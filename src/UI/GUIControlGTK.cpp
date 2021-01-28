@@ -36,8 +36,16 @@ UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
 	this->parent = parent;
 	this->selfResize = false;
 	this->dockType = UI::GUIControl::DOCK_NONE;
-	this->hdpi = 96.0;
-	this->ddpi = 96.0;
+	if (parent)
+	{
+		this->hdpi = parent->GetHDPI();
+		this->ddpi = parent->GetDDPI();
+	}
+	else
+	{
+		this->hdpi = gdk_screen_get_resolution(gdk_screen_get_default());
+		this->ddpi = 96.0;
+	}
 	this->hFont = 0;
 	this->fontName = 0;
 	this->fontHeight = 0;
