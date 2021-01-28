@@ -15,6 +15,13 @@ gboolean GUIControl_ToGenDrawSignal(gpointer user_data)
 	return false;
 }
 
+
+gboolean GUIControl_SetNoResize(gpointer user_data)
+{
+	gtk_window_set_resizable((GtkWindow*)user_data, false);
+	return false;
+}
+
 void GUIControl_SizeChanged(GtkWidget *wnd, GdkEvent *event, gpointer data)
 {
 	UI::GUIControl *me = (UI::GUIControl*)data;
@@ -423,7 +430,82 @@ void UI::GUIControl::UpdateFont()
 
 void UI::GUIControl::UpdatePos(Bool redraw)
 {
-	/////////////////////////	
+	if (Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"WinForm"))
+	{
+		if (gtk_window_is_maximized((GtkWindow*)this->hwnd))
+		{
+			return;
+		}
+	}
+
+	if (this->parent)
+	{
+		Double xOfst = 0;
+		Double yOfst = 0;
+		this->parent->GetClientOfst(&xOfst, &yOfst);
+		void *container = this->parent->GetContainer();
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi));
+		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
+	}
+	else
+	{
+		Double newW = (this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi;
+		Double newH = (this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi;
+		Media::MonitorInfo *monInfo = this->GetMonitorInfo();
+		Double newX;
+		Double newY;
+		gint winX;
+		gint winY;
+		UOSInt winW;
+		UOSInt winH;
+		gtk_window_get_position((GtkWindow*)this->hwnd, &winX, &winY);
+		this->GetSizeP(&winW, &winH);
+		if (monInfo)
+		{
+			Int32 maxW = monInfo->GetPixelWidth();
+			Int32 maxH = monInfo->GetPixelHeight();
+			if (newW > maxW)
+				newW = maxW;
+			if (newH > maxH)
+				newH = maxH;
+			newX = (winX + winX + winW - newW) * 0.5;
+			newY = (winY + winY + winH - newH) * 0.5;
+			if (newY < monInfo->GetTop())
+			{
+				newY = monInfo->GetTop();
+			}
+			DEL_CLASS(monInfo);
+		}
+		else
+		{
+			int maxX = 1024;
+			int maxY = 768;
+			if (newW > maxX)
+				newW = maxX;
+			if (newH > maxY)
+				newH = maxY;
+			newX = (winX + winX + winW - newW) * 0.5;
+			newY = (winY + winY + winH - newH) * 0.5;
+			if (newY < 0)
+			{
+				newY = 0;
+			}
+		}
+
+		gtk_window_move((GtkWindow*)this->hwnd, Math::Double2Int32(newX), Math::Double2Int32(newY));
+		if (gtk_window_get_resizable((GtkWindow*)this->hwnd))
+		{
+			gtk_window_resize((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
+		}
+		else
+		{
+			gtk_window_set_resizable((GtkWindow*)this->hwnd, true);
+			gtk_window_set_default_size((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
+			gtk_window_resize((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
+			g_idle_add(GUIControl_SetNoResize, this->hwnd);
+		}
+		
+	}
 }
 
 void UI::GUIControl::Redraw()
@@ -538,6 +620,21 @@ void *UI::GUIControl::GetHMonitor()
 	}
 	return ret;
 #endif
+}
+
+Media::MonitorInfo *UI::GUIControl::GetMonitorInfo()
+{
+	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd);
+	if (display)
+	{
+		Media::MonitorInfo *info;
+		NEW_CLASS(info, Media::MonitorInfo(0));
+		return info;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 void UI::GUIControl::SetDPI(Double hdpi, Double ddpi)

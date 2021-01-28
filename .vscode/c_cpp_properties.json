@@ -1,0 +1,150 @@
+{
+    "configurations": [
+        {
+            "name": "Linux_x64",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "/usr/include/**",
+                "/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+                "/usr/lib/jvm/java-11-openjdk-amd64/include",
+                "/usr/lib/jvm/java-11-openjdk-amd64/include/linux"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        },
+        {
+            "name": "RPi",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "/usr/include/**",
+                "/opt/vc/include/interface",
+                "/opt/vc/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        },
+        {
+            "name": "MacOS",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+				"/opt/local/include"
+            ],
+            "defines": [
+                "__APPLE__"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        },
+        {
+            "name": "Android",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+				"~/android-ndk-r19c/sysroot/usr/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        },
+        {
+            "name": "Arduino",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+				"~/arduino-1.8.8/hardware/tools/avr/avr/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        },
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "C:/Program Files (x86)/Microsoft Visual Studio 9.0/VC/include"
+            ],
+            "defines": [],
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio 9.0/VC/bin/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        },
+        {
+            "name": "MingW32",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "C:/Program Files/mingw-w64/x86_64-8.1.0-win32-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include",
+                "C:/Program Files/Microsoft SDKs/Windows/v7.1/Samples/multimedia/directshow/baseclasses",
+                "${workspaceFolder}/../opencv/build/include",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl"
+            ],
+            "defines": [
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "\"C:/Program Files/mingw-w64/x86_64-8.1.0-win32-seh-rt_v6-rev0/mingw64/bin/g++.exe\"",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
+            "name": "Windows_cc_x64",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "/usr/x86_64-w64-mingw32/include",
+                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
+                "${workspaceFolder}/../opencv/build/include",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl"
+            ],
+            "defines": [
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "/usr/bin/x86_64-w64-mingw32-g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
