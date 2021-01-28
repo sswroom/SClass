@@ -1,0 +1,10 @@
+
+GPIOControl.o: $(CLASSDIR)src/IO/GPIOControl_ATmega328.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GPIOPin.o: $(CLASSDIR)src/IO/GPIOPin_ATmega328.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+RS232GPIO.o: $(CLASSDIR)src/IO/RS232GPIO_Interrupt.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+

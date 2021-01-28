@@ -1,0 +1,1044 @@
+#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Data/ByteTool.h"
+#include "Data/Integer32Map.h"
+#include "IO/FileStream.h"
+#include "IO/Path.h"
+#include "Manage/Process.h"
+#include "Sync/Interlocked.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
+#include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Reader.h"
+#include <dirent.h>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <errno.h>
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#else
+#include <link.h>
+#endif
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <sys/wait.h>
+
+#include <wchar.h>
+
+#if __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 15)
+ssize_t process_vm_readv(pid_t pid, const struct iovec *local_iov, unsigned long liovcnt,
+	const struct iovec *remote_iov, unsigned long riovcnt, unsigned long flags)
+{
+	MemCopyNO(local_iov->iov_base, remote_iov->iov_base, remote_iov->iov_len);
+	return remote_iov->iov_len;
+}
+#endif
+
+Manage::Process::Process(UOSInt procId, Bool controlRight)
+{
+	this->procId = procId;
+	this->needRelease = true;
+}
+
+Manage::Process::Process()
+{
+	this->procId = getpid();
+	this->needRelease = false;
+}
+
+Manage::Process::Process(const UTF8Char *ccmdLine)
+{
+	UTF8Char progName[512];
+	const UTF8Char *cptr = ccmdLine;
+	UTF8Char *args[10];
+	Int32 argc = 0;
+	Bool argStart = false;
+
+
+	UTF8Char *pptr = progName;
+	Bool isQuote = false;
+	UTF8Char c;
+	args[0] = pptr;
+	while ((c = *cptr++) != 0)
+	{
+		if (c == '"')
+			isQuote = !isQuote;
+		else if (!isQuote && c == ' ')
+		{
+			if (!argStart)
+			{
+				*pptr++ = 0;
+				argStart = true;
+			}
+		}
+		else
+		{
+			if (argStart)
+			{
+				argc++;
+				args[argc] = pptr;
+				argStart = false;
+			}
+			*pptr++ = c;
+		}
+	}
+	*pptr = 0;
+	args[++argc] = 0;
+
+	pid_t pid = fork();
+	if (pid == 0)
+	{
+		OSInt i = Text::StrLastIndexOf(progName, IO::Path::PATH_SEPERATOR);
+		if (i >= 0)
+		{
+			progName[i] = 0;
+			chdir((Char*)progName);
+			progName[i] = IO::Path::PATH_SEPERATOR;
+		}
+		int ret = execvp((Char*)progName, (Char**)args);
+		exit(ret);
+		return;
+	}
+	this->procId = pid;
+	this->needRelease = true;
+}
+
+Manage::Process::Process(const WChar *cmdLine)
+{
+	UTF8Char progName[512];
+	const UTF8Char *ccmdLine = Text::StrToUTF8New(cmdLine);
+	const UTF8Char *cptr = ccmdLine;
+	UTF8Char *args[10];
+	Int32 argc = 0;
+	Bool argStart = false;
+
+
+	UTF8Char *pptr = progName;
+	Bool isQuote = false;
+	WChar c;
+	args[0] = pptr;
+	while ((c = *cptr++) != 0)
+	{
+		if (c == '"')
+			isQuote = !isQuote;
+		else if (!isQuote && c == ' ')
+		{
+			if (!argStart)
+			{
+				*pptr++ = 0;
+				argStart = true;
+			}
+		}
+		else
+		{
+			if (argStart)
+			{
+				argc++;
+				args[argc] = pptr;
+				argStart = false;
+			}
+			*pptr++ = c;
+		}
+	}
+	*pptr = 0;
+	args[++argc] = 0;
+
+	pid_t pid = fork();
+	if (pid == 0)
+	{
+		OSInt i = Text::StrLastIndexOf(progName, IO::Path::PATH_SEPERATOR);
+		if (i >= 0)
+		{
+			progName[i] = 0;
+			chdir((Char*)progName);
+			progName[i] = IO::Path::PATH_SEPERATOR;
+		}
+		int ret = execvp((Char*)progName, (Char**)args);
+		Text::StrDelNew(ccmdLine);
+		exit(ret);
+		return;
+	}
+	Text::StrDelNew(ccmdLine);
+	this->procId = pid;
+	this->needRelease = true;
+}
+
+Manage::Process::~Process()
+{
+	if (needRelease)
+	{
+		//CloseHandle((HANDLE)this->handle);
+//		this->handle = 0;
+	}
+}
+
+UOSInt Manage::Process::GetCurrProcId()
+{
+	return (UOSInt)getpid();
+}
+
+UOSInt Manage::Process::GetProcId()
+{
+	return this->procId;
+}
+
+Bool Manage::Process::IsRunning()
+{
+	UTF8Char sbuff[128];
+	Int32 exitCode;
+	waitpid(this->procId, &exitCode, WNOHANG);
+	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId);
+	if (IO::Path::GetPathType(sbuff) == IO::Path::PT_DIRECTORY)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool Manage::Process::Kill()
+{
+	kill(this->procId, SIGKILL);
+	return true;
+}
+
+WChar *Manage::Process::GetFilename(WChar *buff)
+{
+	UTF8Char sbuff2[512];
+	UTF8Char sbuff[128];
+	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
+	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
+	if (sz < 0)
+	{
+		Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
+		IO::FileStream *fs;
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		sz = fs->Read((UInt8*)sbuff2, 511);
+		DEL_CLASS(fs);
+		sbuff2[sz] = 0;
+		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, -1, 0);
+	}
+	else
+	{
+		sbuff2[sz] = 0;
+		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, -1, 0);
+	}
+	return buff;
+}
+
+Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
+{
+	UTF8Char sbuff2[512];
+	UTF8Char sbuff[128];
+	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
+	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
+	if (sz < 0)
+	{
+		Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
+		IO::FileStream *fs;
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		if (fs->IsError())
+		{
+			sz = 0;
+		}
+		else
+		{
+			sz = fs->Read((UInt8*)sbuff2, 511);
+		}
+		DEL_CLASS(fs);
+		sbuff2[sz] = 0;
+		sb->Append((const UTF8Char*)sbuff2);
+	}
+	else
+	{
+		sbuff2[sz] = 0;
+		sb->Append((const UTF8Char*)sbuff2);
+	}
+	return true;
+}
+
+OSInt Manage::Process::GetMemorySize()
+{
+	return 0;
+}
+
+Bool Manage::Process::SetMemorySize(OSInt minSize, OSInt maxSize)
+{
+	return false;
+}
+
+OSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+{
+	return 0;
+}
+
+void *Manage::Process::GetHandle()
+{
+	return 0;
+}
+
+typedef struct
+{
+	const UTF8Char *fileName;
+	OSInt addr;
+	UInt32 size;
+} ModuleInfoData;
+
+#if !defined(__APPLE__)
+int Process_GetModulesCB(struct dl_phdr_info *info, size_t size, void *data)
+{
+	Data::ArrayList<Manage::ModuleInfo *> *modList = (Data::ArrayList<Manage::ModuleInfo *> *)data;
+	Manage::ModuleInfo *mod;
+	ModuleInfoData midata;
+	UTF8Char sbuff[512];
+
+	midata.addr = info->dlpi_addr;
+	if (info->dlpi_name[0])
+	{
+		Text::StrConcat(sbuff, (UTF8Char*)info->dlpi_name);
+	}
+	else
+	{
+		IO::Path::GetProcessFileName(sbuff);
+	}
+	midata.fileName = sbuff;
+	OSInt totalSize = 0;
+	OSInt i;
+	i = 0;
+	while (i < info->dlpi_phnum)
+	{
+		totalSize += info->dlpi_phdr[i].p_memsz;
+		i++;
+	}
+	midata.size = totalSize;
+
+	NEW_CLASS(mod, Manage::ModuleInfo(0, &midata));
+	modList->Add(mod);
+	return 0;
+}
+#endif
+
+OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+{
+#if defined(__APPLE__)
+	if (this->procId == getpid())
+	{
+		Manage::ModuleInfo *mod;
+		ModuleInfoData midata;
+		OSInt i;
+		OSInt ret = (OSInt)_dyld_image_count;
+		UTF8Char sbuff[512];
+		const Char *name;
+		const struct mach_header *hdr;
+		i = 0;
+		while (i < ret)
+		{
+			name = _dyld_get_image_name((UInt32)i);
+			if (name)
+			{
+				Text::StrConcat(sbuff, (UTF8Char*)name);
+				midata.fileName = sbuff;
+			}
+			else
+			{
+				midata.fileName = (const UTF8Char*)"Unknown";
+			}
+			midata.addr = (OSInt)_dyld_get_image_vmaddr_slide((UInt32)i);
+			midata.size = 0;
+			NEW_CLASS(mod, Manage::ModuleInfo(0, &midata));
+			modList->Add(mod);
+			i++;
+		}
+		return ret;
+	}
+	else
+#elif !defined(__ANDROID__)
+	if (this->procId == (UOSInt)getpid())
+	{
+		OSInt ret = modList->GetCount();
+		dl_iterate_phdr(Process_GetModulesCB, modList);
+		return modList->GetCount() - ret;
+	}
+	else
+#endif
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sarr[6];
+		UTF8Char *sarr2[2];
+		IO::FileStream *fs;
+		Text::UTF8Reader *reader;
+		Data::Integer32Map<ModuleInfoData*> dataMap;
+		Data::ArrayList<ModuleInfoData*> *dataList;
+		ModuleInfoData *data;
+		Manage::ModuleInfo *mod;
+		OSInt ret = 0;
+		OSInt i;
+		Text::StringBuilderUTF8 sb;
+		Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/maps");
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		sb.ClearStr();
+		while (reader->ReadLine(&sb, 512))
+		{
+			ret = Text::StrSplitTrim(sarr, 6, sb.ToString(), ' ');
+			if (ret == 6)
+			{
+				Int32 inode = Text::StrToInt32(sarr[4]);
+				if (inode != 0)
+				{
+					if (Text::StrSplit(sarr2, 2, sarr[0], '-') == 2)
+					{
+						OSInt startAddr = (OSInt)Text::StrHex2Int64(sarr2[0]);
+						OSInt endAddr = (OSInt)Text::StrHex2Int64(sarr2[1]);
+						data = dataMap.Get(inode);
+						if (data)
+						{
+							data->size += (endAddr - startAddr);
+						}
+						else
+						{
+							data = MemAlloc(ModuleInfoData, 1);
+							data->fileName = Text::StrCopyNew(sarr[5]);
+							data->addr = startAddr;
+							data->size = (endAddr - startAddr);
+							dataMap.Put(inode, data);
+						}
+					}
+				}
+			}
+			sb.ClearStr();
+		}
+		DEL_CLASS(reader);
+		DEL_CLASS(fs);
+
+		dataList = dataMap.GetValues();
+		i = 0;
+		ret = dataList->GetCount();
+		while (i < ret)
+		{
+			data = dataList->GetItem(i);
+
+			NEW_CLASS(mod, Manage::ModuleInfo(0, data));
+			modList->Add(mod);
+			Text::StrDelNew(data->fileName);
+			MemFree(data);
+			i++;
+		}
+		return ret;
+	}
+}
+
+OSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+{
+	Char sbuff[128];
+	DIR *dir;
+	UInt32 retCnt = 0;
+	UInt32 threadId;
+	Manage::ThreadInfo *thread;
+	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, "/proc/"), this->procId), "/task");
+	dir = opendir(sbuff);
+	if (dir)
+	{
+		struct dirent *dirent;
+		while ((dirent = readdir(dir)) != 0)
+		{
+			threadId = Text::StrToUInt32(dirent->d_name);
+			if (threadId != 0)
+			{
+				NEW_CLASS(thread, Manage::ThreadInfo(this->procId, threadId));
+				threadList->Add(thread);
+				retCnt++;
+			}
+		}
+		closedir(dir);
+	}
+	return retCnt;
+}
+
+OSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
+{
+	return 0;
+}
+
+OSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, OSInt maxCount)
+{
+	return 0;
+
+}
+
+void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
+{
+}
+
+Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
+{
+	return false;
+}
+
+Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSInt *pagedPoolUsage, OSInt *nonPagedPoolUsage, OSInt *pageFileUsage)
+{
+	Int32 pageSize = sysconf(_SC_PAGESIZE);
+	UTF8Char sbuff[128];
+	IO::FileStream *fs;
+	Text::UTF8Reader *reader;
+	Bool succ = false;
+	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/statm");
+	Text::StringBuilderUTF8 sb;
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	sb.ClearStr();
+	if (reader->ReadLine(&sb, 512))
+	{
+		UTF8Char *sarr[8];
+		if (Text::StrSplit(sarr, 8, sb.ToString(), ' ') == 7)
+		{
+			OSInt wsSize = (OSInt)Text::StrToInt64(sarr[1]);
+			succ = true;
+			if (pageFault)
+			{
+				*pageFault = 0;
+			}
+			if (workingSetSize)
+			{
+				*workingSetSize = wsSize * pageSize;
+			}
+			if (pagedPoolUsage)
+			{
+				*pagedPoolUsage = (OSInt)Text::StrToInt64(sarr[2]) * pageSize;
+			}
+			if (nonPagedPoolUsage)
+			{
+				*nonPagedPoolUsage = (OSInt)Text::StrToInt64(sarr[5]) * pageSize;
+			}
+			if (pageFileUsage)
+			{
+				*pageFileUsage = (OSInt)Text::StrToInt64(sarr[0]) * pageSize;
+			}
+		}
+	}
+	DEL_CLASS(reader);
+	DEL_CLASS(fs);
+	return succ;
+}
+
+Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime)
+{
+	Int32 hertz = sysconf(_SC_CLK_TCK);
+	UTF8Char sbuff[128];
+	IO::FileStream *fs;
+	Text::UTF8Reader *reader;
+	Bool succ = false;
+	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/stat");
+	Text::StringBuilderUTF8 sb;
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	sb.ClearStr();
+	if (reader->ReadLine(&sb, 512))
+	{
+		UTF8Char *sarr[24];
+		if (Text::StrSplit(sarr, 24, sb.ToString(), ' ') >= 23)
+		{
+			succ = true;
+			if (createTime)
+			{
+				createTime->SetTicks(Text::StrToInt64(sarr[21]) * 1000LL / hertz);
+			}
+			if (kernelTime)
+			{
+				kernelTime->SetTicks(Text::StrToInt64(sarr[14]) * 1000LL / hertz);
+			}
+			if (userTime)
+			{
+				userTime->SetTicks(Text::StrToInt64(sarr[13]) * 1000LL / hertz);
+			}
+		}
+	}
+	DEL_CLASS(reader);
+	DEL_CLASS(fs);
+	return succ;
+}
+
+
+UInt32 Manage::Process::GetGDIObjCount()
+{
+	return 0;
+}
+
+UInt32 Manage::Process::GetUserObjCount()
+{
+	return 0;
+}
+
+UInt32 Manage::Process::GetHandleCount()
+{
+	Char sbuff[128];
+	DIR *dir;
+	UInt32 retCnt = 0;
+	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, "/proc/"), this->procId), "/fd");
+	dir = opendir(sbuff);
+	if (dir)
+	{
+		struct dirent *dirent;
+		while ((dirent = readdir(dir)) != 0)
+		{
+			retCnt++;
+		}
+		closedir(dir);
+	}
+	return retCnt;
+}
+
+Manage::Process::ProcessPriority Manage::Process::GetPriority()
+{
+	int priority = getpriority(PRIO_PROCESS, this->procId);
+	if (priority < -16)
+	{
+		return PP_REALTIME;
+	}
+	else if (priority < -8)
+	{
+		return PP_HIGH;
+	}
+	else if (priority < 0)
+	{
+		return PP_ABOVE_NORMAL;
+	}
+	else if (priority < 8)
+	{
+		return PP_NORMAL;
+	}
+	else if (priority < 16)
+	{
+		return PP_BELOW_NORMAL;
+	}
+	else
+	{
+		return PP_IDLE;
+	}
+}
+
+Manage::ThreadContext::ContextType Manage::Process::GetContextType()
+{
+#if defined(CPU_X86_32)
+	return Manage::ThreadContext::CT_X86_32;
+#elif defined(CPU_X86_64)
+	return Manage::ThreadContext::CT_X86_64;
+#elif defined(CPU_ARM)
+	return Manage::ThreadContext::CT_ARM;
+#elif defined(CPU_MIPS)
+	return Manage::ThreadContext::CT_MIPS;
+#else
+	return Manage::ThreadContext::CT_X86_32;
+#endif
+}
+UInt8 Manage::Process::ReadMemUInt8(UInt64 addr)
+{
+	UInt8 buff[1];
+	OSInt size = this->ReadMemory(addr, buff, 1);
+	if (size == 1)
+		return buff[0];
+	return 0;
+}
+
+UInt16 Manage::Process::ReadMemUInt16(UInt64 addr)
+{
+	UInt8 buff[2];
+	OSInt size = this->ReadMemory(addr, buff, 2);
+	if (size == 2)
+		return ReadUInt16(&buff[0]);
+	return 0;
+}
+
+UInt32 Manage::Process::ReadMemUInt32(UInt64 addr)
+{
+	UInt8 buff[4];
+	OSInt size = this->ReadMemory(addr, buff, 4);
+	if (size == 4)
+		return ReadUInt32(&buff[0]);
+	return 0;
+}
+
+UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
+{
+	UInt8 buff[8];
+	OSInt size = this->ReadMemory(addr, buff, 8);
+	if (size == 8)
+		return ReadUInt64(&buff[0]);
+	return 0;
+}
+
+OSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize)
+{
+	struct iovec srcInfo;
+	struct iovec destInfo;
+	destInfo.iov_base = buff;
+	destInfo.iov_len = reqSize;
+	srcInfo.iov_base = (void*)(OSInt)addr;
+	srcInfo.iov_len = reqSize;
+	OSInt i = process_vm_readv(this->procId, &destInfo, 1, &srcInfo, 1, 0);
+	if (i < 0)
+	{
+		i = 0;
+	}
+	return i;
+}
+
+typedef struct
+{
+	void *findFileSess;
+	const UTF8Char *procName;
+} FindProcSess;
+
+void *Manage::Process::FindProcess(const UTF8Char *processName)
+{
+	void *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
+	FindProcSess *sess;
+	if (ffsess == 0)
+	{
+		return 0;
+	}
+	sess = MemAlloc(FindProcSess, 1);
+	sess->findFileSess = ffsess;
+	if (processName)
+	{
+		sess->procName = Text::StrCopyNew(processName);
+	}
+	else
+	{
+		sess->procName = 0;
+	}
+	return sess;
+}
+
+void *Manage::Process::FindProcessW(const WChar *processName)
+{
+	void *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
+	FindProcSess *sess;
+	if (ffsess == 0)
+	{
+		return 0;
+	}
+	sess = MemAlloc(FindProcSess, 1);
+	sess->findFileSess = ffsess;
+	if (processName)
+	{
+		sess->procName = Text::StrToUTF8New(processName);
+	}
+	else
+	{
+		sess->procName = 0;
+	}
+	return sess;
+}
+
+UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+{
+	FindProcSess *fpsess = (FindProcSess*)sess;
+	Int32 pid;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	IO::Path::PathType pt;
+	Text::StringBuilderUTF8 sb;
+	Bool found = false;
+	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
+	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
+	{
+		if (pt == IO::Path::PT_DIRECTORY && Text::StrToInt32(sptr, &pid))
+		{
+			IO::FileStream *fs;
+			Text::UTF8Reader *reader;
+
+			info->processId = pid;
+			info->threadCnt = 0;
+			info->parentId = 0;
+
+			Text::StrConcat(sptr2, (const UTF8Char*)"/status");
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			if (!fs->IsError())
+			{
+				NEW_CLASS(reader, Text::UTF8Reader(fs));
+				sb.ClearStr();
+				while (reader->ReadLine(&sb, 512))
+				{
+					if (sb.StartsWith((const UTF8Char*)"PPid:\t"))
+					{
+						info->parentId = Text::StrToInt32(sb.ToString() + 6);
+					}
+					else if (sb.StartsWith((const UTF8Char*)"Threads:\t"))
+					{
+						info->threadCnt = Text::StrToInt32(sb.ToString() + 9);
+					}
+					sb.ClearStr();
+				}
+				DEL_CLASS(reader);
+			}
+			DEL_CLASS(fs);
+
+			Text::StrConcat(sptr2, (const UTF8Char*)"/comm");
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			if (!fs->IsError())
+			{
+				NEW_CLASS(reader, Text::UTF8Reader(fs));
+				sb.ClearStr();
+				while (reader->ReadLine(&sb, 512))
+				{
+				}
+				DEL_CLASS(reader);
+				if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
+				{
+					found = true;
+				}
+			}
+			DEL_CLASS(fs);
+
+			if (found)
+			{
+				return Text::StrConcat(processNameBuff, sb.ToString());
+			}
+		}
+	}
+	return 0;
+}
+
+WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+{
+	FindProcSess *fpsess = (FindProcSess*)sess;
+	Int32 pid;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	IO::Path::PathType pt;
+	Text::StringBuilderUTF8 sb;
+	Bool found = false;
+	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
+	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
+	{
+		if (pt == IO::Path::PT_DIRECTORY && Text::StrToInt32(sptr, &pid))
+		{
+			IO::FileStream *fs;
+			Text::UTF8Reader *reader;
+
+			info->processId = pid;
+			info->threadCnt = 0;
+			info->parentId = 0;
+
+			Text::StrConcat(sptr2, (const UTF8Char*)"/status");
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			if (!fs->IsError())
+			{
+				NEW_CLASS(reader, Text::UTF8Reader(fs));
+				sb.ClearStr();
+				while (reader->ReadLine(&sb, 512))
+				{
+					if (sb.StartsWith((const UTF8Char*)"PPid:\t"))
+					{
+						info->parentId = Text::StrToInt32(sb.ToString() + 6);
+					}
+					else if (sb.StartsWith((const UTF8Char*)"Threads:\t"))
+					{
+						info->threadCnt = Text::StrToInt32(sb.ToString() + 9);
+					}
+					sb.ClearStr();
+				}
+				DEL_CLASS(reader);
+			}
+			DEL_CLASS(fs);
+
+			Text::StrConcat(sptr2, (const UTF8Char*)"/comm");
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			if (!fs->IsError())
+			{
+				NEW_CLASS(reader, Text::UTF8Reader(fs));
+				sb.ClearStr();
+				while (reader->ReadLine(&sb, 512))
+				{
+				}
+				DEL_CLASS(reader);
+				if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
+				{
+					found = true;
+				}
+			}
+			DEL_CLASS(fs);
+
+			if (found)
+			{
+				return Text::StrUTF8_WChar(processNameBuff, sb.ToString(), -1, 0);
+			}
+		}
+	}
+	return 0;
+}
+
+void Manage::Process::FindProcessClose(void *sess)
+{
+	FindProcSess *fpsess = (FindProcSess*)sess;
+	IO::Path::FindFileClose(fpsess->findFileSess);
+	SDEL_TEXT(fpsess->procName);
+	MemFree(fpsess);
+}
+
+Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUTF *result)
+{
+	UTF8Char progName[64];
+	UTF8Char *progBuff = 0;
+	const UTF8Char *cptr = cmd;
+	Data::ArrayList<UTF8Char *> args;
+	Bool argStart = false;
+
+	OSInt cmdLen = Text::StrCharCnt(cmd);
+	UTF8Char *pptr;
+	if (cmdLen >= 64)
+	{
+		progBuff = MemAlloc(UTF8Char, cmdLen + 1);
+		pptr = progBuff;
+	}
+	else
+	{
+		pptr = progName;
+	}
+	Bool isQuote = false;
+	UTF8Char c;
+	args.Add(pptr);
+	while ((c = *cptr++) != 0)
+	{
+		if (c == '"')
+			isQuote = !isQuote;
+		else if (!isQuote && c == ' ')
+		{
+			if (!argStart)
+			{
+				*pptr++ = 0;
+				argStart = true;
+			}
+		}
+		else
+		{
+			if (argStart)
+			{
+				args.Add(pptr);
+				argStart = false;
+			}
+			*pptr++ = c;
+		}
+	}
+	*pptr = 0;
+	args.Add(0);
+	UOSInt argc;
+	UTF8Char **arr = args.GetArray(&argc);
+
+	static Int32 Process_Id = 0;
+	UTF8Char tmpFile[512];
+	UTF8Char *sptr;
+	if (IO::Path::GetPathType((const UTF8Char*)"/tmp") == IO::Path::PT_DIRECTORY)
+	{
+		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"/tmp/ExecuteProcess");
+	}
+	else
+	{
+		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"ExecuteProcess");
+	}
+	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_Id));
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)".tmp");
+	int fd = open((Char*)tmpFile, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	pid_t pid = fork();
+	int ret = -1;
+	if (pid == 0)
+	{
+		dup2(fd, 1);
+		ret = execvp((Char*)arr[0], (Char**)arr);
+		exit(ret);
+	}
+	int status = -1;
+	if (waitpid(pid, &status, 0) == -1)
+	{
+//		printf("execvp: waitpid failed, pid = %d, errno = %d\r\n", pid, errno);
+	}
+	else
+	{
+		if (WIFEXITED(status))
+		{
+			ret = WEXITSTATUS(status);
+		}
+	}
+
+	UInt8 buff[129];
+	OSInt readSize;
+	lseek(fd, 0, SEEK_SET);
+	while ((readSize = read(fd, buff, 128)) > 0)
+	{
+//		printf("Read %d bytes\r\n", readSize);
+		result->AppendC((const UTF8Char*)buff, readSize);
+	}
+//	printf("Process exited\r\n");
+	close(fd);
+	unlink((Char*)tmpFile);
+	if (progBuff)
+	{
+		MemFree(progBuff);
+	}
+	return ret;
+}
+
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF *result)
+{
+	const UTF8Char *u8ptr = Text::StrToUTF8New(cmd);
+	Int32 ret = ExecuteProcess(u8ptr, result);
+	Text::StrDelNew(u8ptr);
+	return ret;
+}
+
+Bool Manage::Process::IsAlreadyStarted()
+{
+	return false;
+}
+
+Bool Manage::Process::OpenPath(const UTF8Char *path)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"xdg-open ");
+	sb.Append(path);
+	Int32 ret = ExecuteProcess(sb.ToString(), &sb);
+	return ret == 0;
+}
+
+Bool Manage::Process::OpenPathW(const WChar *path)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"xdg-open ");
+	const UTF8Char *csptr = Text::StrToUTF8New(path);
+	sb.Append(csptr);
+	Text::StrDelNew(csptr);
+	Int32 ret = ExecuteProcess(sb.ToString(), &sb);
+	return ret == 0;
+}
+
+const UTF8Char *Manage::Process::GetPriorityName(ProcessPriority priority)
+{
+	switch (priority)
+	{
+	case PP_REALTIME:
+		return (const UTF8Char*)"Realtime";
+	case PP_HIGH:
+		return (const UTF8Char*)"High";
+	case PP_ABOVE_NORMAL:
+		return (const UTF8Char*)"Above Normal";
+	case PP_NORMAL:
+		return (const UTF8Char*)"Normal";
+	case PP_BELOW_NORMAL:
+		return (const UTF8Char*)"Below Normal";
+	case PP_IDLE:
+		return (const UTF8Char*)"Idle";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+}

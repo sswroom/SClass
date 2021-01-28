@@ -1,0 +1,24 @@
+#include "Stdafx.h"
+#include "Core/Core.h"
+#include "IO/ConsoleWriter.h"
+#include "Text/StringBuilderUTF8.h"
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+	IO::ConsoleWriter console;
+	OSInt argc;
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	OSInt i;
+	Text::StringBuilderUTF8 sb;
+	i = 0;
+	while (i < argc)
+	{
+		sb.ClearStr();
+		sb.AppendOSInt(i);
+		sb.AppendChar('\t', 1);
+		sb.Append(argv[i]);
+		console.WriteLine(sb.ToString());
+		i++;
+	}
+	return 0;
+}

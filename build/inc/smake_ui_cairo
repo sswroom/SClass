@@ -1,0 +1,42 @@
+CFLAGS += -DNO_GDK
+
+Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineGTK.cpp
+@DefaultDrawEngine.o
+
+Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterNull.cpp
+@GUIExporter.o
+Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterNull.cpp
+@GUIGIFExporter.o
+Exporter/GUIJPGExporter.h: ../../src/Exporter/GUIJPGExporterNull.cpp
+@GUIJPGExporter.o
+Exporter/GUIPNGExporter.h: ../../src/Exporter/GUIPNGExporterNull.cpp
+@GUIPNGExporter.o
+Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterNull.cpp
+@GUITIFExporter.o
+
+Media/DDrawManager.h:
+Media/DrawEngineGUI.h: ../../src/Media/GTKDrawEngine.cpp
+@DrawEngineGUI.o
+Media/GTKDrawEngine.h: ../../src/Media/GTKDrawEngine.cpp
+@DrawEngineGUI.o
+Media/MonitorInfo.h: ../../src/Media/MonitorInfoNul.cpp
+@MonitorInfo.o
+Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerNull.cpp
+@ScreenCapturer.o
+
+Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserNul.cpp
+@GUIImgParser.o
+
+GUIStartup.o: ../../startup/GtkStartup.cpp
+DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineGTK.cpp
+!-lcairo
+GUIExporter.o: ../../src/Exporter/GUIExporterNull.cpp
+GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterNull.cpp
+GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterNull.cpp
+GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterNull.cpp
+GUITIFExporter.o: ../../src/Exporter/GUITIFExporterNull.cpp
+MonitorInfo.o: ../../src/Media/MonitorInfoNul.cpp
+DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
+!-lcairo
+ScreenCapturer.o: ../../src/Media/ScreenCapturerNull.cpp
+GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserNul.cpp

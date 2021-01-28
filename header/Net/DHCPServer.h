@@ -1,0 +1,53 @@
+#ifndef _SM_NET_DHCPSERVER
+#define _SM_NET_DHCPSERVER
+#include "Data/ArrayList.h"
+#include "Data/Integer64Map.h"
+#include "Net/UDPServer.h"
+#include "Sync/Event.h"
+#include "Sync/Mutex.h"
+
+namespace Net
+{
+	class DHCPServer
+	{
+	public:
+		typedef struct
+		{
+			Int64 hwAddr;
+			UInt32 assignedIP;
+			Int64 assignTime;
+			Bool updated;
+			const UTF8Char *hostName;
+			const UTF8Char *vendorClass;
+		} DeviceStatus;
+		
+	private:
+		Net::SocketFactory *sockf;
+		Net::UDPServer *svr;
+		UInt32 infIndex;
+		UInt32 infIP;
+		UInt32 subnet;
+		UInt32 firstIP;
+		UInt32 devCount;
+		UInt32 gateway;
+		Data::ArrayList<UInt32> *dnsList;
+		UInt32 ipLeaseTime;
+
+		Sync::Mutex *devMut;
+		UInt8 *devUsed;
+		Data::Integer64Map<DeviceStatus*> *devMap;
+
+		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+	public:
+		DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, Data::ArrayList<UInt32> *dnsList);
+		~DHCPServer();
+
+		Bool IsError();
+
+		void StatusBeginGet();
+		void StatusEndGet();
+		Data::ArrayList<DeviceStatus*> *StatusGetList();
+		UInt32 GetIPLeaseTime();
+	};
+}
+#endif

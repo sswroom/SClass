@@ -1,0 +1,5 @@
+
+IO/GPIOControl.h: ../../src/IO/GPIOControl_AllwinnerA64.cpp
+@GPIOControl.o
+
+GPIOControl.o: ../../src/IO/GPIOControl_AllwinnerA64.cpp

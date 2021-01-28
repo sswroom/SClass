@@ -1,0 +1,113 @@
+
+DB/MDBFile.h: ../../src/DB/MDBFile.cpp
+@MDBFile.o
+DB/MongoDB.h: ../../src/DB/MongoDB.cpp
+@MongoDB.o
+DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
+@MySQLConn.o
+DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
+@ODBCConn.o
+DB/OLEDBConn.h:
+
+IO/BTController.h: ../../src/IO/BTControllerNull.cpp
+@BTController.o
+IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
+@BTManager.o
+IO/HIDInfo.h: ../../src/IO/HIDInfoNull.cpp
+@HIDInfo.o
+IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
+@I2CChannelOS.o
+IO/OS.h: ../../src/IO/OSDarwin.cpp
+@OS.o
+IO/SDCardMgr.h: ../../src/IO/SDCardMgrNull.cpp
+@SDCardMgr.o
+IO/SensorAccelerometer.h:
+IO/SensorMagnetometer.h:
+IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
+@SensorManager.o
+IO/SensorOrientation.h:
+IO/SensorPressure.h:
+IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
+@Watchdog.o
+
+Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverL.cpp
+@SymbolResolver.o
+Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
+@ThreadInfo.o
+
+Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
+@AudioDevice.o
+Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
+@Printer.o
+Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
+@FFMPEGDecoder.o
+Media/Decoder/IMSDKDecoder.h:
+Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
+@OCVFrame.o
+Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+@OCVFrameFeeder.o
+Media/OpenCV/OCVInit.h:
+Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
+@OCVObjectDetector.o
+Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
+@OCVUtil.o
+
+Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientL.cpp
+@HTTPOSClient.o
+Net/WirelessLAN.h: ../../src/Net/WirelessLANNull.cpp
+@WirelessLAN.o
+
+Sync/Thread.h: ../../src/Sync/ThreadU.cpp
+@Thread.o
+
+
+ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
+MDBFile.o: ../../src/DB/MDBFile.cpp
+!-lodbc
+!-lodbcinst
+MongoDB.o: ../../src/DB/MongoDB.cpp
+$`pkg-config --cflags libmongoc-1.0`
+!-lmongoc-1.0
+!-lbson-1.0
+MySQLConn.o: ../../src/DB/MySQLConn.cpp
+$-I /opt/local/include/mariadb/mysql
+!-L /opt/local/lib/mariadb/mysql
+!-lmysqlclient
+ODBCConn.o: ../../src/DB/ODBCConn.cpp
+!-lodbc
+!-lodbcinst
+BTController.o: ../../src/IO/BTControllerNull.cpp
+BTManager.o: ../../src/IO/BTManagerNull.cpp
+HIDInfo.o: ../../src/IO/HIDInfoNull.cpp
+I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
+OS.o: ../../src/IO/OSDarwin.cpp
+SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
+SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+Watchdog.o: ../../src/IO/WatchdogNull.cpp
+SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
+ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
+!-lpthread
+AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+Printer.o: ../../src/Media/PrinterCUPS.cpp
+$`pkg-config --cflags --libs cairo` `cups-config --cflags`
+!`cups-config --libs`
+FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
+!-lavutil
+!-lavcodec
+OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
+#$`pkg-config --cflags opencv4`
+!`pkg-config --libs opencv`
+OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+#$`pkg-config --cflags opencv4`
+!`pkg-config --libs opencv`
+OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
+#$`pkg-config --cflags opencv4`
+!`pkg-config --libs opencv`
+OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
+#$`pkg-config --cflags opencv4`
+!`pkg-config --libs opencv`
+HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
+!-lcurl
+WirelessLAN.o: ../../src/Net/WirelessLANNull.cpp
+Thread.o: ../../src/Sync/ThreadU.cpp
+!-lpthread

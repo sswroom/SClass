@@ -1,0 +1,29 @@
+#ifndef _SM_MEDIA_IDEINTRESIZER
+#define _SM_MEDIA_IDEINTRESIZER
+#include "Media/StaticImage.h"
+
+namespace Media
+{
+	class IDeintResizer
+	{
+	public:
+		typedef enum
+		{
+			DT_FULL_FRAME,
+			DT_TOP_FIELD,
+			DT_BOTTOM_FIELD
+		} DeintType;
+
+	protected:
+		Media::AlphaType srcAlphaType;
+	public:
+		IDeintResizer(Media::AlphaType srcAlphaType);
+		virtual ~IDeintResizer(){};
+
+		void SetSrcAlphaType(Media::AlphaType alphaType);
+
+		virtual void DeintResize(DeintType dType, UInt8 *src, OSInt sbpl, Double swidth, Double sheight, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight) = 0;
+		virtual void SetDISrcRefLuminance(Double srcRefLuminance);
+	};
+}
+#endif

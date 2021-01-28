@@ -1,0 +1,97 @@
+﻿#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Media/AVIUtl/AUIAudio.h"
+#include "Sync/Interlocked.h"
+#include <windows.h>
+
+Media::AVIUtl::AUIAudio::AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, Media::AudioFormat *format, UOSInt nSamples)
+{
+	this->plugin = plugin;
+	this->input = input;
+	this->format = format;
+	this->nSamples = nSamples;
+	this->currSample = 0;
+}
+
+Media::AVIUtl::AUIAudio::~AUIAudio()
+{
+	if (Sync::Interlocked::Decrement(&this->input->useCnt) == 0)
+	{
+		this->plugin->CloseInput(this->input->hand);
+		MemFree(this->input);
+	}
+	DEL_CLASS(this->plugin);
+	DEL_CLASS(this->format);
+}
+
+UTF8Char *Media::AVIUtl::AUIAudio::GetSourceName(UTF8Char *buff)
+{
+	return 0;//this->plugin->GetName(buff);
+}
+
+Bool Media::AVIUtl::AUIAudio::CanSeek()
+{
+	return true;
+}
+
+Int32 Media::AVIUtl::AUIAudio::GetStreamTime()
+{
+	return MulDiv((Int32)this->nSamples, 1000, this->format->frequency);
+}
+
+Int32 Media::AVIUtl::AUIAudio::SeekToTime(Int32 time)
+{
+	this->currSample = MulDiv(time, this->format->frequency, 1000);
+	if (this->currSample > this->nSamples)
+		this->currSample = this->nSamples;
+	return MulDiv((Int32)this->currSample, 1000, this->format->frequency);
+}
+
+Bool Media::AVIUtl::AUIAudio::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+{
+	//////////////////////////////////////
+	return false;
+}
+
+void Media::AVIUtl::AUIAudio::GetFormat(AudioFormat *format)
+{
+	format->FromAudioFormat(this->format);
+}
+
+Bool Media::AVIUtl::AUIAudio::Start(Sync::Event *evt, UOSInt blkSize)
+{
+	this->playEvt = evt;
+	if (this->playEvt)
+		this->playEvt->Set();
+	return true;
+}
+
+void Media::AVIUtl::AUIAudio::Stop()
+{
+	this->playEvt = 0;
+}
+
+UOSInt Media::AVIUtl::AUIAudio::ReadBlock(UInt8 *buff, UOSInt blkSize)
+{
+	UOSInt nSample = blkSize / this->format->align;
+	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, (Int32)this->currSample, nSample, buff);
+	this->currSample += readCnt;
+	if (this->playEvt)
+		this->playEvt->Set();
+	return readCnt * this->format->align;
+}
+
+UOSInt Media::AVIUtl::AUIAudio::GetMinBlockSize()
+{
+	return this->format->align;
+}
+
+Int32 Media::AVIUtl::AUIAudio::GetCurrTime()
+{
+	return MulDiv((Int32)this->currSample, 1000, this->format->frequency);
+}
+
+Bool Media::AVIUtl::AUIAudio::IsEnd()
+{
+	return this->currSample >= this->nSamples;
+}

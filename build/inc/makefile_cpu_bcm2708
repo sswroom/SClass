@@ -1,0 +1,4 @@
+
+GPIOPin.o: $(CLASSDIR)src/IO/GPIOPin_BCM2708.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+

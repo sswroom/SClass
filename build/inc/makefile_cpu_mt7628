@@ -1,0 +1,9 @@
+
+GPIOControl.o: $(CLASSDIR)src/IO/GPIOControl_MT7628.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GPIOPin.o: $(CLASSDIR)src/IO/GPIOPin_MT7628.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+RS232GPIO.o: $(CLASSDIR)src/IO/RS232GPIO.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)

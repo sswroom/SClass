@@ -1,0 +1,25 @@
+﻿BSAParser	館 ～官能奇譚～
+BurikoArcParser	グリーングリーン OVERDRIVE EDITION
+BurikoPackFileParser	グリーングリーン OVERDRIVE EDITION
+DCPackParser	D.C. ～ダ・カーポ～
+GamedatPac2Parser	ひめごとユニオン ～We are in the springtime of life!～
+IPACParser	きんぎんはーとさっきゅばす
+LinkArcParser	モーレツ☆にゃん×2 クリニック ～女医とナースがマンモスギザエロＥ→～
+MAIPackParser	姬三妹
+MajiroArcParser	お仕置きJK～俺達の凶イク指導！～
+MEDParser	催眠術3
+MLHParser	PS2 双恋島～恋と水着のサバイバル～
+MRGParser	鏡の中のオルゴール みっつめの物語 ～Haensel und Gretel～
+NFPParser	PS2 双恋島～恋と水着のサバイバル～
+NOAParser	Timepiece Ensemble -タイムピース アンサンブル-
+NS2Parser	√ハーレム！ Root Harem！
+PAC2Parser	魔法少女リィ －淫魔の試練場－
+PACParser	爆乳淫乱家庭教師
+PFS2Parser	ツゴウノイイ家族
+SakuotoArcParser	桜舞う乙女のロンド
+SEGPackParser	Studeo.e.go!! - 夏神楽
+SM2MPXParser	エッチなバニーさんは嫌い？2
+SZSParser	戦極姫5～戦渦断つ覇王の系譜～
+TsuyoshiArcParser	SEXティーチャー剛史 ～純情乙女が濡らしちゃう秘密の性感授業～
+XPCMParser	D.C. ～ダ・カーポ～
+YKCParser	恋×恋＝∞ ～恋する乙女にできること～

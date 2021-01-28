@@ -1,0 +1,7 @@
+Assembly Listing:
+-Wa,-adhln=ExcelXMLExporter.s -g
+
+Disassemble:
+gcc -S -o ABC.s ABC.cpp
+
+gcc -dM -E - < /dev/null

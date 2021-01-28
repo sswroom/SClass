@@ -1,0 +1,203 @@
+
+LIBS_Dasm: DasmX86_32.o ThreadContextX86_32.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_CPUInfo: CPUInfo_CPP.o
+	$(eval CLASS_OBJS += $^ )
+
+MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CRC16_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC16_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CRC16R_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC16R_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC32_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC32R_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC32R_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+MD5_CPP.o: $(CLASSDIR)src/Crypto/Hash/MD5_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+SHA1_CPP.o: $(CLASSDIR)src/Crypto/Hash/SHA1_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+LZODecompressor_CPP.o: $(CLASSDIR)src/Data/Compress/LZODecompressor_cpp.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Benchmark_CPP.o: $(CLASSDIR)src/Manage/Benchmark_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfox86.cpp LIBS_CPUInfo
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CPUInfo_CPP.o: $(CLASSDIR)src/Manage/CPUInfox86_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+Dasm.o: $(CLASSDIR)src/Manage/DasmX86_64.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DasmX86_32.o: $(CLASSDIR)src/Manage/DasmX86_32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ThreadContext.o: $(CLASSDIR)src/Manage/ThreadContextX86_64W.cpp LIBS_Dasm
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ThreadContextX86_32.o: $(CLASSDIR)src/Manage/ThreadContextX86_32W.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FileGDB.o: $(CLASSDIR)src/Map/FileGDB.cpp FileGDBLayerDef
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FileGDBLayer.o: $(CLASSDIR)src/Map/FileGDBLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FileGDBLayerDef: FileGDBLayer.o
+	$(eval CLASS_OBJS += $^ )
+
+ScaledMapView_CPP.o: $(CLASSDIR)src/Map/ScaledMapView_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+Math_CPP.o: $(CLASSDIR)src/Math/Math_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+GRFilter_CPP.o: $(CLASSDIR)src/Media/GRFilter_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageCopy_CPP.o: $(CLASSDIR)src/Media/ImageCopy_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+ImageTo8Bit_CPP.o: $(CLASSDIR)src/Media/ImageTo8Bit_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+ImageUtil_CPP.o: $(CLASSDIR)src/Media/ImageUtil_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+LRGBLimiter_CPP.o: $(CLASSDIR)src/Media/LRGBLimiter_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+RGBColorFilter_CPP.o: $(CLASSDIR)src/Media/RGBColorFilter_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+AlphaBlend8_8_CPP.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+AlphaBlend8_C8_CPP.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_C8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSAYUV_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSAYUV444_10_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSAYUV444_10_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_RGB32C_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSI420_LRGB_CPP.o: $(CLASSDIR)src/Media/CS/CSI420_LRGB_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSI420_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSI420_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSNV12_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSNV12_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSNV12_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB32C_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSP010_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSP010_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSP016_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSP016_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSP016_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSP016_RGB32C_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSP216_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSP216_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSRGB16_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB16_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSRGB16_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB16_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSRGB8_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB8_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSRGB8_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB8_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSRGBF_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGBF_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSUYVY_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSUYVY_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSUYVY_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSUYVY_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSY416_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSY416_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSY416_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSY416_RGB32C_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYUY2_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUY2_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYUY2_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSYUY2_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYUV420_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV420_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYUV420_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV420_RGB32C_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYUV444P10LEP_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_LRGBC_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYUV444P10LEP_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_RGB32C_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+CSYVU9_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSYVU9_RGB8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+NearestNeighbourResizer32_32_CPP.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer32_32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+NearestNeighbourResizer64_64_CPP.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer64_64_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizer8_C8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer8_C8_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+LanczosResizer16_C8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer16_C8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizerH8_8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerH8_8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizerLR_C32_CPU_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Thread_CPP.o: $(CLASSDIR)src/Sync/Thread_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+MyString_CPP.o: $(CLASSDIR)src/Text/MyString_Win64.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win64 -o $@ $< $(ASMSUFFIX)
+
+

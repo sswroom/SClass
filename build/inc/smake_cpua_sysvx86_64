@@ -1,0 +1,101 @@
+
+
+Manage/CPUInfo.h: ../../src/Manage/CPUInfox86.cpp
+@CPUInfo.o
+Manage/CPUInfoDetail.h: ../../src/Manage/CPUInfoDetailx86.cpp
+@CPUInfoDetail.o
+Manage/Dasm.h:
+Manage/DasmARM.h:
+Manage/DasmX86_32.h: ../../src/Manage/DasmX86_32.cpp
+@DasmX86_32.o
+Manage/DasmX86_64.h: ../../src/Manage/DasmX86_64.cpp
+@Dasm.o
+Manage/ThreadContextARM.h:
+Manage/ThreadContextARM64.h:
+Manage/ThreadContextMIPS.h:
+Manage/ThreadContextX86_32.h:
+Manage/ThreadContextX86_64.h: ../../src/Manage/ThreadContextX86_64L.cpp
+@ThreadContext.o
+
+Map/FileGDB.h: ../../src/Map/FileGDBUnk.cpp
+@FileGDB.o
+Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
+@FileGDBLayer.o
+
+
+MyMemory_CPP.o: ../../src/MyMemory_SysV64.asm
+Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_SysV64.asm
+CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_SysV64.asm
+CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp
+CRC32_CPP.o: ../../src/Crypto/Hash/CRC32_CPP.cpp
+CRC32R_CPP.o: ../../src/Crypto/Hash/CRC32R_SysV64.asm
+MD5_CPP.o: ../../src/Crypto/Hash/MD5_SysV64.asm
+SHA1_CPP.o: ../../src/Crypto/Hash/SHA1_SysV64.asm
+LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
+Benchmark_CPP.o: ../../src/Manage/Benchmark_SysV64.asm
+CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
+CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
+Dasm.o: ../../src/Manage/DasmX86_64.cpp
+DasmX86_32.o: ../../src/Manage/DasmX86_32.cpp
+ThreadContext.o: ../../src/Manage/ThreadContextX86_64L.cpp
+FileGDB.o: ../../src/Map/FileGDBUnk.cpp
+#$-I ../../../FileGDB_API-64gcc51/include
+#!-L../../../FileGDB_API-64gcc51/lib
+#!-lFileGDBAPI
+FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
+ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_SysV64.asm
+FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp
+Math_CPP.o: ../../src/Math/Math_SysV64.asm
+Deinterlace8_CPP.o: ../../src/Media/Deinterlace8_CPP.cpp
+DeinterlaceLR_CPP.o: ../../src/Media/DeinterlaceLR_CPP.cpp
+GRFilter_CPP.o: ../../src/Media/GRFilter_CPP.cpp
+ImageCopy_CPP.o: ../../src/Media/ImageCopy_SysV64.asm
+ImageTo8Bit_CPP.o: ../../src/Media/ImageTo8Bit_SysV64.asm
+ImageUtil_CPP.o: ../../src/Media/ImageUtil_SysV64.asm
+LRGBLimiter_CPP.o: ../../src/Media/LRGBLimiter_SysV64.asm
+RGBColorFilter_CPP.o: ../../src/Media/RGBColorFilter_CPP.cpp
+AlphaBlend8_8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_8_CPP.cpp
+AlphaBlend8_C8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_C8_SysV64.asm
+CSAYUV_RGB8_CPP.o: ../../src/Media/CS/CSAYUV_RGB8_SysV64.asm
+CSAYUV444_10_LRGBC_CPP.o: ../../src/Media/CS/CSAYUV444_10_LRGBC_SysV64.asm
+CSAYUV444_10_RGB32C_CPP.o: ../../src/Media/CS/CSAYUV444_10_RGB32C_SysV64.asm
+CSI420_LRGB_CPP.o: ../../src/Media/CS/CSI420_LRGB_SysV64.asm
+CSI420_RGB8_CPP.o: ../../src/Media/CS/CSI420_RGB8_SysV64.asm
+CSNV12_LRGBC_CPP.o: ../../src/Media/CS/CSNV12_LRGBC_SysV64.asm
+CSNV12_RGB8_CPP.o: ../../src/Media/CS/CSNV12_RGB8_SysV64.asm
+CSNV12_RGB32C_CPP.o: ../../src/Media/CS/CSNV12_RGB32C_SysV64.asm
+CSP010_RGB8_CPP.o: ../../src/Media/CS/CSP010_RGB8_SysV64.asm
+CSP016_LRGBC_CPP.o: ../../src/Media/CS/CSP016_LRGBC_SysV64.asm
+CSP016_RGB32C_CPP.o: ../../src/Media/CS/CSP016_RGB32C_SysV64.asm
+CSP216_LRGBC_CPP.o: ../../src/Media/CS/CSP216_LRGBC_SysV64.asm
+CSRGB16_LRGBC_CPP.o: ../../src/Media/CS/CSRGB16_LRGBC_SysV64.asm
+CSRGB16_RGB8_CPP.o: ../../src/Media/CS/CSRGB16_RGB8_SysV64.asm
+CSRGB8_LRGBC_CPP.o: ../../src/Media/CS/CSRGB8_LRGBC_SysV64.asm
+#CSRGB8_LRGBC_CPP.o: ../../src/Media/CS/CSRGB8_LRGBC_CPP.cpp
+CSRGB8_RGB8_CPP.o: ../../src/Media/CS/CSRGB8_RGB8_SysV64.asm
+CSRGBF_LRGBC_CPP.o: ../../src/Media/CS/CSRGBF_LRGBC_SysV64.asm
+CSUYVY_LRGBC_CPP.o: ../../src/Media/CS/CSUYVY_LRGBC_SysV64.asm
+CSUYVY_RGB8_CPP.o: ../../src/Media/CS/CSUYVY_RGB8_SysV64.asm
+CSY416_LRGBC_CPP.o: ../../src/Media/CS/CSY416_LRGBC_SysV64.asm
+CSY416_RGB32C_CPP.o: ../../src/Media/CS/CSY416_RGB32C_SysV64.asm
+CSYUV420_LRGBC_CPP.o: ../../src/Media/CS/CSYUV420_LRGBC_SysV64.asm
+CSYUV420_RGB32C_CPP.o: ../../src/Media/CS/CSYUV420_RGB32C_SysV64.asm
+CSYUV444P10LEP_LRGBC_CPP.o: ../../src/Media/CS/CSYUV444P10LEP_LRGBC_SysV64.asm
+CSYUV444P10LEP_RGB32C_CPP.o: ../../src/Media/CS/CSYUV444P10LEP_RGB32C_SysV64.asm
+CSYUY2_LRGBC_CPP.o: ../../src/Media/CS/CSYUY2_LRGBC_SysV64.asm
+CSYUY2_RGB8_CPP.o: ../../src/Media/CS/CSYUY2_RGB8_SysV64.asm
+CSYVU9_RGB8_CPP.o: ../../src/Media/CS/CSYVU9_RGB8_SysV64.asm
+BGImgFilter_CPP.o: ../../src/Media/ImageFilter/BGImgFilter_cpp.cpp
+BWImgFilter_CPP.o: ../../src/Media/ImageFilter/BWImgFilter_cpp.cpp
+NearestNeighbourResizer32_32_CPP.o: ../../src/Media/Resizer/NearestNeighbourResizer32_32_CPP.cpp
+NearestNeighbourResizer64_64_CPP.o: ../../src/Media/Resizer/NearestNeighbourResizer64_64_CPP.cpp
+LanczosResizer8_C8_CPP.o: ../../src/Media/Resizer/LanczosResizer8_C8_SysV64.asm
+LanczosResizer16_C8_CPP.o: ../../src/Media/Resizer/LanczosResizer16_C8_CPP.cpp
+LanczosResizerH8_8_CPP.o: ../../src/Media/Resizer/LanczosResizerH8_8_CPP.cpp
+LanczosResizerLR_C16_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C16_CPP.cpp
+LanczosResizerLR_C32_CPU_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU_SysV64.asm
+#LanczosResizerLR_C32_CPU_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
+AutoCropFilter_CPP.o: ../../src/Media/VideoFilter/AutoCropFilter_CPP.cpp
+IVTCFilter_CPP.o: ../../src/Media/VideoFilter/IVTCFilter_CPP.cpp
+AVIRMediaPlayer_CPP.o: ../../src/SSWR/AVIRead/AVIRMediaPlayer_CPP.cpp
+MyString_CPP.o: ../../src/Text/MyString_SysV64.asm

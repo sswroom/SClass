@@ -1,0 +1,32 @@
+
+DEPS := DeviceBase.o
+
+IO/DebugWriter.h: ../../src/IO/DebugWriter_Null.cpp
+@DebugWriter.o
+
+IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
+@GPUManager.o
+
+IO/SystemInfo.h: ../../src/IO/SystemInfoNetComm.cpp
+@SystemInfo.o
+
+Media/CameraManager.h: ../../src/Media/CameraManagerNul.cpp
+@CameraManager.o
+
+Media/DDCReader.h: ../../src/Media/DDCReaderNul.cpp
+@DDCReader.o
+
+Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrL.cpp
+@VideoCaptureMgr.o
+
+Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
+@SMBIOSUtil.o
+
+DeviceBase.o: ../../src/DeviceBase_Interlocked.cpp
+DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
+GPUManager.o: ../../src/IO/GPUManagerNull.cpp
+SystemInfo.o: ../../src/IO/SystemInfoNetComm.cpp
+CameraManager.o: ../../src/Media/CameraManagerNul.cpp
+DDCReader.o: ../../src/Media/DDCReaderNul.cpp
+VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrL.cpp
+SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilNull.cpp

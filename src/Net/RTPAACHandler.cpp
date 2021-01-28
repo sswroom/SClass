@@ -1,0 +1,287 @@
+#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Data/ByteTool.h"
+#include "IO/Console.h"
+#include "Net/RTPAACHandler.h"
+#include "Text/Encoding.h"
+#include "Text/MyString.h"
+
+UInt8 Net::RTPAACHandler::GetRateIndex()
+{
+	switch (this->freq)
+	{
+	case 96000:
+		return 0;
+	case 88200:
+		return 1;
+	case 64000:
+		return 2;
+	case 48000:
+		return 3;
+	case 44100:
+		return 4;
+	case 32000:
+		return 5;
+	case 24000:
+		return 6;
+	case 22050:
+		return 7;
+	case 16000:
+		return 8;
+	case 2000:
+		return 9;
+	case 11025:
+		return 10;
+	case 8000:
+		return 11;
+	default:
+		return 15;
+	}
+}
+
+Net::RTPAACHandler::RTPAACHandler(Int32 payloadType, Int32 freq, Int32 nChannel)
+{
+	this->payloadType = payloadType;
+	this->freq = freq;
+	this->nChannel = nChannel;
+	this->evt = 0;
+	this->aacm = AACM_UNKNOWN;
+	this->streamType = 0;
+	this->profileId = 0;
+	this->config = 0;
+	this->buffSize = 0;
+	this->buff = MemAlloc(UInt8, 1048576);
+	NEW_CLASS(this->mut, Sync::Mutex());
+	this->dataEvt = 0;
+}
+
+Net::RTPAACHandler::~RTPAACHandler()
+{
+	this->Stop();
+	MemFree(this->buff);
+	DEL_CLASS(this->mut);
+}
+
+void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts)
+{
+	Int32 headerSize = ReadMInt16(&buff[0]);
+	if (headerSize & 7)
+	{
+		headerSize = (headerSize >> 3) + 1;
+	}
+	else
+	{
+		headerSize = headerSize >> 3;
+	}
+	OSInt sizeLeft = dataSize - headerSize;
+	OSInt ofst = headerSize + 2;
+	OSInt i = 0;
+	Int32 thisSize;
+
+	this->mut->Lock();
+	switch (this->aacm)
+	{
+	case AACM_AAC_HBR:
+		while (i < headerSize)
+		{
+			thisSize = ReadMInt16(&buff[i + 2]) >> 3;
+			if ((this->buffSize + thisSize + 7) > 1048576 || thisSize > sizeLeft)
+			{
+				break;
+			}
+			//ADTS Header
+			this->buff[this->buffSize + 0] = 0xff;
+			this->buff[this->buffSize + 1] = 0xf9;
+			this->buff[this->buffSize + 2] = 1 << 6; // profile = 1 (AAC-LC)
+			this->buff[this->buffSize + 2] |= GetRateIndex() << 2;
+			this->buff[this->buffSize + 2] |= this->nChannel >> 2;
+			this->buff[this->buffSize + 3] = (this->nChannel & 3) << 6;
+			this->buff[this->buffSize + 3] |= ((thisSize + 7) & 0x1800) >> 11;
+			this->buff[this->buffSize + 4] = ((thisSize + 7) & 0x7f8) >> 3;
+			this->buff[this->buffSize + 5] = ((thisSize + 7) & 7) << 5;
+			this->buff[this->buffSize + 5] |= 0x1f;
+			this->buff[this->buffSize + 6] = 0xfc;
+			this->buff[this->buffSize + 6] |= 0; // number_of_raw_data_blocks_in_frame
+			this->buffSize += 7;
+			MemCopyNO(&this->buff[this->buffSize], &buff[ofst], thisSize);
+			this->buffSize += thisSize;
+			ofst += thisSize;
+			sizeLeft -= thisSize;
+			i += 2;
+		}
+
+		break;
+	default:
+		this->mut->Unlock();
+		return;
+	}
+	this->mut->Unlock();
+
+	if (this->evt)
+	{
+		this->evt->Set();
+	}
+	if (this->dataEvt)
+	{
+		this->dataEvt->Set();
+	}
+}
+
+void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
+{
+	UTF8Char sbuff[256];
+	UTF8Char *sarr[2];
+	OSInt i;
+	Text::StrConcat(sbuff, fmtStr);
+	sarr[1] = sbuff;
+	while (true)
+	{
+		i = Text::StrSplitTrim(sarr, 2, sarr[1], ';');
+		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"mode="))
+		{
+			if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=generic") == 0)
+			{
+				this->aacm = AACM_GENERIC;
+			}
+			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=CELP-cbr") == 0)
+			{
+				this->aacm = AACM_CELP_CBR;
+			}
+			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=CELP-vbr") == 0)
+			{
+				this->aacm = AACM_CELP_VBR;
+			}
+			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=AAC-lbr") == 0)
+			{
+				this->aacm = AACM_AAC_LBR;
+			}
+			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=AAC-hbr") == 0)
+			{
+				this->aacm = AACM_AAC_HBR;
+			}
+		}
+		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"streamType="))
+		{
+			this->streamType = Text::StrToInt32(&sarr[0][11]);
+		}
+		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"profile-level-id="))
+		{
+			this->profileId = Text::StrToInt32(&sarr[0][17]);
+		}
+		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"config="))
+		{
+			this->config = Text::StrHex2Int32(&sarr[0][7]);
+		}
+		else
+		{
+			sarr[0] = 0;
+		}
+		
+		if (i == 1)
+		{
+			break;
+		}
+	}
+	////////////////////////////////////
+}
+
+Int32 Net::RTPAACHandler::GetPayloadType()
+{
+	return this->payloadType;
+}
+
+UTF8Char *Net::RTPAACHandler::GetSourceName(UTF8Char *buff)
+{
+	return Text::StrConcat(buff, (const UTF8Char*)"mpeg4-generic");
+}
+
+Bool Net::RTPAACHandler::CanSeek()
+{
+	return false;
+}
+
+Int32 Net::RTPAACHandler::GetStreamTime()
+{
+	return -1;
+}
+
+Int32 Net::RTPAACHandler::SeekToTime(Int32 time)
+{
+	return 0;
+}
+
+Bool Net::RTPAACHandler::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+{
+	return false;
+}
+
+void Net::RTPAACHandler::GetFormat(Media::AudioFormat *format)
+{
+	format->Clear();
+	format->formatId = 255;
+	format->frequency = this->freq;
+	format->nChannels = this->nChannel;
+	format->bitpersample = 16;
+	format->align = 1;
+	format->intType = Media::AudioFormat::IT_NORMAL;
+	format->extraSize = 2;
+	format->extra = MemAlloc(UInt8, 2);
+	WriteInt16(format->extra, this->config);
+	format->bitRate = 128000;
+}
+
+Bool Net::RTPAACHandler::Start(Sync::Event *evt, UOSInt blkSize)
+{
+	this->evt = evt;
+	if (this->dataEvt)
+	{
+		return true;
+	}
+	NEW_CLASS(this->dataEvt, Sync::Event(true, (const UTF8Char*)"Net.RTPAACHandler.dataEvt"));
+	return true;
+}
+
+void Net::RTPAACHandler::Stop()
+{
+	this->evt = 0;
+	SDEL_CLASS(this->dataEvt);
+}
+
+UOSInt Net::RTPAACHandler::ReadBlock(UInt8 *buff, UOSInt blkSize)
+{
+	while (this->buffSize == 0 && this->dataEvt)
+	{
+		this->dataEvt->Wait(1000);
+	}
+	this->mut->Lock();
+	if (this->buffSize <= 0)
+	{
+		this->mut->Unlock();
+		return 0;
+	}
+	if (this->buffSize < blkSize)
+	{
+		blkSize = this->buffSize;
+	}
+	MemCopyNO(buff, this->buff, blkSize);
+	MemCopyO(this->buff, &this->buff[blkSize], this->buffSize - blkSize);
+	this->buffSize -= blkSize;
+	this->mut->Unlock();
+
+	return blkSize;
+}
+
+UOSInt Net::RTPAACHandler::GetMinBlockSize()
+{
+	return 1;
+}
+
+Int32 Net::RTPAACHandler::GetCurrTime()
+{
+	return 0;
+}
+
+Bool Net::RTPAACHandler::IsEnd()
+{
+	return true;
+}

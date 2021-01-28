@@ -1,0 +1,77 @@
+#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Core/Core.h"
+#include "Data/ByteTool.h"
+#include "IO/SerialPort.h"
+#include "Sync/Thread.h"
+#include <stdio.h>
+
+IO::SerialPort *port;
+Bool threadRunning;
+Bool threadToStop;
+
+UInt32 __stdcall ReadThread(void *userObj)
+{
+	UInt8 readBuff[1024];
+	OSInt buffSize = 0;
+	OSInt readSize;
+	OSInt i;
+	threadRunning = true;
+	while (!threadToStop)
+	{
+		readSize = port->Read(&readBuff[buffSize], 1024 - buffSize);
+		if (readSize > 0)
+		{
+			buffSize += readSize;
+			i = 0;
+			while (i < buffSize - 5)
+			{
+				if (readBuff[i] == 0xBB && readBuff[i + 1] == 0xAA)
+				{
+					printf("Value1 = %d, Value2 = %d\r\n", ReadMUInt16(&readBuff[i + 2]), ReadMUInt16(&readBuff[i + 4]));
+					i += 6;
+				}
+				else
+				{
+					i++;
+				}
+			}
+
+			if (i >= buffSize)
+			{
+				buffSize = 0;
+			}
+			else if (i > 0)
+			{
+				MemCopyO(readBuff, &readBuff[i], buffSize - i);
+				buffSize -= i;
+			}
+		}
+	}
+	threadRunning = false;
+	return 0;
+}
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+	NEW_CLASS(port, IO::SerialPort(33, 115200, IO::SerialPort::PARITY_NONE, false));
+	if (port->IsError())
+	{
+		printf("Error in opeining serial port\r\n");
+	}
+	else
+	{
+		threadToStop = false;
+		threadRunning = false;
+		Sync::Thread::Create(ReadThread, 0);
+		progCtrl->WaitForExit(progCtrl);
+		threadToStop = true;
+		port->Close();
+		while (threadRunning)
+		{
+			Sync::Thread::Sleep(10);
+		}
+	}
+	DEL_CLASS(port);
+	return 0;
+}

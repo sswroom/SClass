@@ -1,0 +1,44 @@
+
+IO/DebugWriter.h: ../../src/IO/DebugWriter_Null.cpp
+@DebugWriter.o
+
+IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
+@GPUManager.o
+
+IO/SystemInfo.h: ../../src/IO/SystemInfoRPi.cpp
+@SystemInfo.o
+
+Media/CameraManager.h: ../../src/Media/CameraManagerRPi.cpp
+@CameraManager.o
+
+Media/DDCReader.h: ../../src/Media/DDCReaderRPi.cpp
+@DDCReader.o
+
+Media/MMALStillCapture.h: ../../src/Media/MMALStillCapture.cpp
+@MMALStillCapture.o
+
+Media/MMALVideoCapture.h: ../../src/Media/MMALVideoCapture.cpp
+@MMALVideoCapture.o
+
+Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgr_RPi.cpp
+@VideoCaptureMgr.o
+
+Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
+@SMBIOSUtil.o
+
+DeviceBase.o: ../../src/DeviceBase_SUP.cpp
+DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
+GPUManager.o: ../../src/IO/GPUManagerNull.cpp
+SystemInfo.o: ../../src/IO/SystemInfoRPi.cpp
+CameraManager.o: ../../src/Media/CameraManagerRPi.cpp
+DDCReader.o: ../../src/Media/DDCReaderRPi.cpp
+$-I/opt/vc/include/interface -I/opt/vc/include
+!-lvcos -lvchiq_arm
+MMALStillCapture.o: ../../src/Media/MMALStillCapture.cpp
+$-I/opt/vc/include/interface -I/opt/vc/include
+!-L/opt/vc/lib -lmmal_core -lmmal -lmmal_util
+MMALVideoCapture.o: ../../src/Media/MMALVideoCapture.cpp
+$-I/opt/vc/include/interface -I/opt/vc/include
+!-L/opt/vc/lib -lmmal_core -lmmal -lmmal_util
+VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgr_RPi.cpp
+SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilNull.cpp

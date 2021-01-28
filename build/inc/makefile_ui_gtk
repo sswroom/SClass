@@ -1,0 +1,156 @@
+
+LIBS_gtk:
+	$(eval GTKFLAGS := `pkg-config --cflags --libs gtk+-3.0`)
+	$(eval LIBS += `pkg-config --cflags --libs gtk+-3.0`)
+
+GUIStartup.o: $(CLASSDIR)startup/GtkStartup.cpp LIBS_gtk
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DefaultDrawEngine.o: $(CLASSDIR)src/Core/DefaultDrawEngineGTK.cpp LIBS_gtk
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIExporter.o: $(CLASSDIR)src/Exporter/GUIExporterGTK.cpp LIBS_gtk
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIGIFExporter.o: $(CLASSDIR)src/Exporter/GUIGIFExporterGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIJPGExporter.o: $(CLASSDIR)src/Exporter/GUIJPGExporterGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPNGExporter.o: $(CLASSDIR)src/Exporter/GUIPNGExporterGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITIFExporter.o: $(CLASSDIR)src/Exporter/GUITIFExporterGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MonitorInfo.o: $(CLASSDIR)src/Media/MonitorInfoGTK.cpp LIBS_gtk
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DrawEngineGUI.o: $(CLASSDIR)src/Media/GTKDrawEngine.cpp LIBS_gtk
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIImgParser.o: $(CLASSDIR)src/Parser/FileParser/GUIImgParserGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileDialog.o: $(CLASSDIR)src/UI/FileDialogGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FolderDialog.o: $(CLASSDIR)src/UI/FolderDialogGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FontDialog.o: $(CLASSDIR)src/UI/FontDialogGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIButton.o: $(CLASSDIR)src/UI/GUIButtonGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICheckBox.o: $(CLASSDIR)src/UI/GUICheckBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICheckedListBox.o: $(CLASSDIR)src/UI/GUICheckedListBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIClientControl.o: $(CLASSDIR)src/UI/GUIClientControlGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIComboBox.o: $(CLASSDIR)src/UI/GUIComboBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIControl.o: $(CLASSDIR)src/UI/GUIControlGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICore.o: $(CLASSDIR)src/UI/GUICoreGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICustomDraw.o: $(CLASSDIR)src/UI/GUICustomDrawGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICustomDrawVScroll.o: $(CLASSDIR)src/UI/GUICustomDrawVScrollGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIDDrawControl.o: $(CLASSDIR)src/UI/GUIDDrawControlGtk.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIDragDrop.o: $(CLASSDIR)src/UI/GUIDragDropGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIForm.o: $(CLASSDIR)src/UI/GUIFormGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIGroupBox.o: $(CLASSDIR)src/UI/GUIGroupBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIHScrollBar.o: $(CLASSDIR)src/UI/GUIHScrollBarGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIHSplitter.o: $(CLASSDIR)src/UI/GUIHSplitterGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUILabel.o: $(CLASSDIR)src/UI/GUILabelGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIListBox.o: $(CLASSDIR)src/UI/GUIListBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIListView.o: $(CLASSDIR)src/UI/GUIListViewGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPanel.o: $(CLASSDIR)src/UI/GUIPanelGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIMainMenu.o: $(CLASSDIR)src/UI/GUIMainMenu.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIMenu.o: $(CLASSDIR)src/UI/GUIMenuGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPictureBox.o: $(CLASSDIR)src/UI/GUIPictureBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPictureBoxSimple.o: $(CLASSDIR)src/UI/GUIPictureBoxSimpleGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPopupMenu.o: $(CLASSDIR)src/UI/GUIPopupMenuGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIProgressBar.o: $(CLASSDIR)src/UI/GUIProgressBarGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIRadioButton.o: $(CLASSDIR)src/UI/GUIRadioButtonGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIRealtimeLineChart.o: $(CLASSDIR)src/UI/GUIRealtimeLineChartGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITabControl.o: $(CLASSDIR)src/UI/GUITabControlGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITabPage.o: $(CLASSDIR)src/UI/GUITabPage.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITextBox.o: $(CLASSDIR)src/UI/GUITextBoxGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITextFileView.o: $(CLASSDIR)src/UI/GUITextFileViewGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITimer.o: $(CLASSDIR)src/UI/GUITimerGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITrackBar.o: $(CLASSDIR)src/UI/GUITrackBarGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITreeView.o: $(CLASSDIR)src/UI/GUITreeViewGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIVSplitter.o: $(CLASSDIR)src/UI/GUIVSplitterGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MessageDialog.o: $(CLASSDIR)src/UI/MessageDialogL.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Clipboard.o: $(CLASSDIR)src/Win32/ClipboardGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+

@@ -1,0 +1,114 @@
+#ifndef _SM_UI_GUIDDRAWCONTROL
+#define _SM_UI_GUIDDRAWCONTROL
+#include "IO/IWriter.h"
+#include "IO/Library.h"
+#include "Media/DDrawManager.h"
+#include "Media/ImageCopy.h"
+#include "Sync/Mutex.h"
+#include "UI/GUIControl.h"
+
+namespace UI
+{
+	class GUIForm;
+
+	class GUIDDrawControl : public GUIControl
+	{
+	public:
+		typedef enum
+		{
+			SM_WINDOWED,
+			SM_VFS,
+			SM_FS,
+			SM_WINDOWED_DIR
+		} ScreenMode;
+	private:
+		void *rootHwnd;
+		UI::GUIForm *rootForm;
+		Media::ImageCopy *imgCopy;
+
+		Sync::Event *drawEvt;
+		Media::DDrawManager *ddMgr;
+		void *currDD;
+		void *pSurface;
+		Bool pSurfaceUpdated;
+		void *surfaceBuff2;
+		void *clipper;
+		IO::Stream *debugFS;
+		IO::IWriter *debugWriter;
+		UInt32 joystickId;
+		UInt32 jsLastButtons;
+		Bool focusing;
+	protected:
+		void *surfaceBuff;
+		Bool surfaceNoRelease;
+		Sync::Mutex *surfaceMut;
+		UOSInt surfaceW;
+		UOSInt surfaceH;
+		Int32 bitDepth;
+		OSInt scnX;
+		OSInt scnY;
+		OSInt scnW;
+		OSInt scnH;
+		void *currMon;
+		ScreenMode currScnMode;
+		ScreenMode fullScnMode;
+		Bool directMode;
+		Bool switching;
+		Bool inited;
+		IO::Library *lib;
+
+	private:
+		static Int32 useCnt;
+		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+		static void Init(void *hInst);
+		static void Deinit(void *hInst);
+		static void JSTimerTick(void *userObj);
+	public:
+		static void __stdcall OnResized(void *userObj);
+
+	protected:
+		void GetDrawingRect(void *rc);
+		virtual void OnPaint();
+		Bool CreateSurface();
+		void ReleaseSurface();
+		void CreateSubSurface();
+		void ReleaseSubSurface();
+		Bool CreateClipper(void *lpDD);
+
+		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OSInt *bpl);
+		void LockSurfaceEnd();
+		UInt8 *LockSurfaceDirect(OSInt *bpl);
+		void LockSurfaceUnlock();
+		Media::PixelFormat GetPixelFormat();
+
+	public:
+		GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode);
+		virtual ~GUIDDrawControl();
+
+		void SetUserFSMode(ScreenMode fullScnMode);
+		void DrawToScreen();
+		void DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, OSInt drawW, OSInt drawH, Bool clearScn);
+		void SwitchFullScreen(Bool fullScn, Bool vfs);
+		Bool IsFullScreen();
+		virtual void ChangeMonitor(void *hMon);
+		UInt32 GetRefreshRate();
+	public:
+		virtual void OnSurfaceCreated() = 0;
+		virtual void OnMouseWheel(OSInt x, OSInt y, Int32 amount);
+		virtual void OnMouseMove(OSInt x, OSInt y);
+		virtual void OnMouseDown(OSInt x, OSInt y, MouseButton button);
+		virtual void OnMouseUp(OSInt x, OSInt y, MouseButton button);
+		virtual void OnMouseDblClick(OSInt x, OSInt y, MouseButton button);
+		virtual void OnGZoomBegin(OSInt x, OSInt y, UInt64 dist);
+		virtual void OnGZoomStep(OSInt x, OSInt y, UInt64 dist);
+		virtual void OnGZoomEnd(OSInt x, OSInt y, UInt64 dist);
+		virtual void OnJSButtonDown(OSInt buttonId);
+		virtual void OnJSButtonUp(OSInt buttonId);
+		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
+
+		void *GetSurface();
+		void BeginDrawSurface();
+		void EndDrawSurface();
+	};
+}
+#endif

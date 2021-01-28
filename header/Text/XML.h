@@ -1,0 +1,42 @@
+#ifndef _SM_TEXT_XML
+#define _SM_TEXT_XML
+#include "IO/Stream.h"
+
+namespace Text
+{
+	class XML
+	{
+	private:
+		static OSInt GetXMLTextLen(const UTF8Char *text);
+		static OSInt GetXMLTextLen(const WChar *text);
+		static OSInt GetXMLTextLiteLen(const UTF8Char *text);
+		static OSInt GetXMLTextLiteLen(const WChar *text);
+		static OSInt GetHTMLTextLen(const UTF8Char *text);
+		static OSInt GetHTMLTextLen(const WChar *text);
+		static Bool WriteUTF8Char(IO::Stream *stm, UInt32 c);
+	public:
+		static UTF8Char *ToXMLText(UTF8Char *buff, const UTF8Char *text);
+		static WChar *ToXMLText(WChar *buff, const WChar *text);
+		static UTF8Char *ToXMLTextLite(UTF8Char *buff, const UTF8Char *text);
+		static WChar *ToXMLTextLite(WChar *buff, const WChar *text);
+		static UTF8Char *ToHTMLText(UTF8Char *buff, const UTF8Char *text);
+		static WChar *ToHTMLText(WChar *buff, const WChar *text);
+		static UTF8Char *ToAttrText(UTF8Char *buff, const UTF8Char *text);
+		static WChar *ToAttrText(WChar *buff, const WChar *text);
+		static const UTF8Char *ToNewXMLText(const UTF8Char *text);
+		static const WChar *ToNewXMLText(const WChar *text);
+		static const UTF8Char *ToNewXMLTextLite(const UTF8Char *text);
+		static const WChar *ToNewXMLTextLite(const WChar *text);
+		static const UTF8Char *ToNewHTMLText(const UTF8Char *text);
+		static const WChar *ToNewHTMLText(const WChar *text);
+		static const UTF8Char *ToNewAttrText(const UTF8Char *text);
+		static const WChar *ToNewAttrText(const WChar *text);
+		static void FreeNewText(const UTF8Char *text);
+		static void FreeNewText(const WChar *text);
+		static void ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
+		static void ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd);
+
+		static Bool HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Stream *stm);
+	};
+}
+#endif

@@ -1,0 +1,420 @@
+#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Crypto/Encrypt/Base64.h"
+#include "Data/ByteTool.h"
+#include "IO/Console.h"
+#include "Media/H264Parser.h"
+#include "Net/RTPH264Handler.h"
+#include "Text/Encoding.h"
+#include "Text/MyString.h"
+
+Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
+{
+	this->payloadType = payloadType;
+	this->cb = 0;
+	this->cbData = 0;
+	this->packetMode = -1;
+	this->frameNum = 0;
+	this->lastSeq = -1;
+	this->missSeq = true;
+	this->sps = 0;
+	this->pps = 0;
+	this->firstFrame = false;
+	NEW_CLASS(this->mstm, IO::MemoryStream((const UTF8Char*)"Net.RTPH264Handler.RTPH264Handler"));
+	NEW_CLASS(this->mut, Sync::Mutex());
+	NEW_CLASS(this->frameInfo, Media::FrameInfo());
+
+	this->frameInfo->fourcc = *(Int32*)"H264";
+	this->frameInfo->dispWidth = 0;
+	this->frameInfo->dispHeight = 0;
+	this->frameInfo->storeWidth = 0;
+	this->frameInfo->storeHeight = 0;
+	this->frameInfo->storeBPP = 0;
+	this->frameInfo->pf = Media::PF_UNKNOWN;
+	this->frameInfo->byteSize = 0;
+	this->frameInfo->par2 = 1;
+	this->frameInfo->hdpi = 96;
+	this->frameInfo->ftype = Media::FT_NON_INTERLACE;
+	this->frameInfo->atype = Media::AT_NO_ALPHA;
+	this->frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+	this->frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
+	this->frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
+}
+
+Net::RTPH264Handler::~RTPH264Handler()
+{
+	DEL_CLASS(this->mut);
+	DEL_CLASS(this->mstm);
+	DEL_CLASS(this->frameInfo);
+	if (this->sps)
+	{
+		MemFree(this->sps);
+	}
+	if (this->pps)
+	{
+		MemFree(this->pps);
+	}
+}
+
+
+void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts)
+{
+	UTF8Char sbuff[32];
+	mut->Lock();
+	Text::StrConcat(Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"ts: "), ts), (const UTF8Char*)"\r\n");
+	IO::Console::PrintStrO(sbuff);
+
+	if (((lastSeq + 1) & 65535) != seqNum)
+	{
+		missSeq = true;
+	}
+	lastSeq = seqNum;
+	UOSInt frameSize;
+	UInt8 *frameBuff;
+
+	UInt8 tmpBuff[5];
+	OSInt i = 0;
+	switch (buff[0] & 0x1f)
+	{
+	case 1:
+		missSeq = true;
+		mstm->Clear();
+		WriteMInt32(tmpBuff, 1);
+		mstm->Write(tmpBuff,4);
+		mstm->Write(buff, dataSize);
+		frameBuff = mstm->GetBuff(&frameSize);
+		if (this->cb)
+		{
+			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, (Media::IVideoSource::FrameFlag)(this->firstFrame?Media::IVideoSource::FF_DISCONTTIME:0), Media::YCOFST_C_CENTER_LEFT);
+			this->firstFrame = false;
+		}
+		break;
+	case 5:
+		missSeq = true;
+		mstm->Clear();
+		if (this->sps)
+		{
+			mstm->Write(this->sps, this->spsSize);
+		}
+		if (this->pps)
+		{
+			mstm->Write(this->pps, this->ppsSize);
+		}
+		WriteMInt32(tmpBuff, 1);
+		mstm->Write(tmpBuff,4);
+		mstm->Write(buff, dataSize);
+		frameBuff = mstm->GetBuff(&frameSize);
+		if (this->cb)
+		{
+			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_I, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+		}
+		break;
+	case 24: //STAP-A
+		mstm->Clear();
+		WriteMInt32(tmpBuff, 1);
+		i = 1;
+		while (i < dataSize - 2)
+		{
+			frameSize = ReadMUInt16(&buff[i]);
+			switch (buff[i + 2] & 0x1f)
+			{
+			case 1:
+				mstm->Write(tmpBuff, 4);
+				mstm->Write(&buff[i + 2], frameSize);
+				this->isKey = false;
+				break;
+			case 5:
+				if (this->sps)
+				{
+					mstm->Write(this->sps, this->spsSize);
+				}
+				if (this->pps)
+				{
+					mstm->Write(this->pps, this->ppsSize);
+				}
+				mstm->Write(tmpBuff, 4);
+				mstm->Write(&buff[i + 2], frameSize);
+				this->isKey = true;
+				break;
+			case 6:
+				break;
+			default:
+				i = i + 1;
+				i = i - 1;
+				break;
+			}
+			i += frameSize + 2;
+		}
+		frameBuff = mstm->GetBuff(&frameSize);
+		if (this->cb)
+		{
+			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?Media::IVideoSource::FS_I:Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+		}
+		break;
+	case 28: //FU-A
+		if (buff[1] & 0x80) //start
+		{
+			missSeq = false;
+			mstm->Clear();
+			if ((buff[1] & 0x1f) == 5)
+			{
+				this->isKey = true;
+				if (this->sps)
+				{
+					mstm->Write(this->sps, this->spsSize);
+				}
+				if (this->pps)
+				{
+					mstm->Write(this->pps, this->ppsSize);
+				}
+			}
+			else if ((buff[1] & 0x1f) == 1)
+			{
+				this->isKey = false;
+			}
+			else
+			{
+				this->isKey = false;
+			}
+
+			WriteMInt32(tmpBuff, 1);
+			tmpBuff[4] = (buff[0] & 0xe0) | (buff[1] & 0x1f);
+			mstm->Write(tmpBuff, 5);
+		}
+		mstm->Write(&buff[2], dataSize - 2);
+		if (buff[1] & 0x40) //end
+		{
+			if (!missSeq)
+			{
+				missSeq = true;
+
+				frameBuff = mstm->GetBuff(&frameSize);
+				if (this->cb)
+				{
+					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?(Media::IVideoSource::FF_DISCONTTIME):Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+					if (this->isKey)
+					{
+						this->firstFrame = false;
+					}
+				}
+			}
+			else
+			{
+				IO::Console::PrintStrO((const UTF8Char*)"Dropped frame\n");
+			}
+		}
+		break;
+	case 29:
+		if (buff[1] & 0x80)
+		{
+			missSeq = false;
+			mstm->Clear();
+			if ((buff[1] & 0x1f) == 5)
+			{
+				this->isKey = true;
+				if (this->sps)
+				{
+					mstm->Write(this->sps, this->spsSize);
+				}
+				if (this->pps)
+				{
+					mstm->Write(this->pps, this->ppsSize);
+				}
+			}
+			else
+			{
+				this->isKey = false;
+			}
+			WriteMInt32(tmpBuff, 1);
+			tmpBuff[4] = (buff[0] & 0xe0) | (buff[1] & 0x1f);
+			mstm->Write(tmpBuff, 5);
+		}
+		mstm->Write(&buff[4], dataSize - 4);
+		if (buff[1] & 0x40)
+		{
+			if (!missSeq)
+			{
+				missSeq = true;
+
+				frameBuff = mstm->GetBuff(&frameSize);
+				if (this->cb)
+				{
+					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+					if (this->isKey)
+						this->firstFrame = false;
+				}
+			}
+			else
+			{
+				IO::Console::PrintStrO((const UTF8Char*)"Dropped frame\n");
+			}
+		}
+		break;
+	default:
+		i = 1;
+		break;
+	}
+	mut->Unlock();
+}
+
+void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sarr[2];
+	UTF8Char *sarr2[2];
+	UInt8 buff[256];
+	OSInt splitCnt;
+	Text::StrConcat(sbuff, fmtStr);
+	sarr[1] = sbuff;
+	while (true)
+	{
+		splitCnt = Text::StrSplit(sarr, 2, sarr[1], ';');
+
+		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"packetization-mode="))
+		{
+			this->packetMode = Text::StrToInt32(&sarr[0][19]);
+		}
+		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"profile-level-id="))
+		{
+		}
+		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"sprop-parameter-sets="))
+		{
+			if (Text::StrSplit(sarr2, 2, &sarr[0][21], ',') == 2)
+			{
+				Crypto::Encrypt::Base64 b64;
+
+				OSInt txtSize = Text::StrConcat((UTF8Char*)&buff[4], sarr2[0]) - &buff[4];
+				WriteMInt32(buff, 1);
+				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4], 0);
+
+				if (this->sps)
+				{
+					MemFree(this->sps);
+				}
+				this->spsSize = txtSize + 4;
+				this->sps = MemAlloc(UInt8, spsSize);
+				MemCopyNO(this->sps, buff, this->spsSize);
+				
+				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, 0);
+
+				txtSize = Text::StrConcat(&buff[4], sarr2[1]) - &buff[4];
+				WriteMInt32(buff, 1);
+				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4], 0);
+
+				if (this->pps)
+				{
+					MemFree(this->pps);
+				}
+				this->ppsSize = txtSize + 4;
+				this->pps = MemAlloc(UInt8, spsSize);
+				MemCopyNO(this->pps, buff, this->ppsSize);
+			}
+		}
+		
+		if (splitCnt == 1)
+			break;
+	}
+	///////////////////////////////
+}
+
+Int32 Net::RTPH264Handler::GetPayloadType()
+{
+	return this->payloadType;
+}
+
+UTF8Char *Net::RTPH264Handler::GetSourceName(UTF8Char *buff)
+{
+	return Text::StrConcat(buff, (const UTF8Char*)"H.264 over RTP");
+}
+
+const UTF8Char *Net::RTPH264Handler::GetFilterName()
+{
+	return (const UTF8Char*)"RTPH264Handler";
+}
+
+Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+{
+	if (this->frameInfo->dispWidth == 0 || this->frameInfo->dispHeight == 0)
+		return false;
+	info->Set(this->frameInfo);
+	*frameRateNorm = 30;
+	*frameRateDenorm = 1;
+	*maxFrameSize = 90000;
+	return true;
+}
+
+Bool Net::RTPH264Handler::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+{
+	this->cbData = userData;
+	this->cb = cb;
+	this->fcCb = fcCb;
+	this->firstFrame = true;
+	return true;
+}
+
+Bool Net::RTPH264Handler::Start()
+{
+	this->firstFrame = true;
+	return true;
+}
+
+void Net::RTPH264Handler::Stop()
+{
+	this->cb = 0;
+	this->cbData = 0;
+}
+
+Bool Net::RTPH264Handler::IsRunning()
+{
+	return this->cb != 0;
+}
+
+
+Int32 Net::RTPH264Handler::GetStreamTime()
+{
+	return -1;
+}
+
+Bool Net::RTPH264Handler::CanSeek()
+{
+	return false;
+}
+
+Int32 Net::RTPH264Handler::SeekToTime(Int32 time)
+{
+	return 0;
+}
+
+OSInt Net::RTPH264Handler::GetDataSeekCount()
+{
+	return 0;
+}
+
+OSInt Net::RTPH264Handler::GetFrameCount()
+{
+	return -1;
+}
+
+UInt32 Net::RTPH264Handler::GetFrameTime(UOSInt frameIndex)
+{
+	return 0;
+}
+
+void Net::RTPH264Handler::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+{
+}
+
+Bool Net::RTPH264Handler::IsRealTimeSrc()
+{
+	return true;
+}
+
+Bool Net::RTPH264Handler::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+{
+	return false;
+}
+
+OSInt Net::RTPH264Handler::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+{
+	return 0;
+}

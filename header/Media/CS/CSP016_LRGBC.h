@@ -1,0 +1,71 @@
+#ifndef _SM_MEDIA_CS_CSP016_LRGBC
+#define _SM_MEDIA_CS_CSP016_LRGBC
+#include "Media/CS/CSYUV16_LRGBC.h"
+#include "Sync/Event.h"
+
+namespace Media
+{
+	namespace CS
+	{
+		class CSP016_LRGBC : public Media::CS::CSYUV16_LRGBC
+		{
+		protected:
+			typedef struct
+			{
+				UOSInt length;
+				Int64 *weight;
+				OSInt *index;
+				UOSInt tap;
+			} YVPARAMETER;
+
+			typedef struct
+			{
+				Sync::Event *evt;
+				Int32 status; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
+				UInt8 *yPtr;
+				UOSInt yBpl;
+				UInt8 *uvPtr;
+				UOSInt uvBpl;
+				UInt8 *dest;
+				UOSInt width;
+				UOSInt height;
+				UOSInt isFirst;
+				UOSInt isLast;
+				YVPARAMETER *yvParam;
+				Media::YCOffset ycOfst;
+				OSInt dbpl;
+				UOSInt csLineSize;
+				UInt8 *csLineBuff;
+				UInt8 *csLineBuff2;
+			} THREADSTAT;
+
+			YVPARAMETER yvParamO;
+			UOSInt yvStepO;
+			YVPARAMETER yvParamE;
+			UOSInt yvStepE;
+			UInt8 *uBuff;
+			UInt8 *vBuff;
+			UOSInt yvBuffSize;
+			UInt8 *uvBuff;
+			UOSInt uvBuffSize;
+
+			OSInt currId;
+			UOSInt nThread;
+			Sync::Event *evtMain;
+			THREADSTAT *stats;
+
+			static Double lanczos3_weight(Double phase);
+			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, OSInt indexSep, Double offsetCorr);
+
+			static UInt32 __stdcall WorkerThread(void *obj);
+			void WaitForWorker(Int32 jobStatus);
+		public:
+			CSP016_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			virtual ~CSP016_LRGBC();
+
+			virtual void ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
+		};
+	}
+}
+#endif

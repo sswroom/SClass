@@ -1,0 +1,193 @@
+
+Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineWin.cpp
+@DefaultDrawEngine.o
+
+Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterW.cpp
+@GUIExporter.o
+Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterW.cpp
+@GUIGIFExporter.o
+Exporter/GUIJPGExporter.h: ../../src/Exporter/GUIJPGExporterW.cpp
+@GUIJPGExporter.o
+Exporter/GUIPNGExporter.h: ../../src/Exporter/GUIPNGExporterW.cpp
+@GUIPNGExporter.o
+Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterW.cpp
+@GUITIFExporter.o
+
+Media/DDrawManager.h: ../../src/Media/DDrawManager.cpp
+@DDrawManager.o
+Media/DrawEngineGUI.h: ../../src/Media/GDIEngineC.cpp
+@DrawEngineGUI.o
+Media/GDIEngine.h: ../../src/Media/GDIEngine.cpp
+@GDIEngine.o
+Media/GDIEngineC.h: ../../src/Media/GDIEngineC.cpp
+@DrawEngineGUI.o
+Media/MonitorInfo.h: ../../src/Media/MonitorInfoW.cpp
+@MonitorInfo.o
+Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerW.cpp
+@ScreenCapturer.o
+
+Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserW.cpp
+@GUIImgParser.o
+
+UI/FileDialog.h: ../../src/UI/FileDialogWin.cpp
+@FileDialog.o
+UI/FolderDialog.h: ../../src/UI/FolderDialogWin.cpp
+@FolderDialog.o
+UI/FontDialog.h: ../../src/UI/FontDialogWin.cpp
+@FontDialog.o
+UI/GUIButton.h: ../../src/UI/GUIButtonWin.cpp
+@GUIButton.o
+UI/GUICheckBox.h: ../../src/UI/GUICheckBoxWin.cpp
+@GUICheckBox.o
+UI/GUICheckedListBox.h: ../../src/UI/GUICheckedListBoxWin.cpp
+@GUICheckedListBox.o
+UI/GUIClientControl.h: ../../src/UI/GUIClientControlWin.cpp
+@GUIClientControl.o
+UI/GUIComboBox.h: ../../src/UI/GUIComboBoxWin.cpp
+@GUIComboBox.o
+UI/GUIControl.h: ../../src/UI/GUIControlWin.cpp
+@GUIControl.o
+UI/GUICore.h:
+UI/GUICoreWin.h: ../../src/UI/GUICoreWin.cpp
+@GUICoreWin.o
+UI/GUICustomDraw.h: ../../src/UI/GUICustomDrawWin.cpp
+@GUICustomDraw.o
+UI/GUICustomDrawVScroll.h: ../../src/UI/GUICustomDrawVScrollWin.cpp
+@GUICustomDrawVScroll.o
+UI/GUIDateTimePicker.h: ../../src/UI/GUIDateTimePickerWin.cpp
+@GUIDateTimePicker.o
+UI/GUIDDrawControl.h: ../../src/UI/GUIDDrawControlWin.cpp
+@GUIDDrawControl.o
+UI/GUIDragDrop.h: ../../src/UI/GUIDragDropWin.cpp
+@GUIDragDrop.o
+UI/GUIForm.h: ../../src/UI/GUIFormWin.cpp
+@GUIForm.o
+UI/GUIGroupBox.h: ../../src/UI/GUIGroupBoxWin.cpp
+@GUIGroupBox.o
+UI/GUIHScrollBar.h: ../../src/UI/GUIHScrollBarWin.cpp
+@GUIHScrollBar.o
+UI/GUIHSplitter.h: ../../src/UI/GUIHSplitterWin.cpp
+@GUIHSplitter.o
+UI/GUIIcon.h: ../../src/UI/GUIIconWin.cpp
+@GUIIcon.o
+UI/GUILabel.h: ../../src/UI/GUILabelWin.cpp
+@GUILabel.o
+UI/GUIListBox.h: ../../src/UI/GUIListBoxWin.cpp
+@GUIListBox.o
+UI/GUIListView.h: ../../src/UI/GUIListViewWin.cpp
+@GUIListView.o
+UI/GUIPanel.h: ../../src/UI/GUIPanelWin.cpp
+@GUIPanel.o
+UI/GUIMainMenu.h: ../../src/UI/GUIMainMenu.cpp
+@GUIMainMenu.o
+UI/GUIMenu.h: ../../src/UI/GUIMenuWin.cpp
+@GUIMenu.o
+UI/GUIPictureBox.h: ../../src/UI/GUIPictureBoxWin.cpp
+@GUIPictureBox.o
+UI/GUIPictureBoxSimple.h: ../../src/UI/GUIPictureBoxSimpleWin.cpp
+@GUIPictureBoxSimple.o
+UI/GUIPopupMenu.h: ../../src/UI/GUIPopupMenuWin.cpp
+@GUIPopupMenu.o
+UI/GUIProgressBar.h: ../../src/UI/GUIProgressBarWin.cpp
+@GUIProgressBar.o
+UI/GUIRadioButton.h: ../../src/UI/GUIRadioButtonWin.cpp
+@GUIRadioButton.o
+UI/GUIRealtimeLineChart.h: ../../src/UI/GUIRealtimeLineChartWin.cpp
+@GUIRealtimeLineChart.o
+UI/GUITabControl.h: ../../src/UI/GUITabControlWin.cpp
+@GUITabControl.o
+UI/GUITabPage.h: ../../src/UI/GUITabPage.cpp
+@GUITabPage.o
+UI/GUITextBox.h: ../../src/UI/GUITextBoxWin.cpp
+@GUITextBox.o
+UI/GUITextFileView.h: ../../src/UI/GUITextFileViewWin.cpp
+@GUITextFileView.o
+UI/GUITimer.h: ../../src/UI/GUITimerWin.cpp
+@GUITimer.o
+UI/GUITrackBar.h: ../../src/UI/GUITrackBarWin.cpp
+@GUITrackBar.o
+UI/GUITreeView.h: ../../src/UI/GUITreeViewWin.cpp
+@GUITreeView.o
+UI/GUIVSplitter.h: ../../src/UI/GUIVSplitterWin.cpp
+@GUIVSplitter.o
+UI/GUIWindowDragDrop.h: ../../src/UI/GUIWindowDragDrop.cpp
+@GUIWindowDragDrop.o
+UI/IWindowSystem.h:
+UI/MessageDialog.h: ../../src/UI/MessageDialogW.cpp
+@MessageDialog.o
+
+Win32/Clipboard.h: ../../src/Win32/ClipboardW.cpp
+@Clipboard.o
+
+GUIStartup.o: ../../startup/WinStartup.cpp
+!-Wl,--subsystem,windows
+!-mwindows
+DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineWin.cpp
+GUIExporter.o: ../../src/Exporter/GUIExporterW.cpp
+!-lgdiplus
+GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterW.cpp
+GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterW.cpp
+GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterW.cpp
+$-I ../../ThirdParty/miniz
+GUITIFExporter.o: ../../src/Exporter/GUITIFExporterW.cpp
+DDrawManager.o: ../../src/Media/DDrawManager.cpp
+!-lddraw
+!-ldxguid
+DrawEngineGUI.o: ../../src/Media/GDIEngineC.cpp
+GDIEngine.o: ../../src/Media/GDIEngine.cpp
+!-lgdi32
+!-lgdiplus
+!-lmsimg32
+MonitorInfo.o: ../../src/Media/MonitorInfoW.cpp
+ScreenCapturer.o: ../../src/Media/ScreenCapturerW.cpp
+GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserW.cpp
+!-lgdiplus
+FileDialog.o: ../../src/UI/FileDialogWin.cpp
+FolderDialog.o: ../../src/UI/FolderDialogWin.cpp
+FontDialog.o: ../../src/UI/FontDialogWin.cpp
+GUIButton.o: ../../src/UI/GUIButtonWin.cpp
+GUICheckBox.o: ../../src/UI/GUICheckBoxWin.cpp
+GUICheckedListBox.o: ../../src/UI/GUICheckedListBoxWin.cpp
+GUIClientControl.o: ../../src/UI/GUIClientControlWin.cpp
+GUIComboBox.o: ../../src/UI/GUIComboBoxWin.cpp
+GUIControl.o: ../../src/UI/GUIControlWin.cpp
+GUICoreWin.o: ../../src/UI/GUICoreWin.cpp
+GUICustomDraw.o: ../../src/UI/GUICustomDrawWin.cpp
+!-lwinmm
+GUICustomDrawVScroll.o: ../../src/UI/GUICustomDrawVScrollWin.cpp
+GUIDateTimePicker.o: ../../src/UI/GUIDateTimePickerWin.cpp
+GUIDDrawControl.o: ../../src/UI/GUIDDrawControlWin.cpp
+!-lwinmm
+GUIDragDrop.o: ../../src/UI/GUIDragDropWin.cpp
+GUIForm.o: ../../src/UI/GUIFormWin.cpp
+GUIGroupBox.o: ../../src/UI/GUIGroupBoxWin.cpp
+GUIHScrollBar.o: ../../src/UI/GUIHScrollBarWin.cpp
+GUIHSplitter.o: ../../src/UI/GUIHSplitterWin.cpp
+GUIIcon.o: ../../src/UI/GUIIconWin.cpp
+GUILabel.o: ../../src/UI/GUILabelWin.cpp
+GUIListBox.o: ../../src/UI/GUIListBoxWin.cpp
+GUIListView.o: ../../src/UI/GUIListViewWin.cpp
+!-lcomctl32
+GUIPanel.o: ../../src/UI/GUIPanelWin.cpp
+GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
+GUIMenu.o: ../../src/UI/GUIMenuWin.cpp
+GUIPictureBox.o: ../../src/UI/GUIPictureBoxWin.cpp
+GUIPictureBoxSimple.o: ../../src/UI/GUIPictureBoxSimpleWin.cpp
+GUIPopupMenu.o: ../../src/UI/GUIPopupMenuWin.cpp
+GUIProgressBar.o: ../../src/UI/GUIProgressBarWin.cpp
+!-lcomctl32
+GUIRadioButton.o: ../../src/UI/GUIRadioButtonWin.cpp
+GUIRealtimeLineChart.o: ../../src/UI/GUIRealtimeLineChartWin.cpp
+GUITabControl.o: ../../src/UI/GUITabControlWin.cpp
+!-lcomctl32
+GUITabPage.o: ../../src/UI/GUITabPage.cpp
+GUITextBox.o: ../../src/UI/GUITextBoxWin.cpp
+GUITextFileView.o: ../../src/UI/GUITextFileViewWin.cpp
+GUITimer.o: ../../src/UI/GUITimerWin.cpp
+GUITrackBar.o: ../../src/UI/GUITrackBarWin.cpp
+!-lcomctl32
+GUITreeView.o: ../../src/UI/GUITreeViewWin.cpp
+GUIVSplitter.o: ../../src/UI/GUIVSplitterWin.cpp
+GUIWindowDragDrop.o: ../../src/UI/GUIWindowDragDrop.cpp
+MessageDialog.o: ../../src/UI/MessageDialogW.cpp
+Clipboard.o: ../../src/Win32/ClipboardW.cpp

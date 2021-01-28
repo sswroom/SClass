@@ -1,0 +1,207 @@
+BUILD_OS := WINDOWS
+INCLUDEPATH+=:../../ThirdParty/KSSample
+
+DB/MDBFile.h: ../../src/DB/MDBFile.cpp
+@MDBFile.o
+DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
+@MongoDB.o
+DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
+@MySQLConn.o
+DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
+@ODBCConn.o
+
+IO/AMDGPUControl.h: ../../src/IO/AMDGPUControl.cpp
+@AMDGPUControl.o
+IO/AMDGPUManager.h: ../../src/IO/AMDGPUManager.cpp
+@AMDGPUManager.o
+IO/BTController.h: ../../src/IO/BTControllerW.cpp
+@BTController.o
+IO/BTManager.h: ../../src/IO/BTManagerW.cpp
+@BTManager.o
+IO/HIDInfo.h: ../../src/IO/HIDInfoW.cpp
+@HIDInfo.o
+IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
+@I2CChannelOS.o
+IO/OS.h: ../../src/IO/OSW.cpp
+@OS.o
+IO/SDCardMgr.h: ../../src/IO/SDCardMgrW.cpp
+@SDCardMgr.o
+IO/SensorAccelerometer.h:
+IO/SensorAccelerometerW.h: ../../src/IO/SensorAccelerometerW.cpp
+@SensorAccelerometerW.o
+IO/SensorMagnetometer.h:
+IO/SensorManager.h: ../../src/IO/SensorManagerW.cpp
+@SensorManager.o
+IO/SensorOrientation.h:
+IO/SensorOrientationWin.h: ../../src/IO/SensorOrientationWin.cpp
+@SensorOrientationWin.o
+IO/SensorPressure.h:
+IO/SensorUnknownWin.h: ../../src/IO/SensorUnknownWin.cpp
+@SensorUnknownWin.o
+IO/SensorWin.h: ../../src/IO/SensorWin.cpp
+@SensorWin.o
+IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
+@Watchdog.o
+
+Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverW.cpp
+@SymbolResolver.o
+Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoW.cpp
+@ThreadInfo.o
+
+Media/ASIOOutRenderer.h: ../../src/Media/ASIOOutRenderer.cpp
+@ASIOOutRenderer.o
+Media/AudioDevice.h: ../../src/Media/AudioDeviceW.cpp
+@AudioDevice.o
+Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
+@KSRenderer.o
+@audfilter.o
+@audpin.o
+@enum.o
+@filter.o
+@irptgt.o
+@node.o
+@pin.o
+@util.o
+Media/Printer.h: ../../src/Media/PrinterW.cpp
+@Printer.o
+Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
+@FFMPEGDecoder.o
+Media/DShow/DShowInit.h:
+Media/DShow/DShowVideoCapture.h: ../../src/Media/DShow/DShowVideoCapture.cpp
+@DShowVideoCapture.o
+@amfilter.o
+@arithutil.o
+@combase.o
+@ctlutil.o
+@mtype.o
+@renbase.o
+@wxlist.o
+@wxutil.o
+Media/DShow/DShowVideoFilter.h:
+Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
+@OCVFrame.o
+Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+@OCVFrameFeeder.o
+Media/OpenCV/OCVInit.h:
+Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+@OCVObjectDetector.o
+Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
+@OCVUtil.o
+audfilter.h:
+audpin.h:
+enum.h:
+filter.h:
+irptgt.h:
+kssample.h:
+pin.h:
+node.h:
+tlist.h:
+util.h:
+
+Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientW.cpp
+@HTTPOSClient.o
+Net/WirelessLAN.h: ../../src/Net/WirelessLANW.cpp
+@WirelessLAN.o
+
+Sync/Thread.h: ../../src/Sync/ThreadW.cpp
+@Thread.o
+@Thread_CPP.o
+
+
+ConsoleStartup.o: ../../startup/ConStartup.cpp
+MDBFile.o: ../../src/DB/MDBFile.cpp
+!-lodbc32
+MongoDB.o: ../../src/DB/MongoDBNull.cpp
+MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
+ODBCConn.o: ../../src/DB/ODBCConn.cpp
+!-lodbc32
+!-lodbccp32
+AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp
+$-I ../../ThirdParty/adl
+AMDGPUManager.o: ../../src/IO/AMDGPUManager.cpp
+$-I ../../ThirdParty/adl
+BTController.o: ../../src/IO/BTControllerW.cpp
+BTManager.o: ../../src/IO/BTManagerW.cpp
+HIDInfo.o: ../../src/IO/HIDInfoW.cpp
+I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
+OS.o: ../../src/IO/OSW.cpp
+SDCardMgr.o: ../../src/IO/SDCardMgrW.cpp
+SensorAccelerometerW.o: ../../src/IO/SensorAccelerometerW.cpp
+SensorManager.o: ../../src/IO/SensorManagerW.cpp
+SensorOrientationWin.o: ../../src/IO/SensorOrientationWin.cpp
+SensorUnknownWin.o: ../../src/IO/SensorUnknownWin.cpp
+SensorWin.o: ../../src/IO/SensorWin.cpp
+Watchdog.o: ../../src/IO/WatchdogNull.cpp
+SymbolResolver.o: ../../src/Manage/SymbolResolverW.cpp
+ThreadInfo.o: ../../src/Manage/ThreadInfoW.cpp
+ASIOOutRenderer.o: ../../src/Media/ASIOOutRenderer.cpp
+!-lole32
+AudioDevice.o: ../../src/Media/AudioDeviceW.cpp
+KSRenderer.o: ../../src/Media/KSRenderer.cpp
+$-I ../../ThirdParty/KSSample
+!-luuid
+!-lksguid
+Printer.o: ../../src/Media/PrinterW.cpp
+!-lwinspool
+!-lgdi32
+!-lcomdlg32
+FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
+$-I ../../../ffmpeg-3.3.1-win64-dev/include
+#!-L ../../../ffmpeg-3.3.1-win64-dev/lib
+#!-lavutil
+#!-lavcodec
+DShowVideoCapture.o: ../../src/Media/DShow/DShowVideoCapture.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+!-lole32
+!-loleaut32
+OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
+OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
+HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
+!-lwinhttp
+WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
+Thread.o: ../../src/Sync/ThreadW.cpp
+
+amfilter.o: ../../ThirdParty/baseclasses/amfilter.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+!-lstrmiids
+!-lole32
+arithutil.o: ../../ThirdParty/baseclasses/arithutil.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+combase.o: ../../ThirdParty/baseclasses/combase.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+ctlutil.o: ../../ThirdParty/baseclasses/ctlutil.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+!-luuid
+mtype.o: ../../ThirdParty/baseclasses/mtype.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+!-lole32
+renbase.o: ../../ThirdParty/baseclasses/renbase.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+!-lwinmm
+wxlist.o: ../../ThirdParty/baseclasses/wxlist.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+wxutil.o: ../../ThirdParty/baseclasses/wxutil.cpp
+$-I ../../ThirdParty/baseclasses
+$-fpermissive
+!-lwinmm
+!-lole32
+!-loleaut32
+audfilter.o: ../../ThirdParty/KSSample/audfilter.cpp
+audpin.o: ../../ThirdParty/KSSample/audpin.cpp
+enum.o: ../../ThirdParty/KSSample/enum.cpp
+!-lsetupapi
+filter.o: ../../ThirdParty/KSSample/filter.cpp
+irptgt.o: ../../ThirdParty/KSSample/irptgt.cpp
+node.o: ../../ThirdParty/KSSample/node.cpp
+pin.o: ../../ThirdParty/KSSample/pin.cpp
+util.o: ../../ThirdParty/KSSample/util.cpp

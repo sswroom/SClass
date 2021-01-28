@@ -1,0 +1,36 @@
+#ifndef _SM_PARSER_FILEPARSER_ELFPARSER
+#define _SM_PARSER_FILEPARSER_ELFPARSER
+#include "IO/EXEFile.h"
+#include "IO/IFileParser.h"
+
+namespace Parser
+{
+	namespace FileParser
+	{
+		class ELFParser : public IO::IFileParser
+		{
+		private:
+			static Int64 __stdcall TReadInt64(UInt8 *pVal);
+			static Int64 __stdcall TReadMInt64(UInt8 *pVal);
+			static Int32 __stdcall TReadInt32(UInt8 *pVal);
+			static Int32 __stdcall TReadMInt32(UInt8 *pVal);
+			static Int16 __stdcall TReadInt16(UInt8 *pVal);
+			static Int16 __stdcall TReadMInt16(UInt8 *pVal);
+
+			typedef Int64 (__stdcall *RInt64Func)(UInt8* pVal);
+			typedef Int32 (__stdcall *RInt32Func)(UInt8* pVal);
+			typedef Int16 (__stdcall *RInt16Func)(UInt8* pVal);
+
+			static UTF8Char *ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName);
+		public:
+			ELFParser();
+			virtual ~ELFParser();
+
+			virtual Int32 GetName();
+			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);
+			virtual IO::ParsedObject::ParserType GetParserType();
+			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
+		};
+	};
+};
+#endif

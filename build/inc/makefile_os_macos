@@ -1,0 +1,204 @@
+BUILD_OS := MACOS
+
+LIBS_alsa:
+	$(eval LIBS += -lasound)
+
+LIBS_bluez:
+	$(eval LIBS += -lbluetooth)
+
+LIBS_dl:
+	$(eval LIBS += -ldl)
+
+LIBS_mysqlclient:
+	$(eval LIBS += -lmysqlclient)
+
+LIBS_odbc:
+	$(eval LIBS += -lodbc -lodbcinst)
+
+LIBS_pthread:
+	$(eval LIBS += -lpthread)
+
+LIBS_cups:
+	$(eval LIBS += `cups-config --libs`)
+
+LIBS_FFMPEG:
+	$(eval LIBS += -lavutil -lavcodec)
+
+LIBS_BuildTime:
+	$()
+
+ConsoleStartup.o: $(CLASSDIR)startup/LinuxConStartup.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MyMemory.o: $(CLASSDIR)src/MyMemoryL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MDBFile.o: $(CLASSDIR)src/DB/MDBFile.cpp LIBS_odbc
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MySQLConn.o: $(CLASSDIR)src/DB/MySQLConn.cpp LIBS_mysqlclient
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< `mysql_config --cflags` $(CSUFFIX)
+
+ODBCConn.o: $(CLASSDIR)src/DB/ODBCConn.cpp LIBS_odbc
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTController.o: $(CLASSDIR)src/IO/BTControllerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTManager.o: $(CLASSDIR)src/IO/BTManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BuildTime.o: $(CLASSDIR)src/IO/BuildTime.cpp LIBS_BuildTime
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Console.o: $(CLASSDIR)src/IO/ConsoleL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceInfo.o: $(CLASSDIR)src/IO/DeviceInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceManager.o: $(CLASSDIR)src/IO/DeviceManagerL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileStream.o: $(CLASSDIR)src/IO/FileStreamU.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileUtil.o: $(CLASSDIR)src/IO/FileUtilL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HIDInfo.o: $(CLASSDIR)src/IO/HIDInfoNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+I2CChannelOS.o: $(CLASSDIR)src/IO/I2CChannelOSNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Library.o: $(CLASSDIR)src/IO/LibraryL.cpp LIBS_dl
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OS.o: $(CLASSDIR)src/IO/OSDarwin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Path.o: $(CLASSDIR)src/IO/PathL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PCIInfo.o: $(CLASSDIR)src/IO/PCIInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PhysicalMem.o: $(CLASSDIR)src/IO/PhysicalMemL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PowerInfo.o: $(CLASSDIR)src/IO/PowerInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Registry.o: $(CLASSDIR)src/IO/RegistryNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDCardMgr.o: $(CLASSDIR)src/IO/SDCardMgrNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorManager.o: $(CLASSDIR)src/IO/SensorManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SerialPort.o: $(CLASSDIR)src/IO/SerialPortL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SimpleFileWriter.o: $(CLASSDIR)src/IO/SimpleFileWriterL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+USBInfo.o: $(CLASSDIR)src/IO/USBInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ViewFileBuffer.o: $(CLASSDIR)src/IO/ViewFileBufferL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Watchdog.o: $(CLASSDIR)src/IO/WatchdogL.cpp WatchdogLinuxDef
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WatchdogLinuxDef: WatchdogLinux.o
+	$(eval CLASS_OBJS += WatchdogLinux.o)
+
+WatchdogLinux.o: $(CLASSDIR)src/IO/WatchdogLinux.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EnvironmentVar.o: $(CLASSDIR)src/Manage/EnvironmentVarL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ExceptionRecorder.o: $(CLASSDIR)src/Manage/ExceptionRecorderL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HiResClock.o: $(CLASSDIR)src/Manage/HiResClockL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ModuleInfo.o: $(CLASSDIR)src/Manage/ModuleInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Process.o: $(CLASSDIR)src/Manage/ProcessL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StackTracer.o: $(CLASSDIR)src/Manage/StackTracerL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SymbolResolver.o: $(CLASSDIR)src/Manage/SymbolResolverL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ThreadInfo.o: $(CLASSDIR)src/Manage/ThreadInfoL.cpp LIBS_pthread
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioDevice.o: $(CLASSDIR)src/Media/AudioDeviceNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Printer.o: $(CLASSDIR)src/Media/PrinterCUPS.cpp LIBS_cups
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< `pkg-config --cflags --libs cairo` `cups-config --cflags` $(CSUFFIX)
+
+WaveInSource.o: $(CLASSDIR)src/Media/WaveInSourceNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WIAManager.o: $(CLASSDIR)src/Media/WIAManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ACMDecoder.o: $(CLASSDIR)src/Media/Decoder/ACMDecoderNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FFMPEGDecoder.o: $(CLASSDIR)src/Media/Decoder/FFMPEGDecoder.cpp LIBS_FFMPEG
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VFWDecoder.o: $(CLASSDIR)src/Media/Decoder/VFWDecoderNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VPXDecoder.o: $(CLASSDIR)src/Media/Decoder/VPXDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConnectionInfo_CPP.o: $(CLASSDIR)src/Net/ConnectionInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPOSClient.o: $(CLASSDIR)src/Net/HTTPOSClientL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OSSocketFactory.o: $(CLASSDIR)src/Net/OSSocketFactoryL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPClientMgr.o: $(CLASSDIR)src/Net/TCPClientMgrL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCoreWin.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCoreWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EventPool.o: $(CLASSDIR)src/Sync/EventPoolL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RWMutex.o: $(CLASSDIR)src/Sync/RWMutexL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Thread.o: $(CLASSDIR)src/Sync/ThreadU.cpp LIBS_pthread
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+sqlite3.o: $(CLASSDIR)src/ThirdParty/sqlite3.c Library.o
+	$(CC2) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WMIQuery.o: $(CLASSDIR)src/Win32/WMIQueryNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+

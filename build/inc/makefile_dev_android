@@ -1,0 +1,40 @@
+
+DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoAndroid.cpp UnixConfigFile.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LIBS_AndroidVideoCapture:
+	$(eval CLASS_OBJS += AndroidVideoCapture.o )
+
+ifeq ($(ANDROID_API),24)
+	$(eval LIBS += -lcamera2ndk -lmediandk )
+else
+ifeq ($(ANDROID_API),28)
+	$(eval LIBS += -lcamera2ndk -lmediandk )
+endif
+endif
+
+AndroidVideoCapture.o: $(CLASSDIR)src/Media/AndroidVideoCapture.cpp LIBS_AndroidVideoCapture
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CameraManager.o: $(CLASSDIR)src/Media/CameraManagerNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DDCReader.o: $(CLASSDIR)src/Media/DDCReaderL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+VideoCaptureMgr.o: $(CLASSDIR)src/Media/VideoCaptureMgrAndroid.cpp AndroidVideoCapture.o LIBS_V4LVideoCapture
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SMBIOSUtil.o: $(CLASSDIR)src/Win32/SMBIOSUtilNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+

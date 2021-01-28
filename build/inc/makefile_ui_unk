@@ -1,0 +1,29 @@
+
+DefaultDrawEngine.o: $(CLASSDIR)src/Core/DefaultDrawEngineSEng.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIExporter.o: $(CLASSDIR)src/Exporter/GUIExporterNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIGIFExporter.o: $(CLASSDIR)src/Exporter/GUIGIFExporterNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIJPGExporter.o: $(CLASSDIR)src/Exporter/GUIJPGExporterNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPNGExporter.o: $(CLASSDIR)src/Exporter/GUIPNGExporterNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITIFExporter.o: $(CLASSDIR)src/Exporter/GUITIFExporterNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DrawEngineGUI.o: $(CLASSDIR)src/Media/StaticEngine.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MonitorInfo.o: $(CLASSDIR)src/Media/MonitorInfoNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIImgParser.o: $(CLASSDIR)src/Parser/FileParser/GUIImgParserNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+

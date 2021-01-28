@@ -1,0 +1,608 @@
+#include "Stdafx.h"
+#include "Data/ByteTool.h"
+#include "IO/FileAnalyse/JPGFileAnalyse.h"
+#include "Media/EXIFData.h"
+#include "Media/ICCProfile.h"
+#include "Parser/FileParser/TIFFParser.h"
+#include "Sync/Thread.h"
+#include "Text/Encoding.h"
+
+const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
+{
+	switch (tagType)
+	{
+	case 0x0:
+		return (const UTF8Char*)"Data";
+	case 0x01:
+		return (const UTF8Char*)"TMP"; //For temporary use in arithmetic coding
+	case 0xc0:
+		return (const UTF8Char*)"SOF0"; //Baseline DCT
+	case 0xc1:
+		return (const UTF8Char*)"SOF1"; //Extended sequential DCT
+	case 0xc2:
+		return (const UTF8Char*)"SOF2"; //Progressive DCT
+	case 0xc3:
+		return (const UTF8Char*)"SOF3"; //Lossless (sequential)
+	case 0xc4:
+		return (const UTF8Char*)"DHT"; //Define Huffman Table
+	case 0xc5:
+		return (const UTF8Char*)"SOF5"; //Differential sequential DCT
+	case 0xc6:
+		return (const UTF8Char*)"SOF6"; //Differential progressive DCT
+	case 0xc7:
+		return (const UTF8Char*)"SOF7"; //Differential Lossless
+	case 0xc8:
+		return (const UTF8Char*)"JPG"; //JPG Extension
+	case 0xc9:
+		return (const UTF8Char*)"SOF9"; //Extended sequantial DCT
+	case 0xca:
+		return (const UTF8Char*)"SOF10"; //Progressive DCT
+	case 0xcb:
+		return (const UTF8Char*)"SOF11"; //Lossless (sequential)
+	case 0xcc:
+		return (const UTF8Char*)"DAC"; //Define arithmetic conditioning table
+	case 0xcd:
+		return (const UTF8Char*)"SOF13"; //Differential sequential DCT
+	case 0xce:
+		return (const UTF8Char*)"SOF14"; //Differential progressive DCT
+	case 0xcf:
+		return (const UTF8Char*)"SOF15"; //Differential Lossless
+	case 0xd8:
+		return (const UTF8Char*)"SOI"; //Start of Image
+	case 0xd9:
+		return (const UTF8Char*)"EOI"; //End of Image
+	case 0xda:
+		return (const UTF8Char*)"SOS"; //Start of Scan
+	case 0xdb:
+		return (const UTF8Char*)"DQT"; //Define quantization table
+	case 0xdc:
+		return (const UTF8Char*)"DNL"; //Define number of lines
+	case 0xdd:
+		return (const UTF8Char*)"DRI"; //Define restart interval
+	case 0xde:
+		return (const UTF8Char*)"DHP"; //Define hierarchial progression
+	case 0xdf:
+		return (const UTF8Char*)"EXP"; //Expand reference image(s)
+	case 0xe0:
+		return (const UTF8Char*)"APP0";
+	case 0xe1:
+		return (const UTF8Char*)"APP1";
+	case 0xe2:
+		return (const UTF8Char*)"APP2";
+	case 0xe3:
+		return (const UTF8Char*)"APP3";
+	case 0xe4:
+		return (const UTF8Char*)"APP4";
+	case 0xe5:
+		return (const UTF8Char*)"APP5";
+	case 0xe6:
+		return (const UTF8Char*)"APP6";
+	case 0xe7:
+		return (const UTF8Char*)"APP7";
+	case 0xe8:
+		return (const UTF8Char*)"APP8";
+	case 0xe9:
+		return (const UTF8Char*)"APP9";
+	case 0xea:
+		return (const UTF8Char*)"APP10";
+	case 0xeb:
+		return (const UTF8Char*)"APP11";
+	case 0xec:
+		return (const UTF8Char*)"APP12";
+	case 0xed:
+		return (const UTF8Char*)"APP13";
+	case 0xee:
+		return (const UTF8Char*)"APP14";
+	case 0xef:
+		return (const UTF8Char*)"APP15";
+	case 0xfe:
+		return (const UTF8Char*)"COM"; //comment
+	}
+	return 0;
+}
+
+UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
+{
+	IO::FileAnalyse::JPGFileAnalyse *me = (IO::FileAnalyse::JPGFileAnalyse*)userObj;
+	Int64 dataSize;
+	Int64 ofst;
+	Int32 lastSize;
+	UInt8 tagHdr[4];
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag;
+	me->threadRunning = true;
+	me->threadStarted = true;
+	ofst = 2;
+	dataSize = me->fd->GetDataSize();
+	lastSize = 0;
+	
+	tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+	tag->ofst = 0;
+	tag->size = 2;
+	tag->tagType = 0xd8; //SOI
+	me->tagsMut->Lock();
+	me->tags->Add(tag);
+	me->tagsMut->Unlock();
+
+	while (ofst < dataSize - 11 && !me->threadToStop)
+	{
+		if (me->fd->GetRealData(ofst, 4, tagHdr) != 4)
+			break;
+		
+		lastSize = ReadMUInt16(&tagHdr[2]);
+		if (tagHdr[0] != 0xff)
+			break;
+
+		if (tagHdr[1] == 0xda) //SOS
+		{
+			if (lastSize < 2)
+				break;
+			tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+			tag->ofst = ofst;
+			tag->size = lastSize + 2;
+			tag->tagType = tagHdr[1];
+			me->tagsMut->Lock();
+			me->tags->Add(tag);
+			me->tagsMut->Unlock();
+			ofst += lastSize + 2;
+
+			me->fd->GetRealData(dataSize - 2, 2, tagHdr);
+			if (ReadMUInt16(tagHdr) == 0xffd9) //EOI
+			{
+				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+				tag->ofst = ofst;
+				tag->size = (OSInt)(dataSize - ofst - 2);
+				tag->tagType = 0;
+				me->tagsMut->Lock();
+				me->tags->Add(tag);
+				me->tagsMut->Unlock();
+				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+				tag->ofst = dataSize - 2;
+				tag->size = 2;
+				tag->tagType = 0xd9;
+				me->tagsMut->Lock();
+				me->tags->Add(tag);
+				me->tagsMut->Unlock();
+			}
+			else
+			{
+				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+				tag->ofst = ofst;
+				tag->size = (OSInt)(dataSize - ofst);
+				tag->tagType = 0;
+				me->tagsMut->Lock();
+				me->tags->Add(tag);
+				me->tagsMut->Unlock();
+			}
+			break;
+		}
+		else
+		{
+			if (lastSize < 2)
+				break;
+			tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+			tag->ofst = ofst;
+			tag->size = lastSize + 2;
+			tag->tagType = tagHdr[1];
+			me->tagsMut->Lock();
+			me->tags->Add(tag);
+			me->tagsMut->Unlock();
+			ofst += lastSize + 2;
+		}
+	}
+	
+	me->threadRunning = false;
+	return 0;
+}
+
+IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::IStreamData *fd)
+{
+	UInt8 buff[256];
+	this->fd = 0;
+	this->threadRunning = false;
+	this->pauseParsing = false;
+	this->threadToStop = false;
+	this->threadStarted = false;
+	NEW_CLASS(this->tags, Data::ArrayList<IO::FileAnalyse::JPGFileAnalyse::JPGTag*>());
+	NEW_CLASS(this->tagsMut, Sync::Mutex());
+	fd->GetRealData(0, 256, buff);
+	if (buff[0] != 0xff || buff[1] != 0xd8)
+	{
+		return;
+	}
+	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+
+	Sync::Thread::Create(ParseThread, this);
+	while (!this->threadStarted)
+	{
+		Sync::Thread::Sleep(10);
+	}
+}
+
+IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
+{
+	OSInt i;
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag;
+	if (this->threadRunning)
+	{
+		this->threadToStop = true;
+		while (this->threadRunning)
+		{
+			Sync::Thread::Sleep(10);
+		}
+	}
+
+	SDEL_CLASS(this->fd);
+	i = this->tags->GetCount();
+	while (i-- > 0)
+	{
+		tag = this->tags->GetItem(i);
+		MemFree(tag);
+	}
+	DEL_CLASS(this->tags);
+	DEL_CLASS(this->tagsMut);
+}
+
+UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
+{
+	return this->tags->GetCount();
+}
+
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
+	const UTF8Char *name;
+	if (tag == 0)
+		return false;
+	sb->AppendI64(tag->ofst);
+	sb->Append((const UTF8Char*)": Type=0x");
+	sb->AppendHex8(tag->tagType);
+	name = GetTagName(tag->tagType);
+	if (name)
+	{
+		sb->Append((const UTF8Char*)" (");
+		sb->Append(name);
+		sb->Append((const UTF8Char*)")");
+	}
+	sb->Append((const UTF8Char*)", size=");
+	sb->AppendOSInt(tag->size);
+	return true;
+}
+
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	UInt8 *tagData;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	Int32 v;
+	const UTF8Char *name;
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
+	if (tag == 0)
+		return false;
+	sb->Append((const UTF8Char*)"Tag ");
+	sb->AppendOSInt(index);
+	sb->Append((const UTF8Char*)"\r\nTagType = 0x");
+	sb->AppendHex8(tag->tagType);
+	name = GetTagName(tag->tagType);
+	if (name)
+	{
+		sb->Append((const UTF8Char*)" (");
+		sb->Append(name);
+		sb->Append((const UTF8Char*)")");
+	}
+	sb->Append((const UTF8Char*)"\r\nSize = ");
+	sb->AppendOSInt(tag->size);
+	if (tag->tagType == 0xc4)
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nTable class = ");
+		sb->AppendU16(tagData[4] >> 4);
+		sb->Append((const UTF8Char*)"\r\nTable identifier = ");
+		sb->AppendU16(tagData[4] & 15);
+		i = 0;
+		while (i < 16)
+		{
+			sb->Append((const UTF8Char*)"\r\nCode length ");
+			sb->AppendOSInt(i + 1);
+			sb->Append((const UTF8Char*)" count = ");
+			sb->AppendU16(tagData[5 + i]);
+
+			i++;
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xc8)
+	{
+	}
+	else if (tag->tagType == 0xcc)
+	{
+	}
+	else if (tag->tagType >= 0xc0 && tag->tagType <= 0xcf) //SOFn
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nSample precision = ");
+		sb->AppendU16(tagData[4]);
+		sb->Append((const UTF8Char*)"\r\nNumber of lines = ");
+		sb->AppendI16(ReadMInt16(&tagData[5]));
+		sb->Append((const UTF8Char*)"\r\nNumber of samples/line = ");
+		sb->AppendI16(ReadMInt16(&tagData[7]));
+		sb->Append((const UTF8Char*)"\r\nNumber of components in frame = ");
+		sb->AppendU16(tagData[9]);
+		i = 0;
+		j = 10;
+		while (i < tagData[9])
+		{
+			sb->Append((const UTF8Char*)"\r\nComponent ");
+			sb->AppendOSInt(i);
+			sb->Append((const UTF8Char*)":\r\n");
+			sb->Append((const UTF8Char*)" Component identifier = ");
+			sb->AppendU16(tagData[j]);
+			sb->Append((const UTF8Char*)"\r\n Horizontal sampling factor = ");
+			sb->AppendU16(tagData[j + 1] >> 4);
+			sb->Append((const UTF8Char*)"\r\n Vertical sampling factor = ");
+			sb->AppendU16(tagData[j + 1] & 15);
+			sb->Append((const UTF8Char*)"\r\n Quantization table destination selector = ");
+			sb->AppendU16(tagData[j + 2]);
+			sb->Append((const UTF8Char*)"\r\n");
+			j += 3;
+
+			i++;
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xda) //SOS
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nNumber of components in scan = ");
+		sb->AppendU16(tagData[4]);
+		j = 5;
+		i = 0;
+		while (i < tagData[4])
+		{
+			sb->Append((const UTF8Char*)"\r\nComponent ");
+			sb->AppendOSInt(i);
+			sb->Append((const UTF8Char*)"\r\n Scan component selector = ");
+			sb->AppendU16(tagData[j]);
+			sb->Append((const UTF8Char*)"\r\n DC entropy coding selector = ");
+			sb->AppendU16(tagData[j + 1] >> 4);
+			sb->Append((const UTF8Char*)"\r\n AC entropy coding selector = ");
+			sb->AppendU16(tagData[j + 1] & 15);
+			j += 2;
+			i++;
+		}
+		sb->Append((const UTF8Char*)"\r\nStart of spectral selection = ");
+		sb->AppendU16(tagData[j]);
+		sb->Append((const UTF8Char*)"\r\nEnd of spectral selection = ");
+		sb->AppendU16(tagData[j + 1]);
+		sb->Append((const UTF8Char*)"\r\nSuccessive approximation bit position high = ");
+		sb->AppendU16(tagData[j + 2] >> 4);
+		sb->Append((const UTF8Char*)"\r\nSuccessive approximation bit position low = ");
+		sb->AppendU16(tagData[j + 2] & 15);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xdb) //DQT
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nElement precision = ");
+		sb->AppendU16(tagData[4] >> 4);
+		sb->Append((const UTF8Char*)"\r\nTable identifier = ");
+		sb->AppendU16(tagData[4] & 15);
+		if (tagData[4] * 0xf0 == 0x10)
+		{
+			i = 8;
+			j = 5;
+			while (i-- > 0)
+			{
+				sb->Append((const UTF8Char*)"\r\n");
+				k = 8;
+				while (k-- > 0)
+				{
+					v = ReadMUInt16(&tagData[j]);
+					if (v < 10)
+					{
+						sb->Append((const UTF8Char*)"     ");
+					}
+					else if (v < 100)
+					{
+						sb->Append((const UTF8Char*)"    ");
+					}
+					else if (v < 1000)
+					{
+						sb->Append((const UTF8Char*)"   ");
+					}
+					else if (v < 10000)
+					{
+						sb->Append((const UTF8Char*)"  ");
+					}
+					else
+					{
+						sb->Append((const UTF8Char*)" ");
+					}
+					sb->AppendI32(v);
+
+					j += 2;
+				}
+			}
+		}
+		else
+		{
+			i = 8;
+			j = 5;
+			while (i-- > 0)
+			{
+				sb->Append((const UTF8Char*)"\r\n");
+				k = 8;
+				while (k-- > 0)
+				{
+					if (tagData[j] < 10)
+					{
+						sb->Append((const UTF8Char*)"   ");
+					}
+					else if (tagData[j] < 100)
+					{
+						sb->Append((const UTF8Char*)"  ");
+					}
+					else
+					{
+						sb->Append((const UTF8Char*)" ");
+					}
+					sb->AppendU16(tagData[j]);
+
+					j++;
+				}
+			}
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xe0) //APP0
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
+		sb->Append((const UTF8Char*)&tagData[4]);
+		if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'I' && tagData[7] == 'F' && tagData[8] == 0)
+		{
+			sb->Append((const UTF8Char*)"\r\nVersion = ");
+			sb->AppendU16(tagData[9]);
+			sb->Append((const UTF8Char*)".");
+			sb->AppendU16(tagData[10]);
+			sb->Append((const UTF8Char*)"\r\nDensity unit = ");
+			sb->AppendU16(tagData[11]);
+			sb->Append((const UTF8Char*)"\r\nHorizontal pixel density = ");
+			sb->AppendI16(ReadMInt16(&tagData[12]));
+			sb->Append((const UTF8Char*)"\r\nVertical pixel density = ");
+			sb->AppendI16(ReadMInt16(&tagData[14]));
+			sb->Append((const UTF8Char*)"\r\nX Thumbnail = ");
+			sb->AppendU16(tagData[16]);
+			sb->Append((const UTF8Char*)"\r\nY Thumbnail = ");
+			sb->AppendU16(tagData[17]);
+		}
+		else if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'X' && tagData[7] == 'X' && tagData[8] == 0)
+		{
+			sb->Append((const UTF8Char*)"\r\nThumbnail format = ");
+			sb->AppendU16(tagData[9]);
+			if (tagData[9] == 10)
+			{
+				sb->Append((const UTF8Char*)" (JPEG format)");
+			}
+			else if (tagData[9] == 11)
+			{
+				sb->Append((const UTF8Char*)" (8-bit palettized format)");
+			}
+			else if (tagData[9] == 13)
+			{
+				sb->Append((const UTF8Char*)" (24-bit RGB format)");
+			}
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xe1) //APP1
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
+		sb->Append((UTF8Char*)&tagData[4]);
+		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
+		{
+			Media::EXIFData::RInt32Func readInt32;
+			Media::EXIFData::RInt16Func readInt16;
+			Bool valid = true;
+			if (*(Int16*)&tagData[10] == *(Int16*)"II")
+			{
+				readInt32 = Media::EXIFData::TReadInt32;
+				readInt16 = Media::EXIFData::TReadInt16;
+			}
+			else if (*(Int16*)&tagData[10] == *(Int16*)"MM")
+			{
+				readInt32 = Media::EXIFData::TReadMInt32;
+				readInt16 = Media::EXIFData::TReadMInt16;
+			}
+			else
+			{
+				valid = false;
+			}
+			if (valid)
+			{
+				if (readInt16(&tagData[12]) != 42)
+				{
+					valid = false;
+				}
+				if (readInt32(&tagData[14]) != 8)
+				{
+					valid = false;
+				}
+			}
+			if (valid)
+			{
+				UInt32 nextOfst;
+				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, tag->ofst + 18, readInt32, readInt16, &nextOfst, tag->ofst + 10);
+				if (exif)
+				{
+					sb->Append((const UTF8Char *)"\r\n");
+					exif->ToString(sb, 0);
+					DEL_CLASS(exif);
+				}
+			}
+		}
+		else if (Text::StrEquals((Char*)&tagData[4], "http://ns.adobe.com/xap/1.0/"))
+		{
+			sb->Append((const UTF8Char *)"\r\n");
+			sb->AppendC((const UTF8Char *)&tagData[33], tag->size - 33);
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xe2) //APP2
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
+		sb->Append((UTF8Char*)&tagData[4]);
+		if (Text::StrEquals((Char*)&tagData[4], "ICC_PROFILE"))
+		{
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
+			if (icc)
+			{
+				sb->Append((const UTF8Char*)"\r\n\r\n");
+				icc->ToString(sb);
+				DEL_CLASS(icc);
+			}
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xed) //APP13
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
+		sb->Append((UTF8Char*)&tagData[4]);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xee) //APP14
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
+		sb->Append((UTF8Char*)&tagData[4]);
+		MemFree(tagData);
+	}
+	return true;
+}
+
+Bool IO::FileAnalyse::JPGFileAnalyse::IsError()
+{
+	return this->fd == 0;
+}
+
+Bool IO::FileAnalyse::JPGFileAnalyse::IsParsing()
+{
+	return this->threadRunning;
+}
+
+Bool IO::FileAnalyse::JPGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+{
+	return false;
+}

@@ -1,0 +1,51 @@
+CFLAGS += -I/opt/vc/include/interface -I/opt/vc/include
+
+LIBS_vc:
+	$(eval LIBS += -L/opt/vc/lib)
+
+LIBS_mmal: LIBS_vc
+	$(eval LIBS += -lmmal_core -lmmal -lmmal_util)
+
+LIBS_vchi: LIBS_vc
+	$(eval LIBS += -lvchiq_arm)
+
+LIBS_vcos: LIBS_vc
+	$(eval LIBS += -lvcos)
+
+DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoRPi.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CameraManager.o: $(CLASSDIR)src/Media/CameraManagerRPi.cpp MMALStillCapture.o MMALStillCaptureDef
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DDCReader.o: $(CLASSDIR)src/Media/DDCReaderRPi.cpp LIBS_vchi LIBS_vcos
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MMALStillCapture.o: $(CLASSDIR)src/Media/MMALStillCapture.cpp LIBS_mmal
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MMALVideoCapture.o: $(CLASSDIR)src/Media/MMALVideoCapture.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MMALStillCaptureDef: LIBS_mmal
+	$(eval CLASS_OBJS += MMALStillCapture.o)
+
+MMALVideoCaptureDef: LIBS_mmal
+	$(eval CLASS_OBJS += MMALVideoCapture.o)
+
+VideoCaptureMgr.o: $(CLASSDIR)src/Media/VideoCaptureMgr_RPi.cpp MMALVideoCapture.o MMALVideoCaptureDef LIBS_V4LVideoCapture
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SMBIOSUtil.o: $(CLASSDIR)src/Win32/SMBIOSUtilNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+

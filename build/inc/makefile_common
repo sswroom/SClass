@@ -1,0 +1,2970 @@
+
+LIBS_HashCreator: Adler32.o Adler32_CPP.o CRC16.o CRC16_CPP.o CRC16R.o CRC16R_CPP.o CRC32.o CRC32_CPP.o CRC32R.o CRC32R_CPP.o DJB2.o DJB2_CPP.o DJB2a.o DJB2a_CPP.o FNV1.o FNV1_CPP.o FNV1a.o FNV1a_CPP.o MD5.o MD5_CPP.o RIPEMD128.o RIPEMD128_CPP.o RIPEMD160.o RIPEMD160_CPP.o SDBM.o SDBM_CPP.o SHA1.o SHA1_CPP.o 
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_ExporterList: BMPExporter.o CIPExporter.o CURExporter.o DBCSVExporter.o DBExcelXMLExporter.o DBFExporter.o DBHTMLExporter.o DBPListExporter.o ExcelXMLExporter.o GIFExporter.o GPXExporter.o GUIExporter.o GUIGIFExporter.o GUIJPGExporter.o GUIPNGExporter.o GUITIFExporter.o ICOExporter.o KMLExporter.o MapCSVExporter.o MD4Exporter.o MD5Exporter.o MDBExporter.o MEVExporter.o OruxMapExporter.o PLTExporter.o PNGExporter.o SFVExporter.o SHA1Exporter.o SHPExporter.o SPKExporter.o SQLiteExporter.o TIFFExporter.o WAVExporter.o 
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_IFileAnalyse: FLVFileAnalyse.o JPGFileAnalyse.o MPEGFileAnalyse.o NFDumpFileAnalyse.o PNGFileAnalyse.o QTFileAnalyse.o RIFFFileAnalyse.o TSFileAnalyse.o 
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_ProtoDecList: JTT808ProtocolDecoder.o TK109ProtocolDecoder.o TSProtocolDecoder.o 
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_FullParserList: AC3Parser.o ADXParser.o AFSParser.o ANIParser.o AOSParser.o AVIParser.o BMPParser.o BSAParser.o BurikoArcParser.o BurikoPackFileParser.o CABParser.o CDXAParser.o CIPParser.o COMParser.o CSVParser.o CUEParser.o DBFParser.o DCPackParser.o DTSParser.o ELFParser.o EXEParser.o FNTParser.o GamedatPac2Parser.o GIFParser.o GLOCParser.o GUIImgParser.o GZIPParser.o HTRecParser.o ICOParser.o ID3Parser.o IMGParser.o IPACParser.o IS2Parser.o ISOParser.o JSONParser.o LinkArcParser.o LOGParser.o LUTParser.o M2VStmParser.o MAIPackParser.o MajiroArcParser.o MD5Parser.o MDBParser.o MEDParser.o MEVParser.o MIMEFileParser.o MKVParser.o MLHParser.o MMSParser.o MP2Parser.o MPGParser.o MRGParser.o NFPParser.o NOAParser.o NWAParser.o NS2Parser.o OZF2Parser.o OziMapParser.o PAC2Parser.o PACParser.o PCXParser.o PFS2Parser.o PLTParser.o PNGParser.o PSSParser.o QTParser.o RLOCParser.o SakuotoArcParser.o SEGPackParser.o SFVParser.o SHPParser.o SLOCParser.o SM2MPXParser.o SMDLParser.o SPDParser.o SPKParser.o SPREDParser.o SQLiteParser.o SZSParser.o TARParser.o TGAParser.o TIFFParser.o TILParser.o TSPParser.o TsuyoshiArcParser.o TXTParser.o UDPParser.o WAVParser.o WPTParser.o X13Parser.o XLSParser.o XMLParser.o XPCMParser.o YKCParser.o ZIPParser.o ZWEIParser.o DBITParser.o FileGDBParser.o ISO9660Parser.o ITMParser.o KMZParser.o MPGXAParser.o 
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_V4LVideoCapture: V4LVideoCapture.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_SoundGenerator: BellSoundGen.o ISoundGen.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_CodeImageGen: EAN2CodeImageGen.o EAN5CodeImageGen.o EAN8CodeImageGen.o EAN13CodeImageGen.o
+	$(eval CLASS_OBJS += $^)
+
+LIBS_CSConverter: CSAYUV_RGB8.o CSAYUV_RGB8_CPP.o CSAYUV444_10_LRGBC.o CSAYUV444_10_LRGBC_CPP.o CSAYUV444_10_RGB32C.o CSAYUV444_10_RGB32C_CPP.o CSBI42_LRGBC.o CSBI42_RGB32C.o CSI420_LRGBC.o CSI420_RGB32C.o CSNV12_LRGBC.o CSNV12_LRGBC_CPP.o CSNV12_RGB8.o CSNV12_RGB32C.o CSNV12_RGB32C_CPP.o CSNV12_RGB8_CPP.o CSP010_RGB8.o CSP010_RGB8_CPP.o CSP016_LRGBC.o CSP016_LRGBC_CPP.o CSP016_RGB32C.o CSP016_RGB32C_CPP.o CSP216_LRGBC.o CSP216_LRGBC_CPP.o CSRGB16_LRGBC.o CSRGB16_LRGBC_CPP.o CSRGB16_RGB8.o CSRGB16_RGB8_CPP.o CSRGB8_LRGBC.o CSRGB8_LRGBC_CPP.o CSRGB8_RGB8.o CSRGB8_RGB8_CPP.o CSRGBF_LRGBC.o CSRGBF_LRGBC_CPP.o CSUYVY_LRGBC.o CSUYVY_LRGBC_CPP.o CSUYVY_RGB8.o CSUYVY_RGB8_CPP.o CSY416_LRGBC.o CSY416_LRGBC_CPP.o CSY416_RGB32C.o CSY416_RGB32C_CPP.o CSYUV_LRGB.o CSYUV_LRGBC.o CSYUV_RGB32C.o CSYUV_RGB8.o CSYUV_Y8.o CSYUV10_RGB8.o CSYUV16_LRGBC.o CSYUV16_RGB32C.o CSYUV420_LRGBC.o CSYUV420_LRGBC_CPP.o CSYUV420_RGB32C.o CSYUV420_RGB32C_CPP.o CSYUV420P8_LRGBC.o CSYUV420P8_RGB32C.o CSYUV444P10LEP_LRGBC.o CSYUV444P10LEP_LRGBC_CPP.o CSYUV444P10LEP_RGB32C.o CSYUV444P10LEP_RGB32C_CPP.o CSYUY2_LRGBC.o CSYUY2_LRGBC_CPP.o CSYUY2_RGB8.o CSYUY2_RGB8_CPP.o CSYV12_LRGBC.o CSYV12_RGB32C.o CSYVU9_RGB8.o CSYVU9_RGB8_CPP.o
+	$(eval CLASS_OBJS += $^)
+
+LIBS_TransferFunc: TransferFuncBT709.o TransferFuncBT1361.o TransferFuncBT2100.o TransferFuncCGamma.o TransferFuncHLG.o TransferFuncLinear.o TransferFuncLog100.o TransferFuncLogSqrt10.o TransferFuncLUT.o TransferFuncNLog.o TransferFuncNTSC.o TransferFuncParam1.o TransferFuncProtune.o TransferFuncSLog.o TransferFuncSLog1.o TransferFuncSLog2.o TransferFuncSLog3.o TransferFuncSMPTE240.o TransferFuncSRGB.o TransferFuncVLog.o
+	$(eval CLASS_OBJS += $^)
+
+LIBS_AudioDecoders: ACMDecoder.o ADecoderBase.o ADXDecoder.o G711muLawDecoder.o MP2Decoder.o PSSADecoder.o XADecoder.o 
+	$(eval CLASS_OBJS += $^)
+
+LIBS_VideoDecoders: M2VDecoder.o MP2GDecoder.o RAVCDecoder.o RHVCDecoder.o VDecoderBase.o VDecoderChain.o VFWDecoder.o
+	$(eval CLASS_OBJS += $^)
+
+LIBS_ImageGenMgr: ColorImageGen.o GammaImageGen.o Gamma64ImageGen.o Gradian32ImageGen.o LinesImageGen.o RingsImageGen.o
+	$(eval CLASS_OBJS += $^)
+
+LIBS_IMIMEObj: MailMessage.o MIMEHeader.o MultipartMIMEObj.o TextMIMEObj.o UnknownMIMEObj.o
+	$(eval CLASS_OBJS += $^)
+
+LIBS_TextBinEncList: ANSITextBinEnc.o Base64Enc.o CodePageTextBinEnc.o CPPTextBinEnc.o HexTextBinEnc.o QuotedPrintableEnc.o UTF8TextBinEnc.o UCS2TextBinEnc.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_TVControl: MDT701STVControl.o NECTVControl.o
+	$(eval CLASS_OBJS += $^ )
+
+
+LIBS_opencv:
+	$(eval LIBS += `pkg-config --libs opencv`)
+
+
+Core.o: $(CLASSDIR)src/Core/Core.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Base64.o: $(CLASSDIR)src/Crypto/Encrypt/Base64.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XOREnc.o: $(CLASSDIR)src/Crypto/Encrypt/XOREnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Adler32.o: $(CLASSDIR)src/Crypto/Hash/Adler32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Adler32_CPP.o: $(CLASSDIR)src/Crypto/Hash/Adler32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CRC16.o: $(CLASSDIR)src/Crypto/Hash/CRC16.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CRC16R.o: $(CLASSDIR)src/Crypto/Hash/CRC16R.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CRC32.o: $(CLASSDIR)src/Crypto/Hash/CRC32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CRC32R.o: $(CLASSDIR)src/Crypto/Hash/CRC32R.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DJB2.o: $(CLASSDIR)src/Crypto/Hash/DJB2.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DJB2_CPP.o: $(CLASSDIR)src/Crypto/Hash/DJB2_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DJB2a.o: $(CLASSDIR)src/Crypto/Hash/DJB2a.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DJB2a_CPP.o: $(CLASSDIR)src/Crypto/Hash/DJB2a_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FNV1.o: $(CLASSDIR)src/Crypto/Hash/FNV1.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FNV1_CPP.o: $(CLASSDIR)src/Crypto/Hash/FNV1_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FNV1a.o: $(CLASSDIR)src/Crypto/Hash/FNV1a.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FNV1a_CPP.o: $(CLASSDIR)src/Crypto/Hash/FNV1a_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HashCreator.o: $(CLASSDIR)src/Crypto/Hash/HashCreator.cpp LIBS_HashCreator
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HashStream.o: $(CLASSDIR)src/Crypto/Hash/HashStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HMAC.o: $(CLASSDIR)src/Crypto/Hash/HMAC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MD5.o: $(CLASSDIR)src/Crypto/Hash/MD5.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RIPEMD128.o: $(CLASSDIR)src/Crypto/Hash/RIPEMD128.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RIPEMD128_CPP.o: $(CLASSDIR)src/Crypto/Hash/RIPEMD128_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RIPEMD160.o: $(CLASSDIR)src/Crypto/Hash/RIPEMD160.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RIPEMD160_CPP.o: $(CLASSDIR)src/Crypto/Hash/RIPEMD160_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDBM.o: $(CLASSDIR)src/Crypto/Hash/SDBM.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDBM_CPP.o: $(CLASSDIR)src/Crypto/Hash/SDBM_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHA1.o: $(CLASSDIR)src/Crypto/Hash/SHA1.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListCmp.o: $(CLASSDIR)src/Data/ArrayListCmp.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListDbl.o: $(CLASSDIR)src/Data/ArrayListDbl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListICaseStrW.o: $(CLASSDIR)src/Data/ArrayListICaseStrW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListICaseStrUTF8.o: $(CLASSDIR)src/Data/ArrayListICaseStrUTF8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListInt32.o: $(CLASSDIR)src/Data/ArrayListInt32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListInt64.o: $(CLASSDIR)src/Data/ArrayListInt64.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListStrW.o: $(CLASSDIR)src/Data/ArrayListStrW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListString.o: $(CLASSDIR)src/Data/ArrayListString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListStrUTF8.o: $(CLASSDIR)src/Data/ArrayListStrUTF8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ByteTool.o: $(CLASSDIR)src/Data/ByteTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DateTime.o: $(CLASSDIR)src/Data/DateTime.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IChart.o: $(CLASSDIR)src/Data/IChart.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LineChart.o: $(CLASSDIR)src/Data/LineChart.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LinkedList.o: $(CLASSDIR)src/Data/LinkedList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RandomMT19937.o: $(CLASSDIR)src/Data/RandomMT19937.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RandomOS.o: $(CLASSDIR)src/Data/RandomOS.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SyncArrayList.o: $(CLASSDIR)src/Data/SyncArrayList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Decompressor.o: $(CLASSDIR)src/Data/Compress/Decompressor.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Inflate.o: $(CLASSDIR)src/Data/Compress/Inflate.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+InflateStream.o: $(CLASSDIR)src/Data/Compress/InflateStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LZODecompressor.o: $(CLASSDIR)src/Data/Compress/LZODecompressor.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LZWDecompressor.o: $(CLASSDIR)src/Data/Compress/LZWDecompressor.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LZWDecStream.o: $(CLASSDIR)src/Data/Compress/LZWDecStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LZWEncStream2.o: $(CLASSDIR)src/Data/Compress/LZWEncStream2.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PackBits.o: $(CLASSDIR)src/Data/Compress/PackBits.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArtificialQuickSort.o: $(CLASSDIR)src/Data/Sort/ArtificialQuickSort.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArtificialQuickSort_CPP.o: $(CLASSDIR)src/Data/Sort/ArtificialQuickSort_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitonicSort.o: $(CLASSDIR)src/Data/Sort/BitonicSort.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitonicSort_CPP.o: $(CLASSDIR)src/Data/Sort/BitonicSort_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BubbleSort.o: $(CLASSDIR)src/Data/Sort/BubbleSort.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BubbleSort_CPP.o: $(CLASSDIR)src/Data/Sort/BubbleSort_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ByteCountingSort_CPP.o: $(CLASSDIR)src/Data/Sort/ByteCountingSort_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+InsertionSort_CPP.o: $(CLASSDIR)src/Data/Sort/InsertionSort_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ColDef.o: $(CLASSDIR)src/DB/ColDef.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSVFile.o: $(CLASSDIR)src/DB/CSVFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBConn.o: $(CLASSDIR)src/DB/DBConn.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBFFile.o: $(CLASSDIR)src/DB/DBFFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBFFixWriter.o: $(CLASSDIR)src/DB/DBFFixWriter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBList.o: $(CLASSDIR)src/DB/DBList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBQueue.o: $(CLASSDIR)src/DB/DBQueue.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBReader.o: $(CLASSDIR)src/DB/DBReader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBTool.o: $(CLASSDIR)src/DB/DBTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBUtil.o: $(CLASSDIR)src/DB/DBUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReadingDB.o: $(CLASSDIR)src/DB/ReadingDB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReadingDBTool.o: $(CLASSDIR)src/DB/ReadingDBTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SharedDBConn.o: $(CLASSDIR)src/DB/SharedDBConn.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SharedReadingDB.o: $(CLASSDIR)src/DB/SharedReadingDB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SQLBuilder.o: $(CLASSDIR)src/DB/SQLBuilder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SQLiteFile.o: $(CLASSDIR)src/DB/SQLiteFile.cpp Library.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TableDef.o: $(CLASSDIR)src/DB/TableDef.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BMPExporter.o: $(CLASSDIR)src/Exporter/BMPExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CIPExporter.o: $(CLASSDIR)src/Exporter/CIPExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CURExporter.o: $(CLASSDIR)src/Exporter/CURExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBCSVExporter.o: $(CLASSDIR)src/Exporter/DBCSVExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBExcelXMLExporter.o: $(CLASSDIR)src/Exporter/DBExcelXMLExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBFExporter.o: $(CLASSDIR)src/Exporter/DBFExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBHTMLExporter.o: $(CLASSDIR)src/Exporter/DBHTMLExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBPListExporter.o: $(CLASSDIR)src/Exporter/DBPListExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocHTMLExporter.o: $(CLASSDIR)src/Exporter/DocHTMLExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ExcelXMLExporter.o: $(CLASSDIR)src/Exporter/ExcelXMLExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ExporterList.o: $(CLASSDIR)src/Exporter/ExporterList.cpp LIBS_ExporterList
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GIFExporter.o: $(CLASSDIR)src/Exporter/GIFExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GPXExporter.o: $(CLASSDIR)src/Exporter/GPXExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ICOExporter.o: $(CLASSDIR)src/Exporter/ICOExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+KMLExporter.o: $(CLASSDIR)src/Exporter/KMLExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapCSVExporter.o: $(CLASSDIR)src/Exporter/MapCSVExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MD4Exporter.o: $(CLASSDIR)src/Exporter/MD4Exporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MD5Exporter.o: $(CLASSDIR)src/Exporter/MD5Exporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MDBExporter.o: $(CLASSDIR)src/Exporter/MDBExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MEVExporter.o: $(CLASSDIR)src/Exporter/MEVExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OruxMapExporter.o: $(CLASSDIR)src/Exporter/OruxMapExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PLTExporter.o: $(CLASSDIR)src/Exporter/PLTExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PNGExporter.o: $(CLASSDIR)src/Exporter/PNGExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SFVExporter.o: $(CLASSDIR)src/Exporter/SFVExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHA1Exporter.o: $(CLASSDIR)src/Exporter/SHA1Exporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPExporter.o: $(CLASSDIR)src/Exporter/SHPExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SPKExporter.o: $(CLASSDIR)src/Exporter/SPKExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SQLiteExporter.o: $(CLASSDIR)src/Exporter/SQLiteExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TIFFExporter.o: $(CLASSDIR)src/Exporter/TIFFExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WAVExporter.o: $(CLASSDIR)src/Exporter/WAVExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SudokuBoard.o: $(CLASSDIR)src/Game/Sudoku/SudokuBoard.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ActiveStreamReader.o: $(CLASSDIR)src/IO/ActiveStreamReader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ATCommandChannel.o: $(CLASSDIR)src/IO/ATCommandChannel.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitReaderLSB.o: $(CLASSDIR)src/IO/BitReaderLSB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitReaderMSB.o: $(CLASSDIR)src/IO/BitReaderMSB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitWriterLSB.o: $(CLASSDIR)src/IO/BitWriterLSB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitWriterMSB.o: $(CLASSDIR)src/IO/BitWriterMSB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTUtil.o: $(CLASSDIR)src/IO/BTUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BufferedInputStream.o: $(CLASSDIR)src/IO/BufferedInputStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CDSectorData.o: $(CLASSDIR)src/IO/CDSectorData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CDXAData.o: $(CLASSDIR)src/IO/CDXAData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CodeScanner.o: $(CLASSDIR)src/IO/CodeScanner.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConfigFile.o: $(CLASSDIR)src/IO/ConfigFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConsoleInput.o: $(CLASSDIR)src/IO/ConsoleInput.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CortexControl.o: $(CLASSDIR)src/IO/CortexControl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceDB.o: $(CLASSDIR)src/IO/DeviceDB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DirectoryPackage.o: $(CLASSDIR)src/IO/DirectoryPackage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EXEFile.o: $(CLASSDIR)src/IO/EXEFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileCheck.o: $(CLASSDIR)src/IO/FileCheck.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileExporter.o: $(CLASSDIR)src/IO/FileExporter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileFindRecur.o: $(CLASSDIR)src/IO/FileFindRecur.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileLog.o: $(CLASSDIR)src/IO/FileLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileSectorData.o: $(CLASSDIR)src/IO/FileSectorData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GPSNMEA.o: $(CLASSDIR)src/IO/GPSNMEA.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GSMModemController.o: $(CLASSDIR)src/IO/GSMModemController.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+I2C.o: $(CLASSDIR)src/IO/I2C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+I2CMODBUS.o: $(CLASSDIR)src/IO/I2CMODBUS.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IniFile.o: $(CLASSDIR)src/IO/IniFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IOPinCapture.o: $(CLASSDIR)src/IO/IOPinCapture.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LogFile.o: $(CLASSDIR)src/IO/LogFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LogTool.o: $(CLASSDIR)src/IO/LogTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LoopFileLog.o: $(CLASSDIR)src/IO/LoopFileLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MemFileBuffer.o: $(CLASSDIR)src/IO/MemFileBuffer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MemoryStream.o: $(CLASSDIR)src/IO/MemoryStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MinizZIP.o: $(CLASSDIR)src/IO/MinizZIP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MODBUSController.o: $(CLASSDIR)src/IO/MODBUSController.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MODBUSDevice.o: $(CLASSDIR)src/IO/MODBUSDevice.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MODBUSRTUMaster.o: $(CLASSDIR)src/IO/MODBUSRTUMaster.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MODBUSTCPMaster.o: $(CLASSDIR)src/IO/MODBUSTCPMaster.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ModemController.o: $(CLASSDIR)src/IO/ModemController.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MotionDetectorAccelerometer.o: $(CLASSDIR)src/IO/MotionDetectorAccelerometer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MTFileLog.o: $(CLASSDIR)src/IO/MTFileLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NullIOPin.o: $(CLASSDIR)src/IO/NullIOPin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NullWriter.o: $(CLASSDIR)src/IO/NullWriter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OneWireGPIO.o: $(CLASSDIR)src/IO/OneWireGPIO.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PackageFile.o: $(CLASSDIR)src/IO/PackageFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ParsedObject.o: $(CLASSDIR)src/IO/ParsedObject.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoCortexHandler.o: $(CLASSDIR)src/IO/ProtoCortexHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDCardInfo.o: $(CLASSDIR)src/IO/SDCardInfo.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Sensor.o: $(CLASSDIR)src/IO/Sensor.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SiLabDriver.o: $(CLASSDIR)src/IO/SiLabDriver.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SiLabSerialPort.o: $(CLASSDIR)src/IO/SiLabSerialPort.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMake.o: $(CLASSDIR)src/IO/SMake.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SNBDongle.o: $(CLASSDIR)src/IO/SNBDongle.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SNBProtocol.o: $(CLASSDIR)src/IO/SNBProtocol.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SPackageFile.o: $(CLASSDIR)src/IO/SPackageFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Stream.o: $(CLASSDIR)src/IO/Stream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StreamDataStream.o: $(CLASSDIR)src/IO/StreamDataStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StreamLogger.o: $(CLASSDIR)src/IO/StreamLogger.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StreamReader.o: $(CLASSDIR)src/IO/StreamReader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StreamWriter.o: $(CLASSDIR)src/IO/StreamWriter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TVControl.o: $(CLASSDIR)src/IO/TVControl.cpp LIBS_TVControl
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UDPFileLog.o: $(CLASSDIR)src/IO/UDPFileLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UDPLog.o: $(CLASSDIR)src/IO/UDPLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UnixConfigFile.o: $(CLASSDIR)src/IO/UnixConfigFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VirtualIOPinMgr.o: $(CLASSDIR)src/IO/VirtualIOPinMgr.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WriterLogHandler.o: $(CLASSDIR)src/IO/WriterLogHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WriteCacheStream.o: $(CLASSDIR)src/IO/WriteCacheStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AM2315.o: $(CLASSDIR)src/IO/Device/AM2315.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AM2315GPIO.o: $(CLASSDIR)src/IO/Device/AM2315GPIO.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AMGU4241.o: $(CLASSDIR)src/IO/Device/AMGU4241.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BME280.o: $(CLASSDIR)src/IO/Device/BME280.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BivocomTD210.o: $(CLASSDIR)src/IO/Device/BivocomTD210.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DensoWaveQB30.o: $(CLASSDIR)src/IO/Device/DensoWaveQB30.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DensoWaveQK30U.o: $(CLASSDIR)src/IO/Device/DensoWaveQK30U.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DHT22.o: $(CLASSDIR)src/IO/Device/DHT22.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DS18B20.o: $(CLASSDIR)src/IO/Device/DS18B20.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HCSR04.o: $(CLASSDIR)src/IO/Device/HCSR04.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IBuddy.o: $(CLASSDIR)src/IO/Device/IBuddy.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MTKGPSNMEA.o: $(CLASSDIR)src/IO/Device/MTKGPSNMEA.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+QQZMSerialCamera.o: $(CLASSDIR)src/IO/Device/QQZMSerialCamera.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RockwellModemController.o: $(CLASSDIR)src/IO/Device/RockwellModemController.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDM120M.o: $(CLASSDIR)src/IO/Device/SDM120M.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHT20.o: $(CLASSDIR)src/IO/Device/SHT20.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SIM7000.o: $(CLASSDIR)src/IO/Device/SIM7000.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SIM7000SocketFactory.o: $(CLASSDIR)src/IO/Device/SIM7000SocketFactory.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TH10SB.o: $(CLASSDIR)src/IO/Device/TH10SB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FLVFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/FLVFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/IFileAnalyse.cpp LIBS_IFileAnalyse
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JPGFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/JPGFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MPEGFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/MPEGFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NFDumpFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/NFDumpFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PNGFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/PNGFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+QTFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/QTFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RIFFFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/RIFFFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TSFileAnalyse.o: $(CLASSDIR)src/IO/FileAnalyse/TSFileAnalyse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JTT808ProtocolDecoder.o: $(CLASSDIR)src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoDecList.o: $(CLASSDIR)src/IO/ProtoDec/ProtoDecList.cpp LIBS_ProtoDecList
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TK109ProtocolDecoder.o: $(CLASSDIR)src/IO/ProtoDec/TK109ProtocolDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TSProtocolDecoder.o: $(CLASSDIR)src/IO/ProtoDec/TSProtocolDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoDUploadHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoDUploadHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoGPSDevInfoHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoJTT808Handler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoLogCliHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoLogCliHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoMDataHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoMDataHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoMDataLSHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoMDataLSHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoMQTTHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoMQTTHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoRevGeoHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoRevGeoHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoSMonHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoSMonHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProtoSyncHandler.o: $(CLASSDIR)src/IO/ProtoHdlr/ProtoSyncHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BlockStreamData.o: $(CLASSDIR)src/IO/StmData/BlockStreamData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConcatStreamData.o: $(CLASSDIR)src/IO/StmData/ConcatStreamData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileData.o: $(CLASSDIR)src/IO/StmData/FileData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MemoryData.o: $(CLASSDIR)src/IO/StmData/MemoryData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MemoryData2.o: $(CLASSDIR)src/IO/StmData/MemoryData2.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MDT701STVControl.o: $(CLASSDIR)src/IO/TVCtrl/MDT701STVControl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NECTVControl.o: $(CLASSDIR)src/IO/TVCtrl/NECTVControl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AddressResolver.o: $(CLASSDIR)src/Manage/AddressResolver.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CPUDB.o: $(CLASSDIR)src/Manage/CPUDB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DasmBase.o: $(CLASSDIR)src/Manage/DasmBase.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DasmX86_16.o: $(CLASSDIR)src/Manage/DasmX86_16.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ExceptionLogger.o: $(CLASSDIR)src/Manage/ExceptionLogger.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MonConn.o: $(CLASSDIR)src/Manage/MonConn.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CIPLayer2.o: $(CLASSDIR)src/Map/CIPLayer2.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DrawMapRenderer.o: $(CLASSDIR)src/Map/DrawMapRenderer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AssistedReverseGeocoder.o: $(CLASSDIR)src/Map/AssistedReverseGeocoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AssistedReverseGeocoderPL.o: $(CLASSDIR)src/Map/AssistedReverseGeocoderPL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GPSTrack.o: $(CLASSDIR)src/Map/GPSTrack.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HKTDVehRestrict.o: $(CLASSDIR)src/Map/HKTDVehRestrict.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HKTrafficLayer.o: $(CLASSDIR)src/Map/HKTrafficLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IMapDrawLayer.o: $(CLASSDIR)src/Map/IMapDrawLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LayerTools.o: $(CLASSDIR)src/Map/LayerTools.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LeveledMapView.o: $(CLASSDIR)src/Map/LeveledMapView.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapConfig2.o: $(CLASSDIR)src/Map/MapConfig2.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapConfig2TGen.o: $(CLASSDIR)src/Map/MapConfig2TGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapEnv.o: $(CLASSDIR)src/Map/MapEnv.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapLayerCollection.o: $(CLASSDIR)src/Map/MapLayerCollection.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapLayerData.o: $(CLASSDIR)src/Map/MapLayerData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapManager.o: $(CLASSDIR)src/Map/MapManager.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapScheduler.o: $(CLASSDIR)src/Map/MapScheduler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapSearch.o: $(CLASSDIR)src/Map/MapSearch.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapSearchManager.o: $(CLASSDIR)src/Map/MapSearchManager.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MapView.o: $(CLASSDIR)src/Map/MapView.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MercatorMapView.o: $(CLASSDIR)src/Map/MercatorMapView.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OruxDBLayer.o: $(CLASSDIR)src/Map/OruxDBLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProjectedMapView.o: $(CLASSDIR)src/Map/ProjectedMapView.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReloadableMapLayer.o: $(CLASSDIR)src/Map/ReloadableMapLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RevGeoCfg.o: $(CLASSDIR)src/Map/RevGeoCfg.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RevGeoDir.o: $(CLASSDIR)src/Map/RevGeoDir.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReverseGeocoderServer.o: $(CLASSDIR)src/Map/ReverseGeocoderServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ScaledMapView.o: $(CLASSDIR)src/Map/ScaledMapView.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPData.o: $(CLASSDIR)src/Map/SHPData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SPDLayer.o: $(CLASSDIR)src/Map/SPDLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TileMapGenerator.o: $(CLASSDIR)src/Map/TileMapGenerator.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TileMapLayer.o: $(CLASSDIR)src/Map/TileMapLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VectorLayer.o: $(CLASSDIR)src/Map/VectorLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebImageLayer.o: $(CLASSDIR)src/Map/WebImageLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ESRIMDBLayer.o: $(CLASSDIR)src/Map/ESRI/ESRIMDBLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ESRITileMap.o: $(CLASSDIR)src/Map/ESRI/ESRITileMap.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GoogleMapsUtil.o: $(CLASSDIR)src/Map/GoogleMap/GoogleMapsUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GoogleSearcher.o: $(CLASSDIR)src/Map/GoogleMap/GoogleSearcher.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GoogleStaticMap.o: $(CLASSDIR)src/Map/GoogleMap/GoogleStaticMap.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GoogleWSSearcherJSON.o: $(CLASSDIR)src/Map/GoogleMap/GoogleWSSearcherJSON.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OSMCacheHandler.o: $(CLASSDIR)src/Map/OSM/OSMCacheHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OSMLocalTileMap.o: $(CLASSDIR)src/Map/OSM/OSMLocalTileMap.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OSMTileMap.o: $(CLASSDIR)src/Map/OSM/OSMTileMap.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ComplexNumber.o: $(CLASSDIR)src/Math/ComplexNumber.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CoordinateSystem.o: $(CLASSDIR)src/Math/CoordinateSystem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CoordinateSystemManager.o: $(CLASSDIR)src/Math/CoordinateSystemManager.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EarthEllipsoid.o: $(CLASSDIR)src/Math/EarthEllipsoid.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Ellipse.o: $(CLASSDIR)src/Math/Ellipse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FFT.o: $(CLASSDIR)src/Math/FFT.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FFTCalc.o: $(CLASSDIR)src/Math/FFTCalc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GeographicCoordinateSystem.o: $(CLASSDIR)src/Math/GeographicCoordinateSystem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Geometry.o: $(CLASSDIR)src/Math/Geometry.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Math.o: $(CLASSDIR)src/Math/Math.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Matrix3.o: $(CLASSDIR)src/Math/Matrix3.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MercatorProjectedCoordinateSystem.o: $(CLASSDIR)src/Math/MercatorProjectedCoordinateSystem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Mercator1SPProjectedCoordinateSystem.o: $(CLASSDIR)src/Math/Mercator1SPProjectedCoordinateSystem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Point.o: $(CLASSDIR)src/Math/Point.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Point3D.o: $(CLASSDIR)src/Math/Point3D.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PointCollection.o: $(CLASSDIR)src/Math/PointCollection.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PointMappingCoordinateSystem.o: $(CLASSDIR)src/Math/PointMappingCoordinateSystem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Polygon.o: $(CLASSDIR)src/Math/Polygon.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Polyline.o: $(CLASSDIR)src/Math/Polyline.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Polyline3D.o: $(CLASSDIR)src/Math/Polyline3D.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProjectedCoordinateSystem.o: $(CLASSDIR)src/Math/ProjectedCoordinateSystem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TSPFile.o: $(CLASSDIR)src/Math/TSPFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UTMGridConvertDbl.o: $(CLASSDIR)src/Math/UTMGridConvertDbl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VectorImage.o: $(CLASSDIR)src/Math/VectorImage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VectorString.o: $(CLASSDIR)src/Math/VectorString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Acceleration.o: $(CLASSDIR)src/Math/Unit/Acceleration.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Angle.o: $(CLASSDIR)src/Math/Unit/Angle.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ApparentPower.o: $(CLASSDIR)src/Math/Unit/ApparentPower.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Count.o: $(CLASSDIR)src/Math/Unit/Count.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Distance.o: $(CLASSDIR)src/Math/Unit/Distance.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ElectricCurrent.o: $(CLASSDIR)src/Math/Unit/ElectricCurrent.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ElectricPotential.o: $(CLASSDIR)src/Math/Unit/ElectricPotential.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Energy.o: $(CLASSDIR)src/Math/Unit/Energy.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Frequency.o: $(CLASSDIR)src/Math/Unit/Frequency.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MagneticField.o: $(CLASSDIR)src/Math/Unit/MagneticField.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Mass.o: $(CLASSDIR)src/Math/Unit/Mass.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Power.o: $(CLASSDIR)src/Math/Unit/Power.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Pressure.o: $(CLASSDIR)src/Math/Unit/Pressure.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Ratio.o: $(CLASSDIR)src/Math/Unit/Ratio.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReactiveEnergy.o: $(CLASSDIR)src/Math/Unit/ReactiveEnergy.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReactivePower.o: $(CLASSDIR)src/Math/Unit/ReactivePower.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Temperature.o: $(CLASSDIR)src/Math/Unit/Temperature.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UnitBase.o: $(CLASSDIR)src/Math/Unit/UnitBase.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AACFrameSource.o: $(CLASSDIR)src/Media/AACFrameSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioBlockParser.o: $(CLASSDIR)src/Media/AudioBlockParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioBlockSource.o: $(CLASSDIR)src/Media/AudioBlockSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioConcatSource.o: $(CLASSDIR)src/Media/AudioConcatSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioFixBlockSource.o: $(CLASSDIR)src/Media/AudioFixBlockSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioFormat.o: $(CLASSDIR)src/Media/AudioFormat.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioFrameSource.o: $(CLASSDIR)src/Media/AudioFrameSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioUtil.o: $(CLASSDIR)src/Media/AudioUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BitmapUtil.o: $(CLASSDIR)src/Media/BitmapUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ChapterInfo.o: $(CLASSDIR)src/Media/ChapterInfo.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ClockSpeechCh.o: $(CLASSDIR)src/Media/ClockSpeechCh.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ColorConv.o: $(CLASSDIR)src/Media/ColorConv.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ColorManager.o: $(CLASSDIR)src/Media/ColorManager.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ColorProfile.o: $(CLASSDIR)src/Media/ColorProfile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Deinterlace8.o: $(CLASSDIR)src/Media/Deinterlace8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeinterlaceLR.o: $(CLASSDIR)src/Media/DeinterlaceLR.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DrawImageTool.o: $(CLASSDIR)src/Media/DrawImageTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EDID.o: $(CLASSDIR)src/Media/EDID.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EXIFData.o: $(CLASSDIR)src/Media/EXIFData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileVideoSource.o: $(CLASSDIR)src/Media/FileVideoSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FontRenderer.o: $(CLASSDIR)src/Media/FontRenderer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FrequencyGraph.o: $(CLASSDIR)src/Media/FrequencyGraph.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GRFilter.o: $(CLASSDIR)src/Media/GRFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+H264Parser.o: $(CLASSDIR)src/Media/H264Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+H265Parser.o: $(CLASSDIR)src/Media/H265Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTRecFile.o: $(CLASSDIR)src/Media/HTRecFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IAudioFilter.o: $(CLASSDIR)src/Media/IAudioFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IAudioSource.o: $(CLASSDIR)src/Media/IAudioSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ICCProfile.o: $(CLASSDIR)src/Media/ICCProfile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IDeintResizer.o: $(CLASSDIR)src/Media/IDeintResizer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IImgResizer.o: $(CLASSDIR)src/Media/IImgResizer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Image.o: $(CLASSDIR)src/Media/Image.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ImageAlphaBlend.o: $(CLASSDIR)src/Media/ImageAlphaBlend.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ImageCopy.o: $(CLASSDIR)src/Media/ImageCopy.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ImageGenerator.o: $(CLASSDIR)src/Media/ImageGenerator.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ImageList.o: $(CLASSDIR)src/Media/ImageList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ImageTo8Bit.o: $(CLASSDIR)src/Media/ImageTo8Bit.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IRealtimeVideoSource.o: $(CLASSDIR)src/Media/IRealtimeVideoSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IVideoSource.o: $(CLASSDIR)src/Media/IVideoSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JPEGFile.o: $(CLASSDIR)src/Media/JPEGFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LPCMSource.o: $(CLASSDIR)src/Media/LPCMSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LUT.o: $(CLASSDIR)src/Media/LUT.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+M2VFile.o: $(CLASSDIR)src/Media/M2VFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+M2VStreamSource.o: $(CLASSDIR)src/Media/M2VStreamSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MediaFile.o: $(CLASSDIR)src/Media/MediaFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MonitorMgr.o: $(CLASSDIR)src/Media/MonitorMgr.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MPAStreamSource.o: $(CLASSDIR)src/Media/MPAStreamSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MPEGVideoParser.o: $(CLASSDIR)src/Media/MPEGVideoParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MPGFile.o: $(CLASSDIR)src/Media/MPGFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MSFontRenderer.o: $(CLASSDIR)src/Media/MSFontRenderer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NullRenderer.o: $(CLASSDIR)src/Media/NullRenderer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NWASource.o: $(CLASSDIR)src/Media/NWASource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PaperSize.o: $(CLASSDIR)src/Media/PaperSize.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PhotoInfo.o: $(CLASSDIR)src/Media/PhotoInfo.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Playlist.o: $(CLASSDIR)src/Media/Playlist.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProfiledResizer.o: $(CLASSDIR)src/Media/ProfiledResizer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RefClock.o: $(CLASSDIR)src/Media/RefClockL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RGBColorFilter.o: $(CLASSDIR)src/Media/RGBColorFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RGBLUTGen.o: $(CLASSDIR)src/Media/RGBLUTGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SharedImage.o: $(CLASSDIR)src/Media/SharedImage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SilentSource.o: $(CLASSDIR)src/Media/SilentSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StaticEngine.o: $(CLASSDIR)src/Media/StaticEngine.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StaticImage.o: $(CLASSDIR)src/Media/StaticImage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TimedImageList.o: $(CLASSDIR)src/Media/TimedImageList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+V4LVideoCapture.o: $(CLASSDIR)src/Media/V4LVideoCapture.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VCDMPGFile.o: $(CLASSDIR)src/Media/VCDMPGFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VectorDocument.o: $(CLASSDIR)src/Media/VectorDocument.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VectorGraph.o: $(CLASSDIR)src/Media/VectorGraph.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VideoChecker.o: $(CLASSDIR)src/Media/VideoChecker.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VideoSourceBase.o: $(CLASSDIR)src/Media/VideoSourceBase.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VOBAC3StreamSource.o: $(CLASSDIR)src/Media/VOBAC3StreamSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VOBLPCMStreamSource.o: $(CLASSDIR)src/Media/VOBLPCMStreamSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AlphaBlend8_8.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AlphaBlend8_C8.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_C8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioAmplifier.o: $(CLASSDIR)src/Media/AudioFilter/AudioAmplifier.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioCaptureFilter.o: $(CLASSDIR)src/Media/AudioFilter/AudioCaptureFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioLevelMeter.o: $(CLASSDIR)src/Media/AudioFilter/AudioLevelMeter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioSampleRipper.o: $(CLASSDIR)src/Media/AudioFilter/AudioSampleRipper.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioSweepFilter.o: $(CLASSDIR)src/Media/AudioFilter/AudioSweepFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DTMFDecoder.o: $(CLASSDIR)src/Media/AudioFilter/DTMFDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DTMFGenerator.o: $(CLASSDIR)src/Media/AudioFilter/DTMFGenerator.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DynamicVolBooster.o: $(CLASSDIR)src/Media/AudioFilter/DynamicVolBooster.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileMixFilter.o: $(CLASSDIR)src/Media/AudioFilter/FileMixFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SoundGenerator.o: $(CLASSDIR)src/Media/AudioFilter/SoundGenerator.cpp LIBS_SoundGenerator
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BellSoundGen.o: $(CLASSDIR)src/Media/AudioFilter/SoundGen/BellSoundGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ISoundGen.o: $(CLASSDIR)src/Media/AudioFilter/SoundGen/ISoundGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchLimiter.o: $(CLASSDIR)src/Media/Batch/BatchLimiter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchLoader.o: $(CLASSDIR)src/Media/Batch/BatchLoader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchResizer.o: $(CLASSDIR)src/Media/Batch/BatchResizer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchSaveJPEG.o: $(CLASSDIR)src/Media/Batch/BatchSaveJPEG.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchSaveJPEGSize.o: $(CLASSDIR)src/Media/Batch/BatchSaveJPEGSize.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchSavePNG.o: $(CLASSDIR)src/Media/Batch/BatchSavePNG.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchSaveTIFF.o: $(CLASSDIR)src/Media/Batch/BatchSaveTIFF.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchToLRGB.o: $(CLASSDIR)src/Media/Batch/BatchToLRGB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BatchWatermarker.o: $(CLASSDIR)src/Media/Batch/BatchWatermarker.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AC3BlockParser.o: $(CLASSDIR)src/Media/BlockParser/AC3BlockParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DTSBlockParser.o: $(CLASSDIR)src/Media/BlockParser/DTSBlockParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MP2BlockParser.o: $(CLASSDIR)src/Media/BlockParser/MP2BlockParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MP3BlockParser.o: $(CLASSDIR)src/Media/BlockParser/MP3BlockParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CodeImageGen.o: $(CLASSDIR)src/Media/CodeImageGen/CodeImageGen.cpp LIBS_CodeImageGen
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EAN2CodeImageGen.o: $(CLASSDIR)src/Media/CodeImageGen/EAN2CodeImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EAN5CodeImageGen.o: $(CLASSDIR)src/Media/CodeImageGen/EAN5CodeImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EAN8CodeImageGen.o: $(CLASSDIR)src/Media/CodeImageGen/EAN8CodeImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EAN13CodeImageGen.o: $(CLASSDIR)src/Media/CodeImageGen/EAN13CodeImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSAYUV_RGB8.o: $(CLASSDIR)src/Media/CS/CSAYUV_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSAYUV444_10_LRGBC.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSAYUV444_10_RGB32C.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSBI42_LRGBC.o: $(CLASSDIR)src/Media/CS/CSBI42_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSBI42_RGB32C.o: $(CLASSDIR)src/Media/CS/CSBI42_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSConverter.o: $(CLASSDIR)src/Media/CS/CSConverter.cpp LIBS_CSConverter
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSI420_LRGB.o: $(CLASSDIR)src/Media/CS/CSI420_LRGB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSI420_LRGBC.o: $(CLASSDIR)src/Media/CS/CSI420_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSI420_RGB32C.o: $(CLASSDIR)src/Media/CS/CSI420_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSI420_RGB8.o: $(CLASSDIR)src/Media/CS/CSI420_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSNV12_LRGBC.o: $(CLASSDIR)src/Media/CS/CSNV12_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSNV12_RGB8.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSNV12_RGB32C.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSP010_RGB8.o: $(CLASSDIR)src/Media/CS/CSP010_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSP016_LRGBC.o: $(CLASSDIR)src/Media/CS/CSP016_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSP016_RGB32C.o: $(CLASSDIR)src/Media/CS/CSP016_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSP216_LRGBC.o: $(CLASSDIR)src/Media/CS/CSP216_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSRGB16_LRGBC.o: $(CLASSDIR)src/Media/CS/CSRGB16_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSRGB16_RGB8.o: $(CLASSDIR)src/Media/CS/CSRGB16_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSRGB8_LRGBC.o: $(CLASSDIR)src/Media/CS/CSRGB8_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSRGB8_RGB8.o: $(CLASSDIR)src/Media/CS/CSRGB8_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSRGBF_LRGBC.o: $(CLASSDIR)src/Media/CS/CSRGBF_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSUYVY_LRGBC.o: $(CLASSDIR)src/Media/CS/CSUYVY_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSUYVY_RGB8.o: $(CLASSDIR)src/Media/CS/CSUYVY_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSY416_LRGBC.o: $(CLASSDIR)src/Media/CS/CSY416_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSY416_RGB32C.o: $(CLASSDIR)src/Media/CS/CSY416_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV_LRGB.o: $(CLASSDIR)src/Media/CS/CSYUV_LRGB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYUV_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV_RGB32C.o: $(CLASSDIR)src/Media/CS/CSYUV_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV_RGB8.o: $(CLASSDIR)src/Media/CS/CSYUV_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV_Y8.o: $(CLASSDIR)src/Media/CS/CSYUV_Y8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV10_RGB8.o: $(CLASSDIR)src/Media/CS/CSYUV10_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV16_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYUV16_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV16_RGB32C.o: $(CLASSDIR)src/Media/CS/CSYUV16_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV420_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYUV420_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV420_RGB32C.o: $(CLASSDIR)src/Media/CS/CSYUV420_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV420P8_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYUV420P8_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV420P8_RGB32C.o: $(CLASSDIR)src/Media/CS/CSYUV420P8_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV444P10LEP_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUV444P10LEP_RGB32C.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUY2_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYUY2_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYUY2_RGB8.o: $(CLASSDIR)src/Media/CS/CSYUY2_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYV12_LRGBC.o: $(CLASSDIR)src/Media/CS/CSYV12_LRGBC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYV12_RGB32C.o: $(CLASSDIR)src/Media/CS/CSYV12_RGB32C.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSYVU9_RGB8.o: $(CLASSDIR)src/Media/CS/CSYVU9_RGB8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFunc.o: $(CLASSDIR)src/Media/CS/TransferFunc.cpp LIBS_TransferFunc
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncBT709.o: $(CLASSDIR)src/Media/CS/TransferFuncBT709.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncBT1361.o: $(CLASSDIR)src/Media/CS/TransferFuncBT1361.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncBT2100.o: $(CLASSDIR)src/Media/CS/TransferFuncBT2100.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncCGamma.o: $(CLASSDIR)src/Media/CS/TransferFuncCGamma.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncHLG.o: $(CLASSDIR)src/Media/CS/TransferFuncHLG.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncLinear.o: $(CLASSDIR)src/Media/CS/TransferFuncLinear.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncLog100.o: $(CLASSDIR)src/Media/CS/TransferFuncLog100.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncLogSqrt10.o: $(CLASSDIR)src/Media/CS/TransferFuncLogSqrt10.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncLUT.o: $(CLASSDIR)src/Media/CS/TransferFuncLUT.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncNLog.o: $(CLASSDIR)src/Media/CS/TransferFuncNLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncNTSC.o: $(CLASSDIR)src/Media/CS/TransferFuncNTSC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncParam1.o: $(CLASSDIR)src/Media/CS/TransferFuncParam1.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncProtune.o: $(CLASSDIR)src/Media/CS/TransferFuncProtune.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncSLog.o: $(CLASSDIR)src/Media/CS/TransferFuncSLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncSLog1.o: $(CLASSDIR)src/Media/CS/TransferFuncSLog1.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncSLog2.o: $(CLASSDIR)src/Media/CS/TransferFuncSLog2.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncSLog3.o: $(CLASSDIR)src/Media/CS/TransferFuncSLog3.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncSMPTE240.o: $(CLASSDIR)src/Media/CS/TransferFuncSMPTE240.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncSRGB.o: $(CLASSDIR)src/Media/CS/TransferFuncSRGB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TransferFuncVLog.o: $(CLASSDIR)src/Media/CS/TransferFuncVLog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ADecoderBase.o: $(CLASSDIR)src/Media/Decoder/ADecoderBase.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ADXDecoder.o: $(CLASSDIR)src/Media/Decoder/ADXDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioDecoderFinder.o: $(CLASSDIR)src/Media/Decoder/AudioDecoderFinder.cpp LIBS_AudioDecoders
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+G711muLawDecoder.o: $(CLASSDIR)src/Media/Decoder/G711muLawDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+M2VDecoder.o: $(CLASSDIR)src/Media/Decoder/M2VDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MP2Decoder.o: $(CLASSDIR)src/Media/Decoder/MP2Decoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MP2GDecoder.o: $(CLASSDIR)src/Media/Decoder/MP2GDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PSSADecoder.o: $(CLASSDIR)src/Media/Decoder/PSSADecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RAVCDecoder.o: $(CLASSDIR)src/Media/Decoder/RAVCDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RHVCDecoder.o: $(CLASSDIR)src/Media/Decoder/RHVCDecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VDecoderBase.o: $(CLASSDIR)src/Media/Decoder/VDecoderBase.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VDecoderChain.o: $(CLASSDIR)src/Media/Decoder/VDecoderChain.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VideoDecoderFinder.o: $(CLASSDIR)src/Media/Decoder/VideoDecoderFinder.cpp LIBS_VideoDecoders
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VP09Decoder.o: $(CLASSDIR)src/Media/Decoder/VP09Decoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XADecoder.o: $(CLASSDIR)src/Media/Decoder/XADecoder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BGImgFilter.o: $(CLASSDIR)src/Media/ImageFilter/BGImgFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BWImgFilter.o: $(CLASSDIR)src/Media/ImageFilter/BWImgFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ColorImageGen.o: $(CLASSDIR)src/Media/ImageGen/ColorImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GammaImageGen.o: $(CLASSDIR)src/Media/ImageGen/GammaImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Gamma64ImageGen.o: $(CLASSDIR)src/Media/ImageGen/Gamma64ImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Gradian32ImageGen.o: $(CLASSDIR)src/Media/ImageGen/Gradian32ImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ImageGenMgr.o: $(CLASSDIR)src/Media/ImageGen/ImageGenMgr.cpp LIBS_ImageGenMgr
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LinesImageGen.o: $(CLASSDIR)src/Media/ImageGen/LinesImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RingsImageGen.o: $(CLASSDIR)src/Media/ImageGen/RingsImageGen.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OCVFrame.o: $(CLASSDIR)src/Media/OpenCV/OCVFrame.cpp LIBS_opencv
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OCVFrameFeeder.o: $(CLASSDIR)src/Media/OpenCV/OCVFrameFeeder.cpp LIBS_opencv
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OCVObjectDetector.o: $(CLASSDIR)src/Media/OpenCV/OCVObjectDetector.cpp LIBS_opencv
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OCVUtil.o: $(CLASSDIR)src/Media/OpenCV/OCVUtil.cpp LIBS_opencv
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeintResizerLR_C32.o: $(CLASSDIR)src/Media/Resizer/DeintResizerLR_C32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeintResizerLR_C32_8.o: $(CLASSDIR)src/Media/Resizer/DeintResizerLR_C32_8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeintResizerLR_C32_10.o: $(CLASSDIR)src/Media/Resizer/DeintResizerLR_C32_10.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizer8_C8.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer8_C8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizer16_C8.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer16_C8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizerH8_8.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerH8_8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizerLR_C16.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C16.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizerLR_C32.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizerLR_C32_8.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizerLR_C32_10.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_10.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LanczosResizerLR_C32_CPU.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_CPU.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NearestNeighbourResizer32_32.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer32_32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NearestNeighbourResizer64_64.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer64_64.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AutoCropFilter.o: $(CLASSDIR)src/Media/VideoFilter/AutoCropFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IVTCFilter.o: $(CLASSDIR)src/Media/VideoFilter/IVTCFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UVOffsetFilter.o: $(CLASSDIR)src/Media/VideoFilter/UVOffsetFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VideoFilterBase.o: $(CLASSDIR)src/Media/VideoFilter/VideoFilterBase.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConnectionInfo.o: $(CLASSDIR)src/Net/ConnectionInfo.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DNSClient.o: $(CLASSDIR)src/Net/DNSClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DNSHandler.o: $(CLASSDIR)src/Net/DNSHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DNSProxy.o: $(CLASSDIR)src/Net/DNSProxy.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DNSServer.o: $(CLASSDIR)src/Net/DNSServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FTPClient.o: $(CLASSDIR)src/Net/FTPClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FTPConn.o: $(CLASSDIR)src/Net/FTPConn.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HKTrafficImage.o: $(CLASSDIR)src/Net/HKTrafficImage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HKOWeather.o: $(CLASSDIR)src/Net/HKOWeather.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPClient.o: $(CLASSDIR)src/Net/HTTPClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPData.o: $(CLASSDIR)src/Net/HTTPData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPMyClient.o: $(CLASSDIR)src/Net/HTTPMyClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPProxyClient.o: $(CLASSDIR)src/Net/HTTPProxyClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPProxyTCPClient.o: $(CLASSDIR)src/Net/HTTPProxyTCPClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPQueue.o: $(CLASSDIR)src/Net/HTTPQueue.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LogClient.o: $(CLASSDIR)src/Net/LogClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LogServer.o: $(CLASSDIR)src/Net/LogServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MACInfo.o: $(CLASSDIR)src/Net/MACInfo.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MIME.o: $(CLASSDIR)src/Net/MIME.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MQTTBroker.o: $(CLASSDIR)src/Net/MQTTBroker.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MQTTClient.o: $(CLASSDIR)src/Net/MQTTClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NTPClient.o: $(CLASSDIR)src/Net/NTPClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NTPServer.o: $(CLASSDIR)src/Net/NTPServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PingMonitor.o: $(CLASSDIR)src/Net/PingMonitor.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+POP3Server.o: $(CLASSDIR)src/Net/POP3Server.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ProxyServer.o: $(CLASSDIR)src/Net/ProxyServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RAWCapturer.o: $(CLASSDIR)src/Net/RAWCapturer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RSS.o: $(CLASSDIR)src/Net/RSS.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RSSReader.o: $(CLASSDIR)src/Net/RSSReader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RTPAACHandler.o: $(CLASSDIR)src/Net/RTPAACHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RTPASource.o: $(CLASSDIR)src/Net/RTPASource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RTPCliChannel.o: $(CLASSDIR)src/Net/RTPCliChannel.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RTPH264Handler.o: $(CLASSDIR)src/Net/RTPH264Handler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RTPVSource.o: $(CLASSDIR)src/Net/RTPVSource.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RTSPClient.o: $(CLASSDIR)src/Net/RTSPClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDPFile.o: $(CLASSDIR)src/Net/SDPFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMTPServer.o: $(CLASSDIR)src/Net/SMTPServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SocketFactory.o: $(CLASSDIR)src/Net/SocketFactory.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SocketUtil.o: $(CLASSDIR)src/Net/SocketUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPBoardcastStream.o: $(CLASSDIR)src/Net/TCPBoardcastStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPClient.o: $(CLASSDIR)src/Net/TCPClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPClientMgrMT.o: $(CLASSDIR)src/Net/TCPClientMgrMT.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPServer.o: $(CLASSDIR)src/Net/TCPServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPServerController.o: $(CLASSDIR)src/Net/TCPServerController.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPServerStream.o: $(CLASSDIR)src/Net/TCPServerStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UDPServer.o: $(CLASSDIR)src/Net/UDPServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UDPServerStream.o: $(CLASSDIR)src/Net/UDPServerStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+URL.o: $(CLASSDIR)src/Net/URL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebBrowser.o: $(CLASSDIR)src/Net/WebBrowser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WhoisClient.o: $(CLASSDIR)src/Net/WhoisClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WhoisGlobalClient.o: $(CLASSDIR)src/Net/WhoisGlobalClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WhoisHandler.o: $(CLASSDIR)src/Net/WhoisHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WhoisRecord.o: $(CLASSDIR)src/Net/WhoisRecord.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EGaugeHandler.o: $(CLASSDIR)src/Net/WebServer/EGaugeHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPDirectoryHandler.o: $(CLASSDIR)src/Net/WebServer/HTTPDirectoryHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IWebRequest.o: $(CLASSDIR)src/Net/WebServer/IWebRequest.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IWebResponse.o: $(CLASSDIR)src/Net/WebServer/IWebResponse.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IWebSessionManager.o: $(CLASSDIR)src/Net/WebServer/IWebSessionManager.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MemoryWebSession.o: $(CLASSDIR)src/Net/WebServer/MemoryWebSession.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MemoryWebSessionManager.o: $(CLASSDIR)src/Net/WebServer/MemoryWebSessionManager.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebConnection.o: $(CLASSDIR)src/Net/WebServer/WebConnection.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebListener.o: $(CLASSDIR)src/Net/WebServer/WebListener.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebRequest.o: $(CLASSDIR)src/Net/WebServer/WebRequest.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebStandardHandler.o: $(CLASSDIR)src/Net/WebServer/WebStandardHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WebStatus.o: $(CLASSDIR)src/Net/WebServer/WebStatus.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FullParserList.o: $(CLASSDIR)src/Parser/FullParserList.cpp LIBS_FullParserList
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ParserList.o: $(CLASSDIR)src/Parser/ParserList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AC3Parser.o: $(CLASSDIR)src/Parser/FileParser/AC3Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ADXParser.o: $(CLASSDIR)src/Parser/FileParser/ADXParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AFSParser.o: $(CLASSDIR)src/Parser/FileParser/AFSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ANIParser.o: $(CLASSDIR)src/Parser/FileParser/ANIParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AOSParser.o: $(CLASSDIR)src/Parser/FileParser/AOSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIParser.o: $(CLASSDIR)src/Parser/FileParser/AVIParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BMPParser.o: $(CLASSDIR)src/Parser/FileParser/BMPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BSAParser.o: $(CLASSDIR)src/Parser/FileParser/BSAParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BurikoArcParser.o: $(CLASSDIR)src/Parser/FileParser/BurikoArcParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BurikoPackFileParser.o: $(CLASSDIR)src/Parser/FileParser/BurikoPackFileParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CABParser.o: $(CLASSDIR)src/Parser/FileParser/CABParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CDXAParser.o: $(CLASSDIR)src/Parser/FileParser/CDXAParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CIPParser.o: $(CLASSDIR)src/Parser/FileParser/CIPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+COMParser.o: $(CLASSDIR)src/Parser/FileParser/COMParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CSVParser.o: $(CLASSDIR)src/Parser/FileParser/CSVParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CUEParser.o: $(CLASSDIR)src/Parser/FileParser/CUEParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBFParser.o: $(CLASSDIR)src/Parser/FileParser/DBFParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DCPackParser.o: $(CLASSDIR)src/Parser/FileParser/DCPackParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DTSParser.o: $(CLASSDIR)src/Parser/FileParser/DTSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ELFParser.o: $(CLASSDIR)src/Parser/FileParser/ELFParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EXEParser.o: $(CLASSDIR)src/Parser/FileParser/EXEParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FNTParser.o: $(CLASSDIR)src/Parser/FileParser/FNTParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GamedatPac2Parser.o: $(CLASSDIR)src/Parser/FileParser/GamedatPac2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GIFParser.o: $(CLASSDIR)src/Parser/FileParser/GIFParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GLOCParser.o: $(CLASSDIR)src/Parser/FileParser/GLOCParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GZIPParser.o: $(CLASSDIR)src/Parser/FileParser/GZIPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTRecParser.o: $(CLASSDIR)src/Parser/FileParser/HTRecParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ICOParser.o: $(CLASSDIR)src/Parser/FileParser/ICOParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ID3Parser.o: $(CLASSDIR)src/Parser/FileParser/ID3Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IMGParser.o: $(CLASSDIR)src/Parser/FileParser/IMGParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IPACParser.o: $(CLASSDIR)src/Parser/FileParser/IPACParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IS2Parser.o: $(CLASSDIR)src/Parser/FileParser/IS2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ISOParser.o: $(CLASSDIR)src/Parser/FileParser/ISOParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JSONParser.o: $(CLASSDIR)src/Parser/FileParser/JSONParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LinkArcParser.o: $(CLASSDIR)src/Parser/FileParser/LinkArcParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LOGParser.o: $(CLASSDIR)src/Parser/FileParser/LOGParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+LUTParser.o: $(CLASSDIR)src/Parser/FileParser/LUTParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+M2VStmParser.o: $(CLASSDIR)src/Parser/FileParser/M2VStmParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MAIPackParser.o: $(CLASSDIR)src/Parser/FileParser/MAIPackParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MajiroArcParser.o: $(CLASSDIR)src/Parser/FileParser/MajiroArcParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MD5Parser.o: $(CLASSDIR)src/Parser/FileParser/MD5Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MDBParser.o: $(CLASSDIR)src/Parser/FileParser/MDBParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MEDParser.o: $(CLASSDIR)src/Parser/FileParser/MEDParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MEVParser.o: $(CLASSDIR)src/Parser/FileParser/MEVParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MIMEFileParser.o: $(CLASSDIR)src/Parser/FileParser/MIMEFileParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MKVParser.o: $(CLASSDIR)src/Parser/FileParser/MKVParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MLHParser.o: $(CLASSDIR)src/Parser/FileParser/MLHParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MMSParser.o: $(CLASSDIR)src/Parser/FileParser/MMSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MP2Parser.o: $(CLASSDIR)src/Parser/FileParser/MP2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MPGParser.o: $(CLASSDIR)src/Parser/FileParser/MPGParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MRGParser.o: $(CLASSDIR)src/Parser/FileParser/MRGParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NFPParser.o: $(CLASSDIR)src/Parser/FileParser/NFPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NOAParser.o: $(CLASSDIR)src/Parser/FileParser/NOAParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NWAParser.o: $(CLASSDIR)src/Parser/FileParser/NWAParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+NS2Parser.o: $(CLASSDIR)src/Parser/FileParser/NS2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OZF2Parser.o: $(CLASSDIR)src/Parser/FileParser/OZF2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OziMapParser.o: $(CLASSDIR)src/Parser/FileParser/OziMapParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PAC2Parser.o: $(CLASSDIR)src/Parser/FileParser/PAC2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PACParser.o: $(CLASSDIR)src/Parser/FileParser/PACParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PCXParser.o: $(CLASSDIR)src/Parser/FileParser/PCXParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PFS2Parser.o: $(CLASSDIR)src/Parser/FileParser/PFS2Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PLTParser.o: $(CLASSDIR)src/Parser/FileParser/PLTParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PNGParser.o: $(CLASSDIR)src/Parser/FileParser/PNGParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PSSParser.o: $(CLASSDIR)src/Parser/FileParser/PSSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+QTParser.o: $(CLASSDIR)src/Parser/FileParser/QTParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RLOCParser.o: $(CLASSDIR)src/Parser/FileParser/RLOCParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SakuotoArcParser.o: $(CLASSDIR)src/Parser/FileParser/SakuotoArcParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SEGPackParser.o: $(CLASSDIR)src/Parser/FileParser/SEGPackParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SFVParser.o: $(CLASSDIR)src/Parser/FileParser/SFVParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPParser.o: $(CLASSDIR)src/Parser/FileParser/SHPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SLOCParser.o: $(CLASSDIR)src/Parser/FileParser/SLOCParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SM2MPXParser.o: $(CLASSDIR)src/Parser/FileParser/SM2MPXParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMDLParser.o: $(CLASSDIR)src/Parser/FileParser/SMDLParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SPDParser.o: $(CLASSDIR)src/Parser/FileParser/SPDParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SPKParser.o: $(CLASSDIR)src/Parser/FileParser/SPKParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SPREDParser.o: $(CLASSDIR)src/Parser/FileParser/SPREDParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SQLiteParser.o: $(CLASSDIR)src/Parser/FileParser/SQLiteParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SZSParser.o: $(CLASSDIR)src/Parser/FileParser/SZSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TARParser.o: $(CLASSDIR)src/Parser/FileParser/TARParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TGAParser.o: $(CLASSDIR)src/Parser/FileParser/TGAParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TIFFParser.o: $(CLASSDIR)src/Parser/FileParser/TIFFParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TILParser.o: $(CLASSDIR)src/Parser/FileParser/TILParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TSPParser.o: $(CLASSDIR)src/Parser/FileParser/TSPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TsuyoshiArcParser.o: $(CLASSDIR)src/Parser/FileParser/TsuyoshiArcParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TXTParser.o: $(CLASSDIR)src/Parser/FileParser/TXTParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UDPParser.o: $(CLASSDIR)src/Parser/FileParser/UDPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WAVParser.o: $(CLASSDIR)src/Parser/FileParser/WAVParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WPTParser.o: $(CLASSDIR)src/Parser/FileParser/WPTParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+X13Parser.o: $(CLASSDIR)src/Parser/FileParser/X13Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XLSParser.o: $(CLASSDIR)src/Parser/FileParser/XLSParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XMLParser.o: $(CLASSDIR)src/Parser/FileParser/XMLParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XPCMParser.o: $(CLASSDIR)src/Parser/FileParser/XPCMParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+YKCParser.o: $(CLASSDIR)src/Parser/FileParser/YKCParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ZIPParser.o: $(CLASSDIR)src/Parser/FileParser/ZIPParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ZWEIParser.o: $(CLASSDIR)src/Parser/FileParser/ZWEIParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DBITParser.o: $(CLASSDIR)src/Parser/ObjParser/DBITParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileGDBParser.o: $(CLASSDIR)src/Parser/ObjParser/FileGDBParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ISO9660Parser.o: $(CLASSDIR)src/Parser/ObjParser/ISO9660Parser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ITMParser.o: $(CLASSDIR)src/Parser/ObjParser/ITMParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+KMZParser.o: $(CLASSDIR)src/Parser/ObjParser/KMZParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MPGXAParser.o: $(CLASSDIR)src/Parser/ObjParser/MPGXAParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRAboutForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRAboutForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRAccelerometerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRAsmConvForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRAsmConvForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRAudioFilterForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRAudioViewerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRBaseForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRBaseFormLite.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRBenchmarkForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRBluetoothForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRBluetoothForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRBluetoothLEForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCalculator1Form.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCalculator1Form.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCaptureDevForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCaptureDevForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRChartForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRChartForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRChineseForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRChineseForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRClipboardViewerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRClipboardViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCodeImageGenForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCodeImageGenForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCodePageForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCodePageForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCodeProjectForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCodeProjectForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRColorCustomForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRColorCustomForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRColorSettingForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRColorSettingForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCoordConvForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCoordConvForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCore.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCore.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCPUInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDBForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDBForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDHT22Form.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDHT22Form.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDNSClientForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDNSClientForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDNSProxyForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDNSProxyForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDragDropViewerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDragDropViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDS18B20Form.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDS18B20Form.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRDWQB30Form.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRDWQB30Form.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIREDIDViewerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIREDIDViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIReGaugeSvrForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRElectronicScaleForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIREncryptForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIREncryptForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRESRIMapForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRESRIMapForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRExeForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRExeForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRExportParamForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRExportParamForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFileAnalyseForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFileAnalyseForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFileChkForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFileChkForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFileExForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFileExForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFileHashForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFileHashForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFileSizePackForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFileSizePackForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFontRendererForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFontRendererForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFontSelector.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFontSelector.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRFunctionInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRFunctionInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGenImageForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGenImageForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISCombineForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISCombineForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISCSysForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISCSysForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISDistanceForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISDistanceForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISEditImageForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISFontEditForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISFontForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISFontForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISFontStyleForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISFontStyleForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISHKTDTonnesForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISHKTDTonnesForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISHKTrafficForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISHKTrafficForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISImageForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISImageForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISLineEditForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISLineEditForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISLineForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISLineForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISLineStyleForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISLineStyleForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISPropForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISPropForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISReplayForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISReplayForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISSearchForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISSearchForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGISTileDownloadForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGooglePolylineForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGooglePolylineForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGPSDevForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGPSDevForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGPSSimulatorForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGPSSimulatorForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGPSTrackerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGPSTrackerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGPUInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGPUInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGSMModemForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGSMModemForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRGUIEventForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRGUIEventForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHashTestForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHashTestForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHIDDeviceForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHQMPForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHQMPForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHQMPPlaylistForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHTTPClientForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHTTPDownloaderForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHTTPProxyClientForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHTTPSvrForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRHTTPTestForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRHTTPTestForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRIBuddyForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRIBuddyForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRICCInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRICCInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageBatchConvForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageBatchConvForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageBatchForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageBatchForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageColorForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageColorForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageControl.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageControl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageGRForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageGRForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImagePSNRForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageResizeForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageResizeForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRImageViewerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRImageViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRIOPinTestForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRIOPinTestForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRIPScanForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRIPScanForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRJSTextForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRJSTextForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRJTT808ServerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMediaPlayer.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMediaPlayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMIMEViewerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLineChartForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLineChartForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLineCounterForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLineCounterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLineSelector.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLineSelector.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLogBackupForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLogBackupForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLogExtractForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLogExtractForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLogFileForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLogFileForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLogMergeForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLogMergeForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLogServerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLogServerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRLUTForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRLUTForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMACManagerEntryForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMACManagerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMACManagerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMediaForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMediaForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMODBUSMasterForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMQTTBrokerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMQTTBrokerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMQTTPublishForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMQTTPublishForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMQTTSubscribeForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRMQTTSubscribeForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRNetInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRNetInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRNetPingForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRNetPingForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRNTPClientForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRNTPClientForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRODBCForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRODBCForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIROpenFileForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIROpenFileForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIROSMCacheCfgForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIROSMCacheForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIROSMCacheForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPackageForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPackageForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPaintCntForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPaintCntForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPCIDeviceForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPerformanceLogForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPingMonitorForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPlaylistForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPlaylistForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRPowerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRPowerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRProcInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRProcInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRProfiledResizerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRProtoDecForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRProtoDecForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRProxyServerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRProxyServerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSDCardForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSDCardForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSectorForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSectorForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSelIOPinForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSelPrinterForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSelStreamForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSelStreamForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSetAudioForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSetAudioForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSetDPIForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSetDPIForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSetLocationSvcForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSetLocationSvcForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSMTPServerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSNBDongleForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSNBHandlerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRStreamConvForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRStreamConvForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRStreamEchoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRStreamLatencyForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRStreamLatencyForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRStreamTermForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRStreamTermForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRSudokuForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRSudokuForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRTCPSpdCliForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRTCPSpdCliForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRTCPSpdSvrForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRTCPSpdSvrForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRTCPTestForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRTCPTestForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRThreadInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRThreadInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRThreadSpeedForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRThreadSpeedForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRTimedCaptureForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRTimedCaptureForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRTimeTestForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRTimeTestForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRTVControlForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRTVControlForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRUDPCaptureForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRUDPCaptureForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRUDPTestForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRUDPTestForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRUSBDeviceForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRUSBDeviceForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRVideoCheckerForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRVideoInfoForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRVoiceModemForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRVoiceModemForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRWHOISClientForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRWHOISClientForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRWIADevForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRWIADevForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRWifiCaptureForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRWifiCaptureForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRWMIForm.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRWMIForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMailViewer.o: $(CLASSDIR)src/SSWR/AVIRead/MIMEViewer/AVIRMailViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMIMEImageViewer.o: $(CLASSDIR)src/SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMIMETextViewer.o: $(CLASSDIR)src/SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMIMEViewer.o: $(CLASSDIR)src/SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRMultipartViewer.o: $(CLASSDIR)src/SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRUnknownViewer.o: $(CLASSDIR)src/SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BenchmarkWebHandler.o: $(CLASSDIR)src/SSWR/Benchmark/BenchmarkWebHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ElevationFilter.o: $(CLASSDIR)src/SSWR/SHPConv/ElevationFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvAddFilterForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvAddFilterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvCurrFilterForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvCurrFilterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvDBFViewForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvDBFViewForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvElevationFilterForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvElevationFilterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvGroupForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvGroupForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvMainForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvMainForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvRangeFilterForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvRangeFilterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SHPConvValueFilterForm.o: $(CLASSDIR)src/SSWR/SHPConv/SHPConvValueFilterForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RangeFilter.o: $(CLASSDIR)src/SSWR/SHPConv/RangeFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ValueFilter.o: $(CLASSDIR)src/SSWR/SHPConv/ValueFilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SyncClient.o: $(CLASSDIR)src/SSWR/DataSync/SyncClient.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SyncServer.o: $(CLASSDIR)src/SSWR/DataSync/SyncServer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OrganWebHandler.o: $(CLASSDIR)src/SSWR/OrganMgr/OrganWebHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDNSProxyCore.o: $(CLASSDIR)src/SSWR/SDNSProxy/SDNSProxyCore.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDNSProxyWebHandler.o: $(CLASSDIR)src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SAnalogSensor.o: $(CLASSDIR)src/SSWR/SMonitor/SAnalogSensor.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMonitorSvrCore.o: $(CLASSDIR)src/SSWR/SMonitor/SMonitorSvrCore.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMonitorWebHandler.o: $(CLASSDIR)src/SSWR/SMonitor/SMonitorWebHandler.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Event.o: $(CLASSDIR)src/Sync/Event.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Interlocked.o: $(CLASSDIR)src/Sync/Interlocked.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Mutex.o: $(CLASSDIR)src/Sync/Mutex.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ParallelTask.o: $(CLASSDIR)src/Sync/ParallelTask.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TestModem.o: $(CLASSDIR)src/Test/TestModem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TestSIM7000.o: $(CLASSDIR)src/Test/TestSIM7000.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ChineseInfo.o: $(CLASSDIR)src/Text/ChineseInfo.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CodeProject.o: $(CLASSDIR)src/Text/CodeProject.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Encoding.o: $(CLASSDIR)src/Text/Encoding.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EncodingFactory.o: $(CLASSDIR)src/Text/EncodingFactory.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HKSCSFix.o: $(CLASSDIR)src/Text/HKSCSFix.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+IMIMEObj.o: $(CLASSDIR)src/Text/IMIMEObj.cpp LIBS_IMIMEObj
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JSON.o: $(CLASSDIR)src/Text/JSON.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JSONBuilder.o: $(CLASSDIR)src/Text/JSONBuilder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+JSText.o: $(CLASSDIR)src/Text/JSText.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Locale.o: $(CLASSDIR)src/Text/Locale.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MailBase64Stream.o: $(CLASSDIR)src/Text/MailBase64Stream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MyString.o: $(CLASSDIR)src/Text/MyString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MyStringW.o: $(CLASSDIR)src/Text/MyStringW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ReportBuilder.o: $(CLASSDIR)src/Text/ReportBuilder.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SearchIndexer.o: $(CLASSDIR)src/Text/SearchIndexer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMSMessage.o: $(CLASSDIR)src/Text/SMSMessage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMSUserData.o: $(CLASSDIR)src/Text/SMSUserData.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMSUtil.o: $(CLASSDIR)src/Text/SMSUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+String.o: $(CLASSDIR)src/Text/String.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StringBuilderC.o: $(CLASSDIR)src/Text/StringBuilderC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StringBuilderUTF8.o: $(CLASSDIR)src/Text/StringBuilderUTF8.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StringBuilderUTF16.o: $(CLASSDIR)src/Text/StringBuilderUTF16.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StringBuilderUTF32.o: $(CLASSDIR)src/Text/StringBuilderUTF32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StringBuilderWriter.o: $(CLASSDIR)src/Text/StringBuilderWriter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StringUtil.o: $(CLASSDIR)src/Text/StringUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextAnalyzer.o: $(CLASSDIR)src/Text/TextAnalyzer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+URLString.o: $(CLASSDIR)src/Text/URLString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UTF8Reader.o: $(CLASSDIR)src/Text/UTF8Reader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UTF8Writer.o: $(CLASSDIR)src/Text/UTF8Writer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+VSProject.o: $(CLASSDIR)src/Text/VSProject.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XML.o: $(CLASSDIR)src/Text/XML.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+XMLDOM.o: $(CLASSDIR)src/Text/XMLDOM.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CppCodeParser.o: $(CLASSDIR)src/Text/Cpp/CppCodeParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CppEnv.o: $(CLASSDIR)src/Text/Cpp/CppEnv.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CppParseStatus.o: $(CLASSDIR)src/Text/Cpp/CppParseStatus.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocHeading.o: $(CLASSDIR)src/Text/Doc/DocHeading.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocItem.o: $(CLASSDIR)src/Text/Doc/DocItem.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocLink.o: $(CLASSDIR)src/Text/Doc/DocLink.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocSection.o: $(CLASSDIR)src/Text/Doc/DocSection.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocText.o: $(CLASSDIR)src/Text/Doc/DocText.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DocValidator.o: $(CLASSDIR)src/Text/Doc/DocValidator.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextDocument.o: $(CLASSDIR)src/Text/Doc/TextDocument.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MailMessage.o: $(CLASSDIR)src/Text/MIMEObj/MailMessage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MIMEHeader.o: $(CLASSDIR)src/Text/MIMEObj/MIMEHeader.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MultipartMIMEObj.o: $(CLASSDIR)src/Text/MIMEObj/MultipartMIMEObj.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextMIMEObj.o: $(CLASSDIR)src/Text/MIMEObj/TextMIMEObj.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UnknownMIMEObj.o: $(CLASSDIR)src/Text/MIMEObj/UnknownMIMEObj.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CellStyle.o: $(CLASSDIR)src/Text/SpreadSheet/CellStyle.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Workbook.o: $(CLASSDIR)src/Text/SpreadSheet/Workbook.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Worksheet.o: $(CLASSDIR)src/Text/SpreadSheet/Worksheet.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ANSITextBinEnc.o: $(CLASSDIR)src/Text/TextBinEnc/ANSITextBinEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Base64Enc.o: $(CLASSDIR)src/Text/TextBinEnc/Base64Enc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CodePageTextBinEnc.o: $(CLASSDIR)src/Text/TextBinEnc/CodePageTextBinEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CPPTextBinEnc.o: $(CLASSDIR)src/Text/TextBinEnc/CPPTextBinEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HexTextBinEnc.o: $(CLASSDIR)src/Text/TextBinEnc/HexTextBinEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+QuotedPrintableEnc.o: $(CLASSDIR)src/Text/TextBinEnc/QuotedPrintableEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextBinEncList.o: $(CLASSDIR)src/Text/TextBinEnc/TextBinEncList.cpp LIBS_TextBinEncList
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UCS2TextBinEnc.o: $(CLASSDIR)src/Text/TextBinEnc/UCS2TextBinEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+UTF8TextBinEnc.o: $(CLASSDIR)src/Text/TextBinEnc/UTF8TextBinEnc.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FormEncoding.o: $(CLASSDIR)src/Text/TextEnc/FormEncoding.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Punycode.o: $(CLASSDIR)src/Text/TextEnc/Punycode.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+URIEncoding.o: $(CLASSDIR)src/Text/TextEnc/URIEncoding.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+miniz.o: $(CLASSDIR)src/ThirdParty/miniz.c
+	$(CC2) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ListBoxLogger.o: $(CLASSDIR)src/UI/ListBoxLogger.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIMapControl.o: $(CLASSDIR)src/UI/GUIMapControl.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIMapTreeView.o: $(CLASSDIR)src/UI/GUIMapTreeView.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPictureBoxDD.o: $(CLASSDIR)src/UI/GUIPictureBoxDD.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPictureList.o: $(CLASSDIR)src/UI/GUIPictureList.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUISudokuViewer.o: $(CLASSDIR)src/UI/GUISudokuViewer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIVideoBoxDD.o: $(CLASSDIR)src/UI/GUIVideoBoxDD.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIVideoBoxDDLQ.o: $(CLASSDIR)src/UI/GUIVideoBoxDDLQ.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ColorDialog.o: $(CLASSDIR)src/UtilUI/ColorDialog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextGotoDialog.o: $(CLASSDIR)src/UtilUI/TextGotoDialog.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextSearchForm.o: $(CLASSDIR)src/UtilUI/TextSearchForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TextViewerForm.o: $(CLASSDIR)src/UtilUI/TextViewerForm.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SMBIOS.o: $(CLASSDIR)src/Win32/SMBIOS.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+

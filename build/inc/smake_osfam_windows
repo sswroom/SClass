@@ -1,0 +1,172 @@
+
+MyMemory.h: ../../src/MyMemoryW.cpp
+@MyMemory.o
+@MyMemory_CPP.o
+
+DB/OLEDBConn.h: ../../src/DB/OLEDBConnW.cpp
+@OLEDBConn.o
+@OLEDBGuid.o
+
+IO/BuildTime.h: ../../src/IO/BuildTimeW.cpp
+@BuildTime.o
+IO/Console.h: ../../src/IO/ConsoleW.cpp
+@Console.o
+IO/ConsoleWriter.h: ../../src/IO/ConsoleWriterW.cpp
+@ConsoleWriter.o
+IO/DeviceInfo.h: ../../src/IO/DeviceInfoW.cpp
+@DeviceInfo.o
+IO/DeviceManager.h: ../../src/IO/DeviceManagerW.cpp
+@DeviceManager.o
+IO/DeviceStream.h: ../../src/IO/DeviceStreamW.cpp
+@DeviceStream.o
+IO/FileStream.h: ../../src/IO/FileStreamW.cpp
+@FileStream.o
+IO/FileUtil.h: ../../src/IO/FileUtilW.cpp
+@FileUtil.o
+IO/Library.h: ../../src/IO/LibraryW.cpp
+@Library.o
+IO/Path.h: ../../src/IO/PathW.cpp
+@Path.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoW.cpp
+@PCIInfo.o
+IO/PhysicalMem.h: ../../src/IO/PhysicalMemNull.cpp
+@PhysicalMem.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoW.cpp
+@PowerInfo.o
+IO/Registry.h: ../../src/IO/RegistryW.cpp
+@Registry.o
+IO/SerialPort.h: ../../src/IO/SerialPortW.cpp
+@SerialPort.o
+IO/SimpleFileWriter.h: ../../src/IO/SimpleFileWriterW.cpp
+@SimpleFileWriter.o
+IO/USBInfo.h: ../../src/IO/USBInfoW.cpp
+@USBInfo.o
+IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferW.cpp
+@ViewFileBuffer.o
+
+Manage/EnvironmentVar.h: ../../src/Manage/EnvironmentVarW.cpp
+@EnvironmentVar.o
+Manage/ExceptionRecorder.h: ../../src/Manage/ExceptionRecorderW.cpp
+@ExceptionRecorder.o
+Manage/HiResClock.h: ../../src/Manage/HiResClockW.cpp
+@HiResClock.o
+Manage/ModuleInfo.h: ../../src/Manage/ModuleInfoW.cpp
+@ModuleInfo.o
+Manage/Process.h: ../../src/Manage/ProcessW.cpp
+@Process.o
+Manage/StackTracer.h: ../../src/Manage/StackTracerW.cpp
+@StackTracer.o
+
+Media/ColorManager.h: ../../src/Media/ColorManager.cpp
+@ColorManager.o
+Media/RefClock.h: ../../src/Media/RefClockW.cpp
+@RefClock.o
+Media/WaveInSource.h: ../../src/Media/WaveInSource.cpp
+@WaveInSource.o
+Media/WaveOutRenderer.h: ../../src/Media/WaveOutRenderer.cpp
+@WaveOutRenderer.o
+Media/WIAManager.h: ../../src/Media/WIAManager.cpp
+@WIAManager.o
+Media/Decoder/ACMDecoder.h: ../../src/Media/Decoder/ACMDecoder.cpp
+@ACMDecoder.o
+Media/Decoder/IMSDKDecoder.h:
+Media/Decoder/VFWDecoder.h: ../../src/Media/Decoder/VFWDecoder.cpp
+@VFWDecoder.o
+Media/Decoder/VPXDecoder.h: ../../src/Media/Decoder/VPXDecoder.cpp
+@VPXDecoder.o
+Media/Resizer/LanczosResizerLR_C32_OCL.h:
+
+Net/ARPInfo.h: ../../src/Net/ARPInfoW.cpp
+@ARPInfo.o
+Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryW.cpp
+@OSSocketFactory.o
+Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrW.cpp
+@TCPClientMgr.o
+
+SSWR/AVIRead/AVIRCoreWin.h: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
+@AVIRCoreWin.o
+SSWR/AVIRead/AVIROLEDBForm.h: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
+@AVIROLEDBForm.o
+
+Sync/EventPool.h: ../../src/Sync/EventPoolW.cpp
+@EventPool.o
+Sync/RWMutex.h: ../../src/Sync/RWMutexW.cpp
+@RWMutex.o
+
+Win32/COMStream.h: ../../src/Win32/COMStream.cpp
+@COMStream.o
+Win32/StreamCOM.h: ../../src/Win32/StreamCOM.cpp
+@StreamCOM.o
+Win32/WMIQuery.h: ../../src/Win32/WMIQueryW.cpp
+@WMIQuery.o
+Win32/WMIReader.h: ../../src/Win32/WMIReader.cpp
+@WMIReader.o
+
+sqlite3.h:
+@sqlite3.o
+
+MyMemory.o: ../../src/MyMemoryW.cpp
+!-ldbghelp
+OLEDBConn.o: ../../src/DB/OLEDBConnW.cpp
+!-lole32
+!-loleaut32
+OLEDBGuid.o: ../../src/DB/OLEDBGuid.cpp
+BuildTime.o: ../../src/IO/BuildTimeW.cpp
+Console.o: ../../src/IO/ConsoleW.cpp
+ConsoleWriter.o: ../../src/IO/ConsoleWriterW.cpp
+DeviceInfo.o: ../../src/IO/DeviceInfoW.cpp
+DeviceManager.o: ../../src/IO/DeviceManagerW.cpp
+DeviceStream.o: ../../src/IO/DeviceStreamW.cpp
+FileStream.o: ../../src/IO/FileStreamW.cpp
+FileUtil.o: ../../src/IO/FileUtilW.cpp
+Library.o: ../../src/IO/LibraryW.cpp
+Path.o: ../../src/IO/PathW.cpp
+!-lpsapi
+PCIInfo.o: ../../src/IO/PCIInfoW.cpp
+PhysicalMem.o: ../../src/IO/PhysicalMemW.cpp
+PowerInfo.o: ../../src/IO/PowerInfoW.cpp
+Registry.o: ../../src/IO/RegistryW.cpp
+SerialPort.o: ../../src/IO/SerialPortW.cpp
+SimpleFileWriter.o: ../../src/IO/SimpleFileWriterW.cpp
+USBInfo.o: ../../src/IO/USBInfoW.cpp
+ViewFileBuffer.o: ../../src/IO/ViewFileBufferW.cpp
+EnvironmentVar.o: ../../src/Manage/EnvironmentVarW.cpp
+ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderW.cpp
+HiResClock.o: ../../src/Manage/HiResClockW.cpp
+ModuleInfo.o: ../../src/Manage/ModuleInfoW.cpp
+Process.o: ../../src/Manage/ProcessW.cpp
+!-lpsapi
+StackTracer.o: ../../src/Manage/StackTracerW.cpp
+ColorManager.o: ../../src/Media/ColorManager.cpp
+!-lgdi32
+RefClock.o: ../../src/Media/RefClockW.cpp
+WaveInSource.o: ../../src/Media/WaveInSource.cpp
+WaveOutRenderer.o: ../../src/Media/WaveOutRenderer.cpp
+!-lwinmm
+WIAManager.o: ../../src/Media/WIAManager.cpp
+ACMDecoder.o: ../../src/Media/Decoder/ACMDecoder.cpp
+!-lmsacm32
+VFWDecoder.o: ../../src/Media/Decoder/VFWDecoder.cpp
+!-lvfw32
+VPXDecoder.o: ../../src/Media/Decoder/VPXDecoder.cpp
+ARPInfo.o: ../../src/Net/ARPInfoW.cpp
+ConnectionInfo_CPP.o: ../../src/Net/ConnectionInfoW.cpp
+OSSocketFactory.o: ../../src/Net/OSSocketFactoryW.cpp
+!-lws2_32
+!-liphlpapi
+!-ldnsapi
+TCPClientMgr.o: ../../src/Net/TCPClientMgrW.cpp
+AVIRCoreWin.o: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
+AVIROLEDBForm.o: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
+EventPool.o: ../../src/Sync/EventPoolW.cpp
+RWMutex.o: ../../src/Sync/RWMutexW.cpp
+COMStream.o: ../../src/Win32/COMStream.cpp
+!-luuid
+!-lole32
+StreamCOM.o: ../../src/Win32/StreamCOM.cpp
+WMIQuery.o: ../../src/Win32/WMIQueryW.cpp
+!-lole32
+!-loleaut32
+!-lwbemuuid
+WMIReader.o: ../../src/Win32/WMIReader.cpp
+sqlite3.o: ../../ThirdParty/sqlite3/sqlite3.c

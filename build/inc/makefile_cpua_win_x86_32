@@ -1,0 +1,185 @@
+
+LIBS_CPUInfo: CPUInfo_CPP.o
+	$(eval CLASS_OBJS += $^ )
+
+MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CRC16_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC16_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC16R_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC16R_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC32_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC32R_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC32R_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MD5_CPP.o: $(CLASSDIR)src/Crypto/Hash/MD5_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+SHA1_CPP.o: $(CLASSDIR)src/Crypto/Hash/SHA1_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+LZODecompressor_CPP.o: $(CLASSDIR)src/Data/Compress/LZODecompressor_cpp.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Benchmark_CPP.o: $(CLASSDIR)src/Manage/Benchmark_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfox86.cpp LIBS_CPUInfo
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CPUInfo_CPP.o: $(CLASSDIR)src/Manage/CPUInfox86_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win32 -o $@ $< $(ASMSUFFIX)
+
+Dasm.o: $(CLASSDIR)src/Manage/DasmX86_32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ThreadContext.o: $(CLASSDIR)src/Manage/ThreadContextX86_32W.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FileGDB.o: $(CLASSDIR)src/Map/FileGDB.cpp FileGDBLayerDef
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FileGDBLayer.o: $(CLASSDIR)src/Map/FileGDBLayer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FileGDBLayerDef: FileGDBLayer.o
+	$(eval CLASS_OBJS += $^ )
+
+ScaledMapView_CPP.o: $(CLASSDIR)src/Map/ScaledMapView_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+Math_CPP.o: $(CLASSDIR)src/Math/Math_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageCopy_CPP.o: $(CLASSDIR)src/Media/ImageCopy_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageTo8Bit_CPP.o: $(CLASSDIR)src/Media/ImageTo8Bit_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageUtil_CPP.o: $(CLASSDIR)src/Media/ImageUtil_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+LRGBLimiter_CPP.o: $(CLASSDIR)src/Media/LRGBLimiter32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+AlphaBlend8_C8_CPP.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_C8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSAYUV_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSAYUV444_10_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSAYUV444_10_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSI420_LRGB_CPP.o: $(CLASSDIR)src/Media/CS/CSI420_LRGB_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSI420_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSI420_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSNV12_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSNV12_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSNV12_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB32C_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSP010_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSP010_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSP016_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSP016_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSP016_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSP016_RGB32C_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSP216_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSP216_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSRGB16_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB16_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSRGB16_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB16_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSRGB8_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB8_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSRGB8_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB8_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSRGBF_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGBF_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSUYVY_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSUYVY_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSUYVY_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSUYVY_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSY416_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSY416_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSY416_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSY416_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUY2_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUY2_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSYUY2_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSYUY2_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSYUV420_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV420_LRGBC_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSYUV420_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV420_RGB32C_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+CSYUV444P10LEP_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUV444P10LEP_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYVU9_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSYVU9_RGB8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+NearestNeighbourResizer32_32_CPP.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer32_32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+NearestNeighbourResizer64_64_CPP.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer64_64_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizer8_C8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer8_C8_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+LanczosResizer16_C8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer16_C8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizerH8_8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerH8_8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizerLR_C32_CPU_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Thread_CPP.o: $(CLASSDIR)src/Sync/Thread_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+MyString_CPP.o: $(CLASSDIR)src/Text/MyString_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+

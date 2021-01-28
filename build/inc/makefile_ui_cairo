@@ -1,0 +1,17 @@
+CFLAGS += -DNO_GDK
+
+LIBS_cairo:
+	$(eval LIBS += -lcairo)
+
+DefaultDrawEngine.o: $(CLASSDIR)src/Core/DefaultDrawEngineGTK.cpp LIBS_cairo
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DrawEngineGUI.o: $(CLASSDIR)src/Media/GTKDrawEngine.cpp LIBS_cairo
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MonitorInfo.o: $(CLASSDIR)src/Media/MonitorInfoNul.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIImgParser.o: $(CLASSDIR)src/Parser/FileParser/GUIImgParserNul.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+

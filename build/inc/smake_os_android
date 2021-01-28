@@ -1,0 +1,113 @@
+
+DB/MDBFile.h: ../../src/DB/MDBFileNul.cpp
+@MDBFile.o
+DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
+@MongoDB.o
+DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
+@MySQLConn.o
+DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
+@ODBCConn.o
+
+IO/BTController.h: ../../src/IO/BTControllerNull.cpp
+@BTController.o
+IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
+@BTManager.o
+IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
+@HIDInfo.o
+IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
+@I2CChannelOS.o
+IO/OS.h: ../../src/IO/OSAndroid.cpp
+@OS.o
+IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
+@SDCardMgr.o
+IO/SensorAccelerometer.h:
+IO/SensorAccelerometerAndroid.h: ../../src/IO/SensorAccelerometerAndroid.cpp
+@SensorAccelerometerAndroid.o
+IO/SensorAndroid.h: ../../src/IO/SensorAndroid.cpp
+@SensorAndroid.o
+IO/SensorMagnetometer.h:
+IO/SensorMagnetometerAndroid.h: ../../src/IO/SensorMagnetometerAndroid.cpp
+@SensorMagnetometerAndroid.o
+IO/SensorManager.h: ../../src/IO/SensorManagerAndroid.cpp
+@SensorManager.o
+IO/SensorOrientation.h:
+IO/SensorPressure.h:
+IO/SensorPressureAndroid.h: ../../src/IO/SensorPressureAndroid.cpp
+@SensorPressureAndroid.o
+IO/SensorUnknownAndroid.h: ../../src/IO/SensorUnknownAndroid.cpp
+@SensorUnknownAndroid.o
+IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
+@Watchdog.o
+
+Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverL.cpp
+@SymbolResolver.o
+Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
+@ThreadInfo.o
+
+Media/AAudioRenderer.h: ../../src/Media/AAudioRenderer.cpp
+@AAudioRenderer.o
+Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCapture.cpp
+@AndroidVideoCapture.o
+Media/AudioDevice.h: ../../src/Media/AudioDeviceAndroid.cpp
+@AudioDevice.o
+Media/OpenSLESRenderer.h: ../../src/Media/OpenSLESRenderer.cpp
+@OpenSLESRenderer.o
+Media/Printer.h: ../../src/Media/PrinterNull.cpp
+@Printer.o
+Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
+@FFMPEGDecoder.o
+Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
+@OCVFrame.o
+Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+@OCVFrameFeeder.o
+Media/OpenCV/OCVInit.h:
+Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+@OCVObjectDetector.o
+Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
+@OCVUtil.o
+
+Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientNull.cpp
+@HTTPOSClient.o
+Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
+@WirelessLAN.o
+
+Sync/Thread.h: ../../src/Sync/ThreadU.cpp
+@Thread.o
+
+
+ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
+MDBFile.o: ../../src/DB/MDBFileNul.cpp
+MongoDB.o: ../../src/DB/MongoDBNull.cpp
+MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
+ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
+BTController.o: ../../src/IO/BTControllerNull.cpp
+BTManager.o: ../../src/IO/BTManagerNull.cpp
+HIDInfo.o: ../../src/IO/HIDInfoL.cpp
+I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
+OS.o: ../../src/IO/OSAndroid.cpp
+SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
+SensorAccelerometerAndroid.o: ../../src/IO/SensorAccelerometerAndroid.cpp
+SensorAndroid.o: ../../src/IO/SensorAndroid.cpp
+!-landroid
+SensorMagnetometerAndroid.o: ../../src/IO/SensorMagnetometerAndroid.cpp
+SensorManager.o: ../../src/IO/SensorManagerAndroid.cpp
+SensorPressureAndroid.o: ../../src/IO/SensorPressureAndroid.cpp
+SensorUnknownAndroid.o: ../../src/IO/SensorUnknownAndroid.cpp
+Watchdog.o: ../../src/IO/WatchdogL.cpp
+SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
+ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
+AAudioRenderer.o: ../../src/Media/AAudioRenderer.cpp
+!-laaudio
+AndroidVideoCapture.o: ../../src/Media/AndroidVideoCapture.cpp
+!?(ANDROID_API >= 24) -lcamera2ndk -lmediandk
+AudioDevice.o: ../../src/Media/AudioDeviceAndroid.cpp
+OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
+Printer.o: ../../src/Media/PrinterNull.cpp
+FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
+OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
+OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
+HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp
+WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
+Thread.o: ../../src/Sync/ThreadU.cpp

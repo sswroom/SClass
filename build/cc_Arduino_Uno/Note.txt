@@ -1,0 +1,56 @@
+GPIO:
+0:  D8
+1:  D9
+2:  D10
+3:  D11
+4:  D12
+5:  L LED, D13
+6:  ?
+7:  ?
+8:  A0
+9:  A1
+10: A2
+11: A3
+12: A4
+13: A5
+14: Reset
+15: D0
+16: D1 TX LED (On Chg)
+17: D2
+18: D3
+19: D4
+20: D5
+21: D6
+22: D7
+
+Digitals:
+D0:  15
+D1:  16
+D2:  17
+D3:  18
+D4:  19
+D5:  20
+D6:  21
+D7:  22
+D8:  0
+D9:  1
+D10: 2
+D11: 3
+D12: 4
+D13: 5
+
+~/arduino-1.8.5/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom %1 %1.hex
+~/arduino-1.8.5/hardware/tools/avr/bin/avrdude -F -V -C ~/arduino-1.8.5/hardware/tools/avr/etc/avrdude.conf -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 -U flash:w:%1.hex
+
+~/arduino-1.8.5/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom MCU_Console MCU_Console.hex
+/home/sswroom/arduino-1.8.5/hardware/tools/avr/bin/avrdude -F -V -C /home/sswroom/arduino-1.8.5/hardware/tools/avr/etc/avrdude.conf -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 -U flash:w:MCU_Console.hex
+
+~/arduino-1.8.5/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom MCU_GPIO MCU_GPIO.hex
+/home/sswroom/arduino-1.8.5/hardware/tools/avr/bin/avrdude -F -V -C /home/sswroom/arduino-1.8.5/hardware/tools/avr/etc/avrdude.conf -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 -U flash:w:MCU_GPIO.hex
+
+~/arduino-1.8.5/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom MCU_HiResClock MCU_HiResClock.hex
+/home/sswroom/arduino-1.8.5/hardware/tools/avr/bin/avrdude -F -V -C /home/sswroom/arduino-1.8.5/hardware/tools/avr/etc/avrdude.conf -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 -U flash:w:MCU_HiResClock.hex
+
+~/arduino-1.8.5/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom MCU_Serial MCU_Serial.hex
+/home/sswroom/arduino-1.8.5/hardware/tools/avr/bin/avrdude -F -V -C /home/sswroom/arduino-1.8.5/hardware/tools/avr/etc/avrdude.conf -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 -U flash:w:MCU_Serial.hex
+

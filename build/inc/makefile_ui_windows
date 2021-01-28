@@ -1,0 +1,158 @@
+
+LIBS_GUIStartup: GDIEngineC.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_GDIEngine: AlphaBlend8_8.o AlphaBlend8_8_CPP.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_GDIEngineC:
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_COMStream: COMStream.o
+	$(eval CLASS_OBJS += $^ )
+	
+LIBS_gdi32:
+	$(eval LIBS += -lgdi32)
+
+LIBS_gdiplus:
+	$(eval LIBS += -lgdiplus)
+
+LIBS_msimg32:
+	$(eval LIBS += -lmsimg32)
+
+GUIStartup.o: $(CLASSDIR)startup/WinStartup.cpp LIBS_GUIStartup
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DefaultDrawEngine.o: $(CLASSDIR)src/Core/DefaultDrawEngineWin.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIExporter.o: $(CLASSDIR)src/Exporter/GUIExporterW.cpp LIBS_gdiplus
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIGIFExporter.o: $(CLASSDIR)src/Exporter/GUIGIFExporterW.cpp LIBS_gdiplus LIBS_COMStream
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIJPGExporter.o: $(CLASSDIR)src/Exporter/GUIJPGExporterW.cpp LIBS_gdiplus LIBS_COMStream
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPNGExporter.o: $(CLASSDIR)src/Exporter/GUIPNGExporterW.cpp LIBS_gdiplus LIBS_COMStream
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITIFExporter.o: $(CLASSDIR)src/Exporter/GUITIFExporterW.cpp LIBS_gdiplus LIBS_COMStream
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MonitorInfo.o: $(CLASSDIR)src/Media/MonitorInfoW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DrawEngineGUI.o: $(CLASSDIR)src/Media/GDIEngine.cpp LIBS_gdiplus LIBS_gdi32 LIBS_GDIEngine
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GDIEngineC.o: $(CLASSDIR)src/Media/GDIEngineC.cpp LIBS_GDIEngineC
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIImgParser.o: $(CLASSDIR)src/Parser/FileParser/GUIImgParserW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileDialog.o: $(CLASSDIR)src/UI/FileDialogWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FolderDialog.o: $(CLASSDIR)src/UI/FolderDialogWin.cpp LIBS_ole32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FontDialog.o: $(CLASSDIR)src/UI/FontDialogWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIButton.o: $(CLASSDIR)src/UI/GUIButtonWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICheckBox.o: $(CLASSDIR)src/UI/GUICheckBoxWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIClientControl.o: $(CLASSDIR)src/UI/GUIClientControlWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIComboBox.o: $(CLASSDIR)src/UI/GUIComboBoxWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIControl.o: $(CLASSDIR)src/UI/GUIControlWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUICore.o: $(CLASSDIR)src/UI/GUICoreWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIDragDrop.o: $(CLASSDIR)src/UI/GUIWindowDragDrop.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIForm.o: $(CLASSDIR)src/UI/GUIFormWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIGroupBox.o: $(CLASSDIR)src/UI/GUIGroupBoxWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIHScrollBar.o: $(CLASSDIR)src/UI/GUIHScrollBarWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIHSplitter.o: $(CLASSDIR)src/UI/GUIHSplitterWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUILabel.o: $(CLASSDIR)src/UI/GUILabelWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIListBox.o: $(CLASSDIR)src/UI/GUIListBoxWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIListView.o: $(CLASSDIR)src/UI/GUIListViewWin.cpp LIBS_comctl32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPanel.o: $(CLASSDIR)src/UI/GUIPanelWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIMainMenu.o: $(CLASSDIR)src/UI/GUIMainMenu.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIMenu.o: $(CLASSDIR)src/UI/GUIMenuWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPictureBox.o: $(CLASSDIR)src/UI/GUIPictureBoxWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPictureBoxSimple.o: $(CLASSDIR)src/UI/GUIPictureBoxSimpleWin.cpp LIBS_msimg32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIPopupMenu.o: $(CLASSDIR)src/UI/GUIPopupMenuWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIProgressBar.o: $(CLASSDIR)src/UI/GUIProgressBarWin.cpp LIBS_comctl32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIRadioButton.o: $(CLASSDIR)src/UI/GUIRadioButtonWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIRealtimeLineChart.o: $(CLASSDIR)src/UI/GUIRealtimeLineChartWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITabControl.o: $(CLASSDIR)src/UI/GUITabControlWin.cpp LIBS_comctl32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITabPage.o: $(CLASSDIR)src/UI/GUITabPage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITextBox.o: $(CLASSDIR)src/UI/GUITextBoxWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITimer.o: $(CLASSDIR)src/UI/GUITimerWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUITreeView.o: $(CLASSDIR)src/UI/GUITreeViewWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+GUIVSplitter.o: $(CLASSDIR)src/UI/GUIVSplitterWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MessageDialog.o: $(CLASSDIR)src/UI/MessageDialogW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Clipboard.o: $(CLASSDIR)src/Win32/ClipboardW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+

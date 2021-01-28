@@ -1,0 +1,26 @@
+
+DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoSolaris.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CameraManager.o: $(CLASSDIR)src/Media/CameraManagerNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DDCReader.o: $(CLASSDIR)src/Media/DDCReaderL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+VideoCaptureMgr.o: $(CLASSDIR)src/Media/VideoCaptureMgrNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SMBIOSUtil.o: $(CLASSDIR)src/Win32/SMBIOSUtilL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+

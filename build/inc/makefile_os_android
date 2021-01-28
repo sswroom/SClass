@@ -1,0 +1,218 @@
+BUILD_OS := ANDROID
+
+LIBS_aaudio:
+#API >= 26
+	$(eval LIBS += -laaudio)
+
+LIBS_android:
+	$(eval LIBS += -landroid)
+
+LIBS_dl:
+	$(eval LIBS += -ldl)
+
+LIBS_mediandk:
+	$(eval LIBS += -lmediandk)
+
+LIBS_OpenSLES:
+	$(eval LIBS += -lOpenSLES)
+
+LIBS_pthread:
+	$(eval LIBS += )
+#	$(eval LIBS += -lpthread)
+
+LIBS_BuildTime:
+	$()
+
+ConsoleStartup.o: $(CLASSDIR)startup/LinuxConStartup.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MyMemory.o: $(CLASSDIR)src/MyMemoryL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MDBFile.o: $(CLASSDIR)src/DB/MDBFileNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MySQLConn.o: $(CLASSDIR)src/DB/MySQLConnNull.cpp 
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ODBCConn.o: $(CLASSDIR)src/DB/ODBCConnNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTController.o: $(CLASSDIR)src/IO/BTControllerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTManager.o: $(CLASSDIR)src/IO/BTManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BuildTime.o: $(CLASSDIR)src/IO/BuildTime.cpp LIBS_BuildTime
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Console.o: $(CLASSDIR)src/IO/ConsoleL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceInfo.o: $(CLASSDIR)src/IO/DeviceInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceManager.o: $(CLASSDIR)src/IO/DeviceManagerL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileStream.o: $(CLASSDIR)src/IO/FileStreamU.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileUtil.o: $(CLASSDIR)src/IO/FileUtilL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+I2CChannelOS.o: $(CLASSDIR)src/IO/I2CChannelOSL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Library.o: $(CLASSDIR)src/IO/LibraryL.cpp LIBS_dl
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OS.o: $(CLASSDIR)src/IO/OSAndroid.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Path.o: $(CLASSDIR)src/IO/PathL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PCIInfo.o: $(CLASSDIR)src/IO/PCIInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PhysicalMem.o: $(CLASSDIR)src/IO/PhysicalMemL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PowerInfo.o: $(CLASSDIR)src/IO/PowerInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Registry.o: $(CLASSDIR)src/IO/RegistryNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SDCardMgr.o: $(CLASSDIR)src/IO/SDCardMgrL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorAccelerometerAndroid.o: $(CLASSDIR)src/IO/SensorAccelerometerAndroid.cpp LIBS_android
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorAccelerometerAndroidDef: SensorAccelerometerAndroid.o
+	$(eval CLASS_OBJS += SensorAccelerometerAndroid.o)
+
+SensorAndroid.o: $(CLASSDIR)src/IO/SensorAndroid.cpp LIBS_android
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorAndroidDef: SensorAndroid.o
+	$(eval CLASS_OBJS += SensorAndroid.o)
+
+SensorMagnetometerAndroid.o: $(CLASSDIR)src/IO/SensorMagnetometerAndroid.cpp LIBS_android
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorMagnetometerAndroidDef: SensorMagnetometerAndroid.o
+	$(eval CLASS_OBJS += SensorMagnetometerAndroid.o)
+
+SensorManager.o: $(CLASSDIR)src/IO/SensorManagerAndroid.cpp SensorAccelerometerAndroidDef SensorAndroidDef SensorMagnetometerAndroidDef SensorPressureAndroidDef SensorUnknownAndroidDef LIBS_android
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorPressureAndroid.o: $(CLASSDIR)src/IO/SensorPressureAndroid.cpp LIBS_android
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorPressureAndroidDef: SensorPressureAndroid.o
+	$(eval CLASS_OBJS += SensorPressureAndroid.o)
+
+SensorUnknownAndroid.o: $(CLASSDIR)src/IO/SensorUnknownAndroid.cpp LIBS_android
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SensorUnknownAndroidDef: SensorUnknownAndroid.o
+	$(eval CLASS_OBJS += SensorUnknownAndroid.o)
+
+SerialPort.o: $(CLASSDIR)src/IO/SerialPortL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SimpleFileWriter.o: $(CLASSDIR)src/IO/SimpleFileWriterL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+USBInfo.o: $(CLASSDIR)src/IO/USBInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ViewFileBuffer.o: $(CLASSDIR)src/IO/ViewFileBufferL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Watchdog.o: $(CLASSDIR)src/IO/WatchdogL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EnvironmentVar.o: $(CLASSDIR)src/Manage/EnvironmentVarL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ExceptionRecorder.o: $(CLASSDIR)src/Manage/ExceptionRecorderL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HiResClock.o: $(CLASSDIR)src/Manage/HiResClockL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ModuleInfo.o: $(CLASSDIR)src/Manage/ModuleInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Process.o: $(CLASSDIR)src/Manage/ProcessL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StackTracer.o: $(CLASSDIR)src/Manage/StackTracerL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SymbolResolver.o: $(CLASSDIR)src/Manage/SymbolResolverL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ThreadInfo.o: $(CLASSDIR)src/Manage/ThreadInfoL.cpp LIBS_pthread
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AAudioRenderer.o: $(CLASSDIR)src/Media/AAudioRenderer.cpp LIBS_aaudio
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AAudioRendererDef: AAudioRenderer.o
+	$(eval CLASS_OBJS += $^ )
+
+AudioDevice.o: $(CLASSDIR)src/Media/AudioDeviceAndroid.cpp OpenSLESRendererDef 
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OpenSLESRenderer.o: $(CLASSDIR)src/Media/OpenSLESRenderer.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OpenSLESRendererDef: OpenSLESRenderer.o
+	$(eval CLASS_OBJS += $^ )
+
+Printer.o: $(CLASSDIR)src/Media/PrinterNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WIAManager.o: $(CLASSDIR)src/Media/WIAManagerNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConnectionInfo_CPP.o: $(CLASSDIR)src/Net/ConnectionInfoL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPOSClient.o: $(CLASSDIR)src/Net/HTTPOSClientNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OSSocketFactory.o: $(CLASSDIR)src/Net/OSSocketFactoryL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPClientMgr.o: $(CLASSDIR)src/Net/TCPClientMgrL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WirelessLAN.o: $(CLASSDIR)src/Net/WirelessLANL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EventPool.o: $(CLASSDIR)src/Sync/EventPoolL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RWMutex.o: $(CLASSDIR)src/Sync/RWMutexL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Thread.o: $(CLASSDIR)src/Sync/ThreadU.cpp LIBS_pthread
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+sqlite3.o: $(CLASSDIR)src/ThirdParty/sqlite3.c
+	$(CC2) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WMIQuery.o: $(CLASSDIR)src/Win32/WMIQueryNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+

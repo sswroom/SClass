@@ -1,0 +1,140 @@
+
+MyMemory.h: ../../src/MyMemoryL.cpp
+@MyMemory.o
+@MyMemory_CPP.o
+
+DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
+@OLEDBConn.o
+
+IO/BuildTime.h: ../../src/IO/BuildTime.cpp
+@BuildTime.o
+IO/Console.h: ../../src/IO/ConsoleL.cpp
+@Console.o
+IO/ConsoleWriter.h: ../../src/IO/ConsoleWriterL.cpp
+@ConsoleWriter.o
+IO/DeviceInfo.h: ../../src/IO/DeviceInfoL.cpp
+@DeviceInfo.o
+IO/DeviceManager.h: ../../src/IO/DeviceManagerL.cpp
+@DeviceManager.o
+IO/FileStream.h: ../../src/IO/FileStreamU.cpp
+@FileStream.o
+IO/FileUtil.h: ../../src/IO/FileUtilL.cpp
+@FileUtil.o
+IO/Library.h: ../../src/IO/LibraryL.cpp
+@Library.o
+IO/Path.h: ../../src/IO/PathL.cpp
+@Path.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+@PCIInfo.o
+IO/PhysicalMem.h: ../../src/IO/PhysicalMemL.cpp
+@PhysicalMem.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+@PowerInfo.o
+IO/Registry.h: ../../src/IO/RegistryNul.cpp
+@Registry.o
+IO/SerialPort.h: ../../src/IO/SerialPortL.cpp
+@SerialPort.o
+IO/SimpleFileWriter.h: ../../src/IO/SimpleFileWriterL.cpp
+@SimpleFileWriter.o
+IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+@USBInfo.o
+IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferL.cpp
+@ViewFileBuffer.o
+
+Manage/EnvironmentVar.h: ../../src/Manage/EnvironmentVarL.cpp
+@EnvironmentVar.o
+Manage/ExceptionRecorder.h: ../../src/Manage/ExceptionRecorderL.cpp
+@ExceptionRecorder.o
+Manage/HiResClock.h: ../../src/Manage/HiResClockL.cpp
+@HiResClock.o
+Manage/ModuleInfo.h: ../../src/Manage/ModuleInfoL.cpp
+@ModuleInfo.o
+Manage/Process.h: ../../src/Manage/ProcessL.cpp
+@Process.o
+Manage/StackTracer.h: ../../src/Manage/StackTracerL.cpp
+@StackTracer.o
+
+Media/ColorManager.h: ../../src/Media/ColorManager.cpp
+@ColorManager.o
+Media/RefClock.h: ../../src/Media/RefClockL.cpp
+@RefClock.o
+Media/WaveInSource.h: ../../src/Media/WaveInSourceNull.cpp
+@WaveInSource.o
+Media/WIAManager.h: ../../src/Media/WIAManagerNull.cpp
+@WIAManager.o
+Media/Decoder/ACMDecoder.h: ../../src/Media/Decoder/ACMDecoderNull.cpp
+@ACMDecoder.o
+Media/Decoder/IMSDKDecoder.h:
+Media/Decoder/VFWDecoder.h: ../../src/Media/Decoder/VFWDecoderNull.cpp
+@VFWDecoder.o
+Media/Decoder/VPXDecoder.h: ../../src/Media/Decoder/VPXDecoder.cpp
+@VPXDecoder.o
+Media/Resizer/LanczosResizerLR_C32_OCL.h:
+
+Net/ARPInfo.h: ../../src/Net/ARPInfoL.cpp
+@ARPInfo.o
+Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryL.cpp
+@OSSocketFactory.o
+Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrL.cpp
+@TCPClientMgr.o
+
+SSWR/AVIRead/AVIRCoreWin.h: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
+@AVIRCoreWin.o
+SSWR/AVIRead/AVIROLEDBForm.h:
+
+Sync/EventPool.h: ../../src/Sync/EventPoolL.cpp
+@EventPool.o
+Sync/RWMutex.h: ../../src/Sync/RWMutexL.cpp
+@RWMutex.o
+
+Win32/StreamCOM.h:
+Win32/WMIQuery.h: ../../src/Win32/WMIQueryNull.cpp
+@WMIQuery.o
+Win32/WMIReader.h:
+
+sqlite3.h:
+@sqlite3.o
+
+
+MyMemory.o: ../../src/MyMemoryL.cpp
+OLEDBConn.o: ../../src/DB/OLEDBConnNull.cpp
+BuildTime.o: @../../src/IO/BuildTime.cpp
+Console.o: ../../src/IO/ConsoleL.cpp
+ConsoleWriter.o: ../../src/IO/ConsoleWriterL.cpp
+DeviceInfo.o: ../../src/IO/DeviceInfoL.cpp
+DeviceManager.o: ../../src/IO/DeviceManagerL.cpp
+FileStream.o: ../../src/IO/FileStreamU.cpp
+FileUtil.o: ../../src/IO/FileUtilL.cpp
+Library.o: ../../src/IO/LibraryL.cpp
+!-ldl
+Path.o: ../../src/IO/PathL.cpp
+PCIInfo.o: ../../src/IO/PCIInfoL.cpp
+PhysicalMem.o: ../../src/IO/PhysicalMemL.cpp
+PowerInfo.o: ../../src/IO/PowerInfoL.cpp
+Registry.o: ../../src/IO/RegistryNul.cpp
+SerialPort.o: ../../src/IO/SerialPortL.cpp
+SimpleFileWriter.o: ../../src/IO/SimpleFileWriterL.cpp
+USBInfo.o: ../../src/IO/USBInfoL.cpp
+ViewFileBuffer.o: ../../src/IO/ViewFileBufferL.cpp
+EnvironmentVar.o: ../../src/Manage/EnvironmentVarL.cpp
+ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderL.cpp
+HiResClock.o: ../../src/Manage/HiResClockL.cpp
+ModuleInfo.o: ../../src/Manage/ModuleInfoL.cpp
+Process.o: ../../src/Manage/ProcessL.cpp
+StackTracer.o: ../../src/Manage/StackTracerL.cpp
+ColorManager.o: ../../src/Media/ColorManager.cpp
+RefClock.o: ../../src/Media/RefClockL.cpp
+WaveInSource.o: ../../src/Media/WaveInSourceNull.cpp
+WIAManager.o: ../../src/Media/WIAManagerNull.cpp
+ACMDecoder.o: ../../src/Media/Decoder/ACMDecoderNull.cpp
+VFWDecoder.o: ../../src/Media/Decoder/VFWDecoderNull.cpp
+VPXDecoder.o: ../../src/Media/Decoder/VPXDecoder.cpp
+ARPInfo.o: ../../src/Net/ARPInfoL.cpp
+ConnectionInfo_CPP.o: ../../src/Net/ConnectionInfoL.cpp
+OSSocketFactory.o: ../../src/Net/OSSocketFactoryL.cpp
+TCPClientMgr.o: ../../src/Net/TCPClientMgrL.cpp
+AVIRCoreWin.o: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
+EventPool.o: ../../src/Sync/EventPoolL.cpp
+RWMutex.o: ../../src/Sync/RWMutexL.cpp
+WMIQuery.o: ../../src/Win32/WMIQueryNull.cpp
+sqlite3.o: ../../ThirdParty/sqlite3/sqlite3.c

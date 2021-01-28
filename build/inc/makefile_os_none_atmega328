@@ -1,0 +1,18 @@
+LIB_SerialPortBase: SerialPortBase.o
+	$(eval LIBS += SerialPortBase.o)
+
+SerialPortBase.o: $(CLASSDIR)src/IO/SerialPortBase_ATmega328.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterSerial.cpp LIB_SerialPortBase
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SerialPort.o: $(CLASSDIR)src/IO/SerialPort_ATmega328.cpp LIB_SerialPortBase
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HiResClock.o: $(CLASSDIR)src/Manage/HiResClock_ATmega328.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Thread.o: $(CLASSDIR)src/Sync/Thread_AVR.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+

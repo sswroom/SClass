@@ -1,0 +1,29 @@
+
+LIBS_VideoCaptureMgr:
+	$(eval CLASS_OBJS += $^ )
+
+DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriterW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GPUManager.o: $(CLASSDIR)src/IO/GPUManagerW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoWx86.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CameraManager.o: $(CLASSDIR)src/Media/CameraManagerNul.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DDCReader.o: $(CLASSDIR)src/Media/DDCReaderL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+VideoCaptureMgr.o: $(CLASSDIR)src/Media/VideoCaptureMgrW.cpp LIBS_VideoCaptureMgr
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SMBIOSUtil.o: $(CLASSDIR)src/Win32/SMBIOSUtilW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+

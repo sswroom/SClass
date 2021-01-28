@@ -1,0 +1,225 @@
+BUILD_OS := WINDOWS
+
+LIBS_AudioDevice: ASIOOutRenderer.o KSRenderer.o WaveOutRenderer.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_KSSample: audfilter.o audpin.o enum.o filter.o irptgt.o node.o pin.o util.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_EnvironmentVar:
+	$(eval CLASS_OBJS += $^ )
+	
+LIBS_Thread: Thread_CPP.o
+	$(eval CLASS_OBJS += $^ )
+
+LIBS_comctl32:
+	$(eval LIBS += -lcomctl32)
+
+LIBS_comdlg32:
+	$(eval LIBS += -lcomdlg32)
+	
+LIBS_dbghelp:
+	$(eval LIBS += -ldbghelp)
+
+LIBS_dnsapi:
+	$(eval LIBS += -ldnsapi)
+
+LIBS_iphlpapi:
+	$(eval LIBS += -liphlpapi)
+
+LIBS_odbc:
+	$(eval LIBS += -lodbc)
+
+LIBS_ole32:
+	$(eval LIBS += -lole32)
+
+LIBS_psapi:
+	$(eval LIBS += -lpsapi)
+
+LIBS_setupapi:
+	$(eval LIBS += -lsetupapi)
+
+LIBS_winmm:
+	$(eval LIBS += -lwinmm)
+
+LIBS_winspool:
+	$(eval LIBS += -lwinspool)
+
+LIBS_ws2_32:
+	$(eval LIBS += -lws2_32)
+
+ConsoleStartup.o: $(CLASSDIR)startup/ConStartup.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MyMemory.o: $(CLASSDIR)src/MyMemoryW.cpp LIBS_dbghelp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MDBFile.o: $(CLASSDIR)src/DB/MDBFile.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ODBCConn.o: $(CLASSDIR)src/DB/ODBCConn.cpp LIBS_odbc
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTController.o: $(CLASSDIR)src/IO/BTControllerW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+BTManager.o: $(CLASSDIR)src/IO/BTManagerW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Console.o: $(CLASSDIR)src/IO/ConsoleW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceInfo.o: $(CLASSDIR)src/IO/DeviceInfoW.cpp LIBS_setupapi
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DeviceManager.o: $(CLASSDIR)src/IO/DeviceManagerW.cpp LIBS_setupapi
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileStream.o: $(CLASSDIR)src/IO/FileStreamW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+FileUtil.o: $(CLASSDIR)src/IO/FileUtilW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+I2CChannelOS.o: $(CLASSDIR)src/IO/I2CChannelOSNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Library.o: $(CLASSDIR)src/IO/LibraryW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OS.o: $(CLASSDIR)src/IO/OSW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Path.o: $(CLASSDIR)src/IO/PathW.cpp LIBS_psapi LIBS_EnvironmentVar
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PhysicalMem.o: $(CLASSDIR)src/IO/PhysicalMemNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+PowerInfo.o: $(CLASSDIR)src/IO/PowerInfoW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Registry.o: $(CLASSDIR)src/IO/RegistryW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SerialPort.o: $(CLASSDIR)src/IO/SerialPortW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SimpleFileWriter.o: $(CLASSDIR)src/IO/SimpleFileWriterW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ViewFileBuffer.o: $(CLASSDIR)src/IO/ViewFileBufferW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Watchdog.o: $(CLASSDIR)src/IO/WatchdogL.cpp WatchdogLinuxDef
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WatchdogLinuxDef: WatchdogLinux.o
+	$(eval CLASS_OBJS += WatchdogLinux.o)
+
+WatchdogLinux.o: $(CLASSDIR)src/IO/WatchdogLinux.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ExceptionRecorder.o: $(CLASSDIR)src/Manage/ExceptionRecorderW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EnvironmentVar.o: $(CLASSDIR)src/Manage/EnvironmentVarW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HiResClock.o: $(CLASSDIR)src/Manage/HiResClockW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ModuleInfo.o: $(CLASSDIR)src/Manage/ModuleInfoW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Process.o: $(CLASSDIR)src/Manage/ProcessW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+StackTracer.o: $(CLASSDIR)src/Manage/StackTracerW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+SymbolResolver.o: $(CLASSDIR)src/Manage/SymbolResolverW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ThreadInfo.o: $(CLASSDIR)src/Manage/ThreadInfoW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ASIOOutRenderer.o: $(CLASSDIR)src/Media/ASIOOutRenderer.cpp LIBS_ole32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AudioDevice.o: $(CLASSDIR)src/Media/AudioDeviceW.cpp LIBS_AudioDevice
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+KSRenderer.o: $(CLASSDIR)src/Media/KSRenderer.cpp LIBS_KSSample
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Printer.o: $(CLASSDIR)src/Media/PrinterW.cpp LIBS_winspool LIBS_comdlg32
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WaveOutRenderer.o: $(CLASSDIR)src/Media/WaveOutRenderer.cpp LIBS_winmm
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+DShowVideoCapture.o: $(CLASSDIR)src/Media/DShow/DShowVideoCapture.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DSHOWFLAGS) -c -o $@ $< $(CSUFFIX)
+
+audfilter.o: $(CLASSDIR)src/Media/KSSample/audfilter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+audpin.o: $(CLASSDIR)src/Media/KSSample/audpin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+enum.o: $(CLASSDIR)src/Media/KSSample/enum.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+filter.o: $(CLASSDIR)src/Media/KSSample/filter.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+irptgt.o: $(CLASSDIR)src/Media/KSSample/irptgt.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+node.o: $(CLASSDIR)src/Media/KSSample/node.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+pin.o: $(CLASSDIR)src/Media/KSSample/pin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+util.o: $(CLASSDIR)src/Media/KSSample/util.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ConnectionInfo_CPP.o: $(CLASSDIR)src/Net/ConnectionInfoW.cpp LIBS_iphlpapi
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+HTTPOSClient.o: $(CLASSDIR)src/Net/HTTPOSClientW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+OSSocketFactory.o: $(CLASSDIR)src/Net/OSSocketFactoryW.cpp LIBS_ws2_32 LIBS_dnsapi
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+TCPClientMgr.o: $(CLASSDIR)src/Net/TCPClientMgrW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+AVIRCoreWin.o: $(CLASSDIR)src/SSWR/AVIRead/AVIRCoreWin.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+EventPool.o: $(CLASSDIR)src/Sync/EventPoolW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+RWMutex.o: $(CLASSDIR)src/Sync/RWMutexW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Thread.o: $(CLASSDIR)src/Sync/ThreadW.cpp LIBS_Thread
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+sqlite3.o: $(CLASSDIR)src/ThirdParty/sqlite3.c
+	$(CC2) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+COMStream.o: $(CLASSDIR)src/Win32/COMStream.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WMIQuery.o: $(CLASSDIR)src/Win32/WMIQueryNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+

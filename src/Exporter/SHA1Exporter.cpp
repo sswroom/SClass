@@ -1,0 +1,82 @@
+#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Exporter/SHA1Exporter.h"
+#include "Text/MyString.h"
+#include "IO/FileCheck.h"
+#include "IO/StreamWriter.h"
+
+Exporter::SHA1Exporter::SHA1Exporter()
+{
+	this->codePage = 65001;
+}
+
+Exporter::SHA1Exporter::~SHA1Exporter()
+{
+}
+
+Int32 Exporter::SHA1Exporter::GetName()
+{
+	return *(Int32*)"SHA1";
+}
+
+IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(IO::ParsedObject *pobj)
+{
+	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
+	{
+		return IO::FileExporter::ST_NOT_SUPPORTED;
+	}
+	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	if (fchk->GetCheckType() != IO::FileCheck::CT_SHA1)
+	{
+		return IO::FileExporter::ST_NOT_SUPPORTED;
+	}
+	return IO::FileExporter::ST_NORMAL_STREAM;
+}
+
+Bool Exporter::SHA1Exporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+{
+	if (index == 0)
+	{
+		Text::StrConcat(nameBuff, (const UTF8Char*)"SHA-1 File");
+		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.sha1");
+		return true;
+	}
+	return false;
+}
+
+void Exporter::SHA1Exporter::SetCodePage(Int32 codePage)
+{
+	this->codePage = codePage;
+}
+
+Bool Exporter::SHA1Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+{
+	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
+	{
+		return false;
+	}
+	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	if (fchk->GetCheckType() != IO::FileCheck::CT_SHA1)
+	{
+		return false;
+	}
+
+	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
+	UInt8 buff[20];
+	IO::StreamWriter *writer;
+	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
+	OSInt i = 0;
+	OSInt cnt = fchk->GetCount();
+	while (i < cnt)
+	{
+		fchk->GetEntryHash(i, buff);
+		sptr = Text::StrHexBytes(sbuff, buff, 20, 0);
+		sptr = Text::StrConcat(sptr, (const UTF8Char*)" *");
+		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
+		writer->WriteLine(sbuff, sptr - sbuff);
+		i++;
+	}
+	DEL_CLASS(writer);
+	return true;
+}

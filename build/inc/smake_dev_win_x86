@@ -1,0 +1,31 @@
+
+IO/DebugWriter.h: ../../src/IO/DebugWriterW.cpp
+@DebugWriter.o
+
+IO/GPUManager.h: ../../src/IO/GPUManagerW.cpp
+@GPUManager.o
+
+IO/SystemInfo.h: ../../src/IO/SystemInfoW.cpp
+@SystemInfo.o
+
+Media/CameraManager.h: ../../src/Media/CameraManagerNul.cpp
+@CameraManager.o
+
+Media/DDCReader.h: ../../src/Media/DDCReaderW.cpp
+@DDCReader.o
+
+Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrW.cpp
+@VideoCaptureMgr.o
+
+Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilW.cpp
+@SMBIOSUtil.o
+
+DebugWriter.o: ../../src/IO/DebugWriterW.cpp
+GPUManager.o: ../../src/IO/GPUManagerW.cpp
+SystemInfo.o: ../../src/IO/SystemInfoW.cpp
+CameraManager.o: ../../src/Media/CameraManagerNul.cpp
+DDCReader.o: ../../src/Media/DDCReaderW.cpp
+!-lsetupapi
+VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrW.cpp
+SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilW.cpp
+ 

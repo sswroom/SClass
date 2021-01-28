@@ -1,0 +1,5 @@
+
+IO/GPIOControl.h: ../../src/IO/GPIOControl_RDA8810.cpp
+@GPIOControl.o
+
+GPIOControl.o: ../../src/IO/GPIOControl_RDA8810.cpp

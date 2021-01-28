@@ -1,0 +1,13 @@
+libasound2-dev (GPL and LGPL?)
+libgtk+-3-dev (LGPL) / libcairo2-dev
+unixodbc-dev (LGPL)
+libcups2-dev (Apache)
+libbluetooth-dev (GPL)
+libiw-dev
+
+libmysqlclient-dev (GPL) / libmariadbclient-dev (LGPL) / libmariadb-client-lgpl-dev
+libvpx-dev (BSD)
+libopencv-dev
+libavcodec-dev
+libmongoc-dev
+libcurl4-openssl-dev

@@ -1,0 +1,185 @@
+
+MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC16_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC16_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC16R_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC16R_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC32_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CRC32R_CPP.o: $(CLASSDIR)src/Crypto/Hash/CRC32R_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MD5_CPP.o: $(CLASSDIR)src/Crypto/Hash/MD5_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+SHA1_CPP.o: $(CLASSDIR)src/Crypto/Hash/SHA1_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LZODecompressor_CPP.o: $(CLASSDIR)src/Data/Compress/LZODecompressor_cpp.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Benchmark_CPP.o: $(CLASSDIR)src/Manage/Benchmark_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfoAVR.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Dasm.o: $(CLASSDIR)src/Manage/DasmMIPS.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ThreadContext.o: $(CLASSDIR)src/Manage/ThreadContextAVR.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ScaledMapView_CPP.o: $(CLASSDIR)src/Map/ScaledMapView_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+FFTCalc_CPP.o: $(CLASSDIR)src/Math/FFTCalc_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+Math_CPP.o: $(CLASSDIR)src/Math/Math_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+Deinterlace8_CPP.o: $(CLASSDIR)src/Media/Deinterlace8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+DeinterlaceLR_CPP.o: $(CLASSDIR)src/Media/DeinterlaceLR_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+GRFilter_CPP.o: $(CLASSDIR)src/Media/GRFilter_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageCopy_CPP.o: $(CLASSDIR)src/Media/ImageCopy_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageTo8Bit_CPP.o: $(CLASSDIR)src/Media/ImageTo8Bit_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ImageUtil_CPP.o: $(CLASSDIR)src/Media/ImageUtil_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LRGBLimiter_CPP.o: $(CLASSDIR)src/Media/LRGBLimiter_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+RGBColorFilter_CPP.o: $(CLASSDIR)src/Media/RGBColorFilter_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+AlphaBlend8_8_CPP.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+AlphaBlend8_C8_CPP.o: $(CLASSDIR)src/Media/ABlend/AlphaBlend8_C8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSAYUV444_10_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSAYUV444_10_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV444_10_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSAYUV_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSAYUV_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSNV12_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSNV12_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSNV12_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSNV12_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSP010_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSP010_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSP016_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSP016_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSP016_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSP016_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSP216_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSP216_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSRGB16_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB16_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSRGB16_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB16_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSRGB8_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB8_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSRGB8_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSRGB8_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSRGBF_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSRGBF_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSUYVY_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSUYVY_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSUYVY_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSUYVY_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSY416_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSY416_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSY416_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSY416_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUV420_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV420_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUV420_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV420_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUV444P10LEP_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUV444P10LEP_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYUV444P10LEP_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUY2_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYUY2_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYUY2_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSYUY2_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYV12_LRGBC_CPP.o: $(CLASSDIR)src/Media/CS/CSYV12_LRGBC_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYV12_RGB32C_CPP.o: $(CLASSDIR)src/Media/CS/CSYV12_RGB32C_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+CSYVU9_RGB8_CPP.o: $(CLASSDIR)src/Media/CS/CSYVU9_RGB8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+NearestNeighbourResizer32_32_CPP.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer32_32_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+NearestNeighbourResizer64_64_CPP.o: $(CLASSDIR)src/Media/Resizer/NearestNeighbourResizer64_64_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizer8_C8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer8_C8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizer16_C8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizer16_C8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizerH8_8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerH8_8_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+LanczosResizerLR_C32_CPU_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MyString_CPP.o: $(CLASSDIR)src/Text/MyString_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+

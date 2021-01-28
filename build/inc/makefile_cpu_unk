@@ -1,0 +1,14 @@
+
+GPIOControl.o: $(CLASSDIR)src/IO/GPIOControl_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+ifeq ($(BUILD_OS),LINUX)
+GPIOPin.o: $(CLASSDIR)src/IO/GPIOPin_Linux.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+else
+GPIOPin.o: $(CLASSDIR)src/IO/GPIOPin_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+endif
+
+RS232GPIO.o: $(CLASSDIR)src/IO/RS232GPIO.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)

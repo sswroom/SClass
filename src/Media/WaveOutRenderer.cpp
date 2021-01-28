@@ -1,0 +1,561 @@
+#include "Stdafx.h"
+#include "MyMemory.h"
+#include "Media/IAudioSource.h"
+#include "Media/IMediaSource.h"
+#include "Media/RefClock.h"
+#include "Media/WaveOutRenderer.h"
+#include "Sync/Event.h"
+#include "Sync/Thread.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
+
+#include <windows.h>
+#include <mmsystem.h>
+#include <mmreg.h>
+#if !defined(_WIN32_WCE)
+#include <ks.h>
+#include <ksmedia.h>
+#elif (_WIN32_WCE >= 0x501)
+#define WAVEOUTCAPSW WAVEOUTCAPS
+#define waveOutGetDevCapsW waveOutGetDevCaps
+
+#if defined(__cplusplus) && _MSC_VER >= 1100
+#define DEFINE_GUIDSTRUCT(g, n) struct __declspec(uuid(g)) n
+#define DEFINE_GUIDNAMED(n) __uuidof(struct n)
+#else // !defined(__cplusplus)
+#define DEFINE_GUIDSTRUCT(g, n) DEFINE_GUIDEX(n)
+#define DEFINE_GUIDNAMED(n) n
+#endif // !defined(__cplusplus)
+
+#if !defined( STATIC_KSDATAFORMAT_SUBTYPE_PCM )
+#define STATIC_KSDATAFORMAT_SUBTYPE_PCM\
+    DEFINE_WAVEFORMATEX_GUID(WAVE_FORMAT_PCM)
+DEFINE_GUIDSTRUCT("00000001-0000-0010-8000-00aa00389b71", KSDATAFORMAT_SUBTYPE_PCM);
+#define KSDATAFORMAT_SUBTYPE_PCM DEFINE_GUIDNAMED(KSDATAFORMAT_SUBTYPE_PCM)
+#endif
+#else
+#define WAVEOUTCAPSW WAVEOUTCAPS
+#define waveOutGetDevCapsW waveOutGetDevCaps
+#define WAVE_FORMAT_EXTENSIBLE 65534
+
+typedef struct WAVEFORMATEXTENSIBLE {
+    WAVEFORMATEX Format;
+	union {
+		WORD wValidBitsPerSample;
+		WORD wSamplesPerBlock;
+		WORD wReserved;
+	} Samples;
+	DWORD dwChannelMask;
+	GUID SubFormat;
+} WAVEFORMATEXTENSIBLE;
+
+#if defined(__cplusplus) && _MSC_VER >= 1100
+#define DEFINE_GUIDSTRUCT(g, n) struct __declspec(uuid(g)) n
+#define DEFINE_GUIDNAMED(n) __uuidof(struct n)
+#else // !defined(__cplusplus)
+#define DEFINE_GUIDSTRUCT(g, n) DEFINE_GUIDEX(n)
+#define DEFINE_GUIDNAMED(n) n
+#endif // !defined(__cplusplus)
+
+#if !defined( STATIC_KSDATAFORMAT_SUBTYPE_PCM )
+#define STATIC_KSDATAFORMAT_SUBTYPE_PCM\
+    DEFINE_WAVEFORMATEX_GUID(WAVE_FORMAT_PCM)
+DEFINE_GUIDSTRUCT("00000001-0000-0010-8000-00aa00389b71", KSDATAFORMAT_SUBTYPE_PCM);
+#define KSDATAFORMAT_SUBTYPE_PCM DEFINE_GUIDNAMED(KSDATAFORMAT_SUBTYPE_PCM)
+#endif
+
+// Speaker Positions:
+#define SPEAKER_FRONT_LEFT              0x1
+#define SPEAKER_FRONT_RIGHT             0x2
+#define SPEAKER_FRONT_CENTER            0x4
+#define SPEAKER_LOW_FREQUENCY           0x8
+#define SPEAKER_BACK_LEFT               0x10
+#define SPEAKER_BACK_RIGHT              0x20
+#define SPEAKER_FRONT_LEFT_OF_CENTER    0x40
+#define SPEAKER_FRONT_RIGHT_OF_CENTER   0x80
+#define SPEAKER_BACK_CENTER             0x100
+#define SPEAKER_SIDE_LEFT               0x200
+#define SPEAKER_SIDE_RIGHT              0x400
+#define SPEAKER_TOP_CENTER              0x800
+#define SPEAKER_TOP_FRONT_LEFT          0x1000
+#define SPEAKER_TOP_FRONT_CENTER        0x2000
+#define SPEAKER_TOP_FRONT_RIGHT         0x4000
+#define SPEAKER_TOP_BACK_LEFT           0x8000
+#define SPEAKER_TOP_BACK_CENTER         0x10000
+#define SPEAKER_TOP_BACK_RIGHT          0x20000
+#endif
+#define BUFFLENG 16384
+
+void __stdcall Media::WaveOutRenderer::WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2)
+{
+	Media::WaveOutRenderer *me = (Media::WaveOutRenderer*)dwInstance;
+	if (uMsg == WOM_DONE)
+	{
+		me->buffEmpty[((WAVEHDR*)dwParam1)->dwUser] = true;
+		me->playEvt->Set();
+	}
+}
+
+UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
+{
+	Media::WaveOutRenderer *me = (Media::WaveOutRenderer *)obj;
+	Media::AudioFormat af;
+	Sync::Event *evt;
+	WAVEHDR hdrs[4];
+	Int32 i;
+	Int32 refStart;
+	Int32 audStartTime;
+	MMTIME mmt;
+	OSInt buffLeng = BUFFLENG;
+	OSInt minLeng;
+	Int32 thisT;
+	Int32 lastT;
+	Int32 stmEnd;
+	Bool needNotify = false;
+
+	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	NEW_CLASS(evt, Sync::Event((const UTF8Char*)"Media.WaveOutRenderer.PlayThread.evt"));
+
+	me->playing = true;
+	me->threadInit = true;
+	me->audsrc->GetFormat(&af);
+	if (me->buffTime)
+	{
+		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
+	}
+	i = 4;
+	MemClear(&hdrs[0], sizeof(WAVEHDR) * 4);
+	audStartTime = me->audsrc->GetCurrTime();
+	minLeng = me->audsrc->GetMinBlockSize();
+	if (minLeng > buffLeng)
+		buffLeng = minLeng;
+
+	me->clk->Start(audStartTime);
+	me->audsrc->Start(evt, (Int32)buffLeng);
+
+	waveOutRestart((HWAVEOUT)me->hwo);
+	waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
+	lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, &af);
+	refStart = thisT - audStartTime;
+	stmEnd = 0;
+
+	while (i-- > 0)
+	{
+		hdrs[i].dwBufferLength = (DWORD)buffLeng;
+		hdrs[i].lpData = MemAlloc(CHAR, buffLeng);
+		hdrs[i].dwUser = i;
+		me->buffEmpty[i] = false;
+		hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM((UInt8*)hdrs[i].lpData, buffLeng, &af);
+
+		waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+		waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+	}
+
+	while (!me->stopPlay)
+	{
+		i = 4;
+		while (i-- > 0)
+		{
+			if (me->buffEmpty[i])
+			{
+				me->buffEmpty[i] = false;
+				if (stmEnd == 4)
+				{
+					me->stopPlay = true;
+					me->audsrc->Stop();
+					needNotify = true;
+					break;
+				}
+				else if (stmEnd > 0)
+				{
+					stmEnd++;
+					hdrs[i].dwBufferLength = (DWORD)buffLeng;
+					MemClear(hdrs[i].lpData, buffLeng);
+				}
+				else
+				{
+					hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM((UInt8*)hdrs[i].lpData, buffLeng, &af);
+					if (hdrs[i].dwBufferLength == 0)
+					{
+						hdrs[i].dwBufferLength = (DWORD)buffLeng;
+						MemClear(hdrs[i].lpData, buffLeng);
+						stmEnd = 1;
+					}
+				}
+
+				waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+				waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+
+				waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
+				thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, &af);
+				if (lastT > thisT)
+				{
+					waveOutReset((HWAVEOUT)me->hwo);
+					waveOutRestart((HWAVEOUT)me->hwo);
+					waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
+					lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, &af);
+					refStart = thisT - me->audsrc->GetCurrTime();
+				}
+				else
+				{
+					me->clk->Start(thisT - refStart);
+					lastT = thisT;
+				}
+			}
+
+		}
+
+		me->playEvt->Wait();
+	}
+
+	waveOutPause((HWAVEOUT)me->hwo);
+	waveOutReset((HWAVEOUT)me->hwo);
+	i = 4;
+	while (i-- > 0)
+	{
+		MemFree(hdrs[i].lpData);
+	}
+
+	DEL_CLASS(evt);
+	me->playing = false;
+
+	if (needNotify)
+	{
+		if (me->endHdlr)
+		{
+			me->endHdlr(me->endHdlrObj);
+		}
+	}
+	return 0;
+}
+
+Int32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, AudioFormat *fmt)
+{
+	MMTIME *mmt = (MMTIME *)mmTime;
+	if (mmt->wType == TIME_MS)
+	{
+		return mmt->u.ms;
+	}
+	else if (mmt->wType == TIME_SAMPLES)
+	{
+		return MulDiv(mmt->u.sample, 1000, fmt->frequency);
+	}
+	else if (mmt->wType == TIME_BYTES)
+	{
+		return MulDiv(mmt->u.cb, 1000, fmt->frequency * fmt->nChannels * fmt->bitpersample >> 3);
+	}
+	else if (mmt->wType == TIME_SMPTE)
+	{
+		return mmt->u.smpte.hour * 3600000 + mmt->u.smpte.min * 60000 + mmt->u.smpte.sec * 1000 + MulDiv(mmt->u.smpte.frame, 1000, mmt->u.smpte.fps);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+OSInt Media::WaveOutRenderer::GetDeviceCount()
+{
+	return waveOutGetNumDevs();
+}
+
+UTF8Char *Media::WaveOutRenderer::GetDeviceName(UTF8Char *buff, OSInt devNo)
+{
+	WAVEOUTCAPSW caps;
+	waveOutGetDevCapsW(devNo, &caps, sizeof(caps));
+	return Text::StrWChar_UTF8(buff, caps.szPname, -1);
+}
+
+Media::WaveOutRenderer::WaveOutRenderer(const UTF8Char *devName)
+{
+	OSInt i = GetDeviceCount();
+	UTF8Char buff[256];
+	this->devId = -1;
+	if (devName == 0)
+	{
+		this->devId = 0;
+	}
+	else
+	{
+		while (i-- > 0)
+		{
+			if (GetDeviceName(buff, i))
+			{
+				if (Text::StrCompare(buff, devName) == 0)
+				{
+					this->devId = i;
+					break;
+				}
+			}
+		}
+	}
+	this->audsrc = 0;
+	this->playing = false;
+	this->endHdlr = 0;
+	this->buffTime = 0;
+}
+
+Media::WaveOutRenderer::WaveOutRenderer(Int32 devId)
+{
+	this->devId = devId;
+	this->audsrc = 0;
+	this->playing = false;
+	this->endHdlr = 0;
+	this->buffTime = 0;
+}
+
+Media::WaveOutRenderer::~WaveOutRenderer()
+{
+	if (this->audsrc)
+	{
+		BindAudio(0);
+	}
+}
+
+Bool Media::WaveOutRenderer::IsError()
+{
+	return false;
+}
+
+Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
+{
+	HWAVEOUT hwo;
+	Media::AudioFormat fmt;
+	if (playing)
+	{
+		Stop();
+	}
+	if (this->audsrc)
+	{
+		waveOutClose((HWAVEOUT)this->hwo);
+		this->audsrc = 0;
+		this->hwo = 0;
+		DEL_CLASS(playEvt);
+	}
+	if (audsrc == 0)
+		return false;
+
+	audsrc->GetFormat(&fmt);
+	if (fmt.formatId != 1 && fmt.formatId != WAVE_FORMAT_IEEE_FLOAT)
+	{
+		return false;
+	}
+
+	WAVEFORMATEXTENSIBLE format;
+	if (fmt.nChannels <= 2 && fmt.bitpersample <= 16)
+	{
+		format.Format.wFormatTag = 1;
+		format.Format.nSamplesPerSec = fmt.frequency;
+		format.Format.wBitsPerSample = fmt.bitpersample;
+		format.Format.nChannels = fmt.nChannels;
+		format.Format.nBlockAlign = fmt.nChannels * fmt.bitpersample >> 3;
+		format.Format.nAvgBytesPerSec = fmt.frequency * format.Format.nBlockAlign;
+		format.Format.cbSize = 0;
+	}
+	else
+	{
+		format.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
+		format.Format.nSamplesPerSec = fmt.frequency;
+		format.Format.wBitsPerSample = fmt.bitpersample;
+		format.Format.nChannels = fmt.nChannels;
+		format.Format.nBlockAlign = fmt.nChannels * fmt.bitpersample >> 3;
+		format.Format.nAvgBytesPerSec = fmt.frequency * format.Format.nBlockAlign;
+		format.Format.cbSize = 22;
+		format.Samples.wValidBitsPerSample = fmt.bitpersample;
+		if (fmt.formatId == 1)
+		{
+			format.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+		}
+#if defined(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+		else if (fmt.formatId == 3)
+		{
+			format.SubFormat = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+		}
+#endif
+		if (fmt.nChannels == 1)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_CENTER;
+		}
+		else if (fmt.nChannels == 2)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+		}
+		else if (fmt.nChannels == 3)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER;
+		}
+		else if (fmt.nChannels == 4)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+		}
+		else if (fmt.nChannels == 5)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+		}
+		else if (fmt.nChannels == 6)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+		}
+		else if (fmt.nChannels == 7)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_BACK_CENTER;
+		}
+		else if (fmt.nChannels == 8)
+		{
+			format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT;
+		}
+	}
+	if (waveOutOpen(&hwo, (UINT)this->devId, (WAVEFORMATEX*)&format, (DWORD_PTR)WaveEvents, (DWORD_PTR)this, CALLBACK_FUNCTION) == MMSYSERR_NOERROR)
+	{
+		this->hwo = hwo;
+		this->audsrc = audsrc;
+		NEW_CLASS(this->playEvt, Sync::Event((const UTF8Char*)"Media.WaveOutRenderer.playEvt"));
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Media::WaveOutRenderer::AudioInit(Media::RefClock *clk)
+{
+	if (playing)
+		return;
+	if (this->audsrc == 0)
+		return;
+	this->clk = clk;
+}
+
+void Media::WaveOutRenderer::Start()
+{
+	if (playing)
+		return;
+	if (this->audsrc == 0)
+		return;
+	threadInit = false;
+	stopPlay = false;
+	Sync::Thread::Create(PlayThread, this);
+	while (!threadInit)
+	{
+		Sync::Thread::Sleep(10);
+	}
+}
+
+void Media::WaveOutRenderer::Stop()
+{
+	stopPlay = true;
+	if (!playing)
+		return;
+	playEvt->Set();
+	if (this->audsrc)
+	{
+		this->audsrc->Stop();
+	}
+	while (playing)
+	{
+		Sync::Thread::Sleep(10);
+	}
+}
+
+Bool Media::WaveOutRenderer::IsPlaying()
+{
+	return this->playing;
+}
+
+void Media::WaveOutRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+{
+	this->endHdlr = endHdlr;
+	this->endHdlrObj = endHdlrObj;
+}
+
+Int32 Media::WaveOutRenderer::GetDeviceVolume()
+{
+	HMIXER hMxr;
+	Int32 vol = -1;
+	if (mixerOpen(&hMxr, 0, 0, 0, MIXER_OBJECTF_MIXER) != MMSYSERR_NOERROR)
+	{
+		hMxr = 0;
+	}
+	else
+	{
+		MIXERLINE ml;
+		MIXERLINECONTROLS mlc;
+		MIXERCONTROL mc;
+		MIXERCONTROLDETAILS mcd;
+		ZeroMemory(&mlc, sizeof(mlc));
+		ZeroMemory(&ml, sizeof(ml));
+		ml.cbStruct = sizeof(ml);
+		ml.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
+		if (mixerGetLineInfo((HMIXEROBJ)hMxr, &ml, MIXER_GETLINEINFOF_COMPONENTTYPE) == MMSYSERR_NOERROR)
+		{
+			mlc.cbStruct = sizeof(mlc);
+			mlc.dwLineID = ml.dwLineID;
+			mlc.dwControlType = MIXERCONTROL_CONTROLTYPE_VOLUME;
+			mlc.cControls = 1;
+			mlc.cbmxctrl = sizeof(mc);
+		    mlc.pamxctrl = &mc;
+			mc.cbStruct = sizeof(mc);
+			if (mixerGetLineControls((HMIXEROBJ)hMxr, &mlc, MIXER_GETLINECONTROLSF_ONEBYTYPE) == MMSYSERR_NOERROR)
+			{
+				mcd.cbStruct = sizeof(mcd);
+				mcd.dwControlID = mc.dwControlID;
+				mcd.cChannels = 1;
+				mcd.hwndOwner = 0;
+				mcd.cbDetails = sizeof(vol);
+				mcd.paDetails = &vol;
+				mixerGetControlDetails((HMIXEROBJ)hMxr, &mcd, MIXER_OBJECTF_HMIXER);
+			}
+		}
+		mixerClose(hMxr);
+	}
+	return vol;
+}
+
+void Media::WaveOutRenderer::SetDeviceVolume(Int32 volume)
+{
+	HMIXER hMxr;
+	if (volume > 65535)
+		volume = 65535;
+	if (mixerOpen(&hMxr, 0, 0, 0, MIXER_OBJECTF_MIXER) != MMSYSERR_NOERROR)
+	{
+		hMxr = 0;
+	}
+	else
+	{
+		MIXERLINE ml;
+		MIXERLINECONTROLS mlc;
+		MIXERCONTROL mc;
+		MIXERCONTROLDETAILS mcd;
+		ZeroMemory(&mlc, sizeof(mlc));
+		ZeroMemory(&ml, sizeof(ml));
+		ml.cbStruct = sizeof(ml);
+		ml.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
+		if (mixerGetLineInfo((HMIXEROBJ)hMxr, &ml, MIXER_GETLINEINFOF_COMPONENTTYPE) == MMSYSERR_NOERROR)
+		{
+			mlc.cbStruct = sizeof(mlc);
+			mlc.dwLineID = ml.dwLineID;
+			mlc.dwControlType = MIXERCONTROL_CONTROLTYPE_VOLUME;
+			mlc.cControls = 1;
+			mlc.cbmxctrl = sizeof(mc);
+		    mlc.pamxctrl = &mc;
+			mc.cbStruct = sizeof(mc);
+			if (mixerGetLineControls((HMIXEROBJ)hMxr, &mlc, MIXER_GETLINECONTROLSF_ONEBYTYPE) == MMSYSERR_NOERROR)
+			{
+				mcd.cbStruct = sizeof(mcd);
+				mcd.dwControlID = mc.dwControlID;
+				mcd.cChannels = 1;
+				mcd.hwndOwner = 0;
+				mcd.cbDetails = sizeof(volume);
+				mcd.paDetails = &volume;
+				mixerSetControlDetails((HMIXEROBJ)hMxr, &mcd, MIXER_OBJECTF_HMIXER);
+			}
+		}
+		mixerClose(hMxr);
+	}
+}
+
+void Media::WaveOutRenderer::SetBufferTime(Int32 ms)
+{
+	this->buffTime = ms;
+}
