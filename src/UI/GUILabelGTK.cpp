@@ -1,22 +1,23 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Text/CSSBuilder.h"
 #include "Text/MyString.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIClientControl.h"
 #include <gtk/gtk.h>
 
+#define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
+
 UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *label) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = gtk_label_new((const Char*)label);
 	parent->AddChild(this);
-#if GTK_MAJOR_VERSION == 3
-#if GTK_MINOR_VERSION >= 16
+#if GDK_VERSION_AFTER(3, 16)
 	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)this->hwnd), 0.0);
-#elif GTK_MINOR_VERSION < 14
-	gtk_misc_set_alignment(GTK_MISC((GtkWidget*)this->hwnd), 0.0, 0.0);
-#else
+#elif GDK_VERSION_AFTER(3, 14)
 	gtk_widget_set_halign((GtkWidget*)this->hwnd, GTK_ALIGN_START);
-#endif
+#else
+	gtk_misc_set_alignment(GTK_MISC((GtkWidget*)this->hwnd), 0.0, 0.0);
 #endif
 	this->Show();
 	this->hasTextColor = false;
@@ -56,11 +57,21 @@ void UI::GUILabel::SetTextColor(Int32 textColor)
 {
 	this->textColor = textColor;
 	this->hasTextColor = true;
+#if GDK_VERSION_AFTER(3, 16)
+	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
+	builder.NewStyle(0, 0);
+	builder.AddColorRGBA(textColor);
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	GtkCssProvider *styleProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+#else
 	GdkRGBA c;
 	c.red = ((textColor >> 16) & 0xff) / 255.0;
 	c.green = ((textColor >> 8) & 0xff) / 255.0;
 	c.blue = ((textColor >> 0) & 0xff) / 255.0;
 	c.alpha = ((textColor >> 24) & 0xff) / 255.0;
 	gtk_widget_override_color((GtkWidget*)this->hwnd, GTK_STATE_FLAG_NORMAL, &c);
+#endif
 }
 

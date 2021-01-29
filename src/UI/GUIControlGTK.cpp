@@ -2,12 +2,19 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/GTKDrawEngine.h"
+#include "Text/CSSBuilder.h"
 #include "Text/MyString.h"
+#include "Text/MyStringFloat.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIControl.h"
 #include "UI/GUIDragDropGTK.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
+
+#define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
+/*
+your_widget.get_style_context().add_class('red-background')
+*/
 
 gboolean GUIControl_ToGenDrawSignal(gpointer user_data)
 {
@@ -93,6 +100,7 @@ void *UI::GUIControl::GetFont()
 
 void UI::GUIControl::Show()
 {
+	this->UpdateFont();
 	gtk_widget_show((GtkWidget*)this->hwnd);
 	if (!this->inited)
 	{
@@ -294,12 +302,26 @@ void UI::GUIControl::InitFont()
 	pango_font_description_set_absolute_size(font, this->fontHeight * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (this->fontIsBold)
 		pango_font_description_set_weight(font, PANGO_WEIGHT_BOLD);
-	gtk_widget_override_font((GtkWidget*)this->hwnd, font);
 	if (this->hFont)
 	{
 		pango_font_description_free((PangoFontDescription *)this->hFont);
 	}
 	this->hFont = font;
+#if GDK_VERSION_AFTER(3, 16)
+	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
+	builder.NewStyle("label", 0);
+	if (this->fontName) builder.AddFontFamily(this->fontName);
+	if (this->fontHeight != 0) builder.AddFontSize(this->fontHeight * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
+	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
+	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkStyleContext *style = gtk_widget_get_style_context(widget);
+	GtkCssProvider *styleProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+	gtk_widget_reset_style(widget);
+#else
+	gtk_widget_override_font((GtkWidget*)this->hwnd, font);
+#endif
 }
 
 void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
@@ -340,6 +362,17 @@ void UI::GUIControl::SetEnabled(Bool isEnable)
 
 void UI::GUIControl::SetBGColor(Int32 bgColor)
 {
+#if GDK_VERSION_AFTER(3, 16)
+	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
+	builder.NewStyle(0, 0);
+	builder.AddBGColorRGBA(bgColor);
+
+	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkStyleContext *style = gtk_widget_get_style_context(widget);
+	GtkCssProvider *styleProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+#else
 	if (bgColor)
 	{
 		GdkRGBA color;
@@ -353,6 +386,7 @@ void UI::GUIControl::SetBGColor(Int32 bgColor)
 	{
 		gtk_widget_override_background_color((GtkWidget*)this->hwnd, GTK_STATE_FLAG_NORMAL, 0);
 	}
+#endif
 }
 
 Bool UI::GUIControl::IsFormFocused()
@@ -432,14 +466,35 @@ void UI::GUIControl::UpdateFont()
 	void *font = GetFont();
 	if (font)
 	{
+#if GDK_VERSION_AFTER(3, 16)
+		const Char *family = pango_font_description_get_family((PangoFontDescription*)font);
+		PangoWeight weight = pango_font_description_get_weight((PangoFontDescription*)font);
+		Double height = pango_font_description_get_size((PangoFontDescription*)font) / (Double)PANGO_SCALE;
+		
+		Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
+		builder.NewStyle(0, 0);
+		if (family) builder.AddFontFamily((const UTF8Char*)family);
+		if (height != 0) builder.AddFontSize(height, Math::Unit::Distance::DU_PIXEL);
+		if (weight != 0) builder.AddFontWeight((Text::CSSBuilder::FontWeight)weight);
+
+		GtkWidget *widget = (GtkWidget*)this->hwnd;
+		GtkStyleContext *style = gtk_widget_get_style_context(widget);
+		GtkCssProvider *styleProvider = gtk_css_provider_new();
+		gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+		gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+		gtk_widget_reset_style(widget);
+#else		
 		gtk_widget_override_font((GtkWidget*)this->hwnd, (PangoFontDescription*)font);
+#endif
 	}
 }
 
 void UI::GUIControl::UpdatePos(Bool redraw)
 {
+	Bool isForm = false;
 	if (Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"WinForm"))
 	{
+		isForm = true;
 		if (gtk_window_is_maximized((GtkWindow*)this->hwnd))
 		{
 			return;
@@ -455,7 +510,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi));
 		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 	}
-	else
+	else if (isForm)
 	{
 		Double newW = (this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi;
 		Double newH = (this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi;
@@ -512,7 +567,14 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 			gtk_window_resize((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
 			g_idle_add(GUIControl_SetNoResize, this->hwnd);
 		}
-		
+	}
+	else if (Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"TabPage"))
+	{
+
+	}
+	else
+	{
+		printf("%s is not WinForm without parent\r\n", this->GetObjectClass());
 	}
 }
 
@@ -523,6 +585,13 @@ void UI::GUIControl::Redraw()
 
 void UI::GUIControl::SetCapture()
 {
+#if GDK_VERSION_AFTER(3, 20)
+	GdkSeat *seat = gdk_display_get_default_seat(gdk_display_get_default());
+	if (seat)
+	{
+		gdk_seat_grab(seat, gtk_widget_get_window((GtkWidget*)this->hwnd), GDK_SEAT_CAPABILITY_ALL_POINTING, TRUE, 0, 0, 0, 0);
+	}
+#else
 	GdkDevice *dev = gtk_get_current_event_device();
 	if (dev == 0)
 	{
@@ -531,9 +600,17 @@ void UI::GUIControl::SetCapture()
 	{
 		gdk_device_grab(dev, gtk_widget_get_window((GtkWidget*)this->hwnd), GDK_OWNERSHIP_WINDOW, TRUE, (GdkEventMask)(GDK_BUTTON_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK), 0, GDK_CURRENT_TIME);
 	}
+#endif
 }
 void UI::GUIControl::ReleaseCapture()
 {
+#if GDK_VERSION_AFTER(3, 20)
+	GdkSeat *seat = gdk_display_get_default_seat(gdk_display_get_default());
+	if (seat)
+	{
+		gdk_seat_ungrab(seat);
+	}
+#else
 	GdkDevice *dev = gtk_get_current_event_device();
 	if (dev == 0)
 	{
@@ -542,6 +619,7 @@ void UI::GUIControl::ReleaseCapture()
 	{
 		gdk_device_ungrab(dev, GDK_CURRENT_TIME);
 	}
+#endif
 }
 
 void UI::GUIControl::SetCursor(CursorType curType)
@@ -579,7 +657,7 @@ void *UI::GUIControl::GetHandle()
 
 void *UI::GUIControl::GetHMonitor()
 {
-#if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
+#if GDK_VERSION_AFTER(3, 22)
 	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd);
 	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd);
 	if (display == 0)

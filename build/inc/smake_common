@@ -3073,6 +3073,8 @@ Text/ChineseInfo.h: ../../src/Text/ChineseInfo.cpp
 @ChineseInfo.o
 Text/CodeProject.h: ../../src/Text/CodeProject.cpp
 @CodeProject.o
+Text/CSSBuilder.h: ../../src/Text/CSSBuilder.cpp
+@CSSBuilder.o
 Text/Encoding.h: ../../src/Text/Encoding.cpp
 @Encoding.o
 Text/EncodingFactory.h: ../../src/Text/EncodingFactory.cpp
@@ -4331,6 +4333,7 @@ TestSIM7000.o: ../../src/Test/TestSIM7000.cpp
 CharUtil.o: ../../src/Text/CharUtil.cpp
 ChineseInfo.o: ../../src/Text/ChineseInfo.cpp
 CodeProject.o: ../../src/Text/CodeProject.cpp
+CSSBuilder.o: ../../src/Text/CSSBuilder.cpp
 Encoding.o: ../../src/Text/Encoding.cpp
 EncodingFactory.o: ../../src/Text/EncodingFactory.cpp
 HKSCSFix.o: ../../src/Text/HKSCSFix.cpp

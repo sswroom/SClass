@@ -1,9 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
+#include "Text/CSSBuilder.h"
 #include "Text/MyString.h"
+#include "Text/MyStringFloat.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIClientControl.h"
 #include <gtk/gtk.h>
+
+#define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 
 void GUIButton_EventClicked(void *window, void *userObj)
 {
@@ -92,6 +97,20 @@ void UI::GUIButton::SetText(const UTF8Char *text)
 
 void UI::GUIButton::SetFont(const UTF8Char *name, Double fontHeight, Bool isBold)
 {
+	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd);
+#if GDK_VERSION_AFTER(3, 16)
+	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
+	builder.NewStyle("label", 0);
+	if (name) builder.AddFontFamily(name);
+	if (fontHeight != 0) builder.AddFontSize(fontHeight, Math::Unit::Distance::DU_PIXEL);
+	if (isBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
+
+	GtkStyleContext *style = gtk_widget_get_style_context(widget);
+	GtkCssProvider *styleProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+	gtk_widget_reset_style(widget);
+#else
 	PangoFontDescription *font = pango_font_description_new();
 	if (name)
 	{
@@ -100,8 +119,9 @@ void UI::GUIButton::SetFont(const UTF8Char *name, Double fontHeight, Bool isBold
 	pango_font_description_set_absolute_size(font, fontHeight * PANGO_SCALE);
 	if (isBold)
 		pango_font_description_set_weight(font, PANGO_WEIGHT_BOLD);
-	gtk_widget_override_font(gtk_bin_get_child((GtkBin*)this->hwnd), font); 	
+	gtk_widget_override_font(widget, font); 	
 	pango_font_description_free(font);
+#endif
 }
 
 const UTF8Char *UI::GUIButton::GetObjectClass()
