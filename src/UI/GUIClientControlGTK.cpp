@@ -104,7 +104,6 @@ void UI::GUIClientControl::AddChild(GUIControl *child)
 	gtk_fixed_put((GtkFixed*)data->container, (GtkWidget*)child->GetHandle(), 0, 0);
 	this->children->Add(child);
 	this->selfResize = false;
-	child->SetDPI(this->hdpi, this->ddpi);
 }
 
 OSInt UI::GUIClientControl::GetChildCount()

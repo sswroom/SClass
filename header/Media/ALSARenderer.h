@@ -18,6 +18,7 @@ namespace Media
 		Media::RefClock *clk;
 		EndNotifier endHdlr;
 		void *endHdlrObj;
+		Bool dataConv;
 
 		Int32 buffTime;
 

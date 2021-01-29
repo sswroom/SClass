@@ -767,6 +767,7 @@ GUITest9.o: ../../main/UI/GUITest9.cpp
 
 sdefs.h:
 Stdafx.h:
+SIMD.h:
 
 Core/ConsoleControl.h:
 Core/Core.h: ../../src/Core/Core.cpp
@@ -1649,6 +1650,8 @@ Media/IVideoSource.h: ../../src/Media/IVideoSource.cpp
 @IVideoSource.o
 Media/JPEGFile.h: ../../src/Media/JPEGFile.cpp
 @JPEGFile.o
+Media/LPCMConverter.h: ../../src/Media/LPCMConverter.cpp
+@LPCMConverter.o
 Media/LPCMSource.h: ../../src/Media/LPCMSource.cpp
 @LPCMSource.o
 Media/LRGBLimiter.h:
@@ -3653,6 +3656,7 @@ ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
 IRealtimeVideoSource.o: ../../src/Media/IRealtimeVideoSource.cpp
 IVideoSource.o: ../../src/Media/IVideoSource.cpp
 JPEGFile.o: ../../src/Media/JPEGFile.cpp
+LPCMConverter.o: ../../src/Media/LPCMConverter.cpp
 LPCMSource.o: ../../src/Media/LPCMSource.cpp
 LUT.o: ../../src/Media/LUT.cpp
 M2VFile.o: ../../src/Media/M2VFile.cpp
