@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRRESTFULFORM
 #define _SM_SSWR_AVIREAD_AVIRRESTFULFORM
 #include "Data/ArrayListStrUTF8.h"
+#include "DB/DBCache.h"
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -29,6 +30,9 @@ namespace SSWR
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
 			DB::DBConn *dbConn;
+			DB::DBTool *db;
+			DB::DBCache *dbCache;
+			DB::DBModel *dbModel;
 
 			UI::GUITabControl *tcMain;
 
@@ -64,6 +68,8 @@ namespace SSWR
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnStopClick(void *userObj);
 			static void __stdcall OnLogSel(void *userObj);
+			
+			void InitDB();
 		public:
 			AVIRRESTfulForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRRESTfulForm();

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/SQLBuilder.h"
+#include "DB/TableDef.h"
 #include "Text/MyStringW.h"
 
 DB::SQLBuilder::SQLBuilder(DB::DBUtil::ServerType svrType)
@@ -73,6 +74,30 @@ void DB::SQLBuilder::AppendBinary(const UInt8 *buff, OSInt buffSize)
 {
 	sb->AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->svrType));
 	sb->SetEndPtr(DB::DBUtil::SDBBin(sb->GetEndPtr(), buff, buffSize, this->svrType));
+}
+
+void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
+{
+	const UTF8Char *name;
+	if ((name = table->GetDatabaseName()) != 0)
+	{
+		this->AppendCol(name);
+		sb->AppendChar('.', 1);
+	}
+	name = table->GetTableName();
+	OSInt i = Text::StrIndexOf(name, '.');
+	if (i >= 0)
+	{
+		const UTF8Char *catalog = Text::StrCopyNewC(name, i);
+		this->AppendCol(catalog);
+		sb->AppendChar('.', 1);
+		Text::StrDelNew(catalog);
+		this->AppendCol(name + i + 1);
+	}
+	else
+	{
+		this->AppendCol(name);
+	}
 }
 
 void DB::SQLBuilder::AppendCol(const UTF8Char *val)

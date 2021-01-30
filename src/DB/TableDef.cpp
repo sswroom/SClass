@@ -5,6 +5,7 @@
 
 DB::TableDef::TableDef(const UTF8Char *tableName)
 {
+	this->databaseName = 0;
 	this->tableName = Text::StrCopyNew(tableName);
 	this->engine = 0;
 	this->charset = 0;
@@ -17,31 +18,12 @@ DB::TableDef::TableDef(const UTF8Char *tableName)
 DB::TableDef::~TableDef()
 {
 	OSInt i;
-	if (this->tableName)
-	{
-		Text::StrDelNew(this->tableName);
-		this->tableName = 0;
-	}
-	if (this->engine)
-	{
-		Text::StrDelNew(this->engine);
-		this->engine = 0;
-	}
-	if (this->charset)
-	{
-		Text::StrDelNew(this->charset);
-		this->charset = 0;
-	}
-	if (this->attr)
-	{
-		Text::StrDelNew(this->attr);
-		this->attr = 0;
-	}
-	if (this->comments)
-	{
-		Text::StrDelNew(this->comments);
-		this->comments = 0;
-	}
+	SDEL_TEXT(this->databaseName);
+	SDEL_TEXT(this->tableName);
+	SDEL_TEXT(this->engine);
+	SDEL_TEXT(this->charset);
+	SDEL_TEXT(this->attr);
+	SDEL_TEXT(this->comments);
 	i = this->cols->GetCount();
 	while (i-- > 0)
 	{
@@ -49,6 +31,11 @@ DB::TableDef::~TableDef()
 	}
 	DEL_CLASS(this->cols);
 	this->cols = 0;
+}
+
+const UTF8Char *DB::TableDef::GetDatabaseName()
+{
+	return this->databaseName;
 }
 
 const UTF8Char *DB::TableDef::GetTableName()
@@ -91,92 +78,56 @@ DB::ColDef *DB::TableDef::GetCol(UOSInt index)
 	return this->cols->GetItem(index);
 }
 
-void DB::TableDef::AddCol(DB::ColDef *col)
+DB::TableDef *DB::TableDef::AddCol(DB::ColDef *col)
 {
 	this->cols->Add(col);
+	return this;
 }
 
-void DB::TableDef::SetTableName(const UTF8Char *tableName)
+DB::TableDef *DB::TableDef::SetDatabaseName(const UTF8Char *databaseName)
 {
-	if (this->tableName)
-	{
-		Text::StrDelNew(this->tableName);
-	}
-	if (tableName)
-	{
-		this->tableName = Text::StrCopyNew(tableName);
-	}
-	else
-	{
-		this->tableName = 0;
-	}
+	SDEL_TEXT(this->databaseName);
+	this->databaseName = SCOPY_TEXT(databaseName);
+	return this;
 }
 
-void DB::TableDef::SetEngine(const UTF8Char *engine)
+DB::TableDef *DB::TableDef::SetTableName(const UTF8Char *tableName)
 {
-	if (this->engine)
-	{
-		Text::StrDelNew(this->engine);
-	}
-	if (engine)
-	{
-		this->engine = Text::StrCopyNew(engine);
-	}
-	else
-	{
-		this->engine = 0;
-	}
+	SDEL_TEXT(this->tableName);
+	this->tableName = SCOPY_TEXT(tableName);
+	return this;
 }
 
-void DB::TableDef::SetCharset(const UTF8Char *charset)
+DB::TableDef *DB::TableDef::SetEngine(const UTF8Char *engine)
 {
-	if (this->charset)
-	{
-		Text::StrDelNew(this->charset);
-	}
-	if (charset)
-	{
-		this->charset = Text::StrCopyNew(charset);
-	}
-	else
-	{
-		this->charset = 0;
-	}
+	SDEL_TEXT(this->engine);
+	this->engine = SCOPY_TEXT(engine);
+	return this;
 }
 
-void DB::TableDef::SetAttr(const UTF8Char *attr)
+DB::TableDef *DB::TableDef::SetCharset(const UTF8Char *charset)
 {
-	if (this->attr)
-	{
-		Text::StrDelNew(this->attr);
-	}
-	if (attr)
-	{
-		this->attr = Text::StrCopyNew(attr);
-	}
-	else
-	{
-		this->attr = 0;
-	}
+	SDEL_TEXT(this->charset);
+	this->charset = SCOPY_TEXT(charset);
+	return this;
 }
 
-void DB::TableDef::SetComments(const UTF8Char *comments)
+DB::TableDef *DB::TableDef::SetAttr(const UTF8Char *attr)
 {
-	if (this->comments)
-	{
-		Text::StrDelNew(this->comments);
-	}
-	if (comments)
-	{
-		this->comments = Text::StrCopyNew(comments);
-	}
-	else
-	{
-		this->comments = 0;
-	}
+	SDEL_TEXT(this->attr);
+	this->attr = SCOPY_TEXT(attr);
+	return this;
 }
 
-void DB::TableDef::SetSvrType(DB::DBUtil::ServerType svrType)
+DB::TableDef *DB::TableDef::SetComments(const UTF8Char *comments)
+{
+	SDEL_TEXT(this->comments)
+	this->comments = SCOPY_TEXT(comments);
+	return this;
+}
+
+DB::TableDef *DB::TableDef::SetSvrType(DB::DBUtil::ServerType svrType)
 {
 	this->svrType = svrType;
+	return this;
 }

@@ -13,6 +13,6 @@ namespace Net
 			virtual void WebRequest(IWebRequest *req, IWebResponse *resp) = 0;
 			virtual void Release() = 0;
 		};
-	};
-};
+	}
+}
 #endif

@@ -20,8 +20,8 @@ namespace Data
 		virtual ~ArrayList();
 
 		virtual UOSInt Add(T val);
-		void AddRange(ArrayList<T> *arr);
-		void AddRange(T *arr, UOSInt cnt);
+		UOSInt AddRange(ArrayList<T> *arr);
+		UOSInt AddRange(T *arr, UOSInt cnt);
 		Bool Remove(T val);
 		T RemoveAt(UOSInt index);
 		void Insert(UOSInt Index, T Val);
@@ -80,7 +80,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> void ArrayList<T>::AddRange(ArrayList<T> *arr)
+	template <class T> UOSInt ArrayList<T>::AddRange(ArrayList<T> *arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
@@ -99,9 +99,10 @@ namespace Data
 		}
 		MemCopyNO(&this->arr[objCnt], arr->arr, cnt * sizeof(T));
 		this->objCnt += cnt;
+		return cnt;
 	}
 
-	template <class T> void ArrayList<T>::AddRange(T *arr, UOSInt cnt)
+	template <class T> UOSInt ArrayList<T>::AddRange(T *arr, UOSInt cnt)
 	{
 		if (objCnt + cnt >= this->capacity)
 		{
@@ -119,6 +120,7 @@ namespace Data
 		}
 		MemCopyNO(&this->arr[objCnt], arr, cnt * sizeof(T));
 		this->objCnt += cnt;
+		return cnt;
 	}
 
 	template <class T> Bool ArrayList<T>::Remove(T val)
@@ -336,5 +338,7 @@ namespace Data
 		return this->arr;
 	}
 }
+
+#define DEL_LIST_FUNC(list, func) { UOSInt i = list->GetCount(); while (i-- > 0) func(list->GetItem(i)); }
 
 #endif

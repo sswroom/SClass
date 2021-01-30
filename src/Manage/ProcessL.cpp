@@ -99,7 +99,10 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 		if (i >= 0)
 		{
 			progName[i] = 0;
-			chdir((Char*)progName);
+			if (chdir((Char*)progName) == -1)
+			{
+				printf("Process: cannot change to program path\r\n");
+			}
 			progName[i] = IO::Path::PATH_SEPERATOR;
 		}
 		int ret = execvp((Char*)progName, (Char**)args);
@@ -157,7 +160,10 @@ Manage::Process::Process(const WChar *cmdLine)
 		if (i >= 0)
 		{
 			progName[i] = 0;
-			chdir((Char*)progName);
+			if (chdir((Char*)progName) == -1)
+			{
+				printf("Process: cannot change to program path\r\n");
+			}
 			progName[i] = IO::Path::PATH_SEPERATOR;
 		}
 		int ret = execvp((Char*)progName, (Char**)args);

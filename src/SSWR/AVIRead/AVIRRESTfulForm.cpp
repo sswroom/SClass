@@ -16,11 +16,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(void *user
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRMySQLConnForm(0, me->GetUI(), me->core));
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
+		SDEL_CLASS(me->dbCache);
+		SDEL_CLASS(me->dbModel);
+		SDEL_CLASS(me->db);
 		SDEL_CLASS(me->dbConn);
 		me->dbConn = frm->GetDBConn();
-		Text::StringBuilderUTF8 sb;
-		me->dbConn->GetConnName(&sb);
-		me->txtDatabase->SetText(sb.ToString());
+		me->InitDB();
 	}
 	DEL_CLASS(frm);
 }
@@ -32,11 +33,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(void *us
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRODBCDSNForm(0, me->GetUI(), me->core));
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
+		SDEL_CLASS(me->dbCache);
+		SDEL_CLASS(me->dbModel);
+		SDEL_CLASS(me->db);
 		SDEL_CLASS(me->dbConn);
 		me->dbConn = frm->GetDBConn();
-		Text::StringBuilderUTF8 sb;
-		me->dbConn->GetConnName(&sb);
-		me->txtDatabase->SetText(sb.ToString());
+		me->InitDB();
 	}
 	DEL_CLASS(frm);
 }
@@ -62,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 
 	if (port > 0 && port <= 65535)
 	{
-		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbConn, me->log));
+		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), me->restHdlr, port, 120, Sync::Thread::GetThreadCnt(), (const UTF8Char*)"sswr", me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
 		if (me->svr->IsError())
 		{
@@ -96,14 +98,14 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			UOSInt i;
 			UOSInt j;
 			OSInt k;
-			me->restHdlr->GetTableNames(&tableNames);
+			me->dbModel->GetTableNames(&tableNames);
 			i = 0;
 			j = tableNames.GetCount();
 			while (i < j)
 			{
 				tableName = tableNames.GetItem(i);
 				k = me->lvTable->AddItem(tableName, 0);
-				Text::StrOSInt(sbuff, me->restHdlr->GetRowCount(tableName));
+				Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
 				me->lvTable->SetSubItem(k, 1, sbuff);
 				i++;
 			}
@@ -173,6 +175,17 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 	me->lbLog->DelTextNew(t);
 }
 
+void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
+{
+	Text::StringBuilderUTF8 sb;
+	this->dbConn->GetConnName(&sb);
+	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, false, (const UTF8Char*)"DB: "));
+	NEW_CLASS(this->dbModel, DB::DBModel());
+	this->dbModel->LoadDatabase(this->db, 0);
+	NEW_CLASS(this->dbCache, DB::DBCache(this->dbModel, this->db));
+	this->txtDatabase->SetText(sb.ToString());
+}
+
 SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
@@ -183,7 +196,10 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->svr = 0;
 	this->log = 0;
 	this->logger = 0;
+	this->db = 0;
 	this->dbConn = 0;
+	this->dbCache = 0;
+	this->dbModel = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -261,6 +277,9 @@ SSWR::AVIRead::AVIRRESTfulForm::~AVIRRESTfulForm()
 		this->restHdlr->Release();
 		this->restHdlr = 0;
 	}
+	SDEL_CLASS(this->dbCache);
+	SDEL_CLASS(this->dbModel);
+	SDEL_CLASS(this->db);
 	SDEL_CLASS(this->dbConn);
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);

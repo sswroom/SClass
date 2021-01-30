@@ -6,6 +6,8 @@
 
 namespace DB
 {
+	class TableDef;
+	
 	class SQLBuilder
 	{
 	private:
@@ -27,6 +29,7 @@ namespace DB
 		void AppendVector(Math::Vector2D *vec, Int32 srId);
 		void AppendBinary(const UInt8 *buff, OSInt buffSize);
 
+		void AppendTableName(DB::TableDef *table);
 		void AppendCol(const UTF8Char *val);
 		void AppendCol(const WChar *val);
 		void AppendTrim(const UTF8Char *val);

@@ -490,4 +490,6 @@ FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *des
 	}
 }
 
+#define SMEMFREE(ptr) {if (ptr) {MemFree(ptr); ptr = 0;} }
+
 #endif

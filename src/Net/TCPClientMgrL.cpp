@@ -267,7 +267,10 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			cliStat->recvDataExist = cliStat->cli->GetRecvBuffSize() > 0;
 			cliStat->readMut->Unlock();
 			clsData->hasData = true;
-			write(clsData->pipewrfd, "", 1);
+			if (write(clsData->pipewrfd, "", 1) == -1)
+			{
+				printf("TCPClientMgr: Error in writing to pipe\r\n");
+			}
 		}
 		me->cliMut->Lock();
 		dt->SetCurrTimeUTC();
@@ -455,7 +458,10 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	this->cliArr->Insert(this->cliIdArr->SortedInsert(cli->GetCliId()), cliStat);
 	cliStat->readMut->Unlock();
 	this->cliMut->Unlock();
-	write(((ClassData*)this->clsData)->pipewrfd, "", 1);
+	if (write(((ClassData*)this->clsData)->pipewrfd, "", 1) == -1)
+	{
+		printf("TCPClientMgr: Error in writing to pipe\r\n");
+	}
 }
 
 Bool Net::TCPClientMgr::SendClientData(Int64 cliId, const UInt8 *buff, UOSInt buffSize)

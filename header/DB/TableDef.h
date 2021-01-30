@@ -9,6 +9,7 @@ namespace DB
 	class TableDef
 	{
 	private:
+		const UTF8Char *databaseName;
 		const UTF8Char *tableName;
 		const UTF8Char *engine;
 		const UTF8Char *charset;
@@ -22,6 +23,7 @@ namespace DB
 		TableDef(const UTF8Char *tableName);
 		~TableDef();
 
+		const UTF8Char *GetDatabaseName();
 		const UTF8Char *GetTableName();
 		const UTF8Char *GetEngine();
 		const UTF8Char *GetCharset();
@@ -31,13 +33,14 @@ namespace DB
 		UOSInt GetColCnt();
 		DB::ColDef *GetCol(UOSInt index);
 
-		void AddCol(DB::ColDef *col);
-		void SetTableName(const UTF8Char *tableName);
-		void SetEngine(const UTF8Char *engine);
-		void SetCharset(const UTF8Char *charset);
-		void SetAttr(const UTF8Char *attr);
-		void SetComments(const UTF8Char *comments);
-		void SetSvrType(DB::DBUtil::ServerType svrType);
+		TableDef *AddCol(DB::ColDef *col);
+		TableDef *SetDatabaseName(const UTF8Char *databaseName);
+		TableDef *SetTableName(const UTF8Char *tableName);
+		TableDef *SetEngine(const UTF8Char *engine);
+		TableDef *SetCharset(const UTF8Char *charset);
+		TableDef *SetAttr(const UTF8Char *attr);
+		TableDef *SetComments(const UTF8Char *comments);
+		TableDef *SetSvrType(DB::DBUtil::ServerType svrType);
 	};
 }
 #endif
