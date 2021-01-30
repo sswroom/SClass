@@ -117,6 +117,43 @@ void __stdcall SSWR::AVIRead::AVIRMediaPlayer::VideoCropImage(void *userObj, UIn
 	me->vbox->UpdateCrop();
 }
 
+void SSWR::AVIRead::AVIRMediaPlayer::ReleaseAudio()
+{
+	this->core->BindAudio(0);
+	this->arenderer = 0;
+	SDEL_CLASS(this->currADecoder);
+}
+
+Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime)
+{
+	Bool ret = false;
+	this->arenderer = this->core->BindAudio(asrc);
+	if (this->arenderer)
+	{
+		this->vbox->SetTimeDelay(syncTime);
+		this->currAStm = asrc;
+		ret = true;
+	}
+	else
+	{
+		this->currADecoder = this->adecoders->DecodeAudio(asrc);
+		if (this->currADecoder)
+		{
+			if ((this->arenderer = this->core->BindAudio(this->currADecoder)) != 0)
+			{
+				this->vbox->SetTimeDelay(syncTime);
+				this->currAStm = asrc;
+				ret = true;
+			}
+			else
+			{
+				SDEL_CLASS(this->currADecoder);
+			}
+		}
+	}
+	return ret;
+}
+
 SSWR::AVIRead::AVIRMediaPlayer::AVIRMediaPlayer(UI::GUIVideoBoxDD *vbox, SSWR::AVIRead::AVIRCore *core)
 {
 	this->core = core;
@@ -154,7 +191,6 @@ void SSWR::AVIRead::AVIRMediaPlayer::SetEndHandler(PBEndHandler hdlr, void *user
 Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 {
 	Bool videoFound;
-	Bool audioFound;
 	this->currFile = file;
 	if (this->arenderer) this->arenderer->Stop();
 	if (this->vbox)
@@ -162,26 +198,20 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 		this->vbox->StopPlay();
 		this->vbox->SetVideo(0);
 	}
-	this->core->BindAudio(0);
+	this->ReleaseAudio();
 	this->currAStm = 0;
-	this->arenderer = 0;
 	this->currVStm = 0;
 	this->currChapInfo = 0;
-	SDEL_CLASS(this->currADecoder);
 	SDEL_CLASS(this->currVDecoder);
 	if (this->currFile == 0)
 	{
 		return true;
 	}
 	this->currChapInfo = this->currFile->GetChapterInfo();
-	this->core->BindAudio(0);
-	this->arenderer = 0;
-	SDEL_CLASS(this->currADecoder);
 
 	OSInt i = 0;
 	Int32 syncTime;
 	videoFound = false;
-	audioFound = false;
 	while (true)
 	{
 		Media::MediaType mt;
@@ -208,39 +238,14 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 		}
 		else if (mt == Media::MEDIA_TYPE_AUDIO && this->arenderer == 0)
 		{
-			Media::IAudioSource *asrc = (Media::IAudioSource*)msrc;
-			this->arenderer = this->core->BindAudio(asrc);
-			if (this->arenderer)
-			{
-				this->vbox->SetTimeDelay(syncTime);
-				this->currAStm = asrc;
-				audioFound = true;
-			}
-			else
-			{
-				this->currADecoder = this->adecoders->DecodeAudio(asrc);
-				if (this->currADecoder)
-				{
-					if ((this->arenderer = this->core->BindAudio(this->currADecoder)) != 0)
-					{
-						this->vbox->SetTimeDelay(syncTime);
-						this->currAStm = asrc;
-						audioFound = true;
-					}
-					else
-					{
-						SDEL_CLASS(this->currADecoder);
-					}
-				}
-			}
-
+			this->SwitchAudioSource((Media::IAudioSource*)msrc, syncTime);
 		}
 		i++;
 	}
 	this->vbox->SetHasAudio(this->arenderer != 0);
 	this->currTime = 0;
 
-	return videoFound || audioFound;
+	return videoFound || this->arenderer;
 }
 
 Bool SSWR::AVIRead::AVIRMediaPlayer::StartPlayback()
@@ -286,7 +291,31 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SeekTo(Int32 time)
 
 Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudio(OSInt index)
 {
-	//////////////////////////////
+	this->ReleaseAudio();
+	if (this->currFile == 0)
+	{
+		return true;
+	}
+
+	OSInt i = 0;
+	Int32 syncTime;
+	while (true)
+	{
+		Media::MediaType mt;
+		Media::IMediaSource *msrc = this->currFile->GetStream(i, &syncTime);
+		if (msrc == 0)
+			break;
+		mt = msrc->GetMediaType();
+		if (mt == Media::MEDIA_TYPE_AUDIO)
+		{
+			if (index == 0)
+			{
+				return this->SwitchAudioSource((Media::IAudioSource*)msrc, syncTime);
+			}
+			index--;
+		}
+		i++;
+	}
 	return false;
 }
 

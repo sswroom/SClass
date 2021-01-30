@@ -85,7 +85,6 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	OSInt nextBlock;
 	OSInt readSize = 0;
 	UInt8 *readBuff = 0;
-	OSInt ret;
 	Bool isFirst = true;
 	if (me->dataConv)
 	{
@@ -191,7 +190,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			}
 			if (i >= buffSize[nextBlock] - outSize[nextBlock])
 			{
-				ret = snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
 //				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
 				i -= buffSize[nextBlock] - outSize[nextBlock];
 
@@ -211,7 +210,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			}
 			else
 			{
-				ret = snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], i / (outBitPerSample >> 3) / af.nChannels);
+				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], i / (outBitPerSample >> 3) / af.nChannels);
 //				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
 				outSize[nextBlock] += i;
 				i = 0;

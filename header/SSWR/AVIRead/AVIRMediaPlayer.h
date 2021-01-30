@@ -41,6 +41,9 @@ namespace SSWR
 			static void __stdcall OnVideoEnd(void *userObj);
 			static void __stdcall OnAudioEnd(void *userObj);
 			static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img);
+
+			void ReleaseAudio();
+			Bool SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime);
 		public:
 			AVIRMediaPlayer(UI::GUIVideoBoxDD *vbox, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMediaPlayer();
