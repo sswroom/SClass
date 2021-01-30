@@ -361,15 +361,17 @@ void SSWR::AVIRead::AVIRCore::SetAudioDevice(Data::ArrayList<const UTF8Char *> *
 	}
 	SDEL_CLASS(this->audDevice);
 	NEW_CLASS(this->audDevice, Media::AudioDevice());
-	i = 0;
-	j = devList->GetCount();
-	while (i < j)
+	if (devList)
 	{
-		this->audDevice->AddDevice(devList->GetItem(i));
-		this->audDevList->Add(Text::StrCopyNew(devList->GetItem(i)));
-		i++;
+		i = 0;
+		j = devList->GetCount();
+		while (i < j)
+		{
+			this->audDevice->AddDevice(devList->GetItem(i));
+			this->audDevList->Add(Text::StrCopyNew(devList->GetItem(i)));
+			i++;
+		}
 	}
-	
 }
 
 Data::ArrayList<const UTF8Char *> *SSWR::AVIRead::AVIRCore::GetAudioDevices()

@@ -6,10 +6,10 @@
 #include "Manage/HiResClock.h"
 #include "Math/FFTCalc.h"
 #include "Math/Math.h"
+#include "Media/AudioFilter/DTMFDecoder.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilder.h"
-#include "Media/AudioFilter/DTMFDecoder.h"
 
 #define FFTAVG 1
 //#define SHOWLOG
@@ -522,11 +522,11 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			sizeLeft -= this->sampleBuffSize - this->sampleOfst;
 			this->sampleOfst = 0;
 		}
-		if (thisSize > 0)
+		else if (thisSize > 0)
 		{
 			MemCopyNO(&this->sampleBuff[this->sampleOfst], buff, thisSize);
 			buff += thisSize;
-			sizeLeft -= this->sampleBuffSize - this->sampleOfst;
+			sizeLeft -= thisSize;
 			this->sampleOfst += thisSize;
 		}
 		this->calcMut->Lock();

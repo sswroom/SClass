@@ -85,6 +85,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	OSInt nextBlock;
 	OSInt readSize = 0;
 	UInt8 *readBuff = 0;
+	OSInt ret;
 	Bool isFirst = true;
 	if (me->dataConv)
 	{
@@ -190,7 +191,8 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			}
 			if (i >= buffSize[nextBlock] - outSize[nextBlock])
 			{
-				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+				ret = snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
 				i -= buffSize[nextBlock] - outSize[nextBlock];
 
 				if (me->dataConv)
@@ -209,7 +211,8 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			}
 			else
 			{
-				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], i / (outBitPerSample >> 3) / af.nChannels);
+				ret = snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], i / (outBitPerSample >> 3) / af.nChannels);
+//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
 				outSize[nextBlock] += i;
 				i = 0;
 				break;
@@ -434,12 +437,49 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 
 	if (this->devName)
 	{
-		Text::StrConcat((UTF8Char*)cbuff, this->devName);
-//		cdevName = cbuff;
-	}
-	else
-	{
-//		cdevName = 0;
+		if (Text::StrStartsWith(this->devName, (const UTF8Char*)"hw:"))
+		{
+			Text::StrConcat((UTF8Char*)cbuff, this->devName);
+		}
+		else
+		{
+			Bool found = false;
+			snd_ctl_t *handle;
+			snd_ctl_card_info_t *info;
+			Int32 card = -1;
+			const char *cardName;
+			card = -1;
+			snd_ctl_card_info_alloca(&info);
+			while (snd_card_next(&card) >= 0 && card >= 0)
+			{
+				sprintf(cbuff, "hw:%d", card);
+				if (snd_ctl_open(&handle, cbuff, 0) < 0)
+				{
+					
+				}
+				else if (snd_ctl_card_info(handle, info) < 0)
+				{
+					snd_ctl_close(handle);
+				}
+				else
+				{
+					cardName = snd_ctl_card_info_get_name(info);
+					if (cardName)
+					{
+						if (Text::StrEquals((const UTF8Char*)cardName, this->devName))
+						{
+							found = true;
+						}
+					}
+					snd_ctl_close(handle);
+
+				}
+				if (found)
+				{
+					break;
+				}
+			}
+		}
 	}
 	err = snd_pcm_open(&hand, cbuff, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (err < 0)
