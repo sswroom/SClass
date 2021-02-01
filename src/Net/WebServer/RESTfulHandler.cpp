@@ -5,6 +5,8 @@
 #include "DB/SQLBuilder.h"
 #include "Net/WebServer/RESTfulHandler.h"
 
+#include <stdio.h>
+
 /*
 {
   "_embedded" : {
@@ -116,8 +118,23 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		}
 		else
 		{
-			
-			/////////////////////////
+			Text::StringBuilderUTF8 sb;
+			Data::ArrayList<DB::DBRow*> rows;
+			DB::DBRow *row;
+			this->dbCache->GetTableData(&rows, &subReq[1]);
+			UOSInt i = 0;
+			UOSInt j = rows.GetCount();
+			while (i < j)
+			{
+				row = rows.GetItem(i);
+				sb.ClearStr();
+				row->ToString(&sb);
+				printf("%s\r\n", sb.ToString());
+				i++;
+			}
+			this->dbCache->FreeTableData(&rows);
+			resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+			return true;
 		}
 	}
 	else if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "DB/DBRow.h"
+#include "Math/WKTWriter.h"
 
 void DB::DBRow::FreeField(DB::DBRow::Field *field)
 {
@@ -201,6 +202,132 @@ Bool DB::DBRow::SetFieldBinary(DB::DBRow::Field *field, const UInt8 *buff, UOSIn
 	return true;
 }
 
+Bool DB::DBRow::IsFieldNull(DB::DBRow::Field *field)
+{
+	if (field->currentChanged)
+	{
+		return field->currentNull;
+	}
+	else
+	{
+		return field->committedNull;
+	}
+}
+
+const UTF8Char *DB::DBRow::GetFieldStr(DB::DBRow::Field *field)
+{
+	DataType dtype = this->GetDataType(field);
+	if (dtype != DT_STRING)
+	{
+		return 0;
+	}
+	if (field->currentChanged)
+	{
+		return field->currentData.str;
+	}
+	else
+	{
+		return field->committedData.str;
+	}	
+}
+
+Int64 DB::DBRow::GetFieldInt64(DB::DBRow::Field *field)
+{
+	DataType dtype = this->GetDataType(field);
+	if (dtype != DT_INT64)
+	{
+		return 0;
+	}
+	if (field->currentChanged)
+	{
+		return field->currentData.iVal;
+	}
+	else
+	{
+		return field->committedData.iVal;
+	}
+}
+
+Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field)
+{
+	DataType dtype = this->GetDataType(field);
+	if (dtype != DT_DOUBLE)
+	{
+		return 0;
+	}
+	if (field->currentChanged)
+	{
+		return field->currentData.dVal;
+	}
+	else
+	{
+		return field->committedData.dVal;
+	}
+}
+
+Data::DateTime *DB::DBRow::GetFieldDate(DB::DBRow::Field *field)
+{
+	DataType dtype = this->GetDataType(field);
+	if (dtype != DT_DATETIME)
+	{
+		return 0;
+	}
+	if (field->currentChanged)
+	{
+		return field->currentData.dt;
+	}
+	else
+	{
+		return field->committedData.dt;
+	}
+}
+
+Math::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field)
+{
+	DataType dtype = this->GetDataType(field);
+	if (dtype != DT_VECTOR)
+	{
+		return 0;
+	}
+	if (field->currentChanged)
+	{
+		return field->currentData.vec;
+	}
+	else
+	{
+		return field->committedData.vec;
+	}	
+}
+
+const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize)
+{
+	DataType dtype = this->GetDataType(field);
+	if (dtype != DT_BINARY)
+	{
+		return 0;
+	}
+	const UInt8 *binBuff;
+	if (field->currentChanged)
+	{
+		binBuff = field->currentData.bin;
+	}
+	else
+	{
+		binBuff = field->committedData.bin;
+	}
+	
+	if (binBuff)
+	{
+		*buffSize = ReadUInt32(binBuff);
+		return binBuff + 4;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
 DB::DBRow::DBRow(TableDef *table)
 {
 	this->table = table;
@@ -300,6 +427,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 	{
 		this->Commit();
 	}
+	return true;
 }
 
 DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName)
@@ -402,14 +530,7 @@ Bool DB::DBRow::IsNull(const UTF8Char *fieldName)
 	{
 		return true;
 	}
-	if (field->currentChanged)
-	{
-		return field->currentNull;
-	}
-	else
-	{
-		return field->committedNull;
-	}
+	return this->IsFieldNull(field);
 }
 
 const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName)
@@ -419,20 +540,7 @@ const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName)
 	{
 		return 0;
 	}
-	DataType dtype = this->GetDataType(field);
-	if (dtype != DT_STRING)
-	{
-		return 0;
-	}
-	if (field->currentChanged)
-	{
-		return field->currentData.str;
-	}
-	else
-	{
-		return field->committedData.str;
-	}	
-
+	return this->GetFieldStr(field);
 }
 
 Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName)
@@ -442,19 +550,7 @@ Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName)
 	{
 		return 0;
 	}
-	DataType dtype = this->GetDataType(field);
-	if (dtype != DT_INT64)
-	{
-		return 0;
-	}
-	if (field->currentChanged)
-	{
-		return field->currentData.iVal;
-	}
-	else
-	{
-		return field->committedData.iVal;
-	}	
+	return this->GetFieldInt64(field);
 }
 
 Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName)
@@ -464,20 +560,7 @@ Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName)
 	{
 		return 0;
 	}
-	DataType dtype = this->GetDataType(field);
-	if (dtype != DT_DOUBLE)
-	{
-		return 0;
-	}
-	if (field->currentChanged)
-	{
-		return field->currentData.dVal;
-	}
-	else
-	{
-		return field->committedData.dVal;
-	}	
-
+	return this->GetFieldDouble(field);
 }
 
 Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName)
@@ -487,19 +570,7 @@ Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName)
 	{
 		return 0;
 	}
-	DataType dtype = this->GetDataType(field);
-	if (dtype != DT_DATETIME)
-	{
-		return 0;
-	}
-	if (field->currentChanged)
-	{
-		return field->currentData.dt;
-	}
-	else
-	{
-		return field->committedData.dt;
-	}	
+	return this->GetFieldDate(field);
 }
 
 Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName)
@@ -509,19 +580,7 @@ Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName)
 	{
 		return 0;
 	}
-	DataType dtype = this->GetDataType(field);
-	if (dtype != DT_VECTOR)
-	{
-		return 0;
-	}
-	if (field->currentChanged)
-	{
-		return field->currentData.vec;
-	}
-	else
-	{
-		return field->committedData.vec;
-	}	
+	return this->GetFieldVector(field);
 }
 
 const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize)
@@ -531,30 +590,7 @@ const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSi
 	{
 		return 0;
 	}
-	DataType dtype = this->GetDataType(field);
-	if (dtype != DT_BINARY)
-	{
-		return 0;
-	}
-	const UInt8 *binBuff;
-	if (field->currentChanged)
-	{
-		binBuff = field->currentData.bin;
-	}
-	else
-	{
-		binBuff = field->committedData.bin;
-	}
-	
-	if (binBuff)
-	{
-		*buffSize = ReadUInt32(binBuff);
-		return binBuff + 4;
-	}
-	else
-	{
-		return 0;
-	}
+	return this->GetFieldBinary(field, buffSize);
 }
 
 void DB::DBRow::Commit()
@@ -649,6 +685,186 @@ void DB::DBRow::Rollback()
 
 			field->currentNull = true;;
 			field->currentChanged = false;
+		}
+	}
+}
+
+void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
+{
+	UTF8Char sbuff[128];
+	DB::ColDef *col;
+	DB::DBRow::Field *field;
+	const UInt8 *buff;
+	Math::WKTWriter wkt;
+	Math::Vector2D *vec;
+	DataType dtype;
+	UOSInt i = 0;
+	UOSInt j = this->table->GetColCnt();
+	UOSInt k;
+	UOSInt strLen;
+	this->AppendTableName(sb);
+	sb->AppendChar('[', 1);
+	while (i < j)
+	{
+		col = this->table->GetCol(i);
+		field = this->dataMap->Get(col->GetColName());
+		if (field)
+		{
+			if (i > 0)
+			{
+				sb->Append((const UTF8Char*)", ");
+			}
+			this->AppendVarNameForm(sb, col->GetColName());
+			sb->AppendChar('=', 1);
+			dtype = this->GetDataType(field);
+			if (this->IsFieldNull(field))
+			{
+				sb->Append((const UTF8Char*)"null");
+			}
+			else
+			{
+				switch (dtype)
+				{
+				case DT_DATETIME:
+					DB::DBUtil::SDBDate(sbuff, this->GetFieldDate(field), table->GetSvrType());
+					sb->Append(sbuff);
+					break;
+				case DT_BINARY:
+					buff = this->GetFieldBinary(field, &k);
+					strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSvrType());
+					if (strLen < sizeof(sbuff) - 1)
+					{
+						DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSvrType());
+						sb->Append(sbuff);
+					}
+					else
+					{
+						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
+						DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSvrType());
+						sb->Append(tmpBuff);
+						MemFree(tmpBuff);
+					}
+					break;
+				case DT_DOUBLE:
+					DB::DBUtil::SDBDbl(sbuff, this->GetFieldDouble(field), table->GetSvrType());
+					sb->Append(sbuff);
+					break;
+				case DT_INT64:
+					DB::DBUtil::SDBInt64(sbuff, this->GetFieldInt64(field), table->GetSvrType());
+					sb->Append(sbuff);
+					break;
+				case DT_STRING:
+					buff = this->GetFieldStr(field);
+					strLen = DB::DBUtil::SDBStrUTF8Leng(buff, table->GetSvrType());
+					if (strLen < sizeof(sbuff) - 1)
+					{
+						DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSvrType());
+						sb->Append(sbuff);
+					}
+					else
+					{
+						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
+						DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSvrType());
+						sb->Append(tmpBuff);
+						MemFree(tmpBuff);
+					}
+					break;
+				case DT_VECTOR:
+					vec = this->GetFieldVector(field);
+					wkt.GenerateWKT(sb, vec);
+					break;
+				case DT_UNKNOWN:
+					sb->Append((const UTF8Char*)"?");
+					break;
+				}
+			}
+		}
+
+		i++;
+	}
+	sb->AppendChar(']', 1);
+}
+
+void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
+{
+	const UTF8Char *tableName = this->table->GetTableName();
+	OSInt i = Text::StrIndexOf(tableName, '.');
+	if (i >= 0)
+	{
+		tableName = tableName + i + 1;
+	}
+	Bool nextCap = true;
+	UTF8Char c;
+	while (true)
+	{
+		c = *tableName++;
+		if (c == 0)
+			break;
+		if (c == '_')
+		{
+			nextCap = true;
+		}
+		else if (nextCap)
+		{
+			if (c >= 'a' && c <= 'z')
+			{
+				sb->AppendChar(c - 0x20, 1);
+			}
+			else
+			{
+				sb->AppendChar(c, 1);
+			}
+			nextCap = false;
+		}
+		else
+		{
+			if (c >= 'A' && c <= 'Z')
+			{
+				sb->AppendChar(c + 0x20, 1);
+			}
+			else
+			{
+				sb->AppendChar(c, 1);
+			}
+		}
+	}
+}
+
+void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF *sb, const UTF8Char *colName)
+{
+	Bool nextCap = false;
+	UTF8Char c;
+	while (true)
+	{
+		c = *colName++;
+		if (c == 0)
+			break;
+		if (c == '_')
+		{
+			nextCap = true;
+		}
+		else if (nextCap)
+		{
+			if (c >= 'a' && c <= 'z')
+			{
+				sb->AppendChar(c - 0x20, 1);
+			}
+			else
+			{
+				sb->AppendChar(c, 1);
+			}
+			nextCap = false;
+		}
+		else
+		{
+			if (c >= 'A' && c <= 'Z')
+			{
+				sb->AppendChar(c + 0x20, 1);
+			}
+			else
+			{
+				sb->AppendChar(c, 1);
+			}
 		}
 	}
 }

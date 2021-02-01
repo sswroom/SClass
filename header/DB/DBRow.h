@@ -55,6 +55,15 @@ namespace DB
 		Bool SetFieldDate(Field *field, Data::DateTime *dt);
 		Bool SetFieldVector(Field *field, Math::Vector2D *vec);
 		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
+
+		Bool IsFieldNull(Field *field);
+		const UTF8Char *GetFieldStr(Field *field);
+		Int64 GetFieldInt64(Field *field);
+		Double GetFieldDouble(Field *field);
+		Data::DateTime *GetFieldDate(Field *field);
+		Math::Vector2D *GetFieldVector(Field *field);
+		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize);
+
 	public:
 		DBRow(TableDef *table);
 		~DBRow();
@@ -81,6 +90,10 @@ namespace DB
 
 		void Commit();
 		void Rollback();
+
+		void ToString(Text::StringBuilderUTF *sb);
+		void AppendTableName(Text::StringBuilderUTF *sb);
+		void AppendVarNameForm(Text::StringBuilderUTF *sb, const UTF8Char *colName);
 
 		TableDef *GetTableDef();
 	};

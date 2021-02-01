@@ -320,6 +320,7 @@ Bool DB::DBTool::GenSelectCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef)
 	}
 	sql->AppendCmd((const UTF8Char*)" from ");
 	sql->AppendTableName(tabDef);
+	return true;
 }
 
 Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r)
