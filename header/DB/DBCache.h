@@ -20,8 +20,10 @@ namespace DB
 		DB::DBModel *model;
 		Sync::Mutex *tableMut;
 		Data::StringUTF8Map<TableInfo*> *tableMap;
+		UOSInt cacheCnt;
 
 		TableInfo *GetTableInfo(const UTF8Char *tableName);
+		TableInfo *GetTableInfo(TableDef *tableDef);
 	public:
         DBCache(DB::DBModel *model, DB::DBTool *db);
         ~DBCache();

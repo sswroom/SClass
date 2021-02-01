@@ -1342,7 +1342,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const WChar *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 {
 	ClassDataR *data = (ClassDataR*)this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1362,14 +1362,14 @@ const WChar *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			WChar *tmpBuff = MemAlloc(WChar, (*valLen / sizeof(WChar*)) + 1);
 			MemCopyNO(tmpBuff, val, *valLen);
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
-			const WChar *ret = Text::StrCopyNew(tmpBuff);
+			const UTF8Char *ret = Text::StrToUTF8New(tmpBuff);
 			MemFree(tmpBuff);
 			return ret;
 		}
 	default:
 		if (GetStr(colIndex, sbuff))
 		{
-			return Text::StrCopyNew(sbuff);
+			return Text::StrToUTF8New(sbuff);
 		}
 		return 0;
 	}
@@ -1705,7 +1705,7 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void DB::OLEDBReader::DelNewStr(const WChar *s)
+void DB::OLEDBReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

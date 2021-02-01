@@ -35,6 +35,7 @@ namespace DB
 		Bool GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::TableDef *tabDef);
 		Bool GenDropTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName);
 		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName);
+		Bool GenSelectCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef);
 		Bool GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r);
 		UTF8Char *GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, DB::DBReader *r);
 	};

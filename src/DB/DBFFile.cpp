@@ -602,16 +602,16 @@ Bool DB::DBFReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-const WChar *DB::DBFReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *DB::DBFReader::GetNewStr(UOSInt colIndex)
 {
 	if (!this->recordExist)
 		return 0;
 	if (colIndex >= this->colCnt)
 		return 0;
-	UOSInt strLen = this->enc->CountWChars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
-	WChar *buff;
-	buff = MemAlloc(WChar, strLen + 1);
-	this->enc->WFromBytes(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
+	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
+	UTF8Char *buff;
+	buff = MemAlloc(UTF8Char, strLen + 1);
+	this->enc->UTF8FromBytes(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
 	return buff;
 }
 
@@ -775,7 +775,7 @@ Bool DB::DBFReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }
 
-void DB::DBFReader::DelNewStr(const WChar *s)
+void DB::DBFReader::DelNewStr(const UTF8Char *s)
 {
-	MemFree((WChar*)s);
+	MemFree((UTF8Char*)s);
 }

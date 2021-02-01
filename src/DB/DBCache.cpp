@@ -43,10 +43,31 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 	return table;
 }
 
+DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
+{
+	DB::DBCache::TableInfo *table;
+	UOSInt i;
+	this->tableMut->Lock();
+	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap->GetValues();
+	i = tableList->GetCount();
+	while (i-- > 0)
+	{
+		table = tableList->GetItem(i);
+		if (table->def == tableDef)
+		{
+			this->tableMut->Unlock();
+			return table;
+		}
+	}
+	this->tableMut->Unlock();
+	return 0;
+}
+
 DB::DBCache::DBCache(DB::DBModel *model, DB::DBTool *db)
 {
 	this->model = model;
 	this->db = db;
+	this->cacheCnt = 4000;
 	NEW_CLASS(this->tableMut, Sync::Mutex());
 	NEW_CLASS(this->tableMap, Data::ICaseStringUTF8Map<DB::DBCache::TableInfo*>());
 }
@@ -81,10 +102,42 @@ OSInt DB::DBCache::GetRowCount(const UTF8Char *tableName)
 
 UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName)
 {
-
+	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
+	if (tableInfo == 0)
+		return 0;
+	UOSInt ret = 0;
+	DB::SQLBuilder sql(this->db->GetSvrType());
+	this->db->GenSelectCmd(&sql, tableInfo->def);
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	if (r)
+	{
+		DB::DBRow *row;
+		while (r->ReadNext())
+		{
+			NEW_CLASS(row, DB::DBRow(tableInfo->def));
+			row->SetByReader(r, true);
+			outRows->Add(row);
+			ret++;
+		}
+		this->db->CloseReader(r);
+	}
+	return ret;
 }
 
 void DB::DBCache::FreeTableData(Data::ArrayList<DB::DBRow*> *rows)
 {
-
+	if (rows->GetCount() > 0)
+	{
+		DB::TableDef *table = rows->GetItem(0)->GetTableDef();
+		DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(table);
+		if (tableInfo->dataCnt >= this->cacheCnt)
+		{
+			DEL_LIST_FUNC(rows, DEL_CLASS);
+		}
+		else
+		{
+			/////////////////////////////
+			DEL_LIST_FUNC(rows, DEL_CLASS);
+		}
+	}
 }

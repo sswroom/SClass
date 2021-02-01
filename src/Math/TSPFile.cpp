@@ -275,10 +275,10 @@ Bool Math::TSPReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-const WChar *Math::TSPReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *Math::TSPReader::GetNewStr(UOSInt colIndex)
 {
-	WChar sbuff[64];
-	if (GetStr(colIndex, sbuff))
+	UTF8Char sbuff[64];
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
 		return Text::StrCopyNew(sbuff);
 	}
@@ -530,7 +530,7 @@ Bool Math::TSPReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-void Math::TSPReader::DelNewStr(const WChar *s)
+void Math::TSPReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }
@@ -634,10 +634,10 @@ Bool Math::TSPHReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-const WChar *Math::TSPHReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *Math::TSPHReader::GetNewStr(UOSInt colIndex)
 {
-	WChar sbuff[64];
-	if (GetStr(colIndex, sbuff))
+	UTF8Char sbuff[64];
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
 		return Text::StrCopyNew(sbuff);
 	}
@@ -746,7 +746,7 @@ Bool Math::TSPHReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-void Math::TSPHReader::DelNewStr(const WChar *s)
+void Math::TSPHReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

@@ -110,6 +110,7 @@ MyMemory.o: ../../src/MyMemoryW.cpp
 OLEDBConn.o: ../../src/DB/OLEDBConnW.cpp
 !-lole32
 !-loleaut32
+!-luuid
 OLEDBGuid.o: ../../src/DB/OLEDBGuid.cpp
 BuildTime.o: ../../src/IO/BuildTimeW.cpp
 Console.o: ../../src/IO/ConsoleW.cpp

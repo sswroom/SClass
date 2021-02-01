@@ -472,32 +472,13 @@ WChar *DB::SQLiteReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-const WChar *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 {
-	if (sizeof(WChar) == 2)
-	{
-		const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
-		if (outp == 0)
-			return 0;
-		else
-			return Text::StrCopyNew((const WChar *)outp);
-	}
+	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
+	if (outp == 0)
+		return 0;
 	else
-	{
-		const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
-		if (outp == 0)
-			return 0;
-		else
-		{
-			const UInt16 *s = (const UInt16*)outp;
-			const UInt16 *s2 = s;
-			while (*s2++);
-			WChar *outs = MemAlloc(WChar, s2 - s);
-			WChar *outs2 = outs;
-			while ((*outs2++ = *s++) != 0);
-			return outs;
-		}
-	}
+		return Text::StrToUTF8New((const UTF16Char *)outp);
 }
 
 Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
@@ -646,7 +627,7 @@ Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void DB::SQLiteReader::DelNewStr(const WChar *s)
+void DB::SQLiteReader::DelNewStr(const UTF8Char *s)
 {
 	if (s)
 	{

@@ -567,12 +567,12 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-const WChar *Map::FileGDBReader::GetNewStr(OSInt colIndex)
+const UTF8Char *Map::FileGDBReader::GetNewStr(OSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
 	fgdbError hr;
-	WChar sbuff[40];
+	UTF8Char sbuff[40];
 	if (colIndex < 0 || (UOSInt)colIndex >= fields->size())
 		return 0;
 	FileGDBAPI::FieldDef field = fields->at(colIndex);
@@ -636,8 +636,7 @@ const WChar *Map::FileGDBReader::GetNewStr(OSInt colIndex)
 		{
 			return 0;
 		}
-		Text::StrConcat(sbuff, v.data());
-		return Text::StrCopyNew(sbuff);
+		return Text::StrCopyNew(v.data());
 	}
 	case FileGDBAPI::fieldTypeDate:
 	{
@@ -681,7 +680,7 @@ const WChar *Map::FileGDBReader::GetNewStr(OSInt colIndex)
 		{
 			return 0;
 		}
-		return Text::StrToWCharNew((const UTF8Char*)v.data());
+		return Text::StrCopyNew((const UTF8Char*)v.data());
 	}
 
 	}

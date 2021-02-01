@@ -420,14 +420,14 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const WChar *DB::CSVReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
 		return 0;
 	UOSInt len = 0;
-	const WChar *csptr = Text::StrToWCharNew(cols[colIndex]);
-	const WChar *ptr = csptr;
-	WChar c;
+	const UTF8Char *csptr = cols[colIndex];
+	const UTF8Char *ptr = csptr;
+	UTF8Char c;
 	Int32 quote = 0;
 	c = *ptr;
 	if (c == '"')
@@ -465,8 +465,8 @@ const WChar *DB::CSVReader::GetNewStr(UOSInt colIndex)
 				len++;
 			}
 		}
-		WChar *newStr = MemAlloc(WChar, len + 1);
-		WChar *buff = newStr;
+		UTF8Char *newStr = MemAlloc(UTF8Char, len + 1);
+		UTF8Char *buff = newStr;
 		ptr = csptr;
 		quote = 0;
 		while (true)
@@ -516,8 +516,8 @@ const WChar *DB::CSVReader::GetNewStr(UOSInt colIndex)
 				break;
 			len++;
 		}
-		WChar *newStr = MemAlloc(WChar, len + 1);
-		WChar *buff = newStr;
+		UTF8Char *newStr = MemAlloc(UTF8Char, len + 1);
+		UTF8Char *buff = newStr;
 		ptr = csptr;
 		while (true)
 		{
@@ -681,7 +681,7 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void DB::CSVReader::DelNewStr(const WChar *s)
+void DB::CSVReader::DelNewStr(const UTF8Char *s)
 {
 	MemFree((void*)s);
 }

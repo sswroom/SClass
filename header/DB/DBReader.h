@@ -31,7 +31,7 @@ namespace DB
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff) = 0;
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb) = 0;
 		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
-		virtual const WChar *GetNewStr(UOSInt colIndex) = 0;
+		virtual const UTF8Char *GetNewStr(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal) = 0; //return 0 = ok, 1 = NULL, 2 = Error
 		virtual Double GetDbl(UOSInt colIndex) = 0;
@@ -44,7 +44,7 @@ namespace DB
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff) = 0;
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
-		virtual void DelNewStr(const WChar *s) = 0;
+		virtual void DelNewStr(const UTF8Char *s) = 0;
 
 		TableDef *GenTableDef(const UTF8Char *tableName);
 	};

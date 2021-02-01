@@ -257,7 +257,7 @@ public:
 		return true;
 	}
 
-	virtual const WChar *GetNewStr(UOSInt colIndex)
+	virtual const UTF8Char *GetNewStr(UOSInt colIndex)
 	{
 		if (this->currRow == 0)
 		{
@@ -271,7 +271,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrToWCharNew(this->currRow[colIndex]);
+		return Text::StrCopyNew(this->currRow[colIndex]);
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -419,7 +419,7 @@ public:
 		return false;
 	}
 
-	virtual void DelNewStr(const WChar *s)
+	virtual void DelNewStr(const UTF8Char *s)
 	{
 		Text::StrDelNew(s);
 	}

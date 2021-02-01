@@ -302,6 +302,26 @@ Bool DB::DBTool::GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 	return true;
 }
 
+Bool DB::DBTool::GenSelectCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef)
+{
+	DB::ColDef *col;
+	UOSInt i = 0;
+	UOSInt j = tabDef->GetColCnt();
+	sql->AppendCmd((const UTF8Char*)"select ");
+	while (i < j)
+	{
+		col = tabDef->GetCol(i);
+		if (i > 0)
+		{
+			sql->AppendCmd((const UTF8Char*)", ");
+		}
+		sql->AppendCol(col->GetColName());
+		i++;
+	}
+	sql->AppendCmd((const UTF8Char*)" from ");
+	sql->AppendTableName(tabDef);
+}
+
 Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r)
 {
 	UTF8Char tmpBuff[256];

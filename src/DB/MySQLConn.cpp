@@ -555,7 +555,7 @@ Bool DB::MySQLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const WChar *DB::MySQLReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *DB::MySQLReader::GetNewStr(UOSInt colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -563,10 +563,7 @@ const WChar *DB::MySQLReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		OSInt i = Text::StrUTF8_WCharCnt((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex], -1);
-		WChar *newStr = MemAlloc(WChar, i + 1);
-		Text::StrUTF8_WChar(newStr, (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex], -1, 0);
-		return newStr;
+		return Text::StrCopyNew((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
@@ -736,7 +733,7 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void DB::MySQLReader::DelNewStr(const WChar *s)
+void DB::MySQLReader::DelNewStr(const UTF8Char *s)
 {
 	MemFree((WChar*)s);
 }

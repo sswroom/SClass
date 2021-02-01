@@ -1645,10 +1645,9 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return 0;
 }
 
-const WChar *DB::ODBCReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 {
-	WChar sbuff[32];
-	UTF8Char u8buff[32];
+	UTF8Char sbuff[32];
 	if (colIndex >= this->colCnt)
 		return 0;
 	if (this->colDatas[colIndex].isNull)
@@ -1657,7 +1656,7 @@ const WChar *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	{
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
-		return Text::StrToWCharNew(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return Text::StrCopyNew(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
@@ -1671,8 +1670,8 @@ const WChar *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 		Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
 		return Text::StrCopyNew(sbuff);
 	case DB::DBUtil::CT_DateTime:
-		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(u8buff);
-		return Text::StrToWCharNew(u8buff);
+		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(sbuff);
+		return Text::StrCopyNew(sbuff);
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	default:
@@ -1957,7 +1956,7 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void DB::ODBCReader::DelNewStr(const WChar *s)
+void DB::ODBCReader::DelNewStr(const UTF8Char *s)
 {
 	if (s)
 	{

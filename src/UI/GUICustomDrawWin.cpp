@@ -277,8 +277,9 @@ void UI::GUICustomDraw::OnMouseMove(OSInt scnX, OSInt scnY)
 {
 }
 
-void UI::GUICustomDraw::OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta)
+Bool UI::GUICustomDraw::OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta)
 {
+	return false;
 }
 
 void UI::GUICustomDraw::OnGestureBegin(OSInt scnX, OSInt scnY, UInt64 dist)

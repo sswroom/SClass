@@ -1325,10 +1325,10 @@ Bool Map::GPSDataReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-const WChar *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 {
-	WChar sbuff[32];
-	if (this->GetStr(colIndex, sbuff))
+	UTF8Char sbuff[64];
+	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
 		return Text::StrCopyNew(sbuff);
 	}
@@ -1579,7 +1579,7 @@ Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-void Map::GPSDataReader::DelNewStr(const WChar *s)
+void Map::GPSDataReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

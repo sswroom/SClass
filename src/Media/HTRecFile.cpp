@@ -156,10 +156,10 @@ Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, Text::StringBuilderU
 	return true;
 }
 
-const WChar *Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 {
-	WChar sbuff[40];
-	if (GetStr(colIndex, sbuff) == 0)
+	UTF8Char sbuff[64];
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
 		return 0;
 	return Text::StrCopyNew(sbuff);
 }
@@ -542,7 +542,7 @@ Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDe
 	return false;
 }
 
-void Media::HTRecFile::HTRecReader::DelNewStr(const WChar *s)
+void Media::HTRecFile::HTRecReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

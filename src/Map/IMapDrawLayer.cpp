@@ -950,13 +950,13 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-const WChar *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
 	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
-	return Text::StrToWCharNew(sbuff);
+	return Text::StrCopyNew(sbuff);
 }
 
 UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -1057,7 +1057,7 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return this->layer->GetColumnDef(colIndex - 1, colDef);
 }
 
-void Map::MapLayerReader::DelNewStr(const WChar *s)
+void Map::MapLayerReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

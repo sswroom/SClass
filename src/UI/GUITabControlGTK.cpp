@@ -17,6 +17,13 @@ void GUITabControl_SelChange(GtkNotebook *notebook, GtkWidget *page, guint page_
 	me->EventSelChange(page_num);
 }
 
+gboolean GUITabControl_OnShow(gpointer user_data)
+{
+	UI::GUITabControl *me = (UI::GUITabControl*)user_data;
+	me->OnSizeChanged(false);
+	return false;
+}
+
 UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->tabPages, Data::ArrayList<UI::GUITabPage*>());
@@ -27,6 +34,7 @@ UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) 
 	g_signal_connect((GtkWidget*)this->hwnd, "switch-page", G_CALLBACK(GUITabControl_SelChange), this);
 	parent->AddChild(this);
 	this->Show();
+	g_idle_add(GUITabControl_OnShow, this);
 }
 
 UI::GUITabControl::~GUITabControl()

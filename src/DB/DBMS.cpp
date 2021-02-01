@@ -212,14 +212,14 @@ namespace DB
 			return true;
 		}
 
-		virtual const WChar *GetNewStr(UOSInt colIndex)
+		virtual const UTF8Char *GetNewStr(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
 			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
-			return Text::StrToWCharNew(row[colIndex]);
+			return Text::StrCopyNew(row[colIndex]);
 		}
 
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -351,7 +351,7 @@ namespace DB
 			return true;
 		}
 
-		virtual void DelNewStr(const WChar *s)
+		virtual void DelNewStr(const UTF8Char *s)
 		{
 			Text::StrDelNew(s);
 		}

@@ -449,14 +449,14 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return ret;
 }
 
-const WChar *Win32::WMIReader::GetNewStr(UOSInt colIndex)
+const UTF8Char *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
 		return 0;
 
-	WChar sbuff[64];
-	const WChar *ret = 0;
+	UTF8Char sbuff[64];
+	const UTF8Char *ret = 0;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -482,8 +482,8 @@ const WChar *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 			case CIM_UINT8 | CIM_FLAG_ARRAY:
 				{
 					SAFEARRAY * arr = V_ARRAY(&v);
-					WChar *buffTmp = MemAlloc(WChar, 3 + (arr->cbElements << 1));
-					Text::StrHexBytes(Text::StrConcat(buffTmp, L"0x"), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
+					UTF8Char *buffTmp = MemAlloc(UTF8Char, 3 + (arr->cbElements << 1));
+					Text::StrHexBytes(Text::StrConcat(buffTmp, (const UTF8Char*)"0x"), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
 					ret = buffTmp;
 				}
 				break;
@@ -520,21 +520,20 @@ const WChar *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 				ret = Text::StrCopyNew(sbuff);
 				break;
 			case CIM_BOOLEAN:
-				ret = Text::StrCopyNew((V_BOOL(&v))?L"True":L"False");
+				ret = Text::StrCopyNew((V_BOOL(&v))?(const UTF8Char*)"True":(const UTF8Char*)"False");
 				break;
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					ret = Text::StrCopyNew(bs);
+					ret = Text::StrToUTF8New(bs);
 				}
 				break;
 			case CIM_DATETIME:
 				{
 					Data::DateTime dt;
-					UTF8Char u8buff[32];
 					dt.SetValueVariTime(V_DATE(&v));
-					dt.ToString(u8buff);
-					ret = Text::StrToWCharNew(u8buff);
+					dt.ToString(sbuff);
+					ret = Text::StrCopyNew(sbuff);
 				}
 				break;
 			}
@@ -966,7 +965,7 @@ Bool Win32::WMIReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-void Win32::WMIReader::DelNewStr(const WChar *s)
+void Win32::WMIReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

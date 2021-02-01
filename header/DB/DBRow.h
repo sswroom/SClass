@@ -2,6 +2,7 @@
 #define _SM_DB_DBROW
 #include "Data/DateTime.h"
 #include "Data/StringUTF8Map.h"
+#include "DB/DBReader.h"
 #include "DB/TableDef.h"
 
 namespace DB
@@ -46,9 +47,19 @@ namespace DB
 
 		void FreeField(Field *field);
 		DataType GetDataType(Field *field);
+
+		Bool SetFieldNull(Field *field);
+		Bool SetFieldStr(Field *field, const UTF8Char *strValue);
+		Bool SetFieldInt64(Field *field, Int64 intValue);
+		Bool SetFieldDouble(Field *field, Double dblValue);
+		Bool SetFieldDate(Field *field, Data::DateTime *dt);
+		Bool SetFieldVector(Field *field, Math::Vector2D *vec);
+		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
 	public:
 		DBRow(TableDef *table);
 		~DBRow();
+
+		Bool SetByReader(DB::DBReader *r, Bool commit);
 
 		DB::ColDef *GetFieldType(const UTF8Char *fieldName);
 		DataType GetFieldDataType(const UTF8Char *fieldName);
@@ -70,6 +81,8 @@ namespace DB
 
 		void Commit();
 		void Rollback();
+
+		TableDef *GetTableDef();
 	};
 }
 #endif
