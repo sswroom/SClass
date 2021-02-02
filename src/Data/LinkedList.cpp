@@ -81,11 +81,31 @@ void *Data::LinkedList::GetNoRemove()
 OSInt Data::LinkedList::GetCount()
 {
 	OSInt cnt = 0;
+	this->mut->Lock();
 	Data::LinkedListItem *item = this->firstItem;
 	while (item)
 	{
 		cnt++;
 		item = item->nextItem;
 	}
+	this->mut->Unlock();
 	return cnt;
+}
+
+OSInt Data::LinkedList::IndexOf(void *item)
+{
+	OSInt cnt = 0;
+	this->mut->Lock();
+	Data::LinkedListItem *llItem = this->firstItem;
+	while (llItem)
+	{
+		if (llItem->item == item)
+		{
+			return cnt;
+		}
+		cnt++;
+		llItem = llItem->nextItem;
+	}
+	this->mut->Unlock();
+	return -1;
 }
