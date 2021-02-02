@@ -477,7 +477,7 @@ void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF *str)
 
 Bool DB::OLEDBConn::IsLastDataError()
 {
-	return this->lastDataError = DE_EXEC_SQL_ERROR;
+	return this->lastDataError == DE_EXEC_SQL_ERROR;
 }
 
 void DB::OLEDBConn::Reconnect()
