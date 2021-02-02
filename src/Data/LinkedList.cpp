@@ -101,6 +101,7 @@ OSInt Data::LinkedList::IndexOf(void *item)
 	{
 		if (llItem->item == item)
 		{
+			this->mut->Unlock();
 			return cnt;
 		}
 		cnt++;
