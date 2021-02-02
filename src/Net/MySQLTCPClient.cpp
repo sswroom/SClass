@@ -986,21 +986,8 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->cmdReader = 0;
 	this->cmdResultType = 0;
 	NEW_CLASS(this->cliMut, Sync::Mutex());
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
-	if (this->cli->IsConnectError() != 0)
-	{
-		DEL_CLASS(this->cli);
-		this->cli = 0;
-	}
-	else
-	{
-		this->cli->SetNoDelay(true);
-		Sync::Thread::Create(RecvThread, this);
-		while (!this->recvStarted)
-		{
-			Sync::Thread::Sleep(1);
-		}
-	}
+	this->cli = 0;
+	this->Reconnect();
 }
 
 Net::MySQLTCPClient::~MySQLTCPClient()
@@ -1181,7 +1168,7 @@ void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF *str)
 
 Bool Net::MySQLTCPClient::IsLastDataError()
 {
-	return false;
+	return this->lastDataError == DE_EXEC_SQL_ERROR;
 }
 
 void Net::MySQLTCPClient::Reconnect()
@@ -1200,7 +1187,7 @@ void Net::MySQLTCPClient::Reconnect()
 	this->mode = 0;
 	SDEL_TEXT(this->svrVer);
 	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port));
-	if (this->cli->IsConnectError() != 0)
+	if (this->cli->IsConnectError())
 	{
 		DEL_CLASS(this->cli);
 		this->cli = 0;
