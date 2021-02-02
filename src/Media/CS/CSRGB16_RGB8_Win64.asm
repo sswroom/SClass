@@ -3,32 +3,33 @@ section .text
 global CSRGB16_RGB8_Convert
 
 ;void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, OSInt destNbits, UInt8 *rgbTable);
-;-24 edi
-;-16 esi
-;-8 ebx
-;0 retAddr
+;0 rdi
+;8 rsi
+;16 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 destNBits
-;72 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 destNBits
+;104 rgbTable
 	align 16
 CSRGB16_RGB8_Convert:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+64] ;destNBits
+	sub rsp,32
+	mov qword [rsp],rdi
+	mov qword [rsp+8],rsi
+	mov qword [rsp+16],rbx
+	mov rax,qword [rsp+96] ;destNBits
 	cmp rax,32
 	jz crgb32start
 	jmp crgbexit
 	
 	align 16
 crgb32start:
-	mov rax,qword [rsp+56] ;srcNBits
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,64
 	jz crgb32_64start
 	cmp rax,48
@@ -39,11 +40,11 @@ crgb32start:
 crgb32_64start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;tab
+	mov rbx,qword [rsp+104] ;tab
 	lea rdx,[r8*4]
 	lea rax,[r8*8]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb32_64lop:
 	mov rcx,r8 ;width
@@ -62,8 +63,8 @@ crgb32_64lop2:
 	lea rdi,[rdi+4]
 	dec rcx
 	jnz crgb32_64lop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb32_64lop
 	jmp crgbexit
@@ -72,11 +73,11 @@ crgb32_64lop2:
 crgb32_48start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;tab
+	mov rbx,qword [rsp+104] ;tab
 	lea rdx,[r8*4]
 	lea rax,[rdx+r8*2]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb32_48lop:
 	mov rcx,r8 ;width
@@ -95,14 +96,15 @@ crgb32_48lop2:
 	lea rdi,[rdi+4]
 	dec rcx
 	jnz crgb32_48lop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb32_48lop
 	
 	align 16
 crgbexit:
-	mov rdi,qword [rsp-24]
-	mov rsi,qword [rsp-16]
-	mov rbx,qword [rsp-8]
+	mov rdi,qword [rsp]
+	mov rsi,qword [rsp+8]
+	mov rbx,qword [rsp+16]
+	add rsp,32
 	ret

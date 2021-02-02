@@ -1527,19 +1527,20 @@ vf6nastart:						; else if (tap == 6)
 	jnz vf6nastartavx
 	align 16
 vf6nastart2:
-	mov qword [rsp-8],r12
-	mov qword [rsp-16],r13
-	mov qword [rsp-24],r14
-	mov qword [rsp-32],r15
+	sub rsp,32
+	mov qword [rsp],r12
+	mov qword [rsp+8],r13
+	mov qword [rsp+16],r14
+	mov qword [rsp+24],r15
 	xor r12,r12
 	xor r13,r13
 	xor r14,r14
 	xor r15,r15
-	mov qword [rsp+64],r9 ;height
+	mov qword [rsp+96],r9 ;height
 	shr r8,1 ;width
 	mov rcx,r11 ;outPt
-	mov rbx,qword [rsp+88] ;weight
-	mov rdi,qword [rsp+112] ;rgbTable
+	mov rbx,qword [rsp+120] ;weight
+	mov rdi,qword [rsp+144] ;rgbTable
 	xor r11,r11
 	xor r9,r9
 	ALIGN 16
@@ -1613,31 +1614,33 @@ vf6nalop5:
 	jnz vf6nalop5
 
 	lea rbx,[rbx+80]
-	add rcx,qword [rsp+104] ;dAdd
+	add rcx,qword [rsp+136] ;dAdd
 
-	dec qword [rsp+64] ;r9 ;currHeight
+	dec qword [rsp+96] ;r9 ;currHeight
 	jnz vf6nalop4
-	mov r12,qword [rsp-8]
-	mov r13,qword [rsp-16]
-	mov r14,qword [rsp-24]
-	mov r15,qword [rsp-32]
+	mov r12,qword [rsp]
+	mov r13,qword [rsp+8]
+	mov r14,qword [rsp+16]
+	mov r15,qword [rsp+24]
+	add rsp,32
 	jmp vfnaexit
 
 	align 16
 vf6nastartavx:
-	mov qword [rsp-8],r12
-	mov qword [rsp-16],r13
-	mov qword [rsp-24],r14
-	mov qword [rsp-32],r15
+	sub rsp,32
+	mov qword [rsp],r12
+	mov qword [rsp+8],r13
+	mov qword [rsp+16],r14
+	mov qword [rsp+24],r15
 	xor r12,r12
 	xor r13,r13
 	xor r14,r14
 	xor r15,r15
-	mov qword [rsp+64],r9 ;height
+	mov qword [rsp+96],r9 ;height
 	shr r8,2 ;width
 	mov rcx,r11 ;outPt
-	mov rbx,qword [rsp+88] ;weight
-	mov rdi,qword [rsp+112] ;rgbTable
+	mov rbx,qword [rsp+120] ;weight
+	mov rdi,qword [rsp+144] ;rgbTable
 	xor r11,r11
 	xor r9,r9
 	ALIGN 16
@@ -1732,35 +1735,37 @@ vf6naavxlop5:
 	jnz vf6naavxlop5
 
 	lea rbx,[rbx+80]
-	add rcx,qword [rsp+104] ;dAdd
+	add rcx,qword [rsp+136] ;dAdd
 
-	dec qword [rsp+64] ;r9 ;currHeight
+	dec qword [rsp+96] ;r9 ;currHeight
 	jnz vf6naavxlop4
 	vzeroupper
-	mov r12,qword [rsp-8]
-	mov r13,qword [rsp-16]
-	mov r14,qword [rsp-24]
-	mov r15,qword [rsp-32]
+	mov r12,qword [rsp]
+	mov r13,qword [rsp+8]
+	mov r14,qword [rsp+16]
+	mov r15,qword [rsp+24]
+	add rsp,32
 	jmp vfnaexit
 
 	align 16
 vf8nastart:						;else if (tap == 8)
-	mov qword [rsp-8],r12
-	mov qword [rsp-16],r13
-	mov qword [rsp-24],r14
-	mov qword [rsp-32],r15
+	sub rsp,32
+	mov qword [rsp],r12
+	mov qword [rsp+8],r13
+	mov qword [rsp+16],r14
+	mov qword [rsp+24],r15
 	
 	shr r8,1 ;width
 	mov rcx,r11 ;outPt
-	mov rbx,qword [rsp+80] ;index
-	mov rdi,qword [rsp+112] ;rgbTable
-	mov qword [rsp+40],r10 ;inPt
-	mov qword [rsp+56],r8 ;width
-	mov qword [rsp+64],r9 ;height
+	mov rbx,qword [rsp+112] ;index
+	mov rdi,qword [rsp+144] ;rgbTable
+	mov qword [rsp+72],r10 ;inPt
+	mov qword [rsp+88],r8 ;width
+	mov qword [rsp+96],r9 ;height
 	ALIGN 16
 vf8nalop4:
 
-	mov rbp,qword [rsp+88] ;weight
+	mov rbp,qword [rsp+120] ;weight
 	movdqa xmm5,[rbp]
 	movdqa xmm9,[rbp+16]
 	movdqa xmm6,[rbp+32]
@@ -1774,10 +1779,10 @@ vf8nalop4:
 	mov r13,qword [rbx+40]
 	mov r14,qword [rbx+48]
 	mov r15,qword [rbx+56]
-	mov qword [rsp+88],rbp ;weight
+	mov qword [rsp+120],rbp ;weight
 
-	mov rsi,qword [rsp+40] ;r10 ;inPt
-	mov rbp,qword [rsp+56] ;r8 ;width
+	mov rsi,qword [rsp+72] ;r10 ;inPt
+	mov rbp,qword [rsp+88] ;r8 ;width
 	ALIGN 16
 vf8nalop5:
 	movdqa xmm2,xmm8 ;tmpV
@@ -1844,14 +1849,15 @@ vf8nalop5:
 	jnz vf8nalop5
 
 	lea rbx,[rbx+64]
-	add rcx,qword [rsp+104] ;dAdd
+	add rcx,qword [rsp+136] ;dAdd
 
-	dec qword [rsp+64] ;r9 ;currHeight
+	dec qword [rsp+96] ;r9 ;currHeight
 	jnz vf8nalop4
-	mov r12,qword [rsp-8]
-	mov r13,qword [rsp-16]
-	mov r14,qword [rsp-24]
-	mov r15,qword [rsp-32]
+	mov r12,qword [rsp]
+	mov r13,qword [rsp+8]
+	mov r14,qword [rsp+16]
+	mov r15,qword [rsp+24]
+	add rsp,32
 	jmp vfnaexit
 	
 	align 16

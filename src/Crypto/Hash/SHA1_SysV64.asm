@@ -11,13 +11,13 @@ global _SHA1_CalcBlock
 
 ;#define W_T(t) asm{mov eax,dword ptr W[((t * 4) & 63)]} asm{xor eax,dword ptr W[((t * 4 + 8) & 63)]} asm{xor eax,dword ptr W[((t * 4 + 32) & 63)]} asm{xor eax,dword ptr W[((t * 4 + 52) & 63)]} asm{rol eax,1} asm{add edx,eax} asm{mov dword ptr W[((t * 4) & 63)],eax}
 %macro W_T 1
-	mov eax,dword [rsp - 64 + ((%1 * 4) & 63)]
-	xor eax,dword [rsp - 64 + ((%1 * 4 + 8) & 63)]
-	xor eax,dword [rsp - 64 + ((%1 * 4 + 32) & 63)]
-	xor eax,dword [rsp - 64 + ((%1 * 4 + 52) & 63)]
+	mov eax,dword [rsp + ((%1 * 4) & 63)]
+	xor eax,dword [rsp + ((%1 * 4 + 8) & 63)]
+	xor eax,dword [rsp + ((%1 * 4 + 32) & 63)]
+	xor eax,dword [rsp + ((%1 * 4 + 52) & 63)]
 	rol eax,1
 	add edx,eax
-	mov dword [rsp - 64 + ((%1 * 4) & 63)],eax
+	mov dword [rsp + ((%1 * 4) & 63)],eax
 %endmacro
 
 ;#define F1(valA, valB, valC, valD, valE, t)		asm{mov eax,valB}	asm{mov edx,eax}	asm{and edx,valC}	asm{not eax}       asm{and eax, valD} asm{or edx, eax}											asm{mov eax, valA}	asm{rol eax, 5}	asm{add edx,eax} asm{add edx,dword ptr W[t * 4]} asm {add edx, 0x5A827999} asm {add valE,edx} asm{ror valB,2}
@@ -32,7 +32,7 @@ global _SHA1_CalcBlock
 	mov eax, %1
 	rol eax, 5
 	add edx, eax
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0x5A827999
 	add %5, edx
 	ror %2, 2
@@ -65,7 +65,7 @@ global _SHA1_CalcBlock
 	mov eax, %1
 	rol eax, 5
 	add edx, eax
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0x6ED9EBA1
 	add %5, edx
 	ror %2, 2
@@ -100,7 +100,7 @@ global _SHA1_CalcBlock
 	mov eax, %1
 	rol eax, 5
 	add edx, eax
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0x8F1BBCDC
 	add %5 ,edx
 	ror %2, 2
@@ -135,7 +135,7 @@ global _SHA1_CalcBlock
 	mov eax, %1
 	rol eax, 5
 	add edx, eax
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0xCA62C1D6
 	add %5, edx
 	ror %2, 2
@@ -157,10 +157,10 @@ global _SHA1_CalcBlock
 %endmacro
 
 ;void SHA1_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message_Block)
-;-64 W
-;0 ebx
-;8 ebp
-;16 retAddr
+;0 W
+;64 ebx
+;72 ebp
+;80 retAddr
 ;rdi Intermediate_Hash hashVal
 ;rsi Message_Block
 	align 16
@@ -170,7 +170,8 @@ _SHA1_CalcBlock:
 	push rbx
 	mov r8,rdi
 	mov r9,rsi
-	lea rdi,[rsp-64] ;W
+	sub rsp,64
+	mov rdi,rsp ;W
 	mov rsi,r9 ;Message_Block
 	mov eax,dword [rsi]
 	bswap eax
@@ -314,6 +315,7 @@ _SHA1_CalcBlock:
 	add dword [r8 + 12], edi
 	add dword [r8 + 16], ebp
 
+	add rsp,64
 	pop rbx
 	pop rbp
 	ret

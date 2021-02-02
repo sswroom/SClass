@@ -37,26 +37,27 @@ urtlop:
 	ret
 
 ;void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_Convert:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+56] ;srcNBits
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,32
 	jz crgb32start
 	cmp rax,24
@@ -74,227 +75,236 @@ CSRGB8_LRGBC_Convert:
 	jmp crgbexit
 	
 ;void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertW8A8:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+56] ;srcNBits
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,16
 	jz ca8w8start
 	jmp crgbexit
 
 ;void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertB5G5R5:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+56] ;srcNBits
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,16
 	jz crgb15start
 	jmp crgbexit
 
 ;void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertB5G6R5:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+56] ;srcNBits
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,16
 	jz crgb16start
 	jmp crgbexit
 
 ;void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertR8G8B8:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+56] ;srcNBits
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,24
 	jz crgb24rstart
 	jmp crgbexit
 
 ;void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertR8G8B8A8:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
-	mov rax,qword [rsp+56] ;srcNBits
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
+	mov rax,qword [rsp+88] ;srcNBits
 	cmp rax,32
 	jz crgb24rstart
 	jmp crgbexit
 
 ;void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertP1_A1:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
 	jmp cp1a1start
 
 ;void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertP2_A1:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
 	jmp cp2a1start
 
 ;void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertP4_A1:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
 	jmp cp4a1start
 
 ;void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcPtr
 ;rdx destPtr
 ;r8 width
 ;r9 height
-;40 srcRGBBpl
-;48 destRGBBpl
-;56 srcNBits
-;64 srcPal
-;72 destPal
-;80 rgbTable
+;72 srcRGBBpl
+;80 destRGBBpl
+;88 srcNBits
+;96 srcPal
+;104 destPal
+;112 rgbTable
 	align 16
 CSRGB8_LRGBC_ConvertP8_A1:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
 	jmp cp8a1start
 
 	align 16
 crgb32start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rax,[r8*4]
 	lea rdx,[rax*2]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	
 	align 16
 crgb32lop:
@@ -314,8 +324,8 @@ crgb32lop2:
 	lea rdi,[rdi+8]
 	dec rcx
 	jnz crgb32lop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb32lop
 	jmp crgbexit
@@ -324,11 +334,11 @@ crgb32lop2:
 crgb32rstart:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rax,[r8*4]
 	lea rdx,[rax*2]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	
 	align 16
 crgb32rlop:
@@ -348,8 +358,8 @@ crgb32rlop2:
 	lea rdi,[rdi+8]
 	dec rcx
 	jnz crgb32rlop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb32rlop
 	jmp crgbexit
@@ -358,11 +368,11 @@ crgb32rlop2:
 crgb24start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rdx,[r8*8]
 	lea rax,[r8*2+r8]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb24lop:
 	mov rcx,r8 ;width
@@ -381,8 +391,8 @@ crgb24lop2:
 	lea rdi,[rdi+8]
 	dec rcx
 	jnz crgb24lop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb24lop
 	jmp crgbexit
@@ -391,11 +401,11 @@ crgb24lop2:
 crgb24rstart:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rdx,[r8*8]
 	lea rax,[r8*2+r8]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb24rlop:
 	mov rcx,r8 ;width
@@ -414,8 +424,8 @@ crgb24rlop2:
 	lea rdi,[rdi+8]
 	dec rcx
 	jnz crgb24rlop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb24rlop
 	jmp crgbexit
@@ -423,11 +433,11 @@ crgb24rlop2:
 ca8w8start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rax,[r8*2]
 	lea rdx,[rax*4]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	
 	align 16
 ca8w8lop:
@@ -445,8 +455,8 @@ ca8w8lop2:
 	lea rdi,[rdi+8]
 	dec rcx
 	jnz ca8w8lop2
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz ca8w8lop
 	jmp crgbexit
@@ -455,11 +465,11 @@ ca8w8lop2:
 crgb15start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rdx,[r8*8]
 	lea rax,[r8*2]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	pxor xmm1,xmm1
 	mov ecx,0x00840084
 	mov edx,0x00ff00ff
@@ -499,8 +509,8 @@ crgb15lop:
 	dec rcx
 	jnz crgb15lop
 
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb15lop2
 	jmp crgbexit
@@ -509,11 +519,11 @@ crgb15lop:
 crgb16start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+80] ;tab
+	mov rbx,qword [rsp+112] ;tab
 	lea rdx,[r8*8]
 	lea rax,[r8*2]
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	pxor xmm1,xmm1
 	mov ecx,0x00410084
 	mov edx,0x00ff00ff
@@ -552,8 +562,8 @@ crgb16lop:
 	dec rcx
 	jnz crgb16lop
 
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb16lop2
 	jmp crgbexit
@@ -562,10 +572,10 @@ crgb16lop:
 crgb8start:
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
+	mov rbx,qword [rsp+104] ;destPal
 	lea rdx,[r8*8]
-	sub qword [rsp+40],r8 ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],r8 ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb8lop2:
 	mov rcx,r8 ;width
@@ -579,8 +589,8 @@ crgb8lop:
 	dec rcx
 	jnz crgb8lop
 
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz crgb8lop2
 	jmp crgbexit
@@ -589,12 +599,12 @@ crgb8lop:
 crgb4start:	
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
+	mov rbx,qword [rsp+104] ;destPal
 	mov rax,r8
 	lea rdx,[r8*8]
 	shr rax,1
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb4lop2:
 	mov rcx,r8 ;width
@@ -625,8 +635,8 @@ crgb4lop:
 
 	align 16
 crgb4lop3:
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9 ;height
 	jnz crgb4lop2
 	jmp crgbexit
@@ -635,12 +645,12 @@ crgb4lop3:
 crgb2start:	
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
+	mov rbx,qword [rsp+104] ;destPal
 	mov rax,r8
 	lea rdx,[r8*8]
 	shr rax,2
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb2lop2:
 	mov rcx,r8 ;width
@@ -691,8 +701,8 @@ crgb2lop4:
 
 	align 16
 crgb2lop3:
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9 ;height
 	jnz crgb2lop2
 	jmp crgbexit
@@ -701,12 +711,12 @@ crgb2lop3:
 crgb1start:	
 	mov rsi,rcx ;srcPtr
 	mov rdi,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
+	mov rbx,qword [rsp+104] ;destPal
 	mov rax,r8
 	lea rdx,[r8*8]
 	shr rax,3
-	sub qword [rsp+40],rax ;srcRGBBpl
-	sub qword [rsp+48],rdx ;destRGBBpl
+	sub qword [rsp+72],rax ;srcRGBBpl
+	sub qword [rsp+80],rdx ;destRGBBpl
 	align 16
 crgb1lop2:
 	mov rcx,r8 ;width
@@ -784,8 +794,8 @@ crgb1lop4:
 
 	align 16
 crgb1lop3:
-	add rsi,qword [rsp+40] ;srcRGBBpl
-	add rdi,qword [rsp+48] ;destRGBBpl
+	add rsi,qword [rsp+72] ;srcRGBBpl
+	add rdi,qword [rsp+80] ;destRGBBpl
 	dec r9 ;height
 	jnz crgb1lop2
 	jmp crgbexit
@@ -794,9 +804,9 @@ crgb1lop3:
 cp8a1start:
 	mov rsi,rcx ;srcPtr
 	mov r10,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
-	mov word [rsp-32],0
-	mov word [rsp-30],16383
+	mov rbx,qword [rsp+104] ;destPal
+	mov word [rsp],0
+	mov word [rsp+2],16383
 
 	align 16
 cp8a1lop2:
@@ -821,48 +831,48 @@ cp8a1lop3:
 
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	
 	movzx rax,dl
 	shr rax,6
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+14],ax
 	
 	movzx rax,dl
 	shr rax,5
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+22],ax
 	
 	movzx rax,dl
 	shr rax,4
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+30],ax
 	
 	movzx rax,dl
 	shr rax,3
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+38],ax
 	
 	movzx rax,dl
 	shr rax,2
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+46],ax
 	
 	movzx rax,dl
 	shr rax,1
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+54],ax
 	
 	movzx rax,dl
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+62],ax
 	
 	inc rsi
@@ -878,7 +888,7 @@ cp8a1lop3:
 cp8a1lop3a:
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	rol dl,1
 	lea rdi,[rdi+8]
@@ -888,7 +898,7 @@ cp8a1lop3a:
 	
 	align 16
 cp8a1lop3b:
-	add r10,qword [rsp+48] ;destRGBBpl
+	add r10,qword [rsp+80] ;destRGBBpl
 	dec r9
 	jnz cp8a1lop2
 	jmp crgbexit
@@ -897,9 +907,9 @@ cp8a1lop3b:
 cp4a1start:	
 	mov rsi,rcx ;srcPtr
 	mov r10,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
-	mov word [rsp-32],0
-	mov word [rsp-30],16383
+	mov rbx,qword [rsp+104] ;destPal
+	mov word [rsp],0
+	mov word [rsp+2],16383
 
 	align 16
 cp4a1lop2:
@@ -943,48 +953,48 @@ cp4a1lop3:
 
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	
 	movzx rax,dl
 	shr rax,6
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+14],ax
 	
 	movzx rax,dl
 	shr rax,5
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+22],ax
 	
 	movzx rax,dl
 	shr rax,4
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+30],ax
 	
 	movzx rax,dl
 	shr rax,3
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+38],ax
 	
 	movzx rax,dl
 	shr rax,2
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+46],ax
 	
 	movzx rax,dl
 	shr rax,1
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+54],ax
 	
 	movzx rax,dl
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+62],ax
 	
 	inc rsi
@@ -1000,7 +1010,7 @@ cp4a1lop3:
 cp4a1lop3a:
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	rol dl,1
 	lea rdi,[rdi+8]
@@ -1010,7 +1020,7 @@ cp4a1lop3a:
 	
 	align 16
 cp4a1lop3b:
-	add r10,qword [rsp+48] ;destRGBBpl
+	add r10,qword [rsp+80] ;destRGBBpl
 	dec r9 ;height
 	jnz cp4a1lop2
 	jmp crgbexit
@@ -1019,9 +1029,9 @@ cp4a1lop3b:
 cp2a1start:	
 	mov rsi,rcx ;srcPtr
 	mov r10,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
-	mov word [rsp-32],0
-	mov word [rsp-30],16383
+	mov rbx,qword [rsp+104] ;destPal
+	mov word [rsp],0
+	mov word [rsp+2],16383
 
 	align 16
 cp2a1lop2:
@@ -1085,48 +1095,48 @@ cp2a1lop3:
 
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	
 	movzx rax,dl
 	shr rax,6
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+14],ax
 	
 	movzx rax,dl
 	shr rax,5
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+22],ax
 	
 	movzx rax,dl
 	shr rax,4
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+30],ax
 	
 	movzx rax,dl
 	shr rax,3
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+38],ax
 	
 	movzx rax,dl
 	shr rax,2
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+46],ax
 	
 	movzx rax,dl
 	shr rax,1
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+54],ax
 	
 	movzx rax,dl
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+62],ax
 	
 	inc rsi
@@ -1142,7 +1152,7 @@ cp2a1lop3:
 cp2a1lop3a:
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	rol dl,1
 	lea rdi,[rdi+8]
@@ -1152,7 +1162,7 @@ cp2a1lop3a:
 	
 	align 16
 cp2a1lop3b:
-	add r10,qword [rsp+48] ;destRGBBpl
+	add r10,qword [rsp+80] ;destRGBBpl
 	dec r9 ;height
 	jnz cp2a1lop2
 	jmp crgbexit
@@ -1161,9 +1171,9 @@ cp2a1lop3b:
 cp1a1start:	
 	mov rsi,rcx ;srcPtr
 	mov r10,rdx ;destPtr
-	mov rbx,qword [rsp+72] ;destPal
-	mov word [rsp-32],0
-	mov word [rsp-30],16383
+	mov rbx,qword [rsp+104] ;destPal
+	mov word [rsp],0
+	mov word [rsp+2],16383
 
 	align 16
 cp1a1lop2:
@@ -1252,48 +1262,48 @@ cp1a1lop3:
 
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	
 	movzx rax,dl
 	shr rax,6
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+14],ax
 	
 	movzx rax,dl
 	shr rax,5
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+22],ax
 	
 	movzx rax,dl
 	shr rax,4
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+30],ax
 	
 	movzx rax,dl
 	shr rax,3
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+38],ax
 	
 	movzx rax,dl
 	shr rax,2
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+46],ax
 	
 	movzx rax,dl
 	shr rax,1
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+54],ax
 	
 	movzx rax,dl
 	and rax,1
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+62],ax
 	
 	inc rsi
@@ -1309,7 +1319,7 @@ cp1a1lop3:
 cp1a1lop3a:
 	movzx rax,dl
 	shr rax,7
-	mov ax,word [rsp+rax*2-32]
+	mov ax,word [rsp+rax*2]
 	mov word [rdi+6],ax
 	rol dl,1
 	lea rdi,[rdi+8]
@@ -1320,14 +1330,15 @@ cp1a1lop3a:
 	align 16
 cp1a1lop3b:
 
-	add r10,qword [rsp+48] ;destRGBBpl
+	add r10,qword [rsp+80] ;destRGBBpl
 	dec r9 ;height
 	jnz cp1a1lop2
 	jmp crgbexit
 
 	align 16
 crgbexit:
-	mov rdi,qword [rsp-24]
-	mov rsi,qword [rsp-16]
-	mov rbx,qword [rsp-8]
+	mov rdi,qword [rsp+8]
+	mov rsi,qword [rsp+16]
+	mov rbx,qword [rsp+24]
+	add rsp,32
 	ret

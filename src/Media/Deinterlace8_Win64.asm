@@ -5,20 +5,22 @@ global Deinterlace8_VerticalFilterOdd
 global Deinterlace8_VerticalFilterEven
 
 ;void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
+;0 xmm6
+;16 xmm7
+;32 rdi
+;40 rsi
+;48 rbx
+;56 rbp
+;64 retAddr
 ;rcx inPt
 ;rdx outPt
 ;r8 width
 ;r9 height
-;72 tap
-;80 index
-;88 weight
-;96 sstep
-;104 dstep
+;104 tap
+;112 index
+;120 weight
+;128 sstep
+;136 dstep
 
 	align 16
 Deinterlace8_VerticalFilter:
@@ -26,8 +28,9 @@ Deinterlace8_VerticalFilter:
 	push rbx
 	push rsi
 	push rdi
-	movdqu [rsp-32],xmm6
-	movdqu [rsp-16],xmm7
+	sub rsp,32
+	movdqu [rsp],xmm6
+	movdqu [rsp+16],xmm7
 	mov r10,rcx
 	mov r11,rdx
 	shr r8,1 ;width
@@ -41,9 +44,9 @@ vflop:
 	
 	align 16
 vflop2:
-	mov rbx,qword [rsp+80] ;index
-	mov rdi,qword [rsp+88] ;weight
-	mov rdx,qword [rsp+72] ;tap
+	mov rbx,qword [rsp+112] ;index
+	mov rdi,qword [rsp+120] ;weight
+	mov rdx,qword [rsp+104] ;tap
 	pxor xmm1,xmm1
 	pxor xmm3,xmm3
 	ALIGN 16
@@ -79,17 +82,18 @@ vflop3:
 	dec rbp
 	jnz vflop2
 
-	mov rax,qword [rsp+72] ;tap
-	add r11,qword [rsp+104] ;dstep outPt
+	mov rax,qword [rsp+104] ;tap
+	add r11,qword [rsp+136] ;dstep outPt
 	shl rax,3
-	add qword [rsp+80],rax ;index
-	add qword [rsp+88],rax ;weight
+	add qword [rsp+112],rax ;index
+	add qword [rsp+120],rax ;weight
 
 	dec r9 ;currHeight
 	jnz vflop
 	
-	movdqu xmm6,[rsp-32]
-	movdqu xmm7,[rsp-16]
+	movdqu xmm6,[rsp]
+	movdqu xmm7,[rsp+16]
+	add rsp,32
 	pop rdi
 	pop rsi
 	pop rbx
@@ -97,21 +101,23 @@ vflop3:
 	ret
 
 ;void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
+;0 xmm6
+;16 xmm7
+;32 rdi
+;40 rsi
+;48 rbx
+;56 rbp
+;64 retAddr
 ;rcx inPt
 ;rdx inptCurr
 ;r8 outPt
 ;r9 width
-;72 height
-;80 tap
-;88 index
-;96 weight
-;104 sstep
-;112 dstep
+;104 height
+;112 tap
+;120 index
+;128 weight
+;136 sstep
+;144 dstep
 
 	align 16
 Deinterlace8_VerticalFilterOdd:
@@ -119,24 +125,25 @@ Deinterlace8_VerticalFilterOdd:
 	push rbx
 	push rsi
 	push rdi
-	movdqu [rsp-32],xmm6
-	movdqu [rsp-16],xmm7
+	sub rsp,32
+	movdqu [rsp],xmm6
+	movdqu [rsp+16],xmm7
 	mov r10,rcx
 	mov r11,rdx
 	test r9,3 ;width
 	jnz vfosstart
 	test r8,15 ;outPt
 	jnz vfosstart
-	test qword [rsp+112],15 ;dstep
+	test qword [rsp+144],15 ;dstep
 	jnz vfosstart
 	jmp vfostart
 	
 	align 16
 vfosstart:							;if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
-	mov rax,qword [rsp+72] ;height
+	mov rax,qword [rsp+104] ;height
 	shr r9,1 ;width
 	shr rax,1
-	mov qword [rsp+72],rax ;currHeight
+	mov qword [rsp+104],rax ;currHeight
 	pxor xmm6,xmm6
 
 	align 16
@@ -154,13 +161,13 @@ vfoslop4:
 	add rsi,16
 	dec rax
 	jnz vfoslop4
-	add r11,qword [rsp+104] ;sstep inPtCurr
-	add r8,qword [rsp+112] ;dstep outPt
+	add r11,qword [rsp+136] ;sstep inPtCurr
+	add r8,qword [rsp+144] ;dstep outPt
 
-	mov rax,qword [rsp+80] ;tap
+	mov rax,qword [rsp+112] ;tap
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
 	mov rsi,r8 ;outPt
 	mov rcx,r10 ;inPt
@@ -168,10 +175,10 @@ vfoslop4:
 
 	align 16
 vfoslop2:
-	mov rbx,qword [rsp+88] ;index
-	mov rdi,qword [rsp+96] ;weight
+	mov rbx,qword [rsp+120] ;index
+	mov rdi,qword [rsp+128] ;weight
 
-	mov rdx,qword [rsp+80] ;tap
+	mov rdx,qword [rsp+112] ;tap
 	pxor xmm1,xmm1
 	pxor xmm3,xmm3
 	ALIGN 16
@@ -207,22 +214,22 @@ vfoslop3:
 	dec rbp
 	jnz vfoslop2
 
-	mov rax,qword [rsp+80] ;tap
-	add r8,qword [rsp+112] ;dstep outPt
+	mov rax,qword [rsp+112] ;tap
+	add r8,qword [rsp+144] ;dstep outPt
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
-	dec qword [rsp+72] ;currHeight
+	dec qword [rsp+104] ;currHeight
 	jnz vfoslop
 	jmp vfoexit
 			
 	align 16
 vfostart:
-	mov rax,qword [rsp+72] ;height
+	mov rax,qword [rsp+104] ;height
 	shr r9,2 ;width
 	shr rax,1
-	mov qword [rsp+72],rax ;currHeight
+	mov qword [rsp+104],rax ;currHeight
 	pxor xmm6,xmm6
 
 	align 16
@@ -239,13 +246,13 @@ vfolop4:
 	add rsi,16
 	dec rax
 	jnz vfolop4
-	add r11,qword [rsp+104] ;sstep inPtCurr
-	add r8,qword [rsp+112] ;dstep outPt
+	add r11,qword [rsp+136] ;sstep inPtCurr
+	add r8,qword [rsp+144] ;dstep outPt
 
-	mov rax,qword [rsp+80] ;tap
+	mov rax,qword [rsp+112] ;tap
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
 	mov rsi,r8 ;outPt
 	mov rcx,r11 ;inPt
@@ -253,10 +260,10 @@ vfolop4:
 	mov rbp,r9 ;width
 	align 16
 vfolop2:
-	mov rbx,qword [rsp+88] ;index
-	mov rdi,qword [rsp+96] ;weight
+	mov rbx,qword [rsp+120] ;index
+	mov rdi,qword [rsp+128] ;weight
 
-	mov rdx,qword [rsp+80] ;tap
+	mov rdx,qword [rsp+112] ;tap
 	pxor xmm4,xmm4
 	pxor xmm5,xmm5
 	pxor xmm6,xmm6
@@ -314,19 +321,20 @@ vfolop3:
 	dec rbp
 	jnz vfolop2
 
-	mov rax,qword [rsp+80] ;tap
-	add r8,qword [rsp+112] ;dstep outPt
+	mov rax,qword [rsp+112] ;tap
+	add r8,qword [rsp+144] ;dstep outPt
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
-	dec qword [rsp+72] ;currHeight
+	dec qword [rsp+104] ;currHeight
 	jnz vfolop
 	
 	align 16
 vfoexit:
-	movdqu xmm6,[rsp-32]
-	movdqu xmm7,[rsp-16]
+	movdqu xmm6,[rsp]
+	movdqu xmm7,[rsp+16]
+	add rsp,32
 	pop rdi
 	pop rsi
 	pop rbx
@@ -334,21 +342,23 @@ vfoexit:
 	ret
 
 ;void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
+;0 xmm6
+;16 xmm7
+;32 rdi
+;40 rsi
+;48 rbx
+;56 rbp
+;64 retAddr
 ;rcx inPt r10
 ;rdx inptCurr r11
 ;r8 outPt
 ;r9 width
-;72 height
-;80 tap
-;88 index
-;96 weight
-;104 sstep
-;112 dstep
+;104 height
+;112 tap
+;120 index
+;128 weight
+;136 sstep
+;144 dstep
 
 	align 16
 Deinterlace8_VerticalFilterEven:
@@ -356,24 +366,25 @@ Deinterlace8_VerticalFilterEven:
 	push rbx
 	push rsi
 	push rdi
-	movdqu [rsp-32],xmm6
-	movdqu [rsp-16],xmm7
+	sub rsp,32
+	movdqu [rsp],xmm6
+	movdqu [rsp+16],xmm7
 	mov r10,rcx
 	mov r11,rdx
 	test r9,3 ;width
 	jnz vfesstart
 	test r8,15 ;outPt
 	jnz vfesstart
-	test qword [rsp+112],15 ;dstep
+	test qword [rsp+144],15 ;dstep
 	jnz vfesstart
 	jmp vfestart
 
 	align 16
 vfesstart:								;if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
-	mov rax,qword [rsp+72] ;height
+	mov rax,qword [rsp+104] ;height
 	shr r9,1 ;width
 	shr rax,1
-	mov qword [rsp+72],rax ;currHeight
+	mov qword [rsp+104],rax ;currHeight
 	pxor xmm6,xmm6
 
 	align 16
@@ -385,10 +396,10 @@ vfeslop:
 
 	align 16
 vfeslop2:
-	mov rbx,qword [rsp+88] ;index
-	mov rdi,qword [rsp+96] ;weight
+	mov rbx,qword [rsp+120] ;index
+	mov rdi,qword [rsp+128] ;weight
 
-	mov rdx,qword [rsp+80] ;tap
+	mov rdx,qword [rsp+112] ;tap
 	pxor xmm1,xmm1
 	pxor xmm3,xmm3
 	ALIGN 16
@@ -424,11 +435,11 @@ vfeslop3:
 	dec rbp
 	jnz vfeslop2
 
-	mov rax,qword [rsp+80] ;tap
-	add r8,qword [rsp+112] ;dstep outPt
+	mov rax,qword [rsp+112] ;tap
+	add r8,qword [rsp+144] ;dstep outPt
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
 	mov rcx,r11 ;inPtCurr
 	mov rax,r9 ;width
@@ -441,24 +452,24 @@ vfeslop4:
 	add rsi,16
 	dec rax
 	jnz vfeslop4
-	add r11,qword [rsp+104] ;sstep inPtCurr
-	add r8,qword [rsp+112] ;dstep outPt
+	add r11,qword [rsp+136] ;sstep inPtCurr
+	add r8,qword [rsp+144] ;dstep outPt
 
-	mov rax,qword [rsp+80] ;tap
+	mov rax,qword [rsp+112] ;tap
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
-	dec qword [rsp+72] ;currHeight
+	dec qword [rsp+104] ;currHeight
 	jnz vfeslop
 	jmp vfeexit
 
 	align 16
 vfestart:
-	mov rax,qword [rsp+72] ;height
+	mov rax,qword [rsp+104] ;height
 	shr r9,2 ;width
 	shr rax,1
-	mov qword [rsp+72],rax ;currHeight
+	mov qword [rsp+104],rax ;currHeight
 	pxor xmm6,xmm6
 
 	align 16
@@ -469,10 +480,10 @@ vfelop:
 	mov rbp,r9 ;width
 	align 16
 vfelop2:
-	mov rbx,qword [rsp+88] ;index
-	mov rdi,qword [rsp+96] ;weight
+	mov rbx,qword [rsp+120] ;index
+	mov rdi,qword [rsp+128] ;weight
 
-	mov rdx,qword [rsp+80] ;tap
+	mov rdx,qword [rsp+112] ;tap
 	pxor xmm4,xmm4
 	pxor xmm5,xmm5
 	pxor xmm6,xmm6
@@ -530,11 +541,11 @@ vfelop3:
 	dec rbp
 	jnz vfelop2
 
-	mov rax,qword [rsp+80] ;tap
-	add r8,qword [rsp+112] ;dstep outPt
+	mov rax,qword [rsp+112] ;tap
+	add r8,qword [rsp+144] ;dstep outPt
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
 	mov rcx,r11 ;inPtCurr
 	mov rsi,r8 ;outPt
@@ -547,21 +558,22 @@ vfelop4:
 	add rsi,16
 	dec rax
 	jnz vfelop4
-	add r11,qword [rsp+104] ;sstep inPtCurr
-	add r8,qword [rsp+112] ;dstep outPt
+	add r11,qword [rsp+136] ;sstep inPtCurr
+	add r8,qword [rsp+144] ;dstep outPt
 
-	mov rax,qword [rsp+80] ;tap
+	mov rax,qword [rsp+112] ;tap
 	lea rbx,[rax*8]
-	add qword [rsp+88],rbx ;index
-	add qword [rsp+96],rbx ;weight
+	add qword [rsp+120],rbx ;index
+	add qword [rsp+128],rbx ;weight
 
-	dec qword [rsp+72] ;currHeight
+	dec qword [rsp+104] ;currHeight
 	jnz vfelop
 	
 	align 16
 vfeexit:
-	movdqu xmm6,[rsp-32]
-	movdqu xmm7,[rsp-16]
+	movdqu xmm6,[rsp]
+	movdqu xmm7,[rsp+16]
+	add rsp,32
 	pop rdi
 	pop rsi
 	pop rbx

@@ -10,12 +10,12 @@ global SHA1_CalcBlock
 
 ;#define W_T(t) asm{mov eax,dword ptr W[((t * 4) & 63)]} asm{xor eax,dword ptr W[((t * 4 + 8) & 63)]} asm{xor eax,dword ptr W[((t * 4 + 32) & 63)]} asm{xor eax,dword ptr W[((t * 4 + 52) & 63)]} asm{rol eax,1} asm{add edx,eax} asm{mov dword ptr W[((t * 4) & 63)],eax}
 %macro W_T 1
-	mov eax,dword [rsp - 64 + ((%1 * 4) & 63)]
-	xor eax,dword [rsp - 64 + ((%1 * 4 + 8) & 63)]
-	xor eax,dword [rsp - 64 + ((%1 * 4 + 32) & 63)]
-	xor eax,dword [rsp - 64 + ((%1 * 4 + 52) & 63)]
+	mov eax,dword [rsp + ((%1 * 4) & 63)]
+	xor eax,dword [rsp + ((%1 * 4 + 8) & 63)]
+	xor eax,dword [rsp + ((%1 * 4 + 32) & 63)]
+	xor eax,dword [rsp + ((%1 * 4 + 52) & 63)]
 	rol eax,1
-	mov dword [rsp - 64 + ((%1 * 4) & 63)],eax
+	mov dword [rsp + ((%1 * 4) & 63)],eax
 	add edx,eax
 %endmacro
 
@@ -30,7 +30,7 @@ global SHA1_CalcBlock
 	
 	mov r10d, %1
 	rol r10d, 5
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0x5A827999
 	add edx, r10d
 	add %5, edx
@@ -63,7 +63,7 @@ global SHA1_CalcBlock
 	
 	mov r10d, %1
 	rol r10d, 5
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0x6ED9EBA1
 	add edx, r10d
 	add %5, edx
@@ -98,7 +98,7 @@ global SHA1_CalcBlock
 	
 	mov r10d, %1
 	rol r10d, 5
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0x8F1BBCDC
 	add edx, r10d
 	add %5 ,edx
@@ -133,7 +133,7 @@ global SHA1_CalcBlock
 	
 	mov r10d, %1
 	rol r10d, 5
-	add edx, dword [rsp - 64 + %6 * 4]
+	add edx, dword [rsp + %6 * 4]
 	add edx, 0xCA62C1D6
 	add edx, r10d
 	add %5, edx
@@ -156,12 +156,12 @@ global SHA1_CalcBlock
 %endmacro
 
 ;void SHA1_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message_Block)
-;-64 W
-;0 edi
-;8 esi
-;16 ebx
-;24 ebp
-;32 retAddr
+;0 W
+;64 edi
+;72 esi
+;80 ebx
+;88 ebp
+;96 retAddr
 ;rcx Intermediate_Hash hashVal
 ;rdx Message_Block
 	align 16
@@ -172,7 +172,8 @@ SHA1_CalcBlock:
 	push rdi
 	mov r8,rcx
 	mov r9,rdx
-	lea rdi,[rsp-64] ;W
+	sub rsp,64
+	mov rdi,rsp ;W
 	mov rsi,r9 ;Message_Block
 	mov eax,dword [rsi]
 	bswap eax
@@ -316,6 +317,7 @@ SHA1_CalcBlock:
 	add dword [r8 + 12], edi
 	add dword [r8 + 16], ebp
 
+	add rsp,64
 	pop rdi
 	pop rsi
 	pop rbx

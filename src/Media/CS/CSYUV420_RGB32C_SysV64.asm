@@ -375,10 +375,11 @@ vf7lop5:
 
 	align 16
 vflstart:
-	mov qword [rsp-24],r12
-	mov qword [rsp-32],r13
-	mov qword [rsp-40],r14
-	mov qword [rsp-48],r15
+	sub rsp,32
+	mov qword [rsp],r12
+	mov qword [rsp+8],r13
+	mov qword [rsp+16],r14
+	mov qword [rsp+24],r15
 	xor r12,r12
 	xor r13,r13
 	xor r14,r14
@@ -386,8 +387,8 @@ vflstart:
 
 	ALIGN 16
 vflop:
-	mov rbx,qword [rsp+88] ;weight
-	mov rsi,qword [rsp+120] ;csLineBuff2
+	mov rbx,qword [rsp+120] ;weight
+	mov rsi,qword [rsp+152] ;csLineBuff2
 	mov rcx,r11 ;inUPt
 	mov rdx,r8 ;inVPt
 
@@ -398,9 +399,9 @@ vflop:
 	movdqa xmm5,[rbx+16]
 	movdqa xmm6,[rbx+32]
 
-	add qword [rsp+88],48 ;weight
+	add qword [rsp+120],48 ;weight
 
-	mov rbp,qword [rsp+24] ;sWidth
+	mov rbp,qword [rsp+56] ;sWidth
 	xor rax,rax
 	ALIGN 16
 vflop2:
@@ -454,11 +455,11 @@ vflop2:
 	dec rbp
 	jnz vflop2
 
-	mov rbp,qword [rsp+16] ;cSub
+	mov rbp,qword [rsp+48] ;cSub
 	mov rsi,r10 ;inYPt
-	mov rdi,qword [rsp+112] ;csLineBuff
-	mov rcx,qword [rsp+120] ;csLineBuff2
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rdi,qword [rsp+144] ;csLineBuff
+	mov rcx,qword [rsp+152] ;csLineBuff2
+	mov rbx,qword [rsp+176] ;yuv2rgb
 
 	movzx rdx,word [rsi]
 	movzx rax,dl
@@ -534,13 +535,13 @@ y2rllop2b:
 	paddsw xmm2,xmm0
 	movdqa [rdi+16],xmm2
 
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	lea r10,[rsi+2] ;inYPt
 
 	mov rdi,r9 ;outPt
-	mov rbp,qword [rsp+32] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rbp,qword [rsp+64] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	shr rbp,1
 	ALIGN 16
 y2rllop5:
@@ -584,14 +585,15 @@ y2rllop5:
 	dec rbp
 	jnz y2rllop5
 
-	add r9,qword [rsp+136] ;dstep
+	add r9,qword [rsp+168] ;dstep
 
-	dec qword [rsp+40] ;currHeight
+	dec qword [rsp+72] ;currHeight
 	jnz vflop
-	mov r12,qword [rsp-24]
-	mov r13,qword [rsp-32]
-	mov r14,qword [rsp-40]
-	mov r15,qword [rsp-48]
+	mov r12,qword [rsp]
+	mov r13,qword [rsp+8]
+	mov r14,qword [rsp+16]
+	mov r15,qword [rsp+24]
+	add rsp,32
 
 	align 16
 vflexit:

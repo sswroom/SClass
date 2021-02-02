@@ -412,31 +412,32 @@ imab32lop12a:
 	ret
 
 ;void ImageUtil_ImageMask2ABlend32(UInt8 *maskPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col1, Int32 col2)
-;-32 xmm6
-;-16 xmm7
-;0 rdi
-;8 rsi
-;16 retAddr
+;0 xmm6
+;16 xmm7
+;32 rdi
+;40 rsi
+;48 retAddr
 ;rcx maskPtr
 ;rdx destPtr
 ;r8 w
 ;r9 h
-;56 sbpl
-;64 dbpl
-;72 col1
-;80 col2
+;88 sbpl
+;96 dbpl
+;104 col1
+;112 col2
 	align 16
 ImageUtil_ImageMask2ABlend32:
 	push rsi
 	push rdi
-	movdqu [rsp-32],xmm6
-	movdqu [rsp-16],xmm7
+	sub rsp,32
+	movdqu [rsp],xmm6
+	movdqu [rsp+16],xmm7
 	mov rsi,rcx ;maskPtr
 	mov rdi,rdx ;destPtr
 	
 	lea rax,[r8*4] ;w
-	sub qword [rsp+56],rax ;sbpl
-	sub qword [rsp+64],rax ;dbpl
+	sub qword [rsp+88],rax ;sbpl
+	sub qword [rsp+96],rax ;dbpl
 
 	mov edx,0xff000000
 	mov ecx,0xffffffff
@@ -445,7 +446,7 @@ ImageUtil_ImageMask2ABlend32:
 	punpcklbw xmm3,xmm3 ;mortmp
 	punpcklbw xmm4,xmm4 ;mtmp
 
-	movzx eax,byte [rsp+75] ;col1[3]
+	movzx eax,byte [rsp+107] ;col1[3]
 	movd xmm1,eax
 	punpcklbw xmm1,xmm1
 	punpcklbw xmm1,xmm1
@@ -456,11 +457,11 @@ ImageUtil_ImageMask2ABlend32:
 	movq xmm6,xmm1 ;cmul1
 	por xmm2,xmm3 ;mortmp
 
-	movd xmm7,[rsp+72] ;col1
+	movd xmm7,[rsp+104] ;col1
 	punpcklbw xmm7,xmm7
 	pmulhuw xmm7,xmm2 ;cadd1
 
-	movzx eax,byte [rsp+83] ;col2[3]
+	movzx eax,byte [rsp+115] ;col2[3]
 	movd xmm1,eax
 	punpcklbw xmm1,xmm1
 	punpcklbw xmm1,xmm1
@@ -470,7 +471,7 @@ ImageUtil_ImageMask2ABlend32:
 	pxor xmm4,xmm1 ;mtmp cmul2
 	por xmm2,xmm3 ;mortmp
 	
-	movd xmm5,[rsp+80] ;col2
+	movd xmm5,[rsp+112] ;col2
 	punpcklbw xmm5,xmm5
 	pmulhuw xmm5,xmm2 ;cadd2
 	
@@ -514,13 +515,14 @@ im2ab32lop1:
 	dec rcx
 	jnz im2ab32lop
 	
-	add rsi,qword [rsp+56] ;sbpl
-	add rdi,qword [rsp+64] ;dbpl
+	add rsi,qword [rsp+88] ;sbpl
+	add rdi,qword [rsp+96] ;dbpl
 	dec r9 ;h
 	jnz im2ab32lop3
 	
-	movdqu xmm6,[rsp-32]
-	movdqu xmm7,[rsp-16]
+	movdqu xmm6,[rsp]
+	movdqu xmm7,[rsp+16]
+	add rsp,32
 	pop rdi
 	pop rsi
 	ret
@@ -639,21 +641,22 @@ icf32lop4:
 	ret
 
 ;void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, Int32 col)
-;-32 xmm6
-;-16 xmm7
-;0 retAddr
+;0 xmm6
+;16 xmm7
+;32 retAddr
 ;rcx pixelPtr
 ;rdx w
 ;r8 h
 ;r9 bpl
-;40 col
+;72 col
 	align 16
 ImageUtil_ImageColorBlend32:
-	movdqu [rsp-32],xmm6
-	movdqu [rsp-16],xmm7
+	sub rsp,32
+	movdqu [rsp],xmm6
+	movdqu [rsp+16],xmm7
 	mov r10,rcx
 	mov r11,rdx
-	movzx eax,byte [rsp+43]
+	movzx eax,byte [rsp+75] ;col[3]
 	mov edx,0xff000000
 	mov ecx,0xffffffff
 	movd xmm1,eax
@@ -670,7 +673,7 @@ ImageUtil_ImageColorBlend32:
 	movdqa xmm5,xmm1 ;cimul
 	por xmm2,xmm3 ;mortmp
 
-	movd xmm0,[rsp+40]
+	movd xmm0,[rsp+72] ;col
 	punpcklbw xmm0,xmm0
 	pmulhuw xmm0,xmm2
 	movq xmm6,xmm0 ;cadd
@@ -721,8 +724,9 @@ icbl32lop3:
 	add rdx,r9 ;bpl
 	dec r8 ;hleft
 	jnz icbl32lop
-	movdqu xmm6,[rsp-32]
-	movdqu xmm7,[rsp-16]
+	movdqu xmm6,[rsp]
+	movdqu xmm7,[rsp+16]
+	add rsp,32
 	ret
 	
 ;void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt8 a);

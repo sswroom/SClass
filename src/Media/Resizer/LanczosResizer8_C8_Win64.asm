@@ -859,23 +859,27 @@ hfexit:
 	ret
 
 ;void LanczosResizer8_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
-;-32 xmm6
-;-16 xmm7
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
+;0 r12
+;8 r13
+;16 r14
+;24 r15
+;32 xmm6
+;48 xmm7
+;64 rdi
+;72 rsi
+;80 rbx
+;88 rbp
+;96 retAddr
 ;rcx inPt r10
 ;rdx outPt r11
 ;r8 dwidth
 ;r9 height
-;72 tap
-;80 index
-;88 weight
-;96 sstep
-;104 dstep
-;112 rgbTable
+;136 tap
+;144 index
+;152 weight
+;160 sstep
+;168 dstep
+;176 rgbTable
 
 	align 16
 LanczosResizer8_C8_vertical_filter:
@@ -883,34 +887,35 @@ LanczosResizer8_C8_vertical_filter:
 	push rbx
 	push rsi
 	push rdi
-	movdqu [rsp-32],xmm6
-	movdqu [rsp-16],xmm7
+	sub rsp,64
+	movdqu [rsp+32],xmm6
+	movdqu [rsp+48],xmm7
 	mov r10,rcx
 	mov r11,rdx
 	test r8,1 ;dwidth
 	jnz vf1start
-	cmp qword [rsp+72],6 ;tap
+	cmp qword [rsp+136],6 ;tap
 	jz vf6start
 	jmp vfstart
 	
 	align 16
 vf1start:					; if (dwidth & 1)
-	mov qword [rsp-40],r12
-	mov qword [rsp-48],r13
-	mov qword [rsp-56],r14
-	mov qword [rsp-64],r15
+	mov qword [rsp],r12
+	mov qword [rsp+8],r13
+	mov qword [rsp+16],r14
+	mov qword [rsp+24],r15
 	
-	mov r12,qword [rsp+72] ;tap
+	mov r12,qword [rsp+136] ;tap
 	shr r12,1
 	mov rax,r8 ;dwidth
 	shl rax,2
 	mov rcx,r11 ;outPt
-	sub qword [rsp+104],rax ;dstep
+	sub qword [rsp+168],rax ;dstep
 	pxor xmm3,xmm3
 	
-	mov r13,qword [rsp+80] ;index
-	mov r14,qword [rsp+88] ;weight
-	mov rdi,qword [rsp+112] ;rgbTable
+	mov r13,qword [rsp+144] ;index
+	mov r14,qword [rsp+152] ;weight
+	mov rdi,qword [rsp+176] ;rgbTable
 	align 16
 vf1lop:
 	mov rsi,r10 ;inPt
@@ -960,32 +965,32 @@ vf1lop3:
 	add r13,rax ;index
 	add r14,rax ;weight
 
-	add rcx,qword [rsp+104] ;dstep
+	add rcx,qword [rsp+168] ;dstep
 
 	dec r9 ;currHeight
 	jnz vf1lop
-	mov r12,qword [rsp-40]
-	mov r13,qword [rsp-48]
-	mov r14,qword [rsp-56]
-	mov r15,qword [rsp-64]
+	mov r12,qword [rsp]
+	mov r13,qword [rsp+8]
+	mov r14,qword [rsp+16]
+	mov r15,qword [rsp+24]
 	jmp vfexit
 
 	align 16
 vf6start:				;else if (tap == 6)
 	mov rax,r8 ;dwidth
-	shr qword [rsp+72],1 ;tap
+	shr qword [rsp+136],1 ;tap
 	lea rdx,[rax*4]
 	shr rax,1
-	sub qword [rsp+104],rdx ;dstep
+	sub qword [rsp+168],rdx ;dstep
 	mov r8,rax ;dwidth
 
 	mov rcx,r11 ;outPt
-	mov rdi,qword [rsp+80] ;index
-	mov rbp,qword [rsp+112] ;rgbTable
+	mov rdi,qword [rsp+144] ;index
+	mov rbp,qword [rsp+176] ;rgbTable
 	pxor xmm3,xmm3
 	align 16
 vf6lop4:
-	mov rbx,qword [rsp+88] ;weight
+	mov rbx,qword [rsp+152] ;weight
 	mov rsi,r10 ;inPt
 
 	movdqa xmm5,[rbx]
@@ -1066,9 +1071,9 @@ vf6lop5:
 	jnz vf6lop5
 
 	add rdi,48 ;index
-	add qword [rsp+88],48 ;weight
+	add qword [rsp+152],48 ;weight
 
-	add rcx,qword [rsp+104] ;dstep
+	add rcx,qword [rsp+168] ;dstep
 
 	dec r9 ;currHeight
 	jnz vf6lop4
@@ -1076,19 +1081,19 @@ vf6lop5:
 
 	align 16
 vfstart:
-	mov qword [rsp-40],r12
-	mov qword [rsp-48],r13
-	mov qword [rsp-56],r14
-	mov qword [rsp-64],r15
+	mov qword [rsp],r12
+	mov qword [rsp+8],r13
+	mov qword [rsp+16],r14
+	mov qword [rsp+24],r15
 	
-	mov r12,qword [rsp+72] ;tap
+	mov r12,qword [rsp+136] ;tap
 	shr r8,1 ;dwidth
 	shr r12,1
 	pxor xmm3,xmm3
 
-	mov r13,qword [rsp+80] ;index
-	mov r14,qword [rsp+88] ;weight
-	mov rdi,qword [rsp+112] ;rgbTable
+	mov r13,qword [rsp+144] ;index
+	mov r14,qword [rsp+152] ;weight
+	mov rdi,qword [rsp+176] ;rgbTable
 	align 16
 vflop4:
 
@@ -1162,19 +1167,20 @@ vflop6:
 	add r13,rax ;index
 	add r14,rax ;weight
 
-	add r11,qword [rsp+104] ;dstep
+	add r11,qword [rsp+168] ;dstep
 	
 	dec r9 ;currHeight
 	jnz vflop4
 
-	mov r12,qword [rsp-40]
-	mov r13,qword [rsp-48]
-	mov r14,qword [rsp-56]
-	mov r15,qword [rsp-64]
+	mov r12,qword [rsp]
+	mov r13,qword [rsp+8]
+	mov r14,qword [rsp+16]
+	mov r15,qword [rsp+24]
 	align 16
 vfexit:
-	movdqu [rsp-32],xmm6
-	movdqu xmm7,[rsp-16]
+	movdqu xmm6,[rsp+32]
+	movdqu xmm7,[rsp+48]
+	add rsp,64
 	pop rdi
 	pop rsi
 	pop rbx
