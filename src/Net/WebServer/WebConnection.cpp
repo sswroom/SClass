@@ -697,7 +697,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 
 		Text::StringBuilderUTF8 sb;
 		this->currReq->GetHeader(&sb, (const UTF8Char*)"Connection");
-		if (sb.Equals((const UTF8Char*)"keep-alive"))
+		if (sb.Equals((const UTF8Char*)"keep-alive") && this->allowKA)
 		{
 		}
 		else
