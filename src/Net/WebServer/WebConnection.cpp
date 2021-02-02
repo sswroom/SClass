@@ -390,7 +390,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 {
 	UTF8Char sbuff[32];
 	Text::StringBuilderUTF8 sb;
-	Text::StrUInt16(Text::StrConcat(this->cli->GetRemoteName(sbuff), (const UTF8Char*)":"), this->cli->GetRemotePort());
+	this->cli->GetRemoteName(sbuff);
 	sb.Append(sbuff);
 	sb.Append((const UTF8Char*)" ");
 	if (this->currReq)
