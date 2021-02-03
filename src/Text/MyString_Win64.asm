@@ -1952,12 +1952,13 @@ sccu32lop:
 	ret
 	
 ;UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, Int64 val)
-;0 retAddr
+;0 rbx
+;8 retAddr
 ;rcx oriStr
 ;rdx val
 	align 16
 MyString_StrHexVal64VUTF16:
-	mov qword [esp-8],rbx
+	push rbx
 	lea r8,[rel MyString_StrHexArrU16]
 	mov rax,rdx
 	shr rax,32
@@ -2143,7 +2144,7 @@ shv64vu16lop2:
 	align 16
 shv64vu16exit:
 	mov rax,rcx
-	mov rbx,qword [esp-8]
+	pop rbx
 	ret
 
 ;UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, Int64 val)
@@ -2191,12 +2192,13 @@ MyString_StrHexVal64UTF16:
 	ret
 
 ;UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, Int32 val)
-;0 retAddr
+;0 rbx
+;8 retAddr
 ;rcx oriStr
 ;rdx val
 	align 16
 MyString_StrHexVal32VUTF16:
-	mov qword [esp-8],rbx
+	push rbx
 	lea r8,[rel MyString_StrHexArrU16]
 	jmp shv64vu16lop8v
 

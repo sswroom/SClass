@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
-#include <arm_neon.h>
+#include "SIMD.h"
 
 extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, UInt8 *inVPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weighti64, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt ystep, OSInt dstep, Int64 *yuv2rgb14i64, Int64 *rgbGammaCorri64)
 {
@@ -328,8 +328,8 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 			i = width >> 1;
 			while (i-- > 0)
 			{
-				int32x4 valT1 = vdupq_n_s32(tmpV);
-				int32x4 valT2 = vdupq_n_s32(tmpV);
+				Int32x4 valT1 = PInt32x4SetA(tmpV);
+				Int32x4 valT2 = PInt32x4SetA(tmpV);
 				/////////////////////////////////////////////////
 				valTmp[0] = tmpV;
 				valTmp[1] = tmpV;

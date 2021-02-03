@@ -4,32 +4,33 @@ global CSP216_LRGBC_do_yuy2rgb
 global _CSP216_LRGBC_do_yuy2rgb
 
 ;void CSP216_LRGBC_do_yuy2rgb(UInt8 *srcY, UInt8 *srcUV, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
-;-24 rdi
-;-16 rsi
-;-8 rbx
-;0 retAddr
+;8 rdi
+;16 rsi
+;24 rbx
+;32 retAddr
 ;rcx srcY
 ;rdx srcUV
 ;r8 dest
 ;r9 width
-;40 height
-;48 dbpl
-;56 yuv2rgb
-;64 rgbGammaCorr
+;72 height
+;80 dbpl
+;88 yuv2rgb
+;96 rgbGammaCorr
 	align 16
 CSP216_LRGBC_do_yuy2rgb:
 _CSP216_LRGBC_do_yuy2rgb:
-	mov qword [rsp-24],rdi
-	mov qword [rsp-16],rsi
-	mov qword [rsp-8],rbx
+	sub rsp,32
+	mov qword [rsp+8],rdi
+	mov qword [rsp+16],rsi
+	mov qword [rsp+24],rbx
 	lea rax,[r9*8] ;width
 	shr r9,1
 	sub r9,2 ;Int32 wsize = (width >> 1) - 2;
-	sub qword [rsp+48],rax ;dbpl
+	sub qword [rsp+80],rax ;dbpl
 
-	mov rsi,qword [rsp+40] ;height
-	mov rbx,qword [rsp+56] ;yuv2rgb
-	mov rdi,qword [rsp+64] ;rgbGammaCorr
+	mov rsi,qword [rsp+72] ;height
+	mov rbx,qword [rsp+88] ;yuv2rgb
+	mov rdi,qword [rsp+96] ;rgbGammaCorr
 
 	align 16
 u2rlop:
@@ -155,12 +156,13 @@ u2rlop2:
 	lea rcx,[rcx+4]
 	lea r8,[r8+8]
 
-	add r8,qword [rsp+48] ;dbpl
+	add r8,qword [rsp+80] ;dbpl
 	dec rsi ;hleft
 	jnz u2rlop
 
-	mov rdi,qword [rsp-24]
-	mov rsi,qword [rsp-16]
-	mov rbx,qword [rsp-8]
+	mov rdi,qword [rsp+8]
+	mov rsi,qword [rsp+16]
+	mov rbx,qword [rsp+24]
+	add rsp,32
 	ret
 	

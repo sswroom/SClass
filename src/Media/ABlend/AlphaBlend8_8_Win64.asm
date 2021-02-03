@@ -335,7 +335,7 @@ iabpabldlop:
 	mov rsi,r8 ;src
 	mov rdi,r10 ;dest
 
-	mov rcx,qword [esp+72] ;width
+	mov rcx,qword [rsp+72] ;width
 	align 16
 iadpabldlop2:
 	mov bl,byte [rsi+3]

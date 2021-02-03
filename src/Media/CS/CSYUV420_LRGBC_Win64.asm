@@ -6,30 +6,30 @@ global CSYUV420_LRGBC_do_yv12rgb2
 
 ;void CSYUV420_LRGBC_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, UInt8 *inVPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt ystep, OSInt dstep, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
 ; xmm8 tmpV
-; -16 cSub
-; -8 sWidth
-; 0 rdi
-; 8 rsi
-; 16 rbx
-; 24 rbp
-; 32 retAddr
+; 48 cSub
+; 56 sWidth
+; 64 rdi
+; 72 rsi
+; 80 rbx
+; 88 rbp
+; 96 retAddr
 ; rcx inYPt r10
 ; rdx inUPt r11
 ; r8 inVPt
 ; r9 outPt
-; 72 width
-; 80 height / currHeight
-; 88 tap
-; 96 index
-; 104 weight
-; 112 isFirst
-; 120 isLast
-; 128 csLineBuff
-; 136 csLineBuff2
-; 144 ystep / yAdd
-; 152 dstep
-; 160 yuv2rgb
-; 168 rgbGammaCorr
+; 136 width
+; 144 height / currHeight
+; 152 tap
+; 160 index
+; 168 weight
+; 176 isFirst
+; 184 isLast
+; 192 csLineBuff
+; 200 csLineBuff2
+; 208 ystep / yAdd
+; 216 dstep
+; 224 yuv2rgb
+; 232 rgbGammaCorr
 
 	align 16
 CSYUV420_LRGBC_VerticalFilterLRGB
@@ -38,41 +38,42 @@ CSYUV420_LRGBC_VerticalFilterLRGB
 	push rbx
 	push rsi
 	push rdi
+	sub rsp,64
 	mov r10,rcx
 	mov r11,rdx
 	movd xmm0,eax
 	punpckldq xmm0,xmm0
 	punpckldq xmm0,xmm0
 	movdqa xmm8,xmm0						;Int32 tmpV[4] = {32768, 32768, 32768, 32768};
-	mov rdx,qword [rsp+72] ;width
+	mov rdx,qword [rsp+136] ;width
 	mov rax,rdx
 	mov rcx,rdx
-	sub qword [rsp+144],rdx ;yAdd				;OSInt yAdd = ystep - width;
+	sub qword [rsp+208],rdx ;yAdd				;OSInt yAdd = ystep - width;
 	shr rax,1
 	shr rcx,3
 	sub rax,2
-	mov qword [rsp-8],rcx ;sWidth				OSInt sWidth = width >> 3;
-	mov qword [rsp-16],rax ;cSub				OSInt cSub = (width >> 1) - 2;
-	mov rcx,qword [rsp+88] ;tap
+	mov qword [rsp+56],rcx ;sWidth				OSInt sWidth = width >> 3;
+	mov qword [rsp+48],rax ;cSub				OSInt cSub = (width >> 1) - 2;
+	mov rcx,qword [rsp+152] ;tap
 	cmp rcx,4
 	jnz vflexit									; if (tap == 4)
 	and rdx,7
 	jz vflstart
 												; if (width & 7)
 	shr rdx,2
-	mov qword [rsp-40],rdx						; OSInt widthLeft = (width & 7) >> 2;
+	mov qword [rsp+24],rdx						; OSInt widthLeft = (width & 7) >> 2;
 
 	align 16
 vf7lop:
 	mov rcx,r11 ;inUPt
 	mov rdx,r8 ;inVPt
-	mov rbx,qword [rsp+104] ;weight
-	mov rsi,qword [rsp+136] ;csLineBuff2
+	mov rbx,qword [rsp+168] ;weight
+	mov rsi,qword [rsp+200] ;csLineBuff2
 
 	movdqa xmm5,[rbx+16]
 	movdqa xmm6,[rbx+32]
 
-	mov ebp,dword [rsp-8] ;sWidth
+	mov ebp,dword [rsp+56] ;sWidth
 	xor rax,rax
 	ALIGN 16
 vf7lop2:
@@ -133,7 +134,7 @@ vf7lop2:
 	dec rbp
 	jnz vf7lop2
 
-	mov rbp,qword [rsp-40] ;widthLeft
+	mov rbp,qword [rsp+24] ;widthLeft
 	test rbp,rbp
 	jz vf7lop3b
 	ALIGN 16
@@ -196,7 +197,7 @@ vf7lop3:
 
 	align 16
 vf7lop3b:
-	mov rbp,qword [rsp+72] ;width
+	mov rbp,qword [rsp+136] ;width
 	and rbp,3
 	jz vf7lop3c
 	mov eax,dword [rbx]
@@ -254,11 +255,11 @@ vf7lop3b:
 	align 16
 vf7lop3c:
 
-	mov rbp,qword [rsp-16] ;cSub
+	mov rbp,qword [rsp+48] ;cSub
 	mov rsi,r10 ;inYPt
-	mov rdi,qword [rsp+128] ;csLineBuff
-	mov rcx,qword [rsp+136] ;csLineBuff2
-	mov rbx,qword [rsp+160] ;yuv2rgb
+	mov rdi,qword [rsp+192] ;csLineBuff
+	mov rcx,qword [rsp+200] ;csLineBuff2
+	mov rbx,qword [rsp+224] ;yuv2rgb
 
 	movzx rax,byte [rsi]
 	movq xmm2,[rbx+rax * 8]
@@ -330,13 +331,13 @@ vf7lop2b:
 	movdqa [rdi+16],xmm2
 	lea rsi,[rsi+2]
 	lea rcx,[rcx+4]
-	add rsi,qword [rsp+144] ;yAdd
+	add rsi,qword [rsp+208] ;yAdd
 	mov r10,rsi ;inYPt
 
 	mov rdi,r9 ;outPt
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+128] ;csLineBuff
-	mov rbx,qword [rsp+168] ;rgbGammaCorr
+	mov rcx,qword [rsp+136] ;width
+	mov rsi,qword [rsp+192] ;csLineBuff
+	mov rbx,qword [rsp+232] ;rgbGammaCorr
 	ALIGN 16
 vf7lop5:
 	movzx rax,word [rsi+4]
@@ -353,32 +354,32 @@ vf7lop5:
 	dec ecx
 	jnz vf7lop5
 
-	add qword [rsp+104],48 ;weight
-	add r9,qword [rsp+152] ;dstep outPt
+	add qword [rsp+168],48 ;weight
+	add r9,qword [rsp+216] ;dstep outPt
 
-	dec qword [rsp+80] ;currHeight
+	dec qword [rsp+144] ;currHeight
 	jnz vf7lop
 	jmp vflexit
 
 	align 16
 vflstart:
-	mov qword [rsp-24],r12
-	mov qword [rsp-32],r13
-	mov qword [rsp-40],r14
-	mov qword [rsp-48],r15
+	mov qword [rsp+16],r12
+	mov qword [rsp+24],r13
+	mov qword [rsp+32],r14
+	mov qword [rsp+40],r15
 	xor r12,r12
 	xor r13,r13
 	xor r14,r14
 	xor r15,r15
 	test r9,15
 	jnz vfnalop
-	test qword [rsp+152],15
+	test qword [rsp+216],15
 	jnz vfnalop
 	
 	align 16
 vflop:
-	mov rbx,qword [rsp+104] ;weight
-	mov rsi,qword [rsp+136] ;csLineBuff2
+	mov rbx,qword [rsp+168] ;weight
+	mov rsi,qword [rsp+200] ;csLineBuff2
 	mov rcx,r11 ;inUPt
 	mov rdx,r8 ;inVPt
 
@@ -389,9 +390,9 @@ vflop:
 	movdqa xmm5,[rbx+16]
 	movdqa xmm6,[rbx+32]
 
-	add qword [rsp+104],48 ;weight
+	add qword [rsp+168],48 ;weight
 
-	mov rbp,qword [rsp-8] ;sWidth
+	mov rbp,qword [rsp+56] ;sWidth
 	xor rax,rax
 	ALIGN 16
 vflop2:
@@ -445,12 +446,12 @@ vflop2:
 	dec rbp
 	jnz vflop2
 
-	mov rbp,qword [rsp-16] ;cSub
+	mov rbp,qword [rsp+48] ;cSub
 	mov rsi,r10 ;inYPt
 	mov rdi,r9 ;outPt
-	mov rcx,qword [rsp+136] ;csLineBuff2
-	mov rbx,qword [rsp+160] ;yuv2rgb
-	mov r12,qword [rsp+168] ;rgbGammaCorr
+	mov rcx,qword [rsp+200] ;csLineBuff2
+	mov rbx,qword [rsp+224] ;yuv2rgb
+	mov r12,qword [rsp+232] ;rgbGammaCorr
 
 	movzx rdx,word [rsi]
 	movzx rax,dl
@@ -590,25 +591,25 @@ y2rllop2b:
 	punpcklqdq xmm1,xmm7
 	movntdq [rdi+16],xmm1
 
-	add rsi,qword [rsp+144] ;yAdd
+	add rsi,qword [rsp+208] ;yAdd
 	lea rsi,[rsi+2]
 	mov r10,rsi ;inYPt
 
-	add r9,qword [rsp+152] ;dstep outPt
+	add r9,qword [rsp+216] ;dstep outPt
 	xor r12,r12
 
-	dec qword [rsp+80] ;currHeight
+	dec qword [rsp+144] ;currHeight
 	jnz vflop
-	mov r12,qword [rsp-24]
-	mov r13,qword [rsp-32]
-	mov r14,qword [rsp-40]
-	mov r15,qword [rsp-48]
+	mov r12,qword [rsp+16]
+	mov r13,qword [rsp+24]
+	mov r14,qword [rsp+32]
+	mov r15,qword [rsp+40]
 	jmp vflexit
 
 	align 16
 vfnalop:
-	mov rbx,qword [rsp+104] ;weight
-	mov rsi,qword [rsp+136] ;csLineBuff2
+	mov rbx,qword [rsp+168] ;weight
+	mov rsi,qword [rsp+200] ;csLineBuff2
 	mov rcx,r11 ;inUPt
 	mov rdx,r8 ;inVPt
 
@@ -619,9 +620,9 @@ vfnalop:
 	movdqa xmm5,[rbx+16]
 	movdqa xmm6,[rbx+32]
 
-	add qword [rsp+104],48 ;weight
+	add qword [rsp+168],48 ;weight
 
-	mov rbp,qword [rsp-8] ;sWidth
+	mov rbp,qword [rsp+56] ;sWidth
 	xor rax,rax
 	ALIGN 16
 vfnalop2:
@@ -675,12 +676,12 @@ vfnalop2:
 	dec rbp
 	jnz vfnalop2
 
-	mov rbp,qword [rsp-16] ;cSub
+	mov rbp,qword [rsp+48] ;cSub
 	mov rsi,r10 ;inYPt
 	mov rdi,r9 ;outPt
-	mov rcx,qword [rsp+136] ;csLineBuff2
-	mov rbx,qword [rsp+160] ;yuv2rgb
-	mov r12,qword [rsp+168] ;rgbGammaCorr
+	mov rcx,qword [rsp+200] ;csLineBuff2
+	mov rbx,qword [rsp+224] ;yuv2rgb
+	mov r12,qword [rsp+232] ;rgbGammaCorr
 
 	movzx rdx,word [rsi]
 	movzx rax,dl
@@ -820,22 +821,23 @@ y2rlnalop2b:
 	punpcklqdq xmm1,xmm7
 	movdqu [rdi+16],xmm1
 
-	add rsi,qword [rsp+144] ;yAdd
+	add rsi,qword [rsp+208] ;yAdd
 	lea rsi,[rsi+2]
 	mov r10,rsi ;inYPt
 
-	add r9,qword [rsp+152] ;dstep outPt
+	add r9,qword [rsp+216] ;dstep outPt
 	xor r12,r12
 
-	dec qword [rsp+80] ;currHeight
+	dec qword [rsp+144] ;currHeight
 	jnz vfnalop
-	mov r12,qword [rsp-24]
-	mov r13,qword [rsp-32]
-	mov r14,qword [rsp-40]
-	mov r15,qword [rsp-48]
+	mov r12,qword [rsp+16]
+	mov r13,qword [rsp+24]
+	mov r14,qword [rsp+32]
+	mov r15,qword [rsp+40]
 
 	align 16
 vflexit:
+	add rsp,64
 	pop rdi
 	pop rsi
 	pop rbx
@@ -844,29 +846,29 @@ vflexit:
 
 
 ;void CSYUV420_LRGBC_do_yv12rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
-;-24 widthLeft
-;-16 cSub
-;-8 cSize
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
+;8 widthLeft
+;16 cSub
+;24 cSize
+;32 rdi
+;40 rsi
+;48 rbx
+;56 rbp
+;64 retAddr
 ;rcx yPtr r10
 ;rdx uPtr r11
 ;r8 vPtr
 ;r9 dest
-;72 width
-;80 height
-;88 dbpl
-;96 isFirst
-;104 isLast
-;112 csLineBuff
-;120 csLineBuff2
-;128 yBpl / yAdd
-;136 uvBpl / uvAdd
-;144 yuv2rgb
-;152 rgbGammaCorr
+;104 width
+;112 height
+;120 dbpl
+;128 isFirst
+;136 isLast
+;144 csLineBuff
+;152 csLineBuff2
+;160 yBpl / yAdd
+;168 uvBpl / uvAdd
+;176 yuv2rgb
+;184 rgbGammaCorr
 
 	align 16
 CSYUV420_LRGBC_do_yv12rgb8:
@@ -874,29 +876,30 @@ CSYUV420_LRGBC_do_yv12rgb8:
 	push rbx
 	push rsi
 	push rdi
+	sub rsp,32
 	mov r10,rcx
 	mov r11,rdx
-	mov rdx,qword [rsp+72] ;width
+	mov rdx,qword [rsp+104] ;width
 	lea rax,[rdx*8]
-	sub qword [rsp+128],rdx ;yAdd					Int32 yAdd = yBpl - width;
+	sub qword [rsp+160],rdx ;yAdd					Int32 yAdd = yBpl - width;
 	shr rdx,1
-	mov qword [rsp-8],rax ;cSize					Int32 cSize = width << 3;
-	sub qword [rsp+136],rdx ;uvAdd					Int32 uvAdd = uvBpl - (width >> 1);
+	mov qword [rsp+24],rax ;cSize					Int32 cSize = width << 3;
+	sub qword [rsp+168],rdx ;uvAdd					Int32 uvAdd = uvBpl - (width >> 1);
 	sub rdx,2
-	mov qword [rsp-16],rdx ;cSub						Int32 cSub = (width >> 1) - 2;
+	mov qword [rsp+16],rdx ;cSub						Int32 cSub = (width >> 1) - 2;
 
-	mov rcx,qword [rsp+80] ;height
+	mov rcx,qword [rsp+112] ;height
 	shr rcx,1
-	mov rbx,qword [rsp+104] ;isLast
+	mov rbx,qword [rsp+136] ;isLast
 	and rbx,1
 	shl rbx,1
 	sub rcx,rbx
-	mov qword [rsp+80],rcx ;heightLeft
+	mov qword [rsp+112],rcx ;heightLeft
 
 	mov rsi,r10 ;yPtr
-	mov rcx,qword [rsp+72] ;width
-	mov rdi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rcx,qword [rsp+104] ;width
+	mov rdi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+176] ;yuv2rgb
 	
 	shr rcx,3
 	align 16
@@ -934,8 +937,8 @@ y2r8flop2a:
 	dec rcx
 	jnz y2r8flop2a
 
-	mov rcx,qword [rsp+72] ;width
-	add rsi,qword [rsp+128] ;yAdd
+	mov rcx,qword [rsp+104] ;width
+	add rsi,qword [rsp+160] ;yAdd
 	shr ecx,3
 	ALIGN 16
 y2r8flop2a2:
@@ -971,15 +974,15 @@ y2r8flop2a2:
 	lea rdi,[rdi+64]
 	dec rcx
 	jnz y2r8flop2a2
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	mov r10,rsi ;yPtr
 
-	mov rcx,qword [rsp-16] ;cSub
-	mov rdx,qword [rsp-8] ;cSize
+	mov rcx,qword [rsp+16] ;cSub
+	mov rdx,qword [rsp+24] ;cSize
 	mov rsi,r11 ;uPtr
-	mov rdi,qword [rsp+112] ;csLineBuff
+	mov rdi,qword [rsp+144] ;csLineBuff
 	shr rcx,1
-	mov qword [rsp-24],rcx ;widthLeft
+	mov qword [rsp+8],rcx ;widthLeft
 	mov rcx,r8 ;vPtr
 
 	movzx rax,byte [rsi]
@@ -1049,7 +1052,7 @@ y2r8flop3a:
 	lea rdi,[rdi+32]
 	lea rsi,[rsi+2]
 	lea rcx,[rcx+2]
-	dec qword [rsp-24] ;widthLeft
+	dec qword [rsp+8] ;widthLeft
 	jnz y2r8flop3a
 
 	pxor xmm4,xmm4
@@ -1080,7 +1083,7 @@ y2r8flop3a:
 	lea rdi,[rdi+16]
 	inc rsi
 	inc rcx
-	mov rbp,qword [rsp+136] ;uvAdd
+	mov rbp,qword [rsp+168] ;uvAdd
 	add rsi,rbp
 	add rcx,rbp
 	mov r11,rsi ;uPtr
@@ -1090,9 +1093,9 @@ y2r8flop3a:
 y2r8flop:
 
 	mov rsi,r10 ;yPtr
-	mov rcx,qword [rsp+72] ;width
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rcx,qword [rsp+104] ;width
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov rbx,qword [rsp+176] ;yuv2rgb
 	shr rcx,1
 	align 16
 y2r8flop2:
@@ -1108,8 +1111,8 @@ y2r8flop2:
 	dec rcx
 	jnz y2r8flop2
 
-	mov rcx,qword [rsp+72] ;width
-	add rsi,qword [rsp+128] ;yAdd
+	mov rcx,qword [rsp+104] ;width
+	add rsi,qword [rsp+160] ;yAdd
 	shr rcx,1
 	align 16
 y2r8flop2_2:
@@ -1125,17 +1128,17 @@ y2r8flop2_2:
 	dec rcx
 	jnz y2r8flop2_2
 
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	mov r10,rsi ;yPtr
 
-	mov rcx,qword [rsp-16] ;cSub
+	mov rcx,qword [rsp+16] ;cSub
 	mov rsi,r11 ;uPtr
 	mov rdx,r8 ;vPtr
-	mov rbp,qword [rsp+112] ;csLineBuff
-	mov rdi,qword [rsp+120] ;csLineBuff2
+	mov rbp,qword [rsp+144] ;csLineBuff
+	mov rdi,qword [rsp+152] ;csLineBuff2
 	shr rcx,1
-	mov qword [rsp-24],rcx ;widthLeft
-	mov rcx,qword [rsp-8] ;cSize
+	mov qword [rsp+8],rcx ;widthLeft
+	mov rcx,qword [rsp+24] ;cSize
 
 	pxor xmm4,xmm4
 	movzx rax,byte [rsi]
@@ -1217,7 +1220,7 @@ y2r8flop3:
 	lea rdi,[rdi+32]
 	lea rsi,[rsi+2]
 	lea rdx,[rdx+2]
-	dec qword [rsp-24] ;widthLeft
+	dec qword [rsp+8] ;widthLeft
 	jnz y2r8flop3
 
 	movzx rax,byte [rsi]
@@ -1254,15 +1257,15 @@ y2r8flop3:
 	lea rdi,[rdi+16]
 	inc rsi
 	inc rdx
-	add rsi,qword [rsp+136] ;uvAdd
-	add rdx,qword [rsp+136] ;uvAdd
+	add rsi,qword [rsp+168] ;uvAdd
+	add rdx,qword [rsp+168] ;uvAdd
 	mov r11,rsi ;uPtr
 	mov r8,rdx ;vPtr
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rcx,qword [rsp+104] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	ALIGN 16
 y2r8flop5:
 	movzx rax,word [rsi+4]
@@ -1279,10 +1282,10 @@ y2r8flop5:
 	dec rcx
 	jnz y2r8flop5
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	ALIGN 16
 y2r8flop6:
 	movzx rax,word [rsi+4]
@@ -1299,21 +1302,21 @@ y2r8flop6:
 	dec rcx
 	jnz y2r8flop6
 
-	add r9,qword [rsp+88] ;dbpl dest
-	mov rax,qword [rsp+112] ;csLineBuff
-	xchg rax,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp+112],rax ;;csLineBuff
+	add r9,qword [rsp+120] ;dbpl dest
+	mov rax,qword [rsp+144] ;csLineBuff
+	xchg rax,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+144],rax ;;csLineBuff
 
-	dec qword [rsp+80] ;heightLeft
+	dec qword [rsp+112] ;heightLeft
 	jnz y2r8flop
 
-	test qword [rsp+104],1 ;isLast
+	test qword [rsp+136],1 ;isLast
 	jz yv2r8flopexit
 
 	mov rsi,r10 ;yPtr
-	mov rcx,qword [rsp+72] ;width
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rcx,qword [rsp+104] ;width
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov rbx,qword [rsp+176] ;yuv2rgb
 	shr rcx,1
 	ALIGN 16
 y2r8flop2b:
@@ -1327,9 +1330,9 @@ y2r8flop2b:
 	lea rdi,[rdi+16]
 	dec rcx
 	jnz y2r8flop2b
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	shr rcx,1
 	ALIGN 16
 y2r8flop2b2:
@@ -1343,17 +1346,17 @@ y2r8flop2b2:
 	lea rdi,[rdi+16]
 	dec rcx
 	jnz y2r8flop2b2
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	mov r10,rsi ;yPtr
 
-	mov rcx,qword [rsp-16] ;cSub
+	mov rcx,qword [rsp+16] ;cSub
 	mov rsi,r11 ;uPtr
 	mov rdx,r8 ;vPtr
-	mov rbp,qword [rsp+112] ;csLineBuff
-	mov rdi,qword [rsp+120] ;csLineBuff2
+	mov rbp,qword [rsp+144] ;csLineBuff
+	mov rdi,qword [rsp+152] ;csLineBuff2
 	shr rcx,1
-	mov qword [rsp-24],rcx ;widthLeft
-	mov rcx,qword [rsp-8] ;cSize
+	mov qword [rsp+8],rcx ;widthLeft
+	mov rcx,qword [rsp+24] ;cSize
 
 	pxor xmm1,xmm1
 	movzx rax,byte [rsi]
@@ -1433,7 +1436,7 @@ y2r8flop3b:
 	lea rdi,[rdi+32]
 	lea rsi,[rsi+2]
 	lea rdx,[rdx+2]
-	dec qword [rsp-24] ;widthLeft
+	dec qword [rsp+8] ;widthLeft
 	jnz y2r8flop3b
 
 	pxor xmm1,xmm1
@@ -1469,15 +1472,15 @@ y2r8flop3b:
 	lea rdi,[rbp+16]
 	inc rsi
 	inc rdx
-	add rsi,qword [rsp+136] ;uvAdd
-	add rdx,qword [rsp+136] ;uvAdd
+	add rsi,qword [rsp+168] ;uvAdd
+	add rdx,qword [rsp+168] ;uvAdd
 	mov r11,rsi ;uPtr
 	mov r8,rdx ;vPtr
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rcx,qword [rsp+104] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	ALIGN 16
 y2r8flop5b:
 	movzx rax,word [rsi+4]
@@ -1494,10 +1497,10 @@ y2r8flop5b:
 	dec rcx
 	jnz y2r8flop5b
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	ALIGN 16
 y2r8flop6b:
 	movzx rax,word [rsi+4]
@@ -1514,16 +1517,16 @@ y2r8flop6b:
 	dec rcx
 	jnz y2r8flop6b
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
-	mov rax,qword [rsp+112] ;csLineBuff
-	xchg rax,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp+112],rax ;csLineBuff
+	mov rax,qword [rsp+144] ;csLineBuff
+	xchg rax,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+144],rax ;csLineBuff
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rcx,qword [rsp+104] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	ALIGN 16
 y2r8flop5c:
 	movzx rax,word [rsi+4]
@@ -1540,10 +1543,10 @@ y2r8flop5c:
 	dec rcx
 	jnz y2r8flop5c
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	ALIGN 16
 y2r8flop6c:
 	movzx rax,word [rsi+4]
@@ -1560,14 +1563,15 @@ y2r8flop6c:
 	dec rcx
 	jnz y2r8flop6c
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
-	mov rax,qword [rsp+112] ;csLineBuff
-	xchg rax,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp+112],rax ;csLineBuff
+	mov rax,qword [rsp+144] ;csLineBuff
+	xchg rax,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+144],rax ;csLineBuff
 
 	align 16
 yv2r8flopexit:
+	add rsp,32
 	pop rdi
 	pop rsi
 	pop rbx
@@ -1575,29 +1579,29 @@ yv2r8flopexit:
 	ret
 
 ;void CSYUV420_LRGBC_do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
-;-24 widthLeft
-;-16 cSub
-;-8 cSize
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
+;8 widthLeft
+;16 cSub
+;24 cSize
+;32 rdi
+;40 rsi
+;48 rbx
+;56 rbp
+;64 retAddr
 ;rcx yPtr r10
 ;rdx uPtr r11
 ;r8 vPtr
 ;r9 dest
-;72 width
-;80 height
-;88 dbpl
-;96 isFirst
-;104 isLast
-;112 csLineBuff
-;120 csLineBuff2
-;128 yBpl / yAdd
-;136 uvBpl / uvAdd
-;144 yuv2rgb
-;152 rgbGammaCorr
+;104 width
+;112 height
+;120 dbpl
+;128 isFirst
+;136 isLast
+;144 csLineBuff
+;152 csLineBuff2
+;160 yBpl / yAdd
+;168 uvBpl / uvAdd
+;176 yuv2rgb
+;184 rgbGammaCorr
 
 	align 16
 CSYUV420_LRGBC_do_yv12rgb2:
@@ -1605,32 +1609,33 @@ CSYUV420_LRGBC_do_yv12rgb2:
 	push rbx
 	push rsi
 	push rdi
+	sub rsp,32
 	mov r10,rcx
 	mov r11,rdx
-	mov rdx,qword [rsp+72] ;width
+	mov rdx,qword [rsp+104] ;width
 	lea rcx,[rdx-2]
 	lea rax,[rdx*8]
-	sub qword [rsp+128],rcx ;yAdd					Int32 yAdd = yBpl - width - 2;
+	sub qword [rsp+160],rcx ;yAdd					Int32 yAdd = yBpl - width - 2;
 	shr rdx,1
 	inc rdx
-	mov qword [rsp-8],rax ;cSize					Int32 cSize = width << 3;
-	sub qword [rsp+136],rdx ;uvAdd					Int32 uvAdd = uvBpl - ((width + 2) >> 1);
+	mov qword [rsp+24],rax ;cSize					Int32 cSize = width << 3;
+	sub qword [rsp+168],rdx ;uvAdd					Int32 uvAdd = uvBpl - ((width + 2) >> 1);
 	sub rdx,2
-	mov qword [rsp-16],rdx ;cSub						Int32 cSub = (width >> 1) - 2;
+	mov qword [rsp+16],rdx ;cSub						Int32 cSub = (width >> 1) - 2;
 
-	mov rcx,qword [rsp+80] ;height
+	mov rcx,qword [rsp+112] ;height
 	shr rcx,1
-	mov rbx,qword [rsp+104] ;isLast
+	mov rbx,qword [rsp+136] ;isLast
 	and rbx,1
 	shl rbx,1
 	sub rcx,rbx
-	mov qword [rsp+80],rcx ;heightLeft
+	mov qword [rsp+112],rcx ;heightLeft
 
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	shr rcx,2
 	mov rsi,r10 ;yPtr
-	mov rdi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rdi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+176] ;yuv2rgb
 
 	mov rbp,rcx
 	align 16
@@ -1660,7 +1665,7 @@ y2rflop2a:
 	movq [rdi+8],xmm0
 	add rsi,4
 	add rdi,16
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	mov rcx,rbp
 
 	align 16
@@ -1690,14 +1695,14 @@ y2rflop2c:
 	movq [rdi+8],xmm0
 	add rsi,4
 	add rdi,16
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	mov r10,rsi ;yPtr
 
-	mov rcx,qword [rsp-16] ;cSub
-	mov rdx,qword [rsp-8] ;cSize
+	mov rcx,qword [rsp+16] ;cSub
+	mov rdx,qword [rsp+24] ;cSize
 	mov rsi,r11 ;uPtr
-	mov rdi,qword [rsp+112] ;csLineBuff
-	mov qword [rsp-24],rcx ;widthLeft
+	mov rdi,qword [rsp+144] ;csLineBuff
+	mov qword [rsp+8],rcx ;widthLeft
 	mov rcx,r8 ;vPtr
 
 	movzx rax,byte [rsi]
@@ -1769,7 +1774,7 @@ y2rflop3a:
 	add rdi,16
 	inc rsi
 	inc rcx
-	dec qword [rsp-24] ;widthLeft
+	dec qword [rsp+8] ;widthLeft
 	jnz y2rflop3a
 
 
@@ -1810,17 +1815,17 @@ y2rflop3a:
 	add rdi,16
 	add rsi,2
 	add rcx,2
-	add rsi,qword [rsp+136] ;uvAdd
-	add rcx,qword [rsp+136] ;uvAdd
+	add rsi,qword [rsp+168] ;uvAdd
+	add rcx,qword [rsp+168] ;uvAdd
 	mov r11,rsi ;uPtr
 	mov r8,rcx ;vPtr
 	align 16
 y2rflop:
 
 	mov rsi,r10 ;yPtr
-	mov rcx,qword [rsp+72] ;width
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rcx,qword [rsp+104] ;width
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov rbx,qword [rsp+176] ;yuv2rgb
 
 	align 16
 y2rflop2:
@@ -1832,9 +1837,9 @@ y2rflop2:
 	dec rcx
 	jnz y2rflop2
 	add rsi,2
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	align 16
 y2rflop2d:
 	movzx rax,byte [rsi]
@@ -1845,17 +1850,17 @@ y2rflop2d:
 	dec rcx
 	jnz y2rflop2d
 	add rsi,2
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 
 	mov r10,rsi ;yPtr
 
-	mov rcx,qword [rsp-16] ;cSub
+	mov rcx,qword [rsp+16] ;cSub
 	mov rsi,r11 ;uPtr
 	mov rdx,r8 ;vPtr
-	mov rbp,qword [rsp+112] ;csLineBuff
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov qword [esp-24],rcx ;widthLeft
-	mov rcx,qword [rsp-8] ;cSize
+	mov rbp,qword [rsp+144] ;csLineBuff
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+8],rcx ;widthLeft
+	mov rcx,qword [rsp+24] ;cSize
 
 	movzx rax,byte [rsi]
 	movq xmm0,[rbx+rax*8 + 2048]
@@ -1948,7 +1953,7 @@ y2rflop3:
 	lea rdi,[rdi+16]
 	inc rsi
 	inc rdx
-	dec qword [rsp-24] ;widthLeft
+	dec qword [rsp+8] ;widthLeft
 	jnz y2rflop3
 
 	movzx rax,byte [rsi]
@@ -2001,15 +2006,15 @@ y2rflop3:
 	add rdi,16
 	add rsi,2
 	add rdx,2
-	add rsi,qword [rsp+136] ;uvAdd
-	add rdi,qword [rsp+136] ;uvAdd
+	add rsi,qword [rsp+168] ;uvAdd
+	add rdi,qword [rsp+168] ;uvAdd
 	mov r11,rsi ;uPtr
 	mov r8,rdx ;vPtr
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rcx,qword [rsp+104] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	align 16
 y2rflop5:
 	movzx rax,word [rsi+4]
@@ -2026,10 +2031,10 @@ y2rflop5:
 	dec rcx
 	jnz y2rflop5
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	align 16
 y2rflop6:
 	movzx rax,word [rsi+4]
@@ -2046,22 +2051,22 @@ y2rflop6:
 	dec rcx
 	jnz y2rflop6
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
-	mov rax,qword [rsp+112] ;csLineBuff
-	xchg rax,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp+112],rax ;csLineBuff
+	mov rax,qword [rsp+144] ;csLineBuff
+	xchg rax,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+144],rax ;csLineBuff
 
-	dec qword [rsp+80] ;heightLeft
+	dec qword [rsp+112] ;heightLeft
 	jnz y2rflop
 
-	test qword [rsp+104],1 ;isLast
+	test qword [rsp+136],1 ;isLast
 	jz yv2rflopexit
 
 	mov rsi,r10 ;yPtr
-	mov rcx,qword [rsp+72] ;width
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov rbx,qword [rsp+144] ;yuv2rgb
+	mov rcx,qword [rsp+104] ;width
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov rbx,qword [rsp+176] ;yuv2rgb
 
 	align 16
 y2rflop2b:
@@ -2074,7 +2079,7 @@ y2rflop2b:
 	jnz y2rflop2b
 	inc rsi
 
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	align 16
 y2rflop2e:
 	movzx rax,byte [rsi]
@@ -2085,16 +2090,16 @@ y2rflop2e:
 	dec rcx
 	jnz y2rflop2e
 	inc rsi
-	add rsi,qword [rsp+128] ;yAdd
+	add rsi,qword [rsp+160] ;yAdd
 	mov r10,rsi ;yPtr
 
-	mov rcx,qword [rsp-16] ;cSub
+	mov rcx,qword [rsp+16] ;cSub
 	mov rsi,r11 ;uPtr
 	mov rdx,r8 ;vPtr
-	mov rbp,qword [rsp+112] ;csLineBuff
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp-24],rcx ;widthLeft
-	mov rcx,qword [rsp-8] ;cSize
+	mov rbp,qword [rsp+144] ;csLineBuff
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+8],rcx ;widthLeft
+	mov rcx,qword [rsp+24] ;cSize
 
 	movzx rax,byte [rsi]
 	movq xmm0,[rbx+rax*8 + 2048]
@@ -2187,7 +2192,7 @@ y2rflop3b:
 	lea rdi,[rdi+16]
 	inc rsi
 	inc rdx
-	dec qword [rsp-24] ;widthLeft
+	dec qword [rsp+8] ;widthLeft
 	jnz y2rflop3b
 
 	movzx rax,byte [rsi]
@@ -2240,15 +2245,15 @@ y2rflop3b:
 	lea rdi,[rdi+16]
 	add rsi,2
 	add rdx,2
-	add rsi,qword [rsp+136] ;uvAdd
-	add rdx,qword [rsp+136] ;uvAdd
+	add rsi,qword [rsp+168] ;uvAdd
+	add rdx,qword [rsp+168] ;uvAdd
 	mov r11,rsi ;uPtr
 	mov r8,rdx ;vPtr
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rcx,qword [rsp+104] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	align 16
 y2rflop5b:
 	movzx rax,word [rsi+4]
@@ -2265,10 +2270,10 @@ y2rflop5b:
 	dec rcx
 	jnz y2rflop5b
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	align 16
 y2rflop6b:
 	movzx rax,word [rsi+4]
@@ -2285,17 +2290,17 @@ y2rflop6b:
 	dec rcx
 	jnz y2rflop6b
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp+120],rsi ;csLineBuff2
-	mov qword [rsp+112],rdi ;csLineBuff
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+152],rsi ;csLineBuff2
+	mov qword [rsp+144],rdi ;csLineBuff
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rbx,qword [rsp+152] ;rgbGammaCorr
+	mov rcx,qword [rsp+104] ;width
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rbx,qword [rsp+184] ;rgbGammaCorr
 	align 16
 y2rflop5c:
 	movzx rax,word [rsi+4]
@@ -2312,10 +2317,10 @@ y2rflop5c:
 	dec rcx
 	jnz y2rflop5c
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
 	mov rdi,r9 ;dest
-	mov rcx,qword [rsp+72] ;width
+	mov rcx,qword [rsp+104] ;width
 	align 16
 y2rflop6c:
 	movzx rax,word [rsi+4]
@@ -2332,15 +2337,16 @@ y2rflop6c:
 	dec rcx
 	jnz y2rflop6c
 
-	add r9,qword [rsp+88] ;dbpl dest
+	add r9,qword [rsp+120] ;dbpl dest
 
-	mov rsi,qword [rsp+112] ;csLineBuff
-	mov rdi,qword [rsp+120] ;csLineBuff2
-	mov qword [rsp+120],rsi ;csLineBuff2
-	mov qword [rsp+112],rdi ;csLineBuff
+	mov rsi,qword [rsp+144] ;csLineBuff
+	mov rdi,qword [rsp+152] ;csLineBuff2
+	mov qword [rsp+152],rsi ;csLineBuff2
+	mov qword [rsp+144],rdi ;csLineBuff
 
 	align 16
 yv2rflopexit:
+	add rsp,32
 	pop rdi
 	pop rsi
 	pop rbx

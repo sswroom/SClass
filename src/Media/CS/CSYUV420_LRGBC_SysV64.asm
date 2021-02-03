@@ -1632,7 +1632,7 @@ y2rflop2d:
 	mov rdx,r8 ;vPtr
 	mov rbp,qword [rsp+144] ;csLineBuff
 	mov rdi,qword [rsp+152] ;csLineBuff2
-	mov qword [esp-24],rcx ;widthLeft
+	mov qword [rsp+8],rcx ;widthLeft
 	mov rcx,qword [rsp+24] ;cSize
 
 	movzx rax,byte [rsi]
