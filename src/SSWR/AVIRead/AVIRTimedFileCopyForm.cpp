@@ -66,12 +66,120 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 {
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
+	IO::Path::PathType pt;
+	Int32 iVal;
+	Bool succ;
+	OSInt i;
+	Data::DateTime dt(startTime);
+	Data::DateTime modTime;
 	Text::StrConcat(pathEnd, IO::Path::ALL_FILES);
 	sess = IO::Path::FindFile(buffStart);
 	if (sess)
 	{
+		while ((sptr = IO::Path::FindNextFile(pathEnd, sess, &modTime, &pt, 0)) != 0)
+		{
+			if (pt == IO::Path::PT_FILE)
+			{
+				succ = false;
+				i = Text::StrIndexOf(pathEnd, '.');
+				if (i >= 8)
+				{
+					pathEnd[i] = 0;
+					succ = Text::StrToInt32(&pathEnd[i - 8], &iVal);
+					pathEnd[i] = '.';
+				}
+				else if (i < 0 && (sptr - pathEnd) >= 8)
+				{
+					succ = Text::StrToInt32(sptr - 8, &iVal);
+				}
+				if (succ)
+				{
+					dt.SetYear(iVal / 10000);
+					iVal = iVal % 10000;
+					dt.SetMonth(iVal / 100);
+					dt.SetDay(iVal % 100);
+					if (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0)
+					{
+						IO::FileStream *fs;
+						NEW_CLASS(fs, IO::FileStream(buffStart, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						if (fs->IsError())
+						{
+							succ = false;
+						}
+						else
+						{
+							UInt8 *fileBuff;
+							UInt64 fileLeng = fs->GetLength();
+							UOSInt totalRead = 0;
+							OSInt readSize;
+							if (fileLeng > 0)
+							{
+								fileBuff = MemAlloc(UInt8, fileLeng);
+								while (totalRead < fileLeng)
+								{
+									readSize = fs->Read(&fileBuff[totalRead], fileLeng - totalRead);
+									if (readSize <= 0)
+									{
+										break;
+									}
+									totalRead += readSize;
+								}
+								if (totalRead == fileLeng)
+								{
+									succ = zip->AddFile(pathBase, fileBuff, totalRead, modTime.ToTicks(), false);
+								}
+								else
+								{
+									succ = false;
+								}
+								MemFree(fileBuff);
+							}
+						}
+						DEL_CLASS(fs);
+						if (!succ)
+						{
+							Text::StringBuilderUTF8 sb;
+							sb.Append((const UTF8Char*)"Error in copying ");
+							sb.Append(buffStart);
+							UI::MessageDialog::ShowDialog(sb.ToString(), this->GetFormName(), this);
+							return false;
+						}
+					}
+				}
+			}
+			else if (pt == IO::Path::PT_DIRECTORY)
+			{
+				if (pathEnd[0] != '.')
+				{
+					if (monthDir)
+					{
+						if ((sptr - pathEnd) >= 6 && Text::StrToInt32(sptr - 6, &iVal))
+						{
+							dt.SetDate(iVal / 100, iVal % 100, 1);
+							if ((dt.GetYear() == startTime->GetYear() && dt.GetMonth() == startTime->GetMonth()) || (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0))
+							{
+								*sptr++ = IO::Path::PATH_SEPERATOR;
+								if (!this->CopyToZip(zip, buffStart, pathBase, sptr, startTime, endTime, false))
+								{
+									return false;
+								}
+							}
+						}
+					}
+					else
+					{
+						*sptr++ = IO::Path::PATH_SEPERATOR;
+						if (!this->CopyToZip(zip, buffStart, pathBase, sptr, startTime, endTime, false))
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
 		IO::Path::FindFileClose(sess);
 	}
+	return true;
 }
 
 SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 652, 180, ui)
@@ -99,7 +207,7 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 	this->dtpEndTime->SetRect(104, 52, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
-
+	this->btnStart->HandleButtonClick(OnStartClicked, this);
 }
 
 SSWR::AVIRead::AVIRTimedFileCopyForm::~AVIRTimedFileCopyForm()
