@@ -78,6 +78,28 @@ DB::ColDef *DB::TableDef::GetCol(UOSInt index)
 	return this->cols->GetItem(index);
 }
 
+DB::ColDef *DB::TableDef::GetSinglePKCol()
+{
+	DB::ColDef *retCol = 0;
+	DB::ColDef *col;
+	UOSInt i = 0;
+	UOSInt j = this->cols->GetCount();
+	while (i < j)
+	{
+		col = this->cols->GetItem(i);
+		if (col->IsPK())
+		{
+			if (retCol != 0)
+			{
+				return 0;
+			}
+			retCol = col;
+		}
+		i++;
+	}
+	return retCol;
+}
+
 DB::TableDef *DB::TableDef::AddCol(DB::ColDef *col)
 {
 	this->cols->Add(col);

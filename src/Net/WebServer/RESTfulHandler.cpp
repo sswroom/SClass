@@ -163,8 +163,48 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		OSInt i = Text::StrIndexOf(&subReq[1], '/');
 		if (i >= 0)
 		{
-			/////////////////////////
-			resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+			DB::DBRow *row;
+			const UTF8Char *tableName;
+			Int64 ikey;
+			if (!Text::StrToInt64(&subReq[2 + i], &ikey))
+			{
+				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+				return true;
+			}
+			tableName = Text::StrCopyNewC(&subReq[1], i);
+			row = this->dbCache->GetTableItem(tableName, ikey);
+			Text::StrDelNew(tableName);
+			if (row == 0)
+			{
+				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
+				resp->AddDefHeaders(req);
+				resp->AddCacheControl(0);
+				resp->AddContentLength(0);
+				return true;
+			}
+
+			Text::StringBuilderUTF8 sbURI;
+			Text::StringBuilderUTF8 sb;
+			{
+				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+				this->BuildJSON(&json, row);
+				sbURI.ClearStr();
+				req->GetRequestURLBase(&sbURI);
+				req->GetRequestPath(sbuff, sizeof(sbuff));
+				sbURI.Append(sbuff);
+				json.ObjectBeginObject((const UTF8Char*)"_links");
+				json.ObjectBeginObject((const UTF8Char*)"self");
+				json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+				json.ObjectEnd();
+				json.ObjectEnd();
+				json.ObjectEnd();
+			}
+			this->dbCache->FreeTableItem(row);
+			resp->AddDefHeaders(req);
+			resp->AddCacheControl(0);
+			resp->AddContentType((const UTF8Char*)"application/json");
+			resp->AddContentLength(sb.GetLength());
+			resp->Write(sb.ToString(), sb.GetLength());
 			return true;
 		}
 		else

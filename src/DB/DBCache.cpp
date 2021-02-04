@@ -124,6 +124,49 @@ UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF
 	return ret;
 }
 
+DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
+{
+	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
+	if (tableInfo == 0)
+		return 0;
+	DB::ColDef *col = tableInfo->def->GetSinglePKCol();
+	if (col == 0)
+	{
+		return 0;
+	}
+	switch (col->GetColType())
+	{
+	case DB::DBUtil::CT_Byte:
+	case DB::DBUtil::CT_UInt16:
+	case DB::DBUtil::CT_UInt32:
+	case DB::DBUtil::CT_UInt64:
+	case DB::DBUtil::CT_Int16:
+	case DB::DBUtil::CT_Int32:
+	case DB::DBUtil::CT_Int64:
+		break;
+	default:
+		return 0;
+	}
+	DB::DBRow *row = 0;
+	DB::SQLBuilder sql(this->db->GetSvrType());
+	this->db->GenSelectCmd(&sql, tableInfo->def);
+	sql.AppendCmd((const UTF8Char*)" where ");
+	sql.AppendCol(col->GetColName());
+	sql.AppendCmd((const UTF8Char*)" = ");
+	sql.AppendInt64(pk);
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	if (r)
+	{
+		if (r->ReadNext())
+		{
+			NEW_CLASS(row, DB::DBRow(tableInfo->def));
+			row->SetByReader(r, true);
+		}
+		this->db->CloseReader(r);
+	}
+	return row;
+}
+
 void DB::DBCache::FreeTableData(Data::ArrayList<DB::DBRow*> *rows)
 {
 	if (rows->GetCount() > 0)
@@ -140,4 +183,9 @@ void DB::DBCache::FreeTableData(Data::ArrayList<DB::DBRow*> *rows)
 			DEL_LIST_FUNC(rows, DEL_CLASS);
 		}
 	}
+}
+
+void DB::DBCache::FreeTableItem(DB::DBRow *row)
+{
+	DEL_CLASS(row);
 }

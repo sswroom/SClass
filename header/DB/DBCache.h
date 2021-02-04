@@ -30,7 +30,9 @@ namespace DB
 
 		OSInt GetRowCount(const UTF8Char *tableName); //-1 = table not found
 		UOSInt GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName);
+		DB::DBRow *GetTableItem(const UTF8Char *tableName, Int64 pk);
 		void FreeTableData(Data::ArrayList<DB::DBRow*> *rows);
+		void FreeTableItem(DB::DBRow *row);
 	};
 }
 #endif

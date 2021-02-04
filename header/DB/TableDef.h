@@ -32,6 +32,7 @@ namespace DB
 		DB::DBUtil::ServerType GetSvrType();
 		UOSInt GetColCnt();
 		DB::ColDef *GetCol(UOSInt index);
+		DB::ColDef *GetSinglePKCol();
 
 		TableDef *AddCol(DB::ColDef *col);
 		TableDef *SetDatabaseName(const UTF8Char *databaseName);
