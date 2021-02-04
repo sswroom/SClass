@@ -256,7 +256,7 @@ OSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Z:\\sys\\class\\mmc_host\\");
 		Text::StrConcat(sptr, IO::Path::ALL_FILES);
-		void *sess = IO::Path::FindFile(sbuff);
+		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
 			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -265,7 +265,7 @@ OSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 				{
 					sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"\\");
 					Text::StrConcat(sptr2, IO::Path::ALL_FILES);
-					void *sess2 = IO::Path::FindFile(sbuff);
+					IO::Path::FindFileSession *sess2 = IO::Path::FindFile(sbuff);
 					if (sess2)
 					{
 						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)

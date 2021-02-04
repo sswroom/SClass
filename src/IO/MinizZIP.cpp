@@ -11,7 +11,7 @@ Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)
 {
 	mz_zip_archive *zip = (mz_zip_archive *)this->hand;
 	UTF8Char *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	Bool succ;
 	Int64 fileSize;

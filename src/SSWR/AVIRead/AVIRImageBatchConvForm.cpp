@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 
 	Text::StrConcat(sptr, (const UTF8Char*)"*.tif");
 	void *param;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Bool succ = true;
 	Exporter::GUIJPGExporter exporter;
 	IO::StmData::FileData *fd;

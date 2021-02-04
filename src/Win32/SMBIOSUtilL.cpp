@@ -100,7 +100,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
 		UTF8Char sbuff[512];
-		void *sess;
+		IO::Path::FindFileSession *sess;
 		UOSInt readSize;
 		IO::MemoryStream *mstm;
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Win32.SMBIOS.GetSMBIOS.mstm"));

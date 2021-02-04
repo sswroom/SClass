@@ -128,7 +128,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 {
 	IO::Path::PathType pt;
 	UTF8Char *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	IO::StreamReader *reader;

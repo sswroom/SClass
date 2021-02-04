@@ -25,7 +25,7 @@
 	Int32 maxYBlk;
 	WChar sbuff[512];
 	WChar *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Int32 currVal;
 	OSInt i;
 	IO::Path::PathType pt;

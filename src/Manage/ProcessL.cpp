@@ -695,15 +695,15 @@ OSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize)
 	return i;
 }
 
-typedef struct
+struct Manage::Process::FindProcSess
 {
-	void *findFileSess;
+	IO::Path::FindFileSession *findFileSess;
 	const UTF8Char *procName;
-} FindProcSess;
+};
 
-void *Manage::Process::FindProcess(const UTF8Char *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
 {
-	void *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
+	IO::Path::FindFileSession *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
 	FindProcSess *sess;
 	if (ffsess == 0)
 	{
@@ -722,9 +722,9 @@ void *Manage::Process::FindProcess(const UTF8Char *processName)
 	return sess;
 }
 
-void *Manage::Process::FindProcessW(const WChar *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
 {
-	void *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
+	IO::Path::FindFileSession *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
 	FindProcSess *sess;
 	if (ffsess == 0)
 	{
@@ -743,9 +743,8 @@ void *Manage::Process::FindProcessW(const WChar *processName)
 	return sess;
 }
 
-UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
 {
-	FindProcSess *fpsess = (FindProcSess*)sess;
 	Int32 pid;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -813,9 +812,8 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, void *sess
 	return 0;
 }
 
-WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
 {
-	FindProcSess *fpsess = (FindProcSess*)sess;
 	Int32 pid;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -883,9 +881,8 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, void *sess, Man
 	return 0;
 }
 
-void Manage::Process::FindProcessClose(void *sess)
+void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
 {
-	FindProcSess *fpsess = (FindProcSess*)sess;
 	IO::Path::FindFileClose(fpsess->findFileSess);
 	SDEL_TEXT(fpsess->procName);
 	MemFree(fpsess);

@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	Int32 logTime;
 	UTF8Char *filePath;
 	UTF8Char *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Data::DateTime currTime;
 	Data::StringUTF8Map<LogGroup*> logGrps;
 	Data::ArrayList<LogGroup*> *logGrpList;

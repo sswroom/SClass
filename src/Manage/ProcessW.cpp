@@ -780,21 +780,21 @@ OSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize)
 	return 0;
 }
 
-typedef struct
+struct Manage::Process::FindProcSess
 {
 	const WChar *fileName;
 	HANDLE hand;
 	Bool isFirst;
-} ProcessFindSess;
+};
 
-void *Manage::Process::FindProcess(const UTF8Char *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
 {
-	ProcessFindSess *sess;
+	Manage::Process::FindProcSess *sess;
 	HANDLE hand;
 	hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
 		return 0;
-	sess = MemAlloc(ProcessFindSess, 1);
+	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
 	if (processName == 0)
 	{
@@ -808,14 +808,14 @@ void *Manage::Process::FindProcess(const UTF8Char *processName)
 	return sess;
 }
 
-void *Manage::Process::FindProcessW(const WChar *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
 {
-	ProcessFindSess *sess;
+	Manage::Process::FindProcSess *sess;
 	HANDLE hand;
 	hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
 		return 0;
-	sess = MemAlloc(ProcessFindSess, 1);
+	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
 	if (processName == 0)
 	{
@@ -829,10 +829,9 @@ void *Manage::Process::FindProcessW(const WChar *processName)
 	return sess;
 }
 
-UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
 {
 #ifdef _WIN32_WCE
-	ProcessFindSess *pfsess = (ProcessFindSess*)sess;
 	PROCESSENTRY32 pe32;
 	BOOL ret;
 	pe32.dwSize = sizeof(PROCESSENTRY32);
@@ -869,7 +868,6 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, void *sess
 	}
 	return 0;
 #else
-	ProcessFindSess *pfsess = (ProcessFindSess*)sess;
 	PROCESSENTRY32W pe32;
 	BOOL ret;
 	pe32.dwSize = sizeof(PROCESSENTRY32W);
@@ -908,10 +906,9 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, void *sess
 #endif
 }
 
-WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
 {
 #ifdef _WIN32_WCE
-	ProcessFindSess *pfsess = (ProcessFindSess*)sess;
 	PROCESSENTRY32 pe32;
 	BOOL ret;
 	pe32.dwSize = sizeof(PROCESSENTRY32);
@@ -948,7 +945,6 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, void *sess, Man
 	}
 	return 0;
 #else
-	ProcessFindSess *pfsess = (ProcessFindSess*)sess;
 	PROCESSENTRY32W pe32;
 	BOOL ret;
 	pe32.dwSize = sizeof(PROCESSENTRY32W);
@@ -987,9 +983,8 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, void *sess, Man
 #endif
 }
 
-void Manage::Process::FindProcessClose(void *sess)
+void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 {
-	ProcessFindSess *pfsess = (ProcessFindSess*)sess;
 	if (pfsess->fileName)
 	{
 		Text::StrDelNew(pfsess->fileName);
@@ -1112,7 +1107,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 Bool Manage::Process::IsAlreadyStarted()
 {
 	WChar sbuff[512];
-	void *sess;
+	Manage::Process::FindProcSess *sess;
 	Bool found = false;
 	UOSInt procId = GetCurrProcId();
 	OSInt i;

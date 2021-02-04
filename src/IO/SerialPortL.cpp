@@ -176,7 +176,7 @@ Bool IO::SerialPort::InitStream()
 Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::ArrayList<SerialPortType> *portTypes)
 {
 	UTF8Char sbuff[32];
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	sess = IO::Path::FindFile((const UTF8Char*)"/dev/tty*");
 	if (sess)
 	{

@@ -11,7 +11,7 @@
 void IO::DirectoryPackage::AddFile(const UTF8Char *fileName)
 {
 	UTF8Char sbuff[512];
-	void *sess = IO::Path::FindFile(fileName);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName);
 	if (sess)
 	{
 		Data::DateTime dt;
@@ -35,7 +35,7 @@ IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFil
 	IO::Path::PathType pt;
 	Int64 fileSize;
 	Data::DateTime *dt;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	this->dirName = Text::StrCopyNew(dirName);
 	NEW_CLASS(this->files, Data::ArrayList<const UTF8Char*>());
 	NEW_CLASS(this->fileSizes, Data::ArrayListInt64());

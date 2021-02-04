@@ -12,6 +12,8 @@ namespace Manage
 	class Process : public Manage::IMemoryReader
 	{
 	public:
+		struct FindProcSess;
+
 		typedef enum
 		{
 			PP_REALTIME = 0x00000100,
@@ -89,11 +91,11 @@ namespace Manage
 			UInt32 parentId;
 		} ProcessInfo;
 
-		static void *FindProcess(const UTF8Char *processName);
-		static void *FindProcessW(const WChar *processName);
-		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, void *sess, ProcessInfo *info);
-		static WChar *FindProcessNextW(WChar *processNameBuff, void *sess, ProcessInfo *info);
-		static void FindProcessClose(void *sess);
+		static FindProcSess *FindProcess(const UTF8Char *processName);
+		static FindProcSess *FindProcessW(const WChar *processName);
+		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
+		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
+		static void FindProcessClose(FindProcSess *sess);
 		static Int32 ExecuteProcess(const UTF8Char *cmdLine, Text::StringBuilderUTF *result);
 		static Int32 ExecuteProcessW(const WChar *cmdLine, Text::StringBuilderUTF *result);
 		static Bool IsAlreadyStarted();
@@ -101,5 +103,5 @@ namespace Manage
 		static Bool OpenPathW(const WChar *path);
 		static const UTF8Char *GetPriorityName(ProcessPriority priority);
 	};
-};
+}
 #endif

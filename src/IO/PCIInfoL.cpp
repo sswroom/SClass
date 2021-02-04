@@ -78,7 +78,7 @@ OSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	clsData.dispName = (const UTF8Char*)"PCI Device";
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/pci/devices/");

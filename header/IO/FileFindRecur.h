@@ -9,7 +9,7 @@ namespace IO
 	private:
 		typedef struct
 		{
-			void *sess;
+			IO::Path::FindFileSession *sess;
 			UTF8Char *buffPtr;
 		} FindRecurPart;
 

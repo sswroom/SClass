@@ -18,12 +18,12 @@
 #define PATH_MAX 512
 #endif
 
-typedef struct
+struct IO::Path::FindFileSession
 {
 	const UTF8Char *searchPattern;
 	const UTF8Char *searchDir;
 	DIR *dirObj;
-} FindFileSession;
+};
 
 Char IO::Path::PATH_SEPERATOR = '/';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*";
@@ -352,7 +352,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	return true;
 }
 
-void *IO::Path::FindFile(const UTF8Char *utfPath)
+IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath)
 {
 	FindFileSession *sess = 0;
 	const UTF8Char *searchPattern;
@@ -396,7 +396,7 @@ void *IO::Path::FindFile(const UTF8Char *utfPath)
 	return sess;
 }
 
-void *IO::Path::FindFileW(const WChar *path)
+IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess = 0;
 	const UTF8Char *utfPath = Text::StrToUTF8New(path);
@@ -442,9 +442,8 @@ void *IO::Path::FindFileW(const WChar *path)
 	return sess;
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, void *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
+UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
 {
-	FindFileSession *sess = (FindFileSession*)session;
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
 	{
@@ -487,9 +486,8 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, void *session, Data::DateTime *
 	return 0;
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, void *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
+WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
 {
-	FindFileSession *sess = (FindFileSession*)session;
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
 	{
@@ -531,9 +529,8 @@ WChar *IO::Path::FindNextFileW(WChar *buff, void *session, Data::DateTime *modTi
 	return 0;
 }
 
-void IO::Path::FindFileClose(void *session)
+void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 {
-	FindFileSession *sess = (FindFileSession*)session;
 	Text::StrDelNew(sess->searchPattern);
 	Text::StrDelNew(sess->searchDir);
 	closedir(sess->dirObj);

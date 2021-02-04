@@ -369,7 +369,7 @@ Int64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, c
 	Int64 currSize = 0;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	BurntFile *file;
 	OSInt i = Text::StrCharCnt(relPath);

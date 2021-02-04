@@ -14,6 +14,8 @@ namespace IO
 			PT_FILE,
 			PT_DIRECTORY
 		} PathType;
+		struct FindFileSession;
+
 		static Char PATH_SEPERATOR;
 		static const UTF8Char *ALL_FILES;
 
@@ -41,11 +43,11 @@ namespace IO
 		static UTF8Char *AppendPath(UTF8Char *path, const UTF8Char *toAppend);
 		static WChar *AppendPathW(WChar *path, const WChar *toAppend);
 		static Bool AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend);
-		static void *FindFile(const UTF8Char *path);
-		static void *FindFileW(const WChar *path);
-		static UTF8Char *FindNextFile(UTF8Char *buff, void *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize);
-		static WChar *FindNextFileW(WChar *buff, void *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize);
-		static void FindFileClose(void *session);
+		static FindFileSession *FindFile(const UTF8Char *path);
+		static FindFileSession *FindFileW(const WChar *path);
+		static UTF8Char *FindNextFile(UTF8Char *buff, FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize);
+		static WChar *FindNextFileW(WChar *buff, FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize);
+		static void FindFileClose(FindFileSession *session);
 		static PathType GetPathType(const UTF8Char *path);
 		static PathType GetPathTypeW(const WChar *path);
 		static WChar *GetFullPathW(WChar *buff, const WChar *path);

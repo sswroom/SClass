@@ -2882,6 +2882,8 @@ SSWR/AVIRead/AVIRThreadSpeedForm.h: ../../src/SSWR/AVIRead/AVIRThreadSpeedForm.c
 @AVIRThreadSpeedForm.o
 SSWR/AVIRead/AVIRTimedCaptureForm.h: ../../src/SSWR/AVIRead/AVIRTimedCaptureForm.cpp
 @AVIRTimedCaptureForm.o
+SSWR/AVIRead/AVIRTimedFileCopyForm.h: ../../src/SSWR/AVIRead/AVIRTimedFileCopyForm.cpp
+@AVIRTimedFileCopyForm.o
 SSWR/AVIRead/AVIRTimeTestForm.h: ../../src/SSWR/AVIRead/AVIRTimeTestForm.cpp
 @AVIRTimeTestForm.o
 SSWR/AVIRead/AVIRTraceRouteForm.h: ../../src/SSWR/AVIRead/AVIRTraceRouteForm.cpp
@@ -4250,6 +4252,7 @@ AVIRTFTPServerForm.o: ../../src/SSWR/AVIRead/AVIRTFTPServerForm.cpp
 AVIRThreadInfoForm.o: ../../src/SSWR/AVIRead/AVIRThreadInfoForm.cpp
 AVIRThreadSpeedForm.o: ../../src/SSWR/AVIRead/AVIRThreadSpeedForm.cpp
 AVIRTimedCaptureForm.o: ../../src/SSWR/AVIRead/AVIRTimedCaptureForm.cpp
+AVIRTimedFileCopyForm.o: ../../src/SSWR/AVIRead/AVIRTimedFileCopyForm.cpp
 AVIRTimeTestForm.o: ../../src/SSWR/AVIRead/AVIRTimeTestForm.cpp
 AVIRTraceRouteForm.o: ../../src/SSWR/AVIRead/AVIRTraceRouteForm.cpp
 AVIRTVControlForm.o: ../../src/SSWR/AVIRead/AVIRTVControlForm.cpp

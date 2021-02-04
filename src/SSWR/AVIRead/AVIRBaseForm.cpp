@@ -153,6 +153,7 @@
 #include "SSWR/AVIRead/AVIRTFTPServerForm.h"
 #include "SSWR/AVIRead/AVIRThreadSpeedForm.h"
 #include "SSWR/AVIRead/AVIRTimedCaptureForm.h"
+#include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
 #include "SSWR/AVIRead/AVIRTimeTestForm.h"
 #include "SSWR/AVIRead/AVIRTraceRouteForm.h"
 #include "SSWR/AVIRead/AVIRTVControlForm.h"
@@ -362,7 +363,8 @@ typedef enum
 	MNU_OPEN_ODBC_STR,
 	MNU_COORD_INFO,
 	MNU_MSSQL_CONN,
-	MNU_DB_MANAGER
+	MNU_DB_MANAGER,
+	MNU_TIMED_FILE_COPY
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles)
@@ -522,6 +524,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"Log Merge", MNU_LOGMERGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Log Backup", MNU_LOG_BACKUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Log Extract", MNU_LOGEXTRACT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Timed File Copy", MNU_TIMED_FILE_COPY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Setting");
 	mnu->AddItem((const UTF8Char*)"Set &CodePage", MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2230,6 +2233,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRDBManagerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRDBManagerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_TIMED_FILE_COPY:
+		{
+			SSWR::AVIRead::AVIRTimedFileCopyForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTimedFileCopyForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

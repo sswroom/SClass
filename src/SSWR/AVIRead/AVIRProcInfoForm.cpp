@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 	ProcessInfo *procInfo;
 	Manage::Process::ProcessInfo proc;
 	OSInt i;
-	void *sess = Manage::Process::FindProcess((const UTF8Char*)0);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess((const UTF8Char*)0);
 	if (sess)
 	{
 		i = me->procList->GetCount();

@@ -1256,7 +1256,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				sptr2 = Text::StrConcat(sbuff, sb.ToString());
 				Text::StrConcat(sptr2, IO::Path::ALL_FILES);
-				void *sess = IO::Path::FindFile(sbuff);
+				IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 				if (sess)
 				{
 					if (this->statMap)
@@ -1744,7 +1744,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	NEW_CLASS(this->packageMut, Sync::RWMutex());
 	this->packageMut->LockWrite();
 	NEW_CLASS(this->packageMap, Data::StringUTF8Map<PackageInfo*>());

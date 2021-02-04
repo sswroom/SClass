@@ -19,9 +19,9 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	UTF8Char *sptr2;
 	UTF8Char *sptr3;
 	UTF8Char *sptr4;
-	void *sess;
-	void *sess2;
-	void *sess3;
+	IO::Path::FindFileSession *sess;
+	IO::Path::FindFileSession *sess2;
+	IO::Path::FindFileSession *sess3;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/devices/pci0000:00/");
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);
@@ -212,9 +212,9 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 	UTF8Char *sptr2;
 	UTF8Char *sptr3;
 	UTF8Char *sptr4;
-	void *sess;
-	void *sess2;
-	void *sess3;
+	IO::Path::FindFileSession *sess;
+	IO::Path::FindFileSession *sess2;
+	IO::Path::FindFileSession *sess3;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/devices/pci0000:00/");
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);

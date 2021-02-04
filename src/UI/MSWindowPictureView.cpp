@@ -17,7 +17,7 @@ UInt32 __stdcall UI::MSWindowPictureView::ThreadProc(void *userObj)
 {
 	WChar sbuff[512];
 	WChar *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	ScreenItem *item;
 	OSInt i;

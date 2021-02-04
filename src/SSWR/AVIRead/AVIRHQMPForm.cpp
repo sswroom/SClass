@@ -458,7 +458,7 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	Media::MediaType mt;
 	IO::Path::PathType pt;
 	Int64 fileSize;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	i = 0;
 	while ((msrc = mf->GetStream(i++, 0)) != 0)
 	{
@@ -1513,7 +1513,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 	IO::MemoryStream *mstm;
 	IO::IWriter *writer;
 	IO::Path::PathType pt;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
 	const UTF8Char *u8ptr;
 	UOSInt size;

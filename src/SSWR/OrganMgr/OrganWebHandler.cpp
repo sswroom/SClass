@@ -41,7 +41,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Int32 langId;
 	IO::Path::PathType pt;
 	OSInt i;
@@ -2961,7 +2961,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		UTF8Char sbuff2[512];
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
-		void *sess;
+		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
@@ -4122,7 +4122,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		UTF8Char u8buff2[512];
 		UTF8Char *u8ptr;
 		UTF8Char *u8ptr2;
-		void *sess;
+		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;

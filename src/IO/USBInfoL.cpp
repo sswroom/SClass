@@ -92,7 +92,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	OSInt readSize;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::FileStream *fs;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/usb/devices/");

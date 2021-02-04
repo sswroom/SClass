@@ -146,8 +146,8 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 		UTF8Char sbuff2[512];
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
-		void *sess;
-		void *sess2;
+		IO::Path::FindFileSession *sess;
+		IO::Path::FindFileSession *sess2;
 		IO::Path::PathType pt;
 		Int32 busType;
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/hid/devices/");

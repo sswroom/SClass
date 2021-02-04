@@ -569,7 +569,7 @@ OSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	const UTF8Char *coverName = sp->GetPhoto();
 	Int32 coverId = sp->GetPhotoId();
 	Int32 coverWId = sp->GetPhotoWId();
-	void *sess;
+	voIO::Path::FindFileSessionid *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
 	OSInt i;
@@ -3658,7 +3658,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeFileStruct(OrganSpecies *sp)
 	UTF8Char *sptr;
 	Int32 newFlags = 0;
 	const UTF8Char *coverName = sp->GetPhoto();
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
 	OSInt i;
@@ -3935,7 +3935,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvWeb::ParseSpImage(OrganSpecies *sp)
 	UTF8Char *cols[4];
 	Int32 newFlags = 0;
 	const UTF8Char *coverName = sp->GetPhoto();
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	OSInt i;
 	IO::StmData::FileData *fd;

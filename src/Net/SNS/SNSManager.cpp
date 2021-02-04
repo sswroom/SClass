@@ -454,7 +454,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Text::EncodingFactor
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);
-	void *sess = IO::Path::FindFile(sbuff);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;

@@ -446,7 +446,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char dbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *dptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 //	UInt32 attr = GetFileAttributesW(srcDir);
 	sptr = Text::StrConcat(sbuff, srcDir);
 	dptr = Text::StrConcat(dbuff, destDir);
@@ -513,7 +513,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char dbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *dptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 //	UInt32 attr = GetFileAttributesW(srcDir);
 	sptr = Text::StrWChar_UTF8(sbuff, srcDir, -1);
 	dptr = Text::StrWChar_UTF8(dbuff, destDir, -1);
@@ -642,7 +642,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char dbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *dptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Bool succ;
 
 	Bool samePart = IsSamePartition(srcDir, destDir);
@@ -720,7 +720,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char dbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *dptr;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	Bool succ;
 
 	Bool samePart = IsSamePartition(srcDir, destDir);
@@ -814,7 +814,7 @@ Bool IO::FileUtil::DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile)
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);
 	Bool succ = true;
 	IO::Path::PathType pt;
-	void *sess = IO::Path::FindFile(dir);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(dir);
 	if (sess == 0)
 		return false;
 	while (succ && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

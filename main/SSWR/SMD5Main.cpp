@@ -231,7 +231,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			void *sess;
+			IO::Path::FindFileSession *sess;
 			Text::StringBuilderUTF8 sb;
 			IO::Path::PathType pt;
 			Text::StrConcat(sbuff, cmdLines[1]);

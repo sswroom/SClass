@@ -9,7 +9,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::IWriter *er
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::DateTime modTime;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 
 

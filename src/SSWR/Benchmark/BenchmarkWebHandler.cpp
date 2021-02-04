@@ -7,7 +7,8 @@
 #include "SSWR/Benchmark/BenchmarkWebHandler.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-#include <wchar.h>
+
+#include <stdio.h>
 
 Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
@@ -21,13 +22,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	{
 		if (!sb.Equals((const UTF8Char*)"text/plain"))
 		{
-			wprintf(L"Content-Type invalid\r\n");
+			printf("Content-Type invalid\r\n");
 			valid = false;
 		}
 	}
 	else
 	{
-		wprintf(L"Content-Type not found\r\n");
+		printf("Content-Type not found\r\n");
 		valid = false;
 	}
 	if (valid)
@@ -37,7 +38,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		data = req->GetReqData(&leng);
 		if (leng <= 128 || leng >= 65536)
 		{
-			wprintf(L"leng out of range: %d\r\n", leng);
+			printf("leng out of range: %d\r\n", (Int32)leng);
 			valid = false;
 		}
 		else
@@ -58,13 +59,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			{
 				if (!sb.Equals((const UTF8Char*)"SBench Result:"))
 				{
-					wprintf(L"SBench not found\r\n");
+					printf("SBench not found\r\n");
 					valid = false;
 				}
 			}
 			else
 			{
-				wprintf(L"SBench ended\r\n");
+				printf("SBench ended\r\n");
 				valid = false;
 			}
 
@@ -75,13 +76,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				{
 					if (!sb.Equals((const UTF8Char*)"Computer Info:"))
 					{
-						wprintf(L"Computer Info not found\r\n");
+						printf("Computer Info not found\r\n");
 						valid = false;
 					}
 				}
 				else
 				{
-					wprintf(L"Computer Info ended\r\n");
+					printf("Computer Info ended\r\n");
 					valid = false;
 				}
 			}
@@ -97,13 +98,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 					}
 					else
 					{
-						wprintf(L"Platform not found\r\n");
+						printf("Platform not found\r\n");
 						valid = false;
 					}
 				}
 				else
 				{
-					wprintf(L"Platform ended\r\n");
+					printf("Platform ended\r\n");
 					valid = false;
 				}
 			}
@@ -119,13 +120,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 					}
 					else
 					{
-						wprintf(L"CPU not found\r\n");
+						printf("CPU not found\r\n");
 						valid = false;
 					}
 				}
 				else
 				{
-					wprintf(L"CPU ended\r\n");
+					printf("CPU ended\r\n");
 					valid = false;
 				}
 			}
@@ -156,7 +157,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 				if (fs->IsError())
 				{
-					wprintf(L"Error in creating file\r\n");
+					printf("Error in creating file\r\n");
 					valid = false;
 				}
 				else
@@ -356,7 +357,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	IO::Path::CreateDirectory(path);
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcat(u8ptr, IO::Path::ALL_FILES);
-	void *sess = IO::Path::FindFile(path);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(path);
 	if (sess)
 	{
 		IO::Path::PathType pt;
@@ -415,7 +416,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					}
 					else
 					{
-						wprintf(L"CPU not found: \"%s\"\r\n", u8ptr);
+						printf("CPU not found: \"%s\"\r\n", u8ptr);
 						sbOut.Append((const UTF8Char*)"?</td><td>?</td><td>?");
 					}
 					sbOut.Append((const UTF8Char*)"</td></tr>\r\n");

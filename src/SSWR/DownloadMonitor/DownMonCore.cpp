@@ -143,7 +143,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);
-	void *sess = IO::Path::FindFile(sbuff);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
 //		printf("checking: %s\r\n", sbuff);

@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	UOSInt i;
 	UOSInt j;
 	IO::Path::PathType pt;

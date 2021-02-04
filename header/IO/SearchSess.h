@@ -11,7 +11,7 @@ namespace IO
 		UTF8Char *nameBuff;
 		UTF8Char *nameStart;
 		IO::Path::PathType pt;
-		void *sess;
+		IO::Path::FindFileSession *sess;
 		Int64 fileSize;
 		Data::DateTime *modTime;
 

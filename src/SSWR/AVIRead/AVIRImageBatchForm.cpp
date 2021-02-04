@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 		}
 		Text::StrConcat(sptr, IO::Path::ALL_FILES);
 		OSInt fileCnt = 0;
-		void *sess = IO::Path::FindFile(sbuff);
+		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
 			IO::Path::PathType pt;

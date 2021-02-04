@@ -170,7 +170,7 @@ void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, OSInt buffSize, void 
 Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError)
 {
 	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
-	void *sess;
+	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	IO::FileStream *fs;
 	IO::ActiveStreamReader *reader;

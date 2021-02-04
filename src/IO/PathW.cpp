@@ -24,12 +24,12 @@
 #undef CopyFile
 #undef RemoveDirectory
 
-typedef struct
+struct IO::Path::FindFileSession
 {
 	HANDLE handle;
 	Bool lastFound;
 	WIN32_FIND_DATAW findData;
-} FindFileSession;
+};
 
 Char IO::Path::PATH_SEPERATOR = '\\';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*.*";
@@ -760,7 +760,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	}
 }
 
-void *IO::Path::FindFile(const UTF8Char *path)
+IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *path)
 {
 	FindFileSession *sess;
 	sess = MemAlloc(FindFileSession, 1);
@@ -784,7 +784,7 @@ void *IO::Path::FindFile(const UTF8Char *path)
 	}
 }
 
-void *IO::Path::FindFileW(const WChar *path)
+IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess;
 	sess = MemAlloc(FindFileSession, 1);
@@ -806,14 +806,13 @@ void *IO::Path::FindFileW(const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, void *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
+UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
 {
 	IO::Path::PathType tmp;
 	if (pt == 0)
 	{
 		pt = &tmp;
 	}
-	FindFileSession *sess = (FindFileSession*)session;
 	UTF8Char *outPtr;
 	if (sess->lastFound)
 	{
@@ -849,14 +848,13 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, void *session, Data::DateTime *
 	}
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, void *session, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
+WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
 {
 	IO::Path::PathType tmp;
 	if (pt == 0)
 	{
 		pt = &tmp;
 	}
-	FindFileSession *sess = (FindFileSession*)session;
 	WChar *outPtr;
 	if (sess->lastFound)
 	{
@@ -892,9 +890,8 @@ WChar *IO::Path::FindNextFileW(WChar *buff, void *session, Data::DateTime *modTi
 	}
 }
 
-void IO::Path::FindFileClose(void *session)
+void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 {
-	FindFileSession *sess = (FindFileSession*)session;
 	if (sess->handle != INVALID_HANDLE_VALUE)
 		FindClose(sess->handle);
 	MemFree(sess);
