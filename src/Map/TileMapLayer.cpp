@@ -425,7 +425,7 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	switch (colIndex)
 	{
 	case 0:
-		colDef->SetIsPK(true);
+		colDef->SetPK(true);
 	case 1:
 	case 2:
 		this->GetColumnName(sbuff, colIndex);
@@ -433,8 +433,8 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColType(this->GetColumnType(colIndex, &colSize));
 		colDef->SetColSize(colSize);
 		colDef->SetColDP(0);
-		colDef->SetIsNotNull(true);
-		colDef->SetIsAutoInc(false);
+		colDef->SetNotNull(true);
+		colDef->SetAutoInc(false);
 		return true;
 	}
 	return false;

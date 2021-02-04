@@ -673,9 +673,9 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
 	colDef->SetColSize(256);
 	colDef->SetColDP(0);
-	colDef->SetIsNotNull(true);
-	colDef->SetIsPK(false);
-	colDef->SetIsAutoInc(false);
+	colDef->SetNotNull(true);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	return true;

@@ -1948,9 +1948,9 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColType(this->ODBCType2DBType(dataType, colSize));
 	colDef->SetColSize(colSize);
 	colDef->SetColDP(decimalDigit);
-	colDef->SetIsNotNull(notNull == SQL_NO_NULLS);
-	colDef->SetIsPK(false);
-	colDef->SetIsAutoInc(false);
+	colDef->SetNotNull(notNull == SQL_NO_NULLS);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	return true;

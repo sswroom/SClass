@@ -617,11 +617,11 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 									sptr[6] = Net::MySQLUtil::ColType2MySQLType(colType);
 									UInt16 flags = 0;
 									UInt8 digits = 0;
-									if (col.GetIsNotNull())
+									if (col.IsNotNull())
 									{
 										flags |= 1;
 									}
-									if (col.GetIsPK())
+									if (col.IsPK())
 									{
 										flags |= 2;
 									}
@@ -633,7 +633,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 									{
 										flags |= 32;
 									}
-									if (col.GetIsAutoInc())
+									if (col.IsAutoInc())
 									{
 										flags |= 512;
 									}

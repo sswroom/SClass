@@ -16,7 +16,7 @@ DB::ColDef::ColDef(const UTF8Char *colName)
 	this->colType = DB::DBUtil::CT_Unknown;
 	this->colSize = 0;
 	this->notNull = false;
-	this->isPK = false;
+	this->pk = false;
 	this->autoInc = false;
 	this->defVal = 0;
 	this->attr = 0;
@@ -61,17 +61,17 @@ UOSInt DB::ColDef::GetColDP()
 	return this->colDP;
 }
 
-Bool DB::ColDef::GetIsNotNull()
+Bool DB::ColDef::IsNotNull()
 {
 	return this->notNull;
 }
 
-Bool DB::ColDef::GetIsPK()
+Bool DB::ColDef::IsPK()
 {
-	return this->isPK;
+	return this->pk;
 }
 
-Bool DB::ColDef::GetIsAutoInc()
+Bool DB::ColDef::IsAutoInc()
 {
 	return this->autoInc;
 }
@@ -133,17 +133,17 @@ void DB::ColDef::SetColDP(UOSInt colDP)
 	this->colDP = colDP;
 }
 
-void DB::ColDef::SetIsNotNull(Bool notNull)
+void DB::ColDef::SetNotNull(Bool notNull)
 {
 	this->notNull = notNull;
 }
 
-void DB::ColDef::SetIsPK(Bool isPK)
+void DB::ColDef::SetPK(Bool pk)
 {
-	this->isPK = isPK;
+	this->pk = pk;
 }
 
-void DB::ColDef::SetIsAutoInc(Bool autoInc)
+void DB::ColDef::SetAutoInc(Bool autoInc)
 {
 	this->autoInc = autoInc;
 }

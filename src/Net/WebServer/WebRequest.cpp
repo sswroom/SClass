@@ -307,13 +307,15 @@ const UTF8Char *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name)
 	}
 }
 
-Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort)
+Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
 	this->requestURI = Text::StrCopyNew(requestURI);
 	this->reqMeth = reqMeth;
 	this->reqProto = reqProto;
+	this->secureConn = secureConn;
 	this->cliAddr = *cliAddr;
 	this->cliPort = cliPort;
+	this->svrPort = svrPort;
 	NEW_CLASS(this->headerNames, Data::ArrayListStrUTF8());
 	NEW_CLASS(this->headerVals, Data::ArrayListStrUTF8());
 	this->queryMap = 0;
@@ -571,6 +573,42 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formNam
 		i++;
 	}
 	return 0;
+}
+
+void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
+{
+	UInt16 defPort;
+	const UTF8Char *csptr;
+	switch (this->reqProto)
+	{
+	case REQPROTO_HTTP1_0:
+	case REQPROTO_HTTP1_1:
+		if (this->secureConn)
+		{
+			sb->Append((const UTF8Char*)"https://");
+			defPort=443;
+		}
+		else
+		{
+			sb->Append((const UTF8Char*)"http://");
+			defPort=80;
+		}
+		csptr = this->GetSHeader((const UTF8Char*)"Host");
+		if (csptr)
+		{
+			sb->Append(csptr);
+		}
+		if (this->svrPort != defPort)
+		{
+//			sb->AppendChar(':', 1);
+//			sb->AppendU16(this->svrPort);
+		}
+		break;
+	case REQPROTO_RTSP1_0:
+		sb->Append((const UTF8Char*)"rtsp://");
+		defPort=554;
+		break;
+	}
 }
 
 const Net::SocketUtil::AddressInfo *Net::WebServer::WebRequest::GetClientAddr()

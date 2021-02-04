@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 					while (j-- > 0)
 					{
 						rdr->GetColDef(j, colDef);
-						if (colDef->GetIsPK() && colDef->GetColType() == DB::DBUtil::CT_Int32)
+						if (colDef->IsPK() && colDef->GetColType() == DB::DBUtil::CT_Int32)
 						{
 							objCol = j;
 						}

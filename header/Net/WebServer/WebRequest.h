@@ -28,7 +28,9 @@ namespace Net
 			Data::StringUTF8Map<const UTF8Char *> *queryMap;
 			Net::SocketUtil::AddressInfo cliAddr;
 			UInt16 cliPort;
+			UInt16 svrPort;
 			RequestProtocol reqProto;
+			Bool secureConn;
 			Data::StringUTF8Map<const UTF8Char *> *formMap;
 			Data::ArrayList<FormFileInfo*> *formFileList;
 
@@ -44,7 +46,7 @@ namespace Net
 			const UTF8Char *ParseHeaderVal(Char *headerData);
 			const UTF8Char *GetSHeader(const UTF8Char *name);
 		public:
-			WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort);
+			WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeader(const UTF8Char *name, const UTF8Char *value);
@@ -63,6 +65,7 @@ namespace Net
 			virtual void ParseHTTPForm();
 			virtual const UTF8Char *GetHTTPFormStr(const UTF8Char *name);
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize);
+			virtual void GetRequestURLBase(Text::StringBuilderUTF *sb);
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr();
 			virtual UInt16 GetClientPort();

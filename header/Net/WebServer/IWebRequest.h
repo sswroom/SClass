@@ -76,6 +76,7 @@ namespace Net
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize) = 0;
 			Bool GetHTTPFormInt32(const UTF8Char *name, Int32 *valOut);
 			Bool GetHTTPFormInt64(const UTF8Char *name, Int64 *valOut);
+			virtual void GetRequestURLBase(Text::StringBuilderUTF *sb) = 0;
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;
 			virtual UInt16 GetClientPort() = 0;

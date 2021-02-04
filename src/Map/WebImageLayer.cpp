@@ -599,7 +599,7 @@ Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
 		colDef->SetColSize(256);
 		colDef->SetDefVal(0);
-		colDef->SetIsNotNull(false);
+		colDef->SetNotNull(false);
 		return true;
 	}
 	return false;

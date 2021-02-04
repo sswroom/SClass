@@ -415,6 +415,11 @@ UInt16 Net::TCPClient::GetRemotePort()
 	return (UInt16)((this->cliId >> 32) & 0xffff);
 }
 
+UInt16 Net::TCPClient::GetLocalPort()
+{
+	return (UInt16)((this->cliId >> 48) & 0xffff);
+}
+
 void Net::TCPClient::SetNoDelay(Bool val)
 {
 	this->sockf->SetNoDelay(this->s, val);

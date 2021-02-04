@@ -208,7 +208,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 		{
 			col = tabDef->GetCol(i++);
 			this->AppendColDef(this->svrType, sql, col);
-			if (col->GetIsAutoInc())
+			if (col->IsAutoInc())
 			{
 				hasAutoInc = true;
 			}
@@ -226,7 +226,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 			while (i < j)
 			{
 				col = tabDef->GetCol(i++);
-				if (col->GetIsPK())
+				if (col->IsPK())
 				{
 					if (k > 0)
 					{
@@ -259,7 +259,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
-			if (col->GetIsPK())
+			if (col->IsPK())
 			{
 				if (k > 0)
 				{

@@ -284,9 +284,9 @@ Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColType(this->GetColumnType(colIndex, 0));
 	colDef->SetColSize(this->cols[colIndex].colSize);
 	colDef->SetColDP(this->cols[colIndex].colDP);
-	colDef->SetIsNotNull(false);
-	colDef->SetIsPK(false);
-	colDef->SetIsAutoInc(false);
+	colDef->SetNotNull(false);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	return true;

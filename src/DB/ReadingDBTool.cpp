@@ -779,9 +779,9 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				r->GetStr(0, buff, sizeof(buff));
 				NEW_CLASS(col, DB::ColDef(buff));
 				r->GetStr(2, buff, sizeof(buff));
-				col->SetIsNotNull(Text::StrEqualsICase(buff, (const UTF8Char*)"NO"));
+				col->SetNotNull(Text::StrEqualsICase(buff, (const UTF8Char*)"NO"));
 				r->GetStr(3, buff, sizeof(buff));
-				col->SetIsPK(Text::StrEqualsICase(buff, (const UTF8Char*)"PRI"));
+				col->SetPK(Text::StrEqualsICase(buff, (const UTF8Char*)"PRI"));
 				if (r->GetStr(4, buff, sizeof(buff)))
 				{
 					col->SetDefVal(buff);
@@ -794,7 +794,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				{
 					if (Text::StrEquals(buff, (const UTF8Char*)"auto_increment"))
 					{
-						col->SetIsAutoInc(true);
+						col->SetAutoInc(true);
 						col->SetAttr(0);
 					}
 					else
@@ -812,9 +812,9 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				col->SetColSize(colSize);
 				if (col->GetColType() == DB::DBUtil::CT_DateTime2)
 				{
-					if (col->GetIsNotNull())
+					if (col->IsNotNull())
 					{
-						col->SetIsNotNull(false);
+						col->SetNotNull(false);
 					}
 				}
 				tab->AddCol(col);
@@ -866,8 +866,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		{
 			r->GetStr(3, buff, sizeof(buff));
 			NEW_CLASS(col, DB::ColDef(buff));
-			col->SetIsNotNull(!r->GetBool(10));
-			col->SetIsPK(false);
+			col->SetNotNull(!r->GetBool(10));
+			col->SetPK(false);
 			if ((u8ptr = r->GetStr(12, buff, sizeof(buff))) != 0)
 			{
 				if (*buff == '{')
@@ -884,7 +884,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			r->GetStr(5, buff, sizeof(buff));
 			if (Text::StrEndsWith(buff, (const UTF8Char*)" identity"))
 			{
-				col->SetIsAutoInc(true);
+				col->SetAutoInc(true);
 				buff[Text::StrCharCnt(buff) - 9] = 0;
 			}
 			col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, 0));
@@ -921,7 +921,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				col = tab->GetCol(j);
 				if (Text::StrEquals(col->GetColName(), buff))
 				{
-					col->SetIsPK(true);
+					col->SetPK(true);
 					break;
 				}
 				j++;
@@ -1065,38 +1065,38 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 	sql->AppendCol(col->GetColName());
 	sql->AppendCmd((const UTF8Char*)" ");
 	AppendColType(svrType, sql, col->GetColType(), col->GetColSize());
-	if (col->GetIsNotNull())
+	if (col->IsNotNull())
 	{
 		sql->AppendCmd((const UTF8Char*)" NOT NULL");
 	}
 	if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
 	{
-		if (col->GetIsAutoInc())
+		if (col->IsAutoInc())
 		{
 			sql->AppendCmd((const UTF8Char*)" IDENTITY(1,1)");
 		}
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
 	{
-		if (col->GetIsAutoInc())
+		if (col->IsAutoInc())
 		{
 			sql->AppendCmd((const UTF8Char*)" AUTO_INCREMENT");
 		}
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
 	{
-		if (col->GetIsAutoInc() && col->GetIsPK())
+		if (col->IsAutoInc() && col->IsPK())
 		{
 			sql->AppendCmd((const UTF8Char*)" PRIMARY KEY");
 		}
-		if (col->GetIsAutoInc() && (col->GetColType() == DB::DBUtil::CT_Int32 || col->GetColType() == DB::DBUtil::CT_UInt32))
+		if (col->IsAutoInc() && (col->GetColType() == DB::DBUtil::CT_Int32 || col->GetColType() == DB::DBUtil::CT_UInt32))
 		{
 			sql->AppendCmd((const UTF8Char*)" AUTOINCREMENT");
 		}
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_ACCESS)
 	{
-		if (col->GetIsPK())
+		if (col->IsPK())
 		{
 			sql->AppendCmd((const UTF8Char*)" PRIMARY KEY");
 		}

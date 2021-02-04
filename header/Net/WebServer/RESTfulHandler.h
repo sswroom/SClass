@@ -2,6 +2,7 @@
 #define _SM_NET_WEBSERVER_RESTFULHANDLER
 #include "DB/DBCache.h"
 #include "Net/WebServer/WebStandardHandler.h"
+#include "Text/JSONBuilder.h"
 
 namespace Net
 {
@@ -12,6 +13,7 @@ namespace Net
 		private:
 			DB::DBCache *dbCache;
 
+			void BuildJSON(Text::JSONBuilder *json, DB::DBRow *row);
 		public:
 			RESTfulHandler(DB::DBCache *dbCache);
 

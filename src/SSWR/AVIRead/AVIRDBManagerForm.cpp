@@ -164,9 +164,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, sbuff);
-				this->lvTable->SetSubItem(k, 2, col->GetIsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				this->lvTable->SetSubItem(k, 3, col->GetIsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				this->lvTable->SetSubItem(k, 4, col->GetIsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
+				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
+				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
 					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -188,9 +188,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, sbuff);
-				this->lvTable->SetSubItem(k, 2, col->GetIsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				this->lvTable->SetSubItem(k, 3, col->GetIsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				this->lvTable->SetSubItem(k, 4, col->GetIsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
+				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
+				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
 					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -514,16 +514,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				while (j < k)
 				{
 					colDef = tableDef->GetCol(j);
-					if (colDef->GetIsPK())
+					if (colDef->IsPK())
 					{
 						sb.Append((const UTF8Char*)"\t@Id\r\n");
-						if (colDef->GetIsAutoInc())
+						if (colDef->IsAutoInc())
 						{
 							sb.Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
 						}
 					}
 					sb.Append((const UTF8Char*)"\tprivate ");
-					sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->GetIsNotNull()));
+					sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
 					sb.AppendChar(' ', 1);
 					Text::JavaText::ToJavaName(&sb, colDef->GetColName(), false);
 					sb.Append((const UTF8Char*)";\r\n");

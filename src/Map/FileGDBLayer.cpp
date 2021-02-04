@@ -111,7 +111,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 					}
 				}
 			}
-			else if (colDef->GetIsPK() && colDef->GetColType() == DB::DBUtil::CT_Int32)
+			else if (colDef->IsPK() && colDef->GetColType() == DB::DBUtil::CT_Int32)
 			{
 				this->objIdCol = i;
 			}

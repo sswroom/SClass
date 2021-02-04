@@ -689,6 +689,36 @@ void DB::DBRow::Rollback()
 	}
 }
 
+Bool DB::DBRow::GetSinglePKI64(Int64 *key)
+{
+	Bool hasKey = false;
+	Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap->GetValues();
+	DB::DBRow::Field *field;
+	UOSInt i = fieldList->GetCount();
+	while (i-- > 0)
+	{
+		field = fieldList->GetItem(i);
+		if (field->def->IsPK())
+		{
+			if (hasKey)
+			{
+				return false;
+			}
+			else if (this->GetDataType(field) != DT_INT64)
+			{
+				return false;
+			}
+			else if (this->IsFieldNull(field))
+			{
+				return false;
+			}
+			*key = this->GetFieldInt64(field);
+			hasKey = true;
+		}
+	}
+	return hasKey;
+}
+
 void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[128];

@@ -51,6 +51,7 @@ namespace Net
 		Int64 GetCliId();
 		Bool GetRemoteAddr(Net::SocketUtil::AddressInfo *addr);
 		UInt16 GetRemotePort();
+		UInt16 GetLocalPort();
 
 		void SetNoDelay(Bool val);
 		void ShutdownSend();

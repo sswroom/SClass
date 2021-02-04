@@ -317,6 +317,24 @@ Bool Text::JSONBuilder::ObjectBeginArray(const UTF8Char *name)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectBeginObject(const UTF8Char *name)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC((const UTF8Char*)", ", 2);
+	}
+	this->AppendStrUTF8(name);
+	this->sb->AppendC((const UTF8Char*)" : {", 4);
+	this->objTypes->Add(OT_OBJECT);
+	this->currType = OT_OBJECT;
+	this->isFirst = true;
+	return true;
+}
+
 Bool Text::JSONBuilder::ObjectEnd()
 {
 	if (this->currType != OT_OBJECT)

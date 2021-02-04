@@ -319,9 +319,9 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
 		colDef->SetDefVal(0);
-		colDef->SetIsNotNull(false);
-		colDef->SetIsPK(false);
-		colDef->SetIsAutoInc(false);
+		colDef->SetNotNull(false);
+		colDef->SetPK(false);
+		colDef->SetAutoInc(false);
 		colDef->SetAttr(0);
 		return true;
 	}
@@ -332,9 +332,9 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
 		colDef->SetDefVal(0);
-		colDef->SetIsNotNull(false);
-		colDef->SetIsPK(false);
-		colDef->SetIsAutoInc(false);
+		colDef->SetNotNull(false);
+		colDef->SetPK(false);
+		colDef->SetAutoInc(false);
 		colDef->SetAttr(0);
 		return true;
 	}
@@ -345,9 +345,9 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetDefVal(0);
-		colDef->SetIsNotNull(false);
-		colDef->SetIsPK(false);
-		colDef->SetIsAutoInc(false);
+		colDef->SetNotNull(false);
+		colDef->SetPK(false);
+		colDef->SetAutoInc(false);
 		colDef->SetAttr(0);
 		return true;
 	}
@@ -358,9 +358,9 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetDefVal(0);
-		colDef->SetIsNotNull(false);
-		colDef->SetIsPK(false);
-		colDef->SetIsAutoInc(false);
+		colDef->SetNotNull(false);
+		colDef->SetPK(false);
+		colDef->SetAutoInc(false);
 		colDef->SetAttr(0);
 		return true;
 	}
@@ -1498,9 +1498,9 @@ DB::DBUtil::ColType Map::GPSDataReader::GetColType(UOSInt colIndex, UOSInt *colS
 
 Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	colDef->SetIsNotNull(true);
-	colDef->SetIsPK(false);
-	colDef->SetIsAutoInc(false);
+	colDef->SetNotNull(true);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	switch (colIndex)
@@ -1510,14 +1510,14 @@ Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetColSize(20);
 		colDef->SetColDP(0);
-		colDef->SetIsPK(true);
+		colDef->SetPK(true);
 		return true;
 	case 1:
 		colDef->SetColName(this->GetName(colIndex));
 		colDef->SetColType(DB::DBUtil::CT_Vector);
 		colDef->SetColSize(0x7fffffff);
 		colDef->SetColDP(0);
-		colDef->SetIsPK(false);
+		colDef->SetPK(false);
 		return true;
 	case 2:
 		colDef->SetColName(this->GetName(colIndex));

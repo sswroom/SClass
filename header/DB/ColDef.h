@@ -13,7 +13,7 @@ namespace DB
 		UOSInt colSize;
 		UOSInt colDP;
 		Bool notNull;
-		Bool isPK;
+		Bool pk;
 		Bool autoInc;
 		const UTF8Char *defVal;
 		const UTF8Char *attr;
@@ -26,9 +26,9 @@ namespace DB
 		DB::DBUtil::ColType GetColType();
 		UOSInt GetColSize();
 		UOSInt GetColDP();
-		Bool GetIsNotNull();
-		Bool GetIsPK();
-		Bool GetIsAutoInc();
+		Bool IsNotNull();
+		Bool IsPK();
+		Bool IsAutoInc();
 		const UTF8Char *GetDefVal();
 		const UTF8Char *GetAttr();
 		Bool GetDefVal(DB::SQLBuilder *sql);
@@ -37,9 +37,9 @@ namespace DB
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetColSize(UOSInt colSize);
 		void SetColDP(UOSInt colDP);
-		void SetIsNotNull(Bool notNull);
-		void SetIsPK(Bool isPK);
-		void SetIsAutoInc(Bool autoInc);
+		void SetNotNull(Bool notNull);
+		void SetPK(Bool pk);
+		void SetAutoInc(Bool autoInc);
 		void SetDefVal(const UTF8Char *defVal);
 		void SetAttr(const UTF8Char *attr);
 

@@ -495,19 +495,19 @@ Bool Math::TSPReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	{
 	case 0:
 		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetIsNotNull(true);
+		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Int32);
 		colDef->SetColSize(11);
 		return true;
 	case 1:
 		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetIsNotNull(true);
+		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Vector);
 		colDef->SetColSize(0x7fffffff);
 		return true;
 	case 2:
 		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetIsNotNull(true);
+		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetColSize(18);
 		return true;
@@ -521,7 +521,7 @@ Bool Math::TSPReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	case 10:
 	case 11:
 		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetIsNotNull(true);
+		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Double);
 		colDef->SetColSize(33);
 		return true;
@@ -737,7 +737,7 @@ Bool Math::TSPHReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	case 6:
 	case 7:
 		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetIsNotNull(true);
+		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Double);
 		colDef->SetColSize(33);
 		return true;

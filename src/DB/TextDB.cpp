@@ -224,9 +224,9 @@ public:
 		colDef->SetAttr(0);
 		colDef->SetColDP(0);
 		colDef->SetDefVal(0);
-		colDef->SetIsAutoInc(false);
-		colDef->SetIsNotNull(false);
-		colDef->SetIsPK(false);
+		colDef->SetAutoInc(false);
+		colDef->SetNotNull(false);
+		colDef->SetPK(false);
 		return true;
 	}
 

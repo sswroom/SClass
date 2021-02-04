@@ -35,6 +35,7 @@ namespace Text
 		Bool ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *val);
 		Bool ObjectAddStrW(const UTF8Char *name, const WChar *val);
 		Bool ObjectBeginArray(const UTF8Char *name);
+		Bool ObjectBeginObject(const UTF8Char *name);
 		Bool ObjectEnd();
 	};
 }

@@ -55,9 +55,9 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, sbuff);
-				me->lvTable->SetSubItem(k, 2, col->GetIsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				me->lvTable->SetSubItem(k, 3, col->GetIsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				me->lvTable->SetSubItem(k, 4, col->GetIsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
+				me->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
+				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
 					me->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -79,9 +79,9 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, sbuff);
-				me->lvTable->SetSubItem(k, 2, col->GetIsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				me->lvTable->SetSubItem(k, 3, col->GetIsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				me->lvTable->SetSubItem(k, 4, col->GetIsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
+				me->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
+				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
 					me->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())

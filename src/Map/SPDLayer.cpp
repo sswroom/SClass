@@ -470,9 +470,9 @@ Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
 	colDef->SetDefVal(0);
-	colDef->SetIsNotNull(false);
-	colDef->SetIsPK(false);
-	colDef->SetIsAutoInc(false);
+	colDef->SetNotNull(false);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
 	colDef->SetAttr(0);
 	return true;
 }

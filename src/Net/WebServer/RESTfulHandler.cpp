@@ -4,6 +4,7 @@
 #include "DB/DBTool.h"
 #include "DB/SQLBuilder.h"
 #include "Net/WebServer/RESTfulHandler.h"
+#include "Text/JSONBuilder.h"
 
 #include <stdio.h>
 
@@ -91,6 +92,55 @@
 }
 */
 
+void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRow *row)
+{
+	Text::StringBuilderUTF8 sb;
+	DB::ColDef *col;
+	Data::DateTime *dt;
+	UTF8Char sbuff[64];
+	DB::DBRow::DataType dtype;
+	DB::TableDef *table = row->GetTableDef();
+	UOSInt i = 0;
+	UOSInt j = table->GetColCnt();
+	while (i < j)
+	{
+		col = table->GetCol(i);
+		dtype = row->GetFieldDataType(col->GetColName());
+		sb.ClearStr();
+		row->AppendVarNameForm(&sb, col->GetColName());
+		switch (dtype)
+		{
+		case DB::DBRow::DT_STRING:
+			json->ObjectAddStrUTF8(sb.ToString(), row->GetValueStr(col->GetColName()));
+			break;
+		case DB::DBRow::DT_DOUBLE:
+			json->ObjectAddFloat64(sb.ToString(), row->GetValueDouble(col->GetColName()));
+			break;
+		case DB::DBRow::DT_INT64:
+			json->ObjectAddInt64(sb.ToString(), row->GetValueInt64(col->GetColName()));
+			break;
+		case DB::DBRow::DT_DATETIME:
+			dt = row->GetValueDate(col->GetColName());
+			if (dt)
+			{
+				dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzz");
+				json->ObjectAddStrUTF8(sb.ToString(), sbuff);
+			}
+			else
+			{
+				json->ObjectAddStrUTF8(sb.ToString(), 0);
+			}
+			break;
+		case DB::DBRow::DT_VECTOR:
+		case DB::DBRow::DT_BINARY:
+		case DB::DBRow::DT_UNKNOWN:
+			json->ObjectAddStrUTF8(sb.ToString(), (const UTF8Char*)"?");
+			break;
+		}
+		i++;
+	}
+}
+
 Net::WebServer::RESTfulHandler::RESTfulHandler(DB::DBCache *dbCache)
 {
 	this->dbCache = dbCache;
@@ -102,6 +152,7 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 
 Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
 {
+	UTF8Char sbuff[256];
 	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
@@ -118,22 +169,53 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		}
 		else
 		{
+			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
-			Data::ArrayList<DB::DBRow*> rows;
-			DB::DBRow *row;
-			this->dbCache->GetTableData(&rows, &subReq[1]);
-			UOSInt i = 0;
-			UOSInt j = rows.GetCount();
-			while (i < j)
 			{
-				row = rows.GetItem(i);
-				sb.ClearStr();
-				row->ToString(&sb);
-				printf("%s\r\n", sb.ToString());
-				i++;
+				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+				Data::ArrayList<DB::DBRow*> rows;
+				DB::DBRow *row;
+				Int64 ikey;
+				this->dbCache->GetTableData(&rows, &subReq[1]);
+				json.ObjectBeginObject((const UTF8Char*)"_embedded");
+				json.ObjectBeginArray(&subReq[1]);
+				UOSInt i = 0;
+				UOSInt j = rows.GetCount();
+				while (i < j)
+				{
+					row = rows.GetItem(i);
+					json.ArrayBeginObject();
+					this->BuildJSON(&json, row);
+					if (row->GetSinglePKI64(&ikey))
+					{
+						sbURI.ClearStr();
+						req->GetRequestURLBase(&sbURI);
+						req->GetRequestPath(sbuff, sizeof(sbuff));
+						sbURI.Append(sbuff);
+						if (!sbURI.EndsWith('/'))
+						{
+							sbURI.AppendChar('/', 1);
+						}
+						sbURI.AppendI64(ikey);
+						json.ObjectBeginObject((const UTF8Char*)"_links");
+						json.ObjectBeginObject((const UTF8Char*)"self");
+						json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+						json.ObjectEnd();
+						json.ObjectEnd();
+					}
+					json.ObjectEnd();
+					i++;
+				}
+				this->dbCache->FreeTableData(&rows);
+				json.ArrayEnd();
+				json.ObjectEnd();
+				json.ObjectEnd();
 			}
-			this->dbCache->FreeTableData(&rows);
-			resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+			resp->AddDefHeaders(req);
+			resp->AddCacheControl(0);
+			resp->AddContentType((const UTF8Char*)"application/json");
+			resp->AddContentLength(sb.GetLength());
+			resp->Write(sb.ToString(), sb.GetLength());
 			return true;
 		}
 	}

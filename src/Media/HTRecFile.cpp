@@ -485,9 +485,9 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, U
 
 Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	colDef->SetIsNotNull(true);
-	colDef->SetIsPK(colIndex == 0);
-	colDef->SetIsAutoInc(false);
+	colDef->SetNotNull(true);
+	colDef->SetPK(colIndex == 0);
+	colDef->SetAutoInc(false);
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	if (this->setting)
@@ -517,7 +517,7 @@ Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDe
 			colDef->SetColType(DB::DBUtil::CT_Int32);
 			colDef->SetColSize(11);
 			colDef->SetColDP(0);
-			colDef->SetIsAutoInc(true);
+			colDef->SetAutoInc(true);
 			return true;
 		case 1:
 			colDef->SetColName(GetName(colIndex));

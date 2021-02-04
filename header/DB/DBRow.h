@@ -91,6 +91,7 @@ namespace DB
 		void Commit();
 		void Rollback();
 
+		Bool GetSinglePKI64(Int64 *key);
 		void ToString(Text::StringBuilderUTF *sb);
 		void AppendTableName(Text::StringBuilderUTF *sb);
 		void AppendVarNameForm(Text::StringBuilderUTF *sb, const UTF8Char *colName);

@@ -375,9 +375,9 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(0);
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
-	colDef->SetIsAutoInc(false);
-	colDef->SetIsNotNull(true);
-	colDef->SetIsPK(false);
+	colDef->SetAutoInc(false);
+	colDef->SetNotNull(true);
+	colDef->SetPK(false);
 	return true;
 }
 
