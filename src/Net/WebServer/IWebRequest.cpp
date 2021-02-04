@@ -7,6 +7,8 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 
+Char Net::WebServer::IWebRequest::PARAM_SEPERATOR = '|';
+
 void Net::WebServer::IWebRequest::ParseUserAgent()
 {
 	UTF8Char sbuff[512];

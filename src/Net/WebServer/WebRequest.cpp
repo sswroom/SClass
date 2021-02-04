@@ -35,11 +35,23 @@ void Net::WebServer::WebRequest::ParseQuery()
 			if (scnt == 2)
 			{
 				Text::TextEnc::URIEncoding::URIDecode(sbuff2, strs2[1]);
-				sptr = this->queryMap->Put(strs2[0], Text::StrCopyNew(sbuff2));
 			}
 			else
 			{
-				sptr = this->queryMap->Put(strs2[0], Text::StrCopyNew((const UTF8Char*)""));
+				sbuff2[0] = 0;
+			}
+			sptr = this->queryMap->Get(strs2[0]);
+			if (sptr)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(sptr);
+				sb.AppendChar(PARAM_SEPERATOR, 1);
+				sb.Append(sbuff2);
+				sptr = this->queryMap->Put(strs2[0], Text::StrCopyNew(sb.ToString()));
+			}
+			else
+			{
+				sptr = this->queryMap->Put(strs2[0], Text::StrCopyNew(sbuff2));
 			}
 			if (sptr)
 			{

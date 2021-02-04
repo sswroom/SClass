@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_RESTFULHANDLER
 #define _SM_NET_WEBSERVER_RESTFULHANDLER
 #include "DB/DBCache.h"
+#include "DB/PageRequest.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Text/JSONBuilder.h"
 
@@ -12,6 +13,7 @@ namespace Net
 		{
 		private:
 			DB::DBCache *dbCache;
+			Bool noLinks;
 
 			void BuildJSON(Text::JSONBuilder *json, DB::DBRow *row);
 		public:
@@ -21,6 +23,8 @@ namespace Net
 			virtual ~RESTfulHandler();
 		public:
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
+
+			static DB::PageRequest *ParsePageReq(Net::WebServer::IWebRequest *req);
 		};
 	}
 }

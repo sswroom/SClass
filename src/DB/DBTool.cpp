@@ -302,12 +302,27 @@ Bool DB::DBTool::GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 	return true;
 }
 
-Bool DB::DBTool::GenSelectCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef)
+DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page)
 {
+	DB::DBTool::PageStatus status;
+	if (page)
+	{
+		status = PS_NO_PAGE;
+	}
+	else
+	{
+		status = PS_SUCC;
+	}
 	DB::ColDef *col;
 	UOSInt i = 0;
 	UOSInt j = tabDef->GetColCnt();
 	sql->AppendCmd((const UTF8Char*)"select ");
+	if (page && (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS))
+	{
+		sql->AppendCmd((const UTF8Char*)"TOP ");
+		sql->AppendInt32((page->GetPageNum() + 1) * page->GetPageSize());
+		status = PS_NO_OFFSET;
+	}
 	while (i < j)
 	{
 		col = tabDef->GetCol(i);
@@ -320,7 +335,40 @@ Bool DB::DBTool::GenSelectCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef)
 	}
 	sql->AppendCmd((const UTF8Char*)" from ");
 	sql->AppendTableName(tabDef);
-	return true;
+	if (page)
+	{
+		i = 1;
+		j = page->GetSortingCount();
+		if (j > 0)
+		{
+			sql->AppendCmd((const UTF8Char*)" order by ");
+			sql->AppendCol(page->GetSortColumn(0));
+			if (page->IsSortDesc(0))
+			{
+				sql->AppendCmd((const UTF8Char*)" desc");
+			}
+			while (i < j)
+			{
+				sql->AppendCmd((const UTF8Char*)", ");
+				sql->AppendCol(page->GetSortColumn(i));
+				if (page->IsSortDesc(i))
+				{
+					sql->AppendCmd((const UTF8Char*)" desc");
+				}
+				i++;
+			}
+		}
+
+		if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+		{
+			sql->AppendCmd((const UTF8Char*)" LIMIT ");
+			sql->AppendInt32(page->GetPageNum() * page->GetPageSize());
+			sql->AppendCmd((const UTF8Char*)", ");
+			sql->AppendInt32(page->GetPageSize());
+			status = PS_SUCC;
+		}
+	}
+	return status;
 }
 
 Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r)

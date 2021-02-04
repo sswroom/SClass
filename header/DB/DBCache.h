@@ -2,6 +2,7 @@
 #define _SM_DB_DBCACHE
 #include "DB/DBModel.h"
 #include "DB/DBRow.h"
+#include "DB/PageRequest.h"
 #include "Sync/Mutex.h"
 
 namespace DB
@@ -29,7 +30,7 @@ namespace DB
         ~DBCache();
 
 		OSInt GetRowCount(const UTF8Char *tableName); //-1 = table not found
-		UOSInt GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName);
+		UOSInt GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName, DB::PageRequest *page);
 		DB::DBRow *GetTableItem(const UTF8Char *tableName, Int64 pk);
 		void FreeTableData(Data::ArrayList<DB::DBRow*> *rows);
 		void FreeTableItem(DB::DBRow *row);

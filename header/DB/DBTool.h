@@ -1,6 +1,7 @@
 #ifndef _SM_DB_DBTOOL
 #define _SM_DB_DBTOOL
 #include "DB/DBConn.h"
+#include "DB/PageRequest.h"
 #include "DB/ReadingDBTool.h"
 
 namespace DB
@@ -13,6 +14,13 @@ namespace DB
 			ReaderTrigger = 0,
 			NonQueryTrigger = 1
 		} TriggerType;
+
+		typedef enum
+		{
+			PS_SUCC,
+			PS_NO_OFFSET,
+			PS_NO_PAGE
+		} PageStatus;
 
 	private:
 		Int32 nqFail;
@@ -35,7 +43,7 @@ namespace DB
 		Bool GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::TableDef *tabDef);
 		Bool GenDropTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName);
 		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName);
-		Bool GenSelectCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef);
+		PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);
 		Bool GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r);
 		UTF8Char *GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, DB::DBReader *r);
 	};

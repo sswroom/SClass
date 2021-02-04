@@ -964,6 +964,8 @@ DB/DBUtil.h: ../../src/DB/DBUtil.cpp
 @DBUtil.o
 DB/MSSQLConn.h: ../../src/DB/MSSQLConn.cpp
 @MSSQLConn.o
+DB/PageRequest.h: ../../src/DB/PageRequest.cpp
+@PageRequest.o
 DB/ReadingDB.h: ../../src/DB/ReadingDB.cpp
 @ReadingDB.o
 DB/ReadingDBTool.h: ../../src/DB/ReadingDBTool.cpp
@@ -3350,6 +3352,7 @@ DBRow.o: ../../src/DB/DBRow.cpp
 DBTool.o: ../../src/DB/DBTool.cpp
 DBUtil.o: ../../src/DB/DBUtil.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
+PageRequest.o: ../../src/DB/PageRequest.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
 SharedDBConn.o: ../../src/DB/SharedDBConn.cpp

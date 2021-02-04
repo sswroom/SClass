@@ -100,23 +100,41 @@ OSInt DB::DBCache::GetRowCount(const UTF8Char *tableName)
 	}
 }
 
-UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName)
+UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName, DB::PageRequest *page)
 {
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
 		return 0;
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db->GetSvrType());
-	this->db->GenSelectCmd(&sql, tableInfo->def);
+	DB::DBTool::PageStatus status = this->db->GenSelectCmdPage(&sql, tableInfo->def, page);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
 	if (r)
 	{
 		DB::DBRow *row;
+		UOSInt pageSkip = 0;
+		UOSInt pageSize = page->GetPageSize();
+		if (status != DB::DBTool::PageStatus::PS_SUCC)
+		{
+			pageSkip = page->GetPageNum() * page->GetPageSize();
+		}
 		while (r->ReadNext())
 		{
-			NEW_CLASS(row, DB::DBRow(tableInfo->def));
-			row->SetByReader(r, true);
-			outRows->Add(row);
+			if (pageSkip == 0)
+			{
+				NEW_CLASS(row, DB::DBRow(tableInfo->def));
+				row->SetByReader(r, true);
+				outRows->Add(row);
+				pageSize--;
+				if (pageSize == 0)
+				{
+					break;
+				}
+			}
+			else
+			{
+				pageSkip--;
+			}
 			ret++;
 		}
 		this->db->CloseReader(r);
@@ -149,7 +167,7 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 	}
 	DB::DBRow *row = 0;
 	DB::SQLBuilder sql(this->db->GetSvrType());
-	this->db->GenSelectCmd(&sql, tableInfo->def);
+	this->db->GenSelectCmdPage(&sql, tableInfo->def, 0);
 	sql.AppendCmd((const UTF8Char*)" where ");
 	sql.AppendCol(col->GetColName());
 	sql.AppendCmd((const UTF8Char*)" = ");

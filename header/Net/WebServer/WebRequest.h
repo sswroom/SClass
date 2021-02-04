@@ -20,6 +20,7 @@ namespace Net
 				const UTF8Char *formName;
 				const UTF8Char *fileName;
 			} FormFileInfo;
+
 		private:
 			const UTF8Char *requestURI;
 			RequestMethod reqMeth;

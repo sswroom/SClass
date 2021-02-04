@@ -6,92 +6,6 @@
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Text/JSONBuilder.h"
 
-#include <stdio.h>
-
-/*
-{
-  "_embedded" : {
-    "user" : [ {
-      "id" : 1,
-      "status" : "ACTIVE",
-      "lanAcc" : "simon",
-      "displayName" : "Simon Wong",
-      "email" : "abc@abc.com",
-      "contactNo" : "88888888",
-      "positionId" : 3,
-      "photo" : "#",
-      "rmks" : "",
-      "dtCreate" : "2020-10-09T16:00:00.000+00:00",
-      "dtModify" : "2020-10-09T16:00:00.000+00:00",
-      "uidCreate" : 0,
-      "uidModify" : 0,
-      "roleIds" : [ ],
-      "usergroupIds" : [ 64, 19, 20, 36, 5, 6, 56, 74, 43, 29, 31 ],
-      "_links" : {
-        "self" : {
-          "href" : "https://127.0.0.1:8443/api/user/1"
-        },
-        "user" : {
-          "href" : "https://127.0.0.1:8443/api/user/1{?projection}",
-          "templated" : true
-        }
-      }
-    }, {
-      "id" : 3,
-      "status" : "DELETED",
-      "lanAcc" : "abc",
-      "displayName" : "abc",
-      "email" : "abc@abc.com",
-      "contactNo" : "88888888",
-      "positionId" : 11,
-      "photo" : "#",
-      "rmks" : "",
-      "dtCreate" : "2020-10-09T16:00:00.000+00:00",
-      "dtModify" : "2020-10-09T16:00:00.000+00:00",
-      "uidCreate" : 0,
-      "uidModify" : 0,
-      "roleIds" : [ ],
-      "usergroupIds" : [ 3 ],
-      "_links" : {
-        "self" : {
-          "href" : "https://127.0.0.1:8443/api/user/3"
-        },
-        "user" : {
-          "href" : "https://127.0.0.1:8443/api/user/3{?projection}",
-          "templated" : true
-        }
-      }
-    } ]
-  },
-  "_links" : {
-    "first" : {
-      "href" : "https://127.0.0.1:8443/api/user?page=0&size=20"
-    },
-    "self" : {
-      "href" : "https://127.0.0.1:8443/api/user"
-    },
-    "next" : {
-      "href" : "https://127.0.0.1:8443/api/user?page=1&size=20"
-    },
-    "last" : {
-      "href" : "https://127.0.0.1:8443/api/user?page=1&size=20"
-    },
-    "profile" : {
-      "href" : "https://127.0.0.1:8443/api/profile/user"
-    },
-    "search" : {
-      "href" : "https://127.0.0.1:8443/api/user/search"
-    }
-  },
-  "page" : {
-    "size" : 20,
-    "totalElements" : 40,
-    "totalPages" : 2,
-    "number" : 0
-  }
-}
-*/
-
 void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRow *row)
 {
 	Text::StringBuilderUTF8 sb;
@@ -144,6 +58,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 Net::WebServer::RESTfulHandler::RESTfulHandler(DB::DBCache *dbCache)
 {
 	this->dbCache = dbCache;
+	this->noLinks = false;
 }
 
 Net::WebServer::RESTfulHandler::~RESTfulHandler()
@@ -188,15 +103,18 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			{
 				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
 				this->BuildJSON(&json, row);
-				sbURI.ClearStr();
-				req->GetRequestURLBase(&sbURI);
-				req->GetRequestPath(sbuff, sizeof(sbuff));
-				sbURI.Append(sbuff);
-				json.ObjectBeginObject((const UTF8Char*)"_links");
-				json.ObjectBeginObject((const UTF8Char*)"self");
-				json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
-				json.ObjectEnd();
-				json.ObjectEnd();
+				if (!this->noLinks)
+				{
+					sbURI.ClearStr();
+					req->GetRequestURLBase(&sbURI);
+					req->GetRequestPath(sbuff, sizeof(sbuff));
+					sbURI.Append(sbuff);
+					json.ObjectBeginObject((const UTF8Char*)"_links");
+					json.ObjectBeginObject((const UTF8Char*)"self");
+					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectEnd();
+					json.ObjectEnd();
+				}
 				json.ObjectEnd();
 			}
 			this->dbCache->FreeTableItem(row);
@@ -212,11 +130,12 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
 			{
+				DB::PageRequest *page = ParsePageReq(req);
 				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
 				Data::ArrayList<DB::DBRow*> rows;
 				DB::DBRow *row;
 				Int64 ikey;
-				this->dbCache->GetTableData(&rows, &subReq[1]);
+				this->dbCache->GetTableData(&rows, &subReq[1], page);
 				json.ObjectBeginObject((const UTF8Char*)"_embedded");
 				json.ObjectBeginArray(&subReq[1]);
 				UOSInt i = 0;
@@ -226,7 +145,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					row = rows.GetItem(i);
 					json.ArrayBeginObject();
 					this->BuildJSON(&json, row);
-					if (row->GetSinglePKI64(&ikey))
+					if (!this->noLinks && row->GetSinglePKI64(&ikey))
 					{
 						sbURI.ClearStr();
 						req->GetRequestURLBase(&sbURI);
@@ -249,7 +168,67 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				this->dbCache->FreeTableData(&rows);
 				json.ArrayEnd();
 				json.ObjectEnd();
+
+				OSInt cnt = this->dbCache->GetRowCount(&subReq[1]);
+				OSInt pageCnt = cnt / page->GetPageSize();
+				if (pageCnt * (OSInt)page->GetPageSize() < cnt)
+				{
+					pageCnt++;
+				}
+
+				if (!this->noLinks)
+				{
+					req->GetRequestPath(sbuff, sizeof(sbuff));
+					json.ObjectBeginObject((const UTF8Char*)"_links");
+					sbURI.ClearStr();
+					req->GetRequestURLBase(&sbURI);
+					sbURI.Append(sbuff);
+					sbURI.Append((const UTF8Char*)"?page=0&size=");
+					sbURI.AppendUOSInt(page->GetPageSize());
+					json.ObjectBeginObject((const UTF8Char*)"first");
+					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectEnd();
+					sbURI.ClearStr();
+					req->GetRequestURLBase(&sbURI);
+					sbURI.Append(req->GetRequestURI());
+					json.ObjectBeginObject((const UTF8Char*)"self");
+					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectEnd();
+					if ((OSInt)page->GetPageNum() + 1 < pageCnt)
+					{
+						sbURI.ClearStr();
+						req->GetRequestURLBase(&sbURI);
+						sbURI.Append(sbuff);
+						sbURI.Append((const UTF8Char*)"?page=");
+						sbURI.AppendUOSInt(page->GetPageNum() + 1);
+						sbURI.Append((const UTF8Char*)"&size=");
+						sbURI.AppendUOSInt(page->GetPageSize());
+						json.ObjectBeginObject((const UTF8Char*)"next");
+						json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+						json.ObjectEnd();
+					}
+					sbURI.ClearStr();
+					req->GetRequestURLBase(&sbURI);
+					sbURI.Append(sbuff);
+					sbURI.Append((const UTF8Char*)"?page=");
+					sbURI.AppendUOSInt(pageCnt - 1);
+					sbURI.Append((const UTF8Char*)"&size=");
+					sbURI.AppendUOSInt(page->GetPageSize());
+					json.ObjectBeginObject((const UTF8Char*)"last");
+					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectEnd();
+					json.ObjectEnd();
+				}
+
+				json.ObjectBeginObject((const UTF8Char*)"page");
+				json.ObjectAddInt64((const UTF8Char*)"size", page->GetPageSize());
+				json.ObjectAddInt64((const UTF8Char*)"totalElements", cnt);
+				json.ObjectAddInt64((const UTF8Char*)"totalPages", pageCnt);
+				json.ObjectAddInt64((const UTF8Char*)"number", page->GetPageNum());
 				json.ObjectEnd();
+
+				json.ObjectEnd();
+				DEL_CLASS(page);
 			}
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(0);
@@ -280,4 +259,46 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		return false;
 	}
 	return false;
+}
+
+DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IWebRequest *req)
+{
+	UInt32 pageNum = 0;
+	UInt32 pageSize = 20;
+	req->GetQueryValueU32((const UTF8Char*)"page", &pageNum);
+	req->GetQueryValueU32((const UTF8Char*)"size", &pageSize);
+	if (pageSize <= 0)
+	{
+		pageSize = 20;
+	}
+	DB::PageRequest *page;
+	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
+	const UTF8Char *sort = req->GetQueryValue((const UTF8Char *)"sort");
+	if (sort)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(sort);
+		UTF8Char *sarr[2];
+		UOSInt i;
+		OSInt j;
+		Bool desc;
+		sarr[1] = sb.ToString();
+		while (true)
+		{
+			i = Text::StrSplit(sarr, 2, sarr[1], Net::WebServer::IWebRequest::PARAM_SEPERATOR);
+			j = Text::StrIndexOf(sarr[0], ',');
+			desc = false;
+			if (j >= 0)
+			{
+				sarr[0][j] = 0;
+				desc = Text::StrEqualsICase(&sarr[0][j + 1], (const UTF8Char*)"DESC");
+			}
+			page->Sort(sarr[0], desc);
+			if (i != 2)
+			{
+				break;
+			}
+		}
+	}
+	return page;
 }

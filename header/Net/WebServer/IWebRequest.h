@@ -41,6 +41,8 @@ namespace Net
 				REQPROTO_RTSP1_0
 			} RequestProtocol;
 
+			static Char PARAM_SEPERATOR;
+
 		private:
 			Bool uaParsed;
 			Net::BrowserInfo::BrowserType reqBrowser;
