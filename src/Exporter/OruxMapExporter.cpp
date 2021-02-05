@@ -128,7 +128,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			Data::ArrayList<Int64> imgIds;
 			Map::TileMap::ImageType it;
 			IO::IStreamData *fd;
-			DB::SQLBuilder sql(db->GetSvrType());
+			DB::SQLBuilder sql(db->GetSvrType(), db->GetTzQhr());
 			db->ExecuteNonQuery((const UTF8Char*)"CREATE TABLE android_metadata (locale TEXT)");
 			db->ExecuteNonQuery((const UTF8Char*)"CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))");
 			db->ExecuteNonQuery((const UTF8Char*)"delete from android_metadata");

@@ -26,6 +26,8 @@
 #endif
 #include <sqlext.h>
 
+#include <stdio.h>
+
 void DB::ODBCConn::UpdateConnInfo()
 {
 	Char buff[256];
@@ -84,6 +86,29 @@ void DB::ODBCConn::UpdateConnInfo()
 		}
 		else
 		{
+		}
+	}
+
+	printf("SvrType = %d\r\n", this->svrType);
+	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	{
+		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select getdate(), GETUTCDATE()");
+		if (r)
+		{
+			printf("Reading server dates\r\n");
+			Data::DateTime dt1;
+			Data::DateTime dt2;
+			r->ReadNext();
+			r->GetDate(0, &dt1);
+			r->GetDate(1, &dt2);
+			this->CloseReader(r);
+
+			Text::StringBuilderUTF8 sb;
+			sb.AppendDate(&dt1);
+			sb.Append((const UTF8Char*)", ");
+			sb.AppendDate(&dt2);
+			printf("%s\r\n", sb.ToString());
+			this->tzQhr = dt1.DiffMS(&dt2) / 900000;
 		}
 	}
 }
@@ -308,6 +333,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBCon
 	this->pwd = 0;
 	this->schema = 0;
 	this->enableDebug = false;
+	this->tzQhr = 0;
 }
 
 DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
@@ -327,6 +353,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::
 	this->pwd = 0;
 	this->schema = 0;
 	this->enableDebug = false;
+	this->tzQhr = 0;
 	this->Connect(connStr);
 }
 
@@ -357,6 +384,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 	else
 		this->schema = 0;
 	lastStmtHand = 0;
+	this->tzQhr = 0;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
@@ -391,6 +419,11 @@ DB::DBUtil::ServerType DB::ODBCConn::GetSvrType()
 DB::DBConn::ConnType DB::ODBCConn::GetConnType()
 {
 	return CT_ODBC;
+}
+
+Int32 DB::ODBCConn::GetTzQhr()
+{
+	return this->tzQhr;
 }
 
 void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
@@ -597,7 +630,7 @@ DB::DBReader *DB::ODBCConn::ExecuteReader(const UTF8Char *sql)
 	this->lastDataError = DE_NO_ERROR;
 
 	DB::ODBCReader *r;
-	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug));
+	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
 }
 
@@ -901,7 +934,7 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo()
 	this->lastDataError = DE_NO_ERROR;
 
 	DB::ODBCReader *r;
-	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug));
+	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
 }
 
@@ -1090,12 +1123,13 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid,
 	}
 }
 
-DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug)
+DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, Int32 tzQhr)
 {
 	this->conn = conn;
 	this->hStmt = hStmt;
 	this->enableDebug = enableDebug;
 	this->rowChanged = -1;
+	this->tzQhr = tzQhr;
 
 	UOSInt i;
 	Int16 cnt;
@@ -1414,7 +1448,7 @@ Bool DB::ODBCReader::ReadNext()
 						else
 						{
 							this->colDatas[i].isNull = false;
-							dt->SetValue((UInt16)ts.year, (UInt8)ts.month, (UInt8)ts.day, (UInt8)ts.hour, (UInt8)ts.minute, (UInt8)ts.second, (UInt16)ts.fraction);
+							dt->SetValue((UInt16)ts.year, (UInt8)ts.month, (UInt8)ts.day, (UInt8)ts.hour, (UInt8)ts.minute, (UInt8)ts.second, (UInt16)ts.fraction, this->tzQhr);
 						}
 					}
 					else

@@ -1034,6 +1034,11 @@ DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType()
 	return DB::DBConn::CT_MYSQLTCP;
 }
 
+Int32 Net::MySQLTCPClient::GetTzQhr()
+{
+	return 0;
+}
+
 void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];

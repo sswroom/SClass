@@ -502,6 +502,18 @@ DB::DBConn *DB::ReadingDBTool::GetDBConn()
 	return this->db;
 }
 
+Int32 DB::ReadingDBTool::GetTzQhr()
+{
+	if (this->db)
+	{
+		return this->db->GetTzQhr();
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 
 UTF8Char *DB::ReadingDBTool::DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName)
 {
@@ -555,7 +567,7 @@ UTF8Char *DB::ReadingDBTool::DBBool(UTF8Char *sqlStr, Bool val)
 
 UTF8Char *DB::ReadingDBTool::DBDate(UTF8Char *sqlStr, Data::DateTime *val)
 {
-	return DB::DBUtil::SDBDate(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBDate(sqlStr, val, this->svrType, this->GetTzQhr());
 }
 
 Int32 DB::ReadingDBTool::GetDataCnt()

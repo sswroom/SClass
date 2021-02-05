@@ -44,6 +44,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::
 	this->uid = 0;
 	this->pwd = 0;
 	this->schema = 0;
+	this->tzQhr = 0;
 	this->Connect(connStr);
 }
 
@@ -52,9 +53,9 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 	this->log = log;
 	this->tableNames = 0;
 	this->connStr = 0;
-	this->lastError = 0;
+	this->tzQhr = 0;
 	this->lastStmtHand = 0;
-	this->lastError = 1;
+	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
 	if (dsn)
 		this->dsn = Text::StrCopyNew(dsn);
 	else
@@ -137,6 +138,11 @@ DB::DBUtil::ServerType DB::ODBCConn::GetSvrType()
 DB::DBConn::ConnType DB::ODBCConn::GetConnType()
 {
 	return CT_ODBC;
+}
+
+Int32 DB::ODBCConn::GetTzQhr()
+{
+	return this->tzQhr;
 }
 
 void DB::ODBCConn::Close()

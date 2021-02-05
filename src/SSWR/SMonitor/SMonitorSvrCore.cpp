@@ -1565,7 +1565,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 	dt.SetCurrTimeUTC();
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into device (id, cpuName, platformName, lastKATime, flags) values (");
 	sql.AppendInt64(cliId);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -1639,7 +1639,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 	if (cliTime > dev->readingTime && cliTime < t + 300000)
 	{
 		DB::DBTool *db = this->DBUse();
-		DB::SQLBuilder sql(this->db->GetSvrType());
+		DB::SQLBuilder sql(this->db);
 		if (nReading > SMONITORCORE_DEVREADINGCNT)
 		{
 			nReading = SMONITORCORE_DEVREADINGCNT;
@@ -1751,7 +1751,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set lastKATime = ");
 	sql.AppendDate(&dt);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -1782,7 +1782,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char 
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set devName = ");
 	sql.AppendStrUTF8(devName);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -1820,7 +1820,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8C
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set platformName = ");
 	sql.AppendStrUTF8(platformName);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -1858,7 +1858,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Ch
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set cpuName = ");
 	sql.AppendStrUTF8(cpuName);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -1925,7 +1925,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, Int32 index,
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set readingNames = ");
 	sql.AppendStrUTF8(sb.ToString());
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -1954,7 +1954,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set version = ");
 	sql.AppendInt64(version);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -1991,7 +1991,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, const UTF8Char *
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set devName = ");
 	sql.AppendStrUTF8(devName);
 	sql.AppendCmd((const UTF8Char*)", flags = ");
@@ -2025,7 +2025,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set readingNames = ");
 	sql.AppendStrUTF8(readings);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -2078,7 +2078,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	Bool succ = false;
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set digitalNames = ");
 	sql.AppendStrUTF8(digitals);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -2269,7 +2269,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	Text::StrHexBytes(sbuff, pwdBuff, 16, 0);
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into webuser (userName, pwd, userType) values (");
 	sql.AppendStrUTF8(userName);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -2316,7 +2316,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 	user->mut->UnlockRead();
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update webuser set pwd = ");
 	sql.AppendStrUTF8(sbuff);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -2542,7 +2542,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 	}
 
 	DB::DBTool *db = this->DBUse();
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"delete from webuser_device where webuser_id = ");
 	sql.AppendInt32(user->userId);
 	if (db->ExecuteNonQuery(sql.ToString()) < 0)

@@ -7,15 +7,18 @@
 namespace DB
 {
 	class TableDef;
+	class ReadingDBTool;
 	
 	class SQLBuilder
 	{
 	private:
 		Text::StringBuilderUTF8 *sb;
 		DB::DBUtil::ServerType svrType;
+		Int32 tzQhr;
 
 	public:
-		SQLBuilder(DB::DBUtil::ServerType svrType);
+		SQLBuilder(DB::DBUtil::ServerType svrType, Int32 tzQhr);
+		SQLBuilder(DB::ReadingDBTool *db);
 		~SQLBuilder();
 
 		void AppendCmd(const UTF8Char *val);

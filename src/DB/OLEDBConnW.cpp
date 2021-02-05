@@ -278,6 +278,11 @@ DB::DBConn::ConnType DB::OLEDBConn::GetConnType()
 	return DB::DBConn::CT_OLEDB;
 }
 
+Int32 DB::OLEDBConn::GetTzQhr()
+{
+	return 0;
+}
+
 void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	ClassData *data = (ClassData *)this->clsData;
@@ -1698,9 +1703,9 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColType(DBType2ColType(data->dbColInfo[colIndex].wType));
 	colDef->SetColSize(data->dbColInfo[colIndex].ulColumnSize);
 	colDef->SetColDP(data->dbColInfo[colIndex].bPrecision);
-	colDef->SetIsNotNull((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISNULLABLE) == 0);
-	colDef->SetIsPK((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWID) != 0);
-	colDef->SetIsAutoInc((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWVER) != 0);
+	colDef->SetNotNull((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISNULLABLE) == 0);
+	colDef->SetPK((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWID) != 0);
+	colDef->SetAutoInc((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWVER) != 0);
 
 	return true;
 }

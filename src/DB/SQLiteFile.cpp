@@ -82,6 +82,11 @@ DB::DBConn::ConnType DB::SQLiteFile::GetConnType()
 	return CT_SQLITE;
 }
 
+Int32 DB::SQLiteFile::GetTzQhr()
+{
+	return 0;
+}
+
 void DB::SQLiteFile::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"SQLite:");

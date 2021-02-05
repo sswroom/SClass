@@ -114,7 +114,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		}
 		this->db->CloseReader(r);
 	}
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select id from webuser where id = ");
 	sql.AppendInt32(this->userId);
 	r = this->db->ExecuteReader(sql.ToString());
@@ -325,7 +325,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*>
 		photoGrp = grp->GetPhotoGroup();
 		photoSp = grp->GetPhotoSpecies();
 	}
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	OSInt retCnt = 0;
@@ -438,7 +438,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem*
 	DB::DBReader *r;
 	if (grp == 0 || grp->GetGroupId() == -1)
 		return 0;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	Bool exist;
 	OSInt retCnt = 0;
@@ -865,7 +865,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIte
 
 	if (sp->GetFlags() != newFlags)
 	{
-		DB::SQLBuilder sql(this->db->GetSvrType());
+		DB::SQLBuilder sql(this->db);
 		sp->SetFlags(newFlags);
 		sql.AppendCmd((const UTF8Char*)"update species set flags = ");
 		sql.AppendInt32(newFlags);
@@ -883,7 +883,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpecie
 	Data::ArrayListInt32 allId;
 	Data::ArrayListInt32 thisId;
 	DB::DBReader *r;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	Int32 v;
 	OSInt cnt = 0;
@@ -990,7 +990,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileIn
 	Data::ArrayListInt32 allId;
 	Data::ArrayListInt32 thisId;
 	DB::DBReader *r;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Int32 v;
 	Int32 c;
 	OSInt cnt = items->GetCount();
@@ -1079,7 +1079,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(Data::ArrayList<OrganGroupItem
 	DB::DBReader *r;
 	OSInt i;
 	OSInt j;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
 	if (speciesIds->GetCount() <= 0)
@@ -1144,7 +1144,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(Data::ArrayList<OrganGroupItem
 
 SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 groupId, Int32 *parentId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	Int32 photoGroup;
 	Int32 photoSpecies;
@@ -1195,7 +1195,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 groupId, 
 
 SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speciesId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	OrganSpecies *sp = 0;
 	sql.AppendCmd((const UTF8Char*)"SELECT id, chi_name, sci_name, eng_name, group_id, description, dirName, photo, idKey, flags, photoId, mapColor FROM species where id = ");
@@ -1272,7 +1272,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::CreateSpeciesDir(OrganSpecies *sp)
 
 Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	Bool found = false;
 	sql.AppendCmd((const UTF8Char*)"select id from species where sci_name = ");
@@ -1289,7 +1289,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
 Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF *sb)
 {
 	Data::ArrayListInt32 spList;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	OSInt i;
 	OSInt j;
@@ -1349,7 +1349,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 
 Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(OrganSpecies *sp)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into species (eng_name, chi_name, sci_name, group_id, description, dirName, idKey, cate_id, mapColor) values (");
 	sql.AppendStrUTF8(sp->GetEName());
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -1374,7 +1374,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(OrganSpecies *sp)
 
 Bool SSWR::OrganMgr::OrganEnvDB::DelSpecies(OrganSpecies *sp)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Bool succ = true;
 	sql.Clear();
 	sql.AppendCmd((const UTF8Char*)"update groups set photo_group=NULL, photo_species=NULL where photo_species=");
@@ -1610,7 +1610,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				}
 				if (succ)
 				{
-					DB::SQLBuilder sql(this->db->GetSvrType());
+					DB::SQLBuilder sql(this->db);
 					sql.AppendCmd((const UTF8Char*)"insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom) values (");
 					sql.AppendInt32(fileType);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1832,7 +1832,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				}
 				if (succ)
 				{
-					DB::SQLBuilder sql(this->db->GetSvrType());
+					DB::SQLBuilder sql(this->db);
 					sql.AppendCmd((const UTF8Char*)"insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera) values (");
 					sql.AppendInt32(fileType);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -2037,7 +2037,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	}
 
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into webfile (species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location) values (");
 	sql.AppendInt32(sp->GetSpeciesId());
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -2232,7 +2232,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, const UTF8Char *srcURL, const UTF8Char *location)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update webfile set srcUrl=");
 	sql.AppendStrUTF8(srcURL);
 	sql.AppendCmd((const UTF8Char*)", location=");
@@ -2321,7 +2321,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 
 Bool SSWR::OrganMgr::OrganEnvDB::SaveSpecies(OrganSpecies *sp)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update species set eng_name=");
 	sql.AppendStrUTF8(sp->GetEName());
 	sql.AppendCmd((const UTF8Char*)", chi_name=");
@@ -2354,7 +2354,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(OrganGroup *grp)
 	{
 		flags |= 1;
 	}
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update groups set group_type=");
 	sql.AppendInt32(grp->GetGroupType());
 	sql.AppendCmd((const UTF8Char*)", eng_name=");
@@ -2374,7 +2374,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(OrganGroup *grp)
 
 Int32 SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	sql.AppendCmd((const UTF8Char*)"select count(*) from groups where parent_id = ");
 	sql.AppendInt32(groupId);
@@ -2399,7 +2399,7 @@ Int32 SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 
 Int32 SSWR::OrganMgr::OrganEnvDB::GetSpeciesCount(Int32 groupId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	sql.AppendCmd((const UTF8Char*)"select count(*) from species where group_id = ");
 	sql.AppendInt32(groupId);
@@ -2429,7 +2429,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(OrganGroup *grp, Int32 parGroupId)
 	{
 		flags |= 1;
 	}
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into groups (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values (");
 	sql.AppendInt32(grp->GetGroupType());
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -2452,7 +2452,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(OrganGroup *grp, Int32 parGroupId)
 
 Bool SSWR::OrganMgr::OrganEnvDB::DelGroup(Int32 groupId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"delete from groups where id = ");
 	sql.AppendInt32(groupId);
 	sql.AppendCmd((const UTF8Char*)" and cate_id = ");
@@ -2462,7 +2462,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelGroup(Int32 groupId)
 
 Bool SSWR::OrganMgr::OrganEnvDB::SetGroupDefSp(OrganGroup *grp, OrganImageItem *img)
 {
-/*	DB::SQLBuilder sql(this->db->GetSvrType());
+/*	DB::SQLBuilder sql(this->db);
 	Int32 oldId = grp->GetPhotoSpecies();
 	grp->SetPhotoGroup(-1);
 	grp->SetPhotoSpecies(img->->GetSpeciesId());
@@ -2488,7 +2488,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SetGroupDefSp(OrganGroup *grp, OrganImageItem *
 
 Bool SSWR::OrganMgr::OrganEnvDB::MoveGroups(Data::ArrayList<OrganGroup*> *grpList, OrganGroup *destGroup)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Bool found;
 	OSInt i;
 	OSInt j;
@@ -2517,8 +2517,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveGroups(Data::ArrayList<OrganGroup*> *grpLis
 
 Bool SSWR::OrganMgr::OrganEnvDB::MoveSpecies(Data::ArrayList<OrganSpecies*> *spList, OrganGroup *destGroup)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
-	DB::SQLBuilder sql2(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql2(this->db);
 	OSInt i;
 	OSInt j;
 	Bool found;
@@ -2593,7 +2593,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				userFile->speciesId = destSp->GetSpeciesId();
 				sp = this->GetSpeciesInfo(destSp->GetSpeciesId(), true);
 				sp->files->Add(userFile);
-				DB::SQLBuilder sql(this->db->GetSvrType());
+				DB::SQLBuilder sql(this->db);
 				sql.AppendCmd((const UTF8Char*)"update userfile set species_id = ");
 				sql.AppendInt32(userFile->speciesId);
 				sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -2614,7 +2614,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				wfile->speciesId = destSp->GetSpeciesId();
 				sp = this->GetSpeciesInfo(destSp->GetSpeciesId(), true);
 				sp->wfileMap->Put(wfile->id, wfile);
-				DB::SQLBuilder sql(this->db->GetSvrType());
+				DB::SQLBuilder sql(this->db);
 				sql.AppendCmd((const UTF8Char*)"update webfile set species_id = ");
 				sql.AppendInt32(wfile->speciesId);
 				sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -2776,7 +2776,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 
 Bool SSWR::OrganMgr::OrganEnvDB::CombineSpecies(OrganSpecies *destSp, OrganSpecies *srcSp)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update species_book set species_id = ");
 	sql.AppendInt32(destSp->GetSpeciesId());
 	sql.AppendCmd((const UTF8Char*)" where species_id = ");
@@ -2838,7 +2838,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *us
 
 Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select id from webuser where userName = ");
 	sql.AppendStrUTF8(userName);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
@@ -2872,7 +2872,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8
 
 Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select id from webuser where userName = ");
 	sql.AppendStrUTF8(userName);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
@@ -2925,7 +2925,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseWebUsers(Data::ArrayList<OrganWebUser*> 
 
 Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesBookExist(Int32 speciesId, Int32 bookId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	sql.AppendCmd((const UTF8Char*)"select dispName from species_book where species_id = ");
 	sql.AppendInt32(speciesId);
@@ -2948,7 +2948,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesBookExist(Int32 speciesId, Int32 bookI
 
 Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into species_book (species_id, book_id, dispName) values (");
 	sql.AppendInt32(speciesId);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -2968,7 +2968,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, c
 
 OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	OrganBook *book;
 	SpeciesBook *spBook;
@@ -3018,7 +3018,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook
 Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url)
 {
 	OrganBook *book;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	OSInt i;
 
 	sql.AppendCmd((const UTF8Char*)"insert into book (title, dispAuthor, press, publishDate, groupId, url) values (");
@@ -3174,7 +3174,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 		Text::StrConcat(sptr, &fileName[i]);
 		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
 		{
-			DB::SQLBuilder sql(this->db->GetSvrType());
+			DB::SQLBuilder sql(this->db);
 			sql.AppendCmd((const UTF8Char*)"insert into datafile (fileType, startTime, endTime, oriFileName, dataFileName, webuser_id) values (");
 			sql.AppendInt32(fileType);
 			sql.AppendCmd((const UTF8Char*)", ");
@@ -3275,7 +3275,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_FILE)
 		return false;
 	IO::Path::DeleteFile(sbuff);
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"delete from datafile where id = ");
 	sql.AppendInt32(dataFile->id);
 	this->db->ExecuteNonQuery(sql.ToString());
@@ -3388,7 +3388,7 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 
 void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update userfile set cropLeft = ");
 	sql.AppendDbl(cropLeft);
 	sql.AppendCmd((const UTF8Char*)", cropTop = ");
@@ -3413,7 +3413,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileRot(UserFileInfo *userFile, Int32
 {
 	if (userFile->rotType != rotType)
 	{
-		DB::SQLBuilder sql(this->db->GetSvrType());
+		DB::SQLBuilder sql(this->db);
 		sql.AppendCmd((const UTF8Char*)"update userfile set rotType = ");
 		sql.AppendInt32(rotType);
 		sql.AppendCmd((const UTF8Char*)", prevUpdated = 1");
@@ -3427,7 +3427,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileRot(UserFileInfo *userFile, Int32
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFilePos(UserFileInfo *userFile, Data::DateTime *captureTime, Double lat, Double lon)
 {
 	Bool succ = false;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update userfile set captureTime = ");
 	sql.AppendDate(captureTime);
 	sql.AppendCmd((const UTF8Char*)", lat = ");
@@ -3471,7 +3471,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript)
 {
 	Bool succ = false;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update userfile set descript = ");
 	sql.AppendStrUTF8(descript);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -3491,7 +3491,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(UserFileInfo *userFile, cons
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(UserFileInfo *userFile, const UTF8Char *location)
 {
 	Bool succ = false;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update userfile set location = ");
 	sql.AppendStrUTF8(location);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
@@ -3510,7 +3510,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(UserFileInfo *userFile, const
 
 void SSWR::OrganMgr::OrganEnvDB::UpdateWebFileCrop(WebFileInfo *wfile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update webfile set cropLeft = ");
 	sql.AppendDbl(cropLeft);
 	sql.AppendCmd((const UTF8Char*)", cropTop = ");
@@ -3534,7 +3534,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateWebFileCrop(WebFileInfo *wfile, Double cr
 void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 {
 	DB::DBReader *r;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
 	this->TripRelease();
@@ -3607,7 +3607,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(Data::DateTime *fromDate, Data::DateTim
 	{
 		if (i == j)
 		{
-			DB::SQLBuilder sql(this->db->GetSvrType());
+			DB::SQLBuilder sql(this->db);
 			sql.AppendCmd((const UTF8Char*)"insert into trip (fromDate, toDate, locId, cate_id) values (");
 			sql.AppendDate(fromDate);
 			sql.AppendCmd((const UTF8Char*)", ");
@@ -3646,7 +3646,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, const UTF8Char *eng
 	if (loc == 0)
 		return false;
 
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update location set ename=");
 	sql.AppendStrUTF8(engName);
 	sql.AppendCmd((const UTF8Char*)", cname=");
@@ -3687,7 +3687,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, const UTF8Char *engNam
 	if ((UOSInt)lType + 1 >= this->locType->GetCount())
 		return false;
 	lType = this->locType->GetItem(lType + 1)->id;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into location (parentId, ename, cname, cate_id, locType) values (");
 	sql.AppendInt32(locId);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -4196,7 +4196,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 	Int32 photoGroup;
 	Int32 photoSpecies;
 	DB::DBReader *r;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 
 	sql.AppendCmd((const UTF8Char*)"select group_id, sci_name from species where chi_name = ");
@@ -4350,7 +4350,7 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	}
 	this->grpTypes->Clear();
 
-	NEW_CLASS(sql, DB::SQLBuilder(this->db->GetSvrType()));
+	NEW_CLASS(sql, DB::SQLBuilder(this->db));
 	sql->AppendCmd((const UTF8Char*)"Select seq, chi_name, eng_name from group_type where cate_id = ");
 	sql->AppendInt32(this->currCate->cateId);
 	sql->AppendCmd((const UTF8Char*)" order by seq");
@@ -4376,7 +4376,7 @@ Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMg
 
 	NEW_CLASS(grpTree, Data::Integer32Map<Data::ArrayList<OrganGroup*>*>());
 
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	sql.AppendCmd((const UTF8Char*)"select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, parent_id, flags from groups where cate_id = ");
 	sql.AppendInt32(this->currCate->cateId);
@@ -4439,7 +4439,7 @@ Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::Organ
 
 	NEW_CLASS(spTree, Data::Integer32Map<Data::ArrayList<OrganSpecies*>*>());
 
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	sql.Clear();
 	sql.AppendCmd((const UTF8Char*)"SELECT id, chi_name, sci_name, eng_name, description, dirName, photo, idKey, flags, group_id, photoId, mapColor FROM species where cate_id = ");
@@ -4548,7 +4548,7 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 
 	/*	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
 	UserFileInfo *userFile;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	WChar sbuff[512];
 	WChar *sptr;
 	Data::DateTime dt;
@@ -4667,7 +4667,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 	SpeciesInfo *spInfo;
 	Bool isCover;
 
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	r = this->db->ExecuteReader((const UTF8Char*)"select id, dirName, photo, photoId, photoWId from species");
 	if (r)
 	{

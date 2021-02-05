@@ -2077,27 +2077,7 @@ void Data::DateTime::ToUTCTime()
 
 void Data::DateTime::ToLocalTime()
 {
-#if defined(WIN32) || defined(_WIN32_WCE)
-	TIME_ZONE_INFORMATION tz;
-	tz.Bias = 0;
-	GetTimeZoneInformation(&tz);
-	Int32 newTZ = tz.Bias / -15;
-#elif defined(__sun__)
-	time_t now = time(0);
-	tm *t = localtime(&now);
-	Int32 newTZ = mktime(t) - now;
-	if (t->tm_isdst > 0)
-	{
-    	newTZ = newTZ - 60 * 60;
-	}
-	newTZ = newTZ / 900;
-#elif !defined(CPU_AVR)
-	time_t now = time(0);
-	tm *t = localtime(&now);
-	Int32 newTZ = t->tm_gmtoff / 900;
-#else
-	Int32 newTZ = 0;
-#endif
+	Int32 newTZ = GetLocalTzQhr();
 	if (this->tzQhr != newTZ)
 	{
 		Int32 tzv = this->tzQhr - newTZ;
@@ -2197,3 +2177,28 @@ Int32 Data::DateTime::DayInMonth(UInt16 year, UInt8 month)
 	}
 }
 
+Int32 Data::DateTime::GetLocalTzQhr()
+{
+#if defined(WIN32) || defined(_WIN32_WCE)
+	TIME_ZONE_INFORMATION tz;
+	tz.Bias = 0;
+	GetTimeZoneInformation(&tz);
+	Int32 newTZ = tz.Bias / -15;
+#elif defined(__sun__)
+	time_t now = time(0);
+	tm *t = localtime(&now);
+	Int32 newTZ = mktime(t) - now;
+	if (t->tm_isdst > 0)
+	{
+    	newTZ = newTZ - 60 * 60;
+	}
+	newTZ = newTZ / 900;
+#elif !defined(CPU_AVR)
+	time_t now = time(0);
+	tm *t = localtime(&now);
+	Int32 newTZ = t->tm_gmtoff / 900;
+#else
+	Int32 newTZ = 0;
+#endif
+	return newTZ;
+}

@@ -62,6 +62,7 @@ namespace DB
 		Bool IsDataError(UTF8Char *errCode);
 		void GetLastErrorMsg(Text::StringBuilderUTF *sb);
 		DB::DBConn *GetDBConn();
+		Int32 GetTzQhr();
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);

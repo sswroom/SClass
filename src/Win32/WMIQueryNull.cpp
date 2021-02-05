@@ -45,6 +45,11 @@ DB::DBConn::ConnType Win32::WMIQuery::GetConnType()
 	return DB::DBConn::CT_WMIQUERY;
 }
 
+Int32 Win32::WMIQuery::GetTzQhr()
+{
+	return Data::DateTime::GetLocalTzQhr();
+}
+
 void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"WMI:");

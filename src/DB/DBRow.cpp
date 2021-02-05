@@ -756,8 +756,10 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 				switch (dtype)
 				{
 				case DT_DATETIME:
-					DB::DBUtil::SDBDate(sbuff, this->GetFieldDate(field), table->GetSvrType());
+					this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzz");
+					sb->AppendChar('\"', 1);
 					sb->Append(sbuff);
+					sb->AppendChar('\"', 1);
 					break;
 				case DT_BINARY:
 					buff = this->GetFieldBinary(field, &k);

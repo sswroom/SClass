@@ -103,6 +103,11 @@ DB::DBConn::ConnType DB::MySQLConn::GetConnType()
 	return DB::DBConn::CT_MYSQL;
 }
 
+Int32 DB::MySQLConn::GetTzQhr()
+{
+	return 0;
+}
+
 void DB::MySQLConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"MySQL:");

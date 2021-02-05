@@ -1551,7 +1551,7 @@ OSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::DBUtil::ServerType svrType)
 	return Text::StrInt64(buff, val) - buff;
 }
 
-UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::ServerType svrType)
+UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::ServerType svrType, Int32 tzQhr)
 {
 	UTF8Char *sptr;
 	if (dat == 0)
@@ -1567,7 +1567,17 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 		*sptr = 0;
 		return sptr;
 	}
-	else if (svrType == DB::DBUtil::SVR_TYPE_MSSQL || svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	else if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	{
+		dt.ConvertTimeZoneQHR(tzQhr);
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
 	{
 		dt.ToUTCTime();
 		sptr = sqlstr;
@@ -1582,6 +1592,16 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 		dt.ToUTCTime();
 		sptr = sqlstr;
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"TIMESTAMP '");
+		sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	{
+		dt.ToUTCTime();
+		sptr = sqlstr;
+		*sptr++ = '\'';
 		sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
 		*sptr++ = '\'';
 		*sptr = 0;

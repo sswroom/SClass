@@ -299,7 +299,7 @@ Double SSWR::DiscDB::DiscDBEnv::GetMonitorDDPI(void *hMon)
 
 const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntDisc(const UTF8Char *discId, const UTF8Char *discTypeId, Data::DateTime *dt)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char *)"insert into BurntDisc (DiscID, DiscTypeID, BurntDate, Status) values (");
 	sql.AppendStrUTF8(discId);
 	sql.AppendCmd((const UTF8Char *)", ");
@@ -344,7 +344,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(const UTF8Char *discId)
 
 Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, OSInt fileId, const UTF8Char *name, Int64 fileSize, const UTF8Char *category, Int32 videoId)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into BurntFile (DiscID, FileID, Name, FileSize, Category, VIDEOID) values (");
 	sql.AppendStrUTF8(discId);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -365,7 +365,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::Array
 {
 	DiscFileInfo *file;
 	OSInt ret = 0;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select FileID, Name, FileSize, Category, VIDEOID from BurntFile where DiscID = ");
 	sql.AppendStrUTF8(discId);
 	sql.AppendCmd((const UTF8Char*)" order by FileID");
@@ -432,7 +432,7 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(const UTF8Char *discTypeID, const UT
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update DVDType set Name = ");
 	sql.AppendStrUTF8(name);
 	sql.AppendCmd((const UTF8Char*)", Description = ");
@@ -455,7 +455,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 	DVDTypeInfo *dvdType = this->dvdTypeMap->Get(discTypeID);
 	if (dvdType != 0)
 		return 0;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into DVDType (DiscTypeID, Name, Description) values (");
 	sql.AppendStrUTF8(discTypeID);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -517,7 +517,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTyp
 
 Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into DVDVIDEO (ANIME, SERIES, VOLUME, DISCTYPE) values (");
 	sql.AppendStrUTF8(anime);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -571,7 +571,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *SSWR::DiscDB::DiscDBEnv::GetDVDVide
 
 Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, OSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
 {
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into Movies (DiscID, FileID, MainTitle, Type, Chapter, ChapterTitle, VideoFormat, Width, Height, fps, length, AudioFormat, SamplingRate, Bitrate, AspectRatio, Remarks) values (");
 	sql.AppendStrUTF8(discId);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -637,7 +637,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 
 	Data::StringUTF8Map<Int32> nameMap;
 	Text::StringBuilderUTF8 sb;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
 	sql.Clear();
 	sql.AppendCmd((const UTF8Char*)"select Name, FileID from BurntFile where DiscID = ");

@@ -76,7 +76,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	if (mdb == 0)
 		return false;
 	Bool succ = true;
-	DB::SQLBuilder sql(mdb->GetSvrType());
+	DB::SQLBuilder sql(mdb);
 	Text::StringBuilderUTF8 sb;
 	srcDB = (DB::ReadingDB *)pobj;
 	srcDB->GetTableNames(&tables);

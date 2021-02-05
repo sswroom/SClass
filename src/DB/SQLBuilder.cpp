@@ -1,12 +1,21 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "DB/ReadingDBTool.h"
 #include "DB/SQLBuilder.h"
 #include "DB/TableDef.h"
 #include "Text/MyStringW.h"
 
-DB::SQLBuilder::SQLBuilder(DB::DBUtil::ServerType svrType)
+DB::SQLBuilder::SQLBuilder(DB::DBUtil::ServerType svrType, Int32 tzQhr)
 {
 	this->svrType = svrType;
+	this->tzQhr = tzQhr;
+	NEW_CLASS(sb, Text::StringBuilderUTF8());
+}
+
+DB::SQLBuilder::SQLBuilder(DB::ReadingDBTool *db)
+{
+	this->svrType = svrType;
+	this->tzQhr = db->GetTzQhr();
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 }
 
@@ -49,7 +58,7 @@ void DB::SQLBuilder::AppendStrW(const WChar *val)
 void DB::SQLBuilder::AppendDate(Data::DateTime *val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBDateLeng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBDate(sb->GetEndPtr(), val, this->svrType));
+	sb->SetEndPtr(DB::DBUtil::SDBDate(sb->GetEndPtr(), val, this->svrType, this->tzQhr));
 }
 
 void DB::SQLBuilder::AppendDbl(Double val)

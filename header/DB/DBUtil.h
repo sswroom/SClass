@@ -51,7 +51,7 @@ namespace DB
 		static OSInt SDBInt32Leng(Int32 val, ServerType svrType);
 		static UTF8Char *SDBInt64(UTF8Char *sqlstr, Int64 val, ServerType svrType);
 		static OSInt SDBInt64Leng(Int64 val, ServerType svrType);
-		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, ServerType svrType);
+		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, ServerType svrType, Int32 tzQhr);
 		static OSInt SDBDateLeng(Data::DateTime *dat, ServerType svrType);
 		static UTF8Char *SDBDbl(UTF8Char *sqlstr, Double val, ServerType svrType);
 		static OSInt SDBDblLeng(Double val, ServerType svrType);

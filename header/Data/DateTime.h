@@ -114,6 +114,7 @@ namespace Data
 		static Double MS2Minutes(Int64 ms);
 		static Double MS2Seconds(Int64 ms);
 		static Int32 DayInMonth(UInt16 year, UInt8 month);
+		static Int32 GetLocalTzQhr();
 	};
 }
 #endif

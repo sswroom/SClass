@@ -20,7 +20,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 	table->tableName = Text::StrCopyNew(tableName);
 	table->def = def;
 	table->dataCnt = 0;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select count(*) from ");
 	sql.AppendTableName(def);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
@@ -106,7 +106,7 @@ UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF
 	if (tableInfo == 0)
 		return 0;
 	UOSInt ret = 0;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	DB::DBTool::PageStatus status = this->db->GenSelectCmdPage(&sql, tableInfo->def, page);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
 	if (r)
@@ -166,7 +166,7 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 		return 0;
 	}
 	DB::DBRow *row = 0;
-	DB::SQLBuilder sql(this->db->GetSvrType());
+	DB::SQLBuilder sql(this->db);
 	this->db->GenSelectCmdPage(&sql, tableInfo->def, 0);
 	sql.AppendCmd((const UTF8Char*)" where ");
 	sql.AppendCol(col->GetColName());

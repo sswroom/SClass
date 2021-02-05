@@ -65,7 +65,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	if (destDB == 0)
 		return false;
 	Bool succ = true;
-	DB::SQLBuilder sql(destDB->GetSvrType());
+	DB::SQLBuilder sql(destDB);
 	Text::StringBuilderUTF8 sb;
 	sDB = (DB::ReadingDB *)pobj;
 	sDB->GetTableNames(&tables);
