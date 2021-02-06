@@ -77,26 +77,6 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 			{
 				this->outputCopier->Copy16(vbuff->destBuff, rect[2] * 4, dptr, dlineSize, rect[2], rect[3]);
 			}
-/*
-			UInt8 *sptr = vbuff->destBuff;
-			OSInt lineSize = rect[2] * this->bitDepth >> 3;
-
-			dptr = dptr + (rect[1] * dlineSize + rect[0] * (this->bitDepth >> 3));
-			OSInt i = rect[3];
-			if (lineSize == (OSInt)dlineSize)
-			{
-				MemCopyANC(dptr, sptr, lineSize * i);
-			}
-			else
-			{
-				while (i-- > 0)
-				{
-					MemCopyNO(dptr, sptr, lineSize);
-					sptr += lineSize;
-					dptr += dlineSize;
-				}
-			}*/
-
 			this->LockSurfaceUnlock();
 		}
 	}

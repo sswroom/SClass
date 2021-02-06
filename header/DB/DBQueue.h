@@ -116,6 +116,7 @@ namespace DB
 		OSInt GetQueueCnt();
 		OSInt GetConnCnt();
 		DB::DBUtil::ServerType GetSvrType();
+		Int32 GetTzQhr();
 		UTF8Char *ToString(UTF8Char *buff);
 		OSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
 		UTF8Char *DBDate(UTF8Char *buff, Data::DateTime *dat);

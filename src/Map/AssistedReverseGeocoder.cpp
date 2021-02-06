@@ -44,7 +44,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		return 0;
 
 	mut->Lock();
-	NEW_CLASS(sql, DB::SQLBuilder(this->conn->GetSvrType()));
+	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
 	sql->AppendInt32(lcid);
 	sql->AppendCmd((const UTF8Char*)" and keyx = ");
@@ -121,7 +121,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	Int32 keyy = Math::Double2Int32(lat * 5000);
 
 	mut->Lock();
-	NEW_CLASS(sql, DB::SQLBuilder(this->conn->GetSvrType()));
+	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
 	sql->AppendInt32(lcid);
 	sql->AppendCmd((const UTF8Char*)" and keyx = ");

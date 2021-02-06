@@ -14,7 +14,7 @@ DB::SQLBuilder::SQLBuilder(DB::DBUtil::ServerType svrType, Int32 tzQhr)
 
 DB::SQLBuilder::SQLBuilder(DB::ReadingDBTool *db)
 {
-	this->svrType = svrType;
+	this->svrType = db->GetSvrType();
 	this->tzQhr = db->GetTzQhr();
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 }

@@ -195,7 +195,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		Data::DateTime dt;
 		DB::SQLBuilder *sql;
 		dt.SetCurrTimeUTC();
-		NEW_CLASS(sql, DB::SQLBuilder(this->conn->GetSvrType()));
+		NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
 		sql->AppendInt32(lcid);
 		sql->AppendCmd((const UTF8Char*)", ");
@@ -304,7 +304,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 		Data::DateTime dt;
 		DB::SQLBuilder *sql;
 		dt.SetCurrTimeUTC();
-		NEW_CLASS(sql, DB::SQLBuilder(this->conn->GetSvrType()));
+		NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
 		sql->AppendInt32(lcid);
 		sql->AppendCmd((const UTF8Char*)", ");

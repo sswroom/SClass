@@ -38,6 +38,10 @@ gboolean GUIDDrawControl_OnDDDraw(GtkWidget *widget, cairo_t *cr, gpointer user_
 		cairo_surface_destroy(s);*/
 //		printf("Draw end\r\n");
 	}
+	else
+	{
+		printf("DDraw: Error in drawing\r\n");
+	}
 	me->EndDrawSurface();
 	return true;
 }

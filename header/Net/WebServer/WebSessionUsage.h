@@ -11,9 +11,11 @@ namespace Net
 		private:
 			Net::WebServer::IWebSession *sess;
 		public:
+			WebSessionUsage();
 			WebSessionUsage(Net::WebServer::IWebSession *sess);
 			~WebSessionUsage();
 
+			void Use(Net::WebServer::IWebSession *sess);
 			void EndUse();
 			Net::WebServer::IWebSession *GetSess();
 		};

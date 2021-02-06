@@ -377,6 +377,11 @@ DB::DBUtil::ServerType DB::DBQueue::GetSvrType()
 	return this->db1->GetSvrType();
 }
 
+Int32 DB::DBQueue::GetTzQhr()
+{
+	return this->db1->GetTzQhr();
+}
+
 OSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 {
 	this->mut->Lock();

@@ -8,6 +8,7 @@ namespace DB
 {
 	class TableDef;
 	class ReadingDBTool;
+	class DBQueue;
 	
 	class SQLBuilder
 	{

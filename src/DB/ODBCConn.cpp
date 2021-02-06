@@ -89,13 +89,11 @@ void DB::ODBCConn::UpdateConnInfo()
 		}
 	}
 
-	printf("SvrType = %d\r\n", this->svrType);
 	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select getdate(), GETUTCDATE()");
 		if (r)
 		{
-			printf("Reading server dates\r\n");
 			Data::DateTime dt1;
 			Data::DateTime dt2;
 			r->ReadNext();
@@ -107,7 +105,6 @@ void DB::ODBCConn::UpdateConnInfo()
 			sb.AppendDate(&dt1);
 			sb.Append((const UTF8Char*)", ");
 			sb.AppendDate(&dt2);
-			printf("%s\r\n", sb.ToString());
 			this->tzQhr = dt1.DiffMS(&dt2) / 900000;
 		}
 	}
