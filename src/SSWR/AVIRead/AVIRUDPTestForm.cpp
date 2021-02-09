@@ -3,6 +3,7 @@
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRUDPTestForm.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -16,10 +17,10 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(const Net::SocketUtil
 	{
 		me->udp->SendTo(addr, port, buff, dataSize);
 	}
-	me->mut->Lock();
+	Sync::MutexUsage mutUsage(me->mut);
 	me->recvCnt++;
 	me->recvSize += dataSize;
-	me->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnAutoReplyChanged(void *userObj, Bool newVal)

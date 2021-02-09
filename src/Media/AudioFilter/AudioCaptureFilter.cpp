@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Media/AudioFilter/AudioCaptureFilter.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #define BUFFSIZE 1048576
 
@@ -13,16 +14,16 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 	me->running = true;
 	while (!me->toStop)
 	{
-		me->writeMut->Lock();
+		Sync::MutexUsage writeMutUsage(me->writeMut);
 		while (me->readBuffSize > 0)
 		{
-			me->readMut->Lock();
+			Sync::MutexUsage readMutUsage(me->readMut);
 			tmpBuff = me->writeBuff;
 			me->writeBuff = me->readBuff;
 			me->readBuff = tmpBuff;
 			buffSize = me->readBuffSize;
 			me->readBuffSize = 0;
-			me->readMut->Unlock();
+			readMutUsage.EndUse();
 
 			if (me->waveStm)
 			{
@@ -30,9 +31,8 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 				me->dataSize += buffSize;
 				me->fileSize += buffSize;
 			}
-			me->readMut->Unlock();
 		}
-		me->writeMut->Unlock();
+		writeMutUsage.EndUse();
 		
 		me->evt->Wait(1000);
 	}
@@ -87,7 +87,7 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(UInt8 *buff, UOSInt blk
 		return 0;
 
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
-	this->readMut->Lock();
+	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->writing)
 	{
 		if (this->readBuffSize >= BUFFSIZE)
@@ -106,7 +106,7 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(UInt8 *buff, UOSInt blk
 			this->evt->Set();
 		}
 	}
-	this->readMut->Unlock();
+	mutUsage.EndUse();
 	return readSize;
 }
 
@@ -133,7 +133,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(const UTF8Char *fileNa
 	*(UInt16*)&buff[68] = format.align;
 	*(UInt16*)&buff[70] = format.bitpersample;
 	*(UInt16*)&buff[72] = format.extraSize;
-	this->writeMut->Lock();
+	Sync::MutexUsage mutUsage(this->writeMut);
 	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	this->waveStm->Write(buff, 74);
 	if (format.extraSize > 0)
@@ -150,7 +150,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(const UTF8Char *fileNa
 	this->waveStm->Write(buff, 8);
 	this->dataSize = 0;
 	this->fileSize = this->dataOfst - 4;
-	this->writeMut->Unlock();
+	mutUsage.EndUse();
 	this->writing = true;
 	return true;
 }
@@ -158,7 +158,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(const UTF8Char *fileNa
 void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 {
 	this->writing = false;
-	this->writeMut->Lock();
+	Sync::MutexUsage mutUsage(this->writeMut);
 	if (this->waveStm)
 	{
 		if (this->fileSize >= 0x100000000LL)
@@ -187,5 +187,5 @@ void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 		DEL_CLASS(this->waveStm);
 		this->waveStm = 0;
 	}
-	this->writeMut->Unlock();
+	mutUsage.EndUse();
 }

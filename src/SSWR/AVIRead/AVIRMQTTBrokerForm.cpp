@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -64,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	Data::DateTime dt;
 	OSInt i;
 	OSInt j;
-	me->topicMut->Lock();
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap->GetValues();
 	i = 0;
 	j = topicList->GetCount();
@@ -108,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 			i++;
 		}
 	}
-	me->topicMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
@@ -117,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, c
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	me->topicMut->Lock();
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap->Get(topic);
 	if (topicSt)
 	{
@@ -143,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, c
 		me->topicMap->Put(topic, topicSt);
 		me->topicListUpdated = true;
 	}
-	me->topicMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::ServerStop()

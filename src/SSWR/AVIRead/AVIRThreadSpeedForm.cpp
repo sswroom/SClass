@@ -2,6 +2,7 @@
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRThreadSpeedForm.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 
@@ -11,10 +12,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(void *userObj)
 	me->t = me->clk->GetTimeDiff();
 	me->clk->Start();
 	me->mainEvt->Set();
-	me->mut->Lock();
+	Sync::MutexUsage mutUsage(me->mut);
 	Sync::Thread::Sleep(500);
 	me->clk->Start();
-	me->mut->Unlock();
+	mutUsage.EndUse();
 	return 0;
 }
 
@@ -57,8 +58,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	i = 1000;
 	while (i-- > 0)
 	{
-		me->mut->Lock();
-		me->mut->Unlock();
+		Sync::MutexUsage mutUsage(me->mut);
+		mutUsage.EndUse();
 	}
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem((const UTF8Char*)"Mutex Lock Unlock", 0);
@@ -101,9 +102,11 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
 	Sync::Thread::Sleep(100);
-	me->mut->Lock();
-	t = me->clk->GetTimeDiff();
-	me->mut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(me->mut);
+		t = me->clk->GetTimeDiff();
+		mutUsage.EndUse();
+	}
 	i = me->lvResult->AddItem((const UTF8Char*)"Mutex Lock Relase", 0);
 	Text::StrDouble(sbuff, t);
 	me->lvResult->SetSubItem(i, 1, sbuff);

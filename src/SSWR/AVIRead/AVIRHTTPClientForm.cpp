@@ -8,6 +8,7 @@
 #include "Net/MIME.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/IMIMEObj.h"
 #include "Text/MyString.h"
@@ -227,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 		IO::FileStream *fs;
 		Bool succ = false;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-		me->respMut->Lock();
+		Sync::MutexUsage mutUsage(me->respMut);
 		if (me->respData)
 		{
 			UOSInt buffSize;
@@ -236,7 +237,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 			writeSize = fs->Write(buff, buffSize);
 			succ = (writeSize == buffSize);
 		}
-		me->respMut->Unlock();
+		mutUsage.EndUse();
 		DEL_CLASS(fs);
 		if (!succ)
 		{
@@ -249,7 +250,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	me->respMut->Lock();
+	Sync::MutexUsage mutUsage(me->respMut);
 	if (me->respData)
 	{
 		UOSInt buffSize;
@@ -264,7 +265,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 			me->core->OpenObject(mimeObj);
 		}
 	}
-	me->respMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj)
@@ -408,7 +409,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				pathPtr = Text::URLString::GetURLDomain(buff, currURL, 0) + 1;
 				Text::URLString::GetURLPath(pathPtr, currURL);
 				len1 = Text::StrCharCnt(buff);
-				me->cookieMut->Lock();
+				Sync::MutexUsage mutUsage(me->cookieMut);
 				i = 0;
 				j = me->cookieList->GetCount();
 				while (i < j)
@@ -434,7 +435,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					}
 					i++;
 				}
-				me->cookieMut->Unlock();
+				mutUsage.EndUse();
 				if (cookiePtr)
 				{
 					cli->AddHeader((const UTF8Char*)"Cookie", sbuff);
@@ -474,14 +475,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					contType = Text::StrCopyNew(sb.ToString());
 				}
 				me->respSvrAddr = *cli->GetSvrAddr();
-				me->respMut->Lock();
+				Sync::MutexUsage respMutUsage(me->respMut);
 				SDEL_TEXT(me->respReqURL)
 				SDEL_TEXT(me->respContType);
 				SDEL_CLASS(me->respData);
 				me->respReqURL = Text::StrCopyNew(currURL);
 				me->respContType = contType;
 				me->respData = mstm;
-				me->respMut->Unlock();
+				respMutUsage.EndUse();
 			}
 			else
 			{
@@ -492,12 +493,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respTimeTotal = -1;
 				me->respSize = -1;
 				me->respStatus = 0;
-				me->respMut->Lock();
+				Sync::MutexUsage mutUsage(me->respMut);
 				SDEL_TEXT(me->respReqURL)
 				SDEL_CLASS(me->respData);
 				SDEL_TEXT(me->respContType);
 				me->respReqURL = Text::StrCopyNew(currURL);
-				me->respMut->Unlock();
+				mutUsage.EndUse();
 			}
 
 			DEL_CLASS(cli);
@@ -760,9 +761,9 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		cookie->expireTime = expiryTime;
 		cookie->name = Text::StrCopyNewC(cookieValue, i);
 		cookie->value = Text::StrCopyNew(&cookieValue[i + 1]);
-		this->cookieMut->Lock();
+		Sync::MutexUsage mutUsage(this->cookieMut);
 		this->cookieList->Add(cookie);
-		this->cookieMut->Unlock();
+		mutUsage.EndUse();
 		return cookie;
 	}
 	else

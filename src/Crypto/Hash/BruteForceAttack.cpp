@@ -3,6 +3,7 @@
 #include "Crypto/Hash/BruteForceAttack.h"
 #include "Data/ByteTool.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -88,11 +89,11 @@ OSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resul
 	OSInt len;
 	OSInt i;
 	UInt8 c;
-	this->keyMut->Lock();
+	Sync::MutexUsage mutUsage(this->keyMut);
 	len = Text::StrConcat(resultBuff, this->keyBuff) - resultBuff;
 	if (len > this->maxLeng)
 	{
-		this->keyMut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 	switch (this->ce)
@@ -163,7 +164,7 @@ OSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resul
 		}
 	}
 	this->testCnt++;
-	this->keyMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -209,9 +210,9 @@ UTF8Char *Crypto::Hash::BruteForceAttack::GetCurrKey(UTF8Char *key)
 {
 	if (this->threadCnt > 0)
 	{
-		this->keyMut->Lock();
+		Sync::MutexUsage mutUsage(this->keyMut);
 		key = Text::StrConcat(key, this->keyBuff);
-		this->keyMut->Unlock();
+		mutUsage.EndUse();
 		return key;
 	}
 	return 0;
@@ -222,9 +223,9 @@ OSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
 	OSInt len;
 	if (this->threadCnt > 0)
 	{
-		this->keyMut->Lock();
+		Sync::MutexUsage mutUsage(this->keyMut);
 		len = Text::StrCharCnt(this->keyBuff);
-		this->keyMut->Unlock();
+		mutUsage.EndUse();
 		return len;
 	}
 	return 0;

@@ -2,6 +2,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRPingMonitorForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
@@ -12,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	IPInfo *ipInfo;
 	UTF8Char sbuff[256];
-	me->ipMut->Lock();
+	Sync::MutexUsage mutUsage(me->ipMut);
 	ipInfo = me->ipMap->Get(sortableIP);
 	if (ipInfo == 0)
 	{
@@ -45,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	{
 		me->ipContUpdated = true;
 	}
-	me->ipMut->Unlock();
+	mutUsage.EndUse();
 
 	sb.Append((const UTF8Char *)"Received from ");
 	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
@@ -193,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 		OSInt i;
 		OSInt j;
 		me->ipListUpdated = false;
-		me->ipMut->Lock();
+		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbIP->ClearItems();
 		ipList = me->ipMap->GetValues();
 		i = 0;
@@ -209,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 			}
 			i++;
 		}
-		me->ipMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 

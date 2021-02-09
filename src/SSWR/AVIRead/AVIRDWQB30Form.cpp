@@ -3,6 +3,8 @@
 #include "IO/Device/DensoWaveQK30U.h"
 #include "SSWR/AVIRead/AVIRDWQB30Form.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
+#include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
@@ -257,11 +259,11 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, const UTF8Char *code)
 {
 	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
-	me->codeMut->Lock();
+	Sync::MutexUsage mutUsage(me->codeMut);
 	SDEL_TEXT(me->newCode);
 	me->newCode = Text::StrCopyNew(code);
 	me->codeUpdate = true;
-	me->codeMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
@@ -270,7 +272,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 	if (me->codeUpdate)
 	{
 		me->codeUpdate = false;
-		me->codeMut->Lock();
+		Sync::MutexUsage mutUsage(me->codeMut);
 		if (me->newCode)
 		{
 			me->txtScan->SetText(me->newCode);
@@ -278,7 +280,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 			Text::StrDelNew(me->newCode);
 			me->newCode = 0;
 		}
-		me->codeMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 

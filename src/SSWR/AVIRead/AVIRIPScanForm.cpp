@@ -4,6 +4,7 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRIPScanForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -68,9 +69,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping1Thread(void *userObj)
 				result->mac[3] = 0;
 				result->mac[4] = 0;
 				result->mac[5] = 0;
-				status->me->resultMut->Lock();
+				Sync::MutexUsage mutUsage(status->me->resultMut);
 				status->me->results->Put(Net::SocketUtil::IPv4ToSortable(result->ip), result);
-				status->me->resultMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		if (buff1[3] == buff2[3])
@@ -116,7 +117,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping2Thread(void *userObj)
 
 				if (ipData[0] == 0 && ipDataSize >= 8)
 				{
-					me->resultMut->Lock();
+					Sync::MutexUsage mutUsage(me->resultMut);
 					result = me->results->Get(ReadMInt32(&readBuff[12]));
 					if (result == 0)
 					{
@@ -131,7 +132,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping2Thread(void *userObj)
 						result->mac[5] = 0;
 						me->results->Put(ReadMInt32(&readBuff[12]), result);
 					}
-					me->resultMut->Unlock();
+					mutUsage.EndUse();
 				}
 			}
 		}

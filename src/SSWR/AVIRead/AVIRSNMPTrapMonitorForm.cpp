@@ -3,6 +3,7 @@
 #include "Net/SNMPInfo.h"
 #include "Net/SNMPOIDDB.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
+#include "Sync/MutexUsage.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *userObj)
@@ -86,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 	{
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
-		me->packetMut->Lock();
+		Sync::MutexUsage mutUsage(me->packetMut);
 		while (i < j)
 		{
 			packet = me->packetList->GetItem(i);
@@ -96,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 			me->lbResults->AddItem(sbuff, packet);
 			i++;
 		}
-		me->packetMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -113,9 +114,9 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 	MemCopyNO(&packet->trap, trap, sizeof(Net::SNMPUtil::TrapInfo));
 	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());
 	packet->itemList->AddRange(itemList);
-	me->packetMut->Lock();
+	Sync::MutexUsage mutUsage(me->packetMut);
 	me->packetList->Add(packet);
-	me->packetMut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }
 

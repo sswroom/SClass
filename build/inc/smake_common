@@ -3072,6 +3072,8 @@ Sync/Interlocked.h: ../../src/Sync/Interlocked.cpp
 @Interlocked.o
 Sync/Mutex.h: ../../src/Sync/Mutex.cpp
 @Mutex.o
+Sync/MutexUsage.h: ../../src/Sync/MutexUsage.cpp
+@MutexUsage.o
 Sync/ParallelTask.h: ../../src/Sync/ParallelTask.cpp
 @ParallelTask.o
 
@@ -4346,6 +4348,7 @@ SMonitorWebHandler.o: ../../src/SSWR/SMonitor/SMonitorWebHandler.cpp
 Event.o: ../../src/Sync/Event.cpp
 Interlocked.o: ../../src/Sync/Interlocked.cpp
 Mutex.o: ../../src/Sync/Mutex.cpp
+MutexUsage.o: ../../src/Sync/MutexUsage.cpp
 ParallelTask.o: ../../src/Sync/ParallelTask.cpp
 TestModem.o: ../../src/Test/TestModem.cpp
 TestSIM7000.o: ../../src/Test/TestSIM7000.cpp

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRLogServerForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -72,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt
 {
 	SSWR::AVIRead::AVIRLogServerForm *me = (SSWR::AVIRead::AVIRLogServerForm*)userObj;
 	IPLog *ipLog;
-	me->ipMut->Lock();
+	Sync::MutexUsage mutUsage(me->ipMut);
 	ipLog = me->ipMap->Get(ip);
 	if (ipLog == 0)
 	{
@@ -92,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt
 	{
 		me->msgListUpd = true;
 	}
-	me->ipMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
@@ -105,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
 	{
 		me->ipListUpd = false;
 		Data::ArrayList<Int32> *ipList;
-		me->ipMut->Lock();
+		Sync::MutexUsage mutUsage(me->ipMut);
 		ipList = me->ipMap->GetKeys();
 		me->lbClient->ClearItems();
 		i = 0;
@@ -116,13 +117,13 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
 			me->lbClient->AddItem(sbuff, (void*)(OSInt)ipList->GetItem(i));
 			i++;
 		}
-		me->ipMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->msgListUpd)
 	{
 		me->msgListUpd = false;
 		IPLog *ipLog;
-		me->ipMut->Lock();
+		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbLog->ClearItems();
 		ipLog = me->ipMap->Get(me->currIP);
 		if (ipLog)
@@ -133,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
 				me->lbLog->AddItem(ipLog->logMessage->GetItem(i), 0);
 			}
 		}
-		me->ipMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 

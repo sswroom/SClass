@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/StmData/ConcatStreamData.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::CONCATDATABASE *cdb, UInt64 dataOffset, UInt64 dataLength)
@@ -8,9 +9,9 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 	this->cdb = cdb;
 	this->dataOffset = dataOffset;
 	this->dataLength = dataLength;
-	this->cdb->mut->Lock();
+	Sync::MutexUsage mutUsage(this->cdb->mut);
 	this->cdb->objectCnt++;
-	this->cdb->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 IO::StmData::ConcatStreamData::ConcatStreamData(const UTF8Char *fileName)
@@ -29,9 +30,9 @@ IO::StmData::ConcatStreamData::ConcatStreamData(const UTF8Char *fileName)
 IO::StmData::ConcatStreamData::~ConcatStreamData()
 {
 	Int32 cnt;
-	this->cdb->mut->Lock();
+	Sync::MutexUsage mutUsage(this->cdb->mut);
 	cnt = this->cdb->objectCnt--;
-	this->cdb->mut->Unlock();
+	mutUsage.EndUse();
 	if (cnt == 1)
 	{
 		IO::IStreamData *data;
@@ -174,9 +175,9 @@ OSInt IO::StmData::ConcatStreamData::GetSeekCount()
 
 void IO::StmData::ConcatStreamData::AddData(IO::IStreamData *data)
 {
-	this->cdb->mut->Lock();
+	Sync::MutexUsage mutUsage(this->cdb->mut);
 	this->cdb->dataList->Add(data);
 	this->cdb->ofstList->Add(this->cdb->totalSize);
 	this->cdb->totalSize += data->GetDataSize();
-	this->cdb->mut->Unlock();
+	mutUsage.EndUse();
 }

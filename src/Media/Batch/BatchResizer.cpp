@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Media/Batch/BatchResizer.h"
 #include "Sync/Event.h"
+#include "Sync/MutexUsage.h"
 
 Media::Batch::BatchResizer::BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr)
 {
@@ -75,7 +76,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 	{
 		param = this->targetParam->GetItem(i);
 
-		this->resizeMut->Lock();
+		Sync::MutexUsage mutUsage(this->resizeMut);
 		if (param->sizeType == 0)
 		{
 			resizer->SetTargetWidth(param->width);
@@ -112,7 +113,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 			}
 			j++;
 		}
-		this->resizeMut->Unlock();
+		mutUsage.EndUse();
 		if (succ)
 		{
 			if (this->hdlr)

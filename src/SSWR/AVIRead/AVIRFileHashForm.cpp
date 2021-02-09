@@ -6,6 +6,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
@@ -28,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->UpdateUI();
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
-	me->readMut->Lock();
+	Sync::MutexUsage mutUsage(me->readMut);
 	if (me->progNameChg)
 	{
 		me->txtFileName->SetText(me->progName);
@@ -44,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	Int64 currTotal = me->totalRead;
 	me->readSize = 0;
 	me->prgFile->ProgressUpdate(me->progCurr, me->progCount);
-	me->readMut->Unlock();
+	mutUsage.EndUse();
 
 	Int64 timeDiff = currTime.DiffMS(me->lastTimerTime);
 	Double spd;
@@ -84,7 +85,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	me->threadStatus = 1;
 	while (!me->threadToStop)
 	{
-		me->fileMut->Lock();
+		Sync::MutexUsage mutUsage(me->fileMut);
 		found = false;
 		i = 0;
 		j = me->fileList->GetCount();
@@ -100,7 +101,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			}
 			i++;
 		}
-		me->fileMut->Unlock();
+		mutUsage.EndUse();
 		if (found)
 		{
 			chkType = me->currHashType;
@@ -180,12 +181,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 void SSWR::AVIRead::AVIRFileHashForm::AddFile(const UTF8Char *fileName)
 {
 	FileStatus *status;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	status = MemAlloc(FileStatus, 1);
 	status->status = 0;
 	status->fileName = Text::StrCopyNew(fileName);
 	this->fileList->Add(status);
-	this->fileMut->Unlock();
+	mutUsage.EndUse();
 	this->fileEvt->Set();
 }
 
@@ -199,7 +200,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 		FileStatus *status;
 		this->fileListChg = false;
 		this->lvTasks->ClearItems();
-		this->fileMut->Lock();
+		Sync::MutexUsage mutUsage(this->fileMut);
 		i = 0;
 		j = this->fileList->GetCount();
 		while (i < j)
@@ -228,7 +229,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 			}
 			i++;
 		}
-		this->fileMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -358,7 +359,7 @@ void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(const UTF8Char *name, Int64 count)
 {
-	this->readMut->Lock();
+	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->progName)
 	{
 		Text::StrDelNew(this->progName);
@@ -369,16 +370,16 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(const UTF8Char *name, Int64 
 	this->totalRead += this->progCount - this->progCurr;
 	this->progCount = count;
 	this->progCurr = 0;
-	this->readMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(Int64 currCount, Int64 newCount)
 {
-	this->readMut->Lock();
+	Sync::MutexUsage mutUsage(this->readMut);
 	this->readSize += currCount - this->progCurr;
 	this->totalRead += currCount - this->progCurr;
 	this->progCurr = currCount;
-	this->readMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressEnd()

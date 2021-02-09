@@ -3,6 +3,7 @@
 #include "Net/TCPClient.h"
 #include "SSWR/AVIRead/AVIRTCPTestForm.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
@@ -78,14 +79,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(void *userObj)
 	status->threadRunning = true;
 	while (!status->threadToStop)
 	{
-		status->me->connMut->Lock();
+		Sync::MutexUsage mutUsage(status->me->connMut);
 		if (status->me->connLeftCnt <= 0)
 		{
-			status->me->connMut->Unlock();
+			mutUsage.EndUse();
 			break;
 		}
 		status->me->connLeftCnt -= 1;
-		status->me->connMut->Unlock();
+		mutUsage.EndUse();
 		
 		NEW_CLASS(cli, Net::TCPClient(status->me->sockf, status->me->svrIP, status->me->svrPort));
 		if (cli->IsConnectError())

@@ -1,15 +1,16 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/StmData/FileData.h"
-#include "Sync/Event.h"
-#include "Sync/Thread.h"
 #include "Media/Batch/BatchLoader.h"
+#include "Sync/Event.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
 UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 {
 	UTF8Char sbuff[256];
-	const UTF8Char *fileName;
-	DataInfo *info;
+	const UTF8Char *fileName = 0;
+	DataInfo *info = 0;
 	Bool found;
 	OSInt i;
 	IO::ParsedObject *pobj;
@@ -23,7 +24,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 		while (true)
 		{
 			found = false;
-			state->me->reqMut->Lock();
+			Sync::MutexUsage mutUsage(state->me->reqMut);
 			if (state->me->fileNames->HasItems())
 			{
 				fileName = (const UTF8Char*)state->me->fileNames->Get();
@@ -41,7 +42,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			{
 				state->processing = false;
 			}
-			state->me->reqMut->Unlock();
+			mutUsage.EndUse();
 			if (!found)
 				break;
 
@@ -49,7 +50,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			{
 				IO::StmData::FileData *fd;
 
-				state->me->ioMut->Lock();
+				Sync::MutexUsage mutUsage(state->me->ioMut);
 				NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 				pobj = state->me->parsers->ParseFile(fd, &pt);
 				DEL_CLASS(fd);
@@ -63,7 +64,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						{
 							imgList->ToStaticImage(i);
 						}
-						state->me->ioMut->Unlock();
+						mutUsage.EndUse();
 						
 						Text::StrConcat(sbuff, fileName);
 						i = Text::StrLastIndexOf(sbuff, '.');
@@ -72,20 +73,20 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 					}
 					else
 					{
-						state->me->ioMut->Unlock();
+						mutUsage.EndUse();
 					}
 					DEL_CLASS(pobj);
 				}
 				else
 				{
-					state->me->ioMut->Unlock();
+					mutUsage.EndUse();
 				}
 
 				Text::StrDelNew(fileName);
 			}
 			else
 			{
-				state->me->ioMut->Lock();
+				Sync::MutexUsage mutUsage(state->me->ioMut);
 				pobj = state->me->parsers->ParseFile(info->data, &pt);
 				if (pobj)
 				{
@@ -97,19 +98,19 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						{
 							imgList->ToStaticImage(i);
 						}
-						state->me->ioMut->Unlock();
+						mutUsage.EndUse();
 						
 						state->me->hdlr->ImageOutput(imgList, info->fileId, (const UTF8Char*)"");
 					}
 					else
 					{
-						state->me->ioMut->Unlock();
+						mutUsage.EndUse();
 					}
 					DEL_CLASS(pobj);
 				}
 				else
 				{
-					state->me->ioMut->Unlock();
+					mutUsage.EndUse();
 				}
 
 				DEL_CLASS(info->data);
@@ -229,11 +230,11 @@ Media::Batch::BatchLoader::~BatchLoader()
 
 void Media::Batch::BatchLoader::AddFileName(const UTF8Char *fileName)
 {
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->fileNames->Put((void*)Text::StrCopyNew(fileName));
 	this->threadStates[this->nextThread].evt->Set();
 	this->nextThread = (this->nextThread + 1) % this->threadCnt;
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::Batch::BatchLoader::AddImageData(IO::IStreamData *data, const UTF8Char *fileId)
@@ -242,18 +243,17 @@ void Media::Batch::BatchLoader::AddImageData(IO::IStreamData *data, const UTF8Ch
 	info = MemAlloc(DataInfo, 1);
 	info->data = data->GetPartialData(0, data->GetDataSize());
 	info->fileId = Text::StrCopyNew(fileId);
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->datas->Put(info);
 	this->threadStates[this->nextThread].evt->Set();
 	this->nextThread = (this->nextThread + 1) % this->threadCnt;
-	this->reqMut->Unlock();
-
+	mutUsage.EndUse();
 }
 
 Bool Media::Batch::BatchLoader::IsProcessing()
 {
 	Bool proc = false;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	if (this->fileNames->HasItems())
 	{
 		proc = true;
@@ -274,6 +274,6 @@ Bool Media::Batch::BatchLoader::IsProcessing()
 			}
 		}
 	}
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	return proc;
 }

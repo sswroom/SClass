@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -50,7 +51,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	this->entMut->Lock();
+	Sync::MutexUsage mutUsage(this->entMut);
 	i = this->currEnt;
 	this->currEnt++;
 	if (this->currEnt >= this->logCnt)
@@ -83,7 +84,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 		this->entries[i].headerVal->Add(Text::StrCopyNew(sb.ToString()));
 		k++;
 	}
-	this->entMut->Unlock();
+	mutUsage.EndUse();
 }
 
 OSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
@@ -93,7 +94,7 @@ OSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 
 void SSWR::AVIRead::AVIRHTTPLog::BeginGet()
 {
-	this->entMut->Lock();
+	this->entMut->Use();
 }
 
 void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<OSInt> *logIndex)
@@ -135,7 +136,7 @@ SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(OSInt
 
 void SSWR::AVIRead::AVIRHTTPLog::EndGet()
 {
-	this->entMut->Unlock();
+	this->entMut->Unuse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)

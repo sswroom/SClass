@@ -7,6 +7,7 @@
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
 #include "SSWR/AVIRead/AVIRVideoCheckerForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -25,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 		file = MemAlloc(FileQueue, 1);
 		file->fileName = Text::StrCopyNew(files[i]);;
 		file->index = j;
-		me->fileMut->Lock();
+		Sync::MutexUsage mutUsage(me->fileMut);
 		me->fileList->Add(file);
-		me->fileMut->Unlock();
+		mutUsage.EndUse();
 		i++;
 	}
 }
@@ -50,9 +51,9 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(void *userObj)
 	while (me->updateList->GetCount() > 0)
 	{
 		UpdateQueue *update;
-		me->updateMut->Lock();
+		Sync::MutexUsage mutUsage(me->updateMut);
 		update = me->updateList->RemoveAt(me->updateList->GetCount() - 1);
-		me->updateMut->Unlock();
+		mutUsage.EndUse();
 		if (update->status == 0)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -88,9 +89,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 	NEW_CLASS(clk, Manage::HiResClock());
 	while (!me->threadToStop)
 	{
-		me->fileMut->Lock();
+		Sync::MutexUsage mutUsage(me->fileMut);
 		file = me->fileList->RemoveAt(0);
-		me->fileMut->Unlock();
+		mutUsage.EndUse();
 		if (file)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(file->fileName, false));
@@ -123,9 +124,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 			Text::StrDelNew(file->fileName);
 			MemFree(file);
 
-			me->updateMut->Lock();
+			Sync::MutexUsage mutUsage(me->updateMut);
 			me->updateList->Add(update);
-			me->updateMut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
@@ -141,7 +142,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 {
 	OSInt i;
 	FileQueue *file;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	i = this->fileList->GetCount();
 	while (i-- > 0)
 	{
@@ -151,7 +152,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 		Text::StrDelNew(file->fileName);
 		MemFree(file);
 	}
-	this->fileMut->Unlock();
+	mutUsage.EndUse();
 }
 
 SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)

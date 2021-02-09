@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Net/TCPClient.h"
 #include "SSWR/AVIRead/AVIRGPSDevForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringW.h"
 #include "Text/MyStringFloat.h"
@@ -24,9 +25,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 
 			if (readSize == 0)
 			{
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(me->cliMut);
 				SDEL_CLASS(me->cli);
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 				recvBuffSize = 0;
 			}
 			else
@@ -168,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 	}
 	if (me->alertUpd)
 	{
-		me->alertMut->Lock();
+		Sync::MutexUsage mutUsage(me->alertMut);
 		me->alertUpd = false;
 		me->lbAlert->ClearItems();
 		i = 0;
@@ -179,11 +180,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 			me->lbAlert->AddItem(sbuff, 0);
 			i++;
 		}
-		me->alertMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->deviceUpd)
 	{
-		me->deviceMut->Lock();
+		Sync::MutexUsage mutUsage(me->deviceMut);
 		me->deviceUpd = false;
 		me->lbDevice->ClearItems();
 		i = 0;
@@ -194,11 +195,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 			me->lbDevice->AddItem(sbuff, 0);
 			i++;
 		}
-		me->deviceMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->userUpd)
 	{
-		me->userMut->Lock();
+		Sync::MutexUsage mutUsage(me->userMut);
 		me->userUpd = false;
 		me->lbUser->ClearItems();
 		i = 0;
@@ -209,13 +210,13 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 			me->lbUser->AddItem(sbuff, 0);
 			i++;
 		}
-		me->userMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->devContUpd)
 	{
 		Data::DateTime dt;
 		me->devContUpd = false;
-		me->devContMut->Lock();
+		Sync::MutexUsage mutUsage(me->devContMut);
 		me->lvDevInfo->ClearItems();
 		i = 0;
 		j = me->devConts->GetCount();
@@ -273,12 +274,12 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 			me->lvDevGuard->SetSubItem(k, 10, sbuff);
 			i++;
 		}
-		me->devContMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->alertContUpd)
 	{
 		me->alertContUpd = false;
-		me->alertContMut->Lock();
+		Sync::MutexUsage mutUsage(me->alertContMut);
 		me->lvAlert->ClearItems();
 		i = 0;
 		j = me->alertConts->GetCount();
@@ -297,12 +298,12 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 			me->lbAlertDev->AddItem(sbuff, 0);;
 			i++;
 		}
-		me->alertContMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->userContUpd)
 	{
 		me->userContUpd = false;
-		me->userContMut->Lock();
+		Sync::MutexUsage mutUsage(me->userContMut);
 		me->lvUser->ClearItems();
 		i = 0;
 		j = me->userConts->GetCount();
@@ -321,17 +322,17 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 			me->lbUserDev->AddItem(sbuff, 0);;
 			i++;
 		}
-		me->userContMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 {
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
-		this->cliMut->Unlock();
+		mutUsage.EndUse();
 		while (this->cli)
 		{
 			Sync::Thread::Sleep(10);
@@ -339,14 +340,14 @@ void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 	}
 	else
 	{
-		this->cliMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 {
 	OSInt i;
-	this->devContMut->Lock();
+	Sync::MutexUsage mutUsage(this->devContMut);
 	i = this->devConts->GetCount();
 	while (i-- > 0)
 	{
@@ -365,13 +366,13 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 		this->devContGuards = 0;
 	}
 	this->devContGCnt = 0;
-	this->devContMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearAlertConts()
 {
 	OSInt i;
-	this->alertContMut->Unlock();
+	Sync::MutexUsage mutUsage(this->alertContMut);
 	i = this->alertConts->GetCount();
 	while (i-- > 0)
 	{
@@ -379,13 +380,13 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearAlertConts()
 	}
 	this->alertConts->Clear();
 	this->alertContDevs->Clear();
-	this->alertContMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 {
 	OSInt i;
-	this->userContMut->Unlock();
+	Sync::MutexUsage mutUsage(this->userContMut);
 	i = this->userConts->GetCount();
 	while (i-- > 0)
 	{
@@ -393,79 +394,79 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 	}
 	this->userConts->Clear();
 	this->userContDevs->Clear();
-	this->userContMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 {
 	UInt8 buff[12];
 	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0, 0);
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 {
 	UInt8 buff[12];
 	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 2, 0, 0, 0, 0);
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 {
 	UInt8 buff[12];
 	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 4, 0, 0, 0, 0);
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevice(Int64 devId)
 {
 	UInt8 buff[20];
 	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 6, 0, (UInt8*)&devId, 8, 0);
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlert(Int32 alertId)
 {
 	UInt8 buff[20];
 	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 8, 0, (UInt8*)&alertId, 4, 0);
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 {
 	UInt8 buff[20];
 	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 10, 0, (UInt8*)&userId, 4, 0);
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 }
 
 SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -685,7 +686,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			OSInt i;
 			if (cmdSize >= cnt * 4 + 4)
 			{
-				this->alertMut->Lock();
+				Sync::MutexUsage mutUsage(this->alertMut);
 				this->alertList->Clear();
 				i = 4;
 				while (cnt-- > 0)
@@ -694,7 +695,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 					i += 4;
 				}
 				this->alertUpd = true;
-				this->alertMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -705,7 +706,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			OSInt i;
 			if (cmdSize >= cnt * 8 + 4)
 			{
-				this->deviceMut->Lock();
+				Sync::MutexUsage mutUsage(this->deviceMut);
 				this->deviceList->Clear();
 				i = 4;
 				while (cnt-- > 0)
@@ -714,7 +715,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 					i += 8;
 				}
 				this->deviceUpd = true;
-				this->deviceMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -725,7 +726,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			OSInt i;
 			if (cmdSize >= cnt * 4 + 4)
 			{
-				this->userMut->Lock();
+				Sync::MutexUsage mutUsage(this->userMut);
 				this->userList->Clear();
 				i = 4;
 				while (cnt-- > 0)
@@ -734,7 +735,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 					i += 4;
 				}
 				this->userUpd = true;
-				this->userMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -750,7 +751,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			{
 				Data::DateTime dt;
 				this->ClearDevConts();
-				this->devContMut->Lock();
+				Sync::MutexUsage mutUsage(this->devContMut);
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"CompId"));
 				Text::StrInt32(sbuff, ReadInt32(&cmd[4]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
@@ -881,7 +882,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				}
 
 				this->devContUpd = true;
-				this->devContMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -897,7 +898,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			{
 				Data::DateTime dt;
 				this->ClearAlertConts();
-				this->alertContMut->Lock();
+				Sync::MutexUsage mutUsage(this->alertContMut);
 				this->alertConts->Add(Text::StrCopyNew((const UTF8Char*)"AlertId"));
 				Text::StrInt32(sbuff, ReadInt32(&cmd[4]));
 				this->alertConts->Add(Text::StrCopyNew(sbuff));
@@ -1000,7 +1001,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				}
 
 				this->alertContUpd = true;
-				this->alertContMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -1016,7 +1017,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			{
 				Data::DateTime dt;
 				this->ClearUserConts();
-				this->userContMut->Lock();
+				Sync::MutexUsage mutUsage(this->userContMut);
 				this->userConts->Add(Text::StrCopyNew((const UTF8Char*)"UserId"));
 				Text::StrInt32(sbuff, ReadInt32(&cmd[4]));
 				this->userConts->Add(Text::StrCopyNew(sbuff));
@@ -1055,7 +1056,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				}
 
 				this->userContUpd = true;
-				this->userContMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;

@@ -5,6 +5,7 @@
 #include "IO/StreamWriter.h"
 #include "Media/WaveInSource.h"
 #include "SSWR/AVIRead/AVIRVoiceModemForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "UI/FileDialog.h"
 #include "UI/GUITabPage.h"
@@ -16,9 +17,9 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)
 	if (me->toneChg)
 	{
 		me->toneChg = false;
-		me->toneMut->Lock();
+		Sync::MutexUsage mutUsage(me->toneMut);
 		me->txtDialTones->SetText(me->toneSb->ToString());
-		me->toneMut->Unlock();
+		mutUsage.EndUse();
 	}
 
 	if (me->hasEvt)
@@ -159,10 +160,12 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(void *userObj, UI
 	case 'B':
 	case 'C':
 	case 'D':
-		me->toneMut->Lock();
-		me->toneSb->AppendChar(evtType, 1);
-		me->toneChg = true;
-		me->toneMut->Unlock();
+		{
+			Sync::MutexUsage mutUsage(me->toneMut);
+			me->toneSb->AppendChar(evtType, 1);
+			me->toneChg = true;
+			mutUsage.EndUse();
+		}
 		break;
 	}
 }

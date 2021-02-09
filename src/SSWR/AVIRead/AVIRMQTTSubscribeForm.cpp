@@ -5,6 +5,7 @@
 #include "Math/Math.h"
 #include "Media/ColorProfile.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -190,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 	TopicStatus *topicSt;
 	OSInt i;
 	OSInt j;
-	me->topicMut->Lock();
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap->GetValues();
 	i = 0;
 	j = topicList->GetCount();
@@ -244,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 			i++;
 		}
 	}
-	me->topicMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
@@ -260,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	TopicStatus *topicSt;
-	me->topicMut->Lock();
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap->Get(topic);
 	if (topicSt == 0)
 	{
@@ -302,8 +303,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 		}
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
 	}
-	
-	me->topicMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()

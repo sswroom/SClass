@@ -5,6 +5,7 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "UI/MessageDialog.h"
 
@@ -14,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 {
 	SSWR::AVIRead::AVIRARPScanForm *me = (SSWR::AVIRead::AVIRARPScanForm *)userObj;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	me->arpMut->Lock();
+	Sync::MutexUsage mutUsage(me->arpMut);
 	ipInfo = me->arpMap->Get(ipAddr);
 	if (ipInfo == 0)
 	{
@@ -24,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 		me->arpMap->Put(ipInfo->ipAddr, ipInfo);
 		me->arpUpdated = true;
 	}
-	me->arpMut->Unlock();
+	mutUsage.EndUse();
 
 /*	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
@@ -74,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 		else
 		{
 			buff[3] = 1;
-			me->arpMut->Lock();
+			Sync::MutexUsage mutUsage(me->arpMut);
 			while (buff[3] < 255)
 			{
 				ipInfo = me->arpMap->Get(ReadNInt32(buff));
@@ -84,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 				}
 				buff[3]++;
 			}
-			me->arpMut->Unlock();
+			mutUsage.EndUse();
 			Sync::Thread::Sleep(3000);
 		}
 		DEL_CLASS(arp);
@@ -100,7 +101,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 
 	const Net::MACInfo::MACEntry *macEntry;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	this->arpMut->Lock();
+	Sync::MutexUsage mutUsage(this->arpMut);
 	Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *> *arpList = this->arpMap->GetValues();
 	this->lvARP->ClearItems();
 	i = 0;
@@ -119,7 +120,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 		}
 		i++;
 	}
-	this->arpMut->Unlock();
+	mutUsage.EndUse();
 }
 
 SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

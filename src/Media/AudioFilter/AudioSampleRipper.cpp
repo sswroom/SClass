@@ -3,14 +3,15 @@
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/AudioFilter/AudioSampleRipper.h"
+#include "Sync/MutexUsage.h"
 
 void Media::AudioFilter::AudioSampleRipper::ResetStatus()
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	MemClear(this->soundBuff, this->soundBuffLeng);
 	this->soundBuffOfst = 0;
 	this->changed = true;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(Media::IAudioSource *sourceAudio, UInt32 sampleCount) : Media::IAudioFilter(sourceAudio)
@@ -57,7 +58,7 @@ UOSInt Media::AudioFilter::AudioSampleRipper::ReadBlock(UInt8 *buff, UOSInt blkS
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
 	UOSInt thisSize;
 	UOSInt sizeLeft;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	sizeLeft = readSize;
 	while (sizeLeft > 0)
 	{
@@ -72,7 +73,7 @@ UOSInt Media::AudioFilter::AudioSampleRipper::ReadBlock(UInt8 *buff, UOSInt blkS
 		buff += thisSize;
 	}
 	this->changed = true;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return readSize;
 }
 
@@ -88,13 +89,13 @@ Bool Media::AudioFilter::AudioSampleRipper::IsChanged()
 
 Bool Media::AudioFilter::AudioSampleRipper::GetSamples(UInt8 *samples)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	MemCopyNO(samples, &this->soundBuff[this->soundBuffOfst], this->soundBuffLeng - this->soundBuffOfst);
 	samples += this->soundBuffLeng - this->soundBuffOfst;
 	if (this->soundBuffOfst > 0)
 	{
 		MemCopyNO(samples, this->soundBuff, this->soundBuffOfst);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }

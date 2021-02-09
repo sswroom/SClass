@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/AudioFilter/SoundGen/BellSoundGen.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 /*
@@ -59,11 +60,11 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, OSInt 
 	}
 
 
-	this->soundMut->Lock();
+	Sync::MutexUsage mutUsage(this->soundMut);
 	norVol = this->sampleVol / paramCnt;
 	if (norVol <= 0)
 	{
-		this->soundMut->Unlock();
+		mutUsage.EndUse();
 		return;
 	}
 
@@ -71,7 +72,7 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, OSInt 
 	{
 		this->sampleVol = 0;
 		this->currSample = 0;
-		this->soundMut->Unlock();
+		mutUsage.EndUse();
 		return;
 	}
 
@@ -92,7 +93,7 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, OSInt 
 
 		i++;
 	}
-	this->soundMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::AudioFilter::SoundGen::ISoundGen::SoundType Media::AudioFilter::SoundGen::BellSoundGen::GetSoundType()
@@ -102,9 +103,9 @@ Media::AudioFilter::SoundGen::ISoundGen::SoundType Media::AudioFilter::SoundGen:
 
 Bool Media::AudioFilter::SoundGen::BellSoundGen::GenSound(Double sampleVol)
 {
-	this->soundMut->Lock();
+	Sync::MutexUsage mutUsage(this->soundMut);
 	this->sampleVol = sampleVol;
 	this->currSample = 0;
-	this->soundMut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }

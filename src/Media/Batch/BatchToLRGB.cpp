@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchToLRGB.h"
+#include "Sync/MutexUsage.h"
 
 Media::Batch::BatchToLRGB::BatchToLRGB(Media::ColorProfile *srcProfile, Media::ColorProfile *destProfile, Media::Batch::BatchHandler *hdlr)
 {
@@ -40,7 +41,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF
 		simg = (Media::StaticImage*)imgList->GetImage(i, 0);
 		if (simg->info->fourcc != *(UInt32*)"LRGB")
 		{
-			this->mut->Lock();
+			Sync::MutexUsage mutUsage(this->mut);
 			if (this->csconv == 0 || this->srcFCC != simg->info->fourcc || this->srcBpp != simg->info->storeBPP || this->srcPF != simg->info->pf || !simg->info->color->Equals(this->srcProfile))
 			{
 				SDEL_CLASS(this->csconv);
@@ -58,7 +59,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF
 				this->csconv->ConvertV2(&simg->data, dimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				imgList->ReplaceImage(i, dimg);
 			}
-			this->mut->Unlock();
+			mutUsage.EndUse();
 		}
 		i++;
 	}

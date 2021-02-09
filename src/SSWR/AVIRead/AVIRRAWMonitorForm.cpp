@@ -4,6 +4,7 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
@@ -14,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	PingIPInfo *pingIPInfo;
 	UTF8Char sbuff[256];
-	me->pingIPMut->Lock();
+	Sync::MutexUsage mutUsage(me->pingIPMut);
 	pingIPInfo = me->pingIPMap->Get(sortableIP);
 	if (pingIPInfo == 0)
 	{
@@ -47,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	{
 		me->pingIPContUpdated = true;
 	}
-	me->pingIPMut->Unlock();
+	mutUsage.EndUse();
 
 	sb.Append((const UTF8Char *)"Received from ");
 	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
@@ -361,7 +362,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 	{
 		OSInt i;
 		OSInt j;
-		target->mut->Lock();
+		Sync::MutexUsage mutUsage(target->mut);
 		i = 0;
 		j = target->addrList->GetCount();
 		while (i < j)
@@ -369,7 +370,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 			me->lbDNSTargetDomain->AddItem(target->addrList->GetItem(i), 0);
 			i++;
 		}
-		target->mut->Unlock();
+		mutUsage.EndUse();
 		Net::WhoisRecord *rec = me->whois->RequestIP(target->ip);
 		if (rec)
 		{
@@ -407,7 +408,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 	me->lvDNSClient->ClearItems();
 	if (cli)
 	{
-		cli->mut->Lock();
+		Sync::MutexUsage mutUsage(cli->mut);
 		i = 0;
 		j = cli->hourInfos->GetCount();
 		while (i < j)
@@ -426,7 +427,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 			me->lvDNSClient->SetSubItem(i, 1, sbuff);
 			i++;
 		}
-		cli->mut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -439,7 +440,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(void *userObj)
 	me->lbIPLogVal->ClearItems();
 	if (ipLog)
 	{
-		ipLog->mut->Lock();
+		Sync::MutexUsage mutUsage(ipLog->mut);
 		i = 0;
 		j = ipLog->logList->GetCount();
 		while (i < j)
@@ -447,7 +448,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(void *userObj)
 			me->lbIPLogVal->AddItem(ipLog->logList->GetItem(i), 0);
 			i++;
 		}
-		ipLog->mut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -468,7 +469,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		OSInt i;
 		OSInt j;
 		me->pingIPListUpdated = false;
-		me->pingIPMut->Lock();
+		Sync::MutexUsage mutUsage(me->pingIPMut);
 		me->lbPingIP->ClearItems();
 		pingIPList = me->pingIPMap->GetValues();
 		i = 0;
@@ -484,7 +485,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 			i++;
 		}
-		me->pingIPMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (me->analyzer->DNSReqv4GetCount() != me->lbDNSReqv4->GetCount())
 	{
@@ -888,7 +889,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			if (dhcp->updated)
 			{
 				Data::DateTime dt;
-				dhcp->mut->Lock();
+				Sync::MutexUsage mutUsage(dhcp->mut);
 				dhcp->updated = false;
 				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->ipAddr);
 				me->lvDHCP->SetSubItem(i, 2, sbuff);
@@ -929,7 +930,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 					me->lvDHCP->SetSubItem(i, 12, dhcp->hostName);
 				if (dhcp->vendorClass)
 					me->lvDHCP->SetSubItem(i, 13, dhcp->vendorClass);
-				dhcp->mut->Unlock();
+				mutUsage.EndUse();
 			}
 			i++;
 		}

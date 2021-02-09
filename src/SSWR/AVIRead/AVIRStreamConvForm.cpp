@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
@@ -113,12 +114,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
 			{
 				me->stmLog1->Write(buff, recvSize);
 			}
-			me->mut2->Lock();
+			Sync::MutexUsage mutUsage(me->mut2);
 			if (me->stm2)
 			{
 				me->stm2->Write(buff, recvSize);
 			}
-			me->mut2->Unlock();
+			mutUsage.EndUse();
 			me->stm1DataSize += recvSize;
 		}
 	}
@@ -145,12 +146,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(void *userObj)
 			{
 				me->stmLog2->Write(buff, recvSize);
 			}
-			me->mut1->Lock();
+			Sync::MutexUsage mutUsage(me->mut1);
 			if (me->stm1)
 			{
 				me->stm1->Write(buff, recvSize);
 			}
-			me->mut1->Unlock();
+			mutUsage.EndUse();
 			me->stm2DataSize += recvSize;
 		}
 	}
@@ -163,7 +164,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 	if (this->stm1)
 	{
 		this->thread1ToStop = true;
-		this->mut1->Lock();
+		Sync::MutexUsage mutUsage(this->mut1);
 		this->stm1->Close();
 		while (this->thread1Running)
 		{
@@ -173,7 +174,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 		DEL_CLASS(this->stm1);
 		this->stm1 = 0;
 		SDEL_CLASS(this->stmLog1);
-		this->mut1->Unlock();
+		mutUsage.EndUse();
 		this->txtStream1->SetText((const UTF8Char*)"-");
 		this->btnStream1->SetText((const UTF8Char*)"&Open");
 		this->remoteClosed1 = false;
@@ -185,7 +186,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 	if (this->stm2)
 	{
 		this->thread2ToStop = true;
-		this->mut2->Lock();
+		Sync::MutexUsage mutUsage(this->mut2);
 		this->stm2->Close();
 		while (this->thread2Running)
 		{
@@ -195,7 +196,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 		DEL_CLASS(this->stm2);
 		this->stm2 = 0;
 		SDEL_CLASS(this->stmLog2);
-		this->mut2->Unlock();
+		mutUsage.EndUse();
 		this->txtStream2->SetText((const UTF8Char*)"-");
 		this->btnStream2->SetText((const UTF8Char*)"&Open");
 		this->remoteClosed2 = false;

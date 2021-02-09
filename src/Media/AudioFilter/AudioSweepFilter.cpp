@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/AudioFilter/AudioSweepFilter.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
@@ -38,12 +39,12 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 	Double endFreq;
 	UInt32 currSample;
 	UInt32 endSample;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	startFreq = this->startFreq;
 	endFreq = this->endFreq;
 	currSample = this->currSample;
 	endSample = this->endSample;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 	if (currSample >= endSample)
 		return readSize;
@@ -103,12 +104,12 @@ void Media::AudioFilter::AudioSweepFilter::SetVolume(Double vol)
 
 Bool Media::AudioFilter::AudioSweepFilter::StartSweep(Double startFreq, Double endFreq, Int32 timeSeconds)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->startFreq = startFreq;
 	this->endFreq = endFreq;
 	this->currSample = 0;
 	this->currT = 0;
 	this->endSample = this->format.frequency * timeSeconds;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }

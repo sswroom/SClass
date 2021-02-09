@@ -27,9 +27,9 @@ namespace Sync
 	public:
 		Mutex();
 		~Mutex();
-		void Lock();
-		void Unlock();
-		Bool TryLock();
+		void Use();
+		void Unuse();
+		Bool TryUse();
 		void SetDebName(const WChar *name);
 	};
 }

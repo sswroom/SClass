@@ -6,6 +6,7 @@
 #include "Math/Math.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRWifiCaptureForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -37,12 +38,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			me->txtBattery->SetText(sbuff);
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
-				me->captureMut->Lock();
+				Sync::MutexUsage mutUsage(me->captureMut);
 				DEL_CLASS(me->captureWriter);
 				DEL_CLASS(me->captureFS);
 				me->captureWriter = 0;
 				me->captureFS = 0;
-				me->captureMut->Unlock();
+				mutUsage.EndUse();
 				me->btnGPS->SetEnabled(true);
 			}
 		}
@@ -61,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		if (me->motion->IsMovving())
 		{
 			me->txtMotion->SetText((const UTF8Char*)"Moving");
-			me->captureMut->Lock();
+			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 1)
 			{
 				me->lastMotion = 1;
@@ -70,12 +71,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				sb.Append((const UTF8Char*)"\tMotion:Moving");
 				me->captureWriter->WriteLine(sb.ToString());
 			}
-			me->captureMut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
 			me->txtMotion->SetText((const UTF8Char*)"Stopped");
-			me->captureMut->Lock();
+			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 0)
 			{
 				me->lastMotion = 0;
@@ -84,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				sb.Append((const UTF8Char*)"\tMotion:Stopped");
 				me->captureWriter->WriteLine(sb.ToString());
 			}
-			me->captureMut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	if (me->gpsChg)
@@ -126,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 				maxIMAC = 0;
 				maxRSSI = -128;
-				me->captureMut->Lock();
+				Sync::MutexUsage mutUsage(me->captureMut);
 				if (me->captureWriter)
 				{
 					sb.ClearStr();
@@ -151,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					me->captureWriter->WriteLine(sb.ToString());
 					me->ui->UseDevice(true, false);
 				}
-				me->captureMut->Unlock();
+				mutUsage.EndUse();
 
 				i = 0;
 				j = bssList.GetCount();
@@ -481,12 +482,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->captureWriter)
 	{
-		me->captureMut->Lock();
+		Sync::MutexUsage mutUsage(me->captureMut);
 		DEL_CLASS(me->captureWriter);
 		DEL_CLASS(me->captureFS);
 		me->captureWriter = 0;
 		me->captureFS = 0;
-		me->captureMut->Unlock();
+		mutUsage.EndUse();
 		me->btnGPS->SetEnabled(true);
 	}
 	else
@@ -518,7 +519,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		dt.SetCurrTimeUTC();
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
-		me->captureMut->Lock();
+		Sync::MutexUsage mutUsage(me->captureMut);
 		NEW_CLASS(me->captureFS, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		if (me->captureFS->IsError())
 		{
@@ -533,7 +534,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 			me->currActive = true;
 			isError = false;
 		}
-		me->captureMut->Unlock();
+		mutUsage.EndUse();
 		if (!isError)
 		{
 			me->btnGPS->SetEnabled(false);
@@ -748,7 +749,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->currActive || record->valid != 0)
 	{
-		me->captureMut->Lock();
+		Sync::MutexUsage mutUsage(me->captureMut);
 		if (me->captureWriter)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -772,7 +773,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 			}
 			me->captureWriter->WriteLine(sb.ToString());
 		}
-		me->captureMut->Unlock();
+		mutUsage.EndUse();
 	}
 
 	me->currGPSTimeTick = record->utcTimeTicks;

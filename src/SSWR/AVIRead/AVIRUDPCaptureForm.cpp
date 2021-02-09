@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRUDPCaptureForm.h"
+#include "Sync/MutexUsage.h"
 #include "UI/MessageDialog.h"
 
 #define PACKETCOUNT 128
@@ -63,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 		Data::DateTime dt;
 		OSInt i;
 		me->packetsChg = false;
-		me->packetMut->Lock();
+		Sync::MutexUsage mutUsage(me->packetMut);
 		me->lbData->ClearItems();
 		i = me->packetCurr;
 		while (true)
@@ -85,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 				break;
 		}
 		
-		me->packetMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -104,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		i = (OSInt)me->lbData->GetItem(i);
-		me->packetMut->Lock();
+		Sync::MutexUsage mutUsage(me->packetMut);
 		sb.Append((const UTF8Char*)"Recv Time: ");
 		dt.SetTicks(me->packets[i].recvTime);
 		dt.ToLocalTime();
@@ -117,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		sb.AppendU32(me->packets[i].port);
 		sb.Append((const UTF8Char*)"\r\nData:\r\n");
 		sb.AppendHex(me->packets[i].buff, me->packets[i].buffSize, ' ', Text::LBT_CRLF);
-		me->packetMut->Unlock();
+		mutUsage.EndUse();
 		me->txtData->SetText(sb.ToString());
 	}
 }
@@ -141,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(const Net::SocketU
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userData;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	me->packetMut->Lock();
+	Sync::MutexUsage mutUsage(me->packetMut);
 	if (me->packets[me->packetCurr].buff)
 	{
 		MemFree(me->packets[me->packetCurr].buff);
@@ -153,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(const Net::SocketU
 	me->packets[me->packetCurr].port = port;
 	me->packets[me->packetCurr].recvTime = dt.ToTicks();
 	me->packetCurr = (me->packetCurr + 1) % PACKETCOUNT;
-	me->packetMut->Unlock();
+	mutUsage.EndUse();
 	me->packetsChg = true;
 }
 

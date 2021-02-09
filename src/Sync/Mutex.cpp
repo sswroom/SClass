@@ -346,17 +346,17 @@ Sync::Mutex::~Mutex()
 	Mutex_Destroy(&this->data);
 }
 
-void Sync::Mutex::Lock()
+void Sync::Mutex::Use()
 {
 	Mutex_Lock(&this->data);
 }
 
-void Sync::Mutex::Unlock()
+void Sync::Mutex::Unuse()
 {
 	Mutex_Unlock(&this->data);
 }
 
-Bool Sync::Mutex::TryLock()
+Bool Sync::Mutex::TryUse()
 {
 	return Mutex_TryLock(&this->data);
 }

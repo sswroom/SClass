@@ -2,13 +2,14 @@
 #include "Data/ICaseStringUTF8Map.h"
 #include "DB/DBCache.h"
 #include "DB/DBReader.h"
+#include "Sync/MutexUsage.h"
 
 DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 {
 	DB::DBCache::TableInfo *table;
-	this->tableMut->Lock();
+	Sync::MutexUsage mutUsage(this->tableMut);
 	table = this->tableMap->Get(tableName);
-	this->tableMut->Unlock();
+	mutUsage.EndUse();
 	if (table)
 		return table;
 	DB::TableDef *def = this->model->GetTable(tableName);
@@ -32,9 +33,9 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 		}
 		this->db->CloseReader(r);
 	}
-	this->tableMut->Lock();
+	mutUsage.BeginUse();
 	DB::DBCache::TableInfo *oldTable = this->tableMap->Put(table->tableName, table);
-	this->tableMut->Unlock();
+	mutUsage.EndUse();
 	if (oldTable)
 	{
 		Text::StrDelNew(oldTable->tableName);
@@ -47,7 +48,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 {
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
-	this->tableMut->Lock();
+	Sync::MutexUsage mutUsage(this->tableMut);
 	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap->GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)
@@ -55,11 +56,11 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 		table = tableList->GetItem(i);
 		if (table->def == tableDef)
 		{
-			this->tableMut->Unlock();
+			mutUsage.EndUse();
 			return table;
 		}
 	}
-	this->tableMut->Unlock();
+	mutUsage.EndUse();
 	return 0;
 }
 

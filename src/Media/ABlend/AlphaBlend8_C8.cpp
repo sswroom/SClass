@@ -3,6 +3,7 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Media/CS/TransferFunc.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 extern "C"
@@ -274,7 +275,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 
 void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, Media::AlphaType srcAType)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -290,7 +291,7 @@ void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *
 		this->MTBlend(dest, dbpl, src, sbpl, width, height);
 //		this->DoBlend(dest, dbpl, src, sbpl, width, height);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
@@ -303,7 +304,7 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 
 	sbpl -= width << 2;
 	dbpl -= width << 2;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -329,7 +330,7 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 		src += sbpl;
 		dest += dbpl;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
@@ -340,7 +341,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 {
 	if (this->lutList)
 	{
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		LUTInfo *lut;
 		OSInt i;
 		i = this->lutList->GetCount();
@@ -355,7 +356,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 		}
 		this->lutList->Clear();
 		this->changed = true;
-		this->mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{

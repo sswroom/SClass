@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRTCPSpdCliForm.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -15,12 +16,12 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	if (me->connected)
 	{
 		me->connected = false;
-		me->cliMut->Lock();
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			me->cli->Close();
 		}
-		me->cliMut->Unlock();
+		mutUsage.EndUse();
 		me->txtHost->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
@@ -114,11 +115,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
 	while (!me->toStop)
 	{
-		me->cliMut->Lock();
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			sendSize = me->cli->Write(sendBuff, sendBuffSize);
-			me->cliMut->Unlock();
+			mutUsage.EndUse();
 			if (sendSize > 0)
 			{
 				Sync::Interlocked::Add(&me->sendSize, sendSize);
@@ -130,7 +131,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 		}
 		else
 		{
-			me->cliMut->Unlock();
+			mutUsage.EndUse();
 			me->procEvt->Wait(1000);
 		}
 	}
@@ -159,10 +160,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 			}
 			else
 			{
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 				me->recvEvt->Wait(1000);
 			}
 		}

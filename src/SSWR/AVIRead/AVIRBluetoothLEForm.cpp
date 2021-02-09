@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRBluetoothLEForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -68,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	Data::ArrayList<BTDevice*> *devList;
 	BTDevice *dev;
 
-	me->devMut->Lock();
+	Sync::MutexUsage mutUsage(me->devMut);
 	devList = me->devMap->GetValues();
 	i = 0;
 	j = devList->GetCount();
@@ -102,14 +103,14 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 		}
 		i++;
 	}
-	me->devMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, Int64 mac, Int32 rssi, const Char *name)
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	BTDevice *dev;
-	me->devMut->Lock();
+	Sync::MutexUsage mutUsage(me->devMut);
 	dev = me->devMap->Get(mac);
 	if (dev)
 	{
@@ -145,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, I
 		dev->updated = true;	
 		me->devMap->Put(mac, dev);
 	}
-	me->devMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()

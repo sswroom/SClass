@@ -3,10 +3,11 @@
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/AudioFilter/AudioLevelMeter.h"
+#include "Sync/MutexUsage.h"
 
 void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->soundBuffLeng;
 	while (i-- > 0)
 	{
@@ -20,7 +21,7 @@ void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 		this->status[i].levelChanged = true;
 	}
 	this->soundBuffOfst = 0;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::AudioFilter::AudioLevelMeter::AudioLevelMeter(Media::IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
@@ -76,7 +77,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 	{
 		UOSInt i = 0;
 		UOSInt j;
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
 		while (i < blkSize)
@@ -105,13 +106,13 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 			k = (k + this->nChannel) % this->soundBuffLeng;
 		}
 		this->soundBuffOfst = k;
-		this->mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (this->bitCount == 8)
 	{
 		UOSInt i = 0;
 		UOSInt j;
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
 		while (i < blkSize)
@@ -140,7 +141,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 			k = (k + this->nChannel) % this->soundBuffLeng;
 		}
 		this->soundBuffOfst = k;
-		this->mut->Unlock();
+		mutUsage.EndUse();
 	}
 	return readSize;
 }
@@ -151,7 +152,7 @@ Double Media::AudioFilter::AudioLevelMeter::GetLevel(UOSInt channel)
 	Int32 v;
 	if (channel >= this->nChannel)
 		return 0;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->status[channel].levelChanged)
 	{
 		this->status[channel].levelChanged = false;
@@ -178,7 +179,7 @@ Double Media::AudioFilter::AudioLevelMeter::GetLevel(UOSInt channel)
 	{
 		v = this->status[channel].maxLevel;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	if (this->bitCount == 16)
 	{
 		ret = (0.5 + (UInt32)v) / 32767.5;

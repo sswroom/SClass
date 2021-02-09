@@ -2,6 +2,7 @@
 #include "IO/Device/MTKGPSNMEA.h"
 #include "Math/CoordinateSystemManager.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
@@ -24,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
-	me->recMut->Lock();
+	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord));
 	me->recUpdated = true;
 	if (me->gpsTrk && record->valid)
@@ -41,8 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map
 		me->lastLat = record->lat;
 		me->lastLon = record->lon;
 	}
-	me->recMut->Unlock();
-
+	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	if (me->recUpdated)
 	{
 		me->lastUpdateTime->SetCurrTimeUTC();
-		me->recMut->Lock();
+		Sync::MutexUsage mutUsage(me->recMut);
 		dt.SetTicks(me->recCurr.utcTimeTicks);
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		me->txtGPSTime->SetText(sbuff);
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 				me->mapNavi->PanToMap(me->recCurr.lat, me->recCurr.lon);
 			}
 		}
-		me->recMut->Unlock();
+		mutUsage.EndUse();
 
 		if (me->chkNoSleep->IsChecked())
 		{
@@ -370,9 +370,9 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::OnFocus()
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::SetGPSTrack(Map::GPSTrack *gpsTrk)
 {
-	this->recMut->Lock();
+	Sync::MutexUsage mutUsage(this->recMut);
 	this->gpsTrk = gpsTrk;
-	this->recMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::SetMapNavigator(SSWR::AVIRead::IMapNavigator *mapNavi)

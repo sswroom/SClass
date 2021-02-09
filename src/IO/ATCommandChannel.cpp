@@ -3,6 +3,7 @@
 #include "Text/MyString.h"
 #include "IO/ATCommandChannel.h"
 #include "IO/FileStream.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Data/DateTime.h"
 
@@ -62,9 +63,9 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 						}
 						else
 						{
-							me->cmdResultMut->Lock();
+							Sync::MutexUsage mutUsage(me->cmdResultMut);
 							me->cmdResults->Add(cmdResult);
-							me->cmdResultMut->Unlock();
+							mutUsage.EndUse();
 							me->cmdEvt->Set();
 						}
 						cmdStart = i + 1;
@@ -107,9 +108,9 @@ void IO::ATCommandChannel::ClearResults()
 	const Char *cmdRes;
 	while (this->cmdResults->GetCount() > 0)
 	{
-		this->cmdResultMut->Lock();
+		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults->RemoveAt(0);
-		this->cmdResultMut->Unlock();
+		mutUsage.EndUse();
 		MemFree((void*)cmdRes);
 	}
 }
@@ -336,14 +337,14 @@ Bool IO::ATCommandChannel::CmdBegin()
 {
 	if (!this->threadRunning)
 		return false;
-	this->cmdMut->Lock();
+	this->cmdMut->Use();
 	this->ClearResults();
 	return true;
 }
 
 void IO::ATCommandChannel::CmdEnd()
 {
-	this->cmdMut->Unlock();
+	this->cmdMut->Unuse();
 }
 
 OSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, OSInt dataSize)
@@ -357,17 +358,17 @@ const Char *IO::ATCommandChannel::CmdGetNextResult(Int32 timeoutMS)
 	this->cmdEvt->Clear();
 	if (this->cmdResults->GetCount() > 0)
 	{
-		this->cmdResultMut->Lock();
+		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults->RemoveAt(0);
-		this->cmdResultMut->Unlock();
+		mutUsage.EndUse();
 		return cmdRes;
 	}
 	this->cmdEvt->Wait(timeoutMS);
 	if (this->cmdResults->GetCount() > 0)
 	{
-		this->cmdResultMut->Lock();
+		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults->RemoveAt(0);
-		this->cmdResultMut->Unlock();
+		mutUsage.EndUse();
 		return cmdRes;
 	}
 	return 0;

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRStreamTermForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 
@@ -140,9 +141,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(void *userObj)
 		}
 		else
 		{
-			me->recvMut->Lock();
+			Sync::MutexUsage mutUsage(me->recvMut);
 			me->recvBuff->Write(buff, recvSize);
-			me->recvMut->Unlock();
+			mutUsage.EndUse();
 			me->recvUpdated = true;
 		}
 	}
@@ -174,7 +175,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 	UInt8 *buff;
 	UOSInt buffSize;
 	OSInt j;
-	this->recvMut->Lock();
+	Sync::MutexUsage mutUsage(this->recvMut);
 	buff = this->recvBuff->GetBuff(&buffSize);
 	OSInt i = this->cboRecvType->GetSelectedIndex();
 	if (buffSize > 0)
@@ -208,7 +209,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 	{
 		this->txtRecvDisp->SetText((const UTF8Char*)"");
 	}
-	this->recvMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()

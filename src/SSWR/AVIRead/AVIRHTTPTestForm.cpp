@@ -3,6 +3,7 @@
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -286,10 +287,10 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 const UTF8Char *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 {
 	const UTF8Char *url;
-	this->connMut->Lock();
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->connLeftCnt <= 0)
 	{
-		this->connMut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 	url = this->connURLs->GetItem(this->connCurrIndex);
@@ -297,7 +298,7 @@ const UTF8Char *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 		this->connCurrIndex = 0;
 
 	this->connLeftCnt -= 1;
-	this->connMut->Unlock();
+	mutUsage.EndUse();
 	return url;
 }
 

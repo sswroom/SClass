@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/ABlend/AlphaBlend8_8.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 extern "C"
@@ -201,7 +202,7 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 
 void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, Media::AlphaType srcAType)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (srcAType == Media::AT_PREMUL_ALPHA)
 	{
 		this->MTBlendPA(dest, dbpl, src, sbpl, width, height);
@@ -212,7 +213,7 @@ void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *s
 		this->MTBlend(dest, dbpl, src, sbpl, width, height);
 //		this->DoBlend(dest, dbpl, src, sbpl, width, height);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::ABlend::AlphaBlend8_8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)

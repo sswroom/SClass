@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -21,7 +22,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	UTF8Char sbuff[512];
 	const UTF8Char *fname = 0;
-	ActionType atype;
+	ActionType atype = AT_COPY;
 	OSInt i;
 	OSInt j;
 	Bool found;
@@ -30,7 +31,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	while (!me->threadToStop)
 	{
 		found = false;
-		me->fileMut->Lock();
+		Sync::MutexUsage mutUsage(me->fileMut);
 		i = 0;
 		j = me->fileNames->GetCount();
 		while (!found && i < j)
@@ -56,7 +57,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			i++;
 		}
-		me->fileMut->Unlock();
+		mutUsage.EndUse();
 		if (found)
 		{
 			if (Text::StrStartsWith(fname, (const UTF8Char*)"file:///"))
@@ -68,7 +69,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			if (atype == AT_COPY)
 			{
 				found = me->packFile->CopyFrom(fname, me, &me->statusBNT);
-				me->fileMut->Lock();
+				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
 				{
@@ -86,12 +87,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 						break;
 					}
 				}
-				me->fileMut->Unlock();
+				mutUsage.EndUse();
 			}
 			else if (atype == AT_MOVE)
 			{
 				found = me->packFile->MoveFrom(fname, me, &me->statusBNT);
-				me->fileMut->Lock();
+				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
 				{
@@ -109,12 +110,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 						break;
 					}
 				}
-				me->fileMut->Unlock();
+				mutUsage.EndUse();
 			}
 			else if (atype == AT_RETRYCOPY)
 			{
 				found = me->packFile->RetryCopyFrom(fname, me, &me->statusBNT);
-				me->fileMut->Lock();
+				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
 				{
@@ -132,12 +133,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 						break;
 					}
 				}
-				me->fileMut->Unlock();
+				mutUsage.EndUse();
 			}
 			else if (atype == AT_RETRYMOVE)
 			{
 				found = me->packFile->RetryCopyFrom(fname, me, &me->statusBNT);
-				me->fileMut->Lock();
+				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
 				{
@@ -155,7 +156,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 						break;
 					}
 				}
-				me->fileMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		else
@@ -185,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		const UTF8Char *fname;
 		me->statusChg = false;
 		me->lvStatus->ClearItems();
-		me->fileMut->Lock();
+		Sync::MutexUsage mutUsage(me->fileMut);
 		i = 0;
 		j = me->fileNames->GetCount();
 		while (i < j)
@@ -225,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 			}
 			i++;
 		}
-		me->fileMut->Unlock();
+		mutUsage.EndUse();
 		me->lvStatus->ScrollTo(0, scrVPos);
 	}
 
@@ -233,13 +234,13 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	Int64 readCurr;
 	Int64 timeDiff;
 	Double spd;
-	me->readMut->Lock();
+	Sync::MutexUsage readMutUsage(me->readMut);
 	readPos = me->readLast;
 	readCurr = me->readCurr;
 	me->readCurr = 0;
 	timeDiff = me->readReadTime->DiffMS(me->readLastTimer);
 	me->readLastTimer->SetValue(me->readReadTime);
-	me->readMut->Unlock();
+	readMutUsage.EndUse();
 	if (timeDiff > 0)
 	{
 		spd = readCurr * 1000 / (Double)timeDiff;
@@ -251,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 	me->rlcStatus->AddSample(&spd);
 
-	me->progMut->Lock();
+	Sync::MutexUsage progMutUsage(me->progMut);
 	if (me->progStarted)
 	{
 		me->progStarted = false;
@@ -263,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	Bool progEnd = me->progEnd;
 	me->progUpdated = false;
 	me->progEnd = false;
-	me->progMut->Unlock();
+	progMutUsage.EndUse();
 	if (progUpdated)
 	{
 		me->prgStatus->ProgressUpdate(progUpdateCurr, progUpdateNew);
@@ -277,7 +278,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	Int64 fileSize = 0;
 	if (me->statusFileChg)
 	{
-		me->statusFileMut->Lock();
+		Sync::MutexUsage mutUsage(me->statusFileMut);
 		hasFile = (me->statusFile != 0);
 		if (hasFile)
 		{
@@ -291,14 +292,14 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 			me->txtStatusFile->SetText((const UTF8Char*)"");
 			me->txtStatusFileSize->SetText((const UTF8Char*)"");
 		}
-		me->statusFileMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
-		me->statusFileMut->Lock();
+		Sync::MutexUsage mutUsage(me->statusFileMut);
 		hasFile = (me->statusFile != 0);
 		fileSize = me->statusFileSize;
-		me->statusFileMut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (readPos != me->statusDispSize)
 	{
@@ -380,7 +381,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, O
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	if (index >= 0)
 	{
-		me->fileMut->Lock();
+		Sync::MutexUsage mutUsage(me->fileMut);
 		if (me->fileAction->GetItem(index) == AT_COPYFAIL)
 		{
 			me->fileAction->SetItem(index, AT_RETRYCOPY);
@@ -391,7 +392,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, O
 			me->fileAction->SetItem(index, AT_RETRYMOVE);
 			me->statusChg = true;
 		}
-		me->fileMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -640,7 +641,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			fpt = clipboard.GetDataFiles(&fileNames);
 			if (fpt == Win32::Clipboard::FPT_MOVE)
 			{
-				this->fileMut->Lock();
+				Sync::MutexUsage mutUsage(this->fileMut);
 				i = 0;
 				j = fileNames.GetCount();
 				while (i < j)
@@ -650,12 +651,12 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					i++;
 				}
 				this->statusChg = true;
-				this->fileMut->Unlock();
+				mutUsage.EndUse();
 				clipboard.FreeDataFiles(&fileNames);
 			}
 			else if (fpt == Win32::Clipboard::FPT_COPY)
 			{
-				this->fileMut->Lock();
+				Sync::MutexUsage mutUsage(this->fileMut);
 				i = 0;
 				j = fileNames.GetCount();
 				while (i < j)
@@ -665,7 +666,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					i++;
 				}
 				this->statusChg = true;
-				this->fileMut->Unlock();
+				mutUsage.EndUse();
 				clipboard.FreeDataFiles(&fileNames);
 			}
 		}
@@ -712,58 +713,70 @@ void SSWR::AVIRead::AVIRPackageForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, Int64 count)
 {
-	this->readMut->Lock();
-	this->readLast = 0;
-	this->readCurrFile = name;
-	this->readFileCnt = count;
-	this->readMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(this->readMut);
+		this->readLast = 0;
+		this->readCurrFile = name;
+		this->readFileCnt = count;
+		mutUsage.EndUse();
+	}
 
-	this->statusFileMut->Lock();
-	SDEL_TEXT(this->statusFile);
-	this->statusFile = Text::StrCopyNew(name);
-	this->statusFileSize = count;
-	this->statusFileChg = true;
-	this->statusFileMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(this->statusFileMut);
+		SDEL_TEXT(this->statusFile);
+		this->statusFile = Text::StrCopyNew(name);
+		this->statusFileSize = count;
+		this->statusFileChg = true;
+		mutUsage.EndUse();
+	}
 
-	this->progMut->Lock();
-	this->progStarted = true;
-	SDEL_TEXT(this->progName);
-	this->progName = Text::StrCopyNew(name);
-	this->progStartCnt = count;
-	this->progEnd = false;
-	this->progMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(this->progMut);
+		this->progStarted = true;
+		SDEL_TEXT(this->progName);
+		this->progName = Text::StrCopyNew(name);
+		this->progStartCnt = count;
+		this->progEnd = false;
+		mutUsage.EndUse();
+	}
 }
 
 void SSWR::AVIRead::AVIRPackageForm::ProgressUpdate(Int64 currCount, Int64 newCount)
 {
-	this->readMut->Lock();
-	Int64 readThis = currCount - this->readLast;
-	if (readThis < 0)
-		readThis = 0;
-	this->readCurr += readThis;
-	this->readTotal += readThis;
-	this->readLast = currCount;
-	this->readReadTime->SetCurrTimeUTC();
-	this->readMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(this->readMut);
+		Int64 readThis = currCount - this->readLast;
+		if (readThis < 0)
+			readThis = 0;
+		this->readCurr += readThis;
+		this->readTotal += readThis;
+		this->readLast = currCount;
+		this->readReadTime->SetCurrTimeUTC();
+		mutUsage.EndUse();
+	}
 
-	this->progMut->Lock();
-	this->progUpdated = true;
-	this->progUpdateCurr = currCount;
-	this->progUpdateNew = newCount;
-	this->progEnd = false;
-	this->progMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(this->progMut);
+		this->progUpdated = true;
+		this->progUpdateCurr = currCount;
+		this->progUpdateNew = newCount;
+		this->progEnd = false;
+		mutUsage.EndUse();
+	}
 }
 
 void SSWR::AVIRead::AVIRPackageForm::ProgressEnd()
 {
 	this->readLast = 0;
 	this->readFileCnt = 0;
-	this->progMut->Lock();
+	Sync::MutexUsage mutUsage(this->progMut);
 	this->progEnd = true;
-	this->progMut->Unlock();
+	mutUsage.EndUse();
 
-	this->statusFileMut->Lock();
-	SDEL_TEXT(this->statusFile);
-	this->statusFileChg = true;
-	this->statusFileMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(this->statusFileMut);
+		SDEL_TEXT(this->statusFile);
+		this->statusFileChg = true;
+		mutUsage.EndUse();
+	}
 }

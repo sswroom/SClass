@@ -4,6 +4,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Data/Sort/BubbleSort.h"
 #include "Data/Sort/InsertionSort.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -94,11 +95,11 @@ void Data::Sort::ArtificialQuickSort::DoSortInt32(ThreadStat *stat, Int32 *arr, 
 							++right1;
 							if (right1 < right)
 							{
-								this->mut->Lock();
+								Sync::MutexUsage mutUsage(this->mut);
 								this->tasks[this->taskCnt * 2] = right1;
 								this->tasks[this->taskCnt * 2 + 1] = right;
 								this->taskCnt++;
-								this->mut->Unlock();
+								mutUsage.EndUse();
 								if (stat->threadId + 1 < this->threadCnt)
 								{
 									if (this->threads[stat->threadId + 1].state == 1)
@@ -122,15 +123,17 @@ void Data::Sort::ArtificialQuickSort::DoSortInt32(ThreadStat *stat, Int32 *arr, 
 		}
 
 		Bool found = false;
-		this->mut->Lock();
-		if (this->taskCnt > 0)
 		{
-			found = true;
-			firstIndex = this->tasks[this->taskCnt * 2 - 2];
-			lastIndex = this->tasks[this->taskCnt * 2 - 1];
-			this->taskCnt--;
+			Sync::MutexUsage mutUsage(this->mut);
+			if (this->taskCnt > 0)
+			{
+				found = true;
+				firstIndex = this->tasks[this->taskCnt * 2 - 2];
+				lastIndex = this->tasks[this->taskCnt * 2 - 1];
+				this->taskCnt--;
+			}
+			mutUsage.EndUse();
 		}
-		this->mut->Unlock();
 		if (!found)
 			return;
 	}
@@ -213,11 +216,11 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(ThreadStat *stat, UInt32 *arr
 							++right1;
 							if (right1 < right)
 							{
-								this->mut->Lock();
+								Sync::MutexUsage mutUsage(this->mut);
 								this->tasks[this->taskCnt * 2] = right1;
 								this->tasks[this->taskCnt * 2 + 1] = right;
 								this->taskCnt++;
-								this->mut->Unlock();
+								mutUsage.EndUse();
 								if (stat->threadId + 1 < this->threadCnt)
 								{
 									if (this->threads[stat->threadId + 1].state == 1)
@@ -241,7 +244,7 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(ThreadStat *stat, UInt32 *arr
 		}
 
 		Bool found = false;
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->taskCnt > 0)
 		{
 			found = true;
@@ -249,7 +252,7 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(ThreadStat *stat, UInt32 *arr
 			lastIndex = this->tasks[this->taskCnt * 2 - 1];
 			this->taskCnt--;
 		}
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		if (!found)
 			return;
 	}
@@ -318,11 +321,11 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(ThreadStat *stat, UTF8Char **arr
 					++right1;
 					if (right1 < right)
 					{
-						this->mut->Lock();
+						Sync::MutexUsage mutUsage(this->mut);
 						this->tasks[this->taskCnt * 2] = right1;
 						this->tasks[this->taskCnt * 2 + 1] = right;
 						this->taskCnt++;
-						this->mut->Unlock();
+						mutUsage.EndUse();
 						if (stat->threadId + 1 < this->threadCnt)
 						{
 							if (this->threads[stat->threadId + 1].state == 1)
@@ -336,7 +339,7 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(ThreadStat *stat, UTF8Char **arr
 		}
 
 		Bool found = false;
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->taskCnt > 0)
 		{
 			found = true;
@@ -344,7 +347,7 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(ThreadStat *stat, UTF8Char **arr
 			lastIndex = this->tasks[this->taskCnt * 2 - 1];
 			this->taskCnt--;
 		}
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		if (!found)
 			return;
 	}
@@ -366,7 +369,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 				stat->state = 2;
 				while (stat->me->taskCnt > 0)
 				{
-					stat->me->mut->Lock();
+					Sync::MutexUsage mutUsage(stat->me->mut);
 					if (stat->me->taskCnt > 0)
 					{
 						found = true;
@@ -378,7 +381,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 					{
 						found = false;
 					}
-					stat->me->mut->Unlock();
+					mutUsage.EndUse();
 
 					if (!found)
 					{
@@ -394,7 +397,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 				stat->state = 2;
 				while (stat->me->taskCnt > 0)
 				{
-					stat->me->mut->Lock();
+					Sync::MutexUsage mutUsage(stat->me->mut);
 					if (stat->me->taskCnt > 0)
 					{
 						found = true;
@@ -406,7 +409,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 					{
 						found = false;
 					}
-					stat->me->mut->Unlock();
+					mutUsage.EndUse();
 
 					if (!found)
 					{
@@ -422,7 +425,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 				stat->state = 2;
 				while (stat->me->taskCnt > 0)
 				{
-					stat->me->mut->Lock();
+					Sync::MutexUsage mutUsage(stat->me->mut);
 					if (stat->me->taskCnt > 0)
 					{
 						found = true;
@@ -434,7 +437,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 					{
 						found = false;
 					}
-					stat->me->mut->Unlock();
+					mutUsage.EndUse();
 
 					if (!found)
 					{
@@ -539,11 +542,11 @@ void Data::Sort::ArtificialQuickSort::SortInt32(Int32 *arr, OSInt firstIndex, OS
 	this->arr = arr;
 	this->arrType = AT_INT32;
 	ArtificialQuickSort_PreSortInt32(arr, firstIndex, lastIndex);
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;
 	this->taskCnt = 1;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	this->threads[0].evt->Set();
 
 	while (true)
@@ -585,11 +588,11 @@ void Data::Sort::ArtificialQuickSort::SortUInt32(UInt32 *arr, OSInt firstIndex, 
 	this->arr = arr;
 	this->arrType = AT_UINT32;
 	ArtificialQuickSort_PreSortUInt32(arr, firstIndex, lastIndex);
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;
 	this->taskCnt = 1;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	this->threads[0].evt->Set();
 
 	while (true)
@@ -631,11 +634,11 @@ void Data::Sort::ArtificialQuickSort::SortStr(UTF8Char **arr, OSInt firstIndex, 
 	this->arr = arr;
 	this->arrType = AT_STRUTF8;
 	ArtificialQuickSort_PreSortStr(arr, firstIndex, lastIndex);
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;
 	this->taskCnt = 1;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	this->threads[0].evt->Set();
 
 	while (true)

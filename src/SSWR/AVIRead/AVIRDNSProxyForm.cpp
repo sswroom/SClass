@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRDNSProxyForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -109,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		me->lbClientIP->ClearItems();
 		me->lvClient->ClearItems();
 
-		me->cliInfoMut->Lock();
+		Sync::MutexUsage mutUsage(me->cliInfoMut);
 		cliList = me->cliInfos->GetValues();
 		i = 0;
 		j = cliList->GetCount();
@@ -120,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 			me->lbClientIP->AddItem(sbuff, cli);
 			i++;
 		}
-		me->cliInfoMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -419,7 +420,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 			me->txtTargetName->SetText((const UTF8Char*)"");
 			me->txtTargetCountry->SetText((const UTF8Char*)"");
 		}
-		target->mut->Lock();
+		Sync::MutexUsage mutUsage(target->mut);
 		me->lbTargetDomains->ClearItems();
 		i = 0;
 		j = target->addrList->GetCount();
@@ -428,7 +429,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 			me->lbTargetDomains->AddItem(target->addrList->GetItem(i), 0);
 			i++;
 		}
-		target->mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -631,7 +632,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 		OSInt i;
 		OSInt j;
 		HourInfo *hInfo;
-		cli->mut->Lock();
+		Sync::MutexUsage mutUsage(cli->mut);
 		i = cli->hourInfos->GetCount();
 		while (i-- > 0)
 		{
@@ -648,7 +649,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 			Text::StrInt64(sbuff, hInfo->reqCount);
 			me->lvClient->SetSubItem(j, 1, sbuff);
 		}
-		cli->mut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -692,7 +693,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, cons
 
 	ClientInfo *cli;
 	Int32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
-	me->cliInfoMut->Lock();
+	Sync::MutexUsage cimutUsage(me->cliInfoMut);
 	cli = me->cliInfos->Get(cliId);
 	if (cli == 0)
 	{
@@ -704,11 +705,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, cons
 		me->cliInfos->Put(cliId, cli);
 		me->cliChg = true;
 	}
-	me->cliInfoMut->Unlock();
+	cimutUsage.EndUse();
 	Data::DateTime dt;
 	HourInfo *hInfo;
 	dt.SetCurrTimeUTC();
-	cli->mut->Lock();
+	Sync::MutexUsage mutUsage(cli->mut);
 	hInfo = cli->hourInfos->GetItem(0);
 	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{
@@ -731,8 +732,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, cons
 		hInfo->reqCount = 1;
 		cli->hourInfos->Insert(0, hInfo);
 	}
-	cli->mut->Unlock();
-
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()

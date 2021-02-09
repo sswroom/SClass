@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIReGaugeSvrForm.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -81,17 +82,17 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
 	if (me->reqUpdated)
 	{
-		me->reqMut->Lock();
+		Sync::MutexUsage mutUsage(me->reqMut);
 		me->reqUpdated = false;
 		me->txtReqText->SetText(me->reqLast);
-		me->reqMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, const UInt8 *data, OSInt dataSize)
 {
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
-	me->reqMut->Lock();
+	Sync::MutexUsage mutUsage(me->reqMut);
 	if (me->reqLast)
 	{
 		MemFree(me->reqLast);
@@ -100,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, con
 	MemCopyNO(me->reqLast, data, dataSize);
 	me->reqLast[dataSize] = 0;
 	me->reqUpdated = true;
-	me->reqMut->Unlock();
+	mutUsage.EndUse();
 }
 
 SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

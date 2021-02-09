@@ -4,6 +4,7 @@
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 #include "SSWR/AVIRead/AVIRSMTPServerForm.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MIMEObj/MailMessage.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
@@ -165,11 +166,11 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	DEL_CLASS(fs);
 	email->fileSize = buffSize;
 
-	me->mailMut->Lock();
+	Sync::MutexUsage mutUsage(me->mailMut);
 	me->mailList->Add(email);
 	me->mailChanged = true;
 	me->totalSize += buffSize;
-	me->mailMut->Unlock();
+	mutUsage.EndUse();
 
 	return Text::StrInt64(queryId, id);
 }
@@ -202,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 	if (me->mailChanged)
 	{
 		me->mailChanged = false;
-		me->mailMut->Lock();
+		Sync::MutexUsage mutUsage(me->mailMut);
 		me->lvEmail->ClearItems();
 		i = 0;
 		j = me->mailList->GetCount();
@@ -233,15 +234,15 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 			me->lvEmail->SetSubItem(k, 4, sb.ToString());
 			i++;
 		}
-		me->mailMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
 Int64 SSWR::AVIRead::AVIRSMTPServerForm::NextEmailId()
 {
-	this->currIdMut->Lock();
+	Sync::MutexUsage mutUsage(this->currIdMut);
 	Int64 id = this->currId++;
-	this->currIdMut->Unlock();
+	mutUsage.EndUse();
 	return id;
 }
 
@@ -374,7 +375,7 @@ OSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, OSInt *siz
 	retSize = 0;
 	retCnt = 0;
 
-	this->mailMut->Lock();
+	Sync::MutexUsage mutUsage(this->mailMut);
 	totalCnt = this->mailList->GetCount();
 	i = this->recvIndex;
 	while (i < totalCnt)
@@ -387,7 +388,7 @@ OSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, OSInt *siz
 		}
 		i++;
 	}
-	this->mailMut->Unlock();
+	mutUsage.EndUse();
 	*size = retSize;
 	return retCnt;
 }
@@ -398,7 +399,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayL
 	OSInt i;
 	EmailInfo *email;
 
-	this->mailMut->Lock();
+	Sync::MutexUsage mutUsage(this->mailMut);
 	totalCnt = this->mailList->GetCount();
 	i = this->recvIndex;
 	while (i < totalCnt)
@@ -410,7 +411,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayL
 		}
 		i++;
 	}
-	this->mailMut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }
 
@@ -419,7 +420,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageInfo(Int32 userId, Int32 msgId
 	EmailInfo *email;
 	Bool succ = false;
 
-	this->mailMut->Lock();
+	Sync::MutexUsage mutUsage(this->mailMut);
 	email = this->mailList->GetItem(msgId);
 	if (email)
 	{
@@ -427,7 +428,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageInfo(Int32 userId, Int32 msgId
 		info->size = (Int32)email->fileSize;
 		info->uid = email->uid;
 	}
-	this->mailMut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -437,7 +438,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, Int32 ms
 	Bool succ = false;
 	IO::FileStream *fs;
 
-	this->mailMut->Lock();
+	Sync::MutexUsage mutUsage(this->mailMut);
 	email = this->mailList->GetItem(msgId);
 	if (email)
 	{
@@ -461,7 +462,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, Int32 ms
 		}
 		DEL_CLASS(fs);
 	}
-	this->mailMut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -470,7 +471,7 @@ Int32 SSWR::AVIRead::AVIRSMTPServerForm::RemoveMessage(Int32 userId, Int32 msgId
 	EmailInfo *email;
 	Int32 ret = 0;
 
-	this->mailMut->Lock();
+	Sync::MutexUsage mutUsage(this->mailMut);
 	email = this->mailList->GetItem(msgId);
 	if (email)
 	{
@@ -484,6 +485,6 @@ Int32 SSWR::AVIRead::AVIRSMTPServerForm::RemoveMessage(Int32 userId, Int32 msgId
 			ret = 1;
 		}
 	}
-	this->mailMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }

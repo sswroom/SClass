@@ -11,8 +11,9 @@
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
 #include "Math/Point.h"
-#include "Sync/Mutex.h"
 #include "Sync/Event.h"
+#include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -42,13 +43,8 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 		return -1;
 	}
 
-	Bool mutWait = false;
 	Data::DateTime t1;
-	if (this->mut)
-	{
-		this->mut->Lock();
-		mutWait = true;
-	}
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::DateTime t2;
 	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd);
 	if (i >= -1)
@@ -67,10 +63,7 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 		}
 		nqFail = 0;
 		openFail = 0;
-		if (mutWait)
-		{
-			this->mut->Unlock();
-		}
+		mutUsage.EndUse();
 		return i;
 	}
 	else
@@ -95,10 +88,7 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 		{
 			this->db->Reconnect();
 		}
-		if (mutWait)
-		{
-			this->mut->Unlock();
-		}
+		mutUsage.EndUse();
 
 		if (trig)
 			trig(sqlCmd, DB::ReadingDBTool::NonQueryTrigger);

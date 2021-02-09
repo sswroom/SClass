@@ -8,6 +8,7 @@
 #include "Media/EDID.h"
 #include "Media/ICCProfile.h"
 #include "Media/MonitorInfo.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #if defined(_WIN32) || defined(WIN64)
@@ -596,21 +597,21 @@ void Media::MonitorColorManager::Set10BitColor(Bool color10Bit)
 
 void Media::MonitorColorManager::AddSess(Media::ColorManagerSess *colorSess)
 {
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	this->sessList->Add(colorSess);
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 {
 	OSInt i;
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	i = this->sessList->IndexOf(colorSess);
 	if (i >= 0)
 	{
 		this->sessList->RemoveAt(i);
 	}
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Bool Media::MonitorColorManager::SetFromProfileFile(const UTF8Char *fileName)
@@ -727,27 +728,27 @@ void Media::MonitorColorManager::SetEDIDProfile()
 void Media::MonitorColorManager::RGBUpdated()
 {
 	Media::ColorManagerSess *colorSess;
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	OSInt i = this->sessList->GetCount();
 	while (i-- > 0)
 	{
 		colorSess = this->sessList->GetItem(i);
 		colorSess->RGBUpdated(this->rgb);
 	}
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::MonitorColorManager::YUVUpdated()
 {
 	Media::ColorManagerSess *colorSess;
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	OSInt i = this->sessList->GetCount();
 	while (i-- > 0)
 	{
 		colorSess = this->sessList->GetItem(i);
 		colorSess->YUVUpdated(&this->yuv);
 	}
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::ColorManager::ColorManager()
@@ -887,7 +888,7 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(const UTF8Char *profileName)
 {
 	Media::MonitorColorManager *monColor;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (profileName == 0)
 	{
 		monColor = this->monColor->Get((const UTF8Char*)"");
@@ -908,7 +909,7 @@ Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(const UTF8Ch
 			this->monColor->Put(profileName, monColor);
 		}
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return monColor;
 }
 
@@ -957,13 +958,13 @@ void Media::ColorManagerSess::AddHandler(Media::IColorHandler *hdlr)
 
 void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 {
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	OSInt index = this->hdlrs->IndexOf(hdlr);
 	if (index >= 0)
 	{
 		this->hdlrs->RemoveAt(index);
 	}
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 }
 
 const Media::IColorHandler::YUVPARAM *Media::ColorManagerSess::GetYUVParam()
@@ -1026,22 +1027,22 @@ void Media::ColorManagerSess::ChangeMonitor(void *hMon)
 
 void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	OSInt i = this->hdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->hdlrs->GetItem(i)->RGBParamChanged(rgbParam);
 	}
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::ColorManagerSess::YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam)
 {
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	OSInt i = this->hdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->hdlrs->GetItem(i)->YUVParamChanged(yuvParam);
 	}
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 }
