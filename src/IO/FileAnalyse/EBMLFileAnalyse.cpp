@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 
@@ -366,9 +367,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(OSInt lev, Int64 ofst, Int64 s
 			pack->lev = lev;
 			pack->hdrSize = buffPtr - buff;
 			WriteNInt32(pack->packType, ReadNInt32(buff));
-			this->packMut->Lock();
 			this->packs->Add(pack);
-			this->packMut->Unlock();
 			
 			const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)id);
 			if (element && element->type == ET_MASTER)
@@ -398,8 +397,7 @@ IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::ArrayList<IO::FileAnalyse::EBMLFileAnalyse::PackInfo*>());
-	NEW_CLASS(this->packMut, Sync::Mutex());
+	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::EBMLFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadMInt32(buff) != 0x1A45DFA3)
 	{
@@ -424,16 +422,8 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	OSInt i;
-	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	i = this->packs->GetCount();
-	while (i-- > 0)
-	{
-		pack = this->packs->GetItem(i);
-		MemFree(pack);
-	}
+	DEL_LIST_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
-	DEL_CLASS(this->packMut);
 }
 
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
@@ -444,9 +434,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 	sb->AppendChar('+', pack->lev);
@@ -484,9 +472,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "DB/ColDef.h"
 #include "DB/DBMS.h"
+#include "Sync/MutexUsage.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -1741,13 +1742,13 @@ DB::DBMS::DBMS(const UTF8Char *versionStr, IO::LogTool *log)
 	NEW_CLASS(this->loginMut, Sync::Mutex());
 	NEW_CLASS(this->sessMut, Sync::Mutex());
 	NEW_CLASS(this->sessMap, Data::Integer32Map<DB::DBMS::SessionInfo*>());
-    this->versionStr = Text::StrCopyNew(versionStr);
-    this->log = log;
+	this->versionStr = Text::StrCopyNew(versionStr);
+	this->log = log;
 }
 
 DB::DBMS::~DBMS()
 {
-    Text::StrDelNew(this->versionStr);
+	Text::StrDelNew(this->versionStr);
 	Data::ArrayList<DB::DBMS::LoginInfo*> *loginList = this->loginMap->GetValues();
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
@@ -1783,12 +1784,12 @@ DB::DBMS::~DBMS()
 
 const UTF8Char *DB::DBMS::GetVersion()
 {
-    return this->versionStr;
+	return this->versionStr;
 }
 
 IO::LogTool *DB::DBMS::GetLogTool()
 {
-    return this->log;
+	return this->log;
 }
 
 Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host)
@@ -1800,7 +1801,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *p
 	#if defined(VERBOSE)
 	printf("UserAdd %s/%s@%s\r\n", userName, password, host);
 	#endif
-	this->loginMut->Lock();
+	Sync::MutexUsage mutUsage(this->loginMut);
 	login = this->loginMap->Get(userName);
 	if (login == 0)
 	{
@@ -1842,64 +1843,64 @@ Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *p
 			login->userList->Add(user);
 		}
 	}
-	this->loginMut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
 Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UInt8 *randomData, const UInt8 *passHash, const Net::SocketUtil::AddressInfo *addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
 {
-    DB::DBMS::LoginInfo *login;
-    DB::DBMS::UserInfo *user;
-    UInt8 hashBuff[20];
-    OSInt j;
-    Int32 userId = 0;
-    #if defined(VERBOSE)
-    printf("mysql_native_password auth\r\n");
-    #endif
-    this->loginMut->Lock();
-    login = this->loginMap->Get(userName);
-    if (login)
-    {
-        OSInt i = login->userList->GetCount();
-        while (i-- > 0)
-        {
-            user = login->userList->GetItem(i);
-            this->loginSHA1->Clear();
-            this->loginSHA1->Calc(user->pwdSha1, 20);
-            this->loginSHA1->GetValue(hashBuff);
+	DB::DBMS::LoginInfo *login;
+	DB::DBMS::UserInfo *user;
+	UInt8 hashBuff[20];
+	OSInt j;
+	Int32 userId = 0;
+	#if defined(VERBOSE)
+	printf("mysql_native_password auth\r\n");
+	#endif
+	Sync::MutexUsage mutUsage(this->loginMut);
+	login = this->loginMap->Get(userName);
+	if (login)
+	{
+		OSInt i = login->userList->GetCount();
+		while (i-- > 0)
+		{
+			user = login->userList->GetItem(i);
+			this->loginSHA1->Clear();
+			this->loginSHA1->Calc(user->pwdSha1, 20);
+			this->loginSHA1->GetValue(hashBuff);
 
-            this->loginSHA1->Clear();
-            this->loginSHA1->Calc(randomData, 20);
-            this->loginSHA1->Calc(hashBuff, 20);
-            this->loginSHA1->GetValue(hashBuff);
-            
-            j = 0;
-            while (j < 20)
-            {
-                hashBuff[j] ^= user->pwdSha1[j];
-                j++;
-            }
+			this->loginSHA1->Clear();
+			this->loginSHA1->Calc(randomData, 20);
+			this->loginSHA1->Calc(hashBuff, 20);
+			this->loginSHA1->GetValue(hashBuff);
+			
+			j = 0;
+			while (j < 20)
+			{
+				hashBuff[j] ^= user->pwdSha1[j];
+				j++;
+			}
 
-            #if defined(VERBOSE)
-            Text::StringBuilderUTF8 sb;
-            sb.AppendHexBuff(hashBuff, 20, ' ', Text::LBT_NONE);
-            printf("Password Hash = %s\r\n", sb.ToString());
-            #endif
-            userId = user->userId;
-            j = 20;
-            while (j-- > 0)
-            {
-                if (passHash[j] != hashBuff[j])
-                {
-                    userId = 0;
-                    break;
-                }
-            }
+			#if defined(VERBOSE)
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(hashBuff, 20, ' ', Text::LBT_NONE);
+			printf("Password Hash = %s\r\n", sb.ToString());
+			#endif
+			userId = user->userId;
+			j = 20;
+			while (j-- > 0)
+			{
+				if (passHash[j] != hashBuff[j])
+				{
+					userId = 0;
+					break;
+				}
+			}
 
-            if (userId != 0)
-            {
+			if (userId != 0)
+			{
 				DB::DBMS::SessionInfo *sess;
-				this->sessMut->Lock();
+				Sync::MutexUsage mutUsage(this->sessMut);
 				sess = this->sessMap->Get(sessId);
 				if (sess == 0)
 				{
@@ -1919,19 +1920,19 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 					this->sessMap->Put(sessId, sess);
 				}
 				sess->user = user;
-				this->sessMut->Unlock();
-                break;
-            }
-        }
-    }
-    else
-    {
-        #if defined(VERBOSE)
-        printf("Login not found\r\n");
-        #endif
-    }
-    this->loginMut->Unlock();
-    return userId;
+				mutUsage.EndUse();
+				break;
+			}
+		}
+	}
+	else
+	{
+		#if defined(VERBOSE)
+		printf("Login not found\r\n");
+		#endif
+	}
+	mutUsage.EndUse();
+	return userId;
 }
 
 DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
@@ -2985,22 +2986,22 @@ void DB::DBMS::CloseReader(DB::DBReader *r)
 UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 {
 	DB::DBMS::SessionInfo *sess;
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	sess = this->sessMap->Get(sessId);
 	if (sess && sess->lastError)
 	{
 		msgBuff = Text::StrConcat(msgBuff, sess->lastError);
 	}
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 	return msgBuff;
 }
 
 DB::DBMS::SessionInfo *DB::DBMS::SessGet(Int32 sessId)
 {
 	DB::DBMS::SessionInfo *sess;
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	sess = this->sessMap->Get(sessId);
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 	return sess;
 }
 
@@ -3011,9 +3012,9 @@ void DB::DBMS::SessEnd(Int32 sessId)
 	{
 		return;
 	}
-	this->sessMut->Lock();
+	Sync::MutexUsage mutUsage(this->sessMut);
 	sess = this->sessMap->Remove(sessId);
-	this->sessMut->Unlock();
+	mutUsage.EndUse();
 	if (sess)
 	{
 		this->SessDelete(sess);

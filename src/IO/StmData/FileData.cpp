@@ -3,13 +3,14 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 void IO::StmData::FileData::ReopenFile()
 {
 	if (fdh == 0)
 		return;
-	fdh->mut->Lock();
+	Sync::MutexUsage mutUsage(fdh->mut);
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fdh->filePath, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
@@ -22,7 +23,7 @@ void IO::StmData::FileData::ReopenFile()
 		fdh->file = fs;
 		fdh->currentOffset = fs->GetPosition();
 	}
-	fdh->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
@@ -96,7 +97,7 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 {
 	if (fdh == 0)
 		return 0;
-	fdh->mut->Lock();
+	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->currentOffset != dataOffset + offset)
 	{
 		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, dataOffset + offset)) != dataOffset + offset)
@@ -105,7 +106,7 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 			{
 				this->ReopenFile();
 			}
-			fdh->mut->Unlock();
+			mutUsage.EndUse();
 			return 0;
 		}
 		fdh->seekCnt++;
@@ -117,11 +118,11 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 		byteRead = fdh->file->Read(buffer, (UOSInt) (dataLength - offset));
 	if (byteRead == -1)
 	{
-		fdh->mut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 	fdh->currentOffset += byteRead;
-	fdh->mut->Unlock();
+	mutUsage.EndUse();
 	return byteRead;
 }
 

@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/AudioFilter/DTMFGenerator.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 Media::AudioFilter::DTMFGenerator::DTMFGenerator(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
@@ -65,7 +66,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 		}
 
-		this->tonesMut->Lock();
+		Sync::MutexUsage mutUsage(this->tonesMut);
 		if (this->tonesVals)
 		{
 			OSInt sampleCnt = readSize / this->format.align;
@@ -212,7 +213,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 				tonesOfst++;
 			}
 		}
-		this->tonesMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (this->format.bitpersample == 8)
 	{
@@ -355,13 +356,13 @@ Bool Media::AudioFilter::DTMFGenerator::GenTones(Int32 signalTime, Int32 breakTi
 		}
 	}
 
-	this->tonesMut->Lock();
+	Sync::MutexUsage mutUsage(this->tonesMut);
 	SDEL_TEXT(this->tonesVals);
 	this->tonesVals = Text::StrCopyNew(tones);
 	this->tonesSignalSamples = this->format.frequency * signalTime / 1000;
 	this->tonesBreakSamples = this->format.frequency * breakTime / 1000;
 	this->tonesVol = vol;
 	this->tonesCurrSample = 0;
-	this->tonesMut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }

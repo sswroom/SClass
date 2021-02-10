@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/Path.h"
 #include "IO/FileLog.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -151,15 +152,15 @@ void IO::FileLog::LogClosed()
 {
 	if (!closed)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		log->Close();
-		mut->Unlock();
+		mutUsage.EndUse();
 		closed = true;
 	}
 }
 void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
 {
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	Bool newFile = false;
 	UTF8Char buff[256];
 
@@ -219,5 +220,5 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLeve
 		sb.Append(logMsg);
 		log->WriteLine(sb.ToString());
 	}
-	mut->Unlock();
+	mutUsage.EndUse();
 }

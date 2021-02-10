@@ -16,5 +16,5 @@ namespace Data
 		Int32 NextInt15(); // 0 - 32767
 		Int32 NextInt30();
 	};
-};
+}
 #endif

@@ -13,31 +13,31 @@ namespace Data
 		UOSInt objCnt;
 		UOSInt capacity;
 
-		void Init(UOSInt Capacity);
+		void Init(UOSInt capacity);
 	public:
 		ArrayList();
-		ArrayList(UOSInt Capacity);
+		ArrayList(UOSInt capacity);
 		virtual ~ArrayList();
 
 		virtual UOSInt Add(T val);
 		UOSInt AddRange(ArrayList<T> *arr);
-		UOSInt AddRange(T *arr, UOSInt cnt);
-		Bool Remove(T val);
-		T RemoveAt(UOSInt index);
-		void Insert(UOSInt Index, T Val);
-		UOSInt IndexOf(T Val);
-		void Clear();
+		virtual UOSInt AddRange(T *arr, UOSInt cnt);
+		virtual Bool Remove(T val);
+		virtual T RemoveAt(UOSInt index);
+		virtual void Insert(UOSInt index, T val);
+		virtual UOSInt IndexOf(T val);
+		virtual void Clear();
 		virtual ArrayList<T> *Clone();
 
 		virtual UOSInt GetCount();
-		UOSInt GetCapacity();
-		void EnsureCapacity(UOSInt Capacity);
+		virtual UOSInt GetCapacity();
+		void EnsureCapacity(UOSInt capacity);
 
-		virtual T GetItem(UOSInt Index);
-		void SetItem(UOSInt Index, T Val);
+		virtual T GetItem(UOSInt index);
+		virtual void SetItem(UOSInt index, T val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
-		UOSInt GetRange(T *outArr, UOSInt Index, UOSInt cnt);
-		UOSInt RemoveRange(UOSInt Index, UOSInt cnt);
+		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt);
+		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
 		virtual T *GetArray(UOSInt *arraySize);
 	};
 
@@ -220,7 +220,7 @@ namespace Data
 		UOSInt i = objCnt;
 		while (i-- > 0)
 		{
-			arr[i] = 0;
+			arr[i] = (T)0;
 		}
 		this->objCnt = 0;
 	}

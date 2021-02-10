@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/DHCPServer.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -72,7 +73,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			WriteMInt32(&repBuff[4], transactionId);
 			WriteMInt64(&repBuff[26], hwAddr);
 			WriteNInt32(&repBuff[20], me->infIP);
-			me->devMut->Lock();
+			Sync::MutexUsage mutUsage(me->devMut);
 			dev = me->devMap->Get(hwAddr);
 			if (dev)
 			{
@@ -139,7 +140,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				dev->assignTime = dt.ToTicks();
 				me->devMap->Put(hwAddr, dev);
 			}
-			me->devMut->Unlock();
+			mutUsage.EndUse();
 			WriteNInt32(&repBuff[16], reqIP);
 			WriteMInt32(&repBuff[236], 0x63825363);
 			i = 240;
@@ -194,23 +195,23 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			repBuff[2] = 6;
 			WriteMInt32(&repBuff[4], transactionId);
 			WriteMInt64(&repBuff[26], hwAddr);
-			me->devMut->Lock();
+			Sync::MutexUsage mutUsage(me->devMut);
 			dev = me->devMap->Get(hwAddr);
 			if (dev == 0)
 			{
-				me->devMut->Unlock();
+				mutUsage.EndUse();
 				return;
 			}
 			if (reqIP != dev->assignedIP)
 			{
-				me->devMut->Unlock();
+				mutUsage.EndUse();
 				return;
 			}
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
 			dev->assignTime = dt.ToTicks();
 			dev->updated = true;
-			me->devMut->Unlock();
+			mutUsage.EndUse();
 			WriteNInt32(&repBuff[16], reqIP);
 			WriteMInt32(&repBuff[236], 0x63825363);
 			i = 240;
@@ -359,12 +360,12 @@ Bool Net::DHCPServer::IsError()
 
 void Net::DHCPServer::StatusBeginGet()
 {
-	this->devMut->Lock();
+	this->devMut->Use();
 }
 
 void Net::DHCPServer::StatusEndGet()
 {
-	this->devMut->Unlock();
+	this->devMut->Unuse();
 }
 
 Data::ArrayList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList()

@@ -28,5 +28,5 @@ namespace IO
 		virtual void LogClosed();
 		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev);
 	};
-};
+}
 #endif

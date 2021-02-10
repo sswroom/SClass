@@ -32,7 +32,7 @@ namespace Net
 		const UTF8Char *GetId();
 	};
 
-	class RSS : public Data::List<RSSItem*>
+	class RSS : public Data::ReadingList<RSSItem*>
 	{
 	private:
 		Bool isError;

@@ -7,7 +7,7 @@ namespace IO
 {
 	namespace ProtoDec
 	{
-		class ProtoDecList : public Data::List<IProtocolDecoder*>
+		class ProtoDecList : public Data::ReadingList<IProtocolDecoder*>
 		{
 		private:
 			Data::ArrayList<IProtocolDecoder*> *decList;

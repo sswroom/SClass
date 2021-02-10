@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_EXEFILEANALYSE
 #define _SM_IO_FILEANALYSE_EXEFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
@@ -21,8 +21,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::ArrayList<PackInfo*> *packs;
-			Sync::Mutex *packMut;
+			Data::SyncArrayList<PackInfo*> *packs;
 			UInt8 *imageBuff;
 			OSInt imageSize;
 

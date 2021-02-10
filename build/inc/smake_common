@@ -888,10 +888,13 @@ Data/RandomMT19937.h: ../../src/Data/RandomMT19937.cpp
 @RandomMT19937.o
 Data/RandomOS.h: ../../src/Data/RandomOS.cpp
 @RandomOS.o
+Data/ReadingList.h:
 Data/SortableArrayList.h:
 Data/StringUTF8Map.h:
-Data/SyncArrayList.h: ../../src/Data/SyncArrayList.cpp
-@SyncArrayList.o
+Data/SyncArrayList.h:
+Data/Usable.h:
+Data/Usage.h: ../../src/Data/Usage.cpp
+@Usage.o
 Data/Compress/Decompressor.h: ../../src/Data/Compress/Decompressor.cpp
 @Decompressor.o
 Data/Compress/Inflate.h: ../../src/Data/Compress/Inflate.cpp
@@ -3319,7 +3322,7 @@ LineChart.o: ../../src/Data/LineChart.cpp
 LinkedList.o: ../../src/Data/LinkedList.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
-SyncArrayList.o: ../../src/Data/SyncArrayList.cpp
+Usage.o: ../../src/Data/Usage.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
 Inflate.o: ../../src/Data/Compress/Inflate.cpp
 $-I ../../ThirdParty/miniz

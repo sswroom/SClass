@@ -8,6 +8,7 @@
 #include "Net/NTPServer.h"
 #include "Net/SNMPInfo.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/JSON.h"
 #include "Text/JSText.h"
@@ -231,12 +232,12 @@ Int64 Net::EthernetAnalyzer::GetPacketTotalSize()
 
 void Net::EthernetAnalyzer::IPTranBeginGet()
 {
-	this->ipTranMut->Lock();
+	this->ipTranMut->Use();
 }
 
 void Net::EthernetAnalyzer::IPTranEndGet()
 {
-	this->ipTranMut->Unlock();
+	this->ipTranMut->Unuse();
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::IPTranStatus*> *Net::EthernetAnalyzer::IPTranGetList()
@@ -251,12 +252,12 @@ OSInt Net::EthernetAnalyzer::IPTranGetCount()
 
 void Net::EthernetAnalyzer::MACBeginGet()
 {
-	this->macMut->Lock();
+	this->macMut->Use();
 }
 
 void Net::EthernetAnalyzer::MACEndGet()
 {
-	this->macMut->Unlock();
+	this->macMut->Unuse();
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyzer::MACGetList()
@@ -266,12 +267,12 @@ Data::ArrayList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyzer::MACGe
 
 void Net::EthernetAnalyzer::DNSCliBeginGet()
 {
-	this->dnsCliInfoMut->Lock();
+	this->dnsCliInfoMut->Use();
 }
 
 void Net::EthernetAnalyzer::DNSCliEndGet()
 {
-	this->dnsCliInfoMut->Unlock();
+	this->dnsCliInfoMut->Unuse();
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> *Net::EthernetAnalyzer::DNSCliGetList()
@@ -286,9 +287,9 @@ OSInt Net::EthernetAnalyzer::DNSCliGetCount()
 
 OSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
-	this->dnsReqv4Mut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	reqList->AddRange(this->dnsReqv4Map->GetKeys());
-	this->dnsReqv4Mut->Unlock();
+	mutUsage.EndUse();
 	return reqList->GetCount();
 }
 
@@ -300,16 +301,16 @@ OSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
 Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
-	this->dnsReqv4Mut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	result = this->dnsReqv4Map->Get(req);
-	this->dnsReqv4Mut->Unlock();
+	mutUsage.EndUse();
 	if (result)
 	{
-		result->mut->Lock();
+		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetTicks(result->reqTime);
 		*ttl = result->ttl;
-		result->mut->Unlock();
+		mutUsage.EndUse();
 		return true;
 	}
 	else
@@ -320,9 +321,9 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList
 
 OSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
-	this->dnsReqv6Mut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	reqList->AddRange(this->dnsReqv6Map->GetKeys());
-	this->dnsReqv6Mut->Unlock();
+	mutUsage.EndUse();
 	return reqList->GetCount();
 }
 
@@ -334,16 +335,16 @@ OSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
 Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
-	this->dnsReqv6Mut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	result = this->dnsReqv6Map->Get(req);
-	this->dnsReqv6Mut->Unlock();
+	mutUsage.EndUse();
 	if (result)
 	{
-		result->mut->Lock();
+		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetTicks(result->reqTime);
 		*ttl = result->ttl;
-		result->mut->Unlock();
+		mutUsage.EndUse();
 		return true;
 	}
 	else
@@ -354,9 +355,9 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList
 
 OSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
-	this->dnsReqOthMut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	reqList->AddRange(this->dnsReqOthMap->GetKeys());
-	this->dnsReqOthMut->Unlock();
+	mutUsage.EndUse();
 	return reqList->GetCount();
 }
 
@@ -368,16 +369,16 @@ OSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
 Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
-	this->dnsReqOthMut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	result = this->dnsReqOthMap->Get(req);
-	this->dnsReqOthMut->Unlock();
+	mutUsage.EndUse();
 	if (result)
 	{
-		result->mut->Lock();
+		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetTicks(result->reqTime);
 		*ttl = result->ttl;
-		result->mut->Unlock();
+		mutUsage.EndUse();
 		return true;
 	}
 	else
@@ -388,9 +389,9 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayLis
 
 OSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> *targetList)
 {
-	this->dnsTargetMut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsTargetMut);
 	targetList->AddRange(this->dnsTargetMap->GetValues());
-	this->dnsTargetMut->Unlock();
+	mutUsage.EndUse();
 	return targetList->GetCount();
 }
 
@@ -401,12 +402,12 @@ OSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 
 void Net::EthernetAnalyzer::DHCPBeginGet()
 {
-	this->dhcpMut->Lock();
+	this->dhcpMut->Use();
 }
 
 void Net::EthernetAnalyzer::DHCPEndGet()
 {
-	this->dhcpMut->Unlock();
+	this->dhcpMut->Unuse();
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer::DHCPGetList()
@@ -416,12 +417,12 @@ Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer::DHCPGe
 
 void Net::EthernetAnalyzer::IPLogBeginGet()
 {
-	this->ipLogMut->Lock();
+	this->ipLogMut->Use();
 }
 
 void Net::EthernetAnalyzer::IPLogEndGet()
 {
-	this->ipLogMut->Unlock();
+	this->ipLogMut->Unuse();
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyzer::IPLogGetList()
@@ -589,13 +590,13 @@ AF 81 01 00 00 00 00 00 00 00 00 00 00 00 00 00
 */
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			mac->othSrcCnt++;
 
 			mac = this->MACGet(destMAC);
 			mac->othDestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 	break;
 	case 0x0026: //Unknown
@@ -607,13 +608,13 @@ AF 81 01 00 00 00 00 00 00 00 00 00 00 00 00 00
 */
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			mac->othSrcCnt++;
 
 			mac = this->MACGet(destMAC);
 			mac->othDestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	case 0x002E: //Unknown
@@ -625,13 +626,13 @@ AF 81 01 00 00 00 00 00 00 00 00 00 00 00 00 00
 */
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			mac->othSrcCnt++;
 
 			mac = this->MACGet(destMAC);
 			mac->othDestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	case 0x0046: //Unknown
@@ -645,13 +646,13 @@ C6 6C 2E A2
 */
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			mac->othSrcCnt++;
 
 			mac = this->MACGet(destMAC);
 			mac->othDestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	case 0x0800: //IPv4
@@ -679,25 +680,25 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 */
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			mac->othSrcCnt++;
 
 			mac = this->MACGet(destMAC);
 			mac->othDestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	default:
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			mac->othSrcCnt++;
 
 			mac = this->MACGet(destMAC);
 			mac->othDestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 		valid = false;
 		break;
@@ -724,7 +725,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 		OSInt ipDataSize;
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			ipAddr = ReadNInt32(&packet[12]);
 			i = 0;
@@ -760,12 +761,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 				i++;
 			}
 			mac->ipv4DestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 
 		IPTranStatus *ip;
 		Int64 addr = ReadMInt64(&packet[12]);
-		this->ipTranMut->Lock();
+		Sync::MutexUsage ipTranMutUsage(this->ipTranMut);
 		ip = this->ipTranMap->Get(addr);
 		if (ip == 0)
 		{
@@ -806,7 +807,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 				Data::DateTime dt;
 				dt.SetCurrTime();
 				UInt32 sortableIP = ReadMInt32(&packet[12]);
-				this->ipLogMut->Lock();
+				Sync::MutexUsage mutUsage(this->ipLogMut);
 				ipLog = this->ipLogMap->Get(sortableIP);
 				if (ipLog == 0)
 				{
@@ -906,13 +907,13 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 					sb.AppendU16(packet[8]);
 					sb.Append((const UTF8Char*)", size = ");
 					sb.AppendOSInt(ipDataSize);
-					ipLog->mut->Lock();
+					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
 					{
 						Text::StrDelNew(ipLog->logList->RemoveAt(0));
 					}
 					ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
-					ipLog->mut->Unlock();							
+					mutUsage.EndUse();
 				}
 
 				sortableIP = ReadMInt32(&packet[16]);
@@ -1015,15 +1016,15 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 					sb.AppendU16(packet[8]);
 					sb.Append((const UTF8Char*)", size = ");
 					sb.AppendOSInt(ipDataSize);
-					ipLog->mut->Lock();
+					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
 					{
 						Text::StrDelNew(ipLog->logList->RemoveAt(0));
 					}
 					ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
-					ipLog->mut->Unlock();							
+					mutUsage.EndUse();
 				}
-				this->ipLogMut->Unlock();
+				mutUsage.EndUse();
 
 				if (ipData[0] == 8)
 				{
@@ -1079,17 +1080,17 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								{
 									if (this->atype & AT_DNSREQ)
 									{
-										this->dnsReqv4Mut->Lock();
+										Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 										req = this->dnsReqv4Map->Get(reqName);
 										if (req)
 										{
-											req->mut->Lock();
+											Sync::MutexUsage mutUsage(req->mut);
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
 											req->reqTime = currTime.ToTicks();
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
-											req->mut->Unlock();
+											mutUsage.EndUse();
 										}
 										else
 										{
@@ -1102,7 +1103,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											this->dnsReqv4Map->Put(reqName, req);
 										}
-										this->dnsReqv4Mut->Unlock();
+										mutUsage.EndUse();
 									}
 									if (this->atype & AT_DNSTARGET)
 									{
@@ -1119,7 +1120,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 											{
 												resIP = ReadNInt32(answer->addr.addr);
 												sortIP = ReadMInt32(answer->addr.addr);
-												this->dnsTargetMut->Lock();
+												Sync::MutexUsage dnsTargetMutUsage(this->dnsTargetMut);
 												dnsTarget = this->dnsTargetMap->Get(sortIP);
 												if (dnsTarget == 0)
 												{
@@ -1129,8 +1130,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 													NEW_CLASS(dnsTarget->addrList, Data::ArrayListICaseStrUTF8());
 													this->dnsTargetMap->Put(sortIP, dnsTarget);
 												}
-												dnsTarget->mut->Lock();
-												this->dnsTargetMut->Unlock();
+												Sync::MutexUsage mutUsage(dnsTarget->mut);
+												dnsTargetMutUsage.EndUse();
 												if (dnsTarget->addrList->SortedIndexOf(answer->name) < 0)
 												{
 													dnsTarget->addrList->SortedInsert(Text::StrCopyNew(answer->name));
@@ -1147,7 +1148,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 														}
 													}
 												}
-												dnsTarget->mut->Unlock();
+												mutUsage.EndUse();
 											}
 										}													
 									}
@@ -1156,17 +1157,17 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								{
 									if (this->atype & AT_DNSREQ)
 									{
-										this->dnsReqv6Mut->Lock();
+										Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 										req = this->dnsReqv6Map->Get(reqName);
 										if (req)
 										{
-											req->mut->Lock();
+											Sync::MutexUsage mutUsage(req->mut);
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
 											req->reqTime = currTime.ToTicks();
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
-											req->mut->Unlock();
+											mutUsage.EndUse();
 										}
 										else
 										{
@@ -1179,24 +1180,24 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											this->dnsReqv6Map->Put(reqName, req);
 										}
-										this->dnsReqv6Mut->Unlock();
+										mutUsage.EndUse();
 									}
 								}
 								else
 								{
 									if (this->atype & AT_DNSREQ)
 									{
-										this->dnsReqOthMut->Lock();
+										Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 										req = this->dnsReqOthMap->Get(reqName);
 										if (req)
 										{
-											req->mut->Lock();
+											Sync::MutexUsage mutUsage(req->mut);
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
 											req->reqTime = currTime.ToTicks();
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
-											req->mut->Unlock();
+											mutUsage.EndUse();
 										}
 										else
 										{
@@ -1209,7 +1210,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											this->dnsReqOthMap->Put(reqName, req);
 										}
-										this->dnsReqOthMut->Unlock();
+										mutUsage.EndUse();
 									}
 								}
 								Net::DNSClient::FreeAnswers(&answers);
@@ -1223,7 +1224,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 						{
 							DNSClientInfo *dnsCli;
 							UInt32 cliId = ReadMInt32(&packet[12]);
-							this->dnsCliInfoMut->Lock();
+							Sync::MutexUsage dnsCliInfoMutUsage(this->dnsCliInfoMut);
 							dnsCli = this->dnsCliInfos->Get(cliId);
 							if (dnsCli == 0)
 							{
@@ -1235,11 +1236,11 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								NEW_CLASS(dnsCli->hourInfos, Data::ArrayList<DNSCliHourInfo*>());
 								this->dnsCliInfos->Put(cliId, dnsCli);
 							}
-							this->dnsCliInfoMut->Unlock();
+							dnsCliInfoMutUsage.EndUse();
 							Data::DateTime dt;
 							DNSCliHourInfo *hInfo;
 							dt.SetCurrTimeUTC();
-							dnsCli->mut->Lock();
+							Sync::MutexUsage mutUsage(dnsCli->mut);
 							hInfo = dnsCli->hourInfos->GetItem(0);
 							if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 							{
@@ -1262,7 +1263,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								hInfo->reqCount = 1;
 								dnsCli->hourInfos->Insert(0, hInfo);
 							}
-							dnsCli->mut->Unlock();
+							mutUsage.EndUse();
 						}
 						valid = true;
 					}
@@ -1282,7 +1283,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 							macBuff[6] = ipData[40];
 							macBuff[7] = ipData[41];
 							iMAC = ReadMInt64(macBuff);
-							this->dhcpMut->Lock();
+							Sync::MutexUsage dhcpMutUsage(this->dhcpMut);
 							dhcp = this->dhcpMap->Get(iMAC);
 							if (dhcp == 0)
 							{
@@ -1292,14 +1293,14 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								NEW_CLASS(dhcp->mut, Sync::Mutex());
 								this->dhcpMap->Put(iMAC, dhcp);
 							}
-							this->dhcpMut->Unlock();
+							dhcpMutUsage.EndUse();
 							const UInt8 *currPtr = &ipData[248];
 							const UInt8 *endPtr = &ipData[ipDataSize];
 							UInt8 msgType = 0;
 							UInt8 t;
 							UInt8 len;
 							UTF8Char *sptr;
-							dhcp->mut->Lock();
+							Sync::MutexUsage mutUsage(dhcp->mut);
 							dhcp->updated = true;
 							while (currPtr < endPtr)
 							{
@@ -1385,7 +1386,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								}
 								currPtr += len;
 							}
-							dhcp->mut->Unlock();
+							mutUsage.EndUse();
 						}
 						valid = true;
 					}
@@ -1400,7 +1401,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 									Text::StringBuilderUTF8 sb;
 									IPLogInfo *ipLog;
 									UInt32 sortableIP = ReadMInt32(&packet[12]);
-									this->ipLogMut->Lock();
+									Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 									ipLog = this->ipLogMap->Get(sortableIP);
 									if (ipLog == 0)
 									{
@@ -1410,7 +1411,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 										NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
 										this->ipLogMap->Put(sortableIP, ipLog);
 									}
-									this->ipLogMut->Unlock();
+									ipLogMutUsage.EndUse();
 									Data::DateTime dt;
 									dt.SetCurrTime();
 									sb.AppendDate(&dt);
@@ -1419,13 +1420,13 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 									sb.Append((const UTF8Char*)" NTP request to ");
 									Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
 									sb.Append(sbuff);
-									ipLog->mut->Lock();
+									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList->GetCount() >= IPLOGCNT)
 									{
 										Text::StrDelNew(ipLog->logList->RemoveAt(0));
 									}
 									ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
-									ipLog->mut->Unlock();
+									mutUsage.EndUse();
 								}
 							}
 							else
@@ -1435,7 +1436,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 									Text::StringBuilderUTF8 sb;
 									IPLogInfo *ipLog;
 									UInt32 sortableIP = ReadMInt32(&packet[16]);
-									this->ipLogMut->Lock();
+									Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 									ipLog = this->ipLogMap->Get(sortableIP);
 									if (ipLog == 0)
 									{
@@ -1445,7 +1446,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 										NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
 										this->ipLogMap->Put(sortableIP, ipLog);
 									}
-									this->ipLogMut->Unlock();
+									ipLogMutUsage.EndUse();
 									Data::DateTime dt;
 									dt.SetCurrTime();
 									sb.AppendDate(&dt);
@@ -1458,13 +1459,13 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 									Net::NTPServer::ReadTime(&ipData[40], &dt);
 									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 									sb.Append(sbuff);
-									ipLog->mut->Lock();
+									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList->GetCount() >= IPLOGCNT)
 									{
 										Text::StrDelNew(ipLog->logList->RemoveAt(0));
 									}
 									ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
-									ipLog->mut->Unlock();
+									mutUsage.EndUse();
 								}
 							}
 						}
@@ -1530,7 +1531,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							{
 								if (this->atype & AT_DEVICE)
 								{
-									this->macMut->Lock();
+									Sync::MutexUsage mutUsage(this->macMut);
 									mac = this->MACGet(srcMAC);
 									if (mac->name == 0)
 									{
@@ -1549,7 +1550,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 										Net::SocketUtil::GetIPv4Name(&ipData[23], ip->destIP);
 										console->WriteLine(&ipData[23]);*/
 									}
-									this->macMut->Unlock();
+									mutUsage.EndUse();
 								}
 								valid = true;
 							}
@@ -1577,7 +1578,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							Text::StringBuilderUTF8 sb;
 							IPLogInfo *ipLog;
 							UInt32 sortableIP = ReadMInt32(&packet[12]);
-							this->ipLogMut->Lock();
+							Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 							ipLog = this->ipLogMap->Get(sortableIP);
 							if (ipLog == 0)
 							{
@@ -1587,7 +1588,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
 								this->ipLogMap->Put(sortableIP, ipLog);
 							}
-							this->ipLogMut->Unlock();
+							ipLogMutUsage.EndUse();
 							Data::DateTime dt;
 							dt.SetCurrTime();
 							sb.AppendDate(&dt);
@@ -1603,13 +1604,13 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								sb.Append((const UTF8Char*)", method = ");
 								sb.AppendC(&ipData[8], i);
 							}
-							ipLog->mut->Lock();
+							Sync::MutexUsage mutUsage(ipLog->mut);
 							while (ipLog->logList->GetCount() >= IPLOGCNT)
 							{
 								Text::StrDelNew(ipLog->logList->RemoveAt(0));
 							}
 							ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
-							ipLog->mut->Unlock();
+							mutUsage.EndUse();
 						}
 						valid = true;
 //									ipData[udpLeng] = 0;
@@ -1652,14 +1653,14 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 */
 						if (this->atype & AT_DEVICE)
 						{
-							this->macMut->Lock();
+							Sync::MutexUsage mutUsage(this->macMut);
 							mac = this->MACGet(srcMAC);
 							if (mac->name == 0)
 							{
 								Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
 								mac->name = Text::StrCopyNew(sbuff);
 							}
-							this->macMut->Unlock();
+							mutUsage.EndUse();
 						}
 						valid = true;
 					}
@@ -1685,7 +1686,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 			valid = false;
 			break;
 		}
-		this->ipTranMut->Unlock();
+		ipTranMutUsage.EndUse();
 	}
 	else
 	{
@@ -1702,7 +1703,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, OSInt packetSize, In
 	{
 		if (this->atype & AT_DEVICE)
 		{
-			this->macMut->Lock();
+			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
 			if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_UNKNOWN)
 			{
@@ -1718,7 +1719,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, OSInt packetSize, In
 				MemCopyNO(mac->ipv6Addr.addr, &packet[24], 16);
 			}
 			mac->ipv6DestCnt++;
-			this->macMut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	else
@@ -1746,13 +1747,13 @@ Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, OSInt packetSize, Int
 
 			if (this->atype & AT_DEVICE)
 			{
-				this->macMut->Lock();
+				Sync::MutexUsage mutUsage(this->macMut);
 				mac = this->MACGet(srcMAC);
 				mac->othSrcCnt++;
 
 				mac = this->MACGet(destMAC);
 				mac->othDestCnt++;
-				this->macMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		else

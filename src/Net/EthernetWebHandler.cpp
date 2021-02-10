@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/EthernetWebHandler.h"
 #include "Net/MACInfo.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
 void Net::EthernetWebHandler::AppendHeader(Text::StringBuilderUTF *sbOut)
@@ -619,7 +620,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 			sb.Append((const UTF8Char*)"</h3>\r\n");
 
 			target = targetList.GetItem(targetIndex);
-			target->mut->Lock();
+			Sync::MutexUsage mutUsage(target->mut);
 			i = 0;
 			j = target->addrList->GetCount();
 			while (i < j)
@@ -631,7 +632,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 				sb.Append(target->addrList->GetItem(i));
 				i++;
 			}
-			target->mut->Unlock();
+			mutUsage.EndUse();
 		}
 
 		sb.Append((const UTF8Char*)"</td></tr></table>\r\n");
@@ -705,7 +706,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 			Net::SocketUtil::GetAddrName(sbuff, &dnsCli->addr);
 			sb.Append(sbuff);
 			sb.Append((const UTF8Char*)"<br/><table border=\"1\"><tr><td>Time</td><td>Count</td></tr>");
-			dnsCli->mut->Lock();
+			Sync::MutexUsage mutUsage(dnsCli->mut);
 			i = 0;
 			j = dnsCli->hourInfos->GetCount();
 			while (i < j)
@@ -724,7 +725,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 				sb.Append((const UTF8Char*)"</td></tr>");
 				i++;
 			}
-			dnsCli->mut->Unlock();
+			mutUsage.EndUse();
 			sb.Append((const UTF8Char*)"</table>");
 		}
 		sb.Append((const UTF8Char*)"</td></tr>\r\n");
@@ -783,7 +784,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		while (i < j)
 		{
 			dhcp = dhcpList->GetItem(i);
-			dhcp->mut->Lock();
+			Sync::MutexUsage mutUsage(dhcp->mut);
 			sb.Append((const UTF8Char*)"<tr><td>");
 			WriteMInt64(sbuff, dhcp->iMAC);
 			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LBT_NONE);
@@ -838,7 +839,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 			if (dhcp->vendorClass)
 				sb.Append(dhcp->vendorClass);
 			sb.Append((const UTF8Char*)"</td></tr>\r\n");
-			dhcp->mut->Unlock();
+			mutUsage.EndUse();
 			i++;
 		}
 		me->analyzer->DHCPEndGet();
@@ -911,7 +912,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 			ipLog = ipLogList->GetItem(ipLogInd);
 			Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
 			sb.Append(sbuff);
-			ipLog->mut->Lock();
+			Sync::MutexUsage mutUsage(ipLog->mut);
 			i = 0;
 			j = ipLog->logList->GetCount();
 			while (i < j)
@@ -920,7 +921,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 				sb.Append(ipLog->logList->GetItem(i));
 				i++;
 			}
-			ipLog->mut->Unlock();
+			mutUsage.EndUse();
 		}
 		sb.Append((const UTF8Char*)"</td></tr>\r\n");
 		me->analyzer->IPLogEndGet();

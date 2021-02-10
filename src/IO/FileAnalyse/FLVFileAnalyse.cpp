@@ -133,9 +133,7 @@ UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
 		tag->ofst = ofst;
 		tag->size = lastSize;
 		tag->tagType = tagHdr[4] & 0x1f;
-		me->tagsMut->Lock();
 		me->tags->Add(tag);
-		me->tagsMut->Unlock();
 		ofst += lastSize + 4;
 	}
 	
@@ -151,8 +149,7 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->tags, Data::ArrayList<IO::FileAnalyse::FLVFileAnalyse::FLVTag*>());
-	NEW_CLASS(this->tagsMut, Sync::Mutex());
+	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::FLVFileAnalyse::FLVTag*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 'F' || buff[1] != 'L' || buff[2] != 'V' || buff[3] != 1)
 	{
@@ -174,8 +171,6 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(IO::IStreamData *fd)
 
 IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 {
-	OSInt i;
-	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag;
 	if (this->threadRunning)
 	{
 		this->threadToStop = true;
@@ -186,14 +181,8 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	i = this->tags->GetCount();
-	while (i-- > 0)
-	{
-		tag = this->tags->GetItem(i);
-		MemFree(tag);
-	}
+	DEL_LIST_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
-	DEL_CLASS(this->tagsMut);
 }
 
 UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()

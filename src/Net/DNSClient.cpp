@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Data/RandomOS.h"
 #include "Net/DNSClient.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -12,7 +13,7 @@ void __stdcall Net::DNSClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 {
 	Net::DNSClient *me = (Net::DNSClient*)userData;
 	RequestStatus *req;
-	me->reqMut->Lock();
+	Sync::MutexUsage mutUsage(me->reqMut);
 	req = me->reqMap->Get(ReadMUInt16(buff));
 	if (req)
 	{
@@ -20,7 +21,7 @@ void __stdcall Net::DNSClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 		req->respSize = dataSize;
 		req->finEvt->Set();
 	}
-	me->reqMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(Int32 id)
@@ -28,18 +29,18 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(Int32 id)
 	RequestStatus *req = MemAlloc(RequestStatus, 1);
 	req->respSize = 0;
 	NEW_CLASS(req->finEvt, Sync::Event(true, (const UTF8Char*)"Net.DNSClient.RequestStatus.finEvt"));
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap->Put(id, req);
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	return req;
 }
 
 void Net::DNSClient::DelReq(Int32 id)
 {
 	RequestStatus *req;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	req = this->reqMap->Remove(id);
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	if (req)
 	{
 		DEL_CLASS(req->finEvt);

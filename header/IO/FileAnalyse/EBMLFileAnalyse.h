@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_EBMLFILEANALYSE
 #define _SM_IO_FILEANALYSE_EBMLFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
@@ -43,8 +43,7 @@ namespace IO
 			} ElementInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::ArrayList<PackInfo*> *packs;
-			Sync::Mutex *packMut;
+			Data::SyncArrayList<PackInfo*> *packs;
 
 			Bool pauseParsing;
 			Bool threadRunning;

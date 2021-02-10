@@ -7,6 +7,7 @@
 #include "Math/FFTCalc.h"
 #include "Math/Math.h"
 #include "Media/AudioFilter/DTMFDecoder.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilder.h"
@@ -86,9 +87,9 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 			{
 				align = me->nChannels << 1;
 
-				me->calcMut->Lock();
+				Sync::MutexUsage mutUsage(me->calcMut);
 				MemCopyNO(tmpBuff, me->calcBuff, me->sampleBuffSize);
-				me->calcMut->Unlock();
+				mutUsage.EndUse();
 				
 				i = 0;
 				j = me->sampleBuffSize - volSamples;
@@ -437,12 +438,12 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 
 void Media::AudioFilter::DTMFDecoder::ResetStatus()
 {
-	this->sampleMut->Lock();
+	Sync::MutexUsage mutUsage(this->sampleMut);
 	this->calcReady = false;
 	this->calcLeft = this->sampleCnt;
 	this->sampleOfst = 0;
 	this->currTone = 0;
-	this->sampleMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, OSInt calcInt) : Media::IAudioFilter(audSrc)
@@ -529,14 +530,14 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			sizeLeft -= thisSize;
 			this->sampleOfst += thisSize;
 		}
-		this->calcMut->Lock();
+		Sync::MutexUsage mutUsage(this->calcMut);
 		MemCopyNO(this->calcBuff, &this->sampleBuff[this->sampleOfst], this->sampleBuffSize - this->sampleOfst);
 		if (this->sampleBuffSize > 0)
 		{
 			MemCopyNO(&this->calcBuff[this->sampleBuffSize - this->sampleOfst], this->sampleBuff, this->sampleOfst);
 		}
 		this->calcReady = true;
-		this->calcMut->Unlock();
+		mutUsage.EndUse();
 		this->threadEvt->Set();
 		this->calcLeft = this->calcInt;
 		samples = sizeLeft / this->align;

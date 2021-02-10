@@ -2,6 +2,7 @@
 #define _SM_NET_SNS_SNSMANAGER
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/List.h"
+#include "Data/Usable.h"
 #include "Net/SocketFactory.h"
 #include "Net/SNS/SNSControl.h"
 #include "Text/EncodingFactory.h"
@@ -10,7 +11,7 @@ namespace Net
 {
 	namespace SNS
 	{
-		class SNSManager : public Data::List<Net::SNS::SNSControl*>
+		class SNSManager : public Data::ReadingList<Net::SNS::SNSControl*>, public Data::Usable
 		{
 		private:
 			typedef struct
@@ -45,8 +46,8 @@ namespace Net
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId);
 
-			void BeginUse();
-			void EndUse();
+			virtual void BeginUse();
+			virtual void EndUse();
 			virtual UOSInt GetCount();
 			virtual Net::SNS::SNSControl* GetItem(UOSInt index);
 		};

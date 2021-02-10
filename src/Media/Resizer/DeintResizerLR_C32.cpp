@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/Resizer/DeintResizerLR_C32.h"
@@ -112,7 +113,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 	{
 		if (swidth != dwidth)
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
@@ -155,11 +156,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			}
 			
 			action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, oFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (osSize != sheight || odSize != dheight || osStep != sbpl)
 			{
 				DestoryVertO();
@@ -181,14 +182,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				oFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, oFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	else if (dType == Media::IDeintResizer::DT_BOTTOM_FIELD)
 	{
 		if (swidth != dwidth)
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
@@ -231,11 +232,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			}
 			
 			action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, eFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (esSize != sheight || edSize != dheight || esStep != sbpl)
 			{
 				DestoryVertE();
@@ -257,14 +258,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				eFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, eFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	else
 	{
 		if (swidth != dwidth && sheight != dheight)
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
@@ -307,11 +308,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			}
 			
 			action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, vFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 		else if (swidth != dwidth)
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (hsSize != swidth || hdSize != dwidth)
 			{
 				DestoryHori();
@@ -333,11 +334,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			}
 
 			action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 		else if (sheight != dheight)
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			if (vsSize != sheight || vdSize != dheight || vsStep != sbpl)
 			{
 				DestoryVert();
@@ -359,13 +360,13 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, vFilter, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
-			mut->Lock();
+			Sync::MutexUsage mutUsage(mut);
 			action->DoCollapse(src, dest, siWidth, dheight, sbpl, dbpl, this->Media::IImgResizer::srcAlphaType);
-			mut->Unlock();
+			mutUsage.EndUse();
 
 		}
 	}
