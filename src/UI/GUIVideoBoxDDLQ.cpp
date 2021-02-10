@@ -4,6 +4,7 @@
 #include "Math/Math.h"
 #include "Media/Deinterlace8.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
+#include "Sync/MutexUsage.h"
 #include "UI/GUIVideoBoxDDLQ.h"
 
 void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
@@ -272,20 +273,20 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), srcWidth << 2, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, vbuff2->destW << 2, vbuff2->destW, vbuff2->destH);
 		vbuff2->frameNum = vbuff->frameNum;
 		vbuff2->frameTime = vbuff->frameTime + 17;
-		this->buffMut->Lock();
+		Sync::MutexUsage mutUsage(this->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
 		vbuff2->isOutputReady = true;
 		vbuff2->isProcessing = false;
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 		this->dispEvt->Set();
 	}
 	else
 	{
-		this->buffMut->Lock();
+		Sync::MutexUsage mutUsage(this->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 		this->dispEvt->Set();
 	}
 }

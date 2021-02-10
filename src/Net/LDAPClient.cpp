@@ -5,6 +5,7 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 #include "Net/LDAPClient.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/CharUtil.h"
 
@@ -194,7 +195,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 			#if defined(VERBOSE)
 			printf("LDAPMessage: BindResponse, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
 			#endif
-			this->reqMut->Lock();
+			Sync::MutexUsage mutUsage(this->reqMut);
 			req = this->reqMap->Get(msgId);
 			if (req)
 			{
@@ -202,7 +203,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 				req->isFin = true;
 				this->respEvt->Set();
 			}
-			this->reqMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	case 0x64: //searchResEntry
@@ -285,7 +286,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 				}
 			}
 			printf("LDAPMessage: searchResEntry, end 5\r\n");
-			this->reqMut->Lock();
+			Sync::MutexUsage mutUsage(this->reqMut);
 			req = this->reqMap->Get(msgId);
 			if (req && req->searchObjs)
 			{
@@ -295,7 +296,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 			{
 				SearchResObjectFree(obj);
 			}
-			this->reqMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	case 0x65: //searchResDone
@@ -315,7 +316,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 			#if defined(VERBOSE)
 			printf("LDAPMessage: searchResDone, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
 			#endif
-			this->reqMut->Lock();
+			Sync::MutexUsage mutUsage(this->reqMut);
 			req = this->reqMap->Get(msgId);
 			if (req)
 			{
@@ -323,7 +324,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 				req->isFin = true;
 				this->respEvt->Set();
 			}
-			this->reqMut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	case 0x73: //searchResRef
@@ -335,7 +336,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 				#if defined(VERBOSE)
 				printf("LDAPMessage: searchResRef, LDAPURL = %s\r\n", sb.ToString());
 				#endif
-				this->reqMut->Lock();
+				Sync::MutexUsage mutUsage(this->reqMut);
 				req = this->reqMap->Get(msgId);
 				if (req && req->searchObjs)
 				{
@@ -346,7 +347,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
 					obj->items = 0;
 					req->searchObjs->Add(obj);
 				}
-				this->reqMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -610,10 +611,10 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
 	pdu->SequenceBegin(0x30);
-	this->msgIdMut->Lock();
+	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	status.msgId = ++(this->lastMsgId);
 	pdu->AppendUInt32(status.msgId);
-	this->msgIdMut->Unlock();
+	msgIdMutUsage.EndUse();
 	
 	pdu->SequenceBegin(0x60); //BindRequest
 	pdu->AppendUInt32(3); //version
@@ -636,9 +637,9 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 	status.isFin = false;
 	status.resultCode = 0;
 	status.searchObjs = 0;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap->Put(status.msgId, &status);
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 
 	valid = (this->cli->Write(buff, buffSize) == (UOSInt)buffSize);
 	DEL_CLASS(pdu);
@@ -655,9 +656,9 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 		}
 		valid = status.isFin && status.resultCode == 0;
 	}
-	this->reqMut->Lock();
+	mutUsage.BeginUse();
 	this->reqMap->Remove(status.msgId);
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	return valid;
 }
 
@@ -669,9 +670,9 @@ Bool Net::LDAPClient::Unbind()
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
 	pdu->SequenceBegin(0x30);
-	this->msgIdMut->Lock();
+	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	pdu->AppendUInt32(++(this->lastMsgId));
-	this->msgIdMut->Unlock();
+	msgIdMutUsage.EndUse();
 	pdu->AppendBuff(0x42, 0, 0); //UnbindRequest
 
 	pdu->SequenceBegin(0xA0); //control
@@ -698,10 +699,10 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
 	pdu->SequenceBegin(0x30);
-	this->msgIdMut->Lock();
+	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	status.msgId = ++(this->lastMsgId);
 	pdu->AppendUInt32(status.msgId);
-	this->msgIdMut->Unlock();
+	msgIdMutUsage.EndUse();
 	status.searchObjs = &resObjs;
 
 	pdu->SequenceBegin(0x63); //SearchRequest
@@ -738,9 +739,9 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 
 	status.isFin = false;
 	status.resultCode = 0;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap->Put(status.msgId, &status);
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 
 	valid = (this->cli->Write(buff, buffSize) == (UOSInt)buffSize);
 	DEL_CLASS(pdu);
@@ -758,9 +759,9 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 		valid = status.isFin && status.resultCode == 0;
 	}
 
-	this->reqMut->Lock();
+	mutUsage.BeginUse();
 	this->reqMap->Remove(status.msgId);
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	if (valid)
 	{
 		results->AddRange(&resObjs);

@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Thread.h"
 #include "Media/ImageCopy.h"
 #include "Media/ImageCopyC.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
 #if defined(CPU_X86_64)
 extern "C" Int32 UseAVX;
@@ -80,7 +81,6 @@ Media::ImageCopy::ImageCopy()
 {
 	UOSInt i;
 	Bool found;
-	NEW_CLASS(mut, Sync::Mutex());
 	NEW_CLASS(evtMain, Sync::Event(true, (const UTF8Char*)"Media.ImageCopy.evtMain"));
 #if defined(CPU_X86_64)
 	if (CPUBrand == 2)
@@ -132,7 +132,6 @@ Media::ImageCopy::~ImageCopy()
 {
 	UOSInt i = nThread;
 	Bool found;
-	mut->Lock();
 	while (i-- > 0)
 	{
 		stats[i].status = 2;
@@ -161,8 +160,6 @@ Media::ImageCopy::~ImageCopy()
 			}
 			MemFree(stats);
 			DEL_CLASS(evtMain);
-			mut->Unlock();
-			DEL_CLASS(mut);
 			break;
 		}
 	}

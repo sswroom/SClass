@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Media/FileVideoSource.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -116,9 +117,9 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 						if (me->playToStop)
 							break;
 					}
-					me->outputMut->Lock();
+					Sync::MutexUsage mutUsage(me->outputMut);
 					nextIndex = (me->outputStart + me->outputCount) & (BUFFCNT - 1);
-					me->outputMut->Unlock();
+					mutUsage.EndUse();
 					if (!me->playToStop)
 					{
 						me->outputFrames[nextIndex].frameTime = frameTime;
@@ -130,9 +131,9 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 						me->outputFrames[nextIndex].fType = ftype;
 						me->outputFrames[nextIndex].flags = (frameNum != lastFrameNum + 1)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE;
 						me->outputFrames[nextIndex].ycOfst = Media::YCOFST_C_CENTER_LEFT;
-						me->outputMut->Lock();
+						mutUsage.BeginUse();
 						me->outputCount++;
-						me->outputMut->Unlock();
+						mutUsage.EndUse();
 						me->outputEvt->Set();
 						frameBuff = frameBuff2;
 					}
@@ -173,10 +174,10 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 		{
 			nextIndex = me->outputStart;
 			me->playCb(me->outputFrames[nextIndex].frameTime, me->outputFrames[nextIndex].frameNum, &me->outputFrames[nextIndex].frameBuff, me->outputFrames[nextIndex].frameSize, me->outputFrames[nextIndex].frameStruct, me->playCbData, me->outputFrames[nextIndex].fType, me->outputFrames[nextIndex].flags, me->outputFrames[nextIndex].ycOfst);
-			me->outputMut->Lock();
+			Sync::MutexUsage mutUsage(me->outputMut);
 			me->outputStart = (me->outputStart + 1) & (BUFFCNT - 1);
 			me->outputCount--;
-			me->outputMut->Unlock();
+			mutUsage.EndUse();
 			me->playEvt->Set();
 		}
 		else
@@ -185,9 +186,9 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 		}
 	}
 	me->outputRunning = false;
-	me->outputMut->Lock();
+	Sync::MutexUsage mutUsage(me->outputMut);
 	me->outputCount = 0;
-	me->outputMut->Unlock();
+	mutUsage.EndUse();
 	me->playEvt->Set();
 	me->mainEvt->Set();
 	return 0;
@@ -324,7 +325,7 @@ Bool Media::FileVideoSource::Start()
 			return false;
 		}
 	}
-	this->pbcMut->Lock();
+	Sync::MutexUsage mutUsage(this->pbcMut);
 	this->playEnd = false;
 	this->playToStop = false;
 	this->outputToStop = false;
@@ -340,13 +341,13 @@ Bool Media::FileVideoSource::Start()
 	{
 		this->mainEvt->Wait(100);
 	}
-	this->pbcMut->Unlock();
+	mutUsage.EndUse();
 	return true;
 }
 
 void Media::FileVideoSource::Stop()
 {
-	this->pbcMut->Lock();
+	Sync::MutexUsage mutUsage(this->pbcMut);
 	if (this->outputRunning)
 	{
 		this->outputToStop = true;
@@ -365,7 +366,7 @@ void Media::FileVideoSource::Stop()
 			this->mainEvt->Wait(100);
 		}
 	}
-	this->pbcMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Bool Media::FileVideoSource::IsRunning()

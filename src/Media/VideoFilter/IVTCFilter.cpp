@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/VideoFilter/IVTCFilter.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/UTF8Writer.h"
 
@@ -18,12 +19,12 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 {
 	if (flags & Media::IVideoSource::FF_DISCONTTIME)
 	{
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->enabled)
 		{
 			this->ClearIVTC();
 		}
-		this->mut->Unlock();
+		mutUsage.EndUse();
 	}
 	if (frameType == Media::FT_DISCARD)
 		return;
@@ -32,7 +33,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 	{
 		this->mainEvt->Wait(100);
 	}
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
 	{
 		if (this->fieldExist)
@@ -125,7 +126,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 							flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
 						}
 						this->fieldExist = false;
-						this->mut->Unlock();
+						mutUsage.EndUse();
 						StartIVTC(frameTime, frameNum, this->fieldBuff, dataSize, frameStruct, frameType, flags, ycOfst);
 						return;
 					}
@@ -252,7 +253,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 							flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
 						}
 						this->fieldExist = false;
-						this->mut->Unlock();
+						mutUsage.EndUse();
 						//do_IVTC(frameTime, frameNum, this->fieldBuff, dataSize, frameStruct, frameType, flags, ycOfst);
 						StartIVTC(frameTime, frameNum, this->fieldBuff, dataSize, frameStruct, frameType, flags, ycOfst);
 						return;
@@ -329,7 +330,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 					this->fieldNum = frameNum;
 					this->fieldDataSize = dataSize;
 					this->fieldIsDiscont = (flags & Media::IVideoSource::FF_DISCONTTIME);
-					this->mut->Unlock();
+					mutUsage.EndUse();
 					return;
 				}
 				else if (frameType == Media::FT_MERGED_TF)
@@ -350,7 +351,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 					this->fieldNum = frameNum;
 					this->fieldDataSize = dataSize;
 					this->fieldIsDiscont = (flags & Media::IVideoSource::FF_DISCONTTIME);
-					this->mut->Unlock();
+					mutUsage.EndUse();
 					return;
 				}
 				else if (frameType == Media::FT_MERGED_BF)
@@ -371,13 +372,13 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 					this->fieldNum = frameNum;
 					this->fieldDataSize = dataSize;
 					this->fieldIsDiscont = (flags & Media::IVideoSource::FF_DISCONTTIME);
-					this->mut->Unlock();
+					mutUsage.EndUse();
 					return;
 				}
 			}
 		}
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	do_IVTC(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
 }
 
@@ -394,7 +395,7 @@ void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::IVideoSource::FrameCha
 
 void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
 	{
 		if (frameType == Media::FT_INTERLACED_TFF || frameType == Media::FT_INTERLACED_BFF)
@@ -1195,7 +1196,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 			MemCopyNANC(this->ivtcLastFrame, imgData[0], dataSize);
 			if (frameType == Media::FT_DISCARD)
 			{
-				this->mut->Unlock();
+				mutUsage.EndUse();
 				return;
 			}
 			if (mergedFrame)
@@ -1205,7 +1206,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 			frameTime = outFrameTime;
 		}
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	if (this->videoCb)
 	{
 		this->videoCb(frameTime, frameNum, imgData, dataSize, frameStruct, this->userData, frameType, flags, ycOfst);
@@ -2065,10 +2066,10 @@ const UTF8Char *Media::VideoFilter::IVTCFilter::GetFilterName()
 
 void Media::VideoFilter::IVTCFilter::SetEnabled(Bool enabled)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->enabled = enabled;
 	this->ClearIVTC();
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::VideoFilter::IVTCFilter::Stop()

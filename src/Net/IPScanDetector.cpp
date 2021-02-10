@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "Net/IPScanDetector.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -42,7 +43,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				MemCopyNO(&macBuff[2], &buff[6], 6);
 				iMAC = ReadMInt64(macBuff);
 				ip = ReadMInt32(&buff[38]);
-				stat->me->adapterMut->Lock();
+				Sync::MutexUsage mutUsage(stat->me->adapterMut);
 				adapter = stat->me->adapterMap->Get(iMAC);
 				if (adapter)
 				{
@@ -75,7 +76,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					adapter->targetIPMap->Put(ip, reqTime);
 					stat->me->adapterMap->Put(iMAC, adapter);
 				}
-				stat->me->adapterMut->Unlock();
+				mutUsage.EndUse();
 			}
 			else if (opcode == 2) //Reply
 			{
@@ -92,7 +93,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				MemCopyNO(&macBuff[2], &buff[0], 6);
 				iMAC = ReadMInt64(macBuff);
 				ip = ReadMInt32(&buff[28]);
-				stat->me->adapterMut->Lock();
+				Sync::MutexUsage mutUsage(stat->me->adapterMut);
 				adapter = stat->me->adapterMap->Get(iMAC);
 				if (adapter)
 				{
@@ -125,7 +126,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					adapter->targetIPMap->Put(ip, reqTime);
 					stat->me->adapterMap->Put(iMAC, adapter);
 				}
-				stat->me->adapterMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 	}

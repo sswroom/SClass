@@ -119,9 +119,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 	tag->ofst = 0;
 	tag->size = 2;
 	tag->tagType = 0xd8; //SOI
-	me->tagsMut->Lock();
 	me->tags->Add(tag);
-	me->tagsMut->Unlock();
 
 	while (ofst < dataSize - 11 && !me->threadToStop)
 	{
@@ -140,9 +138,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			tag->ofst = ofst;
 			tag->size = lastSize + 2;
 			tag->tagType = tagHdr[1];
-			me->tagsMut->Lock();
 			me->tags->Add(tag);
-			me->tagsMut->Unlock();
 			ofst += lastSize + 2;
 
 			me->fd->GetRealData(dataSize - 2, 2, tagHdr);
@@ -152,16 +148,12 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 				tag->ofst = ofst;
 				tag->size = (OSInt)(dataSize - ofst - 2);
 				tag->tagType = 0;
-				me->tagsMut->Lock();
 				me->tags->Add(tag);
-				me->tagsMut->Unlock();
 				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
 				tag->ofst = dataSize - 2;
 				tag->size = 2;
 				tag->tagType = 0xd9;
-				me->tagsMut->Lock();
 				me->tags->Add(tag);
-				me->tagsMut->Unlock();
 			}
 			else
 			{
@@ -169,9 +161,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 				tag->ofst = ofst;
 				tag->size = (OSInt)(dataSize - ofst);
 				tag->tagType = 0;
-				me->tagsMut->Lock();
 				me->tags->Add(tag);
-				me->tagsMut->Unlock();
 			}
 			break;
 		}
@@ -183,9 +173,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			tag->ofst = ofst;
 			tag->size = lastSize + 2;
 			tag->tagType = tagHdr[1];
-			me->tagsMut->Lock();
 			me->tags->Add(tag);
-			me->tagsMut->Unlock();
 			ofst += lastSize + 2;
 		}
 	}
@@ -202,8 +190,7 @@ IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->tags, Data::ArrayList<IO::FileAnalyse::JPGFileAnalyse::JPGTag*>());
-	NEW_CLASS(this->tagsMut, Sync::Mutex());
+	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::JPGFileAnalyse::JPGTag*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 	{
@@ -220,8 +207,6 @@ IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::IStreamData *fd)
 
 IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 {
-	OSInt i;
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag;
 	if (this->threadRunning)
 	{
 		this->threadToStop = true;
@@ -232,14 +217,8 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	i = this->tags->GetCount();
-	while (i-- > 0)
-	{
-		tag = this->tags->GetItem(i);
-		MemFree(tag);
-	}
+	DEL_LIST_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
-	DEL_CLASS(this->tagsMut);
 }
 
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()

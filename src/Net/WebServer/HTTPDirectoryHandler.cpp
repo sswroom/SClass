@@ -10,6 +10,7 @@
 #include "Net/MIME.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -921,12 +922,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		}
 	}
 	CacheInfo *cache;
-	this->fileCacheMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileCacheMut);
 	cache = this->fileCache->Get(subReq);
 	if (cache != 0)
 	{
 		Sync::Interlocked::Increment(&this->fileCacheUsing);
-		this->fileCacheMut->Unlock();
+		mutUsage.EndUse();
 		if (this->statMap)
 		{
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
@@ -934,7 +935,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.Append(subReq);
 			i = sb.LastIndexOf('/');
 			sb.TrimToLength(i);
-			this->statMut->Lock();
+			Sync::MutexUsage statMutUsage(this->statMut);
 			stat = this->statMap->Get(sb.ToString());
 			if (stat)
 			{
@@ -953,7 +954,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				stat->cntMap->Put(sb.ToString(), cnt + 1);
 				stat->updated = true;
 			}
-			this->statMut->Unlock();
+			statMutUsage.EndUse();
 		}
 		resp->AddDefHeaders(req);
 		AddCacheHeader(resp);
@@ -991,7 +992,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Sync::Interlocked::Decrement(&this->fileCacheUsing);
 		return true;
 	}
-	this->fileCacheMut->Unlock();
+	mutUsage.EndUse();
 
 	sb.ClearStr();
 	sb.Append(this->rootDir);
@@ -1081,9 +1082,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				if (readSize == sizeLeft)
 				{
 					this->SendContent(req, resp, mime, sizeLeft, cache->buff);
-					this->fileCacheMut->Lock();
+					Sync::MutexUsage mutUsage(this->fileCacheMut);
 					this->fileCache->Put(subReq, cache);
-					this->fileCacheMut->Unlock();
+					mutUsage.EndUse();
 				}
 				else
 				{
@@ -1259,13 +1260,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 				if (sess)
 				{
+					Sync::MutexUsage mutUsage(this->statMut);
 					if (this->statMap)
 					{
 						if (sb2.GetLength() > 1 && sb2.EndsWith('/'))
 						{
 							sb2.RemoveChars(1);
 						}
-						this->statMut->Lock();
 						stat = this->statMap->Get(sb2.ToString());
 						if (stat == 0)
 						{
@@ -1280,6 +1281,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							this->statMap->Put(stat->reqPath, stat);
 							this->StatLoad(stat);
 						}
+					}
+					else
+					{
+						mutUsage.EndUse();
 					}
 
 					Int32 cnt;
@@ -1349,7 +1354,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						IO::Path::FindFileClose(sess);
 						if (stat)
 						{
-							this->statMut->Unlock();
+							mutUsage.EndUse();
 						}
 					}
 					else
@@ -1382,7 +1387,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						IO::Path::FindFileClose(sess);
 						if (stat)
 						{
-							this->statMut->Unlock();
+							mutUsage.EndUse();
 						}
 
 						UOSInt i;
@@ -1503,7 +1508,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			i = sb2.LastIndexOf('/');
 			sptr2 = sb2.ToString() + i + 1;
 			sb2.ToString()[i] = 0;
-			this->statMut->Lock();
+			Sync::MutexUsage mutUsage(this->statMut);
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
 			if (sb2.ToString()[0] == 0)
 			{
@@ -1536,7 +1541,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			stat->cntMap->Put(sptr2, stat->cntMap->Get(sptr2) + 1);
 			stat->updated = true;
-			this->statMut->Unlock();
+			mutUsage.EndUse();
 		}
 		IO::Path::GetFileExt(sbuff, sptr);
 
@@ -1670,9 +1675,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			if (readSize == sizeLeft)
 			{
 				this->SendContent(req, resp, mime, sizeLeft, cache->buff);
-				this->fileCacheMut->Lock();
+				Sync::MutexUsage mutUsage(this->fileCacheMut);
 				cache = this->fileCache->Put(subReq, cache);
-				this->fileCacheMut->Unlock();
+				mutUsage.EndUse();
 				if (cache)
 				{
 					MemFree(cache->buff);
@@ -1720,7 +1725,7 @@ void Net::WebServer::HTTPDirectoryHandler::SetAllowOrigin(const UTF8Char *origin
 void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 {
 	UOSInt cacheCnt;
-	this->fileCacheMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileCacheMut);
 	while (this->fileCacheUsing > 0)
 	{
 		Sync::Thread::Sleep(1);
@@ -1733,7 +1738,7 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	}
 	MemFree(cacheList);
 	this->fileCache->Clear();
-	this->fileCacheMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList *parsers)
@@ -1811,7 +1816,7 @@ void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 		Data::ArrayList<Net::WebServer::HTTPDirectoryHandler::StatInfo*> *statList;
 		Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
 		OSInt i;
-		this->statMut->Lock();
+		Sync::MutexUsage mutUsage(this->statMut);
 		statList = this->statMap->GetValues();
 		i = statList->GetCount();
 		while (i-- > 0)
@@ -1822,6 +1827,6 @@ void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 				this->StatSave(stat);
 			}
 		}
-		this->statMut->Unlock();
+		mutUsage.EndUse();
 	}
 }

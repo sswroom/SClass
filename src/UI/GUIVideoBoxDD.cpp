@@ -11,6 +11,7 @@
 #include "Media/Resizer/LanczosResizerLR_C16.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIVideoBoxDD.h"
@@ -54,7 +55,7 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 	OSInt rect[4];
 
 	this->VideoBeginProc();
-	this->surfaceMut->Lock();
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	OSInt vwidth = this->videoInfo->dispWidth - cropLeft - cropRight;
 	OSInt vheight = this->videoInfo->dispHeight - cropTop - cropBottom;
 	if (this->videoInfo->ftype == Media::FT_FIELD_BF || this->videoInfo->ftype == Media::FT_FIELD_TF)
@@ -80,7 +81,7 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 			this->LockSurfaceUnlock();
 		}
 	}
-	this->surfaceMut->Unlock();
+	mutUsage.EndUse();
 	this->VideoEndProc();
 	
 }
@@ -136,10 +137,10 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 		tstat->csconv->ConvertV2(&vbuff->srcBuff, vbuff->destBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, tstat->me->videoInfo->dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
-		tstat->me->buffMut->Lock();
+		Sync::MutexUsage mutUsage(tstat->me->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
-		tstat->me->buffMut->Unlock();
+		mutUsage.EndUse();
 		tstat->me->dispEvt->Set();
 	}
 	else
@@ -390,10 +391,10 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				vbuff2->frameNum = vbuff->frameNum;
 				vbuff2->frameTime = vbuff->frameTime + 16;
 
-				tstat->me->buffMut->Lock();
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->dispEvt->Set();
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
@@ -404,18 +405,18 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				{
 					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH);
 				}
-				tstat->me->buffMut->Lock();
+				mutUsage.BeginUse();
 				vbuff2->isOutputReady = true;
 				vbuff2->isProcessing = false;
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->dispEvt->Set();
 			}
 			else
 			{
-				tstat->me->buffMut->Lock();
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->dispEvt->Set();
 			}
 
@@ -652,10 +653,10 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				vbuff2->frameNum = vbuff->frameNum;
 				vbuff2->frameTime = vbuff->frameTime + 16;
 
-				tstat->me->buffMut->Lock();
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->dispEvt->Set();
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
@@ -667,18 +668,18 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 3);
 				}
 				tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH);
-				tstat->me->buffMut->Lock();
+				mutUsage.BeginUse();
 				vbuff2->isOutputReady = true;
 				vbuff2->isProcessing = false;
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->dispEvt->Set();
 			}
 			else
 			{
-				tstat->me->buffMut->Lock();
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->dispEvt->Set();
 			}
 			tstat->hTime = 0;
@@ -944,9 +945,10 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 	{
 		buffCnt = me->allBuffCnt;
 	}
+	Sync::MutexUsage mutUsage(me->buffMut);
 	while (!found)
 	{
-		me->buffMut->Lock();
+		mutUsage.BeginUse();
 		frameIndex = 0;
 		while (frameIndex < buffCnt)
 		{
@@ -959,14 +961,14 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 		}
 		if (found)
 			break;
-		me->buffMut->Unlock();
+		mutUsage.EndUse();
 		me->buffEvt->Wait(10);
 		if(!me->playing)
 			return;
 	}
 	if (me->buffs[frameIndex].srcBuff == 0)
 	{
-		me->buffMut->Unlock();
+		mutUsage.EndUse();
 		return;
 	}
 
@@ -1069,7 +1071,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 	{
 		if ((flags & Media::IVideoSource::FF_DISCONTTIME) == 0 && me->lastFrameTime < frameTime && me->lastFrameTime + 30 > frameTime)
 		{
-			me->buffMut->Unlock();
+			mutUsage.EndUse();
 			return;
 		}
 
@@ -1079,7 +1081,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 		}
 		else if (frameType == Media::FT_FIELD_BF || frameType == Media::FT_MERGED_BF)
 		{
-			me->buffMut->Unlock();
+			mutUsage.EndUse();
 			return;
 		}
 		else if (frameType == Media::FT_INTERLACED_TFF)
@@ -1119,7 +1121,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 	me->buffs[frameIndex].isProcessing = false;
 	me->buffs[frameIndex].isOutputReady = false;
 	me->buffs[frameIndex].isEmpty = false;
-	me->buffMut->Unlock();
+	mutUsage.EndUse();
 
 	i = me->threadCnt;
 	while (i-- > 0)
@@ -1137,7 +1139,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 		found = false;
 		while (!found)
 		{
-			me->buffMut->Lock();
+			mutUsage.BeginUse();
 			frameIndex = 0;
 			while (frameIndex < me->allBuffCnt)
 			{
@@ -1150,14 +1152,14 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 			}
 			if (found)
 				break;
-			me->buffMut->Unlock();
+			mutUsage.EndUse();
 			me->buffEvt->Wait(10);
 			if(!me->playing)
 				return;
 		}
 		if (me->buffs[frameIndex].srcBuff == 0)
 		{
-			me->buffMut->Unlock();
+			mutUsage.EndUse();
 			return;
 		}
 
@@ -1206,7 +1208,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 		me->buffs[frameIndex].isProcessing = false;
 		me->buffs[frameIndex].isOutputReady = false;
 		me->buffs[frameIndex].isEmpty = false;
-		me->buffMut->Unlock();
+		mutUsage.EndUse();
 
 		i = me->threadCnt;
 		while (i-- > 0)
@@ -1263,7 +1265,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 	while (!tstat->me->threadToStop)
 	{
 		found = false;
-		tstat->me->buffMut->Lock();
+		Sync::MutexUsage mutUsage(tstat->me->buffMut);
 		i = tstat->me->allBuffCnt;
 		while (i-- > 0)
 		{
@@ -1295,7 +1297,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 			buff = &tstat->me->buffs[minIndex];
 			buff->isProcessing = true;
 		}
-		tstat->me->buffMut->Unlock();
+		mutUsage.EndUse();
 
 		if (found)
 		{
@@ -1305,7 +1307,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 				buff2 = 0;
 				while (buff2 == 0)
 				{
-					tstat->me->buffMut->Lock();
+					mutUsage.BeginUse();
 					i = tstat->me->allBuffCnt;
 					while (i-- > 0)
 					{
@@ -1318,7 +1320,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 							break;
 						}
 					}
-					tstat->me->buffMut->Unlock();
+					mutUsage.EndUse();
 					if (buff2)
 						break;
 					tstat->me->buffEvt->Wait(10);
@@ -1362,7 +1364,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 
 			if (toSkip)
 			{
-				tstat->me->buffMut->Lock();
+				mutUsage.BeginUse();
 				buff->isOutputReady = false;
 				buff->isProcessing = false;
 				buff->isEmpty = true;
@@ -1372,7 +1374,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 					buff2->isProcessing = false;
 					buff2->isEmpty = true;
 				}
-				tstat->me->buffMut->Unlock();
+				mutUsage.EndUse();
 				tstat->me->buffEvt->Set();
 				Sync::Interlocked::Increment(&tstat->me->debugFrameSkip1);
 			}
@@ -1608,7 +1610,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 							me->dispMut->UnlockRead();
 							clk.Start();
 							me->VideoBeginProc();
-							me->surfaceMut->Lock();
+							Sync::MutexUsage mutUsage(me->surfaceMut);
 
 							OSInt rect[4];
 							OSInt vwidth = me->videoInfo->dispWidth - me->cropLeft - me->cropRight;
@@ -1642,7 +1644,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 
 							me->dispFrameTime = frameTime;
 							me->dispFrameNum = frameNum;
-							me->surfaceMut->Unlock();
+							mutUsage.EndUse();
 							me->VideoEndProc();
 							dispT = clk.GetTimeDiff();
 							me->dispDelayMut->LockWrite();
@@ -2493,7 +2495,7 @@ void UI::GUIVideoBoxDD::GetDebugValues(DebugValue *dbg)
 	dbg->vTime = vTime / this->threadCnt;
 	dbg->csTime = csTime / this->threadCnt;
 
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	i = 0;
 	while (i < this->allBuffCnt)
 	{
@@ -2510,7 +2512,7 @@ void UI::GUIVideoBoxDD::GetDebugValues(DebugValue *dbg)
 		}
 		i++;
 	}
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void UI::GUIVideoBoxDD::SetSrcRGBType(Media::CS::TransferType rgbType)

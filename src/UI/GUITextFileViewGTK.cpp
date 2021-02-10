@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Text/Encoding.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -29,7 +30,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				SDEL_TEXT(me->srchText);
 				me->isSearching = false;
 			}
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			me->loadNewFile = false;
 			if (me->fs)
 			{
@@ -41,7 +42,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			me->readBuffOfst = 0;
 			me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
 			me->fileCodePage = me->codePage;
-			me->mut->Unlock();
+			mutUsage.EndUse();
 
 			if (me->readBuffSize >= 3)
 			{
@@ -68,9 +69,9 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				}
 			}
 
-			me->mut->Lock();
+			mutUsage.BeginUse();
 			me->lineOfsts->Add(me->readBuffOfst);
-			me->mut->Unlock();
+			mutUsage.EndUse();
 			lastC = 0;
 			if (me->fileCodePage == 1200)
 			{
@@ -79,7 +80,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 					if (me->loadNewFile || me->threadToStop)
 						break;
 
-					me->mut->Lock();
+					mutUsage.BeginUse();
 					lineCurr = 0;
 					while (lineCurr < me->readBuffSize)
 					{
@@ -115,7 +116,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 
 					me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 					me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-					me->mut->Unlock();
+					mutUsage.EndUse();
 				}
 			}
 			else if (me->fileCodePage == 1201)
@@ -126,7 +127,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						break;
 
 					lineCurr = 0;
-					me->mut->Lock();
+					mutUsage.BeginUse();
 					while (lineCurr < me->readBuffSize)
 					{
 						c = (me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1];
@@ -161,7 +162,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 
 					me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 					me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-					me->mut->Unlock();
+					mutUsage.EndUse();
 				}
 			}
 			else
@@ -172,7 +173,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						break;
 
 					lineCurr = 0;
-					me->mut->Lock();
+					mutUsage.BeginUse();
 					while (lineCurr < me->readBuffSize)
 					{
 						c = me->readBuff[lineCurr];
@@ -207,7 +208,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 
 					me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 					me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-					me->mut->Unlock();
+					mutUsage.EndUse();
 				}
 			}
 			if (me->loadNewFile || me->threadToStop)
@@ -223,20 +224,20 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 		else if (me->fs)
 		{
 			Int64 size;
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			size = me->fs->GetLength();
-			me->mut->Unlock();
+			mutUsage.EndUse();
 			if (size > me->fileSize)
 			{
 				OSInt i;
-				me->mut->Lock();
+				mutUsage.BeginUse();
 				i = me->lineOfsts->GetCount();
 				me->lineOfsts->RemoveAt(i - 1);
 				me->readBuffOfst = me->lineOfsts->GetItem(i - 2);
 				me->readingFile = true;
 				me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 				me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-				me->mut->Unlock();
+				mutUsage.EndUse();
 			
 				lastC = 0;
 				if (me->fileCodePage == 1200)
@@ -246,7 +247,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						if (me->loadNewFile || me->threadToStop)
 							break;
 
-						me->mut->Lock();
+						mutUsage.BeginUse();
 						lineCurr = 0;
 						while (lineCurr < me->readBuffSize)
 						{
@@ -282,7 +283,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 
 						me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 						me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-						me->mut->Unlock();
+						mutUsage.EndUse();
 					}
 				}
 				else if (me->fileCodePage == 1201)
@@ -293,7 +294,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							break;
 
 						lineCurr = 0;
-						me->mut->Lock();
+						mutUsage.BeginUse();
 						while (lineCurr < me->readBuffSize)
 						{
 							c = (me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1];
@@ -328,7 +329,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 
 						me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 						me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-						me->mut->Unlock();
+						mutUsage.EndUse();
 					}
 				}
 				else
@@ -339,7 +340,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							break;
 
 						lineCurr = 0;
-						me->mut->Lock();
+						mutUsage.BeginUse();
 						while (lineCurr < me->readBuffSize)
 						{
 							c = me->readBuff[lineCurr];
@@ -374,7 +375,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 
 						me->fs->Seek(IO::SeekableStream::ST_BEGIN, me->readBuffOfst);
 						me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-						me->mut->Unlock();
+						mutUsage.EndUse();
 					}
 				}
 				if (me->loadNewFile || me->threadToStop)
@@ -419,7 +420,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				currOfst = startLineOfst;
 				while (true)
 				{
-					me->mut->Lock();
+					Sync::MutexUsage mutUsage(me->mut);
 					if (me->fs)
 					{
 						me->fs->Seek(IO::SeekableStream::ST_BEGIN, currOfst);
@@ -430,7 +431,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 					{
 						currSize = 0;
 					}
-					me->mut->Unlock();
+					mutUsage.EndUse();
 					if (currSize <= srchTxtLen)
 					{
 						break;
@@ -491,7 +492,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 					currOfst = 0;
 					while (currOfst < nextLineOfst)
 					{
-						me->mut->Lock();
+						Sync::MutexUsage mutUsage(me->mut);
 						if (me->fs)
 						{
 							currSize = (OSInt)(nextLineOfst - currOfst);
@@ -507,7 +508,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						{
 							currSize = 0;
 						}
-						me->mut->Unlock();
+						mutUsage.EndUse();
 						if (currSize <= srchTxtLen)
 						{
 							break;
@@ -596,10 +597,10 @@ void UI::GUITextFileView::CopySelected()
 	else if (selTopX < selBottomX)
 	{
 	}
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fs == 0)
 	{
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		return;
 	}
 
@@ -617,7 +618,7 @@ void UI::GUITextFileView::CopySelected()
 		endOfst = this->lineOfsts->GetItem(selTopY + 1);
 		if (endOfst == 0)
 		{
-			this->mut->Unlock();
+			mutUsage.EndUse();
 			DEL_CLASS(enc);
 			return;
 //			endOfst = this->fs->GetLength();
@@ -625,7 +626,7 @@ void UI::GUITextFileView::CopySelected()
 		rbuff = MemAlloc(UInt8, (OSInt)(endOfst - startOfst));
 		this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst);
 		this->fs->Read(rbuff, (OSInt)(endOfst - startOfst));
-		this->mut->Unlock();
+		mutUsage.EndUse();
 
 		j = enc->CountUTF8Chars(rbuff, (OSInt)(endOfst - startOfst));
 		line = MemAlloc(UTF8Char, j + 1);
@@ -643,14 +644,14 @@ void UI::GUITextFileView::CopySelected()
 		endOfst = this->lineOfsts->GetItem(selBottomY);
 		if (endOfst == 0)
 		{
-			this->mut->Unlock();
+			mutUsage.EndUse();
 			DEL_CLASS(enc);
 			return;
 //			endOfst = this->fs->GetLength();
 		}
 		else if (endOfst - startOfst > 1048576)
 		{
-			this->mut->Unlock();
+			mutUsage.EndUse();
 			DEL_CLASS(enc);
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Failed to copy because selected area is too long", (const UTF8Char*)"TextViewer", this);
 			return;
@@ -670,14 +671,14 @@ void UI::GUITextFileView::CopySelected()
 		endOfst = this->lineOfsts->GetItem(selBottomY + 1);
 		if (endOfst == 0)
 		{
-			this->mut->Unlock();
+			mutUsage.EndUse();
 			return;
 //			endOfst = this->fs->GetLength();
 		}
 		rbuff = MemAlloc(UInt8, (OSInt)(endOfst - startOfst));
 		this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst);
 		this->fs->Read(rbuff, (OSInt)(endOfst - startOfst));
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		j = enc->CountUTF8Chars(rbuff, (OSInt)(endOfst - startOfst));
 		line = MemAlloc(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff, (OSInt)(endOfst - startOfst), 0);
@@ -749,10 +750,10 @@ void UI::GUITextFileView::GetPosFromByteOfst(Int64 byteOfst, UInt32 *txtPosX, UO
 	OSInt buffSize = (OSInt)(byteOfst - thisOfst);
 	UInt8 *rbuff = MemAlloc(UInt8, buffSize);
 	Text::Encoding enc(this->fileCodePage);
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->fs->Seek(IO::SeekableStream::ST_BEGIN, thisOfst);
 	this->fs->Read(rbuff, buffSize);
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	*txtPosX = (Int32)enc.CountWChars(rbuff, buffSize);
 	*txtPosY = lineNum;
 	MemFree(rbuff);
@@ -883,9 +884,9 @@ UOSInt UI::GUITextFileView::GetLineCount()
 
 void UI::GUITextFileView::SetCodePage(Int32 codePage)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->codePage = codePage;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 Bool UI::GUITextFileView::LoadFile(const UTF8Char *fileName)

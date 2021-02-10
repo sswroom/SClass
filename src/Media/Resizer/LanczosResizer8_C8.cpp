@@ -8,6 +8,7 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 #define PI 3.141592653589793
@@ -956,7 +957,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 
 	if (siWidth != (OSInt)dwidth && siHeight != (OSInt)dheight)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1025,11 +1026,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 		}
 		mt_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, dwidth << 3, dbpl);
 //		LanczosResizer8_C8_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, dwidth << 3, dbpl, this->rgbTable);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (siWidth != (OSInt)dwidth)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1069,11 +1070,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 			mt_horizontal_filter(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dwidth << 3, siWidth);
 		}
 		mt_collapse(buffPtr, dest, dwidth, dheight, dwidth << 3, dbpl);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (siHeight != (OSInt)dheight)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != swidth * 8 || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -1114,11 +1115,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 			mt_expand(src, buffPtr, siWidth, siHeight, sbpl, siWidth << 3);
 		}
 		mt_vertical_filter(buffPtr, dest, siWidth, dheight, vTap, vIndex, vWeight, siWidth << 3, dbpl);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
 			mt_copy_pa(src, dest, siWidth, dheight, sbpl, dbpl);
@@ -1127,7 +1128,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			mt_copy(src, dest, siWidth, dheight, sbpl, dbpl);
 		}
-		mut->Unlock();
+		mutUsage.EndUse();
 
 	}
 }

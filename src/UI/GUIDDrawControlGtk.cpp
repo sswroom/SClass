@@ -5,6 +5,7 @@
 #include "Math/Math.h"
 #include "Media/ImageUtil.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/GUIClientControl.h"
@@ -183,12 +184,12 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	}
 	else
 	{
-		data->me->surfaceMut->Lock();
+		Sync::MutexUsage mutUsage(data->me->surfaceMut);
 		data->me->surfaceW = data->allocation->width;
 		data->me->surfaceH = data->allocation->height;
 		data->me->ReleaseSubSurface();
 		data->me->CreateSubSurface();
-		data->me->surfaceMut->Unlock();
+		mutUsage.EndUse();
 
 		if (data->me->debugWriter)
 		{
@@ -216,9 +217,9 @@ void UI::GUIDDrawControl::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		this->surfaceMut->Lock();
+		Sync::MutexUsage mutUsage(this->surfaceMut);
 		DrawToScreen();
-		this->surfaceMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -408,7 +409,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 
 void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, OSInt drawW, OSInt drawH, Bool clearScn)
 {
-	this->surfaceMut->Lock();
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->surfaceBuff2)
 	{
 		if (this->focusing)
@@ -476,7 +477,7 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 //			printf("Draw from buff 2 %lld\r\n", t);
 		}
 	}
-	this->surfaceMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
@@ -568,12 +569,12 @@ void *UI::GUIDDrawControl::GetSurface()
 
 void UI::GUIDDrawControl::BeginDrawSurface()
 {
-	this->surfaceMut->Lock();
+	this->surfaceMut->Use();
 }
 
 void UI::GUIDDrawControl::EndDrawSurface()
 {
 	this->focusing = false;
-	this->surfaceMut->Unlock();
+	this->surfaceMut->Unuse();
 	this->drawEvt->Set();
 }

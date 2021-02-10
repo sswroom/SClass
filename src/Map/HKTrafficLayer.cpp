@@ -8,6 +8,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 #include "Text/XMLDOM.h"
@@ -751,7 +752,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 	Int64 id = (((Int64)fromId) << 32) | (UInt32)toId;
 	RoadInfo *road;
 
-	this->roadMut->Lock();
+	Sync::MutexUsage mutUsage(this->roadMut);
 	road = this->roadMap->Get(id);
 	if (road == 0)
 	{
@@ -783,7 +784,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		road->lev = lev;
 		road->spd = trafficSpeed;
 	}
-	this->roadMut->Unlock();
+	mutUsage.EndUse();
 }
 
 IO::Stream *Map::HKTrafficLayer::OpenURLStream()
@@ -1141,7 +1142,7 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 	UOSInt j;
 	RoadInfo *road;
 	Data::ArrayList<RoadInfo*> *roadList;
-	this->roadMut->Lock();
+	Sync::MutexUsage mutUsage(this->roadMut);
 	roadList = this->roadMap->GetValues();
 	i = 0;
 	j = roadList->GetCount();
@@ -1155,7 +1156,7 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 		}
 		i++;
 	}
-	this->roadMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -1184,7 +1185,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 		y2 = y1;
 		y1 = tmp;
 	}
-	this->roadMut->Lock();
+	Sync::MutexUsage mutUsage(this->roadMut);
 	roadList = this->roadMap->GetValues();
 	i = 0;
 	j = roadList->GetCount();
@@ -1198,17 +1199,17 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 		}
 		i++;
 	}
-	this->roadMut->Unlock();
+	mutUsage.EndUse();
 	return retCnt;
 }
 
 Int64 Map::HKTrafficLayer::GetObjectIdMax()
 {
 	Int64 ret = 0;
-	this->roadMut->Lock();
+	Sync::MutexUsage mutUsage(this->roadMut);
 	Data::ArrayList<Int64> *keys = this->roadMap->GetKeys();
 	ret = keys->GetItem(keys->GetCount() - 1);
-	this->roadMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -1273,7 +1274,7 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetObjectByIdD(void *session, Int64 id)
 {
 	RoadInfo *road;
 	Map::DrawObjectL *obj = 0;
-	this->roadMut->Lock();
+	Sync::MutexUsage mutUsage(this->roadMut);
 	road = this->roadMap->Get(id);
 	if (road && road->vec)
 	{
@@ -1311,7 +1312,7 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetObjectByIdD(void *session, Int64 id)
 		
 		MemCopyNO(obj->points, points, sizeof(Double) * cnt * 2);
 	}
-	this->roadMut->Unlock();
+	mutUsage.EndUse();
 	return obj;
 }
 
@@ -1319,7 +1320,7 @@ Math::Vector2D *Map::HKTrafficLayer::GetVectorById(void *session, Int64 id)
 {
 	RoadInfo *road;
 	Math::Vector2D *vec = 0;
-	this->roadMut->Lock();
+	Sync::MutexUsage mutUsage(this->roadMut);
 	road = this->roadMap->Get(id);
 	if (road && road->vec)
 	{
@@ -1337,7 +1338,7 @@ Math::Vector2D *Map::HKTrafficLayer::GetVectorById(void *session, Int64 id)
 			((Math::Polyline*)vec)->SetColor(0xffff0000);
 		}
 	}
-	this->roadMut->Unlock();
+	mutUsage.EndUse();
 	return vec;
 }
 

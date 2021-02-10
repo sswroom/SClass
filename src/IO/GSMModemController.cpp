@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/GSMModemController.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 Bool IO::GSMModemController::SetSMSFormat(IO::GSMModemController::SMSFormat smsFormat)
@@ -167,7 +168,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	UTF8Char tmpBuff[256];
 	const Char *sptr;
 	Char c;
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+COPS=?", 60000);
 	OSInt i;
 	OSInt j = this->cmdResults->GetCount();
@@ -351,20 +352,20 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 			}
 			
 			ClearCmdResult();
-			this->cmdMut->Unlock();
+			mutUsage.EndUse();
 			return true;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
+			mutUsage.EndUse();
 			return false;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
+		mutUsage.EndUse();
 		return false;
 	}
 }
@@ -406,7 +407,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 {
 	IO::GSMModemController::SIMStatus sims = IO::GSMModemController::SIMS_UNKNOWN;
 
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+CPIN?", 3000);
 	OSInt i = this->cmdResults->GetCount();
 	const Char *val;
@@ -429,7 +430,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 		}
 	}
 	ClearCmdResult();
-	this->cmdMut->Unlock();
+	mutUsage.EndUse();
 	return sims;
 }
 
@@ -642,7 +643,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 		this->SetSMSFormat(IO::GSMModemController::SMSF_PDU);
 	}
 	Text::StrInt32(Text::StrConcat(sbuff, "AT+CMGL="), (Int32)status);
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, sbuff, 10000);
 	OSInt i;
 	OSInt j = this->cmdResults->GetCount();
@@ -697,20 +698,20 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 			}
 			
 			ClearCmdResult();
-			this->cmdMut->Unlock();
+			mutUsage.EndUse();
 			return true;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
+			mutUsage.EndUse();
 			return false;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
+		mutUsage.EndUse();
 		return false;
 	}
 }
@@ -751,11 +752,11 @@ Bool IO::GSMModemController::SMSSendMessage(Text::SMSMessage *msg)
 	{
 		this->SetSMSFormat(IO::GSMModemController::SMSF_PDU);
 	}
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommands(this->cmdResults, sbuff1, sbuff2, 10000);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
-	this->cmdMut->Unlock();
+	mutUsage.EndUse();
 	return isSucc;
 }
 
@@ -888,7 +889,7 @@ UTF8Char *IO::GSMModemController::SMSGetSMSC(UTF8Char *buff)
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[3];
 	UTF8Char *sptr = 0;
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+CSCA?", 3000);
 	OSInt i = this->cmdResults->GetCount();
 	const Char *val;
@@ -904,7 +905,7 @@ UTF8Char *IO::GSMModemController::SMSGetSMSC(UTF8Char *buff)
 		}
 	}
 	ClearCmdResult();
-	this->cmdMut->Unlock();
+	mutUsage.EndUse();
 	return sptr;
 }
 
@@ -1063,7 +1064,7 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 	{
 		Text::StrInt32(Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, "AT+CPBR="), startEntry), ","), endEntry);
 	}
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, sbuff, 10000);
 	OSInt i;
 	OSInt j = this->cmdResults->GetCount();
@@ -1096,20 +1097,20 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 			}
 			
 			ClearCmdResult();
-			this->cmdMut->Unlock();
+			mutUsage.EndUse();
 			return true;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
+			mutUsage.EndUse();
 			return false;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
+		mutUsage.EndUse();
 		return false;
 	}
 	return false;

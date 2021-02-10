@@ -670,7 +670,7 @@ MCU_SerialEcho.o: ../../main/MCU/MCU_SerialEcho.cpp
 MCU_SIM7000.o: ../../main/MCU/MCU_SIM7000.cpp
 AudioDeviceTest.o: ../../main/Media/AudioDeviceTest.cpp
 GUIExportJPG.o: ../../main/Media/GUIExportJPG.cpp
-ImageCopyTest.o: ../../main/Media/ImageCopy.cpp
+ImageCopyTest.o: ../../main/Media/ImageCopyTest.cpp
 MonitorInfoTest.o: ../../main/Media/MonitorInfoTest.cpp
 NearestNeighbourResizer32_32Test.o: ../../main/Media/NearestNeighbourResizer32_32Test.cpp
 PrinterTest.o: ../../main/Media/PrinterTest.cpp

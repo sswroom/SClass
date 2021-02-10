@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Net/HTTPQueue.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/URLString.h"
 
@@ -17,7 +18,7 @@ Net::HTTPQueue::~HTTPQueue()
 	DomainStatus *status;
 	OSInt i;
 
-	this->statusMut->Lock();
+	Sync::MutexUsage mutUsage(this->statusMut);
 	statusList = this->statusMap->GetValues();
 	i = statusList->GetCount();
 	while (i-- > 0)
@@ -32,7 +33,7 @@ Net::HTTPQueue::~HTTPQueue()
 			status->req2->Close();
 		}
 	}
-	this->statusMut->Unlock();
+	mutUsage.EndUse();
 	while (this->statusMap->GetCount() > 0)
 	{
 		Sync::Thread::Sleep(10);
@@ -51,7 +52,7 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, const Char *me
 	Net::HTTPClient *cli;
 	while (true)
 	{
-		this->statusMut->Lock();
+		Sync::MutexUsage mutUsage(this->statusMut);
 		status = this->statusMap->Get(sbuff);
 		if (status)
 		{
@@ -78,7 +79,7 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, const Char *me
 			this->statusMap->Put(sbuff, status);
 			found = true;
 		}
-		this->statusMut->Unlock();
+		mutUsage.EndUse();
 		if (found)
 			break;
 		this->statusEvt->Wait(1000);
@@ -92,7 +93,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	DomainStatus *status;
 	Text::URLString::GetURLDomain(sbuff, cli->GetURL(), 0);
 
-	this->statusMut->Lock();
+	Sync::MutexUsage mutUsage(this->statusMut);
 	status = this->statusMap->Get(sbuff);
 	if (status)
 	{
@@ -116,5 +117,5 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	{
 		DEL_CLASS(cli);
 	}
-	this->statusMut->Unlock();
+	mutUsage.EndUse();
 }

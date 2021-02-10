@@ -7,6 +7,7 @@
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIPictureBoxDD.h"
 #include "UI/MessageDialog.h"
@@ -358,9 +359,9 @@ void UI::GUIPictureBoxDD::OnPaint()
 			DrawFromBG();
 		}
 
-		this->surfaceMut->Lock();
+		Sync::MutexUsage mutUsage(this->surfaceMut);
 		DrawToScreen();
-		this->surfaceMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{

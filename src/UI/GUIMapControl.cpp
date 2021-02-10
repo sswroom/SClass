@@ -9,6 +9,7 @@
 #include "Math/VectorImage.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIMapControl.h"
@@ -265,7 +266,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		OSInt w;
 		OSInt h;
 
-		this->drawMut->Lock();
+		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
 		{
 			Media::DrawImage *tmpImg = this->eng->CloneImage(this->bgImg);
@@ -331,7 +332,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			drawImg->info->color->Set(this->colorSess->GetRGBParam()->monProfile);
 			resizer.Resize(srcImg->data, srcImg->info->storeWidth * 4, Math::OSInt2Double(this->currWidth), Math::OSInt2Double(this->currHeight), 0, 0, drawImg->data, drawImg->info->storeWidth * 4, w, h);
 		}
-		this->drawMut->Unlock();
+		mutUsage.EndUse();
 		DEL_CLASS(srcImg);
 
 		img->DrawImagePt2(drawImg, tlx, tly);
@@ -378,7 +379,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		}
 		img->DelBrush(bgBrush);
 
-		this->drawMut->Lock();
+		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
 		{
 			Media::DrawImage *drawImg = this->eng->CloneImage(this->bgImg);
@@ -392,7 +393,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			img->DrawImagePt(this->bgImg, tlx, tly);
 			this->DrawScnObjects(img, tlx, tly);
 		}
-		this->drawMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -822,7 +823,7 @@ UI::GUIMapControl::~GUIMapControl()
 
 void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 {
-	this->drawMut->Lock();
+	Sync::MutexUsage mutUsage(this->drawMut);
 	this->GetSizeP(&this->currWidth, &this->currHeight);
 	this->view->UpdateSize(this->currWidth, this->currHeight);
 	if (this->bgImg)
@@ -837,7 +838,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 		this->bgImg->SetVDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
 		this->bgImg->SetColorProfile(this->colorSess->GetRGBParam()->monProfile);
 	}
-	this->drawMut->Unlock();
+	mutUsage.EndUse();
 	this->UpdateMap();
 
 	UOSInt i = this->resizeHandlers->GetCount();
@@ -902,13 +903,13 @@ void UI::GUIMapControl::SetBGColor(Int32 bgColor)
 
 void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 {
-	this->drawMut->Lock();
+	Sync::MutexUsage mutUsage(this->drawMut);
 	if (this->renderer)
 	{
 		this->renderer->SetUpdatedHandler(0, 0);
 	}
 	this->renderer = renderer;
-	this->drawMut->Unlock();
+	mutUsage.EndUse();
 	if (renderer == 0)
 		return;
 	renderer->SetUpdatedHandler(ImageUpdated, this);
@@ -921,7 +922,7 @@ void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 
 void UI::GUIMapControl::UpdateMap()
 {
-	this->drawMut->Lock();
+	Sync::MutexUsage mutUsage(this->drawMut);
 	if (this->bgImg && this->renderer)
 	{
 		Double centerX;
@@ -953,7 +954,7 @@ void UI::GUIMapControl::UpdateMap()
 			this->mapUpdHdlrs->GetItem(i)(this->mapUpdObjs->GetItem(i), centerX, centerY, t);
 		}
 	}
-	this->drawMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void UI::GUIMapControl::ScnXY2MapXY(OSInt scnX, OSInt scnY, Double *mapX, Double *mapY)
