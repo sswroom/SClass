@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Manage/HiResClock.h"
 #include "Media/VOBLPCMStreamSource.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 Media::VOBLPCMStreamSource::VOBLPCMStreamSource(Media::IStreamControl *pbc, Media::AudioFormat *fmt)
@@ -90,10 +91,10 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		blkSize = blkSize - v;
 	}
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	if (this->buffStart == this->buffEnd)
 	{
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 		Manage::HiResClock clk;
 		while (this->buffStart == this->buffEnd && this->pbc->IsRunning())
 		{
@@ -101,10 +102,10 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			if (clk.GetTimeDiff() >= 5)
 				break;
 		}
-		this->buffMut->Lock();
+		mutUsage.BeginUse();
 		if (this->buffStart == this->buffEnd)
 		{
-			this->buffMut->Unlock();
+			mutUsage.EndUse();
 			return 0;
 		}
 	}
@@ -158,7 +159,7 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		}
 	}
 	this->buffSample += byteCopied;
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 
 /*	if (fmt->bitpersample == 24)
 	{
@@ -225,18 +226,18 @@ void Media::VOBLPCMStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSi
 
 void Media::VOBLPCMStreamSource::ClearFrameBuff()
 {
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->buffSample = 0;
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::VOBLPCMStreamSource::SetStreamTime(Int32 time)
 {
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffSample = MulDiv32(time, this->fmt->bitRate, 8000);
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
@@ -251,7 +252,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 				if (this->pbEvt == 0 || !this->pbc->IsRunning())
 					break;
 			
-				this->buffMut->Lock();
+				Sync::MutexUsage mutUsage(this->buffMut);
 				if (this->buffStart > this->buffEnd)
 				{
 					buffWriten = this->buffSize - this->buffStart + this->buffEnd;
@@ -275,19 +276,19 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 					}
 					if (this->pbEvt)
 						this->pbEvt->Set();
-					this->buffMut->Unlock();
+					mutUsage.EndUse();
 					break;
 				}
 				else
 				{
-					this->buffMut->Unlock();
+					mutUsage.EndUse();
 					Sync::Thread::Sleep(10);
 				}
 			}
 		}
 		else
 		{
-			this->buffMut->Lock();
+			Sync::MutexUsage mutUsage(this->buffMut);
 			if (this->buffStart > this->buffEnd)
 			{
 				buffWriten = this->buffSize - this->buffStart + this->buffEnd;
@@ -315,7 +316,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 					this->buffStart -= this->buffSize;
 				}
 			}
-			this->buffMut->Unlock();
+			mutUsage.EndUse();
 		}
 //	}
 }
@@ -323,14 +324,14 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 Int32 Media::VOBLPCMStreamSource::GetFrameStreamTime()
 {
 	Int32 t;
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	OSInt buffSize = this->buffEnd - this->buffStart;
 	if (buffSize < 0)
 	{
 		buffSize += this->buffSize;
 	}
 	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt->bitRate);
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 	return t;
 }
 

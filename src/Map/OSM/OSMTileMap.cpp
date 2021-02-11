@@ -6,9 +6,16 @@
 #include "Math/Math.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Net/HTTPClient.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-//#include <stdio.h>
+const UTF8Char *Map::OSM::OSMTileMap::GetNextURL()
+{
+	Sync::MutexUsage mutUsage(this->urlMut);
+	const UTF8Char *thisUrl = this->urls->GetItem(this->urlNext);
+	this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
+	return thisUrl;
+}
 
 Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf)
 {
@@ -316,10 +323,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		return 0;
 
 	const UTF8Char *thisUrl;
-	this->urlMut->Lock();
-	thisUrl = this->urls->GetItem(this->urlNext);
-	this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
-	this->urlMut->Unlock();
+	thisUrl = this->GetNextURL();
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
 	urlSb.AppendOSInt(level);
@@ -427,11 +431,7 @@ UTF8Char *Map::OSM::OSMTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
-	const UTF8Char *thisUrl;
-	this->urlMut->Lock();
-	thisUrl = this->urls->GetItem(this->urlNext);
-	this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
-	this->urlMut->Unlock();
+	const UTF8Char *thisUrl = this->GetNextURL();
 	sptr = Text::StrConcat(sbuff, thisUrl);
 	sptr = Text::StrUOSInt(sptr, level);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
@@ -531,11 +531,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	if (localOnly)
 		return 0;
 
-	const UTF8Char *thisUrl;
-	this->urlMut->Lock();
-	thisUrl = this->urls->GetItem(this->urlNext);
-	this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
-	this->urlMut->Unlock();
+	const UTF8Char *thisUrl = this->GetNextURL();
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
 	urlSb.AppendOSInt(level);

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/ModemController.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 void IO::ModemController::ClearCmdResult()
@@ -25,7 +26,7 @@ Bool IO::ModemController::IsCmdSucceed()
 
 UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const Char *cmd, Int32 timeoutMS)
 {
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
 	OSInt i = this->cmdResults->GetCount();
 	OSInt j;
@@ -56,27 +57,24 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const Char *cmd
 			}
 			
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return sptr;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return 0;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
 		return 0;
 	}
 }
 
 Bool IO::ModemController::SendStringCommand(Data::ArrayList<const Char*> *resList, const Char *cmd, Int32 timeoutMS)
 {
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
 	OSInt i = this->cmdResults->GetCount();
 	OSInt j;
@@ -98,27 +96,24 @@ Bool IO::ModemController::SendStringCommand(Data::ArrayList<const Char*> *resLis
 			}
 			
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return true;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return false;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
 		return false;
 	}
 }
 
 UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const Char *cmd, Int32 timeoutMS)
 {
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
 	OSInt i = this->cmdResults->GetCount();
 	OSInt j;
@@ -133,27 +128,24 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const Cha
 			if (Text::StrEquals(val, "ERROR"))
 			{
 				ClearCmdResult();
-				this->cmdMut->Unlock();
 				return 0;
 			}
 			else if (val[0] != 0)
 			{
 				UTF8Char *sptr = Text::StrConcat(buff, (const UTF8Char*)val);
 				ClearCmdResult();
-				this->cmdMut->Unlock();
 				return sptr;
 			}
 		}
 		j++;
 	}
 	ClearCmdResult();
-	this->cmdMut->Unlock();
 	return 0;
 }
 
 Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, const Char *cmd)
 {
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, 3000);
 	OSInt i = this->cmdResults->GetCount();
 	OSInt j;
@@ -172,20 +164,17 @@ Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, cons
 			}
 			
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return true;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return false;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
 		return false;
 	}
 }
@@ -198,17 +187,16 @@ Bool IO::ModemController::SendBoolCommand(const Char *cmd)
 Bool IO::ModemController::SendBoolCommand(const Char *cmd, Int32 timeoutMS)
 {
 	Bool isSucc;
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
-	this->cmdMut->Unlock();
 	return isSucc;
 }
 
 IO::ModemController::DialResult IO::ModemController::SendDialCommand(const Char *cmd)
 {
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendDialCommand(this->cmdResults, cmd, 30000);
 	OSInt i = this->cmdResults->GetCount();
 	const Char *val;
@@ -218,38 +206,32 @@ IO::ModemController::DialResult IO::ModemController::SendDialCommand(const Char 
 		if (Text::StrCompare(val, "VCON") == 0)
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return DR_CONNECT;
 		}
 		else if (Text::StrCompare(val, "NO DIALTONE") == 0)
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return DR_NO_DIALTONE;
 		}
 		else if (Text::StrCompare(val, "NO CARRIER") == 0)
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return DR_NO_CARRIER;
 		}
 		else if (Text::StrCompare(val, "BUSY") == 0)
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return DR_BUSY;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return DR_ERROR;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
 		return DR_ERROR;
 	}
 }
@@ -285,11 +267,10 @@ Bool IO::ModemController::HangUp()
 Bool IO::ModemController::ResetModem()
 {
 	Bool isSucc;
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "ATZ", 3000);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
-	this->cmdMut->Unlock();
 	return isSucc;
 }
 

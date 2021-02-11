@@ -7,6 +7,7 @@
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include <math.h>
 #include <float.h>
@@ -938,7 +939,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 
 	if (siWidth != dwidth && siHeight != dheight)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1003,11 +1004,11 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 //			LanczosResizerH8_8_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, siWidth << 3, dbpl);
 			mt_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, siWidth << 3, dbpl);
 		}
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (siWidth != dwidth)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1046,11 +1047,11 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			mt_horizontal_filter8(src, dest, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dbpl);
 		}
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (siHeight != dheight)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -1092,7 +1093,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
 			mt_collapse(buffPtr, dest, siWidth, dheight, siWidth << 3, dbpl);
 		}
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{

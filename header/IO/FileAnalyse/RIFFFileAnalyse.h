@@ -1,9 +1,8 @@
 #ifndef _SM_IO_FILEANALYSE_RIFFFILEANALYSE
 #define _SM_IO_FILEANALYSE_RIFFFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
-#include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -22,8 +21,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::ArrayList<PackInfo*> *packs;
-			Sync::Mutex *packMut;
+			Data::SyncArrayList<PackInfo*> *packs;
 			Int32 mpgVer;
 
 			Bool pauseParsing;

@@ -1,8 +1,17 @@
 #include "Stdafx.h"
 #include "Net/RSS.h"
 #include "Net/SNS/SNSRSS.h"
+#include "Sync/MutexUsage.h"
 #include "Text/HTMLUtil.h"
 #include "Text/StringBuilderUTF8.h"
+
+void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
+{
+	Sync::MutexUsage(this->crcMut);
+	this->crc->Clear();
+	this->crc->Calc(buff, size);
+	this->crc->GetValue(hashVal);
+}
 
 Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId)
 {
@@ -114,11 +123,7 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 {
 	UInt8 crcVal[4];
 	dirName = Text::StrConcat(dirName, (const UTF8Char*)"RSS_");
-	this->crcMut->Lock();
-	this->crc->Clear();
-	this->crc->Calc(this->channelId, Text::StrCharCnt(this->channelId));
-	this->crc->GetValue(crcVal);
-	this->crcMut->Unlock();
+	this->CalcCRC(this->channelId, Text::StrCharCnt(this->channelId), crcVal);
 	dirName = Text::StrHexBytes(dirName, crcVal, 4, 0);
 	return dirName;
 }
@@ -133,11 +138,7 @@ OSInt Net::SNS::SNSRSS::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 UTF8Char *Net::SNS::SNSRSS::GetItemShortId(UTF8Char *buff, SNSItem *item)
 {
 	UInt8 crcVal[4];
-	this->crcMut->Lock();
-	this->crc->Clear();
-	this->crc->Calc(item->id, Text::StrCharCnt(item->id));
-	this->crc->GetValue(crcVal);
-	this->crcMut->Unlock();
+	this->CalcCRC(item->id, Text::StrCharCnt(item->id), crcVal);
 	return Text::StrHexBytes(buff, crcVal, 4, 0);
 }
 

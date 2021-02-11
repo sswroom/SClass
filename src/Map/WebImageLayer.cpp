@@ -6,6 +6,7 @@
 #include "Math/VectorImage.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -137,13 +138,13 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 			this->loadedList->Insert(~this->GetImageStatIndex(stat->id), stat);
 			this->loadedMut->UnlockWrite();
 
-			this->updMut->Lock();
+			Sync::MutexUsage mutUsage(this->updMut);
 			OSInt i = this->updHdlrs->GetCount();
 			while (i-- > 0)
 			{
 				this->updHdlrs->GetItem(i)(this->updObjs->GetItem(i));
 			}
-			this->updMut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 }
@@ -159,7 +160,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		me->loadingMut->Lock();
+		Sync::MutexUsage mutUsage(me->loadingMut);
 		i = me->loadingList->GetCount();
 		while (i-- > 0)
 		{
@@ -199,13 +200,13 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 					me->loadedList->Insert(~me->GetImageStatIndex(stat->id), stat);
 					me->loadedMut->UnlockWrite();
 
-					me->updMut->Lock();
+					Sync::MutexUsage mutUsage(me->updMut);
 					OSInt j = me->updHdlrs->GetCount();
 					while (j-- > 0)
 					{
 						me->updHdlrs->GetItem(j)(me->updObjs->GetItem(j));
 					}
-					me->updMut->Unlock();
+					mutUsage.EndUse();
 				}
 			}
 		}
@@ -216,7 +217,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 				break;
 			me->LoadImage(me->pendingList->RemoveAt(0));
 		}
-		me->loadingMut->Unlock();
+		mutUsage.EndUse();
 		me->loadEvt->Wait(100);
 	}
 
@@ -258,10 +259,10 @@ Map::WebImageLayer::~WebImageLayer()
 {
 	OSInt i;
 	ImageStat *stat;
-	this->updMut->Lock();
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs->Clear();
 	this->updObjs->Clear();
-	this->updMut->Unlock();
+	mutUsage.EndUse();
 
 	this->threadToStop = true;
 	this->loadEvt->Set();
@@ -376,13 +377,13 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 
 	if (changed)
 	{
-		this->updMut->Lock();
+		Sync::MutexUsage mutUsage(this->updMut);
 		i = this->updHdlrs->GetCount();
 		while (i-- > 0)
 		{
 			this->updHdlrs->GetItem(i)(this->updObjs->GetItem(i));
 		}
-		this->updMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -668,16 +669,16 @@ Map::IMapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass()
 
 void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	this->updMut->Lock();
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs->Add(hdlr);
 	this->updObjs->Add(obj);
-	this->updMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	OSInt i;
-	this->updMut->Lock();
+	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -687,7 +688,7 @@ void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 			this->updObjs->RemoveAt(i);
 		}
 	}
-	this->updMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Map::WebImageLayer::AddImage(const UTF8Char *name, const UTF8Char *url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
@@ -793,7 +794,7 @@ void Map::WebImageLayer::AddImage(const UTF8Char *name, const UTF8Char *url, Int
 	stat->alpha = alpha;
 	stat->hasAltitude = hasAltitude;
 	stat->altitude = altitude;
-	this->loadingMut->Lock();
+	Sync::MutexUsage mutUsage(this->loadingMut);
 	if (this->loadingList->GetCount() >= 2)
 	{
 		this->pendingList->Add(stat);
@@ -802,5 +803,5 @@ void Map::WebImageLayer::AddImage(const UTF8Char *name, const UTF8Char *url, Int
 	{
 		this->LoadImage(stat);
 	}
-	this->loadingMut->Unlock();
+	mutUsage.EndUse();
 }

@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
 #include "Net/LogServer.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -92,11 +93,11 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
 		IPStatus *status;
-		this->ipMut->Lock();
+		Sync::MutexUsage mutUsage(this->ipMut);
 		status = this->ipMap->Get(ip);
 		if (status)
 		{
-			this->ipMut->Unlock();
+			mutUsage.EndUse();
 			return status;
 		}
 		status = MemAlloc(IPStatus, 1);
@@ -112,7 +113,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 		NEW_CLASS(status->log, IO::LogTool());
 		status->log->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		this->ipMap->Put(ip, status);
-		this->ipMut->Unlock();
+		mutUsage.EndUse();
 		return status;
 	}
 	return 0;

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/SharedDBConn.h"
+#include "Sync/MutexUsage.h"
 
 DB::SharedDBConn::~SharedDBConn()
 {
@@ -24,24 +25,22 @@ DB::DBUtil::ServerType DB::SharedDBConn::GetSvrType()
 
 void DB::SharedDBConn::Reconnect()
 {
-	this->mutConn->Lock();
+	Sync::MutexUsage mutUsage(this->mutConn);
 	this->conn->Reconnect();
-	this->mutConn->Unlock();
 }
 
 void DB::SharedDBConn::UseObject()
 {
-	this->mutObj->Lock();
+	Sync::MutexUsage mutUsage(this->mutObj);
 	this->useCnt++;
-	this->mutObj->Unlock();
 }
 
 void DB::SharedDBConn::UnuseObject()
 {
 	OSInt i;
-	this->mutObj->Lock();
+	Sync::MutexUsage mutUsage(this->mutObj);
 	i = --this->useCnt;
-	this->mutObj->Unlock();
+	mutUsage.EndUse();
 	if (i <= 0)
 	{
 		DEL_CLASS(this);
@@ -50,11 +49,11 @@ void DB::SharedDBConn::UnuseObject()
 
 DB::DBConn *DB::SharedDBConn::BeginUseConn()
 {
-	this->mutConn->Lock();
+	this->mutConn->Use();
 	return this->conn;
 }
 
 void DB::SharedDBConn::EndUseConn()
 {
-	this->mutConn->Unlock();
+	this->mutConn->Unuse();
 }

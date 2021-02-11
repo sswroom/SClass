@@ -3,6 +3,7 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/SNMPClient.h"
 #include "Net/SNMPInfo.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -12,7 +13,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo 
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Int32 reqId;
 	Net::SNMPUtil::ErrorStatus err;
-	me->scanMut->Lock();
+	Sync::MutexUsage mutUsage(me->scanMut);
 	if (me->scanList)
 	{
 		if (port == 161)
@@ -21,10 +22,10 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo 
 			MemCopyNO(remoteAddr, addr, sizeof(Net::SocketUtil::AddressInfo));
 			me->scanList->Add(remoteAddr);
 		}
-		me->scanMut->Unlock();
+		mutUsage.EndUse();
 		return;
 	}
-	me->scanMut->Unlock();
+	mutUsage.EndUse();
 	err = Net::SNMPUtil::PDUParseMessage(buff, dataSize, &reqId, &itemList);
 	if (!me->hasResp && (err != Net::SNMPUtil::ES_NOERROR || reqId == me->reqId))
 	{
@@ -93,7 +94,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(const Net::SocketUti
 	OSInt buffSize;
 	const UInt8 *buff;
 	Net::SNMPUtil::ErrorStatus ret;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
 	pdu.SequenceBegin(0x30);
 	pdu.AppendInt32(0);
@@ -122,7 +123,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(const Net::SocketUti
 	this->hasResp = true;
 
 	this->reqId++;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -139,7 +140,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(const Net::Socke
 	OSInt buffSize;
 	const UInt8 *buff;
 	Net::SNMPUtil::ErrorStatus ret;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
 	pdu.SequenceBegin(0x30);
 	pdu.AppendInt32(0);
@@ -168,7 +169,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(const Net::Socke
 	this->hasResp = true;
 
 	this->reqId++;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -231,7 +232,7 @@ OSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broa
 	OSInt buffSize;
 	const UInt8 *buff;
 	OSInt initCnt = addrList->GetCount();
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
 	pdu.SequenceBegin(0x30);
 	pdu.AppendInt32(0);
@@ -250,9 +251,9 @@ OSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broa
 	pdu.SequenceEnd();
 	pdu.SequenceEnd();
 	buff = pdu.GetBuff(&buffSize);
-	this->scanMut->Lock();
+	Sync::MutexUsage scanMutUsage(this->scanMut);
 	this->scanList = addrList;
-	this->scanMut->Unlock();
+	scanMutUsage.EndUse();
 	if (scanIP && broadcastAddr->addrType == Net::SocketUtil::AT_IPV4)
 	{
 		Net::SocketUtil::AddressInfo scanAddr;
@@ -270,10 +271,10 @@ OSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broa
 		this->svr->SendTo(broadcastAddr, 161, buff, buffSize);
 	}
 	Sync::Thread::Sleep(timeoutMS);
-	this->scanMut->Lock();
+	scanMutUsage.BeginUse();
 	this->scanList = 0;
-	this->scanMut->Unlock();
-	this->mut->Unlock();
+	scanMutUsage.EndUse();
+	mutUsage.EndUse();
 	return addrList->GetCount() - initCnt;
 
 }

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoGPSDevInfoHandler.h"
+#include "Sync/MutexUsage.h"
 
 IO::ProtoHdlr::ProtoGPSDevInfoHandler::ProtoGPSDevInfoHandler(IO::IProtocolHandler::DataListener *listener)
 {
@@ -40,11 +41,11 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(IO::Stream *stm, voi
 				if (packetSize > buffSize)
 					return buffSize;
 
-				this->crcMut->Lock();
+				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc->Clear();
 				this->crc->Calc(buff, packetSize - 2);
 				this->crc->GetValue(crcVal);
-				this->crcMut->Unlock();
+				mutUsage.EndUse();
 				if (ReadMUInt16(&crcVal[2]) == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], 0, &buff[6], packetSize - 8);
@@ -75,11 +76,11 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmd
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
 	UInt8 crcVal[4];
-	this->crcMut->Lock();
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc->Clear();
 	this->crc->Calc(buff, cmdSize + 6);
 	this->crc->GetValue(crcVal);
-	this->crcMut->Unlock();
+	mutUsage.EndUse();
 	WriteInt16(&buff[cmdSize + 6], ReadMInt32(crcVal));
 	return cmdSize + 8;
 }

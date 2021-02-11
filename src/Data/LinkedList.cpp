@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/LinkedList.h"
+#include "Sync/MutexUsage.h"
 
 Data::LinkedList::LinkedList()
 {
@@ -32,7 +33,7 @@ Bool Data::LinkedList::HasItems()
 
 void Data::LinkedList::Put(void *item)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->lastItem)
 	{
 		this->lastItem->nextItem = MemAlloc(Data::LinkedListItem, 1);
@@ -44,14 +45,14 @@ void Data::LinkedList::Put(void *item)
 	}
 	this->lastItem->item = item;
 	this->lastItem->nextItem = 0;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void *Data::LinkedList::Get()
 {
 	Data::LinkedListItem *item;
 	void *obj = 0;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->firstItem)
 	{
 		item = this->firstItem;
@@ -62,51 +63,51 @@ void *Data::LinkedList::Get()
 		obj = item->item;
 		MemFree(item);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return obj;
 }
 
 void *Data::LinkedList::GetNoRemove()
 {
 	void *obj = 0;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->firstItem)
 	{
 		obj = this->firstItem->item;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return obj;
 }
 
 OSInt Data::LinkedList::GetCount()
 {
 	OSInt cnt = 0;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::LinkedListItem *item = this->firstItem;
 	while (item)
 	{
 		cnt++;
 		item = item->nextItem;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return cnt;
 }
 
 OSInt Data::LinkedList::IndexOf(void *item)
 {
 	OSInt cnt = 0;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::LinkedListItem *llItem = this->firstItem;
 	while (llItem)
 	{
 		if (llItem->item == item)
 		{
-			this->mut->Unlock();
+			mutUsage.EndUse();
 			return cnt;
 		}
 		cnt++;
 		llItem = llItem->nextItem;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return -1;
 }

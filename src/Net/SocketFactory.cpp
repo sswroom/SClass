@@ -5,6 +5,7 @@
 #include "IO/StreamReader.h"
 #include "Net/DNSHandler.h"
 #include "Net/SocketFactory.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -38,7 +39,7 @@ Bool Net::SocketFactory::DNSResolveIP(const Char *host, Net::SocketUtil::Address
 
 	Text::TextEnc::Punycode pcode;
 	Text::TextEnc::Punycode::Encode(sbuff, (const UTF8Char*)host);
-	this->dnsMut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -46,7 +47,7 @@ Bool Net::SocketFactory::DNSResolveIP(const Char *host, Net::SocketUtil::Address
 		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(this, &dnsAddr));
 		this->LoadHosts(this->dnsHdlr);
 	}
-	this->dnsMut->Unlock();
+	mutUsage.EndUse();
 	if (!this->noV6DNS)
 	{
 		if (this->dnsHdlr->GetByDomainNamev6(addr, sbuff))
@@ -74,7 +75,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host)
 
 	Text::TextEnc::Punycode pcode;
 	Text::TextEnc::Punycode::Encode(sbuff, (const UTF8Char*)host);
-	this->dnsMut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -82,7 +83,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host)
 		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(this, &dnsAddr));
 		this->LoadHosts(this->dnsHdlr);
 	}
-	this->dnsMut->Unlock();
+	mutUsage.EndUse();
 	if (this->dnsHdlr->GetByDomainNamev4(&addr, sbuff))
 	{
 		return *(UInt32*)addr.addr;

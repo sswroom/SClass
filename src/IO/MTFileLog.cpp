@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/Path.h"
 #include "IO/MTFileLog.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -161,7 +162,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 	me->running = true;
 	while (!me->closed)
 	{
-		me->mut->Lock();
+		Sync::MutexUsage mutUsage(me->mut);
 		if ((arrCnt = me->msgList->GetCount()) > 0)
 		{
 			msgArr = MemAlloc(const UTF8Char *, arrCnt);
@@ -171,7 +172,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 			me->msgList->RemoveRange(0, arrCnt);
 			me->dateList->RemoveRange(0, arrCnt);
 		}
-		me->mut->Unlock();
+		mutUsage.EndUse();
 		
 		if (arrCnt > 0)
 		{
@@ -265,9 +266,9 @@ IO::MTFileLog::~MTFileLog()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	log->Close();
-	mut->Unlock();
+	mutUsage.EndUse();
 
 
 	Text::StrDelNew(fileName);
@@ -306,9 +307,9 @@ void IO::MTFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLe
 	if (closed)
 		return;
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	this->msgList->Add(Text::StrCopyNew(logMsg));
 	this->dateList->Add(time->ToTicks());
-	mut->Unlock();
+	mutUsage.EndUse();
 	evt->Set();
 }

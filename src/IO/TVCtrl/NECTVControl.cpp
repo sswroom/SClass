@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/TVCtrl/NECTVControl.h"
 #include "Net/SocketFactory.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -23,7 +24,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 		}
 		else
 		{
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			if (me->recvSize >= RECVBUFFSIZE)
 			{
 			}
@@ -39,7 +40,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 				me->recvSize += recvSize;
 				me->recvEvt->Set();
 			}
-			me->mut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	me->recvRunning = false;
@@ -89,9 +90,9 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 	buff[9 + cmdLen] = bcc;
 	buff[10 + cmdLen] = 13;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 
 	this->stm->Write(buff, 11 + cmdLen);
@@ -180,9 +181,9 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	buff[13] = bcc;
 	buff[14] = 13;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 
 	this->stm->Write(buff, 15);
@@ -277,9 +278,9 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	buff[17] = bcc;
 	buff[18] = 13;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 
 	this->stm->Write(buff, 19);

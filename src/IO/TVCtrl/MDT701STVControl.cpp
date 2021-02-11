@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/TVCtrl/MDT701STVControl.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #define RECVBUFFSIZE 256
 
@@ -19,7 +20,7 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 		}
 		else
 		{
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			if (me->recvSize >= RECVBUFFSIZE)
 			{
 			}
@@ -35,7 +36,7 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 				me->recvSize += recvSize;
 				me->recvEvt->Set();
 			}
-			me->mut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	me->recvRunning = false;
@@ -52,9 +53,9 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, OSInt buff
 		Sync::Thread::Sleep((UInt32)timeDiff);
 	}
 	
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 	this->stm->Write((const UInt8*)buff, buffSize);
 	this->nextTime->SetCurrTimeUTC();

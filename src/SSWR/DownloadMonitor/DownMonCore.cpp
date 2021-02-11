@@ -10,6 +10,7 @@
 #include "Net/WebSite/WebSite48IdolControl.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/DownloadMonitor/DownMonCore.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/Clipboard.h"
@@ -586,11 +587,10 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, const 
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	Text::StringBuilderUTF8 sb;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	file = this->fileTypeMap->Get((webType << 24) | id);
 	if (file)
 	{
-		this->fileMut->Unlock();
 		return false;
 	}
 
@@ -606,20 +606,18 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, const 
 
 	this->fileTypeMap->Put((file->webType << 24) | file->id, file);
 	this->fileNameMap->Put(file->fileName, file);
-	this->fileMut->Unlock();
 	return true;
 }
 
 SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, Bool toLock)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	file = this->fileTypeMap->Get((webType << 24) | id);
 	if (file && toLock)
 	{
-		file->mut->Lock();
+		file->mut->Use();
 	}
-	this->fileMut->Unlock();
 	return file;
 }
 
@@ -627,14 +625,13 @@ Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(const UTF8Char *fileName
 {
 	Int32 id = 0;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	file = this->fileNameMap->Get(fileName);
 	if (file)
 	{
 		id = file->id;
 		*webType = file->webType;
 	}
-	this->fileMut->Unlock();
 	return id;
 }
 
@@ -642,7 +639,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 {
 	Bool ret = false;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	file = this->fileTypeMap->Remove((webType << 24) | id);
 	if (file)
 	{
@@ -653,7 +650,6 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 		this->FileFree(file);
 		ret = true;
 	}
-	this->fileMut->Unlock();
 	return ret;
 }
 
@@ -661,7 +657,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, void
 {
 	Bool ret = false;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	this->fileMut->Lock();
+	Sync::MutexUsage mutUsage(this->fileMut);
 	file = this->fileTypeMap->Get((webType << 24) | id);
 	if (file)
 	{
@@ -683,7 +679,6 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, void
 		Manage::Process proc(sb.ToString());
 		ret = true;
 	}
-	this->fileMut->Unlock();
 	return ret;
 }
 

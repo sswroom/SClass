@@ -8,6 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -249,11 +250,11 @@ Bool Net::WirelessLAN::Interface::Scan()
 		wrq.u.data.length = Text::StrConcat(sbuff, "SiteSurvey=1") - sbuff + 1;
 		wrq.u.data.pointer = sbuff;
 		wrq.u.data.flags = 0;
-		cmds->mut->Lock();
+		Sync::MutexUsage mutUsage(cmds->mut);
 //		printf("before ioctl, cmd = %04x, leng = %d\r\n", cmds->setCmd, wrq.u.data.length);
 		ret = ioctl(-1 + (int)(OSInt)this->id, cmds->setCmd, &wrq);
 //		printf("set SiteSurvey=1 ret = %d, errno = %d\r\n", ret, errno);
-		cmds->mut->Unlock();
+		mutUsage.EndUse();
 		return ret >= 0;
 	}
 
@@ -309,11 +310,11 @@ OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 		wrq.u.data.pointer = buff;
 		wrq.u.data.flags = 0;
 		wrq.u.data.length = buffSize;
-		cmds->mut->Lock();
+		Sync::MutexUsage mutUsage(cmds->mut);
 //		printf("SiteSurvey ioctl before\r\n");
 		ret = ioctl(-1 + (int)(OSInt)this->id, cmds->siteSurveyCmd, &wrq);
 //		printf("get_site_survey return %d, errno = %d, len = %d\r\n", ret, errno, wrq.u.data.length);
-		cmds->mut->Unlock();
+		mutUsage.EndUse();
 		if (ret == 0)
 		{
 			OSInt lineCnt = 2;

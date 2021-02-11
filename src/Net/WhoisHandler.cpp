@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Net/WhoisHandler.h"
+#include "Sync/MutexUsage.h"
 
 Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf)
 {
@@ -68,7 +69,7 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	OSInt k;
 	WhoisRecord *rec;
 	
-	this->recordMut->Lock();
+	Sync::MutexUsage mutUsage(this->recordMut);
 	i = 0;
 	j = this->recordList->GetCount() - 1;
 	while (i <= j)
@@ -79,7 +80,6 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 		sortableIP2 = Net::SocketUtil::IPv4ToSortable(rec->GetEndIP());
 		if (sortableIP >= sortableIP1 && sortableIP <= sortableIP2)
 		{
-			this->recordMut->Unlock();
 			return rec;
 		}
 		else if (sortableIP < sortableIP1)
@@ -93,6 +93,5 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	}
 	rec = this->client->RequestIP(ip);
 	this->recordList->Insert(i, rec);
-	this->recordMut->Unlock();
 	return rec;
 }

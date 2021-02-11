@@ -8,6 +8,7 @@
 #include "Media/EDID.h"
 #include "Media/MonitorInfo.h"
 #include "Media/MonitorMgr.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyStringW.h"
 
 Media::MonitorMgr::MonitorMgr()
@@ -42,7 +43,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(void *hMonitor)
 	MonitorSetting *mon;
 	Double hdpi;
 	Double ddpi;
-	this->monMut->Lock();
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap->Get(monName);
 	if (mon)
 	{
@@ -120,7 +121,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(void *hMonitor)
 		mon->ddpi = ddpi;
 		this->monMap->Put(monName, mon);
 	}
-	this->monMut->Unlock();
+	mutUsage.EndUse();
 	return hdpi;
 }
 
@@ -130,7 +131,7 @@ void Media::MonitorMgr::SetMonitorHDPI(void *hMonitor, Double monitorHDPI)
 	const UTF8Char *monName = monInfo.GetMonitorID();
 	const UTF8Char *monDesc = monInfo.GetDesc();
 	MonitorSetting *mon;
-	this->monMut->Lock();
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap->Get(monName);
 	if (mon)
 	{
@@ -143,7 +144,7 @@ void Media::MonitorMgr::SetMonitorHDPI(void *hMonitor, Double monitorHDPI)
 		mon->ddpi = 96.0;
 		this->monMap->Put(monName, mon);
 	}
-	this->monMut->Unlock();
+	mutUsage.EndUse();
 
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
 	if (reg)
@@ -176,27 +177,27 @@ Double Media::MonitorMgr::GetMonitorDDPI(void *hMonitor)
 	}
 	MonitorSetting *mon;
 	Double ddpi;
-	this->monMut->Lock();
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap->Get(monName);
 	if (mon)
 	{
 		ddpi = mon->ddpi;
-		this->monMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
-		this->monMut->Unlock();
+		mutUsage.EndUse();
 		GetMonitorHDPI(hMonitor);
-		this->monMut->Lock();
+		mutUsage.BeginUse();
 		mon = this->monMap->Get(monName);
 		if (mon)
 		{
 			ddpi = mon->ddpi;
-			this->monMut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
-			this->monMut->Unlock();
+			mutUsage.EndUse();
 			ddpi = 96.0;
 		}
 	}
@@ -209,7 +210,7 @@ void Media::MonitorMgr::SetMonitorDDPI(void *hMonitor, Double monitorDDPI)
 	const UTF8Char *monName = monInfo.GetMonitorID();
 	const UTF8Char *monDesc = monInfo.GetDesc();
 	MonitorSetting *mon;
-	this->monMut->Lock();
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap->Get(monName);
 	if (mon)
 	{
@@ -222,7 +223,7 @@ void Media::MonitorMgr::SetMonitorDDPI(void *hMonitor, Double monitorDDPI)
 		mon->ddpi = monitorDDPI;
 		this->monMap->Put(monName, mon);
 	}
-	this->monMut->Unlock();
+	mutUsage.EndUse();
 
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
 	if (reg)

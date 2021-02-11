@@ -3,6 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Media/MPAStreamSource.h"
 #include "Media/BlockParser/AC3BlockParser.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 Media::MPAStreamSource::MPAStreamSource(Media::IStreamControl *pbc)
@@ -191,13 +192,13 @@ void Media::MPAStreamSource::Stop()
 UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 {
 	OSInt bSize;
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	bSize = this->buffEnd - this->buffStart;
 	if (bSize < 0)
 		bSize += this->buffSize;
 	if (bSize == 0 || bSize < this->lastFrameSize)
 	{
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 		Manage::HiResClock clk;
 		while (true)
 		{
@@ -212,10 +213,10 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			if (clk.GetTimeDiff() >= 5)
 				break;
 		}
-		this->buffMut->Lock();
+		mutUsage.BeginUse();
 		if (this->buffStart == this->buffEnd)
 		{
-			this->buffMut->Unlock();
+			mutUsage.EndUse();
 			return 0;
 		}
 	}
@@ -324,7 +325,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 					this->buffStart -= this->buffSize;
 				}
 				this->buffSample += frStart + frameSize;
-				this->buffMut->Unlock();
+				mutUsage.EndUse();
 				return frStart + frameSize;
 			}
 			else
@@ -343,7 +344,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			this->buffStart -= this->buffSize;
 		}
 		this->buffSample += blkSize;
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 		return blkSize;
 	}
 	else
@@ -355,7 +356,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			this->buffStart -= this->buffSize;
 		}
 		this->buffSample += buffSize2;
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 		return buffSize2;
 	}
 }
@@ -386,18 +387,18 @@ void Media::MPAStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
 
 void Media::MPAStreamSource::ClearFrameBuff()
 {
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->buffSample = 0;
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::MPAStreamSource::SetStreamTime(Int32 time)
 {
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffSample = MulDiv32(time, this->fmt->bitRate, 8000);
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
@@ -410,7 +411,7 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 			if (this->pbEvt == 0 || !this->pbc->IsRunning())
 				break;
 		
-			this->buffMut->Lock();
+			Sync::MutexUsage mutUsage(this->buffMut);
 			if (this->buffStart > this->buffEnd)
 			{
 				buffWriten = this->buffSize - this->buffStart + this->buffEnd;
@@ -434,19 +435,19 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 				}
 				if (this->pbEvt)
 					this->pbEvt->Set();
-				this->buffMut->Unlock();
+				mutUsage.EndUse();
 				break;
 			}
 			else
 			{
-				this->buffMut->Unlock();
+				mutUsage.EndUse();
 				Sync::Thread::Sleep(10);
 			}
 		}
 	}
 	else
 	{
-		this->buffMut->Lock();
+		Sync::MutexUsage mutUsage(this->buffMut);
 		if (this->buffStart > this->buffEnd)
 		{
 			buffWriten = this->buffSize - this->buffStart + this->buffEnd;
@@ -475,21 +476,21 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 				this->buffStart -= this->buffSize;
 			}
 		}
-		this->buffMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
 Int32 Media::MPAStreamSource::GetFrameStreamTime()
 {
 	Int32 t;
-	this->buffMut->Lock();
+	Sync::MutexUsage mutUsage(this->buffMut);
 	OSInt buffSize = this->buffEnd - this->buffStart;
 	if (buffSize < 0)
 	{
 		buffSize += this->buffSize;
 	}
 	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt->bitRate);
-	this->buffMut->Unlock();
+	mutUsage.EndUse();
 	return t;
 }
 

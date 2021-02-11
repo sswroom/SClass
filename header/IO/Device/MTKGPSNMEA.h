@@ -1,5 +1,6 @@
 #ifndef _SM_IO_DEVICE_MTKGPSNMEA
 #define _SM_IO_DEVICE_MTKGPSNMEA
+#include "Data/SyncArrayList.h"
 #include "IO/GPSNMEA.h"
 
 namespace IO
@@ -44,8 +45,7 @@ namespace IO
 			Sync::Mutex *cmdMut;
 			Sync::Event *cmdEvt;
 
-			Data::ArrayList<const UTF8Char *> *cmdWResults;
-			Sync::Mutex *cmdResultMut;
+			Data::SyncArrayList<const UTF8Char *> *cmdWResults;
 
 			const UTF8Char *firmwareRel;
 			const UTF8Char *firmwareBuild;

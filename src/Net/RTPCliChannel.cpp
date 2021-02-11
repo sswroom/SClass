@@ -8,11 +8,13 @@
 #include "Net/RTPH264Handler.h"
 #include "Net/RTPAACHandler.h"
 #include "Net/RTPVSource.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
+
 #include <stdio.h>
 
 void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -52,7 +54,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 //	Text::StrConcat(Text::StrInt32(sbuff, seqNum), L"\r\n");
 //	IO::Console::PrintStrO(sbuff);
 
-	chData->packMut->Lock();
+	Sync::MutexUsage mutUsage(chData->packMut);
 	if (chData->packCnt >= chData->buffCnt)
 	{
 		Bool lastExist = false;
@@ -108,7 +110,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 		chData->packCnt++;
 	}
 
-	chData->packMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)

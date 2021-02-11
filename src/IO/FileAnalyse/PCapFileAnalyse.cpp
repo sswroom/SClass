@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
 #include "Net/EthernetAnalyzer.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
@@ -32,10 +33,10 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 		{
 			break;
 		}
-		me->dataMut->Lock();
+		Sync::MutexUsage mutUsage(me->dataMut);
 		me->ofstList->Add(ofst);
 		me->sizeList->Add(thisSize + 16);
-		me->dataMut->Unlock();
+		mutUsage.EndUse();
 		ofst += thisSize + 16;
 	}
 	me->threadRunning = false;
@@ -120,10 +121,10 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	{
 		return false;
 	}
-	this->dataMut->Lock();
+	Sync::MutexUsage mutUsage(this->dataMut);
 	ofst = this->ofstList->GetItem(index - 1);
 	size = this->sizeList->GetItem(index - 1);
-	this->dataMut->Unlock();
+	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sb->AppendI64(ofst);
 	sb->Append((const UTF8Char*)", psize=");
@@ -203,10 +204,10 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	{
 		return false;
 	}
-	this->dataMut->Lock();
+	Sync::MutexUsage mutUsage(this->dataMut);
 	ofst = this->ofstList->GetItem(index - 1);
 	size = this->sizeList->GetItem(index - 1);
-	this->dataMut->Unlock();
+	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sb->Append((const UTF8Char*)"Offset=");
 	sb->AppendI64(ofst);

@@ -1,9 +1,8 @@
 #ifndef _SM_IO_FILEANALYSE_PNGFILEANALYSE
 #define _SM_IO_FILEANALYSE_PNGFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
-#include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -22,8 +21,7 @@ namespace IO
 			} PNGTag;
 		private:
 			IO::IStreamData *fd;
-			Data::ArrayList<PNGTag*> *tags;
-			Sync::Mutex *tagsMut;
+			Data::SyncArrayList<PNGTag*> *tags;
 			OSInt hdrSize;
 
 			Bool pauseParsing;

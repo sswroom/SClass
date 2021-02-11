@@ -5,6 +5,7 @@
 #include "Net/MySQLServer.h"
 #include "Net/MySQLUtil.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -787,14 +788,14 @@ void __stdcall Net::MySQLServer::OnClientConn(UInt32 *s, void *userObj)
 	data->userName[0] = 0;
 	data->database[0] = 0;
 	NEW_CLASS(data->attrMap, Data::StringUTF8Map<const UTF8Char*>());
-	me->randMut->Lock();
+	Sync::MutexUsage mutUsage(me->randMut);
 	i = 0;
 	while (i < 20)
 	{
 		data->authPluginData[i] = ((UInt32)(me->rand->NextInt32()) % 0x5f) + 0x21;
 		i++;
 	}
-	me->randMut->Unlock();
+	mutUsage.EndUse();
 	me->cliMgr->AddClient(cli, data);
 
 	buff[4] = 10;

@@ -86,8 +86,7 @@ IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::ArrayList<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo*>());
-	NEW_CLASS(this->packMut, Sync::Mutex());
+	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadInt32(&buff[0]) != 0x21726152 || ReadInt32(&buff[4]) != 0x0001071A)
 	{
@@ -112,16 +111,8 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	OSInt i;
-	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
-	i = this->packs->GetCount();
-	while (i-- > 0)
-	{
-		pack = this->packs->GetItem(i);
-		MemFree(pack);
-	}
+	DEL_LIST_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
-	DEL_CLASS(this->packMut);
 }
 
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
@@ -132,9 +123,7 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
 {
 	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 	sb->AppendI64(pack->fileOfst);
@@ -158,9 +147,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	const UInt8 *extraEnd;
 	const UInt8 *packEnd;
 	const UInt8 *nextPtr;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 

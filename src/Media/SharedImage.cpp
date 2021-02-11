@@ -3,13 +3,14 @@
 #include "Media/StaticImage.h"
 #include "Media/SharedImage.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Sync/MutexUsage.h"
 
 Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 {
 	this->imgStatus = status;
-	this->imgStatus->mut->Lock();
+	Sync::MutexUsage mutUsage(this->imgStatus->mut);
 	this->imgStatus->useCnt++;
-	this->imgStatus->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
@@ -59,12 +60,12 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 Media::SharedImage::~SharedImage()
 {
 	Bool toDelete = false;
-	this->imgStatus->mut->Lock();
+	Sync::MutexUsage mutUsage(this->imgStatus->mut);
 	if (--this->imgStatus->useCnt <= 0)
 	{
 		toDelete = true;
 	}
-	this->imgStatus->mut->Unlock();
+	mutUsage.EndUse();
 	if (toDelete)
 	{
 		DEL_CLASS(this->imgStatus->mut);

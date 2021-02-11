@@ -6,6 +6,7 @@
 #include "IO/SMake.h"
 #include "Manage/EnvironmentVar.h"
 #include "Manage/Process.h"
+#include "Sync/MutexUsage.h"
 #include "Text/UTF8Reader.h"
 
 #define OBJECTPATH ((const UTF8Char*)"obj")
@@ -1173,10 +1174,9 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 void IO::SMake::SetErrorMsg(const UTF8Char *msg)
 {
-	this->errorMsgMut->Lock();
+	Sync::MutexUsage mutUsage(this->errorMsgMut);
 	SDEL_TEXT(this->errorMsg);
 	this->errorMsg = Text::StrCopyNew(msg);
-	this->errorMsgMut->Unlock();
 }
 
 IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::IWriter *messageWriter) : IO::ParsedObject(cfgFile)
@@ -1270,7 +1270,7 @@ Bool IO::SMake::IsLoadFailed()
 Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF *sb)
 {
 	Bool ret;
-	this->errorMsgMut->Lock();
+	Sync::MutexUsage mutUsage(this->errorMsgMut);
 	if (this->errorMsg)
 	{
 		sb->Append(this->errorMsg);
@@ -1280,7 +1280,6 @@ Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF *sb)
 	{
 		ret = false;
 	}
-	this->errorMsgMut->Unlock();
 	return ret;
 }
 

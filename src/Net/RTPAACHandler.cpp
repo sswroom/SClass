@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Console.h"
 #include "Net/RTPAACHandler.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
@@ -78,7 +79,7 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 se
 	OSInt i = 0;
 	Int32 thisSize;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	switch (this->aacm)
 	{
 	case AACM_AAC_HBR:
@@ -112,10 +113,10 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 se
 
 		break;
 	default:
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		return;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 	if (this->evt)
 	{
@@ -253,10 +254,10 @@ UOSInt Net::RTPAACHandler::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		this->dataEvt->Wait(1000);
 	}
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->buffSize <= 0)
 	{
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 	if (this->buffSize < blkSize)
@@ -266,7 +267,7 @@ UOSInt Net::RTPAACHandler::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	MemCopyNO(buff, this->buff, blkSize);
 	MemCopyO(this->buff, &this->buff[blkSize], this->buffSize - blkSize);
 	this->buffSize -= blkSize;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 
 	return blkSize;
 }

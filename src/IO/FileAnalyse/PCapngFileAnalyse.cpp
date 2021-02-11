@@ -122,9 +122,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 			block->linkType = linkTypeList->GetItem(ifId);
 		}
 
-		me->dataMut->Lock();
 		me->blockList->Add(block);
-		me->dataMut->Unlock();
 		ofst += thisSize;
 	}
 	DEL_CLASS(linkTypeList);
@@ -142,8 +140,7 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->isBE = false;
-	NEW_CLASS(this->dataMut, Sync::Mutex());
-	NEW_CLASS(this->blockList, Data::ArrayList<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo*>());
+	NEW_CLASS(this->blockList, Data::SyncArrayList<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo*>());
 	this->packetBuff = MemAlloc(UInt8, 65536);
 	if (fd->GetRealData(0, 16, buff) != 16)
 	{
@@ -187,15 +184,8 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
-	OSInt i = this->blockList->GetCount();
-	while (i-- > 0)
-	{
-		block = this->blockList->GetItem(i);
-		MemFree(block);
-	}
+	DEL_LIST_FUNC(this->blockList, MemFree);
 	DEL_CLASS(this->blockList);
-	DEL_CLASS(this->dataMut);
 	MemFree(this->packetBuff);
 }
 
@@ -211,9 +201,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 	{
 		return false;
 	}
-	this->dataMut->Lock();
 	block = this->blockList->GetItem(index);
-	this->dataMut->Unlock();
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendI64(block->ofst);
 	sb->Append((const UTF8Char*)", size=");
@@ -303,9 +291,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	{
 		return false;
 	}
-	this->dataMut->Lock();
 	block = this->blockList->GetItem(index);
-	this->dataMut->Unlock();
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->Append((const UTF8Char*)"Offset=");
 	sb->AppendI64(block->ofst);

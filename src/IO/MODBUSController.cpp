@@ -2,8 +2,8 @@
 #include "Data/ByteTool.h"
 #include "IO/MODBUSController.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
-#include <stdio.h>
 
 void __stdcall IO::MODBUSController::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, OSInt resultSize)
 {
@@ -32,17 +32,17 @@ void __stdcall IO::MODBUSController::SetResult(void *userObj, UInt8 funcCode, UI
 Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize)
 {
 	Bool succ;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	if (!this->devMap->Get(devAddr))
 	{
 		this->devMap->Put(devAddr, 1);
 		this->modbus->HandleReadResult(devAddr, ReadResult, SetResult, this);
 	}
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 
 	if (regAddr >= 30000 && regAddr < 40000)
 	{
-		this->reqMut->Lock();
+		mutUsage.BeginUse();
 		this->reqHasResult = false;
 		this->reqResult = resBuff;
 		this->reqFuncCode = 4;
@@ -52,12 +52,12 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
-		this->reqMut->Unlock();
+		mutUsage.EndUse();
 		return succ;
 	}
 	else if (regAddr >= 40000 && regAddr < 50000)
 	{
-		this->reqMut->Lock();
+		mutUsage.BeginUse();
 		this->reqHasResult = false;
 		this->reqResult = resBuff;
 		this->reqFuncCode = 3;
@@ -67,12 +67,12 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
-		this->reqMut->Unlock();
+		mutUsage.EndUse();
 		return succ;
 	}
 	else if (regAddr >= 300000 && regAddr < 400000)
 	{
-		this->reqMut->Lock();
+		mutUsage.BeginUse();
 		this->reqHasResult = false;
 		this->reqResult = resBuff;
 		this->reqFuncCode = 4;
@@ -82,12 +82,12 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
-		this->reqMut->Unlock();
+		mutUsage.EndUse();
 		return succ;
 	}
 	else if (regAddr >= 400000 && regAddr < 500000)
 	{
-		this->reqMut->Lock();
+		mutUsage.BeginUse();
 		this->reqHasResult = false;
 		this->reqResult = resBuff;
 		this->reqFuncCode = 3;
@@ -97,7 +97,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
-		this->reqMut->Unlock();
+		mutUsage.EndUse();
 		return succ;
 	}
 	else

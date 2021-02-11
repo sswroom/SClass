@@ -4,6 +4,7 @@
 #include "Data/DateTime.h"
 #include "IO/Path.h"
 #include "Net/TFTPServer.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -53,9 +54,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	}
 	Int64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
-	me->mut->Lock();
+	Sync::MutexUsage mutUsage(me->mut);
 	sess = me->sessMap->Get(sessId);
-	me->mut->Unlock();
+	mutUsage.EndUse();
 	if (sess)
 	{
 		WriteMInt16(&repBuff[0], 5);
@@ -96,7 +97,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isLast = false;
 			sess->currBlock = 1;
 			sess->fileName = Text::StrCopyNew(sb.ToString());
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			me->sessMap->Put(sess->sessId, sess);
 
 			UInt8 *packet = MemAlloc(UInt8, sess->blockSize + 4);
@@ -107,7 +108,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			{
 				sess->isLast = true;
 			}
-			me->mut->Unlock();
+			mutUsage.EndUse();
 			me->dataSvr->SendTo(addr, port, packet, len + 4);
 			MemFree(packet);
 			if (me->log)
@@ -171,9 +172,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isLast = false;
 			sess->currBlock = 0;
 			sess->fileName = Text::StrCopyNew(sb.ToString());
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			me->sessMap->Put(sess->sessId, sess);
-			me->mut->Unlock();
+			mutUsage.EndUse();
 
 			WriteMInt16(&repBuff[0], 4);
 			WriteMInt16(&repBuff[2], 0);
@@ -208,11 +209,11 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 	Int64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
 	UInt8 repBuff[32];
-	me->mut->Lock();
+	Sync::MutexUsage mutUsage(me->mut);
 	sess = me->sessMap->Get(sessId);
 	if (sess == 0)
 	{
-		me->mut->Unlock();
+		mutUsage.EndUse();
 		if (ReadMUInt16(buff) == 3)
 		{
 			WriteMInt16(&repBuff[0], 4);
@@ -307,7 +308,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 		}
 		
 	}
-	me->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
@@ -322,7 +323,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 	NEW_CLASS(dt, Data::DateTime());
 	while (!me->threadToStop)
 	{
-		me->mut->Lock();
+		Sync::MutexUsage mutUsage(me->mut);
 		dt->SetCurrTimeUTC();
 		currTime = dt->ToTicks();
 		sessList = me->sessMap->GetValues();
@@ -341,7 +342,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 				me->ReleaseSess(sess);
 			}
 		}
-		me->mut->Unlock();
+		mutUsage.EndUse();
 		me->chkEvt->Wait(10000);
 	}
 	DEL_CLASS(dt);

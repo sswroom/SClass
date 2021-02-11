@@ -27,6 +27,7 @@ namespace Map
 			UOSInt tileWidth;
 			UOSInt tileHeight;
 
+			const UTF8Char *GetNextURL();
 		public:
 			OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf);
 			OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf);

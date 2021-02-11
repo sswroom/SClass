@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/SharedReadingDB.h"
+#include "Sync/MutexUsage.h"
 
 DB::SharedReadingDB::~SharedReadingDB()
 {
@@ -19,24 +20,22 @@ DB::SharedReadingDB::SharedReadingDB(DB::ReadingDB *db)
 
 void DB::SharedReadingDB::Reconnect()
 {
-	this->mutDB->Lock();
+	Sync::MutexUsage mutUsage(this->mutDB);
 	this->db->Reconnect();
-	this->mutDB->Unlock();
 }
 
 void DB::SharedReadingDB::UseObject()
 {
-	this->mutObj->Lock();
+	Sync::MutexUsage mutUsage(this->mutObj);
 	this->useCnt++;
-	this->mutObj->Unlock();
 }
 
 void DB::SharedReadingDB::UnuseObject()
 {
 	OSInt i;
-	this->mutObj->Lock();
+	Sync::MutexUsage mutUsage(this->mutObj);
 	i = --this->useCnt;
-	this->mutObj->Unlock();
+	mutUsage.EndUse();
 	if (i <= 0)
 	{
 		DEL_CLASS(this);
@@ -45,11 +44,11 @@ void DB::SharedReadingDB::UnuseObject()
 
 DB::ReadingDB *DB::SharedReadingDB::BeginUseDB()
 {
-	this->mutDB->Lock();
+	this->mutDB->Use();
 	return this->db;
 }
 
 void DB::SharedReadingDB::EndUseDB()
 {
-	this->mutDB->Unlock();
+	this->mutDB->Unuse();
 }

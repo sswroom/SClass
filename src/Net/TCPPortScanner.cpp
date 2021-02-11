@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/TCPPortScanner.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
@@ -13,7 +14,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	while (!me->threadToStop)
 	{
 		me->threadEvt->Wait(10000);
-		me->portMut->Lock();
+		Sync::MutexUsage mutUsage(me->portMut);
 		addr = me->addr;
 		if (addr.addrType != Net::SocketUtil::AT_UNKNOWN)
 		{
@@ -23,7 +24,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 				if (me->portList[i] & 1)
 				{
 					me->portList[i] = 0;
-					me->portMut->Unlock();
+					mutUsage.EndUse();
 					s = 0;
 					if (addr.addrType == Net::SocketUtil::AT_IPV4)
 					{
@@ -38,7 +39,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 						Bool succ = me->sockf->Connect(s, &addr, (UInt16)i);
 						me->sockf->DestroySocket(s);
 
-						me->portMut->Lock();
+						mutUsage.BeginUse();
 						if (succ)
 						{
 							if (me->portList[i] == 0)
@@ -46,16 +47,16 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 								me->portList[i] = 2;
 								if (me->hdlr)
 								{
-									me->portMut->Unlock();
+									mutUsage.EndUse();
 									me->hdlr(me->hdlrObj, (UInt16)i);
-									me->portMut->Lock();
+									mutUsage.BeginUse();
 								}
 							}
 						}
 					}
 					else
 					{
-						me->portMut->Lock();
+						mutUsage.BeginUse();
 					}
 					if (me->threadToStop)
 					{
@@ -65,7 +66,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 				i++;
 			}
 		}
-		me->portMut->Unlock();
+		mutUsage.EndUse();
 	}
 	Sync::Interlocked::Decrement(&me->threadCnt);
 	return 0;
@@ -111,7 +112,7 @@ void Net::TCPPortScanner::Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPo
 {
 	OSInt i;
 	OSInt j = maxPort + 1;
-	this->portMut->Lock();
+	Sync::MutexUsage mutUsage(this->portMut);
 	this->addr = *addr;
 	i = 0;
 	while (i < j)
@@ -119,7 +120,7 @@ void Net::TCPPortScanner::Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPo
 		this->portList[i] = 1;
 		i++;
 	}
-	this->portMut->Unlock();
+	mutUsage.EndUse();
 	this->threadEvt->Set();
 }
 
@@ -127,7 +128,7 @@ Bool Net::TCPPortScanner::IsFinished()
 {
 	Bool ret = true;
 	UInt16 i = 0;
-	this->portMut->Lock();
+	Sync::MutexUsage mutUsage(this->portMut);
 	while (i < 65535)
 	{
 		if ((this->portList[i] & 1) == 1)
@@ -141,7 +142,7 @@ Bool Net::TCPPortScanner::IsFinished()
 	{
 		ret = false;
 	}
-	this->portMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -149,7 +150,7 @@ OSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
 {
 	OSInt initCnt = portList->GetCount();
 	UInt16 i = 0;
-	this->portMut->Lock();
+	Sync::MutexUsage mutUsage(this->portMut);
 	while (i < 65535)
 	{
 		if (this->portList[i] == 2)
@@ -163,6 +164,6 @@ OSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
 	{
 		portList->Add(65535);
 	}
-	this->portMut->Unlock();
+	mutUsage.EndUse();
 	return portList->GetCount() - initCnt;
 }

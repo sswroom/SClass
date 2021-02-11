@@ -4,6 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/SerialPort.h"
 #include "IO/Device/MTKGPSNMEA.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -19,17 +20,13 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 		}
 		else
 		{
-			this->cmdResultMut->Lock();
 			this->cmdWResults->Add(Text::StrCopyNew(cmd));
-			this->cmdResultMut->Unlock();
 			this->cmdEvt->Set();
 		}
 	}
 	else
 	{
-		this->cmdResultMut->Lock();
 		this->cmdWResults->Add(Text::StrCopyNew(cmd));
-		this->cmdResultMut->Unlock();
 		this->cmdEvt->Set();
 	}
 }
@@ -38,9 +35,7 @@ IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(s
 {
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
 	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"IO.Device.MTKTracker.cmdEvt"));
-	NEW_CLASS(this->cmdResultMut, Sync::Mutex());
-//	NEW_CLASS(this->cmdResults, Data::ArrayList<const Char *>());
-	NEW_CLASS(this->cmdWResults, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->cmdWResults, Data::SyncArrayList<const UTF8Char *>());
 	this->firmwareBuild = 0;
 	this->firmwareRel = 0;
 	this->productMode = 0;
@@ -49,15 +44,9 @@ IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(s
 
 IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
 {
-	OSInt i;
 	this->stm->Close();
-	i = this->cmdWResults->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->cmdWResults->RemoveAt(i));
-	}
+	DEL_LIST_FUNC(this->cmdWResults, Text::StrDelNew);
 	DEL_CLASS(this->cmdWResults);
-	DEL_CLASS(this->cmdResultMut);
 	DEL_CLASS(this->cmdEvt);
 	DEL_CLASS(this->cmdMut);
 	SDEL_TEXT(this->firmwareBuild);
@@ -214,7 +203,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(OSInt addr, UInt8 *buff)
 	const UTF8Char *resp = 0;
 	const UTF8Char *cmdRes;
 	i = GenNMEACommand(sbuff, cbuff);
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(cbuff, i);
 	
 	dt.SetCurrTimeUTC();
@@ -224,9 +213,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(OSInt addr, UInt8 *buff)
 		while (this->cmdWResults->GetCount() > 0)
 		{
 			dt.SetCurrTimeUTC();
-			this->cmdResultMut->Lock();
 			cmdRes = this->cmdWResults->RemoveAt(0);
-			this->cmdResultMut->Unlock();
 			if (Text::StrStartsWith(cmdRes, (const UTF8Char*)"$PMTK182,8"))
 			{
 				SDEL_TEXT(data);
@@ -249,7 +236,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(OSInt addr, UInt8 *buff)
 			break;
 	}
 
-	this->cmdMut->Unlock();
+	mutUsage.EndUse();
 	if (resp && data)
 	{
 		Bool succ = false;
@@ -507,7 +494,7 @@ const UTF8Char *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, OSI
 	Data::DateTime dt2;
 	const UTF8Char *cmdRes;
 
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(cmdBuff, cmdSize);
 	const UTF8Char *resultStr = 0;
 	
@@ -518,9 +505,7 @@ const UTF8Char *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, OSI
 		while (this->cmdWResults->GetCount() > 0)
 		{
 			dt.SetCurrTimeUTC();
-			this->cmdResultMut->Lock();
 			cmdRes = this->cmdWResults->RemoveAt(0);
-			this->cmdResultMut->Unlock();
 			if (Text::StrStartsWith(cmdRes, resultStart))
 			{
 				resultStr = cmdRes;
@@ -537,8 +522,7 @@ const UTF8Char *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, OSI
 		if (dt2.DiffMS(&dt) >= timeoutMS)
 			break;
 	}
-
-	this->cmdMut->Unlock();
+	mutUsage.EndUse();
 	return resultStr;
 }
 

@@ -1,9 +1,8 @@
 #ifndef _SM_IO_FILEANALYSE_RAR5FILEANALYSE
 #define _SM_IO_FILEANALYSE_RAR5FILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
-#include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -22,8 +21,7 @@ namespace IO
 			} BlockInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::ArrayList<BlockInfo*> *packs;
-			Sync::Mutex *packMut;
+			Data::SyncArrayList<BlockInfo*> *packs;
 
 			Bool pauseParsing;
 			Bool threadRunning;

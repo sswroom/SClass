@@ -4,13 +4,14 @@
 #include "Data/ByteTool.h"
 #include "Media/H264Parser.h"
 #include "Media/Decoder/RAVCDecoder.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 #define ALLONE 1
 
 void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	this->frameMut->Lock();
+	Sync::MutexUsage mutUsage(this->frameMut);
 	Bool found = false;
 	Media::FrameType seiFrameType = Media::FT_INTERLACED_TFF;
 
@@ -332,7 +333,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 			this->frameSize = 0;
 		}
 	}
-	this->frameMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::Decoder::RAVCDecoder::RAVCDecoder(IVideoSource *sourceVideo, Bool toRelease, Bool skipHeader) : Media::Decoder::VDecoderBase(sourceVideo)
@@ -574,7 +575,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 	if (this->pps == 0 || this->sps == 0)
 		return false;
 
-	this->frameMut->Lock();
+	Sync::MutexUsage mutUsage(this->frameMut);
 	OSInt size = this->BuildIFrameHeader(this->frameBuff);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	UOSInt oriW = info->dispWidth;
@@ -582,7 +583,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 	Media::H264Parser::GetFrameInfo(this->frameBuff, size, info, 0);
 	info->dispWidth = oriW;
 	info->dispHeight = oriH;
-	this->frameMut->Unlock();
+	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
 	info->fourcc = *(Int32*)"h264";
 

@@ -3,6 +3,7 @@
 #include "Map/OSM/OSMCacheHandler.h"
 #include "Net/HTTPClient.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -34,10 +35,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		fs = 0;
 
 		const UTF8Char *thisUrl;
-		this->urlMut->Lock();
+		Sync::MutexUsage mutUsage(this->urlMut);
 		thisUrl = this->urls->GetItem(this->urlNext);
 		this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
-		this->urlMut->Unlock();
+		mutUsage.EndUse();
 		Text::StringBuilderUTF8 urlSb;
 		urlSb.Append(thisUrl);
 		urlSb.AppendI32(lev);

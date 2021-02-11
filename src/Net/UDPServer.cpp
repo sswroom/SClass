@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/UDPServer.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -42,7 +43,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 
 			if (stat->me->logPrefix)
 			{
-				stat->me->logFileMut->Lock();
+				Sync::MutexUsage mutUsage(stat->me->logFileMut);
 				if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
 				{
 					if (stat->me->logFileR)
@@ -67,7 +68,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					stat->me->logFileR->Write(hbuff, 8);
 					stat->me->logFileR->Write(buff, recvSize);
 				}
-				stat->me->logFileMut->Unlock();
+				mutUsage.EndUse();
 			}
 			stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
 		}
@@ -114,7 +115,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 
 			if (stat->me->logPrefix)
 			{
-				stat->me->logFileMut->Lock();
+				Sync::MutexUsage mutUsage(stat->me->logFileMut);
 				if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
 				{
 					if (stat->me->logFileR)
@@ -139,7 +140,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					stat->me->logFileR->Write(hbuff, 8);
 					stat->me->logFileR->Write(buff, recvSize);
 				}
-				stat->me->logFileMut->Unlock();
+				mutUsage.EndUse();
 			}
 			stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
 		}
@@ -456,7 +457,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 		Data::DateTime logTime;
 		logTime.SetCurrTimeUTC();
 
-		this->logFileMut->Lock();
+		Sync::MutexUsage mutUsage(this->logFileMut);
 		if ((logTime.GetDay() != this->logDateS->GetDay()) || (logFileS == 0))
 		{
 			if (logFileS)
@@ -482,7 +483,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			this->logFileS->Write(hbuff, 8);
 			this->logFileS->Write(buff, dataSize);
 		}
-		this->logFileMut->Unlock();
+		mutUsage.EndUse();
 	}
 
 	if (this->msgLog)

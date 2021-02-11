@@ -61,9 +61,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = currOfst + j;
 				pack->packSize = 4;
 				pack->packType = 0xb9;
-				me->packMut->Lock();
 				me->packs->Add(pack);
-				me->packMut->Unlock();
 				break;
 			}
 			if (readBuff[j + 3] == 0xba) 
@@ -84,9 +82,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
 				pack->packType = 0xba;
-				me->packMut->Lock();
 				me->packs->Add(pack);
-				me->packMut->Unlock();
 			}
 			else
 			{
@@ -95,9 +91,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
 				pack->packType = readBuff[j + 3];
-				me->packMut->Lock();
 				me->packs->Add(pack);
-				me->packMut->Unlock();
 			}
 			if (j + frameSize < buffSize)
 			{
@@ -125,8 +119,7 @@ IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::ArrayList<IO::FileAnalyse::MPEGFileAnalyse::PackInfo*>());
-	NEW_CLASS(this->packMut, Sync::Mutex());
+	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::MPEGFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadMInt32(buff) != 0x000001ba)
 	{
@@ -163,16 +156,8 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	OSInt i;
-	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
-	i = this->packs->GetCount();
-	while (i-- > 0)
-	{
-		pack = this->packs->GetItem(i);
-		MemFree(pack);
-	}
+	DEL_LIST_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
-	DEL_CLASS(this->packMut);
 }
 
 UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
@@ -183,9 +168,7 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 	sb->AppendI64(pack->fileOfst);
@@ -230,9 +213,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 

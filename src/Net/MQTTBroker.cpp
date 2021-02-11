@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Net/MQTTBroker.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -37,7 +38,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 
 		OSInt i;
 		SubscribeInfo *subscribe;
-		me->subscribeMut->Lock();
+		Sync::MutexUsage mutUsage(me->subscribeMut);
 		i = me->subscribeList->GetCount();
 		while (i-- > 0)
 		{
@@ -49,7 +50,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 				MemFree(subscribe);
 			}
 		}
-		me->subscribeMut->Unlock();
+		mutUsage.EndUse();
 		DEL_CLASS(cli);
 	}
 }
@@ -681,13 +682,13 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				subscribe->topic = Text::StrCopyNew(sbTopic.ToString());
 				subscribe->cli = (Net::TCPClient*)stm;
 				subscribe->cliData = data;
-				this->subscribeMut->Lock();
+				Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 				this->subscribeList->Add(subscribe);
-				this->subscribeMut->Unlock();
+				subscribeMutUsage.EndUse();
 
 				Data::ArrayList<TopicInfo*> *topicList;
 				TopicInfo *topicInfo;
-				this->topicMut->Lock();
+				Sync::MutexUsage topicMutUsage(this->topicMut);
 				topicList = this->topicMap->GetValues();
 				i = 0;
 				j = topicList->GetCount();
@@ -700,7 +701,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					}
 					i++;
 				}
-				this->topicMut->Unlock();
+				topicMutUsage.EndUse();
 			}
 		}
 		break;
@@ -795,7 +796,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, O
 {
 	TopicInfo *topicInfo;
 	Bool unchanged = false;
-	this->topicMut->Lock();
+	Sync::MutexUsage topicMutUsage(this->topicMut);
 	topicInfo = this->topicMap->Get(topic);
 	if (topicInfo == 0)
 	{
@@ -831,7 +832,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, O
 			{
 				if (suppressUnchg)
 				{
-					this->topicMut->Unlock();
+					topicMutUsage.EndUse();
 					return;
 				}
 			}
@@ -841,7 +842,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, O
 			}		
 		}
 	}
-	this->topicMut->Unlock();
+	topicMutUsage.EndUse();
 	
 	if (this->topicUpdHdlr)
 	{
@@ -850,19 +851,19 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, O
 
 	SubscribeInfo *subscribe;
 	OSInt i;
-	this->subscribeMut->Lock();
+	Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 	i = this->subscribeList->GetCount();
 	while (i-- > 0)
 	{
 		subscribe = this->subscribeList->GetItem(i);
 		if (this->TopicMatch(topic, subscribe->topic))
 		{
-			this->topicMut->Lock();
+			topicMutUsage.BeginUse();
 			this->TopicSend(subscribe->cli, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
-			this->topicMut->Unlock();
+			topicMutUsage.EndUse();
 		}
 	}
-	this->subscribeMut->Unlock();
+	subscribeMutUsage.EndUse();
 }
 
 Bool Net::MQTTBroker::TopicValid(const UTF8Char *topic)
@@ -1128,7 +1129,7 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *u
 		TopicInfo *topic;
 		OSInt i;
 		OSInt j;
-		this->topicMut->Lock();
+		Sync::MutexUsage mutUsage(this->topicMut);
 		topicList = this->topicMap->GetValues();
 		i = 0;
 		j = topicList->GetCount();
@@ -1138,6 +1139,6 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *u
 			this->topicUpdHdlr(this->topicUpdObj, topic->topic, topic->message, topic->msgSize);
 			i++;
 		}
-		this->topicMut->Unlock();
+		mutUsage.EndUse();
 	}
 }

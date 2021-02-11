@@ -11,6 +11,7 @@
 #endif 
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 Double Media::Resizer::LanczosResizerLR_C32::lanczos3_weight(Double phase, UOSInt nTap)
@@ -1274,7 +1275,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 	{
 		if (dwidth < this->hnTap || dheight < this->vnTap)
 			return;
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1319,13 +1320,13 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		}
 		
 		action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, vFilter, sbpl, dbpl, this->srcAlphaType);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (swidth != dwidth)
 	{
 		if (dwidth < this->hnTap)
 			return;
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1347,13 +1348,13 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 			this->hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
 		}
 		action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, this->hFilter, sbpl, dbpl, this->srcAlphaType);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (sheight != dheight)
 	{
 		if (dheight < this->vnTap)
 			return;
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -1376,13 +1377,13 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 			this->vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 		}
 		action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, vFilter, sbpl, dbpl, this->srcAlphaType);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		action->DoCollapse(src, dest, siWidth, dheight, sbpl, dbpl, this->srcAlphaType);
-		mut->Unlock();
+		mutUsage.EndUse();
 
 	}
 }

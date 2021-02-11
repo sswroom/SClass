@@ -25,16 +25,12 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 	pack->fileOfst = 0;
 	pack->packSize = 140;
 	pack->packType = 0;
-	me->packMut->Lock();
 	me->packs->Add(pack);
-	me->packMut->Unlock();
 	pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
 	pack->fileOfst = 140;
 	pack->packSize = 136;
 	pack->packType = 1;
-	me->packMut->Lock();
 	me->packs->Add(pack);
-	me->packMut->Unlock();
 
 	endOfst = me->fd->GetDataSize();
 	ofst = 276;
@@ -57,17 +53,13 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 			pack->fileOfst = ofst;
 			pack->packSize = 12;
 			pack->packType = 2;
-			me->packMut->Lock();
 			me->packs->Add(pack);
-			me->packMut->Unlock();
 			
 			pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
 			pack->fileOfst = ofst + 12;
 			pack->packSize = sz;
 			pack->packType = 3;
-			me->packMut->Lock();
 			me->packs->Add(pack);
-			me->packMut->Unlock();
 
 			ofst += sz + 12;
 		}
@@ -102,8 +94,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::IStreamData *fd)
 
 	this->hasLZODecomp = true;
 
-	NEW_CLASS(this->packs, Data::ArrayList<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo*>());
-	NEW_CLASS(this->packMut, Sync::Mutex());
+	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 0x0c || buff[1] != 0xa5 || buff[2] != 1 || buff[3] != 0)
 	{
@@ -128,23 +119,11 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	OSInt i;
-	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	i = this->packs->GetCount();
-	while (i-- > 0)
-	{
-		pack = this->packs->GetItem(i);
-		MemFree(pack);
-	}
+	DEL_LIST_FUNC(this->packs, MemFree);
 	Data::ArrayList<UInt8*> *extList = this->extMap->GetValues();
-	i = extList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(extList->GetItem(i));
-	}
+	DEL_LIST_FUNC(extList, MemFree);
 	DEL_CLASS(this->extMap);
 	DEL_CLASS(this->packs);
-	DEL_CLASS(this->packMut);
 }
 
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
@@ -155,9 +134,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
 {
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 	sb->AppendI64(pack->fileOfst);
@@ -193,9 +170,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	OSInt j;
 	OSInt k;
 	OSInt l;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 

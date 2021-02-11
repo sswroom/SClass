@@ -8,6 +8,7 @@
 #include "Net/SNS/SNSManager.h"
 #include "Net/SNS/SNSRSS.h"
 #include "Net/SNS/SNSTwitter.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -396,7 +397,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	{
 		dt->SetCurrTimeUTC();
 		t = dt->ToTicks();
-		me->mut->Lock();
+		Sync::MutexUsage mutUsage(me->mut);
 		cntMap->Clear();
 		i = me->channelList->GetCount();
 		while (i-- > 0)
@@ -414,7 +415,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 				}
 			}
 		}
-		me->mut->Unlock();
+		mutUsage.EndUse();
 		me->threadEvt->Wait(60000);
 	}
 	DEL_CLASS(cntMap);
@@ -572,22 +573,22 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		this->channelList->Add(channel);
 		this->ChannelUpdate(channel);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	return ctrl;
 }
 
 void Net::SNS::SNSManager::BeginUse()
 {
-	this->mut->Lock();
+	this->mut->Use();
 }
 
 void Net::SNS::SNSManager::EndUse()
 {
-	this->mut->Unlock();
+	this->mut->Unuse();
 }
 
 UOSInt Net::SNS::SNSManager::GetCount()

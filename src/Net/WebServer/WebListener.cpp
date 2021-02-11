@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebConnection.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/TextEnc/FormEncoding.h"
@@ -16,9 +17,9 @@ void __stdcall Net::WebServer::WebListener::ConnHdlr(UInt32 *s, void *userObj)
 	NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, cli, me, me->hdlr, me->allowProxy, me->allowKA));
 	conn->SetSendLogger(OnDataSent, me);
 	me->cliMgr->AddClient(cli, conn);
-	me->statusMut->Lock();
+	Sync::MutexUsage mutUsage(me->statusMut);
 	me->status.connCnt++;
-	me->statusMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall Net::WebServer::WebListener::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
@@ -41,9 +42,9 @@ void __stdcall Net::WebServer::WebListener::ClientData(Net::TCPClient *cli, void
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
 	conn->ReceivedData(buff, size);
-	me->statusMut->Lock();
+	Sync::MutexUsage mutUsage(me->statusMut);
 	me->status.totalRead += size;
-	me->statusMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void __stdcall Net::WebServer::WebListener::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
@@ -87,9 +88,9 @@ void __stdcall Net::WebServer::WebListener::ProxyTimeout(Net::TCPClient *cli, vo
 void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buffSize)
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
-	me->statusMut->Lock();
+	Sync::MutexUsage mutUsage(me->statusMut);
 	me->status.totalWrite += buffSize;
-	me->statusMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA)
@@ -152,27 +153,25 @@ const UTF8Char *Net::WebServer::WebListener::GetServerName()
 
 void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::ILogHandler::LogLevel accLogLev)
 {
-	this->accLogMut->Lock();
+	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->accLog = accLog;
 	this->accLogLev = accLogLev;
-	this->accLogMut->Unlock();
 }
 
 void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqLog)
 {
-	this->accLogMut->Lock();
+	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->reqLog = reqLog;
-	this->accLogMut->Unlock();
 }
 
 void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time)
 {
 	UTF8Char sbuff[128];
 	const UTF8Char *csptr;
-	this->statusMut->Lock();
+	Sync::MutexUsage mutUsage(this->statusMut);
 	this->status.reqCnt++;
-	this->statusMut->Unlock();
-	this->accLogMut->Lock();
+	mutUsage.EndUse();
+	Sync::MutexUsage accLogMutUsage(this->accLogMut);
 	if (this->reqLog)
 	{
 		this->reqLog->LogRequest(req);
@@ -219,13 +218,13 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 
 		this->accLog->LogMessage(sb.ToString(), this->accLogLev);
 	}
-	this->accLogMut->Unlock();
+	accLogMutUsage.EndUse();
 }
 
 void Net::WebServer::WebListener::LogMessage(Net::WebServer::IWebRequest *req, const UTF8Char *msg)
 {
 	UTF8Char sbuff[32];
-	this->accLogMut->Lock();
+	Sync::MutexUsage mutUsage(this->accLogMut);
 	if (this->accLog)
 	{
 		if (req)
@@ -242,7 +241,6 @@ void Net::WebServer::WebListener::LogMessage(Net::WebServer::IWebRequest *req, c
 			this->accLog->LogMessage(msg, this->accLogLev);
 		}
 	}
-	this->accLogMut->Unlock();
 }
 
 void Net::WebServer::WebListener::AddProxyConn(Net::WebServer::WebConnection *conn, Net::TCPClient *proxyCli)
@@ -265,8 +263,8 @@ void Net::WebServer::WebListener::HandleTimeout(TimeoutHandler hdlr, void *userO
 
 void Net::WebServer::WebListener::GetStatus(SERVER_STATUS *status)
 {
-	this->statusMut->Lock();
+	Sync::MutexUsage mutUsage(this->statusMut);
 	MemCopyNO(status, &this->status, sizeof(SERVER_STATUS));
-	this->statusMut->Unlock();
+	mutUsage.EndUse();
 	status->currConn = (UInt32)this->cliMgr->GetClientCount();
 }

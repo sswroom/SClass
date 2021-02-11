@@ -5,6 +5,7 @@
 #include "Math/Math.h"
 #include "Net/NTPServer.h"
 #include "Net/NTPClient.h"
+#include "Sync/MutexUsage.h"
 
 void __stdcall Net::NTPClient::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
@@ -61,7 +62,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 		port = 123;
 	}
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	MemClear(buff, 48);
 	buff[0] = 0xe3;
 	buff[12] = 'S';
@@ -88,7 +89,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	{
 		svrTime->AddMS(Math::Double2Int32(clk.GetTimeDiff() * 500));
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return hasResult;
 }
 

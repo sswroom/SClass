@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/VirtualIOPinMgr.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 IO::VirtualIOPinMgr::VirtualIOPinMgr(OSInt pinCnt)
@@ -31,9 +32,9 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 	while (i-- > 0)
 	{
 		status = this->pins[i];
-		status->mut->Lock();
+		Sync::MutexUsage mutUsage(status->mut);
 		toRel = (status->useCnt-- <= 1);
-		status->mut->Unlock();
+		mutUsage.EndUse();
 
 		if (toRel)
 		{
@@ -69,22 +70,22 @@ IO::VirtualIOPin::VirtualIOPin(IO::VirtualIOPinMgr::PinStatus *pinStatus)
 {
 	this->pinStatus = pinStatus;
 	this->isOutput = false;
-	this->pinStatus->mut->Lock();
+	Sync::MutexUsage mutUsage(this->pinStatus->mut);
 	this->pinStatus->useCnt++;
-	this->pinStatus->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 IO::VirtualIOPin::~VirtualIOPin()
 {
 	Bool isRel;
-	this->pinStatus->mut->Lock();
+	Sync::MutexUsage mutUsage(this->pinStatus->mut);
 	isRel = (this->pinStatus->useCnt-- <= 1);
 	if (this->isOutput)
 	{
 		this->pinStatus->outputCnt--;
 		this->isOutput = false;
 	}
-	this->pinStatus->mut->Unlock();
+	mutUsage.EndUse();
 	if (isRel)
 	{
 		DEL_CLASS(this->pinStatus->mut);
@@ -95,7 +96,7 @@ IO::VirtualIOPin::~VirtualIOPin()
 Bool IO::VirtualIOPin::IsPinHigh()
 {
 	Bool ret;
-	this->pinStatus->mut->Lock();
+	Sync::MutexUsage mutUsage(this->pinStatus->mut);
 	if (this->pinStatus->outputCnt > 0)
 	{
 		ret = this->pinStatus->outputHigh;
@@ -104,7 +105,7 @@ Bool IO::VirtualIOPin::IsPinHigh()
 	{
 		ret = this->pinStatus->pullHigh;
 	}
-	this->pinStatus->mut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -120,16 +121,16 @@ void IO::VirtualIOPin::SetPinOutput(Bool isOutput)
 		if (isOutput)
 		{
 			this->isOutput = true;
-			this->pinStatus->mut->Lock();
+			Sync::MutexUsage mutUsage(this->pinStatus->mut);
 			this->pinStatus->outputCnt++;
-			this->pinStatus->mut->Unlock();
+			mutUsage.EndUse();
 		}
 		else
 		{
 			this->isOutput = false;
-			this->pinStatus->mut->Lock();
+			Sync::MutexUsage mutUsage(this->pinStatus->mut);
 			this->pinStatus->outputCnt--;
-			this->pinStatus->mut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 }
@@ -138,9 +139,9 @@ void IO::VirtualIOPin::SetPinState(Bool isHigh)
 {
 	if (this->isOutput)
 	{
-		this->pinStatus->mut->Lock();
+		Sync::MutexUsage mutUsage(this->pinStatus->mut);
 		this->pinStatus->outputHigh = isHigh;
-		this->pinStatus->mut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 

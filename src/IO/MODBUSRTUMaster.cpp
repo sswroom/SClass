@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/MODBUSRTUMaster.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
@@ -129,11 +130,11 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(void *userObj)
 void IO::MODBUSRTUMaster::CalcCRC(UInt8 *rtu, OSInt rtuSize)
 {
 	UInt8 crcTmp[2];
-	this->crcMut->Lock();
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc->Clear();
 	this->crc->Calc(rtu, rtuSize - 2);
 	this->crc->GetValue(crcTmp);
-	this->crcMut->Unlock();
+	mutUsage.EndUse();
 	rtu[rtuSize - 2] = ~crcTmp[1];
 	rtu[rtuSize - 1] = ~crcTmp[0];
 }
@@ -141,11 +142,11 @@ void IO::MODBUSRTUMaster::CalcCRC(UInt8 *rtu, OSInt rtuSize)
 Bool IO::MODBUSRTUMaster::IsCRCValid(UInt8 *rtu, OSInt rtuSize)
 {
 	UInt8 crcTmp[2];
-	this->crcMut->Lock();
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc->Clear();
 	this->crc->Calc(rtu, rtuSize - 2);
 	this->crc->GetValue(crcTmp);
-	this->crcMut->Unlock();
+	mutUsage.EndUse();
 	return rtu[rtuSize - 2] == (UInt8)~crcTmp[1] && rtu[rtuSize - 1] == (UInt8)~crcTmp[0];
 }
 
@@ -207,7 +208,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	this->CalcCRC(buff, 8);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -215,7 +216,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		}
 		this->stm->Write(buff, 8);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -236,7 +237,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	this->CalcCRC(buff, 8);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -244,7 +245,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		}
 		this->stm->Write(buff, 8);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -265,7 +266,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	this->CalcCRC(buff, 8);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -273,7 +274,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		}
 		this->stm->Write(buff, 8);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -294,7 +295,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	this->CalcCRC(buff, 8);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -302,7 +303,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		}
 		this->stm->Write(buff, 8);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -330,7 +331,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 	this->CalcCRC(buff, 8);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -338,7 +339,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		}
 		this->stm->Write(buff, 8);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -359,7 +360,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	this->CalcCRC(buff, 8);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -371,7 +372,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 
 		this->stm->Write(buff, 8);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -394,7 +395,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	this->CalcCRC(buff, cnt * 2 + 9);
 	if (this->stm)
 	{
-		this->stmMut->Lock();
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk->GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -406,7 +407,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 
 		this->stm->Write(buff, cnt * 2 + 9);
 		this->clk->Start();
-		this->stmMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{

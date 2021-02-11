@@ -13,6 +13,7 @@
 #include "Math/Math.h"
 #include "Math/Point.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Event.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -390,7 +391,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 	Data::DateTime t1;
 	if (this->mut)
 	{
-		this->mut->Lock();
+		this->mut->Use();
 		mutWait = true;
 	}
 	Data::DateTime t2;
@@ -451,7 +452,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 		}
 		if (mutWait)
 		{
-			this->mut->Unlock();
+			this->mut->Unuse();
 		}
 
 		if (trig)
@@ -467,7 +468,7 @@ void DB::ReadingDBTool::CloseReader(DB::DBReader *r)
 		this->db->CloseReader(r);
 		if (this->mut)
 		{
-			mut->Unlock();
+			mut->Unuse();
 		}
 		this->lastReader = 0;
 		this->readerCnt = 0;
@@ -594,7 +595,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 	Data::DateTime t1;
 	if (this->mut)
 	{
-		this->mut->Lock();
+		this->mut->Use();
 		mutWait = true;
 	}
 	Data::DateTime t2;
@@ -655,7 +656,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 		}
 		if (mutWait)
 		{
-			this->mut->Unlock();
+			this->mut->Unuse();
 		}
 
 		return 0;

@@ -4,6 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Media/M2VStreamSource.h"
 #include "Media/MPEGVideoParser.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -188,7 +189,7 @@ void Media::M2VStreamSource::SubmitFrame(OSInt frameSize, OSInt frameStart, OSIn
 					this->debugMut->Unlock();
 				}
 #endif
-				this->playMut->Lock();
+				Sync::MutexUsage mutUsage(this->playMut);
 				this->playBuff[this->playBuffEnd].frame = MemAlloc(UInt8, frameSize);
 				this->playBuff[this->playBuffEnd].frameNum = this->frameNum;
 				this->playBuff[this->playBuffEnd].frameSize = frameSize;
@@ -198,7 +199,7 @@ void Media::M2VStreamSource::SubmitFrame(OSInt frameSize, OSInt frameStart, OSIn
 
 				this->playBuffEnd = nextIndex;
 				this->playEvt->Set();
-				this->playMut->Unlock();
+				mutUsage.EndUse();
 				break;
 			}
 		}
@@ -210,7 +211,7 @@ void Media::M2VStreamSource::SubmitFrame(OSInt frameSize, OSInt frameStart, OSIn
 
 void Media::M2VStreamSource::ClearPlayBuff()
 {
-	this->playMut->Lock();
+	Sync::MutexUsage mutUsage(this->playMut);
 	while (this->playBuffStart != this->playBuffEnd)
 	{
 		MemFree(this->playBuff[this->playBuffStart].frame);
@@ -221,7 +222,7 @@ void Media::M2VStreamSource::ClearPlayBuff()
 			this->playBuffStart -= PLAYBUFFSIZE;
 		}
 	}
-	this->playMut->Unlock();
+	mutUsage.EndUse();
 }
 
 UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
@@ -231,10 +232,10 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 	me->playing = true;
 	while (!me->playToStop)
 	{
-		me->playMut->Lock();
+		Sync::MutexUsage mutUsage(me->playMut);
 		if (me->playBuffStart == me->playBuffEnd)
 		{
-			me->playMut->Unlock();
+			mutUsage.EndUse();
 			if (me->playEOF)
 			{
 				break;
@@ -376,7 +377,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 			me->playBuffStart++;
 			if (me->playBuffStart >= PLAYBUFFSIZE)
 				me->playBuffStart -= PLAYBUFFSIZE;
-			me->playMut->Unlock();
+			mutUsage.EndUse();
 
 #ifdef _DEBUG
 			if (me->debugLog)
@@ -512,13 +513,13 @@ Bool Media::M2VStreamSource::Start()
 		this->debugMut->Unlock();
 	}
 #endif
-	this->pbcMut->Lock();
+	Sync::MutexUsage mutUsage(this->pbcMut);
 	this->playToStop = false;
 	this->playInit = false;
 	this->playEOF = false;
 	Bool started = this->pbc->StartVideo();
 	Sync::Thread::Create(PlayThread, this);
-	this->pbcMut->Unlock();
+	mutUsage.EndUse();
 	while (!this->playInit)
 	{
 		Sync::Thread::Sleep(10);
@@ -537,13 +538,13 @@ void Media::M2VStreamSource::Stop()
 			Sync::Thread::Sleep(10);
 		}
 	}
-	this->pbcMut->Lock();
+	Sync::MutexUsage mutUsage(this->pbcMut);
 	this->pbc->StopVideo();
 	this->playToStop = false;
 	this->frameCb = 0;
 	this->fcCb = 0;
 	this->frameCbData = 0;
-	this->pbcMut->Unlock();
+	mutUsage.EndUse();
 	this->ClearFrameBuff();
 }
 

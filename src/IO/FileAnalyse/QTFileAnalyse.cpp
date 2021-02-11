@@ -41,9 +41,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(Int64 ofst, Int64 size)
 			pack->fileOfst = ofst;
 			pack->packSize = sz;
 			pack->packType = *(Int32*)&buff[4];
-			this->packMut->Lock();
 			this->packs->Add(pack);
-			this->packMut->Unlock();
 			
 			if (contList.SortedIndexOf(pack->packType) >= 0)
 			{
@@ -73,8 +71,7 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::ArrayList<IO::FileAnalyse::QTFileAnalyse::PackInfo*>());
-	NEW_CLASS(this->packMut, Sync::Mutex());
+	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::QTFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 8, buff);
 	if (ReadInt32(&buff[4]) != *(Int32*)"ftyp" && ReadInt32(&buff[4]) != *(Int32*)"moov")
 	{
@@ -104,16 +101,8 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	OSInt i;
-	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
-	i = this->packs->GetCount();
-	while (i-- > 0)
-	{
-		pack = this->packs->GetItem(i);
-		MemFree(pack);
-	}
+	DEL_LIST_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
-	DEL_CLASS(this->packMut);
 }
 
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
@@ -125,9 +114,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 buff[5];
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 	sb->AppendI64(pack->fileOfst);
@@ -149,9 +136,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	OSInt j;
 	OSInt k;
 	OSInt l;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 

@@ -12,6 +12,7 @@
 #include "IO/Stream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -44,7 +45,7 @@ void IO::LogTool::Close()
 	if (closed)
 		return;
 	closed = true;
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	OSInt i = hdlrArr->GetCount();
 	Data::DateTime dt;
 	dt.SetCurrTime();
@@ -53,7 +54,7 @@ void IO::LogTool::Close()
 		hdlrArr->GetItem(i)->LogAdded(&dt, (const UTF8Char*)"End logging normally", (IO::ILogHandler::LogLevel)0);
 		hdlrArr->GetItem(i)->LogClosed();
 	}
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void IO::LogTool::AddFileLog(const UTF8Char *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
@@ -80,10 +81,10 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 {
 	if (closed)
 		return;
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrArr->Add(hdlr);
 	this->levArr->Add(logLev);
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 
 	UTF8Char buff[256];
 	UTF8Char *sptr;
@@ -107,7 +108,7 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 {
 	if (closed)
 		return;
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	OSInt i = this->hdlrArr->GetCount();
 	while (i-- > 0)
 	{
@@ -118,19 +119,19 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 			break;
 		}
 	}
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void IO::LogTool::LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level)
 {
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	this->hdlrMut->Lock();
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	OSInt i = hdlrArr->GetCount();
 	while (i-- > 0)
 	{
 		if (levArr->GetItem(i) >= level)
 			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg, level);
 	}
-	this->hdlrMut->Unlock();
+	mutUsage.EndUse();
 }

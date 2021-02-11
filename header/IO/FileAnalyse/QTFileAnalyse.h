@@ -1,9 +1,8 @@
 #ifndef _SM_IO_FILEANALYSE_QTFILEANALYSE
 #define _SM_IO_FILEANALYSE_QTFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
-#include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -21,8 +20,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::ArrayList<PackInfo*> *packs;
-			Sync::Mutex *packMut;
+			Data::SyncArrayList<PackInfo*> *packs;
 
 			Bool pauseParsing;
 			Bool threadRunning;

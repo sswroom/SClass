@@ -36,9 +36,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(Int64 ofst, Int64 size)
 			{
 				pack->subPackType = 0;
 			}
-			this->packMut->Lock();
 			this->packs->Add(pack);
-			this->packMut->Unlock();
 			
 			if (pack->subPackType != 0)
 			{
@@ -71,8 +69,7 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::ArrayList<PackInfo*>());
-	NEW_CLASS(this->packMut, Sync::Mutex());
+	NEW_CLASS(this->packs, Data::SyncArrayList<PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadInt32(buff) != *(Int32*)"RIFF")
 	{
@@ -102,16 +99,8 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	OSInt i;
-	PackInfo *pack;
-	i = this->packs->GetCount();
-	while (i-- > 0)
-	{
-		pack = this->packs->GetItem(i);
-		MemFree(pack);
-	}
+	DEL_LIST_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
-	DEL_CLASS(this->packMut);
 }
 
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
@@ -123,9 +112,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 {
 	PackInfo *pack;
 	UInt8 buff[5];
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 	sb->AppendI64(pack->fileOfst);
@@ -153,9 +140,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	this->packMut->Lock();
 	pack = this->packs->GetItem(index);
-	this->packMut->Unlock();
 	if (pack == 0)
 		return false;
 

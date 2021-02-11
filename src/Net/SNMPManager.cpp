@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/SNMPManager.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
 void Net::SNMPManager::FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList)
@@ -101,10 +102,10 @@ void Net::SNMPManager::UpdateValues()
 OSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 {
 	OSInt ret;
-	this->agentMut->Lock();
+	Sync::MutexUsage mutUsage(this->agentMut);
 	ret = this->agentList->GetCount();
 	agentList->AddRange(this->agentList);
-	this->agentMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -144,14 +145,14 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			agent->cpuName = 0;
 			MemClear(agent->mac, 6);
 			NEW_CLASS(agent->readingList, Data::ArrayList<ReadingInfo*>());
-			this->agentMut->Lock();
+			Sync::MutexUsage mutUsage(this->agentMut);
 			this->agentList->Add(agent);
 			if (addr->addrType == Net::SocketUtil::AT_IPV4)
 			{
 				Int32 ipv4 = ReadMInt32(addr->addr);
 				this->ipv4Agents->Put(ipv4, agent);
 			}
-			this->agentMut->Unlock();
+			mutUsage.EndUse();
 		}
 	}
 	FreeAllItems(&itemList);

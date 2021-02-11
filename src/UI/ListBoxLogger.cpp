@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/ListBoxLogger.h"
@@ -13,7 +14,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 		OSInt curr;
 		OSInt cnt;
 		OSInt i;
-		me->mut->Lock();
+		Sync::MutexUsage mutUsage(me->mut);
 		cnt = me->logCnt;
 		curr = me->logIndex - cnt;
 		if (curr < 0)
@@ -29,7 +30,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 			curr = (curr + 1) % me->maxLog;
 		}
 		me->logCnt = 0;
-		me->mut->Unlock();
+		mutUsage.EndUse();
 
 //		this->lb->BeginUpdate();
 		if (me->reverse)
@@ -131,7 +132,7 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->timeFormat)
 	{
 		logTime->ToString(sbuff, this->timeFormat);
@@ -153,13 +154,13 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg
 	}
 	this->logArr[this->logIndex] = Text::StrCopyNew(sb.ToString());
 	this->logIndex = (this->logIndex + 1) % this->maxLog;
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	SDEL_TEXT(this->timeFormat);
 	this->timeFormat = Text::StrCopyNew(timeFormat);
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }

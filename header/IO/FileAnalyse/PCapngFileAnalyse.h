@@ -1,9 +1,8 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
-#include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -24,8 +23,7 @@ namespace IO
 		private:
 			IO::IStreamData *fd;
 			Bool isBE;
-			Data::ArrayList<BlockInfo *> *blockList;
-			Sync::Mutex *dataMut;
+			Data::SyncArrayList<BlockInfo *> *blockList;
 			UInt8 *packetBuff;
 
 			Bool pauseParsing;

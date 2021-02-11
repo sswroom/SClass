@@ -5,6 +5,7 @@
 #include "IO/Console.h"
 #include "Media/H264Parser.h"
 #include "Net/RTPH264Handler.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
@@ -60,7 +61,7 @@ Net::RTPH264Handler::~RTPH264Handler()
 void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts)
 {
 	UTF8Char sbuff[32];
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	Text::StrConcat(Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"ts: "), ts), (const UTF8Char*)"\r\n");
 	IO::Console::PrintStrO(sbuff);
 
@@ -254,7 +255,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 s
 		i = 1;
 		break;
 	}
-	mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)

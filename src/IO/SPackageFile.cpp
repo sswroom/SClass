@@ -4,6 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/SPackageFile.h"
 #include "IO/StmData/MemoryData2.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
@@ -459,13 +460,13 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 	OSInt writeSize;
 	Bool needCommit = false;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileMap->Get(fileName) == 0)
 	{
 	}
 	else
 	{
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		return false;
 	}
 	WriteInt64(&dataBuff[0], this->currOfst);
@@ -533,7 +534,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 	{
 		this->writeMode = false;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	if (needCommit && !this->pauseCommit)
 	{
 		this->Commit();
@@ -546,13 +547,13 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF
 	UInt8 dataBuff[512];
 	OSInt strLen;
 	Bool needCommit = false;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileMap->Get(fileName) == 0)
 	{
 	}
 	else
 	{
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		return false;
 	}
 	WriteInt64(&dataBuff[0], this->currOfst);
@@ -588,7 +589,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF
 		this->writeMode = false;
 	}
 
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	if (needCommit && !this->pauseCommit)
 	{
 		this->Commit();
@@ -609,7 +610,7 @@ Bool IO::SPackageFile::Commit()
 	UInt8 *buff;
 	UInt8 hdr[16];
 	Bool succ = false;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	buff = this->mstm->GetBuff(&buffSize);
 	if (this->flags & 2)
 	{
@@ -645,7 +646,7 @@ Bool IO::SPackageFile::Commit()
 	{
 		succ = false;
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -674,7 +675,7 @@ Bool IO::SPackageFile::OptimizeFile(const UTF8Char *newFile)
 		NEW_CLASS(spkg, IO::SPackageFile(fs, true));
 	}
 	spkg->PauseCommit(true);
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->writeMode = false;
 	this->stm->Seek(IO::SeekableStream::ST_BEGIN, 0);
 	this->stm->Read(hdr, 24);
@@ -684,7 +685,7 @@ Bool IO::SPackageFile::OptimizeFile(const UTF8Char *newFile)
 	{
 		this->OptimizeFileInner(spkg, lastOfst, lastSize);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	DEL_CLASS(spkg);
 	return true;
 }
@@ -697,7 +698,7 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 IO::IStreamData *IO::SPackageFile::CreateStreamData(const UTF8Char *fileName)
 {
 	IO::IStreamData *fd = 0;
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	FileInfo *file = this->fileMap->Get(fileName);
 	if (file)
 	{
@@ -708,6 +709,6 @@ IO::IStreamData *IO::SPackageFile::CreateStreamData(const UTF8Char *fileName)
 		NEW_CLASS(fd, IO::StmData::MemoryData2(fileBuff, (OSInt)file->size));
 		MemFree(fileBuff);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return fd;
 }

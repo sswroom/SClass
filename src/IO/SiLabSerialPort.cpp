@@ -4,6 +4,7 @@
 #include "IO/SiLabSerialPort.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #if defined(_WIN32)
@@ -74,7 +75,7 @@ UOSInt IO::SiLabSerialPort::Read(UInt8 *buff, UOSInt size)
 	if (h == 0)
 		return 0;
 	
-	this->rdMut->Lock();
+	Sync::MutexUsage mutUsage(this->rdMut);
 	OVERLAPPED ol;
 	ol.hEvent = this->rdEvt->hand;
 	ol.Internal = 0;
@@ -96,7 +97,7 @@ UOSInt IO::SiLabSerialPort::Read(UInt8 *buff, UOSInt size)
 #else
 	ret = false;
 #endif
-	this->rdMut->Unlock();
+	mutUsage.EndUse();
 	this->reading = false;
 	if (ret)
 	{

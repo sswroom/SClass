@@ -7,6 +7,7 @@
 #include "Net/MySQLTCPClient.h"
 #include "Net/MySQLUtil.h"
 #include "Net/SocketUtil.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -1095,7 +1096,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 //	Data::DateTime dt;
 	MySQLTCPReader *reader;
 //	Int64 startTime;
-	this->cmdMut->Lock();
+	this->cmdMut->Use();
 	this->cmdResultType = 0;
 	this->cmdSeqNum = 1;
 	NEW_CLASS(reader, MySQLTCPReader());
@@ -1109,7 +1110,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 	{
 		this->cmdReader = 0;
 		DEL_CLASS(reader);
-		this->cmdMut->Unlock();
+		this->cmdMut->Unuse();
 		MemFree(buff);
 		this->lastDataError = DE_CONN_ERROR;
 		return 0;
@@ -1129,7 +1130,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 		this->cmdReader = 0;
 		reader->EndData();
 		DEL_CLASS(reader);
-		this->cmdMut->Unlock();
+		this->cmdMut->Unuse();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
 		return 0;
 	}
@@ -1149,7 +1150,7 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	this->cmdReader = 0;
 	MySQLTCPReader *reader = (MySQLTCPReader*)r;
 	DEL_CLASS(reader);
-	this->cmdMut->Unlock();
+	this->cmdMut->Unuse();
 }
 
 void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF *str)

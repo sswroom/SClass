@@ -24,6 +24,7 @@ namespace Net
 			Sync::Mutex *crcMut;
 			Crypto::Hash::CRC32R *crc;
 
+			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
 		public:
 			SNSRSS(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId);
 			virtual ~SNSRSS();

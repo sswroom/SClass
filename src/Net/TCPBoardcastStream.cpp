@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/TCPBoardcastStream.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -55,7 +56,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		sb.AppendOSInt(size);
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
-	me->readMut->Lock();
+	Sync::MutexUsage mutUsage(me->readMut);
 	OSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
 	if (readBuffSize < 0)
 	{
@@ -83,7 +84,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 			}
 		}
 	}
-	me->readMut->Unlock();
+	mutUsage.EndUse();
 	
 	if (me->log)
 	{
@@ -163,7 +164,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 		Sync::Thread::Sleep(10);
 	}
 	Sync::Interlocked::Decrement(&this->readCnt);
-	this->readMut->Lock();
+	Sync::MutexUsage mutUsage(this->readMut);
 	if ((UOSInt)readBuffSize >= size)
 	{
 	}
@@ -187,7 +188,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 			this->readBuffPtr1 -= 16384;
 		}
 	}
-	this->readMut->Unlock();
+	mutUsage.EndUse();
 	if (this->log)
 	{
 		Text::StringBuilderUTF8 sb;

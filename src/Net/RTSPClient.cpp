@@ -7,6 +7,7 @@
 #include "Media/MediaFile.h"
 #include "Net/RTSPClient.h"
 #include "Net/URL.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/URLString.h"
@@ -36,19 +37,19 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 	{
 		if (cliData->cli == 0)
 		{
-			cliData->cliMut->Lock();
+			Sync::MutexUsage mutUsage(cliData->cliMut);
 			NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host, cliData->port));
-			cliData->cliMut->Unlock();
+			mutUsage.EndUse();
 		}
 		if (content)
 		{
 			thisSize = cliData->cli->Read(dataBuff, 2048);
 			if (thisSize == 0)
 			{
-				cliData->cliMut->Lock();
+				Sync::MutexUsage mutUsage(cliData->cliMut);
 				DEL_CLASS(cliData->cli);
 				cliData->cli = 0;
-				cliData->cliMut->Unlock();
+				mutUsage.EndUse();
 				continue;
 			}
 			if (cliData->reqReplySize > buffSize + thisSize)
@@ -76,10 +77,10 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 			thisSize = cliData->cli->Read(&dataBuff[buffSize], 2048 - buffSize);
 			if (thisSize == 0)
 			{
-				cliData->cliMut->Lock();
+				Sync::MutexUsage mutUsage(cliData->cliMut);
 				DEL_CLASS(cliData->cli);
 				cliData->cli = 0;
-				cliData->cliMut->Unlock();
+				mutUsage.EndUse();
 				continue;
 			}
 			buffSize += thisSize;
@@ -223,12 +224,12 @@ Bool Net::RTSPClient::WaitForReply()
 Bool Net::RTSPClient::SendData(UInt8 *buff, UOSInt buffSize)
 {
 	Bool succ = false;
-	this->cliData->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliData->cliMut);
 	if (this->cliData->cli)
 	{
 		succ = this->cliData->cli->Write(buff, buffSize) == buffSize;
 	}
-	this->cliData->cliMut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -268,12 +269,12 @@ Net::RTSPClient::~RTSPClient()
 	if (--this->cliData->useCnt == 0)
 	{
 		this->cliData->threadToStop = true;
-		this->cliData->cliMut->Lock();
+		Sync::MutexUsage mutUsage(this->cliData->cliMut);
 		if (this->cliData->cli)
 		{
 			this->cliData->cli->Close();
 		}
-		this->cliData->cliMut->Unlock();
+		mutUsage.EndUse();
 		while (this->cliData->threadRunning)
 		{
 			Sync::Thread::Sleep(10);
@@ -297,7 +298,7 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 	IO::StreamWriter *writer;
 	IO::MemoryStream *stm;
 
-	this->cliData->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.GetOptions"));
@@ -333,7 +334,7 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 			ret = true;
 		}
 	}
-	this->cliData->reqMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -345,7 +346,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(const UTF8Char *url)
 	Text::UTF8Writer *writer;
 	IO::MemoryStream *stm;
 
-	this->cliData->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.GetMediaInfo"));
@@ -370,7 +371,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(const UTF8Char *url)
 	{
 		NEW_CLASS(sdp, Net::SDPFile(this->cliData->reqReply, this->cliData->reqReplySize));
 	}
-	this->cliData->reqMut->Unlock();
+	mutUsage.EndUse();
 	return sdp;
 }
 
@@ -382,7 +383,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	Text::UTF8Writer *writer;
 	IO::MemoryStream *stm;
 
-	this->cliData->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.SetupRTP"));
@@ -409,7 +410,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	{
 		ret = Text::StrConcat(sessIdOut, this->cliData->reqStrs);
 	}
-	this->cliData->reqMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -507,7 +508,7 @@ Bool Net::RTSPClient::Play(const UTF8Char *url, const UTF8Char *sessId)
 	Text::UTF8Writer *writer;
 	IO::MemoryStream *stm;
 
-	this->cliData->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.Play"));
@@ -533,7 +534,7 @@ Bool Net::RTSPClient::Play(const UTF8Char *url, const UTF8Char *sessId)
 	{
 		ret = true;
 	}
-	this->cliData->reqMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -545,7 +546,7 @@ Bool Net::RTSPClient::Close(const UTF8Char *url, const UTF8Char *sessId)
 	Text::UTF8Writer *writer;
 	IO::MemoryStream *stm;
 
-	this->cliData->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.Close"));
@@ -571,7 +572,7 @@ Bool Net::RTSPClient::Close(const UTF8Char *url, const UTF8Char *sessId)
 	{
 		ret = true;
 	}
-	this->cliData->reqMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 

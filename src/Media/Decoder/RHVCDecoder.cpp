@@ -4,6 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Media/H265Parser.h"
 #include "Media/Decoder/RHVCDecoder.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 UOSInt Media::Decoder::RHVCDecoder::CalcNALSize(const UInt8 *buff, UOSInt buffSize)
@@ -58,7 +59,7 @@ UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBu
 
 void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	this->frameMut->Lock();
+	Sync::MutexUsage mutUsage(this->frameMut);
 
 	UInt8 *frameBuff = this->frameBuff;
 	UOSInt imgOfst = 0;
@@ -155,7 +156,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 			this->frameSize = 0;
 		}
 	}
-	this->frameMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
@@ -392,7 +393,7 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 	if (this->pps == 0 || this->sps == 0)
 		return false;
 
-	this->frameMut->Lock();
+	Sync::MutexUsage mutUsage(this->frameMut);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	UOSInt oriW = info->dispWidth;
 	UOSInt oriH = info->dispHeight;
@@ -402,7 +403,7 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 	}
 	info->dispWidth = oriW;
 	info->dispHeight = oriH;
-	this->frameMut->Unlock();
+	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
 	info->fourcc = *(Int32*)"HEVC";
 

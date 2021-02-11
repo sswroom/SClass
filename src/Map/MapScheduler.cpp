@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Map/MapScheduler.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
@@ -17,7 +18,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 		Map::DrawObjectL *dobj;
 		if (me->dt == Map::MapScheduler::MSDT_CLEAR)
 		{
-			me->taskMut->Lock();
+			Sync::MutexUsage mutUsage(me->taskMut);
 			j = me->tasks->GetCount();
 			while (j-- > 0)
 			{
@@ -27,35 +28,35 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 			me->tasks->Clear();
 			i = 0;
 			me->dt = Map::MapScheduler::MSDT_POINTS;
-			me->taskMut->Unlock();
+			mutUsage.EndUse();
 			me->finishEvt->Set();
 		}
 		else
 		{
 			while (true)
 			{
-				me->taskMut->Lock();
+				Sync::MutexUsage mutUsage(me->taskMut);
 				j = me->tasks->GetCount();
 				if (i < j)
 				{
 					dobj = me->tasks->GetItem(i);
 					if (dobj)
 					{
-						me->taskMut->Unlock();
+						mutUsage.EndUse();
 						i++;
 					}
 					else
 					{
 						me->tasks->RemoveAt(i);
 						i = 0;
-						me->taskMut->Unlock();
+						mutUsage.EndUse();
 						continue;
 					}
 				}
 				else
 				{
 					me->taskFinish = true;
-					me->taskMut->Unlock();
+					mutUsage.EndUse();
 					me->finishEvt->Set();
 					break;
 				}
@@ -231,10 +232,10 @@ void Map::MapScheduler::SetDrawObjs(Double *objBounds, UOSInt *objCnt, UOSInt ma
 
 void Map::MapScheduler::Draw(Map::DrawObjectL *obj)
 {
-	this->taskMut->Lock();
+	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
 	this->tasks->Add(obj);
-	this->taskMut->Unlock();
+	mutUsage.EndUse();
 	this->taskEvt->Set();
 }
 
@@ -256,11 +257,11 @@ void Map::MapScheduler::DrawNextType(Media::DrawPen *p, Media::DrawBrush *b)
 	}
 	this->p = p;
 	this->b = b;
-	this->taskMut->Lock();
+	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
 	this->isFirst = false;
 	this->tasks->Add(0);
-	this->taskMut->Unlock();
+	mutUsage.EndUse();
 	this->taskEvt->Set();
 }
 

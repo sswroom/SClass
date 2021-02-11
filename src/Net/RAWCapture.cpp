@@ -6,13 +6,14 @@
 #include "IO/SystemInfo.h"
 #include "IO/WriteCacheStream.h"
 #include "Net/RAWCapture.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetData, UOSInt packetSize)
 {
 	Net::RAWCapture *me = (Net::RAWCapture*)userData;
 	UInt8 buff[256];
-	me->mut->Lock();
+	Sync::MutexUsage mutUsage(me->mut);
 	me->packetCnt++;
 	me->dataSize += packetSize;
 	if (me->format == FF_PCAP)
@@ -71,7 +72,7 @@ void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetD
 			me->fs->Write(&buff[3], 5);
 		}
 	}
-	me->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, CaptureType type, FileFormat format, const UTF8Char *fileName, const UTF8Char *appName)

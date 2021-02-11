@@ -6,6 +6,7 @@
 #include "IO/SerialPort.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
@@ -371,7 +372,7 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 	}
 
 //	wprintf(L"Begin read\n");
-	this->rdMut->Lock();
+	Sync::MutexUsage mutUsage(this->rdMut);
 	this->reading = true;
 	readCnt = 0;
 	while (true)
@@ -397,7 +398,7 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 		this->rdEvt->Wait(1);
 	}
 	this->reading = false;
-	this->rdMut->Unlock();
+	mutUsage.EndUse();
 //	wprintf(L"End read, cnt = %d\n", readCnt);
 	return readCnt;
 }

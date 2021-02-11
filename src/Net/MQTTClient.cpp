@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "Manage/HiResClock.h"
 #include "Net/MQTTClient.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
 void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
@@ -57,9 +58,9 @@ void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		packet->packetType = (UInt8)cmdType;
 		packet->size = cmdSize;
 		MemCopyNO(packet->content, cmd, cmdSize);
-		this->packetMut->Lock();
+		Sync::MutexUsage mutUsage(this->packetMut);
 		this->packetList->Add(packet);
-		this->packetMut->Unlock();
+		mutUsage.EndUse();
 		this->packetEvt->Set();
 	}
 }
@@ -116,9 +117,9 @@ Net::MQTTClient::PacketInfo *Net::MQTTClient::GetNextPacket(UInt8 packetType, UO
 	{
 		while (this->packetList->GetCount() > 0)
 		{
-			this->packetMut->Lock();
+			Sync::MutexUsage mutUsage(this->packetMut);
 			packet = this->packetList->RemoveAt(0);
-			this->packetMut->Unlock();
+			mutUsage.EndUse();
 			if ((packet->packetType & 0xf0) == packetType)
 			{
 				return packet;
@@ -356,17 +357,10 @@ UInt8 Net::MQTTClient::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
 
 void Net::MQTTClient::ClearPackets()
 {
-	PacketInfo *packet;
-	UOSInt i;
-	this->packetMut->Lock();
-	i = this->packetList->GetCount();
-	while (i-- > 0)
-	{
-		packet = this->packetList->GetItem(i);
-		MemFree(packet);
-	}
+	Sync::MutexUsage mutUsage(this->packetMut);
+	DEL_LIST_FUNC(this->packetList, MemFree);
 	this->packetList->Clear();
-	this->packetMut->Unlock();
+	mutUsage.EndUse();
 }
 
 Bool Net::MQTTClient::PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)

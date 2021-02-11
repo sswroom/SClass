@@ -44,9 +44,7 @@ UInt32 __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(void *userObj)
 		tag->size = lastSize + 12;
 		tag->tagType = ReadInt32(&tagHdr[8]);
 		tag->crc = 0;
-		me->tagsMut->Lock();
 		me->tags->Add(tag);
-		me->tagsMut->Unlock();
 		ofst += lastSize + 12;
 	}
 	
@@ -62,8 +60,7 @@ IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->tags, Data::ArrayList<IO::FileAnalyse::PNGFileAnalyse::PNGTag*>());
-	NEW_CLASS(this->tagsMut, Sync::Mutex());
+	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::PNGFileAnalyse::PNGTag*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 0x89 && buff[1] != 0x50 && buff[2] != 0x4e && buff[3] != 0x47 && buff[4] != 0x0d && buff[5] != 0x0a && buff[6] != 0x1a && buff[7] != 0x0a)
 	{
@@ -80,8 +77,6 @@ IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::IStreamData *fd)
 
 IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 {
-	OSInt i;
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag;
 	if (this->threadRunning)
 	{
 		this->threadToStop = true;
@@ -92,14 +87,8 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	i = this->tags->GetCount();
-	while (i-- > 0)
-	{
-		tag = this->tags->GetItem(i);
-		MemFree(tag);
-	}
+	DEL_LIST_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
-	DEL_CLASS(this->tagsMut);
 }
 
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()

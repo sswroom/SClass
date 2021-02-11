@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/SMonitor/SMonitorRedir.h"
+#include "Sync/MutexUsage.h"
 
 void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
@@ -8,11 +9,7 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(const Net::SocketU
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
 	{
 		UInt8 calcVal[2];
-		me->dataCRCMut->Lock();
-		me->dataCRC->Clear();
-		me->dataCRC->Calc(buff, dataSize - 2);
-		me->dataCRC->GetValue(calcVal);
-		me->dataCRCMut->Unlock();
+		me->CalcCRC(buff, dataSize - 2, calcVal);
 		if (calcVal[0] == (buff[dataSize - 2] ^ 0x12) && calcVal[1] == (buff[dataSize - 1] ^ 0x34))
 		{
 			UInt16 cmdType = ReadUInt16(&buff[2]);
@@ -53,6 +50,14 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(const Net::SocketU
 			}
 		}
 	}
+}
+
+void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal)
+{
+	Sync::MutexUsage mutUsage(this->dataCRCMut);
+	this->dataCRC->Clear();
+	this->dataCRC->Calc(buff, size);
+	this->dataCRC->GetValue(crcVal);
 }
 
 SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf)
@@ -117,11 +122,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMon
 	}
 	i = 40 + 16 * rec->nreading;
 	UInt8 calcVal[2];
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, i);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->CalcCRC(buff, i, calcVal);
 	buff[i] = calcVal[0] ^ 0x12;
 	buff[i + 1] = calcVal[1] ^ 0x34;
 
@@ -143,11 +144,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *nam
 	WriteInt64(&buff[4], cliId);
 	size = Text::StrConcat(&buff[12], name) - buff;
 	UInt8 calcVal[2];
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, size);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
@@ -169,11 +166,11 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	WriteInt64(&buff[4], cliId);
 	size = Text::StrConcat(&buff[12], platform) - buff;
 	UInt8 calcVal[2];
-	this->dataCRCMut->Lock();
+	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC->Clear();
 	this->dataCRC->Calc(buff, size);
 	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	mutUsage.EndUse();
 	buff[size] = calcVal[0] ^ 0x12;
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
@@ -195,11 +192,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *
 	WriteInt64(&buff[4], cliId);
 	size = Text::StrConcat(&buff[12], cpuName) - buff;
 	UInt8 calcVal[2];
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, size);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
@@ -224,11 +217,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, OSInt index,
 	WriteInt16(&buff[18], readingId);
 	size = Text::StrConcat(&buff[20], readingName) - buff;
 	UInt8 calcVal[2];
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, size);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
@@ -251,11 +240,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersio
 	WriteInt64(&buff[12], progVersion);
 	size = 20;
 	UInt8 calcVal[2];
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, 20);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->CalcCRC(buff, 20, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
 	buff[size + 1] = calcVal[1] ^ 0x34;
 

@@ -1,11 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math.h"
-#include "Sync/Event.h"
-#include "Sync/Mutex.h"
-#include "Sync/Thread.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/Resizer/LanczosResizerLR_C16.h"
+#include "Sync/Event.h"
+#include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 #include <math.h>
 #include <float.h>
 
@@ -410,7 +411,7 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 
 	if (swidth != dwidth && sheight != dheight)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -465,11 +466,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 		}
 		mt_horizontal_filter(src, buffPtr, dwidth, siHeight, hTap,hIndex, hWeight, sbpl, dwidth << 3);
 		mt_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, dwidth << 3, dbpl);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (swidth != dwidth)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -502,11 +503,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 		}
 		mt_horizontal_filter(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dwidth << 3);
 		mt_collapse(buffPtr, dest, dwidth, dheight, dwidth << 3, dbpl);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else if (sheight != dheight)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -539,13 +540,13 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 			buffPtr = MemAllocA64(UInt8, buffW * buffH << 3);
 		}
 		mt_vertical_filter(src, dest, siWidth, dheight, vTap, vIndex, vWeight, sbpl, dbpl);
-		mut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		mt_collapse(src, dest, siWidth, dheight, siWidth << 3, dbpl);
-		mut->Unlock();
+		mutUsage.EndUse();
 
 	}
 }

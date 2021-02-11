@@ -64,6 +64,12 @@ namespace Data
 		return this->arr->AddRange(arr, cnt);
 	}
 
+	template <class T> Bool Data::SyncArrayList<T>::Remove(T val)
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		return this->arr->Remove(val);
+	}
+
 	template <class T> T Data::SyncArrayList<T>::RemoveAt(UOSInt index)
 	{
 		Sync::MutexUsage mutUsage(this->mut);

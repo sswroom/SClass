@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/TCPServerStream.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilder.h"
 
@@ -9,22 +10,20 @@ void __stdcall Net::TCPServerStream::ConnHandler(UInt32 *s, void *userObj)
 	Net::TCPServerStream *me = (Net::TCPServerStream*)userObj;
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
-	me->connMut->Lock();
+	Sync::MutexUsage connMutUsage(me->connMut);
 	if (me->currCli)
 	{
 		me->currCli->Close();
-		me->readMut->Lock();
+		Sync::MutexUsage mutUsage(me->readMut);
 		DEL_CLASS(me->currCli);
 		me->currCli = cli;
-		me->readMut->Unlock();
 	}
 	else
 	{
-		me->readMut->Lock();
+		Sync::MutexUsage mutUsage(me->readMut);
 		me->currCli = cli;
-		me->readMut->Unlock();
 	}
-	me->connMut->Unlock();
+	connMutUsage.EndUse();
 	me->readEvt->Set();
 }
 
@@ -57,7 +56,7 @@ UOSInt Net::TCPServerStream::Read(UInt8 *buff, UOSInt size)
 	UOSInt readSize = 0;
 	while (this->svr)
 	{
-		this->readMut->Lock();
+		Sync::MutexUsage readMutUsage(this->readMut);
 		if (this->currCli)
 		{
 			readSize = this->currCli->Read(buff, size);
@@ -67,14 +66,14 @@ UOSInt Net::TCPServerStream::Read(UInt8 *buff, UOSInt size)
 		else
 		{
 		}
-		this->readMut->Unlock();
+		readMutUsage.EndUse();
 		if (toClose)
 		{
-			this->connMut->Lock();
-			this->readMut->Lock();
+			Sync::MutexUsage mutUsage(this->connMut);
+			readMutUsage.BeginUse();
 			SDEL_CLASS(this->currCli);
-			this->readMut->Unlock();
-			this->connMut->Unlock();
+			readMutUsage.EndUse();
+			mutUsage.EndUse();
 		}
 		if (readSize != 0)
 		{
@@ -89,7 +88,7 @@ UOSInt Net::TCPServerStream::Write(const UInt8 *buff, UOSInt size)
 {
 	Bool toClose = false;
 	Net::TCPClient *cli = 0;
-	this->connMut->Lock();
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->currCli)
 	{
 		cli = this->currCli;
@@ -101,17 +100,17 @@ UOSInt Net::TCPServerStream::Write(const UInt8 *buff, UOSInt size)
 	{
 		size = 0;
 	}
-	this->connMut->Unlock();
+	mutUsage.EndUse();
 	if (toClose)
 	{
-		this->connMut->Lock();
-		this->readMut->Lock();
+		mutUsage.BeginUse();
+		Sync::MutexUsage readMutUsage(this->readMut);
 		if (this->currCli != 0 && this->currCli == cli)
 		{
 			SDEL_CLASS(this->currCli);
 		}
-		this->readMut->Unlock();
-		this->connMut->Unlock();
+		readMutUsage.EndUse();
+		mutUsage.EndUse();
 	}
 	return size;
 }
@@ -124,20 +123,20 @@ Int32 Net::TCPServerStream::Flush()
 void Net::TCPServerStream::Close()
 {
 	SDEL_CLASS(this->svr);
-	this->connMut->Lock();
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->currCli != 0)
 	{
 		this->currCli->Close();
 	}
-	this->connMut->Unlock();
-	this->connMut->Lock();
-	this->readMut->Lock();
+	mutUsage.EndUse();
+	mutUsage.BeginUse();
+	Sync::MutexUsage readMutUsage(this->readMut);
 	if (this->currCli != 0)
 	{
 		SDEL_CLASS(this->currCli);
 	}
-	this->readMut->Unlock();
-	this->connMut->Unlock();
+	readMutUsage.EndUse();
+	mutUsage.EndUse();
 }
 
 Bool Net::TCPServerStream::Recover()
