@@ -2731,6 +2731,9 @@ Interlocked.o: $(CLASSDIR)src/Sync/Interlocked.cpp
 Mutex.o: $(CLASSDIR)src/Sync/Mutex.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+MutexUsage.o: $(CLASSDIR)src/Sync/MutexUsage.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 ParallelTask.o: $(CLASSDIR)src/Sync/ParallelTask.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
