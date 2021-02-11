@@ -9,7 +9,7 @@ namespace Text
 {
 	namespace Doc
 	{
-		class TextDocument : public IO::ParsedObject, public Data::List<DocSection*>, public Media::IPrintHandler
+		class TextDocument : public IO::ParsedObject, public Data::ReadingList<DocSection*>, public Media::IPrintHandler
 		{
 		private:
 			typedef enum

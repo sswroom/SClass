@@ -4,7 +4,8 @@
 #include "Map/AssistedReverseGeocoderPL.h"
 #include "Math/Math.h"
 #include "Manage/HiResClock.h"
-#include <wchar.h>
+#include "Sync/MutexUsage.h"
+#include <stdio.h>
 
 Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::IWriter *errWriter)
 {
@@ -72,7 +73,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::IW
 			}
 			this->conn->CloseReader(r);
 		}
-		wprintf(L"Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
+		printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
 	}
 }
 
@@ -152,7 +153,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	Data::Integer32Map<const UTF8Char *> *addrMap1;
 	Int32 index;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	lcidInfo = this->lcidMap->Get(lcid);
 	if (lcidInfo == 0)
 	{
@@ -171,7 +172,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 			addr = addrMap1->Get(keyy);
 			if (addr)
 			{
-				mut->Unlock();
+				mutUsage.EndUse();
 				return Text::StrConcatS(buff, addr, buffSize);
 			}
 		}
@@ -234,12 +235,12 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		}
 		addrMap1->Put(keyy, addr);
 
-		mut->Unlock();
+		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
-		mut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 }
@@ -261,7 +262,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 	Data::Integer32Map<const UTF8Char *> *addrMap1;
 	Int32 index;
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	lcidInfo = this->lcidMap->Get(lcid);
 	if (lcidInfo == 0)
 	{
@@ -280,7 +281,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 			addr = addrMap1->Get(keyy);
 			if (addr)
 			{
-				mut->Unlock();
+				mutUsage.EndUse();
 				return Text::StrConcatS(buff, addr, buffSize);
 			}
 		}
@@ -343,12 +344,12 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 		}
 		addrMap1->Put(keyy, addr);
 
-		mut->Unlock();
+		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
-		mut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 }

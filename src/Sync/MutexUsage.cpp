@@ -30,3 +30,10 @@ void Sync::MutexUsage::EndUse()
 		this->used = false;
 	}
 }
+
+void Sync::MutexUsage::ReplaceMutex(Sync::Mutex *mut)
+{
+	this->EndUse();
+	this->mut = mut;
+	this->BeginUse();
+}

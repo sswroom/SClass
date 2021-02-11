@@ -8,6 +8,7 @@
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapGenerator.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -51,9 +52,9 @@ void Map::TileMapGenerator::AppendDBFile(IO::IWriter *writer, Int32 x, Int32 y, 
 	Bool generating;
 	while (true)
 	{
-		dbMut->Lock();
+		Sync::MutexUsage mutUsage(dbMut);
 		generating = this->dbGenList->SortedIndexOf(id) >= 0;
-		dbMut->Unlock();
+		mutUsage.EndUse();
 		if (!generating)
 			break;
 		dbEvt->Wait(10);
@@ -90,20 +91,20 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::M
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
-	dbMut->Lock();
+	Sync::MutexUsage mutUsage(dbMut);
 	generating = this->dbGenList->SortedIndexOf(id) >= 0;
 	if (generating)
 	{
-		dbMut->Unlock();
+		mutUsage.EndUse();
 		return true;
 	}
 	if (IO::Path::GetPathType(sbuff) == IO::Path::PT_FILE)
 	{
-		dbMut->Unlock();
+		mutUsage.EndUse();
 		return true;
 	}
 	this->dbGenList->SortedInsert(id);
-	dbMut->Unlock();
+	mutUsage.EndUse();
 
 	Map::ScaledMapView view(this->imgSize, this->imgSize, 0, 0, scale);
 	InitMapView(&view, x, y, scale);
@@ -117,10 +118,10 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::M
 	dimg2->SetHDPI(96.0 * this->osSize);
 	dimg2->SetVDPI(96.0 * this->osSize);
 	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, sbuff, &params);
-	dbMut->Lock();
+	mutUsage.BeginUse();
 	this->dbGenList->RemoveAt(this->dbGenList->SortedIndexOf(id));
 	dbEvt->Set();
-	dbMut->Unlock();
+	mutUsage.EndUse();
 	geng->DeleteImage(dimg2);
 	return true;
 }

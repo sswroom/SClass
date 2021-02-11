@@ -2,19 +2,21 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
-#include "Text/Encoding.h"
-#include "Sync/Mutex.h"
-#include "Sync/Event.h"
-#include "Sync/Thread.h"
-#include "Sync/Interlocked.h"
 #include "IO/Stream.h"
 #include "IO/Path.h"
 #include "IO/FileStream.h"
 #include "IO/Console.h"
-#include "Net/SocketFactory.h"
-#include "Net/TCPClient.h"
 #include "Manage/Process.h"
 #include "Manage/MonConn.h"
+#include "Net/SocketFactory.h"
+#include "Net/TCPClient.h"
+#include "Sync/Event.h"
+#include "Sync/Interlocked.h"
+#include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
+#include "Text/Encoding.h"
+
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -275,9 +277,9 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 void Manage::MonConn::AddCommand(UInt8 *data, OSInt dataSize, Int32 cmdType)
 {
 	UInt8 *buff = MemAlloc(UInt8, dataSize + 10);
-	cmdSeqMut->Lock();
+	Sync::MutexUsage mutUsage(cmdSeqMut);
 	Manage::MonConn::BuildPacket(buff, data, dataSize, cmdType, cmdSeq++);
-	cmdSeqMut->Unlock();
+	mutUsage.EndUse();
 	cmdList->Add(buff);
 	connTEvt->Set();
 }
@@ -286,7 +288,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 {
 	UTF8Char buff[256];
 	NEW_CLASS(lastReqTime, Data::DateTime());
-	NEW_CLASS(cmdList, Data::SyncArrayList());
+	NEW_CLASS(cmdList, Data::SyncArrayList<UInt8*>());
 	NEW_CLASS(cmdSeqMut, Sync::Mutex());
 	NEW_CLASS(lastKATime, Data::DateTime());
 	lastKATime->SetCurrTimeUTC();

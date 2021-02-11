@@ -1,19 +1,21 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoDUploadHandler.h"
+#include "Sync/MutexUsage.h"
 
 IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(IO::IProtocolHandler::DataListener *listener)
 {
 	this->listener = listener;
-	NEW_CLASS(this->crcMut, Sync::Mutex());
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
+	Crypto::Hash::CRC32R *crc;
+	NEW_CLASS(crc, Crypto::Hash::CRC32R());
+	NEW_CLASS(this->crc, Crypto::Hash::HashCalc(crc));
 }
 
 IO::ProtoHdlr::ProtoDUploadHandler::~ProtoDUploadHandler()
 {
 	DEL_CLASS(this->crc);
-	DEL_CLASS(this->crcMut);
 }
 
 void *IO::ProtoHdlr::ProtoDUploadHandler::CreateStreamData(IO::Stream *stm)
@@ -40,11 +42,7 @@ UOSInt IO::ProtoHdlr::ProtoDUploadHandler::ParseProtocol(IO::Stream *stm, void *
 				if (packetSize > buffSize)
 					return buffSize;
 
-				this->crcMut->Lock();
-				this->crc->Clear();
-				this->crc->Calc(buff, packetSize - 2);
-				this->crc->GetValue(crcVal);
-				this->crcMut->Unlock();
+				this->crc->Calc(buff, packetSize - 2, crcVal);
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
 				{
 					this->listener->DataParsed(stm, stmObj, ReadUInt16(&buff[4]), 0, &buff[6], packetSize - 8);
@@ -75,11 +73,7 @@ UOSInt IO::ProtoHdlr::ProtoDUploadHandler::BuildPacket(UInt8 *buff, Int32 cmdTyp
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
 	UInt8 crcVal[4];
-	this->crcMut->Lock();
-	this->crc->Clear();
-	this->crc->Calc(buff, cmdSize + 6);
-	this->crc->GetValue(crcVal);
-	this->crcMut->Unlock();
+	this->crc->Calc(buff, cmdSize + 6, crcVal);
 	WriteInt16(&buff[cmdSize + 6], ReadMInt32(crcVal));
 	return cmdSize + 8;
 }

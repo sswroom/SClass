@@ -1,8 +1,9 @@
-#ifndef _SM_SSWR_DATASYNC_SYNCPROGCLIENT
-#define _SM_SSWR_DATASYNC_SYNCPROGCLIENT
+#ifndef _SM_SSWR_DATASYNC_SYNCCLIENT
+#define _SM_SSWR_DATASYNC_SYNCCLIENT
 #include "Data/DateTime.h"
 #include "IO/IProtocolHandler.h"
 #include "Net/TCPClient.h"
+#include "SSWR/DataSync/SyncClientDataMgr.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
@@ -29,8 +30,7 @@ namespace SSWR
 			Bool kaRunning;
 			Bool toStop;
 
-			Sync::Mutex *userDataMut;
-			Data::ArrayList<UInt8*> *userDataList;
+			SSWR::DataSync::SyncClientDataMgr *dataMgr;
 
 			static UInt32 __stdcall RecvThread(void *userObj);
 			static UInt32 __stdcall KAThread(void *userObj);

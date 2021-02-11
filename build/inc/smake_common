@@ -820,6 +820,8 @@ Crypto/Hash/FNV1.h: ../../src/Crypto/Hash/FNV1.cpp
 Crypto/Hash/FNV1a.h: ../../src/Crypto/Hash/FNV1a.cpp
 @FNV1a.o
 @FNV1a_CPP.o
+Crypto/Hash/HashCalc.h: ../../src/Crypto/Hash/HashCalc.cpp
+@HashCalc.o
 Crypto/Hash/HashCreator.h: ../../src/Crypto/Hash/HashCreator.cpp
 @HashCreator.o
 Crypto/Hash/HashStream.h: ../../src/Crypto/Hash/HashStream.cpp
@@ -1087,6 +1089,8 @@ IO/ConfigFile.h: ../../src/IO/ConfigFile.cpp
 @ConfigFile.o
 IO/ConsoleInput.h: ../../src/IO/ConsoleInput.cpp
 @ConsoleInput.o
+IO/CyclicLogBuffer.h: ../../src/IO/CyclicLogBuffer.cpp
+@CyclicLogBuffer.o
 IO/DeviceDB.h: ../../src/IO/DeviceDB.cpp
 @DeviceDB.o
 IO/DirectoryPackage.h: ../../src/IO/DirectoryPackage.cpp
@@ -2964,6 +2968,8 @@ SSWR/Benchmark/BenchmarkWebHandler.h: ../../src/SSWR/Benchmark/BenchmarkWebHandl
 @BenchmarkWebHandler.o
 SSWR/DataSync/SyncClient.h: ../../src/SSWR/DataSync/SyncClient.cpp
 @SyncClient.o
+SSWR/DataSync/SyncClientDataMgr.h: ../../src/SSWR/DataSync/SyncClientDataMgr.cpp
+@SyncClientDataMgr.o
 SSWR/DataSync/SyncServer.h: ../../src/SSWR/DataSync/SyncServer.cpp
 @SyncServer.o
 SSWR/DiscDB/DiscDBBurntDiscForm.h: ../../src/SSWR/DiscDB/DiscDBBurntDiscForm.cpp
@@ -3293,6 +3299,7 @@ FNV1.o: ../../src/Crypto/Hash/FNV1.cpp
 FNV1_CPP.o: ../../src/Crypto/Hash/FNV1_CPP.cpp
 FNV1a.o: ../../src/Crypto/Hash/FNV1a.cpp
 FNV1a_CPP.o: ../../src/Crypto/Hash/FNV1a_CPP.cpp
+HashCalc.o: ../../src/Crypto/Hash/HashCalc.cpp
 HashCreator.o: ../../src/Crypto/Hash/HashCreator.cpp
 HashStream.o: ../../src/Crypto/Hash/HashStream.cpp
 HMAC.o: ../../src/Crypto/Hash/HMAC.cpp
@@ -3416,6 +3423,7 @@ CodeScanner.o: ../../src/IO/CodeScanner.cpp
 ConfigFile.o: ../../src/IO/ConfigFile.cpp
 ConsoleInput.o: ../../src/IO/ConsoleInput.cpp
 CortexControl.o: ../../src/IO/CortexControl.cpp
+CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
 DeviceDB.o: ../../src/IO/DeviceDB.cpp
 DirectoryPackage.o: ../../src/IO/DirectoryPackage.cpp
 EXEFile.o: ../../src/IO/EXEFile.cpp
@@ -4298,6 +4306,7 @@ AVIRMultipartViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.cpp
 AVIRUnknownViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.cpp
 BenchmarkWebHandler.o: ../../src/SSWR/Benchmark/BenchmarkWebHandler.cpp
 SyncClient.o: ../../src/SSWR/DataSync/SyncClient.cpp
+SyncClientDataMgr.o: ../../src/SSWR/DataSync/SyncClientDataMgr.cpp
 SyncServer.o: ../../src/SSWR/DataSync/SyncServer.cpp
 DiscDBBurntDiscForm.o: ../../src/SSWR/DiscDB/DiscDBBurntDiscForm.cpp
 DiscDBDVDTypeForm.o: ../../src/SSWR/DiscDB/DiscDBDVDTypeForm.cpp

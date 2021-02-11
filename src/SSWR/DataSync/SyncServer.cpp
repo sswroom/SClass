@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoSyncHandler.h"
 #include "SSWR/DataSync/SyncServer.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
 typedef struct
@@ -38,12 +39,12 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(Net::TCPClient *cli, vo
 			me->svrMut->UnlockRead();
 			if (svr)
 			{
-				svr->mut->Lock();
+				Sync::MutexUsage mutUsage(svr->mut);
 				if (svr->cli == cli)
 				{
 					svr->cli = 0;
 				}
-				svr->mut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 		MemFree(data);
@@ -195,9 +196,9 @@ void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32
 				this->svrMut->UnlockRead();
 				if (svr)
 				{
-					svr->mut->Lock();
+					Sync::MutexUsage mutUsage(svr->mut);
 					svr->cli = (Net::TCPClient*)stm;
-					svr->mut->Unlock();
+					mutUsage.EndUse();
 				}
 				else
 				{

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/UDPServerStream.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilder.h"
 #define BUFFSIZE 2048
@@ -8,7 +9,7 @@
 void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::UDPServerStream *me = (Net::UDPServerStream*)userData;
-	me->dataMut->Lock();
+	Sync::MutexUsage mutUsage(me->dataMut);
 	me->lastAddr = *addr;
 	me->lastPort = port;
 	if (dataSize >= BUFFSIZE)
@@ -27,7 +28,6 @@ void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressI
 		MemCopyNO(&me->buff[me->buffSize], buff, dataSize);
 		me->buffSize += dataSize;
 	}
-	me->dataMut->Unlock();
 }
 
 Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, Int32 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.UDPServerSream")
@@ -65,7 +65,7 @@ UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
 	if (this->svr == 0 || this->buffSize == 0)
 		return 0;
 	UOSInt ret;
-	this->dataMut->Lock();
+	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->buffSize > size)
 	{
 		MemCopyNO(buff, this->buff, size);
@@ -79,19 +79,17 @@ UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
 		ret = this->buffSize;
 		this->buffSize = 0;
 	}
-	this->dataMut->Unlock();
 	return ret;
 }
 
 UOSInt Net::UDPServerStream::Write(const UInt8 *buff, UOSInt size)
 {
-	this->dataMut->Lock();
+	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->lastAddr.addrType == Net::SocketUtil::AT_UNKNOWN)
 	{
 		return 0;
 	}
 	this->svr->SendTo(&this->lastAddr, this->lastPort, buff, size);
-	this->dataMut->Unlock();
 	return size;
 }
 

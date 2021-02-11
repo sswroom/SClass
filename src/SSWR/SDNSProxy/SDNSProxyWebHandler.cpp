@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "SSWR/SDNSProxy/SDNSProxyCore.h"
 #include "SSWR/SDNSProxy/SDNSProxyWebHandler.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
 #define LOGSIZE 300
@@ -415,7 +416,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 		sbOut.Append((const UTF8Char*)"</h3>\r\n");
 
 		target = targetList.GetItem(targetIndex);
-		target->mut->Lock();
+		Sync::MutexUsage mutUsage(target->mut);
 		i = 0;
 		j = target->addrList->GetCount();
 		while (i < j)
@@ -427,7 +428,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 			sbOut.Append(target->addrList->GetItem(i));
 			i++;
 		}
-		target->mut->Unlock();
+		mutUsage.EndUse();
 	}
 
 	sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
@@ -490,26 +491,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(SSWR::SDNSProxy::SDN
 	AppendMenu(&sbOut);
 
 	sbOut.Append((const UTF8Char*)"<h2>Log</h2>\r\n");
-
-	me->logMut->Lock();
-	OSInt i = me->logInd;
-	while (i-- > 0)
-	{
-		sbOut.Append(me->logBuff[i]);
-		sbOut.Append((const UTF8Char*)"<br/>\r\n");
-	}
-	i = LOGSIZE - 1;
-	if (me->logBuff[i])
-	{
-		while (i >= me->logInd)
-		{
-			sbOut.Append(me->logBuff[i]);
-			sbOut.Append((const UTF8Char*)"<br/>\r\n");
-
-			i--;
-		}
-	}
-	me->logMut->Unlock();
+	me->logBuff->GetLogs(&sbOut, (const UTF8Char*)"<br/>\r\n");
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -573,7 +555,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 		sbOut.Append((const UTF8Char*)"</h3>");
 		sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Time</td><td>Count</td></tr>");
 		SSWR::SDNSProxy::SDNSProxyCore::HourInfo *hInfo;
-		selCli->mut->Lock();
+		Sync::MutexUsage mutUsage(selCli->mut);
 		i = selCli->hourInfos->GetCount();
 		while (i-- > 0)
 		{
@@ -592,7 +574,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 			sbOut.AppendI64(hInfo->reqCount);
 			sbOut.Append((const UTF8Char*)"</td></tr>");
 		}
-		selCli->mut->Unlock();
+		mutUsage.EndUse();
 
 		sbOut.Append((const UTF8Char*)"</table>");
 	}
@@ -666,10 +648,7 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 	this->core = core;
 	NEW_CLASS(this->reqMap, Data::StringUTF8Map<RequestHandler>());
 	this->log = log;
-	this->logBuff = MemAlloc(UTF8Char*, LOGSIZE);
-	this->logInd = 0;
-	NEW_CLASS(this->logMut, Sync::Mutex());
-	MemClear(this->logBuff, sizeof(UTF8Char*) * LOGSIZE);
+	NEW_CLASS(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
 
 	this->reqMap->Put((const UTF8Char*)"/", StatusReq);
 	this->reqMap->Put((const UTF8Char*)"/reqv4", ReqV4Req);
@@ -681,53 +660,16 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 	this->reqMap->Put((const UTF8Char*)"/client", ClientReq);
 	this->reqMap->Put((const UTF8Char*)"/reqpm", ReqPerMinReq);
 
-	this->log->AddLogHandler(this, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log->AddLogHandler(this->logBuff, IO::ILogHandler::LOG_LEVEL_RAW);
 }
 
 SSWR::SDNSProxy::SDNSProxyWebHandler::~SDNSProxyWebHandler()
 {
-	this->log->RemoveLogHandler(this);
-
-	OSInt i = 0;
-	while (i < LOGSIZE)
-	{
-		if (this->logBuff[i] == 0)
-			break;
-		MemFree(this->logBuff[i]);
-		this->logBuff[i] = 0;
-		i++;
-	}
-	MemFree(this->logBuff);
-	DEL_CLASS(this->logMut);
-
+	this->log->RemoveLogHandler(this->logBuff);
+	DEL_CLASS(this->logBuff);
 	DEL_CLASS(this->reqMap);
 }
 
 void SSWR::SDNSProxy::SDNSProxyWebHandler::Release()
-{
-}
-
-void SSWR::SDNSProxy::SDNSProxyWebHandler::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev)
-{
-	OSInt msgLen = Text::StrCharCnt(logMsg);
-	UTF8Char *strBuff = MemAlloc(UTF8Char, 25 + msgLen);
-	UTF8Char *sptr = logTime->ToString(strBuff, "yyyy-MM-dd HH:mm:ss.fff");
-	*sptr++ = '\t';
-	Text::StrConcatC(sptr, logMsg, msgLen);
-
-	this->logMut->Lock();
-	if (this->logBuff[this->logInd])
-	{
-		MemFree(this->logBuff[this->logInd]);
-	}
-	this->logBuff[this->logInd++] = strBuff;
-	if (this->logInd >= LOGSIZE)
-	{
-		this->logInd -= LOGSIZE;
-	}
-	this->logMut->Unlock();
-}
-
-void SSWR::SDNSProxy::SDNSProxyWebHandler::LogClosed()
 {
 }

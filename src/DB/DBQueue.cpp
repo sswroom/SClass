@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "DB/DBQueue.h"
 #include "IO/FileStream.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -167,7 +168,7 @@ DB::DBQueue::~DBQueue()
 		DEL_CLASS(dbHdlr);
 	}
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
 	while (i-- > 0)
 	{
@@ -217,7 +218,7 @@ DB::DBQueue::~DBQueue()
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	MemFree(sqlList);
 	MemFree(sqlList2);
 	Text::StrDelNew(this->name);
@@ -257,7 +258,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBHd
 		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
 	if (priority < DB_DBQUEUE_PRIORITY_LOWEST)
 		priority = DB_DBQUEUE_PRIORITY_LOWEST;
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	SQLCmd *cmd;
 	NEW_CLASS(cmd, SQLCmd(str, progId, hdlr, userData, userData2));
 	sqlList[priority]->Add(cmd);
@@ -297,7 +298,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBHd
 	}
 	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
-	mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBTransHdlr hdlr, void *userData, void *userData2)
@@ -308,11 +309,11 @@ void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBTransHdlr hdlr, void 
 		priority = DB_DBQUEUE_PRIORITY_LOWEST;
 	DB::DBQueue::SQLTrans *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	sqlList[priority]->Add(trans);
 	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
-	mut->Unlock();
+	mutUsage.EndUse();
 }
 
 void DB::DBQueue::RemoveSQLs(Int32 progId)
@@ -320,7 +321,7 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 	OSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
 	OSInt j;
 	DB::DBQueue::IDBCmd *cmd;
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	while (i-- > 0)
 	{
 		j = sqlList[i]->GetCount();
@@ -334,7 +335,7 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 			}
 		}
 	}
-	mut->Unlock();
+	mutUsage.EndUse();
 }
 
 OSInt DB::DBQueue::GetDataCnt()
@@ -352,13 +353,13 @@ OSInt DB::DBQueue::GetQueueCnt()
 {
 	OSInt cnt = 0;
 	OSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	while (i-- > 0)
 	{
 		cnt += sqlList2[i]->GetCount() * 200;
 		cnt += sqlList[i]->GetCount();
 	}
-	mut->Unlock();
+	mutUsage.EndUse();
 	return cnt;
 }
 
@@ -384,7 +385,7 @@ Int32 DB::DBQueue::GetTzQhr()
 
 OSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	void **c;
 	OSInt i;
 	OSInt j;
@@ -416,7 +417,7 @@ OSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 			break;
 		}
 	}
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return cnt;
 }
 
@@ -503,14 +504,14 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd)
 	Text::UTF8Writer *writer;
 	IO::FileStream *fs;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->Write(sqlCmd);
 	writer->WriteLine((const UTF8Char*)";");
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);
-	this->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)

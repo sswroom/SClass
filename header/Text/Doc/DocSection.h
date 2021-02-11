@@ -7,7 +7,7 @@ namespace Text
 {
 	namespace Doc
 	{
-		class DocSection : public Data::List<DocItem*>
+		class DocSection : public Data::ReadingList<DocItem*>
 		{
 		private:
 			Data::ArrayList<DocItem*> *items;

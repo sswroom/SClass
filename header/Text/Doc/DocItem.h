@@ -7,7 +7,7 @@ namespace Text
 {
 	namespace Doc
 	{
-		class DocItem : public Data::List<DocItem*>
+		class DocItem : public Data::ReadingList<DocItem*>
 		{
 		public:
 			typedef enum

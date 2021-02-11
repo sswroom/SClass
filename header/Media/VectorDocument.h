@@ -8,7 +8,7 @@
 
 namespace Media
 {
-	class VectorDocument : public IO::ParsedObject, public Data::List<Media::VectorGraph*>, public Media::IPrintHandler
+	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Media::VectorGraph*>, public Media::IPrintHandler
 	{
 	private:
 		OSInt currGraph;

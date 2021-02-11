@@ -44,6 +44,7 @@
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -73,10 +74,10 @@ UInt32 __stdcall TestThread(void *userObj)
 	threadT = clk->GetTimeDiff();
 	clk->Start();
 	mainEvt->Set();
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	Sync::Thread::Sleep(500);
 	clk->Start();
-	mut->Unlock();
+	mutUsage.EndUse();
 	return 0;
 }
 
@@ -454,8 +455,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 1000;
 	while (i-- > 0)
 	{
-		mut->Lock();
-		mut->Unlock();
+		Sync::MutexUsage mutUsage(mut);
+		mutUsage.EndUse();
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -520,9 +521,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	writer->WriteLine(sb.ToString());
 
 	Sync::Thread::Sleep(100);
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	t = clk->GetTimeDiff();
-	mut->Unlock();
+	mutUsage.EndUse();
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Mutex Lock Release: ");
 	Text::SBAppendF64(&sb, t);

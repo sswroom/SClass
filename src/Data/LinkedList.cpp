@@ -45,7 +45,6 @@ void Data::LinkedList::Put(void *item)
 	}
 	this->lastItem->item = item;
 	this->lastItem->nextItem = 0;
-	mutUsage.EndUse();
 }
 
 void *Data::LinkedList::Get()
@@ -63,7 +62,6 @@ void *Data::LinkedList::Get()
 		obj = item->item;
 		MemFree(item);
 	}
-	mutUsage.EndUse();
 	return obj;
 }
 
@@ -75,7 +73,6 @@ void *Data::LinkedList::GetNoRemove()
 	{
 		obj = this->firstItem->item;
 	}
-	mutUsage.EndUse();
 	return obj;
 }
 
@@ -89,7 +86,6 @@ OSInt Data::LinkedList::GetCount()
 		cnt++;
 		item = item->nextItem;
 	}
-	mutUsage.EndUse();
 	return cnt;
 }
 
@@ -108,6 +104,5 @@ OSInt Data::LinkedList::IndexOf(void *item)
 		cnt++;
 		llItem = llItem->nextItem;
 	}
-	mutUsage.EndUse();
 	return -1;
 }

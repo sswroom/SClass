@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/DBList.h"
+#include "Sync/MutexUsage.h"
 
 DB::DBList::DBList()
 {
@@ -26,12 +27,12 @@ DB::DBList::~DBList()
 void DB::DBList::AddDB(DB::DBTool *db)
 {
 	DBInfo *dbInfo;
-	this->dbMut->Lock();
+	Sync::MutexUsage mutUsage(this->dbMut);
 	dbInfo = MemAlloc(DBInfo, 1);
 	dbInfo->db = db;
 	dbInfo->isUsing = false;
 	this->dbList->Add(dbInfo);
-	this->dbMut->Unlock();
+	mutUsage.EndUse();
 }
 
 DB::DBTool *DB::DBList::UseDB()
@@ -45,7 +46,7 @@ DB::DBTool *DB::DBList::UseDB()
 
 	while (true)
 	{
-		this->dbMut->Lock();
+		Sync::MutexUsage mutUsage(this->dbMut);
 		j = this->dbList->GetCount();
 		i = j;
 		k = this->nextIndex;
@@ -62,11 +63,11 @@ DB::DBTool *DB::DBList::UseDB()
 			{
 				dbInfo->isUsing = true;
 				this->nextIndex = k;
-				this->dbMut->Unlock();
+				mutUsage.EndUse();
 				return dbInfo->db;
 			}
 		}
-		this->dbMut->Unlock();
+		mutUsage.EndUse();
 
 		this->dbEvt->Wait(1000);
 	}
@@ -76,7 +77,7 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 {
 	OSInt i;
 	DBInfo *dbInfo;
-	this->dbMut->Lock();
+	Sync::MutexUsage mutUsage(this->dbMut);
 	i = this->dbList->GetCount();
 	while (i-- > 0)
 	{
@@ -88,7 +89,7 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 			break;
 		}
 	}
-	this->dbMut->Unlock();
+	mutUsage.EndUse();
 }
 
 OSInt DB::DBList::GetCount()

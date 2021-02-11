@@ -3,6 +3,7 @@
 #include "IO/ProtoHdlr/ProtoSyncHandler.h"
 #include "Net/TCPClient.h"
 #include "SSWR/DataSync/SyncClient.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -23,10 +24,10 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 			recvSize = me->cli->Read(&buff[buffSize], 8192 - buffSize);
 			if (recvSize <= 0)
 			{
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 			}
 			else
 			{
@@ -55,10 +56,10 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 			}
 			else
 			{
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(me->cliMut);
 				me->cli = cli;
 				me->cliKATime->SetCurrTimeUTC();
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 				buffSize = 0;
 				me->SendLogin();
 			}
@@ -66,10 +67,10 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 	}
 	if (me->cli)
 	{
-		me->cliMut->Lock();
+		Sync::MutexUsage mutUsage(me->cliMut);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		me->cliMut->Unlock();
+		mutUsage.EndUse();
 	}
 	MemFree(buff);
 	me->recvRunning = false;
@@ -82,7 +83,6 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(void *userObj)
 	Data::DateTime *currTime;
 	UOSInt i;
 	UOSInt j;
-	UInt8 *userData;
 	me->kaRunning = true;
 	NEW_CLASS(currTime, Data::DateTime());
 	while (!me->toStop)
@@ -90,53 +90,38 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(void *userObj)
 		if (me->cli)
 		{
 			currTime->SetCurrTimeUTC();
-			me->cliMut->Lock();
+			Sync::MutexUsage mutUsage(me->cliMut);
 			if (me->cli && currTime->DiffMS(me->cliKATime) >= 120000)
 			{
 				me->cliKATime->SetCurrTimeUTC();
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 				me->SendKA();
 			}
 			else
 			{
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
 
 		i = 0;
-		j = me->userDataList->GetCount();
+		j = me->dataMgr->GetCount();
 		while (i < j)
 		{
-			me->userDataMut->Lock();
-			userData = me->userDataList->GetItem(i);
-			me->SendUserData(&userData[4], ReadInt32(userData));
-			me->userDataMut->Unlock();
+			UOSInt dataSize;
+			const UInt8 *buff = me->dataMgr->GetData(i, &dataSize);
+			if (!me->SendUserData(buff, dataSize))
+			{
+				break;
+			}
 			i++;
 		}
 		if (i > 0)
 		{
-			Data::ArrayList<UInt8*> tmp;
-			me->userDataMut->Lock();
-			tmp.AddRange(me->userDataList->GetArray(&j), i);
-			me->userDataList->RemoveRange(0, i);
-			me->userDataMut->Unlock();
-			while (i-- > 0)
-			{
-				MemFree(tmp.GetItem(i));
-			}
+			me->dataMgr->RemoveData(i);
 		}
 		else if (j > 16384)
 		{
-			Data::ArrayList<UInt8*> tmp;
-			i = j - 16384;
-			me->userDataMut->Lock();
-			tmp.AddRange(me->userDataList->GetArray(&j), i);
-			me->userDataList->RemoveRange(0, i);
-			me->userDataMut->Unlock();
-			while (i-- > 0)
-			{
-				MemFree(tmp.GetItem(i));
-			}
+			me->dataMgr->RemoveData(j - 16384);
 		}
 		me->kaEvt->Wait(1000);
 	}
@@ -157,12 +142,12 @@ Bool SSWR::DataSync::SyncClient::SendLogin()
 	Text::StrConcat((UTF8Char*)&cmdBuff[5], this->serverName);
 	len = this->protoHdlr->BuildPacket(packetBuff, 0, 0, cmdBuff, len + 5, 0);
 	
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		succ = (this->cli->Write(packetBuff, len) == len);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -173,12 +158,12 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 	UOSInt len;
 	len = this->protoHdlr->BuildPacket(packetBuff, 2, 0, 0, 0, 0);
 	
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		succ = (this->cli->Write(packetBuff, len) == len);
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -192,24 +177,24 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 		UInt8 *dataBuff = MemAlloc(UInt8, dataSize + 10);
 		len = this->protoHdlr->BuildPacket(dataBuff, 4, 0, data, dataSize, 0);
 		
-		this->cliMut->Lock();
+		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
 			succ = (this->cli->Write(dataBuff, len) == len);
 		}
-		this->cliMut->Unlock();
+		mutUsage.EndUse();
 		MemFree(dataBuff);
 	}
 	else
 	{
 		len = this->protoHdlr->BuildPacket(packetBuff, 4, 0, data, dataSize, 0);
 		
-		this->cliMut->Lock();
+		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
 			succ = (this->cli->Write(packetBuff, len) == len);
 		}
-		this->cliMut->Unlock();
+		mutUsage.EndUse();
 	}
 	return succ;
 }
@@ -225,8 +210,7 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 	this->cli = 0;
 	this->cliHost = Text::StrCopyNew(clientHost);
 	this->cliPort = cliPort;
-	NEW_CLASS(this->userDataList, Data::ArrayList<UInt8*>());
-	NEW_CLASS(this->userDataMut, Sync::Mutex());
+	NEW_CLASS(this->dataMgr, SSWR::DataSync::SyncClientDataMgr());
 
 	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DataSync.SyncClient.recvEvt"));
 	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DataSync.SyncClient.kaEvt"));
@@ -244,28 +228,20 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 
 SSWR::DataSync::SyncClient::~SyncClient()
 {
-	OSInt i;
 	this->toStop = true;
 	this->recvEvt->Set();
 	this->kaEvt->Set();
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 	while (this->recvRunning || this->kaRunning)
 	{
 		Sync::Thread::Sleep(1);
 	}
-
-	i = this->userDataList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->userDataList->GetItem(i));
-	}
-	DEL_CLASS(this->userDataList);
-	DEL_CLASS(this->userDataMut);
+	DEL_CLASS(this->dataMgr);
 	DEL_CLASS(this->cliKATime);
 	DEL_CLASS(this->cliMut);
 	Text::StrDelNew(this->cliHost);
@@ -283,10 +259,5 @@ void SSWR::DataSync::SyncClient::DataSkipped(IO::Stream *stm, void *stmObj, cons
 
 void SSWR::DataSync::SyncClient::AddUserData(const UInt8 *data, UOSInt dataSize)
 {
-	UInt8 *newData = MemAlloc(UInt8, dataSize + 4);
-	WriteInt32(newData, (Int32)dataSize);
-	MemCopyNO(&newData[4], data, dataSize);
-	this->userDataMut->Lock();
-	this->userDataList->Add(newData);
-	this->userDataMut->Unlock();
+	this->dataMgr->AddUserData(data, dataSize);
 }

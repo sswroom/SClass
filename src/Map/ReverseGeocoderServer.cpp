@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Map/ReverseGeocoderServer.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -74,7 +75,7 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 	Bool sent;
 	OSInt retryCnt = 0;
 	UTF8Char *sptr = 0;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
 	this->reqLat = Math::Double2Int32(lat * 200000.0);
@@ -116,7 +117,7 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 		retryCnt++;
 	}
 	this->reqBuff = 0;
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	return sptr;
 }
 
@@ -127,7 +128,7 @@ UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize,
 	Bool sent;
 	OSInt retryCnt = 0;
 	UTF8Char *sptr = 0;
-	this->reqMut->Lock();
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
 	this->reqLat = Math::Double2Int32(lat * 200000.0);
@@ -169,7 +170,7 @@ UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize,
 		retryCnt++;
 	}
 	this->reqBuff = 0;
-	this->reqMut->Unlock();
+	mutUsage.EndUse();
 	return sptr;}
 
 void *Map::ReverseGeocoderServer::NewConn(Net::TCPClient *cli)

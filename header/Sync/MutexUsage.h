@@ -15,6 +15,8 @@ namespace Sync
 
 		void BeginUse();
 		void EndUse();
+
+		void ReplaceMutex(Sync::Mutex *mut);
 	};
 }
 #endif

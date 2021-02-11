@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SDNSPROXY_SDNSPROXYWEBHANDLER
 #define _SM_SSWR_SDNSPROXY_SDNSPROXYWEBHANDLER
+#include "IO/CyclicLogBuffer.h"
 #include "IO/LogTool.h"
 #include "Net/DNSProxy.h"
 #include "Net/WebServer/WebStandardHandler.h"
@@ -12,7 +13,7 @@ namespace SSWR
 	{
 		class SDNSProxyCore;
 
-		class SDNSProxyWebHandler : public Net::WebServer::WebStandardHandler, public IO::ILogHandler
+		class SDNSProxyWebHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
 			typedef Bool (__stdcall *RequestHandler)(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
@@ -20,9 +21,7 @@ namespace SSWR
 			Net::DNSProxy *proxy;
 			IO::LogTool *log;
 			Data::StringUTF8Map<RequestHandler> *reqMap;
-			Sync::Mutex *logMut;
-			UTF8Char **logBuff;
-			OSInt logInd;
+			IO::CyclicLogBuffer *logBuff;
 			SDNSProxyCore *core;
 
 			static Bool __stdcall StatusReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
@@ -47,8 +46,6 @@ namespace SSWR
 
 			virtual void Release();
 
-			virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev);
-			virtual void LogClosed();
 		};
 	}
 }

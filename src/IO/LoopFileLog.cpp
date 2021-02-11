@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/FileUtil.h"
 #include "IO/LoopFileLog.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -91,9 +92,9 @@ void IO::LoopFileLog::LogClosed()
 {
 	if (!closed)
 	{
-		mut->Lock();
+		Sync::MutexUsage mutUsage(mut);
 		log->Close();
-		mut->Unlock();
+		mutUsage.EndUse();
 		closed = true;
 	}
 }
@@ -102,7 +103,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, Log
 	Bool newFile = false;
 	UTF8Char buff[256];
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 
 	if (logStyle == ILogHandler::LOG_TYPE_PER_DAY)
 	{
@@ -163,5 +164,5 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, Log
 		sb.Append(logMsg);
 		log->WriteLine(sb.ToString());
 	}
-	mut->Unlock();
+	mutUsage.EndUse();
 }

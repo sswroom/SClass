@@ -1,6 +1,6 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOREVGEOHANDLER
 #define _SM_IO_PROTOHDLR_PROTOREVGEOHANDLER
-#include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/HashCalc.h"
 #include "IO/IProtocolHandler.h"
 #include "Sync/Mutex.h"
 
@@ -12,8 +12,7 @@ namespace IO
 		{
 		private:
 			IO::IProtocolHandler::DataListener *listener;
-			Crypto::Hash::CRC32R *crc;
-			Sync::Mutex *crcMut;
+			Crypto::Hash::HashCalc *crc;
 
 		public:
 			ProtoRevGeoHandler(IO::IProtocolHandler::DataListener *listener);

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/OSSocketFactory.h"
 #include "SSWR/SDNSProxy/SDNSProxyCore.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -25,7 +26,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 	ClientInfo *cli;
 	dt.SetCurrTimeUTC();
 	Int32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
-	me->cliInfoMut->Lock();
+	Sync::MutexUsage mutUsage(me->cliInfoMut);
 	cli = me->cliInfos->Get(cliId);
 	if (cli == 0)
 	{
@@ -48,10 +49,10 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 		me->lastCnt = me->currCnt;
 		me->currCnt = 0;
 	}
-	me->cliInfoMut->Unlock();
+	mutUsage.EndUse();
 
 	HourInfo *hInfo;
-	cli->mut->Lock();
+	mutUsage.ReplaceMutex(cli->mut);
 	hInfo = cli->hourInfos->GetItem(0);
 	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{
@@ -74,7 +75,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 		hInfo->reqCount = 1;
 		cli->hourInfos->Insert(0, hInfo);
 	}
-	cli->mut->Unlock();
+	mutUsage.EndUse();
 }
 
 SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::IWriter *console)
@@ -241,9 +242,9 @@ void SSWR::SDNSProxy::SDNSProxyCore::Run(Core::IProgControl *progCtrl)
 OSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList)
 {
 	OSInt initSize = cliList->GetCount();
-	this->cliInfoMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliInfoMut);
 	cliList->AddRange(this->cliInfos->GetValues());
-	this->cliInfoMut->Unlock();
+	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;
 }
 

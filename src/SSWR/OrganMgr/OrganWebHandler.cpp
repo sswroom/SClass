@@ -25,6 +25,7 @@
 #include "Net/WebServer/WebSessionUsage.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/OrganMgr/OrganWebHandler.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -4384,12 +4385,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					u8ptr = dt.ToString(u8ptr, "yyyyMM");
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
 					u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
-					me->parserMut->Lock();
+					Sync::MutexUsage mutUsage(me->parserMut);
 					NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 					fileSize = fd->GetDataSize();
 					mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
 					DEL_CLASS(fd);
-					me->parserMut->Unlock();
+					mutUsage.EndUse();
 
 					if (mediaFile)
 					{
@@ -5307,12 +5308,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				u8ptr = dt.ToString(u8ptr, "yyyyMM");
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
 				u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
-				me->parserMut->Lock();
+				Sync::MutexUsage mutUsage(me->parserMut);
 				NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 				fileSize = fd->GetDataSize();
 				mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
 				DEL_CLASS(fd);
-				me->parserMut->Unlock();
+				mutUsage.EndUse();
 
 				if (mediaFile)
 				{
@@ -7685,18 +7686,18 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			Media::StaticImage *lrimg;
 			Media::StaticImage *dimg;
 			IO::StmData::FileData *fd;
-			this->parserMut->Lock();
+			Sync::MutexUsage mutUsage(this->parserMut);
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
 			DEL_CLASS(fd);
-			this->parserMut->Unlock();
+			mutUsage.EndUse();
 			if (imgList)
 			{
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASS(lrimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(Int32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				this->csconvMut->Lock();
+				Sync::MutexUsage mutUsage(this->csconvMut);
 				if (this->csconv == 0 || this->csconvFCC != simg->info->fourcc || this->csconvBpp != simg->info->storeBPP || this->csconvPF != simg->info->pf || !simg->info->color->Equals(this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
@@ -7714,18 +7715,18 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				{
 					SDEL_CLASS(lrimg);
 				}
-				this->csconvMut->Unlock();
+				mutUsage.EndUse();
 				DEL_CLASS(simg);
 
 				if (lrimg)
 				{
 					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info->dispWidth, lrimg->info->dispHeight);
-					this->resizerMut->Lock();
+					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
 					resizerLR->SetTargetHeight(imgHeight);
 					dimg = resizerLR->ProcessToNew(lrimg);
-					this->resizerMut->Unlock();
+					mutUsage.EndUse();
 					DEL_CLASS(lrimg)
 				}
 				else
@@ -7969,18 +7970,18 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		Media::StaticImage *lrimg;
 		Media::StaticImage *dimg;
 		IO::StmData::FileData *fd;
-		this->parserMut->Lock();
+		Sync::MutexUsage mutUsage(this->parserMut);
 		NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
 		DEL_CLASS(fd);
-		this->parserMut->Unlock();
+		mutUsage.EndUse();
 		if (imgList)
 		{
 			simg = imgList->GetImage(0, 0)->CreateStaticImage();
 			DEL_CLASS(imgList);
 			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 			NEW_CLASS(lrimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(Int32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			this->csconvMut->Lock();
+			Sync::MutexUsage mutUsage(this->csconvMut);
 			if (this->csconv == 0 || this->csconvFCC != simg->info->fourcc || this->csconvBpp != simg->info->storeBPP || this->csconvPF != simg->info->pf || !simg->info->color->Equals(this->csconvColor))
 			{
 				SDEL_CLASS(this->csconv);
@@ -7998,7 +7999,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			{
 				SDEL_CLASS(lrimg);
 			}
-			this->csconvMut->Unlock();
+			mutUsage.EndUse();
 			DEL_CLASS(simg);
 
 			if (lrimg)
@@ -8006,7 +8007,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info->dispWidth, lrimg->info->dispHeight);
 				if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 				{
-					this->resizerMut->Lock();
+					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
 					resizerLR->SetTargetHeight(imgHeight);
@@ -8035,16 +8036,16 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						y2 = Math::OSInt2Double(lrimg->info->dispHeight);
 					}
 					dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
-					this->resizerMut->Unlock();
+					mutUsage.EndUse();
 				}
 				else
 				{
-					this->resizerMut->Lock();
+					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
 					resizerLR->SetTargetHeight(imgHeight);
 					dimg = resizerLR->ProcessToNew(lrimg);
-					this->resizerMut->Unlock();
+					mutUsage.EndUse();
 				}
 				DEL_CLASS(lrimg)
 			}
@@ -8268,18 +8269,18 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 			Media::StaticImage *lrimg;
 			Media::StaticImage *dimg;
 			IO::StmData::FileData *fd;
-			this->parserMut->Lock();
+			Sync::MutexUsage mutUsage(this->parserMut);
 			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
 			DEL_CLASS(fd);
-			this->parserMut->Unlock();
+			mutUsage.EndUse();
 			if (imgList)
 			{
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASS(lrimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(Int32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				this->csconvMut->Lock();
+				Sync::MutexUsage mutUsage(this->csconvMut);
 				if (this->csconv == 0 || this->csconvFCC != simg->info->fourcc || this->csconvBpp != simg->info->storeBPP || this->csconvPF != simg->info->pf || !simg->info->color->Equals(this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
@@ -8297,7 +8298,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 				{
 					SDEL_CLASS(lrimg);
 				}
-				this->csconvMut->Unlock();
+				mutUsage.EndUse();
 				DEL_CLASS(simg);
 
 				if (lrimg)
@@ -8305,7 +8306,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info->dispWidth, lrimg->info->dispHeight);
 					if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						this->resizerMut->Lock();
+						Sync::MutexUsage mutUsage(this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetWidth(imgWidth);
 						resizerLR->SetTargetHeight(imgHeight);
@@ -8334,16 +8335,16 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 							y2 = Math::OSInt2Double(lrimg->info->dispHeight);
 						}
 						dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
-						this->resizerMut->Unlock();
+						mutUsage.EndUse();
 					}
 					else
 					{
-						this->resizerMut->Lock();
+						Sync::MutexUsage mutUsage(this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetWidth(imgWidth);
 						resizerLR->SetTargetHeight(imgHeight);
 						dimg = resizerLR->ProcessToNew(lrimg);
-						this->resizerMut->Unlock();
+						mutUsage.EndUse();
 					}
 					DEL_CLASS(lrimg)
 				}

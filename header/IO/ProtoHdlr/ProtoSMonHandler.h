@@ -1,6 +1,6 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOSMONHANDLER
 #define _SM_IO_PROTOHDLR_PROTOSMONHANDLER
-#include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/HashCalc.h"
 #include "IO/IProtocolHandler.h"
 #include "Sync/Mutex.h"
 
@@ -12,8 +12,7 @@ namespace IO
 		{
 		private:
 			IO::IProtocolHandler::DataListener *listener;
-			Sync::Mutex *crcMut;
-			Crypto::Hash::CRC32R *crc;
+			Crypto::Hash::HashCalc *crc;
 
 		public:
 			ProtoSMonHandler(IO::IProtocolHandler::DataListener *listener);

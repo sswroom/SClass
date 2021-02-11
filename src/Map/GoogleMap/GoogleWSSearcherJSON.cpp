@@ -8,6 +8,7 @@
 #include "IO/StreamReader.h"
 #include "Map/GoogleMap/GoogleWSSearcherJSON.h"
 #include "Net/HTTPClient.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/JSON.h"
 #include "Text/MyStringFloat.h"
@@ -95,7 +96,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	UInt8 databuff[2048];
 	OSInt readSize;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
@@ -281,7 +282,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 
 	this->lastSrchDate->SetCurrTimeUTC();
 	DEL_CLASS(cli);
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	return buff;
 }
 

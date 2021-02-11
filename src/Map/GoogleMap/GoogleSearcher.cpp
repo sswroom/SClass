@@ -12,6 +12,7 @@
 #include "Map/GoogleMap/GoogleSearcher.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/Locale.h"
@@ -98,7 +99,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	Int32 i;
 	Char *ptrs[3];
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
@@ -221,7 +222,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	}
 	this->lastSrchDate->SetCurrTimeUTC();
 	DEL_CLASS(cli);
-	mut->Unlock();
+	mutUsage.EndUse();
 	return buff;
 }
 

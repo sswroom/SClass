@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "Map/AssistedReverseGeocoder.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 
 Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::IWriter *errWriter)
 {
@@ -43,7 +44,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	if (keyx == 0 && keyy == 0)
 		return 0;
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
 	sql->AppendInt32(lcid);
@@ -59,7 +60,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 			sptr = r->GetStr(0, buff, buffSize);
 			this->conn->CloseReader(r);
 			DEL_CLASS(sql);
-			mut->Unlock();
+			mutUsage.EndUse();
 			return sptr;
 		}
 		this->conn->CloseReader(r);
@@ -98,13 +99,13 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		this->conn->ExecuteNonQuery(sql->ToString());
 
 		DEL_CLASS(sql);
-		mut->Unlock();
+		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
 		DEL_CLASS(sql);
-		mut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 }
@@ -120,7 +121,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	Int32 keyx = Math::Double2Int32(lon * 5000);
 	Int32 keyy = Math::Double2Int32(lat * 5000);
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
 	sql->AppendInt32(lcid);
@@ -136,7 +137,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 			sptr = r->GetStr(0, buff, buffSize);
 			this->conn->CloseReader(r);
 			DEL_CLASS(sql);
-			mut->Unlock();
+			mutUsage.EndUse();
 			return sptr;
 		}
 		this->conn->CloseReader(r);
@@ -175,13 +176,13 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		this->conn->ExecuteNonQuery(sql->ToString());
 
 		DEL_CLASS(sql);
-		mut->Unlock();
+		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
 		DEL_CLASS(sql);
-		mut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 }
