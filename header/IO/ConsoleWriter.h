@@ -16,10 +16,29 @@ namespace IO
 	class ConsoleWriter : public IO::Writer
 	{
 	public:
+		typedef enum
+		{
+			CC_BLACK = 0,
+			CC_DARK_BLUE = 1,
+			CC_DARK_GREEN = 2,
+			CC_DARK_CYAN = 3,
+			CC_DARK_RED = 4,
+			CC_DARK_MAGENTA = 5,
+			CC_DARK_YELLOW = 6,
+			CC_GRAY = 7,
+			CC_DARK_GRAY = 8,
+			CC_BLUE = 9,
+			CC_GREEN = 10,
+			CC_CYAN = 11,
+			CC_RED = 12,
+			CC_MAGENTA = 13,
+			CC_YELLOW = 14,
+			CC_WHITE = 15
+		} ConsoleColor;
 		typedef struct
 		{
-			UInt8 fgColor;
-			UInt8 bgColor;
+			ConsoleColor fgColor;
+			ConsoleColor bgColor;
 			Int32 currX;
 			Int32 currY;
 			Int32 consoleWidth;
@@ -44,7 +63,7 @@ namespace IO
 
 		WChar *ReadLine(WChar *sbuff, OSInt nChar);
 
-		void SetTextColor(UInt8 fgColor, UInt8 bgColor);
+		void SetTextColor(ConsoleColor fgColor, ConsoleColor bgColor);
 		void ResetTextColor();
 		OSInt CalDisplaySize(const WChar *str);
 		void EnableCPFix(Bool isEnable);

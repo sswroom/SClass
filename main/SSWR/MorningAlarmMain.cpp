@@ -319,9 +319,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sptr = startDt->ToString(sptr, "yyyy-MM-dd HH:mm:ss");
 					console->WriteLine(buff);
 
-					console->SetTextColor(7, 2);
+					console->SetTextColor(IO::ConsoleWriter::CC_GRAY, IO::ConsoleWriter::CC_DARK_GREEN);
 					console->WriteLine((const UTF8Char*)"Press Ctrl+C to exit");
-					console->SetTextColor(7, 0);
+					console->SetTextColor(IO::ConsoleWriter::CC_GRAY, IO::ConsoleWriter::CC_BLACK);
 					Sync::Thread::Create(PlayThread, 0);
 
 					progCtrl->WaitForExit(progCtrl);

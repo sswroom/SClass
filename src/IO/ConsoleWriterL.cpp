@@ -50,8 +50,10 @@ Bool IO::ConsoleWriter::WriteLine()
 	return true;
 }
 
-void IO::ConsoleWriter::SetTextColor(UInt8 fgColor, UInt8 bgColor)
+void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgCol, IO::ConsoleWriter::ConsoleColor bgCol)
 {
+	UInt8 fgColor = fgCol;
+	UInt8 bgColor = bgCol;
 	fgColor = (fgColor & ~5) | ((fgColor & 1) << 2) | ((fgColor & 4) >> 2);
 	bgColor = (bgColor & ~5) | ((bgColor & 1) << 2) | ((bgColor & 4) >> 2);
 	if (fgColor & 8)
@@ -115,8 +117,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	ioctl(0, TIOCGWINSZ, &w);
 	state->consoleWidth = w.ws_col;
 	state->consoleHeight = w.ws_row;
-	state->fgColor = 0;
-	state->bgColor = 0;
+	state->fgColor = CC_BLACK;
+	state->bgColor = CC_BLACK;
 
 	struct termios oldIOS;
 	struct termios newIOS;

@@ -229,7 +229,7 @@ Bool IO::ConsoleWriter::WriteLine()
 	return false;
 }
 
-void IO::ConsoleWriter::SetTextColor(UInt8 fgColor, UInt8 bgColor)
+void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgColor, IO::ConsoleWriter::ConsoleColor bgColor)
 {
 #ifndef _WIN32_WCE
 	SetConsoleTextAttribute((HANDLE)this->hand, (fgColor & 0xf) | ((bgColor & 0xf) << 4));
@@ -238,7 +238,7 @@ void IO::ConsoleWriter::SetTextColor(UInt8 fgColor, UInt8 bgColor)
 
 void IO::ConsoleWriter::ResetTextColor()
 {
-	SetTextColor(7, 0);
+	SetTextColor(CC_GRAY, CC_BLACK);
 }
 
 OSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
@@ -326,8 +326,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	CONSOLE_SCREEN_BUFFER_INFO info;
 	if (GetConsoleScreenBufferInfo((HANDLE)this->hand, &info) == FALSE)
 		return false;
-	state->fgColor = info.wAttributes & 0xf;
-	state->bgColor = (info.wAttributes >> 4) & 0xf;
+	state->fgColor = (ConsoleColor)(info.wAttributes & 0xf);
+	state->bgColor = (ConsoleColor)((info.wAttributes >> 4) & 0xf);
 	state->currX = info.dwCursorPosition.X;
 	state->currY = info.dwCursorPosition.Y;
 	state->consoleWidth = info.dwSize.X;

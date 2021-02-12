@@ -11,7 +11,7 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *str, OSInt nChar)
+Bool IO::ConsoleWriter::Write(const UTF8Char *str, UOSInt nChar)
 {
 	return false;
 }
@@ -21,7 +21,7 @@ Bool IO::ConsoleWriter::Write(const UTF8Char *str)
 	return false;
 }
 
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, OSInt nChar)
+Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 {
 	return false;
 }
@@ -31,32 +31,12 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str)
 	return false;
 }
 
-Bool IO::ConsoleWriter::Write(const WChar *str, OSInt nChar)
-{
-	return false;
-}
-
-Bool IO::ConsoleWriter::Write(const WChar *str)
-{
-	return false;
-}
-
-Bool IO::ConsoleWriter::WriteLine(const WChar *str, OSInt nChar)
-{
-	return false;
-}
-
-Bool IO::ConsoleWriter::WriteLine(const WChar *str)
-{
-	return false;
-}
-
 Bool IO::ConsoleWriter::WriteLine()
 {
 	return false;
 }
 
-void IO::ConsoleWriter::SetTextColor(UInt8 fgColor, UInt8 bgColor)
+void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgColor, IO::ConsoleWriter::ConsoleColor bgColor)
 {
 }
 
