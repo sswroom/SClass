@@ -78,7 +78,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 	mutUsage.EndUse();
 }
 
-SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::IWriter *console)
+SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console)
 {
 	this->console = console;
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(false));

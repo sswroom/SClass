@@ -3,7 +3,7 @@
 #include "Data/ICaseStringUTF8Map.h"
 #include "Data/Integer32Map.h"
 #include "Data/Integer64Map.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
 #include "Text/StringBuilderUTF.h"
@@ -144,14 +144,14 @@ namespace Net
 		Int64 packetCnt;
 		Int64 packetTotalSize;
 		Bool isFirst;
-		IO::IWriter *errWriter;
+		IO::Writer *errWriter;
 
 		static void NetBIOSDecName(UTF8Char *nameBuff, OSInt nameSize);
 
 		MACStatus *MACGet(Int64 macAddr);
 
 	public:
-		EthernetAnalyzer(IO::IWriter *errWriter, AnalyzeType ctype, const UTF8Char *name);
+		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, const UTF8Char *name);
 		virtual ~EthernetAnalyzer();
 
 		virtual IO::ParsedObject::ParserType GetParserType();

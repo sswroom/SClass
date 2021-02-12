@@ -1,11 +1,11 @@
 #ifndef _SM_IO_SIMPLEFILEWRITER
 #define _SM_IO_SIMPLEFILEWRITER
 #include "IO/FileStream.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 
 namespace IO
 {
-	class SimpleFileWriter : public IWriter
+	class SimpleFileWriter : public Writer
 	{
 	private:
 		void *handle;

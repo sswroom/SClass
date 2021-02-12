@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/Device/SIM7000.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -42,7 +43,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 				sarr[2][i + 1] = 0;
 				sarr[2]++;
 			}
-			me->dnsMut->Lock();
+			Sync::MutexUsage mutUsage(me->dnsMut);
 			if (me->dnsReq && me->dnsResp)
 			{
 				if (Text::StrEquals(me->dnsReq, sarr[1]) && Net::SocketUtil::GetIPAddr(sarr[2], me->dnsResp))
@@ -51,7 +52,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 					me->respEvt->Set();
 				}
 			}
-			me->dnsMut->Unlock();
+			mutUsage.EndUse();
 		}
 		return true;
 	}
@@ -152,7 +153,7 @@ void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userO
 
 Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
-	this->cmdMut->Lock();
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+CPOWD=1", 2000);
 	OSInt i = this->cmdResults->GetCount();
 	const Char *val;
@@ -162,20 +163,17 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 		if (Text::StrEquals(val, "OK") || Text::StrEquals(val, "NORMAL POWER DOWN"))
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return true;
 		}
 		else
 		{
 			ClearCmdResult();
-			this->cmdMut->Unlock();
 			return false;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		this->cmdMut->Unlock();
 		return false;
 	}
 }
@@ -416,29 +414,29 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(const UTF8Char *domain, Net::SocketUti
 	sptr = Text::StrConcat(sptr, (const Char*)domain);
 	*sptr++ = '"';
 	*sptr = 0;
-	this->dnsMut->Lock();
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	while (this->dnsReq)
 	{
-		this->dnsMut->Unlock();
+		mutUsage.EndUse();
 		Sync::Thread::Sleep(100);
-		this->dnsMut->Lock();
+		mutUsage.BeginUse();
 	}
 	this->dnsResult = false;
 	this->dnsReq = domain;
 	this->dnsResp = addr;
 	this->respEvt->Clear();
-	this->dnsMut->Unlock();
+	mutUsage.EndUse();
 	if (!this->SendBoolCommand((const Char*)sbuff, 3000))
 	{
 		return false;
 	}
 	this->respEvt->Wait(3000);
 	Bool ret;
-	this->dnsMut->Lock();
+	mutUsage.BeginUse();
 	ret = this->dnsResult;
 	this->dnsReq = 0;
 	this->dnsResp = 0;
-	this->dnsMut->Unlock();
+	mutUsage.EndUse();
 	return ret;
 }
 

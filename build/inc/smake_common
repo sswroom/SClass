@@ -1134,7 +1134,6 @@ IO/IProtocolHandler.h:
 IO/IProtocolParser.h:
 IO/ISectorData.h:
 IO/IStreamData.h:
-IO/IWriter.h:
 IO/JavaClass.h: ../../src/IO/JavaClass.cpp
 @JavaClass.o
 IO/LogFile.h: ../../src/IO/LogFile.cpp
@@ -1174,6 +1173,7 @@ IO/PackageFile.h: ../../src/IO/PackageFile.cpp
 @PackageFile.o
 IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
+IO/Reader.h:
 IO/RS232GPIO.h: ../../src/IO/RS232GPIO.cpp
 @RS232GPIO.o
 IO/SDCardInfo.h: ../../src/IO/SDCardInfo.cpp
@@ -1205,6 +1205,8 @@ IO/StreamRecorder.h: ../../src/IO/StreamRecorder.cpp
 @StreamRecorder.o
 IO/StreamWriter.h: ../../src/IO/StreamWriter.cpp
 @StreamWriter.o
+IO/StringLogger.h: ../../src/IO/StringLogger.cpp
+@StringLogger.o
 IO/TVControl.h: ../../src/IO/TVControl.cpp
 @TVControl.o
 IO/UDPFileLog.h: ../../src/IO/UDPFileLog.cpp
@@ -1217,6 +1219,7 @@ IO/VirtualIOPinMgr.h: ../../src/IO/VirtualIOPinMgr.cpp
 @VirtualIOPinMgr.o
 IO/WriteCacheStream.h: ../../src/IO/WriteCacheStream.cpp
 @WriteCacheStream.o
+IO/Writer.h:
 IO/WriterLogHandler.h: ../../src/IO/WriterLogHandler.cpp
 @WriterLogHandler.o
 IO/ZIPBuilder.h: ../../src/IO/ZIPBuilder.cpp
@@ -3475,6 +3478,7 @@ StreamLogger.o: ../../src/IO/StreamLogger.cpp
 StreamReader.o: ../../src/IO/StreamReader.cpp
 StreamRecorder.o: ../../src/IO/StreamRecorder.cpp
 StreamWriter.o: ../../src/IO/StreamWriter.cpp
+StringLogger.o: ../../src/IO/StringLogger.cpp
 TVControl.o: ../../src/IO/TVControl.cpp
 UDPFileLog.o: ../../src/IO/UDPFileLog.cpp
 UDPLog.o: ../../src/IO/UDPLog.cpp

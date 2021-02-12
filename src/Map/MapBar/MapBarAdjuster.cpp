@@ -8,7 +8,7 @@
 #include "Net/HTTPClient.h"
 #include "Map/MapBar/MapBarAdjuster.h"
 
-Map::MapBar::MapBarAdjuster::MapBarAdjuster(Net::SocketFactory *sockf, IO::IWriter *errWriter)
+Map::MapBar::MapBarAdjuster::MapBarAdjuster(Net::SocketFactory *sockf, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

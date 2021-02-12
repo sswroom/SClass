@@ -38,5 +38,5 @@ namespace Manage
 
 		virtual Manage::Dasm *CreateDasm() = 0;
 	};
-};
+}
 #endif

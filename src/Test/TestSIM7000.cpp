@@ -4,7 +4,7 @@
 #include "Test/TestSIM7000.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Test::TestSIM7000::SIM7000Info(IO::IWriter *writer, IO::Device::SIM7000 *modem)
+void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *modem)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];

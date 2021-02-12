@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
-	WChar wbuff[16];
+	UTF8Char sbuff[16];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
@@ -162,11 +162,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					}
 					if (!is2)
 					{
-						reader1->GetLastLineBreak(wbuff);
-						while (succ1 && wbuff[0] == 0)
+						reader1->GetLastLineBreak(sbuff);
+						while (succ1 && sbuff[0] == 0)
 						{
 							succ1 = reader1->ReadLine(&sb1, 1024);
-							reader1->GetLastLineBreak(wbuff);
+							reader1->GetLastLineBreak(sbuff);
 						}
 						writer->WriteLine(sb1.ToString());
 						sb1.ClearStr();
@@ -174,11 +174,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					}
 					else
 					{
-						reader2->GetLastLineBreak(wbuff);
-						while (succ2 && wbuff[0] == 0)
+						reader2->GetLastLineBreak(sbuff);
+						while (succ2 && sbuff[0] == 0)
 						{
 							succ2 = reader2->ReadLine(&sb2, 1024);
-							reader2->GetLastLineBreak(wbuff);
+							reader2->GetLastLineBreak(sbuff);
 						}
 						writer->WriteLine(sb2.ToString());
 						sb2.ClearStr();
@@ -187,11 +187,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 				}
 				else if (succ1)
 				{
-					reader1->GetLastLineBreak(wbuff);
-					while (succ1 && wbuff[0] == 0)
+					reader1->GetLastLineBreak(sbuff);
+					while (succ1 && sbuff[0] == 0)
 					{
 						succ1 = reader1->ReadLine(&sb1, 1024);
-						reader1->GetLastLineBreak(wbuff);
+						reader1->GetLastLineBreak(sbuff);
 					}
 					writer->WriteLine(sb1.ToString());
 					sb1.ClearStr();
@@ -199,11 +199,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 				}
 				else if (succ2)
 				{
-					reader2->GetLastLineBreak(wbuff);
-					while (succ2 && wbuff[0] == 0)
+					reader2->GetLastLineBreak(sbuff);
+					while (succ2 && sbuff[0] == 0)
 					{
 						succ2 = reader2->ReadLine(&sb2, 1024);
-						reader2->GetLastLineBreak(wbuff);
+						reader2->GetLastLineBreak(sbuff);
 					}
 					writer->WriteLine(sb2.ToString());
 					sb2.ClearStr();

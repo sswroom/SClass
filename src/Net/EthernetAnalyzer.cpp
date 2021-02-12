@@ -53,7 +53,7 @@ Net::EthernetAnalyzer::MACStatus *Net::EthernetAnalyzer::MACGet(Int64 macAddr)
 	return mac;
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::IWriter *errWriter, AnalyzeType aType, const UTF8Char *name) : IO::ParsedObject(name)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, const UTF8Char *name) : IO::ParsedObject(name)
 {
 	this->atype = aType;
 	this->packetCnt = 0;

@@ -366,7 +366,7 @@ void MemDeinit()
 	}
 }
 
-IO::IWriter *MemOpenWriter()
+IO::Writer *MemOpenWriter()
 {
 	if (mcLogFile)
 	{
@@ -387,7 +387,7 @@ Int32 MemCheckError()
 	Bool found = false;
 	UTF8Char buff[256];
 	UTF8Char *sptr;
-	IO::IWriter *console = 0;
+	IO::Writer *console = 0;
 
 
 	if (mcMemoryCnt)

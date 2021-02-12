@@ -13,7 +13,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Net::RAWAnalyzer *analyzer;
 	Net::SocketFactory *sockf;
-	IO::IWriter *console;
+	IO::Writer *console;
 	Int32 portNum = 8089;
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);

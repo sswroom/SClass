@@ -37,7 +37,7 @@ namespace Manage
 		void DeleteSess(DasmX86_16_Sess *sess);
 
 		virtual const UTF8Char *GetHeader(Bool fullRegs);
-		virtual Bool Disasm16(IO::IWriter *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		virtual Dasm_Regs *CreateRegs();
 		virtual void FreeRegs(Dasm_Regs *regs);
 

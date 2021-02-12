@@ -3,7 +3,7 @@
 #include "Map/MultiReverseGeocoder.h"
 #include "Math/Math.h"
 
-Map::MultiReverseGeocoder::MultiReverseGeocoder(IO::IWriter *errWriter)
+Map::MultiReverseGeocoder::MultiReverseGeocoder(IO::Writer *errWriter)
 {
 	NEW_CLASS(revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(mut, Sync::Mutex());

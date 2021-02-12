@@ -1,10 +1,10 @@
 #ifndef _SM_MAP_GOOGLEMAP_GOOGLEWSSEARCHERJSON
 #define _SM_MAP_GOOGLEMAP_GOOGLEWSSEARCHERJSON
-#include "IO/IWriter.h"
-#include "Net/SocketFactory.h"
 #include "Data/DateTime.h"
-#include "Sync/Mutex.h"
+#include "IO/Writer.h"
 #include "Map/IReverseGeocoder.h"
+#include "Net/SocketFactory.h"
+#include "Sync/Mutex.h"
 #include "Text/EncodingFactory.h"
 
 namespace Map
@@ -15,7 +15,7 @@ namespace Map
 		{
 		private:
 			Net::SocketFactory *sockf;
-			IO::IWriter *errWriter;
+			IO::Writer *errWriter;
 			Data::DateTime *lastSrchDate;
 			Sync::Mutex *mut;
 			Text::EncodingFactory *encFact;
@@ -27,7 +27,7 @@ namespace Map
 			const UTF8Char *gooAPIKey;
 
 		public:
-			GoogleWSSearcherJSON(Net::SocketFactory *sockf, IO::IWriter *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherJSON(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherJSON();
 
 			void SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);

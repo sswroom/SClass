@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
 #define _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
 #include "Data/StringUTF8Map.h"
+#include "IO/Writer.h"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "SSWR/SMonitor/ISMonitorCore.h"
@@ -37,12 +38,12 @@ namespace SSWR
 			static Bool __stdcall UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 			static Bool __stdcall UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 
-			static void __stdcall WriteHeaderBegin(IO::IWriter *writer);
-			static void __stdcall WriteHeaderEnd(IO::IWriter *writer);
-			static void __stdcall WriteMenu(IO::IWriter *writer, Net::WebServer::IWebSession *sess);
-			static void __stdcall WriteHTMLText(IO::IWriter *writer, const UTF8Char *txt);
-			static void __stdcall WriteAttrText(IO::IWriter *writer, const UTF8Char *txt);
-			static void __stdcall WriteJSText(IO::IWriter *writer, const UTF8Char *txt);
+			static void __stdcall WriteHeaderBegin(IO::Writer *writer);
+			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
+			static void __stdcall WriteMenu(IO::Writer *writer, Net::WebServer::IWebSession *sess);
+			static void __stdcall WriteHTMLText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteAttrText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteJSText(IO::Writer *writer, const UTF8Char *txt);
 
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
 

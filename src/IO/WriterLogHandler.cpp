@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/WriterLogHandler.h"
 
-IO::WriterLogHandler::WriterLogHandler(IO::IWriter *writer, Bool toRelease)
+IO::WriterLogHandler::WriterLogHandler(IO::Writer *writer, Bool toRelease)
 {
 	this->writer = writer;
 	this->toRelease = toRelease;

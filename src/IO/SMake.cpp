@@ -1179,7 +1179,7 @@ void IO::SMake::SetErrorMsg(const UTF8Char *msg)
 	this->errorMsg = Text::StrCopyNew(msg);
 }
 
-IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::IWriter *messageWriter) : IO::ParsedObject(cfgFile)
+IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
 {
 	NEW_CLASS(this->cfgMap, Data::StringUTF8Map<IO::SMake::ConfigItem*>());
 	NEW_CLASS(this->progMap, Data::StringUTF8Map<IO::SMake::ProgramItem*>());
@@ -1283,12 +1283,12 @@ Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF *sb)
 	return ret;
 }
 
-void IO::SMake::SetMessageWriter(IO::IWriter *messageWriter)
+void IO::SMake::SetMessageWriter(IO::Writer *messageWriter)
 {
 	this->messageWriter = messageWriter;
 }
 
-void IO::SMake::SetCommandWriter(IO::IWriter *cmdWriter)
+void IO::SMake::SetCommandWriter(IO::Writer *cmdWriter)
 {
 	this->cmdWriter = cmdWriter;
 }

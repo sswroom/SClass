@@ -254,7 +254,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(UInt32 frameTime, OSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
-	IO::IWriter *writer = (IO::IWriter *)userData;
+	IO::Writer *writer = (IO::Writer *)userData;
 	Text::StrUInt32(sbuff, frameTime);
 	writer->WriteLine(sbuff);
 	return true;

@@ -12,7 +12,7 @@
 
 #define STACKDUMPSIZE 4096
 
-void Manage::ExceptionLogger::WriteContext(IO::IWriter *writer, IO::Stream *stm, Manage::ThreadContext *context, Manage::AddressResolver *addrResol)
+void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, Manage::ThreadContext *context, Manage::AddressResolver *addrResol)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
@@ -331,7 +331,7 @@ void Manage::ExceptionLogger::WriteContext(IO::IWriter *writer, IO::Stream *stm,
 	}
 }
 
-void Manage::ExceptionLogger::WriteStackTrace(IO::IWriter *writer, Manage::StackTracer *tracer, Manage::AddressResolver *addrResol)
+void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackTracer *tracer, Manage::AddressResolver *addrResol)
 {
 #ifndef _WIN32_WCE
 	if (tracer->IsSupported())

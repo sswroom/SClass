@@ -11,6 +11,7 @@
 #include "Parser/FileParser/MD5Parser.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -65,14 +66,14 @@ private:
 				lastDispTime = currTime;
 			}
 			sb->Append((const UTF8Char*)"Bytes/s");
-			me->mut->Lock();
+			Sync::MutexUsage mutUsage(me->mut);
 			if (me->fileName)
 			{
 				sb->Append((const UTF8Char*)" (");
 				sb->Append(me->fileName);
 				sb->Append((const UTF8Char*)")");
 			}
-			me->mut->Unlock();
+			mutUsage.EndUse();
 			console->Write(sb->ToString());
 		}
 		DEL_CLASS(clk);
@@ -116,13 +117,12 @@ public:
 	virtual void ProgressStart(const UTF8Char *name, Int64 count)
 	{
 		OSInt i;
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_TEXT(this->name);
 		this->name = Text::StrCopyNew(name);
 		i = Text::StrLastIndexOf(this->name, IO::Path::PATH_SEPERATOR);
 		this->fileName = &this->name[i + 1];
 		this->lastCount = 0;
-		this->mut->Unlock();
 	}
 
 	virtual void ProgressUpdate(Int64 currCount, Int64 newCount)
@@ -133,10 +133,9 @@ public:
 
 	virtual void ProgressEnd()
 	{
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_TEXT(this->name);
 		this->fileName = 0;
-		this->mut->Unlock();
 	}
 };
 

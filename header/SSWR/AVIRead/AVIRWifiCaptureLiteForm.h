@@ -2,7 +2,6 @@
 #define _SM_SSWR_AVIREAD_AVIRWIFICAPTURELITEFORM
 #include "Data/Integer64Map.h"
 #include "IO/FileStream.h"
-#include "IO/IWriter.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"

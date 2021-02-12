@@ -140,7 +140,7 @@ a:hover {color:#FF00FF;}
 	return true;
 }
 
-void Exporter::DocHTMLExporter::WriteColor(IO::IWriter *writer, UInt32 color)
+void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 {
 	UTF8Char sbuff[8];
 	sbuff[0] = '#';
@@ -148,7 +148,7 @@ void Exporter::DocHTMLExporter::WriteColor(IO::IWriter *writer, UInt32 color)
 	writer->Write(sbuff); 
 }
 
-void Exporter::DocHTMLExporter::WriteItems(IO::IWriter *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName)
+void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName)
 {
 	Text::Doc::DocItem *item;
 	OSInt i = 0;

@@ -1511,7 +1511,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 		}
 	}
 	IO::MemoryStream *mstm;
-	IO::IWriter *writer;
+	IO::Writer *writer;
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
@@ -1658,7 +1658,7 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		this->EventMenuClicked(MNU_PB_AVOFST_INC);
 	}
 	IO::MemoryStream *mstm;
-	IO::IWriter *writer;
+	IO::Writer *writer;
 	UInt8 *buff;
 	const UTF8Char *u8ptr;
 	UOSInt size;

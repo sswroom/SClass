@@ -25,6 +25,5 @@ namespace Manage
 		UInt64 GetCurrentAddr();
 		Bool GoToNextLevel();
 	};
-};
-
+}
 #endif

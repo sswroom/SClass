@@ -2,7 +2,6 @@
 #define _SM_MAP_REVERSEGEOCODERSERVER
 #include "Data/ArrayList.h"
 #include "DB/DBTool.h"
-#include "IO/IWriter.h"
 #include "IO/LogTool.h"
 #include "IO/ProtoHdlr/ProtoRevGeoHandler.h"
 #include "Map/IReverseGeocoder.h"

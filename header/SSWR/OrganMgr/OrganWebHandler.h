@@ -315,15 +315,15 @@ namespace SSWR
 			void ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, Int32 imgWidth, Int32 imgHeight, Int32 photoId);
 			void ResponsePhotoWId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, Int32 imgWidth, Int32 imgHeight, Int32 photoWId);
 
-			void WriteHeaderPart1(IO::IWriter *writer, const UTF8Char *title, Bool isMobile);
-			void WriteHeaderPart2(IO::IWriter *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);
-			void WriteHeader(IO::IWriter *writer, const UTF8Char *title, WebUserInfo *user, Bool isMobile);
-			void WriteFooter(IO::IWriter *writer);
-			void WriteLocator(IO::IWriter *writer, GroupInfo *group, CategoryInfo *cate);
-			void WriteLocatorText(IO::IWriter *writer, GroupInfo *group, CategoryInfo *cate);
-			void WriteGroupTable(IO::IWriter *writer, Data::ArrayList<GroupInfo *> *groupList, Int32 scnWidth, Bool showSelect);
-			void WriteSpeciesTable(IO::IWriter *writer, Data::ArrayList<SpeciesInfo *> *spList, Int32 scnWidth, Int32 cateId, Bool showSelect);
-			void WritePickObjs(IO::IWriter *writer, RequestEnv *env, const UTF8Char *url);
+			void WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile);
+			void WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);
+			void WriteHeader(IO::Writer *writer, const UTF8Char *title, WebUserInfo *user, Bool isMobile);
+			void WriteFooter(IO::Writer *writer);
+			void WriteLocator(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
+			void WriteLocatorText(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
+			void WriteGroupTable(IO::Writer *writer, Data::ArrayList<GroupInfo *> *groupList, Int32 scnWidth, Bool showSelect);
+			void WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SpeciesInfo *> *spList, Int32 scnWidth, Int32 cateId, Bool showSelect);
+			void WritePickObjs(IO::Writer *writer, RequestEnv *env, const UTF8Char *url);
 
 			static Bool __stdcall OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj);
 			static Bool __stdcall OnSessionCheck(Net::WebServer::IWebSession* sess, void *userObj);

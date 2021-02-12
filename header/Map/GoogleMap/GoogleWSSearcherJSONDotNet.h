@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_GOOGLEMAP_GOOGLEWSSEARCHERJSONDOTNET
 #define _SM_MAP_GOOGLEMAP_GOOGLEWSSEARCHERJSONDOTNET
 #include "Data/DateTime.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "Map/IReverseGeocoder.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Mutex.h"
@@ -15,7 +15,7 @@ namespace Map
 		{
 		private:
 			Net::SocketFactory *sockf;
-			IO::IWriter *errWriter;
+			IO::Writer *errWriter;
 			Data::DateTime *lastSrchDate;
 			Sync::Mutex *mut;
 			Text::EncodingFactory *encFact;
@@ -27,7 +27,7 @@ namespace Map
 			const UTF8Char *gooAPIKey;
 
 		public:
-			GoogleWSSearcherJSONDotNet(Net::SocketFactory *sockf, IO::IWriter *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherJSONDotNet(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherJSONDotNet();
 
 			void SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);

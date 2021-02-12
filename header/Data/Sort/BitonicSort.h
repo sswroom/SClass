@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_SORT_BITONICSORT
 #define _SM_DATA_SORT_BITONICSORT
 #include "Data/IComparable.h"
-#include "Data/ArrayList.h"
+#include "Data/SyncArrayList.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
@@ -41,9 +41,7 @@ namespace Data
 			OSInt threadCnt;
 			ThreadStat *threads;
 			ThreadStat mainThread;
-
-			Sync::Mutex *mut;
-			Data::ArrayList<TaskInfo*> *tasks;
+			Data::SyncArrayList<TaskInfo*> *tasks;
 
 			static void DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n, Bool dir, OSInt m);
 			static void DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt n, Bool dir, OSInt m);

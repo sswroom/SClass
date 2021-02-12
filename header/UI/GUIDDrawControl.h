@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUIDDRAWCONTROL
 #define _SM_UI_GUIDDRAWCONTROL
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "IO/Library.h"
 #include "Media/DDrawManager.h"
 #include "Media/ImageCopy.h"
@@ -34,7 +34,7 @@ namespace UI
 		void *surfaceBuff2;
 		void *clipper;
 		IO::Stream *debugFS;
-		IO::IWriter *debugWriter;
+		IO::Writer *debugWriter;
 		UInt32 joystickId;
 		UInt32 jsLastButtons;
 		Bool focusing;

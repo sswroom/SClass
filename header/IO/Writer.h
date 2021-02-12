@@ -1,13 +1,12 @@
-#ifndef _SM_IO_IWRITER
-#define _SM_IO_IWRITER
-
+#ifndef _SM_IO_WRITER
+#define _SM_IO_WRITER
 
 namespace IO
 {
-	class IWriter
+	class Writer
 	{
 	public:
-		virtual ~IWriter() {};
+		virtual ~Writer() {};
 
 		virtual Bool Write(const UTF8Char *str, UOSInt nChar) = 0;
 		virtual Bool Write(const UTF8Char *str) = 0;

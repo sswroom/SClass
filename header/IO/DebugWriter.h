@@ -1,10 +1,10 @@
 #ifndef _SM_IO_DEBUGWRITER
 #define _SM_IO_DEBUGWRITER
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 
 namespace IO
 {
-	class DebugWriter : public IO::IWriter
+	class DebugWriter : public IO::Writer
 	{
 	private:
 		void *clsData;

@@ -3,11 +3,11 @@
 #include "Data/ArrayList.h"
 #include "Data/BTreeUTF8Map.h"
 #include "Data/Integer32Map.h"
-#include "IO/LogTool.h"
-#include "IO/IWriter.h"
 #include "DB/DBTool.h"
-#include "Sync/Mutex.h"
+#include "IO/LogTool.h"
+#include "IO/Writer.h"
 #include "Map/IAssistedReverseGeocoder.h"
+#include "Sync/Mutex.h"
 
 namespace Map
 {
@@ -28,12 +28,12 @@ namespace Map
 		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
 		OSInt nextCoder;
 		DB::DBTool *conn;
-		IO::IWriter *errWriter;
+		IO::Writer *errWriter;
 		Data::BTreeUTF8Map<const UTF8Char *> *strMap;
 		Data::Integer32Map<LCIDInfo *> *lcidMap;
 		Sync::Mutex *mut;
 	public:
-		AssistedReverseGeocoderPL(DB::DBTool *db, IO::IWriter *errWriter);
+		AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoderPL();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);

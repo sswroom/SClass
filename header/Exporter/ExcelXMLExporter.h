@@ -1,7 +1,7 @@
 #ifndef _SM_EXPORTER_EXCELXMLEXPORTER
 #define _SM_EXPORTER_EXCELXMLEXPORTER
 #include "IO/FileExporter.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "Text/SpreadSheet/CellStyle.h"
 
 namespace Exporter
@@ -21,7 +21,7 @@ namespace Exporter
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
 
 	private:
-		static void WriteBorderStyle(IO::IWriter *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border);
+		static void WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border);
 	};
-};
+}
 #endif

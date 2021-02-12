@@ -740,7 +740,7 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Integer32Map<Data::ArrayLis
 	DEL_CLASS(spTree);
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportBeginPage(IO::IWriter *writer, const UTF8Char *title)
+void SSWR::OrganMgr::OrganEnv::ExportBeginPage(IO::Writer *writer, const UTF8Char *title)
 {
 	const UTF8Char *csptr;
 	writer->WriteLine((const UTF8Char*)"<HTML>");
@@ -759,7 +759,7 @@ void SSWR::OrganMgr::OrganEnv::ExportBeginPage(IO::IWriter *writer, const UTF8Ch
 	Text::XML::FreeNewText(csptr);
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportEndPage(IO::IWriter *writer)
+void SSWR::OrganMgr::OrganEnv::ExportEndPage(IO::Writer *writer)
 {
 	writer->WriteLine((const UTF8Char*)"</BODY>");
 	writer->WriteLine((const UTF8Char*)"</HTML>");

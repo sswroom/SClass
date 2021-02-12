@@ -279,7 +279,7 @@ void MemDeinit()
 	}
 }
 
-IO::IWriter *MemOpenWriter()
+IO::Writer *MemOpenWriter()
 {
 	if (mcLogFile)
 	{
@@ -295,7 +295,7 @@ IO::IWriter *MemOpenWriter()
 Int32 MemCheckError()
 {
 	Bool found = false;
-	IO::IWriter *console = 0;
+	IO::Writer *console = 0;
 
 	if (mcMemoryCnt)
 	{

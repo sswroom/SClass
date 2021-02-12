@@ -1,7 +1,6 @@
 #ifndef _SM_EXPORTER_XLSXEXPORTER
 #define _SM_EXPORTER_XLSXEXPORTER
 #include "IO/FileExporter.h"
-#include "IO/IWriter.h"
 
 namespace Exporter
 {

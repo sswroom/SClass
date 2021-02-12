@@ -13,7 +13,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 
-IO::IWriter *console;
+IO::Writer *console;
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {

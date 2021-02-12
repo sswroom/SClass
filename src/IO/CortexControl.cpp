@@ -57,7 +57,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::CortexControl::CortexControl(Int32 portNum, IO::IWriter *errWriter)
+IO::CortexControl::CortexControl(Int32 portNum, IO::Writer *errWriter)
 {
 	this->stm = 0;
 	this->protoHdlr = 0;

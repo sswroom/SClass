@@ -3,9 +3,9 @@
 #include "Data/Integer64Map.h"
 #include "IO/FileStream.h"
 #include "IO/GPSNMEA.h"
-#include "IO/IWriter.h"
 #include "IO/MotionDetectorAccelerometer.h"
 #include "IO/SensorManager.h"
+#include "IO/Writer.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
@@ -66,7 +66,7 @@ namespace SSWR
 			Map::ILocationService *locSvc;
 			Bool locSvcRel;
 			IO::FileStream *captureFS;
-			IO::IWriter *captureWriter;
+			IO::Writer *captureWriter;
 			Sync::Mutex *captureMut;
 			Int64 lastTimeTick;
 

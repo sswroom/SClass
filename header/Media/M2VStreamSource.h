@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_M2VSTREAMSOURCE
 #define _SM_MEDIA_M2VSTREAMSOURCE
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "Media/IMediaStream.h"
 #include "Media/IStreamControl.h"
 #include "Media/VideoSourceBase.h"
@@ -65,7 +65,7 @@ namespace Media
 		FrameInfoCallback finfoCb;
 
 		IO::Stream *debugFS;
-		IO::IWriter *debugLog;
+		IO::Writer *debugLog;
 		Sync::Mutex *debugMut;
 
 		void SubmitFrame(OSInt frameSize, OSInt frameStart, OSInt pictureStart);

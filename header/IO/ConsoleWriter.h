@@ -1,6 +1,6 @@
 #ifndef _SM_IO_CONSOLEWRITER
 #define _SM_IO_CONSOLEWRITER
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 
 namespace Text
 {
@@ -13,7 +13,7 @@ namespace Sync
 
 namespace IO
 {
-	class ConsoleWriter : public IO::IWriter
+	class ConsoleWriter : public IO::Writer
 	{
 	public:
 		typedef struct

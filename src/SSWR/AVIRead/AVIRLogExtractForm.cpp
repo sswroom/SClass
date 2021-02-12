@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
-	WChar wbuff[16];
+	UTF8Char sbuff[16];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
@@ -97,11 +97,11 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 			hasData = reader->ReadLine(&sb1, 1024);
 			while (hasData)
 			{
-				reader->GetLastLineBreak(wbuff);
-				while (hasData && wbuff[0] == 0)
+				reader->GetLastLineBreak(sbuff);
+				while (hasData && sbuff[0] == 0)
 				{
 					hasData = reader->ReadLine(&sb1, 1024);
-					reader->GetLastLineBreak(wbuff);
+					reader->GetLastLineBreak(sbuff);
 				}
 
 				sb1.Append(sbSuffix.ToString());

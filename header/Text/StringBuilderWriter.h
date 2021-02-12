@@ -1,11 +1,11 @@
 #ifndef _SM_TEXT_STRINGBUILDERWRITER
 #define _SM_TEXT_STRINGBUILDERWRITER
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Text
 {
-	class StringBuilderWriter : public IO::IWriter
+	class StringBuilderWriter : public IO::Writer
 	{
 	private:
 		Text::StringBuilderUTF *sb;

@@ -769,6 +769,23 @@ UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
 	return buff;
 }
 
+Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF *sb)
+{
+	if (this->lineBreak == 1)
+	{
+		sb->AppendChar('\r', 1);
+	}
+	else if (this->lineBreak == 2)
+	{
+		sb->AppendChar('\n', 1);
+	}
+	else if (this->lineBreak == 2)
+	{
+		sb->AppendC((const UTF8Char*)"\r\n", 2);
+	}
+	return true;
+}
+
 WChar *IO::StreamReader::GetLastLineBreak(WChar *buff)
 {
 	if (this->lineBreak == 1)

@@ -2277,7 +2277,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -2953,7 +2953,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -3893,7 +3893,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		Bool imageOnly = Text::StrEquals(subReq, (const UTF8Char*)"/listimage.html");
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		UOSInt i;
@@ -4113,7 +4113,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		Int32 fileId;
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -5197,7 +5197,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 
@@ -5462,7 +5462,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		req->GetQueryValueI32((const UTF8Char*)"y", &y))
 	{
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		Data::DateTime dt;
 		Data::DateTime dt2;
 		UOSInt buffSize;
@@ -5768,7 +5768,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		req->GetQueryValueI32((const UTF8Char*)"d", &d))
 	{
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		Data::DateTime dt;
 		UOSInt buffSize;
 		UInt8 *buff;
@@ -6095,7 +6095,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -6302,7 +6302,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -6490,7 +6490,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -6672,7 +6672,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		Data::Integer64Map<BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -6814,7 +6814,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		Data::Integer64Map<BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -7085,7 +7085,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	IO::MemoryStream *mstm;
-	IO::IWriter *writer;
+	IO::Writer *writer;
 	Data::DateTime dt;
 	UOSInt buffSize;
 	UInt8 *buff;
@@ -7197,7 +7197,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 	if (me->reloadPwd)
 	{
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		Data::DateTime dt;
 		UOSInt buffSize;
 		UInt8 *buff;
@@ -7265,7 +7265,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 	if (me->reloadPwd)
 	{
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		Data::DateTime dt;
 		UOSInt buffSize;
 		UInt8 *buff;
@@ -7330,7 +7330,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	IO::MemoryStream *mstm;
-	IO::IWriter *writer;
+	IO::Writer *writer;
 	Data::DateTime dt;
 	UOSInt buffSize;
 	UInt8 *buff;
@@ -7457,7 +7457,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 	{
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
-		IO::IWriter *writer;
+		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
 		OSInt i;
@@ -8425,7 +8425,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart1(IO::IWriter *writer, const UTF8Char *title, Bool isMobile)
+void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile)
 {
 	const UTF8Char *txt;
 	writer->WriteLine((const UTF8Char*)"<HTML>");
@@ -8442,7 +8442,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart1(IO::IWriter *writer, cons
 	writer->WriteLine((const UTF8Char*)"</title>");
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart2(IO::IWriter *writer, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user, const UTF8Char *onLoadFunc)
+void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart2(IO::Writer *writer, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user, const UTF8Char *onLoadFunc)
 {
 	const UTF8Char *txt;
 	writer->WriteLine((const UTF8Char*)"</HEAD>");
@@ -8466,19 +8466,19 @@ void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart2(IO::IWriter *writer, SSWR
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteHeader(IO::IWriter *writer, const UTF8Char *title, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user, Bool isMobile)
+void SSWR::OrganMgr::OrganWebHandler::WriteHeader(IO::Writer *writer, const UTF8Char *title, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user, Bool isMobile)
 {
 	this->WriteHeaderPart1(writer, title, isMobile);
 	this->WriteHeaderPart2(writer, user, 0);
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteFooter(IO::IWriter *writer)
+void SSWR::OrganMgr::OrganWebHandler::WriteFooter(IO::Writer *writer)
 {
 	writer->WriteLine((const UTF8Char*)"</BODY>");
 	writer->WriteLine((const UTF8Char*)"</HTML>");
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::IWriter *writer, SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate)
+void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate)
 {
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
 	const UTF8Char *txt;
@@ -8559,7 +8559,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::IWriter *writer, SSWR::Or
 	writer->WriteLine((const UTF8Char*)"</center>");
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteLocatorText(IO::IWriter *writer, SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate)
+void SSWR::OrganMgr::OrganWebHandler::WriteLocatorText(IO::Writer *writer, SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo *> groupList;
@@ -8597,7 +8597,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocatorText(IO::IWriter *writer, SSWR
 	writer->WriteLine(sb.ToString());
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::IWriter *writer, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo *> *groupList, Int32 scnWidth, Bool showSelect)
+void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo *> *groupList, Int32 scnWidth, Bool showSelect)
 {
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	const UTF8Char *txt;
@@ -8790,7 +8790,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::IWriter *writer, Data:
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::IWriter *writer, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *> *spList, Int32 scnWidth, Int32 cateId, Bool showSelect)
+void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *> *spList, Int32 scnWidth, Int32 cateId, Bool showSelect)
 {
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	const UTF8Char *txt;
@@ -8983,7 +8983,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::IWriter *writer, Dat
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::IWriter *writer, SSWR::OrganMgr::OrganWebHandler::RequestEnv *env, const UTF8Char *url)
+void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::OrganMgr::OrganWebHandler::RequestEnv *env, const UTF8Char *url)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;

@@ -14,7 +14,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/Locale.h"
 
-Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *sockf, IO::IWriter *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

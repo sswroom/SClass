@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GUIVIDEOBOXDD
 #define _SM_UI_GUIVIDEOBOXDD
-#include "IO/IWriter.h"
 #include "IO/Stream.h"
+#include "IO/Writer.h"
 #include "Media/ColorManager.h"
 #include "Media/IDeinterlacer.h"
 #include "Media/IDeintResizer.h"
@@ -175,9 +175,9 @@ namespace UI
 		Bool videoPause;
 		Int32 videoProcCnt;
 
-		IO::IWriter *debugLog;
+		IO::Writer *debugLog;
 		IO::Stream *debugFS;
-		IO::IWriter *debugLog2;
+		IO::Writer *debugLog2;
 		IO::Stream *debugFS2;
 		UInt32 debugFrameTime;
 		Int32 debugFrameNum;

@@ -612,7 +612,7 @@ Int32 Map::MapConfig2::ToColor(WChar *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(WChar *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::IWriter *errWriter)
+Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(WChar *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer *cip;
 	OSInt i = layerList->GetCount();
@@ -2494,7 +2494,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, Int3
 		MemFree(lastLbl);
 }
 
-Map::MapConfig2::MapConfig2(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, WChar *forceBase, IO::IWriter *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2::MapConfig2(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, WChar *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	WChar lineBuff[1024];
 	WChar layerName[512];

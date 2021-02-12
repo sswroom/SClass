@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_VIDEOFILTER_IVTCFILTER
 #define _SM_MEDIA_VIDEOFILTER_IVTCFILTER
 #include "IO/FileStream.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "Media/VideoFilter/VideoFilterBase.h"
 #include "Sync/Mutex.h"
 
@@ -68,7 +68,7 @@ namespace Media
 			OSInt threadCnt;
 			ThreadStat *threadStats;
 			IO::FileStream *debugFS;
-			IO::IWriter *debugLog;
+			IO::Writer *debugLog;
 
 			Bool ivtcTToStop;
 			Sync::Event *ivtcTEvt;

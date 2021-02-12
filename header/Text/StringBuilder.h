@@ -2,7 +2,6 @@
 #define _SM_TEXT_STRINGBUILDER
 #include "MyMemory.h"
 #include "Data/DateTime.h"
-#include "IO/IWriter.h"
 #include "Text/MyString.h"
 
 namespace Text

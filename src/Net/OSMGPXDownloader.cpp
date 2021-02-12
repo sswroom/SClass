@@ -5,7 +5,7 @@
 #include "Net/OSMGPXDownloader.h"
 #include "Sync/Thread.h"
 
-Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const WChar *storeDir, IO::IWriter *writer)
+Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const WChar *storeDir, IO::Writer *writer)
 {
 	WChar sbuff[512];
 	WChar *sptr;

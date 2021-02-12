@@ -3,7 +3,7 @@
 
 #include "Data/ArrayListInt64.h"
 #include "IO/ConfigFile.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "DB/DBTool.h"
 #include "Map/GPSTrack.h"
 #include "Media/ColorManager.h"
@@ -281,8 +281,8 @@ namespace SSWR
 			virtual Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *GetSpeciesTree() = 0;
 			void FreeSpeciesTree(Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree);
 
-			void ExportBeginPage(IO::IWriter *writer, const UTF8Char *title);
-			void ExportEndPage(IO::IWriter *writer);
+			void ExportBeginPage(IO::Writer *writer, const UTF8Char *title);
+			void ExportEndPage(IO::Writer *writer);
 			void ExportGroup(OrganGroup *grp, Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt, OSInt *phSpeciesCnt);
 			Bool ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, Bool *hasMyPhoto);////////////////////
 		public:

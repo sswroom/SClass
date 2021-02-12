@@ -3,7 +3,6 @@
 
 #include "Data/ArrayListInt64.h"
 #include "IO/ConfigFile.h"
-#include "IO/IWriter.h"
 #include "DB/DBTool.h"
 #include "Map/GPSTrack.h"
 #include "Media/ColorManager.h"

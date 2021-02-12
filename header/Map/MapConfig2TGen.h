@@ -1,12 +1,11 @@
 #ifndef _SM_MAP_MAPCONFIG2TGEN
 #define _SM_MAP_MAPCONFIG2TGEN
-
-#include "Map/MapScheduler.h"
-#include "Parser/ParserList.h"
-#include "Media/IImgResizer.h"
+#include "IO/Writer.h"
 #include "Map/MapConfig.h"
 #include "Map/MapLayerData.h"
-#include "IO/IWriter.h"
+#include "Map/MapScheduler.h"
+#include "Media/IImgResizer.h"
+#include "Parser/ParserList.h"
 
 namespace Map
 {
@@ -66,7 +65,7 @@ namespace Map
 		static void DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, Int32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds);
 		static void GetCharsSize(Media::DrawImage *img, Double *size, const UTF8Char *label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
 		static Int32 ToColor(const UTF8Char *str);
-		static Map::IMapDrawLayer *GetDrawLayer(const UTF8Char *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::IWriter *errWriter);
+		static Map::IMapDrawLayer *GetDrawLayer(const UTF8Char *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter);
 		static void DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Double *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
 		static void DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UOSInt maxLabels, UOSInt *labelCnt, Bool *isLayerEmpty);
 		static OSInt NewLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
@@ -77,7 +76,7 @@ namespace Map
 		static void LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, const UTF8Char *fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream);
 
 	public:
-		MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::IWriter *errWriter, Int32 maxScale, Int32 minScale);
+		MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale);
 		~MapConfig2TGen();
 
 		Bool IsError();

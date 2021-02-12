@@ -97,7 +97,7 @@ Int32 Net::SMTPConn::WaitForResult()
 		return 0;
 }
 
-Net::SMTPConn::SMTPConn(const WChar *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage, IO::IWriter *logWriter)
+Net::SMTPConn::SMTPConn(const WChar *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage, IO::Writer *logWriter)
 {
 	this->codePage = codePage;
 	this->threadStarted = false;

@@ -804,7 +804,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 	return true;
 }
 
-void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::IWriter *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border)
+void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border)
 {
 	UTF8Char sbuff[10];
 	Text::StringBuilderUTF8 sb;

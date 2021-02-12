@@ -41,7 +41,7 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 	return sptr;
 }
 
-void Map::TileMapGenerator::AppendDBFile(IO::IWriter *writer, Int32 x, Int32 y, Int32 scale, Int32 xOfst, Int32 yOfst)
+void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, Int32 scale, Int32 xOfst, Int32 yOfst)
 {
 	UTF8Char sbuff2[512];
 	IO::FileStream *sfs;

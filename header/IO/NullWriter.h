@@ -1,10 +1,10 @@
 #ifndef _SM_IO_NULLWRITER
 #define _SM_IO_NULLWRITER
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 
 namespace IO
 {
-	class NullWriter : public IO::IWriter
+	class NullWriter : public IO::Writer
 	{
 	public:
 		NullWriter();

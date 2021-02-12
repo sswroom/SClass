@@ -1,11 +1,11 @@
 #ifndef _SM_TEXT_UTF8WRITER
 #define _SM_TEXT_UTF8WRITER
-#include "IO/IWriter.h"
 #include "IO/Stream.h"
+#include "IO/Writer.h"
 
 namespace Text
 {
-	class UTF8Writer : public IO::IWriter
+	class UTF8Writer : public IO::Writer
 	{
 	private:
 		IO::Stream *stm;

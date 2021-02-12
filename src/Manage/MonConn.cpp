@@ -284,7 +284,7 @@ void Manage::MonConn::AddCommand(UInt8 *data, OSInt dataSize, Int32 cmdType)
 	connTEvt->Set();
 }
 
-Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::IWriter *msgWriter)
+Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter)
 {
 	UTF8Char buff[256];
 	NEW_CLASS(lastReqTime, Data::DateTime());

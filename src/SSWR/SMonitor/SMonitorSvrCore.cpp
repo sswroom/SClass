@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/CRC16.h"
 #include "Crypto/Hash/MD5.h"
 #include "Data/ByteTool.h"
 #include "DB/DBReader.h"
@@ -131,12 +132,12 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 			lastStoreTime->SetValue(currTime);
 			me->SaveDatas();
 			
-			if (me->uaModified)
+			if (me->uaLog->IsModified())
 			{
 				me->UserAgentStore();
 			}
 
-			if (me->refererModified)
+			if (me->refererLog->IsModified())
 			{
 				me->RefererStore();
 			}
@@ -192,11 +193,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
 	{
 		UInt8 calcVal[2];
-		me->dataCRCMut->Lock();
-		me->dataCRC->Clear();
-		me->dataCRC->Calc(buff, dataSize - 2);
-		me->dataCRC->GetValue(calcVal);
-		me->dataCRCMut->Unlock();
+		me->dataCRC->Calc(buff, dataSize - 2, calcVal);
 		if (calcVal[0] == (buff[dataSize - 2] ^ 0x12) && calcVal[1] == (buff[dataSize - 1] ^ 0x34))
 		{
 			switch (ReadUInt16(&buff[2]))
@@ -624,11 +621,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendReadingRecv(const Net::SocketUtil::
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 1);
 	WriteInt64(&reply[4], recTime);
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(reply, 12);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->dataCRC->Calc(reply, 12, calcVal);
 	reply[12] = calcVal[0] ^ 0x12;
 	reply[13] = calcVal[1] ^ 0x34;
 	this->dataUDP->SendTo(addr, port, reply, 14);
@@ -641,11 +634,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendCapturePhoto(const Net::SocketUtil:
 	reply[0] = 'S';
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 9);
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(reply, 4);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->dataCRC->Calc(reply, 4, calcVal);
 	reply[4] = calcVal[0] ^ 0x12;
 	reply[5] = calcVal[1] ^ 0x34;
 	this->dataUDP->SendTo(addr, port, reply, 6);
@@ -660,11 +649,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(const Net::SocketUtil::
 	WriteInt16(&reply[2], 13);
 	WriteInt64(&reply[4], photoTime);
 	WriteInt32(&reply[12], seq);
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(reply, 16);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->dataCRC->Calc(reply, 16, calcVal);
 	reply[16] = calcVal[0] ^ 0x12;
 	reply[17] = calcVal[1] ^ 0x34;
 	this->dataUDP->SendTo(addr, port, reply, 18);
@@ -678,11 +663,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoEnd(const Net::SocketUtil::Add
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 15);
 	WriteInt64(&reply[4], photoTime);
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(reply, 12);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->dataCRC->Calc(reply, 12, calcVal);
 	reply[12] = calcVal[0] ^ 0x12;
 	reply[13] = calcVal[1] ^ 0x34;
 	this->dataUDP->SendTo(addr, port, reply, 14);
@@ -697,11 +678,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendSetOutput(const Net::SocketUtil::Ad
 	WriteInt16(&reply[2], 21);
 	reply[4] = outputNum;
 	reply[5] = isHigh?1:0;
-	this->dataCRCMut->Lock();
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(reply, 6);
-	this->dataCRC->GetValue(calcVal);
-	this->dataCRCMut->Unlock();
+	this->dataCRC->Calc(reply, 6, calcVal);
 	reply[6] = calcVal[0] ^ 0x12;
 	reply[7] = calcVal[1] ^ 0x34;
 	this->dataUDP->SendTo(addr, port, reply, 8);
@@ -1109,13 +1086,13 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 
 DB::DBTool *SSWR::SMonitor::SMonitorSvrCore::DBUse()
 {
-	this->dbMut->Lock();
+	this->dbMut->Use();
 	return this->db;
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::DBUnuse(DB::DBTool *db)
 {
-	this->dbMut->Unlock();
+	this->dbMut->Unuse();
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff)
@@ -1129,7 +1106,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 	md5.GetValue(buff);
 }
 
-SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::IWriter *writer, Media::DrawEngine *deng)
+SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::DrawEngine *deng)
 {
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->log, IO::LogTool());
@@ -1141,7 +1118,6 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::IWriter *writer, Media::Dra
 	this->cliMgr = 0;
 	this->dataUDP = 0;
 	this->dataCRC = 0;
-	this->dataCRCMut = 0;
 	this->db = 0;
 	this->dbMut = 0;
 	this->listener = 0;
@@ -1155,18 +1131,14 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::IWriter *writer, Media::Dra
 	this->checkRunning = false;
 	this->checkToStop = false;
 	this->initErr = false;
-	this->uaModified = false;
-	this->refererModified = false;
 
 	NEW_CLASS(this->devMut, Sync::RWMutex());
 	NEW_CLASS(this->devMap, Data::Integer64Map<DeviceInfo*>());
 	NEW_CLASS(this->userMut, Sync::RWMutex());
 	NEW_CLASS(this->userMap, Data::Integer32Map<WebUser*>());
 	NEW_CLASS(this->userNameMap, Data::StringUTF8Map<WebUser*>());
-	NEW_CLASS(this->uaMut, Sync::Mutex());
-	NEW_CLASS(this->uaList, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->refererMut, Sync::Mutex());
-	NEW_CLASS(this->refererList, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->uaLog, IO::StringLogger());
+	NEW_CLASS(this->refererLog, IO::StringLogger());
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	const UTF8Char *csptr1;
@@ -1182,28 +1154,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::IWriter *writer, Media::Dra
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"UserAgent.txt");
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(&sb, 4096))
-		{
-			this->UserAgentLog(sb.ToString());
-			sb.ClearStr();
-		}
+		this->uaLog->ReadLogs(reader);
 		DEL_CLASS(reader);
 		DEL_CLASS(fs);
-		this->uaModified = false;
 
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"Referer.txt");
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sb.ClearStr();
-		while (reader->ReadLine(&sb, 4096))
-		{
-			this->RefererLog(sb.ToString());
-			sb.ClearStr();
-		}
+		this->refererLog->ReadLogs(reader);
 		DEL_CLASS(reader);
 		DEL_CLASS(fs);
-		this->refererModified = false;
 	}
 	if (cfg == 0)
 	{
@@ -1361,8 +1322,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::IWriter *writer, Media::Dra
 		{
 			if (Text::StrToInt32(csptr1, &port) && port > 0 && port < 65536)
 			{
-				NEW_CLASS(this->dataCRCMut, Sync::Mutex());
-				NEW_CLASS(this->dataCRC, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
+				Crypto::Hash::CRC16 *crc;
+				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
+				NEW_CLASS(this->dataCRC, Crypto::Hash::HashCalc(crc));
 				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, 0, OnDataUDPPacket, this, this->log, (const UTF8Char*)"DUDP: ", 4, false));
 				if (this->dataUDP->IsError())
 				{
@@ -1499,26 +1461,12 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	DEL_CLASS(this->devMut);
 
 	this->UserAgentStore();
-	i = this->uaList->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->uaList->GetItem(i));
-	}
-	DEL_CLASS(this->uaList);
-	DEL_CLASS(this->uaMut);
-
+	DEL_CLASS(this->uaLog);
 	this->RefererStore();
-	i = this->refererList->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->refererList->GetItem(i));
-	}
-	DEL_CLASS(this->refererList);
-	DEL_CLASS(this->refererMut);
+	DEL_CLASS(this->refererLog);
 
 	DEL_CLASS(this->protoHdlr);
 	SDEL_CLASS(this->dataCRC);
-	SDEL_CLASS(this->dataCRCMut);
 	DEL_CLASS(this->parsers);
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->sockf);
@@ -2621,40 +2569,21 @@ void SSWR::SMonitor::SMonitorSvrCore::LogRequest(Net::WebServer::IWebRequest *re
 
 void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(const UTF8Char *userAgent)
 {
-	OSInt i;
-	this->uaMut->Lock();
-	i = this->uaList->SortedIndexOf(userAgent);
-	if (i < 0)
-	{
-		this->uaList->Insert(~i, Text::StrCopyNew(userAgent));
-		this->uaModified = true;
-	}
-	this->uaMut->Unlock();
+	this->uaLog->LogStr(userAgent);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 {
-	if (this->uaModified)
+	if (this->uaLog->IsModified())
 	{
 		UTF8Char sbuff[512];
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		OSInt i;
-		OSInt j;
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"UserAgent.txt");
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		this->uaMut->Lock();
-		i = 0;
-		j = this->uaList->GetCount();	
-		this->uaModified = false;
-		while (i < j)
-		{
-			writer->WriteLine(this->uaList->GetItem(i));
-			i++;
-		}
-		this->uaMut->Unlock();
+		this->uaLog->WriteLogs(writer);
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
 
@@ -2663,7 +2592,6 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 
 void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer)
 {
-	OSInt i;
 	if (Text::StrStartsWith(referer, (const UTF8Char*)"http://sswroom.no-ip.org"))
 	{
 		return;
@@ -2672,39 +2600,21 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer)
 	{
 		return;
 	}
-	this->refererMut->Lock();
-	i = this->refererList->SortedIndexOf(referer);
-	if (i < 0)
-	{
-		this->refererList->Insert(~i, Text::StrCopyNew(referer));
-		this->refererModified = true;
-	}
-	this->refererMut->Unlock();
+	this->refererLog->LogStr(referer);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 {
-	if (this->refererModified)
+	if (this->refererLog->IsModified())
 	{
 		UTF8Char sbuff[512];
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		OSInt i;
-		OSInt j;
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"Referer.txt");
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		this->refererMut->Lock();
-		i = 0;
-		j = this->refererList->GetCount();	
-		this->refererModified = false;
-		while (i < j)
-		{
-			writer->WriteLine(this->refererList->GetItem(i));
-			i++;
-		}
-		this->refererMut->Unlock();
+		this->refererLog->WriteLogs(writer);
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
 

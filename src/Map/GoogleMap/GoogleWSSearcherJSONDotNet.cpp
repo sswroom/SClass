@@ -12,7 +12,7 @@
 #include "Text/Locale.h"
 #include "Text/StringBuilderUTF8.h"
 
-Map::GoogleMap::GoogleWSSearcherJSONDotNet::GoogleWSSearcherJSONDotNet(Net::SocketFactory *sockf, IO::IWriter *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherJSONDotNet::GoogleWSSearcherJSONDotNet(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

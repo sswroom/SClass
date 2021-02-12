@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRPERFORMANCELOGFORM
 #define _SM_SSWR_AVIREAD_AVIRPERFORMANCELOGFORM
 #include "IO/FileStream.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			IO::IWriter *writer;
+			IO::Writer *writer;
 			IO::FileStream *logStream;
 			UInt8 *testBuff;
 			Data::DateTime *testTime;

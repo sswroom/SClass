@@ -1,13 +1,13 @@
 #ifndef _SM_IO_LOGWRITER
 #define _SM_IO_LOGWRITER
-#include "IO/IWriter.h"
 #include "IO/LogTool.h"
+#include "IO/Writer.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
-	class LogWriter : public IO::IWriter
+	class LogWriter : public IO::Writer
 	{
 	private:
 		IO::LogTool *log;

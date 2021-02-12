@@ -22,7 +22,7 @@ namespace Net
 		static UInt32 __stdcall RecvThread(void *obj);
 
 	public:
-		RAWAnalyzer(Net::SocketFactory *sockf, UInt16 infoPort, IO::IWriter *errWriter, Net::EthernetAnalyzer::AnalyzeType aType);
+		RAWAnalyzer(Net::SocketFactory *sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType aType);
 		~RAWAnalyzer();
 
 		Bool IsError();

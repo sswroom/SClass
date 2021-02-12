@@ -1,11 +1,12 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #define _SM_SSWR_SMONITOR_SMONITORSVRCORE
-#include "Crypto/Hash/CRC16.h"
+#include "Crypto/Hash/HashCalc.h"
 #include "Data/Integer32Map.h"
 #include "Data/Integer64Map.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
+#include "IO/StringLogger.h"
 #include "IO/ProtoHdlr/ProtoSMonHandler.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
@@ -41,8 +42,7 @@ namespace SSWR
 			Net::TCPClientMgr *cliMgr;
 			IO::ProtoHdlr::ProtoSMonHandler *protoHdlr;
 			Net::UDPServer *dataUDP;
-			Sync::Mutex *dataCRCMut;
-			Crypto::Hash::CRC16 *dataCRC;
+			Crypto::Hash::HashCalc *dataCRC;
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
 			const UTF8Char *dataDir;
@@ -64,12 +64,8 @@ namespace SSWR
 			Data::Integer32Map<WebUser*> *userMap;
 			Data::StringUTF8Map<WebUser*> *userNameMap;
 
-			Sync::Mutex *uaMut;
-			Data::ArrayListStrUTF8 *uaList;
-			Bool uaModified;
-			Sync::Mutex *refererMut;
-			Data::ArrayListStrUTF8 *refererList;
-			Bool refererModified;
+			IO::StringLogger *uaLog;
+			IO::StringLogger *refererLog;
 
 			static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
@@ -101,7 +97,7 @@ namespace SSWR
 			void DBUnuse(DB::DBTool *db);
 			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
 		public:
-			SMonitorSvrCore(IO::IWriter *writer, Media::DrawEngine *deng);
+			SMonitorSvrCore(IO::Writer *writer, Media::DrawEngine *deng);
 			virtual ~SMonitorSvrCore();
 
 			Bool IsError();

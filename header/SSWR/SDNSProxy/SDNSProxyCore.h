@@ -3,8 +3,8 @@
 #include "Core/Core.h"
 #include "Data/Integer32Map.h"
 #include "IO/ConfigFile.h"
-#include "IO/IWriter.h"
 #include "IO/LogTool.h"
+#include "IO/Writer.h"
 #include "Net/DNSProxy.h"
 #include "Net/SocketFactory.h"
 #include "Net/WebServer/WebListener.h"
@@ -36,7 +36,7 @@ namespace SSWR
 			} ClientInfo;
 
 		private:
-			IO::IWriter *console;
+			IO::Writer *console;
 			Net::DNSProxy *proxy;
 			Net::SocketFactory *sockf;
 
@@ -54,7 +54,7 @@ namespace SSWR
 			static void __stdcall OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, Int32 reqId, Double timeUsed);
 
 		public:
-			SDNSProxyCore(IO::ConfigFile *cfg, IO::IWriter *console);
+			SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console);
 			~SDNSProxyCore();
 
 			Bool IsError();

@@ -25,7 +25,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
 	return 0;
 }
 
-Net::RAWAnalyzer::RAWAnalyzer(Net::SocketFactory *sockf, UInt16 infoPort, IO::IWriter *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
+Net::RAWAnalyzer::RAWAnalyzer(Net::SocketFactory *sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
 {
 	this->sockf = sockf;
 	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, (const UTF8Char*)"RAWAnalyzer")); 

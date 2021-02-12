@@ -3,8 +3,8 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/StringUTF8Map.h"
-#include "IO/IWriter.h"
 #include "IO/ParsedObject.h"
+#include "IO/Writer.h"
 #include "Sync/Mutex.h"
 #include "Sync/ParallelTask.h"
 #include "Text/StringBuilderUTF.h"
@@ -43,8 +43,8 @@ namespace IO
 		Sync::Mutex *errorMsgMut;
 		const UTF8Char *errorMsg;
 		const UTF8Char *basePath;
-		IO::IWriter *messageWriter;
-		IO::IWriter *cmdWriter;
+		IO::Writer *messageWriter;
+		IO::Writer *cmdWriter;
 		const UTF8Char *debugObj;
 		Sync::ParallelTask *tasks;
 
@@ -65,15 +65,15 @@ namespace IO
 
 		void SetErrorMsg(const UTF8Char *msg);
 	public:
-		SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::IWriter *messageWriter);
+		SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
 		Bool IsLoadFailed();
 		Bool GetErrorMsg(Text::StringBuilderUTF *sb);
-		void SetMessageWriter(IO::IWriter *messageWriter);
-		void SetCommandWriter(IO::IWriter *cmdWriter);
+		void SetMessageWriter(IO::Writer *messageWriter);
+		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(const UTF8Char *debugObj);
 		void SetThreadCnt(UOSInt threadCnt);
 

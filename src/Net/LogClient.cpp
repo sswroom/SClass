@@ -4,6 +4,7 @@
 #include "Data/DateTime.h"
 #include "IO/Path.h"
 #include "Net/LogClient.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -28,10 +29,10 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 			if (readSize == 0)
 			{
 				recvSize = 0;
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 			}
 			else
 			{
@@ -56,10 +57,10 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 
 	if (me->cli)
 	{
-		me->cliMut->Lock();
+		Sync::MutexUsage mutUsage(me->cliMut);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		me->cliMut->Unlock();
+		mutUsage.EndUse();
 	}
 	me->recvRunning = false;
 	return 0;
@@ -91,9 +92,9 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 			}
 			else
 			{
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(me->cliMut);
 				me->cli = cli;
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 				currTime->SetCurrTimeUTC();
 				nextKATime = currTime->ToTicks();
 			}
@@ -101,7 +102,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 
 		currTime->SetCurrTimeUTC();
 		t = currTime->ToTicks();
-		me->cliMut->Lock();
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			if (t >= nextKATime)
@@ -113,7 +114,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 
 			if (t >= me->lastSendTime + 30000)
 			{
-				me->mut->Lock();
+				Sync::MutexUsage mutUsage(me->mut);
 				if (me->msgList->GetCount() > 0)
 				{
 					UInt8 *buff1;
@@ -132,10 +133,10 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 					
 					me->lastSendTime = t;
 				}
-				me->mut->Unlock();
+				mutUsage.EndUse();
 			}
 		}
-		me->cliMut->Unlock();
+		mutUsage.EndUse();
 		
 		me->sendEvt->Wait(1000);
 	}
@@ -178,12 +179,12 @@ Net::LogClient::~LogClient()
 	this->sendToStop = true;
 	this->recvEvt->Set();
 	this->sendEvt->Set();
-	this->cliMut->Lock();
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
 	}
-	this->cliMut->Unlock();
+	mutUsage.EndUse();
 	while (this->sendRunning || this->recvRunning)
 	{
 		Sync::Thread::Sleep(10);
@@ -209,10 +210,10 @@ void Net::LogClient::LogClosed()
 
 void Net::LogClient::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
 {
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(this->mut);
 	this->msgList->Add(Text::StrCopyNew(logMsg));
 	this->dateList->Add(time->ToTicks());
-	this->mut->Unlock();
+	mutUsage.EndUse();
 	this->sendEvt->Set();
 }
 
@@ -225,7 +226,7 @@ void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 	case 3: //Log Reply
 		{
 			Int64 msgTime = ReadInt64(cmd);
-			this->mut->Lock();
+			Sync::MutexUsage mutUsage(this->mut);
 			if (msgTime == this->dateList->GetItem(0))
 			{
 				this->dateList->RemoveAt(0);
@@ -233,7 +234,7 @@ void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 				this->lastSendTime = 0;
 				this->sendEvt->Set();
 			}
-			this->mut->Unlock();
+			mutUsage.EndUse();
 		}
 		break;
 	}

@@ -2,9 +2,9 @@
 #define _SM_SSWR_ORGANMGR_ORGANENVWEB
 
 #include "Data/ArrayListInt64.h"
-#include "IO/ConfigFile.h"
-#include "IO/IWriter.h"
 #include "DB/DBTool.h"
+#include "IO/ConfigFile.h"
+#include "IO/Writer.h"
 #include "Map/GPSTrack.h"
 #include "Media/ColorManager.h"
 #include "Media/GDIEngine.h"

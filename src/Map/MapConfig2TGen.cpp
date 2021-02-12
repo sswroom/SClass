@@ -2489,7 +2489,7 @@ Int32 Map::MapConfig2TGen::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(const UTF8Char *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::IWriter *errWriter)
+Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(const UTF8Char *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer2 *cip;
 	OSInt i = layerList->GetCount();
@@ -4427,7 +4427,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	}
 }
 
-Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::IWriter *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];

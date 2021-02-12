@@ -2175,7 +2175,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	return true;
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(IO::IWriter *writer)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(IO::Writer *writer)
 {
 	writer->WriteLine((const UTF8Char*)"<html><head><title>Monitor</title>");
 	writer->WriteLine((const UTF8Char*)"<style>");
@@ -2185,12 +2185,12 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(IO::IWriter 
 	writer->WriteLine((const UTF8Char*)"</style>");
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderEnd(IO::IWriter *writer)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderEnd(IO::Writer *writer)
 {
 	writer->WriteLine((const UTF8Char*)"</head>");
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::IWriter *writer, Net::WebServer::IWebSession *sess)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer, Net::WebServer::IWebSession *sess)
 {
 	Int32 userType = 0;
 	if (sess)
@@ -2222,21 +2222,21 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::IWriter *writer
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::IWriter *writer, const UTF8Char *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, const UTF8Char *txt)
 {
 	const UTF8Char *xmlTxt = Text::XML::ToNewHTMLText(txt);
 	writer->Write(xmlTxt);
 	Text::XML::FreeNewText(xmlTxt);
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::IWriter *writer, const UTF8Char *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, const UTF8Char *txt)
 {
 	const UTF8Char *xmlTxt = Text::XML::ToNewAttrText(txt);
 	writer->Write(xmlTxt);
 	Text::XML::FreeNewText(xmlTxt);
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::IWriter *writer, const UTF8Char *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, const UTF8Char *txt)
 {
 	const UTF8Char *jsTxt = Text::JSText::ToNewJSText(txt);
 	writer->Write(jsTxt);

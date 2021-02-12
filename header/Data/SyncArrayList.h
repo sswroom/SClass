@@ -24,6 +24,7 @@ namespace Data
 		virtual void Insert(UOSInt index, T val);
 		virtual UOSInt IndexOf(T val);
 		virtual void Clear();
+		T RemoveLast();
 		SyncArrayList *Clone();
 
 		virtual UOSInt GetCount();
@@ -92,6 +93,17 @@ namespace Data
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->arr->Clear();
+	}
+
+	template <class T> T Data::SyncArrayList<T>::RemoveLast()
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		UOSInt i = this->arr->GetCount();
+		if (i > 0)
+		{
+			return this->arr->RemoveAt(i - 1);
+		}
+		return 0;
 	}
 
 	template <class T> Data::SyncArrayList<T> *Data::SyncArrayList<T>::Clone()

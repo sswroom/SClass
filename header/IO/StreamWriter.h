@@ -1,14 +1,14 @@
 #ifndef _SM_IO_STREAMWRITER
 #define _SM_IO_STREAMWRITER
-#include "IO/IWriter.h"
 #include "IO/Stream.h"
+#include "IO/Writer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
 
 namespace IO
 {
-	class StreamWriter : public IO::IWriter
+	class StreamWriter : public IO::Writer
 	{
 	private:
 		Text::Encoding *enc;

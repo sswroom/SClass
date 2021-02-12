@@ -12,6 +12,7 @@
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -58,7 +59,7 @@ private:
 		sb.Append((const UTF8Char*)"<table border=\"1\">\r\n");
 		sb.Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>SSID</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n");
 		
-		entryMut->Lock();
+		Sync::MutexUsage mutUsage(entryMut);
 		entryList = entryMap->GetValues();
 		i = 0;
 		j = entryList->GetCount();
@@ -87,7 +88,7 @@ private:
 			sb.Append((const UTF8Char*)"</td></tr>\r\n");
 			i++;
 		}
-		entryMut->Unlock();
+		mutUsage.EndUse();
 		sb.Append((const UTF8Char*)"</table></body><html>");
 	
 		resp->AddDefHeaders(req);
@@ -107,7 +108,7 @@ private:
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<WiFiEntry*> *entryList;
 		WiFiEntry *entry;
-		entryMut->Lock();
+		Sync::MutexUsage mutUsage(entryMut);
 		entryList = entryMap->GetValues();
 		i = 0;
 		j = entryList->GetCount();
@@ -165,7 +166,7 @@ private:
 			sb.Append((const UTF8Char*)"\r\n");
 			i++;
 		}
-		entryMut->Unlock();
+		mutUsage.EndUse();
 
 		Data::DateTime dt;
 		dt.SetCurrTime();
@@ -239,7 +240,7 @@ void StoreStatus()
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		writer->WriteSignature();
 
-		entryMut->Lock();
+		Sync::MutexUsage mutUsage(entryMut);
 		entryList = entryMap->GetValues();
 		i = 0;
 		j = entryList->GetCount();
@@ -298,7 +299,7 @@ void StoreStatus()
 			writer->WriteLine(sb.ToString());
 			i++;
 		}
-		entryMut->Unlock();
+		mutUsage.EndUse();
 
 		DEL_CLASS(writer);
 	}
@@ -362,7 +363,7 @@ UInt32 __stdcall ScanThread(void *userObj)
 					maxRSSI = Math::Double2Int32(bss->GetRSSI());
 					maxIMAC = imac;
 				}
-				entryMut->Lock();
+				Sync::MutexUsage mutUsage(entryMut);
 				entry = entryMap->Get(imac);
 				const UInt8 *oui1 = bss->GetChipsetOUI(0);
 				const UInt8 *oui2 = bss->GetChipsetOUI(1);
@@ -530,7 +531,7 @@ UInt32 __stdcall ScanThread(void *userObj)
 						}
 					}
 				}
-				entryMut->Unlock();
+				mutUsage.EndUse();
 				i++;
 			}
 

@@ -1,9 +1,9 @@
 #ifndef _SM_NET_SMTPCONN
 #define _SM_NET_SMTPCONN
 #include "Data/DateTime.h"
-#include "IO/IWriter.h"
 #include "IO/Stream.h"
 #include "IO/StreamWriter.h"
+#include "IO/Writer.h"
 #include "Net/TCPClient.h"
 #include "Net/SocketFactory.h"
 
@@ -23,13 +23,13 @@ namespace Net
 		Int32 lastStatus;
 		WChar *msgRet;
 		Sync::Event *evt;
-		IO::IWriter *logWriter;
+		IO::Writer *logWriter;
 		Int32 initCode;
 
 		static UInt32 __stdcall SMTPThread(void *userObj);
 		Int32 WaitForResult();
 	public:
-		SMTPConn(const WChar *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage, IO::IWriter *logWriter);
+		SMTPConn(const WChar *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage, IO::Writer *logWriter);
 		~SMTPConn();
 
 		Bool IsError();

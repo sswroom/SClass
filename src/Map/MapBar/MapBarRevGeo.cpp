@@ -8,7 +8,7 @@
 #include "Net/HTTPClient.h"
 #include "Map/MapBar/MapBarRevGeo.h"
 
-Map::MapBar::MapBarRevGeo::MapBarRevGeo(Net::SocketFactory *sockf, IO::IWriter *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
+Map::MapBar::MapBarRevGeo::MapBarRevGeo(Net::SocketFactory *sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

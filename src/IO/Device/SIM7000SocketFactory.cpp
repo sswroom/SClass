@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Device/SIM7000SocketFactory.h"
 #include "Net/ConnectionInfo.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include <stdio.h>
@@ -19,10 +20,10 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, OS
 		packet->remotePort = remotePort;
 		packet->dataSize = buffSize;
 		MemCopyNO(packet->data, buff, buffSize);
-		me->status[index].dataMut->Lock();
+		Sync::MutexUsage mutUsage(me->status[index].dataMut);
 		me->status[index].dataList->Put(packet);
 		me->status[index].dataEvt->Set();
-		me->status[index].dataMut->Unlock();
+		mutUsage.EndUse();
 	}
 }
 
@@ -43,14 +44,16 @@ void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 			break;
 		case SS_TCP_OPENED:
 		case SS_UDP_OPENED:
-			this->modem->NetCloseSocket(i);
-			this->status[i].state = SS_EMPTY;
-			this->status[i].dataMut->Lock();
-			while ((packet = (DataPacket*)this->status[i].dataList->Get()) != 0)
 			{
-				MemFree(packet);
+				this->modem->NetCloseSocket(i);
+				this->status[i].state = SS_EMPTY;
+				Sync::MutexUsage mutUsage(this->status[i].dataMut);
+				while ((packet = (DataPacket*)this->status[i].dataList->Get()) != 0)
+				{
+					MemFree(packet);
+				}
+				mutUsage.EndUse();
 			}
-			this->status[i].dataMut->Unlock();
 			break;
 		}
 	}
@@ -246,14 +249,16 @@ void IO::Device::SIM7000SocketFactory::DestroySocket(UInt32 *socket)
 		break;
 	case SS_TCP_OPENED:
 	case SS_UDP_OPENED:
-		this->modem->NetCloseSocket(i);
-		this->status[i].state = SS_EMPTY;
-		this->status[i].dataMut->Lock();
-		while ((packet = (DataPacket*)this->status[i].dataList->Get()) != 0)
 		{
-			MemFree(packet);
+			this->modem->NetCloseSocket(i);
+			this->status[i].state = SS_EMPTY;
+			Sync::MutexUsage mutUsage(this->status[i].dataMut);
+			while ((packet = (DataPacket*)this->status[i].dataList->Get()) != 0)
+			{
+				MemFree(packet);
+			}
+			mutUsage.EndUse();
 		}
-		this->status[i].dataMut->Unlock();
 		break;
 	}
 }
@@ -411,9 +416,9 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff,
 	{
 		if (this->status[i].dataList->GetCount() > 0)
 		{
-			this->status[i].dataMut->Lock();
+			Sync::MutexUsage mutUsage(this->status[i].dataMut);
 			packet = (DataPacket*)this->status[i].dataList->Get();
-			this->status[i].dataMut->Unlock();
+			mutUsage.EndUse();
 			if (packet)
 			{
 				Net::SocketUtil::SetAddrInfoV4(addr, packet->remoteIP);

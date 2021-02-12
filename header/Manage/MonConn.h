@@ -43,13 +43,13 @@ namespace Manage
 		Data::DateTime *lastReqTime;
 		Data::DateTime *lastKATime;
 		void *userObj;
-		IO::IWriter *msgWriter;
+		IO::Writer *msgWriter;
 
 		static UInt32 __stdcall ConnTThread(void *conn);
 		static UInt32 __stdcall ConnRThread(void *conn);
 		void AddCommand(UInt8 *data, OSInt dataSize, Int32 cmdType);
 	public:
-		MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::IWriter *msgWriter);
+		MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter);
 		~MonConn();
 
 		Bool IsError();

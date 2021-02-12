@@ -7,7 +7,7 @@
 #include "Sync/MutexUsage.h"
 #include <stdio.h>
 
-Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::IWriter *errWriter)
+Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter)
 {
 	NEW_CLASS(this->revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(this->strMap, Data::BTreeUTF8Map<const UTF8Char *>());

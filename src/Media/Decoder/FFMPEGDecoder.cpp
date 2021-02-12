@@ -114,7 +114,7 @@ typedef struct
 	Bool isOpenGOP;
 #ifdef _DEBUG
 	IO::Stream *dbgStm;
-	IO::IWriter *dbgWriter;
+	IO::Writer *dbgWriter;
 #endif
 } FFMPEGClassData;
 

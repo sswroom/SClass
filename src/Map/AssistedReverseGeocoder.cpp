@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 
-Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::IWriter *errWriter)
+Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::Writer *errWriter)
 {
 	NEW_CLASS(revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(mut, Sync::Mutex());

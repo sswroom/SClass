@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_REVGEODIR
 #define _SM_MAP_REVGEODIR
 #include "Data/ArrayList.h"
-#include "IO/IWriter.h"
+#include "IO/Writer.h"
 #include "Map/IReverseGeocoder.h"
 #include "Map/RevGeoCfg.h"
 
@@ -21,7 +21,7 @@ namespace Map
 		Int32 defLCID;
 
 	public:
-		RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::IWriter *errWriter);
+		RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::Writer *errWriter);
 		virtual ~RevGeoDir();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);

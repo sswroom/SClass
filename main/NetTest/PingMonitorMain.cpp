@@ -18,7 +18,7 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
-IO::IWriter *console;
+IO::Writer *console;
 Int32 threadCnt;
 Bool threadToStop;
 UInt32 *rawSock;

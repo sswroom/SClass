@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::IWriter *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

@@ -104,7 +104,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				resp->AddDefHeaders(req);
 
 				IO::MemoryStream *mstm;
-				IO::IWriter *writer;
+				IO::Writer *writer;
 				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.WebServer.WebStandardHandler.WebRequest"));
 				NEW_CLASS(writer, Text::UTF8Writer(mstm));
 				writer->WriteLine((const UTF8Char*)"<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">");

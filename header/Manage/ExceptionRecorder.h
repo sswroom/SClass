@@ -3,8 +3,8 @@
 #define _SM_MANAGE_EXCEPTIONRECORDER
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
-#include "IO/IWriter.h"
 #include "IO/Stream.h"
+#include "IO/Writer.h"
 #include "Manage/AddressResolver.h"
 #include "Manage/StackTracer.h"
 #include "Text/StringBuilder.h"

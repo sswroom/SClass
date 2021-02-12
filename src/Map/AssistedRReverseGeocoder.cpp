@@ -29,7 +29,7 @@ OSInt Map::AssistedRReverseGeocoder::GetLangIndex(Int32 lcid)
 	return -i - 1;
 }
 
-Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(const WChar *dsn, const WChar *uid, const WChar *pwd, IO::LogTool *log, IO::IWriter *errWriter)
+Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(const WChar *dsn, const WChar *uid, const WChar *pwd, IO::LogTool *log, IO::Writer *errWriter)
 {
 	NEW_CLASS(revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(mut, Sync::Mutex());

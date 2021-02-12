@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "Map/RevGeoDir.h"
 
-Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::IWriter *errWriter)
+Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::Writer *errWriter)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

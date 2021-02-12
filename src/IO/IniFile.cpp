@@ -115,7 +115,7 @@ Bool IO::IniFile::SaveConfig(IO::Stream *stm, Int32 codePage, IO::ConfigFile *cf
 	return ret;
 }
 
-Bool IO::IniFile::SaveConfig(IO::IWriter *writer, IO::ConfigFile *cfg)
+Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 {
 	Data::ArrayList<const UTF8Char *> *cateList;
 	Data::ArrayList<const UTF8Char *> *keyList;

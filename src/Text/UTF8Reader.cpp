@@ -306,7 +306,7 @@ UTF32Char Text::UTF8Reader::Read()
 	return 0;
 }
 
-Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, OSInt maxCharCnt)
+Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt)
 {
 	if (this->currOfst >= this->buffSize)
 	{
@@ -316,9 +316,9 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, OSInt maxCharCnt)
 	}
 
 	this->lineBreak = 0;
-	OSInt currSize = 0;
-	OSInt writeSize = 0;
-	OSInt charSize;
+	UOSInt currSize = 0;
+	UOSInt writeSize = 0;
+	UOSInt charSize;
 	while (true)
 	{
 		if (currSize >= maxCharCnt)
@@ -420,7 +420,7 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, OSInt maxCharCnt)
 	return true;
 }
 
-UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, OSInt maxCharCnt)
+UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 {
 	if (this->currOfst >= this->buffSize)
 	{
@@ -430,9 +430,9 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, OSInt maxCharCnt)
 	}
 
 	this->lineBreak = 0;
-	OSInt currSize = 0;
-	OSInt writeSize = 0;
-	OSInt charSize;
+	UOSInt currSize = 0;
+	UOSInt writeSize = 0;
+	UOSInt charSize;
 	while (true)
 	{
 		if (currSize >= maxCharCnt)
@@ -536,7 +536,7 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, OSInt maxCharCnt)
 	return u8buff;
 }
 
-WChar *Text::UTF8Reader::GetLastLineBreak(WChar *buff)
+UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)
 {
 	if (this->lineBreak == 1)
 	{

@@ -1,9 +1,9 @@
 #ifndef _SM_IO_CORTEXCONTROL
 #define _SM_IO_CORTEXCONTROL
 #include "IO/IProtocolHandler.h"
-#include "IO/IWriter.h"
 #include "IO/ProtoCortexHandler.h"
 #include "IO/Stream.h"
+#include "IO/Writer.h"
 #include "Sync/Mutex.h"
 
 namespace IO
@@ -14,7 +14,7 @@ namespace IO
 		IO::Stream *stm;
 		IO::ProtoCortexHandler *protoHdlr;
 
-		IO::IWriter *errWriter;
+		IO::Writer *errWriter;
 		
 		Sync::Mutex *sendMut;
 		Sync::Event *sendEvt;
@@ -27,7 +27,7 @@ namespace IO
 
 		static UInt32 __stdcall RecvThread(void *userObj);
 	public:
-		CortexControl(Int32 portNum, IO::IWriter *errWriter);
+		CortexControl(Int32 portNum, IO::Writer *errWriter);
 		virtual ~CortexControl();
 
 		Bool IsError();

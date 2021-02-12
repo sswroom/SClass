@@ -9,6 +9,7 @@
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -73,11 +74,11 @@ UInt32 __stdcall ProcThread(void *userObj)
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
 	while (!toStop)
 	{
-		cliMut->Lock();
+		Sync::MutexUsage mutUsage(cliMut);
 		if (cli)
 		{
 			sendSize = cli->Write(sendBuff, sendBuffSize);
-			cliMut->Unlock();
+			mutUsage.EndUse();
 			if (sendSize > 0)
 			{
 				Sync::Interlocked::Add(&totalSendSize, sendSize);
@@ -89,7 +90,7 @@ UInt32 __stdcall ProcThread(void *userObj)
 		}
 		else
 		{
-			cliMut->Unlock();
+			mutUsage.EndUse();
 			procEvt->Wait(1000);
 		}
 	}
@@ -117,10 +118,10 @@ UInt32 __stdcall RecvThread(void *userObj)
 			}
 			else
 			{
-				cliMut->Lock();
+				Sync::MutexUsage mutUsage(cliMut);
 				DEL_CLASS(cli);
 				cli = 0;
-				cliMut->Unlock();
+				mutUsage.EndUse();
 				recvEvt->Wait(1000);
 			}
 		}

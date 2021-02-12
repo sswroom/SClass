@@ -7,7 +7,7 @@
 #include "IO/MemoryStream.h"
 #include "Map/GoogleMap/GoogleWSSearcherXML.h"
 
-Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(Net::SocketFactory *sockf, IO::IWriter *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;
