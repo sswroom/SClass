@@ -5,6 +5,7 @@
 #include "IO/SerialPort.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -360,7 +361,7 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 	if (h == 0)
 		return 0;
 	
-	this->rdMut->Lock();
+	Sync::MutexUsage mutUsage(this->rdMut);
 #ifdef _WIN32_WCE
 	ret = ReadFile(h, buff, size, (DWORD*)&readCnt, 0);
 #else
@@ -379,14 +380,14 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 	if (this->handle == 0)
 	{
 		this->reading = false;
-		this->rdMut->Unlock();
+		mutUsage.EndUse();
 		return 0;
 	}
 
 	ADDMESSAGE("Get Result\r\n");
 	ret = GetOverlappedResult(h, &ol, (DWORD*)&readCnt, TRUE);
 #endif
-	this->rdMut->Unlock();
+	mutUsage.EndUse();
 	this->reading = false;
 	if (ret)
 	{

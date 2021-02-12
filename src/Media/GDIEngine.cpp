@@ -15,6 +15,7 @@
 #include "Media/ABlend/AlphaBlend8_8.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Sync/Event.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -130,16 +131,16 @@ Media::DrawImage *Media::GDIEngine::CreateImage32(UOSInt width, UOSInt height, M
 		GDIImage *img;
 		HDC hdcBmp;
 		Int32 i = 10;
-		this->gdiMut->Lock();
+		Sync::MutexUsage mutUsage(this->gdiMut);
 		while ((hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen)) == 0)
 		{
 			if (i-- <= 0)
 				break;
-			this->gdiMut->Unlock();
+			mutUsage.EndUse();
 			Sync::Thread::Sleep(10);
-			this->gdiMut->Lock();
+			mutUsage.BeginUse();
 		}
-		this->gdiMut->Unlock();
+		mutUsage.EndUse();
 		if (hdcBmp)
 		{
 			SelectObject(hdcBmp, hBmp);
@@ -275,9 +276,9 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 					imgSrc += sbpl;
 				}
 				
-				this->gdiMut->Lock();
+				Sync::MutexUsage mutUsage(this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
-				this->gdiMut->Unlock();
+				mutUsage.EndUse();
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
@@ -340,110 +341,118 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		switch (bpp)
 		{
 		case 8:
-			fstm->Read(pal, 1024);
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
-			lineW = bmi.bmiHeader.biWidth;
-			if (lineW & 3)
 			{
-				lineW = lineW + 4 - (lineW & 3);
-			}
-			buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
-			fstm->Read(buff, buffSize);
-			psrc = (UInt8*)pBits;
-			pdest = (Int32*)buff;
-			j = bmi.bmiHeader.biHeight;
-			while (j-- > 0)
-			{
-				psrc2 = psrc;
-				i = bmi.bmiHeader.biWidth;
-				while (i-- > 0)
+				fstm->Read(pal, 1024);
+				fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
+				lineW = bmi.bmiHeader.biWidth;
+				if (lineW & 3)
 				{
-					*pdest++ = ((Int32*)pal)[*psrc2++] | 0xff000000;
+					lineW = lineW + 4 - (lineW & 3);
 				}
-				psrc += lineW;
-			}
-			MemFree(buff);
+				buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
+				fstm->Read(buff, buffSize);
+				psrc = (UInt8*)pBits;
+				pdest = (Int32*)buff;
+				j = bmi.bmiHeader.biHeight;
+				while (j-- > 0)
+				{
+					psrc2 = psrc;
+					i = bmi.bmiHeader.biWidth;
+					while (i-- > 0)
+					{
+						*pdest++ = ((Int32*)pal)[*psrc2++] | 0xff000000;
+					}
+					psrc += lineW;
+				}
+				MemFree(buff);
 
-			this->gdiMut->Lock();
-			hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
-			this->gdiMut->Unlock();
-			if (hdcBmp)
-			{
-				SelectObject(hdcBmp, hBmp);
-				NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
-			}
-			else
-			{
+				Sync::MutexUsage mutUsage(this->gdiMut);
+				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
+				mutUsage.EndUse();
+				if (hdcBmp)
+				{
+					SelectObject(hdcBmp, hBmp);
+					NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+				}
+				else
+				{
+				}
 			}
 			break;
 		case 16:
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
-			buff = MemAlloc(UInt8, buffSize = ((bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 1));
-			fstm->Read(buff, buffSize);
-			//////////////////////////////////////////////////////////////////////
-			MemFree(buff);
-			this->gdiMut->Lock();
-			hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
-			this->gdiMut->Unlock();
-			if (hdcBmp)
 			{
-				SelectObject(hdcBmp, hBmp);
-				NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
-			}
-			else
-			{
+				fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
+				buff = MemAlloc(UInt8, buffSize = ((bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 1));
+				fstm->Read(buff, buffSize);
+				//////////////////////////////////////////////////////////////////////
+				MemFree(buff);
+				Sync::MutexUsage mutUsage(this->gdiMut);
+				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
+				mutUsage.EndUse();
+				if (hdcBmp)
+				{
+					SelectObject(hdcBmp, hBmp);
+					NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+				}
+				else
+				{
+				}
 			}
 			break;
 		case 24:
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
-			lineW = bmi.bmiHeader.biWidth * 3;
-			if (lineW & 3)
 			{
-				lineW = lineW + 4 - (lineW & 3);
-			}
-			buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
-			fstm->Read(buff, buffSize);
-			psrc = (UInt8*)pBits;
-			pdest = (Int32*)buff;
-			j = bmi.bmiHeader.biHeight;
-			while (j-- > 0)
-			{
-				psrc2 = psrc;
-				i = bmi.bmiHeader.biWidth;
-				while (i-- > 0)
+				fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
+				lineW = bmi.bmiHeader.biWidth * 3;
+				if (lineW & 3)
 				{
-					*pdest++ = psrc2[0] | ((Int32)psrc2[1] << 8) | ((Int32)psrc2[2] << 16) | 0xff000000;
+					lineW = lineW + 4 - (lineW & 3);
 				}
-				psrc += lineW;
-			}
-			MemFree(buff);
+				buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
+				fstm->Read(buff, buffSize);
+				psrc = (UInt8*)pBits;
+				pdest = (Int32*)buff;
+				j = bmi.bmiHeader.biHeight;
+				while (j-- > 0)
+				{
+					psrc2 = psrc;
+					i = bmi.bmiHeader.biWidth;
+					while (i-- > 0)
+					{
+						*pdest++ = psrc2[0] | ((Int32)psrc2[1] << 8) | ((Int32)psrc2[2] << 16) | 0xff000000;
+					}
+					psrc += lineW;
+				}
+				MemFree(buff);
 
-			this->gdiMut->Lock();
-			hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
-			this->gdiMut->Unlock();
-			if (hdcBmp)
-			{
-				SelectObject(hdcBmp, hBmp);
-				NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
-			}
-			else
-			{
+				Sync::MutexUsage mutUsage(this->gdiMut);
+				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
+				mutUsage.EndUse();
+				if (hdcBmp)
+				{
+					SelectObject(hdcBmp, hBmp);
+					NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+				}
+				else
+				{
+				}
 			}
 			break;
 		case 32:
-			fstm->Seek(IO::SeekableStream::ST_BEGIN,  *(Int32*)&hdr[10]);
-			fstm->Read((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2);
+			{
+				fstm->Seek(IO::SeekableStream::ST_BEGIN,  *(Int32*)&hdr[10]);
+				fstm->Read((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2);
 
-			this->gdiMut->Lock();
-			hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
-			this->gdiMut->Unlock();
-			if (hdcBmp)
-			{
-				SelectObject(hdcBmp, hBmp);
-				NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
-			}
-			else
-			{
+				Sync::MutexUsage mutUsage(this->gdiMut);
+				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
+				mutUsage.EndUse();
+				if (hdcBmp)
+				{
+					SelectObject(hdcBmp, hBmp);
+					NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
+				}
+				else
+				{
+				}
 			}
 			break;
 		default:

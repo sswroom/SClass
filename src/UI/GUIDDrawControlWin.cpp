@@ -3,6 +3,7 @@
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/GUIClientControl.h"
@@ -227,11 +228,11 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	}
 	else
 	{
-		me->surfaceMut->Lock();
+		Sync::MutexUsage mutUsage(me->surfaceMut);
 		me->GetSizeP(&me->surfaceW, &me->surfaceH);
 		me->ReleaseSubSurface();
 		me->CreateSubSurface();
-		me->surfaceMut->Unlock();
+		mutUsage.EndUse();
 
 		if (me->debugWriter)
 		{
@@ -275,9 +276,9 @@ void UI::GUIDDrawControl::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		this->surfaceMut->Lock();
+		Sync::MutexUsage mutUsage(this->surfaceMut);
 		DrawToScreen();
-		this->surfaceMut->Unlock();
+		mutUsage.EndUse();
 	}
 	else
 	{
@@ -527,7 +528,7 @@ Bool UI::GUIDDrawControl::CreateClipper(void *lpDD)
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OSInt *bpl)
 {
 	RECT rcSrc;
-	this->surfaceMut->Lock();
+	this->surfaceMut->Use();
 	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
 	{
 		HRESULT hRes;
@@ -550,14 +551,14 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 			return (UInt8*)ddsd2.lpSurface;
 		}
 	}
-	this->surfaceMut->Unlock();
+	this->surfaceMut->Unuse();
 	return 0;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
 	((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
-	this->surfaceMut->Unlock();
+	this->surfaceMut->Unuse();
 }
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(OSInt *bpl)
@@ -1181,7 +1182,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (this->currScnMode == SM_WINDOWED || this->currScnMode == SM_WINDOWED_DIR)
 			return;
 	}
-	this->surfaceMut->Lock();
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (fullScn && !vfs)
 	{
 		this->switching = true;
@@ -1202,7 +1203,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (lpDD->GetDisplayMode(&ddsd) != DD_OK)
 		{
 			lpDD->SetCooperativeLevel((HWND)this->rootHwnd, DDSCL_NORMAL);
-			this->surfaceMut->Unlock();
+			mutUsage.EndUse();
 			this->rootForm->FromFullScn();
 			this->switching = false;
 			SwitchFullScreen(false, false);
@@ -1223,13 +1224,13 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (this->pSurface == 0)
 		{
 			lpDD->SetCooperativeLevel((HWND)this->rootHwnd, DDSCL_NORMAL);
-			this->surfaceMut->Unlock();
+			mutUsage.EndUse();
 			this->rootForm->FromFullScn();
 			this->switching = false;
 			SwitchFullScreen(false, false);
 			return;
 		}
-		this->surfaceMut->Unlock();
+		mutUsage.EndUse();
 		this->switching = false;
 		this->OnSizeChanged(true);
 	}
@@ -1302,7 +1303,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 
 		this->CreateClipper(lpDD);
 		this->CreateSurface();
-		this->surfaceMut->Unlock();
+		mutUsage.EndUse();
 		this->switching = false;
 		this->OnSizeChanged(true);
 	}
@@ -1327,7 +1328,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 
 		this->CreateClipper(lpDD);
 		this->CreateSurface();
-		this->surfaceMut->Unlock();
+		mutUsage.EndUse();
 		this->switching = false;
 		this->OnSizeChanged(true);
 	}

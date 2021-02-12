@@ -191,17 +191,17 @@ void MemSetLogFile(const UTF8Char *logFile)
 
 void MemLock()
 {
-	mcMut->Lock();
+	mcMut->Use();
 }
 
 void MemUnlock()
 {
-	mcMut->Unlock();
+	mcMut->Unuse();
 }
 
 void *MAlloc(OSInt size)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt++;
 
 	void *mptr = HeapAlloc(mcHandle, 0, size + 8);
@@ -209,7 +209,7 @@ void *MAlloc(OSInt size)
 	{
 		DebugBreak();
 	}
-	mcMut->Unlock();
+	mcMut->Unuse();
 #if defined(HAS_ASM32)
 #if defined(_DEBUG)
 	_asm
@@ -237,7 +237,7 @@ void *MAlloc(OSInt size)
 
 void *MAllocA(OSInt size)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt++;
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 32);
@@ -246,7 +246,7 @@ void *MAllocA(OSInt size)
 	{
 		DebugBreak();
 	}
-	mcMut->Unlock();
+	mcMut->Unuse();
 #if defined(HAS_ASM32)
 #if defined(_DEBUG)
 	_asm
@@ -277,7 +277,7 @@ void *MAllocA(OSInt size)
 
 void *MAllocA64(OSInt size)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt++;
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 80);
@@ -286,7 +286,7 @@ void *MAllocA64(OSInt size)
 	{
 		DebugBreak();
 	}
-	mcMut->Unlock();
+	mcMut->Unuse();
 #if defined(HAS_ASM32)
 #if defined(_DEBUG)
 	_asm
@@ -317,17 +317,17 @@ void *MAllocA64(OSInt size)
 
 void MemFree(void *ptr)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt--;
 
 //	_heapchk();
 	HeapFree(mcHandle, 0, ((UInt8*)ptr) - 8);
-	mcMut->Unlock();
+	mcMut->Unuse();
 }
 
 void MemFreeA(void *ptr)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt--;
 
 //	_heapchk();
@@ -346,7 +346,7 @@ void MemFreeA(void *ptr)
 #endif
 
 	HeapFree(mcHandle, 0, relPtr);
-	mcMut->Unlock();
+	mcMut->Unuse();
 }
 
 void MemDeinit()
@@ -514,14 +514,14 @@ Int32 MemCountBlks()
 
 void MemIncCounter(void *ptr)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt++;
-	mcMut->Unlock();
+	mcMut->Unuse();
 }
 
 void MemDecCounter(void *ptr)
 {
-	mcMut->Lock();
+	mcMut->Use();
 	mcMemoryCnt--;
-	mcMut->Unlock();
+	mcMut->Unuse();
 }

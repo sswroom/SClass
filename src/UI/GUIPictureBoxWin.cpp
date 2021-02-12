@@ -18,7 +18,6 @@ Int32 UI::GUIPictureBox::useCnt = 0;
 OSInt __stdcall UI::GUIPictureBox::PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
 {
 	UI::GUIPictureBox *me = (UI::GUIPictureBox*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
-	OSInt i;
 	switch (msg)
 	{
 	case WM_SIZE:

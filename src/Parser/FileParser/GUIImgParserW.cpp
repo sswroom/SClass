@@ -13,6 +13,7 @@
 #include "Media/SharedImage.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/GUIImgParser.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -107,7 +108,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 
 	Media::ImageList *imgList = 0;
 
-	data->mut->Lock();
+	Sync::MutexUsage mutUsage(data->mut);
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(cstm, Win32::COMStream(stm));
 	Gdiplus::Bitmap *bmp = Gdiplus::Bitmap::FromStream(cstm, 0);
@@ -269,7 +270,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 	}
 	DEL_CLASS(cstm);
 	DEL_CLASS(stm);
-	data->mut->Unlock();
+	mutUsage.EndUse();
 
 	if (targetType != IO::ParsedObject::PT_IMAGE_LIST_PARSER && imgList && imgList->GetCount() == 1)
 	{

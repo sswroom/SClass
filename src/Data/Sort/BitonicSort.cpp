@@ -182,7 +182,6 @@ void Data::Sort::BitonicSort::DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt
 Bool Data::Sort::BitonicSort::DoTask(ThreadStat *stat)
 {
 	TaskInfo *task = 0;
-	OSInt i;
 	task = this->tasks->RemoveLast();
 	if (task)
 	{

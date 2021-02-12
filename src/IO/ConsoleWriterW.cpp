@@ -3,6 +3,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -161,10 +162,10 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *s)
 	if (this->enc == 0)
 	{
 		const WChar *str = Text::StrToWCharNew(s);
-		this->mut->Lock();
+		Sync::MutexUsage mutUsage(this->mut);
 		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)Text::StrCharCnt(str), (LPDWORD)&outChars, 0);
 		WriteConsoleW((HANDLE)this->hand, L"\n", 1, (LPDWORD)&outChars2, 0);
-		this->mut->Unlock();
+		mutUsage.EndUse();
 		Text::StrDelNew(str);
 		if (outChars == nChar && outChars2 == 1)
 		{

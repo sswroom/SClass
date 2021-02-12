@@ -40,17 +40,17 @@ namespace std
 
 		void lock()
 		{
-			_M_mutex->Lock();
+			_M_mutex->Use();
 		}
 
 		bool try_lock() noexcept
 		{
-			return _M_mutex->TryLock();
+			return _M_mutex->TryUse();
 		}
 
 		void unlock()
 		{
-			_M_mutex->Unlock();
+			_M_mutex->Unuse();
 		}
 
 		native_handle_type native_handle() noexcept

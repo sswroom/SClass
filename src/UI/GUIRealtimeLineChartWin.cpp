@@ -4,6 +4,7 @@
 #include "Math/Math.h"
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/GUIClientControl.h"
@@ -77,7 +78,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	img->DrawRect(0, 0, Math::OSInt2Double(img->GetWidth()), Math::OSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
-	this->chartMut->Lock();
+	Sync::MutexUsage mutUsage(this->chartMut);
 	if (this->chartMaxChg)
 	{
 		this->chartMaxChg = false;
@@ -148,7 +149,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 		}
 		img->DelPen(p);
 	}
-	this->chartMut->Unlock();
+	mutUsage.EndUse();
 
 	dimg->DrawImagePt(img, 0, 0);
 
@@ -253,7 +254,7 @@ OSInt UI::GUIRealtimeLineChart::OnNotify(Int32 code, void *lParam)
 
 void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 {
-	this->chartMut->Lock();
+	Sync::MutexUsage mutUsage(this->chartMut);
 	OSInt ofst = this->chartOfst * this->lineCnt;
 	OSInt i = 0;
 	while (i < lineCnt)
@@ -269,7 +270,7 @@ void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 	}
 
 	this->chartOfst = (this->chartOfst + 1) % this->sampleCnt;
-	this->chartMut->Unlock();
+	mutUsage.EndUse();
 	this->valueChanged = true;
 }
 
@@ -306,7 +307,7 @@ void UI::GUIRealtimeLineChart::ClearChart()
 {
 	OSInt i;
 	OSInt j;
-	this->chartMut->Lock();
+	Sync::MutexUsage mutUsage(this->chartMut);
 	i = 0;
 	j = this->lineCnt * this->sampleCnt;
 	while (i < j)
@@ -319,5 +320,5 @@ void UI::GUIRealtimeLineChart::ClearChart()
 	this->chartMaxChg = false;
 	this->chartOfst = 0;
 	this->valueChanged = true;
-	this->chartMut->Unlock();
+	mutUsage.EndUse();
 }

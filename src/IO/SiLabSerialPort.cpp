@@ -89,7 +89,6 @@ UOSInt IO::SiLabSerialPort::Read(UInt8 *buff, UOSInt size)
 	if (this->handle == 0)
 	{
 		this->reading = false;
-		this->rdMut->Unlock();
 		return 0;
 	}
 
