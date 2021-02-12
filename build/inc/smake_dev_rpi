@@ -34,11 +34,14 @@ CameraManager.o: ../../src/Media/CameraManagerRPi.cpp
 DDCReader.o: ../../src/Media/DDCReaderRPi.cpp
 $-I/opt/vc/include/interface -I/opt/vc/include
 !-lvcos -lvchiq_arm
+!-L/opt/vc/lib
 MMALStillCapture.o: ../../src/Media/MMALStillCapture.cpp
 $-I/opt/vc/include/interface -I/opt/vc/include
-!-L/opt/vc/lib -lmmal_core -lmmal -lmmal_util
+!-lmmal_core -lmmal -lmmal_util
+!-L/opt/vc/lib
 MMALVideoCapture.o: ../../src/Media/MMALVideoCapture.cpp
 $-I/opt/vc/include/interface -I/opt/vc/include
-!-L/opt/vc/lib -lmmal_core -lmmal -lmmal_util
+!-lmmal_core -lmmal -lmmal_util
+!-L/opt/vc/lib
 VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgr_RPi.cpp
 SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilNull.cpp
