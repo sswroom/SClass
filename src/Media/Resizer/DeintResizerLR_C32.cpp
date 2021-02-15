@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math.h"
+#include "Media/RGBLUTGen.h"
+#include "Media/Resizer/DeintResizerLR_C32.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
-#include "Media/RGBLUTGen.h"
-#include "Media/Resizer/DeintResizerLR_C32.h"
 
 #define PI 3.141592653589793
 

@@ -15,5 +15,5 @@ namespace IO
 	public:
 		virtual ~UDPLog();
 	};
-};
+}
 #endif

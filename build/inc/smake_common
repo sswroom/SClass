@@ -1222,6 +1222,8 @@ IO/WriteCacheStream.h: ../../src/IO/WriteCacheStream.cpp
 IO/Writer.h:
 IO/WriterLogHandler.h: ../../src/IO/WriterLogHandler.cpp
 @WriterLogHandler.o
+IO/WSConfigFile.h: ../../src/IO/WSConfigFile.cpp
+@WSConfigFile.o
 IO/ZIPBuilder.h: ../../src/IO/ZIPBuilder.cpp
 @ZIPBuilder.o
 IO/Device/AM2315.h: ../../src/IO/Device/AM2315.cpp
@@ -3484,8 +3486,9 @@ UDPFileLog.o: ../../src/IO/UDPFileLog.cpp
 UDPLog.o: ../../src/IO/UDPLog.cpp
 UnixConfigFile.o: ../../src/IO/UnixConfigFile.cpp
 VirtualIOPinMgr.o: ../../src/IO/VirtualIOPinMgr.cpp
-WriterLogHandler.o: ../../src/IO/WriterLogHandler.cpp
 WriteCacheStream.o: ../../src/IO/WriteCacheStream.cpp
+WriterLogHandler.o: ../../src/IO/WriterLogHandler.cpp
+WSConfigFile.o: ../../src/IO/WSConfigFile.cpp
 ZIPBuilder.o: ../../src/IO/ZIPBuilder.cpp
 AM2315.o: ../../src/IO/Device/AM2315.cpp
 AM2315GPIO.o: ../../src/IO/Device/AM2315GPIO.cpp

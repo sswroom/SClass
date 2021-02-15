@@ -16,7 +16,6 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GUIVideoBoxDD.h"
 #include "UI/MessageDialog.h"
-#include <stdio.h>
 
 //DeinterlaceResizer
 //#define _DEBUG
@@ -96,7 +95,6 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 	OSInt cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
 	OSInt sizeNeeded;
-
 	OSInt cropTotal = tstat->me->cropLeft + tstat->me->cropRight + tstat->me->cropTop + tstat->me->cropBottom;
 	Double par;
 	if (tstat->me->forcePAR == 0)
@@ -1636,7 +1634,8 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 								}
 								else
 								{
-									me->DrawFromBuff(me->buffs[minIndex].destBuff, rect[2] << 2, rect[0], rect[1], rect[2], rect[3], toClear);
+									UInt8 *dispBuff = me->buffs[minIndex].destBuff;
+									me->DrawFromBuff(dispBuff, rect[2] << 2, rect[0], rect[1], rect[2], rect[3], toClear);
 								}
 							}
 							me->buffs[minIndex].isEmpty = true;

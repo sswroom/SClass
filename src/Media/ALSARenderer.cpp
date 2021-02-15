@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/WSConfigFile.h"
 #include "Media/ALSARenderer.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
@@ -342,7 +343,23 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 {
 	if (devName == 0)
 	{
-		this->devName = Text::StrCopyNew((const UTF8Char*)"hw:0");
+		this->devName = 0;
+		IO::ConfigFile *cfg = IO::WSConfigFile::Parse((const UTF8Char*)"/etc/asound.conf");
+		if (cfg)
+		{
+			const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"defaults.pcm.card");
+			if (csptr)
+			{
+				UTF8Char sbuff[32];
+				Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"hw:"), csptr);
+				this->devName = Text::StrCopyNew(sbuff);
+			}
+			DEL_CLASS(cfg);
+		}
+		if (this->devName == 0)
+		{
+			this->devName = Text::StrCopyNew((const UTF8Char*)"hw:0");
+		}
 	}
 	else
 	{

@@ -1399,8 +1399,11 @@ void Media::Resizer::LanczosResizerLR_C32::RGBParamChanged(const Media::IColorHa
 
 void Media::Resizer::LanczosResizerLR_C32::SetSrcRefLuminance(Double srcRefLuminance)
 {
-	this->srcRefLuminance = srcRefLuminance;
-	this->rgbChanged = true;
+	if (this->srcRefLuminance != srcRefLuminance)
+	{
+		this->srcRefLuminance = srcRefLuminance;
+		this->rgbChanged = true;
+	}
 }
 
 Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(Media::FrameInfo *srcInfo)
@@ -1453,4 +1456,9 @@ Double Media::Resizer::LanczosResizerLR_C32::GetHAvgTime()
 Double Media::Resizer::LanczosResizerLR_C32::GetVAvgTime()
 {
 	return this->action->GetVAvgTime();
+}
+
+Bool Media::Resizer::LanczosResizerLR_C32::IsRGBChanged()
+{
+	return this->rgbChanged;
 }

@@ -953,6 +953,7 @@ Media::ColorManagerSess::~ColorManagerSess()
 
 void Media::ColorManagerSess::AddHandler(Media::IColorHandler *hdlr)
 {
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrs->Add(hdlr);
 }
 

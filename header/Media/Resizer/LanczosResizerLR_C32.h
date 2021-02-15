@@ -76,6 +76,8 @@ namespace Media
 
 			Double GetHAvgTime();
 			Double GetVAvgTime();
+
+			Bool IsRGBChanged();
 		};
 	}
 }

@@ -255,7 +255,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	}
 	else
 	{
-		ImageUtil_ColorFill32((UInt8*)this->surfaceBuff, this->surfaceW * this->surfaceH, 0xff000000);
+		ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2, this->surfaceW * this->surfaceH, 0xff000000);
 		g_object_ref(buf);
 		this->pSurface = buf;
 		this->pSurfaceUpdated = true;
@@ -332,6 +332,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->switching = false;
 	this->debugFS = 0;
 	this->debugWriter = 0;
+	this->bitDepth = 32;
 	this->HandleSizeChanged(OnResized, this);
 	this->currScnMode = SM_VFS;
 	this->clipper = 0;
@@ -418,6 +419,10 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 		}
 		else
 		{
+			if (buff[0] == 0 && buff[1] == 0 && buff[2] == 0)
+			{
+				clearScn = true;
+			}
 			if (tlx < 0)
 			{
 				drawW += tlx;
