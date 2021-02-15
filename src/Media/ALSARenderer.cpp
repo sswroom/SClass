@@ -127,7 +127,14 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 		if (isFirst)
 		{
 			isFirst = false;
-			i = af.frequency >> 1;
+			if (me->buffTime)
+			{
+				i = me->buffTime * af.frequency / 1000;
+			}
+			else
+			{
+				i = af.frequency >> 1;
+			}
 		}
 		else
 		{
@@ -278,6 +285,122 @@ Int32 Media::ALSARenderer::GetCurrTime(void *hand)
 	return ret;
 }
 
+Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
+{
+	snd_pcm_hw_params_t *params;
+	snd_pcm_t *hand = (snd_pcm_t*)h;
+	snd_pcm_format_t sndFmt = SND_PCM_FORMAT_U8;
+	Media::AudioFormat fmt;
+
+	audsrc->GetFormat(&fmt);
+	if (fmt.formatId == 1)
+	{
+		switch (fmt.bitpersample)
+		{
+		case 8:
+			sndFmt = SND_PCM_FORMAT_U8;
+			break;
+		case 16:
+			sndFmt = SND_PCM_FORMAT_S16_LE;
+			break;
+		case 24:
+			sndFmt = SND_PCM_FORMAT_S24_3LE;
+			break;
+		case 32:
+			sndFmt = SND_PCM_FORMAT_S32_LE;
+			break;
+		default:
+			return false;
+		}
+	}
+	else if (fmt.formatId == 3)
+	{
+		switch (fmt.bitpersample)
+		{
+		case 32:
+			sndFmt = SND_PCM_FORMAT_FLOAT_LE;
+			break;
+		default:
+			return false;
+		}
+	}
+	
+	int err;
+	err = snd_pcm_hw_params_malloc(&params);
+	if (err < 0)
+	{
+		printf("Error: snd_pcm_hw_params_malloc, err = %d\r\n", err);
+		return false;
+	}
+	err = snd_pcm_hw_params_any(hand, params);
+	if (err < 0)
+	{
+		printf("Error: snd_pcm_hw_params_any, err = %d\r\n", err);
+		snd_pcm_hw_params_free(params);
+		return false;
+	}
+	err = snd_pcm_hw_params_set_access(hand, params, SND_PCM_ACCESS_RW_INTERLEAVED);
+	if (err < 0)
+	{
+		printf("Error: snd_pcm_hw_params_set_access, err = %d\r\n", err);
+		snd_pcm_hw_params_free(params);
+		return false;
+	}
+	err = snd_pcm_hw_params_set_format(hand, params, sndFmt);
+	if (err < 0)
+	{
+		err = snd_pcm_hw_params_set_format(hand, params, SND_PCM_FORMAT_S16_LE);
+		if (err < 0)
+		{
+			printf("Error: snd_pcm_hw_params_set_format(%d), err = %d\r\n", sndFmt, err);
+			snd_pcm_hw_params_free(params);
+			return false;
+		}
+		this->dataConv = true;
+	}
+	UInt32 rrate = fmt.frequency;
+	err = snd_pcm_hw_params_set_rate_near(hand, params, &rrate, 0);
+	if (err < 0)
+	{
+		printf("Error: snd_pcm_hw_params_set_rate_near, err = %d\r\n", err);
+		snd_pcm_hw_params_free(params);
+		return false;
+	}
+//	printf("ALSA: Actual sample rate:%d\r\n", rrate);
+	err = snd_pcm_hw_params_set_channels(hand, params, fmt.nChannels);
+	if (err < 0)
+	{
+		printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
+		snd_pcm_hw_params_free(params);
+		return false;
+	}
+	if (this->buffTime)
+	{
+		snd_pcm_uframes_t usize = (this->buffTime * fmt.frequency / 1000);
+		err = snd_pcm_hw_params_set_buffer_size_near(hand, params, &usize);
+		if (err < 0)
+		{
+			printf("Error: snd_pcm_hw_params_set_buffer_size_near, err = %d\r\n", err);
+		}
+		usize = usize >> 1;
+		err = snd_pcm_hw_params_set_period_size_near(hand, params, &usize, 0);
+		if (err < 0)
+		{
+			printf("Error: snd_pcm_hw_params_set_period_size_near, err = %d\r\n", err);
+		}
+	}
+
+	err = snd_pcm_hw_params(hand, params);
+	if (err < 0)
+	{
+		printf("Error: snd_pcm_hw_params, err = %d\r\n", err);
+		snd_pcm_hw_params_free(params);
+		return false;
+	}
+//	snd_pcm_hw_params_free(params);
+	return true;
+}
+
 Int32 Media::ALSARenderer::GetDeviceCount()
 {
 	Int32 card = -1;
@@ -411,45 +534,11 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	this->dataConv = false;
 	
 	snd_pcm_t *hand;
-	snd_pcm_hw_params_t *params;
 	snd_pcm_sw_params_t *swparams;
-	snd_pcm_format_t sndFmt = SND_PCM_FORMAT_U8;
 	int err;
 //	Char *cdevName;
 	Char cbuff[256];
-	
-	if (fmt.formatId == 1)
-	{
-		switch (fmt.bitpersample)
-		{
-		case 8:
-			sndFmt = SND_PCM_FORMAT_U8;
-			break;
-		case 16:
-			sndFmt = SND_PCM_FORMAT_S16_LE;
-			break;
-		case 24:
-			sndFmt = SND_PCM_FORMAT_S24_3LE;
-			break;
-		case 32:
-			sndFmt = SND_PCM_FORMAT_S32_LE;
-			break;
-		default:
-			return false;
-		}
-	}
-	else if (fmt.formatId == 3)
-	{
-		switch (fmt.bitpersample)
-		{
-		case 32:
-			sndFmt = SND_PCM_FORMAT_FLOAT_LE;
-			break;
-		default:
-			return false;
-		}
-	}
-	
+
 
 	if (this->devName)
 	{
@@ -503,69 +592,11 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 		printf("Error: snd_pcm_open(%s), err = %d %s\r\n", cbuff, err, snd_strerror(err));
 		return false;
 	}
-	err = snd_pcm_hw_params_malloc(&params);
-	if (err < 0)
+	if (!this->SetHWParams(audsrc, hand))
 	{
-		printf("Error: snd_pcm_hw_params_malloc, err = %d\r\n", err);
 		snd_pcm_close(hand);
 		return false;
 	}
-	err = snd_pcm_hw_params_any(hand, params);
-	if (err < 0)
-	{
-		printf("Error: snd_pcm_hw_params_any, err = %d\r\n", err);
-		snd_pcm_hw_params_free(params);
-		snd_pcm_close(hand);
-		return false;
-	}
-	err = snd_pcm_hw_params_set_access(hand, params, SND_PCM_ACCESS_RW_INTERLEAVED);
-	if (err < 0)
-	{
-		printf("Error: snd_pcm_hw_params_set_access, err = %d\r\n", err);
-		snd_pcm_hw_params_free(params);
-		snd_pcm_close(hand);
-		return false;
-	}
-	err = snd_pcm_hw_params_set_format(hand, params, sndFmt);
-	if (err < 0)
-	{
-		err = snd_pcm_hw_params_set_format(hand, params, SND_PCM_FORMAT_S16_LE);
-		if (err < 0)
-		{
-			printf("Error: snd_pcm_hw_params_set_format(%d), err = %d\r\n", sndFmt, err);
-			snd_pcm_hw_params_free(params);
-			snd_pcm_close(hand);
-			return false;
-		}
-		this->dataConv = true;
-	}
-	UInt32 rrate = fmt.frequency;
-	err = snd_pcm_hw_params_set_rate_near(hand, params, &rrate, 0);
-	if (err < 0)
-	{
-		printf("Error: snd_pcm_hw_params_set_rate_near, err = %d\r\n", err);
-		snd_pcm_hw_params_free(params);
-		snd_pcm_close(hand);
-		return false;
-	}
-//	printf("ALSA: Actual sample rate:%d\r\n", rrate);
-	err = snd_pcm_hw_params_set_channels(hand, params, fmt.nChannels);
-	if (err < 0)
-	{
-		printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
-		snd_pcm_hw_params_free(params);
-		snd_pcm_close(hand);
-		return false;
-	}
-	err = snd_pcm_hw_params(hand, params);
-	if (err < 0)
-	{
-		printf("Error: snd_pcm_hw_params, err = %d\r\n", err);
-		snd_pcm_hw_params_free(params);
-		snd_pcm_close(hand);
-		return false;
-	}
-//	snd_pcm_hw_params_free(params);
 
 	err = snd_pcm_sw_params_malloc(&swparams);
 	if (err < 0)
@@ -583,7 +614,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 		snd_pcm_close(hand);
 		return false;
 	}
-	err = snd_pcm_sw_params_set_avail_min(hand, swparams, fmt.frequency >> 1);
+	err = snd_pcm_sw_params_set_avail_min(hand, swparams, (this->buffTime * fmt.frequency / 2000));
 	if (err < 0)
 	{
 		printf("Error: snd_pcm_sw_params_set_avail_min, err = %d\r\n", err);
@@ -747,4 +778,8 @@ void Media::ALSARenderer::SetDeviceVolume(Int32 volume)
 void Media::ALSARenderer::SetBufferTime(Int32 ms)
 {
 	this->buffTime = ms;
+	if (!this->playing && this->hand && this->audsrc)
+	{
+		this->SetHWParams(this->audsrc, this->hand);
+	}
 }
