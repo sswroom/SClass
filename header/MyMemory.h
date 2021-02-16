@@ -47,6 +47,7 @@ void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt
 #define CPUBrand _CPUBrand
 #endif
 
+#define NEW_CLASS_D(className) MemNewClass(new className)
 #if  0
 #define NEW_CLASS(variable, className) {variable = new className;MemPtrChk(variable);MemIncCounter(variable);}
 #define DEL_CLASS(variable) {delete variable;MemDecCounter(variable);}
@@ -78,6 +79,13 @@ Int32 MemCheckError();
 Int32 MemCountBlks();
 void MemIncCounter(void *ptr);
 void MemDecCounter(void *ptr);
+
+template <class T> T MemNewClass(T cls)
+{
+	MemPtrChk(cls);
+	//MemIncCounter(cls);
+	return cls;
+}
 
 typedef void (__cdecl *MemClearFunc)(void *buff, OSInt buffSize);
 typedef void (__cdecl *MemCopyFunc)(void *destPtr, const void *srcPtr, OSInt leng);

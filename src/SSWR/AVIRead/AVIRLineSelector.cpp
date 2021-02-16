@@ -79,7 +79,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 		if (sbuff[0])
 		{
 			Media::DrawFont *fnt = this->CreateDrawFont(img);
-			img->DrawStringUTF8(itemW, Math::OSInt2Double(i + 1), sbuff, fnt, bBlack);
+			img->DrawString(itemW, Math::OSInt2Double(i + 1), sbuff, fnt, bBlack);
 			img->DelFont(fnt);
 		}
 

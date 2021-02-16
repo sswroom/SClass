@@ -15,16 +15,21 @@
 #include "Media/SharedImage.h"
 #include "Net/WebBrowser.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
-#include "SSWR/AVIRead/AVIRGISDistanceForm.h"
-#include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRGISCombineForm.h"
 #include "SSWR/AVIRead/AVIRGISCSysForm.h"
+#include "SSWR/AVIRead/AVIRGISDistanceForm.h"
+#include "SSWR/AVIRead/AVIRGISEditImageForm.h"
+#include "SSWR/AVIRead/AVIRGISForm.h"
+#include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
 #include "SSWR/AVIRead/AVIRGISPropForm.h"
 #include "SSWR/AVIRead/AVIRGISQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISRandomLocForm.h"
+#include "SSWR/AVIRead/AVIRGISReplayForm.h"
 #include "SSWR/AVIRead/AVIRGISSearchForm.h"
+#include "SSWR/AVIRead/AVIRGPSSimulatorForm.h"
+#include "SSWR/AVIRead/AVIRGISTileDownloadForm.h"
 #include "SSWR/AVIRead/AVIRGooglePolylineForm.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
@@ -377,40 +382,10 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnReplayClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::GUIForm *frm)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->replayForm = 0;
-}
-
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnEditImageClosed(void *userObj, UI::GUIForm *frm)
-{
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->editImageForm = 0;
-}
-
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTileDownClosed(void *userObj, UI::GUIForm *frm)
-{
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->tileDownForm = 0;
-}
-
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnGPSSimClosed(void *userObj, UI::GUIForm *frm)
-{
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->gpsSimForm = 0;
-}
-
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnQueryClosed(void *userObj, UI::GUIForm *frm)
-{
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->queryForm = 0;
-}
-
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnGroupQueryClosed(void *userObj, UI::GUIForm *frm)
-{
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->groupQueryForm = 0;
+	me->ctrlForm = 0;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(void *userObj, UI::GUIForm *frm)
@@ -498,33 +473,20 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 
 void SSWR::AVIRead::AVIRGISForm::CloseCtrlForm()
 {
-	if (this->replayForm)
+	if (this->ctrlForm)
 	{
-		this->replayForm->Close();
+		this->ctrlForm->Close();
 		this->HideMarker();
-	}
-	if (this->editImageForm)
-	{
-		this->editImageForm->Close();
-	}
-	if (this->tileDownForm)
-	{
-		this->tileDownForm->Close();
-	}
-	if (this->gpsSimForm)
-	{
-		this->gpsSimForm->Close();
-	}
-	if (this->queryForm)
-	{
-		this->queryForm->Close();
 		this->SetSelectedVector(0);
 	}
-	if (this->groupQueryForm)
-	{
-		this->groupQueryForm->Close();
-		this->SetSelectedVector(0);
-	}
+}
+
+void SSWR::AVIRead::AVIRGISForm::SetCtrlForm(UI::GUIForm *frm)
+{
+	this->CloseCtrlForm();
+	this->ctrlForm = frm;
+	this->ctrlForm->HandleFormClosed(OnCtrlFormClosed, this);
+	this->ctrlForm->Show();
 }
 
 Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
@@ -629,12 +591,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	this->env = env;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->scaleChanging = false;
-	this->replayForm = 0;
-	this->editImageForm = 0;
-	this->tileDownForm = 0;
-	this->gpsSimForm = 0;
-	this->queryForm = 0;
-	this->groupQueryForm = 0;
+	this->ctrlForm = 0;
 	this->timeRangeStart = 0;
 	this->timeRangeEnd = 0;
 	this->useTime = false;
@@ -925,10 +882,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GROUP_QUERY:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			this->CloseCtrlForm();
-			NEW_CLASS(this->groupQueryForm, SSWR::AVIRead::AVIRGISGroupQueryForm(0, this->ui, this->core, this, this->env, (Map::MapEnv::GroupItem*)ind->item));
-			this->groupQueryForm->HandleFormClosed(OnGroupQueryClosed, this);
-			this->groupQueryForm->Show();
+			this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISGroupQueryForm(0, this->ui, this->core, this, this->env, (Map::MapEnv::GroupItem*)ind->item)));
 		}
 		break;
 	case MNU_LAYER_ADD:
@@ -1001,11 +955,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Text::SearchIndexer *searching = layer->layer->CreateSearchIndexer(ta, setting.labelCol);
 			if (searching)
 			{
-				AVIRGISSearchForm *frm;
-				NEW_CLASS(frm, AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags));
-				frm->HandleFormClosed(OnSubFormClosed, this);
-				this->subForms->Add(frm);
-				frm->Show();
+				this->AddSubForm(NEW_CLASS_D(AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags)));
 			}
 		}
 		break;
@@ -1057,29 +1007,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Map::DrawLayerType lyrType = lyr->GetLayerType();
 			if (lyrType == Map::DRAW_LAYER_IMAGE && lyr->GetObjectClass() == Map::IMapDrawLayer::OC_VECTOR_LAYER)
 			{
-				this->CloseCtrlForm();
-				NEW_CLASS(this->editImageForm, SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this));
-				this->editImageForm->HandleFormClosed(OnEditImageClosed, this);
-				this->editImageForm->Show();
+				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)));
 			}
 		}
 		break;
 	case MNU_LAYER_REPLAY:
 		{
-			this->CloseCtrlForm();
-			NEW_CLASS(this->replayForm, SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, (Map::GPSTrack*)((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer, this));
-			this->replayForm->HandleFormClosed(OnReplayClosed, this);
-			this->replayForm->Show();
+			this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, (Map::GPSTrack*)((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer, this)));
 		}
 		break;
 	case MNU_LAYER_OPENDB:
 		{
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
-			AVIRDBForm *frm;
-			NEW_CLASS(frm, AVIRDBForm(0, ui, this->core, lyr, false));
-			frm->HandleFormClosed(OnSubFormClosed, this);
-			this->subForms->Add(frm);
-			frm->Show();
+			this->AddSubForm(NEW_CLASS_D(AVIRDBForm(0, ui, this->core, lyr, false)));
 		}
 		break;
 	case MNU_LAYER_ASSIGN_CSYS:
@@ -1131,10 +1071,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
 			{
-				this->CloseCtrlForm();
-				NEW_CLASS(this->tileDownForm, SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, (Map::TileMapLayer*)lyr, this));
-				this->tileDownForm->HandleFormClosed(OnTileDownClosed, this);
-				this->tileDownForm->Show();
+				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, (Map::TileMapLayer*)lyr, this)));
 			}
 		}
 		break;
@@ -1199,10 +1136,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LAYER_QUERY:
 		{
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
-			this->CloseCtrlForm();
-			NEW_CLASS(this->queryForm, SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, this));
-			this->queryForm->HandleFormClosed(OnQueryClosed, this);
-			this->queryForm->Show();
+			this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, this)));
 		}
 		break;
 	case MNU_MTK_GPS:
@@ -1463,19 +1397,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		this->HKOPortal((const UTF8Char*)"weather_chart.txt", (const UTF8Char*)"/weather_chart/");
 		break;
 	case MNU_GPS_SIMULATOR:
-		this->CloseCtrlForm();
-		NEW_CLASS(this->gpsSimForm, SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, this));
-		this->gpsSimForm->HandleFormClosed(OnGPSSimClosed, this);
-		this->gpsSimForm->Show();
+		this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, this)));
 		break;
 	case MNU_DISTANCE:
-		{
-			SSWR::AVIRead::AVIRGISDistanceForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, this));
-			this->subForms->Add(frm);
-			frm->HandleFormClosed(OnSubFormClosed, this);
-			frm->Show();
-		}
+		this->AddSubForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, this)));
 		break;
 	case MNU_HKTD_TRAFFIC:
 		{
@@ -1503,13 +1428,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_RANDOMLOC:
-		{
-			SSWR::AVIRead::AVIRGISRandomLocForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, this));
-			this->subForms->Add(frm);
-			frm->HandleFormClosed(OnSubFormClosed, this);
-			frm->Show();
-		}
+		this->AddSubForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, this)));
 		break;
 	}
 }

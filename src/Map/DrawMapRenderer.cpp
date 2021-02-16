@@ -1432,7 +1432,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontHUTF8(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1465,7 +1465,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontHUTF8(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1526,7 +1526,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontHUTF8(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1578,7 +1578,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontHUTF8(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -2415,7 +2415,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, const UTF8Char *label, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Double szTmp[2];
-	denv->img->GetTextSizeUTF8(denv->fontStyles[fontStyle].font, label, Text::StrCharCnt(label), szTmp);
+	denv->img->GetTextSize(denv->fontStyles[fontStyle].font, label, Text::StrCharCnt(label), szTmp);
 
 	if (scaleH == 0)
 	{
@@ -2500,7 +2500,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 	{
 		scaleH = 0;
 	}
-	denv->img->GetTextSizeUTF8(df, str1, lblSize, size);
+	denv->img->GetTextSize(df, str1, lblSize, size);
 
 	if (scaleH == 0)
 	{
@@ -2508,12 +2508,12 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 
 		if (font && font->buffSize > 0)
 		{
-			denv->img->DrawStringBUTF8(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
-			denv->img->DrawStringUTF8(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
+			denv->img->DrawStringB(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
+			denv->img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
 		}
 		else
 		{
-			denv->img->DrawStringUTF8(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
+			denv->img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
 		}
 		return;
 	}
@@ -2546,7 +2546,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		Double tmp;
 		Int32 type;
 		Double szThis[2];
-		denv->img->GetTextSizeUTF8(df, str1, lblSize, szThis);
+		denv->img->GetTextSize(df, str1, lblSize, szThis);
 
 		if ((szThis[0] * absH) < (szThis[1] * lblSize * scaleW))
 		{
@@ -2593,11 +2593,11 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 
 			while (cnt--)
 			{
-				denv->img->GetTextSizeUTF8(font->font, lbl, 1, szThis);
+				denv->img->GetTextSize(font->font, lbl, 1, szThis);
 
 				if (type)
 				{
-					WChar l[2];
+					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
 					denv->img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, l, font->font, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
@@ -2609,7 +2609,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 				}
 				else
 				{
-					WChar l[2];
+					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
 					denv->img->DrawStringB(startX + currX, startY + currY, l, font->font, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
@@ -2629,11 +2629,11 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 
 		while (cnt--)
 		{
-			denv->img->GetTextSizeUTF8(df, lbl, 1, szThis);
+			denv->img->GetTextSize(df, lbl, 1, szThis);
 
 			if (type)
 			{
-				WChar l[2];
+				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
 				denv->img->DrawString(startX + currX - (szThis[0] * 0.5), startY + currY, l, df, db);
@@ -2645,7 +2645,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 			}
 			else
 			{
-				WChar l[2];
+				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
 				denv->img->DrawString(startX + currX, startY + currY, l, df, db);
@@ -2663,9 +2663,9 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 		if (font && font->buffSize > 0)
 		{
-			denv->img->DrawStringRotBUTF8(scnPosX, scnPosY, str1, font->font, font->buffBrush, degD * 180 / Math::PI, font->buffSize);
+			denv->img->DrawStringRotB(scnPosX, scnPosY, str1, font->font, font->buffBrush, degD * 180 / Math::PI, font->buffSize);
 		}
-		denv->img->DrawStringRotUTF8(scnPosX, scnPosY, str1, df, db, degD * 180 / Math::PI);
+		denv->img->DrawStringRot(scnPosX, scnPosY, str1, df, db, degD * 180 / Math::PI);
 	}
 }
 
@@ -2745,7 +2745,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 	xDiff = 0;
 	yDiff = 0;
 
-	denv->img->GetTextSizeUTF8(df, str1, lblSize, szThis);
+	denv->img->GetTextSize(df, str1, lblSize, szThis);
 	xDiff = szThis[0] * 0.5;
 	yDiff = xDiff * xDiff;
 
@@ -2944,7 +2944,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			
 		}
 
-		denv->img->GetTextSizeUTF8(df, lbl, nextPos - lbl, szThis);
+		denv->img->GetTextSize(df, lbl, nextPos - lbl, szThis);
 		dist = (szLast[0] + szThis[0]) * 0.5;
 		nextX = currX + (dist * cosAngle);
 		nextY = currY - (dist * sinAngle);
@@ -3170,17 +3170,17 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotBUTF8(currX, currY, lbl, df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, lastAngle, font->buffSize);
 				}
-				denv->img->DrawStringRotUTF8(currX, currY, lbl, df, db, lastAngle);
+				denv->img->DrawStringRot(currX, currY, lbl, df, db, lastAngle);
 			}
 			else
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotBUTF8(currX, currY, lbl, df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, lastAngle, font->buffSize);
 				}
-				denv->img->DrawStringRotUTF8(currX, currY, lbl, df, db, lastAngle);
+				denv->img->DrawStringRot(currX, currY, lbl, df, db, lastAngle);
 			}
 		}
 		else
@@ -3213,17 +3213,17 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotBUTF8(currX, currY, lbl, df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, angleDegree, font->buffSize);
 				}
-				denv->img->DrawStringRotUTF8(currX, currY, lbl, df, db, angleDegree);
+				denv->img->DrawStringRot(currX, currY, lbl, df, db, angleDegree);
 			}
 			else
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotBUTF8(currX, currY, lbl, df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, angleDegree, font->buffSize);
 				}
-				denv->img->DrawStringRotUTF8(currX, currY, lbl, df, db, angleDegree);
+				denv->img->DrawStringRot(currX, currY, lbl, df, db, angleDegree);
 			}
 
 		}
@@ -3335,7 +3335,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 
 	while (i-- > 0)
 	{
-		denv->img->GetTextSizeUTF8(df, &str1[i], 1, szThis);
+		denv->img->GetTextSize(df, &str1[i], 1, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -3617,7 +3617,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		nextChar = *nextPos;
 		*nextPos = 0;
 
-		denv->img->GetTextSizeUTF8(df, lbl, nextPos - lbl, szThis);
+		denv->img->GetTextSize(df, lbl, nextPos - lbl, szThis);
 		while (true)
 		{
 			if (angleDegree <= 90)
@@ -3807,17 +3807,17 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringBUTF8(currX, currY, lbl, df, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
 			}
-			denv->img->DrawStringUTF8(currX, currY, lbl, df, db);
+			denv->img->DrawString(currX, currY, lbl, df, db);
 		}
 		else
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringBUTF8(currX, currY, lbl, df, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, Math::Double2Int32(font->buffSize * denv->img->GetHDPI() / 96.0));
 			}
-			denv->img->DrawStringUTF8(currX, currY, lbl, df, db);
+			denv->img->DrawString(currX, currY, lbl, df, db);
 		}
 		szLast[0] = szThis[0];
 		szLast[1] = szThis[1];
@@ -3887,7 +3887,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, In
 
 		font = &denv.fontStyles[i];
 		env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor);
-		font->font = img->NewFontHUTF8(fontName, fontSize * img->GetHDPI() / 96.0, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		font->font = img->NewFontH(fontName, fontSize * img->GetHDPI() / 96.0, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 		font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
 		font->buffSize = buffSize;
 		if (buffSize > 0)

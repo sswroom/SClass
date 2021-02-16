@@ -47,14 +47,14 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		minFreq = MemAlloc(Double, fftSize);
 
 		retImg = eng->CreateImage32(32, 32, Media::AT_NO_ALPHA);
-		f = retImg->NewFontH(L"Arial", fHeight, Media::DrawEngine::DFS_NORMAL, 0);
+		f = retImg->NewFontH((const UTF8Char*)"Arial", fHeight, Media::DrawEngine::DFS_NORMAL, 0);
 		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, fftSize * 0.5, fHeight, "0", 1, 0);
 		yAxis = 0;
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{
 			i = Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"kHz") - sbuff;
-			retImg->GetTextSizeUTF8(f, sbuff, i, sz);
+			retImg->GetTextSize(f, sbuff, i, sz);
 			k = Math::Double2Int32(sz[0]);
 			if (k > yAxis)
 			{
@@ -71,7 +71,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"s") - sbuff;
-			retImg->GetTextSizeUTF8(f, sbuff, i, sz);
+			retImg->GetTextSize(f, sbuff, i, sz);
 			k = Math::Double2Int32(sz[0]);
 			if (k > xAxis)
 			{
@@ -248,7 +248,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		p = retImg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = retImg->NewBrushARGB(0xff000000);
-		f = retImg->NewFontH(L"Arial", fHeight, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = retImg->NewFontH((const UTF8Char*)"Arial", fHeight, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		retImg->DrawLine(yAxis + 3, ihFontH, yAxis + 3, ihFontH + fftSize * 0.5, p);
 		retImg->DrawLine(yAxis + 3, ihFontH + fftSize * 0.5, yAxis + 4 + Math::OSInt2Double(timeRes), ihFontH + fftSize * 0.5, p);
 
@@ -259,9 +259,9 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"kHz") - sbuff;
-			retImg->GetTextSizeUTF8(f, sbuff, i, sz);
+			retImg->GetTextSize(f, sbuff, i, sz);
 			k = Math::Double2Int32(sz[0]);
-			retImg->DrawStringUTF8(yAxis - Math::OSInt2Double(k), (fftSize >> 1) - chartPos.GetItem(j), sbuff, f, b);
+			retImg->DrawString(yAxis - Math::OSInt2Double(k), (fftSize >> 1) - chartPos.GetItem(j), sbuff, f, b);
 			retImg->DrawLine(yAxis, (fftSize >> 1) - chartPos.GetItem(j) + ihFontH, yAxis + 4, (fftSize >> 1) - chartPos.GetItem(j) + ihFontH, p);
 
 			Text::StrDelNew(chartLabels.GetItem(j));
@@ -274,9 +274,9 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"s") - sbuff;
-			retImg->GetTextSizeUTF8(f, sbuff, i, sz);
+			retImg->GetTextSize(f, sbuff, i, sz);
 			k = Math::Double2Int32(sz[0]);
-			retImg->DrawStringRotUTF8(yAxis + 4 + chartPos.GetItem(j) + ihFontH, ihFontH + fftSize * 0.5 + 4, sbuff, f, b, 270.0);
+			retImg->DrawStringRot(yAxis + 4 + chartPos.GetItem(j) + ihFontH, ihFontH + fftSize * 0.5 + 4, sbuff, f, b, 270.0);
 			retImg->DrawLine(yAxis + 4 + chartPos.GetItem(j), ihFontH + fftSize * 0.5, yAxis + 4 + chartPos.GetItem(j), ihFontH + fftSize * 0.5 + 4, p);
 
 			Text::StrDelNew(chartLabels.GetItem(j));

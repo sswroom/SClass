@@ -1322,15 +1322,15 @@ Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, Dr
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringUTF8(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
+Bool Media::GDIImage::DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
-	Bool ret = DrawString(tlx, tly, wptr, f, b);
+	Bool ret = this->DrawStringW(tlx, tly, wptr, f, b);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawString(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *b)
+Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *b)
 {
 	GDIBrush *brush = (GDIBrush*)b;
 	const WChar *src = str;
@@ -1364,7 +1364,7 @@ Bool Media::GDIImage::DrawString(Double tlx, Double tly, const WChar *str, DrawF
 		GetTextSize(f, str, src - str - 1, sz);
 		Media::GDIImage *tmpImg = (Media::GDIImage*)this->eng->CreateImage32((Int32)sz[0] + 1, (Int32)sz[1] + 1, Media::AT_NO_ALPHA);
 		Media::DrawBrush *b2 = tmpImg->NewBrushARGB(0xffffffff);
-		tmpImg->DrawString(0, 0, str, f, b2);
+		tmpImg->DrawStringW(0, 0, str, f, b2);
 		tmpImg->DelBrush(b2);
 		ImageUtil_ColorReplace32((UInt8*)tmpImg->bmpBits, tmpImg->info->storeWidth, tmpImg->info->storeHeight, ((GDIBrush*)b)->oriColor);
 		tmpImg->info->atype = Media::AT_ALPHA;
@@ -1400,15 +1400,15 @@ Bool Media::GDIImage::DrawString(Double tlx, Double tly, const WChar *str, DrawF
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRotUTF8(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
-	Bool ret = DrawStringRot(centX, centY, wptr, f, b, angleDegree);
+	Bool ret = this->DrawStringRotW(centX, centY, wptr, f, b, angleDegree);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRot(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRotW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	GDIBrush *brush = (GDIBrush*)b;
 	GDIFont *font = (GDIFont*)f;
@@ -1453,15 +1453,15 @@ Bool Media::GDIImage::DrawStringRot(Double centX, Double centY, const WChar *str
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringBUTF8(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, OSInt buffSize)
+Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, OSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1);
-	Bool ret = DrawStringB(dx, dy, wptr, f, b, buffSize);
+	Bool ret = DrawStringBW(dx, dy, wptr, f, b, buffSize);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, OSInt buffSize)
+Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, OSInt buffSize)
 {
 	OSInt px = Math::Double2Int32(dx);
 	OSInt py = Math::Double2Int32(dy);
@@ -1638,15 +1638,15 @@ Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const WChar *str1, DrawF
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRotBUTF8(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
+Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1);
-	Bool ret = this->DrawStringRotB(dx, dy, wptr, f, b, angleDegree, buffSize);
+	Bool ret = this->DrawStringRotBW(dx, dy, wptr, f, b, angleDegree, buffSize);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
+Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
 {
 	OSInt px = Math::Double2Int32(dx);
 	OSInt py = Math::Double2Int32(dy);
@@ -2245,10 +2245,12 @@ Media::DrawBrush *Media::GDIImage::NewBrushARGB(Int32 color)
 	return brush;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontA(const Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
+Media::DrawFont *Media::GDIImage::NewFont(const UTF8Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
 {
 	GDIFont *f;
-	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize * 96.0 / this->info->hdpi, fontStyle, this, 0));
+	const WChar *wptr = Text::StrToWCharNew(name);
+	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize * 96.0 / this->info->hdpi, fontStyle, this, 0));
+	Text::StrDelNew(wptr);
 	return f;
 }
 
@@ -2259,7 +2261,7 @@ Media::DrawFont *Media::GDIImage::NewFontW(const WChar *name, Int16 pxSize, Medi
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontHUTF8(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontH(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
@@ -2310,7 +2312,7 @@ void Media::GDIImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GDIImage::GetTextSizeUTF8(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
+Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
 {
 	OSInt strLen = Text::StrUTF8_WCharCnt(txt, txtLen);
 	WChar *wptr = MemAlloc(WChar, strLen + 1);
@@ -2379,6 +2381,13 @@ void Media::GDIImage::SetTextAlign(Media::DrawEngine::DrawPos pos)
 	static UInt32 textAlign[] = {TA_TOP | TA_LEFT, TA_TOP | TA_CENTER, TA_TOP | TA_RIGHT, TA_TOP | TA_LEFT, TA_TOP | TA_CENTER, TA_TOP | TA_RIGHT, TA_BOTTOM | TA_LEFT, TA_BOTTOM | TA_CENTER, TA_BOTTOM | TA_RIGHT};
 	this->strAlign = pos;
 	::SetTextAlign((HDC)this->hdcBmp, textAlign[pos]);
+}
+
+void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
+{
+	const WChar *wptr = Text::StrToWCharNew(str);
+	GetStringBoundW(pos, centX, centY, wptr, f, drawX, drawY);
+	Text::StrDelNew(wptr);
 }
 
 void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
@@ -2452,6 +2461,12 @@ void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, cons
 	}
 }
 
+void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
+{
+	const WChar *wptr = Text::StrToWCharNew(str);
+	this->GetStringBoundRotW(pos, centX, centY, wptr, f, angleDegree, drawX, drawY);
+	Text::StrDelNew(wptr);
+}
 
 void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
 {

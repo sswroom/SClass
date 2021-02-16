@@ -2,12 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRGISFORM
 #include "Map/MapLayerCollection.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/AVIRGISEditImageForm.h"
-#include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
-#include "SSWR/AVIRead/AVIRGISQueryForm.h"
-#include "SSWR/AVIRead/AVIRGISReplayForm.h"
-#include "SSWR/AVIRead/AVIRGISTileDownloadForm.h"
-#include "SSWR/AVIRead/AVIRGPSSimulatorForm.h"
+#include "SSWR/AVIRead/IMapNavigator.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -29,12 +24,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			SSWR::AVIRead::AVIRGISReplayForm *replayForm;
-			SSWR::AVIRead::AVIRGISQueryForm *queryForm;
-			SSWR::AVIRead::AVIRGISGroupQueryForm *groupQueryForm;
-			SSWR::AVIRead::AVIRGISEditImageForm *editImageForm;
-			SSWR::AVIRead::AVIRGISTileDownloadForm *tileDownForm;
-			SSWR::AVIRead::AVIRGPSSimulatorForm *gpsSimForm;
+			UI::GUIForm *ctrlForm;
 			Media::ColorManagerSess *colorSess;
 			Data::ArrayList<UI::GUIForm *> *subForms;
 			UI::GUIMapControl *mapCtrl;
@@ -90,12 +80,7 @@ namespace SSWR
 			static void __stdcall OnMapUpdated(void *userObj, Double centerX, Double centerY, Double timeUsed);
 			static void __stdcall OnScaleScrolled(void *userObj, Int32 newVal);
 			static void __stdcall OnTreeRightClick(void *userObj);
-			static void __stdcall OnReplayClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnEditImageClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnTileDownClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnGPSSimClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnQueryClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnGroupQueryClosed(void *userObj, UI::GUIForm *frm);
+			static void __stdcall OnCtrlFormClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnSubFormClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnMapLayerUpdated(void *userObj);
 			static void __stdcall OnTimeScrolled(void *userObj, Int32 newVal);
@@ -104,6 +89,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void UpdateTitle();
 			void CloseCtrlForm();
+			void SetCtrlForm(UI::GUIForm *frm);
 			Bool ParseObject(IO::ParsedObject *pobj);
 			void OpenURL(const UTF8Char *url, const UTF8Char *customName);
 			void HKOPortal(const UTF8Char *listFile, const UTF8Char *filePath);

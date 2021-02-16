@@ -8,7 +8,7 @@ namespace Math
 	class VectorString : public Vector2D
 	{
 	private:
-		const WChar *s;
+		const UTF8Char *s;
 		Double x;
 		Double y;
 		Double angleDegree;
@@ -17,7 +17,6 @@ namespace Math
 		
 	public:
 		VectorString(Int32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
-		VectorString(Int32 srid, const WChar *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
 		virtual ~VectorString();
 
 		virtual VectorType GetVectorType();
@@ -29,7 +28,7 @@ namespace Math
 		virtual Bool Support3D();
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 
-		const WChar *GetString();
+		const UTF8Char *GetString();
 		Double GetAngleDegree();
 		Double GetBuffSize();
 		Media::DrawEngine::DrawPos GetTextAlign();

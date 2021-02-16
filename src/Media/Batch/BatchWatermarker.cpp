@@ -68,8 +68,8 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 
 		while (true)
 		{
-			f = tmpImg->NewFontH(L"Arial", fontSize, Media::DrawEngine::DFS_NORMAL, 0);
-			if (!tmpImg->GetTextSizeUTF8(f, this->watermark, leng, sz))
+			f = tmpImg->NewFontH((const UTF8Char*)"Arial", fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+			if (!tmpImg->GetTextSize(f, this->watermark, leng, sz))
 			{
 				tmpImg->DelFont(f);
 				break;
@@ -81,7 +81,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 				iWidth = Math::Double2Int32(sz[0]);
 				iHeight = Math::Double2Int32(sz[1]);
 				gimg2 = this->deng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-				gimg2->DrawStringUTF8(0, 0, this->watermark, f, b);
+				gimg2->DrawString(0, 0, this->watermark, f, b);
 				gimg2->SetAlphaType(Media::AT_ALPHA);
 				Bool revOrder;
 				UInt8 *bmpBits = gimg2->GetImgBits(&revOrder);

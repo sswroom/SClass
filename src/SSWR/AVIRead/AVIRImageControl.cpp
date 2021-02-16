@@ -695,7 +695,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	{
 		j = imgList->GetCount() - 1;
 	}
-	f = dimg->NewFontH(L"Arial", 12 * hdpi / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+	f = dimg->NewFontH((const UTF8Char*)"Arial", 12 * hdpi / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	OSInt strLen;
 	Double strSz[2];
@@ -730,9 +730,9 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			Text::StringBuilderUTF8 sb;
 			sb.Append(status->fileName);
 			strLen = Text::StrCharCnt(sb.ToString());
-			if (f && dimg->GetTextSizeUTF8(f, sb.ToString(), strLen, strSz))
+			if (f && dimg->GetTextSize(f, sb.ToString(), strLen, strSz))
 			{
-				dimg->DrawStringUTF8((scnW - strSz[0]) * 0.5, Math::OSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
+				dimg->DrawString((scnW - strSz[0]) * 0.5, Math::OSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
 			}
 		}
 		i++;

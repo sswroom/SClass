@@ -251,7 +251,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 	{
 		scaleH = 0;
 	}
-	img->GetTextSizeUTF8(font->font, str1, lblSize, size);
+	img->GetTextSize(font->font, str1, lblSize, size);
 
 	if (scaleH == 0)
 	{
@@ -312,11 +312,11 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 			}
 			else if (font->fontType == 0)
 			{
-				img->DrawStringUTF8(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, (Media::DrawBrush*)font->other);
 			}
 			else if (font->fontType == 4)
 			{
-				img->DrawStringBUTF8(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
+				img->DrawStringB(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
 			}
 			i++;
 		}
@@ -422,7 +422,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 				Double tmp;
 				Int32 type;
 				Double szThis[2];
-				img->GetTextSizeUTF8(font->font, str1, lblSize, szThis);
+				img->GetTextSize(font->font, str1, lblSize, szThis);
 
 				if ((szThis[0] * absH) < (szThis[1] * lblSize * scaleW))
 				{
@@ -472,7 +472,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 
 				while (cnt--)
 				{
-					img->GetTextSizeUTF8(font->font, lbl, 1, szThis);
+					img->GetTextSize(font->font, lbl, 1, szThis);
 
 					if (type)
 					{
@@ -481,14 +481,14 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringUTF8(startX + currX - szThis[0] * 0.5, startY + currY, l, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currX - szThis[0] * 0.5, startY + currY, l, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringBUTF8(startX + currX - szThis[0] * 0.5, startY + currY, l, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
+							img->DrawStringB(startX + currX - szThis[0] * 0.5, startY + currY, l, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
 						}
 
 						currY += szThis[1];
@@ -503,14 +503,14 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringUTF8(startX + currX, startY + currY, l, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currX, startY + currY, l, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringBUTF8(startX + currX, startY + currY, l, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
+							img->DrawStringB(startX + currX, startY + currY, l, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
 						}
 
 						currX += szThis[0];
@@ -527,11 +527,11 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 
 				if (font->fontType == 0)
 				{
-					img->DrawStringRotUTF8(scnPosX, scnPosY, str1, font->font, (Media::DrawBrush*)font->other, (Int32)(degD * 180 / PI));
+					img->DrawStringRot(scnPosX, scnPosY, str1, font->font, (Media::DrawBrush*)font->other, (Int32)(degD * 180 / PI));
 				}
 				else if (font->fontType == 4)
 				{
-					img->DrawStringRotBUTF8(scnPosX, scnPosY, str1, font->font, (Media::DrawBrush*)font->other, (Int32)(degD * 180 / PI), Math::Double2Int32(font->thick));
+					img->DrawStringRotB(scnPosX, scnPosY, str1, font->font, (Media::DrawBrush*)font->other, (Int32)(degD * 180 / PI), Math::Double2Int32(font->thick));
 				}
 			}
 		}
@@ -636,7 +636,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 
 	while (i-- > 0)
 	{
-		img->GetTextSizeUTF8(font->font, &str1[i], 1, szThis);
+		img->GetTextSize(font->font, &str1[i], 1, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -922,7 +922,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 			nextChar = *nextPos;
 			*nextPos = 0;
 
-			img->GetTextSizeUTF8(font->font, lbl, nextPos - lbl, szThis);
+			img->GetTextSize(font->font, lbl, nextPos - lbl, szThis);
 			while (true)
 			{
 				if (angleDegree <= 90)
@@ -1112,22 +1112,22 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 			{
 				if (font->fontType == 0)
 				{
-					img->DrawStringUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other);
+					img->DrawString(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other);
 				}
 				else
 				{
-					img->DrawStringBUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
+					img->DrawStringB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
 				}
 			}
 			else
 			{
 				if (font->fontType == 0)
 				{
-					img->DrawStringUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other);
+					img->DrawString(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other);
 				}
 				else
 				{
-					img->DrawStringBUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
+					img->DrawStringB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
 				}
 			}
 			szLast[0] = szThis[0];
@@ -1225,7 +1225,7 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *st
 
 	while (i-- > 0)
 	{
-		img->GetTextSizeUTF8(font->font, &str1[i], 1, szThis);
+		img->GetTextSize(font->font, &str1[i], 1, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -1522,16 +1522,16 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *st
 				}
 			}
 
-			img->GetTextSizeUTF8(font->font, lbl, 1, szThis);
+			img->GetTextSize(font->font, lbl, 1, szThis);
 			l[0] = lbl[0];
 			l[1] = 0;
 			if (font->fontType == 0)
 			{
-				img->DrawStringUTF8(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), l, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), l, font->font, (Media::DrawBrush*)font->other);
 			}
 			else
 			{
-				img->DrawStringBUTF8(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), l, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
+				img->DrawStringB(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), l, font->font, (Media::DrawBrush*)font->other, Math::Double2Int32(font->thick));
 			}
 
 			found = false;
@@ -1899,7 +1899,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 	xDiff = 0;
 	yDiff = 0;
 
-	img->GetTextSizeUTF8(font->font, str1, lblSize, szThis);
+	img->GetTextSize(font->font, str1, lblSize, szThis);
 	xDiff = szThis[0] * 0.5;
 	yDiff = xDiff * xDiff;
 
@@ -2060,7 +2060,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 				}
 			}
 
-			img->GetTextSizeUTF8(font->font, lbl, nextPos - lbl, szThis);
+			img->GetTextSize(font->font, lbl, nextPos - lbl, szThis);
 			dist = (szLast[0] + szThis[0]) * 0.5;
 			nextX = currX + dist * cosAngle;
 			nextY = currY - dist * sinAngle;
@@ -2286,22 +2286,22 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRotUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle);
+						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotBUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle, Math::Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle, Math::Double2Int32(font->thick));
 					}
 				}
 				else
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRotUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle);
+						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotBUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle, Math::Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle, Math::Double2Int32(font->thick));
 					}
 				}
 			}
@@ -2335,22 +2335,22 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRotUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree);
+						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree);
 					}
 					else
 					{
-						img->DrawStringRotBUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree, Math::Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree, Math::Double2Int32(font->thick));
 					}
 				}
 				else
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRotUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree);
+						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree);
 					}
 					else
 					{
-						img->DrawStringRotBUTF8(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree, Math::Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree, Math::Double2Int32(font->thick));
 					}
 				}
 
@@ -2426,7 +2426,7 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, cons
 
 	Double szTmp[2];
 	font = (Map::MapFontStyle*)fontStyle->GetItem(maxIndex);
-	img->GetTextSizeUTF8(font->font, label, Text::StrCharCnt(label), szTmp);
+	img->GetTextSize(font->font, label, Text::StrCharCnt(label), szTmp);
 
 	if (scaleH == 0)
 	{
@@ -4992,7 +4992,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 					Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 					if (fnt->thick > 0)
 						s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-					fnt2->font = img->NewFontHUTF8(fnt->fontName, fnt->fontSize * img->GetHDPI() / 72.0, s, 0);
+					fnt2->font = img->NewFontH(fnt->fontName, fnt->fontSize * img->GetHDPI() / 72.0, s, 0);
 					fnt2->other = img->NewBrushARGB(fnt->color);
 				}
 				else if (fnt->fontType == 1)
@@ -5021,11 +5021,11 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 						if (f->thick > 0)
 							s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-						fnt2->font = img->NewFontHUTF8(f->fontName, f->fontSize * img->GetHDPI() / 72.0, s, 0);
+						fnt2->font = img->NewFontH(f->fontName, f->fontSize * img->GetHDPI() / 72.0, s, 0);
 					}
 					else
 					{
-						fnt2->font = img->NewFontHUTF8(fnt->fontName, fnt->fontSize * img->GetHDPI() / 72.0, Media::DrawEngine::DFS_NORMAL, 0);
+						fnt2->font = img->NewFontH(fnt->fontName, fnt->fontSize * img->GetHDPI() / 72.0, Media::DrawEngine::DFS_NORMAL, 0);
 					}
 					fnt2->other = img->NewBrushARGB(fnt->color);
 					fnt2->thick = fnt2->thick * img->GetHDPI() / 96.0;

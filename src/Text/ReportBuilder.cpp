@@ -485,17 +485,17 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	{
 		g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
-	f = g->NewFontH(L"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+	f = g->NewFontH((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
 		strs = this->headers->GetItem(i);
-		g->GetTextSizeUTF8(f, strs[0], -1, sz);
+		g->GetTextSize(f, strs[0], -1, sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSizeUTF8(f, strs[1], -1, sz);
+		g->GetTextSize(f, strs[1], -1, sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -503,10 +503,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	while (i-- > 0)
 	{
 		strs = this->preheaders->GetItem(i);
-		g->GetTextSizeUTF8(f, strs[0], -1, sz);
+		g->GetTextSize(f, strs[0], -1, sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSizeUTF8(f, strs[1], -1, sz);
+		g->GetTextSize(f, strs[1], -1, sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -531,7 +531,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			colCurrX[j] = 0;
 			if (strs[j])
 			{
-				g->GetTextSizeUTF8(f, strs[j], -1, sz);
+				g->GetTextSize(f, strs[j], -1, sz);
 				colCurrX[j] = sz[0];
 			}
 		}
@@ -609,7 +609,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	l = this->tableContent->GetCount();
 	while (true)
 	{
-		f = g->NewFontH(L"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+		f = g->NewFontH((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 		b = g->NewBrushARGB(0xff000000);
 		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
 
@@ -619,22 +619,22 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		while (i < j)
 		{
 			strs = this->preheaders->GetItem(i);
-			g->DrawStringUTF8(border, currY, strs[0], f, b);
-			g->DrawStringUTF8(border + headerW1 + 0.5, currY, strs[1], f, b);
+			g->DrawString(border, currY, strs[0], f, b);
+			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
 
 			currY += fontHeight * 1.5;
 			i++;
 		}
 
-		g->DrawStringUTF8(border, currY, this->name, f, b);
+		g->DrawString(border, currY, this->name, f, b);
 		currY += fontHeight * 2;
 		i = 0;
 		j = this->headers->GetCount();
 		while (i < j)
 		{
 			strs = this->headers->GetItem(i);
-			g->DrawStringUTF8(border, currY, strs[0], f, b);
-			g->DrawStringUTF8(border + headerW1 + 0.5, currY, strs[1], f, b);
+			g->DrawString(border, currY, strs[0], f, b);
+			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
 
 			currY += fontHeight * 1.5;
 			i++;
@@ -652,7 +652,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			j = this->colCount;
 			while (i < j)
 			{
-				g->DrawStringUTF8(colPos[i], currY, strs[i], f, b);
+				g->DrawString(colPos[i], currY, strs[i], f, b);
 				i++;
 			}
 			currY += fontHeight * 1.5 + 0.2;
@@ -676,7 +676,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 				{
 					if (strs[i])
 					{
-						g->DrawStringUTF8(colPos[i], currY, strs[i], f, b);
+						g->DrawString(colPos[i], currY, strs[i], f, b);
 					}
 					i++;
 				}
@@ -690,7 +690,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					{
 						if (strs[i])
 						{
-							g->GetTextSizeUTF8(f, strs[i], -1, sz);
+							g->GetTextSize(f, strs[i], -1, sz);
 							colCurrX[i] = colPos[i] + sz[0];
 						}
 						else
@@ -733,8 +733,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			}
 			pageId++;
 			Text::StrInt32(sbuff, pageId);
-			g->GetTextSizeUTF8(f, sbuff, -1, sz);
-			g->DrawStringUTF8(border + (drawWidth - sz[0]) * 0.5, paperSize.GetHeightMM() - border, sbuff, f, b);
+			g->GetTextSize(f, sbuff, -1, sz);
+			g->DrawString(border + (drawWidth - sz[0]) * 0.5, paperSize.GetHeightMM() - border, sbuff, f, b);
 		}
 
 		g->DelFont(f);

@@ -1067,12 +1067,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	}
 	if (readingIndex == -1)
 	{
-		f = dimg->NewFontHUTF8((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawStringUTF8(0, 0, (const UTF8Char*)"Sensor not found", f, b);
+		dimg->DrawString(0, 0, (const UTF8Char*)"Sensor not found", f, b);
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
 	}
@@ -1428,13 +1428,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		}
 		else
 		{
-			f = dimg->NewFontHUTF8((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
-			dimg->DrawStringUTF8(0, 0, sb.ToString(), f, b);
-			dimg->DrawStringUTF8(0, 12, (const UTF8Char*)"Data not enough", f, b);
+			dimg->DrawString(0, 0, sb.ToString(), f, b);
+			dimg->DrawString(0, 12, (const UTF8Char*)"Data not enough", f, b);
 			dimg->DelBrush(b);
 			dimg->DelFont(f);
 		}
@@ -1688,12 +1688,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	dev->mut->UnlockRead();
 	if (readingIndex == -1)
 	{
-		f = dimg->NewFontHUTF8((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawStringUTF8(0, 0, (const UTF8Char*)"Sensor not found", f, b);
+		dimg->DrawString(0, 0, (const UTF8Char*)"Sensor not found", f, b);
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
 	}
@@ -1777,13 +1777,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 		else
 		{
-			f = dimg->NewFontHUTF8((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
-			dimg->DrawStringUTF8(0, 0, sb.ToString(), f, b);
-			dimg->DrawStringUTF8(0, 12, (const UTF8Char*)"Data not enough", f, b);
+			dimg->DrawString(0, 0, sb.ToString(), f, b);
+			dimg->DrawString(0, 12, (const UTF8Char*)"Data not enough", f, b);
 			dimg->DelBrush(b);
 			dimg->DelFont(f);
 		}

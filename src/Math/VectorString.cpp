@@ -3,19 +3,8 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/VectorString.h"
 #include "Text/MyString.h"
-#include "Text/MyStringW.h"
 
 Math::VectorString::VectorString(Int32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
-{
-	this->s = Text::StrToWCharNew(s);
-	this->x = x;
-	this->y = y;
-	this->angleDegree = angleDegree;
-	this->buffSize = buffSize;
-	this->align = align;
-}
-
-Math::VectorString::VectorString(Int32 srid, const WChar *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = Text::StrCopyNew(s);
 	this->x = x;
@@ -80,7 +69,7 @@ void Math::VectorString::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordin
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, 0, &this->x, &this->y, 0);
 }
 
-const WChar *Math::VectorString::GetString()
+const UTF8Char *Math::VectorString::GetString()
 {
 	return this->s;
 }

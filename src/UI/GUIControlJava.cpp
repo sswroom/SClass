@@ -527,7 +527,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 	}
 	else
 	{
-		fnt = img->NewFontHUTF8(this->fontName, this->fontHeight * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		fnt = img->NewFontH(this->fontName, this->fontHeight * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
 	return fnt;
 }

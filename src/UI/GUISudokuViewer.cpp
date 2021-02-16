@@ -184,7 +184,7 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 	img->DrawRect(Math::OSInt2Double(tlx + i), Math::OSInt2Double(tly + currPos), Math::OSInt2Double(j - i - 1), Math::OSInt2Double(lastPos - currPos - 1), p, 0);
 	img->DelPen(p);
 
-	f = img->NewFontHUTF8((const UTF8Char*)"Arial", blockSize * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
+	f = img->NewFontH((const UTF8Char*)"Arial", blockSize * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
 	b = img->NewBrushARGB(0xffcccccc);
 	b2 = img->NewBrushARGB(0xff000000);
 	i = 9;
@@ -218,8 +218,8 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 				{
 					img->DrawRect(Math::OSInt2Double(x), Math::OSInt2Double(y), Math::OSInt2Double(x2 - x), Math::OSInt2Double(y2 - y), 0, b3);
 				}
-				img->GetTextSizeUTF8(f, ch, 1, sz);
-				img->DrawStringUTF8(x + (x2 - x - sz[0]) * 0.5, y + (y2 - y - sz[1]) * 0.5, ch, f, b2);
+				img->GetTextSize(f, ch, 1, sz);
+				img->DrawString(x + (x2 - x - sz[0]) * 0.5, y + (y2 - y - sz[1]) * 0.5, ch, f, b2);
 			}
 			else
 			{

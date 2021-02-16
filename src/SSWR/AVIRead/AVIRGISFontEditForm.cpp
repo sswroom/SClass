@@ -134,16 +134,16 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 
 	if (this->currFontName)
 	{
-		f = dimg->NewFontHUTF8(this->currFontName, this->currFontSize * this->GetHDPI() / this->GetDDPI(), this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
-		dimg->GetTextSizeUTF8(f, sbuff, -1, sz);
+		f = dimg->NewFontH(this->currFontName, this->currFontSize * this->GetHDPI() / this->GetDDPI(), this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
+		dimg->GetTextSize(f, sbuff, -1, sz);
 		if (this->currBuffSize > 0)
 		{
 			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));
-			dimg->DrawStringBUTF8((w - sz[0]) * 0.5, (h - sz[1]) * 0.5, sbuff, f, b, Math::Double2Int32(this->currBuffSize * this->GetHDPI() / this->GetDDPI()));
+			dimg->DrawStringB((w - sz[0]) * 0.5, (h - sz[1]) * 0.5, sbuff, f, b, Math::Double2Int32(this->currBuffSize * this->GetHDPI() / this->GetDDPI()));
 			dimg->DelBrush(b);
 		}
 		b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currColor));
-		dimg->DrawStringUTF8((w - sz[0]) * 0.5, (h - sz[1]) * 0.5, sbuff, f, b);
+		dimg->DrawString((w - sz[0]) * 0.5, (h - sz[1]) * 0.5, sbuff, f, b);
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
 	}

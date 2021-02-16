@@ -341,12 +341,12 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 		OSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontHUTF8(this->currFont, Math::OSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontH(this->currFont, Math::OSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
 		len = this->chinese->AppendCharCode(sbuff, this->currChar) - sbuff;
 		sbuff[len] = 0;
 		
-		this->charImg->GetTextSizeUTF8(f, sbuff, len, sz);
-		this->charImg->DrawStringUTF8((newW - sz[0]) * 0.5, (newH - sz[1]) * 0.5, sbuff, f, b);
+		this->charImg->GetTextSize(f, sbuff, len, sz);
+		this->charImg->DrawString((newW - sz[0]) * 0.5, (newH - sz[1]) * 0.5, sbuff, f, b);
 		this->charImg->DelFont(f);
 		this->charImg->DelBrush(b);
 	}

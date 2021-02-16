@@ -12,7 +12,6 @@
 #include "Media/VectorGraph.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "Text/MyStringW.h"
 
 Media::VectorGraph::VectorPenStyle::VectorPenStyle(OSInt index, Int32 color, Double thick, UInt8 *pattern, OSInt nPattern)
 {
@@ -70,7 +69,7 @@ Media::DrawPen *Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI,
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
 }
 
-Media::VectorGraph::VectorFontStyle::VectorFontStyle(OSInt index, const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::VectorGraph::VectorFontStyle::VectorFontStyle(OSInt index, const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	this->index = index;
 	this->name = Text::StrCopyNew(name);
@@ -84,7 +83,7 @@ Media::VectorGraph::VectorFontStyle::~VectorFontStyle()
 	Text::StrDelNew(this->name);
 }
 
-Bool Media::VectorGraph::VectorFontStyle::IsSame(const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Bool Media::VectorGraph::VectorFontStyle::IsSame(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	if (!Text::StrEquals(this->name, name))
 		return false;
@@ -107,7 +106,7 @@ Double Media::VectorGraph::VectorFontStyle::GetHeight()
 	return this->height;
 }
 
-const WChar *Media::VectorGraph::VectorFontStyle::GetName()
+const UTF8Char *Media::VectorGraph::VectorFontStyle::GetName()
 {
 	return this->name;
 }
@@ -390,7 +389,7 @@ Bool Media::VectorGraph::DrawEllipse(Double tlx, Double tly, Double w, Double h,
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringUTF8(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
+Bool Media::VectorGraph::DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
@@ -404,21 +403,7 @@ Bool Media::VectorGraph::DrawStringUTF8(Double tlx, Double tly, const UTF8Char *
 	return true;
 }
 
-Bool Media::VectorGraph::DrawString(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *b)
-{
-	VectorStyles *style;
-	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, 0, this->align));
-	style = MemAlloc(VectorStyles, 1);
-	style->pen = 0;
-	style->brush = (VectorBrushStyle*)b;
-	style->font = (VectorFontStyle*)f;
-	this->items->Add(vstr);
-	this->itemStyle->Add(style);
-	return true;
-}
-
-Bool Media::VectorGraph::DrawStringRotUTF8(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
@@ -432,21 +417,7 @@ Bool Media::VectorGraph::DrawStringRotUTF8(Double centX, Double centY, const UTF
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *b, Double angleDegree)
-{
-	VectorStyles *style;
-	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, 0, this->align));
-	style = MemAlloc(VectorStyles, 1);
-	style->pen = 0;
-	style->brush = (VectorBrushStyle*)b;
-	style->font = (VectorFontStyle*)f;
-	this->items->Add(vstr);
-	this->itemStyle->Add(style);
-	return true;
-}
-
-Bool Media::VectorGraph::DrawStringBUTF8(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b, OSInt buffSize)
+Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b, OSInt buffSize)
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
@@ -460,35 +431,7 @@ Bool Media::VectorGraph::DrawStringBUTF8(Double tlx, Double tly, const UTF8Char 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *b, OSInt buffSize)
-{
-	VectorStyles *style;
-	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, Math::OSInt2Double(buffSize), this->align));
-	style = MemAlloc(VectorStyles, 1);
-	style->pen = 0;
-	style->brush = (VectorBrushStyle*)b;
-	style->font = (VectorFontStyle*)f;
-	this->items->Add(vstr);
-	this->itemStyle->Add(style);
-	return true;
-}
-
-Bool Media::VectorGraph::DrawStringRotBUTF8(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
-{
-	VectorStyles *style;
-	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, Math::OSInt2Double(buffSize), this->align));
-	style = MemAlloc(VectorStyles, 1);
-	style->pen = 0;
-	style->brush = (VectorBrushStyle*)b;
-	style->font = (VectorFontStyle*)f;
-	this->items->Add(vstr);
-	this->itemStyle->Add(style);
-	return true;
-}
-
-Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
+Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
@@ -602,29 +545,7 @@ Media::DrawBrush *Media::VectorGraph::NewBrushARGB(Int32 color)
 	return brush;
 }
 
-Media::DrawFont *Media::VectorGraph::NewFontA(const Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
-{
-	WChar sbuff[256];
-	Text::Encoding enc;
-	enc.WFromBytes(sbuff, (const UInt8*)name, -1, 0);
-	Media::VectorGraph::VectorFontStyle *font;
-	OSInt i;
-	OSInt j;
-	i = 0;
-	j = this->fontStyles->GetCount();
-	while (i < j)
-	{
-		font = this->fontStyles->GetItem(i);
-		if (font->IsSame(sbuff, pxSize, fontStyle, 0))
-			return font;
-		i++;
-	}
-	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), sbuff, pxSize, fontStyle, 0));
-	this->fontStyles->Add(font);
-	return font;
-}
-
-Media::DrawFont *Media::VectorGraph::NewFontW(const WChar *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
+Media::DrawFont *Media::VectorGraph::NewFont(const UTF8Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
 {
 	Media::VectorGraph::VectorFontStyle *font;
 	OSInt i;
@@ -643,15 +564,7 @@ Media::DrawFont *Media::VectorGraph::NewFontW(const WChar *name, Int16 pxSize, M
 	return font;
 }
 
-Media::DrawFont *Media::VectorGraph::NewFontHUTF8(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
-{
-	const WChar *wname = Text::StrToWCharNew(name);
-	Media::DrawFont *ret = NewFontH(wname, height, fontStyle, codePage);
-	Text::StrDelNew(wname);
-	return ret;
-}
-
-Media::DrawFont *Media::VectorGraph::NewFontH(const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::VectorGraph::NewFontH(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	Media::VectorGraph::VectorFontStyle *font;
 	OSInt i;
@@ -690,17 +603,7 @@ void Media::VectorGraph::DelFont(DrawFont *f)
 {
 }
 
-Bool Media::VectorGraph::GetTextSizeUTF8(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
-{
-	OSInt sLen = Text::StrUTF8_WCharCnt(txt, txtLen);
-	WChar *wptr = MemAlloc(WChar, sLen + 1);
-	Text::StrUTF8_WChar(wptr, txt, txtLen, 0);
-	Bool ret = GetTextSize(fnt, wptr, sLen, sz);
-	MemFree(wptr);
-	return ret;
-}
-
-Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Double *sz)
+Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
 {
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
@@ -729,12 +632,12 @@ void Media::VectorGraph::SetTextAlign(Media::DrawEngine::DrawPos pos)
 	this->align = pos;
 }
 
-void Media::VectorGraph::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
+void Media::VectorGraph::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
 {
 	////////////////////////////////////////
 }
 
-void Media::VectorGraph::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
+void Media::VectorGraph::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
 {
 	////////////////////////////////////////
 }

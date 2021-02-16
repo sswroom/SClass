@@ -7767,7 +7767,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						while (true)
 						{
 							f = gimg->NewFontW(L"Arial", fontSize, Media::DrawEngine::DFS_NORMAL);
-							if (!gimg->GetTextSizeUTF8(f, this->watermark, leng, sz))
+							if (!gimg->GetTextSize(f, this->watermark, leng, sz))
 							{
 								gimg->DelFont(f);
 								break;
@@ -7779,7 +7779,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 								iWidth = Math::Double2Int32(sz[0]);
 								iHeight = Math::Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-								gimg2->DrawStringUTF8(0, 0, this->watermark, f, b);
+								gimg2->DrawString(0, 0, this->watermark, f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);
 								{
 									Bool revOrder;
@@ -8089,8 +8089,8 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						Media::DrawFont *f;
 						while (true)
 						{
-							f = gimg->NewFontW(L"Arial", fontSize, Media::DrawEngine::DFS_NORMAL);
-							if (!gimg->GetTextSizeUTF8(f, user->watermark, leng, sz))
+							f = gimg->NewFont((const UTF8Char*)"Arial", fontSize, Media::DrawEngine::DFS_NORMAL);
+							if (!gimg->GetTextSize(f, user->watermark, leng, sz))
 							{
 								gimg->DelFont(f);
 								break;
@@ -8102,7 +8102,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 								iWidth = Math::Double2Int32(sz[0]);
 								iHeight = Math::Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-								gimg2->DrawStringUTF8(0, 0, user->watermark, f, b);
+								gimg2->DrawString(0, 0, user->watermark, f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);
 								{
 									Bool revOrder;
