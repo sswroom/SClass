@@ -104,7 +104,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		gimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 
-		f = gimg->NewFontH((const UTF8Char*)"Arial", 12 * v * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = gimg->NewFontPx((const UTF8Char*)"Arial", 12 * v * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = gimg->NewBrushARGB(0xff000000);
 		currV = 0;

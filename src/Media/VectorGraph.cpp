@@ -69,11 +69,11 @@ Media::DrawPen *Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI,
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
 }
 
-Media::VectorGraph::VectorFontStyle::VectorFontStyle(OSInt index, const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::VectorGraph::VectorFontStyle::VectorFontStyle(OSInt index, const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	this->index = index;
 	this->name = Text::StrCopyNew(name);
-	this->height = height;
+	this->heightPt = heightPt;
 	this->fontStyle = fontStyle;
 	this->codePage = codePage;
 }
@@ -83,11 +83,11 @@ Media::VectorGraph::VectorFontStyle::~VectorFontStyle()
 	Text::StrDelNew(this->name);
 }
 
-Bool Media::VectorGraph::VectorFontStyle::IsSame(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Bool Media::VectorGraph::VectorFontStyle::IsSame(const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	if (!Text::StrEquals(this->name, name))
 		return false;
-	if (this->height != height)
+	if (this->heightPt != heightPt)
 		return false;
 	if (this->fontStyle != fontStyle)
 		return false;
@@ -101,9 +101,9 @@ OSInt Media::VectorGraph::VectorFontStyle::GetIndex()
 	return this->index;
 }
 
-Double Media::VectorGraph::VectorFontStyle::GetHeight()
+Double Media::VectorGraph::VectorFontStyle::GetHeightPt()
 {
-	return this->height;
+	return this->heightPt;
 }
 
 const UTF8Char *Media::VectorGraph::VectorFontStyle::GetName()
@@ -123,7 +123,7 @@ Int32 Media::VectorGraph::VectorFontStyle::GetCodePage()
 
 Media::DrawFont *Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double oriDPI, Media::DrawImage *dimg)
 {
-	return dimg->NewFontH(this->name, this->height * dimg->GetHDPI() / oriDPI, this->fontStyle, this->codePage);
+	return dimg->NewFontPx(this->name, this->heightPt * dimg->GetHDPI() / oriDPI, this->fontStyle, this->codePage);
 }
 
 Media::VectorGraph::VectorBrushStyle::VectorBrushStyle(OSInt index, Int32 color)
@@ -545,7 +545,7 @@ Media::DrawBrush *Media::VectorGraph::NewBrushARGB(Int32 color)
 	return brush;
 }
 
-Media::DrawFont *Media::VectorGraph::NewFont(const UTF8Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
+Media::DrawFont *Media::VectorGraph::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	Media::VectorGraph::VectorFontStyle *font;
 	OSInt i;
@@ -555,18 +555,19 @@ Media::DrawFont *Media::VectorGraph::NewFont(const UTF8Char *name, Int16 pxSize,
 	while (i < j)
 	{
 		font = this->fontStyles->GetItem(i);
-		if (font->IsSame(name, pxSize, fontStyle, 0))
+		if (font->IsSame(name, ptSize, fontStyle, 0))
 			return font;
 		i++;
 	}
-	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), name, pxSize, fontStyle, 0));
+	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), name, ptSize, fontStyle, 0));
 	this->fontStyles->Add(font);
 	return font;
 }
 
-Media::DrawFont *Media::VectorGraph::NewFontH(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::VectorGraph::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	Media::VectorGraph::VectorFontStyle *font;
+	Double ptSize = pxSize * 96.0 / 72.0;
 	OSInt i;
 	OSInt j;
 	i = 0;
@@ -574,11 +575,11 @@ Media::DrawFont *Media::VectorGraph::NewFontH(const UTF8Char *name, Double heigh
 	while (i < j)
 	{
 		font = this->fontStyles->GetItem(i);
-		if (font->IsSame(name, height, fontStyle, codePage))
+		if (font->IsSame(name, ptSize, fontStyle, codePage))
 			return font;
 		i++;
 	}
-	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), name, height, fontStyle, codePage));
+	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), name, ptSize, fontStyle, codePage));
 	this->fontStyles->Add(font);
 	return font;
 }
@@ -586,7 +587,7 @@ Media::DrawFont *Media::VectorGraph::NewFontH(const UTF8Char *name, Double heigh
 Media::DrawFont *Media::VectorGraph::CloneFont(Media::DrawFont *f)
 {
 	Media::VectorGraph::VectorFontStyle *font = (Media::VectorGraph::VectorFontStyle*)f;
-	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), font->GetName(), font->GetHeight(), font->GetStyle(), font->GetCodePage()));
+	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), font->GetName(), font->GetHeightPt(), font->GetStyle(), font->GetCodePage()));
 	this->fontStyles->Add(font);
 	return font;
 }
@@ -608,18 +609,18 @@ Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt t
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
 	Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
-	Double fntSize = fntStyle->GetHeight();
-	if (fntSize < 100)
+	Double fntSizePt = fntStyle->GetHeightPt();
+	if (fntSizePt < 100)
 	{
-		f = tmpImg->NewFontH(fntStyle->GetName(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
+		f = tmpImg->NewFontPt(fntStyle->GetName(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
 		tmpImg->GetTextSize(f, txt, txtLen, sz);
 		tmpImg->DelFont(f);
-		sz[0] *= fntSize / 100.0;
-		sz[1] *= fntSize / 100.0;
+		sz[0] *= fntSizePt / 100.0;
+		sz[1] *= fntSizePt / 100.0;
 	}
 	else
 	{
-		f = tmpImg->NewFontH(fntStyle->GetName(), fntSize, fntStyle->GetStyle(), fntStyle->GetCodePage());
+		f = tmpImg->NewFontPt(fntStyle->GetName(), fntSizePt, fntStyle->GetStyle(), fntStyle->GetCodePage());
 		tmpImg->GetTextSize(f, txt, txtLen, sz);
 		tmpImg->DelFont(f);
 	}

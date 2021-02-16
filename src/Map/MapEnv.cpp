@@ -431,7 +431,7 @@ UOSInt Map::MapEnv::GetLineStyleLayerCnt(UOSInt index)
 	return style->layers->GetCount();
 }
 
-OSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSize, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor)
+OSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor)
 {
 	Map::MapEnv::FontStyle *style;
 	if (fontName == 0)
@@ -446,7 +446,7 @@ OSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontN
 		style->styleName = 0;
 	}
 	style->fontName = Text::StrCopyNew(fontName);
-	style->fontSize = fontSize;
+	style->fontSizePt = fontSizePt;
 	style->bold = bold;
 	style->fontColor = fontColor;
 	style->buffSize = buffSize;
@@ -501,13 +501,13 @@ UOSInt Map::MapEnv::GetFontStyleCount()
 	return this->fontStyles->GetCount();
 }
 
-Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSize, Bool *bold, Int32 *fontColor, UOSInt *buffSize, Int32 *buffColor)
+Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, Int32 *fontColor, UOSInt *buffSize, Int32 *buffColor)
 {
 	Map::MapEnv::FontStyle *style = this->fontStyles->GetItem(index);
 	if (style == 0)
 	{
 		*fontName = 0;
-		*fontSize = 0;
+		*fontSizePt = 0;
 		*bold = false;
 		*fontColor = 0xff000000;
 		*buffSize = 0;
@@ -515,7 +515,7 @@ Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *
 		return false;
 	}
 	*fontName = style->fontName;
-	*fontSize = style->fontSize;
+	*fontSizePt = style->fontSizePt;
 	*bold = style->bold;
 	*fontColor = style->fontColor;
 	*buffSize = style->buffSize;
@@ -523,7 +523,7 @@ Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *
 	return true;
 }
 
-Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSize, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor)
+Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor)
 {
 	if (fontName == 0)
 		return false;
@@ -536,7 +536,7 @@ Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fo
 		Text::StrDelNew(style->fontName);
 		style->fontName = Text::StrCopyNew(fontName);
 	}
-	style->fontSize = fontSize;
+	style->fontSizePt = fontSizePt;
 	style->bold = bold;
 	style->fontColor = fontColor;
 	style->buffSize = buffSize;
@@ -629,7 +629,7 @@ OSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *l
 		lyr->fontType = 0;
 		lyr->fontStyle = (Int32)this->defFontStyle;
 		lyr->fontName = 0;
-		lyr->fontSize = 9;
+		lyr->fontSizePt = 9.0;
 		lyr->fontColor = 0xff000000;
 		lyr->maxScale = 2000000000;
 		lyr->minScale = -1;
@@ -916,7 +916,7 @@ Bool Map::MapEnv::SetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::Gro
 					lyr->fontName = Text::StrCopyNew(setting->fontName);
 				}
 			}
-			lyr->fontSize = setting->fontSize;
+			lyr->fontSizePt = setting->fontSizePt;
 			lyr->fontColor = setting->fontColor;
 
 

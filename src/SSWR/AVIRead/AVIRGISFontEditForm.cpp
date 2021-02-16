@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 	}
 	else
 	{
-		NEW_CLASS(dlg, UI::FontDialog(me->currFontName, me->currFontSize, me->isBold, false));
+		NEW_CLASS(dlg, UI::FontDialog(me->currFontName, me->currFontSizePt, me->isBold, false));
 	}
 	if (dlg->ShowDialog(me->hwnd))
 	{
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 			Text::StrDelNew(me->currFontName);
 		}
 		me->currFontName = Text::StrCopyNew(dlg->GetFontName());
-		me->currFontSize = dlg->GetFontSize();
+		me->currFontSizePt = dlg->GetFontSizePt();
 		me->isBold = dlg->IsBold();
 		me->txtFontName->SetText(me->currFontName);
 		me->UpdateFontPreview();
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(void *userObj)
 		me->env->SetFontStyleName(me->fontStyle, sbuff);
 	}
 
-	me->env->ChgFontStyle(me->fontStyle, me->currFontName, me->currFontSize, me->isBold, me->currColor, me->currBuffSize, me->currBuffColor);
+	me->env->ChgFontStyle(me->fontStyle, me->currFontName, me->currFontSizePt, me->isBold, me->currColor, me->currBuffSize, me->currBuffColor);
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -134,7 +134,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 
 	if (this->currFontName)
 	{
-		f = dimg->NewFontH(this->currFontName, this->currFontSize * this->GetHDPI() / this->GetDDPI(), this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
+		f = dimg->NewFontPt(this->currFontName, this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
 		dimg->GetTextSize(f, sbuff, -1, sz);
 		if (this->currBuffSize > 0)
 		{
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	{
 		this->txtStyleName->SetText((const UTF8Char*)"");
 	}
-	env->GetFontStyle(this->fontStyle, &fontName, &this->currFontSize, &this->isBold, &this->currColor, &this->currBuffSize, &this->currBuffColor);
+	env->GetFontStyle(this->fontStyle, &fontName, &this->currFontSizePt, &this->isBold, &this->currColor, &this->currBuffSize, &this->currBuffColor);
 	if (this->currFontName)
 	{
 		Text::StrDelNew(this->currFontName);

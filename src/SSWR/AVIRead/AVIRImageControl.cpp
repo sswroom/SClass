@@ -695,7 +695,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	{
 		j = imgList->GetCount() - 1;
 	}
-	f = dimg->NewFontH((const UTF8Char*)"Arial", 12 * hdpi / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+	f = dimg->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	OSInt strLen;
 	Double strSz[2];

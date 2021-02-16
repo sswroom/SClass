@@ -8,19 +8,19 @@ namespace UI
 	{
 	private:
 		const UTF8Char *fontName;
-		Double fontSize;
+		Double fontSizePt;
 		Bool isBold;
 		Bool isItalic;
 
 	public:
 		FontDialog();
-		FontDialog(const UTF8Char *fontName, Double fontSize, Bool isBold, Bool isItalic);
+		FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 		~FontDialog();
 
 		Bool ShowDialog(void *ownerHandle);
 
 		const UTF8Char *GetFontName();
-		Double GetFontSize();
+		Double GetFontSizePt();
 		Bool IsBold();
 		Bool IsItalic();
 	};

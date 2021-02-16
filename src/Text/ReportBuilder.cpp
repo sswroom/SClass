@@ -440,7 +440,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	UTF8Char u8buff[32];
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
 	Double border = 10.0;
-	Double fontHeight = 3.0;
+	Double fontHeightMM = 3.0;
+	Double fontHeightPt = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_POINT, fontHeightMM);
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	Media::DrawPen *p;
@@ -485,7 +486,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	{
 		g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
-	f = g->NewFontH((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+	f = g->NewFontPt((const UTF8Char*)"Arial", fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
 	i = this->headers->GetCount();
@@ -554,7 +555,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 
 					if (iconSt->dimg)
 					{
-						colCurrX[icon->col] += fontHeight / iconSt->dimg->GetHeight() * iconSt->dimg->GetWidth();
+						colCurrX[icon->col] += fontHeightPt / iconSt->dimg->GetHeight() * iconSt->dimg->GetWidth();
 					}
 				}
 			}
@@ -574,12 +575,12 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	totalColWidth = 0;
 	if (this->paperHori)
 	{
-		endY = paperSize.GetWidthMM() - border - fontHeight;
+		endY = paperSize.GetWidthMM() - border - fontHeightMM;
 		drawWidth = paperSize.GetHeightMM() - border * 2.0;
 	}
 	else
 	{
-		endY = paperSize.GetHeightMM() - border - fontHeight;
+		endY = paperSize.GetHeightMM() - border - fontHeightMM;
 		drawWidth = paperSize.GetWidthMM() - border * 2.0;
 	}
 
@@ -609,7 +610,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	l = this->tableContent->GetCount();
 	while (true)
 	{
-		f = g->NewFontH((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+		f = g->NewFontPt((const UTF8Char*)"Arial", fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 		b = g->NewBrushARGB(0xff000000);
 		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
 
@@ -622,12 +623,12 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			g->DrawString(border, currY, strs[0], f, b);
 			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
 
-			currY += fontHeight * 1.5;
+			currY += fontHeightMM * 1.5;
 			i++;
 		}
 
 		g->DrawString(border, currY, this->name, f, b);
-		currY += fontHeight * 2;
+		currY += fontHeightMM * 2;
 		i = 0;
 		j = this->headers->GetCount();
 		while (i < j)
@@ -636,10 +637,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			g->DrawString(border, currY, strs[0], f, b);
 			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
 
-			currY += fontHeight * 1.5;
+			currY += fontHeightMM * 1.5;
 			i++;
 		}
-		currY += fontHeight;
+		currY += fontHeightMM;
 
 		if (l == 1 && this->chart)
 		{
@@ -655,7 +656,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 				g->DrawString(colPos[i], currY, strs[i], f, b);
 				i++;
 			}
-			currY += fontHeight * 1.5 + 0.2;
+			currY += fontHeightMM * 1.5 + 0.2;
 			g->DrawLine(border, currY, border + drawWidth, currY, p);
 			if (currY > endY)
 			{
@@ -710,8 +711,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 							iconSt = iconStatus.Get(icon->fileName);
 							if (iconSt && iconSt->dimg)
 							{
-								Double w = fontHeight * iconSt->dimg->GetWidth() / iconSt->dimg->GetHeight();
-								Double dpi = iconSt->dimg->GetHeight() / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeight);
+								Double w = fontHeightMM * iconSt->dimg->GetWidth() / iconSt->dimg->GetHeight();
+								Double dpi = iconSt->dimg->GetHeight() / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
 								iconSt->dimg->SetHDPI(dpi);
 								iconSt->dimg->SetVDPI(dpi);
 								g->DrawImagePt(iconSt->dimg, colCurrX[icon->col], currY);
@@ -722,7 +723,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					}
 				}
 
-				currY += fontHeight * 1.5;
+				currY += fontHeightMM * 1.5;
 				lastRowType = currRowType;
 				k++;
 

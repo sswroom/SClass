@@ -9,7 +9,7 @@ namespace Media
 	class FrequencyGraph
 	{
 	public:
-		static Media::DrawImage *CreateGraph(Media::DrawEngine *eng, Media::IAudioSource *audio, OSInt fftSize, OSInt timeRes, Math::FFTCalc::WindowType wtype, Double fHeight);
+		static Media::DrawImage *CreateGraph(Media::DrawEngine *eng, Media::IAudioSource *audio, OSInt fftSize, OSInt timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx);
 	};
-};
+}
 #endif

@@ -54,7 +54,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 	{
 		Int32 xRand;
 		Int32 yRand;
-		Double fontSize;
+		Double fontSizePx;
 		OSInt leng = Text::StrCharCnt(this->watermark);
 		Double sz[2];
 		Int32 iWidth;
@@ -64,11 +64,11 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Media::DrawFont *f;
 
 		simg = (Media::StaticImage*)imgList->GetImage(i, 0);
-		fontSize = simg->info->dispWidth / 12.0;
+		fontSizePx = simg->info->dispWidth / 12.0;
 
 		while (true)
 		{
-			f = tmpImg->NewFontH((const UTF8Char*)"Arial", fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+			f = tmpImg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 			if (!tmpImg->GetTextSize(f, this->watermark, leng, sz))
 			{
 				tmpImg->DelFont(f);
@@ -101,7 +101,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 			else
 			{
 				tmpImg->DelFont(f);
-				fontSize--;
+				fontSizePx--;
 			}
 		}
 		tmpImg->DelBrush(b);

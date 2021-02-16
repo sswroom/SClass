@@ -63,7 +63,7 @@ namespace SSWR
 			Int32 fontType;
 			OSInt fontStyle;
 			const UTF8Char *fontName;
-			Double fontSize;
+			Double fontSizePt;
 			Int32 fontColor;
 			UOSInt imgIndex;
 

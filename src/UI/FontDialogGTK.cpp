@@ -8,15 +8,15 @@
 UI::FontDialog::FontDialog()
 {
 	this->fontName = 0;
-	this->fontSize = 0;
+	this->fontSizePt = 0;
 	this->isBold = false;
 	this->isItalic = false;
 }
 
-UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSize, Bool isBold, Bool isItalic)
+UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
 	this->fontName = Text::StrCopyNew(fontName);
-	this->fontSize = fontSize;
+	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
 }
@@ -47,9 +47,9 @@ Bool UI::FontDialog::ShowDialog(void *ownerHandle)
 			const char *family = pango_font_description_get_family(fontDesc);
 			Text::StrDelNew(this->fontName);
 			this->fontName = Text::StrCopyNew((const UTF8Char*)family);
-			this->isBold = pango_font_description_get_weight(fontDesc) == PANGO_WEIGHT_BOLD;
+			this->isBold = pango_font_description_get_weight(fontDesc) >= PANGO_WEIGHT_BOLD;
 			this->isItalic = pango_font_description_get_style(fontDesc) == PANGO_STYLE_ITALIC;
-			this->fontSize = pango_font_description_get_size(fontDesc) * 96.0 / 72.0 / PANGO_SCALE;
+			this->fontSizePt = pango_font_description_get_size(fontDesc) / (Double)PANGO_SCALE;
 			ret = true;
 		}
 	}
@@ -62,9 +62,9 @@ const UTF8Char *UI::FontDialog::GetFontName()
 	return this->fontName;
 }
 
-Double UI::FontDialog::GetFontSize()
+Double UI::FontDialog::GetFontSizePt()
 {
-	return this->fontSize;
+	return this->fontSizePt;
 }
 
 Bool UI::FontDialog::IsBold()

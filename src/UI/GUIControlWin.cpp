@@ -48,7 +48,7 @@ void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *cla
 
 void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, const WChar *className, const UTF8Char *txt, Int32 style, Int32 exStyle, Double x, Double y, Double w, Double h)
 {
-	this->fontHeight = 0.0;
+	this->fontHeightPt = 0.0;
 	if (parent)
 	{
 		Double xOfst = 0;
@@ -107,7 +107,7 @@ UI::GUIControl::GUIControl(GUICore *ui, UI::GUIClientControl *parent)
 	this->ui = ui;
 	this->dockType = UI::GUIControl::DOCK_NONE;
 	this->fontName = 0;
-	this->fontHeight = 0;
+	this->fontHeightPt = 0;
 	this->fontIsBold = false;
 	if (parent)
 	{
@@ -306,21 +306,21 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, Double size, Bool isBold)
+void UI::GUIControl::SetFont(const UTF8Char *name, Double ptSize, Bool isBold)
 {
 	SDEL_TEXT(this->fontName);
 	if (name)
 	{
 		this->fontName = Text::StrCopyNew(name);
 	}
-	this->fontHeight = size;
+	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
 	InitFont();
 }
 
 void UI::GUIControl::InitFont()
 {
-	if (this->fontHeight <= 0)
+	if (this->fontHeightPt <= 0)
 		return;
 
 	LOGFONTW lf;
@@ -329,7 +329,7 @@ void UI::GUIControl::InitFont()
 	{
 		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, -1, 0);
 	}
-	lf.lfHeight = Math::Double2Int32(this->fontHeight * this->hdpi / this->ddpi / -0.75);
+	lf.lfHeight = Math::Double2Int32(this->fontHeightPt * this->hdpi / this->ddpi / -0.75);
 	if (this->fontIsBold)
 	{
 		lf.lfWeight = FW_BOLD;
@@ -754,7 +754,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 	else
 	{
 		const WChar *wptr = Text::StrToWCharNew(this->fontName);
-		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img)->hdcBmp, wptr, this->fontHeight * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
+		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img)->hdcBmp, wptr, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 		Text::StrDelNew(wptr);
 	}
 	return fnt;

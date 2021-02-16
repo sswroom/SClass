@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
 	UI::FontDialog *dlg;
-	NEW_CLASS(dlg, UI::FontDialog(me->fontName, me->fontSize, false, false));
+	NEW_CLASS(dlg, UI::FontDialog(me->fontName, me->fontSizePt, false, false));
 	if (dlg->ShowDialog(me->hwnd))
 	{
 		if (me->fontName)
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 			Text::StrDelNew(me->fontName);
 		}
 		me->fontName = Text::StrCopyNew(dlg->GetFontName());
-		me->fontSize = dlg->GetFontSize();
+		me->fontSizePt = dlg->GetFontSizePt();
 		me->UpdateFontText();
 		me->UpdateFontPreview();
 	}
@@ -61,8 +61,8 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontText()
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->fontName);
 	sb.Append((const UTF8Char*)", ");
-	Text::SBAppendF64(&sb, this->fontSize);
-	sb.Append((const UTF8Char*)"px");
+	Text::SBAppendF64(&sb, this->fontSizePt);
+	sb.Append((const UTF8Char*)"pt");
 	this->txtFont->SetText(sb.ToString());
 }
 
@@ -75,13 +75,13 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 	Media::DrawImage *dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	this->core->GenFontPreview(dimg, this->eng, this->fontName, this->fontSize, this->fontColor, this->colorConv);
+	this->core->GenFontPreview(dimg, this->eng, this->fontName, this->fontSizePt, this->fontColor, this->colorConv);
 	this->previewImage = dimg->ToStaticImage();
 	this->eng->DeleteImage(dimg);
 	this->pbPreview->SetImage(this->previewImage);
 }
 
-SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSize, Int32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, Int32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -100,7 +100,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI
 	{
 		this->fontName = Text::StrCopyNew((const UTF8Char*)"Arial");
 	}
-	this->fontSize = fontSize;
+	this->fontSizePt = fontSizePt;
 	this->fontColor = fontColor;
 	this->previewImage = 0;
 
@@ -182,9 +182,9 @@ const UTF8Char *SSWR::AVIRead::AVIRGISFontForm::GetFontName()
 	return this->fontName;
 }
 
-Double SSWR::AVIRead::AVIRGISFontForm::GetFontSize()
+Double SSWR::AVIRead::AVIRGISFontForm::GetFontSizePt()
 {
-	return this->fontSize;
+	return this->fontSizePt;
 }
 
 Int32 SSWR::AVIRead::AVIRGISFontForm::GetFontColor()

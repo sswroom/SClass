@@ -2245,35 +2245,35 @@ Media::DrawBrush *Media::GDIImage::NewBrushARGB(Int32 color)
 	return brush;
 }
 
-Media::DrawFont *Media::GDIImage::NewFont(const UTF8Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
+Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
-	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize * 96.0 / this->info->hdpi, fontStyle, this, 0));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, ptSize * 96.0 / this->info->hdpi, fontStyle, this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontW(const WChar *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle)
+Media::DrawFont *Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
-	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize * 96.0 / this->info->hdpi, fontStyle, this, 0));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, name, ptSize * 96.0 / this->info->hdpi, fontStyle, this, codePage));
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontH(const UTF8Char *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
-	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, height * 72.0 / this->info->hdpi, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize, fontStyle, this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontH(const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
-	NEW_CLASS(f, GDIFont(this->hdcBmp, name, height * 72.0 / this->info->hdpi, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize, fontStyle, this, codePage));
 	return f;
 }
 

@@ -1067,7 +1067,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	}
 	if (readingIndex == -1)
 	{
-		f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
@@ -1420,7 +1420,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			chart->AddYData((const UTF8Char*)"Reading", valList.GetArray(&k), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
 
 			chart->SetDateFormat("");
-			chart->SetFontHeight(10);
+			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
 			chart->SetTimeFormat("HH:mm");
 			chart->Plot(dimg, 0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()));
@@ -1428,7 +1428,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		}
 		else
 		{
-			f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
@@ -1688,7 +1688,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	dev->mut->UnlockRead();
 	if (readingIndex == -1)
 	{
-		f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
@@ -1769,7 +1769,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 			chart->AddXDataDate(dateList.GetArray(&k), dateList.GetCount());
 			chart->AddYData((const UTF8Char*)"Reading", valList.GetArray(&k), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
 			chart->SetDateFormat("");
-			chart->SetFontHeight(10);
+			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
 			chart->SetTimeFormat("HH:mm");
 			chart->Plot(dimg, 0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()));
@@ -1777,7 +1777,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 		else
 		{
-			f = dimg->NewFontH((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);

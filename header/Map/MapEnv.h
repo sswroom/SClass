@@ -51,7 +51,7 @@ namespace Map
 			Int32 fontType;
 			UOSInt fontStyle;
 			const UTF8Char *fontName;
-			Double fontSize;
+			Double fontSizePt;
 			Int32 fontColor;
 			Double maxScale;
 			Double minScale;
@@ -98,7 +98,7 @@ namespace Map
 		{
 			const UTF8Char *styleName;
 			const UTF8Char *fontName;
-			Double fontSize;
+			Double fontSizePt;
 			Bool bold;
 			Int32 fontColor;
 			UOSInt buffSize;
@@ -146,13 +146,13 @@ namespace Map
 		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, Int32 *color, OSInt *thick, UInt8 **pattern, UOSInt *npattern);
 		UOSInt GetLineStyleLayerCnt(UOSInt index);
 
-		OSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSize, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor); //-1 = fail
+		OSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, const UTF8Char *name);
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff);
 		Bool RemoveFontStyle(UOSInt index);
 		UOSInt GetFontStyleCount();
-		Bool GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSize, Bool *bold, Int32 *fontColor, UOSInt *buffSize, Int32 *buffColor);
-		Bool ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSize, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor);
+		Bool GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, Int32 *fontColor, UOSInt *buffSize, Int32 *buffColor);
+		Bool ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor);
 
 		OSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
 		Bool ReplaceLayer(GroupItem *group, OSInt index, Map::IMapDrawLayer *layer, Bool needRelease);

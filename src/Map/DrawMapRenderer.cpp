@@ -1432,7 +1432,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1465,7 +1465,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1526,7 +1526,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1578,7 +1578,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == 1)
 							{
 								OSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontH(layer.fontName, layer.fontSize, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -3879,15 +3879,15 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, In
 	while (i-- > 0)
 	{
 		const UTF8Char *fontName;
-		Double fontSize;
+		Double fontSizePt;
 		Bool bold;
 		Int32 fontColor;
 		UOSInt buffSize;
 		Int32 buffColor;
 
 		font = &denv.fontStyles[i];
-		env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor);
-		font->font = img->NewFontH(fontName, fontSize * img->GetHDPI() / 96.0, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		env->GetFontStyle(i, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor);
+		font->font = img->NewFontPt(fontName, fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 		font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
 		font->buffSize = buffSize;
 		if (buffSize > 0)

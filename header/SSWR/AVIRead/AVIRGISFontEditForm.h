@@ -27,7 +27,7 @@ namespace SSWR
 			Media::DrawEngine *eng;
 
 			const UTF8Char *currFontName;
-			Double currFontSize;
+			Double currFontSizePt;
 			Int32 currColor;
 			UOSInt currBuffSize;
 			Int32 currBuffColor;

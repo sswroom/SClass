@@ -89,7 +89,7 @@ namespace Data
 		Double barLength;
 
 		const UTF8Char *fntName;
-		Double fntSize;
+		Double fntSizePt;
 
 		const Char *dateFormat;
 		const Char *timeFormat;
@@ -118,7 +118,7 @@ namespace Data
 		void SetDateFormat(const Char *format);
 		void SetTimeFormat(const Char *format);
 		void SetDblFormat(const Char *format);
-		void SetFontHeight(Double size);
+		void SetFontHeightPt(Double ptSize);
 		void SetFontName(const UTF8Char *name);
 		void SetYRefVal(Int32 refVal, Int32 col);
 		void SetYRefVal(Double refVal, Int32 col);

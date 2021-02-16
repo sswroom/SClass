@@ -413,7 +413,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, Media::
 	Double dpi = img->GetHDPI();
 	if (lineStyle >= env->GetLineStyleCount())
 	{
-		Media::DrawFont *f = img->NewFont((const UTF8Char*)"Arial", 9 * dpi / 96.0, Media::DrawEngine::DFS_ANTIALIAS);
+		Media::DrawFont *f = img->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		Media::DrawBrush *b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 		img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
 		img->DelBrush(b);
@@ -453,7 +453,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	
 	if (fontStyle >= env->GetFontStyleCount())
 	{
-		Media::DrawFont *f = img->NewFontH((const UTF8Char*)"Arial", 9 * dpi / 96.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		Media::DrawFont *f = img->NewFontPt((const UTF8Char*)"Arial", 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		Media::DrawBrush *b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 		img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
 		img->DelBrush(b);
@@ -475,21 +475,21 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	img->DelBrush(b);
 
 	const UTF8Char *fontName;
-	Double fontSize;
+	Double fontSizePt;
 	Bool bold;
 	Int32 fontColor;
 	UOSInt buffSize;
 	Int32 buffColor;
 	Double sz[2];
 
-	if (env->GetFontStyle(fontStyle, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor))
+	if (env->GetFontStyle(fontStyle, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor))
 	{
 		buffSize = Math::Double2Int32(buffSize * dpi / 96.0);
 		if ((sptr = env->GetFontStyleName(fontStyle, sbuff)) == 0)
 		{
 			sptr = Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), fontStyle);
 		}
-		f = img->NewFontH(fontName, fontSize * dpi / 96.0, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
+		f = img->NewFontPt(fontName, fontSizePt, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 		img->GetTextSize(f, sbuff, (sptr - sbuff), sz);
 		refX = (w - sz[0]) * 0.5;
 		refY = (h - sz[1]) * 0.5;
@@ -508,7 +508,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSize, Int32 fontColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, Int32 fontColor, Media::ColorConv *colorConv)
 {
 	if (fontName == 0)
 	{
@@ -518,13 +518,12 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawE
 	OSInt strLeng;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
-	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 	img->DrawRect(0, 0, Math::OSInt2Double(img->GetWidth()), Math::OSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
 	b = img->NewBrushARGB(colorConv->ConvRGB8(fontColor));
-	f = img->NewFontH(fontName, fontSize * dpi / 96.0, Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
+	f = img->NewFontPt(fontName, fontSizePt, Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 	strLeng = Text::StrCharCnt(fontName);
 	img->GetTextSize(f, fontName, strLeng, sz);
 	img->DrawString((img->GetWidth() - sz[0]) * 0.5, (img->GetHeight() - sz[1]) * 0.5, fontName, f, b);

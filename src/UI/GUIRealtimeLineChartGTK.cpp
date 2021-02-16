@@ -100,7 +100,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	Double pw = 1 * this->hdpi / this->ddpi;
 	if (pw < 1)
 		pw = 1;
-	f = img->NewFont((const UTF8Char*)"Arial", Math::Double2Int32(9 * this->hdpi / this->ddpi), Media::DrawEngine::DFS_ANTIALIAS);
+	f = img->NewFontPt((const UTF8Char*)"Arial", 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	p = img->NewPenARGB(this->fontColor, Math::Double2Int32(pw), 0, 0);
 	b = img->NewBrushARGB(this->fontColor);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");

@@ -55,7 +55,7 @@ UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
 	}
 	this->hFont = 0;
 	this->fontName = 0;
-	this->fontHeight = 0;
+	this->fontHeightPt = 0;
 	this->fontIsBold = false;
 	this->lxPos = 0;
 	this->lyPos = 0;
@@ -280,14 +280,14 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	this->SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, Double size, Bool isBold)
+void UI::GUIControl::SetFont(const UTF8Char *name, Double ptSize, Bool isBold)
 {
 	SDEL_TEXT(this->fontName);
 	if (name)
 	{
 		this->fontName = Text::StrCopyNew(name);
 	}
-	this->fontHeight = size;
+	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
 	this->InitFont();
 }
@@ -299,7 +299,7 @@ void UI::GUIControl::InitFont()
 	{
 		pango_font_description_set_family(font, (const Char*)this->fontName);
 	}
-	pango_font_description_set_absolute_size(font, this->fontHeight * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
+	pango_font_description_set_absolute_size(font, this->fontHeightPt * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (this->fontIsBold)
 		pango_font_description_set_weight(font, PANGO_WEIGHT_BOLD);
 	if (this->hFont)
@@ -311,7 +311,7 @@ void UI::GUIControl::InitFont()
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle("label", 0);
 	if (this->fontName) builder.AddFontFamily(this->fontName);
-	if (this->fontHeight != 0) builder.AddFontSize(this->fontHeight * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
+	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
@@ -767,7 +767,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 	}
 	else
 	{
-		return img->NewFontH(this->fontName, this->fontHeight * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		return img->NewFontPt(this->fontName, this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
 }
 

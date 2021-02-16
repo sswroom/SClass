@@ -231,9 +231,9 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 		font = (Map::MapFontStyle*)fontStyle->GetItem(i);
 		if (font->fontType == 0)
 		{
-			if (maxSize < font->fontSize)
+			if (maxSize < font->fontSizePt)
 			{
-				maxSize = font->fontSize;
+				maxSize = font->fontSizePt;
 				maxIndex = i;
 			}
 		}
@@ -269,16 +269,16 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 			{
 				Media::DrawPen *p = 0;
 				Media::DrawBrush *b = 0;
-				rcLeft = scnPosX - ((size[0] + font->fontSize) * 0.5);
-				rcRight = rcLeft + size[0] + font->fontSize;
-				rcTop = scnPosY - ((size[1] + font->fontSize) * 0.5);
-				rcBottom = rcTop + size[1] + font->fontSize;
+				rcLeft = scnPosX - ((size[0] + font->fontSizePt) * 0.5);
+				rcRight = rcLeft + size[0] + font->fontSizePt;
+				rcTop = scnPosY - ((size[1] + font->fontSizePt) * 0.5);
+				rcBottom = rcTop + size[1] + font->fontSizePt;
 
 				b = (Media::DrawBrush *)font->other;
 				if (i < fntCount - 1)
 				{
 					font2 = (Map::MapFontStyle*)fontStyle->GetItem(i + 1);
-					if (font2->fontType == 2 && font2->fontSize == font->fontSize)
+					if (font2->fontType == 2 && font2->fontSizePt == font->fontSizePt)
 					{
 						i++;
 						p = (Media::DrawPen*)font2->other;
@@ -292,10 +292,10 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 			else if (font->fontType == 2)
 			{
 				Double pt[10];
-				rcLeft = scnPosX - ((size[0] + font->fontSize) * 0.5);
-				rcRight = rcLeft + size[0] + font->fontSize;
-				rcTop = scnPosY - ((size[1] + font->fontSize) * 0.5);
-				rcBottom = rcTop + size[1] + font->fontSize;
+				rcLeft = scnPosX - ((size[0] + font->fontSizePt) * 0.5);
+				rcRight = rcLeft + size[0] + font->fontSizePt;
+				rcTop = scnPosY - ((size[1] + font->fontSizePt) * 0.5);
+				rcBottom = rcTop + size[1] + font->fontSizePt;
 
 				pt[0] = rcLeft;
 				pt[1] = rcTop;
@@ -357,8 +357,8 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 
 		if (font->fontType == 1)
 		{
-			xPos = size[0] + font->fontSize;
-			yPos = size[1] + font->fontSize;
+			xPos = size[0] + font->fontSizePt;
+			yPos = size[1] + font->fontSizePt;
 			Double xs = ((xPos * 0.5) * (sVal = Math::Sin(degD)));
 			Double ys = ((yPos * 0.5) * sVal);
 			Double xc = ((xPos * 0.5) * (cVal = Math::Cos(degD)));
@@ -380,7 +380,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 			if (i < fntCount - 1)
 			{
 				font2 = (Map::MapFontStyle *)fontStyle->GetItem(i + 1);
-				if (font2->fontType == 2 && font2->fontSize == font->fontSize)
+				if (font2->fontType == 2 && font2->fontSizePt == font->fontSizePt)
 				{
 					i++;
 					p = (Media::DrawPen*)font2->other;
@@ -390,8 +390,8 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 		}
 		else if (font->fontType == 2)
 		{
-			xPos = size[0] + font->fontSize;
-			yPos = size[1] + font->fontSize;
+			xPos = size[0] + font->fontSizePt;
+			yPos = size[1] + font->fontSizePt;
 			Double xs = ((xPos * 0.5) * (sVal = Math::Sin(degD)));
 			Double ys = ((yPos * 0.5) * sVal);
 			Double xc = ((xPos * 0.5) * (cVal = Math::Cos(degD)));
@@ -2389,17 +2389,17 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, cons
 		font = (Map::MapFontStyle*)fontStyle->GetItem(i);
 		if (font->fontType == 0)
 		{
-			if (maxSize < font->fontSize)
+			if (maxSize < font->fontSizePt)
 			{
-				maxSize = font->fontSize;
+				maxSize = font->fontSizePt;
 				maxIndex = i;
 			}
 		}
 		else if (font->fontType == 4)
 		{
-			if (maxSize < font->fontSize + font->thick * 2.0)
+			if (maxSize < font->fontSizePt + font->thick * 2.0)
 			{
-				maxSize = font->fontSize + font->thick * 2.0;
+				maxSize = font->fontSizePt + font->thick * 2.0;
 				maxIndex = i;
 				xSizeAdd = font->thick * 2.0;
 				ySizeAdd = font->thick * 2.0;
@@ -2407,13 +2407,13 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, cons
 		}
 		else if (font->fontType == 1 || font->fontType == 2)
 		{
-			if (xSizeAdd < (font->fontSize + font->thick))
+			if (xSizeAdd < (font->fontSizePt + font->thick))
 			{
-				xSizeAdd = (font->fontSize + font->thick);
+				xSizeAdd = (font->fontSizePt + font->thick);
 			}
-			if (ySizeAdd < (font->fontSize + font->thick))
+			if (ySizeAdd < (font->fontSizePt + font->thick))
 			{
-				ySizeAdd = (font->fontSize + font->thick);
+				ySizeAdd = (font->fontSizePt + font->thick);
 			}
 		}
 		i++;
@@ -4572,7 +4572,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 				while (*sptr++);
 				currFont->fontName = MemAlloc(UTF8Char, sptr - strs[3]);
 				Text::StrConcat(currFont->fontName, strs[3]);
-				currFont->fontSize = (Text::StrToInt32(strs[4]) * 3) >> 2;
+				currFont->fontSizePt = (Text::StrToInt32(strs[4]) * 3) >> 2;
 				currFont->thick = Text::StrToInt32(strs[5]);
 				currFont->color = ToColor(strs[6]);
 				this->fonts[i]->Add(currFont);
@@ -4984,7 +4984,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 				fnt2 = MemAlloc(Map::MapFontStyle, 1);
 				fnt2->color = fnt->color;
 				fnt2->fontName = fnt->fontName;
-				fnt2->fontSize = fnt->fontSize;
+				fnt2->fontSizePt = fnt->fontSizePt;
 				fnt2->fontType = fnt->fontType;
 				fnt2->thick = fnt->thick;
 				if (fnt->fontType == 0)
@@ -4992,7 +4992,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 					Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 					if (fnt->thick > 0)
 						s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-					fnt2->font = img->NewFontH(fnt->fontName, fnt->fontSize * img->GetHDPI() / 72.0, s, 0);
+					fnt2->font = img->NewFontPt(fnt->fontName, fnt->fontSizePt, s, 0);
 					fnt2->other = img->NewBrushARGB(fnt->color);
 				}
 				else if (fnt->fontType == 1)
@@ -5021,11 +5021,11 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 						if (f->thick > 0)
 							s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-						fnt2->font = img->NewFontH(f->fontName, f->fontSize * img->GetHDPI() / 72.0, s, 0);
+						fnt2->font = img->NewFontPt(f->fontName, f->fontSizePt, s, 0);
 					}
 					else
 					{
-						fnt2->font = img->NewFontH(fnt->fontName, fnt->fontSize * img->GetHDPI() / 72.0, Media::DrawEngine::DFS_NORMAL, 0);
+						fnt2->font = img->NewFontPt(fnt->fontName, fnt->fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 					}
 					fnt2->other = img->NewBrushARGB(fnt->color);
 					fnt2->thick = fnt2->thick * img->GetHDPI() / 96.0;

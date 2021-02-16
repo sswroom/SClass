@@ -45,7 +45,7 @@ Data::LineChart::LineChart(const UTF8Char *title)
 	this->lineThick = 1.0;
     
 	fntName = Text::StrCopyNew((const UTF8Char*)"SimHei");
-	fntSize = 12.0;
+	fntSizePt = 12.0;
 	timeFormat = Text::StrCopyNew("HH:mm");
 	dateFormat = Text::StrCopyNew("yyyy/MM/dd");
 	dblFormat = Text::StrCopyNew("0.00");
@@ -288,10 +288,10 @@ void Data::LineChart::SetDblFormat(const Char *format)
 	}
 }
 
-void Data::LineChart::SetFontHeight(Double size)
+void Data::LineChart::SetFontHeightPt(Double ptSize)
 {
-	if (size > 0)
-		fntSize = size;
+	if (ptSize > 0)
+		fntSizePt = ptSize;
 }
 
 void Data::LineChart::SetFontName(const UTF8Char *name)
@@ -545,7 +545,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	Media::DrawPen *gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
 	Media::DrawPen *refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
 
-	fnt = img->NewFontH(fntName, (DRAW_UNIT)fntSize, Media::DrawEngine::DFS_ANTIALIAS, 0);
+	fnt = img->NewFontPt(fntName, (DRAW_UNIT)fntSizePt, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	img->DrawRect((DRAW_UNIT)x, (DRAW_UNIT)y, (DRAW_UNIT)width, (DRAW_UNIT)height, 0, bgBrush);
 
 	Double rcSize[2];

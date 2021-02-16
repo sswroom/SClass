@@ -23,7 +23,7 @@ namespace UI
 		virtual ~GUIButton();
 
 		virtual void SetText(const UTF8Char *text);
-		virtual void SetFont(const UTF8Char *name, Double fontHeight, Bool isBold);
+		virtual void SetFont(const UTF8Char *name, Double fontHeightPt, Bool isBold);
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(Int32 code, void *lParam);

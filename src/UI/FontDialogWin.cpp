@@ -10,15 +10,15 @@
 UI::FontDialog::FontDialog()
 {
 	this->fontName = 0;
-	this->fontSize = 0;
+	this->fontSizePt = 0;
 	this->isBold = false;
 	this->isItalic = false;
 }
 
-UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSize, Bool isBold, Bool isItalic)
+UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
 	this->fontName = Text::StrCopyNew(fontName);
-	this->fontSize = fontSize;
+	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
 }
@@ -45,7 +45,7 @@ Bool UI::FontDialog::ShowDialog(void *ownerHandle)
 	ZeroMemory(&lf, sizeof(LOGFONT));
 	if (this->fontName)
 	{
-		lf.lfHeight = -Math::Double2Int32(this->fontSize * 96.0 / 72.0);
+		lf.lfHeight = -Math::Double2Int32(this->fontSizePt * 96.0 / 72.0);
 		if (this->isBold)
 		{
 			lf.lfWeight = FW_BOLD;
@@ -74,11 +74,11 @@ Bool UI::FontDialog::ShowDialog(void *ownerHandle)
 		this->isItalic = lf.lfItalic != FALSE;
 		if (lf.lfHeight < 0)
 		{
-			this->fontSize = -lf.lfHeight * 72.0 / 96.0;
+			this->fontSizePt = -lf.lfHeight * 72.0 / 96.0;
 		}
 		else
 		{
-			this->fontSize = lf.lfHeight;
+			this->fontSizePt = lf.lfHeight;
 		}
 		return true;
 	}
@@ -93,9 +93,9 @@ const UTF8Char *UI::FontDialog::GetFontName()
 	return this->fontName;
 }
 
-Double UI::FontDialog::GetFontSize()
+Double UI::FontDialog::GetFontSizePt()
 {
-	return this->fontSize;
+	return this->fontSizePt;
 }
 
 Bool UI::FontDialog::IsBold()

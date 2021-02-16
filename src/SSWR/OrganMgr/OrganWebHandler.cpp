@@ -8079,7 +8079,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					{
 						Int32 xRand;
 						Int32 yRand;
-						Int16 fontSize = imgWidth / 12;
+						Int16 fontSizePx = imgWidth / 12;
 						OSInt leng = Text::StrCharCnt(user->watermark);
 						Double sz[2];
 						Int32 iWidth;
@@ -8089,7 +8089,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						Media::DrawFont *f;
 						while (true)
 						{
-							f = gimg->NewFont((const UTF8Char*)"Arial", fontSize, Media::DrawEngine::DFS_NORMAL);
+							f = gimg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 							if (!gimg->GetTextSize(f, user->watermark, leng, sz))
 							{
 								gimg->DelFont(f);
@@ -8122,7 +8122,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 							else
 							{
 								gimg->DelFont(f);
-								fontSize--;
+								fontSizePx--;
 							}
 						}
 						gimg->DelBrush(b);

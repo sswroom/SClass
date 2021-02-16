@@ -341,7 +341,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 		OSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontH(this->currFont, Math::OSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontPx(this->currFont, Math::OSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
 		len = this->chinese->AppendCharCode(sbuff, this->currChar) - sbuff;
 		sbuff[len] = 0;
 		
