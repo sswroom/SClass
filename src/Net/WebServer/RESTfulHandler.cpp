@@ -64,11 +64,43 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 	{
 	case Math::Vector2D::VT_POLYGON:
 		{
+			UOSInt nPtOfst;
+			UInt32 *ptOfsts;
+			UOSInt nPoint;
+			Double *points;
+			UOSInt i;
+			UOSInt j;
+			UOSInt k;
 			Math::Polygon *pg = (Math::Polygon*)vec;
 			json->ObjectBeginObject(name);
 			json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polygon");
 			json->ObjectBeginArray((const UTF8Char*)"coordinates");
-			//pg->GetPartList
+			ptOfsts = pg->GetPtOfstList(&nPtOfst);
+			points = pg->GetPointList(&nPoint);
+			j = ptOfsts[0];
+			i = 0;
+			while (i < nPtOfst)
+			{
+				i++;
+				if (i >= nPtOfst)
+				{
+					k = nPoint;
+				}
+				else
+				{
+					k = ptOfsts[i];
+				}
+				json->ArrayBeginArray();
+				while (j < k)
+				{
+					json->ArrayBeginArray();
+					json->ArrayAddFloat64(points[j << 1]);
+					json->ArrayAddFloat64(points[(j << 1) + 1]);
+					json->ArrayEnd();
+					j++;
+				}
+				json->ArrayEnd();
+			}
 			json->ArrayEnd();
 			json->ObjectEnd();
 		}

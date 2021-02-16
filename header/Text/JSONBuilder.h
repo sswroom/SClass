@@ -27,6 +27,7 @@ namespace Text
 
 		Bool ArrayAddFloat64(Double val);
 		Bool ArrayBeginObject();
+		Bool ArrayBeginArray();
 		Bool ArrayEnd();
 
 		Bool ObjectAddFloat64(const UTF8Char *name, Double val);

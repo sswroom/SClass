@@ -202,6 +202,23 @@ Bool Text::JSONBuilder::ArrayBeginObject()
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayBeginArray()
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC((const UTF8Char*)", ", 2);
+	}
+	this->objTypes->Add(OT_ARRAY);
+	this->currType = OT_ARRAY;
+	this->isFirst = true;
+	this->sb->AppendChar('[', 1);
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayEnd()
 {
 	if (this->currType != OT_ARRAY)
