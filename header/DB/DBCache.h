@@ -34,6 +34,8 @@ namespace DB
 		DB::DBRow *GetTableItem(const UTF8Char *tableName, Int64 pk);
 		void FreeTableData(Data::ArrayList<DB::DBRow*> *rows);
 		void FreeTableItem(DB::DBRow *row);
+
+		Bool IsTableExist(const UTF8Char *tableName);
 	};
 }
 #endif

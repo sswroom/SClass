@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "DB/SQLBuilder.h"
+#include "Math/Point.h"
 #include "Math/Polygon.h"
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Text/JSONBuilder.h"
@@ -63,6 +64,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 	switch (vec->GetVectorType())
 	{
 	case Math::Vector2D::VT_POLYGON:
+	case Math::Vector2D::VT_POLYLINE:
 		{
 			UOSInt nPtOfst;
 			UInt32 *ptOfsts;
@@ -71,9 +73,16 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			Math::Polygon *pg = (Math::Polygon*)vec;
+			Math::PointCollection *pg = (Math::PointCollection*)vec;
 			json->ObjectBeginObject(name);
-			json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polygon");
+			if (vec->GetVectorType() == Math::Vector2D::VT_POLYGON)
+			{
+				json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polygon");
+			}
+			else
+			{
+				json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polyline");
+			}
 			json->ObjectBeginArray((const UTF8Char*)"coordinates");
 			ptOfsts = pg->GetPtOfstList(&nPtOfst);
 			points = pg->GetPointList(&nPoint);
@@ -106,6 +115,20 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 		}
 		break;
 	case Math::Vector2D::VT_POINT:
+		{
+			Double x;
+			Double y;
+			Math::Point *pt = (Math::Point*)vec;
+			json->ObjectBeginObject(name);
+			json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Point");
+			json->ObjectBeginArray((const UTF8Char*)"coordinates");
+			pt->GetCenter(&x, &y);
+			json->ArrayAddFloat64(x);
+			json->ArrayAddFloat64(y);
+			json->ArrayEnd();
+			json->ObjectEnd();
+		}
+		break;
 	default:
 		json->ObjectAddStrUTF8(name, (const UTF8Char*)"?");
 		break;
@@ -186,6 +209,15 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		{
 			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
+			if (!this->dbCache->IsTableExist(&subReq[1]))
+			{
+				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
+				resp->AddDefHeaders(req);
+				resp->AddCacheControl(0);
+				resp->AddContentLength(0);
+				return true;
+			}
+			else
 			{
 				DB::PageRequest *page = ParsePageReq(req);
 				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);

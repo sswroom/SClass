@@ -208,3 +208,8 @@ void DB::DBCache::FreeTableItem(DB::DBRow *row)
 {
 	DEL_CLASS(row);
 }
+
+Bool DB::DBCache::IsTableExist(const UTF8Char *tableName)
+{
+	return this->GetTableInfo(tableName) != 0;
+}
