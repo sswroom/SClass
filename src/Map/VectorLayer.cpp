@@ -457,26 +457,26 @@ Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
 		obj->objId = id;
 		if (vec->GetVectorType() == Math::Vector2D::VT_POINT)
 		{
-			obj->nParts = 0;
-			obj->parts = 0;
-			obj->nPoints = 1;
-			obj->points = MemAlloc(Double, 2);
-			vec->GetCenter(&obj->points[0], &obj->points[1]);
+			obj->nPtOfst = 0;
+			obj->ptOfstArr = 0;
+			obj->nPoint = 1;
+			obj->pointArr = MemAlloc(Double, 2);
+			vec->GetCenter(&obj->pointArr[0], &obj->pointArr[1]);
 		}
 		else if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE || vec->GetVectorType() == Math::Vector2D::VT_POLYGON || vec->GetVectorType() == Math::Vector2D::VT_MULTIPOINT)
 		{
-			UInt32 *parts;
+			UInt32 *ptOfsts;
 			Double *points;
 			UOSInt i;
 			Math::PointCollection *pts = (Math::PointCollection*)vec;
-			parts = pts->GetPartList(&i);
-			obj->nParts = (UInt32)i;
-			obj->parts = MemAlloc(UInt32, i);
-			MemCopyNO(obj->parts, parts, sizeof(UInt32) * i);
+			ptOfsts = pts->GetPtOfstList(&i);
+			obj->nPtOfst = (UInt32)i;
+			obj->ptOfstArr = MemAlloc(UInt32, i);
+			MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * i);
 			points = pts->GetPointList(&i);
-			obj->nPoints = (UInt32)i;
-			obj->points = MemAlloc(Double, i * 2);
-			MemCopyNO(obj->points, points, i * 16);
+			obj->nPoint = (UInt32)i;
+			obj->pointArr = MemAlloc(Double, i * 2);
+			MemCopyNO(obj->pointArr, points, i * 16);
 		}
 		obj->flags = 0;
 		obj->lineColor = 0;
@@ -503,10 +503,10 @@ Math::Vector2D *Map::VectorLayer::GetVectorById(void *session, Int64 id)
 
 void Map::VectorLayer::ReleaseObject(void *session, DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

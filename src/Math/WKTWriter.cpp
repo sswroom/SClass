@@ -68,20 +68,20 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 		sb->Append((const UTF8Char*)"POLYGON(");
 		{
 			Math::Polygon *pg = (Math::Polygon*)vec;
-			UOSInt nParts;
-			UOSInt nPoints;
-			UInt32 *partList = pg->GetPartList(&nParts);
-			Double *pointList = pg->GetPointList(&nPoints);
+			UOSInt nPtOfst;
+			UOSInt nPoint;
+			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
+			Double *pointList = pg->GetPointList(&nPoint);
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
 			k = 0;
 			i = 0;
-			j = nParts - 1;
+			j = nPtOfst - 1;
 			while (i < j)
 			{
 				sb->AppendChar('(', 1);
-				while (k < partList[i + 1])
+				while (k < ptOfstList[i + 1])
 				{
 					Text::StrDouble(sbuff, pointList[k * 2]);
 					sb->Append(sbuff);
@@ -89,7 +89,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 					Text::StrDouble(sbuff, pointList[k * 2 + 1]);
 					sb->Append(sbuff);
 					k++;
-					if (k < partList[i + 1])
+					if (k < ptOfstList[i + 1])
 					{
 						sb->AppendChar(',', 1);
 					}
@@ -99,7 +99,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 				i++;
 			}
 			sb->AppendChar('(', 1);
-			while (k < nPoints)
+			while (k < nPoint)
 			{
 				Text::StrDouble(sbuff, pointList[k * 2]);
 				sb->Append(sbuff);
@@ -107,7 +107,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 				Text::StrDouble(sbuff, pointList[k * 2 + 1]);
 				sb->Append(sbuff);
 				k++;
-				if (k < nPoints)
+				if (k < nPoint)
 				{
 					sb->AppendChar(',', 1);
 				}

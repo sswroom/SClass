@@ -8,17 +8,17 @@ namespace Math
 	class Polygon : public Math::PointCollection
 	{
 	private:
-		Double *points;
-		UOSInt nPoints;
-		UInt32 *parts; //pointPos List
-		UOSInt nParts;
+		Double *pointArr;
+		UOSInt nPoint;
+		UInt32 *ptOfstArr;
+		UOSInt nPtOfst;
 	public:
-		Polygon(Int32 srid, UOSInt nParts, UOSInt nPoints);
+		Polygon(Int32 srid, UOSInt nPtOfst, UOSInt nPoint);
 		virtual ~Polygon();
 
 		virtual VectorType GetVectorType();
-		virtual UInt32 *GetPartList(UOSInt *nParts);
-		virtual Double *GetPointList(UOSInt *nPoints);
+		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst);
+		virtual Double *GetPointList(UOSInt *nPoint);
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);

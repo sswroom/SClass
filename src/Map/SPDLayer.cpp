@@ -563,26 +563,26 @@ Map::DrawObjectL *Map::SPDLayer::GetObjectByIdD(void *session, Int64 id)
 	cip->Read((UInt8*)objBuff, 8);
 	obj = MemAlloc(Map::DrawObjectL, 1);
 	obj->objId = objBuff[0];
-	obj->nParts = objBuff[1];
-	if (obj->nParts > 0)
+	obj->nPtOfst = objBuff[1];
+	if (obj->nPtOfst > 0)
 	{
-		obj->parts = MemAlloc(UInt32, obj->nParts);
-		cip->Read((UInt8*)obj->parts, sizeof(UInt32) * obj->nParts);
+		obj->ptOfstArr = MemAlloc(UInt32, obj->nPtOfst);
+		cip->Read((UInt8*)obj->ptOfstArr, sizeof(UInt32) * obj->nPtOfst);
 	}
 	else
 	{
-		obj->parts = 0;
+		obj->ptOfstArr = 0;
 	}
-	cip->Read((UInt8*)&obj->nPoints, 4);
-	OSInt j = obj->nPoints * 2;
-	obj->points = MemAlloc(Double, j);
+	cip->Read((UInt8*)&obj->nPoint, 4);
+	OSInt j = obj->nPoint * 2;
+	obj->pointArr = MemAlloc(Double, j);
 	Int32 *tmpArr = MemAlloc(Int32, j);
 	Double r = 1 / 200000.0;
 	OSInt i = 0;
-	cip->Read((UInt8*)tmpArr, obj->nPoints * 8);
+	cip->Read((UInt8*)tmpArr, obj->nPoint * 8);
 	while (i < j)
 	{
-		obj->points[i] = tmpArr[i] * r;
+		obj->pointArr[i] = tmpArr[i] * r;
 		i++;
 	}
 	MemFree(tmpArr);
@@ -598,10 +598,10 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	IO::FileStream *cip = (IO::FileStream*)session;
 	Int32 ofst = this->ofsts[2 + (id << 1)];
 	Math::PointCollection *ptColl = 0;
-	UInt32 *parts;
+	UInt32 *ptOfsts;
 	Int32 *points;
 	UOSInt i;
-	UInt32 *tmpParts;
+	UInt32 *tmpPtOfsts;
 	Double *tmpPoints;
 
 	cip->Seek(IO::SeekableStream::ST_BEGIN, ofst);
@@ -609,12 +609,12 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	
 	if (buff[1] > 0)
 	{
-		parts = MemAlloc(UInt32, buff[1]);
-		cip->Read((UInt8*)parts, sizeof(UInt32) * buff[1]);
+		ptOfsts = MemAlloc(UInt32, buff[1]);
+		cip->Read((UInt8*)ptOfsts, sizeof(UInt32) * buff[1]);
 	}
 	else
 	{
-		parts = 0;
+		ptOfsts = 0;
 	}
 	cip->Read((UInt8*)&buff[2], 4);
 	points = MemAlloc(Int32, buff[2] * 2);
@@ -624,21 +624,21 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	{
 		Math::Point *pt;
 		NEW_CLASS(pt, Math::Point(4326, points[0] / 200000.0, points[1] / 200000.0));
-		if (parts)
+		if (ptOfsts)
 		{
-			MemFree(parts);
+			MemFree(ptOfsts);
 		}
 		MemFree(points);
 		return ptColl;
 	}
-	else if (parts == 0)
+	else if (ptOfsts == 0)
 	{
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
 		NEW_CLASS(ptColl, Math::Polyline(4326, buff[1], buff[2]));
-		tmpParts = ptColl->GetPartList(&i);
-		MemCopyNO(tmpParts, parts, buff[1] << 2);
+		tmpPtOfsts = ptColl->GetPtOfstList(&i);
+		MemCopyNO(tmpPtOfsts, ptOfsts, buff[1] << 2);
 		
 		tmpPoints = ptColl->GetPointList(&i);
 		i = i << 1;
@@ -650,8 +650,8 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
 		NEW_CLASS(ptColl, Math::Polygon(4326, buff[1], buff[2]));
-		tmpParts = ptColl->GetPartList(&i);
-		MemCopyNO(tmpParts, parts, buff[1] << 2);
+		tmpPtOfsts = ptColl->GetPtOfstList(&i);
+		MemCopyNO(tmpPtOfsts, ptOfsts, buff[1] << 2);
 		
 		tmpPoints = ptColl->GetPointList(&i);
 		i = i << 1;
@@ -661,9 +661,9 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 		}
 	}
 
-	if (parts)
+	if (ptOfsts)
 	{
-		MemFree(parts);
+		MemFree(ptOfsts);
 	}
 	MemFree(points);
 	return ptColl;
@@ -671,10 +671,10 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 
 void Map::SPDLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

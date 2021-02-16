@@ -224,10 +224,10 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 		Math::Polyline *pl;
 		Double box[4];
-		UOSInt nParts;
-		UOSInt nPoints;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
 		UOSInt nvals[2];
-		UInt32 *parts;
+		UInt32 *ptOfsts;
 		Double *points;
 		
 		i = 0;
@@ -235,10 +235,10 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		{
 			pl = (Math::Polyline*)layer->GetVectorById(sess, objIds->GetItem(i));
 			pl->GetBounds(&box[0], &box[1], &box[2], &box[3]);
-			parts = pl->GetPartList(&nParts);
-			points = pl->GetPointList(&nPoints);
-			nvals[0] = nParts;
-			nvals[1] = nPoints;
+			ptOfsts = pl->GetPtOfstList(&nPtOfst);
+			points = pl->GetPointList(&nPoint);
+			nvals[0] = nPtOfst;
+			nvals[1] = nPoint;
 
 			if (i == 0)
 			{
@@ -268,7 +268,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], (Int32)(22 + 2 * nParts + 8 * nPoints));
+			WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
 			shx->Write(buff, 8);
 
 			WriteMInt32(buff, (Int32)i);
@@ -277,9 +277,9 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			stm->Write((UInt8*)box, 32);
 			stm->Write((UInt8*)nvals, 8);
 			fileSize += 52;
-			stm->Write((UInt8*)parts, nParts * 4);
-			stm->Write((UInt8*)points, nPoints * 16);
-			fileSize += nParts * 4 + nPoints * 16;
+			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
+			stm->Write((UInt8*)points, nPoint * 16);
+			fileSize += nPtOfst * 4 + nPoint * 16;
 
 			DEL_CLASS(pl);
 			i++;
@@ -292,11 +292,11 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		OSInt j;
 		Math::Polyline3D *pl;
 		Double box[4];
-		UOSInt nParts;
-		UOSInt nPoints;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
 		Double ranges[2];
 		UOSInt nvals[2];
-		UInt32 *parts;
+		UInt32 *ptOfsts;
 		Double *points;
 		Double *alts;
 		
@@ -305,14 +305,14 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		{
 			pl = (Math::Polyline3D*)layer->GetVectorById(sess, objIds->GetItem(i));
 			pl->GetBounds(&box[0], &box[1], &box[2], &box[3]);
-			parts = pl->GetPartList(&nParts);
-			points = pl->GetPointList(&nPoints);
-			alts = pl->GetAltitudeList(&nPoints);
-			nvals[0] = nParts;
-			nvals[1] = nPoints;
+			ptOfsts = pl->GetPtOfstList(&nPtOfst);
+			points = pl->GetPointList(&nPoint);
+			alts = pl->GetAltitudeList(&nPoint);
+			nvals[0] = nPtOfst;
+			nvals[1] = nPoint;
 
 			ranges[1] = ranges[0] = alts[0];
-			j = nPoints;
+			j = nPoint;
 			while (j-- > 1)
 			{
 				if (ranges[1] < alts[j])
@@ -359,7 +359,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], (Int32)(30 + 2 * nParts + 12 * nPoints));
+			WriteMInt32(&buff[4], (Int32)(30 + 2 * nPtOfst + 12 * nPoint));
 			shx->Write(buff, 8);
 
 			WriteMInt32(buff, (Int32)i);
@@ -368,12 +368,12 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			stm->Write((UInt8*)box, 32);
 			stm->Write((UInt8*)nvals, 8);
 			fileSize += 52;
-			stm->Write((UInt8*)parts, nParts * 4);
-			stm->Write((UInt8*)points, nPoints * 16);
-			fileSize += nParts * 4 + nPoints * 16;
+			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
+			stm->Write((UInt8*)points, nPoint * 16);
+			fileSize += nPtOfst * 4 + nPoint * 16;
 			stm->Write((UInt8*)ranges, 16);
-			stm->Write((UInt8*)alts, nPoints * 8);
-			fileSize += 16 + nPoints * 8;
+			stm->Write((UInt8*)alts, nPoint * 8);
+			fileSize += 16 + nPoint * 8;
 
 			DEL_CLASS(pl);
 			i++;
@@ -385,10 +385,10 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 		Math::Polygon *pg;
 		Double box[4];
-		UOSInt nParts;
-		UOSInt nPoints;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
 		UOSInt nvals[2];
-		UInt32 *parts;
+		UInt32 *ptOfsts;
 		Double *points;
 		
 		i = 0;
@@ -396,10 +396,10 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		{
 			pg = (Math::Polygon*)layer->GetVectorById(sess, objIds->GetItem(i));
 			pg->GetBounds(&box[0], &box[1], &box[2], &box[3]);
-			parts = pg->GetPartList(&nParts);
-			points = pg->GetPointList(&nPoints);
-			nvals[0] = nParts;
-			nvals[1] = nPoints;
+			ptOfsts = pg->GetPtOfstList(&nPtOfst);
+			points = pg->GetPointList(&nPoint);
+			nvals[0] = nPtOfst;
+			nvals[1] = nPoint;
 
 			if (i == 0)
 			{
@@ -429,7 +429,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], (Int32)(22 + 2 * nParts + 8 * nPoints));
+			WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
 			shx->Write(buff, 8);
 
 			WriteMInt32(buff, (Int32)i);
@@ -438,9 +438,9 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			stm->Write((UInt8*)box, 32);
 			stm->Write((UInt8*)nvals, 8);
 			fileSize += 52;
-			stm->Write((UInt8*)parts, nParts * 4);
-			stm->Write((UInt8*)points, nPoints * 16);
-			fileSize += nParts * 4 + nPoints * 16;
+			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
+			stm->Write((UInt8*)points, nPoint * 16);
+			fileSize += nPtOfst * 4 + nPoint * 16;
 
 			DEL_CLASS(pg);
 			i++;

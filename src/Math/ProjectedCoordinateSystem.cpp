@@ -36,14 +36,14 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Double x1, Double y
 
 Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit)
 {
-	UOSInt nPoints;
-	UOSInt nParts;
-	UInt32 *parts;
+	UOSInt nPoint;
+	UOSInt nPtOfst;
+	UInt32 *ptOfsts;
 	Double *points;
-	parts = pl->GetPartList(&nParts);
-	points = pl->GetPointList(&nPoints);
-	UOSInt i = nParts;
-	UOSInt j = nPoints;
+	ptOfsts = pl->GetPtOfstList(&nPtOfst);
+	points = pl->GetPointList(&nPoint);
+	UOSInt i = nPtOfst;
+	UOSInt j = nPoint;
 	UOSInt k;
 	Double totalDist = 0;
 	Bool hasLast;
@@ -51,7 +51,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	Double lastY;
 	while (i-- > 0)
 	{
-		k = parts[i];
+		k = ptOfsts[i];
 		hasLast = false;
 		while (j-- > k)
 		{
@@ -70,17 +70,17 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 
 Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit)
 {
-	UOSInt nPoints;
-	UOSInt nParts;
+	UOSInt nPoint;
+	UOSInt nPtOfst;
 	UOSInt nAlts;
-	UInt32 *parts;
+	UInt32 *ptOfsts;
 	Double *points;
 	Double *alts;
-	parts = pl->GetPartList(&nParts);
-	points = pl->GetPointList(&nPoints);
+	ptOfsts = pl->GetPtOfstList(&nPtOfst);
+	points = pl->GetPointList(&nPoint);
 	alts = pl->GetAltitudeList(&nAlts);
-	UOSInt i = nParts;
-	UOSInt j = nPoints;
+	UOSInt i = nPtOfst;
+	UOSInt j = nPoint;
 	UOSInt k;
 	Double dist;
 	Double totalDist = 0;
@@ -90,7 +90,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	Double lastH;
 	while (i-- > 0)
 	{
-		k = parts[i];
+		k = ptOfsts[i];
 		hasLast = false;
 		while (j-- > k)
 		{

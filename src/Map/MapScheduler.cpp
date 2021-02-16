@@ -71,33 +71,33 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					Int32 l;
 					if (me->isFirst)
 					{
-						if (me->map->MapXYToScnXY(dobj->points, dobj->points, dobj->nPoints, 0, 0))
+						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, 0, 0))
 							*me->isLayerEmpty = false;
 					}
 
 					if (dobj->flags & 1)
 					{
 						Media::DrawPen *p = me->img->NewPenARGB(dobj->lineColor, me->p->GetThick(), 0 ,0);
-						k = dobj->nParts;
+						k = dobj->nPtOfst;
 						l = 1;
 						while (l < k)
 						{
-							me->img->DrawPolyline(&dobj->points[dobj->parts[l - 1] << 1], dobj->parts[l] - dobj->parts[l - 1], p);
+							me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[l - 1] << 1], dobj->ptOfstArr[l] - dobj->ptOfstArr[l - 1], p);
 							l++;
 						}
-						me->img->DrawPolyline(&dobj->points[dobj->parts[k - 1] << 1], dobj->nPoints - dobj->parts[k - 1], p);
+						me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k - 1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], p);
 						me->img->DelPen(p);
 					}
 					else
 					{
-						k = dobj->nParts;
+						k = dobj->nPtOfst;
 						l = 1;
 						while (l < k)
 						{
-							me->img->DrawPolyline(&dobj->points[dobj->parts[l - 1] << 1], dobj->parts[l] - dobj->parts[l - 1], me->p);
+							me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[l - 1] << 1], dobj->ptOfstArr[l] - dobj->ptOfstArr[l - 1], me->p);
 							l++;
 						}
-						me->img->DrawPolyline(&dobj->points[dobj->parts[k - 1] << 1], dobj->nPoints - dobj->parts[k - 1], me->p);
+						me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k - 1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], me->p);
 					}
 				}
 				else if (me->dt == Map::MapScheduler::MSDT_POLYGON)
@@ -106,19 +106,19 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					{
 						Int32 k;
 						Int32 l;
-						if (me->map->MapXYToScnXY(dobj->points, dobj->points, dobj->nPoints, 0, 0))
+						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, 0, 0))
 							*me->isLayerEmpty = false;
-						k = dobj->nParts;
+						k = dobj->nPtOfst;
 						l = 1;
 						while (l < k)
 						{
-							dobj->parts[l - 1] = dobj->parts[l] - dobj->parts[l - 1];
+							dobj->ptOfstArr[l - 1] = dobj->ptOfstArr[l] - dobj->ptOfstArr[l - 1];
 							l++;
 						}
-						dobj->parts[k - 1] = dobj->nPoints - dobj->parts[k - 1];
+						dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
 					}
 
-					me->img->DrawPolyPolygon(dobj->points, dobj->parts, dobj->nParts, me->p, me->b);
+					me->img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, me->p, me->b);
 				}
 			}
 		}
@@ -143,10 +143,10 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 	OSInt spotY = Math::Double2Int32(this->icoSpotY * scale);
 	imgW = Math::Double2Int32(this->ico->GetWidth() * scale);
 	imgH = Math::Double2Int32(this->ico->GetHeight() * scale);
-	j = dobj->nPoints;
+	j = dobj->nPoint;
 	while (j-- > 0)
 	{
-		if (this->map->MapXYToScnXY(&dobj->points[j << 1], pts, 1, 0, 0))
+		if (this->map->MapXYToScnXY(&dobj->pointArr[j << 1], pts, 1, 0, 0))
 			*this->isLayerEmpty = false;
 		if (*this->objCnt >= this->maxCnt)
 		{

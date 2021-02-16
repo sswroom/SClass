@@ -21,10 +21,10 @@ namespace Map
 		typedef struct
 		{
 			Int32 id;
-			UInt32 nParts;
-			UInt32 *parts;
-			UInt32 nPoints;
-			Int32 *points;
+			UInt32 nPtOfst;
+			UInt32 *ptOfstArr;
+			UInt32 nPoint;
+			Int32 *pointArr;
 		} CIPFileObject;
 
 		//IO::FileStream *cip;

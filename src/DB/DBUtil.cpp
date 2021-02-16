@@ -2137,6 +2137,10 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			return DB::DBUtil::CT_Int64;
 		}
+		else if (Text::StrCompare(typeName, (const UTF8Char*)"smallint") == 0)
+		{
+			return DB::DBUtil::CT_Int64;
+		}
 		else if (Text::StrCompare(typeName, (const UTF8Char*)"nvarchar") == 0)
 		{
 			return DB::DBUtil::CT_NVarChar;

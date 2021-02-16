@@ -317,7 +317,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				sb.Append((const UTF8Char*)"<altitudeMode>relativeToGround</altitudeMode>");
 
 				Double *points = pg->GetPointList(&nPoints);
-				UInt32 *parts = pg->GetPartList(&nParts);
+				UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
 
 				if (needConv)
 				{
@@ -329,7 +329,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					while (l-- > 0)
 					{
 						sb.Append((const UTF8Char*)"<outerBoundaryIs><LinearRing><coordinates>");
-						while (k-- > parts[l])
+						while (k-- > ptOfsts[l])
 						{
 							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k << 1], points[(k << 1) + 1], defHeight, &x, &y, &z);
 							sptr = Text::StrDouble(sbuff2, x);
@@ -351,7 +351,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					while (l-- > 0)
 					{
 						sb.Append((const UTF8Char*)"<outerBoundaryIs><LinearRing><coordinates>");
-						while (k-- > parts[l])
+						while (k-- > ptOfsts[l])
 						{
 							sptr = Text::StrDouble(sbuff2, points[k << 1]);
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");

@@ -2648,7 +2648,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							UOSInt j;
 
 							NEW_CLASS(pl, Math::Polyline3D(4326, 1, altList->GetCount()));
-							pl->GetPartList(&nPoints)[0] = 0;
+							pl->GetPtOfstList(&nPoints)[0] = 0;
 							altArr = pl->GetAltitudeList(&nPoints);
 							ptArr = pl->GetPointList(&nPoints);
 							i = altList->GetCount();
@@ -2824,7 +2824,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					if (altList->GetCount() > 0)
 					{
 						NEW_CLASS(pg, Math::Polygon(4326, 2, (coord->GetCount() + altList->GetCount()) >> 1));
-						ptList = pg->GetPartList(&nPoints);
+						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
 						ptList[1] = (Int32)(coord->GetCount() >> 1);
 						ptArr = pg->GetPointList(&nPoints);
@@ -2836,7 +2836,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					else
 					{
 						NEW_CLASS(pg, Math::Polygon(4326, 1, coord->GetCount() >> 1));
-						ptList = pg->GetPartList(&nPoints);
+						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
 						ptArr = pg->GetPointList(&nPoints);
 						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());

@@ -120,18 +120,18 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *sessio
 	Map::DrawObjectL *dobj;
 
 	dobj = MemAlloc(Map::DrawObjectL, 1);
-	dobj->nParts = 0;
-	dobj->nPoints = 1;
+	dobj->nPtOfst = 0;
+	dobj->nPoint = 1;
 	dobj->objId = id;
-	dobj->parts = 0;
-	dobj->points = MemAlloc(Double, 2);
+	dobj->ptOfstArr = 0;
+	dobj->pointArr = MemAlloc(Double, 2);
 	Data::DateTime dt;
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
 	{
 		dt.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
-	this->gpsTrk->GetLatLonByTime(&dt, &dobj->points[1], &dobj->points[0]);
+	this->gpsTrk->GetLatLonByTime(&dt, &dobj->pointArr[1], &dobj->pointArr[0]);
 	dobj->flags = 0;
 	dobj->lineColor = 0;
 	return dobj;
@@ -158,7 +158,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetVectorById(void *session, 
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	MemFree(obj->points);
+	MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

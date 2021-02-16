@@ -9,7 +9,7 @@ namespace Math
 	private:
 		Double *altitudes;
 	public:
-		Polyline3D(Int32 srid, UOSInt nParts, UOSInt nPoints);
+		Polyline3D(Int32 srid, UOSInt nPtOfst, UOSInt nPoint);
 		virtual ~Polyline3D();
 
 		virtual Math::Vector2D *Clone();
@@ -18,7 +18,7 @@ namespace Math
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 
 		virtual Math::Polyline *SplitByPoint(Double x, Double y);
-		Double *GetAltitudeList(UOSInt *nPoints);
+		Double *GetAltitudeList(UOSInt *nPoint);
 	};
 }
 #endif

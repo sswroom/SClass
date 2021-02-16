@@ -346,52 +346,7 @@ void Map::FileGDBLayer::EndGetObject(void *session)
 Map::DrawObjectL *Map::FileGDBLayer::GetObjectByIdD(void *session, Int64 id)
 {
 	Math::Vector2D *vec = this->objects->Get((Int32)id);
-	if (this->layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Vector2D::VT_POINT)
-	{
-		Math::Point *pt = (Math::Point*)vec;
-		Map::DrawObjectL *dobj;
-		dobj = MemAlloc(Map::DrawObjectL, 1);
-		dobj->objId = id;
-		dobj->nParts = 1;
-		dobj->nPoints = 1;
-		dobj->parts = MemAlloc(UInt32, 1);
-		dobj->parts[0] = 0;
-		dobj->points = MemAlloc(Double, 2);
-		pt->GetCenter(&dobj->points[0], &dobj->points[1]);
-		dobj->flags = 0;
-		dobj->lineColor = 0;
-		return dobj;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
-	{
-		Math::PointCollection *ptColl = (Math::PointCollection*)vec;
-		UInt32 *ptArr;
-		Double *ptArr2;
-		UOSInt cnt;
-
-		Map::DrawObjectL *dobj;
-		dobj = MemAlloc(Map::DrawObjectL, 1);
-		dobj->objId = id;
-
-		ptArr = ptColl->GetPartList(&cnt);
-		dobj->nParts = (UInt32)cnt;
-		dobj->parts = MemAlloc(UInt32, cnt);
-		MemCopyNO(dobj->parts, ptArr, sizeof(UInt32) * cnt);
-
-		ptArr2 = ptColl->GetPointList(&cnt);
-		dobj->nPoints = (UInt32)cnt;
-		cnt <<= 1;
-		dobj->points = MemAlloc(Double, cnt);
-		MemCopyNO(dobj->points, ptArr2, cnt << 3);
-		dobj->flags = 0;
-		dobj->lineColor = 0;
-		return dobj;
-
-	}
-	else
-	{
-		return 0;
-	}
+	return Vector2DrawObject(id, vec, this->layerType);
 }
 
 Math::Vector2D *Map::FileGDBLayer::GetVectorById(void *session, Int64 id)
@@ -404,8 +359,8 @@ Math::Vector2D *Map::FileGDBLayer::GetVectorById(void *session, Int64 id)
 
 void Map::FileGDBLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	MemFree(obj->parts);
-	MemFree(obj->points);
+	MemFree(obj->ptOfstArr);
+	MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

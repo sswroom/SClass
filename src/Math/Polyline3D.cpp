@@ -3,10 +3,10 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Polyline3D.h"
 
-Math::Polyline3D::Polyline3D(Int32 srid, UOSInt nParts, UOSInt nPoints) : Math::Polyline(srid, nParts, nPoints)
+Math::Polyline3D::Polyline3D(Int32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::Polyline(srid, nPtOfst, nPoint)
 {
-	this->altitudes = MemAlloc(Double, nPoints);
-	MemClear(this->altitudes, sizeof(Double) * nPoints);
+	this->altitudes = MemAlloc(Double, nPoint);
+	MemClear(this->altitudes, sizeof(Double) * nPoint);
 }
 
 Math::Polyline3D::~Polyline3D()
@@ -17,10 +17,10 @@ Math::Polyline3D::~Polyline3D()
 Math::Vector2D *Math::Polyline3D::Clone()
 {
 	Math::Polyline3D *pl;
-	NEW_CLASS(pl, Math::Polyline3D(this->srid, this->nParts, this->nPoints));
-	MemCopyNO(pl->parts, this->parts, sizeof(Int32) * nParts);
-	MemCopyNO(pl->points, this->points, sizeof(Double) * (nPoints << 1));
-	MemCopyNO(pl->altitudes, this->altitudes, sizeof(Double) * nPoints);
+	NEW_CLASS(pl, Math::Polyline3D(this->srid, this->nPtOfst, this->nPoint));
+	MemCopyNO(pl->ptOfstArr, this->ptOfstArr, sizeof(Int32) * nPtOfst);
+	MemCopyNO(pl->pointArr, this->pointArr, sizeof(Double) * (nPoint << 1));
+	MemCopyNO(pl->altitudes, this->altitudes, sizeof(Double) * nPoint);
 	return pl;
 }
 
@@ -41,10 +41,10 @@ Bool Math::Polyline3D::JoinVector(Math::Vector2D *vec)
 
 void Math::Polyline3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	OSInt i = this->nPoints;
+	OSInt i = this->nPoint;
 	while (i-- > 0)
 	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->points[(i << 1)], this->points[(i << 1) + 1], this->altitudes[i], &this->points[(i << 1)], &this->points[(i << 1) + 1], &this->altitudes[i]);
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[(i << 1)], this->pointArr[(i << 1) + 1], this->altitudes[i], &this->pointArr[(i << 1)], &this->pointArr[(i << 1) + 1], &this->altitudes[i]);
 	}
 }
 
@@ -53,14 +53,14 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	UOSInt k;
 	UOSInt l;
 	UInt32 m;
-	UInt32 *parts;
+	UInt32 *ptOfsts;
 	Double *points;
 
-	parts = this->parts;
-	points = this->points;
+	ptOfsts = this->ptOfstArr;
+	points = this->pointArr;
 
-	k = this->nParts;
-	l = this->nPoints;
+	k = this->nPtOfst;
+	l = this->nPoint;
 
 	Double calBase;
 	Double calH;
@@ -79,7 +79,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 
 	while (k--)
 	{
-		m = parts[k];
+		m = ptOfsts[k];
 		l--;
 		while (l-- > m)
 		{
@@ -169,7 +169,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			}
 		}
 	}
-	k = this->nPoints;
+	k = this->nPoint;
 	while (k-- > 0)
 	{
 		calH = y - points[(k << 1) + 1];
@@ -185,8 +185,8 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			isPoint = true;
 		}
 	}
-	UInt32 *oldParts;
-	UInt32 *newParts;
+	UInt32 *oldPtOfsts;
+	UInt32 *newPtOfsts;
 	Double *oldPoints;
 	Double *newPoints;
 	Double *oldAltitudes;
@@ -194,32 +194,32 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	Math::Polyline3D *newPL;
 	if (isPoint)
 	{
-		if (minId == this->nPoints - 1 || minId == 0)
+		if (minId == this->nPoint - 1 || minId == 0)
 		{
 			return 0;
 		}
-		k = nParts;
+		k = this->nPtOfst;
 		while (k-- > 1)
 		{
-			if (this->parts[k] == minId || (this->parts[k] - 1) == minId)
+			if (this->ptOfstArr[k] == minId || (this->ptOfstArr[k] - 1) == minId)
 			{
 				return 0;
 			}
 		}
 		
-		oldParts = this->parts;
-		oldPoints = this->points;
+		oldPtOfsts = this->ptOfstArr;
+		oldPoints = this->pointArr;
 		oldAltitudes = this->altitudes;
 
-		k = nParts;
+		k = this->nPtOfst;
 		while (k-- > 0)
 		{
-			if (oldParts[k] < minId)
+			if (oldPtOfsts[k] < minId)
 			{
 				break;
 			}
 		}
-		newParts = MemAlloc(UInt32, k + 1);
+		newPtOfsts = MemAlloc(UInt32, k + 1);
 		newPoints = MemAlloc(Double, (minId + 1) * 2);
 		newAltitudes = MemAlloc(Double, minId + 1);
 		l = minId + 1;
@@ -232,52 +232,52 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		l = k + 1;
 		while (l-- > 0)
 		{
-			newParts[l] = oldParts[l];
+			newPtOfsts[l] = oldPtOfsts[l];
 		}
 
-		this->parts = newParts;
-		this->points = newPoints;
+		this->ptOfstArr = newPtOfsts;
+		this->pointArr = newPoints;
 		this->altitudes = newAltitudes;
-		NEW_CLASS(newPL, Math::Polyline3D(this->srid, this->nParts - k, this->nPoints - minId));
-		newParts = newPL->GetPartList(&l);
-		l = this->nParts;
+		NEW_CLASS(newPL, Math::Polyline3D(this->srid, this->nPtOfst - k, this->nPoint - minId));
+		newPtOfsts = newPL->GetPtOfstList(&l);
+		l = this->nPtOfst;
 		while (--l > k)
 		{
-			newParts[l - k] = parts[l] - (UInt32)minId;
+			newPtOfsts[l - k] = ptOfsts[l] - (UInt32)minId;
 		}
-		newParts[0] = 0;
+		newPtOfsts[0] = 0;
 		newPoints = newPL->GetPointList(&l);
 		newAltitudes = newPL->GetAltitudeList(&l);
-		l = this->nPoints;
+		l = this->nPoint;
 		while (l-- > minId)
 		{
 			newPoints[((l - minId) << 1) + 0] = oldPoints[(l << 1) + 0];
 			newPoints[((l - minId) << 1) + 1] = oldPoints[(l << 1) + 1];
 			newAltitudes[l - minId] = oldAltitudes[l];
 		}
-		this->nPoints = minId + 1;
-		this->nParts = k + 1;
+		this->nPoint = minId + 1;
+		this->nPtOfst = k + 1;
 		MemFree(oldPoints);
-		MemFree(oldParts);
+		MemFree(oldPtOfsts);
 		MemFree(oldAltitudes);
 
 		return newPL;
 	}
 	else
 	{
-		oldParts = this->parts;
-		oldPoints = this->points;
+		oldPtOfsts = this->ptOfstArr;
+		oldPoints = this->pointArr;
 		oldAltitudes = this->altitudes;
 
-		k = nParts;
+		k = this->nPtOfst;
 		while (k-- > 0)
 		{
-			if (oldParts[k] < minId)
+			if (oldPtOfsts[k] < minId)
 			{
 				break;
 			}
 		}
-		newParts = MemAlloc(UInt32, k + 1);
+		newPtOfsts = MemAlloc(UInt32, k + 1);
 		newPoints = MemAlloc(Double, (minId + 2) * 2);
 		newAltitudes = MemAlloc(Double,  minId + 2);
 		l = minId + 1;
@@ -294,23 +294,23 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		l = k + 1;
 		while (l-- > 0)
 		{
-			newParts[l] = oldParts[l];
+			newPtOfsts[l] = oldPtOfsts[l];
 		}
 
-		this->parts = newParts;
-		this->points = newPoints;
+		this->ptOfstArr = newPtOfsts;
+		this->pointArr = newPoints;
 		this->altitudes = newAltitudes;
-		NEW_CLASS(newPL, Math::Polyline3D(this->srid, this->nParts - k, this->nPoints - minId));
-		newParts = newPL->GetPartList(&l);
-		l = this->nParts;
+		NEW_CLASS(newPL, Math::Polyline3D(this->srid, this->nPtOfst - k, this->nPoint - minId));
+		newPtOfsts = newPL->GetPtOfstList(&l);
+		l = this->nPtOfst;
 		while (--l > k)
 		{
-			newParts[l - k] = parts[l] - (UInt32)minId;
+			newPtOfsts[l - k] = ptOfsts[l] - (UInt32)minId;
 		}
-		newParts[0] = 0;
+		newPtOfsts[0] = 0;
 		newPoints = newPL->GetPointList(&l);
 		newAltitudes = newPL->GetAltitudeList(&l);
-		l = this->nPoints;
+		l = this->nPoint;
 		while (--l > minId)
 		{
 			newPoints[((l - minId) << 1) + 0] = oldPoints[(l << 1) + 0];
@@ -321,10 +321,10 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		newPoints[1] = calPtY;
 		newAltitudes[0] = calPtZ;
 
-		this->nPoints = minId + 2;
-		this->nParts = k + 1;
+		this->nPoint = minId + 2;
+		this->nPtOfst = k + 1;
 		MemFree(oldPoints);
-		MemFree(oldParts);
+		MemFree(oldPtOfsts);
 		MemFree(oldAltitudes);
 
 
@@ -332,9 +332,9 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	}
 }
 
-Double *Math::Polyline3D::GetAltitudeList(UOSInt *nPoints)
+Double *Math::Polyline3D::GetAltitudeList(UOSInt *nPoint)
 {
-	*nPoints = this->nPoints;
+	*nPoint = this->nPoint;
 	return this->altitudes;
 }
 

@@ -5,20 +5,20 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Polygon.h"
 
-Math::Polygon::Polygon(Int32 srid, UOSInt nParts, UOSInt nPoints) : Math::PointCollection(srid)
+Math::Polygon::Polygon(Int32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointCollection(srid)
 {
-	this->points = MemAlloc(Double, nPoints << 1);
-	this->nPoints = nPoints;
-	MemClear(this->points, sizeof(Double) * (nPoints << 1));
-	this->nParts = nParts;
-	this->parts = MemAlloc(UInt32, nParts);
-	MemClear(this->parts, sizeof(UInt32) * nParts);
+	this->pointArr = MemAlloc(Double, nPoint << 1);
+	this->nPoint = nPoint;
+	MemClear(this->pointArr, sizeof(Double) * (nPoint << 1));
+	this->nPtOfst = nPtOfst;
+	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
+	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
 }
 
 Math::Polygon::~Polygon()
 {
-	MemFree(points);
-	MemFree(parts);
+	MemFree(this->pointArr);
+	MemFree(this->ptOfstArr);
 }
 
 Math::Vector2D::VectorType Math::Polygon::GetVectorType()
@@ -26,54 +26,54 @@ Math::Vector2D::VectorType Math::Polygon::GetVectorType()
 	return Math::Vector2D::VT_POLYGON;
 }
 
-UInt32 *Math::Polygon::GetPartList(UOSInt *nParts)
+UInt32 *Math::Polygon::GetPtOfstList(UOSInt *nPtOfst)
 {
-	*nParts = this->nParts;
-	return this->parts;
+	*nPtOfst = this->nPtOfst;
+	return this->ptOfstArr;
 }
 
-Double *Math::Polygon::GetPointList(UOSInt *nPoints)
+Double *Math::Polygon::GetPointList(UOSInt *nPoint)
 {
-	*nPoints = this->nPoints;
-	return this->points;
+	*nPoint = this->nPoint;
+	return this->pointArr;
 }
 
 Math::Vector2D *Math::Polygon::Clone()
 {
 	Math::Polygon *pg;
-	NEW_CLASS(pg, Math::Polygon(this->srid, this->nParts, this->nPoints));
-	MemCopyNO(pg->points, this->points, sizeof(Double) * (nPoints << 1));
-	MemCopyNO(pg->parts, this->parts, sizeof(UInt32) * nParts);
+	NEW_CLASS(pg, Math::Polygon(this->srid, this->nPtOfst, this->nPoint));
+	MemCopyNO(pg->pointArr, this->pointArr, sizeof(Double) * (this->nPoint << 1));
+	MemCopyNO(pg->ptOfstArr, this->ptOfstArr, sizeof(UInt32) * this->nPtOfst);
 	return pg;
 }
 
 void Math::Polygon::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
-	OSInt i = this->nPoints << 1;
+	OSInt i = this->nPoint << 1;
 	Double x1;
 	Double y1;
 	Double x2;
 	Double y2;
-	x1 = x2 = this->points[0];
-	y1 = y2 = this->points[1];
+	x1 = x2 = this->pointArr[0];
+	y1 = y2 = this->pointArr[1];
 	while (i > 2)
 	{
 		i -= 2;
-		if (x1 > this->points[i])
+		if (x1 > this->pointArr[i])
 		{
-			x1 = this->points[i];
+			x1 = this->pointArr[i];
 		}
-		if (x2 < this->points[i])
+		if (x2 < this->pointArr[i])
 		{
-			x2 = this->points[i];
+			x2 = this->pointArr[i];
 		}
-		if (y1 > this->points[i + 1])
+		if (y1 > this->pointArr[i + 1])
 		{
-			y1 = this->points[i + 1];
+			y1 = this->pointArr[i + 1];
 		}
-		if (y2 < this->points[i + 1])
+		if (y2 < this->pointArr[i + 1])
 		{
-			y2 = this->points[i + 1];
+			y2 = this->pointArr[i + 1];
 		}
 		i -= 2;
 	}
@@ -98,14 +98,14 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 	UOSInt k;
 	UOSInt l;
 	UInt32 m;
-	UInt32 *parts;
+	UInt32 *ptOfsts;
 	Double *points;
 
-	parts = this->parts;
-	points = this->points;
+	ptOfsts = this->ptOfstArr;
+	points = this->pointArr;
 
-	k = this->nParts;
-	l = this->nPoints;
+	k = this->nPtOfst;
+	l = this->nPoint;
 
 	Double calBase;
 	Double calH;
@@ -119,7 +119,7 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 
 	while (k--)
 	{
-		m = parts[k];
+		m = ptOfsts[k];
 		l--;
 		while (l-- > m)
 		{
@@ -189,7 +189,7 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 			}
 		}
 	}
-	k = this->nPoints;
+	k = this->nPoint;
 	while (k-- > 0)
 	{
 		calH = y - points[(k << 1) + 1];
@@ -216,38 +216,38 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 		return false;
 	Math::Polygon *pg = (Math::Polygon*)vec;
 	Double *newPoints;
-	UOSInt nPoints = this->nPoints + pg->nPoints;
-	UInt32 *newParts;
-	UOSInt nParts = this->nParts + pg->nParts;
+	UOSInt nPoint = this->nPoint + pg->nPoint;
+	UInt32 *newPtOfsts;
+	UOSInt nPtOfst = this->nPtOfst + pg->nPtOfst;
 	
-	newPoints = MemAlloc(Double, nPoints * 2);
-	newParts = MemAlloc(UInt32, nParts);
-	MemCopyNO(newPoints, this->points, sizeof(Double) * this->nPoints * 2);
-	MemCopyNO(&newPoints[this->nPoints * 2], pg->points, sizeof(Double) * pg->nPoints * 2);
-	MemCopyNO(newParts, this->parts, sizeof(UInt32) * this->nParts);
-	UOSInt i = pg->nParts;
-	UOSInt j = i + this->nParts;
-	UInt32 k = (UInt32)this->nPoints;
+	newPoints = MemAlloc(Double, nPoint * 2);
+	newPtOfsts = MemAlloc(UInt32, nPtOfst);
+	MemCopyNO(newPoints, this->pointArr, sizeof(Double) * this->nPoint * 2);
+	MemCopyNO(&newPoints[this->nPoint * 2], pg->pointArr, sizeof(Double) * pg->nPoint * 2);
+	MemCopyNO(newPtOfsts, this->ptOfstArr, sizeof(UInt32) * this->nPtOfst);
+	UOSInt i = pg->nPtOfst;
+	UOSInt j = i + this->nPtOfst;
+	UInt32 k = (UInt32)this->nPoint;
 	while (i-- > 0)
 	{
 		j--;
-		newParts[j] = pg->parts[i] + k;
+		newPtOfsts[j] = pg->ptOfstArr[i] + k;
 	}
-	MemFree(this->parts);
-	MemFree(this->points);
-	this->parts = newParts;
-	this->points = newPoints;
-	this->nParts = nParts;
-	this->nPoints = nPoints;
+	MemFree(this->ptOfstArr);
+	MemFree(this->pointArr);
+	this->ptOfstArr = newPtOfsts;
+	this->pointArr = newPoints;
+	this->nPtOfst = nPtOfst;
+	this->nPoint = nPoint;
 	return true;
 }
 
 void Math::Polygon::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	OSInt i = this->nPoints;
+	OSInt i = this->nPoint;
 	while (i-- > 0)
 	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->points[(i << 1)], this->points[(i << 1) + 1], 0, &this->points[(i << 1)], &this->points[(i << 1) + 1], 0);
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[(i << 1)], this->pointArr[(i << 1) + 1], 0, &this->pointArr[(i << 1)], &this->pointArr[(i << 1) + 1], 0);
 	}
 }
 
@@ -264,19 +264,19 @@ Bool Math::Polygon::InsideVector(Double x, Double y)
 	Int32 leftCnt = 0;
 	Double tmpX;
 
-	k = this->nParts;
-	l = this->nPoints;
+	k = this->nPtOfst;
+	l = this->nPoint;
 
 	while (k--)
 	{
-		m = parts[k];
+		m = this->ptOfstArr[k];
 
-		lastX = points[(m << 1) + 0];
-		lastY = points[(m << 1) + 1];
+		lastX = this->pointArr[(m << 1) + 0];
+		lastY = this->pointArr[(m << 1) + 1];
 		while (l-- > m)
 		{
-			thisX = points[(l << 1) + 0];
-			thisY = points[(l << 1) + 1];
+			thisX = this->pointArr[(l << 1) + 0];
+			thisY = this->pointArr[(l << 1) + 1];
 			j = 0;
 			if (lastY > y)
 				j += 1;
@@ -339,18 +339,18 @@ Bool Math::Polygon::HasJunction()
 	Double intY;
 
 
-	i = this->nPoints;
-	j = this->nParts;
+	i = this->nPoint;
+	j = this->nPtOfst;
 	while (j-- > 0)
 	{
-		nextPart = this->parts[j];
-		lastPtX = this->points[(nextPart << 1) + 0];
-		lastPtY = this->points[(nextPart << 1) + 1];
+		nextPart = this->ptOfstArr[j];
+		lastPtX = this->pointArr[(nextPart << 1) + 0];
+		lastPtY = this->pointArr[(nextPart << 1) + 1];
 		lastIndex = nextPart;
 		while (i-- > nextPart)
 		{
-			thisPtX = this->points[(i << 1) + 0];
-			thisPtY = this->points[(i << 1) + 1];
+			thisPtX = this->pointArr[(i << 1) + 0];
+			thisPtY = this->pointArr[(i << 1) + 1];
 
 			if (thisPtX != lastPtX || thisPtY != lastPtY)
 			{
@@ -365,17 +365,17 @@ Bool Math::Polygon::HasJunction()
 				l++;
 				while (l-- > 0)
 				{
-					nextChkPart = this->parts[l];
+					nextChkPart = this->ptOfstArr[l];
 					if (l != j)
 					{
-						lastChkPtX = this->points[(nextChkPart << 1) + 0];
-						lastChkPtY = this->points[(nextChkPart << 1) + 1];
+						lastChkPtX = this->pointArr[(nextChkPart << 1) + 0];
+						lastChkPtY = this->pointArr[(nextChkPart << 1) + 1];
 					}
 
 					while (k-- > nextChkPart)
 					{
-						thisChkPtX = this->points[(k << 1) + 0];
-						thisChkPtY = this->points[(k << 1) + 1];
+						thisChkPtX = this->pointArr[(k << 1) + 0];
+						thisChkPtY = this->pointArr[(k << 1) + 1];
 
 						if (k == i || k == lastIndex || lastChkIndex == i || lastChkIndex == lastIndex)
 						{
@@ -452,17 +452,17 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	Double intX;
 	Double intY;
 
-	i = this->nPoints;
-	while (this->nParts > 1)
+	i = this->nPoint;
+	while (this->nPtOfst > 1)
 	{
-		this->nParts--;
-		j = this->parts[this->nParts];
+		this->nPtOfst--;
+		j = this->ptOfstArr[this->nPtOfst];
 		NEW_CLASS(tmpPG, Math::Polygon(this->srid, 1, i - j));
 		points = tmpPG->GetPointList(&nPoints);
-		MemCopyNO(points, &this->points[(j << 1)], sizeof(Double) * (i - j) << 1);
+		MemCopyNO(points, &this->pointArr[(j << 1)], sizeof(Double) * (i - j) << 1);
 		tmpPG->SplitByJunction(results);
 		
-		this->nPoints = j;
+		this->nPoint = j;
 		i = j;
 	}
 
@@ -470,14 +470,14 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	NEW_CLASS(junctionY, Data::ArrayListDbl());
 	NEW_CLASS(junctionPtNum, Data::ArrayListInt32());
 
-	i = this->nPoints;
-	lastPtX = this->points[0];
-	lastPtY = this->points[1];
+	i = this->nPoint;
+	lastPtX = this->pointArr[0];
+	lastPtY = this->pointArr[1];
 	lastIndex = 0;
 	while (i-- > 0)
 	{
-		thisPtX = this->points[(i << 1) + 0];
-		thisPtY = this->points[(i << 1) + 1];
+		thisPtX = this->pointArr[(i << 1) + 0];
+		thisPtY = this->pointArr[(i << 1) + 1];
 
 		if (thisPtX != lastPtX || thisPtY != lastPtY)
 		{
@@ -489,8 +489,8 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 			j = i;
 			while (j-- > 0)
 			{
-				thisChkPtX = this->points[(j << 1) + 0];
-				thisChkPtY = this->points[(j << 1) + 1];
+				thisChkPtX = this->pointArr[(j << 1) + 0];
+				thisChkPtY = this->pointArr[(j << 1) + 1];
 
 				if (j == i || j == lastIndex || lastChkIndex == i || lastChkIndex == lastIndex)
 				{

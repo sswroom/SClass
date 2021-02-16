@@ -10,8 +10,8 @@ namespace Math
 		PointCollection(Int32 srid);
 		virtual ~PointCollection();
 
-		virtual UInt32 *GetPartList(UOSInt *nParts) = 0;
-		virtual Double *GetPointList(UOSInt *nPoints) = 0;
+		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst) = 0;
+		virtual Double *GetPointList(UOSInt *nPoint) = 0;
 		virtual void GetCenter(Double *x, Double *y);
 	};
 }

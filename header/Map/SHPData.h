@@ -17,8 +17,8 @@ namespace Map
 			Double y1;
 			Double x2;
 			Double y2;
-			UInt32 nPoints;
-			UInt32 nParts;
+			UInt32 nPoint;
+			UInt32 nPtOfst;
 			UInt32 ofst;
 		} RecHdr;
 

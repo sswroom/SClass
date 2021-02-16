@@ -138,7 +138,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		*(Int32*)&buff[4] = (Int32)stmPos;
 		cix->Write(buff, 8);
 
-		if (dobj->nParts == 0)
+		if (dobj->nPtOfst == 0)
 		{
 			*(Int32*)&buff[4] = 1;
 			*(Int32*)&buff[8] = 0;
@@ -147,24 +147,24 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		}
 		else
 		{
-			*(Int32*)&buff[4] = dobj->nParts;
+			*(Int32*)&buff[4] = dobj->nPtOfst;
 			stm->Write(buff, 8);
-			stm->Write((UInt8*)dobj->parts, dobj->nParts * 4);
-			stmPos += 8 + dobj->nParts * 4;
+			stm->Write((UInt8*)dobj->ptOfstArr, dobj->nPtOfst * 4);
+			stmPos += 8 + dobj->nPtOfst * 4;
 		}
-		Int32 *ptArr = MemAlloc(Int32, dobj->nPoints << 1);
-		j = dobj->nPoints << 1;
+		Int32 *ptArr = MemAlloc(Int32, dobj->nPoint << 1);
+		j = dobj->nPoint << 1;
 		while (j-- > 0)
 		{
-			ptArr[j] = Math::Double2Int32(dobj->points[j] * 200000.0);
+			ptArr[j] = Math::Double2Int32(dobj->pointArr[j] * 200000.0);
 		}
-		stm->Write((UInt8*)&dobj->nPoints, 4);
-		stm->Write((UInt8*)ptArr, 8 * dobj->nPoints);
-		stmPos += 8 * dobj->nPoints + 4;
+		stm->Write((UInt8*)&dobj->nPoint, 4);
+		stm->Write((UInt8*)ptArr, 8 * dobj->nPoint);
+		stmPos += 8 * dobj->nPoint + 4;
 
 		maxX = minX = ptArr[0];
 		maxY = minY = ptArr[1];
-		j = dobj->nPoints;
+		j = dobj->nPoint;
 		while (j-- > 0)
 		{
 			if (minX > ptArr[j << 1])

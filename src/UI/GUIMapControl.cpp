@@ -435,25 +435,25 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 		{
 			Math::Polyline *pl = (Math::Polyline*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			UOSInt nPoints;
-			UOSInt nParts;
-			Double *pts = pl->GetPointList(&nPoints);
-			UInt32 *parts = pl->GetPartList(&nParts);
+			UOSInt nPoint;
+			UOSInt nPtOfst;
+			Double *points = pl->GetPointList(&nPoint);
+			UInt32 *ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			UOSInt i;
-			Double *dpts = MemAlloc(Double, nPoints * 2);
+			Double *dpoints = MemAlloc(Double, nPoint * 2);
 			UOSInt lastCnt;
 			UOSInt thisCnt;
 
-			view->MapXYToScnXY(pts, dpts, nPoints, xOfst, yOfst);
-			lastCnt = nPoints;
-			i = nParts;
+			view->MapXYToScnXY(points, dpoints, nPoint, xOfst, yOfst);
+			lastCnt = nPoint;
+			i = nPtOfst;
 			while (i-- > 0)
 			{
-				thisCnt = parts[i];
-				img->DrawPolyline(&dpts[thisCnt * 2], lastCnt - thisCnt, p);
+				thisCnt = ptOfsts[i];
+				img->DrawPolyline(&dpoints[thisCnt * 2], lastCnt - thisCnt, p);
 				lastCnt = thisCnt;
 			}
-			MemFree(dpts);
+			MemFree(dpoints);
 
 			img->DelPen(p);
 		}
@@ -462,24 +462,24 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			Math::Polygon *pg = (Math::Polygon*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
-			UOSInt nPoints;
-			UOSInt nParts;
-			Double *pts = pg->GetPointList(&nPoints);
-			UInt32 *parts = pg->GetPartList(&nParts);
-			Double *dpts = MemAlloc(Double, nPoints * 2);
-			UInt32 *myParts = MemAlloc(UInt32, nParts);
-			view->MapXYToScnXY(pts, dpts, nPoints, xOfst, yOfst);
+			UOSInt nPoint;
+			UOSInt nPtOfst;
+			Double *points = pg->GetPointList(&nPoint);
+			UInt32 *ptOfsts = pg->GetPtOfstList(&nPtOfst);
+			Double *dpoints = MemAlloc(Double, nPoint * 2);
+			UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
+			view->MapXYToScnXY(points, dpoints, nPoint, xOfst, yOfst);
 
-			OSInt i = nParts;
+			OSInt i = nPtOfst;
 			while (i-- > 0)
 			{
-				myParts[i] = (UInt32)nPoints - parts[i];
-				nPoints = parts[i];
+				myPtCnts[i] = (UInt32)nPoint - ptOfsts[i];
+				nPoint = ptOfsts[i];
 			}
 
-			img->DrawPolyPolygon(dpts, myParts, nParts, p, b);
-			MemFree(dpts);
-			MemFree(myParts);
+			img->DrawPolyPolygon(dpoints, myPtCnts, nPtOfst, p, b);
+			MemFree(dpoints);
+			MemFree(myPtCnts);
 			img->DelPen(p);
 			img->DelBrush(b);
 		}

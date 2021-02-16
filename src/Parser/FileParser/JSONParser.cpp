@@ -373,11 +373,11 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 					Double *ptArr;
 					Math::Polygon *pg;
 					NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
-					UInt32 *parts = pg->GetPartList(&j);
+					UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 					i = 0;
 					while (i < j)
 					{
-						parts[i] = partList.GetItem(i);
+						ptOfsts[i] = partList.GetItem(i);
 						i++;
 					}
 					ptArr = pg->GetPointList(&j);

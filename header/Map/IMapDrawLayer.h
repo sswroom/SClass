@@ -31,10 +31,10 @@ namespace Map
 	typedef struct
 	{
 		Int64 objId;
-		UInt32 nParts;
-		UInt32 nPoints;
-		UInt32 *parts;
-		Double *points;
+		UInt32 nPtOfst;
+		UInt32 nPoint;
+		UInt32 *ptOfstArr;
+		Double *pointArr;
 		Int32 flags; //bit0 = has Line color
 		Int32 lineColor;
 	} DrawObjectL;
@@ -170,6 +170,7 @@ namespace Map
 		void SetLabelVisible(Bool labelVisible);
 
 		static Map::DrawLayerType VectorType2LayerType(Math::Vector2D::VectorType vtype);
+		static Map::DrawObjectL *Vector2DrawObject(Int64 id, Math::Vector2D *vec, Map::DrawLayerType layerType);
 	};
 
 	class MapLayerReader : public DB::DBReader

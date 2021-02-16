@@ -307,7 +307,7 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 	UOSInt i = 0;
 	UOSInt j = tabDef->GetColCnt();
 	sql->AppendCmd((const UTF8Char*)"select ");
-	if (page && (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS))
+	if (page && (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS))
 	{
 		sql->AppendCmd((const UTF8Char*)"TOP ");
 		sql->AppendInt32((page->GetPageNum() + 1) * page->GetPageSize());
@@ -327,10 +327,12 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 	sql->AppendTableName(tabDef);
 	if (page)
 	{
+		Bool hasOrder = false;
 		i = 1;
 		j = page->GetSortingCount();
 		if (j > 0)
 		{
+			hasOrder = true;
 			sql->AppendCmd((const UTF8Char*)" order by ");
 			sql->AppendCol(page->GetSortColumn(0));
 			if (page->IsSortDesc(0))
@@ -356,6 +358,45 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 			sql->AppendCmd((const UTF8Char*)", ");
 			sql->AppendInt32(page->GetPageSize());
 			status = PS_SUCC;
+		}
+		else if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+		{
+			if (!hasOrder)
+			{
+				i = 0;
+				j = tabDef->GetColCnt();
+				while (i < j)
+				{
+					col = tabDef->GetCol(i);
+					if (col->IsPK())
+					{
+						if (hasOrder)
+						{
+							sql->AppendCmd((const UTF8Char*)", ");
+						}
+						else
+						{
+							hasOrder = true;
+							sql->AppendCmd((const UTF8Char*)" order by ");
+						}
+						sql->AppendCol(col->GetColName());
+					}
+					i++;
+				}
+			}
+			if (hasOrder)
+			{
+				status = PS_SUCC;
+				sql->AppendCmd((const UTF8Char*)" offset ");
+				sql->AppendInt32(page->GetPageNum() * page->GetPageSize());
+				sql->AppendCmd((const UTF8Char*)" row fetch next ");
+				sql->AppendInt32(page->GetPageSize());
+				sql->AppendCmd((const UTF8Char*)" row only");
+			}
+			else
+			{
+				status = PS_NO_PAGE;
+			}
 		}
 	}
 	return status;

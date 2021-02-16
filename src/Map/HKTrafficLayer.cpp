@@ -1280,15 +1280,15 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetObjectByIdD(void *session, Int64 id)
 	{
 		Math::Polyline *pl = (Math::Polyline*)road->vec;
 		UOSInt cnt;
-		UInt32 *parts = pl->GetPartList(&cnt);
+		UInt32 *ptOfsts = pl->GetPtOfstList(&cnt);
 		obj = MemAlloc(Map::DrawObjectL, 1);
 		obj->objId = id;
-		obj->nParts = (UInt32)cnt;
-		obj->parts = MemAlloc(UInt32, cnt);
-		MemCopyNO(obj->parts, parts, sizeof(UInt32) * cnt);
+		obj->nPtOfst = (UInt32)cnt;
+		obj->ptOfstArr = MemAlloc(UInt32, cnt);
+		MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * cnt);
 		Double *points = pl->GetPointList(&cnt);
-		obj->nPoints = (UInt32)cnt;
-		obj->points = MemAlloc(Double, cnt << 1);
+		obj->nPoint = (UInt32)cnt;
+		obj->pointArr = MemAlloc(Double, cnt << 1);
 		if (road->lev == Map::HKTrafficLayer::SL_GOOD)
 		{
 			obj->flags = 1;
@@ -1310,7 +1310,7 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetObjectByIdD(void *session, Int64 id)
 			obj->lineColor = 0;
 		}
 		
-		MemCopyNO(obj->points, points, sizeof(Double) * cnt * 2);
+		MemCopyNO(obj->pointArr, points, sizeof(Double) * cnt * 2);
 	}
 	mutUsage.EndUse();
 	return obj;
@@ -1344,10 +1344,10 @@ Math::Vector2D *Map::HKTrafficLayer::GetVectorById(void *session, Int64 id)
 
 void Map::HKTrafficLayer::ReleaseObject(void *session, DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "DB/SQLBuilder.h"
+#include "Math/Polygon.h"
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Text/JSONBuilder.h"
 
@@ -46,12 +47,36 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:
+			this->AppendVector(json, sb.ToString(), row->GetValueVector(col->GetColName()));
+			break;
 		case DB::DBRow::DT_BINARY:
 		case DB::DBRow::DT_UNKNOWN:
 			json->ObjectAddStrUTF8(sb.ToString(), (const UTF8Char*)"?");
 			break;
 		}
 		i++;
+	}
+}
+
+void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const UTF8Char *name, Math::Vector2D *vec)
+{
+	switch (vec->GetVectorType())
+	{
+	case Math::Vector2D::VT_POLYGON:
+		{
+			Math::Polygon *pg = (Math::Polygon*)vec;
+			json->ObjectBeginObject(name);
+			json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polygon");
+			json->ObjectBeginArray((const UTF8Char*)"coordinates");
+			//pg->GetPartList
+			json->ArrayEnd();
+			json->ObjectEnd();
+		}
+		break;
+	case Math::Vector2D::VT_POINT:
+	default:
+		json->ObjectAddStrUTF8(name, (const UTF8Char*)"?");
+		break;
 	}
 }
 

@@ -2504,15 +2504,15 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 				UInt32 k;
 				UInt32 maxSize;
 				UInt32 maxPos;
-				maxSize = dobj->nPoints - (maxPos = dobj->parts[dobj->nParts - 1]);
-				k = dobj->nParts;
+				maxSize = dobj->nPoint - (maxPos = dobj->ptOfstArr[dobj->nPtOfst - 1]);
+				k = dobj->nPtOfst;
 				while (k-- > 1)
 				{
-					if ((dobj->parts[k] - dobj->parts[k - 1]) > maxSize)
-						maxSize = (dobj->parts[k] - (maxPos = dobj->parts[k - 1]));
+					if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
+						maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
 				}
 				lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-				if (AddLabel(labels, maxLabels, labelCnt, sptr, maxSize, &dobj->points[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (imgWidth * view->GetHDPI() / view->GetDDPI()), (imgHeight * view->GetHDPI() / view->GetDDPI())))
+				if (AddLabel(labels, maxLabels, labelCnt, sptr, maxSize, &dobj->pointArr[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (imgWidth * view->GetHDPI() / view->GetDDPI()), (imgHeight * view->GetHDPI() / view->GetDDPI())))
 				{
 					lyrs->lyr->ReleaseObject(session, dobj);
 				}
@@ -2524,21 +2524,21 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 			else if (lyrs->lyr->GetLayerType() == 3)
 			{
 				lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-				if (dobj->nPoints & 1)
+				if (dobj->nPoint & 1)
 				{
-					pts[0] = dobj->points[dobj->nPoints - 1];
-					pts[1] = dobj->points[dobj->nPoints];
+					pts[0] = dobj->pointArr[dobj->nPoint - 1];
+					pts[1] = dobj->pointArr[dobj->nPoint];
 
-					scaleW = dobj->points[dobj->nPoints + 1] - dobj->points[dobj->nPoints - 3];
-					scaleH = dobj->points[dobj->nPoints + 2] - dobj->points[dobj->nPoints - 2];
+					scaleW = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 3];
+					scaleH = dobj->pointArr[dobj->nPoint + 2] - dobj->pointArr[dobj->nPoint - 2];
 				}
 				else
 				{
-					pts[0] = (dobj->points[dobj->nPoints - 2] + dobj->points[dobj->nPoints]) * 0.5;
-					pts[1] = (dobj->points[dobj->nPoints - 1] + dobj->points[dobj->nPoints + 1]) * 0.5;
+					pts[0] = (dobj->pointArr[dobj->nPoint - 2] + dobj->pointArr[dobj->nPoint]) * 0.5;
+					pts[1] = (dobj->pointArr[dobj->nPoint - 1] + dobj->pointArr[dobj->nPoint + 1]) * 0.5;
 
-					scaleW = dobj->points[dobj->nPoints] - dobj->points[dobj->nPoints - 2];
-					scaleH = dobj->points[dobj->nPoints + 1] - dobj->points[dobj->nPoints - 1];
+					scaleW = dobj->pointArr[dobj->nPoint] - dobj->pointArr[dobj->nPoint - 2];
+					scaleH = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 1];
 				}
 
 				if (view->InViewXY(pts[0], pts[1]))
@@ -2555,18 +2555,18 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 			{
 				Double lastPtX = 0;
 				Double lastPtY = 0;
-				Double *pointPos = dobj->points;
+				Double *pointPos = dobj->pointArr;
 				lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 
-				j = dobj->nPoints;
+				j = dobj->nPoint;
 				while (j--)
 				{
 					lastPtX += *pointPos++;
 					lastPtY += *pointPos++;
 				}
 
-				pts[0] = (lastPtX / dobj->nPoints);
-				pts[1] = (lastPtY / dobj->nPoints);
+				pts[0] = (lastPtX / dobj->nPoint);
+				pts[1] = (lastPtY / dobj->nPoint);
 				if (view->InViewXY(pts[0], pts[1]))
 				{
 					view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);

@@ -160,13 +160,13 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetObjectByIdD(void *session,
 	Map::DrawObjectL *dobj;
 
 	dobj = MemAlloc(Map::DrawObjectL, 1);
-	dobj->nParts = 0;
-	dobj->nPoints = 1;
+	dobj->nPtOfst = 0;
+	dobj->nPoint = 1;
 	dobj->objId = id;
-	dobj->parts = 0;
-	dobj->points = MemAlloc(Double, 2);
-	dobj->points[0] = ufile->lon;
-	dobj->points[1] = ufile->lat;
+	dobj->ptOfstArr = 0;
+	dobj->pointArr = MemAlloc(Double, 2);
+	dobj->pointArr[0] = ufile->lon;
+	dobj->pointArr[1] = ufile->lat;
 	dobj->flags = 0;
 	dobj->lineColor = 0;
 	return dobj;
@@ -184,7 +184,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetVectorById(void *session, In
 
 void SSWR::OrganMgr::OrganSpImgLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	MemFree(obj->points);
+	MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

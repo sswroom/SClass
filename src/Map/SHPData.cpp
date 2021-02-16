@@ -152,8 +152,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoints = ReadInt32(&shpBuff[40]);
-					rec->nParts = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -189,8 +189,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoints = ReadInt32(&shpBuff[40]);
-					rec->nParts = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -254,8 +254,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoints = ReadInt32(&shpBuff[40]);
-					rec->nParts = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -291,8 +291,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoints = ReadInt32(&shpBuff[40]);
-					rec->nParts = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -546,13 +546,13 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 			return 0;
 		}
 		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->nParts = 0;
-		obj->nPoints = 1;
+		obj->nPtOfst = 0;
+		obj->nPoint = 1;
 		obj->objId = id;
-		obj->parts = 0;
-		obj->points = MemAlloc(Double, 2);
-		obj->points[0] = (this->ptX->GetItem((OSInt)id));
-		obj->points[1] = (this->ptY->GetItem((OSInt)id));
+		obj->ptOfstArr = 0;
+		obj->pointArr = MemAlloc(Double, 2);
+		obj->pointArr[0] = (this->ptX->GetItem((OSInt)id));
+		obj->pointArr[1] = (this->ptY->GetItem((OSInt)id));
 		obj->flags = 0;
 		obj->lineColor = 0;
 		return obj;
@@ -564,13 +564,13 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 			return 0;
 
 		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->nParts = rec->nParts;
-		obj->nPoints = rec->nPoints;
+		obj->nPtOfst = rec->nPtOfst;
+		obj->nPoint = rec->nPoint;
 		obj->objId = id;
-		obj->parts = MemAlloc(UInt32, rec->nParts);
-		obj->points = MemAlloc(Double, rec->nPoints << 1);
-		shpData->GetRealData(rec->ofst, rec->nParts << 2, (UInt8*)obj->parts);
-		shpData->GetRealData(rec->ofst + (rec->nParts << 2), rec->nPoints << 4, (UInt8*)obj->points);
+		obj->ptOfstArr = MemAlloc(UInt32, rec->nPtOfst);
+		obj->pointArr = MemAlloc(Double, rec->nPoint << 1);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)obj->ptOfstArr);
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)obj->pointArr);
 		obj->flags = 0;
 		obj->lineColor = 0;
 		return obj;
@@ -582,13 +582,13 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 			return 0;
 
 		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->nParts = rec->nParts;
-		obj->nPoints = rec->nPoints;
+		obj->nPtOfst = rec->nPtOfst;
+		obj->nPoint = rec->nPoint;
 		obj->objId = id;
-		obj->parts = MemAlloc(UInt32, rec->nParts);
-		obj->points = MemAlloc(Double, rec->nPoints << 1);
-		shpData->GetRealData(rec->ofst, rec->nParts << 2, (UInt8*)obj->parts);
-		shpData->GetRealData(rec->ofst + (rec->nParts << 2), rec->nPoints << 4, (UInt8*)obj->points);
+		obj->ptOfstArr = MemAlloc(UInt32, rec->nPtOfst);
+		obj->pointArr = MemAlloc(Double, rec->nPoint << 1);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)obj->ptOfstArr);
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)obj->pointArr);
 		obj->flags = 0;
 		obj->lineColor = 0;
 		return obj;
@@ -630,9 +630,9 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
 		if (rec == 0)
 			return 0;
-		NEW_CLASS(pg, Math::Polygon(this->csys->GetSRID(), rec->nParts, rec->nPoints));
-		shpData->GetRealData(rec->ofst, rec->nParts << 2, (UInt8*)pg->GetPartList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nParts << 2), rec->nPoints << 4, (UInt8*)pg->GetPointList(&nPoint));
+		NEW_CLASS(pg, Math::Polygon(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pg->GetPtOfstList(&nPoint));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pg->GetPointList(&nPoint));
 		return pg;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
@@ -641,9 +641,9 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
 		if (rec == 0)
 			return 0;
-		NEW_CLASS(pl, Math::Polyline(this->csys->GetSRID(), rec->nParts, rec->nPoints));
-		shpData->GetRealData(rec->ofst, rec->nParts << 2, (UInt8*)pl->GetPartList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nParts << 2), rec->nPoints << 4, (UInt8*)pl->GetPointList(&nPoint));
+		NEW_CLASS(pl, Math::Polyline(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		return pl;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
@@ -652,10 +652,10 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
 		if (rec == 0)
 			return 0;
-		NEW_CLASS(pl, Math::Polyline3D(this->csys->GetSRID(), rec->nParts, rec->nPoints));
-		shpData->GetRealData(rec->ofst, rec->nParts << 2, (UInt8*)pl->GetPartList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nParts << 2), rec->nPoints << 4, (UInt8*)pl->GetPointList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nParts << 2) + (rec->nPoints << 4) + 16, rec->nPoints << 3, (UInt8*)pl->GetAltitudeList(&nPoint));
+		NEW_CLASS(pl, Math::Polyline3D(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetAltitudeList(&nPoint));
 		return pl;
 	}
 	else
@@ -666,10 +666,10 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 
 void Map::SHPData::ReleaseObject(void *session, DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

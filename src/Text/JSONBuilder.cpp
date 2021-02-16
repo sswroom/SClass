@@ -12,7 +12,12 @@ void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 	*sptr++ = '\"';
 	while ((c = *val++) != 0)
 	{
-		if (c == '\"')
+		if (c == '\\')
+		{
+			*sptr++ = '\\';
+			*sptr++ = '\\';
+		}
+		else if (c == '\"')
 		{
 			*sptr++ = '\\';
 			*sptr++ = '\"';
@@ -51,6 +56,11 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	while ((c = *val++) != 0)
 	{
 		if (c == '\"')
+		{
+			*sptr++ = '\\';
+			*sptr++ = '\\';
+		}
+		else if (c == '\"')
 		{
 			*sptr++ = '\\';
 			*sptr++ = '\"';

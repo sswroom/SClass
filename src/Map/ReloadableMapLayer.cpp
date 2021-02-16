@@ -497,10 +497,10 @@ Math::Vector2D *Map::ReloadableMapLayer::GetVectorById(void *session, Int64 id)
 
 void Map::ReloadableMapLayer::ReleaseObject(void *session, DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

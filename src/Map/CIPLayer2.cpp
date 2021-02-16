@@ -676,19 +676,19 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	}
 	obj = MemAlloc(Map::CIPLayer2::CIPFileObject, 1);
 	obj->id = buff[0];
-	obj->nParts = buff[1];
+	obj->nPtOfst = buff[1];
 	if (buff[1] > 0)
 	{
-		obj->parts = MemAlloc(UInt32, buff[1]);
-		cip->Read((UInt8*)obj->parts, sizeof(UInt32) * buff[1]);
+		obj->ptOfstArr = MemAlloc(UInt32, buff[1]);
+		cip->Read((UInt8*)obj->ptOfstArr, sizeof(UInt32) * buff[1]);
 	}
 	else
 	{
-		obj->parts = 0;
+		obj->ptOfstArr = 0;
 	}
-	cip->Read((UInt8*)&obj->nPoints, 4);
-	obj->points = MemAlloc(Int32, obj->nPoints * 2);
-	cip->Read((UInt8*)obj->points, obj->nPoints * 8);
+	cip->Read((UInt8*)&obj->nPoint, 4);
+	obj->pointArr = MemAlloc(Int32, obj->nPoint * 2);
+	cip->Read((UInt8*)obj->pointArr, obj->nPoint * 8);
 	this->currObjs->Put(id, obj);
 	return obj;
 }
@@ -703,13 +703,13 @@ void Map::CIPLayer2::ReleaseFileObjs(Data::Integer32Map<Map::CIPLayer2::CIPFileO
 		obj = objArr->GetItem(i);
 		if (obj)
 		{
-			if (obj->parts)
+			if (obj->ptOfstArr)
 			{
-				MemFree(obj->parts);
+				MemFree(obj->ptOfstArr);
 			}
-			if (obj->points)
+			if (obj->pointArr)
 			{
-				MemFree(obj->points);
+				MemFree(obj->pointArr);
 			}
 			MemFree(obj);
 		}
@@ -758,20 +758,20 @@ Map::DrawObjectL *Map::CIPLayer2::GetObjectByIdD(void *session, Int64 id)
 	Map::DrawObjectL *obj;
 	obj = MemAlloc(Map::DrawObjectL, 1);
 	obj->objId = fobj->id;
-	obj->nParts = fobj->nParts;
-	obj->nPoints = fobj->nPoints;
-	if (fobj->parts)
+	obj->nPtOfst = fobj->nPtOfst;
+	obj->nPoint = fobj->nPoint;
+	if (fobj->ptOfstArr)
 	{
-		obj->parts = MemAlloc(UInt32, fobj->nParts);
-		MemCopyNO(obj->parts, fobj->parts, sizeof(Int32) * fobj->nParts);
+		obj->ptOfstArr = MemAlloc(UInt32, fobj->nPtOfst);
+		MemCopyNO(obj->ptOfstArr, fobj->ptOfstArr, sizeof(Int32) * fobj->nPtOfst);
 	}
-	obj->points = MemAlloc(Double, fobj->nPoints << 1);
+	obj->pointArr = MemAlloc(Double, fobj->nPoint << 1);
 	Double r = 1 / 200000.0;
 	UOSInt i = 0;
-	UOSInt j = fobj->nPoints * 2;
+	UOSInt j = fobj->nPoint * 2;
 	while (i < j)
 	{
-		obj->points[i] = fobj->points[i] * r;
+		obj->pointArr[i] = fobj->pointArr[i] * r;
 		i++;
 	}
 	obj->flags = 0;
@@ -789,35 +789,35 @@ Math::Vector2D *Map::CIPLayer2::GetVectorById(void *session, Int64 id)
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Point *pt;
-		NEW_CLASS(pt, Math::Point(4326, fobj->points[0] / 200000.0, fobj->points[1] / 200000.0));
+		NEW_CLASS(pt, Math::Point(4326, fobj->pointArr[0] / 200000.0, fobj->pointArr[1] / 200000.0));
 		return pt;
 	}
-	else if (fobj->parts == 0)
+	else if (fobj->ptOfstArr == 0)
 	{
 		return 0;
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE || this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
 		Math::PointCollection *ptColl = 0;
-		UInt32 *tmpParts;
+		UInt32 *tmpPtOfsts;
 		Double *tmpPoints;
 		UOSInt i;
 		if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 		{
-			NEW_CLASS(ptColl, Math::Polyline(4326, fobj->nParts, fobj->nPoints));
+			NEW_CLASS(ptColl, Math::Polyline(4326, fobj->nPtOfst, fobj->nPoint));
 		}
 		else
 		{
-			NEW_CLASS(ptColl, Math::Polygon(4326, fobj->nParts, fobj->nPoints));
+			NEW_CLASS(ptColl, Math::Polygon(4326, fobj->nPtOfst, fobj->nPoint));
 		}
-		tmpParts = ptColl->GetPartList(&i);
-		MemCopyNO(tmpParts, fobj->parts, fobj->nParts * sizeof(UInt32));
+		tmpPtOfsts = ptColl->GetPtOfstList(&i);
+		MemCopyNO(tmpPtOfsts, fobj->ptOfstArr, fobj->nPtOfst * sizeof(UInt32));
 		
 		tmpPoints = ptColl->GetPointList(&i);
 		i = i << 1;
 		while (i--)
 		{
-			tmpPoints[i] = fobj->points[i] / 200000.0;
+			tmpPoints[i] = fobj->pointArr[i] / 200000.0;
 		}
 		return ptColl;
 	}
@@ -826,10 +826,10 @@ Math::Vector2D *Map::CIPLayer2::GetVectorById(void *session, Int64 id)
 
 void Map::CIPLayer2::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

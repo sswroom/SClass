@@ -419,12 +419,12 @@ Map::DrawObjectL *Map::GPSTrack::GetObjectByIdD(void *session, Int64 id)
 			lastLon = 0;
 			outObj = MemAlloc(Map::DrawObjectL, 1);
 			outObj->objId = id;
-			outObj->nParts = 1;
-			outObj->nPoints = (UInt32)(j = this->currRecs->GetCount());
-			outObj->parts = MemAlloc(UInt32, 1);
-			outObj->points = MemAlloc(Double, outObj->nPoints * 2);
-			outObj->parts[0] = 0;
-			ptPtr = outObj->points;
+			outObj->nPtOfst = 1;
+			outObj->nPoint = (UInt32)(j = this->currRecs->GetCount());
+			outObj->ptOfstArr = MemAlloc(UInt32, 1);
+			outObj->pointArr = MemAlloc(Double, outObj->nPoint * 2);
+			outObj->ptOfstArr[0] = 0;
+			ptPtr = outObj->pointArr;
 			i = 0;
 			while (i < j)
 			{
@@ -461,12 +461,12 @@ Map::DrawObjectL *Map::GPSTrack::GetObjectByIdD(void *session, Int64 id)
 		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((OSInt)id);
 		outObj = MemAlloc(Map::DrawObjectL, 1);
 		outObj->objId = id;
-		outObj->nParts = 1;
-		outObj->nPoints = (UInt32)(j = track->nRecords);
-		outObj->parts = MemAlloc(UInt32, 1);
-		outObj->points = MemAlloc(Double, outObj->nPoints * 2);
-		outObj->parts[0] = 0;
-		ptPtr = outObj->points;
+		outObj->nPtOfst = 1;
+		outObj->nPoint = (UInt32)(j = track->nRecords);
+		outObj->ptOfstArr = MemAlloc(UInt32, 1);
+		outObj->pointArr = MemAlloc(Double, outObj->nPoint * 2);
+		outObj->ptOfstArr[0] = 0;
+		ptPtr = outObj->pointArr;
 		i = 0;
 		while (i < j)
 		{
@@ -520,7 +520,7 @@ Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
 				Math::Polyline3D *pl;
 
 				NEW_CLASS(pl, Math::Polyline3D(4326, 1, j = this->currRecs->GetCount()));
-				pl->GetPartList(&i)[0] = 0;
+				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				altList = pl->GetAltitudeList(&j);
 				i = 0;
@@ -549,7 +549,7 @@ Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
 			{
 				Math::Polyline *pl;
 				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs->GetCount()));
-				pl->GetPartList(&i)[0] = 0;
+				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				i = 0;
 				while (i < j)
@@ -591,7 +591,7 @@ Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
 			Math::Polyline3D *pl;
 
 			NEW_CLASS(pl, Math::Polyline3D(4326, 1, track->nRecords));
-			pl->GetPartList(&i)[0] = 0;
+			pl->GetPtOfstList(&i)[0] = 0;
 			ptPtr = pl->GetPointList(&j);
 			altList = pl->GetAltitudeList(&j);
 			i = 0;
@@ -620,7 +620,7 @@ Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
 			Math::Polyline *pl;
 
 			NEW_CLASS(pl, Math::Polyline(4326, 1, track->nRecords));
-			pl->GetPartList(&i)[0] = 0;
+			pl->GetPtOfstList(&i)[0] = 0;
 			ptPtr = pl->GetPointList(&j);
 			i = 0;
 			while (i < j)
@@ -646,8 +646,8 @@ Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
 
 void Map::GPSTrack::ReleaseObject(void *session, DrawObjectL *obj)
 {
-	MemFree(obj->parts);
-	MemFree(obj->points);
+	MemFree(obj->ptOfstArr);
+	MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

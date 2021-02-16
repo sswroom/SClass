@@ -6,6 +6,7 @@
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "DB/ColDef.h"
 #include "Math/Math.h"
+#include "Math/Point.h"
 #include "Map/CIPLayer2.h"
 #include "Map/IMapDrawLayer.h"
 #include "Map/ProjectedMapView.h"
@@ -334,17 +335,17 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 				UInt32 k;
 				UInt32 l;
 				UInt32 m;
-				UInt32 *parts;
-				Double *points;
+				UInt32 *ptOfstArr;
+				Double *pointArr;
 				Int32 currFound;
 				Double mapX = lon;
 				Double mapY = lat;
 
-				parts = dobj->parts;
-				points = dobj->points;
+				ptOfstArr = dobj->ptOfstArr;
+				pointArr = dobj->pointArr;
 
-				k = dobj->nParts;
-				l = dobj->nPoints;
+				k = dobj->nPtOfst;
+				l = dobj->nPoint;
 
 				currFound = 0;
 				Double calBase;
@@ -358,12 +359,12 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 
 				while (k--)
 				{
-					m = parts[k];
+					m = ptOfstArr[k];
 					l--;
 					while (l-- > m)
 					{
-						calH = points[(l << 1) + 1] - points[(l << 1) + 3];
-						calW = points[(l << 1) + 0] - points[(l << 1) + 2];
+						calH = pointArr[(l << 1) + 1] - pointArr[(l << 1) + 3];
+						calW = pointArr[(l << 1) + 0] - pointArr[(l << 1) + 2];
 
 						if (calH == 0)
 						{
@@ -373,8 +374,8 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 						{
 							calX = (calBase = (calW * calW)) * mapX;
 							calBase += calH * calH;
-							calX += calH * calH * (points[(l << 1) + 0]);
-							calX += (mapY - points[(l << 1) + 1]) * calH * calW;
+							calX += calH * calH * (pointArr[(l << 1) + 0]);
+							calX += (mapY - pointArr[(l << 1) + 1]) * calH * calW;
 							calX /= calBase;
 						}
 
@@ -384,36 +385,36 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 						}
 						else
 						{
-							calY = ((calX - (points[(l << 1) + 0])) * calH / calW) + points[(l << 1) + 1];
+							calY = ((calX - (pointArr[(l << 1) + 0])) * calH / calW) + pointArr[(l << 1) + 1];
 						}
 
 						if (calW < 0)
 						{
-							if (points[(l << 1) + 0] > calX)
+							if (pointArr[(l << 1) + 0] > calX)
 								continue;
-							if (points[(l << 1) + 2] < calX)
+							if (pointArr[(l << 1) + 2] < calX)
 								continue;
 						}
 						else
 						{
-							if (points[(l << 1) + 0] < calX)
+							if (pointArr[(l << 1) + 0] < calX)
 								continue;
-							if (points[(l << 1) + 2] > calX)
+							if (pointArr[(l << 1) + 2] > calX)
 								continue;
 						}
 
 						if (calH < 0)
 						{
-							if (points[(l << 1) + 1] > calY)
+							if (pointArr[(l << 1) + 1] > calY)
 								continue;
-							if (points[(l << 1) + 3] < calY)
+							if (pointArr[(l << 1) + 3] < calY)
 								continue;
 						}
 						else
 						{
-							if (points[(l << 1) + 1] < calY)
+							if (pointArr[(l << 1) + 1] < calY)
 								continue;
-							if (points[(l << 1) + 3] > calY)
+							if (pointArr[(l << 1) + 3] > calY)
 								continue;
 						}
 
@@ -873,6 +874,55 @@ Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Vector2D::Vect
 		return Map::DRAW_LAYER_IMAGE;
 	default:
 		return Map::DRAW_LAYER_UNKNOWN;
+	}
+}
+
+Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D *vec, Map::DrawLayerType layerType)
+{
+	if (layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Vector2D::VT_POINT)
+	{
+		Math::Point *pt = (Math::Point*)vec;
+		Map::DrawObjectL *dobj;
+		dobj = MemAlloc(Map::DrawObjectL, 1);
+		dobj->objId = id;
+		dobj->nPtOfst = 1;
+		dobj->nPoint = 1;
+		dobj->ptOfstArr = MemAlloc(UInt32, 1);
+		dobj->ptOfstArr[0] = 0;
+		dobj->pointArr = MemAlloc(Double, 2);
+		pt->GetCenter(&dobj->pointArr[0], &dobj->pointArr[1]);
+		dobj->flags = 0;
+		dobj->lineColor = 0;
+		return dobj;
+	}
+	else if (layerType == Map::DRAW_LAYER_POLYGON || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
+	{
+		Math::PointCollection *ptColl = (Math::PointCollection*)vec;
+		UInt32 *ptOfstArr;
+		Double *ptArr;
+		UOSInt cnt;
+
+		Map::DrawObjectL *dobj;
+		dobj = MemAlloc(Map::DrawObjectL, 1);
+		dobj->objId = id;
+
+		ptOfstArr = ptColl->GetPtOfstList(&cnt);
+		dobj->nPtOfst = (UInt32)cnt;
+		dobj->ptOfstArr = MemAlloc(UInt32, cnt);
+		MemCopyNO(dobj->ptOfstArr, ptOfstArr, sizeof(UInt32) * cnt);
+
+		ptArr = ptColl->GetPointList(&cnt);
+		dobj->nPoint = (UInt32)cnt;
+		cnt <<= 1;
+		dobj->pointArr = MemAlloc(Double, cnt);
+		MemCopyNO(dobj->pointArr, ptArr, cnt << 3);
+		dobj->flags = 0;
+		dobj->lineColor = 0;
+		return dobj;
+	}
+	else
+	{
+		return 0;
 	}
 }
 
