@@ -63,8 +63,6 @@ namespace Net
 
 			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
 			Bool MIMEToCompress(const UTF8Char *mime);
-			void SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *stm);
-			void SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff);
 			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, IO::PackageFile *packageFile);
 
 			void StatLoad(StatInfo *stat);

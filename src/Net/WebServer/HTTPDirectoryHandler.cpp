@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "IO/FileStream.h"
@@ -9,6 +8,7 @@
 #include "IO/StmData/FileData.h"
 #include "Net/MIME.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
+#include "Net/WebServer/HTTPServerUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -18,7 +18,6 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 #include "Text/TextEnc/URIEncoding.h"
-#include "miniz.h"
 
 typedef struct
 {
@@ -126,405 +125,6 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebRe
 	if (this->allowOrigin)
 	{
 		resp->AddHeader((const UTF8Char*)"Access-Control-Allow-Origin", this->allowOrigin);
-	}
-}
-
-Bool Net::WebServer::HTTPDirectoryHandler::MIMEToCompress(const UTF8Char *umime)
-{
-	const Char *mime = (const Char *)umime;
-	if (Text::StrEquals(mime, "text/javascript"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/html"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/css"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/plain"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/xml"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/javascript"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/json"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/xml"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/xhtml+xml"))
-	{
-		return true;
-	}
-	return false;
-}
-
-void Net::WebServer::HTTPDirectoryHandler::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *fs)
-{
-	OSInt i;
-	OSInt j;
-	UInt8 buff[2048];
-	UInt8 compBuff[2048];
-	Bool contSent = false;
-	if (contLeng > 1024)
-	{
-		Bool needComp = MIMEToCompress(mime);
-		UTF8Char *sarr[10];
-		Text::StringBuilderUTF8 sb;
-
-		if (needComp && req->GetHeader(&sb, (const UTF8Char*)"Accept-Encoding"))
-		{
-			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
-			Manage::OSInfo::OSType os = req->GetOS();
-			j = Text::StrSplitTrim(sarr, 10, sb.ToString(), ',');
-			i = 0;
-			while (i < j)
-			{
-				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
-				{
-					if (browser != Net::BrowserInfo::BT_CHROME && browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
-					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
-
-						compBuff[0] = 0x1F;
-						compBuff[1] = 0x8B;
-						compBuff[2] = 8;
-						compBuff[3] = 0;
-						compBuff[4] = 0;
-						compBuff[5] = 0;
-						compBuff[6] = 0;
-						compBuff[7] = 0;
-						compBuff[8] = 0;
-						resp->Write(compBuff, 8);
-
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						Int32 oriLeng = (Int32)contLeng;
-						Crypto::Hash::CRC32R crc;
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = 2048;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						stm.avail_in = 0;
-						while (!err && contLeng > 0)
-						{
-							stm.next_in = buff;
-							if (contLeng > 2048)
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, 2048);
-							}
-							else
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, (OSInt)contLeng);
-							}
-							if (stm.avail_in == 0)
-							{
-								break;
-							}
-							crc.Calc(buff, stm.avail_in);
-							contLeng -= stm.avail_in;
-							while (stm.avail_in > 0)
-							{
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-								ret = mz_deflate(&stm, MZ_NO_FLUSH);
-								if (stm.avail_out == 2048)
-								{
-									if (ret != 0)
-									{
-										err = true;
-										break;
-									}
-								}
-								else
-								{
-									resp->Write(compBuff, 2048 - stm.avail_out);
-									stm.next_out = compBuff;
-									stm.avail_out = 2048;
-								}
-							}
-						}
-
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
-
-						crc.GetValue(&compBuff[8]);
-						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
-						WriteInt32(&compBuff[4], (Int32)oriLeng);
-						resp->Write(compBuff, 8);
-						resp->ShutdownSend();
-
-						contSent = true;
-						break;
-					}
-				}
-				else if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"deflate"))
-				{
-					if (browser != Net::BrowserInfo::BT_IE)
-					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
-
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = 2048;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						stm.avail_in = 0;
-						while (!err && contLeng > 0)
-						{
-							stm.next_in = buff;
-							if (contLeng > 2048)
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, 2048);
-							}
-							else
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, (OSInt)contLeng);
-							}
-							if (stm.avail_in == 0)
-							{
-								break;
-							}
-							contLeng -= stm.avail_in;
-							while (stm.avail_in > 0)
-							{
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-								ret = mz_deflate(&stm, MZ_NO_FLUSH);
-								if (stm.avail_out == 2048)
-								{
-									if (ret != 0)
-									{
-										err = true;
-										break;
-									}
-								}
-								else
-								{
-									resp->Write(compBuff, 2048 - stm.avail_out);
-									stm.next_out = compBuff;
-									stm.avail_out = 2048;
-								}
-							}
-						}
-
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
-						resp->ShutdownSend();
-						contSent = true;
-						break;
-					}
-				}
-				i++;
-			}
-		}
-	}
-	if (!contSent)
-	{
-		resp->AddContentLength(contLeng);
-		while (contLeng > 0)
-		{
-			OSInt writeSize;
-			OSInt readSize = fs->Read(buff, 2048);
-			if (readSize <= 0)
-			{
-				break;
-			}
-			writeSize = resp->Write(buff, readSize);
-			if (writeSize != readSize)
-				break;
-			contLeng -= readSize;
-		}
-	}
-}
-
-void Net::WebServer::HTTPDirectoryHandler::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff)
-{
-	OSInt i;
-	OSInt j;
-	UInt8 compBuff[2048];
-	Bool contSent = false;
-	if (contLeng > 1024)
-	{
-		Bool needComp = MIMEToCompress(mime);
-		UTF8Char *sarr[10];
-		Text::StringBuilderUTF8 sb;
-
-		if (needComp && req->GetHeader(&sb, (const UTF8Char*)"Accept-Encoding"))
-		{
-			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
-			j = Text::StrSplitTrim(sarr, 10, sb.ToString(), ',');
-			i = 0;
-			while (i < j)
-			{
-				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
-				{
-					if (browser != Net::BrowserInfo::BT_CHROME)
-					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
-
-						compBuff[0] = 0x1F;
-						compBuff[1] = 0x8B;
-						compBuff[2] = 8;
-						compBuff[3] = 0;
-						compBuff[4] = 0;
-						compBuff[5] = 0;
-						compBuff[6] = 0;
-						compBuff[7] = 0;
-						compBuff[8] = 0;
-						resp->Write(compBuff, 8);
-
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						Crypto::Hash::CRC32R crc;
-						crc.Calc(buff, (OSInt)contLeng);
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = (UInt32)contLeng;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
-						crc.GetValue(&compBuff[8]);
-						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
-						WriteInt32(&compBuff[4], (Int32)contLeng);
-						resp->Write(compBuff, 8);
-						resp->ShutdownSend();
-						contSent = true;
-						break;
-					}
-				}
-				else if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"deflate"))
-				{
-					if (browser != Net::BrowserInfo::BT_IE)
-					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
-
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = (UInt32)contLeng;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
-						resp->ShutdownSend();
-						contSent = true;
-						break;
-					}
-				}
-				i++;
-			}
-		}
-	}
-	if (!contSent)
-	{
-		resp->AddContentLength(contLeng);
-		resp->Write(buff, (OSInt)contLeng);
 	}
 }
 
@@ -654,7 +254,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 		i++;
 	}
 	sbOut.Append((const UTF8Char*)"</table></body></html>");
-	this->SendContent(req, resp, (const UTF8Char*)"text/html", sbOut.GetLength(), sbOut.ToString());
+	Net::WebServer::HTTPServerUtil::SendContent(req, resp, (const UTF8Char*)"text/html", sbOut.GetLength(), sbOut.ToString());
 	return ;
 }
 
@@ -867,7 +467,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							resp->AddHeader((const UTF8Char*)"Access-Control-Allow-Origin", this->allowOrigin);
 						}
 						resp->AddContentType(mime);
-						this->SendContent(req, resp, mime, dataLen, dataBuff);
+						Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
 						MemFree(dataBuff);
 						return true;
 					}
@@ -898,7 +498,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 									resp->AddHeader((const UTF8Char*)"Access-Control-Allow-Origin", this->allowOrigin);
 								}
 								resp->AddContentType(mime);
-								this->SendContent(req, resp, mime, dataLen, dataBuff);
+								Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
 								MemFree(dataBuff);
 							}
 							else
@@ -988,7 +588,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				resp->AddContentType(mime = Net::MIME::GetMIMEFromExt(subReq + i + 1));
 			}
 		}
-		this->SendContent(req, resp, mime, cache->buffSize, cache->buff);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, cache->buffSize, cache->buff);
 		Sync::Interlocked::Decrement(&this->fileCacheUsing);
 		return true;
 	}
@@ -1081,7 +681,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				readSize = fs->Read(cache->buff, (OSInt)sizeLeft);
 				if (readSize == sizeLeft)
 				{
-					this->SendContent(req, resp, mime, sizeLeft, cache->buff);
+					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 					Sync::MutexUsage mutUsage(this->fileCacheMut);
 					this->fileCache->Put(subReq, cache);
 					mutUsage.EndUse();
@@ -1096,7 +696,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				this->SendContent(req, resp, mime, sizeLeft, fs);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 			}
 			DEL_CLASS(fs);
 			return true;
@@ -1460,7 +1060,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 				sbOut.AppendC((const UTF8Char*)"</table></body></html>", 22);
 
-				this->SendContent(req, resp, (const UTF8Char*)"text/html", sbOut.GetLength(), sbOut.ToString());
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, (const UTF8Char*)"text/html", sbOut.GetLength(), sbOut.ToString());
 				return true;
 			}
 			else
@@ -1543,6 +1143,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			stat->updated = true;
 			mutUsage.EndUse();
 		}
+
 		IO::Path::GetFileExt(sbuff, sptr);
 
 		Bool partial = false;
@@ -1648,7 +1249,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			readSize = fs->Read(buff, 2048);
 			if (readSize == 0)
 			{
-				this->SendContent(req, resp, mime, sizeLeft, fs);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 			}
 			else
 			{
@@ -1660,7 +1261,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					readSize = fs->Read(buff, 2048);
 				}
 				mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
-				this->SendContent(req, resp, mime, sizeLeft, mstm);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
 				DEL_CLASS(mstm);
 			}
 		}
@@ -1674,7 +1275,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			readSize = fs->Read(cache->buff, (OSInt)sizeLeft);
 			if (readSize == sizeLeft)
 			{
-				this->SendContent(req, resp, mime, sizeLeft, cache->buff);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 				Sync::MutexUsage mutUsage(this->fileCacheMut);
 				cache = this->fileCache->Put(subReq, cache);
 				mutUsage.EndUse();
@@ -1695,7 +1296,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		}
 		else
 		{
-			this->SendContent(req, resp, mime, sizeLeft, fs);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 		}
 		DEL_CLASS(fs);
 		return true;

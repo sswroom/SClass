@@ -2243,6 +2243,8 @@ Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
 Net/WebServer/HTTPDirectoryHandler.h: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 @HTTPDirectoryHandler.o
 Net/WebServer/HTTPFormParser.h:
+Net/WebServer/HTTPServerUtil.h: ../../src/Net/WebServer/HTTPServerUtil.cpp
+@HTTPServerUtil.o
 Net/WebServer/IReqLogger.h:
 Net/WebServer/IWebHandler.h:
 Net/WebServer/IWebRequest.h: ../../src/Net/WebServer/IWebRequest.cpp
@@ -3953,6 +3955,7 @@ SNSRSS.o: ../../src/Net/SNS/SNSRSS.cpp
 SNSTwitter.o: ../../src/Net/SNS/SNSTwitter.cpp
 EGaugeHandler.o: ../../src/Net/WebServer/EGaugeHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
+HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp
 $-I ../../ThirdParty/miniz
 IWebRequest.o: ../../src/Net/WebServer/IWebRequest.cpp
 IWebResponse.o: ../../src/Net/WebServer/IWebResponse.cpp
