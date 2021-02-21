@@ -3,11 +3,11 @@
 #include "Core/DefaultDrawEngine.h"
 #include "DB/DBTool.h"
 #include "DB/MDBFile.h"
-#include "DB/MySQLConn.h"
 #include "DB/ODBCConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/IniFile.h"
 #include "Manage/ExceptionRecorder.h"
+#include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "SSWR/OrganMgr/OrganWebHandler.h"
 
@@ -55,7 +55,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else if (cfg->GetValue((const UTF8Char*)"MySQLServer"))
 		{
-			db = DB::MySQLConn::CreateDBTool(sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), log, false, (const UTF8Char*)"DB: ");
+			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), log, false, (const UTF8Char*)"DB: ");
 		}
 		else
 		{

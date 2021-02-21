@@ -15,7 +15,7 @@
 
 #define CLIVERSION "1.0.0"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
