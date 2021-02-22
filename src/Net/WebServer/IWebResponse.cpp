@@ -95,23 +95,23 @@ Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, cons
 	if (isAttachment)
 	{
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"attachment");
-		if (attFileName)
-		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"; filename=\"");
-			if (browser == Net::BrowserInfo::BT_IE)
-			{
-				sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
-			}
-			else
-			{
-				sptr = Text::StrConcat(sptr, attFileName);
-			}
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"\"");
-		}
 	}
 	else
 	{
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"inline");
+	}
+	if (attFileName)
+	{
+		sptr = Text::StrConcat(sptr, (const UTF8Char*)"; filename=\"");
+		if (browser == Net::BrowserInfo::BT_IE)
+		{
+			sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
+		}
+		else
+		{
+			sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
+		}
+		sptr = Text::StrConcat(sptr, (const UTF8Char*)"\"");
 	}
 	return this->AddHeader((const UTF8Char*)"Content-Disposition", sbuff);
 }
