@@ -201,6 +201,7 @@ UI::GUIForm::~GUIForm()
 		DEL_CLASS(this->menu);
 		this->menu = 0;
 	}
+	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
 /*void UI::GUIForm::SetText(const WChar *text)

@@ -35,9 +35,10 @@ IO::LogTool::~LogTool()
 		IO::ILogHandler *logHdlr = fileLogArr->GetItem(i);
 		DEL_CLASS(logHdlr);
 	}
-	DEL_CLASS(fileLogArr);
-	DEL_CLASS(levArr);
-	DEL_CLASS(hdlrArr);
+	DEL_CLASS(this->fileLogArr);
+	DEL_CLASS(this->levArr);
+	DEL_CLASS(this->hdlrMut);
+	DEL_CLASS(this->hdlrArr);
 }
 
 void IO::LogTool::Close()

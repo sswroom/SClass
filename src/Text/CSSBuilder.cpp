@@ -8,6 +8,7 @@ Text::CSSBuilder::CSSBuilder(PrettyMode pm)
 {
 	NEW_CLASS(this->sb, Text::StringBuilderUTF8());
 	this->pm = pm;
+	this->bstate = BS_ROOT;
 }
 
 Text::CSSBuilder::~CSSBuilder()

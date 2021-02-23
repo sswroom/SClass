@@ -95,6 +95,7 @@ UI::GUITextBox::~GUITextBox()
 	MemFree(txt);
 	DEL_CLASS(this->txtChgObjs);
 	DEL_CLASS(this->txtChgHdlrs);
+	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
 void UI::GUITextBox::EventTextChange()

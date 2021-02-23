@@ -119,6 +119,7 @@ Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, Exception
 	ExceptionRecorder_Handler = ExceptionHandler;
 
 	struct sigaction sigact;
+	MemClear(&sigact, sizeof(sigact));
 	sigact.sa_sigaction = ExceptionRecorder_Signal;
 	sigact.sa_flags = SA_SIGINFO;
 	sigaction(SIGSEGV, &sigact, 0);

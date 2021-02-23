@@ -501,6 +501,7 @@ Media::ALSARenderer::~ALSARenderer()
 	{
 		BindAudio(0);
 	}
+	SDEL_TEXT(this->devName);
 }
 
 Bool Media::ALSARenderer::IsError()

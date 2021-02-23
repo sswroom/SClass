@@ -246,7 +246,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 
 			if (work[2] > sum)
 			{
-				if (out->index[i * out->tap + 2] == out->index[i * out->tap + 0])
+				if (out->index[i * 3 + 1] == out->index[i * 3 + 0])
 				{
 					work[0] += work[2] - sum;
 					work[2] = sum;
@@ -258,7 +258,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			}
 			if (work[3] > sum)
 			{
-				if (out->index[i * out->tap + 3] == out->index[i * out->tap + 5])
+				if (out->index[i * 3 + 1] == out->index[i * 3 + 2])
 				{
 					work[5] += work[3] - sum;
 					work[3] = sum;
