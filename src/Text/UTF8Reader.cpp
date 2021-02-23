@@ -42,7 +42,7 @@ void Text::UTF8Reader::CheckHeader()
 	if (this->buffSize != 0)
 		return;
 	this->buffSize += this->stm->Read(&this->buff[this->buffSize], 4 - this->buffSize);
-	if (this->buff[0] == 0xef && this->buff[1] == 0xbb && this->buff[2] == 0xbf)
+	if (this->buffSize >= 3 && this->buff[0] == 0xef && this->buff[1] == 0xbb && this->buff[2] == 0xbf)
 	{
 		this->buff[0] = this->buff[3];
 		this->currOfst = 0;
