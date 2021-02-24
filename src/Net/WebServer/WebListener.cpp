@@ -261,6 +261,11 @@ void Net::WebServer::WebListener::HandleTimeout(TimeoutHandler hdlr, void *userO
 	this->timeoutHdlr = hdlr;
 }
 
+void Net::WebServer::WebListener::ExtendTimeout(Net::TCPClient *cli)
+{
+	this->cliMgr->ExtendTimeout(cli);
+}
+
 void Net::WebServer::WebListener::GetStatus(SERVER_STATUS *status)
 {
 	Sync::MutexUsage mutUsage(this->statusMut);

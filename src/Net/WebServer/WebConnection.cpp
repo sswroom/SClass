@@ -802,6 +802,7 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 	{
 		this->logger(this->loggerObj, size);
 	}
+	this->svr->ExtendTimeout(cli);
 	return cli->Write(buff, size);
 }
 

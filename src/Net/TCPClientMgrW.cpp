@@ -398,6 +398,17 @@ OSInt Net::TCPClientMgr::GetClientCount()
 	return this->cliArr->GetCount();
 }
 
+void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
+{
+	Sync::MutexUsage mutUsage(this->cliMut);
+	OSInt i = this->cliIdArr->SortedIndexOf(cli->GetCliId());
+	if (i >= 0)
+	{
+		Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem(i);
+		cliStat->lastDataTime->SetCurrTimeUTC();
+	}
+}
+
 Net::TCPClient *Net::TCPClientMgr::GetClient(OSInt index, void **cliData)
 {
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem(index);

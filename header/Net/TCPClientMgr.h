@@ -83,6 +83,7 @@ namespace Net
 		void BeginGetClient();
 		void EndGetClient();
 		OSInt GetClientCount();
+		void ExtendTimeout(Net::TCPClient *cli);
 		Net::TCPClient *GetClient(OSInt index, void **cliData);
 	};
 }

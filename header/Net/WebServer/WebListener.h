@@ -73,6 +73,7 @@ namespace Net
 			void AddProxyConn(Net::WebServer::WebConnection *conn, Net::TCPClient *proxyCli);
 			void HandleTimeout(TimeoutHandler hdlr, void *userObj);
 
+			void ExtendTimeout(Net::TCPClient *cli);
 			void GetStatus(SERVER_STATUS *status);
 		};
 	}

@@ -35,7 +35,7 @@ void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStat
 {
 	OSInt ind;
 	ind = cliIdArr->SortedIndexOf(cliStat->cli->GetCliId());
-	if (ind == -1)
+	if (ind < 0)
 	{
 		printf("CliId not found\r\n");
 	}
@@ -520,6 +520,17 @@ void Net::TCPClientMgr::EndGetClient()
 OSInt Net::TCPClientMgr::GetClientCount()
 {
 	return this->cliArr->GetCount();
+}
+
+void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
+{
+	Sync::MutexUsage mutUsage(this->cliMut);
+	OSInt i = this->cliIdArr->SortedIndexOf(cli->GetCliId());
+	if (i >= 0)
+	{
+		Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem(i);
+		cliStat->lastDataTime->SetCurrTimeUTC();
+	}
 }
 
 Net::TCPClient *Net::TCPClientMgr::GetClient(OSInt index, void **cliData)
