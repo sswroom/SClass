@@ -1388,6 +1388,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 {
 	Map::MapEnv::LayerItem layer;
 	Map::MapEnv::MapItem *item;
+	Sync::MutexUsage mutUsage(0);
+	denv->env->BeginUse(&mutUsage);
 	OSInt i = 0;
 	OSInt j = denv->env->GetItemCount(group);
 
@@ -1599,6 +1601,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 
 		i++;
 	}
+	mutUsage.EndUse();
 }
 
 void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, Int32 lineColor)

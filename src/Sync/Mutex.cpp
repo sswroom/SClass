@@ -10,7 +10,7 @@
 void Sync::Mutex_Create(Sync::MutexData *data)
 {
 	data->debName = 0;
-#ifdef _DEBUG
+#ifdef MUTEX_DEBUG
 	data->locked = 0;
 #endif
 	data->hand = malloc(sizeof(CRITICAL_SECTION));
@@ -26,35 +26,35 @@ void Sync::Mutex_Destroy(Sync::MutexData *data)
 
 void Sync::Mutex_Lock(Sync::MutexData *data)
 {
-#ifdef _DEBUG
+#ifdef MUTEX_DEBUG
 	if (data->debName)
-		wprintf(L"Mutex %s Locking...", data->debName);
+		printf("Mutex %s Locking...", data->debName);
 	if (data->locked)
 		if (data->lockId == Sync::Thread::GetThreadId())
 		{
-			//wprintf(L"Mutex error2!\r\n");
+			printf("Log again\r\n");
 			//Unlock();
 			data->locked++;
 			return;
 		}
 #endif
 	EnterCriticalSection((LPCRITICAL_SECTION)data->hand);
-#ifdef _DEBUG
+#ifdef MUTEX_DEBUG
 	data->locked = 1;
 	data->lockId = Sync::Thread::GetThreadId();
 	if (data->debName)
-		wprintf(L"Locked\n");
+		printf("Locked\r\n");
 #endif
 }
 
 void Sync::Mutex_Unlock(Sync::MutexData *data)
 {
-#ifdef _DEBUG
+#ifdef MUTEX_DEBUG
 	if (data->debName)
-		wprintf(L"Mutex %s Unlocking...", data->debName);
+		printf("Mutex %s Unlocking...", data->debName);
 	if (!data->locked)
 	{
-		wprintf(L"Mutex error!\r\n");
+		printf("Mutex error!\r\n");
 	}
 	if (--data->locked == 0)
 	{
@@ -62,7 +62,7 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 		if (data->debName)
 		{
 			LeaveCriticalSection((LPCRITICAL_SECTION)data->hand);
-			wprintf(L"Unlocked\n");
+			printf("Unlocked\r\n");
 		}
 		else
 		{
@@ -76,13 +76,13 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 
 Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 {
-#ifdef _DEBUG
+#ifdef MUTEX_DEBUG
 	if (data->debName)
-		wprintf(L"Mutex %s Locking...", data->debName);
+		printf("Mutex %s Locking...", data->debName);
 	if (data->locked)
 		if (data->lockId == Sync::Thread::GetThreadId())
 		{
-			//wprintf(L"Mutex error2!\r\n");
+			printf("Lock Again\r\n");
 			//Unlock();
 			data->locked++;
 			return true;
@@ -90,11 +90,11 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 #endif
 	if (TryEnterCriticalSection((LPCRITICAL_SECTION)data->hand) == 0)
 		return false;
-#ifdef _DEBUG
+#ifdef MUTEX_DEBUG
 	data->locked = 1;
 	data->lockId = Sync::Thread::GetThreadId();
 	if (data->debName)
-		wprintf(L"Locked\n");
+		printf("Locked\r\n");
 #endif
 	return true;
 }
@@ -108,61 +108,50 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 #define gettid() syscall(SYS_gettid)
 //#include <wchar.h>
 
-typedef struct
-{
-	pthread_mutex_t mut;
-	pid_t lockTID;
-	OSInt lockCnt;
-} MutexInfo;
-
 void Sync::Mutex_Create(Sync::MutexData *data)
 {
 	data->debName = 0;
-	data->hand = malloc(sizeof(MutexInfo));
-	MutexInfo *mut = (MutexInfo*)data->hand;
-	mut->lockTID = 0;
-	mut->lockCnt = 0;
+	data->hand = malloc(sizeof(pthread_mutex_t));
+	data->lockId = 0;
+	data->locked = 0;
 
 /*	pthread_mutexattr_t attr;
 	pthread_mutexattr_init(&attr);
 	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
 	pthread_mutex_init(&mut->mut, &attr);
 	pthread_mutexattr_destroy(&attr);*/
-	pthread_mutex_init(&mut->mut, 0);
+	pthread_mutex_init((pthread_mutex_t*)data->hand, 0);
 }
 
 void Sync::Mutex_Destroy(Sync::MutexData *data)
 {
-	MutexInfo *mut = (MutexInfo*)data->hand;
-	pthread_mutex_destroy(&mut->mut);
-	free(mut);
+	pthread_mutex_destroy((pthread_mutex_t*)data->hand);
+	free(data->hand);
 }
 
 void Sync::Mutex_Lock(Sync::MutexData *data)
 {
-	MutexInfo *mut = (MutexInfo*)data->hand;
 	pid_t currTID = gettid();
-	if (mut->lockTID == currTID)
+	if (data->lockId == (UInt32)currTID)
 	{
-		mut->lockCnt++;
+		data->locked++;
 //		wprintf(L"Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
 	}
 	else
 	{
-		pthread_mutex_lock(&mut->mut);
-		mut->lockTID = currTID;
-		mut->lockCnt = 1;
+		pthread_mutex_lock((pthread_mutex_t*)data->hand);
+		data->lockId = (UInt32)currTID;
+		data->locked = 1;
 	}
 }
 
 void Sync::Mutex_Unlock(Sync::MutexData *data)
 {
-	MutexInfo *mut = (MutexInfo*)data->hand;
-	if (mut->lockCnt-- <= 1)
+	if (data->locked-- <= 1)
 	{
-		mut->lockTID = 0;
-		mut->lockCnt = 0;
-		pthread_mutex_unlock(&mut->mut);
+		data->lockId = 0;
+		data->locked = 0;
+		pthread_mutex_unlock((pthread_mutex_t*)data->hand);
 	}
 	else
 	{
@@ -172,20 +161,19 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 
 Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 {
-	MutexInfo *mut = (MutexInfo*)data->hand;
 	pid_t currTID = gettid();
-	if (mut->lockTID == currTID)
+	if (data->lockId == (UInt32)currTID)
 	{
-		mut->lockCnt++;
+		data->locked++;
 //		wprintf(L"Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
 		return true;
 	}
 	else
 	{
-		if (pthread_mutex_lock(&mut->mut) != 0)
+		if (pthread_mutex_lock((pthread_mutex_t*)data->hand) != 0)
 			return false;
-		mut->lockTID = currTID;
-		mut->lockCnt = 1;
+		data->lockId = (UInt32)currTID;
+		data->locked = 1;
 		return true;
 	}
 }
@@ -331,7 +319,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 }
 #endif
 
-void Sync::Mutex_SetDebName(Sync::MutexData *data, const WChar *name)
+void Sync::Mutex_SetDebName(Sync::MutexData *data, const UTF8Char *name)
 {
 	data->debName = name;
 }
@@ -361,7 +349,7 @@ Bool Sync::Mutex::TryUse()
 	return Mutex_TryLock(&this->data);
 }
 
-void Sync::Mutex::SetDebName(const WChar *name)
+void Sync::Mutex::SetDebName(const UTF8Char *name)
 {
 	Mutex_SetDebName(&this->data, name);
 }

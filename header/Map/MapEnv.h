@@ -9,6 +9,8 @@
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/ParserList.h"
+#include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 
 namespace Map
 {
@@ -106,6 +108,7 @@ namespace Map
 		} FontStyle;
 		
 	private:
+		Sync::Mutex *mut;
 		Int32 bgColor;
 		Data::ArrayList<MapItem*> *mapLayers;
 		Data::ArrayList<LineStyle*> *lineStyles;
@@ -195,6 +198,8 @@ namespace Map
 		Map::MapView *CreateMapView(OSInt width, OSInt height);
 		Math::CoordinateSystem *GetCoordinateSystem();
 		Int32 GetSRID();
+
+		void BeginUse(Sync::MutexUsage *mutUsage);
 	};
 }
 #endif

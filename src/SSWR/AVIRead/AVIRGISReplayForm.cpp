@@ -172,6 +172,8 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->navi = navi;
 	this->currTrackId = 0;
 	this->names = 0;
+	this->threadRunning = false;
+	this->threadToStop = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText((const UTF8Char*)"Replay");
 	this->SetFont(0, 8.25, false);
@@ -433,8 +435,8 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 				FreeNames();
 				this->names = MemAlloc(const UTF8Char*, this->namesCnt = recCnt);
 				this->threadToStop = false;
+				this->threadRunning = false;
 				Sync::Thread::Create(AddressThread, this);
-
 			}
 		}
 	}

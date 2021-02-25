@@ -4,8 +4,12 @@
 Sync::MutexUsage::MutexUsage(Sync::Mutex *mut)
 {
 	this->mut = mut;
-	this->used = true;
-	if (this->mut) this->mut->Use();
+	this->used = false;
+	if (this->mut)
+	{
+		this->used = true;
+ 		this->mut->Use();
+	}
 }
 
 Sync::MutexUsage::~MutexUsage()

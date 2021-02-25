@@ -25,6 +25,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			UI::GUIForm *ctrlForm;
+			UI::GUITreeView::TreeItem *ctrlItem;
 			Media::ColorManagerSess *colorSess;
 			Data::ArrayList<UI::GUIForm *> *subForms;
 			UI::GUIMapControl *mapCtrl;
@@ -89,7 +90,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void UpdateTitle();
 			void CloseCtrlForm();
-			void SetCtrlForm(UI::GUIForm *frm);
+			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
 			Bool ParseObject(IO::ParsedObject *pobj);
 			void OpenURL(const UTF8Char *url, const UTF8Char *customName);
 			void HKOPortal(const UTF8Char *listFile, const UTF8Char *filePath);

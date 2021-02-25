@@ -1,16 +1,14 @@
 #ifndef _SM_SYNC_MUTEX
 #define _SM_SYNC_MUTEX
-
+#define MUTEX_DEBUG
 namespace Sync
 {
 	typedef struct
 	{
 		void *hand;
-		const WChar *debName;
-#ifdef _DEBUG
+		const UTF8Char *debName;
 		Int32 locked;
 		UInt32 lockId;
-#endif
 	} MutexData;
 
 	void Mutex_Create(MutexData *data);
@@ -18,7 +16,7 @@ namespace Sync
 	void Mutex_Lock(MutexData *data);
 	void Mutex_Unlock(MutexData *data);
 	Bool Mutex_TryLock(MutexData *data);
-	void Mutex_SetDebName(MutexData *data, const WChar *name);
+	void Mutex_SetDebName(MutexData *data, const UTF8Char *name);
 
 	class Mutex
 	{
@@ -30,7 +28,7 @@ namespace Sync
 		void Use();
 		void Unuse();
 		Bool TryUse();
-		void SetDebName(const WChar *name);
+		void SetDebName(const UTF8Char *name);
 	};
 }
 #endif
