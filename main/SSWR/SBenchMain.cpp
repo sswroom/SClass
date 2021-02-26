@@ -1548,6 +1548,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		clk->Start();
 		srcImg = (Media::StaticImage*)imgGen->GenerateImage(&color, imgWidth, imgHeight);
 		t = clk->GetTimeDiff();
+		DEL_CLASS(imgGen);
 		if (srcImg == 0)
 		{
 			sb.ClearStr();
