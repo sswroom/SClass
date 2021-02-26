@@ -42,10 +42,9 @@ namespace Net
 		~TCPServerController();
 
 		Bool IsError();
-		void BeginGetCli();
-		void EndGetCli();
+		void UseGetCli(Sync::MutexUsage *mutUsage);
 		UOSInt GetCliCount();
 		Net::TCPClient *GetClient(UOSInt index, void **cliObj);
 	};
-};
+}
 #endif

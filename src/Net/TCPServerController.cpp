@@ -102,14 +102,9 @@ Bool Net::TCPServerController::IsError()
 	return this->svr == 0 || this->maxBuffSize <= 0;
 }
 
-void Net::TCPServerController::BeginGetCli()
+void Net::TCPServerController::UseGetCli(Sync::MutexUsage *mutUsage)
 {
-	this->cliMgr->BeginGetClient();
-}
-
-void Net::TCPServerController::EndGetCli()
-{
-	this->cliMgr->EndGetClient();
+	this->cliMgr->UseGetClient(mutUsage);
 }
 
 UOSInt Net::TCPServerController::GetCliCount()
