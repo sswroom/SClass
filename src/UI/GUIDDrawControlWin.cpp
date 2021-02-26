@@ -528,7 +528,7 @@ Bool UI::GUIDDrawControl::CreateClipper(void *lpDD)
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OSInt *bpl)
 {
 	RECT rcSrc;
-	this->surfaceMut->Use();
+	this->surfaceMut->Lock();
 	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
 	{
 		HRESULT hRes;
@@ -551,14 +551,14 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 			return (UInt8*)ddsd2.lpSurface;
 		}
 	}
-	this->surfaceMut->Unuse();
+	this->surfaceMut->Unlock();
 	return 0;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
 	((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
-	this->surfaceMut->Unuse();
+	this->surfaceMut->Unlock();
 }
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(OSInt *bpl)

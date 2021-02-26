@@ -383,14 +383,9 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::BeginGetClient()
+void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
 {
-	this->cliMut->Use();
-}
-
-void Net::TCPClientMgr::EndGetClient()
-{
-	this->cliMut->Unuse();
+	mutUsage->ReplaceMutex(this->cliMut);
 }
 
 OSInt Net::TCPClientMgr::GetClientCount()
