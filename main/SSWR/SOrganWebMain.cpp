@@ -51,15 +51,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (cfg->GetValue((const UTF8Char*)"MDBFile"))
 		{
-			db = DB::MDBFile::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), log, false, (const UTF8Char*)"DB: ");
+			db = DB::MDBFile::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), log, (const UTF8Char*)"DB: ");
 		}
 		else if (cfg->GetValue((const UTF8Char*)"MySQLServer"))
 		{
-			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), log, false, (const UTF8Char*)"DB: ");
+			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), log, (const UTF8Char*)"DB: ");
 		}
 		else
 		{
-			db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), log, false, (const UTF8Char*)"DB: ");
+			db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), log, (const UTF8Char*)"DB: ");
 		}
 		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), Text::StrToInt32(cfg->GetValue((const UTF8Char*)"SvrPort")), cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Core::DefaultDrawEngine::CreateDrawEngine()));
 		DEL_CLASS(cfg);

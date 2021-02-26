@@ -301,8 +301,9 @@ Bool IO::Device::SIM7000::NetIPStartUDP(OSInt index, UInt32 ip, UInt16 port)
 Bool IO::Device::SIM7000::NetIPSend(OSInt index, const UInt8 *buff, OSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
+	Sync::MutexUsage mutUsage;
 	const Char *cmdRes;
-	if (!this->channel->CmdBegin())
+	if (!this->channel->UseCmd(&mutUsage))
 		return false;
 	sb.Append((const UTF8Char*)"AT+CIPSEND=");
 	sb.AppendOSInt(index);
@@ -326,7 +327,6 @@ Bool IO::Device::SIM7000::NetIPSend(OSInt index, const UInt8 *buff, OSInt buffSi
 		if (ret)
 			break;
 	}
-	this->channel->CmdEnd();
 	return ret;
 }
 

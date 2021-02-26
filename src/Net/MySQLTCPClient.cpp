@@ -1327,7 +1327,7 @@ const UTF8Char *Net::MySQLTCPClient::GetConnPWD()
 	return this->password;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;

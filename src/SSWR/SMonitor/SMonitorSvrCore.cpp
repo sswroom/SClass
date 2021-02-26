@@ -821,7 +821,8 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 {
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage mutUsage;
+	DB::DBTool *db = this->UseDB(&mutUsage);
 	DB::DBReader *r;
 	WebUser *user;
 	UTF8Char *sarr[2];
@@ -1081,18 +1082,12 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 		}
 		db->CloseReader(r);
 	}
-	this->DBUnuse(db);
 }
 
-DB::DBTool *SSWR::SMonitor::SMonitorSvrCore::DBUse()
+DB::DBTool *SSWR::SMonitor::SMonitorSvrCore::UseDB(Sync::MutexUsage *mutUsage)
 {
-	this->dbMut->Use();
+	mutUsage->ReplaceMutex(this->dbMut);
 	return this->db;
-}
-
-void SSWR::SMonitor::SMonitorSvrCore::DBUnuse(DB::DBTool *db)
-{
-	this->dbMut->Unuse();
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff)
@@ -1204,7 +1199,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		csptr2 = cfg->GetValue((const UTF8Char*)"MySQLDB");
 		if (csptr1 && csptr2)
 		{
-			this->db = DB::MySQLConn::CreateDBTool(this->sockf, csptr1, csptr2, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), log, false, (const UTF8Char*)"DB: ");
+			this->db = DB::MySQLConn::CreateDBTool(this->sockf, csptr1, csptr2, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), log, (const UTF8Char*)"DB: ");
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1222,7 +1217,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			csptr3 = cfg->GetValue((const UTF8Char*)"PWD");
 			if (csptr1)
 			{
-				this->db = DB::ODBCConn::CreateDBTool(csptr1, csptr2, csptr3, cfg->GetValue((const UTF8Char*)"Schema"), log, false, (const UTF8Char*)"DB: ");
+				this->db = DB::ODBCConn::CreateDBTool(csptr1, csptr2, csptr3, cfg->GetValue((const UTF8Char*)"Schema"), log, (const UTF8Char*)"DB: ");
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
@@ -1511,8 +1506,8 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into device (id, cpuName, platformName, lastKATime, flags) values (");
 	sql.AppendInt64(cliId);
@@ -1568,7 +1563,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 
 		this->devMap->Put(dev->cliId, dev);
 	}
-	this->DBUnuse(db);
+	dbMutUsage.EndUse();
 
 	this->devMut->UnlockWrite();
 	return dev;
@@ -1586,7 +1581,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 	t = dt.ToTicks();
 	if (cliTime > dev->readingTime && cliTime < t + 300000)
 	{
-		DB::DBTool *db = this->DBUse();
+		Sync::MutexUsage dbMutUsage;
+		DB::DBTool *db = this->UseDB(&dbMutUsage);
 		DB::SQLBuilder sql(this->db);
 		if (nReading > SMONITORCORE_DEVREADINGCNT)
 		{
@@ -1645,7 +1641,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 			dev->valUpdated = true;
 			dev->mut->UnlockWrite();
 		}
-		this->DBUnuse(db);
+		dbMutUsage.EndUse();
 
 		DevRecord2 *rec;
 		rec = MemAlloc(DevRecord2, 1);
@@ -1698,7 +1694,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	dt.SetTicks(kaTime);
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set lastKATime = ");
 	sql.AppendDate(&dt);
@@ -1708,7 +1705,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	{
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1729,7 +1725,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char 
 	dev->mut->UnlockRead();
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set devName = ");
 	sql.AppendStrUTF8(devName);
@@ -1746,7 +1743,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char 
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1767,7 +1763,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8C
 	dev->mut->UnlockRead();
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set platformName = ");
 	sql.AppendStrUTF8(platformName);
@@ -1784,7 +1781,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8C
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1805,7 +1801,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Ch
 	dev->mut->UnlockRead();
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set cpuName = ");
 	sql.AppendStrUTF8(cpuName);
@@ -1822,7 +1819,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Ch
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1872,7 +1868,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, Int32 index,
 	dev->mut->UnlockRead();
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set readingNames = ");
 	sql.AppendStrUTF8(sb.ToString());
@@ -1887,7 +1884,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, Int32 index,
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1901,7 +1897,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 		return true;
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set version = ");
 	sql.AppendInt64(version);
@@ -1914,7 +1911,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1938,7 +1934,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, const UTF8Char *
 	}
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set devName = ");
 	sql.AppendStrUTF8(devName);
@@ -1958,7 +1955,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, const UTF8Char *
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -1972,7 +1968,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 	}
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set readingNames = ");
 	sql.AppendStrUTF8(readings);
@@ -2011,7 +2008,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -2025,7 +2021,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	}
 	Bool succ = false;
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update device set digitalNames = ");
 	sql.AppendStrUTF8(digitals);
@@ -2063,7 +2060,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 		dev->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
 	return succ;
 }
 
@@ -2216,7 +2212,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	this->UserPwdCalc(userName, password, pwdBuff);
 	Text::StrHexBytes(sbuff, pwdBuff, 16, 0);
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into webuser (userName, pwd, userType) values (");
 	sql.AppendStrUTF8(userName);
@@ -2239,7 +2236,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 		this->userNameMap->Put(user->userName, user);
 		succ = true;
 	}
-	this->DBUnuse(db);
+	dbMutUsage.EndUse();
 
 	this->userMut->UnlockWrite();
 	return succ;
@@ -2263,7 +2260,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 	Text::StrHexBytes(sbuff, pwdBuff, 16, 0);
 	user->mut->UnlockRead();
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update webuser set pwd = ");
 	sql.AppendStrUTF8(sbuff);
@@ -2276,8 +2274,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 		user->mut->UnlockWrite();
 		succ = true;
 	}
-	this->DBUnuse(db);
-
 	return succ;
 }
 
@@ -2489,13 +2485,13 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 		return false;
 	}
 
-	DB::DBTool *db = this->DBUse();
+	Sync::MutexUsage dbMutUsage;
+	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"delete from webuser_device where webuser_id = ");
 	sql.AppendInt32(user->userId);
 	if (db->ExecuteNonQuery(sql.ToString()) < 0)
 	{
-		this->DBUnuse(db);
 		return false;
 	}
 	succ = true;
@@ -2527,8 +2523,6 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 		i++;
 	}
 	user->mut->UnlockWrite();
-	this->DBUnuse(db);
-
 	return succ;
 }
 

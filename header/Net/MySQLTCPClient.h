@@ -81,7 +81,7 @@ namespace Net
 		const UTF8Char *GetConnUID();
 		const UTF8Char *GetConnPWD();
 
-		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix);
+		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
 	};
 }
 #endif
