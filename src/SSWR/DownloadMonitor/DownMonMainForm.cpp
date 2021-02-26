@@ -11,55 +11,6 @@
 #include "Win32/Clipboard.h"
 #include <stdio.h>
 
-class FileUsage
-{
-private:
-	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-public:
-	FileUsage(SSWR::DownloadMonitor::DownMonCore::FileInfo *file)
-	{
-		this->file = file;
-	}
-
-	~FileUsage()
-	{
-		if (this->file)
-		{
-			this->file->mut->Unuse();
-			this->file = 0;
-		}
-	}
-
-	Bool HasFile()
-	{
-		return this->file != 0;
-	}
-
-	Int32 GetId()
-	{
-		if (this->file == 0) return 0;
-		return this->file->id;
-	}
-
-	Int32 GetWebType()
-	{
-		if (this->file == 0) return 0;
-		return this->file->webType;
-	}
-
-	const UTF8Char *GetFileName()
-	{
-		if (this->file == 0) return 0;
-		return this->file->fileName;
-	}
-
-	const UTF8Char *GetDbName()
-	{
-		if (this->file == 0) return 0;
-		return this->file->dbName;
-	}
-};
-
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj)
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
@@ -172,12 +123,13 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 			{
 				if (me->core->FileAdd(id, webType, sarr2[1]))
 				{
-					FileUsage file(me->core->FileGet(id, webType, true));
-					if (file.HasFile())
+					Sync::MutexUsage mutUsage;
+					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, webType, &mutUsage);
+					if (file != 0)
 					{
-						Text::StrInt32(sbuff, file.GetId());
-						j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file.GetWebType() << 24) | file.GetId()));
-						me->lvFiles->SetSubItem(j, 1, file.GetFileName());
+						Text::StrInt32(sbuff, file->id);
+						j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+						me->lvFiles->SetSubItem(j, 1, file->fileName);
 						changed = true;
 					}
 				}
@@ -290,12 +242,13 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 					{
 						if (me->core->FileAdd(id, webType, desc))
 						{
-							FileUsage file(me->core->FileGet(id, 3,  true));
-							if (file.HasFile())
+							Sync::MutexUsage mutUsage;
+							SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, 3, &mutUsage);
+							if (file != 0)
 							{
-								Text::StrInt32(sbuff, file.GetId());
-								j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file.GetWebType() << 24) | file.GetId()));
-								me->lvFiles->SetSubItem(j, 1, file.GetFileName());
+								Text::StrInt32(sbuff, file->id);
+								j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+								me->lvFiles->SetSubItem(j, 1, file->fileName);
 								changed = true;
 							}
 						}
@@ -322,18 +275,19 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 	while (i < j)
 	{
 		Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(i);
-		FileUsage file(me->core->FileGet(id & 0xffffff, id >> 24, true));
-		if (file.HasFile())
+		Sync::MutexUsage mutUsage;
+		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id & 0xffffff, id >> 24, &mutUsage);
+		if (file != 0)
 		{
-			if (file.GetWebType() == 2)
+			if (file->webType == 2)
 			{
 				sb.Append((const UTF8Char*)"https://48idol.net/video/");
 			}
-			else if (file.GetWebType() == 1)
+			else if (file->webType == 1)
 			{
 				sb.Append((const UTF8Char*)"https://48idol.com/video/");
 			}
-			else if (file.GetWebType() == 3)
+			else if (file->webType == 3)
 			{
 				sb.Append((const UTF8Char*)"https://48idol.tv/archive/video/");
 			}
@@ -341,9 +295,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 			{
 				sb.Append((const UTF8Char*)"https://48idol.tv/video/");
 			}
-			sb.AppendI32(file.GetId());
+			sb.AppendI32(file->id);
 			sb.AppendChar('\t', 1);
-			sb.Append(file.GetDbName());
+			sb.Append(file->dbName);
 			sb.Append((const UTF8Char*)"\r\n");
 		}
 		i++;
@@ -428,13 +382,14 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 			item = totalList.GetItem(i);
 			if (me->core->FileAdd(item->id, webType, item->title))
 			{
-				FileUsage file(me->core->FileGet(item->id, webType, true));
+				Sync::MutexUsage mutUsage;
+				SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(item->id, webType, &mutUsage);
 				OSInt j;
-				if (file.HasFile())
+				if (file != 0)
 				{
-					Text::StrInt32(sbuff, file.GetId());
-					j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file.GetWebType() << 24) | file.GetId()));
-					me->lvFiles->SetSubItem(j, 1, file.GetFileName());
+					Text::StrInt32(sbuff, file->id);
+					j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+					me->lvFiles->SetSubItem(j, 1, file->fileName);
 					changed = true;
 				}
 			}
@@ -547,12 +502,13 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 				}
 				if (this->core->FileAdd(id, webType, sarr[1]))
 				{
-					FileUsage file(this->core->FileGet(id, webType, true));
-					if (file.HasFile())
+					Sync::MutexUsage mutUsage;
+					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, &mutUsage);
+					if (file != 0)
 					{
-						Text::StrInt32(sbuff, file.GetId());
-						i = this->lvFiles->AddItem(sbuff, (void*)(OSInt)((file.GetWebType() << 24) | file.GetId()));
-						this->lvFiles->SetSubItem(i, 1, file.GetFileName());
+						Text::StrInt32(sbuff, file->id);
+						i = this->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+						this->lvFiles->SetSubItem(i, 1, file->fileName);
 					}
 				}
 			}
@@ -587,19 +543,20 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	while (i < j)
 	{
 		Int32 id = (Int32)(OSInt)this->lvFiles->GetItem(i);
-		FileUsage file(this->core->FileGet(id & 0xffffff, id >> 24, true));
-		if (file.HasFile())
+		Sync::MutexUsage mutUsage;
+		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id & 0xffffff, id >> 24, &mutUsage);
+		if (file != 0)
 		{
 			sb.ClearStr();
-			if (file.GetWebType() == 2)
+			if (file->webType == 2)
 			{
 				sb.Append((const UTF8Char*)"https://48idol.net/video/");
 			}
-			else if (file.GetWebType() == 1)
+			else if (file->webType == 1)
 			{
 				sb.Append((const UTF8Char*)"https://48idol.com/video/");
 			}
-			else if (file.GetWebType() == 3)
+			else if (file->webType == 3)
 			{
 				sb.Append((const UTF8Char*)"https://48idol.tv/archive/video/");
 			}
@@ -607,9 +564,9 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 			{
 				sb.Append((const UTF8Char*)"https://48idol.tv/video/");
 			}
-			sb.AppendI32(file.GetId());
+			sb.AppendI32(file->id);
 			sb.AppendChar('\t', 1);
-			sb.Append(file.GetDbName());
+			sb.Append(file->dbName);
 			writer->WriteLine(sb.ToString());
 		}
 		i++;

@@ -5,6 +5,7 @@
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 
 namespace Net
 {
@@ -44,8 +45,7 @@ namespace Net
 
 		Bool IsError();
 
-		void StatusBeginGet();
-		void StatusEndGet();
+		void UseStatus(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DeviceStatus*> *StatusGetList();
 		UInt32 GetIPLeaseTime();
 	};

@@ -92,9 +92,9 @@ OSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 	return this->currEnt;
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::BeginGet()
+void SSWR::AVIRead::AVIRHTTPLog::Use(Sync::MutexUsage *mutUsage)
 {
-	this->entMut->Use();
+	mutUsage->ReplaceMutex(this->entMut);
 }
 
 void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<OSInt> *logIndex)
@@ -132,11 +132,6 @@ void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Da
 SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(OSInt index)
 {
 	return &this->entries[index];
-}
-
-void SSWR::AVIRead::AVIRHTTPLog::EndGet()
-{
-	this->entMut->Unuse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
@@ -325,9 +320,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 		SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
+		Sync::MutexUsage mutUsage;
 
 		me->lastAccessIndex = i;
-		me->reqLog->BeginGet();
+		me->reqLog->Use(&mutUsage);
 		me->reqLog->GetEntries(&logs, &logIndex);
 		me->lbAccess->ClearItems();
 		me->txtAccess->SetText((const UTF8Char*)"");
@@ -347,7 +343,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 			me->lbAccess->AddItem(sb.ToString(), (void*)(OSInt)logIndex.GetItem(i));
 			i++;
 		}
-		me->reqLog->EndGet();
 	}
 }
 
@@ -355,8 +350,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
 	Text::StringBuilderUTF8 sb;
+	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
-	me->reqLog->BeginGet();
+	me->reqLog->Use(&mutUsage);
 	OSInt i = (OSInt)me->lbAccess->GetSelectedItem();
 	OSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
@@ -382,7 +378,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 		i++;
 	}
 	me->txtAccess->SetText(sb.ToString());
-	me->reqLog->EndGet();
 }
 
 SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

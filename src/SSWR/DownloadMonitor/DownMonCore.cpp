@@ -609,14 +609,14 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, const 
 	return true;
 }
 
-SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, Bool toLock)
+SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	Sync::MutexUsage mutUsage(this->fileMut);
+	mutUsage->ReplaceMutex(this->fileMut);
 	file = this->fileTypeMap->Get((webType << 24) | id);
-	if (file && toLock)
+	if (file != 0 && mutUsage != 0)
 	{
-		file->mut->Use();
+		mutUsage->ReplaceMutex(file->mut);
 	}
 	return file;
 }

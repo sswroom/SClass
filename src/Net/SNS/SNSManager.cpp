@@ -581,14 +581,9 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	return ctrl;
 }
 
-void Net::SNS::SNSManager::BeginUse()
+void Net::SNS::SNSManager::Use(Sync::MutexUsage *mutUsage)
 {
-	this->mut->Use();
-}
-
-void Net::SNS::SNSManager::EndUse()
-{
-	this->mut->Unuse();
+	mutUsage->ReplaceMutex(this->mut);
 }
 
 UOSInt Net::SNS::SNSManager::GetCount()

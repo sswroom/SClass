@@ -41,6 +41,6 @@ namespace Net
 
 			void GetSessionIds(Data::ArrayList<Int64> *sessIds);
 		};
-	};
-};
+	}
+}
 #endif

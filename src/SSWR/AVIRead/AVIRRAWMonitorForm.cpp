@@ -583,9 +583,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> cliList;
 		OSInt i;
 		OSInt j;
-		me->analyzer->DNSCliBeginGet();
+		Sync::MutexUsage mutUsage;
+		me->analyzer->UseDNSCli(&mutUsage);
 		cliList.AddRange(me->analyzer->DNSCliGetList());
-		me->analyzer->DNSCliEndGet();
+		mutUsage.EndUse();
 		me->lbDNSClient->ClearItems();
 		i = 0;
 		j = cliList.GetCount();
@@ -608,9 +609,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> ipLogList;
 		OSInt i;
 		OSInt j;
-		me->analyzer->IPLogBeginGet();
+		Sync::MutexUsage mutUsage;
+		me->analyzer->UseIPLog(&mutUsage);
 		ipLogList.AddRange(me->analyzer->IPLogGetList());
-		me->analyzer->IPLogEndGet();
+		mutUsage.EndUse();
 		me->lbIPLog->ClearItems();
 		i = 0;
 		j = ipLogList.GetCount();
@@ -634,10 +636,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		Data::ArrayList<Net::EthernetAnalyzer::IPTranStatus*> ipTranList;
 		Net::EthernetAnalyzer::IPTranStatus *status;
 		IPTranInfo *ipTran;
+		Sync::MutexUsage mutUsage;
 		me->adapterChanged = false;
-		me->analyzer->IPTranBeginGet();
+		me->analyzer->UseIPTran(&mutUsage);
 		ipTranList.AddRange(me->analyzer->IPTranGetList());
-		me->analyzer->IPTranEndGet();
+		mutUsage.EndUse();
 		me->ipTranCnt = ipTranList.GetCount();
 		i = 0;
 		j = ipTranList.GetCount();
@@ -776,7 +779,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		Data::ArrayList<Net::EthernetAnalyzer::MACStatus *> *macList;
 		Net::EthernetAnalyzer::MACStatus *mac;
 		UInt8 macBuff[8];
-		me->analyzer->MACBeginGet();
+		Sync::MutexUsage mutUsage;
+		me->analyzer->UseMAC(&mutUsage);
 		macList = me->analyzer->MACGetList();
 		j = macList->GetCount();
 		if (j != me->lvDevice->GetCount())
@@ -845,7 +849,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 			i++;
 		}
-		me->analyzer->MACEndGet();		
+		mutUsage.EndUse();
 	}
 
 	{
@@ -856,7 +860,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		UTF8Char *sptr;
 		Net::EthernetAnalyzer::DHCPInfo *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
-		me->analyzer->DHCPBeginGet();
+		Sync::MutexUsage mutUsage;
+		me->analyzer->UseDHCP(&mutUsage);
 		Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
 		if (dhcpList->GetCount() != me->lvDHCP->GetCount())
 		{
@@ -934,7 +939,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 			i++;
 		}
-		me->analyzer->DHCPEndGet();
+		mutUsage.EndUse();
 	}
 }
 

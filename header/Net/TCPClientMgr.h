@@ -6,6 +6,7 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/LinkedList.h"
 #include "Net/TCPClient.h"
+#include "Sync/MutexUsage.h"
 
 namespace Net
 {
@@ -80,8 +81,7 @@ namespace Net
 		Bool IsError();
 		void CloseAll();
 
-		void BeginGetClient();
-		void EndGetClient();
+		void UseGetClient(Sync::MutexUsage *mutUsage);
 		OSInt GetClientCount();
 		void ExtendTimeout(Net::TCPClient *cli);
 		Net::TCPClient *GetClient(OSInt index, void **cliData);

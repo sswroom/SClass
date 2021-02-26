@@ -9,7 +9,8 @@
 Data::Integer32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
-	this->currDB = this->conn->BeginUseConn();
+	Sync::MutexUsage mutUsage;
+	this->currDB = this->conn->UseConn(&mutUsage);
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{
@@ -44,13 +45,13 @@ Data::Integer32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 			nameArr->Put(objId, names);
 		}
 		this->currDB->CloseReader(r);
-		this->conn->EndUseConn();
+		mutUsage.EndUse();
 		this->currDB = 0;
 		return nameArr;
 	}
 	else
 	{
-		this->conn->EndUseConn();
+		mutUsage.EndUse();
 		this->currDB = 0;
 		return 0;
 	}
@@ -78,7 +79,8 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const 
 	this->shapeCol = 1;
 	OSInt nameCol = 0;
 
-	this->currDB = this->conn->BeginUseConn();
+	Sync::MutexUsage mutUsage;
+	this->currDB = this->conn->UseConn(&mutUsage);
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{
@@ -193,7 +195,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const 
 		}
 		this->currDB->CloseReader(r);
 	}
-	this->conn->EndUseConn();
+	mutUsage.EndUse();
 	this->currDB = 0;
 	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
 }
@@ -403,24 +405,26 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *
 
 DB::DBReader *Map::ESRI::ESRIMDBLayer::GetTableData(const UTF8Char *name)
 {
-	this->currDB = this->conn->BeginUseConn();
+	Sync::MutexUsage *mutUsage;
+	NEW_CLASS(mutUsage, Sync::MutexUsage());
+	this->currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
 	DB::DBReader *rdr = this->currDB->GetTableData(name, 0, 0, 0);
 	if (rdr)
 	{
 		Map::ESRI::ESRIMDBReader *r;
-		NEW_CLASS(r, Map::ESRI::ESRIMDBReader(this->currDB, rdr));
+		NEW_CLASS(r, Map::ESRI::ESRIMDBReader(this->currDB, rdr, mutUsage));
 		return r;
 	}
-	this->conn->EndUseConn();
+	DEL_CLASS(mutUsage);
 	this->currDB = 0;
 	return 0;
 }
 
 void Map::ESRI::ESRIMDBLayer::CloseReader(DB::DBReader *r)
 {
-	this->currDB->CloseReader(r);
-	this->conn->EndUseConn();
+	Map::ESRI::ESRIMDBReader *rdr = (Map::ESRI::ESRIMDBReader*)r;
+	DEL_CLASS(rdr);
 	this->currDB = 0;
 }
 
@@ -442,14 +446,17 @@ Map::IMapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass()
 	return Map::IMapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
-Map::ESRI::ESRIMDBReader::ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r)
+Map::ESRI::ESRIMDBReader::ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r, Sync::MutexUsage *mutUsage)
 {
 	this->conn = conn;
 	this->r = r;
+	this->mutUsage = mutUsage;
 }
 
 Map::ESRI::ESRIMDBReader::~ESRIMDBReader()
 {
+	this->conn->CloseReader(this->r);
+	DEL_CLASS(this->mutUsage);
 }
 
 Bool Map::ESRI::ESRIMDBReader::ReadNext()

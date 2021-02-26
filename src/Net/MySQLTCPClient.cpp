@@ -48,9 +48,11 @@ private:
 	Bool nextRowReady;
 	Sync::Event *rowEvt;
 	Sync::Event *nextRowEvt;
+	Sync::MutexUsage *mutUsage;
 public:
-	MySQLTCPReader()
+	MySQLTCPReader(Sync::MutexUsage *mutUsage)
 	{
+		this->mutUsage = mutUsage;
 		NEW_CLASS(this->cols, Data::ArrayList<ColumnDef*>());
 		this->rowChanged = -1;
 		this->currRow = 0;
@@ -78,6 +80,7 @@ public:
 		DEL_CLASS(this->cols);
 		DEL_CLASS(this->rowEvt);
 		DEL_CLASS(this->nextRowEvt);
+		DEL_CLASS(this->mutUsage);
 	}
 
 	DB::DBUtil::ColType DBType2ColType(Net::MySQLUtil::MySQLType colType)
@@ -1093,13 +1096,12 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 		}
 		Sync::Thread::Sleep(10);
 	}
-//	Data::DateTime dt;
 	MySQLTCPReader *reader;
-//	Int64 startTime;
-	this->cmdMut->Use();
+	Sync::MutexUsage *mutUsage;
+	NEW_CLASS(mutUsage, Sync::MutexUsage(this->cmdMut));
 	this->cmdResultType = 0;
 	this->cmdSeqNum = 1;
-	NEW_CLASS(reader, MySQLTCPReader());
+	NEW_CLASS(reader, MySQLTCPReader(mutUsage));
 	this->cmdReader = reader;
 	UOSInt len = Text::StrCharCnt(sql);
 	UInt8 *buff = MemAlloc(UInt8, len + 5);
@@ -1110,7 +1112,6 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 	{
 		this->cmdReader = 0;
 		DEL_CLASS(reader);
-		this->cmdMut->Unuse();
 		MemFree(buff);
 		this->lastDataError = DE_CONN_ERROR;
 		return 0;
@@ -1130,7 +1131,6 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 		this->cmdReader = 0;
 		reader->EndData();
 		DEL_CLASS(reader);
-		this->cmdMut->Unuse();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
 		return 0;
 	}
@@ -1150,7 +1150,6 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	this->cmdReader = 0;
 	MySQLTCPReader *reader = (MySQLTCPReader*)r;
 	DEL_CLASS(reader);
-	this->cmdMut->Unuse();
 }
 
 void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF *str)
@@ -1338,7 +1337,7 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, const U
 		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
-			NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, logPrefix));
+			NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 			return db;
 		}
 		else

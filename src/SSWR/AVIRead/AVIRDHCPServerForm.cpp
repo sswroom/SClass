@@ -147,7 +147,8 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 		OSInt j;
 		Net::DHCPServer::DeviceStatus *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
-		me->svr->StatusBeginGet();
+		Sync::MutexUsage mutUsage;
+		me->svr->UseStatus(&mutUsage);
 		Data::ArrayList<Net::DHCPServer::DeviceStatus*> *dhcpList = me->svr->StatusGetList();
 		if (dhcpList->GetCount() != me->lvDevices->GetCount())
 		{
@@ -197,7 +198,6 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 			}
 			i++;
 		}
-		me->svr->StatusEndGet();
 	}
 }
 

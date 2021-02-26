@@ -22,7 +22,8 @@ gboolean GUIDDrawControl_ToGenDrawSignal(gpointer user_data)
 gboolean GUIDDrawControl_OnDDDraw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 {
 	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)user_data;
-	me->BeginDrawSurface();
+	Sync::MutexUsage mutUsage;
+	me->UseDrawSurface(&mutUsage);
 	GdkPixbuf *pixBuf = (GdkPixbuf*)me->GetSurface();
 	if (pixBuf)
 	{
@@ -43,7 +44,7 @@ gboolean GUIDDrawControl_OnDDDraw(GtkWidget *widget, cairo_t *cr, gpointer user_
 	{
 		printf("DDraw: Error in drawing\r\n");
 	}
-	me->EndDrawSurface();
+	me->UnuseDrawSurface(&mutUsage);
 	return true;
 }
 
@@ -572,14 +573,14 @@ void *UI::GUIDDrawControl::GetSurface()
 	return this->pSurface;
 }
 
-void UI::GUIDDrawControl::BeginDrawSurface()
+void UI::GUIDDrawControl::UseDrawSurface(Sync::MutexUsage *mutUsage)
 {
-	this->surfaceMut->Use();
+	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
-void UI::GUIDDrawControl::EndDrawSurface()
+void UI::GUIDDrawControl::UnuseDrawSurface(Sync::MutexUsage *mutUsage)
 {
 	this->focusing = false;
-	this->surfaceMut->Unuse();
+	mutUsage->EndUse();
 	this->drawEvt->Set();
 }

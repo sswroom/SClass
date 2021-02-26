@@ -208,7 +208,8 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 	UTF8Char sbuff[32];
 	Text::StringBuilderUTF8 sb;
 	void *cliData;
-	this->cliMgr->BeginGetClient();
+	Sync::MutexUsage mutUsage;
+	this->cliMgr->UseGetClient(&mutUsage);
 	i = this->cliMgr->GetClientCount();
 	while (i-- > 0)
 	{
@@ -229,7 +230,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 
 		cliFound = true;
 	}
-	this->cliMgr->EndGetClient();
+	mutUsage.EndUse();
 	if (!cliFound)
 	{
 		OSInt buffSizeLeft = 2048 - this->writeBuffSize;

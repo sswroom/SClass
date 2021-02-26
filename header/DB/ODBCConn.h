@@ -94,7 +94,7 @@ namespace DB
 
 		static UOSInt GetDriverList(Data::ArrayList<const UTF8Char*> *driverList);
 		static IO::ConfigFile *GetDriverInfo(const UTF8Char *driverName);
-		static DBTool *CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix);
+		static DBTool *CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix);
 	};
 
 	class ODBCReader : public DB::DBReader

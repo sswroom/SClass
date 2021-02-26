@@ -1103,14 +1103,14 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName)
 #endif
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;
 	NEW_CLASS(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, logPrefix));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

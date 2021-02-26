@@ -9,7 +9,8 @@
 Data::Integer32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
-	this->currDB = this->conn->BeginUseDB();
+	Sync::MutexUsage mutUsage;
+	this->currDB = this->conn->UseDB(&mutUsage);
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{
@@ -44,13 +45,13 @@ Data::Integer32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 			nameArr->Put(objId, names);
 		}
 		this->currDB->CloseReader(r);
-		this->conn->EndUseDB();
+		mutUsage.EndUse();
 		this->currDB = 0;
 		return nameArr;
 	}
 	else
 	{
-		this->conn->EndUseDB();
+		mutUsage.EndUse();
 		this->currDB = 0;
 		return 0;
 	}
@@ -75,7 +76,8 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 	this->shapeCol = 1;
 	OSInt nameCol = 0;
 
-	this->currDB = this->conn->BeginUseDB();
+	Sync::MutexUsage mutUsage;
+	this->currDB = this->conn->UseDB(&mutUsage);
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
@@ -171,7 +173,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 		}
 		this->currDB->CloseReader(r);
 	}
-	this->conn->EndUseDB();
+	mutUsage.EndUse();
 	this->currDB = 0;
 }
 
@@ -380,24 +382,26 @@ UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 
 DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
 {
-	this->currDB = this->conn->BeginUseDB();
+	Sync::MutexUsage *mutUsage;
+	NEW_CLASS(mutUsage, Sync::MutexUsage());
+	this->currDB = this->conn->UseDB(mutUsage);
 	this->lastDB = this->currDB;
 	DB::DBReader *rdr = this->currDB->GetTableData(name, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::FileGDBLReader *r;
-		NEW_CLASS(r, Map::FileGDBLReader(this->currDB, rdr));
+		NEW_CLASS(r, Map::FileGDBLReader(this->currDB, rdr, mutUsage));
 		return r;
 	}
-	this->conn->EndUseDB();
+	DEL_CLASS(mutUsage);
 	this->currDB = 0;
 	return 0;
 }
 
 void Map::FileGDBLayer::CloseReader(DB::DBReader *r)
 {
-	this->currDB->CloseReader(r);
-	this->conn->EndUseDB();
+	Map::FileGDBLReader *rdr = (Map::FileGDBLReader*)r;
+	DEL_CLASS(rdr);
 	this->currDB = 0;
 }
 
@@ -419,14 +423,17 @@ Map::IMapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass()
 	return Map::IMapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
-Map::FileGDBLReader::FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r)
+Map::FileGDBLReader::FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r, Sync::MutexUsage *mutUsage)
 {
 	this->conn = conn;
 	this->r = r;
+	this->mutUsage = mutUsage;
 }
 
 Map::FileGDBLReader::~FileGDBLReader()
 {
+	this->conn->CloseReader(r);
+	DEL_CLASS(this->mutUsage);
 }
 
 Bool Map::FileGDBLReader::ReadNext()

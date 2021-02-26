@@ -724,7 +724,7 @@ void *Map::CIPLayer2::BeginGetObject()
 	IO::FileStream *cip;
 	sptr = Text::StrConcat(fileName, this->layerName);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".cip");
-	mut->Use();
+	mut->Lock();
 	if (this->currObjs == 0)
 	{
 		NEW_CLASS(this->currObjs, Data::Integer32Map<Map::CIPLayer2::CIPFileObject*>());
@@ -745,7 +745,7 @@ void Map::CIPLayer2::EndGetObject(void *session)
 	tmpObjs = this->lastObjs;
 	this->lastObjs = this->currObjs;
 	this->currObjs = tmpObjs;
-	mut->Unuse();
+	mut->Unlock();
 }
 
 Map::DrawObjectL *Map::CIPLayer2::GetObjectByIdD(void *session, Int64 id)

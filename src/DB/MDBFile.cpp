@@ -184,14 +184,14 @@ Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)
 #endif
 }
 
-DB::DBTool *DB::MDBFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::DBTool *DB::MDBFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	DB::MDBFile *conn;
 	DB::DBTool *db;
 	NEW_CLASS(conn, DB::MDBFile(fileName, log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, logPrefix));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

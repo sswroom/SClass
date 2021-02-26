@@ -230,14 +230,9 @@ Int64 Net::EthernetAnalyzer::GetPacketTotalSize()
 	return this->packetTotalSize;
 }
 
-void Net::EthernetAnalyzer::IPTranBeginGet()
+void Net::EthernetAnalyzer::UseIPTran(Sync::MutexUsage *mutUsage)
 {
-	this->ipTranMut->Use();
-}
-
-void Net::EthernetAnalyzer::IPTranEndGet()
-{
-	this->ipTranMut->Unuse();
+	mutUsage->ReplaceMutex(this->ipTranMut);
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::IPTranStatus*> *Net::EthernetAnalyzer::IPTranGetList()
@@ -250,14 +245,9 @@ OSInt Net::EthernetAnalyzer::IPTranGetCount()
 	return this->ipTranMap->GetCount();
 }
 
-void Net::EthernetAnalyzer::MACBeginGet()
+void Net::EthernetAnalyzer::UseMAC(Sync::MutexUsage *mutUsage)
 {
-	this->macMut->Use();
-}
-
-void Net::EthernetAnalyzer::MACEndGet()
-{
-	this->macMut->Unuse();
+	mutUsage->ReplaceMutex(this->macMut);
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyzer::MACGetList()
@@ -265,14 +255,9 @@ Data::ArrayList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyzer::MACGe
 	return this->macMap->GetValues();
 }
 
-void Net::EthernetAnalyzer::DNSCliBeginGet()
+void Net::EthernetAnalyzer::UseDNSCli(Sync::MutexUsage *mutUsage)
 {
-	this->dnsCliInfoMut->Use();
-}
-
-void Net::EthernetAnalyzer::DNSCliEndGet()
-{
-	this->dnsCliInfoMut->Unuse();
+	mutUsage->ReplaceMutex(this->dnsCliInfoMut);
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> *Net::EthernetAnalyzer::DNSCliGetList()
@@ -400,14 +385,9 @@ OSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 	return this->dnsTargetMap->GetCount();
 }
 
-void Net::EthernetAnalyzer::DHCPBeginGet()
+void Net::EthernetAnalyzer::UseDHCP(Sync::MutexUsage *mutUsage)
 {
-	this->dhcpMut->Use();
-}
-
-void Net::EthernetAnalyzer::DHCPEndGet()
-{
-	this->dhcpMut->Unuse();
+	mutUsage->ReplaceMutex(this->dhcpMut);
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer::DHCPGetList()
@@ -415,14 +395,9 @@ Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer::DHCPGe
 	return this->dhcpMap->GetValues();
 }
 
-void Net::EthernetAnalyzer::IPLogBeginGet()
+void Net::EthernetAnalyzer::UseIPLog(Sync::MutexUsage *mutUsage)
 {
-	this->ipLogMut->Use();
-}
-
-void Net::EthernetAnalyzer::IPLogEndGet()
-{
-	this->ipLogMut->Unuse();
+	mutUsage->ReplaceMutex(this->ipLogMut);
 }
 
 Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyzer::IPLogGetList()

@@ -2,6 +2,7 @@
 #define _SM_DB_SHAREDREADINGDB
 #include "DB/ReadingDB.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 
 namespace DB
 {
@@ -22,8 +23,7 @@ namespace DB
 		void UseObject();
 		void UnuseObject();
 
-		DB::ReadingDB *BeginUseDB();
-		void EndUseDB();
+		DB::ReadingDB *UseDB(Sync::MutexUsage *mutUsage);
 	};
-};
+}
 #endif

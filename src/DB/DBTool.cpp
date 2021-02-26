@@ -19,7 +19,7 @@
 #include "Text/UTF8Writer.h"
 
 
-DB::DBTool::DBTool(DB::DBConn *conn, Bool needRelease, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix) : DB::ReadingDBTool(conn, needRelease, log, useMut, logPrefix)
+DB::DBTool::DBTool(DB::DBConn *conn, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
 {
 	this->nqFail = 0;
 	this->tran = 0;
@@ -44,7 +44,6 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 	}
 
 	Data::DateTime t1;
-	Sync::MutexUsage mutUsage(this->mut);
 	Data::DateTime t2;
 	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd);
 	if (i >= -1)
@@ -63,7 +62,6 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 		}
 		nqFail = 0;
 		openFail = 0;
-		mutUsage.EndUse();
 		return i;
 	}
 	else
@@ -88,7 +86,6 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 		{
 			this->db->Reconnect();
 		}
-		mutUsage.EndUse();
 
 		if (trig)
 			trig(sqlCmd, DB::ReadingDBTool::NonQueryTrigger);

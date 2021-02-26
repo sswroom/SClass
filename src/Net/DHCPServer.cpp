@@ -358,14 +358,9 @@ Bool Net::DHCPServer::IsError()
 	return this->svr->IsError();
 }
 
-void Net::DHCPServer::StatusBeginGet()
+void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage)
 {
-	this->devMut->Use();
-}
-
-void Net::DHCPServer::StatusEndGet()
-{
-	this->devMut->Unuse();
+	mutUsage->ReplaceMutex(this->devMut);
 }
 
 Data::ArrayList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList()

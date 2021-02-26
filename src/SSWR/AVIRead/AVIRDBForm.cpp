@@ -198,7 +198,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	this->dbt = 0;
 	if (db->IsFullConn())
 	{
-		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, this->log, false, (const UTF8Char*)"DB: "));
+		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, this->log, (const UTF8Char*)"DB: "));
 	}
 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));

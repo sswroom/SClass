@@ -10,6 +10,7 @@ namespace Sync
 		Sync::Mutex *mut;
 		Bool used;
 	public:
+		MutexUsage();
 		MutexUsage(Sync::Mutex *mut);
 		~MutexUsage();
 

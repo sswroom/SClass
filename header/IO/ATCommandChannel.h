@@ -5,6 +5,7 @@
 #include "IO/Stream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 
 namespace IO
 {
@@ -43,8 +44,7 @@ namespace IO
 		OSInt SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS);
 		OSInt SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
 
-		Bool CmdBegin();
-		void CmdEnd();
+		Bool UseCmd(Sync::MutexUsage *mutUsage);
 		OSInt CmdSend(const UInt8 *data, OSInt dataSize);
 		const Char *CmdGetNextResult(Int32 timeoutMS);
 

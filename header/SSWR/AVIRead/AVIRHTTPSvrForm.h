@@ -4,6 +4,7 @@
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Sync/MutexUsage.h"
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
@@ -43,10 +44,9 @@ namespace SSWR
 
 			virtual void LogRequest(Net::WebServer::IWebRequest *req);
 			OSInt GetNextIndex();
-			void BeginGet();
+			void Use(Sync::MutexUsage *mutUsage);
 			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<OSInt> *logIndex);
 			LogEntry *GetEntry(OSInt index);
-			void EndGet();
 		};
 
 		class AVIRHTTPSvrForm : public UI::GUIForm

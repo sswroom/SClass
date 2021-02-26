@@ -37,12 +37,12 @@ Bool Net::WebServer::MemoryWebSession::RequestValid(Net::BrowserInfo::BrowserTyp
 
 void Net::WebServer::MemoryWebSession::BeginUse()
 {
-	this->mut->Use();
+	this->mut->Lock();
 }
 
 void Net::WebServer::MemoryWebSession::EndUse()
 {
-	this->mut->Unuse();
+	this->mut->Unlock();
 }
 
 Int64 Net::WebServer::MemoryWebSession::GetSessId()

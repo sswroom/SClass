@@ -1,6 +1,12 @@
 #include "Stdafx.h"
 #include "Sync/MutexUsage.h"
 
+Sync::MutexUsage::MutexUsage()
+{
+	this->mut = 0;
+	this->used = false;
+}
+
 Sync::MutexUsage::MutexUsage(Sync::Mutex *mut)
 {
 	this->mut = mut;
@@ -8,7 +14,7 @@ Sync::MutexUsage::MutexUsage(Sync::Mutex *mut)
 	if (this->mut)
 	{
 		this->used = true;
- 		this->mut->Use();
+ 		this->mut->Lock();
 	}
 }
 
@@ -21,7 +27,7 @@ void Sync::MutexUsage::BeginUse()
 {
 	if (this->mut && !this->used)
 	{
-		this->mut->Use();
+		this->mut->Lock();
 		this->used = true;
 	}
 }
@@ -30,7 +36,7 @@ void Sync::MutexUsage::EndUse()
 {
 	if (this->mut && this->used)
 	{
-		this->mut->Unuse();
+		this->mut->Unlock();
 		this->used = false;
 	}
 }

@@ -66,8 +66,9 @@ namespace Map
 	private:
 		DB::ReadingDB *conn;
 		DB::DBReader *r;
+		Sync::MutexUsage *mutUsage;
 	public:
-		FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r);
+		FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r, Sync::MutexUsage *mutUsage);
 		virtual ~FileGDBLReader();
 
 		virtual Bool ReadNext();

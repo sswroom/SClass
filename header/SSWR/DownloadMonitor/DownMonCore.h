@@ -6,6 +6,7 @@
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 
 namespace SSWR
 {
@@ -85,7 +86,7 @@ namespace SSWR
 
 			void FileFree(FileInfo *file);
 			Bool FileAdd(Int32 id, Int32 webType, const UTF8Char *dbName);
-			FileInfo *FileGet(Int32 id, Int32 webType, Bool toLock);
+			FileInfo *FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage);
 			Int32 FileGetByName(const UTF8Char *fileName, Int32 *webType);
 			Bool FileEnd(Int32 id, Int32 webType);
 			Bool FileStart(Int32 id, Int32 webType, void *formHand);

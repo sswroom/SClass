@@ -188,7 +188,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 					break;
 				}
 			}
-			db = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, schema, log, false, DBPREFIX);
+			db = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, schema, log, DBPREFIX);
 			SDEL_TEXT(dsn);
 			SDEL_TEXT(uid);
 			SDEL_TEXT(pwd);
@@ -204,7 +204,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			NEW_CLASS(conn, DB::ODBCConn(connStr + 5, (const UTF8Char*)"ODBCConn", log));
 			if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 			{
-				NEW_CLASS(db, DB::DBTool(conn, true, log, false, DBPREFIX));
+				NEW_CLASS(db, DB::DBTool(conn, true, log, DBPREFIX));
 				return db;
 			}
 			DEL_CLASS(conn);
@@ -249,7 +249,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 				break;
 			}
 		}
-		db = DB::MySQLConn::CreateDBTool(sockf, server, schema, uid, pwd, log, false, DBPREFIX);
+		db = DB::MySQLConn::CreateDBTool(sockf, server, schema, uid, pwd, log, DBPREFIX);
 		SDEL_TEXT(server);
 		SDEL_TEXT(uid);
 		SDEL_TEXT(pwd);
@@ -263,7 +263,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 	{
 		if (Text::StrStartsWithICase(connStr + 7, (const UTF8Char*)"FILE="))
 		{
-			db = DB::SQLiteFile::CreateDBTool(connStr + 12, log, false, DBPREFIX);
+			db = DB::SQLiteFile::CreateDBTool(connStr + 12, log, DBPREFIX);
 			if (db)
 			{
 				return db;
@@ -283,7 +283,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			}
 			else
 			{
-				NEW_CLASS(db, DB::DBTool(wmi, true, log, false, DBPREFIX));
+				NEW_CLASS(db, DB::DBTool(wmi, true, log, DBPREFIX));
 				return db;
 			}
 		}
@@ -299,7 +299,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(oledb, true, log, false, DBPREFIX));
+			NEW_CLASS(db, DB::DBTool(oledb, true, log, DBPREFIX));
 			return db;
 		}
 	}
@@ -355,7 +355,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(cli, true, log, false, DBPREFIX));
+			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
 			return db;
 		}
 	}

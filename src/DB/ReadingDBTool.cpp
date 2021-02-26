@@ -37,7 +37,7 @@ void DB::ReadingDBTool::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel
 	}
 }
 
-DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	this->db = db;
 	this->needRelease = needRelease;
@@ -55,14 +55,6 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	else
 	{
 		this->logPrefix = 0;
-	}
-	if (useMut)
-	{
-		NEW_CLASS(mut, Sync::Mutex());
-	}
-	else
-	{
-		mut = 0;
 	}
 	this->isWorking = false;
 	this->workId = 0;
@@ -345,11 +337,6 @@ OSInt DB::ReadingDBTool::SplitUnkSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char 
 
 DB::ReadingDBTool::~ReadingDBTool()
 {
-	if (mut)
-	{
-		DEL_CLASS(mut);
-		mut = 0;
-	}
 	if (this->logPrefix)
 	{
 		Text::StrDelNew(this->logPrefix);
@@ -387,13 +374,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 		return lastReader;
 	}
 
-	Bool mutWait = false;
 	Data::DateTime t1;
-	if (this->mut)
-	{
-		this->mut->Use();
-		mutWait = true;
-	}
 	Data::DateTime t2;
 	DB::DBReader *r = this->db->ExecuteReader(sqlCmd);
 	if (r)
@@ -450,10 +431,6 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 		{
 			this->db->Reconnect();
 		}
-		if (mutWait)
-		{
-			this->mut->Unuse();
-		}
 
 		if (trig)
 			trig(sqlCmd, DB::ReadingDBTool::ReaderTrigger);
@@ -466,10 +443,6 @@ void DB::ReadingDBTool::CloseReader(DB::DBReader *r)
 	if (r)
 	{
 		this->db->CloseReader(r);
-		if (this->mut)
-		{
-			mut->Unuse();
-		}
 		this->lastReader = 0;
 		this->readerCnt = 0;
 	}
@@ -593,11 +566,6 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 
 	Bool mutWait = false;
 	Data::DateTime t1;
-	if (this->mut)
-	{
-		this->mut->Use();
-		mutWait = true;
-	}
 	Data::DateTime t2;
 	DB::DBReader *r = this->db->GetTableData(tableName, maxCnt, ordering, condition);
 	if (r)
@@ -654,11 +622,6 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 		{
 			this->db->Reconnect();
 		}
-		if (mutWait)
-		{
-			this->mut->Unuse();
-		}
-
 		return 0;
 	}
 }

@@ -28,7 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 		OSInt j;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
-		me->mgr->BeginUse();
+		Sync::MutexUsage mutUsage;
+		me->mgr->Use(&mutUsage);
 		ctrl->GetCurrItems(&itemList);
 		i = itemList.GetCount();
 		while (i-- > 0)
@@ -45,7 +46,6 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 			}
 			me->lvCurrItems->SetSubItem(j, 3, item->message);
 		}
-		me->mgr->EndUse();
 	}
 }
 
@@ -96,7 +96,8 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	}
 	this->cboChannel->SetSelectedIndex(0);
 
-	this->mgr->BeginUse();
+	Sync::MutexUsage mutUsage;
+	this->mgr->Use(&mutUsage);
 	Net::SNS::SNSControl *ctrl;
 	OSInt j = this->mgr->GetCount();
 	i = 0;
@@ -106,7 +107,6 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 		this->lbChannels->AddItem(ctrl->GetName(), ctrl);
 		i++;
 	}
-	this->mgr->EndUse();
 }
 
 SSWR::AVIRead::AVIRSNSManagerForm::~AVIRSNSManagerForm()

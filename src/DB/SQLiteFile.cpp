@@ -381,7 +381,7 @@ void DB::SQLiteReader::UpdateColTypes()
 	}
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));
@@ -391,7 +391,7 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *
 		return 0;
 	}
 	DB::DBTool *db;
-	NEW_CLASS(db, DBTool(conn, true, log, useMut, logPrefix));
+	NEW_CLASS(db, DBTool(conn, true, log, logPrefix));
 	return db;
 }
 

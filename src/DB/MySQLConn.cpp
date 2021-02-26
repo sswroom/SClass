@@ -385,7 +385,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, false, 0));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, 0));
 		return db;
 	}
 	else
@@ -395,14 +395,14 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Bool useMut)
+DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
 	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, 0));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -412,31 +412,14 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
 	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, logPrefix));
-		return db;
-	}
-	else
-	{
-		DEL_CLASS(conn);
-		return 0;
-	}
-}
-
-DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
-{
-	DB::MySQLConn *conn;
-	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
-	if (!conn->IsConnError())
-	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, logPrefix));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

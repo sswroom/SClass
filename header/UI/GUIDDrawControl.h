@@ -5,6 +5,7 @@
 #include "Media/DDrawManager.h"
 #include "Media/ImageCopy.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "UI/GUIControl.h"
 
 namespace UI
@@ -107,8 +108,8 @@ namespace UI
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 
 		void *GetSurface();
-		void BeginDrawSurface();
-		void EndDrawSurface();
+		void UseDrawSurface(Sync::MutexUsage *mut);
+		void UnuseDrawSurface(Sync::MutexUsage *mut);
 	};
 }
 #endif

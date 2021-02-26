@@ -42,13 +42,8 @@ void DB::SharedReadingDB::UnuseObject()
 	}
 }
 
-DB::ReadingDB *DB::SharedReadingDB::BeginUseDB()
+DB::ReadingDB *DB::SharedReadingDB::UseDB(Sync::MutexUsage *mutUsage)
 {
-	this->mutDB->Use();
+	mutUsage->ReplaceMutex(this->mutDB);
 	return this->db;
-}
-
-void DB::SharedReadingDB::EndUseDB()
-{
-	this->mutDB->Unuse();
 }

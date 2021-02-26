@@ -47,7 +47,7 @@ namespace DB
 		Bool IsError();
 		const UTF8Char *GetFileName();
 
-		static DBTool *CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix);
+		static DBTool *CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix);
 	};
 
 	class SQLiteReader : public DB::DBReader

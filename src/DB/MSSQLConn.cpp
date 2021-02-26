@@ -79,13 +79,13 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	}
 }
 
-DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	DB::DBConn *conn = OpenConnTCP(serverHost, port, database, userName, password, log, 0);
 	DB::DBTool *db;
 	if (conn)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, useMut, logPrefix));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

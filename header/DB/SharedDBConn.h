@@ -2,6 +2,7 @@
 #define _SM_DB_SHAREDDBCONN
 #include "DB/DBConn.h"
 #include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 
 namespace DB
 {
@@ -23,8 +24,7 @@ namespace DB
 		void UseObject();
 		void UnuseObject();
 
-		DB::DBConn *BeginUseConn();
-		void EndUseConn();
+		DB::DBConn *UseConn(Sync::MutexUsage *mutUsage);
 	};
-};
+}
 #endif

@@ -24,7 +24,7 @@ namespace Net
 			virtual ~MemoryWebSession();
 
 			virtual Bool RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
-			virtual void BeginUse();
+			void BeginUse();
 			virtual void EndUse();
 			virtual Int64 GetSessId();
 
@@ -38,6 +38,6 @@ namespace Net
 			virtual Int64 GetValueInt64(const Char *name);
 			virtual Int32 GetValueInt32(const Char *name);
 		};
-	};
-};
+	}
+}
 #endif

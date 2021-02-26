@@ -5,13 +5,14 @@
 #include "Data/Usable.h"
 #include "Net/SocketFactory.h"
 #include "Net/SNS/SNSControl.h"
+#include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"
 
 namespace Net
 {
 	namespace SNS
 	{
-		class SNSManager : public Data::ReadingList<Net::SNS::SNSControl*>, public Data::Usable
+		class SNSManager : public Data::ReadingList<Net::SNS::SNSControl*>
 		{
 		private:
 			typedef struct
@@ -46,8 +47,7 @@ namespace Net
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId);
 
-			virtual void BeginUse();
-			virtual void EndUse();
+			void Use(Sync::MutexUsage *mutUsage);
 			virtual UOSInt GetCount();
 			virtual Net::SNS::SNSControl* GetItem(UOSInt index);
 		};

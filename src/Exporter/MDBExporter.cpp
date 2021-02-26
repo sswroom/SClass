@@ -72,7 +72,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	OSInt j;
 	OSInt k;
 	OSInt l;
-	mdb = DB::MDBFile::CreateDBTool(fileName, &log, false, (const UTF8Char*)"DB: ");
+	mdb = DB::MDBFile::CreateDBTool(fileName, &log, (const UTF8Char*)"DB: ");
 	if (mdb == 0)
 		return false;
 	Bool succ = true;

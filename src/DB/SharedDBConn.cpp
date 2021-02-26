@@ -47,13 +47,8 @@ void DB::SharedDBConn::UnuseObject()
 	}
 }
 
-DB::DBConn *DB::SharedDBConn::BeginUseConn()
+DB::DBConn *DB::SharedDBConn::UseConn(Sync::MutexUsage *mutUsage)
 {
-	this->mutConn->Use();
+	mutUsage->ReplaceMutex(this->mutConn);
 	return this->conn;
-}
-
-void DB::SharedDBConn::EndUseConn()
-{
-	this->mutConn->Unuse();
 }

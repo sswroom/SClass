@@ -23,6 +23,6 @@ namespace Net
 			virtual Int64 GetValueInt64(const Char *name) = 0;
 			virtual Int32 GetValueInt32(const Char *name) = 0;
 		};
-	};
-};
+	}
+}
 #endif

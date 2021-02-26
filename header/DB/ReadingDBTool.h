@@ -32,7 +32,6 @@ namespace DB
 
 		const UTF8Char *logPrefix;
 
-		Sync::Mutex *mut;
 		Bool isWorking;
 		Int32 workId;
 		SQLFailedFunc trig;
@@ -43,7 +42,7 @@ namespace DB
 		DBUtil::ServerType svrType;
 
 	public:
-		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix);
+		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, const UTF8Char *logPrefix);
 
 	protected:
 		void AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev);
@@ -52,7 +51,7 @@ namespace DB
 		OSInt SplitMSSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr);
 		OSInt SplitUnkSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr);
 	public:
-		ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix);
+		ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix);
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);

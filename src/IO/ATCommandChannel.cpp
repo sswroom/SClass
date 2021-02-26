@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
+#include "Data/DateTime.h"
 #include "IO/ATCommandChannel.h"
 #include "IO/FileStream.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
-#include "Data/DateTime.h"
+#include "Text/MyString.h"
 
 //#define DEBUG
 
@@ -171,7 +171,8 @@ OSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr,
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
 	const Char *cmdRes;
-	if (!this->CmdBegin())
+	Sync::MutexUsage mutUsage;
+	if (!this->UseCmd(&mutUsage))
 		return 0;
 	this->CmdSend((UInt8*)atCmd, i);
 	this->CmdSend((UInt8*)"\r", 1);
@@ -207,7 +208,6 @@ OSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr,
 			break;
 	}
 
-	this->CmdEnd();
 	return retSize;
 }
 
@@ -220,7 +220,8 @@ OSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retArr
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
 	const Char *cmdRes;
-	if (!this->CmdBegin())
+	Sync::MutexUsage mutUsage;
+	if (!this->UseCmd(&mutUsage))
 		return 0;
 	this->CmdSend((UInt8*)atCmd, i);
 	this->CmdSend((UInt8*)"\r", 1);
@@ -259,8 +260,6 @@ OSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retArr
 		if (dt2.DiffMS(&dt) >= timeoutMS)
 			break;
 	}
-
-	this->CmdEnd();
 	return retSize;
 }
 
@@ -273,7 +272,8 @@ OSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<const Char *> *retAr
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
 	const Char *cmdRes;
-	if (!this->CmdBegin())
+	Sync::MutexUsage mutUsage;
+	if (!this->UseCmd(&mutUsage))
 		return 0;
 	this->CmdSend((UInt8*)atCmd, i);
 	this->CmdSend((UInt8*)"\r", 1);
@@ -328,23 +328,16 @@ OSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<const Char *> *retAr
 		if (dt2.DiffMS(&dt) >= timeoutMS)
 			break;
 	}
-
-	this->CmdEnd();
 	return retSize;
 }
 
-Bool IO::ATCommandChannel::CmdBegin()
+Bool IO::ATCommandChannel::UseCmd(Sync::MutexUsage *mutUsage)
 {
 	if (!this->threadRunning)
 		return false;
-	this->cmdMut->Use();
+	mutUsage->ReplaceMutex(this->cmdMut);
 	this->ClearResults();
 	return true;
-}
-
-void IO::ATCommandChannel::CmdEnd()
-{
-	this->cmdMut->Unuse();
 }
 
 OSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, OSInt dataSize)

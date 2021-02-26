@@ -175,15 +175,15 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		const UTF8Char *csptr;
 		if ((csptr = cfg->GetValue((const UTF8Char*)"DSN")) != 0)
 		{
-			this->db = DB::ODBCConn::CreateDBTool(csptr, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), cfg->GetValue((const UTF8Char*)"Schema"), this->log, false, (const UTF8Char*)"DB: ");
+			this->db = DB::ODBCConn::CreateDBTool(csptr, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), cfg->GetValue((const UTF8Char*)"Schema"), this->log, (const UTF8Char*)"DB: ");
 		}
 		else if ((csptr = cfg->GetValue((const UTF8Char*)"MySQLServer")) != 0)
 		{
-			this->db = DB::MySQLConn::CreateDBTool(this->sockf, csptr, cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), this->log, false, (const UTF8Char*)"DB: ");
+			this->db = DB::MySQLConn::CreateDBTool(this->sockf, csptr, cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), this->log, (const UTF8Char*)"DB: ");
 		}
 		else if ((csptr = cfg->GetValue((const UTF8Char*)"MDBFile")) != 0)
 		{
-			this->db = DB::MDBFile::CreateDBTool(csptr, this->log, false, (const UTF8Char*)"DB: ");
+			this->db = DB::MDBFile::CreateDBTool(csptr, this->log, (const UTF8Char*)"DB: ");
 		}
 		DEL_CLASS(cfg);
 

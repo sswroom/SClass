@@ -6,6 +6,7 @@
 #include "IO/Writer.h"
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Net
@@ -158,15 +159,12 @@ namespace Net
 
 		Int64 GetPacketCnt();
 		Int64 GetPacketTotalSize();
-		void IPTranBeginGet();
-		void IPTranEndGet();
+		void UseIPTran(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<IPTranStatus*> *IPTranGetList();
 		OSInt IPTranGetCount();
-		void MACBeginGet();
-		void MACEndGet();
+		void UseMAC(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<MACStatus*> *MACGetList();
-		void DNSCliBeginGet();
-		void DNSCliEndGet();
+		void UseDNSCli(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DNSClientInfo*> *DNSCliGetList();
 		OSInt DNSCliGetCount();
 		OSInt DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
@@ -180,11 +178,9 @@ namespace Net
 		Bool DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl);
 		OSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release
 		OSInt DNSTargetGetCount();
-		void DHCPBeginGet();
-		void DHCPEndGet();
+		void UseDHCP(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DHCPInfo*> *DHCPGetList();
-		void IPLogBeginGet();
-		void IPLogEndGet();
+		void UseIPLog(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<IPLogInfo*> *IPLogGetList();
 		OSInt IPLogGetCount();
 
