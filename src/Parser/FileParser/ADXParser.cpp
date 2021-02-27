@@ -48,10 +48,10 @@ IO::ParsedObject *Parser::FileParser::ADXParser::ParseFile(IO::IStreamData *fd, 
 	
 	af.formatId = 0x2080;
 	af.nChannels = buff[3];
-	af.frequency = ReadMInt32(&buff[4]);
+	af.frequency = ReadMUInt32(&buff[4]);
 	af.bitpersample = 16;
 	af.bitRate = (af.frequency * af.nChannels * 9) >> 1;
-	af.align = 18 * af.nChannels;
+	af.align = (UInt32)18 * af.nChannels;
 	af.other = 0;
 	af.intType = Media::AudioFormat::IT_NORMAL;
 	af.extraSize = 0;

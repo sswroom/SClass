@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/Encoding.h"
+#include "Data/ByteTool.h"
 #include "IO/IStreamData.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/AFSParser.h"
+#include "Text/Encoding.h"
 
 Parser::FileParser::AFSParser::AFSParser()
 {
@@ -36,8 +37,8 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, 
 	IO::PackageFile *pf;
 	UTF8Char sbuff[9];
 	UTF8Char *namePtr;
-	Int32 fileCnt;
-	Int32 i;
+	UInt32 fileCnt;
+	UInt32 i;
 	UInt8 buff[8];
 	UInt8 *buff2;
 	UInt32 ofst;
@@ -56,7 +57,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, 
 	sbuff[7] = '0';
 	sbuff[8] = 0;
 
-	fileCnt = *(Int32*)&buff[4];
+	fileCnt = ReadUInt32(&buff[4]);
 	buff2 = MemAlloc(UInt8, fileCnt << 3);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);
@@ -69,8 +70,8 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, 
 			*namePtr = '0';
 		}
 
-		ofst = *(UInt32*)&buff2[i << 3];
-		leng = *(UInt32*)&buff2[(i << 3) + 4];
+		ofst = ReadUInt32(&buff2[i << 3]);
+		leng = ReadUInt32(&buff2[(i << 3) + 4]);
 		if (ofst == 0 || leng == 0)
 		{
 			MemFree(buff2);

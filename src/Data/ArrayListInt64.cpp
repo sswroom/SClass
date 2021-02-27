@@ -2,13 +2,12 @@
 #include "MyMemory.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/IComparable.h"
-#include <stdlib.h>
 
 Data::ArrayListInt64::ArrayListInt64() : Data::SortableArrayList<Int64>()
 {
 }
 
-Data::ArrayListInt64::ArrayListInt64(OSInt Capacity) : Data::SortableArrayList<Int64>(Capacity)
+Data::ArrayListInt64::ArrayListInt64(UOSInt capacity) : Data::SortableArrayList<Int64>(capacity)
 {
 }
 
@@ -20,7 +19,7 @@ Data::ArrayList<Int64> *Data::ArrayListInt64::Clone()
 	return newArr;
 }
 
-UOSInt Data::ArrayListInt64::SortedInsert(Int64 Val)
+UOSInt Data::ArrayListInt64::SortedInsert(Int64 val)
 {
 	OSInt i;
 	OSInt j;
@@ -32,11 +31,11 @@ UOSInt Data::ArrayListInt64::SortedInsert(Int64 Val)
 	{
 		k = (i + j) >> 1;
 		l = arr[k];
-		if (l > Val)
+		if (l > val)
 		{
 			j = k - 1;
 		}
-		else if (l < Val)
+		else if (l < val)
 		{
 			i = k + 1;
 		}
@@ -54,7 +53,7 @@ UOSInt Data::ArrayListInt64::SortedInsert(Int64 Val)
 		{
 			MemCopyNO(&newArr[0], &arr[0], (i) * sizeof(Int64));
 		}
-		newArr[i] = Val;
+		newArr[i] = val;
 		if ((UOSInt)i < this->objCnt)
 		{
 			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - i) * sizeof(Int64));
@@ -71,13 +70,13 @@ UOSInt Data::ArrayListInt64::SortedInsert(Int64 Val)
 			arr[j] = arr[j - 1];
 			j--;
 		}
-		arr[i] = Val;
+		arr[i] = val;
 	}
 	this->objCnt++;
 	return (UOSInt)i;
 }
 
-OSInt Data::ArrayListInt64::SortedIndexOf(Int64 Val)
+OSInt Data::ArrayListInt64::SortedIndexOf(Int64 val)
 {
 	OSInt i;
 	OSInt j;
@@ -89,11 +88,11 @@ OSInt Data::ArrayListInt64::SortedIndexOf(Int64 Val)
 	{
 		k = (i + j) >> 1;
 		l = arr[k];
-		if (l > Val)
+		if (l > val)
 		{
 			j = k - 1;
 		}
-		else if (l < Val)
+		else if (l < val)
 		{
 			i = k + 1;
 		}

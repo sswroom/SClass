@@ -312,7 +312,7 @@ namespace Text
 	template<class T> void Text::StringBuilder<T>::AllocLeng(UOSInt leng)
 	{
 		UOSInt slen = leng * sizeof(T);
-		UOSInt currSize = (this->buffEnd - this->buff + 1) * sizeof(T);
+		UOSInt currSize = (this->buffEnd - this->buff + (UOSInt)1) * sizeof(T);
 		while (slen + currSize > this->buffSize)
 		{
 			this->buffSize <<= 1;

@@ -45,7 +45,7 @@ UOSInt Media::AACFrameSource::GetMinBlockSize()
 
 Int32 Media::AACFrameSource::GetRateIndex()
 {
-	Int32 freq = this->format.frequency;
+	UInt32 freq = this->format.frequency;
 	if (this->format.formatId == 0x1610)
 	{
 		freq = freq >> 1;

@@ -308,7 +308,7 @@ namespace Math
 
 	FORCEINLINE Double GetNAN()
 	{
-		Int64 v = 0xffffffffffffffffLL;
+		UInt64 v = 0xffffffffffffffffLL;
 		return *(Double*)&v;
 	}
 

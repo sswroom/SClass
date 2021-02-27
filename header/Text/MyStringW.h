@@ -255,15 +255,15 @@ namespace Text
 	UOSInt StrUTF32_UTF16Cnt(const UTF32Char *strToJoin, UOSInt charCnt);
 
 #if _WCHAR_SIZE == 4
-	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF32(buff, bytes, byteSize, byteConv); }
-	FORCEINLINE OSInt StrUTF8_WCharCnt(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF32Cnt(bytes, byteSize); }
+	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, OSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF32(buff, bytes, byteSize, byteConv); }
+	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes, OSInt byteSize) { return StrUTF8_UTF32Cnt(bytes, byteSize); }
 	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr, OSInt strLen) { return StrUTF32_UTF8(bytes, wstr, strLen); }
-	FORCEINLINE OSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF32_UTF8Cnt(stri, strLen); }
+	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF32_UTF8Cnt(stri, strLen); }
 #elif _WCHAR_SIZE == 2
-	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF16(buff, bytes, byteSize, byteConv); }
-	FORCEINLINE OSInt StrUTF8_WCharCnt(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF16Cnt(bytes, byteSize); }
+	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, OSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF16(buff, bytes, byteSize, byteConv); }
+	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes, OSInt byteSize) { return StrUTF8_UTF16Cnt(bytes, byteSize); }
 	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr, OSInt strLen) { return StrUTF16_UTF8(bytes, wstr, strLen); }
-	FORCEINLINE OSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF16_UTF8Cnt(stri, strLen); }
+	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF16_UTF8Cnt(stri, strLen); }
 #endif
 	const UTF8Char *StrReadChar(const UTF8Char *sptr, UTF32Char *outChar);
 	const UTF16Char *StrReadChar(const UTF16Char *sptr, UTF32Char *outChar);

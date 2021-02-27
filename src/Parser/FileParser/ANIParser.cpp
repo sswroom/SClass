@@ -40,8 +40,8 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 aniSize;
 	Media::ImageList *imgList;
 	UInt8 *buff;
-	OSInt buffSize;
-	OSInt buffOfst;
+	UOSInt buffSize;
+	UOSInt buffOfst;
 	UInt32 tmp;
 	Int32 displayRate = 0;
 	UInt32 nFrames = 0;
@@ -53,10 +53,10 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 	aniSize = hdr[1] + 8;
-	OSInt currOfst = 12;
+	UOSInt currOfst = 12;
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 
-	while (currOfst < (OSInt)aniSize)
+	while (currOfst < aniSize)
 	{
 		fd->GetRealData(currOfst, 12, (UInt8*)hdr);
 		if (hdr[0] == *(UInt32*)"LIST" && hdr[2] == *(UInt32*)"INFO")
@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 			buffSize = hdr[1];
 			buff = MemAlloc(UInt8, buffSize);
 			fd->GetRealData(currOfst + 8, buffSize, buff);
-			displayRate = ReadUInt32(&buff[28]);
+			displayRate = ReadInt32(&buff[28]);
 			nFrames = ReadUInt32(&buff[4]);
 			MemFree(buff);
 		}

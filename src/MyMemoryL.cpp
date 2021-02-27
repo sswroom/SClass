@@ -28,33 +28,33 @@ Int32 mcBlockId = 0;
 #if defined(CPU_X86_64)
 extern "C"
 {
-	void MemClearANC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
+	void MemClearANC_SSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearAC_SSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemCopyAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
 
-	void MemClearANC_AVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
+	void MemClearANC_AVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearAC_AVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemCopyAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
 
-	void MemClearANC_AMDSSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AMDSSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
+	void MemClearANC_AMDSSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearAC_AMDSSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemCopyAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
 
-	void MemClearANC_AMDAVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AMDAVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
+	void MemClearANC_AMDAVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearAC_AMDAVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
 }
 
 MemClearFunc MemClearANC = MemClearANC_SSE;
@@ -172,7 +172,7 @@ void MemUnlock()
 	Sync::Mutex_Unlock(&mcMut);
 }
 
-void *MAlloc(OSInt size)
+void *MAlloc(UOSInt size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
@@ -199,7 +199,7 @@ void *MAlloc(OSInt size)
 	}
 }
 
-void *MAllocA(OSInt size)
+void *MAllocA(UOSInt size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
@@ -221,7 +221,7 @@ void *MAllocA(OSInt size)
 	return mptr;
 }
 
-void *MAllocA64(OSInt size)
+void *MAllocA64(UOSInt size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;

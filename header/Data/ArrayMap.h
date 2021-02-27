@@ -47,14 +47,14 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			V oldVal = this->vals->GetItem(i);
-            this->vals->SetItem(i, val);
+			V oldVal = this->vals->GetItem((UOSInt)i);
+            this->vals->SetItem((UOSInt)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert(~i, key);
-			this->vals->Insert(~i, val);
+			this->keys->Insert((UOSInt)~i, key);
+			this->vals->Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
@@ -65,7 +65,7 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem(i);
+			return this->vals->GetItem((UOSInt)i);
 		}
 		else
 		{
@@ -79,8 +79,8 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			this->keys->RemoveAt(i);
-			return this->vals->RemoveAt(i);
+			this->keys->RemoveAt((UOSInt)i);
+			return this->vals->RemoveAt((UOSInt)i);
 		}
 		else
 		{
@@ -97,8 +97,8 @@ namespace Data
 	{
 		Data::ArrayList<T> *tList = map->GetKeys();
 		Data::ArrayList<V> *vList = map->GetValues();
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = tList->GetCount();
 		while (i < j)

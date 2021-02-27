@@ -29,10 +29,10 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	Int32 i;
 	Int32 refStart;
 	Int32 audStartTime;	
-	OSInt readBuffLeng = BUFFLENG;
-	OSInt outBuffLeng;
+	UOSInt readBuffLeng = BUFFLENG;
+	UOSInt outBuffLeng;
 	OSInt outBitPerSample;
-	OSInt minLeng;
+	UOSInt minLeng;
 	Int32 thisT;
 	Int32 lastT;
 
@@ -52,7 +52,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 
 	me->clk->Start(audStartTime);
 	me->playing = true;
-	me->audsrc->Start(evt, (Int32)readBuffLeng);
+	me->audsrc->Start(evt, readBuffLeng);
 
 	if (me->dataConv)
 	{
@@ -776,7 +776,7 @@ void Media::ALSARenderer::SetDeviceVolume(Int32 volume)
 	}*/
 }
 
-void Media::ALSARenderer::SetBufferTime(Int32 ms)
+void Media::ALSARenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
 	if (!this->playing && this->hand && this->audsrc)

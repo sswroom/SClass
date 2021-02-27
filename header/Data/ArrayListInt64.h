@@ -8,14 +8,14 @@ namespace Data
 	{
 	public:
 		ArrayListInt64();
-		ArrayListInt64(OSInt Capacity);
+		ArrayListInt64(UOSInt capacity);
 
 		virtual ArrayList<Int64> *Clone();
 
-		virtual UOSInt SortedInsert(Int64 Val);
-		virtual OSInt SortedIndexOf(Int64 Val);
+		virtual UOSInt SortedInsert(Int64 val);
+		virtual OSInt SortedIndexOf(Int64 val);
 		void AddRangeI32(Int32 *arr, UOSInt cnt);
 		void AddRangeI32(Data::ArrayList<Int32> *arr);
 	};
-};
+}
 #endif

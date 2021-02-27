@@ -20,7 +20,7 @@ extern "C" void MemFillW(UInt8 *buff, OSInt wordCnt, UInt16 val)
 }
 
 #if defined(CPU_X86_64)
-extern "C" void MemClearANC_SSE(void *buff, OSInt buffSize)
+extern "C" void MemClearANC_SSE(void *buff, UOSInt buffSize)
 {
 	Int32x4 zval = PInt32x4Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -32,7 +32,7 @@ extern "C" void MemClearANC_SSE(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemClearAC_SSE(void *buff, OSInt buffSize)
+extern "C" void MemClearAC_SSE(void *buff, UOSInt buffSize)
 {
 	Int32x4 zval = PInt32x4Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -44,16 +44,16 @@ extern "C" void MemClearAC_SSE(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemCopyAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	const UInt8 *sptr = (const UInt8 *)srcPtr;
 	UInt8 *dptr = (UInt8*)destPtr;
-	OSInt i = leng >> 7;
+	UOSInt i = leng >> 7;
 	while (i-- > 0)
 	{
 		Int32x4 v0 = PLoadInt32x4(&sptr[0]);
@@ -91,17 +91,17 @@ extern "C" void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
 	}
 }
 
-extern "C" void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemClearANC_AVX(void *buff, OSInt buffSize)
+extern "C" void MemClearANC_AVX(void *buff, UOSInt buffSize)
 {
 	Int32x8 zval = PInt32x8Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -114,7 +114,7 @@ extern "C" void MemClearANC_AVX(void *buff, OSInt buffSize)
 	PResetAVX();
 }
 
-extern "C" void MemClearAC_AVX(void *buff, OSInt buffSize)
+extern "C" void MemClearAC_AVX(void *buff, UOSInt buffSize)
 {
 	Int32x8 zval = PInt32x8Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -126,16 +126,16 @@ extern "C" void MemClearAC_AVX(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemCopyAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	const UInt8 *sptr = (const UInt8 *)srcPtr;
 	UInt8 *dptr = (UInt8*)destPtr;
-	OSInt i = leng >> 8;
+	UOSInt i = leng >> 8;
 	while (i-- > 0)
 	{
 		Int32x8 v0 = PLoadInt32x8(&sptr[0]);
@@ -174,17 +174,17 @@ extern "C" void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
 	}
 }
 
-extern "C" void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemClearANC_AMDSSE(void *buff, OSInt buffSize)
+extern "C" void MemClearANC_AMDSSE(void *buff, UOSInt buffSize)
 {
 	Int32x4 zval = PInt32x4Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -196,7 +196,7 @@ extern "C" void MemClearANC_AMDSSE(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemClearAC_AMDSSE(void *buff, OSInt buffSize)
+extern "C" void MemClearAC_AMDSSE(void *buff, UOSInt buffSize)
 {
 	Int32x4 zval = PInt32x4Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -208,27 +208,27 @@ extern "C" void MemClearAC_AMDSSE(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemCopyAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyANC_SSE(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNANC_SSE(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemClearANC_AMDAVX(void *buff, OSInt buffSize)
+extern "C" void MemClearANC_AMDAVX(void *buff, UOSInt buffSize)
 {
 	Int32x8 zval = PInt32x8Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -240,7 +240,7 @@ extern "C" void MemClearANC_AMDAVX(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemClearAC_AMDAVX(void *buff, OSInt buffSize)
+extern "C" void MemClearAC_AMDAVX(void *buff, UOSInt buffSize)
 {
 	Int32x8 zval = PInt32x8Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -252,27 +252,27 @@ extern "C" void MemClearAC_AMDAVX(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyANC_AVX(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNO(destPtr, srcPtr, leng);
 }
 
-extern "C" void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+extern "C" void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	MemCopyNANC_AVX(destPtr, srcPtr, leng);
 }
 #elif defined(HAS_ASM32)
-extern "C" void MemClearANC(void *buff, OSInt buffSize)
+extern "C" void MemClearANC(void *buff, UOSInt buffSize)
 {
 	Int32x4 zval = PInt32x4Clear();
 	UInt8 *buffPtr = (UInt8*)buff;
@@ -284,7 +284,7 @@ extern "C" void MemClearANC(void *buff, OSInt buffSize)
 	}
 }
 
-extern "C" void MemClearAC(void *buff, OSInt buffSize)
+extern "C" void MemClearAC(void *buff, UOSInt buffSize)
 {
 	Int32x4 zval = PInt32x4Clear();
 	UInt8 *buffPtr = (UInt8*)buff;

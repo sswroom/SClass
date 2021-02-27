@@ -16,7 +16,7 @@ namespace Data
 		virtual T Put(const UTF8Char *key, T val);
 		virtual T Get(const UTF8Char *key);
 		virtual T Remove(const UTF8Char *key);
-		virtual const UTF8Char *GetKey(OSInt index);
+		virtual const UTF8Char *GetKey(UOSInt index);
 		virtual void Clear();
 	};
 
@@ -28,7 +28,7 @@ namespace Data
 
 	template <class T> StringUTF8Map<T>::~StringUTF8Map()
 	{
-		OSInt i = this->keys->GetCount();
+		UOSInt i = this->keys->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew((UTF8Char*)this->keys->GetItem(i));
@@ -42,14 +42,14 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			T oldVal = this->vals->GetItem(i);
-            this->vals->SetItem(i, val);
+			T oldVal = this->vals->GetItem((UOSInt)i);
+            this->vals->SetItem((UOSInt)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert(~i, Text::StrCopyNew(key));
-			this->vals->Insert(~i, val);
+			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(key));
+			this->vals->Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
@@ -60,7 +60,7 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem(i);
+			return this->vals->GetItem((UOSInt)i);
 		}
 		else
 		{
@@ -74,8 +74,8 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			Text::StrDelNew(this->keys->RemoveAt(i));
-			return this->vals->RemoveAt(i);
+			Text::StrDelNew(this->keys->RemoveAt((UOSInt)i));
+			return this->vals->RemoveAt((UOSInt)i);
 		}
 		else
 		{
@@ -83,14 +83,14 @@ namespace Data
 		}
 	}
 
-	template <class T> const UTF8Char *StringUTF8Map<T>::GetKey(OSInt index)
+	template <class T> const UTF8Char *StringUTF8Map<T>::GetKey(UOSInt index)
 	{
 		return this->keys->GetItem(index);
 	}
 
 	template <class T> void StringUTF8Map<T>::Clear()
 	{
-		OSInt i;
+		UOSInt i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{

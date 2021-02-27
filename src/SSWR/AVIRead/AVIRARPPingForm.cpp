@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 			NEW_CLASS(me->reqEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRARPPingForm.reqEvt"));
 			me->requested = true;
 			me->clk->Start();
-			if (me->arpHdlr->MakeRequest(ReadNInt32(me->targetAddr.addr)))
+			if (me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr)))
 			{
 				me->reqEvt->Wait(1000);
 				DEL_CLASS(me->arpHdlr);
@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 SSWR::AVIRead::AVIRARPPingForm::~AVIRARPPingForm()
 {
 	SDEL_CLASS(this->arpHdlr);
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 	i = this->adapters->GetCount();
 	while (i-- > 0)

@@ -40,8 +40,8 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	OSInt j;
 	OSInt k;
 	OSInt l;
-	OSInt thisTabCnt = 0;
-	OSInt allTabCnt = 0;
+	UOSInt thisTabCnt = 0;
+	UOSInt allTabCnt = 0;
 	UTF8Char *lineStart;
 	UTF8Char c;
 	UTF8Char c2;

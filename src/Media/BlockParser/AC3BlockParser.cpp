@@ -11,13 +11,13 @@ Media::BlockParser::AC3BlockParser::~AC3BlockParser()
 
 Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(IO::IStreamData *stmData)
 {
-	static Int32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
-	static Int32 frameSize32[] = {96, 96, 120, 120, 144, 144, 168, 168, 192, 192, 240, 240, 288, 288, 336, 336, 384, 384, 480, 480, 576, 576, 672, 672, 768, 768, 960, 960, 1152, 1152, 1344, 1344, 1536, 1536, 1728, 1728, 1920, 1920};
-	static Int32 frameSize44[] = {69, 70, 87,  88,  104, 105, 121, 122, 139, 140, 174, 175, 208, 209, 243, 244, 278, 279, 348, 349, 417, 418, 487, 488, 557, 558, 696, 697, 835,  836,  975,  976,  1114, 1115, 1253, 1254, 1393, 1394};
-	static Int32 frameSize48[] = {64, 64, 80,  80,  96,  96,  112, 112, 128, 128, 160, 160, 192, 192, 224, 224, 256, 256, 320, 320, 384, 384, 448, 448, 512, 512, 640, 640, 768,  768,  896,  896,  1024, 1024, 1152, 1152, 1280, 1280};
-	Int64 leng = stmData->GetDataSize();
+	static UInt32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
+	static UInt32 frameSize32[] = {96, 96, 120, 120, 144, 144, 168, 168, 192, 192, 240, 240, 288, 288, 336, 336, 384, 384, 480, 480, 576, 576, 672, 672, 768, 768, 960, 960, 1152, 1152, 1344, 1344, 1536, 1536, 1728, 1728, 1920, 1920};
+	static UInt32 frameSize44[] = {69, 70, 87,  88,  104, 105, 121, 122, 139, 140, 174, 175, 208, 209, 243, 244, 278, 279, 348, 349, 417, 418, 487, 488, 557, 558, 696, 697, 835,  836,  975,  976,  1114, 1115, 1253, 1254, 1393, 1394};
+	static UInt32 frameSize48[] = {64, 64, 80,  80,  96,  96,  112, 112, 128, 128, 160, 160, 192, 192, 224, 224, 256, 256, 320, 320, 384, 384, 448, 448, 512, 512, 640, 640, 768,  768,  896,  896,  1024, 1024, 1152, 1152, 1280, 1280};
+	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[2048];
-	Int64 currOfst = 0;
+	UInt64 currOfst = 0;
 	stmData->GetRealData(0, 2048, buff);
 	currOfst = 0;
 	while (currOfst < 1920)
@@ -111,11 +111,11 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(IO:
 	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1536));
 	if (currOfst > 0)
 	{
-		audio->AddBlock(0, (Int32)currOfst);
+		audio->AddBlock(0, (UInt32)currOfst);
 	}
 	while (currOfst < leng)
 	{
-		Int32 frameSize;
+		UInt32 frameSize;
 		if (buff[0] != 0x0b || buff[1] != 0x77)
 		{
 			break;
@@ -148,7 +148,7 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(IO:
 
 Bool Media::BlockParser::AC3BlockParser::ParseStreamFormat(UInt8 *buff, OSInt buffSize, Media::AudioFormat *fmt)
 {
-	static Int32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
+	static UInt32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 	while (buffSize > 6)
 	{
 		if (buff[0] == 0xb && buff[1] == 0x77)

@@ -13,7 +13,7 @@ namespace Data
 		virtual Bool Remove(T val) = 0;
 		virtual T RemoveAt(UOSInt index) = 0;
 		virtual void Insert(UOSInt index, T val) = 0;
-		virtual UOSInt IndexOf(T val) = 0; //-1 = not found
+		virtual OSInt IndexOf(T val) = 0; //-1 = not found
 		virtual void Clear() = 0;
 
 		virtual UOSInt GetCount() = 0;

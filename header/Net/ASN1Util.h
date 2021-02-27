@@ -8,7 +8,7 @@ namespace Net
 	class ASN1Util
 	{
 	public:
-		static UOSInt PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len); //len = -1 on error
+		static UOSInt PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, Int32 *len); //len = -1 on error
 
 		static const UInt8 *PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd);
 		static const UInt8 *PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);

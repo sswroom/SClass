@@ -18,7 +18,7 @@ namespace Net
 	private:
 		UInt32 ifIndex;
 		UInt8 *phyAddr;
-		OSInt phyAddrLen;
+		UOSInt phyAddrLen;
 		UInt32 ipAddr;
 		ARPType arpType;
 
@@ -26,7 +26,7 @@ namespace Net
 	public:
 		~ARPInfo();
 		UInt32 GetAdaptorIndex();
-		OSInt GetPhysicalAddr(UInt8 *buff);
+		UOSInt GetPhysicalAddr(UInt8 *buff);
 		UInt32 GetIPAddress();
 		ARPType GetARPType();
 

@@ -17,10 +17,10 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Received.dat", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 #endif
 	UInt8 readBuff[2048];
-	OSInt readSize;
-	OSInt buffSize = 0;
-	OSInt i;
-	OSInt cmdStart;
+	UOSInt readSize;
+	UOSInt buffSize = 0;
+	UOSInt i;
+	UOSInt cmdStart;
 	Char *cmdResult;
 	me->threadRunning = true;
 	me->cmdEvt->Set();
@@ -140,7 +140,7 @@ IO::ATCommandChannel::ATCommandChannel(IO::Stream *stm, Bool needRelease)
 
 IO::ATCommandChannel::~ATCommandChannel()
 {
-	OSInt i;
+	UOSInt i;
 	this->Close();
 	i = this->cmdResults->GetCount();
 	while (i-- > 0)
@@ -162,12 +162,12 @@ IO::Stream *IO::ATCommandChannel::GetStream()
 	return this->stm;
 }
 
-OSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	OSInt i = Text::StrCharCnt(atCmd);
-	OSInt retSize = 0;
+	UOSInt i = Text::StrCharCnt(atCmd);
+	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
 	const Char *cmdRes;
@@ -211,12 +211,12 @@ OSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr,
 	return retSize;
 }
 
-OSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	OSInt i = Text::StrCharCnt(atCmd);
-	OSInt retSize = 0;
+	UOSInt i = Text::StrCharCnt(atCmd);
+	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
 	const Char *cmdRes;
@@ -263,12 +263,12 @@ OSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retArr
 	return retSize;
 }
 
-OSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	OSInt i = Text::StrCharCnt(atCmd);
-	OSInt retSize = 0;
+	UOSInt i = Text::StrCharCnt(atCmd);
+	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
 	const Char *cmdRes;
@@ -340,12 +340,12 @@ Bool IO::ATCommandChannel::UseCmd(Sync::MutexUsage *mutUsage)
 	return true;
 }
 
-OSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, OSInt dataSize)
+UOSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, UOSInt dataSize)
 {
 	return this->stm->Write(data, dataSize);
 }
 
-const Char *IO::ATCommandChannel::CmdGetNextResult(Int32 timeoutMS)
+const Char *IO::ATCommandChannel::CmdGetNextResult(UOSInt timeoutMS)
 {
 	const Char *cmdRes = 0;
 	this->cmdEvt->Clear();

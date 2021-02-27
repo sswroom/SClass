@@ -864,6 +864,10 @@ Data/ArrayListString.h: ../../src/Data/ArrayListString.cpp
 @ArrayListString.o
 Data/ArrayListStrUTF8.h: ../../src/Data/ArrayListStrUTF8.cpp
 @ArrayListStrUTF8.o
+Data/ArrayListUInt32.h: ../../src/Data/ArrayListUInt32.cpp
+@ArrayListUInt32.o
+Data/ArrayListUInt64.h: ../../src/Data/ArrayListUInt64.cpp
+@ArrayListUInt64.o
 Data/ArrayMap.h:
 Data/BTreeUTF8Map.h:
 Data/ByteTool.h: ../../src/Data/ByteTool.cpp
@@ -3328,6 +3332,8 @@ ArrayListInt64.o: ../../src/Data/ArrayListInt64.cpp
 ArrayListStrW.o: ../../src/Data/ArrayListStrW.cpp
 ArrayListString.o: ../../src/Data/ArrayListString.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp
+ArrayListUInt32.o: ../../src/Data/ArrayListUInt32.cpp
+ArrayListUInt64.o: ../../src/Data/ArrayListUInt64.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
 DateTime.o: ../../src/Data/DateTime.cpp

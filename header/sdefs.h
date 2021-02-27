@@ -273,22 +273,22 @@ Int64 __inline BSWAP64(Int64 v)
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
 {
-	 return ((Int64)x * (Int64)y) / z;
+	 return (Int32)(((Int64)x * (Int64)y) / z);
 }
 
 UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
 {
-	 return ((UInt64)x * (UInt64)y) / z;
+	 return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
 
 OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
 {
-	 return ((__int128)x * (__int128)y) / z;
+	 return (OSInt)(((__int128)x * (__int128)y) / z);
 }
 
 UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 {
-	 return ((unsigned __int128)x * (unsigned __int128)y) / z;
+	 return (UOSInt)(((unsigned __int128)x * (unsigned __int128)y) / z);
 }
 #else
 #define BSWAP32(x) \

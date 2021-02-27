@@ -204,10 +204,10 @@ void Media::Decoder::ADXDecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleBy
 		if (s0 > 0x7fffffff)
 			s0 = 0x7fffffff;
 		else if (((Int32*)&s0)[1] < -1)
-			s0 = 0xffffffff80000000;
+			s0 = (Int64)0xffffffff80000000;
 		else if (((Int32*)&s0)[1] == -1)
-			if (((*(Int32*)&s0) & 0x80000000) == 0)
-				s0 = 0xffffffff80000000;
+			if (((*(Int32*)&s0) & (Int32)0x80000000) == 0)
+				s0 = (Int64)0xffffffff80000000;
 		adxSample1[channel] = s0;
 		*(UInt16*)dest = (UInt16)(s0 >> 16);
 		dest += sampleByte;
@@ -221,10 +221,10 @@ void Media::Decoder::ADXDecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleBy
 		if (s0 > 0x7fffffff)
 			s0 = 0x7fffffff;
 		else if (((Int32*)&s0)[1] < -1)
-			s0 = 0xffffffff80000000;
+			s0 = (Int64)0xffffffff80000000;
 		else if (((Int32*)&s0)[1] == -1)
-			if (((*(Int32*)&s0) & 0x80000000) == 0)
-				s0 = 0xffffffff80000000;
+			if (((*(Int32*)&s0) & (Int32)0x80000000) == 0)
+				s0 = (Int64)0xffffffff80000000;
 		adxSample1[channel] = s0;
 		*(UInt16*)dest = (UInt16)(s0 >> 16);
 		dest += sampleByte;

@@ -247,8 +247,8 @@ namespace Text
 	FORCEINLINE UTF8Char *StrUOSInt(UTF8Char *oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
 	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, OSInt val) { return StrHexVal16(oriStr, (Int16)val); }
 #endif
-	FORCEINLINE UOSInt StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar) { return StrSplit((Char **)strs, maxStrs, (Char*)str, (UTF8Char)splitChar); }
-	FORCEINLINE UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar) { return StrSplitTrim((Char **)strs, maxStrs, (Char*)str, (UTF8Char)splitChar); }
+	FORCEINLINE UOSInt StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar) { return StrSplit((Char **)strs, maxStrs, (Char*)str, (Char)splitChar); }
+	FORCEINLINE UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar) { return StrSplitTrim((Char **)strs, maxStrs, (Char*)str, (Char)splitChar); }
 	FORCEINLINE UOSInt StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str) { return StrSplitLine((Char**)strs, maxStrs, (Char*)str); };
 	FORCEINLINE UOSInt StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str) { return StrSplitWS((Char**)strs, maxStrs, (Char*)str); };
 	FORCEINLINE Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal) { return StrToUInt8((const Char*)intStr, outVal); };

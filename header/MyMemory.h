@@ -65,13 +65,13 @@ void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt
 void MemPtrChk(void *ptr);
 void MemInit();
 void MemSetBreakPoint(OSInt address);
-void MemSetBreakPoint(OSInt address, OSInt size);
+void MemSetBreakPoint(OSInt address, UOSInt size);
 void MemSetLogFile(const UTF8Char *logFile);
 void MemLock();
 void MemUnlock();
-void *MAlloc(OSInt size);
-void *MAllocA(OSInt size);
-void *MAllocA64(OSInt size);
+void *MAlloc(UOSInt size);
+void *MAllocA(UOSInt size);
+void *MAllocA64(UOSInt size);
 void MemFree(void *ptr);
 void MemFreeA(void *ptr);
 void MemDeinit();
@@ -87,13 +87,13 @@ template <class T> T MemNewClass(T cls)
 	return cls;
 }
 
-typedef void (__cdecl *MemClearFunc)(void *buff, OSInt buffSize);
-typedef void (__cdecl *MemCopyFunc)(void *destPtr, const void *srcPtr, OSInt leng);
+typedef void (__cdecl *MemClearFunc)(void *buff, UOSInt buffSize);
+typedef void (__cdecl *MemCopyFunc)(void *destPtr, const void *srcPtr, UOSInt leng);
 
 extern "C"
 {
-	void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val);
-	void MemFillW(UInt8 *buff, OSInt wordCnt, UInt16 val);
+	void MemFillB(UInt8 *buff, UOSInt byteCnt, UInt8 val);
+	void MemFillW(UInt8 *buff, UOSInt wordCnt, UInt16 val);
 };
 
 #if defined(HAS_ASM32)
@@ -108,7 +108,7 @@ extern "C"
 #include <memory.h>
 #ifdef CPU_X86_64
 #include <intrin.h>
-#define MemClear(buff, count) {OSInt tmp = (count) & 7; UInt8 *buffPtr = (UInt8*)buff; while (tmp-- > 0) {*buffPtr++ = 0;} __stosq((UInt64*)buffPtr, 0, (count) >> 3);}
+#define MemClear(buff, count) {UOSInt tmp = (count) & 7; UInt8 *buffPtr = (UInt8*)buff; while (tmp-- > 0) {*buffPtr++ = 0;} __stosq((UInt64*)buffPtr, 0, (count) >> 3);}
 #else
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
@@ -116,9 +116,9 @@ extern "C"
 #define MemCopyO(destPtr, srcPtr, len) memmove(destPtr, srcPtr, ((len) < 0)?0:(len))
 #define MemCopyNO(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, ((len) < 0)?0:(len))
 #elif defined(CPU_AVR)
-extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, OSInt len);
+extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, UOSInt len);
 #define MemCopyO(destPtr, srcPtr, len) MemCopyNO(destPtr, srcPtr, len)
-extern "C" void MemClear(void *buff, OSInt count);
+extern "C" void MemClear(void *buff, UOSInt count);
 
 #define MemClearANC(buff, count) MemClear(buff, count);
 #define MemClearAC(buff, count) MemClear(buff, count);
@@ -142,11 +142,11 @@ extern "C" void MemClear(void *buff, OSInt count);
 #if defined(HAS_ASM32)
 extern "C"
 {
-	void MemClearANC(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearANC(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearAC(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
 }
 
-FORCEINLINE void MemCopyAC(void *destPtr, const void *srcPtr, OSInt leng)
+FORCEINLINE void MemCopyAC(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	_asm
 	{
@@ -220,7 +220,7 @@ mcaexit:
 	}
 }
 
-FORCEINLINE void MemCopyANC(void *destPtr, const void *srcPtr, OSInt leng)
+FORCEINLINE void MemCopyANC(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	_asm
 	{
@@ -294,7 +294,7 @@ mcaexit:
 	}
 }
 
-FORCEINLINE void MemCopyNAC(void *destPtr, const void *srcPtr, OSInt leng)
+FORCEINLINE void MemCopyNAC(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	_asm
 	{
@@ -378,7 +378,7 @@ mcpexit:
 	}
 }
 
-FORCEINLINE void MemCopyNANC(void *destPtr, const void *srcPtr, OSInt leng)
+FORCEINLINE void MemCopyNANC(void *destPtr, const void *srcPtr, UOSInt leng)
 {
 	_asm
 	{
@@ -478,15 +478,15 @@ extern MemCopyFunc MemCopyNANC;
 #endif
 
 
-FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt count)
+FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, UOSInt count)
 {
-	while (count >= (OSInt)sizeof(OSInt))
+	while (count >= (UOSInt)sizeof(UOSInt))
 	{
-		*(OSInt*)destBuff = (*(OSInt*)srcBuff1) ^ (*(OSInt*)srcBuff2);
-		srcBuff1 += sizeof(OSInt);
-		srcBuff2 += sizeof(OSInt);
-		destBuff += sizeof(OSInt);
-		count -= sizeof(OSInt);
+		*(UOSInt*)destBuff = (*(UOSInt*)srcBuff1) ^ (*(UOSInt*)srcBuff2);
+		srcBuff1 += sizeof(UOSInt);
+		srcBuff2 += sizeof(UOSInt);
+		destBuff += sizeof(UOSInt);
+		count -= sizeof(UOSInt);
 	}
 	while (count > 0)
 	{

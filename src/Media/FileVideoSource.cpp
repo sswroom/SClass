@@ -194,7 +194,7 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 	return 0;
 }
 
-Media::FileVideoSource::FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, Int32 frameRateNorm, Int32 frameRateDenorm, Bool timeBased)
+Media::FileVideoSource::FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased)
 {
 	NEW_CLASS(this->frameInfo, Media::FrameInfo());
 	this->frameInfo->Set(frameInfo);

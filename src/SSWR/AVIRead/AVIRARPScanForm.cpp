@@ -94,8 +94,8 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 
 void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	UTF8Char sbuff[64];
 
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 {
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
 	Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*> *ipList;

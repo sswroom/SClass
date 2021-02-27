@@ -21,10 +21,10 @@ namespace Media
 		virtual void Stop() = 0;
 		virtual Bool IsPlaying() = 0;
 		virtual void SetEndNotify(EndNotifier hdlr, void *userObj) = 0;
-		virtual void SetBufferTime(Int32 ms) = 0;
+		virtual void SetBufferTime(UInt32 ms) = 0;
 
 		virtual Int32 GetDeviceVolume() = 0;
 		virtual void SetDeviceVolume(Int32 volume) = 0;
 	};
-};
+}
 #endif

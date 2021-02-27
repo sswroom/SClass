@@ -8,10 +8,10 @@ namespace Data
 	{
 	public:
 		SortableArrayList() : Data::ArrayList<T>(){};
-		SortableArrayList(UOSInt Capacity) : Data::ArrayList<T>(Capacity){};
+		SortableArrayList(UOSInt capacity) : Data::ArrayList<T>(capacity){};
 
-		virtual UOSInt SortedInsert(T Val) = 0;
-		virtual OSInt SortedIndexOf(T Val) = 0;
+		virtual UOSInt SortedInsert(T val) = 0;
+		virtual OSInt SortedIndexOf(T val) = 0;
 	};
 }
 #endif

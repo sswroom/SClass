@@ -22,7 +22,7 @@ namespace Data
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
-		virtual UOSInt IndexOf(T val);
+		virtual OSInt IndexOf(T val);
 		virtual void Clear();
 		T RemoveLast();
 		SyncArrayList *Clone();
@@ -83,7 +83,7 @@ namespace Data
 		this->arr->Insert(index, val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayList<T>::IndexOf(T val)
+	template <class T> OSInt Data::SyncArrayList<T>::IndexOf(T val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr->IndexOf(val);

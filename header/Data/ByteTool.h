@@ -5,8 +5,11 @@
 #if defined(CPU_X86_32) || defined(CPU_X86_64) || defined(CPU_ARM64) || (defined(CPU_ARM) && defined(__ARM_FEATURE_UNALIGNED)) || (defined(_MSC_VER) && !defined(WIN32_WCE))
 
 #define ReadNInt16(uint8Ptr) (*(Int16*)uint8Ptr)
+#define ReadNUInt16(uint8Ptr) (*(UInt16*)uint8Ptr)
 #define ReadNInt32(uint8Ptr) (*(Int32*)uint8Ptr)
+#define ReadNUInt32(uint8Ptr) (*(UInt32*)uint8Ptr)
 #define ReadNInt64(uint8Ptr) (*(Int64*)uint8Ptr)
+#define ReadNUInt64(uint8Ptr) (*(UInt64*)uint8Ptr)
 #define WriteNInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (val)
 #define WriteNInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = (val)
 #define WriteNInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
@@ -58,10 +61,10 @@ FORCEINLINE void WriteMInt32(UInt8 *addr, Int32 val)
 		mov dword ptr [edx],eax
 	}
 #else
-	addr[0] = val >> 24;
-	addr[1] = val >> 16;
-	addr[2] = val >> 8;
-	addr[3] = val;
+	addr[0] = (UInt8)((val >> 24) & 0xff);
+	addr[1] = (UInt8)((val >> 16) & 0xff);
+	addr[2] = (UInt8)((val >> 8) & 0xff);
+	addr[3] = (UInt8)(val * 0xff);
 #endif
 }
 
@@ -501,7 +504,7 @@ FORCEINLINE void WriteFloat(UInt8 *dptr, Single val)
 #define ReadUInt24(uint8Ptr) ((ReadUInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
 #define ReadInt24(uint8Ptr) ((ReadInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
 #define ReadMInt24(uint8Ptr) ((ReadMInt16(uint8Ptr) << 8) | (uint8Ptr)[2])
-#define ReadMUInt24(uint8Ptr) (((uint8Ptr)[0] << 16) | ((uint8Ptr)[1] << 8) | ((uint8Ptr)[2]))
+#define ReadMUInt24(uint8Ptr) ((UInt32)((uint8Ptr)[0] << 16) | ReadMUInt16(uint8Ptr + 1))
 #define WriteInt24(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)((val) & 0xff); (uint8Ptr)[1] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[2] = (UInt8)(((val) >> 16) & 0xff);}
 #define WriteMInt24(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 16) & 0xff); (uint8Ptr)[1] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[2] = (UInt8)((val) & 0xff);}
 
@@ -512,7 +515,9 @@ namespace Data
 		Int32 GetBCD8(UInt8 bcd);
 		Int32 GetBCD32(const UInt8 *bcd);
 		UInt8 Int2BCDB(Int32 val);
-	};
-};
+	}
+}
+
+#define WriteMUInt32(uint8Ptr, val) WriteMInt32(uint8Ptr, (Int32)val)
 
 #endif

@@ -20,7 +20,7 @@ namespace Media
 		void *endHdlrObj;
 		Bool dataConv;
 
-		Int32 buffTime;
+		UInt32 buffTime;
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
 		static UInt32 __stdcall PlayThread(void *obj);
@@ -43,10 +43,10 @@ namespace Media
 		virtual void Stop();
 		virtual Bool IsPlaying();
 		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
-		virtual void SetBufferTime(Int32 ms);
+		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
 	};
-};
+}
 #endif

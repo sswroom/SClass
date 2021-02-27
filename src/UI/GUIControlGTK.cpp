@@ -360,7 +360,7 @@ void UI::GUIControl::SetEnabled(Bool isEnable)
 	gtk_widget_set_sensitive((GtkWidget*)this->hwnd, isEnable);
 }
 
-void UI::GUIControl::SetBGColor(Int32 bgColor)
+void UI::GUIControl::SetBGColor(UInt32 bgColor)
 {
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);

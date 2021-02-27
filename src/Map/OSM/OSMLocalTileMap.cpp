@@ -136,7 +136,7 @@ Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 {
 	this->pkgFile = pkgFile;
-	this->maxLevel = -1;
+	this->maxLevel = 0;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->minX = 0;

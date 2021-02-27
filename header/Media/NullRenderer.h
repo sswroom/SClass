@@ -15,7 +15,7 @@ namespace Media
 		Media::RefClock *clk;
 		EndNotifier endHdlr;
 		void *endHdlrObj;
-		Int32 buffTime;
+		UInt32 buffTime;
 		Int64 sampleCnt;
 
 		static UInt32 __stdcall PlayThread(void *obj);
@@ -30,11 +30,11 @@ namespace Media
 		virtual void Stop();
 		virtual Bool IsPlaying();
 		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
-		virtual void SetBufferTime(Int32 ms);
+		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
 		Int64 GetSampleCnt();
 	};
-};
+}
 #endif

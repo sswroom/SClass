@@ -42,7 +42,7 @@ UInt32 Net::ARPInfo::GetAdaptorIndex()
 	return this->ifIndex;
 }
 
-OSInt Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
+UOSInt Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
 {
 	if (this->phyAddr)
 	{
@@ -83,7 +83,7 @@ OSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	if (ioctl(sock, SIOCGIFCONF, &ifc) >= 0)
 	{
 		ifrcurr = ifc.ifc_req;
-		ifrend = ifrcurr + (ifc.ifc_len / sizeof(ifreq));
+		ifrend = ifrcurr + ((UInt32)ifc.ifc_len / sizeof(ifreq));
 		while (ifrcurr != ifrend)
 		{
 			indexMap.Put((const UTF8Char*)ifrcurr->ifr_name, ind);

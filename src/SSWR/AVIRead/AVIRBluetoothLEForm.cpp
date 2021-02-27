@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, I
 
 void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 {
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<BTDevice*> *devList = this->devMap->GetValues();
 	BTDevice *dev;
 	i = devList->GetCount();

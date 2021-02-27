@@ -179,7 +179,7 @@ void Media::NullRenderer::SetDeviceVolume(Int32 volume)
 {
 }
 
-void Media::NullRenderer::SetBufferTime(Int32 ms)
+void Media::NullRenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
 }

@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/ASN1Util.h"
 
-UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
+UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, Int32 *len)
 {
 	if (ofst >= pduSize)
 	{
@@ -49,7 +49,7 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 				*len = -1;
 				return pduSize;
 			}
-			*len = ReadMUInt32(&pdu[ofst + 1]);
+			*len = ReadMInt32(&pdu[ofst + 1]);
 			return ofst + 5;
 		}
 		*len = -1;

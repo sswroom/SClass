@@ -40,13 +40,13 @@ namespace IO
 
 		IO::Stream *GetStream();
 
-		OSInt SendATCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
-		OSInt SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS);
-		OSInt SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
+		UOSInt SendATCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
+		UOSInt SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS);
+		UOSInt SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
 
 		Bool UseCmd(Sync::MutexUsage *mutUsage);
-		OSInt CmdSend(const UInt8 *data, OSInt dataSize);
-		const Char *CmdGetNextResult(Int32 timeoutMS);
+		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);
+		const Char *CmdGetNextResult(UOSInt timeoutMS);
 
 		void Close();
 
@@ -54,5 +54,5 @@ namespace IO
 		void SetCommandHandler(CommandHandler cmdHdlr, void *userObj);
 		void SetLogger(IO::ILogger *log);
 	};
-};
+}
 #endif

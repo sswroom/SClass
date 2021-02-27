@@ -25,8 +25,8 @@ namespace Media
 	private:
 		IO::IStreamData *data;
 		Media::FrameInfo *frameInfo;
-		Int32 frameRateNorm;
-		Int32 frameRateDenorm;
+		UInt32 frameRateNorm;
+		UInt32 frameRateDenorm;
 		UOSInt maxFrameSize;
 		UOSInt currFrameSize;
 		Bool timeBased;
@@ -60,7 +60,7 @@ namespace Media
 		static UInt32 __stdcall PlayThread(void *userObj);
 		static UInt32 __stdcall OutputThread(void *userObj);
 	public:
-		FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, Int32 frameRateNorm, Int32 frameRateDenorm, Bool timeBased);
+		FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
 		virtual ~FileVideoSource();
 
 		void AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, Int32 frameTime);

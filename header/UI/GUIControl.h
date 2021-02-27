@@ -268,7 +268,7 @@ namespace UI
 		virtual void SetVisible(Bool isVisible);
 		virtual Bool GetVisible();
 		virtual void SetEnabled(Bool isEnable);
-		virtual void SetBGColor(Int32 bgColor);
+		virtual void SetBGColor(UInt32 bgColor);
 		void *GetBGBrush();
 		virtual Bool IsFormFocused();
 		virtual void Focus();
