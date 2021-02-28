@@ -14,5 +14,5 @@ Int32 Data::ByteTool::GetBCD32(const UInt8 *bcd)
 UInt8 Data::ByteTool::Int2BCDB(Int32 val)
 {
 	Int32 tmp = val / 10;
-	return ((tmp % 10) << 4) + (val % 10);
+	return (UInt8)(((tmp % 10) << 4) + (val % 10));
 }

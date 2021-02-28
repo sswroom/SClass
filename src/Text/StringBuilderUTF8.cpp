@@ -58,8 +58,8 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	else if (c < 0x800)
 	{
 		this->AllocLeng(2 * repCnt);
-		oc[0] = 0xc0 | (c >> 6);
-		oc[1] = 0x80 | (c & 0x3f);
+		oc[0] = (UTF8Char)(0xc0 | (c >> 6));
+		oc[1] = (UTF8Char)(0x80 | (c & 0x3f));
 		while (repCnt-- > 0)
 		{
 			this->buffEnd[0] = oc[0];
@@ -70,9 +70,9 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	else if (c < 0x10000)
 	{
 		this->AllocLeng(3 * repCnt);
-		oc[0] = 0xe0 | (c >> 12);
-		oc[1] = 0x80 | ((c >> 6) & 0x3f);
-		oc[2] = 0x80 | (c & 0x3f);
+		oc[0] = (UTF8Char)(0xe0 | (c >> 12));
+		oc[1] = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		oc[2] = (UTF8Char)(0x80 | (c & 0x3f));
 		while (repCnt-- > 0)
 		{
 			this->buffEnd[0] = oc[0];
@@ -84,10 +84,10 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	else if (c < 0x200000)
 	{
 		this->AllocLeng(4 * repCnt);
-		oc[0] = 0xf0 | (c >> 18);
-		oc[1] = 0x80 | ((c >> 12) & 0x3f);
-		oc[2] = 0x80 | ((c >> 6) & 0x3f);
-		oc[3] = 0x80 | (c & 0x3f);
+		oc[0] = (UTF8Char)(0xf0 | (c >> 18));
+		oc[1] = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+		oc[2] = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		oc[3] = (UTF8Char)(0x80 | (c & 0x3f));
 		while (repCnt-- > 0)
 		{
 			this->buffEnd[0] = oc[0];
@@ -100,11 +100,11 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	else if (c < 0x4000000)
 	{
 		this->AllocLeng(5 * repCnt);
-		oc[0] = 0xf8 | (c >> 24);
-		oc[1] = 0x80 | ((c >> 18) & 0x3f);
-		oc[2] = 0x80 | ((c >> 12) & 0x3f);
-		oc[3] = 0x80 | ((c >> 6) & 0x3f);
-		oc[4] = 0x80 | (c & 0x3f);
+		oc[0] = (UTF8Char)(0xf8 | (c >> 24));
+		oc[1] = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+		oc[2] = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+		oc[3] = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		oc[4] = (UTF8Char)(0x80 | (c & 0x3f));
 		while (repCnt-- > 0)
 		{
 			this->buffEnd[0] = oc[0];
@@ -118,12 +118,12 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	else
 	{
 		this->AllocLeng(6 * repCnt);
-		oc[0] = 0xfc | (c >> 30);
-		oc[1] = 0x80 | ((c >> 24) & 0x3f);
-		oc[2] = 0x80 | ((c >> 18) & 0x3f);
-		oc[3] = 0x80 | ((c >> 12) & 0x3f);
-		oc[4] = 0x80 | ((c >> 6) & 0x3f);
-		oc[5] = 0x80 | (c & 0x3f);
+		oc[0] = (UTF8Char)(0xfc | (c >> 30));
+		oc[1] = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
+		oc[2] = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+		oc[3] = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+		oc[4] = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		oc[5] = (UTF8Char)(0x80 | (c & 0x3f));
 		while (repCnt-- > 0)
 		{
 			this->buffEnd[0] = oc[0];

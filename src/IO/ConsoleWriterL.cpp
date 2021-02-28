@@ -54,8 +54,8 @@ void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgCol, IO::
 {
 	UInt8 fgColor = fgCol;
 	UInt8 bgColor = bgCol;
-	fgColor = (fgColor & ~5) | ((fgColor & 1) << 2) | ((fgColor & 4) >> 2);
-	bgColor = (bgColor & ~5) | ((bgColor & 1) << 2) | ((bgColor & 4) >> 2);
+	fgColor = (UInt8)((fgColor & ~5) | ((fgColor & 1) << 2) | ((fgColor & 4) >> 2));
+	bgColor = (UInt8)((bgColor & ~5) | ((bgColor & 1) << 2) | ((bgColor & 4) >> 2));
 	if (fgColor & 8)
 	{
 		printf("\x1b[1;3%i;4%im", fgColor & 7, bgColor & 7);
@@ -145,7 +145,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 			c = getchar();
 			if (c >= '0' && c <= '9')
 			{
-				row[i++] = c;
+				row[i++] = (Char)c;
 			}
 			else if (c == ';')
 			{
@@ -165,7 +165,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 				c = getchar();
 				if (c >= '0' && c <= '9')
 				{
-					col[i++] = c;
+					col[i++] = (Char)c;
 				}
 				else if (c == 'R')
 				{

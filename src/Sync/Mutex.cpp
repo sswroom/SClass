@@ -105,7 +105,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/syscall.h>
-#define gettid() syscall(SYS_gettid)
+#define gettid() (pid_t)syscall(SYS_gettid)
 //#include <wchar.h>
 
 void Sync::Mutex_Create(Sync::MutexData *data)

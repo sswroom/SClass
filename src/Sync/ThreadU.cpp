@@ -22,10 +22,10 @@ void Sync::Thread::Sleep(UOSInt ms)
 	UOSInt s = ms / 1000;
 	ms = ms % 1000;
 	if (s)
-		if (!sleep(s))
+		if (!sleep((UInt32)s))
 			return;
 	if (ms)
-		if (!usleep(ms * 1000))
+		if (!usleep((useconds_t)(ms * 1000)))
 			return;
 }
 
@@ -119,7 +119,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 thread
 UInt32 Sync::Thread::GetThreadId()
 {
 #if defined(__linux__)
-	return gettid();
+	return (UInt32)gettid();
 #else
 	return (UInt32)(UOSInt)pthread_self();
 #endif

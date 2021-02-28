@@ -24,7 +24,7 @@ namespace Text
 		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) = 0;
 
 		virtual StringBuilderUTF *AppendHex8(UInt8 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex16(Int32 iVal) = 0;
+		virtual StringBuilderUTF *AppendHex16(UInt16 iVal) = 0;
 		virtual StringBuilderUTF *AppendHex24(Int32 iVal) = 0;
 		virtual StringBuilderUTF *AppendHex32(UInt32 iVal) = 0;
 		virtual StringBuilderUTF *AppendHex32V(UInt32 iVal) = 0;
@@ -60,7 +60,7 @@ namespace Text
 		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LBT_CRLF) return Append((const UTF8Char*)"\r\n"); else if (lbt == Text::LBT_CR) return AppendChar('\r', 1); else if (lbt == Text::LBT_LF) return AppendChar('\n', 1); else return this; }
 
 		virtual StringBuilderUTF *AppendHex8(UInt8 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex8(iVal); }
-		virtual StringBuilderUTF *AppendHex16(Int32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex16(iVal); }
+		virtual StringBuilderUTF *AppendHex16(UInt16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex16(iVal); }
 		virtual StringBuilderUTF *AppendHex24(Int32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex24(iVal); }
 		virtual StringBuilderUTF *AppendHex32(UInt32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex32(iVal); }
 		virtual StringBuilderUTF *AppendHex32V(UInt32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex32V(iVal); }

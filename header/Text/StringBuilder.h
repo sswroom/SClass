@@ -28,7 +28,7 @@ namespace Text
 		StringBuilder<T> *AppendSB(Text::StringBuilder<T> *sb);
 
 		StringBuilder<T> *AppendHex8(UInt8 iVal);
-		StringBuilder<T> *AppendHex16(Int32 iVal);
+		StringBuilder<T> *AppendHex16(UInt16 iVal);
 		StringBuilder<T> *AppendHex24(Int32 iVal);
 		StringBuilder<T> *AppendHex32(UInt32 iVal);
 		StringBuilder<T> *AppendHex32V(UInt32 iVal);
@@ -179,7 +179,7 @@ namespace Text
 		return this;
 	}
 
-	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex16(Int32 iVal)
+	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex16(UInt16 iVal)
 	{
 		this->AllocLeng(4);
 		this->buffEnd = Text::StrHexVal16(this->buffEnd, iVal);

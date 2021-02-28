@@ -102,19 +102,19 @@ namespace Data
 
 		void ToUTCTime();
 		void ToLocalTime();
-		void ConvertTimeZoneQHR(Int32 tzQhr);
-		void SetTimeZoneQHR(Int32 tzQhr);
+		void ConvertTimeZoneQHR(Int8 tzQhr);
+		void SetTimeZoneQHR(Int8 tzQhr);
 		Int32 GetTimeZoneQHR();
 		Int32 GetWeekday(); //0 = Sun, 6 = Sat
 
-		static Int32 ParseMonthStr(const Char *month);
-		static Int32 ParseMonthStr(const UTF8Char *month);
+		static UInt8 ParseMonthStr(const Char *month);
+		static UInt8 ParseMonthStr(const UTF8Char *month);
 		static Double MS2Days(Int64 ms);
 		static Double MS2Hours(Int64 ms);
 		static Double MS2Minutes(Int64 ms);
 		static Double MS2Seconds(Int64 ms);
-		static Int32 DayInMonth(UInt16 year, UInt8 month);
-		static Int32 GetLocalTzQhr();
+		static UInt8 DayInMonth(UInt16 year, UInt8 month);
+		static Int8 GetLocalTzQhr();
 	};
 }
 #endif

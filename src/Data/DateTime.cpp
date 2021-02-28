@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
+#include "Math/Math.h"
 #include "Text/MyString.h"
 #if defined(_WIN32) || defined(_WIN32_WCE)
 #include <windows.h>
@@ -22,43 +23,46 @@ typedef struct
 
 void Data::DateTime::SetDate(Char **dateStrs)
 {
-	Int32 vals[3];
-	vals[0] = Text::StrToInt32(dateStrs[0]);
-	vals[1] = Text::StrToInt32(dateStrs[1]);
-	vals[2] = Text::StrToInt32(dateStrs[2]);
+	UInt32 vals[3];
+	vals[0] = 0;
+	vals[1] = 0;
+	vals[2] = 0;
+	Text::StrToUInt32(dateStrs[0], &vals[0]);
+	Text::StrToUInt32(dateStrs[1], &vals[1]);
+	Text::StrToUInt32(dateStrs[2], &vals[2]);
 	if (vals[0] > 100)
 	{
-		this->year = vals[0];
-		this->month = vals[1];
-		this->day = vals[2];
+		this->year = (UInt16)vals[0];
+		this->month = (UInt8)vals[1];
+		this->day = (UInt8)vals[2];
 	}
 	else if (vals[2] > 100)
 	{
-		this->year = vals[2];
+		this->year = (UInt16)vals[2];
 		if (vals[0] > 12)
 		{
-			this->month = vals[1];
-			this->day = vals[0];
+			this->month = (UInt8)vals[1];
+			this->day = (UInt8)vals[0];
 		}
 		else
 		{
-			this->month = vals[0];
-			this->day = vals[1];
+			this->month = (UInt8)vals[0];
+			this->day = (UInt8)vals[1];
 		}
 	}
 	else
 	{
 		if (vals[1] > 12)
 		{
-			this->year = ((this->year / 100) * 100) + vals[2];
-			this->month = vals[0];
-			this->day = vals[1];
+			this->year = (UInt16)(((this->year / 100) * 100) + vals[2]);
+			this->month = (UInt8)vals[0];
+			this->day = (UInt8)vals[1];
 		}
 		else
 		{
-			this->year = ((this->year / 100) * 100) + vals[0];
-			this->month = vals[1];
-			this->day = vals[2];
+			this->year = (UInt16)(((this->year / 100) * 100) + vals[0]);
+			this->month = (UInt8)vals[1];
+			this->day = (UInt8)vals[2];
 		}
 	}
 }
@@ -66,31 +70,31 @@ void Data::DateTime::SetDate(Char **dateStrs)
 void Data::DateTime::SetTime(Char **timeStrs)
 {
 	Char *strs[2];
-	OSInt valTmp;
+	UOSInt valTmp;
 
-	this->hour = Text::StrToInt32(timeStrs[0]);
-	this->minute = Text::StrToInt32(timeStrs[1]);
+	this->hour = (UInt8)Text::StrToInt32(timeStrs[0]);
+	this->minute = (UInt8)Text::StrToInt32(timeStrs[1]);
 	valTmp = Text::StrSplit(strs, 2, timeStrs[2], '.');
 	if (valTmp == 1)
 	{
-		this->second = Text::StrToInt32(strs[0]);
+		this->second = (UInt8)Text::StrToInt32(strs[0]);
 		this->ms = 0;
 	}
 	else
 	{
-		this->second = Text::StrToInt32(strs[0]);
+		this->second = (UInt8)Text::StrToInt32(strs[0]);
 		valTmp = Text::StrCharCnt(strs[1]);
 		if (valTmp == 1)
 		{
-			this->ms = Text::StrToInt32(strs[1]) * 100;
+			this->ms = (UInt16)(Text::StrToInt32(strs[1]) * 100);
 		}
 		else if (valTmp == 2)
 		{
-			this->ms = Text::StrToInt32(strs[1]) * 10;
+			this->ms = (UInt16)(Text::StrToInt32(strs[1]) * 10);
 		}
 		else if (valTmp == 3)
 		{
-			this->ms = Text::StrToInt32(strs[1]);
+			this->ms = (UInt16)Text::StrToInt32(strs[1]);
 		}
 		else
 		{
@@ -103,44 +107,44 @@ void Data::DateTime::FixValues()
 {
 	while (this->ms >= 1000)
 	{
-		this->ms -= 1000;
+		this->ms = (UInt16)(this->ms - 1000);
 		this->second++;
 	}
 	while (this->second >= 60)
 	{
-		this->second -= 60;
+		this->second = (UInt8)(this->second - 60);
 		this->minute++;
 	}
 	while (this->minute >= 60)
 	{
-		this->minute -= 60;
+		this->minute = (UInt8)(this->minute - 60);
 		this->hour++;
 	}
 	while (this->hour >= 24)
 	{
-		this->hour -= 24;
+		this->hour = (UInt8)(this->hour - 24);
 		this->day++;
 	}
 	while (this->day < 1)
 	{
 		this->month--;
-		this->day += this->DayInMonth(this->year, this->month);
+		this->day = (UInt8)(this->day + this->DayInMonth(this->year, this->month));
 	}
-	Int32 i;
+	UInt32 i;
 	while (this->day > (i = this->DayInMonth(this->year, this->month)))
 	{
-		this->day -= i;
+		this->day = (UInt8)(this->day - i);
 		this->month++;
 	}
 	while (this->month < 1)
 	{
-		this->month += 12;
-		this->year -= 1;
+		this->month = (UInt8)(this->month + 12);
+		this->year--;
 	}
 	while (this->month > 12)
 	{
-		this->month -= 12;
-		this->year += 1;
+		this->month = (UInt8)(this->month - 12);
+		this->year++;
 	}
 }
 
@@ -276,20 +280,20 @@ Data::DateTime *Data::DateTime::SetCurrTime()
 #elif !defined(CPU_AVR)
 	time_t now = time(0);
 	tm *t = localtime(&now);
-	Int32 newTZ = t->tm_gmtoff / 900;
-	this->year = t->tm_year + 1900;
-	this->month = (UInt8)t->tm_mon + 1;
+	Int32 newTZ = (Int32)(t->tm_gmtoff / 900);
+	this->year = (UInt16)(t->tm_year + 1900);
+	this->month = (UInt8)(t->tm_mon + 1);
 	this->day = (UInt8)t->tm_mday;
 	this->hour = (UInt8)t->tm_hour;
 	this->minute = (UInt8)t->tm_min;
 	this->second = (UInt8)t->tm_sec;
 	this->ms = 0;
-	this->tzQhr = newTZ;
+	this->tzQhr = (Int8)newTZ;
 
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
 	this->SetUnixTimestamp(ts.tv_sec);
-	this->ms = ts.tv_nsec / 1000000;
+	this->ms = (UInt16)(ts.tv_nsec / 1000000);
 	return this;
 #else
 	return this;
@@ -317,7 +321,7 @@ Data::DateTime *Data::DateTime::SetCurrTimeUTC()
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
 	this->SetUnixTimestamp(ts.tv_sec);
-	this->ms = ts.tv_nsec / 1000000;
+	this->ms = (UInt16)(ts.tv_nsec / 1000000);
 	return this;
 #else
 	return this;
@@ -416,11 +420,11 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 					min = min + Text::StrToInt32(&strs[2][3]) * 60;
 					if (c == '-')
 					{
-						this->tzQhr = -min / 15;
+						this->tzQhr = (Int8)(-min / 15);
 					}
 					else
 					{
-						this->tzQhr = min / 15;
+						this->tzQhr = (Int8)(min / 15);
 					}
 				}
 			}
@@ -523,11 +527,11 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 				min = min + Text::StrToInt32(&strs2[4][1]) * 60;
 				if (strs2[4][0] == '-')
 				{
-					this->tzQhr = -min / 15;
+					this->tzQhr = (Int8)(-min / 15);
 				}
 				else
 				{
-					this->tzQhr = min / 15;
+					this->tzQhr = (Int8)(min / 15);
 				}
 			}
 		}
@@ -561,26 +565,26 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 				{
 					if (Text::StrSplit(strs, 3, strs2[j], ':') == 2)
 					{
-						this->tzQhr = -((Text::StrToInt32(&strs[0][1]) << 2) + (Text::StrToInt32(strs[1]) / 15));
+						this->tzQhr = (Int8)(-((Text::StrToInt32(&strs[0][1]) << 2) + (Text::StrToInt32(strs[1]) / 15)));
 					}
 					else if (Text::StrCharCnt(strs2[j]) == 5)
 					{
-						this->tzQhr = (Text::StrToInt32(&strs2[j][3]) / 15);
+						this->tzQhr = (Int8)(Text::StrToInt32(&strs2[j][3]) / 15);
 						strs2[j][3] = 0;
-						this->tzQhr = -(this->tzQhr + (Text::StrToInt32(&strs2[j][1]) << 2));
+						this->tzQhr = (Int8)(-(this->tzQhr + (Text::StrToInt32(&strs2[j][1]) << 2)));
 					}
 				}
 				else if (strs2[j][0] == '+')
 				{
 					if (Text::StrSplit(strs, 3, strs2[j], ':') == 2)
 					{
-						this->tzQhr = (Text::StrToInt32(&strs[0][1]) << 2) + (Text::StrToInt32(strs[1]) / 15);
+						this->tzQhr = (Int8)((Text::StrToInt32(&strs[0][1]) << 2) + (Text::StrToInt32(strs[1]) / 15));
 					}
 					else if (Text::StrCharCnt(strs2[j]) == 5)
 					{
-						this->tzQhr = (Text::StrToInt32(&strs2[j][3]) / 15);
+						this->tzQhr = (Int8)(Text::StrToInt32(&strs2[j][3]) / 15);
 						strs2[j][3] = 0;
-						this->tzQhr += (Text::StrToInt32(&strs2[j][1]) << 2);
+						this->tzQhr = (Int8)(this->tzQhr + (Text::StrToInt32(&strs2[j][1]) << 2));
 					}
 				}
 				else
@@ -689,7 +693,7 @@ void Data::DateTime::SetValueVariTime(Double variTime)
 	this->tzQhr = 0;
 	OSInt d = (OSInt)variTime;
 	this->AddDay(d);
-	variTime = (variTime - d) * 24;
+	variTime = (variTime - Math::OSInt2Double(d)) * 24;
 	this->hour = (UInt8)variTime;
 	variTime = (variTime - this->hour) * 60;
 	this->minute = (UInt8)variTime;
@@ -748,7 +752,7 @@ Data::DateTime *Data::DateTime::AddMonth(OSInt val)
 		this->year++;
 	}
 	this->month = (UInt8)newMonth;
-	Int32 newDay = this->DayInMonth(this->year, (UInt8)newMonth);
+	UInt8 newDay = this->DayInMonth(this->year, (UInt8)newMonth);
 	if (this->day > newDay)
 	{
 		this->day = newDay;
@@ -767,7 +771,7 @@ Data::DateTime *Data::DateTime::AddDay(OSInt val)
 			if (--this->month <= 0)
 			{
 				this->year--;
-				this->month += 12;
+				this->month = (UInt8)(this->month + 12);
 			}
 			newDay += this->DayInMonth(this->year, this->month);
 		}
@@ -780,7 +784,7 @@ Data::DateTime *Data::DateTime::AddDay(OSInt val)
 			if (++this->month > 12)
 			{
 				this->year++;
-				this->month -= 12;
+				this->month = (UInt8)(this->month - 12);
 			}
 		}
 	}
@@ -894,7 +898,7 @@ void Data::DateTime::SetDate(UInt16 year, OSInt month, OSInt day)
 			if (--this->month <= 0)
 			{
 				this->year--;
-				this->month += 12;
+				this->month = (UInt8)(this->month + 12);
 			}
 			day += this->DayInMonth(this->year, this->month);
 		}
@@ -907,7 +911,7 @@ void Data::DateTime::SetDate(UInt16 year, OSInt month, OSInt day)
 			if (++this->month > 12)
 			{
 				this->year++;
-				this->month -= 12;
+				this->month = (UInt8)(this->month - 12);
 			}
 		}
 	}
@@ -1117,21 +1121,21 @@ void Data::DateTime::SetTicks(Int64 ticks)
 {
 	ticks = ticks + this->tzQhr * 900000;
 	Int32 totalDays = (Int32)(ticks / 86400000LL);
-	Int32 minutes = (Int32)(ticks % 86400000LL);
+	UInt32 minutes = (UInt32)(ticks % 86400000LL);
 
-	this->ms = minutes % 1000;
+	this->ms = (UInt16)(minutes % 1000);
 	minutes = minutes / 1000;
-	this->second = minutes % 60;
+	this->second = (UInt8)(minutes % 60);
 	minutes = minutes / 60;
-	this->minute = minutes % 60;
-	this->hour = minutes / 60;
+	this->minute = (UInt8)(minutes % 60);
+	this->hour = (UInt8)(minutes / 60);
 
 	if (totalDays < 0)
 	{
 		this->year = 1970;
 		while (totalDays < 0)
 		{
-			this->year -= 1;
+			this->year--;
 			if (this->IsYearLeap())
 			{
 				totalDays += 366;
@@ -1213,82 +1217,82 @@ void Data::DateTime::SetTicks(Int64 ticks)
 	if (totalDays < 31)
 	{
 		this->month = 1;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 31;
 	if (totalDays < febDays)
 	{
 		this->month = 2;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= febDays;
 	if (totalDays < 31)
 	{
 		this->month = 3;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 31;
 	if (totalDays < 30)
 	{
 		this->month = 4;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 30;
 	if (totalDays < 31)
 	{
 		this->month = 5;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 31;
 	if (totalDays < 30)
 	{
 		this->month = 6;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 30;
 	if (totalDays < 31)
 	{
 		this->month = 7;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 31;
 	if (totalDays < 31)
 	{
 		this->month = 8;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 31;
 	if (totalDays < 30)
 	{
 		this->month = 9;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 30;
 	if (totalDays < 31)
 	{
 		this->month = 10;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 31;
 	if (totalDays < 30)
 	{
 		this->month = 11;
-		this->day = totalDays + 1;
+		this->day = (UInt8)(totalDays + 1);
 		return;
 	}
 	totalDays -= 30;
 	this->month = 12;
-	this->day = totalDays + 1;
+	this->day = (UInt8)(totalDays + 1);
 }
 
 void Data::DateTime::SetDotNetTicks(Int64 ticks)
@@ -1303,10 +1307,10 @@ void Data::DateTime::SetUnixTimestamp(Int64 ticks)
 
 void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)
 {
-	this->year = 1980 + ((date >> 9) & 0x7f);
+	this->year = (UInt16)(1980 + ((date >> 9) & 0x7f));
 	this->month = (date >> 5) & 0xf;
 	this->day = date & 0x1f;
-	this->hour = time >> 11;
+	this->hour = (UInt8)(time >> 11);
 	this->minute = (time >> 5) & 0x3f;
 	this->second = (time & 0x1f) << 1;
 	this->ms = 0;
@@ -1314,12 +1318,12 @@ void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)
 
 UInt16 Data::DateTime::ToMSDOSDate()
 {
-	return (((this->year - 1980) & 0x7f) << 9) | (this->month << 5) | this->day;
+	return (UInt16)((((this->year - 1980) & 0x7f) << 9) | (this->month << 5) | this->day);
 }
 
 UInt16 Data::DateTime::ToMSDOSTime()
 {
-	return (this->hour << 11) | (this->minute << 5) | (this->second >> 1);
+	return (UInt16)((this->hour << 11) | (this->minute << 5) | (this->second >> 1));
 }
 
 void Data::DateTime::ToSYSTEMTIME(void *sysTime)
@@ -1383,7 +1387,7 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			Char *src = buff;
 			while (digiCnt-- > 0)
 			{
-				*--src = (thisVal % 10) + 0x30;
+				*--src = (Char)((thisVal % 10) + 0x30);
 				thisVal = thisVal / 10;
 			}
 		}
@@ -1393,19 +1397,19 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (minute < 10)
 				{
-					*buff++ = minute + 0x30;
+					*buff++ = (Char)(minute + 0x30);
 				}
 				else
 				{
-					*buff++ = (minute / 10) + 0x30;
-					*buff++ = (minute % 10) + 0x30;
+					*buff++ = (Char)((minute / 10) + 0x30);
+					*buff++ = (Char)((minute % 10) + 0x30);
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (minute / 10) + 0x30;
-				*buff++ = (minute % 10) + 0x30;
+				*buff++ = (Char)((minute / 10) + 0x30);
+				*buff++ = (Char)((minute % 10) + 0x30);
 
 				while (*pattern == 'm')
 					pattern++;
@@ -1417,19 +1421,19 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (second < 10)
 				{
-					*buff++ = second + 0x30;
+					*buff++ = (Char)(second + 0x30);
 				}
 				else
 				{
-					*buff++ = (second / 10) + 0x30;
-					*buff++ = (second % 10) + 0x30;
+					*buff++ = (Char)((second / 10) + 0x30);
+					*buff++ = (Char)((second % 10) + 0x30);
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (second / 10) + 0x30;
-				*buff++ = (second % 10) + 0x30;
+				*buff++ = (Char)((second / 10) + 0x30);
+				*buff++ = (Char)((second % 10) + 0x30);
 
 				while (*pattern == 's')
 					pattern++;
@@ -1441,19 +1445,19 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (day < 10)
 				{
-					*buff++ = day + 0x30;
+					*buff++ = (Char)(day + 0x30);
 				}
 				else
 				{
 					*buff++ = 0x31;
-					*buff++ = (day % 10) + 0x30;
+					*buff++ = (Char)((day % 10) + 0x30);
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (day / 10) + 0x30;
-				*buff++ = (day % 10) + 0x30;
+				*buff++ = (Char)((day / 10) + 0x30);
+				*buff++ = (Char)((day % 10) + 0x30);
 
 				while (*pattern == 'd')
 					pattern++;
@@ -1486,7 +1490,7 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			Char *src = buff;
 			while (digiCnt-- > 0)
 			{
-				*--src = (thisMS % 10) + 0x30;
+				*--src = (Char)((thisMS % 10) + 0x30);
 				thisMS = thisMS / 10;
 			}
 		}
@@ -1523,7 +1527,7 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			Char *src = buff;
 			while (digiCnt-- > 0)
 			{
-				*--src = (thisMS % 10) + 0x30;
+				*--src = (Char)((thisMS % 10) + 0x30);
 				thisMS = thisMS / 10;
 			}
 		}
@@ -1534,19 +1538,19 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (thisH < 10)
 				{
-					*buff++ = thisH + 0x30;
+					*buff++ = (Char)(thisH + 0x30);
 				}
 				else
 				{
-					*buff++ = (thisH / 10) + 0x30;
-					*buff++ = (thisH % 10) + 0x30;
+					*buff++ = (Char)((thisH / 10) + 0x30);
+					*buff++ = (Char)((thisH % 10) + 0x30);
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (thisH / 10) + 0x30;
-				*buff++ = (thisH % 10) + 0x30;
+				*buff++ = (Char)((thisH / 10) + 0x30);
+				*buff++ = (Char)((thisH % 10) + 0x30);
 
 				while (*pattern == 'h')
 					pattern++;
@@ -1558,19 +1562,19 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (hour < 10)
 				{
-					*buff++ = hour + 0x30;
+					*buff++ = (Char)(hour + 0x30);
 				}
 				else
 				{
-					*buff++ = (hour / 10) + 0x30;
-					*buff++ = (hour % 10) + 0x30;
+					*buff++ = (Char)((hour / 10) + 0x30);
+					*buff++ = (Char)((hour % 10) + 0x30);
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (hour / 10) + 0x30;
-				*buff++ = (hour % 10) + 0x30;
+				*buff++ = (Char)((hour / 10) + 0x30);
+				*buff++ = (Char)((hour % 10) + 0x30);
 
 				while (*pattern == 'H')
 					pattern++;
@@ -1582,12 +1586,12 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (month < 10)
 				{
-					*buff++ = month + 0x30;
+					*buff++ = (Char)(month + 0x30);
 				}
 				else
 				{
 					*buff++ = 0x31;
-					*buff++ = month + 38;
+					*buff++ = (Char)(month + 38);
 				}
 				pattern += 1;
 			}
@@ -1596,12 +1600,12 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				if (month < 10)
 				{
 					*buff++ = 0x30;
-					*buff++ = month + 0x30;
+					*buff++ = (Char)(month + 0x30);
 				}
 				else
 				{
 					*buff++ = 0x31;
-					*buff++ = month + 38;
+					*buff++ = (Char)(month + 38);
 				}
 				pattern += 2;
 			}
@@ -1844,12 +1848,12 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				}
 				if (hr >= 10)
 				{
-					*buff++ = (hr / 10) + 0x30;
-					*buff++ = (hr % 10) + 0x30;
+					*buff++ = (Char)((hr / 10) + 0x30);
+					*buff++ = (Char)((hr % 10) + 0x30);
 				}
 				else
 				{
-					*buff++ = hr + 0x30;
+					*buff++ = (Char)(hr + 0x30);
 				}
 				pattern++;
 			}
@@ -1864,8 +1868,8 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = '-';
 					hr = -hr;
 				}
-				*buff++ = (hr / 10) + 0x30;
-				*buff++ = (hr % 10) + 0x30;
+				*buff++ = (Char)((hr / 10) + 0x30);
+				*buff++ = (Char)((hr % 10) + 0x30);
 				pattern += 2;
 			}
 			else
@@ -1879,11 +1883,11 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = '-';
 					hr = -hr;
 				}
-				*buff++ = (hr / 10) + 0x30;
-				*buff++ = (hr % 10) + 0x30;
+				*buff++ = (Char)((hr / 10) + 0x30);
+				*buff++ = (Char)((hr % 10) + 0x30);
 				*buff++ = ':';
-				*buff++ = (min / 10) + 0x30;
-				*buff++ = (min % 10) + 0x30;
+				*buff++ = (Char)((min / 10) + 0x30);
+				*buff++ = (Char)((min % 10) + 0x30);
 				
 				while (*pattern == 'z')
 					pattern++;
@@ -2007,7 +2011,7 @@ Bool Data::DateTime::IsSameDay(Data::DateTime *dt)
 	return this->year == dt->year && this->month == dt->month && this->day == dt->day;
 }
 
-Int32 Data::DateTime::ParseMonthStr(const Char *month)
+UInt8 Data::DateTime::ParseMonthStr(const Char *month)
 {
 	if (Text::StrStartsWithICase(month, "JAN"))
 	{
@@ -2060,7 +2064,7 @@ Int32 Data::DateTime::ParseMonthStr(const Char *month)
 	return 0;
 }
 
-Int32 Data::DateTime::ParseMonthStr(const UTF8Char *month)
+UInt8 Data::DateTime::ParseMonthStr(const UTF8Char *month)
 {
 	return ParseMonthStr((const Char*)month);
 }
@@ -2077,7 +2081,7 @@ void Data::DateTime::ToUTCTime()
 
 void Data::DateTime::ToLocalTime()
 {
-	Int32 newTZ = GetLocalTzQhr();
+	Int8 newTZ = GetLocalTzQhr();
 	if (this->tzQhr != newTZ)
 	{
 		Int32 tzv = this->tzQhr - newTZ;
@@ -2086,7 +2090,7 @@ void Data::DateTime::ToLocalTime()
 	}
 }
 
-void Data::DateTime::ConvertTimeZoneQHR(Int32 tzQhr)
+void Data::DateTime::ConvertTimeZoneQHR(Int8 tzQhr)
 {
 	if (this->tzQhr != tzQhr)
 	{
@@ -2096,7 +2100,7 @@ void Data::DateTime::ConvertTimeZoneQHR(Int32 tzQhr)
 	}
 }
 
-void Data::DateTime::SetTimeZoneQHR(Int32 tzQhr)
+void Data::DateTime::SetTimeZoneQHR(Int8 tzQhr)
 {
 	this->tzQhr = tzQhr;
 }
@@ -2113,34 +2117,34 @@ Int32 Data::DateTime::GetWeekday()
 
 Double Data::DateTime::MS2Days(Int64 ms)
 {
-	return ms / 86400000.0;
+	return (Double)ms / 86400000.0;
 }
 
 Double Data::DateTime::MS2Hours(Int64 ms)
 {
-	return ms / 3600000.0;
+	return (Double)ms / 3600000.0;
 }
 
 Double Data::DateTime::MS2Minutes(Int64 ms)
 {
-	return ms / 60000.0;
+	return (Double)ms / 60000.0;
 }
 
 Double Data::DateTime::MS2Seconds(Int64 ms)
 {
-	return ms * 0.001;
+	return (Double)ms * 0.001;
 }
 
-Int32 Data::DateTime::DayInMonth(UInt16 year, UInt8 month)
+UInt8 Data::DateTime::DayInMonth(UInt16 year, UInt8 month)
 {
 	while (month < 1)
 	{
-		month += 12;
+		month = (UInt8)(month + 12);
 		year--;
 	}
 	while (month > 12)
 	{
-		month -= 12;
+		month = (UInt8)(month - 12);
 		year++;
 	}
 	switch (month)
@@ -2177,7 +2181,7 @@ Int32 Data::DateTime::DayInMonth(UInt16 year, UInt8 month)
 	}
 }
 
-Int32 Data::DateTime::GetLocalTzQhr()
+Int8 Data::DateTime::GetLocalTzQhr()
 {
 #if defined(WIN32) || defined(_WIN32_WCE)
 	TIME_ZONE_INFORMATION tz;
@@ -2196,9 +2200,9 @@ Int32 Data::DateTime::GetLocalTzQhr()
 #elif !defined(CPU_AVR)
 	time_t now = time(0);
 	tm *t = localtime(&now);
-	Int32 newTZ = t->tm_gmtoff / 900;
+	Int32 newTZ = (Int32)(t->tm_gmtoff / 900);
 #else
 	Int32 newTZ = 0;
 #endif
-	return newTZ;
+	return (Int8)newTZ;
 }

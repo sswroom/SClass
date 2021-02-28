@@ -118,7 +118,7 @@ Char *Text::StrInt16(Char *oriStr, Int16 val)
 {
 	if (val < 0)
 	{
-		val = -val;
+		val = (Int16)-val;
 		*oriStr++ = '-';
 	}
 	if (val < 10)
@@ -314,7 +314,7 @@ Char *Text::StrInt32S(Char *oriStr, Int32 val, Char seperator, OSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = 0x30 + val % 10;
+		*--str = (Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -578,7 +578,7 @@ Char *Text::StrToUpper(Char *oriStr, const Char *strToJoin)
 	{
 		if (c >= 'a' && c <= 'z')
 		{
-			*oriStr++ = (c - 32);
+			*oriStr++ = (Char)(c - 32);
 		}
 		else
 		{
@@ -596,7 +596,7 @@ Char *Text::StrToLower(Char *oriStr, const Char *strToJoin)
 	{
 		if (c >= 'A' && c <= 'Z')
 		{
-			*oriStr++ = (c + 32);
+			*oriStr++ = (Char)(c + 32);
 		}
 		else
 		{
@@ -617,7 +617,7 @@ Char *Text::StrToCapital(Char *oriStr, const Char *strToJoin)
 		{
 			if (lastLetter)
 			{
-				*oriStr++ = (c + 32);
+				*oriStr++ = (Char)(c + 32);
 			}
 			else
 			{
@@ -629,7 +629,7 @@ Char *Text::StrToCapital(Char *oriStr, const Char *strToJoin)
 		{
 			if (!lastLetter)
 			{
-				*oriStr++ = (c - 32);
+				*oriStr++ = (Char)(c - 32);
 				lastLetter = true;
 			}
 			else
@@ -676,11 +676,11 @@ Bool Text::StrEqualsICase(const Char *str1, const Char *str2)
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 -= 0x20;
+			c1 = (Char)(c1 - 0x20);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 0x20;
+			c2 = (Char)(c2 - 0x20);
 		}
 		if (c1 != c2)
 			return false;
@@ -697,9 +697,9 @@ Bool Text::StrEqualsICase(const Char *str1, const Char *str2, OSInt str2Len)
 		c1 = *str1++;
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
-			c1 -= 32;
+			c1 = (Char)(c1 - 32);
 		if (c2 >= 'a' && c2 <= 'z')
-			c2 -= 32;
+			c2 = (Char)(c2 - 32);
 		if (c1 != c2)
 			return false;
 	}
