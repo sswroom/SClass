@@ -1,6 +1,6 @@
 #ifndef _SM_SYNC_MUTEX
 #define _SM_SYNC_MUTEX
-#define MUTEX_DEBUG
+//#define MUTEX_DEBUG
 namespace Sync
 {
 	typedef struct

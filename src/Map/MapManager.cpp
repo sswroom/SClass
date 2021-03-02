@@ -29,7 +29,7 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(const UTF8Char *fileName, Parser:
 	Map::MapManager::MapLayerInfo *info = this->layerArr->Get(fileName);
 	if (info)
 	{
-		if (info->envList->IndexOf(env) == (UOSInt)-1)
+		if (info->envList->IndexOf(env) == -1)
 		{
 			info->envList->Add(env);
 		}

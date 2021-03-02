@@ -32,7 +32,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	if (data->locked)
 		if (data->lockId == Sync::Thread::GetThreadId())
 		{
-			printf("Log again\r\n");
+			printf("Mutex: Lock again\r\n");
 			//Unlock();
 			data->locked++;
 			return;
@@ -54,7 +54,7 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 		printf("Mutex %s Unlocking...", data->debName);
 	if (!data->locked)
 	{
-		printf("Mutex error!\r\n");
+		printf("Mutex: Mutex error!\r\n");
 	}
 	if (--data->locked == 0)
 	{
@@ -62,7 +62,7 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 		if (data->debName)
 		{
 			LeaveCriticalSection((LPCRITICAL_SECTION)data->hand);
-			printf("Unlocked\r\n");
+			printf("Mutex: Unlocked\r\n");
 		}
 		else
 		{
@@ -82,7 +82,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 	if (data->locked)
 		if (data->lockId == Sync::Thread::GetThreadId())
 		{
-			printf("Lock Again\r\n");
+			printf("Mutex: Lock Again\r\n");
 			//Unlock();
 			data->locked++;
 			return true;

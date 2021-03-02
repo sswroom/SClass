@@ -1,6 +1,13 @@
 #include "Stdafx.h"
 #include "Sync/RWMutexUsage.h"
 
+Sync::RWMutexUsage::RWMutexUsage()
+{
+	this->mut = 0;
+	this->used = false;
+	this->writing = false;
+}
+
 Sync::RWMutexUsage::RWMutexUsage(Sync::RWMutex *mut, Bool writing)
 {
 	this->mut = mut;
@@ -15,7 +22,7 @@ Sync::RWMutexUsage::~RWMutexUsage()
 
 void Sync::RWMutexUsage::BeginUse(Bool writing)
 {
-	if (!this->used)
+	if (!this->used && this->mut)
 	{
 		this->writing = writing;
 		if (this->writing)
@@ -44,4 +51,11 @@ void Sync::RWMutexUsage::EndUse()
 		}
 		this->used = false;
 	}
+}
+
+void Sync::RWMutexUsage::ReplaceMutex(Sync::RWMutex *mut, Bool writing)
+{
+	this->EndUse();
+	this->mut = mut;
+	this->BeginUse(writing);
 }

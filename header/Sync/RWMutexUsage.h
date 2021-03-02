@@ -11,11 +11,14 @@ namespace Sync
 		Bool used;
 		Bool writing;
 	public:
+		RWMutexUsage();
 		RWMutexUsage(Sync::RWMutex *mut, Bool writing);
 		~RWMutexUsage();
 
 		void BeginUse(Bool writing);
 		void EndUse();
+
+		void ReplaceMutex(Sync::RWMutex *mut, Bool writing);
 	};
 }
 #endif
