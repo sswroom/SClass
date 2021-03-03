@@ -13,6 +13,8 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+
 Media::VectorGraph::VectorPenStyle::VectorPenStyle(OSInt index, Int32 color, Double thick, UInt8 *pattern, OSInt nPattern)
 {
 	this->index = index;
@@ -123,7 +125,7 @@ Int32 Media::VectorGraph::VectorFontStyle::GetCodePage()
 
 Media::DrawFont *Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double oriDPI, Media::DrawImage *dimg)
 {
-	return dimg->NewFontPx(this->name, this->heightPt * dimg->GetHDPI() / oriDPI, this->fontStyle, this->codePage);
+	return dimg->NewFontPt(this->name, this->heightPt * dimg->GetHDPI() / 96.0, this->fontStyle, this->codePage);
 }
 
 Media::VectorGraph::VectorBrushStyle::VectorBrushStyle(OSInt index, Int32 color)
