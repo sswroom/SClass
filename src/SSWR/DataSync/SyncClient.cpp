@@ -247,6 +247,8 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	Text::StrDelNew(this->cliHost);
 	Text::StrDelNew(this->serverName);
 	DEL_CLASS(this->protoHdlr);
+	DEL_CLASS(this->recvEvt);
+	DEL_CLASS(this->kaEvt);
 }
 
 void SSWR::DataSync::SyncClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)

@@ -21,6 +21,8 @@ Media::ColorConv::ColorConv(const Media::ColorProfile *srcColor, const Media::Co
 Media::ColorConv::~ColorConv()
 {
 	MemFree(this->rgbTable);
+	DEL_CLASS(this->srcColor);
+	DEL_CLASS(this->destColor);
 }
 
 void Media::ColorConv::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)

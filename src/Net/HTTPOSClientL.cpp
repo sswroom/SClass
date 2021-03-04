@@ -93,6 +93,11 @@ Net::HTTPOSClient::~HTTPOSClient()
 		this->dataBuff = 0;
 	}
 	ClassData *data = (ClassData*)this->clsData;
+	if (data->headers)
+	{
+		curl_slist_free_all(data->headers);
+		data->headers = 0;
+	}
 	if (data->curl)
 		curl_easy_cleanup(data->curl);
 	Text::StrDelNew(data->userAgent);

@@ -4,6 +4,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBTool.h"
 #include "DB/MySQLConn.h"
+#include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -11,6 +12,8 @@
 #include <mysql.h>
 #include <wchar.h>
 #include <signal.h>
+
+Int32 DB::MySQLConn::useCnt = 0;
 
 void DB::MySQLConn::Connect()
 {
@@ -37,6 +40,10 @@ void DB::MySQLConn::Connect()
 
 DB::MySQLConn::MySQLConn(const UTF8Char *server, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *database, IO::LogTool *log) : DB::DBConn((const UTF8Char*)"MySQLConn")
 {
+	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	{
+	}
+
 	this->mysql = 0;
 	this->server = Text::StrCopyNew(server);
 	this->uid = Text::StrCopyNew(uid);
@@ -49,6 +56,10 @@ DB::MySQLConn::MySQLConn(const UTF8Char *server, const UTF8Char *uid, const UTF8
 
 DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log) : DB::DBConn((const UTF8Char*)"MySQLConn")
 {
+	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	{
+	}
+
 	this->mysql = 0;
 	this->server = Text::StrToUTF8New(server);
 	this->uid = Text::StrToUTF8New(uid);
@@ -90,6 +101,10 @@ DB::MySQLConn::~MySQLConn()
 			Text::StrDelNew(this->tableNames->GetItem(i));
 		}
 		DEL_CLASS(this->tableNames);
+	}
+	if (Sync::Interlocked::Decrement(&useCnt) == 0)
+	{
+		mysql_library_end();
 	}
 }
 

@@ -21,6 +21,7 @@ DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
 	this->fileName = Text::StrCopyNew(fileName);
 	this->delOnClose = false;
 	this->lastErrMsg = 0;
+	db = 0;
 	NEW_CLASS(this->tableNames, Data::ArrayListStrUTF8());
 	sqlite3_initialize();
 	ret = sqlite3_open_v2((const Char*)fileName, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
@@ -45,6 +46,10 @@ DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
 	}
 	else
 	{
+		if (db)
+		{
+			sqlite3_close(db);
+		}
 		this->db = 0;
 	}
 }

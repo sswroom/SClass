@@ -60,6 +60,8 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 		}
 		me->chkEvt->Wait(1000);
 	}
+	DEL_CLASS(currTime);
+	DEL_CLASS(lastChkTime);
 	me->chkRunning = false;
 	return 0;
 }

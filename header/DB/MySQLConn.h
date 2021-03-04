@@ -12,6 +12,8 @@ namespace DB
 	class MySQLConn : public DB::DBConn
 	{
 	private:
+		static Int32 useCnt;
+
 		void *mysql;
 
 		Bool isTran;

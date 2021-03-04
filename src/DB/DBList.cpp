@@ -21,7 +21,8 @@ DB::DBList::~DBList()
 		MemFree(db);
 	}
 	DEL_CLASS(this->dbList);
-
+	DEL_CLASS(this->dbMut);
+	DEL_CLASS(this->dbEvt);
 }
 
 void DB::DBList::AddDB(DB::DBTool *db)
