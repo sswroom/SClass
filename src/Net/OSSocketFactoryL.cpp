@@ -137,6 +137,7 @@ UInt32 *Net::OSSocketFactory::CreateARPSocket()
 	if (s)
 	{
 		struct sockaddr_ll s_ll;
+		MemClear(&s_ll, sizeof(s_ll));
 		s_ll.sll_family = AF_PACKET;
 		s_ll.sll_protocol = htons(ETH_P_ARP); 
 		s_ll.sll_ifindex = 0; // all ifaces 
