@@ -564,7 +564,6 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 		return lastReader;
 	}
 
-	Bool mutWait = false;
 	Data::DateTime t1;
 	Data::DateTime t2;
 	DB::DBReader *r = this->db->GetTableData(tableName, maxCnt, ordering, condition);
