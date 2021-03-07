@@ -4227,12 +4227,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						const UTF8Char *desc = req->GetHTTPFormStr((const UTF8Char*)"descr");
 						if (desc)
 						{
-							me->UserfileUpdateDesc(id, desc);
+							me->UserfileUpdateDesc(fileId, desc);
 						}
 					}
 					else if (action && Text::StrEquals(action, (const UTF8Char*)"rotate"))
 					{
-						me->UserfileUpdateRotType(id, (userFile->rotType + 1) & 3);
+						me->UserfileUpdateRotType(fileId, (userFile->rotType + 1) & 3);
 					}
 				}
 
