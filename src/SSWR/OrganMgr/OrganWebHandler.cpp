@@ -1979,11 +1979,14 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, In
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"update userfile set rotType = ");
 	sql.AppendInt32(rotType);
+	sql.AppendCmd((const UTF8Char*)", prevUpdated = ");
+	sql.AppendInt32(1);
 	sql.AppendCmd((const UTF8Char*)" where id = ");
 	sql.AppendInt32(userfileId);
 	if (this->db->ExecuteNonQuery(sql.ToString()) > 0)
 	{
 		userFile->rotType = rotType;
+		userFile->prevUpdated = 1;
 		return true;
 	}
 	return false;
