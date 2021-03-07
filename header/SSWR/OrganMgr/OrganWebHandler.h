@@ -279,6 +279,7 @@ namespace SSWR
 			Int32 UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize);
 			Bool UserfileMove(Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(Int32 userfileId, const UTF8Char *descr);
+			Bool UserfileUpdateRotType(Int32 userfileId, Int32 rotType);
 			Bool SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF *bookNameOut);
 			Int32 GroupAdd(const UTF8Char* engName, const UTF8Char *chiName, Int32 parentId, const UTF8Char *descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
 			Bool GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId);

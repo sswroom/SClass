@@ -24,6 +24,12 @@ namespace SSWR
 		class OrganImages;
 		class OrganImageItem;
 
+		typedef enum
+		{
+			UT_ADMIN,
+			UT_USER
+		} UserType;
+
 		typedef struct
 		{
 			Int32 cateId;
@@ -44,6 +50,7 @@ namespace SSWR
 			Int32 id;
 			const UTF8Char *userName;
 			const UTF8Char *watermark;
+			UserType userType;
 		} OrganWebUser;
 
 		typedef struct
@@ -205,7 +212,7 @@ namespace SSWR
 			virtual Bool CombineSpecies(OrganSpecies *destSp, OrganSpecies *srcSp) = 0;
 
 			virtual OSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList) = 0;
-			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark) = 0;
+			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType) = 0;
 			virtual Bool ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark) = 0;
 			virtual void ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList) = 0;
 

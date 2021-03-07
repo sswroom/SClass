@@ -67,7 +67,7 @@ namespace SSWR
 			virtual Bool CombineSpecies(OrganSpecies *destSp, OrganSpecies *srcSp);
 
 			virtual OSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList);
-			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark);
+			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType);
 			virtual Bool ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark);
 			virtual void ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList);
 

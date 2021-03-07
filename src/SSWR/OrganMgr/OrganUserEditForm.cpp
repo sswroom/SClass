@@ -35,7 +35,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter password", (const UTF8Char*)"Error", me);
 			return;
 		}
-		if (me->env->AddWebUser(sb1.ToString(), sb2.ToString(), sb3.ToString()))
+		if (me->env->AddWebUser(sb1.ToString(), sb2.ToString(), sb3.ToString(), SSWR::OrganMgr::UT_USER))
 		{
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}

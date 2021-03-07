@@ -2816,7 +2816,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *us
 	OSInt initCnt = userList->GetCount();
 	OrganWebUser *user;
 	Text::StringBuilderUTF8 sb;
-	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, userName, watermark from webuser");
+	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, userName, watermark, userType from webuser");
 	if (r)
 	{
 		while (r->ReadNext())
@@ -2829,6 +2829,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *us
 			sb.ClearStr();
 			r->GetStr(2, &sb);
 			user->watermark = Text::StrCopyNew(sb.ToString());
+			user->userType = (UserType)r->GetInt32(3);
 			userList->Add(user);
 		}
 		this->db->CloseReader(r);
@@ -2836,7 +2837,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *us
 	return userList->GetCount() - initCnt;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark)
+Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select id from webuser where userName = ");
@@ -2851,7 +2852,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8
 	}
 	this->db->CloseReader(r);
 	sql.Clear();
-	sql.AppendCmd((const UTF8Char*)"insert into webuser (userName, pwd, watermark) values (");
+	sql.AppendCmd((const UTF8Char*)"insert into webuser (userName, pwd, watermark, userType) values (");
 	sql.AppendStrUTF8(userName);
 	sql.AppendCmd((const UTF8Char*)", ");
 	{
@@ -2866,6 +2867,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8
 	}
 	sql.AppendCmd((const UTF8Char*)", ");
 	sql.AppendStrUTF8(watermark);
+	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendInt32(userType);
 	sql.AppendCmd((const UTF8Char*)")");
 	return this->db->ExecuteNonQuery(sql.ToString()) >= 1;
 }

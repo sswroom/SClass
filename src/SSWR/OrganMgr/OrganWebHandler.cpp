@@ -1961,6 +1961,34 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateDesc(Int32 userfileId, const
 	return false;
 }
 
+Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, Int32 rotType)
+{
+	UserFileInfo *userFile = this->userFileMap->Get(userfileId);
+	if (userFile == 0)
+	{
+		return false;
+	}
+	if (rotType < 0 || rotType >= 4)
+	{
+		rotType = 0;
+	}
+	if (userFile->rotType == rotType)
+	{
+		return true;
+	}
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmd((const UTF8Char*)"update userfile set rotType = ");
+	sql.AppendInt32(rotType);
+	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendInt32(userfileId);
+	if (this->db->ExecuteNonQuery(sql.ToString()) > 0)
+	{
+		userFile->rotType = rotType;
+		return true;
+	}
+	return false;
+}
+
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF *bookNameOut)
 {
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap->GetValues();
@@ -4202,6 +4230,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							me->UserfileUpdateDesc(id, desc);
 						}
 					}
+					else if (action && Text::StrEquals(action, (const UTF8Char*)"rotate"))
+					{
+						me->UserfileUpdateRotType(id, (userFile->rotType + 1) & 3);
+					}
 				}
 
 				resp->AddDefHeaders(req);
@@ -4520,6 +4552,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					{
 						sb.Append((const UTF8Char*)"<input type=\"button\" value=\"Set As Species Photo\" onclick=\"document.forms.photo.action.value='setdefault';document.forms.photo.submit();\"/>");
 					}
+					sb.Append((const UTF8Char*)"<input type=\"button\" value=\"Rotate\" onclick=\"document.forms.photo.action.value='rotate';document.forms.photo.submit();\"/>");
 					sb.Append((const UTF8Char*)"<br/>");
 					writer->WriteLine(sb.ToString());
 					sb.ClearStr();
