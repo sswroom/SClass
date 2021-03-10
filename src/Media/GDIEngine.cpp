@@ -586,18 +586,18 @@ Double Media::GDIPen::GetThick()
 	return 0;
 }*/
 
-Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double size, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage)
+Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage)
 {
 	this->fontName = Text::StrToWCharNew((const UTF8Char*)fontName);
 	this->hdc = hdc;
-	this->size = size;
+	this->ptSize = ptSize;
 	this->style = style;
 	this->img = img;
 	this->codePage = codePage;
 	LOGFONTW lf;
 	ZeroMemory(&lf, sizeof(LOGFONT));
 	//this->pxSize = MulDiv(size, GetDeviceCaps((HDC)hdc, LOGPIXELSY), 72);
-	this->pxSize = Math::Double2Int32(size * img->GetHDPI() / 72.0);
+	this->pxSize = Math::Double2Int32(ptSize * img->GetHDPI() / 72.0);
 	lf.lfHeight = -this->pxSize;
 	if (style & Media::DrawEngine::DFS_BOLD)
 	{
@@ -634,12 +634,12 @@ Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double size, Media::Dra
 	this->hfont = CreateFontIndirectW(&lf);
 }
 
-Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double size, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage)
+Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage)
 {
 	const WChar *src;
 	WChar *dest;
 	this->hdc = hdc;
-	this->size = size;
+	this->ptSize = ptSize;
 	this->style = style;
 	this->img = img;
 	this->codePage = codePage;
@@ -648,7 +648,7 @@ Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double size, Media::Dr
 //	EnumFontsW((HDC)hdc, 0, FontFunc, (LPARAM)this);
 	ZeroMemory(&lf, sizeof(LOGFONT));
 	//this->pxSize = MulDiv(size, GetDeviceCaps((HDC)hdc, LOGPIXELSY), 72);
-	this->pxSize = Math::Double2Int32(size * img->GetHDPI() / 72.0);
+	this->pxSize = Math::Double2Int32(ptSize * img->GetHDPI() / 72.0);
 	lf.lfHeight = -this->pxSize;
 	if (style & Media::DrawEngine::DFS_BOLD)
 	{
@@ -701,7 +701,7 @@ const WChar *Media::GDIFont::GetNameW()
 
 Double Media::GDIFont::GetPointSize()
 {
-	return this->size;
+	return this->ptSize;
 }
 
 Media::DrawEngine::DrawFontStyle Media::GDIFont::GetFontStyle()
@@ -2249,7 +2249,7 @@ Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize,
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
-	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, ptSize * this->info->hdpi / 96.0, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, ptSize, fontStyle, this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
@@ -2257,7 +2257,7 @@ Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize,
 Media::DrawFont *Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
-	NEW_CLASS(f, GDIFont(this->hdcBmp, name, ptSize * this->info->hdpi / 96.0, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, name, ptSize, fontStyle, this, codePage));
 	return f;
 }
 
@@ -2265,7 +2265,7 @@ Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize,
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
-	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize * 72.0 / this->info->hdpi, fontStyle, this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
@@ -2273,7 +2273,7 @@ Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize,
 Media::DrawFont *Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
 {
 	GDIFont *f;
-	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize * 72.0 / this->info->hdpi, fontStyle, this, codePage));
 	return f;
 }
 

@@ -74,7 +74,7 @@ namespace Media
 		DrawImage *img;
 		void *hdc;
 		const WChar *fontName;
-		Double size;
+		Double ptSize;
 		Media::DrawEngine::DrawFontStyle style;
 		Int32 codePage;
 		
@@ -82,8 +82,8 @@ namespace Media
 		Int32 pxSize;
 		void *hfont;
 
-		GDIFont(void *hdc, const Char *fontName, Double size, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage);
-		GDIFont(void *hdc, const WChar *fontName, Double size, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage);
+		GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage);
+		GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage);
 		virtual ~GDIFont();
 
 		const WChar *GetNameW();

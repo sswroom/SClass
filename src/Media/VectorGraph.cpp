@@ -125,7 +125,7 @@ Int32 Media::VectorGraph::VectorFontStyle::GetCodePage()
 
 Media::DrawFont *Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double oriDPI, Media::DrawImage *dimg)
 {
-	return dimg->NewFontPt(this->name, this->heightPt * dimg->GetHDPI() / 96.0, this->fontStyle, this->codePage);
+	return dimg->NewFontPt(this->name, this->heightPt, this->fontStyle, this->codePage);
 }
 
 Media::VectorGraph::VectorBrushStyle::VectorBrushStyle(OSInt index, Int32 color)
