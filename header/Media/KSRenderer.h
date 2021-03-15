@@ -22,13 +22,13 @@ namespace Media
 		EndNotifier endHdlr;
 		void *endHdlrObj;
 
-		Int32 buffTime;
+		UInt32 buffTime;
 
 		static void FillFormat(void *formatEx, Media::AudioFormat *fmt);
 		static UInt32 __stdcall PlayThread(void *obj);
 	public:
-		static OSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, OSInt devIndex);
+		static UOSInt GetDeviceCount();
+		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);
 		static OSInt GetDeviceId(const UTF8Char *devName);
 
 		KSRenderer(OSInt devId);
@@ -41,10 +41,10 @@ namespace Media
 		virtual void Stop();
 		virtual Bool IsPlaying();
 		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
-		virtual void SetBufferTime(Int32 ms);
+		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
 	};
-};
+}
 #endif

@@ -422,7 +422,7 @@ void UI::GUIControl::SetEnabled(Bool isEnable)
 	}
 }
 
-void UI::GUIControl::SetBGColor(Int32 bgColor)
+void UI::GUIControl::SetBGColor(UInt32 bgColor)
 {
 	HBRUSH hbr = CreateSolidBrush(((bgColor & 0xff) << 16) | (bgColor & 0xff00) | ((bgColor & 0xff0000) >> 16));
 	if (this->hbrBackground)

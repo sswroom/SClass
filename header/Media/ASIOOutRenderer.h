@@ -29,15 +29,15 @@ namespace Media
 		EndNotifier endHdlr;
 		void *endHdlrObj;
 
-		Int32 buffTime;
+		UInt32 buffTime;
 
 		static Int32 GetDeviceIndex(const UTF8Char *buff);
 		static UInt32 __stdcall PlayThread(void *obj);
 		void InitDevice(Int32 devId);
 
 	public:
-		static OSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, OSInt devNo);
+		static UOSInt GetDeviceCount();
+		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
 
 		Int64 SwitchBuffer(Int32 index);
 
@@ -52,12 +52,12 @@ namespace Media
 		virtual void Stop();
 		virtual Bool IsPlaying();
 		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
-		virtual void SetBufferTime(Int32 ms);
+		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
 
 		void Test();
 	};
-};
+}
 #endif

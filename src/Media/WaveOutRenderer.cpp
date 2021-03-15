@@ -254,12 +254,12 @@ Int32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, AudioFormat *fmt)
 	}
 }
 
-OSInt Media::WaveOutRenderer::GetDeviceCount()
+UOSInt Media::WaveOutRenderer::GetDeviceCount()
 {
 	return waveOutGetNumDevs();
 }
 
-UTF8Char *Media::WaveOutRenderer::GetDeviceName(UTF8Char *buff, OSInt devNo)
+UTF8Char *Media::WaveOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
 	WAVEOUTCAPSW caps;
 	waveOutGetDevCapsW(devNo, &caps, sizeof(caps));
@@ -555,7 +555,7 @@ void Media::WaveOutRenderer::SetDeviceVolume(Int32 volume)
 	}
 }
 
-void Media::WaveOutRenderer::SetBufferTime(Int32 ms)
+void Media::WaveOutRenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
 }

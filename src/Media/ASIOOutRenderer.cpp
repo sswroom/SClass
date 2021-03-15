@@ -688,12 +688,12 @@ void Media::ASIOOutRenderer::InitDevice(Int32 devId)
 		RegCloseKey(hkEnum);
 }
 
-OSInt Media::ASIOOutRenderer::GetDeviceCount()
+UOSInt Media::ASIOOutRenderer::GetDeviceCount()
 {
 	HKEY hkEnum;
 	DWORD nameLen = MAXDRVNAMELEN;
 	WChar keyname[MAXDRVNAMELEN];
-	Int32 index = 0;
+	UInt32 index = 0;
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	while (cr == ERROR_SUCCESS)
 	{
@@ -707,7 +707,7 @@ OSInt Media::ASIOOutRenderer::GetDeviceCount()
 	return index;
 }
 
-UTF8Char *Media::ASIOOutRenderer::GetDeviceName(UTF8Char *buff, OSInt devNo)
+UTF8Char *Media::ASIOOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
 	WChar sbuff[MAXDRVNAMELEN];
 	HKEY hkEnum;
@@ -940,7 +940,7 @@ void Media::ASIOOutRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
 	this->endHdlrObj = endHdlrObj;
 }
 
-void Media::ASIOOutRenderer::SetBufferTime(Int32 ms)
+void Media::ASIOOutRenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
 }

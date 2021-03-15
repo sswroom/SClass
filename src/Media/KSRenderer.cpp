@@ -218,9 +218,9 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 	return 0;
 }
 
-OSInt Media::KSRenderer::GetDeviceCount()
+UOSInt Media::KSRenderer::GetDeviceCount()
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	HRESULT hr;
     GUID  aguidEnumCats[] = { STATIC_KSCATEGORY_AUDIO, STATIC_KSCATEGORY_RENDER };
 	CKsEnumFilters* pEnumerator = new CKsEnumFilters(&hr);
@@ -242,7 +242,7 @@ OSInt Media::KSRenderer::GetDeviceCount()
 	return cnt;
 }
 
-UTF8Char *Media::KSRenderer::GetDeviceName(UTF8Char *buff, OSInt devIndex)
+UTF8Char *Media::KSRenderer::GetDeviceName(UTF8Char *buff, UOSInt devIndex)
 {
 	return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"Device "), devIndex);
 }
@@ -412,7 +412,7 @@ void Media::KSRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
 	this->endHdlrObj = endHdlrObj;
 }
 
-void Media::KSRenderer::SetBufferTime(Int32 ms)
+void Media::KSRenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
 }

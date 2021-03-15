@@ -25,7 +25,7 @@ UInt32 Net::ARPInfo::GetAdaptorIndex()
 	return this->ifIndex;
 }
 
-OSInt Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
+UOSInt Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
 {
 	MemCopyNO(buff, this->phyAddr, this->phyAddrLen);
 	return this->phyAddrLen;
