@@ -190,14 +190,35 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 			{
 				me->dispResults->Add(obj);
 				sb.ClearStr();
-				k = Text::StrIndexOf(obj->name, ',');
-				if (k >= 0)
+				k = 0;
+				while (true)
 				{
-					sb.AppendC(obj->name, k);
-				}
-				else
-				{
-					sb.Append(obj->name);
+					if (obj->name[k] == '\\')
+					{
+						if (obj->name[k + 1] != 0)
+						{
+							sb.AppendChar(obj->name[k + 1], 1);
+							k += 2;
+						}
+						else
+						{
+							sb.AppendChar(obj->name[k], 1);
+							k++;
+						}
+					}
+					else if (obj->name[k] == ',')
+					{
+						break;
+					}
+					else if (obj->name[k] == 0)
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendChar(obj->name[k], 1);
+						k++;
+					}
 				}
 				me->lbObjects->AddItem(sb.ToString(), obj);
 			}
