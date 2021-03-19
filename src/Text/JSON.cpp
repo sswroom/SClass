@@ -29,6 +29,11 @@ void Text::JSONBase::EndUse()
 	}
 }
 
+Bool Text::JSONBase::IsStringUTF8()
+{
+	return this->GetJSType() == JST_STRINGUTF8;
+}
+
 Text::JSONBase *Text::JSONBase::ParseJSONStr(const UTF8Char *jsonStr)
 {
 	const UTF8Char *endPtr;

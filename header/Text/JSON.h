@@ -35,6 +35,8 @@ namespace Text
 		virtual Bool Identical(JSONBase *obj) = 0;
 		void BeginUse();
 		void EndUse();
+		Bool IsStringUTF8();
+
 		static JSONBase *ParseJSONStr(const UTF8Char *jsonStr);
 		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, OSInt strLen);
 
