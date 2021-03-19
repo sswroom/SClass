@@ -68,6 +68,7 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	{0x06, 0x4C,  4,  90, 1600, 2240,  4,  4,    6,  14, 2016, 1, "Intel Celeron N3160", "Intel N3160"},
 	{0x06, 0x55,  4,   0, 2500, 2500, 24, 48,    0,  14, 2017, 1, "Intel Xeon 8163", "Intel 8163"},
 	{0x06, 0x7A,  1, 105, 1100, 2600,  2,  2,    6,  14, 2017, 4, "Intel Celeron N4000", "Intel N4000"},
+	{0x06, 0x8C,  1, 100, 2400, 4200,  4,  8,   28,  10, 2020, 3, "Intel Core i5-1135G7", "Intel i5-1135G7"},
 	{0x06, 0x8E, 12, 100, 1600, 3900,  4,  8,   15,  14, 2018, 3, "Intel Core i5-8265U", "Intel i5-8265U"},
 	{0x06, 0x8E, 12, 100, 1600, 4200,  4,  8,   15,  14, 2019, 3, "Intel Core i5-10210U", "Intel i5-10210U"},
 	{0x06, 0x9E,  9,  80, 2700, 3300,  4,  4,   35,  14, 2017, 1, "Intel Core i5-7500T", "Intel i5-7500T"},
@@ -405,6 +406,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{"Intel Z8300",      Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Atom x5-Z8300",                 2,    14,  "x86",          4,  1440, 1840, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  2048, 0,     "UHD Graphics 600"},
 	{"Intel Z8350",      Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Atom x5-Z8350",                 2,    14,  "x86",          4,  1440, 1920, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  2048, 0,     "UHD Graphics 600"},
 	{"Intel i3-3220",    Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i3-3220",                  55,   22,  "x86 with HT",  2,  3300, 3300, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  3072,  "HD Graphics 2500"},
+	{"Intel i5-1135G7",  Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-1135G7",                28,   10,  "x86 with HT",  4,  2400, 4200, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  5120, 8192,  "Iris Xe G7"},
 	{"Intel i5-3550",    Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-3550",                  77,   22,  "x86",          4,  3300, 3700, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  6144,  "HD Graphics 2500"},
 	{"Intel i5-4460",    Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-4460",                  84,   22,  "x86",          4,  3200, 3400, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  6144,  "HD Graphics 4600"},
 	{"Intel i5-7500T",   Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-7500T",                 35,   14,  "x86",          4,  2700, 3300, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 6144,  "HD Graphics 4600"},
@@ -685,6 +687,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 };
 
 Manage::CPUDB::CPUMapping Manage::CPUDB::cpuX86Map[] = {
+	{"11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz",   "Intel i5-1135G7"},
 	{"AMD A10-9700E RADEON R7, 10 COMPUTE CORES 4C+6G",  "AD9700AHM44AB"},
 	{"AMD Phenom(tm) 9650 Quad-Core Processor",          "HD9650WCGHBOX"},
 	{"AMD Turion(tm) Neo X2 Dual Core Processor L625",   "TMZL625OAX5DY"},
