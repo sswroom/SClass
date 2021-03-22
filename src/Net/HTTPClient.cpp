@@ -52,7 +52,7 @@ Bool Net::HTTPClient::FormBegin()
 	if (this->canWrite && !this->hasForm)
 	{
 		this->hasForm = true;
-		this->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)"application/x-www-form-urlencoded");
+		this->AddContentType((const UTF8Char*)"application/x-www-form-urlencoded");
 		NEW_CLASS(this->formSb, Text::StringBuilderUTF8());
 		return true;
 	}
@@ -83,6 +83,18 @@ void Net::HTTPClient::AddTimeHeader(const UTF8Char *name, Data::DateTime *dt)
 	UTF8Char sbuff[64];
 	Date2Str(sbuff, dt);
 	this->AddHeader(name, sbuff);
+}
+
+void Net::HTTPClient::AddContentType(const UTF8Char *contType)
+{
+	this->AddHeader((const UTF8Char*)"Content-Type", contType);
+}
+
+void Net::HTTPClient::AddContentLength(UOSInt leng)
+{
+	UTF8Char sbuff[32];
+	Text::StrUOSInt(sbuff, leng);
+	this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
 }
 
 OSInt Net::HTTPClient::GetRespHeaderCnt()

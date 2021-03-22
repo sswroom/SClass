@@ -45,6 +45,8 @@ namespace Net
 		Bool FormBegin();
 		Bool FormAdd(const UTF8Char *name, const UTF8Char *value);
 		void AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);
+		void AddContentType(const UTF8Char *contType);
+		void AddContentLength(UOSInt leng);
 
 		OSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(OSInt index, UTF8Char *buff);
