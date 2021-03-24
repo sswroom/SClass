@@ -19,6 +19,11 @@ UInt32 __stdcall Net::MQTTHandler::KAThread(void *userObj)
 
 Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTClient::PublishMessageHdlr hdlr, void *userObj, UInt32 kaSeconds)
 {
+	this->kaRunning = false;
+	this->kaToStop = false;
+	this->kaSeconds = kaSeconds;
+	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTThandler.kaEvt"));
+
 	NEW_CLASS(this->client, Net::MQTTClient(sockf, addr, port));
 	if (this->client->IsError())
 	{
@@ -27,10 +32,6 @@ Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::
 		return;
 	}
 	this->client->HandlePublishMessage(hdlr, userObj);
-	this->kaRunning = false;
-	this->kaToStop = false;
-	this->kaSeconds = kaSeconds;
-	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTThandler.kaEvt"));
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

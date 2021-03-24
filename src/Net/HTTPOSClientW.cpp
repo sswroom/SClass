@@ -494,10 +494,8 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		Double t1;
 		if (this->hasForm)
 		{
-			UTF8Char sbuff[32];
-			OSInt len = this->formSb->GetLength();
-			Text::StrOSInt(sbuff, len);
-			this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+			UOSInt len = this->formSb->GetLength();
+			this->AddContentLength(len);
 			this->hasForm = false;
 			this->Write((UInt8*)this->formSb->ToString(), len);
 			DEL_CLASS(this->formSb);

@@ -13,6 +13,10 @@ Text::StringBuilderUTF8::~StringBuilderUTF8()
 
 Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(const UTF8Char *s)
 {
+	if (s == 0)
+	{
+		return this;
+	}
 	OSInt slen = Text::StrCharCnt(s);
 	if (slen > 0)
 	{
