@@ -186,6 +186,13 @@ UI::GUIForm::~GUIForm()
 		}
 		DEL_CLASS(this->timers);
 	}
+	this->isDialog = true;
+	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	this->hwnd = 0;
+	if (widget)
+	{
+		gtk_widget_destroy(widget);
+	}
 	DEL_CLASS(this->dropFileHandlers);
 	DEL_CLASS(this->dropFileHandlersObj);
 	DEL_CLASS(this->closeHandlers);
@@ -201,7 +208,6 @@ UI::GUIForm::~GUIForm()
 		DEL_CLASS(this->menu);
 		this->menu = 0;
 	}
-	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
 /*void UI::GUIForm::SetText(const WChar *text)
