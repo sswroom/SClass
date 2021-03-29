@@ -189,8 +189,8 @@ namespace Text
 
 	const UTF16Char *StrCopyNew(const UTF16Char *str1);
 	const UTF32Char *StrCopyNew(const UTF32Char *str1);
-	const UTF16Char *StrCopyNewC(const UTF16Char *str1, OSInt strLen);
-	const UTF32Char *StrCopyNewC(const UTF32Char *str1, OSInt strLen);
+	const UTF16Char *StrCopyNewC(const UTF16Char *str1, UOSInt strLen);
+	const UTF32Char *StrCopyNewC(const UTF32Char *str1, UOSInt strLen);
 #if _WCHAR_SIZE == 4
 	const WChar *StrCopyNewUTF16_W(const UTF16Char *str1);
 #endif

@@ -655,7 +655,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 		SDEL_TEXT(cookie->path);
 		MemFree(cookie);
 	}
-	this->params->Clear();
+	this->cookieList->Clear();
 
 }
 
@@ -746,7 +746,31 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 	if (valid)
 	{
+		const UTF8Char *cookieName = Text::StrCopyNewC(cookieValue, i);
 		SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
+		Bool eq;
+		UOSInt j = this->cookieList->GetCount();
+		while (j-- > 0)
+		{
+			cookie = this->cookieList->GetItem(j);
+			eq = Text::StrEquals(cookie->domain, domain) && cookie->secure == secure && Text::StrEquals(cookie->name, cookieName);
+			if (cookie->path == 0)
+			{
+				eq = eq && (path[0] == 0);
+			}
+			else
+			{
+				eq = eq && Text::StrEquals(cookie->path, path);
+			}
+			if (eq)
+			{
+				Sync::MutexUsage mutUsage(this->cookieMut);
+				SDEL_TEXT(cookie->value);
+				cookie->value  = Text::StrCopyNew(&cookieValue[i + 1]);
+				mutUsage.EndUse();
+				return cookie;
+			}
+		}
 		cookie = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie, 1);
 		cookie->domain = Text::StrCopyNew(domain);
 		if (path[0])

@@ -33,15 +33,15 @@ void Sync::Thread::Sleepus(UOSInt us)
 {
 	struct timeval tNow, tLong, tEnd;
 	gettimeofday (&tNow, 0) ;
-	tLong.tv_sec  = us / 1000000 ;
-	tLong.tv_usec = us % 1000000 ;
+	tLong.tv_sec  = (time_t)(us / 1000000);
+	tLong.tv_usec = (suseconds_t)(us % 1000000);
 	timeradd (&tNow, &tLong, &tEnd) ;
 
 	if (us >= 60)
 	{
 		struct timespec sleeper ;
 		us = us - 59;
-		sleeper.tv_sec  = us / 1000000 ;
+		sleeper.tv_sec  = (time_t)(us / 1000000);
 		sleeper.tv_nsec = (Int32)((us % 1000000) * 1000L) ;
 		nanosleep (&sleeper, NULL) ;
 
@@ -158,7 +158,7 @@ UOSInt Sync::Thread::GetThreadCnt()
 	DEL_CLASS(fs);
 	procSys = sysconf(_SC_NPROCESSORS_CONF);
 	if (procSys > 0 && (UOSInt)procSys >= procCnt)
-		return procSys;
+		return (UOSInt)procSys;
 	if (procCnt == 0)
 		return 1;
 	return procCnt;

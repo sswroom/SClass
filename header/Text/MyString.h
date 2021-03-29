@@ -101,16 +101,16 @@ namespace Text
 	OSInt StrCharCntS(const Char *str, OSInt maxLen);
 
 #ifdef HAS_INT64
-	Char *StrHexVal64V(Char *oriStr, Int64 val);
-	Char *StrHexVal64(Char *oriStr, Int64 val);
+	Char *StrHexVal64V(Char *oriStr, UInt64 val);
+	Char *StrHexVal64(Char *oriStr, UInt64 val);
 #endif
 
-	Char *StrHexVal32V(Char *oriStr, Int32 val);
-	Char *StrHexVal32(Char *oriStr, Int32 val);
-	Char *StrHexVal24(Char *oriStr, Int32 val);
+	Char *StrHexVal32V(Char *oriStr, UInt32 val);
+	Char *StrHexVal32(Char *oriStr, UInt32 val);
+	Char *StrHexVal24(Char *oriStr, UInt32 val);
 	Char *StrHexVal16(Char *oriStr, UInt16 val);
 	Char *StrHexByte(Char *oriStr, UInt8 val);
-	Char *StrHexBytes(Char *oriStr, const UInt8 *buff, OSInt buffSize, Char seperator);
+	Char *StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char seperator);
 	Int64 StrHex2Int64(const Char *str);
 	Int32 StrHex2Int32(const Char *str);
 	Int16 StrHex2Int16(const Char *str);
@@ -124,17 +124,17 @@ namespace Text
 	FORCEINLINE Char *StrOSInt(Char *oriStr, OSInt val) { return StrInt64(oriStr, (Int64)val); }
 	FORCEINLINE Char *StrOSIntS(Char *oriStr, OSInt val, Char seperator, OSInt sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
 	FORCEINLINE Char *StrUOSInt(Char *oriStr, UOSInt val) { return StrUInt64(oriStr, (UInt64)val); }
-	FORCEINLINE Char *StrHexValOS(Char *oriStr, OSInt val) { return StrHexVal64(oriStr, (Int64)val); }
+	FORCEINLINE Char *StrHexValOS(Char *oriStr, OSInt val) { return StrHexVal64(oriStr, (UInt64)val); }
 #elif _OSINT_SIZE == 32
 	FORCEINLINE Char *StrOSInt(Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int32)val); }
 	FORCEINLINE Char *StrOSIntS(Char *oriStr, OSInt val, Char seperator, OSInt sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
 	FORCEINLINE Char *StrUOSInt(Char *oriStr, UOSInt val) { return StrUInt32(oriStr, (UInt32)val); }
-	FORCEINLINE Char *StrHexValOS(Char *oriStr, OSInt val) { return StrHexVal32(oriStr, (Int32)val); }
+	FORCEINLINE Char *StrHexValOS(Char *oriStr, OSInt val) { return StrHexVal32(oriStr, (UInt32)val); }
 #else // _OSINT_SIZE == 16
 	FORCEINLINE Char *StrOSInt(Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int16)val); }
 	FORCEINLINE Char *StrOSIntS(Char *oriStr, OSInt val, Char seperator, OSInt sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
 	FORCEINLINE Char *StrUOSInt(Char *oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
-	FORCEINLINE Char *StrHexValOS(Char *oriStr, OSInt val) { return StrHexVal16(oriStr, (Int16)val); }
+	FORCEINLINE Char *StrHexValOS(Char *oriStr, OSInt val) { return StrHexVal16(oriStr, (UInt16)val); }
 #endif
 
 	UOSInt StrSplit(Char **strs, UOSInt maxStrs, Char *str, Char splitChar); //Optimized
@@ -170,7 +170,7 @@ namespace Text
 	Char *StrRemoveChar(Char *str1, Char c);
 
 	const Char *StrCopyNew(const Char *str1);
-	const Char *StrCopyNewC(const Char *str1, OSInt strLen);
+	const Char *StrCopyNewC(const Char *str1, UOSInt strLen);
 	void StrDelNew(const Char *newStr);
 	Bool StrStartsWith(const Char *str1, const Char *str2);
 	Bool StrStartsWithICase(const Char *str1, const Char *str2);
@@ -213,15 +213,15 @@ namespace Text
 	FORCEINLINE OSInt StrCharCntS(const UTF8Char *str, OSInt maxLen) { return StrCharCntS((const Char*)str, maxLen); }
 
 #ifdef HAS_INT64
-	FORCEINLINE UTF8Char *StrHexVal64V(UTF8Char *oriStr, Int64 val) { return (UTF8Char*)StrHexVal64V((Char*)oriStr, val); }
-	FORCEINLINE UTF8Char *StrHexVal64(UTF8Char *oriStr, Int64 val) { return (UTF8Char*)StrHexVal64((Char*)oriStr, val); }
+	FORCEINLINE UTF8Char *StrHexVal64V(UTF8Char *oriStr, UInt64 val) { return (UTF8Char*)StrHexVal64V((Char*)oriStr, val); }
+	FORCEINLINE UTF8Char *StrHexVal64(UTF8Char *oriStr, UInt64 val) { return (UTF8Char*)StrHexVal64((Char*)oriStr, val); }
 #endif
-	FORCEINLINE UTF8Char *StrHexVal32V(UTF8Char *oriStr, Int32 val) { return (UTF8Char*)StrHexVal32V((Char*)oriStr, val); }
-	FORCEINLINE UTF8Char *StrHexVal32(UTF8Char *oriStr, Int32 val) { return (UTF8Char*)StrHexVal32((Char*)oriStr, val); }
-	FORCEINLINE UTF8Char *StrHexVal24(UTF8Char *oriStr, Int32 val) { return (UTF8Char*)StrHexVal24((Char*)oriStr, val); }
+	FORCEINLINE UTF8Char *StrHexVal32V(UTF8Char *oriStr, UInt32 val) { return (UTF8Char*)StrHexVal32V((Char*)oriStr, val); }
+	FORCEINLINE UTF8Char *StrHexVal32(UTF8Char *oriStr, UInt32 val) { return (UTF8Char*)StrHexVal32((Char*)oriStr, val); }
+	FORCEINLINE UTF8Char *StrHexVal24(UTF8Char *oriStr, UInt32 val) { return (UTF8Char*)StrHexVal24((Char*)oriStr, val); }
 	FORCEINLINE UTF8Char *StrHexVal16(UTF8Char *oriStr, UInt16 val) { return (UTF8Char*)StrHexVal16((Char*)oriStr, val); }
 	FORCEINLINE UTF8Char *StrHexByte(UTF8Char *oriStr, UInt8 val) { return (UTF8Char*)StrHexByte((Char*)oriStr, val); }
-	FORCEINLINE UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, OSInt buffSize, UTF8Char seperator) { return (UTF8Char*)StrHexBytes((Char*)oriStr, buff, buffSize, (Char)seperator); };
+	FORCEINLINE UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator) { return (UTF8Char*)StrHexBytes((Char*)oriStr, buff, buffSize, (Char)seperator); };
 	FORCEINLINE Int64 StrHex2Int64(const UTF8Char *str) { return StrHex2Int64((const Char*)str); };
 	FORCEINLINE Int32 StrHex2Int32(const UTF8Char *str) { return StrHex2Int32((const Char*)str); }
 	FORCEINLINE Int16 StrHex2Int16(const UTF8Char *str) { return StrHex2Int16((const Char*)str); }
@@ -235,17 +235,17 @@ namespace Text
 	FORCEINLINE UTF8Char *StrOSInt(UTF8Char *oriStr, OSInt val) { return StrInt64(oriStr, (Int64)val); }
 	FORCEINLINE UTF8Char *StrOSIntS(UTF8Char *oriStr, OSInt val, UTF8Char seperator, OSInt sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
 	FORCEINLINE UTF8Char *StrUOSInt(UTF8Char *oriStr, UOSInt val) { return StrUInt64(oriStr, (UInt64)val); }
-	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, OSInt val) { return StrHexVal64(oriStr, (Int32)val); }
+	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, UOSInt val) { return StrHexVal64(oriStr, (UInt64)val); }
 #elif _OSINT_SIZE == 32
 	FORCEINLINE UTF8Char *StrOSInt(UTF8Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int32)val); }
 	FORCEINLINE UTF8Char *StrOSIntS(UTF8Char *oriStr, OSInt val, UTF8Char seperator, OSInt sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
 	FORCEINLINE UTF8Char *StrUOSInt(UTF8Char *oriStr, UOSInt val) { return StrUInt32(oriStr, (UInt32)val); }
-	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, OSInt val) { return StrHexVal32(oriStr, (Int32)val); }
+	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, UOSInt val) { return StrHexVal32(oriStr, (UInt32)val); }
 #else // _OSINT_SIZE == 16
 	FORCEINLINE UTF8Char *StrOSInt(UTF8Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int16)val); }
 	FORCEINLINE UTF8Char *StrOSIntS(UTF8Char *oriStr, OSInt val, UTF8Char seperator, OSInt sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
 	FORCEINLINE UTF8Char *StrUOSInt(UTF8Char *oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
-	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, OSInt val) { return StrHexVal16(oriStr, (Int16)val); }
+	FORCEINLINE UTF8Char *StrHexValOS(UTF8Char *oriStr, UOSInt val) { return StrHexVal16(oriStr, (UInt16)val); }
 #endif
 	FORCEINLINE UOSInt StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar) { return StrSplit((Char **)strs, maxStrs, (Char*)str, (Char)splitChar); }
 	FORCEINLINE UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar) { return StrSplitTrim((Char **)strs, maxStrs, (Char*)str, (Char)splitChar); }
@@ -280,7 +280,7 @@ namespace Text
 	FORCEINLINE UTF8Char *StrRemoveChar(UTF8Char *str1, UTF8Char c) { return (UTF8Char*)StrRemoveChar((Char*)str1, (Char)c); };
 
 	const UTF8Char *StrCopyNew(const UTF8Char *str1);
-	const UTF8Char *StrCopyNewC(const UTF8Char *str1, OSInt strLen);
+	const UTF8Char *StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
 	void StrDelNew(const UTF8Char *newStr);
 	FORCEINLINE Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2) { return StrStartsWith((const Char*)str1, (const Char*)str2); }
 	FORCEINLINE Bool StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2) { return StrStartsWithICase((const Char*)str1, (const Char*)str2); }

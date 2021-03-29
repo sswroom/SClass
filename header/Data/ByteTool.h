@@ -64,7 +64,7 @@ FORCEINLINE void WriteMInt32(UInt8 *addr, Int32 val)
 	addr[0] = (UInt8)((val >> 24) & 0xff);
 	addr[1] = (UInt8)((val >> 16) & 0xff);
 	addr[2] = (UInt8)((val >> 8) & 0xff);
-	addr[3] = (UInt8)(val * 0xff);
+	addr[3] = (UInt8)(val & 0xff);
 #endif
 }
 
@@ -518,6 +518,6 @@ namespace Data
 	}
 }
 
-#define WriteMUInt32(uint8Ptr, val) WriteMInt32(uint8Ptr, (Int32)val)
+#define WriteMUInt32(uint8Ptr, val) WriteMInt32(uint8Ptr, (Int32)(val))
 
 #endif

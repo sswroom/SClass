@@ -16,7 +16,7 @@ namespace Text
 		UOSInt currOfst;
 		Int32 lineBreak;
 
-		Int64 lastPos;
+		UInt64 lastPos;
 	private:
 		void FillBuffer();
 		void CheckHeader();

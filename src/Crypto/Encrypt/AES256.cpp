@@ -238,8 +238,8 @@ OSInt Crypto::Encrypt::AES256::DecryptBlock(const UInt8 *inBlock, UInt8 *outBloc
 
 void Crypto::Encrypt::AES256::SetKey(const UInt8 *key)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 temp;
 
 	this->encRK[0] = ReadMUInt32(key     );

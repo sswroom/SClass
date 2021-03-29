@@ -52,8 +52,8 @@ Bool IO::SimpleFileWriter::Write(const UTF8Char *str, UOSInt nChar)
 
 Bool IO::SimpleFileWriter::Write(const UTF8Char *str)
 {
-	OSInt writeCnt;
-	OSInt charCnt = Text::StrCharCnt(str);
+	UOSInt writeCnt;
+	UOSInt charCnt = Text::StrCharCnt(str);
 	writeCnt = WriteBuff(str, charCnt);
 	return charCnt == writeCnt;
 }
@@ -93,11 +93,11 @@ Bool IO::SimpleFileWriter::WriteW(const WChar *str, UOSInt nChar)
 		*bptr++ = (UInt8)*str++;
 		if ((bptr - buff) >= 512)
 		{
-			writeCnt += WriteBuff(buff, bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
 	}
-	writeCnt += WriteBuff(buff, bptr - buff);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 	return writeCnt == nChar;
 }
 
@@ -112,12 +112,12 @@ Bool IO::SimpleFileWriter::WriteW(const WChar *str)
 	while ((*bptr++ = (UInt8)*str++) != 0)
 		if ((bptr - buff) >= 512)
 		{
-			charCnt += bptr - buff;
-			writeCnt += WriteBuff(buff, bptr - buff);
+			charCnt += (UOSInt)(bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
-	charCnt += bptr - buff - 1;
-	writeCnt += WriteBuff(buff, bptr - buff - 1);
+	charCnt += (UOSInt)(bptr - buff - 1);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff - 1));
 	return charCnt == writeCnt;
 }
 
@@ -133,13 +133,13 @@ Bool IO::SimpleFileWriter::WriteLineW(const WChar *str, UOSInt nChar)
 		*bptr++ = (UInt8)*str++;
 		if ((bptr - buff) >= 510)
 		{
-			writeCnt += WriteBuff(buff, bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
 	}
 	bptr[0] = 13;
 	bptr[1] = 10;
-	writeCnt += WriteBuff(buff, bptr - buff + 2);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff + 2));
 	return writeCnt == nChar + 2;
 }
 
@@ -154,14 +154,14 @@ Bool IO::SimpleFileWriter::WriteLineW(const WChar *str)
 	while ((*bptr++ = (UInt8)*str++) != 0)
 		if ((bptr - buff) >= 510)
 		{
-			charCnt += bptr - buff;
-			writeCnt += WriteBuff(buff, bptr - buff);
+			charCnt += (UOSInt)(bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
 	bptr[-1] = 13;
 	bptr[0] = 10;
-	charCnt += bptr - buff + 1;
-	writeCnt += WriteBuff(buff, bptr - buff + 1);
+	charCnt += (UOSInt)(bptr - buff + 1);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff + 1));
 	return writeCnt == charCnt;
 }
 
