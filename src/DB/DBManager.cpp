@@ -14,8 +14,6 @@
 #include "Text/UTF8Writer.h"
 #include "Win32/WMIQuery.h"
 
-#include <stdio.h>
-
 #define DBPREFIX ((const UTF8Char*)"DB:")
 #define ENCKEY "sswr"
 #define ENCKEYLEN (sizeof(ENCKEY) - 1)
@@ -404,16 +402,6 @@ Bool DB::DBManager::StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTo
 		UInt8 *outBuff = MemAlloc(UInt8, sb.GetCharCnt());
 		outSize = aes.Encrypt(sb.ToString(), sb.GetCharCnt(), outBuff, 0);
 		fs->Write(outBuff, outSize);
-
-		Text::StringBuilderUTF8 keyBuffSb;
-		keyBuffSb.Append((const UTF8Char*)"EncKeyBuff = ");
-		keyBuffSb.AppendHexBuff(keyBuff, 32, ' ', Text::LBT_CRLF);
-		keyBuffSb.Append((const UTF8Char*)"\r\nSrc = ");
-		keyBuffSb.AppendHexBuff(sb.ToString(), sb.GetCharCnt(), ' ', Text::LBT_CRLF);
-		keyBuffSb.Append((const UTF8Char*)"\r\nDest = ");
-		keyBuffSb.AppendHexBuff(outBuff, outSize, ' ', Text::LBT_CRLF);
-		printf("%s\r\n", keyBuffSb.ToString());
-
 		MemFree(outBuff);
 	}
 
@@ -450,16 +438,6 @@ Bool DB::DBManager::RestoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DB
 		Crypto::Encrypt::AES256 aes(keyBuff);
 		OSInt decLen = aes.Decrypt(fileBuff, (OSInt)len, decBuff, 0);
 		decBuff[(OSInt)len] = 0;
-
-		Text::StringBuilderUTF8 keyBuffSb;
-		keyBuffSb.Append((const UTF8Char*)"DecKeyBuff = ");
-		keyBuffSb.AppendHexBuff(keyBuff, 32, ' ', Text::LBT_CRLF);
-		keyBuffSb.Append((const UTF8Char*)"\r\nSrc = ");
-		keyBuffSb.AppendHexBuff(fileBuff, len, ' ', Text::LBT_CRLF);
-		keyBuffSb.Append((const UTF8Char*)"\r\nDest = ");
-		keyBuffSb.AppendHexBuff(decBuff, decLen, ' ', Text::LBT_CRLF);
-		printf("%s\r\n", keyBuffSb.ToString());
-
 		sarr[1] = decBuff;
 		while (true)
 		{
