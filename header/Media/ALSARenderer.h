@@ -24,7 +24,7 @@ namespace Media
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
 		static UInt32 __stdcall PlayThread(void *obj);
-		static Int32 GetCurrTime(void *hand);
+		static UInt32 GetCurrTime(void *hand);
 
 		Bool SetHWParams(Media::IAudioSource *audsrc, void *h);
 	public:

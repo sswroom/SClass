@@ -35,7 +35,7 @@ Int32 Media::IAudioFilter::GetStreamTime()
 	return 0;
 }
 
-Int32 Media::IAudioFilter::SeekToTime(Int32 time)
+UInt32 Media::IAudioFilter::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{
@@ -44,7 +44,7 @@ Int32 Media::IAudioFilter::SeekToTime(Int32 time)
 	return 0;
 }
 
-Bool Media::IAudioFilter::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::IAudioFilter::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	if (this->sourceAudio)
 	{
@@ -90,7 +90,7 @@ UOSInt Media::IAudioFilter::GetMinBlockSize()
 	return 0;
 }
 
-Int32 Media::IAudioFilter::GetCurrTime()
+UInt32 Media::IAudioFilter::GetCurrTime()
 {
 	if (this->sourceAudio)
 		return this->sourceAudio->GetCurrTime();

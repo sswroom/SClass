@@ -49,7 +49,7 @@ DB::MongoDB::~MongoDB()
 	SDEL_TEXT(this->database);
 	if (this->tableNames)
 	{
-		OSInt i;
+		UOSInt i;
 		i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
@@ -159,7 +159,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 
 void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	OSInt i = names->GetCount();
+	UOSInt i = names->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(names->GetItem(i));

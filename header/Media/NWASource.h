@@ -21,10 +21,10 @@ namespace Media
 		virtual ~NWASource();
 
 		virtual Int32 GetStreamTime(); //ms
-		virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
-		virtual Int32 GetCurrTime();
+		virtual UInt32 GetCurrTime();
 	};
 }
 #endif

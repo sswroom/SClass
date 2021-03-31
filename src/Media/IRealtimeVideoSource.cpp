@@ -44,7 +44,7 @@ Bool Media::IRealtimeVideoSource::CanSeek()
 	return false;
 }
 
-Int32 Media::IRealtimeVideoSource::SeekToTime(Int32 time)
+UInt32 Media::IRealtimeVideoSource::SeekToTime(UInt32 time)
 {
 	return 0;
 }
@@ -54,7 +54,7 @@ Bool Media::IRealtimeVideoSource::IsRealTimeSrc()
 	return true;
 }
 
-Bool Media::IRealtimeVideoSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::IRealtimeVideoSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }

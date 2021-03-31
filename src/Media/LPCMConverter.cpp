@@ -84,7 +84,7 @@ UOSInt Media::LPCMConverter::ConvertU8_I16(UInt8 *destBuff, const UInt8 *srcBuff
     UOSInt i = srcSize;
     while (i-- > 0)
     {
-        v = srcBuff[0] - 0x80;
+        v = (UInt8)(srcBuff[0] - 0x80);
         destBuff[0] = v;
         destBuff[1] = v;
 

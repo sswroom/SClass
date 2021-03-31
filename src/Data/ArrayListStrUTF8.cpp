@@ -7,7 +7,7 @@ Data::ArrayListStrUTF8::ArrayListStrUTF8() : Data::SortableArrayList<const UTF8C
 {
 }
 
-Data::ArrayListStrUTF8::ArrayListStrUTF8(OSInt Capacity) : Data::SortableArrayList<const UTF8Char*>(Capacity)
+Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayList<const UTF8Char*>(capacity)
 {
 }
 
@@ -26,7 +26,7 @@ UOSInt Data::ArrayListStrUTF8::SortedInsert(const UTF8Char *val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)this->objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -51,12 +51,12 @@ UOSInt Data::ArrayListStrUTF8::SortedInsert(const UTF8Char *val)
 		const UTF8Char **newArr = MemAlloc(const UTF8Char*, this->capacity << 1);
 		if (i > 0)
 		{
-			MemCopyNO(&newArr[0], &arr[0], (i) * sizeof(const UTF8Char*));
+			MemCopyNO(&newArr[0], &arr[0], (UOSInt)i * sizeof(const UTF8Char*));
 		}
 		newArr[i] = val;
 		if ((UOSInt)i < this->objCnt)
 		{
-			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - i) * sizeof(const UTF8Char*));
+			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - (UOSInt)i) * sizeof(const UTF8Char*));
 		}
 		this->capacity = this->capacity << 1;
 		MemFree(arr);
@@ -64,7 +64,7 @@ UOSInt Data::ArrayListStrUTF8::SortedInsert(const UTF8Char *val)
 	}
 	else
 	{
-		j = this->objCnt;
+		j = (OSInt)this->objCnt;
 		while (j > i)
 		{
 			arr[j] = arr[j - 1];
@@ -83,7 +83,7 @@ OSInt Data::ArrayListStrUTF8::SortedIndexOf(const UTF8Char *val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -106,10 +106,10 @@ OSInt Data::ArrayListStrUTF8::SortedIndexOf(const UTF8Char *val)
 
 const UTF8Char *Data::ArrayListStrUTF8::JoinNewStr()
 {
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
 	k = j = this->objCnt;
-	OSInt strSize = 0;
+	UOSInt strSize = 0;
 	while (j-- > 0)
 	{
 		strSize += Text::StrCharCnt(arr[j]);

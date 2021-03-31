@@ -64,7 +64,7 @@ namespace Media
 
 		virtual Int32 GetStreamTime() = 0; //ms, -1 = infinity
 		virtual Bool CanSeek() = 0;
-		virtual Int32 SeekToTime(Int32 time) = 0; //ms, ret actual time
+		virtual UInt32 SeekToTime(UInt32 time) = 0; //ms, ret actual time
 		virtual Bool IsRealTimeSrc() = 0;
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
 

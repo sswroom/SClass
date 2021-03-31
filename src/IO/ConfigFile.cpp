@@ -12,8 +12,8 @@ IO::ConfigFile::~ConfigFile()
 	Data::ArrayList<Data::StringUTF8Map<const UTF8Char *>*> *cates;
 	Data::ArrayList<const UTF8Char *> *vals;
 	const UTF8Char *s;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	cates = this->cfgVals->GetValues();
 	i = cates->GetCount();
 	while (i-- > 0)
@@ -86,16 +86,16 @@ Bool IO::ConfigFile::SetValue(const UTF8Char *category, const UTF8Char *name, co
 	return true;
 }
 
-OSInt IO::ConfigFile::GetCateCount()
+UOSInt IO::ConfigFile::GetCateCount()
 {
 	return this->cfgVals->GetCount();
 }
 
-OSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
+UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
 {
-	OSInt retCnt;
-	OSInt i = cateList->GetCount();
-	OSInt j;
+	UOSInt retCnt;
+	UOSInt i = cateList->GetCount();
+	UOSInt j;
 	cateList->AddRange(this->cfgVals->GetKeys());
 	j = cateList->GetCount();
 	retCnt = j - i;
@@ -110,7 +110,7 @@ OSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
 	return retCnt;
 }
 
-OSInt IO::ConfigFile::GetKeys(const UTF8Char *category, Data::ArrayList<const UTF8Char *> *keyList)
+UOSInt IO::ConfigFile::GetKeys(const UTF8Char *category, Data::ArrayList<const UTF8Char *> *keyList)
 {
 	Data::StringUTF8Map<const UTF8Char *> *cate;
 	if (category == 0)
@@ -120,7 +120,7 @@ OSInt IO::ConfigFile::GetKeys(const UTF8Char *category, Data::ArrayList<const UT
 	cate = this->cfgVals->Get(category);
 	if (cate == 0)
 		return 0;
-	OSInt cnt = keyList->GetCount();
+	UOSInt cnt = keyList->GetCount();
 	keyList->AddRange(cate->GetKeys());
 	return keyList->GetCount() - cnt;
 }

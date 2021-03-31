@@ -61,7 +61,7 @@ Bool Net::RTPVSource::CanSeek()
 	//return ch->CanSeek();
 }
 
-Int32 Net::RTPVSource::SeekToTime(Int32 time)
+UInt32 Net::RTPVSource::SeekToTime(UInt32 time)
 {
 	return false;
 //	return ch->SeekToTime();
@@ -72,7 +72,7 @@ Bool Net::RTPVSource::IsRealTimeSrc()
 	return true;
 }
 
-Bool Net::RTPVSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPVSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }

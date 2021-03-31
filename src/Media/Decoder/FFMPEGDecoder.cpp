@@ -1380,7 +1380,7 @@ public:
 		}
 	}
 
-	virtual Int32 SeekToTime(Int32 time)
+	virtual UInt32 SeekToTime(UInt32 time)
 	{
 		if (this->sourceAudio)
 		{

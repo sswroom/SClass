@@ -28,12 +28,12 @@ Int32 Net::RTPASource::GetStreamTime()
 	return this->hdlr->GetStreamTime();
 }
 
-Int32 Net::RTPASource::SeekToTime(Int32 time)
+UInt32 Net::RTPASource::SeekToTime(UInt32 time)
 {
 	return 0;
 }
 
-Bool Net::RTPASource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPASource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }
@@ -66,7 +66,7 @@ UOSInt Net::RTPASource::GetMinBlockSize()
 	return this->hdlr->GetMinBlockSize();
 }
 
-Int32 Net::RTPASource::GetCurrTime()
+UInt32 Net::RTPASource::GetCurrTime()
 {
 	return this->hdlr->GetCurrTime();
 }

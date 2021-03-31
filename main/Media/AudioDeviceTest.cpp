@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::AudioFilter::AudioSweepFilter *sweepFilter;
 	Media::IAudioRenderer *renderer;
 	NEW_CLASS(dev, Media::AudioDevice());
-	NEW_CLASS(audSrc, Media::SilentSource(48000, 2, 16, (const UTF8Char*)"Silent", -1));
+	NEW_CLASS(audSrc, Media::SilentSource(48000, 2, 16, (const UTF8Char*)"Silent", 0));
 	NEW_CLASS(sweepFilter, Media::AudioFilter::AudioSweepFilter(audSrc));
 	sweepFilter->SetVolume(0.3);
 	sweepFilter->StartSweep(10, 24000, 10);
@@ -27,7 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		renderer->Start();
 		if (renderer->IsPlaying())
 		{
-			Int32 t;
+			UInt32 t;
 			console.WriteLine((const UTF8Char*)"Start Playing");
 			while (true)
 			{
@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					break;
 				}
-				Sync::Thread::Sleep(10000 - t);
+				Sync::Thread::Sleep(10000 - (UOSInt)t);
 			}
 			console.WriteLine((const UTF8Char*)"End Playing");
 			renderer->Stop();

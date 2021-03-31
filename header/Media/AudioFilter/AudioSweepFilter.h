@@ -27,7 +27,7 @@ namespace Media
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
 			void SetVolume(Double vol);
-			Bool StartSweep(Double startFreq, Double endFreq, Int32 timeSeconds);
+			Bool StartSweep(Double startFreq, Double endFreq, UInt32 timeSeconds);
 		};
 	}
 }

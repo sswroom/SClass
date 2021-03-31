@@ -36,7 +36,7 @@ void Media::Decoder::ACMDecoder::GetFormat(AudioFormat *format)
 	format->formatId = 0;
 }
 
-Int32 Media::Decoder::ACMDecoder::SeekToTime(Int32 time)
+UInt32 Media::Decoder::ACMDecoder::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

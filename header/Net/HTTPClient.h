@@ -52,7 +52,7 @@ namespace Net
 		UTF8Char *GetRespHeader(OSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(const UTF8Char *name, UTF8Char *valueBuff);
 		Bool GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF *sb);
-		Int64 GetContentLength();
+		UInt64 GetContentLength();
 		Int32 GetContentCodePage();
 		Bool GetLastModified(Data::DateTime *dt);
 

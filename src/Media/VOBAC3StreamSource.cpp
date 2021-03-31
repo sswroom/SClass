@@ -70,16 +70,16 @@ Int32 Media::VOBAC3StreamSource::GetStreamTime()
 	return this->pbc->GetStreamTime();
 }
 
-Int32 Media::VOBAC3StreamSource::SeekToTime(Int32 time)
+UInt32 Media::VOBAC3StreamSource::SeekToTime(UInt32 time)
 {
-	Int32 t = this->pbc->SeekToTime(time);
+	UInt32 t = this->pbc->SeekToTime(time);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->SetStreamTime(t);
 	return t;
 }
 
-Bool Media::VOBAC3StreamSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VOBAC3StreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	//////////////////////////////////
 	return false;
@@ -241,9 +241,9 @@ UOSInt Media::VOBAC3StreamSource::GetMinBlockSize()
 	return this->fmt->align;
 }
 
-Int32 Media::VOBAC3StreamSource::GetCurrTime()
+UInt32 Media::VOBAC3StreamSource::GetCurrTime()
 {
-	return (Int32)(this->buffSample * 8000LL / this->fmt->bitRate);
+	return (UInt32)(this->buffSample * 8000LL / this->fmt->bitRate);
 }
 
 Bool Media::VOBAC3StreamSource::IsEnd()

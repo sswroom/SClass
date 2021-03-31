@@ -58,7 +58,7 @@ Net::HTTPMyClient::~HTTPMyClient()
 		MemFree(this->dataBuff);
 		this->dataBuff = 0;
 	}
-	OSInt i = this->reqHeaders->GetCount();
+	UOSInt i = this->reqHeaders->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->reqHeaders->GetItem(i));
@@ -695,10 +695,8 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #endif
 		if (this->hasForm)
 		{
-			UTF8Char sbuff[32];
 			UOSInt len = this->formSb->GetLength();
-			Text::StrOSInt(sbuff, len);
-			this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+			this->AddContentLength(len);
 			this->hasForm = false;
 			this->Write((UInt8*)this->formSb->ToString(), len);
 			DEL_CLASS(this->formSb);

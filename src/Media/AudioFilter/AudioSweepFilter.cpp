@@ -55,8 +55,8 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 		UOSInt i = 0;
 		UOSInt j = readSize;
 		OSInt k;
-		OSInt nSamples = readSize / (this->format.nChannels << 1);
-		Int32 pos = currSample;
+		UOSInt nSamples = readSize / ((UOSInt)this->format.nChannels << 1);
+		UInt32 pos = currSample;
 		Double freq;
 		Double t;
 		Double v;
@@ -66,7 +66,7 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 		if (currSample + nSamples > endSample)
 		{
 			nSamples = endSample - currSample;
-			j = nSamples * (this->format.nChannels << 1);
+			j = nSamples * ((UOSInt)this->format.nChannels << 1);
 		}
 		while (i < j)
 		{
@@ -88,7 +88,7 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 			}
 			pos++;
 		}
-		this->currSample += (Int32)nSamples;
+		this->currSample += (UInt32)nSamples;
 		this->currT = t;
 	}
 	else if (this->format.bitpersample == 8)
@@ -102,7 +102,7 @@ void Media::AudioFilter::AudioSweepFilter::SetVolume(Double vol)
 	this->vol = vol;
 }
 
-Bool Media::AudioFilter::AudioSweepFilter::StartSweep(Double startFreq, Double endFreq, Int32 timeSeconds)
+Bool Media::AudioFilter::AudioSweepFilter::StartSweep(Double startFreq, Double endFreq, UInt32 timeSeconds)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->startFreq = startFreq;

@@ -105,12 +105,12 @@ void Media::AudioConcatSource::GetFormat(AudioFormat *format)
 	format->FromAudioFormat(&this->format);
 }
 
-Bool Media::AudioConcatSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AudioConcatSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }
 
-Int32 Media::AudioConcatSource::SeekToTime(Int32 time)
+UInt32 Media::AudioConcatSource::SeekToTime(UInt32 time)
 {
 	Int32 stmTotal;
 	Int32 stmTime = 0;
@@ -203,9 +203,9 @@ UOSInt Media::AudioConcatSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	return ((Media::IAudioSource*)this->stmList->GetItem(this->currStm))->ReadBlock(buff, blkSize);
 }
 
-Int32 Media::AudioConcatSource::GetCurrTime()
+UInt32 Media::AudioConcatSource::GetCurrTime()
 {
-	Int32 totalTime = 0;
+	UInt32 totalTime = 0;
 	UOSInt i = this->currStm;
 	Media::IAudioSource *astm = this->stmList->GetItem(i);
 	if (astm)
@@ -217,7 +217,7 @@ Int32 Media::AudioConcatSource::GetCurrTime()
 		astm = this->stmList->GetItem(i);
 		if (astm)
 		{
-			totalTime += astm->GetStreamTime();
+			totalTime += (UInt32)astm->GetStreamTime();
 		}
 	}
 	return totalTime;

@@ -35,7 +35,7 @@ Net::HTTPClient::~HTTPClient()
 {
 	if (this->headers)
 	{
-		OSInt i = this->headers->GetCount();
+		UOSInt i = this->headers->GetCount();
 		while (i-- > 0)
 		{
 			MemFree(this->headers->RemoveAt(i));
@@ -112,7 +112,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UTF8Char *valueBu
 	UTF8Char buff[256];
 	UTF8Char *s2;
 	UTF8Char *s;
-	OSInt i;
+	UOSInt i;
 	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
 	i = this->headers->GetCount();
 	while (i-- > 0)
@@ -131,7 +131,7 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 	UTF8Char buff[256];
 	UTF8Char *s2;
 	UTF8Char *s;
-	OSInt i;
+	UOSInt i;
 	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
 	i = this->headers->GetCount();
 	while (i-- > 0)
@@ -146,7 +146,7 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 	return false;
 }
 
-Int64 Net::HTTPClient::GetContentLength()
+UInt64 Net::HTTPClient::GetContentLength()
 {
 	this->EndRequest(0, 0);
 	return this->contLeng;
@@ -156,7 +156,7 @@ Int32 Net::HTTPClient::GetContentCodePage()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[2];
-	OSInt arrCnt;
+	UOSInt arrCnt;
 	this->EndRequest(0, 0);
 	if (this->GetRespHeader((const UTF8Char*)"Content-Type", sbuff))
 	{

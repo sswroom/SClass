@@ -381,7 +381,7 @@ Bool Net::RTPH264Handler::CanSeek()
 	return false;
 }
 
-Int32 Net::RTPH264Handler::SeekToTime(Int32 time)
+UInt32 Net::RTPH264Handler::SeekToTime(UInt32 time)
 {
 	return 0;
 }
@@ -410,7 +410,7 @@ Bool Net::RTPH264Handler::IsRealTimeSrc()
 	return true;
 }
 
-Bool Net::RTPH264Handler::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPH264Handler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }

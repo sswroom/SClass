@@ -19,7 +19,7 @@ Media::MediaFile::MediaFile(const UTF8Char *name) : IO::ParsedObject(name)
 
 Media::MediaFile::~MediaFile()
 {
-	OSInt i = this->sources->GetCount();
+	UOSInt i = this->sources->GetCount();
 	Media::IMediaSource *src;
 	while (i-- > 0)
 	{
@@ -88,7 +88,7 @@ Bool Media::MediaFile::TrimFile(Int32 trimTimeStart, Int32 trimTimeEnd)
 	if (trimTimeStart == 0 && trimTimeEnd == -1)
 		return true;
 	Int32 syncTime;
-	OSInt i = this->sources->GetCount();
+	UOSInt i = this->sources->GetCount();
 	Media::IMediaSource *src;
 	while (i-- > 0)
 	{

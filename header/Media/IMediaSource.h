@@ -21,10 +21,10 @@ namespace Media
 		virtual void Stop() = 0;
 		virtual Int32 GetStreamTime() = 0; //ms, -1 = infinity
 		virtual Bool CanSeek() = 0;
-		virtual Int32 SeekToTime(Int32 time) = 0; //ms, ret actual time
-		virtual Bool TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime) = 0;
+		virtual UInt32 SeekToTime(UInt32 time) = 0; //ms, ret actual time
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime) = 0;
 
 		virtual MediaType GetMediaType() = 0;
 	};
-};
+}
 #endif

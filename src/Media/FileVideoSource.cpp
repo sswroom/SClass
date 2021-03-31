@@ -384,7 +384,7 @@ Bool Media::FileVideoSource::CanSeek()
 	return true;
 }
 
-Int32 Media::FileVideoSource::SeekToTime(Int32 time)
+UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 {
 	if (this->timeBased)
 	{
@@ -430,7 +430,7 @@ Bool Media::FileVideoSource::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::FileVideoSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::FileVideoSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	///////////////////////////////////////////
 	return false;

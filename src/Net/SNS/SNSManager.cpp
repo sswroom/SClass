@@ -157,7 +157,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		OSInt j;
 		OSInt k;
 		OSInt retryCnt;
-		Int64 leng;
+		UInt64 leng;
 		UTF8Char *sarr[2];
 		Net::HTTPClient *cli;
 		UInt8 *tmpBuff = MemAlloc(UInt8, 65536);
