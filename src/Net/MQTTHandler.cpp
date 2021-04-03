@@ -1,10 +1,29 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Net/MQTTHandler.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTClient::PublishMessageHdlr hdlr, void *userObj)
+UInt32 __stdcall Net::MQTTHandler::KAThread(void *userObj)
 {
+	Net::MQTTHandler *me = (Net::MQTTHandler*)userObj;
+	me->kaRunning = true;
+	while (!me->kaToStop)
+	{
+		me->client->SendPing();
+		me->kaEvt->Wait(me->kaSeconds * 500);
+	}
+	me->kaRunning = false;
+	return 0;
+}
+
+Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTClient::PublishMessageHdlr hdlr, void *userObj, UInt32 kaSeconds)
+{
+	this->kaRunning = false;
+	this->kaToStop = false;
+	this->kaSeconds = kaSeconds;
+	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTThandler.kaEvt"));
+
 	NEW_CLASS(this->client, Net::MQTTClient(sockf, addr, port));
 	if (this->client->IsError())
 	{
@@ -19,7 +38,7 @@ Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"sswrMQTT/");
 	sb.AppendI64(dt.ToTicks());
-	Bool succ = this->client->SendConnect(4, 30, sb.ToString(), username, password);
+	Bool succ = this->client->SendConnect(4, kaSeconds, sb.ToString(), username, password);
 	if (succ)
 	{
 		Net::MQTTClient::ConnectStatus status = this->client->WaitConnAck(30000);
@@ -30,11 +49,29 @@ Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::
 		DEL_CLASS(this->client);
 		this->client = 0;
 	}
+	else
+	{
+		Sync::Thread::Create(KAThread, this);
+		while (!this->kaRunning)
+		{
+			Sync::Thread::Sleep(10);
+		}
+	}
 }
 
 Net::MQTTHandler::~MQTTHandler()
 {
+	if (this->kaRunning)
+	{
+		this->kaToStop = true;
+		this->kaEvt->Set();
+		while (this->kaRunning)
+		{
+			Sync::Thread::Sleep(10);
+		}
+	}
 	SDEL_CLASS(this->client);
+	DEL_CLASS(this->kaEvt);
 }
 
 Bool Net::MQTTHandler::IsError()

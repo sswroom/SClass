@@ -45,12 +45,14 @@ namespace Net
 		Bool FormBegin();
 		Bool FormAdd(const UTF8Char *name, const UTF8Char *value);
 		void AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);
+		void AddContentType(const UTF8Char *contType);
+		void AddContentLength(UOSInt leng);
 
 		OSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(OSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(const UTF8Char *name, UTF8Char *valueBuff);
 		Bool GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF *sb);
-		Int64 GetContentLength();
+		UInt64 GetContentLength();
 		Int32 GetContentCodePage();
 		Bool GetLastModified(Data::DateTime *dt);
 

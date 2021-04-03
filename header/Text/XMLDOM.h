@@ -41,11 +41,11 @@ namespace Text
 
 		void AddAttrib(XMLAttrib *attr);
 		void AddChild(XMLNode *node);
-		OSInt GetAttribCnt();
+		UOSInt GetAttribCnt();
 		XMLAttrib *GetAttrib(OSInt index);
 		XMLAttrib *GetFirstAttrib(const UTF8Char *attrName);
 
-		OSInt GetChildCnt();
+		UOSInt GetChildCnt();
 		XMLNode *GetChild(OSInt index);
 
 		XMLNode **SearchNode(const UTF8Char *path, UOSInt *cnt);

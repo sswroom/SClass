@@ -51,8 +51,8 @@ namespace Manage
 		static const UTF8Char *GetFeatureShortName(OSInt index);
 		static const UTF8Char *GetFeatureName(OSInt index);
 		static const UTF8Char *GetFeatureDesc(OSInt index);
-		static void AppendNameInfo10(Int32 ecxv, Int32 edxv, Text::StringBuilderUTF *sb);
-		static void AppendNameInfo11(Int32 ecxv, Int32 edxv, Text::StringBuilderUTF *sb);
+		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb);
+		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb);
 	};
 }
 

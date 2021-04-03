@@ -54,13 +54,13 @@ void Data::DateTime::SetDate(Char **dateStrs)
 	{
 		if (vals[1] > 12)
 		{
-			this->year = (UInt16)(((this->year / 100) * 100) + vals[2]);
+			this->year = (UInt16)(((this->year / 100) * 100U) + vals[2]);
 			this->month = (UInt8)vals[0];
 			this->day = (UInt8)vals[1];
 		}
 		else
 		{
-			this->year = (UInt16)(((this->year / 100) * 100) + vals[0]);
+			this->year = (UInt16)(((this->year / 100) * 100U) + vals[0]);
 			this->month = (UInt8)vals[1];
 			this->day = (UInt8)vals[2];
 		}
@@ -364,7 +364,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 	Char buff[32];
 	Char *strs2[5];
 	Char *strs[3];
-	OSInt nStrs;
+	UOSInt nStrs;
 	Bool succ = true;
 	if (dateStr[3] == ',' && Text::StrIndexOf(&dateStr[4], ',') == -1)
 	{
@@ -479,9 +479,9 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 	}
 	else if (nStrs == 4 || (nStrs == 5 && (strs2[4][0] == '-' || strs2[4][0] == '+' || Text::StrEquals(strs2[4], "GMT"))))
 	{
-		OSInt len1 = Text::StrCharCnt(strs2[0]);
-		OSInt len2 = Text::StrCharCnt(strs2[1]);
-		OSInt len3 = Text::StrCharCnt(strs2[2]);
+		UOSInt len1 = Text::StrCharCnt(strs2[0]);
+		UOSInt len2 = Text::StrCharCnt(strs2[1]);
+		UOSInt len3 = Text::StrCharCnt(strs2[2]);
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
 			Text::StrToUInt16(strs2[2], &this->year);
@@ -549,15 +549,16 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 
 		OSInt j = 0;
 		OSInt i;
+		UOSInt splitCnt;
 		while (true)
 		{
-			if ((i = Text::StrSplit(strs, 3, strs2[j], ':')) == 3)
+			if ((splitCnt = Text::StrSplit(strs, 3, strs2[j], ':')) == 3)
 			{
 				SetTime(strs);
 			}
 			else
 			{
-				if (i == 2)
+				if (splitCnt == 2)
 				{
 					strs[1][-1] = ':';
 				}
@@ -677,7 +678,7 @@ void Data::DateTime::SetValueFILETIME(void *fileTime)
 	this->ms = stime.wMilliseconds;
 	this->tzQhr = 0;
 #else
-	this->SetTicks(ReadUInt64((const UInt8*)fileTime) / 10000 - 11644473600000LL);
+	this->SetTicks(ReadInt64((const UInt8*)fileTime) / 10000 - 11644473600000LL);
 #endif
 }
 

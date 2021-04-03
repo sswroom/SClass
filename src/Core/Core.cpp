@@ -25,7 +25,7 @@ void Core::CoreEnd()
 	}
 	if (Core_onExitFuncs)
 	{
-		OSInt i = Core_onExitFuncs->GetCount();
+		UOSInt i = Core_onExitFuncs->GetCount();
 		while (i-- > 0)
 		{
 			Core_onExitFuncs->GetItem(i)();
@@ -68,8 +68,8 @@ Media::IVideoSource *Core::DecodeVideo(Media::IVideoSource *video)
 	Media::IVideoSource *decoder = 0;
 	if (Core_decVFuncs == 0)
 		return 0;
-	OSInt i = 0;
-	OSInt j = Core_decVFuncs->GetCount();
+	UOSInt i = 0;
+	UOSInt j = Core_decVFuncs->GetCount();
 	while (decoder == 0 && i < j)
 	{
 		decoder = Core_decVFuncs->GetItem(i)(video);
@@ -83,8 +83,8 @@ Media::IAudioSource *Core::DecodeAudio(Media::IAudioSource *audio)
 	Media::IAudioSource *decoder = 0;
 	if (Core_decAFuncs == 0)
 		return 0;
-	OSInt i = 0;
-	OSInt j = Core_decAFuncs->GetCount();
+	UOSInt i = 0;
+	UOSInt j = Core_decAFuncs->GetCount();
 	while (decoder == 0 && i < j)
 	{
 		decoder = Core_decAFuncs->GetItem(i)(audio);

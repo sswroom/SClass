@@ -147,7 +147,7 @@ void Text::XMLNode::AddChild(XMLNode *node)
 	this->childArr->Add(node);
 }
 
-OSInt Text::XMLNode::GetAttribCnt()
+UOSInt Text::XMLNode::GetAttribCnt()
 {
 	if (this->attribArr == 0)
 		return 0;
@@ -177,7 +177,7 @@ Text::XMLAttrib *Text::XMLNode::GetFirstAttrib(const UTF8Char *attrName)
 	return 0;
 }
 
-OSInt Text::XMLNode::GetChildCnt()
+UOSInt Text::XMLNode::GetChildCnt()
 {
 	if (this->childArr == 0)
 		return 0;

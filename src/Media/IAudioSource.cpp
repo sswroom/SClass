@@ -122,7 +122,7 @@ UOSInt Media::IAudioSource::ReadSample(Int64 sampleOfst, UOSInt sampleCount, UIn
 	return 0;
 }
 
-UInt64 Media::IAudioSource::GetSampleCount()
+Int64 Media::IAudioSource::GetSampleCount()
 {
 	return -1;
 }

@@ -105,21 +105,21 @@ void Media::AudioFormat::ToString(Text::StringBuilderUTF *sb)
 	sb->Append(GetNameFormatId(this->formatId));
 	sb->Append((const UTF8Char*)")");
 	sb->Append((const UTF8Char*)"\r\nFrequency = ");
-	sb->AppendI32(this->frequency);
+	sb->AppendU32(this->frequency);
 	sb->Append((const UTF8Char*)" Hz\r\nBit Per Sample = ");
-	sb->AppendI16(this->bitpersample);
+	sb->AppendU16(this->bitpersample);
 	sb->Append((const UTF8Char*)"\r\nNumber of channels = ");
-	sb->AppendI16(this->nChannels);
+	sb->AppendU16(this->nChannels);
 	sb->Append((const UTF8Char*)"\r\nBit Rate = ");
-	sb->AppendI32(this->bitRate);
+	sb->AppendU32(this->bitRate);
 	sb->Append((const UTF8Char*)"\r\nAlign = ");
-	sb->AppendI32(this->align);
+	sb->AppendU32(this->align);
 	sb->Append((const UTF8Char*)"\r\nOther = ");
-	sb->AppendI32(this->other);
+	sb->AppendU32(this->other);
 	sb->Append((const UTF8Char*)"\r\nInteger Type = ");
 	sb->Append(GetNameIntType(this->intType));
 	sb->Append((const UTF8Char*)"\r\nExtra Size = ");
-	sb->AppendI32(this->extraSize);
+	sb->AppendU32(this->extraSize);
 }
 
 const UTF8Char *Media::AudioFormat::GetNameFormatId(UInt32 formatId)

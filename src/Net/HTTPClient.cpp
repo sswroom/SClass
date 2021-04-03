@@ -35,7 +35,7 @@ Net::HTTPClient::~HTTPClient()
 {
 	if (this->headers)
 	{
-		OSInt i = this->headers->GetCount();
+		UOSInt i = this->headers->GetCount();
 		while (i-- > 0)
 		{
 			MemFree(this->headers->RemoveAt(i));
@@ -52,7 +52,7 @@ Bool Net::HTTPClient::FormBegin()
 	if (this->canWrite && !this->hasForm)
 	{
 		this->hasForm = true;
-		this->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)"application/x-www-form-urlencoded");
+		this->AddContentType((const UTF8Char*)"application/x-www-form-urlencoded");
 		NEW_CLASS(this->formSb, Text::StringBuilderUTF8());
 		return true;
 	}
@@ -85,6 +85,18 @@ void Net::HTTPClient::AddTimeHeader(const UTF8Char *name, Data::DateTime *dt)
 	this->AddHeader(name, sbuff);
 }
 
+void Net::HTTPClient::AddContentType(const UTF8Char *contType)
+{
+	this->AddHeader((const UTF8Char*)"Content-Type", contType);
+}
+
+void Net::HTTPClient::AddContentLength(UOSInt leng)
+{
+	UTF8Char sbuff[32];
+	Text::StrUOSInt(sbuff, leng);
+	this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+}
+
 OSInt Net::HTTPClient::GetRespHeaderCnt()
 {
 	return this->headers->GetCount();
@@ -100,7 +112,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UTF8Char *valueBu
 	UTF8Char buff[256];
 	UTF8Char *s2;
 	UTF8Char *s;
-	OSInt i;
+	UOSInt i;
 	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
 	i = this->headers->GetCount();
 	while (i-- > 0)
@@ -119,7 +131,7 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 	UTF8Char buff[256];
 	UTF8Char *s2;
 	UTF8Char *s;
-	OSInt i;
+	UOSInt i;
 	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
 	i = this->headers->GetCount();
 	while (i-- > 0)
@@ -134,7 +146,7 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 	return false;
 }
 
-Int64 Net::HTTPClient::GetContentLength()
+UInt64 Net::HTTPClient::GetContentLength()
 {
 	this->EndRequest(0, 0);
 	return this->contLeng;
@@ -144,7 +156,7 @@ Int32 Net::HTTPClient::GetContentCodePage()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[2];
-	OSInt arrCnt;
+	UOSInt arrCnt;
 	this->EndRequest(0, 0);
 	if (this->GetRespHeader((const UTF8Char*)"Content-Type", sbuff))
 	{

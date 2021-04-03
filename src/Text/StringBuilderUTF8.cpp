@@ -13,7 +13,11 @@ Text::StringBuilderUTF8::~StringBuilderUTF8()
 
 Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(const UTF8Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	if (s == 0)
+	{
+		return this;
+	}
+	UOSInt slen = Text::StrCharCnt(s);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
@@ -158,7 +162,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sar
 
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
 	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
 	return this;
@@ -166,7 +170,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *
 
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToLower(const UTF8Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
 	this->buffEnd = Text::StrToLower(this->buffEnd, s);
 	return this;

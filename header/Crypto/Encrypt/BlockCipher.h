@@ -20,17 +20,17 @@ namespace Crypto
 
 		protected:
 			UInt8 *iv;
-			OSInt blockSize;
+			UOSInt blockSize;
 			ChainMode cm;
 
 		public:
-			BlockCipher(OSInt blockSize);
+			BlockCipher(UOSInt blockSize);
 			virtual ~BlockCipher();
 
-			virtual OSInt Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam);
-			virtual OSInt Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam);
-			virtual OSInt GetEncBlockSize();
-			virtual OSInt GetDecBlockSize();
+			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam);
+			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam);
+			virtual UOSInt GetEncBlockSize();
+			virtual UOSInt GetDecBlockSize();
 
 			virtual OSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) = 0;
 			virtual OSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) = 0;
@@ -39,5 +39,5 @@ namespace Crypto
 			void SetIV(UInt8 *iv);
 		};
 	}
-};
+}
 #endif

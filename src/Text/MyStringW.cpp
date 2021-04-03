@@ -66,50 +66,55 @@ UTF32Char *Text::StrConcatC(UTF32Char *oriStr, const UTF32Char *strToJoin, UOSIn
 
 UTF16Char *Text::StrConcatASCII(UTF16Char *oriStr, const Char *strToJoin)
 {
-	while ((*oriStr++ = *strToJoin++) != 0);
+	while ((*oriStr++ = (UTF16Char)*strToJoin++) != 0);
 	return oriStr - 1;
 }
 
 UTF32Char *Text::StrConcatASCII(UTF32Char *oriStr, const Char *strToJoin)
 {
-	while ((*oriStr++ = *strToJoin++) != 0);
+	while ((*oriStr++ = (UTF32Char)*strToJoin++) != 0);
 	return oriStr - 1;
 }
 
 UTF16Char *Text::StrInt16(UTF16Char *oriStr, Int16 val)
 {
+	UInt16 uval;
 	if (val < 0)
 	{
-		val = -val;
+		uval = (UInt16)-val;
 		*oriStr++ = '-';
 	}
-	if (val < 10)
+	else
 	{
-		*oriStr++ = MyString_StrDigit100U16[val * 2 + 1];
+		uval = (UInt16)val;
 	}
-	else if (val < 100)
+	if (uval < 10)
 	{
-		WriteNInt32((UTF8Char*)oriStr, ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[val * 2]));
+		*oriStr++ = MyString_StrDigit100U16[uval * 2 + 1];
+	}
+	else if (uval < 100)
+	{
+		WriteNInt32((UTF8Char*)oriStr, ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[uval * 2]));
 		oriStr += 2;
 	}
-	else if (val < 1000)
+	else if (uval < 1000)
 	{
-		WriteNInt32((UTF8Char*)&oriStr[1], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(val % 100) * 2]));
-		*oriStr = MyString_StrDigit100U16[(val / 100) * 2 + 1];
+		WriteNInt32((UTF8Char*)&oriStr[1], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(uval % 100) * 2]));
+		*oriStr = MyString_StrDigit100U16[(uval / 100) * 2 + 1];
 		oriStr += 3;
 	}
-	else if (val < 10000)
+	else if (uval < 10000)
 	{
-		WriteNInt32((UTF8Char*)oriStr, ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(val / 100) * 2]));
-		WriteNInt32((UTF8Char*)&oriStr[2], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(val % 100) * 2]));
+		WriteNInt32((UTF8Char*)oriStr, ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(uval / 100) * 2]));
+		WriteNInt32((UTF8Char*)&oriStr[2], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(uval % 100) * 2]));
 		oriStr += 4;
 	}
 	else
 	{
-		WriteNInt32((UTF8Char*)&oriStr[3], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(val % 100) * 2]));
-		val = val / 100;
-		WriteNInt32((UTF8Char*)&oriStr[1], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(val % 100) * 2]));
-		*oriStr = MyString_StrDigit100U16[(val / 100) * 2 + 1];
+		WriteNInt32((UTF8Char*)&oriStr[3], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(uval % 100) * 2]));
+		uval = uval / 100;
+		WriteNInt32((UTF8Char*)&oriStr[1], ReadNInt32((const UTF8Char*)&MyString_StrDigit100U16[(uval % 100) * 2]));
+		*oriStr = MyString_StrDigit100U16[(uval / 100) * 2 + 1];
 		oriStr += 5;
 	}
 	*oriStr = 0;
@@ -153,38 +158,43 @@ UTF16Char *Text::StrUInt16(UTF16Char *oriStr, UInt16 val)
 
 UTF32Char *Text::StrInt16(UTF32Char *oriStr, Int16 val)
 {
+	UInt16 uval;
 	if (val < 0)
 	{
-		val = -val;
+		uval = (UInt16)-val;
 		*oriStr++ = '-';
 	}
-	if (val < 10)
+	else
 	{
-		*oriStr++ = MyString_StrDigit100U32[val * 2 + 1];
+		uval = (UInt16)val;
 	}
-	else if (val < 100)
+	if (uval < 10)
 	{
-		WriteNInt64((UInt8*)oriStr, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[val * 2]));
+		*oriStr++ = MyString_StrDigit100U32[uval * 2 + 1];
+	}
+	else if (uval < 100)
+	{
+		WriteNInt64((UInt8*)oriStr, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[uval * 2]));
 		oriStr += 2;
 	}
-	else if (val < 1000)
+	else if (uval < 1000)
 	{
-		WriteNInt64((UInt8*)&oriStr[1], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
-		*oriStr = MyString_StrDigit100U32[(val / 100) * 2 + 1];
+		WriteNInt64((UInt8*)&oriStr[1], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(uval % 100) * 2]));
+		*oriStr = MyString_StrDigit100U32[(uval / 100) * 2 + 1];
 		oriStr += 3;
 	}
-	else if (val < 10000)
+	else if (uval < 10000)
 	{
-		WriteNInt64((UInt8*)oriStr, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val / 100) * 2]));
-		WriteNInt64((UInt8*)&oriStr[2], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
+		WriteNInt64((UInt8*)oriStr, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(uval / 100) * 2]));
+		WriteNInt64((UInt8*)&oriStr[2], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(uval % 100) * 2]));
 		oriStr += 4;
 	}
 	else
 	{
-		WriteNInt64((UInt8*)&oriStr[3], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
-		val = val / 100;
-		WriteNInt64((UInt8*)&oriStr[1], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
-		*oriStr = MyString_StrDigit100U32[(val / 100) * 2 + 1];
+		WriteNInt64((UInt8*)&oriStr[3], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(uval % 100) * 2]));
+		uval = uval / 100;
+		WriteNInt64((UInt8*)&oriStr[1], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(uval % 100) * 2]));
+		*oriStr = MyString_StrDigit100U32[(uval / 100) * 2 + 1];
 		oriStr += 5;
 	}
 	*oriStr = 0;
@@ -243,7 +253,7 @@ UTF16Char *Text::StrInt32(UTF16Char *oriStr, Int32 val)
 	else
 	{
 #if 1
-		UInt32 uval = val;
+		UInt32 uval = (UInt32)val;
 		while (uval)
 		{
 			str -= 2;
@@ -455,7 +465,7 @@ UTF16Char *Text::StrInt32S(UTF16Char *oriStr, Int32 val, UTF16Char seperator, OS
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = 0x30 + val % 10;
+		*--str = (UTF16Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -1031,7 +1041,7 @@ UTF16Char *Text::StrToUpper(UTF16Char *oriStr, const UTF16Char *strToJoin)
 	{
 		if (c >= 'a' && c <= 'z')
 		{
-			*oriStr++ = (c - 32);
+			*oriStr++ = (UTF16Char)(c - 32);
 		}
 		else
 		{
@@ -1062,12 +1072,12 @@ UTF32Char *Text::StrToUpper(UTF32Char *oriStr, const UTF32Char *strToJoin)
 
 UTF16Char *Text::StrToLower(UTF16Char *oriStr, const UTF16Char *strToJoin)
 {
-	UTF32Char c;
+	UTF16Char c;
 	while ((c = *strToJoin++) != 0)
 	{
 		if (c >= 'A' && c <= 'Z')
 		{
-			*oriStr++ = (c + 32);
+			*oriStr++ = (UTF16Char)(c + 32);
 		}
 		else
 		{
@@ -1085,7 +1095,7 @@ UTF32Char *Text::StrToLower(UTF32Char *oriStr, const UTF32Char *strToJoin)
 	{
 		if (c >= 'A' && c <= 'Z')
 		{
-			*oriStr++ = (c + 32);
+			*oriStr++ = (UTF32Char)(c + 32);
 		}
 		else
 		{
@@ -1106,7 +1116,7 @@ UTF16Char *Text::StrToCapital(UTF16Char *oriStr, const UTF16Char *strToJoin)
 		{
 			if (lastLetter)
 			{
-				*oriStr++ = (c + 32);
+				*oriStr++ = (UTF16Char)(c + 32);
 			}
 			else
 			{
@@ -1118,7 +1128,7 @@ UTF16Char *Text::StrToCapital(UTF16Char *oriStr, const UTF16Char *strToJoin)
 		{
 			if (!lastLetter)
 			{
-				*oriStr++ = (c - 32);
+				*oriStr++ = (UTF16Char)(c - 32);
 				lastLetter = true;
 			}
 			else
@@ -1146,7 +1156,7 @@ UTF32Char *Text::StrToCapital(UTF32Char *oriStr, const UTF32Char *strToJoin)
 		{
 			if (lastLetter)
 			{
-				*oriStr++ = (c + 32);
+				*oriStr++ = (UTF32Char)(c + 32);
 			}
 			else
 			{
@@ -1158,7 +1168,7 @@ UTF32Char *Text::StrToCapital(UTF32Char *oriStr, const UTF32Char *strToJoin)
 		{
 			if (!lastLetter)
 			{
-				*oriStr++ = (c - 32);
+				*oriStr++ = (UTF32Char)(c - 32);
 				lastLetter = true;
 			}
 			else
@@ -1207,11 +1217,11 @@ Bool Text::StrEqualsICase(const UTF16Char *str1, const UTF16Char *str2)
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 -= 0x20;
+			c1 = (UTF16Char)(c1 - 0x20);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 0x20;
+			c2 = (UTF16Char)(c2 - 0x20);
 		}
 		if (c1 != c2)
 			return false;
@@ -1228,9 +1238,9 @@ Bool Text::StrEqualsICase(const UTF16Char *str1, const UTF16Char*str2, OSInt str
 		c1 = *str1++;
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
-			c1 -= 32;
+			c1 = (UTF16Char)(c1 - 32);
 		if (c2 >= 'a' && c2 <= 'z')
-			c2 -= 32;
+			c2 = (UTF16Char)(c2 - 32);
 		if (c1 != c2)
 			return false;
 	}
@@ -1248,11 +1258,11 @@ Bool Text::StrEqualsICase(const UTF32Char *str1, const UTF32Char *str2)
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 -= 0x20;
+			c1 = (UTF32Char)(c1 - 0x20);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 0x20;
+			c2 = (UTF32Char)(c2 - 0x20);
 		}
 		if (c1 != c2)
 			return false;
@@ -1269,9 +1279,9 @@ Bool Text::StrEqualsICase(const UTF32Char *str1, const UTF32Char *str2, OSInt st
 		c1 = *str1++;
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
-			c1 -= 32;
+			c1 = (UTF32Char)(c1 - 32);
 		if (c2 >= 'a' && c2 <= 'z')
-			c2 -= 32;
+			c2 = (UTF32Char)(c2 - 32);
 		if (c1 != c2)
 			return false;
 	}
@@ -1500,15 +1510,15 @@ Int16 Text::StrHex2Int16(const UTF16Char *str)
 			return outVal;
 		if (c >= '0' && c <= '9')
 		{
-			outVal = (outVal << 4) | (c - 48);
+			outVal = (Int16)((outVal << 4) | (c - 48));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			outVal = (outVal << 4) | (c - 0x37);
+			outVal = (Int16)((outVal << 4) | (c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			outVal = (outVal << 4) | (c - 0x57);
+			outVal = (Int16)((outVal << 4) | (c - 0x57));
 		}
 		else
 		{
@@ -1530,15 +1540,15 @@ Int16 Text::StrHex2Int16(const UTF32Char *str)
 			return outVal;
 		if (c >= '0' && c <= '9')
 		{
-			outVal = (outVal << 4) | (c - 48);
+			outVal = (Int16)((outVal << 4) | (c - 48));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			outVal = (outVal << 4) | (c - 0x37);
+			outVal = (Int16)((outVal << 4) | (c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			outVal = (outVal << 4) | (c - 0x57);
+			outVal = (Int16)((outVal << 4) | (c - 0x57));
 		}
 		else
 		{
@@ -1557,15 +1567,15 @@ UInt8 Text::StrHex2Byte(const UTF16Char *str)
 		return outVal;
 	if (c >= '0' && c <= '9')
 	{
-		outVal = c - 48;
+		outVal = (UInt8)(c - 48);
 	}
 	else if (c >= 'A' && c <= 'F')
 	{
-		outVal = c - 0x37;
+		outVal = (UInt8)(c - 0x37);
 	}
 	else if (c >= 'a' && c <= 'f')
 	{
-		outVal = c - 0x57;
+		outVal = (UInt8)(c - 0x57);
 	}
 	else
 	{
@@ -1576,15 +1586,15 @@ UInt8 Text::StrHex2Byte(const UTF16Char *str)
 		return outVal;
 	if (c >= '0' && c <= '9')
 	{
-		outVal = (outVal << 4) | (c - 48);
+		outVal = (UInt8)((outVal << 4) | (c - 48));
 	}
 	else if (c >= 'A' && c <= 'F')
 	{
-		outVal = (outVal << 4) | (c - 0x37);
+		outVal = (UInt8)((outVal << 4) | (c - 0x37));
 	}
 	else if (c >= 'a' && c <= 'f')
 	{
-		outVal = (outVal << 4) | (c - 0x57);
+		outVal = (UInt8)((outVal << 4) | (c - 0x57));
 	}
 	else
 	{
@@ -1604,15 +1614,15 @@ UInt8 Text::StrHex2Byte(const UTF32Char *str)
 		return outVal;
 	if (c >= '0' && c <= '9')
 	{
-		outVal = c - 48;
+		outVal = (UInt8)(c - 48);
 	}
 	else if (c >= 'A' && c <= 'F')
 	{
-		outVal = c - 0x37;
+		outVal = (UInt8)(c - 0x37);
 	}
 	else if (c >= 'a' && c <= 'f')
 	{
-		outVal = c - 0x57;
+		outVal = (UInt8)(c - 0x57);
 	}
 	else
 	{
@@ -1623,15 +1633,15 @@ UInt8 Text::StrHex2Byte(const UTF32Char *str)
 		return outVal;
 	if (c >= '0' && c <= '9')
 	{
-		outVal = (outVal << 4) | (c - 48);
+		outVal = (UInt8)((outVal << 4) | (c - 48));
 	}
 	else if (c >= 'A' && c <= 'F')
 	{
-		outVal = (outVal << 4) | (c - 0x37);
+		outVal = (UInt8)((outVal << 4) | (c - 0x37));
 	}
 	else if (c >= 'a' && c <= 'f')
 	{
-		outVal = (outVal << 4) | (c - 0x57);
+		outVal = (UInt8)((outVal << 4) | (c - 0x57));
 	}
 	else
 	{
@@ -1654,15 +1664,15 @@ UOSInt Text::StrHex2Bytes(const UTF16Char *str, UInt8 *buff)
 			return outVal;
 		if (c >= '0' && c <= '9')
 		{
-			tmpVal = (c - 48) << 4;
+			tmpVal = (UInt8)((c - 48) << 4);
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			tmpVal = (c - 0x37) << 4;
+			tmpVal = (UInt8)((c - 0x37) << 4);
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			tmpVal = (c - 0x57) << 4;
+			tmpVal = (UInt8)((c - 0x57) << 4);
 		}
 		else if (c == ' ')
 		{
@@ -1682,15 +1692,15 @@ UOSInt Text::StrHex2Bytes(const UTF16Char *str, UInt8 *buff)
 		}
 		if (c >= '0' && c <= '9')
 		{
-			tmpVal |= (c - 48);
+			tmpVal = (UInt8)(tmpVal | (c - 48));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			tmpVal |= (c - 0x37);
+			tmpVal = (UInt8)(tmpVal | (c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			tmpVal |= (c - 0x57);
+			tmpVal = (UInt8)(tmpVal | (c - 0x57));
 		}
 		else
 		{
@@ -1714,15 +1724,15 @@ UOSInt Text::StrHex2Bytes(const UTF32Char *str, UInt8 *buff)
 			return outVal;
 		if (c >= '0' && c <= '9')
 		{
-			tmpVal = (c - 48) << 4;
+			tmpVal = (UInt8)((c - 48) << 4);
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			tmpVal = (c - 0x37) << 4;
+			tmpVal = (UInt8)((c - 0x37) << 4);
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			tmpVal = (c - 0x57) << 4;
+			tmpVal = (UInt8)((c - 0x57) << 4);
 		}
 		else if (c == ' ')
 		{
@@ -1742,15 +1752,15 @@ UOSInt Text::StrHex2Bytes(const UTF32Char *str, UInt8 *buff)
 		}
 		if (c >= '0' && c <= '9')
 		{
-			tmpVal |= (c - 48);
+			tmpVal = (UInt8)(tmpVal | (c - 48));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			tmpVal |= (c - 0x37);
+			tmpVal = (UInt8)(tmpVal | (c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			tmpVal |= (c - 0x57);
+			tmpVal = (UInt8)(tmpVal | (c - 0x57));
 		}
 		else
 		{
@@ -2111,7 +2121,7 @@ Bool Text::StrToUInt8(const UTF32Char *intStr, UInt8 *outVal)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return false;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (retVal & 0xffffff00)
 			return false;
@@ -2127,7 +2137,7 @@ UInt8 Text::StrToUInt8(const UTF16Char *intStr)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return 0;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (retVal & 0xffffff00)
 			return 0;
@@ -2142,7 +2152,7 @@ UInt8 Text::StrToUInt8(const UTF32Char *intStr)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return 0;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (retVal & 0xffffff00)
 			return 0;
@@ -2157,7 +2167,7 @@ Bool Text::StrToUInt16(const UTF16Char *intStr, UInt16 *outVal)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return false;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (retVal & 0xffff0000)
 			return false;
@@ -2173,7 +2183,7 @@ Bool Text::StrToUInt16(const UTF32Char *intStr, UInt16 *outVal)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return false;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (retVal & 0xffff0000)
 			return false;
@@ -2185,7 +2195,7 @@ Bool Text::StrToUInt16(const UTF32Char *intStr, UInt16 *outVal)
 Bool Text::StrToInt16(const UTF16Char *intStr, Int16 *outVal)
 {
 	Bool sign;
-	Int16 retVal = 0;
+	Int32 retVal = 0;
 	if (*intStr == '-')
 	{
 		sign = true;
@@ -2205,14 +2215,14 @@ Bool Text::StrToInt16(const UTF16Char *intStr, Int16 *outVal)
 		{
 			if (*intStr < '0' || *intStr > '9')
 				return false;
-			retVal = retVal * 10 + *intStr - 48;
+			retVal = retVal * 10 + (Int32)*intStr - 48;
 			intStr++;
 		}
 	}
 	if (sign)
-		*outVal = -retVal;
+		*outVal = (Int16)-retVal;
 	else
-		*outVal = retVal;
+		*outVal = (Int16)retVal;
 	return true;
 }
 
@@ -2239,12 +2249,12 @@ Bool Text::StrToInt16(const UTF32Char *intStr, Int16 *outVal)
 		{
 			if (*intStr < '0' || *intStr > '9')
 				return false;
-			retVal = retVal * 10 + *intStr - 48;
+			retVal = (Int16)(retVal * 10 + (Int32)*intStr - 48);
 			intStr++;
 		}
 	}
 	if (sign)
-		*outVal = -retVal;
+		*outVal = (Int16)-retVal;
 	else
 		*outVal = retVal;
 	return true;
@@ -2273,12 +2283,12 @@ Int16 Text::StrToInt16(const UTF16Char *intStr)
 		{
 			if (*intStr < '0' || *intStr > '9')
 				return 0;
-			retVal = retVal * 10 + *intStr - 48;
+			retVal = (Int16)(retVal * 10 + (Int32)*intStr - 48);
 			intStr++;
 		}
 	}
 	if (sign)
-		return -retVal;
+		return (Int16)-retVal;
 	else
 		return retVal;
 }
@@ -2306,12 +2316,12 @@ Int16 Text::StrToInt16(const UTF32Char *intStr)
 		{
 			if (*intStr < '0' || *intStr > '9')
 				return 0;
-			retVal = retVal * 10 + *intStr - 48;
+			retVal = (Int16)(retVal * 10 + (Int32)*intStr - 48);
 			intStr++;
 		}
 	}
 	if (sign)
-		return -retVal;
+		return (Int16)-retVal;
 	else
 		return retVal;
 	return true;
@@ -2338,7 +2348,7 @@ Bool Text::StrToUInt32(const UTF32Char *intStr, UInt32 *outVal)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return false;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 	}
 	*outVal = retVal;
@@ -2353,7 +2363,7 @@ UInt32 Text::StrToUInt32(const UTF16Char *intStr)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return 0;
-		newVal = retVal * 10 + *intStr - 48;
+		newVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (newVal < retVal)
 			return 0;
@@ -2370,7 +2380,7 @@ UInt32 Text::StrToUInt32(const UTF32Char *intStr)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return 0;
-		newVal = retVal * 10 + *intStr - 48;
+		newVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 		if (newVal < retVal)
 			return 0;
@@ -2716,9 +2726,9 @@ OSInt Text::StrIndexOfICase(const UTF16Char *str1, const UTF16Char *str2)
 			if (c2 != c3)
 			{
 				if (c2 >= 'a' && c2 <= 'z')
-					c2 -= 32;
+					c2 = (UTF16Char)(c2 - 32);
 				if (c3 >= 'a' && c3 <= 'z')
-					c3 -= 32;
+					c3 = (UTF16Char)(c3 - 32);
 				if (c2 != c3)
 				{
 					i = 1;
@@ -2800,8 +2810,8 @@ OSInt Text::StrLastIndexOf(const UTF32Char *str1, UTF32Char c)
 
 OSInt Text::StrLastIndexOf(const UTF16Char *str1, const UTF16Char *str2)
 {
-	OSInt leng1 = Text::StrCharCnt(str1);
-	OSInt leng2 = Text::StrCharCnt(str2);
+	UOSInt leng1 = Text::StrCharCnt(str1);
+	UOSInt leng2 = Text::StrCharCnt(str2);
 	if (leng2 > leng1)
 		return -1;
 	const UTF16Char *ptr = str1 + leng1 - leng2;
@@ -2832,8 +2842,8 @@ OSInt Text::StrLastIndexOf(const UTF16Char *str1, const UTF16Char *str2)
 
 OSInt Text::StrLastIndexOf(const UTF32Char *str1, const UTF32Char *str2)
 {
-	OSInt leng1 = Text::StrCharCnt(str1);
-	OSInt leng2 = Text::StrCharCnt(str2);
+	UOSInt leng1 = Text::StrCharCnt(str1);
+	UOSInt leng2 = Text::StrCharCnt(str2);
 	if (leng2 > leng1)
 		return -1;
 	const UTF32Char *ptr = str1 + leng1 - leng2;
@@ -3076,14 +3086,14 @@ const UTF32Char *Text::StrCopyNew(const UTF32Char *str1)
 	return s;
 }
 
-const UTF16Char *Text::StrCopyNewC(const UTF16Char *str1, OSInt strLen)
+const UTF16Char *Text::StrCopyNewC(const UTF16Char *str1, UOSInt strLen)
 {
 	UTF16Char *s = MemAlloc(UTF16Char, strLen + 1);
 	Text::StrConcatC(s, str1, strLen);
 	return s;
 }
 
-const UTF32Char *Text::StrCopyNewC(const UTF32Char *str1, OSInt strLen)
+const UTF32Char *Text::StrCopyNewC(const UTF32Char *str1, UOSInt strLen)
 {
 	UTF32Char *s = MemAlloc(UTF32Char, strLen + 1);
 	Text::StrConcatC(s, str1, strLen);
@@ -3093,7 +3103,7 @@ const UTF32Char *Text::StrCopyNewC(const UTF32Char *str1, OSInt strLen)
 #if _WCHAR_SIZE == 4
 const WChar *Text::StrCopyNewUTF16_W(const UTF16Char *str1)
 {
-	OSInt charCnt = Text::StrCharCnt(str1);
+	UOSInt charCnt = Text::StrCharCnt(str1);
 	WChar *s = MemAlloc(WChar, charCnt + 1);
 	Text::StrUTF16_UTF32(s, str1);
 	return s;
@@ -3101,7 +3111,7 @@ const WChar *Text::StrCopyNewUTF16_W(const UTF16Char *str1)
 #endif
 const UTF8Char *Text::StrToUTF8New(const UTF16Char *str1)
 {
-	OSInt charCnt = Text::StrUTF16_UTF8Cnt(str1, -1);
+	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str1, -1);
 	UTF8Char *s = MemAlloc(UTF8Char, charCnt + 1);
 	Text::StrUTF16_UTF8(s, str1, -1);
 	return s;
@@ -3109,7 +3119,7 @@ const UTF8Char *Text::StrToUTF8New(const UTF16Char *str1)
 
 const UTF8Char *Text::StrToUTF8New(const UTF32Char *str1)
 {
-	OSInt charCnt = Text::StrUTF32_UTF8Cnt(str1, -1);
+	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str1, -1);
 	UTF8Char *s = MemAlloc(UTF8Char, charCnt + 1);
 	Text::StrUTF32_UTF8(s, str1, -1);
 	return s;
@@ -3117,7 +3127,7 @@ const UTF8Char *Text::StrToUTF8New(const UTF32Char *str1)
 
 const WChar *Text::StrToWCharNew(const UTF8Char *str1)
 {
-	OSInt charCnt = Text::StrUTF8_WCharCnt(str1, -1);
+	UOSInt charCnt = Text::StrUTF8_WCharCnt(str1, -1);
 	WChar *s = MemAlloc(WChar, charCnt + 1);
 	Text::StrUTF8_WChar(s, str1, -1, 0);
 	return s;
@@ -3163,11 +3173,11 @@ Bool Text::StrStartsWithICase(const UTF16Char *str1, const UTF16Char *str2)
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 -= 32;
+			c1 = (UTF16Char)(c1 - 32);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 32;
+			c2 = (UTF16Char)(c2 - 32);
 		}
 		if (c1 != c2)
 			return false;
@@ -3207,11 +3217,11 @@ Bool Text::StrStartsWithICase(const UTF16Char *str1, const Char *str2)
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 -= 32;
+			c1 = (UTF16Char)(c1 - 32);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 32;
+			c2 = (Char)(c2 - 32);
 		}
 		if (c1 != (UTF8Char)c2)
 			return false;
@@ -3233,7 +3243,7 @@ Bool Text::StrStartsWithICase(const UTF32Char *str1, const Char *str2)
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 32;
+			c2 = (Char)(c2 - 32);
 		}
 		if (c1 != (UTF8Char)c2)
 			return false;
@@ -3295,11 +3305,11 @@ Bool Text::StrEndsWithICase(const UTF16Char *str1, const UTF16Char *str2)
 		c2 = *--ptr2;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 -= 32;
+			c1 = (UTF16Char)(c1 - 32);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 -= 32;
+			c2 = (UTF16Char)(c2 - 32);
 		}
 		if (c2 != c1)
 			return false;
@@ -3458,7 +3468,7 @@ UOSInt Text::StrReplace(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (sptr - str1) - fromCharCnt + 1) * sizeof(UTF16Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF16Char));
 			}
 			MemCopyNO(sptr, replaceTo, toCharCnt * sizeof(UTF16Char));
 			sptr -= fromCharCnt;
@@ -3494,7 +3504,7 @@ UOSInt Text::StrReplace(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (sptr - str1) - fromCharCnt + 1) * sizeof(UTF32Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF32Char));
 			}
 			MemCopyNO(sptr, replaceTo, toCharCnt * sizeof(UTF32Char));
 			sptr -= fromCharCnt;
@@ -3530,7 +3540,7 @@ UOSInt Text::StrReplaceICase(UTF16Char *str1, const UTF16Char *replaceFrom, cons
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (sptr - str1) - fromCharCnt + 1) * sizeof(UTF16Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF16Char));
 			}
 			MemCopyNO(sptr, replaceTo, toCharCnt * sizeof(UTF16Char));
 			sptr -= fromCharCnt;
@@ -3566,7 +3576,7 @@ UOSInt Text::StrReplaceICase(UTF32Char *str1, const UTF32Char *replaceFrom, cons
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (sptr - str1) - fromCharCnt + 1) * sizeof(UTF32Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF32Char));
 			}
 			MemCopyNO(sptr, replaceTo, toCharCnt * sizeof(UTF32Char));
 			sptr -= fromCharCnt;
@@ -3625,7 +3635,7 @@ UTF32Char *Text::StrToCSVRec(UTF32Char *oriStr, const UTF32Char *str1)
 
 const UTF16Char *Text::StrToNewCSVRec(const UTF16Char *str1)
 {
-	OSInt len = 2;
+	UOSInt len = 2;
 	UTF16Char c;
 	const UTF16Char *sptr = str1;
 	UTF16Char *sptr2;
@@ -3663,7 +3673,7 @@ const UTF16Char *Text::StrToNewCSVRec(const UTF16Char *str1)
 
 const UTF32Char *Text::StrToNewCSVRec(const UTF32Char *str1)
 {
-	OSInt len = 2;
+	UOSInt len = 2;
 	UTF32Char c;
 	const UTF32Char *sptr = str1;
 	UTF32Char *sptr2;
@@ -3900,12 +3910,12 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 			}
 			else if ((b & 0xe0) == 0xc0)
 			{
-				*buff++ = ((b & 0x1f) << 6) | (*bytes & 0x3f);
+				*buff++ = (UTF16Char)(((b & 0x1f) << 6) | (*bytes & 0x3f));
 				bytes++;
 			}
 			else if ((b & 0xf0) == 0xe0)
 			{
-				*buff++ = ((b & 0x0f) << 12) | ((bytes[0] & 0x3f) << 6) | (bytes[1] & 0x3f);
+				*buff++ = (UTF16Char)(((b & 0x0f) << 12) | ((bytes[0] & 0x3f) << 6) | (bytes[1] & 0x3f));
 				bytes += 2;
 			}
 			else if ((b & 0xf8) == 0xf0)
@@ -3913,8 +3923,8 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 				code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[0] & 0x3f) << 12) | ((bytes[1] & 0x3f) << 6) | (bytes[2] & 0x3f);
 				if (code >= 0x10000)
 				{
-					*buff++ = ((code - 0x10000) >> 10) + 0xd800;
-					*buff++ = (code & 0x3ff) + 0xdc00;
+					*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+					*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
 				}
 				else
 				{
@@ -3927,8 +3937,8 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 				code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[0] & 0x3f) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((bytes[2] & 0x3f) << 6) | (bytes[3] & 0x3f);
 				if (code >= 0x10000)
 				{
-					*buff++ = ((code - 0x10000) >> 10) + 0xd800;
-					*buff++ = (code & 0x3ff) + 0xdc00;
+					*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+					*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
 				}
 				else
 				{
@@ -3945,8 +3955,8 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 				code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[0] & 0x3f) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((bytes[3] & 0x3f) << 6) | (bytes[4] & 0x3f);
 				if (code >= 0x10000)
 				{
-					*buff++ = ((code - 0x10000) >> 10) + 0xd800;
-					*buff++ = (code & 0x3ff) + 0xdc00;
+					*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+					*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
 				}
 				else
 				{
@@ -3957,7 +3967,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 		}
 		if (byteConv)
 		{
-			*byteConv = (Int32)(bytes - oriBytes);
+			*byteConv = (UOSInt)(bytes - oriBytes);
 		}
 		*buff = 0;
 		return buff;
@@ -3980,7 +3990,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				*buff++ = ((UTF32Char)(b & 0x1f) << 6) | (Int32)(*bytes & 0x3f);
+				*buff++ = (UTF16Char)(((UTF32Char)(b & 0x1f) << 6) | (Int32)(*bytes & 0x3f));
 				bytes++;
 				byteSize -= 2;
 			}
@@ -3991,7 +4001,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				*buff++ = ((UTF32Char)(b & 0x0f) << 12) | ((UTF32Char)(bytes[0] & 0x3f) << 6) | (UTF32Char)(bytes[1] & 0x3f);
+				*buff++ = (UTF16Char)(((UTF32Char)(b & 0x0f) << 12) | ((UTF32Char)(bytes[0] & 0x3f) << 6) | (UTF32Char)(bytes[1] & 0x3f));
 				bytes += 2;
 				byteSize -= 3;
 			}
@@ -4005,8 +4015,8 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 				code = ((UTF32Char)(b & 0x7) << 18) | ((UTF32Char)(bytes[0] & 0x3f) << 12) | ((UTF32Char)(bytes[1] & 0x3f) << 6) | (UTF32Char)(bytes[2] & 0x3f);
 				if (code >= 0x10000)
 				{
-					*buff++ = ((code - 0x10000) >> 10) + 0xd800;
-					*buff++ = (code & 0x3ff) + 0xdc00;
+					*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+					*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
 				}
 				else
 				{
@@ -4025,8 +4035,8 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 				code = ((UTF32Char)(b & 0x3) << 24) | ((UTF32Char)(bytes[0] & 0x3f) << 18) | ((UTF32Char)(bytes[1] & 0x3f) << 12) | ((UTF32Char)(bytes[2] & 0x3f) << 6) | (Int32)(bytes[3] & 0x3f);
 				if (code >= 0x10000)
 				{
-					*buff++ = ((code - 0x10000) >> 10) + 0xd800;
-					*buff++ = (code & 0x3ff) + 0xdc00;
+					*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+					*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
 				}
 				else
 				{
@@ -4050,8 +4060,8 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 				code = ((UTF32Char)(b & 0x1) << 30) | ((UTF32Char)(bytes[0] & 0x3f) << 24) | ((UTF32Char)(bytes[1] & 0x3f) << 18) | ((UTF32Char)(bytes[2] & 0x3f) << 12) | ((UTF32Char)(bytes[3] & 0x3f) << 6) | (Int32)(bytes[4] & 0x3f);
 				if (code >= 0x10000)
 				{
-					*buff++ = ((code - 0x10000) >> 10) + 0xd800;
-					*buff++ = (code & 0x3ff) + 0xdc00;
+					*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+					*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
 				}
 				else
 				{
@@ -4067,7 +4077,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OSInt byt
 		}
 		if (byteConv)
 		{
-			*byteConv = bytes - oriBytes;
+			*byteConv = (UOSInt)(bytes - oriBytes);
 		}
 		*buff = 0;
 		return buff;
@@ -4220,7 +4230,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 		}
 		if (byteConv)
 		{
-			*byteConv = (Int32)(bytes - oriBytes);
+			*byteConv = (UOSInt)(bytes - oriBytes);
 		}
 		*buff = 0;
 		return buff;
@@ -4243,7 +4253,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				*buff++ = ((UInt32)(b & 0x1f) << 6) | (UInt32)(*bytes & 0x3f);
+				*buff++ = (UTF32Char)(((UInt32)(b & 0x1f) << 6) | (UInt32)(*bytes & 0x3f));
 				bytes++;
 				byteSize -= 2;
 			}
@@ -4254,7 +4264,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				*buff++ = ((UInt32)(b & 0x0f) << 12) | ((UInt32)(bytes[0] & 0x3f) << 6) | (UInt32)(bytes[1] & 0x3f);
+				*buff++ = (UTF32Char)(((UInt32)(b & 0x0f) << 12) | ((UInt32)(bytes[0] & 0x3f) << 6) | (UInt32)(bytes[1] & 0x3f));
 				bytes += 2;
 				byteSize -= 3;
 			}
@@ -4265,7 +4275,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				code = ((UInt32)(b & 0x7) << 18) | ((UInt32)(bytes[0] & 0x3f) << 12) | ((UInt32)(bytes[1] & 0x3f) << 6) | (UInt32)(bytes[2] & 0x3f);
+				code = (UTF32Char)(((UInt32)(b & 0x7) << 18) | ((UInt32)(bytes[0] & 0x3f) << 12) | ((UInt32)(bytes[1] & 0x3f) << 6) | (UInt32)(bytes[2] & 0x3f));
 				*buff++ = code;
 				bytes += 3;
 				byteSize -= 4;
@@ -4277,7 +4287,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				code = ((UInt32)(b & 0x3) << 24) | ((UInt32)(bytes[0] & 0x3f) << 18) | ((UInt32)(bytes[1] & 0x3f) << 12) | ((UInt32)(bytes[2] & 0x3f) << 6) | (UInt32)(bytes[3] & 0x3f);
+				code = (UTF32Char)(((UInt32)(b & 0x3) << 24) | ((UInt32)(bytes[0] & 0x3f) << 18) | ((UInt32)(bytes[1] & 0x3f) << 12) | ((UInt32)(bytes[2] & 0x3f) << 6) | (UInt32)(bytes[3] & 0x3f));
 				*buff++ = code;
 				bytes += 4;
 				byteSize -= 5;
@@ -4289,7 +4299,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 					bytes--;
 					break;
 				}
-				code = ((UInt32)(b & 0x1) << 30) | ((UInt32)(bytes[0] & 0x3f) << 24) | ((UInt32)(bytes[1] & 0x3f) << 18) | ((UInt32)(bytes[2] & 0x3f) << 12) | ((UInt32)(bytes[3] & 0x3f) << 6) | (UInt32)(bytes[4] & 0x3f);
+				code = (UTF32Char)(((UInt32)(b & 0x1) << 30) | ((UInt32)(bytes[0] & 0x3f) << 24) | ((UInt32)(bytes[1] & 0x3f) << 18) | ((UInt32)(bytes[2] & 0x3f) << 12) | ((UInt32)(bytes[3] & 0x3f) << 6) | (UInt32)(bytes[4] & 0x3f));
 				*buff++ = code;
 				bytes += 5;
 				byteSize -= 6;
@@ -4301,7 +4311,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OSInt byt
 		}
 		if (byteConv)
 		{
-			*byteConv = bytes - oriBytes;
+			*byteConv = (UOSInt)(bytes - oriBytes);
 		}
 		*buff = 0;
 		return buff;
@@ -4413,12 +4423,12 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strL
 			}
 			if (c < 0x80)
 			{
-				*bytes++ = (UInt8)c;
+				*bytes++ = (UTF8Char)c;
 			}
 			else if (c < 0x800)
 			{
-				*bytes++ = 0xc0 | (c >> 6);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c >= 0xd800 && c < 0xdc00 && wstr[0] >= 0xdc00 && wstr[0] < 0xe000)
 			{
@@ -4426,34 +4436,34 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strL
 				wstr++;
 				if (code < 0x200000)
 				{
-					*bytes++ = 0xf0 | (code >> 18);
-					*bytes++ = 0x80 | ((code >> 12) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 6) & 0x3f);
-					*bytes++ = 0x80 | (code & 0x3f);
+					*bytes++ = (UTF8Char)(0xf0 | (code >> 18));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
 				}
 				else if (code < 0x4000000)
 				{
-					*bytes++ = 0xf8 | (code >> 24);
-					*bytes++ = 0x80 | ((code >> 18) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 12) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 6) & 0x3f);
-					*bytes++ = 0x80 | (code & 0x3f);
+					*bytes++ = (UTF8Char)(0xf8 | (code >> 24));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
 				}
 				else
 				{
-					*bytes++ = 0xfc | (code >> 30);
-					*bytes++ = 0x80 | ((code >> 24) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 18) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 12) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 6) & 0x3f);
-					*bytes++ = 0x80 | (code & 0x3f);
+					*bytes++ = (UTF8Char)(0xfc | (code >> 30));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 24) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
 				}
 			}
 			else
 			{
-				*bytes++ = 0xe0 | (c >> 12);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 		}
 		return bytes;
@@ -4465,12 +4475,12 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strL
 			c = *wstr++;
 			if (c < 0x80)
 			{
-				*bytes++ = (UInt8)c;
+				*bytes++ = (UTF8Char)c;
 			}
 			else if (c < 0x800)
 			{
-				*bytes++ = 0xc0 | (c >> 6);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c >= 0xd800 && c < 0xdc00 && wstr[0] >= 0xdc00 && wstr[0] < 0xe000 && strLen > 0)
 			{
@@ -4479,34 +4489,34 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strL
 				strLen--;
 				if (code < 0x200000)
 				{
-					*bytes++ = 0xf0 | (code >> 18);
-					*bytes++ = 0x80 | ((code >> 12) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 6) & 0x3f);
-					*bytes++ = 0x80 | (code & 0x3f);
+					*bytes++ = (UTF8Char)(0xf0 | (code >> 18));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
 				}
 				else if (code < 0x4000000)
 				{
-					*bytes++ = 0xf8 | (code >> 24);
-					*bytes++ = 0x80 | ((code >> 18) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 12) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 6) & 0x3f);
-					*bytes++ = 0x80 | (code & 0x3f);
+					*bytes++ = (UTF8Char)(0xf8 | (code >> 24));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
 				}
 				else
 				{
-					*bytes++ = 0xfc | (code >> 30);
-					*bytes++ = 0x80 | ((code >> 24) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 18) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 12) & 0x3f);
-					*bytes++ = 0x80 | ((code >> 6) & 0x3f);
-					*bytes++ = 0x80 | (code & 0x3f);
+					*bytes++ = (UTF8Char)(0xfc | (code >> 30));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 24) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
 				}
 			}
 			else
 			{
-				*bytes++ = 0xe0 | (c >> 12);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 		}
 		return bytes;
@@ -4603,42 +4613,42 @@ UTF8Char* Text::StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr, OSInt strL
 			}
 			if (c < 0x80)
 			{
-				*bytes++ = (UInt8)c;
+				*bytes++ = (UTF8Char)c;
 			}
 			else if (c < 0x800)
 			{
-				*bytes++ = 0xc0 | (c >> 6);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c < 0x10000)
 			{
-				*bytes++ = 0xe0 | (c >> 12);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c < 0x200000)
 			{
-				*bytes++ = 0xf0 | (c >> 18);
-				*bytes++ = 0x80 | ((c >> 12) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xf0 | (c >> 18));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c < 0x4000000)
 			{
-				*bytes++ = 0xf8 | (c >> 24);
-				*bytes++ = 0x80 | ((c >> 18) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 12) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xf8 | (c >> 24));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else
 			{
-				*bytes++ = 0xfc | (c >> 30);
-				*bytes++ = 0x80 | ((c >> 24) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 18) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 12) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xfc | (c >> 30));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 		}
 		return bytes;
@@ -4650,42 +4660,42 @@ UTF8Char* Text::StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr, OSInt strL
 			c = *wstr++;
 			if (c < 0x80)
 			{
-				*bytes++ = (UInt8)c;
+				*bytes++ = (UTF8Char)c;
 			}
 			else if (c < 0x800)
 			{
-				*bytes++ = 0xc0 | (c >> 6);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c < 0x10000)
 			{
-				*bytes++ = 0xe0 | (c >> 12);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c < 0x200000)
 			{
-				*bytes++ = 0xf0 | (c >> 18);
-				*bytes++ = 0x80 | ((c >> 12) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xf0 | (c >> 18));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (c < 0x4000000)
 			{
-				*bytes++ = 0xf8 | (c >> 24);
-				*bytes++ = 0x80 | ((c >> 18) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 12) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xf8 | (c >> 24));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else
 			{
-				*bytes++ = 0xfc | (c >> 30);
-				*bytes++ = 0x80 | ((c >> 24) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 18) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 12) & 0x3f);
-				*bytes++ = 0x80 | ((c >> 6) & 0x3f);
-				*bytes++ = 0x80 | (c & 0x3f);
+				*bytes++ = (UTF8Char)(0xfc | (c >> 30));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 		}
 		return bytes;
@@ -4825,12 +4835,12 @@ UTF16Char *Text::StrUTF32_UTF16(UTF16Char *oriStr, const UTF32Char *strToJoin)
 	{
 		if (c >= 0x10000)
 		{
-			*oriStr++ = (0xd800 + (c >> 10));
-			*oriStr++ = (c & 0x3ff) + 0xdc00;
+			*oriStr++ = (UTF16Char)(0xd800 + (c >> 10));
+			*oriStr++ = (UTF16Char)((c & 0x3ff) + 0xdc00);
 		}
 		else
 		{
-			*oriStr++ = c;
+			*oriStr++ = (UTF16Char)c;
 		}
 	}
 	*oriStr = 0;
@@ -4845,12 +4855,12 @@ UTF16Char *Text::StrUTF32_UTF16(UTF16Char *oriStr, const UTF32Char *strToJoin, U
 		c = *strToJoin++;
 		if (c >= 0x10000)
 		{
-			*oriStr++ = (0xd800 + (c >> 10));
-			*oriStr++ = (c & 0x3ff) + 0xdc00;
+			*oriStr++ = (UTF16Char)(0xd800 + (c >> 10));
+			*oriStr++ = (UTF16Char)((c & 0x3ff) + 0xdc00);
 		}
 		else
 		{
-			*oriStr++ = c;
+			*oriStr++ = (UTF16Char)c;
 		}
 	}
 	*oriStr = 0;
@@ -4903,27 +4913,27 @@ const UTF8Char *Text::StrReadChar(const UTF8Char *sptr, UTF32Char *outChar)
 	}
 	else if ((b & 0xe0) == 0xc0)
 	{
-		*outChar = ((UInt32)(b & 0x1f) << 6) | (UInt32)(*sptr & 0x3f);
+		*outChar = (UTF32Char)(((UInt32)(b & 0x1f) << 6) | (UInt32)(*sptr & 0x3f));
 		sptr++;
 	}
 	else if ((b & 0xf0) == 0xe0)
 	{
-		*outChar = ((UInt32)(b & 0x0f) << 12) | ((UInt32)(sptr[0] & 0x3f) << 6) | (UInt32)(sptr[1] & 0x3f);
+		*outChar = (UTF32Char)(((UInt32)(b & 0x0f) << 12) | ((UInt32)(sptr[0] & 0x3f) << 6) | (UInt32)(sptr[1] & 0x3f));
 		sptr += 2;
 	}
 	else if ((b & 0xf8) == 0xf0)
 	{
-		*outChar = ((UInt32)(b & 0x7) << 18) | ((UInt32)(sptr[0] & 0x3f) << 12) | ((UInt32)(sptr[1] & 0x3f) << 6) | (UInt32)(sptr[2] & 0x3f);
+		*outChar = (UTF32Char)(((UInt32)(b & 0x7) << 18) | ((UInt32)(sptr[0] & 0x3f) << 12) | ((UInt32)(sptr[1] & 0x3f) << 6) | (UInt32)(sptr[2] & 0x3f));
 		sptr += 3;
 	}
 	else if ((b & 0xfc) == 0xf8)
 	{
-		*outChar = ((UInt32)(b & 0x3) << 24) | ((UInt32)(sptr[0] & 0x3f) << 18) | ((UInt32)(sptr[1] & 0x3f) << 12) | ((UInt32)(sptr[2] & 0x3f) << 6) | (UInt32)(sptr[3] & 0x3f);
+		*outChar = (UTF32Char)(((UInt32)(b & 0x3) << 24) | ((UInt32)(sptr[0] & 0x3f) << 18) | ((UInt32)(sptr[1] & 0x3f) << 12) | ((UInt32)(sptr[2] & 0x3f) << 6) | (UInt32)(sptr[3] & 0x3f));
 		sptr += 4;
 	}
 	else if ((b & 0xfe) == 0xfc)
 	{
-		*outChar = ((UInt32)(b & 0x1) << 30) | ((UInt32)(sptr[0] & 0x3f) << 24) | ((UInt32)(sptr[1] & 0x3f) << 18) | ((UInt32)(sptr[2] & 0x3f) << 12) | ((UInt32)(sptr[3] & 0x3f) << 6) | (UInt32)(sptr[4] & 0x3f);
+		*outChar = (UTF32Char)(((UInt32)(b & 0x1) << 30) | ((UInt32)(sptr[0] & 0x3f) << 24) | ((UInt32)(sptr[1] & 0x3f) << 18) | ((UInt32)(sptr[2] & 0x3f) << 12) | ((UInt32)(sptr[3] & 0x3f) << 6) | (UInt32)(sptr[4] & 0x3f));
 		sptr += 5;
 	}
 	else
@@ -4956,38 +4966,38 @@ UTF8Char *Text::StrWriteChar(UTF8Char *sptr, UTF32Char c)
 	}
 	else if (c < 0x800)
 	{
-		*sptr++ = 0xc0 | (c >> 6);
-		*sptr++ = 0x80 | (c & 0x3f);
+		*sptr++ = (UTF8Char)(0xc0 | (c >> 6));
+		*sptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 	}
 	else if (c < 0x10000)
 	{
-		*sptr++ = 0xe0 | (c >> 12);
-		*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-		*sptr++ = 0x80 | (c & 0x3f);
+		*sptr++ = (UTF8Char)(0xe0 | (c >> 12));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 	}
 	else if (c < 0x200000)
 	{
-		*sptr++ = 0xf0 | (c >> 18);
-		*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-		*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-		*sptr++ = 0x80 | (c & 0x3f);
+		*sptr++ = (UTF8Char)(0xf0 | (c >> 18));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 	}
 	else if (c < 0x4000000)
 	{
-		*sptr++ = 0xf8 | (c >> 24);
-		*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-		*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-		*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-		*sptr++ = 0x80 | (c & 0x3f);
+		*sptr++ = (UTF8Char)(0xf8 | (c >> 24));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 	}
 	else
 	{
-		*sptr++ = 0xfc | (c >> 30);
-		*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-		*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-		*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-		*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-		*sptr++ = 0x80 | (c & 0x3f);
+		*sptr++ = (UTF8Char)(0xfc | (c >> 30));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+		*sptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 	}
 	return sptr;
 }
@@ -4996,12 +5006,12 @@ UTF16Char *Text::StrWriteChar(UTF16Char *sptr, UTF32Char c)
 {
 	if (c >= 0x10000)
 	{
-		*sptr++ = (0xd800 + (c >> 10));
-		*sptr++ = (c & 0x3ff) + 0xdc00;
+		*sptr++ = (UTF16Char)(0xd800 + (c >> 10));
+		*sptr++ = (UTF16Char)((c & 0x3ff) + 0xdc00);
 	}
 	else
 	{
-		*sptr++ = c;
+		*sptr++ = (UTF16Char)c;
 	}
 	return sptr;
 }

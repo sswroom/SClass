@@ -41,7 +41,7 @@ Bool Math::Polyline3D::JoinVector(Math::Vector2D *vec)
 
 void Math::Polyline3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	OSInt i = this->nPoint;
+	UOSInt i = this->nPoint;
 	while (i-- > 0)
 	{
 		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[(i << 1)], this->pointArr[(i << 1) + 1], this->altitudes[i], &this->pointArr[(i << 1)], &this->pointArr[(i << 1) + 1], &this->altitudes[i]);

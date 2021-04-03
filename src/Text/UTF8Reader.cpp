@@ -11,7 +11,7 @@ void Text::UTF8Reader::FillBuffer()
 {
 	if (this->stm->CanSeek())
 	{
-		Int64 currPos = ((IO::SeekableStream*)this->stm)->GetPosition();
+		UInt64 currPos = ((IO::SeekableStream*)this->stm)->GetPosition();
 		if (this->lastPos != currPos)
 		{
 			this->buffSize = 0;
@@ -90,7 +90,7 @@ void Text::UTF8Reader::Close()
 
 UTF32Char Text::UTF8Reader::Peek()
 {
-	UTF32Char ret;
+	UInt32 ret;
 	if (this->currOfst < this->buffSize)
 	{
 		UTF8Char c = this->buff[this->currOfst];
@@ -103,7 +103,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 2)
 			{
 				ret = ((UInt32)(c & 0x1f) << 6) | (UInt32)(this->buff[this->currOfst + 1] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf0) == 0xe0)
@@ -111,7 +111,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 3)
 			{
 				ret = ((UInt32)(c & 0x0f) << 12) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 2] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf8) == 0xf0)
@@ -119,7 +119,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 4)
 			{
 				ret = ((UInt32)(c & 0x7) << 18) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 3] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xfc) == 0xf8)
@@ -127,7 +127,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 5)
 			{
 				ret = ((UInt32)(c & 0x3) << 24) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 4] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else
@@ -135,7 +135,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 6)
 			{
 				ret = ((UInt32)(c & 0x1) << 30) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 24) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 4] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 5] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 	}
@@ -152,7 +152,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 2)
 			{
 				ret = ((UInt32)(c & 0x1f) << 6) | (UInt32)(this->buff[this->currOfst + 1] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf0) == 0xe0)
@@ -160,7 +160,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 3)
 			{
 				ret = ((UInt32)(c & 0x0f) << 12) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 2] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf8) == 0xf0)
@@ -168,7 +168,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 4)
 			{
 				ret = ((UInt32)(c & 0x7) << 18) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 3] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xfc) == 0xf8)
@@ -176,7 +176,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 5)
 			{
 				ret = ((UInt32)(c & 0x3) << 24) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 4] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else
@@ -184,7 +184,7 @@ UTF32Char Text::UTF8Reader::Peek()
 			if (this->buffSize - this->currOfst >= 6)
 			{
 				ret = ((UInt32)(c & 0x1) << 30) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 24) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 4] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 5] & 0x3f);
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 	}
@@ -193,7 +193,7 @@ UTF32Char Text::UTF8Reader::Peek()
 
 UTF32Char Text::UTF8Reader::Read()
 {
-	UTF32Char ret;
+	UInt32 ret;
 	if (this->currOfst < this->buffSize)
 	{
 		UTF8Char c = this->buff[this->currOfst];
@@ -208,7 +208,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x1f) << 6) | (UInt32)(this->buff[this->currOfst + 1] & 0x3f);
 				this->currOfst += 2;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf0) == 0xe0)
@@ -217,7 +217,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x0f) << 12) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 2] & 0x3f);
 				this->currOfst += 3;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf8) == 0xf0)
@@ -226,7 +226,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x7) << 18) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 3] & 0x3f);
 				this->currOfst += 4;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xfc) == 0xf8)
@@ -235,7 +235,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x3) << 24) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 4] & 0x3f);
 				this->currOfst += 5;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else
@@ -244,7 +244,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x1) << 30) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 24) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 4] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 5] & 0x3f);
 				this->currOfst += 6;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 	}
@@ -263,7 +263,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x1f) << 6) | (UInt32)(this->buff[this->currOfst + 1] & 0x3f);
 				this->currOfst += 2;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf0) == 0xe0)
@@ -272,7 +272,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x0f) << 12) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 2] & 0x3f);
 				this->currOfst += 3;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xf8) == 0xf0)
@@ -281,7 +281,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x7) << 18) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 3] & 0x3f);
 				this->currOfst += 4;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else if ((c & 0xfc) == 0xf8)
@@ -290,7 +290,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x3) << 24) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 4] & 0x3f);
 				this->currOfst += 5;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 		else
@@ -299,7 +299,7 @@ UTF32Char Text::UTF8Reader::Read()
 			{
 				ret = ((UInt32)(c & 0x1) << 30) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 24) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 4] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 5] & 0x3f);
 				this->currOfst += 6;
-				return ret;
+				return (UTF32Char)ret;
 			}
 		}
 	}

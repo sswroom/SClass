@@ -5,11 +5,11 @@
 #include "Media/SilentSource.h"
 #include "Text/MyString.h"
 
-Media::SilentSource::SilentSource(UInt32 sampleRate, UInt32 nChannels, UInt32 bitCount, const UTF8Char *name, UInt64 sampleCnt)
+Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bitCount, const UTF8Char *name, UInt64 sampleCnt)
 {
 	this->format.frequency = sampleRate;
 	this->format.bitpersample = bitCount;
-	this->format.align = nChannels * bitCount >> 3;
+	this->format.align = nChannels * (UInt32)bitCount >> 3;
 	this->format.extraSize = 0;
 	this->format.extra = 0;
 	this->format.formatId = 1;
@@ -55,28 +55,32 @@ Bool Media::SilentSource::CanSeek()
 
 Int32 Media::SilentSource::GetStreamTime()
 {
+	if (this->sampleCnt == 0)
+	{
+		return -1;
+	}
 	return (Int32)(this->sampleCnt * 1000 / this->format.frequency);
 }
 
-Int32 Media::SilentSource::SeekToTime(Int32 time)
+UInt32 Media::SilentSource::SeekToTime(UInt32 time)
 {
-	this->currSample = time * (Int64)this->format.frequency / 1000;
+	this->currSample = time * (UInt64)this->format.frequency / 1000;
 	this->readOfst = this->currSample * this->format.align;
-	return (Int32)(this->currSample * 1000 / this->format.frequency);
+	return (UInt32)(this->currSample * 1000 / this->format.frequency);
 }
 
-Bool Media::SilentSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	Int32 streamTime = GetStreamTime();
-	if (trimTimeEnd == -1)
+	if (trimTimeEnd == (UInt32)-1)
 	{
-		streamTime -= trimTimeStart;
+		streamTime -= (Int32)trimTimeStart;
 	}
 	else
 	{
-		streamTime = trimTimeEnd - trimTimeStart;
+		streamTime = (Int32)(trimTimeEnd - trimTimeStart);
 	}
-	this->sampleCnt = streamTime * this->format.frequency / 1000;
+	this->sampleCnt = (UInt64)streamTime * this->format.frequency / 1000;
 	if (syncTime)
 	{
 		*syncTime = 0;
@@ -107,7 +111,15 @@ UOSInt Media::SilentSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 {
 	UOSInt readSize = blkSize - (blkSize % this->format.align);
 	UOSInt i = 0;
-	UInt64 endOfst = this->sampleCnt * this->format.align;
+	UInt64 endOfst;
+	if (this->sampleCnt == 0)
+	{
+		endOfst = this->readOfst + readSize;
+	}
+	else
+	{
+		endOfst = this->sampleCnt * this->format.align;
+	}
 	if (this->readOfst >= endOfst)
 	{
 		readSize = 0;
@@ -162,14 +174,18 @@ UOSInt Media::SilentSource::GetMinBlockSize()
 	return this->format.align;
 }
 
-Int32 Media::SilentSource::GetCurrTime()
+UInt32 Media::SilentSource::GetCurrTime()
 {
-	Int32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
-	return (Int32)(this->readOfst * 1000 / this->format.frequency / blk);
+	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
+	return (UInt32)(this->readOfst * 1000 / this->format.frequency / blk);
 }
 
 Bool Media::SilentSource::IsEnd()
 {
+	if (this->sampleCnt == 0)
+	{
+		return false;
+	}
 	UInt64 endOfst = this->sampleCnt * this->format.align;
 	if (this->readOfst >= endOfst)
 	{

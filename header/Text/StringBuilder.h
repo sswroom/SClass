@@ -29,12 +29,12 @@ namespace Text
 
 		StringBuilder<T> *AppendHex8(UInt8 iVal);
 		StringBuilder<T> *AppendHex16(UInt16 iVal);
-		StringBuilder<T> *AppendHex24(Int32 iVal);
+		StringBuilder<T> *AppendHex24(UInt32 iVal);
 		StringBuilder<T> *AppendHex32(UInt32 iVal);
 		StringBuilder<T> *AppendHex32V(UInt32 iVal);
-		StringBuilder<T> *AppendHex64(Int64 iVal);
-		StringBuilder<T> *AppendHex64V(Int64 iVal);
-		StringBuilder<T> *AppendHexOS(OSInt iVal);
+		StringBuilder<T> *AppendHex64(UInt64 iVal);
+		StringBuilder<T> *AppendHex64V(UInt64 iVal);
+		StringBuilder<T> *AppendHexOS(UOSInt iVal);
 		StringBuilder<T> *AppendHex(const UInt8 *buff, UOSInt buffSize, T seperator, LineBreakType lineBreak);
 
 		void ClearStr();
@@ -186,7 +186,7 @@ namespace Text
 		return this;
 	}
 
-	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex24(Int32 iVal)
+	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex24(UInt32 iVal)
 	{
 		this->AllocLeng(6);
 		this->buffEnd = Text::StrHexVal24(this->buffEnd, iVal);
@@ -196,32 +196,32 @@ namespace Text
 	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex32(UInt32 iVal)
 	{
 		this->AllocLeng(8);
-		this->buffEnd = Text::StrHexVal32(this->buffEnd, (Int32)iVal);
+		this->buffEnd = Text::StrHexVal32(this->buffEnd, iVal);
 		return this;
 	}
 
 	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex32V(UInt32 iVal)
 	{
 		this->AllocLeng(8);
-		this->buffEnd = Text::StrHexVal32V(this->buffEnd, (Int32)iVal);
+		this->buffEnd = Text::StrHexVal32V(this->buffEnd, iVal);
 		return this;
 	}
 
-	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex64(Int64 iVal)
+	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex64(UInt64 iVal)
 	{
 		this->AllocLeng(16);
 		this->buffEnd = Text::StrHexVal64(this->buffEnd, iVal);
 		return this;
 	}
 
-	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex64V(Int64 iVal)
+	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHex64V(UInt64 iVal)
 	{
 		this->AllocLeng(16);
 		this->buffEnd = Text::StrHexVal64V(this->buffEnd, iVal);
 		return this;
 	}
 
-	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHexOS(OSInt iVal)
+	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendHexOS(UOSInt iVal)
 	{
 	#if _OSINT_SIZE == 64
 		return AppendHex64(iVal);
@@ -312,7 +312,7 @@ namespace Text
 	template<class T> void Text::StringBuilder<T>::AllocLeng(UOSInt leng)
 	{
 		UOSInt slen = leng * sizeof(T);
-		UOSInt currSize = (this->buffEnd - this->buff + (UOSInt)1) * sizeof(T);
+		UOSInt currSize = (UOSInt)(this->buffEnd - this->buff + 1) * sizeof(T);
 		while (slen + currSize > this->buffSize)
 		{
 			this->buffSize <<= 1;
@@ -326,7 +326,7 @@ namespace Text
 
 	template<class T> UOSInt Text::StringBuilder<T>::GetLength()
 	{
-		return this->buffEnd - this->buff;
+		return (UOSInt)(this->buffEnd - this->buff);
 	}
 
 	template<class T> void Text::StringBuilder<T>::RemoveChars(UOSInt cnt)

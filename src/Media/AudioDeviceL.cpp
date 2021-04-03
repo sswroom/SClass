@@ -11,7 +11,7 @@ OSInt Media::AudioDevice::GetDeviceCount()
 
 UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, OSInt devNo)
 {
-	return Media::ALSARenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"ALSA: "), devNo);
+	return Media::ALSARenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"ALSA: "), (Int32)devNo);
 }
 
 Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(const UTF8Char *devName)
@@ -32,7 +32,7 @@ Media::AudioDevice::AudioDevice()
 
 Media::AudioDevice::~AudioDevice()
 {
-	OSInt i;
+	UOSInt i;
 	Media::IAudioRenderer *renderer;
 
 	BindAudio(0);
@@ -68,8 +68,8 @@ Bool Media::AudioDevice::AddDevice(const UTF8Char *devName)
 
 Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Media::IAudioRenderer *renderer;
 	if (this->rendererList->GetCount() == 0)
 	{

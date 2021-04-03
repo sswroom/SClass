@@ -31,7 +31,7 @@ Int32 Media::Decoder::ADecoderBase::GetStreamTime()
 	return 0;
 }
 
-Int32 Media::Decoder::ADecoderBase::GetCurrTime()
+UInt32 Media::Decoder::ADecoderBase::GetCurrTime()
 {
 	if (this->sourceAudio)
 		return this->sourceAudio->GetCurrTime();
@@ -45,7 +45,7 @@ Bool Media::Decoder::ADecoderBase::IsEnd()
 	return true;
 }
 
-Bool Media::Decoder::ADecoderBase::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::Decoder::ADecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	if (this->sourceAudio)
 		return this->sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);

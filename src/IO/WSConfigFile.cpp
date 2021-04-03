@@ -26,7 +26,7 @@ IO::ConfigFile *IO::WSConfigFile::Parse(const UTF8Char *fileName)
 		i = sb.IndexOf('#');
 		if (i >= 0)
 		{
-			sb.RemoveChars(sb.GetLength() - i);
+			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
 		sb.TrimWSCRLF();
 		if (Text::StrSplitWS(sarr, 2, sb.ToString()) == 2)

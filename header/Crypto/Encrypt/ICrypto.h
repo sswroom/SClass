@@ -10,11 +10,11 @@ namespace Crypto
 		public:
 			virtual ~ICrypto() {};
 
-			virtual OSInt Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam) = 0; //outBuff = null to get the size
-			virtual OSInt Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam) = 0; //outBuff = null to get the size
+			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam) = 0; //outBuff = null to get the size
+			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam) = 0; //outBuff = null to get the size
 
-			virtual OSInt GetEncBlockSize() = 0;
-			virtual OSInt GetDecBlockSize() = 0;
+			virtual UOSInt GetEncBlockSize() = 0;
+			virtual UOSInt GetDecBlockSize() = 0;
 		};
 	}
 }

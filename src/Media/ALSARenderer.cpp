@@ -27,14 +27,14 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	Media::AudioFormat af;
 	Sync::Event *evt;
 	Int32 i;
-	Int32 refStart;
-	Int32 audStartTime;	
+	UInt32 refStart;
+	UInt32 audStartTime;	
 	UOSInt readBuffLeng = BUFFLENG;
 	UOSInt outBuffLeng;
-	OSInt outBitPerSample;
+	UOSInt outBitPerSample;
 	UOSInt minLeng;
-	Int32 thisT;
-	Int32 lastT;
+	UInt32 thisT;
+	UInt32 lastT;
 
 	NEW_CLASS(evt, Sync::Event((const UTF8Char*)"Media.ALSARenderer.PlayThread.evt"));
 
@@ -80,11 +80,11 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	lastT = thisT = GetCurrTime(me->hand);
 	refStart = thisT - audStartTime;
 
-	OSInt buffSize[2];
-	OSInt outSize[2];
+	UOSInt buffSize[2];
+	UOSInt outSize[2];
 	UInt8 *outBuff[2];
 	OSInt nextBlock;
-	OSInt readSize = 0;
+	UOSInt readSize = 0;
 	UInt8 *readBuff = 0;
 	Bool isFirst = true;
 	if (me->dataConv)
@@ -129,16 +129,16 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			isFirst = false;
 			if (me->buffTime)
 			{
-				i = me->buffTime * af.frequency / 1000;
+				i = (Int32)(me->buffTime * af.frequency / 1000);
 			}
 			else
 			{
-				i = af.frequency >> 1;
+				i = (Int32)(af.frequency >> 1);
 			}
 		}
 		else
 		{
-			i = snd_pcm_avail_update((snd_pcm_t*)me->hand);
+			i = (Int32)snd_pcm_avail_update((snd_pcm_t*)me->hand);
 		}
 		if (i < 0)
 		{
@@ -187,7 +187,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				}
 			}
 		}
-		i = i * (outBitPerSample >> 3) * af.nChannels;
+		i = (Int32)((UInt32)i * (outBitPerSample >> 3) * af.nChannels);
 		while (i > 0)
 		{
 			if (buffSize[nextBlock] == 0)
@@ -196,11 +196,11 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				me->audsrc->Stop();
 				break;
 			}
-			if (i >= buffSize[nextBlock] - outSize[nextBlock])
+			if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
 			{
 				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
 //				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
-				i -= buffSize[nextBlock] - outSize[nextBlock];
+				i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
 
 				if (me->dataConv)
 				{
@@ -218,9 +218,9 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			}
 			else
 			{
-				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], i / (outBitPerSample >> 3) / af.nChannels);
+				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (UInt32)i / (outBitPerSample >> 3) / af.nChannels);
 //				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
-				outSize[nextBlock] += i;
+				outSize[nextBlock] += (UInt32)i;
 				i = 0;
 				break;
 			}
@@ -263,9 +263,9 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	return 0;
 }
 
-Int32 Media::ALSARenderer::GetCurrTime(void *hand)
+UInt32 Media::ALSARenderer::GetCurrTime(void *hand)
 {
-	Int32 ret = 0;
+	UInt32 ret = 0;
 	Int32 err;
 	snd_pcm_status_t *status;
 	snd_pcm_status_alloca(&status);
@@ -280,7 +280,7 @@ Int32 Media::ALSARenderer::GetCurrTime(void *hand)
 		snd_timestamp_t tsstart;
 		snd_pcm_status_get_tstamp(status, &tscurr);
 		snd_pcm_status_get_trigger_tstamp(status, &tsstart);
-		ret = (tscurr.tv_sec * 1000LL + (tscurr.tv_usec / 1000LL));
+		ret = (UInt32)(tscurr.tv_sec * 1000LL + (tscurr.tv_usec / 1000LL));
 	}
 	return ret;
 }

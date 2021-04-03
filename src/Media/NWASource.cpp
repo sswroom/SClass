@@ -32,9 +32,9 @@ Int32 Media::NWASource::GetStreamTime()
 	return this->sampleCount * 1000 / this->format.frequency / this->format.nChannels;
 }
 
-Int32 Media::NWASource::SeekToTime(Int32 time)
+UInt32 Media::NWASource::SeekToTime(UInt32 time)
 {
-	Int32 blkSample = this->blockSize / this->format.nChannels;
+	UInt32 blkSample = this->blockSize / this->format.nChannels;
 	this->currBlock = time * this->format.frequency / blkSample / 1000;
 	return this->currBlock * blkSample * 1000 / this->format.frequency;
 }
@@ -228,8 +228,8 @@ UOSInt Media::NWASource::GetMinBlockSize()
 	return this->blockSize * (this->format.bitpersample / 8);
 }
 
-Int32 Media::NWASource::GetCurrTime()
+UInt32 Media::NWASource::GetCurrTime()
 {
-	Int32 blkSample = this->blockSize / this->format.nChannels;
+	UInt32 blkSample = this->blockSize / this->format.nChannels;
 	return this->currBlock * blkSample * 1000 / this->format.frequency;
 }

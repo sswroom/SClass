@@ -436,7 +436,7 @@ Bool DB::DBManager::RestoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DB
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		aes.Decrypt(fileBuff, (OSInt)len, decBuff, 0);
+		OSInt decLen = aes.Decrypt(fileBuff, (OSInt)len, decBuff, 0);
 		decBuff[(OSInt)len] = 0;
 		sarr[1] = decBuff;
 		while (true)

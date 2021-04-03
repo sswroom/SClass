@@ -33,12 +33,12 @@ namespace Media
 
 			virtual void GetFormat(AudioFormat *format);
 
-			virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 			virtual void Stop();
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 			virtual UOSInt GetMinBlockSize();
 		};
-	};
-};
+	}
+}
 #endif

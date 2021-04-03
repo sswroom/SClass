@@ -26,9 +26,9 @@ namespace Net
 
 		virtual Int32 GetStreamTime(); //ms, -1 = infinity
 		virtual Bool CanSeek();
-		virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool IsRealTimeSrc();
-		virtual Bool TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime);
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
 		virtual OSInt GetDataSeekCount();
 

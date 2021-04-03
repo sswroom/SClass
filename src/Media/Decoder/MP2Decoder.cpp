@@ -564,7 +564,7 @@ void Media::Decoder::MP2Decoder::GetFormat(AudioFormat *format)
 	}
 }
 
-Int32 Media::Decoder::MP2Decoder::SeekToTime(Int32 time)
+UInt32 Media::Decoder::MP2Decoder::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

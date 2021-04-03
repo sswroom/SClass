@@ -400,13 +400,13 @@ Bool Manage::CPUInfo::GetInfoValue(OSInt index, Text::StringBuilderUTF *sb)
 	case 10:
 		{
 			__cpuid(cpuInfo, 1);
-			AppendNameInfo10(cpuInfo[2], cpuInfo[3], sb);
+			AppendNameInfo10((UInt32)cpuInfo[2], (UInt32)cpuInfo[3], sb);
 		}
 		return true;
 	case 11:
 		{
 			__cpuid(cpuInfo, 1);
-			AppendNameInfo11(cpuInfo[2], cpuInfo[3], sb);
+			AppendNameInfo11((UInt32)cpuInfo[2], (UInt32)cpuInfo[3], sb);
 		}
 		return true;
 	case 12:
@@ -1127,7 +1127,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureDesc(OSInt index)
 	return desc[index];
 }
 
-void Manage::CPUInfo::AppendNameInfo10(Int32 ecxv, Int32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
 {
 	if (edxv & 1)
 		sb->Append((const UTF8Char*)"FPU ");
@@ -1185,7 +1185,7 @@ void Manage::CPUInfo::AppendNameInfo10(Int32 ecxv, Int32 edxv, Text::StringBuild
 		sb->Append((const UTF8Char*)"RDRAND ");
 }
 
-void Manage::CPUInfo::AppendNameInfo11(Int32 ecxv, Int32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
 {
 	if (edxv & 2)
 		sb->Append((const UTF8Char*)"VME ");

@@ -96,7 +96,7 @@ Bool Media::Decoder::VDecoderBase::CanSeek()
 	return false;
 }
 
-Int32 Media::Decoder::VDecoderBase::SeekToTime(Int32 time)
+UInt32 Media::Decoder::VDecoderBase::SeekToTime(UInt32 time)
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->SeekToTime(time);
@@ -110,7 +110,7 @@ Bool Media::Decoder::VDecoderBase::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::Decoder::VDecoderBase::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::Decoder::VDecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);

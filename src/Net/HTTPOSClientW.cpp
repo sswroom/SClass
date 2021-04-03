@@ -21,6 +21,8 @@
 #include <winhttp.h>
 #include <stdio.h>
 
+#define VERBOSE 1
+
 #define BUFFSIZE 2048
 
 typedef struct
@@ -192,7 +194,7 @@ UOSInt Net::HTTPOSClient::Write(const UInt8 *buff, UOSInt size)
 	{
 		if (!this->writing)
 		{
-			this->reqMstm->Write((UInt8*)"\r\n", 2);
+//			this->reqMstm->Write((UInt8*)"\r\n", 2);
 		}
 		writing = true;
 		return this->reqMstm->Write(buff, size);
@@ -448,6 +450,11 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 			DWORD feature = WINHTTP_DISABLE_KEEP_ALIVE;
 			WinHttpSetOption(data->hRequest, WINHTTP_OPTION_DISABLE_FEATURE, &feature, sizeof(feature));
 		}
+		if (https)
+		{
+			unsigned long flags = SECURITY_FLAG_IGNORE_UNKNOWN_CA | SECURITY_FLAG_IGNORE_CERT_CN_INVALID | SECURITY_FLAG_IGNORE_CERT_DATE_INVALID;
+			WinHttpSetOption(data->hRequest, WINHTTP_OPTION_SECURITY_FLAGS, &flags, sizeof(flags));
+		}
 	}
 	return true;
 }
@@ -494,10 +501,8 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		Double t1;
 		if (this->hasForm)
 		{
-			UTF8Char sbuff[32];
-			OSInt len = this->formSb->GetLength();
-			Text::StrOSInt(sbuff, len);
-			this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+			UOSInt len = this->formSb->GetLength();
+			this->AddContentLength(len);
 			this->hasForm = false;
 			this->Write((UInt8*)this->formSb->ToString(), len);
 			DEL_CLASS(this->formSb);
@@ -527,6 +532,9 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		if (!succ)
 		{
 			DWORD err = GetLastError();
+#if defined(VERBOSE)
+			printf("HTTPOSClientW: WinHttpSendRequest Error = %ld\r\n", err);
+#endif
 			if (err == ERROR_WINHTTP_CLIENT_AUTH_CERT_NEEDED)
 			{
 				succ = false;

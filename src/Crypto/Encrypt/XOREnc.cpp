@@ -9,10 +9,10 @@ Crypto::Encrypt::XOREnc::~XOREnc()
 {
 }
 
-OSInt Crypto::Encrypt::XOREnc::Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::XOREnc::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
 {
 	UInt8 lastByte = 0;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < inSize)
 	{
 		outBuff[i] = inBuff[i] ^ lastByte;
@@ -21,11 +21,11 @@ OSInt Crypto::Encrypt::XOREnc::Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 
 	return inSize;
 }
 
-OSInt Crypto::Encrypt::XOREnc::Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::XOREnc::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
 {
 	UInt8 lastByte = 0;
 	UInt8 lastLastByte = 0;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < inSize)
 	{
 		lastLastByte = inBuff[i];
@@ -36,12 +36,12 @@ OSInt Crypto::Encrypt::XOREnc::Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 
 	return inSize;
 }
 
-OSInt Crypto::Encrypt::XOREnc::GetEncBlockSize()
+UOSInt Crypto::Encrypt::XOREnc::GetEncBlockSize()
 {
 	return 1;
 }
 
-OSInt Crypto::Encrypt::XOREnc::GetDecBlockSize()
+UOSInt Crypto::Encrypt::XOREnc::GetDecBlockSize()
 {
 	return 1;
 }

@@ -206,12 +206,12 @@ Int32 Net::RTPAACHandler::GetStreamTime()
 	return -1;
 }
 
-Int32 Net::RTPAACHandler::SeekToTime(Int32 time)
+UInt32 Net::RTPAACHandler::SeekToTime(UInt32 time)
 {
 	return 0;
 }
 
-Bool Net::RTPAACHandler::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPAACHandler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }
@@ -277,7 +277,7 @@ UOSInt Net::RTPAACHandler::GetMinBlockSize()
 	return 1;
 }
 
-Int32 Net::RTPAACHandler::GetCurrTime()
+UInt32 Net::RTPAACHandler::GetCurrTime()
 {
 	return 0;
 }

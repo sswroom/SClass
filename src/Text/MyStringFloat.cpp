@@ -35,9 +35,9 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 		val = val * 100.0;
 		iVal = (Int32)val;
 		val = val - iVal;
-		oriStr[0] = MyString_StrDigit100U8[iVal * 2];
+		oriStr[0] = (Char)MyString_StrDigit100U8[iVal * 2];
 		oriStr[1] = '.';
-		oriStr[2] = MyString_StrDigit100U8[iVal * 2 + 1];
+		oriStr[2] = (Char)MyString_StrDigit100U8[iVal * 2 + 1];
 		oriStr += 3;
 		i--;
 
@@ -71,7 +71,7 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 		Char *tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
-		UInt32 uex = ex;
+		UInt32 uex = (UInt32)ex;
 		while (true)
 		{
 			tmpStr -= 2;
@@ -128,17 +128,17 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 			val = val * 100.0;
 			iVal = (Int32)val;
 			val = val - iVal;
-			oriStr[0] = MyString_StrDigit100U8[iVal * 2];
+			oriStr[0] = (Char)MyString_StrDigit100U8[iVal * 2];
 			if (val > 1.0e-14)
 			{
 				oriStr[1] = '.';
-				oriStr[2] = MyString_StrDigit100U8[iVal * 2 + 1];
+				oriStr[2] = (Char)MyString_StrDigit100U8[iVal * 2 + 1];
 				oriStr += 3;
 			}
 			else if (MyString_StrDigit100W[iVal * 2 + 1] != '0')
 			{
 				oriStr[1] = '.';
-				oriStr[2] = MyString_StrDigit100U8[iVal * 2 + 1];
+				oriStr[2] = (Char)MyString_StrDigit100U8[iVal * 2 + 1];
 				oriStr += 3;
 			}
 			else
@@ -248,7 +248,7 @@ UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)
 		UTF16Char *tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
-		UInt32 uex = ex;
+		UInt32 uex = (UInt32)ex;
 		while (true)
 		{
 			tmpStr -= 2;
@@ -421,7 +421,7 @@ UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
 		UTF32Char *tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
-		UInt32 uex = ex;
+		UInt32 uex = (UInt32)ex;
 		while (true)
 		{
 			tmpStr -= 2;
@@ -636,7 +636,7 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 		}
 		val = val * 100.0;
 		iVal = (Int32)val;
-		buff[0] = MyString_StrDigit100U8[iVal * 2];
+		buff[0] = (Char)MyString_StrDigit100U8[iVal * 2];
 		buff++;
 	}
 	else
@@ -1200,12 +1200,12 @@ UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
 			}
 			else
 			{
-				*oriStr++ = c;
+				*oriStr++ = (UTF16Char)c;
 			}
 		}
 		else
 		{
-			*oriStr++ = c;
+			*oriStr++ = (UTF16Char)c;
 		}
 	}
 
@@ -1420,7 +1420,7 @@ UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
 					else
 					{
 						buff++;
-						*oriStr++ = c;
+						*oriStr++ = (UTF16Char)c;
 						digit--;
 						if (digit != 0 && (digit % groupCnt) == 0)
 						{
@@ -1450,7 +1450,7 @@ UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
 					else
 					{
 						buff++;
-						*oriStr++ = c;
+						*oriStr++ = (UTF16Char)c;
 						digit--;
 					}
 				}
@@ -1490,7 +1490,7 @@ UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
 				{
 					buff++;
 					afterDigitZ--;
-					*oriStr++ = c;
+					*oriStr++ = (UTF16Char)c;
 				}
 			}
 			while (afterDigitS > 0)
@@ -1500,7 +1500,7 @@ UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
 					break;
 				buff++;
 				afterDigitS--;
-				*oriStr++ = c;
+				*oriStr++ = (UTF16Char)c;
 			}
 		}
 

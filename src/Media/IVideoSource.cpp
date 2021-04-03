@@ -13,7 +13,7 @@ Media::IVideoSource::~IVideoSource()
 {
 	if (this->propBuffs)
 	{
-		OSInt i = this->propBuffs->GetCount();
+		UOSInt i = this->propBuffs->GetCount();
 		while (i-- > 0)
 		{
 			MemFree(this->propBuffs->GetItem(i));

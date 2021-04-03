@@ -55,12 +55,12 @@ Int32 Media::AudioBlockSource::GetStreamTime()
 	return (Int32)(this->blockCnt * (Int64)this->samplePerBlock * 1000 / this->format.frequency);
 }
 
-Int32 Media::AudioBlockSource::SeekToTime(Int32 time)
+UInt32 Media::AudioBlockSource::SeekToTime(UInt32 time)
 {
 	if (this->samplePerBlock == 0)
 	{
-		Int64 byteLeft;
-		Int64 byteOfst = time * (Int64)this->format.bitRate / 8000;
+		UInt64 byteLeft;
+		UInt64 byteOfst = time * (UInt64)this->format.bitRate / 8000;
 		byteLeft = byteOfst;
 		this->readBlock = this->blockCnt;
 
@@ -77,16 +77,16 @@ Int32 Media::AudioBlockSource::SeekToTime(Int32 time)
 			i++;
 		}
 		byteOfst -= byteLeft;
-		return (Int32)(byteOfst * 8000 / this->format.bitRate);
+		return (UInt32)(byteOfst * 8000 / this->format.bitRate);
 	}
 	else
 	{
 		this->readBlock = MulDiv32(time, this->format.frequency, this->samplePerBlock * 1000);
-		return (Int32)(this->readBlock * (Int64)this->samplePerBlock * 1000 / this->format.frequency);
+		return (UInt32)(this->readBlock * (Int64)this->samplePerBlock * 1000 / this->format.frequency);
 	}
 }
 
-Bool Media::AudioBlockSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AudioBlockSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	/////////////////////////////////////////
 	return false;
@@ -129,9 +129,9 @@ UOSInt Media::AudioBlockSource::GetMinBlockSize()
 	return this->maxBlockSize;
 }
 
-Int32 Media::AudioBlockSource::GetCurrTime()
+UInt32 Media::AudioBlockSource::GetCurrTime()
 {
-	return (Int32)(this->readBlock * (UInt64)this->samplePerBlock * 1000 / this->format.frequency);
+	return (UInt32)(this->readBlock * (UInt64)this->samplePerBlock * 1000 / this->format.frequency);
 }
 
 Bool Media::AudioBlockSource::IsEnd()

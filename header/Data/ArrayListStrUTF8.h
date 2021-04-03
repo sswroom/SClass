@@ -8,7 +8,7 @@ namespace Data
 	{
 	public:
 		ArrayListStrUTF8();
-		ArrayListStrUTF8(OSInt Capacity);
+		ArrayListStrUTF8(UOSInt capacity);
 
 		virtual Data::ArrayList<const UTF8Char*> *Clone();
 

@@ -37,9 +37,9 @@ namespace Media
 
 			virtual Int32 GetStreamTime();
 			virtual Bool CanSeek();
-			virtual Int32 SeekToTime(Int32 time);
+			virtual UInt32 SeekToTime(UInt32 time);
 			virtual Bool IsRealTimeSrc();
-			virtual Bool TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime);
+			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
 			virtual OSInt GetDataSeekCount();
 

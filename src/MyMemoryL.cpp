@@ -156,7 +156,7 @@ void MemSetLogFile(const UTF8Char *logFile)
 	}
 	if (logFile)
 	{
-		OSInt size = Text::StrCharCnt(logFile);
+		UOSInt size = Text::StrCharCnt(logFile);
 		mcLogFile = (const UTF8Char *)malloc((size + 1) * sizeof(UTF8Char));
 		Text::StrConcat((UTF8Char*)mcLogFile, logFile);
 	}

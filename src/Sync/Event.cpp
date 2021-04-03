@@ -319,8 +319,8 @@ Bool Sync::Event::Wait(UOSInt timeout)
 		else
 		{
 			clock_gettime(CLOCK_REALTIME, &outtime);
-			outtime.tv_sec += timeout / 1000;
-			outtime.tv_nsec += (timeout % 1000) * 1000000;
+			outtime.tv_sec += (time_t)(timeout / 1000);
+			outtime.tv_nsec += (long)((timeout % 1000) * 1000000);
 			if (outtime.tv_nsec >= 1000000000)
 			{
 				outtime.tv_nsec -= 1000000000;
@@ -349,8 +349,8 @@ Bool Sync::Event::Wait(UOSInt timeout)
 		else
 		{
 			clock_gettime(CLOCK_REALTIME, &outtime);
-			outtime.tv_sec += timeout / 1000;
-			outtime.tv_nsec += (timeout % 1000) * 1000000;
+			outtime.tv_sec += (time_t)(timeout / 1000);
+			outtime.tv_nsec += (long)((timeout % 1000) * 1000000);
 			if (outtime.tv_nsec >= 1000000000)
 			{
 				outtime.tv_nsec -= 1000000000;

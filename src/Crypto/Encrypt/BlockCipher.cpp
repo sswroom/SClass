@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Encrypt/BlockCipher.h"
 
-Crypto::Encrypt::BlockCipher::BlockCipher(OSInt blockSize)
+Crypto::Encrypt::BlockCipher::BlockCipher(UOSInt blockSize)
 {
 	this->blockSize = blockSize;
 	this->cm = CM_ECB;
@@ -15,10 +15,10 @@ Crypto::Encrypt::BlockCipher::~BlockCipher()
 	MemFree(this->iv);
 }
 
-OSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
 {
 	UInt8 *blk;
-	OSInt blkCnt = 0;
+	UOSInt blkCnt = 0;
 	switch (this->cm)
 	{
 	case CM_ECB:
@@ -129,10 +129,10 @@ OSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, OSInt inSize, U
 	}
 }
 
-OSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
 {
 	UInt8 *blk;
-	OSInt blkCnt = 0;
+	UOSInt blkCnt = 0;
 	switch (this->cm)
 	{
 	case CM_ECB:
@@ -206,12 +206,12 @@ OSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, OSInt inSize, U
 	}
 }
 
-OSInt Crypto::Encrypt::BlockCipher::GetEncBlockSize()
+UOSInt Crypto::Encrypt::BlockCipher::GetEncBlockSize()
 {
 	return this->blockSize;
 }
 
-OSInt Crypto::Encrypt::BlockCipher::GetDecBlockSize()
+UOSInt Crypto::Encrypt::BlockCipher::GetDecBlockSize()
 {
 	return this->blockSize;
 }

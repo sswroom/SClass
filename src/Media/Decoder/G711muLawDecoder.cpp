@@ -59,7 +59,7 @@ void Media::Decoder::G711muLawDecoder::GetFormat(AudioFormat *format)
 	}
 }
 
-Int32 Media::Decoder::G711muLawDecoder::SeekToTime(Int32 time)
+UInt32 Media::Decoder::G711muLawDecoder::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

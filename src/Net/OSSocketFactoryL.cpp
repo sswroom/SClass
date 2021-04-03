@@ -985,7 +985,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
 	Net::SocketUtil::AddressInfo addr;
-	OSInt i;
+	UOSInt i;
 	UTF8Char *sarr[2];
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hosts", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
@@ -1499,7 +1499,7 @@ OSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<Net::SocketFactory::P
 
 void Net::OSSocketFactory::FreePortInfos(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList)
 {
-	OSInt i = portInfoList->GetCount();
+	UOSInt i = portInfoList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(portInfoList->RemoveAt(i));
@@ -1538,7 +1538,7 @@ OSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::
 
 void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList)
 {
-	OSInt i = portInfoList->GetCount();
+	UOSInt i = portInfoList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(portInfoList->RemoveAt(i));

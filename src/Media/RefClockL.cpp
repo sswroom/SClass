@@ -12,7 +12,7 @@ Media::RefClock::~RefClock()
 {
 }
 
-void Media::RefClock::Start(Int32 currTime)
+void Media::RefClock::Start(UInt32 currTime)
 {
 	struct timeval t;
 	struct timezone tz;
@@ -28,15 +28,15 @@ void Media::RefClock::Stop()
 	started = false;
 }
 
-Int32 Media::RefClock::GetCurrTime()
+UInt32 Media::RefClock::GetCurrTime()
 {
 	if (started)
 	{
-		Int32 thisTime;
+		UInt32 thisTime;
 		struct timeval t;
 		struct timezone tz;
 		gettimeofday(&t, &tz);
-		thisTime = this->refStartTime + ((t.tv_sec * (Int64)1000000 + t.tv_usec) - this->refStart) / 1000;
+		thisTime = (UInt32)(this->refStartTime + ((t.tv_sec * (Int64)1000000 + t.tv_usec) - this->refStart) / 1000);
 		return thisTime;
 	}
 	else

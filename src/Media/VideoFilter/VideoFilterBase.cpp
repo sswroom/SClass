@@ -148,7 +148,7 @@ Bool Media::VideoFilter::VideoFilterBase::CanSeek()
 	return false;
 }
 
-Int32 Media::VideoFilter::VideoFilterBase::SeekToTime(Int32 time)
+UInt32 Media::VideoFilter::VideoFilterBase::SeekToTime(UInt32 time)
 {
 	if (this->srcVideo)
 	{
@@ -166,7 +166,7 @@ Bool Media::VideoFilter::VideoFilterBase::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::VideoFilter::VideoFilterBase::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	if (this->srcVideo)
 	{

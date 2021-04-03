@@ -154,16 +154,16 @@ Int32 Media::MPAStreamSource::GetStreamTime()
 	return this->pbc->GetStreamTime();
 }
 
-Int32 Media::MPAStreamSource::SeekToTime(Int32 time)
+UInt32 Media::MPAStreamSource::SeekToTime(UInt32 time)
 {
-	Int32 t = this->pbc->SeekToTime(time);
+	UInt32 t = this->pbc->SeekToTime(time);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->SetStreamTime(t);
 	return t;
 }
 
-Bool Media::MPAStreamSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::MPAStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	/////////////////////////////////
 	return false;
@@ -371,9 +371,9 @@ UOSInt Media::MPAStreamSource::GetMinBlockSize()
 	return size;
 }
 
-Int32 Media::MPAStreamSource::GetCurrTime()
+UInt32 Media::MPAStreamSource::GetCurrTime()
 {
-	return (Int32)(this->buffSample * 8000LL / this->fmt->bitRate);
+	return (UInt32)(this->buffSample * 8000LL / this->fmt->bitRate);
 }
 
 Bool Media::MPAStreamSource::IsEnd()

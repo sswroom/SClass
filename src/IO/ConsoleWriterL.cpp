@@ -124,7 +124,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	struct termios newIOS;
 	tcgetattr(0, &oldIOS);
 	newIOS = oldIOS;
-	newIOS.c_lflag &= ~(ICANON | ECHO);
+	newIOS.c_lflag = newIOS.c_lflag & (tcflag_t)~(ICANON | ECHO);
 	tcsetattr(0, TCSANOW, &newIOS);
 
 	printf("\x1b[6n");

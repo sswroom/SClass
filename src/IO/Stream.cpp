@@ -15,7 +15,7 @@ void *IO::Stream::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 
 UOSInt IO::Stream::EndRead(void *reqData, Bool toWait)
 {
-	return (OSInt)reqData;
+	return (UOSInt)reqData;
 }
 
 void IO::Stream::CancelRead(void *reqData)
@@ -24,14 +24,14 @@ void IO::Stream::CancelRead(void *reqData)
 
 void *IO::Stream::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
-	OSInt retVal = Write(buff, size);
+	UOSInt retVal = Write(buff, size);
 	evt->Set();
 	return (void*)retVal;
 }
 
 UOSInt IO::Stream::EndWrite(void *reqData, Bool toWait)
 {
-	return (OSInt)reqData;
+	return (UOSInt)reqData;
 }
 
 void IO::Stream::CancelWrite(void *reqData)

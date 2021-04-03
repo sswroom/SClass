@@ -563,7 +563,7 @@ Bool Media::M2VStreamSource::CanSeek()
 	return this->pbc->CanSeek();
 }
 
-Int32 Media::M2VStreamSource::SeekToTime(Int32 time)
+UInt32 Media::M2VStreamSource::SeekToTime(UInt32 time)
 {
 	this->frameBuffSize = 0;
 	return this->pbc->SeekToTime(time);
@@ -574,7 +574,7 @@ Bool Media::M2VStreamSource::IsRealTimeSrc()
 	return this->pbc->IsRealTimeSrc();
 }
 
-Bool Media::M2VStreamSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::M2VStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	///////////////////////////////////////////
 	return false;
