@@ -554,6 +554,14 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path)
 	{
 		return PT_FILE;
 	}
+	else if (S_ISCHR(s.st_mode))
+	{
+		return PT_FILE;
+	}
+	else if (S_ISBLK(s.st_mode))
+	{
+		return PT_FILE;
+	}
 	else if (S_ISDIR(s.st_mode))
 	{
 		return PT_DIRECTORY;
