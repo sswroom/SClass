@@ -8,6 +8,8 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+
 void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 {
 	if (Text::StrStartsWith(cmd, (const UTF8Char*)"$PMTK"))
@@ -285,7 +287,12 @@ Bool IO::Device::MTKGPSNMEA::ReadLogBlock(OSInt addr, UInt8 *buff)
 		else
 		{
 			if (++retryCnt >= 3)
-				return false;
+			{
+				//return false;
+				ofst += 1024;
+				retryCnt = 0;
+				printf("MTKGPSNMEA: Skipping block %d\r\n", addr + ofst);
+			}
 		}
 	}
 	return true;
@@ -581,7 +588,10 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 			{
 				bitmask = *(Int32*)&block[currOfst + 8];
 				if ((bitmask & 0x3f) != 0x3f)
+				{
+					printf("MTKGPSNMEA: wrong bitmask\r\n");
 					return false;
+				}
 			}
 			currOfst += 16;
 		}
@@ -715,7 +725,10 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 				currOfst += 8;
 			}
 			if (block[currOfst] != '*')
+			{
+				printf("MTKGPSNMEA: not star\r\n");
 				return false;
+			}
 			UInt8 chk = 0;
 			while (recStart < currOfst)
 			{
