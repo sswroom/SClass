@@ -773,6 +773,11 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	}
 	if (this->surface == 0)
 	{
+		if (gimg->info->atype == Media::AT_NO_ALPHA)
+		{
+			Bool revOrder;
+			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(&revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+		}
 		cairo_save((cairo_t*)this->cr);
 		cairo_translate((cairo_t*)this->cr, tlx + this->left, tly + this->top);
 		cairo_scale((cairo_t*)this->cr, 1, 1);
