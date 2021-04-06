@@ -8,6 +8,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDBTool.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
 #include "Math/Math.h"
@@ -18,6 +19,8 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
+
+#include <stdio.h>
 
 void DB::ReadingDBTool::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev)
 {
@@ -674,7 +677,30 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 		{
 			return 0;
 		}
-
+	}
+	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	{
+		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name from sqlite_master where type = 'table'");
+		if (r)
+		{
+			UOSInt ret = 0;
+			Text::StringBuilderUTF8 sb;
+			while (r->ReadNext())
+			{
+				sb.ClearStr();
+				if (r->GetStr(0, &sb))
+				{
+					arr->Add(Text::StrCopyNew(sb.ToString()));
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	else
 	{
@@ -910,6 +936,25 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 	{
 		return 0;
 	}
+	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		sql.AppendCmd((const UTF8Char*)"select sql from sqlite_master where type='table' and name=");
+		sql.AppendStrUTF8(tableName);
+		DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+		if (r == 0)
+		{
+			return 0;
+		}
+		Text::StringBuilderUTF8 sb;
+		if (r->ReadNext())
+		{
+			r->GetStr(0, &sb);
+		}
+		this->db->CloseReader(r);
+		printf("%s\r\n", sb.ToString());
+		return 0;
+	}
 	else
 	{
 		return 0;
@@ -966,6 +1011,20 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 			return 0;
 		}
 
+	}
+	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	{
+		Text::StringBuilderUTF8 sb;
+		const UTF8Char *name = this->db->GetSourceNameObj();
+		OSInt i = Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
+		sb.Append(&name[i + 1]);
+		i = sb.IndexOf('.');
+		if (i >= 0)
+		{
+			sb.RemoveChars(sb.GetLength() - i);
+		}
+		arr->Add(Text::StrCopyNew(sb.ToString()));
+		return 1;
 	}
 	else
 	{

@@ -382,6 +382,14 @@ void DB::SQLiteReader::UpdateColTypes()
 			{
 				this->colTypes[i] = DB::DBUtil::CT_Binary;
 			}
+			else if (colType == SQLITE_NULL)
+			{
+				this->colTypes[i] = DB::DBUtil::CT_Unknown;
+			}
+			else
+			{
+				this->colTypes[i] = DB::DBUtil::CT_Unknown;
+			}
 		}
 	}
 }
