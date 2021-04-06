@@ -832,6 +832,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						{
 							filePathFmt = fmt;
 						}
+						else if (Text::StrEquals(sbuff, (const UTF8Char*)"URIs"))
+						{
+							filePathFmt = fmt;
+						}
 					}
 					i++;
 				}
@@ -855,6 +859,71 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						{
 							SDEL_TEXT(me->initSelImg);
 							me->initSelImg = Text::StrCopyNew(sbuff);
+							me->UpdateImgDir();
+						}
+					}
+				}
+				else if (filePathFmt != -1)
+				{
+					Text::StringBuilderUTF8 sb;
+
+					if (clipboard->GetDataText(filePathFmt, &sb))
+					{
+						Bool chg = false;
+						Bool firstPhoto = me->lbImage->GetCount() == 0;
+						SDEL_TEXT(me->initSelImg);
+						UTF8Char *sarr[2];
+						sarr[1] = sb.ToString();
+						printf("HDROP: %s\r\n", sb.ToString());
+						j = 2;
+						while (j == 2)
+						{
+							j = Text::StrSplitLine(sarr, 2, sarr[1]);
+							OrganEnv::FileStatus fs;
+							if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"file://"))
+							{
+								Text::URLString::GetURLFilePath(sbuff, sarr[0]);
+								sarr[0] = sbuff;
+							}
+							fs = me->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0], firstPhoto, false, 0);
+							if (fs == OrganEnv::FS_SUCCESS)
+							{
+								if (!chg)
+								{
+									OSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
+									me->initSelImg = Text::StrCopyNew(&sarr[0][tmp + 1]);
+								}
+								chg = true;
+								firstPhoto = false;
+							}
+							else if (fs == OrganEnv::FS_NOTSUPPORT)
+							{
+							}
+							else
+							{
+								OSInt i;
+								const UTF8Char *csptr;
+								Text::StringBuilderUTF8 sb;
+								i = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
+								csptr = Text::StrToUTF8New(L"不能複製檔案: ");
+								sb.Append(csptr);
+								Text::StrDelNew(csptr);
+								sb.Append(&sarr[0][i + 1]);
+								csptr = Text::StrToUTF8New(L", 要繼續?");
+								sb.Append(csptr);
+								Text::StrDelNew(csptr);
+								csptr = Text::StrToUTF8New(L"錯誤");
+								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), csptr, me))
+								{
+									Text::StrDelNew(csptr);
+									break;
+								}
+								Text::StrDelNew(csptr);
+							}
+						}
+
+						if (chg)
+						{
 							me->UpdateImgDir();
 						}
 					}
