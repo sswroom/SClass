@@ -265,6 +265,12 @@ Int32 __inline BSWAP32(Int32 v)
     return v;
 }
 
+UInt32 __inline BSWAPU32(UInt32 v)
+{
+	asm("bswapl %0" : "=r" (v) : "0" (v));
+    return v;
+}
+
 Int64 __inline BSWAP64(Int64 v)
 {
 	asm("bswapq %0" : "=r" (v) : "0" (v));
@@ -293,6 +299,11 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #else
 #define BSWAP32(x) \
     ((Int32)( (( (UInt32)x          ) << 24) | \
+      ((((UInt32)x)&0xff00  ) << 8 ) | \
+      ((((UInt32)x)&0xff0000) >> 8 ) | \
+      (( (UInt32)x          ) >> 24)  ))
+#define BSWAPU32(x) \
+    (( (( (UInt32)x          ) << 24) | \
       ((((UInt32)x)&0xff00  ) << 8 ) | \
       ((((UInt32)x)&0xff0000) >> 8 ) | \
       (( (UInt32)x          ) >> 24)  ))

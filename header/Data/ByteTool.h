@@ -19,6 +19,8 @@
 #define ReadMInt64(uint8Ptr) ((((Int64)ReadMInt32(uint8Ptr)) << 32) | ReadMUInt32(&(uint8Ptr)[4]))
 #define ReadMUInt64(uint8Ptr) ((((UInt64)ReadMUInt32(uint8Ptr)) << 32) | ReadMUInt32(&(uint8Ptr)[4]))
 #define WriteInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
+#define WriteUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
+
 FORCEINLINE void WriteMInt64(UInt8 *addr, Int64 val)
 {
 #ifdef HAS_ASM32
@@ -43,6 +45,8 @@ FORCEINLINE void WriteMInt64(UInt8 *addr, Int64 val)
 	addr[7] = (UInt8)(val & 0xff);
 #endif
 }
+
+#define WriteMUInt64(uint8Ptr, val) WriteMInt64(uint8Ptr, (Int64)val)
 
 #define ReadInt32(uint8Ptr) (*(Int32*)(uint8Ptr))
 #define ReadUInt32(uint8Ptr) (*(UInt32*)(uint8Ptr))

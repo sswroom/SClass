@@ -57,11 +57,11 @@ IO::ZIPBuilder::~ZIPBuilder()
 			WriteInt16(&hdrBuff[28], 20);
 			WriteInt16(&hdrBuff[hdrLen], 1);
 			WriteInt16(&hdrBuff[hdrLen + 2], 16);
-			WriteInt64(&hdrBuff[hdrLen + 4], file->compSize);
-			WriteInt64(&hdrBuff[hdrLen + 12], file->uncompSize);
+			WriteUInt64(&hdrBuff[hdrLen + 4], file->compSize);
+			WriteUInt64(&hdrBuff[hdrLen + 12], file->uncompSize);
 			if (file->compSize >= file->uncompSize)
 			{
-				WriteInt64(&hdrBuff[hdrLen + 4], file->uncompSize);
+				WriteUInt64(&hdrBuff[hdrLen + 4], file->uncompSize);
 			}
 			hdrLen += 20;
 		}
@@ -102,7 +102,7 @@ Bool IO::ZIPBuilder::AddFile(const UTF8Char *fileName, const UInt8 *fileContent,
 	}
 	else
 	{
-		compSize = Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false);
+		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false);
 	}
 	UInt8 crcBuff[4];
 	fnameLen = Text::StrCharCnt(fileName);

@@ -16,7 +16,7 @@ Net::WhoisRecord::WhoisRecord(UInt32 recordIP)
 
 Net::WhoisRecord::~WhoisRecord()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->items->GetCount();
 	while (i-- > 0)
 	{
@@ -34,7 +34,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 	if (startIP == 0)
 	{
 		OSInt i;
-		OSInt j;
+		UOSInt j;
 		UTF8Char *sarr[4];
 		Int32 bitCnt;
 		UInt8 ip[4];
@@ -60,7 +60,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 						ip[j] = Text::StrToUInt8(sarr[j]);
 					}
 					this->startIP = ReadUInt32(ip);
-					this->endIP = BSWAP32((Int32)ReadMUInt32(ip) + (1 << (32 - bitCnt)) - 1);
+					this->endIP = BSWAPU32(ReadMUInt32(ip) + (UInt32)(1 << (32 - bitCnt)) - 1);
 				}
 				else
 				{
@@ -95,7 +95,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 						ip[j] = Text::StrToUInt8(sarr[j]);
 					}
 					this->startIP = ReadUInt32(ip);
-					this->endIP = BSWAP32((Int32)ReadMUInt32(ip) + (1 << (32 - bitCnt)) - 1);
+					this->endIP = BSWAP32((UInt32)ReadMUInt32(ip) + (1 << (32 - bitCnt)) - 1);
 				}
 				else
 				{
@@ -113,12 +113,12 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 	this->items->Add(Text::StrCopyNew(item));
 }
 
-OSInt Net::WhoisRecord::GetCount()
+UOSInt Net::WhoisRecord::GetCount()
 {
 	return this->items->GetCount();
 }
 
-const UTF8Char *Net::WhoisRecord::GetItem(OSInt index)
+const UTF8Char *Net::WhoisRecord::GetItem(UOSInt index)
 {
 	return this->items->GetItem(index);
 }
@@ -126,8 +126,8 @@ const UTF8Char *Net::WhoisRecord::GetItem(OSInt index)
 
 UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *sptr;
 	i = 0;
 	j = this->items->GetCount();
@@ -146,8 +146,8 @@ UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 
 UTF8Char *Net::WhoisRecord::GetCountryCode(UTF8Char *buff)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *sptr;
 	i = 0;
 	j = this->items->GetCount();

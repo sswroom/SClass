@@ -51,19 +51,19 @@ IO::ParsedObject *Parser::FileParser::XPCMParser::ParseFile(IO::IStreamData *fd,
 
 	Media::MediaFile *vid;
 	Media::AudioFormat af;
-	af.formatId = *(Int16*)&buff[12];
-	af.nChannels = *(Int16*)&buff[14];
-	af.frequency = *(Int32*)&buff[16];
-	af.bitpersample = *(Int16*)&buff[26];
+	af.formatId = ReadUInt16(&buff[12]);
+	af.nChannels = ReadUInt16(&buff[14]);
+	af.frequency = ReadUInt32(&buff[16]);
+	af.bitpersample = ReadUInt16(&buff[26]);
 	af.bitRate = af.frequency * af.nChannels * af.bitpersample;
-	af.align = af.frequency * af.nChannels * (af.bitpersample >> 3);
+	af.align = af.frequency * af.nChannels * (UInt32)(af.bitpersample >> 3);
 	af.other = 0;
 	af.intType = Media::AudioFormat::IT_NORMAL;
 	af.extraSize = 0;
 	af.extra = 0;
 
 	Media::LPCMSource *src;
-	NEW_CLASS(src, Media::LPCMSource(fd, 28, *(Int32*)&buff[4], &af, fd->GetFullName()));
+	NEW_CLASS(src, Media::LPCMSource(fd, 28, ReadUInt32(&buff[4]), &af, fd->GetFullName()));
 
 	NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 	vid->AddSource(src, 0);

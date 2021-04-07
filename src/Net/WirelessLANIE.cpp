@@ -8,8 +8,8 @@
 
 Net::WirelessLANIE::WirelessLANIE(const UInt8 *ieBuff)
 {
-	this->ieBuff = MemAlloc(UInt8, ieBuff[1] + 2);
-	MemCopyNO(this->ieBuff, ieBuff, ieBuff[1] + 2);
+	this->ieBuff = MemAlloc(UInt8, (UOSInt)(ieBuff[1] + 2));
+	MemCopyNO(this->ieBuff, ieBuff, (UOSInt)(ieBuff[1] + 2));
 }
 
 Net::WirelessLANIE::~WirelessLANIE()
@@ -164,7 +164,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 			if (size > 3)
 			{
 				sb->Append((const UTF8Char*)"\r\n\tPartial Virtual Bitmap = ");
-				sb->AppendHexBuff(&ieBuff[5], size - 3, 0, Text::LBT_NONE);
+				sb->AppendHexBuff(&ieBuff[5], (UOSInt)size - 3, 0, Text::LBT_NONE);
 			}
 		}
 		else
@@ -201,7 +201,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 				sb->AppendU16(ieBuff[3 + i]);
 				sb->Append((const UTF8Char*)"\r\n\tMax transmit power = ");
 				sb->AppendU16(ieBuff[4 + i]);
-				i += 3;
+				i = (UInt8)(i + 3);
 			}
 		}
 		else
@@ -475,14 +475,14 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 					}
 				}
 				j++;
-				i += 4;
+				i = (UInt8)(i + 4);
 			}
 			if (i <= size - 4)
 			{
 				cnt = ReadUInt16(&ieBuff[i + 2]);
 				sb->Append((const UTF8Char*)"\r\n\tAuthentication Suites Count = ");
 				sb->AppendU32(cnt);
-				i += 2;
+				i = (UInt8)(i + 2);
 				j = 0;
 				while (i <= size - 4 && j < cnt)
 				{
@@ -518,7 +518,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 			if (i < size)
 			{
 				sb->Append((const UTF8Char*)"\r\n\tUnknown = ");
-				sb->AppendHexBuff(&ieBuff[i + 2], size - i, 0, Text::LBT_NONE);
+				sb->AppendHexBuff(&ieBuff[i + 2], (UOSInt)(size - i), 0, Text::LBT_NONE);
 				i += 2;
 			}
 		}

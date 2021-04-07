@@ -16,13 +16,13 @@ namespace Net
 		~WhoisRecord();
 
 		void AddItem(const UTF8Char *item);
-		OSInt GetCount();
-		const UTF8Char *GetItem(OSInt index);
+		UOSInt GetCount();
+		const UTF8Char *GetItem(UOSInt index);
 
 		UTF8Char *GetNetworkName(UTF8Char *buff);
 		UTF8Char *GetCountryCode(UTF8Char *buff);
 		UInt32 GetStartIP();
 		UInt32 GetEndIP();
 	};
-};
+}
 #endif
