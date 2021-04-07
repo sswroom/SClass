@@ -52,6 +52,7 @@ namespace Text
 
 		Bool ToUInt16(UInt16 *outVal);
 		Bool ToUInt32(UInt32 *outVal);
+		Bool ToUInt32S(UInt32 *outVal, UInt32 failVal);
 		Bool ToInt32(Int32 *outVal);
 		Int32 ToInt32();
 		Bool ToInt64(Int64 *outVal);
@@ -165,7 +166,7 @@ namespace Text
 
 	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendSB(Text::StringBuilder<T> *sb)
 	{
-		OSInt slen = sb->buffEnd - sb->buff;
+		UOSInt slen = (UOSInt)(sb->buffEnd - sb->buff);
 		this->AllocLeng(slen);
 		MemCopyNO(this->buffEnd, sb->buff, (slen + 1) * sizeof(T));
 		this->buffEnd = &this->buffEnd[slen];
@@ -375,7 +376,7 @@ namespace Text
 		}
 		else if (index > 0)
 		{
-			MemCopyO(this->buff, &this->buff[index], (this->buffEnd - this->buff - index + 1) * sizeof(T));
+			MemCopyO(this->buff, &this->buff[index], (UOSInt)(this->buffEnd - this->buff - index + 1) * sizeof(T));
 			this->buffEnd -= index;
 		}
 		return this;
@@ -404,6 +405,11 @@ namespace Text
 	template<class T> Bool Text::StringBuilder<T>::ToUInt32(UInt32 *outVal)
 	{
 		return Text::StrToUInt32(this->buff, outVal);
+	}
+
+	template<class T> Bool Text::StringBuilder<T>::ToUInt32S(UInt32 *outVal, UInt32 failVal)
+	{
+		return Text::StrToUInt32S(this->buff, outVal, failVal);
 	}
 
 	template<class T> Bool Text::StringBuilder<T>::ToInt32(Int32 *outVal)
@@ -563,10 +569,10 @@ namespace Text
 				j = Text::StrIndexOf(&this->buff[i], fromStr);
 				if (j < 0)
 					break;
-				i += j + fromCharSize;
+				i += (UOSInt)j + fromCharSize;
 				changeCnt++;
 			}
-			this->AllocLeng((buffEnd - buff) + (toCharSize - fromCharSize) * changeCnt);
+			this->AllocLeng((UOSInt)(buffEnd - buff) + (toCharSize - fromCharSize) * changeCnt);
 			changeCnt = Text::StrReplace(this->buff, fromStr, toStr);
 			this->buffEnd += changeCnt * (toCharSize - fromCharSize);
 		}

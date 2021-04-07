@@ -18,7 +18,7 @@ const UTF8Char *Media::ImageGen::RingsImageGen::GetName()
 	return (const UTF8Char*)"Rings Image";
 }
 
-Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile *colorProfile, OSInt width, OSInt height)
+Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;

@@ -137,8 +137,8 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 	OSInt imgW;
 	OSInt imgH;
 	Double scale = this->img->GetHDPI() / this->ico->GetHDPI();
-	OSInt scnW = this->map->GetScnWidth();
-	OSInt scnH = this->map->GetScnHeight();
+	UOSInt scnW = this->map->GetScnWidth();
+	UOSInt scnH = this->map->GetScnHeight();
 	OSInt spotX = Math::Double2Int32(this->icoSpotX * scale);
 	OSInt spotY = Math::Double2Int32(this->icoSpotY * scale);
 	imgW = Math::Double2Int32(this->ico->GetWidth() * scale);

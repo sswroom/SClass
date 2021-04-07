@@ -91,7 +91,7 @@ Int64 Map::IMapDrawLayer::GetTimeEndTS()
 	return 0;
 }
 
-Map::MapView *Map::IMapDrawLayer::CreateMapView(OSInt width, OSInt height)
+Map::MapView *Map::IMapDrawLayer::CreateMapView(UOSInt width, UOSInt height)
 {
 	Map::MapView *view;
 	Double xMin;
@@ -594,10 +594,10 @@ Map::VectorLayer *Map::IMapDrawLayer::CreateEditableLayer()
 	Math::Vector2D *vec;
 	void *nameArr;
 	void *sess;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 
 
 	NEW_CLASS(objIds, Data::ArrayListInt64());
@@ -794,13 +794,13 @@ Bool Map::IMapDrawLayer::HasIconStyle()
 	return this->iconImg != 0;
 }
 
-void Map::IMapDrawLayer::SetLineStyle(Int32 lineColor, Int32 lineWidth)
+void Map::IMapDrawLayer::SetLineStyle(UInt32 lineColor, UInt32 lineWidth)
 {
 	this->lineColor = lineColor;
 	this->lineWidth = lineWidth;
 }
 
-void Map::IMapDrawLayer::SetPGStyle(Int32 pgColor)
+void Map::IMapDrawLayer::SetPGStyle(UInt32 pgColor)
 {
 	this->pgColor = pgColor;
 }
@@ -813,17 +813,17 @@ void Map::IMapDrawLayer::SetIconStyle(Media::ImageList *iconImg, OSInt iconSpotX
 	this->iconSpotY = iconSpotY;
 }
 
-Int32 Map::IMapDrawLayer::GetLineStyleColor()
+UInt32 Map::IMapDrawLayer::GetLineStyleColor()
 {
 	return this->lineColor;
 }
 
-Int32 Map::IMapDrawLayer::GetLineStyleWidth()
+UInt32 Map::IMapDrawLayer::GetLineStyleWidth()
 {
 	return this->lineWidth;
 }
 
-Int32 Map::IMapDrawLayer::GetPGStyleColor()
+UInt32 Map::IMapDrawLayer::GetPGStyleColor()
 {
 	return this->pgColor;
 }

@@ -1277,7 +1277,7 @@ Bool DB::ODBCReader::ReadNext()
 #if !defined(_WIN32) && !defined(_WIN64)
 					if (this->colDatas[i].odbcType == SQL_CHAR || this->colDatas[i].odbcType == SQL_VARCHAR || this->colDatas[i].odbcType == SQL_LONGVARCHAR)
 					{
-						ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)i + 1, SQL_C_CHAR, sbuff, 0, &len);
+						ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, sbuff, 0, &len);
 						if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_SUCCESS)
 						{
 							if (len == SQL_NULL_DATA)
@@ -1291,7 +1291,7 @@ Bool DB::ODBCReader::ReadNext()
 									len = 2048;
 								}
 								u8ptr = MemAlloc(UTF8Char, len + 1);
-								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)i + 1, SQL_C_CHAR, u8ptr, len + 1, &len);
+								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, u8ptr, len + 1, &len);
 								if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_ERROR)
 								{
 	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());

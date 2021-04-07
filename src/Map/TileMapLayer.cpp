@@ -81,9 +81,9 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 	CachedImage *cimg;
 	Data::ArrayListInt64 *cacheIds;
 	Data::ArrayList<CachedImage *> *cacheImgs;
-	OSInt i;
+	UOSInt i;
 	OSInt j;
-	OSInt k;
+	UOSInt k;
 	NEW_CLASS(cacheIds, Data::ArrayListInt64());
 	NEW_CLASS(cacheImgs, Data::ArrayList<CachedImage*>());
 	Sync::MutexUsage lastMutUsage(this->lastMut);
@@ -98,8 +98,8 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 		j = cacheIds->SortedIndexOf(currIDs->GetItem(i));
 		if (j >= 0)
 		{
-			k = this->lastIds->SortedInsert(cacheIds->RemoveAt(j));
-			this->lastImgs->Insert(k, cimg = cacheImgs->RemoveAt(j));
+			k = this->lastIds->SortedInsert(cacheIds->RemoveAt((UOSInt)j));
+			this->lastImgs->Insert(k, cimg = cacheImgs->RemoveAt((UOSInt)j));
 		}
 	}
 	lastMutUsage.EndUse();
@@ -295,7 +295,7 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	}
 }
 
-Map::MapView *Map::TileMapLayer::CreateMapView(OSInt width, OSInt height)
+Map::MapView *Map::TileMapLayer::CreateMapView(UOSInt width, UOSInt height)
 {
 	Map::MapView *view;
 	if (this->tileMap->GetProjectionType() == Map::TileMap::PT_MERCATOR)
@@ -306,8 +306,8 @@ Map::MapView *Map::TileMapLayer::CreateMapView(OSInt width, OSInt height)
 	else if (this->tileMap->GetProjectionType() == Map::TileMap::PT_WGS84)
 	{
 		Data::ArrayListDbl scales;
-		OSInt i = 0;
-		OSInt j = this->tileMap->GetLevelCount();
+		UOSInt i = 0;
+		UOSInt j = this->tileMap->GetLevelCount();
 		while (i < j)
 		{
 			scales.Add(this->tileMap->GetLevelScale(i));
@@ -556,7 +556,7 @@ void Map::TileMapLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr,
 
 void Map::TileMapLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs->GetCount();
 	while (i-- > 0)
@@ -570,9 +570,9 @@ void Map::TileMapLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hd
 	mutUsage.EndUse();
 }
 
-Bool Map::TileMapLayer::IsCaching(OSInt level, Int64 imgId)
+Bool Map::TileMapLayer::IsCaching(UOSInt level, Int64 imgId)
 {
-	OSInt i;
+	UOSInt i;
 	Bool found = false;
 	CachedImage *cimg;
 	Sync::MutexUsage mutUsage(this->idleMut);
@@ -593,7 +593,7 @@ Bool Map::TileMapLayer::IsCaching(OSInt level, Int64 imgId)
 void Map::TileMapLayer::WaitCache()
 {
 	Bool found;
-	OSInt i;
+	UOSInt i;
 	while (true)
 	{
 		found = false;

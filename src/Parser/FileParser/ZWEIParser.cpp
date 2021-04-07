@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
+#include "IO/PackageFile.h"
 #include "Parser/FileParser/ZWEIParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::ZWEIParser::ZWEIParser()
 {
@@ -34,14 +35,14 @@ IO::ParsedObject::ParserType Parser::FileParser::ZWEIParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
-	Int32 hdr[2];
-	Int32 extCnt;
+	UInt32 hdr[2];
+	UInt32 extCnt;
 	UInt32 extOfst;
 	UInt32 fileOfst;
-	OSInt buffOfst;
-	OSInt recOfst;
-	Int32 j;
-	Int32 i;
+	UOSInt buffOfst;
+	UOSInt recOfst;
+	UInt32 j;
+	UInt32 i;
 	Text::Encoding enc(932);
 	UTF8Char name[14];
 	UTF8Char *sptr;
@@ -61,7 +62,7 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 	UInt8 *extHdrs = MemAlloc(UInt8, 12 * extCnt);
 	fd->GetRealData(8, 12 * extCnt, extHdrs);
 	UInt8 *recHdrs;
-	Int32 recCnt;
+	UInt32 recCnt;
 	UInt32 fileSize;
 
 	IO::PackageFile *pf;
@@ -72,7 +73,7 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 	buffOfst = 0;
 	while (i < extCnt)
 	{
-		fileOfst += (*(UInt32*)&extHdrs[buffOfst + 8]) << 4;
+		fileOfst += ReadUInt32(&extHdrs[buffOfst + 8]) << 4;
 		i++;
 		buffOfst += 12;
 	}
@@ -82,14 +83,14 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 	while (i < extCnt)
 	{
 
-		if (*(UInt32*)&extHdrs[buffOfst + 4] != extOfst)
+		if (ReadUInt32(&extHdrs[buffOfst + 4]) != extOfst)
 		{
 			MemFree(extHdrs);
 			DEL_CLASS(pf);
 			return 0;
 		}
 
-		recCnt = *(Int32*)&extHdrs[buffOfst + 8];
+		recCnt = ReadUInt32(&extHdrs[buffOfst + 8]);
 		if (recCnt <= 0 || recCnt > 65536)
 		{
 			MemFree(extHdrs);
@@ -103,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 		recOfst = 0;
 		while (j < recCnt)
 		{
-			if (*(UInt32*)&recHdrs[recOfst + 12] != fileOfst)
+			if (ReadUInt32(&recHdrs[recOfst + 12]) != fileOfst)
 			{
 				MemFree(extHdrs);
 				MemFree(recHdrs);
@@ -115,7 +116,7 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 			*sptr++ = '.';
 			sptr = Text::StrConcatC(sptr, &extHdrs[buffOfst], 4);
 			
-			fileSize = *(UInt32*)&recHdrs[recOfst + 8];
+			fileSize = ReadUInt32(&recHdrs[recOfst + 8]);
 			pf->AddData(fd, fileOfst, fileSize, name, 0);
 			fileOfst += fileSize;
 

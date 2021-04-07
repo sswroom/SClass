@@ -51,8 +51,8 @@ IO::ParsedObject::ParserType Parser::FileParser::SPKParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 hdrBuff[24];
-	Int64 dirOfst;
-	Int64 fileSize;
+	UInt64 dirOfst;
+	UInt64 fileSize;
 	Int32 fnameLen;
 	Int32 flags;
 	OSInt i;
@@ -217,7 +217,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					if (k >= 0)
 					{
 						sptr[k] = 0;
-						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
+						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcat(srcPtr2, sptr);
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)
@@ -231,7 +231,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					else if (l >= 0)
 					{
 						sptr[l] = 0;
-						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
+						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcat(srcPtr2, sptr);
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)

@@ -16,7 +16,7 @@ namespace IO
 		} PathType;
 		struct FindFileSession;
 
-		static Char PATH_SEPERATOR;
+		static UTF8Char PATH_SEPERATOR;
 		static const UTF8Char *ALL_FILES;
 
 		static UTF8Char *GetTempFile(UTF8Char *buff, const UTF8Char *fileName);

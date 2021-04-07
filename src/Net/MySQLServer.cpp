@@ -275,7 +275,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(Net::TCPClient *cli, void *userOb
 {
 	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
 	ClientData *data = (ClientData*)cliData;
-	OSInt i;
+	UOSInt i;
 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
@@ -321,7 +321,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"Received ");
-		sb.AppendOSInt(size);
+		sb.AppendUOSInt(size);
 		sb.Append((const UTF8Char*)" bytes");
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	}

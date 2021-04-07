@@ -16,13 +16,13 @@ namespace Parser
 		private:
 			typedef struct
 			{
-				Int32 lineColor;
-				Int32 lineWidth;
+				UInt32 lineColor;
+				UInt32 lineWidth;
 				const UTF8Char *iconURL;
 				Int32 iconSpotX;
 				Int32 iconSpotY;
-				Int32 iconColor;
-				Int32 fillColor;
+				UInt32 iconColor;
+				UInt32 fillColor;
 				Int32 flags;
 			} KMLStyle;
 

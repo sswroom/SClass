@@ -44,6 +44,7 @@ namespace DB
 		void SetAttr(const UTF8Char *attr);
 
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff);
+		ColDef *Clone();
 	};
 }
 #endif

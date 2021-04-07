@@ -376,9 +376,9 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, ServerTy
 	}
 }
 
-OSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::ServerType svrType)
 {
-	OSInt leng = 0;
+	UOSInt leng = 0;
 	UTF8Char c;
 	if (val == 0)
 		return 4;
@@ -1186,9 +1186,9 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 	}
 }
 
-OSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 {
-	OSInt leng = 0;
+	UOSInt leng = 0;
 	WChar c;
 	if (val == 0)
 		return 4;
@@ -1534,10 +1534,10 @@ UTF8Char *DB::DBUtil::SDBInt32(UTF8Char *sqlstr, Int32 val, DB::DBUtil::ServerTy
 	return Text::StrInt32(sqlstr, val);
 }
 
-OSInt DB::DBUtil::SDBInt32Leng(Int32 val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBInt32Leng(Int32 val, DB::DBUtil::ServerType svrType)
 {
 	UTF8Char buff[12];
-	return Text::StrInt32(buff, val) - buff;
+	return (UOSInt)(Text::StrInt32(buff, val) - buff);
 }
 
 UTF8Char *DB::DBUtil::SDBInt64(UTF8Char *sqlstr, Int64 val, DB::DBUtil::ServerType svrType)
@@ -1545,10 +1545,10 @@ UTF8Char *DB::DBUtil::SDBInt64(UTF8Char *sqlstr, Int64 val, DB::DBUtil::ServerTy
 	return Text::StrInt64(sqlstr, val);
 }
 
-OSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::DBUtil::ServerType svrType)
 {
 	UTF8Char buff[22];
-	return Text::StrInt64(buff, val) - buff;
+	return (UOSInt)(Text::StrInt64(buff, val) - buff);
 }
 
 UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::ServerType svrType, Int32 tzQhr)
@@ -1619,7 +1619,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 	}
 }
 
-OSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::ServerType svrType)
 {
 	if (dat == 0)
 		return 4;
@@ -1627,7 +1627,7 @@ OSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::ServerType svrTyp
 	if (svrType == DB::DBUtil::SVR_TYPE_ACCESS)
 	{
 		UTF8Char buff[100];
-		return dat->ToLocalStr(buff) - buff + 2;
+		return (UOSInt)(dat->ToLocalStr(buff) - buff + 2);
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_MSSQL || svrType == DB::DBUtil::SVR_TYPE_SQLITE)
 	{
@@ -1655,10 +1655,10 @@ UTF8Char *DB::DBUtil::SDBDbl(UTF8Char *sqlstr, Double val, DB::DBUtil::ServerTyp
 	}
 }
 
-OSInt DB::DBUtil::SDBDblLeng(Double val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBDblLeng(Double val, DB::DBUtil::ServerType svrType)
 {
 	UTF8Char buff[128];
-	return Text::StrDouble(buff, val) - buff;
+	return (UOSInt)(Text::StrDouble(buff, val) - buff);
 }
 
 UTF8Char *DB::DBUtil::SDBSng(UTF8Char *sqlstr, Single val, DB::DBUtil::ServerType svrType)
@@ -1666,10 +1666,10 @@ UTF8Char *DB::DBUtil::SDBSng(UTF8Char *sqlstr, Single val, DB::DBUtil::ServerTyp
 	return Text::StrDouble(sqlstr, val);
 }
 
-OSInt DB::DBUtil::SDBSngLeng(Single val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBSngLeng(Single val, DB::DBUtil::ServerType svrType)
 {
 	UTF8Char buff[128];
-	return Text::StrDouble(buff, val) - buff;
+	return (UOSInt)(Text::StrDouble(buff, val) - buff);
 }
 
 UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::DBUtil::ServerType svrType)
@@ -1707,7 +1707,7 @@ UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::DBUtil::ServerType
 	return sqlStr;
 }
 
-OSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::DBUtil::ServerType svrType)
 {
 	if (svrType == DB::DBUtil::SVR_TYPE_ORACLE)
 	{
@@ -1723,7 +1723,7 @@ OSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::DBUtil::ServerType svrType)
 }
 
 
-UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, OSInt size, DB::DBUtil::ServerType svrType)
+UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, DB::DBUtil::ServerType svrType)
 {
 	UTF8Char *sptr;
 	if (buff == 0)
@@ -1750,7 +1750,7 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, OSInt size, DB
 	}
 }
 
-OSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, OSInt size, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::DBUtil::ServerType svrType)
 {
 	if (buff == 0)
 	{
@@ -1799,7 +1799,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, Int32 srI
 	}
 }
 
-OSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svrType)
 {
 	if (vec == 0)
 	{
@@ -1878,9 +1878,9 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 	}
 }
 
-OSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::ServerType svrType)
 {
-	OSInt leng = 0;
+	UOSInt leng = 0;
 	UTF8Char c;
 	if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
 	{
@@ -1928,10 +1928,10 @@ UTF8Char *DB::DBUtil::SDBColW(UTF8Char *sqlstr, const WChar *colName, DB::DBUtil
 	return ret;
 }
 
-OSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::DBUtil::ServerType svrType)
 {
 	const UTF8Char *u8ptr = Text::StrToUTF8New(colName);
-	OSInt ret = SDBColUTF8Leng(u8ptr, svrType);
+	UOSInt ret = SDBColUTF8Leng(u8ptr, svrType);
 	Text::StrDelNew(u8ptr);
 	return ret;
 }
@@ -1948,7 +1948,7 @@ UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, const UTF8Char *val, DB::DBUtil:
 	}
 }
 
-OSInt DB::DBUtil::SDBTrimLeng(const UTF8Char *val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBTrimLeng(const UTF8Char *val, DB::DBUtil::ServerType svrType)
 {
 	if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
 	{
@@ -1960,10 +1960,10 @@ OSInt DB::DBUtil::SDBTrimLeng(const UTF8Char *val, DB::DBUtil::ServerType svrTyp
 	}
 }
 
-DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, const UTF8Char *tName, Int32 *colSize)
+DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, const UTF8Char *tName, UOSInt *colSize)
 {
 	UTF8Char typeName[64];
-	Int32 tmp;
+	UOSInt tmp;
 	OSInt i;
 	if (colSize == 0)
 	{
@@ -2164,7 +2164,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	}
 }
 
-UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, Int32 colSize)
+UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize)
 {
 	switch (colType)
 	{
@@ -2173,13 +2173,13 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	case DB::DBUtil::CT_Int32:
 		return Text::StrConcat(sbuff, (const UTF8Char*)"INTEGER");
 	case DB::DBUtil::CT_VarChar:
-		return Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"VARCHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"VARCHAR("), colSize), (const UTF8Char*)")");
 	case DB::DBUtil::CT_Char:
-		return Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"CHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"CHAR("), colSize), (const UTF8Char*)")");
 	case DB::DBUtil::CT_NVarChar:
-		return Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"NVARCHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"NVARCHAR("), colSize), (const UTF8Char*)")");
 	case DB::DBUtil::CT_NChar:
-		return Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"NCHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"NCHAR("), colSize), (const UTF8Char*)")");
 	case DB::DBUtil::CT_DateTime:
 		return Text::StrConcat(sbuff, (const UTF8Char*)"DATETIME");
 	case DB::DBUtil::CT_DateTime2:
@@ -2201,11 +2201,11 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	case DB::DBUtil::CT_UInt64:
 		return Text::StrConcat(sbuff, (const UTF8Char*)"UNSIGNED BIGINT");
 	case DB::DBUtil::CT_Binary:
-		return Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"BINARY("), colSize), (const UTF8Char*)")");
+		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"BINARY("), colSize), (const UTF8Char*)")");
 	case DB::DBUtil::CT_Vector:
 		return Text::StrConcat(sbuff, (const UTF8Char*)"GEOMETRY");
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"UNKNOWN("), colSize), (const UTF8Char*)")");
+		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"UNKNOWN("), colSize), (const UTF8Char*)")");
 	}
 }

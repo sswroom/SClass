@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	mdb->GetTableNames(tableNames);
 	
 	Bool hasSpRef = false;
-	OSInt i = tableNames->GetCount();
+	UOSInt i = tableNames->GetCount();
 	while (i-- > 0)
 	{
 		const UTF8Char *tableName = tableNames->GetItem(i);
@@ -103,18 +103,18 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 			{
 				OSInt objCol = -1;
 				OSInt shapeCol = -1;
-				OSInt j;
+				UOSInt j;
 				j = rdr->ColCount();
 				while (j-- > 0)
 				{
 					rdr->GetColDef(j, colDef);
 					if (Text::StrEqualsICase(colDef->GetColName(), (const UTF8Char*)"OBJECTID") && colDef->GetColType() == DB::DBUtil::CT_Int32)
 					{
-						objCol = j;
+						objCol = (OSInt)j;
 					}
 					else if (Text::StrEqualsICase(colDef->GetColName(), (const UTF8Char*)"SHAPE") && (colDef->GetColType() == DB::DBUtil::CT_Binary || colDef->GetColType() == DB::DBUtil::CT_VarChar))
 					{
-						shapeCol = j;
+						shapeCol = (OSInt)j;
 					}
 				}
 				if (objCol != -1 && shapeCol != -1)
@@ -161,7 +161,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		NEW_CLASS(conn, DB::SharedDBConn(mdb));
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(fd->GetFullName(), 0));
 
-		OSInt i;
+		UOSInt i;
 		i = shpTables->GetCount();
 		while (i-- > 0)
 		{

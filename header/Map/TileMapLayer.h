@@ -18,7 +18,7 @@ namespace Map
 			Double tly;
 			Double brx;
 			Double bry;
-			OSInt level;
+			UOSInt level;
 			Bool isFinish;
 			Bool isCancel;
 			Media::SharedImage *img;
@@ -64,7 +64,7 @@ namespace Map
 		virtual ~TileMapLayer();
 
 		virtual void SetCurrScale(Double scale);
-		virtual Map::MapView *CreateMapView(OSInt width, OSInt height);
+		virtual Map::MapView *CreateMapView(UOSInt width, UOSInt height);
 
 		virtual DrawLayerType GetLayerType();
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
@@ -90,7 +90,7 @@ namespace Map
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		Bool IsCaching(OSInt level, Int64 imgId);
+		Bool IsCaching(UOSInt level, Int64 imgId);
 		void WaitCache();
 		Map::TileMap *GetTileMap();
 	};

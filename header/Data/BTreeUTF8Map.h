@@ -91,7 +91,7 @@ namespace Data
 
 	template <class T> BTreeUTF8Node<T> *BTreeUTF8Map<T>::NewNode(const UTF8Char *key, UInt32 hash, T val)
 	{
-		OSInt cnt = Text::StrCharCnt(key);
+		UOSInt cnt = Text::StrCharCnt(key);
 		BTreeUTF8Node<T> *node = (BTreeUTF8Node<T> *)MAlloc(sizeof(BTreeUTF8Node<T>) + sizeof(UTF8Char) * cnt);
 		node->nodeCnt = 0;
 		node->parNode = 0;

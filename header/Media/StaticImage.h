@@ -33,9 +33,9 @@ namespace Media
 		Bool To32bpp();
 		Bool To64bpp();
 		Bool ToPal8();
-		Bool FillColor(Int32 color);
+		Bool FillColor(UInt32 color);
 		Bool MultiplyAlpha(Double alpha);
-		Bool MultiplyColor(Int32 color);
+		Bool MultiplyColor(UInt32 color);
 		Bool Resize(Media::IImgResizer *resizer, UOSInt newWidth, UOSInt newHeight);
 		Bool RotateImage(RotateType rtype);
 		Double CalcPSNR(Media::StaticImage *simg);

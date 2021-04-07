@@ -100,7 +100,7 @@ void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF *sb)
 	}
 }
 
-OSInt Text::XMLReader::GetPathLev()
+UOSInt Text::XMLReader::GetPathLev()
 {
 	return this->pathList->GetCount();
 }
@@ -120,12 +120,12 @@ const UTF8Char *Text::XMLReader::GetNodeOriText()
 	return this->nodeOriText;
 }
 
-OSInt Text::XMLReader::GetAttribCount()
+UOSInt Text::XMLReader::GetAttribCount()
 {
 	return this->attrList->GetCount();
 }
 
-Text::XMLAttrib *Text::XMLReader::GetAttrib(OSInt index)
+Text::XMLAttrib *Text::XMLReader::GetAttrib(UOSInt index)
 {
 	return this->attrList->GetItem(index);
 }
@@ -653,7 +653,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							if (this->encFact && Text::StrEquals(this->nodeText, (const UTF8Char*)"xml"))
 							{
-								OSInt i = this->attrList->GetCount();
+								UOSInt i = this->attrList->GetCount();
 								Text::XMLAttrib *attr;
 								while (i-- > 0)
 								{
@@ -1384,7 +1384,7 @@ Bool Text::XMLReader::ReadNext()
 			}
 			else if (c == '&' && !isHTMLScript)
 			{
-				OSInt l = this->buffSize - this->parseOfst;
+				UOSInt l = this->buffSize - this->parseOfst;
 				if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 				{
 					if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
@@ -1591,8 +1591,8 @@ OSInt Text::XMLReader::GetErrorCode()
 
 Bool Text::XMLReader::ToString(Text::StringBuilderUTF *sb)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::XMLAttrib *attr;
 	switch (this->nt)
 	{
@@ -1693,7 +1693,7 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF *sb)
 	return false;
 }
 
-Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, OSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb)
 {
 	Text::XMLReader *reader;
 	Bool toWrite;

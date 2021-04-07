@@ -201,7 +201,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 					me->loadedMut->UnlockWrite();
 
 					Sync::MutexUsage mutUsage(me->updMut);
-					OSInt j = me->updHdlrs->GetCount();
+					UOSInt j = me->updHdlrs->GetCount();
 					while (j-- > 0)
 					{
 						me->updHdlrs->GetItem(j)(me->updObjs->GetItem(j));

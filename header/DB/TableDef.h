@@ -42,6 +42,8 @@ namespace DB
 		TableDef *SetAttr(const UTF8Char *attr);
 		TableDef *SetComments(const UTF8Char *comments);
 		TableDef *SetSvrType(DB::DBUtil::ServerType svrType);
+		
+		TableDef *Clone();
 	};
 }
 #endif

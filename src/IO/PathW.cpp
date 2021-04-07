@@ -31,7 +31,7 @@ struct IO::Path::FindFileSession
 	WIN32_FIND_DATAW findData;
 };
 
-Char IO::Path::PATH_SEPERATOR = '\\';
+UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'\\';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*.*";
 
 UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)

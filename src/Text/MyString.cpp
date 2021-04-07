@@ -1443,6 +1443,23 @@ Bool Text::StrToUInt32(const Char *intStr, UInt32 *outVal)
 	return true;
 }
 
+Bool Text::StrToUInt32S(const Char *intStr, UInt32 *outVal, UInt32 failVal)
+{
+	UInt32 retVal = 0;
+	while (*intStr)
+	{
+		if (*intStr < '0' || *intStr > '9')
+		{
+			*outVal = failVal;
+			return false;
+		}
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
+		intStr++;
+	}
+	*outVal = retVal;
+	return true;
+}
+
 UInt32 Text::StrToUInt32(const Char *intStr)
 {
 	UInt32 retVal = 0;

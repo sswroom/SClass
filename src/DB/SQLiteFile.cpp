@@ -56,7 +56,7 @@ DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
 
 DB::SQLiteFile::~SQLiteFile()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->db)
 	{
 		sqlite3_close((sqlite3*)this->db);

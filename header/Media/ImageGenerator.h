@@ -12,7 +12,7 @@ namespace Media
 		virtual ~ImageGenerator();
 
 		virtual const UTF8Char *GetName() = 0;
-		virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, OSInt width, OSInt height) = 0;
+		virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height) = 0;
 	};
-};
+}
 #endif

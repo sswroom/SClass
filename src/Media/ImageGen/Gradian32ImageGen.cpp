@@ -17,7 +17,7 @@ const UTF8Char *Media::ImageGen::Gradian32ImageGen::GetName()
 	return (const UTF8Char*)"Gradian Test 32-bit";
 }
 
-Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProfile *colorProfile, OSInt width, OSInt height)
+Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;

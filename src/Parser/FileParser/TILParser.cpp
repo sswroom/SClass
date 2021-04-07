@@ -35,8 +35,8 @@ IO::ParsedObject::ParserType Parser::FileParser::TILParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 hdrBuff[16];
-	Int64 dirOfst;
-	Int64 fileSize;
+	UInt64 dirOfst;
+	UInt64 fileSize;
 	Int32 flags;
 	UTF8Char fileName[256];
 	UTF8Char *srcPtr;
@@ -49,7 +49,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 	
 	Data::DateTime dt;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	dirOfst = ReadInt64(&hdrBuff[8]);
+	dirOfst = ReadUInt64(&hdrBuff[8]);
 	flags = ReadInt32(&hdrBuff[4]);
 	fileSize = fd->GetDataSize();
 	if (flags & 2)
@@ -59,8 +59,8 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			DEL_CLASS(pf);
 			return 0;
 		}
-		OSInt indexSize = (OSInt)(fileSize - dirOfst);
-		OSInt i;
+		UOSInt indexSize = (UOSInt)(fileSize - dirOfst);
+		UOSInt i;
 		UInt8 *indexBuff = MemAlloc(UInt8, indexSize);
 		fd->GetRealData(dirOfst, indexSize, indexBuff);
 		i = 0;
@@ -76,7 +76,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			{
 				srcPtr = Text::StrConcat(srcPtr, (const UTF8Char*)".jpg");
 			}
-			pf->AddData(fd, ReadInt64(&indexBuff[i + 16]), ReadInt64(&indexBuff[i + 24]), fileName, timeTicks);
+			pf->AddData(fd, ReadUInt64(&indexBuff[i + 16]), ReadUInt64(&indexBuff[i + 24]), fileName, timeTicks);
 			i += 32;
 		}
 		MemFree(indexBuff);
@@ -90,12 +90,12 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			if (fd->GetRealData(dirOfst, 32, indexBuff) != 32)
 				break;
 
-			Int64 fileOfst;
+			UInt64 fileOfst;
 			Int32 imgType;
 			Int64 timeTicks = ReadInt64(&indexBuff[0]);
 			dt.SetTicks(timeTicks);
 			dt.ToLocalTime();
-			fileOfst = ReadInt64(&indexBuff[16]);
+			fileOfst = ReadUInt64(&indexBuff[16]);
 			if (fileOfst != dirOfst + 32)
 				break;
 			srcPtr = dt.ToString(fileName, "yyyyMMdd HHmmss");
@@ -104,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			{
 				srcPtr = Text::StrConcat(srcPtr, (const UTF8Char*)".jpg");
 			}
-			pf->AddData(fd, fileOfst, ReadInt64(&indexBuff[24]), fileName, timeTicks);
+			pf->AddData(fd, fileOfst, ReadUInt64(&indexBuff[24]), fileName, timeTicks);
 		}
 	}
 	else

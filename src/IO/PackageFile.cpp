@@ -33,7 +33,7 @@ IO::PackageFile::PackageFile(const UTF8Char *fileName) : IO::ParsedObject(fileNa
 IO::PackageFile::~PackageFile()
 {
 	PackFileItem *item;
-	OSInt i = this->items->GetCount();
+	UOSInt i = this->items->GetCount();
 	while (i-- > 0)
 	{
 		item = this->items->GetItem(i);
@@ -79,20 +79,13 @@ IO::ParsedObject::ParserType IO::PackageFile::GetParserType()
 	return IO::ParsedObject::PT_PACKAGE_PARSER;
 }
 
-void IO::PackageFile::AddData(IO::IStreamData *fd, Int64 ofst, Int64 length, const UTF8Char *name, Int64 modTimeTick)
+void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, const UTF8Char *name, Int64 modTimeTick)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_UNCOMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	if (name)
-	{
-		item->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		item->name = 0;
-	}
+	item->name = SCOPY_TEXT(name);
 	item->pobj = 0;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
@@ -123,20 +116,13 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, In
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(IO::IStreamData *fd, Int64 ofst, Int64 length, IO::PackFileItem::CompressInfo *compInfo, const UTF8Char *name, Int64 modTimeTick)
+void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, const UTF8Char *name, Int64 modTimeTick)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_COMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	if (name)
-	{
-		item->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		item->name = 0;
-	}
+	item->name = SCOPY_TEXT(name);
 	item->pobj = 0;
 	item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
 	MemCopyNO(item->compInfo, compInfo, sizeof(PackFileItem::CompressInfo));
@@ -182,7 +168,7 @@ IO::PackageFile *IO::PackageFile::GetPackFile(const UTF8Char *name)
 	return 0;
 }
 
-Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, Int64 ofst, Int32 crc, OSInt compSize, UInt32 decSize)
+Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize)
 {
 	OSInt i;
 	IO::PackFileItem *item;

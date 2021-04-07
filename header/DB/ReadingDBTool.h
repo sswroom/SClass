@@ -47,9 +47,9 @@ namespace DB
 	protected:
 		void AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev);
 
-		OSInt SplitMySQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr);
-		OSInt SplitMSSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr);
-		OSInt SplitUnkSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr);
+		UOSInt SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
+		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
+		UOSInt SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 	public:
 		ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix);
 		virtual ~ReadingDBTool();
@@ -88,11 +88,11 @@ namespace DB
 		void ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
 		Bool ChangeDatabase(const UTF8Char *databaseName);
 
-		OSInt SplitSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr);
+		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 
 	protected:
 		static void AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::ColDef *col);
-		static void AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, OSInt colSize);
+		static void AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize);
 	};
 }
 #endif

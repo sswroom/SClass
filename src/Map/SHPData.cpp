@@ -551,8 +551,8 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 		obj->objId = id;
 		obj->ptOfstArr = 0;
 		obj->pointArr = MemAlloc(Double, 2);
-		obj->pointArr[0] = (this->ptX->GetItem((OSInt)id));
-		obj->pointArr[1] = (this->ptY->GetItem((OSInt)id));
+		obj->pointArr[0] = (this->ptX->GetItem((UOSInt)id));
+		obj->pointArr[1] = (this->ptY->GetItem((UOSInt)id));
 		obj->flags = 0;
 		obj->lineColor = 0;
 		return obj;
@@ -627,7 +627,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
 	{
 		Math::Polygon *pg;
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
+		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		NEW_CLASS(pg, Math::Polygon(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
@@ -638,7 +638,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
 	{
 		Math::Polyline *pl;
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
+		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		NEW_CLASS(pl, Math::Polyline(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
@@ -649,7 +649,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
 		Math::Polyline3D *pl;
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
+		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		NEW_CLASS(pl, Math::Polyline3D(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));

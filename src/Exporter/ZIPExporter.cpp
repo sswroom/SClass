@@ -68,7 +68,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 		{
 			fd = pkg->GetItemStmData(i);
 			fileLeng = fd->GetDataSize();
-			fileBuff = MemAlloc(UInt8, (OSInt)fileLeng);
+			fileBuff = MemAlloc(UInt8, (UOSInt)fileLeng);
 			if (fd->GetRealData(0, (UOSInt)fileLeng, fileBuff) != fileLeng)
 			{
 				MemFree(fileBuff);

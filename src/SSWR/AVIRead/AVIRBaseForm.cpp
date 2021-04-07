@@ -942,7 +942,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				IO::Path::GetProcessFileName(u8buff);
 				Text::StrInt32(u8buff2, ReadMInt32(crcVal));
 				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
+				*u8ptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 				*u8ptr = 0;
 				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, u8buff, this->core->GetSocketFactory()));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));

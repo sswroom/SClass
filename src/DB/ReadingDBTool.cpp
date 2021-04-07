@@ -7,6 +7,8 @@
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDBTool.h"
+#include "DB/SQL/CreateTableCommand.h"
+#include "DB/SQL/SQLCommand.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/LogTool.h"
@@ -19,8 +21,6 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
-
-#include <stdio.h>
 
 void DB::ReadingDBTool::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev)
 {
@@ -94,9 +94,9 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	}
 }
 
-OSInt DB::ReadingDBTool::SplitMySQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
-	OSInt currCnt = 0;
+	UOSInt currCnt = 0;
 	OSInt quoteType = 0;
 	Bool quoted = false;
 	Bool cmdStart = true;
@@ -209,9 +209,9 @@ OSInt DB::ReadingDBTool::SplitMySQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *
 	return currCnt;
 }
 
-OSInt DB::ReadingDBTool::SplitMSSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
-	OSInt currCnt = 0;
+	UOSInt currCnt = 0;
 	OSInt quoteType = 0;
 	Bool quoted = false;
 	Bool cmdStart = true;
@@ -333,7 +333,7 @@ OSInt DB::ReadingDBTool::SplitMSSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *
 	return currCnt;
 }
 
-OSInt DB::ReadingDBTool::SplitUnkSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
 	return Text::StrSplit(outStrs, maxCnt, oriStr, ';');
 }
@@ -710,7 +710,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 
 void DB::ReadingDBTool::ReleaseTableNames(Data::ArrayList<const UTF8Char*> *arr)
 {
-	OSInt i = arr->GetCount();
+	UOSInt i = arr->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(arr->RemoveAt(i));
@@ -808,7 +808,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 					col->SetAttr(0);
 				}
 				r->GetStr(1, buff, sizeof(buff));
-				Int32 colSize;
+				UOSInt colSize;
 				col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, &colSize));
 				col->SetColSize(colSize);
 				if (col->GetColType() == DB::DBUtil::CT_DateTime2)
@@ -839,7 +839,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		{
 			ptr = this->DBStrUTF8(ptr, &tableName[ind + 1]);
 			ptr = Text::StrConcat(ptr, (const UTF8Char*)", ");
-			const UTF8Char *tmpPtr = Text::StrCopyNewC(tableName, ind);
+			const UTF8Char *tmpPtr = Text::StrCopyNewC(tableName, (UOSInt)ind);
 			ptr = this->DBStrUTF8(ptr, tmpPtr);
 			Text::StrDelNew(tmpPtr);
 		}
@@ -881,7 +881,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 					col->SetDefVal(buff);
 				}
 			}
-			col->SetColSize(r->GetInt32(6));
+			col->SetColSize((UOSInt)r->GetInt32(6));
 			r->GetStr(5, buff, sizeof(buff));
 			if (Text::StrEndsWith(buff, (const UTF8Char*)" identity"))
 			{
@@ -952,8 +952,18 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			r->GetStr(0, &sb);
 		}
 		this->db->CloseReader(r);
-		printf("%s\r\n", sb.ToString());
-		return 0;
+
+		DB::TableDef *tab = 0;
+		DB::SQL::SQLCommand *cmd = DB::SQL::SQLCommand::Parse(sb.ToString(), this->svrType);
+		if (cmd)
+		{
+			if (cmd->GetCommandType() == DB::SQL::SQLCommand::CT_CREATE_TABLE)
+			{
+				tab = ((DB::SQL::CreateTableCommand*)cmd)->GetTableDef()->Clone();
+			}
+			DEL_CLASS(cmd);
+		}
+		return tab;
 	}
 	else
 	{
@@ -1016,12 +1026,12 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 	{
 		Text::StringBuilderUTF8 sb;
 		const UTF8Char *name = this->db->GetSourceNameObj();
-		OSInt i = Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
+		OSInt i = Text::StrLastIndexOf(name, (UTF8Char)IO::Path::PATH_SEPERATOR);
 		sb.Append(&name[i + 1]);
 		i = sb.IndexOf('.');
 		if (i >= 0)
 		{
-			sb.RemoveChars(sb.GetLength() - i);
+			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
 		arr->Add(Text::StrCopyNew(sb.ToString()));
 		return 1;
@@ -1078,7 +1088,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	return false;
 }
 
-OSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, OSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
 	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
 	{
@@ -1144,7 +1154,7 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 	}
 }
 
-void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, OSInt colSize)
+void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize)
 {
 	if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
 	{

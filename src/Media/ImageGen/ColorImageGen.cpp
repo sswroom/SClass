@@ -18,7 +18,7 @@ const UTF8Char *Media::ImageGen::ColorImageGen::GetName()
 	return (const UTF8Char*)"Color Test";
 }
 
-Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile *colorProfile, OSInt width, OSInt height)
+Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;

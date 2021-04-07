@@ -545,7 +545,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF8Char *fileName, Int64 modTimeTicks)
 {
 	UInt8 dataBuff[512];
-	OSInt strLen;
+	UOSInt strLen;
 	Bool needCommit = false;
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileMap->Get(fileName) == 0)

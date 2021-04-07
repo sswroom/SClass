@@ -739,7 +739,7 @@ Bool Media::StaticImage::ToPal8()
 	return false;
 }
 
-Bool Media::StaticImage::FillColor(Int32 color)
+Bool Media::StaticImage::FillColor(UInt32 color)
 {
 	if (this->info->fourcc == 0 && this->info->storeBPP == 32 && this->info->pf == Media::PF_B8G8R8A8)
 	{
@@ -805,7 +805,7 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 	return false;
 }
 
-Bool Media::StaticImage::MultiplyColor(Int32 color)
+Bool Media::StaticImage::MultiplyColor(UInt32 color)
 {
 	if (this->info->fourcc == 0 && this->info->storeBPP == 32 && this->info->pf == Media::PF_B8G8R8A8)
 	{

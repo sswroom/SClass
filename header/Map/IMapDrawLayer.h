@@ -64,9 +64,9 @@ namespace Map
 		Math::CoordinateSystem *csys;
 		const UTF8Char *layerName;
 
-		Int32 pgColor;
-		Int32 lineColor;
-		Int32 lineWidth;
+		UInt32 pgColor;
+		UInt32 lineColor;
+		UInt32 lineWidth;
 		Media::ImageList *iconImg;
 		OSInt iconSpotX;
 		OSInt iconSpotY;
@@ -100,7 +100,7 @@ namespace Map
 		virtual void SetCurrTimeTS(Int64 timeStamp);
 		virtual Int64 GetTimeStartTS();
 		virtual Int64 GetTimeEndTS();
-		virtual Map::MapView *CreateMapView(OSInt width, OSInt height);
+		virtual Map::MapView *CreateMapView(UOSInt width, UOSInt height);
 
 		virtual DrawLayerType GetLayerType() = 0;
 		virtual void SetMixedType(DrawLayerType mixedType);
@@ -157,12 +157,12 @@ namespace Map
 		Bool HasLineStyle();
 		Bool HasPGStyle();
 		Bool HasIconStyle();
-		void SetLineStyle(Int32 lineColor, Int32 lineWidth);
-		void SetPGStyle(Int32 pgColor);
+		void SetLineStyle(UInt32 lineColor, UInt32 lineWidth);
+		void SetPGStyle(UInt32 pgColor);
 		void SetIconStyle(Media::ImageList *iconImg, OSInt iconSpotX, OSInt iconSpotY);
-		Int32 GetLineStyleColor();
-		Int32 GetLineStyleWidth();
-		Int32 GetPGStyleColor();
+		UInt32 GetLineStyleColor();
+		UInt32 GetLineStyleWidth();
+		UInt32 GetPGStyleColor();
 		Media::ImageList *GetIconStyleImg();
 		OSInt GetIconStyleSpotX();
 		OSInt GetIconStyleSpotY();

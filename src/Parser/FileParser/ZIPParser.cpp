@@ -60,11 +60,11 @@ IO::ParsedObject::ParserType Parser::FileParser::ZIPParser::GetParserType()
 typedef struct
 {
 	Int32 crc;
-	Int32 fnameSize;
+	UInt32 fnameSize;
 	UInt64 compSize;
 	UInt64 decSize;
-	Int32 extraSize;
-	Int32 commentSize;
+	UInt32 extraSize;
+	UInt32 commentSize;
 } ZIPInfoEntry;
 
 IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
@@ -73,8 +73,8 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *sptr;
 	UInt8 buff[512];
 	OSInt i;
-	Int64 currOfst;
-	Int64 fileSize = fd->GetDataSize();
+	UInt64 currOfst;
+	UInt64 fileSize = fd->GetDataSize();
 
 	fd->GetRealData(0, 512, buff);
 	if (ReadInt32(buff) != 0x04034b50)
@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
-	Data::StringUTF8Map<Int64> ofsts;
+	Data::StringUTF8Map<UInt64> ofsts;
 	Data::StringUTF8Map<ZIPInfoEntry*> zipInfos;
 	ZIPInfoEntry *zipInfo;
 	ZIPInfoEntry *zipInfo2;
@@ -159,9 +159,9 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currOfst, 512, buff);
 		if (ReadInt32(buff) == 0x04034b50)
 		{
-			Int32 fnameSize = ReadUInt16(&buff[26]);
-			Int32 extraSize = ReadUInt16(&buff[28]);
-			Int32 compMeth = ReadUInt16(&buff[8]);
+			UInt32 fnameSize = ReadUInt16(&buff[26]);
+			UInt32 extraSize = ReadUInt16(&buff[28]);
+			UInt32 compMeth = ReadUInt16(&buff[8]);
 			UInt64 dataSize = ReadUInt32(&buff[18]);
 //			UInt64 decompSize = ReadUInt32(&buff[22]);
 			UInt16 modTime = ReadUInt16(&buff[10]);
@@ -320,9 +320,9 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else if (ReadInt32(buff) == 0x02014b50)
 		{
-			Int32 fnameSize = ReadUInt16(&buff[28]);
-			Int32 extraSize = ReadUInt16(&buff[30]);
-			Int32 commentSize = ReadUInt16(&buff[32]);
+			UInt32 fnameSize = ReadUInt16(&buff[28]);
+			UInt32 extraSize = ReadUInt16(&buff[30]);
+			UInt32 commentSize = ReadUInt16(&buff[32]);
 //			UInt32 dataSize = ReadUInt32(&buff[20]);
 			currOfst += 46 + fnameSize + extraSize + commentSize;
 		}
@@ -341,20 +341,20 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		}
 	}
 	Data::ArrayList<ZIPInfoEntry*> *zipInfoList = zipInfos.GetValues();
-	i = zipInfoList->GetCount();
-	while (i-- > 0)
+	UOSInt ui = zipInfoList->GetCount();
+	while (ui-- > 0)
 	{
-		zipInfo = zipInfoList->GetItem(i);
+		zipInfo = zipInfoList->GetItem(ui);
 		MemFree(zipInfo);
 	}
 
 	if (targetType == IO::ParsedObject::PT_MAP_LAYER_PARSER || targetType == IO::ParsedObject::PT_UNKNOWN)
 	{
-		i = pf->GetCount();
-		while (i-- > 0)
+		ui = pf->GetCount();
+		while (ui-- > 0)
 		{
-			pf->GetItemName(sbuff, i);
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"doc.kml") && pf->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			pf->GetItemName(sbuff, ui);
+			if (Text::StrEquals(sbuff, (const UTF8Char*)"doc.kml") && pf->GetItemType(ui) == IO::PackageFile::POT_STREAMDATA)
 			{
 				IO::IStreamData *stmData = pf->GetItemStmData(0);
 				Parser::FileParser::XMLParser xmlParser;

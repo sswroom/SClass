@@ -13,8 +13,8 @@ namespace Media
 			virtual ~Gradian32ImageGen();
 
 			virtual const UTF8Char *GetName();
-			virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, OSInt width, OSInt height);
+			virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height);
 		};
-	};
-};
+	}
+}
 #endif

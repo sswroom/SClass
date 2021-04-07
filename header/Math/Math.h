@@ -291,6 +291,11 @@ namespace Math
 		return (Double)val;
 	}
 
+	FORCEINLINE Double UOSInt2Double(UOSInt val)
+	{
+		return (Double)val;
+	}
+
 	FORCEINLINE Double Fix(Double val)
 	{
 		return floor(val);

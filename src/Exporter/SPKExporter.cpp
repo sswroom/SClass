@@ -88,9 +88,9 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
 				IO::SPackageFile *spkg;
 				UInt8 *customBuff = MemAlloc(UInt8, 2048);
-				OSInt buffSize = 1;
+				UOSInt buffSize = 1;
 				OSInt i = 0;
-				OSInt bSize;
+				UOSInt bSize;
 				const UTF8Char *url;
 				while (true)
 				{

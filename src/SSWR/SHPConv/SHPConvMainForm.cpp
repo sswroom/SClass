@@ -1506,7 +1506,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	UTF8Char sbuff[256];
 	Data::ArrayList<Int32> codePages;
 	Text::EncodingFactory::GetCodePages(&codePages);
-	OSInt i;
+	UOSInt i;
 	i = this->lstLang->AddItem((const UTF8Char*)"utf16", (void*)1200);
 	if (sysCP == 1200)
 	{
@@ -1519,7 +1519,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	}
 
 	i = 0;
-	OSInt j = codePages.GetCount();
+	UOSInt j = codePages.GetCount();
 	OSInt k;
 	while (i < j)
 	{

@@ -18,7 +18,7 @@ const UTF8Char *Media::ImageGen::LinesImageGen::GetName()
 	return (const UTF8Char*)"Lines Image";
 }
 
-Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile *colorProfile, OSInt width, OSInt height)
+Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;

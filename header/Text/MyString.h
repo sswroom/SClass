@@ -113,6 +113,7 @@ namespace Text
 	Char *StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char seperator);
 	Int64 StrHex2Int64(const Char *str);
 	Int32 StrHex2Int32(const Char *str);
+	FORCEINLINE UInt32 StrHex2UInt32(const Char *str) { return (UInt32)StrHex2Int32(str); }
 	Int16 StrHex2Int16(const Char *str);
 	UInt8 StrHex2Byte(const Char *str);
 	UOSInt StrHex2Bytes(const Char *str, UInt8 *buff);
@@ -147,6 +148,7 @@ namespace Text
 	Bool StrToInt16(const Char *str, Int16 *outVal);
 	Int16 StrToInt16(const Char *str);
 	Bool StrToUInt32(const Char *intStr, UInt32 *outVal);
+	Bool StrToUInt32S(const Char *intStr, UInt32 *outVal, UInt32 failVal);
 	UInt32 StrToUInt32(const Char *intStr);
 	Bool StrToInt32(const Char *str, Int32 *outVal);
 	Int32 StrToInt32(const Char *str);
@@ -224,6 +226,7 @@ namespace Text
 	FORCEINLINE UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator) { return (UTF8Char*)StrHexBytes((Char*)oriStr, buff, buffSize, (Char)seperator); };
 	FORCEINLINE Int64 StrHex2Int64(const UTF8Char *str) { return StrHex2Int64((const Char*)str); };
 	FORCEINLINE Int32 StrHex2Int32(const UTF8Char *str) { return StrHex2Int32((const Char*)str); }
+	FORCEINLINE UInt32 StrHex2UInt32(const UTF8Char *str) { return (UInt32)StrHex2Int32((const Char*)str); }
 	FORCEINLINE Int16 StrHex2Int16(const UTF8Char *str) { return StrHex2Int16((const Char*)str); }
 	FORCEINLINE UInt8 StrHex2Byte(const UTF8Char *str) { return StrHex2Byte((const Char*)str); }
 	FORCEINLINE UOSInt StrHex2Bytes(const UTF8Char *str, UInt8 *buff) { return StrHex2Bytes((const Char*)str, buff); };
@@ -257,6 +260,7 @@ namespace Text
 	FORCEINLINE Bool StrToInt16(const UTF8Char *str, Int16 *outVal) { return StrToInt16((const Char*)str, outVal); }
 	FORCEINLINE Int16 StrToInt16(const UTF8Char *str) { return StrToInt16((const Char*)str); }
 	FORCEINLINE Bool StrToUInt32(const UTF8Char *intStr, UInt32 *outVal) { return StrToUInt32((const Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToUInt32S(const UTF8Char *intStr, UInt32 *outVal, UInt32 failVal) { return StrToUInt32S((const Char*)intStr, outVal, failVal); };
 	FORCEINLINE UInt32 StrToUInt32(const UTF8Char *intStr) { return StrToUInt32((const Char*)intStr); };
 	FORCEINLINE Bool StrToInt32(const UTF8Char *str, Int32 *outVal) { return StrToInt32((const Char*)str, outVal); }
 	FORCEINLINE Int32 StrToInt32(const UTF8Char *str) { return StrToInt32((const Char*)str); }

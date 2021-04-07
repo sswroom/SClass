@@ -58,8 +58,8 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	DB::DBReader *r;
 	DB::TableDef *tabDef;
 	Data::ArrayList<const UTF8Char *> tables;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	destDB = DB::SQLiteFile::CreateDBTool(fileName, &log, (const UTF8Char*)"DB: ");
 	if (destDB == 0)

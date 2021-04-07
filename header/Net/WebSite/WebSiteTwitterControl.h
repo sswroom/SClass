@@ -33,7 +33,7 @@ namespace Net
 			WebSiteTwitterControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSiteTwitterControl();
 
-			OSInt GetChannelItems(const UTF8Char *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			UOSInt GetChannelItems(const UTF8Char *channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			const UTF8Char *GetUserAgent();
 		};

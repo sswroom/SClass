@@ -126,8 +126,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 	}
 	else
 	{
-		mousePosX = w >> 1;
-		mousePosY = h >> 1;
+		mousePosX = (OSInt)(w >> 1);
+		mousePosY = (OSInt)(h >> 1);
 	}
 
 	NEW_CLASS(layers, Data::ArrayList<Map::IMapDrawLayer*>());
@@ -181,31 +181,31 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 					if (stimg->info->par2 > 1)
 					{
 						hsX = Math::OSInt2Double(stimg->GetHotSpotX());
-						hsY = stimg->GetHotSpotY() * stimg->info->par2;
-						calcImgW = Math::OSInt2Double(stimg->info->dispWidth);
-						calcImgH = Math::OSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
+						hsY = Math::OSInt2Double(stimg->GetHotSpotY()) * stimg->info->par2;
+						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth);
+						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
 					}
 					else
 					{
-						hsX = stimg->GetHotSpotX() / stimg->info->par2;
+						hsX = Math::OSInt2Double(stimg->GetHotSpotX()) / stimg->info->par2;
 						hsY = Math::OSInt2Double(stimg->GetHotSpotY());
-						calcImgW = Math::OSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
-						calcImgH = Math::OSInt2Double(stimg->info->dispHeight);
+						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
+						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight);
 					}
-					me->mapCtrl->ScnXYD2MapXY(mousePosX - hsX, mousePosY - hsY, &x1, &y1);
-					me->mapCtrl->ScnXYD2MapXY(mousePosX + calcImgW - hsX, mousePosY + calcImgH - hsY, &x2, &y2);
+					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) - hsX, Math::OSInt2Double(mousePosY) - hsY, &x1, &y1);
+					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) + calcImgW - hsX, Math::OSInt2Double(mousePosY) + calcImgH - hsY, &x2, &y2);
 				}
 				else
 				{
 					if (stimg->info->par2 > 1)
 					{
-						calcImgW = Math::OSInt2Double(stimg->info->dispWidth);
-						calcImgH = Math::OSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
+						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth);
+						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
 					}
 					else
 					{
-						calcImgW = Math::OSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
-						calcImgH = Math::OSInt2Double(stimg->info->dispHeight);
+						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
+						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight);
 					}
 					me->mapCtrl->ScnXYD2MapXY(mousePosX - calcImgW * 0.5, mousePosY - calcImgH * 0.5, &x1, &y1);
 					me->mapCtrl->ScnXYD2MapXY(mousePosX + calcImgW * 0.5, mousePosY + calcImgH * 0.5, &x2, &y2);
@@ -277,7 +277,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(void *userObj, OSInt x
 {
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	Bool ret = false;
-	OSInt i;
+	UOSInt i;
 	i = me->mouseDownHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -292,7 +292,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(void *userObj, OSInt x, 
 {
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	Bool ret = false;
-	OSInt i;
+	UOSInt i;
 	i = me->mouseUpHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -756,7 +756,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 {
 	this->mapCtrl->SetRenderer(0);
-	OSInt i;
+	UOSInt i;
 	this->CloseCtrlForm();
 	i = this->subForms->GetCount();
 	while (i-- > 0)
@@ -1212,8 +1212,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					OSInt i;
 					Map::GPSTrack *trk;
-					UInt8 *fileBuff = MemAlloc(UInt8, (OSInt)fileSize);
-					fs->Read(fileBuff, (OSInt)fileSize);
+					UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileSize);
+					fs->Read(fileBuff, (UOSInt)fileSize);
 					NEW_CLASS(trk, Map::GPSTrack(dlg->GetFileName(), true, 0, 0));
 					i = 0;
 					while (i < fileSize)
@@ -1653,7 +1653,7 @@ void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, void *userOb
 
 void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(void *userObj)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->mouseDownObjs->GetCount();
 	while (i-- > 0)
 	{

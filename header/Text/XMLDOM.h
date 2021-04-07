@@ -67,7 +67,7 @@ namespace Text
 	class XMLAttrib : public XMLNode
 	{
 	public:
-		XMLAttrib(const UTF8Char *name, OSInt nameLen, const UTF8Char *value, OSInt valueLen);
+		XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual ~XMLAttrib();
 
 		virtual Bool ToString(Text::StringBuilderUTF *sb);
@@ -78,7 +78,7 @@ namespace Text
 	{
 	private:
 		UTF8Char *doc;
-		OSInt docLeng;
+		UOSInt docLeng;
 		UTF8Char *version;
 		UTF8Char *encoding;
 

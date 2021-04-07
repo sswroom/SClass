@@ -8,7 +8,7 @@
 #include "Text/XML.h"
 #include "Text/XMLDOM.h"
 
-Text::XMLAttrib::XMLAttrib(const UTF8Char *name, OSInt nameLen, const UTF8Char *value, OSInt valueLen) : XMLNode(Text::XMLNode::NT_ATTRIBUTE)
+Text::XMLAttrib::XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen) : XMLNode(Text::XMLNode::NT_ATTRIBUTE)
 {
 	this->name = 0;
 	this->value = 0;

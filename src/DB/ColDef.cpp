@@ -108,14 +108,7 @@ void DB::ColDef::SetColName(const UTF8Char *colName)
 	{
 		Text::StrDelNew(this->colName);
 	}
-	if (colName)
-	{
-		this->colName = Text::StrCopyNew(colName);
-	}
-	else
-	{
-		this->colName = 0;
-	}
+	this->colName = SCOPY_TEXT(colName);
 }
 
 void DB::ColDef::SetColType(DB::DBUtil::ColType colType)
@@ -150,37 +143,32 @@ void DB::ColDef::SetAutoInc(Bool autoInc)
 
 void DB::ColDef::SetDefVal(const UTF8Char *defVal)
 {
-	if (this->defVal)
-	{
-		Text::StrDelNew(this->defVal);
-	}
-	if (defVal)
-	{
-		this->defVal = Text::StrCopyNew(defVal);
-	}
-	else
-	{
-		this->defVal = 0;
-	}
+	SDEL_TEXT(this->defVal);
+	this->defVal = SCOPY_TEXT(defVal);
 }
 
 void DB::ColDef::SetAttr(const UTF8Char *attr)
 {
-	if (this->attr)
-	{
-		Text::StrDelNew(this->attr);
-	}
-	if (attr)
-	{
-		this->attr = Text::StrCopyNew(attr);
-	}
-	else
-	{
-		this->attr = 0;
-	}
+	SDEL_TEXT(this->attr);
+	this->attr = SCOPY_TEXT(attr);
 }
 
 UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff)
 {
 	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize);
+}
+
+DB::ColDef *DB::ColDef::Clone()
+{
+	DB::ColDef *newObj;
+	NEW_CLASS(newObj, DB::ColDef(this->colName));
+	newObj->SetColType(this->colType);
+	newObj->SetColSize(this->colSize);
+	newObj->SetColDP(this->colDP);
+	newObj->SetNotNull(this->notNull);
+	newObj->SetPK(this->pk);
+	newObj->SetAutoInc(this->autoInc);
+	newObj->SetDefVal(this->defVal);
+	newObj->SetAttr(this->attr);
+	return newObj;
 }

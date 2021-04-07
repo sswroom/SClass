@@ -22,8 +22,8 @@ namespace Text
 		Text::EncodingFactory *encFact;
 		IO::Stream *stm;
 		UInt8 *readBuff;
-		OSInt buffSize;
-		OSInt parseOfst;
+		UOSInt buffSize;
+		UOSInt parseOfst;
 		OSInt parseError; //Max = 52
 		ParseMode mode;
 
@@ -41,12 +41,12 @@ namespace Text
 		~XMLReader();
 
 		void GetCurrPath(Text::StringBuilderUTF *sb);
-		OSInt GetPathLev();
+		UOSInt GetPathLev();
 		Text::XMLNode::NodeType GetNodeType();
 		const UTF8Char *GetNodeText(); //TextNode = Value, ElementNode = Name
 		const UTF8Char *GetNodeOriText();
-		OSInt GetAttribCount();
-		Text::XMLAttrib *GetAttrib(OSInt index);
+		UOSInt GetAttribCount();
+		Text::XMLAttrib *GetAttrib(UOSInt index);
 		Text::XMLAttrib *GetAttrib(const UTF8Char *name);
 
 		Bool ReadNext();
@@ -57,7 +57,7 @@ namespace Text
 		OSInt GetErrorCode();
 		Bool ToString(Text::StringBuilderUTF *sb);
 
-		static Bool XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, OSInt lev, Text::StringBuilderUTF *sb);
+		static Bool XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb);
 	};
 }
 #endif

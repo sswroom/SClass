@@ -501,7 +501,7 @@ FORCEINLINE void WriteFloat(UInt8 *dptr, Single val)
 }
 #endif
 
-#define ReadUInt24(uint8Ptr) ((ReadUInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
+#define ReadUInt24(uint8Ptr) (UInt32)((ReadUInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
 #define ReadInt24(uint8Ptr) ((ReadInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
 #define ReadMInt24(uint8Ptr) ((ReadMInt16(uint8Ptr) << 8) | (uint8Ptr)[2])
 #define ReadMUInt24(uint8Ptr) ((UInt32)((uint8Ptr)[0] << 16) | ReadMUInt16(uint8Ptr + 1))

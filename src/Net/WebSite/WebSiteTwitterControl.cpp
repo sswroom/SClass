@@ -21,12 +21,12 @@ Net::WebSite::WebSiteTwitterControl::~WebSiteTwitterControl()
 	SDEL_TEXT(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList, Net::WebSite::WebSiteTwitterControl::ChannelInfo *chInfo)
+UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *channelId, UOSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList, Net::WebSite::WebSiteTwitterControl::ChannelInfo *chInfo)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
-	OSInt i;
-	OSInt j;
+	UOSInt retCnt = 0;
+	UOSInt i;
+	UOSInt j;
 	sb.Append((const UTF8Char*)"https://twitter.com/");
 	sb.Append(channelId);
 	ItemData *item;
@@ -50,7 +50,7 @@ OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chann
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"div"))
 		{
-			attr = reader->GetAttrib((OSInt)0);
+			attr = reader->GetAttrib((UOSInt)0);
 			if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"class") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"stream-item-header"))
 			{
 #if defined(VERBOSE)
@@ -65,10 +65,10 @@ OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chann
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"small") && reader->GetAttribCount() > 0)
 					{
-						attr = reader->GetAttrib((OSInt)0);
+						attr = reader->GetAttrib((UOSInt)0);
 						if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"class") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"time"))
 						{
-							OSInt smallPathLev = reader->GetPathLev();
+							UOSInt smallPathLev = reader->GetPathLev();
 							while (reader->ReadNext() && reader->GetPathLev() > smallPathLev)
 							{
 								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"a") && reader->GetAttribCount() > 0)
@@ -115,12 +115,12 @@ OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chann
 #if defined(VERBOSE)
 				printf("js-tweet-text-container found\r\n");
 #endif				
-				OSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"p"))
 					{
-						OSInt smallPathLev = reader->GetPathLev();
+						UOSInt smallPathLev = reader->GetPathLev();
 						sb.ClearStr();
 						while (reader->ReadNext() && reader->GetPathLev() > smallPathLev)
 						{
@@ -146,7 +146,7 @@ OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chann
 								}
 								else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"a") && reader->GetAttribCount() > 0)
 								{
-									attr = reader->GetAttrib((OSInt)0);
+									attr = reader->GetAttrib((UOSInt)0);
 									if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"href") && attr->value && Text::StrStartsWith(attr->value, (const UTF8Char*)"https://"))
 									{
 										reader->SkipElement();
@@ -164,7 +164,7 @@ OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chann
 #if defined(VERBOSE)
 				printf("AdaptiveMediaOuterContainer found\r\n");
 #endif				
-				OSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"div"))
@@ -215,7 +215,7 @@ OSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chann
 			}
 			else if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"class") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"ProfileHeaderCard"))
 			{
-				OSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)

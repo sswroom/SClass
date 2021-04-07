@@ -50,15 +50,15 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"main") && reader->GetAttribCount() == 2)
 		{
-			attr = reader->GetAttrib((OSInt)0);
+			attr = reader->GetAttrib((UOSInt)0);
 			if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"id") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"main-content"))
 			{
-				OSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"a") && reader->GetAttribCount() == 4)
 					{
-						attr = reader->GetAttrib((OSInt)0);
+						attr = reader->GetAttrib((UOSInt)0);
 						attr1 = reader->GetAttrib(1);
 						attr2 = reader->GetAttrib(2);
 						attr3 = reader->GetAttrib(3);
@@ -120,15 +120,15 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"div"))
 		{
-			attr = reader->GetAttrib((OSInt)0);
+			attr = reader->GetAttrib((UOSInt)0);
 			if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"class") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"post-des"))
 			{
-				OSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader->GetPathLev();
 				Bool lastIsH6 = false;
 				Int32 id = 0;
 				Int64 time = 0;
 				const UTF8Char *title = 0;
-				OSInt pullLeftLev = 0;
+				UOSInt pullLeftLev = 0;
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
@@ -139,7 +139,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 						}
 						else if (lastIsH6 && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"a"))
 						{
-							attr = reader->GetAttrib((OSInt)0);
+							attr = reader->GetAttrib((UOSInt)0);
 							if (reader->GetAttribCount() == 1 && attr && Text::StrEquals(attr->name, (const UTF8Char*)"href") && attr->value && Text::StrStartsWith(attr->value, (const UTF8Char*)BASEURL))
 							{
 								id = Text::StrToInt32(&attr->value[sizeof(BASEURL) + 5]);
@@ -154,7 +154,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 							lastIsH6 = false;
 							if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"p"))
 							{
-								attr = reader->GetAttrib((OSInt)0);
+								attr = reader->GetAttrib((UOSInt)0);
 								if (attr && Text::StrEquals(attr->name, (const UTF8Char*)"class") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"pull-left"))
 								{
 									pullLeftLev = reader->GetPathLev();
@@ -201,7 +201,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 void Net::WebSite::WebSite48IdolControl::FreeItems(Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> *itemList)
 {
 	ItemData *item;
-	OSInt i = itemList->GetCount();
+	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItem(i);
@@ -226,7 +226,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"button") && reader->GetAttribCount() > 0)
 		{
-			attr = reader->GetAttrib((OSInt)0);
+			attr = reader->GetAttrib((UOSInt)0);
 			if (Text::StrEquals(attr->name, (const UTF8Char*)"id") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"ddb"))
 			{
 				attr = reader->GetAttrib(1);
@@ -235,8 +235,11 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 					if (linkId == 0)
 					{
 						OSInt i = Text::StrIndexOf(&attr->value[13], '\'');
-						link->AppendC(&attr->value[13], i);
-						found = true;
+						if (i >= 0)
+						{
+							link->AppendC(&attr->value[13], (UOSInt)i);
+							found = true;
+						}
 					}
 					else
 					{
@@ -266,10 +269,10 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"div") && reader->GetAttribCount() > 0)
 		{
-			attr = reader->GetAttrib((OSInt)0);
+			attr = reader->GetAttrib((UOSInt)0);
 			if (Text::StrEquals(attr->name, (const UTF8Char*)"class") && attr->value && Text::StrEquals(attr->value, (const UTF8Char*)"post-title"))
 			{
-				OSInt initLev = reader->GetPathLev();
+				UOSInt initLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > initLev)
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"h2"))
@@ -301,14 +304,14 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(const UTF8Char *title
 		{
 			break;
 		}
-		sb.TrimToLength(i);
+		sb.TrimToLength((UOSInt)i);
 		sb.Trim();
 	}
 
 	i = sb.IndexOf('|');
 	if (i >= 0)
 	{
-		sb.TrimToLength(i);
+		sb.TrimToLength((UOSInt)i);
 		sb.Trim();
 	}
 	UTF8Char sbuff[4];

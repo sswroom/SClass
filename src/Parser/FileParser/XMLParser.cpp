@@ -181,8 +181,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 		Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 		KMLStyle *style;
-		OSInt i;
-/*		OSInt j;
+/*		OSInt i;
+		OSInt j;
 		const UTF8Char *shortName;
 		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
@@ -195,10 +195,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		}
 		shortName = &fileName[i + 1];*/
 
-		i = styleList->GetCount();
-		while (i-- > 0)
+		UOSInt ui = styleList->GetCount();
+		while (ui-- > 0)
 		{
-			style = styleList->GetItem(i);
+			style = styleList->GetItem(ui);
 			SDEL_TEXT(style->iconURL);
 			MemFree(style);
 		}
@@ -433,7 +433,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										Double mapYMin;
 										Double mapXMax;
 										Double mapYMax;
-										OSInt i;
+										UOSInt i;
 										Text::XMLAttrib *attr;
 										i = reader->GetAttribCount();
 										while (i-- > 0)
@@ -574,7 +574,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Text::VSProject *proj = 0;
 		Text::VSProject::VisualStudioVersion ver = Text::VSProject::VSV_UNKNOWN;
 		const UTF8Char *projName = 0;
-		OSInt i;
+		UOSInt i;
 		i = reader->GetAttribCount();
 		while (i-- > 0)
 		{
@@ -1113,7 +1113,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		i = Text::StrIndexOf(shortName, '.');
 		if (i > 0)
 		{
-			sbTableName.AppendC(shortName, i);
+			sbTableName.AppendC(shortName, (UOSInt)i);
 		}
 		else
 		{
@@ -1130,8 +1130,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			{
 				if (Text::StrStartsWith(reader->GetNodeText(), (const UTF8Char*)"fme:") && Text::StrStartsWith(reader->GetNodeText() + 4, sbTableName.ToString()) && Text::StrEquals(reader->GetNodeText() + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
 				{
-					OSInt i;
-					OSInt j;
+					UOSInt i;
+					UOSInt j;
 					DB::TextDB *db = 0;
 					Text::StringBuilderUTF8 sb;
 					Data::ArrayList<const UTF8Char *> colList;
@@ -1263,6 +1263,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 {
 	KMLStyle *style;
 	OSInt i;
+	UOSInt ui;
 	Text::XMLAttrib *attr;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -1381,10 +1382,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				style->lineWidth = 0;
 				style->fillColor = 0;
 				style->flags = 0;
-				i = reader->GetAttribCount();
-				while (i-- > 0)
+				ui = reader->GetAttribCount();
+				while (ui-- > 0)
 				{
-					attr = reader->GetAttrib(i);
+					attr = reader->GetAttrib(ui);
 					if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"ID"))
 					{
 						styleId = Text::StrCopyNew(attr->value);
@@ -1414,7 +1415,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										style->lineColor = Text::StrHex2Int32(sb.ToString());
+										style->lineColor = Text::StrHex2UInt32(sb.ToString());
 										style->lineColor = (style->lineColor & 0xff00ff00) | ((style->lineColor & 0xff) << 16) | ((style->lineColor & 0xff0000) >> 16);
 										style->flags |= 1;
 									}
@@ -1422,7 +1423,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										style->lineWidth = sb.ToInt32();
+										sb.ToUInt32S(&style->lineWidth, 0);
 										style->flags |= 2;
 									}
 									else
@@ -1446,7 +1447,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										style->iconColor = Text::StrHex2Int32(sb.ToString());
+										style->iconColor = Text::StrHex2UInt32(sb.ToString());
 										style->iconColor = (style->iconColor & 0xff00ff00) | ((style->iconColor & 0xff) << 16) | ((style->iconColor & 0xff0000) >> 16);
 									}
 									else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"ICON"))
@@ -1475,10 +1476,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									}
 									else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"HOTSPOT"))
 									{
-										i = reader->GetAttribCount();
-										while (i-- > 0)
+										ui = reader->GetAttribCount();
+										while (ui-- > 0)
 										{
-											attr = reader->GetAttrib(i);
+											attr = reader->GetAttrib(ui);
 											if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 											{
 												style->iconSpotX = Text::StrToInt32(attr->value);
@@ -1490,7 +1491,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 										}
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										style->lineWidth = sb.ToInt32();
+										sb.ToUInt32S(&style->lineWidth, 0);
 									}
 									else
 									{
@@ -1511,7 +1512,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									style->fillColor = Text::StrHex2Int32(sb.ToString());
+									style->fillColor = Text::StrHex2UInt32(sb.ToString());
 									style->fillColor = (style->fillColor & 0xff00ff00) | ((style->fillColor & 0xff) << 16) | ((style->fillColor & 0xff0000) >> 16);
 									style->flags |= 4;
 								}
@@ -1552,10 +1553,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				style->lineWidth = 0;
 				style->fillColor = 0;
 				style->flags = 0;
-				i = reader->GetAttribCount();
-				while (i-- > 0)
+				ui = reader->GetAttribCount();
+				while (ui-- > 0)
 				{
-					attr = reader->GetAttrib(i);
+					attr = reader->GetAttrib(ui);
 					if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"ID"))
 					{
 						styleId = Text::StrCopyNew(attr->value);
@@ -1662,7 +1663,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				Double sizeY = 0;
 				Bool hasAltitude = false;
 				Double altitude = 0;
-				Int32 color = 0xffffffff;
+				UInt32 color = 0xffffffff;
 				Int64 timeStart = 0;
 				Int64 timeEnd = 0;
 				sbuff[0] = 0;
@@ -1689,7 +1690,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							color = Text::StrHex2Int32(sb.ToString());
+							color = Text::StrHex2UInt32(sb.ToString());
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"DRAWORDER"))
 						{
@@ -1751,10 +1752,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"SCREENXY"))
 						{
-							i = reader->GetAttribCount();
-							while (i-- > 0)
+							ui = reader->GetAttribCount();
+							while (ui-- > 0)
 							{
-								attr = reader->GetAttrib(i);
+								attr = reader->GetAttrib(ui);
 								if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 								{
 									minX = Text::StrToDouble(attr->value);
@@ -1768,10 +1769,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"OVERLAYXY"))
 						{
-							i = reader->GetAttribCount();
-							while (i-- > 0)
+							ui = reader->GetAttribCount();
+							while (ui-- > 0)
 							{
-								attr = reader->GetAttrib(i);
+								attr = reader->GetAttrib(ui);
 								if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 								{
 									oX = Text::StrToDouble(attr->value);
@@ -1785,10 +1786,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"SIZE"))
 						{
-							i = reader->GetAttribCount();
-							while (i--)
+							ui = reader->GetAttribCount();
+							while (ui--)
 							{
-								attr = reader->GetAttrib(i);
+								attr = reader->GetAttrib(ui);
 								if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 								{
 									sizeX = Text::StrToDouble(attr->value);
@@ -2046,15 +2047,15 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	else
 	{
 		Map::MapLayerCollection *lyrColl;
-		OSInt j;
+		UOSInt j;
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToString()));
-		i = 0;
+		ui = 0;
 		j = layers.GetCount();
-		while (i < j)
+		while (ui < j)
 		{
-			lyr = layers.GetItem(i);
+			lyr = layers.GetItem(ui);
 			lyrColl->Add(lyr);
-			i++;
+			ui++;
 		}
 		return lyrColl;
 	}
@@ -2122,8 +2123,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 										rec.speed = 0;
 										rec.valid = true;
 										Data::DateTime dt;
-										OSInt i = 0;
-										OSInt j = timeList.GetCount();
+										UOSInt i = 0;
+										UOSInt j = timeList.GetCount();
 										while (i < j)
 										{
 											dt.SetValue(timeList.GetItem(i)); 
@@ -2146,7 +2147,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 									}
 									else
 									{
-										OSInt i = timeList.GetCount();
+										UOSInt i = timeList.GetCount();
 										while (i-- > 0)
 										{
 											Text::StrDelNew(timeList.GetItem(i));
@@ -2304,8 +2305,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 							rec.speed = 0;
 							rec.valid = true;
 							Data::DateTime dt;
-							OSInt i = 0;
-							OSInt j = timeList.GetCount();
+							UOSInt i = 0;
+							UOSInt j = timeList.GetCount();
 							while (i < j)
 							{
 								dt.SetValue(timeList.GetItem(i)); 
@@ -2328,7 +2329,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 						}
 						else
 						{
-							OSInt i = timeList.GetCount();
+							UOSInt i = timeList.GetCount();
 							while (i-- > 0)
 							{
 								Text::StrDelNew(timeList.GetItem(i));
@@ -2396,8 +2397,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 					Data::DateTime dt;
 					UTF8Char sbuff[256];
 					UTF8Char *strs[4];
-					OSInt i = 0;
-					OSInt j = timeList.GetCount();
+					UOSInt i = 0;
+					UOSInt j = timeList.GetCount();
 					while (i < j)
 					{
 						dt.SetValue(timeList.GetItem(i)); 
@@ -2418,7 +2419,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 				}
 				else
 				{
-					OSInt i = timeList.GetCount();
+					UOSInt i = timeList.GetCount();
 					while (i-- > 0)
 					{
 						Text::StrDelNew(timeList.GetItem(i));
@@ -2460,7 +2461,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 void Parser::FileParser::XMLParser::ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList)
 {
-	OSInt i;
+	UOSInt i;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char c;
@@ -2589,7 +2590,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						UTF8Char *sptr2;
 						UTF8Char sbuff[256];
 						UTF8Char *sarr[4];
-						OSInt i;
+						UOSInt i;
 
 						sb.ClearStr();
 						reader->ReadNodeText(&sb);
@@ -2705,7 +2706,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						Double x;
 						Double y;
 						Double z;
-						OSInt i;
+						UOSInt i;
 						UTF8Char *sarr[4];
 						i = Text::StrSplitTrim(sarr, 4, sb.ToString(), ',');
 						if (i == 3)
@@ -2754,7 +2755,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						{
 							if (style->iconColor != 0)
 							{
-								OSInt j = imgList->GetCount();
+								UOSInt j = imgList->GetCount();
 								while (j-- > 0)
 								{
 									imgList->ToStaticImage(j);
@@ -2765,11 +2766,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							Media::Image *img = imgList->GetImage(0, 0);
 							if (style->iconSpotX == -1 || style->iconSpotY == -1)
 							{
-								lyr->SetIconStyle(imgList, img->info->dispWidth >> 1, img->info->dispHeight >> 1);
+								lyr->SetIconStyle(imgList, (OSInt)(img->info->dispWidth >> 1), (OSInt)(img->info->dispHeight >> 1));
 							}
 							else
 							{
-								lyr->SetIconStyle(imgList, style->iconSpotX, img->info->dispHeight - style->iconSpotY);
+								lyr->SetIconStyle(imgList, style->iconSpotX, (OSInt)img->info->dispHeight - style->iconSpotY);
 							}
 						}
 						DEL_CLASS(fd);
@@ -2826,7 +2827,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						NEW_CLASS(pg, Math::Polygon(4326, 2, (coord->GetCount() + altList->GetCount()) >> 1));
 						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
-						ptList[1] = (Int32)(coord->GetCount() >> 1);
+						ptList[1] = (UInt32)(coord->GetCount() >> 1);
 						ptArr = pg->GetPointList(&nPoints);
 						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
 						MemCopyNO(&ptArr[coord->GetCount()], altList->GetArray(&i), sizeof(Double) * altList->GetCount());
@@ -2891,7 +2892,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 	{
 		return layers.GetItem(0);
 	}
-	OSInt i = layers.GetCount();
+	UOSInt i = layers.GetCount();
 	Map::IMapDrawLayer *lyr;
 	while (i-- > 0)
 	{
@@ -2903,8 +2904,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord *rec)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::XMLAttrib *attr;
 	Text::StringBuilderUTF8 sb;
 	Bool succ;
@@ -2975,7 +2976,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 
 Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Text::VSProjContainer *container)
 {
-	OSInt i;
+	UOSInt i;
 	Bool found;
 	Text::XMLAttrib *attr;
 	while (reader->ReadNext())
@@ -3047,7 +3048,7 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Tex
 
 Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Text::CodeProject *proj)
 {
-	OSInt i;
+	UOSInt i;
 	Text::CodeProjectCfg *cfg;
 	Text::XMLAttrib *attr;
 	const UTF8Char *cfgName;

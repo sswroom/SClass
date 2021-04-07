@@ -153,3 +153,23 @@ DB::TableDef *DB::TableDef::SetSvrType(DB::DBUtil::ServerType svrType)
 	this->svrType = svrType;
 	return this;
 }
+
+DB::TableDef *DB::TableDef::Clone()
+{
+	DB::TableDef *newObj;
+	NEW_CLASS(newObj, DB::TableDef(this->tableName));
+	newObj->SetDatabaseName(this->databaseName);
+	newObj->SetEngine(this->engine);
+	newObj->SetCharset(this->charset);
+	newObj->SetAttr(this->attr);
+	newObj->SetComments(this->comments);
+	newObj->SetSvrType(this->svrType);
+	UOSInt i = 0;
+	UOSInt j = this->cols->GetCount();
+	while (i < j)
+	{
+		newObj->AddCol(this->cols->GetItem(i)->Clone());
+		i++;
+	}
+	return newObj;
+}
