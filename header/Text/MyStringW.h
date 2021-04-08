@@ -157,12 +157,22 @@ namespace Text
 	Bool StrToInt64(const UTF32Char *intStr, Int64 *outVal);
 	FORCEINLINE Int64 StrToInt64(const UTF16Char *str) { return MyString_StrToInt64UTF16(str); }
 	FORCEINLINE Int64 StrToInt64(const UTF32Char *str) { return MyString_StrToInt64UTF32(str); }
+	Bool StrToUInt64(const UTF16Char *intStr, UInt64 *outVal);
+	Bool StrToUInt64(const UTF32Char *intStr, UInt64 *outVal);
+	Bool StrToUInt64S(const UTF16Char *intStr, UInt64 *outVal, UInt64 failVal);
+	Bool StrToUInt64S(const UTF32Char *intStr, UInt64 *outVal, UInt64 failVal);
+	UInt64 StrToUInt64(const UTF16Char *str);
+	UInt64 StrToUInt64(const UTF32Char *str);
 #endif
 
 	OSInt StrToOSInt(const UTF16Char *str);
 	OSInt StrToOSInt(const UTF32Char *str);
 	Bool StrToOSInt(const UTF16Char *intStr, OSInt *outVal);
 	Bool StrToOSInt(const UTF32Char *intStr, OSInt *outVal);
+	UOSInt StrToUOSInt(const UTF16Char *str);
+	UOSInt StrToUOSInt(const UTF32Char *str);
+	Bool StrToUOSInt(const UTF16Char *intStr, UOSInt *outVal);
+	Bool StrToUOSInt(const UTF32Char *intStr, UOSInt *outVal);
 
 	Bool StrToBool(const UTF16Char *str);
 	Bool StrToBool(const UTF32Char *str);
@@ -267,6 +277,7 @@ namespace Text
 #endif
 	const UTF8Char *StrReadChar(const UTF8Char *sptr, UTF32Char *outChar);
 	const UTF16Char *StrReadChar(const UTF16Char *sptr, UTF32Char *outChar);
+	const UTF32Char *StrReadChar(const UTF32Char *sptr, UTF32Char *outChar);
 	UTF8Char *StrWriteChar(UTF8Char *sptr, UTF32Char c);
 	UTF16Char *StrWriteChar(UTF16Char *sptr, UTF32Char c);
 }

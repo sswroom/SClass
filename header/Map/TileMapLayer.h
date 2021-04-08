@@ -42,7 +42,7 @@ namespace Map
 		ThreadStat *threads;
 		UOSInt threadNext;
 
-		OSInt lastLevel;
+		UOSInt lastLevel;
 		Sync::Mutex *lastMut;
 		Data::ArrayListInt64 *lastIds;
 		Data::ArrayList<CachedImage *> *lastImgs;

@@ -42,11 +42,11 @@ namespace Text
 		void AddAttrib(XMLAttrib *attr);
 		void AddChild(XMLNode *node);
 		UOSInt GetAttribCnt();
-		XMLAttrib *GetAttrib(OSInt index);
+		XMLAttrib *GetAttrib(UOSInt index);
 		XMLAttrib *GetFirstAttrib(const UTF8Char *attrName);
 
 		UOSInt GetChildCnt();
-		XMLNode *GetChild(OSInt index);
+		XMLNode *GetChild(UOSInt index);
 
 		XMLNode **SearchNode(const UTF8Char *path, UOSInt *cnt);
 		XMLNode *SearchFirstNode(const UTF8Char *path);
@@ -58,8 +58,8 @@ namespace Text
 		void SearchNodeBegin(const UTF8Char *path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult);
 		Bool SearchNodeSub(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
-		Bool SearchEqual(OSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
-		Bool SearchEval(OSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, UTF8Char *nameStart, UTF8Char *nameEnd, Text::StringBuilderUTF *outSB);
+		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
+		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, UTF8Char *nameStart, UTF8Char *nameEnd, Text::StringBuilderUTF *outSB);
 	public:
 		static const UTF8Char *NodeTypeGetName(NodeType ntype);
 	};
@@ -87,7 +87,7 @@ namespace Text
 	public:
 		XMLDocument();
 		virtual ~XMLDocument();
-		Bool ParseBuff(Text::EncodingFactory *encFact, const UInt8 *buff, OSInt size);
+		Bool ParseBuff(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt size);
 		Bool ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm);
 		void AppendXmlDeclaration(Text::StringBuilderUTF *sb);
 	};

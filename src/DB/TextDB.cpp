@@ -10,7 +10,7 @@ class TextDBReader : public DB::DBReader
 {
 private:
 	DB::TextDB::DBData *data;
-	OSInt index;
+	UOSInt index;
 	const UTF8Char **row;
 public:
 	TextDBReader(DB::TextDB::DBData *data)
@@ -244,9 +244,9 @@ DB::TextDB::TextDB(const UTF8Char *sourceName) : DB::ReadingDB(sourceName)
 
 DB::TextDB::~TextDB()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Data::ArrayList<DBData*> *dbList = this->dbMap->GetValues();
 	DBData *data;
 	const UTF8Char **vals;
@@ -333,8 +333,8 @@ Bool DB::TextDB::AddTable(const UTF8Char *tableName, Data::ArrayList<const UTF8C
 	DBData *data = this->dbMap->Get(tableName);
 	if (data)
 		return false;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	data = MemAlloc(DBData, 1);
 	data->name = Text::StrCopyNew(tableName);
 	NEW_CLASS(data->colList, Data::ArrayList<const UTF8Char*>());
@@ -359,8 +359,8 @@ Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
 	{
 		return false;
 	}
-	OSInt i = 0;
-	OSInt j = valList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = valList->GetCount();
 	const UTF8Char *csptr;
 	const UTF8Char **vals = MemAlloc(const UTF8Char*, j);
 	while (i < j)

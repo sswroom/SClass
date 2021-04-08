@@ -57,12 +57,12 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		sptr = &sbuff[Text::StrCharCnt(sbuff)];
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		t.SetCurrTimeUTC();
-		sptr = Text::StrHexVal64(sptr, t.ToTicks());
+		sptr = Text::StrHexVal64(sptr, (UInt64)t.ToTicks());
 		*sptr++ = '_';
 		sptr = Text::StrConcat(sptr, fd->GetShortName());
 
 		Bool valid = false;
-		Int64 currOfst = 0;
+		UInt64 currOfst = 0;
 		UOSInt readSize;
 		UInt8 *buff;
 		buff = MemAlloc(UInt8, 1048576);

@@ -79,7 +79,7 @@ void DB::SQLBuilder::AppendVector(Math::Vector2D *vec, Int32 srId)
 	sb->SetEndPtr(DB::DBUtil::SDBVector(sb->GetEndPtr(), vec, srId, this->svrType));
 }
 
-void DB::SQLBuilder::AppendBinary(const UInt8 *buff, OSInt buffSize)
+void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
 {
 	sb->AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->svrType));
 	sb->SetEndPtr(DB::DBUtil::SDBBin(sb->GetEndPtr(), buff, buffSize, this->svrType));

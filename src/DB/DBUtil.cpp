@@ -673,7 +673,7 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::ServerType sv
 UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::ServerType svrType)
 {
 	UTF8Char *sptr;
-	WChar c;
+	UTF32Char c;
 	if (val == 0)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"NULL");
 
@@ -681,8 +681,13 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\\')
 			{
 				*sptr++ = '\\';
@@ -723,89 +728,17 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 				*sptr++ = '\\';
 				*sptr++ = 'Z';
 			}
-			else if (c < 0x80)
+			else
 			{
-				*sptr++ = (UInt8)c;
-			}
-			else if (c < 0x800)
-			{
-				*sptr++ = 0xc0 | (c >> 6);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
+				if (c >= 0x200000)
 				{
-/*					*sptr++ = 0xf0 | (c >> 18);
-					*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-					*sptr++ = 0x80 | (c & 0x3f);*/
-					*sptr++ = '?';
-				}
-				else if (code < 0x4000000)
-				{
-/*					*sptr++ = 0xf8 | (c >> 24);
-					*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-					*sptr++ = 0x80 | (c & 0x3f);*/
 					*sptr++ = '?';
 				}
 				else
 				{
-/*					*sptr++ = 0xfc | (c >> 30);
-					*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-					*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-					*sptr++ = 0x80 | (c & 0x3f);*/
-					*sptr++ = '?';
+					sptr = Text::StrWriteChar(sptr, c);
 				}
 			}
-			else
-			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#else
-			else if (c < 0x10000)
-			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x200000)
-			{
-/*				*sptr++ = 0xf0 | (c >> 18);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);*/
-				*sptr++ = '?';
-			}
-			else if (c < 0x4000000)
-			{
-/*				*sptr++ = 0xf8 | (c >> 24);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);*/
-				*sptr++ = '?';
-			}
-			else
-			{
-/*				*sptr++ = 0xfc | (c >> 30);
-				*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);*/
-				*sptr++ = '?';
-			}
-#endif
 		}
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -815,90 +748,22 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				*sptr++ = '\'';
 				*sptr++ = '\'';
 			}
-			else if (c < 0x80)
-			{
-				*sptr++ = (UInt8)c;
-			}
-			else if (c < 0x800)
-			{
-				*sptr++ = 0xc0 | (c >> 6);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					*sptr++ = 0xf0 | (code >> 18);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else if (code < 0x4000000)
-				{
-					*sptr++ = 0xf8 | (code >> 24);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else
-				{
-					*sptr++ = 0xfc | (code >> 30);
-					*sptr++ = 0x80 | ((code >> 24) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-			}
 			else
 			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
+				sptr = Text::StrWriteChar(sptr, c);
 			}
-#else
-			else if (c < 0x10000)
-			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x200000)
-			{
-				*sptr++ = 0xf0 | (c >> 18);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x4000000)
-			{
-				*sptr++ = 0xf8 | (c >> 24);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else
-			{
-				*sptr++ = 0xfc | (c >> 30);
-				*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#endif
 		}
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -909,90 +774,22 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 		sptr = sqlstr;
 		*sptr++ = 'N';
 		*sptr++ = '\'';
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				*sptr++ = '\\';
 				*sptr++ = '\'';
 			}
-			else if (c < 0x80)
-			{
-				*sptr++ = (UInt8)c;
-			}
-			else if (c < 0x800)
-			{
-				*sptr++ = 0xc0 | (c >> 6);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					*sptr++ = 0xf0 | (code >> 18);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else if (code < 0x4000000)
-				{
-					*sptr++ = 0xf8 | (code >> 24);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else
-				{
-					*sptr++ = 0xfc | (code >> 30);
-					*sptr++ = 0x80 | ((code >> 24) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-			}
 			else
 			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
+				sptr = Text::StrWriteChar(sptr, c);
 			}
-#else
-			else if (c < 0x10000)
-			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x200000)
-			{
-				*sptr++ = 0xf0 | (c >> 18);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x4000000)
-			{
-				*sptr++ = 0xf8 | (c >> 24);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else
-			{
-				*sptr++ = 0xfc | (c >> 30);
-				*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#endif
 		}
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -1002,90 +799,22 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				*sptr++ = '\'';
 				*sptr++ = '\'';
 			}
-			else if (c < 0x80)
-			{
-				*sptr++ = (UInt8)c;
-			}
-			else if (c < 0x800)
-			{
-				*sptr++ = 0xc0 | (c >> 6);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					*sptr++ = 0xf0 | (code >> 18);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else if (code < 0x4000000)
-				{
-					*sptr++ = 0xf8 | (code >> 24);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else
-				{
-					*sptr++ = 0xfc | (code >> 30);
-					*sptr++ = 0x80 | ((code >> 24) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-			}
 			else
 			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
+				sptr = Text::StrWriteChar(sptr, c);
 			}
-#else
-			else if (c < 0x10000)
-			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x200000)
-			{
-				*sptr++ = 0xf0 | (c >> 18);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x4000000)
-			{
-				*sptr++ = 0xf8 | (c >> 24);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else
-			{
-				*sptr++ = 0xfc | (c >> 30);
-				*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#endif
 		}
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -1095,90 +824,22 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				*sptr++ = '\\';
 				*sptr++ = '\'';
 			}
-			else if (c < 0x80)
-			{
-				*sptr++ = (UInt8)c;
-			}
-			else if (c < 0x800)
-			{
-				*sptr++ = 0xc0 | (c >> 6);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					*sptr++ = 0xf0 | (code >> 18);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else if (code < 0x4000000)
-				{
-					*sptr++ = 0xf8 | (code >> 24);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-				else
-				{
-					*sptr++ = 0xfc | (code >> 30);
-					*sptr++ = 0x80 | ((code >> 24) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 18) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 12) & 0x3f);
-					*sptr++ = 0x80 | ((code >> 6) & 0x3f);
-					*sptr++ = 0x80 | (code & 0x3f);
-				}
-			}
 			else
 			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
+				sptr = Text::StrWriteChar(sptr, c);
 			}
-#else
-			else if (c < 0x10000)
-			{
-				*sptr++ = 0xe0 | (c >> 12);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x200000)
-			{
-				*sptr++ = 0xf0 | (c >> 18);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x4000000)
-			{
-				*sptr++ = 0xf8 | (c >> 24);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else
-			{
-				*sptr++ = 0xfc | (c >> 30);
-				*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-#endif
 		}
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -1189,14 +850,19 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 {
 	UOSInt leng = 0;
-	WChar c;
+	UTF32Char c;
 	if (val == 0)
 		return 4;
 
 	if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
 	{
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\\')
 			{
 				leng += 2;
@@ -1237,32 +903,6 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 2;
 			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-//					leng += 4;
-					leng += 1;
-				}
-				else if (code < 0x4000000)
-				{
-//					leng += 5;
-					leng += 1;
-				}
-				else
-				{
-// 					leng += 6;
-					leng += 1;
-				}
-			}
-			else
-			{
-				leng += 3;
-			}
-#else
 			else if (c < 0x10000)
 			{
 				leng += 3;
@@ -1282,15 +922,19 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 //				leng += 6;
 				leng += 1;
 			}
-#endif
 		}
 		leng += 2;
 		return leng;
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
 	{
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				leng += 2;
@@ -1303,29 +947,6 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 2;
 			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					leng += 4;
-				}
-				else if (code < 0x4000000)
-				{
-					leng += 5;
-				}
-				else
-				{
-					leng += 6;
-				}
-			}
-			else
-			{
-				leng += 3;
-			}
-#else
 			else if (c < 0x10000)
 			{
 				leng += 3;
@@ -1342,15 +963,19 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 6;
 			}
-#endif
 		}
 		leng += 2;
 		return leng;
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
 	{
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				leng += 2;
@@ -1363,29 +988,6 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 2;
 			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					leng += 4;
-				}
-				else if (code < 0x4000000)
-				{
-					leng += 5;
-				}
-				else
-				{
-					leng += 6;
-				}
-			}
-			else
-			{
-				leng += 3;
-			}
-#else
 			else if (c < 0x10000)
 			{
 				leng += 3;
@@ -1402,15 +1004,19 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 6;
 			}
-#endif
 		}
 		leng += 3;
 		return leng;
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_ACCESS)
 	{
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				leng += 2;
@@ -1423,29 +1029,6 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 2;
 			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					leng += 4;
-				}
-				else if (code < 0x4000000)
-				{
-					leng += 5;
-				}
-				else
-				{
-					leng += 6;
-				}
-			}
-			else
-			{
-				leng += 3;
-			}
-#else
 			else if (c < 0x10000)
 			{
 				leng += 3;
@@ -1462,15 +1045,19 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 6;
 			}
-#endif
 		}
 		leng += 3;
 		return leng;
 	}
 	else
 	{
-		while ((c = *val++) != 0)
+		while (true)
 		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
 			if (c == '\'')
 			{
 				leng += 2;
@@ -1483,29 +1070,6 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 2;
 			}
-#if _WCHAR_SIZE == 2
-			else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-			{
-				UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-				val++;
-				if (code < 0x200000)
-				{
-					leng += 4;
-				}
-				else if (code < 0x4000000)
-				{
-					leng += 5;
-				}
-				else
-				{
-					leng += 6;
-				}
-			}
-			else
-			{
-				leng += 3;
-			}
-#else
 			else if (c < 0x10000)
 			{
 				leng += 3;
@@ -1522,7 +1086,6 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::ServerType svrType)
 			{
 				leng += 6;
 			}
-#endif
 		}
 		leng += 2;
 		return leng;
@@ -1551,7 +1114,7 @@ UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::DBUtil::ServerType svrType)
 	return (UOSInt)(Text::StrInt64(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::ServerType svrType, Int32 tzQhr)
+UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::ServerType svrType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
 	if (dat == 0)
@@ -1979,7 +1542,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			{
 				i = Text::StrIndexOf(typeName, (const UTF8Char*)")");
 				typeName[i] = 0;
-				*colSize = Text::StrToInt32(&typeName[8]);
+				*colSize = Text::StrToUInt32(&typeName[8]);
 				typeName[i] = ')';
 			}
 			else
@@ -1994,7 +1557,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			{
 				i = Text::StrIndexOf(typeName, (const UTF8Char*)")");
 				typeName[i] = 0;
-				*colSize = Text::StrToInt32(&typeName[5]);
+				*colSize = Text::StrToUInt32(&typeName[5]);
 				typeName[i] = ')';
 			}
 			else
@@ -2064,7 +1627,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"longtext"))
 		{
-			*colSize = -1;
+			*colSize = 0xffffffff;
 			return DB::DBUtil::CT_VarChar;
 		}
 		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"text"))
@@ -2160,15 +1723,35 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	}
 	else if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
 	{
-		if (Text::StrEquals(typeName, (const UTF8Char*)"integer"))
+		if (Text::StrEqualsICase(typeName, (const UTF8Char*)"INTEGER"))
 		{
 			*colSize = 4;
 			return DB::DBUtil::CT_Int32;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"real"))
+		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"REAL"))
 		{
 			*colSize = 8;
 			return DB::DBUtil::CT_Double;
+		}
+		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"BLOB"))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_Binary;
+		}
+		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"TEXT"))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_VarChar;
+		}
+		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"VARCHAR"))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_VarChar;
+		}
+		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"BOOLEAN"))
+		{
+			*colSize = 1;
+			return DB::DBUtil::CT_Byte;
 		}
 		else
 		{

@@ -88,7 +88,8 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
 	Text::UTF8Writer *writer;
 	OSInt i;
-	OSInt j;
+	UOSInt j;
+	UOSInt level;
 	const UTF8Char *csptr;
 	Int32 minX;
 	Int32 minY;
@@ -152,19 +153,19 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			writer->Write((const UTF8Char*)"<MapName><![CDATA[");
 			writer->Write(csptr);
 			writer->Write((const UTF8Char*)"]]></MapName>\n");
-			i = 0;
-			while (i <= 18)
+			level = 0;
+			while (level <= 18)
 			{
-				if (osm->GetTileBounds(i, &minX, &minY, &maxX, &maxY))
+				if (osm->GetTileBounds(level, &minX, &minY, &maxX, &maxY))
 				{
-					minLon = Map::OSM::OSMTileMap::TileX2Lon(minX, i);
-					maxLon = Map::OSM::OSMTileMap::TileX2Lon(maxX + 1, i);
-					minLat = Map::OSM::OSMTileMap::TileY2Lat(maxY + 1, i);
-					maxLat = Map::OSM::OSMTileMap::TileY2Lat(minY, i);
+					minLon = Map::OSM::OSMTileMap::TileX2Lon(minX, level);
+					maxLon = Map::OSM::OSMTileMap::TileX2Lon(maxX + 1, level);
+					minLat = Map::OSM::OSMTileMap::TileY2Lat(maxY + 1, level);
+					maxLat = Map::OSM::OSMTileMap::TileY2Lat(minY, level);
 					writer->Write((const UTF8Char*)"<OruxTracker  versionCode=\"2.1\">\n");
 
 					writer->Write((const UTF8Char*)"<MapCalibration layers=\"false\" layerLevel=\"");
-					Text::StrOSInt(sbuff, i);
+					Text::StrUOSInt(sbuff, level);
 					writer->Write(sbuff);
 					writer->Write((const UTF8Char*)"\">\n");
 
@@ -243,15 +244,15 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 					writer->Write((const UTF8Char*)"</OruxTracker>\n");
 				
 					imgIds.Clear();
-					osm->GetImageIDs(i, minLon, maxLat, maxLon, minLat, &imgIds);
+					osm->GetImageIDs(level, minLon, maxLat, maxLon, minLat, &imgIds);
 					void *sess = db->BeginTransaction();
 					j = imgIds.GetCount();
 					while (j-- > 0)
 					{
-						fd = osm->LoadTileImageData(i, imgIds.GetItem(j), boundsXY, true, &x, &y, &it);
+						fd = osm->LoadTileImageData(level, imgIds.GetItem(j), boundsXY, true, &x, &y, &it);
 						if (fd)
 						{
-							OSInt imgSize = (OSInt)fd->GetDataSize();
+							UOSInt imgSize = (UOSInt)fd->GetDataSize();
 							UInt8 *imgBuff = MemAlloc(UInt8, imgSize);
 							fd->GetRealData(0, imgSize, imgBuff);
 							sql.Clear();
@@ -277,7 +278,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 					db->Commit(sess);
 				}
 
-				i++;
+				level++;
 			}
 			Text::XML::FreeNewText(csptr);
 			writer->Write((const UTF8Char*)"</MapCalibration>\n");

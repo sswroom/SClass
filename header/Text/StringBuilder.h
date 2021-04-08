@@ -53,6 +53,7 @@ namespace Text
 		Bool ToUInt16(UInt16 *outVal);
 		Bool ToUInt32(UInt32 *outVal);
 		Bool ToUInt32S(UInt32 *outVal, UInt32 failVal);
+		Bool ToUOSInt(UOSInt *outVal);
 		Bool ToInt32(Int32 *outVal);
 		Int32 ToInt32();
 		Bool ToInt64(Int64 *outVal);
@@ -412,6 +413,11 @@ namespace Text
 		return Text::StrToUInt32S(this->buff, outVal, failVal);
 	}
 
+	template<class T> Bool Text::StringBuilder<T>::ToUOSInt(UOSInt *outVal)
+	{
+		return Text::StrToUOSInt(this->buff, outVal);
+	}
+
 	template<class T> Bool Text::StringBuilder<T>::ToInt32(Int32 *outVal)
 	{
 		return Text::StrToInt32(this->buff, outVal);
@@ -456,7 +462,7 @@ namespace Text
 	{
 		if (ptr < this->buff)
 			return;
-		if (((ptr - this->buff) * sizeof(T)) > this->buffSize - sizeof(T))
+		if (((UOSInt)(ptr - this->buff) * sizeof(T)) > this->buffSize - sizeof(T))
 		{
 			return;
 		}

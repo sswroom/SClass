@@ -1556,6 +1556,44 @@ Bool Text::StrToInt64(const Char *intStr, Int64 *outVal)
 	return true;
 }
 
+Bool Text::StrToUInt64(const Char *intStr, UInt64 *outVal)
+{
+	if (intStr[0] == 0)
+		return false;
+	Char c;
+	UInt64 v = 0;
+	while ((c = *intStr++) != 0)
+	{
+		if (c < '0' || c > '9')
+			return false;
+		v = v * 10 + (UInt64)(c - '0');
+	}
+	*outVal = v;
+	return true;
+}
+
+Bool Text::StrToUInt64S(const Char *intStr, UInt64 *outVal, UInt64 failVal)
+{
+	if (intStr[0] == 0)
+	{
+		*outVal = failVal;
+		return false;
+	}
+	Char c;
+	UInt64 v = 0;
+	while ((c = *intStr++) != 0)
+	{
+		if (c < '0' || c > '9')
+		{
+			*outVal = failVal;
+			return false;
+		}
+		v = v * 10 + (UInt64)(c - '0');
+	}
+	*outVal = v;
+	return true;
+}
+
 OSInt Text::StrToOSInt(const Char *str)
 {
 #if _OSINT_SIZE == 64
@@ -1575,6 +1613,29 @@ Bool Text::StrToOSInt(const Char *intStr, OSInt *outVal)
 	return Text::StrToInt32(intStr, outVal);
 #else
 	return Text::StrToInt16(intStr, outVal);
+#endif
+}
+
+
+UOSInt Text::StrToUOSInt(const Char *str)
+{
+#if _OSINT_SIZE == 64
+	return Text::StrToUInt64(str);
+#elif _OSINT_SIZE == 32
+	return Text::StrToUInt32(str);
+#else
+	return Text::StrToUInt16(str);
+#endif
+}
+
+Bool Text::StrToUOSInt(const Char *intStr, UOSInt *outVal)
+{
+#if _OSINT_SIZE == 64
+	return Text::StrToUInt64(intStr, outVal);
+#elif _OSINT_SIZE == 32
+	return Text::StrToUInt32(intStr, outVal);
+#else
+	return Text::StrToUInt16(intStr, outVal);
 #endif
 }
 

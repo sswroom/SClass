@@ -11,7 +11,7 @@ void Text::XMLReader::FreeCurrent()
 {
 	SDEL_TEXT(this->nodeText);
 	SDEL_TEXT(this->nodeOriText);
-	OSInt i = this->attrList->GetCount();
+	UOSInt i = this->attrList->GetCount();
 	Text::XMLAttrib *attr;
 	while (i-- > 0)
 	{
@@ -72,7 +72,7 @@ Text::XMLReader::~XMLReader()
 {
 	this->FreeCurrent();
 
-	OSInt i = this->pathList->GetCount();
+	UOSInt i = this->pathList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->pathList->GetItem(i));
@@ -85,8 +85,8 @@ Text::XMLReader::~XMLReader()
 
 void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF *sb)
 {
-	OSInt i = 0;
-	OSInt j = this->pathList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->pathList->GetCount();
 	if (j == 0)
 	{
 		sb->AppendChar('/', 1);
@@ -132,7 +132,7 @@ Text::XMLAttrib *Text::XMLReader::GetAttrib(UOSInt index)
 
 Text::XMLAttrib *Text::XMLReader::GetAttrib(const UTF8Char *name)
 {
-	OSInt i = this->attrList->GetCount();
+	UOSInt i = this->attrList->GetCount();
 	Text::XMLAttrib *attr;
 	while (i-- > 0)
 	{
@@ -213,7 +213,7 @@ Bool Text::XMLReader::ReadNext()
 				this->parseOfst = 0;
 			}
 		}
-		OSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+		UOSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
 		if (readSize > 0)
 		{
 			this->buffSize += readSize;
@@ -226,7 +226,7 @@ Bool Text::XMLReader::ReadNext()
 	}
 	if (this->readBuff[this->parseOfst] == '<')
 	{
-		OSInt lenLeft = this->buffSize - this->parseOfst;
+		UOSInt lenLeft = this->buffSize - this->parseOfst;
 		if (lenLeft >= 4 && Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"<!--"))
 		{
 			this->nt = Text::XMLNode::NT_COMMENT;
@@ -247,7 +247,7 @@ Bool Text::XMLReader::ReadNext()
 						this->parseOfst = 0;
 						this->buffSize = 0;
 					}
-					OSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+					UOSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
 					if (readSize <= 0)
 					{
 						this->parseError = 1;
@@ -319,7 +319,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						this->parseOfst = 0;
 						this->buffSize = 0;
-						OSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+						UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
 						if (readSize <= 0)
 						{
 							this->parseError = 41;
@@ -336,7 +336,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (c == '&')
 						{
-							OSInt l = this->buffSize - this->parseOfst;
+							UOSInt l = this->buffSize - this->parseOfst;
 							if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 							{
 								if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
@@ -516,7 +516,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					this->parseOfst = 0;
 					this->buffSize = 0;
-					OSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+					UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
 					if (readSize <= 0)
 					{
 						this->parseError = 4;
@@ -533,7 +533,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else if (c == '&')
 					{
-						OSInt l = this->buffSize - this->parseOfst;
+						UOSInt l = this->buffSize - this->parseOfst;
 						if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 						{
 							if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
@@ -753,7 +753,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					this->parseOfst = 0;
 					this->buffSize = 0;
-					OSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+					UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
 					if (readSize <= 0)
 					{
 						this->parseError = 17;
@@ -845,7 +845,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					this->parseOfst = 0;
 					this->buffSize = 0;
-					OSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+					UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
 					if (readSize <= 0)
 					{
 						this->parseError = 24;
@@ -878,7 +878,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
-								OSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
 								attr->value = MemAlloc(UTF8Char, len + 1);
 								this->enc->UTF8FromBytes(attr->value, buff, mlen, 0);
 								attr->value[len] = 0;
@@ -912,7 +912,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else if (c == '&')
 					{
-						OSInt l = this->buffSize - this->parseOfst;
+						UOSInt l = this->buffSize - this->parseOfst;
 						if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 						{
 							mstmOri.Write(&this->readBuff[this->parseOfst], 4);
@@ -1072,7 +1072,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
-								OSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
 								attr->value = MemAlloc(UTF8Char, len + 1);
 								this->enc->UTF8FromBytes(attr->value, buff, mlen, 0);
 								attr->value[len] = 0;
@@ -1125,7 +1125,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
-								OSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
 								attr->value = MemAlloc(UTF8Char, len + 1);
 								this->enc->UTF8FromBytes(attr->value, buff, mlen, 0);
 								attr->value[len] = 0;
@@ -1201,7 +1201,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
-								OSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
 								attr->value = MemAlloc(UTF8Char, len + 1);
 								this->enc->UTF8FromBytes(attr->value, buff, mlen, 0);
 								attr->value[len] = 0;
@@ -1322,7 +1322,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						UOSInt mlen;
 						UInt8 *buff = mstm.GetBuff(&mlen);
-						OSInt len = this->enc->CountUTF8Chars(buff, mlen);
+						UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
 						this->nodeText = MemAlloc(UTF8Char, len + 1);
 						this->enc->UTF8FromBytes((UTF8Char*)this->nodeText, buff, mlen, 0);
 						((UTF8Char*)this->nodeText)[len] = 0;
@@ -1360,7 +1360,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						UOSInt mlen;
 						UInt8 *buff = mstm.GetBuff(&mlen);
-						OSInt len = this->enc->CountUTF8Chars(buff, mlen);
+						UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
 						this->nodeText = MemAlloc(UTF8Char, len + 1);
 						this->enc->UTF8FromBytes((UTF8Char*)this->nodeText, buff, mlen, 0);
 						((UTF8Char*)this->nodeText)[len] = 0;

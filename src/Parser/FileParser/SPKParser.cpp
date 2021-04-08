@@ -55,8 +55,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	UInt64 fileSize;
 	Int32 fnameLen;
 	Int32 flags;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char fileName[256];
 	UTF8Char srcPath[512];
 	UTF8Char *srcPtr;
@@ -68,14 +68,14 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 
 	flags = ReadInt32(&hdrBuff[4]);
-	dirOfst = ReadInt64(&hdrBuff[8]);
+	dirOfst = ReadUInt64(&hdrBuff[8]);
 	fileSize = fd->GetDataSize();
 	if (dirOfst < 16 || dirOfst > fileSize)
 		return 0;
 	if (flags & 1 && targetType != IO::ParsedObject::PT_PACKAGE_PARSER)
 	{
 		Int32 customType;
-		Int32 customSize;
+		UInt32 customSize;
 		if (flags & 2)
 		{
 			i = 24;
@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 		}
 		fd->GetRealData(i, 8, hdrBuff);
 		customType = ReadInt32(&hdrBuff[0]);
-		customSize = ReadInt32(&hdrBuff[4]);
+		customSize = ReadUInt32(&hdrBuff[4]);
 		if (customType == 1 && fd->IsFullFile() && this->sockf && this->parsers)
 		{
 			UInt8 *customBuff = MemAlloc(UInt8, customSize);
@@ -124,13 +124,13 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 *dirBuff;
 	if (flags & 2)
 	{
-		Int64 dirSize;
+		UInt64 dirSize;
 		fd->GetRealData(16, 8, &hdrBuff[16]);
-		dirSize = ReadInt64(&hdrBuff[16]);
+		dirSize = ReadUInt64(&hdrBuff[16]);
 		while (dirOfst != 0 && dirSize >= 16 && dirOfst + dirSize <= fileSize)
 		{
-			dirBuff = MemAlloc(UInt8, (OSInt)dirSize);
-			fd->GetRealData(dirOfst, (OSInt)dirSize, dirBuff);
+			dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);
+			fd->GetRealData(dirOfst, (UOSInt)dirSize, dirBuff);
 			i = 16;
 			while (i < dirSize)
 			{
@@ -195,7 +195,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	{
 		if (dirOfst < fileSize)
 		{
-			j = (OSInt)(fileSize - dirOfst);
+			j = (UOSInt)(fileSize - dirOfst);
 			dirBuff = MemAlloc(UInt8, j);
 			fd->GetRealData(dirOfst, j, dirBuff);
 			i = 0;

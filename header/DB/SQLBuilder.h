@@ -31,7 +31,7 @@ namespace DB
 		void AppendDbl(Double val);
 		void AppendBool(Bool val);
 		void AppendVector(Math::Vector2D *vec, Int32 srId);
-		void AppendBinary(const UInt8 *buff, OSInt buffSize);
+		void AppendBinary(const UInt8 *buff, UOSInt buffSize);
 
 		void AppendTableName(DB::TableDef *table);
 		void AppendCol(const UTF8Char *val);

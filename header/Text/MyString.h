@@ -155,10 +155,15 @@ namespace Text
 #ifdef HAS_INT64
 	Bool StrToInt64(const Char *intStr, Int64 *outVal);
 	FORCEINLINE Int64 StrToInt64(const Char *str) { return MyString_StrToInt64UTF8((const UTF8Char*)str); }
+	Bool StrToUInt64(const Char *intStr, UInt64 *outVal);
+	Bool StrToUInt64S(const Char *intStr, UInt64 *outVal, UInt64 failVal);
+	FORCEINLINE UInt64 StrToUInt64(const Char *str) { UInt64 v; StrToUInt64S(str, &v, 0); return v; }
 #endif
 
 	OSInt StrToOSInt(const Char *str);
 	Bool StrToOSInt(const Char *intStr, OSInt *outVal);
+	UOSInt StrToUOSInt(const Char *str);
+	Bool StrToUOSInt(const Char *intStr, UOSInt *outVal);
 	Bool StrToBool(const Char *str);
 	OSInt StrIndexOf(const Char *str1, const Char *str2);
 	OSInt StrIndexOf(const Char *str1, Char c);
@@ -267,9 +272,13 @@ namespace Text
 #ifdef HAS_INT64
 	FORCEINLINE Bool StrToInt64(const UTF8Char *intStr, Int64 *outVal) { return StrToInt64((const Char*)intStr, outVal); }
 	FORCEINLINE Int64 StrToInt64(const UTF8Char *str) { return MyString_StrToInt64UTF8(str); }
+	FORCEINLINE Bool StrToUInt64(const UTF8Char *intStr, UInt64 *outVal) { return StrToUInt64((const Char*)intStr, outVal); }
+	FORCEINLINE UInt64 StrToUInt64(const UTF8Char *str) { return StrToUInt64((const Char*)str); }
 #endif
 	FORCEINLINE OSInt StrToOSInt(const UTF8Char *str) { return StrToOSInt((const Char*)str); };
 	FORCEINLINE Bool StrToOSInt(const UTF8Char *intStr, OSInt *outVal) { return StrToOSInt((const Char*)intStr, outVal); };
+	FORCEINLINE UOSInt StrToUOSInt(const UTF8Char *str) { return StrToUOSInt((const Char*)str); };
+	FORCEINLINE Bool StrToUOSInt(const UTF8Char *intStr, UOSInt *outVal) { return StrToUOSInt((const Char*)intStr, outVal); };
 	FORCEINLINE Bool StrToBool(const UTF8Char *str) { return StrToBool((const Char*)str); };
 
 	FORCEINLINE OSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOf((const Char*)str1, (const Char*)str2); }

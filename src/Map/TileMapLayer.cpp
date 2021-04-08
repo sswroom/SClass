@@ -43,7 +43,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 					cimg->isFinish = true;
 					
 					Sync::MutexUsage mutUsage(stat->me->updMut);
-					OSInt i = stat->me->updHdlrs->GetCount();
+					UOSInt i = stat->me->updHdlrs->GetCount();
 					while (i-- > 0)
 					{
 						stat->me->updHdlrs->GetItem(i)(stat->me->updObjs->GetItem(i));
@@ -187,7 +187,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 Map::TileMapLayer::~TileMapLayer()
 {
 	CachedImage *cimg;
-	OSInt i;
+	UOSInt i;
 	Bool running;
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs->Clear();
@@ -261,10 +261,10 @@ Map::TileMapLayer::~TileMapLayer()
 void Map::TileMapLayer::SetCurrScale(Double scale)
 {
 	CachedImage *cimg;
-	OSInt j;
+	UOSInt j;
 
 	this->scale = scale;
-	OSInt level = this->tileMap->GetNearestLevel(scale);
+	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (this->lastLevel != level)
 	{
 		Sync::MutexUsage lastMutUsage(this->lastMut);
@@ -470,16 +470,16 @@ Math::Vector2D *Map::TileMapLayer::GetVectorById(void *session, Int64 id)
 	CachedImage *cimg;
 	Math::VectorImage *vimg;
 	OSInt i;
-	OSInt k;
+	UOSInt k;
 	Media::ImageList *imgList;
 	Double bounds[4];
 	UTF8Char u8buff[512];
-	OSInt level = this->tileMap->GetNearestLevel(scale);
+	UOSInt level = this->tileMap->GetNearestLevel(scale);
 
 	i = this->lastIds->SortedIndexOf(id);
 	if (i >= 0)
 	{
-		cimg = this->lastImgs->GetItem(i);
+		cimg = this->lastImgs->GetItem((UOSInt)i);
 		if (cimg->img == 0)
 			return 0;
 		this->tileMap->GetImageURL(u8buff, cimg->level, cimg->imgId);
