@@ -234,7 +234,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 	this->cu = cu;
 	this->nameCol = nameCol;
 	this->dirCol = dirCol;
-	NEW_CLASS(this->nodeMap, Data::Integer64Map<NodeInfo*>());
+	NEW_CLASS(this->nodeMap, Data::Int64Map<NodeInfo*>());
 
 	UTF8Char sbuff[256];
 	Data::ArrayListInt64 idList;

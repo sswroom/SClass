@@ -1250,7 +1250,7 @@ void Media::EXIFData::GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, Int3
 Media::EXIFData::EXIFData(EXIFMaker exifMaker)
 {
 	this->exifMaker = exifMaker;
-	NEW_CLASS(this->exifMap, Data::Integer32Map<EXIFItem*>());
+	NEW_CLASS(this->exifMap, Data::Int32Map<EXIFItem*>());
 }
 
 Media::EXIFData::~EXIFData()

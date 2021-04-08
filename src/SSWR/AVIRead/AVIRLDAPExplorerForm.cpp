@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	}
 	succ = false;
 	Net::LDAPClient::SearchResItem *item;
-	OSInt i = obj->items->GetCount();
+	UOSInt i = obj->items->GetCount();
 	while (i-- > 0)
 	{
 		item = obj->items->GetItem(i);
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		{
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[32];
-			OSInt j;
+			UOSInt j;
 			sb.Append(item->value);
 			j = Text::StrSplit(sarr, 32, sb.ToString(), ',');
 			me->rootLev = j;
@@ -238,8 +238,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userOb
 	me->lvValues->ClearItems();
 	if (obj && obj->items)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		OSInt k;
 		Net::LDAPClient::SearchResItem *item;
 		Text::StringBuilderUTF8 sb;

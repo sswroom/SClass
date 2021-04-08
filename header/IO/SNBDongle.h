@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SNBDONGLE
 #define _SM_IO_SNBDONGLE
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "IO/SNBProtocol.h"
 #include "Sync/RWMutex.h"
 
@@ -112,7 +112,7 @@ namespace IO
 		IO::SNBProtocol::ProtocolHandler protoHdlr;
 		void *protoObj;
 		SNBHandler *hdlr;
-		Data::Integer64Map<DeviceInfo*> *devMap;
+		Data::Int64Map<DeviceInfo*> *devMap;
 		Sync::RWMutex *devMut;
 		Int64 dongleId;
 		Int32 dongleBaudRate;

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTDVEHRESTRICT
 #define _SM_MAP_HKTDVEHRESTRICT
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "DB/DBTool.h"
 #include "Map/IMapDrawLayer.h"
 
@@ -17,7 +17,7 @@ namespace Map
 	private:
 		DB::DBTool *db;
 		Math::CoordinateSystem *csys;
-		Data::Integer32Map<RouteInfo*> *routeMap;
+		Data::Int32Map<RouteInfo*> *routeMap;
 
 	public:
 		HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *db);

@@ -2,7 +2,7 @@
 #define _SM_IO_PACKAGEFILE
 #include "Crypto/Hash/IHash.h"
 #include "Data/ArrayList.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
 #include "Data/Compress/Decompressor.h"
 #include "IO/ActiveStreamReader.h"
@@ -70,7 +70,7 @@ namespace IO
 		Data::ArrayList<PackFileItem *> *items;
 		Data::StringUTF8Map<PackFileItem *> *namedItems;
 		Data::StringUTF8Map<PackFileItem *> *pkgFiles;
-		Data::Integer32Map<const UTF8Char *> *infoMap;
+		Data::Int32Map<const UTF8Char *> *infoMap;
 
 	public:
 		PackageFile(const UTF8Char *fileName);

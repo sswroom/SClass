@@ -16,6 +16,7 @@ namespace DB
 			} CommandType;
 		private:
 			static const UTF8Char *ParseNextWord(const UTF8Char *sql, Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType);
+			static Bool IsPunctuation(const UTF8Char *s);
 		public:
 			virtual ~SQLCommand() {};
 

@@ -882,8 +882,8 @@ Data/IChart.h: ../../src/Data/IChart.cpp
 @IChart.o
 Data/IComparable.h:
 Data/IMap.h:
-Data/Integer32Map.h:
-Data/Integer64Map.h:
+Data/Int32Map.h:
+Data/Int64Map.h:
 Data/LineChart.h: ../../src/Data/LineChart.cpp
 @LineChart.o
 Data/LinkedList.h: ../../src/Data/LinkedList.cpp
@@ -898,6 +898,8 @@ Data/ReadingList.h:
 Data/SortableArrayList.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
+Data/UInt32Map.h:
+Data/UInt64Map.h:
 Data/Usable.h:
 Data/Usage.h: ../../src/Data/Usage.cpp
 @Usage.o

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #define _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
 #include "Media/VideoChecker.h"
 #include "Parser/ParserList.h"
@@ -64,7 +64,7 @@ namespace SSWR
 			Media::VideoChecker *checker;
 
 			Sync::Mutex *fileMut;
-			Data::Integer32Map<FileInfo*> *fileTypeMap;
+			Data::Int32Map<FileInfo*> *fileTypeMap;
 			Data::StringUTF8Map<FileInfo*> *fileNameMap;
 
 			Bool FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);

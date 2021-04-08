@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNS_SNSTWITTER
 #define _SM_NET_SNS_SNSTWITTER
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "Net/SocketFactory.h"
 #include "Net/SNS/SNSControl.h"
 #include "Net/WebSite/WebSiteTwitterControl.h"
@@ -18,7 +18,7 @@ namespace Net
 			const UTF8Char *chName;
 			const UTF8Char *chDesc;
 			Bool chError;
-			Data::Integer64Map<SNSItem *> *itemMap;
+			Data::Int64Map<SNSItem *> *itemMap;
 
 		public:
 			SNSTwitter(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId);

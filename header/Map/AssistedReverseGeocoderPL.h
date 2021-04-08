@@ -2,7 +2,7 @@
 #define _SM_MAP_ASSISTEDREVERSEGEOCODERPL
 #include "Data/ArrayList.h"
 #include "Data/BTreeUTF8Map.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
@@ -16,13 +16,13 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Data::Integer32Map<Data::Integer32Map<const UTF8Char *>*> *addrMap;
+			Data::Int32Map<Data::Int32Map<const UTF8Char *>*> *addrMap;
 		} IndexInfo;
 
 		typedef struct
 		{
 			Int32 lcid;
-			Data::Integer32Map<IndexInfo *> *indexMap;
+			Data::Int32Map<IndexInfo *> *indexMap;
 		} LCIDInfo;
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
@@ -30,7 +30,7 @@ namespace Map
 		DB::DBTool *conn;
 		IO::Writer *errWriter;
 		Data::BTreeUTF8Map<const UTF8Char *> *strMap;
-		Data::Integer32Map<LCIDInfo *> *lcidMap;
+		Data::Int32Map<LCIDInfo *> *lcidMap;
 		Sync::Mutex *mut;
 	public:
 		AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter);

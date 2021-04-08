@@ -241,7 +241,7 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, Int64 startSector, Int64 en
 	this->fleng = endSector - startSector;
 	this->vstm = 0;
 
-	NEW_CLASS(this->dataStms, Data::Integer32Map<Media::IMediaStream*>());
+	NEW_CLASS(this->dataStms, Data::Int32Map<Media::IMediaStream*>());
 	NEW_CLASS(this->audStms, Data::ArrayList<Media::IAudioSource*>());
 
 	Bool succ;

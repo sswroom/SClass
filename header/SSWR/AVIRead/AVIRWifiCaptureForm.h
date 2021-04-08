@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRWIFICAPTUREFORM
 #define _SM_SSWR_AVIREAD_AVIRWIFICAPTUREFORM
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "IO/FileStream.h"
 #include "IO/GPSNMEA.h"
 #include "IO/MotionDetectorAccelerometer.h"
@@ -54,8 +54,8 @@ namespace SSWR
 			Net::WirelessLAN *wlan;
 			Net::WirelessLAN::Interface *wlanInterf;
 			OSInt wlanScan;
-			Data::Integer64Map<BSSStatus*> *bssMap;
-			Data::Integer64Map<WifiLog*> *wifiLogMap;
+			Data::Int64Map<BSSStatus*> *bssMap;
+			Data::Int64Map<WifiLog*> *wifiLogMap;
 			Int32 lastMotion;
 			Bool gpsChg;
 			Int64 currGPSTimeTick;

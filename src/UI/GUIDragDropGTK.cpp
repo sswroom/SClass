@@ -24,7 +24,7 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 	this->context = context;
 	this->time = time;
 	NEW_CLASS(this->targetMap, Data::StringUTF8Map<OSInt>());
-	NEW_CLASS(this->targetText, Data::Integer32Map<const UTF8Char *>());
+	NEW_CLASS(this->targetText, Data::Int32Map<const UTF8Char *>());
 	GUIDragDataGTK_currData = this;
 
 	UTF8Char sbuff[128];

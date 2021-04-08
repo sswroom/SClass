@@ -1103,7 +1103,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lvClient->AddColumn((const UTF8Char*)"Count", 100);
 
 	NEW_CLASS(this->cliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->cliInfos, Data::Integer32Map<ClientInfo*>());
+	NEW_CLASS(this->cliInfos, Data::Int32Map<ClientInfo*>());
 	this->cliChg = false;
 
 	NEW_CLASS(this->log, IO::LogTool());

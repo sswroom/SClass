@@ -1,7 +1,7 @@
 //require dnsapi.lib
 #ifndef _SM_NET_DNSCLIENT
 #define _SM_NET_DNSCLIENT
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Net/UDPServer.h"
 
 namespace Net
@@ -34,7 +34,7 @@ namespace Net
 		Net::SocketUtil::AddressInfo serverAddr;
 
 		Sync::Mutex *reqMut;
-		Data::Integer32Map<RequestStatus*> *reqMap;
+		Data::Int32Map<RequestStatus*> *reqMap;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		RequestStatus *NewReq(Int32 id);

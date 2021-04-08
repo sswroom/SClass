@@ -10,7 +10,7 @@ Media::AudioFilter::SoundGenerator::SoundGenerator(IAudioSource *sourceAudio) : 
 {
 	this->sourceAudio = sourceAudio;
 	sourceAudio->GetFormat(&this->format);
-	NEW_CLASS(this->sndGenMap, Data::Integer32Map<Media::AudioFilter::SoundGen::ISoundGen*>());
+	NEW_CLASS(this->sndGenMap, Data::Int32Map<Media::AudioFilter::SoundGen::ISoundGen*>());
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 
 	NEW_CLASS(sndGen, Media::AudioFilter::SoundGen::BellSoundGen(this->format.frequency));

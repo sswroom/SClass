@@ -958,7 +958,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->adapterChanged = false;
 	this->dataUpdated = true;
 	NEW_CLASS(this->pingIPMut, Sync::Mutex());
-	NEW_CLASS(this->pingIPMap, Data::Integer32Map<PingIPInfo*>());
+	NEW_CLASS(this->pingIPMap, Data::Int32Map<PingIPInfo*>());
 	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
 	if (analyzer)
 	{
@@ -968,7 +968,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	{
 		NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, (const UTF8Char*)"RAWMonitor"));
 	}
-	NEW_CLASS(this->ipTranMap, Data::Integer32Map<IPTranInfo*>());
+	NEW_CLASS(this->ipTranMap, Data::Int32Map<IPTranInfo*>());
 	this->ipTranCnt = 0;
 	this->pingIPListUpdated = false;
 	this->pingIPContUpdated = false;

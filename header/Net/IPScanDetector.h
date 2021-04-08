@@ -1,7 +1,7 @@
 #ifndef _SM_NET_IPSCANDETECTOR
 #define _SM_NET_IPSCANDETECTOR
-#include "Data/Integer32Map.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int32Map.h"
+#include "Data/Int64Map.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -26,7 +26,7 @@ namespace Net
 			Int64 iMAC;
 			Int64 lastDetectTime;
 			OSInt detectCnt;
-			Data::Integer32Map<Int64> *targetIPMap;
+			Data::Int32Map<Int64> *targetIPMap;
 		} AdapterStatus;
 
 	private:
@@ -34,7 +34,7 @@ namespace Net
 		UInt32 *soc;
 		IPScanHandler hdlr;
 		void *userData;
-		Data::Integer64Map<AdapterStatus*> *adapterMap;
+		Data::Int64Map<AdapterStatus*> *adapterMap;
 		Sync::Mutex *adapterMut;
 
 		ThreadStat *threadStats;

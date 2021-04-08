@@ -11,7 +11,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 entOID[64];
-			OSInt entOIDLen;
+			UOSInt entOIDLen;
 			UInt32 agentIPv4;
 			UInt32 genericTrap;
 			UInt32 specificTrap;
@@ -22,9 +22,9 @@ namespace Net
 		typedef struct
 		{
 			UInt8 oid[64];
-			OSInt oidLen;
+			UOSInt oidLen;
 			UInt8 valType;
-			OSInt valLen;
+			UOSInt valLen;
 			UInt8 *valBuff;
 		} BindingItem;
 

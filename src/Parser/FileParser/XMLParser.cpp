@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "DB/TextDB.h"
 #include "IO/PackageFile.h"
 #include "IO/Path.h"

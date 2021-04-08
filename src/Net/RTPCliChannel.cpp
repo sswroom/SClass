@@ -346,7 +346,7 @@ Net::RTPCliChannel::RTPCliChannel(Net::SocketFactory *sockf, UInt16 port)
 		this->chData->packBuff[i].buff = MemAlloc(UInt8, 2048);
 	}
 
-	NEW_CLASS(this->chData->payloadMap, Data::Integer32Map<Net::IRTPPLHandler*>());
+	NEW_CLASS(this->chData->payloadMap, Data::Int32Map<Net::IRTPPLHandler*>());
 
 	if (port & 1)
 	{

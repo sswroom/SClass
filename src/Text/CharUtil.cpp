@@ -29,3 +29,20 @@ Bool Text::CharUtil::IsWS(const UTF8Char *sptr)
 	}
 	return false;
 }
+
+Bool Text::CharUtil::IsPunctuation(UTF8Char c)
+{
+	switch (c)
+	{
+	case '[':
+	case ']':
+	case '-':
+	case '\'':
+	case ',':
+	case '(':
+	case ')':
+		return true;
+	default:
+		return false;
+	}
+}

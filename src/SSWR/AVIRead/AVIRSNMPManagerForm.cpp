@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 			Int64 cliId;
 			OSInt l;
 			Net::SNMPManager::ReadingInfo *reading;
-			Data::Integer32Map<Int32> readingMap;
+			Data::Int32Map<Int32> readingMap;
 			Int32 currId;
 			me->SendAgentValues(&agentList);
 			Sync::Thread::Sleep(100);
@@ -393,8 +393,8 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 ip;
 	UInt32 netmask;
 	sockf->GetConnInfoList(&connInfoList);

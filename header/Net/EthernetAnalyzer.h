@@ -1,8 +1,8 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
 #include "Data/ICaseStringUTF8Map.h"
-#include "Data/Integer32Map.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int32Map.h"
+#include "Data/Int64Map.h"
 #include "IO/Writer.h"
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
@@ -121,11 +121,11 @@ namespace Net
 	private:
 		AnalyzeType atype;
 		Sync::Mutex *ipTranMut;
-		Data::Integer64Map<IPTranStatus*> *ipTranMap;
+		Data::Int64Map<IPTranStatus*> *ipTranMap;
 		Sync::Mutex *macMut;
-		Data::Integer64Map<MACStatus*> *macMap;
+		Data::Int64Map<MACStatus*> *macMap;
 		Sync::Mutex *dnsCliInfoMut;
-		Data::Integer32Map<DNSClientInfo*> *dnsCliInfos;
+		Data::Int32Map<DNSClientInfo*> *dnsCliInfos;
 		Sync::Mutex *dnsReqv4Mut;
 		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqv4Map;
 		Sync::Mutex *dnsReqv6Mut;
@@ -133,11 +133,11 @@ namespace Net
 		Sync::Mutex *dnsReqOthMut;
 		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqOthMap;
 		Sync::Mutex *dnsTargetMut;
-		Data::Integer32Map<DNSTargetInfo*> *dnsTargetMap;
+		Data::Int32Map<DNSTargetInfo*> *dnsTargetMap;
 		Sync::Mutex *ipLogMut;
-		Data::Integer32Map<IPLogInfo*> *ipLogMap;
+		Data::Int32Map<IPLogInfo*> *ipLogMap;
 		Sync::Mutex *dhcpMut;
-		Data::Integer64Map<DHCPInfo*> *dhcpMap;
+		Data::Int64Map<DHCPInfo*> *dhcpMap;
 
 		Pingv4Handler pingv4ReqHdlr;
 		void *pingv4ReqObj;

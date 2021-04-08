@@ -381,8 +381,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Data::ArrayListDbl ptX;
 		Data::ArrayListDbl ptY;
 		Data::ArrayListDbl ptZ;
-		Data::Integer32Map<Math::Vector2D *> vecMap;
-		Data::Integer32Map<Bool> vecUsed;
+		Data::Int32Map<Math::Vector2D *> vecMap;
+		Data::Int32Map<Bool> vecUsed;
 		Int32 currId = 0;
 		Math::Polygon *pg;
 		Math::Polyline3D *pl;

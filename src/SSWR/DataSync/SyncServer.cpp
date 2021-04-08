@@ -80,7 +80,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	this->sockf = sockf;
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoSyncHandler(this));
 	NEW_CLASS(this->svrMut, Sync::RWMutex());
-	NEW_CLASS(this->svrMap, Data::Integer32Map<ServerInfo*>());
+	NEW_CLASS(this->svrMap, Data::Int32Map<ServerInfo*>());
 	NEW_CLASS(this->syncCliList, Data::ArrayList<SyncClient*>());
 	this->dataHdlr = dataHdlr;
 	this->dataObj = dataObj;

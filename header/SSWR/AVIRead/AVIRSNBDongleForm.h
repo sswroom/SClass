@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSNBDONGLEFORM
 #define _SM_SSWR_AVIREAD_AVIRSNBDONGLEFORM
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "IO/LogTool.h"
 #include "IO/SNBDongle.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -46,9 +46,9 @@ namespace SSWR
 			Bool dongleUpdated;
 
 			Sync::RWMutex *devMut;
-			Data::Integer64Map<DeviceInfo*> *devMap;
+			Data::Int64Map<DeviceInfo*> *devMap;
 			Bool devChg;
-			Data::Integer64Map<Int32> *devHandlerMap;
+			Data::Int64Map<Int32> *devHandlerMap;
 
 			UI::GUITabControl *tcMain;
 

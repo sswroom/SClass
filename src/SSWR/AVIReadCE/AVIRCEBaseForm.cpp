@@ -158,7 +158,7 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, UI
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	Data::ArrayList<MenuInfo*> *menu;
-	NEW_CLASS(this->menuItems, Data::Integer32Map<Data::ArrayList<MenuInfo*>*>());
+	NEW_CLASS(this->menuItems, Data::Int32Map<Data::ArrayList<MenuInfo*>*>());
 
 	OSInt w;
 	OSInt h;

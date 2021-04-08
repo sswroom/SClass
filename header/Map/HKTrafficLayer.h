@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTRAFFICLAYER
 #define _SM_MAP_HKTRAFFICLAYER
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "Map/IMapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Mutex.h"
@@ -56,8 +56,8 @@ namespace Map
 		Net::SocketFactory *sockf;
 		Text::EncodingFactory *encFact;
 		Sync::Mutex *roadMut;
-		Data::Integer64Map<RoadInfo*> *roadMap;
-		Data::Integer64Map<CenterlineInfo*> *vecMap;
+		Data::Int64Map<RoadInfo*> *roadMap;
+		Data::Int64Map<CenterlineInfo*> *vecMap;
 
 		static const NodeInfo *GetNodeInfo(Int32 nodeId);
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);

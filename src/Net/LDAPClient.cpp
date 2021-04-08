@@ -159,7 +159,7 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 	return 0;
 }
 
-void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen)
+void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 {
 	UInt32 msgId;
 	const UInt8 *msgEnd = msgBuff + msgLen;
@@ -455,7 +455,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 			}
 			else if (filter[0] == '=')
 			{
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				filter++;
 				break;
 			}
@@ -466,7 +466,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		{
 			if (filter[0] == ')')
 			{
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				pdu->SequenceEnd();
 				return filter + 1;
 			}
@@ -499,41 +499,41 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 			}
 			else if (filter[0] == '=' && filter[1] == '*' && filter[2] == ')')
 			{
-				pdu->AppendBuff(complex?0xA7:0x87, filterStart, filter - filterStart);
+				pdu->AppendBuff(complex?0xA7:0x87, filterStart, (UOSInt)(filter - filterStart));
 				return filter + 3;
 			}
 			else if (filter[0] == '=' && filter[1] == '*')
 			{
 				pdu->SequenceBegin(complex?0xA4:0x84);
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '=')
 			{
 				pdu->SequenceBegin(complex?0xA3:0x83);
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				filter += 1;
 				break;
 			}
 			else if (filter[0] == '>' && filter[1] == '=')
 			{
 				pdu->SequenceBegin(complex?0xA5:0x85);
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '<' && filter[1] == '=')
 			{
 				pdu->SequenceBegin(complex?0xA6:0x86);
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '~' && filter[1] == '=')
 			{
 				pdu->SequenceBegin(complex?0xA8:0x88);
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
@@ -544,7 +544,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		{
 			if (filter[0] == ')')
 			{
-				pdu->AppendBuff(4, filterStart, filter - filterStart);
+				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
 				pdu->SequenceEnd();
 				return filter + 1;
 			}
@@ -566,7 +566,7 @@ Net::LDAPClient::LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Ad
 	this->lastMsgId = 0;
 	NEW_CLASS(this->msgIdMut, Sync::Mutex());
 	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->reqMap, Data::Integer32Map<Net::LDAPClient::ReqStatus*>());
+	NEW_CLASS(this->reqMap, Data::UInt32Map<Net::LDAPClient::ReqStatus*>());
 	NEW_CLASS(this->respEvt, Sync::Event(true, (const UTF8Char*)"Net.LDAPClient.respEvt"));
 	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
 	if (!this->cli->IsConnectError() && !this->cli->IsClosed())
@@ -605,7 +605,7 @@ Bool Net::LDAPClient::IsError()
 Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 {
 	Net::ASN1PDUBuilder *pdu;
-	OSInt buffSize;
+	UOSInt buffSize;
 	const UInt8 *buff;
 	Net::LDAPClient::ReqStatus status;
 	Bool valid;
@@ -625,7 +625,7 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 	}
 	else
 	{
-		OSInt len = Text::StrCharCnt(password);
+		UOSInt len = Text::StrCharCnt(password);
 		pdu->AppendString(userDN); //name
 		pdu->AppendBuff(0x80, password, len); //authentication
 	}
@@ -641,7 +641,7 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 	this->reqMap->Put(status.msgId, &status);
 	mutUsage.EndUse();
 
-	valid = (this->cli->Write(buff, buffSize) == (UOSInt)buffSize);
+	valid = (this->cli->Write(buff, buffSize) == buffSize);
 	DEL_CLASS(pdu);
 	if (valid)
 	{
@@ -665,7 +665,7 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 Bool Net::LDAPClient::Unbind()
 {
 	Net::ASN1PDUBuilder *pdu;
-	OSInt buffSize;
+	UOSInt buffSize;
 	const UInt8 *buff;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
@@ -684,7 +684,7 @@ Bool Net::LDAPClient::Unbind()
 	pdu->SequenceEnd();
 
 	buff = pdu->GetBuff(&buffSize);
-	valid = (this->cli->Write(buff, buffSize) == (UOSInt)buffSize);
+	valid = (this->cli->Write(buff, buffSize) == buffSize);
 	DEL_CLASS(pdu);
 	return valid;
 }
@@ -692,7 +692,7 @@ Bool Net::LDAPClient::Unbind()
 Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<Net::LDAPClient::SearchResObject*> *results)
 {
 	Net::ASN1PDUBuilder *pdu;
-	OSInt buffSize;
+	UOSInt buffSize;
 	const UInt8 *buff;
 	Net::LDAPClient::ReqStatus status;
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> resObjs;
@@ -743,7 +743,7 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 	this->reqMap->Put(status.msgId, &status);
 	mutUsage.EndUse();
 
-	valid = (this->cli->Write(buff, buffSize) == (UOSInt)buffSize);
+	valid = (this->cli->Write(buff, buffSize) == buffSize);
 	DEL_CLASS(pdu);
 	if (valid)
 	{
@@ -776,7 +776,7 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 void Net::LDAPClient::SearchResultsFree(Data::ArrayList<Net::LDAPClient::SearchResObject*> *results)
 {
 	Net::LDAPClient::SearchResObject *obj;
-	OSInt i = results->GetCount();
+	UOSInt i = results->GetCount();
 	while (i-- > 0)
 	{
 		obj = results->GetItem(i);
@@ -791,7 +791,7 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 	if (obj->items)
 	{
 		Net::LDAPClient::SearchResItem *item;
-		OSInt i = obj->items->GetCount();
+		UOSInt i = obj->items->GetCount();
 		while (i-- > 0)
 		{
 			item = obj->items->GetItem(i);

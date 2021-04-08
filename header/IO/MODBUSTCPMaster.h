@@ -1,6 +1,6 @@
 #ifndef _SM_IO_MODBUSTCPMASTER
 #define _SM_IO_MODBUSTCPMASTER
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/MODBUSMaster.h"
 #include "IO/Stream.h"
 #include "Manage/HiResClock.h"
@@ -25,7 +25,7 @@ namespace IO
 		Bool threadToStop;
 		Manage::HiResClock *clk;
 		Sync::Mutex *stmMut;
-		Data::Integer32Map<AddrResultCb*> *cbMap;
+		Data::Int32Map<AddrResultCb*> *cbMap;
 
 		static UInt32 __stdcall ThreadProc(void *userObj);
 	public:

@@ -9,7 +9,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 {
 	this->db = db;
 	this->csys = routeLyr->GetCoordinateSystem()->Clone();
-	NEW_CLASS(this->routeMap, Data::Integer32Map<RouteInfo*>());
+	NEW_CLASS(this->routeMap, Data::Int32Map<RouteInfo*>());
 	void *sess = routeLyr->BeginGetObject();
 	if (sess)
 	{

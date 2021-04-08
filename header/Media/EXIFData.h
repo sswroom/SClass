@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_EXIFDATA
 #define _SM_MEDIA_EXIFDATA
 #include "Data/DateTime.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/IStreamData.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -95,7 +95,7 @@ namespace Media
 		static EXIFInfo casio1Infos[];
 		static EXIFInfo casio2Infos[];
 		static EXIFInfo flirInfos[];
-		Data::Integer32Map<EXIFItem*> *exifMap;
+		Data::Int32Map<EXIFItem*> *exifMap;
 		EXIFMaker exifMaker;
 
 	private:

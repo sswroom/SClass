@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #define _SM_NET_WEBSERVER_WEBSERVICEHANDLER
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
@@ -16,7 +16,7 @@ namespace Net
 			typedef struct
 			{
 				const UTF8Char *svcPath;
-				Data::Integer32Map<ServiceFunc> *funcs;
+				Data::Int32Map<ServiceFunc> *funcs;
 			} ServiceInfo;
 			
 			Data::StringUTF8Map<ServiceInfo *> *services;

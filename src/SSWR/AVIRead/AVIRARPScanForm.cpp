@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	this->lvARP->AddColumn((const UTF8Char*)"Vendor", 300);
 
 	NEW_CLASS(this->arpMut, Sync::Mutex());
-	NEW_CLASS(this->arpMap, Data::Integer32Map<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*>());
+	NEW_CLASS(this->arpMap, Data::Int32Map<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*>());
 	this->arpUpdated = false;
 	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo*>());
 

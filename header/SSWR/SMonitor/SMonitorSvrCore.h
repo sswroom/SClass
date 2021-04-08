@@ -1,8 +1,8 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #define _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #include "Crypto/Hash/HashCalc.h"
-#include "Data/Integer32Map.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int32Map.h"
+#include "Data/Int64Map.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
 #include "IO/Writer.h"
@@ -59,9 +59,9 @@ namespace SSWR
 			Sync::RWMutex *dateMut;
 
 			Sync::RWMutex *devMut;
-			Data::Integer64Map<DeviceInfo*> *devMap;
+			Data::Int64Map<DeviceInfo*> *devMap;
 			Sync::RWMutex *userMut;
-			Data::Integer32Map<WebUser*> *userMap;
+			Data::Int32Map<WebUser*> *userMap;
 			Data::StringUTF8Map<WebUser*> *userNameMap;
 
 			IO::StringLogger *uaLog;

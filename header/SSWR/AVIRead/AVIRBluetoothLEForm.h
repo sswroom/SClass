@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "IO/BTManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -34,7 +34,7 @@ namespace SSWR
 			Data::ArrayList<IO::BTController *> *btList;
 			IO::BTController *btCtrl;
 			Sync::Mutex *devMut;
-			Data::Integer64Map<BTDevice*> *devMap;
+			Data::Int64Map<BTDevice*> *devMap;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblInterface;

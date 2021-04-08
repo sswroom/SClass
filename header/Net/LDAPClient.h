@@ -1,6 +1,6 @@
 #ifndef _SM_NET_LDAPCLIENT
 #define _SM_NET_LDAPCLIENT
-#include "Data/Integer32Map.h"
+#include "Data/UInt32Map.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
@@ -53,7 +53,7 @@ namespace Net
 		Net::TCPClient *cli;
 		
 		Sync::Mutex *reqMut;
-		Data::Integer32Map<ReqStatus*> *reqMap;
+		Data::UInt32Map<ReqStatus*> *reqMap;
 
 		Sync::Mutex *msgIdMut;
 		UInt32 lastMsgId;
@@ -63,7 +63,7 @@ namespace Net
 		Bool recvToStop;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
-		void ParseLDAPMessage(const UInt8 *msgBuff, OSInt msgLen);
+		void ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen);
 		const UTF8Char *ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF8Char *filter, Bool complex);
 	public:
 		LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);

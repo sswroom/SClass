@@ -11,7 +11,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 {
 	NEW_CLASS(this->revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(this->strMap, Data::BTreeUTF8Map<const UTF8Char *>());
-	NEW_CLASS(this->lcidMap, Data::Integer32Map<LCIDInfo*>());
+	NEW_CLASS(this->lcidMap, Data::Int32Map<LCIDInfo*>());
 	NEW_CLASS(this->mut, Sync::Mutex());
 	this->conn = db;
 	this->errWriter = errWriter;
@@ -32,7 +32,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 			const UTF8Char *addr;
 			LCIDInfo *lcidInfo;
 			IndexInfo *indexInfo;
-			Data::Integer32Map<const UTF8Char *> *addrMap1;
+			Data::Int32Map<const UTF8Char *> *addrMap1;
 			Int32 index;
 			while (r->ReadNext())
 			{
@@ -52,7 +52,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 				{
 					lcidInfo = MemAlloc(LCIDInfo, 1);
 					lcidInfo->lcid = lcid;
-					NEW_CLASS(lcidInfo->indexMap, Data::Integer32Map<IndexInfo*>());
+					NEW_CLASS(lcidInfo->indexMap, Data::Int32Map<IndexInfo*>());
 					this->lcidMap->Put(lcid, lcidInfo);
 				}
 				index = ((keyx & 255) << 8) | (keyy & 255);
@@ -60,13 +60,13 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 				if (indexInfo == 0)
 				{
 					indexInfo = MemAlloc(IndexInfo, 1);
-					NEW_CLASS(indexInfo->addrMap, Data::Integer32Map<Data::Integer32Map<const UTF8Char *>*>());
+					NEW_CLASS(indexInfo->addrMap, Data::Int32Map<Data::Int32Map<const UTF8Char *>*>());
 					lcidInfo->indexMap->Put(index, indexInfo);
 				}
 				addrMap1 = indexInfo->addrMap->Get(keyx);
 				if (addrMap1 == 0)
 				{
-					NEW_CLASS(addrMap1, Data::Integer32Map<const UTF8Char *>());
+					NEW_CLASS(addrMap1, Data::Int32Map<const UTF8Char *>());
 					indexInfo->addrMap->Put(keyx, addrMap1);
 				}
 				addrMap1->Put(keyy, addr);
@@ -86,8 +86,8 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	Data::ArrayList<LCIDInfo *> *lcidList;
 	IndexInfo *index;
 	Data::ArrayList<IndexInfo *> *indexList;
-	Data::ArrayList<Data::Integer32Map<const UTF8Char *>*> *addrList1;
-	Data::Integer32Map<const UTF8Char *> *addrMap1;
+	Data::ArrayList<Data::Int32Map<const UTF8Char *>*> *addrList1;
+	Data::Int32Map<const UTF8Char *> *addrMap1;
 	while (i-- > 0)
 	{
 		Map::IReverseGeocoder *revGeo;
@@ -150,7 +150,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	const UTF8Char *addr;
 	LCIDInfo *lcidInfo;
 	IndexInfo *indexInfo;
-	Data::Integer32Map<const UTF8Char *> *addrMap1;
+	Data::Int32Map<const UTF8Char *> *addrMap1;
 	Int32 index;
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -159,7 +159,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		lcidInfo = MemAlloc(LCIDInfo, 1);
 		lcidInfo->lcid = lcid;
-		NEW_CLASS(lcidInfo->indexMap, Data::Integer32Map<IndexInfo*>());
+		NEW_CLASS(lcidInfo->indexMap, Data::Int32Map<IndexInfo*>());
 		this->lcidMap->Put(lcid, lcidInfo);
 	}
 	index = ((keyx & 255) << 8) | (keyy & 255);
@@ -224,13 +224,13 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		if (indexInfo == 0)
 		{
 			indexInfo = MemAlloc(IndexInfo, 1);
-			NEW_CLASS(indexInfo->addrMap, Data::Integer32Map<Data::Integer32Map<const UTF8Char *>*>());
+			NEW_CLASS(indexInfo->addrMap, Data::Int32Map<Data::Int32Map<const UTF8Char *>*>());
 			lcidInfo->indexMap->Put(index, indexInfo);
 		}
 		addrMap1 = indexInfo->addrMap->Get(keyx);
 		if (addrMap1 == 0)
 		{
-			NEW_CLASS(addrMap1, Data::Integer32Map<const UTF8Char *>());
+			NEW_CLASS(addrMap1, Data::Int32Map<const UTF8Char *>());
 			indexInfo->addrMap->Put(keyx, addrMap1);
 		}
 		addrMap1->Put(keyy, addr);
@@ -259,7 +259,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 	const UTF8Char *addr;
 	LCIDInfo *lcidInfo;
 	IndexInfo *indexInfo;
-	Data::Integer32Map<const UTF8Char *> *addrMap1;
+	Data::Int32Map<const UTF8Char *> *addrMap1;
 	Int32 index;
 
 	Sync::MutexUsage mutUsage(mut);
@@ -268,7 +268,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 	{
 		lcidInfo = MemAlloc(LCIDInfo, 1);
 		lcidInfo->lcid = lcid;
-		NEW_CLASS(lcidInfo->indexMap, Data::Integer32Map<IndexInfo*>());
+		NEW_CLASS(lcidInfo->indexMap, Data::Int32Map<IndexInfo*>());
 		this->lcidMap->Put(lcid, lcidInfo);
 	}
 	index = ((keyx & 255) << 8) | (keyy & 255);
@@ -333,13 +333,13 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 		if (indexInfo == 0)
 		{
 			indexInfo = MemAlloc(IndexInfo, 1);
-			NEW_CLASS(indexInfo->addrMap, Data::Integer32Map<Data::Integer32Map<const UTF8Char *>*>());
+			NEW_CLASS(indexInfo->addrMap, Data::Int32Map<Data::Int32Map<const UTF8Char *>*>());
 			lcidInfo->indexMap->Put(index, indexInfo);
 		}
 		addrMap1 = indexInfo->addrMap->Get(keyx);
 		if (addrMap1 == 0)
 		{
-			NEW_CLASS(addrMap1, Data::Integer32Map<const UTF8Char *>());
+			NEW_CLASS(addrMap1, Data::Int32Map<const UTF8Char *>());
 			indexInfo->addrMap->Put(keyx, addrMap1);
 		}
 		addrMap1->Put(keyy, addr);

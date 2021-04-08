@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/Path.h"

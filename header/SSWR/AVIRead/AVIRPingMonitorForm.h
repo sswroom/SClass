@@ -46,7 +46,7 @@ namespace SSWR
 			Net::EthernetAnalyzer *analyzer;
 			Net::WhoisHandler *whois;
 			Sync::Mutex *ipMut;
-			Data::Integer32Map<IPInfo*> *ipMap;
+			Data::Int32Map<IPInfo*> *ipMap;
 			Bool ipListUpdated;
 			Bool ipContUpdated;
 			IPInfo *currIP;

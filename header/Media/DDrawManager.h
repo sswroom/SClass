@@ -1,13 +1,13 @@
 #ifndef _SM_MEDIA_DDRAWMANAGER
 #define _SM_MEDIA_DDRAWMANAGER
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 
 namespace Media
 {
 	class DDrawManager
 	{
 	private:
-		Data::Integer64Map<void*> *monMap;
+		Data::Int64Map<void*> *monMap;
 		void *defDD;
 
 		static Int32 __stdcall DDEnumMonCall(void *guid, Char *driverDesc, Char *driverName, void *context, void *hMonitor);

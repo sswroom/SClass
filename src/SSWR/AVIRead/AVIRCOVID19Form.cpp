@@ -206,7 +206,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 			country->name = Text::StrCopyNew(sbuff);
 			r->GetStr(colPopulation, sbuff, sizeof(sbuff));
 			country->population = Text::StrToDouble(sbuff);
-			NEW_CLASS(country->records, Data::Integer64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
+			NEW_CLASS(country->records, Data::Int64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
 			this->countries->Put(country->isoCode, country);
 		}
 		r->GetStr(colDate, sbuff, sizeof(sbuff));

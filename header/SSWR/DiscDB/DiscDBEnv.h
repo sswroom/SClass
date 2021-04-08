@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DISCDB_DISCDBENV
 #define _SM_SSWR_DISCDB_DISCDBENV
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "DB/DBTool.h"
 #include "IO/IStreamData.h"
 #include "Media/MonitorMgr.h"
@@ -83,7 +83,7 @@ namespace SSWR
 			Data::StringUTF8Map<DVDTypeInfo*> *dvdTypeMap;
 			Data::StringUTF8Map<CategoryInfo*> *cateMap;
 			Data::StringUTF8Map<DiscTypeInfo*> *discTypeMap;
-			Data::Integer32Map<DVDVideoInfo*> *dvdVideoMap;
+			Data::Int32Map<DVDVideoInfo*> *dvdVideoMap;
 			
 			void LoadDB();
 		public:

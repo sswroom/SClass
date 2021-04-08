@@ -846,8 +846,8 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Text::EncodingFac
 	this->sockf = sockf;
 	this->encFact = encFact;
 	NEW_CLASS(this->roadMut, Sync::Mutex());
-	NEW_CLASS(this->roadMap, Data::Integer64Map<RoadInfo*>());
-	NEW_CLASS(this->vecMap, Data::Integer64Map<CenterlineInfo*>());
+	NEW_CLASS(this->roadMap, Data::Int64Map<RoadInfo*>());
+	NEW_CLASS(this->vecMap, Data::Int64Map<CenterlineInfo*>());
 	this->minX = 0;
 	this->minY = 0;
 	this->maxX = 0;

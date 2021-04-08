@@ -4370,14 +4370,14 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	DEL_CLASS(sql);	
 }
 
-Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvDB::GetGroupTree()
+Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvDB::GetGroupTree()
 {
 	Data::ArrayList<OrganGroup*> *grps;
-	Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
+	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
 	DB::DBReader *r;
 	Int32 parId;
 
-	NEW_CLASS(grpTree, Data::Integer32Map<Data::ArrayList<OrganGroup*>*>());
+	NEW_CLASS(grpTree, Data::Int32Map<Data::ArrayList<OrganGroup*>*>());
 
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
@@ -4433,14 +4433,14 @@ Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMg
 	return grpTree;
 }
 
-Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr::OrganEnvDB::GetSpeciesTree()
+Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr::OrganEnvDB::GetSpeciesTree()
 {
 	Data::ArrayList<OrganSpecies*> *sps;
-	Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
+	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
 	DB::DBReader *r;
 	Int32 parId;
 
-	NEW_CLASS(spTree, Data::Integer32Map<Data::ArrayList<OrganSpecies*>*>());
+	NEW_CLASS(spTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*>());
 
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
@@ -4501,13 +4501,13 @@ Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::Organ
 void SSWR::OrganMgr::OrganEnvDB::Test()
 {
 	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
-	Data::Integer32Map<OrganSpecies*> *speciesMap;
+	Data::Int32Map<OrganSpecies*> *speciesMap;
 	Data::ArrayListInt32 speciesList;
 	UserFileInfo *userFile;
 	OrganSpecies *species;
 	Data::DateTime dt;
 	Trip *tr;
-	NEW_CLASS(speciesMap, Data::Integer32Map<OrganSpecies*>());
+	NEW_CLASS(speciesMap, Data::Int32Map<OrganSpecies*>());
 	UOSInt i = 0;
 	UOSInt j = userFileList->GetCount();
 	while (i < j)

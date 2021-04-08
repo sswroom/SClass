@@ -2101,11 +2101,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	else if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
 	{
 		*colSize = 0;
-		if (Text::StrCompare(typeName, (const UTF8Char*)"varchar") == 0)
+		if (Text::StrEquals(typeName, (const UTF8Char*)"varchar"))
 		{
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"text") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"text"))
 		{
 			return DB::DBUtil::CT_VarChar;
 		}
@@ -2117,44 +2117,62 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			return DB::DBUtil::CT_Int32;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"datetime") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"datetime"))
 		{
 			return DB::DBUtil::CT_DateTime;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"datetime2") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"datetime2"))
 		{
 			return DB::DBUtil::CT_DateTime2;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"float") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"float"))
 		{
 			return DB::DBUtil::CT_Double;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"bit") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"bit"))
 		{
 			return DB::DBUtil::CT_Bool;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"bigint") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"bigint"))
 		{
 			return DB::DBUtil::CT_Int64;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"smallint") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"smallint"))
 		{
 			return DB::DBUtil::CT_Int64;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"nvarchar") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"nvarchar"))
 		{
 			return DB::DBUtil::CT_NVarChar;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"numeric") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"numeric"))
 		{
 			return DB::DBUtil::CT_Double;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"geometry") == 0)
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"geometry"))
 		{
 			return DB::DBUtil::CT_Vector;
 		}
 		else
 		{
+			return DB::DBUtil::CT_Unknown;
+		}
+	}
+	else if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	{
+		if (Text::StrEquals(typeName, (const UTF8Char*)"integer"))
+		{
+			*colSize = 4;
+			return DB::DBUtil::CT_Int32;
+		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"real"))
+		{
+			*colSize = 8;
+			return DB::DBUtil::CT_Double;
+		}
+		else
+		{
+			*colSize = 0;
 			return DB::DBUtil::CT_Unknown;
 		}
 	}

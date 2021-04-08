@@ -126,7 +126,7 @@ IO::MODBUSTCPMaster::MODBUSTCPMaster(IO::Stream *stm)
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->tranId = 0;
-	NEW_CLASS(this->cbMap, Data::Integer32Map<AddrResultCb*>());
+	NEW_CLASS(this->cbMap, Data::Int32Map<AddrResultCb*>());
 	NEW_CLASS(this->clk, Manage::HiResClock());
 	NEW_CLASS(this->stmMut, Sync::Mutex());
 	if (this->stm)

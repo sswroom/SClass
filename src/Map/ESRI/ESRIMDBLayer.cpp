@@ -6,7 +6,7 @@
 #include "Math/Point3D.h"
 #include "Math/Polyline3D.h"
 
-Data::Integer32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
+Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
@@ -14,13 +14,13 @@ Data::Integer32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{
-		Data::Integer32Map<const UTF8Char **> *nameArr;
+		Data::Int32Map<const UTF8Char **> *nameArr;
 		const UTF8Char **names;
 		OSInt colCnt = this->colNames->GetCount();
 		OSInt i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Integer32Map<const UTF8Char **>());
+		NEW_CLASS(nameArr, Data::Int32Map<const UTF8Char **>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
@@ -65,7 +65,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const 
 	OSInt currSize;
 	conn->UseObject();
 	this->conn = conn;
-	NEW_CLASS(this->objects, Data::Integer32Map<Math::Vector2D*>());
+	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
 	NEW_CLASS(this->colNames, Data::ArrayListStrUTF8());
 	this->tableName = Text::StrCopyNew(tableName);
 	this->currDB = 0;
@@ -283,7 +283,7 @@ Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax()
 
 void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 {
-	Data::Integer32Map<const UTF8Char **> *names = (Data::Integer32Map<const UTF8Char **> *)nameArr;
+	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
 	Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
 	OSInt i = nameList->GetCount();
 	OSInt colCnt = this->colNames->GetCount();
@@ -305,7 +305,7 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 
 UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::Integer32Map<const UTF8Char **> *names = (Data::Integer32Map<const UTF8Char **> *)nameArr;
+	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
 	if (names == 0)
 		return 0;
 	const UTF8Char **nameStrs = names->Get((Int32)id);

@@ -27,7 +27,7 @@ IO::PackageFile::PackageFile(const UTF8Char *fileName) : IO::ParsedObject(fileNa
 	{
 		NEW_CLASS(this->namedItems, Data::StringUTF8Map<PackFileItem*>());
 	}
-	NEW_CLASS(this->infoMap, Data::Integer32Map<const UTF8Char *>());
+	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
 
 IO::PackageFile::~PackageFile()

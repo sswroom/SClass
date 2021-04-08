@@ -593,8 +593,8 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 
 	this->core = core;
 	this->lastTimeTick = 0;
-	NEW_CLASS(this->bssMap, Data::Integer64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus*>());
-	NEW_CLASS(this->wifiLogMap, Data::Integer64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*>());
+	NEW_CLASS(this->bssMap, Data::Int64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus*>());
+	NEW_CLASS(this->wifiLogMap, Data::Int64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*>());
 	OSInt i;
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
 	Data::ArrayList<Net::WirelessLAN::Interface*> interfList;

@@ -558,7 +558,7 @@ Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
 	if (analyzeTarget)
 	{
 		NEW_CLASS(this->targetMut, Sync::Mutex());
-		NEW_CLASS(this->targetMap, Data::Integer32Map<TargetInfo*>());
+		NEW_CLASS(this->targetMap, Data::Int32Map<TargetInfo*>());
 		this->targetUpdated = true;
 	}
 	else
@@ -573,7 +573,7 @@ Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
 	NEW_CLASS(this->currIPTime, Data::DateTime());
 	this->lastId = 0;
 	NEW_CLASS(this->cliReqMut, Sync::Mutex());
-	NEW_CLASS(this->cliReqMap, Data::Integer32Map<CliRequestStatus*>());
+	NEW_CLASS(this->cliReqMap, Data::Int32Map<CliRequestStatus*>());
 	NEW_CLASS(this->blackList, Data::ArrayList<const UTF8Char *>());
 	NEW_CLASS(this->blackListMut, Sync::Mutex());
 	sockf->GetDNSList(this->dnsList);

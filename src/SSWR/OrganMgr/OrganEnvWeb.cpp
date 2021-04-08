@@ -4352,14 +4352,14 @@ void SSWR::OrganMgr::OrganEnvWeb::LoadGroupTypes()
 	DEL_CLASS(sql);	
 }
 
-Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvWeb::GetGroupTree()
+Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvWeb::GetGroupTree()
 {
 	Data::ArrayList<OrganGroup*> *grps;
-	Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
+	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
 	DB::DBReader *r;
 	Int32 parId;
 
-	NEW_CLASS(grpTree, Data::Integer32Map<Data::ArrayList<OrganGroup*>*>());
+	NEW_CLASS(grpTree, Data::Int32Map<Data::ArrayList<OrganGroup*>*>());
 
 	DB::SQLBuilder sql(this->db->GetSvrType());
 	Text::StringBuilderUTF8 sb;
@@ -4415,14 +4415,14 @@ Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMg
 	return grpTree;
 }
 
-Data::Integer32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr::OrganEnvWeb::GetSpeciesTree()
+Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr::OrganEnvWeb::GetSpeciesTree()
 {
 	Data::ArrayList<OrganSpecies*> *sps;
-	Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
+	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
 	DB::DBReader *r;
 	Int32 parId;
 
-	NEW_CLASS(spTree, Data::Integer32Map<Data::ArrayList<OrganSpecies*>*>());
+	NEW_CLASS(spTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*>());
 
 	DB::SQLBuilder sql(this->db->GetSvrType());
 	Text::StringBuilderUTF8 sb;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/ByteTool.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
 #include "Manage/ExceptionRecorder.h"
@@ -38,7 +38,7 @@ typedef struct
 Net::WirelessLAN *wlan;
 Int32 threadCnt;
 Bool threadToStop;
-Data::Integer64Map<WiFiEntry*> *entryMap;
+Data::Int64Map<WiFiEntry*> *entryMap;
 Sync::Mutex *entryMut;
 
 class MyWebHandler : public Net::WebServer::WebStandardHandler
@@ -639,7 +639,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"Error.txt");
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
-	NEW_CLASS(entryMap, Data::Integer64Map<WiFiEntry*>());
+	NEW_CLASS(entryMap, Data::Int64Map<WiFiEntry*>());
 	NEW_CLASS(entryMut, Sync::Mutex());
 	NEW_CLASS(wlan, Net::WirelessLAN());
 	threadCnt = 0;

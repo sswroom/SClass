@@ -90,7 +90,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->extMap, Data::Integer32Map<UInt8*>());
+	NEW_CLASS(this->extMap, Data::Int32Map<UInt8*>());
 
 	this->hasLZODecomp = true;
 

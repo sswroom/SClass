@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_XLSPARSER
 #define _SM_PARSER_FILEPARSER_XLSPARSER
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/IFileParser.h"
 #include "Text/StringBuilderUTF.h"
 #include "Text/SpreadSheet/Workbook.h"
@@ -36,7 +36,7 @@ namespace Parser
 				Data::ArrayList<const UTF8Char *> *sst;
 				Data::ArrayList<WorksheetStatus*> *wsList;
 				Data::ArrayList<FontInfo *> *fontList;
-				Data::Integer32Map<const UTF8Char *> *formatMap;
+				Data::Int32Map<const UTF8Char *> *formatMap;
 				UInt32 palette[56];
 			} WorkbookStatus;
 

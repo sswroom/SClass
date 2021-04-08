@@ -68,7 +68,7 @@ void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, Net:
 	{
 		service = MemAlloc(Net::WebServer::WebServiceHandler::ServiceInfo, 1);
 		service->svcPath = Text::StrCopyNew(svcPath);
-		NEW_CLASS(service->funcs, Data::Integer32Map<ServiceFunc>());
+		NEW_CLASS(service->funcs, Data::Int32Map<ServiceFunc>());
 		this->services->Put(svcPath, service);
 	}
 	service->funcs->Put(reqMeth, func);

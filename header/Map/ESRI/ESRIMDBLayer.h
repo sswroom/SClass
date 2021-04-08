@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_ESRIMDBLAYER
 #define _SM_MAP_ESRI_ESRIMDBLAYER
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
 #include "Map/IMapDrawLayer.h"
@@ -14,7 +14,7 @@ namespace Map
 		{
 		private:
 			DB::SharedDBConn *conn;
-			Data::Integer32Map<Math::Vector2D*> *objects;
+			Data::Int32Map<Math::Vector2D*> *objects;
 			DB::DBConn *currDB;
 			DB::DBConn *lastDB;
 			Map::DrawLayerType layerType;
@@ -28,7 +28,7 @@ namespace Map
 			const UTF8Char *tableName;
 
 		private:
-			Data::Integer32Map<const UTF8Char **> *ReadNameArr();
+			Data::Int32Map<const UTF8Char **> *ReadNameArr();
 		public:
 			ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const UTF8Char *sourceName, const UTF8Char *tableName);
 			virtual ~ESRIMDBLayer();

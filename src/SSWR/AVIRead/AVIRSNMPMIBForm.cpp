@@ -33,8 +33,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnObjectsSelChg(void *userObj)
 	me->lvObjectsVal->ClearItems();
 	if (obj)
 	{
-		OSInt i = 0;
-		OSInt j = obj->valName->GetCount();
+		UOSInt i = 0;
+		UOSInt j = obj->valName->GetCount();
 		while (i < j)
 		{
 			me->lvObjectsVal->AddItem(obj->valName->GetItem(i), 0);
@@ -61,8 +61,8 @@ void SSWR::AVIRead::AVIRSNMPMIBForm::LoadFile(const UTF8Char *fileName)
 	}
 	this->lvObjects->ClearItems();
 	this->lvOID->ClearItems();
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	Net::SNMPMIB::ObjectInfo *obj;
 	Net::SNMPMIB::ModuleInfo *module = this->mib->GetModuleByFileName(fileName);
@@ -108,23 +108,23 @@ void SSWR::AVIRead::AVIRSNMPMIBForm::LoadFile(const UTF8Char *fileName)
 		sbOIDText.Append((const UTF8Char*)"{\"");
 		sbOIDText.Append(obj->objectName);
 		sbOIDText.Append((const UTF8Char*)"\",");
-		k = 60 - Text::StrCharCnt(obj->objectName);
+		k = (OSInt)(60 - Text::StrCharCnt(obj->objectName));
 		if (k > 0)
 		{
-			sbOIDText.AppendChar('\t', (k + 3) >> 2);
+			sbOIDText.AppendChar('\t', (UOSInt)(k + 3) >> 2);
 		}
 		if (obj->oidLen < 10)
 		{
-			sbOIDText.AppendOSInt(obj->oidLen);
+			sbOIDText.AppendUOSInt(obj->oidLen);
 			sbOIDText.Append((const UTF8Char*)",  {");
 		}
 		else
 		{
-			sbOIDText.AppendOSInt(obj->oidLen);
+			sbOIDText.AppendUOSInt(obj->oidLen);
 			sbOIDText.Append((const UTF8Char*)", {");
 		}
 		k = 0;
-		while (k < obj->oidLen)
+		while (k < (OSInt)obj->oidLen)
 		{
 			if (k > 0)
 			{

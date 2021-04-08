@@ -475,7 +475,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 	NEW_CLASS(this->chkEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DownloadMonitor.DownMonCore.chkEvt"));
 	this->chkStatus = CS_IDLE;
 	NEW_CLASS(this->fileMut, Sync::Mutex());
-	NEW_CLASS(this->fileTypeMap, Data::Integer32Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
+	NEW_CLASS(this->fileTypeMap, Data::Int32Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
 	NEW_CLASS(this->fileNameMap, Data::StringUTF8Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
 
 	NEW_CLASS(this->parsers, Parser::FullParserList());

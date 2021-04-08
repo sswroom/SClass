@@ -135,7 +135,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->extMap, Data::Integer32Map<UInt8*>());
+	NEW_CLASS(this->extMap, Data::Int32Map<UInt8*>());
 
 	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::SPKFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);

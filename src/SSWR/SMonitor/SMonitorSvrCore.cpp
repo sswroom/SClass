@@ -843,7 +843,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			sb.Hex2Bytes(user->md5Pwd);
 			user->userType = r->GetInt32(3);
 			NEW_CLASS(user->mut, Sync::RWMutex());
-			NEW_CLASS(user->devMap, Data::Integer64Map<DeviceInfo*>());
+			NEW_CLASS(user->devMap, Data::Int64Map<DeviceInfo*>());
 			this->userMut->LockWrite();
 			this->userMap->Put(user->userId, user);
 			this->userNameMap->Put(user->userName, user);
@@ -1014,9 +1014,9 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			WriteInt64(dev->readings[39].status, r->GetInt64(91));
 			dev->readings[39].reading = r->GetDbl(92);
 			NEW_CLASS(dev->recToStore, Data::ArrayList<DevRecord2*>());
-			NEW_CLASS(dev->todayRecs, Data::Integer64Map<DevRecord2*>());
-			NEW_CLASS(dev->yesterdayRecs, Data::Integer64Map<DevRecord2*>());
-			NEW_CLASS(dev->imgCaches, Data::Integer32Map<IO::MemoryStream*>());
+			NEW_CLASS(dev->todayRecs, Data::Int64Map<DevRecord2*>());
+			NEW_CLASS(dev->yesterdayRecs, Data::Int64Map<DevRecord2*>());
+			NEW_CLASS(dev->imgCaches, Data::Int32Map<IO::MemoryStream*>());
 			dev->stm = 0;
 			dev->photoBuff = 0;
 			dev->photoOfst = 0;
@@ -1128,9 +1128,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 	this->initErr = false;
 
 	NEW_CLASS(this->devMut, Sync::RWMutex());
-	NEW_CLASS(this->devMap, Data::Integer64Map<DeviceInfo*>());
+	NEW_CLASS(this->devMap, Data::Int64Map<DeviceInfo*>());
 	NEW_CLASS(this->userMut, Sync::RWMutex());
-	NEW_CLASS(this->userMap, Data::Integer32Map<WebUser*>());
+	NEW_CLASS(this->userMap, Data::Int32Map<WebUser*>());
 	NEW_CLASS(this->userNameMap, Data::StringUTF8Map<WebUser*>());
 	NEW_CLASS(this->uaLog, IO::StringLogger());
 	NEW_CLASS(this->refererLog, IO::StringLogger());
@@ -1551,9 +1551,9 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 			dev->digitalNames[i] = 0;
 		}
 		NEW_CLASS(dev->recToStore, Data::ArrayList<DevRecord2*>());
-		NEW_CLASS(dev->todayRecs, Data::Integer64Map<DevRecord2*>());
-		NEW_CLASS(dev->yesterdayRecs, Data::Integer64Map<DevRecord2*>());
-		NEW_CLASS(dev->imgCaches, Data::Integer32Map<IO::MemoryStream*>());
+		NEW_CLASS(dev->todayRecs, Data::Int64Map<DevRecord2*>());
+		NEW_CLASS(dev->yesterdayRecs, Data::Int64Map<DevRecord2*>());
+		NEW_CLASS(dev->imgCaches, Data::Int32Map<IO::MemoryStream*>());
 		dev->photoBuff = 0;
 		dev->photoOfst = 0;
 		dev->photoSeq = 0;
@@ -2230,7 +2230,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 		MemCopyNO(user->md5Pwd, pwdBuff, 16);
 		user->userType = userType;
 		NEW_CLASS(user->mut, Sync::RWMutex());
-		NEW_CLASS(user->devMap, Data::Integer64Map<DeviceInfo*>());
+		NEW_CLASS(user->devMap, Data::Int64Map<DeviceInfo*>());
 
 		this->userMap->Put(user->userId, user);
 		this->userNameMap->Put(user->userName, user);

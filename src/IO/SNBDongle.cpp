@@ -416,7 +416,7 @@ IO::SNBDongle::SNBDongle(IO::Stream *stm, SNBHandler *hdlr)
 	this->dongleBaudRate = 0;
 	this->dongleId = 0;
 	NEW_CLASS(this->proto, IO::SNBProtocol(stm, OnProtocolRecv, this));
-	NEW_CLASS(this->devMap, Data::Integer64Map<DeviceInfo*>());
+	NEW_CLASS(this->devMap, Data::Int64Map<DeviceInfo*>());
 	NEW_CLASS(this->devMut, Sync::RWMutex());
 }
 

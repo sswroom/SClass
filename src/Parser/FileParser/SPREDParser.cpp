@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Text/MyString.h"
 #include "Map/GPSTrack.h"
 #include "Parser/FileParser/SPREDParser.h"
@@ -34,7 +34,7 @@ IO::ParsedObject::ParserType Parser::FileParser::SPREDParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
-	Data::Integer32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*> *devRecs = 0;
+	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*> *devRecs = 0;
 	Data::ArrayList<Map::GPSTrack::GPSRecord*> *currDev = 0;
 	Int32 currDevId = -1;
 	Int32 devId;
@@ -98,7 +98,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	{
 		return 0;
 	}
-	NEW_CLASS(devRecs, Data::Integer32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*>());
+	NEW_CLASS(devRecs, Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*>());
 	currPos += buffSize;
 	while (true)
 	{

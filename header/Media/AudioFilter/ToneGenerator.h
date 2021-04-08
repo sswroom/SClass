@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AUDIOFILTER_TONEGENERATOR
 #define _SM_MEDIA_AUDIOFILTER_TONEGENERATOR
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Media/IAudioFilter.h"
 #include "Sync/Mutex.h"
 
@@ -95,7 +95,7 @@ namespace Media
 			AudioFormat format;
 			InstrumentType instType;
 			Sync::Mutex *toneMut;
-			Data::Integer32Map<ToneStatus*> *toneMap;
+			Data::Int32Map<ToneStatus*> *toneMap;
 
 		public:
 			ToneGenerator(IAudioSource *sourceAudio);

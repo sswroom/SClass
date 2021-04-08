@@ -48,9 +48,9 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	NEW_CLASS(this->dataFiles, Data::ArrayList<DataFileInfo*>());
 	NEW_CLASS(this->categories, Data::ArrayList<Category*>());
 	NEW_CLASS(this->grpTypes, Data::ArrayList<OrganGroupType*>());
-	NEW_CLASS(this->speciesMap, Data::Integer32Map<SpeciesInfo*>());
-	NEW_CLASS(this->userFileMap, Data::Integer32Map<UserFileInfo*>());
-	NEW_CLASS(this->userMap, Data::Integer32Map<WebUserInfo*>());
+	NEW_CLASS(this->speciesMap, Data::Int32Map<SpeciesInfo*>());
+	NEW_CLASS(this->userFileMap, Data::Int32Map<UserFileInfo*>());
+	NEW_CLASS(this->userMap, Data::Int32Map<WebUserInfo*>());
 	NEW_CLASS(this->gpsStartTime, Data::DateTime());
 	NEW_CLASS(this->gpsEndTime, Data::DateTime());
 	NEW_CLASS(this->trips, Data::ArrayList<Trip*>());
@@ -499,7 +499,7 @@ SSWR::OrganMgr::SpeciesInfo *SSWR::OrganMgr::OrganEnv::GetSpeciesInfo(Int32 spec
 		sp = MemAlloc(SpeciesInfo, 1);
 		sp->id = speciesId;
 		NEW_CLASS(sp->files, Data::ArrayList<UserFileInfo*>());
-		NEW_CLASS(sp->wfileMap, Data::Integer32Map<WebFileInfo*>());
+		NEW_CLASS(sp->wfileMap, Data::Int32Map<WebFileInfo*>());
 		this->speciesMap->Put(sp->id, sp);
 	}
 	return sp;
@@ -629,8 +629,8 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	OSInt i;
 	OSInt j;
 	const UTF8Char *csptr;
-	Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
-	Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
+	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
+	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
 	Data::ArrayList<OrganGroup*> *grps;
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
@@ -692,7 +692,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	*speciesCnt = speciesParsed;
 }
 
-void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *grpTree)
+void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree)
 {
 	OrganGroup *grp;
 	Data::ArrayList<OrganGroup*> *grps;
@@ -716,7 +716,7 @@ void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Integer32Map<Data::ArrayList<
 	DEL_CLASS(grpTree);
 }
 
-void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree)
+void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree)
 {
 	OrganSpecies *sp;
 	Data::ArrayList<OrganSpecies*> *sps;
@@ -765,7 +765,7 @@ void SSWR::OrganMgr::OrganEnv::ExportEndPage(IO::Writer *writer)
 	writer->WriteLine((const UTF8Char*)"</HTML>");
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt, OSInt *phSpeciesCnt)
+void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt, OSInt *phSpeciesCnt)
 {
 	OSInt totalPhoto = 0;
 	OSInt totalSpecies = 0;

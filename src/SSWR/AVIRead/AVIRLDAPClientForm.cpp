@@ -93,8 +93,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
 		me->lvSearch->ClearItems();
 		me->cboSearchResult->ClearItems();
 		Net::LDAPClient::SearchResObject *obj;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = me->dispResults->GetCount();
 		while (i < j)
@@ -117,8 +117,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(void *use
 	me->lvSearch->ClearItems();
 	if (obj && obj->items)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		OSInt k;
 		Net::LDAPClient::SearchResItem *item;
 		Text::StringBuilderUTF8 sb;

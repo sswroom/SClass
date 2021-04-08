@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->btMgr->CreateControllers(this->btList);
 	this->btCtrl = 0;
 	NEW_CLASS(this->devMut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::Integer64Map<BTDevice*>());
+	NEW_CLASS(this->devMap, Data::Int64Map<BTDevice*>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);

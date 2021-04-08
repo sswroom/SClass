@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRARPSCANFORM
 #define _SM_SSWR_AVIREAD_AVIRARPSCANFORM
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
 #include "UI/GUIButton.h"
@@ -41,7 +41,7 @@ namespace SSWR
 
 			Data::ArrayList<AdapterInfo*> *adapters;
 			Sync::Mutex *arpMut;
-			Data::Integer32Map<IPMapInfo *> *arpMap;
+			Data::Int32Map<IPMapInfo *> *arpMap;
 			Bool arpUpdated;
 
 			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj);

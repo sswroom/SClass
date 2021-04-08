@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "DB/SQL/CreateTableCommand.h"
 #include "DB/SQL/SQLCommand.h"
+#include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 #include <stdio.h>
@@ -53,9 +55,15 @@ const UTF8Char *DB::SQL::SQLCommand::ParseNextWord(const UTF8Char *sql, Text::St
 	}
 }
 
+Bool DB::SQL::SQLCommand::IsPunctuation(const UTF8Char *s)
+{
+	return Text::CharUtil::IsPunctuation(s[0]) && s[1] == 0;
+}
+
 DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil::ServerType svrType)
 {
 	printf("Cmd: %s\r\n", sql);
+	DB::SQL::SQLCommand *cmd = 0;
 	Text::StringBuilderUTF8 sb;
 	sql = ParseNextWord(sql, &sb, svrType);
 	if (sb.EqualsICase((const UTF8Char*)"CREATE"))
@@ -63,7 +71,97 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 		sql = ParseNextWord(sql, &sb, svrType);
 		if (sb.EqualsICase((const UTF8Char*)"TABLE"))
 		{
-			//////////////////////////////////////
+			sql = ParseNextWord(sql, &sb, svrType);
+			if (sb.GetLength() == 0)
+			{
+				printf("Missing table name\r\n");
+			}
+			else if (IsPunctuation(sb.ToString()))
+			{
+				printf("Expect tableName, now is %s\r\n", sb.ToString());
+			}
+			else
+			{
+				DB::TableDef *tab;
+				NEW_CLASS(tab, DB::TableDef(sb.ToString()));
+				sql = ParseNextWord(sql, &sb, svrType);
+				if (sb.Equals((const UTF8Char*)"("))
+				{
+					DB::ColDef *col;
+					while (true)
+					{
+						sql = ParseNextWord(sql, &sb, svrType);
+						if (sb.GetLength() == 0)
+						{
+							printf("Expected column name\r\n");
+							break;
+						}
+						else if (IsPunctuation(sb.ToString()))
+						{
+							printf("Expected column name, now is %s\r\n", sb.ToString());
+							break;
+						}
+						NEW_CLASS(col, DB::ColDef(sb.ToString()));
+						sql = ParseNextWord(sql, &sb, svrType);
+						if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
+						{
+							printf("Expected column type, now is %s\r\n", sb.ToString());
+							DEL_CLASS(col);
+							break;
+						}
+						UOSInt colSize;
+						DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(svrType, sb.ToString(), &colSize);
+						if (colType == DB::DBUtil::CT_Unknown)
+						{
+							printf("Unsupported column type: %s\r\n", sb.ToString());
+							DEL_CLASS(col);
+							break;
+						}
+						col->SetColType(colType);
+						col->SetColSize(colSize);
+						sql = ParseNextWord(sql, &sb, svrType);
+						if (sb.Equals((const UTF8Char*)"primary"))
+						{
+							sql = ParseNextWord(sql, &sb, svrType);
+							if (sb.Equals((const UTF8Char*)"key"))
+							{
+								col->SetPK(true);
+								sql = ParseNextWord(sql, &sb, svrType);
+							}
+							else
+							{
+								printf("Expected 'key' after primary, now is %s\r\n", sb.ToString());
+								DEL_CLASS(col);
+								break;
+							}
+						}
+						if (sb.Equals((const UTF8Char*)"autoincrement"))
+						{
+							col->SetAutoInc(true);
+							sql = ParseNextWord(sql, &sb, svrType);
+						}
+						if (sb.Equals((const UTF8Char*)","))
+						{
+							tab->AddCol(col);
+						}
+						else if (sb.Equals((const UTF8Char*)")"))
+						{
+							tab->AddCol(col);
+							NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
+							tab = 0;
+							break;
+						}
+						else
+						{
+							printf("Unknown word found: %s\r\n", sb.ToString());
+							DEL_CLASS(col);
+							break;
+						}
+					}
+				}
+				SDEL_CLASS(tab);
+			}
+			return cmd;
 		}
 		else
 		{
@@ -74,5 +172,5 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 	{
 		printf("Unknown word: %s\r\n", sb.ToString());
 	}
-	return 0;
+	return cmd;
 }

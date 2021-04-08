@@ -717,7 +717,8 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	sb2.ClearStr();
 	sb2.Append((const UTF8Char*)"Include file ");
 	sb2.Append(headerFile);
-	sb2.Append((const UTF8Char*)" not found");
+	sb2.Append((const UTF8Char*)" not found in ");
+	sb2.Append(sourceFile);
 	this->SetErrorMsg(sb2.ToString());
 	return false;
 }

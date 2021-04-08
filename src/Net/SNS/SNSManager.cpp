@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/HTTPClient.h"
@@ -389,10 +389,10 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	OSInt i;
 	Int32 cnt;
 	Net::SNS::SNSManager::ChannelData *channel;
-	Data::Integer32Map<Int32> *cntMap;
+	Data::Int32Map<Int32> *cntMap;
 	me->threadRunning = true;
 	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(cntMap, Data::Integer32Map<Int32>());
+	NEW_CLASS(cntMap, Data::Int32Map<Int32>());
 	while (!me->threadToStop)
 	{
 		dt->SetCurrTimeUTC();

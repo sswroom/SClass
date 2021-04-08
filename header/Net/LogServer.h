@@ -1,6 +1,6 @@
 #ifndef _SM_NET_LOGSERVER
 #define _SM_NET_LOGSERVER
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"
@@ -37,7 +37,7 @@ namespace Net
 		IO::LogTool *log;
 		Bool redirLog;
 		Sync::Mutex *ipMut;
-		Data::Integer32Map<IPStatus*> *ipMap;
+		Data::Int32Map<IPStatus*> *ipMap;
 		ClientLogHandler logHdlr;
 		void *logHdlrObj;
 

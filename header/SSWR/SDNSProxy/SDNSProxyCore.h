@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SDNSPROXY_SDNSPROXYCORE
 #define _SM_SSWR_SDNSPROXY_SDNSPROXYCORE
 #include "Core/Core.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
@@ -41,7 +41,7 @@ namespace SSWR
 			Net::SocketFactory *sockf;
 
 			Sync::Mutex *cliInfoMut;
-			Data::Integer32Map<ClientInfo*> *cliInfos;
+			Data::Int32Map<ClientInfo*> *cliInfos;
 			IO::LogTool *log;
 			Net::WebServer::WebListener *listener;
 			SSWR::SDNSProxy::SDNSProxyWebHandler *hdlr;

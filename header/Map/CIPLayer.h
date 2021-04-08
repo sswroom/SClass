@@ -38,8 +38,8 @@ namespace Map
 		const UTF8Char *layerName;
 		Int64 maxId;
 
-		Data::Integer32Map<CIPFileObject*> *lastObjs;
-		Data::Integer32Map<CIPFileObject*> *currObjs;
+		Data::Int32Map<CIPFileObject*> *lastObjs;
+		Data::Int32Map<CIPFileObject*> *currObjs;
 
 		Sync::Mutex *mut;
 	public:
@@ -66,7 +66,7 @@ namespace Map
 
 	private:
 		CIPFileObject *GetFileObject(void *session, Int32 id);
-		void ReleaseFileObjs(Data::Integer32Map<CIPFileObject*> *objs);
+		void ReleaseFileObjs(Data::Int32Map<CIPFileObject*> *objs);
 
 	public:
 		virtual void *BeginGetObject();

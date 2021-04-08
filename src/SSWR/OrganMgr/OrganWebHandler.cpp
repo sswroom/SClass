@@ -3,7 +3,7 @@
 #include "Crypto/Hash/MD5.h"
 #include "Data/ArrayListICaseStrUTF8.h"
 #include "Data/ByteTool.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "DB/DBReader.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "IO/FileStream.h"
@@ -122,7 +122,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 				cate->srcDir = Text::StrCopyNew(sbuff);
 				cate->flags = r->GetInt32(4);
 				NEW_CLASS(cate->groups, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
-				NEW_CLASS(cate->groupTypes, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*>());
+				NEW_CLASS(cate->groupTypes, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*>());
 				this->cateMap->Put(cate->cateId, cate);
 				this->cateSMap->Put(cate->dirName, cate);
 			}
@@ -216,7 +216,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 
 			NEW_CLASS(sp->books, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookSpInfo*>());
 			NEW_CLASS(sp->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-			NEW_CLASS(sp->wfiles, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
+			NEW_CLASS(sp->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 			this->spMap->Put(sp->speciesId, sp);
 			this->spNameMap->Put(sp->sciName, sp);
 		}
@@ -474,7 +474,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				user->unorganSpId = 0;
 				NEW_CLASS(user->userFileIndex, Data::ArrayListInt64());
 				NEW_CLASS(user->userFileObj, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-				NEW_CLASS(user->tripCates, Data::Integer32Map<Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*>());
+				NEW_CLASS(user->tripCates, Data::Int32Map<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*>());
 				this->userMap->Put(user->id, user);
 				this->userNameMap->Put(user->userName, user);
 			}
@@ -561,7 +561,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 	{
 		Int32 cateId;
 		Int64 fromDate;
-		Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
+		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
 		SSWR::OrganMgr::OrganWebHandler::TripInfo *trip;
 		Data::DateTime dt;
 		user = 0;
@@ -580,7 +580,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				tripCate = user->tripCates->Get(cateId);
 				if (tripCate == 0)
 				{
-					NEW_CLASS(tripCate, Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>());
+					NEW_CLASS(tripCate, Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>());
 					user->tripCates->Put(cateId, tripCate);
 				}
 				trip = tripCate->Get(fromDate);
@@ -784,8 +784,8 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap->GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
-	Data::ArrayList<Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*> *tripCateList;
-	Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
+	Data::ArrayList<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*> *tripCateList;
+	Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripList;
 	SSWR::OrganMgr::OrganWebHandler::TripInfo *trip;
 	OSInt i;
@@ -1231,7 +1231,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(const UTF8Char *engName, const
 
 		NEW_CLASS(species->books, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookSpInfo*>());
 		NEW_CLASS(species->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-		NEW_CLASS(species->wfiles, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
+		NEW_CLASS(species->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 		this->spMap->Put(species->speciesId, species);
 		this->spNameMap->Put(species->sciName, species);
 
@@ -3394,7 +3394,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 							writer->Write(txt);
 							Text::XML::FreeNewText(txt);
 						}
-	/*					Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(species->cateId);
+	/*					Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(species->cateId);
 						if (tripCate)
 						{
 							OSInt ind = tripCate->GetIndex(userFile->captureTime);
@@ -5671,7 +5671,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 			}
 			/*
 			sp = this->spMap->Get(userFile->speciesId);
-			Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
+			Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
 			if (tripCate)
 			{
 				OSInt ind = tripCate->GetIndex(userFile->captureTime);
@@ -5921,7 +5921,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 				Text::XML::FreeNewText(txt);
 			}
 
-	/*		Data::Integer64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
+	/*		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
 			if (tripCate)
 			{
 				OSInt ind = tripCate->GetIndex(userFile->captureTime);
@@ -6709,7 +6709,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		Data::Integer64Map<BookInfo*> sortBookMap;
+		Data::Int64Map<BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
@@ -6851,7 +6851,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		Data::Integer64Map<BookInfo*> sortBookMap;
+		Data::Int64Map<BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		BookInfo *book;
@@ -9347,18 +9347,18 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, IO::
 	this->csconvPF = Media::PF_UNKNOWN;
 	this->eng = eng;
 
-	NEW_CLASS(this->cateMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
+	NEW_CLASS(this->cateMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
 	NEW_CLASS(this->cateSMap, Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
 	NEW_CLASS(this->dataMut, Sync::RWMutex());
-	NEW_CLASS(this->spMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
+	NEW_CLASS(this->spMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
 	NEW_CLASS(this->spNameMap, Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
-	NEW_CLASS(this->groupMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
-	NEW_CLASS(this->bookMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::BookInfo*>());
-	NEW_CLASS(this->userMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
+	NEW_CLASS(this->groupMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
+	NEW_CLASS(this->bookMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::BookInfo*>());
+	NEW_CLASS(this->userMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
 	NEW_CLASS(this->userNameMap, Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
-	NEW_CLASS(this->userFileMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-	NEW_CLASS(this->langMap, Data::Integer32Map<IO::ConfigFile*>());
-	NEW_CLASS(this->locMap, Data::Integer32Map<SSWR::OrganMgr::OrganWebHandler::LocationInfo*>());
+	NEW_CLASS(this->userFileMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
+	NEW_CLASS(this->langMap, Data::Int32Map<IO::ConfigFile*>());
+	NEW_CLASS(this->locMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::LocationInfo*>());
 	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager((const UTF8Char*)"/", OnSessionDel, this, 30000, OnSessionCheck, this));
 	NEW_CLASS(this->locale, Text::Locale());
 

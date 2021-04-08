@@ -2,7 +2,7 @@
 #define _SM_MAP_CIPLAYER2
 #include "Sync/Mutex.h"
 #include "Map/IMapDrawLayer.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 
 namespace Map
 {
@@ -39,8 +39,8 @@ namespace Map
 		const UTF8Char *layerName;
 		Int64 maxId;
 
-		Data::Integer32Map<CIPFileObject*> *lastObjs;
-		Data::Integer32Map<CIPFileObject*> *currObjs;
+		Data::Int32Map<CIPFileObject*> *lastObjs;
+		Data::Int32Map<CIPFileObject*> *currObjs;
 
 		Sync::Mutex *mut;
 	public:
@@ -66,7 +66,7 @@ namespace Map
 
 	private:
 		CIPFileObject *GetFileObject(void *session, Int32 id);
-		void ReleaseFileObjs(Data::Integer32Map<CIPFileObject*> *objs);
+		void ReleaseFileObjs(Data::Int32Map<CIPFileObject*> *objs);
 
 	public:
 		virtual void *BeginGetObject();

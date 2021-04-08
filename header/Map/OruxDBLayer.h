@@ -23,7 +23,7 @@ namespace Map
 		} LayerInfo;
 	private:
 		Parser::ParserList *parsers;
-		Data::Integer32Map<LayerInfo*> *layerMap;
+		Data::Int32Map<LayerInfo*> *layerMap;
 		Int32 currLayer;
 		Int32 tileSize;
 		DB::DBConn *db;

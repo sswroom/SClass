@@ -117,8 +117,8 @@ namespace SSWR
 			virtual void LoadGroupTypes();
 
 		private:
-			virtual Data::Integer32Map<Data::ArrayList<OrganGroup*>*> *GetGroupTree();
-			virtual Data::Integer32Map<Data::ArrayList<OrganSpecies*>*> *GetSpeciesTree();
+			virtual Data::Int32Map<Data::ArrayList<OrganGroup*>*> *GetGroupTree();
+			virtual Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *GetSpeciesTree();
 
 		public:
 			virtual void Test();

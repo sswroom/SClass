@@ -72,7 +72,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					adapter->iMAC = iMAC;
 					adapter->lastDetectTime = reqTime;
 					adapter->detectCnt = 1;
-					NEW_CLASS(adapter->targetIPMap, Data::Integer32Map<Int64>());
+					NEW_CLASS(adapter->targetIPMap, Data::Int32Map<Int64>());
 					adapter->targetIPMap->Put(ip, reqTime);
 					stat->me->adapterMap->Put(iMAC, adapter);
 				}
@@ -122,7 +122,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					adapter->iMAC = iMAC;
 					adapter->lastDetectTime = reqTime;
 					adapter->detectCnt = 1;
-					NEW_CLASS(adapter->targetIPMap, Data::Integer32Map<Int64>());
+					NEW_CLASS(adapter->targetIPMap, Data::Int32Map<Int64>());
 					adapter->targetIPMap->Put(ip, reqTime);
 					stat->me->adapterMap->Put(iMAC, adapter);
 				}
@@ -144,7 +144,7 @@ Net::IPScanDetector::IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdl
 	this->hdlr = hdlr;
 	this->userData = userData;
 	this->ctrlEvt = 0;
-	NEW_CLASS(this->adapterMap, Data::Integer64Map<Net::IPScanDetector::AdapterStatus*>());
+	NEW_CLASS(this->adapterMap, Data::Int64Map<Net::IPScanDetector::AdapterStatus*>());
 	NEW_CLASS(this->adapterMut, Sync::Mutex());
 	this->soc = this->sockf->CreateARPSocket();
 

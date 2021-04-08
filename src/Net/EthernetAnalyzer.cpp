@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "Net/DNSClient.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/MACInfo.h"
@@ -63,11 +63,11 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	this->pingv4ReqHdlr = 0;
 	this->pingv4ReqObj = 0;
 	NEW_CLASS(this->ipTranMut, Sync::Mutex());
-	NEW_CLASS(this->ipTranMap, Data::Integer64Map<IPTranStatus*>());
+	NEW_CLASS(this->ipTranMap, Data::Int64Map<IPTranStatus*>());
 	NEW_CLASS(this->macMut, Sync::Mutex());
-	NEW_CLASS(this->macMap, Data::Integer64Map<MACStatus*>());
+	NEW_CLASS(this->macMap, Data::Int64Map<MACStatus*>());
 	NEW_CLASS(this->dnsCliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->dnsCliInfos, Data::Integer32Map<DNSClientInfo*>());
+	NEW_CLASS(this->dnsCliInfos, Data::Int32Map<DNSClientInfo*>());
 	NEW_CLASS(this->dnsReqv4Mut, Sync::Mutex());
 	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsReqv6Mut, Sync::Mutex());
@@ -75,11 +75,11 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->dnsReqOthMut, Sync::Mutex());
 	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsTargetMut, Sync::Mutex());
-	NEW_CLASS(this->dnsTargetMap, Data::Integer32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
+	NEW_CLASS(this->dnsTargetMap, Data::Int32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
 	NEW_CLASS(this->ipLogMut, Sync::Mutex());
-	NEW_CLASS(this->ipLogMap, Data::Integer32Map<Net::EthernetAnalyzer::IPLogInfo*>());
+	NEW_CLASS(this->ipLogMap, Data::Int32Map<Net::EthernetAnalyzer::IPLogInfo*>());
 	NEW_CLASS(this->dhcpMut, Sync::Mutex());
-	NEW_CLASS(this->dhcpMap, Data::Integer64Map<DHCPInfo*>());
+	NEW_CLASS(this->dhcpMap, Data::Int64Map<DHCPInfo*>());
 }
 
 Net::EthernetAnalyzer::~EthernetAnalyzer()

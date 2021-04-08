@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 	this->ipListUpd = false;
 	this->msgListUpd = false;
 	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::Integer32Map<IPLog*>());
+	NEW_CLASS(this->ipMap, Data::Int32Map<IPLog*>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);

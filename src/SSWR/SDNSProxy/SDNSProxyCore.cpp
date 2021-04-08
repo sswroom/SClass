@@ -88,7 +88,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	this->currCnt = 0;
 
 	NEW_CLASS(this->cliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->cliInfos, Data::Integer32Map<ClientInfo*>());
+	NEW_CLASS(this->cliInfos, Data::Int32Map<ClientInfo*>());
 
 	NEW_CLASS(this->log, IO::LogTool());
 

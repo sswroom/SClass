@@ -112,7 +112,7 @@ IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
 	this->timeout = 200;
 	NEW_CLASS(this->cbEvt, Sync::Event(true, (const UTF8Char*)"IO.MODBUSDevice.cbEvt"));
 	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::Integer32Map<UInt8>());
+	NEW_CLASS(this->devMap, Data::Int32Map<UInt8>());
 	this->reqResult = 0;
 	this->reqSetStartAddr = 0;
 	this->reqSetCount = 0;

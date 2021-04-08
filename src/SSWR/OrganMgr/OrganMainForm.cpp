@@ -2529,7 +2529,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->groupList, Data::ArrayList<OrganGroup*>());
 	NEW_CLASS(this->imgItems, Data::ArrayList<OrganImageItem*>());
 	NEW_CLASS(this->pickObjs, Data::ArrayList<OrganGroupItem*>());
-	NEW_CLASS(this->mapImgLyrs, Data::Integer32Map<OrganSpImgLayer*>());
+	NEW_CLASS(this->mapImgLyrs, Data::Int32Map<OrganSpImgLayer*>());
 	NEW_CLASS(this->mapUFiles, Data::ArrayList<UserFileInfo*>());
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);

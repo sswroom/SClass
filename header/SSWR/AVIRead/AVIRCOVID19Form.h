@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #define _SM_SSWR_AVIREAD_AVIRCOVID19FORM
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "Data/StringUTF8Map.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -29,7 +29,7 @@ namespace SSWR
 				const UTF8Char *isoCode;
 				const UTF8Char *name;
 				Double population;
-				Data::Integer64Map<DailyRecord*> *records;
+				Data::Int64Map<DailyRecord*> *records;
 			} CountryInfo;
 		private:
 			SSWR::AVIRead::AVIRCore *core;

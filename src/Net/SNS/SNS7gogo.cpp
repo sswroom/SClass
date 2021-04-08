@@ -9,7 +9,7 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Text::EncodingFactory *e
 	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
-	NEW_CLASS(this->itemMap, Data::Integer64Map<SNSItem*>());
+	NEW_CLASS(this->itemMap, Data::Int64Map<SNSItem*>());
 
 	UTF8Char sbuff[32];
 	SNSItem *snsItem;

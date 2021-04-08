@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_SHORTESTPATHFINDER
 #define _SM_MAP_SHORTESTPATHFINDER
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "Map/IMapDrawLayer.h"
 #include "Math/Polyline.h"
 
@@ -38,7 +38,7 @@ namespace Map
 		OSInt nameCol;
 		OSInt dirCol;
 		CoordinateUnit cu;
-		Data::Integer64Map<NodeInfo*> *nodeMap;
+		Data::Int64Map<NodeInfo*> *nodeMap;
 
 		Int64 CoordToId(Double x, Double y);
 		Bool SearchShortestPath(Data::ArrayList<Double> *points, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);

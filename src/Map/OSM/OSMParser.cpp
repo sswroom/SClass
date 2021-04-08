@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"
@@ -18,7 +18,7 @@ typedef struct
 
 Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader, const UTF8Char *fileName)
 {
-	Data::Integer64Map<OSMNodeInfo*> nodeMap;
+	Data::Int64Map<OSMNodeInfo*> nodeMap;
 	OSMNodeInfo *node;
 	Data::ArrayList<Double> latList;
 	Data::ArrayList<Double> lonList;

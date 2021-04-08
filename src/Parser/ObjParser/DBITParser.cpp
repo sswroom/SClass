@@ -65,15 +65,15 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 
 	Map::GPSTrack *trk = 0;
 	Record *rec;
-	Data::Integer32Map<Record*> *gpsLogMap;
-	Data::Integer32Map<Record*> *wpMap;
+	Data::Int32Map<Record*> *gpsLogMap;
+	Data::Int32Map<Record*> *wpMap;
 	Data::ArrayList<Record*> *recList;
 	Data::DateTime *dt;
 	OSInt i;
 	OSInt j;
 	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(gpsLogMap, Data::Integer32Map<Record*>());
-	NEW_CLASS(wpMap, Data::Integer32Map<Record*>());
+	NEW_CLASS(gpsLogMap, Data::Int32Map<Record*>());
+	NEW_CLASS(wpMap, Data::Int32Map<Record*>());
 	r = db->GetTableData((const UTF8Char*)"GPSLog", 0, 0, 0);
 	if (r)
 	{

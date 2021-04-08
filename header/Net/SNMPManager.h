@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNMPMANAGER
 #define _SM_NET_SNMPMANAGER
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Net/SNMPClient.h"
 #include "SSWR/SMonitor/ISMonitorCore.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"
@@ -15,7 +15,7 @@ namespace Net
 			const UTF8Char *name;
 			OSInt index;
 			UInt8 objId[64];
-			OSInt objIdLen;
+			UOSInt objIdLen;
 			Double mulVal;
 			Int32 invVal;
 			SSWR::SMonitor::SAnalogSensor::ReadingType readingType;
@@ -28,7 +28,7 @@ namespace Net
 			Net::SocketUtil::AddressInfo addr;
 			const UTF8Char *community;
 			UInt8 objId[64];
-			OSInt objIdLen;
+			UOSInt objIdLen;
 			const UTF8Char *descr;
 			const UTF8Char *contact;
 			const UTF8Char *name;
@@ -44,7 +44,7 @@ namespace Net
 		Net::SNMPClient *cli;
 		Sync::Mutex *agentMut;
 		Data::ArrayList<AgentInfo *> *agentList;
-		Data::Integer32Map<AgentInfo*> *ipv4Agents;
+		Data::Int32Map<AgentInfo*> *ipv4Agents;
 
 		static void FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
 	public:

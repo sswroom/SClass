@@ -1,8 +1,8 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANWEBHANDLER
 #define _SM_SSWR_ORGANMGR_ORGANWEBHANDLER
 #include "Data/ArrayListDbl.h"
-#include "Data/Integer32Map.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int32Map.h"
+#include "Data/Int64Map.h"
 #include "Data/RandomOS.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
@@ -131,7 +131,7 @@ namespace SSWR
 				Int32 userType;
 				Data::ArrayListInt64 *userFileIndex;
 				Data::ArrayList<UserFileInfo*> *userFileObj;
-				Data::Integer32Map<Data::Integer64Map<TripInfo*>*> *tripCates;
+				Data::Int32Map<Data::Int64Map<TripInfo*>*> *tripCates;
 				Int32 unorganSpId;
 			} WebUserInfo;
 
@@ -153,7 +153,7 @@ namespace SSWR
 
 				Data::ArrayList<BookSpInfo*> *books;
 				Data::ArrayList<UserFileInfo*> *files;
-				Data::Integer32Map<WebFileInfo*> *wfiles;
+				Data::Int32Map<WebFileInfo*> *wfiles;
 			} SpeciesInfo;
 
 			struct GroupInfo
@@ -192,7 +192,7 @@ namespace SSWR
 				const UTF8Char *dirName;
 				const UTF8Char *srcDir;
 				Int32 flags;
-				Data::Integer32Map<GroupTypeInfo *> *groupTypes;
+				Data::Int32Map<GroupTypeInfo *> *groupTypes;
 				Data::ArrayList<GroupInfo*> *groups;
 			} CategoryInfo;
 
@@ -234,18 +234,18 @@ namespace SSWR
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
 			Data::StringUTF8Map<CategoryInfo*> *cateSMap;
-			Data::Integer32Map<CategoryInfo*> *cateMap;
+			Data::Int32Map<CategoryInfo*> *cateMap;
 
 			Sync::RWMutex *dataMut;
-			Data::Integer32Map<SpeciesInfo*> *spMap;
+			Data::Int32Map<SpeciesInfo*> *spMap;
 			Data::StringUTF8Map<SpeciesInfo*> *spNameMap;
-			Data::Integer32Map<GroupInfo*> *groupMap;
-			Data::Integer32Map<BookInfo*> *bookMap;
-			Data::Integer32Map<WebUserInfo*> *userMap;
+			Data::Int32Map<GroupInfo*> *groupMap;
+			Data::Int32Map<BookInfo*> *bookMap;
+			Data::Int32Map<WebUserInfo*> *userMap;
 			Data::StringUTF8Map<WebUserInfo*> *userNameMap;
-			Data::Integer32Map<UserFileInfo*> *userFileMap;
-			Data::Integer32Map<IO::ConfigFile*> *langMap;
-			Data::Integer32Map<LocationInfo*> *locMap;
+			Data::Int32Map<UserFileInfo*> *userFileMap;
+			Data::Int32Map<IO::ConfigFile*> *langMap;
+			Data::Int32Map<LocationInfo*> *locMap;
 			Text::Locale *locale;
 
 			void LoadLangs();

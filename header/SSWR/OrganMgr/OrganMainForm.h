@@ -151,7 +151,7 @@ namespace SSWR
 			Map::TileMapLayer *mapTileLyr;
 			Map::TileMap *mapTile;
 			Bool mapUpdated;
-			Data::Integer32Map<OrganSpImgLayer*> *mapImgLyrs;
+			Data::Int32Map<OrganSpImgLayer*> *mapImgLyrs;
 			OSInt imgFontStyle;
 
 			const UTF8Char *initSelObj;

@@ -364,7 +364,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	NEW_CLASS(this->resultMut, Sync::Mutex());
-	NEW_CLASS(this->results, Data::Integer32Map<ScanResult*>());
+	NEW_CLASS(this->results, Data::Int32Map<ScanResult*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));

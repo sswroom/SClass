@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCSERVER
 #define _SM_SSWR_DATASYNC_SYNCSERVER
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/IProtocolHandler.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
@@ -34,7 +34,7 @@ namespace SSWR
 			void *dataObj;
 
 			Sync::RWMutex *svrMut;
-			Data::Integer32Map<ServerInfo*> *svrMap;
+			Data::Int32Map<ServerInfo*> *svrMap;
 
 			Data::ArrayList<SyncClient*> *syncCliList;
 

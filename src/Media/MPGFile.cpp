@@ -429,7 +429,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 	this->playToStop = false;
 	this->startTime = 0;
 	this->vstm = 0;
-	NEW_CLASS(this->dataStms, Data::Integer32Map<Media::IMediaStream*>());
+	NEW_CLASS(this->dataStms, Data::Int32Map<Media::IMediaStream*>());
 	NEW_CLASS(this->audStms, Data::ArrayList<Media::IAudioSource*>());
 
 	if (stmData->GetRealData(0, 128, this->readBuff) != 128)

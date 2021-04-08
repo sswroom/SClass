@@ -40,7 +40,7 @@ namespace SSWR
 			Bool ipListUpd;
 			Bool msgListUpd;
 			Sync::Mutex *ipMut;
-			Data::Integer32Map<IPLog*> *ipMap;
+			Data::Int32Map<IPLog*> *ipMap;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

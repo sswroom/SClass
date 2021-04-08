@@ -54,7 +54,7 @@ void Media::DDrawManager::ReleaseAll()
 
 Media::DDrawManager::DDrawManager()
 {
-	NEW_CLASS(this->monMap, Data::Integer64Map<void*>());
+	NEW_CLASS(this->monMap, Data::Int64Map<void*>());
 	this->defDD = 0;
 	this->RecheckMonitor();
 }

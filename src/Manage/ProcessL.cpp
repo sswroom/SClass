@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Manage/Process.h"
@@ -379,7 +379,7 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 		UTF8Char *sarr2[2];
 		IO::FileStream *fs;
 		Text::UTF8Reader *reader;
-		Data::Integer32Map<ModuleInfoData*> dataMap;
+		Data::Int32Map<ModuleInfoData*> dataMap;
 		Data::ArrayList<ModuleInfoData*> *dataList;
 		ModuleInfoData *data;
 		Manage::ModuleInfo *mod;

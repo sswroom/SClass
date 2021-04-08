@@ -10,14 +10,12 @@ namespace DB
 		class CreateTableCommand : public SQLCommand
 		{
 		private:
-			const UTF8Char *tableName;
 			DB::TableDef *tableDef;
 		public:
-			CreateTableCommand(const UTF8Char *tableName, DB::TableDef *tableDef, Bool toRelease);
+			CreateTableCommand(DB::TableDef *tableDef, Bool toRelease);
 			virtual ~CreateTableCommand();
 
 			virtual CommandType GetCommandType();
-			const UTF8Char *GetTableName();
 			TableDef *GetTableDef();
 		};
 	}

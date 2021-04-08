@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBMS
 #define _SM_DB_DBMS
 #include "Crypto/Hash/SHA1.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBReader.h"
 #include "IO/LogTool.h"
@@ -106,7 +106,7 @@ namespace DB
 		Crypto::Hash::SHA1 *loginSHA1;
 		Data::StringUTF8Map<LoginInfo*> *loginMap;
 		Sync::Mutex *sessMut;
-		Data::Integer32Map<SessionInfo*> *sessMap;
+		Data::Int32Map<SessionInfo*> *sessMap;
 
 		static const UTF8Char *SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql);
 		static Bool StrLike(const UTF8Char *val, const UTF8Char *likeStr);

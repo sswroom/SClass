@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SMONITOR_ISMONITORCORE
 #define _SM_SSWR_SMONITOR_ISMONITORCORE
 #include "Data/ArrayList.h"
-#include "Data/Integer64Map.h"
+#include "Data/Int64Map.h"
 #include "IO/MemoryStream.h"
 #include "Media/DrawEngine.h"
 #include "Sync/RWMutex.h"
@@ -82,9 +82,9 @@ namespace SSWR
 				const UTF8Char *digitalNames[SMONITORCORE_DIGITALCNT];
 
 				Data::ArrayList<DevRecord2*> *recToStore;
-				Data::Integer64Map<DevRecord2*> *todayRecs;
-				Data::Integer64Map<DevRecord2*> *yesterdayRecs;
-				Data::Integer32Map<IO::MemoryStream*> *imgCaches;
+				Data::Int64Map<DevRecord2*> *todayRecs;
+				Data::Int64Map<DevRecord2*> *yesterdayRecs;
+				Data::Int32Map<IO::MemoryStream*> *imgCaches;
 				Bool valUpdated;
 			} DeviceInfo;
 
@@ -95,7 +95,7 @@ namespace SSWR
 				Sync::RWMutex *mut;
 				const UTF8Char *userName;
 				UInt8 md5Pwd[16];
-				Data::Integer64Map<DeviceInfo*> *devMap;
+				Data::Int64Map<DeviceInfo*> *devMap;
 			} WebUser;
 
 		public:

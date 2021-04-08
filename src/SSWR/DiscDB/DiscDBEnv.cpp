@@ -167,7 +167,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	NEW_CLASS(this->dvdTypeMap, Data::StringUTF8Map<DVDTypeInfo*>());
 	NEW_CLASS(this->cateMap, Data::StringUTF8Map<CategoryInfo*>());
 	NEW_CLASS(this->discTypeMap, Data::StringUTF8Map<DiscTypeInfo*>());
-	NEW_CLASS(this->dvdVideoMap, Data::Integer32Map<DVDVideoInfo*>());
+	NEW_CLASS(this->dvdVideoMap, Data::Int32Map<DVDVideoInfo*>());
 
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)

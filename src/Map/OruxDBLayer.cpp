@@ -16,7 +16,7 @@
 Map::OruxDBLayer::OruxDBLayer(const UTF8Char *sourceName, const UTF8Char *layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
-	NEW_CLASS(this->layerMap, Data::Integer32Map<Map::OruxDBLayer::LayerInfo*>());
+	NEW_CLASS(this->layerMap, Data::Int32Map<Map::OruxDBLayer::LayerInfo*>());
 	this->currLayer = -1;
 	this->tileSize = 1;
 	UTF8Char sbuff[512];

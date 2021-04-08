@@ -81,7 +81,7 @@ Net::SyslogServer::SyslogServer(Net::SocketFactory *sockf, UInt16 port, const UT
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
 	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::Integer32Map<Net::SyslogServer::IPStatus*>());
+	NEW_CLASS(this->ipMap, Data::Int32Map<Net::SyslogServer::IPStatus*>());
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, port, 0, OnUDPPacket, this, log, (const UTF8Char*)"UDP: ", 2, false));
 }
 

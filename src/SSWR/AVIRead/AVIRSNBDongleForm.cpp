@@ -534,8 +534,8 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->stm = stm;
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->devMut, Sync::RWMutex());
-	NEW_CLASS(this->devMap, Data::Integer64Map<DeviceInfo*>());
-	NEW_CLASS(this->devHandlerMap, Data::Integer64Map<Int32>());
+	NEW_CLASS(this->devMap, Data::Int64Map<DeviceInfo*>());
+	NEW_CLASS(this->devHandlerMap, Data::Int64Map<Int32>());
 	this->devChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->dongleUpdated = false;

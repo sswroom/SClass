@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->listener = 0;
 	this->webHdlr = 0;
 	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::Integer32Map<IPInfo*>());
+	NEW_CLASS(this->ipMap, Data::Int32Map<IPInfo*>());
 	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
 	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ICMP, (const UTF8Char*)"PingMonitor"));
 	this->ipListUpdated = false;

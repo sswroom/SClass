@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AUDIOFILTER_SOUNDGENERATOR
 #define _SM_MEDIA_AUDIOFILTER_SOUNDGENERATOR
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Media/IAudioFilter.h"
 #include "Media/AudioFilter/SoundGen/ISoundGen.h"
 
@@ -12,7 +12,7 @@ namespace Media
 		{
 		protected:
 			AudioFormat format;
-			Data::Integer32Map<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenMap;
+			Data::Int32Map<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenMap;
 	
 		public:
 			SoundGenerator(IAudioSource *sourceAudio);

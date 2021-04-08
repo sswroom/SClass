@@ -19,7 +19,7 @@ Net::ASN1PDUBuilder::~ASN1PDUBuilder()
 	MemFree(this->buff);
 }
 
-void Net::ASN1PDUBuilder::AllocateSize(OSInt size)
+void Net::ASN1PDUBuilder::AllocateSize(UOSInt size)
 {
 	if (this->currOffset + size > this->buffSize)
 	{
@@ -47,8 +47,8 @@ void Net::ASN1PDUBuilder::SequenceEnd()
 {
 	if (this->currLev > 0)
 	{
-		OSInt seqOffset;
-		OSInt seqLen;
+		UOSInt seqOffset;
+		UOSInt seqLen;
 		this->currLev--;
 		seqOffset = this->seqOffset[this->currLev];
 		seqLen = this->currOffset - seqOffset;
@@ -99,7 +99,7 @@ void Net::ASN1PDUBuilder::AppendInt32(Int32 v)
 		this->AllocateSize(3);
 		this->buff[this->currOffset] = 2;
 		this->buff[this->currOffset + 1] = 1;
-		this->buff[this->currOffset + 2] = (Int8)v;
+		this->buff[this->currOffset + 2] = (UInt8)(Int8)v;
 		this->currOffset += 3;
 	}
 	else if (v < 32768 && v >= -32768)
@@ -159,7 +159,7 @@ void Net::ASN1PDUBuilder::AppendUInt32(UInt32 v)
 		this->AllocateSize(6);
 		this->buff[this->currOffset] = 2;
 		this->buff[this->currOffset + 1] = 4;
-		WriteMInt32(&this->buff[this->currOffset + 2], v);
+		WriteMUInt32(&this->buff[this->currOffset + 2], v);
 		this->currOffset += 6;
 	}
 }
@@ -174,7 +174,7 @@ void Net::ASN1PDUBuilder::AppendString(const UTF8Char *s)
 		this->currOffset += 2;
 		return;
 	}
-	OSInt len = Text::StrCharCnt(s);
+	UOSInt len = Text::StrCharCnt(s);
 	if (len < 128)
 	{
 		this->AllocateSize(len + 2);
@@ -220,7 +220,7 @@ void Net::ASN1PDUBuilder::AppendNull()
 	this->currOffset += 2;
 }
 
-void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, OSInt len)
+void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, UOSInt len)
 {
 	this->AllocateSize(len + 2);
 	this->buff[this->currOffset] = 6;
@@ -260,7 +260,7 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 		this->AllocateSize(6);
 		this->buff[this->currOffset] = 10;
 		this->buff[this->currOffset + 1] = 4;
-		WriteMInt32(&this->buff[this->currOffset + 2], v);
+		WriteMUInt32(&this->buff[this->currOffset + 2], v);
 		this->currOffset += 6;
 	}
 }
@@ -312,7 +312,7 @@ void Net::ASN1PDUBuilder::AppendBuff(UInt8 type, const UInt8 *buff, UOSInt buffS
 
 }
 
-const UInt8 *Net::ASN1PDUBuilder::GetBuff(OSInt *buffSize)
+const UInt8 *Net::ASN1PDUBuilder::GetBuff(UOSInt *buffSize)
 {
 	*buffSize = this->currOffset;
 	return this->buff;

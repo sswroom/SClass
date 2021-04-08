@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Integer32Map.h"
+#include "Data/Int32Map.h"
 #include "Math/Math.h"
 #include "Media/AudioFrameSource.h"
 #include "Media/AACFrameSource.h"
@@ -1341,7 +1341,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			Int64 currChOfst;
 			Int32 currSampleSize;
 
-			Data::Integer32Map<Int32> keyMap;
+			Data::Int32Map<Int32> keyMap;
 			keyMap.Put(0, 1);
 
 			Media::FileVideoSource *fsrc;

@@ -176,7 +176,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrToInt32(row[colIndex]);
@@ -186,7 +186,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrToInt64(row[colIndex]);
@@ -196,7 +196,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrUTF8_WChar(buff, row[colIndex], -1, 0);
@@ -206,7 +206,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return false;
 			sb->Append(row[colIndex]);
@@ -217,7 +217,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrCopyNew(row[colIndex]);
@@ -227,7 +227,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrConcatS(buff, row[colIndex], buffSize);
@@ -237,7 +237,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return DET_ERROR;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0)
 				return DET_ERROR;
 			if (row[colIndex] == 0)
@@ -252,7 +252,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrToDouble(row[colIndex]);
@@ -262,7 +262,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return false;
 			return Text::StrToInt32(row[colIndex]) != 0;
@@ -272,7 +272,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return Text::StrCharCnt(row[colIndex]);
@@ -282,7 +282,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			UOSInt cnt = Text::StrCharCnt(row[colIndex]);
@@ -299,7 +299,7 @@ namespace DB
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return true;
-			const UTF8Char **row = this->rows->GetItem(this->rowIndex);
+			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return true;
 			return false;
@@ -392,13 +392,13 @@ const UTF8Char *DB::DBMS::SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql)
 				if (sptr[0] == '+' || sptr[0] == '-' || sptr[0] == '*' || sptr[0] == '/')
 				{
 					sptr++;
-					nameBuff = Text::StrConcatC(nameBuff, sql, sptr - sql);
+					nameBuff = Text::StrConcatC(nameBuff, sql, (UOSInt)(sptr - sql));
 					sql = sptr;
 
 					while (Text::CharUtil::PtrIsWS(&sptr));
 					if (sptr > sql)
 					{
-						nameBuff = Text::StrConcatC(nameBuff, sql, sptr - sql);
+						nameBuff = Text::StrConcatC(nameBuff, sql, (UOSInt)(sptr - sql));
 						sql = sptr;
 					}
 					return SQLParseName(nameBuff, sql);
@@ -609,7 +609,7 @@ const UTF8Char *DB::DBMS::SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql)
 					if (sql == 0)
 						return 0;
 					while (Text::CharUtil::PtrIsWS(&sql));
-					MemCopyNO(nameBuff, sptr, sql - sptr);
+					MemCopyNO(nameBuff, sptr, (UOSInt)(sql - sptr));
 					nameBuff += sql - sptr;
 					if (sql[0] == ')')
 					{
@@ -625,7 +625,7 @@ const UTF8Char *DB::DBMS::SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql)
 						while (Text::CharUtil::PtrIsWS(&sql));
 						if (sptr != sql)
 						{
-							MemCopyNO(nameBuff, sptr, sql - sptr);
+							MemCopyNO(nameBuff, sptr, (UOSInt)(sql - sptr));
 							nameBuff += sql - sptr;
 						}
 					}
@@ -769,7 +769,7 @@ const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF *sb, DB::DBMS::Sessio
 	}
 	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"max_allowed_packet"))
 	{
-		sb->AppendI32(sess->params.clientMaxPacketSize);
+		sb->AppendU32(sess->params.clientMaxPacketSize);
 		return varName + 18;
 	}
 	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"sql_mode"))
@@ -1047,7 +1047,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		SQLMODE sqlMode = (SQLMODE)0;
 		Text::StringBuilderUTF8 sb;
 		UTF8Char *sarr[2];
-		OSInt i;
+		UOSInt i;
 		sb.Append(val);
 		sarr[1] = sb.ToString();
 		i = 2;
@@ -1146,7 +1146,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 const UTF8Char *DB::DBMS::UserVarGet(Text::StringBuilderUTF *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
 {
 	const UTF8Char *val = sess->userVars->Get(varName);
-	OSInt i = Text::StrCharCnt(varName);
+	UOSInt i = Text::StrCharCnt(varName);
 	if (val)
 	{
 		sb->Append(val);
@@ -1741,7 +1741,7 @@ DB::DBMS::DBMS(const UTF8Char *versionStr, IO::LogTool *log)
 	NEW_CLASS(this->loginSHA1, Crypto::Hash::SHA1());
 	NEW_CLASS(this->loginMut, Sync::Mutex());
 	NEW_CLASS(this->sessMut, Sync::Mutex());
-	NEW_CLASS(this->sessMap, Data::Integer32Map<DB::DBMS::SessionInfo*>());
+	NEW_CLASS(this->sessMap, Data::Int32Map<DB::DBMS::SessionInfo*>());
 	this->versionStr = Text::StrCopyNew(versionStr);
 	this->log = log;
 }
@@ -1752,8 +1752,8 @@ DB::DBMS::~DBMS()
 	Data::ArrayList<DB::DBMS::LoginInfo*> *loginList = this->loginMap->GetValues();
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
-	OSInt i = loginList->GetCount();
-	OSInt j;
+	UOSInt i = loginList->GetCount();
+	UOSInt j;
 	while (i-- > 0)
 	{
 		login = loginList->GetItem(i);
@@ -1852,7 +1852,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
 	UInt8 hashBuff[20];
-	OSInt j;
+	UOSInt j;
 	Int32 userId = 0;
 	#if defined(VERBOSE)
 	printf("mysql_native_password auth\r\n");
@@ -1861,7 +1861,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 	login = this->loginMap->Get(userName);
 	if (login)
 	{
-		OSInt i = login->userList->GetCount();
+		UOSInt i = login->userList->GetCount();
 		while (i-- > 0)
 		{
 			user = login->userList->GetItem(i);
@@ -1940,8 +1940,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 	const UTF8Char *sptr1;
 	const UTF8Char *sptr2;
 	const UTF8Char *sptr3;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char nameBuff[128];
 	UTF8Char nameBuff2[128];
 	DB::DBMS::SessionInfo *sess;
@@ -3024,7 +3024,7 @@ void DB::DBMS::SessEnd(Int32 sessId)
 void DB::DBMS::SessDelete(DB::DBMS::SessionInfo *sess)
 {
 	Data::ArrayList<const UTF8Char*> *varList = sess->userVars->GetValues();
-	OSInt i = varList->GetCount();
+	UOSInt i = varList->GetCount();
 	const UTF8Char *var;
 	while (i-- > 0)
 	{

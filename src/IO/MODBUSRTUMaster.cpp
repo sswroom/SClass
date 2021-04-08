@@ -157,7 +157,7 @@ IO::MODBUSRTUMaster::MODBUSRTUMaster(IO::Stream *stm)
 	this->threadToStop = false;
 	NEW_CLASS(this->crc, Crypto::Hash::CRC16R(Crypto::Hash::CRC16::GetPolynomialANSI()));
 	NEW_CLASS(this->crcMut, Sync::Mutex());
-	NEW_CLASS(this->cbMap, Data::Integer32Map<AddrResultCb*>());
+	NEW_CLASS(this->cbMap, Data::Int32Map<AddrResultCb*>());
 	NEW_CLASS(this->clk, Manage::HiResClock());
 	NEW_CLASS(this->stmMut, Sync::Mutex());
 	if (this->stm)

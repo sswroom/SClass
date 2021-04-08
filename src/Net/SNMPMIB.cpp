@@ -8,9 +8,9 @@
 #include "Text/UTF8Reader.h"
 #define DEBUGOBJ "gdStatusBytes"
 
-OSInt Net::SNMPMIB::CalcLineSpace(const UTF8Char *txt)
+UOSInt Net::SNMPMIB::CalcLineSpace(const UTF8Char *txt)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UTF8Char c;
 	while ((c = *txt++))
 	{
@@ -40,11 +40,11 @@ void Net::SNMPMIB::ModuleAppendOID(Net::SNMPMIB::ModuleInfo *module, ObjectInfo 
 	if (obj->oidLen <= 0)
 		return;
 	i = 0;
-	j = module->oidList->GetCount() - 1;
+	j = (OSInt)module->oidList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		obj2 = module->oidList->GetItem(k);
+		obj2 = module->oidList->GetItem((UOSInt)k);
 		l = Net::SNMPUtil::OIDCompare(obj2->oid, obj2->oidLen, obj->oid, obj->oidLen);
 		if (l > 0)
 		{
@@ -59,7 +59,7 @@ void Net::SNMPMIB::ModuleAppendOID(Net::SNMPMIB::ModuleInfo *module, ObjectInfo 
 			return;
 		}
 	}
-	module->oidList->Insert(i, obj);
+	module->oidList->Insert((UOSInt)i, obj);
 }
 
 Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage)
@@ -67,9 +67,9 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	const UTF8Char *oriS = s;
 	UTF8Char c;
 	const UTF8Char *oidName;
-	OSInt oidNameLen;
+	UOSInt oidNameLen;
 	const UTF8Char *oidNextLev;
-	OSInt oidNextLen;
+	UOSInt oidNextLen;
 	Bool isFirst = false;
 	Text::StringBuilderUTF8 sb;
 	while (true)
@@ -116,7 +116,7 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		c = *s++;
 		if (c == ' ')
 		{
-			oidNameLen = s - oidName - 1;
+			oidNameLen = (UOSInt)(s - oidName - 1);
 			break;
 		}
 		else if (c == '}' || c == 0)
@@ -168,7 +168,7 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		}
 		else
 		{
-			obj2 = module->objValues->GetItem(i);
+			obj2 = module->objValues->GetItem((UOSInt)i);
 		}
 		if (obj2->oidLen == 0)
 		{
@@ -232,7 +232,7 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			c = *s++;
 			if (c == ' ' || c == '}')
 			{
-				oidNextLen = s - oidNextLev - 1;
+				oidNextLen = (UOSInt)(s - oidNextLev - 1);
 				if (c == '}')
 				{
 					s--;
@@ -251,7 +251,7 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		if (i >= 0 && j > i)
 		{
 			sb.SetSubstr(i + 1);
-			sb.TrimToLength(j - i - 1);
+			sb.TrimToLength((UOSInt)(j - i - 1));
 			if (!sb.ToUInt32(&v))
 			{
 				errMessage->Append((const UTF8Char*)"OID Format error: \"");
@@ -275,7 +275,7 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		{
 			if (isFirst)
 			{
-				obj->oid[0] += (UInt8)v;
+				obj->oid[0] = (UInt8)(obj->oid[0] + v);
 				isFirst = false;
 			}
 			else
@@ -336,7 +336,7 @@ Bool Net::SNMPMIB::ParseObjectBegin(Text::UTF8Reader *reader, ObjectInfo *obj, T
 		i = sb.IndexOf((const UTF8Char*)"--");
 		if (i >= 0)
 		{
-			sb.RemoveChars(sb.GetLength() - i);
+			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
 		sb.TrimRight();
 		if (sb.GetLength() > 0)
@@ -359,12 +359,12 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
 	OSInt j;
-	OSInt lineSpace;
+	UOSInt lineSpace;
 	ObjectInfo *obj;
 	ObjectInfo *currObj = 0;
 	Text::StringBuilderUTF8 sbObjValName;
 	Text::StringBuilderUTF8 sbObjValCont;
-	OSInt objLineSpace = 0;
+	UOSInt objLineSpace = 0;
 	Bool objIsEqual = false;
 	Bool objIsBrk = false;
 	Bool succ;
@@ -382,7 +382,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 		i = sb.IndexOf((const UTF8Char*)"--");
 		if (i >= 0)
 		{
-			sb.RemoveChars(sb.GetLength() - i);
+			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
 		sb.TrimRight();
 		if (currObj && currObj->objectName && Text::StrEquals(currObj->objectName, (const UTF8Char*)"PSSEQStringEntry"))
@@ -405,11 +405,11 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 			{
 				Data::ArrayList<ObjectInfo*> *objList = module->objValues;
 				ObjectInfo *obj;
-				i = 0;
-				j = objList->GetCount();
-				while (i < j)
+				UOSInt ui = 0;
+				UOSInt uj = objList->GetCount();
+				while (ui < uj)
 				{
-					obj = objList->GetItem(i);
+					obj = objList->GetItem(ui);
 					if (obj->typeName && obj->typeVal && obj->oidLen == 0 && !Text::StrEquals(obj->typeName, (const UTF8Char*)"TRAP-TYPE") && !Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value"))
 					{
 						succ = this->ParseObjectOID(module, obj, obj->typeVal, errMessage);
@@ -425,7 +425,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						ModuleAppendOID(module, obj);
 						ModuleAppendOID(&this->globalModule, obj);
 					}
-					i++;
+					ui++;
 				}
 				return true;
 			}
@@ -493,8 +493,8 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 								UTF8Char *typeVal = (UTF8Char*)currObj->typeVal;
 								if (typeVal)
 								{
-									OSInt strLen = Text::StrCharCnt(typeVal);
-									OSInt wsCnt = 0;
+									UOSInt strLen = Text::StrCharCnt(typeVal);
+									UOSInt wsCnt = 0;
 									while (strLen-- > 0)
 									{
 										if (typeVal[strLen] == '\r' || typeVal[strLen] == '\n' || typeVal[strLen] == '\t' || typeVal[strLen] == ' ')
@@ -657,7 +657,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							}
 							else
 							{
-								sbObjValName.AppendC(sb.ToString(), i);
+								sbObjValName.AppendC(sb.ToString(), (UOSInt)i);
 								sbObjValCont.Append(sb.ToString() + i + 1);
 								sbObjValCont.Trim();
 							}
@@ -702,7 +702,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 					Net::SNMPMIB::ObjectInfo *impObj;
 					Net::SNMPMIB::ObjectInfo *impObj2;
 					UTF8Char *impSarr[2];
-					OSInt impCnt;
+					UOSInt impCnt;
 					OSInt impInd;
 					sb.SetSubstr(7);
 					sb.Trim();
@@ -717,7 +717,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						i = sb.IndexOf((const UTF8Char*)"FROM ");
 						if (i >= 0)
 						{
-							impObjNames.AppendC(sb.ToString(), i);
+							impObjNames.AppendC(sb.ToString(), (UOSInt)i);
 							impObjNames.TrimRight();
 							if ((impModule = this->moduleMap->Get(sb.ToString() + i + 5)) != 0)
 							{
@@ -751,7 +751,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 								impInd = impModule->objKeys->SortedIndexOf(impSarr[0]);
 								if (impInd >= 0)
 								{
-									impObj = impModule->objValues->GetItem(impInd);
+									impObj = impModule->objValues->GetItem((UOSInt)impInd);
 									impObj2 = MemAlloc(ObjectInfo, 1);
 									impObj2->objectName = Text::StrCopyNew(impSarr[0]);
 									if (impObj->typeName)
@@ -770,17 +770,17 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 									}
 									NEW_CLASS(impObj2->valName, Data::ArrayList<const UTF8Char*>());
 									NEW_CLASS(impObj2->valCont, Data::ArrayList<const UTF8Char*>());
-									j = impObj->valName->GetCount();
-									impInd = 0;
-									while (impInd < j)
+									UOSInt ui = 0;
+									UOSInt uj = impObj->valName->GetCount();
+									while (ui < uj)
 									{
-										impObj2->valName->Add(Text::StrCopyNew(impObj->valName->GetItem(impInd)));
-										impObj2->valCont->Add(Text::StrCopyNew(impObj->valCont->GetItem(impInd)));
-										impInd++;
+										impObj2->valName->Add(Text::StrCopyNew(impObj->valName->GetItem(ui)));
+										impObj2->valCont->Add(Text::StrCopyNew(impObj->valCont->GetItem(ui)));
+										ui++;
 									}
 									
-									impInd = module->objKeys->SortedInsert(impObj2->objectName);
-									module->objValues->Insert(impInd, impObj2);
+									ui = module->objKeys->SortedInsert(impObj2->objectName);
+									module->objValues->Insert(ui, impObj2);
 								}
 								else
 								{
@@ -816,7 +816,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						i = sb.IndexOf((const UTF8Char*)"--");
 						if (i >= 0)
 						{
-							sb.RemoveChars(sb.GetLength() - i);
+							sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 						}
 						sb.Trim();
 					}
@@ -840,7 +840,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						i = sb.IndexOf((const UTF8Char*)"--");
 						if (i >= 0)
 						{
-							sb.RemoveChars(sb.GetLength() - i);
+							sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 						}
 						sb.Trim();
 					}
@@ -882,7 +882,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						}
 						else
 						{
-							i = sb.GetLength();
+							i = (OSInt)sb.GetLength();
 							if (!reader->ReadLine(&sb, 512))
 							{
 								errMessage->Append((const UTF8Char*)"Unknown format: ");
@@ -892,7 +892,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							j = sb.IndexOf((const UTF8Char*)"--");
 							if (j >= 0)
 							{
-								sb.TrimToLength(j);
+								sb.TrimToLength((UOSInt)j);
 							}
 							sb.TrimRight();
 							if (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
@@ -926,14 +926,14 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							k = l;
 						}
 						obj = MemAlloc(ObjectInfo, 1);
-						obj->objectName = Text::StrCopyNewC(sb.ToString(), k);
+						obj->objectName = Text::StrCopyNewC(sb.ToString(), (UOSInt)k);
 						if (j > k)
 						{
 							while (sb.ToString()[k] == ' ' || sb.ToString()[k] == '\t')
 							{
 								k++;
 							}
-							obj->typeName = Text::StrCopyNewC(sb.ToString() + k, j - k);
+							obj->typeName = Text::StrCopyNewC(sb.ToString() + k, (UOSInt)(j - k));
 						}
 						else
 						{
@@ -943,10 +943,10 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						obj->oidLen = 0;
 						NEW_CLASS(obj->valName, Data::ArrayList<const UTF8Char*>());
 						NEW_CLASS(obj->valCont, Data::ArrayList<const UTF8Char*>());
-						k = module->objKeys->SortedInsert(obj->objectName);
-						module->objValues->Insert(k, obj);
-						k = this->globalModule.objKeys->SortedInsert(obj->objectName);
-						this->globalModule.objValues->Insert(k, obj);
+						UOSInt ui = module->objKeys->SortedInsert(obj->objectName);
+						module->objValues->Insert(ui, obj);
+						ui = this->globalModule.objKeys->SortedInsert(obj->objectName);
+						this->globalModule.objValues->Insert(ui, obj);
 						if (Text::StrEquals(obj->objectName, (const UTF8Char*)DEBUGOBJ))
 						{
 							currObj = 0;
@@ -999,7 +999,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						}
 						if (i < 0)
 						{
-							i = sb.GetLength();
+							i = (OSInt)sb.GetLength();
 							if (!reader->ReadLine(&sb, 512))
 							{
 								errMessage->Append((const UTF8Char*)"Unknown format: ");
@@ -1009,7 +1009,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							j = sb.IndexOf((const UTF8Char*)"--");
 							if (j >= 0)
 							{
-								sb.TrimToLength(j);
+								sb.TrimToLength((UOSInt)j);
 							}
 							sb.TrimRight();
 							if (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
@@ -1024,7 +1024,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						}
 
 						obj = MemAlloc(ObjectInfo, 1);
-						obj->objectName = Text::StrCopyNewC(sb.ToString(), i);
+						obj->objectName = Text::StrCopyNewC(sb.ToString(), (UOSInt)i);
 						while (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
 						{
 							i++;
@@ -1034,10 +1034,10 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						obj->oidLen = 0;
 						NEW_CLASS(obj->valName, Data::ArrayList<const UTF8Char*>());
 						NEW_CLASS(obj->valCont, Data::ArrayList<const UTF8Char*>());
-						i = module->objKeys->SortedInsert(obj->objectName);
-						module->objValues->Insert(i, obj);
-						i = this->globalModule.objKeys->SortedInsert(obj->objectName);
-						this->globalModule.objValues->Insert(i, obj);
+						UOSInt ui = module->objKeys->SortedInsert(obj->objectName);
+						module->objValues->Insert(ui, obj);
+						ui = this->globalModule.objKeys->SortedInsert(obj->objectName);
+						this->globalModule.objValues->Insert(ui, obj);
 						if (Text::StrEquals(obj->objectName, (const UTF8Char*)DEBUGOBJ))
 						{
 							currObj = obj;
@@ -1081,7 +1081,7 @@ Net::SNMPMIB::ModuleInfo *Net::SNMPMIB::GetModuleByFileName(const UTF8Char *file
 {
 	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
 	ModuleInfo *module;
-	OSInt i = moduleList->GetCount();
+	UOSInt i = moduleList->GetCount();
 	while (i-- > 0)
 	{
 		module = moduleList->GetItem(i);
@@ -1097,9 +1097,9 @@ void Net::SNMPMIB::UnloadAll()
 	Data::ArrayList<ObjectInfo*> *objList;
 	ObjectInfo *obj;
 	ModuleInfo *module;
-	OSInt i = moduleList->GetCount();
-	OSInt j;
-	OSInt k;
+	UOSInt i = moduleList->GetCount();
+	UOSInt j;
+	UOSInt k;
 	while (i-- > 0)
 	{
 		module = moduleList->GetItem(i);
@@ -1170,7 +1170,7 @@ Bool Net::SNMPMIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *er
 		i = sb.IndexOf((const UTF8Char*)"--");
 		if (i >= 0)
 		{
-			sb.RemoveChars(sb.GetLength() - i);
+			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
 		sb.Trim();
 		if (sb.GetLength() > 0)

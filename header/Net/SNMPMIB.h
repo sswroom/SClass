@@ -15,7 +15,7 @@ namespace Net
 			const UTF8Char *typeName;
 			const UTF8Char *typeVal;
 			UInt8 oid[32];
-			OSInt oidLen;
+			UOSInt oidLen;
 			Data::ArrayList<const UTF8Char *> *valName;
 			Data::ArrayList<const UTF8Char *> *valCont;
 		} ObjectInfo;
@@ -32,7 +32,7 @@ namespace Net
 		Data::StringUTF8Map<ModuleInfo *> *moduleMap;
 		ModuleInfo globalModule;
 
-		static OSInt CalcLineSpace(const UTF8Char *txt);
+		static UOSInt CalcLineSpace(const UTF8Char *txt);
 		static void ModuleAppendOID(ModuleInfo *module, ObjectInfo *obj);
 		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage);
 		Bool ParseObjectBegin(Text::UTF8Reader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);

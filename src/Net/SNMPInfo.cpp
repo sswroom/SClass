@@ -16,14 +16,14 @@ Net::SNMPInfo::~SNMPInfo()
 
 }
 
-void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, OSInt pduSize, OSInt level, Text::StringBuilderUTF *sb)
+void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt level, Text::StringBuilderUTF *sb)
 {
 	if (level > 0)
 	{
 		sb->AppendChar('\t', level);
 	}
 	sb->Append((const UTF8Char*)"{\r\n");
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < pduSize)
 	{
 		i += this->PDUGetDetail(0, &pdu[i], pduSize - i, level + 1, sb);
@@ -40,7 +40,7 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, OSInt pduSize, OSInt level
 	sb->Append((const UTF8Char*)"}");
 }
 
-OSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, OSInt pduSize, OSInt level, Text::StringBuilderUTF *sb)
+UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, Text::StringBuilderUTF *sb)
 {
 	if (pduSize < 2)
 	{
@@ -56,8 +56,8 @@ OSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, OSInt 
 		sb->AppendChar(' ', 1);
 	}
 	UInt8 t = pdu[0];
-	OSInt len = pdu[1];
-	OSInt hdrSize = 2;
+	UOSInt len = pdu[1];
+	UOSInt hdrSize = 2;
 	if (len & 0x80)
 	{
 		if (len == 0x81)
@@ -267,7 +267,7 @@ OSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, OSInt 
 	}
 }
 
-void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, OSInt valLen, Text::StringBuilderUTF *sb)
+void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, Text::StringBuilderUTF *sb)
 {
 	switch (type)
 	{

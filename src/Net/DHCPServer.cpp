@@ -321,7 +321,7 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 
 	NEW_CLASS(this->devMut, Sync::Mutex());
 	this->devUsed = MemAlloc(UInt8, this->devCount);
-	NEW_CLASS(this->devMap, Data::Integer64Map<DeviceStatus*>());
+	NEW_CLASS(this->devMap, Data::Int64Map<DeviceStatus*>());
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(&addr, infIP);

@@ -8,6 +8,7 @@ namespace Text
 	public:
 		static Bool PtrIsWS(const UTF8Char **sptr); //Point to next char if true
 		static Bool IsWS(const UTF8Char *sptr);
+		static Bool IsPunctuation(UTF8Char c);
 	};
 }
 #endif

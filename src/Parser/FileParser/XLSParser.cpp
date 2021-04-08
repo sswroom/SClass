@@ -167,7 +167,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, Int64 ofs
 	NEW_CLASS(status.sst, Data::ArrayList<const UTF8Char*>());
 	NEW_CLASS(status.wsList, Data::ArrayList<WorksheetStatus*>());
 	NEW_CLASS(status.fontList, Data::ArrayList<FontInfo*>());
-	NEW_CLASS(status.formatMap, Data::Integer32Map<const UTF8Char *>());
+	NEW_CLASS(status.formatMap, Data::Int32Map<const UTF8Char *>());
 	Text::SpreadSheet::Workbook::GetDefPalette(status.palette);
 
 	status.formatMap->Put(0x1, Text::StrCopyNew((const UTF8Char*)"0"));
