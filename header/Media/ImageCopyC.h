@@ -2,6 +2,6 @@
 #define _SM_MEDIA_IMAGECOPYC
 extern "C"
 {
-	void ImageCopy_ImgCopy(const UInt8 *inPt, UInt8 *outPt, OSInt copySize, OSInt height, OSInt sstep, OSInt dstep);
+	void ImageCopy_ImgCopy(const UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep);
 }
 #endif

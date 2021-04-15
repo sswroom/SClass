@@ -82,9 +82,9 @@ namespace Net
 		void CloseAll();
 
 		void UseGetClient(Sync::MutexUsage *mutUsage);
-		OSInt GetClientCount();
+		UOSInt GetClientCount();
 		void ExtendTimeout(Net::TCPClient *cli);
-		Net::TCPClient *GetClient(OSInt index, void **cliData);
+		Net::TCPClient *GetClient(UOSInt index, void **cliData);
 	};
 }
 #endif

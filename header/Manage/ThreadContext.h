@@ -21,18 +21,18 @@ namespace Manage
 
 		virtual ~ThreadContext() {};
 
-		virtual OSInt GetRegisterCnt() = 0;
-		virtual UTF8Char *GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount) = 0;
+		virtual UOSInt GetRegisterCnt() = 0;
+		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) = 0;
 		virtual void ToString(Text::StringBuilderUTF *sb) = 0;
 		virtual ContextType GetType() = 0;
 		virtual UOSInt GetThreadId() = 0;
 		virtual UOSInt GetProcessId() = 0;
-		virtual OSInt GetInstAddr() = 0;
-		virtual OSInt GetStackAddr() = 0;
-		virtual OSInt GetFrameAddr() = 0;
-		virtual void SetInstAddr(OSInt instAddr) = 0;
-		virtual void SetStackAddr(OSInt stackAddr) = 0;
-		virtual void SetFrameAddr(OSInt frameAddr) = 0;
+		virtual UOSInt GetInstAddr() = 0;
+		virtual UOSInt GetStackAddr() = 0;
+		virtual UOSInt GetFrameAddr() = 0;
+		virtual void SetInstAddr(UOSInt instAddr) = 0;
+		virtual void SetStackAddr(UOSInt stackAddr) = 0;
+		virtual void SetFrameAddr(UOSInt frameAddr) = 0;
 		virtual ThreadContext *Clone() = 0;
 		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) = 0;
 

@@ -111,7 +111,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 							UInt8 *fileBuff;
 							UInt64 fileLeng = fs->GetLength();
 							UOSInt totalRead = 0;
-							OSInt readSize;
+							UOSInt readSize;
 							if (fileLeng > 0)
 							{
 								fileBuff = MemAlloc(UInt8, fileLeng);

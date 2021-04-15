@@ -6,7 +6,7 @@ Data::ArrayListInt32::ArrayListInt32() : Data::SortableArrayList<Int32>()
 {
 }
 
-Data::ArrayListInt32::ArrayListInt32(OSInt Capacity) : Data::SortableArrayList<Int32>(Capacity)
+Data::ArrayListInt32::ArrayListInt32(UOSInt capacity) : Data::SortableArrayList<Int32>(capacity)
 {
 }
 
@@ -25,7 +25,7 @@ UOSInt Data::ArrayListInt32::SortedInsert(Int32 Val)
 	OSInt k;
 	Int32 l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -50,12 +50,12 @@ UOSInt Data::ArrayListInt32::SortedInsert(Int32 Val)
 		Int32 *newArr = MemAlloc(Int32, this->capacity << 1);
 		if (i > 0)
 		{
-			MemCopyNO(&newArr[0], &arr[0], (i) * sizeof(Int32));
+			MemCopyNO(&newArr[0], &arr[0], (UOSInt)(i) * sizeof(Int32));
 		}
 		newArr[i] = Val;
 		if ((UOSInt)i < this->objCnt)
 		{
-			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - i) * sizeof(Int32));
+			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - (UOSInt)i) * sizeof(Int32));
 		}
 		this->capacity = this->capacity << 1;
 		MemFree(arr);
@@ -63,7 +63,7 @@ UOSInt Data::ArrayListInt32::SortedInsert(Int32 Val)
 	}
 	else
 	{
-		j = this->objCnt;
+		j = (OSInt)this->objCnt;
 		while (j > i)
 		{
 			arr[j] = arr[j - 1];
@@ -82,7 +82,7 @@ OSInt Data::ArrayListInt32::SortedIndexOf(Int32 Val)
 	OSInt k;
 	Int32 l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

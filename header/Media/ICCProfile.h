@@ -69,7 +69,7 @@ namespace Media
 		static void GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz);
 		static void GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, Int32 leng);
 
-		static Media::CS::TransferType FindTransferType(Int32 colorCount, UInt16 *curveColors, Double *gamma);
+		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma);
 		static UTF8Char *GetProfilePath(UTF8Char *sbuff);
 	};
 };

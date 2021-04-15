@@ -44,7 +44,7 @@ namespace Media
 			Media::LUT *lut;
 		public:
 			Double *params;
-			OSInt paramCnt;
+			UOSInt paramCnt;
 
 		public:
 			TransferParam();
@@ -54,7 +54,7 @@ namespace Media
 			~TransferParam();
 
 			void Set(TransferType tranType, Double gamma);
-			void Set(TransferType tranType, Double *params, OSInt paramCnt);
+			void Set(TransferType tranType, Double *params, UOSInt paramCnt);
 			void Set(Media::LUT *lut);
 			void Set(const TransferParam *tran);
 			TransferType GetTranType();
@@ -62,6 +62,6 @@ namespace Media
 			Media::LUT *GetLUT();
 			Bool Equals(const TransferParam *tran);
 		};
-	};
-};
+	}
+}
 #endif

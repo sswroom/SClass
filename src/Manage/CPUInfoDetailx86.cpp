@@ -114,7 +114,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(OSInt index, Double *temp)
 }
 #else
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(OSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 {
 //	InfoData *info = (InfoData*)this->clsData;
 	const UTF8Char *path = 0;

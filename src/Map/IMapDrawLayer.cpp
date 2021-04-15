@@ -44,7 +44,7 @@ OSInt __stdcall Map::IMapDrawLayer::ObjectCompare(void *obj1, void *obj2)
 	}
 }
 
-Map::IMapDrawLayer::IMapDrawLayer(const UTF8Char *sourceName, OSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::IMapDrawLayer::IMapDrawLayer(const UTF8Char *sourceName, UOSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	if (layerName)
@@ -149,12 +149,12 @@ void Map::IMapDrawLayer::Reconnect()
 {
 }
 
-OSInt Map::IMapDrawLayer::GetNameCol()
+UOSInt Map::IMapDrawLayer::GetNameCol()
 {
 	return this->nameCol;
 }
 
-void Map::IMapDrawLayer::SetNameCol(OSInt nameCol)
+void Map::IMapDrawLayer::SetNameCol(UOSInt nameCol)
 {
 	this->nameCol = nameCol;
 }
@@ -218,7 +218,7 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 		NEW_CLASS(idList, Data::ArrayListInt64());
 		this->GetAllObjectIds(idList, 0);
 		
-		Double tVal = (yMax - yMin) * (xMax - xMin) / idList->GetCount();
+		Double tVal = (yMax - yMin) * (xMax - xMin) / Math::UOSInt2Double(idList->GetCount());
 		if (xMax > 180)
 		{
 			blkSize = Math::Double2Int32(Math::Sqrt(tVal) * 3);
@@ -248,7 +248,7 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 	}
 }
 
-UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, Int32 strIndex)
+UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 
@@ -259,7 +259,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	void *names;
 	Data::ArrayListInt64 *arr;
 	Int64 lastId;
-	OSInt i;
+	UOSInt i;
 	Int64 thisId;
 	NEW_CLASS(arr, Data::ArrayListInt64());
 	GetObjectIdsMapXY(arr, &names, lon, lat, lon, lat, false);
@@ -297,7 +297,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	return retVal;
 }
 
-UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, Int32 strIndex)
+UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 	UTF8Char *tmpBuff;
@@ -311,7 +311,7 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	Data::ArrayListInt64 *arr;
 	Int64 lastId;
 	Int64 thisId;
-	OSInt i;
+	UOSInt i;
 	DrawObjectL *dobj;
 	Double dist = 1000.0;
 	NEW_CLASS(arr, Data::ArrayListInt64());
@@ -465,7 +465,7 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Double x, Double y, 
 		this->GetObjectIdsMapXY(objIds, 0, x - (blkSize / 200000.0), y - (blkSize / 200000.0), x + (blkSize / 200000.0), y + (blkSize / 200000.0), true);
 	}
 
-	OSInt i = objIds->GetCount();
+	UOSInt i = objIds->GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
@@ -555,7 +555,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 	if (ret > 0)
 	{
 		void **arr = (void**)objList->GetArray(&i);
-		ArtificialQuickSort_SortCmp(arr, ObjectCompare, 0, i - 1);
+		ArtificialQuickSort_SortCmp(arr, ObjectCompare, 0, (OSInt)i - 1);
 	}
 	else if (nearObjId != -1)
 	{
@@ -573,7 +573,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 void Map::IMapDrawLayer::FreeObjects(Data::ArrayList<ObjectInfo*> *objList)
 {
 	ObjectInfo *objInfo;
-	OSInt i;
+	UOSInt i;
 	i = objList->GetCount();
 	while (i-- > 0)
 	{
@@ -721,7 +721,7 @@ UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListStrUTF8 *outArr, Text::Se
 		k = strList->SortedIndexOf(sbuff);
 		if (k < 0)
 		{
-			strList->Insert(~k, Text::StrCopyNew(sbuff));
+			strList->Insert((UOSInt)~k, Text::StrCopyNew(sbuff));
 			if (++resCnt >= maxResult)
 				break;
 		}
@@ -926,6 +926,11 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 	}
 }
 
+Int64 Map::MapLayerReader::GetCurrObjId()
+{
+	return this->objIds->GetItem((UOSInt)this->currIndex);
+}
+
 Map::MapLayerReader::MapLayerReader(Map::IMapDrawLayer *layer) : DB::DBReader()
 {
 	this->layer = layer;
@@ -965,7 +970,7 @@ Int32 Map::MapLayerReader::GetInt32(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::StrToInt32(sbuff);
 }
 
@@ -974,7 +979,7 @@ Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::StrToInt64(sbuff);
 }
 
@@ -983,7 +988,7 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	if (this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1))
+	if (this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1))
 	{
 		return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
 	}
@@ -995,7 +1000,7 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return false;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	sb->Append(sbuff);
 	return true;
 }
@@ -1005,7 +1010,7 @@ const UTF8Char *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::StrCopyNew(sbuff);
 }
 
@@ -1013,7 +1018,7 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 {
 	if (colIndex <= 0)
 		return 0;
-	return this->layer->GetString(buff, buffSize, this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	return this->layer->GetString(buff, buffSize, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
 DB::DBReader::DateErrType Map::MapLayerReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
@@ -1021,7 +1026,7 @@ DB::DBReader::DateErrType Map::MapLayerReader::GetDate(UOSInt colIndex, Data::Da
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return DB::DBReader::DET_ERROR;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	outVal->SetValue(sbuff);
 	return DB::DBReader::DET_OK;
 }
@@ -1031,7 +1036,7 @@ Double Map::MapLayerReader::GetDbl(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::StrToDouble(sbuff);
 }
 
@@ -1040,7 +1045,7 @@ Bool Map::MapLayerReader::GetBool(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1);
+	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::StrToBool(sbuff);
 }
 
@@ -1061,7 +1066,7 @@ Math::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 	if ((UOSInt)this->currIndex >= this->objIds->GetCount() || this->currIndex < 0)
 		return 0;
 	void *sess = this->layer->BeginGetObject();
-	Math::Vector2D *vec = this->layer->GetVectorById(sess, this->objIds->GetItem(this->currIndex));
+	Math::Vector2D *vec = this->layer->GetVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);
 	return vec;
 
@@ -1072,7 +1077,7 @@ Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	if (colIndex == 0)
 		return false;
-	return this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->objIds->GetItem(this->currIndex), colIndex - 1) == 0;
+	return this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1) == 0;
 }
 
 UTF8Char *Map::MapLayerReader::GetName(UOSInt colIndex, UTF8Char *buff)

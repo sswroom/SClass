@@ -244,7 +244,7 @@ const UTF8Char *Media::FrameInfo::GetPixelFormatName(PixelFormat pf)
 	}
 }
 
-Media::PixelFormat Media::FrameInfo::GetDefPixelFormat(Int32 fourcc, Int32 storeBPP)
+Media::PixelFormat Media::FrameInfo::GetDefPixelFormat(Int32 fourcc, UInt32 storeBPP)
 {
 	if (fourcc == 0 || fourcc == *(Int32*)"DIBS")
 	{

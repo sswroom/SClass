@@ -44,7 +44,7 @@ namespace Net
 			Data::DateTime *dhcpLeaseTime;
 			Data::DateTime *dhcpLeaseExpire;
 			UInt8 *physicalAddr;
-			OSInt physicalAddrLeng;
+			UOSInt physicalAddrLeng;
 			UInt32 mtu;
 			Bool dhcpEnabled;
 			ConnectionType connType;
@@ -68,7 +68,7 @@ namespace Net
 		UInt32 GetDNSAddress(UOSInt index);
 		UInt32 GetDefaultGW();
 		OSInt GetIndex();
-		OSInt GetPhysicalAddress(UInt8 *buff, OSInt buffSize);
+		UOSInt GetPhysicalAddress(UInt8 *buff, UOSInt buffSize);
 		UInt32 GetMTU();
 		Bool IsDhcpEnabled();
 		UInt32 GetDhcpServer();

@@ -66,12 +66,12 @@ public:
 
 	virtual Bool PrintPage(Media::DrawImage *printPage) //return has more pages
 	{
-		OSInt w = printPage->GetWidth();
-		OSInt h = printPage->GetHeight();
+		UOSInt w = printPage->GetWidth();
+		UOSInt h = printPage->GetHeight();
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
 		Media::DrawPen *p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
-		printPage->DrawRect(hdpi * 0.5, vdpi * 0.5, w - hdpi, h - vdpi, p, 0);
+		printPage->DrawRect(hdpi * 0.5, vdpi * 0.5, Math::UOSInt2Double(w) - hdpi, Math::UOSInt2Double(h) - vdpi, p, 0);
 		printPage->DelPen(p);
 
 		if (this->pageId == 0)
@@ -92,23 +92,23 @@ public:
 	}
 };
 
-UTF8Char *ByteDisp(UTF8Char *sbuff, Int64 byteSize)
+UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, byteSize / 1073741824.0, "0.##"), (const UTF8Char*)"GB");
+		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1073741824.0, "0.##"), (const UTF8Char*)"GB");
 	}
 	else if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, byteSize / 1048576.0, "0.##"), (const UTF8Char*)"MB");
+		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1048576.0, "0.##"), (const UTF8Char*)"MB");
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, byteSize / 1024.0, "0.##"), (const UTF8Char*)"KB");
+		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1024.0, "0.##"), (const UTF8Char*)"KB");
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrInt64(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize), (const UTF8Char*)"B");
 	}
 }
 
@@ -120,15 +120,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	IO::SystemInfo sysInfo;
-	Int64 memSize;
+	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char u8buff[128];
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	Int32 threadCnt = Sync::Thread::GetThreadCnt();
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 
 	MemSetLogFile((const UTF8Char*)"Memory.log");
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SHWInfo.log", Manage::ExceptionRecorder::EA_CLOSE));
@@ -254,7 +254,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"CPU Thread Count: ");
-		sb.AppendI32(threadCnt);
+		sb.AppendUOSInt(threadCnt);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
@@ -268,7 +268,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"CPU Temp ");
-			sb.AppendOSInt(i);
+			sb.AppendUOSInt(i);
 			sb.Append((const UTF8Char*)": ");
 			Text::SBAppendF64(&sb, temp);
 			console->WriteLine(sb.ToString());
@@ -360,7 +360,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Monitor ");
-					sb.AppendOSInt(i);
+					sb.AppendUOSInt(i);
 					sb.Append((const UTF8Char*)" - ");
 					sb.Append(edidInfo.monitorName);
 					sb.Append((const UTF8Char*)" (");
@@ -527,7 +527,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Printer ");
-				sb.AppendOSInt(i);
+				sb.AppendUOSInt(i);
 				sb.Append((const UTF8Char*)" = ");
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
@@ -616,7 +616,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				dev = devList.GetItem(i);
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Device ");
-				sb.AppendOSInt(i);
+				sb.AppendUOSInt(i);
 				sb.Append((const UTF8Char*)": ");
 				sb.Append(videoMgr->GetDevTypeName(dev->devType));
 				sb.Append((const UTF8Char*)", ");
@@ -645,15 +645,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						}
 						else
 						{
-							*(Int32*)fmtName = fmts[k].info.fourcc;
+							*(UInt32*)fmtName = fmts[k].info.fourcc;
 							sb.Append((const UTF8Char*)fmtName);
 						}
 						sb.Append((const UTF8Char*)", bpp = ");
-						sb.AppendI32(fmts[k].info.storeBPP);
+						sb.AppendU32(fmts[k].info.storeBPP);
 						sb.Append((const UTF8Char*)", size = ");
-						sb.AppendOSInt(fmts[k].info.dispWidth);
+						sb.AppendUOSInt(fmts[k].info.dispWidth);
 						sb.Append((const UTF8Char*)" x ");
-						sb.AppendOSInt(fmts[k].info.dispHeight);
+						sb.AppendUOSInt(fmts[k].info.dispHeight);
 						sb.Append((const UTF8Char*)", rate = ");
 						Text::SBAppendF64(&sb, fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
 						console->WriteLine(sb.ToString());
@@ -691,7 +691,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			connInfo = connInfoList.GetItem(i);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Connection ");
-			sb.AppendOSInt(i);
+			sb.AppendUOSInt(i);
 			sb.Append((const UTF8Char*)":");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -979,7 +979,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sdcard = sdList.GetItem(i);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"SD Card ");
-			sb.AppendOSInt(i);
+			sb.AppendUOSInt(i);
 			sb.Append((const UTF8Char*)" - ");
 			sb.Append(sdcard->GetName());
 			console->WriteLine(sb.ToString());
@@ -1034,9 +1034,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Manufacturing Date (MDT): ");
-			sb.AppendI32(sdcard->GetManufacturingYear());
+			sb.AppendU32(sdcard->GetManufacturingYear());
 			sb.AppendChar('/', 1);
-			sb.AppendI32(sdcard->GetManufacturingMonth());
+			sb.AppendU32(sdcard->GetManufacturingMonth());
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
@@ -1071,7 +1071,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		writer->WriteLine((const UTF8Char*)"Sensors:");
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Count = ");
-		sb.AppendOSInt(j = sensorMgr.GetSensorCnt());
+		sb.AppendUOSInt(j = sensorMgr.GetSensorCnt());
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 		i = 0;
@@ -1082,7 +1082,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Sensor ");
-				sb.AppendOSInt(i);
+				sb.AppendUOSInt(i);
 				sb.Append((const UTF8Char*)", Name = ");
 				csptr = sensor->GetName();
 				if (csptr)

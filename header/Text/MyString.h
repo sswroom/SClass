@@ -145,6 +145,7 @@ namespace Text
 	Bool StrToUInt8(const Char *intStr, UInt8 *outVal);
 	UInt8 StrToUInt8(const Char *intStr);
 	Bool StrToUInt16(const Char *intStr, UInt16 *outVal);
+	Bool StrToUInt16S(const Char *intStr, UInt16 *outVal, UInt16 failVal);
 	Bool StrToInt16(const Char *str, Int16 *outVal);
 	Int16 StrToInt16(const Char *str);
 	Bool StrToUInt32(const Char *intStr, UInt32 *outVal);
@@ -262,6 +263,7 @@ namespace Text
 	FORCEINLINE Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal) { return StrToUInt8((const Char*)intStr, outVal); };
 	FORCEINLINE UInt8 StrToUInt8(const UTF8Char *intStr) { return StrToUInt8((const Char*)intStr); };
 	FORCEINLINE Bool StrToUInt16(const UTF8Char *intStr, UInt16 *outVal) { return StrToUInt16((const Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToUInt16S(const UTF8Char *intStr, UInt16 *outVal, UInt16 failVal) { return StrToUInt16S((const Char*)intStr, outVal, failVal); };
 	FORCEINLINE Bool StrToInt16(const UTF8Char *str, Int16 *outVal) { return StrToInt16((const Char*)str, outVal); }
 	FORCEINLINE Int16 StrToInt16(const UTF8Char *str) { return StrToInt16((const Char*)str); }
 	FORCEINLINE Bool StrToUInt32(const UTF8Char *intStr, UInt32 *outVal) { return StrToUInt32((const Char*)intStr, outVal); };

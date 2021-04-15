@@ -8,7 +8,7 @@
 typedef struct
 {
 	const UTF8Char *fileName;
-	OSInt addr;
+	UOSInt addr;
 	UInt32 size;
 } ModuleInfoData;
 
@@ -38,7 +38,7 @@ UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
 	return Text::StrConcat(buff, info->fileName);
 }
 
-Bool Manage::ModuleInfo::GetModuleAddress(OSInt *baseAddr, UInt32 *size)
+Bool Manage::ModuleInfo::GetModuleAddress(UOSInt *baseAddr, UInt32 *size)
 {
 	ModuleInfoData *info = (ModuleInfoData*)this->hMod;
 	*baseAddr = info->addr;

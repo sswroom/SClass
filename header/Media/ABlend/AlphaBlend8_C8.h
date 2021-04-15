@@ -40,12 +40,12 @@ namespace Media
 			UInt8 *rgbTable;
 			Media::ColorSess *colorSess;
 			ThreadStat *stats;
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			Sync::Mutex *mut;
 			Sync::Event *mainEvt;
 			
-			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
-			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
+			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
+			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 
 			void UpdateLUT();
 			static UInt32 __stdcall ProcessThread(void *userObj);
@@ -53,12 +53,12 @@ namespace Media
 			AlphaBlend8_C8(Media::ColorSess *colorSess, Bool multiProfile);
 			virtual ~AlphaBlend8_C8();
 
-			virtual void Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, Media::AlphaType srcAType);
-			virtual void PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
+			virtual void Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
+			virtual void PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
 			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
 		};
-	};
-};
+	}
+}
 #endif

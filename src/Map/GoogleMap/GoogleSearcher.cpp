@@ -107,7 +107,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		if (i >= 0)
 		{
-			Sync::Thread::Sleep(200 - i);
+			Sync::Thread::Sleep((UOSInt)(200 - i));
 		}
 	}
 
@@ -125,7 +125,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 
 		UInt8 result[20];
 		UInt8 result2[40];
-		OSInt size = Text::StrConcatC(databuff, urlStart, sptr - urlStart) - databuff;
+		UOSInt size = (UOSInt)(Text::StrConcatC(databuff, urlStart, sptr - urlStart) - databuff);
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(databuff, size);
@@ -155,7 +155,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 			cli->AddHeader((const UTF8Char*)"Accept-Language", lang);
 		}
 		Int32 status = cli->GetRespStatus();
-		OSInt readSize;
+		UOSInt readSize;
 		databuffSize = 0;
 		while ((readSize = cli->Read(&databuff[databuffSize], 2047 - databuffSize)) > 0)
 		{
@@ -174,7 +174,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 				{
 					if ((UOSInt)status < buffSize)
 					{
-						buff = Text::StrConcatC(buff, (const UTF8Char*)&ptrs[2][1], status);
+						buff = Text::StrConcatC(buff, (const UTF8Char*)&ptrs[2][1], (UOSInt)status);
 					}
 					else
 					{

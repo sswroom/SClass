@@ -7,8 +7,8 @@
 
 void Win32::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType)
 {
-	OSInt i = 0;
-	OSInt j = this->smbiosBuffSize;
+	UOSInt i = 0;
+	UOSInt j = this->smbiosBuffSize;
 	const UInt8 *buff = this->smbiosBuff;
 	while (i < j)
 	{
@@ -25,7 +25,7 @@ void Win32::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 
 	}
 }
 
-Win32::SMBIOS::SMBIOS(const UInt8 *smbiosBuff, OSInt smbiosBuffSize, UInt8 *relPtr)
+Win32::SMBIOS::SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr)
 {
 	this->smbiosBuff = smbiosBuff;
 	this->smbiosBuffSize = smbiosBuffSize;
@@ -40,17 +40,17 @@ Win32::SMBIOS::~SMBIOS()
 	}
 }
 
-OSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
+UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
 	const Char *carr[8];
 	MemoryDeviceInfo *mem;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt ret = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt ret = 0;
 	this->GetDataType(&dataList, 17);
 	i = 0;
 	j = dataList.GetCount();
@@ -145,7 +145,7 @@ OSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 
 void Win32::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 {
-	OSInt i = memList->GetCount();
+	UOSInt i = memList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(memList->GetItem(i));
@@ -158,10 +158,10 @@ UTF8Char *Win32::SMBIOS::GetPlatformName(UTF8Char *buff)
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
 	const Char *carr[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	UTF8Char *ret = 0;
 	this->GetDataType(&dataList, 2);
 	i = 0;
@@ -211,10 +211,10 @@ UTF8Char *Win32::SMBIOS::GetPlatformSN(UTF8Char *buff)
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
 	const Char *carr[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	UTF8Char *ret = 0;
 	this->GetDataType(&dataList, 2);
 	i = 0;
@@ -326,8 +326,8 @@ Int32 Win32::SMBIOS::GetChassisType()
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 ret = 0;
 	this->GetDataType(&dataList, 3);
 	i = 0;
@@ -346,10 +346,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 {
 	const Char *carr[32];
 	const UInt8 *dataBuff;
-	OSInt i = 0;
-	OSInt j = this->smbiosBuffSize;
-	OSInt k;
-	OSInt l;
+	UOSInt i = 0;
+	UOSInt j = this->smbiosBuffSize;
+	UOSInt k;
+	UOSInt l;
 	const UInt8 *buff = this->smbiosBuff;
 	while (i < j)
 	{
@@ -382,7 +382,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 0:
 			sb->Append((const UTF8Char*)"SMBIOS Type 0 - BIOS Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Vendor: ");
 			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
@@ -391,7 +391,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (carr[dataBuff[5]]) sb->Append((const UTF8Char*)carr[dataBuff[5]]);
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"BIOS Starting Address Segment: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[6]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[6]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"BIOS Release Date: ");
 			if (carr[dataBuff[8]]) sb->Append((const UTF8Char*)carr[dataBuff[8]]);
@@ -403,11 +403,11 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			}
 			else
 			{
-				sb->AppendU32(65536 * (dataBuff[9] + 1));
+				sb->AppendU32(65536 * (UInt32)(dataBuff[9] + 1));
 			}
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"BIOS Characteristics: 0x");
-			sb->AppendHex64(ReadInt64(&dataBuff[10]));
+			sb->AppendHex64(ReadUInt64(&dataBuff[10]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 19)
 			{
@@ -456,7 +456,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 1:
 			sb->Append((const UTF8Char*)"SMBIOS Type 1 - System Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Manufacturer: ");
 			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
@@ -473,16 +473,16 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 25)
 			{
 				sb->Append((const UTF8Char*)"UUID: {");
-				sb->AppendHex32(ReadInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"-");
-				sb->AppendHex16(ReadInt16(&dataBuff[12]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[12]));
 				sb->Append((const UTF8Char*)"-");
-				sb->AppendHex16(ReadInt16(&dataBuff[14]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[14]));
 				sb->Append((const UTF8Char*)"-");
-				sb->AppendHex16(ReadMInt16(&dataBuff[16]));
+				sb->AppendHex16(ReadMUInt16(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"-");
-				sb->AppendHex32(ReadMInt32(&dataBuff[18]));
-				sb->AppendHex16(ReadMInt16(&dataBuff[22]));
+				sb->AppendHex32(ReadMUInt32(&dataBuff[18]));
+				sb->AppendHex16(ReadMUInt16(&dataBuff[22]));
 				sb->Append((const UTF8Char*)"}\r\n");
 				sb->Append((const UTF8Char*)"Wake-up Type: ");
 				switch (dataBuff[24])
@@ -536,7 +536,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 2:
 			sb->Append((const UTF8Char*)"SMBIOS Type 2 - Baseboard Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 8)
 			{
@@ -574,7 +574,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 13)
 			{
 				sb->Append((const UTF8Char*)"Chassis Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[11]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[11]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 14)
@@ -633,7 +633,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 3:
 			sb->Append((const UTF8Char*)"SMBIOS Type 3 - System Enclosure\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 9)
 			{
@@ -881,7 +881,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 17)
 			{
 				sb->Append((const UTF8Char*)"OEM-defined: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[13]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[13]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 18)
@@ -918,7 +918,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 4:
 			sb->Append((const UTF8Char*)"SMBIOS Type 4 - Processor Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 26)
 			{
@@ -959,7 +959,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Processor ID: 0x");
-				sb->AppendHex64(ReadInt64(&dataBuff[8]));
+				sb->AppendHex64(ReadUInt64(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Processor Version: ");
 				if (carr[dataBuff[16]]) sb->Append((const UTF8Char*)carr[dataBuff[16]]);
@@ -1179,13 +1179,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 32)
 			{
 				sb->Append((const UTF8Char*)"L1 Cache Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[26]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[26]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"L2 Cache Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[28]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[28]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"L3 Cache Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[30]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[30]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 35)
@@ -1212,7 +1212,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[37]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Processor Characteristics: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[38]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[38]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 48)
@@ -1235,7 +1235,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 5:
 			sb->Append((const UTF8Char*)"SMBIOS Type 5 - Memory Controller Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 15)
 			{
@@ -1246,7 +1246,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 6:
 			sb->Append((const UTF8Char*)"SMBIOS Type 6 - Memory Module Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 12)
 			{
@@ -1260,7 +1260,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[6]);
 				sb->Append((const UTF8Char*)"ns\r\n");
 				sb->Append((const UTF8Char*)"Current Memory Type: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[7]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[7]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Installed Size: ");
 				sb->AppendU16(dataBuff[9]);
@@ -1277,7 +1277,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 7:
 			sb->Append((const UTF8Char*)"SMBIOS Type 7 - Cache Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 15)
 			{
@@ -1285,37 +1285,37 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Cache Configuration: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[5]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[5]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Maximum Cache Size: ");
 				if (dataBuff[8] & 0x80)
 				{
-					sb->AppendI16((ReadInt16(&dataBuff[7]) & 0x7fff) * 64);
+					sb->AppendI32((ReadInt16(&dataBuff[7]) & 0x7fff) * 64);
 					sb->Append((const UTF8Char*)"K");
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[7]) & 0x7fff);
+					sb->AppendI32(ReadInt16(&dataBuff[7]) & 0x7fff);
 					sb->Append((const UTF8Char*)"K");
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Installed Size: ");
 				if (dataBuff[10] & 0x80)
 				{
-					sb->AppendI16((ReadInt16(&dataBuff[9]) & 0x7fff) * 64);
+					sb->AppendI32((ReadInt16(&dataBuff[9]) & 0x7fff) * 64);
 					sb->Append((const UTF8Char*)"K");
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[9]) & 0x7fff);
+					sb->AppendI32(ReadInt16(&dataBuff[9]) & 0x7fff);
 					sb->Append((const UTF8Char*)"K");
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Supported SRAM Type: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[11]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[11]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Current SRAM Type: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[13]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[13]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 19)
@@ -1461,7 +1461,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 8:
 			sb->Append((const UTF8Char*)"SMBIOS Type 8 - Port Connector Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 9)
 			{
@@ -1604,7 +1604,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 9:
 			sb->Append((const UTF8Char*)"SMBIOS Type 9 - System Slots\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 12)
 			{
@@ -1898,7 +1898,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Slot ID: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[9]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[9]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Slot Characteristics 1: 0x");
 				sb->AppendHex8(dataBuff[11]);
@@ -1927,14 +1927,14 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 10:
 			sb->Append((const UTF8Char*)"SMBIOS Type 10 - On Board Devices Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			l = 4;
 			k = 1;
 			while (l < dataBuff[1])
 			{
 				sb->Append((const UTF8Char*)"Device ");
-				sb->AppendOSInt(k);
+				sb->AppendUOSInt(k);
 				sb->Append((const UTF8Char*)" Status: ");
 				if (dataBuff[l] & 0x80)
 				{
@@ -1946,7 +1946,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Device ");
-				sb->AppendOSInt(k);
+				sb->AppendUOSInt(k);
 				sb->Append((const UTF8Char*)" Type: ");
 				switch (dataBuff[l] & 0x7f)
 				{
@@ -2000,7 +2000,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 11:
 			sb->Append((const UTF8Char*)"SMBIOS Type 11 - OEM Strings\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Number of strings: ");
 			sb->AppendU16(dataBuff[4]);
@@ -2023,7 +2023,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 12:
 			sb->Append((const UTF8Char*)"SMBIOS Type 12 - System Configuration Options\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Number of strings: ");
 			sb->AppendU16(dataBuff[4]);
@@ -2046,7 +2046,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 13:
 			sb->Append((const UTF8Char*)"SMBIOS Type 13 - BIOS Language Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 5)
 			{
@@ -2084,7 +2084,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 14:
 			sb->Append((const UTF8Char*)"SMBIOS Type 14 - Group Association\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Group Name: ");
 			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
@@ -2096,7 +2096,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[k]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Item Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[k + 1]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[k + 1]));
 				sb->Append((const UTF8Char*)"\r\n");
 				k += 3;
 			}
@@ -2105,7 +2105,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 15:
 			sb->Append((const UTF8Char*)"SMBIOS Type 15 - System Event Log\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 20)
 			{
@@ -2113,10 +2113,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendI16(ReadInt16(&dataBuff[4]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Log Header Start Offset: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[6]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[6]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Log Data Start Offset: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[8]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Access Method: ");
 				switch (dataBuff[10])
@@ -2147,10 +2147,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendHex8(dataBuff[11]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Log Change Token: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[12]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[12]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Access Method Address: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 23)
@@ -2183,7 +2183,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 16:
 			sb->Append((const UTF8Char*)"SMBIOS Type 16 - Physical Memory Array\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 15)
 			{
@@ -2305,7 +2305,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendI32(ReadInt32(&dataBuff[7]));
 				sb->Append((const UTF8Char*)"KB\r\n");
 				sb->Append((const UTF8Char*)"Memory Error Information Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[11]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[11]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Number of Memory Devices: ");
 				sb->AppendI16(ReadInt16(&dataBuff[13]));
@@ -2316,15 +2316,15 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 17:
 			sb->Append((const UTF8Char*)"SMBIOS Type 17 - Memory Device\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 21)
 			{
 				sb->Append((const UTF8Char*)"Physical Memory Array Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[4]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[4]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Memory Error Information Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[6]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[6]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Total Width: ");
 				sb->AppendI16(ReadInt16(&dataBuff[8]));
@@ -2500,7 +2500,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Type Detail: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[19]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[19]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 27)
@@ -2553,25 +2553,25 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 18:
 			sb->Append((const UTF8Char*)"SMBIOS Type 18 - 32-Bit Memory Error Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 		case 19:
 			sb->Append((const UTF8Char*)"SMBIOS Type 19 - Memory Array Mapped Address\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 15)
 			{
 				sb->Append((const UTF8Char*)"Starting Address: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[4]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[4]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Ending Address: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Memory Array Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[12]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[12]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Partition Width: ");
 				sb->AppendU16(dataBuff[14]);
@@ -2591,21 +2591,21 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 20:
 			sb->Append((const UTF8Char*)"SMBIOS Type 20 - Memory Device Mapped Address\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 19)
 			{
 				sb->Append((const UTF8Char*)"Starting Address: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[4]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[4]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Ending Address: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Memory Device Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[12]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[12]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Memory Array Mapped Address Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[14]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[14]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Partition Row Position: ");
 				sb->AppendU16(dataBuff[16]);
@@ -2631,7 +2631,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 21:
 			sb->Append((const UTF8Char*)"SMBIOS Type 21 - Build-in Pointing Device\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 7)
 			{
@@ -2724,7 +2724,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 22:
 			sb->Append((const UTF8Char*)"SMBIOS Type 22 - Portable Battery\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Location: ");
 			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
@@ -2790,7 +2790,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 26)
 			{
 				sb->Append((const UTF8Char*)"SBDS Serial Number: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[16]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"SBDS Manufacture Date: ");
 				sb->AppendU16(1980 + (dataBuff[19] >> 1));
@@ -2806,7 +2806,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[21]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"OEM-specific: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[22]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[22]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			sb->Append((const UTF8Char*)"\r\n");
@@ -2814,7 +2814,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 23:
 			sb->Append((const UTF8Char*)"SMBIOS Type 23 - System Reset\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 13)
 			{
@@ -2839,7 +2839,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 24:
 			sb->Append((const UTF8Char*)"SMBIOS Type 24 - Hardware Security\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 5)
 			{
@@ -2852,7 +2852,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 25:
 			sb->Append((const UTF8Char*)"SMBIOS Type 25 - System Power Control\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 9)
 			{
@@ -2877,7 +2877,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 26:
 			sb->Append((const UTF8Char*)"SMBIOS Type 26 - Voltage Probe\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 20)
 			{
@@ -3011,7 +3011,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"OEM-defined: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 22)
@@ -3033,12 +3033,12 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 27:
 			sb->Append((const UTF8Char*)"SMBIOS Type 27 - Cooling Device\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 12)
 			{
 				sb->Append((const UTF8Char*)"Temperature Probe Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[4]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[4]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Device Type: ");
 				switch (dataBuff[6] & 0x1f)
@@ -3115,7 +3115,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[7]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"OEM-defined: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 14)
@@ -3143,7 +3143,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 28:
 			sb->Append((const UTF8Char*)"SMBIOS Type 28 - Temperature Probe\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 20)
 			{
@@ -3289,7 +3289,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"OEM-defined: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 22)
@@ -3311,7 +3311,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 29:
 			sb->Append((const UTF8Char*)"SMBIOS Type 29 - Electrical Current Probe\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 20)
 			{
@@ -3445,7 +3445,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"OEM-defined: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 22)
@@ -3467,7 +3467,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 30:
 			sb->Append((const UTF8Char*)"SMBIOS Type 30 - Out-of-Band Remote Access\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 6)
 			{
@@ -3483,14 +3483,14 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 31:
 			sb->Append((const UTF8Char*)"SMBIOS Type 31 - Boot Integrity Services Entry Point\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 		case 32:
 			sb->Append((const UTF8Char*)"SMBIOS Type 32 - System Boot Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 11)
 			{
@@ -3537,14 +3537,14 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 33:
 			sb->Append((const UTF8Char*)"SMBIOS Type 33 - 64-Bit Memory Error Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 		case 34:
 			sb->Append((const UTF8Char*)"SMBIOS Type 34 - Management Device\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 11)
 			{
@@ -3601,7 +3601,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Address: 0x");
-				sb->AppendHex32(ReadInt32(&dataBuff[6]));
+				sb->AppendHex32(ReadUInt32(&dataBuff[6]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Address Type: ");
 				switch (dataBuff[10])
@@ -3634,7 +3634,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 35:
 			sb->Append((const UTF8Char*)"SMBIOS Type 35 - Management Device Component\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 11)
 			{
@@ -3642,13 +3642,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Management Device Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[5]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[5]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Component Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[7]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[7]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Threshold Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[9]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[9]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			sb->Append((const UTF8Char*)"\r\n");
@@ -3656,7 +3656,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 36:
 			sb->Append((const UTF8Char*)"SMBIOS Type 36 - Management Device Threshold Data\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 16)
 			{
@@ -3726,21 +3726,21 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 37:
 			sb->Append((const UTF8Char*)"SMBIOS Type 37 - Memory Channel\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 /*		case 38:
 			sb->Append((const UTF8Char*)"SMBIOS Type 38 - IPMI Device Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 		case 39:
 			sb->Append((const UTF8Char*)"SMBIOS Type 39 - System Power Supply\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 16)
 			{
@@ -3779,19 +3779,19 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Power Supply Characteristics: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[14]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[14]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (dataBuff[1] >= 22)
 			{
 				sb->Append((const UTF8Char*)"Input Voltage Probe Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[16]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Cooling Device Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[18]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[18]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Input Current Probe Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[20]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[20]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			sb->Append((const UTF8Char*)"\r\n");
@@ -3799,7 +3799,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 40:
 			sb->Append((const UTF8Char*)"SMBIOS Type 40 - Additional Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Number of Additional Information entries: ");
 			sb->AppendU16(dataBuff[4]);
@@ -3817,7 +3817,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[k]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Referenced Handle: 0x");
-				sb->AppendHex16(ReadInt16(&dataBuff[k + 1]));
+				sb->AppendHex16(ReadUInt16(&dataBuff[k + 1]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Referenced Offset: ");
 				sb->AppendU16(dataBuff[k + 3]);
@@ -3832,7 +3832,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 		case 41:
 			sb->Append((const UTF8Char*)"SMBIOS Type 41 - Onboard Devices Extended Information\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 11)
 			{
@@ -3903,35 +3903,35 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 42:
 			sb->Append((const UTF8Char*)"SMBIOS Type 42 - Management Controller Host Interface\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 /*		case 43:
 			sb->Append((const UTF8Char*)"SMBIOS Type 43 - TPM Device\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 		case 126:
 			sb->Append((const UTF8Char*)"SMBIOS Type 126 - Inactive\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;
 		case 127:
 			sb->Append((const UTF8Char*)"SMBIOS Type 127 - End-of-Table\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;
 		case 128:
 			sb->Append((const UTF8Char*)"SMBIOS Type 128 - Apple Firmware Volume\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 16)
 			{
@@ -3939,7 +3939,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[4]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Firmware Feature: 0x");
-				sb->AppendHex32(ReadInt16(&dataBuff[8]));
+				sb->AppendHex32(ReadUInt16(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Firmware Feature Mask: 0x");
 				sb->AppendHex32(ReadInt16(&dataBuff[12]));
@@ -3983,12 +3983,12 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 						sb->Append((const UTF8Char*)"Region ");
 						sb->AppendOSInt(k);
 						sb->Append((const UTF8Char*)" Start Address: 0x");
-						sb->AppendHex32(ReadInt32(&dataBuff[24 + k * 8]));
+						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8]));
 						sb->Append((const UTF8Char*)"\r\n");
 						sb->Append((const UTF8Char*)"Region ");
 						sb->AppendOSInt(k);
 						sb->Append((const UTF8Char*)" End Address: 0x");
-						sb->AppendHex32(ReadInt32(&dataBuff[24 + k * 8 + 4]));
+						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8 + 4]));
 						sb->Append((const UTF8Char*)"\r\n");
 						
 						k++;
@@ -4000,14 +4000,14 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 /*		case 130:
 			sb->Append((const UTF8Char*)"SMBIOS Type 130 - Apple Memory SPD Data\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;*/
 		case 131:
 			sb->Append((const UTF8Char*)"SMBIOS Type 131 - Apple Processor Type\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (dataBuff[1] >= 6)
 			{
@@ -4022,7 +4022,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			sb->AppendU16(dataBuff[0]);
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Handle: 0x");
-			sb->AppendHex16(ReadInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
 			break;

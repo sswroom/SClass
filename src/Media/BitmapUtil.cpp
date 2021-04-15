@@ -41,10 +41,10 @@ Media::StaticImage *Media::BitmapUtil::ParseDIBBuffer(const UInt8 *dataBuff, OSI
 		inv = false;
 		imgHeight = -imgHeight;
 	}
-	OSInt palSize = 0;
+	UOSInt palSize = 0;
 	if (bpp <= 8)
 	{
-		palSize = 4 << bpp;
+		palSize = (UOSInt)(4 << bpp);
 	}
 
 	NEW_CLASS(outImg, Media::StaticImage(imgWidth, imgHeight, 0, bpp, Media::FrameInfo::GetDefPixelFormat(0, bpp), 0, 0, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));

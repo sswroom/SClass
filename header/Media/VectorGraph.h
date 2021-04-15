@@ -13,37 +13,37 @@ namespace Media
 		class VectorPenStyle : public Media::DrawPen
 		{
 		private:
-			OSInt index;
-			Int32 color;
+			UOSInt index;
+			UInt32 color;
 			Double thick;
 			UInt8 *pattern;
-			OSInt nPattern;
+			UOSInt nPattern;
 
 		public:
-			VectorPenStyle(OSInt index, Int32 color, Double thick, UInt8 *pattern, OSInt nPattern);
+			VectorPenStyle(UOSInt index, UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 			virtual ~VectorPenStyle();
 			
 			virtual Double GetThick();
-			Bool IsSame(Int32 color, Double thick, UInt8 *pattern, OSInt nPattern);
-			OSInt GetIndex();
+			Bool IsSame(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
+			UOSInt GetIndex();
 			Media::DrawPen *CreateDrawPen(Double oriDPI, Media::DrawImage *dimg);
 		};
 
 		class VectorFontStyle : public Media::DrawFont
 		{
 		private:
-			OSInt index;
+			UOSInt index;
 			const UTF8Char *name;
 			Double heightPt;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			Int32 codePage;
 
 		public:
-			VectorFontStyle(OSInt index, const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
+			VectorFontStyle(UOSInt index, const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
 			virtual ~VectorFontStyle();
 			
 			Bool IsSame(const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
-			OSInt GetIndex();
+			UOSInt GetIndex();
 			Double GetHeightPt();
 			const UTF8Char *GetName();
 			Media::DrawEngine::DrawFontStyle GetStyle();
@@ -54,15 +54,15 @@ namespace Media
 		class VectorBrushStyle : public Media::DrawBrush
 		{
 		private:
-			OSInt index;
-			Int32 color;
+			UOSInt index;
+			UInt32 color;
 
 		public:
-			VectorBrushStyle(OSInt index, Int32 color);
+			VectorBrushStyle(UOSInt index, UInt32 color);
 			virtual ~VectorBrushStyle();
 
-			Bool IsSame(Int32 color);
-			OSInt GetIndex();
+			Bool IsSame(UInt32 color);
+			UOSInt GetIndex();
 			Media::DrawBrush *CreateDrawBrush(Double oriDPI, Media::DrawImage *dimg);
 		};
 
@@ -120,14 +120,14 @@ namespace Media
 		virtual Bool DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b);
 		virtual Bool DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p, OSInt buffSize);
-		virtual Bool DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, OSInt buffSize);
+		virtual Bool DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		virtual Bool DrawImagePt(DrawImage *img, Double tlx, Double tly);
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly);
 		virtual Bool DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH); /////////////////////////////
 
-		virtual DrawPen *NewPenARGB(Int32 color, Double thick, UInt8 *pattern, OSInt nPattern);
-		virtual DrawBrush *NewBrushARGB(Int32 color);
+		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
+		virtual DrawBrush *NewBrushARGB(UInt32 color);
 		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
 		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
 		virtual DrawFont *CloneFont(Media::DrawFont *f);
@@ -139,12 +139,12 @@ namespace Media
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos);
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, OSInt width, OSInt height);
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height);
 
 		virtual Media::StaticImage *ToStaticImage();
-		virtual Int32 SavePng(IO::SeekableStream *stm);
-		virtual Int32 SaveGIF(IO::SeekableStream *stm);
-		virtual Int32 SaveJPG(IO::SeekableStream *stm);
+		virtual UOSInt SavePng(IO::SeekableStream *stm);
+		virtual UOSInt SaveGIF(IO::SeekableStream *stm);
+		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
 
 		Double GetVisibleWidthMM();
 		Double GetVisibleHeightMM();

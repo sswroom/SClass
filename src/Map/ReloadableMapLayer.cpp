@@ -504,11 +504,11 @@ void Map::ReloadableMapLayer::ReleaseObject(void *session, DrawObjectL *obj)
 	MemFree(obj);
 }
 
-OSInt Map::ReloadableMapLayer::GetNameCol()
+UOSInt Map::ReloadableMapLayer::GetNameCol()
 {
 	return 0;
 }
-void Map::ReloadableMapLayer::SetNameCol(OSInt nameCol)
+void Map::ReloadableMapLayer::SetNameCol(UOSInt nameCol)
 {
 }
 

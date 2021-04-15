@@ -8,12 +8,12 @@ namespace Data
 	{
 	public:
 		ArrayListInt32();
-		ArrayListInt32(OSInt Capacity);
+		ArrayListInt32(UOSInt capacity);
 
 		virtual ArrayList<Int32> *Clone();
 
-		virtual UOSInt SortedInsert(Int32 Val);
-		virtual OSInt SortedIndexOf(Int32 Val);
+		virtual UOSInt SortedInsert(Int32 val);
+		virtual OSInt SortedIndexOf(Int32 val);
 	};
 }
 #endif

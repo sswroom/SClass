@@ -26,7 +26,7 @@ UOSInt Data::ArrayListInt64::SortedInsert(Int64 val)
 	OSInt k;
 	Int64 l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -51,12 +51,12 @@ UOSInt Data::ArrayListInt64::SortedInsert(Int64 val)
 		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
 		if (i > 0)
 		{
-			MemCopyNO(&newArr[0], &arr[0], (i) * sizeof(Int64));
+			MemCopyNO(&newArr[0], &arr[0], (UOSInt)(i) * sizeof(Int64));
 		}
 		newArr[i] = val;
 		if ((UOSInt)i < this->objCnt)
 		{
-			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - i) * sizeof(Int64));
+			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - (UOSInt)i) * sizeof(Int64));
 		}
 		this->capacity = this->capacity << 1;
 		MemFree(arr);
@@ -83,7 +83,7 @@ OSInt Data::ArrayListInt64::SortedIndexOf(Int64 val)
 	OSInt k;
 	Int64 l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

@@ -1364,10 +1364,10 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 	}
 }
 
-Media::CS::TransferType Media::ICCProfile::FindTransferType(Int32 colorCount, UInt16 *curveColors, Double *gamma)
+Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma)
 {
 	Media::CS::TransferType trans[] = {Media::CS::TRANT_sRGB, Media::CS::TRANT_BT709, Media::CS::TRANT_GAMMA, Media::CS::TRANT_LINEAR, Media::CS::TRANT_SMPTE240};
-	OSInt tranCnt = sizeof(trans) / sizeof(trans[0]);
+	UOSInt tranCnt = sizeof(trans) / sizeof(trans[0]);
 	if (colorCount == 0)
 	{
 		*gamma = 1.0;
@@ -1381,7 +1381,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(Int32 colorCount, UI
 
 	Media::CS::TransferFunc **funcs = MemAlloc(Media::CS::TransferFunc*, tranCnt);
 	Double *diffSqrSum = MemAlloc(Double, tranCnt);
-	OSInt i = tranCnt;
+	UOSInt i = tranCnt;
 	while (i-- > 0)
 	{
 		Media::CS::TransferParam param(trans[i], 2.2);
@@ -1394,7 +1394,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(Int32 colorCount, UI
 	Double v;
 	Double tv;
 
-	OSInt j = 0;
+	UOSInt j = 0;
 	while (j < colorCount)
 	{
 		v = ReadMInt16((UInt8*)&curveColors[j]) * colVal;

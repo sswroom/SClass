@@ -67,8 +67,8 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 {
 	DomainStatus *dnsStat;
 	Double t;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map->Get(domain);

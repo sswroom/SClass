@@ -86,7 +86,7 @@ void Map::VectorLayer::UpdateMapRate()
 
 Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, const UTF8Char *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
 {
-	OSInt i;
+	UOSInt i;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->csys  = csys;
@@ -249,7 +249,7 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 			vec = this->vectorList->GetItem(i);
 			if (vec->GetVectorType() == this->mixedType)
 			{
-				outArr->Add(i);
+				outArr->Add((OSInt)i);
 				ret++;
 			}
 			i++;
@@ -260,7 +260,7 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	{
 		while (i < j)
 		{
-			outArr->Add(i);
+			outArr->Add((OSInt)i);
 			i++;
 		}
 		return j;
@@ -295,7 +295,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 				if (x1 <= vx2 && y1 <= vy2 && x2 >= vx1 && y2 >= vy1)
 				{
 					recCnt++;
-					outArr->Add(i);
+					outArr->Add((Int64)i);
 				}
 			}
 			i++;
@@ -312,7 +312,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 			if (x1 <= vx2 && y1 <= vy2 && x2 >= vx1 && y2 >= vy1)
 			{
 				recCnt++;
-				outArr->Add(i);
+				outArr->Add((Int64)i);
 			}
 			i++;
 		}
@@ -322,7 +322,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 
 Int64 Map::VectorLayer::GetObjectIdMax()
 {
-	return this->vectorList->GetCount() - 1;
+	return (Int64)this->vectorList->GetCount() - 1;
 }
 
 void Map::VectorLayer::ReleaseNameArr(void *nameArr)
@@ -379,7 +379,7 @@ DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, UOSInt *col
 		}
 		else
 		{
-			*colSize = (Int32)this->maxStrLen[colIndex];
+			*colSize = this->maxStrLen[colIndex];
 		}
 	}
 	if (this->cols)
@@ -413,7 +413,7 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	{
 		colDef->SetColName(this->colNames[colIndex]);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
-		colDef->SetColSize((Int32)this->maxStrLen[colIndex]);
+		colDef->SetColSize(this->maxStrLen[colIndex]);
 		colDef->SetColDP(0);
 		colDef->SetAttr(0);
 		colDef->SetDefVal(0);
@@ -450,7 +450,7 @@ void Map::VectorLayer::EndGetObject(void *session)
 Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
 {
 	Map::DrawObjectL *obj;
-	Math::Vector2D *vec = this->vectorList->GetItem((OSInt)id);
+	Math::Vector2D *vec = this->vectorList->GetItem((UOSInt)id);
 	if (vec)
 	{
 		obj = MemAlloc(Map::DrawObjectL, 1);
@@ -490,7 +490,7 @@ Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
 
 Math::Vector2D *Map::VectorLayer::GetVectorById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->vectorList->GetItem((OSInt)id);
+	Math::Vector2D *vec = this->vectorList->GetItem((UOSInt)id);
 	if (vec)
 	{
 		return vec->Clone();
@@ -612,12 +612,12 @@ Bool Map::VectorLayer::SplitPolyline(Double x, Double y)
 	if (objId < 0)
 		return false;
 
-	Math::Polyline *pl = (Math::Polyline*)this->vectorList->GetItem((OSInt)objId);
+	Math::Polyline *pl = (Math::Polyline*)this->vectorList->GetItem((UOSInt)objId);
 	Math::Polyline *pl2;
 	if ((pl2 = pl->SplitByPoint(x, y)) != 0)
 	{
 		this->vectorList->Add(pl2);
-		this->strList->Add(CopyStrs(this->strList->GetItem((OSInt)objId)));
+		this->strList->Add(CopyStrs(this->strList->GetItem((UOSInt)objId)));
 	}
 
 	return false;
@@ -670,12 +670,12 @@ void Map::VectorLayer::OptimizePolylinePath()
 				niy = (Int32)(nearPtY * 200000.0);
 				if (ix == nix && iy == niy)
 				{
-					Math::Polyline *pl = (Math::Polyline*)this->vectorList->GetItem((OSInt)objId);
+					Math::Polyline *pl = (Math::Polyline*)this->vectorList->GetItem((UOSInt)objId);
 					Math::Polyline *pl2;
 					if ((pl2 = pl->SplitByPoint(x, y)) != 0)
 					{
 						this->vectorList->Add(pl2);
-						this->strList->Add(CopyStrs(this->strList->GetItem((OSInt)objId)));
+						this->strList->Add(CopyStrs(this->strList->GetItem((UOSInt)objId)));
 						found = true;
 					}
 				}
@@ -692,12 +692,12 @@ void Map::VectorLayer::OptimizePolylinePath()
 				niy = (Int32)(nearPtY * 200000.0);
 				if (ix == nix && iy == niy)
 				{
-					Math::Polyline *pl = (Math::Polyline*)this->vectorList->GetItem((OSInt)objId);
+					Math::Polyline *pl = (Math::Polyline*)this->vectorList->GetItem((UOSInt)objId);
 					Math::Polyline *pl2;
 					if ((pl2 = pl->SplitByPoint(x, y)) != 0)
 					{
 						this->vectorList->Add(pl2);
-						this->strList->Add(CopyStrs(this->strList->GetItem((OSInt)objId)));
+						this->strList->Add(CopyStrs(this->strList->GetItem((UOSInt)objId)));
 						found = true;
 					}
 				}
@@ -728,8 +728,8 @@ void Map::VectorLayer::ReplaceVector(Int64 id, Math::Vector2D *vec)
 	}
 	else
 	{
-		Math::Vector2D *v = this->vectorList->GetItem((OSInt)id);
-		this->vectorList->SetItem((OSInt)id, vec);
+		Math::Vector2D *v = this->vectorList->GetItem((UOSInt)id);
+		this->vectorList->SetItem((UOSInt)id, vec);
 		DEL_CLASS(v);
 	}
 }
@@ -745,7 +745,7 @@ void Map::VectorLayer::ConvCoordinateSystem(Math::CoordinateSystem *csys)
 	else
 	{
 		Math::Vector2D *v;
-		OSInt i;
+		UOSInt i;
 		i = this->vectorList->GetCount();
 		while (i-- > 0)
 		{

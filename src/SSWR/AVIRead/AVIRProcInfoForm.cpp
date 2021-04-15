@@ -283,10 +283,10 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		Data::ArrayList<Manage::ModuleInfo *> modList;
 		Manage::ModuleInfo *module;
 		UTF8Char sbuff[512];
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt addr;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		UOSInt addr;
 		UInt32 size;
 
 		proc.GetModules(&modList);
@@ -324,11 +324,11 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		Data::ArrayList<Manage::ThreadInfo *> threadList;
 		Manage::ThreadInfo *t;
 		UTF8Char sbuff[512];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		OSInt k;
 		OSInt l;
-		Int64 addr;
+		UInt64 addr;
 
 		proc.GetThreads(&threadList);
 		this->lvDetThread->ClearItems();

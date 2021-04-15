@@ -60,8 +60,8 @@ namespace Map
 		virtual DrawObjectL *GetObjectByIdD(void *session, Int64 id);
 		virtual Math::Vector2D *GetVectorById(void *session, Int64 id);
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
-		virtual OSInt GetNameCol();
-		virtual void SetNameCol(OSInt nameCol);
+		virtual UOSInt GetNameCol();
+		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass();
 		virtual Math::CoordinateSystem *GetCoordinateSystem();

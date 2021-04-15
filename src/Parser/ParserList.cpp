@@ -16,7 +16,7 @@ Parser::ParserList::ParserList()
 Parser::ParserList::~ParserList()
 {
 	IO::IParser *parser;
-	OSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr->GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr->GetItem(i);
@@ -47,7 +47,7 @@ void Parser::ParserList::AddObjectParser(IO::IObjectParser *parser)
 void Parser::ParserList::SetCodePage(Int32 codePage)
 {
 	IO::IParser *parser;
-	OSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr->GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr->GetItem(i);
@@ -64,7 +64,7 @@ void Parser::ParserList::SetCodePage(Int32 codePage)
 void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 {
 	IO::IParser *parser;
-	OSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr->GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr->GetItem(i);
@@ -81,7 +81,7 @@ void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
 {
 	IO::IParser *parser;
-	OSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr->GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr->GetItem(i);
@@ -98,7 +98,7 @@ void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
 void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 {
 	IO::IParser *parser;
-	OSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr->GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr->GetItem(i);
@@ -115,7 +115,7 @@ void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 {
 	IO::IParser *parser;
-	OSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr->GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr->GetItem(i);
@@ -132,8 +132,8 @@ void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
 {
 	IO::IParser *parser;
-	OSInt i;
-	OSInt j = this->filePArr->GetCount();
+	UOSInt i;
+	UOSInt j = this->filePArr->GetCount();
 	i = 0;
 	while (i < j)
 	{
@@ -153,8 +153,8 @@ void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::Parsed
 
 IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t, IO::ParsedObject::ParserType targetType)
 {
-	Int32 i = 0;
-	OSInt j = this->filePArr->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->filePArr->GetCount();
 	IO::IFileParser *parser;
 	IO::ParsedObject *result;
 	if (fd->GetDataSize() <= 0)
@@ -203,8 +203,8 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::Par
 
 IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::ParsedObject::ParserType *t)
 {
-	Int32 i = 0;
-	OSInt j = this->objPArr->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->objPArr->GetCount();
 	IO::IObjectParser *parser;
 	IO::ParsedObject *result;
 	while (i < j)

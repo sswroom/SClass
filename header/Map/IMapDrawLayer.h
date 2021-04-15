@@ -60,7 +60,7 @@ namespace Map
 			Double objDist;
 		} ObjectInfo;
 	protected:
-		OSInt nameCol;
+		UOSInt nameCol;
 		Math::CoordinateSystem *csys;
 		const UTF8Char *layerName;
 
@@ -93,7 +93,7 @@ namespace Map
 
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
-		IMapDrawLayer(const UTF8Char *sourceName, OSInt nameCol, const UTF8Char *layerName);
+		IMapDrawLayer(const UTF8Char *sourceName, UOSInt nameCol, const UTF8Char *layerName);
 		virtual ~IMapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -131,8 +131,8 @@ namespace Map
 		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 		virtual void Reconnect();
 
-		virtual OSInt GetNameCol();
-		virtual void SetNameCol(OSInt nameCol);
+		virtual UOSInt GetNameCol();
+		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass() = 0;
 		const UTF8Char *GetName();
@@ -142,8 +142,8 @@ namespace Map
 
 		Int32 CalBlockSize();
 
-		UTF8Char *GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, Int32 strIndex);
-		UTF8Char *GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, Int32 strIndex);
+		UTF8Char *GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex);
+		UTF8Char *GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex);
 		Int64 GetNearestObjectId(void *session, Double x, Double y, Double *pointX, Double *pointY);
 		OSInt GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Double x, Double y, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(Data::ArrayList<ObjectInfo*> *objList);
@@ -181,6 +181,7 @@ namespace Map
 		void *nameArr;
 		OSInt currIndex;
 
+		Int64 GetCurrObjId();
 	public:
 		MapLayerReader(IMapDrawLayer *layer);
 		~MapLayerReader();

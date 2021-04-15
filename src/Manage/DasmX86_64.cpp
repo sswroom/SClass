@@ -474,9 +474,9 @@ UTF8Char *DasmX86_64_ParseRegDR(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8C
 void DasmX86_64_ParseSIB(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *memName, Bool allowEbp, UInt64 *memAddr)
 {
 	UInt8 sib = sess->memReader->ReadMemUInt8(sess->regs.rip);
-	UInt8 sibi = ((sib >> 3) & 7) | ((sess->thisStatus & 0x200) >> 6);
-	UInt8 sibs = sib >> 6;
-	UInt8 sibb = (sib & 7) | ((sess->thisStatus & 0x100) >> 5);
+	UInt8 sibi = (UInt8)(((sib >> 3) & 7) | ((sess->thisStatus & 0x200) >> 6));
+	UInt8 sibs = (UInt8)(sib >> 6);
+	UInt8 sibb = (UInt8)((sib & 7) | ((sess->thisStatus & 0x100) >> 5));
 	Int32 baseReg = 16;
 	Int32 indexReg = 16;
 	Int32 addr = 0;
@@ -517,13 +517,13 @@ void DasmX86_64_ParseSIB(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *me
 			}
 			else
 			{
-				addr = sess->memReader->ReadMemUInt32(sess->regs.rip);
+				addr = (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip);
 				sess->regs.rip += 4;
 			}
 		}
 		else if (sibs == 3)
 		{
-			addr = sess->memReader->ReadMemUInt32(sess->regs.rip);
+			addr = (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip);
 			sess->regs.rip += 4;
 		}
 	}
@@ -600,14 +600,14 @@ void DasmX86_64_ParseSIB(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *me
 		else if (addr > 1024)
 		{
 			memName = Text::StrConcat(memName, (const UTF8Char*)"+0x");
-			memName = Text::StrHexVal32(memName, addr);
+			memName = Text::StrHexVal32(memName, (UInt32)addr);
 		}
 		else
 		{
 			*memName++ = '+';
 			memName = Text::StrInt32(memName, addr);
 		}
-		srcAddr += addr;
+		srcAddr = srcAddr + addr;
 	}
 	*memName = 0;
 	if (memAddr)

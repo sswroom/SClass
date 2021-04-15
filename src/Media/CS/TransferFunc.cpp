@@ -91,7 +91,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double gamma)
 	}
 }
 
-void Media::CS::TransferParam::Set(TransferType tranType, Double *params, OSInt paramCnt)
+void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UOSInt paramCnt)
 {
 	this->tranType = tranType;
 	this->gamma = 2.2;

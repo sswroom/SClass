@@ -5,7 +5,7 @@ namespace Media
 	class ImageTo8Bit
 	{
 	public:
-		static void From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl);
+		static void From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
 	};
-};
+}
 #endif

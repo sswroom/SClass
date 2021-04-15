@@ -8,14 +8,14 @@ namespace IO
 	{
 	private:
 		UInt8 *filePtr;
-		Int64 fileSize;
+		UInt64 fileSize;
 
 	public:
 		MemFileBuffer(const UTF8Char *fileName);
 		virtual ~MemFileBuffer();
 
 		virtual UInt8 *GetPointer();
-		virtual Int64 GetLength();
+		virtual UInt64 GetLength();
 	};
-};
+}
 #endif

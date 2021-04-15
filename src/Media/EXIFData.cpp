@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
+#include "Math/Math.h"
 #include "Media/EXIFData.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -2031,7 +2032,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 	return false;
 }
 
-Bool Media::EXIFData::GetGeoBounds(OSInt imgW, OSInt imgH, Int32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, Int32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
 	Media::EXIFData::EXIFItem *item;
 	Media::EXIFData::EXIFItem *item2;
@@ -2063,8 +2064,8 @@ Bool Media::EXIFData::GetGeoBounds(OSInt imgW, OSInt imgH, Int32 *srid, Double *
 	*minY = coord->CalLatByDist(mapY, (imgH - imgY) * mppY);*/
 	*minX = mapX - imgX * mppX;
 	*maxY = mapY + imgY * mppY;
-	*maxX = mapX + (imgW - imgX) * mppX;
-	*minY = mapY - (imgH - imgY) * mppY;
+	*maxX = mapX + (Math::UOSInt2Double(imgW) - imgX) * mppX;
+	*minY = mapY - (Math::UOSInt2Double(imgH) - imgY) * mppY;
 
 //	DEL_CLASS(coord);
 	return true;

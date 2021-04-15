@@ -112,7 +112,7 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 	{
 		j = 0;
 	}
-	if (j & 0x80000000)
+	if (j < 0)
 		j = 0;
 
 	k = j;

@@ -8,7 +8,7 @@ Data::ArrayListCmp::ArrayListCmp() : Data::SortableArrayList<Data::IComparable*>
 {
 }
 
-Data::ArrayListCmp::ArrayListCmp(OSInt capacity) : Data::SortableArrayList<Data::IComparable*>(capacity)
+Data::ArrayListCmp::ArrayListCmp(UOSInt capacity) : Data::SortableArrayList<Data::IComparable*>(capacity)
 {
 }
 

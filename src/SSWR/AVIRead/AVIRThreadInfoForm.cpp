@@ -425,9 +425,9 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		{
 			UInt8 buff[16];
 			UTF8Char sbuff[64];
-			Int32 bitCnt;
-			OSInt i;
-			OSInt j;
+			UInt32 bitCnt;
+			UOSInt i;
+			UOSInt j;
 			OSInt k;
 			i = 0;
 			j = context->GetRegisterCnt();
@@ -480,7 +480,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRThreadInfoForm::~AVIRThreadInfoForm()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->stacks->GetCount();
 	while (i-- > 0)
 	{

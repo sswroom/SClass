@@ -8,7 +8,7 @@ namespace IO
 	public:
 		virtual ~IFileBuffer(){};
 		virtual UInt8 *GetPointer() = 0;
-		virtual Int64 GetLength() = 0;
+		virtual UInt64 GetLength() = 0;
 	};
-};
+}
 #endif

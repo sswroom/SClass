@@ -1213,8 +1213,8 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Medi
 	{
 		return 0;
 	}
-	OSInt targetWidth = this->targetWidth;
-	OSInt targetHeight = this->targetHeight;
+	UOSInt targetWidth = this->targetWidth;
+	UOSInt targetHeight = this->targetHeight;
 	if (targetWidth == 0)
 	{
 		targetWidth = Math::Double2Int32(srcX2 - srcX1);

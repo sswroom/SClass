@@ -104,10 +104,10 @@ Bool IO::BufferedInputStream::Recover()
 
 UInt64 IO::BufferedInputStream::Seek(SeekType origin, Int64 position)
 {
-	UInt64 targetPos;
+	Int64 targetPos;
 	if (origin == IO::SeekableStream::ST_END)
 	{
-		targetPos = this->stm->GetLength() + position;
+		targetPos = ((Int64)this->stm->GetLength() + position);
 	}
 	else if (origin == IO::SeekableStream::ST_BEGIN)
 	{
@@ -115,16 +115,20 @@ UInt64 IO::BufferedInputStream::Seek(SeekType origin, Int64 position)
 	}
 	else if (origin == IO::SeekableStream::ST_CURRENT)
 	{
-		targetPos = this->stmPos + this->buffOfst + position;
+		targetPos = (Int64)(this->stmPos + this->buffOfst) + position;
 	}
 	else
 	{
 		targetPos = position;
 	}
 	
+	if (targetPos < 0)
+	{
+		targetPos = 0;
+	}
 	if (targetPos >= this->stmPos && targetPos <= this->stmPos + this->stmBuffSize)
 	{
-		this->buffOfst = (OSInt)(targetPos - this->stmPos);
+		this->buffOfst = (UOSInt)((UInt64)targetPos - this->stmPos);
 	}
 	else
 	{

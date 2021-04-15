@@ -13,12 +13,12 @@ namespace Media
 		const UTF8Char *printerName;
 		
 	public:
-		static OSInt GetPrinterCount();
-		static UTF8Char *GetPrinterName(UTF8Char *sbuff, OSInt index);
+		static UOSInt GetPrinterCount();
+		static UTF8Char *GetPrinterName(UTF8Char *sbuff, UOSInt index);
 		static Printer *SelectPrinter(void *hWnd);
 
 	private:
-		Printer(const WChar *printerName, UInt8 *devMode, OSInt devModeSize);
+		Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize);
 	public:
 		Printer(const UTF8Char *printerName);
 		~Printer();

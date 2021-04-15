@@ -37,7 +37,7 @@ Media::VectorDocument::VectorDocument(Int32 srid, const UTF8Char *name, Media::D
 
 Media::VectorDocument::~VectorDocument()
 {
-	OSInt i;
+	UOSInt i;
 	Media::VectorGraph *graph;
 	i = this->items->GetCount();
 	while (i-- > 0)

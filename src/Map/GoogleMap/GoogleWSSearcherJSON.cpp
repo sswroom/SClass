@@ -64,7 +64,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(const UTF8Char *goo
 	{
 		Crypto::Encrypt::Base64 b64;
 		const UTF8Char *tmpKeyStr;
-		OSInt tmpKeyStrLeng;
+		UOSInt tmpKeyStrLeng;
 
 		this->gooCliId = Text::StrCopyNew(gooCliId);
 		tmpKeyStr = Text::StrCopyNew(gooPrivKey);
@@ -94,7 +94,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	Data::DateTime currDt;
 	Int32 i;
 	UInt8 databuff[2048];
-	OSInt readSize;
+	UOSInt readSize;
 
 	Sync::MutexUsage mutUsage(this->mut);
 	this->srchCnt++;
@@ -104,7 +104,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	{
 		if (i >= 0)
 		{
-			Sync::Thread::Sleep(200 - i);
+			Sync::Thread::Sleep((UOSInt)(200 - i));
 		}
 	}
 
@@ -127,10 +127,10 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 
 		UInt8 result[20];
 		UInt8 result2[40];
-		OSInt size;
+		UOSInt size;
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
-		hmac.Calc(urlStart, sptr - urlStart);
+		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Crypto::Encrypt::Base64 b64;
 		size = b64.Encrypt(result, 20, result2, 0);
@@ -180,9 +180,9 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 					Text::JSONObject *jobj = (Text::JSONObject*)obj;
 					if (jobj->GetObjectValue((const UTF8Char*)"status")->Equals((const UTF8Char*)"OK"))
 					{
-						OSInt i;
-						OSInt j;
-						OSInt bestResult = 0;
+						UOSInt i;
+						UOSInt j;
+						UOSInt bestResult = 0;
 						Text::JSONObject *result;
 						Text::JSONArray *resultType;
 						Text::JSONArray *arr = (Text::JSONArray*)jobj->GetObjectValue((const UTF8Char*)"results");

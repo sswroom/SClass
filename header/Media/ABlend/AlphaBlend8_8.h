@@ -27,21 +27,21 @@ namespace Media
 		private:
 			UInt8 *rgbTable;
 			ThreadStat *stats;
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			Sync::Mutex *mut;
 			Sync::Event *mainEvt;
 			
-			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
-			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
+			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
+			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 
 			static UInt32 __stdcall ProcessThread(void *userObj);
 		public:
 			AlphaBlend8_8();
 			virtual ~AlphaBlend8_8();
 
-			virtual void Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, Media::AlphaType srcAType);
-			virtual void PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
+			virtual void Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
+			virtual void PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 		};
-	};
-};
+	}
+}
 #endif

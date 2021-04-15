@@ -10,7 +10,7 @@ extern "C"
 	void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
 }
 
-void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (height < (this->threadCnt << 4))
 	{
@@ -18,12 +18,12 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 
 	}
 	else
 	{
-		OSInt lastHeight = height;
-		OSInt currHeight;
-		OSInt i = this->threadCnt;
+		UOSInt lastHeight = height;
+		UOSInt currHeight;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			currHeight = MulDivOS(height, i, this->threadCnt);
+			currHeight = MulDivUOS(height, i, this->threadCnt);
 			this->stats[i].dest = dest + dbpl * currHeight;
 			this->stats[i].dbpl = dbpl;
 			this->stats[i].src = src + sbpl * currHeight;
@@ -54,7 +54,7 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 
 	}
 }
 
-void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (height < (this->threadCnt << 4))
 	{
@@ -62,12 +62,12 @@ void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt
 	}
 	else
 	{
-		OSInt lastHeight = height;
-		OSInt currHeight;
-		OSInt i = this->threadCnt;
+		UOSInt lastHeight = height;
+		UOSInt currHeight;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			currHeight = MulDivOS(height, i, this->threadCnt);
+			currHeight = MulDivUOS(height, i, this->threadCnt);
 			this->stats[i].dest = dest + dbpl * currHeight;
 			this->stats[i].dbpl = dbpl;
 			this->stats[i].src = src + sbpl * currHeight;
@@ -200,7 +200,7 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 	DEL_CLASS(this->mainEvt);
 }
 
-void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, Media::AlphaType srcAType)
+void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (srcAType == Media::AT_PREMUL_ALPHA)
@@ -216,7 +216,7 @@ void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *s
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ABlend::AlphaBlend8_8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	OSInt i;
 	sbpl -= width << 2;

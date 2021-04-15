@@ -360,8 +360,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 	me->lbDNSTargetDomain->ClearItems();
 	if (target)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Sync::MutexUsage mutUsage(target->mut);
 		i = 0;
 		j = target->addrList->GetCount();
@@ -1252,9 +1252,9 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(&connInfoList);
 	i = 0;

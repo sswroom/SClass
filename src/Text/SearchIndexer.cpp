@@ -40,13 +40,13 @@ void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 		i = tmpVal->SortedIndexOf(key);
 		if (i < 0)
 		{
-			tmpVal->Insert(~i, key);
+			tmpVal->Insert((UOSInt)~i, key);
 		}
 	}
 	this->ta->EndAnalyze(sess);
 }
 
-OSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF8Char *searchStr, OSInt maxResults)
+UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF8Char *searchStr, UOSInt maxResults)
 {
 	UTF8Char sbuff[256];
 	Data::ArrayList<Data::ArrayListInt64*> *resultList;
@@ -72,11 +72,11 @@ OSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF8
 	}
 	this->ta->EndAnalyze(sess);
 	
-	OSInt retCnt = 0;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt retCnt = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Int64 ind;
 	j = resultList->GetCount();
 	if (j > 0)

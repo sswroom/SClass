@@ -46,7 +46,7 @@ UOSInt Math::Geometry::BoundPolygonY(Int32 *points, UOSInt nPoints, Int32 *point
 	OSInt thisX;
 	OSInt thisY;
 	OSInt yStat;
-	OSInt i;
+	UOSInt i;
 
 	lastX = points[(nPoints << 1) - 2];
 	lastY = points[(nPoints << 1) - 1];
@@ -168,7 +168,7 @@ UOSInt Math::Geometry::BoundPolygonY(Int32 *points, UOSInt nPoints, Int32 *point
 		}
 	}
 
-	return ((pointsCurr - pointOut) >> 1);
+	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
 UOSInt Math::Geometry::BoundPolygonX(Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minX, OSInt maxX, OSInt ofstX, OSInt ofstY)
@@ -179,7 +179,7 @@ UOSInt Math::Geometry::BoundPolygonX(Int32 *points, UOSInt nPoints, Int32 *point
 	Int32 thisX;
 	Int32 thisY;
 	Int32 xStat;
-	OSInt i;
+	UOSInt i;
 
 	lastX = points[(nPoints << 1) - 2];
 	lastY = points[(nPoints << 1) - 1];
@@ -312,7 +312,7 @@ UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *poi
 	Double thisX;
 	Double thisY;
 	OSInt yStat;
-	OSInt i;
+	UOSInt i;
 
 	lastX = points[(nPoints << 1) - 2];
 	lastY = points[(nPoints << 1) - 1];
@@ -445,7 +445,7 @@ UOSInt Math::Geometry::BoundPolygonX(Double *points, UOSInt nPoints, Double *poi
 	Double thisX;
 	Double thisY;
 	Double xStat;
-	OSInt i;
+	UOSInt i;
 
 	lastX = points[(nPoints << 1) - 2];
 	lastY = points[(nPoints << 1) - 1];
@@ -576,8 +576,8 @@ Bool Math::Geometry::InPolygon(Int32 *points, UOSInt nPoints, Int32 ptX, Int32 p
 	Int32 firstY;
 	Int32 lastX;
 	Int32 lastY;
-	Int32 i;
-	Int32 j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt k;
 	Int32 leftCnt = 0;
 	i = 0;
@@ -907,9 +907,9 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	Double thisY;
 	Double tempX;
 	Double sum;
-	OSInt k;
-	OSInt j;
-	OSInt i = nPoints;
+	UOSInt k;
+	UOSInt j;
+	UOSInt i = nPoints;
 	Data::ArrayListDbl *ptArr;
 	if (i <= 0)
 	{

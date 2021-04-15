@@ -36,7 +36,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	}
 	UOSInt i;
 	Int32 *currIds;
-	Int32 totalCnt = 0;
+	UInt32 totalCnt = 0;
 
 	this->maxId = -1;
 	this->ofsts = 0;
@@ -96,7 +96,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 		i = (UOSInt)file->GetLength();
 		this->ofsts = (Int32*)MAlloc(i);
 		file->Read((UInt8*)this->ofsts, i);
-		this->maxId = (i / 8) - 2;
+		this->maxId = (OSInt)(i / 8) - 2;
 	}
 	DEL_CLASS(file);
 
@@ -216,7 +216,7 @@ Map::DrawLayerType Map::CIPLayer2::GetLayerType()
 
 UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
-	OSInt textSize;
+	UOSInt textSize;
 	UOSInt i;
 	UOSInt l = 0;
 	UOSInt k;
@@ -247,14 +247,14 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 				{
 					if (buff[4])
 					{
-						strTmp = MemAlloc(UTF16Char, (buff[4] >> 1) + 1);
+						strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
 						cis->Read((UInt8*)strTmp, buff[4]);
 						strTmp[buff[4] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Put(*(Int32*)buff, strTmp);
 						textSize = Text::StrUTF16_UTF8Cnt(strTmp, -1) - 1;
 						if (textSize > this->maxTextSize)
-							maxTextSize = (Int32)textSize;
+							maxTextSize = textSize;
 					}
 					else
 					{
@@ -289,7 +289,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 		UOSInt arrSize;
 		Int64 lastId;
 		Int64 *arr = outArr->GetArray(&arrSize);
-		ArtificialQuickSort_SortInt64(arr, 0, arrSize - 1);
+		ArtificialQuickSort_SortInt64(arr, 0, (OSInt)arrSize - 1);
 		if (outArr->GetCount() > 0)
 		{
 			lastId = -1;
@@ -342,7 +342,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 		bottomBlk = y2 / blkScale;
 	}
 
-	OSInt textSize;
+	UOSInt textSize;
 	OSInt i;
 	OSInt j;
 	OSInt k;
@@ -418,7 +418,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 					{
 						if (buff[4])
 						{
-							strTmp = MemAlloc(UTF16Char, (buff[4] >> 1) + 1);
+							strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
 							cis->Read((UInt8*)strTmp, buff[4]);
 							strTmp[buff[4] >> 1] = 0;
 							outArr->Add(*(Int32*)buff);
@@ -426,7 +426,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 							textSize = Text::StrUTF16_UTF8Cnt(strTmp, -1) - 1;
 							if (textSize > this->maxTextSize)
 							{
-								this->maxTextSize = (Int32)textSize;
+								this->maxTextSize = textSize;
 							}
 						}
 						else if (keepEmpty)
@@ -469,7 +469,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 		UOSInt k;
 		Int64 lastId;
 		Int32 *arr = tmpArr->GetArray(&arrSize);
-		ArtificialQuickSort_SortInt32(arr, 0, arrSize - 1);
+		ArtificialQuickSort_SortInt32(arr, 0, (OSInt)arrSize - 1);
 		if (tmpArr->GetCount() > 0)
 		{
 			lastId = -1;
@@ -508,7 +508,7 @@ void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<WChar*> *tmpMap = (Data::Int32Map<WChar*>*)nameArr;
 	Data::ArrayList<WChar*> *tmpArr = tmpMap->GetValues();
-	OSInt i = tmpArr->GetCount();
+	UOSInt i = tmpArr->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(tmpArr->RemoveAt(i));
@@ -676,11 +676,11 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	}
 	obj = MemAlloc(Map::CIPLayer2::CIPFileObject, 1);
 	obj->id = buff[0];
-	obj->nPtOfst = buff[1];
+	obj->nPtOfst = (UInt32)buff[1];
 	if (buff[1] > 0)
 	{
-		obj->ptOfstArr = MemAlloc(UInt32, buff[1]);
-		cip->Read((UInt8*)obj->ptOfstArr, sizeof(UInt32) * buff[1]);
+		obj->ptOfstArr = MemAlloc(UInt32, (UInt32)buff[1]);
+		cip->Read((UInt8*)obj->ptOfstArr, sizeof(UInt32) * (UInt32)buff[1]);
 	}
 	else
 	{
@@ -697,7 +697,7 @@ void Map::CIPLayer2::ReleaseFileObjs(Data::Int32Map<Map::CIPLayer2::CIPFileObjec
 {
 	Data::ArrayList<Map::CIPLayer2::CIPFileObject*> *objArr = objs->GetValues();
 	Map::CIPLayer2::CIPFileObject *obj;
-	OSInt i = objArr->GetCount();
+	UOSInt i = objArr->GetCount();
 	while (i-- > 0)
 	{
 		obj = objArr->GetItem(i);

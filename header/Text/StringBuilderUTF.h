@@ -21,6 +21,7 @@ namespace Text
 		virtual StringBuilderUTF *AppendU64(UInt64 iVal) = 0;
 		virtual StringBuilderUTF *AppendDate(Data::DateTime *dt) = 0;
 		virtual StringBuilderUTF *AppendOSInt(OSInt iVal) = 0;
+		virtual StringBuilderUTF *AppendUOSInt(UOSInt iVal) = 0;
 		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) = 0;
 
 		virtual StringBuilderUTF *AppendHex8(UInt8 iVal) = 0;

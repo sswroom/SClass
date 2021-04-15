@@ -16,8 +16,8 @@ namespace Media
 	{
 	public:
 		Int32 color;
-		Int32 count;
-		OSInt index;
+		UOSInt count;
+		UOSInt index;
 
 		ColorStat()
 		{
@@ -33,7 +33,7 @@ namespace Media
 
 		virtual OSInt CompareTo(Data::IComparable *obj)
 		{
-			Int32 cnt = ((Media::ColorStat*)obj)->count;
+			UOSInt cnt = ((Media::ColorStat*)obj)->count;
 			if (cnt > count)
 			{
 				return 1;
@@ -50,14 +50,14 @@ namespace Media
 	};
 }
 
-void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl)
+void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
 	Data::ArrayListCmp *arr[256];
-	OSInt i;
-	OSInt j;
-	OSInt h;
-	Int32 l;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt h;
+	UOSInt l;
+	UOSInt k;
 	UInt8 *currPtr;
 	UInt8 *currPtr2;
 	UInt8 *ptr;
@@ -66,7 +66,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSIn
 	Data::ArrayListCmp *cArr;
 	Media::ColorStat *cs;
 	Media::ColorStat *cs2;
-	OSInt colorCnt = 0;
+	UOSInt colorCnt = 0;
 
 	i = 256;
 	while (i-- > 0)
@@ -123,9 +123,9 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSIn
 
 	if (colorCnt > 1024)
 	{
-		OSInt rVal;
-		OSInt gVal;
-		OSInt bVal;
+		UOSInt rVal;
+		UOSInt gVal;
+		UOSInt bVal;
 		UInt8 *cols;
 		i = 256;
 		while (i-- > 0)
@@ -225,10 +225,10 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSIn
 					b = (UInt8)(bVal >> 5);
 				}
 
-				*currPtr2 = (r << 5) | (g << 3) | b;
-				rVal = rVal - ((r << 5) | (r << 2) | (r >> 1));
-				gVal = gVal - ((g << 6) | (g << 4) | (g << 2) | g);
-				bVal = bVal - ((b << 5) | (b << 2) | (b >> 1));
+				*currPtr2 = (UInt8)((r << 5) | (g << 3) | b);
+				rVal = rVal - (UOSInt)((r << 5) | (r << 2) | (r >> 1));
+				gVal = gVal - (UOSInt)((g << 6) | (g << 4) | (g << 2) | g);
+				bVal = bVal - (UOSInt)((b << 5) | (b << 2) | (b >> 1));
 
 				currPtr += 4;
 				currPtr2++;
@@ -251,20 +251,20 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSIn
 		}
 		UOSInt arrSize;
 		Data::IComparable **cmpArr = cArr->GetArray(&arrSize);
-		ArtificialQuickSort_SortCmpO(cmpArr, 0, arrSize - 1);
+		ArtificialQuickSort_SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
 
 		Int32 *cols = (Int32*)palette;
 		if (cArr->GetCount() > 256)
 		{
-			OSInt colorProc = cArr->GetCount() - 256;
+			OSInt colorProc = (OSInt)cArr->GetCount() - 256;
 			Int32 currDiff;
 			Int32 minDiff;
-			OSInt minIndex;
+			UOSInt minIndex;
 			i = 256;
 			while (i-- > 0)
 			{
 				cs = (ColorStat*)cArr->GetItem(i);
-				cs->index = (Int32)i;
+				cs->index = i;
 				cols[i] = cs->color;
 			}
 
@@ -337,7 +337,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, OSIn
 			{
 				cs = (ColorStat*)cArr->GetItem(i);
 				cols[i] = cs->color;
-				cs->index = (Int32)i;
+				cs->index = i;
 			}
 		}
 

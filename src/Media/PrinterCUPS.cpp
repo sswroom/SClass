@@ -209,22 +209,22 @@ void Media::CUPSPrintDocument::WaitForEnd()
 	}
 }
 
-OSInt Media::Printer::GetPrinterCount()
+UOSInt Media::Printer::GetPrinterCount()
 {
 	cups_dest_t *dests;
 	int cnt = cupsGetDests(&dests);
 	cupsFreeDests(cnt, dests);
-	return cnt;
+	return (UOSInt)cnt;
 }
 
-UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, OSInt index)
+UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UOSInt index)
 {
 	if (index < 0)
 		return 0;
 	UTF8Char *ret = 0;
 	cups_dest_t *dests;
 	int cnt = cupsGetDests(&dests);
-	if (index < cnt)
+	if (index < (UOSInt)cnt)
 	{
 		ret = Text::StrConcat(sbuff, (const UTF8Char*)dests[index].name);
 	}

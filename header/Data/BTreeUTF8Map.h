@@ -10,8 +10,8 @@ namespace Data
 {
 	template <typename T> struct BTreeUTF8Node
 	{
-		Int32 nodeCnt;
-		Int32 maxLev;
+		UInt32 nodeCnt;
+		UInt32 maxLev;
 		BTreeUTF8Node<T> *parNode;
 		BTreeUTF8Node<T> *leftNode;
 		BTreeUTF8Node<T> *rightNode;
@@ -140,7 +140,7 @@ namespace Data
 					node = node->parNode;
 				}
 				node = tmpNode;
-				Int32 currLev = 1;
+				UInt32 currLev = 1;
 				while (node)
 				{
 					if (node->maxLev >= currLev)
@@ -187,7 +187,7 @@ namespace Data
 					node = node->parNode;
 				}
 				node = tmpNode;
-				Int32 currLev = 1;
+				UInt32 currLev = 1;
 				while (node)
 				{
 					if (node->maxLev >= currLev)
@@ -342,7 +342,7 @@ namespace Data
 
 	template <class T> UInt32 BTreeUTF8Map<T>::CalHash(const UTF8Char *key)
 	{
-		OSInt charCnt = Text::StrCharCnt(key);
+		UOSInt charCnt = Text::StrCharCnt(key);
 		this->crc->Clear();
 		this->crc->Calc((const UInt8*)key, charCnt * sizeof(UTF8Char));
 		UInt8 hash[4];

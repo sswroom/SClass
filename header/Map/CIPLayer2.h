@@ -11,7 +11,7 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Int32 objCnt;
+			UInt32 objCnt;
 			Int32 xblk;
 			Int32 yblk;
 			Int32 sofst;
@@ -34,7 +34,7 @@ namespace Map
 		Int32 blkScale;
 		Bool missFile;
 		CIPBlock *blks;
-		Int32 maxTextSize;
+		UOSInt maxTextSize;
 		Map::DrawLayerType lyrType;
 		const UTF8Char *layerName;
 		Int64 maxId;

@@ -20,10 +20,10 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 	}
 	else
 	{
-		UInt32 port;
+		UInt16 port;
 		Text::StringBuilderUTF8 sb;
 		me->txtSMTPPort->GetText(&sb);
-		if (!sb.ToUInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
 			return;

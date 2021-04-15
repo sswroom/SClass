@@ -91,16 +91,16 @@ void Media::IImgResizer::CalOutputSize(Media::FrameInfo *srcInfo, OSInt targetWi
 		if (targetWidth * srcInfo->dispHeight * srcInfo->par2 > targetHeight * srcInfo->dispWidth)
 		{
 			destInfo->dispHeight = targetHeight;
-			destInfo->dispWidth = Math::Double2Int32(targetHeight / srcInfo->par2 * srcInfo->dispWidth / srcInfo->dispHeight);
+			destInfo->dispWidth = Math::Double2Int32(targetHeight / srcInfo->par2 * Math::UOSInt2Double(srcInfo->dispWidth) / Math::UOSInt2Double(srcInfo->dispHeight));
 		}
 		else
 		{
 			destInfo->dispWidth = targetWidth;
-			destInfo->dispHeight = Math::Double2Int32(targetWidth * srcInfo->dispHeight * srcInfo->par2 / srcInfo->dispWidth);
+			destInfo->dispHeight = Math::Double2Int32(targetWidth * Math::UOSInt2Double(srcInfo->dispHeight) * srcInfo->par2 / Math::UOSInt2Double(srcInfo->dispWidth));
 		}
 		destInfo->storeWidth = destInfo->dispWidth;
 		destInfo->storeHeight = destInfo->dispHeight;
-		destInfo->par2 = srcInfo->par2 * srcInfo->dispHeight / srcInfo->dispWidth * destInfo->dispWidth / destInfo->dispHeight;
+		destInfo->par2 = srcInfo->par2 * Math::UOSInt2Double(srcInfo->dispHeight) / Math::UOSInt2Double(srcInfo->dispWidth) * Math::UOSInt2Double(destInfo->dispWidth) / Math::UOSInt2Double(destInfo->dispHeight);
 		destInfo->hdpi = srcInfo->hdpi * targetWidth / srcInfo->dispWidth;
 		destInfo->vdpi = srcInfo->vdpi * targetHeight / srcInfo->dispHeight;
 	}

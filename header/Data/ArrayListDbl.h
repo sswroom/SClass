@@ -8,11 +8,11 @@ namespace Data
 	{
 	public:
 		ArrayListDbl();
-		ArrayListDbl(OSInt Capacity);
+		ArrayListDbl(UOSInt capacity);
 
 		virtual ArrayList<Double> *Clone();
-		virtual UOSInt SortedInsert(Double Val);
-		virtual OSInt SortedIndexOf(Double Val);
+		virtual UOSInt SortedInsert(Double val);
+		virtual OSInt SortedIndexOf(Double val);
 	};
 }
 #endif

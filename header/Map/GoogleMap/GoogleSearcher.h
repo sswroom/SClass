@@ -16,7 +16,7 @@ namespace Map
 			const UTF8Char *gooKey;
 			const UTF8Char *gooCliId;
 			UInt8 *gooPrivKey;
-			OSInt gooPrivKeyLeng;
+			UOSInt gooPrivKeyLeng;
 			Net::SocketFactory *sockf;
 			Data::DateTime *lastSrchDate;
 			Sync::Mutex *mut;

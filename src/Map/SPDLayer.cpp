@@ -62,7 +62,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	}
 	else
 	{
-		i = file->GetErrCode();
+		i = (UOSInt)file->GetErrCode();
 	}
 	DEL_CLASS(bstm);
 	DEL_CLASS(file);
@@ -74,7 +74,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 		i = (UOSInt)file->GetLength();
 		this->ofsts = (Int32*)MAlloc(i);
 		file->Read((UInt8*)this->ofsts, i);
-		this->maxId = (i / 8) - 2;
+		this->maxId = (OSInt)(i / 8) - 2;
 	}
 	DEL_CLASS(file);
 
@@ -120,7 +120,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 
 Map::SPDLayer::~SPDLayer()
 {
-	Int32 i;
+	UInt32 i;
 /*	if (cip)
 	{
 		DEL_CLASS(cip);
@@ -167,7 +167,7 @@ Map::DrawLayerType Map::SPDLayer::GetLayerType()
 
 UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
-	OSInt textSize;
+	UOSInt textSize;
 	UOSInt i;
 	UOSInt k;
 	UOSInt l;
@@ -197,7 +197,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 				cis->Read(buff, 13);
 				if (buff[4])
 				{
-					strTmp = MemAlloc(WChar, (buff[12] >> 1) + 1);
+					strTmp = MemAlloc(WChar, (UOSInt)(buff[12] >> 1) + 1);
 					cis->Read((UInt8*)strTmp, buff[12]);
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
@@ -205,7 +205,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 					cis->Seek(IO::SeekableStream::ST_CURRENT, *(Int32*)&buff[4] - 13 - buff[12]);
 					textSize = Text::StrWChar_UTF8Cnt(strTmp, -1) - 1;
 					if (textSize > this->maxTextSize)
-						maxTextSize = (Int32)textSize;
+						maxTextSize = textSize;
 				}
 				else
 				{
@@ -264,7 +264,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		bottomBlk = y2 / blkScale;
 	}
 
-	OSInt textSize;
+	UOSInt textSize;
 	Int32 i;
 	Int32 j;
 	Int32 k;
@@ -272,7 +272,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	if (this->nblks > 10)
 	{
 		i = 0;
-		j = this->nblks - 1;
+		j = (Int32)this->nblks - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
@@ -304,7 +304,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		j = 0;
 	}
 
-	if (j & 0x80000000)
+	if (j < 0)
 		j = 0;
 
 	k = j;
@@ -332,13 +332,13 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 				WChar *strTmp;
 				UInt8 buff[13];
 				cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
-				i = this->blks[k].objCnt;
+				i = (Int32)this->blks[k].objCnt;
 				while (i-- > 0)
 				{
 					cis->Read(buff, 13);
 					if (buff[4])
 					{
-						strTmp = MemAlloc(WChar, (buff[12] >> 1) + 1);
+						strTmp = MemAlloc(WChar, (UOSInt)(buff[12] >> 1) + 1);
 						cis->Read((UInt8*)strTmp, buff[12]);
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
@@ -347,7 +347,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 						textSize = Text::StrWChar_UTF8Cnt(strTmp, -1);
 						if (textSize > this->maxTextSize)
 						{
-							this->maxTextSize = (Int32)textSize;
+							this->maxTextSize = textSize;
 						}
 					}
 					else if (keepEmpty)
@@ -396,7 +396,7 @@ Int64 Map::SPDLayer::GetObjectIdMax()
 void Map::SPDLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::ArrayList<WChar *>*tmpArr = (Data::ArrayList<WChar*>*)nameArr;
-	OSInt i = tmpArr->GetCount();
+	UOSInt i = tmpArr->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(tmpArr->RemoveAt(i));
@@ -412,7 +412,7 @@ UTF8Char *Map::SPDLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 		*buff = 0;
 		return 0;
 	}
-	WChar *s = tmpArr->GetItem((OSInt)id);
+	WChar *s = tmpArr->GetItem((UOSInt)id);
 	if (s)
 	{
 		return Text::StrWChar_UTF8(buff, s, -1);
@@ -563,7 +563,7 @@ Map::DrawObjectL *Map::SPDLayer::GetObjectByIdD(void *session, Int64 id)
 	cip->Read((UInt8*)objBuff, 8);
 	obj = MemAlloc(Map::DrawObjectL, 1);
 	obj->objId = objBuff[0];
-	obj->nPtOfst = objBuff[1];
+	obj->nPtOfst = (UInt32)objBuff[1];
 	if (obj->nPtOfst > 0)
 	{
 		obj->ptOfstArr = MemAlloc(UInt32, obj->nPtOfst);
@@ -574,11 +574,11 @@ Map::DrawObjectL *Map::SPDLayer::GetObjectByIdD(void *session, Int64 id)
 		obj->ptOfstArr = 0;
 	}
 	cip->Read((UInt8*)&obj->nPoint, 4);
-	OSInt j = obj->nPoint * 2;
+	UOSInt j = obj->nPoint * 2;
 	obj->pointArr = MemAlloc(Double, j);
 	Int32 *tmpArr = MemAlloc(Int32, j);
 	Double r = 1 / 200000.0;
-	OSInt i = 0;
+	UOSInt i = 0;
 	cip->Read((UInt8*)tmpArr, obj->nPoint * 8);
 	while (i < j)
 	{
@@ -609,16 +609,16 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	
 	if (buff[1] > 0)
 	{
-		ptOfsts = MemAlloc(UInt32, buff[1]);
-		cip->Read((UInt8*)ptOfsts, sizeof(UInt32) * buff[1]);
+		ptOfsts = MemAlloc(UInt32, (UOSInt)buff[1]);
+		cip->Read((UInt8*)ptOfsts, sizeof(UInt32) * (UOSInt)buff[1]);
 	}
 	else
 	{
 		ptOfsts = 0;
 	}
 	cip->Read((UInt8*)&buff[2], 4);
-	points = MemAlloc(Int32, buff[2] * 2);
-	cip->Read((UInt8*)points, buff[2] * 8);
+	points = MemAlloc(Int32, (UOSInt)buff[2] * 2);
+	cip->Read((UInt8*)points, (UOSInt)buff[2] * 8);
 
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
@@ -636,9 +636,9 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		NEW_CLASS(ptColl, Math::Polyline(4326, buff[1], buff[2]));
+		NEW_CLASS(ptColl, Math::Polyline(4326, (UInt32)buff[1], (UInt32)buff[2]));
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
-		MemCopyNO(tmpPtOfsts, ptOfsts, buff[1] << 2);
+		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
 		tmpPoints = ptColl->GetPointList(&i);
 		i = i << 1;
@@ -649,9 +649,9 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		NEW_CLASS(ptColl, Math::Polygon(4326, buff[1], buff[2]));
+		NEW_CLASS(ptColl, Math::Polygon(4326, (UInt32)buff[1], (UInt32)buff[2]));
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
-		MemCopyNO(tmpPtOfsts, ptOfsts, buff[1] << 2);
+		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
 		tmpPoints = ptColl->GetPointList(&i);
 		i = i << 1;

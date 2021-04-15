@@ -16,10 +16,10 @@ namespace IO
 		virtual ~ViewFileBuffer();
 
 		virtual UInt8 *GetPointer();
-		virtual Int64 GetLength();
+		virtual UInt64 GetLength();
 
 	private:
 		void FreePointer();
 	};
-};
+}
 #endif

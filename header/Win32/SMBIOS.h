@@ -83,15 +83,15 @@ namespace Win32
 		} MemoryDeviceInfo;
 	private:
 		const UInt8 *smbiosBuff;
-		OSInt smbiosBuffSize;
+		UOSInt smbiosBuffSize;
 		UInt8 *relPtr;
 
 		void GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType);
 	public:
-		SMBIOS(const UInt8 *smbiosBuff, OSInt smbiosBuffSize, UInt8 *relPtr);
+		SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr);
 		~SMBIOS();
 
-		OSInt GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList);
+		UOSInt GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList);
 		void FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList);
 
 		UTF8Char *GetPlatformName(UTF8Char *buff);

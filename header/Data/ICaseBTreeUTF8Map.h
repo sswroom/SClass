@@ -53,7 +53,7 @@ namespace Data
 					node = node->parNode;
 				}
 				node = tmpNode;
-				Int32 currLev = 1;
+				UInt32 currLev = 1;
 				while (node)
 				{
 					if (node->maxLev >= currLev)
@@ -140,7 +140,7 @@ namespace Data
 	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key)
 	{
 		UTF8Char sbuff[256];
-		OSInt charCnt = Text::StrToUpper(sbuff, key) - sbuff;
+		UOSInt charCnt = (UOSInt)(Text::StrToUpper(sbuff, key) - sbuff);
 		this->crc->Clear();
 		this->crc->Calc((const UInt8*)key, charCnt * sizeof(UTF8Char));
 		UInt8 hash[4];

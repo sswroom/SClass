@@ -278,7 +278,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
 
 void SSWR::AVIRead::AVIRTimedCaptureForm::ReleaseFormats()
 {
-	OSInt i = this->currFormats->GetCount();
+	UOSInt i = this->currFormats->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(this->currFormats->RemoveAt(i));

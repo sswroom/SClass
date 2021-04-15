@@ -66,11 +66,11 @@ namespace IO
 
 		UTF8Char *GetPlatformName(UTF8Char *sbuff);
 		UTF8Char *GetPlatformSN(UTF8Char *sbuff);
-		Int64 GetTotalMemSize();
-		Int64 GetTotalUsableMemSize();
+		UInt64 GetTotalMemSize();
+		UInt64 GetTotalUsableMemSize();
 		ChassisType GetChassisType();
 
-		OSInt GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList);
+		UOSInt GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList);
 		void FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList);
 	};
 }

@@ -10,27 +10,27 @@ IO::SensorManager::~SensorManager()
 {
 }
 
-OSInt IO::SensorManager::GetSensorCnt()
+UOSInt IO::SensorManager::GetSensorCnt()
 {
 	return 0;
 }
 
-IO::Sensor::SensorType IO::SensorManager::GetSensorType(OSInt index)
+IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 {
 	return IO::Sensor::ST_UNKNOWN;
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(OSInt index)
+IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
 {
 	return 0;
 }
 
-OSInt IO::SensorManager::GetAccelerometerCnt()
+UOSInt IO::SensorManager::GetAccelerometerCnt()
 {
 	return 0;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(OSInt index)
+IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
 {
 	return 0;
 }

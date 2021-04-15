@@ -44,21 +44,21 @@ namespace Net
 		DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr);
 		~DNSClient();
 
-		OSInt GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain);
-		OSInt GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain);
-		OSInt GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UInt16 type);
-		OSInt GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip);
-		OSInt GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr);
-		OSInt GetServerName(Data::ArrayList<RequestAnswer*> *answers);
+		UOSInt GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain);
+		UOSInt GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain);
+		UOSInt GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UInt16 type);
+		UOSInt GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip);
+		UOSInt GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr);
+		UOSInt GetServerName(Data::ArrayList<RequestAnswer*> *answers);
 
 		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);
 
 		static OSInt ParseString(UTF8Char *sbuff, const UInt8 *buff, OSInt stringOfst, OSInt endOfst); //return actEndOfst
-		static OSInt ParseAnswers(const UInt8 *buff, OSInt dataSize, Data::ArrayList<RequestAnswer*> *answers);
+		static UOSInt ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::ArrayList<RequestAnswer*> *answers);
 		static void FreeAnswers(Data::ArrayList<RequestAnswer*> *answers);
-		static Int32 GetResponseTTL(const UInt8 *buff, OSInt buffSize);
+		static Int32 GetResponseTTL(const UInt8 *buff, UOSInt buffSize);
 		static OSInt SkipString(const UInt8 *buff, OSInt stringOfst, OSInt endOfst);
 		static const UTF8Char *TypeGetID(UInt16 type);
 	};
-};
+}
 #endif

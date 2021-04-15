@@ -22,14 +22,14 @@ char **backtrace_symbols(void **addrArr, int cnt)
 
 Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 {
-	OSInt i;
-	OSInt j;
-	OSInt baseAddr;
+	UOSInt i;
+	UOSInt j;
+	UOSInt baseAddr;
 	UInt32 size;
 	UTF8Char sbuff[256];
 	NEW_CLASS(this->modNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->modBaseAddrs, Data::ArrayListInt64());
-	NEW_CLASS(this->modSizes, Data::ArrayListInt32());
+	NEW_CLASS(this->modBaseAddrs, Data::ArrayListUInt64());
+	NEW_CLASS(this->modSizes, Data::ArrayListUInt32());
 	this->proc = proc;
 
 	Data::ArrayList<Manage::ModuleInfo*> *modList;
@@ -58,7 +58,7 @@ Manage::SymbolResolver::~SymbolResolver()
 {
 	DEL_CLASS(this->modSizes);
 	DEL_CLASS(this->modBaseAddrs);
-	OSInt i = this->modNames->GetCount();
+	UOSInt i = this->modNames->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->modNames->GetItem(i));
@@ -71,27 +71,27 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	void *addr = (void*)(OSInt)address;
 	char **name = backtrace_symbols(&addr, 1);
 	char *cptr = name[0];
-	while ((*buff++ = *cptr++) != 0);
+	while ((*buff++ = (UTF8Char)*cptr++) != 0);
 	free(name);
 	return buff - 1;
 }
 
-OSInt Manage::SymbolResolver::GetModuleCount()
+UOSInt Manage::SymbolResolver::GetModuleCount()
 {
 	return this->modNames->GetCount();
 }
 
-const UTF8Char *Manage::SymbolResolver::GetModuleName(OSInt index)
+const UTF8Char *Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
 	return this->modNames->GetItem(index);
 }
 
-Int64 Manage::SymbolResolver::GetModuleAddr(OSInt index)
+UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
 {
 	return this->modBaseAddrs->GetItem(index);
 }
 
-Int32 Manage::SymbolResolver::GetModuleSize(OSInt index)
+UInt32 Manage::SymbolResolver::GetModuleSize(UOSInt index)
 {
 	return this->modSizes->GetItem(index);
 }

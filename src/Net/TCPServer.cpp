@@ -68,7 +68,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	Net::TCPServer *svr = (Net::TCPServer*)o;
 	UTF8Char buff[1024];
 	UTF8Char *str;
-	OSInt sthreadCnt = 1;
+	UOSInt sthreadCnt = 1;
 	OSInt i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
@@ -227,8 +227,8 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	Net::TCPServer *svr = (Net::TCPServer*)o;
 	UTF8Char buff[1024];
 	UTF8Char *str;
-	OSInt sthreadCnt = 1;
-	OSInt i;
+	UOSInt sthreadCnt = 1;
+	UOSInt i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;

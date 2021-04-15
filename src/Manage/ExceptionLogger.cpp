@@ -15,17 +15,17 @@
 void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, Manage::ThreadContext *context, Manage::AddressResolver *addrResol)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 
 	context->ToString(&sb);
 	writer->WriteLine(sb.ToString());
 
 	Manage::Process proc;
-	OSInt size;
+	UOSInt size;
 	UInt8 buff[STACKDUMPSIZE];
 	if ((size = proc.ReadMemory(context->GetInstAddr(), buff, 256)) != 0)
 	{
-		OSInt currAddr = context->GetInstAddr();
+		UOSInt currAddr = context->GetInstAddr();
 		UInt8 *currPtr = buff;
 		writer->WriteLine();
 		sb.ClearStr();
@@ -351,7 +351,7 @@ void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackT
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode, const UTF8Char *exName, OSInt exAddr, Manage::ThreadContext *context)
+Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode, const UTF8Char *exName, UOSInt exAddr, Manage::ThreadContext *context)
 {
 #ifndef _WIN32_WCE
 	Manage::SymbolResolver *symResol;
@@ -360,8 +360,8 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 	Text::UTF8Writer writer(&fs);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime d;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 
 	d.SetCurrTime();
@@ -386,9 +386,9 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 		sb.ClearStr();
 		sb.Append(symResol->GetModuleName(i));
 		sb.Append((const UTF8Char*)", Addr=");
-		sb.AppendHexOS((OSInt)symResol->GetModuleAddr(i));
+		sb.AppendHexOS(symResol->GetModuleAddr(i));
 		sb.Append((const UTF8Char*)",size=");
-		sb.AppendHex32((UInt32)symResol->GetModuleSize(i));
+		sb.AppendHex32(symResol->GetModuleSize(i));
 		writer.WriteLine(sb.ToString());
 
 		i++;

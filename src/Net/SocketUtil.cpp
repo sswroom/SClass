@@ -65,7 +65,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const Net::SocketUtil::Ad
 		if (zid != 0)
 		{
 			*buff++ = '%';
-			buff = Text::StrInt32(buff, zid);
+			buff = Text::StrUInt32(buff, zid);
 		}
 		*buff = 0;
 		Text::StrToLower(oriBuff, oriBuff);
@@ -138,7 +138,7 @@ WChar *Net::SocketUtil::GetAddrName(WChar *buff, const AddressInfo *addr)
 		if (zid != 0)
 		{
 			*buff++ = '%';
-			buff = Text::StrInt32(buff, zid);
+			buff = Text::StrUInt32(buff, zid);
 		}
 		*buff = 0;
 		Text::StrToLower(oriBuff, oriBuff);
@@ -252,7 +252,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 	WChar sbuff[51];
 	WChar *sarr[9];
 	WChar *sptr;
-	OSInt i;
+	UOSInt i;
 	OSInt j;
 	OSInt k;
 	Int32 v;
@@ -335,17 +335,17 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		return true;
 	}
 	j = 0;
-	while (j < i)
+	while (j < (OSInt)i)
 	{
 		if (sarr[j][0] == 0)
 		{
-			if (j + 1 >= i)
+			if (j + 1 >= (OSInt)i)
 			{
 				return false;
 			}
 			j++;
 			k = 7;
-			while (i-- > j)
+			while ((OSInt)i-- > j)
 			{
 				v = Text::StrHex2Int32(sarr[i]);
 				if (v > 65535)
@@ -406,7 +406,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 	UTF8Char sbuff[51];
 	UTF8Char *sarr[9];
 	UTF8Char *sptr;
-	OSInt i;
+	UOSInt i;
 	OSInt j;
 	OSInt k;
 	Int32 v;
@@ -489,17 +489,17 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		return true;
 	}
 	j = 0;
-	while (j < i)
+	while (j < (OSInt)i)
 	{
 		if (sarr[j][0] == 0)
 		{
-			if (j + 1 >= i)
+			if (j + 1 >= (OSInt)i)
 			{
 				return false;
 			}
 			j++;
 			k = 7;
-			while (i-- > j)
+			while ((OSInt)i-- > j)
 			{
 				v = Text::StrHex2Int32(sarr[i]);
 				if (v > 65535)
@@ -636,7 +636,7 @@ void Net::SocketUtil::SetAddrInfoV6(AddressInfo *addr, const UInt8 *ipv6, Int32 
 {
 	addr->addrType = AT_IPV6;
 	MemCopyNO(addr->addr, ipv6, 16);
-	*(UInt32*)&addr->addr[16] = zid;
+	*(Int32*)&addr->addr[16] = zid;
 }
 
 void Net::SocketUtil::SetAddrAnyV6(AddressInfo *addr)
@@ -665,7 +665,7 @@ UInt32 Net::SocketUtil::CalcCliId(const AddressInfo *addr)
 UInt32 Net::SocketUtil::IPv4ToSortable(UInt32 ipv4)
 {
 #if IS_BYTEORDER_LE == 1
-	return BSWAP32((Int32)ipv4);
+	return BSWAPU32(ipv4);
 #else
 	return ipv4;
 #endif
@@ -696,7 +696,7 @@ Bool Net::SocketUtil::IPv4SubnetValid(UInt32 subnet)
 Net::SocketUtil::IPType Net::SocketUtil::GetIPv4Type(UInt32 ipv4)
 {
 	UInt8 ipBuff[4];
-	WriteNInt32(ipBuff, ipv4);
+	WriteNUInt32(ipBuff, ipv4);
 	if (ipv4 == 0)
 	{
 		return Net::SocketUtil::IT_NETWORK;

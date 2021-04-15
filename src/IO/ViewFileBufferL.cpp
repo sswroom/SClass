@@ -18,7 +18,7 @@ IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
 	{
 		return;
 	}
-	this->mapHandle = mmap(0, GetLength(), PROT_READ|PROT_WRITE, MAP_PRIVATE, (int)(OSInt)this->fileHandle, 0);
+	this->mapHandle = mmap(0, (size_t)GetLength(), PROT_READ|PROT_WRITE, MAP_PRIVATE, (int)(OSInt)this->fileHandle, 0);
 	if ((OSInt)this->mapHandle < 0)
 	{
 		return;
@@ -46,10 +46,10 @@ UInt8 *IO::ViewFileBuffer::GetPointer()
 	return (UInt8*)mapHandle;
 }
 
-Int64 IO::ViewFileBuffer::GetLength()
+UInt64 IO::ViewFileBuffer::GetLength()
 {
-	Int64 pos = lseek((int)(OSInt)fileHandle, 0, SEEK_CUR);
-	Int64 leng = lseek((int)(OSInt)fileHandle, 0, SEEK_END);
+	UInt64 pos = lseek((int)(OSInt)fileHandle, 0, SEEK_CUR);
+	UInt64 leng = lseek((int)(OSInt)fileHandle, 0, SEEK_END);
 	lseek((int)(OSInt)fileHandle, pos, SEEK_SET);
 	return leng;
 }

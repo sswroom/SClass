@@ -1362,6 +1362,28 @@ Bool Text::StrToUInt16(const Char *intStr, UInt16 *outVal)
 	return true;
 }
 
+Bool Text::StrToUInt16S(const Char *intStr, UInt16 *outVal, UInt16 failVal)
+{
+	UInt32 retVal = 0;
+	while (*intStr)
+	{
+		if (*intStr < '0' || *intStr > '9')
+		{
+			*outVal = failVal;
+			return false;
+		}
+		retVal = retVal * 10 + (UInt32)*intStr - 48;
+		intStr++;
+		if (retVal & 0xffff0000)
+		{
+			*outVal = failVal;
+			return false;
+		}
+	}
+	*outVal = (UInt16)retVal;
+	return true;
+}
+
 Bool Text::StrToInt16(const Char *intStr, Int16 *outVal)
 {
 	Bool sign;

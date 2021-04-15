@@ -144,7 +144,7 @@ OSInt Net::ConnectionInfo::GetIndex()
 	return this->ent.index;
 }
 
-OSInt Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, OSInt buffSize)
+UOSInt Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize >= this->ent.physicalAddrLeng)
 	{

@@ -33,7 +33,7 @@ namespace Net
 
 		ThreadStat *v4threadStats;
 		ThreadStat *v6threadStats;
-		OSInt threadCnt;
+		UOSInt threadCnt;
 		UInt16 port;
 		Sync::Event *ctrlEvt;
 
@@ -51,7 +51,7 @@ namespace Net
 		static UInt32 __stdcall DataV6Thread(void *obj);
 
 	public:
-		UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, const UTF8Char *rawLogPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, const UTF8Char *msgPrefix, OSInt workerCnt, Bool reuseAddr);
+		UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, const UTF8Char *rawLogPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, const UTF8Char *msgPrefix, UOSInt workerCnt, Bool reuseAddr);
 		virtual ~UDPServer();
 
 		UInt16 GetPort();

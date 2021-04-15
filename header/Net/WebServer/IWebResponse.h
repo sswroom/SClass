@@ -29,7 +29,7 @@ namespace Net
 			Bool AddCacheControl(OSInt cacheAge);
 			Bool AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);
 			Bool AddContentDisposition(Bool isAttachment, const UTF8Char *attFileName, Net::BrowserInfo::BrowserType browser);
-			Bool AddContentLength(Int64 contentLeng);
+			Bool AddContentLength(UInt64 contentLeng);
 			Bool AddContentType(const UTF8Char *contentType);
 			Bool AddDate(Data::DateTime *dt);
 			Bool AddExpireTime(Data::DateTime *dt);

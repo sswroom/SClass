@@ -9,7 +9,7 @@ namespace Data
 	{
 	public:
 		ArrayListCmp();
-		ArrayListCmp(OSInt Capacity);
+		ArrayListCmp(UOSInt Capacity);
 
 		virtual Data::ArrayList<Data::IComparable*> *Clone();
 

@@ -18,7 +18,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 	UInt8 *buff = MemAlloc(UInt8, 2048);
 	while (!stat->toStop)
 	{
-		OSInt recvSize;
+		UOSInt recvSize;
 		Net::SocketUtil::AddressInfo recvAddr;
 		UInt16 recvPort;
 
@@ -35,7 +35,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 				else
 					sptr = sbuff;
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Received ");
-				sptr = Text::StrInt32(sptr, (Int32)recvSize);
+				sptr = Text::StrUOSInt(sptr, recvSize);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes from ");
 				sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
 				stat->me->msgLog->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_RAW);
@@ -90,7 +90,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 	UInt8 *buff = MemAlloc(UInt8, 2048);
 	while (!stat->toStop)
 	{
-		OSInt recvSize;
+		UOSInt recvSize;
 		Net::SocketUtil::AddressInfo recvAddr;
 		UInt16 recvPort;
 
@@ -107,7 +107,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 				else
 					sptr = sbuff;
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Received ");
-				sptr = Text::StrInt32(sptr, (Int32)recvSize);
+				sptr = Text::StrUOSInt(sptr, recvSize);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes from ");
 				sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
 				stat->me->msgLog->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_RAW);
@@ -151,13 +151,13 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, const UTF8Char *logPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, const UTF8Char *msgPrefix, OSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, const UTF8Char *logPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, const UTF8Char *msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = 0;
 	this->v6threadStats = 0;
 	this->recvCnt = 0;
-	OSInt i;
+	UOSInt i;
 
 	this->sockf = sockf;
 	if (logPrefix)
@@ -224,7 +224,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 			{
 				this->sockf->SetReuseAddr(this->socV4, true);
 			}
-			if (this->sockf->SocketBindv4(this->socV4, ReadNInt32(bindAddr->addr), port))
+			if (this->sockf->SocketBindv4(this->socV4, ReadNUInt32(bindAddr->addr), port))
 			{
 				succ = true;
 			}
@@ -333,7 +333,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 
 Net::UDPServer::~UDPServer()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->v4threadStats)
 	{
 		i = this->threadCnt;
@@ -497,7 +497,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			sptr = sbuff;
 		}
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"Sending UDP ");
-		sptr = Text::StrOSInt(sptr, dataSize);
+		sptr = Text::StrUOSInt(sptr, dataSize);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes to ");
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
 		this->msgLog->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_RAW);

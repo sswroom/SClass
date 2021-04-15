@@ -11,7 +11,7 @@ namespace Media
 	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Media::VectorGraph*>, public Media::IPrintHandler
 	{
 	private:
-		OSInt currGraph;
+		UOSInt currGraph;
 		Data::ArrayList<Media::VectorGraph*> *items;
 		Media::IPrintDocument *currDoc;
 		Media::DrawEngine *refEng;

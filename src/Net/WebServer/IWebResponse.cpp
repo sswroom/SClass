@@ -116,10 +116,10 @@ Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, cons
 	return this->AddHeader((const UTF8Char*)"Content-Disposition", sbuff);
 }
 
-Bool Net::WebServer::IWebResponse::AddContentLength(Int64 contentLeng)
+Bool Net::WebServer::IWebResponse::AddContentLength(UInt64 contentLeng)
 {
 	UTF8Char sbuff[22];
-	Text::StrInt64(sbuff, contentLeng);
+	Text::StrUInt64(sbuff, contentLeng);
 	return this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
 }
 

@@ -25,8 +25,8 @@ void Map::ProjectedMapView::ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Doub
 		scale = 100000000;
 	this->scale = scale;
 
-	Double diffx = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, scnWidth * 0.5 / this->hdpi * this->scale);
-	Double diffy = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, scnHeight * 0.5 / this->hdpi * this->scale);
+	Double diffx = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, Math::UOSInt2Double(scnWidth) * 0.5 / this->hdpi * this->scale);
+	Double diffy = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, Math::UOSInt2Double(scnHeight) * 0.5 / this->hdpi * this->scale);
 
 	this->rightX = centX + diffx;
 	this->leftX = centX - diffx;
@@ -124,8 +124,8 @@ Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, O
 		return false;
 	}
 
-	Double xmul = this->scnWidth / (rightX - leftX);
-	Double ymul = this->scnHeight / (bottomY - topY);
+	Double xmul = Math::UOSInt2Double(this->scnWidth) / (rightX - leftX);
+	Double ymul = Math::UOSInt2Double(this->scnHeight) / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 #ifdef HAS_ASM32
@@ -226,8 +226,8 @@ Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, 
 		return false;
 	}
 
-	Double xmul = this->scnWidth / (rightX - leftX);
-	Double ymul = this->scnHeight / (bottomY - topY);
+	Double xmul = Math::UOSInt2Double(this->scnWidth) / (rightX - leftX);
+	Double ymul = Math::UOSInt2Double(this->scnHeight) / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double iminX = 0;
@@ -257,7 +257,7 @@ Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, 
 				imaxY = thisY;
 		}
 	}
-	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);
+	return (imaxX >= 0) && (iminX < Math::UOSInt2Double(scnWidth)) && (imaxY >= 0) && (iminY < Math::UOSInt2Double(scnHeight));
 }
 
 
@@ -267,8 +267,8 @@ Bool Map::ProjectedMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, I
 	{
 		return false;
 	}
-	Double xmul = this->scnWidth / (rightX - leftX);
-	Double ymul = this->scnHeight / (bottomY - topY);
+	Double xmul = Math::UOSInt2Double(this->scnWidth) / (rightX - leftX);
+	Double ymul = Math::UOSInt2Double(this->scnHeight) / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double rRate = 1 / mapRate;
@@ -368,14 +368,14 @@ mtslop4:
 
 void Map::ProjectedMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
 {
-	*scnX = (mapX - this->leftX) * scnWidth / (this->rightX - this->leftX);
-	*scnY = (this->bottomY - mapY) * scnHeight / (this->bottomY - this->topY);
+	*scnX = (mapX - this->leftX) * Math::UOSInt2Double(scnWidth) / (this->rightX - this->leftX);
+	*scnY = (this->bottomY - mapY) * Math::UOSInt2Double(scnHeight) / (this->bottomY - this->topY);
 }
 
 void Map::ProjectedMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
 {
-	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / scnWidth));
-	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / scnHeight));
+	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / Math::UOSInt2Double(scnWidth)));
+	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / Math::UOSInt2Double(scnHeight)));
 }
 
 Map::MapView *Map::ProjectedMapView::Clone()

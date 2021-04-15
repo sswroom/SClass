@@ -17,7 +17,7 @@ DB::TableDef::TableDef(const UTF8Char *tableName)
 
 DB::TableDef::~TableDef()
 {
-	OSInt i;
+	UOSInt i;
 	SDEL_TEXT(this->databaseName);
 	SDEL_TEXT(this->tableName);
 	SDEL_TEXT(this->engine);

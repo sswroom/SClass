@@ -5,6 +5,7 @@
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Math.h"
 #include "Math/VectorImage.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
@@ -79,10 +80,10 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		return 0;
 
 	Media::ImageList *imgList = 0;
-	Int64 dataSize = fd->GetDataSize();
+	UInt64 dataSize = fd->GetDataSize();
 	UInt8 *data = MemAlloc(UInt8, dataSize);
-	fd->GetRealData(0, dataSize, data);
-	GInputStream *inpStream = g_memory_input_stream_new_from_data(data, dataSize, 0);
+	fd->GetRealData(0, (UOSInt)dataSize, data);
+	GInputStream *inpStream = g_memory_input_stream_new_from_data(data, (gssize)dataSize, 0);
 	GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);
 	if (pixBuf)
 	{
@@ -107,11 +108,11 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 
 		if (nChannels == 3 && bps == 8 && !hasAlpha)
 		{
-			NEW_CLASS(img, Media::StaticImage(width, height, 0, 24, Media::PF_R8G8B8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(img, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 24, Media::PF_R8G8B8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 			UInt8 *imgDest = (UInt8*)img->data;
 			if (imgDest)
 			{
-				ImageCopy_ImgCopy(imgPtr, imgDest, width * 3, height, bpl, img->GetDataBpl());
+				ImageCopy_ImgCopy(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl());
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);
 			}
@@ -123,11 +124,11 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		}
 		else if (nChannels == 3 && bps == 8 && hasAlpha)
 		{
-			NEW_CLASS(img, Media::StaticImage(width, height, 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(img, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 			UInt8 *imgDest = (UInt8*)img->data;
 			if (imgDest)
 			{
-				ImageCopy_ImgCopy(imgPtr, imgDest, width * 4, height, bpl, img->GetDataBpl());
+				ImageCopy_ImgCopy(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl());
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);
 			}
@@ -139,11 +140,11 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		}
 		else if (nChannels == 4 && bps == 8 && hasAlpha)
 		{
-			NEW_CLASS(img, Media::StaticImage(width, height, 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(img, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 			UInt8 *imgDest = (UInt8*)img->data;
 			if (imgDest)
 			{
-				ImageCopy_ImgCopy(imgPtr, imgDest, width * 4, height, bpl, img->GetDataBpl());
+				ImageCopy_ImgCopy(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl());
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);
 			}
@@ -203,7 +204,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			OSInt j = sb.LastIndexOf('.');
 			if (j > i)
 			{
-				sb.RemoveChars(sb.GetCharCnt() - j);
+				sb.RemoveChars(sb.GetCharCnt() - (UOSInt)j);
 			}
 			sb.Append((const UTF8Char*)".tfw");
 			if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PT_FILE)
@@ -261,7 +262,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (img->info->dispHeight - 0.5), xCoord + xPxSize * (img->info->dispWidth - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
+					NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (Math::UOSInt2Double(img->info->dispHeight) - 0.5), xCoord + xPxSize * (Math::UOSInt2Double(img->info->dispWidth) - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
 					lyr->AddVector(vimg, 0);
 					DEL_CLASS(simg);
 					

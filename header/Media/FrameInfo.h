@@ -116,7 +116,7 @@ namespace Media
 		static const UTF8Char *GetAlphaTypeName(AlphaType atype);
 		static const UTF8Char *GetYCOffsetName(YCOffset ycOfst);
 		static const UTF8Char *GetPixelFormatName(PixelFormat pf);
-		static PixelFormat GetDefPixelFormat(Int32 fourcc, Int32 storeBPP);
+		static PixelFormat GetDefPixelFormat(Int32 fourcc, UInt32 storeBPP);
 	};
 }
 #endif

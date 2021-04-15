@@ -136,7 +136,7 @@ namespace Media
 		Int32 GetPhotoISO();
 		Double GetPhotoFocalLength();
 		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick);
-		Bool GetGeoBounds(OSInt imgW, OSInt imgH, Int32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY);
+		Bool GetGeoBounds(UOSInt imgW, UOSInt imgH, Int32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY);
 		RotateType GetRotateType();
 		Double GetHDPI();
 		Double GetVDPI();

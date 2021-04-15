@@ -11,8 +11,11 @@
 #define ReadNInt64(uint8Ptr) (*(Int64*)uint8Ptr)
 #define ReadNUInt64(uint8Ptr) (*(UInt64*)uint8Ptr)
 #define WriteNInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (val)
+#define WriteNUInt16(uint8Ptr, val) *(UInt16*)(uint8Ptr) = (val)
 #define WriteNInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = (val)
+#define WriteNUInt32(uint8Ptr, val) *(UInt32*)(uint8Ptr) = (val)
 #define WriteNInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
+#define WriteNUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
 
 #define ReadInt64(uint8Ptr) (*(Int64*)(uint8Ptr))
 #define ReadUInt64(uint8Ptr) (*(UInt64*)(uint8Ptr))
@@ -77,6 +80,7 @@ FORCEINLINE void WriteMInt32(UInt8 *addr, Int32 val)
 #define ReadMInt16(uint8Ptr) (Int16)(((uint8Ptr)[0] << 8) | (uint8Ptr)[1])
 #define ReadMUInt16(uint8Ptr) (UInt16)(((uint8Ptr)[0] << 8) | (uint8Ptr)[1])
 #define WriteInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (Int16)((val) & 0xffff)
+#define WriteUInt16(uint8Ptr, val) *(UInt16*)(uint8Ptr) = (UInt16)((val) & 0xffff)
 #define WriteMInt16(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[1] = (UInt8)((val) & 0xff);}
 
 #define ReadDouble(uint8Ptr) (*(Double*)(uint8Ptr))
@@ -516,9 +520,9 @@ namespace Data
 {
 	namespace ByteTool
 	{
-		Int32 GetBCD8(UInt8 bcd);
-		Int32 GetBCD32(const UInt8 *bcd);
-		UInt8 Int2BCDB(Int32 val);
+		UInt8 GetBCD8(UInt8 bcd);
+		UInt32 GetBCD32(const UInt8 *bcd);
+		UInt8 Int2BCDB(UInt32 val);
 	}
 }
 

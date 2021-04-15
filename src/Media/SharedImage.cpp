@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Media/StaticImage.h"
 #include "Media/SharedImage.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
@@ -15,7 +16,7 @@ Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 
 Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 {
-	OSInt imgCnt = imgList->GetCount();
+	UOSInt imgCnt = imgList->GetCount();
 	this->imgStatus = MemAlloc(Media::SharedImage::ImageStatus, 1);
 	this->imgStatus->imgList = imgList;
 	this->imgStatus->prevList = 0;
@@ -24,7 +25,7 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 	this->imgStatus->imgDelay = 0;
 	this->imgStatus->lastTimeTick = 0;
 	NEW_CLASS(this->imgStatus->mut, Sync::Mutex());
-	OSInt i = imgCnt;
+	UOSInt i = imgCnt;
 	while (i-- > 0)
 	{
 		imgList->ToStaticImage(i);
@@ -34,8 +35,8 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 		if (img->info->dispWidth >= 640 || img->info->dispHeight >= 640)
 		{
-			OSInt currWidth = img->info->dispWidth;
-			OSInt currHeight = img->info->dispHeight;
+			UOSInt currWidth = img->info->dispWidth;
+			UOSInt currHeight = img->info->dispHeight;
 			Media::StaticImage *simg;
 			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info->color, img->info->color, 0, img->info->atype);
 			img->To32bpp();
@@ -72,7 +73,7 @@ Media::SharedImage::~SharedImage()
 		DEL_CLASS(this->imgStatus->imgList);
 		if (this->imgStatus->prevList)
 		{
-			OSInt i;
+			UOSInt i;
 			Media::StaticImage *simg;
 			i = this->imgStatus->prevList->GetCount();
 			while (i-- > 0)
@@ -148,14 +149,14 @@ Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height
 		return this->GetImage(imgTimeMS);
 	}
 	Media::StaticImage *currImg;
-	OSInt i;
+	UOSInt i;
 	Media::StaticImage *minImg = 0;
 	UOSInt minWidth = 0;
 	i = this->imgStatus->prevList->GetCount();
 	while (i-- > 0)
 	{
 		currImg = this->imgStatus->prevList->GetItem(i);
-		if (currImg->info->dispWidth >= width && currImg->info->dispHeight >= height)
+		if (Math::UOSInt2Double(currImg->info->dispWidth) >= width && Math::UOSInt2Double(currImg->info->dispHeight) >= height)
 		{
 			if (minImg == 0 || minWidth > currImg->info->dispWidth)
 			{

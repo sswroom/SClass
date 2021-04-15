@@ -74,19 +74,19 @@ Net::DNSClient::~DNSClient()
 	DEL_CLASS(this->reqMut);
 }
 
-OSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain)
+UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain)
 {
 	return GetByType(answers, domain, 15);
 }
 
-OSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain)
+UOSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain)
 {
 	return GetByType(answers, domain, 1);
 }
 
-OSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UInt16 reqType)
+UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UInt16 reqType)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UInt8 buff[512];
 	UTF8Char sbuff[256];
 	Char *ptr1;
@@ -189,9 +189,9 @@ OSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const 
 	return ret;
 }
 
-OSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip)
+UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UInt8 buff[512];
 	UInt8 localIP[4];
 	Char *ptr1;
@@ -238,9 +238,9 @@ OSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UI
 	return ret;
 }
 
-OSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr)
+UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UInt8 buff[512];
 	Char *ptr1;
 	Char *ptr2;
@@ -374,7 +374,7 @@ OSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, co
 	return ret;
 }
 
-OSInt Net::DNSClient::GetServerName(Data::ArrayList<RequestAnswer*> *answers)
+UOSInt Net::DNSClient::GetServerName(Data::ArrayList<RequestAnswer*> *answers)
 {
 	return GetByAddrName(answers, &this->serverAddr);
 }
@@ -443,14 +443,14 @@ OSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, OSInt stri
 	return i;
 }
 
-OSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, OSInt dataSize, Data::ArrayList<RequestAnswer*> *answers)
+UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::ArrayList<RequestAnswer*> *answers)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	RequestAnswer *ans;
-	OSInt ansCount = ReadMUInt16(&buff[6]);
-	OSInt cnt2 = ReadMUInt16(&buff[8]);
-	OSInt cnt3 = ReadMUInt16(&buff[10]);
+	UOSInt ansCount = ReadMUInt16(&buff[6]);
+	UOSInt cnt2 = ReadMUInt16(&buff[8]);
+	UOSInt cnt3 = ReadMUInt16(&buff[10]);
 	ansCount += cnt2 + cnt3;
 	OSInt i;
 	OSInt j;
@@ -596,7 +596,7 @@ void Net::DNSClient::FreeAnswers(Data::ArrayList<RequestAnswer*> *answers)
 	}
 }
 
-Int32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, OSInt buffSize)
+Int32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)
 {
 	OSInt ansCount = ReadMUInt16(&buff[6]);
 	OSInt i;

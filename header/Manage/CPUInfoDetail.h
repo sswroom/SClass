@@ -15,7 +15,7 @@ namespace Manage
 
 		const UTF8Char *GetCPUModel();
 		Int32 GetTCC(); //Thermal Control Circuit value
-		Bool GetCPUTemp(OSInt index, Double *temp);
+		Bool GetCPUTemp(UOSInt index, Double *temp);
 	};
 }
 

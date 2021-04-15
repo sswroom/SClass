@@ -12,7 +12,7 @@ extern "C"
 	void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
 }
 
-void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (width < 64 || height < this->threadCnt)
 	{
@@ -20,12 +20,12 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8
 	}
 	else
 	{
-		OSInt lastHeight = height;
-		OSInt currHeight;
-		OSInt i = this->threadCnt;
+		UOSInt lastHeight = height;
+		UOSInt currHeight;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			currHeight = MulDivOS(height, i, this->threadCnt);
+			currHeight = MulDivUOS(height, i, this->threadCnt);
 			this->stats[i].dest = dest + dbpl * currHeight;
 			this->stats[i].dbpl = dbpl;
 			this->stats[i].src = src + sbpl * currHeight;
@@ -56,7 +56,7 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (width < 64 || height < this->threadCnt)
 	{
@@ -64,12 +64,12 @@ void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UIn
 	}
 	else
 	{
-		OSInt lastHeight = height;
-		OSInt currHeight;
-		OSInt i = this->threadCnt;
+		UOSInt lastHeight = height;
+		UOSInt currHeight;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			currHeight = MulDivOS(height, i, this->threadCnt);
+			currHeight = MulDivUOS(height, i, this->threadCnt);
 			this->stats[i].dest = dest + dbpl * currHeight;
 			this->stats[i].dbpl = dbpl;
 			this->stats[i].src = src + sbpl * currHeight;
@@ -105,7 +105,7 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 	if (this->lutList)
 	{
 		LUTInfo *lut;
-		OSInt i;
+		UOSInt i;
 		i = this->lutList->GetCount();
 		while (i-- > 0)
 		{
@@ -216,7 +216,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 
 Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 {
-	OSInt i = this->threadCnt;
+	UOSInt i = this->threadCnt;
 	Bool found;
 	while (i-- > 0)
 	{
@@ -273,7 +273,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, Media::AlphaType srcAType)
+void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
@@ -294,9 +294,9 @@ void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
-	OSInt i;
+	UOSInt i;
 	UInt32 bVal;
 	UInt32 gVal;
 	UInt32 rVal;
@@ -315,7 +315,7 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 		i = width;
 		while (i-- > 0)
 		{
-			aVal = (src[3] << 8) | src[3]; //xmm0
+			aVal = (UInt32)((src[3] << 8) | src[3]); //xmm0
 			bVal = (*(Int16*)&rgbTable[262144 + src[2] * 8 + 0] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 0] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 0] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 0]) * aVal; //xmm1
 			gVal = (*(Int16*)&rgbTable[262144 + src[2] * 8 + 2] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 2] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 2] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 2]) * aVal;
 			rVal = (*(Int16*)&rgbTable[262144 + src[2] * 8 + 4] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 4] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 4] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 4]) * aVal;

@@ -198,7 +198,7 @@ Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::Add
 	{
 		sockaddr_in saddr;
 		saddr.sin_family = AF_INET;
-		saddr.sin_addr.s_addr = *(Int32*)addr->addr;
+		saddr.sin_addr.s_addr = *(in_addr_t*)addr->addr;
 		saddr.sin_port = htons(port);
 		return bind(-1 + (int)(OSInt)socket, (sockaddr*)&saddr, sizeof(saddr)) != -1;
 	}
@@ -239,7 +239,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::Addres
 			if (addr)
 			{
 				addr->addrType = Net::SocketUtil::AT_IPV4;
-				*(Int32*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
+				*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
 			}
 			if (port)
 			{
@@ -280,7 +280,7 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 			if (addr)
 			{
 				addr->addrType = Net::SocketUtil::AT_IPV4;
-				*(Int32*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
+				*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
 			}
 			if (port)
 			{
@@ -393,7 +393,7 @@ OSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt bu
 #if defined(MSG_NOSIGNAL)
 	flags = MSG_NOSIGNAL;
 #endif
-	OSInt ret = send(-1 + (int)(OSInt)socket, (const char*)buff, (int)buffSize, flags);
+	OSInt ret = send(-1 + (int)(OSInt)socket, (const char*)buff, (size_t)buffSize, flags);
 	if (ret == -1)
 	{
 		if (et)
@@ -433,7 +433,7 @@ OSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt bu
 
 OSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et)
 {
-	OSInt ret = recv(-1 + (int)(OSInt)socket, (char*)buff, (int)buffSize, 0);
+	OSInt ret = recv(-1 + (int)(OSInt)socket, (char*)buff, (size_t)buffSize, 0);
 //	OSInt ret = read(-1 + (int)(OSInt)socket, (char*)buff, (int)buffSize);
 	if (ret == -1)
 	{
@@ -493,12 +493,12 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 
 UOSInt Net::OSSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
 {
-	Int32 recvSize;
+	OSInt recvSize;
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
 	socklen_t size = sizeof(addrBuff);
 	saddr->sa_family = 0;
-	recvSize = recvfrom(-1 + (int)(OSInt)socket, (Char*)buff, (int)buffSize, 0, saddr, (socklen_t*)&size);
+	recvSize = recvfrom(-1 + (int)(OSInt)socket, (Char*)buff, (size_t)buffSize, 0, saddr, (socklen_t*)&size);
 	if (recvSize <= 0)
 	{
 		if (et)
@@ -531,23 +531,23 @@ UOSInt Net::OSSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buff
 		if (saddr->sa_family == AF_INET)
 		{
 			addr->addrType = Net::SocketUtil::AT_IPV4;
-			*(Int32*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
+			*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
 			*port = ntohs(((sockaddr_in*)&addrBuff)->sin_port);
-			return recvSize;
+			return (UOSInt)recvSize;
 		}
 		else if (saddr->sa_family == AF_INET6)
 		{
 			addr->addrType = Net::SocketUtil::AT_IPV6;
 			MemCopyNO(addr->addr, &saddr->sa_data[6], 20);
 			*port = ntohs(((sockaddr_in6*)&addrBuff)->sin6_port);
-			return recvSize;
+			return (UOSInt)recvSize;
 		}
 		else
 		{
 //			printf("UDPReceive: unknown family %d\r\n", saddr->sa_family);
 		}
 		
-		return recvSize;
+		return (UOSInt)recvSize;
 	}
 }
 
@@ -555,7 +555,7 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 {
 	sockaddr_storage addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
-	Int32 addrSize;
+	socklen_t addrSize;
 	if (addr == 0)
 	{
 		MemClear(addrBuff, sizeof(sockaddr));
@@ -566,7 +566,7 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 	{
 		sockaddr_in *saddr = (sockaddr_in*)&addrBase;
 		saddr->sin_family = AF_INET;
-		saddr->sin_addr.s_addr = *(Int32*)addr->addr;
+		saddr->sin_addr.s_addr = *(in_addr_t*)addr->addr;
 		saddr->sin_port = htons(port);
 		addrSize = sizeof(sockaddr_in);
 	}
@@ -583,22 +583,36 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 	{
 		return 0;
 	}
-	OSInt ret = sendto(-1 + (int)(OSInt)socket, (const char*)buff, (int)buffSize, 0, addrBuff, addrSize);
-	return ret;
+	OSInt ret = sendto(-1 + (int)(OSInt)socket, (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
+	if (ret == -1)
+	{
+		return 0;
+	}
+	else
+	{
+		return (UOSInt)ret;
+	}
 }
 
 UOSInt Net::OSSocketFactory::SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
 {
 	sockaddr addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
-	Int32 addrSize;
+	socklen_t addrSize;
 	MemClear(addrBuff, sizeof(sockaddr));
 	addrBuff->sa_family = AF_INET;
 	Text::StrConcat(addrBuff->sa_data, (const Char*)ifName);
 	addrSize = sizeof(sockaddr);
 
-	OSInt ret = sendto(-1 + (int)(OSInt)socket, (const char*)buff, (int)buffSize, 0, addrBuff, addrSize);
-	return ret;
+	OSInt ret = sendto(-1 + (int)(OSInt)socket, (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
+	if (ret == -1)
+	{
+		return 0;
+	}
+	else
+	{
+		return (UOSInt)ret;
+	}
 }
 
 UInt16 ICMPChecksum(UInt8 *buff, OSInt buffSize)
@@ -617,7 +631,7 @@ UInt16 ICMPChecksum(UInt8 *buff, OSInt buffSize)
     sum = (sum & 0xffff) + (sum >> 16);
     sum = (sum & 0xffff) + (sum >> 16);
 
-    return ~sum;
+    return (UInt16)~sum;
 }
 
 Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, Int32 *respTime_us, Int32 *ttl)
@@ -639,12 +653,12 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 	{
 		sockaddr_storage addrBase;
 		sockaddr *addrBuff = (sockaddr*)&addrBase;
-		Int32 addrSize;
+		socklen_t addrSize;
 		if (addr->addrType == Net::SocketUtil::AT_IPV4)
 		{
 			sockaddr_in *saddr = (sockaddr_in*)&addrBase;
 			saddr->sin_family = AF_INET;
-			saddr->sin_addr.s_addr = *(Int32*)addr->addr;
+			saddr->sin_addr.s_addr = *(in_addr_t*)addr->addr;
 			saddr->sin_port = 0;
 			addrSize = sizeof(sockaddr_in);
 		}
@@ -697,7 +711,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		case 8:
 		case 0:
 			*ttl = iphdrptr->ttl;
-			*respTime_us = timeStart;
+			*respTime_us = (Int32)timeStart;
 			succ = true;
 			break;
 		case 3:
@@ -727,13 +741,13 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		if (ret == 0)
 		{
 			UTF8Char *sarr[4];
-			OSInt i = Text::StrSplitLine(sarr, 3, sb.ToString());
-			if (i == 3)
+			UOSInt ui = Text::StrSplitLine(sarr, 3, sb.ToString());
+			if (ui == 3)
 			{
-				i = Text::StrIndexOf(sarr[1], (const UTF8Char*)": ");
-				if (i >= 0)
+				OSInt si = Text::StrIndexOf(sarr[1], (const UTF8Char*)": ");
+				if (si >= 0)
 				{
-					sarr[1] = &sarr[1][i + 2];
+					sarr[1] = &sarr[1][si + 2];
 				}
 				if (Text::StrStartsWith(sarr[1], (const UTF8Char*)"icmp_seq="))
 				{
@@ -866,7 +880,7 @@ Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::Ad
 		if (result->ai_addr->sa_family == AF_INET)
 		{
 			addr->addrType = Net::SocketUtil::AT_IPV4;
-			*(Int32*)addr->addr = ((sockaddr_in*)result->ai_addr)->sin_addr.s_addr;
+			*(in_addr_t*)addr->addr = ((sockaddr_in*)result->ai_addr)->sin_addr.s_addr;
 			succ = true;
 		}
 		else if (result->ai_addr->sa_family == AF_INET6)
@@ -1051,7 +1065,7 @@ OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*
 	if (ioctl(sock, SIOCGIFCONF, &ifc) >= 0)
 	{
 		ifrcurr = ifc.ifc_req;
-		ifrend = ifrcurr + (ifc.ifc_len / sizeof(ifreq));
+		ifrend = ifrcurr + ((UOSInt)ifc.ifc_len / sizeof(ifreq));
 		while (ifrcurr != ifrend)
 		{
 			data.sock = sock;
@@ -1070,7 +1084,7 @@ OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*
 	Text::StringBuilderUTF8 sb;
 	Int32 ip;
 	Int32 gw;
-	OSInt i;
+	UOSInt i;
 	UTF8Char *sarr[4];
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/route", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())

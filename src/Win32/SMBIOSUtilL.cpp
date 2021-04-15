@@ -11,7 +11,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 {
 	Win32::SMBIOS *smbios;
 	UInt8 *dataBuff = 0;
-	UInt32 buffSize = 0;
+	UOSInt buffSize = 0;
 	UInt8 buffTmp[1024];
 
 	IO::FileStream *fs;

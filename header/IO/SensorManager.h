@@ -14,12 +14,12 @@ namespace IO
 		SensorManager();
 		~SensorManager();
 
-		OSInt GetSensorCnt();
-		IO::Sensor::SensorType GetSensorType(OSInt index);
-		Sensor *CreateSensor(OSInt index);
+		UOSInt GetSensorCnt();
+		IO::Sensor::SensorType GetSensorType(UOSInt index);
+		Sensor *CreateSensor(UOSInt index);
 
-		OSInt GetAccelerometerCnt();
-		SensorAccelerometer *CreateAccelerometer(OSInt index);
+		UOSInt GetAccelerometerCnt();
+		SensorAccelerometer *CreateAccelerometer(UOSInt index);
 	};
-};
+}
 #endif

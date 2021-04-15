@@ -65,7 +65,7 @@ void Crypto::Hash::CRC32R::Calc(const UInt8 *buff, UOSInt buffSize)
 
 void Crypto::Hash::CRC32R::GetValue(UInt8 *buff)
 {
-	WriteMInt32(buff, ~currVal);
+	WriteMUInt32(buff, ~currVal);
 }
 
 UOSInt Crypto::Hash::CRC32R::GetBlockSize()

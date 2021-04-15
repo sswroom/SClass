@@ -34,7 +34,7 @@ void Net::EthernetAnalyzer::NetBIOSDecName(UTF8Char *nameBuff, OSInt nameSize)
 	UTF8Char *destPtr = nameBuff;
 	while (nameSize >= 2)
 	{
-		*destPtr++ = ((nameBuff[0] - 'A') << 4) | (nameBuff[1] - 'A');
+		*destPtr++ = (UTF8Char)(((nameBuff[0] - 'A') << 4) | (nameBuff[1] - 'A'));
 		nameBuff += 2;
 		nameSize -= 2;
 	}
@@ -84,8 +84,8 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 
 Net::EthernetAnalyzer::~EthernetAnalyzer()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<MACStatus*> *macList = this->macMap->GetValues();
 	MACStatus *mac;
 	i = macList->GetCount();

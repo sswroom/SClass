@@ -14,7 +14,7 @@ IO::MemFileBuffer::MemFileBuffer(const UTF8Char *fileName)
 	this->fileSize = file->GetLength();
 	if (this->fileSize > 0)
 	{
-		this->filePtr = MemAlloc(UInt8, (Int32)this->fileSize);
+		this->filePtr = MemAlloc(UInt8, (UOSInt)this->fileSize);
 
 #if defined(WIN32) || defined(__CYGWIN__)
 		HANDLE hProc;
@@ -55,7 +55,7 @@ IO::MemFileBuffer::MemFileBuffer(const UTF8Char *fileName)
 		}
 #endif
 		file->Seek(IO::SeekableStream::ST_BEGIN, 0);
-		file->Read(this->filePtr, (OSInt)fileSize);
+		file->Read(this->filePtr, (UOSInt)fileSize);
 	}
 	else
 	{
@@ -80,7 +80,7 @@ UInt8 *IO::MemFileBuffer::GetPointer()
 	return filePtr;
 }
 
-Int64 IO::MemFileBuffer::GetLength()
+UInt64 IO::MemFileBuffer::GetLength()
 {
 	return fileSize;
 }

@@ -23,7 +23,7 @@ namespace Map
 			Int32 srchCnt;
 			const UTF8Char *gooCliId;
 			UInt8 *gooPrivKey;
-			OSInt gooPrivKeyLeng;
+			UOSInt gooPrivKeyLeng;
 			const UTF8Char *gooAPIKey;
 
 		public:
