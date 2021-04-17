@@ -465,7 +465,7 @@ Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 	this->tasks = MemAlloc(OSInt, 65536);
 	this->taskCnt = 0;
 	this->threads = MemAlloc(ThreadStat, this->threadCnt);
-	OSInt i;
+	UOSInt i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -500,7 +500,7 @@ Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 
 Data::Sort::ArtificialQuickSort::~ArtificialQuickSort()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -560,7 +560,7 @@ void Data::Sort::ArtificialQuickSort::SortInt32(Int32 *arr, OSInt firstIndex, OS
 		}
 		else
 		{
-			OSInt i = this->threadCnt;
+			UOSInt i = this->threadCnt;
 			while (i-- > 0)
 			{
 				if (this->threads[i].state != 1)
@@ -606,7 +606,7 @@ void Data::Sort::ArtificialQuickSort::SortUInt32(UInt32 *arr, OSInt firstIndex, 
 		}
 		else
 		{
-			OSInt i = this->threadCnt;
+			UOSInt i = this->threadCnt;
 			while (i-- > 0)
 			{
 				if (this->threads[i].state != 1)
@@ -652,7 +652,7 @@ void Data::Sort::ArtificialQuickSort::SortStr(UTF8Char **arr, OSInt firstIndex, 
 		}
 		else
 		{
-			OSInt i = this->threadCnt;
+			UOSInt i = this->threadCnt;
 			while (i-- > 0)
 			{
 				if (this->threads[i].state != 1)

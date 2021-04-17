@@ -71,7 +71,7 @@ namespace Text
 			struct BorderStyle
 			{
 				BorderType borderType;
-				Int32 borderColor;
+				UInt32 borderColor;
 
 				Bool operator!=(BorderStyle style);
 			};
@@ -88,7 +88,7 @@ namespace Text
 			BorderStyle borderTop;
 
 			WorkbookFont *font;
-			Int32 fillColor;
+			UInt32 fillColor;
 			FillPattern fillPattern;
 			const UTF8Char *dataFormat;
 			Bool protection;
@@ -105,7 +105,7 @@ namespace Text
 			CellStyle *SetHAlign(HAlignment halign);
 			CellStyle *SetVAlign(VAlignment valign);
 			CellStyle *SetWordWrap(Bool wordWrap);
-			CellStyle *SetFillColor(Int32 color, FillPattern pattern);
+			CellStyle *SetFillColor(UInt32 color, FillPattern pattern);
 			CellStyle *SetFont(WorkbookFont *font);
 			CellStyle *SetBorderLeft(BorderStyle *border);
 			CellStyle *SetBorderRight(BorderStyle *border);

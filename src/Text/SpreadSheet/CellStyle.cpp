@@ -147,7 +147,7 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetWordWrap(Bool wor
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFillColor(Int32 color, FillPattern pattern)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFillColor(UInt32 color, FillPattern pattern)
 {
 	this->fillColor = color;
 	this->fillPattern = pattern;

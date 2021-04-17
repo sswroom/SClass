@@ -78,7 +78,7 @@ void Text::SpreadSheet::Worksheet::FreeRowData(Text::SpreadSheet::Worksheet::Row
 	CellData *cell;
 	if (data->cells)
 	{
-		OSInt i = data->cells->GetCount();
+		UOSInt i = data->cells->GetCount();
 		while (i-- > 0)
 		{
 			cell = data->cells->GetItem(i);
@@ -109,8 +109,8 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(Ro
 {
 	RowData *newRow;
 	CellData *cell;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	newRow = MemAlloc(RowData, 1);
 	newRow->style = newCtrl->GetStyle(srcCtrl->GetStyleIndex(row->style));
 	NEW_CLASS(newRow->cells, Data::ArrayList<CellData*>());
@@ -180,7 +180,7 @@ Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
 
 Text::SpreadSheet::Worksheet::~Worksheet()
 {
-	OSInt i;
+	UOSInt i;
 	RowData *row;
 	Text::StrDelNew(this->name);
 	i = this->rows->GetCount();
@@ -198,8 +198,8 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Worksheet::Clone(IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::SpreadSheet::Worksheet *newWS;
 	RowData *row;
 	NEW_CLASS(newWS, Text::SpreadSheet::Worksheet(this->name));
@@ -568,7 +568,7 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::GetItem(UOS
 
 void Text::SpreadSheet::Worksheet::RemoveCol(UInt32 col)
 {
-	OSInt i;
+	UOSInt i;
 	RowData *row;
 	CellData *cell;
 
@@ -590,7 +590,7 @@ void Text::SpreadSheet::Worksheet::RemoveCol(UInt32 col)
 
 void Text::SpreadSheet::Worksheet::InsertCol(UInt32 col)
 {
-	OSInt i;
+	UOSInt i;
 	RowData *row;
 
 	if (colWidths->GetCount() > col)

@@ -16,7 +16,7 @@ namespace Data
 			typedef struct
 			{
 				ArtificialQuickSort *me;
-				OSInt threadId;
+				UOSInt threadId;
 				Bool toStop;
 				Int32 state; // 0 = not running, 1 = idle, 2 = processing
 				Sync::Event *evt;
@@ -29,7 +29,7 @@ namespace Data
 				AT_STRUTF8
 			} ArrayType;
 		private:
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			ThreadStat *threads;
 			Sync::Event *mainEvt;
 
@@ -37,7 +37,7 @@ namespace Data
 			void *arr;
 			ArrayType arrType;
 			OSInt *tasks;
-			OSInt taskCnt;
+			UOSInt taskCnt;
 
 			void DoSortInt32(ThreadStat *stat, Int32 *arr, OSInt firstIndex, OSInt lastIndex);
 			void DoSortUInt32(ThreadStat *stat, UInt32 *arr, OSInt firstIndex, OSInt lastIndex);

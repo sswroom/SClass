@@ -35,7 +35,7 @@ namespace IO
 		UInt8 *sectorBuff;
 
 	public:
-		CDSectorStreamData(IO::ISectorData *data, OSInt sectorOfst, Int64 dataSize);
+		CDSectorStreamData(IO::ISectorData *data, UOSInt sectorOfst, UInt64 dataSize);
 		virtual ~CDSectorStreamData();
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
 		virtual const UTF8Char *GetFullName();

@@ -17,11 +17,11 @@ namespace Media
 		~ChapterInfo();
 
 		void AddChapter(Int32 chapterTime, const UTF8Char *chapterName, const UTF8Char *chapterArtist);
-		OSInt GetChapterIndex(Int32 currTime);
-		Int32 GetChapterTime(OSInt index);
-		OSInt GetChapterCnt();
-		const UTF8Char *GetChapterName(OSInt index);
-		const UTF8Char *GetChapterArtist(OSInt index);
+		UOSInt GetChapterIndex(Int32 currTime);
+		Int32 GetChapterTime(UOSInt index);
+		UOSInt GetChapterCnt();
+		const UTF8Char *GetChapterName(UOSInt index);
+		const UTF8Char *GetChapterArtist(UOSInt index);
 	};
-};
+}
 #endif

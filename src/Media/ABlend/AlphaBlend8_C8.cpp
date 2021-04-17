@@ -8,8 +8,8 @@
 
 extern "C"
 {
-	void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
-	void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+	void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, UInt8 *rgbTable);
+	void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, UInt8 *rgbTable);
 }
 
 void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
@@ -343,7 +343,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		LUTInfo *lut;
-		OSInt i;
+		UOSInt i;
 		i = this->lutList->GetCount();
 		while (i-- > 0)
 		{

@@ -40,31 +40,31 @@ void Media::ChapterInfo::AddChapter(Int32 chapterTime, const UTF8Char *chapterNa
 	}
 }
 
-OSInt Media::ChapterInfo::GetChapterIndex(Int32 currTime)
+UOSInt Media::ChapterInfo::GetChapterIndex(Int32 currTime)
 {
 	OSInt i = this->chapterTimes->SortedIndexOf(currTime);
 	if (i >= 0)
-		return i;
+		return (UOSInt)i;
 	else
-		return ~i - 1;
+		return (UOSInt)(~i - 1);
 }
 
-Int32 Media::ChapterInfo::GetChapterTime(OSInt index)
+Int32 Media::ChapterInfo::GetChapterTime(UOSInt index)
 {
 	return this->chapterTimes->GetItem(index);
 }
 
-OSInt Media::ChapterInfo::GetChapterCnt()
+UOSInt Media::ChapterInfo::GetChapterCnt()
 {
 	return this->chapterTimes->GetCount();
 }
 
-const UTF8Char *Media::ChapterInfo::GetChapterName(OSInt index)
+const UTF8Char *Media::ChapterInfo::GetChapterName(UOSInt index)
 {
 	return this->chapterNames->GetItem(index);
 }
 
-const UTF8Char *Media::ChapterInfo::GetChapterArtist(OSInt index)
+const UTF8Char *Media::ChapterInfo::GetChapterArtist(UOSInt index)
 {
 	return this->chapterArtists->GetItem(index);
 }

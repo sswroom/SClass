@@ -63,7 +63,7 @@ UOSInt Data::ArrayListUInt32::SortedInsert(UInt32 Val)
 	}
 	else
 	{
-		j = this->objCnt;
+		j = (OSInt)this->objCnt;
 		while (j > i)
 		{
 			arr[j] = arr[j - 1];

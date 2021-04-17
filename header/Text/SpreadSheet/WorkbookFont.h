@@ -12,7 +12,7 @@ namespace Text
 			Bool bold;
 			Bool italic;
 			Bool underline;
-			Int32 color;
+			UInt32 color;
 		public:
 			WorkbookFont();
 			~WorkbookFont();
@@ -22,7 +22,7 @@ namespace Text
 			WorkbookFont *SetBold(Bool bold);
 			WorkbookFont *SetItalic(Bool italic);
 			WorkbookFont *SetUnderline(Bool underline);
-			WorkbookFont *SetColor(Int32 color);
+			WorkbookFont *SetColor(UInt32 color);
 
 			const UTF8Char *GetName();
 			Double GetSize();

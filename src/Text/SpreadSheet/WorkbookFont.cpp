@@ -49,7 +49,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetUnderline(B
 	return this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetColor(Int32 color)
+Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetColor(UInt32 color)
 {
 	this->color = color;
 	return this;

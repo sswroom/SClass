@@ -15,7 +15,7 @@ namespace Parser
 			typedef struct
 			{
 				Text::SpreadSheet::Worksheet *ws;
-				Int64 ofst;
+				UInt64 ofst;
 			} WorksheetStatus;
 
 			typedef struct
@@ -49,13 +49,13 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 		private:
-			static Bool ParseWorkbook(IO::IStreamData *fd, Int64 ofst, Int64 ofstRef, Text::SpreadSheet::Workbook *wb);
-			static Bool ParseWorksheet(IO::IStreamData *fd, Int64 ofst, Text::SpreadSheet::Workbook *wb, Text::SpreadSheet::Worksheet *ws, WorkbookStatus *status);
-			static OSInt ReadUString(UInt8 *buff, Text::StringBuilderUTF *sb);
-			static OSInt ReadUStringPartial(UInt8 *buff, OSInt buffSize, Int32 *charCnt, Text::StringBuilderUTF *sb);
-			static OSInt ReadUStringB(UInt8 *buff, Text::StringBuilderUTF *sb);
+			static Bool ParseWorkbook(IO::IStreamData *fd, UInt64 ofst, UInt64 ofstRef, Text::SpreadSheet::Workbook *wb);
+			static Bool ParseWorksheet(IO::IStreamData *fd, UInt64 ofst, Text::SpreadSheet::Workbook *wb, Text::SpreadSheet::Worksheet *ws, WorkbookStatus *status);
+			static UOSInt ReadUString(UInt8 *buff, Text::StringBuilderUTF *sb);
+			static UOSInt ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, Text::StringBuilderUTF *sb);
+			static UOSInt ReadUStringB(UInt8 *buff, Text::StringBuilderUTF *sb);
 			static Double ParseRKNumber(Int32 rkValue);
 		};
-	};
-};
+	}
+}
 #endif

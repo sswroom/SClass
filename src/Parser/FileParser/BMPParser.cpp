@@ -487,7 +487,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		UInt8 *pBits = (UInt8*)outImg->data;
 		Int32 lineW;
 		Int32 lineW2;
-		Int32 currOfst;
+		UInt32 currOfst;
 		Int32 i;
 		if (biCompression == 0 || (biCompression == 3 && bitDefault))
 		{
@@ -826,7 +826,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			OSInt bpl = outImg->GetDataBpl() << 1;
 			UInt8 *tmpData = MemAlloc(UInt8, imgHeight * bpl);
 			UInt8 *currPtr;
-			MemClear(tmpData, imgHeight * bpl);
+			MemClear(tmpData, (UOSInt)(imgHeight * bpl));
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 c2;

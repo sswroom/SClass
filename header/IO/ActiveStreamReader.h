@@ -14,16 +14,16 @@ namespace IO
 			BNT_WRITE
 		} BottleNeckType;
 
-		typedef void (__stdcall *DataHdlr)(const UInt8 *buff, OSInt buffSize, void *userData);
+		typedef void (__stdcall *DataHdlr)(const UInt8 *buff, UOSInt buffSize, void *userData);
 		typedef struct
 		{
 			UInt8 *buff;
-			OSInt buffSize;
+			UOSInt buffSize;
 		} ReadBuffer;
 	private:
 		IO::Stream *stm;
 		DataHdlr hdlr;
-		OSInt buffSize;
+		UOSInt buffSize;
 
 		Bool running;
 		Bool toStop;
@@ -39,10 +39,10 @@ namespace IO
 
 		static UInt32 __stdcall ReadThread(void *obj);
 	public:
-		ActiveStreamReader(DataHdlr hdlr, void *userData, IO::Stream *stm, OSInt buffSize);
+		ActiveStreamReader(DataHdlr hdlr, void *userData, IO::Stream *stm, UOSInt buffSize);
 		~ActiveStreamReader();
 
 		void ReadStream(BottleNeckType *bnt);
 	};
-};
+}
 #endif

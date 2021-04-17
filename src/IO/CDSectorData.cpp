@@ -52,7 +52,7 @@ IO::ISectorData *IO::CDSectorData::GetPartialData(UInt64 startSector, UInt64 sec
 IO::IStreamData *IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize)
 {
 	IO::IStreamData *data;
-	Int64 sectorCnt = dataSize / this->userDataSize;
+	UInt64 sectorCnt = dataSize / this->userDataSize;
 	if ((dataSize % this->userDataSize) != 0)
 	{
 		sectorCnt++;
@@ -66,12 +66,12 @@ OSInt IO::CDSectorData::GetSeekCount()
 	return this->data->GetSeekCount();
 }
 
-IO::CDSectorStreamData::CDSectorStreamData(IO::ISectorData *data, OSInt sectorOfst, Int64 dataSize)
+IO::CDSectorStreamData::CDSectorStreamData(IO::ISectorData *data, UOSInt sectorOfst, UInt64 dataSize)
 {
 	this->data = data;
 	this->sectorOfst = sectorOfst;
 	this->dataSize = dataSize;
-	OSInt sectorSize = this->data->GetBytesPerSector();
+	UOSInt sectorSize = this->data->GetBytesPerSector();
 	this->sectorBuff = MemAlloc(UInt8, sectorSize);
 }
 

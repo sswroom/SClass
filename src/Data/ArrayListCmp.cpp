@@ -27,7 +27,7 @@ UOSInt Data::ArrayListCmp::SortedInsert(Data::IComparable *val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -50,7 +50,7 @@ UOSInt Data::ArrayListCmp::SortedInsert(Data::IComparable *val)
 	if (objCnt == this->capacity)
 	{
 		Data::IComparable **newArr = MemAlloc(Data::IComparable*, this->capacity << 1);
-		k = this->objCnt;
+		k = (OSInt)this->objCnt;
 		while (k-- > 0)
 		{
 			newArr[k] = arr[k];
@@ -59,7 +59,7 @@ UOSInt Data::ArrayListCmp::SortedInsert(Data::IComparable *val)
 		MemFree(arr);
 		arr = newArr;
 	}
-	j = objCnt;
+	j = (OSInt)objCnt;
 	while (j > i)
 	{
 		arr[j] = arr[j - 1];
@@ -77,7 +77,7 @@ OSInt Data::ArrayListCmp::SortedIndexOf(Data::IComparable *val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

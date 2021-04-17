@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioBlockSource.h"
 
-Media::AudioBlockSource::AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name, Int32 samplePerBlock)
+Media::AudioBlockSource::AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name, UInt32 samplePerBlock)
 {
 	this->format.FromAudioFormat(format);
 
@@ -70,7 +70,7 @@ UInt32 Media::AudioBlockSource::SeekToTime(UInt32 time)
 		{
 			if (this->blocks[i].length > byteLeft)
 			{
-				this->readBlock = (Int32)i;
+				this->readBlock = (UInt32)i;
 				break;
 			}
 			byteLeft -= this->blocks[i].length;

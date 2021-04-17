@@ -64,7 +64,7 @@ UOSInt Data::ArrayListICaseStrUTF8::SortedInsert(const UTF8Char *val)
 	}
 	else
 	{
-		j = this->objCnt;
+		j = (OSInt)this->objCnt;
 		while (j > i)
 		{
 			arr[j] = arr[j - 1];
