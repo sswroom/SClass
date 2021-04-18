@@ -53,11 +53,11 @@ namespace Net
 
 		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);
 
-		static OSInt ParseString(UTF8Char *sbuff, const UInt8 *buff, OSInt stringOfst, OSInt endOfst); //return actEndOfst
+		static UOSInt ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst); //return actEndOfst
 		static UOSInt ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::ArrayList<RequestAnswer*> *answers);
 		static void FreeAnswers(Data::ArrayList<RequestAnswer*> *answers);
-		static Int32 GetResponseTTL(const UInt8 *buff, UOSInt buffSize);
-		static OSInt SkipString(const UInt8 *buff, OSInt stringOfst, OSInt endOfst);
+		static UInt32 GetResponseTTL(const UInt8 *buff, UOSInt buffSize);
+		static UOSInt SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst);
 		static const UTF8Char *TypeGetID(UInt16 type);
 	};
 }

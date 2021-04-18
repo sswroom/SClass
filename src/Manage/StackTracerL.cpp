@@ -19,12 +19,12 @@ Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
 	this->stackFrame = 0;
 	void *addrArr[50];
 	int cnt;
-	NEW_CLASS(this->addrArr, Data::ArrayListInt64());
+	NEW_CLASS(this->addrArr, Data::ArrayListUInt64());
 	cnt = backtrace(addrArr, 50);
 	OSInt i = 0;
 	while (i < cnt)
 	{
-		this->addrArr->Add((OSInt)addrArr[i]);
+		this->addrArr->Add((UOSInt)addrArr[i]);
 		i++;
 	}
 }

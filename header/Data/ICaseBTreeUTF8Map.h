@@ -100,7 +100,7 @@ namespace Data
 					node = node->parNode;
 				}
 				node = tmpNode;
-				Int32 currLev = 1;
+				UInt32 currLev = 1;
 				while (node)
 				{
 					if (node->maxLev >= currLev)

@@ -38,12 +38,12 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	{
 		this->ent.dnsSuffix = 0;
 	}
-	NEW_CLASS(this->ent.ipaddr, Data::ArrayListInt32());
+	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32());
 	if (ent->ipaddr)
 	{
 		this->ent.ipaddr->AddRange(ent->ipaddr);
 	}
-	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListInt32());
+	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32());
 	if (ent->dnsaddr)
 	{
 		this->ent.dnsaddr->AddRange(ent->dnsaddr);

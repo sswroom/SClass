@@ -79,7 +79,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #if defined(CPU_X86_32)
 	NEW_CLASS(context, Manage::ThreadContextX86_32(einfo->info->si_pid, 0, einfo->ucontext));
 #elif defined(CPU_X86_64)
-	NEW_CLASS(context, Manage::ThreadContextX86_64(einfo->info->si_pid, 0, einfo->ucontext));
+	NEW_CLASS(context, Manage::ThreadContextX86_64((UOSInt)einfo->info->si_pid, 0, einfo->ucontext));
 #elif defined(CPU_ARM)
 	NEW_CLASS(context, Manage::ThreadContextARM(einfo->info->si_pid, 0, einfo->ucontext));
 #elif defined(CPU_ARM64)
@@ -91,7 +91,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #endif
 	if (fileName)
 	{
-		Manage::ExceptionLogger::LogToFile(fileName, einfo->signum, GetExceptionCodeName(einfo->signum), (OSInt)einfo->info->si_addr, context);
+		Manage::ExceptionLogger::LogToFile(fileName, (UInt32)einfo->signum, GetExceptionCodeName((UInt32)einfo->signum), (UOSInt)einfo->info->si_addr, context);
 	}
 	DEL_CLASS(context);
 

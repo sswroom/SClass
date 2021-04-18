@@ -126,18 +126,18 @@ UInt64 IO::BufferedInputStream::Seek(SeekType origin, Int64 position)
 	{
 		targetPos = 0;
 	}
-	if (targetPos >= this->stmPos && targetPos <= this->stmPos + this->stmBuffSize)
+	if ((UInt64)targetPos >= this->stmPos && (UInt64)targetPos <= this->stmPos + this->stmBuffSize)
 	{
 		this->buffOfst = (UOSInt)((UInt64)targetPos - this->stmPos);
 	}
 	else
 	{
-		targetPos = this->stm->Seek(IO::SeekableStream::ST_BEGIN, targetPos);
+		targetPos = (Int64)this->stm->Seek(IO::SeekableStream::ST_BEGIN, targetPos);
 		this->buffOfst = 0;
-		this->stmPos = targetPos;
+		this->stmPos = (UInt64)targetPos;
 		this->stmBuffSize = 0;
 	}
-	return targetPos;
+	return (UInt64)targetPos;
 }
 
 UInt64 IO::BufferedInputStream::GetPosition()

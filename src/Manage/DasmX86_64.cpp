@@ -607,7 +607,7 @@ void DasmX86_64_ParseSIB(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *me
 			*memName++ = '+';
 			memName = Text::StrInt32(memName, addr);
 		}
-		srcAddr = srcAddr + addr;
+		srcAddr = (UInt64)((Int64)srcAddr + addr);
 	}
 	*memName = 0;
 	if (memAddr)
@@ -1045,8 +1045,8 @@ void DasmX86_64_ParseModVYMM256(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8C
 Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* sess, Int64 funcAddr, Int64 *outRsp)
 {
 	Manage::DasmX86_64::DasmX86_64_Sess tmpSess;
-	Data::ArrayListInt64 callAddrs;
-	Data::ArrayListInt64 jmpAddrs;
+	Data::ArrayListUInt64 callAddrs;
+	Data::ArrayListUInt64 jmpAddrs;
 	UTF8Char sbuff[256];
 	Text::StringBuilderUTF8 sb;
 	OSInt instCnt = 0;
@@ -1197,7 +1197,7 @@ Bool __stdcall DasmX86_64_01(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		if ((b & 0xc7) == 0xc4)
 		{
@@ -1254,7 +1254,7 @@ Bool __stdcall DasmX86_64_03(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-/*	if ((sess->thisStatus & 0x80000000) == 0)
+/*	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		if (reg == 4)
 		{
@@ -1687,13 +1687,13 @@ Bool __stdcall DasmX86_64_1d(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb AL, ");
-		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 1));
+		sess->sbuff = Text::StrUInt32(sess->sbuff, sess->memReader->ReadMemUInt16(sess->regs.rip + 1));
 		sess->regs.rip += 3;
 	}
 	else
 	{
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb AL, ");
-		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.rip + 1));
+		sess->sbuff = Text::StrUInt32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.rip + 1));
 		sess->regs.rip += 5;
 	}
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
@@ -2377,7 +2377,7 @@ Bool __stdcall DasmX86_64_50(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2393,7 +2393,7 @@ Bool __stdcall DasmX86_64_51(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2409,7 +2409,7 @@ Bool __stdcall DasmX86_64_52(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2425,7 +2425,7 @@ Bool __stdcall DasmX86_64_53(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2441,7 +2441,7 @@ Bool __stdcall DasmX86_64_54(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 4;
 	}
@@ -2457,7 +2457,7 @@ Bool __stdcall DasmX86_64_55(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2473,7 +2473,7 @@ Bool __stdcall DasmX86_64_56(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2489,7 +2489,7 @@ Bool __stdcall DasmX86_64_57(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		sess->regs.rsp -= 8;
 	}
@@ -2504,7 +2504,7 @@ Bool __stdcall DasmX86_64_58(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 0, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2522,7 +2522,7 @@ Bool __stdcall DasmX86_64_59(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 1, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2540,7 +2540,7 @@ Bool __stdcall DasmX86_64_5a(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 2, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2558,7 +2558,7 @@ Bool __stdcall DasmX86_64_5b(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 3, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2576,7 +2576,7 @@ Bool __stdcall DasmX86_64_5c(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 4, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		if (sess->thisStatus & 0x100)
 		{
@@ -2602,7 +2602,7 @@ Bool __stdcall DasmX86_64_5d(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 5, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2620,7 +2620,7 @@ Bool __stdcall DasmX86_64_5e(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 6, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2638,7 +2638,7 @@ Bool __stdcall DasmX86_64_5f(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	DasmX86_64_ParseReg64(sess, reg, ((sess->thisStatus & 0x100) >> 5) | 7, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	if ((sess->thisStatus & 0x80000000) == 0)
+	if ((sess->thisStatus & (Int32)0x80000000) == 0)
 	{
 		*regPtr = sess->memReader->ReadMemUInt64(sess->regs.rsp);
 		sess->rspOfst += 8;
@@ -2888,7 +2888,7 @@ Bool __stdcall DasmX86_64_6f(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_70(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jo 0x");
@@ -2899,7 +2899,7 @@ Bool __stdcall DasmX86_64_70(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_71(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jno 0x");
@@ -2910,7 +2910,7 @@ Bool __stdcall DasmX86_64_71(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_72(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jb 0x");
@@ -2921,7 +2921,7 @@ Bool __stdcall DasmX86_64_72(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_73(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnb 0x");
@@ -2932,7 +2932,7 @@ Bool __stdcall DasmX86_64_73(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_74(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jz 0x");
@@ -2943,7 +2943,7 @@ Bool __stdcall DasmX86_64_74(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_75(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnz 0x");
@@ -2954,7 +2954,7 @@ Bool __stdcall DasmX86_64_75(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_76(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jbe 0x");
@@ -2965,7 +2965,7 @@ Bool __stdcall DasmX86_64_76(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_77(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ja 0x");
@@ -2976,7 +2976,7 @@ Bool __stdcall DasmX86_64_77(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_78(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"js 0x");
@@ -2987,7 +2987,7 @@ Bool __stdcall DasmX86_64_78(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_79(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jns 0x");
@@ -2998,7 +2998,7 @@ Bool __stdcall DasmX86_64_79(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_7a(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jp 0x");
@@ -3009,7 +3009,7 @@ Bool __stdcall DasmX86_64_7a(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_7b(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnp 0x");
@@ -3020,7 +3020,7 @@ Bool __stdcall DasmX86_64_7b(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_7c(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jl 0x");
@@ -3031,7 +3031,7 @@ Bool __stdcall DasmX86_64_7c(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_7d(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jge 0x");
@@ -3042,7 +3042,7 @@ Bool __stdcall DasmX86_64_7d(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_7e(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jle 0x");
@@ -3053,7 +3053,7 @@ Bool __stdcall DasmX86_64_7e(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_7f(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1));
 	sess->regs.rip += 2;
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jg 0x");
@@ -3371,7 +3371,7 @@ Bool __stdcall DasmX86_64_83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 1;
 
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-		if ((sess->thisStatus & 0x80000000) == 0)
+		if ((sess->thisStatus & (Int32)0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
 			{
@@ -3415,7 +3415,7 @@ Bool __stdcall DasmX86_64_83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 1;
 
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-		if ((sess->thisStatus & 0x80000000) == 0)
+		if ((sess->thisStatus & (Int32)0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
 			{
@@ -3454,7 +3454,7 @@ Bool __stdcall DasmX86_64_83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 1;
 
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-		if ((sess->thisStatus & 0x80000000) == 0)
+		if ((sess->thisStatus & (Int32)0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
 			{
@@ -3493,7 +3493,7 @@ Bool __stdcall DasmX86_64_83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 1;
 
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-		if ((sess->thisStatus & 0x80000000) == 0)
+		if ((sess->thisStatus & (Int32)0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
 			{
@@ -3532,7 +3532,7 @@ Bool __stdcall DasmX86_64_83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 1;
 
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-		if ((sess->thisStatus & 0x80000000) == 0)
+		if ((sess->thisStatus & (Int32)0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
 			{
@@ -3571,7 +3571,7 @@ Bool __stdcall DasmX86_64_83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 1;
 
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-		if ((sess->thisStatus & 0x80000000) == 0)
+		if ((sess->thisStatus & (Int32)0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
 			{
@@ -4619,7 +4619,7 @@ Bool __stdcall DasmX86_64_b8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	else
 	{
 		UInt32 memVal = sess->memReader->ReadMemUInt32(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)memVal);
 		sess->regs.rip += 5;
 		*(UInt32*)regPtr = memVal;
 	}
@@ -4664,14 +4664,14 @@ Bool __stdcall DasmX86_64_ba(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
+		sess->sbuff = Text::StrInt16(sess->sbuff, (Int16)memVal);
 		sess->regs.rip += 3;
 		*(UInt16*)regPtr = memVal;
 	}
 	else
 	{
 		UInt32 memVal = sess->memReader->ReadMemUInt32(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)memVal);
 		sess->regs.rip += 5;
 		*regPtr = memVal;
 	}
@@ -4690,14 +4690,14 @@ Bool __stdcall DasmX86_64_bb(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
+		sess->sbuff = Text::StrInt16(sess->sbuff, (Int16)memVal);
 		sess->regs.rip += 3;
 		*(UInt16*)regPtr = memVal;
 	}
 	else
 	{
 		UInt32 memVal = sess->memReader->ReadMemUInt32(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)memVal);
 		sess->regs.rip += 5;
 		*regPtr = memVal;
 	}
@@ -4749,7 +4749,7 @@ Bool __stdcall DasmX86_64_bd(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	else
 	{
 		UInt32 memVal = sess->memReader->ReadMemUInt32(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)memVal);
 		sess->regs.rip += 5;
 		*regPtr = memVal;
 	}
@@ -4775,7 +4775,7 @@ Bool __stdcall DasmX86_64_be(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	else
 	{
 		UInt32 memVal = sess->memReader->ReadMemUInt32(sess->regs.rip + 1);
-		sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)memVal);
 		sess->regs.rip += 5;
 		*regPtr = memVal;
 	}
@@ -4977,18 +4977,18 @@ Bool __stdcall DasmX86_64_c1(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_c2(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int32 cnt = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
+	UInt32 cnt = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 	sess->endType = Manage::DasmX86_64::ET_FUNC_RET;
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ret ");
-	sess->sbuff = Text::StrInt32(sess->sbuff, cnt);
-	if (sess->thisStatus & 0x80000000)
+	sess->sbuff = Text::StrUInt32(sess->sbuff, cnt);
+	if (sess->thisStatus & (Int32)0x80000000)
 	{
 		sess->retAddr = 0;
 	}
 	else
 	{
 		UInt8 *buff;
-		OSInt buffSize;
+		UOSInt buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.rsp);
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\t;");
 		buff = MemAlloc(UInt8, cnt);
@@ -5009,7 +5009,7 @@ Bool __stdcall DasmX86_64_c3(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
 	sess->endType = Manage::DasmX86_64::ET_FUNC_RET;
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ret\r\n");
-	if (sess->thisStatus & 0x80000000)
+	if (sess->thisStatus & (Int32)0x80000000)
 	{
 		sess->retAddr = 0;
 	}
@@ -5154,7 +5154,7 @@ Bool __stdcall DasmX86_64_ca(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->endType = Manage::DasmX86_64::ET_FUNC_RET;
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"retf ");
 	sess->sbuff = Text::StrInt32(sess->sbuff, cnt);
-	if (sess->thisStatus & 0x80000000)
+	if (sess->thisStatus & (Int32)0x80000000)
 	{
 		sess->retAddr = 0;
 	}
@@ -5182,7 +5182,7 @@ Bool __stdcall DasmX86_64_cb(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
 	sess->endType = Manage::DasmX86_64::ET_FUNC_RET;
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"retf\r\n");
-	if (sess->thisStatus & 0x80000000)
+	if (sess->thisStatus & (Int32)0x80000000)
 	{
 		sess->retAddr = 0;
 	}
@@ -5232,7 +5232,7 @@ Bool __stdcall DasmX86_64_cf(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	{
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"iretd\r\n");
 	}
-	if (sess->thisStatus & 0x80000000)
+	if (sess->thisStatus & (Int32)0x80000000)
 	{
 		sess->retAddr = 0;
 	}
@@ -6799,7 +6799,7 @@ Bool __stdcall DasmX86_64_e7(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 Bool __stdcall DasmX86_64_e8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
 	UTF8Char *sptr;
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
 		addr = sess->regs.rip + ((Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 1)) + 3;
@@ -6813,7 +6813,7 @@ Bool __stdcall DasmX86_64_e8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"call 0x");
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 
-	if (sess->thisStatus & 0x80000000)
+	if (sess->thisStatus & (Int32)0x80000000)
 	{
 	}
 	else
@@ -6826,12 +6826,12 @@ Bool __stdcall DasmX86_64_e8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		{
 			if ((Int64)(sess->regs.rsp + stackCnt + 64) >= outRsp && (Int64)(sess->regs.rsp + stackCnt - 64) <= outRsp)
 			{
-				sess->regs.rsp += stackCnt;
+				sess->regs.rsp += (UInt64)(Int64)stackCnt;
 			}
 		}
 		else if (stackCnt > 0)
 		{
-			sess->regs.rsp += stackCnt;
+			sess->regs.rsp += (UInt32)stackCnt;
 		}
 	}
 	if (sess->addrResol)
@@ -6857,9 +6857,9 @@ Bool __stdcall DasmX86_64_e8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_e9(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
-	Int64 addr2;
-	OSInt i;
+	UInt64 addr;
+	UInt64 addr2;
+	UOSInt i;
 	if (sess->thisStatus & 1)
 	{
 		addr = sess->regs.rip + 3 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
@@ -6874,7 +6874,7 @@ Bool __stdcall DasmX86_64_e9(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	sess->jmpAddrs->Add(addr);
-	addr2 = (Int64)sess->regs.rip;
+	addr2 = sess->regs.rip;
 
 	sess->endType = Manage::DasmX86_64::ET_JMP;
 	sess->retAddr = addr;
@@ -6893,9 +6893,9 @@ Bool __stdcall DasmX86_64_e9(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_ea(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
-	Int32 addr2;
-	OSInt i;
+	UInt64 addr;
+	UInt32 addr2;
+	UOSInt i;
 	if (sess->thisStatus & 1)
 	{
 		addr = (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
@@ -6909,12 +6909,12 @@ Bool __stdcall DasmX86_64_ea(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		sess->regs.rip += 7;
 	}
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp ");
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr2);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, (UInt32)addr2);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)":");
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, (Int32)addr);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	sess->jmpAddrs->Add(addr);
-	addr2 = (Int32)sess->regs.rip;
+	addr2 = (UInt32)sess->regs.rip;
 
 	sess->endType = Manage::DasmX86_64::ET_JMP;
 	sess->retAddr = addr;
@@ -6933,15 +6933,15 @@ Bool __stdcall DasmX86_64_ea(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_eb(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr = ((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
-	Int64 addr2;
-	OSInt i;
+	UInt64 addr = (UInt64)((Int64)sess->regs.rip) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.rip + 1);
+	UInt64 addr2;
+	UOSInt i;
 	sess->regs.rip += 2;
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp 0x");
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	sess->jmpAddrs->Add(addr);
-	addr2 = (Int64)sess->regs.rip;
+	addr2 = sess->regs.rip;
 
 	sess->endType = Manage::DasmX86_64::ET_JMP;
 	sess->retAddr = addr;
@@ -7292,7 +7292,7 @@ Bool __stdcall DasmX86_64_ff(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	{
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"call ");
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		if (sess->thisStatus & 0x80000000)
+		if (sess->thisStatus & (Int32)0x80000000)
 		{
 		}
 		else
@@ -7309,12 +7309,12 @@ Bool __stdcall DasmX86_64_ff(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 			{
 				if ((Int64)(sess->regs.rsp + stackCnt + 16) >= outRsp && (Int64)(sess->regs.rsp + stackCnt - 16) <= outRsp)
 				{
-					sess->regs.rsp += stackCnt;
+					sess->regs.rsp += (UInt32)stackCnt;
 				}
 			}
 			else if (stackCnt > 0)
 			{
-				sess->regs.rsp += stackCnt;
+				sess->regs.rsp += (UInt32)stackCnt;
 			}
 		}
 		if (sess->addrResol)
@@ -7329,7 +7329,7 @@ Bool __stdcall DasmX86_64_ff(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 			if (DasmX86_64_IsEndFunc(sptr))
 			{
 				sess->endType = Manage::DasmX86_64::ET_EXIT;
-				sess->retAddr = (Int32)sess->regs.rip;
+				sess->retAddr = sess->regs.rip;
 			}
 		}
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
@@ -10944,15 +10944,15 @@ Bool __stdcall DasmX86_64_0f7F(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f80(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -10964,15 +10964,15 @@ Bool __stdcall DasmX86_64_0f80(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f81(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -10984,15 +10984,15 @@ Bool __stdcall DasmX86_64_0f81(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f82(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11004,15 +11004,15 @@ Bool __stdcall DasmX86_64_0f82(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11024,15 +11024,15 @@ Bool __stdcall DasmX86_64_0f83(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f84(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11044,15 +11044,15 @@ Bool __stdcall DasmX86_64_0f84(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f85(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11064,15 +11064,15 @@ Bool __stdcall DasmX86_64_0f85(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f86(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11084,15 +11084,15 @@ Bool __stdcall DasmX86_64_0f86(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f87(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11104,15 +11104,15 @@ Bool __stdcall DasmX86_64_0f87(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f88(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11124,15 +11124,15 @@ Bool __stdcall DasmX86_64_0f88(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f89(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11144,15 +11144,15 @@ Bool __stdcall DasmX86_64_0f89(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f8A(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11164,15 +11164,15 @@ Bool __stdcall DasmX86_64_0f8A(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f8B(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11184,15 +11184,15 @@ Bool __stdcall DasmX86_64_0f8B(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f8C(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11204,15 +11204,15 @@ Bool __stdcall DasmX86_64_0f8C(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f8D(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11224,15 +11224,15 @@ Bool __stdcall DasmX86_64_0f8D(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f8E(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -11244,15 +11244,15 @@ Bool __stdcall DasmX86_64_0f8E(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 
 Bool __stdcall DasmX86_64_0f8F(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 {
-	Int64 addr;
+	UInt64 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.rip + 2));
 		sess->regs.rip += 4;
 	}
 	else
 	{
-		addr = (sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2);
+		addr = (UInt64)((Int64)(sess->regs.rip) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.rip + 2));
 		sess->regs.rip += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -19376,12 +19376,12 @@ const UTF8Char *Manage::DasmX86_64::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListInt64 *callAddrs, Data::ArrayListInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_64_Sess sess;
 	Text::StringBuilderUTF8 *outStr;
-	OSInt initJmpCnt = jmpAddrs->GetCount();
+	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
@@ -19455,7 +19455,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 		}
 		if (!ret)
 		{
-			OSInt buffSize;
+			UOSInt buffSize;
 			outStr->Append((const UTF8Char*)"Unknown opcode ");
 			buffSize = sess.memReader->ReadMemory(sess.regs.rip, buff, 16);
 			if (buffSize > 0)
@@ -19471,7 +19471,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 		writer->Write(outStr->ToString());
 		if (sess.endType == Manage::DasmX86_64::ET_JMP && (UInt64)sess.retAddr >= *blockStart && (UInt64)sess.retAddr <= sess.regs.rip)
 		{
-			OSInt i;
+			UOSInt i;
 			UInt64 minAddr = 0xffffffffffffffffLL;
 			UInt64 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -19511,7 +19511,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 	}
 }
 
-Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListInt64 *callAddrs, Data::ArrayListInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt64 initIP = *currRip;
@@ -19539,7 +19539,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 	sess.endType = Manage::DasmX86_64::ET_NOT_END;
 	sess.rspOfst = 0;
 	sess.lastStatus = 0;
-	sess.thisStatus = 0x80000000;
+	sess.thisStatus = (Int32)0x80000000;
 	sess.codes = (void**)this->codes;
 	sess.codes0f = (void**)this->codes0f;
 	sess.addrResol = addrResol;
@@ -19574,7 +19574,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 		if (!ret)
 		{
 			UInt8 buff[256];
-			OSInt buffSize;
+			UOSInt buffSize;
 			buffSize = sess.memReader->ReadMemory(oriip, buff, 16);
 			outStr->Append((const UTF8Char*)"Unknown opcode ");
 			if (buffSize > 0)
@@ -19598,7 +19598,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 			return true;
 		}
 		sess.lastStatus = sess.thisStatus;
-		sess.thisStatus = 0x80000000;
+		sess.thisStatus = (Int32)0x80000000;
 	}
 }
 
@@ -19617,9 +19617,9 @@ void *Manage::DasmX86_64::StartDasm(Manage::AddressResolver *addrResol, void *ad
 {
 	DasmX86_64_Sess *sess;
 	sess = MemAlloc(DasmX86_64_Sess, 1);
-	NEW_CLASS(sess->callAddrs, Data::ArrayListInt64());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListInt64());
-	sess->regs.rip = (OSInt)addr;
+	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt64());
+	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt64());
+	sess->regs.rip = (UOSInt)addr;
 	sess->regs.rsp = 0;
 	sess->regs.rbp = 0;
 	sess->regs.rax = 0;
@@ -19640,7 +19640,7 @@ void *Manage::DasmX86_64::StartDasm(Manage::AddressResolver *addrResol, void *ad
 	sess->endType = Manage::DasmX86_64::ET_NOT_END;
 	sess->rspOfst = 0;
 	sess->lastStatus = 2;
-	sess->thisStatus = 0x80000000;
+	sess->thisStatus = (Int32)0x80000000;
 	sess->codes = (void**)this->codes;
 	sess->codes0f = (void**)this->codes0f;
 	sess->stabesp = 0;
@@ -19668,7 +19668,7 @@ UTF8Char *Manage::DasmX86_64::DasmNext(void *sess, UTF8Char *buff)
 	if (!ret)
 	{
 		UInt8 cbuff[16];
-		OSInt buffSize;
+		UOSInt buffSize;
 		sptr = Text::StrConcat(buff, (const UTF8Char*)"Unknown opcode ");
 		buffSize = ses->memReader->ReadMemory(ses->regs.rip, cbuff, 16);
 		if (buffSize > 0)
@@ -19687,7 +19687,7 @@ UTF8Char *Manage::DasmX86_64::DasmNext(void *sess, UTF8Char *buff)
 		return sptr;
 	}
 	ses->lastStatus = ses->thisStatus;
-	ses->thisStatus = ses->thisStatus & 0x80000000;
+	ses->thisStatus = ses->thisStatus & (Int32)0x80000000;
 	return sptr;
 }
 

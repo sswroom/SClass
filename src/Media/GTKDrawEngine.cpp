@@ -599,7 +599,7 @@ Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, const UTF8Char *str
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	font->Init(this->cr);
 	brush->Init(this->cr);
-	cairo_move_to((cairo_t *)this->cr, tlx + this->left, tly + font->GetHeight() * 0.8 + 1 + this->top);
+	cairo_move_to((cairo_t *)this->cr, tlx + Math::OSInt2Double(this->left), tly + font->GetHeight() * 0.8 + 1 + Math::OSInt2Double(this->top));
 	cairo_show_text((cairo_t *)this->cr, (const Char*)str);
 	return true;
 }
@@ -662,43 +662,43 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 			return false;
 		}
 
-		if (px < buffSize)
+		if (px < (OSInt)buffSize)
 		{
-			sx = -px + buffSize;
-			swidth += px;
+			sx = -px + (OSInt)buffSize;
+			swidth += (UOSInt)px;
 			px = 0;
 		}
 		else
 		{
 			sx = 0;
-			px -= buffSize;
+			px -= (OSInt)buffSize;
 		}
-		if (py < buffSize)
+		if (py < (OSInt)buffSize)
 		{
-			sy = -py + buffSize;
-			sheight += py;
+			sy = -py + (OSInt)buffSize;
+			sheight = (UOSInt)((OSInt)sheight + py);
 			py = 0;
 		}
 		else
 		{
 			sy = 0;
-			py -= buffSize;
+			py -= (OSInt)buffSize;
 		}
-		if ((OSInt)gimg->GetHeight() - sheight < sy)
+		if ((OSInt)(gimg->GetHeight() - sheight) < sy)
 		{
-			sheight = gimg->GetHeight() - sy;
+			sheight = gimg->GetHeight() - (UOSInt)sy;
 		}
-		if ((OSInt)gimg->GetWidth() - swidth < sx)
+		if ((OSInt)(gimg->GetWidth() - swidth) < sx)
 		{
-			swidth = gimg->GetWidth() - sx;
+			swidth = gimg->GetWidth() - (UOSInt)sx;
 		}
-		if (dwidth + buffSize < swidth)
+		if ((UOSInt)dwidth + buffSize < swidth)
 		{
-			swidth = dwidth + buffSize;
+			swidth = (UOSInt)dwidth + buffSize;
 		}
-		if (dheight + buffSize < sheight)
+		if ((UOSInt)dheight + buffSize < sheight)
 		{
-			sheight = dheight + buffSize;
+			sheight = (UOSInt)dheight + buffSize;
 		}
 		if (swidth <= 0 || sheight <= 0 || sz[0] <= 0 || sz[1] <= 0)
 		{
@@ -708,23 +708,23 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 		{
 			Media::DrawBrush *whiteB = gimg->NewBrushARGB(0xffffffff);
 			//gimg->SetTextAlign(this->strAlign);
-			gimg->DrawString(sx + buffSize, sy + buffSize, str, f, whiteB);
+			gimg->DrawString(Math::OSInt2Double(sx) + Math::UOSInt2Double(buffSize), Math::OSInt2Double(sy) + Math::UOSInt2Double(buffSize), str, f, whiteB);
 
-			OSInt bpl = (sz[0] + (buffSize << 1)) << 2;
-			OSInt dbpl = this->info->dispWidth << 2;
-			Int32 color = brush->GetOriColor();
+			OSInt bpl = (OSInt)(sz[0] + (buffSize << 1)) << 2;
+			OSInt dbpl = (OSInt)this->info->dispWidth << 2;
+			UInt32 color = brush->GetOriColor();
 			UInt8 *pbits = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 			UInt8 *dbits = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-			ImageUtil_ImageColorBuffer32(pbits + bpl * buffSize + buffSize * 4, sz[0], sz[1], bpl, buffSize);
-			if (py + sheight > (OSInt)this->info->dispHeight)
+			ImageUtil_ImageColorBuffer32(pbits + bpl * (OSInt)buffSize + (OSInt)buffSize * 4, sz[0], sz[1], bpl, buffSize);
+			if (py + (OSInt)sheight > (OSInt)this->info->dispHeight)
 			{
-				sheight = this->info->dispHeight - py;
+				sheight = this->info->dispHeight - (UOSInt)py;
 			}
-			if (px + swidth > (OSInt)this->info->dispWidth)
+			if (px + (OSInt)swidth > (OSInt)this->info->dispWidth)
 			{
-				swidth = this->info->dispWidth - px;
+				swidth = this->info->dispWidth - (UOSInt)px;
 			}
-			if (swidth > 0 && sheight > 0)
+			if ((OSInt)swidth > 0 && (OSInt)sheight > 0)
 			{
 				if (dbits)
 				{
@@ -805,13 +805,13 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 		UInt8 *simgPtr = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 		OSInt sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
 
-		Int32 ixPos = Math::Double2Int32(tlx);
-		Int32 iyPos = Math::Double2Int32(tly);
-		Int32 ixPos2 = ixPos + (Int32)gimg->info->dispWidth;
-		Int32 iyPos2 = iyPos + (Int32)gimg->info->dispHeight;
+		OSInt ixPos = Math::Double2Int32(tlx);
+		OSInt iyPos = Math::Double2Int32(tly);
+		OSInt ixPos2 = ixPos + (OSInt)gimg->info->dispWidth;
+		OSInt iyPos2 = iyPos + (OSInt)gimg->info->dispHeight;
 		if ((OSInt)this->info->dispWidth < ixPos2)
 		{
-			ixPos2 = this->info->dispWidth;
+			ixPos2 = (OSInt)this->info->dispWidth;
 		}
 		if (ixPos < 0)
 		{
@@ -821,7 +821,7 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 
 		if ((OSInt)this->info->dispHeight < iyPos2)
 		{
-			iyPos2 = (Int32)this->info->dispHeight;
+			iyPos2 = (OSInt)this->info->dispHeight;
 		}
 		if (iyPos < 0)
 		{

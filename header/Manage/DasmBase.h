@@ -1,7 +1,7 @@
 #ifndef _SM_MANAGE_DASM
 #define _SM_MANAGE_DASM
-#include "Data/ArrayListInt32.h"
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt32.h"
+#include "Data/ArrayListUInt64.h"
 #include "IO/Writer.h"
 #include "Manage/IMemoryReader.h"
 
@@ -189,22 +189,22 @@ namespace Manage
 	{
 	public:
 		virtual RegBitDepth GetRegBitDepth();
-		virtual Bool Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
+		virtual Bool Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
 	};
 
 	class Dasm32 : public Dasm
 	{
 	public:
 		virtual RegBitDepth GetRegBitDepth();
-		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
+		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
 	};
 
 	class Dasm64 : public Dasm
 	{
 	public:
 		virtual RegBitDepth GetRegBitDepth();
-		virtual Bool Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListInt64 *callAddrs, Data::ArrayListInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
+		virtual Bool Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
 	};
-};
+}
 
 #endif

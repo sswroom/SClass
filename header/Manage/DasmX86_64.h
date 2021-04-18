@@ -1,6 +1,6 @@
 #ifndef _SM_MANAGE_DASMX86_64
 #define _SM_MANAGE_DASMX86_64
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt64.h"
 #include "Manage/AddressResolver.h"
 #include "Manage/DasmBase.h"
 #include "Manage/IMemoryReader.h"
@@ -87,14 +87,14 @@ namespace Manage
 		typedef struct
 		{
 			DasmX86_64_Regs regs;
-			Data::ArrayListInt64 *callAddrs;
-			Data::ArrayListInt64 *jmpAddrs;
+			Data::ArrayListUInt64 *callAddrs;
+			Data::ArrayListUInt64 *jmpAddrs;
 			//Text::StringBuilderW *outStr;
 			UTF8Char *sbuff;
 //			Bool isEnded;
 			EndType endType;
 			Int64 rspOfst;
-			Int64 retAddr;
+			UInt64 retAddr;
 			Int32 lastStatus;
 			Int32 thisStatus; //bit0: prefix1, bit1: ignore esp change, bit2: prefix2, bit8-11: REX(WRXB), bit16: segment mod, bit17: has vex, bit18: vex leng, bit31: ignore esp
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
@@ -125,8 +125,8 @@ namespace Manage
 		virtual ~DasmX86_64();
 
 		virtual const UTF8Char *GetHeader(Bool fullRegs);
-		virtual Bool Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListInt64 *callAddrs, Data::ArrayListInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		Bool Disasm64In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListInt64 *callAddrs, Data::ArrayListInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
+		virtual Bool Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		Bool Disasm64In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
 		virtual Dasm_Regs *CreateRegs();
 		virtual void FreeRegs(Dasm_Regs *regs);
 

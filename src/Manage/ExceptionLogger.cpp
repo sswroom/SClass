@@ -54,7 +54,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 	}
 	if ((size = proc.ReadMemory(context->GetStackAddr(), buff, STACKDUMPSIZE)) != 0)
 	{
-		OSInt currAddr = context->GetStackAddr();
+		UOSInt currAddr = context->GetStackAddr();
 		UInt8 *currPtr = buff;
 		writer->WriteLine();
 		sb.ClearStr();
@@ -92,21 +92,21 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			UInt32 currInst = (UInt32)context->GetInstAddr();
 			UInt32 currStack = (UInt32)context->GetStackAddr();
 			UInt32 currFrame = (UInt32)context->GetFrameAddr();
-			Data::ArrayListInt32 *callAddrs;
-			Data::ArrayListInt32 *jmpAddrs;
+			Data::ArrayListUInt32 *callAddrs;
+			Data::ArrayListUInt32 *jmpAddrs;
 			UInt32 blockStart;
 			UInt32 blockEnd;
 
-			NEW_CLASS(callAddrs, Data::ArrayListInt32());
-			NEW_CLASS(jmpAddrs, Data::ArrayListInt32());
+			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
+			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
 			Bool retVal = true;
 			writer->WriteLine();
 			writer->WriteLine((const UTF8Char*)"Disassembly:");
 
-			Data::ArrayListInt32 *blkStarts;
-			Data::ArrayListInt32 *blkEnds;
-			NEW_CLASS(blkStarts, Data::ArrayListInt32());
-			NEW_CLASS(blkEnds, Data::ArrayListInt32());
+			Data::ArrayListUInt32 *blkStarts;
+			Data::ArrayListUInt32 *blkEnds;
+			NEW_CLASS(blkStarts, Data::ArrayListUInt32());
+			NEW_CLASS(blkEnds, Data::ArrayListUInt32());
 
 			Bool fin = false;
 
@@ -126,7 +126,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			{
 				if ((size = proc.ReadMemory(currInst, buff, 256)) != 0)
 				{
-					OSInt currAddr = currInst;
+					UOSInt currAddr = currInst;
 					UInt8 *currPtr = buff;
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Memory Dumps (Instructions):");
@@ -213,21 +213,21 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			UInt64 currInst = context->GetInstAddr();
 			UInt64 currStack = context->GetStackAddr();
 			UInt64 currFrame = context->GetFrameAddr();;
-			Data::ArrayListInt64 *callAddrs;
-			Data::ArrayListInt64 *jmpAddrs;
+			Data::ArrayListUInt64 *callAddrs;
+			Data::ArrayListUInt64 *jmpAddrs;
 			UInt64 blockStart;
 			UInt64 blockEnd;
 
-			NEW_CLASS(callAddrs, Data::ArrayListInt64());
-			NEW_CLASS(jmpAddrs, Data::ArrayListInt64());
+			NEW_CLASS(callAddrs, Data::ArrayListUInt64());
+			NEW_CLASS(jmpAddrs, Data::ArrayListUInt64());
 			Bool retVal = true;
 			writer->WriteLine();
 			writer->WriteLine((const UTF8Char*)"Disassembly:");
 
-			Data::ArrayListInt64 *blkStarts;
-			Data::ArrayListInt64 *blkEnds;
-			NEW_CLASS(blkStarts, Data::ArrayListInt64());
-			NEW_CLASS(blkEnds, Data::ArrayListInt64());
+			Data::ArrayListUInt64 *blkStarts;
+			Data::ArrayListUInt64 *blkEnds;
+			NEW_CLASS(blkStarts, Data::ArrayListUInt64());
+			NEW_CLASS(blkEnds, Data::ArrayListUInt64());
 
 			Bool fin = false;
 
@@ -247,7 +247,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			{
 				if ((size = proc.ReadMemory(currInst, buff, 256)) != 0)
 				{
-					Int64 currAddr = currInst;
+					UInt64 currAddr = currInst;
 					UInt8 *currPtr = buff;
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Memory Dumps (Instructions):");

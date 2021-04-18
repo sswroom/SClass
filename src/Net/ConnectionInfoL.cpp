@@ -94,7 +94,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	}
 	if (ioctl(data->sock, SIOCGIFMTU, &ifr) == 0)
 	{
-		this->ent.mtu = ifr.ifr_mtu;
+		this->ent.mtu = (UInt32)ifr.ifr_mtu;
 	}
 	else
 	{
@@ -137,7 +137,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		sb.Append((const UTF8Char*)data->name);
 		sb.Append((const UTF8Char*)"/address");
 	
-		OSInt readSize;
+		UOSInt readSize;
 		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		readSize = fs->Read(buff, 63);
 		DEL_CLASS(fs);
@@ -166,7 +166,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	this->ent.dhcpLeaseExpire = 0;
 	this->ent.dnsSuffix = 0;
 	
-	NEW_CLASS(this->ent.ipaddr, Data::ArrayListInt32(4));
+	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32(4));
 #if !defined(NO_GETIFADDRS) && (!defined(__ANDROID_API__) || __ANDROID_API__ >= 24)
 	struct ifaddrs *ifap;
 	struct ifaddrs *ifa;
@@ -177,7 +177,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		{
 			if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET && Text::StrEquals(ifa->ifa_name, data->name))
 			{
-				this->ent.ipaddr->Add((Int32)((sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr);
+				this->ent.ipaddr->Add((UInt32)((sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr);
 			}
 			ifa = ifa->ifa_next;
 		}
@@ -187,7 +187,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 #endif
 	
 	Text::UTF8Reader *reader;
-	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListInt32(4));
+	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32(4));
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
 	{
@@ -246,6 +246,6 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 
 Bool Net::ConnectionInfo::SetInfo(void *info)
 {
-	this->ent.defGW = *(Int32*)info;
+	this->ent.defGW = *(UInt32*)info;
 	return true;
 }

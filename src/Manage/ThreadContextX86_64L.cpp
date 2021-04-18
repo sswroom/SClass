@@ -858,88 +858,88 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 	switch (index)
 	{
 	case 0:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RAX");
 	case 1:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RDX");
 	case 2:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RCX");
 	case 3:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBX];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBX];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RBX");
 	case 4:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSI];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSI];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RSI");
 	case 5:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDI];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDI];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RDI");
 	case 6:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RSP");
 	case 7:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RBP");
 	case 8:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R8];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R8];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R8");
 	case 9:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R9];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R9];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R9");
 	case 10:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R10];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R10];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R10");
 	case 11:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R11];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R11];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R11");
 	case 12:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R12];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R12];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R12");
 	case 13:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R13];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R13];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R13");
 	case 14:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R14];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R14];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R14");
 	case 15:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R15];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R15];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"R15");
 	case 16:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"RIP");
 #if defined(__sun__)
 	case 17:
-		*(UInt64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RFL];
+		*(Int64*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RFL];
 		*regBitCount = 64;
 		return Text::StrConcat(buff, (const UTF8Char*)"EFLAGS");
 	case 18:
-		*(UInt16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS] & 0xffff;
+		*(Int16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS] & 0xffff;
 		*regBitCount = 16;
 		return Text::StrConcat(buff, (const UTF8Char*)"CS");
 	case 19:
-		*(UInt16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS] & 0xffff;
+		*(Int16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS] & 0xffff;
 		*regBitCount = 16;
 		return Text::StrConcat(buff, (const UTF8Char*)"FS");
 	case 20:
-		*(UInt16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS] & 0xffff;
+		*(Int16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS] & 0xffff;
 		*regBitCount = 16;
 		return Text::StrConcat(buff, (const UTF8Char*)"GS");
 	case 21:
@@ -1008,19 +1008,19 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 		return Text::StrConcat(buff, (const UTF8Char*)"XMM15");
 #else
 	case 17:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
+		*(Int32*)regVal = (Int32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
 		*regBitCount = 32;
 		return Text::StrConcat(buff, (const UTF8Char*)"EFLAGS");
 	case 18:
-		*(UInt16*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] & 0xffff;
+		*(Int16*)regVal = (Int16)(((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] & 0xffff);
 		*regBitCount = 16;
 		return Text::StrConcat(buff, (const UTF8Char*)"CS");
 	case 19:
-		*(UInt16*)regVal = (((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 32) & 0xffff;
+		*(Int16*)regVal = (Int16)((((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 32) & 0xffff);
 		*regBitCount = 16;
 		return Text::StrConcat(buff, (const UTF8Char*)"FS");
 	case 20:
-		*(UInt16*)regVal = (((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 16) & 0xffff;
+		*(Int16*)regVal = (Int16)((((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 16) & 0xffff);
 		*regBitCount = 16;
 		return Text::StrConcat(buff, (const UTF8Char*)"GS");
 	case 21:
@@ -1173,17 +1173,17 @@ UOSInt Manage::ThreadContextX86_64::GetFrameAddr()
 
 void Manage::ThreadContextX86_64::SetInstAddr(UOSInt instAddr)
 {
-	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP] = instAddr;
+	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP] = (OSInt)instAddr;
 }
 
 void Manage::ThreadContextX86_64::SetStackAddr(UOSInt stackAddr)
 {
-	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP] = stackAddr;
+	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP] = (OSInt)stackAddr;
 }
 
 void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
 {
-	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP] = frameAddr;
+	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP] = (OSInt)frameAddr;
 }
 
 Manage::ThreadContext *Manage::ThreadContextX86_64::Clone()
@@ -1196,36 +1196,36 @@ Manage::ThreadContext *Manage::ThreadContextX86_64::Clone()
 Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 {
 	Manage::DasmX86_64::DasmX86_64_Regs *r = (Manage::DasmX86_64::DasmX86_64_Regs *)regs;
-	r->rax = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
-	r->rdx = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
-	r->rcx = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
-	r->rbx = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBX];
-	r->rsi = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSI];
-	r->rdi = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDI];
-	r->rsp = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP];
-	r->rbp = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP];
-	r->rip = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP];
-	r->r8 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R8];
-	r->r9 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R9];
-	r->r10 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R10];
-	r->r11 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R11];
-	r->r12 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R12];
-	r->r13 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R13];
-	r->r14 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R14];
-	r->r15 = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R15];
+	r->rax = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
+	r->rdx = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
+	r->rcx = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
+	r->rbx = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBX];
+	r->rsi = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSI];
+	r->rdi = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDI];
+	r->rsp = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP];
+	r->rbp = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP];
+	r->rip = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP];
+	r->r8 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R8];
+	r->r9 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R9];
+	r->r10 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R10];
+	r->r11 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R11];
+	r->r12 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R12];
+	r->r13 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R13];
+	r->r14 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R14];
+	r->r15 = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R15];
 	r->ss = 0;
 	r->ds = 0;
 	r->es = 0;
 #if defined(__sun__)
-	r->EFLAGS = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RFL];
-	r->cs = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS] & 0xffff;
-	r->fs = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS] & 0xffff;
-	r->gs = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS] & 0xffff;
+	r->EFLAGS = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RFL];
+	r->cs = (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS] & 0xffff;
+	r->fs = (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS] & 0xffff;
+	r->gs = (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS] & 0xffff;
 #else
-	r->EFLAGS = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
-	r->cs = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] & 0xffff;
-	r->fs = (((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 32) & 0xffff;
-	r->gs = (((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 16) & 0xffff;
+	r->EFLAGS = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
+	r->cs = (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] & 0xffff;
+	r->fs = (UInt16)(((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 32) & 0xffff;
+	r->gs = (UInt16)(((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 16) & 0xffff;
 #endif
 	r->dr0 = 0;
 	r->dr1 = 0;
@@ -1250,87 +1250,87 @@ void *Manage::ThreadContextX86_64::GetContext()
 
 UInt64 Manage::ThreadContextX86_64::GetRAX()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRDX()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRCX()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRBX()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBX];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBX];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRSI()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSI];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSI];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRDI()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDI];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDI];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRSP()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RSP];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRBP()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetRIP()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RIP];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR8()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R8];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R8];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR9()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R9];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R9];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR10()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R10];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R10];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR11()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R11];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R11];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR12()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R12];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R12];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR13()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R13];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R13];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR14()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R14];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R14];
 }
 
 UInt64 Manage::ThreadContextX86_64::GetR15()
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R15];
+	return (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_R15];
 }
 
 UInt32 Manage::ThreadContextX86_64::GetEFLAGS()
@@ -1338,16 +1338,16 @@ UInt32 Manage::ThreadContextX86_64::GetEFLAGS()
 #if defined(__sun__)
 	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RFL];
 #else
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
 #endif
 }
 
 UInt16 Manage::ThreadContextX86_64::GetCS()
 {
 #if defined(__sun__)
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS] & 0xffff;
+	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS] & 0xffff;
 #else
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] & 0xffff;
+	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] & 0xffff;
 #endif
 }
 
@@ -1369,18 +1369,18 @@ UInt16 Manage::ThreadContextX86_64::GetES()
 UInt16 Manage::ThreadContextX86_64::GetFS()
 {
 #if defined(__sun__)
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS] & 0xffff;
+	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS] & 0xffff;
 #else
-	return (((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 32) & 0xffff;
+	return (UInt16)(((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 32) & 0xffff;
 #endif
 }
 
 UInt16 Manage::ThreadContextX86_64::GetGS()
 {
 #if defined(__sun__)
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS] & 0xffff;
+	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS] & 0xffff;
 #else
-	return (((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 16) & 0xffff;
+	return (UInt16)(((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CSGSFS] >> 16) & 0xffff;
 #endif
 }
 

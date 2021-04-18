@@ -1,7 +1,7 @@
 #ifndef _SM_NET_CONNECTIONINFO
 #define _SM_NET_CONNECTIONINFO
 #include "Data/ArrayList.h"
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "Data/DateTime.h"
 #include "Net/SocketUtil.h"
 
@@ -37,8 +37,8 @@ namespace Net
 			const UTF8Char *name;
 			const UTF8Char *description;
 			const UTF8Char *dnsSuffix;
-			Data::ArrayListInt32 *ipaddr;
-			Data::ArrayListInt32 *dnsaddr;
+			Data::ArrayListUInt32 *ipaddr;
+			Data::ArrayListUInt32 *dnsaddr;
 			UInt32 defGW;
 			UInt32 dhcpSvr;
 			Data::DateTime *dhcpLeaseTime;

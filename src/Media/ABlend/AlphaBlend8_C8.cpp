@@ -26,9 +26,9 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * currHeight;
+			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * currHeight;
+			this->stats[i].src = src + sbpl * (OSInt)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -70,9 +70,9 @@ void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UIn
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * currHeight;
+			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * currHeight;
+			this->stats[i].src = src + sbpl * (OSInt)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -187,7 +187,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	}
 
 	this->stats = MemAlloc(ThreadStat, this->threadCnt);
-	OSInt i = this->threadCnt;
+	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->stats[i].me = this;
@@ -302,8 +302,8 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 	UInt32 rVal;
 	UInt32 aVal;
 
-	sbpl -= width << 2;
-	dbpl -= width << 2;
+	sbpl = sbpl - (OSInt)(width << 2);
+	dbpl = dbpl - (OSInt)(width << 2);
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
@@ -316,9 +316,9 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 		while (i-- > 0)
 		{
 			aVal = (UInt32)((src[3] << 8) | src[3]); //xmm0
-			bVal = (*(Int16*)&rgbTable[262144 + src[2] * 8 + 0] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 0] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 0] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 0]) * aVal; //xmm1
-			gVal = (*(Int16*)&rgbTable[262144 + src[2] * 8 + 2] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 2] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 2] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 2]) * aVal;
-			rVal = (*(Int16*)&rgbTable[262144 + src[2] * 8 + 4] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 4] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 4] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 4]) * aVal;
+			bVal = (UInt32)(*(Int16*)&rgbTable[262144 + src[2] * 8 + 0] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 0] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 0] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 0]) * aVal; //xmm1
+			gVal = (UInt32)(*(Int16*)&rgbTable[262144 + src[2] * 8 + 2] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 2] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 2] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 2]) * aVal;
+			rVal = (UInt32)(*(Int16*)&rgbTable[262144 + src[2] * 8 + 4] + *(Int16*)&rgbTable[264192 + src[1] * 8 + 4] + *(Int16*)&rgbTable[266240 + src[0] * 8 + 4] + *(Int16*)&rgbTable[268288 + src[3] * 8 + 4]) * aVal;
 			dest[0] = rgbTable[(bVal >> 16)];
 			dest[1] = rgbTable[(gVal >> 16) + 65536];
 			dest[2] = rgbTable[(rVal >> 16) + 131072];

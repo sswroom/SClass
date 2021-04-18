@@ -59,18 +59,18 @@ namespace Manage
 		Bool Kill();
 		WChar *GetFilename(WChar *buff);
 		Bool GetFilename(Text::StringBuilderUTF *sb);
-		OSInt GetMemorySize();
-		Bool SetMemorySize(OSInt minSize, OSInt maxSize);
-		OSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
+		UOSInt GetMemorySize();
+		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
+		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
 		void *GetHandle();
-		OSInt GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList);
-		OSInt GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList);
-		OSInt GetHeapLists(Data::ArrayList<Int32> *heapList);
-		OSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, OSInt maxCount);
+		UOSInt GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList);
+		UOSInt GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList);
+		UOSInt GetHeapLists(Data::ArrayList<Int32> *heapList);
+		UOSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, UOSInt maxCount);
 		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);
 
 		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
-		Bool GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSInt *pagedPoolUsage, OSInt *nonPagedPoolUsage, OSInt *pageFileUsage);
+		Bool GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage);
 		Bool GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime);
 		UInt32 GetGDIObjCount();
 		UInt32 GetUserObjCount();
@@ -82,7 +82,7 @@ namespace Manage
 		virtual UInt16 ReadMemUInt16(UInt64 addr);
 		virtual UInt32 ReadMemUInt32(UInt64 addr);
 		virtual UInt64 ReadMemUInt64(UInt64 addr);
-		virtual OSInt ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize);
+		virtual UOSInt ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize);
 	public:
 		typedef struct
 		{

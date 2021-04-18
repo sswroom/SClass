@@ -173,7 +173,7 @@ Bool Media::CS::TransferParam::Equals(const TransferParam *tran)
 	{
 		if (this->paramCnt != tran->paramCnt)
 			return false;
-		OSInt i = this->paramCnt;
+		UOSInt i = this->paramCnt;
 		while (i-- > 0)
 		{
 			if (this->params[i] != tran->params[i])

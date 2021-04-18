@@ -973,12 +973,12 @@ void Media::EXIFData::FreeItem(Media::EXIFData::EXIFItem *item)
 	MemFree(item);
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, Data::ArrayList<Media::EXIFData::EXIFItem*> *exifList, Int32 *startOfst, Int32 *otherOfst)
+void Media::EXIFData::ToExifBuff(UInt8 *buff, Data::ArrayList<Media::EXIFData::EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst)
 {
-	Int32 objCnt;
+	UInt32 objCnt;
 	UOSInt i;
-	Int32 j;
-	Int32 k;
+	UInt32 j;
+	UInt32 k;
 	EXIFItem *exif;
 
 	objCnt = 0;
@@ -1160,13 +1160,13 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, Data::ArrayList<Media::EXIFData::E
 	*otherOfst = k;
 }
 
-void Media::EXIFData::GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, Int32 *size, Int32 *endOfst)
+void Media::EXIFData::GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst)
 {
-	Int32 i = 6;
-	Int32 j = 6;
-	OSInt k;
-	Int32 l;
-	Int32 m;
+	UInt32 i = 6;
+	UInt32 j = 6;
+	UOSInt k;
+	UInt32 l;
+	UInt32 m;
 	EXIFItem *exif;
 
 	k = exifList->GetCount();
@@ -1348,7 +1348,7 @@ Media::EXIFData *Media::EXIFData::Clone()
 	return newExif;
 }
 
-void Media::EXIFData::AddBytes(Int32 id, Int32 cnt, const UInt8 *buff)
+void Media::EXIFData::AddBytes(Int32 id, UInt32 cnt, const UInt8 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1372,7 +1372,7 @@ void Media::EXIFData::AddBytes(Int32 id, Int32 cnt, const UInt8 *buff)
 	}
 }
 
-void Media::EXIFData::AddString(Int32 id, Int32 cnt, const Char *buff)
+void Media::EXIFData::AddString(Int32 id, UInt32 cnt, const Char *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1388,7 +1388,7 @@ void Media::EXIFData::AddString(Int32 id, Int32 cnt, const Char *buff)
 	}
 }
 
-void Media::EXIFData::AddUInt16(Int32 id, Int32 cnt, const UInt16 *buff)
+void Media::EXIFData::AddUInt16(Int32 id, UInt32 cnt, const UInt16 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1412,7 +1412,7 @@ void Media::EXIFData::AddUInt16(Int32 id, Int32 cnt, const UInt16 *buff)
 	}
 }
 
-void Media::EXIFData::AddUInt32(Int32 id, Int32 cnt, const UInt32 *buff)
+void Media::EXIFData::AddUInt32(Int32 id, UInt32 cnt, const UInt32 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1436,7 +1436,7 @@ void Media::EXIFData::AddUInt32(Int32 id, Int32 cnt, const UInt32 *buff)
 	}
 }
 
-void Media::EXIFData::AddRational(Int32 id, Int32 cnt, const UInt32 *buff)
+void Media::EXIFData::AddRational(Int32 id, UInt32 cnt, const UInt32 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1453,7 +1453,7 @@ void Media::EXIFData::AddRational(Int32 id, Int32 cnt, const UInt32 *buff)
 	}
 }
 
-void Media::EXIFData::AddOther(Int32 id, Int32 cnt, const UInt8 *buff)
+void Media::EXIFData::AddOther(Int32 id, UInt32 cnt, const UInt8 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1470,7 +1470,7 @@ void Media::EXIFData::AddOther(Int32 id, Int32 cnt, const UInt8 *buff)
 	}
 }
 
-void Media::EXIFData::AddInt16(Int32 id, Int32 cnt, const Int16 *buff)
+void Media::EXIFData::AddInt16(Int32 id, UInt32 cnt, const Int16 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1509,7 +1509,7 @@ void Media::EXIFData::AddSubEXIF(Int32 id, Media::EXIFData *exif)
 	}
 }
 
-void Media::EXIFData::AddDouble(Int32 id, Int32 cnt, const Double *buff)
+void Media::EXIFData::AddDouble(Int32 id, UInt32 cnt, const Double *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1556,7 +1556,7 @@ Media::EXIFData::EXIFType Media::EXIFData::GetExifType(Int32 id)
 	return item->type;
 }
 
-Int32 Media::EXIFData::GetExifCount(Int32 id)
+UInt32 Media::EXIFData::GetExifCount(Int32 id)
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap->Get(id);
 	if (item == 0)
@@ -2496,7 +2496,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				if (exItem->size > 1024)
 				{
-					sb->AppendI32(exItem->size);
+					sb->AppendU32(exItem->size);
 					sb->Append((const UTF8Char*)" bytes: ");
 					sb->AppendHexBuff(valBuff, 256, ' ', Text::LBT_CRLF);
 					sb->Append((const UTF8Char*)"\r\n...\r\n");
@@ -2647,7 +2647,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 	//			UInt8 *valBuff;
 	//			valBuff = (UInt8*)exItem->dataBuff;
 				sb->Append((const UTF8Char*)", Other: size = ");
-				sb->AppendI32(exItem->size);
+				sb->AppendU32(exItem->size);
 	//			sb->AppendHex(valBuff, subExItem->size, ' ', Text::StringBuilder::LBT_CRLF);
 			}
 		}
@@ -2663,7 +2663,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 				valBuff = (UInt8*)exItem->dataBuff;
 			}*/
 			sb->Append((const UTF8Char*)", Unknown: size = ");
-			sb->AppendI32(exItem->size);
+			sb->AppendU32(exItem->size);
 //			sb->AppendHex(valBuff, subExItem->size, ' ', Text::StringBuilder::LBT_CRLF);
 		}
 
@@ -2672,11 +2672,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, OSInt valCnt)
+Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
-	OSInt k;
+	UOSInt k;
 	k = 0;
 	while (k < valCnt)
 	{
@@ -3603,11 +3603,11 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, OSInt valCnt)
+Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
-	OSInt k;
+	UOSInt k;
 	k = 0;
 	while (k < valCnt)
 	{
@@ -3666,11 +3666,11 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, OSInt valCnt)
+Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
-	OSInt k;
+	UOSInt k;
 	k = 0;
 	while (k < valCnt)
 	{
@@ -3934,7 +3934,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			break;
 		default:
 			sb->Append((const UTF8Char*)"Unknown(");
-			sb->AppendOSInt(k);
+			sb->AppendUOSInt(k);
 			sb->Append((const UTF8Char*)") = ");
 			isInt16 = true;
 			break;
@@ -3959,17 +3959,17 @@ Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF *sb, UInt16 l
 	return true;
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, Int32 *startOfst, Int32 *otherOfst)
+void Media::EXIFData::ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst)
 {
 	ToExifBuff(buff, this->exifMap->GetValues(), startOfst, otherOfst);
 }
 
-void Media::EXIFData::GetExifBuffSize(Int32 *size, Int32 *endOfst)
+void Media::EXIFData::GetExifBuffSize(UInt32 *size, UInt32 *endOfst)
 {
 	GetExifBuffSize(this->exifMap->GetValues(), size, endOfst);
 }
 
-Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, OSInt buffSize)
+Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffSize)
 {
 	Media::EXIFData *ret = 0;
 	if (Text::StrEquals(buff, (const UTF8Char*)"Panasonic"))
@@ -4194,7 +4194,7 @@ const UTF8Char *Media::EXIFData::GetEXIFTypeName(Media::EXIFData::EXIFType type)
 	};
 }
 
-Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, OSInt buffSize, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, EXIFMaker exifMaker, Int32 readBase)
+Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, EXIFMaker exifMaker, UInt32 readBase)
 {
 	Media::EXIFData *exif;
 	const UInt8 *ifdEntries;
@@ -4203,13 +4203,13 @@ Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, OSInt buffSize, RI
 	OSInt ifdOfst;
 	Int32 tag;
 	Int32 ftype;
-	Int32 fcnt;
+	UInt32 fcnt;
 
 	ifdCnt = readInt16(buff);
 	ifdEntries = &buff[2];
 
 	UInt8 *tmpBuff;
-	Int32 j;
+	UInt32 j;
 	NEW_CLASS(exif, Media::EXIFData(exifMaker));
 
 	if (readBase == 0)
@@ -4505,18 +4505,18 @@ Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, OSInt buffSize, RI
 	return exif;
 }
 
-Media::EXIFData *Media::EXIFData::ParseIFD(IO::IStreamData *fd, Int64 ofst, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, Int64 readBase)
+Media::EXIFData *Media::EXIFData::ParseIFD(IO::IStreamData *fd, UInt64 ofst, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, UInt64 readBase)
 {
 	Media::EXIFData *exif;
 	UInt8 *ifdEntries;
 	UInt8 ifdBuff[2];
-	OSInt ifdCnt;
-	OSInt i;
+	UOSInt ifdCnt;
+	UOSInt i;
 	UOSInt readSize;
 	OSInt ifdOfst;
 	Int32 tag;
 	Int32 ftype;
-	Int32 fcnt;
+	UInt32 fcnt;
 	if (fd->GetRealData(ofst, 2, ifdBuff) != 2)
 	{
 		return 0;
@@ -4531,7 +4531,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::IStreamData *fd, Int64 ofst, RInt
 	}
 
 	UInt8 *tmpBuff;
-	Int32 j;
+	UInt32 j;
 	NEW_CLASS(exif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
 
 	ifdOfst = 0;
@@ -4654,7 +4654,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::IStreamData *fd, Int64 ofst, RInt
 			else
 			{
 				tmpBuff = MemAlloc(UInt8, fcnt);
-				fd->GetRealData(readInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
+				fd->GetRealData((UInt32)readInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
 				exif->AddOther(tag, fcnt, tmpBuff);
 				MemFree(tmpBuff);
 			}
@@ -4684,7 +4684,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::IStreamData *fd, Int64 ofst, RInt
 		else if (ftype == 12)
 		{
 			tmpBuff = MemAlloc(UInt8, fcnt << 3);
-			fd->GetRealData(readInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
+			fd->GetRealData((UInt32)readInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
 			exif->AddDouble(tag, fcnt, (Double*)tmpBuff);
 			MemFree(tmpBuff);
 		}
@@ -4699,7 +4699,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::IStreamData *fd, Int64 ofst, RInt
 
 	if (nextOfst)
 	{
-		*nextOfst = readInt32(&ifdEntries[ifdCnt * 12]);
+		*nextOfst = (UInt32)readInt32(&ifdEntries[ifdCnt * 12]);
 	}
 	MemFree(ifdEntries);
 	return exif;

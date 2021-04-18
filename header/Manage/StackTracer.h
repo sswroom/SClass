@@ -2,7 +2,7 @@
 #ifndef _SM_MANAGE_STACKTRACER
 #define _SM_MANAGE_STACKTRACER
 #include "Manage/ThreadContext.h"
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt64.h"
 
 namespace Manage
 {
@@ -13,7 +13,7 @@ namespace Manage
 		void *hThread;
 		Manage::ThreadContext *winContext;
 		Manage::ThreadContext *context;
-		Data::ArrayListInt64 *addrArr;
+		Data::ArrayListUInt64 *addrArr;
 		void *stackFrame;
 
 	public:

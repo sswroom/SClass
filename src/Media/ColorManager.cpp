@@ -78,7 +78,7 @@ Media::MonitorColorManager::MonitorColorManager(const UTF8Char *profileName)
 
 Media::MonitorColorManager::~MonitorColorManager()
 {
-	OSInt i;
+	UOSInt i;
 	Media::ColorManagerSess *colorSess;
 	i = this->sessList->GetCount();
 	while (i-- > 0)
@@ -609,7 +609,7 @@ void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 	i = this->sessList->IndexOf(colorSess);
 	if (i >= 0)
 	{
-		this->sessList->RemoveAt(i);
+		this->sessList->RemoveAt((UOSInt)i);
 	}
 	mutUsage.EndUse();
 }
@@ -729,7 +729,7 @@ void Media::MonitorColorManager::RGBUpdated()
 {
 	Media::ColorManagerSess *colorSess;
 	Sync::MutexUsage mutUsage(this->sessMut);
-	OSInt i = this->sessList->GetCount();
+	UOSInt i = this->sessList->GetCount();
 	while (i-- > 0)
 	{
 		colorSess = this->sessList->GetItem(i);
@@ -742,7 +742,7 @@ void Media::MonitorColorManager::YUVUpdated()
 {
 	Media::ColorManagerSess *colorSess;
 	Sync::MutexUsage mutUsage(this->sessMut);
-	OSInt i = this->sessList->GetCount();
+	UOSInt i = this->sessList->GetCount();
 	while (i-- > 0)
 	{
 		colorSess = this->sessList->GetItem(i);
@@ -767,7 +767,7 @@ Media::ColorManager::~ColorManager()
 {
 	Data::ArrayList<MonitorColorManager*> *monColorList = this->monColor->GetValues();
 	MonitorColorManager *monColor;
-	OSInt i = monColorList->GetCount();
+	UOSInt i = monColorList->GetCount();
 	while (i-- > 0)
 	{
 		monColor = monColorList->GetItem(i);
@@ -963,7 +963,7 @@ void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 	OSInt index = this->hdlrs->IndexOf(hdlr);
 	if (index >= 0)
 	{
-		this->hdlrs->RemoveAt(index);
+		this->hdlrs->RemoveAt((UOSInt)index);
 	}
 	mutUsage.EndUse();
 }
@@ -1029,7 +1029,7 @@ void Media::ColorManagerSess::ChangeMonitor(void *hMon)
 void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	OSInt i = this->hdlrs->GetCount();
+	UOSInt i = this->hdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->hdlrs->GetItem(i)->RGBParamChanged(rgbParam);
@@ -1040,7 +1040,7 @@ void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *
 void Media::ColorManagerSess::YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	OSInt i = this->hdlrs->GetCount();
+	UOSInt i = this->hdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->hdlrs->GetItem(i)->YUVParamChanged(yuvParam);

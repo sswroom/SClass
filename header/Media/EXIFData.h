@@ -36,7 +36,7 @@ namespace Media
 		{
 			Int32 id;
 			EXIFType type;
-			Int32 size;
+			UInt32 size;
 			Int32 value;
 			void *dataBuff;
 		} EXIFItem;
@@ -100,27 +100,27 @@ namespace Media
 
 	private:
 		void FreeItem(EXIFItem *item);
-		void ToExifBuff(UInt8 *buff, Data::ArrayList<EXIFItem*> *exifList, Int32 *startOfst, Int32 *otherOfst);
-		void GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, Int32 *size, Int32 *endOfst);
+		void ToExifBuff(UInt8 *buff, Data::ArrayList<EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst);
+		void GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst);
 	public:
 		EXIFData(EXIFMaker exifMaker);
 		~EXIFData();
 		EXIFMaker GetEXIFMaker();
 		Media::EXIFData *Clone();
-		void AddBytes(Int32 id, Int32 cnt, const UInt8 *buff);
-		void AddString(Int32 id, Int32 cnt, const Char *buff);
-		void AddUInt16(Int32 id, Int32 cnt, const UInt16 *buff);
-		void AddUInt32(Int32 id, Int32 cnt, const UInt32 *buff);
-		void AddRational(Int32 id, Int32 cnt, const UInt32 *buff);
-		void AddOther(Int32 id, Int32 cnt, const UInt8 *buff);
-		void AddInt16(Int32 id, Int32 cnt, const Int16 *buff);
+		void AddBytes(Int32 id, UInt32 cnt, const UInt8 *buff);
+		void AddString(Int32 id, UInt32 cnt, const Char *buff);
+		void AddUInt16(Int32 id, UInt32 cnt, const UInt16 *buff);
+		void AddUInt32(Int32 id, UInt32 cnt, const UInt32 *buff);
+		void AddRational(Int32 id, UInt32 cnt, const UInt32 *buff);
+		void AddOther(Int32 id, UInt32 cnt, const UInt8 *buff);
+		void AddInt16(Int32 id, UInt32 cnt, const Int16 *buff);
 		void AddSubEXIF(Int32 id, Media::EXIFData *exif);
-		void AddDouble(Int32 id, Int32 cnt, const Double *buff);
+		void AddDouble(Int32 id, UInt32 cnt, const Double *buff);
 		void Remove(Int32 id);
 
 		OSInt GetExifIds(Data::ArrayList<Int32> *idArr);
 		EXIFType GetExifType(Int32 id);
-		Int32 GetExifCount(Int32 id);
+		UInt32 GetExifCount(Int32 id);
 		EXIFItem *GetExifItem(Int32 id);
 		UInt16 *GetExifUInt16(Int32 id);
 		UInt32 *GetExifUInt32(Int32 id);
@@ -144,21 +144,21 @@ namespace Media
 		void SetHeight(UInt32 height);
 
 		Bool ToString(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix);
-		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, OSInt valCnt);
-		Bool ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, OSInt valCnt);
-		Bool ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, OSInt valCnt);
+		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
 		Bool ToStringCanonLensType(Text::StringBuilderUTF *sb, UInt16 lensType);
-		void ToExifBuff(UInt8 *buff, Int32 *startOfst, Int32 *otherOfst);
-		void GetExifBuffSize(Int32 *size, Int32 *endOfst);
+		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst);
+		void GetExifBuffSize(UInt32 *size, UInt32 *endOfst);
 
-		EXIFData *ParseMakerNote(const UInt8 *buff, OSInt buffSize);
+		EXIFData *ParseMakerNote(const UInt8 *buff, UOSInt buffSize);
 
 		static const UTF8Char *GetEXIFMakerName(EXIFMaker exifMaker);
 		static const UTF8Char *GetEXIFName(EXIFMaker exifMaker, Int32 id);
 		static const UTF8Char *GetEXIFName(EXIFMaker exifMaker, Int32 id, Int32 subId);
 		static const UTF8Char *GetEXIFTypeName(EXIFType type);
-		static EXIFData *ParseIFD(const UInt8 *buff, OSInt buffSize, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, EXIFMaker exifMaker, Int32 readBase);
-		static EXIFData *ParseIFD(IO::IStreamData *fd, Int64 ofst, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, Int64 readBase);
+		static EXIFData *ParseIFD(const UInt8 *buff, UOSInt buffSize, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, EXIFMaker exifMaker, UInt32 readBase);
+		static EXIFData *ParseIFD(IO::IStreamData *fd, UInt64 ofst, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, UInt64 readBase);
 	};
-};
+}
 #endif

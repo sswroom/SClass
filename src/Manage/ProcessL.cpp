@@ -49,7 +49,7 @@ Manage::Process::Process(UOSInt procId, Bool controlRight)
 
 Manage::Process::Process()
 {
-	this->procId = getpid();
+	this->procId = (UOSInt)getpid();
 	this->needRelease = false;
 }
 
@@ -109,7 +109,7 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 		exit(ret);
 		return;
 	}
-	this->procId = pid;
+	this->procId = (UOSInt)pid;
 	this->needRelease = true;
 }
 
@@ -125,7 +125,7 @@ Manage::Process::Process(const WChar *cmdLine)
 
 	UTF8Char *pptr = progName;
 	Bool isQuote = false;
-	WChar c;
+	UTF8Char c;
 	args[0] = pptr;
 	while ((c = *cptr++) != 0)
 	{
@@ -172,7 +172,7 @@ Manage::Process::Process(const WChar *cmdLine)
 		return;
 	}
 	Text::StrDelNew(ccmdLine);
-	this->procId = pid;
+	this->procId = (UOSInt)pid;
 	this->needRelease = true;
 }
 
@@ -199,8 +199,8 @@ Bool Manage::Process::IsRunning()
 {
 	UTF8Char sbuff[128];
 	Int32 exitCode;
-	waitpid(this->procId, &exitCode, WNOHANG);
-	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId);
+	waitpid((__pid_t)this->procId, &exitCode, WNOHANG);
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId);
 	if (IO::Path::GetPathType(sbuff) == IO::Path::PT_DIRECTORY)
 	{
 		return true;
@@ -210,7 +210,7 @@ Bool Manage::Process::IsRunning()
 
 Bool Manage::Process::Kill()
 {
-	kill(this->procId, SIGKILL);
+	kill((__pid_t)this->procId, SIGKILL);
 	return true;
 }
 
@@ -218,14 +218,14 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
+		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-		sz = fs->Read((UInt8*)sbuff2, 511);
+		sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
 		DEL_CLASS(fs);
 		sbuff2[sz] = 0;
 		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, -1, 0);
@@ -242,11 +242,11 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
+		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		if (fs->IsError())
@@ -255,7 +255,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 		}
 		else
 		{
-			sz = fs->Read((UInt8*)sbuff2, 511);
+			sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
 		}
 		DEL_CLASS(fs);
 		sbuff2[sz] = 0;
@@ -269,17 +269,17 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 	return true;
 }
 
-OSInt Manage::Process::GetMemorySize()
+UOSInt Manage::Process::GetMemorySize()
 {
 	return 0;
 }
 
-Bool Manage::Process::SetMemorySize(OSInt minSize, OSInt maxSize)
+Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 {
 	return false;
 }
 
-OSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UOSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
 {
 	return 0;
 }
@@ -292,8 +292,8 @@ void *Manage::Process::GetHandle()
 typedef struct
 {
 	const UTF8Char *fileName;
-	OSInt addr;
-	UInt32 size;
+	UOSInt addr;
+	UOSInt size;
 } ModuleInfoData;
 
 #if !defined(__APPLE__)
@@ -314,8 +314,8 @@ int Process_GetModulesCB(struct dl_phdr_info *info, size_t size, void *data)
 		IO::Path::GetProcessFileName(sbuff);
 	}
 	midata.fileName = sbuff;
-	OSInt totalSize = 0;
-	OSInt i;
+	UOSInt totalSize = 0;
+	UOSInt i;
 	i = 0;
 	while (i < info->dlpi_phnum)
 	{
@@ -330,7 +330,7 @@ int Process_GetModulesCB(struct dl_phdr_info *info, size_t size, void *data)
 }
 #endif
 
-OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
 {
 #if defined(__APPLE__)
 	if (this->procId == getpid())
@@ -367,7 +367,7 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 #elif !defined(__ANDROID__)
 	if (this->procId == (UOSInt)getpid())
 	{
-		OSInt ret = modList->GetCount();
+		UOSInt ret = modList->GetCount();
 		dl_iterate_phdr(Process_GetModulesCB, modList);
 		return modList->GetCount() - ret;
 	}
@@ -383,10 +383,10 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 		Data::ArrayList<ModuleInfoData*> *dataList;
 		ModuleInfoData *data;
 		Manage::ModuleInfo *mod;
-		OSInt ret = 0;
-		OSInt i;
+		UOSInt ret = 0;
+		UOSInt i;
 		Text::StringBuilderUTF8 sb;
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/maps");
+		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/maps");
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
@@ -400,19 +400,19 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 				{
 					if (Text::StrSplit(sarr2, 2, sarr[0], '-') == 2)
 					{
-						OSInt startAddr = (OSInt)Text::StrHex2Int64(sarr2[0]);
-						OSInt endAddr = (OSInt)Text::StrHex2Int64(sarr2[1]);
+						UOSInt startAddr = (UOSInt)Text::StrHex2Int64(sarr2[0]);
+						UOSInt endAddr = (UOSInt)Text::StrHex2Int64(sarr2[1]);
 						data = dataMap.Get(inode);
 						if (data)
 						{
-							data->size += (endAddr - startAddr);
+							data->size += (UOSInt)(endAddr - startAddr);
 						}
 						else
 						{
 							data = MemAlloc(ModuleInfoData, 1);
 							data->fileName = Text::StrCopyNew(sarr[5]);
 							data->addr = startAddr;
-							data->size = (endAddr - startAddr);
+							data->size = (UOSInt)(endAddr - startAddr);
 							dataMap.Put(inode, data);
 						}
 					}
@@ -440,14 +440,14 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 	}
 }
 
-OSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
 {
 	Char sbuff[128];
 	DIR *dir;
-	UInt32 retCnt = 0;
+	UOSInt retCnt = 0;
 	UInt32 threadId;
 	Manage::ThreadInfo *thread;
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, "/proc/"), this->procId), "/task");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, "/proc/"), this->procId), "/task");
 	dir = opendir(sbuff);
 	if (dir)
 	{
@@ -467,12 +467,12 @@ OSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadL
 	return retCnt;
 }
 
-OSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
+UOSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
 {
 	return 0;
 }
 
-OSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, OSInt maxCount)
+UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, UOSInt maxCount)
 {
 	return 0;
 
@@ -487,14 +487,14 @@ Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 	return false;
 }
 
-Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSInt *pagedPoolUsage, OSInt *nonPagedPoolUsage, OSInt *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage)
 {
-	Int32 pageSize = sysconf(_SC_PAGESIZE);
+	UOSInt pageSize = (UOSInt)sysconf(_SC_PAGESIZE);
 	UTF8Char sbuff[128];
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Bool succ = false;
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/statm");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/statm");
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -504,7 +504,7 @@ Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSI
 		UTF8Char *sarr[8];
 		if (Text::StrSplit(sarr, 8, sb.ToString(), ' ') == 7)
 		{
-			OSInt wsSize = (OSInt)Text::StrToInt64(sarr[1]);
+			UOSInt wsSize = (UOSInt)Text::StrToUInt64(sarr[1]);
 			succ = true;
 			if (pageFault)
 			{
@@ -516,15 +516,15 @@ Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSI
 			}
 			if (pagedPoolUsage)
 			{
-				*pagedPoolUsage = (OSInt)Text::StrToInt64(sarr[2]) * pageSize;
+				*pagedPoolUsage = (UOSInt)Text::StrToUInt64(sarr[2]) * pageSize;
 			}
 			if (nonPagedPoolUsage)
 			{
-				*nonPagedPoolUsage = (OSInt)Text::StrToInt64(sarr[5]) * pageSize;
+				*nonPagedPoolUsage = (UOSInt)Text::StrToUInt64(sarr[5]) * pageSize;
 			}
 			if (pageFileUsage)
 			{
-				*pageFileUsage = (OSInt)Text::StrToInt64(sarr[0]) * pageSize;
+				*pageFileUsage = (UOSInt)Text::StrToUInt64(sarr[0]) * pageSize;
 			}
 		}
 	}
@@ -535,12 +535,12 @@ Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSI
 
 Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime)
 {
-	Int32 hertz = sysconf(_SC_CLK_TCK);
+	OSInt hertz = (OSInt)sysconf(_SC_CLK_TCK);
 	UTF8Char sbuff[128];
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Bool succ = false;
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/stat");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/stat");
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -586,7 +586,7 @@ UInt32 Manage::Process::GetHandleCount()
 	Char sbuff[128];
 	DIR *dir;
 	UInt32 retCnt = 0;
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, "/proc/"), this->procId), "/fd");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, "/proc/"), this->procId), "/fd");
 	dir = opendir(sbuff);
 	if (dir)
 	{
@@ -602,7 +602,7 @@ UInt32 Manage::Process::GetHandleCount()
 
 Manage::Process::ProcessPriority Manage::Process::GetPriority()
 {
-	int priority = getpriority(PRIO_PROCESS, this->procId);
+	int priority = getpriority(PRIO_PROCESS, (id_t)this->procId);
 	if (priority < -16)
 	{
 		return PP_REALTIME;
@@ -646,7 +646,7 @@ Manage::ThreadContext::ContextType Manage::Process::GetContextType()
 UInt8 Manage::Process::ReadMemUInt8(UInt64 addr)
 {
 	UInt8 buff[1];
-	OSInt size = this->ReadMemory(addr, buff, 1);
+	UOSInt size = this->ReadMemory(addr, buff, 1);
 	if (size == 1)
 		return buff[0];
 	return 0;
@@ -655,7 +655,7 @@ UInt8 Manage::Process::ReadMemUInt8(UInt64 addr)
 UInt16 Manage::Process::ReadMemUInt16(UInt64 addr)
 {
 	UInt8 buff[2];
-	OSInt size = this->ReadMemory(addr, buff, 2);
+	UOSInt size = this->ReadMemory(addr, buff, 2);
 	if (size == 2)
 		return ReadUInt16(&buff[0]);
 	return 0;
@@ -664,7 +664,7 @@ UInt16 Manage::Process::ReadMemUInt16(UInt64 addr)
 UInt32 Manage::Process::ReadMemUInt32(UInt64 addr)
 {
 	UInt8 buff[4];
-	OSInt size = this->ReadMemory(addr, buff, 4);
+	UOSInt size = this->ReadMemory(addr, buff, 4);
 	if (size == 4)
 		return ReadUInt32(&buff[0]);
 	return 0;
@@ -673,26 +673,26 @@ UInt32 Manage::Process::ReadMemUInt32(UInt64 addr)
 UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 {
 	UInt8 buff[8];
-	OSInt size = this->ReadMemory(addr, buff, 8);
+	UOSInt size = this->ReadMemory(addr, buff, 8);
 	if (size == 8)
 		return ReadUInt64(&buff[0]);
 	return 0;
 }
 
-OSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize)
+UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 {
 	struct iovec srcInfo;
 	struct iovec destInfo;
 	destInfo.iov_base = buff;
 	destInfo.iov_len = reqSize;
-	srcInfo.iov_base = (void*)(OSInt)addr;
+	srcInfo.iov_base = (void*)(UOSInt)addr;
 	srcInfo.iov_len = reqSize;
-	OSInt i = process_vm_readv(this->procId, &destInfo, 1, &srcInfo, 1, 0);
+	OSInt i = process_vm_readv((pid_t)this->procId, &destInfo, 1, &srcInfo, 1, 0);
 	if (i < 0)
 	{
 		i = 0;
 	}
-	return i;
+	return (UOSInt)i;
 }
 
 struct Manage::Process::FindProcSess
@@ -745,7 +745,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 
 UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
 {
-	Int32 pid;
+	UInt32 pid;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
@@ -755,7 +755,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
-		if (pt == IO::Path::PT_DIRECTORY && Text::StrToInt32(sptr, &pid))
+		if (pt == IO::Path::PT_DIRECTORY && Text::StrToUInt32(sptr, &pid))
 		{
 			IO::FileStream *fs;
 			Text::UTF8Reader *reader;
@@ -774,11 +774,11 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				{
 					if (sb.StartsWith((const UTF8Char*)"PPid:\t"))
 					{
-						info->parentId = Text::StrToInt32(sb.ToString() + 6);
+						info->parentId = Text::StrToUInt32(sb.ToString() + 6);
 					}
 					else if (sb.StartsWith((const UTF8Char*)"Threads:\t"))
 					{
-						info->threadCnt = Text::StrToInt32(sb.ToString() + 9);
+						info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
 					}
 					sb.ClearStr();
 				}
@@ -814,7 +814,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 
 WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
 {
-	Int32 pid;
+	UInt32 pid;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
@@ -824,7 +824,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
-		if (pt == IO::Path::PT_DIRECTORY && Text::StrToInt32(sptr, &pid))
+		if (pt == IO::Path::PT_DIRECTORY && Text::StrToUInt32(sptr, &pid))
 		{
 			IO::FileStream *fs;
 			Text::UTF8Reader *reader;
@@ -843,11 +843,11 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 				{
 					if (sb.StartsWith((const UTF8Char*)"PPid:\t"))
 					{
-						info->parentId = Text::StrToInt32(sb.ToString() + 6);
+						info->parentId = Text::StrToUInt32(sb.ToString() + 6);
 					}
 					else if (sb.StartsWith((const UTF8Char*)"Threads:\t"))
 					{
-						info->threadCnt = Text::StrToInt32(sb.ToString() + 9);
+						info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
 					}
 					sb.ClearStr();
 				}
@@ -896,7 +896,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 	Data::ArrayList<UTF8Char *> args;
 	Bool argStart = false;
 
-	OSInt cmdLen = Text::StrCharCnt(cmd);
+	UOSInt cmdLen = Text::StrCharCnt(cmd);
 	UTF8Char *pptr;
 	if (cmdLen >= 64)
 	{
@@ -980,7 +980,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 	while ((readSize = read(fd, buff, 128)) > 0)
 	{
 //		printf("Read %d bytes\r\n", readSize);
-		result->AppendC((const UTF8Char*)buff, readSize);
+		result->AppendC((const UTF8Char*)buff, (UOSInt)readSize);
 	}
 //	printf("Process exited\r\n");
 	close(fd);

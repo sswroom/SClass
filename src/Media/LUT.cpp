@@ -5,15 +5,15 @@
 #include "Media/LUT.h"
 #include "Text/MyString.h"
 
-Media::LUT::LUT(OSInt inputCh, OSInt inputLev, OSInt outputCh, DataFormat fmt, const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
+Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
 	this->inputCh = inputCh;
 	this->inputLev = inputLev;
 	this->outputCh = outputCh;
 	this->fmt = fmt;
 	this->remark = 0;
-	OSInt tableSize;
-	OSInt i;
+	UOSInt tableSize;
+	UOSInt i;
 	if (fmt == Media::LUT::DF_UINT8)
 	{
 		tableSize = 1;
@@ -64,7 +64,7 @@ const UTF8Char *Media::LUT::GetRemark()
 	return this->remark;
 }
 
-OSInt Media::LUT::GetInputCh()
+UOSInt Media::LUT::GetInputCh()
 {
 	return this->inputCh;
 }
@@ -74,12 +74,12 @@ Media::LUT::DataFormat Media::LUT::GetFormat()
 	return this->fmt;
 }
 
-OSInt Media::LUT::GetInputLevel()
+UOSInt Media::LUT::GetInputLevel()
 {
 	return this->inputLev;
 }
 
-OSInt Media::LUT::GetOutputCh()
+UOSInt Media::LUT::GetOutputCh()
 {
 	return this->outputCh;
 }
@@ -89,12 +89,12 @@ UInt8 *Media::LUT::GetTablePtr()
 	return this->luTable;
 }
 
-void Media::LUT::GetValueUInt8(Int32 *inputVals, UInt8 *outVals)
+void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals)
 {
-	OSInt indexBase = 1;
-	OSInt index = 0;
-	OSInt ofst;
-	OSInt i;
+	UOSInt indexBase = 1;
+	UOSInt index = 0;
+	UOSInt ofst;
+	UOSInt i;
 	i = 0;
 	while (i < this->inputCh)
 	{
@@ -148,12 +148,12 @@ void Media::LUT::GetValueUInt8(Int32 *inputVals, UInt8 *outVals)
 	}
 }
 
-void Media::LUT::GetValueUInt16(Int32 *inputVals, UInt16 *outVals)
+void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals)
 {
-	OSInt indexBase = 1;
-	OSInt index = 0;
-	OSInt ofst;
-	OSInt i;
+	UOSInt indexBase = 1;
+	UOSInt index = 0;
+	UOSInt ofst;
+	UOSInt i;
 	i = 0;
 	while (i < this->inputCh)
 	{
@@ -169,7 +169,7 @@ void Media::LUT::GetValueUInt16(Int32 *inputVals, UInt16 *outVals)
 		while (i < this->outputCh)
 		{
 			UInt8 v = this->luTable[ofst + i];
-			outVals[i] = v | (v << 8);
+			outVals[i] = (UInt16)(v | (UInt16)(v << 8));
 			i++;
 		}
 	}
@@ -208,12 +208,12 @@ void Media::LUT::GetValueUInt16(Int32 *inputVals, UInt16 *outVals)
 	}
 }
 
-void Media::LUT::GetValueSingle(Int32 *inputVals, Single *outVals)
+void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals)
 {
-	OSInt indexBase = 1;
-	OSInt index = 0;
-	OSInt ofst;
-	OSInt i;
+	UOSInt indexBase = 1;
+	UOSInt index = 0;
+	UOSInt ofst;
+	UOSInt i;
 	i = 0;
 	while (i < this->inputCh)
 	{
@@ -264,8 +264,8 @@ Media::LUT *Media::LUT::Clone()
 	{
 		newLut->SetRemark(this->remark);
 	}
-	OSInt tableSize;
-	OSInt i;
+	UOSInt tableSize;
+	UOSInt i;
 	if (fmt == Media::LUT::DF_UINT8)
 	{
 		tableSize = 1;
@@ -300,8 +300,8 @@ Bool Media::LUT::Equals(Media::LUT *lut)
 		return false;
 	if (this->outputCh != lut->outputCh || this->inputCh != lut->inputCh)
 		return false;
-	OSInt i;
-	OSInt j = 1;
+	UOSInt i;
+	UOSInt j = 1;
 	i = inputCh;
 	while (i-- > 0)
 	{

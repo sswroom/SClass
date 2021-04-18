@@ -10,7 +10,7 @@ namespace Media
 		class TransferFuncLUT : public TransferFunc
 		{
 		private:
-			OSInt srcCnt;
+			UOSInt srcCnt;
 			Double *invLUT;
 			Double *fwdLUT;
 
@@ -21,6 +21,6 @@ namespace Media
 			virtual Double ForwardTransfer(Double linearVal);
 			virtual Double InverseTransfer(Double gammaVal);
 		};
-	};
-};
+	}
+}
 #endif

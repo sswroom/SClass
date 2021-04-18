@@ -25,11 +25,11 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 	UOSInt i;
 	UOSInt j;
 	UOSInt baseAddr;
-	UInt32 size;
+	UOSInt size;
 	UTF8Char sbuff[256];
 	NEW_CLASS(this->modNames, Data::ArrayListStrUTF8());
 	NEW_CLASS(this->modBaseAddrs, Data::ArrayListUInt64());
-	NEW_CLASS(this->modSizes, Data::ArrayListUInt32());
+	NEW_CLASS(this->modSizes, Data::ArrayListUInt64());
 	this->proc = proc;
 
 	Data::ArrayList<Manage::ModuleInfo*> *modList;
@@ -91,8 +91,8 @@ UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
 	return this->modBaseAddrs->GetItem(index);
 }
 
-UInt32 Manage::SymbolResolver::GetModuleSize(UOSInt index)
+UOSInt Manage::SymbolResolver::GetModuleSize(UOSInt index)
 {
-	return this->modSizes->GetItem(index);
+	return (UOSInt)this->modSizes->GetItem(index);
 }
 

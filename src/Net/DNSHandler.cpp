@@ -152,8 +152,8 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 {
 	DomainStatus *dnsStat;
 	Double t;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	dnsStat = this->reqv6Map->Get(domain);

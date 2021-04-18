@@ -147,7 +147,7 @@ Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::
 Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(const UTF8Char *fileName)
 {
 	UInt8 buff[512];
-	OSInt buffSize;
+	UOSInt buffSize;
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
 	if (fs->IsError())
@@ -456,13 +456,13 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(const UTF8
 	return 0;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, OSInt *parsedSize)
+Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, UOSInt *parsedSize)
 {
-	OSInt i;
-	OSInt j;
-	OSInt nameOfst;
-	OSInt datumOfst = 0;
-	OSInt spIndex = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt nameOfst;
+	UOSInt datumOfst = 0;
+	UOSInt spIndex = 0;
 	Double a = 0;
 	Double f_1 = 0;
 	Math::CoordinateSystem *csys = 0;
@@ -520,14 +520,14 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 									return 0;
 								prjBuff[i + j - 1] = 0;
 								i += j;
-								j = -1;
+								j = (UOSInt)-1;
 								spIndex = 1;
 								while (true)
 								{
 									c = prjBuff[i];
 									if (c == ']' || c == ',')
 									{
-										if (j >= 0)
+										if ((OSInt)j >= 0)
 										{
 											prjBuff[i] = 0;
 											if (spIndex == 1)
@@ -676,8 +676,8 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 		Double centralMeridian = -1;
 		Double scaleFactor = -1;
 		Double latitudeOfOrigin = -1;
-		OSInt nOfst;
-		OSInt vOfst;
+		UOSInt nOfst;
+		UOSInt vOfst;
 		Bool commaFound;
 
 		i = 7;
@@ -875,9 +875,9 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 	return 0;
 }
 
-Bool Math::CoordinateSystemManager::ParsePRJString(Char *prjBuff, OSInt *strSize)
+Bool Math::CoordinateSystemManager::ParsePRJString(Char *prjBuff, UOSInt *strSize)
 {
-	OSInt i;
+	UOSInt i;
 	Char c;
 	if (prjBuff[0] != '\"')
 		return false;
@@ -1009,9 +1009,9 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	return csys;
 }
 
-OSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(Data::ArrayList<Math::ProjectedCoordinateSystem::ProjCoordSysType> *csysList)
+UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(Data::ArrayList<Math::ProjectedCoordinateSystem::ProjCoordSysType> *csysList)
 {
-	OSInt initCnt = csysList->GetCount();
+	UOSInt initCnt = csysList->GetCount();
 	Math::ProjectedCoordinateSystem::ProjCoordSysType pcst = Math::ProjectedCoordinateSystem::PCST_FIRST;
 	while (pcst <= Math::ProjectedCoordinateSystem::PCST_LAST)
 	{
@@ -1021,10 +1021,10 @@ OSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(Data::ArrayList<Ma
 	return csysList->GetCount() - initCnt;
 }
 
-OSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList)
+UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(pcsysList) / sizeof(pcsysList[0]));
+	UOSInt i = 0;
+	UOSInt j = (sizeof(pcsysList) / sizeof(pcsysList[0]));
 	while (i < j)
 	{
 		nameList->Add((const UTF8Char*)pcsysList[i].projName);
@@ -1088,9 +1088,9 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	return csys;
 }
 
-OSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> *csysList)
+UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> *csysList)
 {
-	OSInt initCnt = csysList->GetCount();
+	UOSInt initCnt = csysList->GetCount();
 	csysList->Add(Math::GeographicCoordinateSystem::GCST_WGS84);
 	return csysList->GetCount() - initCnt;
 }

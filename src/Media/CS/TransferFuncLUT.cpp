@@ -9,9 +9,9 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 	this->srcCnt = lut->GetInputLevel();
 	this->fwdLUT = MemAlloc(Double, 65536);
 	this->invLUT = MemAlloc(Double, this->srcCnt);
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	if (lut->GetFormat() == Media::LUT::DF_UINT8)
 	{
 		Double srcMul = 1 / 255.0;
@@ -28,11 +28,11 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 		{
 			this->invLUT[i] = srcTab[i] * srcMul;
 			thisV = srcTab[i];
-			j = lastV | (lastV << 8);
-			k = thisV | (thisV << 8);
+			j = (UInt16)(lastV | (lastV << 8));
+			k = (UInt16)(thisV | (thisV << 8));
 			if (k > j)
 			{
-				currV = (i - 1) * destMul;
+				currV = Math::UOSInt2Double(i - 1) * destMul;
 				valAdd = 1 / (Double)(k - j) * destMul;
 				while (j < k)
 				{
@@ -47,7 +47,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 			i++;
 		}
 		k = 65536;
-		j = lastV | (lastV << 8);
+		j = (UInt16)(lastV | (lastV << 8));
 		while (j < k)
 		{
 			this->fwdLUT[j] = currV;
@@ -76,7 +76,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 			k = thisV;
 			if (k > j)
 			{
-				currV = (i - 1) * destMul;
+				currV = Math::UOSInt2Double(i - 1) * destMul;
 				valAdd = 1 / (Double)(k - j) * destMul;
 				while (j < k)
 				{
@@ -115,11 +115,11 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 		{
 			this->invLUT[i] = srcTab[i];
 			thisV = srcTab[i];
-			j = (Int32)(lastV * 65535.0);
-			k = (Int32)(thisV * 65535.0);
+			j = (UInt32)(lastV * 65535.0);
+			k = (UInt32)(thisV * 65535.0);
 			if (k > j)
 			{
-				currV = (i - 1) * destMul;
+				currV = Math::UOSInt2Double(i - 1) * destMul;
 				valAdd = 1 / (thisV - lastV) * destMul;
 				while (j < k)
 				{
@@ -134,7 +134,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 			i++;
 		}
 		k = 65536;
-		j = (Int32)(lastV * 65535.0);
+		j = (UInt32)(lastV * 65535.0);
 		while (j < k)
 		{
 			this->fwdLUT[j] = currV;
@@ -181,17 +181,17 @@ Double Media::CS::TransferFuncLUT::InverseTransfer(Double gammaVal)
 	{
 		Double v1 = this->invLUT[0];
 		Double v2 = this->invLUT[1];
-		return (v2 - v1) * gammaVal * (this->srcCnt - 1);
+		return (v2 - v1) * gammaVal * Math::UOSInt2Double(this->srcCnt - 1);
 	}
 	else if (gammaVal >= 1.0)
 	{
 		Double v1 = this->invLUT[this->srcCnt - 2];
 		Double v2 = this->invLUT[this->srcCnt - 1];
-		return v2 + (v2 - v1) * (gammaVal - 1.0) * (this->srcCnt - 1);
+		return v2 + (v2 - v1) * (gammaVal - 1.0) * Math::UOSInt2Double(this->srcCnt - 1);
 	}
 	else
 	{
-		Double v = gammaVal * (this->srcCnt - 1);
+		Double v = gammaVal * Math::UOSInt2Double(this->srcCnt - 1);
 		Int32 iv = (Int32)v;
 		Double v1 = this->invLUT[iv];
 		Double v2 = this->invLUT[iv + 1];

@@ -8,8 +8,8 @@ DB::TableDef *DB::DBReader::GenTableDef(const UTF8Char *tableName)
 {
 	DB::TableDef *table;
 	DB::ColDef *colDef;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(table, DB::TableDef(tableName));
 	i = 0;
 	j = this->ColCount();

@@ -127,9 +127,9 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 				OSInt i = 16;
 				while (i-- > 0)
 				{
-					*sptr++ = MyString_STRhexarr[addr.addr[i] & 15];
+					*sptr++ = (UTF8Char)MyString_STRhexarr[addr.addr[i] & 15];
 					*sptr++ = '.';
-					*sptr++ = MyString_STRhexarr[addr.addr[i] >> 4];
+					*sptr++ = (UTF8Char)MyString_STRhexarr[addr.addr[i] >> 4];
 					*sptr++ = '.';
 				}
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"ip6.arpa");
@@ -179,7 +179,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 	ptr2 = (Char*)buff;
 	
 	RequestStatus *req = this->NewReq(currId);
-	this->svr->SendTo(&this->serverAddr, 53, buff, ptr1 - ptr2);
+	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt->Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -228,7 +228,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, U
 	ptr2 = (Char*)buff;
 	
 	RequestStatus *req = this->NewReq(currId);
-	this->svr->SendTo(&this->serverAddr, 53, buff, ptr1 - ptr2);
+	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt->Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -364,7 +364,7 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 	}
 	
 	RequestStatus *req = this->NewReq(currId);
-	this->svr->SendTo(&this->serverAddr, 53, buff, ptr1 - ptr2);
+	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt->Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -384,12 +384,12 @@ void Net::DNSClient::UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAdd
 	this->serverAddr = *serverAddr;
 }
 
-OSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, OSInt stringOfst, OSInt endOfst)
+UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst)
 {
 	Bool found = false;
-	OSInt i = stringOfst;
-	OSInt j;
-	OSInt l;
+	UOSInt i = stringOfst;
+	UOSInt j;
+	UOSInt l;
 	while (i < endOfst)
 	{
 		j = buff[i];
@@ -452,9 +452,9 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 	UOSInt cnt2 = ReadMUInt16(&buff[8]);
 	UOSInt cnt3 = ReadMUInt16(&buff[10]);
 	ansCount += cnt2 + cnt3;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	i = ParseString(sbuff, buff, 12, dataSize);
 	i += 4;
 
@@ -472,7 +472,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 		switch (ans->recType)
 		{
 		case 1: // A - a host address
-			Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadInt32(&buff[i + 10]));
+			Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadUInt32(&buff[i + 10]));
 			Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
 			ans->rd = Text::StrCopyNew(sbuff);
 			break;
@@ -484,7 +484,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 			break;
 		case 6: // SOA - Start of [a zone of] authority
 			{
-				OSInt l;
+				UOSInt l;
 				Text::StringBuilderUTF8 sb;
 				l = ParseString(sbuff, buff, i + 10, i + 10 + k);
 				sb.Append(sbuff);
@@ -553,7 +553,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 				while ((*sptr++ = *tmpPtr++) != 0);
 				sptr--;
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature = ");
-				sptr = Text::StrHexBytes(sptr, tmpPtr, k - (tmpPtr - &buff[i + 10]), ' ');
+				sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UOSInt)(tmpPtr - &buff[i + 10]), ' ');
 				ans->rd = Text::StrCopyNew(sbuff);
 			}
 			break;
@@ -586,7 +586,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 void Net::DNSClient::FreeAnswers(Data::ArrayList<RequestAnswer*> *answers)
 {
 	RequestAnswer *ans;
-	OSInt i = answers->GetCount();
+	UOSInt i = answers->GetCount();
 	while (i-- > 0)
 	{
 		ans = answers->RemoveAt(i);
@@ -596,14 +596,14 @@ void Net::DNSClient::FreeAnswers(Data::ArrayList<RequestAnswer*> *answers)
 	}
 }
 
-Int32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)
+UInt32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)
 {
-	OSInt ansCount = ReadMUInt16(&buff[6]);
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	Int32 minTTL = 0x7fffffff;
-	Int32 ttl;
+	UOSInt ansCount = ReadMUInt16(&buff[6]);
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UInt32 minTTL = 0x7fffffff;
+	UInt32 ttl;
 	i = SkipString(buff, 12, buffSize);
 	i += 4;
 	j = 0;
@@ -624,10 +624,10 @@ Int32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)
 	return minTTL;
 }
 
-OSInt Net::DNSClient::SkipString(const UInt8 *buff, OSInt stringOfst, OSInt endOfst)
+UOSInt Net::DNSClient::SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst)
 {
-	OSInt i = stringOfst;
-	OSInt j;
+	UOSInt i = stringOfst;
+	UOSInt j;
 	while (i < endOfst)
 	{
 		j = buff[i];

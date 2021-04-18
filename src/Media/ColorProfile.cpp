@@ -838,7 +838,7 @@ void Media::ColorProfile::ToString(Text::StringBuilderUTF *sb)
 
 	if (this->rawICC)
 	{
-		Media::ICCProfile *icc = Media::ICCProfile::Parse(rawICC, ReadMInt32(this->rawICC));
+		Media::ICCProfile *icc = Media::ICCProfile::Parse(rawICC, ReadMUInt32(this->rawICC));
 		if (icc)
 		{
 			sb->Append((const UTF8Char*)"\r\n");
@@ -858,7 +858,7 @@ void Media::ColorProfile::SetRAWICC(const UInt8 *iccData)
 	}
 	if (iccData)
 	{
-		OSInt leng = ReadMInt32(iccData);
+		UOSInt leng = ReadMUInt32(iccData);
 		UInt8 *newICC = MemAlloc(UInt8, leng);
 		MemCopyNO(newICC, iccData, leng);
 		this->rawICC = newICC;

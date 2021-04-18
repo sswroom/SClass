@@ -80,7 +80,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 
 	if (this->codePage == 65001)
 	{
-		return Text::StrUTF8_WChar(buff, bytes, byteSize, byteConv);
+		return Text::StrUTF8_WChar(buff, bytes, (OSInt)byteSize, byteConv);
 	}
 	if (size <= 0)
 	{
@@ -96,7 +96,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 			{
 				bytes += 2;
 			}
-			*byteConv = (buff - oriBuff) * 2;
+			*byteConv = (UOSInt)(buff - oriBuff) * 2;
 			return buff - 1;
 		}
 		else
@@ -121,7 +121,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 			{
 				bytes += 2;
 			}
-			*byteConv = (buff - oriBuff) * 2;
+			*byteConv = (UOSInt)(buff - oriBuff) * 2;
 			return buff - 1;
 		}
 		else
@@ -290,7 +290,7 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 				c2 = ReadUInt16(bytes);
 				if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 				{
-					UInt32 code = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+					UInt32 code = (UInt32)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
 					bytes += 2;
 					byteSize--;
 					if (code < 0x200000)
@@ -404,8 +404,8 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 			}
 			else if (c < 0x800)
 			{
-				*dest++ = 0xc0 | (c >> 6);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xc0 | (c >> 6));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 			}
 			else if (byteSize > 0)
 			{

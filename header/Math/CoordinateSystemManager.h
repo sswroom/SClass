@@ -138,7 +138,7 @@ namespace Math
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(Int32 epsgId);
 
 		static Math::CoordinateSystem *CreateFromName(const UTF8Char *name);
-		static Math::CoordinateSystem *ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, OSInt *parsedSize);
+		static Math::CoordinateSystem *ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, UOSInt *parsedSize);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(Int32 srid);
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
@@ -146,16 +146,16 @@ namespace Math
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(Math::ProjectedCoordinateSystem::ProjCoordSysType pcst);
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(const UTF8Char *sourceNmae, const UTF8Char *projName);
-		static OSInt GetProjCoordinateSystems(Data::ArrayList<Math::ProjectedCoordinateSystem::ProjCoordSysType> *csysList);
-		static OSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
+		static UOSInt GetProjCoordinateSystems(Data::ArrayList<Math::ProjectedCoordinateSystem::ProjCoordSysType> *csysList);
+		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
 		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(const UTF8Char *projName);
 
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GeoCoordSysType gcst);
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *geoName);
-		static OSInt GetGeogCoordinateSystems(Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> *csysList);
+		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
 	private:
-		static Bool ParsePRJString(Char *prjBuff, OSInt *strSize);
+		static Bool ParsePRJString(Char *prjBuff, UOSInt *strSize);
 	};
 }
 #endif
