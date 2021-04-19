@@ -24,7 +24,7 @@ Media::ImageList::ImageList(const UTF8Char *fileName) : IO::ParsedObject(fileNam
 
 Media::ImageList::~ImageList()
 {
-	OSInt i = imgList->GetCount();
+	UOSInt i = imgList->GetCount();
 	while (i-- > 0)
 	{
 		DEL_CLASS(imgList->RemoveAt(i));
@@ -154,12 +154,12 @@ void Media::ImageList::SetImageName(const UTF8Char *imgName)
 	}
 }
 
-void Media::ImageList::SetThermoImage(OSInt thermoWidth, OSInt thermoHeight, OSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
+void Media::ImageList::SetThermoImage(UOSInt thermoWidth, UOSInt thermoHeight, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
 {
 	this->thermoWidth = thermoWidth;
 	this->thermoHeight = thermoHeight;
 	this->thermoBPP = thermoBPP;
-	OSInt dataSize = thermoWidth * thermoHeight * thermoBPP >> 3;
+	UOSInt dataSize = thermoWidth * thermoHeight * thermoBPP >> 3;
 	if (this->thermoPtr)
 	{
 		MemFree(this->thermoPtr);
@@ -183,28 +183,28 @@ Double Media::ImageList::GetThermoValue(Double x, Double y)
 	{
 		return 0;
 	}
-	OSInt xOfst = Math::Double2Int32(x * this->thermoWidth);
-	OSInt yOfst = Math::Double2Int32(y * this->thermoHeight);
+	OSInt xOfst = Math::Double2Int32(x * Math::UOSInt2Double(this->thermoWidth));
+	OSInt yOfst = Math::Double2Int32(y * Math::UOSInt2Double(this->thermoHeight));
 	if (xOfst < 0)
 		xOfst = 0;
-	else if (xOfst >= this->thermoWidth)
-		xOfst = this->thermoWidth - 1;
+	else if (xOfst >= (OSInt)this->thermoWidth)
+		xOfst = (OSInt)this->thermoWidth - 1;
 	if (yOfst < 0)
 		yOfst = 0;
-	else if (yOfst >= this->thermoHeight)
-		yOfst = this->thermoHeight - 1;
+	else if (yOfst >= (OSInt)this->thermoHeight)
+		yOfst = (OSInt)this->thermoHeight - 1;
 	Double v;
 	if (this->thermoBPP == 16)
 	{
-		v = ReadInt16(&this->thermoPtr[(yOfst * this->thermoWidth + xOfst) << 1]);
+		v = ReadInt16(&this->thermoPtr[(yOfst * (OSInt)this->thermoWidth + xOfst) << 1]);
 	}
 	else if (this->thermoBPP == 8)
 	{
-		v = this->thermoPtr[yOfst * this->thermoWidth + xOfst];
+		v = this->thermoPtr[yOfst * (OSInt)this->thermoWidth + xOfst];
 	}
 	else if (this->thermoBPP == 32)
 	{
-		v = ReadInt32(&this->thermoPtr[(yOfst * this->thermoWidth + xOfst) << 2]);
+		v = ReadInt32(&this->thermoPtr[(yOfst * (OSInt)this->thermoWidth + xOfst) << 2]);
 	}
 	else
 	{
@@ -250,8 +250,8 @@ void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, const UT
 
 Bool Media::ImageList::ToValueString(Text::StringBuilderUTF *sb)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool found = false;
 	ValueType vt;
 	if ((j = this->valStr->GetCount()) != 0)
@@ -357,7 +357,7 @@ void Media::ImageList::ToString(Text::StringBuilderUTF *sb)
 			}
 			hasData = true;
 			sb->Append((const UTF8Char*)"Image ");
-			sb->AppendOSInt(i);
+			sb->AppendUOSInt(i);
 			sb->Append((const UTF8Char*)":\r\nDelay = ");
 			sb->AppendI32(delay);
 			sb->Append((const UTF8Char*)"\r\n");

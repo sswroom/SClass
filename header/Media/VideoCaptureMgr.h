@@ -11,7 +11,7 @@ namespace Media
 		typedef struct
 		{
 			Int32 devType;
-			OSInt devId;
+			UOSInt devId;
 			const UTF8Char *devName;
 		} DeviceInfo;
 	private:
@@ -20,9 +20,9 @@ namespace Media
 		VideoCaptureMgr();
 		~VideoCaptureMgr();
 
-		OSInt GetDeviceList(Data::ArrayList<DeviceInfo *> *devList);
+		UOSInt GetDeviceList(Data::ArrayList<DeviceInfo *> *devList);
 		void FreeDeviceList(Data::ArrayList<DeviceInfo *> *devList);
-		Media::IVideoCapture *CreateDevice(Int32 devType, OSInt devId);
+		Media::IVideoCapture *CreateDevice(Int32 devType, UOSInt devId);
 
 		const UTF8Char *GetDevTypeName(Int32 devType);
 	};

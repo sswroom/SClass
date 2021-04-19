@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "Math/Math.h"
 #include "Media/EDID.h"
 #include "Text/MyString.h"
 
@@ -11,9 +12,9 @@ Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
 		return false;
 	}
 
-	info->vendorName[0] = 0x40 + ((edidBuff[8] >> 2) & 0x1f);
-	info->vendorName[1] = 0x40 + ((edidBuff[9] >> 5) | ((edidBuff[8] << 3) & 0x1f));
-	info->vendorName[2] = 0x40 + (edidBuff[9] & 0x1f);
+	info->vendorName[0] = (UTF8Char)(0x40 + ((edidBuff[8] >> 2) & 0x1f));
+	info->vendorName[1] = (UTF8Char)(0x40 + ((edidBuff[9] >> 5) | ((edidBuff[8] << 3) & 0x1f)));
+	info->vendorName[2] = (UTF8Char)(0x40 + (edidBuff[9] & 0x1f));
 	info->vendorName[3] = 0;
 	info->productCode = ReadUInt16(&edidBuff[0xa]);
 	info->sn = ReadUInt32(&edidBuff[0x0c]);
@@ -25,14 +26,14 @@ Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
 	info->dispPhysicalH = edidBuff[0x16];
 	info->gamma = (edidBuff[0x17] + 100) * 0.01;
 
-	info->rx = ((((OSInt)edidBuff[0x1b]) << 2) | (edidBuff[0x19] >> 6))/ 1024.0;
-	info->ry = ((((OSInt)edidBuff[0x1c]) << 2) | ((edidBuff[0x19] >> 4) & 3))/ 1024.0;
-	info->gx = ((((OSInt)edidBuff[0x1d]) << 2) | ((edidBuff[0x19] >> 2) & 3))/ 1024.0;
-	info->gy = ((((OSInt)edidBuff[0x1e]) << 2) | (edidBuff[0x19] & 3))/ 1024.0;
-	info->bx = ((((OSInt)edidBuff[0x1f]) << 2) | (edidBuff[0x1a] >> 6))/ 1024.0;
-	info->by = ((((OSInt)edidBuff[0x20]) << 2) | ((edidBuff[0x1a] >> 4) & 3))/ 1024.0;
-	info->wx = ((((OSInt)edidBuff[0x21]) << 2) | ((edidBuff[0x1a] >> 2) & 3))/ 1024.0;
-	info->wy = ((((OSInt)edidBuff[0x22]) << 2) | (edidBuff[0x1a] & 3))/ 1024.0;
+	info->rx = Math::OSInt2Double((((OSInt)edidBuff[0x1b]) << 2) | (edidBuff[0x19] >> 6))/ 1024.0;
+	info->ry = Math::OSInt2Double((((OSInt)edidBuff[0x1c]) << 2) | ((edidBuff[0x19] >> 4) & 3))/ 1024.0;
+	info->gx = Math::OSInt2Double((((OSInt)edidBuff[0x1d]) << 2) | ((edidBuff[0x19] >> 2) & 3))/ 1024.0;
+	info->gy = Math::OSInt2Double((((OSInt)edidBuff[0x1e]) << 2) | (edidBuff[0x19] & 3))/ 1024.0;
+	info->bx = Math::OSInt2Double((((OSInt)edidBuff[0x1f]) << 2) | (edidBuff[0x1a] >> 6))/ 1024.0;
+	info->by = Math::OSInt2Double((((OSInt)edidBuff[0x20]) << 2) | ((edidBuff[0x1a] >> 4) & 3))/ 1024.0;
+	info->wx = Math::OSInt2Double((((OSInt)edidBuff[0x21]) << 2) | ((edidBuff[0x1a] >> 2) & 3))/ 1024.0;
+	info->wy = Math::OSInt2Double((((OSInt)edidBuff[0x22]) << 2) | (edidBuff[0x1a] & 3))/ 1024.0;
 	info->monitorName[0] = 0;
 	info->monitorSN[0] = 0;
 	OSInt i;

@@ -55,7 +55,7 @@ IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
 		while (*name++)
 			if (*name == IO::Path::PATH_SEPERATOR)
 				fname = name;
-		fdh->fileName = fdh->fullName = (name = MemAlloc(UTF8Char, name - name2));
+		fdh->fileName = fdh->fullName = (name = MemAlloc(UTF8Char, (UOSInt)(name - name2)));
 		fdh->deleteOnClose = deleteOnClose;
 		while ((*name++ = *name2++) != 0)
 			if (name[-1] == IO::Path::PATH_SEPERATOR)
@@ -100,7 +100,7 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->currentOffset != dataOffset + offset)
 	{
-		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, dataOffset + offset)) != dataOffset + offset)
+		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(dataOffset + offset))) != dataOffset + offset)
 		{
 			if (dataOffset + offset < fdh->fileLength)
 			{
@@ -111,12 +111,12 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 		}
 		fdh->seekCnt++;
 	}
-	OSInt byteRead;
+	UOSInt byteRead;
 	if (length < dataLength - offset)
 		byteRead = fdh->file->Read(buffer, length);
 	else
 		byteRead = fdh->file->Read(buffer, (UOSInt) (dataLength - offset));
-	if (byteRead == -1)
+	if (byteRead == 0)
 	{
 		mutUsage.EndUse();
 		return 0;

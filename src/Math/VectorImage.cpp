@@ -275,7 +275,7 @@ Int32 Math::VectorImage::GetZIndex()
 	return this->zIndex;
 }
 
-void Math::VectorImage::GetScreenBounds(OSInt scnWidth, OSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2)
+void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2)
 {
 	Media::StaticImage *simg = this->img->GetImage(0);
 	Double scnX;
@@ -285,27 +285,27 @@ void Math::VectorImage::GetScreenBounds(OSInt scnWidth, OSInt scnHeight, Double 
 
 	if (this->sizeX == 0 && this->sizeY == 0)
 	{
-		sizeX = simg->info->dispWidth * hdpi / simg->info->hdpi;
-		sizeY = simg->info->dispHeight * vdpi / simg->info->vdpi;
+		sizeX = Math::UOSInt2Double(simg->info->dispWidth) * hdpi / simg->info->hdpi;
+		sizeY = Math::UOSInt2Double(simg->info->dispHeight) * vdpi / simg->info->vdpi;
 	}
 	else if (this->sizeX == 0)
 	{
-		sizeY = scnHeight * this->sizeY;
-		sizeX = scnHeight * this->sizeY * simg->info->dispWidth / simg->info->dispHeight;
+		sizeY = Math::UOSInt2Double(scnHeight) * this->sizeY;
+		sizeX = Math::UOSInt2Double(scnHeight) * this->sizeY * Math::UOSInt2Double(simg->info->dispWidth) / Math::UOSInt2Double(simg->info->dispHeight);
 	}
 	else if (this->sizeY == 0)
 	{
-		sizeX = scnWidth * this->sizeX;
-		sizeY = scnWidth * this->sizeX * simg->info->dispHeight / simg->info->dispWidth;
+		sizeX = Math::UOSInt2Double(scnWidth) * this->sizeX;
+		sizeY = Math::UOSInt2Double(scnWidth) * this->sizeX * Math::UOSInt2Double(simg->info->dispHeight) / Math::UOSInt2Double(simg->info->dispWidth);
 	}
 	else
 	{
-		sizeX = scnWidth * this->sizeX;
-		sizeY = scnHeight * this->sizeY;
+		sizeX = Math::UOSInt2Double(scnWidth) * this->sizeX;
+		sizeY = Math::UOSInt2Double(scnHeight) * this->sizeY;
 	}
 
-	scnX = scnWidth * this->x1 - sizeX * this->x2;
-	scnY = scnHeight * (1 - this->y1) - sizeY * (1 - this->y2);
+	scnX = Math::UOSInt2Double(scnWidth) * this->x1 - sizeX * this->x2;
+	scnY = Math::UOSInt2Double(scnHeight) * (1 - this->y1) - sizeY * (1 - this->y2);
 	*x1 = scnX;
 	*y1 = scnY;
 	*x2 = scnX + sizeX;

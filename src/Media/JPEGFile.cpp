@@ -12,9 +12,9 @@
 
 Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
 {
-	Int64 ofst;
+	UInt64 ofst;
 	UInt32 nextOfst;
-	Int32 j;
+	UInt32 j;
 	UInt8 buff[18];
 	UInt8 *tagBuff;
 	Bool ret = false;
@@ -45,7 +45,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 			break;
 		}
 
-		j = ((buff[2] << 8) | buff[3]) - 2;
+		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		if (buff[1] == 0xe1)
 		{
 			fd->GetRealData(ofst + 4, 14, buff);
@@ -101,7 +101,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 					}
 					else if (flirMstm && buff[6] == (flirCurrSegm + 1))
 					{
-						flirCurrSegm += 1;
+						flirCurrSegm = (UInt8)(flirCurrSegm + 1);
 						tagBuff = MemAlloc(UInt8, j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
 						flirMstm->Write(&tagBuff[8], j - 8);
@@ -145,8 +145,8 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 	{
 		if (flirMaxSegm == flirCurrSegm)
 		{
-			OSInt i;
-			OSInt k;
+			UOSInt i;
+			UOSInt k;
 			UOSInt buffSize;
 			UInt32 blkOfst;
 			UInt32 blkSize;
@@ -213,7 +213,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 									if (stImg->info->pf == Media::PF_LE_W16)
 									{
 										UInt8 *imgPtr = stImg->data;
-										OSInt pixelCnt = stImg->info->dispWidth * stImg->info->dispHeight;
+										UOSInt pixelCnt = stImg->info->dispWidth * stImg->info->dispHeight;
 										while (pixelCnt-- > 0)
 										{
 											WriteInt16(imgPtr, ReadMInt16(imgPtr));
@@ -246,7 +246,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::IStreamData *fd)
 {
 	UInt64 ofst;
 	UInt32 nextOfst;
-	Int32 j;
+	UInt32 j;
 	UInt8 buff[18];
 	if (fd->GetRealData(0, 2, buff) != 2)
 		return 0;
@@ -262,7 +262,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::IStreamData *fd)
 		if (buff[1] == 0xdb)
 			return 0;
 
-		j = ((buff[2] << 8) | buff[3]) - 2;
+		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		if (buff[1] == 0xe1)
 		{
 			fd->GetRealData(ofst + 4, 14, buff);
@@ -336,7 +336,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **ex
 		if (buff[0] != 0xff)
 			return false;
 
-		j = ((buff[2] << 8) | buff[3]) - 2;
+		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		switch (buff[1])
 		{
 		case 0xe1: //APP1

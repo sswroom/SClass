@@ -99,11 +99,11 @@ Double Manage::HiResClock::GetTimeDiff()
 	Int64 t2 = t.tv_sec * (Int64)1000000 + t.tv_usec;
 	if (t2 >= this->stTime)
 	{
-		return (t2 - this->stTime) * 0.000001;
+		return (Double)(t2 - this->stTime) * 0.000001;
 	}
 	else
 	{
-		return (86400000000LL - (t2 - this->stTime)) * 0.000001;
+		return (Double)(86400000000LL - (t2 - this->stTime)) * 0.000001;
 	}
 }
 
@@ -132,11 +132,11 @@ Double Manage::HiResClock::GetAndRestart()
 	Int64 t2 = t.tv_sec * (Int64)1000000 + t.tv_usec;
 	if (t2 > this->stTime)
 	{
-		t3 = (t2 - this->stTime) * 0.000001;
+		t3 = (Double)(t2 - this->stTime) * 0.000001;
 	}
 	else
 	{
-		t3 = (86400000000LL - (t2 - this->stTime)) * 0.000001;
+		t3 = (Double)(86400000000LL - (t2 - this->stTime)) * 0.000001;
 	}
 	this->stTime = t2;
 	return t3;

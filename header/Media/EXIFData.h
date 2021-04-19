@@ -118,7 +118,7 @@ namespace Media
 		void AddDouble(Int32 id, UInt32 cnt, const Double *buff);
 		void Remove(Int32 id);
 
-		OSInt GetExifIds(Data::ArrayList<Int32> *idArr);
+		UOSInt GetExifIds(Data::ArrayList<Int32> *idArr);
 		EXIFType GetExifType(Int32 id);
 		UInt32 GetExifCount(Int32 id);
 		EXIFItem *GetExifItem(Int32 id);
@@ -133,7 +133,7 @@ namespace Media
 		const Char *GetPhotoLens();
 		Double GetPhotoFNumber();
 		Double GetPhotoExpTime();
-		Int32 GetPhotoISO();
+		UInt32 GetPhotoISO();
 		Double GetPhotoFocalLength();
 		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick);
 		Bool GetGeoBounds(UOSInt imgW, UOSInt imgH, Int32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY);

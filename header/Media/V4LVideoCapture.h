@@ -10,7 +10,7 @@ namespace Media
 	{
 	private:
 		Int32 fd;
-		Int32 devId;
+		UOSInt devId;
 		Media::FrameInfo frameInfo;
 		UInt8 *frameBuffs[4];
 		UOSInt frameBuffSize;
@@ -24,7 +24,7 @@ namespace Media
 
 		static UInt32 __stdcall PlayThread(void *userObj);
 	public:
-		V4LVideoCapture(Int32 devId);
+		V4LVideoCapture(UOSInt devId);
 		virtual ~V4LVideoCapture();
 		
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -51,10 +51,10 @@ namespace Media
 		V4LVideoCaptureMgr();
 		~V4LVideoCaptureMgr();
 
-		OSInt GetDeviceList(Data::ArrayList<Int32> *devList);
-		UTF8Char *GetDeviceName(UTF8Char *buff, OSInt devId);
+		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
+		UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devId);
 
-		Media::IVideoCapture *CreateDevice(OSInt devId);
+		Media::IVideoCapture *CreateDevice(UOSInt devId);
 	};
 }
 #endif

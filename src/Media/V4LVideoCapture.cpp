@@ -56,7 +56,7 @@ UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 		{
 			if (me->cb)
 			{
-				me->cb(Math::Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
+				me->cb((UInt32)Math::Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
 			}
 			frameNum++;
 			ioctl(me->fd, VIDIOC_QBUF, &buf);
@@ -81,10 +81,10 @@ UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 	return 0;
 }
 
-Media::V4LVideoCapture::V4LVideoCapture(Int32 devId)
+Media::V4LVideoCapture::V4LVideoCapture(UOSInt devId)
 {
 	Char cbuff[64];
-	Text::StrInt32(Text::StrConcat(cbuff, "/dev/video"), devId);
+	Text::StrUOSInt(Text::StrConcat(cbuff, "/dev/video"), devId);
 	this->fd = open(cbuff, O_RDONLY | O_NONBLOCK);
 	this->devId = devId;
 
@@ -215,8 +215,8 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRa
 	v4l2_streamparm param;
 	if (ioctl(this->fd, VIDIOC_G_PARM, &param) == 0)
 	{
-		*frameRateNorm = param.parm.capture.timeperframe.denominator;
-		*frameRateDenorm = param.parm.capture.timeperframe.numerator;
+		*frameRateNorm = (Int32)param.parm.capture.timeperframe.denominator;
+		*frameRateDenorm = (Int32)param.parm.capture.timeperframe.numerator;
 	}
 	else
 	{
@@ -281,8 +281,8 @@ void Media::V4LVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 f
 	struct v4l2_format fmt;
 	struct v4l2_streamparm parm;
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	fmt.fmt.pix.width = width;
-	fmt.fmt.pix.height = height;
+	fmt.fmt.pix.width = (UInt32)width;
+	fmt.fmt.pix.height = (UInt32)height;
 	fmt.fmt.pix.pixelformat = fourcc;
 	fmt.fmt.pix.field = V4L2_FIELD_NONE;
 	fmt.fmt.pix.bytesperline = 0;
@@ -298,8 +298,8 @@ void Media::V4LVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 f
 	parm.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	parm.parm.capture.capability = 0;
 	parm.parm.capture.capturemode = V4L2_MODE_HIGHQUALITY;
-	parm.parm.capture.timeperframe.numerator = frameRateDenom;
-	parm.parm.capture.timeperframe.denominator = frameRateNumer;
+	parm.parm.capture.timeperframe.numerator = (UInt32)frameRateDenom;
+	parm.parm.capture.timeperframe.denominator = (UInt32)frameRateNumer;
 	parm.parm.capture.extendedmode = 0;
 	parm.parm.capture.readbuffers = 4;
 	if (ioctl(this->fd, VIDIOC_S_PARM, &parm) != 0)
@@ -344,8 +344,8 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 				fmtArr[ret].info.color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
 				fmtArr[ret].info.yuvType = Media::ColorProfile::YUVT_BT601;
 				fmtArr[ret].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
-				fmtArr[ret].frameRateNorm = frmival.discrete.denominator;
-				fmtArr[ret].frameRateDenorm = frmival.discrete.numerator;
+				fmtArr[ret].frameRateNorm = (Int32)frmival.discrete.denominator;
+				fmtArr[ret].frameRateDenorm = (Int32)frmival.discrete.numerator;
 				ret++;
 				frmival.index++;
 			}
@@ -364,7 +364,7 @@ void Media::V4LVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 {
 	struct v4l2_capability video_cap;
 	sb->Append((const UTF8Char*)"DevPath: /dev/video");
-	sb->AppendI32(this->devId);
+	sb->AppendUOSInt(this->devId);
 	sb->Append((const UTF8Char*)"\r\n");
 
 	if (ioctl(this->fd, VIDIOC_QUERYCAP, &video_cap) != -1)
@@ -418,7 +418,7 @@ UOSInt Media::V4LVideoCapture::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	r = ioctl(this->fd, VIDIOC_DQBUF, &buf);
 	if (r == 0)
 	{
-		OSInt size = buf.bytesused;
+		UOSInt size = buf.bytesused;
 		MemCopyNO(buff, (void*)buf.m.userptr, size);
 		ioctl(this->fd, VIDIOC_QBUF, &buf);
 		return size;
@@ -435,7 +435,7 @@ UOSInt Media::V4LVideoCapture::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 
 Bool Media::V4LVideoCapture::ReadFrameBegin()
 {
-	OSInt i;
+	UOSInt i;
 	UOSInt frameSize;
 	Int32 frameRateNumer;
 	Int32 frameRateDenomin;
@@ -489,9 +489,9 @@ Bool Media::V4LVideoCapture::ReadFrameBegin()
 		MemClear(&buf, sizeof(buf));
 		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 		buf.memory = V4L2_MEMORY_USERPTR;
-		buf.index = i;
-		buf.m.userptr = (OSInt)this->frameBuffs[i];
-		buf.length = this->frameBuffSize;
+		buf.index = (UInt32)i;
+		buf.m.userptr = (UOSInt)this->frameBuffs[i];
+		buf.length = (UInt32)this->frameBuffSize;
 		r = ioctl(fd, VIDIOC_QBUF, &buf);
 		if (r != 0)
 		{
@@ -519,12 +519,12 @@ Media::V4LVideoCaptureMgr::~V4LVideoCaptureMgr()
 {
 }
 
-OSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<Int32> *devList)
+UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/dev/");
-	OSInt ret = 0;
-	Int32 devId;
+	UOSInt ret = 0;
+	UInt32 devId;
 	IO::Path::PathType pt;
 	Text::StrConcat(sptr, (const UTF8Char*)"video*");
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
@@ -532,7 +532,7 @@ OSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<Int32> *devList)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			devId = Text::StrToInt32(&sptr[5]);
+			devId = Text::StrToUInt32(&sptr[5]);
 			devList->Add(devId);
 			ret++;
 		}
@@ -545,28 +545,28 @@ OSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<Int32> *devList)
 		int fd;
 		while (true)
 		{
-			Text::StrOSInt(csptr, ret);
+			Text::StrUOSInt(csptr, ret);
 			fd = open(cbuff, O_RDONLY);
 			if (fd == -1)
 			{
 				break;
 			}
 			close(fd);
-			devList->Add((Int32)ret);
+			devList->Add((UInt32)ret);
 			ret++;
 		}
 	}
 	return ret;
 }
 
-UTF8Char *Media::V4LVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSInt devId)
+UTF8Char *Media::V4LVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
 {
 	int fd;
 	struct v4l2_capability video_cap;
 	Char cbuff[64];
 	*buff = 0;
 
-	Text::StrInt32(Text::StrConcat(cbuff, "/dev/video"), devId);
+	Text::StrUOSInt(Text::StrConcat(cbuff, "/dev/video"), devId);
 	fd = open(cbuff, O_RDONLY);
 	if (fd != -1)
 	{
@@ -580,7 +580,7 @@ UTF8Char *Media::V4LVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSInt devId)
 	return buff;
 }
 
-Media::IVideoCapture *Media::V4LVideoCaptureMgr::CreateDevice(OSInt devId)
+Media::IVideoCapture *Media::V4LVideoCaptureMgr::CreateDevice(UOSInt devId)
 {
 	Media::V4LVideoCapture *capture;
 	NEW_CLASS(capture, Media::V4LVideoCapture(devId));

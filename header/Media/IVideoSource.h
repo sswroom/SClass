@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_IVIDEOSOURCE
 #define _SM_MEDIA_IVIDEOSOURCE
 #include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "Media/FrameInfo.h"
 #include "Media/IMediaSource.h"
 #include "Sync/Event.h"
@@ -13,7 +14,7 @@ namespace Media
 	{
 	protected:
 		Data::ArrayListInt32 *propNames;
-		Data::ArrayListInt32 *propSizes;
+		Data::ArrayListUInt32 *propSizes;
 		Data::ArrayList<UInt8*> *propBuffs;
 
 	public:
@@ -79,8 +80,8 @@ namespace Media
 		virtual Bool ReadFrameEnd();
 
 		virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype) = 0; //ret 0 = no more frames
-		void SetProp(Int32 propName, const UInt8 *propBuff, Int32 propBuffSize);
-		virtual UInt8 *GetProp(Int32 propName, Int32 *size);
+		void SetProp(Int32 propName, const UInt8 *propBuff, UInt32 propBuffSize);
+		virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
 
 		virtual MediaType GetMediaType();
 	};

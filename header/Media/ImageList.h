@@ -52,9 +52,9 @@ namespace Media
 		Data::ArrayList<ValueType> *valTypeStr;
 		Data::ArrayList<const UTF8Char *> *valStr;
 
-		OSInt thermoWidth;
-		OSInt thermoHeight;
-		OSInt thermoBPP;
+		UOSInt thermoWidth;
+		UOSInt thermoHeight;
+		UOSInt thermoBPP;
 		UInt8 *thermoPtr;
 		Double thermoEmissivity;
 		Double thermoTransmission;
@@ -77,7 +77,7 @@ namespace Media
 		void SetAuthor(const UTF8Char *name);
 		void SetImageName(const UTF8Char *imgName);
 
-		void SetThermoImage(OSInt thermoWidth, OSInt thermoHeight, OSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
+		void SetThermoImage(UOSInt thermoWidth, UOSInt thermoHeight, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
 		Bool HasThermoImage();
 		Double GetThermoValue(Double x, Double y);
 

@@ -54,41 +54,41 @@ Bool Media::IVideoSource::ReadFrameEnd()
 	return true;
 }
 
-void Media::IVideoSource::SetProp(Int32 propName, const UInt8 *propBuff, Int32 propBuffSize)
+void Media::IVideoSource::SetProp(Int32 propName, const UInt8 *propBuff, UInt32 propBuffSize)
 {
 	UInt8 *prop;
 	if (this->propBuffs == 0)
 	{
 		NEW_CLASS(this->propBuffs, Data::ArrayList<UInt8*>());
 		NEW_CLASS(this->propNames, Data::ArrayListInt32());
-		NEW_CLASS(this->propSizes, Data::ArrayListInt32());
+		NEW_CLASS(this->propSizes, Data::ArrayListUInt32());
 	}
 	OSInt i = this->propNames->SortedIndexOf(propName);
 	prop = MemAlloc(UInt8, propBuffSize);
 	MemCopyNO(prop, propBuff, propBuffSize);
 	if (i >= 0)
 	{
-		MemFree(this->propBuffs->GetItem(i));
-		this->propBuffs->SetItem(i, prop);
-		this->propSizes->SetItem(i, propBuffSize);
+		MemFree(this->propBuffs->GetItem((UOSInt)i));
+		this->propBuffs->SetItem((UOSInt)i, prop);
+		this->propSizes->SetItem((UOSInt)i, propBuffSize);
 	}
 	else
 	{
-		this->propNames->Insert(~i, propName);
-		this->propBuffs->Insert(~i, prop);
-		this->propSizes->Insert(~i, propBuffSize);
+		this->propNames->Insert((UOSInt)~i, propName);
+		this->propBuffs->Insert((UOSInt)~i, prop);
+		this->propSizes->Insert((UOSInt)~i, propBuffSize);
 	}
 }
 
-UInt8 *Media::IVideoSource::GetProp(Int32 propName, Int32 *size)
+UInt8 *Media::IVideoSource::GetProp(Int32 propName, UInt32 *size)
 {
 	if (this->propBuffs == 0)
 		return 0;
 	OSInt i = this->propNames->SortedIndexOf(propName);
 	if (i < 0)
 		return 0;
-	*size = this->propSizes->GetItem(i);
-	return this->propBuffs->GetItem(i);
+	*size = this->propSizes->GetItem((UOSInt)i);
+	return this->propBuffs->GetItem((UOSInt)i);
 }
 
 Media::MediaType Media::IVideoSource::GetMediaType()

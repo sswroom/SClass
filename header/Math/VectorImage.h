@@ -50,7 +50,7 @@ namespace Math
 		void SetZIndex(Int32 zIndex);
 		Bool HasZIndex();
 		Int32 GetZIndex();
-		void GetScreenBounds(OSInt scnWidth, OSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2);
+		void GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2);
 		void GetVectorSize(Double *sizeX, Double *sizeY);
 		Bool IsScnCoord();
 		void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
