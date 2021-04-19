@@ -21,14 +21,14 @@ namespace SSWR
 			{
 			private:
 				const UTF8Char *fileName;
-				Int64 fileSize;
+				UInt64 fileSize;
 			public:
-				MyFile(const UTF8Char *fileName, Int64 fileSize);
+				MyFile(const UTF8Char *fileName, UInt64 fileSize);
 				virtual ~MyFile();
 
 				Bool ToString(Text::StringBuilderUTF *sb);
 				const UTF8Char *GetName();
-				Int64 GetSize();
+				UInt64 GetSize();
 				virtual OSInt CompareTo(Data::IComparable *obj);
 			};
 
@@ -58,7 +58,7 @@ namespace SSWR
 
 			void ReleaseObjects();
 			void GenList();
-			Int64 NewCalc(Data::ArrayList<MyFile *> *fileList, Data::ArrayList<MyFile *> *packList, Int64 maxSize, Int64 minSize);
+			UInt64 NewCalc(Data::ArrayList<MyFile *> *fileList, Data::ArrayList<MyFile *> *packList, UInt64 maxSize, UInt64 minSize);
 		public:
 			AVIRFileSizePackForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRFileSizePackForm();

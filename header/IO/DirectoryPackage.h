@@ -1,6 +1,7 @@
 #ifndef _SM_IO_DIRECTORYPACKAGE
 #define _SM_IO_DIRECTORYPACKAGE
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt64.h"
 #include "IO/PackageFile.h"
 
 namespace IO
@@ -9,7 +10,7 @@ namespace IO
 	{
 	private:
 		Data::ArrayList<const UTF8Char *> *files;
-		Data::ArrayListInt64 *fileSizes;
+		Data::ArrayListUInt64 *fileSizes;
 		Data::ArrayListInt64 *fileTimes;
 		const UTF8Char *dirName;
 
@@ -25,8 +26,8 @@ namespace IO
 		virtual IO::PackageFile *GetItemPack(UOSInt index); // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);
-		virtual Int64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(const UTF8Char *name);
+		virtual UInt64 GetItemSize(UOSInt index);
+		virtual OSInt GetItemIndex(const UTF8Char *name);
 		virtual Bool IsCompressed(UOSInt index);
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
 		virtual PackageFile *Clone();
@@ -38,5 +39,5 @@ namespace IO
 
 		Bool Sort();
 	};
-};
+}
 #endif

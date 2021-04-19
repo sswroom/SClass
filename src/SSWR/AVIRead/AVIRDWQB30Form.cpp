@@ -69,8 +69,8 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(void *userObj
 		me->tpSetting->SetEnabled(true);
 
 		Data::ArrayList<IO::CodeScanner::DeviceCommand> cmdList;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		me->scanner->GetCommandList(&cmdList);
 		me->cboSetCmd->ClearItems();
 		i = 0;

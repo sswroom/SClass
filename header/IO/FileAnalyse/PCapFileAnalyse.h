@@ -16,8 +16,8 @@ namespace IO
 			IO::IStreamData *fd;
 			Bool isBE;
 			UInt32 linkType;
-			Data::ArrayList<Int64> *ofstList;
-			Data::ArrayList<Int64> *sizeList;
+			Data::ArrayList<UInt64> *ofstList;
+			Data::ArrayList<UInt64> *sizeList;
 			Sync::Mutex *dataMut;
 			UInt8 *packetBuff;
 

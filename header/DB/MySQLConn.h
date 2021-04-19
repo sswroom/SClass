@@ -102,7 +102,7 @@ namespace DB
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual void DelNewStr(const UTF8Char *s);
 	
-		DB::DBUtil::ColType ToColType(Int32 dbType, UInt32 flags, UInt32 colSize);
+		DB::DBUtil::ColType ToColType(Int32 dbType, UInt32 flags, UOSInt colSize);
 	};
 }
 #endif

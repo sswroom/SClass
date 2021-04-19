@@ -9,8 +9,8 @@ namespace Exporter
 	{
 	public:
 		static Bool ImageSupported(Media::Image *img);
-		static OSInt CalcBuffSize(Media::ImageList *imgList);
-		static OSInt BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot);
+		static UOSInt CalcBuffSize(Media::ImageList *imgList);
+		static UOSInt BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot);
 		
 	public:
 		CURExporter();
@@ -22,5 +22,5 @@ namespace Exporter
 		virtual void SetCodePage(Int32 codePage);
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
 	};
-};
+}
 #endif

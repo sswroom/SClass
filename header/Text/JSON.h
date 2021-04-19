@@ -38,7 +38,7 @@ namespace Text
 		Bool IsStringUTF8();
 
 		static JSONBase *ParseJSONStr(const UTF8Char *jsonStr);
-		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, OSInt strLen);
+		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen);
 
 	private:
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);

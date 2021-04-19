@@ -58,6 +58,8 @@ namespace Text
 		Int32 ToInt32();
 		Bool ToInt64(Int64 *outVal);
 		Int64 ToInt64();
+		Bool ToUInt64(UInt64 *outVal);
+		UInt64 ToUInt64();
 		Bool ToOSInt(OSInt *outVal);
 		UOSInt Hex2Bytes(UInt8 *buff);
 
@@ -423,11 +425,6 @@ namespace Text
 		return Text::StrToInt32(this->buff, outVal);
 	}
 
-	template<class T> Bool Text::StringBuilder<T>::ToInt64(Int64 *outVal)
-	{
-		return Text::StrToInt64(this->buff, outVal);
-	}
-
 	template<class T> Bool Text::StringBuilder<T>::ToOSInt(OSInt *outVal)
 	{
 		return Text::StrToOSInt(this->buff, outVal);
@@ -438,9 +435,24 @@ namespace Text
 		return Text::StrToInt32(this->buff);
 	}
 
+	template<class T> Bool Text::StringBuilder<T>::ToInt64(Int64 *outVal)
+	{
+		return Text::StrToInt64(this->buff, outVal);
+	}
+
 	template<class T> Int64 Text::StringBuilder<T>::ToInt64()
 	{
 		return Text::StrToInt64(this->buff);
+	}
+
+	template<class T> Bool Text::StringBuilder<T>::ToUInt64(UInt64 *outVal)
+	{
+		return Text::StrToUInt64(this->buff, outVal);
+	}
+
+	template<class T> UInt64 Text::StringBuilder<T>::ToUInt64()
+	{
+		return Text::StrToUInt64(this->buff);
 	}
 
 	template<class T> UOSInt Text::StringBuilder<T>::Hex2Bytes(UInt8 *buff)

@@ -80,6 +80,11 @@ Int64 Sync::Interlocked::Increment(Int64 *val)
 	return __sync_add_and_fetch(val, 1);
 }
 
+UInt64 Sync::Interlocked::Increment(UInt64 *val)
+{
+	return __sync_add_and_fetch(val, 1);
+}
+
 Int32 Sync::Interlocked::Decrement(Int32 *val)
 {
 	return __sync_sub_and_fetch(val, 1);
@@ -96,6 +101,11 @@ Int32 Sync::Interlocked::Add(Int32 *val, Int32 aval)
 }
 
 Int64 Sync::Interlocked::Add(Int64 *val, Int64 aval)
+{
+	return __sync_add_and_fetch(val, aval);
+}
+
+UInt64 Sync::Interlocked::Add(UInt64 *val, UInt64 aval)
 {
 	return __sync_add_and_fetch(val, aval);
 }

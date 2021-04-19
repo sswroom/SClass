@@ -14,9 +14,9 @@
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCameraControlForm *me = (SSWR::AVIRead::AVIRCameraControlForm*)userObj;
-	Data::ArrayList<OSInt> selIndices;
+	Data::ArrayList<UOSInt> selIndices;
 	me->lvFiles->GetSelectedIndices(&selIndices);
-	if (selIndices.GetCount() < 0)
+	if (selIndices.GetCount() <= 0)
 	{
 		return;
 	}
@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 		{
 			IO::FileStream *fs;
 			Bool succ = true;
-			OSInt i = 0;
-			OSInt j = selIndices.GetCount();
+			UOSInt i = 0;
+			UOSInt j = selIndices.GetCount();
 			while (i < j)
 			{
 				IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(i));
@@ -225,8 +225,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 
 	Data::ArrayList<const UTF8Char *> nameList;
 	Data::ArrayList<const UTF8Char *> valueList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->camera->GetInfoList(&nameList, &valueList);
 	i = 0;
 	j = nameList.GetCount();
@@ -272,7 +272,7 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 	this->ClearChildren();
 	DEL_CLASS(this->camera);
 	Data::ArrayList<Media::ImageList*> *previewList = this->previewMap->GetValues();
-	OSInt i = previewList->GetCount();
+	UOSInt i = previewList->GetCount();
 	Media::ImageList *previewImg;
 	while (i-- > 0)
 	{

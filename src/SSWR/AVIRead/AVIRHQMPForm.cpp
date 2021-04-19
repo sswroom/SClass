@@ -457,7 +457,7 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	Media::IMediaSource *msrc;
 	Media::MediaType mt;
 	IO::Path::PathType pt;
-	Int64 fileSize;
+	UInt64 fileSize;
 	IO::Path::FindFileSession *sess;
 	i = 0;
 	while ((msrc = mf->GetStream(i++, 0)) != 0)
@@ -1517,7 +1517,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 	UInt8 *buff;
 	const UTF8Char *u8ptr;
 	UOSInt size;
-	Int64 fileSize;
+	UInt64 fileSize;
 
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));

@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 {
 	SSWR::AVIRead::AVIRWHOISClientForm *me = (SSWR::AVIRead::AVIRWHOISClientForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 ip;
+	UInt32 ip;
 	Net::WhoisRecord *rec;
 	UTF8Char sbuff[32];
 	me->txtIP->GetText(&sb);
@@ -32,8 +32,8 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	me->lbResponse->ClearItems();
 	if (rec)
 	{
-		OSInt i = 0;
-		OSInt j = rec->GetCount();
+		UOSInt i = 0;
+		UOSInt j = rec->GetCount();
 		while (i < j)
 		{
 			me->lbResponse->AddItem(rec->GetItem(i), 0);

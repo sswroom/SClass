@@ -741,7 +741,7 @@ void DB::MySQLReader::DelNewStr(const UTF8Char *s)
 	MemFree((WChar*)s);
 }
 
-DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UInt32 colSize)
+DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSInt colSize)
 {
 	switch (dbType)
 	{

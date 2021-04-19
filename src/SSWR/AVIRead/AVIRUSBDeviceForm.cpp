@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent
 
 	IO::USBInfo::GetUSBList(this->usbList);
 	void **arr = (void**)this->usbList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, j - 1);
+	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
 	
 	i = 0;
 	j = this->usbList->GetCount();
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRUSBDeviceForm::~AVIRUSBDeviceForm()
 {
 	IO::USBInfo *usb;
-	OSInt i = this->usbList->GetCount();
+	UOSInt i = this->usbList->GetCount();
 	while (i-- > 0)
 	{
 		usb = this->usbList->GetItem(i);

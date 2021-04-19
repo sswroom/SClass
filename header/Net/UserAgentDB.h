@@ -21,7 +21,7 @@ namespace Net
 		static UAEntry uaList[];
 	public:
 		static const UAEntry *GetUserAgentInfo(const UTF8Char *userAgent);
-		static UAEntry *GetUAEntryList(OSInt *cnt);
+		static UAEntry *GetUAEntryList(UOSInt *cnt);
 		static void ParseUserAgent(UAEntry *ent, const UTF8Char *userAgent);
 		static const UTF8Char *FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser);
 	};

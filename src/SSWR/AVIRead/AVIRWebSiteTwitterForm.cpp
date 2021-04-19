@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(void 
 	if (sb.GetLength() > 0)
 	{
 		Data::DateTime dt;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 		Net::WebSite::WebSiteTwitterControl::ItemData *item;
 		me->ctrl->GetChannelItems(sb.ToString(), 0, &itemList, 0);

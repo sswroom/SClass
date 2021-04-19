@@ -106,7 +106,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
-	OSInt i = this->ieList->GetCount();
+	UOSInt i = this->ieList->GetCount();
 	Net::WirelessLANIE *ie;
 	while (i-- > 0)
 	{
@@ -192,12 +192,12 @@ const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 	return this->chipsetOUIs[index];
 }
 
-OSInt Net::WirelessLAN::BSSInfo::GetIECount()
+UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 {
 	return this->ieList->GetCount();
 }
 
-Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(OSInt index)
+Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
 	return this->ieList->GetItem(index);
 }
@@ -247,7 +247,7 @@ Bool Net::WirelessLAN::Interface::Scan()
 		Char sbuff[16];
 //		return true;
 		Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, this->name);
-		wrq.u.data.length = Text::StrConcat(sbuff, "SiteSurvey=1") - sbuff + 1;
+		wrq.u.data.length = (UInt16)(Text::StrConcat(sbuff, "SiteSurvey=1") - sbuff + 1);
 		wrq.u.data.pointer = sbuff;
 		wrq.u.data.flags = 0;
 		Sync::MutexUsage mutUsage(cmds->mut);
@@ -267,16 +267,16 @@ Bool Net::WirelessLAN::Interface::Scan()
 	return ret >= 0;
 }
 
-OSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
+UOSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
 {
-	OSInt retVal = 0;
+	UOSInt retVal = 0;
 	Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 	Net::WirelessLAN::BSSInfo *bss;
 	Net::WirelessLAN::Network *network;
 	this->GetBSSList(&bssList);
 	if (bssList.GetCount() > 0)
 	{
-		OSInt i;
+		UOSInt i;
 		retVal = bssList.GetCount();
 		i = 0;
 		while (i < retVal)
@@ -291,16 +291,16 @@ OSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN:
 	return retVal;
 }
 
-OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) ///////////////////////////////////
+UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) ///////////////////////////////////
 {
-	OSInt retVal = 0;
+	UOSInt retVal = 0;
 	BSSInfo *bssInfo;
 	BSSEntry bss;
 	Net::WirelessLANIE *ie;
 	struct iwreq wrq;
 	int ret;
 	UInt8 *buff;
-	OSInt buffSize = IW_SCAN_MAX_DATA;
+	UOSInt buffSize = IW_SCAN_MAX_DATA;
 	NEW_CLASS(bss.ieList, Data::ArrayList<Net::WirelessLANIE*>());
 	Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, this->name);
 	if (this->clsData)
@@ -309,7 +309,7 @@ OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 		buff = MemAlloc(UInt8, buffSize);
 		wrq.u.data.pointer = buff;
 		wrq.u.data.flags = 0;
-		wrq.u.data.length = buffSize;
+		wrq.u.data.length = (UInt16)buffSize;
 		Sync::MutexUsage mutUsage(cmds->mut);
 //		printf("SiteSurvey ioctl before\r\n");
 		ret = ioctl(-1 + (int)(OSInt)this->id, cmds->siteSurveyCmd, &wrq);
@@ -317,12 +317,12 @@ OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 		mutUsage.EndUse();
 		if (ret == 0)
 		{
-			OSInt lineCnt = 2;
-			OSInt colCnt;
+			UOSInt lineCnt = 2;
+			UOSInt colCnt;
 			Char *lines[2];
 			Char *cols[11];
 			Char *macs[6];
-			OSInt i;
+			UOSInt ui;
 			OSInt channelInd = -1;
 			OSInt ssidInd = -1;
 			OSInt bssidInd = -1;
@@ -361,12 +361,12 @@ OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 				Text::StrTrim(cols[0]);
 				if (colCnt >= 8)
 				{
-					i = colCnt;
-					while (i-- > 0)
+					ui = colCnt;
+					while (ui-- > 0)
 					{
-						if (cols[i][0] == ',')
+						if (cols[ui][0] == ',')
 						{
-							cols[i]++;
+							cols[ui]++;
 						}
 					}
 					if (Text::StrSplit(macs, 6, cols[2], ':') == 6)
@@ -378,19 +378,19 @@ OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 						bss.mac[3] = Text::StrHex2Byte(macs[3]);
 						bss.mac[4] = Text::StrHex2Byte(macs[4]);
 						bss.mac[5] = Text::StrHex2Byte(macs[5]);
-						bss.phyId = retVal;
+						bss.phyId = (UInt32)retVal;
 						bss.linkQuality = Text::StrToInt32(cols[4]);
 						bss.freq = 0;
 						bss.devManuf = 0;
 						bss.devModel = 0;
 						bss.devSN = 0;
 						bss.country[0] = 0;
-						i = WLAN_OUI_CNT;
-						while (i-- > 0)
+						ui = WLAN_OUI_CNT;
+						while (ui-- > 0)
 						{
-							bss.ouis[i][0] = 0;
-							bss.ouis[i][1] = 0;
-							bss.ouis[i][2] = 0;
+							bss.ouis[ui][0] = 0;
+							bss.ouis[ui][1] = 0;
+							bss.ouis[ui][2] = 0;
 						}
 						if (Text::StrStartsWith(cols[5], "11b"))
 						{
@@ -572,7 +572,7 @@ OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 		buff = MemAlloc(UInt8, buffSize);
 		wrq.u.data.pointer = buff;
 		wrq.u.data.flags = 0;
-		wrq.u.data.length = buffSize;
+		wrq.u.data.length = (UInt16)buffSize;
 //		printf("SIOCGIWSCAN before\r\n");
 		ret = ioctl(-1 + (int)(OSInt)this->id, SIOCGIWSCAN, &wrq);
 //		printf("SIOCGIWSCAN return %d, errno = %d\r\n", ret, errno);
@@ -728,7 +728,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				bss.freq = 0;
 				bss.linkQuality = 0;
 				MemCopyNO(bss.mac, &buffCurr[10], 6);
-				bss.phyId = retVal;
+				bss.phyId = (UInt32)retVal;
 				bss.phyType = 0;
 				bss.rssi = 0;
 				bss.devManuf = 0;
@@ -760,7 +760,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				bss.freq = 0;
 				bss.linkQuality = 0;
 				MemCopyNO(bss.mac, &buffCurr[6], 6);
-				bss.phyId = retVal;
+				bss.phyId = (UInt32)retVal;
 				bss.phyType = 0;
 				bss.rssi = 0;
 				bss.devManuf = 0;
@@ -814,7 +814,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B01: //SIOCGIWNAME:
 			{
 				Text::StringBuilderUTF8 sbTmp;
-				sbTmp.AppendC(&buffCurr[firstOfst], len - firstOfst);
+				sbTmp.AppendC(&buffCurr[firstOfst], (UOSInt)(len - firstOfst));
 				if (sbTmp.Equals((const UTF8Char*)"IEEE 802.11gn"))
 				{
 					bss.phyType = 7;
@@ -840,7 +840,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B1B: //SIOCGIWESSID:
 			if (len > firstOfst + firstOfst && len < IW_ESSID_MAX_SIZE + firstOfst + firstOfst)
 			{
-				Text::StrConcatC(essid, &buffCurr[firstOfst + firstOfst], len - firstOfst - firstOfst);
+				Text::StrConcatC(essid, &buffCurr[firstOfst + firstOfst], (UOSInt)(len - firstOfst - firstOfst));
 			}
 			break;
 		case 0x8B2B: //SIOCGIWENCODE:
@@ -1062,7 +1062,7 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 		OSInt i;
 		struct iwreq wrq;
 		UInt8 *buff;
-		OSInt buffSize = 16;
+		UOSInt buffSize = 16;
 		int ioret;
 		buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
 
@@ -1078,7 +1078,7 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 			i = sb.IndexOf(':');
 			if (i >= 0)
 			{
-				sb.TrimToLength(i);
+				sb.TrimToLength((UOSInt)i);
 				Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString());
 				printf("Trying interface = %s\r\n", sb.ToString());
 				wrq.u.data.pointer = buff;
@@ -1096,7 +1096,7 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 				else
 				{
 					wrq.u.data.pointer = buff;
-					wrq.u.data.length = buffSize;
+					wrq.u.data.length = (UInt16)buffSize;
 					wrq.u.data.flags = 0;
 					while (true)
 					{
@@ -1145,7 +1145,7 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 							MemFree(buff);
 							buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
 							wrq.u.data.pointer = buff;
-							wrq.u.data.length = buffSize;
+							wrq.u.data.length = (UInt16)buffSize;
 						}
 						else
 						{
@@ -1163,5 +1163,5 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 	}
 	DEL_CLASS(fs);
 
-	return ret;
+	return (Int32)ret;
 }

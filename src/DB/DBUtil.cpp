@@ -1720,6 +1720,20 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			return DB::DBUtil::CT_DateTime;
 		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"sysname"))
+		{
+			*colSize = 128;
+			return DB::DBUtil::CT_NVarChar;
+		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"varbinary"))
+		{
+			return DB::DBUtil::CT_Binary;
+		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"image"))
+		{
+			*colSize = 0x7fffffff;
+			return DB::DBUtil::CT_Binary;
+		}
 		else
 		{
 			return DB::DBUtil::CT_Unknown;

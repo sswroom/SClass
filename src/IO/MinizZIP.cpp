@@ -14,7 +14,7 @@ Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	Bool succ;
-	Int64 fileSize;
+	UInt64 fileSize;
 	sptr = &zipPath[Text::StrCharCnt(zipPath)];
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{

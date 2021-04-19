@@ -77,8 +77,8 @@ namespace Net
 			const UTF8Char *GetSN();
 			const UTF8Char *GetCountry();
 			const UInt8 *GetChipsetOUI(OSInt index);
-			OSInt GetIECount();
-			Net::WirelessLANIE *GetIE(OSInt index);
+			UOSInt GetIECount();
+			Net::WirelessLANIE *GetIE(UOSInt index);
 		};
 
 		class Interface
@@ -95,8 +95,8 @@ namespace Net
 
 			const UTF8Char *GetName();
 			Bool Scan();
-			OSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList);
-			OSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList);
+			UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList);
+			UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList);
 		};
 
 	public:

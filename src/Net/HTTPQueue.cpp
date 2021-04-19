@@ -16,7 +16,7 @@ Net::HTTPQueue::~HTTPQueue()
 {
 	Data::ArrayList<DomainStatus*> *statusList;
 	DomainStatus *status;
-	OSInt i;
+	UOSInt i;
 
 	Sync::MutexUsage mutUsage(this->statusMut);
 	statusList = this->statusMap->GetValues();

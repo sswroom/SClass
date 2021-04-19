@@ -44,9 +44,9 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *sptr;
 	UInt8 buff[512];
 	OSInt i;
-	Int64 currOfst;
-	Int64 fileSize;
-	Int64 itemSize;
+	UInt64 currOfst;
+	UInt64 fileSize;
+	UInt64 itemSize;
 	Int64 t;
 	Text::StrConcat(sbuff, fd->GetFullName());
 	i = Text::StrLastIndexOf(sbuff, '.');
@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currOfst, 512, buff);
 		currOfst += 512;
 
-		itemSize = Text::StrOct2Int64((Char*)&buff[124]);
+		itemSize = (UInt64)Text::StrOct2Int64((Char*)&buff[124]);
 		t = Text::StrOct2Int64((Char*)&buff[136]);
 		enc.UTF8FromBytes(sbuff, buff, 100, 0);
 		if (itemSize == 0)

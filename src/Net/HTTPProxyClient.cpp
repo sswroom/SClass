@@ -43,7 +43,8 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 	UTF8Char svrname[256];
 	UTF8Char host[256];
 
-	OSInt i;
+	OSInt si;
+	UOSInt ui;
 	const UTF8Char *ptr1;
 	UTF8Char *ptrs[2];
 	UTF8Char *cptr;
@@ -51,23 +52,23 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
 		ptr1 = &url[7];
-		i = Text::StrIndexOf(ptr1, '/');
-		if (i >= 0)
+		si = Text::StrIndexOf(ptr1, '/');
+		if (si >= 0)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
+			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
+			urltmp[si] = 0;
 		}
 		else
 		{
-			i = Text::StrCharCnt(ptr1);
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
+			ui = Text::StrCharCnt(ptr1);
+			MemCopyNO(urltmp, ptr1, ui * sizeof(UTF8Char));
+			urltmp[ui] = 0;
 		}
 		cptr = Text::StrConcat(host, (const UTF8Char*)"Host: ");
 		cptr = Text::StrConcat(cptr, urltmp);
 		cptr = Text::StrConcat(cptr, (const UTF8Char*)"\r\n");
-		i = Text::StrSplit(ptrs, 2, urltmp, ':');
-		if (i == 2)
+		ui = Text::StrSplit(ptrs, 2, urltmp, ':');
+		if (ui == 2)
 		{
 			Text::StrConcat(svrname, ptrs[0]);
 		}
@@ -109,11 +110,11 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 		else
 		{
 			this->sockf->SetLinger(cli->GetSocket(), 0);
-			i = Text::StrCharCnt(url);
-			if ((i + 16) > BUFFSIZE)
+			ui = Text::StrCharCnt(url);
+			if ((ui + 16) > BUFFSIZE)
 			{
 				MemFree(this->dataBuff);
-				this->dataBuff = MemAlloc(UInt8, (i + 16));
+				this->dataBuff = MemAlloc(UInt8, (ui + 16));
 			}
 			if (method)
 			{

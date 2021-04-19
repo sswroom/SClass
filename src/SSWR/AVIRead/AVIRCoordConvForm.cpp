@@ -103,17 +103,17 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	Parser::ParserList *parsers = me->core->GetParserList();
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
-	OSInt i;
+	OSInt si;
 
-	i = me->cboSrc->GetSelectedIndex();
-	if (i == -1)
+	si = me->cboSrc->GetSelectedIndex();
+	if (si == -1)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select source coordinate system", (const UTF8Char *)"Error", me);
 		return;
 	}
 
-	i = me->cboDest->GetSelectedIndex();
-	if (i == -1)
+	si = me->cboDest->GetSelectedIndex();
+	if (si == -1)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select dest coordinate system", (const UTF8Char *)"Error", me);
 		return;
@@ -148,7 +148,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	}
 	OSInt xCol = -1;
 	OSInt yCol = -1;
-	OSInt colCnt;
+	UOSInt colCnt;
+	UOSInt i;
 	DB::DBReader *reader = db->GetTableData(0, 0, 0, 0);
 	if (reader == 0)
 	{
@@ -331,9 +332,10 @@ void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
 void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 {
 	WChar sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	OSInt si;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Double x;
 	Double y;
 	Double z;
@@ -343,8 +345,8 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
 
-	i = this->cboSrc->GetSelectedIndex();
-	if (i == -1)
+	si = this->cboSrc->GetSelectedIndex();
+	if (si == -1)
 	{
 		srcCoord = 0;
 	}
@@ -352,18 +354,18 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	{
 		if (this->radSrcGeo->IsSelected())
 		{
-			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)this->cboSrc->GetItem(i);
+			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)this->cboSrc->GetItem((UOSInt)si);
 			srcCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 		}
 		else
 		{
-			Math::ProjectedCoordinateSystem::ProjCoordSysType pcst = (Math::ProjectedCoordinateSystem::ProjCoordSysType)(OSInt)this->cboSrc->GetItem(i);
+			Math::ProjectedCoordinateSystem::ProjCoordSysType pcst = (Math::ProjectedCoordinateSystem::ProjCoordSysType)(OSInt)this->cboSrc->GetItem((UOSInt)si);
 			srcCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
 	}
 
-	i = this->cboDest->GetSelectedIndex();
-	if (i == -1)
+	si = this->cboDest->GetSelectedIndex();
+	if (si == -1)
 	{
 		destCoord = 0;
 	}
@@ -371,12 +373,12 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	{
 		if (this->radDestGeo->IsSelected())
 		{
-			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)this->cboDest->GetItem(i);
+			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)this->cboDest->GetItem((UOSInt)si);
 			destCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 		}
 		else
 		{
-			Math::ProjectedCoordinateSystem::ProjCoordSysType pcst = (Math::ProjectedCoordinateSystem::ProjCoordSysType)(OSInt)this->cboDest->GetItem(i);
+			Math::ProjectedCoordinateSystem::ProjCoordSysType pcst = (Math::ProjectedCoordinateSystem::ProjCoordSysType)(OSInt)this->cboDest->GetItem((UOSInt)si);
 			destCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
 	}

@@ -24,8 +24,8 @@ IO::ZIPBuilder::~ZIPBuilder()
 	UOSInt fnameLen;
 	UOSInt hdrLen;
 	UOSInt cdLen = 0;
-	OSInt i = 0;
-	OSInt j = this->files->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->files->GetCount();
 	while (i < j)
 	{
 		file = this->files->GetItem(i);
@@ -39,7 +39,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteInt16(&hdrBuff[10], file->compMeth);
 		WriteInt16(&hdrBuff[12], dt.ToMSDOSTime());
 		WriteInt16(&hdrBuff[14], dt.ToMSDOSDate());
-		WriteInt32(&hdrBuff[16], file->crcVal);
+		WriteUInt32(&hdrBuff[16], file->crcVal);
 		WriteInt32(&hdrBuff[20], (Int32)file->compSize);
 		WriteInt32(&hdrBuff[24], (Int32)file->uncompSize);
 		WriteInt16(&hdrBuff[28], fnameLen);
@@ -131,11 +131,11 @@ Bool IO::ZIPBuilder::AddFile(const UTF8Char *fileName, const UInt8 *fileContent,
 		WriteInt16(&hdrBuff[28], 20);
 		WriteInt16(&hdrBuff[hdrLen], 1);
 		WriteInt16(&hdrBuff[hdrLen + 2], 16);
-		WriteInt64(&hdrBuff[hdrLen + 4], compSize);
-		WriteInt64(&hdrBuff[hdrLen + 12], fileSize);
+		WriteUInt64(&hdrBuff[hdrLen + 4], compSize);
+		WriteUInt64(&hdrBuff[hdrLen + 12], fileSize);
 		if (compSize >= fileSize)
 		{
-			WriteInt64(&hdrBuff[hdrLen + 4], fileSize);
+			WriteUInt64(&hdrBuff[hdrLen + 4], fileSize);
 		}
 		hdrLen += 20;
 	}

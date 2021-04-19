@@ -821,9 +821,9 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	Data::ArrayListStrUTF8 libList;
 	Data::ArrayListStrUTF8 objList;
 	Data::ArrayListStrUTF8 procList;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	OSInt l;
 	Int64 latestTime = 0;
 	Int64 thisTime;

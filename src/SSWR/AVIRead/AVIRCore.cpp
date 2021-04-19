@@ -328,8 +328,8 @@ void SSWR::AVIRead::AVIRCore::SetAudioDevice(Data::ArrayList<const UTF8Char *> *
 {
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
 	WChar sbuff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = this->audDevList->GetCount();
 	while (i-- > 0)
 	{
@@ -391,7 +391,7 @@ Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *a
 	return this->audDevice->BindAudio(audSrc);
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLinePreview(Media::DrawImage *img, Media::DrawEngine *eng, UOSInt lineThick, Int32 lineColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLinePreview(Media::DrawImage *img, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
 {
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
@@ -427,7 +427,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, Media::
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffc0c0c0));
-	img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+	img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 	img->DelBrush(b);
 
 	UInt32 color;
@@ -439,7 +439,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, Media::
 	while (env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 	{
 		p = img->NewPenARGB(colorConv->ConvRGB8(color), thick * dpi / 96.0, pattern, npattern);
-		img->DrawLine(0, Math::OSInt2Double(h >> 1), Math::OSInt2Double(w), Math::OSInt2Double(h >> 1), p);
+		img->DrawLine(0, Math::UOSInt2Double(h >> 1), Math::UOSInt2Double(w), Math::OSInt2Double(h >> 1), p);
 		img->DelPen(p);
 	}
 	return true;
@@ -508,14 +508,14 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, Int32 fontColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv)
 {
 	if (fontName == 0)
 	{
 		fontName = (const UTF8Char*)"Arial";
 	}
 	Double sz[2];
-	OSInt strLeng;
+	UOSInt strLeng;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));

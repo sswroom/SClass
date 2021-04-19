@@ -97,8 +97,8 @@ namespace IO
 		virtual IO::PackageFile *GetItemPack(UOSInt index); // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);
-		virtual Int64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(const UTF8Char *name);
+		virtual UInt64 GetItemSize(UOSInt index);
+		virtual OSInt GetItemIndex(const UTF8Char *name);
 		virtual Bool IsCompressed(UOSInt index);
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
 		virtual PackageFile *Clone();
@@ -107,7 +107,7 @@ namespace IO
 		virtual Bool MoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryCopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryMoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool CopyTo(OSInt index, const UTF8Char *destPath, Bool fullFileName);
+		virtual Bool CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFileName);
 		virtual IO::IStreamData *OpenStreamData(const UTF8Char *fileName);
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);

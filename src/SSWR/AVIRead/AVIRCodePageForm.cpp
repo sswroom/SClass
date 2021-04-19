@@ -49,9 +49,9 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	this->SetDefaultButton(btnOK);
 	this->SetCancelButton(btnCancel);
 
-	OSInt i;
-	OSInt j;
-	OSInt ind;
+	UOSInt i;
+	UOSInt j;
+	UOSInt ind;
 	Int32 codePage;
 	Int32 currCodePage = this->core->GetCurrCodePage();
 	Data::ArrayListInt32 codePages;
@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 		ind = this->lbCodePages->AddItem(sbuff, (void*)(OSInt)codePage);
 		if (codePage == currCodePage)
 		{
-			this->lbCodePages->SetSelectedIndex(ind);
+			this->lbCodePages->SetSelectedIndex((OSInt)ind);
 		}
 		i++;
 	}

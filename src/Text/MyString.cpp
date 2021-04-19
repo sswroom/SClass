@@ -716,6 +716,19 @@ OSInt Text::StrCharCntS(const Char *str, OSInt maxLen)
 	return currPtr - str;
 }
 
+Bool Text::StrHasUpperCase(const Char *str)
+{
+	Char c;
+	while ((c = *str++) != 0)
+	{
+		if (c >= 'A' && c <= 'Z')
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 Char *Text::StrHexVal64V(Char *oriStr, UInt64 val)
 {
 	UInt32 v1 = (UInt32)((UInt64)val >> 32);

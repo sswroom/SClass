@@ -18,8 +18,8 @@ template <class T> void ArtificialQuickSort_PreSort(Data::ArrayList<T> *arr, OSI
 		temp2 = arr->GetItem(right);
 		if (Data::DataComparer::Compare(temp, temp2) > 0)
 		{
-			arr->SetItem(left, temp2);
-			arr->SetItem(right, temp);
+			arr->SetItem((UOSInt)left, temp2);
+			arr->SetItem((UOSInt)right, temp);
 		}
 		left++;
 		right--;
@@ -66,17 +66,17 @@ template <class T> void ArtificialQuickSort_Sort(Data::ArrayList<T> *arr, OSInt 
 		}
 		else
 		{
-			meja = arr->GetItem( (left + right) >> 1 );
+			meja = arr->GetItem( (UOSInt)(left + right) >> 1 );
 			left1 = left;
 			right1 = right;
 			while (true)
 			{
-				while ( Data::DataComparer::Compare(arr->GetItem(right1), meja) >= 0 )
+				while ( Data::DataComparer::Compare(arr->GetItem((UOSInt)right1), meja) >= 0 )
 				{
 					if (--right1 < left1)
 						break;
 				}
-				while ( Data::DataComparer::Compare(arr->GetItem(left1), meja) < 0 )
+				while ( Data::DataComparer::Compare(arr->GetItem((UOSInt)left1), meja) < 0 )
 				{
 					if (++left1 > right1)
 						break;
@@ -85,13 +85,13 @@ template <class T> void ArtificialQuickSort_Sort(Data::ArrayList<T> *arr, OSInt 
 					break;
 
 				temp = arr->GetItem(right1);
-				arr->SetItem(right1--, arr->GetItem(left1));
-				arr->SetItem(left1++, temp);
+				arr->SetItem((UOSInt)right1--, arr->GetItem((UOSInt)left1));
+				arr->SetItem((UOSInt)left1++, temp);
 			}
 			if (left1 == left)
 			{
-				arr->SetItem((left + right) >> 1, arr->GetItem(left));
-				arr->SetItem(left, meja);
+				arr->SetItem((UOSInt)(left + right) >> 1, arr->GetItem((UOSInt)left));
+				arr->SetItem((UOSInt)left, meja);
 				levi[index] = left + 1;
 				desni[index] = right;
 			}

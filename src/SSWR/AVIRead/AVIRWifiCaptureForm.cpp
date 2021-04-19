@@ -968,7 +968,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 	}
 	DEL_CLASS(this->captureMut);
 	DEL_CLASS(this->wlan);
-	OSInt i;
+	UOSInt i;
 	BSSStatus *bss;
 	Data::ArrayList<BSSStatus*> *bssList = this->bssMap->GetValues();
 	i = bssList->GetCount();

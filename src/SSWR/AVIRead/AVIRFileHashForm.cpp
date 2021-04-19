@@ -329,7 +329,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 {
-	OSInt i;
+	UOSInt i;
 	FileStatus *status;
 	this->threadToStop = true;
 	this->fileEvt->Set();

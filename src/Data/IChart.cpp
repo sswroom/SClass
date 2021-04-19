@@ -156,7 +156,7 @@ OSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		currDate = min;
 		currDate.ClearTime();
 		currDate.AddDay(iScale - (currDate.GetDay() % (iScale)));
-		if ((currDate.DiffMS(min) / (Double)timeDif) < minLeng / leng)
+		if (((Double)currDate.DiffMS(min) / (Double)timeDif) < minLeng / leng)
 		{
 			currDate.AddDay(iScale);
 		}

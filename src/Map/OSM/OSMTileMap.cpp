@@ -351,13 +351,13 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	}
 	else if (!cli->IsError())
 	{
-		Int64 contLeng = cli->GetContentLength();
-		OSInt currPos = 0;
+		UInt64 contLeng = cli->GetContentLength();
+		UOSInt currPos = 0;
 		UInt8 *imgBuff;
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
-			imgBuff = MemAlloc(UInt8, (OSInt)contLeng);
-			while ((readSize = cli->Read(&imgBuff[currPos], (OSInt)contLeng - currPos)) > 0)
+			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
+			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
 			{
 				currPos += readSize;
 				if (currPos >= contLeng)

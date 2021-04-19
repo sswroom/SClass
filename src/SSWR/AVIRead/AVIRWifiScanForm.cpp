@@ -51,7 +51,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 	{
 		UTF8Char sbuff[64];
 		UInt8 id[8];
-		Int64 imac;
+		UInt64 imac;
 		Manage::HiResClock clk;
 		const UTF8Char *csptr;
 		const UTF8Char *ssid;
@@ -59,8 +59,8 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		Net::WirelessLAN::BSSInfo *bss;
 		Double t1;
 		Double t2;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		this->wlanInterf->Scan();
 		t1 = clk.GetTimeDiff();
 		Sync::Thread::Sleep(5000);

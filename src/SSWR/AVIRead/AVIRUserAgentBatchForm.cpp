@@ -10,7 +10,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 {
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry ent;
-	OSInt j;
+	UOSInt j;
 	Net::UserAgentDB::ParseUserAgent(&ent, userAgent);
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"\t{Net::BrowserInfo::");
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb3;
 	UTF8Char *sarr[2];
-	OSInt i;
+	UOSInt i;
 	me->txtSource->GetText(&sb);
 	if (sb.GetLength() <= 0)
 	{
@@ -135,8 +135,8 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt)
 {
 	Data::ArrayListStrUTF8 uaList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	Net::UserAgentDB::UAEntry *entList = Net::UserAgentDB::GetUAEntryList(&j);
 	UTF8Char *sarr[2];
@@ -147,7 +147,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt)
 		k = uaList.SortedIndexOf((const UTF8Char*)entList[i].userAgent);
 		if (k < 0)
 		{
-			uaList.Insert(~k, Text::StrCopyNew((const UTF8Char*)entList[i].userAgent));
+			uaList.Insert((UOSInt)~k, Text::StrCopyNew((const UTF8Char*)entList[i].userAgent));
 		}
 		i++;
 	}
@@ -160,7 +160,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt)
 			k = uaList.SortedIndexOf(sarr[0]);
 			if (k < 0)
 			{
-				uaList.Insert(~k, Text::StrCopyNew(sarr[0]));
+				uaList.Insert((UOSInt)~k, Text::StrCopyNew(sarr[0]));
 				found = true;
 			}
 		}

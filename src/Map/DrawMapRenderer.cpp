@@ -3872,7 +3872,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, In
 	denv.objBounds = MemAlloc(Double, this->env->GetNString() << 2);
 	denv.objCnt = 0;
 	denv.labelCnt = 0;
-	denv.labels = MemAlloc(Map::DrawMapRenderer::MapLabels, denv.maxLabels = (Int32)this->env->GetNString());
+	denv.labels = MemAlloc(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
 	denv.fontStyleCnt = env->GetFontStyleCount();
 	denv.fontStyles = MemAlloc(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
 	denv.imgDurMS = 0;

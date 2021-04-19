@@ -2042,6 +2042,8 @@ DB::DBUtil::ColType DB::ODBCReader::ODBCType2DBType(Int16 odbcType, UOSInt colSi
 		return DB::DBUtil::CT_Int64;
 	case SQL_TYPE_TIMESTAMP:
 		return DB::DBUtil::CT_DateTime;
+	case SQL_VARBINARY:
+		return DB::DBUtil::CT_Binary;
 	case SQL_LONGVARBINARY:
 		return DB::DBUtil::CT_Binary;
 	case -151:

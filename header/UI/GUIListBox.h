@@ -26,25 +26,25 @@ namespace UI
 		void EventDoubleClick();
 		void EventRightClick(OSInt x, OSInt y);
 
-		OSInt AddItem(const UTF8Char *itemText, void *itemObj);
-		OSInt AddItem(const WChar *itemText, void *itemObj);
-		OSInt InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj);
-		OSInt InsertItem(OSInt index, const WChar *itemText, void *itemObj);
-		void *RemoveItem(OSInt index);
-		void *GetItem(OSInt index);
+		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt AddItem(const WChar *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
+		void *RemoveItem(UOSInt index);
+		void *GetItem(UOSInt index);
 		void ClearItems();
-		OSInt GetCount();
-		void SetSelectedIndex(OSInt index);
+		UOSInt GetCount();
+		void SetSelectedIndex(UOSInt index);
 		OSInt GetSelectedIndex();
 		Bool GetSelectedIndices(Data::ArrayList<Int32> *indices);
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		WChar *GetSelectedItemText(WChar *buff);
 		const UTF8Char *GetSelectedItemTextNew();
-		UTF8Char *GetItemText(UTF8Char *buff, OSInt index);
-		WChar *GetItemText(WChar *buff, OSInt index);
-		void SetItemText(OSInt index, const UTF8Char *text);
-		const UTF8Char *GetItemTextNew(OSInt index);
+		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
+		WChar *GetItemText(WChar *buff, UOSInt index);
+		void SetItemText(UOSInt index, const UTF8Char *text);
+		const UTF8Char *GetItemTextNew(UOSInt index);
 		void DelTextNew(const UTF8Char *text);
 		OSInt GetItemHeight();
 

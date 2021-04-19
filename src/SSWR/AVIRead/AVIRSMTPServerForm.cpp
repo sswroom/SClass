@@ -325,8 +325,8 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRSMTPServerForm::~AVIRSMTPServerForm()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	EmailInfo *email;
 	SDEL_CLASS(this->smtpSvr);
 	SDEL_CLASS(this->pop3Svr);
@@ -395,7 +395,7 @@ OSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, OSInt *siz
 
 Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayList<Int32> *unreadList)
 {
-	OSInt totalCnt;
+	UOSInt totalCnt;
 	OSInt i;
 	EmailInfo *email;
 

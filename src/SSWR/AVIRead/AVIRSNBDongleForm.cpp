@@ -638,7 +638,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 	DEL_CLASS(this->logger);
 	Data::ArrayList<DeviceInfo*> *devList = this->devMap->GetValues();
 	DeviceInfo *dev;
-	OSInt i = devList->GetCount();
+	UOSInt i = devList->GetCount();
 	while (i-- > 0)
 	{
 		dev = devList->GetItem(i);
@@ -680,7 +680,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(Int64 devId)
 	this->devMut->UnlockWrite();
 }
 
-void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(Int64 devId, IO::SNBDongle::SensorType sensorType, OSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
+void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(Int64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
 {
 	DeviceInfo *dev;
 	this->devMut->LockRead();
@@ -689,7 +689,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(Int64 devId, IO::SNBDongle::
 	if (dev)
 	{
 		Data::DateTime dt;
-		OSInt i;
+		UOSInt i;
 		dt.SetCurrTimeUTC();
 
 		dev->mut->LockWrite();

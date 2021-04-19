@@ -897,7 +897,7 @@ const Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUserAgentInfo(const UTF8Ch
 	return 0;
 }
 
-Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUAEntryList(OSInt *cnt)
+Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUAEntryList(UOSInt *cnt)
 {
 	*cnt = sizeof(uaList) / sizeof(uaList[0]);
 	return uaList;

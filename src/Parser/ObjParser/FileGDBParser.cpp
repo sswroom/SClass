@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 		NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
 		fileGDB->GetTableNames(tableNames);
 
-		OSInt i = tableNames->GetCount();
+		UOSInt i = tableNames->GetCount();
 		while (i-- > 0)
 		{
 			const UTF8Char *tableName = tableNames->GetItem(i);
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 				{
 					OSInt objCol = -1;
 					OSInt shapeCol = -1;
-					OSInt j;
+					UOSInt j;
 					j = rdr->ColCount();
 					while (j-- > 0)
 					{
@@ -103,7 +103,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 			NEW_CLASS(conn, DB::SharedReadingDB(fileGDB));
 			NEW_CLASS(lyrColl, Map::MapLayerCollection(pkg->GetSourceNameObj(), 0));
 
-			OSInt i;
+			UOSInt i;
 			i = shpTables->GetCount();
 			while (i-- > 0)
 			{

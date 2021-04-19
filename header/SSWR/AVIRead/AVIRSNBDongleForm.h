@@ -107,10 +107,10 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			virtual void DeviceAdded(Int64 devId);
-			virtual void DeviceSensor(Int64 devId, IO::SNBDongle::SensorType sensorType, OSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals);
+			virtual void DeviceSensor(Int64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals);
 			virtual void DeviceUpdated(Int64 devId, Int16 shortAddr);
 			virtual void DongleInfoUpdated();
 		};
-	};
-};
+	}
+}
 #endif

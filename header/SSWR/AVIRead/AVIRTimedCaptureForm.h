@@ -45,9 +45,9 @@ namespace SSWR
 			Bool isStarted;
 			Int32 jpgQuality;
 			Int32 interval;
-			Int32 lastSaveTime;
-			Int32 frameCnt;
-			Int32 saveCnt;
+			UInt32 lastSaveTime;
+			UInt32 frameCnt;
+			UInt32 saveCnt;
 			Media::TimedImageList *timedImageList;
 
 			UI::GUIListBox *lbDevice;

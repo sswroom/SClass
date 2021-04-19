@@ -16,8 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 		Text::CodeObject *obj = (Text::CodeObject*)tvi->GetItemObj();
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			Text::Cpp::CppEnv *env;
 			Text::Cpp::CppParseStatus *status;
 			Text::Cpp::CppCodeParser *parser;

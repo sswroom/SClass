@@ -7,8 +7,8 @@ namespace Net
 	public:
 		typedef struct
 		{
-			Int64 rangeStart;
-			Int64 rangeEnd;
+			UInt64 rangeStart;
+			UInt64 rangeEnd;
 			const Char *name;
 		} MACEntry;
 		
@@ -16,7 +16,7 @@ namespace Net
 		static MACEntry macList[];
 		static MACEntry uncMac;
 	public:
-		static const MACEntry *GetMACInfo(Int64 macAddr);
+		static const MACEntry *GetMACInfo(UInt64 macAddr);
 		static const MACEntry *GetMACInfoBuff(const UInt8 *mac);
 		static const MACEntry *GetMACInfoOUI(const UInt8 *oui);
 		static MACEntry *GetMACEntryList(UOSInt *cnt);

@@ -14,8 +14,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	Net::DNSClient *dnsCli;
 	Net::DNSClient::RequestAnswer *ans;
 	Manage::HiResClock *clk;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt bestInd;
 	me->txtServer->GetText(&sb);
 	if (!Net::SocketUtil::GetIPAddr((Char*)sb.ToString(), &dnsAddr))
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(void *userObj)
 		me->txtAnsType->SetText(sbuff);
 		Text::StrInt32(sbuff, ans->recClass);
 		me->txtAnsClass->SetText(sbuff);
-		Text::StrInt32(sbuff, ans->ttl);
+		Text::StrUInt32(sbuff, ans->ttl);
 		me->txtAnsTTL->SetText(sbuff);
 		if (ans->rd)
 		{

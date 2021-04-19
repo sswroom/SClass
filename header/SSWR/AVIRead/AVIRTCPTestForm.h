@@ -31,8 +31,8 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
 			ThreadStatus *threadStatus;
-			Int32 svrIP;
-			Int32 svrPort;
+			UInt32 svrIP;
+			UInt16 svrPort;
 			Sync::Mutex *connMut;
 			Int32 connLeftCnt;
 			Int32 threadCnt;

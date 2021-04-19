@@ -355,9 +355,9 @@ Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 	return false;
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, OSInt dirSize, Text::StringBuilderUTF *sb)
+void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, Text::StringBuilderUTF *sb)
 {
-	OSInt ofst = 0;
+	UOSInt ofst = 0;
 	while (dirSize - ofst >= 26)
 	{
 		Int64 fileOfst = ReadInt64(&dirBuff[ofst]);

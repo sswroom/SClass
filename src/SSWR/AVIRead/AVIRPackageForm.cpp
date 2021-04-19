@@ -403,9 +403,9 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 	OSInt maxWidth = 0;
 	OSInt w;
 	this->lvFiles->ClearItems();
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	IO::PackageFile::PackObjectType pot;
 	dt.ToLocalTime();
 	i = 0;
@@ -600,7 +600,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 {
-	OSInt i;
+	UOSInt i;
 	this->threadToStop = true;
 	this->threadEvt->Set();
 	while (this->threadRunning)
@@ -673,16 +673,16 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_COPYTO:
 		{
-			Data::ArrayList<OSInt> selIndices;
+			Data::ArrayList<UOSInt> selIndices;
 			this->lvFiles->GetSelectedIndices(&selIndices);
-			OSInt i = selIndices.GetCount();
+			UOSInt i = selIndices.GetCount();
 			if (i > 0)
 			{
 				UI::FolderDialog *dlg;
 				NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"PackageCopyTo"));
 				if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 				{
-					OSInt j;
+					UOSInt j;
 					j = 0;
 					while (j < i)
 					{

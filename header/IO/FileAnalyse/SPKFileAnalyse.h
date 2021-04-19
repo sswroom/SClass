@@ -53,7 +53,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(const UTF8Char *outputFile);
 
-			void GetDetailDirs(const UInt8 *dirBuff, OSInt dirSize, Text::StringBuilderUTF *sb);
+			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, Text::StringBuilderUTF *sb);
 		};
 	}
 }

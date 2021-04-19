@@ -41,8 +41,8 @@ namespace SSWR
 				const UTF8Char *serialNum;
 				const UTF8Char *country;
 				UInt8 ouis[3][3];
-				Int64 neighbour[20];
-				OSInt ieLen;
+				UInt64 neighbour[20];
+				UOSInt ieLen;
 				UInt8 *ieBuff;
 			} WifiLog;
 		private:

@@ -401,9 +401,9 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 		Data::ArrayList<Manage::Process::HeapInfo*> heapList;
 		Manage::Process::HeapInfo *heap;
 		UTF8Char sbuff[20];
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		const UTF8Char *tStr;
 
 		proc.GetHeaps(&heapList, heapId, 257);
@@ -610,7 +610,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIRProcInfoForm::~AVIRProcInfoForm()
 {
 	ProcessInfo *procInfo;
-	OSInt i;
+	UOSInt i;
 	i = this->procList->GetCount();
 	while (i-- > 0)
 	{

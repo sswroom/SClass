@@ -349,9 +349,9 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				const UInt8 *bptr;
 				const UInt8 *bptrEnd;
 				Int64 iVal;
-				OSInt len;
+				UOSInt len;
 				const UTF8Char *authResp = 0;
-				OSInt authLen = 0;
+				UOSInt authLen = 0;
 				Text::StringBuilderUTF8 sb;
 
 				data->clientCap = ReadUInt32(&data->buff[4]);

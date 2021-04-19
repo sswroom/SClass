@@ -90,7 +90,7 @@ namespace IO
 		{
 		public:
 			virtual void DeviceAdded(Int64 devId) = 0;
-			virtual void DeviceSensor(Int64 devId, SensorType sensorType, OSInt nReading, ReadingType *readingTypes, Double *readingVals) = 0;
+			virtual void DeviceSensor(Int64 devId, SensorType sensorType, UOSInt nReading, ReadingType *readingTypes, Double *readingVals) = 0;
 			virtual void DeviceUpdated(Int64 devId, Int16 shortAddr) = 0;
 			virtual void DongleInfoUpdated() = 0;
 		};

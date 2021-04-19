@@ -304,7 +304,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(const UTF8Char *channel
 void Net::WebSite::WebSite7gogoControl::FreeItems(Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList)
 {
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
-	OSInt i = itemList->GetCount();
+	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItem(i);

@@ -12,11 +12,11 @@ template <class T> void InsertionSort_SortB(Data::ArrayList<T> *arr, OSInt left,
 	T temp;
 	T temp1;
 	T temp2;
-	temp1 = arr->GetItem(left);
+	temp1 = arr->GetItem((UOSInt)left);
 	i = left + 1;
 	while (i <= right)
 	{
-		temp2 = arr->GetItem(i);
+		temp2 = arr->GetItem((UOSInt)i);
 		if ( Data::DataComparer::Compare(temp1, temp2) > 0)
 		{
 			j = left;
@@ -24,7 +24,7 @@ template <class T> void InsertionSort_SortB(Data::ArrayList<T> *arr, OSInt left,
 			while (j <= k)
 			{
 				l = (j + k) >> 1;
-				temp = arr->GetItem(l);
+				temp = arr->GetItem((UOSInt)l);
 				if (Data::DataComparer::Compare(temp, temp2) > 0)
 				{
 					k = l - 1;
@@ -34,8 +34,8 @@ template <class T> void InsertionSort_SortB(Data::ArrayList<T> *arr, OSInt left,
 					j = l + 1;
 				}
 			}
-			arr->CopyItems(j + 1, j, i - j);
-			arr->SetItem(j, temp2);
+			arr->CopyItems((UOSInt)j + 1, (UOSInt)j, (UOSInt)(i - j));
+			arr->SetItem((UOSInt)j, temp2);
 		}
 		else
 		{

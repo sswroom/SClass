@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::
 SSWR::AVIRead::AVIRSDCardForm::~AVIRSDCardForm()
 {
 	IO::SDCardInfo *sdCard;
-	OSInt i = this->sdCardList->GetCount();
+	UOSInt i = this->sdCardList->GetCount();
 	while (i-- > 0)
 	{
 		sdCard = this->sdCardList->GetItem(i);

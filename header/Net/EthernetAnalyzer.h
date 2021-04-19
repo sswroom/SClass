@@ -3,6 +3,8 @@
 #include "Data/ICaseStringUTF8Map.h"
 #include "Data/Int32Map.h"
 #include "Data/Int64Map.h"
+#include "Data/UInt32Map.h"
+#include "Data/UInt64Map.h"
 #include "IO/Writer.h"
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
@@ -34,27 +36,27 @@ namespace Net
 		{
 			UInt32 srcIP;
 			UInt32 destIP;
-			Int64 tcpCnt;
-			Int64 udpCnt;
-			Int64 icmpCnt;
-			Int64 otherCnt;
-			Int64 tcpSize;
-			Int64 udpSize;
-			Int64 icmpSize;
-			Int64 otherSize;
+			UInt64 tcpCnt;
+			UInt64 udpCnt;
+			UInt64 icmpCnt;
+			UInt64 otherCnt;
+			UInt64 tcpSize;
+			UInt64 udpSize;
+			UInt64 icmpSize;
+			UInt64 otherSize;
 		} IPTranStatus;
 
 		typedef struct
 		{
-			Int64 macAddr;
+			UInt64 macAddr;
 			UInt32 ipv4Addr[4];
 			Net::SocketUtil::AddressInfo ipv6Addr;
-			Int64 ipv4SrcCnt;
-			Int64 ipv4DestCnt;
-			Int64 ipv6SrcCnt;
-			Int64 ipv6DestCnt;
-			Int64 othSrcCnt;
-			Int64 othDestCnt;
+			UInt64 ipv4SrcCnt;
+			UInt64 ipv4DestCnt;
+			UInt64 ipv6SrcCnt;
+			UInt64 ipv6DestCnt;
+			UInt64 othSrcCnt;
+			UInt64 othDestCnt;
 			const UTF8Char *name;
 		} MACStatus;
 
@@ -64,12 +66,12 @@ namespace Net
 			Int32 month;
 			Int32 day;
 			Int32 hour;
-			Int64 reqCount;
+			UInt64 reqCount;
 		} DNSCliHourInfo;
 
 		typedef struct
 		{
-			Int32 cliId;
+			UInt32 cliId;
 			Net::SocketUtil::AddressInfo addr;
 			Sync::Mutex *mut;
 			Data::ArrayList<DNSCliHourInfo*> *hourInfos;
@@ -78,9 +80,9 @@ namespace Net
 		typedef struct
 		{
 			UInt8 recBuff[512];
-			OSInt recSize;
+			UOSInt recSize;
 			Int64 reqTime;
-			Int32 ttl;
+			UInt32 ttl;
 			Int32 status; //0 = normal, 1 = blocked
 			Sync::Mutex *mut;
 		} DNSRequestResult;
@@ -101,7 +103,7 @@ namespace Net
 
 		typedef struct
 		{
-			Int64 iMAC;
+			UInt64 iMAC;
 			Bool updated;
 			Sync::Mutex *mut;
 			Int64 ipAddrTime;
@@ -123,9 +125,9 @@ namespace Net
 		Sync::Mutex *ipTranMut;
 		Data::Int64Map<IPTranStatus*> *ipTranMap;
 		Sync::Mutex *macMut;
-		Data::Int64Map<MACStatus*> *macMap;
+		Data::UInt64Map<MACStatus*> *macMap;
 		Sync::Mutex *dnsCliInfoMut;
-		Data::Int32Map<DNSClientInfo*> *dnsCliInfos;
+		Data::UInt32Map<DNSClientInfo*> *dnsCliInfos;
 		Sync::Mutex *dnsReqv4Mut;
 		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqv4Map;
 		Sync::Mutex *dnsReqv6Mut;
@@ -133,23 +135,23 @@ namespace Net
 		Sync::Mutex *dnsReqOthMut;
 		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqOthMap;
 		Sync::Mutex *dnsTargetMut;
-		Data::Int32Map<DNSTargetInfo*> *dnsTargetMap;
+		Data::UInt32Map<DNSTargetInfo*> *dnsTargetMap;
 		Sync::Mutex *ipLogMut;
-		Data::Int32Map<IPLogInfo*> *ipLogMap;
+		Data::UInt32Map<IPLogInfo*> *ipLogMap;
 		Sync::Mutex *dhcpMut;
-		Data::Int64Map<DHCPInfo*> *dhcpMap;
+		Data::UInt64Map<DHCPInfo*> *dhcpMap;
 
 		Pingv4Handler pingv4ReqHdlr;
 		void *pingv4ReqObj;
 
-		Int64 packetCnt;
-		Int64 packetTotalSize;
+		UInt64 packetCnt;
+		UInt64 packetTotalSize;
 		Bool isFirst;
 		IO::Writer *errWriter;
 
-		static void NetBIOSDecName(UTF8Char *nameBuff, OSInt nameSize);
+		static void NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize);
 
-		MACStatus *MACGet(Int64 macAddr);
+		MACStatus *MACGet(UInt64 macAddr);
 
 	public:
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, const UTF8Char *name);
@@ -157,69 +159,69 @@ namespace Net
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		Int64 GetPacketCnt();
-		Int64 GetPacketTotalSize();
+		UInt64 GetPacketCnt();
+		UInt64 GetPacketTotalSize();
 		void UseIPTran(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<IPTranStatus*> *IPTranGetList();
-		OSInt IPTranGetCount();
+		UOSInt IPTranGetCount();
 		void UseMAC(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<MACStatus*> *MACGetList();
 		void UseDNSCli(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DNSClientInfo*> *DNSCliGetList();
-		OSInt DNSCliGetCount();
-		OSInt DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
-		OSInt DNSReqv4GetCount();
-		Bool DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl);
-		OSInt DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
-		OSInt DNSReqv6GetCount();
-		Bool DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl);
-		OSInt DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
-		OSInt DNSReqOthGetCount();
-		Bool DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl);
-		OSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release
-		OSInt DNSTargetGetCount();
+		UOSInt DNSCliGetCount();
+		UOSInt DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
+		UOSInt DNSReqv4GetCount();
+		Bool DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		UOSInt DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
+		UOSInt DNSReqv6GetCount();
+		Bool DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		UOSInt DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
+		UOSInt DNSReqOthGetCount();
+		Bool DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		UOSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release
+		UOSInt DNSTargetGetCount();
 		void UseDHCP(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DHCPInfo*> *DHCPGetList();
 		void UseIPLog(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<IPLogInfo*> *IPLogGetList();
-		OSInt IPLogGetCount();
+		UOSInt IPLogGetCount();
 
-		Bool PacketData(UInt32 linkType, const UInt8 *packet, OSInt packetSize); //Return valid
-		Bool PacketNull(const UInt8 *packet, OSInt packetSize); //Return valid
-		Bool PacketEthernet(const UInt8 *packet, OSInt packetSize); //Return valid
-		Bool PacketLinux(const UInt8 *packet, OSInt packetSize); //Return valid
-		Bool PacketEthernetData(const UInt8 *packet, OSInt packetSize, UInt16 etherType, Int64 srcMAC, Int64 destMAC); //Return valid
-		Bool PacketIPv4(const UInt8 *packet, OSInt packetSize, Int64 srcMAC, Int64 destMAC); //Return valid
-		Bool PacketIPv6(const UInt8 *packet, OSInt packetSize, Int64 srcMAC, Int64 destMAC); //Return valid
-		Bool PacketARP(const UInt8 *packet, OSInt packetSize, Int64 srcMAC, Int64 destMAC); //Return valid
+		Bool PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize); //Return valid
+		Bool PacketNull(const UInt8 *packet, UOSInt packetSize); //Return valid
+		Bool PacketEthernet(const UInt8 *packet, UOSInt packetSize); //Return valid
+		Bool PacketLinux(const UInt8 *packet, UOSInt packetSize); //Return valid
+		Bool PacketEthernetData(const UInt8 *packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketIPv4(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketIPv6(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
 
 		AnalyzeType GetAnalyzeType();
 		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, void *userObj);
 
-		static Bool PacketDataGetName(UInt32 linkType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketNullGetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketEthernetGetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketLinuxGetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketEthernetDataGetName(UInt16 etherType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketIPv4GetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketIPv6GetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static Bool PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketNullGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketEthernetGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketLinuxGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketIEEE802_2LLCGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketIPv4GetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketIPv6GetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketDNSGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketLoRaMACGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketNullGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketEthernetGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketLinuxGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketEthernetDataGetName(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 
-		static OSInt HeaderIPv4GetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb);
+		static UOSInt HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 
-		static void XMLWellFormat(const UTF8Char *buff, OSInt buffSize, Text::StringBuilderUTF *sb);
+		static void XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, Text::StringBuilderUTF *sb);
 		static UTF8Char *NetBIOSGetName(UTF8Char *sbuff, const UTF8Char *nbName);
 		static const UTF8Char *TCPPortGetName(UInt16 port); //null = unknwon
 		static const UTF8Char *UDPPortGetName(UInt16 port); //null = unknwon

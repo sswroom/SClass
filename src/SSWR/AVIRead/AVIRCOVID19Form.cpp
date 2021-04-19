@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	}
 	chart->AddXDataDate(dates, j);
 	chart->AddYData((const UTF8Char*)"New Cases", counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-	chart->Plot(dimg, 0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h));
+	chart->Plot(dimg, 0, 0, Math::UOSInt2Double(w), Math::OSInt2Double(h));
 	MemFree(counts);
 	MemFree(dates);
 	DEL_CLASS(chart);
@@ -140,9 +140,9 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	OSInt colTotalCases = -1;
 	OSInt colTotalDeath = -1;
 	OSInt colPopulation = -1;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	this->ClearRecords();
 	NEW_CLASS(csv, DB::CSVFile(stm, 65001));
 	DB::DBReader *r = csv->GetTableData(0, 0, 0, 0);

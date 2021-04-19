@@ -53,8 +53,8 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::IStreamData *fd)
 	this->threadStarted = false;
 	this->isBE = false;
 	NEW_CLASS(this->dataMut, Sync::Mutex());
-	NEW_CLASS(this->ofstList, Data::ArrayList<Int64>());
-	NEW_CLASS(this->sizeList, Data::ArrayList<Int64>());
+	NEW_CLASS(this->ofstList, Data::ArrayList<UInt64>());
+	NEW_CLASS(this->sizeList, Data::ArrayList<UInt64>());
 	this->packetBuff = MemAlloc(UInt8, 65536);
 	if (fd->GetRealData(0, 24, buff) != 24)
 	{
@@ -114,8 +114,8 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 		sb->Append((const UTF8Char*)"PCAP Header");
 		return true;
 	}
-	Int64 ofst;
-	Int64 size;
+	UInt64 ofst;
+	UInt64 size;
 	UInt32 psize;
 	if (index > this->ofstList->GetCount())
 	{
@@ -126,7 +126,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	size = this->sizeList->GetItem(index - 1);
 	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
-	sb->AppendI64(ofst);
+	sb->AppendU64(ofst);
 	sb->Append((const UTF8Char*)", psize=");
 	if (this->isBE)
 	{

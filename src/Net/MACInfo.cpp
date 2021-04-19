@@ -4193,7 +4193,7 @@ Net::MACInfo::MACEntry Net::MACInfo::macList[] = {
 Net::MACInfo::MACEntry Net::MACInfo::uncMac = {0, 0, "Unknown"};
 
 
-const Net::MACInfo::MACEntry *Net::MACInfo::GetMACInfo(Int64 macAddr)
+const Net::MACInfo::MACEntry *Net::MACInfo::GetMACInfo(UInt64 macAddr)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(macList) / sizeof(macList[0])) - 1;

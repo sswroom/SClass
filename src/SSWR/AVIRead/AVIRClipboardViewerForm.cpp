@@ -33,8 +33,8 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientCon
 	NEW_CLASS(this->clipboard, Win32::Clipboard(this->hwnd));
 
 	UTF8Char sbuff[256];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 fmt;
 	Data::ArrayList<Int32> formats;
 	this->clipboard->GetDataFormats(&formats);

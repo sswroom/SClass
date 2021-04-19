@@ -29,7 +29,7 @@ mDNS:
 https://www.ietf.org/rfc/rfc6762.txt
 */
 
-void Net::EthernetAnalyzer::NetBIOSDecName(UTF8Char *nameBuff, OSInt nameSize)
+void Net::EthernetAnalyzer::NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize)
 {
 	UTF8Char *destPtr = nameBuff;
 	while (nameSize >= 2)
@@ -41,7 +41,7 @@ void Net::EthernetAnalyzer::NetBIOSDecName(UTF8Char *nameBuff, OSInt nameSize)
 	*destPtr = 0;
 }
 
-Net::EthernetAnalyzer::MACStatus *Net::EthernetAnalyzer::MACGet(Int64 macAddr)
+Net::EthernetAnalyzer::MACStatus *Net::EthernetAnalyzer::MACGet(UInt64 macAddr)
 {
 	MACStatus *mac = this->macMap->Get(macAddr);
 	if (mac)
@@ -65,9 +65,9 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->ipTranMut, Sync::Mutex());
 	NEW_CLASS(this->ipTranMap, Data::Int64Map<IPTranStatus*>());
 	NEW_CLASS(this->macMut, Sync::Mutex());
-	NEW_CLASS(this->macMap, Data::Int64Map<MACStatus*>());
+	NEW_CLASS(this->macMap, Data::UInt64Map<MACStatus*>());
 	NEW_CLASS(this->dnsCliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->dnsCliInfos, Data::Int32Map<DNSClientInfo*>());
+	NEW_CLASS(this->dnsCliInfos, Data::UInt32Map<DNSClientInfo*>());
 	NEW_CLASS(this->dnsReqv4Mut, Sync::Mutex());
 	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsReqv6Mut, Sync::Mutex());
@@ -75,11 +75,11 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->dnsReqOthMut, Sync::Mutex());
 	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsTargetMut, Sync::Mutex());
-	NEW_CLASS(this->dnsTargetMap, Data::Int32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
+	NEW_CLASS(this->dnsTargetMap, Data::UInt32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
 	NEW_CLASS(this->ipLogMut, Sync::Mutex());
-	NEW_CLASS(this->ipLogMap, Data::Int32Map<Net::EthernetAnalyzer::IPLogInfo*>());
+	NEW_CLASS(this->ipLogMap, Data::UInt32Map<Net::EthernetAnalyzer::IPLogInfo*>());
 	NEW_CLASS(this->dhcpMut, Sync::Mutex());
-	NEW_CLASS(this->dhcpMap, Data::Int64Map<DHCPInfo*>());
+	NEW_CLASS(this->dhcpMap, Data::UInt64Map<DHCPInfo*>());
 }
 
 Net::EthernetAnalyzer::~EthernetAnalyzer()
@@ -220,12 +220,12 @@ IO::ParsedObject::ParserType Net::EthernetAnalyzer::GetParserType()
 	return IO::ParsedObject::PT_ETHERNET_ANALYZER;
 }
 
-Int64 Net::EthernetAnalyzer::GetPacketCnt()
+UInt64 Net::EthernetAnalyzer::GetPacketCnt()
 {
 	return this->packetCnt;
 }
 
-Int64 Net::EthernetAnalyzer::GetPacketTotalSize()
+UInt64 Net::EthernetAnalyzer::GetPacketTotalSize()
 {
 	return this->packetTotalSize;
 }
@@ -240,7 +240,7 @@ Data::ArrayList<Net::EthernetAnalyzer::IPTranStatus*> *Net::EthernetAnalyzer::IP
 	return this->ipTranMap->GetValues();
 }
 
-OSInt Net::EthernetAnalyzer::IPTranGetCount()
+UOSInt Net::EthernetAnalyzer::IPTranGetCount()
 {
 	return this->ipTranMap->GetCount();
 }
@@ -265,12 +265,12 @@ Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> *Net::EthernetAnalyzer::D
 	return this->dnsCliInfos->GetValues();
 }
 
-OSInt Net::EthernetAnalyzer::DNSCliGetCount()
+UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
 {
 	return this->dnsCliInfos->GetCount();
 }
 
-OSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	reqList->AddRange(this->dnsReqv4Map->GetKeys());
@@ -278,12 +278,12 @@ OSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *
 	return reqList->GetCount();
 }
 
-OSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
+UOSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
 {
 	return this->dnsReqv4Map->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
@@ -304,7 +304,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList
 	}
 }
 
-OSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	reqList->AddRange(this->dnsReqv6Map->GetKeys());
@@ -312,12 +312,12 @@ OSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *
 	return reqList->GetCount();
 }
 
-OSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
+UOSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
 {
 	return this->dnsReqv6Map->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
@@ -338,7 +338,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList
 	}
 }
 
-OSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	reqList->AddRange(this->dnsReqOthMap->GetKeys());
@@ -346,12 +346,12 @@ OSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<const UTF8Char *> 
 	return reqList->GetCount();
 }
 
-OSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
+UOSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
 {
 	return this->dnsReqOthMap->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
@@ -372,7 +372,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayLis
 	}
 }
 
-OSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> *targetList)
+UOSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> *targetList)
 {
 	Sync::MutexUsage mutUsage(this->dnsTargetMut);
 	targetList->AddRange(this->dnsTargetMap->GetValues());
@@ -380,7 +380,7 @@ OSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnaly
 	return targetList->GetCount();
 }
 
-OSInt Net::EthernetAnalyzer::DNSTargetGetCount()
+UOSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 {
 	return this->dnsTargetMap->GetCount();
 }
@@ -405,12 +405,12 @@ Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyzer::IPLog
 	return this->ipLogMap->GetValues();
 }
 
-OSInt Net::EthernetAnalyzer::IPLogGetCount()
+UOSInt Net::EthernetAnalyzer::IPLogGetCount()
 {
 	return this->ipLogMap->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, const UInt8 *packet, OSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize)
 {
 	switch (linkType)
 	{
@@ -424,7 +424,7 @@ Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, const UInt8 *packet, OSI
 	return false;
 }
 
-Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, OSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 {
 	UInt32 packetType;
 	Bool valid;
@@ -462,11 +462,11 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, OSInt packetSize)
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, OSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, UOSInt packetSize)
 {
 	UInt16 etherType;
-	Int64 destAddr;
-	Int64 srcAddr;
+	UInt64 destAddr;
+	UInt64 srcAddr;
 	UInt8 tmpBuff[8];
 	Bool valid;
 	if (packetSize < 14)
@@ -477,10 +477,10 @@ Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, OSInt packetSize
 	tmpBuff[0] = 0;
 	tmpBuff[1] = 0;
 	MemCopyNO(&tmpBuff[2], &packet[0], 6);
-	destAddr = ReadMInt64(tmpBuff);
+	destAddr = ReadMUInt64(tmpBuff);
 	MemCopyNO(&tmpBuff[2], &packet[6], 6);
-	srcAddr = ReadMInt64(tmpBuff);
-	etherType = ReadMInt16(&packet[12]);
+	srcAddr = ReadMUInt64(tmpBuff);
+	etherType = ReadMUInt16(&packet[12]);
 	valid = this->PacketEthernetData(&packet[14], packetSize - 14, etherType, srcAddr, destAddr);
 	
 	if (!valid)
@@ -498,11 +498,11 @@ Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, OSInt packetSize
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, OSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 {
 	UInt16 etherType;
-	Int64 destAddr;
-	Int64 srcAddr;
+	UInt64 destAddr;
+	UInt64 srcAddr;
 	UInt16 packetType;
 	UInt8 tmpBuff[8];
 	Bool valid;
@@ -516,7 +516,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, OSInt packetSize)
 		tmpBuff[0] = 0;
 		tmpBuff[1] = 0;
 		MemCopyNO(&tmpBuff[2], &packet[6], 6);
-		destAddr = ReadMInt64(tmpBuff);
+		destAddr = ReadMUInt64(tmpBuff);
 		srcAddr = destAddr;
 		if (packetType == 4)
 		{
@@ -532,7 +532,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, OSInt packetSize)
 		srcAddr = 0;
 		destAddr = 0;
 	}
-	etherType = ReadMInt16(&packet[14]);
+	etherType = ReadMUInt16(&packet[14]);
 	valid = this->PacketEthernetData(&packet[16], packetSize - 16, etherType, srcAddr, destAddr);
 	
 	if (!valid)
@@ -550,7 +550,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, OSInt packetSize)
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, OSInt packetSize, UInt16 etherType, Int64 srcMAC, Int64 destMAC)
+Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC)
 {
 	MACStatus *mac;
 	Bool valid = true;
@@ -681,7 +681,7 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, Int64 srcMAC, Int64 destMAC)
+Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 //	Net::SocketUtil::AddressInfo addr;
 //	UInt16 port;
@@ -692,17 +692,17 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 //	UInt8 tmpBuff[8];
 	UTF8Char sbuff[32];
 	MACStatus *mac;
-	OSInt i;
+	UOSInt i;
 	Bool valid = true;
 	if ((packet[0] & 0xf0) == 0x40)
 	{
 		const UInt8 *ipData;
-		OSInt ipDataSize;
+		UOSInt ipDataSize;
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
-			ipAddr = ReadNInt32(&packet[12]);
+			ipAddr = ReadNUInt32(&packet[12]);
 			i = 0;
 			while (i < 4)
 			{
@@ -720,7 +720,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 			mac->ipv4SrcCnt++;
 
 			mac = this->MACGet(destMAC);
-			ipAddr = ReadNInt32(&packet[16]);
+			ipAddr = ReadNUInt32(&packet[16]);
 			i = 0;
 			while (i < 4)
 			{
@@ -746,8 +746,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 		if (ip == 0)
 		{
 			ip = MemAlloc(IPTranStatus, 1);
-			ip->srcIP = ReadNInt32(&packet[12]);
-			ip->destIP = ReadNInt32(&packet[16]);
+			ip->srcIP = ReadNUInt32(&packet[12]);
+			ip->destIP = ReadNUInt32(&packet[16]);
 			ip->tcpCnt = 0;
 			ip->udpCnt = 0;
 			ip->icmpCnt = 0;
@@ -781,7 +781,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 				IPLogInfo *ipLog;
 				Data::DateTime dt;
 				dt.SetCurrTime();
-				UInt32 sortableIP = ReadMInt32(&packet[12]);
+				UInt32 sortableIP = ReadMUInt32(&packet[12]);
 				Sync::MutexUsage mutUsage(this->ipLogMut);
 				ipLog = this->ipLogMap->Get(sortableIP);
 				if (ipLog == 0)
@@ -881,7 +881,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 					sb.Append((const UTF8Char*)", ttl = ");
 					sb.AppendU16(packet[8]);
 					sb.Append((const UTF8Char*)", size = ");
-					sb.AppendOSInt(ipDataSize);
+					sb.AppendUOSInt(ipDataSize);
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
 					{
@@ -891,7 +891,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 					mutUsage.EndUse();
 				}
 
-				sortableIP = ReadMInt32(&packet[16]);
+				sortableIP = ReadMUInt32(&packet[16]);
 				ipLog = this->ipLogMap->Get(sortableIP);
 				if (ipLog == 0)
 				{
@@ -990,7 +990,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 					sb.Append((const UTF8Char*)", ttl = ");
 					sb.AppendU16(packet[8]);
 					sb.Append((const UTF8Char*)", size = ");
-					sb.AppendOSInt(ipDataSize);
+					sb.AppendUOSInt(ipDataSize);
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
 					{
@@ -1082,8 +1082,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 									}
 									if (this->atype & AT_DNSTARGET)
 									{
-										OSInt i;
-										OSInt j;
+										UOSInt i;
+										UOSInt j;
 										UInt32 resIP;
 										UInt32 sortIP;
 										DNSTargetInfo *dnsTarget;
@@ -1093,8 +1093,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 											answer = answers.GetItem(i);
 											if (answer->recType == 1)
 											{
-												resIP = ReadNInt32(answer->addr.addr);
-												sortIP = ReadMInt32(answer->addr.addr);
+												resIP = ReadNUInt32(answer->addr.addr);
+												sortIP = ReadMUInt32(answer->addr.addr);
 												Sync::MutexUsage dnsTargetMutUsage(this->dnsTargetMut);
 												dnsTarget = this->dnsTargetMap->Get(sortIP);
 												if (dnsTarget == 0)
@@ -1198,7 +1198,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 						if (this->atype & AT_DNSCLI)
 						{
 							DNSClientInfo *dnsCli;
-							UInt32 cliId = ReadMInt32(&packet[12]);
+							UInt32 cliId = ReadMUInt32(&packet[12]);
 							Sync::MutexUsage dnsCliInfoMutUsage(this->dnsCliInfoMut);
 							dnsCli = this->dnsCliInfos->Get(cliId);
 							if (dnsCli == 0)
@@ -1206,7 +1206,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								dnsCli = MemAlloc(DNSClientInfo, 1);
 								dnsCli->cliId = cliId;
 								dnsCli->addr.addrType = Net::SocketUtil::AT_IPV4;
-								WriteMInt32(dnsCli->addr.addr, cliId);
+								WriteMUInt32(dnsCli->addr.addr, cliId);
 								NEW_CLASS(dnsCli->mut, Sync::Mutex());
 								NEW_CLASS(dnsCli->hourInfos, Data::ArrayList<DNSCliHourInfo*>());
 								this->dnsCliInfos->Put(cliId, dnsCli);
@@ -1245,7 +1245,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 					else if (srcPort == 67 || destPort == 67) //DHCP Request/Reply
 					{
 						UInt8 macBuff[8];
-						Int64 iMAC;
+						UInt64 iMAC;
 						DHCPInfo *dhcp;
 						if (ipDataSize >= 248 && ReadMUInt32(&ipData[244]) == 0x63825363)
 						{
@@ -1257,7 +1257,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 							macBuff[5] = ipData[39];
 							macBuff[6] = ipData[40];
 							macBuff[7] = ipData[41];
-							iMAC = ReadMInt64(macBuff);
+							iMAC = ReadMUInt64(macBuff);
 							Sync::MutexUsage dhcpMutUsage(this->dhcpMut);
 							dhcp = this->dhcpMap->Get(iMAC);
 							if (dhcp == 0)
@@ -1297,7 +1297,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								{
 									if (dhcp->hostName == 0)
 									{
-										sptr = MemAlloc(UTF8Char, len + 1);
+										sptr = MemAlloc(UTF8Char, (UOSInt)len + 1);
 										MemCopyNO(sptr, currPtr, len);
 										sptr[len] = 0;
 										dhcp->hostName = sptr;
@@ -1307,7 +1307,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								{
 									if (dhcp->vendorClass == 0)
 									{
-										sptr = MemAlloc(UTF8Char, len + 1);
+										sptr = MemAlloc(UTF8Char, (UOSInt)len + 1);
 										MemCopyNO(sptr, currPtr, len);
 										sptr[len] = 0;
 										dhcp->vendorClass = sptr;
@@ -1315,11 +1315,11 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								}
 								else if (t == 1 && len == 4 && (msgType == 2 || msgType == 5))
 								{
-									dhcp->subnetMask = ReadNInt32(currPtr);
+									dhcp->subnetMask = ReadNUInt32(currPtr);
 								}
 								else if (t == 3 && len == 4 && (msgType == 2 || msgType == 5))
 								{
-									dhcp->router = ReadNInt32(currPtr);
+									dhcp->router = ReadNUInt32(currPtr);
 								}
 								else if (t == 6 && len > 0 && (len & 3) == 0 && (msgType == 2 || msgType == 5))
 								{
@@ -1329,7 +1329,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 										cnt = 4;
 									while (i < cnt)
 									{
-										dhcp->dns[i] = ReadNInt32(&currPtr[i * 4]);
+										dhcp->dns[i] = ReadNUInt32(&currPtr[i * 4]);
 										i++;
 									}
 									while (cnt < 4)
@@ -1340,24 +1340,24 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								}
 								else if (t == 54 && len == 4 && (msgType == 2 || msgType == 5))
 								{
-									dhcp->dhcpServer = ReadNInt32(currPtr);
+									dhcp->dhcpServer = ReadNUInt32(currPtr);
 								}
 								else if (t == 51 && len == 4 && (msgType == 2 || msgType == 5))
 								{
-									dhcp->ipAddr = ReadNInt32(&ipData[24]);
-									dhcp->gwAddr = ReadNInt32(&ipData[32]);
-									dhcp->ipAddrLease = ReadMInt32(currPtr);
+									dhcp->ipAddr = ReadNUInt32(&ipData[24]);
+									dhcp->gwAddr = ReadNUInt32(&ipData[32]);
+									dhcp->ipAddrLease = ReadMUInt32(currPtr);
 									Data::DateTime dt;
 									dt.SetCurrTimeUTC();
 									dhcp->ipAddrTime = dt.ToTicks();
 								}
 								else if (t == 58 && len == 4 && (msgType == 2 || msgType == 5))
 								{
-									dhcp->renewTime = ReadMInt32(currPtr);
+									dhcp->renewTime = ReadMUInt32(currPtr);
 								}
 								else if (t == 59 && len == 4 && (msgType == 2 || msgType == 5))
 								{
-									dhcp->rebindTime = ReadMInt32(currPtr);
+									dhcp->rebindTime = ReadMUInt32(currPtr);
 								}
 								currPtr += len;
 							}
@@ -1375,7 +1375,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								{
 									Text::StringBuilderUTF8 sb;
 									IPLogInfo *ipLog;
-									UInt32 sortableIP = ReadMInt32(&packet[12]);
+									UInt32 sortableIP = ReadMUInt32(&packet[12]);
 									Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 									ipLog = this->ipLogMap->Get(sortableIP);
 									if (ipLog == 0)
@@ -1410,7 +1410,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, OSInt packetSize, In
 								{
 									Text::StringBuilderUTF8 sb;
 									IPLogInfo *ipLog;
-									UInt32 sortableIP = ReadMInt32(&packet[16]);
+									UInt32 sortableIP = ReadMUInt32(&packet[16]);
 									Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 									ipLog = this->ipLogMap->Get(sortableIP);
 									if (ipLog == 0)
@@ -1552,7 +1552,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 						{
 							Text::StringBuilderUTF8 sb;
 							IPLogInfo *ipLog;
-							UInt32 sortableIP = ReadMInt32(&packet[12]);
+							UInt32 sortableIP = ReadMUInt32(&packet[12]);
 							Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 							ipLog = this->ipLogMap->Get(sortableIP);
 							if (ipLog == 0)
@@ -1577,7 +1577,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							if (i > 0)
 							{
 								sb.Append((const UTF8Char*)", method = ");
-								sb.AppendC(&ipData[8], i);
+								sb.AppendC(&ipData[8], (UOSInt)i);
 							}
 							Sync::MutexUsage mutUsage(ipLog->mut);
 							while (ipLog->logList->GetCount() >= IPLOGCNT)
@@ -1670,7 +1670,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, OSInt packetSize, Int64 srcMAC, Int64 destMAC)
+Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 	MACStatus *mac;
 	Bool valid = true;
@@ -1704,7 +1704,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, OSInt packetSize, In
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, OSInt packetSize, Int64 srcMAC, Int64 destMAC)
+Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 	Bool valid = true;
 	MACStatus *mac;
@@ -1754,7 +1754,7 @@ void Net::EthernetAnalyzer::HandlePingv4Request(Pingv4Handler pingv4Hdlr, void *
 	this->pingv4ReqHdlr = pingv4Hdlr;
 }
 
-Bool Net::EthernetAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	switch (linkType)
 	{
@@ -1770,7 +1770,7 @@ Bool Net::EthernetAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *pack
 	return false;
 }
 
-Bool Net::EthernetAnalyzer::PacketNullGetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketNullGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UInt32 packetType = ReadMUInt32(packet);
 	switch (packetType)
@@ -1785,17 +1785,17 @@ Bool Net::EthernetAnalyzer::PacketNullGetName(const UInt8 *packet, OSInt packetS
 	return false;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernetGetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketEthernetGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	return PacketEthernetDataGetName(ReadMInt16(&packet[12]), &packet[14], packetSize - 14, sb);
+	return PacketEthernetDataGetName(ReadMUInt16(&packet[12]), &packet[14], packetSize - 14, sb);
 }
 
-Bool Net::EthernetAnalyzer::PacketLinuxGetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketLinuxGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	return PacketEthernetDataGetName(ReadMInt16(&packet[14]), &packet[16], packetSize - 16, sb);
+	return PacketEthernetDataGetName(ReadMUInt16(&packet[14]), &packet[16], packetSize - 16, sb);
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernetDataGetName(UInt16 etherType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketEthernetDataGetName(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	switch (etherType)
 	{
@@ -1820,7 +1820,7 @@ Bool Net::EthernetAnalyzer::PacketEthernetDataGetName(UInt16 etherType, const UI
 	}
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv4GetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[32];
 	if ((packet[0] & 0xf0) != 0x40)
@@ -1828,10 +1828,10 @@ Bool Net::EthernetAnalyzer::PacketIPv4GetName(const UInt8 *packet, OSInt packetS
 		return false;
 	}
 
-	UInt32 srcIP = ReadNInt32(&packet[12]);
-	UInt32 destIP = ReadNInt32(&packet[16]);
+	UInt32 srcIP = ReadNUInt32(&packet[12]);
+	UInt32 destIP = ReadNUInt32(&packet[16]);
 	const UInt8 *ipData;
-	OSInt ipDataSize;
+	UOSInt ipDataSize;
 
 	if ((packet[0] & 0xf) <= 5)
 	{
@@ -1853,7 +1853,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4GetName(const UInt8 *packet, OSInt packetS
 	return PacketIPDataGetName(packet[9], ipData, ipDataSize, sb);
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv6GetName(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];
 	if ((packet[0] & 0xf0) != 0x60 || packetSize < 40)
@@ -1874,7 +1874,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6GetName(const UInt8 *packet, OSInt packetS
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);
 }
 
-Bool Net::EthernetAnalyzer::PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::EthernetAnalyzer::PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	switch (protocol)
 	{
@@ -1928,7 +1928,7 @@ Bool Net::EthernetAnalyzer::PacketIPDataGetName(UInt8 protocol, const UInt8 *pac
 	}
 }
 
-void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	switch (linkType)
 	{
@@ -1950,7 +1950,7 @@ void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *pa
 	}
 }
 
-void Net::EthernetAnalyzer::PacketNullGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UInt32 packetType = ReadMUInt32(packet);
 	sb->Append((const UTF8Char*)"\r\nPacket Type=");
@@ -1968,7 +1968,7 @@ void Net::EthernetAnalyzer::PacketNullGetDetail(const UInt8 *packet, OSInt packe
 	}
 }
 
-void Net::EthernetAnalyzer::PacketEthernetGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	const Net::MACInfo::MACEntry *mac;
 	sb->Append((const UTF8Char*)"\r\nSrcMAC=");
@@ -1983,10 +1983,10 @@ void Net::EthernetAnalyzer::PacketEthernetGetDetail(const UInt8 *packet, OSInt p
 	sb->Append((const UTF8Char*)" (");
 	sb->Append((const UTF8Char*)mac->name);
 	sb->Append((const UTF8Char*)")");
-	PacketEthernetDataGetDetail(ReadMInt16(&packet[12]), &packet[14], packetSize - 14, sb);
+	PacketEthernetDataGetDetail(ReadMUInt16(&packet[12]), &packet[14], packetSize - 14, sb);
 }
 
-void Net::EthernetAnalyzer::PacketLinuxGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"\r\nPacket Type=");
 	sb->AppendU16(ReadMUInt16(&packet[0]));
@@ -2009,7 +2009,7 @@ void Net::EthernetAnalyzer::PacketLinuxGetDetail(const UInt8 *packet, OSInt pack
 		break;
 	}
 	sb->Append((const UTF8Char*)"\r\nLink-Layer Device Type=");
-	sb->AppendI16(ReadMUInt16(&packet[2]));
+	sb->AppendU16(ReadMUInt16(&packet[2]));
 	switch (ReadMUInt16(&packet[2]))
 	{
 	case 772:
@@ -2037,10 +2037,10 @@ void Net::EthernetAnalyzer::PacketLinuxGetDetail(const UInt8 *packet, OSInt pack
 			sb->Append((const UTF8Char*)")");
 		}
 	}
-	PacketEthernetDataGetDetail(ReadMInt16(&packet[14]), &packet[16], packetSize - 16, sb);
+	PacketEthernetDataGetDetail(ReadMUInt16(&packet[14]), &packet[16], packetSize - 16, sb);
 }
 
-void Net::EthernetAnalyzer::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"\r\nEtherType=0x");
 	sb->AppendHex16(etherType);
@@ -2107,12 +2107,12 @@ void Net::EthernetAnalyzer::PacketEthernetDataGetDetail(UInt16 etherType, const 
 				sb->Append((const UTF8Char*)"\r\nSender hardware address (SHA)=");
 				sb->AppendHexBuff(&packet[8], 6, ':', Text::LBT_NONE);
 				sb->Append((const UTF8Char*)"\r\nSender protocol address (SPA)=");
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[14]));
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[14]));
 				sb->Append(sbuff);
 				sb->Append((const UTF8Char*)"\r\nTarget hardware address (THA)=");
 				sb->AppendHexBuff(&packet[18], 6, ':', Text::LBT_NONE);
 				sb->Append((const UTF8Char*)"\r\nTarget protocol address (TPA)=");
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[24]));
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[24]));
 				sb->Append(sbuff);
 				if (packetSize > 28)
 				{
@@ -2142,7 +2142,7 @@ void Net::EthernetAnalyzer::PacketEthernetDataGetDetail(UInt16 etherType, const 
 	}
 }
 
-void Net::EthernetAnalyzer::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	const UTF8Char *csptr;
 	sb->Append((const UTF8Char*)"\r\n");
@@ -2218,7 +2218,7 @@ void Net::EthernetAnalyzer::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, OSI
 			sb->Append((const UTF8Char*)"\r\nFlags=0x");
 			sb->AppendHex8(packet[7]);
 			sb->Append((const UTF8Char*)"\r\nRoot Bridge Priority=");
-			sb->AppendU16(packet[8] >> 4);
+			sb->AppendU16((UInt16)(packet[8] >> 4));
 			sb->Append((const UTF8Char*)"\r\nRoot Bridge System ID Extension=");
 			sb->AppendU16(ReadMUInt16(&packet[8]) & 0xfff);
 			sb->Append((const UTF8Char*)"\r\nRoot Bridge MAC Address=");
@@ -2226,7 +2226,7 @@ void Net::EthernetAnalyzer::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, OSI
 			sb->Append((const UTF8Char*)"\r\nRoot Path Cost=");
 			sb->AppendU32(ReadMUInt32(&packet[16]));
 			sb->Append((const UTF8Char*)"\r\nBridge Priority=");
-			sb->AppendU16(packet[20] >> 4);
+			sb->AppendU16((UInt16)(packet[20] >> 4));
 			sb->Append((const UTF8Char*)"\r\nBridge System ID Extension=");
 			sb->AppendU16(ReadMUInt16(&packet[20]) & 0xfff);
 			sb->Append((const UTF8Char*)"\r\nBridge MAC Address=");
@@ -2257,7 +2257,7 @@ void Net::EthernetAnalyzer::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, OSI
 
 }
 
-void Net::EthernetAnalyzer::PacketIPv4GetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	if ((packet[0] & 0xf0) != 0x40 || packetSize < 20)
 	{
@@ -2268,7 +2268,7 @@ void Net::EthernetAnalyzer::PacketIPv4GetDetail(const UInt8 *packet, OSInt packe
 	}
 
 	const UInt8 *ipData;
-	OSInt ipDataSize;
+	UOSInt ipDataSize;
 	ipDataSize = HeaderIPv4GetDetail(packet, packetSize, sb);
 	ipData = &packet[ipDataSize];
 	ipDataSize = packetSize - ipDataSize;
@@ -2277,7 +2277,7 @@ void Net::EthernetAnalyzer::PacketIPv4GetDetail(const UInt8 *packet, OSInt packe
 	PacketIPDataGetDetail(packet[9], ipData, ipDataSize, sb);
 }
 
-void Net::EthernetAnalyzer::PacketIPv6GetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];
 	if ((packet[0] & 0xf0) != 0x60 || packetSize < 40)
@@ -2288,11 +2288,11 @@ void Net::EthernetAnalyzer::PacketIPv6GetDetail(const UInt8 *packet, OSInt packe
 
 	sb->Append((const UTF8Char*)"\r\nVersion=6");
 	sb->Append((const UTF8Char*)"\r\nDS=");
-	sb->AppendU16(((packet[0] & 0xf) << 2) | (packet[1] >> 6));
+	sb->AppendU16((UInt16)(((packet[0] & 0xf) << 2) | (packet[1] >> 6)));
 	sb->Append((const UTF8Char*)"\r\nECN=");
-	sb->AppendU16((packet[1] & 0x30) >> 4);
+	sb->AppendU16((UInt16)((packet[1] & 0x30) >> 4));
 	sb->Append((const UTF8Char*)"\r\nFlow Label=");
-	sb->AppendU16(((packet[1] & 0xf) << 16) | ReadMUInt16(&packet[2]));
+	sb->AppendU16((UInt16)(((packet[1] & 0xf) << 16) | ReadMUInt16(&packet[2])));
 	sb->Append((const UTF8Char*)"\r\nPayload Length=");
 	sb->AppendU16(ReadMUInt16(&packet[4]));
 	sb->Append((const UTF8Char*)"\r\nNext Header=");
@@ -2312,7 +2312,7 @@ void Net::EthernetAnalyzer::PacketIPv6GetDetail(const UInt8 *packet, OSInt packe
 	PacketIPDataGetDetail(packet[6], &packet[40], packetSize - 40, sb);
 }
 
-void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];
 	switch (protocol)
@@ -2321,7 +2321,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 		sb->Append((const UTF8Char*)"\r\nICMP:");
 		if (packetSize >= 4)
 		{
-			OSInt i = 4;
+			UOSInt i = 4;
 			sb->Append((const UTF8Char*)"\r\nType=");
 			sb->AppendU16(packet[0]);
 			switch (packet[0])
@@ -2545,7 +2545,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 				sb->AppendU16(packet[1]);
 				sb->Append((const UTF8Char*)"\r\nChecksum=0x");
 				sb->AppendHex16(ReadMUInt16(&packet[2]));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[4]));
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[4]));
 				sb->Append((const UTF8Char*)"\r\nGroup Address=");
 				sb->Append(sbuff);
 				if (packetSize >= 16)
@@ -2557,7 +2557,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 					sb->Append((const UTF8Char*)"\r\nQQIC=");
 					n = ReadMUInt16(&packet[10]);
 					sb->AppendU16(n);
-					if (packetSize >= 12 + n * 4)
+					if (packetSize >= 12 + (UOSInt)n * 4)
 					{
 						UInt16 i = 0;
 						while (i < n)
@@ -2565,15 +2565,15 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 							sb->Append((const UTF8Char*)"\r\nSource Address[");
 							sb->AppendU16(i);
 							sb->Append((const UTF8Char*)"]=");
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[12 + i * 4]));
+							Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[12 + i * 4]));
 							sb->Append(sbuff);
 							i++;
 						}
-						if (packetSize > 12 + n * 4)
+						if (packetSize > 12 + (UOSInt)n * 4)
 						{
 							sb->Append((const UTF8Char*)"\r\n");
 							sb->Append((const UTF8Char*)"\r\n");
-							sb->AppendHexBuff(&packet[12 + n * 4], packetSize - 12 - n * 4, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(&packet[12 + n * 4], packetSize - 12 - (UOSInt)n * 4, ' ', Text::LBT_CRLF);
 						}
 					}
 				}
@@ -2600,7 +2600,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 				sb->AppendU16(packet[1]);
 				sb->Append((const UTF8Char*)"\r\nChecksum=0x");
 				sb->AppendHex16(ReadMUInt16(&packet[2]));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[4]));
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[4]));
 				sb->Append((const UTF8Char*)"\r\nGroup Address=");
 				sb->Append(sbuff);
 				if (packetSize > 8)
@@ -2638,23 +2638,23 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 			sb->Append((const UTF8Char*)"\r\nAcknowledgment Number=");
 			sb->AppendU32(ReadMUInt32(&packet[8]));
 			sb->Append((const UTF8Char*)"\r\nData Offset=");
-			sb->AppendU16(packet[12] >> 4);
+			sb->AppendU16((UInt16)(packet[12] >> 4));
 			sb->Append((const UTF8Char*)"\r\nNS=");
 			sb->AppendU16(packet[12] & 1);
 			sb->Append((const UTF8Char*)"\r\nCWR=");
-			sb->AppendU16((packet[13] >> 7) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 7) & 1));
 			sb->Append((const UTF8Char*)"\r\nECE=");
-			sb->AppendU16((packet[13] >> 6) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 6) & 1));
 			sb->Append((const UTF8Char*)"\r\nURG=");
-			sb->AppendU16((packet[13] >> 5) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 5) & 1));
 			sb->Append((const UTF8Char*)"\r\nACK=");
-			sb->AppendU16((packet[13] >> 4) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 4) & 1));
 			sb->Append((const UTF8Char*)"\r\nPSH=");
-			sb->AppendU16((packet[13] >> 3) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 3) & 1));
 			sb->Append((const UTF8Char*)"\r\nRST=");
-			sb->AppendU16((packet[13] >> 2) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 2) & 1));
 			sb->Append((const UTF8Char*)"\r\nSYN=");
-			sb->AppendU16((packet[13] >> 1) & 1);
+			sb->AppendU16((UInt16)((packet[13] >> 1) & 1));
 			sb->Append((const UTF8Char*)"\r\nFIN=");
 			sb->AppendU16(packet[13] & 1);
 			sb->Append((const UTF8Char*)"\r\nWindow Size=");
@@ -2663,11 +2663,11 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 			sb->AppendHex16(ReadMUInt16(&packet[16]));
 			sb->Append((const UTF8Char*)"\r\nUrgent Pointer=0x");
 			sb->AppendHex16(ReadMUInt16(&packet[18]));
-			OSInt headerLen = (packet[12] >> 4) * 4;
+			UOSInt headerLen = (UOSInt)(packet[12] >> 4) * 4;
 			if (headerLen > 20)
 			{
 				sb->Append((const UTF8Char*)"\r\nOptions:");
-				OSInt i = 20;
+				UOSInt i = 20;
 				while (i < headerLen)
 				{
 					sb->Append((const UTF8Char*)"\r\nKind=");
@@ -2690,7 +2690,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 							sb->Append((const UTF8Char*)", Value=");
 							sb->AppendU16(ReadMUInt16(&packet[i + 2]));
 						}
-						i += packet[i + 1] - 1;
+						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					case 3:
 						sb->Append((const UTF8Char*)" (Window scale)");
@@ -2701,18 +2701,18 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 							sb->Append((const UTF8Char*)", Value=");
 							sb->AppendU16(packet[i + 2]);
 						}
-						i += packet[i + 1] - 1;
+						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					case 4:
 						sb->Append((const UTF8Char*)" (SACK permitted)");
 						sb->Append((const UTF8Char*)", Length=");
 						sb->AppendU16(packet[i + 1]);
-						i += packet[i + 1] - 1;
+						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					default:
 						sb->Append((const UTF8Char*)", Length=");
 						sb->AppendU16(packet[i + 1]);
-						i += packet[i + 1] - 1;
+						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					}
 					i++;
@@ -2733,7 +2733,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 		UInt16 srcPort = 0;
 		UInt16 destPort = 0;
 		const UTF8Char *csptr;
-		OSInt udpLen = packetSize;
+		UOSInt udpLen = packetSize;
 		sb->Append((const UTF8Char*)"\r\nUDP:");
 		
 		if (packetSize >= 2)
@@ -2766,7 +2766,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 		{
 			udpLen = ReadMUInt16(&packet[4]);
 			sb->Append((const UTF8Char*)"\r\nLength=");
-			sb->AppendOSInt(udpLen);
+			sb->AppendUOSInt(udpLen);
 			if (packetSize < udpLen)
 				udpLen = packetSize;
 		}
@@ -3024,7 +3024,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 					sb->AppendU32(ReadMUInt32(&packet[8]));
 					sb->Append((const UTF8Char*)"\r\nRetains Timer=");
 					sb->AppendU32(ReadMUInt32(&packet[12]));
-					OSInt i = 16;
+					UOSInt i = 16;
 					while (i + 7 < packetSize)
 					{
 						sb->Append((const UTF8Char*)"\r\nType=");
@@ -3059,7 +3059,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 							sb->Append((const UTF8Char*)"\r\nReserved=");
 							sb->AppendU32(ReadMUInt32(&packet[i + 12]));
 							sb->Append((const UTF8Char*)"\r\nPrefix=");
-							sb->AppendHexBuff(&packet[i + 16], packet[i + 1] - 16, ' ', Text::LBT_NONE);
+							sb->AppendHexBuff(&packet[i + 16], (UOSInt)packet[i + 1] - 16, ' ', Text::LBT_NONE);
 							break;
 						case 5:
 							sb->Append((const UTF8Char*)"\r\nPrefix Length=");
@@ -3068,7 +3068,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 							sb->AppendU32(ReadMUInt32(&packet[i + 4]));
 							break;
 						}
-						i += packet[i + 1] * 8;
+						i += (UOSInt)packet[i + 1] * 8;
 					}
 				}
 				else
@@ -3087,7 +3087,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 					Net::SocketUtil::GetAddrName(sbuff, &addr);
 					sb->Append((const UTF8Char*)"\r\nTarget Address=");
 					sb->Append(sbuff);
-					OSInt i = 24;
+					UOSInt i = 24;
 					while (i < packetSize)
 					{
 						sb->Append((const UTF8Char*)"\r\nType=");
@@ -3128,7 +3128,7 @@ void Net::EthernetAnalyzer::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *p
 	}
 }
 
-void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[64];
@@ -3193,16 +3193,16 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 			sb->Append((const UTF8Char*)"\r\nFlags=0x");
 			sb->AppendHex16(ReadMUInt16(&packet[10]));
 			sb->Append((const UTF8Char*)"\r\nClient IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[12]));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[12]));
 			sb->Append(sbuff);
 			sb->Append((const UTF8Char*)"\r\nYour IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[16]));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[16]));
 			sb->Append(sbuff);
 			sb->Append((const UTF8Char*)"\r\nServer IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[20]));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[20]));
 			sb->Append(sbuff);
 			sb->Append((const UTF8Char*)"\r\nGateway IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[24]));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[24]));
 			sb->Append(sbuff);
 			sb->Append((const UTF8Char*)"\r\nClient Hardware Address=");
 			sb->AppendHexBuff(&packet[28], 6, ':', Text::LBT_NONE);
@@ -3237,7 +3237,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 					{
 						sb->Append((const UTF8Char*)"\r\nPadding:");
 						sb->Append((const UTF8Char*)"\r\n");
-						sb->AppendHexBuff(currPtr, endPtr - currPtr, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(currPtr, (UOSInt)(endPtr - currPtr), ' ', Text::LBT_CRLF);
 					}
 					break;
 				}
@@ -3251,13 +3251,13 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 				if (t == 1 && len == 4)
 				{
 					sb->Append((const UTF8Char*)"\r\nSubnet Mask=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(currPtr));
+					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
 					sb->Append(sbuff);
 				}
 				else if (t == 3 && len == 4)
 				{
 					sb->Append((const UTF8Char*)"\r\nRouter=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(currPtr));
+					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
 					sb->Append(sbuff);
 				}
 				else if (t == 6 && len > 0 && (len & 3) == 0)
@@ -3270,7 +3270,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 						{
 							sb->Append((const UTF8Char*)", ");
 						}
-						Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&currPtr[i]));
+						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&currPtr[i]));
 						sb->Append(sbuff);
 						i += 4;
 					}
@@ -3288,7 +3288,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 				else if (t == 50 && len == 4)
 				{
 					sb->Append((const UTF8Char*)"\r\nRequested IP Address=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(currPtr));
+					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
 					sb->Append(sbuff);
 				}
 				else if (t == 51 && len == 4)
@@ -3319,7 +3319,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 				else if (t == 54 && len == 4)
 				{
 					sb->Append((const UTF8Char*)"\r\nDHCP Server=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(currPtr));
+					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
 					sb->Append(sbuff);
 				}
 				else if (t == 55 && len > 0)
@@ -3368,7 +3368,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 					if (len > 1)
 					{
 						sb->Append((const UTF8Char*)"\r\nClient ID=");
-						sb->AppendHexBuff(&currPtr[1], len - 1, ':', Text::LBT_NONE);
+						sb->AppendHexBuff(&currPtr[1], (UOSInt)len - 1, ':', Text::LBT_NONE);
 					}
 				}
 				else if (t == 66 && len >= 1)
@@ -3387,7 +3387,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 					if (len > 3)
 					{
 						sb->Append((const UTF8Char*)"\r\nDomain Name=");
-						sb->AppendC(&currPtr[3], len - 3);
+						sb->AppendC(&currPtr[3], (UOSInt)len - 3);
 					}
 				}
 				else if (t == 120 && len >= 1)
@@ -3397,13 +3397,13 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 					if (currPtr[0] == 1 && len == 5)
 					{
 						sb->Append((const UTF8Char*)"\r\nSIP Server Address=");
-						Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&currPtr[1]));
+						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&currPtr[1]));
 						sb->Append(sbuff);
 					}
 					else if (len > 1)
 					{
 						sb->Append((const UTF8Char*)"\r\n");
-						sb->AppendHexBuff(&currPtr[1], len - 1, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(&currPtr[1], (UOSInt)len - 1, ' ', Text::LBT_CRLF);
 					}
 				}
 				else
@@ -3424,8 +3424,8 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 	else if (srcPort == 69 || destPort == 69)
 	{
 		UInt16 opcode = ReadMUInt16(packet);
-		OSInt i = 2;
-		OSInt len;
+		UOSInt i = 2;
+		UOSInt len;
 		sb->Append((const UTF8Char*)"\r\nTFTP:");
 		sb->Append((const UTF8Char*)"\r\nOpcode=");
 		sb->AppendU16(opcode);
@@ -3510,7 +3510,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 		else
 		{
 			sb->Append((const UTF8Char*)"\r\nLeap Indicator=");
-			sb->AppendU16(packet[0] >> 6);
+			sb->AppendU16((UInt16)(packet[0] >> 6));
 			switch (packet[0] >> 6)
 			{
 			case 0:
@@ -3647,9 +3647,9 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 		sb->Append((const UTF8Char*)"\r\nNAME_TRN_ID=0x");
 		sb->AppendHex16(ReadMUInt16(&packet[0]));
 		sb->Append((const UTF8Char*)"\r\nResponse=");
-		sb->AppendU16(packet[1] >> 7);
+		sb->AppendU16((UInt16)(packet[1] >> 7));
 		sb->Append((const UTF8Char*)"\r\nOPCODE=");
-		sb->AppendU16((packet[1] & 0x78) >> 3);
+		sb->AppendU16((UInt16)((packet[1] & 0x78) >> 3));
 		sb->Append((const UTF8Char*)"\r\nNMFLAGS=0x");
 		sb->AppendHex16((ReadMUInt16(&packet[1]) & 0x7F0) >> 4);
 		sb->Append((const UTF8Char*)"\r\nRCODE=");
@@ -3662,7 +3662,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 		sb->AppendU16(nscount);
 		sb->Append((const UTF8Char*)"\r\nARCOUNT=");
 		sb->AppendU16(arcount);
-		OSInt i;
+		UOSInt i;
 		UInt8 j;
 		UInt16 qType;
 		UInt16 qClass;
@@ -3707,7 +3707,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 			j++;
 		}
 		j = 0;
-		ancount += nscount + arcount;
+		ancount = (UInt16)(ancount + nscount + arcount);
 		while (j < ancount)
 		{
 			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
@@ -3751,7 +3751,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 				sb->Append((const UTF8Char*)"\r\nNB_FLAGS=0x");
 				sb->AppendHex16(ReadMUInt16(&packet[i]));
 				sb->Append((const UTF8Char*)"\r\nNB_ADDRESS=");
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[i + 2]));
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[i + 2]));
 				sb->Append(sbuff);
 			}
 			else
@@ -3803,11 +3803,11 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 		sb->Append((const UTF8Char*)"\r\nDGM_ID=");
 		sb->AppendU16(ReadMUInt16(&packet[2]));
 		sb->Append((const UTF8Char*)"\r\nSOURCE_IP=");
-		Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[4]));
+		Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[4]));
 		sb->Append(sbuff);
 		sb->Append((const UTF8Char*)"\r\nSOURCE_PORT=");
 		sb->AppendU16(ReadMUInt16(&packet[8]));
-		OSInt i;
+		UOSInt i;
 		i = 10;
 		switch (msgType)
 		{
@@ -3892,7 +3892,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 			sb->Append((const UTF8Char*)"\r\nSNMP:");
 			sb->Append((const UTF8Char*)"\r\n");
 			Net::SNMPInfo snmp;
-			OSInt i = snmp.PDUGetDetail((const UTF8Char*)"Message", packet, packetSize, 0, sb);
+			UOSInt i = snmp.PDUGetDetail((const UTF8Char*)"Message", packet, packetSize, 0, sb);
 			if (packetSize > i)
 			{
 				sb->Append((const UTF8Char*)"\r\n");
@@ -3902,7 +3902,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 	}
 	else if (srcPort == 427 || destPort == 427) //RFC 2165/2608
 	{
-		OSInt i;
+		UOSInt i;
 		sb->Append((const UTF8Char*)"\r\nService Location Protocol:");
 		sb->Append((const UTF8Char*)"\r\nVersion=");
 		sb->AppendU16(packet[0]);
@@ -4070,8 +4070,8 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 							{
 								Text::TextBinEnc::Base64Enc b64;
 								Text::JSONArray *jarr = (Text::JSONArray*)jbase;
-								OSInt i;
-								OSInt j;
+								UOSInt i;
+								UOSInt j;
 								i = 0;
 								j = jarr->GetArrayLength();
 								while (i < j)
@@ -4223,7 +4223,7 @@ void Net::EthernetAnalyzer::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, 
 	}
 }
 
-void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[128];
 	const UTF8Char *csptr;
@@ -4292,7 +4292,7 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 	sb->AppendU16(nscount);
 	sb->Append((const UTF8Char*)"\r\nARCOUNT=");
 	sb->AppendU16(arcount);
-	OSInt i = 12;
+	UOSInt i = 12;
 	UInt16 j;
 	UInt16 t;
 	j = 0;
@@ -4317,14 +4317,14 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 		i += 4;
 		j++;
 	}
-	ancount += nscount + arcount;
+	ancount = (UInt16)(ancount + nscount + arcount);
 	j = 0;
 	while (j < ancount)
 	{
 		UInt16 rrType;
 		UInt16 rrClass;
 		UInt16 rdLength;
-		OSInt k;
+		UOSInt k;
 
 		i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
 		sb->Append((const UTF8Char*)"\r\nNAME=");
@@ -4352,7 +4352,7 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 		switch (rrType)
 		{
 		case 1: // A - a host address
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[i]));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[i]));
 			sb->Append(sbuff);
 			break;
 		case 2: // NS - an authoritative name server
@@ -4401,10 +4401,10 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 			break;
 		case 16: // TXT - text strings
 			{
-				OSInt k = 0;
+				UOSInt k = 0;
 				while (k < rdLength)
 				{
-					if (packet[i + k] + 1 + k > rdLength)
+					if ((UOSInt)packet[i + k] + 1 + k > rdLength)
 					{
 						sb->AppendHexBuff(&packet[i + k], rdLength - k, ' ', Text::LBT_NONE);
 						break;
@@ -4414,7 +4414,7 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 						sb->Append((const UTF8Char*)", ");
 					}
 					sb->AppendC(&packet[i + k + 1], packet[i + k]);
-					k += packet[i + k] + 1;
+					k += (UOSInt)packet[i + k] + 1;
 				}
 			}
 			break;
@@ -4446,7 +4446,7 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 				sb->Append((const UTF8Char*)", OPTION-LENGTH=");
 				sb->AppendU16(ReadMUInt16(&packet[i + 2]));
 				sb->Append((const UTF8Char*)", OPTION-DATA=");
-				sb->AppendHexBuff(&packet[i + 4], rdLength - 4, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packet[i + 4], (UOSInt)rdLength - 4, ' ', Text::LBT_NONE);
 			}
 			break;
 		case 43: // DS - Delegation signer
@@ -4458,7 +4458,7 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 				sb->Append((const UTF8Char*)", Digest Type=");
 				sb->AppendU16(packet[i + 3]);
 				sb->Append((const UTF8Char*)", Digest=");
-				sb->AppendHexBuff(&packet[i + 4], rdLength - 4, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packet[i + 4], (UOSInt)rdLength - 4, ' ', Text::LBT_NONE);
 			}
 			break;
 		case 46: // RRSIG - DNSSEC signature
@@ -4480,13 +4480,13 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 				sb->Append((const UTF8Char*)", Signer's Name=");
 				sb->Append(&packet[i + 18]);
 				sb->Append((const UTF8Char*)", Signature=");
-				OSInt nameLen = Text::StrCharCnt(&packet[i + 18]);
-				sb->AppendHexBuff(&packet[i + 19 + nameLen], rdLength - 19 - nameLen, ' ', Text::LBT_NONE);
+				UOSInt nameLen = Text::StrCharCnt(&packet[i + 18]);
+				sb->AppendHexBuff(&packet[i + 19 + nameLen], (UOSInt)rdLength - 19 - nameLen, ' ', Text::LBT_NONE);
 			}
 			break;
 		case 47: // NSEC - Next Secure record
 			{
-				OSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
+				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
 				sb->Append((const UTF8Char*)"Next Domain Name=");
 				sb->Append(sbuff);
 				if (k < i + rdLength)
@@ -4505,18 +4505,18 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 				sb->Append((const UTF8Char*)", Algorithm=");
 				sb->AppendU16(packet[i + 3]);
 				sb->Append((const UTF8Char*)", Public Key=");
-				sb->AppendHexBuff(&packet[i + 4], rdLength - 4, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packet[i + 4], (UOSInt)rdLength - 4, ' ', Text::LBT_NONE);
 			}
 			break;
 		case 250: // TSIG
 			{
-				OSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
+				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
 				sb->Append((const UTF8Char*)"\r\n-Algorithm=");
 				sb->Append(sbuff);
 				if (k + 10 < i + rdLength)
 				{
 					Data::DateTime dt;
-					dt.SetUnixTimestamp(((UInt64)(ReadMUInt16(&packet[k])) << 32) | ReadMUInt32(&packet[k + 2]));
+					dt.SetUnixTimestamp((Int64)(((UInt64)(ReadMUInt16(&packet[k])) << 32) | ReadMUInt32(&packet[k + 2])));
 					sb->Append((const UTF8Char*)"\r\n-Time Signed=");
 					dt.ToLocalTime();
 					dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
@@ -4524,8 +4524,8 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 					sb->Append((const UTF8Char*)"\r\n-Fudge=");
 					sb->AppendU16(ReadMUInt16(&packet[k + 6]));
 					sb->Append((const UTF8Char*)"\r\n-MAC Size=");
-					OSInt macSize = ReadMUInt16(&packet[k + 8]);
-					sb->AppendOSInt(macSize);
+					UOSInt macSize = ReadMUInt16(&packet[k + 8]);
+					sb->AppendUOSInt(macSize);
 					k += 10;
 					if (macSize > 0 && k + macSize <= i + rdLength)
 					{
@@ -4571,10 +4571,10 @@ void Net::EthernetAnalyzer::PacketDNSGetDetail(const UInt8 *packet, OSInt packet
 	}
 }
 
-void Net::EthernetAnalyzer::PacketLoRaMACGetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"\r\nMessage type (MType)=");
-	sb->AppendU16(packet[0] >> 5);
+	sb->AppendU16((UInt16)(packet[0] >> 5));
 	switch (packet[0] >> 5)
 	{
 	case 0:
@@ -4606,15 +4606,15 @@ void Net::EthernetAnalyzer::PacketLoRaMACGetDetail(const UInt8 *packet, OSInt pa
 	sb->AppendU16((packet[0] >> 2) & 7);
 	sb->Append((const UTF8Char*)"\r\nMajor=");
 	sb->AppendU16(packet[0] & 3);
-	UInt8 mType = packet[0] >> 5;
+	UInt8 mType = (UInt8)(packet[0] >> 5);
 	if (mType == 0 || mType == 1 || mType == 6)
 	{
 		if (packetSize == 23)
 		{
 			sb->Append((const UTF8Char*)"\r\nJoinEUI=");
-			sb->AppendHex64(ReadInt64(&packet[1]));
+			sb->AppendHex64(ReadUInt64(&packet[1]));
 			sb->Append((const UTF8Char*)"\r\nDevEUI=");
-			sb->AppendHex64(ReadInt64(&packet[9]));
+			sb->AppendHex64(ReadUInt64(&packet[9]));
 			sb->Append((const UTF8Char*)"\r\nDevNonce=");
 			sb->AppendU16(ReadUInt16(&packet[17]));
 		}
@@ -4636,34 +4636,34 @@ void Net::EthernetAnalyzer::PacketLoRaMACGetDetail(const UInt8 *packet, OSInt pa
 	sb->AppendHexBuff(&packet[packetSize - 4], 4, ' ', Text::LBT_NONE);
 }
 
-OSInt Net::EthernetAnalyzer::HeaderIPv4GetDetail(const UInt8 *packet, OSInt packetSize, Text::StringBuilderUTF *sb)
+UOSInt Net::EthernetAnalyzer::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[32];
 	sb->Append((const UTF8Char*)"\r\nVersion=4");
 	sb->Append((const UTF8Char*)"\r\nInternet Header Length=");
-	sb->AppendU16(packet[0] & 0xf);
+	sb->AppendU16((UInt16)packet[0] & 0xf);
 	sb->Append((const UTF8Char*)"\r\nDSCP=");
-	sb->AppendU16(packet[1] >> 2);
+	sb->AppendU16((UInt16)(packet[1] >> 2));
 	sb->Append((const UTF8Char*)"\r\nECN=");
-	sb->AppendU16(packet[1] & 0x3);
+	sb->AppendU16((UInt16)packet[1] & 0x3);
 	sb->Append((const UTF8Char*)"\r\nTotal Size=");
 	sb->AppendU16(ReadMUInt16(&packet[2]));
 	sb->Append((const UTF8Char*)"\r\nIdentification=");
 	sb->AppendU16(ReadMUInt16(&packet[4]));
 	sb->Append((const UTF8Char*)"\r\nFlags=");
-	sb->AppendU16(packet[6] >> 5);
+	sb->AppendU16((UInt16)(packet[6] >> 5));
 	sb->Append((const UTF8Char*)"\r\nFragment Offset=");
 	sb->AppendU16(ReadMUInt16(&packet[6]) & 0x1fff);
 	sb->Append((const UTF8Char*)"\r\nTTL=");
-	sb->AppendU16(packet[8]);
+	sb->AppendU16((UInt16)packet[8]);
 	sb->Append((const UTF8Char*)"\r\nProtocol=");
-	sb->AppendU16(packet[9]);
+	sb->AppendU16((UInt16)packet[9]);
 	sb->Append((const UTF8Char*)"\r\nHeader Checksum=0x");
 	sb->AppendHex16(ReadMUInt16(&packet[10]));
-	Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[12]));
+	Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[12]));
 	sb->Append((const UTF8Char*)"\r\nSrcIP=");
 	sb->Append(sbuff);
-	Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&packet[16]));
+	Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[16]));
 	sb->Append((const UTF8Char*)"\r\nDestIP=");
 	sb->Append(sbuff);
 
@@ -4674,16 +4674,16 @@ OSInt Net::EthernetAnalyzer::HeaderIPv4GetDetail(const UInt8 *packet, OSInt pack
 	else
 	{
 		sb->Append((const UTF8Char*)"\r\nOptions:\r\n");
-		sb->AppendHexBuff(&packet[20], ((packet[0] & 0xf) << 2) - 20, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(&packet[20], (UOSInt)((packet[0] & 0xf) << 2) - 20, ' ', Text::LBT_CRLF);
 		return (packet[0] & 0xf) << 2;
 	}
 }
 
-void Net::EthernetAnalyzer::XMLWellFormat(const UTF8Char *buff, OSInt buffSize, Text::StringBuilderUTF *sb)
+void Net::EthernetAnalyzer::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, Text::StringBuilderUTF *sb)
 {
-	OSInt startOfst = 0;
-	OSInt lev = 0;
-	OSInt currOfst = 0;
+	UOSInt startOfst = 0;
+	UOSInt lev = 0;
+	UOSInt currOfst = 0;
 	UTF8Char lastC = 0;
 	UTF8Char c;
 	UInt8 startType = 0;
@@ -4817,7 +4817,7 @@ UTF8Char *Net::EthernetAnalyzer::NetBIOSGetName(UTF8Char *sbuff, const UTF8Char 
 		{
 			return 0;
 		}
-		*sbuff++ = ((c1 - 65) << 4) | (c2 - 65);
+		*sbuff++ = (UTF8Char)(((c1 - 65) << 4) | (c2 - 65));
 	}
 	*sbuff = 0;
 	return sbuff;

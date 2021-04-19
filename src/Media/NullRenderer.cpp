@@ -13,10 +13,10 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 	Media::NullRenderer *me = (Media::NullRenderer *)obj;
 	Media::AudioFormat af;
 	UInt8 *tmpBuff;
-	Int32 audStartTime;
-	OSInt buffLeng = 16384;
-	OSInt minLeng;
-	OSInt readSize;
+	UInt32 audStartTime;
+	UOSInt buffLeng = 16384;
+	UOSInt minLeng;
+	UOSInt readSize;
 	Bool needNotify = false;
 
 	me->playing = true;
@@ -37,7 +37,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 	{
 		me->clk->Start(audStartTime);
 	}
-	me->audsrc->Start(me->playEvt, (Int32)buffLeng);
+	me->audsrc->Start(me->playEvt, buffLeng);
 
 	while (!me->stopPlay)
 	{

@@ -442,7 +442,7 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	return sess;
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
+UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
@@ -486,7 +486,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 	return 0;
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, Int64 *fileSize)
+WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)

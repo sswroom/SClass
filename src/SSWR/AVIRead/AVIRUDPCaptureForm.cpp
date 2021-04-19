@@ -197,7 +197,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->packetsChg = false;
 	this->packetCurr = 0;
 	this->packets = MemAlloc(PacketInfo, PACKETCOUNT);
-	OSInt i;
+	UOSInt i;
 	i = PACKETCOUNT;
 	while (i-- > 0)
 	{

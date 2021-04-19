@@ -65,7 +65,7 @@ Bool Exporter::ICOExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		return 0;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	OSInt buffSize = Exporter::CURExporter::CalcBuffSize(imgList);
+	UOSInt buffSize = Exporter::CURExporter::CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;
 	UInt8 *buff = MemAlloc(UInt8, buffSize);

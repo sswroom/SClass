@@ -36,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(void *user
 
 void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os, const Char *osVer, Net::BrowserInfo::BrowserType browser)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Text::StringBuilderUTF8 sb;	
 	this->lvUserAgent->ClearItems();
 	i = 0;
@@ -139,9 +139,9 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Bool found;
 	SSWR::AVIRead::AVIRUserAgentSelForm::OSItem *osItem;
 	Text::StringBuilderUTF8 sb;
@@ -218,7 +218,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 
 SSWR::AVIRead::AVIRUserAgentSelForm::~AVIRUserAgentSelForm()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->osList->GetCount();
 	while (i-- > 0)
 	{

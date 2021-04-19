@@ -84,8 +84,8 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, UI::GUICor
 
 	Data::ArrayList<const WChar *> nsList;
 	Win32::WMIQuery::GetNSList(&nsList);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = nsList.GetCount();
 	while (i < j)

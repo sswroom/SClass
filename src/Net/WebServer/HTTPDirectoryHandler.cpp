@@ -296,8 +296,8 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 		{
 			Text::UTF8Writer *writer;
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			i = 0;
 			j = nameList->GetCount();
 			while (i < j)
@@ -315,7 +315,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 	}
 }
 
-Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, Int64 fileCacheSize, Bool allowUpload)
+Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
 {
 	this->rootDir = Text::StrCopyNew(rootDir);
 	this->allowBrowsing = allowBrowsing;
@@ -409,7 +409,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if (i >= 0)
 		{
 			sb.ClearStr();
-			sb.AppendC(subReq, i);
+			sb.AppendC(subReq, (UOSInt)i);
 		}
 		else
 		{
@@ -451,7 +451,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					IO::IStreamData *stmData = package->packageFile->GetPItemStmData(pitem);
 					if (stmData)
 					{
-						OSInt dataLen = (OSInt)stmData->GetDataSize();
+						UOSInt dataLen = (UOSInt)stmData->GetDataSize();
 						UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
 						stmData->GetRealData(0, dataLen, dataBuff);
 						DEL_CLASS(stmData);
@@ -483,7 +483,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							IO::IStreamData *stmData = innerPF->GetPItemStmData(pitem2);
 							if (stmData)
 							{
-								OSInt dataLen = (OSInt)stmData->GetDataSize();
+								UOSInt dataLen = (UOSInt)stmData->GetDataSize();
 								UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
 								stmData->GetRealData(0, dataLen, dataBuff);
 								DEL_CLASS(stmData);
@@ -565,7 +565,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if (i >= 0)
 		{
 			Text::StringBuilderUTF8 sbc;
-			sbc.AppendC(subReq, i);
+			sbc.AppendC(subReq, (UOSInt)i);
 			if (sbc.EndsWith('/'))
 			{
 				resp->AddContentType(mime = Net::MIME::GetMIMEFromExt((const UTF8Char*)"html"));
@@ -642,7 +642,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.Append(sb2.ToString());
 			sptr = sb.ToString();
 			IO::FileStream *fs;
-			Int64 sizeLeft;
+			UInt64 sizeLeft;
 
 			IO::Path::GetFileExt(sbuff, sptr);
 			NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
@@ -673,12 +673,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sizeLeft = fs->GetLength();
 			if (sizeLeft < this->fileCacheSize)
 			{
-				OSInt readSize;
+				UOSInt readSize;
 				cache = MemAlloc(CacheInfo, 1);
-				cache->buff = MemAlloc(UInt8, (OSInt)sizeLeft);
-				cache->buffSize = (OSInt)sizeLeft;
+				cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
+				cache->buffSize = (UOSInt)sizeLeft;
 				cache->t = t.ToTicks();
-				readSize = fs->Read(cache->buff, (OSInt)sizeLeft);
+				readSize = fs->Read(cache->buff, (UOSInt)sizeLeft);
 				if (readSize == sizeLeft)
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
@@ -715,7 +715,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				i = sb2.IndexOf('?');
 				if (i >= 0)
 				{
-					sb2.TrimToLength(i);
+					sb2.TrimToLength((UOSInt)i);
 				}
 				if (!sb2.EndsWith('/'))
 				{
@@ -888,7 +888,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					}
 
 					Int32 cnt;
-					Int64 fileSize;
+					UInt64 fileSize;
 					IO::Path::PathType pt;
 					Data::DateTime modTime;
 					if (sort == 0)
@@ -995,15 +995,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						DirectoryEntry **entArr = entList.GetArray(&j);
 						if (sort == 1)
 						{
-							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncName, 0, j - 1);
+							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncName, 0, (OSInt)j - 1);
 						}
 						else if (sort == 2)
 						{
-							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncSize, 0, j - 1);
+							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncSize, 0, (OSInt)j - 1);
 						}
 						else if (sort == 3)
 						{
-							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncCount, 0, j - 1);
+							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncCount, 0, (OSInt)j - 1);
 						}
 
 						i = 0;
@@ -1074,7 +1074,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		Text::StringBuilderUTF8 sb2;
 		IO::FileStream *fs;
-		Int64 sizeLeft;
+		UInt64 sizeLeft;
 
 		NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
 		fs->GetFileTimes(0, 0, &t);
@@ -1103,7 +1103,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			i = sb2.IndexOf('?');
 			if (i >= 0)
 			{
-				sb2.TrimToLength(i);
+				sb2.TrimToLength((UOSInt)i);
 			}
 			i = sb2.LastIndexOf('/');
 			sptr2 = sb2.ToString() + i + 1;
@@ -1151,7 +1151,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		sb2.ClearStr();
 		if (req->GetHeader(&sb2, (const UTF8Char*)"Range"))
 		{
-			Int64 fileSize = sizeLeft;
+			UInt64 fileSize = sizeLeft;
 			if (!sb2.StartsWith((const UTF8Char*)"bytes="))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -1209,7 +1209,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					DEL_CLASS(fs);
 					return true;
 				}
-				if (end <= start || end > sizeLeft)
+				if (end <= start || (UInt64)end > sizeLeft)
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 					resp->AddDefHeaders(req);
@@ -1219,11 +1219,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					DEL_CLASS(fs);
 					return true;
 				}
-				sizeLeft = end - start;
+				sizeLeft = (UInt64)(end - start);
 			}
 			else
 			{
-				sizeLeft = sizeLeft - start;
+				sizeLeft = sizeLeft - (UInt64)start;
 			}
 			fs->Seek(IO::SeekableStream::ST_BEGIN, start);
 			resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
@@ -1232,9 +1232,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			u8ptr = Text::StrConcat(u8buff, (const UTF8Char*)"bytes ");
 			u8ptr = Text::StrInt64(u8ptr, start);
 			*u8ptr++ = '-';
-			u8ptr = Text::StrInt64(u8ptr, start + sizeLeft - 1);
+			u8ptr = Text::StrUInt64(u8ptr, (UInt64)start + sizeLeft - 1);
 			*u8ptr++ = '/';
-			u8ptr = Text::StrInt64(u8ptr, fileSize);
+			u8ptr = Text::StrUInt64(u8ptr, fileSize);
 			resp->AddHeader((const UTF8Char*)"Content-Range", u8buff);
 			partial = true;
 		}
@@ -1245,7 +1245,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		resp->AddHeader((const UTF8Char*)"Accept-Ranges", (const UTF8Char*)"bytes");
 		if (sizeLeft <= 0)
 		{
-			OSInt readSize;
+			UOSInt readSize;
 			readSize = fs->Read(buff, 2048);
 			if (readSize == 0)
 			{
@@ -1267,12 +1267,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		}
 		else if (!partial && sizeLeft < this->fileCacheSize)
 		{
-			OSInt readSize;
+			UOSInt readSize;
 			cache = MemAlloc(CacheInfo, 1);
-			cache->buff = MemAlloc(UInt8, (OSInt)sizeLeft);
-			cache->buffSize = (OSInt)sizeLeft;
+			cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
+			cache->buffSize = (UOSInt)sizeLeft;
 			cache->t = t.ToTicks();
-			readSize = fs->Read(cache->buff, (OSInt)sizeLeft);
+			readSize = fs->Read(cache->buff, (UOSInt)sizeLeft);
 			if (readSize == sizeLeft)
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
@@ -1416,7 +1416,7 @@ void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 	{
 		Data::ArrayList<Net::WebServer::HTTPDirectoryHandler::StatInfo*> *statList;
 		Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
-		OSInt i;
+		UOSInt i;
 		Sync::MutexUsage mutUsage(this->statMut);
 		statList = this->statMap->GetValues();
 		i = statList->GetCount();

@@ -35,8 +35,8 @@ namespace Manage
 
 		typedef struct
 		{
-			OSInt startAddr;
-			OSInt size;
+			UOSInt startAddr;
+			UOSInt size;
 			HeapType heapType;
 		} HeapInfo;
 

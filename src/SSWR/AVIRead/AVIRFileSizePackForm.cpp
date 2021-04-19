@@ -5,7 +5,7 @@
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
 #include "UI/MessageDialog.h"
 
-SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(const UTF8Char *fileName, Int64 fileSize)
+SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(const UTF8Char *fileName, UInt64 fileSize)
 {
 	this->fileName = Text::StrCopyNew(fileName);
 	this->fileSize = fileSize;
@@ -20,7 +20,7 @@ Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUT
 {
 	sb->Append(this->fileName);
 	sb->Append((const UTF8Char*)" size=");
-	sb->AppendI64(this->fileSize);
+	sb->AppendU64(this->fileSize);
 	return true;
 }
 
@@ -29,14 +29,14 @@ const UTF8Char *SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName()
 	return this->fileName;
 }
 
-Int64 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetSize()
+UInt64 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetSize()
 {
 	return this->fileSize;
 }
 
 OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(Data::IComparable *obj)
 {
-	Int64 size = ((MyFile*)obj)->fileSize;
+	UInt64 size = ((MyFile*)obj)->fileSize;
 	if (this->fileSize > size)
 		return -1;
 	else if (this->fileSize < size)
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 		if (sptr2 != sptr)
 		{
 			SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
-			OSInt i;
+			UOSInt i;
 			IO::Path::CreateDirectory(sbuff);
 			sptr = sptr2;
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 void SSWR::AVIRead::AVIRFileSizePackForm::ReleaseObjects()
 {
 	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
-	OSInt i;
+	UOSInt i;
 	i = this->fileList->GetCount();
 	while (i-- > 0)
 	{
@@ -119,9 +119,9 @@ void SSWR::AVIRead::AVIRFileSizePackForm::ReleaseObjects()
 
 void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 {
-	Int64 maxSize;
-	Int64 minSize;
-	Int64 fileSize;
+	UInt64 maxSize;
+	UInt64 minSize;
+	UInt64 fileSize;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
@@ -131,7 +131,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 	this->cboMaxSize->GetText(&sb);
-	maxSize = sb.ToInt64();
+	maxSize = sb.ToUInt64();
 	if (maxSize <= 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing the size", (const UTF8Char *)"Error", this);
@@ -165,7 +165,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	this->lbFilePack->ClearItems();
 	SDEL_TEXT(this->filePath);
 
-	Int64 totalFileSize = 0;
+	UInt64 totalFileSize = 0;
 	this->filePath = Text::StrCopyNew(sbuff);
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);
 	sess = IO::Path::FindFile(sbuff);
@@ -184,7 +184,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 
 		UOSInt arrSize;
 		Data::IComparable **arr = (Data::IComparable**)this->fileList->GetArray(&arrSize);
-		ArtificialQuickSort_SortCmpO(arr, 0, arrSize - 1);
+		ArtificialQuickSort_SortCmpO(arr, 0, (OSInt)arrSize - 1);
 		i = 0;
 		while (i < arrSize)
 		{
@@ -215,7 +215,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 			i++;
 		}
 		sb.ClearStr();
-		sb.AppendI64(totalFileSize);
+		sb.AppendU64(totalFileSize);
 		this->txtTotalSize->SetText(sb.ToString());
 		return;
 	}
@@ -247,14 +247,14 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	}
 }
 
-Int64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRead::AVIRFileSizePackForm::MyFile *> *fileList, Data::ArrayList<SSWR::AVIRead::AVIRFileSizePackForm::MyFile *> *packList, Int64 maxSize, Int64 minSize)
+UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRead::AVIRFileSizePackForm::MyFile *> *fileList, Data::ArrayList<SSWR::AVIRead::AVIRFileSizePackForm::MyFile *> *packList, UInt64 maxSize, UInt64 minSize)
 {
-	Int64 currMaxSize = 0;
-	OSInt leng = fileList->GetCount();
+	UInt64 currMaxSize = 0;
+	UOSInt leng = fileList->GetCount();
 	Int32 *list = MemAlloc(Int32, leng);
 	OSInt listCount = 0;
 	OSInt j;
-	Int64 currSize = 0;
+	UInt64 currSize = 0;
 	MyFile *currItem;
     list[0] = 0;
     listCount = 1;

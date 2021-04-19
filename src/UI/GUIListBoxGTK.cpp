@@ -155,7 +155,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	}
 }
 
-OSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
@@ -177,11 +177,11 @@ OSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
-	OSInt ret = this->items->Add(item);
+	UOSInt ret = this->items->Add(item);
 	return ret;
 }
 
-OSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
@@ -203,11 +203,11 @@ OSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
-	OSInt ret = this->items->Add(item);
+	UOSInt ret = this->items->Add(item);
 	return ret;
 }
 
-OSInt UI::GUIListBox::InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
@@ -232,16 +232,16 @@ OSInt UI::GUIListBox::InsertItem(OSInt index, const UTF8Char *itemText, void *it
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		this->items->Add(item);
+		i = (OSInt)this->items->Add(item);
 	}
 	else
 	{
-		this->items->Insert(i, item);
+		this->items->Insert((UOSInt)i, item);
 	}
-	return i;
+	return (UOSInt)i;
 }
 
-OSInt UI::GUIListBox::InsertItem(OSInt index, const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
@@ -266,16 +266,16 @@ OSInt UI::GUIListBox::InsertItem(OSInt index, const WChar *itemText, void *itemO
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		this->items->Add(item);
+		i = (OSInt)this->items->Add(item);
 	}
 	else
 	{
-		this->items->Insert(i, item);
+		this->items->Insert((UOSInt)i, item);
 	}
-	return i;
+	return (UOSInt)i;
 }
 
-void *UI::GUIListBox::RemoveItem(OSInt index)
+void *UI::GUIListBox::RemoveItem(UOSInt index)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
@@ -289,7 +289,7 @@ void *UI::GUIListBox::RemoveItem(OSInt index)
 	return ret;
 }
 
-void *UI::GUIListBox::GetItem(OSInt index)
+void *UI::GUIListBox::GetItem(UOSInt index)
 {
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
 	if (item == 0)
@@ -320,12 +320,12 @@ void UI::GUIListBox::ClearItems()
 	this->items->Clear();
 }
 
-OSInt UI::GUIListBox::GetCount()
+UOSInt UI::GUIListBox::GetCount()
 {
 	return this->items->GetCount();
 }
 
-void UI::GUIListBox::SetSelectedIndex(OSInt index)
+void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
@@ -411,7 +411,7 @@ const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
 	return GetItemTextNew(currSel);
 }
 
-UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, OSInt index)
+UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
 	if (item == 0)
@@ -419,7 +419,7 @@ UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, OSInt index)
 	return Text::StrConcat(buff, item->txt);
 }
 
-WChar *UI::GUIListBox::GetItemText(WChar *buff, OSInt index)
+WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 {
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
 	if (item == 0)
@@ -427,7 +427,7 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, OSInt index)
 	return Text::StrUTF8_WChar(buff, item->txt, -1, 0);
 }
 
-void UI::GUIListBox::SetItemText(OSInt index, const UTF8Char *text)
+void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)
 {
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
 	if (item == 0)
@@ -437,7 +437,7 @@ void UI::GUIListBox::SetItemText(OSInt index, const UTF8Char *text)
 	item->txt = Text::StrCopyNew(text);
 }
 
-const UTF8Char *UI::GUIListBox::GetItemTextNew(OSInt index)
+const UTF8Char *UI::GUIListBox::GetItemTextNew(UOSInt index)
 {
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
 	if (item == 0)

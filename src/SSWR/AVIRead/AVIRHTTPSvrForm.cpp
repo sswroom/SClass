@@ -49,8 +49,8 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
 	Sync::MutexUsage mutUsage(this->entMut);
 	i = this->currEnt;
 	this->currEnt++;
@@ -277,23 +277,23 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 		if (me->lastStatus.currConn != status.currConn)
 		{
 			me->lastStatus.currConn = status.currConn;
-			Text::StrInt32(sbuff, status.currConn);
+			Text::StrUInt32(sbuff, status.currConn);
 			me->txtConnCurr->SetText(sbuff);
 		}
 		if (me->lastStatus.connCnt != status.connCnt)
 		{
 			me->lastStatus.connCnt = status.connCnt;
-			Text::StrInt32(sbuff, status.connCnt);
+			Text::StrUInt32(sbuff, status.connCnt);
 			me->txtConnTotal->SetText(sbuff);
 		}
-		Text::StrInt64(sbuff, status.totalRead - me->lastStatus.totalRead);
+		Text::StrUInt64(sbuff, status.totalRead - me->lastStatus.totalRead);
 		me->txtDataRateR->SetText(sbuff);
-		Text::StrInt64(sbuff, status.totalWrite - me->lastStatus.totalWrite);
+		Text::StrUInt64(sbuff, status.totalWrite - me->lastStatus.totalWrite);
 		me->txtDataRateW->SetText(sbuff);
 		if (me->lastStatus.totalRead != status.totalRead)
 		{
 			me->lastStatus.totalRead = status.totalRead;
-			Text::StrInt64(sbuff, status.totalRead);
+			Text::StrUInt64(sbuff, status.totalRead);
 			me->txtDataTotalR->SetText(sbuff);
 		}
 		if (me->lastStatus.totalWrite != status.totalWrite)
@@ -302,12 +302,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 			Text::StrInt64(sbuff, status.totalWrite);
 			me->txtDataTotalW->SetText(sbuff);
 		}
-		Text::StrInt64(sbuff, status.reqCnt - me->lastStatus.reqCnt);
+		Text::StrUInt32(sbuff, status.reqCnt - me->lastStatus.reqCnt);
 		me->txtReqRate->SetText(sbuff);
 		if (me->lastStatus.reqCnt != status.reqCnt)
 		{
 			me->lastStatus.reqCnt = status.reqCnt;
-			Text::StrInt32(sbuff, status.reqCnt);
+			Text::StrUInt32(sbuff, status.reqCnt);
 			me->txtReqTotal->SetText(sbuff);
 		}
 	}

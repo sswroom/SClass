@@ -202,8 +202,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(void *userObj)
 	ExeB16Addr *addr = (ExeB16Addr*)me->lb16BitFuncs->GetSelectedItem();
 	if (addr)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		me->lb16BitCont->ClearItems();
 		i = 0;
 		j = addr->codeList->GetCount();
@@ -315,9 +315,9 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lvProp->AddColumn((const UTF8Char*)"Name", 250);
 	this->lvProp->AddColumn((const UTF8Char*)"Value", 250);
 
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	const UTF8Char *csptr;
 	i = 0;
 	j = this->exeFile->GetPropCount();

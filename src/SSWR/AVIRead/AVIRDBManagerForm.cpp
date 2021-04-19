@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	Data::ArrayList<const UTF8Char*> dbNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->GetDatabaseNames(&dbNames);
-	ArtificialQuickSort_Sort(&dbNames, 0, j - 1);
+	ArtificialQuickSort_Sort(&dbNames, 0, (OSInt)(j - 1));
 	while (i < j)
 	{
 		dbName = dbNames.GetItem(i);
@@ -121,7 +121,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	Data::ArrayList<const UTF8Char*> tableNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->GetTableNames(&tableNames);
-	ArtificialQuickSort_Sort(&tableNames, 0, j - 1);
+	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
 	while (i < j)
 	{
 		tableName = tableNames.GetItem(i);
@@ -151,9 +151,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 		this->UpdateResult(r);
 
 		DB::ColDef *col;
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		if (tabDef)
 		{
 			j = tabDef->GetColCnt();
@@ -214,8 +214,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt k;
 	DB::ColDef *col;
 	Text::StringBuilderUTF8 *sb;
@@ -500,7 +500,17 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			}
 			sb.Append((const UTF8Char*)")\r\n");
 			sb.Append((const UTF8Char*)"public class ");
-			Text::JavaText::ToJavaName(&sb, &tableName[i + 1], true);
+			if (Text::StrHasUpperCase(&tableName[i + 1]))
+			{
+				csptr = Text::StrCopyNew(&tableName[i + 1]);
+				Text::StrToLower((UTF8Char*)csptr, csptr);
+				Text::JavaText::ToJavaName(&sb, csptr, true);
+				Text::StrDelNew(csptr);
+			}
+			else
+			{
+				Text::JavaText::ToJavaName(&sb, &tableName[i + 1], true);
+			}
 			sb.Append((const UTF8Char*)"\r\n");
 			sb.Append((const UTF8Char*)"{\r\n");
 			DB::TableDef *tableDef = this->currDB->GetTableDef(tableName);
@@ -522,11 +532,30 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 							sb.Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
 						}
 					}
-					sb.Append((const UTF8Char*)"\tprivate ");
-					sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
-					sb.AppendChar(' ', 1);
-					Text::JavaText::ToJavaName(&sb, colDef->GetColName(), false);
-					sb.Append((const UTF8Char*)";\r\n");
+					if (Text::StrHasUpperCase(colDef->GetColName()))
+					{
+						sb.Append((const UTF8Char*)"\t@Column(name=");
+						const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName());
+						sb.Append(csptr);
+						Text::JSText::FreeNewText(csptr);
+						sb.Append((const UTF8Char*)")\r\n");
+						sb.Append((const UTF8Char*)"\tprivate ");
+						sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
+						sb.AppendChar(' ', 1);
+						csptr = Text::StrCopyNew(colDef->GetColName());
+						Text::StrToLower((UTF8Char*)csptr, csptr);
+						Text::JavaText::ToJavaName(&sb, csptr, false);
+						Text::StrDelNew(csptr);
+						sb.Append((const UTF8Char*)";\r\n");
+					}
+					else
+					{
+						sb.Append((const UTF8Char*)"\tprivate ");
+						sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
+						sb.AppendChar(' ', 1);
+						Text::JavaText::ToJavaName(&sb, colDef->GetColName(), false);
+						sb.Append((const UTF8Char*)";\r\n");
+					}
 					j++;
 				}
 			}

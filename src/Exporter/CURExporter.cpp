@@ -40,7 +40,7 @@ Bool Exporter::CURExporter::ImageSupported(Media::Image *img)
 	return false;
 }
 
-OSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
+UOSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 {
 	OSInt i;
 	OSInt j;
@@ -137,7 +137,7 @@ OSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 	return retSize;
 }
 
-OSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot)
+UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;

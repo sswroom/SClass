@@ -34,47 +34,47 @@ namespace UI
 		static OSInt useCnt;
 
 	public:
-		GUIListView(GUICore *ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, OSInt colCount);
+		GUIListView(GUICore *ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount);
 		virtual ~GUIListView();
 
 		void ResetImages(Int32 width, Int32 height);
-		OSInt AddImage(Media::DrawImage *img);
+		UOSInt AddImage(Media::DrawImage *img);
 		void EndAddingImage();
 
-		void ChangeColumnCnt(OSInt newColCnt);
-		OSInt GetColumnCnt();
+		void ChangeColumnCnt(UOSInt newColCnt);
+		UOSInt GetColumnCnt();
 		Bool AddColumn(const UTF8Char *columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
 		Bool SetColumnWidth(OSInt index, Double colWidth);
 		Bool ClearAll();
 
-		OSInt AddItem(const UTF8Char *itemText, void *itemObj);
-		OSInt AddItem(const WChar *itemText, void *itemObj);
-		OSInt AddItem(const UTF8Char *itemText, void *itemObj, OSInt imageIndex);
-		Bool SetSubItem(OSInt index, OSInt subIndex, const UTF8Char *text);
-		Bool SetSubItem(OSInt index, OSInt subIndex, const WChar *text);
-		Bool GetSubItem(OSInt index, OSInt subIndex, Text::StringBuilderUTF *sb);
-		OSInt InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj);
-		OSInt InsertItem(OSInt index, const WChar *itemText, void *itemObj);
-		void *RemoveItem(OSInt index);
-		void *GetItem(OSInt index);
+		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt AddItem(const WChar *itemText, void *itemObj);
+		UOSInt AddItem(const UTF8Char *itemText, void *itemObj, UOSInt imageIndex);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
+		Bool GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF *sb);
+		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
+		void *RemoveItem(UOSInt index);
+		void *GetItem(UOSInt index);
 		void ClearItems();
 		UOSInt GetCount();
 		void SetSelectedIndex(OSInt index);
 		OSInt GetSelectedIndex();
-		OSInt GetSelectedIndices(Data::ArrayList<OSInt> *selIndices);
+		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		const UTF8Char *GetSelectedItemTextNew();
-		UTF8Char *GetItemText(UTF8Char *buff, OSInt index);
-		const UTF8Char *GetItemTextNew(OSInt index);
+		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
+		const UTF8Char *GetItemTextNew(UOSInt index);
 		void DelTextNew(const UTF8Char *text);
 		void SetFullRowSelect(Bool fullRowSelect);
 		void SetShowGrid(Bool showGrid);
-		OSInt GetStringWidth(const UTF8Char *s);
-		OSInt GetStringWidth(const WChar *s);
-		void GetItemRectP(OSInt index, Int32 *rect);
-		void EnsureVisible(OSInt index);
+		UOSInt GetStringWidth(const UTF8Char *s);
+		UOSInt GetStringWidth(const WChar *s);
+		void GetItemRectP(UOSInt index, Int32 *rect);
+		void EnsureVisible(UOSInt index);
 
 		void BeginUpdate();
 		void EndUpdate();
@@ -89,5 +89,5 @@ namespace UI
 		void HandleSelChg(UI::UIEvent hdlr, void *userObj);
 		void HandleDblClk(ItemEvent hdlr, void *userObj);
 	};
-};
+}
 #endif

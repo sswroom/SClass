@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
 	sb.Append(sbuff);
 	sb.Append((const UTF8Char *)", size = ");
-	sb.AppendOSInt(packetSize);
+	sb.AppendUOSInt(packetSize);
 	sb.Append((const UTF8Char *)", ttl = ");
 	sb.AppendU16(ttl);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
@@ -157,8 +157,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 		Net::WhoisRecord *rec = me->whois->RequestIP(me->currIP->ip);
 		if (rec)
 		{
-			OSInt i = 0;
-			OSInt j = rec->GetCount();
+			UOSInt i = 0;
+			UOSInt j = rec->GetCount();
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));
@@ -191,8 +191,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<IPInfo*> *ipList;
 		IPInfo *ipInfo;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		me->ipListUpdated = false;
 		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbIP->ClearItems();
@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->listener = 0;
 	this->webHdlr = 0;
 	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::Int32Map<IPInfo*>());
+	NEW_CLASS(this->ipMap, Data::UInt32Map<IPInfo*>());
 	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
 	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ICMP, (const UTF8Char*)"PingMonitor"));
 	this->ipListUpdated = false;
@@ -298,9 +298,9 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(&connInfoList);
 	i = 0;
@@ -347,7 +347,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 
 	Data::ArrayList<IPInfo*> *ipList;
 	IPInfo *ipInfo;
-	OSInt i;
+	UOSInt i;
 	ipList = this->ipMap->GetValues();
 	i = ipList->GetCount();
 	while (i-- > 0)

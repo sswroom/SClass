@@ -7,7 +7,7 @@
 UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::PCapngFileAnalyse *me = (IO::FileAnalyse::PCapngFileAnalyse*)userObj;
-	Int64 ofst;
+	UInt64 ofst;
 	Int64 dataSize;
 	UInt32 thisSize;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;

@@ -15,7 +15,7 @@ void IO::DirectoryPackage::AddFile(const UTF8Char *fileName)
 	if (sess)
 	{
 		Data::DateTime dt;
-		Int64 fileSize;
+		UInt64 fileSize;
 		IO::Path::PathType pt;
 		if (IO::Path::FindNextFile(sbuff, sess, &dt, &pt, &fileSize))
 		{
@@ -33,12 +33,12 @@ IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFil
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::Path::PathType pt;
-	Int64 fileSize;
+	UInt64 fileSize;
 	Data::DateTime *dt;
 	IO::Path::FindFileSession *sess;
 	this->dirName = Text::StrCopyNew(dirName);
 	NEW_CLASS(this->files, Data::ArrayList<const UTF8Char*>());
-	NEW_CLASS(this->fileSizes, Data::ArrayListInt64());
+	NEW_CLASS(this->fileSizes, Data::ArrayListUInt64());
 	NEW_CLASS(this->fileTimes, Data::ArrayListInt64());
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	NEW_CLASS(dt, Data::DateTime());
@@ -80,7 +80,7 @@ IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFil
 
 IO::DirectoryPackage::~DirectoryPackage()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->files->GetCount();
 	while (i-- > 0)
 	{
@@ -173,12 +173,12 @@ Int64 IO::DirectoryPackage::GetItemModTimeTick(UOSInt index)
 	return this->fileTimes->GetItem(index);
 }
 
-Int64 IO::DirectoryPackage::GetItemSize(UOSInt index)
+UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index)
 {
 	return this->fileSizes->GetItem(index);
 }
 
-UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
+OSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
 {
 	UOSInt j = this->files->GetCount();
 	OSInt i;
@@ -190,7 +190,7 @@ UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
 			i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 			if (Text::StrEquals(&fileName[i + 1], name))
 			{
-				return j;
+				return (OSInt)j;
 			}
 		}
 	}
@@ -398,7 +398,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 typedef struct
 {
 	const UTF8Char *name;
-	Int64 fileSize;
+	UInt64 fileSize;
 	Int64 fileTime;
 } DirFile;
 
@@ -411,8 +411,8 @@ OSInt __stdcall DirectoryPackage_Compare(void *obj1, void *obj2)
 
 Bool IO::DirectoryPackage::Sort()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	DirFile *df;
 	void **arr;
 	i = 0;
@@ -429,7 +429,7 @@ Bool IO::DirectoryPackage::Sort()
 		arr[i] = df;
 		i++;
 	}
-	ArtificialQuickSort_SortCmp(arr, DirectoryPackage_Compare, 0, j - 1);
+	ArtificialQuickSort_SortCmp(arr, DirectoryPackage_Compare, 0, (OSInt)j - 1);
 	i = 0;
 	while (i < j)
 	{

@@ -46,7 +46,7 @@ Map::OruxDBLayer::~OruxDBLayer()
 	Data::ArrayList<Map::OruxDBLayer::LayerInfo*> *layerList;
 	Map::OruxDBLayer::LayerInfo *lyr;
 	layerList = this->layerMap->GetValues();
-	OSInt i;
+	UOSInt i;
 	i = layerList->GetCount();
 	while (i-- > 0)
 	{

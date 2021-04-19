@@ -349,13 +349,13 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	NEW_CLASS(this->currFormats, Data::ArrayList<CaptureFormat*>());
 	this->currCapture = 0;
 	this->captureMgr->GetDeviceList(this->devInfoList);
-	OSInt cnt = this->devInfoList->GetCount();
+	UOSInt cnt = this->devInfoList->GetCount();
 	if (cnt == 0)
 	{
 		return;
 	}
 	Media::VideoCaptureMgr::DeviceInfo *dev;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < cnt)
 	{

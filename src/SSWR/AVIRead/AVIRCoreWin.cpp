@@ -216,9 +216,9 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 
 void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObject *pobj, const WChar *dialogName)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Data::ArrayList<IO::FileExporter*> *exp;
 	NEW_CLASS(exp, Data::ArrayList<IO::FileExporter*>());
 	this->exporters->GetSupportedExporters(exp, pobj);

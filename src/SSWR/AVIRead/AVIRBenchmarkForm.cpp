@@ -454,9 +454,9 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
 	IO::SystemInfo::RAMInfo *ram;
 	sysInfo.GetRAMInfo(&ramList);
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	i = 0;
 	j = ramList.GetCount();
 	while (i < j)

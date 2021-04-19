@@ -100,6 +100,8 @@ namespace Text
 	FORCEINLINE UOSInt StrCharCnt(const Char *str) { return MyString_StrCharCnt(str); }
 	OSInt StrCharCntS(const Char *str, OSInt maxLen);
 
+	Bool StrHasUpperCase(const Char *str);
+
 #ifdef HAS_INT64
 	Char *StrHexVal64V(Char *oriStr, UInt64 val);
 	Char *StrHexVal64(Char *oriStr, UInt64 val);
@@ -219,6 +221,7 @@ namespace Text
 	FORCEINLINE OSInt StrCompareICase(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompareICase((const Char*)str1, (const Char*)str2); }
 	FORCEINLINE UOSInt StrCharCnt(const UTF8Char *str) { return MyString_StrCharCnt((const Char*)str); }
 	FORCEINLINE OSInt StrCharCntS(const UTF8Char *str, OSInt maxLen) { return StrCharCntS((const Char*)str, maxLen); }
+	FORCEINLINE Bool StrHasUpperCase(const UTF8Char *str) { return StrHasUpperCase((const Char*)str); }
 
 #ifdef HAS_INT64
 	FORCEINLINE UTF8Char *StrHexVal64V(UTF8Char *oriStr, UInt64 val) { return (UTF8Char*)StrHexVal64V((Char*)oriStr, val); }

@@ -18,7 +18,7 @@ typedef struct
 {
 	GtkListStore *listStore;
 	GtkWidget *treeView;
-	OSInt colCnt;
+	UOSInt colCnt;
 	Double *colSizes;
 	Data::ArrayList<MyRow*> *rows;
 	UI::GUIListView::ListViewStyle lvstyle;
@@ -45,7 +45,7 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	return false;
 }
 
-UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyle lvstyle, OSInt colCount) : UI::GUIControl(ui, parent)
+UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
@@ -54,7 +54,7 @@ UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyl
 
 	GUIListViewData *data = MemAlloc(GUIListViewData, 1);
 	data->noChgEvt = false;
-	OSInt i;
+	UOSInt i;
 	GType *types;
 	if (lvstyle == UI::GUIListView::LVSTYLE_SMALLICON)
 	{
@@ -123,10 +123,10 @@ UI::GUIListView::~GUIListView()
 	DEL_CLASS(this->dblClkObjs);
 }
 
-void UI::GUIListView::ChangeColumnCnt(OSInt newColCnt)
+void UI::GUIListView::ChangeColumnCnt(UOSInt newColCnt)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	OSInt i;
+	UOSInt i;
 	GType *types;
 	MemFree(data->colSizes);
 	if (data->lvstyle == UI::GUIListView::LVSTYLE_SMALLICON)
@@ -160,7 +160,7 @@ void UI::GUIListView::ChangeColumnCnt(OSInt newColCnt)
 	data->colCnt = newColCnt;
 }
 
-OSInt UI::GUIListView::GetColumnCnt()
+UOSInt UI::GUIListView::GetColumnCnt()
 {
 	return this->colCnt;
 }
@@ -226,43 +226,43 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
-OSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj)
+UOSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
 	row->txt = Text::StrCopyNew(text);
 	gtk_list_store_append(data->listStore, &row->iter);
-	OSInt ret = data->rows->Add(row);
+	UOSInt ret = data->rows->Add(row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
 	return ret;
 }
 
-OSInt UI::GUIListView::AddItem(const WChar *text, void *itemObj)
+UOSInt UI::GUIListView::AddItem(const WChar *text, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
 	row->txt = Text::StrToUTF8New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
-	OSInt ret = data->rows->Add(row);
+	UOSInt ret = data->rows->Add(row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt, -1);
 	return ret;
 }
 
-OSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj, OSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj, UOSInt imageIndex)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
 	row->txt = Text::StrCopyNew(text);
 	gtk_list_store_append(data->listStore, &row->iter);
-	OSInt ret = data->rows->Add(row);
+	UOSInt ret = data->rows->Add(row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(OSInt row, OSInt col, const UTF8Char *text)
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const UTF8Char *text)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(row);
@@ -272,11 +272,11 @@ Bool UI::GUIListView::SetSubItem(OSInt row, OSInt col, const UTF8Char *text)
 	return true;
 }
 
-Bool UI::GUIListView::SetSubItem(OSInt row, OSInt col, const WChar *text)
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const WChar *text)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(row);
-	if (r == 0 || col < 0 || col >= data->colCnt)
+	if (r == 0 || col >= data->colCnt)
 		return false;
 	const UTF8Char *txt = Text::StrToUTF8New(text);
 	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)txt, -1);
@@ -284,11 +284,11 @@ Bool UI::GUIListView::SetSubItem(OSInt row, OSInt col, const WChar *text)
 	return true;
 }
 
-Bool UI::GUIListView::GetSubItem(OSInt index, OSInt subIndex, Text::StringBuilderUTF *sb)
+Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF *sb)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
-	if (r == 0 || subIndex < 0 || subIndex >= data->colCnt)
+	if (r == 0 || subIndex >= data->colCnt)
 		return false;
 	const Char *txt = 0;
 	gtk_tree_model_get((GtkTreeModel*)data->listStore, &r->iter, subIndex, &txt, -1);
@@ -304,7 +304,7 @@ Bool UI::GUIListView::GetSubItem(OSInt index, OSInt subIndex, Text::StringBuilde
 	}
 }
 
-OSInt UI::GUIListView::InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -316,7 +316,7 @@ OSInt UI::GUIListView::InsertItem(OSInt index, const UTF8Char *itemText, void *i
 	return index;
 }
 
-OSInt UI::GUIListView::InsertItem(OSInt index, const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -328,7 +328,7 @@ OSInt UI::GUIListView::InsertItem(OSInt index, const WChar *itemText, void *item
 	return index;
 }
 
-void *UI::GUIListView::RemoveItem(OSInt index)
+void *UI::GUIListView::RemoveItem(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->RemoveAt(index);
@@ -342,7 +342,7 @@ void *UI::GUIListView::RemoveItem(OSInt index)
 	return ret;
 }
 
-void *UI::GUIListView::GetItem(OSInt index)
+void *UI::GUIListView::GetItem(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -403,9 +403,9 @@ OSInt UI::GUIListView::GetSelectedIndex()
 	}
 }
 
-OSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<OSInt> *selIndices)
+UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
 	GtkTreeIter iter;
@@ -415,7 +415,7 @@ OSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<OSInt> *selIndices)
 		gint depth;
 		gint *i = gtk_tree_path_get_indices_with_depth(path, &depth);
 		ret = 0;
-		while (ret < depth)
+		while (ret < (UOSInt)depth)
 		{
 			selIndices->Add(i[ret]);
 			ret++;
@@ -452,7 +452,7 @@ const UTF8Char *UI::GUIListView::GetSelectedItemTextNew()
 	return 0;
 }
 
-UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, OSInt index)
+UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -461,7 +461,7 @@ UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, OSInt index)
 	return Text::StrConcat(buff, r->txt);
 }
 
-const UTF8Char *UI::GUIListView::GetItemTextNew(OSInt index)
+const UTF8Char *UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -486,35 +486,35 @@ void UI::GUIListView::SetShowGrid(Bool showGrid)
 	gtk_tree_view_set_grid_lines((GtkTreeView*)data->treeView, showGrid?GTK_TREE_VIEW_GRID_LINES_BOTH:GTK_TREE_VIEW_GRID_LINES_NONE);
 }
 
-OSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
+UOSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	int width;
 	int height;
 	PangoLayout *layout = gtk_widget_create_pango_layout(data->treeView, (const Char*)s);
 	pango_layout_get_pixel_size(layout, &width, &height);
-	ret = width;
+	ret = (UOSInt)width;
 	g_object_unref(G_OBJECT(layout));
 	return ret;
 }
 
-OSInt UI::GUIListView::GetStringWidth(const WChar *s)
+UOSInt UI::GUIListView::GetStringWidth(const WChar *s)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	int width;
 	int height;
 	const UTF8Char *csptr = Text::StrToUTF8New(s);
 	PangoLayout *layout = gtk_widget_create_pango_layout(data->treeView, (const Char*)csptr);
 	pango_layout_get_pixel_size(layout, &width, &height);
-	ret = width;
+	ret = (UOSInt)width;
 	g_object_unref(G_OBJECT(layout));
 	Text::StrDelNew(csptr);
 	return ret;
 }
 
-void UI::GUIListView::GetItemRectP(OSInt index, Int32 *rect)
+void UI::GUIListView::GetItemRectP(UOSInt index, Int32 *rect)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -530,7 +530,7 @@ void UI::GUIListView::GetItemRectP(OSInt index, Int32 *rect)
 	rect[3] = rc.height;
 }
 
-void UI::GUIListView::EnsureVisible(OSInt index)
+void UI::GUIListView::EnsureVisible(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);

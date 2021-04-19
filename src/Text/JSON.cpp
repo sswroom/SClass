@@ -40,7 +40,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr(const UTF8Char *jsonStr)
 	return ParseJSONStr2(jsonStr, &endPtr);
 }
 
-Text::JSONBase *Text::JSONBase::ParseJSONStrLen(const UTF8Char *jsonStr, OSInt strLen)
+Text::JSONBase *Text::JSONBase::ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen)
 {
 	UTF8Char *s = MemAlloc(UTF8Char, strLen + 1);
 	Text::StrConcatC(s, jsonStr, strLen);

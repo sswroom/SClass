@@ -170,7 +170,7 @@ IO::PackageFile *IO::PackageFile::GetPackFile(const UTF8Char *name)
 
 Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize)
 {
-	OSInt i;
+	UOSInt i;
 	IO::PackFileItem *item;
 	i = this->items->GetCount();
 	while (i-- > 0)
@@ -196,7 +196,7 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name)
 {
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
-	OSInt nameLen;
+	UOSInt nameLen;
 	UTF8Char c;
 	sptr = name;
 	while (true)
@@ -204,14 +204,14 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name)
 		c = *sptr++;
 		if (c == 0)
 		{
-			nameLen = sptr - name - 1;
+			nameLen = (UOSInt)(sptr - name - 1);
 			if (nameLen <= 0)
 				return 0;
 			return this->namedItems->Get(name);
 		}
 		else if (c == '/' || c == '\\')
 		{
-			nameLen = sptr - name - 1;
+			nameLen = (UOSInt)(sptr - name - 1);
 			Text::StrConcatC(sbuff, name, nameLen);
 			IO::PackFileItem *item = this->namedItems->Get(sbuff);
 			if (item == 0)
@@ -293,15 +293,15 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			UInt8 chkResult[32];
-			OSInt resSize;
-			OSInt i;
+			UOSInt resSize;
+			UOSInt i;
 			Bool diff = false;
 			IO::Path::GetProcessFileName(sbuff);
 			IO::Path::AppendPath(sbuff, (const UTF8Char*)"temp");
 			IO::Path::CreateDirectory(sbuff);
 			sptr = &sbuff[Text::StrCharCnt(sbuff)];
 			*sptr++ = '\\';
-			sptr = Text::StrHexVal64(sptr, t->ToTicks());
+			sptr = Text::StrHexVal64(sptr, (UInt64)t->ToTicks());
 			*sptr++ = '_';
 			if (item->name)
 			{
@@ -466,7 +466,7 @@ Int64 IO::PackageFile::GetItemModTimeTick(UOSInt index)
 	return 0;
 }
 
-Int64 IO::PackageFile::GetItemSize(UOSInt index)
+UInt64 IO::PackageFile::GetItemSize(UOSInt index)
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
@@ -487,7 +487,7 @@ Int64 IO::PackageFile::GetItemSize(UOSInt index)
 	return 0;
 }
 
-UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
+OSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -500,17 +500,17 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 			if (item->name)
 			{
 				if (Text::StrEqualsICase(item->name, name))
-					return i;
+					return (OSInt)i;
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 			{
 				if (Text::StrEqualsICase(item->fd->GetShortName(), name))
-					return i;
+					return (OSInt)i;
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 			{
 				if (Text::StrEqualsICase(item->pobj->GetSourceNameObj(), name))
-					return i;
+					return (OSInt)i;
 			}
 		}
 	}
@@ -597,7 +597,7 @@ Bool IO::PackageFile::RetryMoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::PackageFile::CopyTo(OSInt index, const UTF8Char *destPath, Bool fullFileName)
+Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFileName)
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
@@ -760,7 +760,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 
 	IO::IStreamData *retFD = 0;
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	OSInt j;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(fileName);
@@ -845,8 +845,8 @@ void IO::PackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 
 void IO::PackageFile::GetInfoText(Text::StringBuilderUTF *sb)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<Int32> *typeList = this->infoMap->GetKeys();
 	Data::ArrayList<const UTF8Char *> *valList = this->infoMap->GetValues();
 	i = 0;

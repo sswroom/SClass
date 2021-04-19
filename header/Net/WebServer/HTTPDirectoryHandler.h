@@ -51,7 +51,7 @@ namespace Net
 			Bool allowUpload;
 			CacheType ctype;
 			Int32 expirePeriod;
-			Int64 fileCacheSize;
+			UInt64 fileCacheSize;
 			const UTF8Char *allowOrigin;
 			Data::BTreeUTF8Map<CacheInfo*> *fileCache;
 			Sync::Mutex *fileCacheMut;
@@ -68,7 +68,7 @@ namespace Net
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
 		public:
-			HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, Int64 fileCacheSize, Bool allowUpload);
+			HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 
 		protected:
 			virtual ~HTTPDirectoryHandler();

@@ -49,8 +49,8 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 
 void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 {
-	OSInt i;
-	OSInt j = this->dispList->GetCount();
+	UOSInt i;
+	UOSInt j = this->dispList->GetCount();
 	Text::StringBuilderUTF8 sb;
 	if (j > 100)
 	{

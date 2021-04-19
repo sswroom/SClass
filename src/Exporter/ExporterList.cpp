@@ -117,7 +117,7 @@ Exporter::ExporterList::ExporterList()
 
 Exporter::ExporterList::~ExporterList()
 {
-	OSInt i = this->exporters->GetCount();
+	UOSInt i = this->exporters->GetCount();
 	IO::FileExporter *exporter;
 	while (i-- > 0)
 	{
@@ -129,7 +129,7 @@ Exporter::ExporterList::~ExporterList()
 
 void Exporter::ExporterList::SetCodePage(Int32 codePage)
 {
-	OSInt i = this->exporters->GetCount();
+	UOSInt i = this->exporters->GetCount();
 	IO::FileExporter *exporter;
 	while (i-- > 0)
 	{
@@ -140,7 +140,7 @@ void Exporter::ExporterList::SetCodePage(Int32 codePage)
 
 void Exporter::ExporterList::SetEncFactory(Text::EncodingFactory *encFact)
 {
-	OSInt i = this->exporters->GetCount();
+	UOSInt i = this->exporters->GetCount();
 	IO::FileExporter *exporter;
 	while (i-- > 0)
 	{
@@ -149,11 +149,11 @@ void Exporter::ExporterList::SetEncFactory(Text::EncodingFactory *encFact)
 	}
 }
 
-OSInt Exporter::ExporterList::GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, IO::ParsedObject *obj)
+UOSInt Exporter::ExporterList::GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, IO::ParsedObject *obj)
 {
-	OSInt cnt = 0;
-	OSInt i = 0;
-	OSInt j = this->exporters->GetCount();
+	UOSInt cnt = 0;
+	UOSInt i = 0;
+	UOSInt j = this->exporters->GetCount();
 	IO::FileExporter *exporter;
 	while (i < j)
 	{

@@ -109,7 +109,7 @@ namespace Map
 		
 	private:
 		Sync::Mutex *mut;
-		Int32 bgColor;
+		UInt32 bgColor;
 		Data::ArrayList<MapItem*> *mapLayers;
 		Data::ArrayList<LineStyle*> *lineStyles;
 		Data::ArrayList<FontStyle*> *fontStyles;
@@ -127,7 +127,7 @@ namespace Map
 		void AddGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
-		MapEnv(const UTF8Char *fileName, Int32 bgColor, Math::CoordinateSystem *csys);
+		MapEnv(const UTF8Char *fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
 
 		virtual IO::ParsedObject::ParserType GetParserType();

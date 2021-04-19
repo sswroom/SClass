@@ -16,7 +16,7 @@ namespace Exporter
 
 		void SetCodePage(Int32 codePage);
 		void SetEncFactory(Text::EncodingFactory *encFact);
-		OSInt GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, IO::ParsedObject *obj);
+		UOSInt GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, IO::ParsedObject *obj);
 	};
 }
 #endif

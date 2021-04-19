@@ -37,8 +37,8 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd,
 	UInt8 hdr[24];
 	UInt8 *packetBuff;
 	UInt32 maxSize = 65536;
-	Int64 currOfst;
-	Int64 fileSize = fd->GetDataSize();
+	UInt64 currOfst;
+	UInt64 fileSize = fd->GetDataSize();
 	UInt32 inclLen;
 	UInt32 origLen;
 	UInt32 linkType;
