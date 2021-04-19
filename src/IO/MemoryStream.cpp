@@ -140,14 +140,14 @@ UInt64 IO::MemoryStream::Seek(SeekType origin, Int64 position)
 		if (position < 0 && this->currPtr < (UInt64)-position)
 			outPos = 0;
 		else
-			outPos = (UInt64)this->currPtr + position;
+			outPos = (UInt64)((Int64)this->currPtr + position);
 	}
 	else if (origin == IO::SeekableStream::ST_END)
 	{
 		if (position < 0 && this->currSize < (UInt64)-position)
 			outPos = 0;
 		else
-			outPos = (UInt64)this->currSize + position;
+			outPos = (UInt64)((Int64)this->currSize + position);
 	}
 	else
 	{

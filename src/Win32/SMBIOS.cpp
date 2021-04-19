@@ -1988,7 +1988,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Device ");
-				sb->AppendOSInt(k);
+				sb->AppendUOSInt(k);
 				sb->Append((const UTF8Char*)" Description: ");
 				if (carr[dataBuff[l + 1]]) sb->Append((const UTF8Char*)carr[dataBuff[l + 1]]);
 				sb->Append((const UTF8Char*)"\r\n");
@@ -2011,7 +2011,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				if (carr[k])
 				{
 					sb->Append((const UTF8Char*)"String ");
-					sb->AppendOSInt(k);
+					sb->AppendUOSInt(k);
 					sb->Append((const UTF8Char*)": ");
 					sb->Append((const UTF8Char*)carr[k]);
 					sb->Append((const UTF8Char*)"\r\n");
@@ -2034,7 +2034,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				if (carr[k])
 				{
 					sb->Append((const UTF8Char*)"String ");
-					sb->AppendOSInt(k);
+					sb->AppendUOSInt(k);
 					sb->Append((const UTF8Char*)": ");
 					sb->Append((const UTF8Char*)carr[k]);
 					sb->Append((const UTF8Char*)"\r\n");
@@ -2072,7 +2072,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				if (carr[k])
 				{
 					sb->Append((const UTF8Char*)"Language ");
-					sb->AppendOSInt(k);
+					sb->AppendUOSInt(k);
 					sb->Append((const UTF8Char*)": ");
 					sb->Append((const UTF8Char*)carr[k]);
 					sb->Append((const UTF8Char*)"\r\n");
@@ -2580,10 +2580,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 31)
 			{
 				sb->Append((const UTF8Char*)"Extended Starting Address: 0x");
-				sb->AppendHex64(ReadInt64(&dataBuff[15]));
+				sb->AppendHex64(ReadUInt64(&dataBuff[15]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Extended Ending Address: 0x");
-				sb->AppendHex64(ReadInt64(&dataBuff[23]));
+				sb->AppendHex64(ReadUInt64(&dataBuff[23]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			sb->Append((const UTF8Char*)"\r\n");
@@ -2620,10 +2620,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			if (dataBuff[1] >= 35)
 			{
 				sb->Append((const UTF8Char*)"Extended Starting Address: 0x");
-				sb->AppendHex64(ReadInt64(&dataBuff[19]));
+				sb->AppendHex64(ReadUInt64(&dataBuff[19]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Extended Ending Address: 0x");
-				sb->AppendHex64(ReadInt64(&dataBuff[27]));
+				sb->AppendHex64(ReadUInt64(&dataBuff[27]));
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			sb->Append((const UTF8Char*)"\r\n");
@@ -2793,9 +2793,9 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendHex16(ReadUInt16(&dataBuff[16]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"SBDS Manufacture Date: ");
-				sb->AppendU16(1980 + (dataBuff[19] >> 1));
+				sb->AppendU16((UInt16)(1980 + (dataBuff[19] >> 1)));
 				sb->Append((const UTF8Char*)"-");
-				sb->AppendU16((dataBuff[18] >> 5) | ((dataBuff[19] & 1) << 3));
+				sb->AppendU16((UInt16)((dataBuff[18] >> 5) | ((dataBuff[19] & 1) << 3)));
 				sb->Append((const UTF8Char*)"-");
 				sb->AppendU16(dataBuff[18] & 31);
 				sb->Append((const UTF8Char*)"\r\n");
@@ -2950,7 +2950,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 					break;
 				default:
 					sb->Append((const UTF8Char*)"Undefined (");
-					sb->AppendU16(dataBuff[5] >> 5);
+					sb->AppendU16((UInt16)(dataBuff[5] >> 5));
 					sb->Append((const UTF8Char*)")");
 					break;
 				}
@@ -3106,7 +3106,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 					break;
 				default:
 					sb->Append((const UTF8Char*)"Undefined (");
-					sb->AppendU16(dataBuff[6] >> 5);
+					sb->AppendU16((UInt16)(dataBuff[6] >> 5));
 					sb->Append((const UTF8Char*)")");
 					break;
 				}
@@ -3228,7 +3228,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 					break;
 				default:
 					sb->Append((const UTF8Char*)"Undefined (");
-					sb->AppendU16(dataBuff[5] >> 5);
+					sb->AppendU16((UInt16)(dataBuff[5] >> 5));
 					sb->Append((const UTF8Char*)")");
 					break;
 				}
@@ -3384,7 +3384,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 					break;
 				default:
 					sb->Append((const UTF8Char*)"Undefined (");
-					sb->AppendU16(dataBuff[5] >> 5);
+					sb->AppendU16((UInt16)(dataBuff[5] >> 5));
 					sb->Append((const UTF8Char*)")");
 					break;
 				}
@@ -3892,7 +3892,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendU16(dataBuff[9]);
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Device Number: ");
-				sb->AppendU16(dataBuff[10] >> 3);
+				sb->AppendU16((UInt16)(dataBuff[10] >> 3));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Function Number: ");
 				sb->AppendU16(dataBuff[10] & 7);
@@ -3942,7 +3942,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				sb->AppendHex32(ReadUInt16(&dataBuff[8]));
 				sb->Append((const UTF8Char*)"\r\n");
 				sb->Append((const UTF8Char*)"Firmware Feature Mask: 0x");
-				sb->AppendHex32(ReadInt16(&dataBuff[12]));
+				sb->AppendHex32(ReadUInt16(&dataBuff[12]));
 				sb->Append((const UTF8Char*)"\r\n");
 				
 				if (dataBuff[1] >= 24 + dataBuff[4])
@@ -3951,7 +3951,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 					while (k < dataBuff[4])
 					{
 						sb->Append((const UTF8Char*)"Region ");
-						sb->AppendOSInt(k);
+						sb->AppendUOSInt(k);
 						sb->Append((const UTF8Char*)" Type: ");
 						switch (dataBuff[16 + k])
 						{
@@ -3981,12 +3981,12 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 						}
 						sb->Append((const UTF8Char*)"\r\n");
 						sb->Append((const UTF8Char*)"Region ");
-						sb->AppendOSInt(k);
+						sb->AppendUOSInt(k);
 						sb->Append((const UTF8Char*)" Start Address: 0x");
 						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8]));
 						sb->Append((const UTF8Char*)"\r\n");
 						sb->Append((const UTF8Char*)"Region ");
-						sb->AppendOSInt(k);
+						sb->AppendUOSInt(k);
 						sb->Append((const UTF8Char*)" End Address: 0x");
 						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8 + 4]));
 						sb->Append((const UTF8Char*)"\r\n");

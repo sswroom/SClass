@@ -8,7 +8,7 @@ namespace Sync
 	private:
 		void *hand;
 		void *mutHand;
-		Int32 writeTId;
+		UInt32 writeTId;
 		Int32 readCnt;
 	public:
 		RWMutex();

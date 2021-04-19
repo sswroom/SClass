@@ -280,5 +280,6 @@ namespace Text
 	const UTF32Char *StrReadChar(const UTF32Char *sptr, UTF32Char *outChar);
 	UTF8Char *StrWriteChar(UTF8Char *sptr, UTF32Char c);
 	UTF16Char *StrWriteChar(UTF16Char *sptr, UTF32Char c);
+	UTF32Char *StrWriteChar(UTF32Char *sptr, UTF32Char c);
 }
 #endif

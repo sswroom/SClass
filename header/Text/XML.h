@@ -7,13 +7,13 @@ namespace Text
 	class XML
 	{
 	private:
-		static OSInt GetXMLTextLen(const UTF8Char *text);
-		static OSInt GetXMLTextLen(const WChar *text);
-		static OSInt GetXMLTextLiteLen(const UTF8Char *text);
-		static OSInt GetXMLTextLiteLen(const WChar *text);
-		static OSInt GetHTMLTextLen(const UTF8Char *text);
-		static OSInt GetHTMLTextLen(const WChar *text);
-		static Bool WriteUTF8Char(IO::Stream *stm, UInt32 c);
+		static UOSInt GetXMLTextLen(const UTF8Char *text);
+		static UOSInt GetXMLTextLen(const WChar *text);
+		static UOSInt GetXMLTextLiteLen(const UTF8Char *text);
+		static UOSInt GetXMLTextLiteLen(const WChar *text);
+		static UOSInt GetHTMLTextLen(const UTF8Char *text);
+		static UOSInt GetHTMLTextLen(const WChar *text);
+		static Bool WriteUTF8Char(IO::Stream *stm, UTF32Char c);
 	public:
 		static UTF8Char *ToXMLText(UTF8Char *buff, const UTF8Char *text);
 		static WChar *ToXMLText(WChar *buff, const WChar *text);

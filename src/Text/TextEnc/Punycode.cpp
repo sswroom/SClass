@@ -11,7 +11,7 @@
 #define SKEW 38
 #define DAMP 700
 
-OSInt Text::TextEnc::Punycode::Adapt(OSInt delta, OSInt numPoints, Bool firstTime)
+OSInt Text::TextEnc::Punycode::Adapt(OSInt delta, UOSInt numPoints, Bool firstTime)
 {
 	OSInt k;
 
@@ -199,7 +199,7 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 			OSInt i = 0;
 			OSInt bias = 72;//initial_bias
 
-			OSInt destSize = 0;
+			UOSInt destSize = 0;
 			OSInt lastMinus = 0;
 			sptr = strToDec;
 			while (true)
@@ -230,7 +230,7 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 			}
 			OSInt digit;
 			OSInt t;
-			OSInt out = destSize;
+			UOSInt out = destSize;
 			while (true)
 			{
 				c = *strToDec;
@@ -359,7 +359,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 			OSInt i = 0;
 			OSInt bias = 72;//initial_bias
 
-			OSInt destSize = 0;
+			UOSInt destSize = 0;
 			OSInt lastMinus = 0;
 			sptr = strToDec;
 			while (true)
@@ -390,7 +390,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 			}
 			OSInt digit;
 			OSInt t;
-			OSInt out = destSize;
+			UOSInt out = destSize;
 			while (true)
 			{
 				c = *strToDec;
@@ -465,7 +465,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 			OSInt i = 0;
 			OSInt bias = 72;//initial_bias
 
-			OSInt destSize = 0;
+			UOSInt destSize = 0;
 			OSInt lastMinus = 0;
 			sptr = strToDec;
 			while (true)
@@ -496,7 +496,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 			}
 			OSInt digit;
 			OSInt t;
-			OSInt out = destSize;
+			UOSInt out = destSize;
 			while (true)
 			{
 				c = *strToDec;

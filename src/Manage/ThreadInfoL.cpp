@@ -95,9 +95,9 @@ Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
 #if defined(__FreeBSD__)
 	long tid;
 	if (thr_self(&tid) != 0) tid = 0;
-	NEW_CLASS(info, Manage::ThreadInfo(getpid(), tid, (void*)-1));
+	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), tid, (void*)-1));
 #else
-	NEW_CLASS(info, Manage::ThreadInfo(getpid(), (UOSInt)pthread_self(), (void*)-1));
+	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), (UOSInt)pthread_self(), (void*)-1));
 #endif
 	return info;
 }

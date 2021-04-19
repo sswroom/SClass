@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
+#include "Math/Math.h"
 #include "Media/ICCProfile.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -9,7 +10,7 @@
 
 Media::ICCProfile::ICCProfile(const UInt8 *iccBuff)
 {
-	OSInt leng = ReadMInt32(iccBuff);
+	UOSInt leng = ReadMUInt32(iccBuff);
 	this->iccBuff = MemAlloc(UInt8, leng);
 	MemCopyNO(this->iccBuff, iccBuff, leng);
 }
@@ -27,7 +28,7 @@ Int32 Media::ICCProfile::GetCMMType()
 void Media::ICCProfile::GetProfileVer(UInt8 *majorVer, UInt8 *minorVer, UInt8 *bugFixVer)
 {
 	*majorVer = this->iccBuff[8];
-	*minorVer = this->iccBuff[9] >> 4;
+	*minorVer = (UInt8)(this->iccBuff[9] >> 4);
 	*bugFixVer = this->iccBuff[9] & 0xf;
 }
 
@@ -112,7 +113,7 @@ Media::LUT *Media::ICCProfile::CreateRLUT()
 		Int32 tagOfst;
 //		Int32 tagLeng;
 		Int32 tagType;
-		Int32 valCnt;
+		UInt32 valCnt;
 
 		tagSign = ReadMInt32(&this->iccBuff[132 + 12 * i]);
 		if (tagSign == 0x72545243 || tagSign == 0x6B545243)
@@ -122,10 +123,10 @@ Media::LUT *Media::ICCProfile::CreateRLUT()
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x63757276)
 			{
-				Int32 i;
+				UInt32 i;
 				UInt8 *stab;
 				UInt8 *dtab;
-				valCnt = ReadMInt32(&this->iccBuff[tagOfst + 8]);
+				valCnt = ReadMUInt32(&this->iccBuff[tagOfst + 8]);
 				if (valCnt <= 1)
 				{
 					return 0;
@@ -162,7 +163,7 @@ Media::LUT *Media::ICCProfile::CreateGLUT()
 		Int32 tagOfst;
 //		Int32 tagLeng;
 		Int32 tagType;
-		Int32 valCnt;
+		UInt32 valCnt;
 
 		tagSign = ReadMInt32(&this->iccBuff[132 + 12 * i]);
 		if (tagSign == 0x67545243 || tagSign == 0x6B545243)
@@ -172,10 +173,10 @@ Media::LUT *Media::ICCProfile::CreateGLUT()
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x63757276)
 			{
-				Int32 i;
+				UInt32 i;
 				UInt8 *stab;
 				UInt8 *dtab;
-				valCnt = ReadMInt32(&this->iccBuff[tagOfst + 8]);
+				valCnt = ReadMUInt32(&this->iccBuff[tagOfst + 8]);
 				if (valCnt <= 1)
 				{
 					return 0;
@@ -203,8 +204,8 @@ Media::LUT *Media::ICCProfile::CreateGLUT()
 
 Media::LUT *Media::ICCProfile::CreateBLUT()
 {
-	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
-	Int32 i = 0;
+	UInt32 cnt = ReadMUInt32(&this->iccBuff[128]);
+	UInt32 i = 0;
 	Media::LUT *lut;
 	while (i < cnt)
 	{
@@ -212,7 +213,7 @@ Media::LUT *Media::ICCProfile::CreateBLUT()
 		Int32 tagOfst;
 //		Int32 tagLeng;
 		Int32 tagType;
-		Int32 valCnt;
+		UInt32 valCnt;
 
 		tagSign = ReadMInt32(&this->iccBuff[132 + 12 * i]);
 		if (tagSign == 0x62545243 || tagSign == 0x6B545243)
@@ -222,10 +223,10 @@ Media::LUT *Media::ICCProfile::CreateBLUT()
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x63757276)
 			{
-				Int32 i;
+				UInt32 i;
 				UInt8 *stab;
 				UInt8 *dtab;
-				valCnt = ReadMInt32(&this->iccBuff[tagOfst + 8]);
+				valCnt = ReadMUInt32(&this->iccBuff[tagOfst + 8]);
 				if (valCnt <= 1)
 				{
 					return 0;
@@ -706,16 +707,16 @@ void Media::ICCProfile::ToString(Text::StringBuilderUTF *sb)
 	sb->Append((const UTF8Char*)"\r\nProfile creator = ");
 	sb->Append(GetNameDeviceManufacturer(this->GetProfileCreator()));
 
-	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
-	Int32 i = 0;
+	UInt32 cnt = ReadMUInt32(&this->iccBuff[128]);
+	UInt32 i = 0;
 	while (i < cnt)
 	{
 		Int32 tagSign;
 		Int32 tagOfst;
-		Int32 tagLeng;
+		UInt32 tagLeng;
 		tagSign = ReadMInt32(&this->iccBuff[132 + 12 * i]);
 		tagOfst = ReadMInt32(&this->iccBuff[136 + 12 * i]);
-		tagLeng = ReadMInt32(&this->iccBuff[140 + 12 * i]);
+		tagLeng = ReadMUInt32(&this->iccBuff[140 + 12 * i]);
 
 		sb->Append((const UTF8Char*)"\r\n");
 		sb->Append(GetNameTag(tagSign));
@@ -740,7 +741,7 @@ Media::ICCProfile *Media::ICCProfile::Parse(const UInt8 *buff, UOSInt buffSize)
 
 void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, Data::DateTime *dt)
 {
-	dt->SetValue(ReadMInt16(&buff[0]), (UInt8)ReadMInt16(&buff[2]), (UInt8)ReadMInt16(&buff[4]), (UInt8)ReadMInt16(&buff[6]), (UInt8)ReadMInt16(&buff[8]), (UInt8)ReadMInt16(&buff[10]), 0);
+	dt->SetValue(ReadMUInt16(&buff[0]), (UInt8)ReadMUInt16(&buff[2]), (UInt8)ReadMUInt16(&buff[4]), (UInt8)ReadMUInt16(&buff[6]), (UInt8)ReadMUInt16(&buff[8]), (UInt8)ReadMUInt16(&buff[10]), 0);
 }
 
 void Media::ICCProfile::ReadXYZNumber(const UInt8 *buff, CIEXYZ *xyz)
@@ -1117,7 +1118,7 @@ void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz)
 	}
 }
 
-void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, Int32 leng)
+void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, UInt32 leng)
 {
 	Int32 typ = ReadMInt32(buff);
 	Int32 nCh;
@@ -1166,7 +1167,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 	case 0x58595A20: //XYZType
 		val = 8;
 		nCh = 0;
-		while (val <= leng - 12)
+		while ((UInt32)val <= leng - 12)
 		{
 			if (nCh)
 				sb->Append((const UTF8Char*)"  ");
@@ -1205,16 +1206,16 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 			val = ReadMInt32(&buff[8]);
 			if (buff[12 + val - 1])
 			{
-				sb->AppendC((const UTF8Char*)&buff[12], val);
+				sb->AppendC((const UTF8Char*)&buff[12], (UInt32)val);
 			}
 			else
 			{
-				sb->AppendC((const UTF8Char*)&buff[12], val - 1);
+				sb->AppendC((const UTF8Char*)&buff[12], (UInt32)val - 1);
 			}
 		}
 		break;
 	case 0x73696720: //signatureType
-		sb->AppendHex32(ReadMInt32(&buff[8]));
+		sb->AppendHex32(ReadMUInt32(&buff[8]));
 		break;
 	case 0x63757276: //curveType
 		val = ReadMInt32(&buff[8]);
@@ -1225,7 +1226,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 			sb->Append((const UTF8Char*)" entries, ");
 			sb->Append((const UTF8Char*)"Closed to ");
 		}
-		tt = FindTransferType(val, (UInt16*)&buff[12], &gamma);
+		tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], &gamma);
 		sb->Append(Media::CS::TransferFunc::GetTransferFuncName(tt));
 		if (tt == Media::CS::TRANT_GAMMA)
 		{
@@ -1317,17 +1318,17 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 		break;
 	case 0x75693332: //uInt32ArrayType
 		sb->Append((const UTF8Char*)"uInt32 Array (");
-		sb->AppendI32((leng - 8) >> 2);
+		sb->AppendU32((leng - 8) >> 2);
 		sb->Append((const UTF8Char*)")");
 		break;
 	case 0x75693038: //uInt8ArrayType
 		sb->Append((const UTF8Char*)"uInt8 Array (");
-		sb->AppendI32((leng - 8));
+		sb->AppendU32((leng - 8));
 		sb->Append((const UTF8Char*)")");
 		break;
 	case 0x73663332: //s15Fixed16ArrayType
 		sb->Append((const UTF8Char*)"s15Fixed16 Array (");
-		sb->AppendI32((leng - 8) >> 2);
+		sb->AppendU32((leng - 8) >> 2);
 		sb->Append((const UTF8Char*)")");
 		break;
 	case 0x6D6C7563: //multiLocalizedUnicodeType
@@ -1339,7 +1340,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 			j = 16;
 			while (i-- > 0)
 			{
-				enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMInt32(&buff[j + 4]), 0);
+				enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMUInt32(&buff[j + 4]), 0);
 				sb->Append(sbuff);
 				if (i > 0)
 				{
@@ -1389,7 +1390,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		diffSqrSum[i] = 0;
 	}
 
-	Double mulVal = 1.0 / (colorCount - 1);
+	Double mulVal = 1.0 / Math::UOSInt2Double(colorCount - 1);
 	Double colVal = 1.0 / 65535.0;
 	Double v;
 	Double tv;
@@ -1401,7 +1402,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		i = tranCnt;
 		while (i-- > 0)
 		{
-			tv = funcs[i]->InverseTransfer(j * mulVal);
+			tv = funcs[i]->InverseTransfer(Math::UOSInt2Double(j) * mulVal);
 			diffSqrSum[i] += (tv - v) * (tv - v);
 		}
 		j++;

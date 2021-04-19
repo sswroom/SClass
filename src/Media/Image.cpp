@@ -122,7 +122,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 		}
 		else if (bpp <= 8)
 		{
-			this->pal = MemAlloc(UInt8, 4 << bpp);
+			this->pal = MemAlloc(UInt8, (UOSInt)(4 << bpp));
 		}
 	}
 }
@@ -144,32 +144,32 @@ OSInt Media::Image::GetDataBpl()
 {
 	if (this->info->fourcc == *(UInt32*)"LRGB")
 	{
-		return this->info->storeWidth << 3;
+		return (OSInt)(this->info->storeWidth << 3);
 	}
 	if (this->info->fourcc != 0 && this->info->fourcc != *(UInt32*)"DIBS")
 		return 0;
 	if (this->info->pf == Media::PF_PAL_1_A1)
 	{
-		return ((this->info->dispWidth + 7) >> 3) * 2;
+		return (OSInt)((this->info->dispWidth + 7) >> 3) * 2;
 	}
 	else if (this->info->pf == Media::PF_PAL_2_A1)
 	{
-		return ((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 3) >> 2);
+		return (OSInt)(((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 3) >> 2));
 	}
 	else if (this->info->pf == Media::PF_PAL_4_A1)
 	{
-		return ((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 1) >> 1);
+		return (OSInt)(((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 1) >> 1));
 	}
 	else if (this->info->pf == Media::PF_PAL_8_A1)
 	{
-		return ((this->info->dispWidth + 7) >> 3) + this->info->dispWidth;
+		return (OSInt)(((this->info->dispWidth + 7) >> 3) + this->info->dispWidth);
 	}
 	else if (this->info->storeBPP <= 0)
-		return this->info->storeWidth * (this->info->storeBPP >> 3);
+		return (OSInt)(this->info->storeWidth * (this->info->storeBPP >> 3));
 	else if (this->info->storeBPP == 4)
-		return (this->info->storeWidth >> 1) + (this->info->storeWidth & 1);
+		return (OSInt)((this->info->storeWidth >> 1) + (this->info->storeWidth & 1));
 	else
-		return (this->info->storeWidth * this->info->storeBPP) >> 3;
+		return (OSInt)((this->info->storeWidth * this->info->storeBPP) >> 3);
 }
 
 void Media::Image::SetHotSpot(OSInt hotSpotX, OSInt hotSpotY)
@@ -205,14 +205,16 @@ Media::StaticImage *Media::Image::CreateStaticImage()
 	this->GetImageData(outImg->data, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl());
 	if (this->pal)
 	{
+		UOSInt size;
 		if (this->info->pf == Media::PF_PAL_1_A1 || this->info->pf == Media::PF_PAL_2_A1 || this->info->pf == Media::PF_PAL_4_A1 || this->info->pf == Media::PF_PAL_8_A1)
 		{
-			MemCopyNO(outImg->pal, this->pal, 4 << (this->info->storeBPP - 1));
+			size = (UOSInt)(4 << (this->info->storeBPP - 1));
 		}
 		else
 		{
-			MemCopyNO(outImg->pal, this->pal, 4 << this->info->storeBPP);
+			size = (UOSInt)(4 << this->info->storeBPP);
 		}
+		MemCopyNO(outImg->pal, this->pal, size);
 	}
 	return outImg;
 }

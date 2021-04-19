@@ -1,11 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/XML.h"
 
-OSInt Text::XML::GetXMLTextLen(const UTF8Char *text)
+UOSInt Text::XML::GetXMLTextLen(const UTF8Char *text)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
 	while ((c = *sptr++) != 0)
@@ -38,9 +39,9 @@ OSInt Text::XML::GetXMLTextLen(const UTF8Char *text)
 	return cnt;
 }
 
-OSInt Text::XML::GetXMLTextLen(const WChar *text)
+UOSInt Text::XML::GetXMLTextLen(const WChar *text)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	const WChar *sptr = text;
 	WChar c;
 	while ((c = *sptr++) != 0)
@@ -73,9 +74,9 @@ OSInt Text::XML::GetXMLTextLen(const WChar *text)
 	return cnt;
 }
 
-OSInt Text::XML::GetXMLTextLiteLen(const UTF8Char *text)
+UOSInt Text::XML::GetXMLTextLiteLen(const UTF8Char *text)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
 	while ((c = *sptr++) != 0)
@@ -99,9 +100,9 @@ OSInt Text::XML::GetXMLTextLiteLen(const UTF8Char *text)
 	return cnt;
 }
 
-OSInt Text::XML::GetXMLTextLiteLen(const WChar *text)
+UOSInt Text::XML::GetXMLTextLiteLen(const WChar *text)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	const WChar *sptr = text;
 	WChar c;
 	while ((c = *sptr++) != 0)
@@ -125,9 +126,9 @@ OSInt Text::XML::GetXMLTextLiteLen(const WChar *text)
 	return cnt;
 }
 
-OSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
+UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
 	while ((c = *sptr++) != 0)
@@ -162,9 +163,9 @@ OSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 	return cnt;
 }
 
-OSInt Text::XML::GetHTMLTextLen(const WChar *text)
+UOSInt Text::XML::GetHTMLTextLen(const WChar *text)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	const WChar *sptr = text;
 	WChar c;
 	while ((c = *sptr++) != 0)
@@ -199,7 +200,7 @@ OSInt Text::XML::GetHTMLTextLen(const WChar *text)
 	return cnt;
 }
 
-Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UInt32 c)
+Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UTF32Char c)
 {
 	UInt8 buff[6];
 	if (c < 0x80)
@@ -209,42 +210,42 @@ Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UInt32 c)
 	}
 	else if (c < 0x800)
 	{
-		buff[0] = 0xc0 | (c >> 6);
-		buff[1] = 0x80 | (c & 0x3f);
+		buff[0] = (UInt8)(0xc0 | (c >> 6));
+		buff[1] = (UInt8)(0x80 | (c & 0x3f));
 		return stm->Write(buff, 2) == 2;
 	}
 	else if (c < 0x10000)
 	{
-		buff[0] = 0xe0 | (c >> 12);
-		buff[1] = 0x80 | ((c >> 6) & 0x3f);
-		buff[2] = 0x80 | (c & 0x3f);
+		buff[0] = (UInt8)(0xe0 | (c >> 12));
+		buff[1] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
+		buff[2] = (UInt8)(0x80 | (c & 0x3f));
 		return stm->Write(buff, 3) == 3;
 	}
 	else if (c < 0x200000)
 	{
-		buff[0] = 0xf0 | (c >> 18);
-		buff[1] = 0x80 | ((c >> 12) & 0x3f);
-		buff[2] = 0x80 | ((c >> 6) & 0x3f);
-		buff[3] = 0x80 | (c & 0x3f);
+		buff[0] = (UInt8)(0xf0 | (c >> 18));
+		buff[1] = (UInt8)(0x80 | ((c >> 12) & 0x3f));
+		buff[2] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
+		buff[3] = (UInt8)(0x80 | (c & 0x3f));
 		return stm->Write(buff, 4) == 4;
 	}
 	else if (c < 0x4000000)
 	{
-		buff[0] = 0xf8 | (c >> 24);
-		buff[1] = 0x80 | ((c >> 18) & 0x3f);
-		buff[2] = 0x80 | ((c >> 12) & 0x3f);
-		buff[3] = 0x80 | ((c >> 6) & 0x3f);
-		buff[4] = 0x80 | (c & 0x3f);
+		buff[0] = (UInt8)(0xf8 | (c >> 24));
+		buff[1] = (UInt8)(0x80 | ((c >> 18) & 0x3f));
+		buff[2] = (UInt8)(0x80 | ((c >> 12) & 0x3f));
+		buff[3] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
+		buff[4] = (UInt8)(0x80 | (c & 0x3f));
 		return stm->Write(buff, 5) == 5;
 	}
 	else
 	{
-		buff[0] = 0xfc | (c >> 30);
-		buff[1] = 0x80 | ((c >> 24) & 0x3f);
-		buff[2] = 0x80 | ((c >> 18) & 0x3f);
-		buff[3] = 0x80 | ((c >> 12) & 0x3f);
-		buff[4] = 0x80 | ((c >> 6) & 0x3f);
-		buff[5] = 0x80 | (c & 0x3f);
+		buff[0] = (UInt8)(0xfc | (c >> 30));
+		buff[1] = (UInt8)(0x80 | ((c >> 24) & 0x3f));
+		buff[2] = (UInt8)(0x80 | ((c >> 18) & 0x3f));
+		buff[3] = (UInt8)(0x80 | ((c >> 12) & 0x3f));
+		buff[4] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
+		buff[5] = (UInt8)(0x80 | (c & 0x3f));
 		return stm->Write(buff, 6) == 6;
 	}
 }
@@ -639,7 +640,7 @@ WChar *Text::XML::ToAttrText(WChar *buff, const WChar *text)
 
 const UTF8Char *Text::XML::ToNewXMLText(const UTF8Char *text)
 {
-	OSInt cnt = GetXMLTextLen(text) + 1;
+	UOSInt cnt = GetXMLTextLen(text) + 1;
 	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
 	ToXMLText(dptr, text);
 	return dptr;
@@ -647,7 +648,7 @@ const UTF8Char *Text::XML::ToNewXMLText(const UTF8Char *text)
 
 const WChar *Text::XML::ToNewXMLText(const WChar *text)
 {
-	OSInt cnt = GetXMLTextLen(text) + 1;
+	UOSInt cnt = GetXMLTextLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	ToXMLText(dptr, text);
 	return dptr;
@@ -655,7 +656,7 @@ const WChar *Text::XML::ToNewXMLText(const WChar *text)
 
 const UTF8Char *Text::XML::ToNewXMLTextLite(const UTF8Char *text)
 {
-	OSInt cnt = GetXMLTextLiteLen(text) + 1;
+	UOSInt cnt = GetXMLTextLiteLen(text) + 1;
 	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
 	ToXMLTextLite(dptr, text);
 	return dptr;
@@ -663,7 +664,7 @@ const UTF8Char *Text::XML::ToNewXMLTextLite(const UTF8Char *text)
 
 const WChar *Text::XML::ToNewXMLTextLite(const WChar *text)
 {
-	OSInt cnt = GetXMLTextLiteLen(text) + 1;
+	UOSInt cnt = GetXMLTextLiteLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	ToXMLTextLite(dptr, text);
 	return dptr;
@@ -671,7 +672,7 @@ const WChar *Text::XML::ToNewXMLTextLite(const WChar *text)
 
 const UTF8Char *Text::XML::ToNewHTMLText(const UTF8Char *text)
 {
-	OSInt cnt = GetHTMLTextLen(text) + 1;
+	UOSInt cnt = GetHTMLTextLen(text) + 1;
 	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
 	ToHTMLText(dptr, text);
 	return dptr;
@@ -679,7 +680,7 @@ const UTF8Char *Text::XML::ToNewHTMLText(const UTF8Char *text)
 
 const WChar *Text::XML::ToNewHTMLText(const WChar *text)
 {
-	OSInt cnt = GetHTMLTextLen(text) + 1;
+	UOSInt cnt = GetHTMLTextLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	ToHTMLText(dptr, text);
 	return dptr;
@@ -687,7 +688,7 @@ const WChar *Text::XML::ToNewHTMLText(const WChar *text)
 
 const UTF8Char *Text::XML::ToNewAttrText(const UTF8Char *text)
 {
-	OSInt cnt = GetXMLTextLen(text) + 3;
+	UOSInt cnt = GetXMLTextLen(text) + 3;
 	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
 	UTF8Char *buff = dptr;
 	*buff++ = '"';
@@ -699,7 +700,7 @@ const UTF8Char *Text::XML::ToNewAttrText(const UTF8Char *text)
 
 const WChar *Text::XML::ToNewAttrText(const WChar *text)
 {
-	OSInt cnt = GetXMLTextLen(text) + 3;
+	UOSInt cnt = GetXMLTextLen(text) + 3;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	WChar *buff = dptr;
 	*buff++ = '"';
@@ -763,57 +764,19 @@ void Text::XML::ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char
 					c = *tmp++;
 					if (c >= '0' && c <= '9')
 					{
-						v = (v << 4) + (c - 48);
+						v = (v << 4) + (UInt32)(c - 48);
 					}
 					else if (c >= 'A' && c <= 'F')
 					{
-						v = (v << 4) + (c - 0x37);
+						v = (v << 4) + (UInt32)(c - 0x37);
 					}
 					else if (c >= 'a' && c <= 'f')
 					{
-						v = (v << 4) + (c - 0x57);
+						v = (v << 4) + (UInt32)(c - 0x57);
 					}
 					else if (c == ';')
 					{
-						if (v < 0x80)
-						{
-							*currPtr++ = (UInt8)c;
-						}
-						else if (v < 0x800)
-						{
-							*currPtr++ = 0xc0 | (v >> 6);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else if (v < 0x10000)
-						{
-							*currPtr++ = 0xe0 | (v >> 12);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else if (v < 0x200000)
-						{
-							*currPtr++ = 0xf0 | (v >> 18);
-							*currPtr++ = 0x80 | ((v >> 12) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else if (v < 0x4000000)
-						{
-							*currPtr++ = 0xf8 | (v >> 24);
-							*currPtr++ = 0x80 | ((v >> 18) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 12) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else
-						{
-							*currPtr++ = 0xfc | (v >> 30);
-							*currPtr++ = 0x80 | ((v >> 24) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 18) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 12) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
+						currPtr = Text::StrWriteChar(currPtr, (UTF32Char)v);
 						xmlStart = tmp;
 						break;
 					}
@@ -839,49 +802,11 @@ void Text::XML::ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char
 					c = *tmp++;
 					if (c >= '0' && c <= '9')
 					{
-						v = v * 10 + (c - 48);
+						v = v * 10 + (UInt32)(c - 48);
 					}
 					else if (c == ';')
 					{
-						if (v < 0x80)
-						{
-							*currPtr++ = (UInt8)c;
-						}
-						else if (v < 0x800)
-						{
-							*currPtr++ = 0xc0 | (v >> 6);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else if (v < 0x10000)
-						{
-							*currPtr++ = 0xe0 | (v >> 12);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else if (v < 0x200000)
-						{
-							*currPtr++ = 0xf0 | (v >> 18);
-							*currPtr++ = 0x80 | ((v >> 12) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else if (v < 0x4000000)
-						{
-							*currPtr++ = 0xf8 | (v >> 24);
-							*currPtr++ = 0x80 | ((v >> 18) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 12) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
-						else
-						{
-							*currPtr++ = 0xfc | (v >> 30);
-							*currPtr++ = 0x80 | ((v >> 24) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 18) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 12) & 0x3f);
-							*currPtr++ = 0x80 | ((v >> 6) & 0x3f);
-							*currPtr++ = 0x80 | (v & 0x3f);
-						}
+						currPtr = Text::StrWriteChar(currPtr, (UTF32Char)v);
 						xmlStart = tmp;
 						break;
 					}
@@ -956,37 +881,21 @@ void Text::XML::ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd)
 					c = *tmp++;
 					if (c >= '0' && c <= '9')
 					{
-						v = (v << 4) + (c - 48);
+						v = (v << 4) + (UInt32)(c - 48);
 					}
 					else if (c >= 'A' && c <= 'F')
 					{
-						v = (v << 4) + (c - 0x37);
+						v = (v << 4) + (UInt32)(c - 0x37);
 					}
 					else if (c >= 'a' && c <= 'f')
 					{
-						v = (v << 4) + (c - 0x57);
+						v = (v << 4) + (UInt32)(c - 0x57);
 					}
 					else if (c == ';')
 					{
-#if _WCHAR_SIZE == 2
-						if (v >= 65536)
-						{
-							*currPtr++ = ((v - 0x10000) >> 10) + 0xd800;
-							*currPtr++ = (v & 0x3ff) + 0xdc00;
-							xmlStart = tmp;
-							break;
-						}
-						else
-						{
-							*currPtr++ = (WChar)v;
-							xmlStart = tmp;
-							break;
-						}
-#else
-						*currPtr++ = (WChar)v;
+						currPtr = Text::StrWriteChar(currPtr, (UTF32Char)v);
 						xmlStart = tmp;
 						break;
-#endif
 					}
 					else
 					{
@@ -1010,29 +919,13 @@ void Text::XML::ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd)
 					c = *tmp++;
 					if (c >= '0' && c <= '9')
 					{
-						v = v * 10 + (c - 48);
+						v = v * 10 + (UInt32)(c - 48);
 					}
 					else if (c == ';')
 					{
-#if _WCHAR_SIZE == 2
-						if (v >= 65536)
-						{
-							*currPtr++ = ((v - 0x10000) >> 10) + 0xd800;
-							*currPtr++ = (v & 0x3ff) + 0xdc00;
-							xmlStart = tmp;
-							break;
-						}
-						else
-						{
-							*currPtr++ = (WChar)v;
-							xmlStart = tmp;
-							break;
-						}
-#else
-						*currPtr++ = (WChar)v;
+						currPtr = Text::StrWriteChar(currPtr, (UTF32Char)v);
 						xmlStart = tmp;
 						break;
-#endif
 					}
 					else
 					{
@@ -1075,7 +968,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 		{
 			sbuff[0] = chrRef[2];
 			sbuff[1] = 0;
-			sbuff[0] = Text::StrToInt32(sbuff);
+			sbuff[0] = (UInt8)Text::StrToUInt32(sbuff);
 			stm->Write(sbuff, 1);
 			return true;
 		}
@@ -1105,7 +998,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 				sbuff[0] = chrRef[2];
 				sbuff[1] = chrRef[3];
 				sbuff[2] = 0;
-				wcs = Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToUInt32(sbuff);
 				return WriteUTF8Char(stm, wcs);
 			}
 		}

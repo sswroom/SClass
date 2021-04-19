@@ -17,7 +17,7 @@ void IO::StreamReader::FillBuffer()
 
 	if (stm->CanSeek())
 	{
-		Int64 currPos = ((IO::SeekableStream*)stm)->GetPosition();
+		UInt64 currPos = ((IO::SeekableStream*)stm)->GetPosition();
 		if (this->lastPos != currPos)
 		{
 			buffSize = 0;
@@ -62,7 +62,7 @@ void IO::StreamReader::FillBuffer()
 		dest = this->enc->WFromBytes(&wcbuff[wcSize], buff, convSize, &i);
 		if (dest)
 		{
-			wcSize = dest - wcbuff;
+			wcSize = (UOSInt)(dest - wcbuff);
 			MemCopyO(buff, &buff[i], buffSize - i);
 			buffSize -= i;
 		}
@@ -568,8 +568,8 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xc0 | (c >> 6);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xc0 | (c >> 6));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 2;
 			}
 			else if (c < 0x10000)
@@ -581,9 +581,9 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xe0 | (c >> 12);
-				*dest++ = 0x80 | ((c >> 6) & 0x3f);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xe0 | (c >> 12));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 3;
 			}
 			else if (c < 0x200000)
@@ -595,10 +595,10 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xf0 | (c >> 18);
-				*dest++ = 0x80 | ((c >> 12) & 0x3f);
-				*dest++ = 0x80 | ((c >> 6) & 0x3f);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xf0 | (c >> 18));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 4;
 			}
 			else if (c < 0x4000000)
@@ -610,11 +610,11 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xf8 | (c >> 24);
-				*dest++ = 0x80 | ((c >> 18) & 0x3f);
-				*dest++ = 0x80 | ((c >> 12) & 0x3f);
-				*dest++ = 0x80 | ((c >> 6) & 0x3f);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xf8 | (c >> 24));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 5;
 			}
 			else
@@ -626,12 +626,12 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xfc | (c >> 30);
-				*dest++ = 0x80 | ((c >> 24) & 0x3f);
-				*dest++ = 0x80 | ((c >> 18) & 0x3f);
-				*dest++ = 0x80 | ((c >> 12) & 0x3f);
-				*dest++ = 0x80 | ((c >> 6) & 0x3f);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xfc | (c >> 30));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 6;
 			}
 

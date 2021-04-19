@@ -35,7 +35,7 @@ namespace Media
 		void SetSrcAlphaType(Media::AlphaType alphaType);
 		virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
-		static void CalOutputSize(Media::FrameInfo *srcInfo, OSInt targetWidth, OSInt targetHeight, Media::FrameInfo *destInfo, ResizeAspectRatio rar);
+		static void CalOutputSize(Media::FrameInfo *srcInfo, UOSInt targetWidth, UOSInt targetHeight, Media::FrameInfo *destInfo, ResizeAspectRatio rar);
 	};
 }
 #endif

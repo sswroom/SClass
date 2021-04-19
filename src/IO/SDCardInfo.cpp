@@ -7,7 +7,7 @@
 
 IO::SDCardInfo::SDCardInfo(const UTF8Char *name, const UInt8 *cid, const UInt8 *csd)
 {
-	UInt8 csdType = csd[0] >> 6;
+	UInt8 csdType = (UInt8)(csd[0] >> 6);
 	this->isEMMC = (csdType >= 2);
 	MemCopyNO(this->cid, cid, 16);
 	MemCopyNO(this->csd, csd, 16);
@@ -43,16 +43,16 @@ UInt8 IO::SDCardInfo::GetManufacturerID()
 
 UInt16 IO::SDCardInfo::GetOEMID()
 {
-	return ReadMInt16(&this->cid[1]);
+	return ReadMUInt16(&this->cid[1]);
 }
 
 Char *IO::SDCardInfo::GetProductName(Char *name)
 {
-	name[0] = this->cid[3];
-	name[1] = this->cid[4];
-	name[2] = this->cid[5];
-	name[3] = this->cid[6];
-	name[4] = this->cid[7];
+	name[0] = (Char)this->cid[3];
+	name[1] = (Char)this->cid[4];
+	name[2] = (Char)this->cid[5];
+	name[3] = (Char)this->cid[6];
+	name[4] = (Char)this->cid[7];
 	name[5] = 0;
 	return &name[5];
 }
@@ -73,11 +73,11 @@ UInt32 IO::SDCardInfo::GetSerialNo()
 {
 	if (this->isEMMC)
 	{
-		return ReadMInt32(&this->cid[10]);
+		return ReadMUInt32(&this->cid[10]);
 	}
 	else
 	{
-		return ReadMInt32(&this->cid[9]);
+		return ReadMUInt32(&this->cid[9]);
 	}
 }
 
@@ -85,8 +85,8 @@ UInt32 IO::SDCardInfo::GetManufacturingYear()
 {
 	if (this->isEMMC)
 	{
-		UInt32 year = 1997 + (this->cid[14] & 15);
-		UInt8 month = this->cid[14] >> 4;
+		UInt32 year = (UInt32)(1997 + (this->cid[14] & 15));
+		UInt8 month = (UInt8)(this->cid[14] >> 4);
 		Data::DateTime dt;
 		dt.SetCurrTime();
 		while (true)
@@ -103,7 +103,7 @@ UInt32 IO::SDCardInfo::GetManufacturingYear()
 	}
 	else
 	{
-		return 2000 + (((this->cid[13] & 15) << 4) | (this->cid[14] >> 4));
+		return (UInt32)(2000 + (((this->cid[13] & 15) << 4) | (this->cid[14] >> 4)));
 	}
 }
 
@@ -111,11 +111,11 @@ UInt8 IO::SDCardInfo::GetManufacturingMonth()
 {
 	if (this->isEMMC)
 	{
-		return this->cid[14] >> 4;
+		return (UInt8)(this->cid[14] >> 4);
 	}
 	else
 	{
-		return this->cid[14] & 15;
+		return (UInt8)(this->cid[14] & 15);
 	}
 }
 
@@ -218,7 +218,7 @@ Int64 IO::SDCardInfo::GetMaxTranRate()
 
 UInt16 IO::SDCardInfo::GetCardCmdClass()
 {
-	return ReadMInt16(&this->csd[4]) >> 4;
+	return (UInt16)(ReadMUInt16(&this->csd[4]) >> 4);
 }
 
 UInt8 IO::SDCardInfo::GetMaxReadBlkLen()
@@ -248,7 +248,7 @@ Bool IO::SDCardInfo::GetDSRImplemented()
 
 UInt32 IO::SDCardInfo::GetDeviceSize()
 {
-	return ((this->csd[6] & 3) << 10) | (this->csd[7] << 2) | (this->csd[8] >> 6);
+	return (UInt32)(((this->csd[6] & 3) << 10) | (this->csd[7] << 2) | (this->csd[8] >> 6));
 }
 
 UInt8 IO::SDCardInfo::GetMaxVDDReadCurr()
@@ -273,7 +273,7 @@ UInt8 IO::SDCardInfo::GetMinVDDWriteCurr()
 
 UInt8 IO::SDCardInfo::GetDeviceSizeMulitply()
 {
-	return ((this->csd[9] & 3) << 1) | (this->csd[10] >> 7);
+	return (UInt8)(((this->csd[9] & 3) << 1) | (this->csd[10] >> 7));
 }
 
 Bool IO::SDCardInfo::GetEraseSingleBlockEnabled()
@@ -283,7 +283,7 @@ Bool IO::SDCardInfo::GetEraseSingleBlockEnabled()
 
 UInt8 IO::SDCardInfo::GetEraseSectorSize()
 {
-	return ((this->csd[10] & 0x3f) << 1) | (this->csd[11] >> 7);
+	return (UInt8)(((this->csd[10] & 0x3f) << 1) | (this->csd[11] >> 7));
 }
 
 UInt8 IO::SDCardInfo::GetWriteProtectGroupSize()
@@ -303,7 +303,7 @@ UInt8 IO::SDCardInfo::GetWriteSpeedFactor()
 
 UInt8 IO::SDCardInfo::GetMaxWriteBlockLen()
 {
-	return ((this->csd[12] & 3) << 2) | (this->csd[13] >> 6);
+	return (UInt8)(((this->csd[12] & 3) << 2) | (this->csd[13] >> 6));
 }
 
 Bool IO::SDCardInfo::GetBlockWritePartial()
@@ -340,13 +340,13 @@ Int64 IO::SDCardInfo::GetCardCapacity()
 {
 	if ((this->csd[0] & 0xc0) == 0)
 	{
-		UInt32 c_size_multi = ((this->csd[9] & 3) << 1) | (this->csd[10] >> 7);
+		UInt32 c_size_multi = (UInt32)(((this->csd[9] & 3) << 1) | (this->csd[10] >> 7));
 		UInt32 read_bl_len = this->csd[5] & 15;
 		if (read_bl_len < 12 && c_size_multi < 8)
 		{
-			UInt32 c_size = ((this->csd[6] & 3) << 10) | (this->csd[7] << 2) | (this->csd[8] >> 6);
-			UInt32 block_len = 1 << read_bl_len;
-			UInt32 blocknr = (c_size + 1) * (4 << c_size_multi);
+			UInt32 c_size = (UInt32)(((this->csd[6] & 3) << 10) | (this->csd[7] << 2) | (this->csd[8] >> 6));
+			UInt32 block_len = (UInt32)(1 << read_bl_len);
+			UInt32 blocknr = (c_size + 1) * (UInt32)(4 << c_size_multi);
 			return blocknr * (Int64)block_len;
 		}
 		else
@@ -356,7 +356,7 @@ Int64 IO::SDCardInfo::GetCardCapacity()
 	}
 	else if ((this->csd[0] & 0xc0) == 0x40)
 	{
-		UInt32 c_size = ((UInt32)(this->csd[7] & 0x3f) << 16) | (this->csd[8] << 8) | this->csd[9];
+		UInt32 c_size = ((UInt32)(this->csd[7] & 0x3f) << 16) | (UInt32)(this->csd[8] << 8) | this->csd[9];
 		return (c_size + 1) * (Int64)524288;
 	}
 	else

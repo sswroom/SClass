@@ -54,7 +54,7 @@ Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendC(dirInput, i);
+		sb.AppendC(dirInput, (UOSInt)i);
 		if (GetPathType(sb.ToString()) == PT_UNKNOWN)
 		{
 			CreateDirectory(sb.ToString());
@@ -69,7 +69,7 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	OSInt i = Text::StrLastIndexOf(dirInput, '/');
 	if (i > 0)
 	{
-		const WChar *wptr = Text::StrCopyNewC(dirInput, i);
+		const WChar *wptr = Text::StrCopyNewC(dirInput, (UOSInt)i);
 		const UTF8Char *csptr = Text::StrToUTF8New(wptr);
 		if (GetPathType(csptr) == PT_UNKNOWN)
 		{
@@ -178,7 +178,7 @@ Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF *sb)
 	ssize_t size = readlink("/proc/self/exe", sbuff, 512);
 	if (size == -1)
 		return 0;
-	sb->AppendC((const UTF8Char*)sbuff, size);
+	sb->AppendC((const UTF8Char*)sbuff, (UOSInt)size);
 	return true;
 }
 
@@ -269,14 +269,14 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	if (toAppend[0] == '/')
 		return Text::StrConcat(path, toAppend);
 	OSInt i = Text::StrLastIndexOf(path, '/');
-	OSInt j = Text::StrCharCnt(path);
+	UOSInt j = Text::StrCharCnt(path);
 	IO::Path::PathType pt = GetPathType(path);
 	if (pt == PT_FILE && i >= 0)
 	{
 		path[i] = 0;
 		i = Text::StrLastIndexOf(path, '/');
 	}
-	else if (i == j - 1)
+	else if (i == (OSInt)j - 1)
 	{
 		path[i] = 0;
 		i = Text::StrLastIndexOf(path, '/');
@@ -290,9 +290,9 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 		}
 		toAppend += 3;
 	}
-	i = Text::StrCharCnt(path);
-	path[i] = '/';
-	return Text::StrConcat(&path[i + 1], toAppend);
+	j = Text::StrCharCnt(path);
+	path[j] = '/';
+	return Text::StrConcat(&path[j + 1], toAppend);
 }
 
 WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
@@ -314,9 +314,9 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 		}
 		toAppend += 3;
 	}
-	i = Text::StrCharCnt(path);
-	path[i] = '/';
-	return Text::StrConcat(&path[i + 1], toAppend);
+	UOSInt j = Text::StrCharCnt(path);
+	path[j] = '/';
+	return Text::StrConcat(&path[j + 1], toAppend);
 }
 
 Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
@@ -330,7 +330,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	OSInt i = Text::StrLastIndexOf(sb->ToString(), '/');
 	if (GetPathType(sb->ToString()) == PT_FILE && i >= 0)
 	{
-		sb->RemoveChars(sb->GetLength() - i);
+		sb->RemoveChars(sb->GetLength() - (UOSInt)i);
 		i = Text::StrLastIndexOf(sb->ToString(), '/');
 	}
 	else if (i == (OSInt)sb->GetCharCnt() - 1)
@@ -342,7 +342,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	{
 		if (i != -1)
 		{
-			sb->RemoveChars(sb->GetLength() - i);
+			sb->RemoveChars(sb->GetLength() - (UOSInt)i);
 			i = Text::StrLastIndexOf(sb->ToString(), '/');
 		}
 		toAppend += 3;
@@ -373,8 +373,8 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath)
 	}
 	else
 	{
-		UTF8Char *tmpBuff = MemAlloc(UTF8Char, i + 2);
-		Text::StrConcatC(tmpBuff, utfPath, i);
+		UTF8Char *tmpBuff = MemAlloc(UTF8Char, (UOSInt)i + 2);
+		Text::StrConcatC(tmpBuff, utfPath, (UOSInt)i);
 		dirObj = opendir((const Char*)tmpBuff);
 		searchPattern = utfPath + i + 1;
 		tmpBuff[i + 1] = 0;
@@ -421,7 +421,7 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 		*(UTF8Char*)&utfPath[i] = 0;
 		dirObj = opendir((const Char*)utfPath);
 		searchPattern = utfPath + i + 1;
-		Char c = utfPath[i + 1];
+		UTF8Char c = utfPath[i + 1];
 		*(UTF8Char*)&utfPath[i + 1] = 0;
 		*(UTF8Char*)&utfPath[i] = '/';
 		searchDir = Text::StrCopyNew(utfPath);
@@ -476,7 +476,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 				}
 				if (fileSize)
 				{
-					*fileSize = s.st_size;
+					*fileSize = (UInt64)s.st_size;
 				}
 				return Text::StrConcat(buff, (const UTF8Char*)ent->d_name);
 			}
@@ -520,7 +520,7 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 				}
 				if (fileSize)
 				{
-					*fileSize = s.st_size;
+					*fileSize = (UInt64)s.st_size;
 				}
 				return Text::StrUTF8_WChar(buff, (const UTF8Char*)ent->d_name, -1, 0);
 			}

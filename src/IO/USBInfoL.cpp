@@ -60,7 +60,7 @@ const UTF8Char *IO::USBInfo::GetDispName()
 UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 {
 	UInt8 buff[33];
-	OSInt readSize;
+	UOSInt readSize;
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	readSize = fs->Read(buff, 32);
@@ -89,7 +89,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	OSInt ret = 0;
 	UTF8Char sbuff[512];
 	UInt8 cbuff[256];
-	OSInt readSize;
+	UOSInt readSize;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;

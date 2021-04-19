@@ -5156,3 +5156,9 @@ UTF16Char *Text::StrWriteChar(UTF16Char *sptr, UTF32Char c)
 	}
 	return sptr;
 }
+
+UTF32Char *Text::StrWriteChar(UTF32Char *sptr, UTF32Char c)
+{
+	*sptr++ = c;
+	return sptr;
+}

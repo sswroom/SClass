@@ -58,7 +58,7 @@ void DB::SQLBuilder::AppendStrW(const WChar *val)
 void DB::SQLBuilder::AppendDate(Data::DateTime *val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBDateLeng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBDate(sb->GetEndPtr(), val, this->svrType, this->tzQhr));
+	sb->SetEndPtr(DB::DBUtil::SDBDate(sb->GetEndPtr(), val, this->svrType, (Int8)this->tzQhr));
 }
 
 void DB::SQLBuilder::AppendDbl(Double val)
@@ -97,7 +97,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 	OSInt i = Text::StrIndexOf(name, '.');
 	if (i >= 0)
 	{
-		const UTF8Char *catalog = Text::StrCopyNewC(name, i);
+		const UTF8Char *catalog = Text::StrCopyNewC(name, (UOSInt)i);
 		this->AppendCol(catalog);
 		sb->AppendChar('.', 1);
 		Text::StrDelNew(catalog);

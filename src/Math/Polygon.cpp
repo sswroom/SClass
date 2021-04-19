@@ -49,7 +49,7 @@ Math::Vector2D *Math::Polygon::Clone()
 
 void Math::Polygon::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
-	OSInt i = this->nPoint << 1;
+	UOSInt i = this->nPoint << 1;
 	Double x1;
 	Double y1;
 	Double x2;
@@ -244,7 +244,7 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 
 void Math::Polygon::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	OSInt i = this->nPoint;
+	UOSInt i = this->nPoint;
 	while (i-- > 0)
 	{
 		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[(i << 1)], this->pointArr[(i << 1) + 1], 0, &this->pointArr[(i << 1)], &this->pointArr[(i << 1) + 1], 0);
@@ -257,10 +257,10 @@ Bool Math::Polygon::InsideVector(Double x, Double y)
 	Double thisY;
 	Double lastX;
 	Double lastY;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt m;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
 	Int32 leftCnt = 0;
 	Double tmpX;
 
@@ -316,20 +316,20 @@ Bool Math::Polygon::InsideVector(Double x, Double y)
 
 Bool Math::Polygon::HasJunction()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	Int32 nextPart;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UInt32 nextPart;
 	Double lastPtX;
 	Double lastPtY;
-	OSInt lastIndex;
+	UOSInt lastIndex;
 	Double thisPtX;
 	Double thisPtY;
-	Int32 nextChkPart;
+	UInt32 nextChkPart;
 	Double lastChkPtX;
 	Double lastChkPtY;
-	OSInt lastChkIndex;
+	UOSInt lastChkIndex;
 	Double thisChkPtX;
 	Double thisChkPtY;
 
@@ -429,8 +429,8 @@ Bool Math::Polygon::HasJunction()
 
 void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Math::Polygon *tmpPG;
 	Double *points;
 	UOSInt nPoints;
@@ -441,12 +441,12 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	Double lastPtY;
 	Double thisPtX;
 	Double thisPtY;
-	OSInt lastIndex;
+	UOSInt lastIndex;
 	Double lastChkPtX;
 	Double lastChkPtY;
 	Double thisChkPtX;
 	Double thisChkPtY;
-	OSInt lastChkIndex;
+	UOSInt lastChkIndex;
 	Double m1;
 	Double m2 = 0;
 	Double intX;

@@ -34,7 +34,7 @@ extern "C" void InsertionSort_SortBInt32(Int32 *arr, OSInt left, OSInt right)
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else
@@ -76,7 +76,7 @@ extern "C" void InsertionSort_SortBStr(UTF8Char **arr, OSInt left, OSInt right)
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else
@@ -118,7 +118,7 @@ extern "C" void InsertionSort_SortBCmp(void **arr, Data::IComparable::CompareFun
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else
@@ -160,7 +160,7 @@ extern "C" void InsertionSort_SortBCmpO(Data::IComparable **arr, OSInt left, OSI
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else

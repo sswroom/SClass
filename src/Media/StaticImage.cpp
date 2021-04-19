@@ -36,7 +36,8 @@ Media::Image *Media::StaticImage::Clone()
 	{
 		if (this->pal)
 		{
-			MemCopyNO(img->pal, this->pal, (UOSInt)(4 << info->storeBPP));
+			UOSInt palSize = (UOSInt)(4 << info->storeBPP);
+			MemCopyNO(img->pal, this->pal, palSize);
 		}
 	}
 	if (this->hasHotSpot)

@@ -20,7 +20,7 @@ namespace IO
 		UOSInt buffSize;
 		UOSInt lineBreak;
 
-		Int64 lastPos;
+		UInt64 lastPos;
 	private:
 		void FillBuffer();
 		void CheckHeader();

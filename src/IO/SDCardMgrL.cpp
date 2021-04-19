@@ -7,7 +7,7 @@
 
 Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
 {
-	OSInt i;
+	UOSInt i;
 	Bool ret = false;
 	UInt8 fileBuff[64];
 	IO::FileStream *fs;
@@ -25,7 +25,7 @@ Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
 	return ret;
 }
 
-OSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
+UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 {
 	UTF8Char nameBuff[16];
 	UTF8Char sbuff[512];
@@ -35,7 +35,7 @@ OSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	UInt8 cid[16];
 	UInt8 csd[16];
 	IO::Path::PathType pt;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	IO::SDCardInfo *sdcard;
 
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/mmc_host/");

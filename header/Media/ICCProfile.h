@@ -67,10 +67,10 @@ namespace Media
 		static const UTF8Char *GetNameStandardIlluminent(Int32 val);
 
 		static void GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz);
-		static void GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, Int32 leng);
+		static void GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, UInt32 leng);
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma);
 		static UTF8Char *GetProfilePath(UTF8Char *sbuff);
 	};
-};
+}
 #endif

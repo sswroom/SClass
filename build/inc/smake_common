@@ -1491,6 +1491,8 @@ Math/GeographicCoordinateSystem.h: ../../src/Math/GeographicCoordinateSystem.cpp
 @GeographicCoordinateSystem.o
 Math/Geometry.h: ../../src/Math/Geometry.cpp
 @Geometry.o
+Math/LanczosFilter.h: ../../src/Math/LanczosFilter.cpp
+@LanczosFilter.o
 Math/Math.h: ../../src/Math/Math.cpp
 @Math.o
 @Math_CPP.o
@@ -3629,6 +3631,7 @@ FFT.o: ../../src/Math/FFT.cpp
 FFTCalc.o: ../../src/Math/FFTCalc.cpp
 GeographicCoordinateSystem.o: ../../src/Math/GeographicCoordinateSystem.cpp
 Geometry.o: ../../src/Math/Geometry.cpp
+LanczosFilter.o: ../../src/Math/LanczosFilter.cpp
 Math.o: ../../src/Math/Math.cpp
 Matrix3.o: ../../src/Math/Matrix3.cpp
 MercatorProjectedCoordinateSystem.o: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
