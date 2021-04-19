@@ -332,8 +332,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			UInt8 buff[256];
 			OSInt buffSize;
 			Bool ret;
-			Data::ArrayListInt64 *callAddrs;
-			Data::ArrayListInt64 *jmpAddrs;
+			Data::ArrayListUInt64 *callAddrs;
+			Data::ArrayListUInt64 *jmpAddrs;
 			UInt64 blockStart;
 			UInt64 blockEnd;
 			Text::StringBuilderUTF8 sb;
@@ -359,8 +359,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn((const UTF8Char*)"R15", 140);
 			this->contextType = Manage::ThreadContext::CT_X86_64;
 
-			NEW_CLASS(callAddrs, Data::ArrayListInt64());
-			NEW_CLASS(jmpAddrs, Data::ArrayListInt64());
+			NEW_CLASS(callAddrs, Data::ArrayListUInt64());
+			NEW_CLASS(jmpAddrs, Data::ArrayListUInt64());
 			rip = context->GetInstAddr();
 			rsp = context->GetStackAddr();
 			rbp = context->GetFrameAddr();

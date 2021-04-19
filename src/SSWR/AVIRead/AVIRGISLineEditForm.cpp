@@ -9,8 +9,8 @@
 void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 {
 	UTF8Char sbuff[16];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->lbLayer->ClearItems();
 	i = 0;
 	j = this->lineLayers->GetCount();
@@ -26,8 +26,8 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 {
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	OSInt w = this->prevImage->GetWidth();
-	OSInt h = this->prevImage->GetHeight();
+	UOSInt w = this->prevImage->GetWidth();
+	UOSInt h = this->prevImage->GetHeight();
 	Double dpi = this->prevImage->GetHDPI();
 
 	Media::DrawPen *p;
@@ -36,8 +36,8 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	this->prevImage->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
 	this->prevImage->DelBrush(b);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 t;
 	LineLayer *lyr;
 	i = 0;
@@ -370,8 +370,8 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	j = this->env->GetLineStyleLayerCnt(this->lineStyle);
 	while (i < j)
 	{
-		Int32 color;
-		OSInt thick;
+		UInt32 color;
+		UOSInt thick;
 		UInt8 *pattern = 0;
 		UOSInt npattern;
 		this->env->GetLineStyleLayer(this->lineStyle, i, &color, &thick, &pattern, &npattern);

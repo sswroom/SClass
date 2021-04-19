@@ -931,7 +931,7 @@ Bool Net::DNSProxy::AddBlackList(const UTF8Char *blackList)
 	sbuff[0] = '.';
 	Text::StrConcat(&sbuff[1], blackList);
 
-	OSInt i;
+	UOSInt i;
 	RequestResult *req;
 	const UTF8Char *reqName;
 	Data::ArrayList<RequestResult*> *reqList;

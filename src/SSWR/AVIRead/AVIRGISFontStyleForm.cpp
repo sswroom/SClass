@@ -52,25 +52,19 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsSelectedChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
-	OSInt i = me->fsFonts->GetSelectedFontStyle();
-	if (i < 0)
-		return;
+	UOSInt i = me->fsFonts->GetSelectedFontStyle();
 	me->fontStyle = i;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsDoubleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
-	if (me->fontStyle < 0)
-		return;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::OKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
-	if (me->fontStyle < 0)
-		return;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 

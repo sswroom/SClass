@@ -163,20 +163,20 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Double lat, Double lon, Doub
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write((UInt8*)buff, cptr - buff);
+	this->stm->Write((UInt8*)buff, (UOSInt)(cptr - buff));
 
 	cptr = Text::StrConcat(buff, "$GPGSA,A,3,,,,,,,,,,,,,1.5,1.5,1.5");
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write((UInt8*)buff, cptr - buff);
+	this->stm->Write((UInt8*)buff, (UOSInt)(cptr - buff));
 
 
 	cptr = Text::StrConcat(buff, "$GPGSV,1,1,0");
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write((UInt8*)buff, cptr - buff);
+	this->stm->Write((UInt8*)buff, (UOSInt)(cptr - buff));
 
 	cptr = Text::StrConcat(buff, "$GPRMC,");
 	cptr = dt.ToString(cptr, "HHmmss.fff");

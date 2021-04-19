@@ -105,11 +105,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 			}
 
 			Manage::Process proc(procInfo->procId, false);
-			OSInt ws;
-			OSInt pageFault;
-			OSInt pagedPool;
-			OSInt nonPagedPool;
-			OSInt pageFile;
+			UOSInt ws;
+			UOSInt pageFault;
+			UOSInt pagedPool;
+			UOSInt nonPagedPool;
+			UOSInt pageFile;
 			if (proc.GetMemoryInfo(&pageFault, &ws, &pagedPool, &nonPagedPool, &pageFile))
 			{
 				Text::StrOSIntS(sbuff, ws, ',', 3);
@@ -183,10 +183,10 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 				me->lastUserTime->SetValue(&userTime);
 			}
 		}
-		OSInt workingSet;
-		OSInt pagePool;
-		OSInt nonPagePool;
-		OSInt pageFile;
+		UOSInt workingSet;
+		UOSInt pagePool;
+		UOSInt nonPagePool;
+		UOSInt pageFile;
 		if (proc.GetMemoryInfo(0, &workingSet, &pagePool, &nonPagePool, &pageFile))
 		{
 			v[0] = Math::OSInt2Double(pagePool);
@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 		return;
 	Text::StringBuilderUTF8 sb;
 	OSInt addr = (OSInt)me->lvDetHeap->GetItem(i);
-	OSInt size;
+	UOSInt size;
 	me->lvDetHeap->GetSubItem(i, 1, &sb);
 	size = sb.ToInt32();
 	Manage::Process proc(me->currProc, false);
@@ -260,7 +260,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 	}
 	else
 	{
-		OSInt size2;
+		UOSInt size2;
 		sb.ClearStr();
 		size2 = proc.ReadMemory(addr, buff, 256);
 		sb.AppendHex(buff, size2, ' ', Text::LBT_CRLF);
@@ -287,7 +287,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		UOSInt j;
 		UOSInt k;
 		UOSInt addr;
-		UInt32 size;
+		UOSInt size;
 
 		proc.GetModules(&modList);
 

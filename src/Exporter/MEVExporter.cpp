@@ -148,9 +148,9 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		const UTF8Char *fontName;
 		Double fontSize;
 		Bool bold;
-		Int32 fontColor;
+		UInt32 fontColor;
 		UOSInt buffSize;
-		Int32 buffColor;
+		UInt32 buffColor;
 
 		u8ptr = env->GetFontStyleName(i, u8buff);
 		env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor);
@@ -200,8 +200,8 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		k = 0;
 		while (k < l)
 		{
-			Int32 color;
-			OSInt thick;
+			UInt32 color;
+			UOSInt thick;
 			UOSInt npattern;
 			UInt8 *pattern;
 

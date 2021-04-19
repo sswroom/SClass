@@ -265,7 +265,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, OSInt x
 	conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, lat, lon);
 	me->txtUTMGrid->SetText(sbuff);
 
-	OSInt i;
+	UOSInt i;
 	i = me->mouseMoveHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -1205,12 +1205,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				IO::FileStream *fs;
-				Int64 fileSize;
+				UInt64 fileSize;
 				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 				fileSize = fs->GetLength();
 				if (fileSize > 0 && fileSize <= 2097152 && (fileSize & 0xffff) == 0)
 				{
-					OSInt i;
+					UOSInt i;
 					Map::GPSTrack *trk;
 					UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileSize);
 					fs->Read(fileBuff, (UOSInt)fileSize);
@@ -1481,8 +1481,8 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 {
 	Map::IMapDrawLayer *layer;
 	Bool needPan = this->env->GetItemCount(0) == 0;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double minX;
 	Double minY;
 	Double maxX;

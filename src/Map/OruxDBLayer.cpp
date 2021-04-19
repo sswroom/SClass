@@ -330,7 +330,7 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 	Media::ImageList *imgList = 0;
 	if (r->ReadNext())
 	{
-		OSInt size = r->GetBinarySize(0);
+		UOSInt size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
 		IO::StmData::MemoryData *fd;
@@ -424,7 +424,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	Bool succ = false;
 	if (r->ReadNext())
 	{
-		OSInt size = r->GetBinarySize(0);
+		UOSInt size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
 		stm->Write(buff, size);

@@ -56,15 +56,15 @@ namespace SSWR
 			Map::MapEnv::GroupItem *group;
 			OSInt index;
 			Int32 lineType;
-			OSInt lineStyle;
-			OSInt lineThick;
-			Int32 lineColor;
+			UOSInt lineStyle;
+			UOSInt lineThick;
+			UInt32 lineColor;
 			Int32 fillStyle;
 			Int32 fontType;
-			OSInt fontStyle;
+			UOSInt fontStyle;
 			const UTF8Char *fontName;
 			Double fontSizePt;
-			Int32 fontColor;
+			UInt32 fontColor;
 			UOSInt imgIndex;
 
 		private:

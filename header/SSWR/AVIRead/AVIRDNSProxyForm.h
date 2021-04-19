@@ -184,7 +184,7 @@ namespace SSWR
 			Sync::Mutex *cliInfoMut;
 			Data::Int32Map<ClientInfo*> *cliInfos;
 			Bool cliChg;
-			Int32 currServer;
+			UInt32 currServer;
 
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> *v4ansList;
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> *v6ansList;

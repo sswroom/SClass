@@ -430,9 +430,9 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, Media::
 	img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
 	img->DelBrush(b);
 
-	Int32 color;
+	UInt32 color;
 	OSInt layerId = 0;
-	OSInt thick;
+	UOSInt thick;
 	UInt8 *pattern;
 	UOSInt npattern;
 
@@ -477,9 +477,9 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	const UTF8Char *fontName;
 	Double fontSizePt;
 	Bool bold;
-	Int32 fontColor;
+	UInt32 fontColor;
 	UOSInt buffSize;
-	Int32 buffColor;
+	UInt32 buffColor;
 	Double sz[2];
 
 	if (env->GetFontStyle(fontStyle, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor))
@@ -526,7 +526,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawE
 	f = img->NewFontPt(fontName, fontSizePt, Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 	strLeng = Text::StrCharCnt(fontName);
 	img->GetTextSize(f, fontName, strLeng, sz);
-	img->DrawString((img->GetWidth() - sz[0]) * 0.5, (img->GetHeight() - sz[1]) * 0.5, fontName, f, b);
+	img->DrawString((img->GetWidth() - sz[0]) * 0.5, (Math::UOSInt2Double(img->GetHeight()) - sz[1]) * 0.5, fontName, f, b);
 	img->DelFont(f);
 	img->DelBrush(b);
 	return true;
@@ -540,7 +540,7 @@ void SSWR::AVIRead::AVIRCore::ShowForm(UI::GUIForm *frm)
 
 void SSWR::AVIRead::AVIRCore::CloseAllForm()
 {
-	OSInt i = this->frms->GetCount();
+	UOSInt i = this->frms->GetCount();
 	while (i-- > 0)
 	{
 		this->frms->GetItem(i)->Close();

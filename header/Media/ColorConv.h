@@ -17,10 +17,10 @@ namespace Media
 		~ColorConv();
 
 		void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
-		Int32 ConvRGB8(Int32 c);
+		UInt32 ConvRGB8(UInt32 c);
 
 
-		static Int32 ConvARGB(Media::ColorProfile *srcColor,  Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Int32 c);
+		static UInt32 ConvARGB(Media::ColorProfile *srcColor,  Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, UInt32 c);
 	};
-};
+}
 #endif

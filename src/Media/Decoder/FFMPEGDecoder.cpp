@@ -551,7 +551,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->ctx->thread_count = (int)Sync::Thread::GetThreadCnt();
 	if (codecId == AV_CODEC_ID_H264)
 	{
-		Int32 sz;
+		UInt32 sz;
 		UInt8 *buff = sourceVideo->GetProp(*(Int32*)"AVCH", &sz);
 		if (buff)
 		{
@@ -562,7 +562,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 #if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
 	else if (codecId == AV_CODEC_ID_HEVC)
 	{
-		Int32 sz;
+		UInt32 sz;
 		UInt8 *buff = sourceVideo->GetProp(*(Int32*)"HEVC", &sz);
 		if (buff)
 		{

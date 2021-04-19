@@ -7939,8 +7939,8 @@ Manage::DasmX86_16::DasmX86_16_Sess *Manage::DasmX86_16::CreateSess(Manage::Dasm
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	sess->code0fHdlrs = (void**)this->codes0f;
-	NEW_CLASS(sess->callAddrs, Data::ArrayListInt32());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListInt32());
+	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
+	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
 	MemCopyNO(&sess->regs, regs, sizeof(Manage::DasmX86_16::DasmX86_16_Regs));
 	return sess;
 }
@@ -7960,7 +7960,7 @@ const UTF8Char *Manage::DasmX86_16::GetHeader(Bool fullRegs)
 	return (const UTF8Char*)"EAX\tEDX\tECX\tEBX";
 }
 
-Bool Manage::DasmX86_16::Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_16::Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	return false;
 }
@@ -7976,7 +7976,7 @@ void Manage::DasmX86_16::FreeRegs(Dasm_Regs *regs)
 	MemFree(regs);
 }
 
-Bool Manage::DasmX86_16::DasmNext(Manage::DasmX86_16::DasmX86_16_Sess *sess, UTF8Char *buff, OSInt *outBuffSize)
+Bool Manage::DasmX86_16::DasmNext(Manage::DasmX86_16::DasmX86_16_Sess *sess, UTF8Char *buff, UOSInt *outBuffSize)
 {
 	*buff = 0;
 	if (outBuffSize)

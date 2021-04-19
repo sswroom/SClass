@@ -891,7 +891,7 @@ UTF8Char *IO::GSMModemController::SMSGetSMSC(UTF8Char *buff)
 	UTF8Char *sptr = 0;
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+CSCA?", 3000);
-	OSInt i = this->cmdResults->GetCount();
+	UOSInt i = this->cmdResults->GetCount();
 	const Char *val;
 	while (i-- > 0)
 	{

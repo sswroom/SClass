@@ -173,9 +173,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				const UTF8Char *fontName;
 				Double fontSize;
 				Bool bold;
-				Int32 fontColor;
+				UInt32 fontColor;
 				UOSInt buffSize;
-				Int32 buffColor;
+				UInt32 buffColor;
 				Int32 addFont;
 
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 7)

@@ -34,7 +34,7 @@ namespace SSWR
 				Bool shortAddrChg;
 				IO::SNBDongle::SensorType sensorType;
 				Int64 readingTime;
-				OSInt nReading;
+				UOSInt nReading;
 				Double readings[16];
 				IO::SNBDongle::ReadingType readingTypes[16];
 			} DeviceInfo;

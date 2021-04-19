@@ -233,7 +233,7 @@ void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, void *userObj)
 void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
 	this->hdlrMut->LockWrite();
-	OSInt i = this->hdlrList->GetCount();
+	UOSInt i = this->hdlrList->GetCount();
 	while (i-- > 0)
 	{
 		if (this->hdlrList->GetItem(i) == hdlr && this->hdlrObjs->GetItem(i) == userObj)

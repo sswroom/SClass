@@ -340,7 +340,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 {
 	Media::FrameInfo info;
 	UOSInt size;
-	Int32 size32;
+	UInt32 size32;
 	Int32 frameRateNorm;
 	Int32 frameRateDenorm;
 	UInt8 *buff;

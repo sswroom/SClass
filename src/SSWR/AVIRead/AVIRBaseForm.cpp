@@ -1503,7 +1503,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ACCELEROMETER:
 		{
 			IO::SensorManager sensors;
-			OSInt cnt = sensors.GetAccelerometerCnt();
+			UOSInt cnt = sensors.GetAccelerometerCnt();
 			if (cnt > 0)
 			{
 				IO::SensorAccelerometer *acc = sensors.CreateAccelerometer(0);

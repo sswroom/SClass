@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	UTF8Char sbuff[32];
-	Int32 ip = me->proxy->GetServerIP();
+	UInt32 ip = me->proxy->GetServerIP();
 	if (ip != me->currServer)
 	{
 		me->currServer = ip;
@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<const UTF8Char *> nameList;
 		Text::StringBuilderUTF8 sb;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		me->proxy->GetReqv4List(&nameList);
 
 		me->lbV4Request->ClearItems();

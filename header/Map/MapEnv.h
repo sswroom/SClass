@@ -47,14 +47,14 @@ namespace Map
 			Bool needRelease;
 			Int32 lineType;
 			UOSInt lineStyle;
-			OSInt lineThick;
-			Int32 lineColor;
+			UOSInt lineThick;
+			UInt32 lineColor;
 			Int32 fillStyle;
 			Int32 fontType;
 			UOSInt fontStyle;
 			const UTF8Char *fontName;
 			Double fontSizePt;
-			Int32 fontColor;
+			UInt32 fontColor;
 			Double maxScale;
 			Double minScale;
 			Int32 labelCol;
@@ -141,21 +141,21 @@ namespace Map
 		UOSInt AddLineStyle();
 		Bool SetLineStyleName(UOSInt index, const UTF8Char *name);
 		UTF8Char *GetLineStyleName(UOSInt index, UTF8Char *buff);
-		Bool AddLineStyleLayer(UOSInt index, Int32 color, OSInt thick, const UInt8 *pattern, UOSInt npattern);
-		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, Int32 color, OSInt thick, const UInt8 *pattern, UOSInt npattern);
+		Bool AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
+		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
 		Bool RemoveLineStyleLayer(UOSInt index, UOSInt layerId);
 		Bool RemoveLineStyle(UOSInt index);
 		UOSInt GetLineStyleCount();
-		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, Int32 *color, OSInt *thick, UInt8 **pattern, UOSInt *npattern);
+		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern);
 		UOSInt GetLineStyleLayerCnt(UOSInt index);
 
-		OSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor); //-1 = fail
+		OSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, const UTF8Char *name);
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff);
 		Bool RemoveFontStyle(UOSInt index);
 		UOSInt GetFontStyleCount();
-		Bool GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, Int32 *fontColor, UOSInt *buffSize, Int32 *buffColor);
-		Bool ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor);
+		Bool GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor);
+		Bool ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
 		OSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
 		Bool ReplaceLayer(GroupItem *group, OSInt index, Map::IMapDrawLayer *layer, Bool needRelease);

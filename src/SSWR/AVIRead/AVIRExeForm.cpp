@@ -13,9 +13,9 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 {
 	UTF8Char buff[512];
 	UTF8Char *sptr;
-	OSInt buffSize;
+	UOSInt buffSize;
 	ExeB16Addr *eaddr;
-	OSInt i;
+	UOSInt i;
 	UInt16 oriIP;
 	while (true)
 	{
@@ -112,8 +112,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	OSInt codeSize;
 	OSInt i;
 	OSInt j;
-	Data::ArrayListInt32 *funcCalls;
-	Data::ArrayListInt32 *nfuncCalls;
+	Data::ArrayListUInt32 *funcCalls;
+	Data::ArrayListUInt32 *nfuncCalls;
 
 	this->exeFile->GetDOSInitRegs(&regs);
 	NEW_CLASS(parts, Data::ArrayList<ExeB16Addr*>());
@@ -130,8 +130,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	parts->Insert(partInd->SortedInsert((eaddr->segm << 16) | eaddr->addr), eaddr);
 	
 	NEW_CLASS(dasm, Manage::DasmX86_16());
-	NEW_CLASS(funcCalls, ::Data::ArrayListInt32());
-	NEW_CLASS(nfuncCalls, ::Data::ArrayListInt32());
+	NEW_CLASS(funcCalls, ::Data::ArrayListUInt32());
+	NEW_CLASS(nfuncCalls, ::Data::ArrayListUInt32());
 	sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(&codeSize), this->exeFile->GetDOSCodeSegm());
 	if (sess)
 	{
@@ -139,13 +139,13 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		nfuncCalls->AddRange(sess->callAddrs);
 		nfuncCalls->AddRange(sess->jmpAddrs);
 		UOSInt arrSize;
-		Int32 *tmpArr = nfuncCalls->GetArray(&arrSize);
-		ArtificialQuickSort_SortInt32(tmpArr, 0, arrSize - 1);
+		UInt32 *tmpArr = nfuncCalls->GetArray(&arrSize);
+		ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
 		dasm->DeleteSess(sess);
 
 		while (nfuncCalls->GetCount() > 0)
 		{
-			Int32 faddr = nfuncCalls->GetItem(0);
+			UInt32 faddr = nfuncCalls->GetItem(0);
 			nfuncCalls->RemoveAt(0);
 			i = funcCalls->SortedIndexOf(faddr);
 			if (i < 0)
@@ -166,7 +166,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				nfuncCalls->AddRange(sess->callAddrs);
 				nfuncCalls->AddRange(sess->jmpAddrs);
 				tmpArr = nfuncCalls->GetArray(&arrSize);
-				ArtificialQuickSort_SortInt32(tmpArr, 0, arrSize - 1);
+				ArtificialQuickSort_SortUInt32(tmpArr, 0, arrSize - 1);
 				dasm->DeleteSess(sess);
 			}
 		}
@@ -400,8 +400,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 
 SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 {
-	OSInt j;
-	OSInt i;
+	UOSInt j;
+	UOSInt i;
 	DEL_CLASS(this->exeFile);
 	if (this->parts)
 	{

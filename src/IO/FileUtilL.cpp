@@ -157,9 +157,9 @@ Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
 typedef struct
 {
 	IO::FileStream *destStm;
-	Int64 writeSize;
+	UInt64 writeSize;
 	IO::IProgressHandler *progHdlr;
-	Int64 fileSize;
+	UInt64 fileSize;
 } CopySess;
 
 Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
@@ -792,10 +792,10 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	return succ;
 }*/
 
-void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, OSInt buffSize, void *userData)
+void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, void *userData)
 {
 	CopySess *csess = (CopySess*)userData;
-	OSInt writenSize;
+	UOSInt writenSize;
 	writenSize = csess->destStm->Write(buff, buffSize);
 	csess->writeSize += writenSize;
 	if (csess->progHdlr)

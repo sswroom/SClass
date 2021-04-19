@@ -18,7 +18,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	OSInt inputLev = this->lut->GetInputLevel();
 	OSInt outputCh = this->lut->GetOutputCh();
 	Media::LUT::DataFormat fmt = this->lut->GetFormat();
-	Int32 inputValues[4];
+	UInt32 inputValues[4];
 	inputValues[0] = 0;
 	inputValues[1] = 0;
 	inputValues[2] = 0;

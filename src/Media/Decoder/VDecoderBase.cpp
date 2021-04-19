@@ -129,7 +129,7 @@ OSInt Media::Decoder::VDecoderBase::ReadNextFrame(UInt8 *frameBuff, Int32 *frame
 	return 0;
 }
 
-UInt8 *Media::Decoder::VDecoderBase::GetProp(Int32 propName, Int32 *size)
+UInt8 *Media::Decoder::VDecoderBase::GetProp(Int32 propName, UInt32 *size)
 {
 	UInt8 *ret = Media::IVideoSource::GetProp(propName, size);
 	if (ret)

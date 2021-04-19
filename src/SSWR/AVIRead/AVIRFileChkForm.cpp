@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_VALIDATE:
 		{
 			UTF8Char sbuff[128];
-			OSInt hashSize;
+			UOSInt hashSize;
 			UInt8 *hash;
 			UInt8 *hash2;
 			OSInt i;

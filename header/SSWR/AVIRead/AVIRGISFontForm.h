@@ -27,7 +27,7 @@ namespace SSWR
 
 			const UTF8Char *fontName;
 			Double fontSizePt;
-			Int32 fontColor;
+			UInt32 fontColor;
 			Media::StaticImage *previewImage;
 
 			UI::GUIPictureBox *pbPreview;

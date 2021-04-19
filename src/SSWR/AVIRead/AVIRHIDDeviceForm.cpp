@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRHIDDeviceForm::~AVIRHIDDeviceForm()
 {
 	IO::HIDInfo *hid;
-	OSInt i = this->hidList->GetCount();
+	UOSInt i = this->hidList->GetCount();
 	while (i-- > 0)
 	{
 		hid = this->hidList->GetItem(i);

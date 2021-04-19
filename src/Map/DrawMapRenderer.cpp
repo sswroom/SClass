@@ -1604,7 +1604,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, Int32 lineColor)
+void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	OSInt i;
 	OSInt j;
@@ -1635,8 +1635,8 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 
 		if ((i = denv->idArr->GetCount()) > 0)
 		{
-			Int32 color;
-			OSInt thick;
+			UInt32 color;
+			UOSInt thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
@@ -1692,8 +1692,8 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 
 		if ((i = denv->idArr->GetCount()) > 0)
 		{
-			Int32 color;
-			OSInt thick;
+			UInt32 color;
+			UOSInt thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
@@ -1740,7 +1740,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 }
 
-void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, Int32 fillStyle, UOSInt lineThick, Int32 lineColor)
+void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, Int32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	OSInt i;
 	OSInt j;
@@ -1770,8 +1770,8 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 
 		if ((i = denv->idArr->GetCount()) > 0)
 		{
-			Int32 color;
-			OSInt thick;
+			UInt32 color;
+			UOSInt thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
@@ -1818,8 +1818,8 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 
 		if ((i = denv->idArr->GetCount()) > 0)
 		{
-			Int32 color;
-			OSInt thick;
+			UInt32 color;
+			UOSInt thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
@@ -3856,7 +3856,7 @@ Map::DrawMapRenderer::~DrawMapRenderer()
 void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, Int32 *imgDurMS)
 {
 	Map::DrawMapRenderer::DrawEnv denv;
-	OSInt i;
+	UOSInt i;
 	Map::DrawMapRenderer::DrawFontStyle *font;
 
 /*	Media::DrawBrush *b = img->NewBrushARGB(this->env->GetBGColor());
@@ -3884,9 +3884,9 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, In
 		const UTF8Char *fontName;
 		Double fontSizePt;
 		Bool bold;
-		Int32 fontColor;
+		UInt32 fontColor;
 		UOSInt buffSize;
-		Int32 buffColor;
+		UInt32 buffColor;
 
 		font = &denv.fontStyles[i];
 		env->GetFontStyle(i, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor);

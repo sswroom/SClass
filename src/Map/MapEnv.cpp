@@ -282,7 +282,7 @@ UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff)
 	}
 }
 
-Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, Int32 color, OSInt thick, const UInt8 *pattern, UOSInt npattern)
+Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles->GetCount();
@@ -311,7 +311,7 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, Int32 color, OSInt thick, cons
 	return true;
 }
 
-Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, Int32 color, OSInt thick, const UInt8 *pattern, UOSInt npattern)
+Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern)
 {
 	UOSInt cnt = this->lineStyles->GetCount();
 	if (index >= cnt)
@@ -406,7 +406,7 @@ UOSInt Map::MapEnv::GetLineStyleCount()
 	return this->lineStyles->GetCount();
 }
 
-Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, Int32 *color, OSInt *thick, UInt8 **pattern, UOSInt *npattern)
+Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern)
 {
 	UOSInt cnt = this->lineStyles->GetCount();
 	if (index >= cnt)
@@ -440,7 +440,7 @@ UOSInt Map::MapEnv::GetLineStyleLayerCnt(UOSInt index)
 	return style->layers->GetCount();
 }
 
-OSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor)
+OSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
 	Map::MapEnv::FontStyle *style;
 	if (fontName == 0)
@@ -513,7 +513,7 @@ UOSInt Map::MapEnv::GetFontStyleCount()
 	return this->fontStyles->GetCount();
 }
 
-Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, Int32 *fontColor, UOSInt *buffSize, Int32 *buffColor)
+Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor)
 {
 	Map::MapEnv::FontStyle *style = this->fontStyles->GetItem(index);
 	if (style == 0)
@@ -535,7 +535,7 @@ Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *
 	return true;
 }
 
-Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, Int32 fontColor, UOSInt buffSize, Int32 buffColor)
+Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
 	if (fontName == 0)
 		return false;
@@ -1119,7 +1119,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 	{
 		if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		{
-			OSInt i;
+			UOSInt i;
 			imgInfo = MemAlloc(ImageInfo, 1);
 			Media::ImageList *imgList = (Media::ImageList*)pobj;
 			imgInfo->fileName = Text::StrCopyNew(fileName);
@@ -1280,7 +1280,7 @@ Int64 Map::MapEnv::GetTimeStartTS(Map::MapEnv::GroupItem *group)
 {
 	Data::ArrayList<Map::MapEnv::MapItem*> *objs;
 	Map::MapEnv::MapItem *item;
-	OSInt i;
+	UOSInt i;
 	Int64 val = 0;
 	Int64 val2 = 0;
 

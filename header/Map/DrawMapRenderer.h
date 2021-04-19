@@ -86,8 +86,8 @@ namespace Map
 		static OSInt __stdcall VImgCompare(void *obj1, void *obj2);
 	private:
 		void DrawLayers(DrawEnv *denv, Map::MapEnv::GroupItem *group);
-		void DrawPLLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, Int32 lineColor);
-		void DrawPGLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, Int32 fillStyle, UOSInt lineThick, Int32 lineColor);
+		void DrawPLLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor);
+		void DrawPGLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, Int32 fillStyle, UOSInt lineThick, UInt32 lineColor);
 		void DrawPTLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex);
 		void DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontSytle, Int32 labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType);
 		void DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer);

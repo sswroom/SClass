@@ -28,9 +28,9 @@ namespace SSWR
 
 			const UTF8Char *currFontName;
 			Double currFontSizePt;
-			Int32 currColor;
+			UInt32 currColor;
 			UOSInt currBuffSize;
-			Int32 currBuffColor;
+			UInt32 currBuffColor;
 			Bool isBold;
 			Media::StaticImage *previewImage;
 

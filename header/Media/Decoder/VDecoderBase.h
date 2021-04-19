@@ -44,7 +44,7 @@ namespace Media
 			virtual OSInt GetDataSeekCount();
 
 			virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype);
-			virtual UInt8 *GetProp(Int32 propName, Int32 *size);
+			virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
 			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
 		};
 	}

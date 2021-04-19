@@ -123,10 +123,10 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					/////////////////////////////////////
 
 
-					Int32 exifSize;
-					Int32 endOfst;
-					Int32 k;
-					Int32 l;
+					UInt32 exifSize;
+					UInt32 endOfst;
+					UInt32 k;
+					UInt32 l;
 
 					UInt8 *exifBuff;
 					exif->GetExifBuffSize(&exifSize, &endOfst);

@@ -78,10 +78,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	DeviceInfo *dev;
 	UTF8Char sbuff[64];
 	Data::DateTime dt;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Text::StringBuilderUTF8 sb;
 
 	if (me->devChg)

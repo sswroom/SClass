@@ -32,7 +32,7 @@ void Media::ColorConv::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rg
 	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor->rtransfer));
 }
 
-Int32 Media::ColorConv::ConvRGB8(Int32 c)
+UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 {
 	UInt8 *rgbTable = this->rgbTable;
 #if defined(HAS_ASM32)
@@ -106,7 +106,7 @@ Int32 Media::ColorConv::ConvRGB8(Int32 c)
 #endif
 }
 
-Int32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Int32 c)
+UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, UInt32 c)
 {
 	UInt8 buff[4];
 	const Media::IColorHandler::RGBPARAM2 *rgbParam;

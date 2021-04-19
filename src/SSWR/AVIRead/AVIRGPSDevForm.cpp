@@ -12,8 +12,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
 	UInt8 *recvBuff;
-	OSInt recvBuffSize;
-	OSInt readSize;
+	UOSInt recvBuffSize;
+	UOSInt readSize;
 	recvBuff = MemAlloc(UInt8, 16384);
 	recvBuffSize = 0;
 	me->threadRunning = true;
@@ -157,8 +157,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	if (me->cli == 0 && me->dispConn)
 	{
@@ -780,19 +780,19 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				Text::StrDouble(sbuff, ReadDouble(&cmd[56]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"GuardFlags"));
-				Text::StrHexVal32(sbuff, ReadInt32(&cmd[64]));
+				Text::StrHexVal32(sbuff, ReadUInt32(&cmd[64]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"GuardFlags2"));
-				Text::StrHexVal32(sbuff, ReadInt32(&cmd[68]));
+				Text::StrHexVal32(sbuff, ReadUInt32(&cmd[68]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"GuardFlags3"));
-				Text::StrHexVal32(sbuff, ReadInt32(&cmd[72]));
+				Text::StrHexVal32(sbuff, ReadUInt32(&cmd[72]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"GuardFlags4"));
-				Text::StrHexVal32(sbuff, ReadInt32(&cmd[76]));
+				Text::StrHexVal32(sbuff, ReadUInt32(&cmd[76]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"GuardFlags5"));
-				Text::StrHexVal32(sbuff, ReadInt32(&cmd[80]));
+				Text::StrHexVal32(sbuff, ReadUInt32(&cmd[80]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"DevPeriod"));
 				Text::StrInt32(sbuff, ReadInt32(&cmd[84]));

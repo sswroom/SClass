@@ -41,7 +41,7 @@ namespace Net
 		Net::DNSServer *svr;
 
 		UInt32 currServerIP;
-		OSInt currServerIndex;
+		UOSInt currServerIndex;
 		Data::DateTime *currIPTime;
 		Sync::Mutex *dnsMut;
 		Data::ArrayList<UInt32> *dnsList;

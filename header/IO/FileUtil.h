@@ -32,8 +32,8 @@ namespace IO
 		static Bool MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 	private:
-		static void __stdcall CopyHdlr(const UInt8 *buff, OSInt buffSize, void *userData);
+		static void __stdcall CopyHdlr(const UInt8 *buff, UOSInt buffSize, void *userData);
 		static Bool DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile);
 	};
-};
+}
 #endif

@@ -26,15 +26,15 @@ namespace IO
 	private:
 		Data::ArrayListStrUTF8 *fileNames;
 		UInt8 *chkValues;
-		OSInt chkCapacity;
+		UOSInt chkCapacity;
 		CheckType chkType;
-		OSInt hashSize;
+		UOSInt hashSize;
 
 	public:
 		static Crypto::Hash::IHash *CreateHash(CheckType chkType);
 		static FileCheck *CreateCheck(const UTF8Char *path, CheckType chkType, IO::IProgressHandler *progress, Bool skipError);
 	private:
-		static void __stdcall CheckData(const UInt8 *buff, OSInt buffSize, void *userData);
+		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, void *userData);
 		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError); //true = error
 
 	public:
@@ -42,7 +42,7 @@ namespace IO
 		virtual ~FileCheck();
 
 		HashType GetHashType();
-		OSInt GetHashSize();
+		UOSInt GetHashSize();
 		CheckType GetCheckType();
 		UOSInt GetCount();
 		const UTF8Char *GetEntryName(UOSInt index);
@@ -52,5 +52,5 @@ namespace IO
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 	};
-};
+}
 #endif

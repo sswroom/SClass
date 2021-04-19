@@ -76,8 +76,8 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 		UInt64 blockStart;
 		UInt64 blockEnd;
 		OSInt i;
-		Data::ArrayListInt64 callAddrs;
-		Data::ArrayListInt64 jmpAddrs;
+		Data::ArrayListUInt64 callAddrs;
+		Data::ArrayListUInt64 jmpAddrs;
 		NEW_CLASS(dasm, Manage::DasmX86_64());
 		dasm->Disasm64In(&sb, symbol, &addr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, proc);
 		DEL_CLASS(dasm);

@@ -78,8 +78,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	Bool found;
 	FileStatus *status = 0;
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	IO::FileExporter *exporter;
 	IO::FileCheck::CheckType chkType;
 	me->threadStatus = 1;
@@ -194,9 +194,9 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 {
 	if (this->fileListChg)
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		FileStatus *status;
 		this->fileListChg = false;
 		this->lvTasks->ClearItems();

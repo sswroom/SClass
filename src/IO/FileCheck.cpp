@@ -12,8 +12,8 @@
 typedef struct
 {
 	Crypto::Hash::IHash *hash;
-	Int64 readSize;
-	Int64 fileSize;
+	UInt64 readSize;
+	UInt64 fileSize;
 	IO::IProgressHandler *progress;
 } ReadSess;
 
@@ -156,7 +156,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	return fchk;
 }
 
-void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, OSInt buffSize, void *userData)
+void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, void *userData)
 {
 	ReadSess *sess = (ReadSess*)userData;
 	sess->hash->Calc(buff, buffSize);
@@ -308,7 +308,7 @@ IO::FileCheck::HashType IO::FileCheck::GetHashType()
 	}
 }
 
-OSInt IO::FileCheck::GetHashSize()
+UOSInt IO::FileCheck::GetHashSize()
 {
 	return this->hashSize;
 }

@@ -444,7 +444,7 @@ UTF8Char *Map::OSM::OSMTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64
 
 IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	UTF8Char filePathU[512];
 	UTF8Char u8buff[64];
 	Text::StringBuilderUTF8 urlSb;
@@ -557,7 +557,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	}
 	else
 	{
-		Int64 contLeng = cli->GetContentLength();
+		UInt64 contLeng = cli->GetContentLength();
 		OSInt currPos = 0;
 		UInt8 *imgBuff;
 		if (contLeng > 0 && contLeng <= 10485760)
