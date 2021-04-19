@@ -1716,6 +1716,10 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			return DB::DBUtil::CT_Vector;
 		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"date"))
+		{
+			return DB::DBUtil::CT_DateTime;
+		}
 		else
 		{
 			return DB::DBUtil::CT_Unknown;
