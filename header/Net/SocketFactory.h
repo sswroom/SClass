@@ -176,10 +176,10 @@ namespace Net
 		virtual void SetBroadcast(UInt32 *socket, Bool val) = 0;
 		virtual void AddIPMembership(UInt32 *socket, UInt32 ip) = 0;
 
-		virtual OSInt SendData(UInt32 *socket, const UInt8 *buff, OSInt buffSize, ErrorType *et) = 0;
-		virtual OSInt ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et) = 0;
-		virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, Sync::Event *evt, ErrorType *et) = 0;
-		virtual OSInt EndReceiveData(void *reqData, Bool toWait) = 0;
+		virtual UOSInt SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
+		virtual UOSInt ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
+		virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et) = 0;
+		virtual UOSInt EndReceiveData(void *reqData, Bool toWait) = 0;
 		virtual void CancelReceiveData(void *reqData) = 0;
 
 		virtual UOSInt UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et) = 0;
@@ -196,18 +196,18 @@ namespace Net
 
 		virtual Bool DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr) = 0;
 		virtual Bool GetDefDNS(Net::SocketUtil::AddressInfo *addr) = 0;
-		virtual OSInt GetDNSList(Data::ArrayList<UInt32> *dnsList) = 0;
+		virtual UOSInt GetDNSList(Data::ArrayList<UInt32> *dnsList) = 0;
 		virtual Bool LoadHosts(Net::DNSHandler *dnsHdlr) = 0;
 
-		virtual Bool ARPAddRecord(OSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4) = 0;
+		virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4) = 0;
 
-		virtual OSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList) = 0;
+		virtual UOSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList) = 0;
 		virtual Bool GetIPInfo(IPInfo *info) = 0; //////////////////////////////////
 		virtual Bool GetTCPInfo(TCPInfo *info) = 0; //////////////////////////////////
 		virtual Bool GetUDPInfo(UDPInfo *info) = 0; //////////////////////////////////
-		virtual OSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList) = 0;
-		virtual OSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList) = 0;
 
 		virtual Bool AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr);

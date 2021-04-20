@@ -77,14 +77,14 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(const UTF8Char **msgArr, Int64 *dateArr, OSInt arrCnt)
+void IO::MTFileLog::WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
 	Data::DateTime time;
 	Text::StringBuilderUTF8 sb;
 
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < arrCnt)
 	{
@@ -156,7 +156,7 @@ void IO::MTFileLog::WriteArr(const UTF8Char **msgArr, Int64 *dateArr, OSInt arrC
 UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 {
 	IO::MTFileLog *me = (IO::MTFileLog*)userObj;
-	OSInt arrCnt;
+	UOSInt arrCnt;
 	const UTF8Char **msgArr = 0;
 	Int64 *dateArr = 0;
 	me->running = true;

@@ -66,7 +66,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Int32 ip, UInt16 port) : IO::Stream((const UTF8Char*)"")
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : IO::Stream((const UTF8Char*)"")
 {
 	this->currCnt = 0;
 	this->s = 0;

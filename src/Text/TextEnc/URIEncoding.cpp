@@ -38,8 +38,8 @@ UTF8Char *Text::TextEnc::URIEncoding::URIEncode(UTF8Char *buff, const UTF8Char *
 		{
 			*dest++ = '%';
 			b = *uri++;
-			*dest++ = MyString_STRHEXARR[b >> 4];
-			*dest++ = MyString_STRHEXARR[b & 15];
+			*dest++ = (UTF8Char)MyString_STRHEXARR[b >> 4];
+			*dest++ = (UTF8Char)MyString_STRHEXARR[b & 15];
 		}
 	}
 	*dest = 0;
@@ -66,15 +66,15 @@ UTF8Char *Text::TextEnc::URIEncoding::URIDecode(UTF8Char *buff, const UTF8Char *
 				c = *uri++;
 				if (c >= 0x30 && c <= 0x39)
 				{
-					v = c - 0x30;
+					v = (UTF8Char)(c - 0x30);
 				}
 				else if (c >= 0x41 && c <= 0x46)
 				{
-					v = c - 0x37;
+					v = (UTF8Char)(c - 0x37);
 				}
 				else if (c >= 0x61 && c <= 0x66)
 				{
-					v = c - 0x57;
+					v = (UTF8Char)(c - 0x57);
 				}
 				else
 				{
@@ -87,15 +87,15 @@ UTF8Char *Text::TextEnc::URIEncoding::URIDecode(UTF8Char *buff, const UTF8Char *
 					c = *uri++;
 					if (c >= 0x30 && c <= 0x39)
 					{
-						*dest++ = (v << 4) + (c - 0x30);
+						*dest++ = (UTF8Char)((v << 4) + (c - 0x30));
 					}
 					else if (c >= 0x41 && c <= 0x46)
 					{
-						*dest++ = (v << 4) + (c - 0x37);
+						*dest++ = (UTF8Char)((v << 4) + (c - 0x37));
 					}
 					else if (c >= 0x61 && c <= 0x66)
 					{
-						*dest++ = (v << 4) + (c - 0x57);
+						*dest++ = (UTF8Char)((v << 4) + (c - 0x57));
 					}
 					else
 					{

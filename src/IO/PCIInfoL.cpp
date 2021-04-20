@@ -49,7 +49,7 @@ const UTF8Char *IO::PCIInfo::GetDispName()
 UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
 {
 	UInt8 buff[33];
-	OSInt readSize;
+	UOSInt readSize;
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	readSize = fs->Read(buff, 32);
@@ -70,11 +70,11 @@ UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 
-OSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
+UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 {
 	ClassData clsData;
 	IO::PCIInfo *pci;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;

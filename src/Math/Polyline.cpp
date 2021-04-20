@@ -59,11 +59,11 @@ Double *Math::Polyline::GetPointList(UOSInt *nPoint)
 void Math::Polyline::GetCenter(Double *x, Double *y)
 {
 	Double maxLength = 0;
-	OSInt maxId = 0;
+	UOSInt maxId = 0;
 	Double currLength;
-	OSInt i = this->nPoint - 1;
-	OSInt j = this->nPtOfst;
-	OSInt k;
+	UOSInt i = this->nPoint - 1;
+	UOSInt j = this->nPtOfst;
+	UOSInt k;
 	Double lastX;
 	Double lastY;
 	Double thisX;
@@ -143,7 +143,7 @@ Math::Vector2D *Math::Polyline::Clone()
 
 void Math::Polyline::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
-	OSInt i = this->nPoint << 1;
+	UOSInt i = this->nPoint << 1;
 	Double x1;
 	Double y1;
 	Double x2;
@@ -306,7 +306,7 @@ Bool Math::Polyline::JoinVector(Math::Vector2D *vec)
 	MemCopyNO(newPtOfsts, this->ptOfstArr, this->nPtOfst * sizeof(UInt32));
 	MemCopyNO(newPoints, this->pointArr, this->nPoint * 2 * sizeof(Double));
 	MemCopyNO(&newPoints[this->nPoint * 2], pl->pointArr, pl->nPoint * 2 * sizeof(Double));
-	OSInt i = pl->nPtOfst;
+	UOSInt i = pl->nPtOfst;
 	while (i-- > 0)
 	{
 		newPtOfsts[this->nPtOfst + i] = pl->ptOfstArr[i] + (UInt32)this->nPoint;
@@ -345,7 +345,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 	Double calPtX;
 	Double calPtY;
 	Bool isPoint;
-	UOSInt minId = this->GetPointNo(x, y, &isPoint, &calPtX, &calPtY);
+	UOSInt minId = (UOSInt)this->GetPointNo(x, y, &isPoint, &calPtX, &calPtY);
 
 	UInt32 *oldPtOfsts;
 	UInt32 *newPtOfsts;
@@ -354,7 +354,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 	Math::Polyline *newPL;
 	if (isPoint)
 	{
-		if (minId == this->nPoint - 1 || minId == 0)
+		if (minId == this->nPoint - 1 || minId == 0 || minId == (UOSInt)-1)
 		{
 			return 0;
 		}
@@ -399,7 +399,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 		l = this->nPtOfst;
 		while (--l > k)
 		{
-			newPtOfsts[l - k] = ptOfsts[l] - (Int32)minId;
+			newPtOfsts[l - k] = ptOfsts[l] - (UInt32)minId;
 		}
 		newPtOfsts[0] = 0;
 		newPoints = newPL->GetPointList(&l);
@@ -453,7 +453,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 		l = this->nPtOfst;
 		while (--l > k)
 		{
-			newPtOfsts[l - k] = ptOfsts[l] - (Int32)minId;
+			newPtOfsts[l - k] = ptOfsts[l] - (UInt32)minId;
 		}
 		newPtOfsts[0] = 0;
 		newPoints = newPL->GetPointList(&l);
@@ -478,7 +478,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 void Math::Polyline::OptimizePolyline()
 {
 	Double *tmpPoints = MemAlloc(Double, this->nPoint * 2);
-	UInt32 lastPoints = (Int32)this->nPoint;
+	UInt32 lastPoints = (UInt32)this->nPoint;
 	UInt32 thisPoints;
 	UInt32 lastChkPoint;
 	UInt32 thisChkPoint;
@@ -565,7 +565,7 @@ void Math::Polyline::OptimizePolyline()
 			{
 				Double *srcPt;
 				Double *destPt;
-				Int32 ptCnt;
+				UInt32 ptCnt;
 
 				MemCopyNO(tmpPoints, &this->pointArr[thisPoints << 1], sizeof(Double) * 2 * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
@@ -596,7 +596,7 @@ void Math::Polyline::OptimizePolyline()
 				this->nPoint -= 1;
 				if (i >= this->nPtOfst)
 				{
-					thisPoints = (Int32)this->nPoint;
+					thisPoints = (UInt32)this->nPoint;
 				}
 				else
 				{
@@ -608,7 +608,7 @@ void Math::Polyline::OptimizePolyline()
 			{
 				Double *srcPt;
 				Double *destPt;
-				Int32 ptCnt;
+				UInt32 ptCnt;
 
 				MemCopyNO(tmpPoints, &this->pointArr[thisPoints << 1], sizeof(Double) * 2 * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
@@ -641,7 +641,7 @@ void Math::Polyline::OptimizePolyline()
 				this->nPoint -= 1;
 				if (i >= this->nPtOfst)
 				{
-					thisPoints = (Int32)this->nPoint;
+					thisPoints = (UInt32)this->nPoint;
 				}
 				else
 				{
@@ -752,7 +752,7 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 				calPtX = calX;
 				calPtY = calY;
 				isPointI = false;
-				minId = l;
+				minId = (OSInt)l;
 			}
 		}
 	}
@@ -767,7 +767,7 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 			dist = calD;
 			calPtX = points[(k << 1) + 0];
 			calPtY = points[(k << 1) + 1];
-			minId = k;
+			minId = (OSInt)k;
 			isPointI = true;
 		}
 	}

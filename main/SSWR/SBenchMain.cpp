@@ -98,23 +98,23 @@ Double HashTestSpeed(Crypto::Hash::IHash *hash)
 	return t;
 }
 
-UTF8Char *ByteDisp(UTF8Char *sbuff, Int64 byteSize)
+UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, byteSize / 1073741824.0, "0.#"), (const UTF8Char*)"GB");
+		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1073741824.0, "0.#"), (const UTF8Char*)"GB");
 	}
 	else if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, byteSize / 1048576.0, "0.#"), (const UTF8Char*)"MB");
+		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1048576.0, "0.#"), (const UTF8Char*)"MB");
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, byteSize / 1024.0, "0.#"), (const UTF8Char*)"KB");
+		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1024.0, "0.#"), (const UTF8Char*)"KB");
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrInt64(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize), (const UTF8Char*)"B");
 	}
 }
 
@@ -135,16 +135,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #endif
 	Text::UTF8Writer *writer;
 	IO::SystemInfo sysInfo;
-	Int64 memSize;
+	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char u8buff[256];
 	UTF16Char u16buff[32];
 	UTF32Char u32buff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double t;
-	Int32 threadCnt = Sync::Thread::GetThreadCnt();
+	UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 
 	MemSetLogFile((const UTF8Char*)"Memory.log");
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SBench.log", Manage::ExceptionRecorder::EA_CLOSE));
@@ -236,7 +236,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"CPU Thread Count: ");
-	sb.AppendI32(threadCnt);
+	sb.AppendUOSInt(threadCnt);
 	console->WriteLine(sb.ToString());
 	writer->WriteLine(sb.ToString());
 	sb.ClearStr();
@@ -356,7 +356,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Monitor ");
-					sb.AppendOSInt(i);
+					sb.AppendUOSInt(i);
 					sb.Append((const UTF8Char*)" - ");
 					sb.Append(edidInfo.monitorName);
 					sb.Append((const UTF8Char*)" (");
@@ -725,7 +725,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	writer->WriteLine(sb.ToString());
 
 	{
-		Int64 maxVal = memSize >> 5;
+		UInt64 maxVal = memSize >> 5;
 		if (maxVal > 100000000)
 		{
 			maxVal = 100000000;
@@ -742,7 +742,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"ArrayList<Int32>.Add (0 - ");
-		sb.AppendI64(maxVal - 1);
+		sb.AppendU64(maxVal - 1);
 		sb.Append((const UTF8Char*)"): ");
 		Text::SBAppendF64(&sb, t);
 		console->WriteLine(sb.ToString());
@@ -756,7 +756,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"ArrayList<Int32>.RemoveAt(Last) * ");
-		sb.AppendI64(maxVal);
+		sb.AppendU64(maxVal);
 		sb.Append((const UTF8Char*)": ");
 		Text::SBAppendF64(&sb, t);
 		console->WriteLine(sb.ToString());
@@ -805,10 +805,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #endif
 
 #if defined(TEST_SORT)
-	OSInt recordCnt = 100000000;
-	OSInt noOfRec;
+	UOSInt recordCnt = 100000000;
+	UOSInt noOfRec;
 	Bool valid;
-	Int32 seed = 0;
+	UInt32 seed = 0;
 	UInt32 *iarray1;
 	UInt32 *iarray2;
 
@@ -846,9 +846,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Gen Random (MT19937) N = ");
-	sb.AppendOSInt(recordCnt);
+	sb.AppendUOSInt(recordCnt);
 	sb.Append((const UTF8Char*)", seed = ");
-	sb.AppendI32(seed);
+	sb.AppendU32(seed);
 	sb.Append((const UTF8Char*)", time = ");
 	Text::SBAppendF64(&sb, t);
 	sb.Append((const UTF8Char*)"s");
@@ -861,11 +861,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		MemCopyANC(iarray2, iarray1, noOfRec * sizeof(Int32));
 		clk->Start();
-		ArtificialQuickSort_SortUInt32(iarray2, 0, noOfRec - 1);
+		ArtificialQuickSort_SortUInt32(iarray2, 0, (OSInt)noOfRec - 1);
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"AQuickSort 1 Thread N = ");
-		sb.AppendOSInt(noOfRec);
+		sb.AppendUOSInt(noOfRec);
 		sb.Append((const UTF8Char*)", Sort time = ");
 		Text::SBAppendF64(&sb, t);
 		sb.Append((const UTF8Char*)"s");
@@ -909,13 +909,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			MemCopyANC(iarray2, iarray1, noOfRec * sizeof(Int32));
 			clk->Start();
-			aqsort->SortUInt32(iarray2, 0, noOfRec - 1);
+			aqsort->SortUInt32(iarray2, 0, (OSInt)noOfRec - 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"AQuickSort ");
-			sb.AppendOSInt(Sync::Thread::GetThreadCnt());
+			sb.AppendUOSInt(Sync::Thread::GetThreadCnt());
 			sb.Append((const UTF8Char*)" Thread N = ");
-			sb.AppendOSInt(noOfRec);
+			sb.AppendUOSInt(noOfRec);
 			sb.Append((const UTF8Char*)", Sort time = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)"s");
@@ -956,11 +956,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		MemCopyANC(iarray2, iarray1, noOfRec * sizeof(Int32));
 		clk->Start();
-		BubbleSort_SortUInt32(iarray2, 0, noOfRec - 1);
+		BubbleSort_SortUInt32(iarray2, 0, (OSInt)noOfRec - 1);
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"BubbleSortv1 1 Thread N = ");
-		sb.AppendOSInt(noOfRec);
+		sb.AppendUOSInt(noOfRec);
 		sb.Append((const UTF8Char*)", Sort time = ");
 		Text::SBAppendF64(&sb, t);
 		sb.Append((const UTF8Char*)"s");
@@ -998,11 +998,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		MemCopyANC(iarray2, iarray1, noOfRec * sizeof(Int32));
 		clk->Start();
-		InsertionSort_SortUInt32(iarray2, 0, noOfRec - 1);
+		InsertionSort_SortUInt32(iarray2, 0, (OSInt)noOfRec - 1);
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"InsertionSort 1 Thread N = ");
-		sb.AppendOSInt(noOfRec);
+		sb.AppendUOSInt(noOfRec);
 		sb.Append((const UTF8Char*)", Sort time = ");
 		Text::SBAppendF64(&sb, t);
 		sb.Append((const UTF8Char*)"s");
@@ -1040,11 +1040,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		MemCopyANC(iarray2, iarray1, noOfRec * sizeof(Int32));
 		clk->Start();
-		BitonicSort_SortUInt32(iarray2, 0, noOfRec - 1);
+		BitonicSort_SortUInt32(iarray2, 0, (OSInt)noOfRec - 1);
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"BitonicSort 1 Thread N = ");
-		sb.AppendOSInt(noOfRec);
+		sb.AppendUOSInt(noOfRec);
 		sb.Append((const UTF8Char*)", Sort time = ");
 		Text::SBAppendF64(&sb, t);
 		sb.Append((const UTF8Char*)"s");
@@ -1134,12 +1134,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		MemCopyANC(iarray2, iarray1, noOfRec * sizeof(Int32));
 		clk->Start();
-		if (!ByteCountingSort_SortUInt32(iarray2, 0, noOfRec - 1))
+		if (!ByteCountingSort_SortUInt32(iarray2, 0, (OSInt)noOfRec - 1))
 			break;
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"BCountSort 1 Thread N = ");
-		sb.AppendOSInt(noOfRec);
+		sb.AppendUOSInt(noOfRec);
 		sb.Append((const UTF8Char*)", Sort time = ");
 		Text::SBAppendF64(&sb, t);
 		sb.Append((const UTF8Char*)"s");
@@ -1188,10 +1188,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double oriT;
 	UInt8 *buff1;
 	UInt8 *buff2;
-	OSInt loopCnt;
-	OSInt currSize;
-	OSInt startSize = 128;
-	OSInt buffSize = 64 << 20;
+	UOSInt loopCnt;
+	UOSInt currSize;
+	UOSInt startSize = 128;
+	UOSInt buffSize = 64 << 20;
 	while (buffSize > (memSize >> 2))
 	{
 		buffSize = buffSize >> 1;
@@ -1234,7 +1234,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * loopCnt) / t * 2.0;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Copy\t");
@@ -1244,7 +1244,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1274,7 +1274,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t;
+				Double rate = (Double)(currSize * loopCnt) / t;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Write\t");
@@ -1284,7 +1284,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1314,7 +1314,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t;
+				Double rate = (Double)(currSize * loopCnt) / t;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Read\t");
@@ -1324,7 +1324,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1358,7 +1358,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * loopCnt) / t * 2.0;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"MemCopyNO\t");
@@ -1368,7 +1368,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1402,7 +1402,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * loopCnt) / t * 2.0;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"MemCopyO\t");
@@ -1412,7 +1412,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1446,7 +1446,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * loopCnt) / t * 2.0;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"MemCopyAC\t");
@@ -1456,7 +1456,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1490,7 +1490,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * loopCnt) / t * 2.0;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"MemCopyANC\t");
@@ -1500,7 +1500,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -1525,8 +1525,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Media::ImageList *imgList;
 		Media::ImageGen::RingsImageGen *imgGen;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		OSInt imgWidth;
-		OSInt imgHeight;
+		UOSInt imgWidth;
+		UOSInt imgHeight;
 		Media::StaticImage *srcImg;
 		UInt8 *tmpBuff;
 		Media::CS::CSConverter *csconv;
@@ -1553,9 +1553,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Generate Rings Image: Error, size = ");
-			sb.AppendOSInt(imgWidth);
+			sb.AppendUOSInt(imgWidth);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight);
+			sb.AppendUOSInt(imgHeight);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 		}
@@ -1563,17 +1563,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Media::StaticImage *newImg;
 			Media::IImgResizer *resizer;
-			OSInt cnt;
+			UOSInt cnt;
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Generate Rings Image: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth);
+			sb.AppendUOSInt(imgWidth);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight);
+			sb.AppendUOSInt(imgHeight);
 			sb.Append((const UTF8Char*)" ");
-			sb.AppendI32(srcImg->info->storeBPP);
+			sb.AppendU32(srcImg->info->storeBPP);
 			sb.Append((const UTF8Char*)" bpp");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -1598,9 +1598,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"Create Image: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth >> 1);
+			sb.AppendUOSInt(imgWidth >> 1);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight >> 1);
+			sb.AppendUOSInt(imgHeight >> 1);
 			sb.Append((const UTF8Char*)" 64 bpp");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -1621,7 +1621,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1630,16 +1630,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1662,9 +1662,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"Delete Image List: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth >> 1);
+			sb.AppendUOSInt(imgWidth >> 1);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight >> 1);
+			sb.AppendUOSInt(imgHeight >> 1);
 			sb.Append((const UTF8Char*)" 64 bpp");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -1676,9 +1676,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"Create Image: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth >> 1);
+			sb.AppendUOSInt(imgWidth >> 1);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight >> 1);
+			sb.AppendUOSInt(imgHeight >> 1);
 			sb.Append((const UTF8Char*)" 32 bpp");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -1692,7 +1692,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1701,16 +1701,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1732,7 +1732,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1741,16 +1741,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1809,7 +1809,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, (OSInt)srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"CSConv (1st): t = ");
@@ -1818,16 +1818,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, (OSInt)srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"CSConv (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1859,7 +1859,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(tmpBuff, imgWidth << 3, Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1868,16 +1868,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(tmpBuff, imgWidth << 3, Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1900,7 +1900,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(tmpBuff, imgWidth << 3, Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1909,16 +1909,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(tmpBuff, imgWidth << 3, Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1942,9 +1942,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"To 32bpp: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth);
+			sb.AppendUOSInt(imgWidth);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight);
+			sb.AppendUOSInt(imgHeight);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
@@ -1966,7 +1966,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1975,16 +1975,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -2007,7 +2007,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -2016,16 +2016,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -2048,7 +2048,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -2057,16 +2057,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -2089,7 +2089,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -2098,16 +2098,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			if (t * 30 > 10)
-				cnt = 1 + (Int32)(10 / t);
+				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -2131,9 +2131,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"Delete Image List: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth >> 1);
+			sb.AppendUOSInt(imgWidth >> 1);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight >> 1);
+			sb.AppendUOSInt(imgHeight >> 1);
 			sb.Append((const UTF8Char*)" 32 bpp");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -2145,9 +2145,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"Delete Image: t = ");
 			Text::SBAppendF64(&sb, t);
 			sb.Append((const UTF8Char*)", size = ");
-			sb.AppendOSInt(imgWidth);
+			sb.AppendUOSInt(imgWidth);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(imgHeight);
+			sb.AppendUOSInt(imgHeight);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
@@ -2169,7 +2169,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		else if (key == 'y' || key == 'Y')
 		{
 			Bool allowRetry = false;
-			Int64 fileSize;
+			UInt64 fileSize;
 			console->WriteLine((const UTF8Char*)"Uploading to server");
 			fileSize = fs->GetLength();
 			if (fileSize <= 0)
@@ -2180,8 +2180,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Net::SocketFactory *sockf;
 				Net::HTTPClient *cli;
-				Int64 readSize;
-				UInt8 *txtBuff = MemAlloc(UInt8, (OSInt)fileSize);
+				UInt64 readSize;
+				UInt8 *txtBuff = MemAlloc(UInt8, (UOSInt)fileSize);
 				fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
 				if (fileSize != (readSize = fs->Read(txtBuff, fileSize)))
 				{
@@ -2192,7 +2192,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					NEW_CLASS(sockf, Net::OSSocketFactory(false));
 					cli = Net::HTTPClient::CreateConnect(sockf, (const UTF8Char*)"http://sswroom.no-ip.org:5080/benchmark/upload", "POST", false);
 					cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)"text/plain");
-					Text::StrInt64(u8buff, fileSize);
+					Text::StrUInt64(u8buff, fileSize);
 					cli->AddHeader((const UTF8Char*)"Content-Length", u8buff);
 					cli->Write(txtBuff, fileSize);
 					if (cli->GetRespStatus() == 200)

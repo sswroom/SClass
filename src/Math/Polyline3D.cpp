@@ -74,7 +74,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	Double calPtX = 0;
 	Double calPtY = 0;
 	Double calPtZ = 0;
-	UOSInt minId = -1;
+	UOSInt minId = 0;
 	Bool isPoint;
 
 	while (k--)

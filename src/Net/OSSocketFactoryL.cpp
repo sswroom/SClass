@@ -387,7 +387,7 @@ void Net::OSSocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
 	setsockopt(-1 + (int)(OSInt)socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-OSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	int flags = 0;
 #if defined(MSG_NOSIGNAL)
@@ -427,11 +427,11 @@ OSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt bu
 		{
 			*et = ET_NO_ERROR;
 		}
-		return ret;
+		return (UOSInt)ret;
 	}
 }
 
-OSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	OSInt ret = recv(-1 + (int)(OSInt)socket, (char*)buff, (size_t)buffSize, 0);
 //	OSInt ret = read(-1 + (int)(OSInt)socket, (char*)buff, (int)buffSize);
@@ -468,13 +468,13 @@ OSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffS
 		{
 			*et = ET_NO_ERROR;
 		}
-		return ret;
+		return (UOSInt)ret;
 	}
 }
 
-void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
 {
-	OSInt ret = ReceiveData(socket, buff, buffSize, et);
+	UOSInt ret = ReceiveData(socket, buff, buffSize, et);
 	if (ret)
 	{
 		evt->Set();
@@ -482,7 +482,7 @@ void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt 
 	return (void*)ret;
 }
 
-OSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
 {
 	return (OSInt)reqData;
 }
@@ -944,7 +944,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 	return ret;
 }
 
-OSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
+UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
@@ -954,7 +954,7 @@ OSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 		DEL_CLASS(fs);
 		return false;
 	}
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UTF8Char *sarr[3];
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
@@ -1040,13 +1040,13 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	return true;
 }
 
-Bool Net::OSSocketFactory::ARPAddRecord(OSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
+Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
 {
 	return false;
 }
 
 
-OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
+UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
 {
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 	if (sock == -1)
@@ -1054,7 +1054,7 @@ OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*
 
 	Net::ConnectionInfo *connInfo;
 	ConnectionData data;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	Char buff[1024];
 	ifconf ifc;
 	ifreq *ifrend;
@@ -1082,8 +1082,8 @@ OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	Int32 ip;
-	Int32 gw;
+	UInt32 ip;
+	UInt32 gw;
 	UOSInt i;
 	UTF8Char *sarr[4];
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/route", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -1098,8 +1098,8 @@ OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*
 				i = Text::StrSplitWS(sarr, 4, sb.ToString());
 				if (i == 4)
 				{
-					ip = Text::StrHex2Int32(sarr[1]);
-					gw = Text::StrHex2Int32(sarr[2]);
+					ip = Text::StrHex2UInt32(sarr[1]);
+					gw = Text::StrHex2UInt32(sarr[2]);
 					if (ip == 0 && gw != 0)
 					{
 						i = connInfoList->GetCount();
@@ -1182,9 +1182,9 @@ Bool Net::OSSocketFactory::GetUDPInfo(UDPInfo *info)
 	return true;
 }
 
-OSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo *port;
@@ -1284,9 +1284,9 @@ OSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*
 	return ret;
 }
 
-OSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo2 *port;
@@ -1386,9 +1386,9 @@ OSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInf
 	return ret;
 }
 
-OSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo2 *port;
@@ -1493,9 +1493,9 @@ OSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInf
 	return ret;
 }
 
-OSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
 		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, (const UTF8Char*)"/proc/net/tcp", PT_TCP);
@@ -1520,9 +1520,9 @@ void Net::OSSocketFactory::FreePortInfos(Data::ArrayList<Net::SocketFactory::Por
 	}
 }
 
-OSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
 		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, (const UTF8Char*)"/proc/net/tcp", PT_TCP);
@@ -1616,7 +1616,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const U
 #endif
 }
 
-OSInt Net::OSSocketFactory::GetBroadcastAddrs(Data::ArrayList<UInt32> *addrs)
+UOSInt Net::OSSocketFactory::GetBroadcastAddrs(Data::ArrayList<UInt32> *addrs)
 {
 	return 0;
 }

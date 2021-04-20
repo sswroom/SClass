@@ -30,7 +30,7 @@ namespace IO
 		Bool running;
 
 		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime);
-		void WriteArr(const UTF8Char **msgArr, Int64 *dateArr, OSInt arrCnt);
+		void WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
 	public:
 		MTFileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
@@ -38,5 +38,5 @@ namespace IO
 		virtual void LogClosed();
 		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev);
 	};
-};
+}
 #endif

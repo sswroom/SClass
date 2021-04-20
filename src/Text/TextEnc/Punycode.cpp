@@ -11,9 +11,9 @@
 #define SKEW 38
 #define DAMP 700
 
-OSInt Text::TextEnc::Punycode::Adapt(OSInt delta, UOSInt numPoints, Bool firstTime)
+UOSInt Text::TextEnc::Punycode::Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime)
 {
-	OSInt k;
+	UOSInt k;
 
 	delta = firstTime ? (delta / DAMP) : (delta >> 1);
 	delta += delta / numPoints;
@@ -195,12 +195,12 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 			const UTF8Char *sptr;
 			UTF8Char c;
 
-			OSInt n = 128;//initial_n
-			OSInt i = 0;
-			OSInt bias = 72;//initial_bias
+			UOSInt n = 128;//initial_n
+			UOSInt i = 0;
+			UOSInt bias = 72;//initial_bias
 
 			UOSInt destSize = 0;
-			OSInt lastMinus = 0;
+			UOSInt lastMinus = 0;
 			sptr = strToDec;
 			while (true)
 			{
@@ -211,7 +211,7 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 				}
 				else if (c == '-')
 				{
-					lastMinus = sptr - strToDec;
+					lastMinus = (UOSInt)(sptr - strToDec);
 					sptr++;
 				}
 				else
@@ -228,8 +228,8 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 				}
 				strToDec = sptr + 1;
 			}
-			OSInt digit;
-			OSInt t;
+			UOSInt digit;
+			UOSInt t;
 			UOSInt out = destSize;
 			while (true)
 			{
@@ -238,23 +238,23 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 				{
 					break;
 				}
-				OSInt oldi = i;
-				OSInt w = 1;
-				OSInt k = BASE; //base;
+				UOSInt oldi = i;
+				UOSInt w = 1;
+				UOSInt k = BASE; //base;
 				while (true)
 				{
 					c = *strToDec;
 					if (c >= 'a' && c <= 'z')
 					{
-						digit = c - 'a';
+						digit = (UOSInt)(c - 'a');
 					}
 					else if (c >= 'A' && c <= 'Z')
 					{
-						digit = c - 'A';
+						digit = (UOSInt)(c - 'A');
 					}
 					else if (c >= '0' && c <= '9')
 					{
-						digit = c - '0' + 26;
+						digit = (UOSInt)(c - '0' + 26);
 					}
 					else
 					{
@@ -355,12 +355,12 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 			const UTF8Char *sptr;
 			UTF8Char c;
 
-			OSInt n = 128;//initial_n
-			OSInt i = 0;
-			OSInt bias = 72;//initial_bias
+			UOSInt n = 128;//initial_n
+			UOSInt i = 0;
+			UOSInt bias = 72;//initial_bias
 
 			UOSInt destSize = 0;
-			OSInt lastMinus = 0;
+			UOSInt lastMinus = 0;
 			sptr = strToDec;
 			while (true)
 			{
@@ -371,7 +371,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 				}
 				else if (c == '-')
 				{
-					lastMinus = sptr - strToDec;
+					lastMinus = (UOSInt)(sptr - strToDec);
 					sptr++;
 				}
 				else
@@ -388,8 +388,8 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 				}
 				strToDec = sptr + 1;
 			}
-			OSInt digit;
-			OSInt t;
+			UOSInt digit;
+			UOSInt t;
 			UOSInt out = destSize;
 			while (true)
 			{
@@ -398,23 +398,23 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 				{
 					break;
 				}
-				OSInt oldi = i;
-				OSInt w = 1;
-				OSInt k = BASE; //base;
+				UOSInt oldi = i;
+				UOSInt w = 1;
+				UOSInt k = BASE; //base;
 				while (true)
 				{
 					c = *strToDec;
 					if (c >= 'a' && c <= 'z')
 					{
-						digit = c - 'a';
+						digit = (UOSInt)(c - 'a');
 					}
 					else if (c >= 'A' && c <= 'Z')
 					{
-						digit = c - 'A';
+						digit = (UOSInt)(c - 'A');
 					}
 					else if (c >= '0' && c <= '9')
 					{
-						digit = c - '0' + 26;
+						digit = (UOSInt)(c - '0' + 26);
 					}
 					else
 					{
@@ -461,12 +461,12 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 			const WChar *sptr;
 			WChar c;
 
-			OSInt n = 128;//initial_n
-			OSInt i = 0;
-			OSInt bias = 72;//initial_bias
+			UOSInt n = 128;//initial_n
+			UOSInt i = 0;
+			UOSInt bias = 72;//initial_bias
 
 			UOSInt destSize = 0;
-			OSInt lastMinus = 0;
+			UOSInt lastMinus = 0;
 			sptr = strToDec;
 			while (true)
 			{
@@ -477,7 +477,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 				}
 				else if (c == '-')
 				{
-					lastMinus = sptr - strToDec;
+					lastMinus = (UOSInt)(sptr - strToDec);
 					sptr++;
 				}
 				else
@@ -494,8 +494,8 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 				}
 				strToDec = sptr + 1;
 			}
-			OSInt digit;
-			OSInt t;
+			UOSInt digit;
+			UOSInt t;
 			UOSInt out = destSize;
 			while (true)
 			{
@@ -504,23 +504,23 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 				{
 					break;
 				}
-				OSInt oldi = i;
-				OSInt w = 1;
-				OSInt k = BASE; //base;
+				UOSInt oldi = i;
+				UOSInt w = 1;
+				UOSInt k = BASE; //base;
 				while (true)
 				{
 					c = *strToDec;
 					if (c >= 'a' && c <= 'z')
 					{
-						digit = c - 'a';
+						digit = (UOSInt)(c - 'a');
 					}
 					else if (c >= 'A' && c <= 'Z')
 					{
-						digit = c - 'A';
+						digit = (UOSInt)(c - 'A');
 					}
 					else if (c >= '0' && c <= '9')
 					{
-						digit = c - '0' + 26;
+						digit = (UOSInt)(c - '0' + 26);
 					}
 					else
 					{

@@ -11,8 +11,8 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, Int64 buffO
 {
 	Int64 currOfst = buffOfst;
 	Data::ArrayListInt32 ids;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 *ifd;
 	Int32 exifId;
 	Media::EXIFData::EXIFItem *exifItem;
@@ -628,7 +628,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		newExif->AddUInt32(273, 1, ibuff); //StripOffsets
 		if (img->info->storeBPP < 8)
 		{
-			OSInt lineSize = (img->info->dispWidth * img->info->storeBPP + 7) >> 3;
+			UOSInt lineSize = (img->info->dispWidth * img->info->storeBPP + 7) >> 3;
 			ibuff[0] = (UInt32)(lineSize * img->info->dispHeight);
 		}
 		else

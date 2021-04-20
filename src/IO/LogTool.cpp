@@ -29,7 +29,7 @@ IO::LogTool::LogTool()
 IO::LogTool::~LogTool()
 {
 	Close();
-	OSInt i = fileLogArr->GetCount();
+	UOSInt i = fileLogArr->GetCount();
 	while (i-- > 0)
 	{
 		IO::ILogHandler *logHdlr = fileLogArr->GetItem(i);
@@ -47,7 +47,7 @@ void IO::LogTool::Close()
 		return;
 	closed = true;
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	OSInt i = hdlrArr->GetCount();
+	UOSInt i = hdlrArr->GetCount();
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	while (i-- > 0)
@@ -110,7 +110,7 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 	if (closed)
 		return;
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	OSInt i = this->hdlrArr->GetCount();
+	UOSInt i = this->hdlrArr->GetCount();
 	while (i-- > 0)
 	{
 		if (this->hdlrArr->GetItem(i) == hdlr)
@@ -128,7 +128,7 @@ void IO::LogTool::LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	OSInt i = hdlrArr->GetCount();
+	UOSInt i = hdlrArr->GetCount();
 	while (i-- > 0)
 	{
 		if (levArr->GetItem(i) >= level)

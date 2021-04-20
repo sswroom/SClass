@@ -9,7 +9,7 @@ namespace Text
 		class Punycode : public Text::TextEncoding
 		{
 		private:
-			static OSInt Adapt(OSInt delta, UOSInt numPoints, Bool firstTime);
+			static UOSInt Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime);
 		public:
 			static UTF8Char *Encode(UTF8Char *buff, const UTF8Char *strToEnc);
 			static UTF8Char *Encode(UTF8Char *buff, const WChar *strToEnc);

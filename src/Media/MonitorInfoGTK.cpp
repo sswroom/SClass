@@ -36,7 +36,7 @@ Media::MonitorInfo::MonitorInfo(void *hMonitor)
 
 		}
 	}
-	if (display && (mon = gdk_display_get_monitor(display, monNum)) != 0)
+	if (display && (mon = gdk_display_get_monitor(display, (int)monNum)) != 0)
 	{
 		this->isPrimary = gdk_monitor_is_primary(mon);
 		gdk_monitor_get_geometry(mon, &rect);

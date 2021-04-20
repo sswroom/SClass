@@ -544,7 +544,7 @@ UTF8Char *DB::ReadingDBTool::DBBool(UTF8Char *sqlStr, Bool val)
 
 UTF8Char *DB::ReadingDBTool::DBDate(UTF8Char *sqlStr, Data::DateTime *val)
 {
-	return DB::DBUtil::SDBDate(sqlStr, val, this->svrType, this->GetTzQhr());
+	return DB::DBUtil::SDBDate(sqlStr, val, this->svrType, (Int8)this->GetTzQhr());
 }
 
 Int32 DB::ReadingDBTool::GetDataCnt()
@@ -1202,7 +1202,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
-			if (colSize == -1)
+			if (colSize == (UOSInt)-1)
 			{
 				sql->AppendCmd((const UTF8Char*)"LONGTEXT");
 			}
@@ -1268,7 +1268,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
-			if (colSize == -1)
+			if (colSize == (UOSInt)-1)
 			{
 				sql->AppendCmd((const UTF8Char*)"NVARCHAR(MAX)");
 			}
@@ -1334,7 +1334,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
-			if (colSize == -1)
+			if (colSize == (UOSInt)-1)
 			{
 				sql->AppendCmd((const UTF8Char*)"TEXT");
 			}
@@ -1400,7 +1400,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
-			if (colSize == -1)
+			if (colSize == (UOSInt)-1)
 			{
 				sql->AppendCmd((const UTF8Char*)"TEXT");
 			}
