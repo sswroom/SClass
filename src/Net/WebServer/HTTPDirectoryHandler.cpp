@@ -22,10 +22,10 @@
 typedef struct
 {
 	const UTF8Char *fileName;
-	Int64 fileSize;
+	UInt64 fileSize;
 	Int64 modTime;
 	IO::Path::PathType pt;
-	Int32 cnt;
+	UInt32 cnt;
 } DirectoryEntry;
 
 OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(void *obj1, void *obj2)
@@ -139,16 +139,18 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sbOut;
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
+	OSInt si;
 
 	sb2.ClearStr();
 	sb2.Append(req->GetRequestURI());
 	sptr = sb2.ToString();
-	i = Text::StrIndexOf(sptr, '?');
-	if (i >= 0)
+	si = Text::StrIndexOf(sptr, '?');
+	if (si >= 0)
 	{
-		sptr[i] = 0;
+		sptr[si] = 0;
+		i = (UOSInt)si;
 	}
 	else
 	{
@@ -242,7 +244,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 				IO::Path::GetFileExt(u8buff2, u8buff);
 				sbOut.Append(Net::MIME::GetMIMEFromExt(u8buff2));
 				sbOut.Append((const UTF8Char*)"</td><td>");
-				sbOut.AppendI64(packageFile->GetItemSize(i));
+				sbOut.AppendU64(packageFile->GetItemSize(i));
 			}
 
 			modTime.SetTicks(packageFile->GetItemModTimeTick(i));
@@ -534,7 +536,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.ClearStr();
 			sb.Append(subReq);
 			i = sb.LastIndexOf('/');
-			sb.TrimToLength(i);
+			sb.TrimToLength((UOSInt)i);
 			Sync::MutexUsage statMutUsage(this->statMut);
 			stat = this->statMap->Get(sb.ToString());
 			if (stat)
@@ -543,7 +545,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				i = sb.IndexOf('?');
 				if (i >= 0)
 				{
-					sb.TrimToLength(i);
+					sb.TrimToLength((UOSInt)i);
 				}
 				if (sb.ToString()[0] == 0)
 				{
@@ -626,7 +628,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.Append(sb.ToString());
-		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
+		if (sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 		{
 			sb2.Append((const UTF8Char*)"index.html");
 		}
@@ -725,7 +727,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				{
 					const UInt8 *uplfile;
 					UOSInt uplSize;
-					OSInt fileId;
+					UOSInt fileId;
 					req->ParseHTTPForm();
 					fileId = 0;
 					while ((uplfile = req->GetHTTPFormFile((const UTF8Char *)"uploadfile", fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
@@ -939,7 +941,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 									IO::Path::GetFileExt(sbuff2, sptr2);
 									sbOut.Append(Net::MIME::GetMIMEFromExt(sbuff2));
 									sbOut.AppendC((const UTF8Char*)"</td><td>", 9);
-									sbOut.AppendI64(fileSize);
+									sbOut.AppendU64(fileSize);
 								}
 								if (this->statMap)
 								{

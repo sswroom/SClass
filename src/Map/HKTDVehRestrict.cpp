@@ -16,9 +16,9 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 		UTF8Char sbuff[512];
 		void *nameArr;
 		Data::ArrayListInt64 idArr;
-		OSInt colCnt;
-		OSInt i;
-		OSInt j;
+		UOSInt colCnt;
+		UOSInt i;
+		UOSInt j;
 		OSInt idCol = -1;
 		RouteInfo *route;
 		Math::Vector2D *vec;
@@ -32,7 +32,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 			{
 				if (Text::StrEquals(sbuff, (const UTF8Char*)"ROUTE_ID"))
 				{
-					idCol = i;
+					idCol = (OSInt)i;
 					break;
 				}
 			}
@@ -45,7 +45,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 			j = idArr.GetCount();
 			while (i < j)
 			{
-				if (routeLyr->GetString(sbuff, sizeof(sbuff), nameArr, idArr.GetItem(i), idCol))
+				if (routeLyr->GetString(sbuff, sizeof(sbuff), nameArr, idArr.GetItem(i), (UOSInt)idCol))
 				{
 					vec = routeLyr->GetVectorById(sess, idArr.GetItem(i));
 					if (vec)
@@ -80,7 +80,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 
 Map::HKTDVehRestrict::~HKTDVehRestrict()
 {
-	OSInt i;
+	UOSInt i;
 	RouteInfo *route;
 	DEL_CLASS(this->csys);
 	DEL_CLASS(this->db);
@@ -127,23 +127,23 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 			{
 				if (Text::StrEquals(sbuff, (const UTF8Char*)"ROAD_ROUTE_ID"))
 				{
-					roadRouteIdCol = i;
+					roadRouteIdCol = (OSInt)i;
 				}
 				else if (Text::StrEquals(sbuff, (const UTF8Char*)"LOCATION"))
 				{
-					locationCol = i;
+					locationCol = (OSInt)i;
 				}
 				else if (Text::StrEquals(sbuff, (const UTF8Char*)"VR_ID"))
 				{
-					vrIdCol = i;
+					vrIdCol = (OSInt)i;
 				}
 				else if (Text::StrEquals(sbuff, (const UTF8Char*)"MAX_WEIGHT"))
 				{
-					maxWeightCol = i;
+					maxWeightCol = (OSInt)i;
 				}
 				else if (Text::StrEquals(sbuff, (const UTF8Char*)"REMARKS"))
 				{
-					remarksCol = i;
+					remarksCol = (OSInt)i;
 				}
 			}
 			i++;
@@ -151,15 +151,15 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 
 		while (r->ReadNext())
 		{
-			if (r->IsNull(maxWeightCol))
+			if (r->IsNull((UOSInt)maxWeightCol))
 			{
 			}
 			else
 			{
-				Int32 roadRouteId = r->GetInt32(roadRouteIdCol);
-				Double location = r->GetDbl(locationCol);
-				Int32 vrId = r->GetInt32(vrIdCol);
-				Double maxWeight = r->GetDbl(maxWeightCol);
+				Int32 roadRouteId = r->GetInt32((UOSInt)roadRouteIdCol);
+				Double location = r->GetDbl((UOSInt)locationCol);
+				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
+				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
 				RouteInfo *route;
 				Math::Point *pt;
 				Double ptX;
@@ -168,7 +168,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				Double diffX;
 				Double diffY;
 				sbuff[0] = 0;
-				r->GetStr(remarksCol, sbuff, sizeof(sbuff));
+				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
 
 				route = this->routeMap->Get(roadRouteId);
 				if (route)

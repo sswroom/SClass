@@ -25,11 +25,11 @@ namespace UI
 		Data::ArrayList<ItemEvent> *dblClkHdlrs;
 		Data::ArrayList<void*> *dblClkObjs;
 		void *himgList;
-		Int32 imgW;
-		Int32 imgH;
+		UInt32 imgW;
+		UInt32 imgH;
 		ListViewStyle lvStyle;
 		Bool changing;
-		OSInt colCnt;
+		UOSInt colCnt;
 
 		static OSInt useCnt;
 
@@ -37,7 +37,7 @@ namespace UI
 		GUIListView(GUICore *ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount);
 		virtual ~GUIListView();
 
-		void ResetImages(Int32 width, Int32 height);
+		void ResetImages(UInt32 width, UInt32 height);
 		UOSInt AddImage(Media::DrawImage *img);
 		void EndAddingImage();
 
@@ -45,7 +45,7 @@ namespace UI
 		UOSInt GetColumnCnt();
 		Bool AddColumn(const UTF8Char *columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
-		Bool SetColumnWidth(OSInt index, Double colWidth);
+		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
 		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);

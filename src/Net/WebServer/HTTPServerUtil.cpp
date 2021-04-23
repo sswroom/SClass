@@ -53,8 +53,8 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime)
 
 void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *fs)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 buff[2048];
 	UInt8 compBuff[2048];
 	Bool contSent = false;
@@ -112,7 +112,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 							}
 							else
 							{
-								stm.avail_in = (UInt32)fs->Read(buff, (OSInt)contLeng);
+								stm.avail_in = (UInt32)fs->Read(buff, (UOSInt)contLeng);
 							}
 							if (stm.avail_in == 0)
 							{
@@ -263,8 +263,8 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		resp->AddContentLength(contLeng);
 		while (contLeng > 0)
 		{
-			OSInt writeSize;
-			OSInt readSize = fs->Read(buff, 2048);
+			UOSInt writeSize;
+			UOSInt readSize = fs->Read(buff, 2048);
 			if (readSize <= 0)
 			{
 				break;
@@ -279,8 +279,8 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 
 void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 compBuff[2048];
 	Bool contSent = false;
 	if (contLeng > 1024)
@@ -317,7 +317,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						Bool err = false;
 						Int32 ret;
 						Crypto::Hash::CRC32R crc;
-						crc.Calc(buff, (OSInt)contLeng);
+						crc.Calc(buff, (UOSInt)contLeng);
 						MemClear(&stm, sizeof(stm));
 
 						stm.next_in = buff;
@@ -404,7 +404,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	if (!contSent)
 	{
 		resp->AddContentLength(contLeng);
-		resp->Write(buff, (OSInt)contLeng);
+		resp->Write(buff, (UOSInt)contLeng);
 	}
 }
 
@@ -443,7 +443,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	sb2.ClearStr();
 	if (req->GetHeader(&sb2, (const UTF8Char*)"Range"))
 	{
-		Int64 fileSize = sizeLeft;
+		UInt64 fileSize = sizeLeft;
 		if (!sb2.StartsWith((const UTF8Char*)"bytes="))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -464,7 +464,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			DEL_CLASS(fs);
 			return true;
 		}
-		Int64 start = 0;
+		UInt64 start = 0;
 		Int64 end = -1;
 		OSInt i = sb2.IndexOf('-');
 		if (i < 0)
@@ -479,7 +479,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		sptr = sb2.ToString();
 		sptr[i] = 0;
-		if (!Text::StrToInt64(&sptr[6], &start))
+		if (!Text::StrToUInt64(&sptr[6], &start))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			resp->AddDefHeaders(req);
@@ -511,7 +511,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				DEL_CLASS(fs);
 				return true;
 			}
-			sizeLeft = end - start;
+			sizeLeft = (UInt64)end - start;
 		}
 		else
 		{
@@ -522,11 +522,11 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		UTF8Char u8buff[128];
 		UTF8Char *u8ptr;
 		u8ptr = Text::StrConcat(u8buff, (const UTF8Char*)"bytes ");
-		u8ptr = Text::StrInt64(u8ptr, start);
+		u8ptr = Text::StrUInt64(u8ptr, start);
 		*u8ptr++ = '-';
-		u8ptr = Text::StrInt64(u8ptr, start + sizeLeft - 1);
+		u8ptr = Text::StrUInt64(u8ptr, start + sizeLeft - 1);
 		*u8ptr++ = '/';
-		u8ptr = Text::StrInt64(u8ptr, fileSize);
+		u8ptr = Text::StrUInt64(u8ptr, fileSize);
 		resp->AddHeader((const UTF8Char*)"Content-Range", u8buff);
 	}
 	resp->AddDefHeaders(req);
@@ -537,7 +537,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	if (sizeLeft <= 0)
 	{
 		UInt8 buff[2048];
-		OSInt readSize;
+		UOSInt readSize;
 		readSize = fs->Read(buff, 2048);
 		if (readSize == 0)
 		{

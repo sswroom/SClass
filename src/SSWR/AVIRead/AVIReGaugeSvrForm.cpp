@@ -23,12 +23,12 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 	}
 	else
 	{
-		Int32 port = 0;
+		UInt16 port = 0;
 		Bool valid = true;
 		Text::StringBuilderUTF8 *sb;
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
 		me->txtPort->GetText(sb);
-		port = Text::StrToInt32(sb->ToString());
+		Text::StrToUInt16S(sb->ToString(), &port, 0);
 
 		if (port > 0 && port <= 65535)
 		{
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, const UInt8 *data, OSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize)
 {
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
 	Sync::MutexUsage mutUsage(me->reqMut);

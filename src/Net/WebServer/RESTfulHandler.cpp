@@ -166,7 +166,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 				return true;
 			}
-			tableName = Text::StrCopyNewC(&subReq[1], i);
+			tableName = Text::StrCopyNewC(&subReq[1], (UOSInt)i);
 			row = this->dbCache->GetTableItem(tableName, ikey);
 			Text::StrDelNew(tableName);
 			if (row == 0)
@@ -259,8 +259,12 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				json.ObjectEnd();
 
 				OSInt cnt = this->dbCache->GetRowCount(&subReq[1]);
-				OSInt pageCnt = cnt / page->GetPageSize();
-				if (pageCnt * (OSInt)page->GetPageSize() < cnt)
+				if (cnt < 0)
+				{
+					cnt = 0;
+				}
+				UOSInt pageCnt = (UOSInt)cnt / page->GetPageSize();
+				if (pageCnt * page->GetPageSize() < (UOSInt)cnt)
 				{
 					pageCnt++;
 				}
@@ -283,7 +287,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					json.ObjectBeginObject((const UTF8Char*)"self");
 					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
 					json.ObjectEnd();
-					if ((OSInt)page->GetPageNum() + 1 < pageCnt)
+					if (page->GetPageNum() + 1 < pageCnt)
 					{
 						sbURI.ClearStr();
 						req->GetRequestURLBase(&sbURI);

@@ -337,7 +337,7 @@ DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *name, UOSInt maxCnt, 
 	if (maxCnt > 0)
 	{
 		sb.Append((const UTF8Char*)" LIMIT ");
-		sb.AppendOSInt(maxCnt);
+		sb.AppendOSInt((OSInt)maxCnt);
 	}
 	return ExecuteReader(sb.ToString());
 }
@@ -359,7 +359,7 @@ const UTF8Char *DB::SQLiteFile::GetFileName()
 
 void DB::SQLiteReader::UpdateColTypes()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->colCnt;
 	while (i-- > 0)
 	{
@@ -410,7 +410,7 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *
 
 DB::SQLiteReader::SQLiteReader(DB::SQLiteFile *conn, void *hStmt)
 {
-	OSInt i;
+	UOSInt i;
 	this->conn = conn;
 	this->hStmt = hStmt;
 	this->isFirst = true;
@@ -448,7 +448,7 @@ Bool DB::SQLiteReader::ReadNext()
 
 UOSInt DB::SQLiteReader::ColCount()
 {
-	return sqlite3_column_count((sqlite3_stmt*)this->hStmt);
+	return (UOSInt)sqlite3_column_count((sqlite3_stmt*)this->hStmt);
 }
 
 OSInt DB::SQLiteReader::GetRowChanged()
@@ -543,7 +543,7 @@ Bool DB::SQLiteReader::GetBool(UOSInt colIndex)
 
 UOSInt DB::SQLiteReader::GetBinarySize(UOSInt colIndex)
 {
-	return sqlite3_column_bytes((sqlite3_stmt*)this->hStmt, (int)colIndex);
+	return (UOSInt)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt, (int)colIndex);
 }
 
 Math::Vector2D *DB::SQLiteReader::GetVector(UOSInt colIndex)

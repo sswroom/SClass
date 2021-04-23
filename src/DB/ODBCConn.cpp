@@ -36,6 +36,11 @@ void DB::ODBCConn::UpdateConnInfo()
 	ret = SQLGetInfoA(connHand, SQL_DRIVER_NAME, buff, sizeof(buff), &buffSize);
 	if (ret == SQL_SUCCESS || SQL_SUCCESS_WITH_INFO)
 	{
+		if (buffSize == 0)
+		{
+			buff[0] = 0;
+		}
+	
 		if (log)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -86,6 +91,13 @@ void DB::ODBCConn::UpdateConnInfo()
 		}
 		else
 		{
+		}
+	}
+	if (this->svrType == DB::DBUtil::SVR_TYPE_UNKNOWN)
+	{
+		if (Text::StrIndexOfICase(this->connStr, (const UTF8Char*)"DRIVER=MDBTOOLS;") >= 0)
+		{
+			this->svrType = DB::DBUtil::SVR_TYPE_MDBTOOLS;
 		}
 	}
 
@@ -894,6 +906,8 @@ UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 	else if (this->svrType == DB::DBUtil::SVR_TYPE_ORACLE)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"select table_name from user_tables");
 	else if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+		return Text::StrConcat(sqlstr, (const UTF8Char*)"select name from MSysObjects where type = 1");
+	else if (this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"select name from MSysObjects where type = 1");
 	else
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"show Tables");

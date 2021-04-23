@@ -10,7 +10,7 @@
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
 {
 	Net::WebServer::WebStandardHandler *hdlr;
-	OSInt i = this->relHdlrs->GetCount();
+	UOSInt i = this->relHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		hdlr = this->relHdlrs->GetItem(i);
@@ -31,7 +31,7 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 		return false;
 	UTF8Char *sbuff;
 	UTF8Char c;
-	OSInt i = 1;
+	UOSInt i = 1;
 	Net::WebServer::WebStandardHandler *subHdlr;
 
 	while (true)

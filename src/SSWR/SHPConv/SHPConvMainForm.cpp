@@ -1236,8 +1236,8 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 	Text::StringBuilderUTF8 sb;
 	sb.Append(labelStr);
 	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
 	OSInt strType;
 	const UTF8Char *strTmp;
 	UTF8Char sbuff[256];

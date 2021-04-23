@@ -702,6 +702,31 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 			return 0;
 		}
 	}
+	else if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS || this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
+	{
+		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name, type from MSysObjects where type = 1");
+		if (r)
+		{
+			UOSInt ret = 0;
+			Text::StringBuilderUTF8 sb;
+			while (r->ReadNext())
+			{
+				sb.ClearStr();
+				Int32 type = r->GetInt32(1);
+				if (r->GetStr(0, &sb))
+				{
+					arr->Add(Text::StrCopyNew(sb.ToString()));
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
 	else
 	{
 		return 0;

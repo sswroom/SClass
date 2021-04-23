@@ -13,7 +13,7 @@ void Net::WebServer::WebRequest::ParseQuery()
 	UTF8Char *sbuff;
 	UTF8Char *sbuff2;
 	const UTF8Char *url = this->GetRequestURI();
-	OSInt urlLen = Text::StrCharCnt(url);
+	UOSInt urlLen = Text::StrCharCnt(url);
 	UTF8Char *strs1[2];
 	UTF8Char *strs2[2];
 	const UTF8Char *sptr;
@@ -23,7 +23,7 @@ void Net::WebServer::WebRequest::ParseQuery()
 	NEW_CLASS(this->queryMap, Data::StringUTF8Map<const UTF8Char *>());
 	if (this->GetQueryString(sbuff, urlLen))
 	{
-		OSInt scnt;
+		UOSInt scnt;
 		Bool hasMore;
 		strs1[1] = sbuff;
 		hasMore = true;
@@ -114,25 +114,25 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::StringUTF8Map<const UTF8Char
 		}
 		else if (b == '%' && buffSize >= 2)
 		{
-			b = (*buff++) - 0x30;
-			b2 = (*buff++) - 0x30;
+			b = (UInt8)((*buff++) - 0x30);
+			b2 = (UInt8)((*buff++) - 0x30);
 			if (b >= 0x2a)
 			{
-				b -= 0x27;
+				b = (UInt8)(b - 0x27);
 			}
 			else if (b >= 0xa)
 			{
-				b -= 7;
+				b = (UInt8)(b - 7);
 			}
 			if (b2 >= 0x2a)
 			{
-				b2 -= 0x27;
+				b2 = (UInt8)(b2 - 0x27);
 			}
 			else if (b2 >= 0xa)
 			{
-				b2 -= 7;
+				b2 = (UInt8)(b2 - 7);
 			}
-			tmpBuff[buffPos] = ((b << 4) | b2) & 0xff;
+			tmpBuff[buffPos] = (UInt8)(((b << 4) | b2) & 0xff);
 			buffPos++;
 			buffSize -= 2;
 		}
@@ -290,7 +290,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(Char *headerData)
 {
 	UTF8Char *outStr;
-	OSInt charCnt = Text::StrCharCnt(headerData);
+	UOSInt charCnt = Text::StrCharCnt(headerData);
 	if (headerData[0] == '"' && headerData[charCnt-1] == '"')
 	{
 		outStr = MemAlloc(UTF8Char, charCnt - 1);
@@ -311,7 +311,7 @@ const UTF8Char *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name)
 	OSInt i = this->headerNames->SortedIndexOf(name);
 	if (i >= 0)
 	{
-		return this->headerVals->GetItem(i);
+		return this->headerVals->GetItem((UOSInt)i);
 	}
 	else
 	{
@@ -393,7 +393,7 @@ Net::WebServer::WebRequest::~WebRequest()
 
 void Net::WebServer::WebRequest::AddHeader(const UTF8Char *name, const UTF8Char *value)
 {
-	OSInt i = this->headerNames->SortedInsert(Text::StrCopyNew(name));
+	UOSInt i = this->headerNames->SortedInsert(Text::StrCopyNew(name));
 	this->headerVals->Insert(i, Text::StrCopyNew(value));
 }
 
@@ -402,7 +402,7 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char 
 	OSInt i = this->headerNames->SortedIndexOf(name);
 	if (i >= 0)
 	{
-		return Text::StrConcatS(sbuff, this->headerVals->GetItem(i), buffLen);
+		return Text::StrConcatS(sbuff, this->headerVals->GetItem((UOSInt)i), buffLen);
 	}
 	else
 	{
@@ -670,7 +670,7 @@ Bool Net::WebServer::WebRequest::HasData()
 		this->reqDataSize = -1;
 		return true;
 	}
-	this->reqDataSize = (OSInt)Text::StrToInt64(contLeng);
+	this->reqDataSize = (UOSInt)Text::StrToUInt64(contLeng);
 	if (this->reqDataSize > 0 && this->reqDataSize <= MAX_DATA_SIZE)
 		return true;
 	return false;
@@ -704,7 +704,7 @@ Bool Net::WebServer::WebRequest::DataFull()
 		return true;
 	return false;
 }
-OSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, OSInt dataSize)
+UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 {
 	if (this->reqData == 0)
 		return 0;
@@ -810,7 +810,7 @@ OSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, OSInt dataSize)
 	}
 	else
 	{
-		OSInt sizeLeft = this->reqDataSize - this->reqCurrSize;
+		UOSInt sizeLeft = this->reqDataSize - this->reqCurrSize;
 		if (sizeLeft > dataSize)
 		{
 			MemCopyNO(&this->reqData[this->reqCurrSize], data, dataSize);
@@ -827,7 +827,7 @@ OSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, OSInt dataSize)
 	return 0;
 }
 
-OSInt Net::WebServer::WebRequest::GetMaxDataSize()
+UOSInt Net::WebServer::WebRequest::GetMaxDataSize()
 {
 	return MAX_DATA_SIZE;
 }

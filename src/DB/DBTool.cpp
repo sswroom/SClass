@@ -116,7 +116,7 @@ void DB::DBTool::EndTrans(Bool toCommit)
 
 Int32 DB::DBTool::GetLastIdentity32()
 {
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL || this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL || this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS || this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
 	{
 		DB::DBReader *reader = this->ExecuteReader((const UTF8Char*)"select @@identity");
 		Int32 id = 0;
@@ -138,7 +138,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 
 Int64 DB::DBTool::GetLastIdentity64()
 {
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL || this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL || this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS || this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
 	{
 		DB::DBReader *reader = this->ExecuteReader((const UTF8Char*)"select @@identity");
 		Int64 id = 0;
@@ -165,14 +165,14 @@ DB::DBConn *DB::DBTool::GetConn()
 
 Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::TableDef *tabDef)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	DB::ColDef *col;
 	sql->AppendCmd((const UTF8Char*)"create table ");
 	sql->AppendCol(tableName);
 	sql->AppendCmd((const UTF8Char*)" (");
-	if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS || this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
 	{
 		j = tabDef->GetColCnt();
 		i = 0;
@@ -307,7 +307,7 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 	if (page && (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS))
 	{
 		sql->AppendCmd((const UTF8Char*)"TOP ");
-		sql->AppendInt32((page->GetPageNum() + 1) * page->GetPageSize());
+		sql->AppendInt32((Int32)((page->GetPageNum() + 1) * page->GetPageSize()));
 		status = PS_NO_OFFSET;
 	}
 	while (i < j)
@@ -351,9 +351,9 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 		if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
 		{
 			sql->AppendCmd((const UTF8Char*)" LIMIT ");
-			sql->AppendInt32(page->GetPageNum() * page->GetPageSize());
+			sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
 			sql->AppendCmd((const UTF8Char*)", ");
-			sql->AppendInt32(page->GetPageSize());
+			sql->AppendInt32((Int32)page->GetPageSize());
 			status = PS_SUCC;
 		}
 		else if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
@@ -385,9 +385,9 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 			{
 				status = PS_SUCC;
 				sql->AppendCmd((const UTF8Char*)" offset ");
-				sql->AppendInt32(page->GetPageNum() * page->GetPageSize());
+				sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
 				sql->AppendCmd((const UTF8Char*)" row fetch next ");
-				sql->AppendInt32(page->GetPageSize());
+				sql->AppendInt32((Int32)page->GetPageSize());
 				sql->AppendCmd((const UTF8Char*)" row only");
 			}
 			else
@@ -405,8 +405,8 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 	DB::DBUtil::ColType colType;
 	Text::StringBuilderUTF8 *sb;
 	Data::DateTime *dt;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	NEW_CLASS(dt, Data::DateTime());
@@ -479,8 +479,8 @@ UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, 
 {
 	UTF8Char *currPtr;
 	UTF8Char tmpBuff[256];
-	Int32 i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	currPtr = Text::StrConcat(sqlstr, (const UTF8Char*)"insert into ");
 	currPtr = DBColUTF8(currPtr, tableName);

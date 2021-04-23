@@ -11,7 +11,7 @@ namespace Net
 		class EGaugeHandler : public Net::WebServer::WebStandardHandler
 		{
 		public:
-			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, OSInt dataSize);
+			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, UOSInt dataSize);
 		private:
 			void *dataHdlrObj;
 			DataHandler dataHdlr;

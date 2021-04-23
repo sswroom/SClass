@@ -76,9 +76,9 @@ namespace Net
 			void DataStart();
 			Bool DataStarted();
 			Bool DataFull();
-			OSInt DataPut(const UInt8 *data, OSInt dataSize);
+			UOSInt DataPut(const UInt8 *data, UOSInt dataSize);
 
-			static OSInt GetMaxDataSize();
+			static UOSInt GetMaxDataSize();
 		};
 	}
 }

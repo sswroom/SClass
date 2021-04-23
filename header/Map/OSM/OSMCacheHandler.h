@@ -39,7 +39,7 @@ namespace Map
 
 		private:
 			Data::ArrayListStrUTF8 *urls;
-			OSInt urlNext;
+			UOSInt urlNext;
 			Sync::Mutex *urlMut;
 
 			const UTF8Char *cacheDir;

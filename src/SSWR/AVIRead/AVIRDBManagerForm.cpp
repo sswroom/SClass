@@ -3,6 +3,8 @@
 #include "Data/Sort/ArtificialQuickSortCmp.h"
 #include "DB/ColDef.h"
 #include "DB/DBManager.h"
+#include "Math/Math.h"
+#include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
@@ -23,6 +25,7 @@ typedef enum
 	MNU_CONN_ODBCSTR,
 	MNU_CONN_MYSQL,
 	MNU_CONN_MSSQL,
+	MNU_CONN_ACCESS,
 
 	MNU_CONN_REMOVE,
 	MNU_CONN_COPY_STR,
@@ -280,13 +283,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	if (k > 0)
 	{
 		this->lvTableResult->GetSize(&w, &h);
-		w -= 20 + j * 6;
+		w -= 20 + Math::UOSInt2Double(j) * 6;
 		if (w < 0)
 			w = 0;
 		i = 0;
 		while (i < j)
 		{
-			this->lvTableResult->SetColumnWidth(i, (colSize[i] * w / k + 6));
+			this->lvTableResult->SetColumnWidth(i, (Math::UOSInt2Double(colSize[i]) * w / Math::UOSInt2Double(k) + 6));
 			i++;
 		}
 	}
@@ -358,6 +361,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu2->AddItem((const UTF8Char*)"ODBC Connection String", MNU_CONN_ODBCSTR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"MySQL TCP", MNU_CONN_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"SQL Server", MNU_CONN_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Access File", MNU_CONN_ACCESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->mnuConn, UI::GUIPopupMenu());
@@ -452,14 +456,25 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			DEL_CLASS(dlg);
 		}
 		break;
+	case MNU_CONN_ACCESS:
+		{
+			SSWR::AVIRead::AVIRAccessConnForm *dlg;
+			NEW_CLASS(dlg, SSWR::AVIRead::AVIRAccessConnForm(0, this->ui, this->core));
+			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				this->ConnAdd(dlg->GetDBConn());
+			}
+			DEL_CLASS(dlg);
+		}
+		break;
 	case MNU_CONN_REMOVE:
 		{
 			OSInt i = this->lbConn->GetSelectedIndex();
 			if (i >= 0)
 			{
-				DB::DBTool *db = this->dbList->RemoveAt(i);
+				DB::DBTool *db = this->dbList->RemoveAt((UOSInt)i);
 				DEL_CLASS(db);
-				this->lbConn->RemoveItem(i);
+				this->lbConn->RemoveItem((UOSInt)i);
 			}
 		}
 		break;
@@ -493,7 +508,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			Text::JSText::ToJSTextDQuote(&sb, &tableName[i + 1]);
 			if (i >= 0)
 			{
-				csptr = Text::StrCopyNewC(tableName, i);
+				csptr = Text::StrCopyNewC(tableName, (UOSInt)i);
 				sb.Append((const UTF8Char*)", schema=");
 				Text::JSText::ToJSTextDQuote(&sb, csptr);
 				Text::StrDelNew(csptr);

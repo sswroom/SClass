@@ -26,7 +26,7 @@ namespace Net
 		const UTF8Char *svrVer;
 		UInt32 connId;
 		UInt8 authPluginData[20];
-		OSInt authPluginDataSize;
+		UOSInt authPluginDataSize;
 		UInt32 svrCap;
 		UInt16 svrCS;
 		UInt16 connStatus;
@@ -41,7 +41,7 @@ namespace Net
 		OSInt cmdResultType; // 0 = processing, 1 = result ready, 2 = error, 3 = result end
 
 		static UInt32 __stdcall RecvThread(void *userObj);
-		void SetLastError(const UTF8Char *errMsg, OSInt msgLen);
+		void SetLastError(const UTF8Char *errMsg, UOSInt msgLen);
 	public:
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *database);
 		virtual ~MySQLTCPClient();

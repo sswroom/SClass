@@ -69,7 +69,7 @@ public:
 		{
 
 		}
-		OSInt i = this->cols->GetCount();
+		UOSInt i = this->cols->GetCount();
 		while (i-- > 0)
 		{
 			col = this->cols->GetItem(i);
@@ -154,7 +154,7 @@ public:
 
 	virtual Bool ReadNext()
 	{
-		OSInt i;
+		UOSInt i;
 		if (this->currRow)
 		{
 			i = this->cols->GetCount();
@@ -448,7 +448,7 @@ public:
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_table
 		colDef += v;
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //name
-		col->name = Text::StrCopyNewC(colDef, (OSInt)v);
+		col->name = Text::StrCopyNewC(colDef, (UOSInt)v);
 		colDef += v;
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_name
 		colDef += v;
@@ -470,7 +470,7 @@ public:
 			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
 			if ((colDef + v) <= colEnd)
 			{
-				col->defValues = Text::StrCopyNewC(colDef, (OSInt)v);
+				col->defValues = Text::StrCopyNewC(colDef, (UOSInt)v);
 			}
 		}
 		this->cols->Add(col);
@@ -496,7 +496,7 @@ public:
 			else
 			{
 				rowData = Net::MySQLUtil::ReadLenencInt(rowData, &v);
-				row[i] = Text::StrCopyNewC(rowData, (OSInt)v);
+				row[i] = Text::StrCopyNewC(rowData, (UOSInt)v);
 				rowData += v;
 			}
 			i++;
@@ -594,7 +594,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							else
 							{
 								me->svrVer = Text::StrCopyNew(&buff[5]);
-								me->connId = ReadInt32(&buff[packetSize - 9]);
+								me->connId = ReadUInt32(&buff[packetSize - 9]);
 								MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 								me->authPluginDataSize = 8;
 								me->mode = 1;
@@ -620,7 +620,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 #endif
 							if (ptrEnd - ptrCurr >= 15)
 							{
-								me->connId = ReadInt32(&ptrCurr[0]);
+								me->connId = ReadUInt32(&ptrCurr[0]);
 								MemCopyNO(me->authPluginData, &ptrCurr[4], 8);
 								me->authPluginDataSize = 8;
 								me->svrCap = ReadUInt16(&ptrCurr[13]);
@@ -651,7 +651,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									}
 									if (me->svrCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 									{
-										Text::StrConcatS(sbuff, ptrCurr, ptrEnd - ptrCurr);
+										Text::StrConcatS(sbuff, ptrCurr, (UOSInt)(ptrEnd - ptrCurr));
 									}
 									else
 									{
@@ -956,7 +956,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	return 0;
 }
 
-void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg, OSInt msgLen)
+void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg, UOSInt msgLen)
 {
 	SDEL_TEXT(this->lastError);
 	this->lastError = Text::StrCopyNewC(errMsg, msgLen);
@@ -1019,7 +1019,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 	SDEL_TEXT(this->lastError);
 	if (this->tableNames)
 	{
-		OSInt i = this->tableNames->GetCount();
+		UOSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew(this->tableNames->GetItem(i));

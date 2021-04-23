@@ -81,7 +81,7 @@ UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyl
 			data->colSizes[i] = 0;
 		}
 	}
-	data->listStore = gtk_list_store_newv(colCount, types);
+	data->listStore = gtk_list_store_newv((gint)colCount, types);
 	data->treeView = gtk_tree_view_new_with_model(GTK_TREE_MODEL(data->listStore));
 	MemFree(types);
 	if (lvstyle == UI::GUIListView::LVSTYLE_TABLE)
@@ -104,7 +104,7 @@ UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyl
 
 UI::GUIListView::~GUIListView()
 {
-	OSInt i;
+	UOSInt i;
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row;
 	i = data->rows->GetCount();
@@ -154,7 +154,7 @@ void UI::GUIListView::ChangeColumnCnt(UOSInt newColCnt)
 			data->colSizes[i] = 0;
 		}
 	}
-	data->listStore = gtk_list_store_newv(newColCnt, types);
+	data->listStore = gtk_list_store_newv((gint)newColCnt, types);
 	gtk_tree_view_set_model((GtkTreeView*)data->treeView, GTK_TREE_MODEL(data->listStore));
 	MemFree(types);
 	data->colCnt = newColCnt;
@@ -199,12 +199,12 @@ Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
 	return true;
 }
 
-Bool UI::GUIListView::SetColumnWidth(OSInt index, Double colWidth)
+Bool UI::GUIListView::SetColumnWidth(UOSInt index, Double colWidth)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	if (index < 0 || index >= data->colCnt)
+	if (index >= data->colCnt)
 		return false;
-	GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, index);
+	GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, (gint)index);
 	if (col == 0)
 		return false;
 	gtk_tree_view_column_set_fixed_width(col, Math::Double2Int32(colWidth * this->hdpi / this->ddpi));
@@ -218,7 +218,7 @@ Bool UI::GUIListView::ClearAll()
 	guint cnt = gtk_tree_view_get_n_columns((GtkTreeView *)data->treeView);
 	while (cnt-- > 0)
 	{
-		GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, cnt);
+		GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, (gint)cnt);
 		gtk_tree_view_remove_column((GtkTreeView*)data->treeView, col);
 	}
 	this->colCnt = 0;
@@ -310,7 +310,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
 	row->txt = Text::StrCopyNew(itemText);
-	gtk_list_store_insert(data->listStore, &row->iter, index);
+	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText, -1);
 	return index;
@@ -322,7 +322,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *it
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
 	row->txt = Text::StrToUTF8New(itemText);
-	gtk_list_store_insert(data->listStore, &row->iter, index);
+	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt, -1);
 	return index;
@@ -354,7 +354,7 @@ void *UI::GUIListView::GetItem(UOSInt index)
 void UI::GUIListView::ClearItems()
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	OSInt i;
+	UOSInt i;
 	MyRow *row;
 	data->noChgEvt = true;
 	gtk_list_store_clear(data->listStore);
@@ -378,7 +378,12 @@ UOSInt UI::GUIListView::GetCount()
 void UI::GUIListView::SetSelectedIndex(OSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	MyRow *r = data->rows->GetItem(index);
+	if (index == -1)
+	{
+		//////////////////////
+		return;
+	}
+	MyRow *r = data->rows->GetItem((UOSInt)index);
 	if (r == 0)
 		return;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
@@ -417,7 +422,7 @@ UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 		ret = 0;
 		while (ret < (UOSInt)depth)
 		{
-			selIndices->Add(i[ret]);
+			selIndices->Add((UOSInt)i[ret]);
 			ret++;
 		}
 		return ret;
@@ -432,7 +437,7 @@ void *UI::GUIListView::GetSelectedItem()
 {
 	OSInt i = GetSelectedIndex();
 	if (i >= 0)
-		return this->GetItem(i);
+		return this->GetItem((UOSInt)i);
 	return 0;
 }
 
@@ -440,7 +445,7 @@ UTF8Char *UI::GUIListView::GetSelectedItemText(UTF8Char *buff)
 {
 	OSInt i = GetSelectedIndex();
 	if (i >= 0)
-		return this->GetItemText(buff, i);
+		return this->GetItemText(buff, (UOSInt)i);
 	return 0;
 }
 
@@ -448,7 +453,7 @@ const UTF8Char *UI::GUIListView::GetSelectedItemTextNew()
 {
 	OSInt i = GetSelectedIndex();
 	if (i >= 0)
-		return this->GetItemTextNew(i);
+		return this->GetItemTextNew((UOSInt)i);
 	return 0;
 }
 
@@ -564,7 +569,7 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 	{
 		SendMessage((HWND)this->hwnd, LVM_ARRANGE, LVA_DEFAULT, 0);
 	}*/
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -576,7 +581,7 @@ void UI::GUIListView::EventSelChg()
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	if (data->noChgEvt)
 		return;
-	OSInt i;
+	UOSInt i;
 	i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -586,7 +591,7 @@ void UI::GUIListView::EventSelChg()
 
 void UI::GUIListView::EventDblClk(OSInt itemIndex)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->dblClkHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -608,10 +613,10 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < this->colCnt)
 	{
-		GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, i);
+		GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, (gint)i);
 		if (col)
 		{
 			gtk_tree_view_column_set_fixed_width(col, Math::Double2Int32(data->colSizes[i] * this->hdpi / this->ddpi));

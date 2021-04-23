@@ -62,14 +62,14 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		}
 		else
 		{
-			Int64 contLeng = cli->GetContentLength();
-			OSInt currPos = 0;
-			OSInt readSize;
+			UInt64 contLeng = cli->GetContentLength();
+			UOSInt currPos = 0;
+			UOSInt readSize;
 			UInt8 *imgBuff;
 			if (contLeng > 0 && contLeng <= 10485760)
 			{
-				imgBuff = MemAlloc(UInt8, (OSInt)contLeng);
-				while ((readSize = cli->Read(&imgBuff[currPos], (OSInt)contLeng - currPos)) > 0)
+				imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
+				while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
 				{
 					currPos += readSize;
 					if (currPos >= contLeng)
@@ -80,7 +80,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 				if (currPos >= contLeng)
 				{
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_READ, IO::FileStream::BT_NO_WRITE_BUFFER));
-					fs->Write(imgBuff, (OSInt)contLeng);
+					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
 						currTime.SetCurrTimeUTC();
@@ -138,7 +138,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *
 
 Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->urls->GetCount();
 	while (i-- > 0)
 	{
@@ -166,7 +166,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[5];
-	OSInt i;
+	UOSInt i;
 	Text::StrConcatS(sbuff, subReq, 255);
 	i = Text::StrSplit(sarr, 5, sbuff, '/');
 

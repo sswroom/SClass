@@ -68,10 +68,10 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	DB::TableDef *tabDef;
 	DB::ColDef *colDef;
 	Data::ArrayList<const UTF8Char *> tables;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	mdb = DB::MDBFile::CreateDBTool(fileName, &log, (const UTF8Char*)"DB: ");
 	if (mdb == 0)
 		return false;

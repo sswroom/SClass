@@ -95,8 +95,9 @@ DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, Int32 codePage,
 		if (!Connect(sb.ToString()))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Driver=MDBTools;DBQ=");
+			sb.Append((const UTF8Char*)"Driver=MDBTools;DBQ=\"");
 			sb.Append(fileName);
+			sb.Append((const UTF8Char*)"\"");
 			if (codePage != 0)
 			{
 				UTF8Char sbuff[16];
@@ -133,6 +134,7 @@ DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, Int32 codePage,
 			Connect(sb.ToString());
 		}
 	}
+	this->svrType = DB::DBUtil::SVR_TYPE_ACCESS;
 }
 
 Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)

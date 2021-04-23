@@ -17,7 +17,8 @@ namespace DB
 			SVR_TYPE_ACCESS = 4,
 			SVR_TYPE_TEXT = 5,
 			SVR_TYPE_SQLITE = 6,
-			SVR_TYPE_WBEM = 7
+			SVR_TYPE_WBEM = 7,
+			SVR_TYPE_MDBTOOLS = 8
 		} ServerType;
 
 		typedef enum

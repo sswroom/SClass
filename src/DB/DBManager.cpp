@@ -391,7 +391,7 @@ Bool DB::DBManager::StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTo
 		}
 		
 		UInt8 keyBuff[32];
-		OSInt outSize;
+		UOSInt outSize;
 		Crypto::Hash::MD5 md5;
 		md5.Calc((const UInt8*)ENCKEY, ENCKEYLEN);
 		md5.GetValue(keyBuff);
@@ -419,13 +419,13 @@ Bool DB::DBManager::RestoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DB
 		return false;
 	}
 
-	Int64 len = fs->GetLength();
+	UInt64 len = fs->GetLength();
 	if (len > 0 && len < 65536)
 	{
-		UInt8 *fileBuff = MemAlloc(UInt8, (OSInt)len);
-		UInt8 *decBuff = MemAlloc(UInt8, (OSInt)len + 1);
+		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)len);
+		UInt8 *decBuff = MemAlloc(UInt8, (UOSInt)len + 1);
 		UTF8Char *sarr[2];
-		fs->Read(fileBuff, (OSInt)len);
+		fs->Read(fileBuff, (UOSInt)len);
 		UInt8 keyBuff[32];
 		UOSInt cnt;
 		DB::DBTool *db;
@@ -436,8 +436,8 @@ Bool DB::DBManager::RestoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DB
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		OSInt decLen = aes.Decrypt(fileBuff, (OSInt)len, decBuff, 0);
-		decBuff[(OSInt)len] = 0;
+		aes.Decrypt(fileBuff, (UOSInt)len, decBuff, 0);
+		decBuff[(UOSInt)len] = 0;
 		sarr[1] = decBuff;
 		while (true)
 		{

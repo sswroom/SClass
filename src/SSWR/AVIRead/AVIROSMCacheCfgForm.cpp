@@ -11,10 +11,10 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIROSMCacheCfgForm *me = (SSWR::AVIRead::AVIROSMCacheCfgForm*)userObj;
 	UTF8Char sbuff[512];
-	Int32 port;
+	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	me->txtHTTPPort->GetText(&sb);
-	if (!sb.ToInt32(&port) || port <= 0 || port >= 65536)
+	if (!sb.ToUInt16(&port) || port <= 0 || port >= 65536)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid HTTP port number", (const UTF8Char *)"Error", me);
 		return;

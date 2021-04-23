@@ -14,8 +14,8 @@ template <class T> void ArtificialQuickSort_PreSort(Data::ArrayList<T> *arr, OSI
 
 	while (left < right)
 	{
-		temp = arr->GetItem(left);
-		temp2 = arr->GetItem(right);
+		temp = arr->GetItem((UOSInt)left);
+		temp2 = arr->GetItem((UOSInt)right);
 		if (Data::DataComparer::Compare(temp, temp2) > 0)
 		{
 			arr->SetItem((UOSInt)left, temp2);
@@ -84,7 +84,7 @@ template <class T> void ArtificialQuickSort_Sort(Data::ArrayList<T> *arr, OSInt 
 				if (left1 > right1)
 					break;
 
-				temp = arr->GetItem(right1);
+				temp = arr->GetItem((UOSInt)right1);
 				arr->SetItem((UOSInt)right1--, arr->GetItem((UOSInt)left1));
 				arr->SetItem((UOSInt)left1++, temp);
 			}

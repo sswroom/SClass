@@ -22,6 +22,8 @@ namespace DB
 			CE_SET_DBC,
 			CE_CONNECT_ERR
 		} ConnError;
+	protected:
+		DBUtil::ServerType svrType;
 	private:
 		void *envHand;
 		void *connHand;
@@ -29,7 +31,6 @@ namespace DB
 		Int32 lastStmtState;
 		const UTF8Char *lastErrorMsg;
 		ConnError connErr;
-		DBUtil::ServerType svrType;
 		Bool isTran;
 		const UTF8Char *dsn;
 		const UTF8Char *uid;
