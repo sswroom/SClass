@@ -7,7 +7,7 @@ void Text::JavaText::ToJavaName(Text::StringBuilderUTF *sb, const UTF8Char *usNa
 	UTF8Char c;
 	while ((c = *usName++) != 0)
 	{
-		if (c == '_' || c == ' ')
+		if (c == '_' || c == ' ' || c == '/')
 		{
 			isClass = true;
 		}
