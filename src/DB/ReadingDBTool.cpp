@@ -712,7 +712,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				Int32 type = r->GetInt32(1);
+				//Int32 type = r->GetInt32(1);
 				if (r->GetStr(0, &sb))
 				{
 					arr->Add(Text::StrCopyNew(sb.ToString()));

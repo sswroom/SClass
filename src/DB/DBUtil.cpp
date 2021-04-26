@@ -1435,6 +1435,26 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr = 0;
 		return sptr;
 	}
+	else if (svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
+	{
+		sptr = sqlstr;
+		*sptr++ = '"';
+		while ((c = *colName++) != 0)
+		{
+			if (c == '"')
+			{
+				*sptr++ = '"';
+				*sptr++ = '"';
+			}
+			else
+			{
+				*sptr++ = c;
+			}
+		}
+		*sptr++ = '"';
+		*sptr = 0;
+		return sptr;
+	}
 	else
 	{
 		return Text::StrConcat(sqlstr, colName);

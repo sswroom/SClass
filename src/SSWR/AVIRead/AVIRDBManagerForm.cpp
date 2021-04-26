@@ -296,6 +296,43 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
+void SSWR::AVIRead::AVIRDBManagerForm::AppendJavaCol(Text::StringBuilderUTF *sb, DB::ColDef *colDef)
+{
+	if (colDef->IsPK())
+	{
+		sb->Append((const UTF8Char*)"\t@Id\r\n");
+		if (colDef->IsAutoInc())
+		{
+			sb->Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
+		}
+	}
+	if (Text::StrHasUpperCase(colDef->GetColName()))
+	{
+		sb->Append((const UTF8Char*)"\t@Column(name=");
+		const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName());
+		sb->Append(csptr);
+		Text::JSText::FreeNewText(csptr);
+		sb->Append((const UTF8Char*)")\r\n");
+		sb->Append((const UTF8Char*)"\tprivate ");
+		sb->Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
+		sb->AppendChar(' ', 1);
+		csptr = Text::StrCopyNew(colDef->GetColName());
+		Text::StrToLower((UTF8Char*)csptr, csptr);
+		Text::JavaText::ToJavaName(sb, csptr, false);
+		Text::StrDelNew(csptr);
+		sb->Append((const UTF8Char*)";\r\n");
+	}
+	else
+	{
+		sb->Append((const UTF8Char*)"\tprivate ");
+		sb->Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
+		sb->AppendChar(' ', 1);
+		Text::JavaText::ToJavaName(sb, colDef->GetColName(), false);
+		sb->Append((const UTF8Char*)";\r\n");
+	}
+}
+
+
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
@@ -539,39 +576,26 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				while (j < k)
 				{
 					colDef = tableDef->GetCol(j);
-					if (colDef->IsPK())
-					{
-						sb.Append((const UTF8Char*)"\t@Id\r\n");
-						if (colDef->IsAutoInc())
-						{
-							sb.Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
-						}
-					}
-					if (Text::StrHasUpperCase(colDef->GetColName()))
-					{
-						sb.Append((const UTF8Char*)"\t@Column(name=");
-						const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName());
-						sb.Append(csptr);
-						Text::JSText::FreeNewText(csptr);
-						sb.Append((const UTF8Char*)")\r\n");
-						sb.Append((const UTF8Char*)"\tprivate ");
-						sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
-						sb.AppendChar(' ', 1);
-						csptr = Text::StrCopyNew(colDef->GetColName());
-						Text::StrToLower((UTF8Char*)csptr, csptr);
-						Text::JavaText::ToJavaName(&sb, csptr, false);
-						Text::StrDelNew(csptr);
-						sb.Append((const UTF8Char*)";\r\n");
-					}
-					else
-					{
-						sb.Append((const UTF8Char*)"\tprivate ");
-						sb.Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
-						sb.AppendChar(' ', 1);
-						Text::JavaText::ToJavaName(&sb, colDef->GetColName(), false);
-						sb.Append((const UTF8Char*)";\r\n");
-					}
+					this->AppendJavaCol(&sb, colDef);
 					j++;
+				}
+			}
+			else
+			{
+				DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
+				if (r)
+				{
+					DB::ColDef colDef((const UTF8Char*)"");
+					UOSInt j = 0;
+					UOSInt k = r->ColCount();
+					while (j < k)
+					{
+						if (r->GetColDef(j, &colDef))
+						{
+							this->AppendJavaCol(&sb, &colDef);
+						}
+						j++;
+					}
 				}
 			}
 			sb.Append((const UTF8Char*)"}\r\n");

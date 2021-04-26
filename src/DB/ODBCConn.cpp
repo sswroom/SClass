@@ -967,7 +967,14 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 			while (rdr->ReadNext())
 			{
 				rdr->GetStr(2, sbuff);
-				this->tableNames->Add(Text::StrToUTF8New(sbuff));
+				if (Text::StrStartsWith(sbuff, L"~sq_"))
+				{
+
+				}
+				else
+				{
+					this->tableNames->Add(Text::StrToUTF8New(sbuff));
+				}
 			}
 			this->CloseReader(rdr);
 		}

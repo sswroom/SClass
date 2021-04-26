@@ -134,7 +134,6 @@ DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, Int32 codePage,
 			Connect(sb.ToString());
 		}
 	}
-	this->svrType = DB::DBUtil::SVR_TYPE_ACCESS;
 }
 
 Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)
