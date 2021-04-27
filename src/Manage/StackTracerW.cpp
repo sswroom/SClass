@@ -73,7 +73,7 @@ Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
 	hThread = OpenThread(THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, false, (DWORD)context->GetThreadId());
 	this->context = context;
 	this->winContext = 0;
-	NEW_CLASS(addrArr, Data::ArrayListInt64());
+	NEW_CLASS(addrArr, Data::ArrayListUInt64());
 	STACKFRAME64 *sf = MemAlloc(STACKFRAME64, 1);
 	this->stackFrame = sf;
 	ZeroMemory(sf, sizeof(STACKFRAME64));

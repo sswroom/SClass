@@ -343,7 +343,7 @@ void Net::OSSocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
 	setsockopt((SOCKET)socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-OSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 //	return send((SOCKET)socket, (const char*)buff, (int)buffSize, 0);
 	WSABUF buf;
@@ -366,7 +366,7 @@ OSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt bu
 	return 0;
 }
 
-OSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	WSABUF buf;
 	DWORD flags = 0;
@@ -397,7 +397,7 @@ typedef struct
 	UInt32 *s;
 } WSAOverlapped;
 
-void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
 {
 	WSAOverlapped *overlapped;
 	overlapped = MemAlloc(WSAOverlapped, 1);
@@ -429,7 +429,7 @@ void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt 
 	return overlapped;
 }
 
-OSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
 {
 	WSAOverlapped *overlapped = (WSAOverlapped*)reqData;
 	if (overlapped == 0)
@@ -446,7 +446,7 @@ OSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
 		DWORD lastErr = WSAGetLastError();
 		if (lastErr == WSA_IO_INCOMPLETE)
 		{
-			return -1;
+			return 0;
 		}
 		MemFree(overlapped);
 		return 0;
@@ -686,7 +686,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 #endif
 }
 
-OSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
+UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
 #ifdef _WIN32_WCE
 	/////////////////////////////////
@@ -700,8 +700,8 @@ OSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 #else
 	UInt8 buff[256];
 	DWORD buffSize;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	buffSize = 256;
 	if (DnsQueryConfig(DnsConfigDnsServerList, 0, 0, 0, buff, &buffSize) == 0)
 	{
@@ -717,7 +717,7 @@ OSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 	}
 	else
 	{
-		Int32 ip;
+		UInt32 ip;
 		UInt32 defGW;
 		Net::ConnectionInfo *connInfo;
 		Data::ArrayList<Net::ConnectionInfo*> connInfos;
@@ -800,7 +800,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	return true;
 }
 
-Bool Net::OSSocketFactory::ARPAddRecord(OSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
+Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
 {
 #if defined(__MINGW32__)
 	MIB_IPNETROW row;
@@ -822,10 +822,10 @@ Bool Net::OSSocketFactory::ARPAddRecord(OSInt ifIndex, const UInt8 *hwAddr, UInt
 }
 
 
-OSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
+UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
 {
 	UInt32 size = 0;
-	OSInt nAdapters = 0;
+	UOSInt nAdapters = 0;
 	IP_ADAPTER_ADDRESSES *addrs;
 	IP_ADAPTER_ADDRESSES *addr;
 	IP_ADAPTER_INFO *infos;
@@ -896,9 +896,9 @@ Bool Net::OSSocketFactory::GetUDPInfo(UDPInfo *info)
 	return GetUdpStatisticsEx((MIB_UDPSTATS*)info, AF_INET) == NO_ERROR;
 }
 
-OSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	UInt32 ret;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
@@ -1017,9 +1017,9 @@ void Net::OSSocketFactory::FreePortInfos(Data::ArrayList<Net::SocketFactory::Por
 	}
 }
 
-OSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	UInt32 ret;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
@@ -1204,13 +1204,13 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const U
 	return false;
 }
 
-OSInt Net::OSSocketFactory::GetBroadcastAddrs(Data::ArrayList<UInt32> *addrs)
+UOSInt Net::OSSocketFactory::GetBroadcastAddrs(Data::ArrayList<UInt32> *addrs)
 {
 	UInt32 currIP;
 	UInt32 netMask;
-	OSInt cnt = 0;
-	OSInt i;
-	OSInt j;
+	UOSInt cnt = 0;
+	UOSInt i;
+	UOSInt j;
 	Net::ConnectionInfo *connInfo;
 	Data::ArrayList<Net::ConnectionInfo*> connInfos;
 	if (this->GetConnInfoList(&connInfos))

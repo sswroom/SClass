@@ -76,9 +76,9 @@ namespace SSWR
 			virtual ~SAnalogSensor() {};
 
 			virtual Bool IsError() = 0;
-			virtual OSInt GetMinInterval() = 0;
-			virtual OSInt GetReadingCnt() = 0;
-			virtual ReadingType GetReadingType(OSInt index) = 0;
+			virtual UOSInt GetMinInterval() = 0;
+			virtual UOSInt GetReadingCnt() = 0;
+			virtual ReadingType GetReadingType(UOSInt index) = 0;
 			virtual Bool GetReadings(Double *values) = 0;
 			virtual SensorType GetSensorType() = 0;
 

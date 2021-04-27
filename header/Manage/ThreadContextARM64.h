@@ -14,15 +14,15 @@ namespace Manage
 		ThreadContextARM64(UOSInt procId, UOSInt threadId, void *context);
 		virtual ~ThreadContextARM64();
 
-		virtual OSInt GetRegisterCnt();
+		virtual UOSInt GetRegisterCnt();
 		virtual UTF8Char *GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount);
 		virtual void ToString(Text::StringBuilderUTF *sb);
 		virtual ContextType GetType();
 		virtual UOSInt GetThreadId();
 		virtual UOSInt GetProcessId();
-		virtual OSInt GetInstAddr();
-		virtual OSInt GetStackAddr();
-		virtual OSInt GetFrameAddr();
+		virtual UOSInt GetInstAddr();
+		virtual UOSInt GetStackAddr();
+		virtual UOSInt GetFrameAddr();
 		virtual void SetInstAddr(OSInt instAddr);
 		virtual void SetStackAddr(OSInt stackAddr);
 		virtual void SetFrameAddr(OSInt frameAddr);
@@ -31,5 +31,5 @@ namespace Manage
 		virtual Manage::Dasm *CreateDasm();
 		void *GetContext();
 	};
-};
+}
 #endif

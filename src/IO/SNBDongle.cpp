@@ -3,13 +3,13 @@
 #include "Data/ByteTool.h"
 #include "IO/SNBDongle.h"
 
-void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, OSInt cmdSize, UInt8 *cmd)
+void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
 	IO::SNBDongle *me = (IO::SNBDongle*)userObj;
 	DeviceInfo *dev;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Double readingVals[16];
 	ReadingType readingTypes[16];
 	SensorType sensorType;

@@ -241,7 +241,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 				if (Net::SNMPUtil::OIDCompare(oidPDU, pduSize, agent->objId, agent->objIdLen) == 0)
 				{
 					ReadingInfo *reading;
-					Int32 slotCnt = 0;
+					UInt32 slotCnt = 0;
 					Int32 iVal;
 					Text::StringBuilderUTF8 sb;
 					found = true;
@@ -251,7 +251,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItem(0);
-						Net::SNMPUtil::ValueToInt32(item->valType, item->valBuff, item->valLen, &slotCnt);
+						Net::SNMPUtil::ValueToInt32(item->valType, item->valBuff, item->valLen, (Int32*)&slotCnt);
 					}
 					FreeAllItems(&itemList);
 

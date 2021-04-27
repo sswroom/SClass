@@ -12,7 +12,7 @@ Media::RefClock::~RefClock()
 {
 }
 
-void Media::RefClock::Start(Int32 currTime)
+void Media::RefClock::Start(UInt32 currTime)
 {
 	LARGE_INTEGER liClk;
 	QueryPerformanceCounter(&liClk);
@@ -27,17 +27,17 @@ void Media::RefClock::Stop()
 	started = false;
 }
 
-Int32 Media::RefClock::GetCurrTime()
+UInt32 Media::RefClock::GetCurrTime()
 {
 	if (started)
 	{
-		Int32 thisTime;
+		UInt32 thisTime;
 		LARGE_INTEGER liClk;
 		LARGE_INTEGER liFreq;
 
 		QueryPerformanceFrequency(&liFreq);
 		QueryPerformanceCounter(&liClk);
-		thisTime = this->refStartTime + Math::Double2Int32((liClk.QuadPart - refStart) * 1000.0 / liFreq.QuadPart);
+		thisTime = this->refStartTime + (UInt32)(Math::Double2Int32((liClk.QuadPart - refStart) * 1000.0 / liFreq.QuadPart));
 		return thisTime;
 	}
 	else

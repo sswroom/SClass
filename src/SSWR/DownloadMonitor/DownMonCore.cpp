@@ -149,8 +149,8 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 	{
 //		printf("checking: %s\r\n", sbuff);
 		this->chkStatus = CS_CHECKING;
-		Int64 fileSize;
-		Int64 fileSize2;
+		UInt64 fileSize;
+		UInt64 fileSize2;
 		IO::Path::PathType pt;
 		Data::DateTime modTime;
 		IO::ActiveStreamReader::BottleNeckType bnt;

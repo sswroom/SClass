@@ -50,7 +50,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	Crypto::Hash::IHash *hash;
 	IO::FileCheck *fchk;
 	IO::Path::PathType pt;
-	Int64 fileSize;
+	UInt64 fileSize;
 	ReadSess readSess;
 	IO::FileStream *fs;
 	IO::ActiveStreamReader *reader;
@@ -175,7 +175,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	IO::FileStream *fs;
 	IO::ActiveStreamReader *reader;
 	ReadSess readSess;
-	Int64 fileSize;
+	UInt64 fileSize;
 	UInt8 hashBuff[32];
 	IO::ActiveStreamReader::BottleNeckType bnt;
 
@@ -338,7 +338,7 @@ Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal)
 
 void IO::FileCheck::AddEntry(const UTF8Char *fileName, UInt8 *hashVal)
 {
-	OSInt index = this->fileNames->Add(Text::StrCopyNew(fileName));
+	UOSInt index = this->fileNames->Add(Text::StrCopyNew(fileName));
 	if (index >= this->chkCapacity)
 	{
 		this->chkCapacity = this->chkCapacity << 1;
@@ -390,7 +390,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 		Bool ret = false;
 		ReadSess readSess;
 		IO::ActiveStreamReader *reader;
-		Int64 fileSize;
+		UInt64 fileSize;
 		IO::ActiveStreamReader::BottleNeckType bnt;
 		readSess.hash = hash;
 		readSess.readSize = 0;

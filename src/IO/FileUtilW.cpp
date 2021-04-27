@@ -835,10 +835,10 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	return succ;
 }
 
-void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, OSInt buffSize, void *userData)
+void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, void *userData)
 {
 	CopySess *csess = (CopySess*)userData;
-	OSInt writenSize;
+	UOSInt writenSize;
 	writenSize = csess->destStm->Write(buff, buffSize);
 	csess->writeSize += writenSize;
 	if (csess->progHdlr)

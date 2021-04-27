@@ -46,7 +46,7 @@ namespace SSWR
 			Media::ChapterInfo *currChapters;
 
 			Bool playing;
-			OSInt pbLastChapter;
+			UOSInt pbLastChapter;
 
 			void UpdateStreamList();
 			void UpdateChapters();

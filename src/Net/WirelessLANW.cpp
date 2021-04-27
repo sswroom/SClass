@@ -308,12 +308,12 @@ const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 	return this->chipsetOUIs[index];
 }
 
-OSInt Net::WirelessLAN::BSSInfo::GetIECount()
+UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 {
 	return this->ieList->GetCount();
 }
 
-Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(OSInt index)
+Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
 	return this->ieList->GetItem(index);
 }
@@ -343,14 +343,14 @@ Bool Net::WirelessLAN::Interface::Scan()
 	return WirelessLAN_Scan((ClassData*)this->clsData, this->id, 0, 0, 0) == ERROR_SUCCESS;
 }
 
-OSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
+UOSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
 {
 	WLAN_AVAILABLE_NETWORK_LIST *list;
-	OSInt retVal = 0;
+	UOSInt retVal = 0;
 	if (ERROR_SUCCESS == WirelessLAN_GetAvailableNetworkList((ClassData*)this->clsData, this->id, 0, 0, (void**)&list))
 	{
-		Int32 i = 0;
-		Int32 j = list->dwNumberOfItems;
+		UInt32 i = 0;
+		UInt32 j = list->dwNumberOfItems;
 		while (i < j)
 		{
 			Net::WirelessLAN::Network *net;
@@ -366,14 +366,14 @@ OSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN:
 	return retVal;
 }
 
-OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList)
+UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList)
 {
 	WLAN_BSS_LIST *list;
-	OSInt retVal = 0;
+	UOSInt retVal = 0;
 	if (ERROR_SUCCESS == WirelessLAN_GetNetworkBssList((ClassData*)this->clsData, this->id, 0, 0, 0, 0, (void**)&list))
 	{
-		Int32 i = 0;
-		Int32 j = list->dwNumberOfItems;
+		UInt32 i = 0;
+		UInt32 j = list->dwNumberOfItems;
 		while (i < j)
 		{
 			Net::WirelessLAN::BSSInfo *bss;

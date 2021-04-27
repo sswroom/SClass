@@ -21,8 +21,8 @@ Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProf
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 hv;
 	UInt8 vv;
 	OSInt bpl;

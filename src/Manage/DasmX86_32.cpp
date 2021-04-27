@@ -812,8 +812,8 @@ void DasmX86_32_ParseModRMXMM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8
 Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* sess, Int32 funcAddr, Int32 *outEsp)
 {
 	Manage::DasmX86_32::DasmX86_32_Sess tmpSess;
-	Data::ArrayListInt32 callAddrs;
-	Data::ArrayListInt32 jmpAddrs;
+	Data::ArrayListUInt32 callAddrs;
+	Data::ArrayListUInt32 jmpAddrs;
 	UTF8Char sbuff[256];
 	Text::StringBuilderUTF8 sb;
 	OSInt instCnt = 0;
@@ -19187,7 +19187,7 @@ const UTF8Char *Manage::DasmX86_32::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19306,7 +19306,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt32 initIP = *currEip;
@@ -19401,8 +19401,8 @@ void *Manage::DasmX86_32::StartDasm(Manage::AddressResolver *addrResol, void *ad
 {
 	DasmX86_32_Sess *sess;
 	sess = MemAlloc(DasmX86_32_Sess, 1);
-	NEW_CLASS(sess->callAddrs, Data::ArrayListInt32());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListInt32());
+	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
+	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
 	sess->regs.EIP = (UInt32)(OSInt)addr;
 	sess->regs.ESP = 0;
 	sess->regs.EBP = 0;

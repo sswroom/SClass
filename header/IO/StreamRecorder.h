@@ -8,15 +8,15 @@ namespace IO
 	{
 	private:
 		IO::FileStream *destStm;
-		Int64 recordedLength;
+		UInt64 recordedLength;
 
-		static void __stdcall DataHdlr(const UInt8 *buff, OSInt buffSize, void *userData);
+		static void __stdcall DataHdlr(const UInt8 *buff, UOSInt buffSize, void *userData);
 	public:
 		StreamRecorder(const UTF8Char *destFile);
 		~StreamRecorder();
 
 		Bool AppendStream(IO::Stream *stm);
-		Int64 GetRecordedLength();
+		UInt64 GetRecordedLength();
 	};
-};
+}
 #endif

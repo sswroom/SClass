@@ -76,7 +76,7 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 }
 
 #if defined(WIN32) || defined(_WIN64)
-Bool Manage::CPUInfoDetail::GetCPUTemp(OSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 {
 	InfoData *info = (InfoData*)this->clsData;
 	if (info->winRing0 == 0)

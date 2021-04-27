@@ -13,7 +13,7 @@
 
 IO::ConsoleWriter *console;
 Net::SocketFactory *sockf;
-Data::ArrayListInt32 *ipList;
+Data::ArrayListUInt32 *ipList;
 
 void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 {
@@ -44,15 +44,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	NEW_CLASS(ipList, Data::ArrayListInt32());
+	NEW_CLASS(ipList, Data::ArrayListUInt32());
 
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<Net::ARPInfo *> arpList;
 
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const Net::MACInfo::MACEntry *macEntry;
 	Net::ARPInfo::ARPType arpType;
 	Net::ARPInfo *arp;
@@ -138,9 +138,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							buff[3] = 1;
 							while (buff[3] < 255)
 							{
-								if (ipList->SortedIndexOf(ReadNInt32(buff)) < 0)
+								if (ipList->SortedIndexOf(ReadNUInt32(buff)) < 0)
 								{
-									arpHdlr->MakeRequest(ReadNInt32(buff));
+									arpHdlr->MakeRequest(ReadNUInt32(buff));
 								}
 								buff[3]++;
 							}

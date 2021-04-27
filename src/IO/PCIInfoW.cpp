@@ -72,7 +72,7 @@ UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 
-OSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
+UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListInt32 existList;
@@ -80,7 +80,7 @@ OSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	ClassData clsData;
 	UInt32 id;
 	UTF8Char sbuff[512];
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_LogicalDevice", 0, 0, 0);
 	if (r)

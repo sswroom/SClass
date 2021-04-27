@@ -13,11 +13,11 @@ namespace IO
 			const UTF8Char *manufacturer;
 			const UTF8Char *partNo;
 			const UTF8Char *sn;
-			OSInt defSpdMHz;
-			OSInt confSpdMHz;
-			Int32 dataWidth;
-			Int32 totalWidth;
-			Int64 memorySize;
+			UOSInt defSpdMHz;
+			UOSInt confSpdMHz;
+			UInt32 dataWidth;
+			UInt32 totalWidth;
+			UInt64 memorySize;
 		} RAMInfo;
 
 		typedef enum

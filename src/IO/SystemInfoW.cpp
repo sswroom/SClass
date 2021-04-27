@@ -71,11 +71,11 @@ UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 	return 0;
 }
 
-Int64 IO::SystemInfo::GetTotalMemSize()
+UInt64 IO::SystemInfo::GetTotalMemSize()
 {
-	Int64 totalSize = 0;
+	UInt64 totalSize = 0;
 
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<RAMInfo*> ramList;
 	this->GetRAMInfo(&ramList);
 	i = ramList.GetCount();
@@ -88,7 +88,7 @@ Int64 IO::SystemInfo::GetTotalMemSize()
 	return totalSize;
 }
 
-Int64 IO::SystemInfo::GetTotalUsableMemSize()
+UInt64 IO::SystemInfo::GetTotalUsableMemSize()
 {
 #if !defined(_WIN32_WCE)
 	MEMORYSTATUSEX memStat;
@@ -185,9 +185,9 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_UNKNOWN;
 }
 
-OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	Win32::WMIQuery *db;
 	RAMInfo *ram;
 	UTF8Char sbuff[128];
@@ -201,8 +201,8 @@ OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)
 		{
-			OSInt i = 0;
-			OSInt j = memList.GetCount();
+			UOSInt i = 0;
+			UOSInt j = memList.GetCount();
 			while (i < j)
 			{
 				mem = memList.GetItem(i);

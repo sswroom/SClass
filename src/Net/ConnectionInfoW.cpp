@@ -35,8 +35,8 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		this->ent.dnsSuffix = Text::StrToUTF8New(addr->DnsSuffix);
 	}
-	NEW_CLASS(this->ent.ipaddr, Data::ArrayListInt32(4));
-	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListInt32(4));
+	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32(4));
+	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32(4));
 	IP_ADAPTER_UNICAST_ADDRESS *ipaddrs = addr->FirstUnicastAddress;
 	IP_ADAPTER_DNS_SERVER_ADDRESS *dnsaddrs = addr->FirstDnsServerAddress;
 

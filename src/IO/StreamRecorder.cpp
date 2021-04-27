@@ -3,7 +3,7 @@
 #include "IO/ActiveStreamReader.h"
 #include "IO/StreamRecorder.h"
 
-void __stdcall IO::StreamRecorder::DataHdlr(const UInt8 *buff, OSInt buffSize, void *userData)
+void __stdcall IO::StreamRecorder::DataHdlr(const UInt8 *buff, UOSInt buffSize, void *userData)
 {
 	IO::StreamRecorder *me = (IO::StreamRecorder *)userData;
 	me->recordedLength += me->destStm->Write(buff, buffSize);
@@ -31,7 +31,7 @@ Bool IO::StreamRecorder::AppendStream(IO::Stream *stm)
 	return true;
 }
 
-Int64 IO::StreamRecorder::GetRecordedLength()
+UInt64 IO::StreamRecorder::GetRecordedLength()
 {
 	return this->recordedLength;
 }

@@ -115,7 +115,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		sb->Append((const UTF8Char*)"OCTET STRING ");
 		{
 			Bool isBin = false;
-			OSInt i = 0;
+			UOSInt i = 0;
 			while (i < len)
 			{
 				if (pdu[i + hdrSize] < 0x20 || pdu[i + hdrSize] >= 0x7f)
@@ -296,7 +296,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 	case 4:
 		{
 			Bool isBin = false;
-			OSInt i = 0;
+			UOSInt i = 0;
 			while (i < valLen)
 			{
 				if (pduBuff[i] < 0x20 || pduBuff[i] >= 0x7f)

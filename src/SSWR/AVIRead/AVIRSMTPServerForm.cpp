@@ -396,7 +396,7 @@ OSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, OSInt *siz
 Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayList<Int32> *unreadList)
 {
 	UOSInt totalCnt;
-	OSInt i;
+	UOSInt i;
 	EmailInfo *email;
 
 	Sync::MutexUsage mutUsage(this->mailMut);

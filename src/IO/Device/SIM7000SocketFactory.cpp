@@ -379,22 +379,22 @@ void IO::Device::SIM7000SocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip
 
 }
 
-OSInt IO::Device::SIM7000SocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	return 0;
 }
 
-OSInt IO::Device::SIM7000SocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	return 0;
 }
 
-void *IO::Device::SIM7000SocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *IO::Device::SIM7000SocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
 {
 	return 0;
 }
 
-OSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait)
 {
 	return 0;
 }
@@ -550,9 +550,9 @@ Bool IO::Device::SIM7000SocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *a
 	return false;
 }
 
-OSInt IO::Device::SIM7000SocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
+UOSInt IO::Device::SIM7000SocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
-	OSInt i = dnsList->GetCount();
+	UOSInt i = dnsList->GetCount();
 	if (this->modem->NetGetDNSList(dnsList))
 	{
 		return dnsList->GetCount() - i;
@@ -565,12 +565,12 @@ Bool IO::Device::SIM7000SocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	return true;
 }
 
-Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(OSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
+Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
 {
 	return false;
 }
 
-OSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
+UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
 {
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[64];
@@ -582,9 +582,9 @@ OSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Con
 		ent.name = 0;
 		ent.description = 0;
 		ent.dnsSuffix = 0;
-		NEW_CLASS(ent.ipaddr, Data::ArrayListInt32());
+		NEW_CLASS(ent.ipaddr, Data::ArrayListUInt32());
 		ent.ipaddr->Add(Net::SocketUtil::GetIPAddr(sbuff));
-		NEW_CLASS(ent.dnsaddr, Data::ArrayListInt32());
+		NEW_CLASS(ent.dnsaddr, Data::ArrayListUInt32());
 		ent.defGW = 0;
 		ent.dhcpSvr = 0;
 		ent.dhcpLeaseTime = 0;
@@ -620,9 +620,9 @@ Bool IO::Device::SIM7000SocketFactory::GetUDPInfo(UDPInfo *info)
 	return false;
 }
 
-OSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt i = 8;
+	UOSInt i = 8;
 	if (protoType == PT_UDP)
 	{
 		while (i-- > 0)
@@ -651,9 +651,9 @@ void IO::Device::SIM7000SocketFactory::FreePortInfos(Data::ArrayList<PortInfo*> 
 
 }
 
-OSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt i = 8;
+	UOSInt i = 8;
 	if (protoType == PT_UDP)
 	{
 		while (i-- > 0)

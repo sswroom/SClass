@@ -22,14 +22,14 @@ Media::VideoCaptureMgr::~VideoCaptureMgr()
 	MemFree(data);
 }
 
-OSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
 {
 	ManagerData *data = (ManagerData*)this->mgrData;
 	DeviceInfo *devInfo;
 	UTF8Char sbuff[512];
-	OSInt ret = 0;
-	OSInt i = 0;
-	OSInt j = data->dshowMgr->GetDeviceCount();
+	UOSInt ret = 0;
+	UOSInt i = 0;
+	UOSInt j = data->dshowMgr->GetDeviceCount();
 	while (i < j)
 	{
 		devInfo = MemAlloc(DeviceInfo, 1);
@@ -56,7 +56,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devLi
 	}
 }
 
-Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, OSInt devId)
+Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
 	ManagerData *data = (ManagerData*)this->mgrData;
 	if (devType == 0)

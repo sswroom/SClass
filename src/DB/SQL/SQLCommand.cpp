@@ -87,7 +87,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 				sql = ParseNextWord(sql, &sb, svrType);
 				if (sb.Equals((const UTF8Char*)"("))
 				{
-					DB::ColDef *col;
+					DB::ColDef *col = 0;
 					while (true)
 					{
 						sql = ParseNextWord(sql, &sb, svrType);

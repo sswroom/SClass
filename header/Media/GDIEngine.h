@@ -44,11 +44,11 @@ namespace Media
 	public:
 		void *hbrush;
 		DrawImage *img;
-		Int32 color;
-		Int32 oriColor;
+		UInt32 color;
+		UInt32 oriColor;
 
 	public:
-		GDIBrush(void *hbrush, Int32 oriColor, DrawImage *img);
+		GDIBrush(void *hbrush, UInt32 oriColor, DrawImage *img);
 		virtual ~GDIBrush();
 	};
 
@@ -57,12 +57,12 @@ namespace Media
 	public:
 		void *hpen;
 		UInt32 *pattern;
-		OSInt nPattern;
+		UOSInt nPattern;
 		DrawImage *img;
 		Double thick;
-		Int32 oriColor;
+		UInt32 oriColor;
 	public:
-		GDIPen(void *hpen, UInt32 *pattern, OSInt nPattern, DrawImage *img, Double thick, Int32 oriColor);
+		GDIPen(void *hpen, UInt32 *pattern, UOSInt nPattern, DrawImage *img, Double thick, UInt32 oriColor);
 		virtual ~GDIPen();
 
 		Double GetThick();
@@ -145,17 +145,17 @@ namespace Media
 		Bool DrawStringW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p);
 		virtual Bool DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree);
 		Bool DrawStringRotW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p, OSInt buffSize);
-		Bool DrawStringBW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p, OSInt buffSize);
-		virtual Bool DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, OSInt buffSize);
-		Bool DrawStringRotBW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree, OSInt buffSize);
+		virtual Bool DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		Bool DrawStringBW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
+		Bool DrawStringRotBW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		virtual Bool DrawImagePt(DrawImage *img, Double tlx, Double tly);
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly);
 		virtual Bool DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH);
 		Bool DrawImageRect(DrawImage *img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry);
 
-		virtual DrawPen *NewPenARGB(Int32 color, Double thick, UInt8 *pattern, OSInt nPattern);
-		virtual DrawBrush *NewBrushARGB(Int32 color);
+		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
+		virtual DrawBrush *NewBrushARGB(UInt32 color);
 		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
 		DrawFont *NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
 		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
@@ -172,16 +172,16 @@ namespace Media
 		void GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
 		void GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, OSInt width, OSInt height);
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height);
 
 		virtual Media::StaticImage *ToStaticImage();
-		virtual Int32 SavePng(IO::SeekableStream *stm);
-		virtual Int32 SaveGIF(IO::SeekableStream *stm);
-		virtual Int32 SaveJPG(IO::SeekableStream *stm);
+		virtual UOSInt SavePng(IO::SeekableStream *stm);
+		virtual UOSInt SaveGIF(IO::SeekableStream *stm);
+		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
 
 		virtual Media::Image *Clone();
 		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, OSInt width, OSInt height, OSInt destBpl);
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl);
 		virtual Int32 GetPixel32(OSInt x, OSInt y);
 
 		static void PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height);

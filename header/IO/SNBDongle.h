@@ -117,7 +117,7 @@ namespace IO
 		Int64 dongleId;
 		Int32 dongleBaudRate;
 
-		static void __stdcall OnProtocolRecv(void *userObj, UInt8 cmdType, OSInt cmdSize, UInt8 *cmd);
+		static void __stdcall OnProtocolRecv(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 		DeviceInfo *GetDevice(Int64 devId);
 	public:
 		SNBDongle(IO::Stream *stm, SNBHandler *hdlr);

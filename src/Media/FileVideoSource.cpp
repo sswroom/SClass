@@ -398,7 +398,7 @@ UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 			if (this->frameIsKey->GetItem(i))
 			{
 				thisTime = this->frameTimes->GetItem(i);
-				if (thisTime > time)
+				if ((UInt32)thisTime > time)
 					break;
 				lastKey = i;
 				lastKeyTime = thisTime;

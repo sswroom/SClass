@@ -12,7 +12,7 @@
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userObj, UInt8 cmdType, OSInt cmdSize, UInt8 *cmd)
+void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
 	Text::StringBuilderUTF8 sb;

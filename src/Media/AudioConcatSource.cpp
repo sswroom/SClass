@@ -125,7 +125,7 @@ UInt32 Media::AudioConcatSource::SeekToTime(UInt32 time)
 	while (stmIndex < stmCnt)
 	{
 		stmTime = ((Media::IAudioSource *)this->stmList->GetItem(stmIndex))->GetStreamTime();
-		if (stmTime > time)
+		if (stmTime > (Int32)time)
 		{
 			if (this->currStm != stmIndex && this->readEvt)
 			{

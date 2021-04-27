@@ -3217,9 +3217,9 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_NAV_DOWN:
 		{
 			OSInt i = this->lbObj->GetSelectedIndex();
-			if (i < this->lbObj->GetCount() - 1)
+			if (i < (OSInt)this->lbObj->GetCount() - 1)
 			{
-				this->lbObj->SetSelectedIndex(i + 1);
+				this->lbObj->SetSelectedIndex((UOSInt)i + 1);
 			}
 			i = this->tcMain->GetSelectedIndex();
 			if (i == 0)

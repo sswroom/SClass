@@ -15,7 +15,7 @@
 
 OSInt UI::GUIListView::useCnt = 0;
 
-UI::GUIListView::GUIListView(UI::GUICore *ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, OSInt colCount) : UI::GUIControl(ui, parent)
+UI::GUIListView::GUIListView(UI::GUICore *ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	Double w;
 	Double h;
@@ -72,7 +72,7 @@ UI::GUIListView::~GUIListView()
 	DEL_CLASS(this->dblClkObjs);
 }
 
-void UI::GUIListView::ResetImages(Int32 width, Int32 height)
+void UI::GUIListView::ResetImages(UInt32 width, UInt32 height)
 {
 	if (this->himgList)
 	{
@@ -83,7 +83,7 @@ void UI::GUIListView::ResetImages(Int32 width, Int32 height)
 	this->imgH = height;
 }
 
-OSInt UI::GUIListView::AddImage(Media::DrawImage *img)
+UOSInt UI::GUIListView::AddImage(Media::DrawImage *img)
 {
 //	IMAGEINFO imgInfo;
 	if (this->himgList == 0)
@@ -99,7 +99,7 @@ OSInt UI::GUIListView::AddImage(Media::DrawImage *img)
 	ret = GetDIBits(GetDC(0), imgInfo.hbmImage, 0, 0, 0, &bmi, DIB_RGB_COLORS);
 	ret = GetDIBits(GetDC(0), imgInfo.hbmImage, 0, 1, buff, &bmi, DIB_RGB_COLORS);*/
 
-	return retIndex;
+	return (UOSInt)retIndex;
 }
 
 void UI::GUIListView::EndAddingImage()
@@ -114,11 +114,11 @@ void UI::GUIListView::EndAddingImage()
 	}
 }
 
-void UI::GUIListView::ChangeColumnCnt(OSInt newColCnt)
+void UI::GUIListView::ChangeColumnCnt(UOSInt newColCnt)
 {
 }
 
-OSInt UI::GUIListView::GetColumnCnt()
+UOSInt UI::GUIListView::GetColumnCnt()
 {
 	return this->colCnt;
 }
@@ -147,7 +147,7 @@ Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
 	return false;
 }
 
-Bool UI::GUIListView::SetColumnWidth(OSInt index, Double colWidth)
+Bool UI::GUIListView::SetColumnWidth(UOSInt index, Double colWidth)
 {
 	LVCOLUMNW col;
 	col.mask = LVCF_WIDTH;
@@ -172,9 +172,9 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
-OSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj)
 {
-	OSInt strLen = Text::StrUTF8_WCharCnt(itemText, -1);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText, -1);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(ws, itemText, -1, 0);
 	LVITEMW item;
@@ -189,7 +189,7 @@ OSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj)
 	return strLen;
 }
 
-OSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
@@ -201,7 +201,7 @@ OSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
 	return SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
 
-OSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, OSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, UOSInt imageIndex)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
@@ -211,12 +211,12 @@ OSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, OSInt im
 	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText);
 	item.cchTextMax = (int)Text::StrCharCnt(itemText);
 	item.iImage = (Int32)imageIndex;
-	OSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	UOSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(OSInt index, OSInt subIndex, const UTF8Char *text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text)
 {
 	const WChar *ws = Text::StrToWCharNew(text);
 	LVITEMW item;
@@ -230,7 +230,7 @@ Bool UI::GUIListView::SetSubItem(OSInt index, OSInt subIndex, const UTF8Char *te
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(OSInt index, OSInt subIndex, const WChar *text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text)
 {
 	LVITEMW item;
 	item.iItem = (int)index;
@@ -241,7 +241,7 @@ Bool UI::GUIListView::SetSubItem(OSInt index, OSInt subIndex, const WChar *text)
 	return (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 }
 
-Bool UI::GUIListView::GetSubItem(OSInt index, OSInt subIndex, Text::StringBuilderUTF *sb)
+Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF *sb)
 {
 	LVITEMW item;
 	sb->AllocLeng(256);
@@ -264,7 +264,7 @@ Bool UI::GUIListView::GetSubItem(OSInt index, OSInt subIndex, Text::StringBuilde
 	return ret;
 }
 
-OSInt UI::GUIListView::InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
@@ -274,12 +274,12 @@ OSInt UI::GUIListView::InsertItem(OSInt index, const UTF8Char *itemText, void *i
 	const WChar *wptr = Text::StrToWCharNew(itemText);
 	item.pszText = (LPWSTR)wptr;
 	item.cchTextMax = 256;
-	OSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	UOSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-OSInt UI::GUIListView::InsertItem(OSInt index, const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
@@ -291,14 +291,14 @@ OSInt UI::GUIListView::InsertItem(OSInt index, const WChar *itemText, void *item
 	return SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 }
 
-void *UI::GUIListView::RemoveItem(OSInt index)
+void *UI::GUIListView::RemoveItem(UOSInt index)
 {
 	void *item = GetItem(index);
 	SendMessage((HWND)this->hwnd, LVM_DELETEITEM, index, 0);
 	return item;
 }
 
-void *UI::GUIListView::GetItem(OSInt index)
+void *UI::GUIListView::GetItem(UOSInt index)
 {
 	LVITEM item;
 	item.iItem = (Int32)index;
@@ -330,11 +330,11 @@ OSInt UI::GUIListView::GetSelectedIndex()
 	return SendMessage((HWND)this->hwnd, LVM_GETSELECTIONMARK, 0, 0);
 }
 
-OSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<OSInt> *selIndices)
+UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 {
 	OSInt cnt = SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
 	OSInt i;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	i = 0;
 	while (i < cnt)
 	{
@@ -372,7 +372,7 @@ const UTF8Char *UI::GUIListView::GetSelectedItemTextNew()
 	return 0;
 }
 
-UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, OSInt index)
+UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 {
 	WChar sbuff[256];
 	sbuff[0] = 0;
@@ -385,7 +385,7 @@ UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, OSInt index)
 	return Text::StrWChar_UTF8(buff, sbuff, -1);
 }
 
-const UTF8Char *UI::GUIListView::GetItemTextNew(OSInt index)
+const UTF8Char *UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	UTF8Char sbuff[768];
 	UTF8Char *sout;
@@ -412,9 +412,9 @@ void UI::GUIListView::SetShowGrid(Bool showGrid)
 	SendMessage((HWND)this->hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_GRIDLINES, showGrid?LVS_EX_GRIDLINES:0);
 }
 
-OSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
+UOSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
 {
-	OSInt strLen = Text::StrUTF8_WCharCnt(s, -1);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(s, -1);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(ws, s, -1, 0);
 	strLen = SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
@@ -422,12 +422,12 @@ OSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
 	return strLen;
 }
 
-OSInt UI::GUIListView::GetStringWidth(const WChar *s)
+UOSInt UI::GUIListView::GetStringWidth(const WChar *s)
 {
 	return SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)s);
 }
 
-void UI::GUIListView::GetItemRectP(OSInt index, Int32 *rect)
+void UI::GUIListView::GetItemRectP(UOSInt index, Int32 *rect)
 {
 	RECT rc;
 	rc.left = LVIR_BOUNDS;
@@ -447,7 +447,7 @@ void UI::GUIListView::GetItemRectP(OSInt index, Int32 *rect)
 	}
 }
 
-void UI::GUIListView::EnsureVisible(OSInt index)
+void UI::GUIListView::EnsureVisible(UOSInt index)
 {
 	SendMessage((HWND)this->hwnd, LVM_ENSUREVISIBLE, index, (LPARAM)TRUE);
 }
@@ -570,7 +570,7 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->UpdateFont();
 	}
-	OSInt i = 0;
+	UOSInt i = 0;
 	OSInt ret;
 	LVCOLUMNW col;
 	col.mask = LVCF_WIDTH;

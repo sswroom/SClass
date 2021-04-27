@@ -54,7 +54,7 @@ UInt8 *IO::ViewFileBuffer::GetPointer()
 	return this->filePtr;
 }
 
-Int64 IO::ViewFileBuffer::GetLength()
+UInt64 IO::ViewFileBuffer::GetLength()
 {
 	LARGE_INTEGER li;
 	if (GetFileSizeEx(this->fileHandle, &li))
@@ -63,7 +63,7 @@ Int64 IO::ViewFileBuffer::GetLength()
 	}
 	else
 	{
-		return -1;
+		return 0;
 	}
 }
 

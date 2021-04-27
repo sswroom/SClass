@@ -501,7 +501,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				DEL_CLASS(fs);
 				return true;
 			}
-			if (end <= start || end > (Int64)sizeLeft)
+			if (end <= (Int64)start || end > (Int64)sizeLeft)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 				resp->AddDefHeaders(req);

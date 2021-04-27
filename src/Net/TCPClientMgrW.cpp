@@ -388,7 +388,7 @@ void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(this->cliMut);
 }
 
-OSInt Net::TCPClientMgr::GetClientCount()
+UOSInt Net::TCPClientMgr::GetClientCount()
 {
 	return this->cliArr->GetCount();
 }
@@ -404,7 +404,7 @@ void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
 	}
 }
 
-Net::TCPClient *Net::TCPClientMgr::GetClient(OSInt index, void **cliData)
+Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, void **cliData)
 {
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem(index);
 	if (cliStat)

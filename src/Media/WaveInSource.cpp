@@ -177,12 +177,12 @@ Int32 Media::WaveInSource::GetStreamTime()
 	return -1;
 }
 
-Int32 Media::WaveInSource::SeekToTime(Int32 time)
+UInt32 Media::WaveInSource::SeekToTime(UInt32 time)
 {
 	return 0;
 }
 
-Bool Media::WaveInSource::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::WaveInSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	return false;
 }
@@ -294,7 +294,7 @@ UOSInt Media::WaveInSource::GetMinBlockSize()
 	return this->nChannels * this->nbits >> 3;
 }
 
-Int32 Media::WaveInSource::GetCurrTime()
+UInt32 Media::WaveInSource::GetCurrTime()
 {
 	return 0;
 }

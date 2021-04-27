@@ -24,8 +24,8 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile 
 	Int64 *imgPtr;
 	UInt8 *imgPtr2;
 	UInt16 c[4];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double v;
 	Double dx;
 	Double dy;

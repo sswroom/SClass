@@ -81,7 +81,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 			UI::ListBoxLogger *logger;
 
-			static void __stdcall OnProtocolReceived(void *userObj, UInt8 cmdType, OSInt cmdSize, UInt8 *cmd);
+			static void __stdcall OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 			static void __stdcall OnDongleInfoClicked(void *userObj);
 			static void __stdcall OnCheckDongleClicked(void *userObj);
 			static void __stdcall OnCheckDevicesClicked(void *userObj);

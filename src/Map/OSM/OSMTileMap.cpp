@@ -558,7 +558,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	else
 	{
 		UInt64 contLeng = cli->GetContentLength();
-		OSInt currPos = 0;
+		UOSInt currPos = 0;
 		UInt8 *imgBuff;
 		if (contLeng > 0 && contLeng <= 10485760)
 		{

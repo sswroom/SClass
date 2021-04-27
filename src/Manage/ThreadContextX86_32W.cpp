@@ -67,9 +67,9 @@ Manage::ThreadContextX86_32::~ThreadContextX86_32()
 	MemFree(this->context);
 }
 
-OSInt Manage::ThreadContextX86_32::GetRegisterCnt()
+UOSInt Manage::ThreadContextX86_32::GetRegisterCnt()
 {
-	OSInt cnt = 33;
+	UOSInt cnt = 33;
 	if (this->mmOfst >= 0)
 	{
 		cnt += 8;
@@ -81,7 +81,7 @@ OSInt Manage::ThreadContextX86_32::GetRegisterCnt()
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextX86_32::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextX86_32::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	switch (index)
 	{
@@ -444,10 +444,10 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF *sb)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
-	Int32 bitCnt;
-	OSInt i = 0;
-	OSInt j = this->GetRegisterCnt();
-	OSInt k;
+	UInt32 bitCnt;
+	UOSInt i = 0;
+	UOSInt j = this->GetRegisterCnt();
+	UOSInt k;
 
 	while (i < j)
 	{
@@ -502,22 +502,22 @@ UOSInt Manage::ThreadContextX86_32::GetProcessId()
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextX86_32::GetInstAddr()
+UOSInt Manage::ThreadContextX86_32::GetInstAddr()
 {
 	return this->GetEIP();
 }
 
-OSInt Manage::ThreadContextX86_32::GetStackAddr()
+UOSInt Manage::ThreadContextX86_32::GetStackAddr()
 {
 	return this->GetESP();
 }
 
-OSInt Manage::ThreadContextX86_32::GetFrameAddr()
+UOSInt Manage::ThreadContextX86_32::GetFrameAddr()
 {
 	return this->GetEBP();
 }
 
-void Manage::ThreadContextX86_32::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr)
 {
 #ifdef CONTEXT_VX86
 	((CONTEXT_TYPE*)this->context)->Rip = instAddr;
@@ -526,7 +526,7 @@ void Manage::ThreadContextX86_32::SetInstAddr(OSInt instAddr)
 #endif
 }
 
-void Manage::ThreadContextX86_32::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr)
 {
 #ifdef CONTEXT_VX86
 	((CONTEXT_TYPE*)this->context)->Rsp = stackAddr;
@@ -535,7 +535,7 @@ void Manage::ThreadContextX86_32::SetStackAddr(OSInt stackAddr)
 #endif
 }
 
-void Manage::ThreadContextX86_32::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
 {
 #ifdef CONTEXT_VX86
 	((CONTEXT_TYPE*)this->context)->Rbp = frameAddr;

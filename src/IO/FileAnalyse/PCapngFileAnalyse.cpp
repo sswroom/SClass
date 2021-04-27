@@ -8,7 +8,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::PCapngFileAnalyse *me = (IO::FileAnalyse::PCapngFileAnalyse*)userObj;
 	UInt64 ofst;
-	Int64 dataSize;
+	UInt64 dataSize;
 	UInt32 thisSize;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
 	UInt8 packetHdr[16];

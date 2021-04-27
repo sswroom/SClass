@@ -363,16 +363,16 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::SetVideoField(Int32 videoId)
 	}
 }
 
-Int64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, const UTF8Char *relPath, Int64 maxSize)
+UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, const UTF8Char *relPath, UInt64 maxSize)
 {
-	Int64 size;
-	Int64 currSize = 0;
+	UInt64 size;
+	UInt64 currSize = 0;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	BurntFile *file;
-	OSInt i = Text::StrCharCnt(relPath);
+	UOSInt i = Text::StrCharCnt(relPath);
 	sptr = Text::StrConcat(sbuff, absPath);
 	relPath = sptr - i;
 	*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -418,7 +418,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileUpdateVideo(BurntFile *file)
 	}
 }
 
-SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(const UTF8Char *fileName, const UTF8Char *relPath, Int64 fileSize)
+SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(const UTF8Char *fileName, const UTF8Char *relPath, UInt64 fileSize)
 {
 	BurntFile *file;
 	file = MemAlloc(BurntFile, 1);

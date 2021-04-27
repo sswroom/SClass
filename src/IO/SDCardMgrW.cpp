@@ -201,11 +201,11 @@ Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
 	return ret;
 }
 
-OSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
+UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 {
 	Text::StringBuilderUTF16 sb;
 	UTF8Char sbuff[512];
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	IO::SDCardInfo *sdcard;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_MediaAccessDevice", 0, 0, 0);

@@ -70,9 +70,9 @@ namespace SSWR
 
 			Data::ArrayList<EmailInfo*> *mailList;
 			Sync::Mutex *mailMut;
-			OSInt totalSize;
-			OSInt recvIndex;
-			OSInt recvSize;
+			UOSInt totalSize;
+			UOSInt recvIndex;
+			UOSInt recvSize;
 			Bool mailChanged;
 
 			static void __stdcall OnSMTPStartClicked(void *userObj);
@@ -96,6 +96,6 @@ namespace SSWR
 			virtual Bool GetMessageContent(Int32 userId, Int32 msgId, IO::Stream *stm);
 			virtual Int32 RemoveMessage(Int32 userId, Int32 msgId);
 		};
-	};
-};
+	}
+}
 #endif

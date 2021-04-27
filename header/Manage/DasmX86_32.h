@@ -1,6 +1,6 @@
 #ifndef _SM_MANAGE_DASMX86_32
 #define _SM_MANAGE_DASMX86_32
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "Manage/AddressResolver.h"
 #include "Manage/IMemoryReader.h"
 #include "Manage/ThreadContextX86_32.h"
@@ -23,14 +23,14 @@ namespace Manage
 		typedef struct
 		{
 			DasmX86_32_Regs regs;
-			Data::ArrayListInt32 *callAddrs;
-			Data::ArrayListInt32 *jmpAddrs;
+			Data::ArrayListUInt32 *callAddrs;
+			Data::ArrayListUInt32 *jmpAddrs;
 			//Text::StringBuilderW *outStr;
 			UTF8Char *sbuff;
 //			Bool isEnded;
 			EndType endType;
-			Int32 espOfst;
-			Int32 retAddr;
+			UInt32 espOfst;
+			UInt32 retAddr;
 			Int32 lastStatus;
 			Int32 thisStatus; //bit0: prefix1, bit1: ignore esp change, bit2: prefix2, bit16: segment mod, bit31: ignore esp
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
@@ -60,8 +60,8 @@ namespace Manage
 		virtual ~DasmX86_32();
 
 		virtual const UTF8Char *GetHeader(Bool fullRegs);
-		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		Bool Disasm32In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
+		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		Bool Disasm32In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
 		virtual Dasm_Regs *CreateRegs();
 		virtual void FreeRegs(Dasm_Regs *regs);
 
@@ -72,6 +72,6 @@ namespace Manage
 		EndType SessGetEndType(void *sess);
 		Bool SessContJmp(void *sess);
 	};
-};
+}
 
 #endif

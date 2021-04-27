@@ -23,7 +23,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::LDAPClient *cli;
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
-			OSInt rootLev;
+			UOSInt rootLev;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblHost;

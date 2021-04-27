@@ -89,12 +89,12 @@ IO::SNBProtocol::~SNBProtocol()
 	DEL_CLASS(this->stm);
 }
 
-void IO::SNBProtocol::SendCommand(UInt8 cmdType, OSInt cmdSize, UInt8 *cmd)
+void IO::SNBProtocol::SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
 	UInt8 buff[262];
 	UInt8 chk;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	buff[0] = 0;
 	buff[1] = 2;
 	buff[2] = 1;

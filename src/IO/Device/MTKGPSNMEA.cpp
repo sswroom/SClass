@@ -291,7 +291,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogBlock(OSInt addr, UInt8 *buff)
 				//return false;
 				ofst += 1024;
 				retryCnt = 0;
-				printf("MTKGPSNMEA: Skipping block %d\r\n", addr + ofst);
+				printf("MTKGPSNMEA: Skipping block %d\r\n", (Int32)(addr + ofst));
 			}
 		}
 	}

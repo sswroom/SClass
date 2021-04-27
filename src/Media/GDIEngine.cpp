@@ -77,7 +77,7 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 }
 #endif
 
-COLORREF GDIEGetCol(Int32 col)
+COLORREF GDIEGetCol(UInt32 col)
 {
 	return ((col & 0xff) << 16) | (col & 0xff00) | ((col >> 16) & 0xff);
 }
@@ -549,7 +549,7 @@ void *Media::GDIEngine::GetWhiteBrush()
 	return this->hbrushWhite;
 }
 
-Media::GDIBrush::GDIBrush(void *hbrush, Int32 oriColor, DrawImage *img)
+Media::GDIBrush::GDIBrush(void *hbrush, UInt32 oriColor, DrawImage *img)
 {
 	this->hbrush = hbrush;
 	this->oriColor = oriColor;
@@ -561,7 +561,7 @@ Media::GDIBrush::~GDIBrush()
 {
 }
 
-Media::GDIPen::GDIPen(void *hpen, UInt32 *pattern, OSInt nPattern, DrawImage *img, Double thick, Int32 oriColor)
+Media::GDIPen::GDIPen(void *hpen, UInt32 *pattern, UOSInt nPattern, DrawImage *img, Double thick, UInt32 oriColor)
 {
 	this->hpen = hpen;
 	this->pattern = pattern;
@@ -1453,7 +1453,7 @@ Bool Media::GDIImage::DrawStringRotW(Double centX, Double centY, const WChar *st
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, OSInt buffSize)
+Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1);
 	Bool ret = DrawStringBW(dx, dy, wptr, f, b, buffSize);
@@ -1461,7 +1461,7 @@ Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const UTF8Char *str1, Dr
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, OSInt buffSize)
+Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	OSInt px = Math::Double2Int32(dx);
 	OSInt py = Math::Double2Int32(dy);
@@ -1533,7 +1533,7 @@ Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, Draw
 			return false;
 		}
 
-		if (px < buffSize)
+		if (px < (OSInt)buffSize)
 		{
 			sx = -px + buffSize;
 			swidth += px;
@@ -1544,7 +1544,7 @@ Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, Draw
 			sx = 0;
 			px -= buffSize;
 		}
-		if (py < buffSize)
+		if (py < (OSInt)buffSize)
 		{
 			sy = -py + buffSize;
 			sheight += py;
@@ -1563,11 +1563,11 @@ Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, Draw
 		{
 			swidth = gimg->GetWidth() - sx;
 		}
-		if (dwidth + buffSize < swidth)
+		if (dwidth + (OSInt)buffSize < swidth)
 		{
 			swidth = dwidth + buffSize;
 		}
-		if (dheight + buffSize < sheight)
+		if (dheight + (OSInt)buffSize < sheight)
 		{
 			sheight = dheight + buffSize;
 		}
@@ -1638,7 +1638,7 @@ Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, Draw
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
+Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1);
 	Bool ret = this->DrawStringRotBW(dx, dy, wptr, f, b, angleDegree, buffSize);
@@ -1646,7 +1646,7 @@ Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const UTF8Char *str1,
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, Double angleDegree, OSInt buffSize)
+Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	OSInt px = Math::Double2Int32(dx);
 	OSInt py = Math::Double2Int32(dy);
@@ -1715,7 +1715,7 @@ Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, D
 		if (gimg == 0)
 			return false;
 
-		if (px < buffSize)
+		if (px < (OSInt)buffSize)
 		{
 			sx = -px + buffSize;
 			swidth += px;
@@ -1726,7 +1726,7 @@ Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, D
 			sx = 0;
 			px -= buffSize;
 		}
-		if (py < buffSize)
+		if (py < (OSInt)buffSize)
 		{
 			sy = -py + buffSize;
 			sheight += py;
@@ -1745,11 +1745,11 @@ Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, D
 		{
 			swidth = gimg->GetWidth() - sx;
 		}
-		if (dwidth + buffSize < swidth)
+		if (dwidth + (OSInt)buffSize < swidth)
 		{
 			swidth = dwidth + buffSize;
 		}
-		if (dheight + buffSize < sheight)
+		if (dheight + (OSInt)buffSize < sheight)
 		{
 			sheight = dheight + buffSize;
 		}
@@ -2199,7 +2199,7 @@ Bool Media::GDIImage::DrawImageRect(DrawImage *img, OSInt tlx, OSInt tly, OSInt 
 	return true;
 }
 
-Media::DrawPen *Media::GDIImage::NewPenARGB(Int32 color, Double thick, UInt8 *pattern, OSInt nPattern)
+Media::DrawPen *Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
 	if (thick < 1)
 		thick = 1;
@@ -2237,7 +2237,7 @@ Media::DrawPen *Media::GDIImage::NewPenARGB(Int32 color, Double thick, UInt8 *pa
 	return pen;
 }
 
-Media::DrawBrush *Media::GDIImage::NewBrushARGB(Int32 color)
+Media::DrawBrush *Media::GDIImage::NewBrushARGB(UInt32 color)
 {
 	HBRUSH hbrush = CreateSolidBrush(GDIEGetCol(color));
 	GDIBrush *brush;
@@ -2560,7 +2560,7 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 	}
 }
 
-void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, OSInt width, OSInt height)
+void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height)
 {
 	UInt8 *iptr = (UInt8*)imgPtr;
 	UInt8 *sptr = (UInt8*)this->bmpBits;
@@ -2578,11 +2578,11 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, OSInt 
 		height += y;
 		y = 0;
 	}
-	if (x + width > (OSInt)this->width)
+	if (x + (OSInt)width > (OSInt)this->width)
 	{
 		width = this->width - x;
 	}
-	if (y + height > (OSInt)this->height)
+	if (y + (OSInt)height > (OSInt)this->height)
 	{
 		height = this->height - y;
 	}
@@ -2614,7 +2614,7 @@ Media::StaticImage *Media::GDIImage::ToStaticImage()
 	return CreateStaticImage();
 }
 
-Int32 Media::GDIImage::SavePng(IO::SeekableStream *stm)
+UOSInt Media::GDIImage::SavePng(IO::SeekableStream *stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2651,7 +2651,7 @@ Int32 Media::GDIImage::SavePng(IO::SeekableStream *stm)
 #endif
 }
 
-Int32 Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
+UOSInt Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2730,7 +2730,7 @@ Int32 Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
 #endif
 }
 
-Int32 Media::GDIImage::SaveJPG(IO::SeekableStream *stm)
+UOSInt Media::GDIImage::SaveJPG(IO::SeekableStream *stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2778,7 +2778,7 @@ Media::Image::ImageType Media::GDIImage::GetImageType()
 	return IT_GUIIMAGE;
 }
 
-void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, OSInt width, OSInt height, OSInt destBpl)
+void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl)
 {
 	if (left < 0)
 	{
@@ -2792,20 +2792,20 @@ void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, OSInt
 	}
 	if (left >= (OSInt)this->width || top >= (OSInt)this->height)
 		return;
-	if (left + width > (OSInt)this->width)
+	if (left + (OSInt)width > (OSInt)this->width)
 	{
 		width = this->width - left;
 	}
-	if (top + height > (OSInt)this->height)
+	if (top + (OSInt)height > (OSInt)this->height)
 	{
 		height = this->height - top;
 	}
-	OSInt lineSize = (width * this->bitCount) >> 3;
+	UOSInt lineSize = (width * this->bitCount) >> 3;
 	OSInt srcBpl = (this->width * this->bitCount) >> 3;
 	
 	UInt8 *srcPtr = (UInt8*)this->bmpBits;
 	srcPtr = srcPtr + (this->height - top) * srcBpl + ((left * this->bitCount) >> 3);
-	OSInt i = height;
+	UOSInt i = height;
 	while (i-- > 0)
 	{
 		srcPtr -= srcBpl;

@@ -418,7 +418,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 {
 	Int32 currTime;
-	OSInt i;
+	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
 		i = cmdId - MNU_PB_CHAPTERS;
@@ -452,7 +452,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			currTime = this->clk->GetCurrTime();
 			this->PBStop();
 			this->PBStart(currTime + 10000);
-			this->pbLastChapter = -1;
+			this->pbLastChapter = (UOSInt)-1;
 		}
 		break;
 	case MNU_PB_BWD:
@@ -476,7 +476,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				i++;
 			}
 			i--;
-			if (i < 0)
+			if ((OSInt)i < 0)
 			{
 				i = 0;
 			}
@@ -603,7 +603,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				if (j >= 0)
 				{
 					i = 0;
-					while (i < j)
+					while ((OSInt)i < j)
 					{
 						Text::StrInt32(sbuff, video->GetFrameTime(i));
 						writer->WriteLine(sbuff);

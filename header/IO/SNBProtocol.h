@@ -7,7 +7,7 @@ namespace IO
 	class SNBProtocol
 	{
 	public:
-		typedef void (__stdcall *ProtocolHandler)(void *userObj, UInt8 cmdType, OSInt cmdSize, UInt8 *cmd);
+		typedef void (__stdcall *ProtocolHandler)(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 	public:
 		IO::Stream *stm;
 		ProtocolHandler protoHdlr;
@@ -21,7 +21,7 @@ namespace IO
 		SNBProtocol(IO::Stream *stm, ProtocolHandler protoHdlr, void *userObj);
 		~SNBProtocol();
 
-		void SendCommand(UInt8 cmdType, OSInt cmdSize, UInt8 *cmd);
+		void SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 	};
 }
 

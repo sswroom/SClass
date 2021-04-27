@@ -227,7 +227,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 	}
 }
 
-OSInt Manage::Process::GetMemorySize()
+UOSInt Manage::Process::GetMemorySize()
 {
 #ifdef _WIN32_WCE
 	return 0;
@@ -245,7 +245,7 @@ OSInt Manage::Process::GetMemorySize()
 #endif
 }
 
-Bool Manage::Process::SetMemorySize(OSInt minSize, OSInt maxSize)
+Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -260,10 +260,10 @@ Bool Manage::Process::SetMemorySize(OSInt minSize, OSInt maxSize)
 #endif
 }
 
-OSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UOSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
 {
 	THREADENTRY32 threadEntry;
-	OSInt threadCnt = 0;
+	UOSInt threadCnt = 0;
 	HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 	threadEntry.dwSize = sizeof(threadEntry);
 	if (Thread32First(hSnapShot, &threadEntry))
@@ -291,13 +291,13 @@ void *Manage::Process::GetHandle()
 	return this->handle;
 }
 
-OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
 {
 #ifdef _WIN32_WCE
 	MODULEENTRY32 moduleInfo;
 	Manage::ModuleInfo *mod;
 	HANDLE hSnapShot;
-	OSInt i;
+	UOSInt i;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
 	moduleInfo.dwSize = sizeof(moduleInfo);
 	i = 0;
@@ -321,14 +321,14 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 	CloseToolhelp32Snapshot(hSnapShot);
 	return i;
 #else
-	OSInt i;
+	UOSInt i;
 	Manage::ModuleInfo *mod;
 	HMODULE mods[512];
 	UInt32 modCnt;
 	if (EnumProcessModules((HANDLE)this->handle, mods, sizeof(mods), (LPDWORD)&modCnt))
 	{
 		i = 0;
-		while (i < (OSInt)(modCnt / sizeof(HMODULE)))
+		while (i < (modCnt / sizeof(HMODULE)))
 		{
 			NEW_CLASS(mod, Manage::ModuleInfo(this->handle, mods[i]));
 			modList->Add(mod);
@@ -341,10 +341,10 @@ OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList
 #endif
 }
 
-OSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
 {
 	Manage::ThreadInfo *tInfo;
-	OSInt threadCnt = 0;
+	UOSInt threadCnt = 0;
 	THREADENTRY32 threadEntry;
 	HANDLE hSnapShot;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
@@ -377,11 +377,11 @@ OSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadL
 	return threadCnt;
 }
 
-OSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
+UOSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
 {
 	HEAPLIST32 heapListInfo;
 	HANDLE hSnapShot;
-	OSInt i;
+	UOSInt i;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPHEAPLIST, (DWORD)this->procId);
 	heapListInfo.dwSize = sizeof(heapListInfo);
 	i = 0;
@@ -405,15 +405,15 @@ OSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
 	return i;
 }
 
-OSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, OSInt maxCount)
+UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, UOSInt maxCount)
 {
 	HEAPENTRY32 ent;
 	HeapInfo *heap;
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	if (maxCount <= 0)
 	{
-		maxCount = -1;
-		maxCount = (OSInt)(((UOSInt)maxCount) >> 1);
+		maxCount = (UOSInt)-1;
+		maxCount = (maxCount >> 1);
 	}
 	ent.dwSize = sizeof(ent);
 #ifdef _WIN32_WCE
@@ -486,7 +486,7 @@ OSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heap
 
 void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
 {
-	OSInt i;
+	UOSInt i;
 	i = heapList->GetCount();
 	while (i-- > 0)
 	{
@@ -504,7 +504,7 @@ Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 
 }
 
-Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSInt *pagedPoolUsage, OSInt *nonPagedPoolUsage, OSInt *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -770,7 +770,7 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	return 0;
 }
 
-OSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize)
+UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 {
 	SIZE_T size;
 	if (ReadProcessMemory(this->handle, (void*)addr, buff, reqSize, &size))

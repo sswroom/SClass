@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 	UInt8 id[8];
 	UTF8Char sbuff[64];
 	Data::DateTime dt;
-	Int64 maxIMAC;
+	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Text::StringBuilderUTF8 sb;
 	UOSInt ieLen;

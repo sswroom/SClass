@@ -244,8 +244,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			UInt8 buff[256];
 			OSInt buffSize;
 			Bool ret;
-			Data::ArrayListInt32 *callAddrs;
-			Data::ArrayListInt32 *jmpAddrs;
+			Data::ArrayListUInt32 *callAddrs;
+			Data::ArrayListUInt32 *jmpAddrs;
 			UInt32 blockStart;
 			UInt32 blockEnd;
 			Text::StringBuilderUTF8 sb;
@@ -263,8 +263,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn((const UTF8Char*)"Edi", 70);
 			this->contextType = Manage::ThreadContext::CT_X86_32;
 
-			NEW_CLASS(callAddrs, Data::ArrayListInt32());
-			NEW_CLASS(jmpAddrs, Data::ArrayListInt32());
+			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
+			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
 			eip = (UInt32)context->GetInstAddr();
 			esp = (UInt32)context->GetStackAddr();
 			ebp = (UInt32)context->GetFrameAddr();

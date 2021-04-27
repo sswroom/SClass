@@ -60,13 +60,13 @@ IO::SensorManager::~SensorManager()
 	CoUninitialize();
 }
 
-OSInt IO::SensorManager::GetSensorCnt()
+UOSInt IO::SensorManager::GetSensorCnt()
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0)
 		return 0;
 
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	ISensorCollection *pSensorColl;
 	HRESULT hr;
 	hr = me->mgr->GetSensorsByCategory(SENSOR_CATEGORY_ALL, &pSensorColl);
@@ -86,10 +86,10 @@ OSInt IO::SensorManager::GetSensorCnt()
 	return ret;
 }
 
-IO::Sensor::SensorType IO::SensorManager::GetSensorType(OSInt index)
+IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 {
 	ClassData *me = (ClassData*)this->clsData;
-	if (me->mgr == 0 || index < 0)
+	if (me->mgr == 0)
 		return IO::Sensor::ST_UNKNOWN;
 
 	IO::Sensor::SensorType sensorType = IO::Sensor::ST_UNKNOWN;
@@ -139,7 +139,7 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(OSInt index)
 	return sensorType;
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(OSInt index)
+IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0 || index < 0)
@@ -200,13 +200,13 @@ IO::Sensor *IO::SensorManager::CreateSensor(OSInt index)
 	return ret;
 }
 
-OSInt IO::SensorManager::GetAccelerometerCnt()
+UOSInt IO::SensorManager::GetAccelerometerCnt()
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0)
 		return 0;
 
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	ISensorCollection *pSensorColl;
 	HRESULT hr;
 	hr = me->mgr->GetSensorsByType(SENSOR_TYPE_ACCELEROMETER_3D, &pSensorColl);
@@ -226,7 +226,7 @@ OSInt IO::SensorManager::GetAccelerometerCnt()
 	return ret;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(OSInt index)
+IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
 {
 	IO::SensorAccelerometer *ret = 0;
 	ClassData *me = (ClassData*)this->clsData;

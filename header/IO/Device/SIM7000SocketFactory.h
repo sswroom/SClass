@@ -89,10 +89,10 @@ namespace IO
 			virtual void SetBroadcast(UInt32 *socket, Bool val);
 			virtual void AddIPMembership(UInt32 *socket, UInt32 ip); ////////////////////////
 
-			virtual OSInt SendData(UInt32 *socket, const UInt8 *buff, OSInt buffSize, ErrorType *et); ////////////////////////
-			virtual OSInt ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et); ////////////////////////
-			virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, Sync::Event *evt, ErrorType *et); ////////////////////////
-			virtual OSInt EndReceiveData(void *reqData, Bool toWait); ////////////////////////
+			virtual UOSInt SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et); ////////////////////////
+			virtual UOSInt ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et); ////////////////////////
+			virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et); ////////////////////////
+			virtual UOSInt EndReceiveData(void *reqData, Bool toWait); ////////////////////////
 			virtual void CancelReceiveData(void *reqData); ////////////////////////
 
 			virtual UOSInt UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et); ////////////////////////
@@ -109,18 +109,18 @@ namespace IO
 
 			virtual Bool DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr);
 			virtual Bool GetDefDNS(Net::SocketUtil::AddressInfo *addr);
-			virtual OSInt GetDNSList(Data::ArrayList<UInt32> *dnsList);
+			virtual UOSInt GetDNSList(Data::ArrayList<UInt32> *dnsList);
 			virtual Bool LoadHosts(Net::DNSHandler *dnsHdlr);
 
-			virtual Bool ARPAddRecord(OSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4);
+			virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4);
 
-			virtual OSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList);
+			virtual UOSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList);
 			virtual Bool GetIPInfo(IPInfo *info); //////////////////////////////////
 			virtual Bool GetTCPInfo(TCPInfo *info); //////////////////////////////////
 			virtual Bool GetUDPInfo(UDPInfo *info); //////////////////////////////////
-			virtual OSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId);
 			virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList);
-			virtual OSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId);
 			virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList);
 		};
 	}

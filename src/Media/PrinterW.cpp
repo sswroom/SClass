@@ -207,7 +207,7 @@ void Media::GDIPrintDocument::WaitForEnd()
 }
 
 
-OSInt Media::Printer::GetPrinterCount()
+UOSInt Media::Printer::GetPrinterCount()
 {
 	UInt8 buff[4096];
 	UInt32 cbNeeded;
@@ -216,13 +216,13 @@ OSInt Media::Printer::GetPrinterCount()
 	return cReturned;
 }
 
-UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, OSInt index)
+UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UOSInt index)
 {
 	UInt8 buff[4096];
 	UInt32 cbNeeded;
 	UInt32 cReturned = 0;
 	EnumPrintersW(PRINTER_ENUM_LOCAL, 0, 1, buff, 4096, (LPDWORD)&cbNeeded, (LPDWORD)&cReturned);
-	if (index < 0 || (UInt32)index > cReturned)
+	if (index > cReturned)
 		return 0;
 	_PRINTER_INFO_1W *info = (_PRINTER_INFO_1W*)buff;
 	return Text::StrWChar_UTF8(sbuff, info[index].pName, -1);
@@ -289,7 +289,7 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 	return printer;
 }
 
-Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, OSInt devModeSize)
+Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize)
 {
 	this->devMode = 0;
 	this->hPrinter = 0;

@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 		{
 			Text::StringBuilderUTF8 sb;
 			me->txtInterval->GetText(&sb);
-			if (!sb.ToInt32(&me->interval))
+			if (!sb.ToUInt32(&me->interval))
 			{
 				return;
 			}
@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTim
 {
 	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userData;
 	me->frameCnt++;
-	if (me->lastSaveTime + me->interval <= (Int32)frameTime)
+	if (me->lastSaveTime + me->interval <= frameTime)
 	{
 		Media::ImageList *imgList;
 		Media::StaticImage *simg;

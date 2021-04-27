@@ -44,7 +44,7 @@ namespace SSWR
 			Exporter::GUIJPGExporter *exporter;
 			Bool isStarted;
 			Int32 jpgQuality;
-			Int32 interval;
+			UInt32 interval;
 			UInt32 lastSaveTime;
 			UInt32 frameCnt;
 			UInt32 saveCnt;
