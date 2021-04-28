@@ -4,16 +4,16 @@
 extern "C" Bool ByteCountingSort_SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
 {
 	arr += firstIndex;
-	OSInt arrLen = lastIndex - firstIndex + 1;
+	UOSInt arrLen = (UOSInt)(lastIndex - firstIndex + 1);
 	UInt32 *arr2 = MemAlloc(UInt32, arrLen);
 	if (arr2 == 0)
 		return false;
 	UInt32 *arrTmp;
 	UOSInt dynArr3[4][256] = {{0}};
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt m;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt m;
 	i = 0;
 	while (i < arrLen)
 	{

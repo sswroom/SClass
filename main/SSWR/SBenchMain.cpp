@@ -321,15 +321,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.Append(ram->sn);
 			}
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI64(ram->defSpdMHz);
+			sb.AppendUOSInt(ram->defSpdMHz);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI64(ram->confSpdMHz);
+			sb.AppendUOSInt(ram->confSpdMHz);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI32(ram->dataWidth);
+			sb.AppendU32(ram->dataWidth);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI32(ram->totalWidth);
+			sb.AppendU32(ram->totalWidth);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI64(ram->memorySize);
+			sb.AppendU64(ram->memorySize);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 			i++;

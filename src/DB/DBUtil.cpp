@@ -4,9 +4,11 @@
 #include "DB/DBUtil.h"
 #include "Math/Math.h"
 #include "Math/Point.h"
+#include "Math/WKTWriter.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "Text/StringBuilderUTF8.h"
 
 UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, ServerType svrType)
 {
@@ -1356,6 +1358,24 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, Int32 srI
 			return sqlstr;
 		}
 	}
+	else if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	{
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		if (writer.GenerateWKT(&sb, vec))
+		{
+			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)"geometry::STGeomFromText('");
+			sqlstr = Text::StrConcat(sqlstr, sb.ToString());
+			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)"', ");
+			sqlstr = Text::StrInt32(sqlstr, vec->GetSRID());
+			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)")");
+			return sqlstr;
+		}
+		else
+		{
+			return sqlstr;
+		}
+	}
 	else
 	{
 		return sqlstr;
@@ -1373,6 +1393,23 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svr
 		if (vec->GetVectorType() == Math::Vector2D::VT_POINT)
 		{
 			return SDBBinLeng(0, 22, svrType);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	{
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		if (writer.GenerateWKT(&sb, vec))
+		{
+			UOSInt ret = 30 + sb.GetLength();
+			sb.ClearStr();
+			sb.AppendI32(vec->GetSRID());
+			ret += sb.GetLength();
+			return ret;
 		}
 		else
 		{

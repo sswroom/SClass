@@ -55,11 +55,11 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UInt8 *src, OSInt sbpl
 		{
 			j = (UOSInt)currV;
 			currV += v;
-			if (j >= swidth)
+			if (Math::UOSInt2Double(j) >= swidth)
 			{
 				j = (UOSInt)swidth - 1;
 			}
-			this->xindex[i] = j << 2;
+			this->xindex[i] = (OSInt)j << 2;
 			i++;
 		}
 	}
@@ -80,7 +80,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UInt8 *src, OSInt sbpl
 		{
 			j = (UOSInt)currV;
 			currV += v;
-			if (j >= sheight)
+			if (Math::UOSInt2Double(j) >= sheight)
 			{
 				j = (UOSInt)sheight - 1;
 			}
