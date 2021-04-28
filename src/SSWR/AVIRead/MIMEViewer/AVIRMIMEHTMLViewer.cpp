@@ -11,7 +11,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(SSWR::AVIRead:
 	this->txtHTML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtHTML->SetReadOnly(true);
 
-	OSInt size;
+	UOSInt size;
 	const UInt8 *buff = obj->GetRAWData(&size);
 	IO::MemoryStream *mstm;
 	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, size, (const UTF8Char*)"SSWR.AVIRead.MIMEViewer.AVIRMIMEHTMLViewer.mstm"));

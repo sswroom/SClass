@@ -90,7 +90,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			virtual Bool Login(const Char *user, const Char *pwd, Int32 *userId);
-			virtual OSInt GetMessageStat(Int32 userId, OSInt *size);
+			virtual UOSInt GetMessageStat(Int32 userId, UOSInt *size);
 			virtual Bool GetUnreadList(Int32 userId, Data::ArrayList<Int32> *unreadList);
 			virtual Bool GetMessageInfo(Int32 userId, Int32 msgId, MessageInfo *info);
 			virtual Bool GetMessageContent(Int32 userId, Int32 msgId, IO::Stream *stm);

@@ -31,7 +31,7 @@ void __stdcall Net::POP3Server::ClientEvent(Net::TCPClient *cli, void *userObj, 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		MailStatus *cliStatus;
-		OSInt i;
+		UOSInt i;
 		cliStatus = (MailStatus*)cliData;
 		MemFree(cliStatus->buff);
 		if (cliStatus->cliName)
@@ -85,8 +85,8 @@ void __stdcall Net::POP3Server::ClientData(Net::TCPClient *cli, void *userObj, v
 		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, size);
 		cliStatus->buffSize += size;
 	}
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	j = 0;
 	i = 0;
 	while (i < cliStatus->buffSize)
@@ -119,7 +119,7 @@ void __stdcall Net::POP3Server::ClientTimeout(Net::TCPClient *cli, void *userObj
 {
 }
 
-OSInt Net::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg)
+UOSInt Net::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg)
 {
 	Text::StringBuilderUTF8 sb;
 	if (success)
@@ -138,7 +138,7 @@ OSInt Net::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF
 	sb.Append((const UTF8Char *)"\r\n");
 
 
-	OSInt buffSize;
+	UOSInt buffSize;
 	buffSize = cli->Write(sb.ToString(), sb.GetLength());
 	if (this->rawLog)
 	{
@@ -147,10 +147,10 @@ OSInt Net::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF
 	return buffSize;
 }
 
-OSInt Net::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg)
+UOSInt Net::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg)
 {
-	OSInt strLen = Text::StrCharCnt(msg);
-	OSInt buffSize;
+	UOSInt strLen = Text::StrCharCnt(msg);
+	UOSInt buffSize;
 	buffSize = cli->Write(msg, strLen);
 	if (this->rawLog)
 	{
@@ -188,13 +188,13 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			OSInt mailCnt;
-			OSInt mailSize;
+			UOSInt mailCnt;
+			UOSInt mailSize;
 			mailCnt = this->mailCtrl->GetMessageStat(cliStatus->userId, &mailSize);
 			Text::StringBuilderUTF8 sb;
-			sb.AppendOSInt(mailCnt);
+			sb.AppendUOSInt(mailCnt);
 			sb.Append((const UTF8Char *)" ");
-			sb.AppendOSInt(mailSize);
+			sb.AppendUOSInt(mailSize);
 			WriteMessage(cli, true, sb.ToString());
 		}
 	}
@@ -207,8 +207,8 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		else
 		{
 			Data::ArrayListInt32 unreadList;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			Int32 id;
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
 			{
@@ -349,8 +349,8 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		else
 		{
 			Data::ArrayListInt32 unreadList;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			Int32 id;
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
 			{

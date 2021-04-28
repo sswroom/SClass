@@ -37,7 +37,7 @@ namespace Text
 
 			virtual const UTF8Char *GetClassName();
 			virtual const UTF8Char *GetContentType();
-			virtual OSInt WriteStream(IO::Stream *stm);
+			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 
 			void SetContent(Text::IMIMEObj *content);
@@ -46,7 +46,7 @@ namespace Text
 			UTF8Char *GetFromAddr(UTF8Char *sbuff);
 			UTF8Char *GetSubject(UTF8Char *sbuff);
 			UTF8Char *GetReplyTo(UTF8Char *sbuff);
-			OSInt GetRecpList(Data::ArrayList<MailAddress*> *recpList);
+			UOSInt GetRecpList(Data::ArrayList<MailAddress*> *recpList);
 			void FreeRecpList(Data::ArrayList<MailAddress*> *recpList);
 
 			Text::MIMEObj::TextMIMEObj *GetContentText();
@@ -58,7 +58,7 @@ namespace Text
 			static MailMessage *ParseFile(IO::IStreamData *fd);
 
 		private:
-			OSInt ParseAddrList(const UTF8Char *hdr, Data::ArrayList<MailAddress*> *recpList, AddressType type);
+			UOSInt ParseAddrList(const UTF8Char *hdr, Data::ArrayList<MailAddress*> *recpList, AddressType type);
 		};
 	}
 }

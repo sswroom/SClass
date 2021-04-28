@@ -4,15 +4,15 @@
 #include "Text/MIMEObj/MIMEHeader.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, OSInt buffSize, const UTF8Char *contentType) : Text::IMIMEObj(contentType)
+Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, const UTF8Char *contentType) : Text::IMIMEObj(contentType)
 {
 	this->buffSize = buffSize;
 	this->dataBuff = MemAlloc(UInt8, buffSize);
 	this->contType = Text::StrCopyNew(contentType);
 	MemCopyNO(this->dataBuff, dataBuff, buffSize);
 	const UTF8Char *tmpPtr = Text::StrCopyNew(contentType);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char *sarr[2];
 	UTF8Char sbuff[256];
 	i = Text::StrSplitTrim(sarr, 2, (UTF8Char*)tmpPtr, ';');
@@ -54,7 +54,7 @@ const UTF8Char *Text::MIMEObj::UnknownMIMEObj::GetContentType()
 	return this->contType;
 }
 
-OSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)
 {
 	return stm->Write(this->dataBuff, this->buffSize);
 }
@@ -66,7 +66,7 @@ Text::IMIMEObj *Text::MIMEObj::UnknownMIMEObj::Clone()
 	return newObj;
 }
 
-const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(OSInt *dataSize)
+const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(UOSInt *dataSize)
 {
 	*dataSize = this->buffSize;
 	return this->dataBuff;

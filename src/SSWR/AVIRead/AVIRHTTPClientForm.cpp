@@ -49,8 +49,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	me->reqMeth = (const Char*)me->cboMethod->GetSelectedItem();
 	if (Text::StrEqualsICase(me->reqMeth, "GET") || Text::StrEqualsICase(me->reqMeth, "DELETE"))
 	{
-		OSInt i = 0;
-		OSInt j = me->params->GetCount();
+		UOSInt i = 0;
+		UOSInt j = me->params->GetCount();
 		if (j > 0)
 		{
 			if (sb.IndexOf('?') >= 0)
@@ -282,6 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 		UTF8Char *sptr = sb.ToString();
 		OSInt spInd;
 		OSInt eqInd;
+		UOSInt i;
 		while (true)
 		{
 			spInd = Text::StrIndexOf(sptr, '&');
@@ -306,8 +307,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 				param->value = Text::StrCopyNew((const UTF8Char*)"");
 			}
 			me->params->Add(param);
-			eqInd = me->lvReqData->AddItem(param->name, param);
-			me->lvReqData->SetSubItem(eqInd, 1, param->value);
+			i = me->lvReqData->AddItem(param->name, param);
+			me->lvReqData->SetSubItem(i, 1, param->value);
 
 			if (spInd < 0)
 			{
@@ -661,7 +662,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearFiles()
 {
-	OSInt i = this->fileList->GetCount();
+	UOSInt i = this->fileList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->fileList->GetItem(i));

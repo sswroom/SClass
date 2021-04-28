@@ -19,7 +19,7 @@ Media::MonitorMgr::MonitorMgr()
 
 Media::MonitorMgr::~MonitorMgr()
 {
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<MonitorSetting*> *monList = this->monMap->GetValues();
 	MonitorSetting *mon;
 	i = monList->GetCount();

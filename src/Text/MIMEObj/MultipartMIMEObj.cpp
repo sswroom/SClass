@@ -28,8 +28,8 @@ Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::PartInfo::GetObject()
 Text::MIMEObj::MultipartMIMEObj::PartInfo *Text::MIMEObj::MultipartMIMEObj::PartInfo::Clone()
 {
 	Text::MIMEObj::MultipartMIMEObj::PartInfo *obj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj::PartInfo(this->obj->Clone()));
 	i = 0;
 	j = this->headerName->GetCount();
@@ -41,12 +41,13 @@ Text::MIMEObj::MultipartMIMEObj::PartInfo *Text::MIMEObj::MultipartMIMEObj::Part
 	return obj;
 }
 
-void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, OSInt buffSize)
+void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 {
-	OSInt lineStart;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt lineStart;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	OSInt si;
 	Data::ArrayListStrUTF8 hdrNames;
 	Data::ArrayListStrUTF8 hdrValues;
 	Text::StringBuilderUTF8 sb;
@@ -112,16 +113,16 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, OSInt buffSize)
 		return;
 	}
 
-	j = hdrNames.SortedIndexOf((const UTF8Char*)"Content-Type");
-	if (j >= 0)
+	si = hdrNames.SortedIndexOf((const UTF8Char*)"Content-Type");
+	if (si >= 0)
 	{
-		const UTF8Char *contType = hdrValues.GetItem(j);
+		const UTF8Char *contType = hdrValues.GetItem((UOSInt)si);
 		Text::IMIMEObj *obj = 0;
 		IO::StmData::MemoryData *mdata;
-		j = hdrNames.SortedIndexOf((const UTF8Char*)"Content-Transfer-Encoding");
-		if (j >= 0)
+		si = hdrNames.SortedIndexOf((const UTF8Char*)"Content-Transfer-Encoding");
+		if (si >= 0)
 		{
-			const UTF8Char *tenc = hdrValues.GetItem(j);
+			const UTF8Char *tenc = hdrValues.GetItem((UOSInt)si);
 			if (Text::StrEquals(tenc, (const UTF8Char*)"base64"))
 			{
 				Text::TextBinEnc::Base64Enc b64;
@@ -223,7 +224,7 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, c
 
 Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 {
-	OSInt i;
+	UOSInt i;
 	PartInfo *part;
 	Text::StrDelNew(this->contentType);
 	SDEL_TEXT(this->defMsg);
@@ -247,14 +248,14 @@ const UTF8Char *Text::MIMEObj::MultipartMIMEObj::GetContentType()
 	return this->contentType;
 }
 
-OSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 {
-	OSInt ret = 0;
-	OSInt len;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt ret = 0;
+	UOSInt len;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Int32 encType;
 	PartInfo *part;
 	const UTF8Char *hdrName;
@@ -351,14 +352,14 @@ const UTF8Char *Text::MIMEObj::MultipartMIMEObj::GetDefMsg()
 	return this->defMsg;
 }
 
-OSInt Text::MIMEObj::MultipartMIMEObj::AddPart(Text::IMIMEObj *obj)
+UOSInt Text::MIMEObj::MultipartMIMEObj::AddPart(Text::IMIMEObj *obj)
 {
 	PartInfo *part;
 	NEW_CLASS(part, PartInfo(obj));
 	return this->parts->Add(part);
 }
 
-Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(OSInt partIndex, const UTF8Char *name, const UTF8Char *value)
+Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(UOSInt partIndex, const UTF8Char *name, const UTF8Char *value)
 {
 	PartInfo *part = this->parts->GetItem(partIndex);
 	if (part == 0)
@@ -367,7 +368,7 @@ Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(OSInt partIndex, const UTF8C
 	return true;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::GetPartObj(OSInt partIndex)
+Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::GetPartObj(UOSInt partIndex)
 {
 	PartInfo *part = this->parts->GetItem(partIndex);
 	if (part == 0)
@@ -375,12 +376,12 @@ Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::GetPartObj(OSInt partIndex)
 	return part->GetObject();
 }
 
-Text::MIMEObj::MultipartMIMEObj::PartInfo *Text::MIMEObj::MultipartMIMEObj::GetPart(OSInt partIndex)
+Text::MIMEObj::MultipartMIMEObj::PartInfo *Text::MIMEObj::MultipartMIMEObj::GetPart(UOSInt partIndex)
 {
 	return this->parts->GetItem(partIndex);
 }
 
-OSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount()
+UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount()
 {
 	return this->parts->GetCount();
 }

@@ -11,7 +11,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer::AVIRMIMEJSONViewer(SSWR::AVIRead:
 	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtJSON->SetReadOnly(true);
 
-	OSInt size;
+	UOSInt size;
 	const UInt8 *buff = obj->GetRAWData(&size);
 	Text::StringBuilderUTF8 sb;
 	Text::JSText::JSONWellFormat(buff, size, 0, &sb);

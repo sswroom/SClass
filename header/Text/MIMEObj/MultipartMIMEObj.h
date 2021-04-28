@@ -30,7 +30,7 @@ namespace Text
 			const UTF8Char *defMsg;
 			Data::ArrayList<PartInfo*> *parts;
 
-			void ParsePart(UInt8 *buff, OSInt buffSize);
+			void ParsePart(UInt8 *buff, UOSInt buffSize);
 			MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg, const UTF8Char *boundary);
 		public:
 			MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg);
@@ -38,15 +38,15 @@ namespace Text
 
 			virtual const UTF8Char *GetClassName();
 			virtual const UTF8Char *GetContentType();
-			virtual OSInt WriteStream(IO::Stream *stm);
+			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 
 			const UTF8Char *GetDefMsg();
-			OSInt AddPart(Text::IMIMEObj *obj);
-			Bool AddPartHeader(OSInt partIndex, const UTF8Char *name, const UTF8Char *value);
-			Text::IMIMEObj *GetPartObj(OSInt partIndex);
-			PartInfo *GetPart(OSInt partIndex);
-			OSInt GetPartCount();
+			UOSInt AddPart(Text::IMIMEObj *obj);
+			Bool AddPartHeader(UOSInt partIndex, const UTF8Char *name, const UTF8Char *value);
+			Text::IMIMEObj *GetPartObj(UOSInt partIndex);
+			PartInfo *GetPart(UOSInt partIndex);
+			UOSInt GetPartCount();
 
 			static MultipartMIMEObj *ParseFile(const UTF8Char *contentType, IO::IStreamData *data);
 		};

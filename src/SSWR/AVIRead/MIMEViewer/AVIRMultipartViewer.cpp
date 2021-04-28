@@ -9,8 +9,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 	NEW_CLASS(this->subViewers, Data::ArrayList<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *>());
 
 	UI::GUITabPage *tp;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::IMIMEObj *subObj;
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 	NEW_CLASS(this->tcParts, UI::GUITabControl(ui, ctrl));

@@ -15,7 +15,7 @@ namespace Text
 
 		virtual const UTF8Char *GetClassName() = 0;
 		virtual const UTF8Char *GetContentType() = 0;
-		virtual OSInt WriteStream(IO::Stream *stm) = 0;
+		virtual UOSInt WriteStream(IO::Stream *stm) = 0;
 		virtual IMIMEObj *Clone() = 0;
 
 		virtual IO::ParsedObject::ParserType GetParserType();
@@ -23,5 +23,5 @@ namespace Text
 		static Text::IMIMEObj *ParseFromData(IO::IStreamData *data, const UTF8Char *contentType);
 		static Text::IMIMEObj *ParseFromFile(const UTF8Char *fileName);
 	};
-};
+}
 #endif

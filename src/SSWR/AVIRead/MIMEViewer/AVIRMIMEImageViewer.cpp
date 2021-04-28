@@ -6,7 +6,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(SSWR::AVIRea
 {
 	this->obj = obj;
 	this->imgList = 0;
-	OSInt buffSize;
+	UOSInt buffSize;
 	const UInt8 *buff = this->obj->GetRAWData(&buffSize);
 	IO::StmData::MemoryData *data;
 	NEW_CLASS(data, IO::StmData::MemoryData(buff, buffSize));

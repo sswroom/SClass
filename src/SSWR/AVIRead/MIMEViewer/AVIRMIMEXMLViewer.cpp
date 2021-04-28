@@ -15,7 +15,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	this->lvXML->AddColumn((const UTF8Char*)"Path", 300);
 	this->lvXML->AddColumn((const UTF8Char*)"Value", 300);
 
-	OSInt size;
+	UOSInt size;
 	const UInt8 *buff = obj->GetRAWData(&size);
 	IO::MemoryStream *mstm;
 	Text::XMLReader *reader;
@@ -24,8 +24,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	Text::StringBuilderUTF8 sbCont;
 	Text::XMLAttrib *attr;
 	const UTF8Char *csptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(mstm, IO::MemoryStream((UTF8Char*)buff, size, (const UTF8Char*)"SSWR.AVIRead.MIMEViewer.AVIRMIMEXMLViewer.mstm"));
 	NEW_CLASS(reader, Text::XMLReader(core->GetEncFactory(), mstm, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())

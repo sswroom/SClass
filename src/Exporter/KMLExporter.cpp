@@ -96,12 +96,12 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
-	OSInt nameCol = layer->GetNameCol();
+	UOSInt nameCol = layer->GetNameCol();
 
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	OSInt l;
+	UOSInt l;
 	Int64 currId;
 	Int64 lastId;
 	IO::BufferedOutputStream *cstm;
@@ -135,7 +135,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<Folder>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<name>Points</name>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<open>1</open>");
-	writer->Write(sbuff2, sptr - sbuff2);
+	writer->Write(sbuff2, (UOSInt)(sptr - sbuff2));
 
 	NEW_CLASS(ids, Data::ArrayListInt64());
 	layer->GetAllObjectIds(ids, &nameArr);
@@ -190,7 +190,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				sptr = Text::StrDouble(sptr, z);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</coordinates></Point>");
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Placemark>");
-				writer->WriteLine(sbuff2, sptr - sbuff2);
+				writer->WriteLine(sbuff2, (UOSInt)(sptr - sbuff2));
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE)
 			{
@@ -229,7 +229,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							*sptr++ = ' ';
 							*sptr = 0;
 
-							sb.AppendC(sbuff2, sptr - sbuff2);
+							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 							k++;
 						}
 					}
@@ -248,7 +248,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							*sptr++ = ' ';
 							*sptr = 0;
 
-							sb.AppendC(sbuff2, sptr - sbuff2);
+							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 							k++;
 						}
 					}
@@ -270,7 +270,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							*sptr++ = ' ';
 							*sptr = 0;
 
-							sb.AppendC(sbuff2, sptr - sbuff2);
+							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 							k++;
 						}
 					}
@@ -288,7 +288,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							*sptr++ = ' ';
 							*sptr = 0;
 
-							sb.AppendC(sbuff2, sptr - sbuff2);
+							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 							k++;
 						}
 					}
@@ -338,7 +338,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
 							sptr = Text::StrDouble(sptr, z);
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
-							sb.AppendC(sbuff2, sptr - sbuff2);
+							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 						}
 						k++;
 						sb.Append((const UTF8Char*)"</coordinates></LinearRing></outerBoundaryIs>");
@@ -359,7 +359,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
 							sptr = Text::StrDouble(sptr, defHeight);
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
-							sb.AppendC(sbuff2, sptr - sbuff2);
+							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 						}
 						k++;
 						sb.Append((const UTF8Char*)"</coordinates></LinearRing></outerBoundaryIs>");
@@ -425,7 +425,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					if (img->HasSrcAlpha())
 					{
 						sb.Append((const UTF8Char*)"<color>");
-						sb.AppendHex32((Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
+						sb.AppendHex32(((UInt32)Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
 						sb.Append((const UTF8Char*)"</color>");
 					}
 					if (img->HasZIndex())
@@ -503,7 +503,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					if (img->HasSrcAlpha())
 					{
 						sb.Append((const UTF8Char*)"<color>");
-						sb.AppendHex32((Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
+						sb.AppendHex32(((UInt32)Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
 						sb.Append((const UTF8Char*)"</color>");
 					}
 					if (img->HasZIndex())
@@ -561,7 +561,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"</Folder>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Document>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</kml>");
-	writer->Write(sbuff2, sptr - sbuff2);
+	writer->Write(sbuff2, (UOSInt)(sptr - sbuff2));
 
 	DEL_CLASS(writer);
 	DEL_CLASS(cstm);

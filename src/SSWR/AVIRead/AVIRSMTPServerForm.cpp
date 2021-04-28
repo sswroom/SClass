@@ -53,10 +53,10 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 	}
 	else
 	{
-		UInt32 port;
+		UInt16 port;
 		Text::StringBuilderUTF8 sb;
 		me->txtPOP3Port->GetText(&sb);
-		if (!sb.ToUInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
 			return;
@@ -129,8 +129,8 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	IO::FileStream *fs;
 	UOSInt buffSize;
 	UInt8 *buff;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	sb.ClearStr();
 	IO::Path::GetProcessFileName(&sb);
 	IO::Path::AppendPath(&sb, (const UTF8Char*)"SMTP");
@@ -191,11 +191,11 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	EmailInfo *email;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt m;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
 	UTF8Char sbuff[32];
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -365,12 +365,12 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::Login(const Char *user, const Char *pwd,
 	return true;
 }
 
-OSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, OSInt *size)
+UOSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, UOSInt *size)
 {
-	OSInt retCnt;
-	OSInt retSize;
-	OSInt totalCnt;
-	OSInt i;
+	UOSInt retCnt;
+	UOSInt retSize;
+	UOSInt totalCnt;
+	UOSInt i;
 	EmailInfo *email;
 	retSize = 0;
 	retCnt = 0;
@@ -450,7 +450,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, Int32 ms
 		else
 		{
 			UInt8 *buff;
-			OSInt readSize;
+			UOSInt readSize;
 			buff = MemAlloc(UInt8, 1048576);
 			while ((readSize = fs->Read(buff, 1048576)) > 0)
 			{

@@ -10,19 +10,19 @@ namespace Text
 		{
 		private:
 			UInt8 *dataBuff;
-			OSInt buffSize;
+			UOSInt buffSize;
 			const UTF8Char *contType;
 
 		public:
-			UnknownMIMEObj(UInt8 *dataBuff, OSInt buffSize, const UTF8Char *contentType);
+			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, const UTF8Char *contentType);
 			virtual ~UnknownMIMEObj();
 
 			virtual const UTF8Char *GetClassName();
 			virtual const UTF8Char *GetContentType();
-			virtual OSInt WriteStream(IO::Stream *stm);
+			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 
-			const UInt8 *GetRAWData(OSInt *dataSize);
+			const UInt8 *GetRAWData(UOSInt *dataSize);
 		};
 	}
 }

@@ -50,8 +50,8 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj2;
 	NEW_CLASS(pobjList, Data::ArrayList<IO::ParsedObject*>());
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)

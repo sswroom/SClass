@@ -25,7 +25,7 @@ IO::ParsedObject::ParserType Text::IMIMEObj::GetParserType()
 Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8Char *contentType)
 {
 	Text::IMIMEObj *obj;
-	OSInt buffSize;
+	UOSInt buffSize;
 	UInt8 *buff;
 	if (data->GetDataSize() > 104857600)
 	{
@@ -33,7 +33,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	}
 	if (contentType == 0)
 	{
-		buffSize = (OSInt)data->GetDataSize();
+		buffSize = data->GetDataSize();
 		buff = MemAlloc(UInt8, buffSize);
 		data->GetRealData(0, buffSize, buff);
 		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff, buffSize, 0));
@@ -58,13 +58,13 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 			j = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)";");
 			if (j >= 0)
 			{
-				sb.TrimToLength(j);
+				sb.TrimToLength((UOSInt)j);
 			}
 			Text::EncodingFactory encFact;
 			codePage = encFact.GetCodePage(sb.ToString());
 		}
 
-		buffSize = (OSInt)data->GetDataSize();
+		buffSize = (UOSInt)data->GetDataSize();
 		buff = MemAlloc(UInt8, buffSize);
 		data->GetRealData(0, buffSize, buff);
 		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff, buffSize, codePage));
