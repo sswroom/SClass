@@ -60,7 +60,7 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::GIFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::GIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

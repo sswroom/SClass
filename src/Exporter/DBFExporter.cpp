@@ -28,7 +28,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	}
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
-	OSInt tableCnt;
+	UOSInt tableCnt;
 	Data::ArrayList<const UTF8Char *> *tableNames;
 	NEW_CLASS(tableNames, Data::ArrayList<const UTF8Char*>());
 	conn->GetTableNames(tableNames);
@@ -39,7 +39,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::DBFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DBFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

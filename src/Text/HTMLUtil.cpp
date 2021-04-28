@@ -151,12 +151,12 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 	return true;
 }
 
-Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, OSInt buffSize, OSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb)
 {
 	UInt8 c;
 	Bool lineStart = true;
 	Bool lastIsWS = true;
-	OSInt currLev = 0;
+	UOSInt currLev = 0;
 	while (buffSize > 0)
 	{
 		c = *buff;
@@ -228,7 +228,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, OSInt buffSize, OSInt lev,
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, OSInt buffSize, Bool singleLine, Text::StringBuilderUTF *sb, Data::ArrayList<const UTF8Char *> *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF *sb, Data::ArrayList<const UTF8Char *> *imgList)
 {
 	Text::XMLReader *reader;
 	IO::MemoryStream *mstm;

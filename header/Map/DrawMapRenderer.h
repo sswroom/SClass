@@ -42,7 +42,7 @@ namespace Map
 		{
 			Media::DrawFont *font;
 			Media::DrawBrush *fontBrush;
-			OSInt buffSize;
+			UOSInt buffSize;
 			Media::DrawBrush *buffBrush;
 		} DrawFontStyle;
 

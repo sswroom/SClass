@@ -3,7 +3,7 @@
 #include "Net/MySQLUtil.h"
 #include "Text/MyString.h"
 
-const UInt8 *Net::MySQLUtil::ReadLenencInt(const UInt8 *buff, Int64 *val)
+const UInt8 *Net::MySQLUtil::ReadLenencInt(const UInt8 *buff, UInt64 *val)
 {
 	if (buff[0] < 251)
 	{
@@ -27,7 +27,7 @@ const UInt8 *Net::MySQLUtil::ReadLenencInt(const UInt8 *buff, Int64 *val)
 	}
 	else if (buff[0] == 254)
 	{
-		*val = ReadInt64(&buff[1]);
+		*val = ReadUInt64(&buff[1]);
 		buff += 9;
 	}
 	else
@@ -38,7 +38,7 @@ const UInt8 *Net::MySQLUtil::ReadLenencInt(const UInt8 *buff, Int64 *val)
 	return buff;
 }
 
-UInt8 *Net::MySQLUtil::AppendLenencInt(UInt8 *buff, Int64 val)
+UInt8 *Net::MySQLUtil::AppendLenencInt(UInt8 *buff, UInt64 val)
 {
 	if (val < 251)
 	{
@@ -48,19 +48,19 @@ UInt8 *Net::MySQLUtil::AppendLenencInt(UInt8 *buff, Int64 val)
 	else if (val < 0x10000)
 	{
 		buff[0] = 0xfc;
-		WriteInt16(&buff[1], val);
+		WriteUInt16(&buff[1], (UInt16)val);
 		return buff + 3;
 	}
 	else if (val < 0x1000000)
 	{
 		buff[0] = 0xfd;
-		WriteInt24(&buff[1], val);
+		WriteInt24(&buff[1], (UInt32)val);
 		return buff + 4;
 	}
 	else
 	{
 		buff[0] = 0xfe;
-		WriteInt64(&buff[1], val);
+		WriteUInt64(&buff[1], val);
 		return buff + 9;
 	}
 }
@@ -74,7 +74,7 @@ UInt8 *Net::MySQLUtil::AppendLenencStr(UInt8 *buff, const UTF8Char *s)
 	}
 	else
 	{
-		OSInt len = Text::StrCharCnt(s);
+		UOSInt len = Text::StrCharCnt(s);
 		buff = AppendLenencInt(buff, len);
 		MemCopyNO(buff, s, len);
 		buff += len;

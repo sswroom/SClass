@@ -881,14 +881,14 @@ void UI::GUIMapControl::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIMapControl::EventScaleChanged(Double newScale)
 {
-	OSInt i = this->scaleChgHdlrs->GetCount();
+	UOSInt i = this->scaleChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->scaleChgHdlrs->GetItem(i)(this->scaleChgObjs->GetItem(i), newScale);
 	}
 }
 
-void UI::GUIMapControl::SetBGColor(Int32 bgColor)
+void UI::GUIMapControl::SetBGColor(UInt32 bgColor)
 {
 	this->bgColor = bgColor;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
@@ -928,13 +928,13 @@ void UI::GUIMapControl::UpdateMap()
 		Double centerX;
 		Double centerY;
 		Double t;
-		OSInt i;
+		UOSInt i;
 		Int32 imgDurMS;
 		centerX = this->view->GetCenterX();
 		centerY = this->view->GetCenterY();
 		Manage::HiResClock clk;
 		Media::DrawBrush *b = this->bgImg->NewBrushARGB(this->bgDispColor);
-		this->bgImg->DrawRect(0, 0, Math::OSInt2Double(this->bgImg->GetWidth()), Math::OSInt2Double(this->bgImg->GetHeight()), 0, b);
+		this->bgImg->DrawRect(0, 0, Math::UOSInt2Double(this->bgImg->GetWidth()), Math::UOSInt2Double(this->bgImg->GetHeight()), 0, b);
 		this->bgImg->DelBrush(b);
 		this->renderer->DrawMap(this->bgImg, this->view, &imgDurMS);
 		t = clk.GetTimeDiff();

@@ -24,7 +24,7 @@ IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::ZIPExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

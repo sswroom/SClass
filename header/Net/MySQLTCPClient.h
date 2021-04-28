@@ -71,7 +71,7 @@ namespace Net
 		Bool ServerInfoRecv();
 		const UTF8Char *GetServerVer();
 		UInt32 GetConnId();
-		OSInt GetAuthPluginData(UInt8 *buff);
+		UOSInt GetAuthPluginData(UInt8 *buff);
 		UInt32 GetServerCap();
 		UInt16 GetServerCS();
 

@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->devContMut);
 	i = this->devConts->GetCount();
 	while (i-- > 0)
@@ -371,7 +371,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearAlertConts()
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->alertContMut);
 	i = this->alertConts->GetCount();
 	while (i-- > 0)
@@ -385,7 +385,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearAlertConts()
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->userContMut);
 	i = this->userConts->GetCount();
 	while (i-- > 0)
@@ -400,7 +400,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 {
 	UInt8 buff[12];
-	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0, 0);
+	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -412,7 +412,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 {
 	UInt8 buff[12];
-	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 2, 0, 0, 0, 0);
+	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 2, 0, 0, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -424,7 +424,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 {
 	UInt8 buff[12];
-	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 4, 0, 0, 0, 0);
+	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 4, 0, 0, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -436,7 +436,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevice(Int64 devId)
 {
 	UInt8 buff[20];
-	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 6, 0, (UInt8*)&devId, 8, 0);
+	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 6, 0, (UInt8*)&devId, 8, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -448,7 +448,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevice(Int64 devId)
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlert(Int32 alertId)
 {
 	UInt8 buff[20];
-	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 8, 0, (UInt8*)&alertId, 4, 0);
+	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 8, 0, (UInt8*)&alertId, 4, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -460,7 +460,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlert(Int32 alertId)
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 {
 	UInt8 buff[20];
-	OSInt cmdSize = this->protoHdlr->BuildPacket(buff, 10, 0, (UInt8*)&userId, 4, 0);
+	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 10, 0, (UInt8*)&userId, 4, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{

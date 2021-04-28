@@ -64,7 +64,7 @@ IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::KMLExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::KMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -568,7 +568,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	return true;
 }
 
-OSInt Exporter::KMLExporter::GetParamCnt()
+UOSInt Exporter::KMLExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -585,7 +585,7 @@ void Exporter::KMLExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::KMLExporter::GetParamInfo(OSInt index, ParamInfo *info)
+Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, ParamInfo *info)
 {
 	if (index != 0)
 		return false;
@@ -595,7 +595,7 @@ Bool Exporter::KMLExporter::GetParamInfo(OSInt index, ParamInfo *info)
 	return true;
 }
 
-Bool Exporter::KMLExporter::SetParamInt32(void *param, OSInt index, Int32 val)
+Bool Exporter::KMLExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 {
 	if (index != 0)
 		return false;
@@ -604,7 +604,7 @@ Bool Exporter::KMLExporter::SetParamInt32(void *param, OSInt index, Int32 val)
 	return true;
 }
 
-Int32 Exporter::KMLExporter::GetParamInt32(void *param, OSInt index)
+Int32 Exporter::KMLExporter::GetParamInt32(void *param, UOSInt index)
 {
 	if (index != 0)
 		return 0;

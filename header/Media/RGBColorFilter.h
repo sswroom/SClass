@@ -13,8 +13,8 @@ namespace Media
 		{
 			UInt8 *srcPtr;
 			UInt8 *destPtr;
-			OSInt width;
-			OSInt height;
+			UOSInt width;
+			UOSInt height;
 			OSInt sbpl;
 			OSInt dbpl;
 			Int32 threadStat;
@@ -29,11 +29,11 @@ namespace Media
 		Double gamma;
 		Int32 bpp;
 		Media::PixelFormat pf;
-		Int32 hdrLev;
+		UInt32 hdrLev;
 		UInt8 *lut;
 		Bool hasSSE41;
 		Double *gammaParam;
-		OSInt gammaCnt;
+		UOSInt gammaCnt;
 
 		UOSInt nThread;
 		Sync::Event *threadEvt;
@@ -46,8 +46,8 @@ namespace Media
 		~RGBColorFilter();
 
 		void SetGammaCorr(Double *gammaParam, OSInt gammaCnt);
-		void SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, Int32 bpp, Media::PixelFormat pf, Int32 hdrLev);
-		void ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl);
+		void SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, Int32 bpp, Media::PixelFormat pf, UInt32 hdrLev);
+		void ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
 	};
-};
+}
 #endif

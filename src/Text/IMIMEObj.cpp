@@ -77,7 +77,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 		if (obj)
 			return obj;
 	}
-	buffSize = (OSInt)data->GetDataSize();
+	buffSize = (UOSInt)data->GetDataSize();
 	buff = MemAlloc(UInt8, buffSize);
 	data->GetRealData(0, buffSize, buff);
 	NEW_CLASS(obj, Text::MIMEObj::UnknownMIMEObj(buff, buffSize, contentType));

@@ -47,11 +47,11 @@ OSInt Map::WebImageLayer::GetImageStatIndex(Int32 id)
 	OSInt k;
 	Map::WebImageLayer::ImageStat *stat;
 	i = 0;
-	j = this->loadedList->GetCount() - 1;
+	j = (OSInt)this->loadedList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		stat = this->loadedList->GetItem(k);
+		stat = this->loadedList->GetItem((UOSInt)k);
 		if (stat->id > id)
 		{
 			j = k - 1;
@@ -76,7 +76,7 @@ Map::WebImageLayer::ImageStat *Map::WebImageLayer::GetImageStat(Int32 id)
 	ind = this->GetImageStatIndex(id);
 	if (ind >= 0)
 	{
-		stat = this->loadedList->GetItem(ind);
+		stat = this->loadedList->GetItem((UOSInt)ind);
 	}
 	this->loadedMut->UnlockRead();
 	return stat;
@@ -135,11 +135,11 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 			}
 			NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
 			this->loadedMut->LockWrite();
-			this->loadedList->Insert(~this->GetImageStatIndex(stat->id), stat);
+			this->loadedList->Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
 			this->loadedMut->UnlockWrite();
 
 			Sync::MutexUsage mutUsage(this->updMut);
-			OSInt i = this->updHdlrs->GetCount();
+			UOSInt i = this->updHdlrs->GetCount();
 			while (i-- > 0)
 			{
 				this->updHdlrs->GetItem(i)(this->updObjs->GetItem(i));
@@ -153,7 +153,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 {
 	Map::WebImageLayer *me = (Map::WebImageLayer*)userObj;
 	ImageStat *stat;
-	OSInt i;
+	UOSInt i;
 	IO::ParsedObject::ParserType pt;
 	IO::ParsedObject *pobj;
 
@@ -197,7 +197,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 					}
 					NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
 					me->loadedMut->LockWrite();
-					me->loadedList->Insert(~me->GetImageStatIndex(stat->id), stat);
+					me->loadedList->Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
 					me->loadedMut->UnlockWrite();
 
 					Sync::MutexUsage mutUsage(me->updMut);
@@ -257,7 +257,7 @@ Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *
 
 Map::WebImageLayer::~WebImageLayer()
 {
-	OSInt i;
+	UOSInt i;
 	ImageStat *stat;
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs->Clear();
@@ -341,7 +341,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 	Bool oldValid;
 	Bool currValid;
 	Bool changed = false;
-	OSInt i;
+	UOSInt i;
 	ImageStat *stat;
 	oldTime = this->currTime;
 	this->currTime = timeStamp;
@@ -415,7 +415,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **
 	this->loadedMut->UnlockRead();
 
 	imgArr = imgList->GetArray(&retCnt);
-	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, retCnt - 1);
+	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
 
 	i = 0;
 	while (i < retCnt)
@@ -522,7 +522,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void 
 	this->loadedMut->UnlockRead();
 
 	imgArr = imgList->GetArray(&retCnt);
-	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, retCnt - 1);
+	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
 
 	i = 0;
 	while (i < retCnt)
@@ -677,7 +677,7 @@ void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 
 void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs->GetCount();
 	while (i-- > 0)

@@ -33,7 +33,7 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Map::MapEnv *env;
 			Media::DrawEngine *eng;
-			OSInt lineStyle;
+			UOSInt lineStyle;
 			LineLayer *currLayer;
 			Data::ArrayList<LineLayer*> *lineLayers;
 			Media::DrawImage *prevImage;

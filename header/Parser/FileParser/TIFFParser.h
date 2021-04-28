@@ -24,7 +24,7 @@ namespace Parser
 		private:
 			static UInt32 GetUInt(Media::EXIFData *exif, Int32 id);
 			static UInt32 GetUInt0(Media::EXIFData *exif, Int32 id);
-			static UInt32 GetUIntSum(Media::EXIFData *exif, Int32 id, OSInt *nChannels);
+			static UInt32 GetUIntSum(Media::EXIFData *exif, Int32 id, UOSInt *nChannels);
 		};
 	};
 };

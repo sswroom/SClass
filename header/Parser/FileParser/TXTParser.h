@@ -24,8 +24,8 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 
-			static Int32 ToColor(Int32 val);
+			static UInt32 ToColor(UInt32 val);
 		};
-	};
-};
+	}
+}
 #endif

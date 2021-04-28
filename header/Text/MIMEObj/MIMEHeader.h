@@ -18,9 +18,9 @@ namespace Text
 
 			void AddHeader(const UTF8Char *name, const UTF8Char *value);
 			const UTF8Char *GetHeader(const UTF8Char *name);
-			OSInt GetHeaderCount();
-			const UTF8Char *GetHeaderName(OSInt index);
-			const UTF8Char *GetHeaderValue(OSInt index);
+			UOSInt GetHeaderCount();
+			const UTF8Char *GetHeaderName(UOSInt index);
+			const UTF8Char *GetHeaderValue(UOSInt index);
 
 			static UTF8Char *ParseHeaderStr(UTF8Char *sbuff, const UTF8Char *value);
 		};

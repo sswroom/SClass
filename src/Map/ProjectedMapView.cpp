@@ -117,7 +117,7 @@ Bool Map::ProjectedMapView::InViewXY(Double mapX, Double mapY)
 	return mapY >= topY && mapY < bottomY && mapX >= leftX && mapX < rightX;
 }
 
-Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, OSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
 {
 	if (nPoints == 0)
 	{
@@ -219,7 +219,7 @@ mtslop4:
 #endif
 }
 
-Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, OSInt nPoints, Double ofstX, Double ofstY)
+Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY)
 {
 	if (nPoints == 0)
 	{
@@ -261,7 +261,7 @@ Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, 
 }
 
 
-Bool Map::ProjectedMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, OSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::ProjectedMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
 {
 	if (nPoints == 0)
 	{

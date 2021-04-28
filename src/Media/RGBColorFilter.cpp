@@ -158,7 +158,7 @@ void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, OSInt gammaCnt)
 	}
 }
 
-void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, Int32 bpp, Media::PixelFormat pf, Int32 hdrLev)
+void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, Int32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
 {
 	this->brightness = brightness;
 	this->contrast = contrast;
@@ -315,18 +315,18 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	DEL_CLASS(btFunc);
 }
 
-void Media::RGBColorFilter::ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl)
+void Media::RGBColorFilter::ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
 	if (this->lut == 0)
 		return;
 	if (this->bpp == 32 || this->bpp == 48)
 	{
-		OSInt lastHeight = height;
-		OSInt currHeight;
-		OSInt i = this->nThread;
+		UOSInt lastHeight = height;
+		UOSInt currHeight;
+		UOSInt i = this->nThread;
 		while (i-- > 0)
 		{
-			currHeight = MulDivOS(i, height, this->nThread);
+			currHeight = MulDivUOS(i, height, this->nThread);
 			this->threadStats[i].srcPtr = srcPtr + currHeight * sbpl;
 			this->threadStats[i].destPtr = destPtr + currHeight * dbpl;
 			this->threadStats[i].width = width;

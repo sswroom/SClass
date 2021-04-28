@@ -18,8 +18,8 @@ namespace Map
 			Double mapYMax;
 			Double projYMin;
 			Double projYMax;
-			Int32 maxX;
-			Int32 maxY;
+			UInt32 maxX;
+			UInt32 maxY;
 		} LayerInfo;
 	private:
 		Parser::ParserList *parsers;
@@ -37,7 +37,7 @@ namespace Map
 
 		void SetCurrLayer(Int32 level);
 		virtual void SetCurrScale(Double scale);
-		virtual Map::MapView *CreateMapView(OSInt width, OSInt height);
+		virtual Map::MapView *CreateMapView(UOSInt width, UOSInt height);
 
 		virtual DrawLayerType GetLayerType();
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);

@@ -59,7 +59,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::P
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::OruxMapExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

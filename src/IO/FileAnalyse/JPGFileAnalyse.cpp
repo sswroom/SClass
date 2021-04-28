@@ -104,9 +104,9 @@ const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::JPGFileAnalyse *me = (IO::FileAnalyse::JPGFileAnalyse*)userObj;
-	Int64 dataSize;
-	Int64 ofst;
-	Int32 lastSize;
+	UInt64 dataSize;
+	UInt64 ofst;
+	UInt32 lastSize;
 	UInt8 tagHdr[4];
 	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag;
 	me->threadRunning = true;
@@ -146,7 +146,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			{
 				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
 				tag->ofst = ofst;
-				tag->size = (OSInt)(dataSize - ofst - 2);
+				tag->size = (UOSInt)(dataSize - ofst - 2);
 				tag->tagType = 0;
 				me->tags->Add(tag);
 				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
@@ -159,7 +159,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			{
 				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
 				tag->ofst = ofst;
-				tag->size = (OSInt)(dataSize - ofst);
+				tag->size = (UOSInt)(dataSize - ofst);
 				tag->tagType = 0;
 				me->tags->Add(tag);
 			}
@@ -232,7 +232,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	const UTF8Char *name;
 	if (tag == 0)
 		return false;
-	sb->AppendI64(tag->ofst);
+	sb->AppendU64(tag->ofst);
 	sb->Append((const UTF8Char*)": Type=0x");
 	sb->AppendHex8(tag->tagType);
 	name = GetTagName(tag->tagType);
@@ -243,7 +243,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 		sb->Append((const UTF8Char*)")");
 	}
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendOSInt(tag->size);
+	sb->AppendUOSInt(tag->size);
 	return true;
 }
 
@@ -259,7 +259,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	if (tag == 0)
 		return false;
 	sb->Append((const UTF8Char*)"Tag ");
-	sb->AppendOSInt(index);
+	sb->AppendUOSInt(index);
 	sb->Append((const UTF8Char*)"\r\nTagType = 0x");
 	sb->AppendHex8(tag->tagType);
 	name = GetTagName(tag->tagType);
@@ -270,20 +270,20 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->Append((const UTF8Char*)")");
 	}
 	sb->Append((const UTF8Char*)"\r\nSize = ");
-	sb->AppendOSInt(tag->size);
+	sb->AppendUOSInt(tag->size);
 	if (tag->tagType == 0xc4)
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->Append((const UTF8Char*)"\r\nTable class = ");
-		sb->AppendU16(tagData[4] >> 4);
+		sb->AppendU16((UInt16)(tagData[4] >> 4));
 		sb->Append((const UTF8Char*)"\r\nTable identifier = ");
 		sb->AppendU16(tagData[4] & 15);
 		i = 0;
 		while (i < 16)
 		{
 			sb->Append((const UTF8Char*)"\r\nCode length ");
-			sb->AppendOSInt(i + 1);
+			sb->AppendUOSInt(i + 1);
 			sb->Append((const UTF8Char*)" count = ");
 			sb->AppendU16(tagData[5 + i]);
 
@@ -314,12 +314,12 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		while (i < tagData[9])
 		{
 			sb->Append((const UTF8Char*)"\r\nComponent ");
-			sb->AppendOSInt(i);
+			sb->AppendUOSInt(i);
 			sb->Append((const UTF8Char*)":\r\n");
 			sb->Append((const UTF8Char*)" Component identifier = ");
 			sb->AppendU16(tagData[j]);
 			sb->Append((const UTF8Char*)"\r\n Horizontal sampling factor = ");
-			sb->AppendU16(tagData[j + 1] >> 4);
+			sb->AppendU16((UInt16)(tagData[j + 1] >> 4));
 			sb->Append((const UTF8Char*)"\r\n Vertical sampling factor = ");
 			sb->AppendU16(tagData[j + 1] & 15);
 			sb->Append((const UTF8Char*)"\r\n Quantization table destination selector = ");
@@ -342,11 +342,11 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		while (i < tagData[4])
 		{
 			sb->Append((const UTF8Char*)"\r\nComponent ");
-			sb->AppendOSInt(i);
+			sb->AppendUOSInt(i);
 			sb->Append((const UTF8Char*)"\r\n Scan component selector = ");
 			sb->AppendU16(tagData[j]);
 			sb->Append((const UTF8Char*)"\r\n DC entropy coding selector = ");
-			sb->AppendU16(tagData[j + 1] >> 4);
+			sb->AppendU16((UInt16)(tagData[j + 1] >> 4));
 			sb->Append((const UTF8Char*)"\r\n AC entropy coding selector = ");
 			sb->AppendU16(tagData[j + 1] & 15);
 			j += 2;
@@ -357,7 +357,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->Append((const UTF8Char*)"\r\nEnd of spectral selection = ");
 		sb->AppendU16(tagData[j + 1]);
 		sb->Append((const UTF8Char*)"\r\nSuccessive approximation bit position high = ");
-		sb->AppendU16(tagData[j + 2] >> 4);
+		sb->AppendU16((UInt16)(tagData[j + 2] >> 4));
 		sb->Append((const UTF8Char*)"\r\nSuccessive approximation bit position low = ");
 		sb->AppendU16(tagData[j + 2] & 15);
 		MemFree(tagData);
@@ -367,7 +367,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->Append((const UTF8Char*)"\r\nElement precision = ");
-		sb->AppendU16(tagData[4] >> 4);
+		sb->AppendU16((UInt16)(tagData[4] >> 4));
 		sb->Append((const UTF8Char*)"\r\nTable identifier = ");
 		sb->AppendU16(tagData[4] & 15);
 		if (tagData[4] * 0xf0 == 0x10)

@@ -1411,7 +1411,7 @@ IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::PNGExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::PNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -1993,7 +1993,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 	WriteMInt32(&hdr[0], 0);
 	*(Int32*)&hdr[4] = *(Int32*)"IEND";
-	WriteMInt32(&hdr[8], 0xAE426082);
+	WriteMUInt32(&hdr[8], 0xAE426082);
 	stm->Write(hdr, 12);
 	return true;
 }

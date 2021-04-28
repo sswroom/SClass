@@ -403,7 +403,7 @@ Bool Map::ReloadableMapLayer::GetBoundsDbl(Double *minX, Double *minY, Double *m
 
 void *Map::ReloadableMapLayer::BeginGetObject()
 {
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
@@ -418,7 +418,7 @@ void *Map::ReloadableMapLayer::BeginGetObject()
 }
 void Map::ReloadableMapLayer::EndGetObject(void *session)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
 	{
@@ -433,8 +433,8 @@ void Map::ReloadableMapLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *Map::ReloadableMapLayer::GetObjectByIdD(void *session, Int64 id)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
 	Map::DrawObjectL *dobj = 0;
@@ -520,7 +520,7 @@ Map::IMapDrawLayer::ObjectClass Map::ReloadableMapLayer::GetObjectClass()
 Math::CoordinateSystem *Map::ReloadableMapLayer::GetCoordinateSystem()
 {
 	Math::CoordinateSystem *csys = 0;
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
@@ -579,7 +579,7 @@ void Map::ReloadableMapLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 
 void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	OSInt i;
+	UOSInt i;
 	InnerLayerInfo *innerLayer;
 	Bool chg = false;
 	this->innerLayerMut->LockWrite();
@@ -611,7 +611,7 @@ void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 void Map::ReloadableMapLayer::AddInnerLayer(const UTF8Char *name, const UTF8Char *url, Int32 seconds)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt urlLen;
+	UOSInt urlLen;
 	sb.Append(this->GetSourceNameObj());
 	urlLen = Text::StrCharCnt(url);
 	sb.AllocLeng(urlLen);

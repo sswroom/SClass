@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "Data/Compress/PackBits.h"
 
-Bool Data::Compress::PackBits::Decompress(UInt8 *destBuff, OSInt *destBuffSize, UInt8 *srcBuff, OSInt srcBuffSize)
+Bool Data::Compress::PackBits::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize)
 {
 	UInt8 b;
 	UInt8 b2;
-	OSInt writeCnt = 0;
+	UOSInt writeCnt = 0;
 	while (srcBuffSize-- > 0)
 	{
 		b = *srcBuff++;
@@ -36,7 +36,7 @@ Bool Data::Compress::PackBits::Decompress(UInt8 *destBuff, OSInt *destBuffSize, 
 		}
 		else
 		{
-			b = ~b + 2;
+			b = (UInt8)(~b + 2);
 			if (srcBuffSize-- > 0)
 			{
 				b2 = *srcBuff++;

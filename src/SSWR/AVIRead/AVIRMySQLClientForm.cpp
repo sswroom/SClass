@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "DB/ColDef.h"
 #include "IO/Path.h"
+#include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -129,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRMySQLClientForm *me = (SSWR::AVIRead::AVIRMySQLClientForm*)userObj;
 	UTF8Char sbuff[128];
 	UInt8 buff[48];
-	OSInt i;
+	UOSInt i;
 	const UTF8Char *csptr;
 	if (me->cli)
 	{
@@ -171,15 +172,16 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 
 void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	OSInt rowChg;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	DB::ColDef *col;
 	Text::StringBuilderUTF8 *sb;
 	UOSInt *colSize;
 
-	i = r->GetRowChanged();
-	if (i == -1)
+	rowChg = r->GetRowChanged();
+	if (rowChg == -1)
 	{
 		this->txtQueryStatus->SetText((const UTF8Char*)"");
 		this->lvQueryResult->ClearAll();
@@ -241,13 +243,13 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		if (k > 0)
 		{
 			this->lvQueryResult->GetSize(&w, &h);
-			w -= 20 + j * 6;
+			w -= Math::UOSInt2Double(20 + j * 6);
 			if (w < 0)
 				w = 0;
 			i = 0;
 			while (i < j)
 			{
-				this->lvQueryResult->SetColumnWidth(i, (colSize[i] * w / k + 6));
+				this->lvQueryResult->SetColumnWidth(i, (Math::UOSInt2Double(colSize[i]) * w / Math::UOSInt2Double(k) + 6));
 				i++;
 			}
 		}
@@ -258,7 +260,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		this->lvQueryResult->ClearItems();
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
 		sb->Append((const UTF8Char*)"Record changed = ");
-		sb->AppendOSInt(i);
+		sb->AppendOSInt(rowChg);
 		this->txtQueryStatus->SetText(sb->ToString());
 		DEL_CLASS(sb);
 	}

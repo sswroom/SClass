@@ -15,8 +15,8 @@ namespace IO
 			typedef struct
 			{
 				UInt8 tagType;
-				Int64 ofst;
-				OSInt size;
+				UInt64 ofst;
+				UOSInt size;
 			} JPGTag;
 		private:
 			IO::IStreamData *fd;

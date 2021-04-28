@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::DBPListExporter::IsObjectSupported(IO::P
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::DBPListExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DBPListExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -154,7 +154,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	return true;
 }
 
-OSInt Exporter::DBPListExporter::GetParamCnt()
+UOSInt Exporter::DBPListExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -176,7 +176,7 @@ void Exporter::DBPListExporter::DeleteParam(void *param)
 	MemFree(dbParam);
 }
 
-Bool Exporter::DBPListExporter::GetParamInfo(OSInt index, IO::FileExporter::ParamInfo *info)
+Bool Exporter::DBPListExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
 {
 	if (index == 0)
 	{
@@ -191,17 +191,17 @@ Bool Exporter::DBPListExporter::GetParamInfo(OSInt index, IO::FileExporter::Para
 	}
 }
 
-Bool Exporter::DBPListExporter::SetParamStr(void *param, OSInt index, const UTF8Char *val)
+Bool Exporter::DBPListExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool Exporter::DBPListExporter::SetParamInt32(void *param, OSInt index, Int32 val)
+Bool Exporter::DBPListExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 {
 	return false;
 }
 
-Bool Exporter::DBPListExporter::SetParamSel(void *param, OSInt index, Int32 selCol)
+Bool Exporter::DBPListExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
 {
 	if (index == 0)
 	{
@@ -212,17 +212,17 @@ Bool Exporter::DBPListExporter::SetParamSel(void *param, OSInt index, Int32 selC
 	return false;
 }
 
-UTF8Char *Exporter::DBPListExporter::GetParamStr(void *param, OSInt index, UTF8Char *buff)
+UTF8Char *Exporter::DBPListExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 Exporter::DBPListExporter::GetParamInt32(void *param, OSInt index)
+Int32 Exporter::DBPListExporter::GetParamInt32(void *param, UOSInt index)
 {
 	return 0;
 }
 
-Int32 Exporter::DBPListExporter::GetParamSel(void *param, OSInt index)
+Int32 Exporter::DBPListExporter::GetParamSel(void *param, UOSInt index)
 {
 	if (index == 0)
 	{
@@ -232,7 +232,7 @@ Int32 Exporter::DBPListExporter::GetParamSel(void *param, OSInt index)
 	return 0;
 }
 
-UTF8Char *Exporter::DBPListExporter::GetParamSelItems(void *param, OSInt index, OSInt itemIndex, UTF8Char *buff)
+UTF8Char *Exporter::DBPListExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
 	if (index == 0)
 	{

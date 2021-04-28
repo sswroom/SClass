@@ -95,7 +95,7 @@ DB::MySQLConn::~MySQLConn()
 	}
 	if (this->tableNames)
 	{
-		OSInt i = this->tableNames->GetCount();
+		UOSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew(this->tableNames->GetItem(i));
@@ -156,8 +156,8 @@ OSInt DB::MySQLConn::ExecuteNonQuery(const UTF8Char *sql)
 		return -2;
 	}
 
-	OSInt i = Text::StrCharCnt(sql);
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql, (Int32)i) == 0)
+	UOSInt i = Text::StrCharCnt(sql);
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql, (UInt32)i) == 0)
 	{
 		MYSQL_RES *result;
 		this->lastDataError = DE_NO_ERROR;
@@ -165,11 +165,11 @@ OSInt DB::MySQLConn::ExecuteNonQuery(const UTF8Char *sql)
 		if (result)
 		{
 			mysql_free_result(result);
-			return mysql_affected_rows((MYSQL*)this->mysql);
+			return (OSInt)mysql_affected_rows((MYSQL*)this->mysql);
 		}
 		else
 		{
-			return mysql_affected_rows((MYSQL*)this->mysql);
+			return (OSInt)mysql_affected_rows((MYSQL*)this->mysql);
 		}
 	}
 	else
@@ -218,8 +218,8 @@ DB::DBReader *DB::MySQLConn::ExecuteReader(const UTF8Char *sql)
 		return 0;
 	}
 
-	OSInt i = Text::StrCharCnt(sql);
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql, (Int32)i) == 0)
+	UOSInt i = Text::StrCharCnt(sql);
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql, (UInt32)i) == 0)
 	{
 		MYSQL_RES *result;
 		result = mysql_use_result((MYSQL*)this->mysql);
@@ -227,7 +227,7 @@ DB::DBReader *DB::MySQLConn::ExecuteReader(const UTF8Char *sql)
 		{
 			DB::DBReader *r;
 			this->lastDataError = DE_NO_ERROR;
-			NEW_CLASS(r, DB::MySQLReader(mysql_affected_rows((MYSQL*)this->mysql), result));
+			NEW_CLASS(r, DB::MySQLReader((OSInt)mysql_affected_rows((MYSQL*)this->mysql), result));
 			return r;
 		}
 		else
@@ -354,7 +354,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, v
 			sb.Append(sbuff);
 			break;
 		}
-		sptr = Text::StrConcatC(sbuff, &name[i], j);
+		sptr = Text::StrConcatC(sbuff, &name[i], (UOSInt)j);
 		DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::SVR_TYPE_MYSQL);
 		sb.Append(sptr + 1);
 		sb.AppendChar('.', 1);
@@ -363,7 +363,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, v
 	if (maxCnt > 0)
 	{
 		sb.Append((const UTF8Char*)" LIMIT ");
-		sb.AppendOSInt(maxCnt);
+		sb.AppendUOSInt(maxCnt);
 	}
 	return this->ExecuteReader(sb.ToString());
 }
@@ -452,8 +452,8 @@ DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
 	this->row = 0;
 	this->lengs = 0;
 	this->names = MemAlloc(WChar *, this->colCount);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = this->colCount;
 	while (i-- > 0)
 	{
@@ -467,7 +467,7 @@ DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
 DB::MySQLReader::~MySQLReader()
 {
 	mysql_free_result((MYSQL_RES*)result);
-	OSInt i = this->colCount;
+	UOSInt i = this->colCount;
 	while (i-- > 0)
 	{
 		MemFree(this->names[i]);
@@ -703,7 +703,7 @@ DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, UOSInt *colSize
 		return DB::DBUtil::CT_Unknown;
 	if (colIndex >= this->colCount)
 		return DB::DBUtil::CT_Unknown;
-	MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, colIndex);
+	MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, (UInt32)colIndex);
 	return ToColType(field->type, field->flags, field->length);
 }
 

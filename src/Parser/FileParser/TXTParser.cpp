@@ -73,9 +73,10 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
+	OSInt si;
 	Text::StrConcat(u8buff, fd->GetFullName());
-	i = Text::StrLastIndexOf(u8buff, '.');
-	if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".TXT") != 0)
+	si = Text::StrLastIndexOf(u8buff, '.');
+	if (Text::StrCompareICase(&u8buff[si], (const UTF8Char*)".TXT") != 0)
 	{
 		return 0;
 	}
@@ -205,12 +206,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				if (j == 0)
 				{
 					bold = Text::StrToInt32(sarr[5]) != 0;
-					fontColor = ToColor(Text::StrHex2Int32(sarr[6]));
+					fontColor = ToColor(Text::StrHex2UInt32(sarr[6]));
 				}
 				else if (j == 4)
 				{
 					buffSize = Text::StrToInt32(sarr[5]);
-					buffColor = ToColor(Text::StrHex2Int32(sarr[6]));
+					buffColor = ToColor(Text::StrHex2UInt32(sarr[6]));
 				}
 				else
 				{
@@ -271,10 +272,10 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 					if (env->GetLayerProp(&setting, currGroup, i))
 					{
-						setting.minScale = Text::StrToInt32(sarr[2]);
-						setting.maxScale = Text::StrToInt32(sarr[3]);
-						setting.lineStyle = Text::StrToInt32(sarr[4]);
-						setting.fillStyle = ToColor(Text::StrHex2Int32(sarr[5]));
+						setting.minScale = Text::StrToUInt32(sarr[2]);
+						setting.maxScale = Text::StrToUInt32(sarr[3]);
+						setting.lineStyle = Text::StrToUInt32(sarr[4]);
+						setting.fillStyle = ToColor(Text::StrHex2UInt32(sarr[5]));
 						env->SetLayerProp(&setting, currGroup, i);
 					}
 				}
@@ -569,7 +570,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	return 0;
 }
 
-Int32 Parser::FileParser::TXTParser::ToColor(Int32 val)
+UInt32 Parser::FileParser::TXTParser::ToColor(UInt32 val)
 {
 	return 0xFF000000 | ((val & 255) << 16) | (val & 0xff00) | ((val & 0xff0000) >> 16);
 }

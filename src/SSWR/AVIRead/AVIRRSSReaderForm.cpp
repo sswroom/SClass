@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 
 SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->rssList->GetCount();
 	while (i-- > 0)
 	{

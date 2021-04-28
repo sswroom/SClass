@@ -36,7 +36,7 @@ namespace Map
 		UInt32 *ptOfstArr;
 		Double *pointArr;
 		Int32 flags; //bit0 = has Line color
-		Int32 lineColor;
+		UInt32 lineColor;
 	} DrawObjectL;
 
 /*	typedef struct

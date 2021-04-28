@@ -45,7 +45,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::ICOExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::ICOExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

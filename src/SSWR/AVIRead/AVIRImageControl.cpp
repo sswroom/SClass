@@ -600,7 +600,7 @@ void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(const Media::IColorHandler
 {
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *> *imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	OSInt i;
+	UOSInt i;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
@@ -621,7 +621,7 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 {
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *> *imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	OSInt i;
+	UOSInt i;
 
 	this->hdpi = hdpi;
 	this->ddpi = ddpi;
@@ -697,7 +697,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	}
 	f = dimg->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	b = dimg->NewBrushARGB(0xff000000);
-	OSInt strLen;
+	UOSInt strLen;
 	Double strSz[2];
 	while (i <= j)
 	{
@@ -774,8 +774,8 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 {
 	if (btn == UI::GUIClientControl::MBTN_LEFT)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Double hdpi = this->GetHDPI();
 		Double ddpi = this->GetDDPI();
 		Int32 scrPos = Math::Double2Int32(scrollY * hdpi / ddpi);
@@ -1049,13 +1049,13 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 {
 	Media::DrawImage *srcImg = img->previewImg;
 	Media::DrawImage *destImg = img->previewImg2;
-	OSInt sWidth = srcImg->GetWidth();
-	OSInt sHeight = srcImg->GetHeight();
+	UOSInt sWidth = srcImg->GetWidth();
+	UOSInt sHeight = srcImg->GetHeight();
 	OSInt sbpl = srcImg->GetImgBpl();
 	Bool srev;
 	UInt8 *sptr = srcImg->GetImgBits(&srev);
-	OSInt dWidth = destImg->GetWidth();
-	OSInt dHeight = destImg->GetHeight();
+	UOSInt dWidth = destImg->GetWidth();
+	UOSInt dHeight = destImg->GetHeight();
 	OSInt dbpl = destImg->GetImgBpl();
 	Bool drev;
 	UInt8 *dptr = destImg->GetImgBits(&drev);
@@ -1079,7 +1079,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	this->filter->SetParameter((img->setting.brightness - 1.0) * img->setting.contrast, img->setting.contrast, img->setting.gamma, srcImg->GetColorProfile(), srcImg->GetBitCount(), srcImg->GetPixelFormat(), (img->setting.flags & 240) >> 4);
 	this->filter->SetGammaCorr(gammaParam, gammaCnt);
 	this->filter->ProcessImage(sptr, tmpBuff, sWidth, sHeight, sbpl, sbpl);
-	this->dispResizer->Resize(tmpBuff, sbpl, Math::OSInt2Double(sWidth), Math::OSInt2Double(sHeight), 0, 0, dptr, dbpl, dWidth, dHeight);
+	this->dispResizer->Resize(tmpBuff, sbpl, Math::UOSInt2Double(sWidth), Math::UOSInt2Double(sHeight), 0, 0, dptr, dbpl, dWidth, dHeight);
 	mutUsage.EndUse();
 	MemFreeA(tmpBuff);
 	srcImg->GetImgBitsEnd(false);
@@ -1090,7 +1090,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgSetting(SSWR::AVIRead::AVIRImageC
 {
 	Data::ArrayList<ImageStatus*> *imgList;
 	ImageStatus *status;
-	OSInt i;
+	UOSInt i;
 	Bool chg = false;
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
@@ -1136,9 +1136,9 @@ OSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 	ImageStatus *status;
 	ImageStatus *status2;
 	Data::ArrayList<ImageStatus*> *imgList;
-	OSInt i;
-	OSInt j;
-	OSInt cnt = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
 	j = imgList->GetCount();
@@ -1303,7 +1303,7 @@ void SSWR::AVIRead::AVIRImageControl::SelectAll()
 {
 	Sync::MutexUsage mutUsage(this->imgMut);
 	Data::ArrayList<ImageStatus*> *imgList = this->imgMap->GetValues();
-	OSInt i = imgList->GetCount();
+	UOSInt i = imgList->GetCount();
 	ImageStatus *status;
 	while (i-- > 0)
 	{

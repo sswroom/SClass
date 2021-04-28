@@ -211,7 +211,7 @@ Bool Text::SpreadSheet::CellStyle::GetWordWrap()
 	return this->wordWrap;
 }
 
-Int32 Text::SpreadSheet::CellStyle::GetFillColor()
+UInt32 Text::SpreadSheet::CellStyle::GetFillColor()
 {
 	return this->fillColor;
 }

@@ -487,9 +487,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 	else
 	{
 		UTF8Char sbuff[32];
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		Data::ArrayList<Net::WirelessLAN::Network*> networks;
 		Net::WirelessLAN::Network *network;
 		interf->GetNetworks(&networks);

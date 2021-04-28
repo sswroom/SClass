@@ -74,9 +74,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	}
 	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress *> addrList;
 	Text::MIMEObj::MailMessage::MailAddress *addr;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	this->mail->GetRecpList(&addrList);
 	i = 0;
 	j = addrList.GetCount();

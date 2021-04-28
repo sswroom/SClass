@@ -42,9 +42,9 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 
 		me->lvTable->ClearItems();
 		DB::ColDef *col;
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		if (tabDef)
 		{
 			j = tabDef->GetColCnt();
@@ -105,8 +105,8 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 
 void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt k;
 	DB::ColDef *col;
 	Text::StringBuilderUTF8 *sb;

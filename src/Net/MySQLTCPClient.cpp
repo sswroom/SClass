@@ -436,7 +436,7 @@ public:
 
 	void AddColumnDef41(const UInt8 *colDef, OSInt buffSize)
 	{
-		Int64 v;
+		UInt64 v;
 		ColumnDef *col = MemAlloc(ColumnDef, 1);
 		const UInt8 *colEnd = colDef + buffSize;
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
@@ -485,7 +485,7 @@ public:
 		const UTF8Char **row = MemAlloc(const UTF8Char *, this->cols->GetCount());
 		UOSInt i = 0;
 		UOSInt j = this->cols->GetCount();
-		Int64 v;
+		UInt64 v;
 		while (i < j)
 		{
 			if (rowData[0] == 0xfb)
@@ -696,7 +696,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									{
 										cliCap |= Net::MySQLUtil::CLIENT_CONNECT_WITH_DB;
 									}
-									WriteInt32(&buff[4], cliCap);
+									WriteUInt32(&buff[4], cliCap);
 									WriteInt32(&buff[8], 16777215);
 									buff[12] = 45;
 									MemClear(&buff[13], 23);
@@ -741,13 +741,13 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)"_os_version");
 										IO::OS::GetVersion(sbuff2);
 										sptr = Net::MySQLUtil::AppendLenencStr(sptr, sbuff2);
-										ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, sptr - sbuff);
-										MemCopyNO(ptrCurr, sbuff, sptr - sbuff);
+										ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, (UOSInt)(sptr - sbuff));
+										MemCopyNO(ptrCurr, sbuff, (UOSInt)(sptr - sbuff));
 										ptrCurr += sptr - sbuff;
 									}
 									WriteInt24(buff, (ptrCurr - buff - 4));
 									buff[3] = 1;
-									me->cli->Write(buff, ptrCurr - buff);
+									me->cli->Write(buff, (UOSInt)(ptrCurr - buff));
 #if defined(VERBOSE)
 									printf("MySQLTCP handshake response sent\r\n");
 #endif
@@ -826,7 +826,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 		else if (me->mode == 2)
 		{
 			UInt32 packetSize;
-			Int64 val;
+			UInt64 val;
 			readSize = 0;
 			while (readSize + 4 <= buffSize)
 			{
@@ -842,7 +842,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						if (buff[readSize + 4] == 0) //OK
 						{
 							Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
-							((MySQLTCPReader*)me->cmdReader)->SetRowChanged(val);
+							((MySQLTCPReader*)me->cmdReader)->SetRowChanged((Int64)val);
 							me->cmdResultType = 3;
 							me->cmdEvt->Set();
 #if defined(VERBOSE)
@@ -1286,7 +1286,7 @@ UInt32 Net::MySQLTCPClient::GetConnId()
 	return this->connId;
 }
 
-OSInt Net::MySQLTCPClient::GetAuthPluginData(UInt8 *buff)
+UOSInt Net::MySQLTCPClient::GetAuthPluginData(UInt8 *buff)
 {
 	MemCopyNO(buff, this->authPluginData, this->authPluginDataSize);
 	return this->authPluginDataSize;

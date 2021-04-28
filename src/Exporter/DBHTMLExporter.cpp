@@ -29,7 +29,7 @@ IO::FileExporter::SupportType Exporter::DBHTMLExporter::IsObjectSupported(IO::Pa
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::DBHTMLExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DBHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -145,7 +145,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	return true;
 }
 
-OSInt Exporter::DBHTMLExporter::GetParamCnt()
+UOSInt Exporter::DBHTMLExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -167,7 +167,7 @@ void Exporter::DBHTMLExporter::DeleteParam(void *param)
 	MemFree(dbParam);
 }
 
-Bool Exporter::DBHTMLExporter::GetParamInfo(OSInt index, IO::FileExporter::ParamInfo *info)
+Bool Exporter::DBHTMLExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
 {
 	if (index == 0)
 	{
@@ -182,17 +182,17 @@ Bool Exporter::DBHTMLExporter::GetParamInfo(OSInt index, IO::FileExporter::Param
 	}
 }
 
-Bool Exporter::DBHTMLExporter::SetParamStr(void *param, OSInt index, const UTF8Char *val)
+Bool Exporter::DBHTMLExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool Exporter::DBHTMLExporter::SetParamInt32(void *param, OSInt index, Int32 val)
+Bool Exporter::DBHTMLExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 {
 	return false;
 }
 
-Bool Exporter::DBHTMLExporter::SetParamSel(void *param, OSInt index, Int32 selCol)
+Bool Exporter::DBHTMLExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
 {
 	if (index == 0)
 	{
@@ -203,17 +203,17 @@ Bool Exporter::DBHTMLExporter::SetParamSel(void *param, OSInt index, Int32 selCo
 	return false;
 }
 
-UTF8Char *Exporter::DBHTMLExporter::GetParamStr(void *param, OSInt index, UTF8Char *buff)
+UTF8Char *Exporter::DBHTMLExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 Exporter::DBHTMLExporter::GetParamInt32(void *param, OSInt index)
+Int32 Exporter::DBHTMLExporter::GetParamInt32(void *param, UOSInt index)
 {
 	return 0;
 }
 
-Int32 Exporter::DBHTMLExporter::GetParamSel(void *param, OSInt index)
+Int32 Exporter::DBHTMLExporter::GetParamSel(void *param, UOSInt index)
 {
 	if (index == 0)
 	{
@@ -223,7 +223,7 @@ Int32 Exporter::DBHTMLExporter::GetParamSel(void *param, OSInt index)
 	return 0;
 }
 
-UTF8Char *Exporter::DBHTMLExporter::GetParamSelItems(void *param, OSInt index, OSInt itemIndex, UTF8Char *buff)
+UTF8Char *Exporter::DBHTMLExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
 	if (index == 0)
 	{

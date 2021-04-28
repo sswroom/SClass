@@ -44,9 +44,9 @@ typedef enum
 
 void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Media::MediaFile *mFile;
 	Media::IMediaSource *medSource;
 	Int32 syncTime;

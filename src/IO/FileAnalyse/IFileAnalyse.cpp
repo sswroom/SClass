@@ -23,7 +23,7 @@ IO::FileAnalyse::IFileAnalyse::~IFileAnalyse()
 IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IStreamData *fd)
 {
 	UInt8 buff[256];
-	OSInt buffSize;
+	UOSInt buffSize;
 	IO::FileAnalyse::IFileAnalyse *analyse = 0;
 	buffSize = fd->GetRealData(0, 256, buff);
 	if (buffSize >= 4 && ReadMInt32(&buff[0]) == 0x000001ba)

@@ -71,8 +71,8 @@ namespace Net
 		} MySQLType;
 		
 	public:
-		static const UInt8 *ReadLenencInt(const UInt8 *buff, Int64 *val);
-		static UInt8 *AppendLenencInt(UInt8 *buff, Int64 val);
+		static const UInt8 *ReadLenencInt(const UInt8 *buff, UInt64 *val);
+		static UInt8 *AppendLenencInt(UInt8 *buff, UInt64 val);
 		static UInt8 *AppendLenencStr(UInt8 *buff, const UTF8Char *s);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);
 	};

@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::MD4Exporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::MD4Exporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::MD4Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

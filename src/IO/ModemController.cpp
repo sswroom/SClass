@@ -7,7 +7,7 @@
 void IO::ModemController::ClearCmdResult()
 {
 	const Char *val;
-	OSInt i;
+	UOSInt i;
 	i = cmdResults->GetCount();
 	while (i-- > 0)
 	{
@@ -18,7 +18,7 @@ void IO::ModemController::ClearCmdResult()
 
 Bool IO::ModemController::IsCmdSucceed()
 {
-	OSInt i = this->cmdResults->GetCount();
+	UOSInt i = this->cmdResults->GetCount();
 	if (i <= 0)
 		return false;
 	return Text::StrCompare(this->cmdResults->GetItem(i - 1), "OK") == 0;
@@ -28,8 +28,8 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const Char *cmd
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
-	OSInt i = this->cmdResults->GetCount();
-	OSInt j;
+	UOSInt i = this->cmdResults->GetCount();
+	UOSInt j;
 	const Char *val;
 //	printf("SendStringCommand, count = %d\r\n", i);
 	if (i > 1)
@@ -76,8 +76,8 @@ Bool IO::ModemController::SendStringCommand(Data::ArrayList<const Char*> *resLis
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
-	OSInt i = this->cmdResults->GetCount();
-	OSInt j;
+	UOSInt i = this->cmdResults->GetCount();
+	UOSInt j;
 	const Char *val;
 	if (i > 1)
 	{
@@ -115,8 +115,8 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const Cha
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
-	OSInt i = this->cmdResults->GetCount();
-	OSInt j;
+	UOSInt i = this->cmdResults->GetCount();
+	UOSInt j;
 	const Char *val;
 	j = 0;
 	while (j < i - 1)
@@ -147,8 +147,8 @@ Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, cons
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, 3000);
-	OSInt i = this->cmdResults->GetCount();
-	OSInt j;
+	UOSInt i = this->cmdResults->GetCount();
+	UOSInt j;
 	const Char *val;
 	if (i > 1)
 	{
@@ -198,7 +198,7 @@ IO::ModemController::DialResult IO::ModemController::SendDialCommand(const Char 
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendDialCommand(this->cmdResults, cmd, 30000);
-	OSInt i = this->cmdResults->GetCount();
+	UOSInt i = this->cmdResults->GetCount();
 	const Char *val;
 	if (i >= 1)
 	{

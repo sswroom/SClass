@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 	NEW_CLASS(vdecoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASS(adecoders, Media::Decoder::AudioDecoderFinder());
 	Bool isEnd;
-	OSInt i = 0;
+	UOSInt i = 0;
 	Int32 syncTime;
 	while (true)
 	{
@@ -335,7 +335,7 @@ void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF *sb, In
 void SSWR::AVIRead::AVIRVideoInfoForm::ClearDecode()
 {
 	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *status;
-	OSInt i = this->decStatus->GetCount();
+	UOSInt i = this->decStatus->GetCount();
 	while (i-- > 0)
 	{
 		status = this->decStatus->GetItem(i);

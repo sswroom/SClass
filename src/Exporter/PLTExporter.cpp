@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::PLTExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::PLTExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::PLTExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

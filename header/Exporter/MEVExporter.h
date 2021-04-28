@@ -1,7 +1,7 @@
 #ifndef _SM_EXPORTER_MEVEXPORTER
 #define _SM_EXPORTER_MEVEXPORTER
 #include "Data/ArrayList.h"
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/FileExporter.h"
@@ -15,8 +15,8 @@ namespace Exporter
 		typedef struct
 		{
 			UInt8 *strBytes;
-			Int32 byteSize;
-			Data::ArrayListInt32 *ofstList;
+			UInt32 byteSize;
+			Data::ArrayListUInt32 *ofstList;
 		} MEVStrRecord;
 
 	public:
@@ -25,13 +25,13 @@ namespace Exporter
 
 		virtual Int32 GetName();
 		virtual SupportType IsObjectSupported(IO::ParsedObject *pobj);
-		virtual Bool GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
+		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
 
 	private:
 		static void GetMapDirs(Map::MapEnv *env, Data::ArrayListStrUTF8 *dirArr, Map::MapEnv::GroupItem *group);
-		static Int32 AddString(Data::StringUTF8Map<MEVStrRecord*> *strArr, const UTF8Char *strVal, Int32 fileOfst);
-		static void WriteGroupItems(Map::MapEnv *env, Map::MapEnv::GroupItem *group, Int32 *stmPos, IO::SeekableStream *stm, Data::StringUTF8Map<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListStrUTF8 *dirArr);
+		static Int32 AddString(Data::StringUTF8Map<MEVStrRecord*> *strArr, const UTF8Char *strVal, UInt32 fileOfst);
+		static void WriteGroupItems(Map::MapEnv *env, Map::MapEnv::GroupItem *group, UInt32 *stmPos, IO::SeekableStream *stm, Data::StringUTF8Map<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListStrUTF8 *dirArr);
 	};
 }
 #endif

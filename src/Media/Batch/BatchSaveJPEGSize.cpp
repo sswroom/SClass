@@ -32,11 +32,11 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	IO::FileStream *fs;
 	void *param;
 	Int32 minIndex;
-	Int64 minSize;
+	UInt64 minSize;
 	Int32 maxIndex;
-	Int64 maxSize;
+	UInt64 maxSize;
 	Int32 currIndex;
-	Int64 currSize;
+	UInt64 currSize;
 	Int64 targetSize;
 	Media::Image *img;
 

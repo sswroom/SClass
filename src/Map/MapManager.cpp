@@ -13,7 +13,7 @@ Map::MapManager::MapManager()
 Map::MapManager::~MapManager()
 {
 	Data::ArrayList<Map::MapManager::MapLayerInfo*> *arr = layerArr->GetValues();
-	OSInt i = arr->GetCount();
+	UOSInt i = arr->GetCount();
 	while (i-- > 0)
 	{
 		Map::MapManager::MapLayerInfo *info = arr->GetItem(i);
@@ -61,7 +61,7 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(const UTF8Char *fileName, Parser:
 void Map::MapManager::ClearMap(Map::MapEnv *env)
 {
 	Data::ArrayList<Map::MapManager::MapLayerInfo *> *infoArr = this->layerArr->GetValues();
-	OSInt i = infoArr->GetCount();
+	UOSInt i = infoArr->GetCount();
 	OSInt j;
 	Map::MapManager::MapLayerInfo *info;
 	while (i-- > 0)
@@ -70,7 +70,7 @@ void Map::MapManager::ClearMap(Map::MapEnv *env)
 		j = info->envList->IndexOf(env);
 		if (j >= 0)
 		{
-			info->envList->RemoveAt(j);
+			info->envList->RemoveAt((UOSInt)j);
 			if (info->envList->GetCount() == 0)
 			{
 				this->layerArr->Remove(this->layerArr->GetKey(i));

@@ -420,8 +420,8 @@ void Map::MapLayerCollection::EndGetObject(void *session)
 
 Map::DrawObjectL *Map::MapLayerCollection::GetObjectByIdD(void *session, Int64 id)
 {
-	OSInt k;
-	OSInt l;
+	UOSInt k;
+	UOSInt l;
 	Int64 currId = 0;
 	Int64 maxId;
 	Map::IMapDrawLayer *lyr;
@@ -450,8 +450,8 @@ Map::DrawObjectL *Map::MapLayerCollection::GetObjectByIdD(void *session, Int64 i
 
 Math::Vector2D *Map::MapLayerCollection::GetVectorById(void *session, Int64 id)
 {
-	OSInt k;
-	OSInt l;
+	UOSInt k;
+	UOSInt l;
 	Int64 currId = 0;
 	Int64 maxId;
 	Map::IMapDrawLayer *lyr;
@@ -497,7 +497,7 @@ void Map::MapLayerCollection::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 
 void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	OSInt i;
+	UOSInt i;
 	this->mut->LockWrite();
 	i = this->updHdlrs->GetCount();
 	while (i-- > 0)
@@ -520,8 +520,8 @@ Math::CoordinateSystem *Map::MapLayerCollection::GetCoordinateSystem()
 {
 	Math::CoordinateSystem *csys = 0;
 	this->mut->LockRead();
-	OSInt i = 0;
-	OSInt j = this->layerList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->layerList->GetCount();
 	while (i < j)
 	{
 		csys = this->layerList->GetItem(i)->GetCoordinateSystem();
@@ -538,7 +538,7 @@ Math::CoordinateSystem *Map::MapLayerCollection::GetCoordinateSystem()
 void Map::MapLayerCollection::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
 	this->mut->LockRead();
-	OSInt i = this->layerList->GetCount();
+	UOSInt i = this->layerList->GetCount();
 	while (i-- > 0)
 	{
 		this->layerList->GetItem(i)->SetCoordinateSystem(csys);
@@ -550,7 +550,7 @@ void Map::MapLayerCollection::ReleaseAll()
 {
 	Map::IMapDrawLayer *lyr;
 	this->mut->LockWrite();
-	OSInt i = this->layerList->GetCount();
+	UOSInt i = this->layerList->GetCount();
 	while (i-- > 0)
 	{
 		lyr = this->layerList->RemoveAt(i);

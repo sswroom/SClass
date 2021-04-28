@@ -103,7 +103,7 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 		Char sbuff[512];
 		OSInt i;
 		this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile, -1);
-		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOf(sbuff, (Char)IO::Path::PATH_SEPERATOR);
 		return mz_zip_writer_add_file(zip, &sbuff[i + 1], sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
 	}
 	else if (pt == IO::Path::PT_DIRECTORY)
@@ -118,8 +118,8 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 
 Bool IO::MinizZIP::AddFiles(Data::ArrayList<const UTF8Char *> *files)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool succ = true;
 	i = 0;
 	j = files->GetCount();

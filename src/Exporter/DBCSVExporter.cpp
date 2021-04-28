@@ -29,7 +29,7 @@ IO::FileExporter::SupportType Exporter::DBCSVExporter::IsObjectSupported(IO::Par
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::DBCSVExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DBCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -147,7 +147,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 	return true;
 }
 
-OSInt Exporter::DBCSVExporter::GetParamCnt()
+UOSInt Exporter::DBCSVExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -169,7 +169,7 @@ void Exporter::DBCSVExporter::DeleteParam(void *param)
 	MemFree(dbParam);
 }
 
-Bool Exporter::DBCSVExporter::GetParamInfo(OSInt index, IO::FileExporter::ParamInfo *info)
+Bool Exporter::DBCSVExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
 {
 	if (index == 0)
 	{
@@ -184,17 +184,17 @@ Bool Exporter::DBCSVExporter::GetParamInfo(OSInt index, IO::FileExporter::ParamI
 	}
 }
 
-Bool Exporter::DBCSVExporter::SetParamStr(void *param, OSInt index, const UTF8Char *val)
+Bool Exporter::DBCSVExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool Exporter::DBCSVExporter::SetParamInt32(void *param, OSInt index, Int32 val)
+Bool Exporter::DBCSVExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 {
 	return false;
 }
 
-Bool Exporter::DBCSVExporter::SetParamSel(void *param, OSInt index, Int32 selCol)
+Bool Exporter::DBCSVExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
 {
 	if (index == 0)
 	{
@@ -205,17 +205,17 @@ Bool Exporter::DBCSVExporter::SetParamSel(void *param, OSInt index, Int32 selCol
 	return false;
 }
 
-UTF8Char *Exporter::DBCSVExporter::GetParamStr(void *param, OSInt index, UTF8Char *buff)
+UTF8Char *Exporter::DBCSVExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 Exporter::DBCSVExporter::GetParamInt32(void *param, OSInt index)
+Int32 Exporter::DBCSVExporter::GetParamInt32(void *param, UOSInt index)
 {
 	return 0;
 }
 
-Int32 Exporter::DBCSVExporter::GetParamSel(void *param, OSInt index)
+Int32 Exporter::DBCSVExporter::GetParamSel(void *param, UOSInt index)
 {
 	if (index == 0)
 	{
@@ -225,7 +225,7 @@ Int32 Exporter::DBCSVExporter::GetParamSel(void *param, OSInt index)
 	return 0;
 }
 
-UTF8Char *Exporter::DBCSVExporter::GetParamSelItems(void *param, OSInt index, OSInt itemIndex, UTF8Char *buff)
+UTF8Char *Exporter::DBCSVExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
 	if (index == 0)
 	{

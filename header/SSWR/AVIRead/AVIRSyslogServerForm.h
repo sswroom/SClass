@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSYSLOGSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIRSYSLOGSERVERFORM
+#include "Data/UInt32Map.h"
 #include "Net/SyslogServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/ListBoxLogger.h"
@@ -40,7 +41,7 @@ namespace SSWR
 			Bool ipListUpd;
 			Bool msgListUpd;
 			Sync::Mutex *ipMut;
-			Data::Int32Map<IPLog*> *ipMap;
+			Data::UInt32Map<IPLog*> *ipMap;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);
@@ -54,6 +55,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
+	}
 }
 #endif

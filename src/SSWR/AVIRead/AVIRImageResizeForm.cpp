@@ -12,18 +12,18 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageResizeForm *me = (SSWR::AVIRead::AVIRImageResizeForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	OSInt outW = 0;
-	OSInt outH = 0;
-	OSInt nTap = 0;
+	UOSInt outW = 0;
+	UOSInt outH = 0;
+	UOSInt nTap = 0;
 	sb.ClearStr();
 	me->txtOutW->GetText(&sb);
-	sb.ToOSInt(&outW);
+	sb.ToUOSInt(&outW);
 	sb.ClearStr();
 	me->txtOutH->GetText(&sb);
-	sb.ToOSInt(&outH);
+	sb.ToUOSInt(&outH);
 	sb.ClearStr();
 	me->txtNTap->GetText(&sb);
-	sb.ToOSInt(&nTap);
+	sb.ToUOSInt(&nTap);
 	if (outW == 0 || outH == 0 || nTap < 3 || nTap > 32)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input", (const UTF8Char*)"Error", me);
@@ -106,10 +106,10 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	this->txtOutW->Focus();
 	if (this->srcImg)
 	{
-		Text::StrOSInt(sbuff, this->srcImg->info->dispWidth);
+		Text::StrUOSInt(sbuff, this->srcImg->info->dispWidth);
 		this->txtOriW->SetText(sbuff);
 		this->txtOutW->SetText(sbuff);
-		Text::StrOSInt(sbuff, this->srcImg->info->dispHeight);
+		Text::StrUOSInt(sbuff, this->srcImg->info->dispHeight);
 		this->txtOriH->SetText(sbuff);
 		this->txtOutH->SetText(sbuff);
 	}

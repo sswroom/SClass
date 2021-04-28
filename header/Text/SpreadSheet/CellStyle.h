@@ -117,7 +117,7 @@ namespace Text
 			HAlignment GetHAlign();
 			VAlignment GetVAlign();
 			Bool GetWordWrap();
-			Int32 GetFillColor();
+			UInt32 GetFillColor();
 			FillPattern GetFillPattern();
 			WorkbookFont *GetFont();
 			BorderStyle *GetBorderLeft();

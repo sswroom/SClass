@@ -59,7 +59,7 @@ IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::BMPExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::BMPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -90,7 +90,7 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	lineSize = lineSize >> 3;
 	if (lineSize & 3)
 		lineSize = lineSize + 4 - (lineSize & 3);
-	OSInt palSize = 0;
+	UOSInt palSize = 0;
 	if (img->info->storeBPP <= 8)
 		palSize = 4 << img->info->storeBPP;
 	const UInt8 *rawICC = img->info->color->GetRAWICC();

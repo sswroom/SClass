@@ -41,7 +41,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::~AVIRMultipartViewer()
 {
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
-	OSInt i;
+	UOSInt i;
 	i = this->subViewers->GetCount();
 	while (i-- > 0)
 	{

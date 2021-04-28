@@ -10,6 +10,7 @@
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Math.h"
 #include "Math/VectorImage.h"
 #include "Media/FrameInfo.h"
 #include "Media/ICCProfile.h"
@@ -69,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 	Bool isBE;
 
 	UInt32 nextOfst;
-	OSInt i;
+	UOSInt i;
 
 	if (fd->GetRealData(0, 8, hdr) != 8)
 		return 0;
@@ -121,9 +122,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 
 		Bool valid = true;
 		Bool processed = false;
-		OSInt j;
-		OSInt k;
-		OSInt nChannels;
+		UOSInt j;
+		UOSInt k;
+		UOSInt nChannels;
 		UInt32 compression = 0;
 		UInt32 imgWidth = 0;
 		UInt32 imgHeight = 0;
@@ -131,13 +132,13 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		UInt32 photometricInterpretation = 0;
 		UInt32 planarConfiguration = 1;
 		UInt32 sampleFormat = 1;
-		Int32 nStrip = 0;
-		Int32 stripOfst = 0;
-		Int32 stripLeng = 0;
-		Int32 *stripOfsts = 0;
-		Int32 *stripLengs = 0;
-		Int32 storeBPP;
-		Int32 predictor;
+		UInt32 nStrip = 0;
+		UInt32 stripOfst = 0;
+		UInt32 stripLeng = 0;
+		UInt32 *stripOfsts = 0;
+		UInt32 *stripLengs = 0;
+		UInt32 storeBPP;
+		UInt32 predictor;
 		UInt32 rowsPerStrip;
 		if ((imgWidth = GetUInt(exif, 0x100)) == 0)
 			valid = false;
@@ -170,7 +171,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
-				stripOfst = item->value;
+				stripOfst = (UInt32)item->value;
 			}
 			else
 			{
@@ -182,7 +183,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
 				UInt16 *val = exif->GetExifUInt16(0x111);
-				stripOfsts = MemAlloc(Int32, item->size);
+				stripOfsts = MemAlloc(UInt32, item->size);
 				j = item->size;
 				while (j-- > 0)
 				{
@@ -191,7 +192,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
-				stripOfsts = MemAlloc(Int32, item->size);
+				stripOfsts = MemAlloc(UInt32, item->size);
 				MemCopyNO(stripOfsts, exif->GetExifUInt32(0x111), item->size * sizeof(UInt32));
 			}
 			else
@@ -213,7 +214,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
-				stripLeng = item->value;
+				stripLeng = (UInt32)item->value;
 			}
 			else
 			{
@@ -226,7 +227,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
 				UInt16 *val = exif->GetExifUInt16(0x111);
-				stripLengs = MemAlloc(Int32, item->size);
+				stripLengs = MemAlloc(UInt32, item->size);
 				j = item->size;
 				while (j-- > 0)
 				{
@@ -235,7 +236,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
-				stripLengs = MemAlloc(Int32, item->size);
+				stripLengs = MemAlloc(UInt32, item->size);
 				MemCopyNO(stripLengs, exif->GetExifUInt32(0x117), item->size * sizeof(UInt32));
 			}
 			else
@@ -443,9 +444,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			if (compression == 32773)
 			{
 				UInt8 *compImgData;
-				OSInt maxLeng;
-				OSInt lengLeft;
-				OSInt destSize;
+				UOSInt maxLeng;
+				UOSInt lengLeft;
+				UOSInt destSize;
 				if (nStrip == 1)
 				{
 					compImgData = MemAlloc(UInt8, stripLeng);
@@ -483,8 +484,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			else if (compression == 5 || compression == 8)
 			{
 				UInt8 *compImgData;
-				OSInt maxLeng;
-				OSInt lengLeft;
+				UOSInt maxLeng;
+				UOSInt lengLeft;
 				UOSInt destSize;
 				if (compression == 5)
 				{
@@ -592,8 +593,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				UInt8 *tmpPtr;
 				UInt8 *tmpPtr2;
 				UInt8 lastPx[4];
-				OSInt bytePerChannels = (bpp >> 3) / nChannels;
-				OSInt l;
+				UOSInt bytePerChannels = (bpp >> 3) / nChannels;
+				UOSInt l;
 				if (planarConfiguration == 2)
 				{
 					tmpBuff = MemAlloc(UInt8, bytePerChannels * imgWidth);
@@ -615,7 +616,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 									l = imgWidth;
 									while (l-- > 0)
 									{
-										lastPx[0] = lastPx[0] + *tmpPtr++;
+										lastPx[0] = (UInt8)(lastPx[0] + *tmpPtr++);
 										tmpPtr2[0] = lastPx[0];
 										tmpPtr2 += bytePerChannels;
 									}
@@ -642,7 +643,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 									l = imgWidth;
 									while (l-- > 0)
 									{
-										lastPx[0] = lastPx[0] + *tmpPtr++;
+										lastPx[0] = (UInt8)(lastPx[0] + *tmpPtr++);
 										tmpPtr2[k] = lastPx[0];
 										tmpPtr2 += bytePerChannels;
 									}
@@ -680,7 +681,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 									l = nChannels;
 									while (l-- > 0)
 									{
-										lastPx[l] = lastPx[l] + *tmpPtr++;
+										lastPx[l] = (UInt8)(lastPx[l] + *tmpPtr++);
 										tmpPtr2[0] = lastPx[l];
 										tmpPtr2 += bytePerChannels;
 									}
@@ -712,7 +713,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 									l = nChannels;
 									while (l-- > 0)
 									{
-										lastPx[l] = lastPx[l] + *tmpPtr++;
+										lastPx[l] = (UInt8)(lastPx[l] + *tmpPtr++);
 										tmpPtr2[0] = lastPx[l];
 										tmpPtr2 += bytePerChannels;
 									}
@@ -1094,11 +1095,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (bpp <= 8)
 			{
-				OSInt j;
+				UOSInt j;
 				if (photometricInterpretation == 3)
 				{
 					UInt16 *pal = exif->GetExifUInt16(0x140);
-					j = (OSInt)1 << bpp;
+					j = (UOSInt)1 << bpp;
 					i = 0;
 					while (i < j)
 					{
@@ -1112,7 +1113,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				else if (photometricInterpretation == 0) //whiteIsZero
 				{
 					UInt8 v;
-					i = (OSInt)1 << bpp;
+					i = (UOSInt)1 << bpp;
 					j = i - 1;
 					while (i-- > 0)
 					{
@@ -1127,14 +1128,14 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					i = ((imgWidth * bpp + 7) >> 3) * imgHeight;
 					while (i-- > 0)
 					{
-						imgData[0] = 255 - imgData[0];
+						imgData[0] = (UInt8)(255 - imgData[0]);
 						imgData += 1;
 					}
 				}
 				else if (photometricInterpretation == 1) //blackIsZero
 				{
 					UInt8 v;
-					i = (OSInt)1 << bpp;
+					i = (UOSInt)1 << bpp;
 					j = i - 1;
 					while (i-- > 0)
 					{
@@ -1354,7 +1355,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						j = img->info->dispWidth - 1;
 						while (j-- > 0)
 						{
-							imgData[0] = imgData[0] + imgData[-1];
+							imgData[0] = (UInt8)(imgData[0] + imgData[-1]);
 							imgData += 1;
 						}
 					}
@@ -1368,8 +1369,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						j = img->info->dispWidth - 1;
 						while (j-- > 0)
 						{
-							imgData[0] = imgData[0] + imgData[-2];
-							imgData[1] = imgData[1] + imgData[-1];
+							imgData[0] = (UInt8)(imgData[0] + imgData[-2]);
+							imgData[1] = (UInt8)(imgData[1] + imgData[-1]);
 							imgData += 2;
 						}
 					}
@@ -1383,9 +1384,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						j = img->info->dispWidth - 1;
 						while (j-- > 0)
 						{
-							imgData[0] = imgData[0] + imgData[-3];
-							imgData[1] = imgData[1] + imgData[-2];
-							imgData[2] = imgData[2] + imgData[-1];
+							imgData[0] = (UInt8)(imgData[0] + imgData[-3]);
+							imgData[1] = (UInt8)(imgData[1] + imgData[-2]);
+							imgData[2] = (UInt8)(imgData[2] + imgData[-1]);
 							imgData += 3;
 						}
 					}
@@ -1399,10 +1400,10 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						j = img->info->dispWidth - 1;
 						while (j-- > 0)
 						{
-							imgData[0] = imgData[0] + imgData[-4];
-							imgData[1] = imgData[1] + imgData[-3];
-							imgData[2] = imgData[2] + imgData[-2];
-							imgData[3] = imgData[3] + imgData[-1];
+							imgData[0] = (UInt8)(imgData[0] + imgData[-4]);
+							imgData[1] = (UInt8)(imgData[1] + imgData[-3]);
+							imgData[2] = (UInt8)(imgData[2] + imgData[-2]);
+							imgData[3] = (UInt8)(imgData[3] + imgData[-1]);
 							imgData += 4;
 						}
 					}
@@ -1525,7 +1526,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (img->info->dispHeight - 0.5), xCoord + xPxSize * (img->info->dispWidth - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
+					NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (Math::UOSInt2Double(img->info->dispHeight) - 0.5), xCoord + xPxSize * (Math::UOSInt2Double(img->info->dispWidth) - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
 					lyr->AddVector(vimg, 0);
 					DEL_CLASS(simg);
 					
@@ -1563,13 +1564,13 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(Media::EXIFData *exif, Int32 id)
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUIntSum(Media::EXIFData *exif, Int32 id, OSInt *nChannels)
+UInt32 Parser::FileParser::TIFFParser::GetUIntSum(Media::EXIFData *exif, Int32 id, UOSInt *nChannels)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
 		return 0;
 	UInt32 sum = 0;
-	OSInt i = item->size;
+	UOSInt i = item->size;
 	if (nChannels)
 	{
 		*nChannels = i;

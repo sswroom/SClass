@@ -24,9 +24,9 @@ typedef struct
 	UOSInt buffSize;
 	Int32 mode;
 	Int32 connId;
-	Int32 capability;
-	Int32 clientCap;
-	Int32 clientCS;
+	UInt32 capability;
+	UInt32 clientCap;
+	UInt16 clientCS;
 	DB::DBMS::SessionParam param;
 	UInt8 authPluginData[20];
 	UTF8Char userName[64];
@@ -348,7 +348,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				UTF8Char sbuff[256];
 				const UInt8 *bptr;
 				const UInt8 *bptrEnd;
-				Int64 iVal;
+				UInt64 iVal;
 				UOSInt len;
 				const UTF8Char *authResp = 0;
 				UOSInt authLen = 0;
@@ -380,7 +380,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					sb.AppendU32(data->param.clientMaxPacketSize);
 					sb.Append((const UTF8Char*)"\r\nCharacter Set = ");
 					sb.AppendU16(data->clientCS);
-					len = Text::StrConcat(data->userName, &data->buff[36]) - data->userName;
+					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[36]) - data->userName);
 					bptr = &data->buff[37] + len;
 					sb.Append((const UTF8Char*)"\r\nUsername = ");
 					sb.Append(data->userName);
@@ -389,7 +389,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
 						authResp = bptr;
 						bptr += iVal;
-						authLen = (OSInt)iVal;
+						authLen = (UOSInt)iVal;
 					}
 					else if (data->clientCap & Net::MySQLUtil::CLIENT_SECURE_CONNECTION)
 					{
@@ -407,7 +407,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					sb.AppendHexBuff(authResp, authLen, ' ', Text::LBT_NONE);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_CONNECT_WITH_DB)
 					{
-						len = Text::StrConcat(data->database, bptr) - data->database;
+						len = (UOSInt)(Text::StrConcat(data->database, bptr) - data->database);
 						sb.Append((const UTF8Char*)"\r\nDatabase = ");
 						sb.Append(data->database);
 						bptr += len + 1;
@@ -425,22 +425,22 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						sb.Append((const UTF8Char*)"\r\nAttr:");
 						bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
 						sb.Append((const UTF8Char*)"\r\n-Length of all key-values = ");
-						sb.AppendI64(iVal);
+						sb.AppendU64(iVal);
 						while (bptr < bptrEnd)
 						{
 							bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
 							if (iVal == 0 || bptr + iVal > bptrEnd)
 								break;
 							sb.Append((const UTF8Char*)"\r\n-");
-							sb.AppendC(bptr, (OSInt)iVal);
-							Text::StrConcatC(sbuff, bptr, (OSInt)iVal);
+							sb.AppendC(bptr, (UOSInt)iVal);
+							Text::StrConcatC(sbuff, bptr, (UOSInt)iVal);
 							bptr += iVal;
 							sb.Append((const UTF8Char*)" = ");
 							bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
 							if (bptr + iVal > bptrEnd)
 								break;
-							sb.AppendC(bptr, (OSInt)iVal);
-							data->attrMap->Put(sbuff, Text::StrCopyNewC(bptr, (OSInt)iVal));
+							sb.AppendC(bptr, (UOSInt)iVal);
+							data->attrMap->Put(sbuff, Text::StrCopyNewC(bptr, (UOSInt)iVal));
 							bptr += iVal;
 						}
 					}
@@ -451,10 +451,10 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					data->param.clientMaxPacketSize = ReadUInt24(&data->buff[6]);
 					sb.Append((const UTF8Char*)"Handshake Response 320");
 					sb.Append((const UTF8Char*)"\r\nCapability Flags = 0x");
-					sb.AppendHex16(data->clientCap);
+					sb.AppendHex16((UInt16)data->clientCap);
 					sb.Append((const UTF8Char*)"\r\nMax Packet Size = ");
 					sb.AppendU32(data->param.clientMaxPacketSize);
-					len = Text::StrConcat(data->userName, &data->buff[9]) - data->userName;
+					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[9]) - data->userName);
 					bptr = &data->buff[10] + len;
 					sb.Append((const UTF8Char*)"\r\nUsername = ");
 					sb.Append(data->userName);
@@ -470,7 +470,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					else
 					{
 						authResp = bptr;
-						authLen = packetSize - (bptr - data->buff) + 4;
+						authLen = packetSize - (UOSInt)(bptr - data->buff) + 4;
 					}
 					sb.Append((const UTF8Char*)"\r\nAuth Response = ");
 					sb.AppendHexBuff(authResp, authLen, ' ', Text::LBT_NONE);
@@ -518,7 +518,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					sbuff[3] = 2;
 					sbuff[4] = 0xff;
 					WriteInt16(&sbuff[5], 0x6A2);
-					cli->Write(sbuff, sptr - sbuff);
+					cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 					data->mode = -1;
 					#if defined(VERBOSE)
 					printf("Sent login failure\r\n");
@@ -536,7 +536,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 		UOSInt i = 0;
 		while (i + 5 <= data->buffSize)
 		{
-			UInt32 packetSize = ReadInt32(&data->buff[i]);
+			UInt32 packetSize = ReadUInt32(&data->buff[i]);
 			UInt8 packetType = data->buff[i + 4];
 			if (i + packetSize + 4 <= data->buffSize)
 			{
@@ -561,13 +561,13 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 								UTF8Char *sptr;
 								sbuff[3] = 1;
 								sbuff[4] = 0;
-								sptr = Net::MySQLUtil::AppendLenencInt(&sbuff[5], r->GetRowChanged());
+								sptr = Net::MySQLUtil::AppendLenencInt(&sbuff[5], (UOSInt)r->GetRowChanged());
 								sptr = Net::MySQLUtil::AppendLenencInt(sptr, 0); //last insert-id
 								WriteInt16(&sptr[0], 0x4002);
 								WriteInt16(&sptr[2], 0);
 								sptr += 4;
 								WriteInt24(&sbuff[0], sptr - sbuff - 4);
-								cli->Write(sbuff, sptr - sbuff);
+								cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 								#if defined(VERBOSE)
 								printf("COM_QUERY OK, row changed = %d\r\n", (int)r->GetRowChanged());
 								#endif
@@ -587,7 +587,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 								sbuff[3] = seqId++;
 								sptr = Net::MySQLUtil::AppendLenencInt(&sbuff[4], r->ColCount());
 								WriteInt24(&sbuff[0], sptr - sbuff - 4);
-								cli->Write(sbuff, sptr - sbuff);
+								cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 								#if defined(VERBOSE)
 								printf("COM_QUERY OK, column_count = %d\r\n", (int)r->ColCount());
 								#endif
@@ -612,7 +612,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 
 									sptr = Net::MySQLUtil::AppendLenencInt(sptr, 12);
 									WriteInt16(&sptr[0], data->clientCS);
-									WriteInt32(&sptr[2], col.GetColSize());
+									WriteUInt32(&sptr[2], (UInt32)col.GetColSize());
 
 									DB::DBUtil::ColType colType = col.GetColType();
 									sptr[6] = Net::MySQLUtil::ColType2MySQLType(colType);
@@ -653,7 +653,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 									sptr += 12;
 
 									WriteInt24(&sbuff[0], sptr - sbuff - 4);
-									cli->Write(sbuff, sptr - sbuff);
+									cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 									#if defined(VERBOSE)
 									printf("COM_QUERY column: %s\r\n", col.GetColName());
 									#endif
@@ -701,7 +701,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 									}
 
 									WriteInt24(&sbuff[0], sptr - sbuff - 4);
-									cli->Write(sbuff, sptr - sbuff);
+									cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 									#if defined(VERBOSE)
 									printf("COM_QUERY return row\r\n");
 									#endif
@@ -731,7 +731,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 							sbuff[3] = 1;
 							sbuff[4] = 0xff;
 							WriteInt16(&sbuff[5], 0x416);
-							cli->Write(sbuff, sptr - sbuff);
+							cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 							#if defined(VERBOSE)
 							printf("COM_QUERY failure\r\n");
 							#endif
@@ -792,7 +792,7 @@ void __stdcall Net::MySQLServer::OnClientConn(UInt32 *s, void *userObj)
 	i = 0;
 	while (i < 20)
 	{
-		data->authPluginData[i] = ((UInt32)(me->rand->NextInt32()) % 0x5f) + 0x21;
+		data->authPluginData[i] = (UInt8)(((UInt32)(me->rand->NextInt32()) % 0x5f) + 0x21);
 		i++;
 	}
 	mutUsage.EndUse();
@@ -816,7 +816,7 @@ void __stdcall Net::MySQLServer::OnClientConn(UInt32 *s, void *userObj)
 	bptr += 13;
 	bptr = Text::StrConcat(bptr, (const UTF8Char*)"mysql_native_password") + 1;
 	WriteInt32(buff, (Int32)(bptr - buff - 4));
-	cli->Write(buff, bptr - buff);
+	cli->Write(buff, (UOSInt)(bptr - buff));
 }
 
 

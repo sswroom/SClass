@@ -11,7 +11,7 @@ namespace UI
 		typedef struct
 		{
 			Map::MapEnv::GroupItem *group;
-			OSInt index;
+			UOSInt index;
 			Map::MapEnv::ItemType itemType;
 			Map::MapEnv::MapItem *item;
 		} ItemIndex;

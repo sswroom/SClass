@@ -105,7 +105,7 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 	this->currLayer = level;
 }
 
-Map::MapView *Map::OruxDBLayer::CreateMapView(OSInt width, OSInt height)
+Map::MapView *Map::OruxDBLayer::CreateMapView(UOSInt width, UOSInt height)
 {
 	Map::MapView *view;
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
@@ -131,15 +131,15 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr)
 	{
-		Int32 i;
-		Int32 j;
+		UInt32 i;
+		UInt32 j;
 		i = 0;
 		while (i < lyr->maxX)
 		{
 			j = 0;
 			while (j < lyr->maxY)
 			{
-				outArr->Add((((Int64)i) << 32) | (UInt32)j);
+				outArr->Add((((UInt64)i) << 32) | j);
 				j++;
 			}
 			i++;

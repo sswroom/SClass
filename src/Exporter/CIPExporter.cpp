@@ -42,7 +42,7 @@ IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NOT_SUPPORTED;
 }
 
-Bool Exporter::CIPExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -367,7 +367,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	return true;
 }
 
-OSInt Exporter::CIPExporter::GetParamCnt()
+UOSInt Exporter::CIPExporter::GetParamCnt()
 {
 	return 2;
 }
@@ -399,7 +399,7 @@ void Exporter::CIPExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::CIPExporter::GetParamInfo(OSInt index, IO::FileExporter::ParamInfo *info)
+Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
 {
 	if (index == 0)
 	{
@@ -418,12 +418,12 @@ Bool Exporter::CIPExporter::GetParamInfo(OSInt index, IO::FileExporter::ParamInf
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamStr(void *param, OSInt index, const UTF8Char *val)
+Bool Exporter::CIPExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamInt32(void *param, OSInt index, Int32 val)
+Bool Exporter::CIPExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 {
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 0)
@@ -441,7 +441,7 @@ Bool Exporter::CIPExporter::SetParamInt32(void *param, OSInt index, Int32 val)
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamSel(void *param, OSInt index, Int32 selCol)
+Bool Exporter::CIPExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
 {
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 1)
@@ -452,12 +452,12 @@ Bool Exporter::CIPExporter::SetParamSel(void *param, OSInt index, Int32 selCol)
 	return false;
 }
 
-UTF8Char *Exporter::CIPExporter::GetParamStr(void *param, OSInt index, UTF8Char *buff)
+UTF8Char *Exporter::CIPExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 Exporter::CIPExporter::GetParamInt32(void *param, OSInt index)
+Int32 Exporter::CIPExporter::GetParamInt32(void *param, UOSInt index)
 {
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 0)
@@ -467,7 +467,7 @@ Int32 Exporter::CIPExporter::GetParamInt32(void *param, OSInt index)
 	return 0;
 }
 
-Int32 Exporter::CIPExporter::GetParamSel(void *param, OSInt index)
+Int32 Exporter::CIPExporter::GetParamSel(void *param, UOSInt index)
 {
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 1)
@@ -477,7 +477,7 @@ Int32 Exporter::CIPExporter::GetParamSel(void *param, OSInt index)
 	return 0;
 }
 
-UTF8Char *Exporter::CIPExporter::GetParamSelItems(void *param, OSInt index, OSInt itemIndex, UTF8Char *buff)
+UTF8Char *Exporter::CIPExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 1)

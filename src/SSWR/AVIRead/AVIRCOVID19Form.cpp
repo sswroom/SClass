@@ -73,8 +73,8 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	Data::LineChart *chart;
 	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList = country->records->GetValues();
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int64 lastCount = 0;
 	Int32 *counts;
 	Int64 *dates;

@@ -707,7 +707,7 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::CURExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::CURExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

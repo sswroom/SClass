@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(IO::Pars
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::SHA1Exporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::SHA1Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

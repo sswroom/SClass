@@ -3582,7 +3582,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 	{
 		j = 0;
 	}
-	OSInt startInd = j;
+	UOSInt startInd = j;
 	denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
 	////////////////////////////////
@@ -3592,7 +3592,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 	Double angle;
 	Int32 angleDegree;
 	Int32 lastAngle;
-	OSInt lastAInd;
+	UOSInt lastAInd;
 	Double lastX;
 	Double lastY;
 

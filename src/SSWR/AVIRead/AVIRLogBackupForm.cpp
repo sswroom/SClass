@@ -22,10 +22,10 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	Data::StringUTF8Map<LogGroup*> logGrps;
 	Data::ArrayList<LogGroup*> *logGrpList;
 	LogGroup *logGrp;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	IO::MinizZIP *zip;
 	Bool succ;
 	IO::Path::PathType pt;

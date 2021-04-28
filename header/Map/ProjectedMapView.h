@@ -39,9 +39,9 @@ namespace Map
 		virtual Double GetDDPI();
 
 		virtual Bool InViewXY(Double mapX, Double mapY);
-		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, OSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
-		virtual Bool MapXYToScnXY(const Double *srcArr, Double *destArr, OSInt nPoints, Double ofstX, Double ofstY); // return inScreen
-		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, OSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
+		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
+		virtual Bool MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY); // return inScreen
+		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
 		virtual void MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY);
 		virtual void ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY);
 		virtual Map::MapView *Clone();

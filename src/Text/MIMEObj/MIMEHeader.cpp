@@ -14,7 +14,7 @@ Text::MIMEObj::MIMEHeader::MIMEHeader()
 
 Text::MIMEObj::MIMEHeader::~MIMEHeader()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->headerName->GetCount();
 	while (i-- > 0)
 	{
@@ -34,8 +34,8 @@ void Text::MIMEObj::MIMEHeader::AddHeader(const UTF8Char *name, const UTF8Char *
 
 const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeader(const UTF8Char *name)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->headerName->GetCount();
 	while (i < j)
@@ -47,17 +47,17 @@ const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeader(const UTF8Char *name)
 	return 0;
 }
 
-OSInt Text::MIMEObj::MIMEHeader::GetHeaderCount()
+UOSInt Text::MIMEObj::MIMEHeader::GetHeaderCount()
 {
 	return this->headerName->GetCount();
 }
 
-const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeaderName(OSInt index)
+const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeaderName(UOSInt index)
 {
 	return this->headerName->GetItem(index);
 }
 
-const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeaderValue(OSInt index)
+const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeaderValue(UOSInt index)
 {
 	return this->headerValue->GetItem(index);
 }
@@ -151,8 +151,8 @@ UTF8Char *Text::MIMEObj::MIMEHeader::ParseHeaderStr(UTF8Char *sbuff, const UTF8C
 					{
 						Text::Encoding enc(cp);
 						Crypto::Encrypt::Base64 b64;
-						OSInt buffSize = (sbc.GetLength() >> 2) * 3;
-						OSInt outSize;
+						UOSInt buffSize = (sbc.GetLength() >> 2) * 3;
+						UOSInt outSize;
 						UInt8 *tmpBuff = MemAlloc(UInt8, buffSize);
 						outSize = b64.Decrypt((const UInt8*)sbc.ToString(), sbc.GetLength(), tmpBuff, 0);
 						sbuff = enc.UTF8FromBytes(sbuff, tmpBuff, outSize, 0);

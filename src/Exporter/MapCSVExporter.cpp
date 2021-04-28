@@ -37,7 +37,7 @@ IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(IO::Pa
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::MapCSVExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

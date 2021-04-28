@@ -72,8 +72,8 @@ IO::ParsedObject::ParserType Text::SpreadSheet::Workbook::GetParserType()
 
 Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::SpreadSheet::Workbook *newWB;
 	NEW_CLASS(newWB, Text::SpreadSheet::Workbook());
 	newWB->author = SCOPY_TEXT(this->author);

@@ -234,7 +234,7 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 	UInt8 buff[512];
 	WChar sbuff[256];
 	WChar *sptr;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < itemCnt)
 	{
 		fd->GetRealData(*currPos, 4, buff);

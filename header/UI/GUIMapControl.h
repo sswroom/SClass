@@ -28,8 +28,8 @@ namespace UI
 		UOSInt currHeight;
 
 		Bool bgUpdated;
-		Int32 bgColor;
-		Int32 bgDispColor;
+		UInt32 bgColor;
+		UInt32 bgDispColor;
 		Bool mouseDown;
 		OSInt mouseDownX;
 		OSInt mouseDownY;
@@ -100,7 +100,7 @@ namespace UI
 
 		void EventScaleChanged(Double newScale);
 
-		void SetBGColor(Int32 bgColor);
+		void SetBGColor(UInt32 bgColor);
 		void SetRenderer(Map::DrawMapRenderer *renderer);
 		void UpdateMap();
 		void ScnXY2MapXY(OSInt scnX, OSInt scnY, Double *mapX, Double *mapY);

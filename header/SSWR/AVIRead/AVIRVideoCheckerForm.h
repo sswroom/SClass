@@ -20,12 +20,12 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *fileName;
-				OSInt index;
+				UOSInt index;
 			} FileQueue;
 
 			typedef struct
 			{
-				OSInt index;
+				UOSInt index;
 				Int32 status;
 				Double t;
 			} UpdateQueue;

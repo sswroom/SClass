@@ -249,9 +249,9 @@ void UI::GUIMapTreeView::ExpandColl(UI::GUIMapTreeView::ItemIndex *ind)
 		{
 			Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)lyr;
 			Map::MapEnv::GroupItem *grp;
-			OSInt i = this->env->GetItemCount(ind->group);
-			OSInt j;
-			OSInt k;
+			UOSInt i = this->env->GetItemCount(ind->group);
+			UOSInt j;
+			UOSInt k;
 			grp = this->env->AddGroup(ind->group, lyrColl->GetName());
 			j = 0;
 			k = lyrColl->GetCount();

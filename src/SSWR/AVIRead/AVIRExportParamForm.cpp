@@ -64,8 +64,8 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	this->SetFont(0, 8.25, false);
 
 	UTF8Char sbuff[256];
-	OSInt cnt = this->exporter->GetParamCnt();
-	OSInt i;
+	UOSInt cnt = this->exporter->GetParamCnt();
+	UOSInt i;
 	UI::GUILabel *lbl;
 	IO::FileExporter::ParamInfo pi;
 

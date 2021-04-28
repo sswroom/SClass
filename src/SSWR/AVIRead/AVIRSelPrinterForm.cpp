@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(void *userObj)
 SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 512, 104, ui)
 {
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	this->SetText((const UTF8Char*)"Select Printer");
 	this->SetFont(0, 8.25, false);

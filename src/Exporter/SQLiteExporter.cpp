@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(IO::Pa
 	return IO::FileExporter::ST_PATH_ONLY;
 }
 
-Bool Exporter::SQLiteExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

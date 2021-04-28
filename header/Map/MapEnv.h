@@ -49,7 +49,7 @@ namespace Map
 			UOSInt lineStyle;
 			UOSInt lineThick;
 			UInt32 lineColor;
-			Int32 fillStyle;
+			UInt32 fillStyle;
 			Int32 fontType;
 			UOSInt fontStyle;
 			const UTF8Char *fontName;
@@ -57,7 +57,7 @@ namespace Map
 			UInt32 fontColor;
 			Double maxScale;
 			Double minScale;
-			Int32 labelCol;
+			UOSInt labelCol;
 			Int32 flags;
 			UOSInt imgIndex;
 			Int32 priority;
@@ -84,8 +84,8 @@ namespace Map
 
 		typedef struct
 		{
-			Int32 color;
-			OSInt thick;
+			UInt32 color;
+			UOSInt thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 		} LineStyleLayer;
@@ -102,9 +102,9 @@ namespace Map
 			const UTF8Char *fontName;
 			Double fontSizePt;
 			Bool bold;
-			Int32 fontColor;
+			UInt32 fontColor;
 			UOSInt buffSize;
-			Int32 buffColor;
+			UInt32 buffColor;
 		} FontStyle;
 		
 	private:
@@ -123,7 +123,7 @@ namespace Map
 
 	private:
 		UInt8 GetRandomColor();
-		OSInt GetLayersInList(Data::ArrayList<Map::IMapDrawLayer*> *layers, Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType);
+		UOSInt GetLayersInList(Data::ArrayList<Map::IMapDrawLayer*> *layers, Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType);
 		void AddGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
@@ -132,7 +132,7 @@ namespace Map
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		Int32 GetBGColor();
+		UInt32 GetBGColor();
 		UOSInt GetDefLineStyle();
 		void SetDefLineStyle(UOSInt lineStyle);
 		UOSInt GetDefFontStyle();
@@ -149,7 +149,8 @@ namespace Map
 		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern);
 		UOSInt GetLineStyleLayerCnt(UOSInt index);
 
-		OSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
+		//-1 = error
+		UOSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, const UTF8Char *name);
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff);
 		Bool RemoveFontStyle(UOSInt index);
@@ -157,20 +158,20 @@ namespace Map
 		Bool GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor);
 		Bool ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
-		OSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
-		Bool ReplaceLayer(GroupItem *group, OSInt index, Map::IMapDrawLayer *layer, Bool needRelease);
+		UOSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
+		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::IMapDrawLayer *layer, Bool needRelease);
 		GroupItem *AddGroup(GroupItem *group, const UTF8Char *subgroupName);
-		void RemoveItem(GroupItem *group, OSInt index);
-		void MoveItem(GroupItem *group, OSInt fromIndex, OSInt toIndex);
-		void MoveItem(GroupItem *fromGroup, OSInt fromIndex, GroupItem *toGroup, OSInt toIndex);
-		OSInt GetItemCount(GroupItem *group);
-		MapItem *GetItem(GroupItem *group, OSInt index);
+		void RemoveItem(GroupItem *group, UOSInt index);
+		void MoveItem(GroupItem *group, UOSInt fromIndex, UOSInt toIndex);
+		void MoveItem(GroupItem *fromGroup, UOSInt fromIndex, GroupItem *toGroup, UOSInt toIndex);
+		UOSInt GetItemCount(GroupItem *group);
+		MapItem *GetItem(GroupItem *group, UOSInt index);
 		const UTF8Char *GetGroupName(GroupItem *group);
 		void SetGroupName(GroupItem *group, const UTF8Char *name);
 		void SetGroupHide(GroupItem *group, Bool isHide);
 		Bool GetGroupHide(GroupItem *group);
-		Bool GetLayerProp(LayerItem *setting, GroupItem *group, OSInt index);
-		Bool SetLayerProp(LayerItem *setting, GroupItem *group, OSInt index);
+		Bool GetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index);
+		Bool SetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index);
 		UOSInt GetNString();
 		void SetNString(UOSInt nStr);
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);
@@ -195,7 +196,7 @@ namespace Map
 		Map::IMapDrawLayer *GetFirstLayer(GroupItem *group);
 		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::IMapDrawLayer *> *layers);
 		Bool GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Double *minY, Double *maxX, Double *maxY);
-		Map::MapView *CreateMapView(OSInt width, OSInt height);
+		Map::MapView *CreateMapView(UOSInt width, UOSInt height);
 		Math::CoordinateSystem *GetCoordinateSystem();
 		Int32 GetSRID();
 

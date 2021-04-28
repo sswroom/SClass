@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::MDBExporter::IsObjectSupported(IO::Parse
 #endif
 }
 
-Bool Exporter::MDBExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::MDBExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
