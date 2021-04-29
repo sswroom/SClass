@@ -26,8 +26,8 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	Text::StringBuilderUTF8 *sb;
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	Text::XMLAttrib *attr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = itemNode->GetAttribCnt();
 	while (i < j)
@@ -59,7 +59,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 			{
 				if (node->GetChildCnt() == 0)
 				{
-					OSInt k = node->GetAttribCnt();
+					UOSInt k = node->GetAttribCnt();
 					while (k-- > 0)
 					{
 						attr = node->GetAttrib(k);
@@ -164,7 +164,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 			}
 			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"media:group") == 0)
 			{
-				OSInt k = node->GetChildCnt();
+				UOSInt k = node->GetChildCnt();
 				Text::XMLNode *node2;
 				while (k-- > 0)
 				{
@@ -270,20 +270,20 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	NEW_CLASS(items, Data::ArrayList<RSSItem*>());
-	OSInt i = doc->GetChildCnt();
+	UOSInt i = doc->GetChildCnt();
 	while (i-- > 0)
 	{
 		Text::XMLNode *node = doc->GetChild(i);
 		if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node->name, (const UTF8Char*)"RSS") == 0)
 		{
-			OSInt j = node->GetChildCnt();
+			UOSInt j = node->GetChildCnt();
 			while (j-- > 0)
 			{
 				Text::XMLNode *node2 = node->GetChild(j);
 				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node2->name, (const UTF8Char*)"Channel") == 0)
 				{
-					OSInt k = 0;
-					OSInt l = node2->GetChildCnt();
+					UOSInt k = 0;
+					UOSInt l = node2->GetChildCnt();
 					while (k < l)
 					{
 						Text::XMLNode *node3 = node2->GetChild(k);
@@ -387,15 +387,15 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 		}
 		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node->name, (const UTF8Char*)"rdf:RDF") == 0)
 		{
-			OSInt j = node->GetChildCnt();
-			OSInt i2 = 0;
+			UOSInt j = node->GetChildCnt();
+			UOSInt i2 = 0;
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
 				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node2->name, (const UTF8Char*)"Channel") == 0)
 				{
-					OSInt k = 0;
-					OSInt l = node2->GetChildCnt();
+					UOSInt k = 0;
+					UOSInt l = node2->GetChildCnt();
 					while (k < l)
 					{
 						Text::XMLNode *node3 = node2->GetChild(k);
@@ -501,8 +501,8 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node->name, (const UTF8Char*)"feed") == 0)
 		{
 			Text::XMLAttrib *attr;
-			OSInt j = node->GetChildCnt();
-			OSInt i2 = 0;
+			UOSInt j = node->GetChildCnt();
+			UOSInt i2 = 0;
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
@@ -525,8 +525,8 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"link") == 0)
 					{
 						Int32 linkType = 0;
-						OSInt k = 0;
-						OSInt l = node2->GetAttribCnt();
+						UOSInt k = 0;
+						UOSInt l = node2->GetAttribCnt();
 						while (k < l)
 						{
 							attr = node2->GetAttrib(k);
@@ -567,8 +567,8 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 					}
 					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"author") == 0)
 					{
-						OSInt k;
-						OSInt l;
+						UOSInt k;
+						UOSInt l;
 						Text::XMLNode *node3;
 						k = 0;
 						l = node2->GetChildCnt();
@@ -652,7 +652,7 @@ Net::RSS::~RSS()
 	SDEL_TEXT(this->docs);
 	if (this->items)
 	{
-		OSInt i = this->items->GetCount();
+		UOSInt i = this->items->GetCount();
 		RSSItem *item;
 		while (i-- > 0)
 		{

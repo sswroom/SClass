@@ -280,6 +280,22 @@ Bool Text::JSONBuilder::ObjectAddInt64(const UTF8Char *name, Int64 val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectAddUInt64(const UTF8Char *name, UInt64 val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC((const UTF8Char*)", ", 2);
+	}
+	this->AppendStrUTF8(name);
+	this->sb->AppendC((const UTF8Char*)" : ", 3);
+	this->sb->AppendU64(val);
+	return true;
+}
+
 Bool Text::JSONBuilder::ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *val)
 {
 	if (this->currType != OT_OBJECT)

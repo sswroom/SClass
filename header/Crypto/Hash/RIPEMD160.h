@@ -9,14 +9,14 @@ namespace Crypto
 		class RIPEMD160 : public IHash
 		{
 		private:
-			Int64 msgLeng;
+			UInt64 msgLeng;
 			UInt32 h0;
 			UInt32 h1;
 			UInt32 h2;
 			UInt32 h3;
 			UInt32 h4;
 			UInt8 *buff;
-			Int32 buffSize;
+			UInt32 buffSize;
 
 		public:
 			RIPEMD160();

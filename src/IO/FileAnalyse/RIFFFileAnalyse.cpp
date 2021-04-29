@@ -3,10 +3,10 @@
 #include "IO/FileAnalyse/RIFFFileAnalyse.h"
 #include "Sync/Thread.h"
 
-void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(Int64 ofst, Int64 size)
+void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UInt64 ofst, UInt64 size)
 {
 	UInt8 buff[12];
-	Int64 endOfst = ofst + size;
+	UInt64 endOfst = ofst + size;
 	UInt32 sz;
 	PackInfo *pack;
 
@@ -19,7 +19,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(Int64 ofst, Int64 size)
 		else
 		{
 			this->fd->GetRealData(ofst, 12, buff);
-			sz = ReadInt32(&buff[4]);
+			sz = ReadUInt32(&buff[4]);
 			if (ofst + sz + 8 > endOfst)
 			{
 				return;
@@ -27,10 +27,10 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(Int64 ofst, Int64 size)
 			pack = MemAlloc(PackInfo, 1);
 			pack->fileOfst = ofst;
 			pack->packSize = sz + 8;
-			pack->packType = *(Int32*)buff;
+			pack->packType = ReadNInt32(buff);
 			if (pack->packType == *(Int32*)"RIFF" || pack->packType == *(Int32*)"LIST")
 			{
-				pack->subPackType = *(Int32*)&buff[8];
+				pack->subPackType = ReadNInt32(&buff[8]);
 			}
 			else
 			{
@@ -71,11 +71,11 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::IStreamData *fd)
 	this->threadStarted = false;
 	NEW_CLASS(this->packs, Data::SyncArrayList<PackInfo*>());
 	fd->GetRealData(0, 256, buff);
-	if (ReadInt32(buff) != *(Int32*)"RIFF")
+	if (ReadNInt32(buff) != *(Int32*)"RIFF")
 	{
 		return;
 	}
-	UInt32 size = ReadInt32(&buff[4]);
+	UInt32 size = ReadUInt32(&buff[4]);
 	if (size + 8 > fd->GetDataSize())
 	{
 		return;
@@ -115,7 +115,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
@@ -128,7 +128,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 		sb->Append((UTF8Char*)buff);
 	}
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI32((Int32)pack->packSize);
+	sb->AppendUOSInt(pack->packSize);
 	return true;
 }
 
@@ -137,14 +137,14 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	PackInfo *pack;
 	UInt8 *packBuff;
 	UInt8 buff[5];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
 
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
@@ -157,7 +157,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		sb->Append((UTF8Char*)buff);
 	}
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI32((Int32)pack->packSize);
+	sb->AppendUOSInt(pack->packSize);
 
 	if (pack->packType == *(Int32*)"avih")
 	{

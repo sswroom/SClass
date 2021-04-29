@@ -64,8 +64,8 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRImageControl *me = (SSWR::AVIRead::AVIRImageControl*)userObj;
 	if (me->imgMapUpdated)
 	{
-		OSInt imgCnt;
-		OSInt totalHeight;
+		UOSInt imgCnt;
+		UOSInt totalHeight;
 		me->imgMapUpdated = false;
 		Sync::MutexUsage mutUsage(me->imgMut);
 		imgCnt = me->imgMap->GetCount();
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 		UOSInt scnW;
 		UOSInt scnH;
 		me->GetSizeP(&scnW, &scnH);
-		me->SetVScrollBar(0, totalHeight, Math::Double2Int32(scnH / me->GetHDPI() * me->GetDDPI()));
+		me->SetVScrollBar(0, (OSInt)totalHeight, (UInt32)Math::Double2Int32(Math::UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
 		me->imgUpdated = true;
 	}
 
@@ -108,8 +108,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	IO::Path::CreateDirectory(sbuff2);
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
 
-	OSInt i;
-	OSInt colCnt;
+	UOSInt i;
+	UOSInt colCnt;
 	Data::ICaseStringUTF8Map<ImageSetting*> *imgSettMap;
 	Data::ArrayList<ImageSetting*> *imgSettList;
 	ImageSetting *imgSett;
@@ -354,7 +354,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
 	if (this->folderPath == 0)
@@ -447,7 +447,7 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF *sb, 
 	return true;
 }
 
-Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraName, Int32 *gammaCnt)
+Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraName, UInt32 *gammaCnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -490,7 +490,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraNa
 	if (gammaVals.GetCount() > 0)
 	{
 		UOSInt i;
-		camera->gammaCnt = (Int32)gammaVals.GetCount();
+		camera->gammaCnt = (UInt32)gammaVals.GetCount();
 		camera->gammaParam = MemAlloc(Double, camera->gammaCnt);
 		MemCopyNO(camera->gammaParam, gammaVals.GetArray(&i), sizeof(Double) * camera->gammaCnt);
 	}
@@ -552,7 +552,7 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 	{
 		this->folderCtrlEvt->Wait(10);
 	}
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::CameraCorr *> *cameraList = this->cameraMap->GetValues();
 	CameraCorr *camera;
 	i = cameraList->GetCount();
@@ -657,10 +657,11 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	Media::DrawBrush *barr[5];
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	OSInt i;
-	OSInt j;
-	OSInt scnW = dimg->GetWidth();
-	OSInt scnH = dimg->GetHeight();
+	UOSInt ui;
+	OSInt si;
+	OSInt sj;
+	UOSInt scnW = dimg->GetWidth();
+	UOSInt scnH = dimg->GetHeight();
 
 	barr[0] = dimg->NewBrushARGB(0xffc0c0c0);
 	barr[1] = dimg->NewBrushARGB(0xffff8080);
@@ -674,34 +675,34 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	Int32 itemTH = Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
 	Int32 itemBH = Math::Double2Int32((20 + 12 + this->previewSize) * hdpi / ddpi);
 	Int32 itemH = Math::Double2Int32((20 + this->previewSize) * hdpi / ddpi);
-	Int32 scrPos = Math::Double2Int32(this->GetVScrollPos() * hdpi / ddpi);
+	Int32 scrPos = Math::Double2Int32(Math::OSInt2Double(this->GetVScrollPos()) * hdpi / ddpi);
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
-	i = imgList->GetCount();
-	while (i-- > 0)
+	ui = imgList->GetCount();
+	while (ui-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = imgList->GetItem(ui);
 		status->setting.flags &= ~8;
 	}
-	i = this->GetVScrollPos() / (20 + 12 + 12 + this->previewSize);
-	j = Math::Double2Int32(this->GetVScrollPos() + scnH * ddpi / hdpi) / (20 + 12 + 12 + this->previewSize);
+	si = this->GetVScrollPos() / (OSInt)(20 + 12 + 12 + this->previewSize);
+	sj = Math::Double2Int32(Math::OSInt2Double(this->GetVScrollPos()) + Math::UOSInt2Double(scnH) * ddpi / hdpi) / (OSInt)(20 + 12 + 12 + this->previewSize);
 
-	if (i < 0)
+	if (si < 0)
 	{
-		i = 0;
+		si = 0;
 	}
-	if ((UOSInt)j >= imgList->GetCount())
+	if ((UOSInt)sj >= imgList->GetCount())
 	{
-		j = imgList->GetCount() - 1;
+		sj = (OSInt)imgList->GetCount() - 1;
 	}
 	f = dimg->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	UOSInt strLen;
 	Double strSz[2];
-	while (i <= j)
+	while (si <= sj)
 	{
-		status = imgList->GetItem(i);
+		status = imgList->GetItem((UOSInt)si);
 		status->setting.flags |= 8;
 		if (status->previewImg == 0)
 		{
@@ -717,13 +718,13 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			status->previewImg2 = this->deng->CreateImage32(Math::Double2Int32(status->previewImg->GetWidth() * hdpi / ddpi), Math::Double2Int32(status->previewImg->GetHeight() * hdpi / ddpi), Media::AT_NO_ALPHA);
 			this->UpdateImgPreview(status);
 		}
-		dimg->DrawRect(0, Math::OSInt2Double(i * itemTH - scrPos), Math::OSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-		dimg->DrawRect(0, Math::OSInt2Double(i * itemTH - scrPos + itemBH), Math::OSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos), Math::OSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
+		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos + itemBH), Math::OSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
 		if (status->previewImg2)
 		{
 			status->previewImg2->SetHDPI(dimg->GetHDPI());
 			status->previewImg2->SetVDPI(dimg->GetVDPI());
-			dimg->DrawImagePt(status->previewImg2, Math::OSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
+			dimg->DrawImagePt(status->previewImg2, Math::OSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double(si * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
 		}
 		if (status->fileName)
 		{
@@ -732,21 +733,21 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			strLen = Text::StrCharCnt(sb.ToString());
 			if (f && dimg->GetTextSize(f, sb.ToString(), strLen, strSz))
 			{
-				dimg->DrawString((scnW - strSz[0]) * 0.5, Math::OSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
+				dimg->DrawString((scnW - strSz[0]) * 0.5, Math::OSInt2Double(si * itemTH - scrPos + itemH), sb.ToString(), f, b);
 			}
 		}
-		i++;
+		si++;
 	}
-	if ((j + 1) * itemTH - scrPos < scnH)
+	if ((sj + 1) * itemTH - scrPos < scnH)
 	{
-		dimg->DrawRect(0, Math::OSInt2Double((j + 1) * itemTH - scrPos), Math::OSInt2Double(scnW), scnH - Math::OSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
+		dimg->DrawRect(0, Math::OSInt2Double((sj + 1) * itemTH - scrPos), Math::OSInt2Double(scnW), scnH - Math::OSInt2Double((sj + 1) * itemTH - scrPos), 0, barr[4]);
 	}
 	dimg->DelBrush(b);
 	dimg->DelFont(f);
-	i = imgList->GetCount();
-	while (i-- > 0)
+	ui = imgList->GetCount();
+	while (ui-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = imgList->GetItem(ui);
 		if ((status->setting.flags & 8) == 0)
 		{
 			if (status->previewImg != 0)
@@ -904,8 +905,8 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	if (this->folderPath == 0)
 	{
@@ -1026,7 +1027,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, Media::StaticImage *destImg, SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
 {
 	Double *gammaParam;
-	Int32 gammaCnt;
+	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
 	if (this->GetCameraName(&sb, srcImg->exif))
 	{
@@ -1060,10 +1061,10 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	Bool drev;
 	UInt8 *dptr = destImg->GetImgBits(&drev);
 
-	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * sbpl);
+	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * (UOSInt)sbpl);
 
 	Double *gammaParam;
-	Int32 gammaCnt;
+	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
 	Media::EXIFData *exif = srcImg->GetEXIF();
 	if (exif && this->GetCameraName(&sb, exif))
@@ -1131,7 +1132,7 @@ void SSWR::AVIRead::AVIRImageControl::SetExportFormat(ExportFormat fmt)
 	this->exportFmt = fmt;
 }
 
-OSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
+UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 {
 	ImageStatus *status;
 	ImageStatus *status2;
@@ -1175,7 +1176,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	Data::ArrayList<ImageStatus *> *imgList;
 	ImageStatus *status;
 	OSInt i;
-	OSInt j;
+	UOSInt j;
 	if (this->folderPath == 0)
 		return;
 
@@ -1187,7 +1188,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 		i = nameList->SortedIndexOf(this->dispImg->fileName);
 		if (i == -1)
 		{
-			i = nameList->GetCount() - 1;
+			i = (OSInt)nameList->GetCount() - 1;
 		}
 		else if (i == 0)
 		{
@@ -1199,7 +1200,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	}
 	else
 	{
-		i = nameList->GetCount() - 1;
+		i = (OSInt)nameList->GetCount() - 1;
 	}
 	this->currSel = i;
 	j = imgList->GetCount();
@@ -1219,7 +1220,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	}
 	else
 	{
-		this->dispImg = this->imgMap->GetValues()->GetItem(i);
+		this->dispImg = this->imgMap->GetValues()->GetItem((UOSInt)i);
 		this->dispImg->setting.flags |= 1;
 		if (this->dispHdlr)
 		{
@@ -1240,7 +1241,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	Data::ArrayList<ImageStatus *> *imgList;
 	ImageStatus *status;
 	OSInt i;
-	OSInt j;
+	UOSInt j;
 	if (this->folderPath == 0)
 		return;
 
@@ -1284,7 +1285,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	}
 	else
 	{
-		this->dispImg = this->imgMap->GetValues()->GetItem(i);
+		this->dispImg = this->imgMap->GetValues()->GetItem((UOSInt)i);
 		this->dispImg->setting.flags |= 1;
 		if (this->dispHdlr)
 		{

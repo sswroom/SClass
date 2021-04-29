@@ -8,9 +8,9 @@ namespace IO
 	public:
 		virtual ~BitReader() {};
 
-		virtual Bool ReadBits(Int32 *code, OSInt bitCount) = 0;
+		virtual Bool ReadBits(UInt32 *code, UOSInt bitCount) = 0;
 		virtual Bool ByteAlign() = 0;
-		virtual OSInt ReadBytes(UInt8 *buff, OSInt cnt) = 0;
+		virtual UOSInt ReadBytes(UInt8 *buff, UOSInt cnt) = 0;
 	};
-};
+}
 #endif

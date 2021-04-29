@@ -60,11 +60,11 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 	const UInt8 *extraEnd;
 	UInt64 iVal;
 	UInt64 headerFlags;
-	Int64 currOfst = 8;
-	Int64 endOfst = fd->GetDataSize();
+	UInt64 currOfst = 8;
+	UInt64 endOfst = fd->GetDataSize();
 	UInt32 headerSize;
 	UInt64 extraSize;
-	Int64 dataSize;
+	UInt64 dataSize;
 	UInt32 headerType;
 
 	fd->GetRealData(0, 8, buff);
@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			DEL_CLASS(pf);
 			return 0;
 		}
-		headerSize = (UInt32)(iVal + (buffPtr - buff));
+		headerSize = (UInt32)(iVal + (UOSInt)(buffPtr - buff));
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal > 5)
 		{
@@ -134,7 +134,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			buffPtr = ReadVInt(buffPtr, &compInfo);
 			buffPtr = ReadVInt(buffPtr, &iVal); //host OS
 			buffPtr = ReadVInt(buffPtr, &iVal); //name length
-			Text::StrConcatC(sbuff, buffPtr, (OSInt)iVal); //name
+			Text::StrConcatC(sbuff, buffPtr, (UOSInt)iVal); //name
 			buffPtr += iVal; //name
 
 			extraEnd = buffPtr + (OSInt)extraSize;
@@ -204,7 +204,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			{
 				IO::PackFileItem::CompressInfo cinfo;
 				cinfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
-				WriteMInt32(cinfo.checkBytes, dataCRC);
+				WriteMUInt32(cinfo.checkBytes, dataCRC);
 				cinfo.compExtras = 0;
 				cinfo.compExtraSize = 0;
 				cinfo.compFlags = (Int32)compInfo;

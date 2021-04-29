@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_CS_CSCONVERTER
 #define _SM_MEDIA_CS_CSCONVERTER
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "Media/ColorManager.h"
 #include "Media/FrameInfo.h"
 
@@ -21,7 +21,7 @@ namespace Media
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height) = 0;
 			virtual void SetPalette(UInt8 *pal);
 
-			static UOSInt GetSupportedCS(Data::ArrayListInt32 *csList);
+			static UOSInt GetSupportedCS(Data::ArrayListUInt32 *csList);
 			static Bool IsSupported(UInt32 fourcc);
 			static CSConverter *NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, const Media::ColorProfile *srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			static const UTF8Char *GetFormatName(UInt32 format);

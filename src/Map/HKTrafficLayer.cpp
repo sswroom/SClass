@@ -859,7 +859,7 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Text::EncodingFac
 
 Map::HKTrafficLayer::~HKTrafficLayer()
 {
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<RoadInfo*> *roadList;
 	RoadInfo *road;
 
@@ -902,9 +902,9 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 	Data::ArrayListInt64 idArr;
 	UTF8Char sbuff[512];
 	UTF8Char *sarr[3];
-	OSInt colCnt;
-	OSInt i;
-	OSInt j;
+	UOSInt colCnt;
+	UOSInt i;
+	UOSInt j;
 	OSInt idCol = -1;
 	Int32 fromId;
 	Int32 toId;
@@ -1042,9 +1042,9 @@ void Map::HKTrafficLayer::ReloadData()
 		if (doc->ParseBuff(this->encFact, xmlBuff, readSize))
 		{
 //			printf("success\r\n");
-			OSInt i = 0;
-			OSInt j = doc->GetChildCnt();
-			OSInt k;
+			UOSInt i = 0;
+			UOSInt j = doc->GetChildCnt();
+			UOSInt k;
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[2];
 			while (i < j)

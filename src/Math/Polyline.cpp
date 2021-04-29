@@ -936,7 +936,7 @@ Int32 Math::Polyline::GetColor()
 {
 	return this->color;
 }
-void Math::Polyline::SetColor(Int32 color)
+void Math::Polyline::SetColor(UInt32 color)
 {
 	this->color = color;
 	this->flags |= 1;

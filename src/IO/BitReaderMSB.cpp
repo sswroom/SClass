@@ -23,7 +23,7 @@ IO::BitReaderMSB::BitReaderMSB(IO::Stream *stm)
 	}
 }
 
-IO::BitReaderMSB::BitReaderMSB(const UInt8 *buff, OSInt buffSize)
+IO::BitReaderMSB::BitReaderMSB(const UInt8 *buff, UOSInt buffSize)
 {
 	this->buff = (UInt8*)buff;
 	this->buffSize = buffSize;
@@ -40,7 +40,7 @@ IO::BitReaderMSB::~BitReaderMSB()
 	}
 }
 
-Bool IO::BitReaderMSB::ReadBits(Int32 *code, OSInt bitCount)
+Bool IO::BitReaderMSB::ReadBits(UInt32 *code, UOSInt bitCount)
 {
 #ifdef _DEBUG
 	if (bitCount > 32 || bitCount <= 0)
@@ -61,7 +61,7 @@ Bool IO::BitReaderMSB::ReadBits(Int32 *code, OSInt bitCount)
 				this->buffSize = 0;
 				this->currBytePos = 0;
 			}
-			OSInt readSize = this->stm->Read(&this->buff[this->buffSize], 1024 - this->buffSize);
+			UOSInt readSize = this->stm->Read(&this->buff[this->buffSize], 1024 - this->buffSize);
 			if (readSize <= 0)
 				return false;
 			this->buffSize += readSize;
@@ -73,14 +73,14 @@ Bool IO::BitReaderMSB::ReadBits(Int32 *code, OSInt bitCount)
 			return false;
 		}
 	}
-	OSInt bits = bitCount + this->currBitPos;
-	OSInt bits2 = bits;
-	OSInt bits3 = bits2 & 7;
+	UOSInt bits = bitCount + this->currBitPos;
+	UOSInt bits2 = bits;
+	UOSInt bits3 = bits2 & 7;
 	if (bits3)
 		bits2 += 8;
 	else
 		bits3 = 8;
-	Int32 retCode = 0;
+	UInt32 retCode = 0;
 	switch (bits2 >> 3)
 	{
 	case 1:
@@ -93,10 +93,10 @@ Bool IO::BitReaderMSB::ReadBits(Int32 *code, OSInt bitCount)
 		retCode = (buff[this->currBytePos] << (8 + bits3)) | (buff[this->currBytePos + 1] << bits3) | (buff[this->currBytePos + 2] >> (8 - bits3));
 		break;
 	case 4:
-		retCode = (Int32)(((UInt32)ReadMInt32(&buff[this->currBytePos])) >> (8 - bits3));
+		retCode = ReadMUInt32(&buff[this->currBytePos]) >> (8 - bits3);
 		break;
 	case 5:
-		retCode = (ReadMInt32(&buff[this->currBytePos]) << bits3) | (buff[this->currBytePos + 4] >> (8 - bits3));
+		retCode = (ReadMUInt32(&buff[this->currBytePos]) << bits3) | (buff[this->currBytePos + 4] >> (8 - bits3));
 		break;
 	}
 	if (bitCount >= 32)
@@ -122,7 +122,7 @@ Bool IO::BitReaderMSB::ByteAlign()
 	return true;
 }
 
-OSInt IO::BitReaderMSB::ReadBytes(UInt8 *buff, OSInt cnt)
+UOSInt IO::BitReaderMSB::ReadBytes(UInt8 *buff, UOSInt cnt)
 {
 	this->ByteAlign();
 	if (this->buffSize - this->currBytePos >= cnt)
@@ -131,7 +131,7 @@ OSInt IO::BitReaderMSB::ReadBytes(UInt8 *buff, OSInt cnt)
 		this->currBytePos += cnt;
 		return cnt;
 	}
-	OSInt ret = this->buffSize - this->currBytePos;
+	UOSInt ret = this->buffSize - this->currBytePos;
 	if (ret > 0)
 	{
 		MemCopyNO(buff, &this->buff[this->currBytePos], ret);
@@ -140,7 +140,7 @@ OSInt IO::BitReaderMSB::ReadBytes(UInt8 *buff, OSInt cnt)
 	}
 	if (cnt > 0)
 	{
-		OSInt readSize = this->stm->Read(&buff[ret], cnt);
+		UOSInt readSize = this->stm->Read(&buff[ret], cnt);
 		if (readSize > 0)
 		{
 			ret += cnt;

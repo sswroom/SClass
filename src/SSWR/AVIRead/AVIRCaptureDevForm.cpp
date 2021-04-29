@@ -53,19 +53,19 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 	me->cboFormat->ClearItems();
 	if (me->currCapture)
 	{
-		Data::ArrayListInt32 supportedCS;
+		Data::ArrayListUInt32 supportedCS;
 		UTF8Char u8buff[128];
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
 		Media::IVideoCapture::VideoFormat fmts[80];
 		SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat *cfmt;
 		OSInt bestSize = 0;
-		Int32 bestFmt = 0;
+		UInt32 bestFmt = 0;
 		OSInt bestBPP = 0;
 		OSInt bestIndex = 0;
 		OSInt currSize;
-		OSInt fmtCnt;
-		OSInt i;
+		UOSInt fmtCnt;
+		UOSInt i;
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
 
 		devInfo.Append((const UTF8Char*)"Name: ");
@@ -204,12 +204,12 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	this->currCapture = 0;
 	this->capture = 0;
 	this->captureMgr->GetDeviceList(this->devInfoList);
-	OSInt cnt = this->devInfoList->GetCount();
+	UOSInt cnt = this->devInfoList->GetCount();
 	if (cnt == 0)
 	{
 		return;
 	}
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < cnt)
 	{

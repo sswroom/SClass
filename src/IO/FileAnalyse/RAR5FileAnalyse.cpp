@@ -31,8 +31,8 @@ UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
 	const UInt8 *buffPtr;
 	UInt64 iVal;
 	UInt64 headerFlags;
-	Int64 currOfst = 8;
-	Int64 endOfst = me->fd->GetDataSize();
+	UInt64 currOfst = 8;
+	UInt64 endOfst = me->fd->GetDataSize();
 	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *block;
 	me->threadRunning = true;
 	me->threadStarted = true;
@@ -48,7 +48,7 @@ UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
 			MemFree(block);
 			break;
 		}
-		block->headerSize = (UInt32)(iVal + (buffPtr - buff));
+		block->headerSize = (UInt32)(iVal + (UOSInt)(buffPtr - buff));
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal > 5)
 		{
@@ -126,13 +126,13 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	sb->AppendU32(pack->headerType);
 	sb->Append((const UTF8Char*)", HeaderSize=");
 	sb->AppendU32(pack->headerSize);
 	sb->Append((const UTF8Char*)", DataSize=");
-	sb->AppendI64(pack->dataSize);
+	sb->AppendU64(pack->dataSize);
 	return true;
 }
 
@@ -151,7 +151,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	if (pack == 0)
 		return false;
 
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)":");
 	packBuff = MemAlloc(UInt8, pack->headerSize);
 	this->fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
@@ -186,7 +186,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	}
 	packPtr = ReadVInt(packPtr, &headerFlags);
 	sb->Append((const UTF8Char*)"\r\nHeader Flags = 0x");
-	sb->AppendHex16((Int32)iVal);
+	sb->AppendHex16((UInt16)iVal);
 	extraSize = 0;
 	if (headerFlags & 1)
 	{
@@ -205,7 +205,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	{
 		packPtr = ReadVInt(packPtr, &iVal);
 		sb->Append((const UTF8Char*)"\r\nArchive flags = 0x");
-		sb->AppendHex16((Int32)iVal);
+		sb->AppendHex16((UInt16)iVal);
 		if (iVal & 1)
 		{
 			sb->Append((const UTF8Char*)" (Volume)");
@@ -254,7 +254,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 					sb->Append((const UTF8Char*)" (Locator)");
 					packPtr = ReadVInt(packPtr, &iVal);
 					sb->Append((const UTF8Char*)", Flags = 0x");
-					sb->AppendHex16((Int32)iVal);
+					sb->AppendHex16((UInt16)iVal);
 					if (iVal & 1)
 					{
 						packPtr = ReadVInt(packPtr, &extraSize);
@@ -276,7 +276,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	{
 		packPtr = ReadVInt(packPtr, &headerFlags);
 		sb->Append((const UTF8Char*)"\r\nFile flags = 0x");
-		sb->AppendHex16((Int32)headerFlags);
+		sb->AppendHex16((UInt16)headerFlags);
 		if (headerFlags & 1)
 		{
 			sb->Append((const UTF8Char*)" (Directory file system object)");
@@ -328,7 +328,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		sb->Append((const UTF8Char*)"\r\nName length = ");
 		sb->AppendU64(iVal);
 		sb->Append((const UTF8Char*)"\r\nName = ");
-		sb->AppendC(packPtr, (OSInt)iVal);
+		sb->AppendC(packPtr, (UOSInt)iVal);
 		packPtr += iVal;
 
 		extraEnd = packPtr + extraSize;
@@ -361,7 +361,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 					sb->Append((const UTF8Char*)" (File time)");
 					packPtr = ReadVInt(packPtr, &headerFlags);
 					sb->Append((const UTF8Char*)", Flags = 0x");
-					sb->AppendHex16((Int32)headerFlags);
+					sb->AppendHex16((UInt16)headerFlags);
 					if (headerFlags & 2)
 					{
 						if (headerFlags & 1)
@@ -432,7 +432,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	{
 		packPtr = ReadVInt(packPtr, &headerFlags);
 		sb->Append((const UTF8Char*)"\r\nEnd of archive flags = 0x");
-		sb->AppendHex16((Int32)headerFlags);
+		sb->AppendHex16((UInt16)headerFlags);
 	}
 
 	/*	sb->Append((const UTF8Char*)"\r\nMicroSec Per Frame = ");

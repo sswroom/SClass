@@ -29,10 +29,12 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile 
 	Double v;
 	Double dx;
 	Double dy;
-	Double d = Math::OSInt2Double(width);
-	if (height > d)
+	Double dwidth = Math::UOSInt2Double(width);
+	Double dheight = Math::UOSInt2Double(height);
+	Double d = dwidth;
+	if (dheight > d)
 	{
-		d = Math::OSInt2Double(height);
+		d = dheight;
 	}
 	if (width < 8 || height < 4)
 		return 0;
@@ -42,7 +44,6 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile 
 	NEW_CLASS(outImage, Media::StaticImage(width, height, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;
-	
 	j = 0;
 	while (j < height)
 	{
@@ -50,8 +51,8 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile 
 		i = 0;
 		while (i < width)
 		{
-			dx = (width * 0.5) - i - 0.5;
-			dy = (height * 0.5) - j - 0.5;
+			dx = (dwidth * 0.5) - Math::UOSInt2Double(i) - 0.5;
+			dy = (dheight * 0.5) - Math::UOSInt2Double(j) - 0.5;
 			v = 0.5 + Math::Sin((dx * dx + dy * dy) / (d / 2)) * 0.5;
 			c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(v) * 65535.0);
 			c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(v) * 65535.0);

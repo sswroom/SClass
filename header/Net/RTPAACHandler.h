@@ -22,8 +22,8 @@ namespace Net
 		} AACMode;
 	private:
 		Int32 payloadType;
-		Int32 freq;
-		Int32 nChannel;
+		UInt32 freq;
+		UInt32 nChannel;
 		AACMode aacm;
 		Int32 streamType;
 		Int32 profileId;
@@ -36,15 +36,15 @@ namespace Net
 
 		Sync::Mutex *mut;
 		IO::MemoryStream *mstm;
-		Int32 lastSeq;
+		UInt32 lastSeq;
 		Bool missSeq;
 
 		UInt8 GetRateIndex();
 	public:
-		RTPAACHandler(Int32 payloadType, Int32 freq, Int32 nChannel);
+		RTPAACHandler(Int32 payloadType, UInt32 freq, UInt32 nChannel);
 		virtual ~RTPAACHandler();
 
-		virtual void MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts);
+		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts);
 		virtual void SetFormat(const UTF8Char *fmtStr);
 		virtual Int32 GetPayloadType();
 

@@ -41,12 +41,12 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 hdrBuff[44];
 	Int32 compLevel;
-	Int32 nBlocks;
-	Int32 dataSize;
+	UInt32 nBlocks;
+	UInt32 dataSize;
 	UInt32 compDataSize;
-	Int32 sampleCount;
-	Int32 blockSize;
-	Int32 restSize;
+	UInt32 sampleCount;
+	UInt32 blockSize;
+	UInt32 restSize;
 	Media::AudioFormat afmt;
 	if (!Text::StrEndsWithICase(fd->GetFullName(), (const UTF8Char*)".NWA"))
 		return 0;
@@ -54,14 +54,14 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 	afmt.formatId = 1;
 	afmt.nChannels = ReadUInt16(&hdrBuff[0]);
 	afmt.bitpersample = ReadUInt16(&hdrBuff[2]);
-	afmt.frequency = ReadInt32(&hdrBuff[4]);
+	afmt.frequency = ReadUInt32(&hdrBuff[4]);
 	compLevel = ReadInt32(&hdrBuff[8]);
-	nBlocks = ReadInt32(&hdrBuff[16]);
-	dataSize = ReadInt32(&hdrBuff[20]);
+	nBlocks = ReadUInt32(&hdrBuff[16]);
+	dataSize = ReadUInt32(&hdrBuff[20]);
 	compDataSize = ReadUInt32(&hdrBuff[24]);
-	sampleCount = ReadInt32(&hdrBuff[28]);
-	blockSize = ReadInt32(&hdrBuff[32]);
-	restSize = ReadInt32(&hdrBuff[36]);
+	sampleCount = ReadUInt32(&hdrBuff[28]);
+	blockSize = ReadUInt32(&hdrBuff[32]);
+	restSize = ReadUInt32(&hdrBuff[36]);
 	if (compLevel == -1)
 	{
 		blockSize = 65536;
@@ -69,7 +69,7 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 		nBlocks = dataSize / (blockSize * afmt.bitpersample / 8) + (restSize > 0 ? 1 : 0);
 	}
 	afmt.extraSize = 0;
-	afmt.align = afmt.nChannels * afmt.bitpersample / 8;
+	afmt.align = (UInt32)afmt.nChannels * afmt.bitpersample / 8;
 	afmt.bitRate = afmt.frequency * afmt.align * 8;
 	afmt.intType = Media::AudioFormat::IT_NORMAL;
 	afmt.other = 0;
@@ -80,7 +80,7 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 	if (fd->GetDataSize() != compDataSize)
 		return 0;
 
-	Int32 byps = afmt.bitpersample / 8;
+	UInt32 byps = afmt.bitpersample / 8;
 	if (dataSize != sampleCount * byps)
 		return 0;
 	if (sampleCount != (nBlocks - 1) * blockSize + restSize )
@@ -103,7 +103,7 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 	{
 		Media::NWASource *asrc;
 		Media::MediaFile *file;
-		NEW_CLASS(asrc, Media::NWASource(fd, sampleCount, blockSize, compLevel, nBlocks, &afmt, fd->GetFullName()));
+		NEW_CLASS(asrc, Media::NWASource(fd, sampleCount, blockSize, (UInt32)compLevel, nBlocks, &afmt, fd->GetFullName()));
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
 		file->AddSource(asrc, 0);
 		return file;

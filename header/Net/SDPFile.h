@@ -61,10 +61,10 @@ namespace Net
 		Bool BuildBuff();
 
 		Bool WriteToStream(IO::Stream *stm);
-		OSInt GetLength();
+		UOSInt GetLength();
 
-		OSInt GetMediaCount();
-		Data::ArrayList<const UTF8Char *> *GetMediaDesc(OSInt index);
+		UOSInt GetMediaCount();
+		Data::ArrayList<const UTF8Char *> *GetMediaDesc(UOSInt index);
 	};
-};
+}
 #endif

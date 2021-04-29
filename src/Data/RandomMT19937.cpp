@@ -8,10 +8,10 @@ Data::RandomMT19937::RandomMT19937(UInt32 seed)
 	this->mt_index = 624;
 
     mt[0] = seed;
-	OSInt i = 1;
+	UOSInt i = 1;
 	while (i < 624)
 	{
-		this->mt[i] = (1812433253 * (this->mt[i - 1] ^ (this->mt[i - 1] >> 30)) + i) & 0xffffffff;
+		this->mt[i] = (UInt32)((1812433253 * (this->mt[i - 1] ^ (this->mt[i - 1] >> 30)) + i) & 0xffffffff);
 		i++;
     }
 }
@@ -51,4 +51,5 @@ Int32 Data::RandomMT19937::NextInt32()
     y ^= y >> 18;
    
     this->mt_index++;
-    return y;}
+    return (Int32)y;
+}

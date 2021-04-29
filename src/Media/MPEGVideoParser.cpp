@@ -362,10 +362,10 @@ Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, 
 {
 	if (ReadMInt32(frame) != 0x00000100)
 		return false;
-	Int32 temporal_reference;
-	Int32 picture_coding_type;
-	Int32 vbv_delay;
-	Int32 v;
+	UInt32 temporal_reference;
+	UInt32 picture_coding_type;
+	UInt32 vbv_delay;
+	UInt32 v;
 	IO::BitReaderMSB reader(&frame[4], frameSize - 4);
 	reader.ReadBits(&temporal_reference, 10);
 	reader.ReadBits(&picture_coding_type, 3);
@@ -432,9 +432,9 @@ Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, 
 		return false;
 	}
 	reader.ReadBits(&v, 16);
-	Int32 intra_dc_precision;
-	Int32 picture_structure;
-	Int32 flags;
+	UInt32 intra_dc_precision;
+	UInt32 picture_structure;
+	UInt32 flags;
 	reader.ReadBits(&intra_dc_precision, 2);
 	reader.ReadBits(&picture_structure, 2);
 	reader.ReadBits(&flags, 10);

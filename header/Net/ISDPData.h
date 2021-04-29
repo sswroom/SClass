@@ -6,10 +6,10 @@ namespace Net
 	class ISDPData
 	{
 	public:
-		virtual Int32 GetSDPDataPort() = 0;
+		virtual UInt16 GetSDPDataPort() = 0;
 		virtual UTF8Char *GetSDPDataType(UTF8Char *buff) = 0;
-		virtual Int32 GetSDPDataFreq() = 0;
+		virtual UInt32 GetSDPDataFreq() = 0;
 		virtual UTF8Char *GetSDPDataFormat(UTF8Char *buff) = 0;
 	};
-};
+}
 #endif

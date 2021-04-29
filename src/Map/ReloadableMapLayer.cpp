@@ -8,7 +8,7 @@
 void __stdcall Map::ReloadableMapLayer::InnerUpdated(void *userObj)
 {
 	Map::ReloadableMapLayer *me = (Map::ReloadableMapLayer*)userObj;
-	OSInt i;
+	UOSInt i;
 	me->innerLayerMut->LockRead();
 	i = me->updHdlrs->GetCount();
 	while (i-- > 0)
@@ -33,7 +33,7 @@ Map::ReloadableMapLayer::ReloadableMapLayer(const UTF8Char *fileName, Parser::Pa
 
 Map::ReloadableMapLayer::~ReloadableMapLayer()
 {
-	OSInt i;
+	UOSInt i;
 	InnerLayerInfo *innerLayer;
 	DEL_CLASS(this->innerLayerMut);
 	i = this->innerLayers->GetCount();
@@ -52,7 +52,7 @@ Map::ReloadableMapLayer::~ReloadableMapLayer()
 
 void Map::ReloadableMapLayer::SetCurrScale(Double scale)
 {
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	this->currScale = scale;
 	i = this->innerLayers->GetCount();
@@ -69,7 +69,7 @@ void Map::ReloadableMapLayer::SetCurrScale(Double scale)
 
 void Map::ReloadableMapLayer::SetCurrTimeTS(Int64 timeStamp)
 {
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	this->currTime = timeStamp;
 	i = this->innerLayers->GetCount();
@@ -89,7 +89,7 @@ Int64 Map::ReloadableMapLayer::GetTimeStartTS()
 	Bool first = true;
 	Int64 timeStart = 0;
 	Int64 v;
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
@@ -121,7 +121,7 @@ Int64 Map::ReloadableMapLayer::GetTimeEndTS()
 	Bool first = true;
 	Int64 timeEnd = 0;
 	Int64 v;
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
@@ -266,7 +266,7 @@ UOSInt Map::ReloadableMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 
 Int64 Map::ReloadableMapLayer::GetObjectIdMax()
 {
-	OSInt i;
+	UOSInt i;
 	Int64 currId = 0;
 	Int64 maxId;
 	this->innerLayerMut->LockRead();
@@ -343,7 +343,7 @@ Int32 Map::ReloadableMapLayer::GetCodePage()
 Bool Map::ReloadableMapLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
 	Bool isFirst = true;
-	OSInt i;
+	UOSInt i;
 	Double currMaxX;
 	Double currMaxY;
 	Double currMinX;
@@ -542,7 +542,7 @@ Math::CoordinateSystem *Map::ReloadableMapLayer::GetCoordinateSystem()
 
 void Map::ReloadableMapLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockWrite();
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
@@ -560,7 +560,7 @@ void Map::ReloadableMapLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 
 void Map::ReloadableMapLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	OSInt i;
+	UOSInt i;
 	InnerLayerInfo *innerLayer;
 	this->innerLayerMut->LockWrite();
 	this->updHdlrs->Add(hdlr);
@@ -669,7 +669,7 @@ void Map::ReloadableMapLayer::SetReloadInterval(Int32 seconds)
 
 void Map::ReloadableMapLayer::Reload()
 {
-	OSInt i;
+	UOSInt i;
 	this->innerLayerMut->LockRead();
 	i = this->innerLayers->GetCount();
 	this->innerLayerMut->UnlockRead();
@@ -697,7 +697,7 @@ void Map::ReloadableMapLayer::Reload()
 			{
 				if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
 				{
-					OSInt j;
+					UOSInt j;
 					this->innerLayerMut->LockWrite();
 					SDEL_CLASS(innerLayer->innerLayer);
 					innerLayer->innerLayer = (Map::IMapDrawLayer*)pobj;

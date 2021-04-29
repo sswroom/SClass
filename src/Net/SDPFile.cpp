@@ -180,8 +180,8 @@ Net::SDPFile::SDPFile()
 
 Net::SDPFile::~SDPFile()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<const UTF8Char *> *currMedia;
 	MemFree(this->buff);
 	SDEL_TEXT(this->sessName);
@@ -325,10 +325,10 @@ void Net::SDPFile::AddBuildMedia(Net::ISDPMedia *media)
 
 Bool Net::SDPFile::BuildBuff()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	UTF8Char sbuff[3];
 	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
@@ -433,7 +433,7 @@ Bool Net::SDPFile::BuildBuff()
 			sb.Append((const UTF8Char*)"audio");
 		}
 		sb.Append((const UTF8Char*)" ");
-		sb.AppendI32(media->GetSDPMediaPort());
+		sb.AppendU16(media->GetSDPMediaPort());
 		sb.Append((const UTF8Char*)" ");
 		sb.Append(media->GetSDPProtocol());
 		k = 0;
@@ -441,7 +441,7 @@ Bool Net::SDPFile::BuildBuff()
 		while (k < l)
 		{
 			sb.Append((const UTF8Char*)" ");
-			sb.AppendI32(media->GetSDPData(k)->GetSDPDataPort());
+			sb.AppendU16(media->GetSDPData(k)->GetSDPDataPort());
 
 			k++;
 		}
@@ -454,17 +454,17 @@ Bool Net::SDPFile::BuildBuff()
 			Net::ISDPData *data = media->GetSDPData(k);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"a=rtpmap:");
-			sb.AppendI32(data->GetSDPDataPort());
+			sb.AppendU16(data->GetSDPDataPort());
 			sb.Append((const UTF8Char*)" ");
 			sb.AllocLeng(512);
 			sb.SetEndPtr(data->GetSDPDataType(sb.GetEndPtr()));
 			sb.Append((const UTF8Char*)"/");
-			sb.AppendI32(data->GetSDPDataFreq());
+			sb.AppendU32(data->GetSDPDataFreq());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"a=fmtp:");
-			sb.AppendI32(data->GetSDPDataPort());
+			sb.AppendU16(data->GetSDPDataPort());
 			sb.Append((const UTF8Char*)" ");
 			sb.AllocLeng(512);
 			sb.SetEndPtr(data->GetSDPDataFormat(sb.GetEndPtr()));
@@ -503,17 +503,17 @@ Bool Net::SDPFile::WriteToStream(IO::Stream *stm)
 	return stm->Write(this->buff, this->buffSize) == this->buffSize;
 }
 
-OSInt Net::SDPFile::GetLength()
+UOSInt Net::SDPFile::GetLength()
 {
 	return this->buffSize;
 }
 
-OSInt Net::SDPFile::GetMediaCount()
+UOSInt Net::SDPFile::GetMediaCount()
 {
 	return this->mediaList->GetCount();
 }
 
-Data::ArrayList<const UTF8Char *> *Net::SDPFile::GetMediaDesc(OSInt index)
+Data::ArrayList<const UTF8Char *> *Net::SDPFile::GetMediaDesc(UOSInt index)
 {
 	return this->mediaList->GetItem(index);
 }

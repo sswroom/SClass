@@ -22,7 +22,7 @@ UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url)
 	}
 }
 
-UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, Int32 *port)
+UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UInt16 *port)
 {
 	OSInt i;
 	OSInt j;
@@ -46,7 +46,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, In
 		{
 			MemCopyNO(sbuff, &url[j + 1], (i - j - 1) * sizeof(UTF8Char));
 			sbuff[i - j - 1] = 0;
-			*port = Text::StrToInt32(sbuff);
+			Text::StrToUInt16S(sbuff, port, 0);
 		}
 		if (i < j)
 		{
@@ -75,7 +75,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, In
 	{
 		if (port)
 		{
-			*port = Text::StrToInt32(&url[j + 1]);
+			Text::StrToUInt16S(&url[j + 1], port, 0);
 		}
 		MemCopyNO(sbuff, url, sizeof(UTF8Char) * j);
 		sbuff[j] = 0;

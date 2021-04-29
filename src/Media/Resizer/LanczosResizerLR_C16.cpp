@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/LanczosFilter.h"
 #include "Math/Math.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/Resizer/LanczosResizerLR_C16.h"
@@ -19,25 +20,7 @@ extern "C"
 	void LanczosResizerLR_C16_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
 }
 
-Double Media::Resizer::LanczosResizerLR_C16::lanczos3_weight(Double phase, OSInt nTap)
-{
-	Double ret;
-	
-	if(fabs(phase) < DBL_EPSILON)
-	{
-		return 1.0;
-	}
-
-	if ((fabs(phase) * 2) >= nTap){
-		return 0.0;
-	}
-
-	ret = sin(PI * phase) * sin(PI * phase / nTap * 2) / (PI * PI * phase * phase / nTap * 2);
-
-	return ret;
-}
-
-void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	OSInt j;
@@ -70,7 +53,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(OSInt n
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = lanczos3_weight(pos, nTap);
+			work[j] = Math::LanczosFilter::Weight(pos, nTap);
 			sum += work[j];
 			pos += 1;
 			n += 1;
@@ -98,7 +81,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(OSInt n
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	OSInt j;
@@ -137,7 +120,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(OSInt nTap
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = lanczos3_weight(phase, nTap);
+			work[j] = Math::LanczosFilter::Weight(phase, nTap);
 			sum += work[j];
 			n += 1;
 			j++;
@@ -300,7 +283,7 @@ void Media::Resizer::LanczosResizerLR_C16::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(OSInt hnTap, OSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType)
+Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType)
 {
 	OSInt i;
 	nThread = Sync::Thread::GetThreadCnt();

@@ -13,8 +13,8 @@ typedef struct
 	Int32 devId;
 	Int32 devType;
 	Int32 funcs;
-	Int32 status;
-	Int32 status2;
+	UInt32 status;
+	UInt32 status2;
 	Double other0;
 	Double other1;
 	Double other2;
@@ -203,29 +203,30 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[384];
 	UTF8Char u8buff[256];
 	const UTF8Char *u8ptr;
-	OSInt i;
-	OSInt currPos;
-	Int64 fileSize;
+	UOSInt i;
+	OSInt si;
+	UOSInt currPos;
+	UInt64 fileSize;
 	Int32 devId;
 	u8ptr = fd->GetFullName();
-	i = Text::StrLastIndexOf(u8ptr, IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(u8buff, &u8ptr[i + 1]);
+	si = Text::StrLastIndexOf(u8ptr, IO::Path::PATH_SEPERATOR);
+	Text::StrConcat(u8buff, &u8ptr[si + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"LOC"))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
-	if (i < 0)
+	si = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
+	if (si < 0)
 	{
-		i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
-		if (i < 0)
+		si = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+		if (si < 0)
 			return 0;
-		u8buff[i] = 0;
+		u8buff[si] = 0;
 		devId = Text::StrToInt32(&u8buff[3]);
 	}
 	else
 	{
-		u8buff[i] = 0;
+		u8buff[si] = 0;
 		devId = Text::StrToInt32(&u8buff[3]);
 	}
 	if (devId == 0)
@@ -260,8 +261,8 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 		rec.nSateUsed = buff[19];
 		rec.lat = ReadInt32(&buff[20]) / 200000.0;
 		rec.lon = ReadInt32(&buff[24]) / 200000.0;
-		extInfo.status = ReadInt32(&buff[28]);
-		extInfo.status2 = ReadInt32(&buff[32]);
+		extInfo.status = ReadUInt32(&buff[28]);
+		extInfo.status2 = ReadUInt32(&buff[32]);
 		rec.nSateView = buff[36];
 		rec.valid = buff[38] & 1;
 		extInfo.other0 = ReadUInt32(&buff[40]) * 0.001;

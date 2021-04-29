@@ -95,8 +95,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		sb2.Append(sbBoundary.ToString());
 		me->reqBodyType = Text::StrCopyNew(sb2.ToString());
 		IO::MemoryStream mstm((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.OnRequestClicked.mstm");
-		OSInt i = 0;
-		OSInt j = me->params->GetCount();
+		UOSInt i = 0;
+		UOSInt j = me->params->GetCount();
 		OSInt k;
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 		const UTF8Char *csptr;
@@ -140,13 +140,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				{
 					mstm.Write((const UInt8*)"name=\"", 6);
 					sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, sb2.ToString());
-					mstm.Write(sbuff, sptr - sbuff);
+					mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 					mstm.Write((const UInt8*)"\"; ", 3);
 				}
 				k = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
 				mstm.Write((const UInt8*)"filename=\"", 10);
 				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &csptr[k + 1]);
-				mstm.Write(sbuff, sptr - sbuff);
+				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
 				IO::Path::GetFileExt(sbuff, &csptr[k]);

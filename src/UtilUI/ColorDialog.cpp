@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/CS/TransferFunc.h"
 #include "Sync/Thread.h"
@@ -771,10 +772,10 @@ void __inline UtilUI::ColorDialog::RGB2HSV(Double r, Double g, Double b, Double 
 	}
 }
 
-void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, OSInt startIndex, OSInt endIndex, OSInt w, OSInt h)
+void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double v1;
 	Double v2;
 	Double v3;
@@ -991,8 +992,8 @@ void UtilUI::ColorDialog::GenMainImage()
 
 void UtilUI::ColorDialog::GenSubImage()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double v1;
 	Double v2;
 	Double v3;
@@ -1002,8 +1003,8 @@ void UtilUI::ColorDialog::GenSubImage()
 
 	UInt8 c[4];
 	UInt8 *imgPtr = this->subImg->data;
-	OSInt w = this->subImg->info->dispWidth;
-	OSInt h = this->subImg->info->dispHeight;
+	UOSInt w = this->subImg->info->dispWidth;
+	UOSInt h = this->subImg->info->dispHeight;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
@@ -1116,7 +1117,7 @@ void UtilUI::ColorDialog::GenSubImage()
 	i = 0;
 	while (i < h)
 	{
-		v1 = i * v1R;
+		v1 = Math::UOSInt2Double(i) * v1R;
 		this->XYZ2RGB(v2, v3, v1, &rgbv.val[0], &rgbv.val[1], &rgbv.val[2]);
 		rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
 		rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
@@ -1136,19 +1137,19 @@ void UtilUI::ColorDialog::GenSubImage()
 		else if (bV < 0)
 			c[0] = 0;
 		else
-			c[0] = (bV & 255);
+			c[0] = (UInt8)(bV & 255);
 		if (gV > 255)
 			c[1] = 255;
 		else if (gV < 0)
 			c[1] = 0;
 		else
-			c[1] = (gV & 255);
+			c[1] = (UInt8)(gV & 255);
 		if (rV > 255)
 			c[2] = 255;
 		else if (rV < 0)
 			c[2] = 0;
 		else
-			c[2] = (rV & 255);
+			c[2] = (UInt8)(rV & 255);
 		c[3] = 255;
 
 		j = w;
@@ -1314,21 +1315,21 @@ void UtilUI::ColorDialog::UpdateColor()
 	else if (bV < 0)
 		c[0] = 0;
 	else
-		c[0] = (bV & 255);
+		c[0] = (UInt8)(bV & 255);
 	if (gV > 255)
 		c[1] = 255;
 	else if (gV < 0)
 		c[1] = 0;
 	else
-		c[1] = (gV & 255);
+		c[1] = (UInt8)(gV & 255);
 	if (rV > 255)
 		c[2] = 255;
 	else if (rV < 0)
 		c[2] = 0;
 	else
-		c[2] = (rV & 255);
+		c[2] = (UInt8)(rV & 255);
 	c[3] = 255;
-	this->pbColor->SetBGColor(*(Int32*)c);
+	this->pbColor->SetBGColor(ReadUInt32(c));
 	this->pbColor->Redraw();
 
 	this->autoTextUpdate = true;
@@ -1557,7 +1558,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 
 	this->genThreadCnt = Sync::Thread::GetThreadCnt();
 	NEW_CLASS(this->genEvt, Sync::Event(true, (const UTF8Char*)"UtilUI.ColorDialog.genEvt"));
-	OSInt i;
+	UOSInt i;
 	this->genStats = MemAlloc(ThreadStat, this->genThreadCnt);
 	Bool running;
 	i = this->genThreadCnt;
@@ -1606,7 +1607,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 
 UtilUI::ColorDialog::~ColorDialog()
 {
-	OSInt i;
+	UOSInt i;
 	Bool running;
 	i = this->genThreadCnt;
 	while (i-- > 0)
@@ -1647,7 +1648,7 @@ UtilUI::ColorDialog::~ColorDialog()
 	this->colorMgr->DeleteSess(this->colorSess);
 }
 
-void UtilUI::ColorDialog::SetColor32(Int32 color)
+void UtilUI::ColorDialog::SetColor32(UInt32 color)
 {
 	this->aVal = ((color >> 24) & 0xff) / 255.0;
 	this->rVal = ((color >> 16) & 0xff) / 255.0;
@@ -1657,36 +1658,36 @@ void UtilUI::ColorDialog::SetColor32(Int32 color)
 	this->UpdateColor();
 }
 
-Int32 UtilUI::ColorDialog::GetColor32()
+UInt32 UtilUI::ColorDialog::GetColor32()
 {
-	Int32 a;
-	Int32 r;
-	Int32 g;
-	Int32 b;
+	UInt32 a;
+	UInt32 r;
+	UInt32 g;
+	UInt32 b;
 	if (this->aVal > 1.0)
 		a = 255;
 	else if (this->aVal < 0)
 		a = 0;
 	else
-		a = Math::Double2Int32(this->aVal * 255.0);
+		a = (UInt32)Math::Double2Int32(this->aVal * 255.0);
 	if (this->rVal > 1.0)
 		r = 255;
 	else if (this->rVal < 0)
 		r = 0;
 	else
-		r = Math::Double2Int32(this->rVal * 255.0);
+		r = (UInt32)Math::Double2Int32(this->rVal * 255.0);
 	if (this->gVal > 1.0)
 		g = 255;
 	else if (this->gVal < 0)
 		g = 0;
 	else
-		g = Math::Double2Int32(this->gVal * 255.0);
+		g = (UInt32)Math::Double2Int32(this->gVal * 255.0);
 	if (this->bVal > 1.0)
 		b = 255;
 	else if (this->bVal < 0)
 		b = 0;
 	else
-		b = Math::Double2Int32(this->bVal * 255.0);
+		b = (UInt32)Math::Double2Int32(this->bVal * 255.0);
 	return (a << 24) | (r << 16) | (g << 8) | (b);
 }
 
@@ -1713,7 +1714,7 @@ void UtilUI::ColorDialog::OnMonitorChanged()
 	}
 }
 
-void UtilUI::ColorDialog::OnDisplaySizeChange(OSInt dispWidth, OSInt dispHeight)
+void UtilUI::ColorDialog::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 	if (dispWidth > dispHeight)
 	{

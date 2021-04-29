@@ -23,8 +23,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	UTF8Char sbuff[512];
 	const UTF8Char *fname = 0;
 	ActionType atype = AT_COPY;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool found;
 	Bool lastFound = false;
 	me->threadRunning = true;

@@ -37,7 +37,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 //	Int32 csrcCnt = buff[0] & 15;
 	Bool marker = (buff[1] & 0x80) != 0;
 	Int32 payloadType = buff[1] & 0x7f;
-	Int32 seqNum = ReadMUInt16(&buff[2]);
+	UInt32 seqNum = ReadMUInt16(&buff[2]);
 	UInt32 timestamp = ReadMUInt32(&buff[4]);
 	chData->lastSSRC = ReadMUInt32(&buff[8]);
 
@@ -58,9 +58,9 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 	if (chData->packCnt >= chData->buffCnt)
 	{
 		Bool lastExist = false;
-		OSInt i;
-		OSInt minIndex = 0;
-		Int32 minSeq = chData->packBuff[0].seqNum;
+		UOSInt i;
+		UOSInt minIndex = 0;
+		UInt32 minSeq = chData->packBuff[0].seqNum;
 		if (minSeq == 65535)
 			lastExist = true;
 		i = chData->buffCnt;
@@ -126,7 +126,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 	UOSInt i;
 	while (ofst < dataSize)
 	{
-		size = (ReadMUInt16(&buff[ofst + 2]) + 1) << 2;
+		size = (UOSInt)(ReadMUInt16(&buff[ofst + 2]) + 1) << 2;
 		if (size + ofst > dataSize)
 		{
 			break;
@@ -171,7 +171,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 				tmpBuff[13] = 0xff;
 				tmpBuff[14] = 0xff;
 				tmpBuff[15] = 0xff;
-				WriteMInt32(&tmpBuff[16], (chData->lastSeqNumHi << 16) | chData->lastSeqNumLo);
+				WriteMUInt32(&tmpBuff[16], (chData->lastSeqNumHi << 16) | chData->lastSeqNumLo);
 				WriteMInt32(&tmpBuff[20], 0);
 				WriteMInt32(&tmpBuff[24], ReadMInt32(&buff[ofst + 10]));
 				WriteMInt32(&tmpBuff[28], 0);
@@ -183,9 +183,9 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 					i = 40;
 					tmpBuff[i] = 1;
 					u8ptr = Net::SocketUtil::GetAddrName(u8buff, addr);
-					Text::StrConcatC(&tmpBuff[i + 2], u8buff, u8ptr - u8buff);
+					Text::StrConcatC(&tmpBuff[i + 2], u8buff, (UOSInt)(u8ptr - u8buff));
 					tmpBuff[i + 1] = (UInt8)(u8ptr - u8buff);
-					i += tmpBuff[i + 1] + 2;
+					i += (UOSInt)(tmpBuff[i + 1] + 2);
 					tmpBuff[i] = 0;
 					i++;
 					if (i & 3)
@@ -220,37 +220,37 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 						case 1:
 							sb->Append((const UTF8Char*)", CNAME=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 2:
 							sb->Append((const UTF8Char*)", NAME=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 3:
 							sb->Append((const UTF8Char*)", EMAIL=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 4:
 							sb->Append((const UTF8Char*)", PHONE=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 5:
 							sb->Append((const UTF8Char*)", LOC=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 6:
 							sb->Append((const UTF8Char*)", TOOL=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 7:
 							sb->Append((const UTF8Char*)", NOTE=");
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += buff[ofst + i + 1] + 2;
+							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 8:
 							sb->Append((const UTF8Char*)", PRIV=");
@@ -324,7 +324,7 @@ Net::RTPCliChannel::RTPCliChannel(Net::SocketFactory *sockf, UInt16 port)
 	this->chData = MemAlloc(ChannelData, 1);
 	this->chData->useCnt = 1;
 
-	OSInt i;
+	UOSInt i;
 	this->chData->sockf = sockf;
 	this->chData->rtpUDP = 0;
 	this->chData->rtcpUDP = 0;
@@ -350,7 +350,7 @@ Net::RTPCliChannel::RTPCliChannel(Net::SocketFactory *sockf, UInt16 port)
 
 	if (port & 1)
 	{
-		port += 1;
+		port = (UInt16)(port + 1);
 	}
 	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this->chData, 0, 0, this->chData->threadCnt, false));
 	if (port == 0)
@@ -358,13 +358,13 @@ Net::RTPCliChannel::RTPCliChannel(Net::SocketFactory *sockf, UInt16 port)
 		port = this->chData->rtpUDP->GetPort();
 		if (port & 1)
 		{
-			port += 1;
+			port = (UInt16)(port + 1);
 			DEL_CLASS(this->chData->rtpUDP);
 			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this->chData, 0, 0, this->chData->threadCnt, false));
 		}
 	}
 	this->chData->rtpUDP->SetBuffSize(1048576);
-	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, 0, PacketCtrlHdlr, this->chData, 0, 0, 1, false));
+	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, (UInt16)(port + 1), 0, PacketCtrlHdlr, this->chData, 0, 0, 1, false));
 }
 
 Net::RTPCliChannel::RTPCliChannel(Net::RTPCliChannel *ch)
@@ -377,7 +377,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 {
 	if (--this->chData->useCnt == 0)
 	{
-		OSInt i;
+		UOSInt i;
 		Data::ArrayList<Net::IRTPPLHandler*> *plHdlrs;
 		Net::IRTPPLHandler *plHdlr;
 		this->StopPlay();
@@ -440,21 +440,21 @@ void Net::RTPCliChannel::SetMediaType(Media::MediaType mediaType)
 	this->chData->mediaType = mediaType;
 }
 
-Media::IVideoSource *Net::RTPCliChannel::GetVideo(OSInt index)
+Media::IVideoSource *Net::RTPCliChannel::GetVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
 	return (Net::RTPVPLHandler*)this->chData->payloadMap->GetValues()->GetItem(index);
 }
 
-Media::IAudioSource *Net::RTPCliChannel::GetAudio(OSInt index)
+Media::IAudioSource *Net::RTPCliChannel::GetAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
 	return 0;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
 }
 
-Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(OSInt index)
+Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
@@ -470,7 +470,7 @@ Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(OSInt index)
 	return vSrc;
 }
 
-Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(OSInt index)
+Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
@@ -528,7 +528,7 @@ Bool Net::RTPCliChannel::IsRunning()
 	return this->chData->playing;
 }
 
-Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, Int32 freq, Int32 nChannel)
+Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, UInt32 freq, UInt32 nChannel)
 {
 	Net::IRTPPLHandler *hdlr;
 	if (this->chData->payloadMap->Get(payloadType))
@@ -587,10 +587,10 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 	ch->SetPlayControl(playCtrl->Clone());
 	Bool ctrlFound = false;
 	Int32 payloadType;
-	OSInt k;
+	UOSInt k;
 
-	OSInt i = 0;
-	OSInt j = sdpDesc->GetCount();
+	UOSInt i = 0;
+	UOSInt j = sdpDesc->GetCount();
 	while (i < j)
 	{
 		desc = sdpDesc->GetItem(i);
@@ -628,15 +628,15 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 				k = Text::StrSplit(sarr, 4, sarr[1], '/');
 				if (k == 2 && ch->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
-					ch->MapPayloadType(payloadType, sarr[0], Text::StrToInt32(sarr[1]), 0);
+					ch->MapPayloadType(payloadType, sarr[0], Text::StrToUInt32(sarr[1]), 0);
 				}
 				else if (k == 3 && ch->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 				{
-					ch->MapPayloadType(payloadType, sarr[0], Text::StrToInt32(sarr[1]), Text::StrToInt32(sarr[2]));
+					ch->MapPayloadType(payloadType, sarr[0], Text::StrToUInt32(sarr[1]), Text::StrToUInt32(sarr[2]));
 				}
 				else if (k == 2 && ch->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 				{
-					ch->MapPayloadType(payloadType, sarr[0], Text::StrToInt32(sarr[1]), 1);
+					ch->MapPayloadType(payloadType, sarr[0], Text::StrToUInt32(sarr[1]), 1);
 				}
 			}
 		}

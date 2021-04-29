@@ -20,12 +20,12 @@ namespace Net
 
 		Sync::Mutex *mut;
 		IO::MemoryStream *mstm;
-		Int32 lastSeq;
+		UInt32 lastSeq;
 		Bool missSeq;
 		UInt8 *sps;
-		OSInt spsSize;
+		UOSInt spsSize;
 		UInt8 *pps;
-		OSInt ppsSize;
+		UOSInt ppsSize;
 		Bool isKey;
 		Bool firstFrame;
 
@@ -34,7 +34,7 @@ namespace Net
 		RTPH264Handler(Int32 payloadType);
 		virtual ~RTPH264Handler();
 
-		virtual void MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts);
+		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts);
 		virtual void SetFormat(const UTF8Char *fmtStr);
 		virtual Int32 GetPayloadType();
 

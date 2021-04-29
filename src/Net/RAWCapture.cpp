@@ -102,7 +102,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 
 		if (format == FF_PCAP)
 		{
-			WriteInt32(&buff[0], 0xa1b2c3d4); //magic number
+			WriteUInt32(&buff[0], 0xa1b2c3d4); //magic number
 			WriteInt16(&buff[4], 2); //version_major
 			WriteInt16(&buff[6], 4); //version_minor
 			WriteInt32(&buff[8], 0); //thiszone
@@ -117,7 +117,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 			OSInt i;
 			UTF8Char *sptr;
 			UTF8Char *sptr2;
-			WriteInt32(&buff[0], 0x0a0d0d0a); //block type = SHB
+			WriteUInt32(&buff[0], 0x0a0d0d0a); //block type = SHB
 			WriteInt32(&buff[4], 2); //block length
 			WriteInt32(&buff[8], 0x1A2B3C4D); //byte order magic
 			WriteInt16(&buff[12], 1); //major version
@@ -180,7 +180,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 			WriteInt32(sptr, (Int32)i);
 			WriteInt32(&buff[4], (Int32)i);
 
-			this->fs->Write(buff, i);
+			this->fs->Write(buff, (UOSInt)i);
 
 			WriteInt32(&buff[0], 1); //Block Type = IDB
 			WriteInt32(&buff[4], 0); //Block Size
@@ -215,7 +215,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 			WriteInt32(sptr, (Int32)i);
 			WriteInt32(&buff[4], (Int32)i);
 
-			this->fs->Write(buff, i);
+			this->fs->Write(buff, (UOSInt)i);
 		}
 
 		UInt32 *s = 0;
@@ -253,12 +253,12 @@ Bool Net::RAWCapture::IsError()
 	return this->socMon == 0;
 }
 
-Int64 Net::RAWCapture::GetPacketCnt()
+UInt64 Net::RAWCapture::GetPacketCnt()
 {
 	return this->packetCnt;
 }
 
-Int64 Net::RAWCapture::GetDataSize()
+UInt64 Net::RAWCapture::GetDataSize()
 {
 	return this->dataSize;
 }

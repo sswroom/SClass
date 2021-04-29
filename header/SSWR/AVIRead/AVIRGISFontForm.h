@@ -48,7 +48,7 @@ namespace SSWR
 			void UpdateFontText();
 			void UpdateFontPreview();
 		public:
-			AVIRGISFontForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, Int32 fontColor);
+			AVIRGISFontForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, UInt32 fontColor);
 			virtual ~AVIRGISFontForm();
 
 			virtual void OnMonitorChanged();
@@ -58,7 +58,7 @@ namespace SSWR
 
 			const UTF8Char *GetFontName();
 			Double GetFontSizePt();
-			Int32 GetFontColor();
+			UInt32 GetFontColor();
 
 			Bool IsChanged();
 		};

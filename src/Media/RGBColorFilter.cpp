@@ -8,10 +8,10 @@
 
 extern "C"
 {
-	void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
-	void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
-	void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
-	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev);
+	void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
+	void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
+	void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
+	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev);
 }
 
 UInt32 __stdcall Media::RGBColorFilter::ProcessThread(void *userObj)
@@ -139,7 +139,7 @@ Media::RGBColorFilter::~RGBColorFilter()
 	}
 }
 
-void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, OSInt gammaCnt)
+void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, UOSInt gammaCnt)
 {
 	if (this->gammaParam)
 	{

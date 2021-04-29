@@ -35,7 +35,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			virtual void OnFocus();
 			virtual void OnFocusLost();
-			virtual void OnDisplaySizeChange(OSInt dispWidth, OSInt dispHeight);
+			virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
 		};
 	};
 };

@@ -80,8 +80,8 @@ Data::Compress::LZWDecStream::~LZWDecStream()
 
 UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 {
-	OSInt writeSize = 0;
-	Int32 code;
+	UOSInt writeSize = 0;
+	UInt32 code;
 
 	if (this->decBuffSize > 0)
 	{

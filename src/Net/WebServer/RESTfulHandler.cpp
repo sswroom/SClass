@@ -314,10 +314,10 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				}
 
 				json.ObjectBeginObject((const UTF8Char*)"page");
-				json.ObjectAddInt64((const UTF8Char*)"size", page->GetPageSize());
-				json.ObjectAddInt64((const UTF8Char*)"totalElements", cnt);
-				json.ObjectAddInt64((const UTF8Char*)"totalPages", pageCnt);
-				json.ObjectAddInt64((const UTF8Char*)"number", page->GetPageNum());
+				json.ObjectAddUInt64((const UTF8Char*)"size", page->GetPageSize());
+				json.ObjectAddUInt64((const UTF8Char*)"totalElements", cnt);
+				json.ObjectAddUInt64((const UTF8Char*)"totalPages", pageCnt);
+				json.ObjectAddUInt64((const UTF8Char*)"number", page->GetPageNum());
 				json.ObjectEnd();
 
 				json.ObjectEnd();

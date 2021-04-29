@@ -6,15 +6,15 @@
 
 Bool Media::H264Parser::ParseHRDParameters(IO::BitReaderMSB *reader, H264Flags *flags)
 {
-	Int32 cpb_cnt_minus1;
-	Int32 bit_rate_scale;
-	Int32 cpb_size_scale;
-	Int32 initial_cpb_removal_delay_length_minus1;
-	Int32 cpb_removal_delay_length_minus1;
-	Int32 dpb_output_delay_length_minus1;
-	Int32 time_offset_length;
-	Int32 v;
-	Int32 i;
+	UInt32 cpb_cnt_minus1;
+	UInt32 bit_rate_scale;
+	UInt32 cpb_size_scale;
+	UInt32 initial_cpb_removal_delay_length_minus1;
+	UInt32 cpb_removal_delay_length_minus1;
+	UInt32 dpb_output_delay_length_minus1;
+	UInt32 time_offset_length;
+	UInt32 v;
+	UInt32 i;
 	ParseVari(reader, &cpb_cnt_minus1);
 	reader->ReadBits(&bit_rate_scale, 4);
 	reader->ReadBits(&cpb_size_scale, 4);
@@ -41,23 +41,23 @@ Bool Media::H264Parser::ParseHRDParameters(IO::BitReaderMSB *reader, H264Flags *
 
 Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::FrameInfo *info, H264Flags *flags)
 {
-	Int32 aspect_ratio_info_present_flag = 0;
-	Int32 overscan_info_present_flag = 0;
-	Int32 video_signal_type_present_flag = 0;
-	Int32 chroma_loc_info_present_flag = 0;
-	Int32 timing_info_present_flag = 0;
-	Int32 nal_hrd_parameters_present_flag = 0;
-	Int32 vcl_hrd_parameters_present_flag = 0;
-	Int32 low_delay_hrd_flag = 0;
-	Int32 pic_struct_present_flag = 0;
-	Int32 bitstream_restriction_flag = 0;
-	Int32 temp;
+	UInt32 aspect_ratio_info_present_flag = 0;
+	UInt32 overscan_info_present_flag = 0;
+	UInt32 video_signal_type_present_flag = 0;
+	UInt32 chroma_loc_info_present_flag = 0;
+	UInt32 timing_info_present_flag = 0;
+	UInt32 nal_hrd_parameters_present_flag = 0;
+	UInt32 vcl_hrd_parameters_present_flag = 0;
+	UInt32 low_delay_hrd_flag = 0;
+	UInt32 pic_struct_present_flag = 0;
+	UInt32 bitstream_restriction_flag = 0;
+	UInt32 temp;
 	reader->ReadBits(&aspect_ratio_info_present_flag, 1);
 	if (aspect_ratio_info_present_flag != 0)
 	{
-		Int32 aspect_ratio_idc = 0;
-		Int32 sarWidth;
-		Int32 sarHeight;
+		UInt32 aspect_ratio_idc = 0;
+		UInt32 sarWidth;
+		UInt32 sarHeight;
 		reader->ReadBits(&aspect_ratio_idc, 8);
 		switch (aspect_ratio_idc)
 		{
@@ -131,17 +131,17 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 	reader->ReadBits(&video_signal_type_present_flag, 1);
 	if (video_signal_type_present_flag != 0)
 	{
-		Int32 video_format;
-		Int32 video_full_range_flag;
-		Int32 colour_description_present_flag = 0;
+		UInt32 video_format;
+		UInt32 video_full_range_flag;
+		UInt32 colour_description_present_flag = 0;
 		reader->ReadBits(&video_format, 3);
 		reader->ReadBits(&video_full_range_flag, 1);
 		reader->ReadBits(&colour_description_present_flag, 1);
 		if (colour_description_present_flag != 0)
 		{
-			Int32 colour_primaries = 0;
-			Int32 transfer_characteristics = 0;
-			Int32 matrix_coefficients = 0;
+			UInt32 colour_primaries = 0;
+			UInt32 transfer_characteristics = 0;
+			UInt32 matrix_coefficients = 0;
 			reader->ReadBits(&colour_primaries, 8);
 			reader->ReadBits(&transfer_characteristics, 8);
 			reader->ReadBits(&matrix_coefficients, 8);
@@ -253,8 +253,8 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 	reader->ReadBits(&chroma_loc_info_present_flag, 1);
 	if (chroma_loc_info_present_flag != 0)
 	{
-		Int32 chroma_sample_loc_type_top_field;
-		Int32 chroma_sample_loc_type_bottom_field;
+		UInt32 chroma_sample_loc_type_top_field;
+		UInt32 chroma_sample_loc_type_bottom_field;
 		ParseVari(reader, &chroma_sample_loc_type_top_field);
 		ParseVari(reader, &chroma_sample_loc_type_bottom_field);
 	}
@@ -300,23 +300,24 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 	return true;
 }
 
-Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, OSInt frameSize, Media::FrameInfo *frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
+Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
 {
 	IO::BitReaderMSB *reader;
 	Bool succ = false;
 	UInt8 *tmpBuff;
 	UInt8 *tmpPtr;
-	Int32 profile_idc;
-	Int32 level_idc;
-	Int32 pic_order_cnt_type;
-	Int32 seq_parameter_set_id;
-	Int32 temp;
-	Int32 pic_width_in_mbs_minus1;
-	Int32 pic_height_in_map_units_minus1;
-	Int32 frame_mbs_only_flag;
-	Int32 mb_adaptive_frame_field_flag;
-	OSInt i;
-	OSInt j;
+	UInt32 profile_idc;
+	UInt32 level_idc;
+	UInt32 pic_order_cnt_type;
+	UInt32 seq_parameter_set_id;
+	UInt32 temp;
+	Int32 stemp;
+	UInt32 pic_width_in_mbs_minus1;
+	UInt32 pic_height_in_map_units_minus1;
+	UInt32 frame_mbs_only_flag;
+	UInt32 mb_adaptive_frame_field_flag;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 
 	if (ReadMInt32(frame) != 1)
@@ -357,12 +358,12 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, OSInt frameSize, Media:
 	reader->ReadBits(&temp, 8);
 	reader->ReadBits(&level_idc, 8);
 	ParseVari(reader, &seq_parameter_set_id);
-	Int32 separate_colour_plane_flag = 0;
+	UInt32 separate_colour_plane_flag = 0;
 
 	if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44 || profile_idc == 83 || profile_idc == 86 || profile_idc == 118 || profile_idc == 128)
 	{
-		Int32 chroma_format_idc = 0;
-		Int32 seq_scaling_matrix_present_flag = 0;
+		UInt32 chroma_format_idc = 0;
+		UInt32 seq_scaling_matrix_present_flag = 0;
 		j = 8;
 
 		ParseVari(reader, &chroma_format_idc);
@@ -387,15 +388,15 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, OSInt frameSize, Media:
 					if (i < 6)
 					{
 						//scaling_list( ScalingList4x4[ i ], 16, UseDefaultScalingMatrix4x4Flag[ i ]);
-						Int32 lastScale = 8;
-						Int32 nextScale = 8;
+						UInt32 lastScale = 8;
+						UInt32 nextScale = 8;
 						k = 16;
 						while (k-- > 0)
 						{
 							if (nextScale != 0)
 							{
-								ParseSVari(reader, &temp);
-								nextScale = (lastScale + temp + 256) & 255;
+								ParseSVari(reader, &stemp);
+								nextScale = (lastScale + stemp + 256) & 255;
 							}
 							if (nextScale)
 							{
@@ -406,15 +407,15 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, OSInt frameSize, Media:
 					else
 					{
 						//scaling_list( ScalingList8x8[ i − 6 ], 64, UseDefaultScalingMatrix8x8Flag[ i − 6 ]);
-						Int32 lastScale = 8;
-						Int32 nextScale = 8;
+						UInt32 lastScale = 8;
+						UInt32 nextScale = 8;
 						k = 64;
 						while (k-- > 0)
 						{
 							if (nextScale != 0)
 							{
-								ParseSVari(reader, &temp);
-								nextScale = (lastScale + temp + 256) & 255;
+								ParseSVari(reader, &stemp);
+								nextScale = (lastScale + stemp + 256) & 255;
 							}
 							if (nextScale)
 							{
@@ -441,14 +442,14 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, OSInt frameSize, Media:
 	else if (pic_order_cnt_type == 1)
 	{
 		reader->ReadBits(&temp, 1); //delta_pic_order_always_zero_flag
-		ParseSVari(reader, &temp); //offset_for_non_ref_pic
-		ParseSVari(reader, &temp); //offset_for_top_to_bottom_field
+		ParseSVari(reader, &stemp); //offset_for_non_ref_pic
+		ParseSVari(reader, &stemp); //offset_for_top_to_bottom_field
 		ParseVari(reader, &temp); //num_ref_frames_in_pic_order_cnt_cycle
 		j = temp;
 		i = 0;
 		while (i < j)
 		{
-			ParseSVari(reader, &temp); //offset_for_ref_frame[i]
+			ParseSVari(reader, &stemp); //offset_for_ref_frame[i]
 			i++;
 		}
 	}
@@ -504,10 +505,10 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, OSInt frameSize, Media:
 	return succ;
 }
 
-Bool Media::H264Parser::ParseVari(IO::BitReaderMSB *reader, Int32 *val)
+Bool Media::H264Parser::ParseVari(IO::BitReaderMSB *reader, UInt32 *val)
 {
-	Int32 v;
-	Int32 bitCnt = 0;
+	UInt32 v;
+	UInt32 bitCnt = 0;
 	while (true)
 	{
 		if (!reader->ReadBits(&v, 1))
@@ -533,7 +534,7 @@ Bool Media::H264Parser::ParseVari(IO::BitReaderMSB *reader, Int32 *val)
 
 Bool Media::H264Parser::ParseSVari(IO::BitReaderMSB *reader, Int32 *val)
 {
-	Int32 v;
+	UInt32 v;
 	Bool ret = ParseVari(reader, &v);
 	if (ret)
 	{
@@ -549,17 +550,17 @@ Bool Media::H264Parser::ParseSVari(IO::BitReaderMSB *reader, Int32 *val)
 	return ret;
 }
 
-Bool Media::H264Parser::FindSPS(const UInt8 *frame, OSInt frameSize, const UInt8 **sps, OSInt *spsSize)
+Bool Media::H264Parser::FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
-	OSInt i;
+	UOSInt i;
 	Data::ArrayListInt32 nalList;
 	UInt8 t;
 	FindNALs(frame, frameSize, &nalList);
 
-	OSInt startOfst;
-	OSInt endOfst = frameSize;
+	UOSInt startOfst;
+	UOSInt endOfst = frameSize;
 	i = nalList.GetCount();
 	while (i-- > 0)
 	{
@@ -577,16 +578,16 @@ Bool Media::H264Parser::FindSPS(const UInt8 *frame, OSInt frameSize, const UInt8
 }
 
 
-Bool Media::H264Parser::FindPPS(const UInt8 *frame, OSInt frameSize, const UInt8 **pps, OSInt *ppsSize)
+Bool Media::H264Parser::FindPPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
-	OSInt i;
+	UOSInt i;
 	Data::ArrayListInt32 nalList;
 	FindNALs(frame, frameSize, &nalList);
 
-	OSInt startOfst;
-	OSInt endOfst = frameSize;
+	UOSInt startOfst;
+	UOSInt endOfst = frameSize;
 	i = nalList.GetCount();
 	while (i-- > 0)
 	{
@@ -602,12 +603,12 @@ Bool Media::H264Parser::FindPPS(const UInt8 *frame, OSInt frameSize, const UInt8
 	return false;
 }
 
-Bool Media::H264Parser::FindNALs(const UInt8 *frame, OSInt frameSize, Data::ArrayListInt32 *nalList)
+Bool Media::H264Parser::FindNALs(const UInt8 *frame, UOSInt frameSize, Data::ArrayListInt32 *nalList)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
-	OSInt i;
-	OSInt j = frameSize - 4;
+	UOSInt i;
+	UOSInt j = frameSize - 4;
 	UInt8 t;
 	i = 0;
 	while (i <= j)
@@ -627,17 +628,17 @@ Bool Media::H264Parser::FindNALs(const UInt8 *frame, OSInt frameSize, Data::Arra
 	return true;
 }
 
-UTF8Char *Media::H264Parser::GetFrameType(UTF8Char *sbuff, const UInt8 *frame, OSInt frameSize)
+UTF8Char *Media::H264Parser::GetFrameType(UTF8Char *sbuff, const UInt8 *frame, UOSInt frameSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return 0;
 
-	OSInt i;
+	UOSInt i;
 	Data::ArrayListInt32 nalList;
 	FindNALs(frame, frameSize, &nalList);
 
-	OSInt startOfst;
-	OSInt endOfst = frameSize;
+	UOSInt startOfst;
+	UOSInt endOfst = frameSize;
 	i = nalList.GetCount();
 	while (i-- > 0)
 	{
@@ -645,7 +646,7 @@ UTF8Char *Media::H264Parser::GetFrameType(UTF8Char *sbuff, const UInt8 *frame, O
 		if ((frame[startOfst + 4] & 0x1f) == 1 || (frame[startOfst + 4] & 0x1f) == 5)
 		{
 			IO::BitReaderMSB *reader;
-			Int32 v;
+			UInt32 v;
 			NEW_CLASS(reader, IO::BitReaderMSB(&frame[startOfst + 5], endOfst - startOfst - 5));
 			ParseVari(reader, &v);
 			v = -1;

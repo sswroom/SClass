@@ -13,7 +13,7 @@ namespace Math
 		UInt32 *ptOfstArr;
 		UOSInt nPtOfst;
 		Int32 flags;
-		Int32 color;
+		UInt32 color;
 	public:
 		Polyline(Int32 srid, Double *pointArr, UOSInt nPoint);
 		Polyline(Int32 srid, UOSInt nPtOfst, UOSInt nPoint);
@@ -36,7 +36,7 @@ namespace Math
 		Math::Polygon *CreatePolygonByDist(Double dist);
 		Bool HasColor();
 		Int32 GetColor();
-		void SetColor(Int32 color);
+		void SetColor(UInt32 color);
 	};
 }
 #endif

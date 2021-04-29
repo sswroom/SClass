@@ -76,9 +76,9 @@ void *Data::LinkedList::GetNoRemove()
 	return obj;
 }
 
-OSInt Data::LinkedList::GetCount()
+UOSInt Data::LinkedList::GetCount()
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	Data::LinkedListItem *item = this->firstItem;
 	while (item)

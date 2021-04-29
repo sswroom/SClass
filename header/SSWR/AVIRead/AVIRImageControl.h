@@ -48,7 +48,7 @@ namespace SSWR
 			typedef struct
 			{
 				Double *gammaParam;
-				Int32 gammaCnt;
+				UInt32 gammaCnt;
 			} CameraCorr;
 
 		public:
@@ -69,7 +69,7 @@ namespace SSWR
 			Data::ICaseStringUTF8Map<ImageStatus*> *imgMap;
 			Bool imgMapUpdated;
 			Bool imgUpdated;
-			Int32 previewSize;
+			UInt32 previewSize;
 			OSInt currSel;
 			ImageStatus *dispImg;
 			Bool dispImgChg;
@@ -99,7 +99,7 @@ namespace SSWR
 			void ThreadCancelTasks();
 			void EndFolder();
 			Bool GetCameraName(Text::StringBuilderUTF *sb, Media::EXIFData *exif);
-			Double *GetCameraGamma(const UTF8Char *cameraName, Int32 *gammaCnt);
+			Double *GetCameraGamma(const UTF8Char *cameraName, UInt32 *gammaCnt);
 		public:
 			AVIRImageControl(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRImageControl();
@@ -127,11 +127,11 @@ namespace SSWR
 			void UpdateImgSetting(ImageSetting *setting);
 			Bool IsLoadingDir();
 			void SetExportFormat(ExportFormat fmt);
-			OSInt ExportSelected();
+			UOSInt ExportSelected();
 			void MoveUp();
 			void MoveDown();
 			void SelectAll();
 		};
-	};
-};
+	}
+}
 #endif

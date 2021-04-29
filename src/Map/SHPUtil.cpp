@@ -29,8 +29,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 3: //Polyline
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polyline *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -38,8 +38,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
@@ -50,7 +50,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -67,8 +67,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 5: //Polygon
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polygon *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -76,8 +76,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
@@ -88,7 +88,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -130,8 +130,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 10: //PolylineZ
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polyline3D *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -139,8 +139,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 24)
 			{
 				UOSInt tmpV;
@@ -151,7 +151,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -182,8 +182,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 13: //PolylineZM
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polyline3D *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -191,8 +191,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 32)
 			{
 				UOSInt tmpV;
@@ -203,7 +203,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -226,8 +226,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 15: //PolygonZM
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polygon *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -235,8 +235,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
@@ -247,7 +247,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -265,8 +265,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 19: //PolygonZ
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polygon *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -274,8 +274,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
@@ -286,7 +286,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -314,8 +314,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 23: //PolylineM
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polyline *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -323,8 +323,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
@@ -335,7 +335,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);
@@ -352,8 +352,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 	case 25: //PolygonM
 		if (buffSize >= 44)
 		{
-			Int32 nPtOfst;
-			Int32 nPoint;
+			UInt32 nPtOfst;
+			UInt32 nPoint;
 			Math::Polygon *pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -361,8 +361,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 			xMax = ReadDouble(&buff[20]);
 			yMax = ReadDouble(&buff[28]);
 			*/
-			nPtOfst = ReadInt32(&buff[36]);
-			nPoint = ReadInt32(&buff[40]);
+			nPtOfst = ReadUInt32(&buff[36]);
+			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
@@ -373,7 +373,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSIn
 				buff += 44;
 				while (tmpV-- > 0)
 				{
-					*ptOfsts++ = ReadInt32(buff);
+					*ptOfsts++ = ReadUInt32(buff);
 					buff += 4;
 				}
 				points = pl->GetPointList(&tmpV);

@@ -64,7 +64,7 @@ void Media::CS::CSConverter::SetPalette(UInt8 *pal)
 {
 }
 
-UOSInt Media::CS::CSConverter::GetSupportedCS(Data::ArrayListInt32 *csList)
+UOSInt Media::CS::CSConverter::GetSupportedCS(Data::ArrayListUInt32 *csList)
 {
 	/////////////////////////////////
 	// YUV8 4:4:4 AYUV
@@ -78,32 +78,32 @@ UOSInt Media::CS::CSConverter::GetSupportedCS(Data::ArrayListInt32 *csList)
 	csList->SortedInsert(FFMT_YUV420P8);
 	csList->SortedInsert(FFMT_AYUV444_10);
 	csList->SortedInsert(FFMT_YUV444P10LEP);
-	csList->SortedInsert(*(Int32*)"DIBS");
-	csList->SortedInsert(*(Int32*)"NV12");
-	csList->SortedInsert(*(Int32*)"YV12");
-	csList->SortedInsert(*(Int32*)"YUY2");
-	csList->SortedInsert(*(Int32*)"YUYV");
-	csList->SortedInsert(*(Int32*)"UYVY");
-	csList->SortedInsert(*(Int32*)"YVU9");
-	csList->SortedInsert(*(Int32*)"Y422");
-	csList->SortedInsert(*(Int32*)"UYNV");
-	csList->SortedInsert(*(Int32*)"HDYC");
-	csList->SortedInsert(*(Int32*)"I420");
-	csList->SortedInsert(*(Int32*)"AYUV");
-	csList->SortedInsert(*(Int32*)"P010");
-	csList->SortedInsert(*(Int32*)"P210");
-	csList->SortedInsert(*(Int32*)"P016");
-	csList->SortedInsert(*(Int32*)"P216");
-	csList->SortedInsert(*(Int32*)"Y416");
-	csList->SortedInsert(*(Int32*)"Y800");
-	csList->SortedInsert(*(Int32*)"Y8  ");
-	csList->SortedInsert(*(Int32*)"GREY");
+	csList->SortedInsert(*(UInt32*)"DIBS");
+	csList->SortedInsert(*(UInt32*)"NV12");
+	csList->SortedInsert(*(UInt32*)"YV12");
+	csList->SortedInsert(*(UInt32*)"YUY2");
+	csList->SortedInsert(*(UInt32*)"YUYV");
+	csList->SortedInsert(*(UInt32*)"UYVY");
+	csList->SortedInsert(*(UInt32*)"YVU9");
+	csList->SortedInsert(*(UInt32*)"Y422");
+	csList->SortedInsert(*(UInt32*)"UYNV");
+	csList->SortedInsert(*(UInt32*)"HDYC");
+	csList->SortedInsert(*(UInt32*)"I420");
+	csList->SortedInsert(*(UInt32*)"AYUV");
+	csList->SortedInsert(*(UInt32*)"P010");
+	csList->SortedInsert(*(UInt32*)"P210");
+	csList->SortedInsert(*(UInt32*)"P016");
+	csList->SortedInsert(*(UInt32*)"P216");
+	csList->SortedInsert(*(UInt32*)"Y416");
+	csList->SortedInsert(*(UInt32*)"Y800");
+	csList->SortedInsert(*(UInt32*)"Y8  ");
+	csList->SortedInsert(*(UInt32*)"GREY");
 	return csList->GetCount() - i;
 }
 
 Bool Media::CS::CSConverter::IsSupported(UInt32 fourcc)
 {
-	Data::ArrayListInt32 csList;
+	Data::ArrayListUInt32 csList;
 	GetSupportedCS(&csList);
 	return csList.SortedIndexOf(fourcc) >= 0;
 }

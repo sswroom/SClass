@@ -22,7 +22,7 @@ namespace Media
 				UInt8 *outPt;
 				UOSInt width;
 				UOSInt height;
-				OSInt tap;
+				UOSInt tap;
 				OSInt *index;
 				Int64 *weight;
 				OSInt sstep;
@@ -34,13 +34,13 @@ namespace Media
 				UOSInt length;
 				Int64 *weight;
 				OSInt *index;
-				OSInt tap;
+				UOSInt tap;
 			} LRHPARAMETER;
 
 		private:
-			OSInt hnTap;
-			OSInt vnTap;
-			OSInt nThread;
+			UOSInt hnTap;
+			UOSInt vnTap;
+			UOSInt nThread;
 			Sync::Mutex *mut;
 			TaskParam *params;
 			Sync::ParallelTask *ptask;
@@ -50,7 +50,7 @@ namespace Media
 			UOSInt hdSize;
 			OSInt *hIndex;
 			Int64 *hWeight;
-			OSInt hTap;
+			UOSInt hTap;
 
 			Double vsSize;
 			Double vsOfst;
@@ -58,7 +58,7 @@ namespace Media
 			OSInt vsStep;
 			OSInt *vIndex;
 			Int64 *vWeight;
-			OSInt vTap;
+			UOSInt vTap;
 
 			UOSInt buffW;
 			UOSInt buffH;
@@ -70,9 +70,8 @@ namespace Media
 			Bool rgbChanged;
 			UInt8 *rgbTable;
 
-			Double lanczos3_weight(Double phase, OSInt nTap);
-			void setup_interpolation_parameter(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_decimation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
 
 			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
 			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
@@ -84,7 +83,7 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerLR_C16(OSInt hnTap, OSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
+			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
 			virtual ~LanczosResizerLR_C16();
 
 			virtual void Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
@@ -95,6 +94,6 @@ namespace Media
 			virtual Bool IsSupported(Media::FrameInfo *srcInfo);
 			virtual Media::StaticImage *ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
 		};
-	};
-};
+	}
+}
 #endif

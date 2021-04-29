@@ -83,7 +83,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 
 	while (imgOfst < dataSize)
 	{
-		imgSize = ReadMInt32(&imgData[0][imgOfst]);
+		imgSize = ReadMUInt32(&imgData[0][imgOfst]);
 		imgOfst += 4;
 
 		if (imgSize <= 0)
@@ -131,7 +131,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 
 	if (this->finfoMode)
 	{
-		if (!this->finfoCb(frameTime, frameNum, frameBuff - this->frameBuff, frameStruct, frameType, this->finfoData, ycOfst))
+		if (!this->finfoCb(frameTime, frameNum, (UOSInt)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoData, ycOfst))
 		{
 			this->sourceVideo->Stop();
 		}
@@ -152,7 +152,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 				flags = (Media::IVideoSource::FrameFlag)(flags & ~Media::IVideoSource::FF_DISCONTTIME);
 			}
 			this->discontTime = false;
-			this->frameCb(frameTime, frameNum, &this->frameBuff, frameBuff - this->frameBuff, frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
+			this->frameCb(frameTime, frameNum, &this->frameBuff, (UOSInt)(frameBuff - this->frameBuff), frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
 			this->frameSize = 0;
 		}
 	}
@@ -235,11 +235,11 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	OSInt cropBottom = 0;
 	if (info.dispWidth < oriW)
 	{
-		cropRight = oriW - info.dispWidth;
+		cropRight = (OSInt)(oriW - info.dispWidth);
 	}
 	if (info.dispHeight < oriH)
 	{
-		cropBottom = oriH - info.dispHeight;
+		cropBottom = (OSInt)(oriH - info.dispHeight);
 	}
 	if (cropRight > 0 || cropBottom > 0)
 	{
@@ -405,7 +405,7 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 	info->dispHeight = oriH;
 	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
-	info->fourcc = *(Int32*)"HEVC";
+	info->fourcc = ReadNUInt32("HEVC");
 
 	return true;
 }

@@ -23,7 +23,7 @@ IO::BitReaderLSB::BitReaderLSB(IO::Stream *stm)
 	}
 }
 
-IO::BitReaderLSB::BitReaderLSB(const UInt8 *buff, OSInt buffSize)
+IO::BitReaderLSB::BitReaderLSB(const UInt8 *buff, UOSInt buffSize)
 {
 	this->buff = (UInt8*)buff;
 	this->buffSize = buffSize;
@@ -40,7 +40,7 @@ IO::BitReaderLSB::~BitReaderLSB()
 	}
 }
 
-Bool IO::BitReaderLSB::ReadBits(Int32 *code, OSInt bitCount)
+Bool IO::BitReaderLSB::ReadBits(UInt32 *code, UOSInt bitCount)
 {
 #ifdef _DEBUG
 	if (bitCount > 32 || bitCount <= 0)
@@ -73,11 +73,11 @@ Bool IO::BitReaderLSB::ReadBits(Int32 *code, OSInt bitCount)
 			return false;
 		}
 	}
-	OSInt bits = bitCount + this->currBitPos;
-	OSInt bits2 = bits;
+	UOSInt bits = bitCount + this->currBitPos;
+	UOSInt bits2 = bits;
 	if (bits2 & 7)
 		bits2 += 8;
-	Int32 retCode = 0;
+	UInt32 retCode = 0;
 	switch (bits2 >> 3)
 	{
 	case 1:
@@ -90,10 +90,10 @@ Bool IO::BitReaderLSB::ReadBits(Int32 *code, OSInt bitCount)
 		retCode = (buff[this->currBytePos] | (buff[this->currBytePos + 1] << 8) | (buff[this->currBytePos + 2] << 16)) >> this->currBitPos;
 		break;
 	case 4:
-		retCode = (Int32)(((UInt32)ReadInt32(&buff[this->currBytePos])) >> this->currBitPos);
+		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos);
 		break;
 	case 5:
-		retCode = (((UInt32)ReadInt32(&buff[this->currBytePos])) >> this->currBitPos) | (buff[this->currBytePos + 4] << (32 - this->currBitPos));
+		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos) | (buff[this->currBytePos + 4] << (32 - this->currBitPos));
 		break;
 	}
 	*code = retCode & ((1 << bitCount) - 1);
@@ -112,7 +112,7 @@ Bool IO::BitReaderLSB::ByteAlign()
 	return true;
 }
 
-OSInt IO::BitReaderLSB::ReadBytes(UInt8 *buff, OSInt cnt)
+UOSInt IO::BitReaderLSB::ReadBytes(UInt8 *buff, UOSInt cnt)
 {
 	this->ByteAlign();
 	if (this->buffSize - this->currBytePos >= cnt)
@@ -121,7 +121,7 @@ OSInt IO::BitReaderLSB::ReadBytes(UInt8 *buff, OSInt cnt)
 		this->currBytePos += cnt;
 		return cnt;
 	}
-	OSInt ret = this->buffSize - this->currBytePos;
+	UOSInt ret = this->buffSize - this->currBytePos;
 	if (ret > 0)
 	{
 		MemCopyNO(buff, &this->buff[this->currBytePos], ret);
@@ -130,7 +130,7 @@ OSInt IO::BitReaderLSB::ReadBytes(UInt8 *buff, OSInt cnt)
 	}
 	if (cnt > 0)
 	{
-		OSInt readSize = this->stm->Read(&buff[ret], cnt);
+		UOSInt readSize = this->stm->Read(&buff[ret], cnt);
 		if (readSize > 0)
 		{
 			ret += cnt;

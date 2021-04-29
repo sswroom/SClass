@@ -72,7 +72,7 @@ void SSWR::AVIRead::AVIRGUIEventForm::OnFocusLost()
 	this->log->LogMessage((const UTF8Char*)"FocusLost", IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
-void SSWR::AVIRead::AVIRGUIEventForm::OnDisplaySizeChange(OSInt dispWidth, OSInt dispHeight)
+void SSWR::AVIRead::AVIRGUIEventForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 	this->log->LogMessage((const UTF8Char*)"DisplaySizeChange", IO::ILogHandler::LOG_LEVEL_ACTION);
 }

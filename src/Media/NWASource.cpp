@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Sync/Event.h"
 
-Media::NWASource::NWASource(IO::IStreamData *fd, Int32 sampleCount, UInt32 blockSize, Int32 compLevel, Int32 nBlocks, Media::AudioFormat *format, const UTF8Char *name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
+Media::NWASource::NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, const UTF8Char *name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
 {
 	this->sampleCount = sampleCount;
 	this->blockSize = blockSize;
@@ -29,7 +29,7 @@ Media::NWASource::~NWASource()
 
 Int32 Media::NWASource::GetStreamTime()
 {
-	return this->sampleCount * 1000 / this->format.frequency / this->format.nChannels;
+	return (Int32)(this->sampleCount * 1000 / this->format.frequency / this->format.nChannels);
 }
 
 UInt32 Media::NWASource::SeekToTime(UInt32 time)
@@ -47,11 +47,11 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		if (blkSize < this->blockSize * byps)
 			return retSize;
-		Int32 decSize;
+		UInt32 decSize;
 		UInt32 compBlockSize;
 		if (this->currBlock == this->nBlocks - 1)
 		{
-			Int32 restSize = this->sampleCount - (this->nBlocks - 1) * this->blockSize;
+			UInt32 restSize = this->sampleCount - (this->nBlocks - 1) * this->blockSize;
 			decSize = restSize * byps;
 			compBlockSize = this->blockSize * byps * 2;
 		}
@@ -100,20 +100,20 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 		}
 		UInt32 bps = this->format.bitpersample;
-		Int32 dSize = decSize / (bps / 8);
+		UInt32 dSize = decSize / (bps / 8);
 		Int32 flipFlag = 0;
-		Int32 aType;
-		Int32 i;
+		UInt32 aType;
+		UInt32 i;
 		IO::BitReaderLSB rdr(&this->blockBuff[currOfst], compBlockSize - currOfst);
 
-		Int32 bits8 = 8 - this->compLevel;
-		Int32 mask81 = 1 << (bits8 - 1);
-		Int32 mask82 = mask81 - 1;
-		Int32 bits5 = 5 - this->compLevel;
-		Int32 mask51 = 1 << (bits5 - 1);
-		Int32 mask52 = mask51 - 1;
-		Int32 sh;
-		Int32 v;
+		UInt32 bits8 = 8 - this->compLevel;
+		UInt32 mask81 = (UInt32)(1 << (bits8 - 1));
+		UInt32 mask82 = mask81 - 1;
+		UInt32 bits5 = 5 - this->compLevel;
+		UInt32 mask51 = (UInt32)(1 << (bits5 - 1));
+		UInt32 mask52 = mask51 - 1;
+		UInt32 sh;
+		UInt32 v;
 		i = 0;
 		while (i < dSize)
 		{
@@ -133,9 +133,9 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						if (rdr.ReadBits(&v, bits8))
 						{
 							if (v & mask81)
-								d[flipFlag] -= (v & mask82) << sh;
+								d[flipFlag] -= (Int32)((v & mask82) << sh);
 							else
-								d[flipFlag] += (v & mask82) << sh;
+								d[flipFlag] += (Int32)((v & mask82) << sh);
 						}
 						else
 						{
@@ -154,9 +154,9 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 				if (rdr.ReadBits(&v, bits5))
 				{
 					if (v & mask51)
-						d[flipFlag] -= (v & mask52) << sh;
+						d[flipFlag] -= (Int32)((v & mask52) << sh);
 					else
-						d[flipFlag] += (v & mask52) << sh;
+						d[flipFlag] += (Int32)((v & mask52) << sh);
 				}
 				else
 				{
@@ -187,7 +187,7 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 					{
 						if (bps == 8)
 						{
-							*buff++ = d[flipFlag];
+							*buff++ = (UInt8)d[flipFlag];
 						}
 						else
 						{
@@ -204,7 +204,7 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 
 			if (bps == 8)
 			{
-				*buff++ = d[flipFlag];
+				*buff++ = (UInt8)d[flipFlag];
 			}
 			else
 			{

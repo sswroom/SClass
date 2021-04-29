@@ -25,7 +25,7 @@ namespace Net
 			Sync::Event *reqEvt;
 			Sync::Mutex *reqMut;
 			UInt8 *reqReply;
-			OSInt reqReplySize;
+			UOSInt reqReplySize;
 			Int32 reqReplyStatus;
 			Bool reqSuccess;
 			const UTF8Char *reqStrs;

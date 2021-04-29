@@ -9,11 +9,11 @@ namespace Net
 	{
 	public:
 		virtual Media::MediaType GetSDPMediaType() = 0;
-		virtual Int32 GetSDPMediaPort() = 0;
+		virtual UInt16 GetSDPMediaPort() = 0;
 		virtual const UTF8Char *GetSDPProtocol() = 0;
 		virtual const UTF8Char *GetSDPControlURL(const UTF8Char *reqUserAgent) = 0;
-		virtual OSInt GetSDPDataCount() = 0;
-		virtual Net::ISDPData *GetSDPData(OSInt index) = 0;
+		virtual UOSInt GetSDPDataCount() = 0;
+		virtual Net::ISDPData *GetSDPData(UOSInt index) = 0;
 	};
-};
+}
 #endif

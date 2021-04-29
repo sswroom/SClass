@@ -17,11 +17,11 @@ namespace Net
 	private:
 		typedef struct
 		{
-			Int32 seqNum;
+			UInt32 seqNum;
 			Int32 payloadType;
 			UInt32 ts;
 			UInt8 *buff;
-			OSInt dataSize;
+			UOSInt dataSize;
 		} PacketBuff;
 
 		typedef struct
@@ -32,19 +32,19 @@ namespace Net
 			Net::UDPServer *rtcpUDP;
 			void *userData;
 			const UTF8Char *controlURL;
-			Int32 lastSSRC;
-			Int32 lastSeqNumHi;
-			Int32 lastSeqNumLo;
+			UInt32 lastSSRC;
+			UInt32 lastSeqNumHi;
+			UInt32 lastSeqNumLo;
 			Data::Int32Map<Net::IRTPPLHandler *> *payloadMap;
 			Media::MediaType mediaType;
 			Net::SocketFactory *sockf;
 
-			OSInt threadCnt;
-			OSInt buffCnt;
+			UOSInt threadCnt;
+			UOSInt buffCnt;
 
 			Sync::Mutex *packMut;
 			PacketBuff *packBuff; 
-			OSInt packCnt;
+			UOSInt packCnt;
 
 			Net::IRTPController *playCtrl;
 
@@ -75,10 +75,10 @@ namespace Net
 		const UTF8Char *GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
-		Media::IVideoSource *GetVideo(OSInt index);
-		Media::IAudioSource *GetAudio(OSInt index);
-		Media::IVideoSource *CreateShadowVideo(OSInt index);
-		Media::IAudioSource *CreateShadowAudio(OSInt index);
+		Media::IVideoSource *GetVideo(UOSInt index);
+		Media::IAudioSource *GetAudio(UOSInt index);
+		Media::IVideoSource *CreateShadowVideo(UOSInt index);
+		Media::IAudioSource *CreateShadowAudio(UOSInt index);
 
 		void *GetUserData();
 		void SetUserData(void *userData);
@@ -87,10 +87,10 @@ namespace Net
 		Bool StopPlay();
 		Bool IsRunning();
 
-		Bool MapPayloadType(Int32 payloadType, const UTF8Char *typ, Int32 freq, Int32 nChannel);
+		Bool MapPayloadType(Int32 payloadType, const UTF8Char *typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
 
 		static RTPCliChannel *CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, const UTF8Char *ctrlURL, Net::IRTPController *playCtrl);
 	};
-};
+}
 #endif

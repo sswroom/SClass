@@ -81,7 +81,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 	this->pbPreview->SetImage(this->previewImage);
 }
 
-SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, Int32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -187,7 +187,7 @@ Double SSWR::AVIRead::AVIRGISFontForm::GetFontSizePt()
 	return this->fontSizePt;
 }
 
-Int32 SSWR::AVIRead::AVIRGISFontForm::GetFontColor()
+UInt32 SSWR::AVIRead::AVIRGISFontForm::GetFontColor()
 {
 	return this->fontColor;
 }

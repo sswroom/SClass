@@ -28,18 +28,18 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 	me->cboFormat->ClearItems();
 	if (me->currCapture)
 	{
-		Data::ArrayListInt32 supportedCS;
+		Data::ArrayListUInt32 supportedCS;
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
 		Media::IVideoCapture::VideoFormat fmts[80];
 		CaptureFormat *cfmt;
 		OSInt bestSize = 0;
-		Int32 bestFmt = 0;
+		UInt32 bestFmt = 0;
 		OSInt bestBPP = 0;
 		OSInt bestIndex = 0;
 		OSInt currSize;
-		OSInt fmtCnt;
-		OSInt i;
+		UOSInt fmtCnt;
+		UOSInt i;
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
 
 		UTF8Char u8buff[128];

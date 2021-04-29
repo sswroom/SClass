@@ -39,12 +39,12 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		}
 		if (this->size32)
 		{
-			imgSize = ReadMInt32(&imgData[0][imgOfst]);
+			imgSize = ReadMUInt32(&imgData[0][imgOfst]);
 			imgOfst += 4;
 		}
 		else
 		{
-			imgSize = ReadMInt16(&imgData[0][imgOfst]);
+			imgSize = ReadMUInt16(&imgData[0][imgOfst]);
 			imgOfst += 2;
 		}
 		if (imgSize <= 0)
@@ -63,7 +63,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		
 		if ((imgData[0][imgOfst] & 0x1f) == 5 && !found && !this->spsFound)
 		{
-			OSInt size = this->BuildIFrameHeader(frameBuff);
+			UOSInt size = this->BuildIFrameHeader(frameBuff);
 			frameBuff += size;
 			this->frameSize += size;
 			found = true;
@@ -87,9 +87,9 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		}
 		else if ((imgData[0][imgOfst] & 0x1f) == 6) //sei_rbsp( )
 		{
-			OSInt i = 1;
-			Int32 payloadType = 0;
-			Int32 payloadSize = 0;
+			UOSInt i = 1;
+			UInt32 payloadType = 0;
+			UInt32 payloadSize = 0;
 			if (imgData[0][imgOfst + i] == 0xff)
 			{
 				payloadType += 255;
@@ -107,9 +107,9 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 
 			if (payloadType == 1)
 			{
-				Int32 cpb_removal_delay;
-				Int32 dpb_output_delay;
-				Int32 pic_struct;
+				UInt32 cpb_removal_delay;
+				UInt32 dpb_output_delay;
+				UInt32 pic_struct;
 				IO::BitReaderMSB reader(&imgData[0][imgOfst + i], imgSize - i);
 				if (h264Flags.nal_hrd_parameters_present_flag || h264Flags.vcl_hrd_parameters_present_flag)
 				{
@@ -181,10 +181,10 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		else if ((imgData[0][imgOfst] & 0x1f) == 5 || (imgData[0][imgOfst] & 0x1f) == 1) //5: slice_layer_without_partitioning_rbsp( ), 1: slice_layer_without_partitioning_rbsp( )
 		{
 			IO::BitReaderMSB *reader;
-			Int32 v;
+			UInt32 v;
 			NEW_CLASS(reader, IO::BitReaderMSB(&imgData[0][imgOfst + 1], imgSize - 1));
 			Media::H264Parser::ParseVari(reader, &v);
-			v = -1;
+			v = (UInt32)-1;
 			Media::H264Parser::ParseVari(reader, &v);
 			if (!frameFound)
 			{
@@ -576,7 +576,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 		return false;
 
 	Sync::MutexUsage mutUsage(this->frameMut);
-	OSInt size = this->BuildIFrameHeader(this->frameBuff);
+	UOSInt size = this->BuildIFrameHeader(this->frameBuff);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	UOSInt oriW = info->dispWidth;
 	UOSInt oriH = info->dispHeight;
@@ -585,7 +585,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fr
 	info->dispHeight = oriH;
 	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
-	info->fourcc = *(Int32*)"h264";
+	info->fourcc = ReadNUInt32("h264");
 
 	return true;
 }

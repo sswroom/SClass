@@ -16,7 +16,7 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->cbData = 0;
 	this->packetMode = -1;
 	this->frameNum = 0;
-	this->lastSeq = -1;
+	this->lastSeq = (UInt32)-1;
 	this->missSeq = true;
 	this->sps = 0;
 	this->pps = 0;
@@ -25,7 +25,7 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->frameInfo, Media::FrameInfo());
 
-	this->frameInfo->fourcc = *(Int32*)"H264";
+	this->frameInfo->fourcc = *(UInt32*)"H264";
 	this->frameInfo->dispWidth = 0;
 	this->frameInfo->dispHeight = 0;
 	this->frameInfo->storeWidth = 0;
@@ -58,7 +58,7 @@ Net::RTPH264Handler::~RTPH264Handler()
 }
 
 
-void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts)
+void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
 {
 	UTF8Char sbuff[32];
 	Sync::MutexUsage mutUsage(mut);
@@ -74,7 +74,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 s
 	UInt8 *frameBuff;
 
 	UInt8 tmpBuff[5];
-	OSInt i = 0;
+	UOSInt i = 0;
 	switch (buff[0] & 0x1f)
 	{
 	case 1:
@@ -264,7 +264,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 	UTF8Char *sarr[2];
 	UTF8Char *sarr2[2];
 	UInt8 buff[256];
-	OSInt splitCnt;
+	UOSInt splitCnt;
 	Text::StrConcat(sbuff, fmtStr);
 	sarr[1] = sbuff;
 	while (true)
@@ -284,7 +284,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 			{
 				Crypto::Encrypt::Base64 b64;
 
-				OSInt txtSize = Text::StrConcat((UTF8Char*)&buff[4], sarr2[0]) - &buff[4];
+				UOSInt txtSize = (UOSInt)(Text::StrConcat((UTF8Char*)&buff[4], sarr2[0]) - &buff[4]);
 				WriteMInt32(buff, 1);
 				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4], 0);
 
@@ -298,7 +298,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 				
 				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, 0);
 
-				txtSize = Text::StrConcat(&buff[4], sarr2[1]) - &buff[4];
+				txtSize = (UOSInt)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
 				WriteMInt32(buff, 1);
 				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4], 0);
 

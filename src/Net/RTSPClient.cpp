@@ -20,10 +20,10 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 	UTF8Char *sptr;
 	UTF8Char *sarr[3];
 	UInt8 dataBuff[2048];
-	OSInt buffSize;
-	OSInt thisSize;
-	OSInt i;
-	OSInt j;
+	UOSInt buffSize;
+	UOSInt thisSize;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	Bool content;
 	IO::MemoryStream *mstm;
@@ -120,7 +120,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 							break;
 						if (Text::StrStartsWith(sbuff, (const UTF8Char*)"Content-Length: "))
 						{
-							cliData->reqReplySize = Text::StrToInt32(&sbuff[16]);
+							cliData->reqReplySize = Text::StrToUInt32(&sbuff[16]);
 						}
 						else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"Session: "))
 						{
@@ -418,11 +418,11 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF
 {
 	UTF8Char sbuff[512];
 	Net::RTSPClient *cli;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 
-	Int32 port = 554;
+	UInt16 port = 554;
 	Text::URLString::GetURLDomain(sbuff, url, &port);
 	if (port == 0)
 	{

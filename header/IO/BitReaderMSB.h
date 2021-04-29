@@ -9,19 +9,19 @@ namespace IO
 	{
 	private:
 		UInt8 *buff;
-		OSInt buffSize;
-		OSInt currBytePos;
-		OSInt currBitPos;
+		UOSInt buffSize;
+		UOSInt currBytePos;
+		UOSInt currBitPos;
 		IO::Stream *stm;
 
 	public:
 		BitReaderMSB(IO::Stream *stm);
-		BitReaderMSB(const UInt8 *buff, OSInt buffSize);
+		BitReaderMSB(const UInt8 *buff, UOSInt buffSize);
 		virtual ~BitReaderMSB();
 
-		virtual Bool ReadBits(Int32 *code, OSInt bitCount);
+		virtual Bool ReadBits(UInt32 *code, UOSInt bitCount);
 		virtual Bool ByteAlign();
-		virtual OSInt ReadBytes(UInt8 *buff, OSInt cnt);
+		virtual UOSInt ReadBytes(UInt8 *buff, UOSInt cnt);
 	};
-};
+}
 #endif

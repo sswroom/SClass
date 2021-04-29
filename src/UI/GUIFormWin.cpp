@@ -972,7 +972,7 @@ void UI::GUIForm::OnFocusLost()
 {
 }
 
-void UI::GUIForm::OnDisplaySizeChange(OSInt dispWidth, OSInt dispHeight)
+void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 

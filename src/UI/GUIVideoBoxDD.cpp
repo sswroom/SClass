@@ -2184,7 +2184,7 @@ void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 	this->curr10Bit = curr10Bit;
 	this->toClear = true;
 
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -2193,7 +2193,7 @@ void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 
 void UI::GUIVideoBoxDD::SetVideo(Media::IVideoSource *video)
 {
-	OSInt i;
+	UOSInt i;
 	///////////////////////////////////////
 	this->playing = false;
 	this->dispMut->LockWrite();
@@ -2603,7 +2603,7 @@ void UI::GUIVideoBoxDD::SetSrcRGBType(Media::CS::TransferType rgbType)
 
 void UI::GUIVideoBoxDD::SetSrcPrimaries(Media::ColorProfile::ColorType colorType)
 {
-	OSInt i;
+	UOSInt i;
 	this->VideoBeginLoad();
 	if (colorType == Media::ColorProfile::CT_VUNKNOWN)
 	{
@@ -2623,7 +2623,7 @@ void UI::GUIVideoBoxDD::SetSrcPrimaries(Media::ColorProfile::ColorType colorType
 
 void UI::GUIVideoBoxDD::SetSrcWP(Media::ColorProfile::WhitePointType wpType)
 {
-	OSInt i;
+	UOSInt i;
 	this->VideoBeginLoad();
 	this->videoInfo->color->GetPrimaries()->SetWhiteType(wpType);
 	this->videoInfo->color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
@@ -2637,7 +2637,7 @@ void UI::GUIVideoBoxDD::SetSrcWP(Media::ColorProfile::WhitePointType wpType)
 
 void UI::GUIVideoBoxDD::SetSrcWPTemp(Double colorTemp)
 {
-	OSInt i;
+	UOSInt i;
 	this->VideoBeginLoad();
 	this->videoInfo->color->GetPrimaries()->SetWhiteTemp(colorTemp);
 	this->videoInfo->color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
@@ -2651,7 +2651,7 @@ void UI::GUIVideoBoxDD::SetSrcWPTemp(Double colorTemp)
 
 void UI::GUIVideoBoxDD::SetSrcYUVType(Media::ColorProfile::YUVType yuvType)
 {
-	OSInt i;
+	UOSInt i;
 	this->VideoBeginLoad();
 	this->videoInfo->yuvType = yuvType;
 	this->srcYUVType = yuvType;

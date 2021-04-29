@@ -14,10 +14,10 @@ namespace IO
 		private:
 			typedef struct
 			{
-				Int64 fileOfst;
+				UInt64 fileOfst;
 				UInt32 headerSize;
 				UInt32 headerType;
-				Int64 dataSize;
+				UInt64 dataSize;
 			} BlockInfo;
 		private:
 			IO::IStreamData *fd;

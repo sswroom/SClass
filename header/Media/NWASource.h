@@ -8,16 +8,16 @@ namespace Media
 	class NWASource : public LPCMSource
 	{
 	private:
-		Int32 currBlock;
-		Int32 sampleCount;
+		UInt32 currBlock;
+		UInt32 sampleCount;
 		UInt32 blockSize;
-		Int32 nBlocks;
-		Int32 compLevel;
+		UInt32 nBlocks;
+		UInt32 compLevel;
 		UInt32 *blockOfsts;
 		UInt8 *blockBuff;
 
 	public:
-		NWASource(IO::IStreamData *fd, Int32 sampleCount, UInt32 blockSize, Int32 compLevel, Int32 nBlocks, Media::AudioFormat *format, const UTF8Char *name);
+		NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, const UTF8Char *name);
 		virtual ~NWASource();
 
 		virtual Int32 GetStreamTime(); //ms

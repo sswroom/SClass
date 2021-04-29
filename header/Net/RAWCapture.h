@@ -35,8 +35,8 @@ namespace Net
 		IO::Stream *fs;
 		FileFormat format;
 		Sync::Mutex *mut;
-		Int64 packetCnt;
-		Int64 dataSize;
+		UInt64 packetCnt;
+		UInt64 dataSize;
 	
 		static void __stdcall DataHandler(void *userData, const UInt8 *packetData, UOSInt packetSize);
 	public:
@@ -44,8 +44,8 @@ namespace Net
 		~RAWCapture();
 
 		Bool IsError();
-		Int64 GetPacketCnt();
-		Int64 GetDataSize();
+		UInt64 GetPacketCnt();
+		UInt64 GetDataSize();
 
 		static const UTF8Char *CaptureTypeGetName(CaptureType type);
 		static Int32 CaptureTypeGetLinkType(CaptureType type);

@@ -129,5 +129,5 @@ namespace Media
 		virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam) = 0;
 		virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam) = 0;
 	};
-};
+}
 #endif

@@ -40,7 +40,7 @@ UInt8 Net::RTPAACHandler::GetRateIndex()
 	}
 }
 
-Net::RTPAACHandler::RTPAACHandler(Int32 payloadType, Int32 freq, Int32 nChannel)
+Net::RTPAACHandler::RTPAACHandler(Int32 payloadType, UInt32 freq, UInt32 nChannel)
 {
 	this->payloadType = payloadType;
 	this->freq = freq;
@@ -63,9 +63,9 @@ Net::RTPAACHandler::~RTPAACHandler()
 	DEL_CLASS(this->mut);
 }
 
-void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 seqNum, UInt32 ts)
+void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
 {
-	Int32 headerSize = ReadMInt16(&buff[0]);
+	UInt32 headerSize = ReadMUInt16(&buff[0]);
 	if (headerSize & 7)
 	{
 		headerSize = (headerSize >> 3) + 1;
@@ -74,10 +74,10 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 se
 	{
 		headerSize = headerSize >> 3;
 	}
-	OSInt sizeLeft = dataSize - headerSize;
-	OSInt ofst = headerSize + 2;
-	OSInt i = 0;
-	Int32 thisSize;
+	UOSInt sizeLeft = dataSize - headerSize;
+	UOSInt ofst = headerSize + 2;
+	UOSInt i = 0;
+	UInt32 thisSize;
 
 	Sync::MutexUsage mutUsage(this->mut);
 	switch (this->aacm)
@@ -85,7 +85,7 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 se
 	case AACM_AAC_HBR:
 		while (i < headerSize)
 		{
-			thisSize = ReadMInt16(&buff[i + 2]) >> 3;
+			thisSize = (UInt32)(ReadMUInt16(&buff[i + 2]) >> 3);
 			if ((this->buffSize + thisSize + 7) > 1048576 || thisSize > sizeLeft)
 			{
 				break;
@@ -93,11 +93,11 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, OSInt dataSize, Int32 se
 			//ADTS Header
 			this->buff[this->buffSize + 0] = 0xff;
 			this->buff[this->buffSize + 1] = 0xf9;
-			this->buff[this->buffSize + 2] = 1 << 6; // profile = 1 (AAC-LC)
-			this->buff[this->buffSize + 2] |= GetRateIndex() << 2;
-			this->buff[this->buffSize + 2] |= this->nChannel >> 2;
-			this->buff[this->buffSize + 3] = (this->nChannel & 3) << 6;
-			this->buff[this->buffSize + 3] |= ((thisSize + 7) & 0x1800) >> 11;
+			this->buff[this->buffSize + 2] = (1 << 6) // profile = 1 (AAC-LC)
+										| (UInt8)(GetRateIndex() << 2)
+										| (UInt8)(this->nChannel >> 2);
+			this->buff[this->buffSize + 3] = (UInt8)((this->nChannel & 3) << 6)
+										| (UInt8)(((thisSize + 7) & 0x1800) >> 11);
 			this->buff[this->buffSize + 4] = ((thisSize + 7) & 0x7f8) >> 3;
 			this->buff[this->buffSize + 5] = ((thisSize + 7) & 7) << 5;
 			this->buff[this->buffSize + 5] |= 0x1f;
@@ -132,7 +132,7 @@ void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[2];
-	OSInt i;
+	UOSInt i;
 	Text::StrConcat(sbuff, fmtStr);
 	sarr[1] = sbuff;
 	while (true)
@@ -221,7 +221,7 @@ void Net::RTPAACHandler::GetFormat(Media::AudioFormat *format)
 	format->Clear();
 	format->formatId = 255;
 	format->frequency = this->freq;
-	format->nChannels = this->nChannel;
+	format->nChannels = (UInt16)this->nChannel;
 	format->bitpersample = 16;
 	format->align = 1;
 	format->intType = Media::AudioFormat::IT_NORMAL;

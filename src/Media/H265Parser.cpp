@@ -5,17 +5,17 @@
 #include "Media/H265Parser.h"
 #include "Text/MyString.h"
 
-Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, OSInt spsSize, Media::FrameInfo *frameInfo)
+Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, Media::FrameInfo *frameInfo)
 {
 	IO::BitReaderMSB *reader;
 	UInt8 *tmpBuff;
-	OSInt tmpSize;
-	OSInt i;
-	OSInt j;
-	Int32 tmp;
-	Int32 sps_max_sub_layers_minus1;
-	Int32 chroma_format_idc;
-	Int32 num_short_term_ref_pic_sets;
+	UOSInt tmpSize;
+	UOSInt i;
+	UOSInt j;
+	UInt32 tmp;
+	UInt32 sps_max_sub_layers_minus1;
+	UInt32 chroma_format_idc;
+	UInt32 num_short_term_ref_pic_sets;
 
 	if ((sps[0] & 0x7e) != 0x42)
 		return false;
@@ -63,7 +63,7 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, OSInt spsSize, Media::
 		reader->ReadBits(&tmp, 8); //general_level_idc
 		if (sps_max_sub_layers_minus1 > 0)
 		{
-			Int32 subLyrFlags[8];
+			UInt32 subLyrFlags[8];
 			i = 0;
 			while (i < 8)
 			{
@@ -100,8 +100,8 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, OSInt spsSize, Media::
 	{
 		reader->ReadBits(&tmp, 1); //separate_colour_plane_flag
 	}
-	Int32 pic_width_in_luma_samples;
-	Int32 pic_height_in_luma_samples;
+	UInt32 pic_width_in_luma_samples;
+	UInt32 pic_height_in_luma_samples;
 	Media::H264Parser::ParseVari(reader, &pic_width_in_luma_samples); //pic_width_in_luma_samples
 	Media::H264Parser::ParseVari(reader, &pic_height_in_luma_samples); //pic_height_in_luma_samples
 	if (pic_width_in_luma_samples != 0 && pic_height_in_luma_samples != 0)
@@ -237,8 +237,8 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, OSInt spsSize, Media::
 		reader->ReadBits(&tmp, 1); //aspect_ratio_info_present_flag
 		if (tmp)
 		{
-			Int32 sarWidth;
-			Int32 sarHeight;
+			UInt32 sarWidth;
+			UInt32 sarHeight;
 
 			reader->ReadBits(&tmp, 8); //aspect_ratio_idc
 			switch (tmp)
