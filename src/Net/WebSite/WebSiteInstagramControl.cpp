@@ -67,8 +67,8 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(const UTF8Char *cha
 		Text::JSONObject *obj1;
 		Text::JSONArray *arr1;
 		Text::JSONStringUTF8 *str1;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		if (baseData->GetJSType() == Text::JSONBase::JST_OBJECT)
 		{
 			obj1 = (Text::JSONObject*)baseData;
@@ -217,7 +217,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(const UTF8Char *cha
 void Net::WebSite::WebSiteInstagramControl::FreeItems(Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> *itemList)
 {
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
-	OSInt i = itemList->GetCount();
+	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItem(i);
@@ -250,8 +250,8 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(const UTF8Char *short
 		Text::JSONBase *jsBase;
 		Text::JSONObject *obj1;
 		Text::JSONArray *arr1;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		if (baseData->GetJSType() == Text::JSONBase::JST_OBJECT)
 		{
 			obj1 = (Text::JSONObject*)baseData;

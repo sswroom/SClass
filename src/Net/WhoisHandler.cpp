@@ -48,7 +48,7 @@ Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf)
 Net::WhoisHandler::~WhoisHandler()
 {
 	DEL_CLASS(this->client);
-	OSInt i = this->recordList->GetCount();
+	UOSInt i = this->recordList->GetCount();
 	WhoisRecord *rec;
 	while (i-- > 0)
 	{
@@ -71,11 +71,11 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	
 	Sync::MutexUsage mutUsage(this->recordMut);
 	i = 0;
-	j = this->recordList->GetCount() - 1;
+	j = (OSInt)this->recordList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		rec = this->recordList->GetItem(k);
+		rec = this->recordList->GetItem((UOSInt)k);
 		sortableIP1 = Net::SocketUtil::IPv4ToSortable(rec->GetStartIP());
 		sortableIP2 = Net::SocketUtil::IPv4ToSortable(rec->GetEndIP());
 		if (sortableIP >= sortableIP1 && sortableIP <= sortableIP2)
@@ -92,6 +92,6 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 		}
 	}
 	rec = this->client->RequestIP(ip);
-	this->recordList->Insert(i, rec);
+	this->recordList->Insert((UOSInt)i, rec);
 	return rec;
 }

@@ -27,26 +27,26 @@ namespace SSWR
 			{
 				Int64 reqTime;
 				Net::SocketUtil::AddressInfo cliAddr;
-				Int32 cliPort;
+				UInt16 cliPort;
 				const UTF8Char *reqURI;
 				Data::ArrayListStrUTF8 *headerName;
 				Data::ArrayList<const UTF8Char *> *headerVal;
 			} LogEntry;
 		private:
-			OSInt logCnt;
+			UOSInt logCnt;
 			LogEntry *entries;
-			OSInt currEnt;
+			UOSInt currEnt;
 			Sync::Mutex *entMut;
 
 		public:
-			AVIRHTTPLog(OSInt logCnt);
+			AVIRHTTPLog(UOSInt logCnt);
 			virtual ~AVIRHTTPLog();
 
 			virtual void LogRequest(Net::WebServer::IWebRequest *req);
-			OSInt GetNextIndex();
+			UOSInt GetNextIndex();
 			void Use(Sync::MutexUsage *mutUsage);
-			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<OSInt> *logIndex);
-			LogEntry *GetEntry(OSInt index);
+			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex);
+			LogEntry *GetEntry(UOSInt index);
 		};
 
 		class AVIRHTTPSvrForm : public UI::GUIForm
@@ -59,7 +59,7 @@ namespace SSWR
 			UI::ListBoxLogger *logger;
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
 			AVIRHTTPLog *reqLog;
-			OSInt lastAccessIndex;
+			UOSInt lastAccessIndex;
 
 			UI::GUITabControl *tcMain;
 			UI::GUITabPage *tpControl;

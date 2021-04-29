@@ -39,18 +39,18 @@ void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStat
 	{
 		printf("CliId not found\r\n");
 	}
-	if (cliArr->GetItem(ind) == cliStat)
+	if (cliArr->GetItem((UOSInt)ind) == cliStat)
 	{
-		cliArr->RemoveAt(ind);
-		cliIdArr->RemoveAt(ind);
+		cliArr->RemoveAt((UOSInt)ind);
+		cliIdArr->RemoveAt((UOSInt)ind);
 	}
 	else
 	{
 		ind = cliArr->IndexOf(cliStat);
 		if (ind != -1)
 		{
-			cliArr->RemoveAt(ind);
-			cliIdArr->RemoveAt(ind);
+			cliArr->RemoveAt((UOSInt)ind);
+			cliIdArr->RemoveAt((UOSInt)ind);
 		}
 		else
 		{
@@ -67,15 +67,16 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	ClassData *clsData = (ClassData*)me->clsData;
 	NEW_CLASS(currTime, Data::DateTime());
 	NEW_CLASS(clk, Manage::HiResClock());
-	OSInt i;
-	OSInt readSize;
+	Int32 pollRet;
+	UOSInt i;
+	UOSInt readSize;
 	UInt8 tmpBuff[16];
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
-	OSInt pollfdCap = 16;
+	UOSInt pollfdCap = 16;
 	struct pollfd *pollfds = MemAlloc(struct pollfd, pollfdCap);
 	Net::TCPClientMgr::TCPClientStatus **pollCli = MemAlloc(Net::TCPClientMgr::TCPClientStatus*, pollfdCap);
-	OSInt pollCliCnt = -1;
-	OSInt pollReqCnt;
+	UOSInt pollCliCnt;
+	UOSInt pollReqCnt;
 	Bool pollPreData = false;
 
 	me->clientThreadRunning = true;
@@ -127,19 +128,19 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 		mutUsage.EndUse();
 		if (pollPreData)
 		{
-			i = 1;
+			pollRet = 1;
 		}
 		else
 		{
 //			printf("Poll Begin\r\n");
-			i = poll(pollfds, pollReqCnt + 1, -1);
+			pollRet = poll(pollfds, pollReqCnt + 1, -1);
 //			printf("Poll End %d\r\n", i);
 		}
-		if (i > 0)
+		if (pollRet > 0)
 		{
 			if (pollfds[0].revents != 0)
 			{
-				i = read(clsData->piperdfd, tmpBuff, 16);
+				pollRet = read(clsData->piperdfd, tmpBuff, 16);
 				pollfds[0].revents = 0;
 				clsData->hasData = false;
 			}
@@ -249,7 +250,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Net::TCPClientMgr *me = stat->me;
 	ClassData *clsData = (ClassData*)me->clsData;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
-	OSInt i;
+	UOSInt i;
 	stat->running = true;
 	NEW_CLASS(dt, Data::DateTime());
 	while (!stat->toStop)
@@ -357,7 +358,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 Net::TCPClientMgr::~TCPClientMgr()
 {
 	ClassData *clsData = (ClassData*)this->clsData;
-	OSInt i = cliArr->GetCount();
+	UOSInt i = cliArr->GetCount();
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	if (i)
 	{

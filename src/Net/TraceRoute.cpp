@@ -11,10 +11,10 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Net::SocketFactory::ErrorType et;
-	OSInt readSize;
+	UOSInt readSize;
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
-	OSInt ipDataSize;
+	UOSInt ipDataSize;
 	me->threadRunning = true;
 	me->resEvt->Set();
 	while (!me->threadToStop)
@@ -41,7 +41,7 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 					UInt16 seq = ReadMUInt16(&ipData[6]);
 					if (me->resId == id && me->resSeq == seq)
 					{
-						me->resIP = ReadNInt32(&readBuff[12]);
+						me->resIP = ReadNUInt32(&readBuff[12]);
 						me->resFound = true;
 						me->resEvt->Set();
 					}
@@ -51,7 +51,7 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 				}
 				else if (ipData[0] == 11)
 				{
-					me->resIP = ReadNInt32(&readBuff[12]);
+					me->resIP = ReadNUInt32(&readBuff[12]);
 					me->resFound = true;
 					me->resEvt->Set();
 				}

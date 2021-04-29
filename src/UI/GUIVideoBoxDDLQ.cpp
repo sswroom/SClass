@@ -10,13 +10,13 @@
 void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
 	OSInt rect[4];
-	OSInt srcWidth = 0;
-	OSInt srcHeight = 0;
+	UOSInt srcWidth = 0;
+	UOSInt srcHeight = 0;
 	OSInt cropWidth;
 	OSInt cropHeight;
 	OSInt cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
-	OSInt sizeNeeded;
+	UOSInt sizeNeeded;
 
 #if 0
 	tstat->me->buffMut->Lock();
@@ -32,15 +32,15 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	}
 
 	Manage::HiResClock clk;
-	tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, this->videoInfo->dispWidth, this->videoInfo->dispHeight, this->videoInfo->storeWidth, this->videoInfo->storeHeight, this->videoInfo->dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
+	tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, this->videoInfo->dispWidth, this->videoInfo->dispHeight, this->videoInfo->storeWidth, this->videoInfo->storeHeight, (OSInt)this->videoInfo->dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
 	tstat->csTime = clk.GetTimeDiff();
 
 	if (vbuff->frameType == Media::FT_NON_INTERLACE)
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = srcWidth - this->cropLeft - this->cropRight;
-		cropHeight = srcHeight - this->cropTop - this->cropBottom;
+		cropWidth = (OSInt)srcWidth - this->cropLeft - this->cropRight;
+		cropHeight = (OSInt)srcHeight - this->cropTop - this->cropBottom;
 		cropDY = this->cropTop;
 		srcBuff = tstat->lrBuff;
 	}
@@ -48,8 +48,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight << 1;
-		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop << 1;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -76,8 +76,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight << 1;
-		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop << 1;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -104,8 +104,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -132,8 +132,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -160,8 +160,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -216,8 +216,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = srcWidth - this->cropLeft - this->cropRight;
-		cropHeight = srcHeight - this->cropTop - this->cropBottom;
+		cropWidth = (OSInt)srcWidth - this->cropLeft - this->cropRight;
+		cropHeight = (OSInt)srcHeight - this->cropTop - this->cropBottom;
 		cropDY = this->cropTop;
 		srcBuff = tstat->lrBuff;
 	}
@@ -225,8 +225,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = srcWidth - this->cropLeft - this->cropRight;
-		cropHeight = srcHeight - this->cropTop - this->cropBottom;
+		cropWidth = (OSInt)srcWidth - this->cropLeft - this->cropRight;
+		cropHeight = (OSInt)srcHeight - this->cropTop - this->cropBottom;
 		cropDY = this->cropTop;
 		srcBuff = tstat->lrBuff;
 	}

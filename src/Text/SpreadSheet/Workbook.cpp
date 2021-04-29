@@ -37,7 +37,7 @@ Text::SpreadSheet::Workbook::~Workbook()
 	Text::SpreadSheet::Worksheet *ws;
 	Text::SpreadSheet::CellStyle *style;
 	Text::SpreadSheet::WorkbookFont *font;
-	OSInt i = this->sheets->GetCount();
+	UOSInt i = this->sheets->GetCount();
 	while (i-- > 0)
 	{
 		ws = this->sheets->GetItem(i);
@@ -265,7 +265,7 @@ void Text::SpreadSheet::Workbook::SetWindowHeight(Int32 windowHeight)
 	this->windowHeight = windowHeight;
 }
 
-void Text::SpreadSheet::Workbook::SetActiveSheet(OSInt index)
+void Text::SpreadSheet::Workbook::SetActiveSheet(UOSInt index)
 {
 	this->activeSheet = index;
 }
@@ -290,7 +290,7 @@ Int32 Text::SpreadSheet::Workbook::GetWindowHeight()
 	return this->windowHeight;
 }
 
-OSInt Text::SpreadSheet::Workbook::GetActiveSheet()
+UOSInt Text::SpreadSheet::Workbook::GetActiveSheet()
 {
 	return this->activeSheet;
 }
@@ -319,23 +319,23 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle()
 	return style;
 }
 
-OSInt Text::SpreadSheet::Workbook::GetStyleCount()
+UOSInt Text::SpreadSheet::Workbook::GetStyleCount()
 {
 	return this->styles->GetCount();
 }
 
 OSInt Text::SpreadSheet::Workbook::GetStyleIndex(CellStyle *style)
 {
-	OSInt i = this->styles->GetCount();
+	UOSInt i = this->styles->GetCount();
 	while (i-- > 0)
 	{
 		if (this->styles->GetItem(i) == style)
-			return i;
+			return (OSInt)i;
 	}
 	return -1;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(OSInt Index)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt Index)
 {
 	return this->styles->GetItem(Index);
 }
@@ -364,7 +364,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(const UT
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(OSInt index, const UTF8Char *name)
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, const UTF8Char *name)
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
@@ -372,17 +372,17 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(OSInt
 	return ws;
 }
 
-OSInt Text::SpreadSheet::Workbook::GetCount()
+UOSInt Text::SpreadSheet::Workbook::GetCount()
 {
 	return this->sheets->GetCount();
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetItem(OSInt index)
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetItem(UOSInt index)
 {
 	return this->sheets->GetItem(index);
 }
 
-void Text::SpreadSheet::Workbook::RemoveAt(OSInt index)
+void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 {
 	Text::SpreadSheet::Worksheet *ws = this->sheets->RemoveAt(index);
 	if (ws)

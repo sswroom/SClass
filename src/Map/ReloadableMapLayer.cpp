@@ -465,8 +465,8 @@ Map::DrawObjectL *Map::ReloadableMapLayer::GetObjectByIdD(void *session, Int64 i
 
 Math::Vector2D *Map::ReloadableMapLayer::GetVectorById(void *session, Int64 id)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
 	Math::Vector2D *vec = 0;

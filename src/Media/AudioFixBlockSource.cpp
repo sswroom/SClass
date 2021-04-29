@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioFixBlockSource.h"
 
-Media::AudioFixBlockSource::AudioFixBlockSource(IO::IStreamData *fd, Int64 ofst, Int64 length, Media::AudioFormat *format, const UTF8Char *name)
+Media::AudioFixBlockSource::AudioFixBlockSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, const UTF8Char *name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
@@ -54,7 +54,7 @@ UInt32 Media::AudioFixBlockSource::SeekToTime(UInt32 time)
 	{
 		blk = this->format.align;
 	}
-	this->readOfst = (MulDiv32(time, this->format.bitRate >> 3, 1000) / this->format.align) * blk;
+	this->readOfst = (MulDivU32(time, this->format.bitRate >> 3, 1000) / this->format.align) * blk;
 	return (UInt32)(this->readOfst * 8000 / this->format.bitRate);
 }
 

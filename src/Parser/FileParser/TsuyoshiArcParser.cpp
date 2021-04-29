@@ -90,10 +90,10 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 		while (filePtr > &recBuff[j])
 		{
 			filePtr--;
-			*filePtr -= b;
+			*filePtr = (UInt8)(*filePtr - b);
 			b++;
 		}
-		enc.UTF8FromBytes(fileName, &recBuff[j], -1, 0);
+		enc.UTF8FromBytes(fileName, &recBuff[j], Text::StrCharCnt(&recBuff[j]), 0);
 		if (recSize == decSize)
 		{
 			pf->AddData(fd, recOfst, recSize, fileName, 0);

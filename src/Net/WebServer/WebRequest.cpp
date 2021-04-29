@@ -497,11 +497,12 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 		else if (Text::StrStartsWith(sb->ToString(), (const UTF8Char*)"multipart/form-data"))
 		{
 			UTF8Char *sptr = sb->ToString();
-			OSInt i = Text::StrIndexOf(sptr, (const UTF8Char*)"boundary=");
-			if (i >= 0)
+			OSInt si = Text::StrIndexOf(sptr, (const UTF8Char*)"boundary=");
+			UOSInt i;
+			if (si >= 0)
 			{
-				UInt8 *boundary = &sptr[i + 9];
-				UOSInt boundSize = Text::StrCharCnt(&sptr[i + 9]);
+				UInt8 *boundary = &sptr[si + 9];
+				UOSInt boundSize = Text::StrCharCnt(&sptr[si + 9]);
 				NEW_CLASS(this->formMap, Data::StringUTF8Map<const UTF8Char *>());
 				NEW_CLASS(this->formFileList, Data::ArrayList<FormFileInfo *>());
 
@@ -667,7 +668,7 @@ Bool Net::WebServer::WebRequest::HasData()
 		{
 			return false;
 		}
-		this->reqDataSize = -1;
+		this->reqDataSize = (UOSInt)-1;
 		return true;
 	}
 	this->reqDataSize = (UOSInt)Text::StrToUInt64(contLeng);
@@ -725,7 +726,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 
 		UOSInt i;
 		UOSInt j;
-		Int32 leng;
+		UInt32 leng;
 		i = 0;
 		while (i <= this->reqCurrSize - 2)
 		{
@@ -745,7 +746,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 				if (this->reqData[j] == 13 && this->reqData[j + 1] == 10)
 				{
 					this->reqData[j] = 0;
-					leng = Text::StrHex2Int32(&this->reqData[i]);
+					leng = Text::StrHex2UInt32(&this->reqData[i]);
 					this->reqData[j] = 13;
 					if (j + 4 + leng <= this->reqCurrSize)
 					{

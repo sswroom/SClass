@@ -16,12 +16,12 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
 	}
 	else
 	{
-		Int32 threadCnt = 0;
+		UInt32 threadCnt = 0;
 		UInt16 maxPort = 0;
 		Net::SocketUtil::AddressInfo addr;
 		Text::StringBuilderUTF8 sb;
 		me->txtThreadCnt->GetText(&sb);
-		if (!sb.ToInt32(&threadCnt))
+		if (!sb.ToUInt32(&threadCnt))
 		{
 			return;
 		}
@@ -53,8 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 		{
 			UTF8Char sbuff[32];
 			Data::ArrayList<UInt16> portList;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			UInt16 port;
 			const UTF8Char *csptr;
 			me->listUpdated = false;
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 			{
 				port = portList.GetItem(i);
 				Text::StrUInt16(sbuff, port);
-				me->lvPort->AddItem(sbuff, (void*)(OSInt)port);
+				me->lvPort->AddItem(sbuff, (void*)(UOSInt)port);
 				csptr = Net::EthernetAnalyzer::TCPPortGetName(port);
 				if (csptr)
 				{

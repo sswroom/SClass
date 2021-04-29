@@ -28,7 +28,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::Parse
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	Int32 imgTime;
 	Media::Image *img;
-	OSInt i = imgList->GetCount();
+	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
 		return IO::FileExporter::ST_NOT_SUPPORTED;

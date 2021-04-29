@@ -24,7 +24,7 @@ UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, Int32 devNo)
 	return 0;
 }
 
-Media::WaveInSource::WaveInSource(const UTF8Char *devName, Int32 freq, Int16 nbits, Int16 nChannels)
+Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	this->devId = -1;
 	this->freq = freq;
@@ -36,7 +36,7 @@ Media::WaveInSource::WaveInSource(const UTF8Char *devName, Int32 freq, Int16 nbi
 	NEW_CLASS(this->dataEvt, Sync::Event(true, (const UTF8Char*)"Media.WaveInSource.dataEvt"));
 }
 
-Media::WaveInSource::WaveInSource(Int32 devId, Int32 freq, Int16 nbits, Int16 nChannels)
+Media::WaveInSource::WaveInSource(Int32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	this->devId = devId;
 	this->freq = freq;
@@ -90,7 +90,7 @@ void Media::WaveInSource::GetFormat(AudioFormat *format)
 	format->frequency = this->freq;
 	format->nChannels = this->nChannels;
 	format->bitRate = this->freq * this->nChannels * this->nbits;
-	format->align = this->nChannels * this->nbits >> 3;
+	format->align = (UInt32)this->nChannels * this->nbits >> 3;
 }
 
 Bool Media::WaveInSource::Start(Sync::Event *evt, UOSInt blkSize)
@@ -111,7 +111,7 @@ UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 
 UOSInt Media::WaveInSource::GetMinBlockSize()
 {
-	return this->nChannels * this->nbits >> 3;
+	return (UInt32)(this->nChannels * this->nbits >> 3);
 }
 
 UInt32 Media::WaveInSource::GetCurrTime()

@@ -275,7 +275,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirector
 		{
 			if (Text::StrSplit(sarr, 2, sb.ToString(), '\t') == 2)
 			{
-				stat->cntMap->Put(sarr[1], Text::StrToInt32(sarr[0]));
+				stat->cntMap->Put(sarr[1], Text::StrToUInt32(sarr[0]));
 			}
 			sb.ClearStr();
 		}
@@ -289,7 +289,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 	IO::FileStream *fs;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<const UTF8Char *> *nameList = stat->cntMap->GetKeys();
-	Data::ArrayList<Int32> *cntList = stat->cntMap->GetValues();
+	Data::ArrayList<UInt32> *cntList = stat->cntMap->GetValues();
 	stat->updated = false;
 	if (nameList->GetCount() > 0)
 	{
@@ -305,7 +305,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 			while (i < j)
 			{
 				sb.ClearStr();
-				sb.AppendI32(cntList->GetItem(i));
+				sb.AppendU32(cntList->GetItem(i));
 				sb.AppendChar('\t', 1);
 				sb.Append(nameList->GetItem(i));
 				writer->WriteLine(sb.ToString());
@@ -552,7 +552,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"index.html");
 				}
-				Int32 cnt = stat->cntMap->Get(sb.ToString());
+				UInt32 cnt = stat->cntMap->Get(sb.ToString());
 				stat->cntMap->Put(sb.ToString(), cnt + 1);
 				stat->updated = true;
 			}
@@ -874,7 +874,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						{
 							stat = MemAlloc(Net::WebServer::HTTPDirectoryHandler::StatInfo, 1);
 							stat->reqPath = Text::StrCopyNew(sb2.ToString());
-							NEW_CLASS(stat->cntMap, Data::StringUTF8Map<Int32>());
+							NEW_CLASS(stat->cntMap, Data::StringUTF8Map<UInt32>());
 							stat->updated = true;
 							sb2.ClearStr();
 							sb2.AppendC(sb.ToString(), sb.GetLength());
@@ -889,7 +889,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						mutUsage.EndUse();
 					}
 
-					Int32 cnt;
+					UInt32 cnt;
 					UInt64 fileSize;
 					IO::Path::PathType pt;
 					Data::DateTime modTime;
@@ -946,7 +946,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								if (this->statMap)
 								{
 									sbOut.AppendC((const UTF8Char*)"</td><td>", 9);
-									sbOut.AppendI32(cnt);
+									sbOut.AppendU32(cnt);
 								}
 								sbOut.AppendC((const UTF8Char*)"</td><td>", 9);
 								sbOut.AppendDate(&modTime);
@@ -1043,12 +1043,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								IO::Path::GetFileExt(sbuff2, ent->fileName);
 								sbOut.Append(Net::MIME::GetMIMEFromExt(sbuff2));
 								sbOut.Append((const UTF8Char*)"</td><td>");
-								sbOut.AppendI64(ent->fileSize);
+								sbOut.AppendU64(ent->fileSize);
 							}
 							if (this->statMap)
 							{
 								sbOut.Append((const UTF8Char*)"</td><td>");
-								sbOut.AppendI32(ent->cnt);
+								sbOut.AppendU32(ent->cnt);
 							}
 							sbOut.Append((const UTF8Char*)"</td><td>");
 							modTime.SetTicks(ent->modTime);
@@ -1132,7 +1132,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					stat->reqPath = Text::StrCopyNew(sb2.ToString());
 				}
 				stat->reqPath = Text::StrCopyNew(sb2.ToString());
-				NEW_CLASS(stat->cntMap, Data::StringUTF8Map<Int32>());
+				NEW_CLASS(stat->cntMap, Data::StringUTF8Map<UInt32>());
 				stat->updated = true;
 				Text::StrConcat(sbuff, sptr);
 				i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);

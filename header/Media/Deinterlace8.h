@@ -25,10 +25,10 @@ namespace Media
 
 	typedef struct
 	{
-		OSInt length;
+		UOSInt length;
 		Int64 *weight;
 		OSInt *index;
-		OSInt tap;
+		UOSInt tap;
 	} DI8PARAMETER;
 
 
@@ -40,20 +40,20 @@ namespace Media
 		DI8THREADSTAT *stats;
 		UOSInt nCore;
 		Sync::Event *evtMain;
-		OSInt fieldCnt;
+		UOSInt fieldCnt;
 		OSInt fieldSep;
 
 
 		static Double lanczos3_weight(Double phase);
-		static void SetupInterpolationParameter(OSInt source_length, OSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr);
+		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr);
 
 		static UInt32 __stdcall ProcThread(void *obj);
 	public:
-		Deinterlace8(OSInt fieldCnt, OSInt fieldSep);
+		Deinterlace8(UOSInt fieldCnt, OSInt fieldSep);
 		virtual ~Deinterlace8();
 
-		virtual void Reinit(OSInt fieldCnt, OSInt fieldSep);
-		virtual void Deinterlace(UInt8 *src, UInt8 *dest, OSInt isBottomField, OSInt width, OSInt dstep);
+		virtual void Reinit(UOSInt fieldCnt, OSInt fieldSep);
+		virtual void Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep);
 	};
-};
+}
 #endif

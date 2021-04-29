@@ -71,7 +71,7 @@ Text::IMIMEObj *Text::MIMEObj::TextMIMEObj::Clone()
 void Text::MIMEObj::TextMIMEObj::GetText(Text::StringBuilderUTF *sb)
 {
 	Text::Encoding enc(this->codePage);
-	OSInt strLen;
+	UOSInt strLen;
 	UTF8Char *sbuff;
 	strLen = enc.CountUTF8Chars(this->textBuff, this->buffSize);
 	sbuff = MemAlloc(UTF8Char, strLen + 1);

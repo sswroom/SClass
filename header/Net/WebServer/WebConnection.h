@@ -33,7 +33,7 @@ namespace Net
 			Bool respDataEnd;
 			Net::WebStatus::StatusCode respStatus;
 			Text::StringBuilderUTF8 *respHeaders;
-			Int64 respLeng;
+			UInt64 respLeng;
 
 			SendLogger logger;
 			void *loggerObj;
@@ -58,7 +58,7 @@ namespace Net
 			virtual Int32 GetStatusCode();
 			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value);
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req);
-			virtual Int64 GetRespLength();
+			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();
 
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);

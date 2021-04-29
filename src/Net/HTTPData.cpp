@@ -11,7 +11,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 {
 	UInt8 buff[2048];
 	UTF8Char u8buff[64];
-	OSInt readSize;
+	UOSInt readSize;
 
 	HTTPDATAHANDLE *fdh = (HTTPDATAHANDLE*)userObj;
 	if (fdh->queue)
@@ -90,7 +90,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				Sync::MutexUsage mutUsage(fdh->mut);
 				if (fdh->currentOffset != fdh->loadSize)
 				{
-					fdh->file->Seek(IO::SeekableStream::ST_BEGIN, fdh->loadSize);
+					fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)fdh->loadSize);
 					fdh->seekCnt++;
 					fdh->currentOffset = fdh->loadSize;
 				}
@@ -121,8 +121,9 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					sess = fdh->cli->BeginRead(buff, 2048, readEvt);
 					if (sess)
 					{
+						Bool incomplete;
 						readEvt->Wait(2000);
-						readSize = fdh->cli->EndRead(sess, false);
+						readSize = fdh->cli->EndRead(sess, false, &incomplete);
 						if (readSize <= 0)
 						{
 							fdh->cli->Close();
@@ -137,7 +138,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					Sync::MutexUsage mutUsage(fdh->mut);
 					if (fdh->currentOffset != fdh->loadSize)
 					{
-						fdh->file->Seek(IO::SeekableStream::ST_BEGIN, fdh->loadSize);
+						fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)fdh->loadSize);
 						fdh->seekCnt++;
 					}
 					fdh->file->Write(buff, readSize);
@@ -190,7 +191,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 
 Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload)
 {
-	OSInt i;
+	UOSInt i;
 	Bool needReload = forceReload;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
 	fdh = 0;
@@ -244,7 +245,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const 
 	else
 	{
 		dataOffset = 0;
-		dataLength = -1;
+		dataLength = (UOSInt)-1;
 		fdh = MemAlloc(Net::HTTPData::HTTPDATAHANDLE, 1);
 		fdh->file = 0;
 		fdh->fileLength = 0;
@@ -303,12 +304,12 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 		}
 		fdh->seekCnt++;
 	}
-	OSInt byteRead;
+	UOSInt byteRead;
 	if (length < this->GetDataSize() - offset)
 		byteRead = fdh->file->Read(buffer, length);
 	else
-		byteRead = fdh->file->Read(buffer, (UInt32) (dataLength - offset));
-	if (byteRead == -1)
+		byteRead = fdh->file->Read(buffer, (UOSInt) (dataLength - offset));
+	if (byteRead == 0)
 	{
 		mutUsage.EndUse();
 		return 0;
@@ -320,7 +321,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 
 UInt64 Net::HTTPData::GetDataSize()
 {
-	if (dataLength == -1)
+	if (dataLength == (UOSInt)-1)
 	{
 		while (true)
 		{

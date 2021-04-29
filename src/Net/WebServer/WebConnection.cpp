@@ -57,7 +57,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 	UOSInt j;
 	UOSInt lineStart;
 	OSInt strIndex;
-	OSInt strLen;
+	UOSInt strLen;
 	if (this->proxyMode)
 	{
 		if (this->proxyCli->Write(buff, size) != size)
@@ -323,16 +323,16 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 					strIndex = Text::StrIndexOf((Char*)&this->dataBuff[lineStart], ':');
 					if (strIndex >= 0)
 					{
-						this->dataBuff[lineStart + strIndex] = 0;
+						this->dataBuff[lineStart + (UOSInt)strIndex] = 0;
 						strIndex++;
-						while (this->dataBuff[lineStart + strIndex] == ' ')
+						while (this->dataBuff[lineStart + (UOSInt)strIndex] == ' ')
 						{
 							strIndex++;
 						}
 						this->dataBuff[i] = 0;
 						if (this->currReq)
 						{
-							this->currReq->AddHeader(&this->dataBuff[lineStart], &this->dataBuff[lineStart + strIndex]);
+							this->currReq->AddHeader(&this->dataBuff[lineStart], &this->dataBuff[lineStart + (UOSInt)strIndex]);
 						}
 					}
 				}
@@ -446,10 +446,10 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	sptr = Text::StrConcat(sptr, (Char*)this->respHeaders->ToString());
 	sptr = Text::StrConcat(sptr, "\r\n");
 
-	cli->Write(buff, sptr - (Char*)buff);
+	cli->Write(buff, (UOSInt)(sptr - (Char*)buff));
 	if (this->logger)
 	{
-		this->logger(this->loggerObj, sptr - (Char*)buff);
+		this->logger(this->loggerObj, (UOSInt)(sptr - (Char*)buff));
 	}
 	MemFree(buff);
 	this->respHeaderSent = true;
@@ -548,9 +548,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			{
 				UInt8 buff[2048];
 				UTF8Char *sbuffHdr = MemAlloc(UTF8Char, 65536);
-				OSInt i;
-				OSInt j;
-				OSInt k;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
+				OSInt si;
 				const UTF8Char *csptr;
 				Bool lengFound = false;
 				
@@ -596,10 +597,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					{
 						lengFound = true;
 					}
-					k = Text::StrIndexOf(sbuffHdr, (const UTF8Char*)": ");
-					if (k >= 0)
+					si = Text::StrIndexOf(sbuffHdr, (const UTF8Char*)": ");
+					if (si >= 0)
 					{
-						sbuffHdr[k] = 0;
+						sbuffHdr[si] = 0;
 						if (Text::StrEquals(sbuffHdr, (const UTF8Char*)"Server"))
 						{
 						}
@@ -611,7 +612,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						}
 						else
 						{
-							this->AddHeader(sbuffHdr, &sbuffHdr[k + 2]);
+							this->AddHeader(sbuffHdr, &sbuffHdr[si + 2]);
 						}
 					}
 					else
@@ -767,7 +768,7 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 	return false;
 }
 
-Int64 Net::WebServer::WebConnection::GetRespLength()
+UInt64 Net::WebServer::WebConnection::GetRespLength()
 {
 	return this->respLeng;
 }

@@ -47,7 +47,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	UOSInt j;
 	UInt8 *fat;
-	UOSInt sectorSize = 1 << (ReadUInt16(&buff[30]));
+	UOSInt sectorSize = (UOSInt)(1 << (ReadUInt16(&buff[30])));
 //	Int32 dirCnt = ReadInt32(&buff[40]);
 	UInt32 fatCnt = ReadUInt32(&buff[44]);
 	UInt32 dirSect = ReadUInt32(&buff[48]);
@@ -288,7 +288,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 				wb->SetWindowTopY(ReadInt16(&readBuff[i + 6]));
 				wb->SetWindowWidth(ReadInt16(&readBuff[i + 8]));
 				wb->SetWindowHeight(ReadInt16(&readBuff[i + 10]));
-				wb->SetActiveSheet(ReadInt16(&readBuff[i + 14]));
+				wb->SetActiveSheet(ReadUInt16(&readBuff[i + 14]));
 				break;
 			case 0x40: //BACKUP
 				break;
@@ -331,7 +331,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					k = 0;
 					while (k < j)
 					{
-						status.palette[k] = 0xff000000 | (readBuff[i + 6 + k * 4] << 16) | (readBuff[i + 7 + k * 4] << 8) | (readBuff[i + 8 + k * 4]);
+						status.palette[k] = 0xff000000 | (UInt32)(readBuff[i + 6 + k * 4] << 16) | (UInt32)(readBuff[i + 7 + k * 4] << 8) | (UInt32)(readBuff[i + 8 + k * 4]);
 						k++;
 					}
 					wb->SetPalette(status.palette);
@@ -504,7 +504,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					{
 						if (j >= i + 4 + recLeng)
 						{
-							i += 4 + recLeng;
+							i += (UOSInt)(4 + recLeng);
 							recNo = ReadUInt16(&readBuff[i]);
 							recLeng = ReadUInt16(&readBuff[i + 2]);
 							if (i + 4 + recLeng > readBuffSize)
@@ -539,7 +539,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, &charCnt, sb);
 							while (true)
 							{
-								i += 4 + recLeng;
+								i += (UOSInt)(4 + recLeng);
 								recNo = ReadUInt16(&readBuff[i]);
 								recLeng = ReadUInt16(&readBuff[i + 2]);
 								if (i + 4 + recLeng > readBuffSize)
@@ -620,7 +620,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 				break;
 			case 0x87d: //XFEXT
 				{
-					Int16 ixfe = ReadInt16(&readBuff[i + 18]);
+					UInt16 ixfe = ReadUInt16(&readBuff[i + 18]);
 					Int16 cexts = ReadInt16(&readBuff[i + 22]);
 					UInt32 j;
 					Text::SpreadSheet::CellStyle *style = wb->GetStyle(ixfe);
@@ -705,7 +705,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 				readSize = 0;
 				break;
 			}
-			i += 4 + recLeng;
+			i += (UOSInt)(4 + recLeng);
 			if (eofFound)
 				break;
 		}
@@ -866,8 +866,8 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 				break;
 			case 0x7d: //COLINFO
 				{
-					UInt16 colStart = ReadUInt16(&readBuff[i + 4]) + 1;
-					UInt16 colEnd = ReadUInt16(&readBuff[i + 6]) + 1;
+					UInt16 colStart = (UInt16)(ReadUInt16(&readBuff[i + 4]) + 1);
+					UInt16 colEnd = (UInt16)(ReadUInt16(&readBuff[i + 6]) + 1);
 					Double w = ReadUInt16(&readBuff[i + 8]) / 256.0 * 5.25 + 0.05;
 					while (colStart <= colEnd)
 					{
@@ -894,9 +894,9 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 				break;
 			case 0xbd: //MULRK
 				{
-					UInt16 row = ReadUInt16(&readBuff[i + 4]) + 1;
-					UInt16 colStart = ReadUInt16(&readBuff[i + 6]) + 1;
-					UInt16 colEnd = ReadUInt16(&readBuff[i + recLeng + 2]) + 1;
+					UInt16 row = (UInt16)(ReadUInt16(&readBuff[i + 4]) + 1);
+					UInt16 colStart = (UInt16)(ReadUInt16(&readBuff[i + 6]) + 1);
+					UInt16 colEnd = (UInt16)(ReadUInt16(&readBuff[i + recLeng + 2]) + 1);
 					UOSInt currI = i + 8;
 					while (colStart <= colEnd)
 					{
@@ -910,9 +910,9 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 				break;
 			case 0xbe: //MULBLANK
 				{
-					UInt16 row = ReadUInt16(&readBuff[i + 4]) + 1;
-					UInt16 colStart = ReadUInt16(&readBuff[i + 6]) + 1;
-					UInt16 colEnd = ReadUInt16(&readBuff[i + recLeng + 2]) + 1;
+					UInt16 row = (UInt16)(ReadUInt16(&readBuff[i + 4]) + 1);
+					UInt16 colStart = (UInt16)(ReadUInt16(&readBuff[i + 6]) + 1);
+					UInt16 colEnd = (UInt16)(ReadUInt16(&readBuff[i + recLeng + 2]) + 1);
 					UOSInt currI = i + 8;
 					while (colStart <= colEnd)
 					{
@@ -929,12 +929,12 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 				break;
 			case 0xe5: //MERGECELLS
 				{
-					UInt16 cnt = ReadUInt16(&readBuff[i + 4]);
+					UInt16 cnt = (UInt16)(ReadUInt16(&readBuff[i + 4]));
 					UInt16 v = 0;
 					UOSInt vofst = i + 6;
 					while (v < cnt)
 					{
-						ws->MergeCells(ReadUInt16(&readBuff[vofst]) + 1, ReadUInt16(&readBuff[vofst + 4]) + 1, (UInt32)ReadUInt16(&readBuff[vofst + 2]) - ReadUInt16(&readBuff[vofst]) + 1, (UInt32)ReadUInt16(&readBuff[vofst + 6]) - ReadUInt16(&readBuff[vofst + 4]) + 1);
+						ws->MergeCells((UInt32)(ReadUInt16(&readBuff[vofst]) + 1), (UInt32)(ReadUInt16(&readBuff[vofst + 4]) + 1), (UInt32)ReadUInt16(&readBuff[vofst + 2]) - ReadUInt16(&readBuff[vofst]) + 1, (UInt32)ReadUInt16(&readBuff[vofst + 6]) - ReadUInt16(&readBuff[vofst + 4]) + 1);
 						vofst += 8;
 						v++;
 					}
@@ -947,8 +947,8 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 			case 0xef: ///////////////////////////////////
 				break;
 			case 0xfd: //LABELSST
-				ws->SetCellString(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, status->sst->GetItem(ReadUInt32(&readBuff[i + 10])));
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellString((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), status->sst->GetItem(ReadUInt32(&readBuff[i + 10])));
+				ws->SetCellStyle((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
 				break;
 			case 0x1b6: //TXO
 				break;
@@ -957,17 +957,17 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 			case 0x200: //DIMENSIONS
 				break;
 			case 0x201: //BLANK
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellStyle((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
 				break;
 			case 0x203: //NUMBER
-				ws->SetCellDouble(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, ReadDouble(&readBuff[i + 10]));
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellDouble((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), ReadDouble(&readBuff[i + 10]));
+				ws->SetCellStyle((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
 				break;
 			case 0x207: //STRING
 
 				break;
 			case 0x208: //ROW
-				ws->SetRowHeight(ReadUInt16(&readBuff[i + 4]) + 1, ReadInt16(&readBuff[i + 10]) * 0.05);
+				ws->SetRowHeight((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), ReadInt16(&readBuff[i + 10]) * 0.05);
 				break;
 			case 0x20b: //INDEX
 				break;
@@ -978,8 +978,8 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 				ws->SetZoom(ReadUInt16(&readBuff[i + 16]));
 				break;
 			case 0x27e: // RK? ////////////////////////////
-				ws->SetCellDouble(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, ParseRKNumber(ReadInt32(&readBuff[i + 10])));
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]) + 1, ReadUInt16(&readBuff[i + 6]) + 1, wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellDouble((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), ParseRKNumber(ReadInt32(&readBuff[i + 10])));
+				ws->SetCellStyle((UInt32)(ReadUInt16(&readBuff[i + 4]) + 1), (UInt32)(ReadUInt16(&readBuff[i + 6]) + 1), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
 				break;
 			case 0x4bc: //SHRFMLA?
 				break;
@@ -990,7 +990,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 				readSize = 0;
 				break;
 			}
-			i += 4 + recLeng;
+			i += (UOSInt)(4 + recLeng);
 			if (eofFound)
 				break;
 		}

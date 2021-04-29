@@ -151,7 +151,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 	this->tileMap = tileMap;
 	this->scale = 10000;
 
-	this->lastLevel = -1;
+	this->lastLevel = (UOSInt)-1;
 	this->threadNext = 0;
 	NEW_CLASS(this->updMut, Sync::Mutex());
 	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());

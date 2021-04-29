@@ -36,12 +36,15 @@ Double Media::DeinterlaceLR::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::DeinterlaceLR::SetupInterpolationParameter(OSInt source_length, OSInt result_length, DIPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
-	Int32 i,j,n;
+	UInt32 i,j;
+	Int32 n;
 	Double *work;
 	Double  sum;
 	Double  pos;
+	Double dslen = Math::UOSInt2Double(source_length);
+	Double drlen = Math::UOSInt2Double(result_length);
 
 	out->length = result_length;
 	out->tap = LANCZOS_NTAP;
@@ -53,8 +56,8 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(OSInt source_length, OSIn
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i+0.5)*source_length;
-		pos = pos / result_length + offsetCorr;
+		pos = (i + 0.5) * dslen;
+		pos = pos / drlen + offsetCorr;
 		n = (Int32)floor(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
 		pos = (n+0.5-pos);
 		sum = 0;
@@ -62,7 +65,7 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(OSInt source_length, OSIn
 		{
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
-			}else if(n >= source_length){
+			}else if(n >= (OSInt)source_length){
 				out->index[i * out->tap + j] = (source_length - 1) * indexSep;
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
@@ -130,7 +133,7 @@ UInt32 __stdcall Media::DeinterlaceLR::ProcThread(void *obj)
 	return 0;
 }
 
-Media::DeinterlaceLR::DeinterlaceLR(OSInt fieldCnt, OSInt fieldSep)
+Media::DeinterlaceLR::DeinterlaceLR(UOSInt fieldCnt, OSInt fieldSep)
 {
 	this->oddParam.index = 0;
 	this->oddParam.weight = 0;
@@ -214,7 +217,7 @@ Media::DeinterlaceLR::~DeinterlaceLR()
 	}
 }
 
-void Media::DeinterlaceLR::Reinit(OSInt fieldCnt, OSInt fieldSep)
+void Media::DeinterlaceLR::Reinit(UOSInt fieldCnt, OSInt fieldSep)
 {
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
@@ -239,18 +242,18 @@ void Media::DeinterlaceLR::Reinit(OSInt fieldCnt, OSInt fieldSep)
 	this->fieldSep = fieldSep;
 }
 
-void Media::DeinterlaceLR::Deinterlace(UInt8 *src, UInt8 *dest, OSInt isBottomField, OSInt width, OSInt dstep)
+void Media::DeinterlaceLR::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep)
 {
-	if (isBottomField == 0)
+	if (!bottomField)
 	{
-		OSInt imgHeight = oddParam.length >> 1;
+		UOSInt imgHeight = oddParam.length >> 1;
 
-		OSInt thisLine;
-		OSInt lastLine = imgHeight << 1;
-		OSInt i = nCore;
+		UOSInt thisLine;
+		UOSInt lastLine = imgHeight << 1;
+		UOSInt i = nCore;
 		while (i-- > 0)
 		{
-			thisLine = MulDivOS(imgHeight, i, nCore) * 2;
+			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
 			stats[i].outPt = dest + dstep * thisLine;
@@ -287,14 +290,14 @@ void Media::DeinterlaceLR::Deinterlace(UInt8 *src, UInt8 *dest, OSInt isBottomFi
 	}
 	else
 	{
-		OSInt imgHeight = evenParam.length >> 1;
+		UOSInt imgHeight = evenParam.length >> 1;
 
-		OSInt thisLine;
-		OSInt lastLine = imgHeight << 1;
-		OSInt i = nCore;
+		UOSInt thisLine;
+		UOSInt lastLine = imgHeight << 1;
+		UOSInt i = nCore;
 		while (i-- > 0)
 		{
-			thisLine = MulDivOS(imgHeight, i, nCore) * 2;
+			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
 			stats[i].outPt = dest + dstep * thisLine;

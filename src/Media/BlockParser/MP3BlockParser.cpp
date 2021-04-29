@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "Media/BlockParser/MP3BlockParser.h"
 Media::BlockParser::MP3BlockParser::MP3BlockParser() : Media::AudioBlockParser()
 {
@@ -11,10 +12,10 @@ Media::BlockParser::MP3BlockParser::~MP3BlockParser()
 
 Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(IO::IStreamData *stmData)
 {
-	static Int32 bitrateL3[] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320};
-	Int64 leng = stmData->GetDataSize();
+	static UInt32 bitrateL3[] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320};
+	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[256];
-	Int64 currOfst = 0;
+	UInt64 currOfst = 0;
 	stmData->GetRealData(0, 7, buff);
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)
 	{
@@ -24,11 +25,11 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(IO:
 	UInt8 samplingFrequency = ((buff[2] & 0xC) >> 2);
 	UInt8 paddingBit = (buff[2] & 2) >> 1;
 	UInt8 mode = (buff[3] & 0xC0) >> 6;
-	Int32 frameLength = 0;
+	UInt32 frameLength = 0;
 
 	if (samplingFrequency == 0)
 	{
-		frameLength = ((Int32)(144 * bitrateL3[bitrateIndex] / 44.1)) + paddingBit;
+		frameLength = ((UInt32)(144 * bitrateL3[bitrateIndex] / 44.1)) + paddingBit;
 	}
 	else if (samplingFrequency == 1)
 	{
@@ -72,11 +73,11 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(IO:
 	format.align = 1152; //nBlockAlign
 	format.other = 0;
 	format.intType = Media::AudioFormat::IT_NORMAL;
-	*(Int16*)&format.extra[0] = 1;
-	*(Int32*)&format.extra[2] = 2;
-	*(Int32*)&format.extra[6] = 66236;
-	*(Int16*)&format.extra[10] = 0;
-	Int32 blkCnt = 0;
+	WriteUInt16(&format.extra[0], 1);
+	WriteUInt32(&format.extra[2], 2);
+	WriteUInt32(&format.extra[6], 66236);
+	WriteUInt16(&format.extra[10], 0);
+	UInt32 blkCnt = 0;
 
 	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1152));
 	while (currOfst < leng)
@@ -90,7 +91,7 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(IO:
 		paddingBit = (buff[2] & 2) >> 1;
 		if (samplingFrequency == 0)
 		{
-			frameLength = ((Int32)(144 * bitrateL3[bitrateIndex] / 44.1)) + paddingBit;
+			frameLength = ((UInt32)(144 * bitrateL3[bitrateIndex] / 44.1)) + paddingBit;
 		}
 		else if (samplingFrequency == 1)
 		{
@@ -111,7 +112,7 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(IO:
 	return audio;
 }
 
-Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, OSInt buffSize, Media::AudioFormat *fmt)
+Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, Media::AudioFormat *fmt)
 {
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)
 	{

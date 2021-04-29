@@ -17,7 +17,7 @@ namespace Media
 		UInt64 readOfst;
 		Sync::Event *readEvt;
 	public:
-		AudioFixBlockSource(IO::IStreamData *fd, Int64 ofst, Int64 length, Media::AudioFormat *format, const UTF8Char *name);
+		AudioFixBlockSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, const UTF8Char *name);
 		virtual ~AudioFixBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

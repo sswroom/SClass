@@ -41,7 +41,7 @@ namespace Net
 			{
 				const UTF8Char *reqPath;
 				const UTF8Char *statFileName;
-				Data::StringUTF8Map<Int32> *cntMap;
+				Data::StringUTF8Map<UInt32> *cntMap;
 				Bool updated;
 			} StatInfo;
 			

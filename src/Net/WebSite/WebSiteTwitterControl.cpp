@@ -56,7 +56,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chan
 #if defined(VERBOSE)
 				printf("stream-item-header found\r\n");
 #endif
-				OSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader->GetPathLev();
 				conversationId = 0;
 				recTime = 0;
 				SDEL_TEXT(imgURL);
@@ -275,7 +275,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chan
 void Net::WebSite::WebSiteTwitterControl::FreeItems(Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList)
 {
 	ItemData *item;
-	OSInt i = itemList->GetCount();
+	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItem(i);

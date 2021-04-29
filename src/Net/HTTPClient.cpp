@@ -97,12 +97,12 @@ void Net::HTTPClient::AddContentLength(UOSInt leng)
 	this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
 }
 
-OSInt Net::HTTPClient::GetRespHeaderCnt()
+UOSInt Net::HTTPClient::GetRespHeaderCnt()
 {
 	return this->headers->GetCount();
 }
 
-UTF8Char *Net::HTTPClient::GetRespHeader(OSInt index, UTF8Char *buff)
+UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 {
 	return Text::StrConcat(buff, this->headers->GetItem(index));
 }

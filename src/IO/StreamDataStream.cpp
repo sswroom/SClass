@@ -80,15 +80,15 @@ UInt64 IO::StreamDataStream::Seek(SeekType origin, Int64 position)
 {
 	if (origin == IO::SeekableStream::ST_BEGIN)
 	{
-		this->currOfst = position;
+		this->currOfst = (UInt64)position;
 	}
 	else if (origin == IO::SeekableStream::ST_CURRENT)
 	{
-		this->currOfst += position;
+		this->currOfst += (UInt64)position;
 	}
 	else if (origin == IO::SeekableStream::ST_END)
 	{
-		this->currOfst = this->stmDataLeng + position;
+		this->currOfst = this->stmDataLeng + (UInt64)position;
 	}
 	if ((Int64)currOfst < 0)
 		currOfst = 0;

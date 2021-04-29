@@ -482,9 +482,10 @@ void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt
 	return (void*)ret;
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
 {
-	return (OSInt)reqData;
+	*incomplete = false;
+	return (UOSInt)reqData;
 }
 
 void Net::OSSocketFactory::CancelReceiveData(void *reqData)

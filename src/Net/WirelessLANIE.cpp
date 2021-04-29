@@ -8,8 +8,9 @@
 
 Net::WirelessLANIE::WirelessLANIE(const UInt8 *ieBuff)
 {
-	this->ieBuff = MemAlloc(UInt8, (UOSInt)(ieBuff[1] + 2));
-	MemCopyNO(this->ieBuff, ieBuff, (UOSInt)(ieBuff[1] + 2));
+	UOSInt size = (UOSInt)(ieBuff[1] + 2);
+	this->ieBuff = MemAlloc(UInt8, size);
+	MemCopyNO(this->ieBuff, ieBuff, size);
 }
 
 Net::WirelessLANIE::~WirelessLANIE()
@@ -25,8 +26,8 @@ const UInt8 *Net::WirelessLANIE::GetIEBuff()
 void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *sb)
 {
 	UInt8 cmd = ieBuff[0];
-	UInt8 size = ieBuff[1];
-	UInt8 i;
+	UOSInt size = ieBuff[1];
+	UOSInt i;
 	Bool found;
 	switch (cmd)
 	{
@@ -201,7 +202,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 				sb->AppendU16(ieBuff[3 + i]);
 				sb->Append((const UTF8Char*)"\r\n\tMax transmit power = ");
 				sb->AppendU16(ieBuff[4 + i]);
-				i = (UInt8)(i + 3);
+				i = i + 3;
 			}
 		}
 		else
@@ -475,14 +476,14 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 					}
 				}
 				j++;
-				i = (UInt8)(i + 4);
+				i = i + 4;
 			}
 			if (i <= size - 4)
 			{
 				cnt = ReadUInt16(&ieBuff[i + 2]);
 				sb->Append((const UTF8Char*)"\r\n\tAuthentication Suites Count = ");
 				sb->AppendU32(cnt);
-				i = (UInt8)(i + 2);
+				i = i + 2;
 				j = 0;
 				while (i <= size - 4 && j < cnt)
 				{
@@ -934,7 +935,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 				sb->Append((const UTF8Char*)"\r\n\tWME QoS Info = 0x");
 				sb->AppendHex8(ieBuff[8]);
 				sb->Append((const UTF8Char*)"\r\n\t\tU-APSD = ");
-				sb->AppendU16(ieBuff[8] >> 7);
+				sb->AppendU16((UInt16)(ieBuff[8] >> 7));
 				sb->Append((const UTF8Char*)"\r\n\t\tParameter Set Count = ");
 				sb->AppendU16(ieBuff[8] & 15);
 				sb->Append((const UTF8Char*)"\r\n\tReserved = ");
@@ -976,7 +977,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else if (v32 == 0x0050F204)
 		{
 			UInt16 itemId;
-			UInt16 itemSize;
+			UOSInt itemSize;
 			succ = true;
 			sb->Append((const UTF8Char*)" (WPS Information Element)");
 			i = 4;
@@ -1069,7 +1070,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 						sb->Append((const UTF8Char*)" (");
 						sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 6])->name);
 						sb->AppendChar(')', 1);
-						OSInt j = 3;
+						UOSInt j = 3;
 						while (j < itemSize - 2)
 						{
 							if (j + 2 + ieBuff[i + 6 + j + 1] > itemSize)
@@ -1087,14 +1088,14 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 							}
 							sb->Append((const UTF8Char*)", Value=");
 							sb->AppendHexBuff(&ieBuff[i + 6 + j + 2], ieBuff[i + 6 + j + 1], ' ', Text::LBT_NONE);
-							j += ieBuff[i + 6 + j + 1] + 2;
+							j += (UOSInt)(ieBuff[i + 6 + j + 1] + 2);
 						}
 					}
 				case 0x104A:
 					sb->Append((const UTF8Char*)"\r\n\tVersion = ");
 					if (itemSize == 1)
 					{
-						sb->AppendU16(ieBuff[i + 6] >> 4);
+						sb->AppendU16((UInt16)(ieBuff[i + 6] >> 4));
 						sb->AppendChar('.', 1);
 						sb->AppendU16(ieBuff[i + 6] & 15);
 					}

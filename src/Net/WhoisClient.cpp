@@ -55,7 +55,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const C
 
 	NEW_CLASS(rec, Net::WhoisRecord(ip));
 	NEW_CLASS(cli, Net::TCPClient(sockf, whoisIP, 43));
-	cli->Write((UInt8*)cbuff, sptr - cbuff);
+	cli->Write((UInt8*)cbuff, (UOSInt)(sptr - cbuff));
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	while (reader->ReadLine(sbuff, 511))
 	{

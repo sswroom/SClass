@@ -16,8 +16,8 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	Text::JSONArray *arr1;
 	Text::JSONObject *obj1;
 	Int32 bodyType;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Net::WebSite::WebSite7gogoControl::ItemData *item = MemAlloc(Net::WebSite::WebSite7gogoControl::ItemData, 1);
 	MemClear(item, sizeof(Net::WebSite::WebSite7gogoControl::ItemData));
 	if ((jsBase = postObj->GetObjectValue((const UTF8Char*)"postId")) != 0 && jsBase->GetJSType() == Text::JSONBase::JST_NUMBER)
@@ -157,9 +157,10 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(const UTF8Char *channel
 						Text::JSONArray *arr1;
 						Text::JSONStringUTF8 *str1;
 						Text::JSONNumber *num1;
-						OSInt i;
-						OSInt j;
-						OSInt k;
+						UOSInt i;
+						UOSInt j;
+						UOSInt k;
+						OSInt si;
 						if (chInfo)
 						{
 							jsBase = baseObj->GetObjectValue((const UTF8Char*)"page:talk:service:entity:talk");
@@ -222,8 +223,8 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(const UTF8Char *channel
 											item = ParsePost((Text::JSONObject*)jsBase);
 											if (item)
 											{
-												k = idList.SortedIndexOf(item->id);
-												if (k >= 0)
+												si = idList.SortedIndexOf(item->id);
+												if (si >= 0)
 												{
 													Text::StrDelNew(item->message);
 													SDEL_TEXT(item->imgURL);
@@ -261,8 +262,8 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(const UTF8Char *channel
 											item = ParsePost((Text::JSONObject*)jsBase);
 											if (item)
 											{
-												k = idList.SortedIndexOf(item->id);
-												if (k >= 0)
+												si = idList.SortedIndexOf(item->id);
+												if (si >= 0)
 												{
 													Text::StrDelNew(item->message);
 													SDEL_TEXT(item->imgURL);

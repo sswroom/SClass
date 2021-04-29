@@ -71,11 +71,11 @@ void *IO::StreamLogger::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 	}
 }
 
-UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait)
+UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
 	MyReqData *myReqData = (MyReqData*)reqData;
-	UOSInt readCnt = this->stm->EndRead(myReqData->reqData, toWait);
-	if (readCnt >= 0)
+	UOSInt readCnt = this->stm->EndRead(myReqData->reqData, toWait, incomplete);
+	if (!*incomplete)
 	{
 		if (readCnt > 0 && this->readLog)
 		{

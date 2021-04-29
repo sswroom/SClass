@@ -13,8 +13,9 @@ void *IO::Stream::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 	return (void*)retVal;
 }
 
-UOSInt IO::Stream::EndRead(void *reqData, Bool toWait)
+UOSInt IO::Stream::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
+	*incomplete = false;
 	return (UOSInt)reqData;
 }
 

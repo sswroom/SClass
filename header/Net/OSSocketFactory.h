@@ -50,7 +50,7 @@ namespace Net
 		virtual UOSInt SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et);
 		virtual UOSInt ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et);
 		virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et);
-		virtual UOSInt EndReceiveData(void *reqData, Bool toWait);
+		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, Bool *incomplete);
 		virtual void CancelReceiveData(void *reqData);
 
 		virtual UOSInt UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et);

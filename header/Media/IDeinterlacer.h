@@ -8,8 +8,8 @@ namespace Media
 	public:
 		virtual ~IDeinterlacer(){};
 
-		virtual void Reinit(OSInt fieldCnt, OSInt fieldSep) = 0;
-		virtual void Deinterlace(UInt8 *src, UInt8 *dest, OSInt isBottomField, OSInt width, OSInt dstep) = 0;
+		virtual void Reinit(UOSInt fieldCnt, OSInt fieldSep) = 0;
+		virtual void Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep) = 0;
 	};
-};
+}
 #endif

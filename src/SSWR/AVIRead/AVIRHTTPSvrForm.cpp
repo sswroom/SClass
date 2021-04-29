@@ -6,13 +6,13 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(OSInt logCnt)
+SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 {
 	this->logCnt = logCnt;
 	this->entries = MemAlloc(LogEntry, this->logCnt);
 	this->currEnt = 0;
 	NEW_CLASS(this->entMut, Sync::Mutex());
-	OSInt i = this->logCnt;
+	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
 		this->entries[i].reqTime = 0;
@@ -26,8 +26,8 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(OSInt logCnt)
 
 SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 {
-	OSInt j;
-	OSInt i = this->logCnt;
+	UOSInt j;
+	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
 		SDEL_TEXT(this->entries[i].reqURI);
@@ -48,7 +48,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	OSInt i;
+	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	Sync::MutexUsage mutUsage(this->entMut);
@@ -87,7 +87,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	mutUsage.EndUse();
 }
 
-OSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
+UOSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 {
 	return this->currEnt;
 }
@@ -97,9 +97,9 @@ void SSWR::AVIRead::AVIRHTTPLog::Use(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(this->entMut);
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<OSInt> *logIndex)
+void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex)
 {
-	OSInt i;
+	UOSInt i;
 	if (this->entries[this->currEnt].reqTime == 0)
 	{
 		i = 0;
@@ -129,7 +129,7 @@ void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Da
 	}
 }
 
-SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(OSInt index)
+SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(UOSInt index)
 {
 	return &this->entries[index];
 }
@@ -141,18 +141,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	{
 		return;
 	}
-	Int32 port = 0;
+	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 *sb;
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	me->txtPort->GetText(sb);
-	port = Text::StrToInt32(sb->ToString());
+	Text::StrToUInt16S(sb->ToString(), &port, 0);
 	sb->ClearStr();
 	me->txtDocDir->GetText(sb);
 
-	if (port > 0 && port <= 65535)
+	if (port > 0 && port < 65535)
 	{
-		Int64 cacheSize = 0;
+		UInt64 cacheSize = 0;
 		if (me->chkCacheFile->IsChecked())
 		{
 			cacheSize = 4096;
@@ -266,8 +266,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char sbuff[128];
 	if (me->svr)
 	{
@@ -299,7 +299,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 		if (me->lastStatus.totalWrite != status.totalWrite)
 		{
 			me->lastStatus.totalWrite = status.totalWrite;
-			Text::StrInt64(sbuff, status.totalWrite);
+			Text::StrUInt64(sbuff, status.totalWrite);
 			me->txtDataTotalW->SetText(sbuff);
 		}
 		Text::StrUInt32(sbuff, status.reqCnt - me->lastStatus.reqCnt);
@@ -316,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 	if (i != me->lastAccessIndex)
 	{
 		Data::ArrayList<SSWR::AVIRead::AVIRHTTPLog::LogEntry *> logs;
-		Data::ArrayList<OSInt> logIndex;
+		Data::ArrayList<UOSInt> logIndex;
 		SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
@@ -353,8 +353,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
 	me->reqLog->Use(&mutUsage);
-	OSInt i = (OSInt)me->lbAccess->GetSelectedItem();
-	OSInt j;
+	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem();
+	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 	log = me->reqLog->GetEntry(i);
 	Data::DateTime dt;

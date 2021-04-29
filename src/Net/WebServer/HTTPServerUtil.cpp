@@ -200,7 +200,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 							}
 							else
 							{
-								stm.avail_in = (UInt32)fs->Read(buff, (OSInt)contLeng);
+								stm.avail_in = (UInt32)fs->Read(buff, (UOSInt)contLeng);
 							}
 							if (stm.avail_in == 0)
 							{
@@ -517,7 +517,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		{
 			sizeLeft = sizeLeft - start;
 		}
-		fs->Seek(IO::SeekableStream::ST_BEGIN, start);
+		fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)start);
 		resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 		UTF8Char u8buff[128];
 		UTF8Char *u8ptr;

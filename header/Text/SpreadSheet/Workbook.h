@@ -23,7 +23,7 @@ namespace Text
 			Int32 windowTopY;
 			Int32 windowWidth;
 			Int32 windowHeight;
-			OSInt activeSheet;
+			UOSInt activeSheet;
 			UInt32 palette[56];
 
 			Data::ArrayList<Worksheet*> *sheets;
@@ -59,28 +59,28 @@ namespace Text
 			void SetWindowTopY(Int32 windowTopY);
 			void SetWindowWidth(Int32 windowWidth);
 			void SetWindowHeight(Int32 windowHeight);
-			void SetActiveSheet(OSInt index);
+			void SetActiveSheet(UOSInt index);
 			Int32 GetWindowTopX();
 			Int32 GetWindowTopY();
 			Int32 GetWindowWidth();
 			Int32 GetWindowHeight();
-			OSInt GetActiveSheet();
+			UOSInt GetActiveSheet();
 			Bool HasWindowInfo();
 
 			Bool HasCellStyle();
 			CellStyle *NewCellStyle();
-			OSInt GetStyleCount();
+			UOSInt GetStyleCount();
 			virtual OSInt GetStyleIndex(CellStyle *style);
-			virtual CellStyle *GetStyle(OSInt Index);
+			virtual CellStyle *GetStyle(UOSInt Index);
 			CellStyle *GetDefaultStyle();
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);
 
 			Worksheet *AddWorksheet(const UTF8Char *name);
-			Worksheet *InsertWorksheet(OSInt index, const UTF8Char *name);
-			OSInt GetCount();
-			Worksheet *GetItem(OSInt index);
-			void RemoveAt(OSInt index);
+			Worksheet *InsertWorksheet(UOSInt index, const UTF8Char *name);
+			UOSInt GetCount();
+			Worksheet *GetItem(UOSInt index);
+			void RemoveAt(UOSInt index);
 
 			UOSInt GetFontCount();
 			WorkbookFont *GetFont(UOSInt index);

@@ -17,18 +17,18 @@ namespace Net
 		Sync::Mutex *portMut;
 		PortUpdatedHandler hdlr;
 		void *hdlrObj;
-		OSInt threadCnt;
+		UOSInt threadCnt;
 		Bool threadToStop;
 		Sync::Event *threadEvt;
 
 		static UInt32 __stdcall ScanThread(void *userObj);
 	public:
-		TCPPortScanner(Net::SocketFactory *socf, OSInt threadCnt, PortUpdatedHandler hdlr, void *userObj);
+		TCPPortScanner(Net::SocketFactory *socf, UOSInt threadCnt, PortUpdatedHandler hdlr, void *userObj);
 		~TCPPortScanner();
 
 		void Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPort);
 		Bool IsFinished();
-		OSInt GetAvailablePorts(Data::ArrayList<UInt16> *portList);
+		UOSInt GetAvailablePorts(Data::ArrayList<UInt16> *portList);
 	};
-};
+}
 #endif

@@ -1,10 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Exporter/PNGExporter.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/StreamWriter.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/DeinterlaceLR.h"
+#include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/DeintResizerLR_C32.h"
@@ -104,6 +107,70 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 	else
 	{
 		par = tstat->me->forcePAR / tstat->me->monPAR;
+	}
+	
+	if (tstat->me->captureFrame)
+	{
+		tstat->me->captureFrame = false;
+		Media::FrameInfo *info = tstat->me->videoInfo;
+		Media::ColorProfile::YUVType yuvType = info->yuvType;
+		if (yuvType == Media::ColorProfile::YUVT_UNKNOWN)
+		{
+			if (info->dispHeight > 576)
+			{
+				yuvType = Media::ColorProfile::YUVT_BT709;
+			}
+			else
+			{
+				yuvType = Media::ColorProfile::YUVT_BT601;
+			}
+		}
+		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+		Int32 fcc = info->fourcc;
+		if (fcc == FFMT_YUV444P10LE)
+		{
+			fcc = FFMT_YUV444P10LEP;
+		}
+		else if (fcc == FFMT_YUV420P10LE)
+		{
+			fcc = *(Int32*)"P016";
+		}
+		else if (fcc == FFMT_YUV420P12LE)
+		{
+			fcc = *(Int32*)"P016";
+		}
+		else if (fcc == FFMT_YUV420P8)
+		{
+			fcc = *(Int32*)"YV12";
+		}
+		Media::CS::CSConverter *csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
+		if (csconv)
+		{
+			UTF8Char sbuff[512];
+			UTF8Char *sptr;
+			OSInt i;
+			Media::ImageList *imgList;
+			Media::StaticImage *simg;
+			NEW_CLASS(simg, Media::StaticImage(info->dispWidth, info->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
+			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispWidth, info->dispHeight, info->storeWidth, info->storeHeight, simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
+			ImageUtil_ImageFillAlpha32(simg->data, info->dispWidth, info->dispHeight, simg->GetDataBpl(), 0xff);
+			this->video->GetSourceName(sbuff);
+			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+			sptr = &sbuff[i + 1];
+			Data::DateTime dt;
+			dt.SetCurrTime();
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Snapshot");
+			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+			NEW_CLASS(imgList, Media::ImageList(sbuff));
+			imgList->AddImage(simg, 0);
+			Exporter::PNGExporter exporter;
+			IO::FileStream *fs;
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			exporter.ExportFile(fs, sbuff, imgList, 0);
+			DEL_CLASS(imgList);
+			DEL_CLASS(csconv);
+		}
 	}
 
 	if ((vbuff->frameType == Media::FT_NON_INTERLACE || vbuff->frameType == Media::FT_INTERLACED_NODEINT) && par == 1.0 && cropTotal == 0 && tstat->me->videoInfo->dispWidth == tstat->me->surfaceW && tstat->me->videoInfo->dispHeight <= tstat->me->surfaceH && tstat->me->bitDepth == 32)
@@ -1922,6 +1989,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	NEW_CLASS(this->debugLog2, IO::StreamWriter(this->debugFS2, 65001));
 #endif
 	this->playing = false;
+	this->captureFrame = false;
 	this->threadCnt = threadCnt;
 	this->buffCnt = buffCnt - threadCnt;
 	if (this->buffCnt <= 0)
@@ -2241,6 +2309,7 @@ void UI::GUIVideoBoxDD::VideoStart()
 		{
 			if (this->uvOfst->Start())
 			{
+				this->captureFrame = false;
 				this->playing = true;
 			}
 		}
@@ -2643,4 +2712,12 @@ void UI::GUIVideoBoxDD::HandleMouseActon(MouseActionHandler hdlr, void *userObj)
 {
 	this->maHdlr = hdlr;
 	this->maHdlrObj = userObj;
+}
+
+void UI::GUIVideoBoxDD::Snapshot()
+{
+	if (this->playing)
+	{
+		this->captureFrame = true;
+	}
 }

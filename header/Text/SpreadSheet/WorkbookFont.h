@@ -29,7 +29,7 @@ namespace Text
 			Bool IsBold();
 			Bool IsItalic();
 			Bool IsUnderline();
-			Int32 GetColor();
+			UInt32 GetColor();
 
 			WorkbookFont *Clone();
 			Bool Equals(WorkbookFont *font);

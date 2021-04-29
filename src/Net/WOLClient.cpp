@@ -28,7 +28,7 @@ Bool Net::WOLClient::IsError()
 Bool Net::WOLClient::WakeDevice(const UInt8 *macAddr)
 {
 	UInt8 packet[102];
-	WriteNInt32(&packet[0], 0xffffffff);
+	WriteNUInt32(&packet[0], 0xffffffff);
 	WriteNInt16(&packet[4], (Int16)0xffff);
 	UOSInt i = 0;
 	while (i < 16)

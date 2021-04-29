@@ -429,9 +429,10 @@ void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt
 	return overlapped;
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
 {
 	WSAOverlapped *overlapped = (WSAOverlapped*)reqData;
+	*incomplete = false;
 	if (overlapped == 0)
 		return 0;
 	DWORD recvSize;
@@ -446,6 +447,7 @@ UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait)
 		DWORD lastErr = WSAGetLastError();
 		if (lastErr == WSA_IO_INCOMPLETE)
 		{
+			*incomplete = true;
 			return 0;
 		}
 		MemFree(overlapped);

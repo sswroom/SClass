@@ -10,9 +10,9 @@ namespace Text
 		{
 		public:
 			virtual OSInt GetStyleIndex(CellStyle *style) = 0;
-			virtual CellStyle *GetStyle(OSInt index) = 0;
+			virtual CellStyle *GetStyle(UOSInt index) = 0;
 		};
-	};
-};
+	}
+}
 
 #endif

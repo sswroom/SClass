@@ -553,7 +553,7 @@ Double Media::Deinterlace8::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::Deinterlace8::SetupInterpolationParameter(OSInt source_length, OSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	Int32 i,j,n;
 	Double *work;
@@ -648,7 +648,7 @@ UInt32 __stdcall Media::Deinterlace8::ProcThread(void *obj)
 	return 0;
 }
 
-Media::Deinterlace8::Deinterlace8(OSInt fieldCnt, OSInt fieldSep)
+Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, OSInt fieldSep)
 {
 	this->oddParam.index = 0;
 	this->oddParam.weight = 0;
@@ -732,7 +732,7 @@ Media::Deinterlace8::~Deinterlace8()
 	}
 }
 
-void Media::Deinterlace8::Reinit(OSInt fieldCnt, OSInt fieldSep)
+void Media::Deinterlace8::Reinit(UOSInt fieldCnt, OSInt fieldSep)
 {
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
@@ -757,18 +757,18 @@ void Media::Deinterlace8::Reinit(OSInt fieldCnt, OSInt fieldSep)
 	this->fieldSep = fieldSep;
 }
 
-void Media::Deinterlace8::Deinterlace(UInt8 *src, UInt8 *dest, OSInt isBottomField, OSInt width, OSInt dstep)
+void Media::Deinterlace8::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep)
 {
-	if (isBottomField == 0)
+	if (!bottomField)
 	{
-		OSInt imgHeight = oddParam.length >> 1;
+		UOSInt imgHeight = oddParam.length >> 1;
 
-		OSInt thisLine;
-		OSInt lastLine = imgHeight << 1;
-		OSInt i = nCore;
+		UOSInt thisLine;
+		UOSInt lastLine = imgHeight << 1;
+		UOSInt i = nCore;
 		while (i-- > 0)
 		{
-			thisLine = MulDivOS(imgHeight, i, nCore) * 2;
+			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
 			stats[i].outPt = dest + dstep * thisLine;
@@ -805,14 +805,14 @@ void Media::Deinterlace8::Deinterlace(UInt8 *src, UInt8 *dest, OSInt isBottomFie
 	}
 	else
 	{
-		OSInt imgHeight = evenParam.length >> 1;
+		UOSInt imgHeight = evenParam.length >> 1;
 
-		OSInt thisLine;
-		OSInt lastLine = imgHeight << 1;
-		OSInt i = nCore;
+		UOSInt thisLine;
+		UOSInt lastLine = imgHeight << 1;
+		UOSInt i = nCore;
 		while (i-- > 0)
 		{
-			thisLine = MulDivOS(imgHeight, i, nCore) * 2;
+			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
 			stats[i].outPt = dest + dstep * thisLine;

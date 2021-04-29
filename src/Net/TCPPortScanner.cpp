@@ -68,11 +68,11 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 		}
 		mutUsage.EndUse();
 	}
-	Sync::Interlocked::Decrement(&me->threadCnt);
+	Sync::Interlocked::Decrement((OSInt*)&me->threadCnt);
 	return 0;
 }
 
-Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, OSInt threadCnt, PortUpdatedHandler hdlr, void *userObj)
+Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, void *userObj)
 {
 	this->sockf = sockf;
 	this->portList = MemAlloc(UInt8, 65536);
@@ -84,7 +84,7 @@ Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, OSInt threadCnt, 
 	this->threadCnt = 0;
 	this->threadToStop = false;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPPortScanner.threadEvt"));
-	OSInt i = threadCnt;
+	UOSInt i = threadCnt;
 	if (threadCnt <= 0)
 	{
 		i = Sync::Thread::GetThreadCnt();
@@ -146,9 +146,9 @@ Bool Net::TCPPortScanner::IsFinished()
 	return ret;
 }
 
-OSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
+UOSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
 {
-	OSInt initCnt = portList->GetCount();
+	UOSInt initCnt = portList->GetCount();
 	UInt16 i = 0;
 	Sync::MutexUsage mutUsage(this->portMut);
 	while (i < 65535)

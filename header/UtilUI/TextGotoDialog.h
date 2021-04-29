@@ -16,7 +16,7 @@ namespace UtilUI
 		UI::GUIButton *btnOk;
 		UI::GUIButton *btnCancel;
 		Media::MonitorMgr *monMgr;
-		OSInt currLine;
+		UOSInt currLine;
 
 		static void __stdcall OnOKClicked(void *userObj);
 		static void __stdcall OnCancelClicked(void *userObj);
@@ -27,8 +27,8 @@ namespace UtilUI
 		virtual void OnShow();
 		virtual void OnMonitorChanged();
 
-		void SetLineNumber(OSInt currLine);
-		OSInt GetLineNumber();
+		void SetLineNumber(UOSInt currLine);
+		UOSInt GetLineNumber();
 	};
-};
+}
 #endif

@@ -159,8 +159,8 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 	}
 	else
 	{
-		sbuff = MemAlloc(UTF8Char, i + 1);
-		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * i);
+		sbuff = MemAlloc(UTF8Char, (UOSInt)i + 1);
+		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * (UOSInt)i);
 		sbuff[i] = 0;
 
 		subHdlr = this->hdlrs->Get(sbuff);

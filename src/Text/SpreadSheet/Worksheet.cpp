@@ -112,7 +112,7 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(Ro
 	UOSInt i;
 	UOSInt j;
 	newRow = MemAlloc(RowData, 1);
-	newRow->style = newCtrl->GetStyle(srcCtrl->GetStyleIndex(row->style));
+	newRow->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(row->style));
 	NEW_CLASS(newRow->cells, Data::ArrayList<CellData*>());
 	newRow->height = row->height;
 	i = 0;
@@ -146,7 +146,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	{
 		newCell->cellValue = 0;
 	}
-	newCell->style = newCtrl->GetStyle(srcCtrl->GetStyleIndex(cell->style));
+	newCell->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(cell->style));
 	newCell->mergeHori = cell->mergeHori;
 	newCell->mergeVert = cell->mergeVert;
 	newCell->hidden = cell->hidden;
@@ -331,12 +331,12 @@ Double Text::SpreadSheet::Worksheet::GetMarginFooter()
 	return this->marginFooter;
 }
 
-void Text::SpreadSheet::Worksheet::SetZoom(Int32 zoom)
+void Text::SpreadSheet::Worksheet::SetZoom(UInt32 zoom)
 {
 	this->zoom = zoom;
 }
 
-Int32 Text::SpreadSheet::Worksheet::GetZoom()
+UInt32 Text::SpreadSheet::Worksheet::GetZoom()
 {
 	return this->zoom;
 }

@@ -143,7 +143,7 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 
 void Win32::WMIQuery::FreeNSList(Data::ArrayList<const WChar *> *nsList)
 {
-	OSInt i = nsList->GetCount();
+	UOSInt i = nsList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(nsList->GetItem(i));

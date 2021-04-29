@@ -52,7 +52,7 @@ void Media::Decoder::XADecoder::GetFormat(AudioFormat *format)
 		format->frequency = fmt.frequency;
 		format->nChannels = fmt.nChannels;
 		format->bitRate = fmt.frequency * fmt.nChannels << 4;
-		format->align = fmt.nChannels * 2;
+		format->align = (UInt32)(fmt.nChannels * 2);
 		format->other = 0;
 		format->intType = Media::AudioFormat::IT_NORMAL;
 		format->extraSize = 0;
@@ -146,10 +146,10 @@ UOSInt Media::Decoder::XADecoder::GetMinBlockSize()
 if (x > 0x7fffffff) \
 	x = 0x7fffffff; \
 else if (((Int32*)&x)[1] < -1) \
-	x = 0xffffffff80000000LL; \
+	x = (Int64)0xffffffff80000000LL; \
 else if (((Int32*)&x)[1] == -1) \
-	if (((*(Int32*)&x) & 0x80000000) == 0) \
-		x = 0xffffffff80000000LL;
+	if (((*(UInt32*)&x) & 0x80000000) == 0) \
+		x = (Int64)0xffffffff80000000LL;
 
 void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByte, Int32 channel)
 {
@@ -195,10 +195,10 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 				if (x > 0x7fffffff)
 					x = 0x7fffffff;
 				else if (((long*)&x)[1] < -1)
-					x = 0xffffffff80000000LL;
+					x = (Int64)0xffffffff80000000LL;
 				else if (((long*)&x)[1] == -1)
 					if (((*(long*)&x) & 0x80000000) == 0)
-						x = 0xffffffff80000000LL;
+						x = (Int64)0xffffffff80000000LL;
 				adxSample1[0] = x;
 				*(Int16*)dest = (Int16)(x >> 16);
 				dest += 2;
@@ -214,10 +214,10 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 				if (x > 0x7fffffff)
 					x = 0x7fffffff;
 				else if (((long*)&x)[1] < -1)
-					x = 0xffffffff80000000LL;
+					x = (Int64)0xffffffff80000000LL;
 				else if (((long*)&x)[1] == -1)
 					if (((*(long*)&x) & 0x80000000) == 0)
-						x = 0xffffffff80000000LL;
+						x = (Int64)0xffffffff80000000LL;
 				adxSample1[1] = x;
 				*(Int16*)dest = (Int16)(x >> 16);
 				dest += 2;

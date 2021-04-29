@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/ByteTool.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "IO/IStreamData.h"
@@ -47,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt32 buff[4];
 	UInt32 fileSize;
-	Int64 currPos;
+	UInt64 currPos;
 	fd->GetRealData(0, 12, (UInt8*)buff);
 	if (buff[0] != *(UInt32*)"RIFF")
 		return 0;
@@ -77,11 +78,11 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					Media::AudioFormat af;
 					af.formatId = 1;
-					af.nChannels = *(Int16*)&fmt[2];
-					af.frequency = *(Int32*)&fmt[4];
-					af.bitpersample = *(Int16*)&fmt[14];
+					af.nChannels = ReadUInt16(&fmt[2]);
+					af.frequency = ReadUInt32(&fmt[4]);
+					af.bitpersample = ReadUInt16(&fmt[14]);
 					af.bitRate = af.frequency * af.nChannels * af.bitpersample;
-					af.align = *(Int16*)&fmt[12];
+					af.align = ReadUInt16(&fmt[12]);
 					af.other = 0;
 					af.intType = Media::AudioFormat::IT_NORMAL;
 					af.extraSize = 0;

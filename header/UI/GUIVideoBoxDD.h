@@ -49,10 +49,10 @@ namespace UI
 			Int32 srcDelay;
 			Int32 avOfst;
 			Int32 format;
-			OSInt srcWidth;
-			OSInt srcHeight;
-			OSInt dispWidth;
-			OSInt dispHeight;
+			UOSInt srcWidth;
+			UOSInt srcHeight;
+			UOSInt dispWidth;
+			UOSInt dispHeight;
 			OSInt seekCnt;
 			Double par;
 			Int32 dispBitDepth;
@@ -108,7 +108,7 @@ namespace UI
 			UInt8 *lrBuff;
 			UOSInt lrSize;
 			UInt8 *diBuff;
-			OSInt diSize;
+			UOSInt diSize;
 			Media::IDeinterlacer *deint;
 			GUIVideoBoxDD *me;
 			Bool srcChanged;
@@ -170,6 +170,7 @@ namespace UI
 //		Media::FrameType forseFTVal;
 
 		Int32 timeDelay;
+		Bool captureFrame;
 		Bool playing;
 //		Sync::Mutex *videoMut;
 		Bool videoPause;
@@ -282,6 +283,7 @@ namespace UI
 
 		void AddImgFilter(Media::IImgFilter *imgFilter);
 		void HandleMouseActon(MouseActionHandler hdlr, void *userObj);
+		void Snapshot();
 	};
-};
+}
 #endif

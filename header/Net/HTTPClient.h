@@ -48,8 +48,8 @@ namespace Net
 		void AddContentType(const UTF8Char *contType);
 		void AddContentLength(UOSInt leng);
 
-		OSInt GetRespHeaderCnt();
-		UTF8Char *GetRespHeader(OSInt index, UTF8Char *buff);
+		UOSInt GetRespHeaderCnt();
+		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(const UTF8Char *name, UTF8Char *valueBuff);
 		Bool GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF *sb);
 		UInt64 GetContentLength();

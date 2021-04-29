@@ -52,7 +52,7 @@ namespace Text
 			Double marginHeader;
 			Double marginFooter;
 			UInt16 options;
-			Int32 zoom;
+			UInt32 zoom;
 
 		public:
 			RowData *CreateRow(UInt32 row);
@@ -86,8 +86,8 @@ namespace Text
 			Double GetMarginHeader();
 			void SetMarginFooter(Double marginFooter); //Inch
 			Double GetMarginFooter();
-			void SetZoom(Int32 zoom);
-			Int32 GetZoom();
+			void SetZoom(UInt32 zoom);
+			UInt32 GetZoom();
 			Bool IsDefaultPageSetup();
 
 			const UTF8Char *GetName();

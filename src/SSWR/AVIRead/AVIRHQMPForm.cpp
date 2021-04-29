@@ -156,6 +156,7 @@ typedef enum
 	MNU_VIDEO_WP_19000K,
 	MNU_VIDEO_FTIME_ENABLE,
 	MNU_VIDEO_FTIME_DISABLE,
+	MNU_VIDEO_SNAPSHOT,
 
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
@@ -871,6 +872,8 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu3 = mnu2->AddSubMenu((const UTF8Char*)"Ignore Frame Time");
 	mnu3->AddItem((const UTF8Char*)"Enable", MNU_VIDEO_FTIME_ENABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem((const UTF8Char*)"Disable", MNU_VIDEO_FTIME_DISABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddSeperator();
+	mnu->AddItem((const UTF8Char*)"Take Snapshot", MNU_VIDEO_SNAPSHOT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Audio");
 
@@ -1472,6 +1475,9 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VIDEO_FTIME_DISABLE:
 		this->vbox->SetIgnoreFrameTime(false);
+		break;
+	case MNU_VIDEO_SNAPSHOT:
+		this->vbox->Snapshot();
 		break;
 	}
 }

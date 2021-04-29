@@ -19,7 +19,7 @@ namespace Net
 			virtual Int32 GetStatusCode() = 0;
 			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value) = 0;
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req) = 0;
-			virtual Int64 GetRespLength() = 0;
+			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);

@@ -179,7 +179,7 @@ namespace Net
 		virtual UOSInt SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
 		virtual UOSInt ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
 		virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et) = 0;
-		virtual UOSInt EndReceiveData(void *reqData, Bool toWait) = 0;
+		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, Bool *incomplete) = 0;
 		virtual void CancelReceiveData(void *reqData) = 0;
 
 		virtual UOSInt UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et) = 0;

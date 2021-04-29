@@ -303,16 +303,20 @@ void *Net::TCPClient::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 	return data;
 }
 
-UOSInt Net::TCPClient::EndRead(void *reqData, Bool toWait)
+UOSInt Net::TCPClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
 	if (reqData == 0)
+	{
+		*incomplete = false;
 		return 0;
-	return sockf->EndReceiveData(reqData, toWait);
+	}
+	return sockf->EndReceiveData(reqData, toWait, incomplete);
 }
 
 void Net::TCPClient::CancelRead(void *reqData)
 {
-	EndRead(reqData, true);
+	Bool incomplete;
+	EndRead(reqData, true, &incomplete);
 }
 
 void *Net::TCPClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)

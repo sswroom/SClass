@@ -95,7 +95,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 						ip[j] = Text::StrToUInt8(sarr[j]);
 					}
 					this->startIP = ReadUInt32(ip);
-					this->endIP = BSWAP32((UInt32)ReadMUInt32(ip) + (1 << (32 - bitCnt)) - 1);
+					this->endIP = BSWAPU32((UInt32)ReadMUInt32(ip) + (UInt32)(1 << (32 - bitCnt)) - 1);
 				}
 				else
 				{

@@ -20,7 +20,7 @@ typedef struct
 	Data::ArrayList<UTF8Char*> *respHeaders;
 	const UTF8Char *userAgent;
 	IO::MemoryStream *respData;
-	Int64 contLen;
+	UInt64 contLen;
 } ClassData;
 
 size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *userdata)
@@ -33,7 +33,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 	UTF8Char *hdr = MemAlloc(UTF8Char, size * nitems + 1);
 	MemCopyNO(hdr, buffer, size * nitems);
 	hdr[size * nitems] = 0;
-	OSInt i = size * nitems;
+	UOSInt i = size * nitems;
 	while (i > 0)
 	{
 		if (hdr[i - 1] == 13 || hdr[i - 1] == 10)
@@ -48,7 +48,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 	}
 	if (Text::StrStartsWithICase(hdr, (const UTF8Char*)"Content-Length: "))
 	{
-		data->contLen = Text::StrToInt64(&hdr[16]);
+		data->contLen = Text::StrToUInt64(&hdr[16]);
 	}
 	data->respHeaders->Add(hdr);
 	return size * nitems;
@@ -193,7 +193,8 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
 
-	OSInt i;
+	OSInt si;
+	UOSInt i;
 	const UTF8Char *ptr1;
 	UTF8Char *ptrs[2];
 	UInt16 port;
@@ -218,11 +219,11 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
 		ptr1 = &url[7];
-		i = Text::StrIndexOf(ptr1, '/');
-		if (i >= 0)
+		si = Text::StrIndexOf(ptr1, '/');
+		if (si >= 0)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
+			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
+			urltmp[si] = 0;
 		}
 		else
 		{
@@ -236,11 +237,11 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
 	{
 		ptr1 = &url[8];
-		i = Text::StrIndexOf(ptr1, '/');
-		if (i >= 0)
+		si = Text::StrIndexOf(ptr1, '/');
+		if (si >= 0)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
+			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
+			urltmp[si] = 0;
 		}
 		else
 		{
@@ -266,19 +267,19 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 
 	if (urltmp[0] == '[')
 	{
-		i = Text::StrIndexOf(urltmp, ']');
-		if (i < 0)
+		si = Text::StrIndexOf(urltmp, ']');
+		if (si < 0)
 		{
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
-		Text::StrConcatC(svrname, &urltmp[1], i - 1);
-		if (urltmp[i + 1] == ':')
+		Text::StrConcatC(svrname, &urltmp[1], (UOSInt)si - 1);
+		if (urltmp[si + 1] == ':')
 		{
 			port = 0;
-			Text::StrToUInt16(&urltmp[i + 2], &port);
-			urltmp[i + 1] = 0;
+			Text::StrToUInt16(&urltmp[si + 2], &port);
+			urltmp[si + 1] = 0;
 		}
 		else
 		{

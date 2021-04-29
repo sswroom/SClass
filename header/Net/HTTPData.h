@@ -36,7 +36,7 @@ namespace Net
 	private:
 		HTTPDATAHANDLE *fdh;
 		UInt64 dataOffset;
-		Int64 dataLength;
+		UInt64 dataLength;
 
 		static UInt32 __stdcall LoadThread(void *userObj);
 	public:

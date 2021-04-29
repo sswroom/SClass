@@ -333,7 +333,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(const UTF8Char *title
 		{
 			break;
 		}
-		sb.TrimToLength(i);
+		sb.TrimToLength((UOSInt)i);
 		sb.Trim();
 	}
 

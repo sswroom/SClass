@@ -4,26 +4,26 @@
 
 void Media::TimedImageList::ScanFile()
 {
-	Int64 currOfst = 16;
+	UInt64 currOfst = 16;
 	UInt8 indexBuff[32];
 	this->flags &= ~2;
 	this->changed = true;
 	this->fs->Seek(IO::SeekableStream::ST_BEGIN, 16);
 	while (this->fs->Read(indexBuff, 32) == 32)
 	{
-		if (ReadInt64(&indexBuff[16]) == currOfst + 32)
+		if (ReadUInt64(&indexBuff[16]) == currOfst + 32)
 		{
 			Int64 imgSize = ReadInt64(&indexBuff[24]);
 			this->indexStm->Write(indexBuff, 32);
-			currOfst += 32 + imgSize;
-			this->fs->Seek(IO::SeekableStream::ST_CURRENT, (OSInt)imgSize);
+			currOfst += 32 + (UInt64)imgSize;
+			this->fs->Seek(IO::SeekableStream::ST_CURRENT, imgSize);
 		}
 		else
 		{
 			break;
 		}
 	}
-	this->fs->Seek(IO::SeekableStream::ST_BEGIN, currOfst);
+	this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)currOfst);
 	this->currFileOfst = currOfst;
 }
 
@@ -38,7 +38,7 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 		this->fs = 0;
 		return;
 	}
-	Int64 fileSize = this->fs->GetLength();
+	UInt64 fileSize = this->fs->GetLength();
 	if (fileSize > 0 && fileSize < 16)
 	{
 		DEL_CLASS(this->fs);
@@ -69,18 +69,18 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 			return;
 		}
 		this->flags = ReadInt32(&hdr[4]);
-		this->currFileOfst = ReadInt64(&hdr[8]);
+		this->currFileOfst = ReadUInt64(&hdr[8]);
 		if (this->flags & 2)
 		{
-			Int64 indexSize = fileSize - this->currFileOfst;
-			if (indexSize >= 0 && (indexSize & 31) == 0)
+			UInt64 indexSize = fileSize - this->currFileOfst;
+			if (fileSize >= this->currFileOfst && (indexSize & 31) == 0)
 			{
-				UInt8 *indexBuff = MemAlloc(UInt8, (OSInt)indexSize);
-				this->fs->Seek(IO::SeekableStream::ST_BEGIN, this->currFileOfst);
-				this->fs->Read(indexBuff, (OSInt)indexSize);
-				this->indexStm->Write(indexBuff, (OSInt)indexSize);
+				UInt8 *indexBuff = MemAlloc(UInt8, (UOSInt)indexSize);
+				this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currFileOfst);
+				this->fs->Read(indexBuff, (UOSInt)indexSize);
+				this->indexStm->Write(indexBuff, (UOSInt)indexSize);
 				MemFree(indexBuff);
-				this->fs->Seek(IO::SeekableStream::ST_BEGIN, this->currFileOfst);
+				this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currFileOfst);
 			}
 			else if (this->flags & 1)
 			{
@@ -124,7 +124,7 @@ Media::TimedImageList::~TimedImageList()
 			hdr[2] = 'i';
 			hdr[3] = 'l';
 			WriteInt32(&hdr[4], this->flags | 2);
-			WriteInt64(&hdr[8], this->currFileOfst);
+			WriteUInt64(&hdr[8], this->currFileOfst);
 			this->fs->Write(hdr, 16);
 		}
 		DEL_CLASS(this->fs);
@@ -151,16 +151,16 @@ Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, const UInt8 *imgBuf
 		indexBuff[2] = 'i';
 		indexBuff[3] = 'l';
 		WriteInt32(&indexBuff[4], this->flags);
-		WriteInt64(&indexBuff[8], this->currFileOfst);
+		WriteUInt64(&indexBuff[8], this->currFileOfst);
 		this->fs->Write(indexBuff, 16);
-		this->fs->Seek(IO::SeekableStream::ST_BEGIN, this->currFileOfst);
+		this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currFileOfst);
 		this->changed = true;
 	}
 	WriteInt64(&indexBuff[0], captureTimeTicks);
 	WriteInt32(&indexBuff[8], 0); //flags
 	WriteInt32(&indexBuff[12], imgFmt);
-	WriteInt64(&indexBuff[16], this->currFileOfst + 32);
-	WriteInt64(&indexBuff[24], imgSize);
+	WriteUInt64(&indexBuff[16], this->currFileOfst + 32);
+	WriteUInt64(&indexBuff[24], imgSize);
 	succ = succ && (this->fs->Write(indexBuff, 32) == 32);
 	this->indexStm->Write(indexBuff, 32);
 	succ = succ && (this->fs->Write(imgBuff, imgSize) == imgSize);

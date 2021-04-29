@@ -10,9 +10,9 @@ namespace Media
 	private:
 		void *hWaveIn;
 		Int32 devId;
-		Int32 freq;
-		Int16 nbits;
-		Int16 nChannels;
+		UInt32 freq;
+		UInt16 nbits;
+		UInt16 nChannels;
 
 		Int32 nextId;
 		void *hdrs;
@@ -28,8 +28,8 @@ namespace Media
 		static Int32 GetDeviceCount();
 		static UTF8Char *GetDeviceName(UTF8Char *u8buff, Int32 devNo);
 
-		WaveInSource(const UTF8Char *devName, Int32 freq, Int16 nbits, Int16 nChannels);
-		WaveInSource(Int32 devId, Int32 freq, Int16 nbits, Int16 nChannels);
+		WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels);
+		WaveInSource(Int32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels);
 		virtual ~WaveInSource();
 
 		Bool IsError();

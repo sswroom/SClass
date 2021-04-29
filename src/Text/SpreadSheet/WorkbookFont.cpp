@@ -80,7 +80,7 @@ Bool Text::SpreadSheet::WorkbookFont::IsUnderline()
 	return this->underline;
 }
 
-Int32 Text::SpreadSheet::WorkbookFont::GetColor()
+UInt32 Text::SpreadSheet::WorkbookFont::GetColor()
 {
 	return this->color;
 }

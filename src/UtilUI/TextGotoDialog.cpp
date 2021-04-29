@@ -8,10 +8,10 @@ void __stdcall UtilUI::TextGotoDialog::OnOKClicked(void *userObj)
 	UTF8Char sbuff[20];
 	UtilUI::TextGotoDialog *me = (UtilUI::TextGotoDialog*)userObj;
 
+	UOSInt lineNum;
 	me->txtLine->GetText(sbuff);
-	if (Text::StrIsInt32(sbuff))
+	if (Text::StrToUOSInt(sbuff, &lineNum))
 	{
-		Int32 lineNum = Text::StrToInt32(sbuff);
 		if (lineNum > 0)
 		{
 			me->currLine = lineNum;
@@ -63,15 +63,15 @@ void UtilUI::TextGotoDialog::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void UtilUI::TextGotoDialog::SetLineNumber(OSInt currLine)
+void UtilUI::TextGotoDialog::SetLineNumber(UOSInt currLine)
 {
 	UTF8Char sbuff[22];
 	this->currLine = currLine;
-	Text::StrOSInt(sbuff, currLine);
+	Text::StrUOSInt(sbuff, currLine);
 	this->txtLine->SetText(sbuff);
 }
 
-OSInt UtilUI::TextGotoDialog::GetLineNumber()
+UOSInt UtilUI::TextGotoDialog::GetLineNumber()
 {
 	return this->currLine;
 }

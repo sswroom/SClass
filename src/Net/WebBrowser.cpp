@@ -134,7 +134,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 				}
 				else
 				{
-					*contentType++ = (Char)c;
+					*contentType++ = (UTF8Char)c;
 				}
 			}
 		}
@@ -156,8 +156,8 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		if (Text::StrStartsWith(url, (const UTF8Char*)"base64,"))
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			OSInt textSize;
-			OSInt binSize;
+			UOSInt textSize;
+			UOSInt binSize;
 			UTF8Char *strTemp;
 			UInt8 *binTemp;
 			textSize = Text::StrCharCnt(url + 7);

@@ -212,7 +212,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.Append((const UTF8Char*)" ");
 		sb.AppendI32(resp->GetStatusCode());
 		sb.Append((const UTF8Char*)" ");
-		sb.AppendI64(resp->GetRespLength());
+		sb.AppendU64(resp->GetRespLength());
 		sb.Append((const UTF8Char*)" ");
 		Text::SBAppendF64(&sb, time);
 

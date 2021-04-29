@@ -63,11 +63,11 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF
 
 		sptr = Text::StrConcat(sptr, "Proxy-Authorization: Basic ");
 		Crypto::Encrypt::Base64 b64;
-		sptr = sptr + b64.Encrypt((UInt8*)userPwd, sptr2 - userPwd, (UInt8*)sptr, 0);
+		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), (UInt8*)sptr, 0);
 		sptr = Text::StrConcat(sptr, "\r\n");
 	}
 	sptr = Text::StrConcat(sptr, "\r\n");
-	this->Write((UInt8*)reqBuff, sptr - reqBuff);
+	this->Write((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff));
 	this->SetTimeout(4000);
 	this->Read((UInt8*)reqBuff, 512);
 	this->SetTimeout(-1);
