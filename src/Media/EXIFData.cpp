@@ -2032,7 +2032,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 	return false;
 }
 
-Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, Int32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
 	Media::EXIFData::EXIFItem *item;
 	Media::EXIFData::EXIFItem *item2;

@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogServerForm *me = (SSWR::AVIRead::AVIRLogServerForm*)userObj;
-	me->currIP = (Int32)(OSInt)me->lbClient->GetSelectedItem();
+	me->currIP = (UInt32)(UOSInt)me->lbClient->GetSelectedItem();
 	me->lbLog->ClearItems();
 	me->msgListUpd = true;
 }
@@ -100,12 +100,12 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogServerForm *me = (SSWR::AVIRead::AVIRLogServerForm*)userObj;
 	UTF8Char sbuff[20];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (me->ipListUpd)
 	{
 		me->ipListUpd = false;
-		Data::ArrayList<Int32> *ipList;
+		Data::ArrayList<UInt32> *ipList;
 		Sync::MutexUsage mutUsage(me->ipMut);
 		ipList = me->ipMap->GetKeys();
 		me->lbClient->ClearItems();
@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 	this->ipListUpd = false;
 	this->msgListUpd = false;
 	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::Int32Map<IPLog*>());
+	NEW_CLASS(this->ipMap, Data::UInt32Map<IPLog*>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -184,8 +184,8 @@ SSWR::AVIRead::AVIRLogServerForm::~AVIRLogServerForm()
 
 	Data::ArrayList<IPLog*> *ipList = this->ipMap->GetValues();
 	IPLog *ipLog;
-	OSInt i = ipList->GetCount();
-	OSInt j;
+	UOSInt i = ipList->GetCount();
+	UOSInt j;
 	while (i-- > 0)
 	{
 		ipLog = ipList->GetItem(i);

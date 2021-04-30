@@ -15,10 +15,10 @@ namespace Media
 		virtual Bool StartVideo() = 0;
 		virtual Bool StopVideo() = 0;
 		virtual Bool IsRunning() = 0;
-		virtual Int32 SeekToTime(Int32 mediaTime) = 0;
+		virtual UInt32 SeekToTime(UInt32 mediaTime) = 0;
 		virtual Bool IsRealTimeSrc() = 0;
 		virtual Bool CanSeek() = 0;
-		virtual OSInt GetDataSeekCount() = 0;
+		virtual UOSInt GetDataSeekCount() = 0;
 	};
-};
+}
 #endif

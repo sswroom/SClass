@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(const UTF8Char *sourceName, Int32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
@@ -13,7 +13,7 @@ Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(const UTF8Char 
 
 Math::PointMappingCoordinateSystem::~PointMappingCoordinateSystem()
 {
-	OSInt i;
+	UOSInt i;
 	Double *ptItem;
 	i = this->mappingList->GetCount();
 	while (i-- > 0)
@@ -48,8 +48,8 @@ void Math::PointMappingCoordinateSystem::CalcBaseXY(Double mapX, Double mapY, Do
 	Double ptDist[3];
 	Double *ptList[3];
 	Double *ptItem;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ptDist[0] = -1;
 	ptDist[1] = -1;
 	ptDist[2] = -1;

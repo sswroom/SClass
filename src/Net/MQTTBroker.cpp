@@ -11,7 +11,7 @@ typedef struct
 {
 	void *cliData;
 	const UTF8Char *cliId;
-	OSInt buffSize;
+	UOSInt buffSize;
 	UInt8 recvBuff[4096];
 	UInt16 keepAlive;
 	Bool connected;
@@ -36,7 +36,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 		SDEL_TEXT(data->cliId);
 		MemFree(data);
 
-		OSInt i;
+		UOSInt i;
 		SubscribeInfo *subscribe;
 		Sync::MutexUsage mutUsage(me->subscribeMut);
 		i = me->subscribeList->GetCount();
@@ -59,7 +59,7 @@ void __stdcall Net::MQTTBroker::OnClientData(Net::TCPClient *cli, void *userObj,
 {
 	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
 	ClientData *data = (ClientData*)cliData;
-	Sync::Interlocked::Add(&me->infoTotalRecv, size);
+	Sync::Interlocked::Add(&me->infoTotalRecv, (OSInt)size);
 
 	if (me->log)
 	{
@@ -113,7 +113,7 @@ void __stdcall Net::MQTTBroker::OnClientConn(UInt32 *s, void *userObj)
 	data->connected = false;
 	data->cliId = 0;
 	me->cliMgr->AddClient(cli, data);
-	OSInt cnt = me->cliMgr->GetClientCount();
+	UOSInt cnt = me->cliMgr->GetClientCount();
 	if (cnt > me->infoCliMax)
 	{
 		me->infoCliMax = cnt;
@@ -125,53 +125,53 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
 	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
 	Data::DateTime *dt;
 	UTF8Char sbuff[64];
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(dt, Data::DateTime());
 
 	dt->SetCurrTimeUTC();
-	i = dt->ToString(Text::StrConcat(sbuff, (const UTF8Char*)"SMQTT "), "yyyyMMdd") - sbuff;
+	i = (UOSInt)(dt->ToString(Text::StrConcat(sbuff, (const UTF8Char*)"SMQTT "), "yyyyMMdd") - sbuff);
 	me->UpdateTopic((const UTF8Char*)"$SYS/broker/version", sbuff, i, true);
 	me->sysInfoRunning = true;
 	while (!me->sysInfoToStop)
 	{
 		dt->SetCurrTimeUTC();
-		i = Text::StrConcat(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), (const UTF8Char*)" seconds") - sbuff;
+		i = (UOSInt)(Text::StrConcat(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), (const UTF8Char*)" seconds") - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/uptime", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoTotalRecv) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoTotalRecv) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/load/bytes/received", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoTotalSent) - sbuff;
+		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoTotalSent) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/load/bytes/sent", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->cliMgr->GetClientCount()) - sbuff;
+		i = (UOSInt)(Text::StrUOSInt(sbuff, me->cliMgr->GetClientCount()) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/clients/connected", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoCliDisconn) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoCliDisconn) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/clients/disconnected", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoCliMax) - sbuff;
+		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoCliMax) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/clients/maximum", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoMsgRecv) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoMsgRecv) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/received", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoMsgSent) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoMsgSent) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/sent", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoPubDrop) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubDrop) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/publish/dropped", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoPubRecv) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubRecv) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/publish/received", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->infoPubSent) - sbuff;
+		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubSent) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/publish/sent", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->topicMap->GetCount()) - sbuff;
+		i = (UOSInt)(Text::StrUOSInt(sbuff, me->topicMap->GetCount()) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/retained/count", sbuff, i, true);
 
-		i = Text::StrInt64(sbuff, me->subscribeList->GetCount()) - sbuff;
+		i = (UOSInt)(Text::StrUOSInt(sbuff, me->subscribeList->GetCount()) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/subscriptions/count", sbuff, i, true);
 
 		me->sysInfoEvt->Wait(10000);
@@ -188,7 +188,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 	UInt8 packet2[256];
 	UOSInt i;
 	UOSInt j;
-	OSInt sent;
+	UOSInt sent;
 	Sync::Interlocked::Increment(&this->infoMsgRecv);
 	switch (cmdType >> 4)
 	{
@@ -288,7 +288,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						SDEL_TEXT(userName);
 						break;
 					}
-					UInt16 pwdSize = ReadMUInt16(&cmd[i]);
+					UOSInt pwdSize = ReadMUInt16(&cmd[i]);
 					if (cmdSize - i - 2 < pwdSize)
 					{
 						sb.Append((const UTF8Char*)", data = ");
@@ -362,7 +362,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						SDEL_TEXT(userName);
 						break;
 					}
-					UInt16 pwdSize = ReadMUInt16(&cmd[i]);
+					UOSInt pwdSize = ReadMUInt16(&cmd[i]);
 					if (cmdSize - i - 2 < pwdSize)
 					{
 						SDEL_TEXT(clientId);
@@ -444,7 +444,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			Text::StringBuilderUTF8 topicSb;
 			UInt16 packetId = 0;
 			const UInt8 *message;
-			OSInt messageSize;
+			UOSInt messageSize;
 			Sync::Interlocked::Increment(&this->infoPubRecv);
 			if (this->log)
 			{
@@ -566,7 +566,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = PUBACK, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -577,7 +577,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = PUBREC, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -588,7 +588,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = PUBREL, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -599,7 +599,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = PUBCOMP, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -611,7 +611,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			UInt16 packetId = 0;
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = SUBSCRIBE, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)", Packet Id = ");
 			if (cmdSize >= 2)
 			{
@@ -710,7 +710,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = SUBACK, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -721,7 +721,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = UNSUBSCRIBE, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -732,7 +732,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = UNSUBACK, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -743,7 +743,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = PINGREQ, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -757,7 +757,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = PINGRESP, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -768,7 +768,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = DISCONNECT, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -779,7 +779,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Packet Type = Reserved, size = ");
-			sb.AppendOSInt(cmdSize);
+			sb.AppendUOSInt(cmdSize);
 			sb.Append((const UTF8Char*)" bytes, data = ");
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_CRLF);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -792,7 +792,7 @@ void Net::MQTTBroker::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *bu
 {
 }
 
-void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, OSInt msgSize, Bool suppressUnchg)
+void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
 {
 	TopicInfo *topicInfo;
 	Bool unchanged = false;
@@ -818,7 +818,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, O
 		}
 		else
 		{
-			OSInt i = msgSize;
+			UOSInt i = msgSize;
 			unchanged = true;
 			while (i-- > 0)
 			{
@@ -850,7 +850,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, O
 	}
 
 	SubscribeInfo *subscribe;
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 	i = this->subscribeList->GetCount();
 	while (i-- > 0)
@@ -921,7 +921,7 @@ Bool Net::MQTTBroker::TopicMatch(const UTF8Char *topic, const UTF8Char *subscrib
 		if (i > 0)
 		{
 			sb.ClearStr();
-			sb.AppendC(subscribeTopic, i);
+			sb.AppendC(subscribeTopic, (UOSInt)i);
 			if (!Text::StrStartsWith(topic, sb.ToString()))
 			{
 				return false;
@@ -952,7 +952,7 @@ Bool Net::MQTTBroker::TopicMatch(const UTF8Char *topic, const UTF8Char *subscrib
 	}
 
 	sb.ClearStr();
-	sb.AppendC(subscribeTopic, i);
+	sb.AppendC(subscribeTopic, (UOSInt)i);
 	if (!Text::StrStartsWith(topic, sb.ToString()))
 	{
 		return false;
@@ -966,9 +966,9 @@ Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo 
 	UInt8 packet2[128];
 	UInt8 *packetBuff1;
 	UInt8 *packetBuff2;
-	OSInt i;
-	OSInt sent;
-	OSInt topicLen = Text::StrCharCnt(topic->topic);
+	UOSInt i;
+	UOSInt sent;
+	UOSInt topicLen = Text::StrCharCnt(topic->topic);
 	Sync::Interlocked::Increment(&this->infoPubSent);
 	Sync::Interlocked::Increment(&this->infoMsgSent);
 	if (topicLen + topic->msgSize + 4 <= 128)
@@ -1072,7 +1072,7 @@ Net::MQTTBroker::~MQTTBroker()
 	DEL_CLASS(this->protoHdlr);
 	Data::ArrayList<TopicInfo*> *topicList = this->topicMap->GetValues();
 	TopicInfo *topic;
-	OSInt i = topicList->GetCount();
+	UOSInt i = topicList->GetCount();
 	while (i-- > 0)
 	{
 		topic = topicList->GetItem(i);
@@ -1127,8 +1127,8 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *u
 	{
 		Data::ArrayList<TopicInfo*> *topicList;
 		TopicInfo *topic;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Sync::MutexUsage mutUsage(this->topicMut);
 		topicList = this->topicMap->GetValues();
 		i = 0;

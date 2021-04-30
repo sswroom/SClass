@@ -31,7 +31,7 @@ namespace IO
 			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
-			virtual OSInt GetSeekCount();
+			virtual UOSInt GetSeekCount();
 
 			void Append(UInt64 ofst, UInt32 length);
 		};

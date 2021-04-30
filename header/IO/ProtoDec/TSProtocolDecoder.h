@@ -15,9 +15,9 @@ namespace IO
 			virtual ~TSProtocolDecoder();
 
 			virtual const UTF8Char *GetName();
-			virtual OSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, Int64 fileOfst, UInt8 *buff, OSInt buffSize);
-			virtual Bool GetProtocolDetail(UInt8 *buff, OSInt buffSize, Text::StringBuilderUTF *sb);
-			virtual Bool IsValid(UInt8 *buff, OSInt buffSize);
+			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize);
+			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb);
+			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize);
 		};
 	}
 }

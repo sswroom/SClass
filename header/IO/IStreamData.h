@@ -18,7 +18,7 @@ namespace IO
 		virtual Bool IsFullFile() = 0;
 		virtual const UTF8Char *GetFullFileName() {return GetFullName();};
 		virtual Bool IsLoading() = 0;
-		virtual OSInt GetSeekCount() = 0;
+		virtual UOSInt GetSeekCount() = 0;
 	};
-};
+}
 #endif

@@ -26,14 +26,14 @@ namespace IO
 		Sync::Mutex *reqMut;
 		UInt8 *reqResult;
 		UInt8 reqFuncCode;
-		OSInt reqResultSize;
+		UOSInt reqResultSize;
 		Bool reqHasResult;
 		Data::Int32Map<UInt8> *devMap;
 
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
 
-		static void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, OSInt resultSize);
+		static void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
 		static void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 		Bool ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize);

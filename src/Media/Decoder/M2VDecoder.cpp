@@ -16,7 +16,7 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 		Media::FrameInfo info;
 		Int32 norm;
 		Int32 denorm;
-		Int64 bitRate;
+		UInt64 bitRate;
 
 		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, &info, &norm, &denorm, &bitRate, true))
 		{
@@ -200,7 +200,7 @@ Bool Media::Decoder::M2VDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fra
 		return false;
 
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
-	info->fourcc = *(Int32*)"MPG2";
+	info->fourcc = ReadNUInt32("MPG2");
 	info->par2 = this->par;
 
 	return true;

@@ -6,8 +6,8 @@
 void Map::LeveledMapView::UpdateVals()
 {
 	Double scale = this->scales->GetItem(this->level);
-	Double diffx = this->scnWidth * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
-	Double diffy = this->scnHeight * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
+	Double diffx = Math::UOSInt2Double(this->scnWidth) * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
+	Double diffy = Math::UOSInt2Double(this->scnHeight) * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
 
 	this->rightX = this->centX + diffx;
 	this->leftX = this->centX - diffx;
@@ -49,8 +49,8 @@ void Map::LeveledMapView::SetMapScale(Double scale)
 {
 	Double ldiff;
 	Double minDiff;
-	OSInt minInd;
-	OSInt i;
+	UOSInt minInd;
+	UOSInt i;
 	Double logResol = Math::Log10(scale);
 	minInd = 0;
 	minDiff = 100000.0;
@@ -66,7 +66,7 @@ void Map::LeveledMapView::SetMapScale(Double scale)
 			minInd = i;
 		}
 	}
-	this->level = (Int32)minInd;
+	this->level = (UInt32)minInd;
 	this->UpdateVals();
 }
 
@@ -149,8 +149,8 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOS
 		return false;
 	}
 
-	Double xmul = this->scnWidth / (rightX - leftX);
-	Double ymul = this->scnHeight / (bottomY - topY);
+	Double xmul = Math::UOSInt2Double(this->scnWidth) / (rightX - leftX);
+	Double ymul = Math::UOSInt2Double(this->scnHeight) / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 #ifdef HAS_ASM32
@@ -251,8 +251,8 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UO
 		return false;
 	}
 
-	Double xmul = this->scnWidth / (rightX - leftX);
-	Double ymul = this->scnHeight / (bottomY - topY);
+	Double xmul = Math::UOSInt2Double(this->scnWidth) / (rightX - leftX);
+	Double ymul = Math::UOSInt2Double(this->scnHeight) / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double iminX = 0;
@@ -282,7 +282,7 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UO
 				imaxY = thisY;
 		}
 	}
-	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);
+	return (imaxX >= 0) && (iminX < Math::UOSInt2Double(scnWidth)) && (imaxY >= 0) && (iminY < Math::UOSInt2Double(scnHeight));
 }
 
 Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
@@ -291,8 +291,8 @@ Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int
 	{
 		return false;
 	}
-	Double xmul = this->scnWidth / (rightX - leftX);
-	Double ymul = this->scnHeight / (bottomY - topY);
+	Double xmul = Math::UOSInt2Double(this->scnWidth) / (rightX - leftX);
+	Double ymul = Math::UOSInt2Double(this->scnHeight) / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double rRate = 1 / mapRate;

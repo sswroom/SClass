@@ -102,8 +102,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 
 		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
-		NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ToColor(Text::StrHex2Int32(sarr[1])), csys));
-		env->SetNString(Text::StrToInt32(sarr[4]));
+		NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ToColor(Text::StrHex2UInt32(sarr[1])), csys));
+		env->SetNString(Text::StrToUInt32(sarr[4]));
 		fileName = baseDir;
 
 		while (reader->ReadLine(sbuff, 255))
@@ -150,7 +150,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					pattern = 0;
 				}
-				env->AddLineStyleLayer(j, ToColor(Text::StrHex2Int32(sarr[4])), Text::StrToInt32(sarr[3]), pattern, (Int32)i - 5);
+				env->AddLineStyleLayer(j, ToColor(Text::StrHex2UInt32(sarr[4])), Text::StrToUInt32(sarr[3]), pattern, i - 5);
 				if (pattern)
 				{
 					MemFree(pattern);
@@ -167,7 +167,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				env->SetLineStyleName(Text::StrToInt32(sarr[1]), sarr[2]);
+				env->SetLineStyleName(Text::StrToUInt32(sarr[1]), sarr[2]);
 			}
 			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"5,"))
 			{
@@ -187,7 +187,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				i = Text::StrToInt32(sarr[1]);
+				i = Text::StrToUInt32(sarr[1]);
 				if (env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor))
 				{
 					addFont = 1;
@@ -210,7 +210,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				}
 				else if (j == 4)
 				{
-					buffSize = Text::StrToInt32(sarr[5]);
+					buffSize = Text::StrToUInt32(sarr[5]);
 					buffColor = ToColor(Text::StrHex2UInt32(sarr[6]));
 				}
 				else
@@ -247,7 +247,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					{
 						setting.minScale = Text::StrToInt32(sarr[2]);
 						setting.maxScale = Text::StrToInt32(sarr[3]);
-						setting.lineStyle = Text::StrToInt32(sarr[4]);
+						setting.lineStyle = Text::StrToUInt32(sarr[4]);
 						env->SetLayerProp(&setting, currGroup, i);
 					}
 				}
@@ -303,8 +303,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						setting.minScale = Text::StrToInt32(sarr[2]);
 						setting.maxScale = Text::StrToInt32(sarr[3]);
 						setting.priority = Text::StrToInt32(sarr[4]);
-						setting.fontStyle = Text::StrToInt32(sarr[5]);
-						j = Text::StrToInt32(sarr[6]);
+						setting.fontStyle = Text::StrToUInt32(sarr[5]);
+						j = Text::StrToUInt32(sarr[6]);
 						setting.flags = Map::MapEnv::SFLG_HIDESHAPE | Map::MapEnv::SFLG_SHOWLABEL;
 						if (j & 1)
 						{
@@ -333,12 +333,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
+				OSInt si;
 				Text::StrConcat(Text::StrConcat(fileName, sarr[1]), (const UTF8Char*)".cip");
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
 				Text::StrConcat(sbuff3, sbuff2);
 				IO::Path::AppendPath(sbuff3, sarr[4]);
-				j = env->AddImage(sbuff3, this->parsers);
-				if (lyr && j != (UOSInt)-1)
+				si = env->AddImage(sbuff3, this->parsers);
+				if (lyr && si != -1)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -346,7 +347,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					{
 						setting.minScale = Text::StrToInt32(sarr[2]);
 						setting.maxScale = Text::StrToInt32(sarr[3]);
-						setting.imgIndex = (Int32)j;
+						setting.imgIndex = (UOSInt)si;
 						env->SetLayerProp(&setting, currGroup, i);
 					}
 				}
@@ -376,7 +377,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Bool hasPt = false;
 		Bool hasPL = false;
 		Bool hasPG = false;
-		Int32 srid = 0;
+		UInt32 srid = 0;
 		IO::FileStream *fs2;
 		IO::StreamReader *reader2;
 		Data::ArrayListDbl ptX;

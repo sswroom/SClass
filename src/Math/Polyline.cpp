@@ -5,7 +5,7 @@
 #include "Math/Polyline.h"
 #include "Data/ArrayListDbl.h"
 
-Math::Polyline::Polyline(Int32 srid, Double *pointArr, UOSInt nPoint) : PointCollection(srid)
+Math::Polyline::Polyline(UInt32 srid, Double *pointArr, UOSInt nPoint) : PointCollection(srid)
 {
 	this->pointArr = MemAlloc(Double, nPoint << 1);
 	MemCopyNO(this->pointArr, pointArr, sizeof(Double) * (nPoint << 1));
@@ -17,7 +17,7 @@ Math::Polyline::Polyline(Int32 srid, Double *pointArr, UOSInt nPoint) : PointCol
 	this->color = 0;
 }
 
-Math::Polyline::Polyline(Int32 srid, UOSInt nPtOfst, UOSInt nPoint) : PointCollection(srid)
+Math::Polyline::Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : PointCollection(srid)
 {
 	if (nPtOfst == 0)
 	{
@@ -932,7 +932,7 @@ Bool Math::Polyline::HasColor()
 	return (this->flags & 1) != 0;
 }
 
-Int32 Math::Polyline::GetColor()
+UInt32 Math::Polyline::GetColor()
 {
 	return this->color;
 }

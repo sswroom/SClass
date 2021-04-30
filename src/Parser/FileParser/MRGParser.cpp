@@ -33,11 +33,11 @@ IO::ParsedObject::ParserType Parser::FileParser::MRGParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MRGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
-	Int32 hdr[4];
-	Int32 startOfst;
-	Int64 currOfst;
+	UInt32 hdr[4];
+	UInt32 startOfst;
+	UInt64 currOfst;
 	UInt32 currSize;
-	Int32 hdrOfst;
+	UInt32 hdrOfst;
 	UInt8 rec[76];
 	UTF8Char name[65];
 
@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::MRGParser::ParseFile(IO::IStreamData *fd, 
 		}
 		enc.UTF8FromBytes(name, rec, 64, 0);
 		currSize = *(UInt32*)&rec[64];
-		pf->AddData(fd, currOfst, (Int32)currSize, name, 0);
+		pf->AddData(fd, currOfst, currSize, name, 0);
 		currOfst += currSize;
 		hdrOfst += 76;
 	}

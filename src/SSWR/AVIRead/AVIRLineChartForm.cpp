@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	{
 		if (i == 0)
 		{
-			colInfos[i].colIndex = xCol;
+			colInfos[i].colIndex = (UOSInt)xCol;
 		}
 		else
 		{
@@ -242,16 +242,16 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
 	UTF8Char sbuff[512];
 	OSInt i = me->cboYAxis->GetSelectedIndex();
-	OSInt col;
+	UOSInt col;
 	if (i < 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a column first", (const UTF8Char *)"Error", me);
 		return;
 	}
-	col = (OSInt)me->cboYAxis->GetItem(i);
+	col = (UOSInt)me->cboYAxis->GetItem(i);
 	me->cboYAxis->GetItemText(sbuff, i);
 	me->lbYAxis->AddItem(sbuff, (void*)col);
-	me->yCols->Add((Int32)col);
+	me->yCols->Add((UInt32)col);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userObj)
@@ -260,13 +260,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userO
 	OSInt selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd >= 0)
 	{
-		OSInt colInd = (OSInt)me->lbStrCols->GetItem(selInd);
+		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem((UOSInt)selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Double;
-		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew(selInd);
+		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew((UOSInt)selInd);
 		me->cboXAxis->AddItem(csptr, (void*)colInd);
 		me->cboYAxis->AddItem(csptr, (void*)colInd);
 		me->lbStrCols->DelTextNew(csptr);
-		me->lbStrCols->RemoveItem(selInd);
+		me->lbStrCols->RemoveItem((UOSInt)selInd);
 	}
 }
 
@@ -276,13 +276,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *use
 	OSInt selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd >= 0)
 	{
-		OSInt colInd = (OSInt)me->lbStrCols->GetItem(selInd);
+		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem((UOSInt)selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
-		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew(selInd);
+		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew((UOSInt)selInd);
 		me->cboXAxis->AddItem(csptr, (void*)colInd);
 		me->cboYAxis->AddItem(csptr, (void*)colInd);
 		me->lbStrCols->DelTextNew(csptr);
-		me->lbStrCols->RemoveItem(selInd);
+		me->lbStrCols->RemoveItem((UOSInt)selInd);
 	}
 }
 
@@ -295,7 +295,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->db = db;
 	this->strTypes = 0;
 	this->tableName = Text::StrCopyNew(tableName);
-	NEW_CLASS(this->yCols, Data::ArrayList<Int32>());
+	NEW_CLASS(this->yCols, Data::ArrayList<UInt32>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlStrCols, UI::GUIPanel(ui, this));
@@ -350,8 +350,8 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	{
 		this->cboXAxis->AddItem((const UTF8Char*)"Auto Number", (void*)-1);
 		this->cboXAxis->SetSelectedIndex(0);
-		OSInt i;
-		OSInt j = reader->ColCount();
+		UOSInt i;
+		UOSInt j = reader->ColCount();
 		DB::ColDef colDef((const UTF8Char*)"");
 		this->strTypes = MemAlloc(DB::DBUtil::ColType, j);
 		i = 0;

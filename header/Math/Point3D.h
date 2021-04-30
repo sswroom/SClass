@@ -9,7 +9,7 @@ namespace Math
 	private:
 		Double z;
 	public:
-		Point3D(Int32 srid, Double x, Double y, Double z);
+		Point3D(UInt32 srid, Double x, Double y, Double z);
 		virtual ~Point3D();
 
 		virtual Math::Vector2D *Clone();

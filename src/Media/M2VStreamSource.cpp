@@ -275,7 +275,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 					Media::FrameInfo info;
 					Int32 norm;
 					Int32 denorm;
-					Int64 bitRate;
+					UInt64 bitRate;
 
 					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, &info, &norm, &denorm, &bitRate, true))
 					{
@@ -627,7 +627,7 @@ OSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, 
 
 void Media::M2VStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
 {
-	Int64 bitRate;
+	UInt64 bitRate;
 	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, &this->frameRateNorm, &this->frameRateDenorm, &bitRate, false);
 	this->par = this->info->par2;
 	this->bitRate = bitRate;

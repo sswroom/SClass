@@ -68,9 +68,9 @@ namespace IO
 			Bool IsLogEnabled();
 			Bool DisableLog();
 			Bool EnableLog();
-			OSInt CalLogBlockCount(OSInt logSize);
-			Bool ReadLogPart(OSInt addr, UInt8 *buff); //1024 bytes
-			Bool ReadLogBlock(OSInt addr, UInt8 *buff); //65536 bytes
+			UOSInt CalLogBlockCount(UOSInt logSize);
+			Bool ReadLogPart(UOSInt addr, UInt8 *buff); //1024 bytes
+			Bool ReadLogBlock(UOSInt addr, UInt8 *buff); //65536 bytes
 			Bool ParseLog(Map::GPSTrack *gps);
 			Bool DelLogData();
 			Bool SetLogFormat(LogFormat lf);
@@ -83,8 +83,8 @@ namespace IO
 			Int32 GetLogDistance();
 			Int32 GetLogSpeed();
 			LogMode GetLogMode();
-			OSInt GetLogSize(); //Bytes
-			const UTF8Char *SendMTKCommand(const UInt8 *cmdBuff, OSInt cmdSize, const UTF8Char *resultStart, Int32 timeoutMS);
+			UOSInt GetLogSize(); //Bytes
+			const UTF8Char *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, Int32 timeoutMS);
 
 			const UTF8Char *GetFirmwareRel();
 			const UTF8Char *GetFirmwareBuild();

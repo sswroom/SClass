@@ -3,7 +3,7 @@
 #include "IO/BitReaderMSB.h"
 #include "Media/MPEGVideoParser.h"
 
-Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, Int32 *fRateNorm, Int32 *fRateDenorm, Int64 *bitRate, Bool decoderFix)
+Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, Int32 *fRateNorm, Int32 *fRateDenorm, UInt64 *bitRate, Bool decoderFix)
 {
 	decoderFix = false;
 	if (ReadMInt32(frame) != 0x1b3)
@@ -19,7 +19,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 	UInt32 vertical_size = ((frame[5] & 0xf) << 8) | frame[6];
 	Int32 aspect_ratio_information = frame[7] >> 4;
 	Int32 frame_rate_code = frame[7] & 0xf;
-	Int32 bit_rate = (frame[8] << 10) | (frame[9] << 2) | (frame[10] >> 6);
+	UInt32 bit_rate = (frame[8] << 10) | (frame[9] << 2) | (frame[10] >> 6);
 	Int32 vbv_buffer_size = ((frame[10] & 0x1f) << 5) | (frame[11] >> 3);
 //	Int32 constrained_parameters_flag = (frame[11] & 4) >> 2;
 	Bool load_intra_quantiser_matrix = (frame[11] & 2) != 0;
@@ -238,7 +238,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 				frameInfo->dispHeight = ((frame[ofst + 6] & 1) << 13) | (frame[ofst + 7] << 5) | (frame[ofst + 8] >> 3);
 				if (decoderFix && (frameInfo->dispWidth != horizontal_size || frameInfo->dispHeight != vertical_size))
 				{
-					frame[ofst + 5] = horizontal_size >> 6;
+					frame[ofst + 5] = (UInt8)(horizontal_size >> 6);
 					frame[ofst + 6] = (UInt8)(((horizontal_size << 2) | 2 | (vertical_size >> 13)) & 0xff);
 					frame[ofst + 7] = (UInt8)((vertical_size >> 5) & 0xff);
 					frame[ofst + 8] = (UInt8)((vertical_size << 3) & 0xff);
@@ -454,7 +454,7 @@ Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, 
 		prop->pictureCodingType = 0;
 		break;
 	}
-	prop->dcBits = intra_dc_precision + 8;
+	prop->dcBits = (UInt8)intra_dc_precision + 8;
 	prop->tff = (flags & 0x200) != 0;
 	prop->progressive = (flags & 2) != 0;
 	prop->rff = (flags & 8) != 0;

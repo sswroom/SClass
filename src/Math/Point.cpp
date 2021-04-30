@@ -3,7 +3,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Point.h"
 
-Math::Point::Point(Int32 srid, Double x, Double y) : Vector2D(srid)
+Math::Point::Point(UInt32 srid, Double x, Double y) : Vector2D(srid)
 {
 	this->x = x;
 	this->y = y;

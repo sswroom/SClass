@@ -25,7 +25,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 packetType;
-			OSInt size;
+			UOSInt size;
 			UInt8 content[1];
 		} PacketInfo;
 

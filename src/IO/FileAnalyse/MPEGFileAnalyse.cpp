@@ -8,12 +8,12 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::MPEGFileAnalyse *me = (IO::FileAnalyse::MPEGFileAnalyse*)userObj;
 	UInt8 readBuff[256];
-	Int64 currOfst;
-	Int64 readOfst;
-	OSInt buffSize;
-	OSInt readSize;
-	OSInt frameSize;
-	OSInt j;
+	UInt64 currOfst;
+	UInt64 readOfst;
+	UOSInt buffSize;
+	UOSInt readSize;
+	UOSInt frameSize;
+	UOSInt j;
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 
 	me->threadRunning = true;
@@ -68,7 +68,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 			{
 				if ((readBuff[j + 4] & 0xc0) == 0x40)
 				{
-					frameSize = 14 + (readBuff[j + 13] & 7);
+					frameSize = 14 + (UOSInt)(readBuff[j + 13] & 7);
 				}
 				else if ((readBuff[j + 4] & 0xf0) == 0x20)
 				{
@@ -86,7 +86,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 			}
 			else
 			{
-				frameSize = 6 + ReadMUInt16(&readBuff[j + 4]);
+				frameSize = 6 + (UOSInt)ReadMUInt16(&readBuff[j + 4]);
 				pack = MemAlloc(IO::FileAnalyse::MPEGFileAnalyse::PackInfo, 1);
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
@@ -171,7 +171,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=0x");
 	sb->AppendHexBuff(&pack->packType, 1, 0, Text::LBT_NONE);
 	switch (pack->packType)
@@ -260,14 +260,14 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		break;
 	case 0xbb:
 		{
-			OSInt i;
+			UOSInt i;
 			sb->Append((const UTF8Char*)"System header");
 			sb->Append((const UTF8Char*)"\r\nRate Bound = ");
 			sb->AppendU32((ReadMUInt24(&packBuff[6]) >> 1) & 0x3fffff);
 			sb->Append((const UTF8Char*)"\r\nAudio Bound = ");
-			sb->AppendU16(packBuff[9] >> 2);
+			sb->AppendU16((UInt16)(packBuff[9] >> 2));
 			sb->Append((const UTF8Char*)"\r\nFixed Flag = ");
-			sb->AppendU16((packBuff[9] & 2) >> 1);
+			sb->AppendU16((UInt16)((packBuff[9] & 2) >> 1));
 			sb->Append((const UTF8Char*)"\r\nCSPS Flag = ");
 			sb->AppendU16(packBuff[9] & 1);
 			sb->Append((const UTF8Char*)"\r\nSystem Audio Lock Flag = ");
@@ -303,7 +303,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		sb->Append((const UTF8Char*)"Private Stream 1");
 		if (this->mpgVer == 2)
 		{
-			OSInt i;
+			UOSInt i;
 			Int64 pts;
 			sb->Append((const UTF8Char*)"\r\nPES Scrambling Control = ");
 			sb->AppendU16((packBuff[6] & 0x30) >> 4);
@@ -402,14 +402,14 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 				i += 1;
 			}
 
-			i = 9 + packBuff[8];
+			i = 9 + (UOSInt)packBuff[8];
 			sb->Append((const UTF8Char*)"\r\nStream Type = 0x");
 			sb->AppendHex8(packBuff[i]);
 			if ((packBuff[i] & 0xf0) == 0xa0)
 			{
 				sb->Append((const UTF8Char*)" (VOB LPCM Audio)");
 				sb->Append((const UTF8Char*)"\r\nNo. of Channels = ");
-				sb->AppendU16((packBuff[i + 5] & 7) + 1);
+				sb->AppendU16((UInt16)((packBuff[i + 5] & 7) + 1));
 				sb->Append((const UTF8Char*)"\r\nBits per Sample = ");
 				switch (packBuff[i + 5] & 0xc0)
 				{
@@ -424,7 +424,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 					break;
 				}
 				sb->Append((const UTF8Char*)"\r\nSampling Frequency = ");
-				sb->AppendU16((packBuff[i + 5] & 0x30)?96000:48000);
+				sb->AppendU32((packBuff[i + 5] & 0x30)?96000:48000);
 				sb->Append((const UTF8Char*)"\r\nVOB LPCM Header = ");
 				sb->AppendHexBuff(&packBuff[i], 7, ' ', Text::LBT_NONE);
 				i += 7;
@@ -452,13 +452,13 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			}
 		
 			sb->Append((const UTF8Char*)"\r\nContent Size = ");
-			sb->AppendI32((Int32)(pack->packSize - i));
+			sb->AppendUOSInt((pack->packSize - i));
 			sb->Append((const UTF8Char*)"\r\nContent:\r\n");
 			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LBT_CRLF);
 		}
 		else
 		{
-			OSInt i;
+			UOSInt i;
 			Int64 pts;
 			i = 6;
 			while (packBuff[i] & 0x80)
@@ -525,7 +525,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		break;
 	case 0xc0:
 		{
-			OSInt i;
+			UOSInt i;
 			Int64 pts;
 			sb->Append((const UTF8Char*)"Audio Stream 1");
 			i = 6;
@@ -689,7 +689,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		}
 		else
 		{
-			OSInt i;
+			UOSInt i;
 			Int64 pts;
 			i = 6;
 			while (packBuff[i] & 0x80)
@@ -761,11 +761,11 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
 Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 {
 	UInt8 *readBuff;
-	OSInt readSize;
-	OSInt buffSize;
-	OSInt j;
-	OSInt frameSize;
-	Int64 readOfst;
+	UOSInt readSize;
+	UOSInt buffSize;
+	UOSInt j;
+	UOSInt frameSize;
+	UInt64 readOfst;
 	Bool valid = true;
 	IO::FileStream *dfs;
 	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -816,7 +816,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 		{
 			if ((readBuff[j + 4] & 0xc0) == 0x40)
 			{
-				frameSize = 14 + (readBuff[j + 13] & 7);
+				frameSize = 14 + (UOSInt)(readBuff[j + 13] & 7);
 			}
 			else if ((readBuff[j + 4] & 0xf0) == 0x20)
 			{
@@ -830,7 +830,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 		}
 		else
 		{
-			frameSize = 6 + ReadMUInt16(&readBuff[j + 4]);
+			frameSize = 6 + (UOSInt)ReadMUInt16(&readBuff[j + 4]);
 		}
 		if (j + frameSize <= buffSize)
 		{

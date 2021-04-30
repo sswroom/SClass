@@ -43,7 +43,7 @@ Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile 
 		i = 0;
 		while (i < width)
 		{
-			v = 0.5 + Math::Sin(Math::OSInt2Double(i)) * 0.25 + Math::Sin(Math::OSInt2Double(j)) * 0.25;
+			v = 0.5 + Math::Sin(Math::UOSInt2Double(i)) * 0.25 + Math::Sin(Math::UOSInt2Double(j)) * 0.25;
 			c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(v) * 65535.0);
 			c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(v) * 65535.0);
 			c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(v) * 65535.0);

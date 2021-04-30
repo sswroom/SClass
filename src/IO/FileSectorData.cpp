@@ -40,7 +40,7 @@ IO::IStreamData *IO::FileSectorData::GetStreamData(UInt64 startSector, UInt64 da
 	return this->data->GetPartialData(startSector * sectorSize, dataSize);
 }
 
-OSInt IO::FileSectorData::GetSeekCount()
+UOSInt IO::FileSectorData::GetSeekCount()
 {
 	return this->data->GetSeekCount();
 }

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/PointCollection.h"
 
-Math::PointCollection::PointCollection(Int32 srid) : Vector2D(srid)
+Math::PointCollection::PointCollection(UInt32 srid) : Vector2D(srid)
 {
 
 }

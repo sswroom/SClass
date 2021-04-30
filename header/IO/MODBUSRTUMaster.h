@@ -30,8 +30,8 @@ namespace IO
 		Data::Int32Map<AddrResultCb*> *cbMap;
 
 		static UInt32 __stdcall ThreadProc(void *userObj);
-		void CalcCRC(UInt8 *rtu, OSInt rtuSize); // size include CRC
-		Bool IsCRCValid(UInt8 *rtu, OSInt rtuSize);
+		void CalcCRC(UInt8 *rtu, UOSInt rtuSize); // size include CRC
+		Bool IsCRCValid(UInt8 *rtu, UOSInt rtuSize);
 	public:
 		MODBUSRTUMaster(IO::Stream *stm);
 		virtual ~MODBUSRTUMaster();

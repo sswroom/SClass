@@ -5,7 +5,7 @@ void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRJavaClassForm *me = (SSWR::AVIRead::AVIRJavaClassForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->clsFile->MethodsGetDetail(me->lbMethods->GetSelectedIndex(), 0, true, &sb);
+	me->clsFile->MethodsGetDetail((UOSInt)me->lbMethods->GetSelectedIndex(), 0, true, &sb);
 	me->txtMethods->SetText(sb.ToString());
 }
 
@@ -45,8 +45,8 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->txtMethods->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMethods->SetReadOnly(true);
 
-	OSInt i = 0;
-	OSInt j = this->clsFile->FieldsGetCount();
+	UOSInt i = 0;
+	UOSInt j = this->clsFile->FieldsGetCount();
 	while (i < j)
 	{
 		sb.ClearStr();

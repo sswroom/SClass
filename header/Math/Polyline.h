@@ -15,8 +15,8 @@ namespace Math
 		Int32 flags;
 		UInt32 color;
 	public:
-		Polyline(Int32 srid, Double *pointArr, UOSInt nPoint);
-		Polyline(Int32 srid, UOSInt nPtOfst, UOSInt nPoint);
+		Polyline(UInt32 srid, Double *pointArr, UOSInt nPoint);
+		Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint);
 		virtual ~Polyline();
 
 		virtual VectorType GetVectorType();
@@ -35,7 +35,7 @@ namespace Math
 
 		Math::Polygon *CreatePolygonByDist(Double dist);
 		Bool HasColor();
-		Int32 GetColor();
+		UInt32 GetColor();
 		void SetColor(UInt32 color);
 	};
 }

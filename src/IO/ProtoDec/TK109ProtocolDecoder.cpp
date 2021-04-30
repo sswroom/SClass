@@ -18,11 +18,11 @@ const UTF8Char *IO::ProtoDec::TK109ProtocolDecoder::GetName()
 	return (const UTF8Char*)"TK109";
 }
 
-OSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, Int64 fileOfst, UInt8 *buff, OSInt buffSize)
+UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
 {
-	OSInt i;
-	OSInt j;
-	Int32 protoSize;
+	UOSInt i;
+	UOSInt j;
+	UInt32 protoSize;
 	Text::StringBuilderUTF8 sb;
 	j = 0;
 	i = 0;
@@ -102,15 +102,15 @@ OSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void 
 	return j;
 }
 
-Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb)
 {
 	if (buffSize < 7)
 		return false;
-	Int32 protoSize = ReadMUInt16(&buff[3]);
+	UInt32 protoSize = ReadMUInt16(&buff[3]);
 	if (buff[0] != 0x67 || buff[1] != 0x67)
 		return false;
 	sb->Append((const UTF8Char*)"Protocol Size=");
-	sb->AppendI32(protoSize);
+	sb->AppendU32(protoSize);
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Seq=");
 	sb->AppendU16(ReadMUInt16(&buff[5]));
@@ -173,12 +173,12 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt bu
 				else if (buff[16] < 40)
 				{
 					sb->Append((const UTF8Char*)"+0");
-					sb->AppendU16((buff[16] / 4) * 100 + (buff[16] & 3) * 15);
+					sb->AppendU16((UInt16)((buff[16] / 4) * 100 + (buff[16] & 3) * 15));
 				}
 				else
 				{
 					sb->Append((const UTF8Char*)"+");
-					sb->AppendU16((buff[16] / 4) * 100 + (buff[16] & 3) * 15);
+					sb->AppendU16((UInt16)((buff[16] / 4) * 100 + (buff[16] & 3) * 15));
 				}
 				sb->Append((const UTF8Char*)"\r\n");
 			}
@@ -244,7 +244,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt bu
 		if (protoSize >= 33)
 		{
 			sb->Append((const UTF8Char*)"Signal Quality=");
-			sb->AppendI16(-110 + ReadMUInt16(&buff[36]));
+			sb->AppendI32(-110 + ReadMUInt16(&buff[36]));
 			sb->Append((const UTF8Char*)"dB\r\n");
 		}
 		if (protoSize >= 35)
@@ -478,7 +478,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt bu
 	return true;
 }
 
-Bool IO::ProtoDec::TK109ProtocolDecoder::IsValid(UInt8 *buff, OSInt buffSize)
+Bool IO::ProtoDec::TK109ProtocolDecoder::IsValid(UInt8 *buff, UOSInt buffSize)
 {
 	return buff[0] == 0x67 && buff[1] == 0x67;
 }

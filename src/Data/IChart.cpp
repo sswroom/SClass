@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-OSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
+UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
 {
-	OSInt retCnt = 2;
+	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Double scale;
@@ -61,9 +61,9 @@ OSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-OSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
+UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
 {
-	OSInt retCnt = 2;
+	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Double scale;
@@ -116,9 +116,9 @@ OSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-OSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
+UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
 {
-	OSInt retCnt = 2;
+	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
 	Int64 timeDif;
 	Double scale;

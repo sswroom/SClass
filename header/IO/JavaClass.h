@@ -42,26 +42,26 @@ namespace IO
 		
 	private:
 		UInt8 *fileBuff;
-		OSInt fileBuffSize;
-		OSInt constPoolCnt;
+		UOSInt fileBuffSize;
+		UOSInt constPoolCnt;
 		UInt8 **constPool;
 		UInt16 accessFlags;
 		UInt16 thisClass;
 		UInt16 superClass;
-		OSInt interfaceCnt;
+		UOSInt interfaceCnt;
 		UInt8 *interfaces;
-		OSInt fieldsCnt;
+		UOSInt fieldsCnt;
 		UInt8 **fields;
-		OSInt methodCnt;
+		UOSInt methodCnt;
 		UInt8 **methods;
-		OSInt attrCnt;
+		UOSInt attrCnt;
 		UInt8 **attrs;
 
 		static const UInt8 *Type2String(const UInt8 *typeStr, Text::StringBuilderUTF *sb);
 		static const UInt8 *CondType2String(CondType ct);
 		static const UInt8 *CondType2IString(CondType ct);
 		static void DetailAccessFlags(UInt16 accessFlags, Text::StringBuilderUTF *sb);
-		const UInt8 *DetailAttribute(const UInt8 *attr, OSInt lev, Text::StringBuilderUTF *sb);
+		const UInt8 *DetailAttribute(const UInt8 *attr, UOSInt lev, Text::StringBuilderUTF *sb);
 		void DetailConstVal(UInt16 index, Text::StringBuilderUTF *sb, Bool brankets);
 		void DetailName(UInt16 index, Text::StringBuilderUTF *sb, Bool brankets);
 		void DetailClassName(UInt16 index, Text::StringBuilderUTF *sb);
@@ -71,35 +71,35 @@ namespace IO
 		void DetailNameAndType(UInt16 index, UInt16 classIndex, Text::StringBuilderUTF *sb);
 		void DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, Text::StringBuilderUTF *sb, UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen, Bool isStatic);
 		void DetailType(UInt16 typeIndex, Text::StringBuilderUTF *sb);
-		void DetailCode(const UInt8 *code, OSInt codeLen, OSInt lev, Text::StringBuilderUTF *sb);
+		void DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Text::StringBuilderUTF *sb);
 		const UInt8 *DetailAnnotation(const UInt8 *annoPtr, const UInt8 *annoEnd, Text::StringBuilderUTF *sb);
 		const UInt8 *DetailElementValue(const UInt8 *annoPtr, const UInt8 *annoEnd, Text::StringBuilderUTF *sb);
 		UTF8Char *GetConstName(UTF8Char *sbuff, UInt16 index);
 		void ClassNameString(UInt16 index, Text::StringBuilderUTF *sb);
 		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const UInt8 *lvTable, UOSInt lvTableLen, UOSInt codeOfst);
 	public:
-		JavaClass(const UTF8Char *sourceName, const UInt8 *buff, OSInt buffSize);
+		JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 		virtual ~JavaClass();
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
 		Bool FileStructDetail(Text::StringBuilderUTF *sb);
-		OSInt FieldsGetCount();
-		Bool FieldsGetDecl(OSInt index, Text::StringBuilderUTF *sb);
-		OSInt MethodsGetCount();
-		Bool MethodsGetDecl(OSInt index, Text::StringBuilderUTF *sb);
-		Bool MethodsGetDetail(OSInt index, OSInt lev, Bool disasm, Text::StringBuilderUTF *sb);
+		UOSInt FieldsGetCount();
+		Bool FieldsGetDecl(UOSInt index, Text::StringBuilderUTF *sb);
+		UOSInt MethodsGetCount();
+		Bool MethodsGetDecl(UOSInt index, Text::StringBuilderUTF *sb);
+		Bool MethodsGetDetail(UOSInt index, UOSInt lev, Bool disasm, Text::StringBuilderUTF *sb);
 
-		void Decompile(const UInt8 *codeAttr, Bool staticFunc, const UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen, OSInt lev, Text::StringBuilderUTF *sb);
+		void Decompile(const UInt8 *codeAttr, Bool staticFunc, const UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen, UOSInt lev, Text::StringBuilderUTF *sb);
 	private:
-		EndType DecompileCode(const UInt8 *codePtr, const UInt8 *codeEnd, DecompileEnv *env, OSInt lev, Text::StringBuilderUTF *sb);
+		EndType DecompileCode(const UInt8 *codePtr, const UInt8 *codeEnd, DecompileEnv *env, UOSInt lev, Text::StringBuilderUTF *sb);
 		void DecompileLDC(UInt16 index, DecompileEnv *env);
-		void DecompileStore(UInt16 index, DecompileEnv *env, OSInt lev, Text::StringBuilderUTF *sb, UOSInt codeOfst);
-		EndType DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, DecompileEnv *env, OSInt lev, Text::StringBuilderUTF *sb);
+		void DecompileStore(UInt16 index, DecompileEnv *env, UOSInt lev, Text::StringBuilderUTF *sb, UOSInt codeOfst);
+		EndType DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, DecompileEnv *env, UOSInt lev, Text::StringBuilderUTF *sb);
 		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, Text::StringBuilderUTF *sb);
 	public:
 		static JavaClass *ParseFile(const UTF8Char *fileName);
-		static JavaClass *ParseBuff(const UTF8Char *sourceName, const UInt8 *buff, OSInt buffSize);
+		static JavaClass *ParseBuff(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

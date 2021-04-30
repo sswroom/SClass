@@ -12,7 +12,7 @@ Math::SRESRIWKTWriter::~SRESRIWKTWriter()
 
 }
 
-Char *Math::SRESRIWKTWriter::WriteSRID(Char *buff, Int32 srid, UOSInt lev, Text::LineBreakType lbt)
+Char *Math::SRESRIWKTWriter::WriteSRID(Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt)
 {
 	return buff;
 }

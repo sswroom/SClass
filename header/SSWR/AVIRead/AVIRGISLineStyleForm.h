@@ -23,7 +23,7 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Map::MapEnv *env;
 			Media::DrawEngine *eng;
-			OSInt lineStyle;
+			UOSInt lineStyle;
 			Bool changed;
 
 			UI::GUIGroupBox *grpStyle;
@@ -48,13 +48,13 @@ namespace SSWR
 			static void __stdcall OKClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);
 		public:
-			AVIRGISLineStyleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, OSInt lineStyle);
+			AVIRGISLineStyleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineStyleForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			OSInt GetLineStyle();
+			UOSInt GetLineStyle();
 			Bool IsChanged();
 		};
 	};

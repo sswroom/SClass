@@ -132,7 +132,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		k = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
-		*(Int32*)&buff[4] = AddString(strArr, &u8buff[k + 1], stmPos);
+		WriteUInt32(&buff[4], AddString(strArr, &u8buff[k + 1], stmPos));
 		u8buff[k] = 0;
 		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOf(u8buff);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
@@ -160,14 +160,14 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		*(Int32*)&buff[0] = 0;
 		if (u8ptr)
 		{
-			*(Int32*)&buff[4] = AddString(strArr, u8buff, stmPos);
+			WriteUInt32(&buff[4], AddString(strArr, u8buff, stmPos));
 		}
 		else
 		{
 			*(Int32*)&buff[4] = 0;
 		}
 		*(Int32*)&buff[8] = 0;
-		*(Int32*)&buff[12] = AddString(strArr, fontName, stmPos + 8);
+		WriteUInt32(&buff[12], AddString(strArr, fontName, stmPos + 8));
 		*(Int32*)&buff[16] = Math::Double2Int32(fontSize / 0.75);
 		*(Int32*)&buff[20] = bold?1:0;
 		WriteUInt32(&buff[24], fontColor);
@@ -218,7 +218,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			if (npattern > 0)
 			{
 				stm->Write(pattern, npattern);
-				stmPos = (Int32)(stmPos + (Int32)npattern);
+				stmPos = (UInt32)(stmPos + npattern);
 			}
 
 			k++;
@@ -307,7 +307,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListStrUTF8 
 	}
 }
 
-Int32 Exporter::MEVExporter::AddString(Data::StringUTF8Map<MEVStrRecord*> *strArr, const UTF8Char *strVal, UInt32 fileOfst)
+UInt32 Exporter::MEVExporter::AddString(Data::StringUTF8Map<MEVStrRecord*> *strArr, const UTF8Char *strVal, UInt32 fileOfst)
 {
 	MEVStrRecord *strRec = strArr->Get(strVal);
 	if (strRec == 0)
@@ -378,7 +378,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			env->GetLayerProp(&setting, group, i);
 			ltype = layer->GetLayerType();
 			*(Int32*)&buff[16] = layer->GetCodePage();
-			*(Int32*)&buff[24] = setting.labelCol;
+			WriteUInt32(&buff[24], (UInt32)setting.labelCol);
 			*(Int32*)&buff[28] = setting.flags;
 			*(Int32*)&buff[32] = Math::Double2Int32(setting.minScale);
 			*(Int32*)&buff[36] = Math::Double2Int32(setting.maxScale);

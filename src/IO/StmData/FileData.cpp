@@ -200,7 +200,7 @@ Bool IO::StmData::FileData::IsLoading()
 	return false;
 }
 
-OSInt IO::StmData::FileData::GetSeekCount()
+UOSInt IO::StmData::FileData::GetSeekCount()
 {
 	if (this->fdh)
 		return this->fdh->seekCnt;

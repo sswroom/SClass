@@ -21,7 +21,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		Media::FrameInfo info;
 		Int32 norm;
 		Int32 denorm;
-		Int64 bitRate;
+		UInt64 bitRate;
 
 		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, &info, &norm, &denorm, &bitRate, true))
 		{

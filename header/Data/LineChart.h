@@ -46,11 +46,11 @@ namespace Data
 		public:
 			void *data;
 			Data::LineChart::ChartType dataType;
-			Int32 lineColor;
+			UInt32 lineColor;
 			UOSInt dataCnt;
 			Data::LineChart::LineStyle lineStyle;
 
-			ChartData(void *data, UOSInt dataCnt, Data::LineChart::ChartType dataType, Int32 lineColor, Data::LineChart::LineStyle lineStyle);
+			ChartData(void *data, UOSInt dataCnt, Data::LineChart::ChartType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
 			~ChartData();
 		};
 
@@ -69,7 +69,7 @@ namespace Data
 		UTF8Char *titleLine[3];
 		UOSInt titleLineCnt;
 		const UTF8Char *yUnit;
-		Int32 timeZoneQHR;
+		Int8 timeZoneQHR;
 
 		Double refDbl;
 		Int32 refInt;
@@ -80,11 +80,11 @@ namespace Data
 		PointType pointType;
 		Double pointSize;
 
-		Int32 bgColor;
-		Int32 boundColor;
-		Int32 fontColor;
-		Int32 gridColor;
-		Int32 refLineColor;
+		UInt32 bgColor;
+		UInt32 boundColor;
+		UInt32 fontColor;
+		UInt32 gridColor;
+		UInt32 refLineColor;
 		Double lineThick;
 		Double barLength;
 
@@ -120,27 +120,27 @@ namespace Data
 		void SetDblFormat(const Char *format);
 		void SetFontHeightPt(Double ptSize);
 		void SetFontName(const UTF8Char *name);
-		void SetYRefVal(Int32 refVal, Int32 col);
-		void SetYRefVal(Double refVal, Int32 col);
-		void SetYRefVal(Data::DateTime *refVal, Int32 col);
+		void SetYRefVal(Int32 refVal, UInt32 col);
+		void SetYRefVal(Double refVal, UInt32 col);
+		void SetYRefVal(Data::DateTime *refVal, UInt32 col);
 		void SetYRefType(Data::LineChart::RefType refType);
 		void SetYUnit(const UTF8Char *yUnit);
 		void SetLineThick(Double lineThick);
 		void SetTimeZoneQHR(Int32 timeZone);
 		void SetBarLength(Double barLength);
 		void SetPointType(PointType pointType, Double pointSize);
-		Int32 GetRndColor();
-		void AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, Int32 lineColor, Data::LineChart::LineStyle style);
-		void AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, Int32 lineColor, Data::LineChart::LineStyle style);
-		void AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, Int32 lineColor, Data::LineChart::LineStyle style);
+		UInt32 GetRndColor();
+		void AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void SetYAxis(const UTF8Char *name);
 		void SetXRangeDate(Data::DateTime *xVal);
 		void SetYRangeInt(Int32 yVal);
 		void SetYRangeDbl(Double yVal);
 //		void SetStyle(Data::LineChart::LineStyle style);
 		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height);
-		virtual OSInt GetLegendCount();
-		virtual UTF8Char *GetLegend(UTF8Char *sbuff, Int32 *color, UOSInt index);
+		virtual UOSInt GetLegendCount();
+		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index);
 
 	};
 }

@@ -1127,7 +1127,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 			imgInfo->cnt = imgList->GetCount();
 			imgInfo->imgs = imgList;
 			imgInfo->isAni = false;
-			imgInfo->aniIndex = -1;
+			imgInfo->aniIndex = (UOSInt)-1;
 			imgInfo->aniLastTimeTick = 0;
 			i = imgInfo->cnt;
 			while (i-- > 0)
@@ -1142,7 +1142,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 			}
 			this->images->Put(fileName, imgInfo);
 			this->imgList->Add(imgInfo);
-			return imgInfo->index;
+			return (OSInt)imgInfo->index;
 		}
 		else
 		{
@@ -1153,7 +1153,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 	return -1;
 }
 
-OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList)
+UOSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;
@@ -1169,7 +1169,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList)
 	imgInfo->cnt = imgList->GetCount();
 	imgInfo->imgs = imgList;
 	imgInfo->isAni = false;
-	imgInfo->aniIndex = -1;
+	imgInfo->aniIndex = (UOSInt)-1;
 	imgInfo->aniLastTimeTick = 0;
 	i = imgInfo->cnt;
 	while (i-- > 0)
@@ -1217,7 +1217,7 @@ UOSInt Map::MapEnv::GetImageFileIndex(UOSInt index)
 	return 0;
 }
 
-OSInt Map::MapEnv::GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType)
+UOSInt Map::MapEnv::GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType)
 {
 	return this->GetLayersInList(layers, this->mapLayers, lyrType);
 }
@@ -1516,7 +1516,7 @@ Math::CoordinateSystem *Map::MapEnv::GetCoordinateSystem()
 	return this->csys;
 }
 
-Int32 Map::MapEnv::GetSRID()
+UInt32 Map::MapEnv::GetSRID()
 {
 	if (this->csys)
 		return this->csys->GetSRID();

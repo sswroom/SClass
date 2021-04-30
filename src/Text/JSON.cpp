@@ -85,7 +85,7 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::Str
 			if (sptr != sbuff)
 			{
 				*sptr = 0;
-				sb->AppendC(sbuff, sptr - sbuff);
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			return jsonStr;
 		}
@@ -129,38 +129,38 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::Str
 				UInt32 v = 0;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
-					v = (v << 4) + (c - '0');
+					v = (v << 4) + (UInt32)(c - '0');
 				else if (c >= 'A' && c <= 'F')
-					v = (v << 4) + (c - 0x37);
+					v = (v << 4) + (UInt32)(c - 0x37);
 				else if (c >= 'a' && c <= 'f')
-					v = (v << 4) + (c - 0x57);
+					v = (v << 4) + (UInt32)(c - 0x57);
 				else
 					return 0;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
-					v = (v << 4) + (c - '0');
+					v = (v << 4) + (UInt32)(c - '0');
 				else if (c >= 'A' && c <= 'F')
-					v = (v << 4) + (c - 0x37);
+					v = (v << 4) + (UInt32)(c - 0x37);
 				else if (c >= 'a' && c <= 'f')
-					v = (v << 4) + (c - 0x57);
+					v = (v << 4) + (UInt32)(c - 0x57);
 				else
 					return 0;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
-					v = (v << 4) + (c - '0');
+					v = (v << 4) + (UInt32)(c - '0');
 				else if (c >= 'A' && c <= 'F')
-					v = (v << 4) + (c - 0x37);
+					v = (v << 4) + (UInt32)(c - 0x37);
 				else if (c >= 'a' && c <= 'f')
-					v = (v << 4) + (c - 0x57);
+					v = (v << 4) + (UInt32)(c - 0x57);
 				else
 					return 0;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
-					v = (v << 4) + (c - '0');
+					v = (v << 4) + (UInt32)(c - '0');
 				else if (c >= 'A' && c <= 'F')
-					v = (v << 4) + (c - 0x37);
+					v = (v << 4) + (UInt32)(c - 0x37);
 				else if (c >= 'a' && c <= 'f')
-					v = (v << 4) + (c - 0x57);
+					v = (v << 4) + (UInt32)(c - 0x57);
 				else
 					return 0;
 
@@ -170,8 +170,8 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::Str
 				}
 				else if (v < 0x800)
 				{
-					*sptr++ = 0xc0 | (v >> 6);
-					*sptr++ = 0x80 | (v & 0x3f);
+					*sptr++ = (UTF8Char)(0xc0 | (v >> 6));
+					*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
 				}
 				else if (v >= 0xd800 && v < 0xdc00)
 				{
@@ -181,38 +181,38 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::Str
 						jsonStr += 2;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
-							v2 = (v2 << 4) + (c - '0');
+							v2 = (v2 << 4) + (UInt32)(c - '0');
 						else if (c >= 'A' && c <= 'F')
-							v2 = (v2 << 4) + (c - 0x37);
+							v2 = (v2 << 4) + (UInt32)(c - 0x37);
 						else if (c >= 'a' && c <= 'f')
-							v2 = (v2 << 4) + (c - 0x57);
+							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
 							return 0;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
-							v2 = (v2 << 4) + (c - '0');
+							v2 = (v2 << 4) + (UInt32)(c - '0');
 						else if (c >= 'A' && c <= 'F')
-							v2 = (v2 << 4) + (c - 0x37);
+							v2 = (v2 << 4) + (UInt32)(c - 0x37);
 						else if (c >= 'a' && c <= 'f')
-							v2 = (v2 << 4) + (c - 0x57);
+							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
 							return 0;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
-							v2 = (v2 << 4) + (c - '0');
+							v2 = (v2 << 4) + (UInt32)(c - '0');
 						else if (c >= 'A' && c <= 'F')
-							v2 = (v2 << 4) + (c - 0x37);
+							v2 = (v2 << 4) + (UInt32)(c - 0x37);
 						else if (c >= 'a' && c <= 'f')
-							v2 = (v2 << 4) + (c - 0x57);
+							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
 							return 0;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
-							v2 = (v2 << 4) + (c - '0');
+							v2 = (v2 << 4) + (UInt32)(c - '0');
 						else if (c >= 'A' && c <= 'F')
-							v2 = (v2 << 4) + (c - 0x37);
+							v2 = (v2 << 4) + (UInt32)(c - 0x37);
 						else if (c >= 'a' && c <= 'f')
-							v2 = (v2 << 4) + (c - 0x57);
+							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
 							return 0;
 
@@ -221,52 +221,51 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::Str
 							v = 0x10000 + ((v - 0xd800) << 10) + (v2 - 0xdc00);
 							if (v < 0x200000)
 							{
-								*sptr++ = 0xf0 | (v >> 18);
-								*sptr++ = 0x80 | ((v >> 12) & 0x3f);
-								*sptr++ = 0x80 | ((v >> 6) & 0x3f);
-								*sptr++ = 0x80 | (v & 0x3f);
+								*sptr++ = (UTF8Char)(0xf0 | (v >> 18));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 12) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
 							}
 							else if (v < 0x4000000)
 							{
-								*sptr++ = 0xf8 | (v >> 24);
-								*sptr++ = 0x80 | ((v >> 18) & 0x3f);
-								*sptr++ = 0x80 | ((v >> 12) & 0x3f);
-								*sptr++ = 0x80 | ((v >> 6) & 0x3f);
-								*sptr++ = 0x80 | (v & 0x3f);
+								*sptr++ = (UTF8Char)(0xf8 | (v >> 24));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 18) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 12) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
 							}
 							else
 							{
-								*sptr++ = 0xfc | (v >> 30);
-								*sptr++ = 0x80 | ((v >> 24) & 0x3f);
-								*sptr++ = 0x80 | ((v >> 18) & 0x3f);
-								*sptr++ = 0x80 | ((v >> 12) & 0x3f);
-								*sptr++ = 0x80 | ((v >> 6) & 0x3f);
-								*sptr++ = 0x80 | (v & 0x3f);
+								*sptr++ = (UTF8Char)(0xfc | (v >> 30));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 24) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 18) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 12) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+								*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
 							}
 						}
 						else
 						{
-							*sptr++ = 0xe0 | (v >> 12);
-							*sptr++ = 0x80 | ((v >> 6) & 0x3f);
-							*sptr++ = 0x80 | (v & 0x3f);
-							*sptr++ = 0xe0 | (v2 >> 12);
-							*sptr++ = 0x80 | ((v2 >> 6) & 0x3f);
-							*sptr++ = 0x80 | (v2 & 0x3f);
+							*sptr++ = (UTF8Char)(0xe0 | (v >> 12));
+							*sptr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+							*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
+							*sptr++ = (UTF8Char)(0xe0 | (v2 >> 12));
+							*sptr++ = (UTF8Char)(0x80 | ((v2 >> 6) & 0x3f));
+							*sptr++ = (UTF8Char)(0x80 | (v2 & 0x3f));
 						}
 					}
 					else
 					{
-						*sptr++ = 0xe0 | (v >> 12);
-						*sptr++ = 0x80 | ((v >> 6) & 0x3f);
-						*sptr++ = 0x80 | (v & 0x3f);
+						*sptr++ = (UTF8Char)(0xe0 | (v >> 12));
+						*sptr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+						*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
 					}
-					
 				}
 				else
 				{
-					*sptr++ = 0xe0 | (v >> 12);
-					*sptr++ = 0x80 | ((v >> 6) & 0x3f);
-					*sptr++ = 0x80 | (v & 0x3f);
+					*sptr++ = (UTF8Char)(0xe0 | (v >> 12));
+					*sptr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+					*sptr++ = (UTF8Char)(0x80 | (v & 0x3f));
 				}
 			}
 			else
@@ -285,7 +284,7 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::Str
 		if ((sptr - sbuff) >= 126)
 		{
 			*sptr = 0;
-			sb->AppendC(sbuff, sptr - sbuff);
+			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
@@ -745,13 +744,13 @@ void Text::JSONStringUTF8::ToJSONString(Text::StringBuilderUTF *sb)
 			}
 			if (dptr - sbuff >= 126)
 			{
-				sb->AppendC(sbuff, dptr - sbuff);
+				sb->AppendC(sbuff,(UOSInt)(dptr - sbuff));
 				dptr = sbuff;
 			}
 		}
 		if (dptr - sbuff > 0)
 		{
-			sb->AppendC(sbuff, dptr - sbuff);
+			sb->AppendC(sbuff, (UOSInt)(dptr - sbuff));
 		}
 		sb->AppendChar('\"', 1);
 	}
@@ -850,7 +849,7 @@ Text::JSONObject::JSONObject()
 
 Text::JSONObject::~JSONObject()
 {
-	OSInt i;
+	UOSInt i;
 	Text::JSONBase *obj;
 	Data::ArrayList<Text::JSONBase*> *vals = this->objVals->GetValues();
 	i = vals->GetCount();
@@ -872,8 +871,8 @@ void Text::JSONObject::ToJSONString(Text::StringBuilderUTF *sb)
 	Data::ArrayList<const UTF8Char *> *keys = this->objVals->GetKeys();
 	Data::ArrayList<Text::JSONBase*> *vals = this->objVals->GetValues();
 	Text::JSONBase *obj;
-	OSInt i = 0;
-	OSInt j = keys->GetCount();
+	UOSInt i = 0;
+	UOSInt j = keys->GetCount();
 	sb->AppendC((const UTF8Char*)"{", 1);
 	i = 0;
 	while (i < j)
@@ -940,7 +939,7 @@ Text::JSONArray::JSONArray()
 
 Text::JSONArray::~JSONArray()
 {
-	OSInt i = this->arrVals->GetCount();
+	UOSInt i = this->arrVals->GetCount();
 	while (i-- > 0)
 	{
 		this->arrVals->GetItem(i)->EndUse();
@@ -956,8 +955,8 @@ Text::JSONBase::JSType Text::JSONArray::GetJSType()
 void Text::JSONArray::ToJSONString(Text::StringBuilderUTF *sb)
 {
 	Text::JSONBase *obj;
-	OSInt i = 0;
-	OSInt j = this->arrVals->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->arrVals->GetCount();
 	sb->AppendC((const UTF8Char*)"[", 1);
 	while (i < j)
 	{

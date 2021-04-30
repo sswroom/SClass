@@ -8,7 +8,7 @@
 UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
 {
 	Media::M2VFile *me = (Media::M2VFile*)userData;
-	OSInt buffSize;
+	UOSInt buffSize;
 	me->playStarted = true;
 	me->playing = true;
 	me->stm->ClearFrameBuff();
@@ -40,7 +40,7 @@ Media::M2VFile::M2VFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 	this->playToStop = false;
 	this->startTime = 0;
 
-	OSInt buffSize = this->stmData->GetRealData(0, 1024, this->readBuff);
+	UOSInt buffSize = this->stmData->GetRealData(0, 1024, this->readBuff);
 	Int32 frameRateNorm;
 	Int32 frameRateDenorm;
 	FrameInfo info;
@@ -125,7 +125,7 @@ Bool Media::M2VFile::IsRunning()
 	return this->playing;
 }
 
-Int32 Media::M2VFile::SeekToTime(Int32 mediaTime)
+UInt32 Media::M2VFile::SeekToTime(UInt32 mediaTime)
 {
 	if (this->playing)
 		return 0;
@@ -144,7 +144,7 @@ Bool Media::M2VFile::CanSeek()
 	return true;
 }
 
-OSInt Media::M2VFile::GetDataSeekCount()
+UOSInt Media::M2VFile::GetDataSeekCount()
 {
 	return this->stmData->GetSeekCount();
 }

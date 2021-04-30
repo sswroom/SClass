@@ -23,7 +23,7 @@ namespace IO
 		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff);
 		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount);
 		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize);
-		virtual OSInt GetSeekCount();
+		virtual UOSInt GetSeekCount();
 	};
 
 	class CDSectorStreamData : public IO::IStreamData
@@ -46,7 +46,7 @@ namespace IO
 		virtual IStreamData *GetPartialData(UInt64 offset, UInt64 length);
 		virtual Bool IsFullFile();
 		virtual Bool IsLoading();
-		virtual OSInt GetSeekCount();
+		virtual UOSInt GetSeekCount();
 	};
 }
 #endif

@@ -135,8 +135,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		MODBUSEntry *entry;
-		OSInt i = 0;
-		OSInt j = me->entryList->GetCount();
+		UOSInt i = 0;
+		UOSInt j = me->entryList->GetCount();
 		while (i < j)
 		{
 			Single f32Val;
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 					}
 					else if (entry->denorm == 0)
 					{
-						sptr = Text::StrHexVal32(sbuff, i32Val);
+						sptr = Text::StrHexVal32(sbuff, (UInt32)i32Val);
 					}
 					else
 					{
@@ -202,11 +202,11 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				{
 					if (entry->denorm == 1)
 					{
-						sptr = Text::StrUInt32(sbuff, i32Val);
+						sptr = Text::StrUInt32(sbuff, (UInt32)i32Val);
 					}
 					else if (entry->denorm == 0)
 					{
-						sptr = Text::StrHexVal32(sbuff, i32Val);
+						sptr = Text::StrHexVal32(sbuff, (UInt32)i32Val);
 					}
 					else
 					{
@@ -256,7 +256,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 					}
 					else if (entry->denorm == 0)
 					{
-						sptr = Text::StrHexVal16(sbuff, i32Val);
+						sptr = Text::StrHexVal16(sbuff, (UInt16)i32Val);
 					}
 					else
 					{
@@ -296,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 	entry->lvIndex = me->lvDevice->AddItem(sbuff, entry);
 	entry->val = 0;
 	me->entryList->Add(entry);
-	Text::StrUInt16(sbuff, regAddr);
+	Text::StrUInt16(sbuff, (UInt16)regAddr);
 	me->lvDevice->SetSubItem(entry->lvIndex, 1, sbuff);
 	me->lvDevice->SetSubItem(entry->lvIndex, 2, name);
 	me->lvDevice->SetSubItem(entry->lvIndex, 3, (const UTF8Char*)"-");
@@ -413,7 +413,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 {
 	StopStream();
 	MODBUSEntry *entry;
-	OSInt i = this->entryList->GetCount();
+	UOSInt i = this->entryList->GetCount();
 	while (i-- > 0)
 	{
 		entry = this->entryList->GetItem(i);

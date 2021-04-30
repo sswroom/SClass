@@ -55,7 +55,7 @@ namespace SSWR
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
 			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
 
-			OSInt GetFontStyle();
+			UOSInt GetFontStyle();
 			Bool IsChanged();
 		};
 	}

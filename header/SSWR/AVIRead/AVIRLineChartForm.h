@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				OSInt colIndex;
+				UOSInt colIndex;
 				DB::ColDef *colDef;
 				void *datas;
 			} ColInfo;
@@ -45,7 +45,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			DB::ReadingDB *db;
 			Data::IChart *chart;
-			Data::ArrayList<Int32> *yCols;
+			Data::ArrayList<UInt32> *yCols;
 			const UTF8Char *tableName;
 			DB::DBUtil::ColType *strTypes;
 

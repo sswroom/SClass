@@ -61,7 +61,7 @@ IO::IStreamData *IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 data
 	return data;
 }
 
-OSInt IO::CDSectorData::GetSeekCount()
+UOSInt IO::CDSectorData::GetSeekCount()
 {
 	return this->data->GetSeekCount();
 }
@@ -158,7 +158,7 @@ Bool IO::CDSectorStreamData::IsLoading()
 	return false;
 }
 
-OSInt IO::CDSectorStreamData::GetSeekCount()
+UOSInt IO::CDSectorStreamData::GetSeekCount()
 {
 	return 0;
 }

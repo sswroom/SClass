@@ -3,7 +3,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Polyline3D.h"
 
-Math::Polyline3D::Polyline3D(Int32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::Polyline(srid, nPtOfst, nPoint)
+Math::Polyline3D::Polyline3D(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::Polyline(srid, nPtOfst, nPoint)
 {
 	this->altitudes = MemAlloc(Double, nPoint);
 	MemClear(this->altitudes, sizeof(Double) * nPoint);

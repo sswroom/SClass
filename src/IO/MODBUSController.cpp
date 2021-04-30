@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
-void __stdcall IO::MODBUSController::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, OSInt resultSize)
+void __stdcall IO::MODBUSController::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
 	IO::MODBUSController *me = (IO::MODBUSController*)userObj;
 	if (me->reqResult && funcCode == me->reqFuncCode && resultSize == me->reqResultSize)
@@ -48,7 +48,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqFuncCode = 4;
 		this->reqResultSize = resSize;
 		this->cbEvt->Clear();
-		this->modbus->ReadInputRegisters(devAddr, (UInt16)(regAddr - 30001), resSize >> 1);
+		this->modbus->ReadInputRegisters(devAddr, (UInt16)(regAddr - 30001), (UInt16)(resSize >> 1));
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
@@ -63,7 +63,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqFuncCode = 3;
 		this->reqResultSize = resSize;
 		this->cbEvt->Clear();
-		this->modbus->ReadHoldingRegisters(devAddr, (UInt16)(regAddr - 40001), resSize >> 1);
+		this->modbus->ReadHoldingRegisters(devAddr, (UInt16)(regAddr - 40001), (UInt16)(resSize >> 1));
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
@@ -78,7 +78,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqFuncCode = 4;
 		this->reqResultSize = resSize;
 		this->cbEvt->Clear();
-		this->modbus->ReadInputRegisters(devAddr, (UInt16)(regAddr - 300001), resSize >> 1);
+		this->modbus->ReadInputRegisters(devAddr, (UInt16)(regAddr - 300001), (UInt16)(resSize >> 1));
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
@@ -93,7 +93,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqFuncCode = 3;
 		this->reqResultSize = resSize;
 		this->cbEvt->Clear();
-		this->modbus->ReadHoldingRegisters(devAddr, (UInt16)(regAddr - 400001), resSize >> 1);
+		this->modbus->ReadHoldingRegisters(devAddr, (UInt16)(regAddr - 400001), (UInt16)(resSize >> 1));
 		this->cbEvt->Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
@@ -121,7 +121,7 @@ IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
 IO::MODBUSController::~MODBUSController()
 {
 	Data::ArrayList<Int32> *devList = this->devMap->GetKeys();
-	OSInt i = devList->GetCount();
+	UOSInt i = devList->GetCount();
 	while (i-- > 0)
 	{
 		this->modbus->HandleReadResult((UInt8)devList->GetItem(i), 0, 0, 0);

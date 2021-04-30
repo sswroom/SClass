@@ -58,7 +58,7 @@ namespace Media
 		OSInt playBuffStart;
 		OSInt playBuffEnd;
 		Double par;
-		Int64 bitRate;
+		UInt64 bitRate;
 
 		Bool finfoMode;
 		void *finfoData;

@@ -10,7 +10,7 @@ namespace Math
 		Double x;
 		Double y;
 	public:
-		Point(Int32 srid, Double x, Double y);
+		Point(UInt32 srid, Double x, Double y);
 		virtual ~Point();
 
 		virtual VectorType GetVectorType();

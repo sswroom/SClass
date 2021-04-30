@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Text/JSONBuilder.h"
 #include "Text/MyStringFloat.h"
+#include "Text/MyStringW.h"
 
 void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 {
@@ -38,12 +39,12 @@ void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 		}
 		if (sptr - sbuff >= 254)
 		{
-			sb->AppendC(sbuff, sptr - sbuff);
+			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
 	*sptr++ = '\"';
-	sb->AppendC(sbuff, sptr - sbuff);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 void Text::JSONBuilder::AppendStrW(const WChar *val)
@@ -53,9 +54,14 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	UTF32Char c;
 	sptr = sbuff;
 	*sptr++ = '\"';
-	while ((c = *val++) != 0)
+	while (true)
 	{
-		if (c == '\"')
+		val = Text::StrReadChar(val, &c);
+		if (c == 0)
+		{
+			break;
+		}
+		else if (c == '\"')
 		{
 			*sptr++ = '\\';
 			*sptr++ = '\\';
@@ -75,58 +81,18 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 			*sptr++ = '\\';
 			*sptr++ = 'n';
 		}
-		else if (c < 0x80)
-		{
-			*sptr++ = (UTF8Char)c;
-		}
-		else if (c < 0x800)
-		{
-			*sptr++ = 0xc0 | (c >> 6);
-			*sptr++ = 0x80 | (c & 0x3f);
-		}
-		else if (c >= 0xd800 && c < 0xdc00 && val[0] >= 0xdc00 && val[0] < 0xe000)
-		{
-			c = 0x10000 + ((c - 0xd800) << 10) + (val[0] - 0xdc00);
-			val++;
-			if (c < 0x200000)
-			{
-				*sptr++ = 0xf0 | (c >> 18);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else if (c < 0x4000000)
-			{
-				*sptr++ = 0xf8 | (c >> 24);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-			else
-			{
-				*sptr++ = 0xfc | (c >> 30);
-				*sptr++ = 0x80 | ((c >> 24) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 18) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 12) & 0x3f);
-				*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-				*sptr++ = 0x80 | (c & 0x3f);
-			}
-		}
 		else
 		{
-			*sptr++ = 0xe0 | (c >> 12);
-			*sptr++ = 0x80 | ((c >> 6) & 0x3f);
-			*sptr++ = 0x80 | (c & 0x3f);
+			sptr = Text::StrWriteChar(sptr, c);
 		}
 		if (sptr - sbuff >= 250)
 		{
-			sb->AppendC(sbuff, sptr - sbuff);
+			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
 	*sptr++ = '\"';
-	sb->AppendC(sbuff, sptr - sbuff);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF *sb, ObjectType rootType)
@@ -147,7 +113,7 @@ Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF *sb, ObjectType rootType)
 
 Text::JSONBuilder::~JSONBuilder()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->currType == OT_ARRAY)
 	{
 		this->sb->AppendChar(']', 1);
@@ -223,7 +189,7 @@ Bool Text::JSONBuilder::ArrayEnd()
 {
 	if (this->currType != OT_ARRAY)
 		return false;
-	OSInt i = this->objTypes->GetCount();
+	UOSInt i = this->objTypes->GetCount();
 	if (i <= 0)
 		return false;
 	this->currType = this->objTypes->RemoveAt(i - 1);
@@ -382,7 +348,7 @@ Bool Text::JSONBuilder::ObjectEnd()
 {
 	if (this->currType != OT_OBJECT)
 		return false;
-	OSInt i = this->objTypes->GetCount();
+	UOSInt i = this->objTypes->GetCount();
 	if (i <= 0)
 		return false;
 	this->currType = this->objTypes->RemoveAt(i - 1);

@@ -34,14 +34,14 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid;
+			UInt32 srid;
 			const Char *name;
 			Math::EarthEllipsoid *ellipsoid;
 		} SpheroidData;
 		
 		typedef struct
 		{
-			Int32 srid;
+			UInt32 srid;
 			SpheroidData spheroid;
 			const Char *name;
 			Double x0;
@@ -59,9 +59,9 @@ namespace Math
 		
 	protected:
 		const UTF8Char *csysName;
-		Int32 srid;
+		UInt32 srid;
 
-		CoordinateSystem(const UTF8Char *sourceName, Int32 srid, const UTF8Char *csysName);
+		CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName);
 	public:
 		virtual ~CoordinateSystem();
 
@@ -77,7 +77,7 @@ namespace Math
 
 		virtual Bool Equals(CoordinateSystem *csys);
 		const UTF8Char *GetCSysName();
-		Int32 GetSRID();
+		UInt32 GetSRID();
 
 		static void ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
 	};

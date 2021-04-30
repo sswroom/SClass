@@ -85,7 +85,7 @@ namespace SSWR
 */
 
 		public:
-			AVIRGISPropForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapEnv::GroupItem *group, OSInt index);
+			AVIRGISPropForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapEnv::GroupItem *group, UOSInt index);
 			virtual ~AVIRGISPropForm();
 
 			virtual void OnMonitorChanged();

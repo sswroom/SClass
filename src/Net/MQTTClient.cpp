@@ -12,7 +12,7 @@ void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 	{
 		UInt8 qosLev = (cmdType & 6) >> 1;
 		UOSInt i;
-		UInt16 packetId = ReadMUInt16(&cmd[0]);
+		UOSInt packetId = ReadMUInt16(&cmd[0]);
 		UTF8Char *topic = 0;
 		if ((UOSInt)(packetId + 2) <= cmdSize)
 		{
@@ -39,11 +39,11 @@ void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 		}
 		if (qosLev == 1)
 		{
-			this->SendPubAck(packetId);
+			this->SendPubAck((UInt16)packetId);
 		}
 		else if (qosLev == 2)
 		{
-			this->SendPubRec(packetId);
+			this->SendPubRec((UInt16)packetId);
 		}
 		if (topic)
 		{
@@ -73,8 +73,8 @@ UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
 {
 	Net::MQTTClient *me = (Net::MQTTClient*)userObj;
 	UInt8 buff[2048];
-	OSInt buffSize;
-	OSInt readSize;
+	UOSInt buffSize;
+	UOSInt readSize;
 	me->recvStarted = true;
 	me->recvRunning = true;
 	buffSize = 0;
@@ -180,7 +180,7 @@ Net::MQTTClient::~MQTTClient()
 		this->cli = 0;
 	}
 	DEL_CLASS(this->protoHdlr);
-	OSInt i;
+	UOSInt i;
 	i = this->packetList->GetCount();
 	while (i-- > 0)
 	{

@@ -12,12 +12,12 @@
 UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 {
 	Media::MPGFile *me = (Media::MPGFile*)userData;
-	OSInt buffSize;
-	OSInt readSize;
-	OSInt i;
-	OSInt j;
-	OSInt endOfst;
-	Int32 thisSize;
+	UOSInt buffSize;
+	UOSInt readSize;
+	UOSInt i;
+	UOSInt j;
+	UOSInt endOfst;
+	UInt32 thisSize;
 	Int64 scr_base;
 //	Int64 scr_ext;
 	Int64 initScr = -1;
@@ -29,7 +29,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 	me->playStarted = true;
 	me->playing = 2;
 	me->vstm->ClearFrameBuff();
-	me->vstm->SetStreamTime(me->startTime);
+	me->vstm->SetStreamTime((Int32)me->startTime);
 	buffSize = 0;
 	Bool firstAudio = true;
 	Bool firstVideo = false;
@@ -87,7 +87,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 						}
 						scr_base = (((Int64)(me->readBuff[i + 4] & 0x38)) << 27) | ((me->readBuff[i + 4] & 3) << 28) | (me->readBuff[i + 5] << 20) | ((me->readBuff[i + 6] & 0xf8) << 12) | ((me->readBuff[i + 6] & 3) << 13) | (me->readBuff[i + 7] << 5) | (me->readBuff[i + 8] >> 3);
 //						scr_ext = ((me->readBuff[i + 8] & 3) << 7) | (me->readBuff[i + 9] >> 1);
-						i += 14 + (me->readBuff[i + 13] & 7);
+						i += 14 + (UOSInt)(me->readBuff[i + 13] & 7);
 					}
 					if (initScr == -1)
 					{
@@ -249,7 +249,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 						}
 						else
 						{
-							j += me->readBuff[i + j + 1] + 2;
+							j += (UOSInt)me->readBuff[i + j + 1] + 2;
 						}
 					}
 					UInt8 stmType = me->readBuff[i + 3] & 0x1f;
@@ -274,7 +274,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 					thisSize = ReadMUInt16(&me->readBuff[i + 4]);
 					Int64 pts = 0;
 					Int64 dts = 0;
-					Int32 stmHdrSize;
+					UInt32 stmHdrSize;
 
 					if (buffSize - i < 6 + thisSize)
 					{
@@ -282,7 +282,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 					}
 					if (me->mpgVer == 1)
 					{
-						Int32 buffOfst = 6;
+						UInt32 buffOfst = 6;
 						while (me->readBuff[i + buffOfst] & 0x80)
 						{
 							buffOfst++;
@@ -380,12 +380,12 @@ Int64 Media::MPGFile::GetBitRate()
 	Int32 currTime = this->vstm->GetFrameStreamTime();
 	if (currTime > 0 && this->readOfst > 0)
 	{
-		return (this->readOfst * 8000LL / currTime);
+		return (Int64)(this->readOfst * 8000LL / (UInt64)currTime);
 	}
 	else
 	{
 		Int64 bitRate = this->vstm->GetBitRate();
-		OSInt i;
+		UOSInt i;
 		Data::ArrayList<Media::IMediaStream*> *stms = this->dataStms->GetValues();
 		i = stms->GetCount();
 		while (i-- > 0)
@@ -448,9 +448,9 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 	{
 		return;
 	}
-	Int32 j;
-	Int32 i;
-	Int64 currOfst;
+	UInt32 j;
+	UInt32 i;
+	UInt64 currOfst;
 //	Int32 lastType = -1;
 	if (this->mpgVer == 1)
 	{
@@ -464,7 +464,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 	if (*(Int32*)&this->readBuff[currOfst] != (Int32)0xbb010000)
 		return;
 
-	i = ReadMInt16(&this->readBuff[currOfst + 4]);
+	i = ReadMUInt16(&this->readBuff[currOfst + 4]);
 	currOfst += 6 + i;
 	while (true)
 	{
@@ -508,7 +508,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 			{
 				scr_base = (((Int64)(this->readBuff[j + 4] & 0x38)) << 27) | ((this->readBuff[j + 4] & 3) << 28) | (this->readBuff[j + 5] << 20) | ((this->readBuff[j + 6] & 0xf8) << 12) | ((this->readBuff[j + 6] & 3) << 13) | (this->readBuff[j + 7] << 5) | (this->readBuff[j + 8] >> 3);
 //				scr_ext = ((this->readBuff[j + 8] & 3) << 7) | (this->readBuff[j + 9] >> 1);
-				currOfst += 14 + (this->readBuff[j + 13] & 7);
+				currOfst += 14 + (UOSInt)(this->readBuff[j + 13] & 7);
 			}
 			if (initScr == -1)
 			{
@@ -518,12 +518,12 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 		}
 		else
 		{
-			i = ReadMInt16(&this->readBuff[j + 4]);
+			i = ReadMUInt16(&this->readBuff[j + 4]);
 			if (this->readBuff[j + 3] == 0xbd) //Private stream 1
 			{
 //				Int64 pts = 0;
 //				Int64 dts = 0;
-				UInt8 stmHdrSize = this->readBuff[j + 8];
+				UOSInt stmHdrSize = this->readBuff[j + 8];
 				if ((this->readBuff[j + 7] & 0xc0) == 0x80)
 				{
 //					pts = (((Int64)(this->readBuff[j + 9] & 0xe)) << 29) | (this->readBuff[j + 10] << 22) | ((this->readBuff[j + 11] & 0xfe) << 14) | (this->readBuff[j + 12] << 7) | (this->readBuff[j + 13] >> 1);
@@ -575,7 +575,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 						{
 							Media::AudioFormat fmt;
 							fmt.formatId = 1;
-							fmt.nChannels = (this->readBuff[j + 14 + stmHdrSize] & 7) + 1;//?
+							fmt.nChannels = (UInt16)((this->readBuff[j + 14 + stmHdrSize] & 7) + 1);//?
 							fmt.frequency = (this->readBuff[j + 14 + stmHdrSize] & 0x30)?96000:48000;
 							switch ((this->readBuff[j + 14 + stmHdrSize] & 0xc0) >> 6)
 							{
@@ -591,7 +591,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 							}
 
 							fmt.bitRate = fmt.frequency * fmt.nChannels * fmt.bitpersample;
-							fmt.align = fmt.nChannels * (fmt.bitpersample >> 3);
+							fmt.align = (UInt32)(fmt.nChannels * (fmt.bitpersample >> 3));
 							fmt.other = 0;
 							fmt.intType = Media::AudioFormat::IT_BIGENDIAN16;
 							fmt.extraSize = 0;
@@ -684,7 +684,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 					}
 					else
 					{
-						j += this->readBuff[j + 1] + 2;
+						j += (UInt32)this->readBuff[j + 1] + 2;
 					}
 				}
 
@@ -693,7 +693,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 				Media::IMediaStream *mstm = this->dataStms->Get(stmId);
 				if (mstm == 0)
 				{
-					Int32 v = ReadMInt32(&this->readBuff[j]);
+					UInt32 v = ReadMUInt32(&this->readBuff[j]);
 					if ((v & 0x80000000) != 0 && (v & 0x7fffffff) <= 2048)
 					{
 /*						formats[stmId]->formatId = 0x2080;
@@ -736,10 +736,10 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 
 //				Int64 pts = 0;
 //				Int64 dts = 0;
-				UInt8 stmHdrSize;
+				UInt32 stmHdrSize;
 				if (this->mpgVer == 1)
 				{
-					Int32 buffOfst = j + 6;
+					UInt32 buffOfst = j + 6;
 					while (this->readBuff[buffOfst] & 0x80)
 					{
 						buffOfst++;
@@ -788,10 +788,10 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 				FrameInfo info;
 				Int32 frameRateNorm;
 				Int32 frameRateDenorm;
-				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - stmHdrSize, &info, &frameRateNorm, &frameRateDenorm, &this->bitRate, false))
+				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize, &info, &frameRateNorm, &frameRateDenorm, &this->bitRate, false))
 				{
 					NEW_CLASS(this->vstm, Media::M2VStreamSource(this));
-					this->vstm->DetectStreamInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - stmHdrSize);
+					this->vstm->DetectStreamInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize);
 				}
 			}
 			else if (this->readBuff[j + 3] == 0xbc) // program_stream_map
@@ -816,7 +816,7 @@ Media::MPGFile::~MPGFile()
 	}
 	Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
 	Media::IMediaStream *stm;
-	OSInt i;
+	UOSInt i;
 	i = dataList->GetCount();
 	while (i-- > 0)
 	{
@@ -832,7 +832,7 @@ Media::MPGFile::~MPGFile()
 
 UOSInt Media::MPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
 {
-	return -1;
+	return (UOSInt)-1;
 }
 
 Media::IMediaSource *Media::MPGFile::GetStream(UOSInt index, Int32 *syncTime)
@@ -855,7 +855,7 @@ UTF8Char *Media::MPGFile::GetMediaName(UTF8Char *buff)
 
 Int32 Media::MPGFile::GetStreamTime()
 {
-	return (Int32)(this->fleng * 8000 / this->GetBitRate());
+	return (Int32)((Int64)this->fleng * 8000 / this->GetBitRate());
 }
 
 Bool Media::MPGFile::StartAudio()
@@ -883,11 +883,11 @@ Bool Media::MPGFile::IsRunning()
 	return (this->playing != 0) && !this->playToStop;
 }
 
-Int32 Media::MPGFile::SeekToTime(Int32 mediaTime)
+UInt32 Media::MPGFile::SeekToTime(UInt32 mediaTime)
 {
 	if (this->playing)
 		return 0;
-	this->readOfst = mediaTime * this->GetBitRate() / 8000;
+	this->readOfst = (UInt64)(mediaTime * this->GetBitRate() / 8000);
 	this->startTime = mediaTime;
 	return mediaTime;
 }
@@ -902,7 +902,7 @@ Bool Media::MPGFile::CanSeek()
 	return true;
 }
 
-OSInt Media::MPGFile::GetDataSeekCount()
+UOSInt Media::MPGFile::GetDataSeekCount()
 {
 	return this->stmData->GetSeekCount();
 }

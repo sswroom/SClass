@@ -12,10 +12,10 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
 {
 	Media::VCDMPGFile *me = (Media::VCDMPGFile*)userData;
 	Bool succ;
-	OSInt currOfst;
-	OSInt i;
-	OSInt j;
-	Int32 thisSize;
+	UOSInt currOfst;
+	UOSInt i;
+	UOSInt j;
+	UInt32 thisSize;
 	Int64 scr;
 //	Int32 muxRate;
 	Int64 initScr = -1;
@@ -230,7 +230,7 @@ Bool Media::VCDMPGFile::StopPlay()
 	return true;
 }
 
-Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, Int64 startSector, Int64 endSector) : Media::MediaFile(data->GetSourceNameObj())
+Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj())
 {
 	this->data = data->GetPartialData(startSector, endSector - startSector);
 	this->readOfst = 0;
@@ -245,10 +245,10 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, Int64 startSector, Int64 en
 	NEW_CLASS(this->audStms, Data::ArrayList<Media::IAudioSource*>());
 
 	Bool succ;
-	OSInt currSector = 0;
-	OSInt currOfst;
-	OSInt i;
-	OSInt j;
+	UOSInt currSector = 0;
+	UOSInt currOfst;
+	UOSInt i;
+	UOSInt j;
 //	Int64 scr;
 //	Int32 muxRate;
 	while (true)
@@ -281,7 +281,7 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, Int64 startSector, Int64 en
 			}
 			else
 			{
-				i = ReadMInt16(&this->readBuff[currOfst + 4]);
+				i = ReadMUInt16(&this->readBuff[currOfst + 4]);
 				if (this->readBuff[currOfst + 3] == 0xbb) // System Header
 				{
 				}
@@ -420,7 +420,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 	}
 	Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
 	Media::IMediaStream *stm;
-	OSInt i;
+	UOSInt i;
 	i = dataList->GetCount();
 	while (i-- > 0)
 	{
@@ -490,7 +490,7 @@ Bool Media::VCDMPGFile::IsRunning()
 	return this->playing != 0;
 }
 
-Int32 Media::VCDMPGFile::SeekToTime(Int32 mediaTime)
+UInt32 Media::VCDMPGFile::SeekToTime(UInt32 mediaTime)
 {
 	if (this->playing)
 		return 0;
@@ -509,7 +509,7 @@ Bool Media::VCDMPGFile::CanSeek()
 	return true;
 }
 
-OSInt Media::VCDMPGFile::GetDataSeekCount()
+UOSInt Media::VCDMPGFile::GetDataSeekCount()
 {
 	return this->data->GetSeekCount();
 }

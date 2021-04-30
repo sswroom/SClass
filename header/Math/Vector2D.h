@@ -21,9 +21,9 @@ namespace Math
 		} VectorType;
 
 	protected:
-		Int32 srid;
+		UInt32 srid;
 	public:
-		Vector2D(Int32 srid);
+		Vector2D(UInt32 srid);
 		virtual ~Vector2D();
 
 		virtual VectorType GetVectorType() = 0;
@@ -35,8 +35,8 @@ namespace Math
 		virtual Bool Support3D() { return false; };
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
 
-		Int32 GetSRID();
-		void SetSRID(Int32 srid);
+		UInt32 GetSRID();
+		void SetSRID(UInt32 srid);
 	};
 }
 #endif

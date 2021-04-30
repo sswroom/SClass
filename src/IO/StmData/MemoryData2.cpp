@@ -94,7 +94,7 @@ Bool IO::StmData::MemoryData2::IsLoading()
 	return false;
 }
 
-OSInt IO::StmData::MemoryData2::GetSeekCount()
+UOSInt IO::StmData::MemoryData2::GetSeekCount()
 {
 	return 0;
 }

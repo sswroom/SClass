@@ -14,8 +14,8 @@ namespace IO
 		private:
 			typedef struct
 			{
-				Int64 fileOfst;
-				OSInt packSize;
+				UInt64 fileOfst;
+				UOSInt packSize;
 				UInt8 packType;
 			} PackInfo;
 		private:

@@ -20,7 +20,7 @@ namespace IO
 				UTF8Char *fullName;
 				const UTF8Char *filePath;
 				Bool deleteOnClose;
-				OSInt seekCnt;
+				UOSInt seekCnt;
 
 				Sync::Mutex *mut;
 				UInt32 objectCnt;
@@ -56,7 +56,7 @@ namespace IO
 			virtual Bool IsFullFile();
 			virtual const UTF8Char *GetFullFileName();
 			virtual Bool IsLoading();
-			virtual OSInt GetSeekCount();
+			virtual UOSInt GetSeekCount();
 
 			IO::FileStream *GetFileStream();
 		private:

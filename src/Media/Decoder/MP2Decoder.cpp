@@ -614,7 +614,7 @@ UOSInt Media::Decoder::MP2Decoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		else if (readSize != this->blkSize && readSize != this->blkSize - 1)
 		{
 			Media::AudioFormat fmt;
-			OSInt size;
+			UOSInt size;
 			this->sourceAudio->GetFormat(&fmt);
 			size = readSize * 8 * fmt.frequency / fmt.bitRate * fmt.nChannels;
 			MemClear(buff, size);

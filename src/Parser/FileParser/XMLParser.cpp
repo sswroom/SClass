@@ -642,7 +642,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"gml:FeatureCollection"))
 	{
 		Math::CoordinateSystem *csys = 0;
-		Int32 srid = 0;
+		UInt32 srid = 0;
 		UOSInt colCnt = 0;
 		Data::ArrayList<const UTF8Char *> nameList;
 		Data::ArrayList<const UTF8Char *> valList;

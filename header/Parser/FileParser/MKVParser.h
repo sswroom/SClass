@@ -15,10 +15,10 @@ namespace Parser
 			typedef struct
 			{
 				IO::IStreamData *fd;
-				Int64 nextReadOfst;
+				UInt64 nextReadOfst;
 				UInt8 *buff;
-				OSInt buffSize;
-				OSInt currOfst;
+				UOSInt buffSize;
+				UOSInt currOfst;
 			} MKVStatus;
 
 		public:
@@ -30,18 +30,18 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 		private:
-			static OSInt ReadDataSize(MKVStatus *status, Int64 *dataSize);
-			static OSInt ReadID(MKVStatus *status, UInt32 *eleId);
-			static OSInt ReadData(MKVStatus *status, Int64 dataSize, UInt8 *buff);
-			static OSInt ReadBuffer(MKVStatus *status);
-			static Bool SkipBuffer(MKVStatus *status, OSInt skipSize);
-			static Bool ReadHeader(MKVStatus *status, Int64 dataSize);
-			static IO::ParsedObject *ReadSegment(MKVStatus *status, Int64 dataSize);
-			static Bool ReadTrack(MKVStatus *status, Int64 dataSize);
-			static Bool ReadTrackEntry(MKVStatus *status, Int64 dataSize);
-			static Bool ReadVideo(MKVStatus *status, Int64 dataSize, Media::FrameInfo *frameInfo);
-			static Bool ReadAudio(MKVStatus *status, Int64 dataSize, Media::AudioFormat *audioFmt);
+			static UOSInt ReadDataSize(MKVStatus *status, UInt64 *dataSize);
+			static UOSInt ReadID(MKVStatus *status, UInt32 *eleId);
+			static UOSInt ReadData(MKVStatus *status, UInt64 dataSize, UInt8 *buff);
+			static UOSInt ReadBuffer(MKVStatus *status);
+			static Bool SkipBuffer(MKVStatus *status, UOSInt skipSize);
+			static Bool ReadHeader(MKVStatus *status, UInt64 dataSize);
+			static IO::ParsedObject *ReadSegment(MKVStatus *status, UInt64 dataSize);
+			static Bool ReadTrack(MKVStatus *status, UInt64 dataSize);
+			static Bool ReadTrackEntry(MKVStatus *status, UInt64 dataSize);
+			static Bool ReadVideo(MKVStatus *status, UInt64 dataSize, Media::FrameInfo *frameInfo);
+			static Bool ReadAudio(MKVStatus *status, UInt64 dataSize, Media::AudioFormat *audioFmt);
 		};
-	};
-};
+	}
+}
 #endif

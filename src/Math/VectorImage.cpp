@@ -5,7 +5,7 @@
 #include "Math/VectorImage.h"
 #include "Media/StaticImage.h"
 
-Math::VectorImage::VectorImage(Int32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -60,7 +60,7 @@ Math::VectorImage::VectorImage(Int32 srid, Media::SharedImage *img, Double x1, D
 	this->zIndex = 0;
 }
 
-Math::VectorImage::VectorImage(Int32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)

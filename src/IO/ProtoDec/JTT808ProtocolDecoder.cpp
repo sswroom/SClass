@@ -18,13 +18,13 @@ const UTF8Char *IO::ProtoDec::JTT808ProtocolDecoder::GetName()
 	return (const UTF8Char*)"JTT808";
 }
 
-OSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, Int64 fileOfst, UInt8 *buff, OSInt buffSize)
+UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 proto[1024];
-	OSInt i;
+	UOSInt i;
 	OSInt protoStart = -1;
 	OSInt unkStart = -1;
-	OSInt protoSize;
+	UOSInt protoSize;
 	Text::StringBuilderUTF8 sb;
 	i = 0;
 	while (i < buffSize)
@@ -33,21 +33,21 @@ OSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void
 		{
 			if (unkStart >= 0)
 			{
-				hdlr(userObj, fileOfst + unkStart, i - unkStart, (const UTF8Char*)"Unknown Protocol");
+				hdlr(userObj, fileOfst + (UOSInt)unkStart, i - (UOSInt)unkStart, (const UTF8Char*)"Unknown Protocol");
 				unkStart = -1;
 			}
 			if (protoStart < 0)
 			{
-				protoStart = i;
+				protoStart = (OSInt)i;
 			}
-			else if (i - protoStart < 1025)
+			else if (i - (UOSInt)protoStart < 1025)
 			{
-				protoSize = Unpack(proto, &buff[protoStart], i - protoStart + 1);
+				protoSize = Unpack(proto, &buff[protoStart], i - (UOSInt)protoStart + 1);
 				if (protoSize >= 12)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"0x");
-					sb.AppendHex16(ReadMInt16(&proto[0]));
+					sb.AppendHex16(ReadMUInt16(&proto[0]));
 					sb.Append((const UTF8Char*)", ");
 					switch (ReadMUInt16(&proto[0]))
 					{
@@ -136,49 +136,49 @@ OSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void
 						sb.Append((const UTF8Char*)"Unknown Protocol");
 						break;
 					}
-					hdlr(userObj, fileOfst + protoStart, i - protoStart + 1, sb.ToString());
+					hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart + 1, sb.ToString());
 				}
 				else
 				{
-					hdlr(userObj, fileOfst + protoStart, i - protoStart, (const UTF8Char*)"Unknown Protocol");
+					hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart, (const UTF8Char*)"Unknown Protocol");
 				}
 				protoStart = -1;
 			}
 			else
 			{
-				hdlr(userObj, fileOfst + protoStart, i - protoStart, (const UTF8Char*)"Unknown Protocol");
-				protoStart = i;
+				hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart, (const UTF8Char*)"Unknown Protocol");
+				protoStart = (OSInt)i;
 			}
 		}
 		else
 		{
 			if (protoStart < 0 && unkStart < 0)
 			{
-				unkStart = i;
+				unkStart = (OSInt)i;
 			}
 		}
 		i++;
 	}
 	if (unkStart >= 0)
-		return unkStart;
+		return (UOSInt)unkStart;
 	if (protoStart >= 0)
-		return protoStart;
+		return (UOSInt)protoStart;
 	return buffSize;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb)
 {
 	UInt8 proto[1024];
-	OSInt protoSize;
+	UOSInt protoSize;
 	if (buff[0] != 0x7e || buff[buffSize - 1] != 0x7e)
 		return false;
 	protoSize = Unpack(proto, buff, buffSize);
 	if (protoSize < 13)
 		return false;
 	Bool valid = false;
-	OSInt msgLeng;
+	UOSInt msgLeng;
 	sb->Append((const UTF8Char*)"Protocol Size=");
-	sb->AppendOSInt(protoSize);
+	sb->AppendUOSInt(protoSize);
 	sb->Append((const UTF8Char*)"\r\nMessage Flag=0x");
 	sb->AppendHex16(ReadMUInt16(&proto[2]));
 	sb->Append((const UTF8Char*)"\r\nMessage Length=");
@@ -191,7 +191,7 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt b
 	if (msgLeng == protoSize - 1 - 12)
 	{
 		UInt8 chk = 0;
-		OSInt i;
+		UOSInt i;
 		sb->Append((const UTF8Char*)"\r\nCheckDigits=0x");
 		sb->AppendHex8(proto[protoSize - 1]);
 		i = protoSize;
@@ -259,15 +259,15 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt b
 			sb->Append((const UTF8Char*)"\r\nBlind Zone=");
 			sb->AppendU16(proto[14]);
 			{
-				OSInt i = ReadMUInt16(&proto[12]);
-				OSInt j = 15;
-				OSInt locSize;
+				UOSInt i = ReadMUInt16(&proto[12]);
+				UOSInt j = 15;
+				UOSInt locSize;
 				while (i > 0 && j + 2 <= msgLeng + 12)
 				{
 					i--;
 					locSize = ReadMUInt16(&proto[j]);
 					sb->Append((const UTF8Char*)"\r\nLocation Size=");
-					sb->AppendOSInt(locSize);
+					sb->AppendUOSInt(locSize);
 
 					if (j + 2 + locSize <= msgLeng + 12)
 					{
@@ -334,14 +334,14 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt b
 	return true;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::IsValid(UInt8 *buff, OSInt buffSize)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::IsValid(UInt8 *buff, UOSInt buffSize)
 {
 	return buff[0] == 0x7e;
 }
 
-OSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UInt8 *buff, const UInt8 *proto, OSInt protoSize)
+UOSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UInt8 *buff, const UInt8 *proto, UOSInt protoSize)
 {
-	OSInt retSize = protoSize - 2;
+	UOSInt retSize = protoSize - 2;
 	if (proto[0] != 0x7e || proto[protoSize - 1] != 0x7e)
 		return 0;
 	protoSize -= 2;
@@ -370,10 +370,10 @@ OSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UInt8 *buff, const UInt8 *prot
 	return retSize;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(const UTF8Char *loc, OSInt locSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(const UTF8Char *loc, UOSInt locSize, Text::StringBuilderUTF *sb)
 {
 	UInt32 uVal;
-	OSInt i;
+	UOSInt i;
 	if (locSize >= 28)
 	{
 		uVal = ReadMUInt32(&loc[0]);
@@ -583,7 +583,7 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(const UTF8Char *loc, OSI
 				break;
 			}
 		}
-		i += 2 + loc[i + 1];
+		i += 2 + (UOSInt)loc[i + 1];
 	}
 	return true;
 }

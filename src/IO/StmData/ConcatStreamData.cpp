@@ -159,11 +159,11 @@ Bool IO::StmData::ConcatStreamData::IsLoading()
 	return false;
 }
 
-OSInt IO::StmData::ConcatStreamData::GetSeekCount()
+UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	IO::IStreamData *data;
-	OSInt i;
+	UOSInt i;
 	i = this->cdb->dataList->GetCount();
 	while (i-- > 0)
 	{

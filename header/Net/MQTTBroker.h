@@ -30,7 +30,7 @@ namespace Net
 		{
 			const UTF8Char *topic;
 			UInt8 *message;
-			OSInt msgSize;
+			UOSInt msgSize;
 		} TopicInfo;
 		
 		typedef struct
@@ -56,9 +56,9 @@ namespace Net
 		Sync::Mutex *subscribeMut;
 		Data::ArrayList<SubscribeInfo*> *subscribeList;
 		Int64 infoTotalRecv;
-		Int64 infoTotalSent;
+		UInt64 infoTotalSent;
 		Int64 infoCliDisconn;
-		Int64 infoCliMax;
+		UInt64 infoCliMax;
 		Int64 infoMsgRecv;
 		Int64 infoMsgSent;
 		Int64 infoPubRecv;
@@ -87,7 +87,7 @@ namespace Net
 
 		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
-		void UpdateTopic(const UTF8Char *topic, const UInt8 *message, OSInt msgSize, Bool suppressUnchg);
+		void UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicValid(const UTF8Char *topic);
 		Bool TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeTopic);
 		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);

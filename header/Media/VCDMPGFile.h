@@ -13,8 +13,8 @@ namespace Media
 	private:
 		IO::ISectorData *data;
 		UInt8 *readBuff;
-		Int64 readOfst;
-		Int64 fleng;
+		UInt64 readOfst;
+		UInt64 fleng;
 		Int32 startTime;
 		Media::M2VStreamSource *vstm;
 		Data::Int32Map<Media::IMediaStream*> *dataStms;
@@ -29,7 +29,7 @@ namespace Media
 		Bool StartPlay();
 		Bool StopPlay();
 	public:
-		VCDMPGFile(IO::ISectorData *data, Int64 startSector, Int64 endSector);
+		VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 endSector);
 		virtual ~VCDMPGFile();
 		
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);
@@ -43,10 +43,10 @@ namespace Media
 		virtual Bool StartVideo();
 		virtual Bool StopVideo();
 		virtual Bool IsRunning();
-		virtual Int32 SeekToTime(Int32 mediaTime);
+		virtual UInt32 SeekToTime(UInt32 mediaTime);
 		virtual Bool IsRealTimeSrc();
 		virtual Bool CanSeek();
-		virtual OSInt GetDataSeekCount();
+		virtual UOSInt GetDataSeekCount();
 	};
-};
+}
 #endif

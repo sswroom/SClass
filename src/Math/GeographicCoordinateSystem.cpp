@@ -15,7 +15,7 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(const UTF8Char *sourceName, Int32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->csysName = Text::StrCopyNew(csysName);
 	this->datum.spheroid.srid = datum->spheroid.srid;

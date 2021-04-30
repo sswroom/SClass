@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 		Double x;
 		Double y;
 		void *sess;
-		const UTF8Char *s = me->lbResults->GetItemTextNew(i);
+		const UTF8Char *s = me->lbResults->GetItemTextNew((UOSInt)i);
 
 		sess = me->layer->BeginGetObject();
 		Math::Vector2D *vec = me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s, me->strIndex);
@@ -76,7 +76,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	}
 }
 
-SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi, Map::IMapDrawLayer *layer, Text::SearchIndexer *searching, OSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi, Map::IMapDrawLayer *layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;

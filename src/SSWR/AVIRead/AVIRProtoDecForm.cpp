@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UInt8 *buff;
 		buff = MemAlloc(UInt8, item->size);
-		me->currFile->Seek(IO::SeekableStream::ST_BEGIN, item->fileOfst);
+		me->currFile->Seek(IO::SeekableStream::ST_BEGIN, (Int64)item->fileOfst);
 		me->currFile->Read(buff, item->size);
 		sb.AppendHex(buff, item->size, ' ', Text::LBT_CRLF);
 		sb.Append((const UTF8Char*)"\r\n\r\n");
@@ -67,9 +67,9 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 		}
 		me->currDec = protoDec;
 		UInt8 *buff;
-		OSInt buffSize;
-		OSInt readSize;
-		Int64 fileOfst;
+		UOSInt buffSize;
+		UOSInt readSize;
+		UInt64 fileOfst;
 		buff = MemAlloc(UInt8, 65536);
 		buffSize = 0;
 		fileOfst = 0;
@@ -99,16 +99,16 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, Int64 fileOfst, OSInt size, const UTF8Char *typeName)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, const UTF8Char *typeName)
 {
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	ProtocolItem *item;
 	UTF8Char sbuff[32];
-	OSInt i;
+	UOSInt i;
 	item = MemAlloc(ProtocolItem, 1);
 	item->fileOfst = fileOfst;
 	item->size = size;
-	Text::StrInt64(sbuff, fileOfst);
+	Text::StrUInt64(sbuff, fileOfst);
 	i = me->lvLogs->AddItem(sbuff, item);
 	Text::StrInt32(sbuff, (Int32)size);
 	me->lvLogs->SetSubItem(i, 1, sbuff);
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, I
 
 void SSWR::AVIRead::AVIRProtoDecForm::ClearList()
 {
-	OSInt i = this->itemList->GetCount();
+	UOSInt i = this->itemList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(this->itemList->GetItem(i));
@@ -171,8 +171,8 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->lvLogs->AddColumn((const UTF8Char*)"Type", 200);
 	this->lvLogs->HandleSelChg(OnLogSelChg, this);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	IO::ProtoDec::IProtocolDecoder *protoDec;
 	i = 0;
 	j = this->decList->GetCount();
