@@ -432,7 +432,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeChecked(void *userObj, Bool new
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeDrag(void *userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	if (dragItem->group == 0 && dragItem->index == -1)
+	if (dragItem->group == 0 && dragItem->index == (UOSInt)-1)
 		return;
 	if (dropItem->itemType == Map::MapEnv::IT_GROUP)
 	{

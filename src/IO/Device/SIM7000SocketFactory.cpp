@@ -394,8 +394,9 @@ void *IO::Device::SIM7000SocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
 {
+	*incomplete = false;
 	return 0;
 }
 

@@ -12,10 +12,10 @@ namespace Media
 		private:
 			Exporter::GUIJPGExporter *exporter;
 			Sync::Mutex *mut;
-			Int32 sizePercent;
+			UInt32 sizePercent;
 
 		public:
-			BatchSaveJPEGSize(Int32 sizePercent);
+			BatchSaveJPEGSize(UInt32 sizePercent);
 			virtual ~BatchSaveJPEGSize();
 			
 			virtual void ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *targetId);

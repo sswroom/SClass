@@ -6,7 +6,7 @@
 #include "IO/Path.h"
 #include "Media/Batch/BatchSaveJPEGSize.h"
 
-Media::Batch::BatchSaveJPEGSize::BatchSaveJPEGSize(Int32 sizePercent)
+Media::Batch::BatchSaveJPEGSize::BatchSaveJPEGSize(UInt32 sizePercent)
 {
 	NEW_CLASS(exporter, Exporter::GUIJPGExporter());
 	NEW_CLASS(mut, Sync::Mutex());
@@ -37,7 +37,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	UInt64 maxSize;
 	Int32 currIndex;
 	UInt64 currSize;
-	Int64 targetSize;
+	UInt64 targetSize;
 	Media::Image *img;
 
 	sptr = Text::StrConcat(sbuff, fileId);

@@ -31,7 +31,7 @@ IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(IO::Pars
 	return IO::FileExporter::ST_NORMAL_STREAM;
 }
 
-Bool Exporter::XLSXExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

@@ -280,7 +280,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SeekTo(Int32 time)
 	{
 		this->StopPlayback();
 		this->PlayTime(time);
-		this->pbLastChapter = -1;
+		this->pbLastChapter = (UOSInt)-1;
 	}
 	else
 	{
@@ -335,7 +335,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::IsPlaying()
 
 Bool SSWR::AVIRead::AVIRMediaPlayer::PrevChapter()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->IsPlaying() && this->currChapInfo)
 	{
 		currTime = this->clk->GetCurrTime();
@@ -361,7 +361,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::PrevChapter()
 
 Bool SSWR::AVIRead::AVIRMediaPlayer::NextChapter()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->currChapInfo && this->IsPlaying())
 	{
 		currTime = this->clk->GetCurrTime();

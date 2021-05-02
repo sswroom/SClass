@@ -251,9 +251,9 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 {
 	UInt64 currMaxSize = 0;
 	UOSInt leng = fileList->GetCount();
-	Int32 *list = MemAlloc(Int32, leng);
-	OSInt listCount = 0;
-	OSInt j;
+	UInt32 *list = MemAlloc(UInt32, leng);
+	UOSInt listCount = 0;
+	UOSInt j;
 	UInt64 currSize = 0;
 	MyFile *currItem;
     list[0] = 0;

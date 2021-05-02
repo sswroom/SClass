@@ -229,7 +229,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	return env;
 }
 
-void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *env, Int32 itemCnt, Int32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
+void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *env, UInt32 itemCnt, Int32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
 {
 	UInt8 buff[512];
 	WChar sbuff[256];

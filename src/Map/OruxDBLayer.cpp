@@ -62,7 +62,7 @@ Bool Map::OruxDBLayer::IsError()
 	return this->db == 0;
 }
 
-void Map::OruxDBLayer::AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, Int32 maxX, Int32 maxY, Int32 tileSize)
+void Map::OruxDBLayer::AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize)
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(layerId);
 	if (lyr == 0)
@@ -193,17 +193,17 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 			return 0;
 		if (maxY < 0)
 			return 0;
-		if (minX >= lyr->maxX)
+		if (minX >= (Int32)lyr->maxX)
 			return 0;
-		if (minY >= lyr->maxY)
+		if (minY >= (Int32)lyr->maxY)
 			return 0;
 		if (minX < 0)
 			minX = 0;
 		if (minY < 0)
 			minY = 0;
-		if (maxX > lyr->maxX)
+		if (maxX > (Int32)lyr->maxX)
 			maxX = lyr->maxX;
-		if (maxY > lyr->maxY)
+		if (maxY > (Int32)lyr->maxY)
 			maxY = lyr->maxY;
 		i = minX;
 		while (i < maxX)

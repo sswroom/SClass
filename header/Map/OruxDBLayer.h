@@ -25,7 +25,7 @@ namespace Map
 		Parser::ParserList *parsers;
 		Data::Int32Map<LayerInfo*> *layerMap;
 		Int32 currLayer;
-		Int32 tileSize;
+		UInt32 tileSize;
 		DB::DBConn *db;
 
 	public:
@@ -33,7 +33,7 @@ namespace Map
 		virtual ~OruxDBLayer();
 
 		Bool IsError();
-		void AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, Int32 maxX, Int32 maxY, Int32 tileSize);
+		void AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize);
 
 		void SetCurrLayer(Int32 level);
 		virtual void SetCurrScale(Double scale);

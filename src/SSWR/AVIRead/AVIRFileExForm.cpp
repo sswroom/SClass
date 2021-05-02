@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	Int64 startOfst;
 	Int64 endOfst;
 	Int64 fileSize;
-	Int64 sizeLeft;
+	UInt64 sizeLeft;
 	UOSInt thisSize;
 	UOSInt readSize;
 	UInt8 *buff;

@@ -23,7 +23,7 @@ extern "C"
 void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	OSInt n;
 	Double *work;
 	Double  sum;

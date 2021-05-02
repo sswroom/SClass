@@ -104,7 +104,7 @@ UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, Int32 devNo)
 	return Text::StrWChar_UTF8(u8buff, caps.szPname, -1);
 }
 
-Media::WaveInSource::WaveInSource(const UTF8Char *devName, Int32 freq, Int16 nbits, Int16 nChannels)
+Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	UTF8Char u8buff[256];
 	Int32 i;
@@ -133,7 +133,7 @@ Media::WaveInSource::WaveInSource(const UTF8Char *devName, Int32 freq, Int16 nbi
 	OpenAudio();
 }
 
-Media::WaveInSource::WaveInSource(Int32 devId, Int32 freq, Int16 nbits, Int16 nChannels)
+Media::WaveInSource::WaveInSource(Int32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	this->devId = devId;
 	this->freq = freq;

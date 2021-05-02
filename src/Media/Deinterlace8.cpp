@@ -555,7 +555,8 @@ Double Media::Deinterlace8::lanczos3_weight(Double phase)
 
 void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
-	Int32 i,j,n;
+	UInt32 i,j;
+	Int32 n;
 	Double *work;
 	Double  sum;
 	Double  pos;

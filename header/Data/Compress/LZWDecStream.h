@@ -15,8 +15,8 @@ namespace Data
 			OSInt currCodeSize;
 			OSInt currTableSize;
 			OSInt nextTableSize;
-			Int32 resetCode;
-			Int32 endCode;
+			UInt32 resetCode;
+			UInt32 endCode;
 			UInt8 *lzwTable;
 			OSInt tableSize;
 			UInt8 *decBuff;

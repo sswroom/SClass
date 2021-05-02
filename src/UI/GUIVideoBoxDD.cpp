@@ -97,7 +97,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 	OSInt cropHeight;
 	OSInt cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
-	OSInt sizeNeeded;
+	UOSInt sizeNeeded;
 	OSInt cropTotal = tstat->me->cropLeft + tstat->me->cropRight + tstat->me->cropTop + tstat->me->cropBottom;
 	Double par;
 	if (tstat->me->forcePAR == 0)

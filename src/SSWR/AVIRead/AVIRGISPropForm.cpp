@@ -367,8 +367,8 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	if (this->env->GetLayerProp(&setting, this->group, this->index))
 	{
 		lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(this->group, this->index);
-		OSInt j = lyr->layer->GetColumnCnt();
-		OSInt i = 0;
+		UOSInt j = lyr->layer->GetColumnCnt();
+		UOSInt i = 0;
 		while (i < j)
 		{
 			if (lyr->layer->GetColumnName(u8buff, i))

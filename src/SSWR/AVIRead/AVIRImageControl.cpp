@@ -738,7 +738,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 		}
 		si++;
 	}
-	if ((sj + 1) * itemTH - scrPos < scnH)
+	if ((sj + 1) * itemTH - scrPos < (OSInt)scnH)
 	{
 		dimg->DrawRect(0, Math::OSInt2Double((sj + 1) * itemTH - scrPos), Math::OSInt2Double(scnW), scnH - Math::OSInt2Double((sj + 1) * itemTH - scrPos), 0, barr[4]);
 	}

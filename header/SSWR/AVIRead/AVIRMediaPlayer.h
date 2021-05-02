@@ -32,7 +32,7 @@ namespace SSWR
 			Bool videoPlaying;
 			Bool audioPlaying;
 			Int32 currTime;
-			OSInt pbLastChapter;
+			UOSInt pbLastChapter;
 
 			PBEndHandler endHdlr;
 			void *endObj;
