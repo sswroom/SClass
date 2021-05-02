@@ -21,12 +21,12 @@ const UTF8Char *IO::ProtoDec::TSProtocolDecoder::GetName()
 	return (const UTF8Char*)"TS";
 }
 
-OSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, Int64 fileOfst, UInt8 *buff, OSInt buffSize)
+UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
 {
-	OSInt i;
-	OSInt j;
-	Int32 cmdSize;
-	Int32 cmdType;
+	UOSInt i;
+	UOSInt j;
+	UInt32 cmdSize;
+	UInt16 cmdType;
 	Int32 seqId;
 
 	Text::StringBuilderUTF8 sb;
@@ -172,8 +172,8 @@ OSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *us
 		}
 		else if (buff[i] == 'T' && buff[i + 1] == 'S')
 		{
-			OSInt tmpVal1;
-			OSInt tmpVal2;
+			UOSInt tmpVal1;
+			UOSInt tmpVal2;
 			Crypto::Encrypt::Base64 b64;
 
 			if (j != i)
@@ -329,13 +329,13 @@ OSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *us
 	return j;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb)
 {
 	if (buffSize < 10)
 		return false;
-	Int32 cmdSize = ReadUInt16(&buff[2]);
-	Int32 cmdType = ReadUInt16(&buff[4]);
-	Int32 seqId = ReadUInt16(&buff[6]);
+	UInt32 cmdSize = ReadUInt16(&buff[2]);
+	UInt32 cmdType = ReadUInt16(&buff[4]);
+	UInt32 seqId = ReadUInt16(&buff[6]);
 	if (buff[0] == 'T' && buff[1] == 's')
 	{
 		cmdSize = ReadUInt16(&buff[2]);
@@ -344,8 +344,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffS
 	}
 	else if (buff[0] == 'T' && buff[1] == 'S')
 	{
-		OSInt tmpVal1;
-		OSInt tmpVal2;
+		UOSInt tmpVal1;
+		UOSInt tmpVal2;
 		Crypto::Encrypt::Base64 b64;
 		b64.Decrypt(&buff[2], 8, this->protoBuff, 0);
 		cmdSize = ReadUInt16(&this->protoBuff[0]);
@@ -369,13 +369,13 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffS
 		return false;
 	}
 	sb->Append((const UTF8Char*)"Protocol Size=");
-	sb->AppendI32(cmdSize);
+	sb->AppendU32(cmdSize);
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Seq=");
-	sb->AppendI32(seqId);
+	sb->AppendU32(seqId);
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Protocol Type=");
-	sb->AppendI32(cmdType);
+	sb->AppendU32(cmdType);
 	sb->Append((const UTF8Char*)", ");
 	switch (cmdType)
 	{
@@ -396,7 +396,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffS
 			sb->Append((const UTF8Char*)"KA Reply");
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"DevStatus=0x");
-			sb->AppendHex32(ReadInt32(&buff[8]));
+			sb->AppendHex32(ReadUInt32(&buff[8]));
 			sb->Append((const UTF8Char*)"\r\n");
 			if (buff[13] & 1)
 			{
@@ -710,7 +710,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffS
 			sb->AppendI32(ReadInt32(&buff[12]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"File CRC=");
-			sb->AppendHex32(ReadInt32(&buff[16]));
+			sb->AppendHex32(ReadUInt32(&buff[16]));
 			sb->Append((const UTF8Char*)"\r\n");
 		}
 		break;
@@ -836,7 +836,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, OSInt buffS
 	return true;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::IsValid(UInt8 *buff, OSInt buffSize)
+Bool IO::ProtoDec::TSProtocolDecoder::IsValid(UInt8 *buff, UOSInt buffSize)
 {
 	return buff[0] == 'T' && buff[1] == 's';
 }

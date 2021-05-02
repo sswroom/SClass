@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
 	UInt8 buff[2048];
-	OSInt i;
+	UOSInt i;
 	IO::MemoryStream *mstm;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, (const UTF8Char*)"https://covid.ourworldindata.org/data/owid-covid-data.csv", "GET", true);
 	NEW_CLASS(mstm, IO::MemoryStream(1024, (const UTF8Char*)"SSWR.AVIRead.AVIRCOVID19Form.OnDownloadClicked.mstm"));
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	}
 	chart->AddXDataDate(dates, j);
 	chart->AddYData((const UTF8Char*)"New Cases", counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-	chart->Plot(dimg, 0, 0, Math::UOSInt2Double(w), Math::OSInt2Double(h));
+	chart->Plot(dimg, 0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h));
 	MemFree(counts);
 	MemFree(dates);
 	DEL_CLASS(chart);
@@ -134,12 +134,12 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 {
 	UTF8Char sbuff[256];
 	DB::CSVFile *csv;
-	OSInt colIsoCode = -1;
-	OSInt colLocation = -1;
-	OSInt colDate = -1;
-	OSInt colTotalCases = -1;
-	OSInt colTotalDeath = -1;
-	OSInt colPopulation = -1;
+	UOSInt colIsoCode = (UOSInt)-1;
+	UOSInt colLocation = (UOSInt)-1;
+	UOSInt colDate = (UOSInt)-1;
+	UOSInt colTotalCases = (UOSInt)-1;
+	UOSInt colTotalDeath = (UOSInt)-1;
+	UOSInt colPopulation = (UOSInt)-1;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -183,7 +183,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 		}
 	}
 
-	if (colIsoCode == -1 || colLocation == -1 || colDate == -1 || colTotalCases == -1 || colTotalDeath == -1 || colPopulation == -1)
+	if (colIsoCode == (UOSInt)-1 || colLocation == (UOSInt)-1 || colDate == (UOSInt)-1 || colTotalCases == (UOSInt)-1 || colTotalDeath == (UOSInt)-1 || colPopulation == (UOSInt)-1)
 	{
 		csv->CloseReader(r);
 		DEL_CLASS(csv);
@@ -239,7 +239,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 		this->lvCountry->SetSubItem(k, 2, sbuff);
 		Text::StrInt64(sbuff, record->totalDeaths);
 		this->lvCountry->SetSubItem(k, 3, sbuff);
-		Text::StrDouble(sbuff, country->population / record->totalCases);
+		Text::StrDouble(sbuff, country->population / (Double)record->totalCases);
 		this->lvCountry->SetSubItem(k, 4, sbuff);
 
 		i++;

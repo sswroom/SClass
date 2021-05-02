@@ -39,7 +39,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 }
 
 
-IO::StmData::FileViewData::FileViewData(const IO::StmData::FileViewData *fd, Int64 offset, Int64 length)
+IO::StmData::FileViewData::FileViewData(const IO::StmData::FileViewData *fd, UInt64 offset, UInt64 length)
 {
 	dataOffset = offset + fd->dataOffset;
 	Int64 endOffset = fd->dataOffset + fd->dataLength;
@@ -62,7 +62,7 @@ IO::StmData::FileViewData::~FileViewData()
 	Close();
 }
 
-OSInt IO::StmData::FileViewData::GetRealData(Int64 offset, OSInt length, UInt8* buffer)
+UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 {
 	if (fdh == 0)
 		return 0;
@@ -85,7 +85,7 @@ OSInt IO::StmData::FileViewData::GetRealData(Int64 offset, OSInt length, UInt8* 
 	return (OSInt)(endOfst - startOfst);
 }
 
-Int64 IO::StmData::FileViewData::GetDataSize()
+UInt64 IO::StmData::FileViewData::GetDataSize()
 {
 	return dataLength;
 }
@@ -111,7 +111,7 @@ const UInt8 *IO::StmData::FileViewData::GetPointer()
 	return &fdh->fptr[this->dataOffset];
 }
 
-IO::IStreamData *IO::StmData::FileViewData::GetPartialData(Int64 offset, Int64 length)
+IO::IStreamData *IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	IO::StmData::FileViewData *data;
 	NEW_CLASS(data, IO::StmData::FileViewData(this, offset, length));
@@ -128,7 +128,7 @@ Bool IO::StmData::FileViewData::IsLoading()
 	return false;
 }
 
-OSInt IO::StmData::FileViewData::GetSeekCount()
+UOSInt IO::StmData::FileViewData::GetSeekCount()
 {
 	return 0;
 }

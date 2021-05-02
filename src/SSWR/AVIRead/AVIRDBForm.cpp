@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ColDef.h"
+#include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChartForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
@@ -171,13 +172,13 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	if (k > 0)
 	{
 		this->lvResult->GetSize(&w, &h);
-		w -= 20 + j * 6;
+		w -= Math::UOSInt2Double(20 + j * 6);
 		if (w < 0)
 			w = 0;
 		i = 0;
 		while (i < j)
 		{
-			this->lvResult->SetColumnWidth(i, (colSize[i] * w / k + 6));
+			this->lvResult->SetColumnWidth(i, (Math::UOSInt2Double(colSize[i]) * w / Math::UOSInt2Double(k) + 6));
 			i++;
 		}
 	}
@@ -242,7 +243,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 		mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Database");
 		while (i < j)
 		{
-			mnu->AddItem(this->dbNames->GetItem(i), MNU_DATABASE_START + i, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			mnu->AddItem(this->dbNames->GetItem(i), (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			i++;
 		}
 	}
@@ -269,8 +270,8 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
 	Data::ArrayListStrUTF8 *tableNames;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	this->lbTable->ClearItems();
 	NEW_CLASS(tableNames, Data::ArrayListStrUTF8());
@@ -289,7 +290,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 {
 	if (cmdId >= MNU_DATABASE_START)
 	{
-		if (this->dbt->ChangeDatabase(this->dbNames->GetItem(cmdId - MNU_DATABASE_START)))
+		if (this->dbt->ChangeDatabase(this->dbNames->GetItem((UOSInt)cmdId - MNU_DATABASE_START)))
 		{
 			this->UpdateTables();
 		}

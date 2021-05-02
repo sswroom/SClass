@@ -18,11 +18,11 @@ namespace Media
 		Sync::Mutex *buffMut;
 		UInt8 *dataBuff;
 		UInt8 *dataBuff2;
-		OSInt buffSize;
+		UOSInt buffSize;
 		OSInt buffStart;
 		OSInt buffEnd;
 		Int64 buffSample;
-		Int32 lastFrameSize;
+		UInt32 lastFrameSize;
 		Bool streamStarted;
 
 

@@ -107,7 +107,7 @@ IO::ParsedObject *Parser::FileParser::QTParser::ParseFile(IO::IStreamData *fd, I
 	return 0;
 }
 
-Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *fd, Int64 ofst, Int64 size)
+Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *fd, UInt64 ofst, Int64 size)
 {
 	Int64 i;
 	UInt8 hdr[8];
@@ -196,7 +196,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *f
 	return file;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData *fd, Int64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, Int32 mvTimeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, Int32 mvTimeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -280,7 +280,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData *fd, Int64 ofst, UInt32 size, Int32 *timeScaleOut)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Int32 *timeScaleOut)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -354,7 +354,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::IStreamData *fd, Int64 ofst, UInt32 size, Media::MediaType mtyp, Int32 timeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, Int32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -400,7 +400,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::IStreamData
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData *fd, Int64 ofst, UInt32 size, Media::MediaType mtyp, Int32 timeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, Int32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -411,22 +411,22 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 	Media::AudioFormat afmt;
 	Media::FrameInfo frInfo;
 //	Int32 frameCnt = 0;
-	Int64 ttsOfst = 0;
-	Int32 ttsAtomSize = 0;
-	Int64 stcOfst = 0;
-	Int32 stcAtomSize = 0;
-	Int64 stszOfst = 0;
-	Int32 stszAtomSize = 0;
-	Int64 stcoOfst = 0;
-	Int32 stcoAtomSize = 0;
-	Int64 stssOfst = 0;
-	Int32 stssAtomSize = 0;
-	OSInt atomOfst;
-	Int32 subAtomSize;
+	UInt64 ttsOfst = 0;
+	UInt32 ttsAtomSize = 0;
+	UInt64 stcOfst = 0;
+	UInt32 stcAtomSize = 0;
+	UInt64 stszOfst = 0;
+	UInt32 stszAtomSize = 0;
+	UInt64 stcoOfst = 0;
+	UInt32 stcoAtomSize = 0;
+	UInt64 stssOfst = 0;
+	UInt32 stssAtomSize = 0;
+	UOSInt atomOfst;
+	UInt32 subAtomSize;
 	Int32 frameRate = 24;
 	Int32 frameRateDenorm = 1;
-	Int64 avccOfst = 0;
-	Int32 avccAtomSize = 0;
+	UInt64 avccOfst = 0;
+	UInt32 avccAtomSize = 0;
 
 	if (mtyp == Media::MEDIA_TYPE_VIDEO)
 	{
@@ -693,7 +693,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 						{
 							Int32 norm;
 							Int32 denorm;
-							Int64 br;
+							UInt64 br;
 							Media::MPEGVideoParser::GetFrameInfo(&buff[atomOfst + 8], subAtomSize - 8, &frInfo, &norm, &denorm, &br, false);
 							frInfo.fourcc = *(UInt32*)"m2v1";
 						}
@@ -747,42 +747,42 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				{
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_BIGENDIAN;
-					afmt.align = afmt.nChannels * afmt.bitpersample >> 3;
+					afmt.align = (UInt32)(afmt.nChannels * afmt.bitpersample >> 3);
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"NONE")
 				{
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_BIGENDIAN;
-					afmt.align = afmt.nChannels * afmt.bitpersample >> 3;
+					afmt.align = (UInt32)(afmt.nChannels * afmt.bitpersample >> 3);
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"raw ")
 				{
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_NORMAL;
-					afmt.align = afmt.nChannels * afmt.bitpersample >> 3;
+					afmt.align = (UInt32)(afmt.nChannels * afmt.bitpersample >> 3);
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"twos")
 				{
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_BIGENDIAN;
-					afmt.align = afmt.nChannels * afmt.bitpersample >> 3;
+					afmt.align = (UInt32)(afmt.nChannels * afmt.bitpersample >> 3);
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"sowt")
 				{
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_NORMAL;
-					afmt.align = afmt.nChannels * afmt.bitpersample >> 3;
+					afmt.align = (UInt32)(afmt.nChannels * afmt.bitpersample >> 3);
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"lpcm")
 				{
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_NORMAL;
-					afmt.align = afmt.nChannels * afmt.bitpersample >> 3;
+					afmt.align = (UInt32)(afmt.nChannels * afmt.bitpersample >> 3);
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"MAC3")
@@ -1631,7 +1631,7 @@ array_item:
 	return src;
 }
 
-Bool Parser::FileParser::QTParser::ParseEdtsAtom(IO::IStreamData *fd, Int64 ofst, UInt32 size, Int32 *delay, Int32 *sampleSkip)
+Bool Parser::FileParser::QTParser::ParseEdtsAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Int32 *delay, Int32 *sampleSkip)
 {
 	UInt32 i;
 	UInt8 hdr[8];

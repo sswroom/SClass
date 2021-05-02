@@ -9,7 +9,7 @@ namespace Math
 	private:
 		Double *altitudes;
 	public:
-		Polyline3D(Int32 srid, UOSInt nPtOfst, UOSInt nPoint);
+		Polyline3D(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint);
 		virtual ~Polyline3D();
 
 		virtual Math::Vector2D *Clone();

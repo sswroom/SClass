@@ -43,7 +43,7 @@ Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
 		{
 			if (buff[0] == 0xff && (buff[1] & 0xf8) == 0xf8)
 			{
-				static Int32 freq[4] = {44100, 48000, 32000, 0};
+				static UInt32 freq[4] = {44100, 48000, 32000, 0};
 				this->fmt->frequency = freq[(buff[2] >> 2) & 3];
 				if ((buff[3] & 0xc0) == 3)
 					this->fmt->nChannels = 1;
@@ -56,7 +56,7 @@ Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
 
 				if ((buff[1] & 0xfe) == 0xfe) //Layer 1
 				{
-					static Int32 bitrate[16] = {0, 32000, 64000, 96000, 128000, 160000, 192000, 224000, 256000, 288000, 320000, 352000, 384000, 416000, 448000, 0};
+					static UInt32 bitrate[16] = {0, 32000, 64000, 96000, 128000, 160000, 192000, 224000, 256000, 288000, 320000, 352000, 384000, 416000, 448000, 0};
 					this->fmt->formatId = 0x50;
 					this->fmt->bitRate = bitrate[buff[2] >> 4];
 					this->fmt->extra = MemAlloc(UInt8, 22);
@@ -71,16 +71,16 @@ Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
 					}
 					*(UInt16*)&this->fmt->extra[0] = 1;
 					*(UInt32*)&this->fmt->extra[2] = this->fmt->bitRate;
-					*(UInt16*)&this->fmt->extra[6] = buff[3] >> 6;
-					*(UInt16*)&this->fmt->extra[8] = (buff[3] >> 4) & 3;
-					*(UInt16*)&this->fmt->extra[10] = (buff[3] & 3) + 1;
+					*(UInt16*)&this->fmt->extra[6] = (UInt16)(buff[3] >> 6);
+					*(UInt16*)&this->fmt->extra[8] = (UInt16)((buff[3] >> 4) & 3);
+					*(UInt16*)&this->fmt->extra[10] = (UInt16)((buff[3] & 3) + 1);
 					*(UInt16*)&this->fmt->extra[12] = 0;
 					*(UInt32*)&this->fmt->extra[14] = 0;
 					*(UInt32*)&this->fmt->extra[18] = 0;
 				}
 				else if ((buff[1] & 0xfe) == 0xfc) //Layer 2
 				{
-					static Int32 bitrate[16] = {0, 32000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000, 384000, 0};
+					static UInt32 bitrate[16] = {0, 32000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000, 384000, 0};
 					this->fmt->formatId = 0x50;
 					this->fmt->bitRate = bitrate[buff[2] >> 4];
 					this->fmt->extraSize = 12;
@@ -100,7 +100,7 @@ Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
 				}
 				else if ((buff[1] & 0xfe) == 0xfa) //Layer3
 				{
-					static Int32 bitrate[16] = {0, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000, 0};
+					static UInt32 bitrate[16] = {0, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000, 0};
 					this->fmt->formatId = 0x55;
 					this->fmt->bitRate = bitrate[buff[2] >> 4];
 					this->fmt->extra = MemAlloc(UInt8, 12);
@@ -226,7 +226,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		MemCopyNO(this->dataBuff2, &this->dataBuff[this->buffStart], this->buffSize - this->buffStart);
 		MemCopyNO(&this->dataBuff2[this->buffSize - this->buffStart], this->dataBuff, this->buffEnd);
-		buffSize2 = this->buffEnd - this->buffStart + this->buffSize;
+		buffSize2 = (UOSInt)(this->buffEnd - this->buffStart) + this->buffSize;
 	}
 	else
 	{
@@ -397,7 +397,7 @@ void Media::MPAStreamSource::ClearFrameBuff()
 void Media::MPAStreamSource::SetStreamTime(Int32 time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	this->buffSample = MulDiv32(time, this->fmt->bitRate, 8000);
+	this->buffSample = MulDivU32(time, this->fmt->bitRate, 8000);
 	mutUsage.EndUse();
 }
 

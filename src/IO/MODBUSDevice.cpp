@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
-void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, OSInt resultSize)
+void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
 	IO::MODBUSDevice *me = (IO::MODBUSDevice*)userObj;
 	if (funcCode == 4)
@@ -92,7 +92,7 @@ void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult[0] = ReadUInt24(result);
+				me->reqIResult[0] = (Int32)ReadUInt24(result);
 				me->reqHasResult = true;
 				me->cbEvt->Set();
 			}

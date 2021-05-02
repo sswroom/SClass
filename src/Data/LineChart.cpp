@@ -66,7 +66,7 @@ Data::LineChart::LineChart(const UTF8Char *title)
 
 Data::LineChart::~LineChart()
 {
-	OSInt i;
+	UOSInt i;
 
 	i = this->xDatas->GetCount();
 	while (i-- > 0)
@@ -279,7 +279,7 @@ void Data::LineChart::SetDblFormat(const Char *format)
 	}
 	else
 	{
-		i = Text::StrCharCnt(format) - i - 1;
+		i = (OSInt)Text::StrCharCnt(format) - i - 1;
 		this->minDblVal = 1.0;
 		while (i-- > 0)
 		{
@@ -303,21 +303,21 @@ void Data::LineChart::SetFontName(const UTF8Char *name)
 	this->fntName = Text::StrCopyNew(name);
 }
 
-void Data::LineChart::SetYRefVal(Int32 refVal, Int32 col)
+void Data::LineChart::SetYRefVal(Int32 refVal, UInt32 col)
 {
 	this->refInt = refVal;
 	this->refLineColor = col;
 	this->refExist = true;
 }
 
-void Data::LineChart::SetYRefVal(Double refVal, Int32 col)
+void Data::LineChart::SetYRefVal(Double refVal, UInt32 col)
 {
 	this->refDbl = refVal;
 	this->refLineColor = col;
 	this->refExist = true;
 }
 
-void Data::LineChart::SetYRefVal(Data::DateTime *refVal, Int32 col)
+void Data::LineChart::SetYRefVal(Data::DateTime *refVal, UInt32 col)
 {
 	this->refTime = refVal->ToTicks();
 	this->refLineColor = col;
@@ -359,14 +359,14 @@ void Data::LineChart::SetPointType(PointType pointType, Double pointSize)
 	this->pointSize = pointSize;
 }
 
-Int32 Data::LineChart::GetRndColor()
+UInt32 Data::LineChart::GetRndColor()
 {
-	Int32 r;
-	Int32 g;
-	Int32 b;
+	UInt32 r;
+	UInt32 g;
+	UInt32 b;
 	
-	r = (Int32)(64 + (this->rnd->NextInt15() % 192));
-	g = (Int32)(64 + (this->rnd->NextInt15() % 192));
+	r = (UInt32)(64 + (this->rnd->NextInt15() % 192));
+	g = (UInt32)(64 + (this->rnd->NextInt15() % 192));
 	b = 512 - r - g;
 	if (b < 0)
 		b = 0;
@@ -375,7 +375,7 @@ Int32 Data::LineChart::GetRndColor()
 	return 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
-void Data::LineChart::AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, Int32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int64 *newVals;
 	newVals = MemAlloc(Int64, valCnt);
@@ -384,7 +384,7 @@ void Data::LineChart::AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt va
 	yCharts->Add(new Data::LineChart::ChartData(newVals, valCnt, Data::LineChart::CT_DATETICK, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, Int32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int32 *newVals;
 	newVals = MemAlloc(Int32, valCnt);
@@ -393,7 +393,7 @@ void Data::LineChart::AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt
 	yCharts->Add(new Data::LineChart::ChartData(newVals, valCnt, Data::LineChart::CT_INTEGER, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, Int32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Double *newVals;
 	newVals = MemAlloc(Double, valCnt);
@@ -1644,12 +1644,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 }
 
-OSInt Data::LineChart::GetLegendCount()
+UOSInt Data::LineChart::GetLegendCount()
 {
 	return this->yCharts->GetCount();
 }
 
-UTF8Char *Data::LineChart::GetLegend(UTF8Char *sbuff, Int32 *color, UOSInt index)
+UTF8Char *Data::LineChart::GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index)
 {
 	if (index >= this->yCharts->GetCount())
 		return 0;
@@ -1658,7 +1658,7 @@ UTF8Char *Data::LineChart::GetLegend(UTF8Char *sbuff, Int32 *color, UOSInt index
 	return Text::StrConcat(sbuff, dataNames->GetItem(index));
 }
 
-Data::LineChart::ChartData::ChartData(void *data, UOSInt dataCnt, Data::LineChart::ChartType dataType, Int32 lineColor, Data::LineChart::LineStyle lineStyle)
+Data::LineChart::ChartData::ChartData(void *data, UOSInt dataCnt, Data::LineChart::ChartType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	this->data = data;
 	this->dataCnt = dataCnt;

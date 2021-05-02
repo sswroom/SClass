@@ -44,7 +44,7 @@ namespace SSWR
 				Math::Unit::UnitBase::ValueType vt;
 				Int32 unit;
 				Int32 denorm;
-				OSInt lvIndex;
+				UOSInt lvIndex;
 				Double val;
 			} MODBUSEntry;
 		private:

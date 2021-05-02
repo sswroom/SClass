@@ -20,7 +20,7 @@ namespace Net
 			const UTF8Char *url;
 			const UTF8Char *fileName;
 			const UTF8Char *localFile;
-			OSInt seekCnt;
+			UOSInt seekCnt;
 
 			Net::HTTPClient *cli;
 			Net::SocketFactory *sockf;
@@ -54,7 +54,7 @@ namespace Net
 		virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
 		virtual Bool IsFullFile();
 		virtual Bool IsLoading();
-		virtual OSInt GetSeekCount();
+		virtual UOSInt GetSeekCount();
 	private:
 		void Close();
 	};

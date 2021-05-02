@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::MKVParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 buff[BUFFSIZE];
 	MKVStatus status;
-	Int64 dataSize;
+	UInt64 dataSize;
 	UInt32 segmId;
 	status.buffSize = fd->GetRealData(0, 256, buff);
 	status.nextReadOfst = 256;
@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::FileParser::MKVParser::ParseFile(IO::IStreamData *fd, 
 	return pobj;
 }
 
-OSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, Int64 *dataSize)
+UOSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, UInt64 *dataSize)
 {
 	if (status->currOfst >= status->buffSize)
 	{
@@ -121,7 +121,7 @@ OSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, Int64 *data
 			if (status->buffSize - status->currOfst < 5)
 				return 0;
 		}
-		*dataSize = (((Int64)status->buff[status->currOfst] & 7) << 32) | ReadMUInt32(&status->buff[status->currOfst + 1]);
+		*dataSize = (((UInt64)status->buff[status->currOfst] & 7) << 32) | ReadMUInt32(&status->buff[status->currOfst + 1]);
 		status->currOfst += 5;
 		return 5;
 	}
@@ -134,7 +134,7 @@ OSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, Int64 *data
 			if (status->buffSize - status->currOfst < 6)
 				return 0;
 		}
-		*dataSize = (((Int64)ReadMUInt16(&status->buff[status->currOfst]) & 0x3ff) << 32) | ReadMUInt32(&status->buff[status->currOfst + 2]);
+		*dataSize = (((UInt64)ReadMUInt16(&status->buff[status->currOfst]) & 0x3ff) << 32) | ReadMUInt32(&status->buff[status->currOfst + 2]);
 		status->currOfst += 6;
 		return 6;
 	}
@@ -147,7 +147,7 @@ OSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, Int64 *data
 			if (status->buffSize - status->currOfst < 7)
 				return 0;
 		}
-		*dataSize = (((Int64)ReadMUInt24(&status->buff[status->currOfst]) & 0x1ffff) << 32) | ReadMUInt32(&status->buff[status->currOfst + 3]);
+		*dataSize = (((UInt64)ReadMUInt24(&status->buff[status->currOfst]) & 0x1ffff) << 32) | ReadMUInt32(&status->buff[status->currOfst + 3]);
 		status->currOfst += 7;
 		return 7;
 	}
@@ -160,7 +160,7 @@ OSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, Int64 *data
 			if (status->buffSize - status->currOfst < 8)
 				return 0;
 		}
-		*dataSize = (((Int64)ReadMUInt24(&status->buff[status->currOfst + 1])) << 32) | ReadMUInt32(&status->buff[status->currOfst + 4]);
+		*dataSize = (((UInt64)ReadMUInt24(&status->buff[status->currOfst + 1])) << 32) | ReadMUInt32(&status->buff[status->currOfst + 4]);
 		status->currOfst += 8;
 		return 8;
 	}
@@ -170,7 +170,7 @@ OSInt Parser::FileParser::MKVParser::ReadDataSize(MKVStatus *status, Int64 *data
 	}
 }
 
-OSInt Parser::FileParser::MKVParser::ReadID(MKVStatus *status, UInt32 *eleId)
+UOSInt Parser::FileParser::MKVParser::ReadID(MKVStatus *status, UInt32 *eleId)
 {
 	if (status->currOfst >= status->buffSize)
 	{
@@ -229,10 +229,10 @@ OSInt Parser::FileParser::MKVParser::ReadID(MKVStatus *status, UInt32 *eleId)
 	}
 }
 
-OSInt Parser::FileParser::MKVParser::ReadData(MKVStatus *status, Int64 dataSize, UInt8 *buff)
+UOSInt Parser::FileParser::MKVParser::ReadData(MKVStatus *status, UInt64 dataSize, UInt8 *buff)
 {
-	OSInt readSize;
-	OSInt thisReadSize;
+	UOSInt readSize;
+	UOSInt thisReadSize;
 	if (status->currOfst + dataSize > status->buffSize)
 	{
 		readSize = 0;
@@ -246,7 +246,7 @@ OSInt Parser::FileParser::MKVParser::ReadData(MKVStatus *status, Int64 dataSize,
 		}
 		if (dataSize > BUFFSIZE)
 		{
-			thisReadSize = status->fd->GetRealData(status->nextReadOfst, (OSInt)dataSize, buff);
+			thisReadSize = status->fd->GetRealData(status->nextReadOfst, (UOSInt)dataSize, buff);
 			status->nextReadOfst += thisReadSize;
 			readSize += thisReadSize;
 		}
@@ -261,24 +261,24 @@ OSInt Parser::FileParser::MKVParser::ReadData(MKVStatus *status, Int64 dataSize,
 			}
 			else
 			{
-				MemCopyNO(buff, &status->buff[status->currOfst], (OSInt)dataSize);
-				status->currOfst += (OSInt)dataSize;
-				readSize += (OSInt)dataSize;
+				MemCopyNO(buff, &status->buff[status->currOfst], (UOSInt)dataSize);
+				status->currOfst += (UOSInt)dataSize;
+				readSize += (UOSInt)dataSize;
 			}
 		}
 		return readSize;
 	}
 	else
 	{
-		MemCopyNO(buff, &status->buff[status->currOfst], (OSInt)dataSize);
-		status->currOfst += (OSInt)dataSize;
-		return (OSInt)dataSize;
+		MemCopyNO(buff, &status->buff[status->currOfst], (UOSInt)dataSize);
+		status->currOfst += (UOSInt)dataSize;
+		return (UOSInt)dataSize;
 	}
 }
 
-OSInt Parser::FileParser::MKVParser::ReadBuffer(MKVStatus *status)
+UOSInt Parser::FileParser::MKVParser::ReadBuffer(MKVStatus *status)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	if (status->currOfst < status->buffSize)
 	{
 		MemCopyO(status->buff, &status->buff[status->currOfst], status->buffSize - status->currOfst);
@@ -298,7 +298,7 @@ OSInt Parser::FileParser::MKVParser::ReadBuffer(MKVStatus *status)
 	return readSize;
 }
 
-Bool Parser::FileParser::MKVParser::SkipBuffer(MKVStatus *status, OSInt skipSize)
+Bool Parser::FileParser::MKVParser::SkipBuffer(MKVStatus *status, UOSInt skipSize)
 {
 	if (status->currOfst + skipSize > status->buffSize)
 	{
@@ -314,10 +314,10 @@ Bool Parser::FileParser::MKVParser::SkipBuffer(MKVStatus *status, OSInt skipSize
 	}
 }
 
-Bool Parser::FileParser::MKVParser::ReadHeader(MKVStatus *status, Int64 dataSize)
+Bool Parser::FileParser::MKVParser::ReadHeader(MKVStatus *status, UInt64 dataSize)
 {
-	OSInt readSize;
-	Int64 elementSize;
+	UOSInt readSize;
+	UInt64 elementSize;
 	UInt32 hdrId;
 	UInt8 buff[16];
 	while (dataSize > 0)
@@ -333,36 +333,36 @@ Bool Parser::FileParser::MKVParser::ReadHeader(MKVStatus *status, Int64 dataSize
 		switch (hdrId)
 		{
 		case 0x4286: //EBMLVersion
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x42f7: //EBMLReadVersion
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x42f2: //EBMLMaxIDLength
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x42f3: //EBMLMaxSizeLength
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x4282: //DocType
 			if (elementSize > 16)
 			{
-				SkipBuffer(status, (OSInt)elementSize);
+				SkipBuffer(status, (UOSInt)elementSize);
 			}
 			else
 			{
-				ReadData(status, (OSInt)elementSize, buff);
+				ReadData(status, (UOSInt)elementSize, buff);
 
 			}
 			break;
 		case 0x4287: //DocTypeVersion
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x4285: //DocTypeReadVersion
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		default:
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -370,12 +370,12 @@ Bool Parser::FileParser::MKVParser::ReadHeader(MKVStatus *status, Int64 dataSize
 	return dataSize == 0;
 }
 
-IO::ParsedObject *Parser::FileParser::MKVParser::ReadSegment(MKVStatus *status, Int64 dataSize)
+IO::ParsedObject *Parser::FileParser::MKVParser::ReadSegment(MKVStatus *status, UInt64 dataSize)
 {
 	IO::ParsedObject *pobj = 0;
-	OSInt readSize;
+	UOSInt readSize;
 	Bool valid = true;
-	Int64 elementSize;
+	UInt64 elementSize;
 	UInt32 hdrId;
 	while (dataSize > 0)
 	{
@@ -398,28 +398,28 @@ IO::ParsedObject *Parser::FileParser::MKVParser::ReadSegment(MKVStatus *status, 
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x114d9b74: //SeekHead
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x1254c367: //Tags
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x1549a966: //Info
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x1654ae6b: //Track
 			valid = ReadTrack(status, elementSize);
 			break;
 		case 0x1c53bb6b: //Cues
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x1f43b675: //Cluster
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		default:
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -433,11 +433,11 @@ IO::ParsedObject *Parser::FileParser::MKVParser::ReadSegment(MKVStatus *status, 
 	return pobj;
 }
 
-Bool Parser::FileParser::MKVParser::ReadTrack(MKVStatus *status, Int64 dataSize)
+Bool Parser::FileParser::MKVParser::ReadTrack(MKVStatus *status, UInt64 dataSize)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	Bool valid = true;
-	Int64 elementSize;
+	UInt64 elementSize;
 	UInt32 hdrId;
 	while (dataSize > 0)
 	{
@@ -456,13 +456,13 @@ Bool Parser::FileParser::MKVParser::ReadTrack(MKVStatus *status, Int64 dataSize)
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0xae: //TrackEntry
-			valid = ReadTrackEntry(status, (OSInt)elementSize);
+			valid = ReadTrackEntry(status, (UOSInt)elementSize);
 			break;
 		default:
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -472,11 +472,11 @@ Bool Parser::FileParser::MKVParser::ReadTrack(MKVStatus *status, Int64 dataSize)
 	return dataSize == 0;
 }
 
-Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 dataSize)
+Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, UInt64 dataSize)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	Bool valid = true;
-	Int64 elementSize;
+	UInt64 elementSize;
 	UInt32 hdrId;
 	UInt8 buff[64];
 
@@ -505,7 +505,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 data
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x83: //TrackType
 			if (ReadData(status, elementSize, buff) != elementSize)
@@ -523,7 +523,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 data
 			}
 			break;
 		case 0x9c: //FlagLacing
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0xd7: //TrackNumber
 			ReadData(status, elementSize, buff);
@@ -551,7 +551,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 data
 			valid = ReadAudio(status, elementSize, &audioFmt);
 			break;
 		case 0x63a2: //CodecPrivate
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x73c5: //TrackUID
 			ReadData(status, elementSize, buff);
@@ -573,7 +573,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 data
 			}
 			break;
 		case 0x22b59c: //Language
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x23e383: //DefaultDuration
 			if (elementSize == 4)
@@ -583,11 +583,11 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 data
 			}
 			else
 			{
-				SkipBuffer(status, (OSInt)elementSize);
+				SkipBuffer(status, (UOSInt)elementSize);
 			}
 			break;
 		default:
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -599,11 +599,11 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(MKVStatus *status, Int64 data
 	return dataSize == 0;
 }
 
-Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, Int64 dataSize, Media::FrameInfo *frameInfo)
+Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, UInt64 dataSize, Media::FrameInfo *frameInfo)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	Bool valid = true;
-	Int64 elementSize;
+	UInt64 elementSize;
 	UInt32 hdrId;
 	UInt8 buff[64];
 
@@ -624,7 +624,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, Int64 dataSize,
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0xb0: //PixelWidth
 			if (elementSize != ReadData(status, elementSize, buff))
@@ -677,7 +677,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, Int64 dataSize,
 			}
 			break;
 		default:
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -689,11 +689,11 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, Int64 dataSize,
 	return dataSize == 0;
 }
 
-Bool Parser::FileParser::MKVParser::ReadAudio(MKVStatus *status, Int64 dataSize, Media::AudioFormat *audioFmt)
+Bool Parser::FileParser::MKVParser::ReadAudio(MKVStatus *status, UInt64 dataSize, Media::AudioFormat *audioFmt)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	Bool valid = true;
-	Int64 elementSize;
+	UInt64 elementSize;
 	UInt32 hdrId;
 	UInt8 buff[64];
 
@@ -714,7 +714,7 @@ Bool Parser::FileParser::MKVParser::ReadAudio(MKVStatus *status, Int64 dataSize,
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		case 0x9f: //Channels
 			if (elementSize != ReadData(status, elementSize, buff))
@@ -733,7 +733,7 @@ Bool Parser::FileParser::MKVParser::ReadAudio(MKVStatus *status, Int64 dataSize,
 				valid = false;
 			if (elementSize == 8)
 			{
-				audioFmt->frequency = Math::Double2Int32(ReadMDouble(buff));
+				audioFmt->frequency = (UInt32)Math::Double2Int32(ReadMDouble(buff));
 			}
 			else
 			{
@@ -753,7 +753,7 @@ Bool Parser::FileParser::MKVParser::ReadAudio(MKVStatus *status, Int64 dataSize,
 			}
 			break;
 		default:
-			SkipBuffer(status, (OSInt)elementSize);
+			SkipBuffer(status, (UOSInt)elementSize);
 			break;
 		}
 		dataSize -= elementSize;

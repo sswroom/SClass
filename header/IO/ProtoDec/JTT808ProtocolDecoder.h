@@ -13,12 +13,12 @@ namespace IO
 			virtual ~JTT808ProtocolDecoder();
 
 			virtual const UTF8Char *GetName();
-			virtual OSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, Int64 fileOfst, UInt8 *buff, OSInt buffSize);
-			virtual Bool GetProtocolDetail(UInt8 *buff, OSInt buffSize, Text::StringBuilderUTF *sb);
-			virtual Bool IsValid(UInt8 *buff, OSInt buffSize);
+			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize);
+			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb);
+			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize);
 
-			OSInt Unpack(UInt8 *buff, const UInt8 *proto, OSInt protoSize);
-			Bool ParseLocation(const UTF8Char *loc, OSInt locSize, Text::StringBuilderUTF *sb);
+			UOSInt Unpack(UInt8 *buff, const UInt8 *proto, UOSInt protoSize);
+			Bool ParseLocation(const UTF8Char *loc, UOSInt locSize, Text::StringBuilderUTF *sb);
 		};
 	}
 }

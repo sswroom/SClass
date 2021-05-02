@@ -53,13 +53,13 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	{
 		return 0;
 	}
-	OSInt buffSize = (OSInt)fd->GetDataSize();
+	UOSInt buffSize = (UOSInt)fd->GetDataSize();
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
-	fileBuff[fd->GetRealData(0, (OSInt)fd->GetDataSize(), fileBuff)] = 0;
+	fileBuff[fd->GetRealData(0, (UOSInt)fd->GetDataSize(), fileBuff)] = 0;
 	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(fileBuff);
 	MemFree(fileBuff);
 
-	Int32 srid = 0;
+	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
 	if (fileJSON == 0)
 	{
@@ -100,11 +100,11 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 				Map::VectorLayer *lyr = 0;
 				const UTF8Char *tabHdrs[10];
 				const UTF8Char *tabCols[10];
-				OSInt colCnt;
+				UOSInt colCnt;
 				Text::JSONArray *features = (Text::JSONArray*)jbase;
-				OSInt i;
-				OSInt j = features->GetArrayLength();
-				OSInt k;
+				UOSInt i;
+				UOSInt j = features->GetArrayLength();
+				UOSInt k;
 				Text::JSONBase *feature = features->GetArrayValue(0);
 				Text::JSONBase *featType;
 				Text::JSONBase *featProp;
@@ -189,7 +189,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	return pobj;
 }
 
-Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, Int32 srid)
+Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
 {
 	Text::JSONBase *jbase = obj->GetObjectValue((const UTF8Char*)"type");
 	if (jbase && jbase->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
@@ -313,7 +313,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;
 				Data::ArrayList<Double> ptList;
-				Data::ArrayList<Int32> partList;
+				Data::ArrayList<UInt32> partList;
 				Bool hasData = false;
 				Text::JSONArray *ptArr;
 				Text::JSONArray *pt;
@@ -341,7 +341,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 									if (!hasData)
 									{
 										hasData = true;
-										partList.Add((Int32)ptList.GetCount() >> 1);
+										partList.Add((UInt32)ptList.GetCount() >> 1);
 									}
 									jbase = pt->GetArrayValue(0);
 									if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)

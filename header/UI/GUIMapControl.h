@@ -87,7 +87,7 @@ namespace UI
 		/*
 		view - will release
 		*/
-		GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Int32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess);
+		GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess);
 		GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Map::MapEnv *mapEnv, Media::ColorManagerSess *colorSess);
 		virtual ~GUIMapControl();
 

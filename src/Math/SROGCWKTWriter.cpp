@@ -12,14 +12,14 @@ Math::SROGCWKTWriter::~SROGCWKTWriter()
 
 }
 
-Char *Math::SROGCWKTWriter::WriteSRID(Char *buff, Int32 srid, UOSInt lev, Text::LineBreakType lbt)
+Char *Math::SROGCWKTWriter::WriteSRID(Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt)
 {
 	if (srid != 0)
 	{
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
 		buff = Text::StrConcat(buff, "AUTHORITY[\"EPSG\",\"");
-		buff = Text::StrInt32(buff, srid);
+		buff = Text::StrUInt32(buff, srid);
 		buff = Text::StrConcat(buff, "\"]");
 	}
 	return buff;

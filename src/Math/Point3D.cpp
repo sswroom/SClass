@@ -3,7 +3,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Point3D.h"
 
-Math::Point3D::Point3D(Int32 srid, Double x, Double y, Double z) : Math::Point(srid, x, y)
+Math::Point3D::Point3D(UInt32 srid, Double x, Double y, Double z) : Math::Point(srid, x, y)
 {
 	this->z = z;
 }

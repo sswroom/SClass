@@ -36,14 +36,14 @@ IO::ParsedObject::ParserType Parser::FileParser::LinkArcParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 hdrBuff[32];
-	Int64 currOfst;
+	UInt64 currOfst;
 	UInt8 nameSize;
 	UInt8 recBuff[256];
-	Int64 fileSize;
+	UInt64 fileSize;
 
 	UInt32 recSize;
 
-	Int16 fnameSize;
+	UInt16 fnameSize;
 	UTF8Char fileName[256];
 	Data::DateTime dt;
 
@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *
 	nameSize = hdrBuff[7];
 	if (nameSize > Text::StrCharCnt(fd->GetShortName()) - 4)
 		return 0;
-	currOfst = 8 + nameSize;
+	currOfst = 8 + (UOSInt)nameSize;
 	fileSize = fd->GetDataSize();
 
 	IO::PackageFile *pf;
@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *
 	{
 		fd->GetRealData(currOfst, 256, recBuff);
 		recSize = ReadUInt32(&recBuff[0]);
-		fnameSize = ReadInt16(&recBuff[13]);
+		fnameSize = ReadUInt16(&recBuff[13]);
 		if (recSize == 0 && currOfst == fileSize - 4)
 			break;
 		if (recSize <= 16 || recSize + currOfst > fileSize)

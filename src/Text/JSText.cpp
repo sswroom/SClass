@@ -93,13 +93,13 @@ void Text::JSText::ToJSTextDQuote(Text::StringBuilderUTF *sb, const UTF8Char *s)
 		}
 		if (sptr - buff >= 254)
 		{
-			sb->AppendC(buff, sptr - buff);
+			sb->AppendC(buff, (UOSInt)(sptr - buff));
 			sptr = buff;
 		}
 	}
 	if (sptr > buff)
 	{
-		sb->AppendC(buff, sptr - buff);
+		sb->AppendC(buff, (UOSInt)(sptr - buff));
 	}
 	sb->AppendChar('\"', 1);
 }
@@ -175,7 +175,7 @@ const UTF8Char *Text::JSText::ToNewJSText(const UTF8Char *s)
 	}
 	const UTF8Char *srcPtr;
 	UTF8Char c;
-	OSInt chCnt;
+	UOSInt chCnt;
 
 	srcPtr = s;
 	chCnt = 3;
@@ -209,7 +209,7 @@ const UTF8Char *Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 	}
 	const UTF8Char *srcPtr;
 	UTF8Char c;
-	OSInt chCnt;
+	UOSInt chCnt;
 
 	srcPtr = s;
 	chCnt = 3;
@@ -243,7 +243,7 @@ const WChar *Text::JSText::ToNewJSText(const WChar *s)
 	}
 	const WChar *srcPtr;
 	WChar c;
-	OSInt chCnt;
+	UOSInt chCnt;
 
 	srcPtr = s;
 	chCnt = 3;
@@ -277,7 +277,7 @@ const WChar *Text::JSText::ToNewJSTextDQuote(const WChar *s)
 	}
 	const WChar *srcPtr;
 	WChar c;
-	OSInt chCnt;
+	UOSInt chCnt;
 
 	srcPtr = s;
 	chCnt = 3;
@@ -306,7 +306,7 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 	const UTF8Char *srcPtr;
 	UTF8Char *destPtr;
 	UTF8Char *outStr;
-	OSInt chCnt;
+	UOSInt chCnt;
 	UTF8Char c;
 	UTF8Char startC;
 	UInt32 v;
@@ -332,15 +332,15 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 				else
 				{
@@ -350,15 +350,15 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 				else
 				{
@@ -368,15 +368,15 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 				else
 				{
@@ -386,15 +386,15 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 				else
 				{
@@ -455,57 +455,57 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (UInt32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (UInt32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (UInt32)(c - 0x57);
 				}
 				if (v < 0x80)
 				{
@@ -513,14 +513,14 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 				}
 				else if (v < 0x800)
 				{
-					*destPtr++ = 0xc0 | (v >> 6);
-					*destPtr++ = 0x80 | (v & 0x3f);
+					*destPtr++ = (UTF8Char)(0xc0 | (v >> 6));
+					*destPtr++ = (UTF8Char)(0x80 | (v & 0x3f));
 				}
 				else
 				{
-					*destPtr++ = 0xe0 | (v >> 12);
-					*destPtr++ = 0x80 | ((v >> 6) & 0x3f);
-					*destPtr++ = 0x80 | (v & 0x3f);
+					*destPtr++ = (UTF8Char)(0xe0 | (v >> 12));
+					*destPtr++ = (UTF8Char)(0x80 | ((v >> 6) & 0x3f));
+					*destPtr++ =(UTF8Char)( 0x80 | (v & 0x3f));
 				}
 				break;
 			case '\"':
@@ -565,7 +565,7 @@ const WChar *Text::JSText::FromNewJSText(const WChar *s)
 	const WChar *srcPtr;
 	WChar *destPtr;
 	WChar *outStr;
-	OSInt chCnt;
+	UOSInt chCnt;
 	WChar c;
 	WChar startC;
 	Int32 v;
@@ -817,7 +817,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 					sb->AppendChar('\t', lev);
 				if (endOfst != -1)
 				{
-					sb->AppendC(&buff[startOfst], endOfst + 1 - startOfst);
+					sb->AppendC(&buff[startOfst], (UOSInt)endOfst + 1 - startOfst);
 				}
 				else
 				{
@@ -827,7 +827,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 			}
 			lev--;
 			startOfst = i;
-			endOfst = i;
+			endOfst = (OSInt)i;
 		}
 		else if (c == ',')
 		{
@@ -848,7 +848,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 					break;
 				i++;
 			}
-			endOfst = i;
+			endOfst = (OSInt)i;
 		}
 		else if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
 		{
@@ -859,7 +859,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 		}
 		else
 		{
-			endOfst = i;
+			endOfst = (OSInt)i;
 		}
 		
 		i++;
@@ -892,7 +892,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 		{
 			if ((lastC == '=' || lastC == '(') && jsonLev == -1)
 			{
-				jsonLev = lev;
+				jsonLev = (OSInt)lev;
 			}
 			if (lev > 0)
 				sb->AppendChar('\t', lev);
@@ -911,7 +911,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 					sb->AppendChar('\t', lev);
 				if (endOfst != -1)
 				{
-					sb->AppendC(&buff[startOfst], endOfst + 1 - startOfst);
+					sb->AppendC(&buff[startOfst], (UOSInt)endOfst + 1 - startOfst);
 				}
 				else
 				{
@@ -921,7 +921,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 			}
 			lev--;
 			startOfst = i;
-			endOfst = i;
+			endOfst = (OSInt)i;
 			if ((OSInt)lev <= jsonLev)
 			{
 				jsonLev = -1;
@@ -942,7 +942,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 			}
 			else
 			{
-				endOfst = i;
+				endOfst = (OSInt)i;
 			}
 			lastC = c;
 		}
@@ -956,7 +956,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 						sb->AppendChar('\t', lev);
 					if (endOfst != -1)
 					{
-						sb->AppendC(&buff[startOfst], endOfst + 1 - startOfst);
+						sb->AppendC(&buff[startOfst], (UOSInt)endOfst + 1 - startOfst);
 					}
 					else
 					{
@@ -966,11 +966,11 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				}
 				lev--;
 				startOfst = i;
-				endOfst = i;
+				endOfst = (OSInt)i;
 			}
 			else
 			{
-				endOfst = i;
+				endOfst = (OSInt)i;
 			}
 			lastC = c;
 		}
@@ -987,7 +987,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 			}
 			else
 			{
-				endOfst = i;
+				endOfst = (OSInt)i;
 			}
 			lastC = c;
 		}
@@ -1017,7 +1017,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				}
 				i++;
 			}
-			endOfst = i;
+			endOfst = (OSInt)i;
 			lastC = c;
 		}
 		else if (c == '\'')
@@ -1036,7 +1036,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				}
 				i++;
 			}
-			endOfst = i;
+			endOfst = (OSInt)i;
 			lastC = c;
 		}
 		else if (c == '\r' || c == '\n')
@@ -1065,7 +1065,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 		}
 		else
 		{
-			endOfst = i;
+			endOfst = (OSInt)i;
 			if (c == '=' || c == '(' || c == ')')
 			{
 				lastC = c;

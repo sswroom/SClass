@@ -4,7 +4,7 @@
 void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
 {
 	Map::MapLayerCollection *me = (Map::MapLayerCollection*)userObj;
-	OSInt i;
+	UOSInt i;
 	me->mut->LockRead();
 	i = me->updHdlrs->GetCount();
 	while (i-- > 0)

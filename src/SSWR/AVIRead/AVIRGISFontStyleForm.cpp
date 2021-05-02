@@ -149,7 +149,7 @@ void SSWR::AVIRead::AVIRGISFontStyleForm::RGBParamChanged(const Media::IColorHan
 {
 }
 
-OSInt SSWR::AVIRead::AVIRGISFontStyleForm::GetFontStyle()
+UOSInt SSWR::AVIRead::AVIRGISFontStyleForm::GetFontStyle()
 {
 	return this->fontStyle;
 }

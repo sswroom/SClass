@@ -330,7 +330,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			drawImg->info->hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info->vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info->color->Set(this->colorSess->GetRGBParam()->monProfile);
-			resizer.Resize(srcImg->data, srcImg->info->storeWidth * 4, Math::OSInt2Double(this->currWidth), Math::OSInt2Double(this->currHeight), 0, 0, drawImg->data, drawImg->info->storeWidth * 4, w, h);
+			resizer.Resize(srcImg->data, srcImg->info->storeWidth * 4, Math::UOSInt2Double(this->currWidth), Math::UOSInt2Double(this->currHeight), 0, 0, drawImg->data, drawImg->info->storeWidth * 4, w, h);
 		}
 		mutUsage.EndUse();
 		DEL_CLASS(srcImg);
@@ -342,19 +342,19 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		Media::DrawBrush *bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tlx > 0)
 		{
-			img->DrawRect(0, 0, tlx, Math::OSInt2Double(this->currHeight), 0, bgBrush);
+			img->DrawRect(0, 0, tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
 		if (tlx + w < this->currWidth)
 		{
-			img->DrawRect(w + tlx, 0, this->currWidth - w - tlx, Math::OSInt2Double(this->currHeight), 0, bgBrush);
+			img->DrawRect(w + tlx, 0, this->currWidth - w - tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
 		if (tly > 0)
 		{
-			img->DrawRect(0, 0, Math::OSInt2Double(this->currWidth), tly, 0, bgBrush);
+			img->DrawRect(0, 0, Math::UOSInt2Double(this->currWidth), tly, 0, bgBrush);
 		}
 		if (tly + h < this->currHeight)
 		{
-			img->DrawRect(0, h + tly, Math::OSInt2Double(this->currWidth), this->currHeight - h - tly, 0, bgBrush);
+			img->DrawRect(0, h + tly, Math::UOSInt2Double(this->currWidth), this->currHeight - h - tly, 0, bgBrush);
 		}
 		img->DelBrush(bgBrush);
 	}
@@ -363,19 +363,19 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		Media::DrawBrush *bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tlx > 0)
 		{
-			img->DrawRect(0, 0, tlx, Math::OSInt2Double(this->currHeight), 0, bgBrush);
+			img->DrawRect(0, 0, tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
 		else if (tlx < 0)
 		{
-			img->DrawRect(this->currWidth + tlx, 0, -tlx, Math::OSInt2Double(this->currHeight), 0, bgBrush);
+			img->DrawRect(this->currWidth + tlx, 0, -tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
 		if (tly > 0)
 		{
-			img->DrawRect(0, 0, Math::OSInt2Double(this->currWidth), tly, 0, bgBrush);
+			img->DrawRect(0, 0, Math::UOSInt2Double(this->currWidth), tly, 0, bgBrush);
 		}
 		else if (tly < 0)
 		{
-			img->DrawRect(0, this->currHeight + tly, Math::OSInt2Double(this->currWidth), -tly, 0, bgBrush);
+			img->DrawRect(0, this->currHeight + tly, Math::UOSInt2Double(this->currWidth), -tly, 0, bgBrush);
 		}
 		img->DelBrush(bgBrush);
 
@@ -470,7 +470,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
 			view->MapXYToScnXY(points, dpoints, nPoint, xOfst, yOfst);
 
-			OSInt i = nPtOfst;
+			UOSInt i = nPtOfst;
 			while (i-- > 0)
 			{
 				myPtCnts[i] = (UInt32)nPoint - ptOfsts[i];
@@ -681,7 +681,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 	}
 }
 
-UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Int32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	if (this->colorSess)

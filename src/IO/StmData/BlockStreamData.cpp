@@ -138,7 +138,7 @@ Bool IO::StmData::BlockStreamData::IsLoading()
 	return this->sd->IsLoading();
 }
 
-OSInt IO::StmData::BlockStreamData::GetSeekCount()
+UOSInt IO::StmData::BlockStreamData::GetSeekCount()
 {
 	return this->sd->GetSeekCount();
 }

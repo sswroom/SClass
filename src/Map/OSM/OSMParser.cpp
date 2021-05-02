@@ -654,7 +654,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 						{
 							if (layers[elemType - 1] == 0)
 							{
-								OSInt colCnt = 1;
+								UOSInt colCnt = 1;
 								if (elemType == 38)
 								{
 									colCnt = 2;
@@ -1315,7 +1315,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 					{
 						if (layers[elemType - 1] == 0)
 						{
-							OSInt colCnt = 1;
+							UOSInt colCnt = 1;
 							if (elemType == 6)
 							{
 								colCnt = 2;
@@ -1336,7 +1336,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 					{
 						if (layers[elemType - 1] == 0)
 						{
-							OSInt colCnt = 1;
+							UOSInt colCnt = 1;
 							if (elemType == 6)
 							{
 								colCnt = 2;

@@ -15,7 +15,7 @@ Text::MailBase64Stream::~MailBase64Stream()
 	UInt8 b64buff[74];
 	if (this->lineBuffSize > 0)
 	{
-		OSInt i = b64->Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff, 0);
+		UOSInt i = b64->Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff, 0);
 		this->stm->Write(b64buff, i);
 	}
 	DEL_CLASS(this->b64);

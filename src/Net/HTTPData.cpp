@@ -394,7 +394,7 @@ Bool Net::HTTPData::IsLoading()
 	return fdh->isLoading;
 }
 
-OSInt Net::HTTPData::GetSeekCount()
+UOSInt Net::HTTPData::GetSeekCount()
 {
 	if (fdh == 0)
 		return 0;

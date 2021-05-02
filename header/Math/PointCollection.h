@@ -7,7 +7,7 @@ namespace Math
 	class PointCollection : public Math::Vector2D
 	{
 	public:
-		PointCollection(Int32 srid);
+		PointCollection(UInt32 srid);
 		virtual ~PointCollection();
 
 		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst) = 0;

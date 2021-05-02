@@ -35,9 +35,9 @@ IO::ParsedObject::ParserType Parser::FileParser::MajiroArcParser::GetParserType(
 typedef struct
 {
 	Char idChars[16];
-	Int32 fileCnt;
-	Int32 fileNameOfst;
-	Int32 fileNameEndOfst;
+	UInt32 fileCnt;
+	UInt32 fileNameOfst;
+	UInt32 fileNameEndOfst;
 } ARCHeader;
 
 typedef struct
@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData
 	UInt8 *fileNamePtr;
 	UInt8 *fileNamePtr2;
 	UTF8Char sbuff[256];
-	Int32 i;
+	UInt32 i;
 	Text::Encoding enc(932);
 
 	fd->GetRealData(0, 28, (UInt8*)&hdr);
@@ -77,7 +77,7 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData
 	{
 		fileNamePtr2 = fileNamePtr;
 		while (*fileNamePtr2++);
-		enc.UTF8FromBytes(sbuff, fileNamePtr, fileNamePtr2 - fileNamePtr - 1, 0);
+		enc.UTF8FromBytes(sbuff, fileNamePtr, (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
 		pf->AddData(fd, recBuff[i].recOfst, recBuff[i].recSize, sbuff, 0);
 
 		fileNamePtr = fileNamePtr2;

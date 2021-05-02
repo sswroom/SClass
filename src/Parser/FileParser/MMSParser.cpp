@@ -34,8 +34,8 @@ IO::ParsedObject::ParserType Parser::FileParser::MMSParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	IO::PackageFile *pf;
-	Int32 fileCnt;
-	OSInt currOfst;
+	UInt32 fileCnt;
+	UOSInt currOfst;
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
 	UInt8 *ptr;
@@ -77,17 +77,17 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 	}
 
 	fileCnt = *ptr++;
-	currOfst = ptr - buff;
+	currOfst = (UOSInt)(ptr - buff);
 
 	while (fileCnt-- > 0)
 	{
-		Int32 hdrSize;
-		Int32 dataSize;
+		UInt32 hdrSize;
+		UInt32 dataSize;
 		fd->GetRealData(currOfst, 4, buff);
 		hdrSize = buff[0];
 		if (buff[1] & 0x80)
 		{
-			dataSize = ((buff[1] & 0x7f) << 7) | (buff[2] & 0x7f);
+			dataSize = (UInt32)((buff[1] & 0x7f) << 7) | (buff[2] & 0x7f);
 			currOfst += 3;
 		}
 		else
@@ -96,7 +96,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 			currOfst += 2;
 		}
 		fd->GetRealData(currOfst, hdrSize, buff);
-		sbuff[0] = 0x41 + fileCnt;
+		sbuff[0] = (UTF8Char)(0x41 + fileCnt);
 		sbuff[1] = 0;
 		ptr = buff;
 		if (*ptr < hdrSize)

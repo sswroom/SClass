@@ -42,13 +42,13 @@ IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(IO::ParsedObject *
 
 	UInt8 buff[2352];
 	Bool found = false;
-	OSInt i = 0;
-	Int32 v;
+	UOSInt i = 0;
+	UInt32 v;
 	while (i < 75)
 	{
 		if (!data->ReadSector(i, buff))
 			return 0;
-		v = ReadMInt32(&buff[24]);
+		v = ReadMUInt32(&buff[24]);
 		if (v == 0x1ba)
 		{
 			if ((buff[28] & 0xf0) != 0x20)

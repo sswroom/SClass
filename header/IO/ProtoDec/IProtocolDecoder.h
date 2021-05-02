@@ -9,14 +9,14 @@ namespace IO
 		class IProtocolDecoder
 		{
 		public:
-			typedef void (__stdcall *ProtocolInfo)(void *userObj, Int64 fileOfst, OSInt size, const UTF8Char *typeName);
+			typedef void (__stdcall *ProtocolInfo)(void *userObj, UInt64 fileOfst, UOSInt size, const UTF8Char *typeName);
 		public:
 			virtual ~IProtocolDecoder(){};
 
 			virtual const UTF8Char *GetName() = 0;
-			virtual OSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, Int64 fileOfst, UInt8 *buff, OSInt buffSize) = 0;
-			virtual Bool GetProtocolDetail(UInt8 *buff, OSInt buffSize, Text::StringBuilderUTF *sb) = 0;
-			virtual Bool IsValid(UInt8 *buff, OSInt buffSize) = 0;
+			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize) = 0;
+			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb) = 0;
+			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize) = 0;
 		};
 	}
 }

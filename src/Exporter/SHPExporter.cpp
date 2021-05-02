@@ -67,9 +67,9 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
-	OSInt fileSize = 100;
-	OSInt recCnt = 0;
-	OSInt i;
+	UOSInt fileSize = 100;
+	UOSInt recCnt = 0;
+	UOSInt i;
 	Int32 ilayerType = 0;
 	Double xMin = 0;
 	Double xMax = 0;
@@ -289,7 +289,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		ilayerType = 13;
 
-		OSInt j;
+		UOSInt j;
 		Math::Polyline3D *pl;
 		Double box[4];
 		UOSInt nPtOfst;
@@ -491,7 +491,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		Math::SRESRIWKTWriter wkt;
 		Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LBT_NONE);
 		NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-		shx->Write((UInt8*)projArr, cptr - projArr);
+		shx->Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 		DEL_CLASS(shx);
 	}
 	return true;

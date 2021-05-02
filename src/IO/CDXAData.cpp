@@ -39,7 +39,7 @@ IO::IStreamData *IO::CDXAData::GetStreamData(UInt64 startSector, UInt64 dataSize
 	return this->data->GetPartialData(startSector * 2352, dataSize);
 }
 
-OSInt IO::CDXAData::GetSeekCount()
+UOSInt IO::CDXAData::GetSeekCount()
 {
 	return this->data->GetSeekCount();
 }

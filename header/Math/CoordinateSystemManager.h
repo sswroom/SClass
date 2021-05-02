@@ -30,8 +30,8 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid;
-			Int32 spheroid;
+			UInt32 srid;
+			UInt32 spheroid;
 			const Char *datumName;
 			Double x0;
 			Double y0;
@@ -48,7 +48,7 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid;
+			UInt32 srid;
 			Int32 datum;
 			const Char *name;
 			Math::CoordinateSystem::PrimemType primem;
@@ -57,8 +57,8 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid;
-			Int32 geogcsSRID;
+			UInt32 srid;
+			UInt32 geogcsSRID;
 			Math::CoordinateSystem::CoordinateSystemType csysType;
 			const Char *projName;
 			Double falseEasting;
@@ -94,7 +94,7 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid;
+			UInt32 srid;
 			Math::CoordinateSystem::CoordinateSystemType csysType;
 			const Char *projName;
 			Double falseEasting;
@@ -107,7 +107,7 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid;
+			UInt32 srid;
 			const Char *geoName;
 			const Char *datumName;
 			Math::EarthEllipsoid::EarthEllipsoidType eet;

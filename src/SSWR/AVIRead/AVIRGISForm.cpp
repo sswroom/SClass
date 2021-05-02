@@ -207,8 +207,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
 						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight);
 					}
-					me->mapCtrl->ScnXYD2MapXY(mousePosX - calcImgW * 0.5, mousePosY - calcImgH * 0.5, &x1, &y1);
-					me->mapCtrl->ScnXYD2MapXY(mousePosX + calcImgW * 0.5, mousePosY + calcImgH * 0.5, &x2, &y2);
+					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) - calcImgW * 0.5, Math::OSInt2Double(mousePosY) - calcImgH * 0.5, &x1, &y1);
+					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) + calcImgW * 0.5, Math::OSInt2Double(mousePosY) + calcImgH * 0.5, &x2, &y2);
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
 				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, files[i], 0, 0));
@@ -391,7 +391,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::G
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(void *userObj, UI::GUIForm *frm)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->subForms->RemoveAt(me->subForms->IndexOf(frm));
+	me->subForms->RemoveAt((UOSInt)me->subForms->IndexOf(frm));
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(void *userObj)

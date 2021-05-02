@@ -83,7 +83,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, 
 	{
 		reader->ReadLine(sbuff, 1024);
 		reader->ReadLine(sbuff, 1024);
-		OSInt cnt;
+		UOSInt cnt;
 
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, 0));
 		while (reader->ReadLine(sbuff, 1024))

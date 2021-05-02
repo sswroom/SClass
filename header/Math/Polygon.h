@@ -13,7 +13,7 @@ namespace Math
 		UInt32 *ptOfstArr;
 		UOSInt nPtOfst;
 	public:
-		Polygon(Int32 srid, UOSInt nPtOfst, UOSInt nPoint);
+		Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint);
 		virtual ~Polygon();
 
 		virtual VectorType GetVectorType();

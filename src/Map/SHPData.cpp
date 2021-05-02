@@ -16,7 +16,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 	UTF8Char *u8ptr;
 	UInt8 shpBuff[100];
 	Int32 valid;
-	Int32 fileLen;
+	UInt32 fileLen;
 //	Int32 shpType;
 	UOSInt i;
 	Map::SHPData::RecHdr *rec;
@@ -107,7 +107,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		this->mapRate = 10000000.0;
 	}
 
-	Int64 currOfst = 100;
+	UInt64 currOfst = 100;
 	if (*(Int32*)&shpHdr[32] == 1)
 	{
 		this->layerType = Map::DRAW_LAYER_POINT;
@@ -116,7 +116,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
-			fileLen = ReadMInt32(&shpBuff[4]);
+			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			data->GetRealData(currOfst, fileLen << 1, shpBuff);
 			currOfst += fileLen << 1;
@@ -140,7 +140,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
-			fileLen = ReadMInt32(&shpBuff[4]);
+			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
@@ -152,8 +152,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoint = ReadInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -177,7 +177,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
-			fileLen = ReadMInt32(&shpBuff[4]);
+			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
@@ -189,8 +189,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoint = ReadInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -216,7 +216,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
-			fileLen = ReadMInt32(&shpBuff[4]);
+			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			data->GetRealData(currOfst, fileLen << 1, shpBuff);
 			currOfst += fileLen << 1;
@@ -242,7 +242,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
-			fileLen = ReadMInt32(&shpBuff[4]);
+			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
@@ -254,8 +254,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoint = ReadInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -279,7 +279,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
-			fileLen = ReadMInt32(&shpBuff[4]);
+			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
@@ -291,8 +291,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Ma
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->nPoint = ReadInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadInt32(&shpBuff[36]);
+					rec->nPoint = ReadUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					this->recs->Add(rec);
 				}
@@ -353,7 +353,7 @@ Map::SHPData::~SHPData()
 	SDEL_CLASS(this->ptZ);
 	if (this->recs)
 	{
-		OSInt i = this->recs->GetCount();
+		UOSInt i = this->recs->GetCount();
 		while (i-- > 0)
 		{
 			void *obj;
@@ -391,7 +391,7 @@ UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameAr
 		j = this->ptX->GetCount();
 		while (i < j)
 		{
-			outArr->Add(i);
+			outArr->Add((Int64)i);
 			i++;
 		}
 		return j;
@@ -402,7 +402,7 @@ UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameAr
 		i = 0;
 		while (i < j)
 		{
-			outArr->Add(i);
+			outArr->Add((Int64)i);
 			i++;
 		}
 		return j;
@@ -434,7 +434,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **name
 			y = this->ptY->GetItem(i);
 			if (x1 <= x && x2 >= x && y1 <= y && y2 >= y)
 			{
-				outArr->Add(i);
+				outArr->Add((Int64)i);
 				retCnt++;
 			}
 			i++;
@@ -452,7 +452,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **name
 			{
 				if (rec->x2 >= x1 && rec->x1 <= x2 && rec->y2 >= y1 && rec->y1 <= y2)
 				{
-					outArr->Add(i);
+					outArr->Add((Int64)i);
 					retCnt++;
 				}
 			}
@@ -470,11 +470,11 @@ Int64 Map::SHPData::GetObjectIdMax()
 {
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		return this->ptX->GetCount() - 1;
+		return (Int64)this->ptX->GetCount() - 1;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE)
 	{
-		return this->recs->GetCount() - 1;
+		return (Int64)this->recs->GetCount() - 1;
 	}
 	else
 	{
@@ -559,7 +559,7 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE)
 	{
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
+		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 
@@ -577,7 +577,7 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((OSInt)id);
+		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 
@@ -611,7 +611,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), this->ptX->GetItem((OSInt)id), this->ptY->GetItem((OSInt)id)));
+		NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
@@ -621,7 +621,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Point3D(this->csys->GetSRID(), this->ptX->GetItem((OSInt)id), this->ptY->GetItem((OSInt)id), this->ptZ->GetItem((OSInt)id)));
+		NEW_CLASS(pt, Math::Point3D(this->csys->GetSRID(), this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)

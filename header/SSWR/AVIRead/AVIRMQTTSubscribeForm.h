@@ -29,7 +29,7 @@ namespace SSWR
 				const UTF8Char *topic;
 				UTF8Char *currValue;
 				Bool updated;
-				OSInt recvCnt;
+				UOSInt recvCnt;
 				Int64 lastRecvTime;
 				Int64 dateList[256];
 				Double valueList[256];

@@ -26,7 +26,7 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, OSInt buffS
 	{
 		return 0;
 	}
-	Int32 srid = ReadInt32(&buffPtr[0]);
+	UInt32 srid = ReadUInt32(&buffPtr[0]);
 	if (srIdOut)
 	{
 		*srIdOut = srid;
@@ -49,7 +49,7 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, OSInt buffS
 			UInt32 nFigures;
 			UInt32 nShapes;
 			const UInt8 *pointPtr;
-			const UInt8 *figurePtr;
+			//const UInt8 *figurePtr;
 			const UInt8 *shapePtr;
 			OSInt ind;
 			if (buffSize < 10)
@@ -64,7 +64,7 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, OSInt buffS
 				return 0;
 			}
 			nFigures = ReadUInt32(&buffPtr[ind]);
-			figurePtr = &buffPtr[ind + 4];
+			//figurePtr = &buffPtr[ind + 4];
 			ind += 4 + nFigures * 5;
 			if (buffSize < ind + 4)
 			{

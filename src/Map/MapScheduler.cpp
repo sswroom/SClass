@@ -67,8 +67,8 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				}
 				else if (me->dt == Map::MapScheduler::MSDT_POLYLINE)
 				{
-					Int32 k;
-					Int32 l;
+					UInt32 k;
+					UInt32 l;
 					if (me->isFirst)
 					{
 						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, 0, 0))
@@ -104,8 +104,8 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				{
 					if (me->isFirst)
 					{
-						Int32 k;
-						Int32 l;
+						UInt32 k;
+						UInt32 l;
 						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, 0, 0))
 							*me->isLayerEmpty = false;
 						k = dobj->nPtOfst;
@@ -157,7 +157,7 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 		objPtr[1] = pts[1] - Math::OSInt2Double(spotY);
 		objPtr[2] = objPtr[0] + Math::OSInt2Double(imgW);
 		objPtr[3] = objPtr[1] + Math::OSInt2Double(imgH);
-		if (objPtr[0] < scnW && objPtr[1] < scnH && objPtr[2] >= 0 && objPtr[3] >= 0)
+		if (objPtr[0] < Math::UOSInt2Double(scnW) && objPtr[1] < Math::UOSInt2Double(scnH) && objPtr[2] >= 0 && objPtr[3] >= 0)
 		{
 			this->img->DrawImagePt(this->ico, objPtr[0], objPtr[1]);
 			objPtr += 4;

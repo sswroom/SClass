@@ -82,6 +82,7 @@ FORCEINLINE void WriteMInt32(UInt8 *addr, Int32 val)
 #define WriteInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (Int16)((val) & 0xffff)
 #define WriteUInt16(uint8Ptr, val) *(UInt16*)(uint8Ptr) = (UInt16)((val) & 0xffff)
 #define WriteMInt16(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[1] = (UInt8)((val) & 0xff);}
+#define WriteMUInt16(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[1] = (UInt8)((val) & 0xff);}
 
 #define ReadDouble(uint8Ptr) (*(Double*)(uint8Ptr))
 FORCEINLINE Double ReadMDouble(const UInt8 *dptr)

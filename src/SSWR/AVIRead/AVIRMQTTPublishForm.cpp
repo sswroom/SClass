@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	const UTF8Char *message = 0;
 	const UTF8Char *username = 0;
 	const UTF8Char *password = 0;
-	Int32 port;
+	UInt16 port;
 	me->txtHost->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
 	{
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
-	if (!sb.ToInt32(&port))
+	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"MQTT Publish", me);
 		return;

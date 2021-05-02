@@ -22,8 +22,8 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Int64 fileOfst;
-				OSInt size;
+				UInt64 fileOfst;
+				UOSInt size;
 			} ProtocolItem;
 		private:
 			UI::GUIPanel *pnlCtrl;
@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnProtocolEntry(void *userObj, Int64 fileOfst, OSInt size, const UTF8Char *typeName);
+			static void __stdcall OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, const UTF8Char *typeName);
 			void ClearList();
 		public:
 			AVIRProtoDecForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
@@ -54,6 +54,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

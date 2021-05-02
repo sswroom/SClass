@@ -359,7 +359,7 @@ Int32 Media::VOBAC3StreamSource::GetFrameStreamTime()
 	OSInt buffSize = this->buffEnd - this->buffStart;
 	if (buffSize < 0)
 	{
-		buffSize += this->buffSize;
+		buffSize += (OSInt)this->buffSize;
 	}
 	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt->bitRate);
 	mutUsage.EndUse();

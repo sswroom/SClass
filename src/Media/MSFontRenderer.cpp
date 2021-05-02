@@ -63,7 +63,7 @@ Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, UOSIn
 	{
 		charCode = this->fontBuff[97];
 	}
-	i = charCode - this->fontBuff[95];
+	i = (UOSInt)charCode - (UOSInt)this->fontBuff[95];
 	if (ver == 0x200)
 	{
 		i = 118 + i * 4;
@@ -109,7 +109,7 @@ Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, UOSIn
 		j = lineSize;
 		while (j-- > 0)
 		{
-			*destPtr++ = ~*tmpPtr;
+			*destPtr++ = (UInt8)~*tmpPtr;
 			tmpPtr += fntH;
 		}
 		srcPtr++;

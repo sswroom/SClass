@@ -92,8 +92,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 	}
 	if (valid)
 	{
-		Int32 currPt;
-		Int32 nPts = 0;
+		UInt32 currPt;
+		UInt32 nPts = 0;
 		Double *ptXY = 0;
 		Int32 *ptStatus = 0;
 		Double imgW = 0;
@@ -104,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			{
 				if (ptXY == 0)
 				{
-					nPts = Text::StrToInt32(&sbuff[7]);
+					nPts = Text::StrToUInt32(&sbuff[7]);
 					if (nPts > 0 && nPts <= 10)
 					{
 						ptXY = MemAlloc(Double, nPts << 2);
@@ -121,8 +121,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			{
 				if (ptXY && Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
-					currPt = Text::StrToInt32(tmpArr[1]) - 1;
-					if (currPt >= 0 && currPt <nPts)
+					currPt = Text::StrToUInt32(tmpArr[1]) - 1;
+					if ((Int32)currPt >= 0 && currPt < nPts)
 					{
 						ptXY[(currPt << 2)] = Text::StrToDouble(tmpArr[2]);
 						ptXY[(currPt << 2) + 1] = Text::StrToDouble(tmpArr[3]);
@@ -134,8 +134,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			{
 				if (ptXY && Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
-					currPt = Text::StrToInt32(tmpArr[1]) - 1;
-					if (currPt >= 0 && currPt <nPts)
+					currPt = Text::StrToUInt32(tmpArr[1]) - 1;
+					if ((Int32)currPt >= 0 && currPt <nPts)
 					{
 						ptXY[(currPt << 2) + 2] = Text::StrToDouble(tmpArr[2]);
 						ptXY[(currPt << 2) + 3] = Text::StrToDouble(tmpArr[3]);

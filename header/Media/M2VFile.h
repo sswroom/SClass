@@ -11,9 +11,9 @@ namespace Media
 	private:
 		IO::IStreamData *stmData;
 		UInt8 *readBuff;
-		Int64 readOfst;
-		Int64 bitRate;
-		Int64 fleng;
+		UInt64 readOfst;
+		UInt64 bitRate;
+		UInt64 fleng;
 		Int32 startTime;
 		Media::M2VStreamSource *stm;
 
@@ -37,10 +37,10 @@ namespace Media
 		virtual Bool StartVideo();
 		virtual Bool StopVideo();
 		virtual Bool IsRunning();
-		virtual Int32 SeekToTime(Int32 mediaTime);
+		virtual UInt32 SeekToTime(UInt32 mediaTime);
 		virtual Bool IsRealTimeSrc();
 		virtual Bool CanSeek();
-		virtual OSInt GetDataSeekCount();
+		virtual UOSInt GetDataSeekCount();
 	};
 }
 #endif

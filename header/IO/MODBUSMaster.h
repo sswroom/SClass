@@ -6,7 +6,7 @@ namespace IO
 	class MODBUSMaster
 	{
 	public:
-		typedef void (__stdcall *ReadResultFunc)(void *userObj, UInt8 funcCode, const UInt8 *result, OSInt resultSize);
+		typedef void (__stdcall *ReadResultFunc)(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
 		typedef void (__stdcall *SetResultFunc)(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 count);
 
 	public:

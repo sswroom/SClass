@@ -179,13 +179,13 @@ namespace Map
 		UOSInt GetImageCnt();
 		Media::StaticImage *GetImage(UOSInt index, Int32 *imgDurMS);
 		OSInt AddImage(const UTF8Char *fileName, Parser::ParserList *parserList); // -1 = fail
-		OSInt AddImage(const UTF8Char *fileName, Media::ImageList *imgList); // -1 = fail
+		UOSInt AddImage(const UTF8Char *fileName, Media::ImageList *imgList);
 		
 		UOSInt GetImageFileCnt();
 		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info);
 		UOSInt GetImageFileIndex(UOSInt index);
 
-		OSInt GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType);
+		UOSInt GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType);
 		void AddUpdatedHandler(Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveUpdatedHandler(Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 
@@ -198,7 +198,7 @@ namespace Map
 		Bool GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Double *minY, Double *maxX, Double *maxY);
 		Map::MapView *CreateMapView(UOSInt width, UOSInt height);
 		Math::CoordinateSystem *GetCoordinateSystem();
-		Int32 GetSRID();
+		UInt32 GetSRID();
 
 		void BeginUse(Sync::MutexUsage *mutUsage);
 	};

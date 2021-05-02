@@ -17,9 +17,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 port;
+		UInt16 port;
 		me->txtPort->GetText(&sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"Error", me);
 		}
@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap->GetValues();
 	i = 0;
@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	DEL_CLASS(this->logger);
 	Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList = this->topicMap->GetValues();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
-	OSInt i = topicList->GetCount();
+	UOSInt i = topicList->GetCount();
 	while (i-- > 0)
 	{
 		topic = topicList->GetItem(i);

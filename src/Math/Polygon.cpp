@@ -5,7 +5,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Polygon.h"
 
-Math::Polygon::Polygon(Int32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointCollection(srid)
+Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointCollection(srid)
 {
 	this->pointArr = MemAlloc(Double, nPoint << 1);
 	this->nPoint = nPoint;
