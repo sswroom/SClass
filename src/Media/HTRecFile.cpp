@@ -144,7 +144,7 @@ WChar *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, WChar *buff)
 	UTF8Char sbuff[40];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
 		return 0;
-	return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+	return Text::StrUTF8_WChar(buff, sbuff, 0);
 }
 
 Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
@@ -332,7 +332,7 @@ DB::DBReader::DateErrType Media::HTRecFile::HTRecReader::GetDate(UOSInt colIndex
 		if (colIndex == 1)
 		{
 			this->file->GetAdjStartTime(outVal);
-			outVal->AddMS(this->currRow * this->file->GetAdjRecInterval());
+			outVal->AddMS((OSInt)this->currRow * this->file->GetAdjRecInterval());
 			outVal->ToLocalTime();
 			return DB::DBReader::DET_OK;
 		}
@@ -355,7 +355,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 		}
 		else if (this->currRow == 5)
 		{
-			return Math::OSInt2Double(this->file->GetTotalRec());
+			return Math::UOSInt2Double(this->file->GetTotalRec());
 		}
 		else if (this->currRow == 6)
 		{
@@ -379,7 +379,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 		}
 		else if (this->currRow == 15)
 		{
-			return Math::OSInt2Double(this->file->GetRecCount());
+			return Math::UOSInt2Double(this->file->GetRecCount());
 		}
 
 		return 0;
@@ -390,7 +390,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 			return 0;
 		if (colIndex == 0)
 		{
-			return Math::OSInt2Double(this->currRow + 1);
+			return Math::UOSInt2Double(this->currRow + 1);
 		}
 		else if (colIndex == 1)
 		{

@@ -228,12 +228,12 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 		sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
 		DEL_CLASS(fs);
 		sbuff2[sz] = 0;
-		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, -1, 0);
+		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, 0);
 	}
 	else
 	{
 		sbuff2[sz] = 0;
-		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, -1, 0);
+		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, 0);
 	}
 	return buff;
 }
@@ -874,7 +874,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 
 			if (found)
 			{
-				return Text::StrUTF8_WChar(processNameBuff, sb.ToString(), -1, 0);
+				return Text::StrUTF8_WChar(processNameBuff, sb.ToString(), 0);
 			}
 		}
 	}

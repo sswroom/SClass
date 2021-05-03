@@ -17,17 +17,17 @@ namespace SSWR
 			UI::GUIButton *btnSave;
 			UI::GUITextBox *txtEDID;
 			UInt8 *edid;
-			OSInt edidSize;
+			UOSInt edidSize;
 			
 			void UpdateEDIDDisp();
 			static void __stdcall OnSaveClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **fileNames, OSInt fileCnt);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt fileCnt);
 		public:
 			AVIREDIDViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIREDIDViewerForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

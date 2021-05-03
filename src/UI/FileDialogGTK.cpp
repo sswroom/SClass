@@ -98,9 +98,9 @@ const UTF8Char *UI::FileDialog::GetFileName()
 	return this->fileName;
 }
 
-OSInt UI::FileDialog::GetFileNameCount()
+UOSInt UI::FileDialog::GetFileNameCount()
 {
-	OSInt cnt = this->fileNames->GetCount();
+	UOSInt cnt = this->fileNames->GetCount();
 	if (cnt)
 		return cnt;
 	if (this->fileName)
@@ -108,7 +108,7 @@ OSInt UI::FileDialog::GetFileNameCount()
 	return 0;
 }
 
-const UTF8Char *UI::FileDialog::GetFileNames(OSInt index)
+const UTF8Char *UI::FileDialog::GetFileNames(UOSInt index)
 {
 	if (index == 0 && this->fileNames->GetCount() == 0)
 		return this->fileName;
@@ -191,7 +191,7 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 //	fnameBuffSize = MAXFILENAMESIZE;
 	if (this->fileName)
 	{
-		Text::StrUTF8_WChar(fname2, this->fileName, -1, 0);
+		Text::StrUTF8_WChar(fname2, this->fileName, 0);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
 			Text::StrReplace(fname2, '/', '_');

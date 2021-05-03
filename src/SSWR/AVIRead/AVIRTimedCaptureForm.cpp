@@ -180,8 +180,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 				return;
 			}
 			
-			Int32 norm;
-			Int32 denorm;
+			UInt32 norm;
+			UInt32 denorm;
 			UOSInt frameSize;
 			me->currCapture->GetVideoInfo(&me->videoInfo, &norm, &denorm, &frameSize);
 			me->lastSaveTime = -me->interval;

@@ -17,15 +17,15 @@
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
-	Int64 imac;
+	UInt64 imac;
 	BSSStatus *bsss;
 	UInt8 id[8];
 	UTF8Char sbuff[64];
 	Data::DateTime dt;
-	Int64 maxIMAC;
+	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Text::StringBuilderUTF8 sb;
 	IO::PowerInfo::PowerStatus power;
@@ -693,7 +693,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 			MemCopyNO(&macBuff[2], wifiLog->mac, 6);
 			macBuff[0] = 0;
 			macBuff[1] = 0;
-			if (Text::StrEquals(Net::MACInfo::GetMACInfo(ReadMInt64(macBuff))->name, "Unknown"))
+			if (Text::StrEquals(Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff))->name, "Unknown"))
 			{
 				sb.ClearStr();
 				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LBT_NONE);

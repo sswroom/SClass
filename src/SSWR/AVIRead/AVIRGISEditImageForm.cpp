@@ -834,9 +834,9 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	Data::ArrayListInt64 objIds;
 	void *nameArr;
 	UTF8Char sbuff[256];
-	OSInt cnt = lyr->GetColumnCnt();
-	OSInt i;
-	OSInt j;
+	UOSInt cnt = lyr->GetColumnCnt();
+	UOSInt i;
+	UOSInt j;
 	lyr->GetAllObjectIds(&objIds, &nameArr);
 	if (cnt > 0)
 	{

@@ -15,7 +15,7 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 		private:
-			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles);
 		public:
 			AVIRBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBaseForm();

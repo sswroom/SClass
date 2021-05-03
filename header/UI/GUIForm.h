@@ -10,7 +10,7 @@ namespace UI
 	class GUIButton;
 	class GUIIcon;
 
-	typedef void (__stdcall *FileEvent)(void *userObj, const UTF8Char **files, OSInt nFiles);
+	typedef void (__stdcall *FileEvent)(void *userObj, const UTF8Char **files, UOSInt nFiles);
 	typedef void (__stdcall *MenuEvent)(void *userObj, UInt16 cmdId);
 
 	class GUIForm : public GUIClientControl

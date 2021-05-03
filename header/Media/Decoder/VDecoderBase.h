@@ -28,7 +28,7 @@ namespace Media
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize) = 0;
+			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize) = 0;
 
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 			virtual Bool Start();
@@ -41,7 +41,7 @@ namespace Media
 			virtual Bool IsRealTimeSrc();
 			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-			virtual OSInt GetDataSeekCount();
+			virtual UOSInt GetDataSeekCount();
 
 			virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype);
 			virtual UInt8 *GetProp(Int32 propName, UInt32 *size);

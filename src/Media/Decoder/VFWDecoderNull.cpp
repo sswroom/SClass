@@ -42,8 +42,8 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	this->uOfst = 0;
 	this->vOfst = 0;
 	
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	Media::FrameInfo frameInfo;
 	if (!sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
@@ -67,7 +67,7 @@ const UTF8Char *Media::Decoder::VFWDecoder::GetFilterName()
 	return (const UTF8Char*)"VFWDecoder";
 }
 
-Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

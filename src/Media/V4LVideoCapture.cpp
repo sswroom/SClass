@@ -140,7 +140,7 @@ const UTF8Char *Media::V4LVideoCapture::GetFilterName()
 	return (const UTF8Char*)"V4LVideoCapture";
 }
 
-Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	struct v4l2_format fmt;
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -276,7 +276,7 @@ Bool Media::V4LVideoCapture::IsRunning()
 	return this->threadRunning;
 }
 
-void Media::V4LVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, Int32 frameRateNumer, Int32 frameRateDenom)
+void Media::V4LVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	struct v4l2_format fmt;
 	struct v4l2_streamparm parm;
@@ -383,7 +383,7 @@ void Media::V4LVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 	}				
 }
 
-OSInt Media::V4LVideoCapture::GetDataSeekCount()
+UOSInt Media::V4LVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }
@@ -437,8 +437,8 @@ Bool Media::V4LVideoCapture::ReadFrameBegin()
 {
 	UOSInt i;
 	UOSInt frameSize;
-	Int32 frameRateNumer;
-	Int32 frameRateDenomin;
+	UInt32 frameRateNumer;
+	UInt32 frameRateDenomin;
 	if (!this->GetVideoInfo(&this->frameInfo, &frameRateNumer, &frameRateDenomin, &frameSize))
 	{
 		return false;

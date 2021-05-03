@@ -35,10 +35,10 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnAudioEnd(void *userData)
 	status->evt->Set();
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRVideoInfoForm *me = (SSWR::AVIRead::AVIRVideoInfoForm*)userObj;
-	OSInt i = 0;
+	UOSInt i = 0;
 	Bool succ;
 	while (i < nFiles)
 	{
@@ -77,8 +77,8 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 	{
 		Media::IVideoSource *videoSrc = (Media::IVideoSource*)mediaSrc;
 		Media::FrameInfo frameInfo;
-		Int32 rateNorm;
-		Int32 rateDenorm;
+		UInt32 rateNorm;
+		UInt32 rateDenorm;
 		UOSInt maxFrameSize;
 		sb.Append((const UTF8Char*)"Media Type = Video\r\n");
 		sb.Append((const UTF8Char*)"Frame Count = ");

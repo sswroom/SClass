@@ -273,8 +273,8 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 				else if (startCode == 0x000001b3)
 				{
 					Media::FrameInfo info;
-					Int32 norm;
-					Int32 denorm;
+					UInt32 norm;
+					UInt32 denorm;
 					UInt64 bitRate;
 
 					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, &info, &norm, &denorm, &bitRate, true))
@@ -478,7 +478,7 @@ const UTF8Char *Media::M2VStreamSource::GetFilterName()
 	return (const UTF8Char*)"M2VStreamSource";
 }
 
-Bool Media::M2VStreamSource::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::M2VStreamSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	info->Set(this->info);
 	*frameRateNorm = this->frameRateNorm;
@@ -581,7 +581,7 @@ Bool Media::M2VStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd
 }
 
 
-OSInt Media::M2VStreamSource::GetDataSeekCount()
+UOSInt Media::M2VStreamSource::GetDataSeekCount()
 {
 	return this->pbc->GetDataSeekCount();
 }

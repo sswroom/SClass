@@ -247,10 +247,10 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 	Int32 msgLeng;
 	UTF16Char *u16MsgPtr;
 	UTF16Char *u16Msg;
-	OSInt u16Len = Text::StrUTF8_UTF16Cnt(osmsMessage, -1);
+	UOSInt u16Len = Text::StrUTF8_UTF16Cnt(osmsMessage);
 	u16MsgPtr = MemAlloc(UTF16Char, u16Len + 1);
 	u16Msg = u16MsgPtr;
-	Text::StrUTF8_UTF16(u16MsgPtr, osmsMessage, -1, 0);
+	Text::StrUTF8_UTF16(u16MsgPtr, osmsMessage, 0);
 	Text::SMSUtil::GetTextInfo(u16Msg, &dcs, &msgLeng);
 	OSInt cnt = 0;
 	UInt8 refId = (UInt8)(u16Msg[0] & 0xff);

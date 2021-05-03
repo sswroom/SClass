@@ -3,7 +3,7 @@
 #include "IO/BitReaderMSB.h"
 #include "Media/MPEGVideoParser.h"
 
-Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, Int32 *fRateNorm, Int32 *fRateDenorm, UInt64 *bitRate, Bool decoderFix)
+Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, UInt32 *fRateNorm, UInt32 *fRateDenorm, UInt64 *bitRate, Bool decoderFix)
 {
 	decoderFix = false;
 	if (ReadMInt32(frame) != 0x1b3)

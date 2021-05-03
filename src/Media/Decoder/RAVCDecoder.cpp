@@ -341,8 +341,8 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	Media::FrameInfo info;
 	UOSInt size;
 	UInt32 size32;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UInt8 *buff;
 	this->toRelease = toRelease;
 	this->sps = 0;
@@ -570,7 +570,7 @@ UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return outSize;
 }
 
-Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (this->pps == 0 || this->sps == 0)
 		return false;

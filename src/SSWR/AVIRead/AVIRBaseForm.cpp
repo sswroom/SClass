@@ -367,7 +367,7 @@ typedef enum
 	MNU_TIMED_FILE_COPY
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
@@ -377,7 +377,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	sb.Append((const UTF8Char *)"Cannot parse:");
 	Bool found = false;
 	me->core->BeginLoad();
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < nFiles)
 	{
 		pt = IO::Path::GetPathType(files[i]);

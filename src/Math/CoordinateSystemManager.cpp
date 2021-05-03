@@ -164,7 +164,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(const UTF8Ch
 	return ParsePRJBuff(fileName, (Char*)buff, &buffSize);
 }
 
-const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRef(Int32 epsgId)
+const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRef(UInt32 epsgId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
@@ -191,7 +191,7 @@ const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManag
 	return 0;
 }
 
-const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRefPrev(Int32 epsgId)
+const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRefPrev(UInt32 epsgId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
@@ -222,7 +222,7 @@ const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManag
 	return 0;
 }
 
-const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRefNext(Int32 epsgId)
+const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRefNext(UInt32 epsgId)
 {
 	OSInt lastInd;
 	OSInt i = 0;
@@ -254,7 +254,7 @@ const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManag
 	return 0;
 }
 
-const Math::CoordinateSystemManager::SpheroidInfo *Math::CoordinateSystemManager::SRGetSpheroid(Int32 epsgId)
+const Math::CoordinateSystemManager::SpheroidInfo *Math::CoordinateSystemManager::SRGetSpheroid(UInt32 epsgId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(spheroidSRID) / sizeof(spheroidSRID[0])) - 1;
@@ -281,7 +281,7 @@ const Math::CoordinateSystemManager::SpheroidInfo *Math::CoordinateSystemManager
 	return 0;
 }
 
-const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::SRGetDatum(Int32 epsgId)
+const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::SRGetDatum(UInt32 epsgId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(datumSRID) / sizeof(datumSRID[0])) - 1;
@@ -308,7 +308,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::S
 	return 0;
 }
 
-const Math::CoordinateSystemManager::GeogcsSRInfo *Math::CoordinateSystemManager::SRGetGeogcsInfo(Int32 epsgId)
+const Math::CoordinateSystemManager::GeogcsSRInfo *Math::CoordinateSystemManager::SRGetGeogcsInfo(UInt32 epsgId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(geogcsSRID) / sizeof(geogcsSRID[0])) - 1;
@@ -335,7 +335,7 @@ const Math::CoordinateSystemManager::GeogcsSRInfo *Math::CoordinateSystemManager
 	return 0;	
 }
 
-const Math::CoordinateSystemManager::ProjcsSRInfo *Math::CoordinateSystemManager::SRGetProjcsInfo(Int32 epsgId)
+const Math::CoordinateSystemManager::ProjcsSRInfo *Math::CoordinateSystemManager::SRGetProjcsInfo(UInt32 epsgId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(projcsSRID) / sizeof(projcsSRID[0])) - 1;
@@ -362,7 +362,7 @@ const Math::CoordinateSystemManager::ProjcsSRInfo *Math::CoordinateSystemManager
 	return 0;	
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(Int32 epsgId)
+Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::SpatialRefInfo *info = SRGetSpatialRef(epsgId);
 	if (info)
@@ -381,7 +381,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(Int32 epsgId
 	return 0;
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys(Int32 epsgId)
+Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::ProjcsSRInfo *projcs = SRGetProjcsInfo(epsgId);
 	if (projcs == 0)
@@ -410,7 +410,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	return 0;
 }
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSys(Int32 epsgId)
+Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::GeogcsSRInfo *geogcs = SRGetGeogcsInfo(epsgId);
 	if (geogcs == 0)
@@ -471,7 +471,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PrimemType::PT_GREENWICH;
 	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UnitType::UT_DEGREE;
 	Char c;
-	Int32 srid = 0;
+	UInt32 srid = 0;
 	if (Text::StrStartsWith(prjBuff, "GEOGCS["))
 	{
 		i = 7;

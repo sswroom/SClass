@@ -786,8 +786,8 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 					isFrame = true;
 				}
 				FrameInfo info;
-				Int32 frameRateNorm;
-				Int32 frameRateDenorm;
+				UInt32 frameRateNorm;
+				UInt32 frameRateDenorm;
 				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize, &info, &frameRateNorm, &frameRateDenorm, &this->bitRate, false))
 				{
 					NEW_CLASS(this->vstm, Media::M2VStreamSource(this));

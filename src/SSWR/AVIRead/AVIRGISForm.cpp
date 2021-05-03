@@ -102,7 +102,7 @@ typedef enum
 #define MAX_SCALE 200000000
 #define MIN_SCALE 400
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 	}
 
 	NEW_CLASS(layers, Data::ArrayList<Map::IMapDrawLayer*>());
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < nFiles)
 	{
 		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]);
@@ -1565,7 +1565,7 @@ void SSWR::AVIRead::AVIRGISForm::AddSubForm(UI::GUIForm *frm)
 	frm->Show();
 }
 
-Int32 SSWR::AVIRead::AVIRGISForm::GetSRID()
+UInt32 SSWR::AVIRead::AVIRGISForm::GetSRID()
 {
 	return this->env->GetSRID();
 }

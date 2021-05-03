@@ -271,8 +271,8 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 	}
 //	printf("ODBC Connect: %s\r\n", connStr);
 	SQLSMALLINT outSize;
-	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16Cnt(connStr, -1) + 1);
-	SQLWCHAR *connEnd = Text::StrUTF8_UTF16(connBuff, connStr, -1, 0);
+	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16Cnt(connStr) + 1);
+	SQLWCHAR *connEnd = Text::StrUTF8_UTF16(connBuff, connStr, 0);
 	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
 	MemFree(connBuff);
 
@@ -1621,7 +1621,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	{
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
-		return Text::StrUTF8_WChar(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), -1, 0);
+		return Text::StrUTF8_WChar(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), 0);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		return Text::StrDouble(buff, *(Double*)&this->colDatas[colIndex].dataVal);
@@ -1634,7 +1634,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 		return Text::StrInt64(buff, this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_DateTime:
 		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(u8buff);
-		return Text::StrUTF8_WChar(buff, u8buff, -1, 0);
+		return Text::StrUTF8_WChar(buff, u8buff, 0);
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:

@@ -243,7 +243,7 @@ WChar *DB::MongoDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)str, -1, 0);
+		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)str, 0);
 		bson_free(str);
 		return buff;
 	}

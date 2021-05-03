@@ -54,7 +54,7 @@ namespace SSWR
 			Int32 errCnt;
 			Sync::Event *mainEvt;
 			Bool stopDownload;
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			ThreadStat *threadStat;
 
 			Map::TileMapLayer *lyr;

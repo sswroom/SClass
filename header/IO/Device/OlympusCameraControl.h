@@ -31,9 +31,9 @@ namespace IO
 			OlympusCameraControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~OlympusCameraControl();
 
-			virtual OSInt GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
+			virtual UOSInt GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
 			virtual void FreeInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
-			virtual OSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
+			virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
 			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
 			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);
 

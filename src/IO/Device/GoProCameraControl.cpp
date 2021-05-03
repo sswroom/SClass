@@ -242,10 +242,10 @@ IO::Device::GoProCameraControl::~GoProCameraControl()
 	}
 }
 
-OSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
+UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt initCnt = nameList->GetCount();
+	UOSInt initCnt = nameList->GetCount();
 	this->GetInfo(nameList, valueList);
 	return nameList->GetCount() - initCnt;
 }
@@ -266,7 +266,7 @@ void IO::Device::GoProCameraControl::FreeInfoList(Data::ArrayList<const UTF8Char
 	valueList->Clear();
 }
 
-OSInt IO::Device::GoProCameraControl::GetFileList(Data::ArrayList<IO::CameraControl::FileInfo*> *fileList)
+UOSInt IO::Device::GoProCameraControl::GetFileList(Data::ArrayList<IO::CameraControl::FileInfo*> *fileList)
 {
 	if (this->fileList == 0)
 	{

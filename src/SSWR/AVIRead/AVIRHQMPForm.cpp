@@ -161,10 +161,10 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
-	OSInt i;
+	UOSInt i;
 
 	me->player->StopPlayback();
 	i = 0;
@@ -1804,14 +1804,14 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		sb.AppendI32(dbg.buffReady);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Src Size: ");
-		sb.AppendOSInt(dbg.srcWidth);
+		sb.AppendUOSInt(dbg.srcWidth);
 		sb.Append((const UTF8Char*)" x ");
-		sb.AppendOSInt(dbg.srcHeight);
+		sb.AppendUOSInt(dbg.srcHeight);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Disp Size: ");
-		sb.AppendOSInt(dbg.dispWidth);
+		sb.AppendUOSInt(dbg.dispWidth);
 		sb.Append((const UTF8Char*)" x ");
-		sb.AppendOSInt(dbg.dispHeight);
+		sb.AppendUOSInt(dbg.dispHeight);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"PAR: ");
 		Text::SBAppendF64(&sb, dbg.par);

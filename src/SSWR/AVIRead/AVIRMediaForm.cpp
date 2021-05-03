@@ -395,7 +395,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 	SDEL_CLASS(this->currADecoder);
 	DEL_CLASS(this->decoders);
 	DEL_CLASS(this->adecoders);
-	OSInt i = this->files->GetCount();
+	UOSInt i = this->files->GetCount();
 	while (i-- > 0)
 	{
 		Media::MediaFile *file = this->files->GetItem(i);
@@ -516,7 +516,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			OSInt cropBottom;
 			OSInt vw;
 			OSInt vh;
-			Int32 tmpV;
+			UInt32 tmpV;
 
 			if (this->currDecoder)
 			{

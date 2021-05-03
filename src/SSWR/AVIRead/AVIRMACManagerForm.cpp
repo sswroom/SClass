@@ -485,8 +485,8 @@ Bool SSWR::AVIRead::AVIRMACManagerForm::DataStore()
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
 	IO::FileStream *fs;
 	IO::WriteCacheStream *cstm;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
 	{
@@ -526,7 +526,7 @@ Bool SSWR::AVIRead::AVIRMACManagerForm::DataStore()
 void SSWR::AVIRead::AVIRMACManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendOSInt(this->dataList->GetCount());
+	sb.AppendUOSInt(this->dataList->GetCount());
 	sb.Append((const UTF8Char*)" Records");
 	this->lblInfo->SetText(sb.ToString());
 }

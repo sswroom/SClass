@@ -1305,7 +1305,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 
 void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2)
 {
-	OSInt i;
+	UOSInt i;
 	i = dbCols->GetCount();
 	while (i-- > 0)
 	{
@@ -1318,8 +1318,8 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, OSInt currRec, Data::ArrayList<Int32> *dbCols2)
 {
 	Text::StringBuilderUTF16 output;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 col;
 	Int32 shpType;
 	UTF8Char sbuff[256];

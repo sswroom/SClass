@@ -990,7 +990,7 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 		return 0;
 	if (this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1))
 	{
-		return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	}
 	return 0;
 }

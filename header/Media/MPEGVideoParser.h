@@ -25,7 +25,7 @@ namespace Media
 		} MPEGFrameProp;
 
 	public:
-		static Bool GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, Int32 *frameRateNorm, Int32 *frameRateDenorm, UInt64 *bitRate, Bool decoderFix);
+		static Bool GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UInt64 *bitRate, Bool decoderFix);
 		static Bool GetFrameProp(const UInt8 *frame, UOSInt frameSize, MPEGFrameProp *prop);
 	};
 }

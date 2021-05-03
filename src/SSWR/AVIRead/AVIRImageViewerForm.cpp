@@ -19,11 +19,11 @@ typedef enum
 	MNU_IMAGE_INFO
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	IO::StmData::FileData *fd;
-	OSInt i;
+	UOSInt i;
 	Bool succ;
 	i = 0;
 	while (i < fileCnt)
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 	{
 		IO::IStreamData *fd;
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		IO::ParsedObject *pobj;
 		Bool found = false;
 		i = me->fileIndex;

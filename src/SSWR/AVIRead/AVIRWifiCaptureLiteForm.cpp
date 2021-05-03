@@ -540,7 +540,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 			MemCopyNO(&macBuff[2], wifiLog->mac, 6);
 			macBuff[0] = 0;
 			macBuff[1] = 0;
-			if (Text::StrEquals(Net::MACInfo::GetMACInfo(ReadMInt64(macBuff))->name, "Unknown"))
+			if (Text::StrEquals(Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff))->name, "Unknown"))
 			{
 				sb.ClearStr();
 				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LBT_NONE);

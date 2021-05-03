@@ -150,12 +150,12 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	this->lvARP->AddColumn((const UTF8Char*)"Vendor", 300);
 
 	NEW_CLASS(this->arpMut, Sync::Mutex());
-	NEW_CLASS(this->arpMap, Data::Int32Map<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*>());
+	NEW_CLASS(this->arpMap, Data::UInt32Map<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*>());
 	this->arpUpdated = false;
 	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo*>());
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
 	Data::ArrayList<Net::ARPInfo *> arpList;
 	Net::ARPInfo::ARPType arpType;
@@ -190,7 +190,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	Net::SocketUtil::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
-	OSInt k;
+	UOSInt k;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(&connInfoList);
 	i = 0;

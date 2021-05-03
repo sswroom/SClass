@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[64];
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	if (me->cli == 0 && me->dispConn)
 	{
 		me->dispConn = false;

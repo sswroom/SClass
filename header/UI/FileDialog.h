@@ -31,8 +31,8 @@ namespace UI
 		void SetFileName(const UTF8Char *fileName);
 		const UTF8Char *GetFileName();
 
-		OSInt GetFileNameCount();
-		const UTF8Char *GetFileNames(OSInt index);
+		UOSInt GetFileNameCount();
+		const UTF8Char *GetFileNames(UOSInt index);
 
 		void SetAllowMultiSel(Bool allowMulti);
 

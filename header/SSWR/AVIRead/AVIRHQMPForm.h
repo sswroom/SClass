@@ -32,7 +32,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *fileName;
-				Int64 fileSize;
+				UInt64 fileSize;
 			} VideoFileInfo;
 
 
@@ -61,7 +61,7 @@ namespace SSWR
 			UI::GUIForm *dbgFrm;
 			UI::GUITextBox *txtDebug;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnVideoEnd(void *userObj);

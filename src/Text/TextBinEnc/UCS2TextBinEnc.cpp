@@ -26,15 +26,15 @@ UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, c
 
 UOSInt Text::TextBinEnc::UCS2TextBinEnc::CalcBinSize(const UTF8Char *sbuff)
 {
-	return Text::StrUTF8_UTF16Cnt(sbuff, -1) << 1;
+	return Text::StrUTF8_UTF16Cnt(sbuff) << 1;
 }
 
 UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
 {
-	UOSInt byteCnt = Text::StrUTF8_UTF16Cnt(sbuff, -1) << 1;
+	UOSInt byteCnt = Text::StrUTF8_UTF16Cnt(sbuff) << 1;
 	if (byteCnt > 0)
 	{
-		Text::StrUTF8_UTF16((UTF16Char*)dataBuff, sbuff, -1, 0);
+		Text::StrUTF8_UTF16((UTF16Char*)dataBuff, sbuff, 0);
 	}
 	return byteCnt;
 }

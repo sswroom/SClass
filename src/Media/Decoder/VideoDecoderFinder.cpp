@@ -24,8 +24,8 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 	Media::IVideoSource *decoder;
 	Media::FrameInfo frameInfo;
 	Media::FrameInfo decFrameInfo;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	vsrc->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)

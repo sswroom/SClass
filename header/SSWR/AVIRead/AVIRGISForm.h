@@ -73,7 +73,7 @@ namespace SSWR
 			CursorType currCursor;
 
 		private:
-			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnMapMouseMove(void *userObj, OSInt x, OSInt y);
 			static Bool __stdcall OnMapMouseDown(void *userObj, OSInt x, OSInt y, MouseButton button);
 			static Bool __stdcall OnMapMouseUp(void *userObj, OSInt x, OSInt y, MouseButton button);
@@ -107,7 +107,7 @@ namespace SSWR
 //			void AddLayerColl(Map::MapLayerCollection *lyrColl);
 			void AddSubForm(UI::GUIForm *frm);
 
-			virtual Int32 GetSRID();
+			virtual UInt32 GetSRID();
 			virtual Bool InMap(Double lat, Double lon);
 			virtual void PanToMap(Double lat, Double lon);
 			virtual void ShowMarker(Double lat, Double lon);

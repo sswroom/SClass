@@ -9,10 +9,10 @@
 
 #define PER_PAGE 10000
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < nFiles)
 	{
@@ -63,13 +63,13 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 	UTF8Char *sptr;
 	if (me->file)
 	{
-		OSInt currCnt = me->file->GetFrameCount();
+		UOSInt currCnt = me->file->GetFrameCount();
 		OSInt i;
 		OSInt j;
 		if (currCnt != me->lastPackCount)
 		{
-			i = (currCnt - 1) / PER_PAGE;
-			j = (me->lastPackCount - 1) / PER_PAGE;
+			i = (OSInt)(currCnt - 1) / PER_PAGE;
+			j = (OSInt)(me->lastPackCount - 1) / PER_PAGE;
 			if (currCnt == 0)
 				i = -1;
 			if (me->lastPackCount == 0)

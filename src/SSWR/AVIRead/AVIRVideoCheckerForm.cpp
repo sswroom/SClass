@@ -12,11 +12,11 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
-	OSInt i = 0;
-	OSInt j;
+	UOSInt i = 0;
+	UOSInt j;
 	FileQueue *file;
 	while (i < nFiles)
 	{
@@ -140,7 +140,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 
 void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 {
-	OSInt i;
+	UOSInt i;
 	FileQueue *file;
 	Sync::MutexUsage mutUsage(this->fileMut);
 	i = this->fileList->GetCount();
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::~AVIRVideoCheckerForm()
 	{
 		Sync::Thread::Sleep(1);
 	}
-	OSInt i = this->updateList->GetCount();
+	UOSInt i = this->updateList->GetCount();
 	UpdateQueue *update;
 	while (i-- > 0)
 	{

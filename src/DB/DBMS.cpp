@@ -199,7 +199,7 @@ namespace DB
 			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
-			return Text::StrUTF8_WChar(buff, row[colIndex], -1, 0);
+			return Text::StrUTF8_WChar(buff, row[colIndex], 0);
 		}
 
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
@@ -593,7 +593,7 @@ const UTF8Char *DB::DBMS::SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql)
 			if (sptr[0] == '(')
 			{
 				sptr++;
-				MemCopyNO(nameBuff, sql, sptr - sql);
+				MemCopyNO(nameBuff, sql, (UOSInt)(sptr - sql));
 				nameBuff += sptr - sql;
 				sql = sptr;
 				if (sql[0] == ')')
@@ -1796,7 +1796,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *p
 {
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
-	OSInt i;
+	UOSInt i;
 	Bool succ;
 	#if defined(VERBOSE)
 	printf("UserAdd %s/%s@%s\r\n", userName, password, host);

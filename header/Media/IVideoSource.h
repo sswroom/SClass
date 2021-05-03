@@ -57,7 +57,7 @@ namespace Media
 
 		virtual void SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom) = 0;
 		virtual void GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom) = 0;
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize) = 0;
+		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize) = 0;
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData) = 0;
 		virtual Bool Start() = 0; //true = succeed
 		virtual void Stop() = 0;
@@ -69,7 +69,7 @@ namespace Media
 		virtual Bool IsRealTimeSrc() = 0;
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
 
-		virtual OSInt GetDataSeekCount() = 0;
+		virtual UOSInt GetDataSeekCount() = 0;
 
 		virtual OSInt GetFrameCount() = 0; //-1 = unknown;
 		virtual UInt32 GetFrameTime(UOSInt frameIndex) = 0;

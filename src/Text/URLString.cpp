@@ -67,7 +67,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UI
 		{
 			*port = 0;
 		}
-		MemCopyNO(sbuff, url, sizeof(UTF8Char) * i);
+		MemCopyNO(sbuff, url, sizeof(UTF8Char) * (UOSInt)i);
 		sbuff[i] = 0;
 		return &sbuff[i];
 	}
@@ -77,7 +77,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UI
 		{
 			Text::StrToUInt16S(&url[j + 1], port, 0);
 		}
-		MemCopyNO(sbuff, url, sizeof(UTF8Char) * j);
+		MemCopyNO(sbuff, url, sizeof(UTF8Char) * (UOSInt)j);
 		sbuff[j] = 0;
 		return &sbuff[j];
 	}
@@ -98,7 +98,7 @@ UTF8Char *Text::URLString::GetURIScheme(UTF8Char *sbuff, const UTF8Char *url)
 	{
 		return 0;
 	}
-	MemCopyNO(sbuff, url, i * sizeof(UTF8Char));
+	MemCopyNO(sbuff, url, (UOSInt)i * sizeof(UTF8Char));
 	sbuff[i] = 0;
 	return &sbuff[i];
 }

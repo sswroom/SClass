@@ -9,8 +9,8 @@ namespace Media
 		class MP2GDecoder : public VDecoderBase
 		{
 		private:
-			Int32 frameRateNorm;
-			Int32 frameRateDenorm;
+			UInt32 frameRateNorm;
+			UInt32 frameRateDenorm;
 			Double par;
 			Bool toRelease;
 
@@ -38,7 +38,7 @@ namespace Media
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize);
+			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 		};
 	}
 }

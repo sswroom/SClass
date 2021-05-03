@@ -99,7 +99,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
 {
 	SSWR::AVIRead::AVIRStreamConvForm *me = (SSWR::AVIRead::AVIRStreamConvForm *)userObj;
 	UInt8 buff[2048];
-	OSInt recvSize;
+	UOSInt recvSize;
 	me->thread1Running = true;
 	while (!me->thread1ToStop)
 	{

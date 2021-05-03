@@ -58,8 +58,8 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	const UTF8Char *csptr;
 	const UTF8Char *csptr2;
 	IO::ZIPBuilder *zip;
-	OSInt i;
-	OSInt j = workbook->GetCount();
+	UOSInt i;
+	UOSInt j = workbook->GetCount();
 	dt.SetCurrTimeUTC();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm));
 
@@ -71,9 +71,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	while (i < j)
 	{
 		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
-		sb.AppendOSInt(i + 2);
+		sb.AppendUOSInt(i + 2);
 		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet");
-		sb.AppendOSInt(i + 1);
+		sb.AppendUOSInt(i + 1);
 		sb.Append((const UTF8Char*)".xml\"/>");
 		i++;
 	}
@@ -93,11 +93,11 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"<dimension ref=\"A1\"/>");
 		sb.Append((const UTF8Char*)"<sheetViews>");
 		sb.Append((const UTF8Char*)"<sheetView showFormulas=\"false\" showGridLines=\"true\" showRowColHeaders=\"true\" showZeros=\"true\" rightToLeft=\"false\" tabSelected=\"true\" showOutlineSymbols=\"true\" defaultGridColor=\"true\" view=\"normal\" topLeftCell=\"A1\" colorId=\"64\" zoomScale=\"");
-		sb.AppendI32(sheet->GetZoom());
+		sb.AppendU32(sheet->GetZoom());
 		sb.Append((const UTF8Char*)"\" zoomScaleNormal=\"");
-		sb.AppendI32(sheet->GetZoom());
+		sb.AppendU32(sheet->GetZoom());
 		sb.Append((const UTF8Char*)"\" zoomScalePageLayoutView=\"");
-		sb.AppendI32(sheet->GetZoom());
+		sb.AppendU32(sheet->GetZoom());
 		sb.Append((const UTF8Char*)"\" workbookViewId=\"0\">");
 		sb.Append((const UTF8Char*)"<selection pane=\"topLeft\" activeCell=\"A1\" activeCellId=\"0\" sqref=\"A1\"/>");
 		sb.Append((const UTF8Char*)"</sheetView>");
@@ -127,7 +127,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"<oddFooter>&amp;C&amp;&quot;Times New Roman,Regular&quot;&amp;12Page &amp;P</oddFooter>");
 		sb.Append((const UTF8Char*)"</headerFooter>");
 		sb.Append((const UTF8Char*)"</worksheet>");
-		Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/sheet"), i + 1), (const UTF8Char*)".xml");
+		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/sheet"), i + 1), (const UTF8Char*)".xml");
 		zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 		i++;
 	}
@@ -152,9 +152,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append(csptr2);
 		Text::XML::FreeNewText(csptr2);
 		sb.Append((const UTF8Char*)" sheetId=\"");
-		sb.AppendOSInt(i + 1);
+		sb.AppendUOSInt(i + 1);
 		sb.Append((const UTF8Char*)"\" state=\"visible\" r:id=\"rId");
-		sb.AppendOSInt(i + 2);
+		sb.AppendUOSInt(i + 2);
 		sb.Append((const UTF8Char*)"\"/>");
 		i++;
 	}
@@ -288,7 +288,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	while (i < j)
 	{
 		sb.Append((const UTF8Char*)"<Override PartName=\"/xl/worksheets/sheet");
-		sb.AppendOSInt(i + 1);
+		sb.AppendUOSInt(i + 1);
 		sb.Append((const UTF8Char*)".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
 		i++;
 	}

@@ -2490,8 +2490,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveGroups(Data::ArrayList<OrganGroup*> *grpLis
 {
 	DB::SQLBuilder sql(this->db);
 	Bool found;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = grpList->GetCount();
 	sql.AppendCmd((const UTF8Char*)"update groups set parent_id=");
@@ -3740,7 +3740,7 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 	Text::StringBuilderUTF8 sb;
 	DB::DBReader *r;
 	Data::DateTime dt;
-	OSInt i;
+	UOSInt i;
 
 	NEW_CLASS(this->bookIds, Data::ArrayListInt32());
 	NEW_CLASS(this->bookObjs, Data::ArrayList<OrganBook*>());
@@ -4341,7 +4341,7 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	OrganGroupType *grpType;
 	DB::DBReader *r;
 	DB::SQLBuilder *sql;
-	OSInt i;
+	UOSInt i;
 	Int32 seq;
 	UTF8Char cname[64];
 	UTF8Char ename[64];

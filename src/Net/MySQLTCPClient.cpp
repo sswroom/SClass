@@ -240,7 +240,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrUTF8_WChar(buff, this->currRow[colIndex], -1, 0);
+		return Text::StrUTF8_WChar(buff, this->currRow[colIndex], 0);
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)

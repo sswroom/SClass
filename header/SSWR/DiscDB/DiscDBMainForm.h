@@ -14,7 +14,7 @@ namespace SSWR
 			SSWR::DiscDB::DiscDBEnv *env;
 			UI::GUIMainMenu *mnuMain;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 
 		public:
 			DiscDBMainForm(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::DiscDB::DiscDBEnv *env);

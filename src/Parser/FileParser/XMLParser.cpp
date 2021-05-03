@@ -425,9 +425,9 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"MapCalibration"))
 									{
 										Int32 layerId = -1;
-										Int32 maxX = 0;
-										Int32 maxY = 0;
-										Int32 tileSize = 0;
+										UInt32 maxX = 0;
+										UInt32 maxY = 0;
+										UInt32 tileSize = 0;
 										Int32 flags = 0;
 										Double mapXMin;
 										Double mapYMin;
@@ -465,17 +465,17 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														attr = reader->GetAttrib(i);
 														if (Text::StrEquals(attr->name, (const UTF8Char*)"xMax"))
 														{
-															if (Text::StrToInt32(attr->value, &maxX))
+															if (Text::StrToUInt32(attr->value, &maxX))
 																flags |= 2;
 														}
 														else if (Text::StrEquals(attr->name, (const UTF8Char*)"yMax"))
 														{
-															if (Text::StrToInt32(attr->value, &maxY))
+															if (Text::StrToUInt32(attr->value, &maxY))
 																flags |= 4;
 														}
 														else if (Text::StrEquals(attr->name, (const UTF8Char*)"img_width"))
 														{
-															if (Text::StrToInt32(attr->value, &tileSize))
+															if (Text::StrToUInt32(attr->value, &tileSize))
 																flags |= 8;
 														}
 													}

@@ -24,8 +24,8 @@ void Media::VideoFilter::VideoFilterBase::OnFrameChange(Media::IVideoSource::Fra
 
 Media::VideoFilter::VideoFilterBase::VideoFilterBase(Media::IVideoSource *srcVideo)
 {
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	this->srcVideo = srcVideo;
 	NEW_CLASS(this->videoInfo, Media::FrameInfo());
@@ -46,8 +46,8 @@ Media::VideoFilter::VideoFilterBase::~VideoFilterBase()
 
 void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Media::IVideoSource *srcVideo)
 {
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	this->srcVideo = srcVideo;
 	if (this->srcVideo)
@@ -80,7 +80,7 @@ void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OSInt *cropLeft, OSInt *
 		this->srcVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (this->srcVideo)
 	{
@@ -175,7 +175,7 @@ Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt3
 	return false;
 }
 
-OSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
+UOSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
 {
 	if (this->srcVideo)
 	{

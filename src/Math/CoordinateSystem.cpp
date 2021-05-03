@@ -5,7 +5,7 @@
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/MyString.h"
 
-Math::CoordinateSystem::CoordinateSystem(const UTF8Char *sourceName, Int32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
+Math::CoordinateSystem::CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
 {
 	this->csysName = Text::StrCopyNew(csysName);
 	this->srid = srid;
@@ -51,7 +51,7 @@ const UTF8Char *Math::CoordinateSystem::GetCSysName()
 	return this->csysName;
 }
 
-Int32 Math::CoordinateSystem::GetSRID()
+UInt32 Math::CoordinateSystem::GetSRID()
 {
 	return this->srid;
 }

@@ -37,7 +37,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *fname;
-				Int64 fSize;
+				UInt64 fSize;
 				const UTF8Char *cate;
 				Int32 videoId;
 				Bool video;

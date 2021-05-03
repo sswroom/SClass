@@ -538,7 +538,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	WChar fname[512];
 	WChar *mainTitle;
 	WChar chapterTitle[256];
-	Text::StrUTF8_WChar(fname, fileName, -1, 0);
+	Text::StrUTF8_WChar(fname, fileName, 0);
 	OSInt i;
 	OSInt j;
 	MovieCols *anime = MemAlloc(MovieCols, 1);
@@ -777,7 +777,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	{
 		anime->chapterTitle = 0;
 	}
-	Text::StrUTF8_WChar(fname, anime->remark, -1, 0);
+	Text::StrUTF8_WChar(fname, anime->remark, 0);
 	Text::StrDelNew(anime->remark);
 	anime->remark = 0;
 	if ((i = Text::StrIndexOf(fname, L"(")) != -1 && (j = Text::StrIndexOf(fname, L")")) != -1)
@@ -805,7 +805,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	}
 	if (Text::StrEquals(anime->type, (const UTF8Char*)"TV"))
 	{
-		Text::StrUTF8_WChar(fname, anime->mainTitle, -1, 0);
+		Text::StrUTF8_WChar(fname, anime->mainTitle, 0);
 		if (Text::StrIndexOf(fname, L"ショウ") != -1)
 		{
 			Text::StrDelNew(anime->type);
@@ -872,9 +872,12 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 	{
 		OSInt i = Text::StrLastIndexOf(ofd->GetFileName(), IO::Path::PATH_SEPERATOR);
 		Text::StringBuilderUTF8 sbBasePath;
-		sbBasePath.AppendC(ofd->GetFileName(), i);
+		if (i >= 0)
+		{
+			sbBasePath.AppendC(ofd->GetFileName(), (UOSInt)i);
+		}
 		me->lbFileName->ClearItems();
-		OSInt j = me->fileList->GetCount();
+		UOSInt j = me->fileList->GetCount();
 		while (j-- > 0)
 		{
 			me->BurntFileFree(me->fileList->GetItem(j));
@@ -911,7 +914,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 		return;
 	}
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::CategoryInfo *> cateList;
-	OSInt i;
+	UOSInt i;
 	me->env->GetCategories(&cateList);
 	i = cateList.GetCount();
 	while (i-- > 0)
@@ -925,20 +928,20 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 
 	if (me->selectedFile->video && me->selectedFile->videoId == 0)
 	{
-		OSInt animeLen = 0;
-		OSInt seriesLen = 0;
-		OSInt len;
+		UOSInt animeLen = 0;
+		UOSInt seriesLen = 0;
+		UOSInt len;
 		const UTF8Char *anime = (const UTF8Char*)"";
 		const UTF8Char *series = (const UTF8Char*)"";
 		OSInt prefix = Text::StrIndexOf(me->selectedFile->fname, (const UTF8Char*)".part");
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 
 		if (prefix != -1)
 		{
 			Text::StringBuilderUTF8 sbBegText;
 			BurntFile *bFile;
-			sbBegText.AppendC(me->selectedFile->fname, prefix);
+			sbBegText.AppendC(me->selectedFile->fname, (UOSInt)prefix);
 
 			i = 0;
 			j = me->fileList->GetCount();
@@ -1022,7 +1025,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 				const UTF8Char *fname = me->selectedFile->fname;
 				i = Text::StrIndexOf(fname, series) + seriesLen;
 				OSInt lastR = 0;
-				OSInt endOfst = Text::StrCharCnt(fname);
+				UOSInt endOfst = Text::StrCharCnt(fname);
 				if ((j = Text::StrIndexOfICase(fname, (const UTF8Char*)".PART")) != -1)
 				{
 					endOfst = j;
@@ -1100,8 +1103,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(void *userObj)
 	const UTF8Char *csptr = me->lbBrand->GetSelectedItemTextNew();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->env->GetDiscTypesByBrand(&discList, csptr);
 	me->lbBrand->DelTextNew(csptr);
 	me->lbDVDName->ClearItems();
@@ -1195,8 +1198,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 	if (disc)
 	{
 		BurntFile *file;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = me->fileList->GetCount();
 		while (i < j)
@@ -1295,10 +1298,10 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDiscIdTextChg(void *userObj)
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(void *userObj)
 {
 	SSWR::DiscDB::DiscDBBurntDiscForm *me = (SSWR::DiscDB::DiscDBBurntDiscForm*)userObj;
-	OSInt i;
-	OSInt j;
-	Int64 size;
-	Int64 baseSize;
+	UOSInt i;
+	UOSInt j;
+	UInt64 size;
+	UInt64 baseSize;
 	Text::StringBuilderUTF8 sb;
 	me->txtSectorSize->GetText(&sb);
 	if (sb.GetLength() > 6)
@@ -1306,8 +1309,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(void *user
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Sector Size too long", (const UTF8Char*)"Burnt Disc", me);
 		return;
 	}
-	i = Text::StrHex2Int32(sb.ToString());
-	size = i * (Int64)2048;
+	i = Text::StrHex2UInt32(sb.ToString());
+	size = i * (UInt64)2048;
 	baseSize = 0;
 	i = 0;
 	j = me->fileList->GetCount();
@@ -1335,8 +1338,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnAllFileClicked(void *userObj
 		if (me->UpdateFileInfo())
 		{
 			BurntFile *file;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			i = 0;
 			j = me->fileList->GetCount();
 			while (i < j)
@@ -1456,8 +1459,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->pnlFile->SetEnabled(false);
 
 	UTF8Char sbuff[128];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	dt.ToString(sbuff, "yyyy-MM-dd");
@@ -1511,7 +1514,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 
 SSWR::DiscDB::DiscDBBurntDiscForm::~DiscDBBurntDiscForm()
 {
-	OSInt i = this->fileList->GetCount();
+	UOSInt i = this->fileList->GetCount();
 	while (i-- > 0)
 	{
 		this->BurntFileFree(this->fileList->GetItem(i));

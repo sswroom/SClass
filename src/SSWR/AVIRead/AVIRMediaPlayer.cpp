@@ -408,7 +408,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 	OSInt cropBottom;
 	UOSInt vw;
 	UOSInt vh;
-	Int32 tmpV;
+	UInt32 tmpV;
 	if (this->currVStm)
 	{
 		if (this->currVDecoder)

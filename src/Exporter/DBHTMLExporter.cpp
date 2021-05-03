@@ -69,8 +69,9 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
-	OSInt colCnt;
-	OSInt i;
+	UOSInt colCnt;
+	UOSInt i;
+	OSInt si;
 
 	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
 
@@ -82,8 +83,8 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	writer->Write((const UTF8Char*)"<title>");
 	db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
-	if ((i = Text::StrLastIndexOf(sptr, '\\')) >= 0)
-		sptr = &sptr[i + 1];
+	if ((si = Text::StrLastIndexOf(sptr, '\\')) >= 0)
+		sptr = &sptr[si + 1];
 	Text::XML::ToXMLText(lineBuff2, sptr);
 	writer->WriteLine(lineBuff2);
 	writer->WriteLine((const UTF8Char*)"</title>");
@@ -92,8 +93,8 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	writer->WriteLine((const UTF8Char*)"</head>");
 	db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
-	if ((i = Text::StrLastIndexOf(sptr, '\\')) >= 0)
-		sptr = &sptr[i + 1];
+	if ((si = Text::StrLastIndexOf(sptr, '\\')) >= 0)
+		sptr = &sptr[si + 1];
 	sptr = Text::XML::ToXMLText(Text::StrConcat(lineBuff1, (const UTF8Char*)"<body><h1>"), sptr);
 	writer->WriteLine(lineBuff1, sptr - lineBuff1);
 	writer->WriteLine((const UTF8Char*)"</h1>");

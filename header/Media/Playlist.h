@@ -33,19 +33,19 @@ namespace Media
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 		Bool AddFile(const UTF8Char *fileName);
-		Bool RemoveEntry(OSInt index);
+		Bool RemoveEntry(UOSInt index);
 		Bool AppendPlaylist(Media::Playlist *playlist);
 		void ClearFiles();
 
-		OSInt GetCount();
-		const UTF8Char *GetTitle(OSInt index);
-		const UTF8Char *GetArtist(OSInt index);
-		const UTF8Char *GetFileName(OSInt index);
-		Int32 GetTimeStart(OSInt index);
-		Int32 GetTimeEnd(OSInt index);
+		UOSInt GetCount();
+		const UTF8Char *GetTitle(UOSInt index);
+		const UTF8Char *GetArtist(UOSInt index);
+		const UTF8Char *GetFileName(UOSInt index);
+		Int32 GetTimeStart(UOSInt index);
+		Int32 GetTimeEnd(UOSInt index);
 
 		void SetPlayer(Media::IMediaPlayer *player);
-		Bool OpenItem(OSInt index);
+		Bool OpenItem(UOSInt index);
 		
 		virtual Bool IsPlaying();
 		virtual Bool StartPlayback();
@@ -54,5 +54,5 @@ namespace Media
 		virtual Bool NextChapter();
 		virtual Int32 GetCurrTime();
 	};
-};
+}
 #endif

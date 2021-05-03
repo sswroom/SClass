@@ -5,13 +5,13 @@
 #include "SSWR/AVIRead/AVIRICCInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
-	OSInt i;
+	UOSInt i;
 	IO::FileStream *fs;
 	UInt8 *buff = MemAlloc(UInt8, 1048576);
-	OSInt fileSize;
+	UOSInt fileSize;
 	i = 0;
 	while (i < fileCnt)
 	{

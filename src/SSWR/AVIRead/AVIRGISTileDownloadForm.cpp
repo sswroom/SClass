@@ -347,11 +347,11 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(const UTF8Char *fileN
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
 	OSInt currLyr;
-	OSInt lyrCnt = tileMap->GetLevelCount();
+	UOSInt lyrCnt = tileMap->GetLevelCount();
 	Data::ArrayList<Int64> imgIdList;
-	OSInt i;
-	OSInt j;
-	OSInt cnt;
+	UOSInt i;
+	UOSInt j;
+	UOSInt cnt;
 	OSInt err = 0;
 	Bool found;
 	this->errCnt = 0;

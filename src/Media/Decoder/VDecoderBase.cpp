@@ -117,7 +117,7 @@ Bool Media::Decoder::VDecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimT
 	return false;
 }
 
-OSInt Media::Decoder::VDecoderBase::GetDataSeekCount()
+UOSInt Media::Decoder::VDecoderBase::GetDataSeekCount()
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->GetDataSeekCount();

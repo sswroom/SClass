@@ -254,7 +254,7 @@ IO::Device::OlympusCameraControl::OlympusCameraControl(Net::SocketFactory *sockf
 
 IO::Device::OlympusCameraControl::~OlympusCameraControl()
 {
-	OSInt i = this->cmdList->GetCount();
+	UOSInt i = this->cmdList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->cmdList->GetItem(i));
@@ -275,10 +275,10 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	SDEL_TEXT(this->oiTrackVersion);
 }
 
-OSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
+UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt initCnt = nameList->GetCount();
+	UOSInt initCnt = nameList->GetCount();
 	if (this->GetModel(&sb))
 	{
 		nameList->Add(Text::StrCopyNew((const UTF8Char*)"Model"));
@@ -313,7 +313,7 @@ void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayList<const UTF8Ch
 	valueList->Clear();
 }
 
-OSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*> *fileList)
+UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*> *fileList)
 {
 	if (this->fileList == 0)
 	{

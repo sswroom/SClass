@@ -24,11 +24,11 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnCancelClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, const UTF8Char **fileNames, OSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRGISImageForm *me = (SSWR::AVIRead::AVIRGISImageForm *)userObj;
 	Bool loaded = false;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < fileCnt)
 	{
@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, const 
 
 void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 {
-	OSInt i = 0;
-	OSInt j = this->env->GetImageCnt();
+	UOSInt i = 0;
+	UOSInt j = this->env->GetImageCnt();
 	Int32 imgDurMS;
 
 	this->plIcons->Clear();

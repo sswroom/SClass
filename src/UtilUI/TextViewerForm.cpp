@@ -9,7 +9,7 @@
 #define MNU_EDIT_GOTO 102
 #define MNU_EDIT_SEARCH 103
 
-void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	UTF8Char sbuff[530];

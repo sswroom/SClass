@@ -30,11 +30,11 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
 	Bool changed = false;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < nFiles)
 	{
@@ -81,9 +81,9 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFSClicked(void *userObj)
 
 void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	const UTF8Char *csptr;
 	this->lvPlaylist->ClearItems();
 	i = 0;

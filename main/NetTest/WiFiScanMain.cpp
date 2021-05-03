@@ -20,14 +20,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt thisLen;
-		OSInt maxSSIDLen;
-		OSInt maxManuLen;
-		OSInt maxModelLen;
-		OSInt maxSNLen;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		UOSInt thisLen;
+		UOSInt maxSSIDLen;
+		UOSInt maxManuLen;
+		UOSInt maxModelLen;
+		UOSInt maxSNLen;
 		UInt8 buff[8];
 		const UInt8 *macPtr;
 		const UTF8Char *csptr;
@@ -168,7 +168,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					buff[5] = macPtr[3];
 					buff[6] = macPtr[4];
 					buff[7] = macPtr[5];
-					sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(ReadMInt64(buff))->name);					
+					sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(ReadMUInt64(buff))->name);					
 					console.WriteLine(sb.ToString());
 					DEL_CLASS(bss);
 					j++;

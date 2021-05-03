@@ -38,9 +38,9 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			IO::FileAnalyse::IFileAnalyse *file;
-			OSInt lastPackCount;
+			UOSInt lastPackCount;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnTrimPaddingClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
@@ -53,6 +53,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -284,7 +284,7 @@ const UTF8Char *Media::FileVideoSource::GetFilterName()
 	return (const UTF8Char*)"FileVideoSource";
 }
 
-Bool Media::FileVideoSource::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::FileVideoSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	info->Set(this->frameInfo);
 	*frameRateNorm = this->frameRateNorm;
@@ -436,7 +436,7 @@ Bool Media::FileVideoSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd
 	return false;
 }
 
-OSInt Media::FileVideoSource::GetDataSeekCount()
+UOSInt Media::FileVideoSource::GetDataSeekCount()
 {
 	return this->data->GetSeekCount();
 }

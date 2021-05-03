@@ -193,8 +193,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"SMSSaveAll"));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			OSInt i = 0;
-			OSInt j = me->lvSMS->GetCount();
+			UOSInt i = 0;
+			UOSInt j = me->lvSMS->GetCount();
 			Text::StringBuilderUTF8 sb;
 			Data::DateTime dt;
 			while (i < j)

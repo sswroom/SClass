@@ -103,7 +103,7 @@ UTF16Char *Text::SMSMessage::ParsePDUPhone(UTF16Char *buff, const UInt8 *pduPhon
 			}
 			break;
 		default:
-			buff = Text::StrUTF8_UTF16(buff, (const UTF8Char*)"Unknown", -1, 0);
+			buff = Text::StrUTF8_UTF16(buff, (const UTF8Char*)"Unknown", 0);
 			break;
 		}
 	}

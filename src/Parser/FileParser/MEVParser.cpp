@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "IO/StreamDataStream.h"
@@ -51,14 +52,14 @@ IO::ParsedObject::ParserType Parser::FileParser::MEVParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 buff[512];
-	Int32 currPos = 0;
-	Int32 dirCnt;
-	Int32 imgFileCnt;
-	Int32 fontStyleCnt;
-	Int32 lineStyleCnt;
-	Int32 itemCnt;
-	Int32 defLineStyle;
-	Int32 defFontStyle;
+	UInt32 currPos = 0;
+	UInt32 dirCnt;
+	UInt32 imgFileCnt;
+	UInt32 fontStyleCnt;
+	UInt32 lineStyleCnt;
+	UInt32 itemCnt;
+	UInt32 defLineStyle;
+	UInt32 defFontStyle;
 	Parser::FileParser::MEVParser::MEVImageInfo *imgFileArr;
 	const WChar **dirArr;
 	WChar *sptr;
@@ -69,8 +70,8 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char u8buff[256];
 	UTF8Char u8buff2[256];
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	
 	if (this->parsers == 0)
 		return 0;
@@ -78,28 +79,28 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	fd->GetRealData(0, 12, buff);
 	currPos = 12;
-	if (*(Int32*)&buff[0] != *(Int32*)"SMEv" || *(Int32*)&buff[4] != (Int32)0x81c0fe1a)
+	if (*(Int32*)&buff[0] != *(Int32*)"SMEv" || ReadUInt32(&buff[4]) != 0x81c0fe1a)
 	{
 		return 0;
 	}
 
-	Int32 initSize = *(Int32*)&buff[8];
+	UInt32 initSize = ReadUInt32(&buff[8]);
 	fd->GetRealData(currPos, initSize, buff);
 	currPos += initSize;
 	Map::MapEnv *env;
-	NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), *(Int32*)&buff[0], Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84)));
-	env->SetNString(*(Int32*)&buff[4]);
-	dirCnt = *(Int32*)&buff[16];
-	imgFileCnt = *(Int32*)&buff[20];
-	fontStyleCnt = *(Int32*)&buff[24];
-	lineStyleCnt = *(Int32*)&buff[28];
-	itemCnt = *(Int32*)&buff[32];
-	defLineStyle = *(Int32*)&buff[36];
-	defFontStyle = *(Int32*)&buff[40];
+	NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84)));
+	env->SetNString(ReadUInt32(&buff[4]));
+	dirCnt = ReadUInt32(&buff[16]);
+	imgFileCnt = ReadUInt32(&buff[20]);
+	fontStyleCnt = ReadUInt32(&buff[24]);
+	lineStyleCnt = ReadUInt32(&buff[28]);
+	itemCnt = ReadUInt32(&buff[32]);
+	defLineStyle = ReadUInt32(&buff[36]);
+	defFontStyle = ReadUInt32(&buff[40]);
 
-	fd->GetRealData(*(Int32*)&buff[8], *(Int32*)&buff[12], &buff[16]);
-	sptr = Text::StrUTF8_WChar(sbuff, &buff[16], *(Int32*)&buff[12], 0);
-	sptr2 = Text::StrUTF8_WChar(sbuff2, fd->GetFullName(), -1, 0);
+	fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), &buff[16]);
+	sptr = Text::StrUTF8_WCharC(sbuff, &buff[16], ReadUInt32(&buff[12]), 0);
+	sptr2 = Text::StrUTF8_WChar(sbuff2, fd->GetFullName(), 0);
 	while (sptr > sbuff && sptr2 > sbuff2)
 	{
 		if (sptr[-1] != sptr2[-1])
@@ -124,10 +125,10 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	while (i < dirCnt)
 	{
 		fd->GetRealData(currPos, 8, buff);
-		if (*(Int32*)&buff[4] > 0)
+		if (ReadUInt32(&buff[4]) > 0)
 		{
-			fd->GetRealData(*(Int32*)&buff[0], *(Int32*)&buff[4], &buff[8]);
-			Text::StrUTF8_WChar(sbuff, &buff[8], *(Int32*)&buff[4], 0);
+			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[8]);
+			Text::StrUTF8_WCharC(sbuff, &buff[8], ReadUInt32(&buff[4]), 0);
 			if (sptr2)
 			{
 				Text::StrReplace(sbuff, sptr2 + 1, sbuff2);
@@ -146,11 +147,11 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	while (i < imgFileCnt)
 	{
 		fd->GetRealData(currPos, 16, buff);
-		imgFileArr[i].fileIndex = *(Int32*)&buff[12];
-		fd->GetRealData(*(Int32*)&buff[0], *(Int32*)&buff[4], &buff[16]);
-		sptr = Text::StrConcat(sbuff, dirArr[*(Int32*)&buff[8]]);
+		imgFileArr[i].fileIndex = ReadInt32(&buff[12]);
+		fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[16]);
+		sptr = Text::StrConcat(sbuff, dirArr[ReadInt32(&buff[8])]);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrUTF8_WChar(sptr, &buff[16], *(Int32*)&buff[4], 0);
+		Text::StrUTF8_WCharC(sptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
 		const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
 		imgFileArr[i].envIndex = env->AddImage(u8ptr, this->parsers);
@@ -165,19 +166,19 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		Double fontSize;
 		fd->GetRealData(currPos, 36, buff);
 
-		fd->GetRealData(*(Int32*)&buff[8], *(Int32*)&buff[12], &buff[36]);
-		Text::StrConcatC(u8buff, &buff[36], *(Int32*)&buff[12]);
-		if (*(Int32*)&buff[4] > 0)
+		fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), &buff[36]);
+		Text::StrConcatC(u8buff, &buff[36], ReadUInt32(&buff[12]));
+		if (ReadUInt32(&buff[4]) > 0)
 		{
-			fd->GetRealData(*(Int32*)&buff[0], *(Int32*)&buff[4], &buff[36]);
-			Text::StrConcatC(u8ptr = u8buff2, &buff[36], *(Int32*)&buff[4]);
+			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[36]);
+			Text::StrConcatC(u8ptr = u8buff2, &buff[36], ReadUInt32(&buff[4]));
 		}
 		else
 		{
 			u8ptr = 0;
 		}
 		fontSize = *(Int32*)&buff[16] * 0.75;
-		env->AddFontStyle(u8ptr, u8buff, fontSize, *(Int32*)&buff[20] != 0, *(Int32*)&buff[24], *(Int32*)&buff[28], *(Int32*)&buff[32]);
+		env->AddFontStyle(u8ptr, u8buff, fontSize, ReadUInt32(&buff[20]) != 0, ReadUInt32(&buff[24]), ReadUInt32(&buff[28]), ReadUInt32(&buff[32]));
 		
 		i++;
 		currPos += 36;
@@ -189,24 +190,24 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currPos, 12, buff);
 		currPos += 12;
 		env->AddLineStyle();
-		if (*(Int32*)&buff[4] > 0)
+		if (ReadUInt32(&buff[4]) > 0)
 		{
-			fd->GetRealData(*(Int32*)&buff[0], *(Int32*)&buff[4], &buff[12]);
-			Text::StrConcatC(u8buff2, &buff[12], *(Int32*)&buff[4]);
+			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12]);
+			Text::StrConcatC(u8buff2, &buff[12], ReadUInt32(&buff[4]));
 			env->SetLineStyleName(i, u8buff2);
 		}
 
-		j = *(Int32*)&buff[8];
+		j = ReadUInt32(&buff[8]);
 		while (j-- > 0)
 		{
 			fd->GetRealData(currPos, 12, buff);
 			currPos += 12;
-			if (*(Int32*)&buff[8] > 0)
+			if (ReadUInt32(&buff[8]) > 0)
 			{
-				fd->GetRealData(currPos, *(Int32*)&buff[8], &buff[12]);
-				currPos += *(Int32*)&buff[8];
+				fd->GetRealData(currPos, ReadUInt32(&buff[8]), &buff[12]);
+				currPos += ReadUInt32(&buff[8]);
 			}
-			env->AddLineStyleLayer(i, *(Int32*)&buff[0], *(Int32*)&buff[4], &buff[12], *(Int32*)&buff[8]);
+			env->AddLineStyleLayer(i, ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12], ReadUInt32(&buff[8]));
 		}
 
 		i++;
@@ -229,7 +230,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	return env;
 }
 
-void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *env, UInt32 itemCnt, Int32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
+void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *env, UInt32 itemCnt, UInt32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
 {
 	UInt8 buff[512];
 	WChar sbuff[256];
@@ -242,23 +243,23 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 		if (*(Int32*)&buff[0] == Map::MapEnv::IT_GROUP)
 		{
 			fd->GetRealData(*currPos, 12, buff);
-			fd->GetRealData(*(Int32*)&buff[0], *(Int32*)&buff[4], &buff[12]);
-			Text::StrUTF8_WChar(sbuff, &buff[12], *(Int32*)&buff[4], 0);
+			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12]);
+			Text::StrUTF8_WCharC(sbuff, &buff[12], ReadUInt32(&buff[4]), 0);
 			*currPos = 12 + *currPos;
 			
 			const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
 			Map::MapEnv::GroupItem *item = env->AddGroup(group, u8ptr);
 			Text::StrDelNew(u8ptr);
-			ReadItems(fd, env, *(Int32*)&buff[8], currPos, item, dirArr, imgInfos);
+			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
 		}
 		else if (*(Int32*)&buff[0] == Map::MapEnv::IT_LAYER)
 		{
 			fd->GetRealData(*currPos, 20, buff);
 			*currPos = 20 + *currPos;
 
-			fd->GetRealData(*(Int32*)&buff[0], *(Int32*)&buff[4], &buff[20]);
-			sptr = Text::StrConcat(Text::StrConcat(sbuff, dirArr[*(Int32*)&buff[8]]), L"\\");
-			Text::StrUTF8_WChar(sptr, &buff[20], *(Int32*)&buff[4], 0);
+			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[20]);
+			sptr = Text::StrConcat(Text::StrConcat(sbuff, dirArr[ReadUInt32(&buff[8])]), L"\\");
+			Text::StrUTF8_WCharC(sptr, &buff[20], ReadUInt32(&buff[4]), 0);
 			if (*(Int32*)&buff[12])
 			{
 				this->parsers->SetCodePage(*(Int32*)&buff[12]);
@@ -269,52 +270,52 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 			if (layer)
 			{
 				Map::MapEnv::LayerItem setting;
-				OSInt layerId = env->AddLayer(group, layer, false);
+				UOSInt layerId = env->AddLayer(group, layer, false);
 				env->GetLayerProp(&setting, group, layerId);
 
-				if (*(Int32*)&buff[16] == 1)
+				if (ReadUInt32(&buff[16]) == 1)
 				{
 					fd->GetRealData(*currPos, 32, buff);
 					*currPos = 32 + *currPos;
 
-					setting.labelCol = *(Int32*)&buff[0];
-					setting.flags = *(Int32*)&buff[4];
-					setting.minScale = *(Int32*)&buff[8];
-					setting.maxScale = *(Int32*)&buff[12];
-					setting.priority = *(Int32*)&buff[16];
-					setting.fontStyle = *(Int32*)&buff[20];
-					setting.imgIndex = (Int32)(*(Int32*)&buff[28] - imgInfos[*(Int32*)&buff[24]].fileIndex + imgInfos[*(Int32*)&buff[24]].envIndex);
+					setting.labelCol = ReadUInt32(&buff[0]);
+					setting.flags = ReadInt32(&buff[4]);
+					setting.minScale = ReadInt32(&buff[8]);
+					setting.maxScale = ReadInt32(&buff[12]);
+					setting.priority = ReadInt32(&buff[16]);
+					setting.fontStyle = ReadUInt32(&buff[20]);
+					setting.imgIndex = (UInt32)(ReadInt32(&buff[28]) - imgInfos[ReadInt32(&buff[24])].fileIndex + imgInfos[ReadInt32(&buff[24])].envIndex);
 
 					env->SetLayerProp(&setting, group, layerId);
 				}
-				else if (*(Int32*)&buff[16] == 3)
+				else if (ReadUInt32(&buff[16]) == 3)
 				{
 					fd->GetRealData(*currPos, 28, buff);
 					*currPos = 28 + *currPos;
 
-					setting.labelCol = *(Int32*)&buff[0];
-					setting.flags = *(Int32*)&buff[4];
-					setting.minScale = *(Int32*)&buff[8];
-					setting.maxScale = *(Int32*)&buff[12];
-					setting.priority = *(Int32*)&buff[16];
-					setting.fontStyle = *(Int32*)&buff[20];
-					setting.lineStyle = *(Int32*)&buff[24];
+					setting.labelCol = ReadUInt32(&buff[0]);
+					setting.flags = ReadInt32(&buff[4]);
+					setting.minScale = ReadInt32(&buff[8]);
+					setting.maxScale = ReadInt32(&buff[12]);
+					setting.priority = ReadInt32(&buff[16]);
+					setting.fontStyle = ReadUInt32(&buff[20]);
+					setting.lineStyle = ReadUInt32(&buff[24]);
 
 					env->SetLayerProp(&setting, group, layerId);
 				}
-				else if (*(Int32*)&buff[16] == 5)
+				else if (ReadUInt32(&buff[16]) == 5)
 				{
 					fd->GetRealData(*currPos, 32, buff);
 					*currPos = 32 + *currPos;
 
-					setting.labelCol = *(Int32*)&buff[0];
-					setting.flags = *(Int32*)&buff[4];
-					setting.minScale = *(Int32*)&buff[8];
-					setting.maxScale = *(Int32*)&buff[12];
-					setting.priority = *(Int32*)&buff[16];
-					setting.fontStyle = *(Int32*)&buff[20];
-					setting.lineStyle = *(Int32*)&buff[24];
-					setting.fillStyle = *(Int32*)&buff[28];
+					setting.labelCol = ReadUInt32(&buff[0]);
+					setting.flags = ReadInt32(&buff[4]);
+					setting.minScale = ReadInt32(&buff[8]);
+					setting.maxScale = ReadInt32(&buff[12]);
+					setting.priority = ReadInt32(&buff[16]);
+					setting.fontStyle = ReadUInt32(&buff[20]);
+					setting.lineStyle = ReadUInt32(&buff[24]);
+					setting.fillStyle = ReadUInt32(&buff[28]);
 
 					env->SetLayerProp(&setting, group, layerId);
 				}
@@ -322,27 +323,27 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 				{
 					fd->GetRealData(*currPos, 24, buff);
 					*currPos = 24 + *currPos;
-					setting.labelCol = *(Int32*)&buff[0];
-					setting.flags = *(Int32*)&buff[4];
-					setting.minScale = *(Int32*)&buff[8];
-					setting.maxScale = *(Int32*)&buff[12];
-					setting.priority = *(Int32*)&buff[16];
-					setting.fontStyle = *(Int32*)&buff[20];
+					setting.labelCol = ReadUInt32(&buff[0]);
+					setting.flags = ReadInt32(&buff[4]);
+					setting.minScale = ReadInt32(&buff[8]);
+					setting.maxScale = ReadInt32(&buff[12]);
+					setting.priority = ReadInt32(&buff[16]);
+					setting.fontStyle = ReadUInt32(&buff[20]);
 
 					env->SetLayerProp(&setting, group, layerId);
 				}
 			}
 			else
 			{
-				if (*(Int32*)&buff[16] == 1)
+				if (ReadUInt32(&buff[16]) == 1)
 				{
 					*currPos = 32 + *currPos;
 				}
-				else if (*(Int32*)&buff[16] == 3)
+				else if (ReadUInt32(&buff[16]) == 3)
 				{
 					*currPos = 28 + *currPos;
 				}
-				else if (*(Int32*)&buff[16] == 5)
+				else if (ReadUInt32(&buff[16]) == 5)
 				{
 					*currPos = 32 + *currPos;
 				}

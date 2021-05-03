@@ -9,10 +9,10 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm *)userObj;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < nFiles)
 	{

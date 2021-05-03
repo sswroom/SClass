@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUIListView *lvXML;
 
 			static void __stdcall OnBrowseClick(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **fileNames, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt nFiles);
 
 			void LoadFile(const UTF8Char *fileName);
 		public:
@@ -33,6 +33,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

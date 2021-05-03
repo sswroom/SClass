@@ -66,8 +66,8 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 {
 	OSInt i;
 	OSInt j;
-	Int32 rateNorm;
-	Int32 rateDenorm;
+	UInt32 rateNorm;
+	UInt32 rateDenorm;
 	UOSInt maxFrameSize;
 	if (this->src->IsRunning())
 	{

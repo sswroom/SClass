@@ -9,9 +9,9 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRExportParamForm *me = (SSWR::AVIRead::AVIRExportParamForm *)userObj;
 	UTF8Char sbuff[256];
-	OSInt i;
+	UOSInt i;
 	OSInt j;
-	OSInt cnt = me->exporter->GetParamCnt();
+	UOSInt cnt = me->exporter->GetParamCnt();
 	IO::FileExporter::ParamInfo pi;
 	Int32 val;
 	i = 0;

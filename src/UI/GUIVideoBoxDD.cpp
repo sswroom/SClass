@@ -1290,8 +1290,8 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 void __stdcall UI::GUIVideoBoxDD::OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData)
 {
 	UI::GUIVideoBoxDD *me = (UI::GUIVideoBoxDD*)userData;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt frameSize;
 	if (fc == Media::IVideoSource::FC_PAR)
 	{
@@ -2087,7 +2087,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 UI::GUIVideoBoxDD::~GUIVideoBoxDD()
 {
-	OSInt i;
+	UOSInt i;
 	this->StopThreads();
 	DEL_CLASS(this->dispEvt);
 	DEL_CLASS(this->dispMut);
@@ -2236,8 +2236,8 @@ void UI::GUIVideoBoxDD::SetVideo(Media::IVideoSource *video)
 	if (this->video)
 	{
 		Media::FrameInfo info;
-		Int32 frameRateNorm;
-		Int32 frameRateDenorm;
+		UInt32 frameRateNorm;
+		UInt32 frameRateDenorm;
 		UOSInt frameSize;
  		if (!this->video->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &frameSize))
 		{
@@ -2585,7 +2585,7 @@ void UI::GUIVideoBoxDD::GetDebugValues(DebugValue *dbg)
 
 void UI::GUIVideoBoxDD::SetSrcRGBType(Media::CS::TransferType rgbType)
 {
-	OSInt i;
+	UOSInt i;
 	this->VideoBeginLoad();
 	this->videoInfo->color->GetRTranParam()->Set(rgbType, 2.2);
 	this->videoInfo->color->GetGTranParam()->Set(rgbType, 2.2);

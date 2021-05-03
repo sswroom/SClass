@@ -122,7 +122,7 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 	return true;
 }
 
-Bool Media::Playlist::RemoveEntry(OSInt index)
+Bool Media::Playlist::RemoveEntry(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->RemoveAt(index);
 	if (ent == 0)
@@ -173,12 +173,12 @@ void Media::Playlist::ClearFiles()
 	this->entries->Clear();
 }
 
-OSInt Media::Playlist::GetCount()
+UOSInt Media::Playlist::GetCount()
 {
 	return this->entries->GetCount();
 }
 
-const UTF8Char *Media::Playlist::GetTitle(OSInt index)
+const UTF8Char *Media::Playlist::GetTitle(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -186,7 +186,7 @@ const UTF8Char *Media::Playlist::GetTitle(OSInt index)
 	return ent->title;
 }
 
-const UTF8Char *Media::Playlist::GetArtist(OSInt index)
+const UTF8Char *Media::Playlist::GetArtist(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -194,7 +194,7 @@ const UTF8Char *Media::Playlist::GetArtist(OSInt index)
 	return ent->artist;
 }
 
-const UTF8Char *Media::Playlist::GetFileName(OSInt index)
+const UTF8Char *Media::Playlist::GetFileName(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -202,7 +202,7 @@ const UTF8Char *Media::Playlist::GetFileName(OSInt index)
 	return ent->fileName;
 }
 
-Int32 Media::Playlist::GetTimeStart(OSInt index)
+Int32 Media::Playlist::GetTimeStart(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -210,7 +210,7 @@ Int32 Media::Playlist::GetTimeStart(OSInt index)
 	return ent->timeStart;
 }
 
-Int32 Media::Playlist::GetTimeEnd(OSInt index)
+Int32 Media::Playlist::GetTimeEnd(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -232,7 +232,7 @@ void Media::Playlist::SetPlayer(Media::IMediaPlayer *player)
 	}
 }
 
-Bool Media::Playlist::OpenItem(OSInt index)
+Bool Media::Playlist::OpenItem(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0 || this->player == 0)

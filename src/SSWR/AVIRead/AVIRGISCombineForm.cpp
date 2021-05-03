@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(void *userOb
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->selLayers->Clear();
 	i = 0;
 	j = me->layers->GetCount();
@@ -97,8 +97,8 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 
 
-	OSInt i = 0;
-	OSInt cnt = this->layers->GetCount();
+	UOSInt i = 0;
+	UOSInt cnt = this->layers->GetCount();
 	OSInt j;
 	Map::IMapDrawLayer *lyr;
 	const UTF8Char *name;

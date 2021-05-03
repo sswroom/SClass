@@ -114,7 +114,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
 {
 	WChar sbuff[256];
-	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), name, -1, 0);
+	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), name, 0);
 	return this->ExecuteReader(sbuff);
 }
 

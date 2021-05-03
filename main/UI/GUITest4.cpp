@@ -35,7 +35,7 @@ void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
 	}
 }
 
-void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
 	OSInt i;

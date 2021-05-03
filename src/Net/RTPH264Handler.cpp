@@ -333,7 +333,7 @@ const UTF8Char *Net::RTPH264Handler::GetFilterName()
 	return (const UTF8Char*)"RTPH264Handler";
 }
 
-Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (this->frameInfo->dispWidth == 0 || this->frameInfo->dispHeight == 0)
 		return false;
@@ -386,7 +386,7 @@ UInt32 Net::RTPH264Handler::SeekToTime(UInt32 time)
 	return 0;
 }
 
-OSInt Net::RTPH264Handler::GetDataSeekCount()
+UOSInt Net::RTPH264Handler::GetDataSeekCount()
 {
 	return 0;
 }

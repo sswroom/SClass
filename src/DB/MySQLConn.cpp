@@ -458,9 +458,9 @@ DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
 	while (i-- > 0)
 	{
 		MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, (UInt32)i);
-		j = Text::StrUTF8_WCharCnt((const UTF8Char*)field->name, field->name_length);
+		j = Text::StrUTF8_WCharCntC((const UTF8Char*)field->name, field->name_length);
 		this->names[i] = MemAlloc(WChar, j + 1);
-		Text::StrUTF8_WChar(this->names[i], (const UTF8Char*)field->name, field->name_length, 0);
+		Text::StrUTF8_WCharC(this->names[i], (const UTF8Char*)field->name, field->name_length, 0);
 	}
 }
 
@@ -533,7 +533,7 @@ WChar *DB::MySQLReader::GetStr(UOSInt colIndex, WChar *buff)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrUTF8_WChar(buff, (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex], -1, 0);
+		return Text::StrUTF8_WChar(buff, (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex], 0);
 	}
 	else
 	{

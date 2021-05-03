@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 	DEL_CLASS(dlg);
 }
 
-void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, const UTF8Char **fileNames, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
 	if (nFiles > 0)

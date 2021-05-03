@@ -59,7 +59,7 @@ namespace SSWR
 			UOSInt lineStyle;
 			UOSInt lineThick;
 			UInt32 lineColor;
-			Int32 fillStyle;
+			UInt32 fillStyle;
 			Int32 fontType;
 			UOSInt fontStyle;
 			const UTF8Char *fontName;

@@ -33,7 +33,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRMediaPlayer *player;
 			const WChar *currFileName;
 		private:
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnPlaylistDblClk(void *userObj, OSInt itemIndex);
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnEndClicked(void *userObj);

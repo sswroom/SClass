@@ -473,8 +473,8 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 #endif
 
 	Media::FrameInfo frameInfo;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 
@@ -735,8 +735,8 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 			if (ret >= 0)
 			{
 				Media::FrameInfo frinfo;
-				Int32 frameRateNorm;
-				Int32 frameRateDenorm;
+				UInt32 frameRateNorm;
+				UInt32 frameRateDenorm;
 				UOSInt maxFrameSize;
 				this->GetVideoInfo(&frinfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 				data->frameSize = maxFrameSize;
@@ -794,7 +794,7 @@ const UTF8Char *Media::Decoder::FFMPEGDecoder::GetFilterName()
 	return (const UTF8Char*)"FFMPEGDecoder";
 }
 
-Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	FFMPEGClassData *data = (FFMPEGClassData*)this->clsData;
 	if (this->sourceVideo == 0)
@@ -1089,8 +1089,8 @@ Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(Media::IVideoSource *so
 {
 	Media::Decoder::FFMPEGDecoder *decoder;
 	Media::FrameInfo frameInfo;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)

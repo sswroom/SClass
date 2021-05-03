@@ -31,14 +31,14 @@ namespace SSWR
 				const UTF8Char *country;
 				UInt8 ouis[3][3];
 				Int64 neighbour[20];
-				Int32 ieLen;
+				UInt32 ieLen;
 				UInt8 *ieBuff;
 			} LogFileEntry;
 
 			typedef struct
 			{
-				Int64 rangeFrom;
-				Int64 rangeTo;
+				UInt64 rangeFrom;
+				UInt64 rangeTo;
 				const UTF8Char *name;
 			} DataEntry;
 		private:

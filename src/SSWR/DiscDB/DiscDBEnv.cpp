@@ -342,7 +342,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(const UTF8Char *discId)
 	return this->discMap->GetIndex(discId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, OSInt fileId, const UTF8Char *name, Int64 fileSize, const UTF8Char *category, Int32 videoId)
+Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, const UTF8Char *category, Int32 videoId)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into BurntFile (DiscID, FileID, Name, FileSize, Category, VIDEOID) values (");
@@ -352,7 +352,7 @@ Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, OSInt fileId,
 	sql.AppendCmd((const UTF8Char*)", ");
 	sql.AppendStrUTF8(name);
 	sql.AppendCmd((const UTF8Char*)", ");
-	sql.AppendInt64(fileSize);
+	sql.AppendInt64((Int64)fileSize);
 	sql.AppendCmd((const UTF8Char*)", ");
 	sql.AppendStrUTF8(category);
 	sql.AppendCmd((const UTF8Char*)", ");

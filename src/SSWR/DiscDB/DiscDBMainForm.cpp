@@ -14,7 +14,7 @@ typedef enum
 	MNU_SEARCH_DISC
 } MenuItems;
 
-void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::DiscDB::DiscDBMainForm *me = (SSWR::DiscDB::DiscDBMainForm *)userObj;
 	IO::StmData::FileData *fd;

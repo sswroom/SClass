@@ -18,7 +18,7 @@ namespace Net
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual const UTF8Char *GetFilterName();
 
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize);
+		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();
@@ -30,7 +30,7 @@ namespace Net
 		virtual Bool IsRealTimeSrc();
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual OSInt GetDataSeekCount();
+		virtual UOSInt GetDataSeekCount();
 
 		virtual OSInt GetFrameCount();
 		virtual UInt32 GetFrameTime(UOSInt frameIndex);

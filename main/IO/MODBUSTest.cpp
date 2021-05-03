@@ -7,7 +7,7 @@
 #include "Sync/Thread.h"
 #include <stdio.h>
 
-void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, OSInt resultSize)
+void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
 	if (resultSize == 4)
 	{

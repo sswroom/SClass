@@ -33,9 +33,9 @@ Bool IO::StreamWriter::Write(const UTF8Char *str, UOSInt nChar)
 	}
 	else
 	{
-		UOSInt wnChar = Text::StrUTF8_WCharCnt(str, nChar);
+		UOSInt wnChar = Text::StrUTF8_WCharCntC(str, nChar);
 		WChar *ws = MemAlloc(WChar, wnChar + 1);
-		Text::StrUTF8_WChar(ws, str, nChar, 0);
+		Text::StrUTF8_WCharC(ws, str, nChar, 0);
 
 		UOSInt strSize = 3 * wnChar;
 		if (strSize > buffSize)
@@ -73,9 +73,9 @@ Bool IO::StreamWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 	}
 	else
 	{
-		UOSInt wnChar = Text::StrUTF8_WCharCnt(str, nChar);
+		UOSInt wnChar = Text::StrUTF8_WCharCntC(str, nChar);
 		WChar *ws = MemAlloc(WChar, wnChar + 2);
-		Text::StrUTF8_WChar(ws, str, nChar, 0);
+		Text::StrUTF8_WCharC(ws, str, nChar, 0);
 		ws[wnChar] = 13;
 		ws[wnChar + 1] = 10;
 

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/ByteTool.h"
-#include "Data/Int64Map.h"
+#include "Data/UInt64Map.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
 #include "Manage/ExceptionRecorder.h"
@@ -21,7 +21,7 @@
 typedef struct
 {
 	UInt8 mac[6];
-	Int64 imac;
+	UInt64 imac;
 	const UTF8Char *ssid;
 	Int32 phyType;
 	Double freq;
@@ -30,15 +30,15 @@ typedef struct
 	const UTF8Char *serialNum;
 	const UTF8Char *country;
 	UInt8 ouis[3][3];
-	Int64 neighbour[20];
-	OSInt ieLen;
+	UInt64 neighbour[20];
+	UOSInt ieLen;
 	UInt8 *ieBuff;
 } WiFiEntry;
 
 Net::WirelessLAN *wlan;
 Int32 threadCnt;
 Bool threadToStop;
-Data::Int64Map<WiFiEntry*> *entryMap;
+Data::UInt64Map<WiFiEntry*> *entryMap;
 Sync::Mutex *entryMut;
 
 class MyWebHandler : public Net::WebServer::WebStandardHandler
@@ -49,8 +49,8 @@ private:
 
 	static Bool __stdcall DefReq(MyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<WiFiEntry*> *entryList;
 		WiFiEntry *entry;
@@ -102,9 +102,9 @@ private:
 	static Bool __stdcall DownloadReq(MyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 	{
 		UTF8Char sbuff[64];
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<WiFiEntry*> *entryList;
 		WiFiEntry *entry;
@@ -219,14 +219,15 @@ void StoreStatus()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Data::DateTime dt;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	OSInt si;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[i + 1];
+	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[si + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
@@ -311,22 +312,22 @@ UInt32 __stdcall ScanThread(void *userObj)
 	Net::WirelessLAN::Interface *interf = (Net::WirelessLAN::Interface*)userObj;
 	Data::ArrayList<Net::WirelessLAN::BSSInfo *> *bssList;
 	Net::WirelessLAN::BSSInfo *bss;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt m;
-	Int64 imac;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
+	UInt64 imac;
 	UInt8 mac[8];
 	const UInt8 *macPtr;
 	WiFiEntry *entry;
 	const UTF8Char *namePtr;
 	Data::DateTime *dt;
-	Int64 maxIMAC;
+	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Int64 lastStoreTime;
 	Int64 currTime;
-	OSInt ieLen;
+	UOSInt ieLen;
 	Net::WirelessLANIE *ie;
 	const UInt8 *ieBuff;
 
@@ -357,7 +358,7 @@ UInt32 __stdcall ScanThread(void *userObj)
 				mac[5] = macPtr[3];
 				mac[6] = macPtr[4];
 				mac[7] = macPtr[5];
-				imac = ReadMInt64(mac);
+				imac = ReadMUInt64(mac);
 				if (maxRSSI < bss->GetRSSI())
 				{
 					maxRSSI = Math::Double2Int32(bss->GetRSSI());
@@ -373,7 +374,7 @@ UInt32 __stdcall ScanThread(void *userObj)
 				while (k-- > 0)
 				{
 					ie = bss->GetIE(k);
-					ieLen += ie->GetIEBuff()[1] + 2;
+					ieLen += (UOSInt)ie->GetIEBuff()[1] + 2;
 				}
 				if (entry == 0)
 				{
@@ -420,8 +421,8 @@ UInt32 __stdcall ScanThread(void *userObj)
 						{
 							ie = bss->GetIE(k);
 							ieBuff = ie->GetIEBuff();
-							MemCopyNO(&entry->ieBuff[m], ieBuff, ieBuff[1] + 2);
-							m += ieBuff[1] + 2;
+							MemCopyNO(&entry->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+							m += (UOSInt)ieBuff[1] + 2;
 							k++;
 						}
 					}
@@ -449,7 +450,7 @@ UInt32 __stdcall ScanThread(void *userObj)
 					{
 						entry->country = Text::StrCopyNew(bss->GetCountry());
 					}
-					OSInt l;
+					UOSInt l;
 					const UInt8 *oui;
 					oui = oui1;
 					if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
@@ -525,8 +526,8 @@ UInt32 __stdcall ScanThread(void *userObj)
 						{
 							ie = bss->GetIE(k);
 							ieBuff = ie->GetIEBuff();
-							MemCopyNO(&entry->ieBuff[m], ieBuff, ieBuff[1] + 2);
-							m += ieBuff[1] + 2;
+							MemCopyNO(&entry->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+							m += (UOSInt)ieBuff[1] + 2;
 							k++;
 						}
 					}
@@ -547,31 +548,31 @@ UInt32 __stdcall ScanThread(void *userObj)
 					MemCopyNO(&mac[2], bss->GetMAC(), 6);
 					mac[0] = 0;
 					mac[1] = 0;
-					imac = ReadMInt64(mac);
+					imac = ReadMUInt64(mac);
 					if (imac != maxIMAC)
 					{
 						Bool found = false;
 						Int32 minRSSI;
-						OSInt minIndex;
+						UOSInt minIndex;
 						Int32 rssi1 = Math::Double2Int32(bss->GetRSSI());
 						minRSSI = 0;
 						minIndex = 0;
 						k = 0;
 						while (k < 20)
 						{
-							Int8 rssi2 = (entry->neighbour[k] >> 48) & 0xff;
+							Int8 rssi2 = (Int8)((entry->neighbour[k] >> 48) & 0xff);
 							if ((entry->neighbour[k] & 0xffffffffffffLL) == imac)
 							{
 								found = true;
 								if (rssi1 > rssi2)
 								{
-									entry->neighbour[k] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+									entry->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 								}
 								break;
 							}
 							else if (entry->neighbour[k] == 0)
 							{
-								entry->neighbour[k] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+								entry->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 								found = true;
 								break;
 							}
@@ -586,7 +587,7 @@ UInt32 __stdcall ScanThread(void *userObj)
 
 						if (!found && minRSSI < rssi1)
 						{
-							entry->neighbour[minIndex] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+							entry->neighbour[minIndex] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 						}
 					}
 					i++;
@@ -622,11 +623,11 @@ UInt32 __stdcall ScanThread(void *userObj)
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
-	OSInt i;
+	UOSInt i;
 	Net::SocketFactory *sockf;
 	MyWebHandler *webHdlr;
 	Net::WebServer::WebListener *listener;
-	Int32 webPort = 8080;
+	UInt16 webPort = 8080;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	
@@ -634,12 +635,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &webPort);
+		Text::StrToUInt16(argv[1], &webPort);
 	}
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"Error.txt");
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
-	NEW_CLASS(entryMap, Data::Int64Map<WiFiEntry*>());
+	NEW_CLASS(entryMap, Data::UInt64Map<WiFiEntry*>());
 	NEW_CLASS(entryMut, Sync::Mutex());
 	NEW_CLASS(wlan, Net::WirelessLAN());
 	threadCnt = 0;

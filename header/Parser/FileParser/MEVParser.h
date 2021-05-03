@@ -31,7 +31,7 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 
 		private:
-			void ReadItems(IO::IStreamData *fd, Map::MapEnv *env, UInt32 itemCnt, Int32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos);
+			void ReadItems(IO::IStreamData *fd, Map::MapEnv *env, UInt32 itemCnt, UInt32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos);
 		};
 	}
 }

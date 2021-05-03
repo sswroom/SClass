@@ -169,7 +169,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	if (size == -1)
 		return 0;
 #endif
-	return Text::StrUTF8_WChar(buff, (UInt8*)sbuff, size, 0);
+	return Text::StrUTF8_WCharC(buff, (UInt8*)sbuff, size, 0);
 }
 
 Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF *sb)
@@ -522,7 +522,7 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 				{
 					*fileSize = (UInt64)s.st_size;
 				}
-				return Text::StrUTF8_WChar(buff, (const UTF8Char*)ent->d_name, -1, 0);
+				return Text::StrUTF8_WChar(buff, (const UTF8Char*)ent->d_name, 0);
 			}
 		}
 	}
@@ -620,7 +620,7 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 //			printf("GetFullPath: Loop i = %d\r\n", i);
 			if (i < 0)
 			{
-				return Text::StrUTF8_WChar(buff, u8ptr, -1, 0);
+				return Text::StrUTF8_WChar(buff, u8ptr, 0);
 			}
 			u8ptr[i] = 0;
 #if defined(__USE_LARGEFILE64)
@@ -636,12 +636,12 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 					cbuff[size] = 0;
 //					printf("readlink %s -> %s\r\n", u8ptr, cbuff);
 					//////////////////////////////
-					return Text::StrUTF8_WChar(buff, u8ptr, -1, 0);
+					return Text::StrUTF8_WChar(buff, u8ptr, 0);
 				}
 				else
 				{
 					u8ptr[i] = '/';
-					return Text::StrUTF8_WChar(buff, u8ptr, -1, 0);
+					return Text::StrUTF8_WChar(buff, u8ptr, 0);
 				}
 			}
 			else
@@ -927,7 +927,7 @@ WChar *IO::Path::GetCurrDirectoryW(WChar *buff)
 	Char cbuff[PATH_MAX];
 	if (getcwd(cbuff, PATH_MAX) == 0)
 		return 0;
-	return Text::StrUTF8_WChar(buff, (const UTF8Char*)cbuff, -1, 0);
+	return Text::StrUTF8_WChar(buff, (const UTF8Char*)cbuff, 0);
 }
 
 Bool IO::Path::SetCurrDirectoryW(const WChar *path)

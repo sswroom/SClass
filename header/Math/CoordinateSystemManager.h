@@ -126,21 +126,21 @@ namespace Math
 	public:
 		static Math::CoordinateSystem *ParsePRJFile(const UTF8Char *fileName);
 
-		static const SpatialRefInfo *SRGetSpatialRef(Int32 epsgId);
-		static const SpatialRefInfo *SRGetSpatialRefPrev(Int32 epsgId);
-		static const SpatialRefInfo *SRGetSpatialRefNext(Int32 epsgId);
-		static const SpheroidInfo *SRGetSpheroid(Int32 epsgId);
-		static const DatumInfo *SRGetDatum(Int32 epsgId);
-		static const GeogcsSRInfo *SRGetGeogcsInfo(Int32 epsgId);
-		static const ProjcsSRInfo *SRGetProjcsInfo(Int32 epsgId);
-		static Math::CoordinateSystem *SRCreateCSys(Int32 epsgId);
-		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(Int32 epsgId);
-		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(Int32 epsgId);
+		static const SpatialRefInfo *SRGetSpatialRef(UInt32 epsgId);
+		static const SpatialRefInfo *SRGetSpatialRefPrev(UInt32 epsgId);
+		static const SpatialRefInfo *SRGetSpatialRefNext(UInt32 epsgId);
+		static const SpheroidInfo *SRGetSpheroid(UInt32 epsgId);
+		static const DatumInfo *SRGetDatum(UInt32 epsgId);
+		static const GeogcsSRInfo *SRGetGeogcsInfo(UInt32 epsgId);
+		static const ProjcsSRInfo *SRGetProjcsInfo(UInt32 epsgId);
+		static Math::CoordinateSystem *SRCreateCSys(UInt32 epsgId);
+		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
+		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 
 		static Math::CoordinateSystem *CreateFromName(const UTF8Char *name);
 		static Math::CoordinateSystem *ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, UOSInt *parsedSize);
 
-		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(Int32 srid);
+		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(UInt32 srid);
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, const Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 

@@ -45,7 +45,7 @@ namespace SSWR
 			Bool threadToStop;
 			Sync::Event *threadEvt;
 
-			static void __stdcall OnFileHandler(void *userObj, const UTF8Char **files, OSInt nFilesj);
+			static void __stdcall OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFilesj);
 			static void __stdcall OnCancelClicked(void *userObj);
 			static void __stdcall OnAllowTimeSkipChange(void *userObj, Bool newVal);
 			static void __stdcall OnTimerTick(void *userObj);

@@ -621,8 +621,8 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 					}
 				}
 
-				Int32 frameRateNorm;
-				Int32 frameRateDenorm;
+				UInt32 frameRateNorm;
+				UInt32 frameRateDenorm;
 				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&buff[9 + stmHdrSize], 256 - 9 - stmHdrSize, &frameInfo, &frameRateNorm, &frameRateDenorm, 0, false))
 				{
 					frameInfo.fourcc = *(UInt32*)"MP2G";

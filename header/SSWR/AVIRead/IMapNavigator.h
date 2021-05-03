@@ -13,7 +13,7 @@ namespace SSWR
 		public:
 			typedef Bool (__stdcall *MouseEvent)(void *userObj, OSInt scnX, OSInt scnY);
 
-			virtual Int32 GetSRID() = 0;
+			virtual UInt32 GetSRID() = 0;
 			virtual Bool InMap(Double lat, Double lon) = 0;
 			virtual void PanToMap(Double lat, Double lon) = 0;
 			virtual void ShowMarker(Double lat, Double lon) = 0;

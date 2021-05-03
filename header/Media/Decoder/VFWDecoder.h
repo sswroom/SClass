@@ -27,9 +27,9 @@ namespace Media
 				Media::FrameType frameType;
 			} BFrameStatus;
 		private:
-			Int32 frameRateNorm;
-			Int32 frameRateDenorm;
-			Int32 maxFrameSize;
+			UInt32 frameRateNorm;
+			UInt32 frameRateDenorm;
+			UOSInt maxFrameSize;
 			void *bmihSrc;
 			void *bmihDest;
 			void *hic;
@@ -67,7 +67,7 @@ namespace Media
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
 			virtual const UTF8Char *GetFilterName();
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize);
+			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 			virtual void Stop();
 
 			virtual OSInt GetFrameCount(); //-1 = unknown;

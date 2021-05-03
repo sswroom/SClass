@@ -71,7 +71,7 @@ namespace SSWR
 			Int64 progLastCount;
 			IO::FileCheck::CheckType currHashType;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnCheckTypeChg(void *userObj);
 			static UInt32 __stdcall HashThread(void *userObj);

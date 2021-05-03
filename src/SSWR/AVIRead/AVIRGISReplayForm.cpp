@@ -291,8 +291,8 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	Data::ArrayListStrUTF8 *nameArr;
 	NEW_CLASS(nameArr, Data::ArrayListStrUTF8());
 	this->track->GetTrackNames(nameArr);
-	OSInt i = 0;
-	OSInt j = nameArr->GetCount();
+	UOSInt i = 0;
+	UOSInt j = nameArr->GetCount();
 	while (i < j)
 	{
 		if (nameArr->GetItem(i) == 0)

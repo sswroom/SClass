@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
+#include "Data/ByteTool.h"
 #include "Exporter/TIFFExporter.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
@@ -39,7 +40,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 
 		if (converter)
 		{
-			converter->ConvertV2(imgData, simg->data, info.dispWidth, info.dispHeight, info.storeWidth, info.storeHeight, info.storeWidth * 4, frameType, info.ycOfst);
+			converter->ConvertV2(imgData, simg->data, info.dispWidth, info.dispHeight, info.storeWidth, info.storeHeight, (OSInt)info.storeWidth * 4, frameType, info.ycOfst);
 		}
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		exporter.ExportFile(fs, fileName, imgList, 0);
@@ -56,10 +57,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::ColorManagerSess *colorSess;
 	Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo *> devList;
 	Media::VideoCaptureMgr::DeviceInfo *devInfo;
-	OSInt cnt;
-	OSInt i;
-	OSInt j;
-	OSInt devNo;
+	UOSInt cnt;
+	UOSInt i;
+	UOSInt j;
+	UOSInt devNo;
 	Bool succ;
 	Text::StringBuilderUTF8 sb;
 	Bool isRunning;
@@ -72,7 +73,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		widthLimit = Text::StrToInt32(argv[1]);
+		widthLimit = Text::StrToUInt32(argv[1]);
 		if (widthLimit <= 0)
 		{
 			widthLimit = 3840;
@@ -86,7 +87,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			tmpBuff[1] = argv[2][1];
 			tmpBuff[2] = argv[2][2];
 			tmpBuff[3] = argv[2][3];
-			prefFmt = *(Int32*)tmpBuff;
+			prefFmt = ReadNUInt32(tmpBuff);
 		}
 	}
 
@@ -103,7 +104,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Device Count = ");
-		sb.AppendOSInt(cnt);
+		sb.AppendUOSInt(cnt);
 		console->WriteLine(sb.ToString());
 		i = 0;
 		while (i < cnt)
@@ -113,7 +114,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append((const UTF8Char*)"Type = ");
 			sb.AppendI32(devInfo->devType);
 			sb.Append((const UTF8Char*)", Index ");
-			sb.AppendOSInt(devInfo->devId);
+			sb.AppendUOSInt(devInfo->devId);
 			sb.Append((const UTF8Char*)", Name = ");
 			sb.Append(devInfo->devName);
 			console->WriteLine(sb.ToString());
@@ -131,16 +132,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (capture)
 			{
 				UInt32 maxFmt = 0;
-				Int32 maxBpp = 0;
-				OSInt maxWidth = 0;
-				OSInt maxHeight = 0;
-				OSInt maxSize = 0;
-				Int32 maxRateNumer = 0;
-				Int32 maxRateDenom = 0;
-				OSInt thisSize;
+				UInt32 maxBpp = 0;
+				UOSInt maxWidth = 0;
+				UOSInt maxHeight = 0;
+				UOSInt maxSize = 0;
+				UInt32 maxRateNumer = 0;
+				UInt32 maxRateDenom = 0;
+				UOSInt thisSize;
 				
-				Int32 frameRateNorm;
-				Int32 frameRateDenorm;
+				UInt32 frameRateNorm;
+				UInt32 frameRateDenorm;
 				UOSInt frameMaxSize;
 				Media::IVideoCapture::VideoFormat *formats;
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -179,15 +180,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC((const UTF8Char*)&formats[i].info.fourcc, 4);
 					}
 					sb.Append((const UTF8Char*)", Size = ");
-					sb.AppendOSInt(formats[i].info.dispWidth);
+					sb.AppendUOSInt(formats[i].info.dispWidth);
 					sb.Append((const UTF8Char*)" x ");
-					sb.AppendOSInt(formats[i].info.dispHeight);
+					sb.AppendUOSInt(formats[i].info.dispHeight);
 					sb.Append((const UTF8Char*)", bpp = ");
-					sb.AppendI32(formats[i].info.storeBPP);
+					sb.AppendU32(formats[i].info.storeBPP);
 					sb.Append((const UTF8Char*)", rate = ");
-					sb.AppendI32(formats[i].frameRateNorm);
+					sb.AppendU32(formats[i].frameRateNorm);
 					sb.Append((const UTF8Char*)" / ");
-					sb.AppendI32(formats[i].frameRateDenorm);
+					sb.AppendU32(formats[i].frameRateDenorm);
 					sb.Append((const UTF8Char*)" (");
 					Text::SBAppendF64(&sb, formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
 					sb.Append((const UTF8Char*)")");

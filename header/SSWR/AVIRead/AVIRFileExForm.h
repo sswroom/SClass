@@ -34,13 +34,13 @@ namespace SSWR
 			static void __stdcall OnSrcClicked(void *userObj);
 			static void __stdcall OnDestClicked(void *userObj);
 			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, OSInt fileCnt);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt);
 		public:
 			AVIRFileExForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRFileExForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

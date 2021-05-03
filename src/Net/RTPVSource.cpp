@@ -23,7 +23,7 @@ const UTF8Char *Net::RTPVSource::GetFilterName()
 	return (const UTF8Char*)"RTPVSource";
 }
 
-Bool Net::RTPVSource::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Net::RTPVSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	return this->hdlr->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }
@@ -77,7 +77,7 @@ Bool Net::RTPVSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32
 	return false;
 }
 
-OSInt Net::RTPVSource::GetDataSeekCount()
+UOSInt Net::RTPVSource::GetDataSeekCount()
 {
 	return 0;
 }

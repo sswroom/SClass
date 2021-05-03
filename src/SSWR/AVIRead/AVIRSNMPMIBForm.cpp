@@ -6,7 +6,7 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnFileDroped(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnFileDroped(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRSNMPMIBForm *me = (SSWR::AVIRead::AVIRSNMPMIBForm*)userObj;
 	me->LoadFile(files[0]);

@@ -119,7 +119,7 @@ Bool EchoFile(const UTF8Char *fileName, const Char *msg)
 		DEL_CLASS(fs);
 		return false;
 	}
-	OSInt fileSize = Text::StrCharCnt(msg);
+	UOSInt fileSize = Text::StrCharCnt(msg);
 	fs->Write((const UInt8*)msg, fileSize);
 	DEL_CLASS(fs);
 	return true;

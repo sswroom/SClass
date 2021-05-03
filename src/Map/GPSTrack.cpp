@@ -1209,8 +1209,8 @@ Map::GPSDataReader::~GPSDataReader()
 
 Bool Map::GPSDataReader::ReadNext()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt k;
 	UOSInt rowLeft;
 	Map::GPSTrack::GPSRecord *rec;
@@ -1302,7 +1302,7 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 		UTF8Char sbuff[32];
 		GetDate(0, &dt);
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	}
 	else if (colIndex == 1)
 	{

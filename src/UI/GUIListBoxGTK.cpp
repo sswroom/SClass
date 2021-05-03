@@ -424,7 +424,7 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
 	if (item == 0)
 		return 0;
-	return Text::StrUTF8_WChar(buff, item->txt, -1, 0);
+	return Text::StrUTF8_WChar(buff, item->txt, 0);
 }
 
 void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)

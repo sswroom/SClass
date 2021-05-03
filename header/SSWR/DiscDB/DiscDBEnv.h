@@ -30,9 +30,9 @@ namespace SSWR
 
 			typedef struct
 			{
-				Int32 fileId;
+				UInt32 fileId;
 				const UTF8Char *fileName;
-				Int64 fileSize;
+				UInt64 fileSize;
 				UTF8Char category[6];
 				Int32 videoId;
 			} DiscFileInfo;
@@ -99,7 +99,7 @@ namespace SSWR
 			OSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
 			const BurntDiscInfo *GetBurntDisc(const UTF8Char *discId);
 			OSInt GetBurntDiscIndex(const UTF8Char *discId);
-			Bool NewBurntFile(const UTF8Char *discId, OSInt fileId, const UTF8Char *name, Int64 fileSize, const UTF8Char *category, Int32 videoId);
+			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, const UTF8Char *category, Int32 videoId);
 			OSInt GetBurntFiles(const UTF8Char *discId, Data::ArrayList<DiscFileInfo*> *fileList);
 			void FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList);
 			OSInt GetDVDTypeCount();

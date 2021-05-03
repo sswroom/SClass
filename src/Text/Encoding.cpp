@@ -51,7 +51,7 @@ UOSInt Text::Encoding::CountWChars(const UInt8 *bytes, UOSInt byteSize)
 {
 	if (this->codePage == 65001)
 	{
-		return StrUTF8_WCharCnt(bytes, (OSInt)byteSize);
+		return StrUTF8_WCharCntC(bytes, byteSize);
 	}
 	else if (this->codePage == 1200)
 	{
@@ -80,7 +80,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 
 	if (this->codePage == 65001)
 	{
-		return Text::StrUTF8_WChar(buff, bytes, (OSInt)byteSize, byteConv);
+		return Text::StrUTF8_WCharC(buff, bytes, byteSize, byteConv);
 	}
 	if (size <= 0)
 	{
