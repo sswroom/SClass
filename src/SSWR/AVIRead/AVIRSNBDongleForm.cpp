@@ -492,9 +492,9 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 
 void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt8 *dataBuff;
 	Data::ArrayList<Int64> *keys;
 	Data::ArrayList<Int32> *vals;

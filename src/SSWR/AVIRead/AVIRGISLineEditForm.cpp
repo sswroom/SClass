@@ -45,7 +45,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	while (i < j)
 	{
 		lyr = this->lineLayers->GetItem(i);
-		t = Math::Double2Int32(lyr->thick * dpi / 96.0);
+		t = Math::Double2Int32(Math::UOSInt2Double(lyr->thick) * dpi / 96.0);
 		if (t <= 0)
 		{
 			t = 1;
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(void *userObj
 	lyr->pattern = 0;
 	lyr->nPattern = 0;
 	UTF8Char sbuff[16];
-	OSInt i = me->lineLayers->Add(lyr);
+	UOSInt i = me->lineLayers->Add(lyr);
 	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Layer"), (Int32)i);
 	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem(sbuff, lyr));
 	me->UpdatePreview();
@@ -190,7 +190,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, O
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
-	OSInt npattern;
+	UOSInt npattern;
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[32];
 	if (me->currLayer == 0)
@@ -229,8 +229,8 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(void *userObj)
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
 	LineLayer *lyr;
 	Text::StringBuilderUTF8 sb;
-	OSInt i = me->lineLayers->GetCount();
-	OSInt j = me->env->GetLineStyleLayerCnt(me->lineStyle);
+	UOSInt i = me->lineLayers->GetCount();
+	UOSInt j = me->env->GetLineStyleLayerCnt(me->lineStyle);
 	while (j > i)
 	{
 		me->env->RemoveLineStyleLayer(me->lineStyle, --j);
@@ -270,7 +270,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::FreeLayer(LineLayer *lyr)
 	MemFree(lyr);
 }
 
-SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, OSInt lineStyle) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt lineStyle) : UI::GUIForm(parent, 462, 334, ui)
 {
 	this->core = core;
 	this->env = env;

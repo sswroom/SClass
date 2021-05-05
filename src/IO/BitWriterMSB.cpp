@@ -23,11 +23,11 @@ IO::BitWriterMSB::~BitWriterMSB()
 	MemFree(this->buff);
 }
 
-Bool IO::BitWriterMSB::WriteBits(UInt32 code, OSInt bitCount)
+Bool IO::BitWriterMSB::WriteBits(UInt32 code, UOSInt bitCount)
 {
 	if (this->currBitPos != 0)
 	{
-		OSInt rShift = (bitCount - 8 + this->currBitPos);
+		UOSInt rShift = (bitCount - 8 + this->currBitPos);
 		if (rShift > 0)
 		{
 			this->buff[this->currBytePos] = (UInt8)((this->buff[this->currBytePos] | (code >> rShift)) & 0xff);
@@ -46,7 +46,7 @@ Bool IO::BitWriterMSB::WriteBits(UInt32 code, OSInt bitCount)
 			return true;
 		}
 		bitCount -= 8 - this->currBitPos;
-		code = code & ((1 << bitCount) - 1);
+		code = code & (UInt32)((1 << bitCount) - 1);
 		this->currBitPos = 0;
 		this->currBytePos++;
 	}
@@ -55,7 +55,7 @@ Bool IO::BitWriterMSB::WriteBits(UInt32 code, OSInt bitCount)
 		this->buff[this->currBytePos] = (UInt8)(code >> (bitCount - 8));
 		this->currBytePos++;
 		bitCount -= 8;
-		code = code & ((1 << bitCount) - 1);
+		code = code & (UInt32)((1 << bitCount) - 1);
 	}
 	if (this->currBytePos >= BUFFSIZE - 5)
 	{

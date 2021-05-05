@@ -84,19 +84,19 @@ Bool IO::BitReaderMSB::ReadBits(UInt32 *code, UOSInt bitCount)
 	switch (bits2 >> 3)
 	{
 	case 1:
-		retCode = buff[this->currBytePos] >> (8 - bits3);
+		retCode = (UInt32)(buff[this->currBytePos] >> (8 - bits3));
 		break;
 	case 2:
-		retCode = (buff[this->currBytePos] << bits3) | (buff[this->currBytePos + 1] >> (8 - bits3));
+		retCode = (UInt32)((buff[this->currBytePos] << bits3) | (buff[this->currBytePos + 1] >> (8 - bits3)));
 		break;
 	case 3:
-		retCode = (buff[this->currBytePos] << (8 + bits3)) | (buff[this->currBytePos + 1] << bits3) | (buff[this->currBytePos + 2] >> (8 - bits3));
+		retCode = (UInt32)((buff[this->currBytePos] << (8 + bits3)) | (buff[this->currBytePos + 1] << bits3) | (buff[this->currBytePos + 2] >> (8 - bits3)));
 		break;
 	case 4:
 		retCode = ReadMUInt32(&buff[this->currBytePos]) >> (8 - bits3);
 		break;
 	case 5:
-		retCode = (ReadMUInt32(&buff[this->currBytePos]) << bits3) | (buff[this->currBytePos + 4] >> (8 - bits3));
+		retCode = (ReadMUInt32(&buff[this->currBytePos]) << bits3) | (UInt32)(buff[this->currBytePos + 4] >> (8 - bits3));
 		break;
 	}
 	if (bitCount >= 32)
@@ -105,7 +105,7 @@ Bool IO::BitReaderMSB::ReadBits(UInt32 *code, UOSInt bitCount)
 	}
 	else
 	{
-		*code = retCode & ((1 << bitCount) - 1);
+		*code = retCode & (UInt32)((1 << bitCount) - 1);
 	}
 	this->currBytePos += bits >> 3;
 	this->currBitPos = bits & 7;

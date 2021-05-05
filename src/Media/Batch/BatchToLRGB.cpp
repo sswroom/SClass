@@ -30,8 +30,8 @@ void Media::Batch::BatchToLRGB::SetHandler(Media::Batch::BatchHandler *hdlr)
 
 void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Media::StaticImage *simg;
 	Media::StaticImage *dimg;
 	i = 0;

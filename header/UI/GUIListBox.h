@@ -36,7 +36,7 @@ namespace UI
 		UOSInt GetCount();
 		void SetSelectedIndex(UOSInt index);
 		OSInt GetSelectedIndex();
-		Bool GetSelectedIndices(Data::ArrayList<Int32> *indices);
+		Bool GetSelectedIndices(Data::ArrayList<UInt32> *indices);
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		WChar *GetSelectedItemText(WChar *buff);

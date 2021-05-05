@@ -66,7 +66,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(void *userObj)
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
-	Data::ArrayList<Int32> indices;
+	Data::ArrayList<UInt32> indices;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	me->lstRecords->GetSelectedIndices(&indices);
@@ -293,8 +293,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	OSInt l;
 	OSInt m;
@@ -1315,7 +1315,7 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 	dbCols2->Clear();
 }
 
-const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, OSInt currRec, Data::ArrayList<Int32> *dbCols2)
+const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<Int32> *dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UOSInt i;
@@ -1555,13 +1555,13 @@ void SSWR::SHPConv::SHPConvMainForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ProgressStart(const UTF8Char *name, Int64 count)
+void SSWR::SHPConv::SHPConvMainForm::ProgressStart(const UTF8Char *name, UInt64 count)
 {
 	this->progressName = name;
 	this->totalVal = count;
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(Int64 currCount, Int64 newCount)
+void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = sbuff;
@@ -1570,9 +1570,9 @@ void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(Int64 currCount, Int64 newCo
 		sptr = Text::StrConcat(sptr, this->progressName);
 	}
 	*sptr++ = ' ';
-	sptr = Text::StrInt64(sptr, currCount);
+	sptr = Text::StrUInt64(sptr, currCount);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)" out of ");
-	sptr = Text::StrInt64(sptr, this->totalVal);
+	sptr = Text::StrUInt64(sptr, this->totalVal);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
 	sptr = Text::StrInt32(sptr, (Int32)(currCount * 100.0 / totalVal));
 	this->lblProgress->SetText(sbuff);

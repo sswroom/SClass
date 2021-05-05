@@ -49,7 +49,7 @@ namespace SSWR
 			Bool threadToStop;
 			Sync::Event *threadEvt;
 			const UTF8Char *reqURL;
-			Int32 proxyIP;
+			UInt32 proxyIP;
 			UInt16 proxyPort;
 
 			Bool respChanged;

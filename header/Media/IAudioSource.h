@@ -26,7 +26,7 @@ namespace Media
 		virtual MediaType GetMediaType();
 
 		virtual Bool SupportSampleRead();
-		virtual UOSInt ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8 *buff);
+		virtual UOSInt ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt8 *buff);
 		virtual Int64 GetSampleCount(); // -1 = infinity
 
 		UOSInt ReadBlockLPCM(UInt8 *buff, UOSInt blkSize, AudioFormat *format);

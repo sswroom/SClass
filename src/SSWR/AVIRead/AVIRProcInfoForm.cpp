@@ -367,8 +367,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListInt32 heapList;
 		UTF8Char sbuff[20];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 
 		proc.GetHeapLists(&heapList);
 
@@ -416,7 +416,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 			heap = heapList.GetItem(i);
 			Text::StrHexValOS(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), heap->startAddr);
 			k = this->lvDetHeap->AddItem(sbuff, (void*)heap->startAddr, 0);
-			Text::StrOSInt(sbuff, heap->size);
+			Text::StrUOSInt(sbuff, heap->size);
 			this->lvDetHeap->SetSubItem(k, 1, sbuff);
 			switch (heap->heapType)
 			{

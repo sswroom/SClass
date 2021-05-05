@@ -705,8 +705,8 @@ IO::IStreamData *IO::SPackageFile::CreateStreamData(const UTF8Char *fileName)
 		UInt8 *fileBuff = MemAlloc(UInt8, (OSInt)file->size);
 		this->writeMode = false;
 		this->stm->Seek(IO::SeekableStream::ST_BEGIN, file->ofst);
-		this->stm->Read(fileBuff, (OSInt)file->size);
-		NEW_CLASS(fd, IO::StmData::MemoryData2(fileBuff, (OSInt)file->size));
+		this->stm->Read(fileBuff, (UOSInt)file->size);
+		NEW_CLASS(fd, IO::StmData::MemoryData2(fileBuff, (UOSInt)file->size));
 		MemFree(fileBuff);
 	}
 	mutUsage.EndUse();

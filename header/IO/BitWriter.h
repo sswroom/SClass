@@ -8,8 +8,8 @@ namespace IO
 	public:
 		virtual ~BitWriter() {};
 
-		virtual Bool WriteBits(UInt32 code, OSInt bitCount) = 0;
+		virtual Bool WriteBits(UInt32 code, UOSInt bitCount) = 0;
 		virtual Bool ByteAlign() = 0;
 	};
-};
+}
 #endif

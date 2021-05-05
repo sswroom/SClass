@@ -117,7 +117,7 @@ Bool Media::IAudioSource::SupportSampleRead()
 	return false;
 }
 
-UOSInt Media::IAudioSource::ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
+UOSInt Media::IAudioSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
 {
 	return 0;
 }

@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceUpdateClicked(void *use
 	SSWR::AVIRead::AVIRBluetoothForm *me = (SSWR::AVIRead::AVIRBluetoothForm*)userObj;
 	BTStatus *btStatus = (BTStatus*)me->lbCtrl->GetSelectedItem();
 	IO::BTController::BTDevice *dev;
-	OSInt i;
+	UOSInt i;
 	if (btStatus)
 	{
 		i = btStatus->devList->GetCount();
@@ -143,9 +143,9 @@ void SSWR::AVIRead::AVIRBluetoothForm::ClearGUIDs()
 void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(BTStatus *btStatus)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	IO::BTController::BTDevice *dev;
 	this->ClearGUIDs();
 	this->currDev = 0;
@@ -245,8 +245,8 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->lvDevice->AddColumn((const UTF8Char*)"Authen", 60);
 	this->lvDevice->AddColumn((const UTF8Char*)"Remember", 80);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(this->btList, Data::ArrayList<BTStatus*>());
 	NEW_CLASS(this->guidList, Data::ArrayList<void *>());
 	Data::ArrayList<IO::BTController*> btList;
@@ -283,8 +283,8 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 
 SSWR::AVIRead::AVIRBluetoothForm::~AVIRBluetoothForm()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	BTStatus *btStatus;
 	IO::BTController::BTDevice *dev;
 	this->ClearGUIDs();

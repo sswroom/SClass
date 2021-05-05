@@ -37,7 +37,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		Media::DrawFont *f;
 		gimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
 		f = gimg->NewFontPt((const UTF8Char*)"Arial", 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -57,11 +57,11 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		Media::DrawPen *p;
 		UOSInt i;
 		UOSInt j;
-		Int32 currCh;
-		OSInt currY;
-		OSInt channelH;
-		OSInt lastY;
-		OSInt thisY;
+		UInt32 currCh;
+		UOSInt currY;
+		UOSInt channelH;
+		UOSInt lastY;
+		UOSInt thisY;
 		UOSInt align = this->format->align;
 		gimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 
@@ -69,7 +69,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		i = this->audSrc->ReadSample(currSample, w, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 
 		channelH = h / this->format->nChannels / 2;
@@ -97,8 +97,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 					j = 2 * currCh;
 					while (i < w)
 					{
-						thisY = currY + channelH + (((*(Int16*)&buff[j]) * channelH) >> 15);
-						gimg->DrawLine(Math::OSInt2Double(i - 1), Math::OSInt2Double(lastY), Math::OSInt2Double(i), Math::OSInt2Double(thisY), p);
+						thisY = currY + channelH + ((ReadUInt16(&buff[j]) * channelH) >> 15);
+						gimg->DrawLine(Math::UOSInt2Double(i - 1), Math::UOSInt2Double(lastY), Math::UOSInt2Double(i), Math::UOSInt2Double(thisY), p);
 						
 						lastY = thisY;
 						i++;
@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		Media::DrawFont *f;
 		gimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
 		f = gimg->NewFontPt((const UTF8Char*)"Arial", 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		Media::DrawBrush *b;
 		Media::DrawPen *p;
 		OSInt i;
-		OSInt j;
+		UOSInt j;
 		Double lastX;
 		Double lastY;
 		Double thisX;
@@ -168,16 +168,16 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		i = (OSInt)(currSample - FFTSAMPLE + 1);
 		if (i < 0)
 		{
-			MemClear(buff, this->format->align * -i);
-			i = this->audSrc->ReadSample(0, FFTSAMPLE + i + FFTAVG - 1, buff + (this->format->align * -i)) - i;
+			MemClear(buff, this->format->align * (UOSInt)-i);
+			i = (OSInt)this->audSrc->ReadSample(0, FFTSAMPLE + (UOSInt)i + FFTAVG - 1, buff + (this->format->align * (UOSInt)-i)) - i;
 		}
 		else
 		{
-			i = this->audSrc->ReadSample(i, FFTSAMPLE + FFTAVG - 1, buff);
+			i = (OSInt)this->audSrc->ReadSample(i, FFTSAMPLE + FFTAVG - 1, buff);
 		}
 		
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 
 		Double *freqData;
@@ -202,7 +202,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			else
 			{
 				Data::RandomOS rand;
-				p = gimg->NewPenARGB(rand.NextInt30() | 0xff000000, 1, 0, 0);
+				p = gimg->NewPenARGB((UInt32)rand.NextInt30() | 0xff000000, 1, 0, 0);
 			}
 
 			Double rVal;
@@ -213,8 +213,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			{
 				rVal = freqData[j];
 
-				thisX = j * w / (Double)(FFTSAMPLE / 2 - 1);
-				thisY = -Math::Log10(rVal / (FFTSAMPLE * 0.5)) * h / 7.0;
+				thisX = Math::UOSInt2Double(j * w) / (Double)(FFTSAMPLE / 2 - 1);
+				thisY = -Math::Log10(rVal / (FFTSAMPLE * 0.5)) * Math::UOSInt2Double(h) / 7.0;
 				if (lastX >= 0)
 				{
 					gimg->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 	this->pbsFreq->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->currSample = 0;
-	this->totalSample = this->audSrc->GetSampleCount();
+	this->totalSample = (UInt64)this->audSrc->GetSampleCount();
 
 	this->HandleSizeChanged(OnSizeChanged, this);
 	this->UpdateImages();
@@ -304,7 +304,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_NEXT_SAMPLE:
-		if (this->totalSample != -1)
+		if (this->totalSample != (UOSInt)-1)
 		{
 			if (this->currSample + 1 < this->totalSample)
 			{

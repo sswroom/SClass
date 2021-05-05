@@ -711,7 +711,7 @@ void SSWR::AVIRead::AVIRPackageForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, Int64 count)
+void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, UInt64 count)
 {
 	{
 		Sync::MutexUsage mutUsage(this->readMut);
@@ -741,7 +741,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, Int64 c
 	}
 }
 
-void SSWR::AVIRead::AVIRPackageForm::ProgressUpdate(Int64 currCount, Int64 newCount)
+void SSWR::AVIRead::AVIRPackageForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
 	{
 		Sync::MutexUsage mutUsage(this->readMut);

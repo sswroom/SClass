@@ -590,7 +590,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 			{
 				img = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 				b = img->NewBrushARGB(0xffffffff);
-				img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+				img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 				img->DelBrush(b);
 				sampleInt = me->nChannels * me->bitCount >> 3;
 				if (me->bitCount == 16)

@@ -44,8 +44,8 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		this->hdlr->ImageOutput(imgList, fileId, subId);
 		return;
 	}
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Media::StaticImage *simg;
 	Media::DrawImage *tmpImg = this->deng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	i = 0;
@@ -55,7 +55,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Int32 xRand;
 		Int32 yRand;
 		Double fontSizePx;
-		OSInt leng = Text::StrCharCnt(this->watermark);
+		UOSInt leng = Text::StrCharCnt(this->watermark);
 		Double sz[2];
 		Int32 iWidth;
 		Int32 iHeight;
@@ -64,7 +64,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Media::DrawFont *f;
 
 		simg = (Media::StaticImage*)imgList->GetImage(i, 0);
-		fontSizePx = simg->info->dispWidth / 12.0;
+		fontSizePx = Math::UOSInt2Double(simg->info->dispWidth) / 12.0;
 
 		while (true)
 		{

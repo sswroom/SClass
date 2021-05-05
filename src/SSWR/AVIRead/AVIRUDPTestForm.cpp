@@ -41,9 +41,10 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(void *userObj)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 port;
+		UInt16 port;
 		me->txtServerPort->GetText(&sb);
-		port = sb.ToInt32();
+		port = 0;
+		sb.ToUInt16(&port);
 		if (port > 0 && port < 65536)
 		{
 			NEW_CLASS(me->udp, Net::UDPServer(me->sockf, 0, port, 0, OnUDPPacket, me, 0, 0, 5, false));

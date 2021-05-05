@@ -153,8 +153,8 @@ namespace SSWR
 			Media::DrawImage *sampleImg;
 			Media::DrawImage *fftImg;
 			UInt8 *sampleBuff;
-			Int32 nChannels;
-			Int32 bitCount;
+			UInt32 nChannels;
+			UInt32 bitCount;
 
 			Bool dtmfMod;
 			Sync::Mutex *dtmfMut;

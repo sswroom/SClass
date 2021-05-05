@@ -82,7 +82,7 @@ UI::GUIListBox::~GUIListBox()
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	ListBoxItem *item;
-	OSInt i;
+	UOSInt i;
 	DEL_CLASS(this->selChgHdlrs);
 	DEL_CLASS(this->selChgObjs);
 	DEL_CLASS(this->dblClickHdlrs);
@@ -119,7 +119,7 @@ void UI::GUIListBox::EventSelectionChange()
 		data->showTime = 0;
 	}
 
-	OSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
@@ -128,7 +128,7 @@ void UI::GUIListBox::EventSelectionChange()
 
 void UI::GUIListBox::EventDoubleClick()
 {
-	OSInt i = this->dblClickHdlrs->GetCount();
+	UOSInt i = this->dblClickHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->dblClickHdlrs->GetItem(i)(this->dblClickObjs->GetItem(i));
@@ -138,7 +138,7 @@ void UI::GUIListBox::EventDoubleClick()
 void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
-	OSInt i = this->rightClickHdlrs->GetCount();
+	UOSInt i = this->rightClickHdlrs->GetCount();
 	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, y);
 	if (row)
 	{
@@ -308,7 +308,7 @@ void UI::GUIListBox::ClearItems()
 		curr = curr->next;
 	}
 	g_list_free(list);
-	OSInt i;
+	UOSInt i;
 	ListBoxItem *item;
 	i = this->items->GetCount();
 	while (i-- > 0)
@@ -365,14 +365,14 @@ OSInt UI::GUIListBox::GetSelectedIndex()
 	return gtk_list_box_row_get_index(row);
 }
 
-Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<Int32> *indices)
+Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	GList *list = gtk_list_box_get_selected_rows((GtkListBox*)data->listbox);
 	GList *curr = list;
 	while (curr)
 	{
-		indices->Add(gtk_list_box_row_get_index((GtkListBoxRow*)curr->data));
+		indices->Add((UInt32)gtk_list_box_row_get_index((GtkListBoxRow*)curr->data));
 		curr = curr->next;
 	}
 	g_list_free(list);
@@ -384,7 +384,7 @@ void *UI::GUIListBox::GetSelectedItem()
 	OSInt currSel = GetSelectedIndex();
 	if (currSel <= -1)
 		return 0;
-	return GetItem(currSel);
+	return GetItem((UOSInt)currSel);
 }
 
 UTF8Char *UI::GUIListBox::GetSelectedItemText(UTF8Char *buff)
@@ -392,7 +392,7 @@ UTF8Char *UI::GUIListBox::GetSelectedItemText(UTF8Char *buff)
 	OSInt currSel = GetSelectedIndex();
 	if (currSel <= -1)
 		return 0;
-	return GetItemText(buff, currSel);
+	return GetItemText(buff, (UOSInt)currSel);
 }
 
 WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
@@ -400,7 +400,7 @@ WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 	OSInt currSel = GetSelectedIndex();
 	if (currSel <= -1)
 		return 0;
-	return GetItemText(buff, currSel);
+	return GetItemText(buff, (UOSInt)currSel);
 }
 
 const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
@@ -408,7 +408,7 @@ const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
 	OSInt currSel = GetSelectedIndex();
 	if (currSel <= -1)
 		return 0;
-	return GetItemTextNew(currSel);
+	return GetItemTextNew((UOSInt)currSel);
 }
 
 UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)

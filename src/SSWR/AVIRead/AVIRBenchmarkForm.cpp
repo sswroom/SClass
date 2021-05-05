@@ -12,23 +12,23 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
-UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, OSInt byteSize)
+UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, UOSInt byteSize)
 {
 	if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrOSInt(sbuff, byteSize >> 20), (const UTF8Char*)"MB");
+		return Text::StrConcat(Text::StrUOSInt(sbuff, byteSize >> 20), (const UTF8Char*)"MB");
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrOSInt(sbuff, byteSize >> 10), (const UTF8Char*)"KB");
+		return Text::StrConcat(Text::StrUOSInt(sbuff, byteSize >> 10), (const UTF8Char*)"KB");
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrOSInt(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcat(Text::StrUOSInt(sbuff, byteSize), (const UTF8Char*)"B");
 	}
 }
 
-void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(OSInt startSize, OSInt buffSize)
+void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSize)
 {
 	OSInt i;
 	UTF8Char sbuff[32];
@@ -37,11 +37,11 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(OSInt startSize, OSInt buffSize
 	Manage::HiResClock clk;
 	UInt8 *buff1;
 	UInt8 *buff2;
-	OSInt loopCnt;
-	OSInt currSize;
+	UOSInt loopCnt;
+	UOSInt currSize;
 	SSWR::AVIRead::AVIRBenchmarkForm::TestResult *result;
 
-	OSInt testCnt = 0;
+	UOSInt testCnt = 0;
 	currSize = startSize;
 	while (currSize <= buffSize)
 	{
@@ -466,29 +466,29 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 		this->lvRAM->SetSubItem(k, 1, ram->manufacturer);
 		this->lvRAM->SetSubItem(k, 2, ram->partNo);
 		this->lvRAM->SetSubItem(k, 3, ram->sn);
-		Text::StrOSInt(sbuff, ram->defSpdMHz);
+		Text::StrUOSInt(sbuff, ram->defSpdMHz);
 		this->lvRAM->SetSubItem(k, 4, sbuff);
-		Text::StrOSInt(sbuff, ram->confSpdMHz);
+		Text::StrUOSInt(sbuff, ram->confSpdMHz);
 		this->lvRAM->SetSubItem(k, 5, sbuff);
-		Text::StrInt32(sbuff, ram->dataWidth);
+		Text::StrUInt32(sbuff, ram->dataWidth);
 		this->lvRAM->SetSubItem(k, 6, sbuff);
-		Text::StrInt32(sbuff, ram->totalWidth);
+		Text::StrUInt32(sbuff, ram->totalWidth);
 		this->lvRAM->SetSubItem(k, 7, sbuff);
 		if (ram->memorySize == 0)
 		{
-			Text::StrInt64(sbuff, ram->memorySize);
+			Text::StrUInt64(sbuff, ram->memorySize);
 		}
 		else if (ram->memorySize >= 1073741824)
 		{
-			Text::StrConcat(Text::StrInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"GB");
+			Text::StrConcat(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"GB");
 		}
 		else if (ram->memorySize >= 1048576)
 		{
-			Text::StrConcat(Text::StrInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"MB");
+			Text::StrConcat(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"MB");
 		}
 		else if (ram->memorySize >= 1024)
 		{
-			Text::StrConcat(Text::StrInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"KB");
+			Text::StrConcat(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"KB");
 		}
 		this->lvRAM->SetSubItem(k, 8, sbuff);
 		i++;

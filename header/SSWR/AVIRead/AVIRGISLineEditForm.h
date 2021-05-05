@@ -22,10 +22,10 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Int32 color;
-				OSInt thick;
+				UInt32 color;
+				UOSInt thick;
 				UInt8 *pattern;
-				OSInt nPattern;
+				UOSInt nPattern;
 			} LineLayer;
 
 		private:
@@ -82,7 +82,7 @@ namespace SSWR
 
 			static void FreeLayer(LineLayer *lyr);
 		public:
-			AVIRGISLineEditForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, OSInt lineStyle);
+			AVIRGISLineEditForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineEditForm();
 
 			virtual void OnMonitorChanged();

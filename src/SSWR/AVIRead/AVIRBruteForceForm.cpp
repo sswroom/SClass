@@ -17,8 +17,8 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	SSWR::AVIRead::AVIRBruteForceForm *me = (SSWR::AVIRead::AVIRBruteForceForm*)userObj;
 	Crypto::Hash::IHash *hash;
 	Text::StringBuilderUTF8 sb;
-	Int32 minLeng;
-	Int32 maxLeng;
+	UInt32 minLeng;
+	UInt32 maxLeng;
 	UInt8 hashBuff[64];
 	UOSInt hashSize;
 	if (me->bforce)
@@ -29,10 +29,12 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 		return;
 	}
 	me->txtMinLen->GetText(&sb);
-	minLeng = sb.ToInt32();
+	minLeng = 0;
+	sb.ToUInt32(&minLeng);
 	sb.ClearStr();
 	me->txtMaxLen->GetText(&sb);
-	maxLeng = sb.ToInt32();
+	maxLeng = 0;
+	sb.ToUInt32(&maxLeng);
 	if (minLeng <= 0 || maxLeng < minLeng)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"MinLeng or MaxLeng is not valid", (const UTF8Char*)"Brute Force", me);
@@ -70,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
 	{
 		if (me->bforce->IsProcessing())
 		{
-			Int64 thisCnt = me->bforce->GetTestCnt();
+			UInt64 thisCnt = me->bforce->GetTestCnt();
 			
 			me->bforce->GetCurrKey(Text::StrConcat(Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"Processing, spd="), thisCnt - me->lastCnt), (const UTF8Char*)", key="));
 			me->lastCnt = thisCnt;

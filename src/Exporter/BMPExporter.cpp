@@ -83,8 +83,8 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	Media::Image *img = imgList->GetImage(0, &imgTime);
 
 	UInt8 buff[138];
-	OSInt hdrSize = 54;
-	OSInt lineSize = img->info->storeWidth * img->info->storeBPP;
+	UOSInt hdrSize = 54;
+	UOSInt lineSize = img->info->storeWidth * img->info->storeBPP;
 	if (lineSize & 7)
 		lineSize = lineSize + 8 - (lineSize & 7);
 	lineSize = lineSize >> 3;
@@ -92,13 +92,13 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		lineSize = lineSize + 4 - (lineSize & 3);
 	UOSInt palSize = 0;
 	if (img->info->storeBPP <= 8)
-		palSize = 4 << img->info->storeBPP;
+		palSize = (UOSInt)4 << img->info->storeBPP;
 	const UInt8 *rawICC = img->info->color->GetRAWICC();
-	OSInt iccSize = 0;
+	UOSInt iccSize = 0;
 	if (rawICC)
 	{
 		hdrSize = 124;
-		iccSize = ReadMInt32(rawICC);
+		iccSize = ReadMUInt32(rawICC);
 		WriteInt32(&buff[70], ReadInt32((const UInt8*)"DEBM")); //bV5CSType = PROFILE_EMBEDDED
 		WriteInt32(&buff[74], 0);
 		WriteInt32(&buff[78], 0);
@@ -208,7 +208,7 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	WriteInt32(&buff[18], (Int32)(img->info->dispWidth));
 	WriteInt32(&buff[22], (Int32)(img->info->dispHeight));
 	WriteInt32(&buff[26], 1);
-	WriteInt32(&buff[28], img->info->storeBPP);
+	WriteUInt32(&buff[28], img->info->storeBPP);
 	WriteInt32(&buff[30], (img->info->pf == Media::PF_LE_R5G6B5 || img->info->pf == Media::PF_LE_A2B10G10R10)?3:0);
 	WriteInt32(&buff[34], 0);
 	WriteInt32(&buff[38], Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, img->info->hdpi)));
@@ -236,11 +236,11 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		WriteInt32(&buff[62], 0x3ff00000);
 		if (img->info->atype == Media::AT_ALPHA)
 		{
-			WriteInt32(&buff[66], 0xc0000000);
+			WriteUInt32(&buff[66], 0xc0000000);
 		}
 		else
 		{
-			WriteInt32(&buff[66], 0x00000000);
+			WriteUInt32(&buff[66], 0x00000000);
 		}
 	}
 	else
@@ -258,7 +258,7 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	}
 
 	UInt8 *imgData = MemAlloc(UInt8, lineSize * img->info->dispHeight);
-	img->GetImageData(imgData + lineSize * (img->info->dispHeight - 1), 0, 0, img->info->dispWidth, img->info->dispHeight, -lineSize);
+	img->GetImageData(imgData + lineSize * (img->info->dispHeight - 1), 0, 0, img->info->dispWidth, img->info->dispHeight, -(OSInt)lineSize);
 	stm->Write(imgData, lineSize * img->info->dispHeight);
 
 	if (iccSize > 0)

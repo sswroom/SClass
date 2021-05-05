@@ -45,11 +45,11 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(void *userObj)
 	Crypto::Hash::BruteForceAttack *me = (Crypto::Hash::BruteForceAttack*)userObj;
 	UInt8 keyBuff[256];
 	UTF8Char result[64];
-	OSInt keySize;
-	OSInt hashSize;
+	UOSInt keySize;
+	UOSInt hashSize;
 	Crypto::Hash::IHash *hash;
 	Bool eq;
-	OSInt i;
+	UOSInt i;
 	Sync::Interlocked::Increment(&me->threadCnt);
 	hash = me->hash->Clone();
 	hashSize = hash->GetResultSize();
@@ -79,18 +79,18 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(void *userObj)
 		}
 	}
 	DEL_CLASS(hash);
-	Sync::Interlocked::Decrement(&me->threadCnt);
+	Sync::Interlocked::Decrement((OSInt*)&me->threadCnt);
 	return 0;
 }
 
-OSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resultBuff)
+UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resultBuff)
 {
-	OSInt ret;
-	OSInt len;
-	OSInt i;
+	UOSInt ret;
+	UOSInt len;
+	UOSInt i;
 	UInt8 c;
 	Sync::MutexUsage mutUsage(this->keyMut);
-	len = Text::StrConcat(resultBuff, this->keyBuff) - resultBuff;
+	len = (UOSInt)(Text::StrConcat(resultBuff, this->keyBuff) - resultBuff);
 	if (len > this->maxLeng)
 	{
 		mutUsage.EndUse();
@@ -127,7 +127,7 @@ OSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resul
 	i = len;
 	while (i-- > 0)
 	{
-		c = this->keyBuff[i] + 1;
+		c = (UInt8)(this->keyBuff[i] + 1);
 		while (c < 0x80)
 		{
 			if (this->keyLimit[c])
@@ -218,9 +218,9 @@ UTF8Char *Crypto::Hash::BruteForceAttack::GetCurrKey(UTF8Char *key)
 	return 0;
 }
 
-OSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
+UOSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
 {
-	OSInt len;
+	UOSInt len;
 	if (this->threadCnt > 0)
 	{
 		Sync::MutexUsage mutUsage(this->keyMut);
@@ -231,7 +231,7 @@ OSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
 	return 0;
 }
 
-Int64 Crypto::Hash::BruteForceAttack::GetTestCnt()
+UInt64 Crypto::Hash::BruteForceAttack::GetTestCnt()
 {
 	return this->testCnt;
 }
@@ -243,7 +243,7 @@ UTF8Char *Crypto::Hash::BruteForceAttack::GetResult(UTF8Char *resultBuff)
 	return 0;
 }
 
-Bool Crypto::Hash::BruteForceAttack::Start(const UInt8 *hashValue, OSInt minLeng, OSInt maxLeng)
+Bool Crypto::Hash::BruteForceAttack::Start(const UInt8 *hashValue, UOSInt minLeng, UOSInt maxLeng)
 {
 	if (this->threadCnt > 0)
 	{
@@ -269,7 +269,7 @@ Bool Crypto::Hash::BruteForceAttack::Start(const UInt8 *hashValue, OSInt minLeng
 	while (this->keyLimit[c] == 0)
 		c++;
 	this->keyFirst = c;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < minLeng)
 	{

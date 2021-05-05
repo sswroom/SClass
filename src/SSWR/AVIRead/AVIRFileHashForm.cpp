@@ -357,7 +357,7 @@ void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(const UTF8Char *name, Int64 count)
+void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(const UTF8Char *name, UInt64 count)
 {
 	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->progName)
@@ -373,7 +373,7 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(const UTF8Char *name, Int64 
 	mutUsage.EndUse();
 }
 
-void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(Int64 currCount, Int64 newCount)
+void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
 	Sync::MutexUsage mutUsage(this->readMut);
 	this->readSize += currCount - this->progCurr;

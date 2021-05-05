@@ -9,16 +9,16 @@ namespace UI
 	{
 	private:
 		void *clsData;
-		Int64 totalCnt;
+		UInt64 totalCnt;
 	public:
-		GUIProgressBar(GUICore *ui, UI::GUIClientControl *parent, Int64 totalCnt);
+		GUIProgressBar(GUICore *ui, UI::GUIClientControl *parent, UInt64 totalCnt);
 		virtual ~GUIProgressBar();
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(Int32 code, void *lParam);
 
-		virtual void ProgressStart(const UTF8Char *name, Int64 count);
-		virtual void ProgressUpdate(Int64 currCount, Int64 newTotalCount);
+		virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+		virtual void ProgressUpdate(UInt64 currCount, UInt64 newTotalCount);
 		virtual void ProgressEnd();
 	};
 }

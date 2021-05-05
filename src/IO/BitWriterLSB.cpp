@@ -23,7 +23,7 @@ IO::BitWriterLSB::~BitWriterLSB()
 	MemFree(this->buff);
 }
 
-Bool IO::BitWriterLSB::WriteBits(UInt32 code, OSInt bitCount)
+Bool IO::BitWriterLSB::WriteBits(UInt32 code, UOSInt bitCount)
 {
 	if (this->currBitPos != 0)
 	{

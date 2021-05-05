@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Crypto::Hash::BruteForceAttack *bforce;
-			Int64 lastCnt;
+			UInt64 lastCnt;
 
 			UI::GUILabel *lblHashType;
 			UI::GUIComboBox *cboHashType;

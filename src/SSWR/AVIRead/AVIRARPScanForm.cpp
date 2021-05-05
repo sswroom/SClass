@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 	if (adapter)
 	{
 		UInt8 buff[4];
-		WriteNInt32(buff, adapter->ipAddr);
+		WriteNUInt32(buff, adapter->ipAddr);
 		if (buff[0] == 192 && buff[1] == 168)
 		{
 		}
@@ -78,10 +78,10 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 			Sync::MutexUsage mutUsage(me->arpMut);
 			while (buff[3] < 255)
 			{
-				ipInfo = me->arpMap->Get(ReadNInt32(buff));
+				ipInfo = me->arpMap->Get(ReadNUInt32(buff));
 				if (ipInfo == 0)
 				{
-					arp->MakeRequest(ReadNInt32(buff));
+					arp->MakeRequest(ReadNUInt32(buff));
 				}
 				buff[3]++;
 			}
@@ -96,7 +96,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 {
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	UTF8Char sbuff[64];
 
 	const Net::MACInfo::MACEntry *macEntry;

@@ -34,7 +34,7 @@ Int32 GUIProgressBar_OnTick(void *userObj)
 	return 1;
 }
 
-UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent, Int64 totalCnt) : UI::GUIControl(ui, parent)
+UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = gtk_progress_bar_new();
 	gtk_progress_bar_set_show_text((GtkProgressBar*)this->hwnd, false);
@@ -67,7 +67,7 @@ OSInt UI::GUIProgressBar::OnNotify(Int32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, Int64 count)
+void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, UInt64 count)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	data->currCnt = 0;
@@ -76,7 +76,7 @@ void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, Int64 count)
 	data->cntUpdated = true;
 }
 
-void UI::GUIProgressBar::ProgressUpdate(Int64 currCount, Int64 newTotalCount)
+void UI::GUIProgressBar::ProgressUpdate(UInt64 currCount, UInt64 newTotalCount)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	data->currCnt = currCount;

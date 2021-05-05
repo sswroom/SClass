@@ -13,9 +13,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	SSWR::AVIRead::AVIRHTTPProxyClientForm *me = (SSWR::AVIRead::AVIRHTTPProxyClientForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
-	Int32 port;
+	UInt16 port;
 	me->txtProxyPort->GetText(&sb);
-	port = sb.ToInt32();
+	port = 0;
+	sb.ToUInt16(&port);
 	if (port <= 0 || port >= 65536)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid proxy port", (const UTF8Char *)"Request", me);
@@ -55,8 +56,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 	Net::HTTPClient *cli;
 	UInt8 buff[4096];
 	UTF8Char *sbuff;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->threadRunning = true;
 	sbuff = MemAlloc(UTF8Char, 65536);
 	while (!me->threadToStop)
@@ -169,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj
 
 void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->respHeaders->GetCount();
 	while (i-- > 0)
 	{

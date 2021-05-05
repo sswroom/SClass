@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 	SSWR::AVIRead::AVIRARPPingForm *me = (SSWR::AVIRead::AVIRARPPingForm *)userObj;
 	if (me->requested)
 	{
-		UInt32 reqIP = ReadNInt32(me->targetAddr.addr);
+		UInt32 reqIP = ReadNUInt32(me->targetAddr.addr);
 		if (reqIP == ipAddr)
 		{
 			Double t = me->clk->GetTimeDiff() * 1000;
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(void *userObj)
 		}
 		me->requested = true;
 		me->clk->Start();
-		me->arpHdlr->MakeRequest(ReadNInt32(me->targetAddr.addr));
+		me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr));
 	}
 }
 
@@ -169,8 +169,8 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(&connInfoList);
 	i = 0;

@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 	OSInt i = me->cboRecent->GetSelectedIndex();
 	if (i >= 0)
 	{
-		me->txtURL->SetText(me->rssList->GetItem(i));
+		me->txtURL->SetText(me->rssList->GetItem((UOSInt)i));
 	}
 }
 
@@ -178,8 +178,8 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"RSSList.txt");
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
 	{

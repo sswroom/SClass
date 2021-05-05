@@ -14,8 +14,8 @@ namespace IO
 	private:
 		typedef struct
 		{
-			Int64 ofst;
-			Int64 size;
+			UInt64 ofst;
+			UInt64 size;
 		} FileInfo;
 	private:
 		Data::BTreeUTF8Map<FileInfo*> *fileMap;

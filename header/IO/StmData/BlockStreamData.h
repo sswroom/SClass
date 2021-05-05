@@ -2,8 +2,8 @@
 #define _SM_IO_STMDATA_BLOCKSTREAMDATA
 #include "IO/IStreamData.h"
 #include "IO/FileStream.h"
-#include "Data/ArrayListInt32.h"
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt32.h"
+#include "Data/ArrayListUInt64.h"
 
 namespace IO
 {
@@ -13,9 +13,9 @@ namespace IO
 		{
 		private:
 			IO::IStreamData *sd;
-			Data::ArrayListInt64 *dataOfstList;
-			Data::ArrayListInt64 *stmOfstList;
-			Data::ArrayListInt32 *lengthList;
+			Data::ArrayListUInt64 *dataOfstList;
+			Data::ArrayListUInt64 *stmOfstList;
+			Data::ArrayListUInt32 *lengthList;
 			UInt64 totalSize;
 
 		public:

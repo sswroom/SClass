@@ -62,8 +62,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(void *userO
 void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	Data::ArrayList<BTDevice*> *devList;
@@ -200,8 +200,8 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 150);
 	this->lvDevices->AddColumn((const UTF8Char*)"RSSI", 60);
 
-	OSInt i = 0;
-	OSInt j = this->btList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->btList->GetCount();
 	IO::BTController *btCtrl;
 	while (i < j)
 	{
@@ -218,7 +218,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRBluetoothLEForm::~AVIRBluetoothLEForm()
 {
-	OSInt i;
+	UOSInt i;
 	IO::BTController *btCtrl;
 	if (this->btCtrl)
 	{

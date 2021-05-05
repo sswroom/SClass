@@ -9,16 +9,16 @@ namespace IO
 	{
 	private:
 		UInt8 *buff;
-		OSInt currBytePos;
-		OSInt currBitPos;
+		UOSInt currBytePos;
+		UOSInt currBitPos;
 		IO::Stream *stm;
 
 	public:
 		BitWriterLSB(IO::Stream *stm);
 		virtual ~BitWriterLSB();
 
-		virtual Bool WriteBits(UInt32 code, OSInt bitCount);
+		virtual Bool WriteBits(UInt32 code, UOSInt bitCount);
 		virtual Bool ByteAlign();
 	};
-};
+}
 #endif

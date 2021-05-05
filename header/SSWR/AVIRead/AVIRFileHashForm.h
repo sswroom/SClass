@@ -64,11 +64,11 @@ namespace SSWR
 			Sync::Mutex *readMut;
 			const UTF8Char *progName;
 			Bool progNameChg;
-			Int64 readSize;
-			Int64 totalRead;
-			Int64 progCount;
-			Int64 progCurr;
-			Int64 progLastCount;
+			UInt64 readSize;
+			UInt64 totalRead;
+			UInt64 progCount;
+			UInt64 progCurr;
+			UInt64 progLastCount;
 			IO::FileCheck::CheckType currHashType;
 
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
@@ -83,10 +83,10 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(const UTF8Char *name, Int64 count);
-			virtual void ProgressUpdate(Int64 currCount, Int64 newCount);
+			virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};
-	};
-};
+	}
+}
 #endif

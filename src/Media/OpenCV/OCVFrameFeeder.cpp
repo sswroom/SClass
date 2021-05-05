@@ -64,8 +64,8 @@ Media::OpenCV::OCVFrameFeeder::~OCVFrameFeeder()
 
 Bool Media::OpenCV::OCVFrameFeeder::Start()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 rateNorm;
 	UInt32 rateDenorm;
 	UOSInt maxFrameSize;
@@ -82,12 +82,12 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 			Media::IVideoCapture::VideoFormat *formats;
 			UOSInt thisSize;
 			UOSInt maxSize = 0;
-			UOSInt maxWidth = -1;
-			UOSInt maxHeight = -1;
+			UOSInt maxWidth = 0;
+			UOSInt maxHeight = 0;
 			UInt32 maxFmt = 0xFFFFFFFF;
-			Int32 maxBpp;
-			Int32 maxRateNumer = 0;
-			Int32 maxRateDenom = 0;
+			UInt32 maxBpp;
+			UInt32 maxRateNumer = 0;
+			UInt32 maxRateDenom = 0;
 			formats = MemAlloc(Media::IVideoCapture::VideoFormat, 512);
 			i = 0;
 			j = 512;
@@ -188,7 +188,7 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 			}
 			if (maxSize > 0)
 			{
-				Int32 tmp[2];
+				UInt32 tmp[2];
 				tmp[0] = maxFmt;
 				tmp[1] = 0;
 				printf("OCVFrameFeeder: %s %d %d\r\n", (Char*)tmp, (Int32)maxWidth, (Int32)maxHeight);

@@ -61,8 +61,8 @@ namespace SSWR
 			UI::GUITextBox *txtCPU;
 			UI::GUIListView *lvRAM;
 
-			static UTF8Char *ByteDisp(UTF8Char *sbuff, OSInt byteSize);
-			void StartTest(OSInt startSize, OSInt buffSize);
+			static UTF8Char *ByteDisp(UTF8Char *sbuff, UOSInt byteSize);
+			void StartTest(UOSInt startSize, UOSInt buffSize);
 			void ClearResult();
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnQuickClicked(void *userObj);

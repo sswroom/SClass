@@ -34,8 +34,8 @@ namespace SSWR
 			Media::DrawEngine *eng;
 			Media::DrawImage *sampleImg;
 			Media::DrawImage *fftImg;
-			Int64 currSample;
-			Int64 totalSample;
+			UInt64 currSample;
+			UInt64 totalSample;
 			Media::AudioFormat *format;
 
 			static void __stdcall OnSizeChanged(void *userObj);

@@ -5,9 +5,9 @@
 IO::StmData::BlockStreamData::BlockStreamData(IO::IStreamData *sd)
 {
 	this->sd = sd->GetPartialData(0, sd->GetDataSize());
-	NEW_CLASS(this->dataOfstList, Data::ArrayListInt64());
-	NEW_CLASS(this->stmOfstList, Data::ArrayListInt64());
-	NEW_CLASS(this->lengthList, Data::ArrayListInt32());
+	NEW_CLASS(this->dataOfstList, Data::ArrayListUInt64());
+	NEW_CLASS(this->stmOfstList, Data::ArrayListUInt64());
+	NEW_CLASS(this->lengthList, Data::ArrayListUInt32());
 	this->totalSize = 0;
 }
 
@@ -25,19 +25,19 @@ UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, U
 	UOSInt totalLength = 0;
 	UOSInt thisLength;
 	UOSInt thisOfst;
-	OSInt j = this->stmOfstList->GetCount();
+	OSInt j = (OSInt)this->stmOfstList->GetCount();
 	if (offset >= totalSize)
 		return 0;
 	if (i < 0)
 	{
 		i = ~i - 1;
-		thisOfst = (OSInt)(offset - this->dataOfstList->GetItem(i));
-		thisLength = this->lengthList->GetItem(i) - thisOfst;
+		thisOfst = (UOSInt)(offset - this->dataOfstList->GetItem((UOSInt)i));
+		thisLength = this->lengthList->GetItem((UOSInt)i) - thisOfst;
 		if (thisLength > length)
 		{
 			thisLength = length;
 		}
-		totalLength += this->sd->GetRealData(this->stmOfstList->GetItem(i) + thisOfst, thisLength, buffer);
+		totalLength += this->sd->GetRealData(this->stmOfstList->GetItem((UOSInt)i) + thisOfst, thisLength, buffer);
 		buffer += thisLength;
 		length -= thisLength;
 		i++;
@@ -47,12 +47,12 @@ UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, U
 		if (length <= 0)
 			break;
 
-		thisLength = this->lengthList->GetItem(i);
+		thisLength = this->lengthList->GetItem((UOSInt)i);
 		if (thisLength > length)
 		{
 			thisLength = length;
 		}
-		totalLength += this->sd->GetRealData(this->stmOfstList->GetItem(i), thisLength, buffer);
+		totalLength += this->sd->GetRealData(this->stmOfstList->GetItem((UOSInt)i), thisLength, buffer);
 		buffer += thisLength;
 		length -= thisLength;
 		i++;
@@ -88,21 +88,21 @@ IO::IStreamData *IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UIn
 	UInt64 totalLength = 0;
 	UOSInt thisLength;
 	UOSInt thisOfst;
-	OSInt j = this->stmOfstList->GetCount();
+	OSInt j = (OSInt)this->stmOfstList->GetCount();
 	if (offset >= totalSize)
 		return data;
 	if (i < 0)
 	{
 		i = ~i - 1;
-		thisOfst = (OSInt)(offset - this->stmOfstList->GetItem(i));
-		thisLength = this->lengthList->GetItem(i) - thisOfst;
+		thisOfst = (UOSInt)(offset - this->stmOfstList->GetItem((UOSInt)i));
+		thisLength = this->lengthList->GetItem((UOSInt)i) - thisOfst;
 		if (thisLength > length)
 		{
-			thisLength = (OSInt)length;
+			thisLength = (UOSInt)length;
 		}
 		data->dataOfstList->Add(totalLength);
-		data->stmOfstList->Add(this->stmOfstList->GetItem(i) + thisOfst);
-		data->lengthList->Add((Int32)thisLength);
+		data->stmOfstList->Add(this->stmOfstList->GetItem((UOSInt)i) + thisOfst);
+		data->lengthList->Add((UInt32)thisLength);
 		length -= thisLength;
 		totalLength += thisLength;
 		i++;
@@ -112,14 +112,14 @@ IO::IStreamData *IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UIn
 		if (length <= 0)
 			break;
 
-		thisLength = this->lengthList->GetItem(i);
+		thisLength = this->lengthList->GetItem((UOSInt)i);
 		if (thisLength > length)
 		{
-			thisLength = (OSInt)length;
+			thisLength = (UOSInt)length;
 		}
 		data->dataOfstList->Add(totalLength);
-		data->stmOfstList->Add(this->stmOfstList->GetItem(i));
-		data->lengthList->Add((Int32)thisLength);
+		data->stmOfstList->Add(this->stmOfstList->GetItem((UOSInt)i));
+		data->lengthList->Add((UInt32)thisLength);
 		length -= thisLength;
 		totalLength += thisLength;
 		i++;
@@ -157,6 +157,6 @@ void IO::StmData::BlockStreamData::Append(UInt64 ofst, UInt32 length)
 	}
 	this->dataOfstList->Add(totalSize);
 	this->stmOfstList->Add(startOfst);
-	this->lengthList->Add((Int32)(endOfst - startOfst));
+	this->lengthList->Add((UInt32)(endOfst - startOfst));
 	totalSize += endOfst - startOfst;
 }

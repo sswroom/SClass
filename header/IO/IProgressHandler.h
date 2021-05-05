@@ -6,9 +6,9 @@ namespace IO
 	class IProgressHandler
 	{
 	public:
-		virtual void ProgressStart(const UTF8Char *name, Int64 count) = 0;
-		virtual void ProgressUpdate(Int64 currCount, Int64 newCount) = 0;
+		virtual void ProgressStart(const UTF8Char *name, UInt64 count) = 0;
+		virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount) = 0;
 		virtual void ProgressEnd() = 0;
 	};
-};
+}
 #endif

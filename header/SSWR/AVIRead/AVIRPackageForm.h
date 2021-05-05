@@ -88,16 +88,16 @@ namespace SSWR
 			Int64 readCurr;
 			Int64 readLast;
 			const UTF8Char *readCurrFile;
-			Int64 readFileCnt;
+			UInt64 readFileCnt;
 			Data::DateTime *readLastTimer;
 			Data::DateTime *readReadTime;
 
 			Sync::Mutex *progMut;
 			const UTF8Char *progName;
-			Int64 progStartCnt;
+			UInt64 progStartCnt;
 			Bool progStarted;
-			Int64 progUpdateCurr;
-			Int64 progUpdateNew;
+			UInt64 progUpdateCurr;
+			UInt64 progUpdateNew;
 			Bool progUpdated;
 			Bool progEnd;
 
@@ -113,10 +113,10 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(const UTF8Char *name, Int64 count);
-			virtual void ProgressUpdate(Int64 currCount, Int64 newCount);
+			virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};
-	};
-};
+	}
+}
 #endif

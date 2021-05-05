@@ -271,9 +271,9 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 #if _WCHAR_SIZE == 4
 	WChar wbuff[64];
 #endif
-	OSInt k;
-	OSInt i;
-	OSInt j;
+	UOSInt k;
+	UOSInt i;
+	UOSInt j;
 	this->modem->SMSFreeMessages(this->msgList);
 	this->lvSMS->ClearItems();
 	this->msgList->Clear();

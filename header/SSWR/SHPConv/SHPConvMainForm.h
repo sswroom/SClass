@@ -88,7 +88,7 @@ namespace SSWR
 			Media::MonitorMgr *monMgr;
 			Data::ArrayList<MapFilter *> *globalFilters;
 			const UTF8Char *progressName;
-			Int64 totalVal;
+			UInt64 totalVal;
 			OSInt currGroup;
 			Text::HKSCSFix *hkscsConv;
 			Bool isGrid80;
@@ -109,7 +109,7 @@ namespace SSWR
 
 			virtual void ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2);
 			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2);
-			virtual const UTF8Char *GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, OSInt currRec, Data::ArrayList<Int32> *dbcols2);
+			virtual const UTF8Char *GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<Int32> *dbcols2);
 
 		public:
 			SHPConvMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr);
@@ -117,10 +117,10 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(const UTF8Char *name, Int64 count);
-			virtual void ProgressUpdate(Int64 currCount, Int64 newCount);
+			virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};
-	};
-};
+	}
+}
 #endif
