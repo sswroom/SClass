@@ -17,8 +17,8 @@ void Media::CS::CSRGBF_LRGBC::UpdateRGBTable()
 	}
 	OSInt i;
 	OSInt iV;
+	Double dV;
 	Double thisV;
-	Double cV;
 	UInt16 v[4];
 	Media::ColorProfile *srcProfile;
 	if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
@@ -91,21 +91,22 @@ void Media::CS::CSRGBF_LRGBC::UpdateRGBTable()
 		{
 			iV = i - 65536;
 		}
-		thisV = rtFunc->InverseTransfer(iV / 32767.0);
+		dV = Math::OSInt2Double(iV) / 32767.0;
+		thisV = rtFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
 		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0x3fff;
 		rgbGammaCorr[i] = *(Int64*)&v[0];
 
-		thisV = gtFunc->InverseTransfer(iV / 32767.0);
+		thisV = gtFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
 		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
-		thisV = btFunc->InverseTransfer(iV / 32767.0);
+		thisV = btFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
 		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
@@ -159,10 +160,10 @@ void Media::CS::CSRGBF_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (srcStoreHeight - 1) * destRGBBpl;
+		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGBF_LRGBC_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, srcStoreWidth * srcNBits >> 3, destRGBBpl, this->rgbTable);
+	CSRGBF_LRGBC_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 }
 
 UOSInt Media::CS::CSRGBF_LRGBC::GetSrcFrameSize(UOSInt width, UOSInt height)

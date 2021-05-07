@@ -118,30 +118,13 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	i = 256;
 	while (i-- > 0)
 	{
-		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(i / 255.0) * rMul);
-		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(i / 255.0) * gMul);
-		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(i / 255.0) * bMul);
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0;
-		if (rV > 255.0)
-			this->rgbTable[i + 512] = 255;
-		else if (rV < 0)
-			this->rgbTable[i + 512] = 0;
-		else
-			this->rgbTable[i + 512] = (UInt8)Math::Double2Int32(rV);
-		if (gV > 255.0)
-			this->rgbTable[i + 256] = 255;
-		else if (gV < 0)
-			this->rgbTable[i + 256] = 0;
-		else
-			this->rgbTable[i + 256] = (UInt8)Math::Double2Int32(gV);
-		if (bV > 255.0)
-			this->rgbTable[i + 0] = 255;
-		else if (bV < 0)
-			this->rgbTable[i + 0] = 0;
-		else
-			this->rgbTable[i + 0] = (UInt8)Math::Double2Int32(bV);
+		Double dV = Math::OSInt2Double(i) / 255.0;
+		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dV) * rMul);
+		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dV) * gMul);
+		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dV) * bMul);
+		this->rgbTable[i + 512] = Math::SDouble2UInt8((rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0);
+		this->rgbTable[i + 256] = Math::SDouble2UInt8((gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0);
+		this->rgbTable[i + 0] = Math::SDouble2UInt8((bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0);
 	}
 	DEL_CLASS(irFunc);
 	DEL_CLASS(igFunc);
@@ -152,7 +135,7 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 
 	if (this->srcPal)
 	{
-		CSRGB8_RGB8_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, 1 << this->srcNBits);
+		CSRGB8_RGB8_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, (UOSInt)(1 << this->srcNBits));
 	}
 }
 
@@ -170,8 +153,8 @@ Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, U
 	this->rgbParam->Set(colorSess->GetRGBParam());
 	if (this->srcNBits <= 8)
 	{
-		this->srcPal = MemAlloc(UInt8, 4 << this->srcNBits);
-		this->destPal = MemAlloc(UInt8, 4 << this->srcNBits);
+		this->srcPal = MemAlloc(UInt8, (UOSInt)(4 << this->srcNBits));
+		this->destPal = MemAlloc(UInt8, (UOSInt)(4 << this->srcNBits));
 	}
 	this->rgbTable = 0;
 	this->rgbUpdated = true;
@@ -208,10 +191,10 @@ void Media::CS::CSRGB8_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt di
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (srcStoreHeight - 1) * destRGBBpl;
+		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGB8_RGB8_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcStoreWidth * srcNBits >> 3, destRGBBpl, srcNBits, destNBits, this->srcPal, this->destPal, this->rgbTable);
+	CSRGB8_RGB8_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->srcPal, this->destPal, this->rgbTable);
 }
 
 UOSInt Media::CS::CSRGB8_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)
@@ -228,7 +211,8 @@ void Media::CS::CSRGB8_RGB8::SetPalette(UInt8 *pal)
 {
 	if (this->srcPal)
 	{
-		MemCopyNO(this->srcPal, pal, 4 << this->srcNBits);
+		UOSInt nColor = (UOSInt)(4 << this->srcNBits);
+		MemCopyNO(this->srcPal, pal, nColor);
 		this->rgbUpdated = true;
 	}
 }

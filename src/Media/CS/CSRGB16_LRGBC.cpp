@@ -19,7 +19,7 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	}
 	OSInt i;
 	Double thisV;
-	Double cV;
+	Double dV;
 	UInt16 v[4];
 	Media::ColorProfile *srcProfile;
 	if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
@@ -84,21 +84,22 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	i = 65536;
 	while (i--)
 	{
-		thisV = rtFunc->InverseTransfer(i / 65535.0);
+		dV = Math::OSInt2Double(i) / 65535.0;
+		thisV = rtFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
 		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0x3fff;
 		rgbGammaCorr[i] = *(Int64*)&v[0];
 
-		thisV = gtFunc->InverseTransfer(i / 65535.0);
+		thisV = gtFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
 		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
-		thisV = btFunc->InverseTransfer(i / 65535.0);
+		thisV = btFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
 		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
@@ -152,16 +153,16 @@ void Media::CS::CSRGB16_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt 
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (srcStoreHeight - 1) * destRGBBpl;
+		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
 	if (this->srcPF == Media::PF_LE_A2B10G10R10)
 	{
-		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, srcStoreWidth * srcNBits >> 3, destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 	}
 	else
 	{
-		CSRGB16_LRGBC_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, srcStoreWidth * srcNBits >> 3, destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 	}
 }
 

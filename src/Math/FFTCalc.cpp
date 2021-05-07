@@ -6,10 +6,10 @@
 
 extern "C"
 {
-	void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul);
-	void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul);
-	void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, OSInt sampleCnt);
-	OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount);
+	void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, UOSInt sampleCnt, UOSInt sampleAdd, Double sampleMul);
+	void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, UOSInt sampleCnt, UOSInt sampleAdd, Double sampleMul);
+	void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, UOSInt sampleCnt);
+	UOSInt FFTCalc_Forward(Double *complexData, UOSInt sampleCount);
 }
 
 void Math::FFTCalc::BuildSampleWin()
@@ -21,8 +21,11 @@ void Math::FFTCalc::BuildSampleWin()
 	Double a3;
 	Double a4;
 	Double invK;
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
+	Double dj;
+	Double dk;
+	Double dsampleCount;
 	switch (this->wtype)
 	{
 	default:
@@ -39,14 +42,16 @@ void Math::FFTCalc::BuildSampleWin()
 	case WT_TRIANGULAR:
 		k = sampleCount >> 1;
 		j = 0;
+		dk = Math::UOSInt2Double(k);
+		dsampleCount = Math::UOSInt2Double(sampleCount);
 		while (j < k)
 		{
-			this->sampleWindow[j]= (j + 0.5) / k;
+			this->sampleWindow[j]= (Math::UOSInt2Double(j) + 0.5) / dk;
 			j++;
 		}
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (sampleCount - j + 0.5) / k;
+			this->sampleWindow[j] = (dsampleCount - Math::UOSInt2Double(j) + 0.5) / dk;
 			j++;
 		}
 		break;
@@ -57,9 +62,10 @@ void Math::FFTCalc::BuildSampleWin()
 		a0 = 0.53836;
 		a1 = 0.46164;
 		j = 0;
+		dk = Math::UOSInt2Double(k);
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(j * pi2 / k));
+			this->sampleWindow[j] = (a0 - a1 * Math::Cos(Math::UOSInt2Double(j) * pi2 / dk));
 			j++;
 		}
 		break;
@@ -70,10 +76,12 @@ void Math::FFTCalc::BuildSampleWin()
 		a0 = 7938.0 / 18608.0;
 		a1 = 9240.0 / 18608.0;
 		a2 = 1430.0 / 18608.0;
+		dk = Math::UOSInt2Double(k);
 		j = 0;
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk));
 			j++;
 		}
 		break;
@@ -85,10 +93,12 @@ void Math::FFTCalc::BuildSampleWin()
 		a1 = 0.487396;
 		a2 = 0.144232;
 		a3 = 0.012604;
+		dk = Math::UOSInt2Double(k);
 		j = 0;
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k) - a3 * Math::Cos(3 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk));
 			j++;
 		}
 		break;
@@ -100,17 +110,20 @@ void Math::FFTCalc::BuildSampleWin()
 		a1 = 0.4891775;
 		a2 = 0.1365995;
 		a3 = 0.0106411;
+		dk = Math::UOSInt2Double(k);
 		j = 0;
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k) - a3 * Math::Cos(3 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk));
 			j++;
 		}
 		break;
 
 	case WT_BLACKMANN_HARRIS:
 		k = sampleCount - 1;
-		invK = 1.0 / k;
+		dk = Math::UOSInt2Double(k);
+		invK = 1.0 / dk;
 		pi2 = 2 * Math::PI;
 		a0 = 0.35875;
 		a1 = 0.48829;
@@ -119,7 +132,8 @@ void Math::FFTCalc::BuildSampleWin()
 		j = 0;
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(j * pi2 * invK) + a2 * Math::Cos(2 * pi2 * j * invK) - a3 * Math::Cos(3 * pi2 * j * invK));
+			dj = Math::UOSInt2Double(j);
+			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 * invK) + a2 * Math::Cos(2 * pi2 * dj * invK) - a3 * Math::Cos(3 * pi2 * dj * invK));
 			j++;
 		}
 		break;
@@ -132,17 +146,19 @@ void Math::FFTCalc::BuildSampleWin()
 		a2 = 1.29;
 		a3 = 0.388;
 		a4 = 0.028;
+		dk = Math::UOSInt2Double(k);
 		j = 0;
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k) - a3 * Math::Cos(3 * pi2 * j / k) + a4 * Math::Cos(4 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk) + a4 * Math::Cos(4 * pi2 * dj / dk));
 			j++;
 		}
 		break;
 	}
 }
 
-Math::FFTCalc::FFTCalc(OSInt sampleCount, WindowType wtype)
+Math::FFTCalc::FFTCalc(UOSInt sampleCount, WindowType wtype)
 {
 	this->sampleCount = sampleCount;
 	this->wtype = wtype;
@@ -157,7 +173,7 @@ Math::FFTCalc::~FFTCalc()
 	MemFreeA(this->sampleTemp);
 }
 
-Bool Math::FFTCalc::ForwardBits(UInt8 *samples, Double *freq, SampleType sampleType, OSInt nChannels, Double magnify)
+Bool Math::FFTCalc::ForwardBits(UInt8 *samples, Double *freq, SampleType sampleType, UOSInt nChannels, Double magnify)
 {
 	if (sampleType == Math::FFTCalc::ST_I24)
 	{

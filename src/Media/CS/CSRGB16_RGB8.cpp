@@ -117,9 +117,10 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	i = 65536;
 	while (i-- > 0)
 	{
-		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(i / 65535.0) * rMul);
-		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(i / 65535.0) * gMul);
-		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(i / 65535.0) * bMul);
+		Double dv = Math::OSInt2Double(i) / 65535.0;
+		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dv) * rMul);
+		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dv) * gMul);
+		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dv) * bMul);
 		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0;
 		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0;
 		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0;
@@ -190,7 +191,7 @@ void Media::CS::CSRGB16_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGB16_RGB8_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcStoreWidth * srcNBits >> 3, destRGBBpl, srcNBits, destNBits, this->rgbTable);
+	CSRGB16_RGB8_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable);
 }
 
 UOSInt Media::CS::CSRGB16_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)
