@@ -395,7 +395,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	}
 	Math::ProjectedCoordinateSystem *csys;
 	UTF8Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"EPSG:"), epsgId);
+	Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"EPSG:"), epsgId);
 	if (projcs->csysType == Math::CoordinateSystem::CST_MERCATORPROJECTED || projcs->csysType == Math::CoordinateSystem::CST_GAUSSKRUGERPROJECTED)
 	{
 		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sbuff, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
@@ -429,7 +429,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	}
 	UTF8Char sbuff[32];
 	Math::GeographicCoordinateSystem *csys;
-	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"EPSG:"), epsgId);
+	Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"EPSG:"), epsgId);
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(&data, datum, datum->datumName, &ellipsoid, spheroid);
@@ -441,12 +441,12 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(const UTF8
 {
 	if (Text::StrStartsWith(name, (const UTF8Char*)"EPSG:"))
 	{
-		Int32 epsgId = Text::StrToInt32(&name[5]);
+		UInt32 epsgId = Text::StrToUInt32(&name[5]);
 		return SRCreateCSys(epsgId);
 	}
 	else if (Text::StrStartsWith(name, (const UTF8Char*)"urn:ogc:def:crs:EPSG::"))
 	{
-		Int32 epsgId = Text::StrToInt32(&name[22]);
+		UInt32 epsgId = Text::StrToUInt32(&name[22]);
 		return SRCreateCSys(epsgId);
 	}
 	else if (Text::StrEquals(name, (const UTF8Char*)"urn:ogc:def:crs:OGC:1.3:CRS84"))

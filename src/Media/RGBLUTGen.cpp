@@ -218,77 +218,23 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcP
 	while (i-- > 0)
 	{
 		thisV = irFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal;
-		cV = thisV * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (Int16)Math::Double2Int32(cV);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
 		thisV = igFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal;
-		cV = thisV * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (Int16)Math::Double2Int32(cV);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbTable[i + 256] = *(Int64*)&v[0];
 
 		thisV = ibFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal;
-		cV = thisV * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (Int16)Math::Double2Int32(cV);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbTable[i + 512] = *(Int64*)&v[0];
 
@@ -435,77 +381,23 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcP
 	while (i-- > 0)
 	{
 		thisV = irFunc->InverseTransfer(Math::UOSInt2Double(i) / 65535.0) * maxRGBVal;
-		cV = thisV * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (Int16)Math::Double2Int32(cV);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
 		thisV = igFunc->InverseTransfer(Math::UOSInt2Double(i) / 65535.0) * maxRGBVal;
-		cV = thisV * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (Int16)Math::Double2Int32(cV);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbTable[i + 65536] = *(Int64*)&v[0];
 
 		thisV = ibFunc->InverseTransfer(Math::UOSInt2Double(i) / 65535.0) * maxRGBVal;
-		cV = thisV * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (Int16)Math::Double2Int32(cV);
-		cV = thisV * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (Int16)Math::Double2Int32(cV);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbTable[i + 131072] = *(Int64*)&v[0];
 

@@ -9,10 +9,10 @@ namespace Crypto
 		class SHA1 : public Crypto::Hash::IHash
 		{
 		private:
-			UInt32 *Intermediate_Hash;
-			Int64 Message_Length;
-			OSInt Message_Block_Index;
-			UInt8 *Message_Block;
+			UInt32 *intermediateHash;
+			UInt64 messageLength;
+			UOSInt messageBlockIndex;
+			UInt8 *messageBlock;
 
 		public:
 			SHA1();

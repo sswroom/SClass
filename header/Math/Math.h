@@ -296,6 +296,16 @@ namespace Math
 		return (Double)val;
 	}
 
+	FORCEINLINE Int16 SDouble2Int16(Double val)
+	{
+		if (val < -32768.0)
+			return -32768;
+		else if (val > 32767.0)
+			return 32767;
+		else
+			return (Int16)Math::Double2Int32(val);
+	}
+
 	FORCEINLINE Double Fix(Double val)
 	{
 		return floor(val);

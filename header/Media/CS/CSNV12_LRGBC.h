@@ -23,9 +23,9 @@ namespace Media
 				Sync::Event *evt;
 				Int32 status; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
 				UInt8 *yPtr;
-				OSInt yBpl;
+				UOSInt yBpl;
 				UInt8 *uvPtr;
-				OSInt uvBpl;
+				UOSInt uvBpl;
 				UInt8 *dest;
 				UOSInt width;
 				UOSInt height;
@@ -49,13 +49,13 @@ namespace Media
 			UInt8 *uvBuff;
 			UOSInt uvBuffSize;
 
-			OSInt currId;
+			UOSInt currId;
 			UOSInt nThread;
 			Sync::Event *evtMain;
 			THREADSTAT *stats;
 
 			static Double lanczos3_weight(Double phase);
-			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
 			static UInt32 __stdcall WorkerThread(void *obj);
 			void WaitForWorker(Int32 jobStatus);

@@ -23,7 +23,7 @@ namespace Math
 		
 		typedef struct
 		{
-			Int32 srid;
+			UInt32 srid;
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
 			const Char *name;
 		} SpheroidInfo;
@@ -49,7 +49,7 @@ namespace Math
 		typedef struct
 		{
 			UInt32 srid;
-			Int32 datum;
+			UInt32 datum;
 			const Char *name;
 			Math::CoordinateSystem::PrimemType primem;
 			Math::CoordinateSystem::UnitType unit;
@@ -86,7 +86,7 @@ namespace Math
 
 		typedef struct
 		{
-			Int32 srid; //srid
+			UInt32 srid; //srid
 			SpatialReferenceType srType;
 			OrgType org;
 			const Char *name;

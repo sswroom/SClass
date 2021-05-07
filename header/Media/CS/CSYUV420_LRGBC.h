@@ -50,13 +50,13 @@ namespace Media
 			UInt8 *uvBuff;
 			UOSInt uvBuffSize;
 
-			OSInt currId;
+			UOSInt currId;
 			UOSInt nThread;
 			Sync::Event *evtMain;
 			THREADSTAT *stats;
 
 			static Double lanczos3_weight(Double phase);
-			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
 			static UInt32 __stdcall WorkerThread(void *obj);
 			void WaitForWorker(Int32 jobStatus);

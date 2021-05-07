@@ -15,11 +15,11 @@ namespace IO
 		static void PutChar(UTF32Char c);
 		static UTF8Char *GetLine(UTF8Char *buff); //Without newline
 		static void PrintStrO(const UTF8Char *str1);
-		static Int32 WriteStdOut(UInt8 *buff, Int32 size);
+		static UOSInt WriteStdOut(UInt8 *buff, UOSInt size);
 		static void PreventCtrlC();
 		static void HandleExitCmd(ConsoleHandler exitCmdHdlr, void *userObj);
 		static void SetCodePage(Int32 codePage);
 		static Int32 GetKey();
 	};
-};
+}
 #endif

@@ -439,32 +439,8 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 			tmpTap = 0;
 			while (tmpTap < nTap)
 			{
-				vTmp = (work[tmpTap] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v1 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v1 = -32768;
-				}
-				else
-				{
-					v1 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
-				vTmp = (work[tmpTap + 2] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v2 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v2 = -32768;
-				}
-				else
-				{
-					v2 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
+				v1 = (UInt16)Math::SDouble2Int16((work[tmpTap] / sum) * 32767.0);
+				v2 = (UInt16)Math::SDouble2Int16((work[tmpTap + 2] / sum) * 32767.0);
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;
 				tmpPtr[2] = v1;
@@ -475,32 +451,8 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				tmpPtr[7] = v2;
 				tmpPtr += 8;
 
-				vTmp = (work[tmpTap + 1] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v1 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v1 = -32768;
-				}
-				else
-				{
-					v1 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
-				vTmp = (work[tmpTap + 3] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v2 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v2 = -32768;
-				}
-				else
-				{
-					v2 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
+				v1 = (UInt16)Math::SDouble2Int16((work[tmpTap + 1] / sum) * 32767.0);
+				v2 = (UInt16)Math::SDouble2Int16((work[tmpTap + 3] / sum) * 32767.0);
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;
 				tmpPtr[2] = v1;
@@ -564,32 +516,8 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 			tmpTap = 0;
 			while (tmpTap < nTap)
 			{
-				vTmp = (work[tmpTap] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v1 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v1 = -32768;
-				}
-				else
-				{
-					v1 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
-				vTmp = (work[tmpTap + 2] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v2 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v2 = -32768;
-				}
-				else
-				{
-					v2 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
+				v1 = (UInt16)Math::SDouble2Int16((work[tmpTap] / sum) * 32767.0);
+				v2 = (UInt16)Math::SDouble2Int16((work[tmpTap + 2] / sum) * 32767.0);
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;
 				tmpPtr[2] = v1;
@@ -600,32 +528,8 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				tmpPtr[7] = v2;
 				tmpPtr += 8;
 
-				vTmp = (work[tmpTap + 1] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v1 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v1 = -32768;
-				}
-				else
-				{
-					v1 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
-				vTmp = (work[tmpTap + 3] / sum) * 32767.0;
-				if (vTmp > 32767.0)
-				{
-					v2 = 32767;
-				}
-				else if (vTmp < -32768)
-				{
-					v2 = -32768;
-				}
-				else
-				{
-					v2 = (UInt16)(0xffff & Math::Double2Int32(vTmp));
-				}
+				v1 = (UInt16)Math::SDouble2Int16((work[tmpTap + 1] / sum) * 32767.0);
+				v2 = (UInt16)Math::SDouble2Int16((work[tmpTap + 3] / sum) * 32767.0);
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;
 				tmpPtr[2] = v1;
@@ -1419,8 +1323,8 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(Me
 	Media::StaticImage *img;
 	if (!IsSupported(srcImage->info))
 		return 0;
-	OSInt targetWidth = this->targetWidth;
-	OSInt targetHeight = this->targetHeight;
+	OSInt targetWidth = (OSInt)this->targetWidth;
+	OSInt targetHeight = (OSInt)this->targetHeight;
 	if (targetWidth == 0)
 	{
 		targetWidth = Math::Double2Int32(srcX2 - srcX1);//srcImage->info->width;
@@ -1429,7 +1333,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(Me
 	{
 		targetHeight = Math::Double2Int32(srcY2 - srcY1);//srcImage->info->height;
 	}
-	CalOutputSize(srcImage->info, targetWidth, targetHeight, &destInfo, rar);
+	CalOutputSize(srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, rar);
 	destInfo.fourcc = 0;
 	destInfo.storeBPP = 32;
 	destInfo.pf = this->pf;

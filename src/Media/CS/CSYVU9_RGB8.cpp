@@ -5,8 +5,8 @@
 
 extern "C"
 {
-	void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
-//	void CSYVU9_RGB8_do_yvu9rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2);
+	void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+//	void CSYVU9_RGB8_do_yvu9rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2);
 }
 
 /*void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
@@ -793,8 +793,8 @@ Media::CS::CSYVU9_RGB8::~CSYVU9_RGB8()
 void Media::CS::CSYVU9_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	Int32 isLast = 1;
-	Int32 isFirst = 0;
+	UInt32 isLast = 1;
+	UInt32 isFirst = 0;
 	UOSInt i = this->nThread;
 	UOSInt lastHeight = dispHeight;
 	UOSInt currHeight;
@@ -813,12 +813,12 @@ void Media::CS::CSYVU9_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt di
 	{
 		if (i == 0)
 			isFirst = 1;
-		currHeight = MulDivUOS(i, dispHeight, nThread) & ~3;
+		currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~3;
 
 		stats[i].yPtr = srcPtr[0] + srcStoreWidth * currHeight;
 		stats[i].vPtr = srcPtr[0] + srcStoreWidth * srcStoreHeight + ((srcStoreWidth * currHeight) >> 4);
 		stats[i].uPtr = stats[i].vPtr + ((srcStoreWidth * srcStoreHeight) >> 4);
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 		stats[i].isFirst = isFirst;
 		stats[i].isLast = isLast;
 		isLast = 0;

@@ -55,7 +55,7 @@ void Crypto::Hash::RIPEMD128::Calc(const UInt8 *buff, UOSInt buffSize)
 	if ((buffSize + this->buffSize) < 64)
 	{
 		MemCopyNO(&this->buff[this->buffSize], buff, buffSize);
-		this->buffSize += (Int32)buffSize;
+		this->buffSize += (UInt32)buffSize;
 		return;
 	}
 
@@ -77,7 +77,7 @@ void Crypto::Hash::RIPEMD128::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 	if (buffSize > 0)
 	{
-		MemCopyNO(this->buff, buff, this->buffSize = (Int32)buffSize);
+		MemCopyNO(this->buff, buff, this->buffSize = (UInt32)buffSize);
 	}
 
 	h0 = keys[0];
@@ -93,7 +93,7 @@ void Crypto::Hash::RIPEMD128::GetValue(UInt8 *buff)
 	*(UInt32*)&buff[4] = h1;
 	*(UInt32*)&buff[8] = h2;
 	*(UInt32*)&buff[12] = h3;
-	Int32 i;
+	UInt32 i;
 	if (buffSize < 56)
 	{
 		MemCopyNO(calBuff, this->buff, buffSize);
@@ -103,7 +103,7 @@ void Crypto::Hash::RIPEMD128::GetValue(UInt8 *buff)
 		{
 			calBuff[i++] = 0;
 		}
-		*(Int64*)&calBuff[56] = msgLeng;
+		*(UInt64*)&calBuff[56] = msgLeng;
 		RMD128_CalcBlock((UInt32*)buff, calBuff);
 	}
 	else
@@ -118,7 +118,7 @@ void Crypto::Hash::RIPEMD128::GetValue(UInt8 *buff)
 		RMD128_CalcBlock((UInt32*)buff, calBuff);
 
 		MemClear(calBuff, 56);
-		*(Int64*)&calBuff[56] = msgLeng;
+		*(UInt64*)&calBuff[56] = msgLeng;
 		RMD128_CalcBlock((UInt32*)buff, calBuff);
 	}
 }

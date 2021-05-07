@@ -57,7 +57,7 @@ void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
 	if ((buffSize + this->buffSize) < 64)
 	{
 		MemCopyNO(&this->buff[this->buffSize], buff, buffSize);
-		this->buffSize += (Int32)buffSize;
+		this->buffSize += buffSize;
 		return;
 	}
 
@@ -73,7 +73,7 @@ void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
 	if (buffSize >= 64)
 	{
 		MD5_CalcBlock(v, buff, buffSize >> 6);
-		buff += buffSize & ~63;
+		buff += buffSize & (UOSInt)~63;
 		buffSize = buffSize & 63;
 	}
 	if (buffSize > 0)
@@ -90,7 +90,7 @@ void Crypto::Hash::MD5::GetValue(UInt8 *buff)
 	v[1] = this->h[1];
 	v[2] = this->h[2];
 	v[3] = this->h[3];
-	OSInt i;
+	UOSInt i;
 	if (buffSize < 56)
 	{
 		MemCopyNO(calBuff, this->buff, buffSize);
@@ -100,7 +100,7 @@ void Crypto::Hash::MD5::GetValue(UInt8 *buff)
 		{
 			calBuff[i++] = 0;
 		}
-		WriteInt64(&calBuff[56], msgLeng);
+		WriteUInt64(&calBuff[56], msgLeng);
 		MD5_CalcBlock(v, calBuff, 1);
 	}
 	else
@@ -115,13 +115,13 @@ void Crypto::Hash::MD5::GetValue(UInt8 *buff)
 		MD5_CalcBlock(v, calBuff, 1);
 
 		MemClear(calBuff, 56);
-		WriteInt64(&calBuff[56], msgLeng);
+		WriteUInt64(&calBuff[56], msgLeng);
 		MD5_CalcBlock(v, calBuff, 1);
 	}
-	WriteInt32(&buff[0], v[0]);
-	WriteInt32(&buff[4], v[1]);
-	WriteInt32(&buff[8], v[2]);
-	WriteInt32(&buff[12], v[3]);
+	WriteUInt32(&buff[0], v[0]);
+	WriteUInt32(&buff[4], v[1]);
+	WriteUInt32(&buff[8], v[2]);
+	WriteUInt32(&buff[12], v[3]);
 }
 
 UOSInt Crypto::Hash::MD5::GetBlockSize()

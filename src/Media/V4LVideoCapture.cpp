@@ -215,8 +215,8 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameR
 	v4l2_streamparm param;
 	if (ioctl(this->fd, VIDIOC_G_PARM, &param) == 0)
 	{
-		*frameRateNorm = (Int32)param.parm.capture.timeperframe.denominator;
-		*frameRateDenorm = (Int32)param.parm.capture.timeperframe.numerator;
+		*frameRateNorm = param.parm.capture.timeperframe.denominator;
+		*frameRateDenorm = param.parm.capture.timeperframe.numerator;
 	}
 	else
 	{
@@ -344,8 +344,8 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 				fmtArr[ret].info.color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
 				fmtArr[ret].info.yuvType = Media::ColorProfile::YUVT_BT601;
 				fmtArr[ret].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
-				fmtArr[ret].frameRateNorm = (Int32)frmival.discrete.denominator;
-				fmtArr[ret].frameRateDenorm = (Int32)frmival.discrete.numerator;
+				fmtArr[ret].frameRateNorm = frmival.discrete.denominator;
+				fmtArr[ret].frameRateDenorm = frmival.discrete.numerator;
 				ret++;
 				frmival.index++;
 			}

@@ -35,7 +35,7 @@ namespace Media
 			Int64 *yuv2rgb;
 			Int64 *rgbGammaCorr;
 
-			OSInt currId;
+			UOSInt currId;
 			UOSInt nThread;
 			Sync::Event *evtMain;
 			THREADSTAT *stats;

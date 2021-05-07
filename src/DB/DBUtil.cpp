@@ -1367,7 +1367,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, Int32 srI
 			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)"geometry::STGeomFromText('");
 			sqlstr = Text::StrConcat(sqlstr, sb.ToString());
 			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)"', ");
-			sqlstr = Text::StrInt32(sqlstr, vec->GetSRID());
+			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
 			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)")");
 			return sqlstr;
 		}
@@ -1407,7 +1407,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svr
 		{
 			UOSInt ret = 30 + sb.GetLength();
 			sb.ClearStr();
-			sb.AppendI32(vec->GetSRID());
+			sb.AppendU32(vec->GetSRID());
 			ret += sb.GetLength();
 			return ret;
 		}

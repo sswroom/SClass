@@ -31,13 +31,13 @@ Int32 __stdcall IO::Console::ConsoleHdlr(UInt32 dwCtrlType)
 
 UTF32Char IO::Console::GetChar()
 {
-	return getwchar();
+	return (UTF32Char)getwchar();
 }
 
 void IO::Console::PutChar(UTF32Char c)
 {
 #if _WCHAR_SIZE == 4
-	ungetwc(c, stdin);
+	ungetwc((wint_t)c, stdin);
 #else
 	if (c >= 0x10000)
 	{
@@ -57,7 +57,7 @@ UTF8Char *IO::Console::GetLine(UTF8Char *buff)
 	UTF32Char c;
 	while (true)
 	{
-		c = getwchar();
+		c = (UTF32Char)getwchar();
 		if (c == 13 || c == 10)
 		{
 			*ptr = 0;
@@ -70,38 +70,38 @@ UTF8Char *IO::Console::GetLine(UTF8Char *buff)
 		}
 		else if (c < 0x800)
 		{
-			*ptr++ = 0xc0 | (c >> 6);
-			*ptr++ = 0x80 | (c & 0x3f);
+			*ptr++ = (UTF8Char)(0xc0 | (c >> 6));
+			*ptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 		}
 		else if (c < 0x10000)
 		{
-			*ptr++ = 0xe0 | (c >> 12);
-			*ptr++ = 0x80 | ((c >> 6) & 0x3f);
-			*ptr++ = 0x80 | (c & 0x3f);
+			*ptr++ = (UTF8Char)(0xe0 | (c >> 12));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 		}
 		else if (c < 0x200000)
 		{
-			*ptr++ = 0xf0 | (c >> 18);
-			*ptr++ = 0x80 | ((c >> 12) & 0x3f);
-			*ptr++ = 0x80 | ((c >> 6) & 0x3f);
-			*ptr++ = 0x80 | (c & 0x3f);
+			*ptr++ = (UTF8Char)(0xf0 | (c >> 18));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 		}
 		else if (c < 0x4000000)
 		{
-			*ptr++ = 0xf8 | (c >> 24);
-			*ptr++ = 0x80 | ((c >> 18) & 0x3f);
-			*ptr++ = 0x80 | ((c >> 12) & 0x3f);
-			*ptr++ = 0x80 | ((c >> 6) & 0x3f);
-			*ptr++ = 0x80 | (c & 0x3f);
+			*ptr++ = (UTF8Char)(0xf8 | (c >> 24));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 		}
 		else
 		{
-			*ptr++ = 0xfc | (c >> 30);
-			*ptr++ = 0x80 | ((c >> 24) & 0x3f);
-			*ptr++ = 0x80 | ((c >> 18) & 0x3f);
-			*ptr++ = 0x80 | ((c >> 12) & 0x3f);
-			*ptr++ = 0x80 | ((c >> 6) & 0x3f);
-			*ptr++ = 0x80 | (c & 0x3f);
+			*ptr++ = (UTF8Char)(0xfc | (c >> 30));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+			*ptr++ = (UTF8Char)(0x80 | (c & 0x3f));
 		}
 	}
 }
@@ -112,7 +112,7 @@ void IO::Console::PrintStrO(const UTF8Char *str1)
 	fflush(stdout);
 }
 
-Int32 IO::Console::WriteStdOut(UInt8 *buff, Int32 size)
+UOSInt IO::Console::WriteStdOut(UInt8 *buff, UOSInt size)
 {
 	return fwrite(buff, 1, size, stdout);
 }
@@ -142,13 +142,13 @@ Int32 IO::Console::GetKey()
 	struct termios newIOS;
 	tcgetattr(0, &oldIOS);
 	newIOS = oldIOS;
-	newIOS.c_lflag &= ~(ICANON | ECHO);
+	newIOS.c_lflag &= (tcflag_t)~(ICANON | ECHO);
 	tcsetattr(0, TCSANOW, &newIOS);
 
 	k = getchar();
 	if (k == 0x1b)
 	{
-		newIOS.c_lflag &= ~ISIG;
+		newIOS.c_lflag &= (tcflag_t)~ISIG;
 		newIOS.c_cc[VMIN] = 0;
 		newIOS.c_cc[VTIME] = 0;
 		tcsetattr(0, TCSANOW, &newIOS);

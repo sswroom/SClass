@@ -64,7 +64,7 @@ namespace Win32
 			UInt16 memErrHandle;
 			UInt16 totalWidthBits;
 			UInt16 dataWidthBits;
-			Int64 memorySize;
+			UInt64 memorySize;
 			MemoryFormFactor formFactor;
 			UInt8 deviceSet;
 			const Char *deviceLocator;

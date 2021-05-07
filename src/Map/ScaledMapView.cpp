@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, OSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, UOSInt scnWidth, UOSInt scnHeight);
+	Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, UOSInt scnWidth, UOSInt scnHeight);
 }
 
 Map::ScaledMapView::ScaledMapView(UOSInt scnWidth, UOSInt scnHeight, Double centLat, Double centLon, Double scale) : Map::MapView(scnWidth, scnHeight)

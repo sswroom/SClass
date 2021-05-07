@@ -12,7 +12,7 @@ extern "C"
 UInt32 Media::CS::CSY416_RGB32C::WorkerThread(void *obj)
 {
 	CSY416_RGB32C *converter = (CSY416_RGB32C*)obj;
-	OSInt threadId = converter->currId;
+	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -38,7 +38,7 @@ UInt32 Media::CS::CSY416_RGB32C::WorkerThread(void *obj)
 
 void Media::CS::CSY416_RGB32C::WaitForWorker(Int32 jobStatus)
 {
-	OSInt i;
+	UOSInt i;
 	Bool exited;
 	while (true)
 	{
@@ -155,7 +155,7 @@ void Media::CS::CSY416_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt 
 
 		stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 3);
 		stats[i].yBpl = srcStoreWidth << 3;
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;

@@ -9,7 +9,7 @@ namespace Crypto
 		class RIPEMD128 : public IHash
 		{
 		private:
-			Int64 msgLeng;
+			UInt64 msgLeng;
 			UInt32 h0;
 			UInt32 h1;
 			UInt32 h2;

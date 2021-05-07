@@ -17,8 +17,8 @@ Media::CS::CSYV12_RGB32C::~CSYV12_RGB32C()
 void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	Int32 isLast = 1;
-	Int32 isFirst = 0;
+	UInt32 isLast = 1;
+	UInt32 isFirst = 0;
 	UOSInt i = this->nThread;
 	UOSInt lastHeight = dispHeight;
 	UOSInt currHeight;
@@ -106,7 +106,7 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 				}
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].uvBpl = currHeight;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -139,14 +139,14 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 			{
 				if (i == 0)
 					isFirst = 1;
-				currHeight = MulDivUOS(i, dispHeight >> 1, nThread) & ~1;
+				currHeight = MulDivUOS(i, dispHeight >> 1, nThread) & (UOSInt)~1;
 
 				stats[i].yPtr = srcPtr + srcStoreWidth * (currHeight << 1);
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].vPtr = vStart + ((srcStoreWidth * currHeight) >> 1);
 				stats[i].uPtr = uStart + ((srcStoreWidth * currHeight) >> 1);
 				stats[i].uvBpl = srcStoreWidth;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -219,14 +219,14 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 				{
 					if (i == j)
 						isFirst = 1;
-					currHeight = MulDivUOS(i - j, dispHeight, j) & ~3;
+					currHeight = MulDivUOS(i - j, dispHeight, j) & (UOSInt)~3;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].uPtr = uStart;
 					stats[i].vPtr = vStart;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvBpl = currHeight >> 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -258,14 +258,14 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 				{
 					if (i == 0)
 						isFirst = 1;
-					currHeight = (MulDivUOS(i, dispHeight, j) & ~3) + 1;
+					currHeight = (MulDivUOS(i, dispHeight, j) & (UOSInt)~3) + 1;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].uPtr = uStart + (srcStoreWidth >> 1);
 					stats[i].vPtr = vStart + (srcStoreWidth >> 1);
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvBpl = currHeight >> 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -300,14 +300,14 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 				{
 					if (i == j)
 						isFirst = 1;
-					currHeight = MulDivUOS(i - j, dispHeight, j) & ~3;
+					currHeight = MulDivUOS(i - j, dispHeight, j) & (UOSInt)~3;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].vPtr = srcPtr + srcStoreWidth * srcStoreHeight + ((srcStoreWidth >> 1) * (currHeight >> 1));
 					stats[i].uPtr = stats[i].vPtr + ((srcStoreWidth * srcStoreHeight) >> 2);
 					stats[i].uvBpl = srcStoreWidth;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -339,14 +339,14 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 				{
 					if (i == 0)
 						isFirst = 1;
-					currHeight = (MulDivUOS(i, dispHeight, j) & ~3) + 1;
+					currHeight = (MulDivUOS(i, dispHeight, j) & (UOSInt)~3) + 1;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].vPtr = srcPtr + srcStoreWidth * srcStoreHeight + ((srcStoreWidth >> 1) * ((currHeight >> 1) + 1));
 					stats[i].uPtr = stats[i].vPtr + ((srcStoreWidth * srcStoreHeight) >> 2);
 					stats[i].uvBpl = srcStoreWidth;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -419,7 +419,7 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 				stats[i].vPtr = vStart;
 				stats[i].yBpl = srcStoreWidth;
 				stats[i].uvBpl = currHeight;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -451,14 +451,14 @@ void Media::CS::CSYV12_RGB32C::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt
 			{
 				if (i == 0)
 					isFirst = 1;
-				currHeight = MulDivUOS(i, dispHeight, nThread) & ~1;
+				currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~1;
 
 				stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 				stats[i].yBpl = srcStoreWidth;
 				stats[i].vPtr = srcPtr + srcStoreWidth * srcStoreHeight + ((srcStoreWidth * currHeight) >> 2);
 				stats[i].uPtr = stats[i].vPtr + ((srcStoreWidth * srcStoreHeight) >> 2);
 				stats[i].uvBpl = srcStoreWidth >> 1;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;

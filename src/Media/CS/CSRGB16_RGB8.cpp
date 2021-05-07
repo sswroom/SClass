@@ -187,7 +187,7 @@ void Media::CS::CSRGB16_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (srcStoreHeight - 1) * destRGBBpl;
+		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
 	CSRGB16_RGB8_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcStoreWidth * srcNBits >> 3, destRGBBpl, srcNBits, destNBits, this->rgbTable);

@@ -9,7 +9,7 @@ namespace Crypto
 		class MD5 : public IHash
 		{
 		private:
-			Int64 msgLeng;
+			UInt64 msgLeng;
 			UInt32 h[4];
 			UInt8 *buff;
 			UOSInt buffSize;

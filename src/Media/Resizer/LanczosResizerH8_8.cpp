@@ -1111,13 +1111,13 @@ Bool Media::Resizer::LanczosResizerH8_8::Resize(Media::StaticImage *srcImg, Medi
 		return false;
 	if (srcImg->info->fourcc == destImg->info->fourcc)
 	{
-		Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(srcImg->info->dispWidth), Math::OSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(srcImg->info->dispWidth), Math::UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
 		return true;
 	}
 	else
 	{
 		OSInt dbpl = destImg->GetDataBpl();
-		Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(srcImg->info->dispWidth), Math::OSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(srcImg->info->dispWidth), Math::UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
 		return true;
 	}
 }
@@ -1137,8 +1137,8 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(Medi
 	Media::StaticImage *img;
 	if (!IsSupported(srcImage->info))
 		return 0;
-	OSInt targetWidth = this->targetWidth;
-	OSInt targetHeight = this->targetHeight;
+	OSInt targetWidth = (OSInt)this->targetWidth;
+	OSInt targetHeight = (OSInt)this->targetHeight;
 	if (targetWidth == 0)
 	{
 		targetWidth = Math::Double2Int32(srcX2 - srcX1);//srcImage->info->width;
@@ -1147,7 +1147,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(Medi
 	{
 		targetHeight = Math::Double2Int32(srcX2 - srcX1);//srcImage->info->height;
 	}
-	CalOutputSize(srcImage->info, targetWidth, targetHeight, &destInfo, rar);
+	CalOutputSize(srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	if (srcImage->exif)
 	{

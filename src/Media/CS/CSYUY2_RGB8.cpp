@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, UOSInt UOSInt, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+	void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
 UInt32 Media::CS::CSYUY2_RGB8::WorkerThread(void *obj)
@@ -121,10 +121,10 @@ void Media::CS::CSYUY2_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt di
 
 	while (i-- > 0)
 	{
-		currHeight = MulDivUOS(i, dispHeight, nThread) & ~1;
+		currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~1;
 
 		stats[i].yPtr = srcPtr[0] + currHeight * (srcStoreWidth << 1);
-		stats[i].dest = destPtr + destRGBBpl * currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;

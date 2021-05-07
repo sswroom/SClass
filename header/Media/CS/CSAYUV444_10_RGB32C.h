@@ -34,7 +34,7 @@ namespace Media
 			Int64 *rgbGammaCorr;
 			Media::PixelFormat destPF;
 
-			OSInt currId;
+			UOSInt currId;
 			UOSInt nThread;
 			Sync::Event *evtMain;
 			THREADSTAT *stats;

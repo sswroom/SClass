@@ -169,7 +169,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	if (size == -1)
 		return 0;
 #endif
-	return Text::StrUTF8_WCharC(buff, (UInt8*)sbuff, size, 0);
+	return Text::StrUTF8_WCharC(buff, (UInt8*)sbuff, (UOSInt)size, 0);
 }
 
 Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF *sb)

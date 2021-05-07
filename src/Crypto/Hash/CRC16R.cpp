@@ -76,13 +76,13 @@ UInt16 Crypto::Hash::CRC16R::Reverse(UInt16 polynomial)
 {
 	UInt16 v;
 	UInt16 v2;
-	OSInt i = 16;
+	UOSInt i = 16;
 	v = polynomial;
 	v2 = 0;
 	while (i-- > 0)
 	{
-		v2 = (v2 >> 1) | (v & 0x8000);
-		v <<= 1;
+		v2 = (UInt16)((v2 >> 1) | (v & 0x8000));
+		v = (UInt16)(v << 1);
 	}
 	return v2;
 }

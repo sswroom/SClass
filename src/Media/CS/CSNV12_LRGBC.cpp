@@ -10,9 +10,9 @@
 
 extern "C"
 {
-	void CSNV12_LRGBC_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUVPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt ystep, OSInt dstep, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
-	void CSNV12_LRGBC_do_yv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
-	void CSNV12_LRGBC_do_yv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSNV12_LRGBC_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUVPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, UOSInt ystep, OSInt dstep, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSNV12_LRGBC_do_yv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, UOSInt yBpl, UOSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSNV12_LRGBC_do_yv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, UOSInt yBpl, UOSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
 Double Media::CS::CSNV12_LRGBC::lanczos3_weight(Double phase)
@@ -35,7 +35,7 @@ Double Media::CS::CSNV12_LRGBC::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -60,10 +60,10 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i + 0.5) * source_length;
-		pos /= result_length;
+		pos = ((Math::UOSInt2Double(i) + 0.5) * Math::UOSInt2Double(source_length));
+		pos /= Math::UOSInt2Double(result_length);
 		n = (OSInt)Math::Fix(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
-		pos = (n + 0.5 - pos);
+		pos = (Math::OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 #if LANCZOS_NTAP == 4
 		ind = (Int32*)&out->weight[i * 6];
@@ -74,7 +74,7 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 			}else if(n >= (OSInt)source_length){
 				ind[j] = (Int32)((source_length - 1) * indexSep);
 			}else{
-				ind[j] = (Int32)(n * indexSep);
+				ind[j] = (Int32)(n * (OSInt)indexSep);
 			}
 			work[j] = lanczos3_weight(pos + offsetCorr);
 			sum += work[j];
@@ -140,7 +140,7 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 UInt32 Media::CS::CSNV12_LRGBC::WorkerThread(void *obj)
 {
 	CSNV12_LRGBC *converter = (CSNV12_LRGBC*)obj;
-	OSInt threadId = converter->currId;
+	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -183,7 +183,7 @@ UInt32 Media::CS::CSNV12_LRGBC::WorkerThread(void *obj)
 
 void Media::CS::CSNV12_LRGBC::WaitForWorker(Int32 jobStatus)
 {
-	OSInt i;
+	UOSInt i;
 	Bool exited;
 	while (true)
 	{
@@ -339,8 +339,8 @@ Media::CS::CSNV12_LRGBC::~CSNV12_LRGBC()
 void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	Int32 isLast = 1;
-	Int32 isFirst = 0;
+	UInt32 isLast = 1;
+	UInt32 isFirst = 0;
 	UOSInt i = this->nThread;
 	UOSInt lastHeight = dispHeight;
 	UOSInt currHeight;
@@ -408,7 +408,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 			{
 				if (i == 0)
 					isFirst = 1;
-				currHeight = MulDivUOS(i, dispHeight >> 1, this->nThread) & ~1;
+				currHeight = MulDivUOS(i, dispHeight >> 1, this->nThread) & (UOSInt)~1;
 
 				if (ftype == Media::FT_MERGED_TF)
 				{
@@ -424,7 +424,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 				}
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].uvBpl = currHeight;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -457,13 +457,13 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 			{
 				if (i == 0)
 					isFirst = 1;
-				currHeight = MulDivUOS(i, dispHeight >> 1, nThread) & ~1;
+				currHeight = MulDivUOS(i, dispHeight >> 1, nThread) & (UOSInt)~1;
 
 				stats[i].yPtr = srcPtr + srcStoreWidth * (currHeight << 1);
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].uvPtr = uvStart + (srcStoreWidth * currHeight);
 				stats[i].uvBpl = srcStoreWidth << 1;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -535,13 +535,13 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 				{
 					if (i == j)
 						isFirst = 1;
-					currHeight = MulDivUOS(i - j, dispHeight, j) & ~3;
+					currHeight = MulDivUOS(i - j, dispHeight, j) & (UOSInt)~3;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].uvPtr = uvStart;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvBpl = currHeight >> 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -573,13 +573,13 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 				{
 					if (i == 0)
 						isFirst = 1;
-					currHeight = (MulDivUOS(i, dispHeight, j) & ~3) + 1;
+					currHeight = (MulDivUOS(i, dispHeight, j) & (UOSInt)~3) + 1;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].uvPtr = uvStart + srcStoreWidth;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvBpl = currHeight >> 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -614,13 +614,13 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 				{
 					if (i == j)
 						isFirst = 1;
-					currHeight = MulDivUOS(i - j, dispHeight, j) & ~3;
+					currHeight = MulDivUOS(i - j, dispHeight, j) & (UOSInt)~3;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvPtr = srcPtr + srcStoreWidth * srcStoreHeight + (srcStoreWidth * (currHeight >> 1));
 					stats[i].uvBpl = srcStoreWidth << 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -652,13 +652,13 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 				{
 					if (i == 0)
 						isFirst = 1;
-					currHeight = (MulDivUOS(i, dispHeight, j) & ~3) + 1;
+					currHeight = (MulDivUOS(i, dispHeight, j) & (UOSInt)~3) + 1;
 
 					stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvPtr = srcPtr + srcStoreWidth * srcStoreHeight + (srcStoreWidth * ((currHeight >> 1) + 1));
 					stats[i].uvBpl = srcStoreWidth << 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -717,7 +717,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 				stats[i].uvPtr = uvStart;
 				stats[i].yBpl = srcStoreWidth;
 				stats[i].uvBpl = currHeight;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -749,13 +749,13 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 **srcPtr2, UInt8 *destPtr, UOSInt 
 			{
 				if (i == 0)
 					isFirst = 1;
-				currHeight = MulDivUOS(i, dispHeight, nThread) & ~1;
+				currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~1;
 
 				stats[i].yPtr = srcPtr + srcStoreWidth * currHeight;
 				stats[i].yBpl = srcStoreWidth;
 				stats[i].uvPtr = srcPtr + srcStoreWidth * srcStoreHeight + ((srcStoreWidth * currHeight) >> 1);
 				stats[i].uvBpl = srcStoreWidth;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;

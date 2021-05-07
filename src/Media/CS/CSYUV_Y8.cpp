@@ -17,7 +17,7 @@ void Media::CS::CSYUV_Y8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispW
 	{
 		UOSInt i = dispHeight;
 		UOSInt j;
-		OSInt sAdd = (srcStoreWidth - dispWidth) * 2;
+		UOSInt sAdd = (srcStoreWidth - dispWidth) * 2;
 		UInt8 *sptr = srcPtr[0];
 		while (i-- > 0)
 		{

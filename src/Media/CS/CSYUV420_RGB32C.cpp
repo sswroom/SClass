@@ -9,9 +9,9 @@
 
 extern "C"
 {
-	void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, UInt8 *inVPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt ystep, OSInt dstep, Int64 *yuv2rgb14, Int64 *rgbGammaCorr);
-	void CSYUV420_RGB32C_do_yv12rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
-	void CSYUV420_RGB32C_do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, UInt8 *inVPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, UOSInt ystep, OSInt dstep, Int64 *yuv2rgb14, Int64 *rgbGammaCorr);
+	void CSYUV420_RGB32C_do_yv12rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, UOSInt yBpl, UOSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSYUV420_RGB32C_do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, UOSInt yBpl, UOSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
 Double Media::CS::CSYUV420_RGB32C::lanczos3_weight(Double phase)
@@ -34,7 +34,7 @@ Double Media::CS::CSYUV420_RGB32C::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -59,10 +59,10 @@ void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_lengt
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i + 0.5) * source_length;
-		pos /= result_length;
+		pos = (Math::UOSInt2Double(i) + 0.5) * Math::UOSInt2Double(source_length);
+		pos /= Math::UOSInt2Double(result_length);
 		n = (OSInt)Math::Fix(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
-		pos = (n + 0.5 - pos);
+		pos = (Math::OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 #if LANCZOS_NTAP == 4
 		ind = (Int32*)&out->weight[i * 6];
@@ -73,7 +73,7 @@ void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_lengt
 			}else if(n >= (OSInt)source_length){
 				ind[j] = (Int32)((source_length - 1) * indexSep);
 			}else{
-				ind[j] = (Int32)(n * indexSep);
+				ind[j] = (Int32)(n * (OSInt)indexSep);
 			}
 			work[j] = lanczos3_weight(pos + offsetCorr);
 			sum += work[j];
@@ -139,7 +139,7 @@ void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_lengt
 UInt32 Media::CS::CSYUV420_RGB32C::WorkerThread(void *obj)
 {
 	CSYUV420_RGB32C *converter = (CSYUV420_RGB32C*)obj;
-	OSInt threadId = converter->currId;
+	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -182,7 +182,7 @@ UInt32 Media::CS::CSYUV420_RGB32C::WorkerThread(void *obj)
 
 void Media::CS::CSYUV420_RGB32C::WaitForWorker(Int32 jobStatus)
 {
-	OSInt i;
+	UOSInt i;
 	Bool exited;
 	while (true)
 	{

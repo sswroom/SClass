@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 
-extern "C" void NearestNeighbourResizer64_64_Resize(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex)
+extern "C" void NearestNeighbourResizer64_64_Resize(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex)
 {
-	OSInt i;
+	UOSInt i;
 	UInt8 *linePt;
 	OSInt *xindexTmp;
-	dbpl -= dwidth << 3;
+	dbpl -= (OSInt)dwidth << 3;
 	while (dheight-- > 0)
 	{
 		linePt = inPt + *yindex;

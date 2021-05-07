@@ -95,15 +95,15 @@ UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 			UInt16 sizeVal = ReadUInt16(&dataBuff[12]);
 			if (sizeVal == 0x7fff)
 			{
-				mem->memorySize = (ReadUInt32(&dataBuff[28]) & 0x7fffffff) * 1048576LL;
+				mem->memorySize = (ReadUInt32(&dataBuff[28]) & 0x7fffffff) * 1048576ULL;
 			}
 			else if (sizeVal & 0x8000)
 			{
-				mem->memorySize = (sizeVal & 0x7fff) * 1024LL;
+				mem->memorySize = (sizeVal & 0x7fff) * 1024ULL;
 			}
 			else
 			{
-				mem->memorySize = sizeVal * 1048576LL;
+				mem->memorySize = sizeVal * 1048576ULL;
 			}
 		}
 		if (dataBuff[1] >= 15)

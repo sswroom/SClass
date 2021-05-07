@@ -7,7 +7,6 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 {
 	Int32 i;
 	Double thisV;
-	Double cV;
 	UInt16 v[4];
 
 	Media::ColorProfile *srcProfile;
@@ -94,27 +93,9 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 		{
 			thisV = 2.0;
 		}
-		cV = thisV * 16383.0 * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0;
 		this->rgbGammaCorr[i] = *(Int64*)&v[0];
 
@@ -123,27 +104,9 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 		{
 			thisV = 2.0;
 		}
-		cV = thisV * 16383.0 * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
@@ -152,27 +115,9 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 		{
 			thisV = 2.0;
 		}
-		cV = thisV * 16383.0 * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 131072] = *(Int64*)&v[0];
 	}
@@ -184,27 +129,9 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 		{
 			thisV = -2.0;
 		}
-		cV = thisV * 16383.0 * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0;
 		this->rgbGammaCorr[i] = *(Int64*)&v[0];
 
@@ -213,27 +140,9 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 		{
 			thisV = -2.0;
 		}
-		cV = thisV * 16383.0 * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
@@ -242,27 +151,9 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 		{
 			thisV = -2.0;
 		}
-		cV = thisV * 16383.0 * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 131072] = *(Int64*)&v[0];
 	}

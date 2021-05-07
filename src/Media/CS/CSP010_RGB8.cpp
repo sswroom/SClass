@@ -5,8 +5,8 @@
 
 extern "C"
 {
-	void CSP010_RGB8_do_p010rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
-	void CSP010_RGB8_do_p010rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+	void CSP010_RGB8_do_p010rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+	void CSP010_RGB8_do_p010rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
 UInt32 Media::CS::CSP010_RGB8::WorkerThread(void *obj)
@@ -143,8 +143,8 @@ Media::CS::CSP010_RGB8::~CSP010_RGB8()
 void Media::CS::CSP010_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	OSInt isLast = 1;
-	OSInt isFirst = 0;
+	UOSInt isLast = 1;
+	UOSInt isFirst = 0;
 	UOSInt i = this->nThread;
 	UOSInt lastHeight = dispHeight;
 	UOSInt currHeight;
@@ -163,11 +163,11 @@ void Media::CS::CSP010_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt di
 	{
 		if (i == 0)
 			isFirst = 1;
-		currHeight = MulDivUOS(i, dispHeight, nThread) & ~1;
+		currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~1;
 
 		stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 1);
 		stats[i].uvPtr = srcPtr[0] + (srcStoreWidth * srcStoreHeight << 1) + (srcStoreWidth * currHeight);
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 		stats[i].isFirst = isFirst;
 		stats[i].isLast = isLast;
 		isLast = 0;

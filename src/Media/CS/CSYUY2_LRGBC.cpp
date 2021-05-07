@@ -121,10 +121,10 @@ void Media::CS::CSYUY2_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 
 	while (i-- > 0)
 	{
-		currHeight = MulDivUOS(i, dispHeight, nThread) & ~1;
+		currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~1;
 
 		stats[i].yPtr = srcPtr[0] + currHeight * (srcStoreWidth << 1);
-		stats[i].dest = destPtr + destRGBBpl * currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;

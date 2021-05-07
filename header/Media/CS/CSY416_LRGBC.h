@@ -22,7 +22,7 @@ namespace Media
 				OSInt dbpl;
 			} THREADSTAT;
 
-			OSInt currId;
+			UOSInt currId;
 			UOSInt nThread;
 			Sync::Event *evtMain;
 			THREADSTAT *stats;

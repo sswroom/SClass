@@ -7,14 +7,13 @@
 
 extern "C"
 {
-	void CSAYUV444_10_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, UOSInt width, UOSInt height, UOSInt dbpl, OSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSAYUV444_10_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
 void Media::CS::CSAYUV444_10_LRGBC::SetupRGB13_LR()
 {
 	Int32 i;
 	Double thisV;
-	Double cV;
 	UInt16 v[4];
 	Media::ColorProfile *srcColor;
 	if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
@@ -84,77 +83,23 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupRGB13_LR()
 	while (i--)
 	{
 		thisV = rtFunc->InverseTransfer(i / 32767.0 * 4.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0;
 		this->rgbGammaCorr[i] = *(Int64*)&v[0];
 
 		thisV = gtFunc->InverseTransfer(i / 32767.0 * 4.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
 		thisV = btFunc->InverseTransfer(i / 32767.0 * 4.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 131072] = *(Int64*)&v[0];
 	}
@@ -162,77 +107,23 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupRGB13_LR()
 	while (i-- > 32768)
 	{
 		thisV = rtFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0;
 		this->rgbGammaCorr[i] = *(Int64*)&v[0];
 
 		thisV = gtFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
 		thisV = btFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 131072] = *(Int64*)&v[0];
 	}
@@ -370,7 +261,7 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupYUV_RGB13()
 UInt32 Media::CS::CSAYUV444_10_LRGBC::WorkerThread(void *obj)
 {
 	CSAYUV444_10_LRGBC *converter = (CSAYUV444_10_LRGBC*)obj;
-	OSInt threadId = converter->currId;
+	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -396,7 +287,7 @@ UInt32 Media::CS::CSAYUV444_10_LRGBC::WorkerThread(void *obj)
 
 void Media::CS::CSAYUV444_10_LRGBC::WaitForWorker(Int32 jobStatus)
 {
-	OSInt i;
+	UOSInt i;
 	Bool exited;
 	while (true)
 	{
@@ -530,7 +421,7 @@ void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UO
 		currHeight = MulDivUOS(i, dispHeight, this->nThread);
 
 		stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 3);
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * currHeight;
+		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;

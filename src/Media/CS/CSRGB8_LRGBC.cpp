@@ -93,77 +93,23 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	while (i--)
 	{
 		thisV = rtFunc->InverseTransfer(i / 255.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[0];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[0];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[0];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
 		v[3] = 0x3fff;
 		rgbGammaCorr[i] = *(Int64*)&v[0];
 
 		thisV = gtFunc->InverseTransfer(i / 255.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[1];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[1];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[1];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbGammaCorr[i + 256] = *(Int64*)&v[0];
 
 		thisV = btFunc->InverseTransfer(i / 255.0);
-		cV = thisV * 16383.0 * mat1.vec[0].val[2];
-		if (cV < -32768.0)
-			v[2] = -32768;
-		else if (cV > 32767.0)
-			v[2] = 32767;
-		else
-			v[2] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[1].val[2];
-		if (cV < -32768.0)
-			v[1] = -32768;
-		else if (cV > 32767.0)
-			v[1] = 32767;
-		else
-			v[1] = (UInt16)Math::Double2Int32(cV);
-		cV = thisV * 16383.0 * mat1.vec[2].val[2];
-		if (cV < -32768.0)
-			v[0] = -32768;
-		else if (cV > 32767.0)
-			v[0] = 32767;
-		else
-			v[0] = (UInt16)Math::Double2Int32(cV);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbGammaCorr[i + 512] = *(Int64*)&v[0];
 	}
