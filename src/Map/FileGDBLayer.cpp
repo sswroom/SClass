@@ -16,8 +16,8 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
 		const UTF8Char **names;
-		OSInt colCnt = this->colNames->GetCount();
-		OSInt i;
+		UOSInt colCnt = this->colNames->GetCount();
+		UOSInt i;
 		Int32 objId;
 
 		NEW_CLASS(nameArr, Data::Int32Map<const UTF8Char **>());
@@ -74,7 +74,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 	this->minY = 0;
 	this->objIdCol = 0;
 	this->shapeCol = 1;
-	OSInt nameCol = 0;
+	UOSInt nameCol = 0;
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
@@ -82,8 +82,8 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		DB::ColDef *colDef;
 		NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
 		i = 0;
@@ -100,7 +100,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 					Math::CoordinateSystem *csys2 = 0;
 					if (Text::StrStartsWith(prj, (const UTF8Char*)"EPSG:"))
 					{
-						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToInt32(&prj[5]));
+						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj[5]));
 					}
 					else
 					{
@@ -179,7 +179,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 
 Map::FileGDBLayer::~FileGDBLayer()
 {
-	OSInt i;
+	UOSInt i;
 
 	this->conn->UnuseObject();
 	i = this->colNames->GetCount();
@@ -262,9 +262,9 @@ void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
 	Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
-	OSInt i = nameList->GetCount();
-	OSInt colCnt = this->colNames->GetCount();
-	OSInt j;
+	UOSInt i = nameList->GetCount();
+	UOSInt colCnt = this->colNames->GetCount();
+	UOSInt j;
 	const UTF8Char **nameStrs;
 	while (i-- > 0)
 	{

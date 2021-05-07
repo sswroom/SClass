@@ -4,7 +4,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 
-OSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, OSInt ofst, OSInt endOfst, Text::StringBuilderUTF *sb)
+UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb)
 {
 	if (ofst >= endOfst)
 	{
@@ -27,7 +27,7 @@ OSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, OSInt ofs
 	case 2:
 		if (ofst + 3 <= endOfst)
 		{
-			Int32 strSize = ReadMUInt16(&data[ofst + 1]);
+			UInt32 strSize = ReadMUInt16(&data[ofst + 1]);
 			if (ofst + 3 + strSize <= endOfst)
 			{
 				sb->AppendC((UTF8Char*)&data[ofst + 3], strSize);
@@ -41,9 +41,9 @@ OSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, OSInt ofs
 	case 8:
 		if (ofst + 5 <= endOfst)
 		{
-			Int32 arrCnt = ReadMInt32(&data[ofst + 1]);
-			Int32 i;
-			Int32 strLen;
+			UInt32 arrCnt = ReadMUInt32(&data[ofst + 1]);
+			UInt32 i;
+			UInt32 strLen;
 			sb->Append((const UTF8Char*)"[");
 			ofst += 5;
 			i = 0;
@@ -95,7 +95,7 @@ OSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, OSInt ofs
 	}
 }
 
-void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, OSInt ofst, OSInt endOfst, Text::StringBuilderUTF *sb)
+void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"\r\n");
 	ofst = ParseScriptDataVal(data, ofst, endOfst, sb);
@@ -106,9 +106,9 @@ void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, OSInt ofst, O
 UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::FLVFileAnalyse *me = (IO::FileAnalyse::FLVFileAnalyse*)userObj;
-	Int64 dataSize;
-	Int64 ofst;
-	Int32 lastSize;
+	UInt64 dataSize;
+	UInt64 ofst;
+	UInt32 lastSize;
 	UInt8 tagHdr[15];
 	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag;
 	me->threadRunning = true;
@@ -121,7 +121,7 @@ UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
 		if (me->fd->GetRealData(ofst - 4, 15, tagHdr) != 15)
 			break;
 		
-		if (ReadMInt32(tagHdr) != lastSize)
+		if (ReadMUInt32(tagHdr) != lastSize)
 			break;
 
 		lastSize = ReadMUInt24(&tagHdr[5]) + 11;
@@ -155,7 +155,7 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(IO::IStreamData *fd)
 	{
 		return;
 	}
-	hdrSize = ReadMInt32(&buff[5]);
+	hdrSize = ReadMUInt32(&buff[5]);
 	if (hdrSize < 9 || hdrSize > 100)
 	{
 		return;
@@ -200,11 +200,11 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags->GetItem(index - 1);
 	if (tag == 0)
 		return false;
-	sb->AppendI64(tag->ofst);
+	sb->AppendU64(tag->ofst);
 	sb->Append((const UTF8Char*)": Type=");
 	sb->AppendU16(tag->tagType);
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendOSInt(tag->size);
+	sb->AppendUOSInt(tag->size);
 	return true;
 }
 
@@ -218,13 +218,13 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->Append((const UTF8Char*)"Version = ");
 		sb->AppendU16(buff[3]);
 		sb->Append((const UTF8Char*)"\r\nTypeFlagsReserved = ");
-		sb->AppendU16(buff[4] >> 3);
+		sb->AppendU16((UInt16)(buff[4] >> 3));
 		sb->Append((const UTF8Char*)"\r\nTypeFlagsAudio = ");
-		sb->AppendU16((buff[4] >> 2) & 1);
+		sb->AppendU16((UInt16)((buff[4] >> 2) & 1));
 		sb->Append((const UTF8Char*)"\r\nTypeFlagsReserved = ");
-		sb->AppendU16((buff[4] >> 1) & 1);
+		sb->AppendU16((UInt16)((buff[4] >> 1) & 1));
 		sb->Append((const UTF8Char*)"\r\nTypeFlagsVideo = ");
-		sb->AppendU16(buff[4] & 1);
+		sb->AppendU16((UInt16)(buff[4] & 1));
 		sb->Append((const UTF8Char*)"\r\nDataOffset = ");
 		sb->AppendI32(ReadMInt32(&buff[5]));
 		return true;
@@ -233,12 +233,12 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	if (tag == 0)
 		return false;
 	sb->Append((const UTF8Char*)"Tag");
-	sb->AppendOSInt(index);
+	sb->AppendUOSInt(index);
 	this->fd->GetRealData(tag->ofst, 11, buff);
 	sb->Append((const UTF8Char*)"\r\nReserved = ");
-	sb->AppendU16(buff[0] >> 6);
+	sb->AppendU16((UInt16)(buff[0] >> 6));
 	sb->Append((const UTF8Char*)"\r\nFilter = ");
-	sb->AppendU16((buff[0] >> 5) & 1);
+	sb->AppendU16((UInt16)((buff[0] >> 5) & 1));
 	sb->Append((const UTF8Char*)"\r\nTagType = ");
 	sb->AppendU16(buff[0] & 0x1f);
 	if (tag->tagType == 8)

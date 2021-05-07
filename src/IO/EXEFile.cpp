@@ -96,22 +96,22 @@ void IO::EXEFile::AddProp(const UTF8Char *name, const UTF8Char *value)
 	}
 }
 
-OSInt IO::EXEFile::GetPropCount()
+UOSInt IO::EXEFile::GetPropCount()
 {
 	return this->propNames->GetCount();
 }
 
-const UTF8Char *IO::EXEFile::GetPropName(OSInt index)
+const UTF8Char *IO::EXEFile::GetPropName(UOSInt index)
 {
 	return this->propNames->GetItem(index);
 }
 
-const UTF8Char *IO::EXEFile::GetPropValue(OSInt index)
+const UTF8Char *IO::EXEFile::GetPropValue(UOSInt index)
 {
 	return this->propValues->GetItem(index);
 }
 
-OSInt IO::EXEFile::AddImportModule(const UTF8Char *moduleName)
+UOSInt IO::EXEFile::AddImportModule(const UTF8Char *moduleName)
 {
 	ImportInfo *imp;
 	imp = MemAlloc(ImportInfo, 1);
@@ -120,7 +120,7 @@ OSInt IO::EXEFile::AddImportModule(const UTF8Char *moduleName)
 	return this->importList->Add(imp);
 }
 
-void IO::EXEFile::AddImportFunc(OSInt modIndex, const UTF8Char *funcName)
+void IO::EXEFile::AddImportFunc(UOSInt modIndex, const UTF8Char *funcName)
 {
 	ImportInfo *imp;
 	imp = this->importList->GetItem(modIndex);
@@ -130,12 +130,12 @@ void IO::EXEFile::AddImportFunc(OSInt modIndex, const UTF8Char *funcName)
 	}
 }
 
-OSInt IO::EXEFile::GetImportCount()
+UOSInt IO::EXEFile::GetImportCount()
 {
 	return this->importList->GetCount();
 }
 
-const UTF8Char *IO::EXEFile::GetImportName(OSInt modIndex)
+const UTF8Char *IO::EXEFile::GetImportName(UOSInt modIndex)
 {
 	ImportInfo *imp = this->importList->GetItem(modIndex);
 	if (imp)
@@ -145,7 +145,7 @@ const UTF8Char *IO::EXEFile::GetImportName(OSInt modIndex)
 	return 0;
 }
 
-OSInt IO::EXEFile::GetImportFuncCount(OSInt modIndex)
+UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex)
 {
 	ImportInfo *imp = this->importList->GetItem(modIndex);
 	if (imp)
@@ -155,7 +155,7 @@ OSInt IO::EXEFile::GetImportFuncCount(OSInt modIndex)
 	return 0;
 }
 
-const UTF8Char *IO::EXEFile::GetImportFunc(OSInt modIndex, OSInt funcIndex)
+const UTF8Char *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex)
 {
 	ImportInfo *imp = this->importList->GetItem(modIndex);
 	if (imp)
@@ -172,12 +172,12 @@ void IO::EXEFile::AddExportFunc(const UTF8Char *funcName)
 	this->exportList->Add(exp);
 }
 
-OSInt IO::EXEFile::GetExportCount()
+UOSInt IO::EXEFile::GetExportCount()
 {
 	return this->exportList->GetCount();
 }
 
-const UTF8Char *IO::EXEFile::GetExportName(OSInt index)
+const UTF8Char *IO::EXEFile::GetExportName(UOSInt index)
 {
 	ExportInfo *exp = this->exportList->GetItem(index);
 	if (exp)
@@ -207,7 +207,7 @@ void IO::EXEFile::AddDOSEnv(OSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16
 	}
 }
 
-UInt8 *IO::EXEFile::GetDOSCodePtr(OSInt *codeLen)
+UInt8 *IO::EXEFile::GetDOSCodePtr(UOSInt *codeLen)
 {
 	if (this->envDOS == 0)
 		return 0;
@@ -236,7 +236,7 @@ UInt16 IO::EXEFile::GetDOSCodeSegm()
 	return this->envDOS->b16CodeSegm;
 }
 
-void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, OSInt dataSize, Int32 codePage, ResourceType rt)
+void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, Int32 codePage, ResourceType rt)
 {
 	ResourceInfo *res = MemAlloc(ResourceInfo, 1);
 	res->name = Text::StrCopyNew(name);
@@ -248,7 +248,7 @@ void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, OSInt dat
 	this->resList->Add(res);
 }
 
-OSInt IO::EXEFile::GetResourceCount()
+UOSInt IO::EXEFile::GetResourceCount()
 {
 	return this->resList->GetCount();
 }

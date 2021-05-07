@@ -93,24 +93,24 @@ typedef struct
 	const AVCodec *codec;
 	AVCodecContext *ctx;
 	AVFrame *frame;
-	Int32 dispWidth;
-	Int32 dispHeight;
-	Int32 storeWidth;
-	Int32 storeHeight;
+	UInt32 dispWidth;
+	UInt32 dispHeight;
+	UInt32 storeWidth;
+	UInt32 storeHeight;
 	Double par;
-	Int32 currFmt;
-	Int32 srcFCC;
+	UInt32 currFmt;
+	UInt32 srcFCC;
 	UInt8 *frameBuff;
-	OSInt frameSize;
+	UOSInt frameSize;
 	Bool seeked;
 	UInt32 seekTime;
 	AVColorPrimaries colorPrimaries;
 	AVColorTransferCharacteristic colorTrc;
 	AVColorSpace yuvColor;
 	FFMPEGFrameInfo frames[FRAMEBUFFSIZE];
-	OSInt frameIndexS;
-	OSInt frameIndexE;
-	Int32 lastFrameTime;
+	UOSInt frameIndexS;
+	UOSInt frameIndexE;
+	UInt32 lastFrameTime;
 	Bool isOpenGOP;
 #ifdef _DEBUG
 	IO::Stream *dbgStm;
@@ -258,7 +258,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 				OSInt h = data->frame->height;
 				UInt8 *dptr;
 				OSInt i;
-				frameTempBuff = MemAllocA(UInt8, w * h * 2);
+				frameTempBuff = MemAllocA(UInt8, (UOSInt)(w * h * 2));
 				dptr = frameTempBuff;
 				w = w >> 1;
 				while (h-- > 0)
@@ -307,7 +307,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 				skip = true;
 			}
 		}
-		if (data->frame->width != data->dispWidth || data->frame->height != data->dispHeight)
+		if (data->frame->width != (int)data->dispWidth || data->frame->height != (int)data->dispHeight)
 		{
 			skip = true;
 		}
@@ -685,8 +685,8 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		}
 		sourceVideo->ReadFrameEnd();
 
-		data->dispWidth = data->ctx->width;
-		data->dispHeight = data->ctx->height;
+		data->dispWidth = (UInt32)data->ctx->width;
+		data->dispHeight = (UInt32)data->ctx->height;
 		data->currFmt = data->ctx->pix_fmt;
 		if (data->ctx->sample_aspect_ratio.num != 0 && data->ctx->sample_aspect_ratio.den)
 		{
@@ -702,24 +702,24 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 			{
 #if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
 			case AV_PIX_FMT_YUV420P12LE:
-				data->storeWidth = data->frame->linesize[0] >> 1;
+				data->storeWidth = (UInt32)data->frame->linesize[0] >> 1;
 				break;
 #endif
 			case AV_PIX_FMT_YUV420P10LE:
-				data->storeWidth = data->frame->linesize[0] >> 1;
+				data->storeWidth = (UInt32)data->frame->linesize[0] >> 1;
 				break;
 			case AV_PIX_FMT_YUV444P10LE:
-				data->storeWidth = data->frame->linesize[0] >> 1;
+				data->storeWidth = (UInt32)data->frame->linesize[0] >> 1;
 				break;
 			case AV_PIX_FMT_YUVJ420P:
 			case AV_PIX_FMT_YUV420P:
-				data->storeWidth = data->frame->linesize[0];
+				data->storeWidth = (UInt32)data->frame->linesize[0];
 				break;
 			default:
-				data->storeWidth = data->frame->linesize[0];
+				data->storeWidth = (UInt32)data->frame->linesize[0];
 				break;
 			}
-			data->storeHeight = data->dispHeight;
+			data->storeHeight = (UInt32)data->dispHeight;
 #if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
 			data->colorPrimaries = data->frame->color_primaries;
 			data->colorTrc = data->frame->color_trc;
@@ -1324,7 +1324,7 @@ public:
 		default:
 			break;
 		}
-		this->decFmt->align = this->decFmt->nChannels * this->decFmt->bitpersample >> 3;
+		this->decFmt->align = (UInt32)this->decFmt->nChannels * this->decFmt->bitpersample >> 3;
 		this->decFmt->bitRate = this->decFmt->frequency * this->decFmt->align << 3;
 		this->inited = true;
 	}
@@ -1418,8 +1418,8 @@ public:
 
 	virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
-		OSInt outSize = 0;
-		OSInt i;
+		UOSInt outSize = 0;
+		UOSInt i;
 	    AVPacket avpkt;
 		Int32 ret;
 		if (this->decFmt == 0 || !this->inited)
@@ -1476,7 +1476,7 @@ public:
 				}
 			}
 
-			OSInt srcSize = this->sourceAudio->ReadBlock(this->readBuff, this->readBlockSize);
+			UOSInt srcSize = this->sourceAudio->ReadBlock(this->readBuff, this->readBlockSize);
 			if (srcSize == 0)
 			{
 				if (this->readEvt)
@@ -1512,7 +1512,7 @@ public:
 					if (gotFrame)
 					{
 						UInt8 *dataPtr = this->frame->data[0];
-						OSInt dataSize = this->frame->nb_samples * this->decFmt->align;
+						UOSInt dataSize = (UOSInt)this->frame->nb_samples * this->decFmt->align;
 						if (this->frameBuffSize + dataSize > this->frameMaxSize)
 						{
 							while (this->frameBuffSize + dataSize > this->frameMaxSize)

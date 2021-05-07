@@ -53,8 +53,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	const UTF8Char *fileName = 0;
 	const UTF8Char *artists[100];
 	const UTF8Char *titles[100];
-	Int32 stmTime[100];
-	Int32 lastTime;
+	UInt32 stmTime[100];
+	UInt32 lastTime;
 	OSInt i;
 	Bool errorFound = false;
 	i = Text::StrLastIndexOf(fd->GetFullName(), '.');
@@ -158,7 +158,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 				mf = (Media::MediaFile*)pobj;
 				Media::ChapterInfo *chapters;
 				NEW_CLASS(chapters, Media::ChapterInfo());
-				lastTime = -1;
+				lastTime = 0;
 				i = 1;
 				while (i <= maxTrack)
 				{
@@ -245,7 +245,7 @@ UTF8Char *Parser::FileParser::CUEParser::ReadString(UTF8Char *sbuff, const UTF8C
 	return sbuff;
 }
 
-Int32 Parser::FileParser::CUEParser::ReadTime(const UTF8Char *timeStr)
+UInt32 Parser::FileParser::CUEParser::ReadTime(const UTF8Char *timeStr)
 {
 	UTF8Char sbuff[10];
 	UTF8Char *sarr[4];
@@ -253,7 +253,7 @@ Int32 Parser::FileParser::CUEParser::ReadTime(const UTF8Char *timeStr)
 	{
 		if (Text::StrSplit(sarr, 4, sbuff, ':') == 3)
 		{
-			return Text::StrToInt32(sarr[0]) * 60000 + Text::StrToInt32(sarr[1]) * 1000 + (Text::StrToInt32(sarr[2]) * 1000 / 75);
+			return Text::StrToUInt32(sarr[0]) * 60000 + Text::StrToUInt32(sarr[1]) * 1000 + (Text::StrToUInt32(sarr[2]) * 1000 / 75);
 		}
 		else
 		{

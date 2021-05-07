@@ -76,7 +76,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
 			}
 			else
 			{
-				i = ReadMInt16(&me->readBuff[currOfst + 4]);
+				i = ReadMUInt16(&me->readBuff[currOfst + 4]);
 				if (me->readBuff[currOfst + 3] == 0xbb) // System Header
 				{
 				}

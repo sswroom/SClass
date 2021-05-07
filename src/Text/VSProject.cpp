@@ -27,7 +27,7 @@ Text::VSContainer::VSContainer(const UTF8Char *contName)
 Text::VSContainer::~VSContainer()
 {
 	Text::CodeObject *child;
-	OSInt i;
+	UOSInt i;
 	Text::StrDelNew(this->contName);
 	i = this->childList->GetCount();
 	while (i-- > 0)
@@ -52,12 +52,12 @@ const UTF8Char *Text::VSContainer::GetContainerName()
 	return this->contName;
 }
 
-OSInt Text::VSContainer::GetChildCount()
+UOSInt Text::VSContainer::GetChildCount()
 {
 	return this->childList->GetCount();
 }
 
-Text::CodeObject *Text::VSContainer::GetChildObj(OSInt index)
+Text::CodeObject *Text::VSContainer::GetChildObj(UOSInt index)
 {
 	return this->childList->GetItem(index);
 }
@@ -85,7 +85,7 @@ Text::VSProject::VSProject(const UTF8Char *name, VisualStudioVersion ver) : Text
 
 Text::VSProject::~VSProject()
 {
-	OSInt i;
+	UOSInt i;
 	Text::CodeObject *child;
 	SDEL_TEXT(this->projName);
 	i = this->childList->GetCount();
@@ -116,12 +116,12 @@ const UTF8Char *Text::VSProject::GetContainerName()
 	return this->projName;
 }
 
-OSInt Text::VSProject::GetChildCount()
+UOSInt Text::VSProject::GetChildCount()
 {
 	return this->childList->GetCount();
 }
 
-Text::CodeObject *Text::VSProject::GetChildObj(OSInt index)
+Text::CodeObject *Text::VSProject::GetChildObj(UOSInt index)
 {
 	return this->childList->GetItem(index);
 }

@@ -151,8 +151,8 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(UI::GUITreeView::TreeItem *p
 {
 	UI::GUITreeView::TreeItem *tviLast = 0;
 	Text::CodeObject *obj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	i = 0;
 	j = container->GetChildCount();

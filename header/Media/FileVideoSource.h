@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_FILEVIDEOSOURCE
 #define _SM_MEDIA_FILEVIDEOSOURCE
-#include "Data/ArrayListInt32.h"
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt32.h"
+#include "Data/ArrayListUInt64.h"
 #include "IO/IStreamData.h"
 #include "Media/VideoSourceBase.h"
 #include "Sync/Mutex.h"
@@ -16,7 +16,7 @@ namespace Media
 			UInt32 frameTime;
 			UInt32 frameNum;
 			UInt8 *frameBuff;
-			OSInt frameSize;
+			UOSInt frameSize;
 			Media::IVideoSource::FrameStruct frameStruct;
 			Media::FrameType fType;
 			Media::IVideoSource::FrameFlag flags;
@@ -31,11 +31,11 @@ namespace Media
 		UOSInt currFrameSize;
 		Bool timeBased;
 
-		Data::ArrayListInt64 *frameOfsts;
-		Data::ArrayListInt32 *frameSizes;
-		Data::ArrayListInt32 *frameParts;
+		Data::ArrayListUInt64 *frameOfsts;
+		Data::ArrayListUInt32 *frameSizes;
+		Data::ArrayListUInt32 *frameParts;
 		Data::ArrayList<Bool> *frameIsKey;
-		Data::ArrayListInt32 *frameTimes;
+		Data::ArrayListUInt32 *frameTimes;
 
 		UInt32 currFrameNum;
 		Bool playing;
@@ -63,9 +63,9 @@ namespace Media
 		FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
 		virtual ~FileVideoSource();
 
-		void AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, Int32 frameTime);
+		void AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, UInt32 frameTime);
 		void AddFramePart(UInt64 frameOfst, UInt32 frameSize);
-		void SetFrameRate(Int32 frameRateNorm, Int32 frameRateDenorm);
+		void SetFrameRate(UInt32 frameRateNorm, UInt32 frameRateDenorm);
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual const UTF8Char *GetFilterName();

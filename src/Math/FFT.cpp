@@ -66,7 +66,7 @@ fftflop2:
 	if (!Forward(complexData, j) || !Forward(&complexData[j * 2], j))
 		return false;
 
-	Double kthMul = -2 * Math::PI / sampleCount;
+	Double kthMul = -2 * Math::PI / Math::UOSInt2Double(sampleCount);
 	Double wk[2];
 	Double odd[2];
 	Double even[2];
@@ -75,7 +75,7 @@ fftflop2:
 	i = 0;
 	while (i < j)
 	{
-		Double kth = i * kthMul;
+		Double kth = Math::UOSInt2Double(i) * kthMul;
 		even[0] = complexData[i * 2];
 		even[1] = complexData[i * 2 + 1];
 		odd[0] = complexData[(i + j) * 2];

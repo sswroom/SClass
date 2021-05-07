@@ -109,9 +109,9 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Data::ArrayListInt32 *partInd;
 	UTF8Char sbuff[32];
 	ExeB16Addr *eaddr;
-	OSInt codeSize;
-	OSInt i;
-	OSInt j;
+	UOSInt codeSize;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayListUInt32 *funcCalls;
 	Data::ArrayListUInt32 *nfuncCalls;
 

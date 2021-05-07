@@ -18,7 +18,7 @@ Media::Decoder::VDecoderChain::~VDecoderChain()
 	{
 		DEL_CLASS(this->sourceVideo);
 	}
-	OSInt i = this->srcFilters->GetCount();
+	UOSInt i = this->srcFilters->GetCount();
 	while (i-- > 0)
 	{
 		Media::IVideoSource *video = this->srcFilters->GetItem(i);

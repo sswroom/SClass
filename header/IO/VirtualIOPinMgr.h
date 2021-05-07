@@ -11,7 +11,7 @@ namespace IO
 	public:
 		typedef struct
 		{
-			Int32 pinNum;
+			UInt32 pinNum;
 			Sync::Mutex *mut;
 			OSInt useCnt;
 			Bool pullHigh;
@@ -20,14 +20,14 @@ namespace IO
 		} PinStatus;
 	private:
 		PinStatus **pins;
-		OSInt pinCnt;
+		UOSInt pinCnt;
 
 	public:
-		VirtualIOPinMgr(OSInt pinCnt);
+		VirtualIOPinMgr(UOSInt pinCnt);
 		~VirtualIOPinMgr();
 
-		IO::IOPin *CreatePin(Int32 pinNum);
-		OSInt GetAvailablePins(Data::ArrayList<Int32> *pinList);
+		IO::IOPin *CreatePin(UInt32 pinNum);
+		UOSInt GetAvailablePins(Data::ArrayList<Int32> *pinList);
 	};
 
 	class VirtualIOPin : public IOPin
@@ -46,5 +46,5 @@ namespace IO
 		virtual Bool SetPullType(PullType pt);
 		virtual UTF8Char *GetName(UTF8Char *buff);
 	};
-};
+}
 #endif

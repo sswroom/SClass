@@ -84,7 +84,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 //					Int64 fileSize;
 //					Data::DateTime dt;
 
-					Int32 ip;
+					UInt32 ip;
 					UInt16 port;
 //					this->conn->GetFileSize(&sbuff[i + 1], &fileSize);
 //					this->conn->GetFileModTime(&sbuff[i + 1], &dt);

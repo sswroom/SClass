@@ -34,8 +34,8 @@ namespace Text
 		virtual void SetContainerName(const UTF8Char *contName);
 		virtual const UTF8Char *GetContainerName();
 
-		virtual OSInt GetChildCount();
-		virtual CodeObject *GetChildObj(OSInt index);
+		virtual UOSInt GetChildCount();
+		virtual CodeObject *GetChildObj(UOSInt index);
 
 		virtual void AddChild(Text::CodeObject *obj);
 	};
@@ -66,8 +66,8 @@ namespace Text
 		virtual void SetProjectName(const UTF8Char *projName);
 		virtual const UTF8Char *GetContainerName();
 
-		virtual OSInt GetChildCount();
-		virtual CodeObject *GetChildObj(OSInt index);
+		virtual UOSInt GetChildCount();
+		virtual CodeObject *GetChildObj(UOSInt index);
 
 		virtual void AddChild(Text::CodeObject *obj);
 		VisualStudioVersion GetVSVersion();

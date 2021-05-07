@@ -16,21 +16,21 @@ namespace IO
 			typedef struct
 			{
 				UInt8 tagType;
-				Int64 ofst;
-				OSInt size;
+				UInt64 ofst;
+				UOSInt size;
 			} FLVTag;
 		private:
 			IO::IStreamData *fd;
 			Data::SyncArrayList<FLVTag*> *tags;
-			OSInt hdrSize;
+			UOSInt hdrSize;
 
 			Bool pauseParsing;
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool threadStarted;
 
-			OSInt ParseScriptDataVal(UInt8 *data, OSInt ofst, OSInt endOfst, Text::StringBuilderUTF *sb);
-			void ParseScriptData(UInt8 *data, OSInt ofst, OSInt endOfst, Text::StringBuilderUTF *sb);
+			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb);
+			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			FLVFileAnalyse(IO::IStreamData *fd);

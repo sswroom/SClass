@@ -281,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 					}
 
 					WriteInt16(id, Math::Double2Int32(bss->GetFreq() / 1000000.0));
-					bsss = me->bssMap->Get(ReadInt64(id));
+					bsss = me->bssMap->Get(ReadUInt64(id));
 					if (bsss == 0)
 					{
 						bsss = MemAlloc(SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus, 1);
@@ -297,7 +297,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						{
 							bsss->ssid = 0;
 						}
-						me->bssMap->Put(ReadInt64(id), bsss);
+						me->bssMap->Put(ReadUInt64(id), bsss);
 					}
 					else if (ssid && bsss->ssid == 0)
 					{
@@ -319,7 +319,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						MemCopyNO(&id[2], bss->GetMAC(), 6);
 						id[0] = 0;
 						id[1] = 0;
-						imac = ReadMInt64(id);
+						imac = ReadMUInt64(id);
 						if (imac != maxIMAC)
 						{
 							Bool found = false;
@@ -337,13 +337,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									found = true;
 									if (rssi1 > rssi2)
 									{
-										wifiLog->neighbour[k] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+										wifiLog->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 									}
 									break;
 								}
 								else if (wifiLog->neighbour[k] == 0)
 								{
-									wifiLog->neighbour[k] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+									wifiLog->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 									found = true;
 									break;
 								}
@@ -358,7 +358,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 
 							if (!found && minRSSI < rssi1)
 							{
-								wifiLog->neighbour[minIndex] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+								wifiLog->neighbour[minIndex] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 							}
 						}
 						i++;
@@ -385,7 +385,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
-	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew(index);
+	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew((UOSInt)index);
 	if (csptr)
 	{
 		Win32::Clipboard::SetString(me->GetHandle(), csptr);
@@ -598,8 +598,8 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 
 	this->core = core;
 	this->lastTimeTick = 0;
-	NEW_CLASS(this->bssMap, Data::Int64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus*>());
-	NEW_CLASS(this->wifiLogMap, Data::Int64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*>());
+	NEW_CLASS(this->bssMap, Data::UInt64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus*>());
+	NEW_CLASS(this->wifiLogMap, Data::UInt64Map<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*>());
 	UOSInt i;
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
 	Data::ArrayList<Net::WirelessLAN::Interface*> interfList;

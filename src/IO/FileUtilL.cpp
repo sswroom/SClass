@@ -97,7 +97,7 @@ Bool FileUtil_Stat(const UTF8Char *fileName, struct stat *outStat)
 		{
 			break;
 		}
-		sb.RemoveChars(sb.GetLength() - i);
+		sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		if (stat((const Char*)sb.ToString(), outStat) == 0)
 		{
 			return true;
@@ -192,15 +192,15 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		DEL_CLASS(fs1);
 		return false;
 	}
-	Int64 fileSize = fs1->GetLength();
-	Int64 ramSize = 104857600;//MemGetRAMSize();
-	Int64 writeSize = 0;
-	Int64 writenSize;
+	UInt64 fileSize = fs1->GetLength();
+	UInt64 ramSize = 104857600;//MemGetRAMSize();
+	UInt64 writeSize = 0;
+	UInt64 writenSize;
 	Bool samePart = IsSamePartition(file1, file2);
 	UInt8 *buff;
 	if (fea == FEA_CONTINUE)
 	{
-		Int64 destPos = fs2->GetPosition();
+		UInt64 destPos = fs2->GetPosition();
 		if (destPos > fileSize)
 		{
 			DEL_CLASS(fs2);
@@ -216,7 +216,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		else if (destPos > 0)
 		{
 			fileSize -= destPos;
-			fs1->Seek(IO::SeekableStream::ST_BEGIN, destPos);
+			fs1->Seek(IO::SeekableStream::ST_BEGIN, (Int64)destPos);
 		}
 	}
 
@@ -229,9 +229,9 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		Data::DateTime dt1;
 		Data::DateTime dt2;
 		Data::DateTime dt3;
-		buff = MemAlloc(UInt8, (OSInt)1048576);
-		writeSize = fs1->Read(buff, (OSInt)1048576);
-		writeSize = fs2->Write(buff, (OSInt)writeSize);
+		buff = MemAlloc(UInt8, 1048576);
+		writeSize = fs1->Read(buff, (UOSInt)1048576);
+		writeSize = fs2->Write(buff, (UOSInt)writeSize);
 		MemFree(buff);
 		fs1->GetFileTimes(&dt1, &dt2, &dt3);
 		fs2->SetFileTimes(&dt1, &dt2, &dt3);
@@ -245,15 +245,15 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		Data::DateTime dt1;
 		Data::DateTime dt2;
 		Data::DateTime dt3;
-		OSInt readSize;
-		OSInt thisSize;
+		UOSInt readSize;
+		UOSInt thisSize;
 		if (fileSize < ramSize)
 		{
-			buff = MemAllocA(UInt8, readSize = (OSInt)fileSize);
+			buff = MemAllocA(UInt8, readSize = (UOSInt)fileSize);
 		}
 		else
 		{
-			buff = MemAllocA(UInt8, readSize = (OSInt)ramSize);
+			buff = MemAllocA(UInt8, readSize = (UOSInt)ramSize);
 		}
 		while (writeSize < fileSize)
 		{

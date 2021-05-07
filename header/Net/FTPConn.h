@@ -35,16 +35,16 @@ namespace Net
 		Bool ChangeDirectory(const UTF8Char *dir);
 		Bool MakeDirectory(const UTF8Char *dir);
 		Bool RemoveDirectory(const UTF8Char *dir);
-		Bool GetFileSize(const UTF8Char *fileName, Int64 *fileSize);
+		Bool GetFileSize(const UTF8Char *fileName, UInt64 *fileSize);
 		Bool GetFileModTime(const UTF8Char *fileName, Data::DateTime *modTime);
 		Bool ToBinaryType();
 		Bool ToASCIIType();
 		Bool ToEBCDICType();
-		Bool ChangePassiveMode(Int32 *ip, UInt16 *port);
-		Bool ChangeActiveMode(Int32 ip, UInt16 port);
-		Bool ResumeTransferPos(Int64 pos);
+		Bool ChangePassiveMode(UInt32 *ip, UInt16 *port);
+		Bool ChangeActiveMode(UInt32 ip, UInt16 port);
+		Bool ResumeTransferPos(UInt64 pos);
 		Bool GetFile(const UTF8Char *fileName);
 		Bool RenameFile(const UTF8Char *fromFile, const UTF8Char *toFile);
 	};
-};
+}
 #endif

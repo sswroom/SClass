@@ -13,9 +13,9 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 	UInt8 *frameBuff2;
 	UInt32 lastFrameNum;
 	UInt32 frameNum;
-	OSInt frameSize;
-	OSInt currPart;
-	OSInt nextPart;
+	UOSInt frameSize;
+	UOSInt currPart;
+	UOSInt nextPart;
 	Bool needNotify = false;
 	OSInt nextIndex;
 
@@ -69,10 +69,10 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 				}
 				if (frameSize > 0)
 				{
-					Int32 frameTime = me->frameTimes->GetItem(frameNum);
+					UInt32 frameTime = me->frameTimes->GetItem(frameNum);
 					if (frameTime == 0)
 					{
-						frameTime = MulDiv32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
+						frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
 					}
 
 					Media::FrameType ftype;
@@ -205,11 +205,11 @@ Media::FileVideoSource::FileVideoSource(IO::IStreamData *data, Media::FrameInfo 
 	this->currFrameNum = 0;
 	this->timeBased = timeBased;
 
-	NEW_CLASS(this->frameOfsts, Data::ArrayListInt64());
-	NEW_CLASS(this->frameSizes, Data::ArrayListInt32());
+	NEW_CLASS(this->frameOfsts, Data::ArrayListUInt64());
+	NEW_CLASS(this->frameSizes, Data::ArrayListUInt32());
 	NEW_CLASS(this->frameIsKey, Data::ArrayList<Bool>());
-	NEW_CLASS(this->frameParts, Data::ArrayListInt32());
-	NEW_CLASS(this->frameTimes, Data::ArrayListInt32());
+	NEW_CLASS(this->frameParts, Data::ArrayListUInt32());
+	NEW_CLASS(this->frameTimes, Data::ArrayListUInt32());
 
 	this->playing = false;
 	this->outputRunning = false;
@@ -242,10 +242,10 @@ Media::FileVideoSource::~FileVideoSource()
 	DEL_CLASS(this->frameInfo);
 }
 
-void Media::FileVideoSource::AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, Int32 frameTime)
+void Media::FileVideoSource::AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, UInt32 frameTime)
 {
 	this->frameIsKey->Add(isKey);
-	this->frameParts->Add((Int32)this->frameOfsts->GetCount());
+	this->frameParts->Add((UInt32)this->frameOfsts->GetCount());
 	this->frameOfsts->Add(frameOfst);
 	this->frameSizes->Add(frameSize);
 	this->frameTimes->Add(frameTime);
@@ -268,7 +268,7 @@ void Media::FileVideoSource::AddFramePart(UInt64 frameOfst, UInt32 frameSize)
 	}
 }
 
-void Media::FileVideoSource::SetFrameRate(Int32 frameRateNorm, Int32 frameRateDenorm)
+void Media::FileVideoSource::SetFrameRate(UInt32 frameRateNorm, UInt32 frameRateDenorm)
 {
 	this->frameRateNorm = frameRateNorm;
 	this->frameRateDenorm = frameRateDenorm;
@@ -376,7 +376,7 @@ Bool Media::FileVideoSource::IsRunning()
 
 Int32 Media::FileVideoSource::GetStreamTime()
 {
-	return MulDiv32((int)this->frameParts->GetCount(), this->frameRateDenorm * 1000, this->frameRateNorm);
+	return (Int32)MulDivU32((UInt32)this->frameParts->GetCount(), this->frameRateDenorm * 1000, this->frameRateNorm);
 }
 
 Bool Media::FileVideoSource::CanSeek()
@@ -388,40 +388,40 @@ UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 {
 	if (this->timeBased)
 	{
-		OSInt lastKey = 0;
-		Int32 lastKeyTime = 0;
-		Int32 thisTime;
-		OSInt i = 0;
-		OSInt j = this->frameParts->GetCount();
+		UOSInt lastKey = 0;
+		UInt32 lastKeyTime = 0;
+		UInt32 thisTime;
+		UOSInt i = 0;
+		UOSInt j = this->frameParts->GetCount();
 		while (i < j)
 		{
 			if (this->frameIsKey->GetItem(i))
 			{
 				thisTime = this->frameTimes->GetItem(i);
-				if ((UInt32)thisTime > time)
+				if (thisTime > time)
 					break;
 				lastKey = i;
 				lastKeyTime = thisTime;
 			}
 			i++;
 		}
-		this->currFrameNum = (Int32)lastKey;
+		this->currFrameNum = (UInt32)lastKey;
 		return lastKeyTime;
 	}
 	else
 	{
-		Int32 newNum = MulDiv32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
-		if (newNum > (OSInt)this->frameParts->GetCount())
+		UInt32 newNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
+		if (newNum > this->frameParts->GetCount())
 		{
-			newNum = (Int32)this->frameParts->GetCount();
+			newNum = (UInt32)this->frameParts->GetCount();
 		}
-		if ((UInt32)newNum != this->currFrameNum)
+		if (newNum != this->currFrameNum)
 		{
 			while (newNum >= 0 && !this->frameIsKey->GetItem(newNum))
 				newNum--;
 			this->currFrameNum = newNum;
 		}
-		return MulDiv32(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);;
+		return MulDivU32(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);;
 	}
 }
 
@@ -443,26 +443,26 @@ UOSInt Media::FileVideoSource::GetDataSeekCount()
 
 OSInt Media::FileVideoSource::GetFrameCount()
 {
-	return this->frameParts->GetCount();
+	return (OSInt)this->frameParts->GetCount();
 }
 
 UInt32 Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
 {
-	Int32 frameTime = this->frameTimes->GetItem(frameIndex);
+	UInt32 frameTime = this->frameTimes->GetItem(frameIndex);
 	if (frameTime == 0)
 	{
-		frameTime = MulDiv32((Int32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
+		frameTime = MulDivU32((UInt32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
 	}
-	return (UInt32)frameTime;
+	return frameTime;
 }
 
 void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 {
-	OSInt frameSize;
-	OSInt currPart;
-	OSInt nextPart;
-	OSInt i = 0;
-	OSInt j = this->frameParts->GetCount();
+	UOSInt frameSize;
+	UOSInt currPart;
+	UOSInt nextPart;
+	UOSInt i = 0;
+	UOSInt j = this->frameParts->GetCount();
 	UInt32 lastFrameTime = 0;
 	while (i < j)
 	{
@@ -484,10 +484,10 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 		}
 		if (frameSize > 0)
 		{
-			Int32 frameTime = this->frameTimes->GetItem(i);
+			UInt32 frameTime = this->frameTimes->GetItem(i);
 			if (frameTime == 0)
 			{
-				frameTime = MulDiv32((Int32)i, this->frameRateDenorm * 1000, this->frameRateNorm);
+				frameTime = MulDivU32((UInt32)i, this->frameRateDenorm * 1000, this->frameRateNorm);
 			}
 			lastFrameTime = frameTime;
 

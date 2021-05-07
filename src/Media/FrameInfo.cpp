@@ -244,9 +244,9 @@ const UTF8Char *Media::FrameInfo::GetPixelFormatName(PixelFormat pf)
 	}
 }
 
-Media::PixelFormat Media::FrameInfo::GetDefPixelFormat(Int32 fourcc, UInt32 storeBPP)
+Media::PixelFormat Media::FrameInfo::GetDefPixelFormat(UInt32 fourcc, UInt32 storeBPP)
 {
-	if (fourcc == 0 || fourcc == *(Int32*)"DIBS")
+	if (fourcc == 0 || fourcc == *(UInt32*)"DIBS")
 	{
 		if (storeBPP == 1)
 			return PF_PAL_1;

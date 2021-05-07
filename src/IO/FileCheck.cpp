@@ -287,7 +287,7 @@ IO::FileCheck::FileCheck(const UTF8Char *name, CheckType chkType) : IO::ParsedOb
 
 IO::FileCheck::~FileCheck()
 {
-	OSInt i = this->fileNames->GetCount();
+	UOSInt i = this->fileNames->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->fileNames->GetItem(i));

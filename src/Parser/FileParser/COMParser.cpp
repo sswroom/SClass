@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::COMParser::ParseFile(IO::IStreamData *fd, 
 	regs.SS = 0x80;
 	IO::EXEFile *exef;
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
-	OSInt codeLen;
+	UOSInt codeLen;
 	exef->AddDOSEnv((OSInt)fd->GetDataSize() + 256, &regs, 0x80);
 	UInt8 *codePtr = exef->GetDOSCodePtr(&codeLen);
 	exef->SetDOSHasPSP(true);

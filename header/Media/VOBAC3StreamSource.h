@@ -21,7 +21,7 @@ namespace Media
 		UOSInt buffSize;
 		UOSInt buffStart;
 		UOSInt buffEnd;
-		Int64 buffSample;
+		UInt64 buffSample;
 		Int32 lastFrameSize;
 
 

@@ -20,8 +20,8 @@ namespace Map
 		Double minY;
 		Double maxX;
 		Double maxY;
-		OSInt objIdCol;
-		OSInt shapeCol;
+		UOSInt objIdCol;
+		UOSInt shapeCol;
 		const UTF8Char *tableName;
 
 	private:

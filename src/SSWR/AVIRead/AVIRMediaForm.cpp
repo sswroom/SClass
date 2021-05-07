@@ -15,7 +15,7 @@
 
 extern "C"
 {
-	void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops);
+	void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, OSInt ySplit, OSInt *crops);
 }
 
 typedef enum
@@ -95,8 +95,8 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->mnuChapters->ClearItems();
 	if (this->currChapters)
 	{
@@ -222,8 +222,8 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
 {
 	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
-	OSInt w = img->info->dispWidth;
-	OSInt h = img->info->dispHeight;
+	UOSInt w = img->info->dispWidth;
+	UOSInt h = img->info->dispHeight;
 	UInt8 *yptr = img->data;
 	OSInt ySplit;
 	OSInt crops[4];
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 	me->vbdMain->UpdateCrop();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(UInt32 frameTime, OSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
+Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
 	IO::Writer *writer = (IO::Writer *)userData;
@@ -260,7 +260,7 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(UInt32 frameTime, OSInt
 	return true;
 }
 
-void SSWR::AVIRead::AVIRMediaForm::PBStart(Int32 startTime)
+void SSWR::AVIRead::AVIRMediaForm::PBStart(UInt32 startTime)
 {
 	if (this->currDecoder)
 	{
@@ -417,11 +417,11 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 
 void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 {
-	Int32 currTime;
+	UInt32 currTime;
 	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
-		i = cmdId - MNU_PB_CHAPTERS;
+		i = (UOSInt)cmdId - MNU_PB_CHAPTERS;
 		if (this->PBIsPlaying())
 		{
 			PBStop();
@@ -605,7 +605,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 					i = 0;
 					while ((OSInt)i < j)
 					{
-						Text::StrInt32(sbuff, video->GetFrameTime(i));
+						Text::StrUInt32(sbuff, video->GetFrameTime(i));
 						writer->WriteLine(sbuff);
 						i++;
 					}

@@ -36,8 +36,8 @@ namespace Text
 		virtual ObjectType GetObjectType();
 
 		virtual const UTF8Char *GetContainerName() = 0;
-		virtual OSInt GetChildCount() = 0;
-		virtual CodeObject *GetChildObj(OSInt index) = 0;
+		virtual UOSInt GetChildCount() = 0;
+		virtual CodeObject *GetChildObj(UOSInt index) = 0;
 	};
 
 	class CodeProjectCfg : public IO::ConfigFile
@@ -71,5 +71,5 @@ namespace Text
 		virtual ProjectType GetProjectType() = 0;
 		virtual IO::ParsedObject::ParserType GetParserType();
 	};
-};
+}
 #endif

@@ -193,7 +193,7 @@ UOSInt Media::VOBAC3StreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 			else if ((UOSInt)frStart + frameSize <= (UOSInt)buffSize2)
 			{
-				MemCopyNO(buff, this->dataBuff2, frStart + frameSize);
+				MemCopyNO(buff, this->dataBuff2, (UOSInt)frStart + frameSize);
 				this->buffStart += frStart + frameSize;
 				if (this->buffStart >= this->buffSize)
 				{
@@ -267,7 +267,7 @@ void Media::VOBAC3StreamSource::ClearFrameBuff()
 void Media::VOBAC3StreamSource::SetStreamTime(Int32 time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	this->buffSample = MulDiv32(time, this->fmt->bitRate, 8000);
+	this->buffSample = MulDivU32(time, this->fmt->bitRate, 8000);
 	mutUsage.EndUse();
 }
 
@@ -356,12 +356,12 @@ Int32 Media::VOBAC3StreamSource::GetFrameStreamTime()
 {
 	Int32 t;
 	Sync::MutexUsage mutUsage(this->buffMut);
-	OSInt buffSize = this->buffEnd - this->buffStart;
+	OSInt buffSize = (OSInt)(this->buffEnd - this->buffStart);
 	if (buffSize < 0)
 	{
 		buffSize += (OSInt)this->buffSize;
 	}
-	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt->bitRate);
+	t = (Int32)((this->buffSample + buffSize) * 8000LL / (OSInt)this->fmt->bitRate);
 	mutUsage.EndUse();
 	return t;
 }

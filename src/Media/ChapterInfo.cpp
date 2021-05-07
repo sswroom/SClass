@@ -7,12 +7,12 @@ Media::ChapterInfo::ChapterInfo()
 {
 	NEW_CLASS(this->chapterNames, Data::ArrayList<const UTF8Char *>());
 	NEW_CLASS(this->chapterArtists, Data::ArrayList<const UTF8Char *>());
-	NEW_CLASS(this->chapterTimes, Data::ArrayListInt32());
+	NEW_CLASS(this->chapterTimes, Data::ArrayListUInt32());
 }
 
 Media::ChapterInfo::~ChapterInfo()
 {
-	OSInt i;
+	UOSInt i;
 	const UTF8Char *csptr;
 	i = this->chapterNames->GetCount();
 	while (i-- > 0)
@@ -26,9 +26,9 @@ Media::ChapterInfo::~ChapterInfo()
 	DEL_CLASS(this->chapterTimes);
 }
 
-void Media::ChapterInfo::AddChapter(Int32 chapterTime, const UTF8Char *chapterName, const UTF8Char *chapterArtist)
+void Media::ChapterInfo::AddChapter(UInt32 chapterTime, const UTF8Char *chapterName, const UTF8Char *chapterArtist)
 {
-	OSInt i = this->chapterTimes->SortedInsert(chapterTime);
+	UOSInt i = this->chapterTimes->SortedInsert(chapterTime);
 	this->chapterNames->Insert(i, Text::StrCopyNew(chapterName));
 	if (chapterArtist)
 	{
@@ -40,7 +40,7 @@ void Media::ChapterInfo::AddChapter(Int32 chapterTime, const UTF8Char *chapterNa
 	}
 }
 
-UOSInt Media::ChapterInfo::GetChapterIndex(Int32 currTime)
+UOSInt Media::ChapterInfo::GetChapterIndex(UInt32 currTime)
 {
 	OSInt i = this->chapterTimes->SortedIndexOf(currTime);
 	if (i >= 0)
@@ -49,7 +49,7 @@ UOSInt Media::ChapterInfo::GetChapterIndex(Int32 currTime)
 		return (UOSInt)(~i - 1);
 }
 
-Int32 Media::ChapterInfo::GetChapterTime(UOSInt index)
+UInt32 Media::ChapterInfo::GetChapterTime(UOSInt index)
 {
 	return this->chapterTimes->GetItem(index);
 }

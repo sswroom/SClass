@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		return;
 	}
 	Int32 syncTime;
-	Media::IMediaSource *mediaSrc = me->currFile->GetStream(i, &syncTime);
+	Media::IMediaSource *mediaSrc = me->currFile->GetStream((UOSInt)i, &syncTime);
 	if (mediaSrc == 0)
 	{
 		me->txtStream->SetText((const UTF8Char*)"");
@@ -90,18 +90,18 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		if (videoSrc->GetVideoInfo(&frameInfo, &rateNorm, &rateDenorm, &maxFrameSize))
 		{
 			sb.Append((const UTF8Char*)"Frame Rate = ");
-			sb.AppendI32(rateNorm);
+			sb.AppendU32(rateNorm);
 			sb.Append((const UTF8Char*)"/");
-			sb.AppendI32(rateDenorm);
+			sb.AppendU32(rateDenorm);
 			sb.Append((const UTF8Char*)" (");
 			Text::SBAppendF64(&sb, rateNorm / (Double)rateDenorm);
 			sb.Append((const UTF8Char*)")\r\n");
 			sb.Append((const UTF8Char*)"Max Frame Size = ");
-			sb.AppendOSInt(maxFrameSize);
+			sb.AppendUOSInt(maxFrameSize);
 			sb.Append((const UTF8Char*)"\r\n");
 			frameInfo.ToString(&sb);
 		}
-		decStatus = me->decStatus->GetItem(i);
+		decStatus = me->decStatus->GetItem((UOSInt)i);
 		if (decStatus)
 		{
 			sb.Append((const UTF8Char*)"\r\nDecoded Frame Count = ");
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		me->AppendTime(&sb, audioSrc->GetStreamTime());
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Min Block Size = ");
-		sb.AppendOSInt(audioSrc->GetMinBlockSize());
+		sb.AppendUOSInt(audioSrc->GetMinBlockSize());
 		sb.Append((const UTF8Char*)"\r\n");
 		audioSrc->GetFormat(&fmt);
 		fmt.ToString(&sb);
@@ -302,23 +302,23 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 	return true;
 }
 
-void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF *sb, Int32 t)
+void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF *sb, UInt32 t)
 {
-	sb->AppendI32(t / 3600000);
+	sb->AppendU32(t / 3600000);
 	t = t % 3600000;
 	sb->AppendChar(':', 1);
 	if (t < 600000)
 	{
 		sb->AppendChar('0', 1);
 	}
-	sb->AppendI32(t / 60000);
+	sb->AppendU32(t / 60000);
 	t = t % 60000;
 	sb->AppendChar(':', 1);
 	if (t < 10000)
 	{
 		sb->AppendChar('0', 1);
 	}
-	sb->AppendI32(t / 1000);
+	sb->AppendU32(t / 1000);
 	t = t % 1000;
 	sb->AppendChar('.', 1);
 	if (t < 10)
@@ -329,7 +329,7 @@ void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF *sb, In
 	{
 		sb->AppendChar('0', 1);
 	}
-	sb->AppendI32(t);
+	sb->AppendU32(t);
 }
 
 void SSWR::AVIRead::AVIRVideoInfoForm::ClearDecode()

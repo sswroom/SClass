@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/SHPConv/ValueFilter.h"
 
-SSWR::SHPConv::ValueFilter::ValueFilter(OSInt colIndex, const UTF8Char *val, Int32 compareType)
+SSWR::SHPConv::ValueFilter::ValueFilter(UOSInt colIndex, const UTF8Char *val, Int32 compareType)
 {
 	this->colIndex = colIndex;
 	this->value = Text::StrCopyNew(val);
@@ -34,7 +34,7 @@ Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, 
 UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff)
 {
 	buff = Text::StrConcat(buff, (const UTF8Char*)"Compare column ");
-	buff = Text::StrOSInt(buff, this->colIndex);
+	buff = Text::StrUOSInt(buff, this->colIndex);
 	switch (this->compareType)
 	{
 	case 3:

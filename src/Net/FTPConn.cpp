@@ -168,7 +168,7 @@ Bool Net::FTPConn::RemoveDirectory(const UTF8Char *dir)
 	return code == 250;
 }
 
-Bool Net::FTPConn::GetFileSize(const UTF8Char *fileName, Int64 *fileSize)
+Bool Net::FTPConn::GetFileSize(const UTF8Char *fileName, UInt64 *fileSize)
 {
 	UTF8Char sbuff[512];
 	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"SIZE "), fileName);
@@ -180,7 +180,7 @@ Bool Net::FTPConn::GetFileSize(const UTF8Char *fileName, Int64 *fileSize)
 	{
 		if (fileSize)
 		{
-			*fileSize = Text::StrToInt64(sbuff);
+			*fileSize = Text::StrToUInt64(sbuff);
 		}
 		return true;
 	}
@@ -200,7 +200,7 @@ Bool Net::FTPConn::GetFileModTime(const UTF8Char *fileName, Data::DateTime *modT
 	Int32 code = WaitForResult();
 	if (code == 213)
 	{
-		Int32 year;
+		UInt16 year;
 		Int32 month;
 		Int32 day;
 		Int32 hour;
@@ -216,7 +216,7 @@ Bool Net::FTPConn::GetFileModTime(const UTF8Char *fileName, Data::DateTime *modT
 		sbuff[6] = 0;
 		month = Text::StrToInt32(&sbuff[4]);
 		sbuff[4] = 0;
-		year = Text::StrToInt32(&sbuff[0]);
+		Text::StrToUInt16S(&sbuff[0], &year, 0);
 		modTime->ToUTCTime();
 		modTime->SetValue(year, month, day, hour, minute, second, 0);
 		return true;
@@ -252,7 +252,7 @@ Bool Net::FTPConn::ToEBCDICType()
 }
 
 
-Bool Net::FTPConn::ChangePassiveMode(Int32 *ip, UInt16 *port)
+Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -277,15 +277,15 @@ Bool Net::FTPConn::ChangePassiveMode(Int32 *ip, UInt16 *port)
 		if (Text::StrSplit(sarr, 7, sptr, ',') != 6)
 			return false;
 		i = 6;
-		buff[0] = Text::StrToInt32(sarr[0]);
-		buff[1] = Text::StrToInt32(sarr[1]);
-		buff[2] = Text::StrToInt32(sarr[2]);
-		buff[3] = Text::StrToInt32(sarr[3]);
-		buff[4] = Text::StrToInt32(sarr[5]);
-		buff[5] = Text::StrToInt32(sarr[4]);
+		buff[0] = (UInt8)Text::StrToUInt32(sarr[0]);
+		buff[1] = (UInt8)Text::StrToUInt32(sarr[1]);
+		buff[2] = (UInt8)Text::StrToUInt32(sarr[2]);
+		buff[3] = (UInt8)Text::StrToUInt32(sarr[3]);
+		buff[4] = (UInt8)Text::StrToUInt32(sarr[5]);
+		buff[5] = (UInt8)Text::StrToUInt32(sarr[4]);
 		if (ip)
 		{
-			*ip = *(Int32*)buff;
+			*ip = *(UInt32*)buff;
 		}
 		if (port)
 		{
@@ -299,35 +299,35 @@ Bool Net::FTPConn::ChangePassiveMode(Int32 *ip, UInt16 *port)
 	}
 }
 
-Bool Net::FTPConn::ChangeActiveMode(Int32 ip, UInt16 port)
+Bool Net::FTPConn::ChangeActiveMode(UInt32 ip, UInt16 port)
 {
 	UInt8 buff[6];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	*(Int32*)&buff[0] = ip;
+	*(UInt32*)&buff[0] = ip;
 	*(UInt16*)&buff[4] = port;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"PORT ");
-	sptr = Text::StrInt32(sptr, buff[0]);
+	sptr = Text::StrUInt16(sptr, buff[0]);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
-	sptr = Text::StrInt32(sptr, buff[1]);
+	sptr = Text::StrUInt16(sptr, buff[1]);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
-	sptr = Text::StrInt32(sptr, buff[2]);
+	sptr = Text::StrUInt16(sptr, buff[2]);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
-	sptr = Text::StrInt32(sptr, buff[3]);
+	sptr = Text::StrUInt16(sptr, buff[3]);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
-	sptr = Text::StrInt32(sptr, buff[5]);
+	sptr = Text::StrUInt16(sptr, buff[5]);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
-	sptr = Text::StrInt32(sptr, buff[4]);
+	sptr = Text::StrUInt16(sptr, buff[4]);
 	this->statusChg = false;
 	writer->WriteLine(sbuff);
 	Int32 code = WaitForResult();
 	return code == 200;
 }
 
-Bool Net::FTPConn::ResumeTransferPos(Int64 pos)
+Bool Net::FTPConn::ResumeTransferPos(UInt64 pos)
 {
 	UTF8Char sbuff[64];
-	Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"REST "), pos);
+	Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"REST "), pos);
 	this->statusChg = false;
 	writer->WriteLine(sbuff);
 	Int32 code = WaitForResult();

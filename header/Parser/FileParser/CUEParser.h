@@ -21,8 +21,8 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 		private:
 			UTF8Char *ReadString(UTF8Char *sbuff, const UTF8Char *cueStr);
-			Int32 ReadTime(const UTF8Char *timeStr);
+			UInt32 ReadTime(const UTF8Char *timeStr);
 		};
-	};
-};
+	}
+}
 #endif

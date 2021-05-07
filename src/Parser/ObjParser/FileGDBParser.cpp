@@ -68,8 +68,8 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 			{
 				if (rdr->ColCount() >= 2)
 				{
-					OSInt objCol = -1;
-					OSInt shapeCol = -1;
+					UOSInt objCol = (UOSInt)-1;
+					UOSInt shapeCol = (UOSInt)-1;
 					UOSInt j;
 					j = rdr->ColCount();
 					while (j-- > 0)
@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 							shapeCol = j;
 						}
 					}
-					if (objCol != -1 && shapeCol != -1)
+					if (objCol != (UOSInt)-1 && shapeCol != (UOSInt)-1)
 					{
 						shpTables->Add(tableName);
 					}

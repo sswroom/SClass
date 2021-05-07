@@ -124,36 +124,36 @@ namespace IO
 		virtual IO::ParsedObject::ParserType GetParserType();
 
 		void AddProp(const UTF8Char *name, const UTF8Char *value);
-		OSInt GetPropCount();
-		const UTF8Char *GetPropName(OSInt index);
-		const UTF8Char *GetPropValue(OSInt index);
+		UOSInt GetPropCount();
+		const UTF8Char *GetPropName(UOSInt index);
+		const UTF8Char *GetPropValue(UOSInt index);
 
-		OSInt AddImportModule(const UTF8Char *moduleName);
-		void AddImportFunc(OSInt modIndex, const UTF8Char *funcName);
-		OSInt GetImportCount();
-		const UTF8Char *GetImportName(OSInt modIndex);
-		OSInt GetImportFuncCount(OSInt modIndex);
-		const UTF8Char *GetImportFunc(OSInt modIndex, OSInt funcIndex);
+		UOSInt AddImportModule(const UTF8Char *moduleName);
+		void AddImportFunc(UOSInt modIndex, const UTF8Char *funcName);
+		UOSInt GetImportCount();
+		const UTF8Char *GetImportName(UOSInt modIndex);
+		UOSInt GetImportFuncCount(UOSInt modIndex);
+		const UTF8Char *GetImportFunc(UOSInt modIndex, UOSInt funcIndex);
 
 		void AddExportFunc(const UTF8Char *funcName);
-		OSInt GetExportCount();
-		const UTF8Char *GetExportName(OSInt index);
+		UOSInt GetExportCount();
+		const UTF8Char *GetExportName(UOSInt index);
 
 		Bool HasDOS();
 		void AddDOSEnv(OSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
-		UInt8 *GetDOSCodePtr(OSInt *codeLen);
+		UInt8 *GetDOSCodePtr(UOSInt *codeLen);
 		void SetDOSHasPSP(Bool hasPSP);
 		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs);
 		UInt16 GetDOSCodeSegm();
 
-		void AddResource(const UTF8Char *name, const UInt8 *data, OSInt dataSize, Int32 codePage, ResourceType rt);
-		OSInt GetResourceCount();
+		void AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, Int32 codePage, ResourceType rt);
+		UOSInt GetResourceCount();
 		const ResourceInfo *GetResource(OSInt index);
 	public:
 		static Bool GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTimeOut);
 		static const UTF8Char *GetResourceTypeName(ResourceType rt);
 		static void GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF *sb);
 	};
-};
+}
 
 #endif

@@ -56,9 +56,9 @@ namespace SSWR
 			static Bool __stdcall OnFileRClicked(void *userObj, OSInt scnX, OSInt scnY, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnFileDblClicked(void *userObj);
 			static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img);
-			static Bool __stdcall OnFrameTime(UInt32 frameTime, OSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst);
+			static Bool __stdcall OnFrameTime(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst);
 
-			void PBStart(Int32 startTime);
+			void PBStart(UInt32 startTime);
 			void PBStop();
 			Bool PBIsPlaying();
 		public:

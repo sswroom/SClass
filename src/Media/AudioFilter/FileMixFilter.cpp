@@ -140,7 +140,7 @@ Bool Media::AudioFilter::FileMixFilter::LoadFile(const UTF8Char *fileName)
 		Media::IMediaSource *mediaSrc;
 		Media::IAudioSource *audSrc;
 		Int32 syncTime;
-		OSInt i;
+		UOSInt i;
 		Bool found = false;
 		i = 0;
 		while (true)

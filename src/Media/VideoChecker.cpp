@@ -56,7 +56,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 	Media::IMediaSource *msrc;
 	Data::ArrayList<DecodeStatus*> statusList;
 	Bool isEnd;
-	OSInt i = 0;
+	UOSInt i = 0;
 	Int32 syncTime;
 	Bool valid = true;
 	UInt32 videoTime = 0;

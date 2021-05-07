@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	UInt64 imac;
 	BSSStatus *bsss;
 	UInt8 id[8];

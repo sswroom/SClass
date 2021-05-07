@@ -3,17 +3,17 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-IO::VirtualIOPinMgr::VirtualIOPinMgr(OSInt pinCnt)
+IO::VirtualIOPinMgr::VirtualIOPinMgr(UOSInt pinCnt)
 {
 	this->pinCnt = pinCnt;
 	this->pins = MemAlloc(PinStatus*, this->pinCnt);
 	PinStatus *status;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < pinCnt)
 	{
 		status = MemAlloc(PinStatus, 1);
-		status->pinNum = (Int32)i;
+		status->pinNum = (UInt32)i;
 		NEW_CLASS(status->mut, Sync::Mutex());
 		status->useCnt = 1;
 		status->pullHigh = false;
@@ -27,7 +27,7 @@ IO::VirtualIOPinMgr::VirtualIOPinMgr(OSInt pinCnt)
 IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 {
 	PinStatus *status;
-	OSInt i = this->pinCnt;
+	UOSInt i = this->pinCnt;
 	Bool toRel;
 	while (i-- > 0)
 	{
@@ -45,19 +45,19 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 	MemFree(this->pins);
 }
 
-IO::IOPin *IO::VirtualIOPinMgr::CreatePin(Int32 pinNum)
+IO::IOPin *IO::VirtualIOPinMgr::CreatePin(UInt32 pinNum)
 {
-	if (pinNum < 0 || pinNum >= this->pinCnt)
+	if (pinNum >= this->pinCnt)
 		return 0;
 	IO::IOPin *pin;
 	NEW_CLASS(pin, IO::VirtualIOPin(this->pins[pinNum]));
 	return pin;
 }
 
-OSInt IO::VirtualIOPinMgr::GetAvailablePins(Data::ArrayList<Int32> *pinList)
+UOSInt IO::VirtualIOPinMgr::GetAvailablePins(Data::ArrayList<Int32> *pinList)
 {
-	OSInt i = 0;
-	OSInt j = this->pinCnt;
+	UOSInt i = 0;
+	UOSInt j = this->pinCnt;
 	while (i < j)
 	{
 		pinList->Add((Int32)i);
@@ -160,5 +160,5 @@ Bool IO::VirtualIOPin::SetPullType(PullType pt)
 
 UTF8Char *IO::VirtualIOPin::GetName(UTF8Char *buff)
 {
-	return Text::StrInt32(Text::StrConcat(buff, (const UTF8Char*)"VirtualIOPin"), this->pinStatus->pinNum);
+	return Text::StrUInt32(Text::StrConcat(buff, (const UTF8Char*)"VirtualIOPin"), this->pinStatus->pinNum);
 }

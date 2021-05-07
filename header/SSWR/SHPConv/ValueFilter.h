@@ -9,18 +9,18 @@ namespace SSWR
 		class ValueFilter : public MapFilter
 		{
 		private:
-			OSInt colIndex;
+			UOSInt colIndex;
 			const UTF8Char *value;
 			Int32 compareType;
 
 		public:
-			ValueFilter(OSInt colIndex, const UTF8Char *val, Int32 compareType);
+			ValueFilter(UOSInt colIndex, const UTF8Char *val, Int32 compareType);
 			virtual ~ValueFilter();
 
 			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf);
 			virtual UTF8Char *ToString(UTF8Char *buff);
 			virtual MapFilter *Clone();
 		};
-	};
-};
+	}
+}
 #endif
