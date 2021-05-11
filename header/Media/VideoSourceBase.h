@@ -7,17 +7,17 @@ namespace Media
 	class VideoSourceBase : public Media::IVideoSource
 	{
 	protected:
-		OSInt cropLeft;
-		OSInt cropTop;
-		OSInt cropRight;
-		OSInt cropBottom;
+		UOSInt cropLeft;
+		UOSInt cropTop;
+		UOSInt cropRight;
+		UOSInt cropBottom;
 
 	public:
 		VideoSourceBase();
 		virtual ~VideoSourceBase();
 
-		virtual void SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom);
-		virtual void GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom);
+		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
+		virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom);
 	};
 }
 #endif

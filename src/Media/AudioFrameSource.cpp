@@ -84,11 +84,11 @@ UInt32 Media::AudioFrameSource::SeekToTime(UInt32 time)
 		}
 		else
 		{
-			this->readBlock = k;
+			this->readBlock = (UOSInt)k;
 			return (UInt32)(this->blocks[this->readBlock].sampleOffset * (UInt64)1000 / this->format.frequency);
 		}
 	}
-	this->readBlock = i - 1;
+	this->readBlock = (UOSInt)i - 1;
 	this->readBlockOfst = 0;
 	return (UInt32)(this->blocks[this->readBlock].sampleOffset * (UInt64)1000 / this->format.frequency);
 }
@@ -103,7 +103,7 @@ void Media::AudioFrameSource::GetFormat(AudioFormat *format)
 {
 	if (this->format.bitRate == 0)
 	{
-		this->format.bitRate = (Int32)(this->totalSize * 8 * this->format.frequency / this->totalSampleCnt);
+		this->format.bitRate = (UInt32)(this->totalSize * 8 * this->format.frequency / this->totalSampleCnt);
 	}
 
 	format->FromAudioFormat(&this->format);
@@ -180,7 +180,7 @@ UInt32 Media::AudioFrameSource::GetCurrTime()
 {
 	if (this->readBlock >= this->blockCnt)
 	{
-		return this->GetStreamTime();
+		return (UInt32)this->GetStreamTime();
 	}
 	return (UInt32)(this->blocks[this->readBlock].sampleOffset * (UInt64)1000 / this->format.frequency);
 }

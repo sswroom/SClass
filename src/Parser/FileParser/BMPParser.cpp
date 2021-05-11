@@ -485,8 +485,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	if (outImg)
 	{
 		UInt8 *pBits = (UInt8*)outImg->data;
-		Int32 lineW;
-		Int32 lineW2;
+		UInt32 lineW;
+		UInt32 lineW2;
 		UInt32 currOfst;
 		Int32 i;
 		if (biCompression == 0 || (biCompression == 3 && bitDefault))
@@ -1648,7 +1648,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 								break;
 							}
 							pxVal = (aVal << 24) | (rVal << 16) | (gVal << 8) | bVal;
-							WriteInt32(&pBits[destI], pxVal);
+							WriteUInt32(&pBits[destI], pxVal);
 						}
 						else if (bpp == 64)
 						{

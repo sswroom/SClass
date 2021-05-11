@@ -15,7 +15,7 @@ namespace Media
 			const UTF8Char *title;
 			const UTF8Char *artist;
 			const UTF8Char *fileName;
-			Int32 timeStart;
+			UInt32 timeStart;
 			Int32 timeEnd;
 		} PlaylistEntry;
 
@@ -41,7 +41,7 @@ namespace Media
 		const UTF8Char *GetTitle(UOSInt index);
 		const UTF8Char *GetArtist(UOSInt index);
 		const UTF8Char *GetFileName(UOSInt index);
-		Int32 GetTimeStart(UOSInt index);
+		UInt32 GetTimeStart(UOSInt index);
 		Int32 GetTimeEnd(UOSInt index);
 
 		void SetPlayer(Media::IMediaPlayer *player);
@@ -52,7 +52,7 @@ namespace Media
 		virtual Bool StopPlayback();
 		virtual Bool PrevChapter();
 		virtual Bool NextChapter();
-		virtual Int32 GetCurrTime();
+		virtual UInt32 GetCurrTime();
 	};
 }
 #endif

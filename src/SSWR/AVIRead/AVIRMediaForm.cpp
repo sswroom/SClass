@@ -15,7 +15,7 @@
 
 extern "C"
 {
-	void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, OSInt ySplit, OSInt *crops);
+	void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
 }
 
 typedef enum
@@ -225,8 +225,8 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 	UOSInt w = img->info->dispWidth;
 	UOSInt h = img->info->dispHeight;
 	UInt8 *yptr = img->data;
-	OSInt ySplit;
-	OSInt crops[4];
+	UOSInt ySplit;
+	UOSInt crops[4];
 	if (img->info->fourcc == *(UInt32*)"YV12")
 	{
 		if (w & 3)
@@ -510,10 +510,10 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt h1;
 			UOSInt w2;
 			UOSInt h2;
-			OSInt cropLeft;
-			OSInt cropTop;
-			OSInt cropRight;
-			OSInt cropBottom;
+			UOSInt cropLeft;
+			UOSInt cropTop;
+			UOSInt cropRight;
+			UOSInt cropBottom;
 			OSInt vw;
 			OSInt vh;
 			UInt32 tmpV;

@@ -23,7 +23,7 @@ namespace Media
 			AudioSampleRipper(IAudioSource *sourceAudio, UInt32 sampleCount);
 			virtual ~AudioSampleRipper();
 
-			virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
 			Bool IsChanged();

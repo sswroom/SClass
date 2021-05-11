@@ -26,12 +26,12 @@ Media::Decoder::VDecoderBase::~VDecoderBase()
 {
 }
 
-void Media::Decoder::VDecoderBase::SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom)
+void Media::Decoder::VDecoderBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
 	this->sourceVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-void Media::Decoder::VDecoderBase::GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom)
+void Media::Decoder::VDecoderBase::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
 {
 	this->sourceVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }

@@ -88,11 +88,11 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 				ImageUtil_ColorReplace32A(bmpBits, iWidth, iHeight, (this->rnd->NextInt30() & 0xffffff) | 0x5f808080);
 				if (revOrder)
 				{
-					this->ablend->Blend(simg->data + Math::Double2Int32(this->rnd->NextDouble() * yRand) * simg->info->storeWidth * 4 + Math::Double2Int32(this->rnd->NextDouble() * xRand) * 4, simg->info->storeWidth << 2, bmpBits + iWidth * 4 * (iHeight - 1), -iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+					this->ablend->Blend(simg->data + Math::Double2Int32(this->rnd->NextDouble() * yRand) * simg->info->storeWidth * 4 + Math::Double2Int32(this->rnd->NextDouble() * xRand) * 4, (OSInt)simg->info->storeWidth << 2, bmpBits + iWidth * 4 * (iHeight - 1), -iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
 				}
 				else
 				{
-					this->ablend->Blend(simg->data + Math::Double2Int32(this->rnd->NextDouble() * yRand) * simg->info->storeWidth * 4 + Math::Double2Int32(this->rnd->NextDouble() * xRand) * 4, simg->info->storeWidth << 2, bmpBits, iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+					this->ablend->Blend(simg->data + Math::Double2Int32(this->rnd->NextDouble() * yRand) * simg->info->storeWidth * 4 + Math::Double2Int32(this->rnd->NextDouble() * xRand) * 4, (OSInt)simg->info->storeWidth << 2, bmpBits, iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
 				}
 				this->deng->DeleteImage(gimg2);
 				tmpImg->DelFont(f);

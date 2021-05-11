@@ -138,7 +138,7 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 		this->threadCnt = 4;
 	}
 	this->stats = MemAlloc(ThreadStat, this->threadCnt);
-	OSInt i = this->threadCnt;
+	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->stats[i].me = this;
@@ -167,7 +167,7 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 
 Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 {
-	OSInt i = this->threadCnt;
+	UOSInt i = this->threadCnt;
 	Bool found;
 	while (i-- > 0)
 	{
@@ -218,17 +218,17 @@ void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *s
 
 void Media::ABlend::AlphaBlend8_8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
 {
-	OSInt i;
-	sbpl -= width << 2;
-	dbpl -= width << 2;
+	UOSInt i;
+	sbpl -= (OSInt)width << 2;
+	dbpl -= (OSInt)width << 2;
 	while (height-- > 0)
 	{
 		i = width;
 		while (i-- > 0)
 		{
-			dest[0] = src[0] * src[3] / 255;
-			dest[1] = src[1] * src[3] / 255;
-			dest[2] = src[2] * src[3] / 255;
+			dest[0] = (UInt8)(src[0] * src[3] / 255);
+			dest[1] = (UInt8)(src[1] * src[3] / 255);
+			dest[2] = (UInt8)(src[2] * src[3] / 255);
 			dest[3] = src[3];
 
 			src += 4;

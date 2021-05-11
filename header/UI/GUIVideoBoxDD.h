@@ -36,24 +36,24 @@ namespace UI
 
 		typedef struct
 		{
-			Int32 currTime;
+			UInt32 currTime;
 			Int32 procDelay;
 			Int32 dispDelay;
 			Int32 dispJitter;
 			Int32 videoDelay;
-			Int32 dispFrameTime;
+			UInt32 dispFrameTime;
 			Int32 dispFrameNum;
 			Int32 frameDispCnt;
 			Int32 frameSkip1;
 			Int32 frameSkip2;
 			Int32 srcDelay;
 			Int32 avOfst;
-			Int32 format;
+			UInt32 format;
 			UOSInt srcWidth;
 			UOSInt srcHeight;
 			UOSInt dispWidth;
 			UOSInt dispHeight;
-			OSInt seekCnt;
+			UOSInt seekCnt;
 			Double par;
 			Int32 dispBitDepth;
 			Media::ColorProfile *color;
@@ -86,10 +86,10 @@ namespace UI
 			UInt32 frameTime;
 			UInt32 frameNum;
 			Bool discontTime;
-			OSInt destSize;
+			UOSInt destSize;
 			UInt8 *destBuff;
-			OSInt destW;
-			OSInt destH;
+			UOSInt destW;
+			UOSInt destH;
 			Int32 destBitDepth;
 			Media::FrameType frameType;
 			Media::YCOffset ycOfst;
@@ -161,10 +161,10 @@ namespace UI
 		Double *dispJitterBuff;
 		Int32 dispCnt;
 
-		OSInt cropLeft;
-		OSInt cropTop;
-		OSInt cropRight;
-		OSInt cropBottom;
+		UOSInt cropLeft;
+		UOSInt cropTop;
+		UOSInt cropRight;
+		UOSInt cropBottom;
 		DeinterlaceType deintType;
 //		Bool forseFT;
 //		Media::FrameType forseFTVal;
@@ -183,7 +183,7 @@ namespace UI
 		UInt32 debugFrameTime;
 		Int32 debugFrameNum;
 		Int32 videoDelay;
-		Int32 dispFrameTime;
+		UInt32 dispFrameTime;
 		Int32 dispFrameNum;
 		Int32 debugFrameDisp;
 		Int32 debugFrameSkip1;

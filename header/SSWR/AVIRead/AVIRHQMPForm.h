@@ -46,7 +46,7 @@ namespace SSWR
 			Media::ChapterInfo *currChapInfo;
 			Int32 uOfst;
 			Int32 vOfst;
-			Int32 storeTime;
+			UInt32 storeTime;
 			QualityMode qMode;
 			Bool pbEnd;
 			Net::WebServer::WebListener *listener;

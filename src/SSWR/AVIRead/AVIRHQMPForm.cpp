@@ -183,12 +183,12 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UI::GUIVideoBoxDD::DebugValue dbg;
-		Int32 currTime;
-		Int32 v;
+		UInt32 currTime;
+		UInt32 v;
 		NEW_CLASS(dbg.color, Media::ColorProfile());
 		me->vbox->GetDebugValues(&dbg);
 		sb.Append((const UTF8Char*)"Curr Time: ");
-		sb.AppendI32(dbg.currTime);
+		sb.AppendU32(dbg.currTime);
 		currTime = dbg.currTime;
 		v = currTime / 3600000;
 		sb.Append((const UTF8Char*)" (");

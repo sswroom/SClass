@@ -29,7 +29,7 @@ void Media::AudioFilter::AudioAmplifier::GetFormat(AudioFormat *format)
 		Media::AudioFormat fmt;
 		this->sourceAudio->GetFormat(&fmt);
 		format->formatId = 1;
-		format->bitpersample = this->bitCount;
+		format->bitpersample = (UInt16)this->bitCount;
 		format->frequency = fmt.frequency;
 		format->nChannels = fmt.nChannels;
 		format->bitRate = fmt.frequency * fmt.nChannels * this->bitCount;
@@ -45,7 +45,7 @@ void Media::AudioFilter::AudioAmplifier::GetFormat(AudioFormat *format)
 	}
 }
 
-Int32 Media::AudioFilter::AudioAmplifier::SeekToTime(Int32 time)
+UInt32 Media::AudioFilter::AudioAmplifier::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

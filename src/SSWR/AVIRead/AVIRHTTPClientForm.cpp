@@ -14,6 +14,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/URLString.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextEnc/FormEncoding.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
@@ -38,12 +39,25 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbTmp;
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith((const UTF8Char*)"http://") && !sb.StartsWith((const UTF8Char*)"https://"))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid http URL", (const UTF8Char *)"Request", me);
 		return;
 	}
+
+	sbTmp.ClearStr();
+	if (me->txtUserName->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
+	{
+		me->reqUserName = Text::StrCopyNew(sbTmp.ToString());
+	}
+	sbTmp.ClearStr();
+	if (me->txtPassword->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
+	{
+		me->reqPassword = Text::StrCopyNew(sbTmp.ToString());
+	}
+
 
 	me->noShutdown = me->chkNoShutdown->IsChecked();
 	me->reqMeth = (const Char*)me->cboMethod->GetSelectedItem();
@@ -97,7 +111,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		IO::MemoryStream mstm((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.OnRequestClicked.mstm");
 		UOSInt i = 0;
 		UOSInt j = me->params->GetCount();
-		OSInt k;
+		UOSInt k;
+		OSInt si;
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 		const UTF8Char *csptr;
 		while (i < j)
@@ -108,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			csptr = (const UTF8Char*)"\r\nContent-Disposition: form-data; name=\"";
 			mstm.Write(csptr, Text::StrCharCnt(csptr));
 			sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, param->name);
-			mstm.Write(sbuff, sptr - sbuff);
+			mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 			mstm.Write((const UInt8*)"\"\r\n\r\n", 5);
 			mstm.Write(param->value, Text::StrCharCnt(param->value));
 			mstm.Write((const UInt8*)"\r\n", 2);
@@ -143,13 +158,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 					mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 					mstm.Write((const UInt8*)"\"; ", 3);
 				}
-				k = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+				si = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
 				mstm.Write((const UInt8*)"filename=\"", 10);
-				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &csptr[k + 1]);
+				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &csptr[si + 1]);
 				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
-				IO::Path::GetFileExt(sbuff, &csptr[k]);
+				IO::Path::GetFileExt(sbuff, &csptr[si]);
 				csptr2 = Net::MIME::GetMIMEFromExt(sbuff);
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
 				mstm.Write(csptr2, Text::StrCharCnt(csptr2));
@@ -184,8 +199,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	}
 	else
 	{
-		OSInt i = 0;
-		OSInt j = me->params->GetCount();
+		UOSInt i = 0;
+		UOSInt j = me->params->GetCount();
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 		Text::StringBuilderUTF8 sb2;
 		while (i < j)
@@ -330,8 +345,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 	{
 		me->ClearFiles();
 
-		OSInt i = 0;
-		OSInt j = dlg->GetFileNameCount();
+		UOSInt i = 0;
+		UOSInt j = dlg->GetFileNameCount();
 		const UTF8Char *fileName;
 		while (i < j)
 		{
@@ -340,7 +355,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 			i++;
 		}
 		Text::StringBuilderUTF8 sb;
-		sb.AppendOSInt(j);
+		sb.AppendUOSInt(j);
 		if (j > 1)
 		{
 			sb.Append((const UTF8Char*)" files selected");
@@ -366,16 +381,18 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	const UTF8Char *currURL;
 	const UTF8Char *currBody;
-	OSInt currBodyLen;
+	UOSInt currBodyLen;
 	const UTF8Char *currBodyType;
+	const UTF8Char *currUserName;
+	const UTF8Char *currPassword;
 	const Char *currMeth;
 	UInt8 buff[4096];
 	UTF8Char *pathPtr;
 	UTF8Char *sbuff;
 	UTF8Char *cookiePtr;
 	SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt len1;
 	UOSInt len2;
 	me->threadRunning = true;
@@ -389,11 +406,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			currBodyLen = me->reqBodyLen;
 			currBodyType = me->reqBodyType;
 			currMeth = me->reqMeth;
+			currUserName = me->reqUserName;
+			currPassword = me->reqPassword;
 			me->reqURL = 0;
 			me->reqBody = 0;
 			me->reqBodyLen = 0;
 			me->reqBodyType = 0;
-
+			me->reqUserName = 0;
+			me->reqPassword = 0;
 			
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
@@ -451,8 +471,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				}
 
 				cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
-				Int64 totalRead = 0;
-				OSInt thisRead;
+				UInt64 totalRead = 0;
+				UOSInt thisRead;
 				while ((thisRead = cli->Read(buff, 4096)) > 0)
 				{
 					mstm->Write(buff, thisRead);
@@ -461,6 +481,89 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respTimeTotal = cli->GetTotalTime();
 				me->respSize = totalRead;
 				me->respStatus = cli->GetRespStatus();
+				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
+				{
+					DEL_CLASS(cli);
+					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+					if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+					{
+						contType = 0;
+						mstm->Clear();
+						cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
+						cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+						i = (UOSInt)(Text::StrConcat(Text::StrConcat(Text::StrConcat(buff, currUserName), (const UTF8Char*)":"), currPassword) - buff);
+						Text::StringBuilderUTF8 sbAuth;
+						sbAuth.Append((const UTF8Char*)"Basic ");
+						Text::TextBinEnc::Base64Enc b64Enc;
+						b64Enc.EncodeBin(&sbAuth, buff, i);
+						cli->AddHeader((const UTF8Char*)"Authorization", sbAuth.ToString());
+						
+						cookiePtr = 0;
+						pathPtr = Text::URLString::GetURLDomain(buff, currURL, 0) + 1;
+						Text::URLString::GetURLPath(pathPtr, currURL);
+						len1 = Text::StrCharCnt(buff);
+						mutUsage.ReplaceMutex(me->cookieMut);
+						i = 0;
+						j = me->cookieList->GetCount();
+						while (i < j)
+						{
+							cookie = me->cookieList->GetItem(i);
+							len2 = Text::StrCharCnt(cookie->domain);
+							if ((len1 == len2 && Text::StrEquals(buff, cookie->domain)) || (len1 > len2 && buff[len1 - len2 - 1] == '.' && Text::StrEquals(&buff[len1 - len2], cookie->domain)))
+							{
+								if (cookie->path == 0 || Text::StrStartsWith(pathPtr, cookie->path))
+								{
+									if (cookiePtr == 0)
+									{
+										cookiePtr = Text::StrConcat(sbuff, cookie->name);
+									}
+									else
+									{
+										cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"; ");
+										cookiePtr = Text::StrConcat(cookiePtr, cookie->name);
+									}
+									cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"=");
+									cookiePtr = Text::StrConcat(cookiePtr, cookie->value);
+								}
+							}
+							i++;
+						}
+						mutUsage.EndUse();
+						if (cookiePtr)
+						{
+							cli->AddHeader((const UTF8Char*)"Cookie", sbuff);
+						}
+
+						if (!Text::StrEquals(currMeth, "GET") && currBody)
+						{
+							Text::StrUOSInt(sbuff, currBodyLen);
+							cli->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+							cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)currBodyType);
+							cli->Write(currBody, currBodyLen);
+						}
+
+						cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
+						totalRead = 0;
+						while ((thisRead = cli->Read(buff, 4096)) > 0)
+						{
+							mstm->Write(buff, thisRead);
+							totalRead += thisRead;
+						}
+						me->respTimeTotal = cli->GetTotalTime();
+						me->respSize = totalRead;
+						me->respStatus = cli->GetRespStatus();
+					}
+					else
+					{
+						me->respTimeDNS = -1;
+						me->respTimeConn = -1;
+						me->respTimeReq = -1;
+						me->respTimeResp = -1;
+						me->respTimeTotal = -1;
+						me->respSize = 0;
+						me->respStatus = 0;
+					}
+				}
 				me->ClearHeaders();
 				i = 0;
 				j = cli->GetRespHeaderCnt();
@@ -492,7 +595,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respTimeReq = -1;
 				me->respTimeResp = -1;
 				me->respTimeTotal = -1;
-				me->respSize = -1;
+				me->respSize = 0;
 				me->respStatus = 0;
 				Sync::MutexUsage mutUsage(me->respMut);
 				SDEL_TEXT(me->respReqURL)
@@ -512,6 +615,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				currBody = 0;
 			}
 			SDEL_TEXT(currBodyType);
+			SDEL_TEXT(currUserName);
+			SDEL_TEXT(currPassword);
 		}
 		else
 		{
@@ -532,8 +637,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	const UTF8Char *hdr;
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (me->respChanged)
 	{
 		me->txtReqURL->SetText(me->respReqURL);
@@ -584,7 +689,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 			Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
 			me->txtTimeTotal->SetText(sbuff);
 		}
-		Text::StrInt64(sbuff, me->respSize);
+		Text::StrUInt64(sbuff, me->respSize);
 		me->txtRespSize->SetText(sbuff);
 		Text::StrInt32(sbuff, me->respStatus);
 		me->txtRespStatus->SetText(sbuff);
@@ -600,7 +705,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr[12], me->respReqURL);
 				if (cookie)
 				{
-					OSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
+					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
 					if (cookie->path)
 					{
 						me->lvCookie->SetSubItem(k, 1, cookie->path);
@@ -619,7 +724,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->respHeaders->GetCount();
 	while (i-- > 0)
 	{
@@ -629,7 +734,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 {
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 	i = this->params->GetCount();
 	while (i-- > 0)
@@ -644,7 +749,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 {
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
 	i = this->cookieList->GetCount();
 	while (i-- > 0)
@@ -747,7 +852,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 	if (valid)
 	{
-		const UTF8Char *cookieName = Text::StrCopyNewC(cookieValue, i);
+		const UTF8Char *cookieName = Text::StrCopyNewC(cookieValue, (UOSInt)i);
 		SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
 		Bool eq;
 		UOSInt j = this->cookieList->GetCount();
@@ -784,7 +889,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		}
 		cookie->secure = secure;
 		cookie->expireTime = expiryTime;
-		cookie->name = Text::StrCopyNewC(cookieValue, i);
+		cookie->name = Text::StrCopyNewC(cookieValue, (UOSInt)i);
 		cookie->value = Text::StrCopyNew(&cookieValue[i + 1]);
 		Sync::MutexUsage mutUsage(this->cookieMut);
 		this->cookieList->Add(cookie);
@@ -829,7 +934,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->tpRequest = this->tcMain->AddTabPage((const UTF8Char*)"Request");
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
-	this->pnlRequest->SetRect(0, 0, 100, 148, false);
+	this->pnlRequest->SetRect(0, 0, 100, 196, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
@@ -852,27 +957,36 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
 	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent));
 	this->lblUserAgent->SetRect(104, 52, 400, 23, false);
+	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"UserName"));
+	this->lblUserName->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	this->txtUserName->SetRect(104, 76, 150, 23, false);
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Password"));
+	this->lblPassword->SetRect(4, 100, 100, 23, false);
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	this->txtPassword->SetPasswordChar('*');
+	this->txtPassword->SetRect(104, 100, 150, 23, false);
 	NEW_CLASS(this->lblFileUpload, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"File Upload"));
-	this->lblFileUpload->SetRect(4, 76, 100, 23, false);
+	this->lblFileUpload->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtFileFormName, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
-	this->txtFileFormName->SetRect(104, 76, 150, 23, false);
+	this->txtFileFormName->SetRect(104, 124, 150, 23, false);
 	NEW_CLASS(this->btnFileSelect, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Select"));
-	this->btnFileSelect->SetRect(254, 76, 75, 23, false);
+	this->btnFileSelect->SetRect(254, 124, 75, 23, false);
 	this->btnFileSelect->HandleButtonClick(OnFileSelectClicked, this);
 	NEW_CLASS(this->btnFileClear, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Clear"));
-	this->btnFileClear->SetRect(334, 76, 75, 23, false);
+	this->btnFileClear->SetRect(334, 124, 75, 23, false);
 	this->btnFileClear->HandleButtonClick(OnFileClearClicked, this);
 	NEW_CLASS(this->lblFileStatus, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"No files selected"));
-	this->lblFileStatus->SetRect(414, 76, 200, 23, false);
+	this->lblFileStatus->SetRect(414, 124, 200, 23, false);
 	NEW_CLASS(this->lblDataStr, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Data String"));
-	this->lblDataStr->SetRect(4, 100, 100, 23, false);
+	this->lblDataStr->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDataStr, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
-	this->txtDataStr->SetRect(104, 100, 400, 23, false);
+	this->txtDataStr->SetRect(104, 148, 400, 23, false);
 	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Parse"));
-	this->btnDataStr->SetRect(504, 100, 75, 23, false);
+	this->btnDataStr->SetRect(504, 148, 75, 23, false);
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
-	this->btnRequest->SetRect(104, 124, 75, 23, false);
+	this->btnRequest->SetRect(104, 172, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);

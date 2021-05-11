@@ -282,10 +282,10 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 		{
 			Int32 arARH = 1;
 			Int32 arARV = 1;
-			Int32 arLeft = 0;
-			Int32 arTop = 0;
-			Int32 arRight = 0;
-			Int32 arBottom = 0;
+			UInt32 arLeft = 0;
+			UInt32 arTop = 0;
+			UInt32 arRight = 0;
+			UInt32 arBottom = 0;
 //			Int32 ccCoord = 0;
 			Int32 ccYUV = 0;
 			Int32 ccTransfer = 0;
@@ -386,11 +386,11 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 					arRight = *(Int16*)&strl[i].others[j + 14];
 					arARH = *(Int16*)&strl[i].others[j + 16];
 					arARV = *(Int16*)&strl[i].others[j + 18];
-					j += *(Int32*)&strl[i].others[j + 4] + 8;
+					j += ReadUInt32(&strl[i].others[j + 4]) + 8;
 				}
 				else
 				{
-					j += *(Int32*)&strl[i].others[j + 4] + 8;
+					j += ReadUInt32(&strl[i].others[j + 4]) + 8;
 				}
 				if (j & 1) j++;
 			}
@@ -398,7 +398,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			if (idx1)
 			{
 				k = 4;
-				l = *(Int32*)idx1;
+				l = ReadUInt32(idx1);
 				while (k < l)
 				{
 					if (*(Int16*)&idx1[k + 2] == *(Int16*)"dc" || *(Int16*)&idx1[k + 2] == *(Int16*)"db")
@@ -414,8 +414,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			{
 				BITMAPINFOHEADER *bmih = (BITMAPINFOHEADER*)strl[i].strf;
 				Media::FrameInfo info;
-				info.dispWidth = bmih->biWidth;
-				info.dispHeight = bmih->biHeight;
+				info.dispWidth = (UInt32)bmih->biWidth;
+				info.dispHeight = (UInt32)bmih->biHeight;
 				info.storeWidth = info.dispWidth;
 				info.storeHeight = info.dispHeight;
 				info.fourcc = bmih->biCompression;
@@ -492,7 +492,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 				while (j < k)
 				{
 					UInt32 size = sizes->GetItem(j);
-					vstm->AddNewFrame(ofsts->GetItem(j), size & 0x7fffffff, (size & 0x80000000) == 0, MulDiv32(j, scale * 1000, rate));
+					vstm->AddNewFrame(ofsts->GetItem(j), size & 0x7fffffff, (size & 0x80000000) == 0, MulDivU32(j, scale * 1000, rate));
 					j++;
 				}
 
@@ -521,7 +521,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			{
 				if (*(Int32*)&strl[i].others[j] == *(Int32*)"strn")
 				{
-					enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], *(Int32*)&strl[i].others[j + 4], 0);
+					enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
 					audsName = Text::StrCopyNew(sbuff);
 					j += *(UInt32*)&strl[i].others[j + 4] + 8;
 				}
@@ -552,7 +552,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 					k = 0;
 					while (k < *(UInt32*)&indx[4])
 					{
-						buffer = MemAlloc(UInt8, l = *(Int32*)&indx[(k << 4) + 32]);
+						buffer = MemAlloc(UInt8, l = ReadUInt32(&indx[(k << 4) + 32]));
 						if (l > fd->GetRealData(*(Int64*)&indx[(k << 4) + 24], l, buffer))
 						{
 							MemFree(buffer);

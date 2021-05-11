@@ -55,8 +55,8 @@ namespace Media
 		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
 		virtual const UTF8Char *GetFilterName() = 0;
 
-		virtual void SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom) = 0;
-		virtual void GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom) = 0;
+		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom) = 0;
+		virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom) = 0;
 		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize) = 0;
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData) = 0;
 		virtual Bool Start() = 0; //true = succeed

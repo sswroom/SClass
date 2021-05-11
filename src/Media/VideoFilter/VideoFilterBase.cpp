@@ -68,13 +68,13 @@ UTF8Char *Media::VideoFilter::VideoFilterBase::GetSourceName(UTF8Char *buff)
 	return 0;
 }
 
-void Media::VideoFilter::VideoFilterBase::SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom)
+void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
 	if (this->srcVideo)
 		this->srcVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom)
+void Media::VideoFilter::VideoFilterBase::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
 {
 	if (this->srcVideo)
 		this->srcVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);

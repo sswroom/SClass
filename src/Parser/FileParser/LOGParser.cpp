@@ -67,7 +67,7 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 		DEL_CLASS(stm);
 		return 0;
 	}
-	OSInt strLen = Text::StrCharCnt(sbuff);
+	UOSInt strLen = Text::StrCharCnt(sbuff);
 	if (strLen >= 43 && sbuff[2] == ':' && sbuff[5] == ':' && sbuff[8] == ' ' && Text::StrEquals(&sbuff[9], (const UTF8Char*)"MSG start UDP server successfully!"))
 	{
 		IO::UDPLog *log = 0;

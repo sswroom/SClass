@@ -54,6 +54,10 @@ namespace SSWR
 			UI::GUIComboBox *cboMethod;
 			UI::GUIButton *btnUserAgent;
 			UI::GUILabel *lblUserAgent;
+			UI::GUILabel *lblUserName;
+			UI::GUITextBox *txtUserName;
+			UI::GUILabel *lblPassword;
+			UI::GUITextBox *txtPassword;
 			UI::GUILabel *lblFileUpload;
 			UI::GUITextBox *txtFileFormName;
 			UI::GUIButton *btnFileSelect;
@@ -100,7 +104,9 @@ namespace SSWR
 			const UTF8Char *reqURL;
 			const UTF8Char *reqBody;
 			const UTF8Char *reqBodyType;
-			OSInt reqBodyLen;
+			const UTF8Char *reqUserName;
+			const UTF8Char *reqPassword;
+			UOSInt reqBodyLen;
 			const Char *reqMeth;
 			Bool noShutdown;
 			const UTF8Char *userAgent;
@@ -112,7 +118,7 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
-			Int64 respSize;
+			UInt64 respSize;
 			Int32 respStatus;
 			const UTF8Char *respReqURL;
 			Data::ArrayList<const UTF8Char*> *respHeaders;

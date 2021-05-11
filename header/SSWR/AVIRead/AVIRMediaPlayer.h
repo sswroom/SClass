@@ -31,13 +31,13 @@ namespace SSWR
 			Bool playing;
 			Bool videoPlaying;
 			Bool audioPlaying;
-			Int32 currTime;
+			UInt32 currTime;
 			UOSInt pbLastChapter;
 
 			PBEndHandler endHdlr;
 			void *endObj;
 
-			void PlayTime(Int32 time);
+			void PlayTime(UInt32 time);
 			static void __stdcall OnVideoEnd(void *userObj);
 			static void __stdcall OnAudioEnd(void *userObj);
 			static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img);
@@ -50,17 +50,17 @@ namespace SSWR
 
 			virtual void SetEndHandler(PBEndHandler hdlr, void *userObj);
 			virtual Bool LoadMedia(Media::MediaFile *file);
-			virtual Bool SeekTo(Int32 time);
-			virtual Bool SwitchAudio(OSInt index);
+			virtual Bool SeekTo(UInt32 time);
+			virtual Bool SwitchAudio(UOSInt index);
 
 			virtual Bool IsPlaying();
 			virtual Bool StartPlayback();
 			virtual Bool StopPlayback();
 			virtual Bool PrevChapter();
 			virtual Bool NextChapter();
-			virtual Int32 GetCurrTime();
+			virtual UInt32 GetCurrTime();
 
-			virtual Bool GotoChapter(OSInt chapter);
+			virtual Bool GotoChapter(UOSInt chapter);
 			virtual Bool GetVideoSize(UOSInt *w, UOSInt *h);
 			virtual void DetectCrop();
 		};

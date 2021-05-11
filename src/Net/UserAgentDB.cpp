@@ -912,7 +912,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	ent->os = Manage::OSInfo::OT_UNKNOWN;
 	ent->userAgent = (const Char *)userAgent;
 
-	OSInt i;
+	OSInt si;
 	if (Text::StrEquals(ent->userAgent, "Microsoft Windows Network Diagnostics"))
 	{
 		ent->browser = Net::BrowserInfo::BT_WINDIAG;
@@ -927,10 +927,10 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	else if (Text::StrStartsWith(ent->userAgent, "Sogou web spider/"))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUWEB;
-		i = Text::StrIndexOf(ent->userAgent, '(');
-		if (i > 0)
+		si = Text::StrIndexOf(ent->userAgent, '(');
+		if (si > 0)
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], (UOSInt)si - 17);
 		}
 		else
 		{
@@ -941,10 +941,10 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	else if (Text::StrStartsWith(ent->userAgent, "Sogou Pic Spider/"))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUPIC;
-		i = Text::StrIndexOf(ent->userAgent, '(');
-		if (i > 0)
+		si = Text::StrIndexOf(ent->userAgent, '(');
+		if (si > 0)
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], (UOSInt)si - 17);
 		}
 		else
 		{
@@ -977,13 +977,14 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	Char *strs2[10];
 	Char *sptr;
 	Char c;
-	OSInt nstrs;
-	OSInt nstrs2;
-	OSInt j;
+	UOSInt nstrs;
+	UOSInt nstrs2;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	Bool bst;
 	Bool lastIsAndroid;
-	OSInt strLen = Text::StrCharCnt(userAgent);
+	UOSInt strLen = Text::StrCharCnt(userAgent);
 	Char *sbuff = MemAlloc(Char, strLen + 1);
 	Text::StrConcat(sbuff, (const Char*)userAgent);
 	if (sbuff[0] == '"' && sbuff[strLen - 1] == '"')
@@ -1024,7 +1025,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	{
 		if (strs[i][0] == '(')
 		{
-			OSInt charCnt = Text::StrCharCnt(strs[i]);
+			UOSInt charCnt = Text::StrCharCnt(strs[i]);
 			if (strs[i][charCnt - 1] == ')')
 			{
 				strs[i][charCnt - 1] = 0;

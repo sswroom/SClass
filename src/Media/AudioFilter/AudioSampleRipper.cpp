@@ -40,7 +40,7 @@ Media::AudioFilter::AudioSampleRipper::~AudioSampleRipper()
 	DEL_CLASS(this->mut);
 }
 
-Int32 Media::AudioFilter::AudioSampleRipper::SeekToTime(Int32 time)
+UInt32 Media::AudioFilter::AudioSampleRipper::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

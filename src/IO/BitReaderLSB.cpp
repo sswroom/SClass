@@ -61,7 +61,7 @@ Bool IO::BitReaderLSB::ReadBits(UInt32 *code, UOSInt bitCount)
 				this->buffSize = 0;
 				this->currBytePos = 0;
 			}
-			OSInt readSize = this->stm->Read(&this->buff[this->buffSize], 1024 - this->buffSize);
+			UOSInt readSize = this->stm->Read(&this->buff[this->buffSize], 1024 - this->buffSize);
 			if (readSize <= 0)
 				return false;
 			this->buffSize += readSize;
@@ -81,22 +81,22 @@ Bool IO::BitReaderLSB::ReadBits(UInt32 *code, UOSInt bitCount)
 	switch (bits2 >> 3)
 	{
 	case 1:
-		retCode = buff[this->currBytePos] >> this->currBitPos;
+		retCode = (UInt32)buff[this->currBytePos] >> this->currBitPos;
 		break;
 	case 2:
-		retCode = (buff[this->currBytePos] | (buff[this->currBytePos + 1] << 8)) >> this->currBitPos;
+		retCode = (UInt32)(buff[this->currBytePos] | (buff[this->currBytePos + 1] << 8)) >> this->currBitPos;
 		break;
 	case 3:
-		retCode = (buff[this->currBytePos] | (buff[this->currBytePos + 1] << 8) | (buff[this->currBytePos + 2] << 16)) >> this->currBitPos;
+		retCode = (UInt32)(buff[this->currBytePos] | (buff[this->currBytePos + 1] << 8) | (buff[this->currBytePos + 2] << 16)) >> this->currBitPos;
 		break;
 	case 4:
 		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos);
 		break;
 	case 5:
-		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos) | (buff[this->currBytePos + 4] << (32 - this->currBitPos));
+		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos) | (UInt32)(buff[this->currBytePos + 4] << (32 - this->currBitPos));
 		break;
 	}
-	*code = retCode & ((1 << bitCount) - 1);
+	*code = retCode & (UInt32)((1 << bitCount) - 1);
 	this->currBytePos += bits >> 3;
 	this->currBitPos = bits & 7;
 	return true;

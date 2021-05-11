@@ -436,7 +436,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 
 UOSInt Media::VCDMPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
 {
-	return -1;
+	return (UOSInt)-1;
 }
 
 Media::IMediaSource *Media::VCDMPGFile::GetStream(UOSInt index, Int32 *syncTime)

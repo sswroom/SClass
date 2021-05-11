@@ -21,8 +21,8 @@ namespace Media
 				OSInt dbpl;
 				const UInt8 *src;
 				OSInt sbpl;
-				OSInt width;
-				OSInt height;
+				UOSInt width;
+				UOSInt height;
 			} ThreadStat;
 		private:
 			UInt8 *rgbTable;

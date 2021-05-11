@@ -10,7 +10,7 @@ void __stdcall Media::Playlist::OnPBEnd(void *userObj)
 {
 	Media::Playlist *me = (Media::Playlist*)userObj;
 	Data::RandomOS random;
-	OSInt i = random.NextInt15() % me->entries->GetCount();
+	UOSInt i = (UInt32)random.NextInt15() % me->entries->GetCount();
 	me->OpenItem(i);
 }
 
@@ -40,7 +40,7 @@ Media::Playlist::~Playlist()
 		this->player = 0;
 	}
 	SDEL_CLASS(this->currFile);
-	OSInt i;
+	UOSInt i;
 	i = this->entries->GetCount();
 	while (i-- > 0)
 	{
@@ -69,8 +69,8 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 
 	Media::ChapterInfo *chap = file->GetChapterInfo();
 	const UTF8Char *artist;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 nextTime;
 	PlaylistEntry *ent;
 	if (chap)
@@ -85,7 +85,7 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 			}
 			else
 			{
-				nextTime = chap->GetChapterTime(i + 1);
+				nextTime = (Int32)chap->GetChapterTime(i + 1);
 			}
 
 			ent = MemAlloc(PlaylistEntry, 1);
@@ -109,10 +109,11 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 	}
 	else
 	{
+		OSInt si;
 		ent = MemAlloc(PlaylistEntry, 1);
 		ent->fileName = Text::StrCopyNew(fileName);
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-		ent->title = Text::StrCopyNew(&fileName[i + 1]);
+		si = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		ent->title = Text::StrCopyNew(&fileName[si + 1]);
 		ent->artist = 0;
 		ent->timeStart = 0;
 		ent->timeEnd = -1;
@@ -133,8 +134,8 @@ Bool Media::Playlist::RemoveEntry(UOSInt index)
 
 Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	PlaylistEntry *ent;
 	PlaylistEntry *plent;
 	i = 0;
@@ -163,7 +164,7 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 
 void Media::Playlist::ClearFiles()
 {
-	OSInt i = this->entries->GetCount();
+	UOSInt i = this->entries->GetCount();
 	PlaylistEntry *ent;
 	while (i-- > 0)
 	{
@@ -202,7 +203,7 @@ const UTF8Char *Media::Playlist::GetFileName(UOSInt index)
 	return ent->fileName;
 }
 
-Int32 Media::Playlist::GetTimeStart(UOSInt index)
+UInt32 Media::Playlist::GetTimeStart(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -313,7 +314,7 @@ Bool Media::Playlist::NextChapter()
 	return true;
 }
 
-Int32 Media::Playlist::GetCurrTime()
+UInt32 Media::Playlist::GetCurrTime()
 {
 	if (this->player == 0)
 	{

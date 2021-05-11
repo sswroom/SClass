@@ -13,7 +13,7 @@ Media::IRealtimeVideoSource::~IRealtimeVideoSource()
 {
 }
 
-void Media::IRealtimeVideoSource::SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom)
+void Media::IRealtimeVideoSource::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
 	this->cropLeft = cropLeft;
 	this->cropTop = cropTop;
@@ -21,7 +21,7 @@ void Media::IRealtimeVideoSource::SetBorderCrop(OSInt cropLeft, OSInt cropTop, O
 	this->cropBottom = cropBottom;
 }
 
-void Media::IRealtimeVideoSource::GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom)
+void Media::IRealtimeVideoSource::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
 {
 	*cropLeft = this->cropLeft;
 	*cropTop = this->cropTop;

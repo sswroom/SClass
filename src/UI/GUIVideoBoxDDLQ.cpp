@@ -12,9 +12,9 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	OSInt rect[4];
 	UOSInt srcWidth = 0;
 	UOSInt srcHeight = 0;
-	OSInt cropWidth;
-	OSInt cropHeight;
-	OSInt cropDY;
+	UOSInt cropWidth;
+	UOSInt cropHeight;
+	UOSInt cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
 	UOSInt sizeNeeded;
 
@@ -39,8 +39,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = (OSInt)srcWidth - this->cropLeft - this->cropRight;
-		cropHeight = (OSInt)srcHeight - this->cropTop - this->cropBottom;
+		cropWidth = srcWidth - this->cropLeft - this->cropRight;
+		cropHeight = srcHeight - this->cropTop - this->cropBottom;
 		cropDY = this->cropTop;
 		srcBuff = tstat->lrBuff;
 	}
@@ -48,8 +48,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight << 1;
-		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop << 1;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -63,21 +63,21 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 2));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 2));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
+			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_FIELD_BF)
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight << 1;
-		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop << 1;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -91,14 +91,14 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 2));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 2));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
+			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_MERGED_TF)
 	{
@@ -147,21 +147,21 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 2));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 2));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
+			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = (OSInt)srcWidth - (this->cropLeft + this->cropRight);
-		cropHeight = (OSInt)srcHeight - (this->cropTop + this->cropBottom);
+		cropWidth = srcWidth - (this->cropLeft + this->cropRight);
+		cropHeight = srcHeight - (this->cropTop + this->cropBottom);
 		cropDY = this->cropTop;
 		sizeNeeded = srcWidth * srcHeight << 2;
 		if (tstat->diSize < sizeNeeded)
@@ -175,14 +175,14 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 3));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 3));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
+			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 3);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 	{
@@ -203,21 +203,21 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 3));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 3));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
+			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 3);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = (OSInt)srcWidth - this->cropLeft - this->cropRight;
-		cropHeight = (OSInt)srcHeight - this->cropTop - this->cropBottom;
+		cropWidth = srcWidth - this->cropLeft - this->cropRight;
+		cropHeight = srcHeight - this->cropTop - this->cropBottom;
 		cropDY = this->cropTop;
 		srcBuff = tstat->lrBuff;
 	}
@@ -225,8 +225,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		srcWidth = this->videoInfo->dispWidth;
 		srcHeight = this->videoInfo->dispHeight;
-		cropWidth = (OSInt)srcWidth - this->cropLeft - this->cropRight;
-		cropHeight = (OSInt)srcHeight - this->cropTop - this->cropBottom;
+		cropWidth = srcWidth - this->cropLeft - this->cropRight;
+		cropHeight = srcHeight - this->cropTop - this->cropBottom;
 		cropDY = this->cropTop;
 		srcBuff = tstat->lrBuff;
 	}
@@ -253,11 +253,11 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	{
 		if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 		{
-			tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, srcWidth << 2);
+			tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
 		}
 		else
 		{
-			tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 2);
+			tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
 		}
 		vbuff2->destW = vbuff->destW;
 		vbuff2->destH = vbuff->destH;

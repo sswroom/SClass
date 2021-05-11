@@ -13,7 +13,7 @@ Media::VideoSourceBase::~VideoSourceBase()
 {
 }
 
-void Media::VideoSourceBase::SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom)
+void Media::VideoSourceBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
 	this->cropLeft = cropLeft;
 	this->cropTop = cropTop;
@@ -21,7 +21,7 @@ void Media::VideoSourceBase::SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt 
 	this->cropBottom = cropBottom;
 }
 
-void Media::VideoSourceBase::GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom)
+void Media::VideoSourceBase::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
 {
 	*cropLeft = this->cropLeft;
 	*cropTop = this->cropTop;

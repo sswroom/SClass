@@ -17,7 +17,7 @@ namespace Media
 			virtual ~AudioAmplifier();
 
 			virtual void GetFormat(AudioFormat *format);
-			virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
 			void SetLevel(Double level);

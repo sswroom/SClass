@@ -55,7 +55,7 @@ typedef __m128i Int32x4;
 #define PUInt8x4SetA(v) _mm_set1_epi8(v)
 #define PUInt8x8SetA(v) _mm_set1_epi8(v)
 #define PUInt8x16SetA(v) _mm_set1_epi8(v)
-#define PUInt16x4SetA(v) _mm_set1_epi16(v)
+#define PUInt16x4SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt16x4SetA(v) _mm_set1_epi16(v)
 #define PInt16x8SetA(v) _mm_set1_epi16(v)
 #define PInt32x4SetA(v) _mm_set1_epi32(v)

@@ -6,7 +6,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyStringFloat.h"
 
-Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUTF *sb, Bool detail)
+Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderUTF *sb, Bool detail)
 {
 	UTF8Char sbuff[32];
 
@@ -16,7 +16,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 	}
 	else if (buffSize >= 10 && dataBuff[0] == 0xff && dataBuff[buffSize - 1] == 0xff)
 	{
-		Int32 cmdSize = (dataBuff[1] << 8) | dataBuff[2];
+		UInt32 cmdSize = (UInt32)(dataBuff[1] << 8) | dataBuff[2];
 		Int64 termId = Data::ByteTool::GetBCD8(dataBuff[4]) * 100000000LL + Data::ByteTool::GetBCD32(&dataBuff[5]);
 		if (cmdSize <= buffSize)
 		{
@@ -48,7 +48,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					{
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000, Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
 						Double lat;
@@ -108,7 +108,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 				sb->Append((const UTF8Char*)", MDT Message Echo");
 				if (detail)
 				{
-					if (cmdSize == 11 + dataBuff[9])
+					if (cmdSize == 11 + (UInt32)dataBuff[9])
 					{
 						sb->Append((const UTF8Char*)"\r\nMessage = ");
 						sb->AppendC((const UTF8Char*)&dataBuff[10], cmdSize - 11);
@@ -208,7 +208,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					{
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000, Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
 						Double lat;
@@ -280,7 +280,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					{
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000, Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
 						Double lat;
@@ -356,7 +356,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 						sb->Append((const UTF8Char*)"m\r\nMileage timezone = ");
 						sb->AppendU16(dataBuff[51]);
 						sb->Append((const UTF8Char*)"\r\nDaily mileage = ");
-						sb->AppendU32(ReadMUInt16(&dataBuff[52]) * 100);
+						sb->AppendU32(ReadMUInt16(&dataBuff[52]) * (UInt32)100);
 						sb->Append((const UTF8Char*)"m\r\nFuel level = ");
 						Text::SBAppendF64(sb, ReadMUInt16(&dataBuff[54]) * 0.1);
 						sb->Append((const UTF8Char*)"%\r\nStatus5 = 0x");
@@ -383,7 +383,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					{
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000, Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
 						Double lat;
@@ -432,7 +432,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 						sb->Append((const UTF8Char*)"m\r\nMileage timezone = ");
 						sb->AppendU16(dataBuff[36]);
 						sb->Append((const UTF8Char*)"\r\nDaily mileage = ");
-						sb->AppendU32(ReadMUInt16(&dataBuff[37]) * 100);
+						sb->AppendU32(ReadMUInt16(&dataBuff[37]) * (UInt32)100);
 						sb->Append((const UTF8Char*)"m\r\nFuel level = ");
 						Text::SBAppendF64(sb, ReadMUInt16(&dataBuff[39]) * 0.1);
 						sb->Append((const UTF8Char*)"%\r\nStatus5 = 0x");
@@ -473,7 +473,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					{
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000, Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
 						Double lat;
@@ -602,7 +602,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					if (cmdSize == 23)
 					{
 						Data::DateTime dt;
-						dt.SetValue(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000, Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, dataBuff[15] * 4);
+						dt.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, (Int8)((Int8)dataBuff[15] * 4));
 						sb->Append((const UTF8Char*)"\r\nDevice Time = ");
 						sb->AppendDate(&dt);
 						sb->Append((const UTF8Char*)"\r\nBattery Status = 0x");
@@ -643,7 +643,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LBT_NONE);
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000, Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDate(&t);
 						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
 						sb->AppendHex8(dataBuff[28]);
@@ -695,7 +695,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LBT_NONE);
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000, Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDate(&t);
 						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
 						sb->AppendHex8(dataBuff[28]);
@@ -787,7 +787,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LBT_NONE);
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
-						t.SetValue(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000, Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
+						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDate(&t);
 						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
 						sb->AppendHex8(dataBuff[28]);
@@ -834,7 +834,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 	}
 	else if (buffSize >= 10 && dataBuff[0] == 0xfe && dataBuff[buffSize - 1] == 0xfe)
 	{
-		Int32 cmdSize = (dataBuff[1] << 8) | dataBuff[2];
+		UInt32 cmdSize = (UInt32)(dataBuff[1] << 8) | dataBuff[2];
 		Int64 termId = Data::ByteTool::GetBCD8(dataBuff[4]) * 100000000LL + Data::ByteTool::GetBCD32(&dataBuff[5]);
 		if (cmdSize <= buffSize)
 		{
@@ -859,7 +859,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 							sb->Append((const UTF8Char*)" (Failed)");
 						}
 						sb->Append((const UTF8Char*)"\r\nPeriod = ");
-						sb->AppendU16((dataBuff[10] << 8) | dataBuff[11]);
+						sb->AppendU16((UInt16)((dataBuff[10] << 8) | dataBuff[11]));
 						sb->Append((const UTF8Char*)"s");
 					}
 				}
@@ -877,7 +877,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					if (cmdSize == 37)
 					{
 						sb->Append((const UTF8Char*)"\r\nServer IP = ");
-						Net::SocketUtil::GetIPv4Name(sbuff, *(Int32*)&dataBuff[9]);
+						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
 						sb->Append(sbuff);
 						sb->Append((const UTF8Char*)"\r\nServer Port = ");
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
@@ -889,7 +889,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, OSInt buffSize, Text::StringBuilderUT
 					else if (cmdSize == 56)
 					{
 						sb->Append((const UTF8Char*)"\r\nServer IP = ");
-						Net::SocketUtil::GetIPv4Name(sbuff, *(Int32*)&dataBuff[9]);
+						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
 						sb->Append(sbuff);
 						sb->Append((const UTF8Char*)"\r\nServer Port = ");
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));

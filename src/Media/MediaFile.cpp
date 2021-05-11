@@ -83,7 +83,7 @@ void Media::MediaFile::SetChapterInfo(Media::ChapterInfo *chapters, Bool release
 	this->releaseChapter = releaseChapter;
 }
 
-Bool Media::MediaFile::TrimFile(Int32 trimTimeStart, Int32 trimTimeEnd)
+Bool Media::MediaFile::TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd)
 {
 	if (trimTimeStart == 0 && trimTimeEnd == -1)
 		return true;
@@ -96,7 +96,7 @@ Bool Media::MediaFile::TrimFile(Int32 trimTimeStart, Int32 trimTimeEnd)
 		syncTime = this->syncTime->GetItem(i);
 		if (trimTimeEnd == -1)
 		{
-			src->TrimStream((UInt32)(trimTimeStart + syncTime), (UInt32)trimTimeEnd, &syncTime);
+			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)trimTimeEnd, &syncTime);
 			this->syncTime->SetItem(i, syncTime);
 		}
 		else

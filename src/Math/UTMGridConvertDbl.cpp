@@ -117,9 +117,9 @@ UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt,
 	if (gridStr)
 	{
 		UTF8Char *sptr = Text::StrInt32(gridStr, zoneNumber);
-		*sptr++ = letters[(((Int32)lat) >> 3) + 12];
-		*sptr++ = eastZone;
-		*sptr++ = northZone;
+		*sptr++ = (UTF8Char)letters[(((Int32)lat) >> 3) + 12];
+		*sptr++ = (UTF8Char)eastZone;
+		*sptr++ = (UTF8Char)northZone;
 
 		if (digitCnt <= 3)
 		{
@@ -143,13 +143,13 @@ UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt,
 		i = digitCnt;
 		while (i-- > 0)
 		{
-			*--sptr = (inorth % 10) + 0x30;
+			*--sptr = (UTF8Char)((inorth % 10) + 0x30);
 			inorth /= 10;
 		}
 		i = digitCnt;
 		while (i-- > 0)
 		{
-			*--sptr = (ieast % 10) + 0x30;
+			*--sptr = (UTF8Char)((ieast % 10) + 0x30);
 			ieast /= 10;
 		}
 		sptr += digitCnt << 1;

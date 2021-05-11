@@ -1,7 +1,7 @@
 #ifndef _SM_IO_UDPFILELOG
 #define _SM_IO_UDPFILELOG
-#include "Data/ArrayListInt32.h"
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt32.h"
+#include "Data/ArrayListUInt64.h"
 #include "IO/IStreamData.h"
 #include "IO/UDPLog.h"
 
@@ -11,8 +11,8 @@ namespace IO
 	{
 	private:
 		IO::IStreamData *fd;
-		Data::ArrayListInt64 *logPos;
-		Data::ArrayListInt32 *logSize;
+		Data::ArrayListUInt64 *logPos;
+		Data::ArrayListUInt32 *logSize;
 		UInt8 *logBuff;
 
 	public:

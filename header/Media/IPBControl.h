@@ -24,7 +24,7 @@ namespace Media
 		virtual Bool StopPlayback() = 0;
 		virtual Bool PrevChapter() = 0;
 		virtual Bool NextChapter() = 0;
-		virtual Int32 GetCurrTime() = 0;
+		virtual UInt32 GetCurrTime() = 0;
 	};
 }
 #endif

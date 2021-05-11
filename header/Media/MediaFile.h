@@ -30,7 +30,7 @@ namespace Media
 		Media::ChapterInfo *GetChapterInfo();
 		void SetChapterInfo(Media::ChapterInfo *chapters, Bool releaseChapter);
 
-		Bool TrimFile(Int32 trimTimeStart, Int32 trimTimeEnd);
+		Bool TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd);
 	};
 }
 #endif

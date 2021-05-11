@@ -10,7 +10,7 @@ namespace IO
 	class UDPLog : public IO::LogFile
 	{
 	protected:
-		Bool ParseLog(UInt8 *dataBuff, OSInt dataSize, Text::StringBuilderUTF *sb, Bool detail);
+		Bool ParseLog(UInt8 *dataBuff, UOSInt dataSize, Text::StringBuilderUTF *sb, Bool detail);
 		UDPLog(const UTF8Char *sourceName);
 	public:
 		virtual ~UDPLog();

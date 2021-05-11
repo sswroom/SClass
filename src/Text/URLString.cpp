@@ -44,19 +44,19 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UI
 	{
 		if (port)
 		{
-			MemCopyNO(sbuff, &url[j + 1], (i - j - 1) * sizeof(UTF8Char));
+			MemCopyNO(sbuff, &url[j + 1], (UOSInt)(i - j - 1) * sizeof(UTF8Char));
 			sbuff[i - j - 1] = 0;
 			Text::StrToUInt16S(sbuff, port, 0);
 		}
 		if (i < j)
 		{
-			MemCopyNO(sbuff, url, sizeof(UTF8Char) * i);
+			MemCopyNO(sbuff, url, sizeof(UTF8Char) * (UOSInt)i);
 			sbuff[i] = 0;
 			return &sbuff[i];
 		}
 		else
 		{
-			MemCopyNO(sbuff, url, sizeof(UTF8Char) * j);
+			MemCopyNO(sbuff, url, sizeof(UTF8Char) * (UOSInt)j);
 			sbuff[j] = 0;
 			return &sbuff[j];
 		}
@@ -114,7 +114,7 @@ UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url)
 	i = Text::StrIndexOf(url, '/');
 	if (i >= 0)
 	{
-		MemCopyNO(sbuff, url, sizeof(UTF8Char) * i);
+		MemCopyNO(sbuff, url, sizeof(UTF8Char) * (UOSInt)i);
 		sbuff[i] = 0;
 		return &sbuff[i];
 	}
@@ -128,7 +128,7 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, const UTF8Char *url)
 {
 	OSInt i;
 	UTF8Char *tmpBuff;
-	OSInt urlLen = Text::StrCharCnt(url);
+	UOSInt urlLen = Text::StrCharCnt(url);
 	i = Text::StrIndexOf(url, (const UTF8Char*)"://");
 	if (i >= 0)
 	{
@@ -165,7 +165,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url)
 {
 	OSInt i;
 	UTF8Char *tmpBuff;
-	OSInt urlLen = Text::StrCharCnt(url);
+	UOSInt urlLen = Text::StrCharCnt(url);
 	i = Text::StrIndexOf(url, (const UTF8Char*)"://");
 	if (i >= 0)
 	{

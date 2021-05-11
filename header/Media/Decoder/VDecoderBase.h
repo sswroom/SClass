@@ -23,8 +23,8 @@ namespace Media
 			VDecoderBase(IVideoSource *sourceVideo);
 			virtual ~VDecoderBase();
 
-			virtual void SetBorderCrop(OSInt cropLeft, OSInt cropTop, OSInt cropRight, OSInt cropBottom);
-			virtual void GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom);
+			virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
+			virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom);
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 

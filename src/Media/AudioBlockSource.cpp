@@ -81,8 +81,8 @@ UInt32 Media::AudioBlockSource::SeekToTime(UInt32 time)
 	}
 	else
 	{
-		this->readBlock = MulDiv32(time, this->format.frequency, this->samplePerBlock * 1000);
-		return (UInt32)(this->readBlock * (Int64)this->samplePerBlock * 1000 / this->format.frequency);
+		this->readBlock = MulDivU32(time, this->format.frequency, this->samplePerBlock * 1000);
+		return (UInt32)(this->readBlock * (UInt64)this->samplePerBlock * 1000 / this->format.frequency);
 	}
 }
 
@@ -159,7 +159,7 @@ void Media::AudioBlockSource::AddBlock(UInt64 offset, UInt32 length)
 	}
 }
 
-void Media::AudioBlockSource::UpdateBitRate(Int32 bitRate)
+void Media::AudioBlockSource::UpdateBitRate(UInt32 bitRate)
 {
 	this->format.bitRate = bitRate;
 }

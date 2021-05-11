@@ -36,8 +36,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
 	UI::FileDialog *dlg;
 	Bool changed = false;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HQMPPlaylist", false));
 	dlg->SetAllowMultiSel(true);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_VIDEO_PARSER);
@@ -157,8 +157,8 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Ch
 
 void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->lbPlaylist->ClearItems();
 	i = 0;
 	j = this->playlist->GetCount();

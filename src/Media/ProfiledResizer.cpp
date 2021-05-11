@@ -37,7 +37,7 @@ Media::ProfiledResizer::ProfiledResizer(Parser::ParserList *parsers, Media::Colo
 
 Media::ProfiledResizer::~ProfiledResizer()
 {
-	OSInt i;
+	UOSInt i;
 	while (loader->IsProcessing())
 	{
 		Sync::Thread::Sleep(100);
@@ -125,7 +125,7 @@ const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetProfile(
 	return this->profiles->GetItem(index);
 }
 
-Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, Int32 targetSizeX, Int32 targetSizeY, OutputType outType, Int32 outParam, const UTF8Char *watermark, SizeType sizeType)
+Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, Int32 targetSizeX, Int32 targetSizeY, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType)
 {
 	ResizeProfile *profile;
 	if (outType == OT_TIFF)
@@ -134,7 +134,7 @@ Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8C
 	}
 	else if (outType == OT_JPEGQUALITY)
 	{
-		if (outParam < 0 || outParam > 100)
+		if (outParam > 100)
 			return false;
 	}
 	else if (outType == OT_JPEGSIZE)
@@ -220,8 +220,8 @@ Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
 	UTF8Char sbuff2[256];
 	UTF8Char *sptr;
 	const UTF8Char *cols[8];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ResizeProfile *profile;
 	if (fileName == 0)
 	{
@@ -254,7 +254,7 @@ Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
 		cols[4] = sptr;
 		sptr = Text::StrInt32(sptr, (Int32)profile->outType) + 1;
 		cols[5] = sptr;
-		sptr = Text::StrInt32(sptr, profile->outParam) + 1;
+		sptr = Text::StrUInt32(sptr, profile->outParam) + 1;
 		if (profile->watermark)
 		{
 			cols[6] = profile->watermark;
@@ -283,7 +283,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 	Int32 targetSizeX;
 	Int32 targetSizeY;
 	Int32 outType;
-	Int32 outParam;
+	UInt32 outParam;
 	Int32 sizeType;
 	Text::StringBuilderUTF8 sb;
 	DB::CSVFile *csv;
@@ -301,7 +301,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 	DB::DBReader *r = csv->GetTableData(0, 0, 0, 0);
 	if (r)
 	{
-		OSInt i;
+		UOSInt i;
 		while (loader->IsProcessing())
 		{
 			Sync::Thread::Sleep(100);
@@ -322,7 +322,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 				targetSizeX = r->GetInt32(2);
 				targetSizeY = r->GetInt32(3);
 				outType = r->GetInt32(4);
-				outParam = r->GetInt32(5);
+				outParam = (UInt32)r->GetInt32(5);
 				r->GetStr(0, sbuff, sizeof(sbuff));
 				r->GetStr(1, sbuff2, sizeof(sbuff2));
 				this->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, (OutputType)outType, outParam, 0, ST_MAXSIZE);
@@ -332,7 +332,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 				targetSizeX = r->GetInt32(2);
 				targetSizeY = r->GetInt32(3);
 				outType = r->GetInt32(4);
-				outParam = r->GetInt32(5);
+				outParam = (UInt32)r->GetInt32(5);
 				r->GetStr(0, sbuff, sizeof(sbuff));
 				r->GetStr(1, sbuff2, sizeof(sbuff2));
 				sb.ClearStr();
@@ -344,7 +344,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 				targetSizeX = r->GetInt32(2);
 				targetSizeY = r->GetInt32(3);
 				outType = r->GetInt32(4);
-				outParam = r->GetInt32(5);
+				outParam = (UInt32)r->GetInt32(5);
 				r->GetStr(0, sbuff, sizeof(sbuff));
 				r->GetStr(1, sbuff2, sizeof(sbuff2));
 				sb.ClearStr();

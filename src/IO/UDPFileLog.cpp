@@ -11,17 +11,17 @@ IO::UDPFileLog::UDPFileLog(IO::IStreamData *fd) : IO::UDPLog(fd->GetFullName())
 
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->logBuff = MemAlloc(UInt8, 65544);
-	NEW_CLASS(this->logPos, Data::ArrayListInt64());
-	NEW_CLASS(this->logSize, Data::ArrayListInt32());
+	NEW_CLASS(this->logPos, Data::ArrayListUInt64());
+	NEW_CLASS(this->logSize, Data::ArrayListUInt32());
 
-	Int64 currPos;
-	Int64 buffPos;
-	Int64 fdSize;
-	OSInt buffSize;
-	OSInt endOfst;
-	OSInt readSize;
-	Int32 packetSize;
-	OSInt i;
+	UInt64 currPos;
+	UInt64 buffPos;
+	UInt64 fdSize;
+	UOSInt buffSize;
+	UOSInt endOfst;
+	UOSInt readSize;
+	UInt32 packetSize;
+	UOSInt i;
 
 	buff = MemAlloc(UInt8, 1048576);
 	fdSize = this->fd->GetDataSize();
@@ -33,7 +33,7 @@ IO::UDPFileLog::UDPFileLog(IO::IStreamData *fd) : IO::UDPLog(fd->GetFullName())
 		readSize = 1048576 - buffSize;
 		if (readSize > fdSize - currPos)
 		{
-			readSize = (OSInt)(fdSize - currPos);
+			readSize = (UOSInt)(fdSize - currPos);
 		}
 		this->fd->GetRealData(currPos, readSize, &buff[buffSize]);
 		buffPos = currPos - buffSize;
@@ -45,7 +45,7 @@ IO::UDPFileLog::UDPFileLog(IO::IStreamData *fd) : IO::UDPLog(fd->GetFullName())
 		{
 			if (buff[i] == 0xaa && buff[i + 1] == 0xbb)
 			{
-				packetSize = *(UInt16*)&buff[i + 2];
+				packetSize = ReadUInt16(&buff[i + 2]);
 				if (packetSize + 8 + i > buffSize)
 					break;
 				
@@ -110,8 +110,8 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 		{
 			index = index >> 1;
 
-			Int64 pos = this->logPos->GetItem(index);
-			Int32 size = this->logSize->GetItem(index);
+			UInt64 pos = this->logPos->GetItem(index);
+			UInt32 size = this->logSize->GetItem(index);
 			this->fd->GetRealData(pos, size, this->logBuff);
 			dt->SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
 			return ParseLog(&this->logBuff[8], size - 8, sb, false);
@@ -133,8 +133,8 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 		if (index >= this->logPos->GetCount())
 			return false;
 	}
-	Int64 pos = this->logPos->GetItem(index);
-	Int32 size = this->logSize->GetItem(index);
+	UInt64 pos = this->logPos->GetItem(index);
+	UInt32 size = this->logSize->GetItem(index);
 	this->fd->GetRealData(pos, size, this->logBuff);
 	dt->SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
 	sb->AppendHexBuff(&this->logBuff[8], size - 8, ' ', lineBreak);
@@ -150,8 +150,8 @@ Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSIn
 	if (index >= this->logPos->GetCount())
 		return false;
 	Data::DateTime dt;
-	Int64 pos = this->logPos->GetItem(index);
-	Int32 size = this->logSize->GetItem(index);
+	UInt64 pos = this->logPos->GetItem(index);
+	UInt32 size = this->logSize->GetItem(index);
 	this->fd->GetRealData(pos, size, this->logBuff);
 	dt.SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
 	return this->ParseLog(&this->logBuff[8], size - 8, sb, true);

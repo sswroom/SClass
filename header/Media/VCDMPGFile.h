@@ -15,7 +15,7 @@ namespace Media
 		UInt8 *readBuff;
 		UInt64 readOfst;
 		UInt64 fleng;
-		Int32 startTime;
+		UInt32 startTime;
 		Media::M2VStreamSource *vstm;
 		Data::Int32Map<Media::IMediaStream*> *dataStms;
 		Data::ArrayList<Media::IAudioSource*> *audStms;

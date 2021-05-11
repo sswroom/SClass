@@ -255,9 +255,10 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 		}
 		if (pobj->GetSourceName(u8buff))
 		{
-			if ((i = Text::StrLastIndexOf(u8buff, '.')) >= 0)
+			OSInt si;
+			if ((si = Text::StrLastIndexOf(u8buff, '.')) >= 0)
 			{
-				u8buff[i] = 0;
+				u8buff[si] = 0;
 			}
 			sfd->SetFileName(u8buff);
 		}
@@ -265,7 +266,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 		{
 			IO::FileStream *fs;
 			IO::FileExporter::SupportType suppType;
-			fileExp = exp2->GetItem(sfd->GetFilterIndex());
+			fileExp = exp2->GetItem((UOSInt)sfd->GetFilterIndex());
 			suppType = fileExp->IsObjectSupported(pobj);
 			if (fileExp->GetParamCnt() > 0)
 			{

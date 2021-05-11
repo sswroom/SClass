@@ -20,7 +20,7 @@ extern "C" void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src,
 		i = width;
 		while (i-- > 0)
 		{
-			daVal = PUInt16x4SetA(255 - src[3]);
+			daVal = PUInt16x4SetA((UInt16)(255 - src[3]));
 			daVal = PINSUW4(daVal, 3, 255);
 			cval = PSADDUW4(PMULULW4(PUNPCKUBW4(PLoadUInt8x4(src), zeroU8), PUInt16x4SetA(src[3])), PMULULW4(PUNPCKUBW4(PLoadUInt8x4(dest), zeroU8), daVal));
 			PStoreUInt8x4(dest, PSHRADDWB4(PSADDUW4(PSHRW4(cval, 8), cval), cAdd, 8));
@@ -80,7 +80,7 @@ extern "C" void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *sr
 		i = width;
 		while (i-- > 0)
 		{
-			daVal = PUInt16x4SetA(255 - src[3]);
+			daVal = PUInt16x4SetA((UInt16)(255 - src[3]));
 			daVal = PINSUW4(daVal, 3, 255);
 			cval = PADDUW4(PMULULW4(PUNPCKUBW4(PLoadUInt8x4(src), zeroU8), cMul), PMULULW4(PUNPCKUBW4(PLoadUInt8x4(dest), zeroU8), daVal));
 			PStoreUInt8x4(dest, PSHRADDWB4(PSADDUW4(PSHRW4(cval, 8), cval), cAdd, 8));

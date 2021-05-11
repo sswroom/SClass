@@ -49,7 +49,7 @@ namespace Media
 		virtual Bool IsEnd();
 
 		void AddBlock(UInt64 offset, UInt32 length);
-		void UpdateBitRate(Int32 bitRate);
+		void UpdateBitRate(UInt32 bitRate);
 	};
 }
 #endif

@@ -12,7 +12,7 @@ Text::TextBinEnc::Base64Enc::~Base64Enc()
 
 UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
-	const Char *encArr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	const UTF8Char *encArr = (const UTF8Char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	UOSInt outSize;
 	UTF8Char sptr[4];
 	UOSInt tmp1 = buffSize % 3;

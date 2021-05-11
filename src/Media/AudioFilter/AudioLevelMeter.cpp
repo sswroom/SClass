@@ -57,7 +57,7 @@ Media::AudioFilter::AudioLevelMeter::~AudioLevelMeter()
 	DEL_CLASS(this->mut);
 }
 
-Int32 Media::AudioFilter::AudioLevelMeter::SeekToTime(Int32 time)
+UInt32 Media::AudioFilter::AudioLevelMeter::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

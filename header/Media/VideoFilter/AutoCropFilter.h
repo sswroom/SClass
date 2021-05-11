@@ -22,7 +22,7 @@ namespace Media
 
 			void SetEnabled(Bool enabled);
 
-			virtual void GetBorderCrop(OSInt *cropLeft, OSInt *cropTop, OSInt *cropRight, OSInt *cropBottom);
+			virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom);
 		};
 	}
 }

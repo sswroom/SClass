@@ -26,15 +26,15 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(void 
 	OSInt i = me->lbProfile->GetSelectedIndex();
 	if (i >= 0)
 	{
-		me->lbProfile->RemoveItem(i);
+		me->lbProfile->RemoveItem((UOSInt)i);
 		if (me->resizer->GetCurrProfileIndex() == (UOSInt)i)
 		{
-			me->resizer->RemoveProfile(i);
+			me->resizer->RemoveProfile((UOSInt)i);
 			me->UpdateProfileDisp();
 		}
 		else
 		{
-			me->resizer->RemoveProfile(i);
+			me->resizer->RemoveProfile((UOSInt)i);
 		}
 		me->resizer->SaveProfile(0);
 	}
@@ -183,8 +183,8 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 {
 	const Media::ProfiledResizer::ResizeProfile *profile;
-	OSInt i = 0;
-	OSInt j = this->resizer->GetProfileCount();
+	UOSInt i = 0;
+	UOSInt j = this->resizer->GetProfileCount();
 	this->lbProfile->ClearItems();
 	while (i < j)
 	{
