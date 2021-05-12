@@ -23,7 +23,7 @@ namespace SSWR
 			Int32 flags;
 			Int32 photoId;
 			Int32 photoWId;
-			Int32 mapColor;
+			UInt32 mapColor;
 
 		public:
 			OrganSpecies();
@@ -55,8 +55,8 @@ namespace SSWR
 			Int32 GetPhotoId();
 			void SetPhotoWId(Int32 photoWId);
 			Int32 GetPhotoWId();
-			void SetMapColor(Int32 mapColor);
-			Int32 GetMapColor();
+			void SetMapColor(UInt32 mapColor);
+			UInt32 GetMapColor();
 
 
 			virtual ItemType GetItemType();

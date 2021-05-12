@@ -814,8 +814,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 				OSInt j;
 				Int32 fmt;
 				Data::ArrayList<Int32> formats;
-				Int32 filePathFmt = -1;
-				Int32 urlFmt = -1;
+				UInt32 filePathFmt = (UInt32)-1;
+				UInt32 urlFmt = (UInt32)-1;
 				clipboard->GetDataFormats(&formats);
 				i = 0;
 				j = formats.GetCount();
@@ -840,7 +840,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 					i++;
 				}
 
-				if (urlFmt != -1 && filePathFmt != -1)
+				if (urlFmt != (UInt32)-1 && filePathFmt != (UInt32)-1)
 				{
 					Bool succ;
 					IO::FileStream *fs;
@@ -1257,9 +1257,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickClicked(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	UTF8Char sbuff[512];
-	Data::ArrayListInt32 sels;
-	OSInt i;
-	OSInt j;
+	Data::ArrayListUInt32 sels;
+	UOSInt i;
+	UOSInt j;
 	OrganImages *imgs;
 	me->lbImage->GetSelectedIndices(&sels);
 	if (sels.GetCount() <= 0)
@@ -1298,7 +1298,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(void *userOb
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	UTF8Char sbuff[512];
-	Data::ArrayListInt32 sels;
+	Data::ArrayListUInt32 sels;
 	OrganGroupItem *gi;
 	OSInt i;
 	OSInt j;
@@ -1383,11 +1383,11 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPickClicked(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	OrganGroupItem *gi;
-	Data::ArrayListInt32 sels;
+	Data::ArrayListUInt32 sels;
 	Data::ArrayList<OrganGroupItem*> newList;
 	me->lbObj->GetSelectedIndices(&sels);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = sels.GetCount();
 	while (i < j)
@@ -1417,7 +1417,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 	gi = me->pickObjs->GetItem(0);
 	if (gi->GetItemType() == OrganGroupItem::IT_IMAGE)
 	{
-		Data::ArrayListInt32 sels;
+		Data::ArrayListUInt32 sels;
 		Data::ArrayList<OrganImages*> imgList;
 		me->lbObj->GetSelectedIndices(&sels);
 		if (sels.GetCount() != 1 && me->inputMode != IM_GROUP)
@@ -1432,8 +1432,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			return;
 		}
 		SDEL_TEXT(me->initSelImg);
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = me->pickObjs->GetCount();
 		if (j > 0)
@@ -1601,8 +1601,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, OSIn
 		updated = true;
 	}
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UserFileInfo *ufile;
 	i = 0;
 	j = me->mapUFiles->GetCount();
@@ -1775,7 +1775,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
     ClearGroupForm();
     if (lbDir->GetSelectedIndex() == -1)
 	{
-		OSInt i = this->groupItems->GetCount();
+		UOSInt i = this->groupItems->GetCount();
 		while (i-- > 0)
 		{
 			item = this->groupItems->RemoveAt(i);
@@ -1897,8 +1897,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 	}
 
 	OrganImageItem *imgItem;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->ClearImgLayers();
 	i = this->imgItems->GetCount();
 	while (i-- > 0)
@@ -1970,7 +1970,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			}
 		}
 
-		OSInt initSel = 0;
+		UOSInt initSel = 0;
 		j = this->imgItems->GetCount();
 		if (showDef)
 		{
@@ -2093,8 +2093,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		UTF8Char u8buff[256];
 		OrganGroupItem *gi;
 		OrganGroup *o;
-		OSInt i = 0;
-		OSInt j = this->lbObj->GetCount();
+		UOSInt i = 0;
+		UOSInt j = this->lbObj->GetCount();
 		while (i < j)
 		{
 			gi = (OrganGroupItem*)this->lbObj->GetItem(i);
@@ -2466,7 +2466,7 @@ void SSWR::OrganMgr::OrganMainForm::ClearImgLayers()
 	}
 }
 
-SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(Int32 mapColor)
+SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt32 mapColor)
 {
 	OrganSpImgLayer *lyr = this->mapImgLyrs->Get(mapColor);
 	if (lyr)
@@ -2834,7 +2834,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 {
-	OSInt i;
+	UOSInt i;
 	OrganGroupItem *item;
 	OrganGroup *grp;
 	OrganImageItem *img;
@@ -2916,8 +2916,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			OrganGroupItem *item;
 			OrganGroup *selObj = (OrganGroup*)this->lbDir->GetSelectedItem();
 			OrganGroup *g;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			UTF8Char sbuff[256];
 			if (selObj->GetGroupId() <= 0)
 				return;
@@ -3158,7 +3158,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_NAV_RIGHT:
 		{
-			OSInt i = this->tcMain->GetSelectedIndex();
+			UOSInt i = this->tcMain->GetSelectedIndex();
 			switch (i)
 			{
 			case 0:
@@ -3178,7 +3178,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_NAV_LEFT:
 		{
-			OSInt i = this->tcMain->GetSelectedIndex();
+			UOSInt i = this->tcMain->GetSelectedIndex();
 			switch (i)
 			{
 			case 1:
@@ -3345,7 +3345,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 				const UTF8Char *fmtFile = 0;
 				const UTF8Char *fmtHDrop = 0;
 				const UTF8Char *name;
-				OSInt j = data->GetCount();
+				UOSInt j = data->GetCount();
 				while (j-- > 0)
 				{
 					name = data->GetName(j);

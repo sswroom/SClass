@@ -230,7 +230,7 @@ namespace SSWR
 			void GoToDir(OrganGroup *grp, Int32 parentId);
 
 			void ClearImgLayers();
-			OrganSpImgLayer *GetImgLayer(Int32 mapColor);
+			OrganSpImgLayer *GetImgLayer(UInt32 mapColor);
 		public:
 			OrganMainForm(UI::GUICore *ui, UI::GUIClientControl *parent, OrganEnv *env);
 			virtual ~OrganMainForm();

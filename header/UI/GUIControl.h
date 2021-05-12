@@ -14,7 +14,7 @@ namespace UI
 	class GUIDropData
 	{
 	public:
-		virtual OSInt GetCount() = 0;
+		virtual UOSInt GetCount() = 0;
 		virtual const UTF8Char *GetName(OSInt index) = 0;
 		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF *sb) = 0;
 		virtual IO::Stream *GetDataStream(const UTF8Char *name) = 0;

@@ -87,7 +87,7 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(IO:
 		format.nChannels = 2;
 	}
 	if (lfeon)
-		format.nChannels += 1;
+		format.nChannels = (UInt16)(format.nChannels + 1);
 	switch (fscod)
 	{
 	case 0:
@@ -210,7 +210,7 @@ Bool Media::BlockParser::AC3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt b
 		fmt->nChannels = 2;
 	}
 	if (lfeon)
-		fmt->nChannels += 1;
+		fmt->nChannels = (UInt16)(fmt->nChannels + 1);
 	switch (fscod)
 	{
 	case 0:

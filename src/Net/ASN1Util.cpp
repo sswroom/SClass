@@ -39,7 +39,7 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 				*len = -1;
 				return pduSize;
 			}
-			*len = ReadMUInt24(&pdu[ofst + 1]);
+			*len = (Int32)ReadMUInt24(&pdu[ofst + 1]);
 			return ofst + 4;
 		}
 		else if (pdu[ofst] == 0x84)
@@ -178,7 +178,7 @@ const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd
 	{
 		return 0;
 	}
-	sb->AppendC(pdu, len);
+	sb->AppendC(pdu, (UOSInt)len);
 	return pdu + len;
 }
 

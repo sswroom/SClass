@@ -9,8 +9,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(void *userObj)
 {
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	UserFileInfo *userFile;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 spId;
 	spId = (Int32)(OSInt)me->cboSpecies->GetSelectedItem();
 	me->currFileList->Clear();
@@ -169,8 +169,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int32 timeAdj;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UserFileInfo *userFile;
 	Int32 succCnt = 0;
 	Int32 failCnt = 0;

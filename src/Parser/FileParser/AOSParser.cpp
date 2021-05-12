@@ -97,7 +97,7 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, 
 			return 0;
 		}
 		enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
-		pf->AddData(fd, fileOfst + (Int64)dataOfst, fileSize, fileName, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, fileName, 0);
 
 		nextOfst = fileOfst + fileSize;
 		i++;

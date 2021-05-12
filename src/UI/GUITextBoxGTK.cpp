@@ -100,7 +100,7 @@ UI::GUITextBox::~GUITextBox()
 
 void UI::GUITextBox::EventTextChange()
 {
-	OSInt i = this->txtChgHdlrs->GetCount();
+	UOSInt i = this->txtChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->txtChgHdlrs->GetItem(i)(this->txtChgObjs->GetItem(i));
@@ -136,7 +136,7 @@ void UI::GUITextBox::SetPasswordChar(WChar c)
 void UI::GUITextBox::SetText(const UTF8Char *lbl)
 {
 	TextBoxData *txt = (TextBoxData*)this->clsData;
-	OSInt lblLeng = Text::StrCharCnt(lbl);
+	UOSInt lblLeng = Text::StrCharCnt(lbl);
 	if (txt->multiLine)
 	{
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);

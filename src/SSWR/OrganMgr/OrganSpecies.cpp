@@ -246,12 +246,12 @@ Int32 SSWR::OrganMgr::OrganSpecies::GetPhotoWId()
 	return this->photoWId;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetMapColor(Int32 mapColor)
+void SSWR::OrganMgr::OrganSpecies::SetMapColor(UInt32 mapColor)
 {
 	this->mapColor = mapColor;
 }
 
-Int32 SSWR::OrganMgr::OrganSpecies::GetMapColor()
+UInt32 SSWR::OrganMgr::OrganSpecies::GetMapColor()
 {
 	return this->mapColor;
 }

@@ -20,7 +20,7 @@ namespace UI
 		GUIDragDataGTK(void *widget, void *context, UInt32 time, Bool readData);
 		virtual ~GUIDragDataGTK();
 
-		virtual OSInt GetCount();
+		virtual UOSInt GetCount();
 		virtual const UTF8Char *GetName(OSInt index);
 		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF *sb);
 		virtual IO::Stream *GetDataStream(const UTF8Char *name);

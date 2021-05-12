@@ -86,7 +86,7 @@ UI::GUIDragDataGTK::~GUIDragDataGTK()
 	}
 }*/
 
-OSInt UI::GUIDragDataGTK::GetCount()
+UOSInt UI::GUIDragDataGTK::GetCount()
 {
 	return this->targetMap->GetCount();
 }

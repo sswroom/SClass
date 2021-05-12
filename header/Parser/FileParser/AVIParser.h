@@ -22,8 +22,8 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 
 		private:
-			Int32 EstimateDecodeSize(Media::AudioFormat *fmt, Int64 totalSize, OSInt frameSize);
+			UInt32 EstimateDecodeSize(Media::AudioFormat *fmt, UInt64 totalSize, UOSInt frameSize);
 		};
-	};
-};
+	}
+}
 #endif
