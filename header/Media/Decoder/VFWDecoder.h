@@ -70,7 +70,8 @@ namespace Media
 			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 			virtual void Stop();
 
-			virtual OSInt GetFrameCount(); //-1 = unknown;
+			virtual Bool HasFrameCount();
+			virtual UOSInt GetFrameCount();
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 

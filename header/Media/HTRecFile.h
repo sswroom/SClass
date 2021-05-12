@@ -15,7 +15,7 @@ namespace Media
 		private:
 			HTRecFile *file;
 			Bool setting;
-			UOSInt currRow;
+			UOSInt nextRow;
 			UOSInt recCount;
 		public:
 			HTRecReader(HTRecFile *file, Bool setting);
@@ -52,7 +52,7 @@ namespace Media
 		const UTF8Char *testName;
 		Int32 address;
 		UOSInt totalRecords;
-		Int32 recInterval;
+		UInt32 recInterval;
 		Int32 tempAlarmL;
 		Int32 tempAlarmH;
 		Int32 rhAlarmL;
@@ -62,7 +62,7 @@ namespace Media
 		UOSInt recCount;
 		UInt8 *recBuff;
 		Data::DateTime *adjStTime;
-		Int32 adjRecInterval;
+		UInt32 adjRecInterval;
 
 	public:
 		HTRecFile(IO::IStreamData *stmData);
@@ -78,7 +78,7 @@ namespace Media
 		Int32 GetAddress();
 		Bool GetSettingTime(Data::DateTime *t);
 		UOSInt GetTotalRec();
-		Int32 GetRecInterval();
+		UInt32 GetRecInterval();
 		Double GetTempAlarmL();
 		Double GetTempAlarmH();
 		Double GetHumiAlarmL();
@@ -88,7 +88,7 @@ namespace Media
 		UTF8Char *GetSerialNo(UTF8Char *sbuff);
 		UTF8Char *GetTestName(UTF8Char *sbuff);
 		Bool GetAdjStartTime(Data::DateTime *t);
-		Int32 GetAdjRecInterval();
+		UInt32 GetAdjRecInterval();
 		const UInt8 *GetRecBuff();
 	};
 }

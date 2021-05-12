@@ -59,9 +59,14 @@ Bool Media::IRealtimeVideoSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTi
 	return false;
 }
 
-OSInt Media::IRealtimeVideoSource::GetFrameCount()
+Bool Media::IRealtimeVideoSource::HasFrameCount()
 {
-	return -1;
+	return false;
+}
+
+UOSInt Media::IRealtimeVideoSource::GetFrameCount()
+{
+	return 0;
 }
 
 UInt32 Media::IRealtimeVideoSource::GetFrameTime(UOSInt frameIndex)
@@ -73,7 +78,7 @@ void Media::IRealtimeVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *use
 {
 }
 
-OSInt Media::IRealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::IRealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	///////////////////////////////////////
 	return 0;

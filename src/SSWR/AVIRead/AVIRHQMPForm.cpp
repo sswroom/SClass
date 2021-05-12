@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		currTime = dbg.currTime;
 		v = currTime / 3600000;
 		sb.Append((const UTF8Char*)" (");
-		sb.AppendI32(v);
+		sb.AppendU32(v);
 		sb.Append((const UTF8Char*)":");
 		currTime -= v * 3600000;
 		v = currTime / 60000;
@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		{
 			sb.Append((const UTF8Char*)"0");
 		}
-		sb.AppendI32(v);
+		sb.AppendU32(v);
 		sb.Append((const UTF8Char*)":");
 		currTime -= v * 60000;
 		v = currTime / 1000;
@@ -208,26 +208,26 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		{
 			sb.Append((const UTF8Char*)"0");
 		}
-		sb.AppendI32(v);
+		sb.AppendU32(v);
 		sb.Append((const UTF8Char*)".");
 		currTime -= v * 1000;
 		if (currTime < 10)
 		{
 			sb.Append((const UTF8Char*)"00");
-			sb.AppendI32(currTime);
+			sb.AppendU32(currTime);
 		}
 		else if (currTime < 100)
 		{
 			sb.Append((const UTF8Char*)"0");
-			sb.AppendI32(currTime);
+			sb.AppendU32(currTime);
 		}
 		else
 		{
-			sb.AppendI32(currTime);
+			sb.AppendU32(currTime);
 		}
 		sb.Append((const UTF8Char*)")\r\n");
 		sb.Append((const UTF8Char*)"Disp Frame Time: ");
-		sb.AppendI32(dbg.dispFrameTime);
+		sb.AppendU32(dbg.dispFrameTime);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Disp Frame Num: ");
 		sb.AppendI32(dbg.dispFrameNum);
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.avOfst);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Seek Count: ");
-		sb.AppendOSInt(dbg.seekCnt);
+		sb.AppendUOSInt(dbg.seekCnt);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Frame Displayed: ");
 		sb.AppendI32(dbg.frameDispCnt);
@@ -277,14 +277,14 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.buffReady);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Src Size: ");
-		sb.AppendOSInt(dbg.srcWidth);
+		sb.AppendUOSInt(dbg.srcWidth);
 		sb.Append((const UTF8Char*)" x ");
-		sb.AppendOSInt(dbg.srcHeight);
+		sb.AppendUOSInt(dbg.srcHeight);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Disp Size: ");
-		sb.AppendOSInt(dbg.dispWidth);
+		sb.AppendUOSInt(dbg.dispWidth);
 		sb.Append((const UTF8Char*)" x ");
-		sb.AppendOSInt(dbg.dispHeight);
+		sb.AppendUOSInt(dbg.dispHeight);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"PAR: ");
 		Text::SBAppendF64(&sb, dbg.par);
@@ -446,8 +446,10 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
+	OSInt si;
+	OSInt sj;
 
 	this->player->LoadMedia(0);
 	SDEL_CLASS(this->currFile);
@@ -476,37 +478,37 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	if (hasVideo && !hasAudio)
 	{
 		Text::StrConcat(sbuff, mf->GetSourceNameObj());
-		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-		if (i >= 0)
+		si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		if (si >= 0)
 		{
-			j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
-			if (j >= 0)
+			sj = Text::StrLastIndexOf(&sbuff[si + 1], '.');
+			if (sj >= 0)
 			{
-				Text::StrConcat(&sbuff[i + j + 1], IO::Path::ALL_FILES);
+				Text::StrConcat(&sbuff[si + sj + 1], IO::Path::ALL_FILES);
 				sess = IO::Path::FindFile(sbuff);
 				if (sess)
 				{
 					Parser::ParserList *parsers = this->core->GetParserList();
 
-					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize))
+					while (IO::Path::FindNextFile(&sbuff[si + 1], sess, 0, &pt, &fileSize))
 					{
-						j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
-						if (j >= 0)
+						sj = Text::StrLastIndexOf(&sbuff[si + 1], '.');
+						if (sj >= 0)
 						{
 							Bool audFile = false;
-							if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"m4a"))
+							if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"m4a"))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"aac"))
+							else if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"aac"))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"ac3"))
+							else if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"ac3"))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"wav"))
+							else if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"wav"))
 							{
 								audFile = true;
 							}
@@ -521,12 +523,12 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 								if (audFile)
 								{
 									Int32 syncTime;
-									j = 0;
-									while ((msrc = audFile->GetStream(j, &syncTime)) != 0)
+									i = 0;
+									while ((msrc = audFile->GetStream(i, &syncTime)) != 0)
 									{
-										audFile->KeepStream(j, true);
+										audFile->KeepStream(i, true);
 										mf->AddSource(msrc, syncTime);
-										j++;
+										i++;
 									}
 									DEL_CLASS(audFile);
 								}
@@ -926,11 +928,11 @@ SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 
 void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 {
-	Int32 currTime;
-	OSInt i;
+	UInt32 currTime;
+	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
-		i = cmdId - MNU_PB_CHAPTERS;
+		i = (UOSInt)(cmdId - MNU_PB_CHAPTERS);
 		if (this->currChapInfo)
 		{
 			this->player->GotoChapter(i);
@@ -1089,10 +1091,10 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PB_BWD2:
 		if (this->player->IsPlaying())
 		{
-			currTime = this->player->GetCurrTime() - 60000;
-			if (currTime < 0)
+			currTime = this->player->GetCurrTime();
+			if (currTime < 60000)
 				currTime = 0;
-			this->player->SeekTo(currTime);
+			this->player->SeekTo(currTime - 60000);
 		}
 		break;
 	case MNU_PB_CHAP_PREV:
@@ -1502,9 +1504,10 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
+	OSInt si;
 	Text::StrConcat(sbuff, this->currFile->GetSourceNameObj());
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[i + 1];
+	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[si + 1];
 
 	if (fname)
 	{
@@ -1562,7 +1565,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 		IO::Path::FindFileClose(sess);
 
 		void **arr = (void**)fileList.GetArray(&j);
-		ArtificialQuickSort_SortCmp(arr, VideoFileCompare, 0, j - 1);
+		ArtificialQuickSort_SortCmp(arr, VideoFileCompare, 0, (OSInt)j - 1);
 
 		i = 0;
 		j = fileList.GetCount();
@@ -1582,7 +1585,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 			writer->Write(u8ptr);
 			Text::XML::FreeNewText(u8ptr);
 			writer->Write((const UTF8Char*)"</a></td><td>");
-			Text::StrInt64(sbuff2, vfile->fileSize);
+			Text::StrUInt64(sbuff2, vfile->fileSize);
 			writer->Write(sbuff2);
 			writer->Write((const UTF8Char*)"</td><td>");
 
@@ -1708,18 +1711,18 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 	{
 		Text::StringBuilderUTF8 sb;
 		UI::GUIVideoBoxDD::DebugValue dbg;
-		Int32 currTime;
-		Int32 v;
+		UInt32 currTime;
+		UInt32 v;
 
 		writer->WriteLine((const UTF8Char*)"<hr/>");
 		NEW_CLASS(dbg.color, Media::ColorProfile());
 		this->vbox->GetDebugValues(&dbg);
 		sb.Append((const UTF8Char*)"Curr Time: ");
-		sb.AppendI32(dbg.currTime);
+		sb.AppendU32(dbg.currTime);
 		currTime = dbg.currTime;
 		v = currTime / 3600000;
 		sb.Append((const UTF8Char*)" (");
-		sb.AppendI32(v);
+		sb.AppendU32(v);
 		sb.Append((const UTF8Char*)":");
 		currTime -= v * 3600000;
 		v = currTime / 60000;
@@ -1727,7 +1730,7 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		{
 			sb.Append((const UTF8Char*)"0");
 		}
-		sb.AppendI32(v);
+		sb.AppendU32(v);
 		sb.Append((const UTF8Char*)":");
 		currTime -= v * 60000;
 		v = currTime / 1000;
@@ -1735,26 +1738,26 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		{
 			sb.Append((const UTF8Char*)"0");
 		}
-		sb.AppendI32(v);
+		sb.AppendU32(v);
 		sb.Append((const UTF8Char*)".");
 		currTime -= v * 1000;
 		if (currTime < 10)
 		{
 			sb.Append((const UTF8Char*)"00");
-			sb.AppendI32(currTime);
+			sb.AppendU32(currTime);
 		}
 		else if (currTime < 100)
 		{
 			sb.Append((const UTF8Char*)"0");
-			sb.AppendI32(currTime);
+			sb.AppendU32(currTime);
 		}
 		else
 		{
-			sb.AppendI32(currTime);
+			sb.AppendU32(currTime);
 		}
 		sb.Append((const UTF8Char*)")<br/>\r\n");
 		sb.Append((const UTF8Char*)"Disp Frame Time: ");
-		sb.AppendI32(dbg.dispFrameTime);
+		sb.AppendU32(dbg.dispFrameTime);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Disp Frame Num: ");
 		sb.AppendI32(dbg.dispFrameNum);
@@ -1778,7 +1781,7 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		sb.AppendI32(dbg.avOfst);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Seek Count: ");
-		sb.AppendOSInt(dbg.seekCnt);
+		sb.AppendUOSInt(dbg.seekCnt);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Frame Displayed: ");
 		sb.AppendI32(dbg.frameDispCnt);

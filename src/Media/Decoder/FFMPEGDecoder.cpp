@@ -555,7 +555,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		UInt8 *buff = sourceVideo->GetProp(*(Int32*)"AVCH", &sz);
 		if (buff)
 		{
-			data->ctx->extradata_size = sz;
+			data->ctx->extradata_size = (int)sz;
 			data->ctx->extradata = buff;
 		}
 	}	
@@ -566,7 +566,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		UInt8 *buff = sourceVideo->GetProp(*(Int32*)"HEVC", &sz);
 		if (buff)
 		{
-			data->ctx->extradata_size = sz;
+			data->ctx->extradata_size = (int)sz;
 			data->ctx->extradata = buff;
 		}
 	}
@@ -578,7 +578,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		return;
 	}
 
-	OSInt frameSize;
+	UOSInt frameSize;
 	if (sourceVideo->IsRealTimeSrc())
 	{
 		frameSize = frameInfo.dispWidth * frameInfo.dispHeight * 4;
@@ -593,7 +593,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	    AVPacket avpkt;
 		Int32 ret;
 		UInt8 *firstFrame;
-		OSInt frameNum;
+		UOSInt frameNum;
 		ret = FFMPEGDecoder_avcodec_open2(data->ctx, data->codec, 0);
 		if (ret < 0)
 		{
@@ -821,7 +821,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		break;
 	case AV_PIX_FMT_YUVJ422P:
 		fullRange = true;
-		info->fourcc = *(Int32*)"YUY2";
+		info->fourcc = *(UInt32*)"YUY2";
 		info->storeBPP = 16;
 		info->pf = Media::FrameInfo::GetDefPixelFormat(info->fourcc, info->storeBPP);
 		info->byteSize = (info->storeWidth * info->storeHeight * 3) >> 1;
@@ -1053,7 +1053,12 @@ void Media::Decoder::FFMPEGDecoder::Stop()
 	data->frameIndexE = 0;
 }
 
-OSInt Media::Decoder::FFMPEGDecoder::GetFrameCount()
+Bool Media::Decoder::FFMPEGDecoder::HasFrameCount()
+{
+	return this->sourceVideo->HasFrameCount();
+}
+
+UOSInt Media::Decoder::FFMPEGDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }
@@ -1259,12 +1264,12 @@ public:
 		}
 		this->frame = FFMPEGDecoder_av_frame_alloc();
 		this->ctx->bit_rate = fmt.bitRate;
-		this->ctx->sample_rate = fmt.frequency;
+		this->ctx->sample_rate = (int)fmt.frequency;
 		this->ctx->channels = fmt.nChannels;
 		this->ctx->flags2 = AV_CODEC_FLAG2_CHUNKS;
 		if (fmt.formatId != 1 && fmt.extraSize > 0)
 		{
-			this->ctx->extradata_size = fmt.extraSize;
+			this->ctx->extradata_size = (int)fmt.extraSize;
 			this->ctx->extradata = fmt.extra;
 		}
 		ret = FFMPEGDecoder_avcodec_open2(this->ctx, this->codec, 0);

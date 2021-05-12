@@ -191,7 +191,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 
 Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload)
 {
-	UOSInt i;
+	OSInt i;
 	Bool needReload = forceReload;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
 	fdh = 0;
@@ -207,7 +207,6 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const 
 	}
 	if (!needReload)
 	{
-		OSInt i;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(localFile, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NORMAL));
 		if (fs->IsError())
@@ -297,7 +296,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 	}
 	if (fdh->currentOffset != dataOffset + offset)
 	{
-		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, dataOffset + offset)) != dataOffset + offset)
+		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(dataOffset + offset))) != dataOffset + offset)
 		{
 			mutUsage.EndUse();
 			return 0;

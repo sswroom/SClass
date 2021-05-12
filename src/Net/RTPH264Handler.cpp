@@ -391,9 +391,14 @@ UOSInt Net::RTPH264Handler::GetDataSeekCount()
 	return 0;
 }
 
-OSInt Net::RTPH264Handler::GetFrameCount()
+Bool Net::RTPH264Handler::HasFrameCount()
 {
-	return -1;
+	return false;
+}
+
+UOSInt Net::RTPH264Handler::GetFrameCount()
+{
+	return 0;
 }
 
 UInt32 Net::RTPH264Handler::GetFrameTime(UOSInt frameIndex)
@@ -415,7 +420,7 @@ Bool Net::RTPH264Handler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 	return false;
 }
 
-OSInt Net::RTPH264Handler::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Net::RTPH264Handler::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

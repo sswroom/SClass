@@ -20,7 +20,8 @@ namespace Media
 
 			virtual const UTF8Char *GetFilterName();
 
-			virtual OSInt GetFrameCount();
+			virtual Bool HasFrameCount();
+			virtual UOSInt GetFrameCount();
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);

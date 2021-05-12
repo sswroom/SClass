@@ -71,7 +71,8 @@ namespace Media
 
 		virtual UOSInt GetDataSeekCount() = 0;
 
-		virtual OSInt GetFrameCount() = 0; //-1 = unknown;
+		virtual Bool HasFrameCount() = 0;
+		virtual UOSInt GetFrameCount() = 0;
 		virtual UInt32 GetFrameTime(UOSInt frameIndex) = 0;
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData) = 0;
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
@@ -79,7 +80,7 @@ namespace Media
 		virtual Bool ReadFrameBegin();
 		virtual Bool ReadFrameEnd();
 
-		virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype) = 0; //ret 0 = no more frames
+		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype) = 0; //ret 0 = no more frames
 		void SetProp(Int32 propName, const UInt8 *propBuff, UInt32 propBuffSize);
 		virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
 

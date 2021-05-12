@@ -357,9 +357,14 @@ const UTF8Char *Media::Decoder::MP2GDecoder::GetFilterName()
 	return (const UTF8Char*)"MP2GDecoder";
 }
 
-OSInt Media::Decoder::MP2GDecoder::GetFrameCount()
+Bool Media::Decoder::MP2GDecoder::HasFrameCount()
 {
-	return -1;
+	return false;
+}
+
+UOSInt Media::Decoder::MP2GDecoder::GetFrameCount()
+{
+	return 0;
 }
 
 UInt32 Media::Decoder::MP2GDecoder::GetFrameTime(UOSInt frameIndex)
@@ -389,7 +394,7 @@ Bool Media::Decoder::MP2GDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	Bool succ = this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (succ)
 	{
-		info->fourcc = *(Int32*)"MPG2";
+		info->fourcc = *(UInt32*)"MPG2";
 		if (info->color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 		{
 			Media::CS::TransferType ttype;

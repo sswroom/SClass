@@ -82,9 +82,14 @@ UOSInt Net::RTPVSource::GetDataSeekCount()
 	return 0;
 }
 
-OSInt Net::RTPVSource::GetFrameCount()
+Bool Net::RTPVSource::HasFrameCount()
 {
-	return -1;
+	return false;
+}
+
+UOSInt Net::RTPVSource::GetFrameCount()
+{
+	return 0;
 }
 
 UInt32 Net::RTPVSource::GetFrameTime(UOSInt frameIndex)
@@ -96,7 +101,7 @@ void Net::RTPVSource::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 {
 }
 
-OSInt Net::RTPVSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Net::RTPVSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	return this->hdlr->ReadNextFrame(frameBuff, frameTime, ftype);
 }

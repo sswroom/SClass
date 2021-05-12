@@ -104,7 +104,7 @@ Media::Decoder::VP09Decoder::VP09Decoder(IVideoSource *sourceVideo, Bool toRelea
 
 Media::Decoder::VP09Decoder::~VP09Decoder()
 {
-	OSInt i = this->frameList->GetCount();
+	UOSInt i = this->frameList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(this->frameList->GetItem(i));
@@ -117,11 +117,20 @@ const UTF8Char *Media::Decoder::VP09Decoder::GetFilterName()
 	return (const UTF8Char*)"VP09Decoder";
 }
 
-OSInt Media::Decoder::VP09Decoder::GetFrameCount()
+Bool Media::Decoder::VP09Decoder::HasFrameCount()
 {
 	if (this->sourceVideo)
 	{
-		OSInt srcFrameCount = this->sourceVideo->GetFrameCount();
+		return this->sourceVideo->HasFrameCount();
+	}
+	return false;
+}
+
+UOSInt Media::Decoder::VP09Decoder::GetFrameCount()
+{
+	if (this->sourceVideo && this->sourceVideo->HasFrameCount())
+	{
+		UOSInt srcFrameCount = this->sourceVideo->GetFrameCount();
 		VP9FrameInfo *frInfo = this->frameList->GetItem(this->frameList->GetCount() - 1);
 		if (frInfo && frInfo->srcFrameIndex == srcFrameCount - 1)
 		{
@@ -129,7 +138,7 @@ OSInt Media::Decoder::VP09Decoder::GetFrameCount()
 		}
 		return srcFrameCount;
 	}
-	return -1;
+	return 0;
 }
 
 UInt32 Media::Decoder::VP09Decoder::GetFrameTime(UOSInt frameIndex)

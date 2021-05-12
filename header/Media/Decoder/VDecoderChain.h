@@ -22,7 +22,8 @@ namespace Media
 			void AddDecoder(Media::IVideoSource *decoder);
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
 
-			virtual OSInt GetFrameCount(); //-1 = unknown;
+			virtual Bool HasFrameCount();
+			virtual UOSInt GetFrameCount();
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 

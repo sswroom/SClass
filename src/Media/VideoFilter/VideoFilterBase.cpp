@@ -184,7 +184,16 @@ UOSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
 	return 0;
 }
 
-OSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
+Bool Media::VideoFilter::VideoFilterBase::HasFrameCount()
+{
+	if (this->srcVideo)
+	{
+		return this->srcVideo->HasFrameCount();
+	}
+	return false;
+}
+
+UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
 {
 	if (this->srcVideo)
 	{
@@ -210,7 +219,7 @@ void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, v
 	}
 }
 
-OSInt Media::VideoFilter::VideoFilterBase::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::VideoFilter::VideoFilterBase::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

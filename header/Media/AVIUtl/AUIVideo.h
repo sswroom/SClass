@@ -50,13 +50,14 @@ namespace Media
 			virtual Bool IsRealTimeSrc();
 			virtual Bool TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime);
 
-			virtual OSInt GetDataSeekCount();
+			virtual UOSInt GetDataSeekCount();
 
-			virtual OSInt GetFrameCount(); //-1 = unknown;
+			virtual Bool HasFrameCount();
+			virtual UOSInt GetFrameCount();
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-			virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype);
+			virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype);
 
 		};
 	}

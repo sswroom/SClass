@@ -49,15 +49,15 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *
 	{
 		if (c >= '0' && c <= '9')
 		{
-			b |= c - 0x30;
+			b = (UInt8)(b | (c - 0x30));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			b |= c - 0x37;
+			b = (UInt8)(b | (c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			b |= c - 0x57;
+			b = (UInt8)(b | (c - 0x57));
 		}
 		else
 		{
@@ -72,7 +72,7 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *
 		}
 		else
 		{
-			b = b << 4;
+			b = (UInt8)(b << 4);
 			exist = true;
 		}
 	}

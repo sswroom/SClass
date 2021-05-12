@@ -277,13 +277,22 @@ const UTF8Char *Media::Decoder::RHVCDecoder::GetFilterName()
 	return (const UTF8Char*)"RHVCDecoder";
 }
 
-OSInt Media::Decoder::RHVCDecoder::GetFrameCount()
+Bool Media::Decoder::RHVCDecoder::HasFrameCount()
+{
+	if (this->sourceVideo)
+	{
+		return this->sourceVideo->HasFrameCount();
+	}
+	return false;
+}
+
+UOSInt Media::Decoder::RHVCDecoder::GetFrameCount()
 {
 	if (this->sourceVideo)
 	{
 		return this->sourceVideo->GetFrameCount();
 	}
-	return -1;
+	return 0;
 }
 
 UInt32 Media::Decoder::RHVCDecoder::GetFrameTime(UOSInt frameIndex)

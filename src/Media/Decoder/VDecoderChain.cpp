@@ -46,7 +46,12 @@ Bool Media::Decoder::VDecoderChain::CaptureImage(ImageCallback imgCb, void *user
 	return this->sourceVideo->CaptureImage(imgCb, userData);
 }
 
-OSInt Media::Decoder::VDecoderChain::GetFrameCount()
+Bool Media::Decoder::VDecoderChain::HasFrameCount()
+{
+	return this->sourceVideo->HasFrameCount();
+}
+
+UOSInt Media::Decoder::VDecoderChain::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }

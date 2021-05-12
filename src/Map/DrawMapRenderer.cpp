@@ -1527,7 +1527,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							}
 							else if (layer.fontType == 1)
 							{
-								OSInt fs = denv->layerFont->GetCount();
+								UOSInt fs = denv->layerFont->GetCount();
 								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
@@ -1861,8 +1861,8 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 {
 	Data::ArrayListInt64 *arri;
 	Map::DrawObjectL *dobj;
-	OSInt i;
-	OSInt k;
+	UOSInt i;
+	UOSInt k;
 	void *session;
 	Double leftLon = denv->view->GetLeftX();
 	Double topLat = denv->view->GetTopY();
@@ -2295,15 +2295,19 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 
 void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha)
 {
-	OSInt imgW;
-	OSInt imgH;
+	UOSInt imgW;
+	UOSInt imgH;
 	Double cimgX2;
 	Double cimgY2;
 	Double cimgX;
 	Double cimgY;
+	Double dimgW;
+	Double dimgH;
 
 	imgW = denv->img->GetWidth();
 	imgH = denv->img->GetHeight();
+	dimgW = Math::UOSInt2Double(imgW);
+	dimgH = Math::UOSInt2Double(imgH);
 
 	if (img != 0 && scnX1 < scnX2 && scnY1 < scnY2)
 	{
@@ -2317,7 +2321,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 		{
 			Double drawW = scnX2 - scnX1;
 			Double drawH = scnY2 - scnY1;
-			if (imgW > drawW || imgH > drawH)
+			if (dimgW > drawW || dimgH > drawH)
 			{
 				img->To32bpp();
 				this->resizer->SetTargetWidth(Math::Double2Int32(scnX2) - Math::Double2Int32(scnX1));
@@ -2352,15 +2356,15 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 					cimgY = cimgY2 * scnY1 / (scnY1 - scnY2);
 					scnY1 = 0;
 				}
-				if (scnX2 > imgW)
+				if (scnX2 > dimgW)
 				{
-					cimgX2 = cimgX + (cimgX2 - cimgX) * (imgW - scnX1) / (scnX2 - scnX1);
-					scnX2 = Math::OSInt2Double(imgW);
+					cimgX2 = cimgX + (cimgX2 - cimgX) * (dimgW - scnX1) / (scnX2 - scnX1);
+					scnX2 = dimgW;
 				}
-				if (scnY2 > imgH)
+				if (scnY2 > dimgH)
 				{
-					cimgY2 = cimgY + (cimgY2 - cimgY) * (imgH - scnY1) / (scnY2 - scnY1);
-					scnY2 = Math::OSInt2Double(imgH);
+					cimgY2 = cimgY + (cimgY2 - cimgY) * (dimgH - scnY1) / (scnY2 - scnY1);
+					scnY2 = dimgH;
 				}
 				if (cimgX == cimgX2)
 				{

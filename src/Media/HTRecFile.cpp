@@ -14,7 +14,7 @@ Media::HTRecFile::HTRecReader::HTRecReader(Media::HTRecFile *file, Bool setting)
 {
 	this->file = file;
 	this->setting = setting;
-	this->currRow = -1;
+	this->nextRow = 0;
 	this->recCount = this->file->GetRecCount();
 }
 
@@ -26,19 +26,19 @@ Bool Media::HTRecFile::HTRecReader::ReadNext()
 {
 	if (this->setting)
 	{
-		if (this->currRow >= 18)
+		if (this->nextRow > 18)
 			return false;
-		this->currRow++;
-		if (this->currRow >= 18)
+		this->nextRow++;
+		if (this->nextRow > 18)
 			return false;
 		return true;
 	}
 	else
 	{
-		if (this->currRow >= this->recCount)
+		if (this->nextRow >= this->recCount)
 			return false;
-		this->currRow++;
-		if (this->currRow >= this->recCount)
+		this->nextRow++;
+		if (this->nextRow >= this->recCount)
 			return false;
 		return true;
 	}
@@ -63,39 +63,40 @@ OSInt Media::HTRecFile::HTRecReader::GetRowChanged()
 
 Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
 {
+	UOSInt currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex == 1)
 		{
-			if (this->currRow == 1)
+			if (currRow == 1)
 			{
 				return this->file->GetAddress();
 			}
-			else if (this->currRow == 5)
+			else if (currRow == 5)
 			{
 				return (Int32)this->file->GetTotalRec();
 			}
-			else if (this->currRow == 6)
+			else if (currRow == 6)
 			{
-				return this->file->GetRecInterval();
+				return (Int32)this->file->GetRecInterval();
 			}
-			else if (this->currRow == 9)
+			else if (currRow == 9)
 			{
 				return Math::Double2Int32(this->file->GetTempAlarmL());
 			}
-			else if (this->currRow == 10)
+			else if (currRow == 10)
 			{
 				return Math::Double2Int32(this->file->GetTempAlarmH());
 			}
-			else if (this->currRow == 11)
+			else if (currRow == 11)
 			{
 				return Math::Double2Int32(this->file->GetHumiAlarmL());
 			}
-			else if (this->currRow == 12)
+			else if (currRow == 12)
 			{
 				return Math::Double2Int32(this->file->GetHumiAlarmH());
 			}
-			else if (this->currRow == 15)
+			else if (currRow == 15)
 			{
 				return (Int32)this->file->GetRecCount();
 			}
@@ -109,11 +110,11 @@ Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
 	}
 	else
 	{
-		if (this->currRow >= this->recCount)
+		if (nextRow > this->recCount)
 			return 0;
 		if (colIndex == 0)
 		{
-			return (Int32)this->currRow + 1;
+			return (Int32)nextRow;
 		}
 		else if (colIndex == 1)
 		{
@@ -170,7 +171,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 	{
 		if (colIndex == 0)
 		{
-			switch (this->currRow)
+			switch (this->nextRow - 1)
 			{
 			case 0:
 				return Text::StrConcatS(buff, (const UTF8Char*)"Download Time", buffSize);
@@ -213,7 +214,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 		else if (colIndex == 1)
 		{
 			Data::DateTime dt;
-			switch (this->currRow)
+			switch (nextRow - 1)
 			{
 			case 0:
 				this->file->GetDownloadTime(&dt);
@@ -233,7 +234,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 			case 5:
 				return Text::StrUOSInt(buff, this->file->GetTotalRec());
 			case 6:
-				return Text::StrInt32(buff, this->file->GetRecInterval());
+				return Text::StrUInt32(buff, this->file->GetRecInterval());
 			case 7:
 				*buff = 0;
 				return buff;
@@ -274,11 +275,11 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 	}
 	else
 	{
-		if (this->currRow >= this->recCount)
+		if (nextRow > this->recCount)
 			return 0;
 		if (colIndex == 0)
 		{
-			return Text::StrUOSInt(buff, this->currRow + 1);
+			return Text::StrUOSInt(buff, this->nextRow);
 		}
 		else if (colIndex == 1)
 		{
@@ -303,21 +304,22 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 
 DB::DBReader::DateErrType Media::HTRecFile::HTRecReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
 {
+	UOSInt currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex == 1)
 		{
-			if (this->currRow == 0)
+			if (currRow == 0)
 			{
 				this->file->GetDownloadTime(outVal);
 				return DB::DBReader::DET_OK;
 			}
-			else if (this->currRow == 4)
+			else if (currRow == 4)
 			{
 				this->file->GetSettingTime(outVal);
 				return DB::DBReader::DET_OK;
 			}
-			else if (this->currRow == 14)
+			else if (currRow == 14)
 			{
 				this->file->GetStartTime(outVal);
 				return DB::DBReader::DET_OK;
@@ -327,12 +329,12 @@ DB::DBReader::DateErrType Media::HTRecFile::HTRecReader::GetDate(UOSInt colIndex
 	}
 	else
 	{
-		if (this->currRow >= this->recCount)
+		if (currRow >= this->recCount)
 			return DB::DBReader::DET_ERROR;
 		if (colIndex == 1)
 		{
 			this->file->GetAdjStartTime(outVal);
-			outVal->AddMS((OSInt)this->currRow * this->file->GetAdjRecInterval());
+			outVal->AddMS((OSInt)currRow * this->file->GetAdjRecInterval());
 			outVal->ToLocalTime();
 			return DB::DBReader::DET_OK;
 		}
@@ -345,39 +347,40 @@ DB::DBReader::DateErrType Media::HTRecFile::HTRecReader::GetDate(UOSInt colIndex
 
 Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 {
+	UOSInt currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex != 1)
 			return 0;
-		if (this->currRow == 1)
+		if (currRow == 1)
 		{
 			return this->file->GetAddress();
 		}
-		else if (this->currRow == 5)
+		else if (currRow == 5)
 		{
 			return Math::UOSInt2Double(this->file->GetTotalRec());
 		}
-		else if (this->currRow == 6)
+		else if (currRow == 6)
 		{
 			return this->file->GetRecInterval();
 		}
-		else if (this->currRow == 9)
+		else if (currRow == 9)
 		{
 			return this->file->GetTempAlarmL();
 		}
-		else if (this->currRow == 10)
+		else if (currRow == 10)
 		{
 			return this->file->GetTempAlarmH();
 		}
-		else if (this->currRow == 11)
+		else if (currRow == 11)
 		{
 			return this->file->GetHumiAlarmL();
 		}
-		else if (this->currRow == 12)
+		else if (currRow == 12)
 		{
 			return this->file->GetHumiAlarmH();
 		}
-		else if (this->currRow == 15)
+		else if (currRow == 15)
 		{
 			return Math::UOSInt2Double(this->file->GetRecCount());
 		}
@@ -386,11 +389,11 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 	}
 	else
 	{
-		if (this->currRow >= this->recCount)
+		if (currRow >= this->recCount)
 			return 0;
 		if (colIndex == 0)
 		{
-			return Math::UOSInt2Double(this->currRow + 1);
+			return Math::UOSInt2Double(currRow + 1);
 		}
 		else if (colIndex == 1)
 		{
@@ -399,13 +402,13 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 		else if (colIndex == 2)
 		{
 			const UInt8 *recBuff = this->file->GetRecBuff();
-			OSInt i = this->currRow * 3;
+			UOSInt i = currRow * 3;
 			return (recBuff[i] | ((recBuff[i + 2] & 0xf) << 8)) * 0.1 - 40.0;
 		}
 		else if (colIndex == 3)
 		{
 			const UInt8 *recBuff = this->file->GetRecBuff();
-			OSInt i = this->currRow * 3;
+			UOSInt i = currRow * 3;
 			return (recBuff[i + 1] | ((recBuff[i + 2] & 0xf0) << 4)) * 0.1;
 		}
 		else
@@ -638,13 +641,13 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 	
 	Data::DateTime tmp;
 	tmp.SetValue(this->time3);
-	tmp.AddSecond(this->recCount * this->recInterval);
+	tmp.AddSecond((OSInt)(this->recCount * this->recInterval));
 	if (tmp.CompareTo(this->time1) > 0)
 	{
 		Int64 tick1 = this->time2->ToTicks();
 		Int64 tick2 = tmp.ToTicks() - tick1;
 		tick1 = this->time1->ToTicks() - tick1;
-		this->adjRecInterval = (Int32)(recInterval * 1000 * tick1 / tick2); 
+		this->adjRecInterval = (UInt32)(recInterval * 1000 * (UInt64)tick1 / (UInt64)tick2); 
 		this->adjStTime->SetValue(this->time1);
 		this->adjStTime->AddMS(-(OSInt)this->recCount * this->adjRecInterval);
 	}
@@ -752,7 +755,7 @@ UOSInt Media::HTRecFile::GetTotalRec()
 	return this->totalRecords;
 }
 
-Int32 Media::HTRecFile::GetRecInterval()
+UInt32 Media::HTRecFile::GetRecInterval()
 {
 	return this->recInterval;
 }
@@ -818,7 +821,7 @@ Bool Media::HTRecFile::GetAdjStartTime(Data::DateTime *t)
 	}
 }
 
-Int32 Media::HTRecFile::GetAdjRecInterval()
+UInt32 Media::HTRecFile::GetAdjRecInterval()
 {
 	return this->adjRecInterval;
 }

@@ -440,13 +440,22 @@ const UTF8Char *Media::Decoder::RAVCDecoder::GetFilterName()
 	return (const UTF8Char*)"RAVCDecoder";
 }
 
-OSInt Media::Decoder::RAVCDecoder::GetFrameCount()
+Bool Media::Decoder::RAVCDecoder::HasFrameCount()
+{
+	if (this->sourceVideo)
+	{
+		return this->sourceVideo->HasFrameCount();
+	}
+	return false;
+}
+
+UOSInt Media::Decoder::RAVCDecoder::GetFrameCount()
 {
 	if (this->sourceVideo)
 	{
 		return this->sourceVideo->GetFrameCount();
 	}
-	return -1;
+	return 0;
 }
 
 UInt32 Media::Decoder::RAVCDecoder::GetFrameTime(UOSInt frameIndex)

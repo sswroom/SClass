@@ -586,9 +586,14 @@ UOSInt Media::M2VStreamSource::GetDataSeekCount()
 	return this->pbc->GetDataSeekCount();
 }
 
-OSInt Media::M2VStreamSource::GetFrameCount()
+Bool Media::M2VStreamSource::HasFrameCount()
 {
-	return -1;
+	return false;
+}
+
+UOSInt Media::M2VStreamSource::GetFrameCount()
+{
+	return 0;
 }
 
 UInt32 Media::M2VStreamSource::GetFrameTime(UOSInt frameIndex)
@@ -620,7 +625,7 @@ UOSInt Media::M2VStreamSource::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return 0;
 }
 
-OSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

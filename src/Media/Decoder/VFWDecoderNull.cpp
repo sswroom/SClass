@@ -91,8 +91,12 @@ void Media::Decoder::VFWDecoder::Stop()
 	this->frameCbData = 0;
 }
 
+Bool Media::Decoder::VFWDecoder::HasFrameCount()
+{
+	return this->sourceVideo->HasFrameCount();
+}
 
-OSInt Media::Decoder::VFWDecoder::GetFrameCount()
+UOSInt Media::Decoder::VFWDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }

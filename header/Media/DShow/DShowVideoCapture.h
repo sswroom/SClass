@@ -43,19 +43,20 @@ namespace Media
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 			virtual const UTF8Char *GetFilterName();
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize);
+			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 			virtual Bool Start();
 			virtual void Stop();
 			virtual Bool IsRunning();
 
-			virtual OSInt GetDataSeekCount();
+			virtual UOSInt GetDataSeekCount();
 
-			virtual OSInt GetFrameCount();
+			virtual Bool HasFrameCount();
+			virtual UOSInt GetFrameCount();
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-			virtual void SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, Int32 frameRateNumer, Int32 fraemRateDenom);
+			virtual void SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom);
 			virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
 			virtual void GetInfo(Text::StringBuilderUTF *sb);
 		};

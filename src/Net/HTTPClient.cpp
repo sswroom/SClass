@@ -215,11 +215,12 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 	UTF8Char *ptrs2[3];
 	UTF8Char *ptrs3[3];
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
-	if ((i = Text::StrIndexOf(dateStr, (const UTF8Char*)", ")) != -1)
+	OSInt si;
+	UOSInt i;
+	UOSInt j;
+	if ((si = Text::StrIndexOf(dateStr, (const UTF8Char*)", ")) != -1)
 	{
-		Text::StrConcat(sbuff, &dateStr[i + 2]);
+		Text::StrConcat(sbuff, &dateStr[si + 2]);
 		tmps = sbuff;
 		if (Text::StrIndexOf(tmps, '-') == -1)
 		{
@@ -229,7 +230,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 				j = Text::StrSplit(ptrs2, 3, ptrs[3], ':');
 				if (j == 3)
 				{
-					dt->SetValue(Text::StrToInt32(ptrs[2]), Data::DateTime::ParseMonthStr(ptrs[1]), Text::StrToInt32(ptrs[0]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
+					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2]), Data::DateTime::ParseMonthStr(ptrs[1]), Text::StrToInt32(ptrs[0]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
 				}
 			}
 		}
@@ -240,7 +241,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 			{
 				Text::StrSplit(ptrs2, 3, ptrs[1], ':');
 				Text::StrSplit(ptrs3, 3, ptrs[0], '-');
-				dt->SetValue(Text::StrToInt32(ptrs3[2]) + ((dt->GetYear() / 100) * 100), Data::DateTime::ParseMonthStr(ptrs3[1]), Text::StrToInt32(ptrs3[0]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
+				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2]) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTime::ParseMonthStr(ptrs3[1]), Text::StrToInt32(ptrs3[0]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
 			}
 		}
 	}
@@ -253,7 +254,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 			j = Text::StrSplit(ptrs2, 3, ptrs[i - 2], ':');
 			if (j == 3)
 			{
-				dt->SetValue(Text::StrToInt32(ptrs[i - 1]), Data::DateTime::ParseMonthStr(ptrs[1]), Text::StrToInt32(ptrs[i - 3]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
+				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1]), Data::DateTime::ParseMonthStr(ptrs[1]), Text::StrToInt32(ptrs[i - 3]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
 			}
 		}
 	}

@@ -1,8 +1,8 @@
 #include "Stdafx.h"
-
 #include "MyMemory.h"
 #include "Crypto/Encrypt/Base64.h"
 #include "Data/ArrayList.h"
+#include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Net/SocketFactory.h"
@@ -84,7 +84,7 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 			*timeDNS = 0;
 		}
 		this->svrAddr.addrType = Net::SocketUtil::AT_IPV4;
-		*(Int32*)this->svrAddr.addr = this->proxyIP;
+		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
 		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort));
 		t1 = clk->GetTimeDiff();
@@ -135,7 +135,7 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 			}
 			cptr = Text::StrConcat(cptr, url);
 			cptr = Text::StrConcat(cptr, (const UTF8Char*)" HTTP/1.1\r\n");
-			cli->Write((UInt8*)dataBuff, cptr - dataBuff);
+			cli->Write((UInt8*)dataBuff, (UOSInt)(cptr - dataBuff));
 			cli->Write((UInt8*)host, Text::StrCharCnt(host));
 			return true;
 		}
@@ -169,7 +169,7 @@ Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdTy
 
 		sptr = Text::StrConcat(buff, (const UTF8Char*)"BASIC ");
 		Crypto::Encrypt::Base64 b64;
-		sptr = buff + b64.Encrypt(userPwd, sptr2 - userPwd, sptr, 0);
+		sptr = buff + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr, 0);
 		*sptr = 0;
 		this->AddHeader((const UTF8Char*)"Proxy-Authorization", (const UTF8Char*)buff);
 		return true;

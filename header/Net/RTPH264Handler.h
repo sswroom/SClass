@@ -55,11 +55,12 @@ namespace Net
 
 		virtual UOSInt GetDataSeekCount();
 
-		virtual OSInt GetFrameCount(); //-1 = unknown;
+		virtual Bool HasFrameCount();
+		virtual UOSInt GetFrameCount();
 		virtual UInt32 GetFrameTime(UOSInt frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-		virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
+		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 
 	};
 }

@@ -441,9 +441,14 @@ UOSInt Media::FileVideoSource::GetDataSeekCount()
 	return this->data->GetSeekCount();
 }
 
-OSInt Media::FileVideoSource::GetFrameCount()
+Bool Media::FileVideoSource::HasFrameCount()
 {
-	return (OSInt)this->frameParts->GetCount();
+	return true;
+}
+
+UOSInt Media::FileVideoSource::GetFrameCount()
+{
+	return this->frameParts->GetCount();
 }
 
 UInt32 Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
@@ -558,7 +563,7 @@ UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UInt8 *frameBuff)
 	return this->data->GetRealData(this->frameOfsts->GetItem(frameIndex), frameSize, frameBuff);
 }
 
-OSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

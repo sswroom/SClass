@@ -140,13 +140,22 @@ const UTF8Char *Media::Decoder::M2VDecoder::GetFilterName()
 	return (const UTF8Char*)"M2VDecoder";
 }
 
-OSInt Media::Decoder::M2VDecoder::GetFrameCount()
+Bool Media::Decoder::M2VDecoder::HasFrameCount()
+{
+	if (this->sourceVideo)
+	{
+		return this->sourceVideo->HasFrameCount();
+	}
+	return false;
+}
+
+UOSInt Media::Decoder::M2VDecoder::GetFrameCount()
 {
 	if (this->sourceVideo)
 	{
 		return this->sourceVideo->GetFrameCount();
 	}
-	return -1;
+	return 0;
 }
 
 UInt32 Media::Decoder::M2VDecoder::GetFrameTime(UOSInt frameIndex)
