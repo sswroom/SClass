@@ -917,6 +917,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->reqBody = 0;
 	this->reqBodyLen = 0;
 	this->reqBodyType = 0;
+	this->reqUserName = 0;
+	this->reqPassword = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.threadEvt"));
 	NEW_CLASS(this->respHeaders, Data::ArrayList<const UTF8Char *>());
 	NEW_CLASS(this->respMut, Sync::Mutex());
