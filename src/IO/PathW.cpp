@@ -75,7 +75,7 @@ Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
 	WChar dir[MAX_PATH];
 	if (IsDirectoryExist(dirInput))
 		return true;
-	Text::StrUTF8_WChar(dir, dirInput, -1, 0);
+	Text::StrUTF8_WChar(dir, dirInput, 0);
 	OSInt i = Text::StrLastIndexOf(dir, '\\');
 	if (i == -1)
 		return ::CreateDirectoryW(dir, 0) != 0;
@@ -1123,7 +1123,7 @@ WChar *IO::Path::GetSystemProgramPathW(WChar *buff)
 #else
 	UTF8Char sbuff[512];
 	Manage::EnvironmentVar::GetEnvValue(sbuff, (const UTF8Char*)"PROGRAMFILES");
-	return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+	return Text::StrUTF8_WChar(buff, sbuff, 0);
 #endif
 }
 
@@ -1170,7 +1170,7 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 #else
 	UTF8Char sbuff[512];
 	Manage::EnvironmentVar::GetEnvValue(sbuff, (const UTF8Char*)"windir");
-	return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+	return Text::StrUTF8_WChar(buff, sbuff, 0);
 #endif
 }
 

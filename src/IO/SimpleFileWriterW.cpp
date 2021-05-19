@@ -23,7 +23,7 @@ UOSInt IO::SimpleFileWriter::WriteBuff(const UInt8 *buff, UOSInt size)
 IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream::FileMode mode, IO::FileStream::FileShare share)
 {
 	WChar wfileName[512];
-	Text::StrUTF8_WChar(wfileName, fileName, -1, 0);
+	Text::StrUTF8_WChar(wfileName, fileName, 0);
 	handle = INVALID_HANDLE_VALUE;
 	SECURITY_ATTRIBUTES secAttr;
 	Int32 shflag;

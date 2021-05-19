@@ -280,7 +280,7 @@ namespace Text
 	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF16C(buff, bytes, byteSize, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF16CntC(bytes, byteSize); }
 	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt *byteConv) { return StrUTF8_UTF16(buff, bytes, byteConv); }
-	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF16Cnt(bytes, byteSize); }
+	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF16Cnt(bytes); }
 	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr, OSInt strLen) { return StrUTF16_UTF8(bytes, wstr, strLen); }
 	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF16_UTF8Cnt(stri, strLen); }
 #endif

@@ -1143,9 +1143,9 @@ Bool Manage::Process::OpenPath(const UTF8Char *path)
 #ifdef _WIN32_WCE
 	return false;
 #else
-	OSInt strLen = Text::StrUTF8_WCharCnt(path, -1);
+	OSInt strLen = Text::StrUTF8_WCharCnt(path);
 	WChar *s = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(s, path, -1, 0);
+	Text::StrUTF8_WChar(s, path, 0);
 	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", s, 0, 0, SW_SHOW);
 	MemFree(s);
 	return succ;
