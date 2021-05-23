@@ -1208,7 +1208,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				UInt64 fileSize;
 				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 				fileSize = fs->GetLength();
-				if (fileSize > 0 && fileSize <= 2097152 && (fileSize & 0xffff) == 0)
+				if (fileSize > 0 && fileSize <= 8388608 && (fileSize & 0xffff) == 0)
 				{
 					UOSInt i;
 					Map::GPSTrack *trk;
