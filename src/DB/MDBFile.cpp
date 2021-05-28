@@ -168,15 +168,15 @@ Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)
 	BOOL fCreated;
 	UTF16Char sbuff[512];
 	UTF16Char *sptr;
-	sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DB=", -1, 0);
-	sptr = Text::StrUTF8_UTF16(sptr, fileName, -1, 0);
+	sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DB=", 0);
+	sptr = Text::StrUTF8_UTF16(sptr, fileName, 0);
 	sptr = Text::StrUTF8_UTF16(sptr, (const UTF8Char*)" General");
 	sptr[1] = 0;
 	fCreated = SQLConfigDataSourceW(0, ODBC_ADD_DSN, L"Microsoft Access Driver (*.mdb)", sbuff);
 	if (fCreated == 0)
 	{
-		sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DBV4=", -1, 0);
-		sptr = Text::StrUTF8_UTF16(sptr, fileName, -1, 0);
+		sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DBV4=", 0);
+		sptr = Text::StrUTF8_UTF16(sptr, fileName, 0);
 		sptr = Text::StrUTF8_UTF16(sptr, (const UTF8Char*)" General");
 		sptr[1] = 0;
 		fCreated = SQLConfigDataSourceW(0, ODBC_ADD_DSN, L"Microsoft Access Driver (*.mdb, *.accdb)", sbuff);

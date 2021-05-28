@@ -2314,9 +2314,24 @@ void Media::GDIImage::DelFont(DrawFont *f)
 
 Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
 {
-	OSInt strLen = Text::StrUTF8_WCharCnt(txt, txtLen);
+	UOSInt strLen;
+	if (txtLen < 0)
+	{
+		strLen = Text::StrUTF8_WCharCnt(txt);
+	}
+	else
+	{
+		strLen = Text::StrUTF8_WCharCntC(txt, (UOSInt)txtLen);
+	}
 	WChar *wptr = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(wptr, txt, txtLen, 0);
+	if (txtLen < 0)
+	{
+		Text::StrUTF8_WChar(wptr, txt, 0);
+	}
+	else
+	{
+		Text::StrUTF8_WCharC(wptr, txt, (UOSInt)txtLen, 0);
+	}
 	Bool ret = GetTextSize(fnt, wptr, strLen, sz);
 	MemFree(wptr);
 	return ret;

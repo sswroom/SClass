@@ -99,7 +99,7 @@ void IO::Console::PrintStrO(const UTF8Char *str1)
 	fflush(stdout);
 }
 
-Int32 IO::Console::WriteStdOut(UInt8 *buff, Int32 size)
+UOSInt IO::Console::WriteStdOut(UInt8 *buff, UOSInt size)
 {
 #if defined(WIN32) && !defined(_WIN32_WCE) && !defined(__CYGWIN__)
 	return _write(1, buff, size);

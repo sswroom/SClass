@@ -279,7 +279,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		Double minY;
 		Double maxX;
 		Double maxY;
-		Int32 srid;
+		UInt32 srid;
 		if (img->exif && img->exif->GetGeoBounds(img->info->dispWidth, img->info->dispHeight, &srid, &minX, &minY, &maxX, &maxY))
 		{
 			Map::VectorLayer *lyr;

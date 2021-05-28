@@ -16,9 +16,9 @@ IO::DebugWriter::~DebugWriter()
 Bool IO::DebugWriter::Write(const UTF8Char *str, UOSInt nChar)
 {
 
-	UOSInt strLen = Text::StrUTF8_WCharCnt(str, nChar);
+	UOSInt strLen = Text::StrUTF8_WCharCntC(str, nChar);
 	WChar *wstr = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(wstr, str, nChar, 0);
+	Text::StrUTF8_WCharC(wstr, str, nChar, 0);
 	wstr[strLen] = 0;
 	OutputDebugStringW(wstr);
 	MemFree(wstr);
@@ -35,9 +35,9 @@ Bool IO::DebugWriter::Write(const UTF8Char *str)
 
 Bool IO::DebugWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(str, nChar);
+	UOSInt strLen = Text::StrUTF8_WCharCntC(str, nChar);
 	WChar *wstr = MemAlloc(WChar, strLen + 3);
-	Text::StrUTF8_WChar(wstr, str, nChar, 0);
+	Text::StrUTF8_WCharC(wstr, str, nChar, 0);
 	wstr[strLen] = 13;
 	wstr[strLen] = 10;
 	wstr[strLen] = 0;
@@ -48,9 +48,9 @@ Bool IO::DebugWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 
 Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(str, -1);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(str);
 	WChar *wstr = MemAlloc(WChar, strLen + 3);
-	Text::StrUTF8_WChar(wstr, str, -1, 0);
+	Text::StrUTF8_WChar(wstr, str, 0);
 	wstr[strLen] = 13;
 	wstr[strLen] = 10;
 	wstr[strLen] = 0;

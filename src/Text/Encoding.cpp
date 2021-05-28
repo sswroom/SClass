@@ -784,9 +784,9 @@ UOSInt Text::Encoding::UTF8CountBytes(const UTF8Char *str, OSInt strLen)
 		}
 		else
 		{
-			OSInt ret = Text::StrUTF8_WCharCnt(str, strLen);
+			OSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
 			WChar *wptr = MemAlloc(WChar, ret + 1);
-			Text::StrUTF8_WChar(wptr, str, strLen, 0);
+			Text::StrUTF8_WCharC(wptr, str, strLen, 0);
 			ret = WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
 			MemFree(wptr);
 			return ret;
@@ -1055,9 +1055,9 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str, OSInt strL
 		}
 		else
 		{
-			UOSInt ret = Text::StrUTF8_WCharCnt(str, strLen);
+			UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
 			WChar *wptr = MemAlloc(WChar, ret + 1);
-			Text::StrUTF8_WChar(wptr, str, strLen, 0);
+			Text::StrUTF8_WCharC(wptr, str, strLen, 0);
 			ret = WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes, (Int32)(ret * 3), 0, 0) + 1;
 			MemFree(wptr);
 			return ret;
