@@ -1151,6 +1151,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 			sb->Append((const UTF8Char*)")");
 			val++;
 		}
+		sb->Append((const UTF8Char*)"}");
 		break;
 	case 0x74657874: //textType
 		{
