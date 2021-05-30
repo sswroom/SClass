@@ -50,7 +50,7 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64
 		ufile = this->userFileList->GetItem(i);
 		if (x1 <= ufile->lon && x2 >= ufile->lon && y1 <= ufile->lat && y2 >= ufile->lat)
 		{
-			outArr->Add(i);
+			outArr->Add((Int64)i);
 			cnt++;
 		}
 		i++;
@@ -60,7 +60,7 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64
 
 Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax()
 {
-	return userFileList->GetCount() - 1;
+	return (Int64)userFileList->GetCount() - 1;
 }
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(void *nameArr)
@@ -114,7 +114,7 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *session, Int64 id)
 {
-	UserFileInfo *ufile = this->userFileList->GetItem((OSInt)id);
+	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	Map::DrawObjectL *dobj;
@@ -139,7 +139,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *sessio
 
 Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetVectorById(void *session, Int64 id)
 {
-	UserFileInfo *ufile = this->userFileList->GetItem((OSInt)id);
+	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	Math::Point *pt;
@@ -152,7 +152,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetVectorById(void *session, 
 		dt.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
 	this->gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
-	NEW_CLASS(pt, Math::Point(lon, lat, this->csys->GetSRID()));
+	NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), lon, lat));
 	return pt;
 }
 

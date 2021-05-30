@@ -14,6 +14,7 @@
 #include "Text/MyStringW.h"
 
 #define CLIVERSION "1.0.0"
+#define BUFFSIZE 65536
 
 //#define VERBOSE
 #if defined(VERBOSE)
@@ -476,7 +477,7 @@ public:
 		this->cols->Add(col);
 	}
 
-	void AddRowData(const UInt8 *rowData, OSInt dataSize)
+	void AddRowData(const UInt8 *rowData, UOSInt dataSize)
 	{
 		while (this->nextRowReady)
 		{
@@ -525,7 +526,7 @@ public:
 UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 {
 	Net::MySQLTCPClient *me = (Net::MySQLTCPClient*)userObj;
-	UInt8 buff[2048];
+	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt readSize;
 	UTF8Char sbuff[512];
@@ -543,9 +544,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 #if defined(VERBOSE)
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 #endif
+	buff = MemAlloc(UInt8, BUFFSIZE);
 	while (true)
 	{
-		readSize = me->cli->Read(&buff[buffSize], 2048 - buffSize);
+		readSize = me->cli->Read(&buff[buffSize], BUFFSIZE - buffSize);
 		if (readSize <= 0)
 			break;
 #if defined(VERBOSE)
@@ -952,6 +954,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	printf("MySQLTCP End connection\r\n");
 	DEL_CLASS(sb);
 #endif
+	MemFree(buff);
 	me->recvRunning = false;
 	return 0;
 }

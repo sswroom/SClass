@@ -34,9 +34,9 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, Int32 codePage) : Text
 	this->contType = 0;
 	this->codePage = codePage;
 	strLen = Text::StrCharCnt(txt);
-	this->buffSize = enc.WCountBytes(txt, strLen);
+	this->buffSize = enc.WCountBytes(txt, (OSInt)strLen);
 	this->textBuff = MemAlloc(UInt8, this->buffSize);
-	enc.WToBytes(this->textBuff, txt, strLen);
+	enc.WToBytes(this->textBuff, txt, (OSInt)strLen);
 	this->BuildContentType();
 }
 
