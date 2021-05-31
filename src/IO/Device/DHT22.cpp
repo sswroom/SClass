@@ -74,7 +74,7 @@ Bool IO::Device::DHT22::ReadData(Double *temp, Double *rh)
 			{
 				dhtBuff[j] |= mask;
 			}
-			mask >>= 1;
+			mask = (UInt8)(mask >> 1);
 			if (mask == 0)
 			{
 				mask = 128;

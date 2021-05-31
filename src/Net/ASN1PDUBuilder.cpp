@@ -135,7 +135,7 @@ void Net::ASN1PDUBuilder::AppendUInt32(UInt32 v)
 		this->AllocateSize(3);
 		this->buff[this->currOffset] = 2;
 		this->buff[this->currOffset + 1] = 1;
-		this->buff[this->currOffset + 2] = (Int8)v;
+		this->buff[this->currOffset + 2] = (UInt8)v;
 		this->currOffset += 3;
 	}
 	else if (v < 65536)
@@ -236,7 +236,7 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 		this->AllocateSize(3);
 		this->buff[this->currOffset] = 10;
 		this->buff[this->currOffset + 1] = 1;
-		this->buff[this->currOffset + 2] = (Int8)v;
+		this->buff[this->currOffset + 2] = (UInt8)v;
 		this->currOffset += 3;
 	}
 	else if (v < 65536)

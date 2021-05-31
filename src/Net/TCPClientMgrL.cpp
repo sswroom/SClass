@@ -381,7 +381,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	if (clsData)
 	{
 		clsData->hasData = true;
-		write(clsData->pipewrfd, "", 1);
+		i = (UOSInt)write(clsData->pipewrfd, "", 1);
 	}
 	while (clientThreadRunning)
 	{

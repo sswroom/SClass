@@ -10,7 +10,7 @@ Text::SMSUserData::SMSUserData(const UTF16Char *msg, Text::SMSUtil::DCS dcs, con
 	this->dcs = dcs;
 	if (udh)
 	{
-		UInt32 len = udh[0] + 1;
+		UInt32 len = (UInt32)udh[0] + 1;
 		this->udh = MemAlloc(UInt8, len);
 		MemCopyNO(this->udh, udh, len);
 	}
@@ -38,24 +38,25 @@ Text::SMSUtil::DCS Text::SMSUserData::GetDCS()
 {
 	return this->dcs;
 }
-Int32 Text::SMSUserData::GetByteSize()
+
+UInt32 Text::SMSUserData::GetByteSize()
 {
-	Int32 udhSize = 0;
+	UInt32 udhSize = 0;
 	if (this->udh)
 	{
-		udhSize = this->udh[0] + 1;
+		udhSize = (UInt32)this->udh[0] + 1;
 	}
 	if (this->dcs == Text::SMSUtil::DCS_GSM7BIT)
 	{
 		Text::SMSUtil::DCS dcs;
-		Int32 dataSize;
+		UInt32 dataSize;
 		Text::SMSUtil::GetTextInfo(this->msg, &dcs, &dataSize);
 		return 1 + udhSize + Text::SMSUtil::GSMTextSize2DataSize(dataSize);
 		
 	}
 	else if (this->dcs == Text::SMSUtil::DCS_UCS2)
 	{
-		return (Int32)(1 + udhSize + Text::StrCharCnt(this->msg) * 2);
+		return (UInt32)(1 + udhSize + Text::StrCharCnt(this->msg) * 2);
 	}
 	else
 	{
@@ -63,7 +64,7 @@ Int32 Text::SMSUserData::GetByteSize()
 	}
 } //Including UDL
 
-Int32 Text::SMSUserData::GetBytes(UInt8 *bytes)
+UInt32 Text::SMSUserData::GetBytes(UInt8 *bytes)
 {
 	Int32 i;
 	UInt8 *currPtr;
@@ -104,55 +105,55 @@ Int32 Text::SMSUserData::GetBytes(UInt8 *bytes)
 				switch (t)
 				{
 				case 0:
-					*currPtr++ = (v >> 8);
-					currPtr[-1] |= (UInt8)(v << 7);
-					*currPtr++ = (v >> 1) & 0x3f;
+					*currPtr++ = (UInt8)(v >> 8);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 7));
+					*currPtr++ = (UInt8)((v >> 1) & 0x3f);
 					t = 2;
 					break;
 				case 1:
-					currPtr[-1] |= (v >> 1) & 0x80;
-					*currPtr++ = (v >> 9);
-					currPtr[-1] |= (v << 6);
-					*currPtr++ = (v >> 2) & 0x1f;
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 1) & 0x80));
+					*currPtr++ = (UInt8)(v >> 9);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 6));
+					*currPtr++ = (UInt8)((v >> 2) & 0x1f);
 					t = 3;
 					break;
 				case 2:
-					currPtr[-1] |= (v >> 2) & 0xc0;
-					*currPtr++ = (v >> 10);
-					currPtr[-1] |= (v << 5);
-					*currPtr++ = (v >> 3) & 0x0f;
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 2) & 0xc0));
+					*currPtr++ = (UInt8)(v >> 10);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 5));
+					*currPtr++ = (UInt8)((v >> 3) & 0x0f);
 					t = 4;
 					break;
 				case 3:
-					currPtr[-1] |= (v >> 3) & 0xe0;
-					*currPtr++ = (v >> 11);
-					currPtr[-1] |= (v << 4);
-					*currPtr++ = (v >> 4) & 0x07;
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 3) & 0xe0));
+					*currPtr++ = (UInt8)(v >> 11);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 4));
+					*currPtr++ = (UInt8)((v >> 4) & 0x07);
 					t = 5;
 					break;
 				case 4:
-					currPtr[-1] |= (v >> 4) & 0xf0;
-					*currPtr++ = (v >> 12);
-					currPtr[-1] |= (v << 3);
-					*currPtr++ = (v >> 5) & 0x03;
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 4) & 0xf0));
+					*currPtr++ = (UInt8)(v >> 12);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 3));
+					*currPtr++ = (UInt8)((v >> 5) & 0x03);
 					t = 6;
 					break;
 				case 5:
-					currPtr[-1] |= (v >> 5) & 0xf8;
-					*currPtr++ = (v >> 13);
-					currPtr[-1] |= (v << 2);
-					*currPtr++ = (v >> 6) & 0x01;
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 5) & 0xf8));
+					*currPtr++ = (UInt8)(v >> 13);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 2));
+					*currPtr++ = (UInt8)((v >> 6) & 0x01);
 					t = 7;
 					break;
 				case 6:
-					currPtr[-1] |= (v >> 6) & 0xfc;
-					*currPtr++ = (v >> 14);
-					currPtr[-1] |= (v << 1);
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 6) & 0xfc));
+					*currPtr++ = (UInt8)(v >> 14);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 1));
 					t = 0;
 					break;
 				case 7:
-					currPtr[-1] |= (v >> 7) & 0xfe;
-					*currPtr++ = v & 0x7f;
+					currPtr[-1] = (UInt8)(currPtr[-1] | ((v >> 7) & 0xfe));
+					*currPtr++ = (UInt8)(v & 0x7f);
 					t = 1;
 					break;
 				}
@@ -163,48 +164,48 @@ Int32 Text::SMSUserData::GetBytes(UInt8 *bytes)
 				switch (t)
 				{
 				case 0:
-					*currPtr++ = v & 0xff;
+					*currPtr++ = (UInt8)(v & 0xff);
 					t = 1;
 					break;
 				case 1:
-					currPtr[-1] |= (v << 7);
-					*currPtr++ = (v >> 1);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 7));
+					*currPtr++ = (UInt8)(v >> 1);
 					t = 2;
 					break;
 				case 2:
-					currPtr[-1] |= (v << 6);
-					*currPtr++ = (v >> 2);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 6));
+					*currPtr++ = (UInt8)(v >> 2);
 					t = 3;
 					break;
 				case 3:
-					currPtr[-1] |= (v << 5);
-					*currPtr++ = (v >> 3);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 5));
+					*currPtr++ = (UInt8)(v >> 3);
 					t = 4;
 					break;
 				case 4:
-					currPtr[-1] |= (v << 4);
-					*currPtr++ = (v >> 4);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 4));
+					*currPtr++ = (UInt8)(v >> 4);
 					t = 5;
 					break;
 				case 5:
-					currPtr[-1] |= (v << 3);
-					*currPtr++ = (v >> 5);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 3));
+					*currPtr++ = (UInt8)(v >> 5);
 					t = 6;
 					break;
 				case 6:
-					currPtr[-1] |= (v << 2);
-					*currPtr++ = (v >> 6);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 2));
+					*currPtr++ = (UInt8)(v >> 6);
 					t = 7;
 					break;
 				case 7:
-					currPtr[-1] |= (v << 1);
+					currPtr[-1] = (UInt8)(currPtr[-1] | (v << 1));
 					t = 0;
 					break;
 				}
 			}
 		}
 		bytes[0] = (UInt8)septetLeng;
-		return (Int32)(currPtr - bytes);
+		return (UInt32)(currPtr - bytes);
 	}
 	else if (this->dcs == Text::SMSUtil::DCS_UCS2)
 	{
@@ -220,12 +221,12 @@ Int32 Text::SMSUserData::GetBytes(UInt8 *bytes)
 		}
 		while ((c = *src++) != 0)
 		{
-			currPtr[0] = c >> 8;
+			currPtr[0] = (UInt8)(c >> 8);
 			currPtr[1] = (UInt8)c;
 			currPtr += 2;
 		}
 		bytes[0] = (UInt8)(currPtr - bytes - 1);
-		return (Int32)(currPtr - bytes);
+		return (UInt32)(currPtr - bytes);
 	}
 	return 0;
 }
@@ -244,7 +245,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 	UInt8 udh[6];
 	UTF16Char sbuff[161];
 	Text::SMSUtil::DCS dcs;
-	Int32 msgLeng;
+	UInt32 msgLeng;
 	UTF16Char *u16MsgPtr;
 	UTF16Char *u16Msg;
 	UOSInt u16Len = Text::StrUTF8_UTF16Cnt(osmsMessage);
@@ -355,16 +356,16 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 Text::SMSUserData *Text::SMSUserData::CreateSMSTrim(const UTF16Char *smsMessage, UInt8 *udh)
 {
 	UTF16Char sbuff[161];
-	Int32 udhSize;
+	UInt32 udhSize;
 	Text::SMSUtil::DCS dcs;
-	Int32 msgLeng;
+	UInt32 msgLeng;
 	if (udh == 0)
 	{
 		udhSize = 0;
 	}
 	else
 	{
-		udhSize = udh[0] + 1;
+		udhSize = (UInt32)udh[0] + 1;
 	}
 	Text::SMSUserData *ud;
 	Text::SMSUtil::GetTextInfo(smsMessage, &dcs, &msgLeng);
@@ -385,7 +386,7 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSTrim(const UTF16Char *smsMessage,
 	}
 	else if (dcs == Text::SMSUtil::DCS_GSM7BIT)
 	{
-		Int32 dataLeng = Text::SMSUtil::GSMTextSize2DataSize(msgLeng);
+		UInt32 dataLeng = Text::SMSUtil::GSMTextSize2DataSize(msgLeng);
 		if (dataLeng > 140 - udhSize)
 		{
 			Text::SMSUtil::TrimGSMText(sbuff, smsMessage, 140 - udhSize);
@@ -426,12 +427,12 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Boo
 			i = (udh[0] + 1) * 8;
 			if (i % 7)
 			{
-				size -= i / 7 + 1;
+				size = (UInt8)(size - i / 7 + 1);
 				i = (i % 7) + 1;
 			}
 			else
 			{
-				size -= i / 7;
+				size = (UInt8)(size - i / 7);
 			}
 		}
 		lastIs1B = false;
@@ -505,12 +506,12 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Boo
 		{
 			udh = srcPtr;
 			srcPtr += udh[0] + 1;
-			size -= udh[0] + 1;
+			size = (UInt8)(size - udh[0] + 1);
 		}
 		while (size >= 2)
 		{
-			*sptr++ = (((WChar)srcPtr[0]) << 8) | srcPtr[1];
-			size -= 2;
+			*sptr++ = (UTF16Char)((((UTF16Char)srcPtr[0]) << 8) | srcPtr[1]);
+			size = (UInt8)(size - 2);
 			srcPtr += 2;
 		}
 		*sptr = 0;

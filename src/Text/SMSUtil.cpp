@@ -112,9 +112,9 @@ UInt16 Text::SMSUtil::text2gsm[] = {
 	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF
 };
 
-OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, Int32 *dataLen)
+OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, UInt32 *dataLen)
 {
-	OSInt len = 0;
+	UOSInt len = 0;
 	Int32 t = Text::SMSUtil::DCS_GSM7BIT;
 	UInt16 v;
 	UTF16Char c;
@@ -152,9 +152,9 @@ OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, Int
 		*dcs = Text::SMSUtil::DCS_GSM7BIT;
 		if (len > 160)
 		{
-			return -len;
+			return -(OSInt)len;
 		}
-		*dataLen = (Int32)len;
+		*dataLen = (UInt32)len;
 		t = 0;
 		src = msg;
 		dest = buff;
@@ -166,55 +166,55 @@ OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, Int
 				switch (t)
 				{
 				case 0:
-					*dest++ = (v >> 7) & 0xfe;
-					dest[-1] |= ((UInt8)v) >> 6;
-					*dest++ = (v << 2);
+					*dest++ = (UInt8)((v >> 7) & 0xfe);
+					dest[-1] = (UInt8)(dest[-1] | ((UInt8)v) >> 6);
+					*dest++ = (UInt8)(v << 2);
 					t = 2;
 					break;
 				case 1:
-					dest[-1] |= (v >> 14);
-					*dest++ = (v >> 6) & 0xfc;
-					dest[-1] |= (v >> 5) & 3;
-					*dest++ = (v << 3);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 14));
+					*dest++ = (UInt8)((v >> 6) & 0xfc);
+					dest[-1] = (UInt8)(dest[-1] | ((v >> 5) & 3));
+					*dest++ = (UInt8)(v << 3);
 					t = 3;
 					break;
 				case 2:
-					dest[-1] |= (v >> 13);
-					*dest++ = (v >> 5) & 0xf8;
-					dest[-1] |= (v >> 4) & 7;
-					*dest++ = (v << 4);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 13));
+					*dest++ = (UInt8)((v >> 5) & 0xf8);
+					dest[-1] = (UInt8)(dest[-1] | ((v >> 4) & 7));
+					*dest++ = (UInt8)(v << 4);
 					t = 4;
 					break;
 				case 3:
-					dest[-1] |= (v >> 12);
-					*dest++ = (v >> 4) & 0xf0;
-					dest[-1] |= (v >> 3) & 7;
-					*dest++ = (v << 5);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 12));
+					*dest++ = (UInt8)((v >> 4) & 0xf0);
+					dest[-1] = (UInt8)(dest[-1] | ((v >> 3) & 7));
+					*dest++ = (UInt8)(v << 5);
 					t = 5;
 					break;
 				case 4:
-					dest[-1] |= (v >> 11);
-					*dest++ = (v >> 3) & 0xe0;
-					dest[-1] |= (v >> 2) & 0x1f;
-					*dest++ = (v << 6);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 11));
+					*dest++ = (UInt8)((v >> 3) & 0xe0);
+					dest[-1] = (UInt8)(dest[-1] | ((v >> 2) & 0x1f));
+					*dest++ = (UInt8)(v << 6);
 					t = 6;
 					break;
 				case 5:
-					dest[-1] |= (v >> 10);
-					*dest++ = (v >> 2) & 0xc0;
-					dest[-1] |= (v >> 1) & 0x3f;
-					*dest++ = (v << 7);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 10));
+					*dest++ = (UInt8)((v >> 2) & 0xc0);
+					dest[-1] = (UInt8)(dest[-1] | ((v >> 1) & 0x3f));
+					*dest++ = (UInt8)(v << 7);
 					t = 7;
 					break;
 				case 6:
-					dest[-1] |= (v >> 9);
-					*dest++ = (v >> 1) & 0xf8;
-					dest[-1] |= v;
+					dest[-1] = (UInt8)(dest[-1] | (v >> 9));
+					*dest++ = (UInt8)((v >> 1) & 0xf8);
+					dest[-1] = (UInt8)(dest[-1] | v);
 					t = 0;
 					break;
 				case 7:
-					dest[-1] |= (v >> 8);
-					*dest++ = (v << 1);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 8));
+					*dest++ = (UInt8)(v << 1);
 					t = 1;
 					break;
 				}
@@ -228,99 +228,99 @@ OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, Int
 					t = 1;
 					break;
 				case 1:
-					dest[-1] |= (v >> 6);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 6));
 					*dest++ = (UInt8)((v << 2) & 0xff);
 					t = 2;
 					break;
 				case 2:
-					dest[-1] |= (v >> 5);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 5));
 					*dest++ = (UInt8)((v << 3) & 0xff);
 					t = 3;
 					break;
 				case 3:
-					dest[-1] |= (v >> 4);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 4));
 					*dest++ = (UInt8)((v << 4) & 0xff);
 					t = 4;
 					break;
 				case 4:
-					dest[-1] |= (v >> 3);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 3));
 					*dest++ = (UInt8)((v << 5) & 0xff);
 					t = 5;
 					break;
 				case 5:
-					dest[-1] |= (v >> 2);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 2));
 					*dest++ = (UInt8)((v << 6) & 0xff);
 					t = 6;
 					break;
 				case 6:
-					dest[-1] |= (v >> 1);
+					dest[-1] = (UInt8)(dest[-1] | (v >> 1));
 					*dest++ = (UInt8)((v << 7) & 0xff);
 					t = 7;
 					break;
 				case 7:
-					dest[-1] |= v;
+					dest[-1] = (UInt8)(dest[-1] | v);
 					t = 0;
 					break;
 				}
 			}
 		}
-		return len;
+		return (OSInt)len;
 	}
 	else if (t == Text::SMSUtil::DCS_UCS2)
 	{
 		*dcs = Text::SMSUtil::DCS_UCS2;
 		len = Text::StrCharCnt(msg) << 1;
-		*dataLen = (Int32)len;
+		*dataLen = (UInt32)len;
 		if (len > 140)
 		{
-			return -len;
+			return -(OSInt)len;
 		}
 		src = msg;
 		while ((c = *src++) != 0)
 		{
-			buff[0] = c >> 8;
+			buff[0] = (UInt8)(c >> 8);
 			buff[1] = (UInt8)c;
 			buff += 2;
 		}
-		return len;
+		return (OSInt)len;
 	}
 	return 0;
 }
 
 OSInt Text::SMSUtil::ToUCS2Bytes(const UTF16Char *msg, UInt8 *buff)
 {
-	OSInt len;
+	UOSInt len;
 	const UTF16Char *src;
 	UTF16Char c;
 	len = Text::StrCharCnt(msg) << 1;
 	src = msg;
 	while ((c = *src++) != 0)
 	{
-		buff[0] = c >> 8;
+		buff[0] = (UInt8)(c >> 8);
 		buff[1] = (UInt8)c;
 		buff += 2;
 	}
-	return len;
+	return (OSInt)len;
 }
 
-void Text::SMSUtil::GetTextInfo(const UTF16Char *msg, DCS *dcs, Int32 *msgLeng)
+void Text::SMSUtil::GetTextInfo(const UTF16Char *msg, DCS *dcs, UInt32 *msgLeng)
 {
 	UInt8 buff[140];
 	OSInt len = ToGSMBytes(msg, buff, dcs, msgLeng);
 	if (len < 0)
 	{
-		*msgLeng = (Int32)-len;
+		*msgLeng = (UInt32)-len;
 	}
 	else
 	{
-		*msgLeng = (Int32)len;
+		*msgLeng = (UInt32)len;
 	}
 }
 
-Int32 Text::SMSUtil::GSMTextSize2DataSize(Int32 textSize)
+UInt32 Text::SMSUtil::GSMTextSize2DataSize(UInt32 textSize)
 {
-	Int32 nBits = textSize * 7;
-	Int32 dataSize = nBits >> 3;
+	UInt32 nBits = textSize * 7;
+	UInt32 dataSize = nBits >> 3;
 	if (nBits & 7)
 		dataSize++;
 	return dataSize;
@@ -328,7 +328,7 @@ Int32 Text::SMSUtil::GSMTextSize2DataSize(Int32 textSize)
 
 Bool Text::SMSUtil::TrimGSMText(UTF16Char *msg)
 {
-	OSInt len = 0;
+	UOSInt len = 0;
 	UInt16 v;
 	UTF16Char c;
 	UTF16Char *src;
@@ -365,7 +365,7 @@ Bool Text::SMSUtil::TrimGSMText(UTF16Char *msg)
 	return true;
 }
 
-UTF16Char *Text::SMSUtil::TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg, Int32 dataLen)
+UTF16Char *Text::SMSUtil::TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg, UInt32 dataLen)
 {
 	OSInt len = 0;
 	UInt16 v;

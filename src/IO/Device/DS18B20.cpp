@@ -15,11 +15,11 @@ UInt8 IO::Device::DS18B20::CalcCRC(const UInt8 *buff, OSInt size)
 		{
 			if (v & 1)
 			{
-				v = (v >> 1) ^ 0x8c;
+				v = (UInt8)((v >> 1) ^ 0x8c);
 			}
 			else
 			{
-				v = v >> 1;
+				v = (UInt8)(v >> 1);
 			}
 		}
 	}

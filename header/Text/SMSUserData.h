@@ -19,8 +19,8 @@ namespace Text
 		~SMSUserData();
 		Bool HasUDH();
 		Text::SMSUtil::DCS GetDCS();
-		Int32 GetByteSize(); //Including UDL
-		Int32 GetBytes(UInt8 *bytes);
+		UInt32 GetByteSize(); //Including UDL
+		UInt32 GetBytes(UInt8 *bytes);
 		const UInt8 *GetUDH();
 		const UTF16Char *GetMessage();
 

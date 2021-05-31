@@ -20,10 +20,10 @@ UTF16Char *Text::SMSMessage::ParsePDUPhone(UTF16Char *buff, const UInt8 *pduPhon
 			phoneSize--;
 			while (phoneSize-- > 0)
 			{
-				*buff++ = (pduPhone[0] & 0xf) + 0x30;
+				*buff++ = (UTF16Char)((pduPhone[0] & 0xf) + 0x30);
 				if ((pduPhone[0] & 0xf0) != 0xf0)
 				{
-					*buff++ = ((pduPhone[0] & 0xf0) >> 4) + 0x30;
+					*buff++ = (UTF16Char)(((pduPhone[0] & 0xf0) >> 4) + 0x30);
 				}
 				else
 				{
@@ -49,37 +49,37 @@ UTF16Char *Text::SMSMessage::ParsePDUPhone(UTF16Char *buff, const UInt8 *pduPhon
 						i = 1;
 						break;
 					case 1:
-						v = ((pduPhone[0] & 0x80) >> 7) | ((pduPhone[1] << 1) & 0x7f);
+						v = (UInt8)(((pduPhone[0] & 0x80) >> 7) | ((pduPhone[1] << 1) & 0x7f));
 						pduPhone++;
 						i = 2;
 						break;
 					case 2:
-						v = ((pduPhone[0] & 0xc0) >> 6) | ((pduPhone[1] << 2) & 0x7f);
+						v = (UInt8)(((pduPhone[0] & 0xc0) >> 6) | ((pduPhone[1] << 2) & 0x7f));
 						pduPhone++;
 						i = 3;
 						break;
 					case 3:
-						v = ((pduPhone[0] & 0xe0) >> 5) | ((pduPhone[1] << 3) & 0x7f);
+						v = (UInt8)(((pduPhone[0] & 0xe0) >> 5) | ((pduPhone[1] << 3) & 0x7f));
 						pduPhone++;
 						i = 4;
 						break;
 					case 4:
-						v = ((pduPhone[0] & 0xf0) >> 4) | ((pduPhone[1] << 4) & 0x7f);
+						v = (UInt8)(((pduPhone[0] & 0xf0) >> 4) | ((pduPhone[1] << 4) & 0x7f));
 						pduPhone++;
 						i = 5;
 						break;
 					case 5:
-						v = ((pduPhone[0] & 0xf8) >> 3) | ((pduPhone[1] << 5) & 0x7f);
+						v = (UInt8)(((pduPhone[0] & 0xf8) >> 3) | ((pduPhone[1] << 5) & 0x7f));
 						pduPhone++;
 						i = 6;
 						break;
 					case 6:
-						v = ((pduPhone[0] & 0xfc) >> 2) | ((pduPhone[1] << 6) & 0x7f);
+						v = (UInt8)(((pduPhone[0] & 0xfc) >> 2) | ((pduPhone[1] << 6) & 0x7f));
 						pduPhone++;
 						i = 7;
 						break;
 					case 7:
-						v = (pduPhone[0] & 0xfe) >> 1;
+						v = (UInt8)((pduPhone[0] & 0xfe) >> 1);
 						pduPhone++;
 						i = 0;
 						break;
@@ -113,18 +113,18 @@ UTF16Char *Text::SMSMessage::ParsePDUPhone(UTF16Char *buff, const UInt8 *pduPhon
 
 UInt8 Text::SMSMessage::ParseIBCD(UInt8 byte)
 {
-	return (byte & 0xf) * 10 + (byte >> 4);
+	return (UInt8)((byte & 0xf) * 10 + (byte >> 4));
 }
 
 void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, Data::DateTime *time)
 {
 	if ((buff[6] & 0x8) != 0)
 	{
-		time->SetValue(ParseIBCD(buff[0]) + 2000, ParseIBCD(buff[1]), ParseIBCD(buff[2]), ParseIBCD(buff[3]), ParseIBCD(buff[4]), ParseIBCD(buff[5]), 0, -ParseIBCD(buff[6] & 0xf7));
+		time->SetValue((UInt16)(ParseIBCD(buff[0]) + 2000), ParseIBCD(buff[1]), ParseIBCD(buff[2]), ParseIBCD(buff[3]), ParseIBCD(buff[4]), ParseIBCD(buff[5]), 0, (Int8)-ParseIBCD(buff[6] & 0xf7));
 	}
 	else
 	{
-		time->SetValue(ParseIBCD(buff[0]) + 2000, ParseIBCD(buff[1]), ParseIBCD(buff[2]), ParseIBCD(buff[3]), ParseIBCD(buff[4]), ParseIBCD(buff[5]), 0, ParseIBCD(buff[6] & 0xf7));
+		time->SetValue((UInt16)(ParseIBCD(buff[0]) + 2000), ParseIBCD(buff[1]), ParseIBCD(buff[2]), ParseIBCD(buff[3]), ParseIBCD(buff[4]), ParseIBCD(buff[5]), 0, (Int8)ParseIBCD(buff[6] & 0xf7));
 	}
 }
 
@@ -150,12 +150,12 @@ UInt8 *Text::SMSMessage::ToPDUPhone(UInt8 *buff, const UTF16Char *phoneNum, UInt
 		if ((c = *phoneNum++) != 0)
 		{
 			*buff++ |= (UInt8)((c << 4) & 0xff);
-			oPhoneSize += 2;
+			oPhoneSize = (UInt8)(oPhoneSize + 2);
 		}
 		else
 		{
 			*buff++ |= 0xf0;
-			oPhoneSize += 1;
+			oPhoneSize = (UInt8)(oPhoneSize + 1);
 			break;
 		}
 	}
@@ -322,7 +322,7 @@ Text::SMSMessage *Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
 		pduBytes++;
 		address = sptr;
 		addrByteLen = *pduBytes++;
-		addrByteLen = 1 + (addrByteLen >> 1) + (addrByteLen & 1);
+		addrByteLen = (UInt8)(1 + (addrByteLen >> 1) + (addrByteLen & 1));
 		sptr = ParsePDUPhone(sptr, pduBytes, addrByteLen) + 1;
 		pduBytes += addrByteLen;
 		/*pid = **/pduBytes++;	//protocol (TP-PID)
@@ -353,7 +353,7 @@ Text::SMSMessage *Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
 		mr = *pduBytes++;
 		address = sptr;
 		addrByteLen = *pduBytes++;
-		addrByteLen = 1 + (addrByteLen >> 1) + (addrByteLen & 1);
+		addrByteLen = (UInt8)(1 + (addrByteLen >> 1) + (addrByteLen & 1));
 		sptr = ParsePDUPhone(sptr, pduBytes, addrByteLen) + 1;
 		pduBytes += addrByteLen;
 		/*pid = **/pduBytes++;	//protocol (TP-PID)
