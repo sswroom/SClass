@@ -28,8 +28,8 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			void AddGroup(const UTF8Char *grpName);
-			void SetCurrGroup(OSInt currGroup);
-			OSInt GetCurrGroup();
+			void SetCurrGroup(UOSInt currGroup);
+			UOSInt GetCurrGroup();
 		};
 	};
 };

@@ -21,7 +21,7 @@ Media::AudioFilter::SoundGenerator::~SoundGenerator()
 {
 	Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap->GetValues();
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
-	OSInt i;
+	UOSInt i;
 	i = sndGenList->GetCount();
 	while (i-- > 0)
 	{
@@ -45,7 +45,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt sampleCnt = readSize / (this->format.align);
 	Double *sndBuff;
-	OSInt i;
+	UOSInt i;
 	i = sndGenList->GetCount();
 	if (i <= 0)
 	{
@@ -62,7 +62,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 	{
 		UOSInt i;
 		UOSInt j;
-		OSInt l;
+		UOSInt l;
 		Double v2;
 		UOSInt sampleCnt = readSize / 2 / this->format.nChannels;
 		l = 0;
@@ -93,11 +93,11 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 	}
 	else if (this->format.bitpersample == 8)
 	{
-		OSInt i;
+		UOSInt i;
 		UOSInt j;
-		OSInt l;
+		UOSInt l;
 		Double v2;
-		OSInt sampleCnt = readSize / this->format.nChannels;
+		UOSInt sampleCnt = readSize / this->format.nChannels;
 		l = 0;
 		i = 0;
 		while (i < sampleCnt)

@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(void *userObj, OSInt 
 {
 	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrDouble(sbuff, newVal * 0.1);
+	Text::StrDouble(sbuff, Math::OSInt2Double(newVal) * 0.1);
 	me->lblDPIV->SetText(sbuff);
 	me->UpdatePreview();
 }
@@ -101,7 +101,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		v = this->hsbDPI->GetPos();
 		gimg = eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xffffffff);
-		gimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 
 		f = gimg->NewFontPx((const UTF8Char*)"Arial", 12 * v * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);

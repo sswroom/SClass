@@ -29,7 +29,7 @@ namespace IO
 	private:
 		void *handle;
 		UOSInt portNum;
-		Int32 baudRate;
+		UInt32 baudRate;
 		ParityType parity;
 		Bool flowCtrl;
 		Sync::Event *rdEvt;
@@ -46,7 +46,7 @@ namespace IO
 		static UTF8Char *GetPortName(UTF8Char *buff, UOSInt portNum);
 		static Bool ResetPort(UOSInt portNum);
 
-		SerialPort(UOSInt portNum, Int32 baudRate, ParityType parity, Bool flowCtrl);
+		SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl);
 		virtual ~SerialPort();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

@@ -14,13 +14,13 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 
 	UTF8Char sbuff[256];
 	WChar wbuff[256];
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt m;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
 	Data::ArrayList<const UTF8Char*> dbCols;
-	Data::ArrayList<Int32> dbCols2;
+	Data::ArrayList<UInt32> dbCols2;
 
 	eng->ParseLabelStr(lbl, &dbCols, &dbCols2);
 	this->lvDBF->AddColumn((const UTF8Char*)"Output", 120);

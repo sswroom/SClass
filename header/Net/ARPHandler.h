@@ -28,7 +28,7 @@ namespace Net
 		void *userData;
 
 		ThreadStat *threadStats;
-		OSInt threadCnt;
+		UOSInt threadCnt;
 		Sync::Event *ctrlEvt;
 
 
@@ -36,7 +36,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(void *obj);
 
 	public:
-		ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, OSInt workerCnt);
+		ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, UOSInt workerCnt);
 		~ARPHandler();
 
 		Bool IsError();

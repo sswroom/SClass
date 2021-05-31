@@ -144,10 +144,10 @@ Bool IO::SiLabDriver::GetDLLVersion(UInt16 *ver1, UInt16 *ver2, UInt16 *ver3, UI
 	UInt32 loVer;
 	if (SI_GetDLLVersion(&hiVer, &loVer) == SI_SUCCESS)
 	{
-		*ver1 = hiVer >> 16;
-		*ver2 = hiVer & 0xffff;
-		*ver3 = loVer >> 16;
-		*ver4 = loVer & 0xffff;
+		*ver1 = (UInt16)(hiVer >> 16);
+		*ver2 = (UInt16)(hiVer & 0xffff);
+		*ver3 = (UInt16)(loVer >> 16);
+		*ver4 = (UInt16)(loVer & 0xffff);
 		return true;
 	}
 	return false;
@@ -159,10 +159,10 @@ Bool IO::SiLabDriver::GetDriverVersion(UInt16 *ver1, UInt16 *ver2, UInt16 *ver3,
 	UInt32 loVer;
 	if (SI_GetDriverVersion(&hiVer, &loVer) == SI_SUCCESS)
 	{
-		*ver1 = hiVer >> 16;
-		*ver2 = hiVer & 0xffff;
-		*ver3 = loVer >> 16;
-		*ver4 = loVer & 0xffff;
+		*ver1 = (UInt16)(hiVer >> 16);
+		*ver2 = (UInt16)(hiVer & 0xffff);
+		*ver3 = (UInt16)(loVer >> 16);
+		*ver4 = (UInt16)(loVer & 0xffff);
 		return true;
 	}
 	return false;
@@ -228,7 +228,7 @@ UTF8Char *IO::SiLabDriver::GetDeviceLink(UInt32 devId, UTF8Char *buff)
 	return 0;
 }
 
-IO::Stream *IO::SiLabDriver::OpenPort(UInt32 devId, Int32 baudRate)
+IO::Stream *IO::SiLabDriver::OpenPort(UInt32 devId, UInt32 baudRate)
 {
 	IO::SiLabSerialPort *port;
 	void *hand;

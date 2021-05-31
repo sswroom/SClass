@@ -1290,7 +1290,7 @@ Bool Text::StrEqualsICase(const UTF32Char *str1, const UTF32Char *str2, OSInt st
 	return false;
 }
 
-OSInt Text::StrCharCntS(const UTF16Char *str, OSInt maxLen)
+UOSInt Text::StrCharCntS(const UTF16Char *str, UOSInt maxLen)
 {
 	const UTF16Char *currPtr = str;
 	const UTF16Char *endPtr = str + maxLen;
@@ -1298,7 +1298,7 @@ OSInt Text::StrCharCntS(const UTF16Char *str, OSInt maxLen)
 	return currPtr - str;
 }
 
-OSInt Text::StrCharCntS(const UTF32Char *str, OSInt maxLen)
+UOSInt Text::StrCharCntS(const UTF32Char *str, UOSInt maxLen)
 {
 	const UTF32Char *currPtr = str;
 	const UTF32Char *endPtr = str + maxLen;

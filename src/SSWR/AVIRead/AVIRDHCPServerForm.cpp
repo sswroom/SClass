@@ -143,8 +143,8 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 	{
 		UTF8Char sbuff[64];
 		UInt8 mac[8];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Net::DHCPServer::DeviceStatus *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Sync::MutexUsage mutUsage;

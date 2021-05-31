@@ -642,8 +642,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 					k = 4;
 					l = ReadUInt32(idx1);
 					cmpTmp = *(Int32*)"00wb";
-					((Char*)&cmpTmp)[1] += i % 10;
-					*(Char*)&cmpTmp += i / 10;
+					((Char*)&cmpTmp)[1] = (Char)('0' + (i % 10));
+					*(Char*)&cmpTmp = (Char)('0' + (i / 10));
 					while (k < l)
 					{
 						if (*(Int32*)&idx1[k] == cmpTmp)
@@ -657,10 +657,10 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 				{
 					NEW_CLASS(audsData, Media::AudioFrameSource(fd, &fmt, audsName));
 					k = 4;
-					l = *(Int32*)idx1;
+					l = ReadUInt32(idx1);
 					cmpTmp = *(Int32*)"00wb";
-					((Char*)&cmpTmp)[1] += i % 10;
-					*(Char*)&cmpTmp += i / 10;
+					((Char*)&cmpTmp)[1] = (Char)('0' + (i % 10));
+					*(Char*)&cmpTmp = (Char)('0' + (i / 10));
 					while (k < l)
 					{
 						if (*(Int32*)&idx1[k] == cmpTmp)
@@ -727,7 +727,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			}
 			else
 			{
-				enc.UTF8FromBytes(sbuff, &chap[chapOfst], -1, 0);
+				enc.UTF8FromBytes(sbuff, &chap[chapOfst], Text::StrCharCnt(&chap[chapOfst]), 0);
 				chapters->AddChapter(chapTime, sbuff, 0);
 			}
 			i++;

@@ -33,12 +33,12 @@ Int32 Data::RandomOS::NextInt32()
 	return (rand() | (rand() << 15)) ^ (rand() << 17);
 }
 
-Int32 Data::RandomOS::NextInt15()
+UInt32 Data::RandomOS::NextInt15()
 {
-	return rand();
+	return (UInt32)rand();
 }
 
-Int32 Data::RandomOS::NextInt30()
+UInt32 Data::RandomOS::NextInt30()
 {
-	return rand() | (rand() << 15);
+	return (UInt32)rand() | (UInt32)(rand() << 15);
 }

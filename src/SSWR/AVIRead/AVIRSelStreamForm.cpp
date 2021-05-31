@@ -16,14 +16,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	if (st == SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT)
 	{
 		OSInt i = me->cboSerialPort->GetSelectedIndex();
-		Int32 portNum = (Int32)(OSInt)me->cboSerialPort->GetItem(i);
+		UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
 		if (portNum == 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"Select Serial Port", me);
 			return;
 		}
 		me->txtBaudRate->GetText(sbuff);
-		Int32 baudRate = Text::StrToInt32(sbuff);
+		UInt32 baudRate = Text::StrToUInt32(sbuff);
 		if (baudRate == 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input a valid baud rate", (const UTF8Char *)"Select Serial Port", me);
@@ -250,9 +250,9 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool allowReadOnly) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UTF8Char *sptr;
 
 	this->SetText((const UTF8Char*)"Select Stream");

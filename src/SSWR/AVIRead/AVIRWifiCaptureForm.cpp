@@ -805,8 +805,8 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->bssMap, Data::Int64Map<BSSStatus*>());
 	NEW_CLASS(this->wifiLogMap, Data::Int64Map<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*>());
 	NEW_CLASS(this->sensorMgr, IO::SensorManager());
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->sensorMgr->GetSensorCnt();
 	while (i < j)

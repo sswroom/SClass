@@ -55,23 +55,23 @@ namespace Text
 
 	FORCEINLINE UOSInt StrCharCnt(const UTF16Char *str) { return MyString_StrCharCntUTF16(str); }
 	FORCEINLINE UOSInt StrCharCnt(const UTF32Char *str) { return MyString_StrCharCntUTF32(str); }
-	OSInt StrCharCntS(const UTF16Char *str, OSInt maxLen);
-	OSInt StrCharCntS(const UTF32Char *str, OSInt maxLen);
+	UOSInt StrCharCntS(const UTF16Char *str, UOSInt maxLen);
+	UOSInt StrCharCntS(const UTF32Char *str, UOSInt maxLen);
 
 #ifdef HAS_INT64
-	FORCEINLINE UTF16Char *StrHexVal64V(UTF16Char *oriStr, Int64 val) { return MyString_StrHexVal64VUTF16(oriStr, val); }
-	FORCEINLINE UTF16Char *StrHexVal64(UTF16Char *oriStr, Int64 val) { return MyString_StrHexVal64UTF16(oriStr, val); }
-	FORCEINLINE UTF32Char *StrHexVal64V(UTF32Char *oriStr, Int64 val) { return MyString_StrHexVal64VUTF32(oriStr, val); }
-	FORCEINLINE UTF32Char *StrHexVal64(UTF32Char *oriStr, Int64 val) { return MyString_StrHexVal64UTF32(oriStr, val); }
+	FORCEINLINE UTF16Char *StrHexVal64V(UTF16Char *oriStr, UInt64 val) { return MyString_StrHexVal64VUTF16(oriStr, val); }
+	FORCEINLINE UTF16Char *StrHexVal64(UTF16Char *oriStr, UInt64 val) { return MyString_StrHexVal64UTF16(oriStr, val); }
+	FORCEINLINE UTF32Char *StrHexVal64V(UTF32Char *oriStr, UInt64 val) { return MyString_StrHexVal64VUTF32(oriStr, val); }
+	FORCEINLINE UTF32Char *StrHexVal64(UTF32Char *oriStr, UInt64 val) { return MyString_StrHexVal64UTF32(oriStr, val); }
 #endif
 
-	FORCEINLINE UTF16Char *StrHexVal32V(UTF16Char *oriStr, Int32 val) { return MyString_StrHexVal32VUTF16(oriStr, val); }
-	FORCEINLINE UTF16Char *StrHexVal32(UTF16Char *oriStr, Int32 val) { return MyString_StrHexVal32UTF16(oriStr, val); }
-	FORCEINLINE UTF32Char *StrHexVal32V(UTF32Char *oriStr, Int32 val) { return MyString_StrHexVal32VUTF32(oriStr, val); }
-	FORCEINLINE UTF32Char *StrHexVal32(UTF32Char *oriStr, Int32 val) { return MyString_StrHexVal32UTF32(oriStr, val); }
+	FORCEINLINE UTF16Char *StrHexVal32V(UTF16Char *oriStr, UInt32 val) { return MyString_StrHexVal32VUTF16(oriStr, val); }
+	FORCEINLINE UTF16Char *StrHexVal32(UTF16Char *oriStr, UInt32 val) { return MyString_StrHexVal32UTF16(oriStr, val); }
+	FORCEINLINE UTF32Char *StrHexVal32V(UTF32Char *oriStr, UInt32 val) { return MyString_StrHexVal32VUTF32(oriStr, val); }
+	FORCEINLINE UTF32Char *StrHexVal32(UTF32Char *oriStr, UInt32 val) { return MyString_StrHexVal32UTF32(oriStr, val); }
 
-	FORCEINLINE UTF16Char *StrHexVal24(UTF16Char *oriStr, Int32 val) { return MyString_StrHexVal24UTF16(oriStr, val); }
-	FORCEINLINE UTF32Char *StrHexVal24(UTF32Char *oriStr, Int32 val) { return MyString_StrHexVal24UTF32(oriStr, val); }
+	FORCEINLINE UTF16Char *StrHexVal24(UTF16Char *oriStr, UInt32 val) { return MyString_StrHexVal24UTF16(oriStr, val); }
+	FORCEINLINE UTF32Char *StrHexVal24(UTF32Char *oriStr, UInt32 val) { return MyString_StrHexVal24UTF32(oriStr, val); }
 
 	UTF16Char *StrHexVal16(UTF16Char *oriStr, UInt16 val);
 	UTF32Char *StrHexVal16(UTF32Char *oriStr, UInt16 val);
@@ -103,8 +103,8 @@ namespace Text
 	FORCEINLINE UTF32Char *StrOSIntS(UTF32Char *oriStr, OSInt val, UTF32Char seperator, OSInt sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
 	FORCEINLINE UTF16Char *StrUOSInt(UTF16Char *oriStr, UOSInt val) { return StrUInt64(oriStr, (UInt64)val); }
 	FORCEINLINE UTF32Char *StrUOSInt(UTF32Char *oriStr, UOSInt val) { return StrUInt64(oriStr, (UInt64)val); }
-	FORCEINLINE UTF16Char *StrHexValOS(UTF16Char *oriStr, OSInt val) { return StrHexVal64(oriStr, (Int64)val); }
-	FORCEINLINE UTF32Char *StrHexValOS(UTF32Char *oriStr, OSInt val) { return StrHexVal64(oriStr, (Int64)val); }
+	FORCEINLINE UTF16Char *StrHexValOS(UTF16Char *oriStr, UOSInt val) { return StrHexVal64(oriStr, (UInt64)val); }
+	FORCEINLINE UTF32Char *StrHexValOS(UTF32Char *oriStr, UOSInt val) { return StrHexVal64(oriStr, (UInt64)val); }
 #elif _OSINT_SIZE == 32
 	FORCEINLINE UTF16Char *StrOSInt(UTF16Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int32)val); }
 	FORCEINLINE UTF32Char *StrOSInt(UTF32Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int32)val); }
@@ -112,8 +112,8 @@ namespace Text
 	FORCEINLINE UTF32Char *StrOSIntS(UTF32Char *oriStr, OSInt val, UTF32Char seperator, OSInt sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
 	FORCEINLINE UTF16Char *StrUOSInt(UTF16Char *oriStr, UOSInt val) { return StrUInt32(oriStr, (UInt32)val); }
 	FORCEINLINE UTF32Char *StrUOSInt(UTF32Char *oriStr, UOSInt val) { return StrUInt32(oriStr, (UInt32)val); }
-	FORCEINLINE UTF16Char *StrHexValOS(UTF16Char *oriStr, OSInt val) { return StrHexVal32(oriStr, (Int32)val); }
-	FORCEINLINE UTF32Char *StrHexValOS(UTF32Char *oriStr, OSInt val) { return StrHexVal32(oriStr, (Int32)val); }
+	FORCEINLINE UTF16Char *StrHexValOS(UTF16Char *oriStr, UOSInt val) { return StrHexVal32(oriStr, (UInt32)val); }
+	FORCEINLINE UTF32Char *StrHexValOS(UTF32Char *oriStr, UOSInt val) { return StrHexVal32(oriStr, (UInt32)val); }
 #else // _OSINT_SIZE == 16
 	FORCEINLINE UTF16Char *StrOSInt(UTF16Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int16)val); }
 	FORCEINLINE UTF32Char *StrOSInt(UTF32Char *oriStr, OSInt val) { return StrInt32(oriStr, (Int16)val); }
@@ -121,8 +121,8 @@ namespace Text
 	FORCEINLINE UTF32Char *StrOSIntS(UTF32Char *oriStr, OSInt val, UTF32Char seperator, OSInt sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
 	FORCEINLINE UTF16Char *StrUOSInt(UTF16Char *oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
 	FORCEINLINE UTF32Char *StrUOSInt(UTF32Char *oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
-	FORCEINLINE UTF16Char *StrHexValOS(UTF16Char *oriStr, OSInt val) { return StrHexVal16(oriStr, (Int16)val); }
-	FORCEINLINE UTF32Char *StrHexValOS(UTF32Char *oriStr, OSInt val) { return StrHexVal16(oriStr, (Int16)val); }
+	FORCEINLINE UTF16Char *StrHexValOS(UTF16Char *oriStr, UOSInt val) { return StrHexVal16(oriStr, (UInt16)val); }
+	FORCEINLINE UTF32Char *StrHexValOS(UTF32Char *oriStr, UOSInt val) { return StrHexVal16(oriStr, (UInt16)val); }
 #endif
 
 	UOSInt StrSplit(UTF16Char **strs, UOSInt maxStrs, UTF16Char *str, UTF16Char splitChar); //Optimized

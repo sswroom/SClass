@@ -23,7 +23,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(void *hMon)
     Drawable drawable = XRootWindow(dis, -1 + (int)(OSInt)hMon);
 
 	Media::StaticImage *retImg = 0;
-    XImage *image = XGetImage(dis, drawable, 0, 0, scr->width, scr->height, AllPlanes, ZPixmap);
+    XImage *image = XGetImage(dis, drawable, 0, 0, (UInt32)scr->width, (UInt32)scr->height, AllPlanes, ZPixmap);
 	if (image)
 	{
 		Media::MonitorColorManager *monColor = this->colorMgr->GetMonColorManager(hMon);
@@ -34,16 +34,16 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(void *hMon)
 		info.atype = Media::AT_NO_ALPHA;
 		info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 		info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-		info.storeBPP = image->bits_per_pixel;
+		info.storeBPP = (UInt32)image->bits_per_pixel;
 		info.pf = Media::FrameInfo::GetDefPixelFormat(0, info.storeBPP);
 		if (info.storeBPP == 32 && monColor->Get10BitColor())
 		{
 			info.pf = Media::PF_LE_A2B10G10R10;
 		}
-		info.dispWidth = image->width;
-		info.dispHeight = image->height;
-		info.storeWidth = image->bytes_per_line / (info.storeBPP >> 3);
-		info.storeHeight = image->height;
+		info.dispWidth = (UInt32)image->width;
+		info.dispHeight = (UInt32)image->height;
+		info.storeWidth = (UInt32)image->bytes_per_line / (info.storeBPP >> 3);
+		info.storeHeight = (UInt32)image->height;
 		info.byteSize = info.storeWidth * info.storeHeight * (info.storeBPP >> 3);
 		info.par2 = 1.0;
 		info.hdpi = this->monMgr->GetMonitorHDPI(hMon);;

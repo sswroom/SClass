@@ -26,8 +26,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 		return;
 	}
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	me->txtCommunity->SetText(packet->trap.community);

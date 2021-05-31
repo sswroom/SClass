@@ -9,9 +9,9 @@ namespace SSWR
 		class IMapEng
 		{
 		public:
-			virtual void ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2) = 0;
-			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2) = 0;
-			virtual const UTF8Char *GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<Int32> *dbcols2) = 0;
+			virtual void ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2) = 0;
+			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2) = 0;
+			virtual const UTF8Char *GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbcols2) = 0;
 		};
 	}
 }

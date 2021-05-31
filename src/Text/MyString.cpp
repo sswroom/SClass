@@ -708,7 +708,7 @@ Bool Text::StrEqualsICase(const Char *str1, const Char *str2, OSInt str2Len)
 	return false;
 }
 
-OSInt Text::StrCharCntS(const Char *str, OSInt maxLen)
+UOSInt Text::StrCharCntS(const Char *str, UOSInt maxLen)
 {
 	const Char *currPtr = str;
 	const Char *endPtr = str + maxLen;

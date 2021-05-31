@@ -55,7 +55,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 			return status;
 		}
 		status = MemAlloc(IPStatus, 1);
-		status->ip = ReadNInt32(addr->addr);
+		status->ip = ReadNUInt32(addr->addr);
 		sptr = Text::StrConcat(sbuff, this->logPath);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -81,7 +81,7 @@ Net::SyslogServer::SyslogServer(Net::SocketFactory *sockf, UInt16 port, const UT
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
 	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::Int32Map<Net::SyslogServer::IPStatus*>());
+	NEW_CLASS(this->ipMap, Data::UInt32Map<Net::SyslogServer::IPStatus*>());
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, port, 0, OnUDPPacket, this, log, (const UTF8Char*)"UDP: ", 2, false));
 }
 
@@ -89,7 +89,7 @@ Net::SyslogServer::~SyslogServer()
 {
 	DEL_CLASS(this->svr);
 	Text::StrDelNew(this->logPath);
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<Net::SyslogServer::IPStatus*> *ipList = this->ipMap->GetValues();
 	IPStatus *status;
 	i = ipList->GetCount();

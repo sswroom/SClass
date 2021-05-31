@@ -70,8 +70,8 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	me->lstRecords->GetSelectedIndices(&indices);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (indices.GetCount() <= 0)
 	{
 		me->txtLabel->SetText((const UTF8Char*)"");
@@ -103,8 +103,8 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	SSWR::SHPConv::SHPConvGroupForm *frm;
 	const UTF8Char *csptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(frm, SSWR::SHPConv::SHPConvGroupForm(0, me->ui));
 	frm->AddGroup((const UTF8Char*)"-- None --");
 	i = 0;
@@ -193,7 +193,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->btnSBrowse->SetEnabled(false);
 
 	Data::ArrayList<const UTF8Char*> dbCols;
-	Data::ArrayList<Int32> dbCols2;
+	Data::ArrayList<UInt32> dbCols2;
 	sb.ClearStr();
 	me->txtLabel->GetText(&sb);
 	me->ParseLabelStr(sb.ToString(), &dbCols, &dbCols2);
@@ -201,7 +201,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->txtSource->GetText(&sb);
 	const UTF8Char *srcFile = Text::StrCopyNew(sb.ToString());
 	sb.RemoveChars(4);
-	if (me->currGroup == -1)
+	if (me->currGroup == (UOSInt)-1)
 	{
 		me->ConvertShp(srcFile, sb.ToString(), &dbCols, blkScale, me->globalFilters, me, &dbCols2);
 	}
@@ -220,9 +220,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->btnSBrowse->SetEnabled(true);
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, OSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<Int32> *dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2)
 {
-	OSInt i;
+	OSInt si;
 	IO::StmData::FileData *fd;
 	DB::DBFFile *dbf;
 	Text::StringBuilderUTF8 sb;
@@ -232,8 +232,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	const UTF8Char *s;
 
 	sb.Append(sourceFile);
-	i = sb.LastIndexOf('.');
-	sb.RemoveChars(sb.GetLength() - i - 1);
+	si = sb.LastIndexOf('.');
+	sb.RemoveChars(sb.GetLength() - (UOSInt)si - 1);
 	sb.Append((const UTF8Char*)"dbf");
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 	NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)this->lstLang->GetSelectedItem()));
@@ -244,10 +244,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 		{
 			sb.ClearStr();
 			r->GetStr(groupCol, &sb);
-			i = names.SortedIndexOf(sb.ToString());
-			if (i < 0)
+			si = names.SortedIndexOf(sb.ToString());
+			if (si < 0)
 			{
-				names.Insert(~i, Text::StrCopyNew(sb.ToString()));
+				names.Insert((UOSInt)~si, Text::StrCopyNew(sb.ToString()));
 			}
 		}
 		dbf->CloseReader(r);
@@ -258,6 +258,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	Text::StringBuilderUTF8 sb2;
 	Data::ArrayList<MapFilter*> newFilters;
 	MapFilter *filter;
+	UOSInt i;
 	newFilters.AddRange(filters);
 	i = names.GetCount();
 	while (i-- > 0)
@@ -289,15 +290,19 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<Int32> *dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt m;
+	UOSInt k;
+	UOSInt l;
+	OSInt si;
+	OSInt sj;
+	OSInt sk;
+	OSInt sl;
+	OSInt sm;
 	UInt32 cipPos;
 	IO::FileStream *cip;
 	IO::FileStream *cix;
@@ -308,12 +313,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	DB::DBReader *dbfr;
 	Data::ArrayList<Block*> blks;
 	Int32 currRec;
-	Int32 nRecords;
-	Int64 fileLeng;
-	Int64 filePos;
+	UInt32 nRecords;
+	UInt64 fileLeng;
+	UInt64 filePos;
 	Int32 shpType;
-	Int32 nParts;
-	Int32 nPoints;
+	UInt32 nParts;
+	UInt32 nPoints;
 	Double xMin;
 	Double yMin;
 	Double xMax;
@@ -329,7 +334,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	UInt8 *outBuff;
 	Block *theBlk;
 //	Dim tmpWriter As IO.StreamWriter
-	Int32 tRec;
+	UInt32 tRec;
 
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(sourceFile, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -376,10 +381,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		{
 			sb.ClearStr();
 			sb.Append(sourceFile);
-			i = sb.LastIndexOf('.');
-			if (i >= 0)
+			si = sb.LastIndexOf('.');
+			if (si >= 0)
 			{
-				sb.RemoveChars(sb.GetLength() - i);
+				sb.RemoveChars(sb.GetLength() - (UOSInt)si);
 			}
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
@@ -389,7 +394,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 
 //			tmpWriter = New IO.StreamWriter(sourceFile.Substring(0, sourceFile.LastIndexOf(".")) + ".txt")
 
-			WriteInt32(&buff[0], nRecords);
+			WriteUInt32(&buff[0], nRecords);
 			WriteInt32(&buff[4], shpType);
 			cip->Write(buff, 8);
 			cix->Write(buff, 4);
@@ -472,20 +477,20 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 				if (chkVal)
 				{
 					fs->Read(buff, 8);
-					nParts = ReadInt32(&buff[0]);
-					nPoints = ReadInt32(&buff[4]);
+					nParts = ReadUInt32(&buff[0]);
+					nPoints = ReadUInt32(&buff[4]);
 //					'tmpWriter.WriteLine(nParts.ToString() + ControlChars.Tab + nPoints.ToString())
 
 					WriteInt32(&buff[0], currRec);
 					WriteUInt32(&buff[4], cipPos);
 					cix->Write(buff, 8);
 
-					WriteInt32(&buff[4], nParts);
+					WriteUInt32(&buff[4], nParts);
 					cip->Write(buff, 8);
 					cipPos += 8;
 					outBuff = MemAlloc(UInt8, nParts * 4 + 4);
 					fs->Read(outBuff, nParts * 4);
-					WriteInt32(&outBuff[nParts * 4], nPoints);
+					WriteUInt32(&outBuff[nParts * 4], nPoints);
 					cip->Write(outBuff, nParts * 4 + 4);
 					cipPos += nParts * 4 + 4;
 					MemFree(outBuff);
@@ -582,33 +587,33 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 						bottom = Math::Double2Int32(yMax * LATSCALE) / blkScale;
 					}
 
-					i = top;
-					while (i <= bottom)
+					si = top;
+					while (si <= bottom)
 					{
-						j = left;
-						while (j <= right)
+						sj = left;
+						while (sj <= right)
 						{
-							k = 0;
-							l = blks.GetCount() - 1;
-							while (k <= l)
+							sk = 0;
+							sl = (OSInt)blks.GetCount() - 1;
+							while (sk <= sl)
 							{
-								m = (k + l) >> 1;
-								theBlk = blks.GetItem(m);
-								if (theBlk->blockX > j)
+								sm = (sk + sl) >> 1;
+								theBlk = blks.GetItem((UOSInt)sm);
+								if (theBlk->blockX > sj)
 								{
-									l = m - 1;
+									sl = sm - 1;
 								}
-								else if (theBlk->blockX < j)
+								else if (theBlk->blockX < sj)
 								{
-									k = m + 1;
+									sk = sm + 1;
 								}
-								else if (theBlk->blockY > i)
+								else if (theBlk->blockY > si)
 								{
-									l = m - 1;
+									sl = sm - 1;
 								}
-								else if (theBlk->blockY < i)
+								else if (theBlk->blockY < si)
 								{
-									k = m + 1;
+									sk = sm + 1;
 								}
 								else
 								{
@@ -623,15 +628,15 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 										strRec->str = 0;
 									}
 									theBlk->records->Add(strRec);
-									k = -1;
+									sk = -1;
 									break;
 								}
 							}
-							if (k >= 0)
+							if (sk >= 0)
 							{
 								theBlk = MemAlloc(Block, 1);
-								theBlk->blockX = (Int32)j;
-								theBlk->blockY = (Int32)i;
+								theBlk->blockX = (Int32)sj;
+								theBlk->blockY = (Int32)si;
 								NEW_CLASS(theBlk->records, Data::ArrayList<StrRecord*>());
 
 								strRec = MemAlloc(StrRecord, 1);
@@ -646,12 +651,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 								}
 								theBlk->records->Add(strRec);
 
-								blks.Insert(k, theBlk);
+								blks.Insert((UOSInt)sk, theBlk);
 							}
 
-							j += 1;
+							sj += 1;
 						}
-						i += 1;
+						si += 1;
 					}
 					currRec++;
 				}
@@ -697,7 +702,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				cib->Seek(IO::SeekableStream::ST_BEGIN, 8 + i * 16);
+				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(8 + i * 16));
 
 				WriteInt32(&buff[0], theBlk->blockX);
 				WriteInt32(&buff[4], theBlk->blockY);
@@ -705,7 +710,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 				WriteInt32(&buff[12], (Int32)filePos);
 				cib->Write(buff, 16);
 
-				cib->Seek(IO::SeekableStream::ST_BEGIN, filePos);
+				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)filePos);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
@@ -727,7 +732,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 					{
 						cib->Write((const UInt8*)u16buff.ToString(), buff[4]);
 					}
-					filePos += buff[4] + 5;
+					filePos += (UOSInt)buff[4] + 5;
 					k++;
 				}
 				i++;
@@ -792,10 +797,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		{
 			sb.ClearStr();
 			sb.Append(sourceFile);
-			i = sb.LastIndexOf('.');
-			if (i >= 0)
+			si = sb.LastIndexOf('.');
+			if (si >= 0)
 			{
-				sb.RemoveChars(sb.GetLength() - i);
+				sb.RemoveChars(sb.GetLength() - (UOSInt)si);
 			}
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
@@ -805,7 +810,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			StrRecord *strRec;
 
 			cipPos = 0;
-			WriteInt32(&buff[0], nRecords);
+			WriteUInt32(&buff[0], nRecords);
 			WriteInt32(&buff[4], 1); //shpType;
 			cip->Write(buff, 8);
 			cix->Write(buff, 4);
@@ -825,7 +830,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 					progress->ProgressUpdate(tRec, nRecords);
 				}
 
-				Int32 recSize = ReadMInt32(&buff[4]);
+				UInt32 recSize = ReadMUInt32(&buff[4]);
 				Bool chkVal = true;
 				if (recSize == 2 && ReadInt32(&buff[8]) == 0)
 				{
@@ -909,34 +914,34 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 					}
 					cipPos += 8;
 
-					i = top;
-					while (i < bottom)
+					si = top;
+					while (si < bottom)
 					{
-						j = left;
-						while (j < right)
+						sj = left;
+						while (sj < right)
 						{
 							Bool found = false;
-							k = 0;
-							l = blks.GetCount() - 1;
-							while (k <= l)
+							sk = 0;
+							sl = (OSInt)blks.GetCount() - 1;
+							while (sk <= sl)
 							{
-								m = (k + l) >> 1;
-								theBlk = blks.GetItem(k);
-								if (theBlk->blockX > j)
+								sm = (sk + sl) >> 1;
+								theBlk = blks.GetItem((UOSInt)sk);
+								if (theBlk->blockX > sj)
 								{
-									l = m - 1;
+									sl = sm - 1;
 								}
-								else if (theBlk->blockX < j)
+								else if (theBlk->blockX < sj)
 								{
-									k = m + 1;
+									sk = sm + 1;
 								}
-								else if (theBlk->blockY > i)
+								else if (theBlk->blockY > si)
 								{
-									l = m - 1;
+									sl = sm - 1;
 								}
-								else if (theBlk->blockX < i)
+								else if (theBlk->blockX < si)
 								{
-									k = m + 1;
+									sk = sm + 1;
 								}
 								else
 								{
@@ -958,8 +963,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 							if (!found)
 							{
 								theBlk = MemAlloc(Block, 1);
-								theBlk->blockX = (Int32)j;
-								theBlk->blockY = (Int32)i;
+								theBlk->blockX = (Int32)sj;
+								theBlk->blockY = (Int32)si;
 								NEW_CLASS(theBlk->records, Data::ArrayList<StrRecord*>());
 
 								strRec = MemAlloc(StrRecord, 1);
@@ -974,12 +979,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 								}
 								theBlk->records->Add(strRec);
 
-								blks.Insert(k, theBlk);
+								blks.Insert((UOSInt)sk, theBlk);
 							}
 
-							j += 1;
+							sj += 1;
 						}
-						i += 1;
+						si += 1;
 					}
 					currRec += 1;
 				}
@@ -1026,7 +1031,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				cib->Seek(IO::SeekableStream::ST_BEGIN, 8 + i * 16);
+				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(8 + i * 16));
 
 				WriteInt32(&buff[0], theBlk->blockX);
 				WriteInt32(&buff[4], theBlk->blockY);
@@ -1034,7 +1039,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 				WriteInt32(&buff[12], (Int32)filePos);
 				cib->Write(buff, 16);
 
-				cib->Seek(IO::SeekableStream::ST_BEGIN, filePos);
+				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)filePos);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
@@ -1056,7 +1061,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 					{
 						cib->Write((const UInt8*)u16buff.ToString(), buff[4]);
 					}
-					filePos += buff[4] + 5;
+					filePos += (UOSInt)buff[4] + 5;
 					k++;
 				}
 				i++;
@@ -1195,7 +1200,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		DEL_CLASS(dbf);
 		DEL_CLASS(fd);
 
-		this->currGroup = -1;
+		this->currGroup = (UOSInt)-1;
 
 		if (shpType == 1)
 		{
@@ -1203,7 +1208,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		}
 		else
 		{
-			Double tVal = (yMax - yMin) * (xMax - xMin) / dbRecCnt;
+			Double tVal = (yMax - yMin) * (xMax - xMin) / Math::UOSInt2Double(dbRecCnt);
 			retV = (Int32)(Math::Sqrt(tVal) * 500000);
 			if (retV < 5000)
 			{
@@ -1222,7 +1227,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 void SSWR::SHPConv::SHPConvMainForm::ClearFilter()
 {
 	MapFilter *filter;
-	OSInt i = this->globalFilters->GetCount();
+	UOSInt i = this->globalFilters->GetCount();
 	while (i-- > 0)
 	{
 		filter = this->globalFilters->GetItem(i);
@@ -1231,14 +1236,14 @@ void SSWR::SHPConv::SHPConvMainForm::ClearFilter()
 	this->globalFilters->Clear();
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2)
+void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(labelStr);
 	OSInt i;
 	UOSInt j;
 	UOSInt k;
-	OSInt strType;
+	UOSInt strType;
 	const UTF8Char *strTmp;
 	UTF8Char sbuff[256];
 	UTF8Char c;
@@ -1290,7 +1295,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 			}
 			j += 1;
 		}
-		dbCols2->Add((Int32)(j + (strType * 256)));
+		dbCols2->Add((UInt32)(j + (strType * 256)));
 
 		if (i >= 0)
 		{
@@ -1303,7 +1308,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 	}
 }
 
-void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2)
+void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2)
 {
 	UOSInt i;
 	i = dbCols->GetCount();
@@ -1315,13 +1320,13 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 	dbCols2->Clear();
 }
 
-const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<Int32> *dbCols2)
+const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UOSInt i;
 	UOSInt j;
-	Int32 col;
-	Int32 shpType;
+	UInt32 col;
+	UInt32 shpType;
 	UTF8Char sbuff[256];
 	i = 0;
 	j = dbCols2->GetCount();
@@ -1520,7 +1525,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 
 	i = 0;
 	UOSInt j = codePages.GetCount();
-	OSInt k;
+	UOSInt k;
 	while (i < j)
 	{
 		cp = codePages.GetItem(i);
@@ -1574,7 +1579,7 @@ void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(UInt64 currCount, UInt64 new
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)" out of ");
 	sptr = Text::StrUInt64(sptr, this->totalVal);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
-	sptr = Text::StrInt32(sptr, (Int32)(currCount * 100.0 / totalVal));
+	sptr = Text::StrUInt32(sptr, (UInt32)(currCount * 100 / totalVal));
 	this->lblProgress->SetText(sbuff);
 	this->ui->ProcessMessages();
 }

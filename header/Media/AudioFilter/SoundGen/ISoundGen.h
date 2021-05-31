@@ -16,13 +16,13 @@ namespace Media
 					ST_BELL
 				} SoundType;
 			protected:
-				Int32 freq;
+				UInt32 freq;
 
 			public:
-				ISoundGen(Int32 freq);
+				ISoundGen(UInt32 freq);
 				virtual ~ISoundGen();
 
-				virtual void GenSignals(Double *buff, OSInt sampleCnt) = 0;
+				virtual void GenSignals(Double *buff, UOSInt sampleCnt) = 0;
 				virtual SoundType GetSoundType() = 0;
 
 				virtual Bool GenSound(Double sampleVol) = 0;

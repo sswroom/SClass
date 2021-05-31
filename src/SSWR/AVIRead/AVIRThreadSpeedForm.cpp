@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	SSWR::AVIRead::AVIRThreadSpeedForm *me = (SSWR::AVIRead::AVIRThreadSpeedForm*)userObj;
 	UTF8Char sbuff[64];
 	Double t;
-	OSInt i;
+	UOSInt i;
 	me->lvResult->ClearItems();
 
 	NEW_CLASS(me->clk, Manage::HiResClock());

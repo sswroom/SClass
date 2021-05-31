@@ -14,7 +14,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
 	UInt8 *buff = MemAlloc(UInt8, 2048);
 	while (!stat->toStop)
 	{
-		OSInt recvSize;
+		UOSInt recvSize;
 		Net::SocketUtil::AddressInfo recvAddr;
 		UInt16 recvPort;
 
@@ -30,7 +30,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
 				}
 				else if (opcode == 2) //Reply
 				{
-					stat->me->hdlr(&buff[22], ReadNInt32(&buff[28]), stat->me->userData);
+					stat->me->hdlr(&buff[22], ReadNUInt32(&buff[28]), stat->me->userData);
 				}
 			}
 		}
@@ -41,9 +41,9 @@ UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
 	return 0;
 }
 
-Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, OSInt threadCnt)
+Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, UOSInt threadCnt)
 {
-	OSInt i;
+	UOSInt i;
 	this->threadCnt = threadCnt;
 	this->sockf = sockf;
 	this->hdlr = hdlr;
@@ -92,7 +92,7 @@ Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, c
 
 Net::ARPHandler::~ARPHandler()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->threadStats)
 	{
 		i = this->threadCnt;
@@ -157,7 +157,7 @@ Bool Net::ARPHandler::MakeRequest(UInt32 targetIP)
 {
 	UInt8 buff[256];
 	Bool succ = false;
-	WriteNInt32(&buff[0], 0xffffffff);
+	WriteNUInt32(&buff[0], 0xffffffff);
 	WriteNInt16(&buff[4], (Int16)0xffff);
 	MemCopyNO(&buff[6], this->hwAddr, 6);
 	WriteMInt16(&buff[12], 0x806); //ARP
@@ -167,9 +167,9 @@ Bool Net::ARPHandler::MakeRequest(UInt32 targetIP)
 	buff[19] = 4; //Protocol Size;
 	WriteMInt16(&buff[20], 1); //Opcode = request
 	MemCopyNO(&buff[22], this->hwAddr, 6); // Sender Address
-	WriteNInt32(&buff[28], this->ipAddr); // Sender IP
+	WriteNUInt32(&buff[28], this->ipAddr); // Sender IP
 	MemClear(&buff[32], 6); // Target Address
-	WriteNInt32(&buff[38], targetIP); //Target IP
+	WriteNUInt32(&buff[38], targetIP); //Target IP
 	MemClear(&buff[42], 18);
 
 	succ = (this->sockf->SendToIF(this->soc, buff, 60, this->ifName) == 60);

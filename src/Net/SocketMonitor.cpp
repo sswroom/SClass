@@ -15,7 +15,7 @@ UInt32 __stdcall Net::SocketMonitor::DataThread(void *obj)
 	UInt8 *buff = MemAlloc(UInt8, 65536);
 	while (!stat->toStop)
 	{
-		OSInt recvSize;
+		UOSInt recvSize;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		Net::SocketFactory::ErrorType et;

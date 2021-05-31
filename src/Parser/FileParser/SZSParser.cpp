@@ -42,8 +42,8 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char u8buff[257];
 	OSInt i;
 	Int32 fileCnt;
-	Int64 ofst;
-	Int64 minOfst;
+	UInt64 ofst;
+	UInt64 minOfst;
 	Int64 fileOfst;
 	Int64 fileSize;
 	IO::PackageFile *pf = 0;
@@ -56,13 +56,13 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	ofst = 16;
-	minOfst = 16 + 272 * fileCnt;
+	minOfst = 16 + 272 * (UInt32)fileCnt;
 	i = 0;
 	while (i < fileCnt)
 	{
 		fd->GetRealData(ofst, 272, fileBuff);
 
-		fileOfst = ReadInt64(&fileBuff[256]);
+		fileOfst = ReadUInt64(&fileBuff[256]);
 		fileSize = ReadInt64(&fileBuff[264]);
 		if (fileOfst < minOfst || fileSize < 0)
 		{

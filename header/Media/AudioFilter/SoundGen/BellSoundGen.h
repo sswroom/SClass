@@ -12,15 +12,15 @@ namespace Media
 			class BellSoundGen : public ISoundGen
 			{
 			protected:
-				Int32 currSample;
+				UInt32 currSample;
 				Double sampleVol;
 				Sync::Mutex *soundMut;
 		
 			public:
-				BellSoundGen(Int32 freq);
+				BellSoundGen(UInt32 freq);
 				virtual ~BellSoundGen();
 
-				virtual void GenSignals(Double *buff, OSInt sampleCnt);
+				virtual void GenSignals(Double *buff, UOSInt sampleCnt);
 				virtual SoundType GetSoundType();
 
 				virtual Bool GenSound(Double sampleVol);

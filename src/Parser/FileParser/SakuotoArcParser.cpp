@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFile(IO::IStreamDat
 {
 	UInt8 hdrBuff[16];
 	UInt8 *recBuff;
-	Int64 dataOfst;
+	UInt64 dataOfst;
 	UInt32 recCnt;
 	UInt32 recSize;
 	UInt32 i;

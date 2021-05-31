@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRUDPTestForm::~AVIRUDPTestForm()
 {
-	OSInt i;
+	UOSInt i;
 	Bool found = true;
 	i = this->threadCnt;
 	while (i-- > 0)

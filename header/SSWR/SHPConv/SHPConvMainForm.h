@@ -89,7 +89,7 @@ namespace SSWR
 			Data::ArrayList<MapFilter *> *globalFilters;
 			const UTF8Char *progressName;
 			UInt64 totalVal;
-			OSInt currGroup;
+			UOSInt currGroup;
 			Text::HKSCSFix *hkscsConv;
 			Bool isGrid80;
 
@@ -102,14 +102,14 @@ namespace SSWR
 			static void __stdcall OnPreviewClicked(void *userObj);
 			static void __stdcall OnConvertClicked(void *userObj);
 
-			Int32 GroupConvert(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, OSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<Int32> *dbCols2);
-			Int32 ConvertShp(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<Int32> *dbCols2);
+			Int32 GroupConvert(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2);
+			Int32 ConvertShp(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2);
 			Int32 LoadShape(const UTF8Char *fileName, Bool updateTxt);
 			void ClearFilter();
 
-			virtual void ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2);
-			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<Int32> *dbCols2);
-			virtual const UTF8Char *GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<Int32> *dbcols2);
+			virtual void ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);
+			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);
+			virtual const UTF8Char *GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbcols2);
 
 		public:
 			SHPConvMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr);

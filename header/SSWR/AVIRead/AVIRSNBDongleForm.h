@@ -26,8 +26,8 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Int64 devId;
-				Int16 shortAddr;
+				UInt64 devId;
+				UInt16 shortAddr;
 				IO::SNBDongle::HandleType handType;
 				Sync::RWMutex *mut;
 				Bool readingChg;
@@ -46,9 +46,9 @@ namespace SSWR
 			Bool dongleUpdated;
 
 			Sync::RWMutex *devMut;
-			Data::Int64Map<DeviceInfo*> *devMap;
+			Data::UInt64Map<DeviceInfo*> *devMap;
 			Bool devChg;
-			Data::Int64Map<Int32> *devHandlerMap;
+			Data::UInt64Map<Int32> *devHandlerMap;
 
 			UI::GUITabControl *tcMain;
 
@@ -106,9 +106,9 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void DeviceAdded(Int64 devId);
-			virtual void DeviceSensor(Int64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals);
-			virtual void DeviceUpdated(Int64 devId, Int16 shortAddr);
+			virtual void DeviceAdded(UInt64 devId);
+			virtual void DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals);
+			virtual void DeviceUpdated(UInt64 devId, UInt16 shortAddr);
 			virtual void DongleInfoUpdated();
 		};
 	}

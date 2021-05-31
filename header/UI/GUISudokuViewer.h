@@ -8,12 +8,12 @@ namespace UI
 	class GUISudokuViewer : public UI::GUICustomDraw
 	{
 	public:
-		typedef void (__stdcall *NumberInputEvent)(void *userObj, OSInt x, OSInt y, UInt8 num);
+		typedef void (__stdcall *NumberInputEvent)(void *userObj, UOSInt x, UOSInt y, UInt8 num);
 
 	private:
 		Game::Sudoku::SudokuBoard *board;
-		OSInt selX;
-		OSInt selY;
+		UOSInt selX;
+		UOSInt selY;
 		Data::ArrayList<NumberInputEvent> *numInputHdlr;
 		Data::ArrayList<void *> *numInputObj;
 
@@ -28,5 +28,5 @@ namespace UI
 		void HandleNumberInput(NumberInputEvent hdlr, void *userObj);
 
 	};
-};
+}
 #endif

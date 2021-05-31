@@ -496,7 +496,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	UOSInt j;
 	UOSInt k;
 	UInt8 *dataBuff;
-	Data::ArrayList<Int64> *keys;
+	Data::ArrayList<UInt64> *keys;
 	Data::ArrayList<Int32> *vals;
 	this->devMut->LockRead();
 	i = 0;
@@ -507,7 +507,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	vals = this->devHandlerMap->GetValues();
 	while (i < j)
 	{
-		WriteInt64(&dataBuff[k], keys->GetItem(i));
+		WriteUInt64(&dataBuff[k], keys->GetItem(i));
 		WriteInt32(&dataBuff[k + 8], vals->GetItem(i));
 		i++;
 		k += 12;
@@ -534,8 +534,8 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->stm = stm;
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->devMut, Sync::RWMutex());
-	NEW_CLASS(this->devMap, Data::Int64Map<DeviceInfo*>());
-	NEW_CLASS(this->devHandlerMap, Data::Int64Map<Int32>());
+	NEW_CLASS(this->devMap, Data::UInt64Map<DeviceInfo*>());
+	NEW_CLASS(this->devHandlerMap, Data::UInt64Map<Int32>());
 	this->devChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->dongleUpdated = false;
@@ -655,7 +655,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(Int64 devId)
+void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 {
 	DeviceInfo *dev;
 	this->devMut->LockWrite();
@@ -680,7 +680,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(Int64 devId)
 	this->devMut->UnlockWrite();
 }
 
-void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(Int64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
+void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
 {
 	DeviceInfo *dev;
 	this->devMut->LockRead();
@@ -708,7 +708,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(Int64 devId, IO::SNBDongle::
 	}
 }
 
-void SSWR::AVIRead::AVIRSNBDongleForm::DeviceUpdated(Int64 devId, Int16 shortAddr)
+void SSWR::AVIRead::AVIRSNBDongleForm::DeviceUpdated(UInt64 devId, UInt16 shortAddr)
 {
 	DeviceInfo *dev;
 	this->devMut->LockRead();

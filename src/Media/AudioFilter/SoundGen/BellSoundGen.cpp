@@ -23,7 +23,7 @@ Ting Sound
 46590
 */
 
-Media::AudioFilter::SoundGen::BellSoundGen::BellSoundGen(Int32 freq) : Media::AudioFilter::SoundGen::ISoundGen(freq)
+Media::AudioFilter::SoundGen::BellSoundGen::BellSoundGen(UInt32 freq) : Media::AudioFilter::SoundGen::ISoundGen(freq)
 {
 	NEW_CLASS(this->soundMut, Sync::Mutex());
 	this->sampleVol = 0;
@@ -35,7 +35,7 @@ Media::AudioFilter::SoundGen::BellSoundGen::~BellSoundGen()
 	DEL_CLASS(this->soundMut)
 }
 
-void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, OSInt sampleCnt)
+void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt sampleCnt)
 {
 	Double params[] = {
 	1406, -1.0, 1.0,
@@ -52,7 +52,7 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, OSInt 
 	44250, -1.3, 1.0,
 	46590, -1.3, 1.0
 	};
-	Int32 paramCnt = 13;
+	UInt32 paramCnt = 13;
 	Double norVol;
 	if (this->freq <= 48000)
 	{
@@ -76,8 +76,8 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, OSInt 
 		return;
 	}
 
-	OSInt i;
-	OSInt k;
+	UOSInt i;
+	UOSInt k;
 	Double t;
 	i = 0;
 	while (i < sampleCnt)

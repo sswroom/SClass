@@ -40,16 +40,16 @@ extern "C"
 	UOSInt MyString_StrCharCntUTF16(const UTF16Char *oriStr);
 	UOSInt MyString_StrCharCntUTF32(const UTF32Char *oriStr);
 
-	UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, Int64 val);
-	UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, Int64 val);
-	UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, Int32 val);
-	UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, Int32 val);
-	UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, Int32 val);
-	UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, Int64 val);
-	UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, Int64 val);
-	UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, Int32 val);
-	UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, Int32 val);
-	UTF32Char *MyString_StrHexVal24UTF32(UTF32Char *oriStr, Int32 val);
+	UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, UInt64 val);
+	UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, UInt64 val);
+	UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, UInt32 val);
+	UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, UInt32 val);
+	UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, UInt32 val);
+	UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, UInt64 val);
+	UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, UInt64 val);
+	UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, UInt32 val);
+	UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, UInt32 val);
+	UTF32Char *MyString_StrHexVal24UTF32(UTF32Char *oriStr, UInt32 val);
 
 	Int32 MyString_StrToInt32UTF8(const UTF8Char *intStr);
 	Int32 MyString_StrToInt32UTF16(const UTF16Char *intStr);
@@ -98,7 +98,7 @@ namespace Text
 	FORCEINLINE OSInt StrCompareICase(const Char *str1, const Char *str2) { return MyString_StrCompareICase(str1, str2); }
 
 	FORCEINLINE UOSInt StrCharCnt(const Char *str) { return MyString_StrCharCnt(str); }
-	OSInt StrCharCntS(const Char *str, OSInt maxLen);
+	UOSInt StrCharCntS(const Char *str, UOSInt maxLen);
 
 	Bool StrHasUpperCase(const Char *str);
 
@@ -220,7 +220,7 @@ namespace Text
 	FORCEINLINE OSInt StrCompare(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompare((const Char*)str1, (const Char*)str2); }
 	FORCEINLINE OSInt StrCompareICase(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompareICase((const Char*)str1, (const Char*)str2); }
 	FORCEINLINE UOSInt StrCharCnt(const UTF8Char *str) { return MyString_StrCharCnt((const Char*)str); }
-	FORCEINLINE OSInt StrCharCntS(const UTF8Char *str, OSInt maxLen) { return StrCharCntS((const Char*)str, maxLen); }
+	FORCEINLINE UOSInt StrCharCntS(const UTF8Char *str, UOSInt maxLen) { return StrCharCntS((const Char*)str, maxLen); }
 	FORCEINLINE Bool StrHasUpperCase(const UTF8Char *str) { return StrHasUpperCase((const Char*)str); }
 
 #ifdef HAS_INT64

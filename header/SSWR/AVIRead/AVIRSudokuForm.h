@@ -18,7 +18,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Game::Sudoku::SudokuBoard *board;
 
-			static void __stdcall EventNumInput(void *userObj, OSInt selX, OSInt selY, UInt8 num);
+			static void __stdcall EventNumInput(void *userObj, UOSInt selX, UOSInt selY, UInt8 num);
 		public:
 			AVIRSudokuForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSudokuForm();
@@ -26,6 +26,6 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

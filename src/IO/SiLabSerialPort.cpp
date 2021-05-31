@@ -134,7 +134,7 @@ UOSInt IO::SiLabSerialPort::Write(const UInt8 *buff, UOSInt size)
 		return 0;
 	}
 #else
-	if (this->driver->SI_Write(h, (void*)buff, size, &writeCnt, 0) == IO::SiLabDriver::SI_SUCCESS)
+	if (this->driver->SI_Write(h, (void*)buff, (UInt32)size, &writeCnt, 0) == IO::SiLabDriver::SI_SUCCESS)
 	{
 		return writeCnt;
 	}
@@ -148,7 +148,7 @@ UOSInt IO::SiLabSerialPort::Write(const UInt8 *buff, UOSInt size)
 struct ReadEvent
 {
 	UInt8 *buff;
-	OSInt size;	
+	UOSInt size;	
 	Sync::Event *evt;
 	UInt32 readSize;
 	OVERLAPPED ol;

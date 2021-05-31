@@ -28,42 +28,42 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 	if (me->audSrc == 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 buffSize;
-		Int32 frequency;
-		Int32 nChannel;
-		Int32 bitCount;
-		Int32 dtmfMS;
+		UInt32 buffSize;
+		UInt32 frequency;
+		UInt16 nChannel;
+		UInt16 bitCount;
+		UInt32 dtmfMS;
 		sb.ClearStr();
 		me->txtBuffSize->GetText(&sb);
-		if (!sb.ToInt32(&buffSize))
+		if (!sb.ToUInt32(&buffSize))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error found in buffer size", (const UTF8Char *)"Error", me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtFrequency->GetText(&sb);
-		if (!sb.ToInt32(&frequency))
+		if (!sb.ToUInt32(&frequency))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error found in sampling rate", (const UTF8Char *)"Error", me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtChannel->GetText(&sb);
-		if (!sb.ToInt32(&nChannel))
+		if (!sb.ToUInt16(&nChannel))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error found in no. of channels", (const UTF8Char *)"Error", me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtBitCount->GetText(&sb);
-		if (!sb.ToInt32(&bitCount))
+		if (!sb.ToUInt16(&bitCount))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error found in bit per sample", (const UTF8Char *)"Error", me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtDTMFInterval->GetText(&sb);
-		if (!sb.ToInt32(&dtmfMS))
+		if (!sb.ToUInt32(&dtmfMS))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error found in DTMF decode interval", (const UTF8Char *)"Error", me);
 			return;
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 		}
 		if (me->radInputSilent->IsSelected())
 		{
-			NEW_CLASS(me->audSrc, Media::SilentSource(frequency, nChannel, bitCount, (const UTF8Char*)"Silent", -1));
+			NEW_CLASS(me->audSrc, Media::SilentSource(frequency, nChannel, bitCount, (const UTF8Char*)"Silent", (UInt64)-1));
 		}
 		else if (me->radInputWaveIn->IsSelected())
 		{
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 			NEW_CLASS(me->audioCapture, Media::AudioFilter::AudioCaptureFilter(me->audioLevel));
 			me->bitCount = bitCount;
 			me->nChannels = nChannel;
-			me->sampleBuff = MemAlloc(UInt8, (FFTSAMPLE + FFTAVG - 1) * me->nChannels * (me->bitCount >> 3));
+			me->sampleBuff = MemAlloc(UInt8, (FFTSAMPLE + FFTAVG - 1) * (UOSInt)me->nChannels * (UOSInt)(me->bitCount >> 3));
 			me->volBooster->SetEnabled(me->chkVolBoost->IsChecked());
 			me->volBooster->SetBGLevel(Math::Pow(10, (me->tbVolBoostBG->GetPos() - 192) / 20.0));
 			me->dtmfGen->SetVolume(Math::Pow(10, (me->tbDTMFVol->GetPos() - 960) / 20.0));

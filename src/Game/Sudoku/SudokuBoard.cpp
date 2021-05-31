@@ -20,12 +20,12 @@ void Game::Sudoku::SudokuBoard::HintInit()
 
 void Game::Sudoku::SudokuBoard::HintHCheck()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt currOfst;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt currOfst;
 	Bool numExist[10];
-	Int16 v;
+	UInt16 v;
 	currOfst = 0;
 	i = 9;
 	while (i-- > 0)
@@ -46,7 +46,7 @@ void Game::Sudoku::SudokuBoard::HintHCheck()
 		{
 			if (numExist[k])
 			{
-				v = ~(16 << k);
+				v = (UInt16)~(16 << k);
 				j = 9;
 				while (j-- > 0)
 				{
@@ -61,12 +61,12 @@ void Game::Sudoku::SudokuBoard::HintHCheck()
 
 void Game::Sudoku::SudokuBoard::HintVCheck()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt currOfst;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt currOfst;
 	Bool numExist[10];
-	Int16 v;
+	UInt16 v;
 	currOfst = 0;
 	i = 9;
 	while (i-- > 0)
@@ -87,11 +87,11 @@ void Game::Sudoku::SudokuBoard::HintVCheck()
 		{
 			if (numExist[k])
 			{
-				v = ~(16 << k);
+				v = (UInt16)~(16 << k);
 				j = 9;
 				while (j-- > 0)
 				{
-					this->board[currOfst + j * 9] = this->board[currOfst + j * 9] & v;
+					this->board[currOfst + j * 9] = (UInt16)(this->board[currOfst + j * 9] & v);
 				}
 			}
 		}
@@ -102,15 +102,15 @@ void Game::Sudoku::SudokuBoard::HintVCheck()
 
 void Game::Sudoku::SudokuBoard::HintBoxCheck()
 {
-	OSInt i1;
-	OSInt i2;
-	OSInt j1;
-	OSInt j2;
-	OSInt k;
-	OSInt currOfst;
-	OSInt currOfst2;
+	UOSInt i1;
+	UOSInt i2;
+	UOSInt j1;
+	UOSInt j2;
+	UOSInt k;
+	UOSInt currOfst;
+	UOSInt currOfst2;
 	Bool numExist[10];
-	Int16 v;
+	UInt16 v;
 	currOfst = 0;
 	i1 = 3;
 	while (i1-- > 0)
@@ -139,14 +139,14 @@ void Game::Sudoku::SudokuBoard::HintBoxCheck()
 			{
 				if (numExist[k])
 				{
-					v = ~(16 << k);
+					v = (UInt16)~(16 << k);
 					i2 = 3;
 					while (i2-- > 0)
 					{
 						j2 = 3;
 						while (j2-- > 0)
 						{
-							this->board[currOfst2 + i2 + j2 * 9] = this->board[currOfst2 + i2 + j2 * 9] & v;
+							this->board[currOfst2 + i2 + j2 * 9] = (UInt16)(this->board[currOfst2 + i2 + j2 * 9] & v);
 						}
 					}
 				}
@@ -167,7 +167,7 @@ void Game::Sudoku::SudokuBoard::HintCheckLev1()
 
 Bool Game::Sudoku::SudokuBoard::SolveLev1()
 {
-	Int16 v;
+	UInt16 v;
 	Bool changed;
 	Bool modified;
 	changed = false;
@@ -176,7 +176,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev1()
 	{
 		modified = false;
 		HintCheckLev1();
-		OSInt i = 81;
+		UOSInt i = 81;
 		while (i-- > 0)
 		{
 			v = this->board[i];
@@ -234,7 +234,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev1()
 
 Bool Game::Sudoku::SudokuBoard::SolveLev1One()
 {
-	Int16 v;
+	UInt16 v;
 	Bool changed;
 	changed = false;
 
@@ -295,11 +295,11 @@ Bool Game::Sudoku::SudokuBoard::SolveLev1One()
 Bool Game::Sudoku::SudokuBoard::SolveLev2H()
 {
 	UInt8 cnts[10];
-	Int16 v;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt currOfst;
+	UInt16 v;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt currOfst;
 	Bool modified = false;
 	currOfst = 0;
 	i = 9;
@@ -357,7 +357,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2H()
 		{
 			if (cnts[k] == 1)
 			{
-				v = 16 << k;
+				v = (UInt16)(16 << k);
 				j = 9;
 				while (j-- > 0)
 				{
@@ -378,11 +378,11 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2H()
 Bool Game::Sudoku::SudokuBoard::SolveLev2V()
 {
 	UInt8 cnts[10];
-	Int16 v;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt currOfst;
+	UInt16 v;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt currOfst;
 	Bool modified = false;
 	currOfst = 0;
 	i = 9;
@@ -440,7 +440,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2V()
 		{
 			if (cnts[k] == 1)
 			{
-				v = 16 << k;
+				v = (UInt16)(16 << k);
 				j = 9;
 				while (j-- > 0)
 				{
@@ -461,14 +461,14 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2V()
 Bool Game::Sudoku::SudokuBoard::SolveLev2Box()
 {
 	UInt8 cnts[10];
-	Int16 v;
-	OSInt i1;
-	OSInt i2;
-	OSInt j1;
-	OSInt j2;
-	OSInt k;
-	OSInt currOfst;
-	OSInt currOfst2;
+	UInt16 v;
+	UOSInt i1;
+	UOSInt i2;
+	UOSInt j1;
+	UOSInt j2;
+	UOSInt k;
+	UOSInt currOfst;
+	UOSInt currOfst2;
 	Bool modified = false;
 	currOfst = 0;
 	i1 = 3;
@@ -534,7 +534,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2Box()
 			{
 				if (cnts[k] == 1)
 				{
-					v = 16 << k;
+					v = (UInt16)(16 << k);
 					i2 = 3;
 					while (i2-- > 0)
 					{
@@ -580,14 +580,14 @@ Bool Game::Sudoku::SudokuBoard::SolveLev3()
 	Bool changed;
 	Bool modified;
 	Bool fin;
-	Int16 v;
+	UInt16 v;
 	changed = this->SolveLev2();
 	if (this->IsFinish())
 	{
 		return changed;
 	}
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 k;
 	Game::Sudoku::SudokuBoard *tmpBoard;
 	NEW_CLASS(tmpBoard, Game::Sudoku::SudokuBoard());
@@ -637,7 +637,7 @@ Game::Sudoku::SudokuBoard::~SudokuBoard()
 	MemFree(this->board);
 }
 
-void Game::Sudoku::SudokuBoard::SetBoardNum(OSInt xOfst, OSInt yOfst, UInt8 number, Bool isDefault)
+void Game::Sudoku::SudokuBoard::SetBoardNum(UOSInt xOfst, UOSInt yOfst, UInt8 number, Bool isDefault)
 {
 	UInt16 v = number;
 	if (isDefault)
@@ -647,7 +647,7 @@ void Game::Sudoku::SudokuBoard::SetBoardNum(OSInt xOfst, OSInt yOfst, UInt8 numb
 	this->board[yOfst * 9 + xOfst] = v;
 }
 
-UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(OSInt xOfst, OSInt yOfst, Bool *isDefault)
+UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UOSInt xOfst, UOSInt yOfst, Bool *isDefault)
 {
 	UInt16 v = this->board[yOfst * 9 + xOfst];
 	if (isDefault)

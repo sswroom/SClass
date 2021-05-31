@@ -9,7 +9,7 @@ typedef enum
 	MNU_CLEAR
 } MenuItem;
 
-void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(void *userObj, OSInt selX, OSInt selY, UInt8 num)
+void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(void *userObj, UOSInt selX, UOSInt selY, UInt8 num)
 {
 	SSWR::AVIRead::AVIRSudokuForm *me = (SSWR::AVIRead::AVIRSudokuForm *)userObj;
 	me->board->SetBoardNum(selX, selY, num, true);
