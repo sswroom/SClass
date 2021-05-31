@@ -468,8 +468,8 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 	Math::CoordinateSystem *csys = 0;
 	Math::EarthEllipsoid::EarthEllipsoidType eet;
 	Math::GeographicCoordinateSystem *gcs = 0;
-	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PrimemType::PT_GREENWICH;
-	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UnitType::UT_DEGREE;
+	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PT_GREENWICH;
+	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UT_DEGREE;
 	Char c;
 	UInt32 srid = 0;
 	if (Text::StrStartsWith(prjBuff, "GEOGCS["))
