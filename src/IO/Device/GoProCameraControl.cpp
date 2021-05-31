@@ -279,9 +279,9 @@ UOSInt IO::Device::GoProCameraControl::GetFileList(Data::ArrayList<IO::CameraCon
 Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, IO::Stream *outStm)
 {
 	UTF8Char sbuff[2048];
-	OSInt readSize;
-	Int64 totalSize = 0;
-	Int64 totalWriteSize = 0;
+	UOSInt readSize;
+	UInt64 totalSize = 0;
+	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
 	Net::HTTPClient *cli;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
@@ -303,8 +303,8 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInfo *file, IO::Stream *outStm)
 {
 	UTF8Char sbuff[2048];
-	OSInt readSize;
-	Int64 totalSize = 0;
+	UOSInt readSize;
+	UInt64 totalSize = 0;
 	UTF8Char *sptr;
 	Net::HTTPClient *cli;
 	if (!Text::StrStartsWith(file->fileName, (const UTF8Char*)"GOPR"))
@@ -335,7 +335,7 @@ IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(Ne
 	if (sockf->GetConnInfoList(&connInfoList) == 0)
 		return 0;
 	UInt32 ip = Net::SocketUtil::GetIPAddr((const UTF8Char*)"10.5.5.9");
-	OSInt i = connInfoList.GetCount();
+	UOSInt i = connInfoList.GetCount();
 	while (i-- > 0)
 	{
 		connInfo = connInfoList.GetItem(i);

@@ -22,7 +22,7 @@ namespace SSWR
 				AVIRGISTileDownloadForm *me;
 				Sync::Event *threadEvt;
 				Int32 threadStat; //0 = not running, 1 = idle, 2 = has task, 3 = toStop
-				OSInt lyrId;
+				UOSInt lyrId;
 				Int64 imageId;
 				Sync::Mutex *pkgMut;
 				IO::SPackageFile *spkg;

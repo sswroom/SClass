@@ -58,8 +58,8 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 
 	this->VideoBeginProc();
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	OSInt vwidth = this->videoInfo->dispWidth - cropLeft - cropRight;
-	OSInt vheight = this->videoInfo->dispHeight - cropTop - cropBottom;
+	UOSInt vwidth = this->videoInfo->dispWidth - cropLeft - cropRight;
+	UOSInt vheight = this->videoInfo->dispHeight - cropTop - cropBottom;
 	if (this->videoInfo->ftype == Media::FT_FIELD_BF || this->videoInfo->ftype == Media::FT_FIELD_TF)
 	{
 		vheight = vheight << 1;

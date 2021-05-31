@@ -397,14 +397,14 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 	this->logList->Clear();
 }
 
-OSInt SSWR::AVIRead::AVIRMACManagerForm::DataGetIndex(Int64 macInt)
+OSInt SSWR::AVIRead::AVIRMACManagerForm::DataGetIndex(UInt64 macInt)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	SSWR::AVIRead::AVIRMACManagerForm::DataEntry *entry;
 	i = 0;
-	j = this->dataList->GetCount() - 1;
+	j = (OSInt)this->dataList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

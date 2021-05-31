@@ -236,7 +236,7 @@ DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *name, UOSInt maxCnt,
 	{
 		return 0;
 	}
-	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), name, -1, 0);
+	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), name, 0);
 	return this->ExecuteReader(sbuff);
 }
 

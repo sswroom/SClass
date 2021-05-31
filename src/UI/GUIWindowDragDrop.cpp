@@ -52,7 +52,7 @@ UI::GUIWindowDragData::~GUIWindowDragData()
 	}
 }
 
-OSInt UI::GUIWindowDragData::GetCount()
+UOSInt UI::GUIWindowDragData::GetCount()
 {
 	if (this->dataMap == 0)
 	{
@@ -61,7 +61,7 @@ OSInt UI::GUIWindowDragData::GetCount()
 	return this->dataMap->GetCount();
 }
 
-const UTF8Char *UI::GUIWindowDragData::GetName(OSInt index)
+const UTF8Char *UI::GUIWindowDragData::GetName(UOSInt index)
 {
 	if (this->dataMap == 0)
 	{

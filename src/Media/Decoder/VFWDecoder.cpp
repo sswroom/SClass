@@ -165,8 +165,8 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 		{
 			Media::FrameInfo info;
 			Media::StaticImage *img;
-			Int32 frameRateNorm;
-			Int32 frameRateDenorm;
+			UInt32 frameRateNorm;
+			UInt32 frameRateDenorm;
 			UOSInt maxFrameSize;
 			this->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 			NEW_CLASS(img, Media::StaticImage(&info));
@@ -225,8 +225,8 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	this->lastFrameType = Media::FT_NON_INTERLACE;
 	this->lastFrameFlags = Media::IVideoSource::FF_DISCONTTIME;*/
 
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	Media::FrameInfo frameInfo;
 	if (!sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
@@ -250,12 +250,12 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	bmih.biClrImportant = 0;
 	bmih.biClrUsed = 0;
 
-	OSInt fccIndex = 0;
-	OSInt j = fccHdlrs.GetCount();
+	UOSInt fccIndex = 0;
+	UOSInt j = fccHdlrs.GetCount();
 	Int32 fcc;
 	Int32 outFcc;
-	OSInt k;
-	OSInt l;
+	UOSInt k;
+	UOSInt l;
 	while (fccIndex < j)
 	{
 		fcc = fccHdlrs.GetItem(fccIndex);
@@ -444,7 +444,7 @@ const UTF8Char *Media::Decoder::VFWDecoder::GetFilterName()
 	return (const UTF8Char*)"VFWDecoder";
 }
 
-Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;
@@ -480,8 +480,12 @@ void Media::Decoder::VFWDecoder::Stop()
 	this->frameCbData = 0;
 }
 
+Bool Media::Decoder::VFWDecoder::HasFrameCount()
+{
+	return this->sourceVideo->HasFrameCount();
+}
 
-OSInt Media::Decoder::VFWDecoder::GetFrameCount()
+UOSInt Media::Decoder::VFWDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }

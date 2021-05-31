@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(const UTF8Char *fileN
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
-	OSInt currLyr;
+	UOSInt currLyr;
 	UOSInt lyrCnt = tileMap->GetLevelCount();
 	Data::ArrayList<Int64> imgIdList;
 	UOSInt i;
@@ -366,7 +366,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(const UTF8Char *fileN
 	currLyr = 0;
 	while (currLyr < lyrCnt)
 	{
-		Text::StrOSInt(sbuff, currLyr);
+		Text::StrUOSInt(sbuff, currLyr);
 		this->txtLayer->SetText(sbuff);
 
 		imgIdList.Clear();
@@ -375,7 +375,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(const UTF8Char *fileN
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrOSInt(Text::StrConcat(Text::StrOSInt(sbuff, cnt - i), (const UTF8Char*)"/"), cnt);
+			Text::StrUOSInt(Text::StrConcat(Text::StrUOSInt(sbuff, cnt - i), (const UTF8Char*)"/"), cnt);
 			this->txtImages->SetText(sbuff);
 			this->ui->ProcessMessages();
 
@@ -604,7 +604,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->navi->HandleMapMouseUp(OnMouseUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 
-	OSInt i;
+	UOSInt i;
 	this->threadCnt = this->lyr->GetTileMap()->GetConcurrentCount();
 	if (this->threadCnt <= 0)
 	{
@@ -651,7 +651,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::~AVIRGISTileDownloadForm()
 	this->navi->SetSelectedVector(0);
 	this->navi->UnhandleMapMouse(this);
 
-	OSInt i;
+	UOSInt i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{

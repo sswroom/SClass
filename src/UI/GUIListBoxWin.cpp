@@ -105,9 +105,9 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 
 UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
-	UOSInt i = Text::StrUTF8_WCharCnt(itemText, -1);
+	UOSInt i = Text::StrUTF8_WCharCnt(itemText);
 	WChar *s = MemAlloc(WChar, i + 1);
-	Text::StrUTF8_WChar(s, itemText, -1, 0);
+	Text::StrUTF8_WChar(s, itemText, 0);
 	i = SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)s);
 	MemFree(s);
 	if (i < 0)
@@ -190,20 +190,20 @@ OSInt UI::GUIListBox::GetSelectedIndex()
 	return SendMessage((HWND)hwnd, LB_GETCURSEL, 0, 0);
 }
 
-Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<Int32> *indices)
+Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 {
 	if (this->mulSel)
 	{
 		OSInt ret;
-		OSInt i = 0;
-		OSInt j = this->GetCount();
+		UOSInt i = 0;
+		UOSInt j = this->GetCount();
 		while (i < j)
 		{
 			ret = SendMessage((HWND)hwnd, LB_GETSEL, i, 0);
 			if (ret < 0)
 				return false;
 			if (ret)
-				indices->Add((Int32)i);
+				indices->Add((UInt32)i);
 			i++;
 		}
 		return true;
@@ -212,7 +212,7 @@ Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<Int32> *indices)
 	{
 		OSInt i = SendMessage((HWND)hwnd, LB_GETCURSEL, 0, 0);
 		if (i >= 0)
-			indices->Add((Int32)i);
+			indices->Add((UInt32)i);
 		return true;
 	}
 }

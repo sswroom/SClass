@@ -422,7 +422,7 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 			}
 			if (this->buffSize - buffWriten > buffSize)
 			{
-				if (this->buffSize - this->buffEnd >= (OSInt)buffSize)
+				if (this->buffSize - this->buffEnd >= buffSize)
 				{
 					MemCopyNO(&this->dataBuff[this->buffEnd], buff, buffSize);
 					this->buffEnd += buffSize;
@@ -456,7 +456,7 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 		{
 			buffWriten = this->buffEnd - this->buffStart;
 		}
-		if (this->buffSize - this->buffEnd >= (OSInt)buffSize)
+		if (this->buffSize - this->buffEnd >= buffSize)
 		{
 			MemCopyNO(&this->dataBuff[this->buffEnd], buff, buffSize);
 			this->buffEnd += buffSize;
@@ -467,11 +467,11 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 			MemCopyNO(this->dataBuff, &buff[this->buffSize - this->buffEnd], buffSize - (this->buffSize - this->buffEnd));
 			this->buffEnd = this->buffEnd + buffSize - this->buffSize;
 		}
-		if (buffWriten + buffSize >= (UOSInt)this->buffSize)
+		if (buffWriten + buffSize >= this->buffSize)
 		{
 			this->buffStart = this->buffEnd + 1;
 			this->buffSample += buffWriten + buffSize - this->buffSize + 1;
-			if (this->buffStart >= this->buffSize)
+			if (this->buffStart >= (OSInt)this->buffSize)
 			{
 				this->buffStart -= this->buffSize;
 			}

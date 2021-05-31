@@ -29,12 +29,13 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 	UOSInt currSample;
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	UOSInt l;
 	Double *allFreqs;
 	Double *freqs;
 	Double *maxFreq;
 	Double *minFreq;
+	Int32 iVal;
 	Media::AudioFormat fmt;
 	Math::FFTCalc fft(fftSize, wtype);
 	audio->GetFormat(&fmt);
@@ -55,10 +56,10 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		{
 			i = (UOSInt)(Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"kHz") - sbuff);
 			retImg->GetTextSize(f, sbuff, (OSInt)i, sz);
-			k = Math::Double2Int32(sz[0]);
-			if (k > yAxis)
+			iVal = Math::Double2Int32(sz[0]);
+			if (iVal > yAxis)
 			{
-				yAxis = (Int32)k;
+				yAxis = iVal;
 			}
 			Text::StrDelNew(chartLabels.GetItem(j));
 		}
@@ -72,10 +73,10 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		{
 			i = (UOSInt)(Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"s") - sbuff);
 			retImg->GetTextSize(f, sbuff, (OSInt)i, sz);
-			k = Math::Double2Int32(sz[0]);
-			if (k > xAxis)
+			iVal = Math::Double2Int32(sz[0]);
+			if (iVal > xAxis)
 			{
-				xAxis = (Int32)k;
+				xAxis = iVal;
 			}
 			Text::StrDelNew(chartLabels.GetItem(j));
 		}

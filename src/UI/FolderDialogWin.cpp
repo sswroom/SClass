@@ -93,7 +93,7 @@ Bool UI::FolderDialog::ShowDialog(void *ownerHandle)
 	info.pidlRoot = 0;
 	if (this->dirName)
 	{
-		Text::StrUTF8_WChar(sbuff, this->dirName, -1, 0);
+		Text::StrUTF8_WChar(sbuff, this->dirName, 0);
 	}
 	else
 	{

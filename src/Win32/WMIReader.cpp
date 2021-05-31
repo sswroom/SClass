@@ -343,7 +343,7 @@ WChar *Win32::WMIReader::GetStr(UOSInt colIndex, WChar *buff)
 					UTF8Char sbuff[32];
 					dt.SetValueVariTime(V_DATE(&v));
 					dt.ToString(sbuff);
-					ret = Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+					ret = Text::StrUTF8_WChar(buff, sbuff, 0);
 				}
 				break;
 			}

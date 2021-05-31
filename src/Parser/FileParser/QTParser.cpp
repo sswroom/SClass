@@ -602,7 +602,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					frInfo.fourcc = *(Int32*)"vp09";
 				}
 
-				while (atomOfst < (Int32)atomSize - 8)
+				while (atomOfst < atomSize - 8)
 				{
 					subAtomSize = ReadMInt32(&buff[atomOfst]);
 					if (subAtomSize == 0)
@@ -1321,10 +1321,10 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			UInt8 *stcoBuff;
 			UInt8 *stszBuff;
 			UInt8 *stssBuff;
-//			Int32 ntts;
-			Int32 nstc;
-//			Int32 nstco;
-			Int32 nstsz;
+//			UInt32 ntts;
+			UInt32 nstc;
+//			UInt32 nstco;
+			UInt32 nstsz;
 			OSInt ttsBuffOfst;
 			OSInt stcBuffOfst;
 			OSInt stcoBuffOfst;
@@ -1336,8 +1336,8 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			Int32 samplePerChunk;
 			Int32 chunkId;
 			Int32 chunkSample;
-			Int32 nSample;
-			Int32 currStc;
+			UInt32 nSample;
+			UInt32 currStc;
 			Int64 currChOfst;
 			Int32 currSampleSize;
 
@@ -1380,7 +1380,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			}
 			else
 			{
-				nstsz = ReadMInt32(&stszBuff[16]);
+				nstsz = ReadMUInt32(&stszBuff[16]);
 				nSample = 0;
 				while (nSample < nstsz)
 				{

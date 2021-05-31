@@ -14,7 +14,7 @@ IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
 
 	this->filePtr = 0;
 	WChar sbuff[512];
-	Text::StrUTF8_WChar(sbuff, fileName, -1, 0);
+	Text::StrUTF8_WChar(sbuff, fileName, 0);
 
 	fileHandle = CreateFileW(sbuff, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, 0);
 	if (fileHandle == 0)

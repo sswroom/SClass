@@ -462,10 +462,10 @@ UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyM
 		WChar sbuff[256];
 		UTF8Char u8buff[64];
 		WChar *sptr;
-		sptr = Text::StrUTF8_WChar(sbuff, name, -1, 0);
+		sptr = Text::StrUTF8_WChar(sbuff, name, 0);
 		sptr = Text::StrConcat(sptr, L"\t");
 		ToKeyDisplay(u8buff, keyModifier, shortcutKey);
-		sptr = Text::StrUTF8_WChar(sptr, u8buff, -1, 0);
+		sptr = Text::StrUTF8_WChar(sptr, u8buff, 0);
 		AppendMenuW((HMENU)this->hMenu, 0, cmdId, sbuff);
 		ShortcutKey *key = MemAlloc(ShortcutKey, 1);
 		key->cmdId = cmdId;

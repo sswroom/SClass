@@ -1192,7 +1192,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
-			return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+			return Text::StrUTF8_WChar(buff, sbuff, 0);
 		}
 		return 0;
 	case DBTYPE_DBTIME:
@@ -1202,7 +1202,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
-			return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+			return Text::StrUTF8_WChar(buff, sbuff, 0);
 		}
 		return 0;
 	case DBTYPE_DBTIMESTAMP:
@@ -1212,7 +1212,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
-			return Text::StrUTF8_WChar(buff, sbuff, -1, 0);
+			return Text::StrUTF8_WChar(buff, sbuff, 0);
 		}
 		return 0;
 	case DBTYPE_NULL:

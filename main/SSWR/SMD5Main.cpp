@@ -26,8 +26,8 @@ private:
 	Sync::Mutex *mut;
 	const UTF8Char *name;
 	const UTF8Char *fileName;
-	Int64 currCount;
-	Int64 lastCount;
+	UInt64 currCount;
+	UInt64 lastCount;
 
 	Bool threadRunning;
 	Bool threadToStop;
@@ -36,9 +36,9 @@ private:
 	static UInt32 __stdcall CheckThread(void *userObj)
 	{
 		ProgressHandler *me = (ProgressHandler*)userObj;
-		Int64 lastDispCount = 0;
+		UInt64 lastDispCount = 0;
 		Double lastDispTime = 0;
-		Int64 currCount;
+		UInt64 currCount;
 		Double currTime;
 		Manage::HiResClock *clk;
 		Text::StringBuilderUTF8 *sb;
@@ -61,7 +61,7 @@ private:
 			}
 			else
 			{
-				Text::SBAppendF64(sb, (currCount - lastDispCount)  / (currTime - lastDispTime));
+				Text::SBAppendF64(sb, (Double)(currCount - lastDispCount)  / (currTime - lastDispTime));
 				lastDispCount = currCount;
 				lastDispTime = currTime;
 			}
@@ -114,7 +114,7 @@ public:
 		DEL_CLASS(mut);
 	}
 
-	virtual void ProgressStart(const UTF8Char *name, Int64 count)
+	virtual void ProgressStart(const UTF8Char *name, UInt64 count)
 	{
 		OSInt i;
 		Sync::MutexUsage mutUsage(this->mut);
@@ -125,7 +125,7 @@ public:
 		this->lastCount = 0;
 	}
 
-	virtual void ProgressUpdate(Int64 currCount, Int64 newCount)
+	virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount)
 	{
 		this->currCount += currCount - this->lastCount;
 		this->lastCount = currCount;

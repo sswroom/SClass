@@ -58,7 +58,7 @@ Bool UI::FontDialog::ShowDialog(void *ownerHandle)
 		{
 			lf.lfItalic = TRUE;
 		}
-		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, -1, 0);
+		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, 0);
 		cfont.Flags = cfont.Flags | CF_INITTOLOGFONTSTRUCT;
 	}
 

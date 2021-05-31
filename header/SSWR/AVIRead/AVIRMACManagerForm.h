@@ -21,7 +21,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt8 mac[6];
-				Int64 macInt;
+				UInt64 macInt;
 				const UTF8Char *ssid;
 				Int32 phyType;
 				Double freq;
@@ -30,7 +30,7 @@ namespace SSWR
 				const UTF8Char *serialNum;
 				const UTF8Char *country;
 				UInt8 ouis[3][3];
-				Int64 neighbour[20];
+				UInt64 neighbour[20];
 				UInt32 ieLen;
 				UInt8 *ieBuff;
 			} LogFileEntry;
@@ -75,7 +75,7 @@ namespace SSWR
 			void LogFileLoad(const UTF8Char *fileName);
 			void LogFileClear();
 
-			OSInt DataGetIndex(Int64 macInt);
+			OSInt DataGetIndex(UInt64 macInt);
 			void DataLoad();
 			Bool DataStore();
 			void UpdateStatus();

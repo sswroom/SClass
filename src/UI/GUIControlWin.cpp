@@ -327,7 +327,7 @@ void UI::GUIControl::InitFont()
 	MemClear(&lf, sizeof(LOGFONTW));
 	if (this->fontName)
 	{
-		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, -1, 0);
+		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, 0);
 	}
 	lf.lfHeight = Math::Double2Int32(this->fontHeightPt * this->hdpi / this->ddpi / -0.75);
 	if (this->fontIsBold)

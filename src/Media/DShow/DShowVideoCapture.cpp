@@ -109,7 +109,7 @@ const UTF8Char *Media::DShow::DShowVideoCapture::GetFilterName()
 	return (const UTF8Char*)"DShowVideoCapture";
 }
 
-Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (captureFilter == 0)
 	{
@@ -181,7 +181,7 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, Int32
 	return true;
 }
 
-void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, Int32 frameRateNumer, Int32 fraemRateDenom)
+void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
 {
 	Bool found = false;
 	Int32 minRate = 0;
@@ -394,14 +394,19 @@ Bool Media::DShow::DShowVideoCapture::IsRunning()
 	return state == State_Running;
 }
 
-OSInt Media::DShow::DShowVideoCapture::GetDataSeekCount()
+UOSInt Media::DShow::DShowVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }
 
-OSInt Media::DShow::DShowVideoCapture::GetFrameCount()
+Bool Media::DShow::DShowVideoCapture::HasFrameCount()
 {
-	return -1;
+	return false;
+}
+
+UOSInt Media::DShow::DShowVideoCapture::GetFrameCount()
+{
+	return 0;
 }
 
 UInt32 Media::DShow::DShowVideoCapture::GetFrameTime(UOSInt frameIndex)

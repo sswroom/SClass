@@ -174,9 +174,9 @@ Bool UI::GUIListView::ClearAll()
 
 UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText, -1);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(ws, itemText, -1, 0);
+	Text::StrUTF8_WChar(ws, itemText, 0);
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
@@ -414,9 +414,9 @@ void UI::GUIListView::SetShowGrid(Bool showGrid)
 
 UOSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(s, -1);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(s);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(ws, s, -1, 0);
+	Text::StrUTF8_WChar(ws, s, 0);
 	strLen = SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
 	MemFree(ws);
 	return strLen;

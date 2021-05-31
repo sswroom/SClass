@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent, Int64 totalCnt) : UI::GUIControl(ui, parent)
+UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -40,22 +40,22 @@ OSInt UI::GUIProgressBar::OnNotify(Int32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, Int64 count)
+void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, UInt64 count)
 {
 	this->totalCnt = count;
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);
 }
 
-void UI::GUIProgressBar::ProgressUpdate(Int64 currCount, Int64 newCount)
+void UI::GUIProgressBar::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
-	OSInt pos;
+	UOSInt pos;
 	if (totalCnt == 0)
 	{
 		pos = 0;
 	}
 	else
 	{
-		pos = (OSInt)((currCount << 16) / this->totalCnt);
+		pos = (UOSInt)((currCount << 16) / this->totalCnt);
 	}
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, pos, 0);
 }

@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		else
 		{
 			sptr = Text::StrInt32(sbuff, me->currLayer->pattern[0]);
-			Int32 i = 1;
+			UOSInt i = 1;
 			while (i < me->currLayer->nPattern)
 			{
 				sptr = Text::StrInt32(Text::StrConcat(sptr, (const UTF8Char*)","), me->currLayer->pattern[i]);
