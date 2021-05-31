@@ -9,7 +9,19 @@ namespace Text
 		class Base64Enc : public Text::TextBinEnc::ITextBinEnc
 		{
 		public:
+			typedef enum
+			{
+				CS_NORMAL,
+				CS_URL
+			} Charset;
+		private:
+			Charset cs;
+			Bool noPadding;
+			static const UInt8 decArr[];
+			static const UTF8Char *GetEncArr(Charset cs);
+		public:
 			Base64Enc();
+			Base64Enc(Charset cs, Bool noPadding);
 			virtual ~Base64Enc();
 			virtual UOSInt EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *b64Str);

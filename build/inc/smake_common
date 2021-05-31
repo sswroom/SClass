@@ -20,7 +20,9 @@ nodeps:
 @AES192Test
 @AES256Test
 @CRC32RTest
+@JWTTest
 @MD5Test
+@SHA256Test
 @SortSpeed
 @XLSXExporterTest
 @AM2315Test
@@ -171,8 +173,14 @@ AES256Test:
 CRC32RTest:
 @CRC32RTestMain.o
 @ConsoleStartup.o
+JWTTest:
+@JWTTest.o
+@ConsoleStartup.o
 MD5Test:
 @MD5TestMain.o
+@ConsoleStartup.o
+SHA256Test:
+@SHA256Test.o
 @ConsoleStartup.o
 
 #Data
@@ -623,7 +631,9 @@ AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
+JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
+SHA256Test.o: ../../main/CryptoTest/SHA256Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
@@ -846,7 +856,12 @@ Crypto/Hash/SHA1.h: ../../src/Crypto/Hash/SHA1.cpp
 @SHA1_CPP.o
 Crypto/Hash/SHA1_SHA1.h: ../../src/Crypto/Hash/SHA1_SHA1.cpp
 @SHA1_SHA1.o
+Crypto/Hash/SHA256.h: ../../src/Crypto/Hash/SHA256.cpp
+@SHA256.o
+@SHA256_CPP.o
 Crypto/Hash/SuperFastHash.h:
+Crypto/Token/JSONWebToken.h: ../../src/Crypto/Token/JSONWebToken.cpp
+@JSONWebToken.o
 
 Data/ArrayCollection.h:
 Data/ArrayList.h:
@@ -3337,6 +3352,9 @@ SDBM.o: ../../src/Crypto/Hash/SDBM.cpp
 SDBM_CPP.o: ../../src/Crypto/Hash/SDBM_CPP.cpp
 SHA1.o: ../../src/Crypto/Hash/SHA1.cpp
 SHA1_SHA1.o: ../../src/Crypto/Hash/SHA1_SHA1.cpp
+SHA256.o: ../../src/Crypto/Hash/SHA256.cpp
+SHA256_CPP.o: ../../src/Crypto/Hash/SHA256_CPP.cpp
+JSONWebToken.o: ../../src/Crypto/Token/JSONWebToken.cpp
 ArrayListCmp.o: ../../src/Data/ArrayListCmp.cpp
 ArrayListDbl.o: ../../src/Data/ArrayListDbl.cpp
 ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp

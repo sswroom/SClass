@@ -16,7 +16,7 @@ Crypto::Hash::HMAC::HMAC(Crypto::Hash::IHash *hash, const UInt8 *key, UOSInt key
 		this->padSize = keySize;
 	this->iPad = MemAlloc(UInt8, this->padSize);
 	this->oPad = MemAlloc(UInt8, this->padSize);
-	OSInt i = this->padSize;
+	UOSInt i = this->padSize;
 	while (i-- > 0)
 	{
 		this->iPad[i] = 0x36;

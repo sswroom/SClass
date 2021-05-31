@@ -37,7 +37,7 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 
 Text::TextBinEnc::TextBinEncList::~TextBinEncList()
 {
-	OSInt i;
+	UOSInt i;
 	Text::TextBinEnc::ITextBinEnc *enc;
 	i = this->encList->GetCount();
 	while (i-- > 0)
