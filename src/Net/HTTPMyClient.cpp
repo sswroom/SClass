@@ -860,6 +860,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 
 void Net::HTTPMyClient::SetTimeout(Int32 ms)
 {
+	this->timeOutMS = ms;
 	if (this->cli)
-		this->cli->SetTimeout(this->timeOutMS = ms);
+		this->cli->SetTimeout(ms);
 }
