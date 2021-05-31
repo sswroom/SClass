@@ -381,7 +381,7 @@ Bool Net::TCPClient::IsConnectError()
 	return (this->flags & 8) != 0;
 }
 
-OSInt Net::TCPClient::GetRecvBuffSize()
+UOSInt Net::TCPClient::GetRecvBuffSize()
 {
 	UInt32 argp;
 	if (this->sockf->SocketGetReadBuff(this->s, &argp))

@@ -67,7 +67,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	ClassData *clsData = (ClassData*)me->clsData;
 	NEW_CLASS(currTime, Data::DateTime());
 	NEW_CLASS(clk, Manage::HiResClock());
-	Int32 pollRet;
+	OSInt pollRet;
 	UOSInt i;
 	UOSInt readSize;
 	UInt8 tmpBuff[16];
@@ -180,7 +180,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 							readMutUsage.EndUse();
 						}
 
-						if (readSize == -1)
+						if (readSize == (UOSInt)-1)
 						{
 //							printf("Cli readSize = -1\r\n");
 							currTime->SetCurrTimeUTC();
@@ -297,7 +297,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliStat)
 {
 	this->workerTasks->Put(cliStat);
-	OSInt i = this->workerCnt;
+	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
 		if (this->workers[i].cliStat == 0)
@@ -381,7 +381,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	if (clsData)
 	{
 		clsData->hasData = true;
-		i = write(clsData->pipewrfd, "", 1);
+		write(clsData->pipewrfd, "", 1);
 	}
 	while (clientThreadRunning)
 	{
@@ -474,7 +474,7 @@ Bool Net::TCPClientMgr::SendClientData(Int64 cliId, const UInt8 *buff, UOSInt bu
 	i = this->cliIdArr->SortedIndexOf(cliId);
 	if (i >= 0)
 	{
-		cliStat = this->cliArr->GetItem(i);
+		cliStat = this->cliArr->GetItem((UOSInt)i);
 	}
 	mutUsage.EndUse();
 	if (cliStat)

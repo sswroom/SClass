@@ -605,7 +605,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		Text::StringBuilderUTF8 sb;
 		Bool succ = true;
 		sb.Append(destPath);
-		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
+		if (sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 		{
 			sb.Append(item->name);
 		}
@@ -636,8 +636,8 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 				return false;
 			}
 			UInt8 chkResult[32];
-			OSInt resSize;
-			OSInt i;
+			UOSInt resSize;
+			UOSInt i;
 			Bool diff = false;
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
@@ -679,13 +679,13 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 
 			if (fileSize < 1048576)
 			{
-				UInt8 *tmpBuff = MemAlloc(UInt8, (OSInt)fileSize);
-				succ = (item->fd->GetRealData(0, (OSInt)fileSize, tmpBuff) == fileSize);
+				UInt8 *tmpBuff = MemAlloc(UInt8, (UOSInt)fileSize);
+				succ = (item->fd->GetRealData(0, (UOSInt)fileSize, tmpBuff) == fileSize);
 				if (succ)
 				{
 					IO::FileStream *fs;
 					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
-					succ = (fs->Write(tmpBuff, (OSInt)fileSize) == fileSize);
+					succ = (fs->Write(tmpBuff, (UOSInt)fileSize) == fileSize);
 					DEL_CLASS(fs);
 				}
 				MemFree(tmpBuff);
@@ -732,8 +732,8 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		{
 			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
 			IO::Path::CreateDirectory(sb.ToString());
-			OSInt i = 0;
-			OSInt j = pf->GetCount();
+			UOSInt i = 0;
+			UOSInt j = pf->GetCount();
 			while (i < j)
 			{
 				succ = pf->CopyTo(i, sb.ToString(), false);

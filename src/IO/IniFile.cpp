@@ -80,7 +80,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.Append(value);
-					while (reader->ReadLine(src, 1023 - (src - buff)))
+					while (reader->ReadLine(src, 1023 - (UOSInt)(src - buff)))
 					{
 						sb.Append(src);
 						if (reader->GetLastLineBreak(lbrk) != lbrk)
@@ -121,10 +121,10 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	Data::ArrayList<const UTF8Char *> *keyList;
 	const UTF8Char *csptr;
 	const UTF8Char *csptr2;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	NEW_CLASS(keyList, Data::ArrayList<const UTF8Char *>());
 	cfg->GetKeys(0, keyList);
 	i = 0;

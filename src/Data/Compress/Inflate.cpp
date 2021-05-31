@@ -27,8 +27,8 @@ Bool Data::Compress::Inflate::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, 
 
 Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *srcData)
 {
-	Int64 srcOfst = 0;
-	OSInt srcSize;
+	UInt64 srcOfst = 0;
+	UOSInt srcSize;
 	UInt8 *readBuff;
 	UInt8 *writeBuff;
 	Bool error = false;
@@ -104,22 +104,22 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *s
 	return error;
 }
 
-OSInt Data::Compress::Inflate::TestCompress(const UInt8 *srcBuff, UOSInt srcBuffSize, Bool hasHeader)
+UOSInt Data::Compress::Inflate::TestCompress(const UInt8 *srcBuff, UOSInt srcBuffSize, Bool hasHeader)
 {
 	UInt8 *tmpBuff = MemAlloc(UInt8, srcBuffSize + 11);
-	OSInt outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader);
+	UOSInt outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader);
 	MemFree(tmpBuff);
 	return outSize;
 }
 
-OSInt Data::Compress::Inflate::Compress(const UInt8 *srcBuff, UOSInt srcBuffSize, UInt8 *destBuff, Bool hasHeader)
+UOSInt Data::Compress::Inflate::Compress(const UInt8 *srcBuff, UOSInt srcBuffSize, UInt8 *destBuff, Bool hasHeader)
 {
 	int status;
 	mz_stream stream;
 	MemClear(&stream, sizeof(stream));
 
 	if (srcBuffSize > 0xFFFFFFFFU)
-		return -1;
+		return 0;
 
 	stream.next_in = srcBuff;
 	stream.avail_in = (mz_uint32)srcBuffSize;
@@ -128,7 +128,7 @@ OSInt Data::Compress::Inflate::Compress(const UInt8 *srcBuff, UOSInt srcBuffSize
 
 	status = mz_deflateInit2(&stream, MZ_BEST_COMPRESSION, MZ_DEFLATED, hasHeader?MZ_DEFAULT_WINDOW_BITS:-MZ_DEFAULT_WINDOW_BITS, 1, 0);
 	if (status != MZ_OK)
-		return -1;
+		return 0;
 
 	status = mz_deflate(&stream, MZ_FINISH);
 	mz_deflateEnd(&stream);
@@ -136,5 +136,5 @@ OSInt Data::Compress::Inflate::Compress(const UInt8 *srcBuff, UOSInt srcBuffSize
 	{
 		return stream.total_out;
 	}
-	return -1;
+	return 0;
 }

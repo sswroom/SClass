@@ -44,7 +44,7 @@ namespace Net
 		Bool IsRecvDown();
 		Bool IsConnectError();
 
-		OSInt GetRecvBuffSize();
+		UOSInt GetRecvBuffSize();
 
 		UTF8Char *GetRemoteName(UTF8Char *buff);
 		UTF8Char *GetLocalName(UTF8Char *buff);

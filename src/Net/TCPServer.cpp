@@ -69,7 +69,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	UOSInt sthreadCnt = 1;
-	OSInt i;
+	UOSInt i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;

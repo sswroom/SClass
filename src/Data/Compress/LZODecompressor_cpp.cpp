@@ -203,19 +203,19 @@ match_next:
 		}
 	}
 
-	*out_len = op - out;
+	*out_len = (UOSInt)(op - out);
 	return false; //LZO_E_EOF_NOT_FOUND;
 
 eof_found:
-	*out_len = op - out;
+	*out_len = (UOSInt)(op - out);
 	return ip == ip_end;
 
 input_overrun:
-	*out_len = op - out;
+	*out_len = (UOSInt)(op - out);
 	return false; //LZO_E_INPUT_OVERRUN;
 
 lookbehind_overrun:
-	*out_len = op - out;
+	*out_len = (UOSInt)(op - out);
 	return false; //LZO_E_LOOKBEHIND_OVERRUN;
 }
 
@@ -386,7 +386,7 @@ match_next:
 
 eof_found:
 	if (ip == ip_end)
-		return op - ip_end;
+		return (UOSInt)(op - ip_end);
 	return 0;
 
 input_overrun:
