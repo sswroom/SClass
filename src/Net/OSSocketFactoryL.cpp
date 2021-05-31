@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <netdb.h>
-#if !defined(__ARM_PCS_VFP)
+#if !defined(__ARM_PCS_VFP) && 0
 #include <net/if.h>
 #endif
 #include <netinet/in.h>
