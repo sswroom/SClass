@@ -163,6 +163,12 @@ ArrayListString.o: $(CLASSDIR)src/Data/ArrayListString.cpp
 ArrayListStrUTF8.o: $(CLASSDIR)src/Data/ArrayListStrUTF8.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+ArrayListUInt32.o: $(CLASSDIR)src/Data/ArrayListUInt32.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+ArrayListUInt64.o: $(CLASSDIR)src/Data/ArrayListUInt64.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 ByteTool.o: $(CLASSDIR)src/Data/ByteTool.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
