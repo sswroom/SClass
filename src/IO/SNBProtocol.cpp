@@ -7,10 +7,10 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
 {
 	IO::SNBProtocol *me = (IO::SNBProtocol*)userObj;
 	UInt8 *recvBuff;
-	OSInt buffSize;
-	OSInt recvSize;
-	OSInt i;
-	OSInt j;
+	UOSInt buffSize;
+	UOSInt recvSize;
+	UOSInt i;
+	UOSInt j;
 	UInt8 chk;
 	me->running = true;
 	recvBuff = MemAlloc(UInt8, 4096);

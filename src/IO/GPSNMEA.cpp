@@ -15,8 +15,8 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrack::GPSRecord *record)
 {
 	UTF8Char *sarr[32];
-	OSInt scnt;
-	OSInt slen = Text::StrCharCnt(line);
+	UOSInt scnt;
+	UOSInt slen = Text::StrCharCnt(line);
 	if (slen <= 3)
 	{
 		return PS_NOT_NMEA;
@@ -100,7 +100,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 			t3 = t2 / 100;
 
 			Data::DateTime dt;
-			dt.SetValue((d % 100) + 2000, d2 % 100, d3, t3, t2 % 100, it % 100, Math::Double2Int32((t - it) * 1000));
+			dt.SetValue((UInt16)((d % 100) + 2000), d2 % 100, d3, t3, t2 % 100, it % 100, Math::Double2Int32((t - it) * 1000));
 			record->utcTimeTicks = dt.ToTicks();
 
 			if ((sarr[4][0] == 'N' || sarr[4][0] == 'S') && (sarr[6][0] == 'E' || sarr[6][0] == 'W'))
@@ -169,7 +169,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 			else if (ps == PS_NEW_RECORD)
 			{
 				me->hdlrMut->LockRead();
-				OSInt i = me->hdlrList->GetCount();
+				UOSInt i = me->hdlrList->GetCount();
 				while (i-- > 0)
 				{
 					me->hdlrList->GetItem(i)(me->hdlrObjs->GetItem(i), &record);

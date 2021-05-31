@@ -161,7 +161,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		if (len == 4)
 		{
 			UTF8Char sbuff[16];
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&pdu[hdrSize]));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&pdu[hdrSize]));
 			sb->Append(sbuff);
 		}
 		else
@@ -341,7 +341,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		if (valLen == 4)
 		{
 			UTF8Char sbuff[16];
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(pduBuff));
+			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(pduBuff));
 			sb->Append(sbuff);
 		}
 		else
@@ -434,7 +434,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else if (valLen == 8)
 		{
-			sb->AppendU32(ReadMUInt64(pduBuff));
+			sb->AppendU64(ReadMUInt64(pduBuff));
 		}
 		else
 		{

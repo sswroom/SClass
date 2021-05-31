@@ -266,7 +266,7 @@ const UTF16Char *Text::SMSMessage::GetContent()
 	return 0;
 }
 
-OSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
+UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 {
 	UInt8 *currPtr = buff;
 	*currPtr++ = 0;
@@ -285,7 +285,7 @@ OSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 	*currPtr++ = 0;
 	*currPtr++ = (UInt8)ud->GetDCS();
 	currPtr += ud->GetBytes(currPtr);
-	return currPtr - buff;
+	return (UOSInt)(currPtr - buff);
 }
 
 Text::SMSMessage *Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)

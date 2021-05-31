@@ -15,9 +15,9 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(void *userObj)
 	Data::DateTime *dt;
 	UInt8 cmdBuff[10];
 	UInt8 buff[2048];
-	OSInt buffSize = 0;
-	OSInt recvSize;
-	OSInt i;
+	UOSInt buffSize = 0;
+	UOSInt recvSize;
+	UOSInt i;
 	me->threadRunning = true;
 	NEW_CLASS(dt, Data::DateTime());
 	while (!me->threadToStop)
@@ -67,7 +67,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(void *userObj)
 						}
 						else
 						{
-							me->imgSize = ReadInt32(&buff[i + 3]);
+							me->imgSize = ReadUInt32(&buff[i + 3]);
 							me->imgPackets = ReadUInt16(&buff[i + 7]);
 							i += 10;
 
@@ -106,7 +106,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(void *userObj)
 							break;
 						}
 						Int32 packNum = ReadUInt16(&buff[i + 3]);
-						Int32 packSize = ReadUInt16(&buff[i + 5]);
+						UInt32 packSize = ReadUInt16(&buff[i + 5]);
 						if (packSize > 1024 || packSize <= 0)
 						{
 							i++;

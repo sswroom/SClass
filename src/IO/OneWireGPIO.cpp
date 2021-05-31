@@ -69,7 +69,7 @@ void IO::OneWireGPIO::SendBits(const UInt8 *buff, OSInt nBits)
 			}
 //			Sync::Thread::Sleepus(10);
 		}
-		mask = mask << 1;
+		mask = (UInt8)(mask << 1);
 		if (mask == 0)
 		{
 			mask = 1;
@@ -99,7 +99,7 @@ OSInt IO::OneWireGPIO::ReadBits(UInt8 *buff, OSInt nBits)
 		{
 			v |= mask;
 		}
-		mask = (mask << 1) & 255;
+		mask = (UInt8)((mask << 1) & 255);
 		while (this->clk->GetTimeDiff() < 0.000059)
 		{
 			this->pin->IsPinHigh();

@@ -17,9 +17,9 @@ namespace IO
 			Bool threadRunning;
 
 			UInt8 *imgBuff;
-			Int32 imgSize;
+			UInt32 imgSize;
 			Int32 imgPackets;
-			Int32 imgNextOfst;
+			UInt32 imgNextOfst;
 			Int32 imgNextPacket;
 			Bool imgEnd;
 			Int64 imgLastUpdateTime;

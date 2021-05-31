@@ -4,7 +4,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/SNMPUtil.h"
 
-Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, Int32 *reqId, Data::ArrayList<BindingItem*> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, UInt32 *reqId, Data::ArrayList<BindingItem*> *itemList)
 {
 	UOSInt i;
 	if (pdu[0] != 0x30)
@@ -13,12 +13,12 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
 	BindingItem *item;
-	Int32 bindingLen;
+	UInt32 bindingLen;
 	UOSInt bindingEnd;
-	Int32 pduLen;
+	UInt32 pduLen;
 	UInt32 err;
 	i = Net::ASN1Util::PDUParseLen(pdu, 1, pduSize, &pduLen);
-	if (pduLen == -1)
+	if (i > pduSize)
 	{
 		*reqId = 0;
 		return Net::SNMPUtil::ES_UNKRESP;
@@ -42,7 +42,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			*reqId = 0;
 			return Net::SNMPUtil::ES_UNKRESP;
@@ -59,7 +59,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			*reqId = 0;
 			return Net::SNMPUtil::ES_UNKRESP;
@@ -114,7 +114,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -124,7 +124,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -139,7 +139,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
 			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &bindingLen);
-			if (bindingLen == -1)
+			if (i > pduSize)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -149,7 +149,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
 			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-			if (pduLen == -1 || pduLen > 64)
+			if (i > pduSize || pduLen > 64)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -203,11 +203,11 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
 	BindingItem *item;
-	Int32 bindingLen;
+	UInt32 bindingLen;
 	UOSInt bindingEnd;
-	Int32 pduLen;
+	UInt32 pduLen;
 	i = Net::ASN1Util::PDUParseLen(pdu, 1, pduSize, &pduLen);
-	if (pduLen == -1)
+	if (i > pduSize)
 	{
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
@@ -227,7 +227,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -249,7 +249,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -262,7 +262,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1 || pduLen > 64)
+		if (i > pduSize || pduLen > 64)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -278,7 +278,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		trap->agentIPv4 = ReadNInt32(&pdu[i]);
+		trap->agentIPv4 = ReadNUInt32(&pdu[i]);
 		i += 4;
 		if (pdu[i] != 2)
 		{
@@ -370,7 +370,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
 		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-		if (pduLen == -1)
+		if (i > pduSize)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -385,7 +385,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
 			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &bindingLen);
-			if (bindingLen == -1)
+			if (i > pduSize)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -395,7 +395,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
 			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, &pduLen);
-			if (pduLen == -1 || pduLen > 64)
+			if (i > pduSize || pduLen > 64)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -699,7 +699,7 @@ Bool Net::SNMPUtil::ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen
 		}
 		else if (valLen == 3)
 		{
-			*outVal = ReadMUInt24(pduBuff);
+			*outVal = (Int32)ReadMUInt24(pduBuff);
 			return true;
 		}
 		else if (valLen == 4)
@@ -719,12 +719,12 @@ Bool Net::SNMPUtil::ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen
 		}
 		else if (valLen == 2)
 		{
-			*outVal = ReadMUInt16(pduBuff);
+			*outVal = (Int32)ReadMUInt16(pduBuff);
 			return true;
 		}
 		else if (valLen == 3)
 		{
-			*outVal = ReadMUInt24(pduBuff);
+			*outVal = (Int32)ReadMUInt24(pduBuff);
 			return true;
 		}
 		else if (valLen == 4)

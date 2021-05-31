@@ -8984,11 +8984,11 @@ Net::SNMPOIDDB::OIDInfo Net::SNMPOIDDB::oidList[] = {
 	{"snmpUsmAesMIB",												6,  {0x2B, 0x06, 0x01, 0x06, 0x03, 0x14}}, // 1.3.6.1.6.3.20
 };
 
-void Net::SNMPOIDDB::OIDToNameString(const UInt8 *pdu, OSInt pduSize, Text::StringBuilderUTF *sb)
+void Net::SNMPOIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
 {
 	Net::SNMPOIDDB::OIDInfo *oid;
 	UInt32 v;
-	OSInt checkSize = pduSize;
+	UOSInt checkSize = pduSize;
 	while (checkSize > 0)
 	{
 		oid = OIDGetEntry(pdu, checkSize);
@@ -9013,11 +9013,11 @@ void Net::SNMPOIDDB::OIDToNameString(const UInt8 *pdu, OSInt pduSize, Text::Stri
 	}
 }
 
-Net::SNMPOIDDB::OIDInfo *Net::SNMPOIDDB::OIDGetEntry(const UInt8 *pdu, OSInt pduSize)
+Net::SNMPOIDDB::OIDInfo *Net::SNMPOIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
 {
 	Net::SNMPOIDDB::OIDInfo *oid;
 	OSInt i = 0;
-	OSInt j = (sizeof(oidList) / sizeof(oidList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(oidList) / sizeof(oidList[0])) - 1;
 	OSInt k;
 	OSInt l;
 	while (i <= j)

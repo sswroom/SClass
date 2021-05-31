@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SNBDONGLE
 #define _SM_IO_SNBDONGLE
-#include "Data/Int64Map.h"
+#include "Data/UInt64Map.h"
 #include "IO/SNBProtocol.h"
 #include "Sync/RWMutex.h"
 
@@ -89,16 +89,16 @@ namespace IO
 		class SNBHandler
 		{
 		public:
-			virtual void DeviceAdded(Int64 devId) = 0;
-			virtual void DeviceSensor(Int64 devId, SensorType sensorType, UOSInt nReading, ReadingType *readingTypes, Double *readingVals) = 0;
-			virtual void DeviceUpdated(Int64 devId, Int16 shortAddr) = 0;
+			virtual void DeviceAdded(UInt64 devId) = 0;
+			virtual void DeviceSensor(UInt64 devId, SensorType sensorType, UOSInt nReading, ReadingType *readingTypes, Double *readingVals) = 0;
+			virtual void DeviceUpdated(UInt64 devId, UInt16 shortAddr) = 0;
 			virtual void DongleInfoUpdated() = 0;
 		};
 
 		typedef struct
 		{
-			Int64 devId;
-			Int16 shortAddr;
+			UInt64 devId;
+			UInt16 shortAddr;
 			DeviceType devType;
 			HandleType handType;
 			UInt8 sensorCount;
@@ -112,20 +112,20 @@ namespace IO
 		IO::SNBProtocol::ProtocolHandler protoHdlr;
 		void *protoObj;
 		SNBHandler *hdlr;
-		Data::Int64Map<DeviceInfo*> *devMap;
+		Data::UInt64Map<DeviceInfo*> *devMap;
 		Sync::RWMutex *devMut;
-		Int64 dongleId;
+		UInt64 dongleId;
 		Int32 dongleBaudRate;
 
 		static void __stdcall OnProtocolRecv(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
-		DeviceInfo *GetDevice(Int64 devId);
+		DeviceInfo *GetDevice(UInt64 devId);
 	public:
 		SNBDongle(IO::Stream *stm, SNBHandler *hdlr);
 		~SNBDongle();
 
-		void SetDevHandleType(Int64 devId, HandleType handType);
-		void SetDevShortAddr(Int64 devId, UInt16 shortAddr);
-		Int64 GetDongleId();
+		void SetDevHandleType(UInt64 devId, HandleType handType);
+		void SetDevShortAddr(UInt64 devId, UInt16 shortAddr);
+		UInt64 GetDongleId();
 		Int32 GetBaudRate();
 
 		void HandleProtocolReceived(IO::SNBProtocol::ProtocolHandler protoHdlr, void *userObj);
@@ -134,12 +134,12 @@ namespace IO
 		void SendCheckDevices();
 		void SendResetNetwork();
 		void SendAddDevice(UInt8 timeout);
-		void SendSetReportTime(Int64 devId, Int32 interval); //1 = 10 seconds
-		void SendGetReportTime(Int64 devId);
+		void SendSetReportTime(UInt64 devId, Int32 interval); //1 = 10 seconds
+		void SendGetReportTime(UInt64 devId);
 
-		Bool SendDevTurnOn(Int64 devId);
-		Bool SendDevTurnOff(Int64 devId);
-		Bool SendDevGetStatus(Int64 devId);
+		Bool SendDevTurnOn(UInt64 devId);
+		Bool SendDevTurnOff(UInt64 devId);
+		Bool SendDevGetStatus(UInt64 devId);
 
 		static const UTF8Char *GetHandleName(HandleType handType);
 		static const UTF8Char *GetReadingName(ReadingType readingType);

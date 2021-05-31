@@ -3,12 +3,12 @@
 #include "Data/ByteTool.h"
 #include "Net/ASN1Util.h"
 
-UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, Int32 *len)
+UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
 {
 	if (ofst >= pduSize)
 	{
-		*len = -1;
-		return pduSize;
+		*len = 0;
+		return pduSize + 1;
 	}
 	if (pdu[ofst] & 0x80)
 	{
@@ -16,8 +16,8 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 		{
 			if (ofst + 2 > pduSize)
 			{
-				*len = -1;
-				return pduSize;
+				*len = 0;
+				return pduSize + 1;
 			}
 			*len = pdu[ofst + 1];
 			return ofst + 2;
@@ -26,8 +26,8 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 		{
 			if (ofst + 3 > pduSize)
 			{
-				*len = -1;
-				return pduSize;
+				*len = 0;
+				return pduSize + 1;
 			}
 			*len = ReadMUInt16(&pdu[ofst + 1]);
 			return ofst + 3;
@@ -36,31 +36,30 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 		{
 			if (ofst + 4 > pduSize)
 			{
-				*len = -1;
-				return pduSize;
+				*len = 0;
+				return pduSize + 1;
 			}
-			*len = (Int32)ReadMUInt24(&pdu[ofst + 1]);
+			*len = ReadMUInt24(&pdu[ofst + 1]);
 			return ofst + 4;
 		}
 		else if (pdu[ofst] == 0x84)
 		{
 			if (ofst + 5 > pduSize)
 			{
-				*len = -1;
-				return pduSize;
+				*len = 0;
+				return pduSize + 1;
 			}
-			*len = ReadMInt32(&pdu[ofst + 1]);
+			*len = ReadMUInt32(&pdu[ofst + 1]);
 			return ofst + 5;
 		}
-		*len = -1;
-		return pduSize;
+		*len = 0;
+		return pduSize + 1;
 	}
 	else
 	{
 		*len = pdu[ofst];
 		return ofst + 1;
 	}
-	
 }
 
 const UInt8 *Net::ASN1Util::PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd)

@@ -10,7 +10,7 @@ namespace Net
 		typedef struct
 		{
 			const Char *name;
-			OSInt len;
+			UOSInt len;
 			const UInt8 oid[64];
 		} OIDInfo;
 
@@ -18,8 +18,8 @@ namespace Net
 		static OIDInfo oidList[];
 
 	public:
-		static void OIDToNameString(const UInt8 *pdu, OSInt pduSize, Text::StringBuilderUTF *sb);
-		static OIDInfo *OIDGetEntry(const UInt8 *pdu, OSInt pduSize);
+		static void OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb);
+		static OIDInfo *OIDGetEntry(const UInt8 *pdu, UOSInt pduSize);
 	};
 }
 #endif

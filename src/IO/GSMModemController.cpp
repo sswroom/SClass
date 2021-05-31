@@ -170,10 +170,10 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	Char c;
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+COPS=?", 60000);
-	OSInt i;
-	OSInt j = this->cmdResults->GetCount();
-	OSInt k = 0;
-	OSInt l = 0;
+	UOSInt i;
+	UOSInt j = this->cmdResults->GetCount();
+	UOSInt k = 0;
+	UOSInt l = 0;
 	Bool operStarted;
 	Bool quoteStarted;
 	Bool operExist;
@@ -210,15 +210,15 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 								{
 									if (k == 1)
 									{
-										lbuff[l++] = c;
+										lbuff[l++] = (UTF8Char)c;
 									}
 									else if (k == 2)
 									{
-										sbuff[l++] = c;
+										sbuff[l++] = (UTF8Char)c;
 									}
 									else
 									{
-										tmpBuff[l++] = c;
+										tmpBuff[l++] = (UTF8Char)c;
 									}
 								}
 							}
@@ -307,19 +307,19 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 									{
 										if (k == 0)
 										{
-											tmpBuff[l++] = c;
+											tmpBuff[l++] = (UTF8Char)c;
 										}
 										else if (k == 1)
 										{
-											lbuff[l++] = c;
+											lbuff[l++] = (UTF8Char)c;
 										}
 										else if (k == 2)
 										{
-											sbuff[l++] = c;
+											sbuff[l++] = (UTF8Char)c;
 										}
 										else
 										{
-											tmpBuff[l++] = c;
+											tmpBuff[l++] = (UTF8Char)c;
 										}
 									}
 								}
@@ -372,7 +372,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 
 void IO::GSMModemController::GSMFreeOperators(Data::ArrayList<Operator*> *operList)
 {
-	OSInt i = operList->GetCount();
+	UOSInt i = operList->GetCount();
 	while (i-- > 0)
 	{
 		FreeOperator(operList->RemoveAt(i));
@@ -384,8 +384,8 @@ Int32 IO::GSMModemController::GSMSearchOperatorPLMN(Int32 netact)
 	Data::ArrayList<IO::GSMModemController::Operator *> operList;
 	IO::GSMModemController::Operator *oper;
 	Int32 plmn = 0;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->GSMGetAllowedOperators(&operList);
 	i = 0;
 	j = operList.GetCount();
@@ -409,7 +409,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+CPIN?", 3000);
-	OSInt i = this->cmdResults->GetCount();
+	UOSInt i = this->cmdResults->GetCount();
 	const Char *val;
 	while (i-- > 0)
 	{
@@ -496,15 +496,15 @@ Bool IO::GSMModemController::GSMGetModemTime(Data::DateTime *date)
 			date->SetValue(&sbuff[6]);
 			if (date->GetYear() >= 2080)
 			{
-				date->SetYear(date->GetYear() - 100);
+				date->SetYear((UInt16)(date->GetYear() - 100));
 			}
 			if (tzSign == '-')
 			{
-				date->SetTimeZoneQHR(-Text::StrToInt32(&sbuff[26]));
+				date->SetTimeZoneQHR((Int8)(-Text::StrToInt32(&sbuff[26])));
 			}
 			else
 			{
-				date->SetTimeZoneQHR(Text::StrToInt32(&sbuff[26]));
+				date->SetTimeZoneQHR((Int8)Text::StrToInt32(&sbuff[26]));
 			}
 			return true;
 		}
@@ -637,7 +637,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 {
 	Char sbuff[256];
 	Char *sbuffs[5];
-	OSInt strLen;
+	UOSInt strLen;
 	if (this->smsFormat != 0)
 	{
 		this->SetSMSFormat(IO::GSMModemController::SMSF_PDU);
@@ -645,8 +645,8 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	Text::StrInt32(Text::StrConcat(sbuff, "AT+CMGL="), (Int32)status);
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, sbuff, 10000);
-	OSInt i;
-	OSInt j = this->cmdResults->GetCount();
+	UOSInt i;
+	UOSInt j = this->cmdResults->GetCount();
 	Int32 lastIndex = 0;
 	const Char *val;
 	const Char *val2;
@@ -718,7 +718,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 
 void IO::GSMModemController::SMSFreeMessages(Data::ArrayList<SMSMessage*> *msgList)
 {
-	OSInt i = msgList->GetCount();
+	UOSInt i = msgList->GetCount();
 	while (i-- > 0)
 	{
 		SMSFreeMessage(msgList->RemoveAt(i));
@@ -744,7 +744,7 @@ Bool IO::GSMModemController::SMSSendMessage(Text::SMSMessage *msg)
 	Char sbuff2[512];
 	UInt8 dataBuff[256];
 	Bool isSucc;
-	OSInt buffSize = msg->ToSubmitPDU(dataBuff);
+	UOSInt buffSize = msg->ToSubmitPDU(dataBuff);
 	Text::StrHexBytes(sbuff2, dataBuff, buffSize, 0);
 	Text::StrInt32(Text::StrConcat(sbuff1, "AT+CMGS="), (Int32)(buffSize - 1));
 
@@ -1066,8 +1066,8 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 	}
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, sbuff, 10000);
-	OSInt i;
-	OSInt j = this->cmdResults->GetCount();
+	UOSInt i;
+	UOSInt j = this->cmdResults->GetCount();
 	const Char *val;
 	IO::GSMModemController::PBEntry *ent;
 	if (j > 1)
@@ -1136,7 +1136,7 @@ void IO::GSMModemController::PBFreeEntry(PBEntry *entry)
 
 void IO::GSMModemController::PBFreeEntries(Data::ArrayList<PBEntry*> *phoneList)
 {
-	OSInt i = phoneList->GetCount();
+	UOSInt i = phoneList->GetCount();
 	while (i-- > 0)
 	{
 		PBFreeEntry(phoneList->RemoveAt(i));

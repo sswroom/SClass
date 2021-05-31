@@ -11,7 +11,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo 
 {
 	Net::SNMPClient *me = (Net::SNMPClient*)userData;
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
-	Int32 reqId;
+	UInt32 reqId;
 	Net::SNMPUtil::ErrorStatus err;
 	Sync::MutexUsage mutUsage(me->scanMut);
 	if (me->scanList)
@@ -100,7 +100,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(const Net::SocketUti
 	pdu.AppendInt32(0);
 	pdu.AppendString(community);
 	pdu.SequenceBegin(0xA0);
-	pdu.AppendInt32(this->reqId);
+	pdu.AppendUInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);
@@ -146,7 +146,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(const Net::Socke
 	pdu.AppendInt32(0);
 	pdu.AppendString(community);
 	pdu.SequenceBegin(0xA1);
-	pdu.AppendInt32(this->reqId);
+	pdu.AppendUInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);
@@ -225,20 +225,20 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(const Net::SocketUtil::Addres
 	return Net::SNMPUtil::ES_NOERROR;
 }
 
-OSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broadcastAddr, const UTF8Char *community, const UTF8Char *oid, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, UOSInt timeoutMS, Bool scanIP)
+UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broadcastAddr, const UTF8Char *community, const UTF8Char *oid, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, UOSInt timeoutMS, Bool scanIP)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
 	UOSInt buffSize;
 	const UInt8 *buff;
-	OSInt initCnt = addrList->GetCount();
+	UOSInt initCnt = addrList->GetCount();
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
 	pdu.SequenceBegin(0x30);
 	pdu.AppendInt32(0);
 	pdu.AppendString(community);
 	pdu.SequenceBegin(0xA0);
-	pdu.AppendInt32(this->reqId);
+	pdu.AppendUInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);

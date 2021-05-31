@@ -43,7 +43,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 			t = (Int32)(nextTime - clk->GetTimeDiffus());
 			if (t > 0)
 			{
-				Sync::Thread::Sleepus(t);
+				Sync::Thread::Sleepus((UInt32)t);
 			}
 			nextTime += fullClk;
 
@@ -53,7 +53,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 			{
 				if (readBuff[9] == 1)
 				{
-					v = readBuff[1] | (readBuff[2] << 1) | (readBuff[3] << 2) | (readBuff[4] << 3) | (readBuff[5] << 4) | (readBuff[6] << 5) | (readBuff[7] << 6) | (readBuff[8] << 7);
+					v = (UInt8)(readBuff[1] | (readBuff[2] << 1) | (readBuff[3] << 2) | (readBuff[4] << 3) | (readBuff[5] << 4) | (readBuff[6] << 5) | (readBuff[7] << 6) | (readBuff[8] << 7));
 					me->readBuff[me->readBuffEnd] = v;
 					readPos = me->readBuffEnd + 1;
 					if (readPos == RS232GPIO_BUFFSIZE)
@@ -102,7 +102,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 	return 0;
 }
 
-IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, Int32 baudRate) : IO::Stream((const UTF8Char*)"RS-232")
+IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream((const UTF8Char*)"RS-232")
 {
 	this->running = false;
 	this->toStop = false;
@@ -193,25 +193,25 @@ UOSInt IO::RS232GPIO::Write(const UInt8 *buff, UOSInt size)
 		this->gpio->SetPinState(txdPin, false);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		v >>= 1;
+		v = (UInt8)(v >> 1);
 		Sync::Thread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		Sync::Thread::Sleepus(fullClk);
@@ -238,7 +238,7 @@ void *IO::RS232GPIO::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 
 UOSInt IO::RS232GPIO::EndRead(void *reqData, Bool toWait)
 {
-	return (Int32)(OSInt)reqData;
+	return (UOSInt)reqData;
 }
 
 void IO::RS232GPIO::CancelRead(void *reqData)
@@ -257,7 +257,7 @@ void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt
 
 UOSInt IO::RS232GPIO::EndWrite(void *reqData, Bool toWait)
 {
-	return (Int32)(OSInt)reqData;
+	return (UOSInt)reqData;
 }
 
 void IO::RS232GPIO::CancelWrite(void *reqData)

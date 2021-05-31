@@ -32,15 +32,15 @@ Bool IO::SerialPort::InitStream()
 		return false;
 	if (portNum <= 32)
 	{
-		Text::StrOSInt(Text::StrConcat(portName, "/dev/ttyS"), portNum - 1);
+		Text::StrUOSInt(Text::StrConcat(portName, "/dev/ttyS"), portNum - 1);
 	}
 	else if (portNum <= 64)
 	{
-		Text::StrOSInt(Text::StrConcat(portName, "/dev/ttyUSB"), portNum - 33);
+		Text::StrUOSInt(Text::StrConcat(portName, "/dev/ttyUSB"), portNum - 33);
 	}
 	else if (portNum <= 96)
 	{
-		Text::StrOSInt(Text::StrConcat(portName, "/dev/ttyACM"), portNum - 65);
+		Text::StrUOSInt(Text::StrConcat(portName, "/dev/ttyACM"), portNum - 65);
 	}
 	else
 	{
@@ -60,8 +60,8 @@ Bool IO::SerialPort::InitStream()
 	fcntl(h, F_SETFL, FNDELAY);
 #endif
 	struct termios options;
-	options.c_cflag &= ~(PARENB | CSTOPB | CSIZE);
-	options.c_cflag |= ~CS8;
+	options.c_cflag &= (tcflag_t)~(PARENB | CSTOPB | CSIZE);
+	options.c_cflag |= (tcflag_t)~CS8;
 	if (tcgetattr(h, &options) == -1)
 	{
 		close(h);
@@ -69,9 +69,9 @@ Bool IO::SerialPort::InitStream()
 		return false;
 	}
 	options.c_cflag |= (CLOCAL | CREAD);
-	options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-	options.c_iflag &= ~(IXON | IXOFF | IXANY | INLCR | ICRNL);
-	options.c_oflag &= ~OPOST;
+	options.c_lflag &= (tcflag_t)~(ICANON | ECHO | ECHOE | ISIG);
+	options.c_iflag &= (tcflag_t)~(IXON | IXOFF | IXANY | INLCR | ICRNL);
+	options.c_oflag &= (tcflag_t)~OPOST;
 	if (flowCtrl)
 	{
 		options.c_cflag |= CRTSCTS;
@@ -85,16 +85,16 @@ Bool IO::SerialPort::InitStream()
 		break;
 	case PARITY_EVEN:
 		options.c_cflag |= PARENB;
-		options.c_cflag &= ~PARODD;
+		options.c_cflag &= (tcflag_t)~PARODD;
 		options.c_iflag |= INPCK;
 		break;
 	case PARITY_NONE:
-		options.c_cflag &= ~PARENB;
-		options.c_iflag &= ~INPCK;
+		options.c_cflag &= (tcflag_t)~PARENB;
+		options.c_iflag &= (tcflag_t)~INPCK;
 		break;
 	}
 
-	Int32 rateId;
+	UInt32 rateId;
 	switch (baudRate)
 	{
 	case 50:
@@ -185,19 +185,19 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 		{
 			if (Text::StrStartsWith(sbuff, (const UTF8Char*)"ttyS"))
 			{
-				ports->Add(1 + Text::StrToOSInt(&sbuff[4]));
+				ports->Add(1 + Text::StrToUOSInt(&sbuff[4]));
 				if (portTypes)
 					portTypes->Add(SPT_SERIALPORT);
 			}
 			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"ttyUSB"))
 			{
-				ports->Add(33 + Text::StrToOSInt(&sbuff[6]));
+				ports->Add(33 + Text::StrToUOSInt(&sbuff[6]));
 				if (portTypes)
 					portTypes->Add(SPT_USBSERIAL);
 			}
 			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"ttyACM"))
 			{
-				ports->Add(65 + Text::StrToOSInt(&sbuff[6]));
+				ports->Add(65 + Text::StrToUOSInt(&sbuff[6]));
 				if (portTypes)
 					portTypes->Add(SPT_USBSERIAL);
 			}
@@ -248,15 +248,15 @@ UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 		return 0;
 	if (portNum <= 32)
 	{
-		return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyS"), portNum - 1);
+		return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyS"), portNum - 1);
 	}
 	else if (portNum <= 64)
 	{
-		return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyUSB"), portNum - 33);
+		return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyUSB"), portNum - 33);
 	}
 	else if (portNum <= 96)
 	{
-		return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyACM"), portNum - 65);
+		return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyACM"), portNum - 65);
 	}
 	else
 	{
@@ -274,7 +274,7 @@ Bool SerialPort_WriteInt32(const UTF8Char *path, Int32 num)
 	if (!fs->IsError())
 	{
 		sptr = Text::StrInt32(sbuff, num);
-		if (fs->Write(sbuff, sptr - sbuff) == (UOSInt)(sptr - sbuff))
+		if (fs->Write(sbuff, (UOSInt)(sptr - sbuff)) == (UOSInt)(sptr - sbuff))
 		{
 			ret = true;
 		}
@@ -295,7 +295,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	}
 	else if (portNum <= 64)
 	{
-		Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/usb-serial/devices/ttyUSB"), portNum - 33);
+		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/usb-serial/devices/ttyUSB"), portNum - 33);
 		if ((i = readlink((const Char*)sbuff, (Char*)sbuff2, 511)) <= 0)
 		{
 			return false;
@@ -346,8 +346,8 @@ IO::SerialPort::~SerialPort()
 	{
 		OSInt h = (OSInt)this->handle;
 		this->handle = 0;
-		flock(h, LOCK_UN);
-		close(h);
+		flock((int)h, LOCK_UN);
+		close((int)h);
 	}
 
 	ADDMESSAGE("Set event\r\n");
@@ -381,7 +381,7 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 	{
 		if (this->handle == 0)
 			break;
-		readCnt = read(h, buff, size);
+		readCnt = read((int)h, buff, size);
 		if (readCnt == -1)
 		{
 			if (errno == EAGAIN)
@@ -402,16 +402,16 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 	this->reading = false;
 	mutUsage.EndUse();
 //	wprintf(L"End read, cnt = %d\n", readCnt);
-	return readCnt;
+	return (UOSInt)readCnt;
 }
 
 UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
 {
-	Int32 writeCnt;
+	OSInt writeCnt;
 	OSInt h = (OSInt)this->handle;
-	writeCnt = write(h, buff, size);
-	fsync(h);
-	return writeCnt;
+	writeCnt = write((int)h, buff, size);
+	fsync((int)h);
+	return (UOSInt)writeCnt;
 }
 
 void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
@@ -433,14 +433,14 @@ void *IO::SerialPort::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *ev
 	evt->Set();
 	if (this->handle == 0)
 		return 0;
-	return (void*)(OSInt)Write(buff, size);
+	return (void*)Write(buff, size);
 }
 
 UOSInt IO::SerialPort::EndWrite(void *reqData, Bool toWait)
 {
 	OSInt h = (OSInt)this->handle;
-	fsync(h);
-	return (Int32)(OSInt)reqData;
+	fsync((int)h);
+	return (UOSInt)reqData;
 }
 
 void IO::SerialPort::CancelWrite(void *reqData)
@@ -449,7 +449,7 @@ void IO::SerialPort::CancelWrite(void *reqData)
 
 Int32 IO::SerialPort::Flush()
 {
-	tcflush((OSInt)this->handle, TCIOFLUSH);
+	tcflush((int)(OSInt)this->handle, TCIOFLUSH);
 	return 0;
 }
 
@@ -460,8 +460,8 @@ void IO::SerialPort::Close()
 	{
 		OSInt h = (OSInt)this->handle;
 		this->handle = 0;
-		flock(h, LOCK_UN);
-		close(h);
+		flock((int)h, LOCK_UN);
+		close((int)h);
 	}
 	if (this->rdEvt)
 	{

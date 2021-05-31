@@ -10,7 +10,7 @@ namespace IO
 		class SIM7000 : public IO::GSMModemController
 		{
 		public:
-			typedef void (__stdcall *ReceiveHandler)(void *userObj, OSInt index, UInt32 ip, UInt16 port, const UInt8 *buff, OSInt buffSize);
+			typedef void (__stdcall *ReceiveHandler)(void *userObj, UOSInt index, UInt32 ip, UInt16 port, const UInt8 *buff, UOSInt buffSize);
 		private:
 			Sync::Event *respEvt;
 			Sync::Mutex *dnsMut;
@@ -18,11 +18,11 @@ namespace IO
 			Net::SocketUtil::AddressInfo *dnsResp;
 			Bool dnsResult;
 
-			OSInt connInd;
+			UOSInt connInd;
 			Int32 connResult;
 			Bool nextReceive;
-			OSInt recvIndex;
-			OSInt recvSize;
+			UOSInt recvIndex;
+			UOSInt recvSize;
 			UInt32 recvIP;
 			UInt16 recvPort;
 			ReceiveHandler recvHdlr;
@@ -72,15 +72,15 @@ namespace IO
 			//AT+CENG
 
 			Bool NetSetMultiIP(Bool multiIP); //AT+CIPMUX
-			Bool NetIPStartTCP(OSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
-			Bool NetIPStartUDP(OSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
-			Bool NetIPSend(OSInt index, const UInt8 *buff, OSInt buffSize); //AT+CIPSEND
+			Bool NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
+			Bool NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
+			Bool NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buffSize); //AT+CIPSEND
 			//AT+CIPQSEND
 			//AT+CIPACK
-			Bool NetCloseSocket(OSInt index); //AT+CIPCLOSE
+			Bool NetCloseSocket(UOSInt index); //AT+CIPCLOSE
 			//AT+CIPSHUT
-			Bool NetSetLocalPortTCP(OSInt index, UInt16 port); //AT+CLPORT
-			Bool NetSetLocalPortUDP(OSInt index, UInt16 port); //AT+CLPORT
+			Bool NetSetLocalPortTCP(UOSInt index, UInt16 port); //AT+CLPORT
+			Bool NetSetLocalPortUDP(UOSInt index, UInt16 port); //AT+CLPORT
 			Bool NetSetAPN(const UTF8Char *apn); //AT+CSTT
 			Bool NetDataStart(); //AT+CIICR
 			UTF8Char *NetGetIFAddr(UTF8Char *addr); //AT+CIFSR

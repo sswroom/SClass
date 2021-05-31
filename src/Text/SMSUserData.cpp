@@ -10,7 +10,7 @@ Text::SMSUserData::SMSUserData(const UTF16Char *msg, Text::SMSUtil::DCS dcs, con
 	this->dcs = dcs;
 	if (udh)
 	{
-		Int32 len = udh[0] + 1;
+		UInt32 len = udh[0] + 1;
 		this->udh = MemAlloc(UInt8, len);
 		MemCopyNO(this->udh, udh, len);
 	}
@@ -262,7 +262,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 	{
 		if (msgLeng > 140)
 		{
-			OSInt charCnt;
+			UOSInt charCnt;
 			charCnt = Text::StrCharCnt(u16Msg);
 			if (charCnt % 67)
 			{
@@ -308,7 +308,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 	{
 		if (msgLeng > 160)
 		{
-			OSInt charCnt;
+			UOSInt charCnt;
 			charCnt = Text::StrCharCnt(u16Msg);
 			/////////////////////////////////
 			if (charCnt % 153)

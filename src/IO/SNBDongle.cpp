@@ -23,7 +23,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 		if (cmdSize >= 12)
 		{
 			Bool valid = true;
-			dev = me->GetDevice(ReadInt64(&cmd[0]));
+			dev = me->GetDevice(ReadUInt64(&cmd[0]));
 			sensorType = ST_CUSTOM;
 			readingTypes[0] = RT_ONOFF;
 			dev->param = cmd[8];
@@ -56,7 +56,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 	case 0xc3:
 		if (cmdSize >= 17)
 		{
-			me->dongleId = ReadInt64(&cmd[3]);
+			me->dongleId = ReadUInt64(&cmd[3]);
 			if (cmd[16] == 4)
 			{
 				me->dongleBaudRate = 115200;
@@ -111,10 +111,10 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 	case 0xc6:
 		if (cmdSize >= 17)
 		{
-			dev = me->GetDevice(ReadInt64(cmd));
-			if (dev->shortAddr != ReadInt16(&cmd[8]))
+			dev = me->GetDevice(ReadUInt64(cmd));
+			if (dev->shortAddr != ReadUInt16(&cmd[8]))
 			{
-				dev->shortAddr = ReadInt16(&cmd[8]);
+				dev->shortAddr = ReadUInt16(&cmd[8]);
 				me->hdlr->DeviceUpdated(dev->devId, dev->shortAddr);
 			}
 			dev->devType = (DeviceType)cmd[10];
@@ -126,10 +126,10 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 		}
 		else if (cmdSize >= 14)
 		{
-			dev = me->GetDevice(ReadInt64(cmd));
-			if (dev->shortAddr != ReadInt16(&cmd[8]))
+			dev = me->GetDevice(ReadUInt64(cmd));
+			if (dev->shortAddr != ReadUInt16(&cmd[8]))
 			{
-				dev->shortAddr = ReadInt16(&cmd[8]);
+				dev->shortAddr = ReadUInt16(&cmd[8]);
 				me->hdlr->DeviceUpdated(dev->devId, dev->shortAddr);
 			}
 			dev->devType = (DeviceType)cmd[10];
@@ -141,10 +141,10 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 	case 0xdc:
 		if (cmdSize >= 10)
 		{
-			dev = me->GetDevice(ReadInt64(cmd));
-			if (dev->shortAddr != ReadInt16(&cmd[8]))
+			dev = me->GetDevice(ReadUInt64(cmd));
+			if (dev->shortAddr != ReadUInt16(&cmd[8]))
 			{
-				dev->shortAddr = ReadInt16(&cmd[8]);
+				dev->shortAddr = ReadUInt16(&cmd[8]);
 				me->hdlr->DeviceUpdated(dev->devId, dev->shortAddr);
 			}
 			dev->devType = IO::SNBDongle::DT_UNKNOWN;
@@ -157,7 +157,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 		if (cmdSize >= 14)
 		{
 			Bool valid = false;
-			dev = me->GetDevice(ReadInt64(&cmd[1]));
+			dev = me->GetDevice(ReadUInt64(&cmd[1]));
 			switch (cmd[0])
 			{
 			case 3:
@@ -351,7 +351,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 	case 0xe7:
 		if (cmdSize >= 24)
 		{
-			dev = me->GetDevice(ReadInt64(cmd));
+			dev = me->GetDevice(ReadUInt64(cmd));
 			sensorType = ST_CUSTOM;
 			if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 			{
@@ -379,7 +379,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 	}
 }
 
-IO::SNBDongle::DeviceInfo *IO::SNBDongle::GetDevice(Int64 devId)
+IO::SNBDongle::DeviceInfo *IO::SNBDongle::GetDevice(UInt64 devId)
 {
 	DeviceInfo *dev;
 	Bool upd = false;
@@ -416,7 +416,7 @@ IO::SNBDongle::SNBDongle(IO::Stream *stm, SNBHandler *hdlr)
 	this->dongleBaudRate = 0;
 	this->dongleId = 0;
 	NEW_CLASS(this->proto, IO::SNBProtocol(stm, OnProtocolRecv, this));
-	NEW_CLASS(this->devMap, Data::Int64Map<DeviceInfo*>());
+	NEW_CLASS(this->devMap, Data::UInt64Map<DeviceInfo*>());
 	NEW_CLASS(this->devMut, Sync::RWMutex());
 }
 
@@ -426,7 +426,7 @@ IO::SNBDongle::~SNBDongle()
 	DEL_CLASS(this->devMut);
 	DeviceInfo *dev;
 	Data::ArrayList<DeviceInfo*> *devList = this->devMap->GetValues();
-	OSInt i;
+	UOSInt i;
 	i = devList->GetCount();
 	while (i-- > 0)
 	{
@@ -436,21 +436,21 @@ IO::SNBDongle::~SNBDongle()
 	DEL_CLASS(this->devMap);
 }
 
-void IO::SNBDongle::SetDevHandleType(Int64 devId, HandleType handType)
+void IO::SNBDongle::SetDevHandleType(UInt64 devId, HandleType handType)
 {
 	DeviceInfo *dev;
 	dev = this->GetDevice(devId);
 	dev->handType = handType;
 }
 
-void IO::SNBDongle::SetDevShortAddr(Int64 devId, UInt16 shortAddr)
+void IO::SNBDongle::SetDevShortAddr(UInt64 devId, UInt16 shortAddr)
 {
 	DeviceInfo *dev;
 	dev = this->GetDevice(devId);
 	dev->shortAddr = shortAddr;
 }
 
-Int64 IO::SNBDongle::GetDongleId()
+UInt64 IO::SNBDongle::GetDongleId()
 {
 	return this->dongleId;
 }
@@ -491,7 +491,7 @@ void IO::SNBDongle::SendAddDevice(UInt8 timeout)
 	this->proto->SendCommand(0xc7, 1, &timeout);
 }
 
-void IO::SNBDongle::SendSetReportTime(Int64 devId, Int32 interval)
+void IO::SNBDongle::SendSetReportTime(UInt64 devId, Int32 interval)
 {
 	UInt8 buff[20];
 	DeviceInfo *dev;
@@ -502,7 +502,7 @@ void IO::SNBDongle::SendSetReportTime(Int64 devId, Int32 interval)
 		if (interval <= 0)
 			return;
 
-		WriteInt64(&buff[0], dev->devId);
+		WriteUInt64(&buff[0], dev->devId);
 		buff[8] = 0xe3;
 		buff[9] = 2;
 		buff[10] = 0x2a;
@@ -524,15 +524,15 @@ void IO::SNBDongle::SendSetReportTime(Int64 devId, Int32 interval)
 	}*/
 }
 
-void IO::SNBDongle::SendGetReportTime(Int64 devId)
+void IO::SNBDongle::SendGetReportTime(UInt64 devId)
 {
 	UInt8 buff[9];
-	WriteInt64(&buff[0], devId);
+	WriteUInt64(&buff[0], devId);
 	buff[8] = 0xe0;
 	this->proto->SendCommand(0xb2, 9, buff);
 }
 
-Bool IO::SNBDongle::SendDevTurnOn(Int64 devId)
+Bool IO::SNBDongle::SendDevTurnOn(UInt64 devId)
 {
 	UInt8 buff[16];
 	DeviceInfo *dev;
@@ -543,8 +543,8 @@ Bool IO::SNBDongle::SendDevTurnOn(Int64 devId)
 		{
 			return false;
 		}
-		WriteInt16(&buff[0], dev->shortAddr);
-		WriteInt64(&buff[2], dev->devId);
+		WriteUInt16(&buff[0], dev->shortAddr);
+		WriteUInt64(&buff[2], dev->devId);
 		buff[10] = 1;
 		buff[11] = 1;
 		buff[12] = 0;
@@ -554,7 +554,7 @@ Bool IO::SNBDongle::SendDevTurnOn(Int64 devId)
 	return false;
 }
 
-Bool IO::SNBDongle::SendDevTurnOff(Int64 devId)
+Bool IO::SNBDongle::SendDevTurnOff(UInt64 devId)
 {
 	UInt8 buff[16];
 	DeviceInfo *dev;
@@ -565,8 +565,8 @@ Bool IO::SNBDongle::SendDevTurnOff(Int64 devId)
 		{
 			return false;
 		}
-		WriteInt16(&buff[0], dev->shortAddr);
-		WriteInt64(&buff[2], dev->devId);
+		WriteUInt16(&buff[0], dev->shortAddr);
+		WriteUInt64(&buff[2], dev->devId);
 		buff[10] = 1;
 		buff[11] = 2;
 		buff[12] = 0;
@@ -576,7 +576,7 @@ Bool IO::SNBDongle::SendDevTurnOff(Int64 devId)
 	return false;
 }
 
-Bool IO::SNBDongle::SendDevGetStatus(Int64 devId)
+Bool IO::SNBDongle::SendDevGetStatus(UInt64 devId)
 {
 	UInt8 buff[16];
 	DeviceInfo *dev;
@@ -587,7 +587,7 @@ Bool IO::SNBDongle::SendDevGetStatus(Int64 devId)
 		{
 			return false;
 		}
-		WriteInt16(&buff[0], dev->shortAddr);
+		WriteUInt16(&buff[0], dev->shortAddr);
 		this->proto->SendCommand(0xe7, 2, buff);
 		return true;
 	}

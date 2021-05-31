@@ -10,7 +10,8 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[4];
-	OSInt i;
+	UOSInt i;
+	OSInt si;
 	IO::Device::SIM7000 *me = (IO::Device::SIM7000*)userObj;
 	if (me->nextReceive)
 	{
@@ -33,14 +34,14 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 		{
 			if (sarr[1][0] == '"')
 			{
-				i = Text::StrIndexOf(&sarr[1][1], '"');
-				sarr[1][i + 1] = 0;
+				si = Text::StrIndexOf(&sarr[1][1], '"');
+				sarr[1][si + 1] = 0;
 				sarr[1]++;
 			}
 			if (sarr[2][0] == '"')
 			{
-				i = Text::StrIndexOf(&sarr[2][1], '"');
-				sarr[2][i + 1] = 0;
+				si = Text::StrIndexOf(&sarr[2][1], '"');
+				sarr[2][si + 1] = 0;
 				sarr[2]++;
 			}
 			Sync::MutexUsage mutUsage(me->dnsMut);
@@ -62,15 +63,15 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 		Text::StrConcat(sbuff, (const UTF8Char*)&cmd[9]);
 		if (Text::StrSplit(sarr, 4, sbuff, ',') == 3)
 		{
-			me->recvIndex = Text::StrToInt32(sarr[0]);
-			me->recvSize = Text::StrToInt32(sarr[1]);
-			i = Text::StrIndexOf(sarr[2], ':');
-			if (i >= 0)
+			me->recvIndex = Text::StrToUInt32(sarr[0]);
+			me->recvSize = Text::StrToUInt32(sarr[1]);
+			si = Text::StrIndexOf(sarr[2], ':');
+			if (si >= 0)
 			{
-				sarr[2][i] = 0;
+				sarr[2][si] = 0;
 				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2]);
 				me->recvPort = 0;
-				Text::StrToUInt16(&sarr[2][i + 1], &me->recvPort);
+				Text::StrToUInt16(&sarr[2][si + 1], &me->recvPort);
 			}
 			else
 			{
@@ -90,7 +91,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 	}
 	if (cmd[0] >= '0' && cmd[0] <= '7' && cmd[1] == ',' && cmd[2] == ' ')
 	{
-		i = cmd[0] - 48;
+		i = (UOSInt)cmd[0] - 48;
 		if (Text::StrEquals(&cmd[3], "CONNECT OK"))
 		{
 			if (i == me->connInd)
@@ -155,7 +156,7 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, "AT+CPOWD=1", 2000);
-	OSInt i = this->cmdResults->GetCount();
+	UOSInt i = this->cmdResults->GetCount();
 	const Char *val;
 	if (i > 1)
 	{
@@ -223,7 +224,7 @@ UTF8Char *IO::Device::SIM7000::SIMCOMGetNetworkAPN(UTF8Char *apn)
 			if (sbuff[11] == '"')
 			{
 				sptr = &sbuff[12];
-				OSInt i = Text::StrCharCnt(sptr);
+				UOSInt i = Text::StrCharCnt(sptr);
 				if (sptr[i - 1] == '"')
 				{
 					sptr[i - 1] = 0;					
@@ -244,11 +245,11 @@ Bool IO::Device::SIM7000::NetSetMultiIP(Bool multiIP)
 	return this->SendBoolCommand(multiIP?"AT+CIPMUX=1":"AT+CIPMUX=0");
 }
 
-Bool IO::Device::SIM7000::NetIPStartTCP(OSInt index, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 {
 	Char sbuff[256];
 	Char *sptr = Text::StrConcat(sbuff, "AT+CIPSTART=");
-	sptr = Text::StrOSInt(sptr, index);
+	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcat(sptr, ",\"TCP\",\"");
 	sptr = (Char*)Net::SocketUtil::GetIPv4Name((UTF8Char*)sptr, ip);
 	sptr = Text::StrConcat(sptr, "\",");
@@ -271,11 +272,11 @@ Bool IO::Device::SIM7000::NetIPStartTCP(OSInt index, UInt32 ip, UInt16 port)
 	}	
 }
 
-Bool IO::Device::SIM7000::NetIPStartUDP(OSInt index, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 {
 	Char sbuff[256];
 	Char *sptr = Text::StrConcat(sbuff, "AT+CIPSTART=");
-	sptr = Text::StrOSInt(sptr, index);
+	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcat(sptr, ",\"UDP\",\"");
 	sptr = (Char*)Net::SocketUtil::GetIPv4Name((UTF8Char*)sptr, ip);
 	sptr = Text::StrConcat(sptr, "\",");
@@ -298,7 +299,7 @@ Bool IO::Device::SIM7000::NetIPStartUDP(OSInt index, UInt32 ip, UInt16 port)
 	}	
 }
 
-Bool IO::Device::SIM7000::NetIPSend(OSInt index, const UInt8 *buff, OSInt buffSize)
+Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
@@ -306,9 +307,9 @@ Bool IO::Device::SIM7000::NetIPSend(OSInt index, const UInt8 *buff, OSInt buffSi
 	if (!this->channel->UseCmd(&mutUsage))
 		return false;
 	sb.Append((const UTF8Char*)"AT+CIPSEND=");
-	sb.AppendOSInt(index);
+	sb.AppendUOSInt(index);
 	sb.AppendChar(',', 1);
-	sb.AppendOSInt(buffSize);
+	sb.AppendUOSInt(buffSize);
 	sb.AppendChar('\r', 1);
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Sync::Thread::Sleep(1000);
@@ -330,11 +331,11 @@ Bool IO::Device::SIM7000::NetIPSend(OSInt index, const UInt8 *buff, OSInt buffSi
 	return ret;
 }
 
-Bool IO::Device::SIM7000::NetCloseSocket(OSInt index)
+Bool IO::Device::SIM7000::NetCloseSocket(UOSInt index)
 {
 	UTF8Char sbuff[256];
 	Char *sptr = Text::StrConcat((Char*)sbuff, "AT+CIPCLOSE=");
-	sptr = Text::StrOSInt(sptr, index);
+	sptr = Text::StrUOSInt(sptr, index);
 	if (this->SendStringCommandDirect(sbuff, (const Char*)sbuff, 1000) == 0)
 	{
 		return false;
@@ -342,21 +343,21 @@ Bool IO::Device::SIM7000::NetCloseSocket(OSInt index)
 	return Text::StrEndsWith(sbuff, (const UTF8Char*)"OK");
 }
 
-Bool IO::Device::SIM7000::NetSetLocalPortTCP(OSInt index, UInt16 port)
+Bool IO::Device::SIM7000::NetSetLocalPortTCP(UOSInt index, UInt16 port)
 {
 	Char sbuff[256];
 	Char *sptr = Text::StrConcat(sbuff, "AT+CLPORT=");
-	sptr = Text::StrOSInt(sptr, index);
+	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcat(sptr, ",\"TCP\",");
 	sptr = Text::StrUInt16(sptr, port);
 	return this->SendBoolCommand(sbuff);
 }
 
-Bool IO::Device::SIM7000::NetSetLocalPortUDP(OSInt index, UInt16 port)
+Bool IO::Device::SIM7000::NetSetLocalPortUDP(UOSInt index, UInt16 port)
 {
 	Char sbuff[256];
 	Char *sptr = Text::StrConcat(sbuff, "AT+CLPORT=");
-	sptr = Text::StrOSInt(sptr, index);
+	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcat(sptr, ",\"UDP\",");
 	sptr = Text::StrUInt16(sptr, port);
 	return this->SendBoolCommand(sbuff);
@@ -387,8 +388,8 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 	Data::ArrayList<const Char*> resList;
 	if (this->SendStringCommand(&resList, "AT+CDNSCFG?", 3000))
 	{
-		OSInt i = 0;
-		OSInt j = resList.GetCount();
+		UOSInt i = 0;
+		UOSInt j = resList.GetCount();
 		OSInt k;
 		while (i < j)
 		{

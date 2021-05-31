@@ -22,7 +22,7 @@ namespace IO
 		UInt8 readBuff[RS232GPIO_BUFFSIZE];
 		UOSInt readBuffStart;
 		UOSInt readBuffEnd;
-		Int32 baudRate;
+		UInt32 baudRate;
 		Int64 readStartTime;
 		UOSInt readBit;
 		UInt8 readVal;
@@ -34,7 +34,7 @@ namespace IO
 		static UInt32 __stdcall ReadThread(void *userObj);
 		static void __stdcall IntHdlr(void *userObj);
 	public:
-		RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, Int32 baudRate);
+		RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate);
 		virtual ~RS232GPIO();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

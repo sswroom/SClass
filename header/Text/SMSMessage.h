@@ -38,9 +38,9 @@ namespace Text
 		const UTF16Char *GetSMSC();
 		const UTF16Char *GetContent();
 
-		OSInt ToSubmitPDU(UInt8 *buff);
+		UOSInt ToSubmitPDU(UInt8 *buff);
 
 		static Text::SMSMessage *CreateFromPDU(const UInt8 *pduBytes);
 	};
-};
+}
 #endif

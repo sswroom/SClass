@@ -101,12 +101,12 @@ UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	UOSInt j = this->currTracks->GetCount();
 	while (i < j)
 	{
-		outArr->Add(i);
+		outArr->Add((Int64)i);
 		i++;
 	}
 	if (this->currTimes->GetCount() > 0)
 	{
-		outArr->Add(j);
+		outArr->Add((Int64)j);
 		mutUsage.EndUse();
 		return j + 1;
 	}
@@ -147,7 +147,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 		track = (Map::GPSTrack::TrackRecord*)this->currTracks->GetItem(i);
 		if (track->minLon <= x2 && track->maxLon >= x1 && track->minLat <= y2 && track->maxLat >= y1)
 		{
-			outArr->Add(i);
+			outArr->Add((Int64)i);
 			cnt++;
 		}
 		i++;
@@ -156,7 +156,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 	{
 		if (this->currMinLon <= x2 && this->currMaxLon >= x1 && this->currMinLat <= y2 && this->currMaxLat >= y1)
 		{
-			outArr->Add(j);
+			outArr->Add((Int64)j);
 			cnt++;
 		}
 	}
@@ -168,11 +168,11 @@ Int64 Map::GPSTrack::GetObjectIdMax()
 {
 	if (this->currTimes->GetCount() > 0)
 	{
-		return this->currTracks->GetCount();
+		return (Int64)this->currTracks->GetCount();
 	}
 	else
 	{
-		return this->currTracks->GetCount() - 1;
+		return (Int64)this->currTracks->GetCount() - 1;
 	}
 }
 
@@ -219,7 +219,7 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 	}
 	else
 	{
-		Map::GPSTrack::TrackRecord *track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((OSInt)id);
+		Map::GPSTrack::TrackRecord *track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((UOSInt)id);
 		if (strIndex == 0)
 		{
 			dt.SetTicks(track->records[0].utcTimeTicks);
@@ -458,7 +458,7 @@ Map::DrawObjectL *Map::GPSTrack::GetObjectByIdD(void *session, Int64 id)
 		Map::GPSTrack::TrackRecord *track;
 		lastLat = 0;
 		lastLon = 0;
-		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((OSInt)id);
+		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((UOSInt)id);
 		outObj = MemAlloc(Map::DrawObjectL, 1);
 		outObj->objId = id;
 		outObj->nPtOfst = 1;
@@ -585,7 +585,7 @@ Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
 		lastLat = 0;
 		lastLon = 0;
 		lastAlt = 0;
-		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((OSInt)id);
+		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((UOSInt)id);
 		if (this->hasAltitude)
 		{
 			Math::Polyline3D *pl;
@@ -668,7 +668,7 @@ void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 
 void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs->GetCount();
 	while (i-- > 0)
@@ -1024,15 +1024,15 @@ void Map::GPSTrack::GetLatLonByTime(Data::DateTime *dt, Double *lat, Double *lon
 
 void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 {
-	OSInt i;
+	OSInt si;
 	if (this->currTimes->GetCount() > 0)
 	{
 		if (ticks >= this->currTimes->GetItem(0) && ticks <= this->currTimes->GetItem(this->currTimes->GetCount() - 1))
 		{
-			i = this->currTimes->SortedIndexOf(ticks);
-			if (i >= 0)
+			si = this->currTimes->SortedIndexOf(ticks);
+			if (si >= 0)
 			{
-				Map::GPSTrack::GPSRecord *rec = this->currRecs->GetItem(i);
+				Map::GPSTrack::GPSRecord *rec = this->currRecs->GetItem((UOSInt)si);
 				*lat = rec->lat;
 				*lon = rec->lon;
 				return;
@@ -1040,11 +1040,11 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 			else
 			{
 				Int64 tDiff;
-				Map::GPSTrack::GPSRecord *rec1 = this->currRecs->GetItem(~i - 1);
-				Map::GPSTrack::GPSRecord *rec2 = this->currRecs->GetItem(~i);
+				Map::GPSTrack::GPSRecord *rec1 = this->currRecs->GetItem((UOSInt)~si - 1);
+				Map::GPSTrack::GPSRecord *rec2 = this->currRecs->GetItem((UOSInt)~si);
 				tDiff = rec2->utcTimeTicks - rec1->utcTimeTicks;
-				*lat = (rec1->lat * (rec2->utcTimeTicks - ticks) + rec2->lat * (ticks - rec1->utcTimeTicks)) / tDiff;
-				*lon = (rec1->lon * (rec2->utcTimeTicks - ticks) + rec2->lon * (ticks - rec1->utcTimeTicks)) / tDiff;
+				*lat = (rec1->lat * (Double)(rec2->utcTimeTicks - ticks) + rec2->lat * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
+				*lon = (rec1->lon * (Double)(rec2->utcTimeTicks - ticks) + rec2->lon * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
 				return;
 			}
 		}
@@ -1052,6 +1052,7 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 	if (this->currTracks->GetCount() > 0)
 	{
 		Map::GPSTrack::TrackRecord *rec;
+		UOSInt i;
 		UOSInt j;
 		i = this->currTracks->GetCount();
 		while (i-- > 0)
@@ -1076,8 +1077,8 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 				{
 					Int64 tDiff;
 					tDiff = rec->records[j].utcTimeTicks - rec->records[j - 1].utcTimeTicks;
-					*lat = (rec->records[j - 1].lat * (rec->records[j].utcTimeTicks - ticks) + rec->records[j].lat * (ticks - rec->records[j - 1].utcTimeTicks)) / tDiff;
-					*lon = (rec->records[j - 1].lon * (rec->records[j].utcTimeTicks - ticks) + rec->records[j].lon * (ticks - rec->records[j - 1].utcTimeTicks)) / tDiff;
+					*lat = (rec->records[j - 1].lat * (Double)(rec->records[j].utcTimeTicks - ticks) + rec->records[j].lat * (Double)(ticks - rec->records[j - 1].utcTimeTicks)) / (Double)tDiff;
+					*lon = (rec->records[j - 1].lon * (Double)(rec->records[j].utcTimeTicks - ticks) + rec->records[j].lon * (Double)(ticks - rec->records[j - 1].utcTimeTicks)) / (Double)tDiff;
 					return;
 				}
 			}
@@ -1180,7 +1181,7 @@ Map::GPSTrackReader::~GPSTrackReader()
 
 DB::DBReader::DateErrType Map::GPSTrackReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
 {
-	OSInt id = this->currIndex;
+	UOSInt id = (UOSInt)this->currIndex;
 	if (colIndex != 1 && colIndex != 2)
 		return DB::DBReader::DET_ERROR;
 	if (colIndex == 2)
@@ -1215,7 +1216,7 @@ Bool Map::GPSDataReader::ReadNext()
 	UOSInt rowLeft;
 	Map::GPSTrack::GPSRecord *rec;
 	this->currRow++;
-	rowLeft = this->currRow;
+	rowLeft = (UOSInt)this->currRow;
 	i = 0;
 	j = this->gps->GetTrackCnt();
 	while (i < j)

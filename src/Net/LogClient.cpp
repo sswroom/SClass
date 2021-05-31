@@ -17,8 +17,8 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 {
 	Net::LogClient *me = (Net::LogClient*)userObj;
 	UInt8 *recvBuff;
-	OSInt recvSize = 0;
-	OSInt readSize;
+	UOSInt recvSize = 0;
+	UOSInt readSize;
 	me->recvRunning = true;
 	recvBuff = MemAlloc(UInt8, BUFFSIZE);
 	while (!me->recvToStop)
@@ -74,10 +74,10 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	Int64 t;
 	Int64 msgTime;
 	const UTF8Char *msg;
-	OSInt msgLen;
+	UOSInt msgLen;
 	Int64 nextKATime = 0;
 	UInt8 kaBuff[10];
-	OSInt buffSize;
+	UOSInt buffSize;
 
 	me->sendRunning = true;
 	NEW_CLASS(currTime, Data::DateTime())
@@ -174,7 +174,7 @@ Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 
 Net::LogClient::~LogClient()
 {
-	OSInt i;
+	UOSInt i;
 	this->recvToStop = true;
 	this->sendToStop = true;
 	this->recvEvt->Set();

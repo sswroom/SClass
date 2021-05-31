@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, OSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, OSInt buffSize)
+void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize)
 {
 	IO::Device::SIM7000SocketFactory *me = (IO::Device::SIM7000SocketFactory*)userObj;
 	DataPacket *packet;
@@ -29,7 +29,7 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, OS
 
 void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 {
-	OSInt i = 8;
+	UOSInt i = 8;
 	DataPacket *packet;
 	while (i-- > 0)
 	{
@@ -232,9 +232,9 @@ UInt32 *IO::Device::SIM7000SocketFactory::CreateRAWSocket()
 
 void IO::Device::SIM7000SocketFactory::DestroySocket(UInt32 *socket)
 {
-	OSInt i = -1 + (OSInt)socket;
+	UOSInt i = (UOSInt)socket - 1;
 	DataPacket *packet;
-	if (i < 0 || i >= 8)
+	if (socket == 0 || i >= 8)
 	{
 		return;
 	}
@@ -285,8 +285,8 @@ Bool IO::Device::SIM7000SocketFactory::SocketIsInvalid(UInt32 *socket)
 
 Bool IO::Device::SIM7000SocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port)
 {
-	OSInt i = -1 + (OSInt)socket;
-	if (i < 0 || i >= 8)
+	UOSInt i = (UOSInt)socket - 1;
+	if (socket == 0 || i >= 8)
 	{
 		return false;
 	}
@@ -448,8 +448,8 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff,
 
 UOSInt IO::Device::SIM7000SocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
-	OSInt i = -1 + (OSInt)socket;
-	if (i < 0 || i >= 8)
+	UOSInt i = (UOSInt)socket - 1;
+	if (socket == 0 || i >= 8)
 	{
 		return false;
 	}
