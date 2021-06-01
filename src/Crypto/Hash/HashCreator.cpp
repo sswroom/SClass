@@ -17,6 +17,10 @@
 #include "Crypto/Hash/SDBM.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Crypto/Hash/SHA1_SHA1.h"
+#include "Crypto/Hash/SHA224.h"
+#include "Crypto/Hash/SHA256.h"
+#include "Crypto/Hash/SHA384.h"
+#include "Crypto/Hash/SHA512.h"
 //#include "Crypto/Hash/SuperFastHash.h"
 
 Crypto::Hash::IHash *Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType hashType)
@@ -68,6 +72,18 @@ Crypto::Hash::IHash *Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashTyp
 		break;
 	case Crypto::Hash::HT_SHA1:
 		NEW_CLASS(hash, Crypto::Hash::SHA1());
+		break;
+	case Crypto::Hash::HT_SHA224:
+		NEW_CLASS(hash, Crypto::Hash::SHA224());
+		break;
+	case Crypto::Hash::HT_SHA256:
+		NEW_CLASS(hash, Crypto::Hash::SHA256());
+		break;
+	case Crypto::Hash::HT_SHA384:
+		NEW_CLASS(hash, Crypto::Hash::SHA384());
+		break;
+	case Crypto::Hash::HT_SHA512:
+		NEW_CLASS(hash, Crypto::Hash::SHA512());
 		break;
 //	case Crypto::Hash::HT_SUPERFASTHASH:
 //		NEW_CLASS(hash, Crypto::Hash::SuperFastHash());

@@ -1295,7 +1295,7 @@ UOSInt Text::StrCharCntS(const UTF16Char *str, UOSInt maxLen)
 	const UTF16Char *currPtr = str;
 	const UTF16Char *endPtr = str + maxLen;
 	while (currPtr < endPtr && *currPtr++);
-	return currPtr - str;
+	return (UOSInt)(currPtr - str);
 }
 
 UOSInt Text::StrCharCntS(const UTF32Char *str, UOSInt maxLen)
@@ -1303,7 +1303,7 @@ UOSInt Text::StrCharCntS(const UTF32Char *str, UOSInt maxLen)
 	const UTF32Char *currPtr = str;
 	const UTF32Char *endPtr = str + maxLen;
 	while (currPtr < endPtr && *currPtr++);
-	return currPtr - str;
+	return (UOSInt)(currPtr - str);
 }
 
 UTF16Char *Text::StrHexVal16(UTF16Char *oriStr, UInt16 val)

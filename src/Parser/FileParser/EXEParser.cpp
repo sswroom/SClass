@@ -166,7 +166,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 	*(UInt32*)&codePtr[56] = 0xffffffff;
 	*(UInt32*)&codePtr[60] = 0;
 	*(UInt16*)&codePtr[64] = 0x206;
-	OSInt i = 66;
+	UOSInt i = 66;
 	while (i < 80)
 		codePtr[i++] = 0;
 	codePtr[80] = 0xcd;				// INT 21H,RETF INSTRUCTIONS
@@ -777,7 +777,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 			UOSInt tableStart;
 			UOSInt tableSize;
 			UInt8 *nameTable;
-			OSInt j;
+			UOSInt j;
 			tableStart = ReadUInt16(&neBuff[38]);
 			tableSize = ReadUInt16(&neBuff[40]) - tableStart;
 			tableStart += peOfst;

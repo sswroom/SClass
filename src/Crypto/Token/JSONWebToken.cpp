@@ -3,6 +3,8 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/IHash.h"
 #include "Crypto/Hash/SHA256.h"
+#include "Crypto/Hash/SHA384.h"
+#include "Crypto/Hash/SHA512.h"
 #include "Crypto/Token/JSONWebToken.h"
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
@@ -24,6 +26,16 @@ Bool Crypto::Token::JSONWebToken::Generate(Text::StringBuilderUTF8 *sb, Algorith
 	{
 	case HS256:
 		NEW_CLASS(ihash, Crypto::Hash::SHA256());
+		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, key, keySize));
+		DEL_CLASS(ihash);
+		break;
+	case HS384:
+		NEW_CLASS(ihash, Crypto::Hash::SHA384());
+		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, key, keySize));
+		DEL_CLASS(ihash);
+		break;
+	case HS512:
+		NEW_CLASS(ihash, Crypto::Hash::SHA512());
 		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, key, keySize));
 		DEL_CLASS(ihash);
 		break;

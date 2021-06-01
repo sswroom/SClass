@@ -23,6 +23,10 @@ namespace Crypto
 			HT_SDBM,
 			HT_SHA1,
 			HT_EXCEL,
+			HT_SHA224,
+			HT_SHA256,
+			HT_SHA384,
+			HT_SHA512,
 
 			// Compound Algorithm
 			HT_SHA1_SHA1,

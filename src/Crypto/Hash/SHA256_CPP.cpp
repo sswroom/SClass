@@ -2,9 +2,6 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 
-#define SHA256HashSize 20
-#define ROR(x, n) ((x >> n) | (x << (32 - n)))
-
 extern "C" void SHA256_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message_Block)
 {
 	UInt32 w[64];
@@ -34,8 +31,8 @@ extern "C" void SHA256_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message
 
 	while(t < 64)
 	{
-		s0 = ROR(w[t - 15], 7) ^ ROR(w[t - 15], 18) ^ (w[t - 15] >> 3);
-		s1 = ROR(w[t - 2], 17) ^ ROR(w[t - 2],  19) ^ (w[t - 2] >> 10);
+		s0 = ROR32(w[t - 15], 7) ^ ROR32(w[t - 15], 18) ^ (w[t - 15] >> 3);
+		s1 = ROR32(w[t - 2], 17) ^ ROR32(w[t - 2],  19) ^ (w[t - 2] >> 10);
 		w[t] = w[t - 16] + s0 + w[t - 7] + s1;
 		t++;
 	}
@@ -52,10 +49,10 @@ extern "C" void SHA256_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message
 	t = 0;
 	while (t < 64)
 	{
-        s1 = ROR(e, 6) ^ ROR(e, 11) ^ ROR(e, 25);
+        s1 = ROR32(e, 6) ^ ROR32(e, 11) ^ ROR32(e, 25);
         ch = (e & f) ^ ((~e) & g);
         temp1 = h + s1 + ch + K[t] + w[t];
-        s0 = ROR(a, 2) ^ ROR(a, 13) ^ ROR(a, 22);
+        s0 = ROR32(a, 2) ^ ROR32(a, 13) ^ ROR32(a, 22);
         maj = (a & b) ^ (a & c) ^ (b & c);
         temp2 = s0 + maj;
 

@@ -321,4 +321,8 @@ typedef WChar UTF32Char;
 typedef WChar UTF16Char;
 typedef UInt32 UTF32Char;
 #endif
+
+#define ROR32(x, n) ((x >> n) | (x << (32 - n)))
+#define ROR64(x, n) ((x >> n) | (x << (64 - n)))
+
 #endif

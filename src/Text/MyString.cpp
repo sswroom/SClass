@@ -713,7 +713,7 @@ UOSInt Text::StrCharCntS(const Char *str, UOSInt maxLen)
 	const Char *currPtr = str;
 	const Char *endPtr = str + maxLen;
 	while (currPtr < endPtr && *currPtr++);
-	return currPtr - str;
+	return (UOSInt)(currPtr - str);
 }
 
 Bool Text::StrHasUpperCase(const Char *str)

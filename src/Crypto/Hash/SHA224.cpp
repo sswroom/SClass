@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Crypto/Hash/SHA256.h"
+#include "Crypto/Hash/SHA224.h"
 #include "Text/MyString.h"
 
 extern "C"
@@ -9,57 +9,57 @@ extern "C"
 	void SHA256_CalcBlock(UInt32 *intermediateHash, const UInt8 *messageBlock);
 }
 
-Crypto::Hash::SHA256::SHA256()
+Crypto::Hash::SHA224::SHA224()
 {
 	this->intermediateHash = MemAlloc(UInt32, 8);
 	this->messageBlock = MemAlloc(UInt8, 64);
 	Clear();
 }
 
-Crypto::Hash::SHA256::~SHA256()
+Crypto::Hash::SHA224::~SHA224()
 {
 	MemFree(this->intermediateHash);
 	MemFree(this->messageBlock);
 }
 
-UTF8Char *Crypto::Hash::SHA256::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::SHA224::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA-256");
+	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA-224");
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA256::Clone()
+Crypto::Hash::IHash *Crypto::Hash::SHA224::Clone()
 {
-	Crypto::Hash::SHA256 *sha256;
-	NEW_CLASS(sha256, Crypto::Hash::SHA256());
-	sha256->messageLength = this->messageLength;
-	sha256->messageBlockIndex = this->messageBlockIndex;
+	Crypto::Hash::SHA224 *sha224;
+	NEW_CLASS(sha224, Crypto::Hash::SHA224());
+	sha224->messageLength = this->messageLength;
+	sha224->messageBlockIndex = this->messageBlockIndex;
     
-	sha256->intermediateHash[0] = this->intermediateHash[0];
-	sha256->intermediateHash[1] = this->intermediateHash[1];
-	sha256->intermediateHash[2] = this->intermediateHash[2];
-	sha256->intermediateHash[3] = this->intermediateHash[3];
-	sha256->intermediateHash[4] = this->intermediateHash[4];
-	sha256->intermediateHash[5] = this->intermediateHash[5];
-	sha256->intermediateHash[6] = this->intermediateHash[6];
-	sha256->intermediateHash[7] = this->intermediateHash[7];
-	return sha256;
+	sha224->intermediateHash[0] = this->intermediateHash[0];
+	sha224->intermediateHash[1] = this->intermediateHash[1];
+	sha224->intermediateHash[2] = this->intermediateHash[2];
+	sha224->intermediateHash[3] = this->intermediateHash[3];
+	sha224->intermediateHash[4] = this->intermediateHash[4];
+	sha224->intermediateHash[5] = this->intermediateHash[5];
+	sha224->intermediateHash[6] = this->intermediateHash[6];
+	sha224->intermediateHash[7] = this->intermediateHash[7];
+	return sha224;
 }
-void Crypto::Hash::SHA256::Clear()
+void Crypto::Hash::SHA224::Clear()
 {
 	this->messageLength        = 0;
 	this->messageBlockIndex    = 0;
     
-	this->intermediateHash[0]   = 0x6a09e667;
-	this->intermediateHash[1]   = 0xbb67ae85;
-	this->intermediateHash[2]   = 0x3c6ef372;
-	this->intermediateHash[3]   = 0xa54ff53a;
-	this->intermediateHash[4]   = 0x510e527f;
-	this->intermediateHash[5]   = 0x9b05688c;
-	this->intermediateHash[6]   = 0x1f83d9ab;
-	this->intermediateHash[7]   = 0x5be0cd19;
+	this->intermediateHash[0]   = 0xc1059ed8;
+	this->intermediateHash[1]   = 0x367cd507;
+	this->intermediateHash[2]   = 0x3070dd17;
+	this->intermediateHash[3]   = 0xf70e5939;
+	this->intermediateHash[4]   = 0xffc00b31;
+	this->intermediateHash[5]   = 0x68581511;
+	this->intermediateHash[6]   = 0x64f98fa7;
+	this->intermediateHash[7]   = 0xbefa4fa4;
 }
 
-void Crypto::Hash::SHA256::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::SHA224::Calc(const UInt8 *buff, UOSInt buffSize)
 {
 	this->messageLength += (buffSize << 3);
 	if ((buffSize + this->messageBlockIndex) < 64)
@@ -90,7 +90,7 @@ void Crypto::Hash::SHA256::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::SHA256::GetValue(UInt8 *buff)
+void Crypto::Hash::SHA224::GetValue(UInt8 *buff)
 {
 	UInt8 calBuff[64];
 	UInt32 intHash[8];
@@ -126,7 +126,7 @@ void Crypto::Hash::SHA256::GetValue(UInt8 *buff)
 	WriteMUInt64(&calBuff[56], msgLeng);
 	SHA256_CalcBlock(this->intermediateHash, calBuff);
 	UInt8 *res = (UInt8*)this->intermediateHash;
-	i = 32;
+	i = 28;
 	while (i > 0)
 	{
 		i -= 4;
@@ -138,12 +138,12 @@ void Crypto::Hash::SHA256::GetValue(UInt8 *buff)
 	MemCopyNO(this->intermediateHash, intHash, 32);
 }
 
-UOSInt Crypto::Hash::SHA256::GetBlockSize()
+UOSInt Crypto::Hash::SHA224::GetBlockSize()
 {
 	return 64;
 }
 
-UOSInt Crypto::Hash::SHA256::GetResultSize()
+UOSInt Crypto::Hash::SHA224::GetResultSize()
 {
-	return 32;
+	return 28;
 }
