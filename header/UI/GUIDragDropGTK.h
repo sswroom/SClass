@@ -21,7 +21,7 @@ namespace UI
 		virtual ~GUIDragDataGTK();
 
 		virtual UOSInt GetCount();
-		virtual const UTF8Char *GetName(OSInt index);
+		virtual const UTF8Char *GetName(UOSInt index);
 		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF *sb);
 		virtual IO::Stream *GetDataStream(const UTF8Char *name);
 

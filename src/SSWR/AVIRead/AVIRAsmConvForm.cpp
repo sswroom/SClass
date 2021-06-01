@@ -252,7 +252,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 							{
 								destSb.Append((const UTF8Char*)"q");
 							}
-							sarr[j] = &sarr[j][k + 5];
+							sarr[j] = &sarr[j][si + 5];
 							Text::StrTrim(sarr[j]);
 						}
 					}

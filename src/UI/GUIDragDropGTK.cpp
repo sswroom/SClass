@@ -91,7 +91,7 @@ UOSInt UI::GUIDragDataGTK::GetCount()
 	return this->targetMap->GetCount();
 }
 
-const UTF8Char *UI::GUIDragDataGTK::GetName(OSInt index)
+const UTF8Char *UI::GUIDragDataGTK::GetName(UOSInt index)
 {
 	return this->targetMap->GetKey(index);
 }
