@@ -904,8 +904,10 @@ Crypto/Hash/SHA512.h: ../../src/Crypto/Hash/SHA512.cpp
 @SHA512.o
 @SHA512_CPP.o
 Crypto/Hash/SuperFastHash.h:
-Crypto/Token/JSONWebToken.h: ../../src/Crypto/Token/JSONWebToken.cpp
-@JSONWebToken.o
+Crypto/Token/JWTHandler.h: ../../src/Crypto/Token/JWTHandler.cpp
+@JWTHandler.o
+Crypto/Token/JWTParam.h: ../../src/Crypto/Token/JWTHandler.cpp
+@JWTParam.o
 
 Data/ArrayCollection.h:
 Data/ArrayList.h:
@@ -3187,6 +3189,7 @@ Text/Encoding.h: ../../src/Text/Encoding.cpp
 @Encoding.o
 Text/EncodingFactory.h: ../../src/Text/EncodingFactory.cpp
 @EncodingFactory.o
+Text/EnumFinder.h:
 Text/HKSCSFix.h: ../../src/Text/HKSCSFix.cpp
 @HKSCSFix.o
 Text/HTMLUtil.h: ../../src/Text/HTMLUtil.cpp
@@ -3234,6 +3237,8 @@ Text/StringBuilderUTF32.h: ../../src/Text/StringBuilderUTF32.cpp
 @StringBuilderUTF32.o
 Text/StringBuilderWriter.h: ../../src/Text/StringBuilderWriter.cpp
 @StringBuilderWriter.o
+Text/StringTool.h: ../../src/Text/StringTool.cpp
+@StringTool.o
 Text/StringUtil.h: ../../src/Text/StringUtil.cpp
 @StringUtil.o
 Text/TextAnalyzer.h: ../../src/Text/TextAnalyzer.cpp
@@ -3402,7 +3407,8 @@ SHA256_CPP.o: ../../src/Crypto/Hash/SHA256_CPP.cpp
 SHA384.o: ../../src/Crypto/Hash/SHA384.cpp
 SHA512.o: ../../src/Crypto/Hash/SHA512.cpp
 SHA512_CPP.o: ../../src/Crypto/Hash/SHA512_CPP.cpp
-JSONWebToken.o: ../../src/Crypto/Token/JSONWebToken.cpp
+JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
+JWTParam.o: ../../src/Crypto/Token/JWTParam.cpp
 ArrayListCmp.o: ../../src/Data/ArrayListCmp.cpp
 ArrayListDbl.o: ../../src/Data/ArrayListDbl.cpp
 ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
@@ -4495,6 +4501,7 @@ StringBuilderUTF8.o: ../../src/Text/StringBuilderUTF8.cpp
 StringBuilderUTF16.o: ../../src/Text/StringBuilderUTF16.cpp
 StringBuilderUTF32.o: ../../src/Text/StringBuilderUTF32.cpp
 StringBuilderWriter.o: ../../src/Text/StringBuilderWriter.cpp
+StringTool.o: ../../src/Text/StringTool.cpp
 StringUtil.o: ../../src/Text/StringUtil.cpp
 TextAnalyzer.o: ../../src/Text/TextAnalyzer.cpp
 URLString.o: ../../src/Text/URLString.cpp
