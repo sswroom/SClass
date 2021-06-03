@@ -44,9 +44,10 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 	Int32 fileCnt;
 	UInt64 ofst;
 	UInt64 minOfst;
-	Int64 fileOfst;
-	Int64 fileSize;
+	UInt64 fileOfst;
+	UInt64 fileSize;
 	IO::PackageFile *pf = 0;
+	UInt64 fileLen = fd->GetDataSize();
 
 	fd->GetRealData(0, 16, hdr);
 	if (!Text::StrEquals((Char*)hdr, "SZS100__"))
@@ -63,8 +64,8 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(ofst, 272, fileBuff);
 
 		fileOfst = ReadUInt64(&fileBuff[256]);
-		fileSize = ReadInt64(&fileBuff[264]);
-		if (fileOfst < minOfst || fileSize < 0)
+		fileSize = ReadUInt64(&fileBuff[264]);
+		if (fileOfst < minOfst || (fileOfst + fileSize) > fileLen)
 		{
 			DEL_CLASS(pf);
 			return 0;

@@ -222,7 +222,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	}
 	sb.Append((const UTF8Char*)"</dc:description>");
 	sb.Append((const UTF8Char*)"<dc:language>");
-	Int32 lcid = Text::EncodingFactory::GetSystemLCID();
+	UInt32 lcid = Text::EncodingFactory::GetSystemLCID();
 	Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntry(lcid);
 	if (loc)
 	{

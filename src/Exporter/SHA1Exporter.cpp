@@ -44,7 +44,7 @@ Bool Exporter::SHA1Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-void Exporter::SHA1Exporter::SetCodePage(Int32 codePage)
+void Exporter::SHA1Exporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

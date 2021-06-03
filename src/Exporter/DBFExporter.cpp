@@ -50,7 +50,7 @@ Bool Exporter::DBFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::DBFExporter::SetCodePage(Int32 codePage)
+void Exporter::DBFExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

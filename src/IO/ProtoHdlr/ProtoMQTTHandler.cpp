@@ -78,18 +78,18 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(IO::Stream *stm, void *stm
 			{
 				if (buff[3] & 0x80)
 				{
-					packetSize = (buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | ((buff[3] & 0x7f) << 14) | (buff[4] << 21);
+					packetSize = (UOSInt)((buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | ((buff[3] & 0x7f) << 14) | (buff[4] << 21));
 					i = 5;
 				}
 				else
 				{
-					packetSize = (buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | (buff[3] << 14);
+					packetSize = (UOSInt)((buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | (buff[3] << 14));
 					i = 4;
 				}
 			}
 			else
 			{
-				packetSize = (buff[1] & 0x7f) | (buff[2] << 7);
+				packetSize = (UOSInt)((buff[1] & 0x7f) | (buff[2] << 7));
 				i = 3;
 			}
 		}
@@ -177,6 +177,6 @@ Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(const UTF8Char *buff, UOSInt 
 		return false;
 	}
 	sb->AppendC((const UTF8Char*)&buff[2 + *index], strSize);
-	*index = strSize + 2 + *index;
+	*index = (UOSInt)strSize + 2 + *index;
 	return true;
 }

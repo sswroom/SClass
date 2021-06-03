@@ -20,7 +20,7 @@ namespace Map
 			Sync::Mutex *mut;
 			Text::EncodingFactory *encFact;
 			Int32 lastIsError;
-			Int32 srchCnt;
+			UInt32 srchCnt;
 			const UTF8Char *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
@@ -34,9 +34,9 @@ namespace Map
 			void SetGoogleAPIKey(const UTF8Char *gooAPIKey);
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw
-			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual Int32 GetSrchCnt();
+			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+			virtual UInt32 GetSrchCnt();
 		};
 	}
 }

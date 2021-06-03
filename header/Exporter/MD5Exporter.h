@@ -7,7 +7,7 @@ namespace Exporter
 	class MD5Exporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		MD5Exporter();
 		virtual ~MD5Exporter();
@@ -15,7 +15,7 @@ namespace Exporter
 		virtual Int32 GetName();
 		virtual SupportType IsObjectSupported(IO::ParsedObject *pobj);
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
-		virtual void SetCodePage(Int32 codePage);
+		virtual void SetCodePage(UInt32 codePage);
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
 	};
 }

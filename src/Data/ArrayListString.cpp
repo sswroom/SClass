@@ -7,7 +7,7 @@ Data::ArrayListString::ArrayListString() : Data::SortableArrayList<Text::String*
 {
 }
 
-Data::ArrayListString::ArrayListString(OSInt Capacity) : Data::SortableArrayList<Text::String*>(Capacity)
+Data::ArrayListString::ArrayListString(UOSInt capacity) : Data::SortableArrayList<Text::String*>(capacity)
 {
 }
 
@@ -26,7 +26,7 @@ UOSInt Data::ArrayListString::SortedInsert(Text::String *val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -49,7 +49,7 @@ UOSInt Data::ArrayListString::SortedInsert(Text::String *val)
 	if (objCnt == this->capacity)
 	{
 		Text::String **newArr = MemAlloc(Text::String*, this->capacity << 1);
-		k = this->objCnt;
+		k = (OSInt)this->objCnt;
 		while (k-- > 0)
 		{
 			newArr[k] = arr[k];
@@ -58,7 +58,7 @@ UOSInt Data::ArrayListString::SortedInsert(Text::String *val)
 		MemFree(arr);
 		arr = newArr;
 	}
-	j = objCnt;
+	j = (OSInt)objCnt;
 	while (j > i)
 	{
 		arr[j] = arr[j - 1];
@@ -76,7 +76,7 @@ OSInt Data::ArrayListString::SortedIndexOf(Text::String *val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -100,9 +100,9 @@ OSInt Data::ArrayListString::SortedIndexOf(Text::String *val)
 Text::String *Data::ArrayListString::JoinString()
 {
 	Text::String *newStr;
-	OSInt newStrLeng = 0;
-	OSInt j;
-	OSInt i;
+	UOSInt newStrLeng = 0;
+	UOSInt j;
+	UOSInt i;
 	j = this->objCnt;
 	i = 0;
 	while (i < j)

@@ -22,7 +22,7 @@ namespace Media
 				UOSInt swidth;
 				UOSInt dwidth;
 				UOSInt height;
-				OSInt tap;
+				UOSInt tap;
 				OSInt *index;
 				Int64 *weight;
 				OSInt sstep;
@@ -36,13 +36,13 @@ namespace Media
 				UOSInt length;
 				Int64 *weight;
 				OSInt *index;
-				OSInt tap;
+				UOSInt tap;
 			} LRHPARAMETER;
 
 		private:
-			OSInt hnTap;
-			OSInt vnTap;
-			OSInt nThread;
+			UOSInt hnTap;
+			UOSInt vnTap;
+			UOSInt nThread;
 			Sync::Mutex *mut;
 			TaskParam *params;
 			Sync::ParallelTask *ptask;
@@ -52,7 +52,7 @@ namespace Media
 			UOSInt hdSize;
 			OSInt *hIndex;
 			Int64 *hWeight;
-			OSInt hTap;
+			UOSInt hTap;
 
 			Double vsSize;
 			Double vsOfst;
@@ -60,7 +60,7 @@ namespace Media
 			OSInt vsStep;
 			OSInt *vIndex;
 			Int64 *vWeight;
-			OSInt vTap;
+			UOSInt vTap;
 
 			UOSInt buffW;
 			UOSInt buffH;
@@ -72,18 +72,17 @@ namespace Media
 			Bool rgbChanged;
 			UInt8 *rgbTable;
 
-			Double lanczos3_weight(Double phase, OSInt nTap);
-			void setup_interpolation_parameter(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
 
-			void mt_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, OSInt swidth);
-			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, OSInt swidth);
-			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_expand_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
-			void mt_expand(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
-			void mt_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
-			void mt_copy_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
-			void mt_copy(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
+			void mt_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth);
+			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth);
+			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_expand_pa(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void mt_expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void mt_copy_pa(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void mt_copy(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 			void UpdateRGBTable();
 
@@ -91,7 +90,7 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizer16_C8(OSInt hnTap, OSInt vnTap, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType);
+			LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType);
 			virtual ~LanczosResizer16_C8();
 
 			virtual void Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);

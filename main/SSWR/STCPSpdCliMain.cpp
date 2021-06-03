@@ -18,7 +18,7 @@ Net::SocketFactory *sockf;
 Manage::HiResClock *clk;
 IO::ConsoleWriter *console;
 Bool toStop;
-Int32 procRunning;
+UInt32 procRunning;
 Bool recvRunning;
 Bool dispRunning;
 Sync::Event *mainEvt;
@@ -27,11 +27,11 @@ Sync::Event *recvEvt;
 Sync::Event *dispEvt;
 Sync::Mutex *cliMut;
 Net::TCPClient *cli;
-Int64 totalRecvSize;
-Int64 totalSendSize;
+UInt64 totalRecvSize;
+UInt64 totalSendSize;
 Double lastTime;
-Int64 lastRecvSize;
-Int64 lastSendSize;
+UInt64 lastRecvSize;
+UInt64 lastSendSize;
 
 UInt32 __stdcall DispThread(void *userObj)
 {
@@ -43,15 +43,15 @@ UInt32 __stdcall DispThread(void *userObj)
 		dispEvt->Wait(1000);
 
 		Double currTime = clk->GetTimeDiff();
-		Int64 currRecvSize = totalRecvSize;
-		Int64 currSendSize = totalSendSize;
+		UInt64 currRecvSize = totalRecvSize;
+		UInt64 currSendSize = totalSendSize;
 		if (currTime > lastTime)
 		{
 			sptr = sbuff;
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Send: ");
-			sptr = Text::StrDouble(sptr, (currSendSize - lastSendSize) / (currTime - lastTime));
+			sptr = Text::StrDouble(sptr, (Double)(currSendSize - lastSendSize) / (currTime - lastTime));
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bps\tRecv: ");
-			sptr = Text::StrDouble(sptr, (currRecvSize - lastRecvSize) / (currTime - lastTime));
+			sptr = Text::StrDouble(sptr, (Double)(currRecvSize - lastRecvSize) / (currTime - lastTime));
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bps       ");
 			console->WriteLine(sbuff);
 		}
@@ -67,8 +67,8 @@ UInt32 __stdcall DispThread(void *userObj)
 UInt32 __stdcall ProcThread(void *userObj)
 {
 	UInt8 *sendBuff;
-	OSInt sendSize;
-	OSInt sendBuffSize = 9000;
+	UOSInt sendSize;
+	UOSInt sendBuffSize = 9000;
 	Sync::Interlocked::Increment(&procRunning);
 	mainEvt->Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
@@ -103,7 +103,7 @@ UInt32 __stdcall ProcThread(void *userObj)
 UInt32 __stdcall RecvThread(void *userObj)
 {
 	UInt8 *recvBuff;
-	OSInt recvSize;
+	UOSInt recvSize;
 	recvRunning = true;
 	mainEvt->Set();
 	recvBuff = MemAlloc(UInt8, 9000);
@@ -165,8 +165,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(procEvt, Sync::Event(true, (const UTF8Char*)"procEvt"));
 		NEW_CLASS(dispEvt, Sync::Event(true, (const UTF8Char*)"dispEvt"));
 
-		OSInt threadCnt = Sync::Thread::GetThreadCnt();
-		OSInt i;
+		UOSInt threadCnt = Sync::Thread::GetThreadCnt();
+		UOSInt i;
 		Sync::Thread::Create(DispThread, 0);
 		i = 0;
 		while (i < threadCnt)
@@ -182,7 +182,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		Bool valid = true;
 		Net::SocketUtil::AddressInfo addr;
-		Int32 port;
+		UInt16 port;
 		Net::TCPClient *c;
 
 		if (!sockf->DNSResolveIP(argv[1], &addr))
@@ -190,7 +190,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Host is not valid");
 			valid = false;
 		}
-		if (!Text::StrToInt32(argv[2], &port))
+		if (!Text::StrToUInt16(argv[2], &port))
 		{
 			console->WriteLine((const UTF8Char*)"Port is not a number");
 			valid = false;

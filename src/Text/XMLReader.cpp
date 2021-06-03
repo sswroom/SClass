@@ -660,7 +660,7 @@ Bool Text::XMLReader::ReadNext()
 									attr = this->attrList->GetItem(i);
 									if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"ENCODING"))
 									{
-										Int32 cp = this->encFact->GetCodePage(attr->value);
+										UInt32 cp = this->encFact->GetCodePage(attr->value);
 										if (cp)
 										{
 											SDEL_CLASS(this->enc);

@@ -14,8 +14,8 @@ namespace IO
 
 		virtual Bool IsError();
 		
-		virtual OSInt I2CRead(UInt8 *buff, OSInt buffSize);
-		virtual OSInt I2CWrite(const UInt8 *buff, OSInt buffSize);
+		virtual UOSInt I2CRead(UInt8 *buff, UOSInt buffSize);
+		virtual UOSInt I2CWrite(const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

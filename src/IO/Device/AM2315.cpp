@@ -82,7 +82,7 @@ Bool IO::Device::AM2315::ReadTemperature(Single *temp)
 	this->Wakeup();
 	if (this->i2c->ReadBuff(2, 2, buff))
 	{
-		*temp = ReadMInt16(buff) * 0.1;
+		*temp = (Single)(ReadMInt16(buff) * 0.1);
 		return true;
 	}
 	else
@@ -99,7 +99,7 @@ Bool IO::Device::AM2315::ReadRH(Single *rh)
 	this->Wakeup();
 	if (this->i2c->ReadBuff(0, 2, buff))
 	{
-		*rh = ReadMUInt16(buff) * 0.1;
+		*rh = (Single)(ReadMUInt16(buff) * 0.1);
 		return true;
 	}
 	else

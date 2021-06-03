@@ -191,13 +191,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	UTF8Char *u8ptr;
 	if (req->GetQueryValueStr((const UTF8Char*)"model", fileName, 512))
 	{
-		OSInt fileSize;
+		UOSInt fileSize;
 		IO::Path::GetProcessFileName(path);
 		u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 		u8ptr = Text::StrConcat(u8ptr, fileName);
 		NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-		fileSize = (OSInt)fs->GetLength();
+		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize > 0)
 		{
 			UInt8 *fileBuff = MemAlloc(UInt8, fileSize);
@@ -242,7 +242,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				*u8ptr++ = '\t';
 				u8ptr = Text::StrInt32(u8ptr, cpuStepping);
 				*u8ptr++ = '\t';
-				fs->Write(fileName, u8ptr - fileName);
+				fs->Write(fileName, (UOSInt)(u8ptr - fileName));
 				fs->Write(reqData, reqSize);
 				fs->Write((const UInt8*)"\r\n", 2);
 				DEL_CLASS(fs);

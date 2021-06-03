@@ -131,7 +131,7 @@ UOSInt Map::OSM::OSMTileMap::GetNearestLevel(Double scale)
 		level = 0;
 	else if (level >= (Int32)GetLevelCount())
 		level = (Int32)GetLevelCount() - 1;
-	return level;
+	return (UOSInt)level;
 }
 
 UOSInt Map::OSM::OSMTileMap::GetConcurrentCount()
@@ -326,7 +326,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	thisUrl = this->GetNextURL();
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
-	urlSb.AppendOSInt(level);
+	urlSb.AppendUOSInt(level);
 	urlSb.Append((const UTF8Char*)"/");
 	urlSb.AppendI32(imgX);
 	urlSb.Append((const UTF8Char*)"/");

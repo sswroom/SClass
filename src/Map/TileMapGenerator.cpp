@@ -7,6 +7,7 @@
 #include "IO/StreamWriter.h"
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapGenerator.h"
+#include "Math/Math.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -14,8 +15,8 @@
 
 void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, Int32 scale)
 {
-	view->UpdateSize((Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize));
-	view->SetDPI((this->osSize * 96.0), 96.0);
+	view->UpdateSize((this->imgSize * this->osSize), (this->imgSize * this->osSize));
+	view->SetDPI((Math::UOSInt2Double(this->osSize) * 96.0), 96.0);
 	view->SetCenterXY((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464);
 }
 
@@ -115,8 +116,8 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::M
 	params.dbStream = 0;
 
 	dimg2 = geng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
-	dimg2->SetHDPI(96.0 * this->osSize);
-	dimg2->SetVDPI(96.0 * this->osSize);
+	dimg2->SetHDPI(96.0 * Math::UOSInt2Double(this->osSize));
+	dimg2->SetVDPI(96.0 * Math::UOSInt2Double(this->osSize));
 	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, sbuff, &params);
 	mutUsage.BeginUse();
 	this->dbGenList->RemoveAt(this->dbGenList->SortedIndexOf(id));
@@ -126,7 +127,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::M
 	return true;
 }
 
-Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEngine *geng, const UTF8Char *tileDir, OSInt osSize)
+Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEngine *geng, const UTF8Char *tileDir, UOSInt osSize)
 {
 	this->imgSize = 512;
 	this->geng = geng;
@@ -149,12 +150,12 @@ Map::TileMapGenerator::~TileMapGenerator()
 	DEL_CLASS(this->resizer);
 }
 
-Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, Int32 scale, Int32 imgSize)
+Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, Int32 scale, UInt32 imgSize)
 {
 	Int32 x;
 	Int32 y;
-	x = (::Int32)(lon * 2000 * 283464 / scale) / imgSize;
-	y = (::Int32)(lat * 2000 * 283464 / scale) / imgSize;
+	x = (::Int32)(lon * 2000 * 283464 / (Double)scale) / (Int32)imgSize;
+	y = (::Int32)(lat * 2000 * 283464 / (Double)scale) / (Int32)imgSize;
 	return (((Int64)x) << 32) | (0xffffffffLL & (Int64)y);
 }
 
@@ -211,8 +212,8 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, Int32 scale, Map::MapSche
 	else
 	{
 		dimg2 = this->geng->CreateImage32((this->imgSize * this->osSize), (this->imgSize * this->osSize), Media::AT_NO_ALPHA);
-		dimg2->SetHDPI(96.0 * this->osSize);
-		dimg2->SetVDPI(96.0 * this->osSize);
+		dimg2->SetHDPI(96.0 * Math::UOSInt2Double(this->osSize));
+		dimg2->SetVDPI(96.0 * Math::UOSInt2Double(this->osSize));
 		mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, 0, &params);
 		
 		Bool revOrder;

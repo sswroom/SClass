@@ -83,7 +83,7 @@ namespace IO
 		typedef struct
 		{
 			UInt8 *b16Codes;
-			OSInt b16CodeLen;
+			UOSInt b16CodeLen;
 			Manage::Dasm::DasmX86_16_Regs *b16Regs;
 			Bool b16HasPSP;
 			UInt16 b16CodeSegm;
@@ -104,9 +104,9 @@ namespace IO
 		{
 			ResourceType rt;
 			const UTF8Char *name;
-			Int32 codePage;
+			UInt32 codePage;
 			const UInt8 *data;
-			OSInt dataSize;
+			UOSInt dataSize;
 		} ResourceInfo;
 	private:
 		Data::ArrayList<const UTF8Char *> *propNames;
@@ -140,15 +140,15 @@ namespace IO
 		const UTF8Char *GetExportName(UOSInt index);
 
 		Bool HasDOS();
-		void AddDOSEnv(OSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
+		void AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
 		UInt8 *GetDOSCodePtr(UOSInt *codeLen);
 		void SetDOSHasPSP(Bool hasPSP);
 		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs);
 		UInt16 GetDOSCodeSegm();
 
-		void AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, Int32 codePage, ResourceType rt);
+		void AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
 		UOSInt GetResourceCount();
-		const ResourceInfo *GetResource(OSInt index);
+		const ResourceInfo *GetResource(UOSInt index);
 	public:
 		static Bool GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTimeOut);
 		static const UTF8Char *GetResourceTypeName(ResourceType rt);

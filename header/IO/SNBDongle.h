@@ -115,7 +115,7 @@ namespace IO
 		Data::UInt64Map<DeviceInfo*> *devMap;
 		Sync::RWMutex *devMut;
 		UInt64 dongleId;
-		Int32 dongleBaudRate;
+		UInt32 dongleBaudRate;
 
 		static void __stdcall OnProtocolRecv(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 		DeviceInfo *GetDevice(UInt64 devId);
@@ -126,7 +126,7 @@ namespace IO
 		void SetDevHandleType(UInt64 devId, HandleType handType);
 		void SetDevShortAddr(UInt64 devId, UInt16 shortAddr);
 		UInt64 GetDongleId();
-		Int32 GetBaudRate();
+		UInt32 GetBaudRate();
 
 		void HandleProtocolReceived(IO::SNBProtocol::ProtocolHandler protoHdlr, void *userObj);
 		void SendCheckDongle();

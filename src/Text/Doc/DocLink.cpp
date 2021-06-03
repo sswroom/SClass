@@ -23,7 +23,7 @@ UOSInt Text::Doc::DocLink::Add(Text::Doc::DocItem *item)
 	if (item->GetItemType() == Text::Doc::DocItem::DIT_URL)
 	{
 		DEL_CLASS(item);
-		return -1;
+		return (UOSInt)-1;
 	}
 	return this->items->Add(item);
 }

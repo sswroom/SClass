@@ -48,7 +48,7 @@ Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-void Exporter::MapCSVExporter::SetCodePage(Int32 codePage)
+void Exporter::MapCSVExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

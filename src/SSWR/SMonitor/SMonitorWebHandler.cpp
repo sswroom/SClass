@@ -114,11 +114,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				Text::StringBuilderUTF8 sb;
 				sb.Append(reqOutput);
 				UTF8Char *sarr[3];
-				OSInt i;
+				UOSInt i;
 				i = Text::StrSplit(sarr, 3, sb.ToString(), ',');
 				if (i == 2)
 				{
-					me->core->DeviceSetOutput(idevId, Text::StrToInt32(sarr[0]), Text::StrToInt32(sarr[1]) != 0);
+					me->core->DeviceSetOutput(idevId, Text::StrToUInt32(sarr[0]), Text::StrToInt32(sarr[1]) != 0);
 				}
 			}
 		}
@@ -127,10 +127,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		ISMonitorCore::DeviceInfo *dev;
 		Data::DateTime dt;
 		me->core->UserGetDevices(userId, userType, &devList);
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		UOSInt l;
 		writer->WriteLine((const UTF8Char*)"<h2>Home</h2>");
 		writer->WriteLine((const UTF8Char*)"<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Last Reading Time</td><td>Readings Today</td><td>Digitals</td><td>Output</td></tr>");
 		i = 0;
@@ -214,11 +214,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				else
 				{
 					writer->Write((const UTF8Char*)"Digital ");
-					Text::StrOSInt(sbuff, k);
+					Text::StrUOSInt(sbuff, k);
 					writer->Write(sbuff);
 				}
 				writer->Write((const UTF8Char*)": ");
-				writer->Write((dev->digitalVals & (1 << k))?(const UTF8Char*)"1":(const UTF8Char*)"0");
+				writer->Write((dev->digitalVals & (UInt32)(1 << k))?(const UTF8Char*)"1":(const UTF8Char*)"0");
 				k++;
 				if (k != l)
 				{
@@ -232,20 +232,20 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			while (k < l)
 			{
 				writer->Write((const UTF8Char*)"Output ");
-				Text::StrOSInt(sbuff, k);
+				Text::StrUOSInt(sbuff, k);
 				writer->Write(sbuff);
 				writer->Write((const UTF8Char*)": ");
 				writer->Write((const UTF8Char*)"<a href=\"index?devid=");
 				Text::StrInt64(sbuff, dev->cliId);
 				writer->Write(sbuff);
 				writer->Write((const UTF8Char*)"&output=");
-				Text::StrOSInt(sbuff, k);
+				Text::StrUOSInt(sbuff, k);
 				writer->Write(sbuff);
 				writer->Write((const UTF8Char*)",1\">On</a> <a href=\"index?devid=");
 				Text::StrInt64(sbuff, dev->cliId);
 				writer->Write(sbuff);
 				writer->Write((const UTF8Char*)"&output=");
-				Text::StrOSInt(sbuff, k);
+				Text::StrUOSInt(sbuff, k);
 				writer->Write(sbuff);
 				writer->Write((const UTF8Char*)",0\">Off</a>");
 				k++;
@@ -405,10 +405,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	ISMonitorCore::DeviceInfo *dev;
 	Data::DateTime dt;
 	me->core->UserGetDevices(sess->GetValueInt32("UserId"), sess->GetValueInt32("UserType"), &devList);
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	writer->WriteLine((const UTF8Char*)"<h2>Device</h2>");
 	writer->WriteLine((const UTF8Char*)"<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Platform Name</td><td>CPU Name</td><td>Version</td><td>Reading Time</td><td>Readings</td><td>Digitals</td><td>Action</td></tr>");
 	i = 0;
@@ -493,11 +493,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 			else
 			{
 				writer->Write((const UTF8Char*)"Digital ");
-				Text::StrOSInt(sbuff, k);
+				Text::StrUOSInt(sbuff, k);
 				writer->Write(sbuff);
 			}
 			writer->Write((const UTF8Char*)": ");
-			writer->Write((dev->digitalVals & (1 << k))?(const UTF8Char*)"1":(const UTF8Char*)"0");
+			writer->Write((dev->digitalVals & (UInt32)(1 << k))?(const UTF8Char*)"1":(const UTF8Char*)"0");
 			k++;
 			if (k != l)
 			{
@@ -667,8 +667,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ISMonitorCore::DeviceInfo *dev;
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
@@ -709,7 +709,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 				{
 					sb.Append((const UTF8Char*)"|");
 				}
-				Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"readingName"), i);
+				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"readingName"), i);
 				csptr = req->GetHTTPFormStr(sbuff);
 				if (csptr)
 				{
@@ -753,7 +753,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	while (i < j)
 	{
 		writer->Write((const UTF8Char*)"<tr><td>Reading ");
-		Text::StrOSInt(sbuff, i);
+		Text::StrUOSInt(sbuff, i);
 		writer->Write(sbuff);
 		writer->Write((const UTF8Char*)"</td><td><input type=\"text\" name=\"readingName");
 		writer->Write(sbuff);
@@ -810,8 +810,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ISMonitorCore::DeviceInfo *dev;
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
@@ -852,7 +852,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 				{
 					sb.Append((const UTF8Char*)"|");
 				}
-				Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"digitalName"), i);
+				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"digitalName"), i);
 				csptr = req->GetHTTPFormStr(sbuff);
 				if (csptr)
 				{
@@ -896,7 +896,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	while (i < j)
 	{
 		writer->Write((const UTF8Char*)"<tr><td>Digital ");
-		Text::StrOSInt(sbuff, i);
+		Text::StrUOSInt(sbuff, i);
 		writer->Write(sbuff);
 		writer->Write((const UTF8Char*)"</td><td><input type=\"text\" name=\"digitalName");
 		writer->Write(sbuff);
@@ -1041,7 +1041,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Media::DrawImage *dimg = deng->CreateImage32(640, 120, Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
-	OSInt readingIndex = -1;
+	UOSInt readingIndex = (UOSInt)-1;
 	Int32 readingTypeD;
 	Data::LineChart *chart;
 	j = dev->nReading;
@@ -1065,11 +1065,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		}
 		i++;
 	}
-	if (readingIndex == -1)
+	if (readingIndex == (UOSInt)-1)
 	{
 		f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
+		dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xff000000);
 		dimg->DrawString(0, 0, (const UTF8Char*)"Sensor not found", f, b);
@@ -1085,7 +1085,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		recList = dev->todayRecs->GetValues();
 		if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 		{
-			OSInt treadingIndex = -1;
+			UOSInt treadingIndex = (UOSInt)-1;
 			Double tempDeg;
 			Double rh;
 			Bool hasTemp;
@@ -1131,7 +1131,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 					}
 				}
 
-				if (rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+				if (treadingIndex != (UOSInt)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 				{
 					hasTemp = true;
 					tempDeg = rec->readings[treadingIndex].reading;
@@ -1243,7 +1243,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			recList = dev->yesterdayRecs->GetValues();
 			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
-				OSInt treadingIndex = -1;
+				UOSInt treadingIndex = (UOSInt)-1;
 				Double tempDeg;
 				Double rh;
 				Bool hasTemp;
@@ -1292,7 +1292,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 						}
 					}
 
-					if (rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+					if (treadingIndex != (UOSInt)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 					{
 						hasTemp = true;
 						tempDeg = rec->readings[treadingIndex].reading;
@@ -1423,14 +1423,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
 			chart->SetTimeFormat("HH:mm");
-			chart->Plot(dimg, 0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()));
+			chart->Plot(dimg, 0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()));
 			DEL_CLASS(chart);
 		}
 		else
 		{
 			f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
+			dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(0, 0, sb.ToString(), f, b);
@@ -1487,10 +1487,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 		userType = sess->GetValueInt32("UserType");
 	}
 
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DevicePastDataReq"));
@@ -1671,7 +1671,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	Media::DrawImage *dimg = deng->CreateImage32(640, 120, Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
-	OSInt readingIndex = -1;
+	UOSInt readingIndex = (UOSInt)-1;
 	Int32 readingType = 0;
 	Data::LineChart *chart;
 	dev->mut->LockRead();
@@ -1686,11 +1686,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 	}
 	dev->mut->UnlockRead();
-	if (readingIndex == -1)
+	if (readingIndex == (UOSInt)-1)
 	{
 		f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
+		dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xff000000);
 		dimg->DrawString(0, 0, (const UTF8Char*)"Sensor not found", f, b);
@@ -1772,14 +1772,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
 			chart->SetTimeFormat("HH:mm");
-			chart->Plot(dimg, 0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()));
+			chart->Plot(dimg, 0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()));
 			DEL_CLASS(chart);
 		}
 		else
 		{
 			f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(0, 0, Math::OSInt2Double(dimg->GetWidth()), Math::OSInt2Double(dimg->GetHeight()), 0, b);
+			dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(0, 0, sb.ToString(), f, b);
@@ -1844,7 +1844,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 		}
 		else
 		{
-			OSInt len = Text::StrCharCnt(pwd);
+			UOSInt len = Text::StrCharCnt(pwd);
 			if (len < 3)
 			{
 				msg = (const UTF8Char*)"Password is too short";
@@ -1919,8 +1919,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::WebUser*> userList;
 	SSWR::SMonitor::ISMonitorCore::WebUser *user;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->core->UserGetList(&userList);
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.UsersReq"));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -1994,7 +1994,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		userName = req->GetHTTPFormStr((const UTF8Char*)"username");
 		if (action && userName && Text::StrEquals(action, (const UTF8Char*)"adduser"))
 		{
-			OSInt len = Text::StrCharCnt(userName);
+			UOSInt len = Text::StrCharCnt(userName);
 			if (len >= 3 && len < 128)
 			{
 				if (me->core->UserAdd(userName, userName, 2))
@@ -2045,8 +2045,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	SSWR::SMonitor::ISMonitorCore::WebUser *user;
 	Int32 userId;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	if (!req->GetQueryValueI32((const UTF8Char*)"id", &userId))
 	{

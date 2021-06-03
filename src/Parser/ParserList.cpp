@@ -44,7 +44,7 @@ void Parser::ParserList::AddObjectParser(IO::IObjectParser *parser)
 	parser->SetParserList(this);
 }
 
-void Parser::ParserList::SetCodePage(Int32 codePage)
+void Parser::ParserList::SetCodePage(UInt32 codePage)
 {
 	IO::IParser *parser;
 	UOSInt i = this->filePArr->GetCount();

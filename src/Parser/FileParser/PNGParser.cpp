@@ -1796,7 +1796,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 	{
 		if (bitDepth < 8)
 		{
-			OSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
+			UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
 			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispHeight);
 			UInt8 *lineStart;
 			OSInt pxMask;
@@ -1880,10 +1880,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_W2;
 				info->byteSize = storeWidth * info->storeHeight >> 2;
 				NEW_CLASS(simg, Media::StaticImage(info));
-				WriteInt32(&simg->pal[0], 0xff000000);
-				WriteInt32(&simg->pal[4], 0xff555555);
-				WriteInt32(&simg->pal[8], 0xffaaaaaa);
-				WriteInt32(&simg->pal[12], 0xffffffff);
+				WriteUInt32(&simg->pal[0], 0xff000000);
+				WriteUInt32(&simg->pal[4], 0xff555555);
+				WriteUInt32(&simg->pal[8], 0xffaaaaaa);
+				WriteUInt32(&simg->pal[12], 0xffffffff);
 
 				byteCnt = info->byteSize;
 				dataBuff = tmpData;
@@ -1902,22 +1902,22 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_W4;
 				info->byteSize = storeWidth * info->storeHeight >> 1;
 				NEW_CLASS(simg, Media::StaticImage(info));
-				WriteInt32(&simg->pal[0], 0xff000000);
-				WriteInt32(&simg->pal[4], 0xff111111);
-				WriteInt32(&simg->pal[8], 0xff222222);
-				WriteInt32(&simg->pal[12], 0xff333333);
-				WriteInt32(&simg->pal[16], 0xff444444);
-				WriteInt32(&simg->pal[20], 0xff555555);
-				WriteInt32(&simg->pal[24], 0xff666666);
-				WriteInt32(&simg->pal[28], 0xff777777);
-				WriteInt32(&simg->pal[32], 0xff888888);
-				WriteInt32(&simg->pal[36], 0xff999999);
-				WriteInt32(&simg->pal[40], 0xffaaaaaa);
-				WriteInt32(&simg->pal[44], 0xffbbbbbb);
-				WriteInt32(&simg->pal[48], 0xffcccccc);
-				WriteInt32(&simg->pal[52], 0xffdddddd);
-				WriteInt32(&simg->pal[56], 0xffeeeeee);
-				WriteInt32(&simg->pal[60], 0xffffffff);
+				WriteUInt32(&simg->pal[0], 0xff000000);
+				WriteUInt32(&simg->pal[4], 0xff111111);
+				WriteUInt32(&simg->pal[8], 0xff222222);
+				WriteUInt32(&simg->pal[12], 0xff333333);
+				WriteUInt32(&simg->pal[16], 0xff444444);
+				WriteUInt32(&simg->pal[20], 0xff555555);
+				WriteUInt32(&simg->pal[24], 0xff666666);
+				WriteUInt32(&simg->pal[28], 0xff777777);
+				WriteUInt32(&simg->pal[32], 0xff888888);
+				WriteUInt32(&simg->pal[36], 0xff999999);
+				WriteUInt32(&simg->pal[40], 0xffaaaaaa);
+				WriteUInt32(&simg->pal[44], 0xffbbbbbb);
+				WriteUInt32(&simg->pal[48], 0xffcccccc);
+				WriteUInt32(&simg->pal[52], 0xffdddddd);
+				WriteUInt32(&simg->pal[56], 0xffeeeeee);
+				WriteUInt32(&simg->pal[60], 0xffffffff);
 
 				byteCnt = info->byteSize;
 				dataBuff = tmpData;
@@ -1935,7 +1935,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		}
 		else if (bitDepth == 8)
 		{
-			OSInt pxId;
+			UInt32 pxId;
 
 			info->atype = Media::AT_NO_ALPHA;
 			info->storeWidth = info->dispWidth;
@@ -1946,7 +1946,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			pxId = 0;
 			while (pxId < 256)
 			{
-				WriteInt32(&simg->pal[pxId << 2], (Int32)(0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
+				WriteUInt32(&simg->pal[pxId << 2], (0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
 				pxId++;
 			}
 			if (info->dispWidth != imgW || info->dispHeight != imgH)

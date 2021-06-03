@@ -21,7 +21,7 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocText::GetItemType()
 UOSInt Text::Doc::DocText::Add(Text::Doc::DocItem *item)
 {
 	DEL_CLASS(item);
-	return -1;
+	return (UOSInt)-1;
 }
 
 const UTF8Char *Text::Doc::DocText::GetText()

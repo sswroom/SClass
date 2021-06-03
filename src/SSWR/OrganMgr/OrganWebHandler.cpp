@@ -1922,6 +1922,12 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileMove(Int32 userfileId, Int32 speci
 		{
 			this->SpeciesSetFlags(destSpecies->speciesId, (SpeciesFlags)(destSpecies->flags | SF_HAS_MYPHOTO));
 			this->GroupAddCounts(destSpecies->groupId, 0, 1, 1);
+			SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(destSpecies->groupId);
+			while (group && group->photoSpObj == 0)
+			{
+				group->photoSpObj = destSpecies;
+				group = this->groupMap->Get(group->parentId);
+			}
 		}
 		if (destSpecies->photoId == 0)
 		{

@@ -36,8 +36,8 @@ IO::EXEFile::~EXEFile()
 		MemFree(this->envDOS);
 		this->envDOS = 0;
 	}
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = this->propNames->GetCount();
 	while (i-- > 0)
 	{
@@ -193,7 +193,7 @@ Bool IO::EXEFile::HasDOS()
 	return this->envDOS != 0;
 }
 
-void IO::EXEFile::AddDOSEnv(OSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm)
+void IO::EXEFile::AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm)
 {
 	if (this->envDOS == 0)
 	{
@@ -236,7 +236,7 @@ UInt16 IO::EXEFile::GetDOSCodeSegm()
 	return this->envDOS->b16CodeSegm;
 }
 
-void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, Int32 codePage, ResourceType rt)
+void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
 {
 	ResourceInfo *res = MemAlloc(ResourceInfo, 1);
 	res->name = Text::StrCopyNew(name);
@@ -253,7 +253,7 @@ UOSInt IO::EXEFile::GetResourceCount()
 	return this->resList->GetCount();
 }
 
-const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(OSInt index)
+const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index)
 {
 	return this->resList->GetItem(index);
 }
@@ -364,19 +364,19 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 	{
 		if (res->dataSize >= 92 && ReadUInt16(&res->data[2]) == 52 && Text::StrEquals((Char*)&res->data[4], "VS_VERSION_INFO") && Text::StrEquals((Char*)&res->data[76], "StringFileInfo"))
 		{
-			Int32 verSize = ReadUInt16(&res->data[0]);
-			Int32 v;
-			Int32 v2;
+			UInt32 verSize = ReadUInt16(&res->data[0]);
+			UInt32 v;
+			UInt32 v2;
 			if (verSize <= res->dataSize)
 			{
 				sb->Append((const UTF8Char*)"Length = ");
-				sb->AppendI32(verSize);
+				sb->AppendU32(verSize);
 				sb->Append((const UTF8Char*)"\r\nValue Length = ");
 				sb->AppendU16(ReadUInt16(&res->data[2]));
 				sb->Append((const UTF8Char*)"\r\nKey = ");
 				sb->Append((UTF8Char*)&res->data[4]);
 				sb->Append((const UTF8Char*)"\r\nSignature = 0x");
-				sb->AppendHex32(ReadInt32(&res->data[20]));
+				sb->AppendHex32(ReadUInt32(&res->data[20]));
 				sb->Append((const UTF8Char*)"\r\nStruct Version = ");
 				sb->AppendU16(ReadUInt16(&res->data[26]));
 				sb->Append((const UTF8Char*)".");
@@ -398,11 +398,11 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->Append((const UTF8Char*)".");
 				sb->AppendU16(ReadUInt16(&res->data[40]));
 				sb->Append((const UTF8Char*)"\r\nFile Flags Mask = 0x");
-				sb->AppendHex32(ReadInt32(&res->data[44]));
+				sb->AppendHex32(ReadUInt32(&res->data[44]));
 				sb->Append((const UTF8Char*)"\r\nFile Flags = 0x");
-				sb->AppendHex32(ReadInt32(&res->data[48]));
+				sb->AppendHex32(ReadUInt32(&res->data[48]));
 				sb->Append((const UTF8Char*)"\r\nFile OS = 0x");
-				sb->AppendHex32(v = ReadInt32(&res->data[52]));
+				sb->AppendHex32(v = ReadUInt32(&res->data[52]));
 				switch (v)
 				{
 				case 0x00010001:
@@ -446,7 +446,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					break;
 				}
 				sb->Append((const UTF8Char*)"\r\nFile Type = 0x");
-				sb->AppendHex32(v = ReadInt32(&res->data[56]));
+				sb->AppendHex32(v = ReadUInt32(&res->data[56]));
 				switch (v)
 				{
 				case 0x00000001:
@@ -469,7 +469,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					break;
 				}
 				sb->Append((const UTF8Char*)"\r\nFile Sub-Type = 0x");
-				sb->AppendHex32(v2 = ReadInt32(&res->data[60]));
+				sb->AppendHex32(v2 = ReadUInt32(&res->data[60]));
 				if (v == 0x00000003) //VFT_DRV
 				{
 					switch (v2)
@@ -525,8 +525,8 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					}
 				}
 				sb->Append((const UTF8Char*)"\r\nFile Date = 0x");
-				sb->AppendHex32(ReadInt32(&res->data[64]));
-				sb->AppendHex32(ReadInt32(&res->data[68]));
+				sb->AppendHex32(ReadUInt32(&res->data[64]));
+				sb->AppendHex32(ReadUInt32(&res->data[68]));
 				sb->Append((const UTF8Char*)"\r\nString File Length = ");
 				sb->AppendU16(ReadUInt16(&res->data[72]));
 				sb->Append((const UTF8Char*)"\r\nString File Value Length = ");
@@ -541,9 +541,9 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->AppendU16(ReadUInt16(&res->data[94]));
 				sb->Append((const UTF8Char*)"\r\nString Table Key = ");
 				sb->Append((UTF8Char*)&res->data[96]);
-				v = Text::StrHex2Int32((Char*)&res->data[96]);
+				v = (UInt32)Text::StrHex2Int32((Char*)&res->data[96]);
 				sb->Append((const UTF8Char*)"\r\nLanguage = ");
-				sb->AppendI32((v >> 16) & 0xffff);
+				sb->AppendU32((v >> 16) & 0xffff);
 				Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry((v >> 16) & 0xffff);
 				if (locale)
 				{
@@ -552,7 +552,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					sb->Append((const UTF8Char*)")");
 				}
 				sb->Append((const UTF8Char*)"\r\nCodePage = ");
-				sb->AppendI32(v & 0xffff);
+				sb->AppendU32(v & 0xffff);
 				if (Text::EncodingFactory::GetName(u8buff, v & 0xffff))
 				{
 					sb->Append((const UTF8Char*)" (");
@@ -573,7 +573,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					enc.UTF8FromBytes(u8buff, &res->data[i + v - v2], v2, 0);
 					sb->Append((const UTF8Char*)" = ");
 					sb->Append(u8buff);
-					v2 = (v + 3) & ~3;
+					v2 = (v + 3) & (UInt32)~3;
 					i += v2;
 					strLen -= v2;
 				}

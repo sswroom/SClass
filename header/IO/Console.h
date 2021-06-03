@@ -18,7 +18,7 @@ namespace IO
 		static UOSInt WriteStdOut(UInt8 *buff, UOSInt size);
 		static void PreventCtrlC();
 		static void HandleExitCmd(ConsoleHandler exitCmdHdlr, void *userObj);
-		static void SetCodePage(Int32 codePage);
+		static void SetCodePage(UInt32 codePage);
 		static Int32 GetKey();
 	};
 }

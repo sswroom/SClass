@@ -126,7 +126,7 @@ namespace Data
 		void SetYRefType(Data::LineChart::RefType refType);
 		void SetYUnit(const UTF8Char *yUnit);
 		void SetLineThick(Double lineThick);
-		void SetTimeZoneQHR(Int32 timeZone);
+		void SetTimeZoneQHR(Int8 timeZone);
 		void SetBarLength(Double barLength);
 		void SetPointType(PointType pointType, Double pointSize);
 		UInt32 GetRndColor();

@@ -17,10 +17,10 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	OSInt sWidth = 1920;
-	OSInt sHeight = 1080;
-	OSInt dWidth = 3840;
-	OSInt dHeight = 2160;
+	UOSInt sWidth = 1920;
+	UOSInt sHeight = 1080;
+	UOSInt dWidth = 3840;
+	UOSInt dHeight = 2160;
 	Media::StaticImage *simg;
 	Media::StaticImage *simg2;
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);

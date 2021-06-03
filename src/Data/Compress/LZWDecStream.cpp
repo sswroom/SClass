@@ -14,31 +14,31 @@ void Data::Compress::LZWDecStream::ResetTable()
 	*(Int32*)&this->lzwTable[this->resetCode * 4] = 0;
 	*(Int32*)&this->lzwTable[this->endCode * 4] = 0;
 
-	Int32 i = 0;
-	Int32 j = this->resetCode;
+	UInt32 i = 0;
+	UInt32 j = this->resetCode;
 	while (i < j)
 	{
 #if IS_BYTEORDER_LE
-		*(Int32*)&this->lzwTable[i * 4] = i << 16;
+		*(UInt32*)&this->lzwTable[i * 4] = i << 16;
 #else
-		*(Int16*)&this->lzwTable[i * 4] = 0;
-		*(Int16*)&this->lzwTable[i * 4 + 2] = i;
+		*(UInt16*)&this->lzwTable[i * 4] = 0;
+		*(UInt16*)&this->lzwTable[i * 4 + 2] = (UInt16)i;
 #endif
 		i++;
 	}
 	this->localCode = -1;
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, OSInt minCodeSize, OSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
+Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
-	this->tableSize = (Int32)(1 << maxCodeSize);
+	this->tableSize = (UOSInt)(1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
 	this->decBuff = MemAlloc(UInt8, DECBUFFSIZE);
 	this->decBuffSize = 0;
 	this->codeSizeAdj = codeSizeAdj;
-	this->resetCode = 1 << minCodeSize;
+	this->resetCode = (UInt32)(1 << minCodeSize);
 	this->endCode = this->resetCode + 1;
 	if (lsb)
 	{
@@ -52,7 +52,7 @@ Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, OSInt minC
 	ResetTable();
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, OSInt minCodeSize, OSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream((const UTF8Char*)"LZWStream")
+Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream((const UTF8Char*)"LZWStream")
 {
 	this->tableSize = (Int32)(1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
@@ -61,7 +61,7 @@ Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease
 	this->decBuff = MemAlloc(UInt8, DECBUFFSIZE);
 	this->decBuffSize = 0;
 	this->codeSizeAdj = codeSizeAdj;
-	this->resetCode = 1 << minCodeSize;
+	this->resetCode = (UInt32)(1 << minCodeSize);
 	this->endCode = this->resetCode + 1;
 	this->reader = reader;
 	this->toRelease = toRelease;

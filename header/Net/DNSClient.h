@@ -1,7 +1,7 @@
 //require dnsapi.lib
 #ifndef _SM_NET_DNSCLIENT
 #define _SM_NET_DNSCLIENT
-#include "Data/Int32Map.h"
+#include "Data/UInt32Map.h"
 #include "Net/UDPServer.h"
 
 namespace Net
@@ -30,16 +30,16 @@ namespace Net
 
 		Net::UDPServer *svr;
 		Net::SocketFactory *sockf;
-		Int32 lastID;
+		UInt32 lastID;
 		Net::SocketUtil::AddressInfo serverAddr;
 
 		Sync::Mutex *reqMut;
-		Data::Int32Map<RequestStatus*> *reqMap;
+		Data::UInt32Map<RequestStatus*> *reqMap;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-		RequestStatus *NewReq(Int32 id);
-		void DelReq(Int32 id);
-		Int32 NextId();
+		RequestStatus *NewReq(UInt32 id);
+		void DelReq(UInt32 id);
+		UInt32 NextId();
 	public:
 		DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr);
 		~DNSClient();

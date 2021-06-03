@@ -75,7 +75,7 @@ Bool Exporter::KMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::KMLExporter::SetCodePage(Int32 codePage)
+void Exporter::KMLExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

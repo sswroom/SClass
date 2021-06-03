@@ -672,7 +672,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 						msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
 						lastIndex = msg->index = Text::StrToInt32(sbuffs[0]);
 						msg->status = (SMSStatus)Text::StrToInt32(sbuffs[1]);
-						msg->pduLeng = (Int32)(strLen >> 1);
+						msg->pduLeng = (strLen >> 1);
 						msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
 						Text::StrHex2Bytes(val2, msg->pduMessage);
 						msgList->Add(msg);
@@ -687,7 +687,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 						msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
 						msg->index = lastIndex + 1;
 						msg->status = (SMSStatus)0;
-						msg->pduLeng = (Int32)(strLen >> 1);
+						msg->pduLeng = (strLen >> 1);
 						msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
 						Text::StrHex2Bytes(val, msg->pduMessage);
 						msgList->Add(msg);

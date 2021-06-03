@@ -14,7 +14,7 @@ Map::MapSearchManager::MapSearchManager()
 
 Map::MapSearchManager::~MapSearchManager()
 {
-	OSInt i = this->nameArr->GetCount();
+	UOSInt i = this->nameArr->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->nameArr->RemoveAt(i));
@@ -29,11 +29,11 @@ Map::IMapSearchLayer *Map::MapSearchManager::LoadLayer(const UTF8Char *fileName)
 	OSInt i = this->nameArr->SortedIndexOf(fileName);
 	if (i >= 0)
 	{
-		return this->layerArr->GetItem(i);
+		return this->layerArr->GetItem((UOSInt)i);
 	}
-	i = this->nameArr->SortedInsert(Text::StrCopyNew(fileName));
+	i = (OSInt)this->nameArr->SortedInsert(Text::StrCopyNew(fileName));
 	Map::MapLayerData *lyr;
 	NEW_CLASS(lyr, Map::MapLayerData(fileName));
-	this->layerArr->Insert(i, lyr);
+	this->layerArr->Insert((UOSInt)i, lyr);
 	return lyr;
 }

@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_H264PARSER
 #define _SM_MEDIA_H264PARSER
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "IO/BitReaderMSB.h"
 #include "Media/FrameInfo.h"
 
@@ -33,7 +33,7 @@ namespace Media
 		static Bool ParseSVari(IO::BitReaderMSB *reader, Int32 *val);
 		static Bool FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize);
 		static Bool FindPPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize);
-		static Bool FindNALs(const UInt8 *frame, UOSInt frameSize, Data::ArrayListInt32 *nalList);
+		static Bool FindNALs(const UInt8 *frame, UOSInt frameSize, Data::ArrayListUInt32 *nalList);
 		static UTF8Char *GetFrameType(UTF8Char *sbuff, const UInt8 *frame, UOSInt frameSize);
 	};
 }

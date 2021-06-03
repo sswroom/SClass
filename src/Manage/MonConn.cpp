@@ -360,7 +360,7 @@ Manage::MonConn::~MonConn()
 		this->connTEvt = 0;
 	}
 	DEL_CLASS(cmdSeqMut);
-	OSInt i = cmdList->GetCount();
+	UOSInt i = cmdList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(cmdList->RemoveAt(i));

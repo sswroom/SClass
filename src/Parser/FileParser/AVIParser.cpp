@@ -96,7 +96,7 @@ Int32 Parser::FileParser::AVIParser::GetName()
 	return *(Int32*)"AVIP";
 }
 
-void Parser::FileParser::AVIParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::AVIParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

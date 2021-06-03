@@ -101,7 +101,7 @@ namespace SSWR
 			IO::GPIOControl *GetGPIOControl();
 
 			Int32 GetCurrCodePage();
-			void SetCodePage(Int32 codePage);
+			void SetCodePage(UInt32 codePage);
 			IO::LogTool *GetLog();
 			Double GetMonitorHDPI(void *hMonitor);
 			void SetMonitorHDPI(void *hMonitor, Double monitorHDPI);

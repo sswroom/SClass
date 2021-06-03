@@ -47,7 +47,7 @@ namespace Map
 			virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, Text::StringBuilderUTF *sb) = 0;
 		};
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 		Bool hasAltitude;
 		Double currMaxLat;
 		Double currMaxLon;
@@ -72,7 +72,7 @@ namespace Map
 		Data::ArrayList<void *> *updObjs;
 
 	public:
-		GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, Int32 codePage, const UTF8Char *layerName);
+		GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName);
 		virtual ~GPSTrack();
 
 		virtual DrawLayerType GetLayerType();
@@ -86,7 +86,7 @@ namespace Map
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
-		virtual Int32 GetCodePage();
+		virtual UInt32 GetCodePage();
 		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
 
 		virtual void *BeginGetObject();

@@ -195,7 +195,7 @@ Bool DB::DBRow::SetFieldBinary(DB::DBRow::Field *field, const UInt8 *buff, UOSIn
 	else
 	{
 		field->currentData.bin = MemAlloc(UInt8, buffSize + 4);
-		WriteInt32(field->currentData.bin, buffSize);
+		WriteUInt32(field->currentData.bin, (UInt32)buffSize);
 		MemCopyNO(&field->currentData.bin[4], buff, buffSize);
 		field->currentNull = false;
 	}

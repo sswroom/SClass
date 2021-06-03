@@ -19,8 +19,8 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 
-			IO::PackageFile *ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, Int32 codePage);
-			void ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, Int32 codePage);
+			IO::PackageFile *ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 codePage);
+			void ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);
 		};
 	};
 };

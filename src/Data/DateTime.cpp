@@ -2106,7 +2106,7 @@ void Data::DateTime::SetTimeZoneQHR(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-Int32 Data::DateTime::GetTimeZoneQHR()
+Int8 Data::DateTime::GetTimeZoneQHR()
 {
 	return this->tzQhr;
 }

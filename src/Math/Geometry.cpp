@@ -301,7 +301,7 @@ UOSInt Math::Geometry::BoundPolygonX(Int32 *points, UOSInt nPoints, Int32 *point
 		}
 	}
 
-	return ((pointsCurr - pointOut) >> 1);
+	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
 UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *pointOut, Double minY, Double maxY, Double ofstX, Double ofstY)
@@ -434,7 +434,7 @@ UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *poi
 		}
 	}
 
-	return ((pointsCurr - pointOut) >> 1);
+	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
 UOSInt Math::Geometry::BoundPolygonX(Double *points, UOSInt nPoints, Double *pointOut, Double minX, Double maxX, Double ofstX, Double ofstY)
@@ -567,7 +567,7 @@ UOSInt Math::Geometry::BoundPolygonX(Double *points, UOSInt nPoints, Double *poi
 		}
 	}
 
-	return ((pointsCurr - pointOut) >> 1);
+	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
 Bool Math::Geometry::InPolygon(Int32 *points, UOSInt nPoints, Int32 ptX, Int32 ptY)
@@ -674,39 +674,39 @@ unsigned int yt)                   //   y (vertical) of target point
 
 void Math::Geometry::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt ptY, Int32 *nearPtX, Int32 *nearPtY)
 {
-	OSInt i = nPoints - 1;
-	Single calH;
-	Single calW;
-	Single calX = 0;
-	Single calY = 0;
-	Single calBase;
-	Single dist = (Single)0x7fffffff;
+	UOSInt i = nPoints - 1;
+	Double calH;
+	Double calW;
+	Double calX = 0;
+	Double calY = 0;
+	Double calBase;
+	Double dist = (Double)0x7fffffff;
 
 	while (i-- > 0)
 	{
-		calH = points[(i << 1) + 1] - (Single)points[(i << 1) + 3];
-		calW = points[(i << 1) + 0] - (Single)points[(i << 1) + 2];
+		calH = points[(i << 1) + 1] - (Double)points[(i << 1) + 3];
+		calW = points[(i << 1) + 0] - (Double)points[(i << 1) + 2];
 
 		if (calH == 0)
 		{
-			calX = (Single)ptX;
+			calX = (Double)ptX;
 		}
 		else
 		{
-			calX = (calBase = (calW * calW)) * ptX;
+			calX = (calBase = (calW * calW)) * Math::OSInt2Double(ptX);
 			calBase += calH * calH;
 			calX += calH * calH * (points[(i << 1) + 0]);
-			calX += (ptY - (Single)points[(i << 1) + 1]) * calH * calW;
+			calX += (Math::OSInt2Double(ptY) - (Double)points[(i << 1) + 1]) * calH * calW;
 			calX /= calBase;
 		}
 
 		if (calW == 0)
 		{
-			calY = (Single)ptY;
+			calY = (Double)ptY;
 		}
 		else
 		{
-			calY = ((calX - (Single)(points[(i << 1) + 0])) * calH / calW) + (Single)points[(i << 1) + 1];
+			calY = ((calX - (Double)(points[(i << 1) + 0])) * calH / calW) + (Double)points[(i << 1) + 1];
 		}
 
 		if (calW < 0)
@@ -739,8 +739,8 @@ void Math::Geometry::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt
 				continue;
 		}
 
-		calH = ptY - calY;
-		calW = ptX - calX;
+		calH = Math::OSInt2Double(ptY) - calY;
+		calW = Math::OSInt2Double(ptX) - calX;
 		calBase = calW * calW + calH * calH;
 		if (calBase < dist)
 		{
@@ -753,8 +753,8 @@ void Math::Geometry::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt
 	i = nPoints;
 	while (i-- > 0)
 	{
-		calH = ptY - (Single)points[(i << 1) + 1];
-		calW = ptX - (Single)points[(i << 1)];
+		calH = Math::OSInt2Double(ptY) - (Double)points[(i << 1) + 1];
+		calW = Math::OSInt2Double(ptX) - (Double)points[(i << 1)];
 		calBase = calW * calW + calH * calH;
 		if (calBase < dist)
 		{
@@ -798,9 +798,9 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	Int32 thisX;
 	Int32 thisY;
 	Int32 tempX;
-	OSInt k;
-	OSInt j;
-	OSInt i = nPoints;
+	UOSInt k;
+	UOSInt j;
+	UOSInt i = nPoints;
 	Data::ArrayListInt32 *ptArr;
 	if (i <= 0)
 	{
@@ -868,7 +868,7 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	i = 0;
 	while (i < j)
 	{
-		k += ptArr->GetItem(i + 1) - ptArr->GetItem(i);
+		k += (UOSInt)(ptArr->GetItem(i + 1) - ptArr->GetItem(i));
 		i += 2;
 	}
 
@@ -878,14 +878,14 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	{
 		lastX = ptArr->GetItem(i);
 		thisX = ptArr->GetItem(i + 1);
-		if ((thisX - lastX) > k)
+		if ((thisX - lastX) > (OSInt)k)
 		{
 			DEL_CLASS(ptArr);
-			*outPtX = (Int32)(lastX + k);
+			*outPtX = (Int32)(lastX + (OSInt)k);
 			*outPtY = centY;
 			return;
 		}
-		k -= thisX - lastX;
+		k -= (UOSInt)(thisX - lastX);
 		i += 2;
 	}
 	DEL_CLASS(ptArr);

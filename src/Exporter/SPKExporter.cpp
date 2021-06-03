@@ -59,7 +59,7 @@ Bool Exporter::SPKExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::SPKExporter::SetCodePage(Int32 codePage)
+void Exporter::SPKExporter::SetCodePage(UInt32 codePage)
 {
 }
 

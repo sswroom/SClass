@@ -49,7 +49,7 @@ void Text::HKSCSFix::FixString(UTF16Char *s)
 	{
 		if (c >= 0xe000)
 		{
-			if ((c = this->tab[c - 0xe000]) != 0)
+			if ((c = (UTF16Char)this->tab[c - 0xe000]) != 0)
 				s[-1] = c;
 		}
 	}

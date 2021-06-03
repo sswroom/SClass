@@ -38,17 +38,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	MyLogHandler *logHdlr;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	Int32 port = 1234;
+	UInt16 port = 1234;
 
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		port = Text::StrToInt32(argv[1]);
-		if (port <= 0)
-		{
-			port = 0;
-		}
+		Text::StrToUInt16S(argv[1], &port, 0);
 	}
 
 	sb.ClearStr();

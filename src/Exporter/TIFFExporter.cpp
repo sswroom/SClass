@@ -210,7 +210,7 @@ Bool Exporter::TIFFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-void Exporter::TIFFExporter::SetCodePage(Int32 codePage)
+void Exporter::TIFFExporter::SetCodePage(UInt32 codePage)
 {
 }
 

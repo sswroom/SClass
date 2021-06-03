@@ -69,8 +69,8 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	Data::Int32Map<Record*> *wpMap;
 	Data::ArrayList<Record*> *recList;
 	Data::DateTime *dt;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(dt, Data::DateTime());
 	NEW_CLASS(gpsLogMap, Data::Int32Map<Record*>());
 	NEW_CLASS(wpMap, Data::Int32Map<Record*>());
@@ -165,8 +165,8 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 			{
 				r->GetStr(2, sbuff, sizeof(sbuff));
 				trk->SetTrackName(sbuff);
-				i = r->GetInt32(9);
-				j = r->GetInt32(10);
+				i = (UOSInt)r->GetInt32(9);
+				j = (UOSInt)r->GetInt32(10);
 				while (i <= j)
 				{
 					rec = wpMap->Get((Int32)i);

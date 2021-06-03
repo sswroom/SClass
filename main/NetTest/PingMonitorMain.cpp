@@ -28,9 +28,9 @@ IO::LogTool *logTool;
 UInt32 __stdcall RecvThread(void *userObj)
 {
 	UInt8 packetBuff[10240];
-	OSInt packetSize;
+	UOSInt packetSize;
 	UInt8 *buff;
-	OSInt buffSize;
+	UOSInt buffSize;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	UInt16 etherType;
@@ -44,7 +44,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 		packetSize = sockf->UDPReceive(rawSock, packetBuff, 10240, &addr, &port, &et);
 		if (packetSize >= 14)
 		{
-			etherType = ReadMInt16(&packetBuff[12]);
+			etherType = ReadMUInt16(&packetBuff[12]);
 			switch (etherType)
 			{
 			case 0x0026: //Unknown
@@ -57,7 +57,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 				if ((buff[0] & 0xf0) == 0x40)
 				{
 					UInt8 *ipData;
-					OSInt ipDataSize;
+					UOSInt ipDataSize;
 
 					if ((buff[0] & 0xf) <= 5)
 					{
@@ -77,10 +77,10 @@ UInt32 __stdcall RecvThread(void *userObj)
 						{
 							sb->ClearStr();
 							sb->Append((const UTF8Char*)"Received ping from ");
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadNInt32(&buff[12]));
+							Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
 							sb->Append(sbuff);
 							sb->Append((const UTF8Char*)", Size = ");
-							sb->AppendOSInt(ipDataSize);
+							sb->AppendUOSInt(ipDataSize);
 							logTool->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 //							console->WriteLine(sb->ToString());
 						}

@@ -16,8 +16,8 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
 		const UTF8Char **names;
-		OSInt colCnt = this->colNames->GetCount();
-		OSInt i;
+		UOSInt colCnt = this->colNames->GetCount();
+		UOSInt i;
 		Int32 objId;
 
 		NEW_CLASS(nameArr, Data::Int32Map<const UTF8Char **>());
@@ -57,12 +57,12 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	}
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const UTF8Char *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
 {
 	UTF8Char sbuff[256];
 	UInt8 *buff = 0; 
-	OSInt buffSize = 0;
-	OSInt currSize;
+	UOSInt buffSize = 0;
+	UOSInt currSize;
 	conn->UseObject();
 	this->conn = conn;
 	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
@@ -77,15 +77,15 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const 
 	this->minY = 0;
 	this->objIdCol = 0;
 	this->shapeCol = 1;
-	OSInt nameCol = 0;
+	UOSInt nameCol = 0;
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
@@ -202,7 +202,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const 
 
 Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 {
-	OSInt i;
+	UOSInt i;
 
 	this->conn->UnuseObject();
 	i = this->colNames->GetCount();
@@ -285,9 +285,9 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
 	Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
-	OSInt i = nameList->GetCount();
-	OSInt colCnt = this->colNames->GetCount();
-	OSInt j;
+	UOSInt i = nameList->GetCount();
+	UOSInt colCnt = this->colNames->GetCount();
+	UOSInt j;
 	const UTF8Char **nameStrs;
 	while (i-- > 0)
 	{
@@ -341,7 +341,7 @@ Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::ESRI::ESRIMDBLayer::GetCodePage()
+UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage()
 {
 	return 65001;
 }

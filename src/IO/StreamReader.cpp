@@ -130,7 +130,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm)
 	FillBuffer();
 }
 
-IO::StreamReader::StreamReader(IO::Stream *stm, Int32 codePage)
+IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage)
 {
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);

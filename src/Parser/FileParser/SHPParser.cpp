@@ -18,7 +18,7 @@ Int32 Parser::FileParser::SHPParser::GetName()
 	return *(Int32*)"SHPP";
 }
 
-void Parser::FileParser::SHPParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::SHPParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

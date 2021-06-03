@@ -27,7 +27,7 @@ namespace Parser
 			} KMLStyle;
 
 		private:
-			Int32 codePage;
+			UInt32 codePage;
 			Text::EncodingFactory *encFact;
 			Parser::ParserList *parsers;
 			Net::WebBrowser *browser;
@@ -36,7 +36,7 @@ namespace Parser
 			virtual ~XMLParser();
 
 			virtual Int32 GetName();
-			virtual void SetCodePage(Int32 codePage);
+			virtual void SetCodePage(UInt32 codePage);
 			virtual void SetParserList(Parser::ParserList *parsers);
 			virtual void SetWebBrowser(Net::WebBrowser *browser);
 			virtual void SetEncFactory(Text::EncodingFactory *encFact);

@@ -40,7 +40,7 @@ Bool Exporter::DBHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-void Exporter::DBHTMLExporter::SetCodePage(Int32 codePage)
+void Exporter::DBHTMLExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

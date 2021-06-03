@@ -982,7 +982,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				{
 					while (bofst < (Int32)atomSize - 8)
 					{
-						subAtomSize = ReadMInt32(&buff[bofst]);
+						subAtomSize = ReadMUInt32(&buff[bofst]);
 						if (subAtomSize == 0)
 							break;
 						if (*(Int32*)&buff[bofst + 4] == *(Int32*)"esds")

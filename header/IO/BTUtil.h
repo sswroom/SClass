@@ -19,9 +19,9 @@ namespace IO
 	public:
 		static const UTF8Char *GetManufacturerName(UInt16 manuf);
 		static void GetAddrText(Text::StringBuilderUTF *sb, UInt8 *addr);
-		static Int64 GetAddrMAC(UInt8 *addr);
+		static UInt64 GetAddrMAC(UInt8 *addr);
 		static const UTF8Char *GetUUIDName(UInt16 uuid);
 		static void GetServiceName(Text::StringBuilderUTF *sb, void *serviceUUID);
 	};
-};
+}
 #endif

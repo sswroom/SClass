@@ -2,37 +2,21 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
+#include "Math/LanczosFilter.h"
 #include "Math/Math.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include <float.h>
 
-Double LanczosFunc(Double phase, OSInt nTap)
-{
-	Double ret;
-	Double aphase = Math::Abs(phase);
-	
-	if(aphase < DBL_EPSILON)
-	{
-		return 1.0;
-	}
-
-	if ((aphase * 2) >= nTap){
-		return 0.0;
-	}
-
-	ret = Math::Sin(Math::PI * phase) * Math::Sin(Math::PI * phase / nTap * 2) / (Math::PI * Math::PI * phase * phase / nTap * 2);
-
-	return ret;
-}
-
-void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt destSize, OSInt nTap, Double sampleOfst)
+void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt destSize, UOSInt nTap, Double sampleOfst)
 {
 	if (destSize == srcSize)
 		return;
 	if (destSize > srcSize)
 	{
-		OSInt i, j, n;
+		UOSInt i;
+		UOSInt j;
+		OSInt n;
 		Double sum;
 		Double pos;
 		Double tval;
@@ -42,10 +26,10 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 		i = 0;
 		while (i < destSize)
 		{
-			pos = (i + 0.5) * srcSize;
-			pos = pos / destSize + sampleOfst;
-			n = (OSInt)Math::Fix(pos - (nTap * 0.5 - 0.5));//2.5);
-			pos = (n + 0.5 - pos);
+			pos = (Math::UOSInt2Double(i) + 0.5) * Math::UOSInt2Double(srcSize);
+			pos = pos / Math::UOSInt2Double(destSize) + sampleOfst;
+			n = (OSInt)Math::Fix(pos - (Math::UOSInt2Double(nTap) * 0.5 - 0.5));//2.5);
+			pos = (Math::OSInt2Double(n) + 0.5 - pos);
 
 			sum = 0;
 			tval = 0;
@@ -57,7 +41,7 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 				{
 					v = srcBuff[0];
 				}
-				else if(n >= srcSize)
+				else if((UOSInt)n >= srcSize)
 				{
 					v = srcBuff[srcSize - 1];
 				}
@@ -65,7 +49,7 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 				{
 					v = srcBuff[n];
 				}
-				lv = LanczosFunc(pos, nTap);
+				lv = Math::LanczosFilter::Weight(pos, nTap);
 				sum += lv;
 				tval += v * lv;
 
@@ -80,8 +64,10 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 	}
 	else
 	{
-		OSInt i, j, n;
-		OSInt effTap = (OSInt)Math::Fix((nTap * (srcSize) + (destSize - 1)) / destSize);
+		UOSInt i;
+		UOSInt j;
+		OSInt n;
+		UOSInt effTap = (UOSInt)((nTap * (srcSize) + (destSize - 1)) / destSize);
 		Double sum;
 		Double pos;
 		Double tval;
@@ -92,7 +78,7 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 		i = 0;
 		while (i < destSize)
 		{
-			pos = (i - (nTap / 2) + 0.5) * srcSize / destSize + 0.5;
+			pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 0.5) * Math::UOSInt2Double(srcSize) / Math::UOSInt2Double(destSize) + 0.5;
 			n = (OSInt)Math::Fix(pos + sampleOfst);
 
 			sum = 0;
@@ -101,15 +87,15 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 			j = 0;
 			while (j < effTap)
 			{
-				phase = (n + 0.5) * destSize;
-				phase /= srcSize;
-				phase -= (i + 0.5);
+				phase = (Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(destSize);
+				phase /= Math::UOSInt2Double(srcSize);
+				phase -= (Math::UOSInt2Double(i) + 0.5);
 
 				if (n < 0)
 				{
 					v = srcBuff[0];
 				}
-				else if(n >= srcSize)
+				else if((UOSInt)n >= srcSize)
 				{
 					v = srcBuff[srcSize - 1];
 				}
@@ -117,7 +103,7 @@ void LanczosResampler(Double *srcBuff, OSInt srcSize, Double *destBuff, OSInt de
 				{
 					v = srcBuff[n];
 				}
-				lv = LanczosFunc(pos, nTap);
+				lv = Math::LanczosFilter::Weight(pos, nTap);
 				sum += lv;
 				tval += v * lv;
 

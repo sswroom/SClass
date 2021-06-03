@@ -114,7 +114,7 @@ namespace Map
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
-		virtual Int32 GetCodePage() = 0;
+		virtual UInt32 GetCodePage() = 0;
 		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY) = 0;
 
 		virtual void *BeginGetObject() = 0;

@@ -606,7 +606,7 @@ Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::WebImageLayer::GetCodePage()
+UInt32 Map::WebImageLayer::GetCodePage()
 {
 	return 0;
 }

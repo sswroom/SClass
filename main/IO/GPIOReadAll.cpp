@@ -10,8 +10,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::GPIOControl *ctrl;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
-	UInt8 i;
-	UInt8 j;
+	UOSInt i;
+	UOSInt j;
 	console.WriteLine((const UTF8Char*)"GPIO Pins:");
 	NEW_CLASS(ctrl, IO::GPIOControl());
 	if (ctrl->IsError())
@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Pin ");
-			sb.AppendU16(i);
+			sb.AppendUOSInt(i);
 			sb.Append((const UTF8Char*)" = ");
 			if (ctrl->IsPinHigh(i))
 			{

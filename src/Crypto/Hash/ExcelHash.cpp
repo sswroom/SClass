@@ -36,11 +36,11 @@ void Crypto::Hash::ExcelHash::Clear()
 
 void Crypto::Hash::ExcelHash::Calc(const UInt8 *buff, UOSInt buffSize)
 {
-	this->charCnt += (UInt16)buffSize;
+	this->charCnt = (UInt16)(this->charCnt + buffSize);
 	while (buffSize > 0)
 	{
 		buffSize--;
-		this->currVal = (this->currVal ^ buff[buffSize]) << 1;
+		this->currVal = (UInt16)((this->currVal ^ buff[buffSize]) << 1);
 		if (this->currVal & 0x8000)
 		{
 			this->currVal = (this->currVal & 0x7fff) | 1;

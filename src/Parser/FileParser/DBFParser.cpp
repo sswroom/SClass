@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Parser/FileParser/DBFParser.h"
-#include "IO/PackageFile.h"
+#include "Data/ByteTool.h"
 #include "DB/DBFFile.h"
+#include "IO/PackageFile.h"
+#include "Parser/FileParser/DBFParser.h"
 
 Parser::FileParser::DBFParser::DBFParser()
 {
@@ -18,7 +19,7 @@ Int32 Parser::FileParser::DBFParser::GetName()
 	return *(Int32*)"DBFP";
 }
 
-void Parser::FileParser::DBFParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::DBFParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
@@ -47,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::DBFParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 	
-	fd->GetRealData((*(UInt16*)&hdr[8]) - 1, 1, &hdr2);
+	fd->GetRealData((UOSInt)ReadUInt16(&hdr[8]) - 1, 1, &hdr2);
 	if (hdr2 != 0xd)
 	{
 		return 0;

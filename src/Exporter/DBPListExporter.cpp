@@ -41,7 +41,7 @@ Bool Exporter::DBPListExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 	return false;
 }
 
-void Exporter::DBPListExporter::SetCodePage(Int32 codePage)
+void Exporter::DBPListExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

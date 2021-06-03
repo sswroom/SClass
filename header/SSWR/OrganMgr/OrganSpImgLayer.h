@@ -31,7 +31,7 @@ namespace SSWR
 			virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
-			virtual Int32 GetCodePage();
+			virtual UInt32 GetCodePage();
 			virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
 
 			virtual void *BeginGetObject();

@@ -8,15 +8,15 @@ namespace IO
 	{
 	protected:
 		IO::I2CChannel *channel;
-		Int32 delayMS;
+		UOSInt delayMS;
 	public:
-		I2C(IO::I2CChannel *channel, Int32 delayMS);
+		I2C(IO::I2CChannel *channel, UOSInt delayMS);
 		virtual ~I2C();
 
 		void Wait();
 		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data);
 		virtual Bool WriteBuff(UInt8 regAddr, UInt8 len, UInt8 *data);
 	};
-};
+}
 
 #endif

@@ -1255,7 +1255,7 @@ void IO::BTUtil::GetAddrText(Text::StringBuilderUTF *sb, UInt8 *addr)
 	sb->AppendHex8(addr[0]);
 }
 
-Int64 IO::BTUtil::GetAddrMAC(UInt8 *addr)
+UInt64 IO::BTUtil::GetAddrMAC(UInt8 *addr)
 {
 	UInt8 buff[8];
 	buff[0] = addr[0];
@@ -1266,7 +1266,7 @@ Int64 IO::BTUtil::GetAddrMAC(UInt8 *addr)
 	buff[5] = addr[5];
 	buff[6] = 0;
 	buff[7] = 0;
-	return ReadInt64(buff);
+	return ReadUInt64(buff);
 }
 
 const UTF8Char *IO::BTUtil::GetUUIDName(UInt16 uuid)

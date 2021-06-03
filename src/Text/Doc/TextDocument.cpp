@@ -22,7 +22,7 @@ Text::Doc::TextDocument::TextDocument(const UTF8Char *name) : IO::ParsedObject(n
 Text::Doc::TextDocument::~TextDocument()
 {
 	DocSection *item;
-	OSInt i = this->items->GetCount();
+	UOSInt i = this->items->GetCount();
 	while (i-- > 0)
 	{
 		item = this->items->GetItem(i);

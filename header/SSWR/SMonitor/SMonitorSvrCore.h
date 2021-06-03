@@ -81,11 +81,11 @@ namespace SSWR
 			void TCPSendKAReply(IO::Stream *stm, Int64 cliTime, Int64 svrTime);
 			void TCPSendCapturePhoto(IO::Stream *stm);
 			void TCPSendPhotoEnd(IO::Stream *stm, Int64 photoTime);
-			void TCPSendSetOutput(IO::Stream *stm, Int32 outputNum, Bool toHigh);
+			void TCPSendSetOutput(IO::Stream *stm, UInt32 outputNum, Bool toHigh);
 
 			void UDPSendReadingRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 recTime);
 			void UDPSendCapturePhoto(const Net::SocketUtil::AddressInfo *addr, UInt16 port);
-			void UDPSendPhotoPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime, Int32 seq);
+			void UDPSendPhotoPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime, UInt32 seq);
 			void UDPSendPhotoEnd(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime);
 			void UDPSendSetOutput(const Net::SocketUtil::AddressInfo *addr, UInt16 port, UInt8 outputNum, Bool isHigh);
 
@@ -104,28 +104,28 @@ namespace SSWR
 
 			DeviceInfo *DevGet(Int64 cliId, Bool toAdd);
 			DeviceInfo *DevAdd(Int64 cliId, const UTF8Char *cpuName, const UTF8Char *platformName);
-			Bool DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, OSInt nDigitals, OSInt nReading, OSInt nOutput, Int32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
+			Bool DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
 			Bool DeviceKARecv(DeviceInfo *dev, Int64 kaTime);
 			Bool DeviceSetName(Int64 cliId, const UTF8Char *devName);
 			Bool DeviceSetPlatform(Int64 cliId, const UTF8Char *platformName);
 			Bool DeviceSetCPUName(Int64 cliId, const UTF8Char *cpuName);
-			Bool DeviceSetReading(Int64 cliId, Int32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
+			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
 			Bool DeviceSetVersion(Int64 cliId, Int64 version);
 			virtual DeviceInfo *DeviceGet(Int64 cliId);
 			virtual Bool DeviceModify(Int64 cliId, const UTF8Char *devName, Int32 flags);
 			virtual Bool DeviceSetReadings(DeviceInfo *dev, const UTF8Char *readings);
 			virtual Bool DeviceSetDigitals(DeviceInfo *dev, const UTF8Char *digitals);
-			virtual OSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList);
-			virtual Bool DeviceSetOutput(Int64 cliId, Int32 outputNum, Bool toHigh);
+			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList);
+			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh);
 
 			virtual Bool UserExist();
 			virtual Bool UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType);
 			virtual Bool UserSetPassword(Int32 userId, const UTF8Char *password);
 			virtual LoginInfo *UserLogin(const UTF8Char *userName, const UTF8Char *password);
 			virtual void UserFreeLogin(LoginInfo *login);
-			virtual OSInt UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList);
+			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList);
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId);
-			virtual OSInt UserGetList(Data::ArrayList<WebUser*> *userList);
+			virtual UOSInt UserGetList(Data::ArrayList<WebUser*> *userList);
 			virtual WebUser *UserGet(Int32 userId);
 			virtual Bool UserAssign(Int32 userId, Data::ArrayList<Int64> *devIdList);
 

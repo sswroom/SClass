@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
+#include "IO/PackageFile.h"
 #include "Parser/FileParser/DCPackParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::DCPackParser::DCPackParser()
 {
@@ -44,12 +45,12 @@ IO::ParsedObject *Parser::FileParser::DCPackParser::ParseFile(IO::IStreamData *f
 	Text::Encoding enc(932);
 
 	fd->GetRealData(0, 64, buff);
-	if (*(Int32*)&buff[0] != 0x41544144 || *(Int32*)&buff[4] != 0x504f5424)
+	if (ReadInt32(&buff[0]) != 0x41544144 || ReadInt32(&buff[4]) != 0x504f5424)
 	{
 		return 0;
 	}
 
-	hdrEnd = *(Int32*)&buff[56] << 6;
+	hdrEnd = ReadUInt32(&buff[56]) << 6;
 	fileOfst = 0;
 	hdrOfst = 64;
 	IO::PackageFile *pf;
@@ -58,9 +59,9 @@ IO::ParsedObject *Parser::FileParser::DCPackParser::ParseFile(IO::IStreamData *f
 	while (hdrOfst < hdrEnd)
 	{
 		fd->GetRealData(hdrOfst, 64, buff);
-		thisOfst = *(Int32*)&buff[48];
-		thisSize = *(Int32*)&buff[56];
-		if (thisOfst != fileOfst || thisOfst != *(UInt32*)&buff[52])
+		thisOfst = ReadUInt32(&buff[48]);
+		thisSize = ReadUInt32(&buff[56]);
+		if (thisOfst != fileOfst || thisOfst != ReadUInt32(&buff[52]))
 		{
 			DEL_CLASS(pf);
 			return 0;

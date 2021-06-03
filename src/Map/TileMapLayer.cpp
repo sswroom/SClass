@@ -441,7 +441,7 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::TileMapLayer::GetCodePage()
+UInt32 Map::TileMapLayer::GetCodePage()
 {
 	return 0;
 }

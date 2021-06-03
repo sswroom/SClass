@@ -345,7 +345,7 @@ Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::MapLayerCollection::GetCodePage()
+UInt32 Map::MapLayerCollection::GetCodePage()
 {
 	return 0;
 }

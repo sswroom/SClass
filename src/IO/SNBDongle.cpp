@@ -455,7 +455,7 @@ UInt64 IO::SNBDongle::GetDongleId()
 	return this->dongleId;
 }
 
-Int32 IO::SNBDongle::GetBaudRate()
+UInt32 IO::SNBDongle::GetBaudRate()
 {
 	return this->dongleBaudRate;
 }

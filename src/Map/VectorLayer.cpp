@@ -424,7 +424,7 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-Int32 Map::VectorLayer::GetCodePage()
+UInt32 Map::VectorLayer::GetCodePage()
 {
 	return 0;
 }

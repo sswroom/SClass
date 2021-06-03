@@ -13,23 +13,23 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *ByteDisp(UTF8Char *sbuff, Int64 byteSize)
+UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
-		return Text::StrConcat(Text::StrInt64(sbuff, byteSize >> 30), (const UTF8Char*)"GB");
+		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize >> 30), (const UTF8Char*)"GB");
 	}
 	else if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrInt64(sbuff, byteSize >> 20), (const UTF8Char*)"MB");
+		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize >> 20), (const UTF8Char*)"MB");
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrInt64(sbuff, byteSize >> 10), (const UTF8Char*)"KB");
+		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize >> 10), (const UTF8Char*)"KB");
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrInt64(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize), (const UTF8Char*)"B");
 	}
 }
 
@@ -47,13 +47,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::CPUInfo cpuInfo;
 	IO::FileStream *fs;
 	IO::StreamWriter *writer;
-	Int64 memSize;
+	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Benchmark_");
 	sptr2 = sysInfo.GetPlatformName(sptr);
 	if (sptr2)
@@ -133,15 +133,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.Append(ram->sn);
 		}
 		sb.Append((const UTF8Char*)"\t");
-		sb.AppendOSInt(ram->defSpdMHz);
+		sb.AppendUOSInt(ram->defSpdMHz);
 		sb.Append((const UTF8Char*)"\t");
-		sb.AppendOSInt(ram->confSpdMHz);
+		sb.AppendUOSInt(ram->confSpdMHz);
 		sb.Append((const UTF8Char*)"\t");
-		sb.AppendI32(ram->dataWidth);
+		sb.AppendU32(ram->dataWidth);
 		sb.Append((const UTF8Char*)"\t");
-		sb.AppendI32(ram->totalWidth);
+		sb.AppendU32(ram->totalWidth);
 		sb.Append((const UTF8Char*)"\t");
-		sb.AppendI64(ram->memorySize);
+		sb.AppendU64(ram->memorySize);
 		writer->WriteLine(sb.ToString());
 		console->WriteLine(sb.ToString());
 		i++;
@@ -157,13 +157,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::HiResClock clk;
 	UInt8 *buff1;
 	UInt8 *buff2;
-	OSInt loopCnt;
-	OSInt currSize;
-	OSInt startSize = 128;
-	OSInt buffSize = 64 << 20;
+	UOSInt loopCnt;
+	UOSInt currSize;
+	UOSInt startSize = 128;
+	UOSInt buffSize = 64 << 20;
 	if (buffSize > (memSize >> 1))
 	{
-		buffSize = (OSInt)(memSize >> 1);
+		buffSize = (UOSInt)(memSize >> 1);
 	}
 
 	buff1 = MemAllocA64(UInt8, buffSize);
@@ -186,11 +186,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * (UInt64)loopCnt) / t * 2.0;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Copy\t");
-				sb.AppendOSInt(currSize);
+				sb.AppendUOSInt(currSize);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, rate);
 				writer->WriteLine(sb.ToString());
@@ -203,7 +203,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -232,11 +232,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t;
+				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Write\t");
-				sb.AppendOSInt(currSize);
+				sb.AppendUOSInt(currSize);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, rate);
 				writer->WriteLine(sb.ToString());
@@ -249,7 +249,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
@@ -278,11 +278,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t;
+				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"Read\t");
-				sb.AppendOSInt(currSize);
+				sb.AppendUOSInt(currSize);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, rate);
 				writer->WriteLine(sb.ToString());
@@ -295,7 +295,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"\t");
-				sb.AppendOSInt(loopCnt);
+				sb.AppendUOSInt(loopCnt);
 				sb.Append((const UTF8Char*)"\t");
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());

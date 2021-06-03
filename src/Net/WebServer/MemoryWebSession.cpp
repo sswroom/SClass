@@ -15,7 +15,7 @@ Net::WebServer::MemoryWebSession::MemoryWebSession(Int64 sessId, Net::BrowserInf
 
 Net::WebServer::MemoryWebSession::~MemoryWebSession()
 {
-	OSInt i;
+	UOSInt i;
 	DEL_CLASS(this->mut);
 	DEL_CLASS(this->vals);
 	i = this->names->GetCount();
@@ -52,66 +52,66 @@ Int64 Net::WebServer::MemoryWebSession::GetSessId()
 
 void Net::WebServer::MemoryWebSession::SetValuePtr(const Char *name, void *val)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		this->vals->SetItem(i, (Int64)val);
+		this->vals->SetItem((UOSInt)si, (Int64)val);
 	}
 	else
 	{
-		i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
+		UOSInt i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
 		this->vals->Insert(i, (Int64)val);
 	}
 }
 
 void Net::WebServer::MemoryWebSession::SetValueDbl(const Char *name, Double val)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		this->vals->SetItem(i, *(Int64*)&val);
+		this->vals->SetItem((UOSInt)si, *(Int64*)&val);
 	}
 	else
 	{
-		i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
+		UOSInt i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
 		this->vals->Insert(i, *(Int64*)&val);
 	}
 }
 
 void Net::WebServer::MemoryWebSession::SetValueInt64(const Char *name, Int64 val)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		this->vals->SetItem(i, val);
+		this->vals->SetItem((UOSInt)si, val);
 	}
 	else
 	{
-		i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
+		UOSInt i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
 		this->vals->Insert(i, val);
 	}
 }
 
 void Net::WebServer::MemoryWebSession::SetValueInt32(const Char *name, Int32 val)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		this->vals->SetItem(i, val);
+		this->vals->SetItem((UOSInt)si, val);
 	}
 	else
 	{
-		i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
+		UOSInt i = this->names->SortedInsert(Text::StrCopyNew((const UTF8Char*)name));
 		this->vals->Insert(i, val);
 	}
 }
 
 void *Net::WebServer::MemoryWebSession::GetValuePtr(const Char *name)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		return (void*)this->vals->GetItem(i);
+		return (void*)this->vals->GetItem((UOSInt)si);
 	}
 	return 0;
 }
@@ -119,10 +119,10 @@ void *Net::WebServer::MemoryWebSession::GetValuePtr(const Char *name)
 Double Net::WebServer::MemoryWebSession::GetValueDbl(const Char *name)
 {
 	Int64 ret;
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		ret = this->vals->GetItem(i);
+		ret = this->vals->GetItem((UOSInt)si);
 		return *(Double*)&ret;
 	}
 	return 0;
@@ -130,20 +130,20 @@ Double Net::WebServer::MemoryWebSession::GetValueDbl(const Char *name)
 
 Int64 Net::WebServer::MemoryWebSession::GetValueInt64(const Char *name)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		return this->vals->GetItem(i);
+		return this->vals->GetItem((UOSInt)si);
 	}
 	return 0;
 }
 
 Int32 Net::WebServer::MemoryWebSession::GetValueInt32(const Char *name)
 {
-	OSInt i = this->names->SortedIndexOf((const UTF8Char*)name);
-	if (i >= 0)
+	OSInt si = this->names->SortedIndexOf((const UTF8Char*)name);
+	if (si >= 0)
 	{
-		return (Int32)this->vals->GetItem(i);
+		return (Int32)this->vals->GetItem((UOSInt)si);
 	}
 	return 0;
 }

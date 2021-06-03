@@ -29,7 +29,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 	{
 		if (r->ReadNext())
 		{
-			table->dataCnt = r->GetInt32(0);
+			table->dataCnt = (UInt32)r->GetInt32(0);
 		}
 		this->db->CloseReader(r);
 	}
@@ -93,7 +93,7 @@ OSInt DB::DBCache::GetRowCount(const UTF8Char *tableName)
 	DB::DBCache::TableInfo *table = this->GetTableInfo(tableName);
 	if (table)
 	{
-		return table->dataCnt;
+		return (OSInt)table->dataCnt;
 	}
 	else
 	{

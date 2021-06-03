@@ -36,7 +36,7 @@ namespace SSWR
 			Bool SendDevName(Int64 cliId, const UTF8Char *name);
 			Bool SendDevPlatform(Int64 cliId, const UTF8Char *platform);
 			Bool SendDevCPUName(Int64 cliId, const UTF8Char *cpuName);
-			Bool SendDevReadingName(Int64 cliId, OSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
+			Bool SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
 			Bool SendDevVersion(Int64 cliId, Int64 progVersion);
 
 			void HandleRecReply(RecordReplyHandler hdlr, void *userObj);

@@ -38,7 +38,7 @@ IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFile(IO::IStreamData *fd,
 {
 	Int32 buff[4];
 	UInt32 fileSize;
-	Int64 currPos;
+	UInt64 currPos;
 	fd->GetRealData(0, 12, (UInt8*)buff);
 	if (buff[0] != *(Int32*)"RIFF")
 		return 0;
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFile(IO::IStreamData *fd,
 			}
 			//////////////////////////
 		}
-		else if (buff[0] & 0x80808080)
+		else if ((UInt32)buff[0] & 0x80808080)
 		{
 			if (fmt)
 				MemFree(fmt);

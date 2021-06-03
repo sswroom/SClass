@@ -6,15 +6,15 @@ namespace Text
 	class Encoding
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 		Bool lastHigh;
 	public:
-		Encoding(Int32 codePage);
+		Encoding(UInt32 codePage);
 		Encoding();
 		~Encoding();
 		
-		void SetCodePage(Int32 codePage);
-		Int32 GetEncCodePage();
+		void SetCodePage(UInt32 codePage);
+		UInt32 GetEncCodePage();
 		UTF8Char *ToString(UTF8Char *buff);
 
 		// bug if _WCHAR_SIZE != 2

@@ -101,7 +101,7 @@ Bool Media::MediaFile::TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd)
 		}
 		else
 		{
-			src->TrimStream((UInt32)(trimTimeStart + syncTime), (UInt32)(trimTimeEnd + syncTime), &syncTime);
+			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)(trimTimeEnd + syncTime), &syncTime);
 			this->syncTime->SetItem(i, syncTime);
 		}
 	}

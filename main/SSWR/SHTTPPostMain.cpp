@@ -69,7 +69,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				cli->AddHeader((const UTF8Char*)"Content-Type", mime);
 			}
-			Text::StrOSInt((UTF8Char*)buff, fileSize);
+			Text::StrUOSInt((UTF8Char*)buff, fileSize);
 			cli->AddHeader((const UTF8Char*)"Content-Length", (const UTF8Char*)buff); 
 
 			while (totalSize < fileSize)
@@ -100,10 +100,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				IO::MemoryStream *mstm;
 				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SHTTPGet.mstm"));
+				UOSInt readSize;
 
-				while ((argc = cli->Read(buff, 2048)) > 0)
+				while ((readSize = cli->Read(buff, 2048)) > 0)
 				{
-					mstm->Write(buff, argc);
+					mstm->Write(buff, readSize);
 				}
 				if (mstm->GetLength() == 0)
 				{
@@ -117,7 +118,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					argc = sb.IndexOf('?');
 					if (argc >= 0)
 					{
-						sb.TrimToLength(argc);
+						sb.TrimToLength((UOSInt)argc);
 					}
 					if (sb.EndsWith('/'))
 					{
@@ -134,7 +135,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Received ");
-					sb.AppendI64(mstm->GetLength());
+					sb.AppendU64(mstm->GetLength());
 					sb.Append((const UTF8Char*)" bytes from server");
 					console->WriteLine(sb.ToString());
 

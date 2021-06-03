@@ -29,11 +29,11 @@ namespace Text
 		private:
 			const UTF8Char *docName;
 			PropertiesFlags pflags;
-			Int32 textColor;
-			Int32 bgColor;
-			Int32 linkColor;
-			Int32 activeLinkColor;
-			Int32 visitedLinkColor;
+			UInt32 textColor;
+			UInt32 bgColor;
+			UInt32 linkColor;
+			UInt32 activeLinkColor;
+			UInt32 visitedLinkColor;
 
 			PrintStatus pStatus;
 			Data::ArrayList<DocSection*> *items;

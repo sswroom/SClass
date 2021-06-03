@@ -8,8 +8,8 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Char sbuff[32];
-	UInt64 i;
-	UInt64 j;
+	Int64 i;
+	Int64 j;
 	Bool succ = true;
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());

@@ -8,7 +8,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	const UTF8Char *url = (const UTF8Char*)"https://resource.data.one.gov.hk/td/speedmap.xml";
 	UInt8 buff[2048];
-	OSInt readSize;
+	UOSInt readSize;
 	Net::SocketFactory *sockf;
 	Net::HTTPClient *cli;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));

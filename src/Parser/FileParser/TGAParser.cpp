@@ -45,14 +45,14 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 hdr[18];
 //	UInt8 pal[1024];
 
-	Int32 imgWidth;
-	Int32 imgHeight;
-	Int32 bpp;
-	Int32 imgPos;
+	UInt32 imgWidth;
+	UInt32 imgHeight;
+	UInt32 bpp;
+	UInt32 imgPos;
 
 	Media::StaticImage *outImg;
 
-	Int32 ds = (Int32)fd->GetDataSize();
+	UInt64 ds = fd->GetDataSize();
 	fd->GetRealData(ds - 26, 26, footer);
 
 	if (*(Int32*)&footer[8] != 0x45555254 || *(Int32*)&footer[12] != 0x49534956 || *(Int32*)&footer[16] != 0x582D4E4F || *(Int32*)&footer[20] != 0x454C4946 || *(Int16*)&footer[24] != 0x2E)
@@ -119,7 +119,7 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 		UInt8 *pBits = (UInt8*)outImg->data;
 		Int32 lineW;
 		Int32 lineW2;
-		Int32 currOfst;
+		UInt32 currOfst;
 
 		if (hdr[2] == 10)
 		{

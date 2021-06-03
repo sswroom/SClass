@@ -49,7 +49,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"text/plain"))
 	{
 		OSInt i = Text::StrIndexOf(contentType, (const UTF8Char*)"charset=");
-		Int32 codePage = 0;
+		UInt32 codePage = 0;
 		if (i > 0)
 		{
 			Text::StringBuilderUTF8 sb;

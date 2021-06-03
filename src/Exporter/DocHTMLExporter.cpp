@@ -43,7 +43,7 @@ Bool Exporter::DocHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 	return false;
 }
 
-void Exporter::DocHTMLExporter::SetCodePage(Int32 codePage)
+void Exporter::DocHTMLExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
@@ -82,7 +82,7 @@ Bool Exporter::DocHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	writer->Write(lineBuff2);
 	writer->WriteLine((const UTF8Char*)"</title>");
 	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset="), this->codePage), (const UTF8Char*)"\" />");
-	writer->WriteLine(lineBuff1, sptr - lineBuff1);
+	writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLine((const UTF8Char*)"<style type=\"text/css\">");
 /*
 a:hover {color:#FF00FF;}
@@ -122,8 +122,8 @@ a:hover {color:#FF00FF;}
 	writer->WriteLine((const UTF8Char*)"</head>");
 	writer->Write((const UTF8Char*)"<body>");
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = doc->GetCount();
 	while (i < j)
@@ -151,8 +151,8 @@ void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName)
 {
 	Text::Doc::DocItem *item;
-	OSInt i = 0;
-	OSInt j = items->GetCount();
+	UOSInt i = 0;
+	UOSInt j = items->GetCount();
 	const UTF8Char *text;
 	Text::Doc::DocItem::HorizontalAlign halign;
 	Text::Doc::DocHeading *heading;

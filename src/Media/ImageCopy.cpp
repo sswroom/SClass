@@ -10,17 +10,17 @@ extern "C" Int32 UseAVX;
 extern "C" Int32 CPUBrand;
 #endif
 
-void Media::ImageCopy::MT_Copy(UInt8 *inPt, UInt8 *outPt, OSInt copySize, OSInt height, OSInt sstep, OSInt dstep)
+void Media::ImageCopy::MT_Copy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
-		this->stats[i].inPt = inPt + currHeight * sstep;
-		this->stats[i].outPt = outPt + currHeight * dstep;
+		currHeight = MulDivUOS(i, height, this->nThread);
+		this->stats[i].inPt = inPt + (OSInt)currHeight * sstep;
+		this->stats[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->stats[i].copySize = copySize;
 		this->stats[i].height = lastHeight - currHeight;
 		this->stats[i].sstep = sstep;
@@ -165,7 +165,7 @@ Media::ImageCopy::~ImageCopy()
 	}
 }
 
-void Media::ImageCopy::Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, OSInt dwidth, OSInt dheight)
+void Media::ImageCopy::Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	if (dheight < 16 || this->nThread == 1)
 	{
@@ -177,7 +177,7 @@ void Media::ImageCopy::Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, O
 	}
 }
 
-void Media::ImageCopy::Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, OSInt dwidth, OSInt dheight)
+void Media::ImageCopy::Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	if (dheight < 16 || this->nThread == 1)
 	{
@@ -195,7 +195,7 @@ void Media::ImageCopy::SetThreadPriority(Sync::Thread::ThreadPriority tp)
 	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
-		this->stats[i].copySize = (Int32)tp;
+		this->stats[i].copySize = (UOSInt)tp;
 		this->stats[i].status = 4;
 		this->stats[i].evt->Set();
 	}

@@ -45,7 +45,7 @@ Text::CodeProject::CodeProject(const UTF8Char *name) : IO::ParsedObject(name)
 
 Text::CodeProject::~CodeProject()
 {
-	OSInt i;
+	UOSInt i;
 	CodeProjectCfg *cfg;
 	i = this->cfgList->GetCount();
 	while (i-- > 0)
@@ -61,12 +61,12 @@ void Text::CodeProject::AddConfig(Text::CodeProjectCfg *cfg)
 	this->cfgList->Add(cfg);
 }
 
-OSInt Text::CodeProject::GetConfigCnt()
+UOSInt Text::CodeProject::GetConfigCnt()
 {
 	return this->cfgList->GetCount();
 }
 
-Text::CodeProjectCfg *Text::CodeProject::GetConfig(OSInt index)
+Text::CodeProjectCfg *Text::CodeProject::GetConfig(UOSInt index)
 {
 	return this->cfgList->GetItem(index);
 }

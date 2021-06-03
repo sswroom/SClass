@@ -13,8 +13,8 @@ namespace Media
 		Sync::Event *evtMain;
 		UInt8 *inPt;
 		UInt8 *outPt;
-		OSInt copySize;
-		OSInt height;
+		UOSInt copySize;
+		UOSInt height;
 		OSInt sstep;
 		OSInt dstep;
 	} IMGCOPYSTAT;
@@ -26,17 +26,17 @@ namespace Media
 		IMGCOPYSTAT *stats;
 		UOSInt nThread;
 
-		void MT_Copy(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
+		void MT_Copy(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 		static UInt32 __stdcall WorkerThread(void *obj);
 	public:
 		ImageCopy();
 		~ImageCopy();
 
-		void Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, OSInt dwidth, OSInt dheight);
-		void Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, OSInt dwidth, OSInt dheight);
+		void Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+		void Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
 		void SetThreadPriority(Sync::Thread::ThreadPriority tp);
 	};
-};
+}
 
 #endif

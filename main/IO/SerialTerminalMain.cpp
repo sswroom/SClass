@@ -15,7 +15,7 @@ Bool threadRunning;
 UInt32 __stdcall RecvThread(void *userObj)
 {
 	UInt8 buff[512];
-	OSInt buffSize;
+	UOSInt buffSize;
 	threadRunning = true;
 	while (!threadToStop)
 	{
@@ -54,9 +54,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		Int32 portNum;
-		Int32 baudRate;
-		if (Text::StrToInt32(argv[1], &portNum) && Text::StrToInt32(argv[2], &baudRate))
+		UInt32 portNum;
+		UInt32 baudRate;
+		if (Text::StrToUInt32(argv[1], &portNum) && Text::StrToUInt32(argv[2], &baudRate))
 		{
 			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
@@ -76,7 +76,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						break;
 					}
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\r\n");
-					port->Write(sbuff, sptr - sbuff);
+					port->Write(sbuff, (UOSInt)(sptr - sbuff));
 				}
 				threadToStop = true;
 				port->Close();

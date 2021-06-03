@@ -104,7 +104,7 @@ namespace Data
 		void ToLocalTime();
 		void ConvertTimeZoneQHR(Int8 tzQhr);
 		void SetTimeZoneQHR(Int8 tzQhr);
-		Int32 GetTimeZoneQHR();
+		Int8 GetTimeZoneQHR();
 		Int32 GetWeekday(); //0 = Sun, 6 = Sat
 
 		static UInt8 ParseMonthStr(const Char *month);

@@ -18,7 +18,7 @@ namespace IO
 
 	public:
 		StreamWriter(IO::Stream *stm, Text::Encoding *enc);
-		StreamWriter(IO::Stream *stm, Int32 codePage);
+		StreamWriter(IO::Stream *stm, UInt32 codePage);
 		virtual ~StreamWriter();
 
 		virtual Bool Write(const UTF8Char *str, UOSInt nChar);

@@ -10,9 +10,9 @@
 typedef struct
 {
 	Int64 termId;
-	Int32 status;
-	Int32 inStatus;
-	Int32 outStatus;
+	UInt32 status;
+	UInt32 inStatus;
+	UInt32 outStatus;
 	UInt8 fixMode;
 	UInt8 gpsFix;
 	Double pdop;
@@ -24,7 +24,7 @@ typedef struct
 	Double temper1;
 	Double temper2;
 	Double temper3;
-	Int32 cliIP;
+	UInt32 cliIP;
 	UInt16 cliPort;
 	UInt32 recvTimeTS;
 } ExtraInfo;

@@ -2483,9 +2483,9 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, cons
 	size[1] = maxY - minY;
 }
 
-Int32 Map::MapConfig2TGen::ToColor(const UTF8Char *str)
+UInt32 Map::MapConfig2TGen::ToColor(const UTF8Char *str)
 {
-	Int32 v = Text::StrHex2Int32(str);
+	UInt32 v = (UInt32)Text::StrHex2Int32(str);
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
@@ -4437,8 +4437,8 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 	UTF8Char *sptr;
 	IO::FileStream *fstm;
 	IO::StreamReader *rdr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	MapLineStyle *currLine;
 	MapFontStyle *currFont;
 	MapLayerStyle *currLayer;
@@ -4480,7 +4480,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 		}
 		while (rdr->ReadLine(lineBuff, 1023))
 		{
-			OSInt strCnt;
+			UOSInt strCnt;
 			Int32 lyrType;
 			strCnt = Text::StrSplitTrim(strs, 10, lineBuff, ',');
 
@@ -4489,8 +4489,8 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 			{
 			case 1:
 				this->bgColor = ToColor(strs[1]);
-				this->nLine = Text::StrToInt32(strs[2]);
-				this->nFont = Text::StrToInt32(strs[3]);
+				this->nLine = Text::StrToUInt32(strs[2]);
+				this->nFont = Text::StrToUInt32(strs[3]);
 				this->nStr = 5000;//Text::StrToInt32(strs[4]);
 				this->lines = MemAlloc(Data::ArrayList<MapLineStyle*>*, this->nLine);
 				this->fonts = MemAlloc(Data::ArrayList<MapFontStyle*>*, this->nFont);
@@ -4938,9 +4938,9 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	Media::DrawBrush *brush;
 	Media::DrawPen *pen;
 	MapLogger *log;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	OSInt l;
 	Int64 lastId;
 	Int64 thisId;

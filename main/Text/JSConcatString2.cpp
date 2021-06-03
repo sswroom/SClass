@@ -12,8 +12,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff2[256];
 	Manage::HiResClock *clk;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayListString *strs;
 	Text::String *s;
 	

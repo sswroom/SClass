@@ -24,7 +24,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, cons
 	{
 		Crypto::Encrypt::Base64 b64;
 		const UTF8Char *tmpKeyStr;
-		OSInt tmpKeyStrLeng;
+		UOSInt tmpKeyStrLeng;
 
 		this->gooCliId = Text::StrCopyNew(gooCliId);
 		tmpKeyStr = Text::StrCopyNew(gooPrivKey);
@@ -32,7 +32,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, cons
 		this->gooPrivKey = MemAlloc(UInt8, tmpKeyStrLeng + 1);
 		Text::StrReplace((Char*)tmpKeyStr, '-', '+');
 		Text::StrReplace((Char*)tmpKeyStr, '_', '/');
-		this->gooPrivKeyLeng = b64.Decrypt(tmpKeyStr, (Int32)tmpKeyStrLeng, this->gooPrivKey, 0);
+		this->gooPrivKeyLeng = b64.Decrypt(tmpKeyStr, tmpKeyStrLeng, this->gooPrivKey, 0);
 		Text::StrDelNew(tmpKeyStr);
 		
 		this->gooKey = 0;
@@ -77,13 +77,13 @@ Map::GoogleMap::GoogleStaticMap::~GoogleStaticMap()
 	}
 }
 
-Int32 Map::GoogleMap::GoogleStaticMap::Level2Scale(Int32 level)
+UInt32 Map::GoogleMap::GoogleStaticMap::Level2Scale(UInt32 level)
 {
-	Int32 levels[] = {100000000,100000000,100000000,100000000,49827656,24913828,12456914,6228457,3114229,1557114,778557,389279,194639,97320,48660,24330,12165,6082,3041,1521};
+	UInt32 levels[] = {100000000,100000000,100000000,100000000,49827656,24913828,12456914,6228457,3114229,1557114,778557,389279,194639,97320,48660,24330,12165,6082,3041,1521};
 	return levels[level];
 }
 
-Int32 Map::GoogleMap::GoogleStaticMap::Scale2Level(Int32 scale)
+UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 {
 	if (scale > 70466947)
 	{
@@ -155,14 +155,14 @@ Int32 Map::GoogleMap::GoogleStaticMap::Scale2Level(Int32 scale)
 	}
 }
 
-OSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, Int32 scale, Int32 width, Int32 height, const UTF8Char *lang, Int32 format, Double marker_lat, Double marker_lon)
+UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, UInt32 width, UInt32 height, const UTF8Char *lang, Int32 format, Double marker_lat, Double marker_lon)
 {
 	Net::HTTPClient *cli;
 	UTF8Char url[512];
 	UTF8Char *sptr;
 	UTF8Char *urlStart;
-	OSInt retSize = 0;
-	OSInt thisSize;
+	UOSInt retSize = 0;
+	UOSInt thisSize;
 	urlStart = sptr = Text::StrConcat(url, (const UTF8Char*)"http://maps.google.com");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/maps/api/staticmap?format=");
 	if (format == 1)
@@ -182,11 +182,11 @@ OSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lo
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
 	sptr = Text::StrDouble(sptr, lon);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&zoom=");
-	sptr = Text::StrInt32(sptr, Map::GoogleMap::GoogleStaticMap::Scale2Level(scale));
+	sptr = Text::StrUInt32(sptr, Map::GoogleMap::GoogleStaticMap::Scale2Level(scale));
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&size=");
-	sptr = Text::StrInt32(sptr, width);
+	sptr = Text::StrUInt32(sptr, width);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"x");
-	sptr = Text::StrInt32(sptr, height);
+	sptr = Text::StrUInt32(sptr, height);
 	if (marker_lat != 0 || marker_lon != 0)
 	{
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&markers=");
@@ -202,7 +202,7 @@ OSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lo
 
 		UInt8 result[20];
 		UInt8 result2[40];
-		OSInt size = Text::StrConcatC(buff, urlStart, sptr - urlStart) - buff;
+		UOSInt size = (UOSInt)(Text::StrConcatC(buff, urlStart, (UOSInt)(sptr - urlStart)) - buff);
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(buff, size);

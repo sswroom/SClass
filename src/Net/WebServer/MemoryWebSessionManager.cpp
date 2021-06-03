@@ -14,7 +14,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 	Data::DateTime *currTime;
 	Net::WebServer::MemoryWebSession *sess;
 	Int64 sessId;
-	OSInt i;
+	UOSInt i;
 	OSInt j;
 
 	NEW_CLASS(lastChkTime, Data::DateTime());
@@ -46,8 +46,8 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 					{
 						mutUsage.BeginUse();
 						j = me->sessIds->SortedIndexOf(sessId);
-						me->sessIds->RemoveAt(j);
-						sess = me->sesses->RemoveAt(j);
+						me->sessIds->RemoveAt((UOSInt)j);
+						sess = me->sesses->RemoveAt((UOSInt)j);
 						mutUsage.EndUse();
 
 						sess->BeginUse();
@@ -71,7 +71,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	Text::StringBuilderUTF8 *sb;
 	UTF8Char *sbuff;
 	UTF8Char *strs[2];
-	OSInt strCnt = 2;
+	UOSInt strCnt = 2;
 	Int64 sessId = 0;
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
@@ -126,7 +126,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 	}
 	DEL_CLASS(this->chkEvt);
 
-	OSInt i = this->sesses->GetCount();
+	UOSInt i = this->sesses->GetCount();
 	while (i-- > 0)
 	{
 		sess = this->sesses->GetItem(i);
@@ -170,7 +170,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"; Path=");
 	sptr = Text::StrConcat(sptr, this->path);
 	resp->AddHeader((const UTF8Char*)"Set-Cookie", sbuff);
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds->SortedInsert(sessId);
@@ -195,8 +195,8 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 		i = this->sessIds->SortedIndexOf(sessId);
 		if (i >= 0)
 		{
-			sess = this->sesses->RemoveAt(i);
-			this->sessIds->RemoveAt(i);
+			sess = this->sesses->RemoveAt((UOSInt)i);
+			this->sessIds->RemoveAt((UOSInt)i);
 		}
 		mutUsage.EndUse();
 		if (sess)
@@ -243,14 +243,14 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(Net::WebServer::IWebReq
 
 Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId)
 {
-	OSInt i;
+	OSInt si;
 	Net::WebServer::MemoryWebSession *sess = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	i = this->sessIds->SortedIndexOf(sessId);
-	if (i < 0)
+	si = this->sessIds->SortedIndexOf(sessId);
+	if (si < 0)
 	{
 		NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, Net::BrowserInfo::BT_UNKNOWN, Manage::OSInfo::OT_UNKNOWN));
-		i = this->sessIds->SortedInsert(sessId);
+		UOSInt i = this->sessIds->SortedInsert(sessId);
 		this->sesses->Insert(i, (Net::WebServer::MemoryWebSession*)sess);
 	}
 	mutUsage.EndUse();
@@ -267,7 +267,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession
 	i = this->sessIds->SortedIndexOf(sessId);
 	if (i >= 0)
 	{
-		sess = this->sesses->GetItem(i);
+		sess = this->sesses->GetItem((UOSInt)i);
 	}
 	mutUsage.EndUse();
 	if (sess)
@@ -286,8 +286,8 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 	i = this->sessIds->SortedIndexOf(sessId);
 	if (i >= 0)
 	{
-		sess = this->sesses->RemoveAt(i);
-		this->sessIds->RemoveAt(i);
+		sess = this->sesses->RemoveAt((UOSInt)i);
+		this->sessIds->RemoveAt((UOSInt)i);
 	}
 	mutUsage.EndUse();
 	if (sess)

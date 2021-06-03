@@ -10,7 +10,7 @@
 #include "Math/Point.h"
 #include "Math/Point3D.h"
 
-Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, Int32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
+Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
 {
 	UTF8Char u8buff[256];
 	UTF8Char *u8ptr;
@@ -511,7 +511,7 @@ Bool Map::SHPData::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }
 
-Int32 Map::SHPData::GetCodePage()
+UInt32 Map::SHPData::GetCodePage()
 {
 	return this->dbf->GetCodePage();
 }

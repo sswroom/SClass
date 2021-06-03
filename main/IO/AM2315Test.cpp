@@ -19,14 +19,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double temp;
 	Double rh;
 	Text::StringBuilderUTF8 sb;
-	Int32 pinNum1 = 15;
-	Int32 pinNum2 = 14;
+	UInt16 pinNum1 = 15;
+	UInt16 pinNum2 = 14;
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{
-		Text::StrToInt32(argv[1], &pinNum1);
-		Text::StrToInt32(argv[1], &pinNum2);
+		Text::StrToUInt16(argv[1], &pinNum1);
+		Text::StrToUInt16(argv[1], &pinNum2);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	sb.Append((const UTF8Char*)"Run using GPIO pin ");

@@ -8,8 +8,8 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[32];
-	Int64 i;
-	Int64 j;
+	UInt64 i;
+	UInt64 j;
 	Bool succ = true;
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
@@ -17,13 +17,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i-- > 0)
 	{
 		Text::StrHexVal64(sbuff, i);
-		j = Text::StrHex2Int64(sbuff);
+		j = (UInt64)Text::StrHex2Int64(sbuff);
 		if (i != j)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendI64(i);
+			sb.AppendU64(i);
 			sb.Append((const UTF8Char*)" != ");
-			sb.AppendI64(j);
+			sb.AppendU64(j);
 			console->WriteLine(sb.ToString());
 			succ = false;
 			break;
@@ -35,13 +35,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		while (i-- > 10000000000LL)
 		{
 			Text::StrHexVal64(sbuff, i);
-			j = Text::StrHex2Int64(sbuff);
+			j = (UInt64)Text::StrHex2Int64(sbuff);
 			if (i != j)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendI64(i);
+				sb.AppendU64(i);
 				sb.Append((const UTF8Char*)" != ");
-				sb.AppendI64(j);
+				sb.AppendU64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;
 				break;
@@ -50,17 +50,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (succ)
 	{
-		i = -100000;
-		while (i++ < 0)
+		i = (UInt64)-100000;
+		while (i++ != 0)
 		{
 			Text::StrHexVal64(sbuff, i);
-			j = Text::StrHex2Int64(sbuff);
+			j = (UInt64)Text::StrHex2Int64(sbuff);
 			if (i != j)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendI64(i);
+				sb.AppendU64(i);
 				sb.Append((const UTF8Char*)" != ");
-				sb.AppendI64(j);
+				sb.AppendU64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;
 				break;
@@ -69,17 +69,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (succ)
 	{
-		i = -10000100000LL;
-		while (i++ < -10000000000LL)
+		i = (UInt64)-10000100000LL;
+		while (i++ != (UInt64)-10000000000LL)
 		{
 			Text::StrHexVal64(sbuff, i);
-			j = Text::StrHex2Int64(sbuff);
+			j = (UInt64)Text::StrHex2Int64(sbuff);
 			if (i != j)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendI64(i);
+				sb.AppendU64(i);
 				sb.Append((const UTF8Char*)" != ");
-				sb.AppendI64(j);
+				sb.AppendU64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;
 				break;

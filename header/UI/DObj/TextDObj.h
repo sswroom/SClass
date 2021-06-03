@@ -22,17 +22,17 @@ namespace UI
 			Double fontSize;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			TextAlign talign;
-			Int32 fontColor;
-			Int32 codePage;
-			OSInt width;
-			OSInt height;
+			UInt32 fontColor;
+			UInt32 codePage;
+			UOSInt width;
+			UOSInt height;
 			Double lineHeight;
-			Int32 currPage;
+			UInt32 currPage;
 			Bool pageChg;
 			Data::ArrayList<const WChar *> *lines;
 
 		public:
-			TextDObj(Media::DrawEngine *deng, const WChar *txt, const WChar *fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 fontColor, OSInt left, OSInt top, OSInt width, OSInt height, Int32 codePage);
+			TextDObj(Media::DrawEngine *deng, const WChar *txt, const WChar *fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage);
 			virtual ~TextDObj();
 
 			virtual Bool IsChanged();
@@ -46,9 +46,9 @@ namespace UI
 			virtual void OnMouseClick();
 
 			void SetTextAlign(TextAlign talign);
-			OSInt GetPageCount();
-			Int32 GetCurrPage();
-			void SetCurrPage(Int32 currPage);
+			UOSInt GetPageCount();
+			UInt32 GetCurrPage();
+			void SetCurrPage(UInt32 currPage);
 		};
 	}
 }

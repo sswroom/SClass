@@ -12,10 +12,10 @@ void IO::IOPinCapture::FreeCaptureData(CaptureBuff *buff)
 	MemFree(buff);
 }
 
-OSInt IO::IOPinCapture::AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff)
+UOSInt IO::IOPinCapture::AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff)
 {
-	OSInt ret = 0;
-	OSInt i;	
+	UOSInt ret = 0;
+	UOSInt i;	
 	if (buff->prevBuff)
 	{
 		ret += AddCaptureData(times, isHigh, buff->prevBuff);
@@ -179,7 +179,7 @@ UTF8Char *IO::IOPinCapture::GetName(UTF8Char *buff)
 	return this->pin->GetName(Text::StrConcat(buff, (const UTF8Char*)"IOPinCapture - "));
 }
 
-OSInt IO::IOPinCapture::GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh)
+UOSInt IO::IOPinCapture::GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh)
 {
 	return this->AddCaptureData(times, isHigh, this->capBuff);
 }

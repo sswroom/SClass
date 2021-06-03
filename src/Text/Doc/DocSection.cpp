@@ -13,7 +13,7 @@ Text::Doc::DocSection::DocSection(Media::PaperSize::PaperType paperType, Bool is
 Text::Doc::DocSection::~DocSection()
 {
 	Text::Doc::DocItem *item;
-	OSInt i;
+	UOSInt i;
 	i = this->items->GetCount();
 	while (i-- > 0)
 	{

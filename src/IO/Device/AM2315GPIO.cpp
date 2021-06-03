@@ -36,7 +36,7 @@ Bool IO::Device::AM2315GPIO::I2CWriteByte(UInt8 b)
 		this->sclPin->SetPinState(true);
 		Sync::Thread::Sleepus(5); //4.7
 		this->sclPin->SetPinState(false);
-		v = v >> 1;
+		v = (UInt8)(v >> 1);
 	}
 	this->sdaPin->SetPinOutput(false);
 	Sync::Thread::Sleepus(4); //4.0
@@ -71,7 +71,7 @@ Bool IO::Device::AM2315GPIO::I2CReadByte(UInt8 *b, Bool isLast)
 		}
 		Sync::Thread::Sleepus(5); //4.7
 		this->sclPin->SetPinState(false);
-		v = v >> 1;
+		v = (UInt8)(v >> 1);
 	}
 
 	*b = by;
@@ -122,7 +122,7 @@ OSInt IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, OSInt readSize)
 	sb.Append((const UTF8Char*)": ");
 	if (i > 0)
 	{
-		sb.AppendHex(buff, i, ' ', Text::LBT_NONE);
+		sb.AppendHex(buff, (UOSInt)i, ' ', Text::LBT_NONE);
 	}
 	printf("%s\r\n", sb.ToString());
 	return i;

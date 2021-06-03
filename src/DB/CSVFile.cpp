@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-DB::CSVFile::CSVFile(const UTF8Char *fileName, Int32 codePage) : DB::ReadingDB(fileName)
+DB::CSVFile::CSVFile(const UTF8Char *fileName, UInt32 codePage) : DB::ReadingDB(fileName)
 {
 	this->fileName = Text::StrCopyNew(fileName);
 	this->stm = 0;
@@ -18,7 +18,7 @@ DB::CSVFile::CSVFile(const UTF8Char *fileName, Int32 codePage) : DB::ReadingDB(f
 	this->noHeader = false;
 }
 
-DB::CSVFile::CSVFile(IO::SeekableStream *stm, Int32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
+DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
 {
 	this->fileName = Text::StrCopyNew(stm->GetSourceNameObj());
 	this->stm = stm;
@@ -159,8 +159,8 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader)
 		}
 	}
 
-	this->hdr = MemAlloc(UTF8Char, currPtr - this->row + 1);
-	MemCopyNO(this->hdr, this->row, sizeof(UTF8Char) * (currPtr - this->row + 1));
+	this->hdr = MemAlloc(UTF8Char, (UOSInt)(currPtr - this->row + 1));
+	MemCopyNO(this->hdr, this->row, sizeof(UTF8Char) * (UOSInt)(currPtr - this->row + 1));
 	this->nHdr = Text::StrCSVSplit(this->hdrs, 128, this->hdr);
 	this->nCol = this->nHdr;
 }
@@ -183,7 +183,7 @@ Bool DB::CSVReader::ReadNext()
 	Bool colStart;
 	Int32 quote = 0;
 
-	OSInt nCol;
+	UOSInt nCol;
 	if (this->rdr == 0)
 	{
 		this->nCol = 0;

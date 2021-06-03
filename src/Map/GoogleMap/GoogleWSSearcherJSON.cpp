@@ -286,7 +286,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -301,7 +301,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	return SearchName(buff, buffSize, lat, lon, ent->shortName);
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{
@@ -316,7 +316,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt
 	return SearchName(buff, buffSize, lat, lon, ent->shortName);
 }
 
-Int32 Map::GoogleMap::GoogleWSSearcherJSON::GetSrchCnt()
+UInt32 Map::GoogleMap::GoogleWSSearcherJSON::GetSrchCnt()
 {
 	return this->srchCnt;
 }

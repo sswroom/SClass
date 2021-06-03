@@ -9,15 +9,15 @@ namespace IO
 	class IniFile
 	{
 	public:
-		static IO::ConfigFile *Parse(IO::Stream *stm, Int32 codePage);
-		static IO::ConfigFile *Parse(const UTF8Char *fileName, Int32 codePage);
-		static IO::ConfigFile *ParseProgConfig(Int32 codePage);
+		static IO::ConfigFile *Parse(IO::Stream *stm, UInt32 codePage);
+		static IO::ConfigFile *Parse(const UTF8Char *fileName, UInt32 codePage);
+		static IO::ConfigFile *ParseProgConfig(UInt32 codePage);
 
 	private:
 		static IO::ConfigFile *ParseReader(IO::StreamReader *reader);
 
 	public:
-		static Bool SaveConfig(IO::Stream *stm, Int32 codePage, IO::ConfigFile *cfg);
+		static Bool SaveConfig(IO::Stream *stm, UInt32 codePage, IO::ConfigFile *cfg);
 		static Bool SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg);
 	};
 }

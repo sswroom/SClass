@@ -317,7 +317,7 @@ Data::Sort::BitonicSort::BitonicSort()
 	mainThread.toStop = false;
 	mainThread.state = 1;
 	NEW_CLASS(mainThread.evt, Sync::Event(true, (const UTF8Char*)"Data.Sort.BitonicSort.mainThread.evt"));
-	OSInt i = this->threadCnt;
+	UOSInt i = this->threadCnt;
 	ThreadStat *lastThread = 0;
 	while (i-- > 0)
 	{
@@ -350,7 +350,7 @@ Data::Sort::BitonicSort::BitonicSort()
 
 Data::Sort::BitonicSort::~BitonicSort()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{

@@ -23,7 +23,7 @@ namespace Net
 
 		static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		UDPServerStream(Net::SocketFactory *sockf, Int32 port, IO::LogTool *log);
+		UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log);
 		~UDPServerStream();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

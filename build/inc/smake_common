@@ -1199,6 +1199,8 @@ IO/IObjectParser.h:
 IO/IOPin.h:
 IO/IOPinCapture.h: ../../src/IO/IOPinCapture.cpp
 @IOPinCapture.o
+IO/IOTool.h: ../../src/IO/IOTool.cpp
+@IOTool.o
 IO/IParser.h:
 IO/IProgressHandler.h:
 IO/IProtocolHandler.h:
@@ -3540,6 +3542,7 @@ I2C.o: ../../src/IO/I2C.cpp
 I2CMODBUS.o: ../../src/IO/I2CMODBUS.cpp
 IniFile.o: ../../src/IO/IniFile.cpp
 IOPinCapture.o: ../../src/IO/IOPinCapture.cpp
+IOTool.o: ../../src/IO/IOTool.cpp
 JavaClass.o: ../../src/IO/JavaClass.cpp
 LogFile.o: ../../src/IO/LogFile.cpp
 LogTool.o: ../../src/IO/LogTool.cpp

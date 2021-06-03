@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
 #include "DB/DBFFile.h"
@@ -10,13 +11,13 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-DB::DBFFile::DBFFile(IO::IStreamData *stmData, Int32 codePage) : DB::ReadingDB(stmData->GetFullName())
+DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName())
 {
 	UTF8Char u8buff[256];
 	UInt8 buff[32];
 	UOSInt currColOfst;
 	UOSInt i;
-	Int64 currOfst;
+	UInt64 currOfst;
 	this->stmData = stmData->GetPartialData(0, stmData->GetDataSize());
 //	NEW_CLASS(mut, Sync::Mutex());
 
@@ -24,10 +25,10 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, Int32 codePage) : DB::ReadingDB(s
 	this->colCnt = 0;
 	this->stmData->GetRealData(0, 32, buff);
 	NEW_CLASS(this->enc, Text::Encoding(codePage));
-	refPos = *(UInt16*)&buff[8];
-	rowSize = *(UInt32*)&buff[10];
-	colCnt = ((*(UInt16*)&buff[8]) >> 5) - 1;
-	rowCnt = *(Int32*)&buff[4];
+	refPos = ReadUInt16(&buff[8]);
+	rowSize = ReadUInt32(&buff[10]);
+	colCnt = (UOSInt)(ReadUInt16(&buff[8]) >> 5) - 1;
+	rowCnt = ReadUInt32(&buff[4]);
 	cols = MemAlloc(DBFCol, colCnt);
 	
 	currOfst = 32;
@@ -50,10 +51,10 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, Int32 codePage) : DB::ReadingDB(s
 
 	this->name = 0;
 	Text::StrConcat(u8buff, this->stmData->GetShortName());
-	i = Text::StrLastIndexOf(u8buff, '.');
-	if (i != (UOSInt)-1)
+	OSInt si = Text::StrLastIndexOf(u8buff, '.');
+	if (si != -1)
 	{
-		u8buff[i] = 0;
+		u8buff[si] = 0;
 	}
 	this->name = Text::StrCopyNew(u8buff);
 }
@@ -134,7 +135,7 @@ Bool DB::DBFFile::IsError()
 	return this->cols == 0;
 }
 
-Int32 DB::DBFFile::GetCodePage()
+UInt32 DB::DBFFile::GetCodePage()
 {
 	return this->enc->GetEncCodePage();
 }
@@ -152,7 +153,7 @@ OSInt DB::DBFFile::GetColIndex(const UTF8Char *name)
 	while (i-- > 0)
 	{
 		if (Text::StrCompareICase(name, this->cols[i].name) == 0)
-			return i;
+			return (OSInt)i;
 	}
 	return -1;
 }
@@ -188,7 +189,7 @@ UOSInt DB::DBFFile::GetColCount()
 
 UOSInt DB::DBFFile::GetRowCnt()
 {
-	return (Int32)this->rowCnt;
+	return this->rowCnt;
 }
 
 UTF8Char *DB::DBFFile::GetColumnName(UOSInt colIndex, UTF8Char *buff)
@@ -523,12 +524,12 @@ Bool DB::DBFReader::ReadNext()
 	{
 		this->currIndex++;
 		this->recordExist = true;
-		this->dbf->ReadRowData(this->currIndex, this->recordData);
+		this->dbf->ReadRowData((UOSInt)this->currIndex, this->recordData);
 		return true;
 	}
 	else
 	{
-		this->currIndex = this->rowCnt;
+		this->currIndex = (OSInt)this->rowCnt;
 		this->recordExist = false;
 		return false;
 	}
@@ -644,7 +645,7 @@ DB::DBReader::DateErrType DB::DBFReader::GetDate(UOSInt colIndex, Data::DateTime
 	}
 	Char buff[5];
 	Char *currPtr = (Char*)&this->recordData[this->cols[colIndex].colOfst];
-	Int32 year;
+	UInt16 year;
 	Int32 month;
 	Int32 day;
 	buff[0] = currPtr[0];
@@ -652,7 +653,7 @@ DB::DBReader::DateErrType DB::DBFReader::GetDate(UOSInt colIndex, Data::DateTime
 	buff[2] = currPtr[2];
 	buff[3] = currPtr[3];
 	buff[4] = 0;
-	year = Text::StrToInt32(buff);
+	Text::StrToUInt16S(buff, &year, 0);
 	buff[0] = currPtr[4];
 	buff[1] = currPtr[5];
 	buff[2] = 0;

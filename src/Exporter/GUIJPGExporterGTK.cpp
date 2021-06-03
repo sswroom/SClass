@@ -63,7 +63,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		Media::Image *srcImg = 0;
 		Media::ImageList *imgList;
 		UInt8 *jpgBuff;
-		OSInt jpgSize;
+		UOSInt jpgSize;
 		if (pobj->GetParserType() == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		{
 			imgList = (Media::ImageList*)pobj;
@@ -73,8 +73,8 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		jpgSize = buffSize;
 		if (srcImg != 0 && srcImg->exif != 0 && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 		{
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			Media::EXIFData *exif = srcImg->exif->Clone();
 			exif->Remove(254); //NewSubfileType
 			exif->Remove(256); //Width
@@ -109,7 +109,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					const UInt8 *iccBuff = srcImg->info->color->GetRAWICC();
 					if (iccBuff)
 					{
-						OSInt iccLeng = ReadMInt32(iccBuff);
+						UOSInt iccLeng = ReadMUInt32(iccBuff);
 						UInt8 iccHdr[18];
 						iccHdr[0] = 0xff;
 						iccHdr[1] = 0xe2;
@@ -150,11 +150,11 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				}
 				else if (jpgBuff[i + 1] == 0xe1)
 				{
-					i += ReadMUInt16(&jpgBuff[i + 2]) + 2;
+					i += (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 				}
 				else
 				{
-					j = ReadMUInt16(&jpgBuff[i + 2]) + 2;
+					j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 					stm->Write(&jpgBuff[i], j);
 					i += j;
 				}

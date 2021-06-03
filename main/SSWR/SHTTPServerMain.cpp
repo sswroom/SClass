@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::SocketFactory *sockf;
 	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
-	Int32 port;
+	UInt16 port;
 	const UTF8Char *path;
 
 #if defined(DEBUGCON)
@@ -42,11 +42,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		port = Text::StrToInt32(argv[1]);
-		if (port <= 0)
-		{
-			port = 0;
-		}
+		port = 0;
+		Text::StrToUInt16(argv[1], &port);
 	}
 
 	sb.ClearStr();

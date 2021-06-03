@@ -11,18 +11,18 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter *console;
-	Int32 portNum = 1;
-	Int32 baudRate = 115200;
+	UInt32 portNum = 1;
+	UInt32 baudRate = 115200;
 
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &portNum);
+		Text::StrToUInt32(argv[1], &portNum);
 	}
 	if (argc >= 3)
 	{
-		Text::StrToInt32(argv[2], &baudRate);
+		Text::StrToUInt32(argv[2], &baudRate);
 	}
 
 	NEW_CLASS(console, IO::ConsoleWriter());

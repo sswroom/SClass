@@ -44,9 +44,9 @@ typedef struct
 IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 hdr[64];
-	Int32 fileCnt;
-	Int32 fileOfst;
-	OSInt i;
+	UInt32 fileCnt;
+	UInt32 fileOfst;
+	UOSInt i;
 	NFPFileInfo *fileInfo;
 	UTF8Char sbuff[13];
 
@@ -54,8 +54,8 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, 
 	if (!Text::StrEquals((const Char*)hdr, "NFP2.0 (c)NOBORI 1997-2002"))
 		return 0;
 
-	fileCnt = ReadInt32(&hdr[52]);
-	fileOfst = ReadInt32(&hdr[56]);
+	fileCnt = ReadUInt32(&hdr[52]);
+	fileOfst = ReadUInt32(&hdr[56]);
 //	dataOfst = ReadInt32(&hdr[60]);
 	Text::Encoding enc(932);
 	IO::PackageFile *pf;

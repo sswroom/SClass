@@ -151,7 +151,7 @@ Text::Locale::LocaleEntry Text::Locale::locales[] = {
 	{0x4C0A, (const UTF8Char*)"es-ni", (const UTF8Char*)"Spanish - Nicaragua", 0},
 	{0x500A, (const UTF8Char*)"es-pr", (const UTF8Char*)"Spanish - Puerto Rico", 0}};
 
-Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntry(Int32 lcid)
+Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntry(UInt32 lcid)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(locales) / sizeof(locales[0])) - 1;
@@ -175,9 +175,9 @@ Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntry(Int32 lcid)
 	return 0;
 }
 
-Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByCodePage(Int32 codePage)
+Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByCodePage(UInt32 codePage)
 {
-	OSInt j = (sizeof(locales) / sizeof(locales[0]));
+	UOSInt j = (sizeof(locales) / sizeof(locales[0]));
 	while (j-- > 0)
 	{
 		if (locales[j].defCodePage == codePage)
@@ -189,7 +189,7 @@ Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByCodePage(Int32 codePage
 Text::Locale::Locale()
 {
 	NEW_CLASS(this->names, Data::ICaseStringUTF8Map<Text::Locale::LocaleEntry*>());
-	OSInt i = sizeof(locales) / sizeof(locales[0]);
+	UOSInt i = sizeof(locales) / sizeof(locales[0]);
 	while (i-- > 0)
 	{
 		if (this->locales[i].shortName[0] != 0)

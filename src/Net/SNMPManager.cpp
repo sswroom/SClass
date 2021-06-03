@@ -7,7 +7,7 @@
 
 void Net::SNMPManager::FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList)
 {
-	OSInt i = itemList->GetCount();
+	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		Net::SNMPUtil::FreeBindingItem(itemList->GetItem(i));
@@ -19,7 +19,7 @@ Net::SNMPManager::SNMPManager(Net::SocketFactory *sockf)
 {
 	NEW_CLASS(this->agentMut, Sync::Mutex());
 	NEW_CLASS(this->agentList, Data::ArrayList<AgentInfo*>());
-	NEW_CLASS(this->ipv4Agents, Data::Int32Map<AgentInfo*>());
+	NEW_CLASS(this->ipv4Agents, Data::UInt32Map<AgentInfo*>());
 	NEW_CLASS(this->cli, Net::SNMPClient(sockf));
 }
 
@@ -99,9 +99,9 @@ void Net::SNMPManager::UpdateValues()
 	}
 }
 
-OSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
+UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 {
-	OSInt ret;
+	UOSInt ret;
 	Sync::MutexUsage mutUsage(this->agentMut);
 	ret = this->agentList->GetCount();
 	agentList->AddRange(this->agentList);
@@ -119,7 +119,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 	UOSInt i;
 	if (addr->addrType == Net::SocketUtil::AT_IPV4)
 	{
-		Int32 ipv4 = ReadMInt32(addr->addr);
+		UInt32 ipv4 = ReadMUInt32(addr->addr);
 		if (this->ipv4Agents->Get(ipv4))
 		{
 			return 0;
@@ -149,7 +149,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			this->agentList->Add(agent);
 			if (addr->addrType == Net::SocketUtil::AT_IPV4)
 			{
-				Int32 ipv4 = ReadMInt32(addr->addr);
+				UInt32 ipv4 = ReadMUInt32(addr->addr);
 				this->ipv4Agents->Put(ipv4, agent);
 			}
 			mutUsage.EndUse();
@@ -206,7 +206,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 		UOSInt i = 1;
 		while (true)
 		{
-			Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.2.1.2.2.1.6."), i);
+			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.2.1.2.2.1.6."), i);
 			err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //sysLocation
 			if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 			{
@@ -353,7 +353,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (i < slotCnt)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6."), i);
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6."), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskTemperature
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -374,8 +374,8 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 
 								sb.ClearStr();
 								sb.Append((const UTF8Char*)"Disk ");
-								sb.AppendOSInt(i);
-								Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8."), i);
+								sb.AppendUOSInt(i);
+								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8."), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskModel
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
@@ -388,14 +388,14 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								}
 								reading->name = Text::StrCopyNew(sb.ToString());
 
-								Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2."), i);
+								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2."), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskID
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
 									item = itemList.GetItem(0);
 									if (Net::SNMPUtil::ValueToInt32(item->valType, item->valBuff, item->valLen, &iVal) && iVal > 0)
 									{
-										reading->index = 3 + iVal;
+										reading->index = 3 + (UInt32)iVal;
 									}
 								}
 							}
@@ -453,7 +453,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						i = 0;
 						while (true)
 						{
-							Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.6."), i);
+							Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.6."), i);
 							err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskTemperature
 							if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 							{
@@ -473,7 +473,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									FreeAllItems(&itemList);
 
 									sb.ClearStr();
-									Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.2."), i);
+									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.2."), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskID
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -485,7 +485,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 											{
 												if (item->valBuff[5] >= '1' && item->valBuff[5] <= '9')
 												{
-													reading->index = 3 + item->valBuff[5] - 0x30;
+													reading->index = 3 + (UOSInt)item->valBuff[5] - 0x30;
 												}
 											}
 										}
@@ -493,11 +493,11 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									if (sb.GetLength() == 0)
 									{
 										sb.Append((const UTF8Char*)"Disk ");
-										sb.AppendOSInt(i + 1);
+										sb.AppendUOSInt(i + 1);
 									}
 									FreeAllItems(&itemList);
 
-									Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.3."), i);
+									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.3."), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskModel
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -548,7 +548,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 1;
 					while (true)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.1602.1.11.2.1.1.3."), i);
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.1602.1.11.2.1.1.3."), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -567,7 +567,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								agent->readingList->Add(reading);
 								FreeAllItems(&itemList);
 
-								Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.1602.1.11.2.1.1.2."), i);
+								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.1602.1.11.2.1.1.2."), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList);
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
@@ -579,7 +579,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								}
 								if (reading->name == 0)
 								{
-									Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Count "), i);
+									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Count "), i);
 									reading->name = Text::StrCopyNew(sbuff);
 								}
 							}
@@ -638,7 +638,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (true)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.5."), i);
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.5."), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -647,7 +647,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							{
 								if (iVal == 1)
 								{
-									Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.14."), i);
+									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.14."), i);
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
@@ -736,7 +736,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									FreeAllItems(&itemList);
 
-									Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.17.1.1."), i);
+									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.17.1.1."), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -748,7 +748,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									if (reading->name == 0)
 									{
-										Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Humidity"), i + 1);
+										Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Humidity"), i + 1);
 										reading->name = Text::StrCopyNew(sbuff);
 									}
 								}
@@ -766,7 +766,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (true)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.4."), i);
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.4."), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -775,7 +775,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							{
 								if (iVal == 1)
 								{
-									Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.3."), i);
+									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.3."), i);
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
@@ -870,19 +870,19 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 	return agent;
 }
 
-OSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
+UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
 {
 	AgentInfo *agent;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	if (addr->addrType == Net::SocketUtil::AT_IPV4)
 	{
-		Net::SocketUtil::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNInt32(addr->addr));
+		Net::SocketUtil::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(addr->addr));
 		if (ipType == Net::SocketUtil::IT_BROADCAST)
 		{
 			Net::SocketUtil::AddressInfo *agentAddr;
 			Data::ArrayList<Net::SocketUtil::AddressInfo *> addrList;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			this->cli->V1ScanGetRequest(addr, community, (const UTF8Char*)"1.3.6.1.2.1.1.1.0", &addrList, 3000, scanIP);
 			i = 0;
 			j = addrList.GetCount();
@@ -914,7 +914,7 @@ void Net::SNMPManager::Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMo
 {
 	*cliId = Agent2CliId(agent);
 
-	Data::Int32Map<Int32> readingIdMap;
+	Data::UInt32Map<Int32> readingIdMap;
 	Int32 currId;
 	ReadingInfo *reading;
 	Data::DateTime dt;
@@ -934,9 +934,9 @@ void Net::SNMPManager::Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMo
 		reading = agent->readingList->GetItem(i);
 		WriteInt16(&rec->readings[i].status[0], reading->index);
 		WriteInt16(&rec->readings[i].status[2], SSWR::SMonitor::SAnalogSensor::ST_SNMP);
-		currId = readingIdMap.Get((Int32)reading->index);
+		currId = readingIdMap.Get((UInt32)reading->index);
 		WriteInt16(&rec->readings[i].status[4], currId);
-		readingIdMap.Put((Int32)reading->index, currId + 1);
+		readingIdMap.Put((UInt32)reading->index, currId + 1);
 		if (reading->valValid)
 		{
 			WriteInt16(&rec->readings[i].status[6], reading->readingType);

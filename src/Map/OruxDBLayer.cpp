@@ -266,7 +266,7 @@ Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::OruxDBLayer::GetCodePage()
+UInt32 Map::OruxDBLayer::GetCodePage()
 {
 	return 0;
 }

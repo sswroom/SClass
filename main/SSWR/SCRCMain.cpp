@@ -170,8 +170,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				else
 				{
 					UInt8 hash[4];
-					OSInt i;
-					OSInt j;
+					UOSInt i;
+					UOSInt j;
 					i = 0;
 					j = fileChk->GetCount();
 					while (i < j)

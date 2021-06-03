@@ -40,7 +40,7 @@ void IO::StringLogger::LogStr(const UTF8Char *s)
 	OSInt i = this->strList->SortedIndexOf(s);
 	if (i < 0)
 	{
-		this->strList->Insert(~i, Text::StrCopyNew(s));
+		this->strList->Insert((UOSInt)~i, Text::StrCopyNew(s));
 		this->modified = true;
 	}
 }

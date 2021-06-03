@@ -28,7 +28,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Sleep 10 x ");
-		sb.AppendI32(i);
+		sb.AppendU32(i);
 		sb.Append((const UTF8Char*)", t = ");
 		Text::SBAppendF64(&sb, t);
 		console.WriteLine(sb.ToString());

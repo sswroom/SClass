@@ -47,7 +47,7 @@ Bool Exporter::WAVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::WAVExporter::SetCodePage(Int32 codePage)
+void Exporter::WAVExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

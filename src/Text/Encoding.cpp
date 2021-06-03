@@ -9,7 +9,7 @@
 #else
 #endif
 
-Text::Encoding::Encoding(Int32 codePage)
+Text::Encoding::Encoding(UInt32 codePage)
 {
 	if (codePage)
 	{
@@ -32,12 +32,12 @@ Text::Encoding::~Encoding()
 {
 }
 
-void Text::Encoding::SetCodePage(Int32 codePage)
+void Text::Encoding::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
 
-Int32 Text::Encoding::GetEncCodePage()
+UInt32 Text::Encoding::GetEncCodePage()
 {
 	return this->codePage;
 }

@@ -17,7 +17,7 @@ UInt32 __stdcall Net::MQTTHandler::KAThread(void *userObj)
 	return 0;
 }
 
-Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTClient::PublishMessageHdlr hdlr, void *userObj, UInt32 kaSeconds)
+Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTClient::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds)
 {
 	this->kaRunning = false;
 	this->kaToStop = false;

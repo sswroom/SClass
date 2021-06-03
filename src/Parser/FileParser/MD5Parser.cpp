@@ -21,7 +21,7 @@ Int32 Parser::FileParser::MD5Parser::GetName()
 	return *(Int32*)"MD5P";
 }
 
-void Parser::FileParser::MD5Parser::SetCodePage(Int32 codePage)
+void Parser::FileParser::MD5Parser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

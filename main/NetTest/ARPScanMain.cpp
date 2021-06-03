@@ -92,7 +92,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	Net::SocketUtil::IPType ipType;
-	OSInt k;
+	UOSInt k;
 	UInt32 ip;
 	sockf->GetConnInfoList(&connInfoList);
 	i = 0;
@@ -125,7 +125,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.Append(sbuff);
 					console->WriteLine(sb.ToString());
 					connInfo->GetName(sbuff);
-					WriteNInt32(buff, ip);
+					WriteNUInt32(buff, ip);
 					if (buff[0] == 192 && buff[1] == 168)
 					{
 						NEW_CLASS(arpHdlr, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));

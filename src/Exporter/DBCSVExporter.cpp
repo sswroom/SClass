@@ -40,7 +40,7 @@ Bool Exporter::DBCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UT
 	return false;
 }
 
-void Exporter::DBCSVExporter::SetCodePage(Int32 codePage)
+void Exporter::DBCSVExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

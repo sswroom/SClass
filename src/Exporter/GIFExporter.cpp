@@ -71,7 +71,7 @@ Bool Exporter::GIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::GIFExporter::SetCodePage(Int32 codePage)
+void Exporter::GIFExporter::SetCodePage(UInt32 codePage)
 {
 }
 

@@ -94,7 +94,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	UTF8Char *sptr;
 	UTF8Char *urlStart;
 	UInt8 databuff[2048];
-	OSInt databuffSize;
+	UOSInt databuffSize;
 	Data::DateTime currDt;
 	Int32 i;
 	Char *ptrs[3];
@@ -125,7 +125,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 
 		UInt8 result[20];
 		UInt8 result2[40];
-		UOSInt size = (UOSInt)(Text::StrConcatC(databuff, urlStart, sptr - urlStart) - databuff);
+		UOSInt size = (UOSInt)(Text::StrConcatC(databuff, urlStart, (UOSInt)(sptr - urlStart)) - databuff);
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(databuff, size);
@@ -226,7 +226,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -241,7 +241,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	return SearchName(buff, buffSize, lat, lon, ent->shortName);
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{
@@ -256,7 +256,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffS
 	return SearchName(buff, buffSize, lat, lon, ent->shortName);
 }
 
-Int32 Map::GoogleMap::GoogleSearcher::GetSrchCnt()
+UInt32 Map::GoogleMap::GoogleSearcher::GetSrchCnt()
 {
 	return this->srchCnt;
 }

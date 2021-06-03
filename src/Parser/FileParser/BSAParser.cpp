@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 hdrBuff[16];
 //	UInt16 ver;
-	UInt16 recCnt;
+	UOSInt recCnt;
 	UInt32 recOfst;
 
 	UOSInt recSize;
@@ -86,7 +86,8 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else
 		{
-			enc.UTF8FromBytes(fileName, &recBuff[recCnt * 12 + ReadInt32(&recBuff[j])], -1, 0);
+			UInt8 *buff = &recBuff[recCnt * 12 + ReadUInt32(&recBuff[j])];
+			enc.UTF8FromBytes(fileName, buff, Text::StrCharCnt(buff), 0);
 			pf->AddData(fd, fileOfst, fileSize, fileName, 0);
 		}
 		i++;

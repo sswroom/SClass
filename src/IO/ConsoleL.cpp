@@ -125,7 +125,7 @@ void IO::Console::HandleExitCmd(IO::Console::ConsoleHandler exitCmdHdlr, void *u
 {
 }
 
-void IO::Console::SetCodePage(Int32 codePage)
+void IO::Console::SetCodePage(UInt32 codePage)
 {
 }
 

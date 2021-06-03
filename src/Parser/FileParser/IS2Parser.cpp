@@ -47,11 +47,11 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 
 	UInt32 totalSize = 204;
 	UInt32 currSize;
-	OSInt i = 44;
-	OSInt j;
+	UOSInt i = 44;
+	UOSInt j;
 	while (i < 204)
 	{
-		currSize = ReadInt32(&buff[i + 4]);
+		currSize = ReadUInt32(&buff[i + 4]);
 		if (currSize == 0)
 			break;
 		totalSize += currSize;
@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 	if (totalSize != fd->GetDataSize())
 		return 0;
 	Bool valid = true;
-	OSInt currOfst = 204;
+	UOSInt currOfst = 204;
 	Int32 currType;
 	Media::ImageList *imgList;
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 	while (i < 204 && valid)
 	{
 		currType = ReadInt32(&buff[i]);
-		currSize = ReadInt32(&buff[i + 4]);
+		currSize = ReadUInt32(&buff[i + 4]);
 		if (currSize == 0)
 			break;
 		currBuff = MemAlloc(UInt8, currSize);
@@ -93,7 +93,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 						Int32 irHeight = ReadInt32(&currBuff[24]);
 						Int32 visibleWidth = ReadInt32(&currBuff[28]);
 						Int32 visibleHeight = ReadInt32(&currBuff[32]);
-						Int32 firmwareYear = ReadInt16(&currBuff[50]);
+						UInt16 firmwareYear = ReadUInt16(&currBuff[50]);
 						Int32 firmwareMonth = currBuff[49];
 						Int32 firmwareDay = currBuff[48];
 //						Int32 firmwareMajor = currBuff[71];
@@ -128,7 +128,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 						captureWidth = ReadInt32(&currBuff[8]);
 						captureHeight = ReadInt32(&currBuff[12]);
 						captureTime.ToLocalTime();
-						captureTime.SetValue(ReadInt16(&currBuff[22]), currBuff[21], currBuff[20], 0, 0, 0, 0);
+						captureTime.SetValue(ReadUInt16(&currBuff[22]), currBuff[21], currBuff[20], 0, 0, 0, 0);
 						captureTime.AddMS(ReadInt32(&currBuff[16]));
 						imgList->SetValueInt32(Media::ImageList::VT_CAPTURE_WIDTH, captureWidth);
 						imgList->SetValueInt32(Media::ImageList::VT_CAPTURE_HEIGHT, captureHeight);
@@ -137,25 +137,25 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 					break;
 				case 0x18: //Visible Image
 					{
-						Int32 imageWidth = ReadInt32(&currBuff[12]);
-						Int32 imageHeight = ReadInt32(&currBuff[16]);
+						UInt32 imageWidth = ReadUInt32(&currBuff[12]);
+						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
 						Media::StaticImage *img;
 						NEW_CLASS(img, Media::StaticImage(imageWidth, imageHeight, 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						UInt8 *currBuffPtr = currBuff + 60;
-						Int32 cnt = imageWidth * imageHeight;
+						UInt32 cnt = imageWidth * imageHeight;
 						while (cnt-- > 0)
 						{
 							UInt32 v = *(UInt16*)currBuffPtr;
 							UInt8 r;
 							UInt8 g;
 							UInt8 b;
-							r = v >> 11;
-							b = v & 0x1f;
-							g = (v >> 5) & 0x3f;
-							dataPtr[0] = (b << 3) | (b >> 2);
-							dataPtr[1] = (g << 2) | (g >> 4);
-							dataPtr[2] = (r << 3) | (r >> 2);
+							r = (UInt8)(v >> 11);
+							b = (UInt8)(v & 0x1f);
+							g = (UInt8)((v >> 5) & 0x3f);
+							dataPtr[0] = (UInt8)((b << 3) | (b >> 2));
+							dataPtr[1] = (UInt8)((g << 2) | (g >> 4));
+							dataPtr[2] = (UInt8)((r << 3) | (r >> 2));
 							dataPtr[3] = 0xff;
 							currBuffPtr += 2;
 							dataPtr += 4;
@@ -178,8 +178,8 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 						// [0] = 4
 						// [4] = size
 						// [8] = 0
-						Int32 imageWidth = ReadInt32(&currBuff[12]);
-						Int32 imageHeight = ReadInt32(&currBuff[16]);
+						UInt32 imageWidth = ReadUInt32(&currBuff[12]);
+						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
 						// [20] = 1
 						// [24] = 0
 						// [28] = 32
@@ -198,7 +198,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 						NEW_CLASS(img, Media::StaticImage(imageWidth, imageHeight, 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						UInt8 *currBuffPtr = currBuff + 64;
-						Int32 cnt = imageWidth * imageHeight;
+						UInt32 cnt = imageWidth * imageHeight;
 						Int32 v;
 						while (cnt-- > 0)
 						{
@@ -218,25 +218,25 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 					break;
 				case 0x22: //Output Image
 					{
-						Int32 imageWidth = ReadInt32(&currBuff[20]);
-						Int32 imageHeight = ReadInt32(&currBuff[24]);
+						UInt32 imageWidth = ReadUInt32(&currBuff[20]);
+						UInt32 imageHeight = ReadUInt32(&currBuff[24]);
 						Media::StaticImage *img;
 						NEW_CLASS(img, Media::StaticImage(imageWidth, imageHeight, 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						UInt8 *currBuffPtr = currBuff + 56;
-						Int32 cnt = imageWidth * imageHeight;
+						UInt32 cnt = imageWidth * imageHeight;
 						while (cnt-- > 0)
 						{
 							UInt32 v = *(UInt16*)currBuffPtr;
 							UInt8 r;
 							UInt8 g;
 							UInt8 b;
-							r = v >> 11;
-							b = v & 0x1f;
-							g = (v >> 5) & 0x3f;
-							dataPtr[0] = (b << 3) | (b >> 2);
-							dataPtr[1] = (g << 2) | (g >> 4);
-							dataPtr[2] = (r << 3) | (r >> 2);
+							r = (UInt8)(v >> 11);
+							b = (UInt8)(v & 0x1f);
+							g = (UInt8)((v >> 5) & 0x3f);
+							dataPtr[0] = (UInt8)((b << 3) | (b >> 2));
+							dataPtr[1] = (UInt8)((g << 2) | (g >> 4));
+							dataPtr[2] = (UInt8)((r << 3) | (r >> 2));
 							dataPtr[3] = 0xff;
 							currBuffPtr += 2;
 							dataPtr += 4;

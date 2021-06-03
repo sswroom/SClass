@@ -31,23 +31,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char sbuff[256];
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	Int32 portNum = Test::TestModem::ListPorts(console);
-	Int32 baudRate = 115200;
+	UOSInt portNum = Test::TestModem::ListPorts(console);
+	UInt32 baudRate = 115200;
 
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &portNum);
+		Text::StrToUOSInt(argv[1], &portNum);
 	}
 	if (argc >= 3)
 	{
-		Text::StrToInt32(argv[2], &baudRate);
+		Text::StrToUInt32(argv[2], &baudRate);
 	}
 	console->WriteLine();
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Trying Port ");
-	sb.AppendI32(portNum);
+	sb.AppendUOSInt(portNum);
 	console->WriteLine(sb.ToString());
 
 	IO::SerialPort *port;
@@ -150,8 +150,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (valid)
 				{
 					Data::ArrayList<UInt32> dnsList;
-					OSInt i;
-					OSInt j;
+					UOSInt i;
+					UOSInt j;
 					if (sockf->GetDNSList(&dnsList))
 					{
 						sb.ClearStr();

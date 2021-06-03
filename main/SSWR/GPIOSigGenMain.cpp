@@ -36,12 +36,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	const UTF8Char *csptr;
-	Int32 pinNum;
+	UInt16 pinNum;
 	if (cfg)
 	{
 		pinNum = 0;
 		csptr = cfg->GetValue((const UTF8Char*)"GPIOPin");
-		if (csptr && Text::StrToInt32(csptr, &pinNum))
+		if (csptr && Text::StrToUInt16(csptr, &pinNum))
 		{
 			if (pinNum > 0)
 			{

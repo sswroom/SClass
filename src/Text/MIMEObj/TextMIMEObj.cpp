@@ -17,7 +17,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	this->contType = Text::StrCopyNew(sbc.ToString());
 }
 
-Text::MIMEObj::TextMIMEObj::TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, Int32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/plain")
+Text::MIMEObj::TextMIMEObj::TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/plain")
 {
 	this->contType = 0;
 	this->codePage = codePage;
@@ -27,7 +27,7 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, Int32 
 	this->BuildContentType();
 }
 
-Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, Int32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/plain")
+Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, UInt32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/plain")
 {
 	Text::Encoding enc(codePage);
 	UOSInt strLen;
@@ -80,7 +80,7 @@ void Text::MIMEObj::TextMIMEObj::GetText(Text::StringBuilderUTF *sb)
 	MemFree(sbuff);
 }
 
-Int32 Text::MIMEObj::TextMIMEObj::GetCodePage()
+UInt32 Text::MIMEObj::TextMIMEObj::GetCodePage()
 {
 	return this->codePage;
 }

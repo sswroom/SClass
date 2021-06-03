@@ -157,8 +157,8 @@ Bool ParseFile(const UTF8Char *fileName)
 		else
 		{
 			UInt8 hash[16];
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			
 			i = 0;
 			j = fileChk->GetCount();

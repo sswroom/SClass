@@ -39,7 +39,7 @@ namespace IO
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff) = 0;
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param) = 0;
 
-		virtual void SetCodePage(Int32 codePage);
+		virtual void SetCodePage(UInt32 codePage);
 		virtual void SetEncFactory(Text::EncodingFactory *encFact);
 
 		virtual UOSInt GetParamCnt();

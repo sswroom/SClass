@@ -28,7 +28,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Double respTimeReq = -1;
 		Double respTimeResp = -1;
 		Double respTimeTotal = -1;
-		Int64 totalReadSize;
+		UInt64 totalReadSize;
 
 		const UTF8Char *url = argv[1];
 		if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
@@ -57,10 +57,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
+					UOSInt readSize;
 					totalReadSize = 0;
-					while ((argc = cli->Read(buff, 2048)) > 0)
+					while ((readSize = cli->Read(buff, 2048)) > 0)
 					{
-						totalReadSize += argc;
+						totalReadSize += readSize;
 					}
 					respTimeTotal = cli->GetTotalTime();
 
@@ -71,7 +72,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Received ");
-					sb.AppendI64(totalReadSize);
+					sb.AppendU64(totalReadSize);
 					sb.Append((const UTF8Char*)" bytes from server");
 					console->WriteLine(sb.ToString());
 

@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-IO::I2CMODBUS::I2CMODBUS(IO::I2CChannel *channel, Int32 delayMS) : I2C(channel, delayMS)
+IO::I2CMODBUS::I2CMODBUS(IO::I2CChannel *channel, UOSInt delayMS) : I2C(channel, delayMS)
 {
 	NEW_CLASS(this->crc, Crypto::Hash::CRC16R());
 }
@@ -27,7 +27,7 @@ Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 		return false;
 	}
 	Wait();
-	if (this->channel->I2CRead(buff, 4 + len) != (4 + len))
+	if (this->channel->I2CRead(buff, 4 + (UOSInt)len) != (4 + (UOSInt)len))
 	{
 		printf("ReadBuff: Read Error\r\n");
 		return false;
@@ -40,7 +40,7 @@ Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 	}
 	UInt8 crcVal[2];
 	this->crc->Clear();
-	this->crc->Calc(buff, len + 2);
+	this->crc->Calc(buff, (UOSInt)len + 2);
 	this->crc->GetValue(crcVal);
 	if (((UInt16)~ReadMUInt16(crcVal)) == dataCRC)
 	{
@@ -63,10 +63,10 @@ Bool IO::I2CMODBUS::WriteBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 	MemCopyNO(&buff[3], data, len);
 	UInt8 crcVal[2];
 	this->crc->Clear();
-	this->crc->Calc(buff, len + 3);
+	this->crc->Calc(buff, (UOSInt)len + 3);
 	this->crc->GetValue(crcVal);
 	WriteInt16(&buff[len + 3], ~ReadMUInt16(crcVal));
-	if (this->channel->I2CWrite(buff, len + 5) != (len + 5))
+	if (this->channel->I2CWrite(buff, (UOSInt)len + 5) != (UOSInt)(len + 5))
 	{
 		printf("WriteBuff: Write Error\r\n");
 		return false;

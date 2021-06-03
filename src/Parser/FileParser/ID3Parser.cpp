@@ -20,7 +20,7 @@ Int32 Parser::FileParser::ID3Parser::GetName()
 	return *(Int32*)"ID3P";
 }
 
-void Parser::FileParser::ID3Parser::SetCodePage(Int32 codePage)
+void Parser::FileParser::ID3Parser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
@@ -67,5 +67,5 @@ IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFile(IO::IStreamData *fd, 
 
 UInt32 Parser::FileParser::ID3Parser::ReadUSInt32(UInt8 *buff)
 {
-	return (buff[0] << 21) | (buff[1] << 14) | (buff[2] << 7) | buff[3];
+	return (UInt32)((buff[0] << 21) | (buff[1] << 14) | (buff[2] << 7) | buff[3]);
 }

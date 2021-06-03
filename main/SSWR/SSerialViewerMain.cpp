@@ -16,7 +16,7 @@ Bool running;
 static UInt32 __stdcall SerialViewer(void *userObj)
 {
 	UInt8 readBuff[1024];
-	OSInt readSize;
+	UOSInt readSize;
 	Text::StringBuilderUTF8 *sb;
 	Data::DateTime *dt;
 	running = true;
@@ -49,7 +49,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	OSInt argc;
 	UTF8Char **argv;
-	Int32 baudRate = 115200;
+	UInt32 baudRate = 115200;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc <= 1)
@@ -58,8 +58,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		Int32 portNo = 0;
-		Text::StrToInt32(argv[1], &portNo);
+		UInt32 portNo = 0;
+		Text::StrToUInt32(argv[1], &portNo);
 		if (portNo == 0)
 		{
 			console->WriteLine((const UTF8Char*)"PortNo is not correct");
@@ -69,16 +69,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::StringBuilderUTF8 sb;
 			if (argc >= 3)
 			{
-				Text::StrToInt32(argv[2], &baudRate);
+				Text::StrToUInt32(argv[2], &baudRate);
 			}
 			running = false;
 			readError = false;
 			toStop = false;
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Opening Serial Port ");
-			sb.AppendI32(portNo);
+			sb.AppendU32(portNo);
 			sb.Append((const UTF8Char*)" with baudrate = ");
-			sb.AppendI32(baudRate);
+			sb.AppendU32(baudRate);
 			NEW_CLASS(port, IO::SerialPort(portNo, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
 			{

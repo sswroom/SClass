@@ -44,7 +44,7 @@ Bool Exporter::MD4Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::MD4Exporter::SetCodePage(Int32 codePage)
+void Exporter::MD4Exporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

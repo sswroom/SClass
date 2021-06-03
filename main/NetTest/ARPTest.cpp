@@ -35,9 +35,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::SocketUtil::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt32 ip;
 	sockf->GetConnInfoList(&connInfoList);
 	i = 0;

@@ -38,8 +38,8 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 icoHdr[6];
 	UInt8 icoImageHdr[16];
-	Int32 icoCnt;
-	OSInt i;
+	UInt32 icoCnt;
+	UOSInt i;
 	Media::ImageList *imgList;
 	Media::StaticImage *currImg;
 	UInt32 imgWidth;
@@ -105,10 +105,10 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 				UInt8 *sptr = 8 + (UInt8*)pal;
 				UInt8 *maskPtr;
 				UInt8 *currPtr;
-				OSInt i;
-				OSInt dataSize = (imgWidth + 7) >> 3;
-				OSInt dataAdd;
-				dbpl = dataSize * 2;
+				UOSInt i;
+				UOSInt dataSize = (imgWidth + 7) >> 3;
+				UOSInt dataAdd;
+				dbpl = (OSInt)dataSize * 2;
 				if ((dataAdd = (dataSize & 3)) != 0)
 				{
 					dataAdd = 4 - dataAdd;
@@ -139,7 +139,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 					i = dataSize;
 					while (i-- > 0)
 					{
-						*currPtr++ = ~*maskPtr++;
+						*currPtr++ = (UInt8)(~*maskPtr++);
 					}
 
 					maskPtr += dataAdd;
@@ -151,12 +151,12 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 				UInt8 *sptr = 64 + (UInt8*)pal;
 				UInt8 *maskPtr;;
 				UInt8 *currPtr;
-				OSInt i;
-				OSInt maskByteSize = (imgWidth + 7) >> 3;
-				OSInt imgByteSize = (imgWidth + 1) >> 1;
-				OSInt maskByteAdd;
-				OSInt imgByteAdd;
-				dbpl = maskByteSize + imgByteSize;
+				UOSInt i;
+				UOSInt maskByteSize = (imgWidth + 7) >> 3;
+				UOSInt imgByteSize = (imgWidth + 1) >> 1;
+				UOSInt maskByteAdd;
+				UOSInt imgByteAdd;
+				dbpl = (OSInt)(maskByteSize + imgByteSize);
 
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
@@ -192,7 +192,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 					i = maskByteSize;
 					while (i-- > 0)
 					{
-						*currPtr++ = ~*maskPtr++;
+						*currPtr++ = (UInt8)~*maskPtr++;
 					}
 
 					maskPtr += maskByteAdd;
@@ -204,11 +204,11 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 				UInt8 *sptr = 1024 + (UInt8*)pal;
 				UInt8 *maskPtr;
 				UInt8 *currPtr;
-				OSInt i;
-				OSInt maskByteSize = (imgWidth + 7) >> 3;
-				OSInt maskByteAdd;
-				OSInt imgByteAdd;
-				dbpl = maskByteSize + imgWidth;
+				UOSInt i;
+				UOSInt maskByteSize = (imgWidth + 7) >> 3;
+				UOSInt maskByteAdd;
+				UOSInt imgByteAdd;
+				dbpl = (OSInt)(maskByteSize + imgWidth);
 
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
@@ -244,7 +244,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 					i = maskByteSize;
 					while (i-- > 0)
 					{
-						*currPtr++ = ~*maskPtr++;
+						*currPtr++ = (UInt8)~*maskPtr++;
 					}
 
 					maskPtr += maskByteAdd;
@@ -304,14 +304,14 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 					i = imgWidth >> 3;
 					while (i-- > 0)
 					{
-						currPtr[3] = (maskPtr[0] >> 7) - 1;
-						currPtr[7] = ((maskPtr[0] >> 6) & 1) - 1;
-						currPtr[11] = ((maskPtr[0] >> 5) & 1) - 1;
-						currPtr[15] = ((maskPtr[0] >> 4) & 1) - 1;
-						currPtr[19] = ((maskPtr[0] >> 3) & 1) - 1;
-						currPtr[23] = ((maskPtr[0] >> 2) & 1) - 1;
-						currPtr[27] = ((maskPtr[0] >> 1) & 1) - 1;
-						currPtr[31] = ((maskPtr[0] >> 0) & 1) - 1;
+						currPtr[3] = (UInt8)((maskPtr[0] >> 7) - 1);
+						currPtr[7] = (UInt8)(((maskPtr[0] >> 6) & 1) - 1);
+						currPtr[11] = (UInt8)(((maskPtr[0] >> 5) & 1) - 1);
+						currPtr[15] = (UInt8)(((maskPtr[0] >> 4) & 1) - 1);
+						currPtr[19] = (UInt8)(((maskPtr[0] >> 3) & 1) - 1);
+						currPtr[23] = (UInt8)(((maskPtr[0] >> 2) & 1) - 1);
+						currPtr[27] = (UInt8)(((maskPtr[0] >> 1) & 1) - 1);
+						currPtr[31] = (UInt8)(((maskPtr[0] >> 0) & 1) - 1);
 						currPtr += 32;
 						maskPtr++;
 					}
@@ -322,8 +322,8 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 						i = imgWidth & 7;
 						while (i-- > 0)
 						{
-							currPtr[3] = (v >> 7) - 1;
-							v = v << 1;
+							currPtr[3] = (UInt8)((v >> 7) - 1);
+							v = (UInt8)(v << 1);
 							currPtr += 4;
 						}
 					}
@@ -333,8 +333,8 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 			break;
 		case 32:
 			{
-				OSInt maskByteSize = (imgWidth + 7) >> 3;
-				OSInt maskByteAdd;
+				UOSInt maskByteSize = (imgWidth + 7) >> 3;
+				UOSInt maskByteAdd;
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
 					maskByteAdd = 4 - maskByteAdd;

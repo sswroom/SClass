@@ -40,7 +40,7 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject
 	IO::ISectorData *data;
 	IO::ISectorData *cdData;
 	UInt8 sector[2048];
-	OSInt sectorSize;
+	UOSInt sectorSize;
 	if (pobj->GetParserType() != IO::ParsedObject::PT_SECTOR_DATA)
 		return 0;
 
@@ -98,7 +98,7 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject
 	return pf;
 }
 
-IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, Int32 codePage)
+IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 codePage)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -178,11 +178,11 @@ IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sec
 	return pkgFile;
 }
 
-void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, Int32 codePage)
+void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
 {
 	UInt8 *dataBuff = MemAlloc(UInt8, recSize + 2048);
 	UInt8 *recBuff = &dataBuff[2048];
-	OSInt sizeLeft = recSize;
+	UOSInt sizeLeft = recSize;
 	Bool err = false;
 	while (sizeLeft > 0)
 	{
@@ -208,7 +208,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 	if (!err)
 	{
 		Data::DateTime dt;
-		OSInt fileRecSize;
+		UOSInt fileRecSize;
 		UInt32 sectorNum;
 		UInt32 fileSize;
 		IO::IStreamData *fd;
@@ -222,9 +222,9 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 			fileRecSize = recBuff[0];
 			if (fileRecSize < 34)
 				break;
-			sectorNum = ReadInt32(&recBuff[2]);
-			fileSize = ReadInt32(&recBuff[10]);
-			dt.SetValue(1900 + recBuff[18], recBuff[19], recBuff[20], recBuff[21], recBuff[22], recBuff[23], 0, (Int8)recBuff[24]);
+			sectorNum = ReadUInt32(&recBuff[2]);
+			fileSize = ReadUInt32(&recBuff[10]);
+			dt.SetValue((UInt16)(1900 + recBuff[18]), recBuff[19], recBuff[20], recBuff[21], recBuff[22], recBuff[23], 0, (Int8)recBuff[24]);
 			if (recBuff[25] & 2)
 			{
 				if (recBuff[32] == 1 && recBuff[33] == 0)

@@ -43,7 +43,7 @@ Bool Exporter::DBExcelXMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuf
 	return false;
 }
 
-void Exporter::DBExcelXMLExporter::SetCodePage(Int32 codePage)
+void Exporter::DBExcelXMLExporter::SetCodePage(UInt32 codePage)
 {
 //	this->codePage = codePage;
 }

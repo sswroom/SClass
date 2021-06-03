@@ -20,12 +20,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double temp;
 	Text::StringBuilderUTF8 sb;
 	UInt8 sensorId[7];
-	Int32 pinNum = 7;
+	UInt16 pinNum = 7;
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &pinNum);
+		Text::StrToUInt16(argv[1], &pinNum);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	sb.Append((const UTF8Char*)"Run using GPIO pin ");

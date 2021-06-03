@@ -132,7 +132,7 @@ UInt32 __stdcall IO::BTController::LEScanThread(void *userObj)
 	struct hci_filter of;
 	socklen_t olen;
 //	hci_event_hdr *hdr;
-	int len;
+	ssize_t len;
 
 	me->leScanning = true;
 
@@ -201,12 +201,12 @@ UInt32 __stdcall IO::BTController::LEScanThread(void *userObj)
 								if (name == 0)
 								{
 									name = sbuff;
-									Text::StrConcatC(sbuff, (const Char*)&ainfo->data[ofst + 2], eirSize - 1);
+									Text::StrConcatC(sbuff, (const Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1);
 								}
 								break;
 							case 9: //EIR_NAME_COMPLETE
 								name = sbuff;
-								Text::StrConcatC(sbuff, (const Char*)&ainfo->data[ofst + 2], eirSize - 1);
+								Text::StrConcatC(sbuff, (const Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1);
 								break;
 							case 10: //EIR_TX_POWER
 								break;
@@ -278,7 +278,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 		}
 		if (hci_read_class_of_dev(info->dd, cls, 1000) >= 0)
 		{
-			this->devClass = ReadInt24(cls);
+			this->devClass = ReadUInt24(cls);
 		}
 	}
 	else

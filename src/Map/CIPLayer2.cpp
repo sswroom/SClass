@@ -595,7 +595,7 @@ Int32 Map::CIPLayer2::GetBlockSize()
 	return this->blkScale;
 }
 
-Int32 Map::CIPLayer2::GetCodePage()
+UInt32 Map::CIPLayer2::GetCodePage()
 {
 	return 0;
 }

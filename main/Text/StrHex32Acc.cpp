@@ -8,21 +8,21 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[32];
-	Int32 i = 100000;
-	Int32 j;
+	UInt32 i = 100000;
+	UInt32 j;
 	Bool succ = true;
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	while (i-- > 0)
 	{
 		Text::StrHexVal32V(sbuff, i);
-		j = Text::StrHex2Int32(sbuff);
+		j = (UInt32)Text::StrHex2Int32(sbuff);
 		if (i != j)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendI32(i);
+			sb.AppendU32(i);
 			sb.Append((const UTF8Char*)" != ");
-			sb.AppendI32(j);
+			sb.AppendU32(j);
 			console->WriteLine(sb.ToString());
 			succ = false;
 			break;

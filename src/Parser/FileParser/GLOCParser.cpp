@@ -12,10 +12,10 @@ typedef struct
 	UInt32 termId;
 	Int32 devType;
 	UInt32 recvTimeTS;
-	Int32 status;
-	Int32 status2;
+	UInt32 status;
+	UInt32 status2;
 	Int32 period;
-	Int16 mileageTZ;
+	UInt16 mileageTZ;
 	Double temperature1;
 	Double temperature2;
 	Double temperature3;
@@ -24,15 +24,15 @@ typedef struct
 	Int32 mileageDiff;
 	Int32 mileageDaily;
 	Double fuelLev;
-	Int32 devIP;
+	UInt32 devIP;
 	UInt16 devPort;
 	UInt16 recType;
-	Int32 status4;
+	UInt32 status4;
 	Int32 adc5;
 	Double adc6;
 	Double adc7;
 	Double adc8;
-	Int64 fileOfst;
+	UInt64 fileOfst;
 } ExtraInfo;
 
 class GLOCExtraParser : public Map::GPSTrack::GPSExtraParser
@@ -165,7 +165,7 @@ public:
 			sb->AppendI32(extInfo->period);
 			return true;
 		case 6:
-			sb->AppendI16(extInfo->mileageTZ);
+			sb->AppendU16(extInfo->mileageTZ);
 			return true;
 		case 7:
 			Text::SBAppendF64(sb, extInfo->temperature1);
@@ -221,7 +221,7 @@ public:
 			Text::SBAppendF64(sb, extInfo->adc8);
 			return true;
 		case 23:
-			sb->AppendI64(extInfo->fileOfst);
+			sb->AppendU64(extInfo->fileOfst);
 			return true;
 		}
 		return false;
@@ -260,30 +260,30 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[384];
 	UTF8Char u8buff[256];
 	const UTF8Char *sptr;
-	OSInt i;
-	Int64 currPos;
-	Int64 fileSize;
+	OSInt si;
+	UInt64 currPos;
+	UInt64 fileSize;
 	Int64 devId;
 	UInt32 idevId;
 	sptr = fd->GetFullName();
-	i = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(u8buff, &sptr[i + 1]);
+	si = Text::StrLastIndexOf(sptr, '\\');
+	Text::StrConcat(u8buff, &sptr[si + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"GLOC"))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
-	if (i < 0)
+	si = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
+	if (si < 0)
 	{
-		i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
-		if (i < 0)
+		si = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+		if (si < 0)
 			return 0;
-		u8buff[i] = 0;
+		u8buff[si] = 0;
 		devId = Text::StrToInt64(&u8buff[4]);
 	}
 	else
 	{
-		u8buff[i] = 0;
+		u8buff[si] = 0;
 		devId = Text::StrToInt64(&u8buff[4]);
 	}
 	if (devId == 0)
@@ -293,7 +293,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 	idevId = (UInt32)(devId & 0xffffffffLL);
 
-	i = fd->GetRealData(0, 384, buff);
+	UOSInt i = fd->GetRealData(0, 384, buff);
 	if (*(UInt32*)&buff[0] != idevId || (i > 128 && *(UInt32*)&buff[128] != idevId) || (i > 256 && *(UInt32*)&buff[256] != idevId))
 		return 0;
 
@@ -317,8 +317,8 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		rec.lon = ReadInt32(&buff[20]) / 10000000.0;
 		rec.speed = ReadUInt16(&buff[24]) * 0.1;
 		rec.heading = ReadUInt16(&buff[26]) * 0.01;
-		extInfo.status = ReadInt32(&buff[28]);
-		extInfo.status2 = ReadInt32(&buff[32]);
+		extInfo.status = ReadUInt32(&buff[28]);
+		extInfo.status2 = ReadUInt32(&buff[32]);
 		extInfo.period = ReadInt32(&buff[36]);
 		rec.valid = (buff[32] & 1) == 0;
 		rec.nSateUsed = buff[40];
@@ -332,11 +332,11 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		extInfo.mileageDiff = ReadInt32(&buff[64]);
 		extInfo.mileageDaily = ReadInt32(&buff[68]);
 		extInfo.fuelLev = ReadInt32(&buff[72]) * 0.0001;
-		extInfo.devIP = *(Int32*)&buff[76];
+		extInfo.devIP = ReadNUInt32(&buff[76]);
 		extInfo.devPort = ReadUInt16(&buff[80]);
 		extInfo.recType = ReadUInt16(&buff[82]);
-		rec.altitude = *(Int32*)&buff[84] / 1000.0;
-		extInfo.status4 = ReadInt32(&buff[88]);
+		rec.altitude = ReadInt32(&buff[84]) / 1000.0;
+		extInfo.status4 = ReadUInt32(&buff[88]);
 		extInfo.adc5 = ReadInt32(&buff[92]);
 		extInfo.adc6 = ReadInt32(&buff[96]) * 0.001;
 		extInfo.adc7 = ReadInt32(&buff[100]) * 0.001;

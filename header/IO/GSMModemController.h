@@ -111,7 +111,7 @@ namespace IO
 		{
 			Int32 index;
 			SMSStatus status;
-			Int32 pduLeng;
+			UOSInt pduLeng;
 			UInt8 *pduMessage;
 		} SMSMessage;
 

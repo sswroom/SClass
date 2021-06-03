@@ -45,8 +45,8 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
 	IO::ParsedObject::ParserType pt;
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)

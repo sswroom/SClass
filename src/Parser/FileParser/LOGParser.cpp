@@ -21,7 +21,7 @@ Int32 Parser::FileParser::LOGParser::GetName()
 	return *(Int32*)"LOGP";
 }
 
-void Parser::FileParser::LOGParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::LOGParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

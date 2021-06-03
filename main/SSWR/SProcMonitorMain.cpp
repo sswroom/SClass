@@ -14,7 +14,7 @@ typedef struct
 {
 	const UTF8Char *progName;
 	const UTF8Char *progPath;
-	Int32 procId;
+	UOSInt procId;
 } ProgInfo;
 
 IO::LogTool *myLog;
@@ -51,7 +51,7 @@ Bool SearchProcId(ProgInfo *prog)
 					sb.Append((const UTF8Char*)"Prog ");
 					sb.Append(prog->progName);
 					sb.Append((const UTF8Char*)": Updated procId as ");
-					sb.AppendI32(prog->procId);
+					sb.AppendUOSInt(prog->procId);
 					myLog->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					break;
 				}
@@ -123,7 +123,7 @@ void LoadProgList()
 
 void __stdcall OnTimerTick(void *userObj)
 {
-	OSInt i;
+	UOSInt i;
 	ProgInfo *prog;
 	i = progList->GetCount();
 	while (i-- > 0)
@@ -156,7 +156,7 @@ void __stdcall OnTimerTick(void *userObj)
 						sb.Append((const UTF8Char*)"Prog ");
 						sb.Append(prog->progName);
 						sb.Append((const UTF8Char*)" restarted, procId = ");
-						sb.AppendI32(prog->procId);
+						sb.AppendUOSInt(prog->procId);
 						myLog->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					}
 				}
@@ -209,7 +209,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 
 	ProgInfo *prog;
-	OSInt i = progList->GetCount();
+	UOSInt i = progList->GetCount();
 	while (i-- > 0)
 	{
 		prog = progList->GetItem(i);

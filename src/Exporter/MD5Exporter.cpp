@@ -44,7 +44,7 @@ Bool Exporter::MD5Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::MD5Exporter::SetCodePage(Int32 codePage)
+void Exporter::MD5Exporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
@@ -67,8 +67,8 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UInt8 buff[16];
 	IO::StreamWriter *writer;
 	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
-	OSInt i = 0;
-	OSInt cnt = fchk->GetCount();
+	UOSInt i = 0;
+	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
 	{
 		fchk->GetEntryHash(i, buff);
@@ -77,7 +77,7 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		sptr2 = sptr;
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
 		Text::StrReplace(sptr2, '/', '\\');
-		writer->WriteLine(sbuff, sptr - sbuff);
+		writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	DEL_CLASS(writer);

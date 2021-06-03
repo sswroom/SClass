@@ -718,7 +718,7 @@ Bool Exporter::CURExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::CURExporter::SetCodePage(Int32 codePage)
+void Exporter::CURExporter::SetCodePage(UInt32 codePage)
 {
 }
 

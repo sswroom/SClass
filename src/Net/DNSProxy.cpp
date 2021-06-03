@@ -23,14 +23,14 @@ void __stdcall Net::DNSProxy::ClientPacket(const Net::SocketUtil::AddressInfo *a
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, Int32 reqId)
+void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId)
 {
 	Net::DNSProxy *me = (Net::DNSProxy*)userObj;
 	RequestResult *req;
 	UTF8Char sbuff[256];
 	UInt8 buff[512];
-	OSInt buffSize;
-	OSInt i;
+	UOSInt buffSize;
+	UOSInt i;
 	Manage::HiResClock clk;
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
@@ -131,7 +131,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqNam
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 				UInt32 resIP;
 				UInt32 sortIP;
-				OSInt j;
+				UOSInt j;
 				TargetInfo *target;
 				mutUsage.BeginUse();
 				Net::DNSClient::ParseAnswers(req->recBuff, req->recSize, &ansList);
@@ -144,8 +144,8 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqNam
 					ans = ansList.GetItem(i);
 					if (ans->recType == 1)
 					{
-						resIP = ReadNInt32(ans->addr.addr);
-						sortIP = ReadMInt32(ans->addr.addr);
+						resIP = ReadNUInt32(ans->addr.addr);
+						sortIP = ReadMUInt32(ans->addr.addr);
 						Sync::MutexUsage targetMutUsage(me->targetMut);
 						target = me->targetMap->Get(sortIP);
 						if (target == 0)
@@ -335,7 +335,7 @@ void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 req
 	const UTF8Char *cptr1;
 	const UTF8Char *cptr2;
 	UTF8Char c;
-	Int32 currId = this->NextId();
+	UInt32 currId = this->NextId();
 
 	WriteMInt16(&buff[0], currId);
 	WriteMInt16(&buff[2], 0x100); //flags
@@ -378,7 +378,7 @@ void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 req
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(&addr, this->currServerIP);
 	cliReq->finEvt->Clear();
-	this->cli->SendTo(&addr, 53, buff, ptr1 - ptr2);
+	this->cli->SendTo(&addr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	cliReq->finEvt->Wait(2000);
 	if (cliReq->respSize > 12)
 	{
@@ -389,8 +389,8 @@ void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 req
 	{
 		if (req->recSize == 0)
 		{
-			MemCopyNO(req->recBuff, buff, ptr1 - ptr2);
-			req->recSize = ptr1 - ptr2;
+			MemCopyNO(req->recBuff, buff, (UOSInt)(ptr1 - ptr2));
+			req->recSize = (UOSInt)(ptr1 - ptr2);
 			WriteMInt16(&req->recBuff[2], 0x8581);
 		}
 		Data::DateTime currTime;
@@ -408,9 +408,9 @@ void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 req
 	this->DelCliReq(currId);
 }
 
-Int32 Net::DNSProxy::NextId()
+UInt32 Net::DNSProxy::NextId()
 {
-	Int32 id;
+	UInt32 id;
 	Sync::MutexUsage mutUsage(this->lastIdMut);
 	this->lastId++;
 	if (this->lastId >= 65536)
@@ -420,7 +420,7 @@ Int32 Net::DNSProxy::NextId()
 	return id;
 }
 
-Net::DNSProxy::CliRequestStatus *Net::DNSProxy::NewCliReq(Int32 id)
+Net::DNSProxy::CliRequestStatus *Net::DNSProxy::NewCliReq(UInt32 id)
 {
 	CliRequestStatus *req = MemAlloc(CliRequestStatus, 1);
 	req->respSize = 0;
@@ -431,7 +431,7 @@ Net::DNSProxy::CliRequestStatus *Net::DNSProxy::NewCliReq(Int32 id)
 	return req;
 }
 
-void Net::DNSProxy::DelCliReq(Int32 id)
+void Net::DNSProxy::DelCliReq(UInt32 id)
 {
 	CliRequestStatus *req;
 	Sync::MutexUsage mutUsage(this->cliReqMut);
@@ -444,11 +444,11 @@ void Net::DNSProxy::DelCliReq(Int32 id)
 	}
 }
 
-OSInt Net::DNSProxy::BuildEmptyReply(UInt8 *buff, Int32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool blockResult)
+UOSInt Net::DNSProxy::BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool blockResult)
 {
 	// RFC1035
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char c;
 	WriteMInt16(&buff[0], id); // Header
 	buff[2] = 0x81; //Question
@@ -558,7 +558,7 @@ Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
 	if (analyzeTarget)
 	{
 		NEW_CLASS(this->targetMut, Sync::Mutex());
-		NEW_CLASS(this->targetMap, Data::Int32Map<TargetInfo*>());
+		NEW_CLASS(this->targetMap, Data::UInt32Map<TargetInfo*>());
 		this->targetUpdated = true;
 	}
 	else
@@ -573,7 +573,7 @@ Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
 	NEW_CLASS(this->currIPTime, Data::DateTime());
 	this->lastId = 0;
 	NEW_CLASS(this->cliReqMut, Sync::Mutex());
-	NEW_CLASS(this->cliReqMap, Data::Int32Map<CliRequestStatus*>());
+	NEW_CLASS(this->cliReqMap, Data::UInt32Map<CliRequestStatus*>());
 	NEW_CLASS(this->blackList, Data::ArrayList<const UTF8Char *>());
 	NEW_CLASS(this->blackListMut, Sync::Mutex());
 	sockf->GetDNSList(this->dnsList);
@@ -599,7 +599,7 @@ Net::DNSProxy::~DNSProxy()
 
 	Data::ArrayList<RequestResult*> *reqList;
 	RequestResult *req;
-	OSInt i;
+	UOSInt i;
 	reqList = this->reqv4Map->GetValues();
 	i = reqList->GetCount();
 	while (i-- > 0)
@@ -636,7 +636,7 @@ Net::DNSProxy::~DNSProxy()
 	if (this->targetMap)
 	{
 		TargetInfo *target;
-		OSInt j;
+		UOSInt j;
 		Data::ArrayList<TargetInfo*> *targetList = this->targetMap->GetValues();
 		i = targetList->GetCount();
 		while (i-- > 0)
@@ -714,7 +714,7 @@ Bool Net::DNSProxy::IsTargetChg()
 	return false;
 }
 
-OSInt Net::DNSProxy::GetReqv4List(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::DNSProxy::GetReqv4List(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	reqList->AddRange(this->reqv4Map->GetKeys());
@@ -722,7 +722,7 @@ OSInt Net::DNSProxy::GetReqv4List(Data::ArrayList<const UTF8Char *> *reqList)
 	return reqList->GetCount();
 }
 
-OSInt Net::DNSProxy::GetReqv6List(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::DNSProxy::GetReqv6List(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	reqList->AddRange(this->reqv6Map->GetKeys());
@@ -730,7 +730,7 @@ OSInt Net::DNSProxy::GetReqv6List(Data::ArrayList<const UTF8Char *> *reqList)
 	return reqList->GetCount();
 }
 
-OSInt Net::DNSProxy::GetReqOthList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::DNSProxy::GetReqOthList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->reqothMut);
 	reqList->AddRange(this->reqothMap->GetKeys());
@@ -738,7 +738,7 @@ OSInt Net::DNSProxy::GetReqOthList(Data::ArrayList<const UTF8Char *> *reqList)
 	return reqList->GetCount();
 }
 
-OSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
+UOSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
 {
 	if (this->targetMap == 0)
 		return 0;
@@ -748,7 +748,7 @@ OSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
 	return targetList->GetCount();
 }
 
-OSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<const UTF8Char *> *reqList, Int32 ip, Int32 mask)
+UOSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<const UTF8Char *> *reqList, UInt32 ip, UInt32 mask)
 {
 	Data::ArrayList<const UTF8Char *> *keys;
 	Data::ArrayList<RequestResult*> *results;
@@ -756,10 +756,10 @@ OSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<const UTF8Char *> *reqList, Int3
 	Net::DNSClient::RequestAnswer *ans;
 	RequestResult *result;
 	Bool valid;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt retCnt = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt retCnt = 0;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	keys = this->reqv4Map->GetKeys();
 	results = this->reqv4Map->GetValues();
@@ -779,7 +779,7 @@ OSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<const UTF8Char *> *reqList, Int3
 			ans = ansList.GetItem(k);
 			if (ans->recType == 1)
 			{
-				if ((ip & mask) == ((*(Int32*)ans->addr.addr) & mask))
+				if ((ip & mask) == (ReadNUInt32(ans->addr.addr) & mask))
 				{
 					valid = true;
 					break;
@@ -799,7 +799,7 @@ OSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<const UTF8Char *> *reqList, Int3
 	return retCnt;
 }
 
-Bool Net::DNSProxy::GetRequestInfov4(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
+Bool Net::DNSProxy::GetRequestInfov4(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	RequestResult *result;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
@@ -820,7 +820,7 @@ Bool Net::DNSProxy::GetRequestInfov4(const UTF8Char *req, Data::ArrayList<Net::D
 	}
 }
 
-Bool Net::DNSProxy::GetRequestInfov6(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
+Bool Net::DNSProxy::GetRequestInfov6(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	RequestResult *result;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
@@ -841,7 +841,7 @@ Bool Net::DNSProxy::GetRequestInfov6(const UTF8Char *req, Data::ArrayList<Net::D
 	}
 }
 
-Bool Net::DNSProxy::GetRequestInfoOth(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, Int32 *ttl)
+Bool Net::DNSProxy::GetRequestInfoOth(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	RequestResult *result;
 	Sync::MutexUsage mutUsage(this->reqothMut);
@@ -911,9 +911,9 @@ void Net::DNSProxy::SetDisableV6(Bool disableV6)
 	this->disableV6 = disableV6;
 }
 
-OSInt Net::DNSProxy::GetBlackList(Data::ArrayList<const UTF8Char*> *blackList)
+UOSInt Net::DNSProxy::GetBlackList(Data::ArrayList<const UTF8Char*> *blackList)
 {
-	OSInt ret;
+	UOSInt ret;
 	Sync::MutexUsage mutUsage(this->blackListMut);
 	ret = this->blackList->GetCount();
 	blackList->AddRange(this->blackList);

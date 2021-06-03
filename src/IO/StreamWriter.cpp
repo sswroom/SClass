@@ -12,7 +12,7 @@ IO::StreamWriter::StreamWriter(IO::Stream *stm, Text::Encoding *enc)
 	this->buff = MemAlloc(UInt8, this->buffSize = 256);
 }
 
-IO::StreamWriter::StreamWriter(IO::Stream *stm, Int32 codePage)
+IO::StreamWriter::StreamWriter(IO::Stream *stm, UInt32 codePage)
 {
 	this->stm = stm;
 	NEW_CLASS(this->enc, Text::Encoding(codePage));
@@ -159,7 +159,7 @@ void IO::StreamWriter::WriteSignature()
 	{
 		if (((IO::SeekableStream*)this->stm)->GetPosition() == 0)
 		{
-			Int32 cp = enc->GetEncCodePage();
+			UInt32 cp = enc->GetEncCodePage();
 			if (cp == 65001)
 			{
 				buff[0] = 0xef;

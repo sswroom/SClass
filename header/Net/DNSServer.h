@@ -8,7 +8,7 @@ namespace Net
 	class DNSServer
 	{
 	public:
-		typedef void (__stdcall *DNSRequest)(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, Int32 reqId);
+		typedef void (__stdcall *DNSRequest)(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId);
 	private:
 		Net::UDPServer *svr;
 		Net::SocketFactory *sockf;
@@ -25,7 +25,7 @@ namespace Net
 		Bool IsError();
 		void HandleRequest(DNSRequest hdlr, void *userObj);
 
-		void ReplyRequest(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, OSInt dataSize);
+		void ReplyRequest(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
 	};
-};
+}
 #endif

@@ -335,7 +335,7 @@ Bool Map::ReloadableMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::ReloadableMapLayer::GetCodePage()
+UInt32 Map::ReloadableMapLayer::GetCodePage()
 {
 	return 0;
 }

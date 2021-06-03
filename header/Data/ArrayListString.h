@@ -9,7 +9,7 @@ namespace Data
 	{
 	public:
 		ArrayListString();
-		ArrayListString(OSInt Capacity);
+		ArrayListString(UOSInt capacity);
 
 		virtual Data::ArrayList<Text::String*> *Clone();
 

@@ -220,7 +220,7 @@ Text::EncodingFactory::~EncodingFactory()
 	DEL_CLASS(encMap);
 }
 
-Int32 Text::EncodingFactory::GetCodePage(const UTF8Char *shortName)
+UInt32 Text::EncodingFactory::GetCodePage(const UTF8Char *shortName)
 {
 	Text::EncodingFactory::EncodingInfo *encInfo = this->encMap->Get(shortName);
 	if (encInfo)
@@ -233,12 +233,12 @@ Int32 Text::EncodingFactory::GetCodePage(const UTF8Char *shortName)
 	}
 }
 
-UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, Int32 codePage)
+UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
-	OSInt l;
+	UInt32 l;
 	const UTF8Char *tmpStr = (const UTF8Char*)"Unknown";
 	while (i <= j)
 	{
@@ -261,12 +261,12 @@ UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, Int32 codePage)
 	return Text::StrConcat(buff, tmpStr);
 }
 
-UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, Int32 codePage)
+UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
-	OSInt l;
+	UInt32 l;
 	const UTF8Char *tmpStr = (const UTF8Char*)"UTF-8";
 	while (i <= j)
 	{
@@ -290,12 +290,12 @@ UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, Int32 codePage)
 	return Text::StrConcat(buff, tmpStr);
 }
 
-UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, Int32 codePage)
+UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
-	OSInt l;
+	UInt32 l;
 	const UTF8Char *tmpStr = (const UTF8Char*)"UTF-8";
 	while (i <= j)
 	{
@@ -346,17 +346,17 @@ Int32 __stdcall EncodingFactory_CodePageResult(WChar *codePageName)
 }
 #else
 
-Int32 Text::EncodingFactory::GetSystemCodePage()
+UInt32 Text::EncodingFactory::GetSystemCodePage()
 {
 	return 65001;
 }
 
-Int32 Text::EncodingFactory::GetSystemLCID()
+UInt32 Text::EncodingFactory::GetSystemLCID()
 {
 	return 0x0409;
 }
 
-void Text::EncodingFactory::GetCodePages(Data::ArrayList<Int32> *codePages)
+void Text::EncodingFactory::GetCodePages(Data::ArrayList<UInt32> *codePages)
 {
 	codePages->Add(1200);
 	codePages->Add(1201);

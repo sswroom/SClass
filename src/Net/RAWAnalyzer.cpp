@@ -9,7 +9,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
 {
 	Net::RAWAnalyzer *me = (Net::RAWAnalyzer*)userObj;
 	UInt8 packetBuff[10240];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Sync::Interlocked::Increment(&me->threadCnt);

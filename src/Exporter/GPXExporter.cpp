@@ -47,7 +47,7 @@ Bool Exporter::GPXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::GPXExporter::SetCodePage(Int32 codePage)
+void Exporter::GPXExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

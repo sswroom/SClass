@@ -78,19 +78,19 @@ Bool Media::LPCMSource::CanSeek()
 
 Int32 Media::LPCMSource::GetStreamTime()
 {
-	return (Int32)(this->data->GetDataSize() * 1000 / this->format.frequency / (this->format.bitpersample >> 3) / this->format.nChannels);
+	return (Int32)(this->data->GetDataSize() * 1000 / this->format.frequency / (UInt32)(this->format.bitpersample >> 3) / this->format.nChannels);
 }
 
 UInt32 Media::LPCMSource::SeekToTime(UInt32 time)
 {
-	UInt32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	this->readOfst = time * (UInt64)this->format.frequency / 1000 * blk;
 	return (UInt32)(this->readOfst * 1000 / this->format.frequency / blk);
 }
 
 Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
-	UInt32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (trimTimeEnd == (UInt32)-1)
 	{
 		if (trimTimeStart >= 0)
@@ -108,7 +108,7 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 		{
 			if (syncTime)
 			{
-				*syncTime = trimTimeStart;
+				*syncTime = (Int32)trimTimeStart;
 			}
 		}
 	}
@@ -136,7 +136,7 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 			this->data = newData;
 			if (syncTime)
 			{
-				*syncTime = trimTimeStart;
+				*syncTime = (Int32)trimTimeStart;
 			}
 		}
 	}
@@ -166,11 +166,11 @@ UOSInt Media::LPCMSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 {
 	UOSInt readSize = 0;
 #ifndef HAS_ASM32
-	OSInt i;
+	UOSInt i;
 #endif
 	if (this->format.intType == Media::AudioFormat::IT_BIGENDIAN)
 	{
-		UInt32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+		UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 		readSize = blkSize / blk;
 		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 		if (this->format.bitpersample == 16)
@@ -246,7 +246,7 @@ rblk1_24exit:
 	{
 		if (this->format.bitpersample == 16)
 		{
-			UInt32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+			UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 			readSize = blkSize / blk;
 			readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 #ifdef HAS_ASM32
@@ -352,11 +352,11 @@ rblk2_24_2exit:
 	}
 	else if (this->format.other)
 	{
-		UInt32 blk = this->format.nChannels * (this->format.bitpersample >> 3) * this->format.other;
+		UInt32 blk = this->format.nChannels * (UInt32)(this->format.bitpersample >> 3) * this->format.other;
 		readSize = blkSize / blk;
 		if (readSize > 0)
 		{
-			UInt32 ofstPC = (this->format.bitpersample >> 3) * this->format.other;
+			UInt32 ofstPC = (UInt32)(this->format.bitpersample >> 3) * this->format.other;
 			UInt8 *tmpBuff = MemAlloc(UInt8, blkSize * blk);
 			UInt8 *tmpPtr;
 			UInt8 *tmpPtr2;
@@ -388,7 +388,7 @@ rblk2_24_2exit:
 	}
 	else
 	{
-		Int32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+		UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 		readSize = blkSize / blk;
 		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 	}
@@ -400,12 +400,12 @@ rblk2_24_2exit:
 
 UOSInt Media::LPCMSource::GetMinBlockSize()
 {
-	return this->format.nChannels * (this->format.bitpersample >> 3);
+	return this->format.nChannels * (UOSInt)(this->format.bitpersample >> 3);
 }
 
 UInt32 Media::LPCMSource::GetCurrTime()
 {
-	UInt32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	return (UInt32)(this->readOfst * 1000 / this->format.frequency / blk);
 }
 
@@ -421,13 +421,13 @@ Bool Media::LPCMSource::SupportSampleRead()
 
 UOSInt Media::LPCMSource::ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
 {
-	UOSInt blk = (this->format.nChannels * this->format.bitpersample >> 3);
+	UOSInt blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (sampleOfst < 0)
 	{
-		if (sampleOfst + sampleCount > 0)
+		if (sampleOfst + (OSInt)sampleCount > 0)
 		{
-			MemClear(buff, (OSInt)-sampleOfst * blk);
-			return (OSInt)(this->data->GetRealData(0, (OSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk - sampleOfst);
+			MemClear(buff, (UOSInt)-sampleOfst * blk);
+			return (UOSInt)((OSInt)(this->data->GetRealData(0, (UOSInt)((OSInt)sampleCount + sampleOfst) * blk, buff - sampleOfst * (OSInt)blk) / blk) - sampleOfst);
 		}
 		else
 		{
@@ -437,12 +437,12 @@ UOSInt Media::LPCMSource::ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8
 	}
 	else
 	{
-		return this->data->GetRealData(sampleOfst * blk, sampleCount * blk, buff) / blk;
+		return this->data->GetRealData((UInt64)sampleOfst * blk, sampleCount * blk, buff) / blk;
 	}
 }
 
 Int64 Media::LPCMSource::GetSampleCount()
 {
-	UInt32 blk = (this->format.nChannels * this->format.bitpersample >> 3);
+	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	return (Int64)this->data->GetDataSize() / blk;
 }

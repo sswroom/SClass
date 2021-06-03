@@ -56,7 +56,7 @@ Bool Exporter::ICOExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::ICOExporter::SetCodePage(Int32 codePage)
+void Exporter::ICOExporter::SetCodePage(UInt32 codePage)
 {
 }
 

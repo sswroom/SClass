@@ -20,7 +20,7 @@ namespace Media
 				UInt8 *outPt;
 				UOSInt width;
 				UOSInt height;
-				OSInt tap;
+				UOSInt tap;
 				OSInt *index;
 				Int64 *weight;
 				OSInt sstep;
@@ -32,13 +32,13 @@ namespace Media
 				UOSInt length;
 				Int64 *weight;
 				OSInt *index;
-				OSInt tap;
+				UOSInt tap;
 			} LRHPARAMETER;
 
 		private:
-			OSInt hnTap;
-			OSInt vnTap;
-			OSInt nThread;
+			UOSInt hnTap;
+			UOSInt vnTap;
+			UOSInt nThread;
 			Sync::Mutex *mut;
 			TaskParam *params;
 			Sync::ParallelTask *ptask;
@@ -48,7 +48,7 @@ namespace Media
 			UOSInt hdSize;
 			OSInt *hIndex;
 			Int64 *hWeight;
-			OSInt hTap;
+			UOSInt hTap;
 
 			Double vsSize;
 			Double vsOfst;
@@ -56,7 +56,7 @@ namespace Media
 			OSInt vsStep;
 			OSInt *vIndex;
 			Int64 *vWeight;
-			OSInt vTap;
+			UOSInt vTap;
 
 			UOSInt buffW;
 			UOSInt buffH;
@@ -65,15 +65,14 @@ namespace Media
 			Double hTime;
 			Double vTime;
 
-			Double lanczos3_weight(Double phase, OSInt nTap);
-			void setup_interpolation_parameter_v(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter_v(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_interpolation_parameter_h(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter_h(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_interpolation_parameter_v(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_decimation_parameter_v(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_interpolation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_decimation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
 
-			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
 			void mt_expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 			void mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 			void mt_copy(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
@@ -82,7 +81,7 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerH8_8(OSInt hnTap, OSInt vnTap, Media::AlphaType srcAlphaType);
+			LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTap, Media::AlphaType srcAlphaType);
 			virtual ~LanczosResizerH8_8();
 
 			virtual void Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);

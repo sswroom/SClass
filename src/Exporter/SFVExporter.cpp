@@ -61,15 +61,15 @@ Bool Exporter::SFVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UInt8 buff[16];
 	Text::UTF8Writer *writer;
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
-	OSInt i = 0;
-	OSInt cnt = fchk->GetCount();
+	UOSInt i = 0;
+	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
 	{
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrConcat(sbuff, fchk->GetEntryName(i));
 		*sptr++ = ' ';
-		sptr = Text::StrHexVal32(sptr, ReadMInt32(buff));
-		writer->WriteLine(sbuff, sptr - sbuff);
+		sptr = Text::StrHexVal32(sptr, ReadMUInt32(buff));
+		writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	DEL_CLASS(writer);

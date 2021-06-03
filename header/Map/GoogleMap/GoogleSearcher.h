@@ -22,16 +22,16 @@ namespace Map
 			Sync::Mutex *mut;
 			IO::Writer *errWriter;
 			Int32 lastIsError;
-			Int32 srchCnt;
+			UInt32 srchCnt;
 			
 		public:
 			GoogleSearcher(Net::SocketFactory *sockf, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter);
 			virtual ~GoogleSearcher();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw
-			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual Int32 GetSrchCnt();
+			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+			virtual UInt32 GetSrchCnt();
 		};
 	}
 }

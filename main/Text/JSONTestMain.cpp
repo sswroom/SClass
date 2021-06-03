@@ -10,14 +10,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::FileStream *fs;
 	UInt8 *buff;
-	Int64 flen;
+	UInt64 flen;
 	
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"test.json", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	flen = fs->GetLength();
 	if (flen > 0)
 	{
-		buff = MemAlloc(UInt8, (OSInt)flen + 1);
-		fs->Read(buff, flen);
+		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
+		fs->Read(buff, (UOSInt)flen);
 		buff[flen] = 0;
 		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(buff);
 		if (obj)

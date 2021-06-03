@@ -61,7 +61,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual Int32 GetBlockSize();
-		virtual Int32 GetCodePage();
+		virtual UInt32 GetCodePage();
 		virtual void GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
 
 	private:

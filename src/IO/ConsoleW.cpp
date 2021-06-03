@@ -124,7 +124,7 @@ void IO::Console::HandleExitCmd(IO::Console::ConsoleHandler exitCmdHdlr, void *u
 #endif
 }
 
-void IO::Console::SetCodePage(Int32 codePage)
+void IO::Console::SetCodePage(UInt32 codePage)
 {
 #if (defined(WIN32) || defined(__CYGWIN__)) && !defined(_WIN32_WCE)
 	SetConsoleOutputCP(codePage);

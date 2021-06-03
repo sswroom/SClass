@@ -62,7 +62,7 @@ Media::M2VFile::~M2VFile()
 
 UOSInt Media::M2VFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
 {
-	return -1;
+	return (UOSInt)-1;
 }
 
 Media::IMediaSource *Media::M2VFile::GetStream(UOSInt index, Int32 *syncTime)
@@ -130,7 +130,7 @@ UInt32 Media::M2VFile::SeekToTime(UInt32 mediaTime)
 	if (this->playing)
 		return 0;
 	this->readOfst = mediaTime * this->bitRate / 8000;
-	this->startTime = mediaTime;
+	this->startTime = (Int32)mediaTime;
 	return mediaTime;
 }
 

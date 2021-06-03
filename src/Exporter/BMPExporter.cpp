@@ -70,7 +70,7 @@ Bool Exporter::BMPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::BMPExporter::SetCodePage(Int32 codePage)
+void Exporter::BMPExporter::SetCodePage(UInt32 codePage)
 {
 }
 

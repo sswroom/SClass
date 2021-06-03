@@ -12,13 +12,13 @@ namespace Text
 		private:
 			UInt8 *textBuff;
 			UOSInt buffSize;
-			Int32 codePage;
+			UInt32 codePage;
 			const UTF8Char *contType;
 
 			void BuildContentType();
 		public:
-			TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, Int32 codePage);
-			TextMIMEObj(const WChar *txt, Int32 codePage);
+			TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, UInt32 codePage);
+			TextMIMEObj(const WChar *txt, UInt32 codePage);
 			virtual ~TextMIMEObj();
 
 			virtual const UTF8Char *GetClassName();
@@ -27,7 +27,7 @@ namespace Text
 			virtual IMIMEObj *Clone();
 
 			void GetText(Text::StringBuilderUTF *sb);
-			Int32 GetCodePage();
+			UInt32 GetCodePage();
 		};
 	}
 }

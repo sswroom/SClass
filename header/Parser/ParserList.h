@@ -23,7 +23,7 @@ namespace Parser
 		void AddFileParser(IO::IFileParser *parser);
 		void AddObjectParser(IO::IObjectParser *parser);
 
-		void SetCodePage(Int32 codePage);
+		void SetCodePage(UInt32 codePage);
 		void SetMapManager(Map::MapManager *mapMgr);
 		void SetEncFactory(Text::EncodingFactory *encFact);
 		void SetWebBrowser(Net::WebBrowser *browser);

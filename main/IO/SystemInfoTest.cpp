@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::CPUInfoDetail *cpuInfo;
 	IO::ConsoleWriter console;
 	Double temp;
-	OSInt i;
+	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
 
@@ -49,7 +49,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"CPU Temp ");
-		sb.AppendOSInt(i);
+		sb.AppendUOSInt(i);
 		sb.Append((const UTF8Char*)" = ");
 		Text::SBAppendF64(&sb, temp);
 		console.WriteLine(sb.ToString());

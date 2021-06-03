@@ -10,7 +10,7 @@ namespace Text
 	public:
 		typedef struct
 		{
-			Int32 codePage;
+			UInt32 codePage;
 			const Char *dotNetName;
 			const Char *desc;
 			const Char *internetNames[12];
@@ -23,14 +23,14 @@ namespace Text
 		EncodingFactory();
 		~EncodingFactory();
 		
-		Int32 GetCodePage(const UTF8Char *shortName);
+		UInt32 GetCodePage(const UTF8Char *shortName);
 
-		static UTF8Char *GetName(UTF8Char *buff, Int32 codePage);
-		static UTF8Char *GetInternetName(UTF8Char *buff, Int32 codePage);
-		static UTF8Char *GetDotNetName(UTF8Char *buff, Int32 codePage);
-		static Int32 GetSystemCodePage();
-		static Int32 GetSystemLCID();
-		static void GetCodePages(Data::ArrayList<Int32> *codePages);
+		static UTF8Char *GetName(UTF8Char *buff, UInt32 codePage);
+		static UTF8Char *GetInternetName(UTF8Char *buff, UInt32 codePage);
+		static UTF8Char *GetDotNetName(UTF8Char *buff, UInt32 codePage);
+		static UInt32 GetSystemCodePage();
+		static UInt32 GetSystemLCID();
+		static void GetCodePages(Data::ArrayList<UInt32> *codePages);
 	};
 }
 #endif

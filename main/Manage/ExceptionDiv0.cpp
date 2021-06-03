@@ -9,6 +9,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char sbuff[10];
 
 	i = 10 / i;
-	Text::StrInt32(sbuff, i);
+	Text::StrOSInt(sbuff, i);
 	return 0;
 }

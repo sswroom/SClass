@@ -16,7 +16,7 @@ Math::TSPFile::TSPFile(IO::IStreamData *fd) : DB::ReadingDB(fd->GetFullName())
 
 	if (*(Int64*)hdr == *(Int64*)"SmTS____")
 	{
-		this->rowCnt = (OSInt)((fd->GetDataSize() - 8) / 64);
+		this->rowCnt = (UOSInt)((fd->GetDataSize() - 8) / 64);
 		this->ptBuff = MemAlloc(UInt8, this->rowCnt * 64);
 		this->rowSize = 64;
 		this->fileType = 1;
@@ -25,7 +25,7 @@ Math::TSPFile::TSPFile(IO::IStreamData *fd) : DB::ReadingDB(fd->GetFullName())
 	}
 	else if (*(Int64*)hdr == *(Int64*)"SmTS___A")
 	{
-		this->rowCnt = (OSInt)((fd->GetDataSize() - 72) / 64);
+		this->rowCnt = (UOSInt)((fd->GetDataSize() - 72) / 64);
 		this->ptBuff = MemAlloc(UInt8, this->rowCnt * 64);
 		this->rowSize = 64;
 		this->fileType = 2;
@@ -35,7 +35,7 @@ Math::TSPFile::TSPFile(IO::IStreamData *fd) : DB::ReadingDB(fd->GetFullName())
 	}
 	else if (*(Int64*)hdr == *(Int64*)"SmTS___B")
 	{
-		this->rowCnt = (OSInt)((fd->GetDataSize() - 72) / 128);
+		this->rowCnt = (UOSInt)((fd->GetDataSize() - 72) / 128);
 		this->ptBuff = MemAlloc(UInt8, this->rowCnt * 128);
 		this->rowSize = 128;
 		this->fileType = 3;
@@ -151,7 +151,7 @@ Bool Math::TSPReader::ReadNext()
 {
 	if (this->currRow >= (OSInt)this->rowCnt - 1)
 	{
-		this->currRow = this->rowCnt;
+		this->currRow = (OSInt)this->rowCnt;
 		this->currRowPtr = 0;
 	}
 	else

@@ -25,7 +25,7 @@ Int32 Parser::FileParser::MDBParser::GetName()
 	return *(Int32*)"MDBP";
 }
 
-void Parser::FileParser::MDBParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::MDBParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
@@ -132,7 +132,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		Math::CoordinateSystem *csys = 0;
 		DB::SharedDBConn *conn;
 		Map::ESRI::ESRIMDBLayer *lyr;
-		Int32 srid = 0;
+		UInt32 srid = 0;
 
 		if (hasSpRef)
 		{

@@ -10,27 +10,27 @@ namespace Data
 		class LZWDecStream : public IO::Stream
 		{
 		private:
-			OSInt minCodeSize;
-			OSInt maxCodeSize;
-			OSInt currCodeSize;
-			OSInt currTableSize;
-			OSInt nextTableSize;
+			UOSInt minCodeSize;
+			UOSInt maxCodeSize;
+			UOSInt currCodeSize;
+			UOSInt currTableSize;
+			UOSInt nextTableSize;
 			UInt32 resetCode;
 			UInt32 endCode;
 			UInt8 *lzwTable;
-			OSInt tableSize;
+			UOSInt tableSize;
 			UInt8 *decBuff;
 			UOSInt decBuffSize;
 			OSInt codeSizeAdj;
-			Int16 localCode;
+			UInt32 localCode;
 			IO::BitReader *reader;
 			Bool toRelease;
 
 		private:
 			void ResetTable();
 		public:
-			LZWDecStream(IO::Stream *stm, Bool lsb, OSInt minCodeSize, OSInt maxCodeSize, OSInt codeSizeAdj);
-			LZWDecStream(IO::BitReader *reader, Bool toRelease, OSInt minCodeSize, OSInt maxCodeSize, OSInt codeSizeAdj);
+			LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
+			LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
 			virtual ~LZWDecStream();
 
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);

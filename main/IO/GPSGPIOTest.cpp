@@ -40,13 +40,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::RS232GPIO *port;
 	IO::GPSNMEA *gps;
 	Text::StringBuilderUTF8 sb;
-	Int32 pinNum = 7;
+	UInt16 pinNum = 7;
 	OSInt argc;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &pinNum);
+		Text::StrToUInt16(argv[1], &pinNum);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	sb.Append((const UTF8Char*)"Run using GPIO pin ");

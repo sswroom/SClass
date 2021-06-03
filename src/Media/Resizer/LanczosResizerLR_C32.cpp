@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include <float.h>
 #include "MyMemory.h"
+#include "Math/LanczosFilter.h"
 #include "Math/Math.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
@@ -14,26 +15,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
-Double Media::Resizer::LanczosResizerLR_C32::lanczos3_weight(Double phase, UOSInt nTap)
-{
-	Double ret;
-	Double aphase = Math::Abs(phase);
-	
-	if(aphase < DBL_EPSILON)
-	{
-		return 1.0;
-	}
-
-	if ((aphase * 2) >= nTap){
-		return 0.0;
-	}
-
-	ret = Math::Sin(Math::PI * phase) * Math::Sin(Math::PI * phase / nTap * 2) / (Math::PI * Math::PI * phase * phase / nTap * 2);
-
-	return ret;
-}
-
-void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -66,10 +48,10 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt 
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i + 0.5) * source_length;
-		pos = pos / result_length + offsetCorr;
-		n = (OSInt)Math::Fix(pos - (nTap / 2 - 0.5));//2.5);
-		pos = (n+0.5-pos);
+		pos = (Math::UOSInt2Double(i) + 0.5) * source_length;
+		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+		n = (OSInt)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+		pos = (Math::OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		if (nTap == 6)
 		{
@@ -78,12 +60,12 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt 
 			{
 				if(n < 0){
 					ind[j] = 0;
-				}else if(n >= source_max_pos){
-					ind[j] = (Int32)((source_max_pos - 1) * indexSep);
+				}else if((UOSInt)n >= source_max_pos){
+					ind[j] = (Int32)((OSInt)(source_max_pos - 1) * indexSep);
 				}else{
 					ind[j] = (Int32)(n * indexSep);
 				}
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				sum += work[j];
 				pos += 1;
 				n += 1;
@@ -113,12 +95,12 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt 
 			{
 				if(n < 0){
 					out->index[i * out->tap + j] = 0;
-				}else if(n >= source_max_pos){
-					out->index[i * out->tap + j] = (source_max_pos - 1) * indexSep;
+				}else if((UOSInt)n >= source_max_pos){
+					out->index[i * out->tap + j] = (OSInt)(source_max_pos - 1) * indexSep;
 				}else{
 					out->index[i * out->tap + j] = n * indexSep;
 				}
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				sum += work[j];
 				pos += 1;
 				n += 1;
@@ -147,7 +129,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -164,7 +146,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTa
 	}
 
 	out->length = result_length;
-	out->tap = (OSInt)Math::Fix((nTap * (source_length) + (result_length - 1)) / result_length);
+	out->tap = (UOSInt)Math::Fix((Math::UOSInt2Double(nTap) * (source_length) + Math::UOSInt2Double(result_length - 1)) / Math::UOSInt2Double(result_length));
 	ttap = out->tap;
 	out->tap += out->tap & 1;
 
@@ -184,7 +166,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTa
 	i = 0;
 	while (i < result_length)
 	{
-		pos = ((OSInt)i - (OSInt)(nTap / 2) + 0.5) * source_length / result_length + 0.5;
+		pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 0.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
 		n = (Int32)Math::Fix(pos + offsetCorr);
 		sum = 0;
 		if (ttap == 6)
@@ -193,17 +175,17 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTa
 			j = 0;
 			while (j < ttap)
 			{
-				phase = (n+0.5)*result_length;
+				phase = (Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length);
 				phase /= source_length;
-				phase -= (i+0.5);
+				phase -= (Math::UOSInt2Double(i) + 0.5);
 				if(n < 0){
 					ind[j] = 0;
-				}else if(n >= source_max_pos){
-					ind[j] = (Int32)((source_max_pos-1) * indexSep);
+				}else if((UOSInt)n >= source_max_pos){
+					ind[j] = (Int32)((OSInt)(source_max_pos - 1) * indexSep);
 				}else{
 					ind[j] = (Int32)(n * indexSep);
 				}
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
 				j++;
@@ -231,17 +213,17 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTa
 			j = 0;
 			while (j < ttap)
 			{
-				phase = (n+0.5)*result_length;
+				phase = (Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length);
 				phase /= source_length;
-				phase -= (i+0.5);
+				phase -= (Math::UOSInt2Double(i) + 0.5);
 				if(n < 0){
 					out->index[i * out->tap + j] = 0;
-				}else if(n >= source_max_pos){
-					out->index[i * out->tap + j] = (source_max_pos-1) * indexSep;
+				}else if((UOSInt)n >= source_max_pos){
+					out->index[i * out->tap + j] = (OSInt)(source_max_pos-1) * indexSep;
 				}else{
 					out->index[i * out->tap + j] = n * indexSep;
 				}
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
 				j++;
@@ -275,7 +257,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTa
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -308,10 +290,10 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i + 0.5) * source_length;
-		pos = pos / result_length + offsetCorr;
-		n = (Int32)Math::Fix(pos - (nTap / 2 - 0.5));//2.5);
-		pos = (n + 0.5 - pos);
+		pos = (Math::UOSInt2Double(i) + 0.5) * source_length;
+		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+		n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+		pos = (Math::OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		if (out->tap == 6 && (result_length & 1) == 0)
 		{
@@ -322,24 +304,24 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = lanczos3_weight(pos, nTap) + lanczos3_weight(pos + 1, nTap);
+					work[j] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
-				else if (n >= source_max_pos - 1)
+				else if ((UOSInt)n >= source_max_pos - 1)
 				{
-					ind1 = source_max_pos - 2;
+					ind1 = (OSInt)source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = lanczos3_weight(pos, nTap) + lanczos3_weight(pos + 1, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = lanczos3_weight(pos, nTap);
-					work[j + 1] = lanczos3_weight(pos + 1, nTap);
+					work[j] = Math::LanczosFilter::Weight(pos, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(pos + 1, nTap);
 					sum += work[j] + work[j + 1];
 				}
 //				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -392,12 +374,11 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 			UInt16 *tmpPtr;
 			UInt16 v1;
 			UInt16 v2;
-			Double vTmp;
 			UOSInt tmpTap;
 			j = 0;
 			while (j < nTap)
 			{
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				sum += work[j];
 				tmpIndex[j] = n;
 				ind1 = n;
@@ -419,7 +400,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				tmpIndex[nTap - 1] = 0;
 				work[nTap - 1] = 0.0;
 			}
-			while (tmpIndex[nTap - 1] >= source_max_pos)
+			while (tmpIndex[nTap - 1] >= (OSInt)source_max_pos)
 			{
 				work[nTap - 1] = work[nTap - 1] + work[nTap - 2];
 				tmpIndex[nTap - 1] = tmpIndex[nTap - 2];
@@ -465,16 +446,16 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				tmpTap += 4;
 			}
 
-			pos = (i + 1.5) * source_length;
-			pos = pos / result_length + offsetCorr;
-			n = (Int32)Math::Fix(pos - (nTap / 2 - 0.5));//2.5);
-			pos = (n + 0.5 - pos);
+			pos = (Math::UOSInt2Double(i) + 1.5) * source_length;
+			pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+			n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+			pos = (Math::OSInt2Double(n) + 0.5 - pos);
 			sum = 0;
 
 			j = 0;
 			while (j < nTap)
 			{
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				sum += work[j];
 				tmpIndex[j] = n;
 				ind1 = n;
@@ -496,7 +477,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				tmpIndex[nTap - 1] = 0;
 				work[nTap - 1] = 0.0;
 			}
-			while (tmpIndex[nTap - 1] >= source_max_pos)
+			while (tmpIndex[nTap - 1] >= (OSInt)source_max_pos)
 			{
 				work[nTap - 1] = work[nTap - 1] + work[nTap - 2];
 				tmpIndex[nTap - 1] = tmpIndex[nTap - 2];
@@ -553,24 +534,24 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = lanczos3_weight(pos, nTap) + lanczos3_weight(pos + 1, nTap);
+					work[j] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
-				else if (n >= source_max_pos - 1)
+				else if ((UOSInt)n >= source_max_pos - 1)
 				{
-					ind1 = source_max_pos - 2;
+					ind1 = (OSInt)source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = lanczos3_weight(pos, nTap) + lanczos3_weight(pos + 1, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = lanczos3_weight(pos, nTap);
-					work[j + 1] = lanczos3_weight(pos + 1, nTap);
+					work[j] = Math::LanczosFilter::Weight(pos, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(pos + 1, nTap);
 					sum += work[j] + work[j + 1];
 				}
 				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -603,7 +584,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -619,7 +600,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 
 	if (nTap == 0)
 	{
-		ttap = (OSInt)Math::Fix((8 * (source_length) + (result_length - 1)) / result_length);
+		ttap = (UOSInt)Math::Fix((8 * (source_length) + Math::UOSInt2Double(result_length - 1)) / Math::UOSInt2Double(result_length));
 		if (ttap == 7 || ttap == 8 || ttap == 15 || ttap == 16)
 		{
 			nTap = 8;
@@ -631,7 +612,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 	}
 
 	out->length = result_length;
-	out->tap = (OSInt)Math::Fix((nTap * (source_length) + (result_length - 1)) / result_length);
+	out->tap = (UOSInt)Math::Fix((Math::UOSInt2Double(nTap) * (source_length) + Math::UOSInt2Double(result_length - 1)) / Math::UOSInt2Double(result_length));
 //	ttap = out->tap;
 	out->tap += out->tap & 1;
 	ttap = out->tap;
@@ -652,7 +633,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 	i = 0;
 	while (i < result_length)
 	{
-		pos = ((OSInt)i - (OSInt)(nTap / 2) + 0.5) * source_length / result_length + 0.5;
+		pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 0.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
 		n = (Int32)Math::Fix(pos + offsetCorr);
 		sum = 0;
 		if (ttap & 1)
@@ -660,30 +641,30 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 			j = 0;
 			while (j < ttap - 1)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 0.5);
-				phase2 = ((n + 1.5) * result_length / source_length) - (i + 0.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
+				phase2 = ((Math::OSInt2Double(n) + 1.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
 				if (n < 0)
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = lanczos3_weight(phase, nTap) + lanczos3_weight(phase2, nTap);
+					work[j] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
-				else if (n >= source_max_pos - 1)
+				else if ((UOSInt)n >= source_max_pos - 1)
 				{
-					ind1 = source_max_pos - 2;
+					ind1 = (OSInt)source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = lanczos3_weight(phase, nTap) + lanczos3_weight(phase2, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = lanczos3_weight(phase, nTap);
-					work[j + 1] = lanczos3_weight(phase2, nTap);
+					work[j] = Math::LanczosFilter::Weight(phase, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(phase2, nTap);
 					sum += work[j] + work[j + 1];
 				}
 				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -691,28 +672,28 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 				n += 2;
 				j += 2;
 			}
-			phase = ((n + 0.5) * result_length / source_length) - (i + 0.5);
+			phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
 			if (n < 0)
 			{
 				ind1 = 0;
 				ind2 = 0;
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				work[j + 1] = 0;
 				sum += work[j];
 			}
-			else if (n >= source_max_pos - 1)
+			else if ((UOSInt)n >= source_max_pos - 1)
 			{
-				ind1 = source_max_pos - 2;
+				ind1 = (OSInt)source_max_pos - 2;
 				ind2 = ind1 + 1;
 				work[j] = 0;
-				work[j + 1] = lanczos3_weight(phase, nTap);
+				work[j + 1] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j + 1];
 			}
 			else
 			{
 				ind1 = n;
 				ind2 = n + 1;
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				work[j + 1] = 0;
 				sum += work[j];
 			}
@@ -741,30 +722,30 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 			j = 0;
 			while (j < out->tap)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 0.5);
-				phase2 = ((n + 1.5) * result_length / source_length) - (i + 0.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
+				phase2 = ((Math::OSInt2Double(n) + 1.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
 				if (n < 0)
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = lanczos3_weight(phase, nTap) + lanczos3_weight(phase2, nTap);
+					work[j] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
-				else if (n >= source_max_pos - 1)
+				else if ((UOSInt)n >= source_max_pos - 1)
 				{
-					ind1 = source_max_pos - 2;
+					ind1 = (OSInt)source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = lanczos3_weight(phase, nTap) + lanczos3_weight(phase2, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = lanczos3_weight(phase, nTap);
-					work[j + 1] = lanczos3_weight(phase2, nTap);
+					work[j] = Math::LanczosFilter::Weight(phase, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(phase2, nTap);
 					sum += work[j] + work[j + 1];
 				}
 //				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -820,8 +801,8 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 			j = 0;
 			while (j < ttap)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 0.5);
-				work[j] = lanczos3_weight(phase, nTap);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				tmpIndex[j] = n;
 				ind1 = n;
 				sum += work[j];
@@ -842,7 +823,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 				tmpIndex[ttap - 1] = 0;
 				work[ttap - 1] = 0.0;
 			}
-			while (tmpIndex[ttap - 1] >= source_max_pos - 1)
+			while (tmpIndex[ttap - 1] >= (OSInt)source_max_pos - 1)
 			{
 				work[ttap - 1] = work[ttap - 1] + work[ttap - 2];
 				tmpIndex[ttap - 1] = tmpIndex[ttap - 2];
@@ -888,15 +869,15 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 				tmpTap += 4;
 			}
 
-			pos = ((OSInt)i - (OSInt)(nTap / 2) + 1.5) * source_length / result_length + 0.5;
+			pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 1.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
 			n = (Int32)Math::Fix(pos + offsetCorr);
 			sum = 0;
 
 			j = 0;
 			while (j < ttap)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 1.5);
-				work[j] = lanczos3_weight(phase, nTap);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 1.5);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				tmpIndex[j] = n;
 				ind1 = n;
 				sum += work[j];
@@ -917,7 +898,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 				tmpIndex[ttap - 1] = 0;
 				work[ttap - 1] = 0.0;
 			}
-			while (tmpIndex[ttap - 1] >= source_max_pos - 1)
+			while (tmpIndex[ttap - 1] >= (OSInt)source_max_pos - 1)
 			{
 				work[ttap - 1] = work[ttap - 1] + work[ttap - 2];
 				tmpIndex[ttap - 1] = tmpIndex[ttap - 2];
@@ -970,30 +951,30 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 			j = 0;
 			while (j < ttap)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 0.5);
-				phase2 = ((n + 1.5) * result_length / source_length) - (i + 0.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
+				phase2 = ((Math::OSInt2Double(n) + 1.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
 				if (n < 0)
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = lanczos3_weight(phase, nTap) + lanczos3_weight(phase2, nTap);
+					work[j] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
-				else if (n >= source_max_pos - 1)
+				else if ((UOSInt)n >= source_max_pos - 1)
 				{
-					ind1 = source_max_pos - 2;
+					ind1 = (OSInt)source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = lanczos3_weight(phase, nTap) + lanczos3_weight(phase2, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = lanczos3_weight(phase, nTap);
-					work[j + 1] = lanczos3_weight(phase2, nTap);
+					work[j] = Math::LanczosFilter::Weight(phase, nTap);
+					work[j + 1] = Math::LanczosFilter::Weight(phase2, nTap);
 					sum += work[j] + work[j + 1];
 				}
 				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -1151,15 +1132,15 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 	LRHPARAMETER prm;
 	Double w;
 	Double h;
-	Int32 siWidth;
-	Int32 siHeight;
+	UOSInt siWidth;
+	UOSInt siHeight;
 
 	w = xOfst + swidth;
 	h = yOfst + sheight;
-	siWidth = (Int32)w;
-	siHeight = (Int32)h;
-	w -= siWidth;
-	h -= siHeight;
+	siWidth = (UOSInt)w;
+	siHeight = (UOSInt)h;
+	w -= Math::UOSInt2Double(siWidth);
+	h -= Math::UOSInt2Double(siHeight);
 	if (w > 0.00001)
 		siWidth++;
 	if (h > 0.00001)
@@ -1175,7 +1156,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		this->action->UpdateRGBTable(this->rgbTable);
 	}
 
-	if (swidth != dwidth && sheight != dheight)
+	if (swidth != Math::UOSInt2Double(dwidth) && sheight != Math::UOSInt2Double(dheight))
 	{
 		if (dwidth < this->hnTap || dheight < this->vnTap)
 			return;
@@ -1184,7 +1165,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		{
 			DestoryHori();
 
-			if (swidth > dwidth)
+			if (swidth > Math::UOSInt2Double(dwidth))
 			{
 				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
 			}
@@ -1205,28 +1186,28 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		{
 			DestoryVert();
 
-			if (sheight > dheight)
+			if (sheight > Math::UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, dwidth << 3, yOfst);
+				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, dwidth << 3, yOfst);
+				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
 			vsOfst = yOfst;
-			vsStep = dwidth << 3;
+			vsStep = (OSInt)dwidth << 3;
 			vIndex = prm.index;
 			vWeight = prm.weight;
 			vTap = prm.tap;
 			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 		}
 		
-		action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, vFilter, sbpl, dbpl, this->srcAlphaType);
+		action->DoHorizontalVerticalFilter(src, dest, dwidth, (UOSInt)siHeight, dheight, hFilter, vFilter, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();
 	}
-	else if (swidth != dwidth)
+	else if (swidth != Math::UOSInt2Double(dwidth))
 	{
 		if (dwidth < this->hnTap)
 			return;
@@ -1235,7 +1216,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		{
 			DestoryHori();
 
-			if (swidth > dwidth)
+			if (swidth > Math::UOSInt2Double(dwidth))
 			{
 				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
 			}
@@ -1254,7 +1235,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, this->hFilter, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();
 	}
-	else if (sheight != dheight)
+	else if (sheight != Math::UOSInt2Double(dheight))
 	{
 		if (dheight < this->vnTap)
 			return;
@@ -1263,7 +1244,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 		{
 			DestoryVert();
 
-			if (sheight > dheight)
+			if (sheight > Math::UOSInt2Double(dheight))
 			{
 				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
 			}
@@ -1280,13 +1261,13 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double
 			vTap = prm.tap;
 			this->vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 		}
-		action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, vFilter, sbpl, dbpl, this->srcAlphaType);
+		action->DoVerticalFilter(src, dest, (UOSInt)siWidth, (UOSInt)siHeight, dheight, vFilter, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();
 	}
 	else
 	{
 		Sync::MutexUsage mutUsage(mut);
-		action->DoCollapse(src, dest, siWidth, dheight, sbpl, dbpl, this->srcAlphaType);
+		action->DoCollapse(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();
 
 	}

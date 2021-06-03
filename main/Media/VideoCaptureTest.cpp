@@ -238,11 +238,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC((const UTF8Char*)&maxFmt, 4);
 					}
 					sb.Append((const UTF8Char*)", Size = ");
-					sb.AppendOSInt(maxWidth);
+					sb.AppendUOSInt(maxWidth);
 					sb.Append((const UTF8Char*)" x ");
-					sb.AppendOSInt(maxHeight);
+					sb.AppendUOSInt(maxHeight);
 					sb.Append((const UTF8Char*)", bpp = ");
-					sb.AppendI32(maxBpp);
+					sb.AppendU32(maxBpp);
 					console->WriteLine(sb.ToString());
 					capture->SetPreferSize(maxWidth, maxHeight, maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 				}
@@ -272,15 +272,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC((const UTF8Char*)&info.fourcc, 4);
 					}
 					sb.Append((const UTF8Char*)", Size = ");
-					sb.AppendOSInt(info.dispWidth);
+					sb.AppendUOSInt(info.dispWidth);
 					sb.Append((const UTF8Char*)" x ");
-					sb.AppendOSInt(info.dispHeight);
+					sb.AppendUOSInt(info.dispHeight);
 					sb.Append((const UTF8Char*)", bpp = ");
-					sb.AppendI32(info.storeBPP);
+					sb.AppendU32(info.storeBPP);
 					sb.Append((const UTF8Char*)", rate = ");
-					sb.AppendI32(frameRateNorm);
+					sb.AppendU32(frameRateNorm);
 					sb.Append((const UTF8Char*)" / ");
-					sb.AppendI32(frameRateDenorm);
+					sb.AppendU32(frameRateDenorm);
 					sb.Append((const UTF8Char*)" (");
 					Text::SBAppendF64(&sb, frameRateNorm / (Double)frameRateDenorm);
 					sb.Append((const UTF8Char*)")");

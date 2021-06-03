@@ -44,11 +44,11 @@ typedef struct
 IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 hdr[64];
-//	Int32 fileSize;
-	Int32 fileCnt;
-	Int32 fileOfst;
-//	Int32 isUncompress;
-	OSInt i;
+//	UInt32 fileSize;
+	UInt32 fileCnt;
+	UInt32 fileOfst;
+//	UInt32 isUncompress;
+	UOSInt i;
 	MLHFileInfo *fileInfo;
 	UTF8Char sbuff[17];
 
@@ -56,10 +56,10 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 	if (!Text::StrEquals((const Char*)hdr, "MLH ENCODE 1.04  (C) MAEHASHI"))
 		return 0;
 
-//	fileSize = ReadInt32(&hdr[32]);
-	fileCnt = ReadInt32(&hdr[36]);
-	fileOfst = ReadInt32(&hdr[40]);
-//	isUncompress = ReadInt32(&hdr[44]);
+//	fileSize = ReadUInt32(&hdr[32]);
+	fileCnt = ReadUInt32(&hdr[36]);
+	fileOfst = ReadUInt32(&hdr[40]);
+//	isUncompress = ReadUInt32(&hdr[44]);
 
 	Text::Encoding enc(932);
 	IO::PackageFile *pf;

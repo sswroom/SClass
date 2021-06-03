@@ -13,12 +13,12 @@ namespace DB
 	private:
 		const UTF8Char *fileName;
 		IO::SeekableStream *stm;
-		Int32 codePage;
+		UInt32 codePage;
 		Bool noHeader;
 
 	public:
-		CSVFile(const UTF8Char *fileName, Int32 codePage);
-		CSVFile(IO::SeekableStream *stm, Int32 codePage);
+		CSVFile(const UTF8Char *fileName, UInt32 codePage);
+		CSVFile(IO::SeekableStream *stm, UInt32 codePage);
 		virtual ~CSVFile();
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release

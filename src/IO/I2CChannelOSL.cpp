@@ -45,9 +45,9 @@ Bool IO::I2CChannelOS::IsError()
 	return this->hand == 0;
 }
 
-OSInt IO::I2CChannelOS::I2CRead(UInt8 *buff, OSInt buffSize)
+UOSInt IO::I2CChannelOS::I2CRead(UInt8 *buff, UOSInt buffSize)
 {
-	Int32 ret;
+	OSInt ret;
 	while (true)
 	{
 		ret = read((int)(OSInt)this->hand, buff, buffSize);
@@ -57,12 +57,12 @@ OSInt IO::I2CChannelOS::I2CRead(UInt8 *buff, OSInt buffSize)
 	if (ret < 0)
 		return 0;
 	else
-		return ret;
+		return (UOSInt)ret;
 }
 
-OSInt IO::I2CChannelOS::I2CWrite(const UInt8 *buff, OSInt buffSize)
+UOSInt IO::I2CChannelOS::I2CWrite(const UInt8 *buff, UOSInt buffSize)
 {
-	Int32 ret;
+	OSInt ret;
 	while (true)
 	{
 		ret = write((int)(OSInt)this->hand, buff, buffSize);
@@ -72,5 +72,5 @@ OSInt IO::I2CChannelOS::I2CWrite(const UInt8 *buff, OSInt buffSize)
 	if (ret < 0)
 		return 0;
 	else
-		return ret;
+		return (UOSInt)ret;
 }

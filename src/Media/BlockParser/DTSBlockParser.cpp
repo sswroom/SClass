@@ -11,16 +11,16 @@ Media::BlockParser::DTSBlockParser::~DTSBlockParser()
 
 Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(IO::IStreamData *stmData)
 {
-	Int64 leng = stmData->GetDataSize();
+	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[256];
-	Int64 currOfst = 0;
+	UInt64 currOfst = 0;
 	stmData->GetRealData(0, 16, buff);
 	if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)
 	{
 		return 0;
 	}
-	Int32 nblks = ((buff[4] & 1) << 6) + (buff[5] >> 2);
-	Int32 fsize = ((buff[5] & 3) << 12) + (buff[6] << 4) + (buff[7] >> 4);
+	UInt32 nblks = (UInt32)(((buff[4] & 1) << 6) + (buff[5] >> 2));
+	UInt32 fsize = (UInt32)(((buff[5] & 3) << 12) + (buff[6] << 4) + (buff[7] >> 4));
 	Int32 amode = ((buff[7] & 15) << 2) + ((buff[8] & 0xC0) >> 6);
 	Int32 sfreq = (buff[8] & 0x3C) >> 2;
 //	Int32 rate = ((buff[8] & 3) << 3) + ((buff[9] & 0xE0) >> 5);
@@ -67,7 +67,7 @@ Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(IO:
 		break;
 	}
 	if (lff == 1 || lff == 2)
-		format.nChannels += 1;
+		format.nChannels = (UInt16)(format.nChannels + 1);
 
 	switch (sfreq)
 	{
@@ -118,8 +118,8 @@ Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(IO:
 			return 0;
 		}
 
-		nblks = ((buff[4] & 1) << 6) + (buff[5] >> 2);
-		fsize = ((buff[5] & 3) << 12) + (buff[6] << 4) + (buff[7] >> 4);
+		nblks = (UInt32)(((buff[4] & 1) << 6) + (buff[5] >> 2));
+		fsize = (UInt32)(((buff[5] & 3) << 12) + (buff[6] << 4) + (buff[7] >> 4));
 		amode = ((buff[7] & 15) << 2) + ((buff[8] & 0xC0) >> 6);
 		sfreq = (buff[8] & 0x3C) >> 2;
 //		rate = ((buff[8] & 3) << 3) + ((buff[9] & 0xE0) >> 5);

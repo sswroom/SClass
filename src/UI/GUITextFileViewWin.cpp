@@ -1842,7 +1842,7 @@ UOSInt UI::GUITextFileView::GetLineCount()
 	return this->lineOfsts->GetCount() - 1;
 }
 
-void UI::GUITextFileView::SetCodePage(Int32 codePage)
+void UI::GUITextFileView::SetCodePage(UInt32 codePage)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->codePage = codePage;

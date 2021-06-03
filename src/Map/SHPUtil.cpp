@@ -9,7 +9,7 @@
 #include "Math/Point.h"
 #include "Math/Point3D.h"
 
-Math::Vector2D *Map::SHPUtil::ParseShpRecord(Int32 srid, const UInt8 *buff, OSInt buffSize)
+Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize < 4)
 		return 0;

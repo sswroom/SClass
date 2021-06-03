@@ -21,10 +21,10 @@ namespace Media
 				UOSInt width;
 				UOSInt height;
 				UOSInt width0;
-				OSInt tap;
+				UOSInt tap;
 				OSInt *index;
 				Int64 *weight;
-				OSInt tap2;
+				UOSInt tap2;
 				OSInt *index2;
 				Int64 *weight2;
 				UInt8 *buffPt;
@@ -54,9 +54,9 @@ namespace Media
 			Double vTotTime;
 			UOSInt vTotCount;
 
-			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
-			void mt_hv_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, OSInt htap, OSInt *hindex, Int64 *hweight, OSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType);
+			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			void mt_hv_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType);
 			void mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
 			static void __stdcall DoTask(void *obj);
@@ -70,9 +70,9 @@ namespace Media
 			virtual void DoCollapse(UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
 			virtual void UpdateRGBTable(UInt8 *rgbTable);
-			virtual HoriFilter *CreateHoriFilter(OSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length);
+			virtual HoriFilter *CreateHoriFilter(UOSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length);
 			virtual void DestroyHoriFilter(HoriFilter *hfilter);
-			virtual VertFilter *CreateVertFilter(OSInt vtap, OSInt *vIndex, Int64 *vWeight, UOSInt length);
+			virtual VertFilter *CreateVertFilter(UOSInt vtap, OSInt *vIndex, Int64 *vWeight, UOSInt length);
 			virtual void DestroyVertFilter(VertFilter *vfilter);
 
 			virtual Double GetHAvgTime();

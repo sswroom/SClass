@@ -11,23 +11,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
-	Int32 portNum = Test::TestModem::ListPorts(&console);
-	Int32 baudRate = 115200;
+	UOSInt portNum = Test::TestModem::ListPorts(&console);
+	UInt32 baudRate = 115200;
 
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &portNum);
+		Text::StrToUOSInt(argv[1], &portNum);
 	}
 	if (argc >= 3)
 	{
-		Text::StrToInt32(argv[2], &baudRate);
+		Text::StrToUInt32(argv[2], &baudRate);
 	}
 	console.WriteLine();
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Trying Port ");
-	sb.AppendI32(portNum);
+	sb.AppendUOSInt(portNum);
 	console.WriteLine(sb.ToString());
 
 	IO::SerialPort *port;

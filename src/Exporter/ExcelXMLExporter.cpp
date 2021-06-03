@@ -45,7 +45,7 @@ Bool Exporter::ExcelXMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff,
 	return false;
 }
 
-void Exporter::ExcelXMLExporter::SetCodePage(Int32 codePage)
+void Exporter::ExcelXMLExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

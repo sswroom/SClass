@@ -4,12 +4,12 @@
 #include "Test/TestModem.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 Test::TestModem::ListPorts(IO::Writer *writer)
+UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<UOSInt> ports;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<IO::SerialPort::SerialPortType> portTypes;
 	IO::SerialPort::GetAvailablePorts(&ports, &portTypes);
 	writer->WriteLine((const UTF8Char*)"Available Serial Ports:");
@@ -19,7 +19,7 @@ Int32 Test::TestModem::ListPorts(IO::Writer *writer)
 	{
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Port ");
-		sb.AppendOSInt(ports.GetItem(i));
+		sb.AppendUOSInt(ports.GetItem(i));
 		sb.Append((const UTF8Char*)" - ");
 		sb.Append(IO::SerialPort::GetPortTypeName(portTypes.GetItem(i)));
 		writer->WriteLine(sb.ToString());
@@ -32,8 +32,8 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	if (modem->GSMGetManufacturer(sbuff))
 	{

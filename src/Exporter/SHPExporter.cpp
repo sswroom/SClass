@@ -52,7 +52,7 @@ Bool Exporter::SHPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-void Exporter::SHPExporter::SetCodePage(Int32 codePage)
+void Exporter::SHPExporter::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

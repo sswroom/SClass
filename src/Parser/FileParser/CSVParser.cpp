@@ -26,7 +26,7 @@ Int32 Parser::FileParser::CSVParser::GetName()
 	return *(Int32*)"CSVP";
 }
 
-void Parser::FileParser::CSVParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::CSVParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
@@ -51,14 +51,14 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *tmpArr[2];
 	const UTF8Char **tmpcArr2;
 	UTF8Char **tmpArr2;
-	OSInt colCnt;
-	OSInt currCol;
+	UOSInt colCnt;
+	UOSInt currCol;
 	Data::ArrayListStrUTF8 *colNames;
 
-	OSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i < 0)
+	OSInt si = Text::StrLastIndexOf(fd->GetFullName(), '.');
+	if (si < 0)
 		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"CSV") != 0)
+	if (Text::StrCompareICase(&(fd->GetFullName())[si + 1], (const UTF8Char*)"CSV") != 0)
 		return 0;
 
 	IO::StreamDataStream *stm;
@@ -66,18 +66,18 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
 
-	OSInt dateCol = -1;
-	OSInt timeCol = -1;
-	OSInt dtCol = -1;
-	OSInt validCol = -1;
-	OSInt latCol = -1;
-	OSInt lonCol = -1;
-	OSInt latDirCol = -1;
-	OSInt lonDirCol = -1;
-	OSInt altCol = -1;
-	OSInt speedCol = -1;
-	OSInt headingCol = -1;
-	OSInt nSateCol = -1;
+	UOSInt dateCol = (UOSInt)-1;
+	UOSInt timeCol = (UOSInt)-1;
+	UOSInt dtCol = (UOSInt)-1;
+	UOSInt validCol = (UOSInt)-1;
+	UOSInt latCol = (UOSInt)-1;
+	UOSInt lonCol = (UOSInt)-1;
+	UOSInt latDirCol = (UOSInt)-1;
+	UOSInt lonDirCol = (UOSInt)-1;
+	UOSInt altCol = (UOSInt)-1;
+	UOSInt speedCol = (UOSInt)-1;
+	UOSInt headingCol = (UOSInt)-1;
+	UOSInt nSateCol = (UOSInt)-1;
 
 	NEW_CLASS(colNames, Data::ArrayListStrUTF8());
 	reader->ReadLine(sbuff, 1024);
@@ -163,18 +163,18 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		{
 			nSateCol = currCol;
 		}
-		currCol+=1;
+		currCol += 1;
 		if (colCnt < 2)
 			break;
 		colCnt = Text::StrCSVSplit(tmpArr, 2, tmpArr[1]);
 	}
 
-	if (((dateCol >= 0 && timeCol >= 0) || (dtCol >= 0)) && latCol >= 0 && lonCol >= 0)
+	if (((dateCol != (UOSInt)-1 && timeCol != (UOSInt)-1) || (dtCol != (UOSInt)-1)) && latCol != (UOSInt)-1 && lonCol != (UOSInt)-1)
 	{
 		Map::GPSTrack *track;
 		Map::GPSTrack::GPSRecord rec;
 		Data::DateTime dt;
-		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol >= 0, this->codePage, 0));
+		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != (UOSInt)-1, this->codePage, 0));
 		track->SetTrackName(fd->GetShortName());
 		
 		tmpArr2 = MemAlloc(UTF8Char*, currCol + 1);
@@ -182,7 +182,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpArr2, currCol + 1, sbuff))
 			{
-				if (dtCol >= 0)
+				if (dtCol != (UOSInt)-1)
 				{
 					dt.SetValue(tmpArr2[dtCol]);
 				}
@@ -194,17 +194,17 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				rec.utcTimeTicks = dt.ToTicks();
 				rec.lat = Text::StrToDouble(tmpArr2[latCol]);
 				rec.lon = Text::StrToDouble(tmpArr2[lonCol]);
-				if (latDirCol >= 0)
+				if (latDirCol != (UOSInt)-1)
 				{
 					if (tmpArr2[latDirCol][0] == 'S')
 						rec.lat = -rec.lat;
 				}
-				if (lonDirCol >= 0)
+				if (lonDirCol != (UOSInt)-1)
 				{
 					if (tmpArr2[lonDirCol][0] == 'W')
 						rec.lon = -rec.lon;
 				}
-				if (validCol >= 0)
+				if (validCol != (UOSInt)-1)
 				{
 					if (Text::StrCompareICase(tmpArr2[validCol], (const UTF8Char*)"DGPS"))
 					{
@@ -223,12 +223,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.valid = 0;
 				}
-				if (altCol >= 0)
+				if (altCol != (UOSInt)-1)
 				{
-					i = Text::StrIndexOf(tmpArr2[altCol], (const UTF8Char*)" ");
-					if (i >= 0)
+					si = Text::StrIndexOf(tmpArr2[altCol], (const UTF8Char*)" ");
+					if (si >= 0)
 					{
-						tmpArr2[altCol][i] = 0;
+						tmpArr2[altCol][si] = 0;
 					}
 					rec.altitude = Text::StrToDouble(tmpArr2[altCol]);
 				}
@@ -236,12 +236,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.altitude = 0;
 				}
-				if (speedCol >= 0)
+				if (speedCol != (UOSInt)-1)
 				{
-					i = Text::StrIndexOf(tmpArr2[speedCol], (const UTF8Char*)" ");
-					if (i >= 0)
+					si = Text::StrIndexOf(tmpArr2[speedCol], (const UTF8Char*)" ");
+					if (si >= 0)
 					{
-						tmpArr2[speedCol][i] = 0;
+						tmpArr2[speedCol][si] = 0;
 					}
 					rec.speed = Text::StrToDouble(tmpArr2[speedCol]) / 1.852;
 				}
@@ -249,7 +249,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.speed = 0;
 				}
-				if (headingCol >= 0)
+				if (headingCol != (UOSInt)-1)
 				{
 					rec.heading = Text::StrToDouble(tmpArr2[headingCol]);
 				}
@@ -257,16 +257,16 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.heading = 0;
 				}
-				if (nSateCol >= 0)
+				if (nSateCol != (UOSInt)-1)
 				{
-					i = Text::StrIndexOf(tmpArr2[nSateCol], (const UTF8Char*)"/");
-					if (i >= 0)
+					si = Text::StrIndexOf(tmpArr2[nSateCol], (const UTF8Char*)"/");
+					if (si >= 0)
 					{
-						tmpArr2[nSateCol][i] = 0;
+						tmpArr2[nSateCol][si] = 0;
 						Text::StrTrim(tmpArr2[nSateCol]);
-						Text::StrTrim(&tmpArr2[nSateCol][i + 1]);
+						Text::StrTrim(&tmpArr2[nSateCol][si + 1]);
 						rec.nSateUsed = Text::StrToInt32(tmpArr2[nSateCol]);
-						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol][i + 1]);
+						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol][si + 1]);
 					}
 					else
 					{
@@ -289,11 +289,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		DEL_CLASS(colNames);
 		return track;
 	}
-	else if (latCol >= 0 && lonCol >= 0)
+	else if (latCol != (UOSInt)-1 && lonCol != (UOSInt)-1)
 	{
 		Map::VectorLayer *lyr;
 		Math::Point *pt;
-		OSInt nameCol = 0;
+		UOSInt i;
+		UOSInt nameCol = 0;
 
 		tmpcArr2 = MemAlloc(const UTF8Char*, currCol + 1);
 		i = currCol;

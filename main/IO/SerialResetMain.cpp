@@ -26,8 +26,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		Int32 portNum;
-		if (Text::StrToInt32(argv[1], &portNum))
+		UInt32 portNum;
+		if (Text::StrToUInt32(argv[1], &portNum))
 		{
 			if (IO::SerialPort::ResetPort(portNum))
 			{

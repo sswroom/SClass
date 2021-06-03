@@ -12,8 +12,8 @@ namespace IO
 		struct CaptureBuff
 		{
 			CaptureBuff *prevBuff;
-			OSInt thisBuffSize;
-			OSInt thisDataCnt;
+			UOSInt thisBuffSize;
+			UOSInt thisDataCnt;
 			Double *times;
 			Int32 *isHigh;
 		};
@@ -26,7 +26,7 @@ namespace IO
 		Double startTime;
 
 		void FreeCaptureData(CaptureBuff *buff);
-		OSInt AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff);
+		UOSInt AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff);
 	public:
 		IOPinCapture(IO::IOPin *pin);
 		virtual ~IOPinCapture();
@@ -38,7 +38,7 @@ namespace IO
 		virtual Bool SetPullType(PullType pt);
 		virtual UTF8Char *GetName(UTF8Char *buff);
 
-		OSInt GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh);
+		UOSInt GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh);
 	};
 }
 #endif

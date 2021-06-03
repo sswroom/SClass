@@ -25,7 +25,7 @@ Int32 Parser::FileParser::ZIPParser::GetName()
 	return *(Int32*)"ZIPP";
 }
 
-void Parser::FileParser::ZIPParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::ZIPParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

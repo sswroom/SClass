@@ -32,7 +32,7 @@ Int32 Parser::FileParser::TXTParser::GetName()
 	return *(Int32*)"TXTP";
 }
 
-void Parser::FileParser::TXTParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::TXTParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

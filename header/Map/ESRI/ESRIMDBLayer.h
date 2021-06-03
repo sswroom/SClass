@@ -23,14 +23,14 @@ namespace Map
 			Double minY;
 			Double maxX;
 			Double maxY;
-			OSInt objIdCol;
-			OSInt shapeCol;
+			UOSInt objIdCol;
+			UOSInt shapeCol;
 			const UTF8Char *tableName;
 
 		private:
 			Data::Int32Map<const UTF8Char **> *ReadNameArr();
 		public:
-			ESRIMDBLayer(DB::SharedDBConn *conn, Int32 srid, const UTF8Char *sourceName, const UTF8Char *tableName);
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *sourceName, const UTF8Char *tableName);
 			virtual ~ESRIMDBLayer();
 
 			virtual DrawLayerType GetLayerType();
@@ -44,7 +44,7 @@ namespace Map
 			virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
-			virtual Int32 GetCodePage();
+			virtual UInt32 GetCodePage();
 			virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
 
 			virtual void *BeginGetObject();

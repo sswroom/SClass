@@ -41,8 +41,8 @@ public:
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter *console;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char sbuff[256];
 	Media::DrawEngine *eng;
 	Media::Printer *printer;

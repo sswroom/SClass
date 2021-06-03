@@ -18,14 +18,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter *console;
-	Int32 port = 80;
+	UInt16 port = 80;
 	NEW_CLASS(console, IO::ConsoleWriter());
 
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		port = Text::StrToInt32(argv[1]);
+		port = 0;
+		Text::StrToUInt16(argv[1], &port);
 		if (port <= 0)
 		{
 			port = 0;

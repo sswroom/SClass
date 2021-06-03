@@ -22,6 +22,6 @@ namespace Parser
 			void ParseResourceData(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, OSInt resOfst, UInt8 *exeImage);
 			IO::EXEFile::ResourceType GetResourceType(UInt32 resType);
 		};
-	};
-};
+	}
+}
 #endif

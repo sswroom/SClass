@@ -38,13 +38,13 @@ IO::ParsedObject *Parser::FileParser::LUTParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	Int32 inputBpp = ReadInt32(&hdrBuff[48]);
-	Int32 outputBpp = ReadInt32(&hdrBuff[64]);
-	Int32 paramOfst = ReadInt32(&hdrBuff[72]);
-	Int32 paramSize = ReadInt32(&hdrBuff[76]);
-	Int32 lutOfst = ReadInt32(&hdrBuff[80]);
-	Int32 lutSize = ReadInt32(&hdrBuff[92]);
-	Int32 inpLev = (1 << inputBpp);
+	UInt32 inputBpp = ReadUInt32(&hdrBuff[48]);
+	UInt32 outputBpp = ReadUInt32(&hdrBuff[64]);
+	UInt32 paramOfst = ReadUInt32(&hdrBuff[72]);
+	UInt32 paramSize = ReadUInt32(&hdrBuff[76]);
+	UInt32 lutOfst = ReadUInt32(&hdrBuff[80]);
+	UInt32 lutSize = ReadUInt32(&hdrBuff[92]);
+	UInt32 inpLev = (UInt32)(1 << inputBpp);
 //	Int32 outpLev = (1 << outputBpp);
 	UInt8 *lutTable;
 	if (inpLev * inpLev * inpLev * 3 * (outputBpp >> 3) != lutSize)

@@ -35,7 +35,7 @@ namespace DB
 		const UTF8Char *name;
 
 	public:
-		DBFFile(IO::IStreamData *stmData, Int32 codePage);
+		DBFFile(IO::IStreamData *stmData, UInt32 codePage);
 		virtual ~DBFFile();
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
@@ -45,7 +45,7 @@ namespace DB
 		virtual void Reconnect();
 
 		Bool IsError();
-		Int32 GetCodePage();
+		UInt32 GetCodePage();
 		UOSInt GetColSize(UOSInt colIndex);
 		OSInt GetColIndex(const UTF8Char *name);
 		WChar *GetRecord(WChar *buff, UOSInt row, UOSInt col);

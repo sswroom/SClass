@@ -38,8 +38,8 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 	UInt8 footer[8];
 	UTF8Char sbuff[512];
 	Text::Encoding enc(65001);
-	OSInt byteConv = 0;
-	Int64 fileLeng;
+	UOSInt byteConv = 0;
+	UInt64 fileLeng;
 	UTF8Char *sptr;
 
 	fd->GetRealData(0, 256, (UInt8*)hdr);
@@ -57,7 +57,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 	if (hdr[3] & 8)
 	{
-		byteConv = Text::StrConcat(sbuff, &hdr[10]) - sbuff;
+		byteConv = (UOSInt)(Text::StrConcat(sbuff, &hdr[10]) - sbuff);
 		if (byteConv >= 247)
 			return 0;
 		

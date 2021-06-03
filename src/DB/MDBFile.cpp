@@ -16,7 +16,7 @@
 #endif
 #include <odbcinst.h>
 
-DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, Int32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"Driver={Microsoft Access Driver (*.mdb)};Dbq=");

@@ -26,7 +26,7 @@ namespace IO
 		void CheckHeader();
 	public:
 		StreamReader(IO::Stream *stm);
-		StreamReader(IO::Stream *stm, Int32 codePage);
+		StreamReader(IO::Stream *stm, UInt32 codePage);
 		virtual ~StreamReader();
 		virtual void Close();
 		Int32 Peek();

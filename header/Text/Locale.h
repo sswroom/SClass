@@ -9,17 +9,17 @@ namespace Text
 	public:
 		typedef struct
 		{
-			Int32 lcid;
+			UInt32 lcid;
 			const UTF8Char *shortName;
 			const UTF8Char *desc;
-			Int32 defCodePage;
+			UInt32 defCodePage;
 		} LocaleEntry;
 
 	private:
 		static LocaleEntry locales[];
 	public:
-		static LocaleEntry *GetLocaleEntry(Int32 lcid); //see Text::EncodingFactory::GetSystemLCID()
-		static LocaleEntry *GetLocaleEntryByCodePage(Int32 codePage);
+		static LocaleEntry *GetLocaleEntry(UInt32 lcid); //see Text::EncodingFactory::GetSystemLCID()
+		static LocaleEntry *GetLocaleEntryByCodePage(UInt32 codePage);
 
 	private:
 		Data::StringUTF8Map<LocaleEntry*> *names;

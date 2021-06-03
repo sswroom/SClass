@@ -22,12 +22,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double temp;
 	Double rh;
 	Text::StringBuilderUTF8 sb;
-	Int32 pinNum = 7;
+	UInt16 pinNum = 7;
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToInt32(argv[1], &pinNum);
+		Text::StrToUInt16(argv[1], &pinNum);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	sb.Append((const UTF8Char*)"Run using GPIO pin ");
@@ -62,8 +62,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Data::ArrayList<Int32> isHighs;
 		IO::FileStream *fs;
 		IO::StreamWriter *writer;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		if (pinCapture->GetCaptureData(&times, &isHighs) > 0)
 		{
 			NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.csv", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));

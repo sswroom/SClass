@@ -8,11 +8,11 @@ namespace Map
 	class TileMapGenerator
 	{
 	private:
-		Int32 imgSize;
+		UInt32 imgSize;
 		const UTF8Char *tileDir;
 		Map::MapConfig2TGen *mcfg;
 		Media::DrawEngine *geng;
-		OSInt osSize;
+		UOSInt osSize;
 
 		Data::ArrayListInt64 *dbGenList;
 		Sync::Mutex *dbMut;
@@ -25,13 +25,13 @@ namespace Map
 		void AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, Int32 scale, Int32 xOfst, Int32 yOfst);
 		Bool GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::MapScheduler *mapSch);
 	public:
-		TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEngine *geng, const UTF8Char *tileDir, OSInt osSize);
+		TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEngine *geng, const UTF8Char *tileDir, UOSInt osSize);
 		~TileMapGenerator();
 
-		static Int64 GetTileID(Double lat, Double lon, Int32 scale, Int32 imgSize);
+		static Int64 GetTileID(Double lat, Double lon, Int32 scale, UInt32 imgSize);
 
 		Bool GenerateTile(Int64 tileId, Int32 scale, Map::MapScheduler *mapSch);
 		Bool GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, Int32 scale, Map::MapScheduler *mapSch);
 	};
-};
+}
 #endif

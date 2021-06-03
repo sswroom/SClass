@@ -19,24 +19,24 @@ IO::StmData::ConcatStreamData::ConcatStreamData(const UTF8Char *fileName)
 	this->cdb = MemAlloc(CONCATDATABASE, 1);
 	NEW_CLASS(this->cdb->mut, Sync::Mutex());
 	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
-	NEW_CLASS(this->cdb->ofstList, Data::ArrayListInt64());
+	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
 	this->cdb->fileName = Text::StrCopyNew(fileName);
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
 	this->dataOffset = 0;
-	this->dataLength = -1;
+	this->dataLength = (UOSInt)-1;
 }
 
 IO::StmData::ConcatStreamData::~ConcatStreamData()
 {
-	Int32 cnt;
+	UInt32 cnt;
 	Sync::MutexUsage mutUsage(this->cdb->mut);
 	cnt = this->cdb->objectCnt--;
 	mutUsage.EndUse();
 	if (cnt == 1)
 	{
 		IO::IStreamData *data;
-		OSInt i;
+		UOSInt i;
 		DEL_CLASS(this->cdb->ofstList);
 		DEL_CLASS(this->cdb->mut);
 		i = this->cdb->dataList->GetCount();
@@ -53,8 +53,9 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 
 UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
 {
-	OSInt i;
-	OSInt j;
+	OSInt si;
+	UOSInt i;
+	UOSInt j;
 	UInt64 startOfst;
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
@@ -70,10 +71,14 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	}
 	length = (UOSInt)(endOfst - offset);
 
-	i = this->cdb->ofstList->SortedIndexOf(offset);
-	if (i < 0)
+	si = this->cdb->ofstList->SortedIndexOf(offset);
+	if (si < 0)
 	{
-		i = ~i - 1;
+		i = (UOSInt)(~si - 1);
+	}
+	else
+	{
+		i = (UOSInt)si;
 	}
 	startOfst = this->cdb->ofstList->GetItem(i);
 	offset -= startOfst;
@@ -108,7 +113,7 @@ const UTF8Char *IO::StmData::ConcatStreamData::GetShortName()
 
 UInt64 IO::StmData::ConcatStreamData::GetDataSize()
 {
-	if (this->dataLength == -1)
+	if (this->dataLength == (UOSInt)-1)
 	{
 		return this->cdb->totalSize;
 	}
@@ -128,12 +133,12 @@ IO::IStreamData *IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, UI
 	IO::IStreamData *data;
 
 	UInt64 endOfst = length + offset;
-	Int64 thisSize = this->dataLength;
-	if (thisSize == -1)
+	UInt64 thisSize = this->dataLength;
+	if (thisSize == (UOSInt)-1)
 	{
 		thisSize = this->cdb->totalSize;
 	}
-	if (endOfst > (UInt64)thisSize)
+	if (endOfst > thisSize)
 	{
 		endOfst = thisSize;
 	}

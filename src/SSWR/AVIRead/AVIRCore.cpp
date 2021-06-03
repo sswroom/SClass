@@ -287,7 +287,7 @@ Int32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()
 	else
 		return this->currCodePage;
 }
-void SSWR::AVIRead::AVIRCore::SetCodePage(Int32 codePage)
+void SSWR::AVIRead::AVIRCore::SetCodePage(UInt32 codePage)
 {
 	this->currCodePage = codePage;
 	this->parsers->SetCodePage(codePage);

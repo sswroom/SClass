@@ -13,12 +13,12 @@ Text::String::String(const UTF8Char *str)
 
 Text::String::String(const UTF8Char *str, UTF8Char *strEnd)
 {
-	this->leng = strEnd - str;
+	this->leng = (UOSInt)(strEnd - str);
 	this->strVal = (const UTF8Char*)MemAlloc(UTF8Char, this->leng + 1);
 	MemCopyNO((void*)this->strVal, str, sizeof(UTF8Char) * (this->leng + 1));
 }
 
-Text::String::String(OSInt leng)
+Text::String::String(UOSInt leng)
 {
 	this->leng = leng;
 	this->strVal = (const UTF8Char*)MemAlloc(UTF8Char, this->leng + 1);

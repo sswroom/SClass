@@ -20,7 +20,7 @@ Int32 Parser::FileParser::TARParser::GetName()
 	return *(Int32*)"TARP";
 }
 
-void Parser::FileParser::TARParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::TARParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }

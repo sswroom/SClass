@@ -318,7 +318,7 @@ Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	return false;
 }
 
-Int32 Map::FileGDBLayer::GetCodePage()
+UInt32 Map::FileGDBLayer::GetCodePage()
 {
 	return 65001;
 }

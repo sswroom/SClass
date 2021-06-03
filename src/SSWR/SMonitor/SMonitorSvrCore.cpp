@@ -115,8 +115,8 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 	Data::ArrayList<DevRecord2*> *recList;
 	DeviceInfo *dev;
 	Int64 t;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	me->checkRunning = true;
 	NEW_CLASS(currTime, Data::DateTime());
@@ -204,7 +204,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					Int32 profileId = ReadInt32(&buff[4]);
 					Int64 clientId = ReadInt64(&buff[8]);
 					Int64 recTime = ReadInt64(&buff[16]);
-					Int32 digitalVals = ReadInt32(&buff[24]);
+					UInt32 digitalVals = ReadUInt32(&buff[24]);
 //					Int32 reportInterval = ReadInt32(&buff[28]);
 //					Int32 kaInterval = ReadInt32(&buff[32]);
 					UInt32 nReading = buff[36];
@@ -236,9 +236,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 						MemFree(dev->photoBuffRecv);
 					}
 					dev->photoTime = ReadInt64(&buff[12]);
-					dev->photoSize = ReadInt32(&buff[20]);
+					dev->photoSize = ReadUInt32(&buff[20]);
 					dev->photoFmt = ReadInt32(&buff[24]);
-					dev->photoPacketSize = ReadInt32(&buff[28]);
+					dev->photoPacketSize = ReadUInt32(&buff[28]);
 					dev->photoBuff = MemAlloc(UInt8, dev->photoSize);
 					dev->photoBuffRecv = MemAlloc(UInt8, (dev->photoSize / dev->photoPacketSize) + 1);
 					MemClear(dev->photoBuffRecv, (dev->photoSize / dev->photoPacketSize) + 1);
@@ -256,7 +256,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					if (dev)
 					{
 						Int64 photoTime = ReadInt64(&buff[12]);
-						Int32 seq = ReadInt32(&buff[20]);
+						UInt32 seq = ReadUInt32(&buff[20]);
 						dev->mut->LockWrite();
 						if (dev->photoBuff && dev->photoTime == photoTime)
 						{
@@ -301,7 +301,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 						dev->mut->LockWrite();
 						if (dev->photoBuff && dev->photoTime == photoTime)
 						{
-							OSInt i = dev->photoSize / dev->photoPacketSize;
+							UOSInt i = dev->photoSize / dev->photoPacketSize;
 							if (i * dev->photoPacketSize < dev->photoSize)
 							{
 								i++;
@@ -312,7 +312,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 								if (dev->photoBuffRecv[i] == 0)
 								{
 									succ = false;
-									me->UDPSendPhotoPacket(addr, port, photoTime, (Int32)i);
+									me->UDPSendPhotoPacket(addr, port, photoTime, (UInt32)i);
 								}
 							}
 							if (succ)
@@ -364,7 +364,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 				if (dataSize > 22)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					Int32 index = ReadInt32(&buff[12]);
+					UInt32 index = ReadUInt32(&buff[12]);
 					UInt16 sensorId = ReadUInt16(&buff[16]);
 					UInt16 readingId = ReadUInt16(&buff[18]);
 					const UTF8Char *name = Text::StrCopyNewC(&buff[20], dataSize - 22);
@@ -386,7 +386,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					sb.Append((const UTF8Char*)"Received unknown packet func ");
 					sb.AppendU16(ReadUInt16(&buff[2]));
 					sb.Append((const UTF8Char*)", size = ");
-					sb.AppendOSInt(dataSize);
+					sb.AppendUOSInt(dataSize);
 					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 				}
 				break;
@@ -469,7 +469,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, 
 		{
 			if (cmdSize >= (UOSInt)(16 + cmd[12] * 16))
 			{
-				this->DeviceRecvReading(status->dev, ReadInt64(&cmd[0]), cmd[13], cmd[12], cmd[14], ReadInt32(&cmd[8]), (ReadingInfo *)&cmd[16], 0, 0, 0);
+				this->DeviceRecvReading(status->dev, ReadInt64(&cmd[0]), cmd[13], cmd[12], cmd[14], ReadUInt32(&cmd[8]), (ReadingInfo *)&cmd[16], 0, 0, 0);
 			}
 		}
 		break;
@@ -498,7 +498,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, 
 					MemFree(status->dev->photoBuff);
 				}
 				status->dev->photoTime = ReadInt64(&cmd[0]);
-				status->dev->photoSize = ReadInt32(&cmd[8]);
+				status->dev->photoSize = ReadUInt32(&cmd[8]);
 				status->dev->photoFmt = ReadInt32(&cmd[12]);
 				status->dev->photoBuff = MemAlloc(UInt8, status->dev->photoSize);
 				status->dev->photoOfst = 0;
@@ -565,7 +565,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(IO::Stream *stm, Int64 c
 {
 	UInt8 cmdBuff[17];
 	UInt8 packetBuff[27];
-	OSInt packetSize;
+	UOSInt packetSize;
 	WriteInt64(&cmdBuff[0], cliTime);
 	WriteInt64(&cmdBuff[8], svrTime);
 	cmdBuff[16] = status;
@@ -577,7 +577,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(IO::Stream *stm, Int64 cliT
 {
 	UInt8 cmdBuff[16];
 	UInt8 packetBuff[26];
-	OSInt packetSize;
+	UOSInt packetSize;
 	WriteInt64(&cmdBuff[0], cliTime);
 	WriteInt64(&cmdBuff[8], svrTime);
 	packetSize = this->protoHdlr->BuildPacket(packetBuff, 7, 0, cmdBuff, 16, 0);
@@ -587,7 +587,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(IO::Stream *stm, Int64 cliT
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(IO::Stream *stm)
 {
 	UInt8 packetBuff[10];
-	OSInt packetSize;
+	UOSInt packetSize;
 	packetSize = this->protoHdlr->BuildPacket(packetBuff, 9, 0, packetBuff, 0, 0);
 	stm->Write(packetBuff, packetSize);
 }
@@ -596,17 +596,17 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(IO::Stream *stm, Int64 pho
 {
 	UInt8 cmdBuff[8];
 	UInt8 packetBuff[18];
-	OSInt packetSize;
+	UOSInt packetSize;
 	WriteInt64(&cmdBuff[0], photoTime);
 	packetSize = this->protoHdlr->BuildPacket(packetBuff, 15, 0, cmdBuff, 8, 0);
 	stm->Write(packetBuff, packetSize);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(IO::Stream *stm, Int32 outputNum, Bool toHigh)
+void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(IO::Stream *stm, UInt32 outputNum, Bool toHigh)
 {
 	UInt8 cmdBuff[2];
 	UInt8 packetBuff[12];
-	OSInt packetSize;
+	UOSInt packetSize;
 	cmdBuff[0] = (UInt8)outputNum;
 	cmdBuff[1] = toHigh?1:0;
 	packetSize = this->protoHdlr->BuildPacket(packetBuff, 21, 0, cmdBuff, 2, 0);
@@ -640,7 +640,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendCapturePhoto(const Net::SocketUtil:
 	this->dataUDP->SendTo(addr, port, reply, 6);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime, Int32 seq)
+void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime, UInt32 seq)
 {
 	UInt8 reply[18];
 	UInt8 calcVal[2];
@@ -648,7 +648,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(const Net::SocketUtil::
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 13);
 	WriteInt64(&reply[4], photoTime);
-	WriteInt32(&reply[12], seq);
+	WriteUInt32(&reply[12], seq);
 	this->dataCRC->Calc(reply, 16, calcVal);
 	reply[16] = calcVal[0] ^ 0x12;
 	reply[17] = calcVal[1] ^ 0x34;
@@ -693,9 +693,9 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	DevRecord2 *rec;
 	Data::DateTime dt;
 	IO::FileStream *fs;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Int32 currYear;
 	Int32 currMonth;
 	Int32 currDay;
@@ -754,7 +754,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 
 			if (fs)
 			{
-				WriteInt32(&fsBuff[0], rec->digitalVals);
+				WriteUInt32(&fsBuff[0], rec->digitalVals);
 				fsBuff[4] = 2;
 				fsBuff[5] = (UInt8)rec->nreading;
 				WriteInt16(&fsBuff[6], -1);
@@ -826,8 +826,8 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 	DB::DBReader *r;
 	WebUser *user;
 	UTF8Char *sarr[2];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	r = db->ExecuteReader((const UTF8Char*)"select id, userName, pwd, userType from webuser order by id");
 	if (r)
 	{
@@ -882,9 +882,9 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 				dev->readingTime = dt.ToTicks();
 			}
 			dev->version = r->GetInt64(93);
-			dev->nReading = r->GetInt32(6);
-			dev->digitalVals = r->GetInt32(7);
-			dev->ndigital = r->GetInt32(8);
+			dev->nReading = (UInt32)r->GetInt32(6);
+			dev->digitalVals = (UInt32)r->GetInt32(7);
+			dev->ndigital = (UInt32)r->GetInt32(8);
 			WriteInt64(dev->readings[0].status, r->GetInt64(9));
 			dev->readings[0].reading = r->GetDbl(10);
 			WriteInt64(dev->readings[1].status, r->GetInt64(11));
@@ -980,7 +980,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			dev->readings[22].reading = r->GetDbl(57);
 			WriteInt64(dev->readings[23].status, r->GetInt64(58));
 			dev->readings[23].reading = r->GetDbl(59);
-			dev->nOutput = r->GetInt32(60);
+			dev->nOutput = (UInt32)r->GetInt32(60);
 			WriteInt64(dev->readings[24].status, r->GetInt64(61));
 			dev->readings[24].reading = r->GetDbl(62);
 			WriteInt64(dev->readings[25].status, r->GetInt64(63));
@@ -1139,7 +1139,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 	const UTF8Char *csptr1;
 	const UTF8Char *csptr2;
 	const UTF8Char *csptr3;
-	Int32 port;
+	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	{
 		UTF8Char sbuff[512];
@@ -1172,7 +1172,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		{
 			sb.ClearStr();
 			sb.Append(csptr1);
-			if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+			if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 			{
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
@@ -1188,7 +1188,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		{
 			sb.ClearStr();
 			sb.Append(csptr1);
-			if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+			if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 			{
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
@@ -1240,7 +1240,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		{
 			if (csptr2 && IO::Path::GetPathType(csptr2) == IO::Path::PT_DIRECTORY)
 			{
-				if (Text::StrToInt32(csptr1, &port) && port > 0 && port < 65536)
+				if (Text::StrToUInt16(csptr1, &port) && port > 0 && port < 65536)
 				{
 					Net::WebServer::HTTPDirectoryHandler *hdlr;
 					SSWR::SMonitor::SMonitorWebHandler *shdlr;
@@ -1290,7 +1290,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		csptr1 = cfg->GetValue((const UTF8Char*)"ClientPort");
 		if (csptr1)
 		{
-			if (Text::StrToInt32(csptr1, &port) && port > 0 && port < 65536)
+			if (Text::StrToUInt16(csptr1, &port) && port > 0 && port < 65536)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
 				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, (const UTF8Char*)"CLI: "));
@@ -1315,7 +1315,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		csptr1 = cfg->GetValue((const UTF8Char*)"DataUDPPort");
 		if (csptr1)
 		{
-			if (Text::StrToInt32(csptr1, &port) && port > 0 && port < 65536)
+			if (Text::StrToUInt16(csptr1, &port) && port > 0 && port < 65536)
 			{
 				Crypto::Hash::CRC16 *crc;
 				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
@@ -1372,8 +1372,8 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	}
 	this->SaveDatas();
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<WebUser*> *userList = this->userMap->GetValues();
 	WebUser *user;
 	i = userList->GetCount();
@@ -1569,11 +1569,11 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 	return dev;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, OSInt nDigitals, OSInt nReading, OSInt nOutput, Int32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	OSInt i;
+	UOSInt i;
 	Bool succ = false;
 	Data::DateTime dt;
 	Int64 t;
@@ -1598,13 +1598,13 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 		sql.AppendCmd((const UTF8Char*)", nOutput = ");
 		sql.AppendInt32((Int32)nOutput);
 		sql.AppendCmd((const UTF8Char*)", dsensors = ");
-		sql.AppendInt32(digitalVals);
+		sql.AppendInt32((Int32)digitalVals);
 		i = 0;
 		while (i < nReading)
 		{
 			if (ReadInt16(&readings[i].status[6]) != 0)
 			{
-				sptr = Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"reading"), i + 1);
+				sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"reading"), i + 1);
 				sql.AppendCmd((const UTF8Char*)", ");
 				sql.AppendCol(sbuff);
 				sql.AppendCmd((const UTF8Char*)" = ");
@@ -1625,10 +1625,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 		{
 			dev->mut->LockWrite();
 			dev->readingTime = cliTime;
-			dev->ndigital = (Int32)nDigitals;
+			dev->ndigital = nDigitals;
 			dev->digitalVals = digitalVals;
-			dev->nOutput = (Int32)nOutput;
-			dev->nReading = (Int32)nReading;
+			dev->nOutput = nOutput;
+			dev->nReading = nReading;
 			i = 0;
 			while (i < nReading)
 			{
@@ -1822,7 +1822,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Ch
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, Int32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
@@ -1831,7 +1831,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, Int32 index,
 	if (readingName == 0 || readingName[0] == 0)
 		return false;
 	dev->mut->LockRead();
-	if (index < 0 || index >= dev->nReading)
+	if (index < 0 || index >= (OSInt)dev->nReading)
 	{
 		dev->mut->UnlockRead();
 		return false;
@@ -1846,7 +1846,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, Int32 index,
 		dev->mut->UnlockRead();
 		return true;
 	}
-	OSInt i = 0;
+	UOSInt i = 0;
 	Text::StringBuilderUTF8 sb;
 	while (i < dev->nReading)
 	{
@@ -1977,8 +1977,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		dev->mut->LockWrite();
 		i = SMONITORCORE_DEVREADINGCNT;
 		while (i-- > 0)
@@ -2030,8 +2030,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		dev->mut->LockWrite();
 		i = SMONITORCORE_DIGITALCNT;
 		while (i-- > 0)
@@ -2063,17 +2063,17 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	return succ;
 }
 
-OSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList)
+UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList)
 {
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	Int64 t;
 	Int64 currTime;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::FileStream *fs;
 	UInt8 *fileBuff;
-	OSInt fileBuffSize;
-	OSInt i;
+	UOSInt fileBuffSize;
+	UOSInt i;
 	Data::DateTime dt;
 	DevRecord2 *rec;
 
@@ -2116,7 +2116,7 @@ OSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTi
 						}
 						else
 						{
-							if (i + (fileBuff[i + 4] + fileBuff[i + 5]) * 16 <= fileBuffSize)
+							if (i + (fileBuff[i + 4] + (UOSInt)fileBuff[i + 5]) * 16 <= fileBuffSize)
 							{
 								t = ReadInt64(&fileBuff[i + 8]);
 								if (t >= startTime && t < endTime)
@@ -2125,18 +2125,18 @@ OSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTi
 									rec->recTime = t;
 									rec->recvTime = ReadInt64(&fileBuff[i + 24]);
 									rec->profileId = 0;
-									rec->digitalVals = ReadInt32(&fileBuff[i]);
+									rec->digitalVals = ReadUInt32(&fileBuff[i]);
 									rec->ndigital = fileBuff[i + 20];
 									rec->nreading = fileBuff[i + 5];
 									rec->nOutput = 0;
 									if (rec->nreading > 0)
 									{
-										MemCopyNO(rec->readings, &fileBuff[i + 16 * fileBuff[i + 4]], rec->nreading * 16);
+										MemCopyNO(rec->readings, &fileBuff[i + 16 * (UOSInt)fileBuff[i + 4]], rec->nreading * 16);
 									}
 									recList->Add(rec);
 									ret++;
 								}
-								i += (fileBuff[i + 4] + fileBuff[i + 5]) * 16;
+								i += (fileBuff[i + 4] + (UOSInt)fileBuff[i + 5]) * 16;
 							}
 							else
 							{
@@ -2172,7 +2172,7 @@ OSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTi
 	return ret;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetOutput(Int64 cliId, Int32 outputNum, Bool toHigh)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh)
 {
 	DeviceInfo *dev;
 	Bool succ = false;
@@ -2317,13 +2317,13 @@ void SSWR::SMonitor::SMonitorSvrCore::UserFreeLogin(LoginInfo *login)
 	MemFree(login);
 }
 
-OSInt SSWR::SMonitor::SMonitorSvrCore::UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList)
+UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList)
 {
-	OSInt retCnt;
+	UOSInt retCnt;
 	Data::ArrayList<DeviceInfo *> *devs;
 	DeviceInfo *dev;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (userType == 0)
 	{
 		retCnt = 0;
@@ -2434,9 +2434,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserHasDevice(Int32 userId, Int32 userType
 	return ret;
 }
 
-OSInt SSWR::SMonitor::SMonitorSvrCore::UserGetList(Data::ArrayList<WebUser*> *userList)
+UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetList(Data::ArrayList<WebUser*> *userList)
 {
-	OSInt ret = userList->GetCount();
+	UOSInt ret = userList->GetCount();
 	this->userMut->LockRead();
 	userList->AddRange(this->userMap->GetValues());
 	this->userMut->UnlockRead();
@@ -2466,8 +2466,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 		return false;
 	}
 	Int64 cliId;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = devIdList->GetCount();
 	valid = true;
 	this->devMut->LockRead();

@@ -65,8 +65,8 @@ namespace Text
 		virtual ~CodeProject();
 
 		void AddConfig(Text::CodeProjectCfg *cfg);
-		OSInt GetConfigCnt();
-		CodeProjectCfg *GetConfig(OSInt index);
+		UOSInt GetConfigCnt();
+		CodeProjectCfg *GetConfig(UOSInt index);
 
 		virtual ProjectType GetProjectType() = 0;
 		virtual IO::ParsedObject::ParserType GetParserType();

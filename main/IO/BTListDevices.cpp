@@ -7,10 +7,10 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Data::ArrayList<IO::BTController*> btCtrlList;
 	Data::ArrayList<IO::BTController::BTDevice*> btDevList;
 	IO::BTController *btCtrl;
@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::BTManager btMgr;
 	btMgr.CreateControllers(&btCtrlList);
 	i = btCtrlList.GetCount();
-	sb.AppendOSInt(i);
+	sb.AppendUOSInt(i);
 	sb.Append((const UTF8Char*)" controller found:");
 	j = 0;
 	console.WriteLine(sb.ToString());
@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLine();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Controller ");
-		sb.AppendOSInt(j);
+		sb.AppendUOSInt(j);
 		sb.Append((const UTF8Char*)":");
 		console.WriteLine(sb.ToString());
 		sb.ClearStr();
@@ -62,7 +62,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLine();
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Controller ");
-		sb.AppendOSInt(j);
+		sb.AppendUOSInt(j);
 		sb.Append((const UTF8Char*)" - Devices:");
 		console.WriteLine(sb.ToString());
 
@@ -74,9 +74,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			btDev = btDevList.GetItem(k);
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Controller ");
-			sb.AppendOSInt(j);
+			sb.AppendUOSInt(j);
 			sb.Append((const UTF8Char*)" Device ");
-			sb.AppendOSInt(k);
+			sb.AppendUOSInt(k);
 			console.WriteLine(sb.ToString());
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Name: ");

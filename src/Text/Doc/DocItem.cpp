@@ -11,7 +11,7 @@ Text::Doc::DocItem::DocItem()
 Text::Doc::DocItem::~DocItem()
 {
 	DocItem *item;
-	OSInt i;
+	UOSInt i;
 	i = this->items->GetCount();
 	while (i-- > 0)
 	{

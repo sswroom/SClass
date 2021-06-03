@@ -9,12 +9,12 @@ namespace Parser
 		class MDBParser : public IO::IFileParser
 		{
 		private:
-			Int32 codePage;
+			UInt32 codePage;
 		public:
 			MDBParser();
 			virtual ~MDBParser();
 
-			virtual void SetCodePage(Int32 codePage);
+			virtual void SetCodePage(UInt32 codePage);
 
 			virtual Int32 GetName();
 			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);

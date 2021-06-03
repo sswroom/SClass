@@ -1,6 +1,6 @@
 #ifndef _SM_IO_STMDATA_CONCATSTREAMDATA
 #define _SM_IO_STMDATA_CONCATSTREAMDATA
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt64.h"
 #include "IO/IStreamData.h"
 #include "Sync/Mutex.h"
 
@@ -14,7 +14,7 @@ namespace IO
 			typedef struct
 			{
 				Data::ArrayList<IO::IStreamData *> *dataList;
-				Data::ArrayListInt64 *ofstList;
+				Data::ArrayListUInt64 *ofstList;
 
 				UInt64 totalSize;
 				const UTF8Char *fileName;
@@ -26,7 +26,7 @@ namespace IO
 		private:
 			CONCATDATABASE *cdb;
 			UInt64 dataOffset;
-			Int64 dataLength;
+			UInt64 dataLength;
 
 			ConcatStreamData(CONCATDATABASE *cdb, UInt64 dataOffset, UInt64 dataLength);
 		public:

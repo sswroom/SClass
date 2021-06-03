@@ -75,7 +75,7 @@ void Net::DNSServer::HandleRequest(DNSRequest hdlr, void *userObj)
 	this->reqObj = userObj;
 }
 
-void Net::DNSServer::ReplyRequest(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, OSInt dataSize)
+void Net::DNSServer::ReplyRequest(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
 {
 	this->svr->SendTo(addr, port, buff, dataSize);
 }

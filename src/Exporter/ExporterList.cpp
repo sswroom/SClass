@@ -127,7 +127,7 @@ Exporter::ExporterList::~ExporterList()
 	DEL_CLASS(this->exporters);
 }
 
-void Exporter::ExporterList::SetCodePage(Int32 codePage)
+void Exporter::ExporterList::SetCodePage(UInt32 codePage)
 {
 	UOSInt i = this->exporters->GetCount();
 	IO::FileExporter *exporter;

@@ -85,10 +85,10 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 	if (hdr[10] & 0x80)
 	{
-		globalColorTable = MemAlloc(UInt8, 3 << colorSize);
+		globalColorTable = MemAlloc(UInt8, (UOSInt)3 << colorSize);
 //		colorIndex = hdr[11];
-		fd->GetRealData(currOfst, 3 << colorSize, globalColorTable);
-		currOfst += 3 << colorSize;
+		fd->GetRealData(currOfst, (UOSInt)3 << colorSize, globalColorTable);
+		currOfst += (UOSInt)3 << colorSize;
 	}
 	scnImg = MemAllocA(UInt8, scnWidth * scnHeight);
 	
@@ -116,9 +116,9 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 			if (imgDesc[8] & 0x80)
 			{
 				Int32 colorSize = (imgDesc[8] & 7) + 1;
-				localColorTable = MemAlloc(UInt8, 3 << colorSize);
-				fd->GetRealData(currOfst, 3 << colorSize, localColorTable);
-				currOfst += 3 << colorSize;
+				localColorTable = MemAlloc(UInt8, (UOSInt)3 << colorSize);
+				fd->GetRealData(currOfst, (UOSInt)3 << colorSize, localColorTable);
+				currOfst += (UOSInt)3 << colorSize;
 			}
 
 			while (true)
@@ -156,7 +156,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 							break;
 						}
 						mstm->Write(&readBlock[1], readBlock[0]);
-						currOfst += 1 + readBlock[0];
+						currOfst += 1 + (UOSInt)readBlock[0];
 					}
 					mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
 					Data::Compress::LZWDecStream *lzw;
@@ -188,7 +188,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 							{
 								while (i-- > 0)
 								{
-									j = tmpPtr[0] * 3;
+									j = (UOSInt)tmpPtr[0] * 3;
 									tmpPtr2[0] = screenColorTable[j + 2];
 									tmpPtr2[1] = screenColorTable[j + 1];
 									tmpPtr2[2] = screenColorTable[j + 0];
@@ -208,7 +208,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 							{
 								while (i-- > 0)
 								{
-									j = tmpPtr[0] * 3;
+									j = (UOSInt)tmpPtr[0] * 3;
 									tmpPtr2[0] = globalColorTable[j + 2];
 									tmpPtr2[1] = globalColorTable[j + 1];
 									tmpPtr2[2] = globalColorTable[j + 0];
@@ -642,17 +642,17 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 						MemCopyANC(simg->data, scnImg, scnWidth * scnHeight);
 						if (localColorTable)
 						{
-							readSize = (Int32)(1 << ((imgDesc[8] & 7) + 1));
+							readSize = (UOSInt)(1 << ((imgDesc[8] & 7) + 1));
 							tmpPtr = localColorTable;
 						}
 						else if (screenColorTable)
 						{
-							readSize = (Int32)(1 << colorSize);
+							readSize = (UOSInt)(1 << colorSize);
 							tmpPtr = screenColorTable;
 						}
 						else if (globalColorTable)
 						{
-							readSize = (Int32)(1 << colorSize);
+							readSize = (UOSInt)(1 << colorSize);
 							tmpPtr = globalColorTable;
 						}
 						else

@@ -8,7 +8,7 @@ namespace Test
 	class TestModem
 	{
 	public:
-		static Int32 ListPorts(IO::Writer *writer); //return default port
+		static UOSInt ListPorts(IO::Writer *writer); //return default port
 		static void GSMModemTest(IO::Writer *writer, IO::GSMModemController *modem, Bool quick);
 	};
 }

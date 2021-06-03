@@ -4228,7 +4228,7 @@ const Net::MACInfo::MACEntry *Net::MACInfo::GetMACInfoBuff(const UInt8 *mac)
 	buff[5] = mac[3];
 	buff[6] = mac[4];
 	buff[7] = mac[5];
-	return GetMACInfo(ReadMInt64(buff));
+	return GetMACInfo(ReadMUInt64(buff));
 }
 
 const Net::MACInfo::MACEntry *Net::MACInfo::GetMACInfoOUI(const UInt8 *oui)
@@ -4242,7 +4242,7 @@ const Net::MACInfo::MACEntry *Net::MACInfo::GetMACInfoOUI(const UInt8 *oui)
 	buff[5] = 0;
 	buff[6] = 0;
 	buff[7] = 0;
-	return GetMACInfo(ReadMInt64(buff));
+	return GetMACInfo(ReadMUInt64(buff));
 }
 
 Net::MACInfo::MACEntry *Net::MACInfo::GetMACEntryList(UOSInt *cnt)

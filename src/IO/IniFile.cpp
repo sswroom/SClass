@@ -9,7 +9,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-IO::ConfigFile *IO::IniFile::Parse(IO::Stream *stm, Int32 codePage)
+IO::ConfigFile *IO::IniFile::Parse(IO::Stream *stm, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
 	IO::StreamReader *reader;
@@ -19,7 +19,7 @@ IO::ConfigFile *IO::IniFile::Parse(IO::Stream *stm, Int32 codePage)
 	return cfg;
 }
 
-IO::ConfigFile *IO::IniFile::Parse(const UTF8Char *fileName, Int32 codePage)
+IO::ConfigFile *IO::IniFile::Parse(const UTF8Char *fileName, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream *fstm;
@@ -32,7 +32,7 @@ IO::ConfigFile *IO::IniFile::Parse(const UTF8Char *fileName, Int32 codePage)
 	return cfg;
 }
 
-IO::ConfigFile *IO::IniFile::ParseProgConfig(Int32 codePage)
+IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 {
 	UTF8Char sbuff[512];
 	IO::Path::GetProcessFileName(sbuff);
@@ -105,7 +105,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 	return cfg;
 }
 
-Bool IO::IniFile::SaveConfig(IO::Stream *stm, Int32 codePage, IO::ConfigFile *cfg)
+Bool IO::IniFile::SaveConfig(IO::Stream *stm, UInt32 codePage, IO::ConfigFile *cfg)
 {
 	IO::StreamWriter *writer;
 	Bool ret;

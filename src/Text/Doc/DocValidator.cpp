@@ -19,5 +19,5 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocValidator::GetItemType()
 UOSInt Text::Doc::DocValidator::Add(Text::Doc::DocItem *item)
 {
 	DEL_CLASS(item);
-	return -1;
+	return (UOSInt)-1;
 }

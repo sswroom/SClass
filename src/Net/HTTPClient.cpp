@@ -152,7 +152,7 @@ UInt64 Net::HTTPClient::GetContentLength()
 	return this->contLeng;
 }
 
-Int32 Net::HTTPClient::GetContentCodePage()
+UInt32 Net::HTTPClient::GetContentCodePage()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[2];

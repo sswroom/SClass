@@ -58,7 +58,7 @@ Double IO::Device::BME280::CalcPressureRAW(Int32 tRAW, Int32 pressureRAW)
 	v1 = (((Int64) this->p9) * (rslt >> 13) * (rslt >> 13)) >> 25;
 	v2 = (((Int64) this->p8) * rslt) >> 19;
 	rslt = ((rslt + v1 + v2) >> 8) + (((Int64) this->p7) << 4);
-	return rslt / 256.0;
+	return (Double)rslt / 256.0;
 }
 
 IO::Device::BME280::BME280(IO::I2CChannel *channel, Bool toRelease)
@@ -128,10 +128,10 @@ Bool IO::Device::BME280::Reset()
 	}
 	else
 	{
-		this->h2 = ReadInt16(&buff[0]);
+		this->h2 = ReadUInt16(&buff[0]);
 		this->h3 = buff[2];
-		this->h4 = (buff[3] << 4) | (buff[4] & 0xf);
-		this->h5 = (buff[4] >> 4) | (buff[5] << 4);
+		this->h4 = (UInt16)((buff[3] << 4) | (buff[4] & 0xf));
+		this->h5 = (UInt16)((buff[4] >> 4) | (buff[5] << 4));
 		this->h6 = buff[6];
 	}
 	

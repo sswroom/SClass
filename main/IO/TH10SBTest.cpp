@@ -13,15 +13,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::MODBUSMaster *modbus;
 	IO::SerialPort *port;
 	IO::Device::TH10SB *th10sb;
-	Int32 portNum = 33;
-	Int32 baudRate = 9600;
+	UInt32 portNum = 33;
+	UInt32 baudRate = 9600;
 	UInt8 addr = 1;
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{
-		Text::StrToInt32(argv[1], &portNum);
-		Text::StrToInt32(argv[2], &baudRate);
+		Text::StrToUInt32(argv[1], &portNum);
+		Text::StrToUInt32(argv[2], &baudRate);
 	}
 	if (argc >= 4)
 	{

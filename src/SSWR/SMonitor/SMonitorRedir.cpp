@@ -106,14 +106,14 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMon
 	WriteInt32(&buff[4], rec->profileId);
 	WriteInt64(&buff[8], cliId);
 	WriteInt64(&buff[16], rec->recTime);
-	WriteInt32(&buff[24], rec->digitalVals);
+	WriteUInt32(&buff[24], rec->digitalVals);
 	WriteInt32(&buff[28], reportInterval);
 	WriteInt32(&buff[32], kaInterval);
 	buff[36] = (UInt8)rec->nreading;
 	buff[37] = (UInt8)rec->ndigital;
 	buff[38] = (UInt8)rec->nOutput;
 	buff[39] = 0;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < rec->nreading)
 	{
 		WriteNInt64(&buff[40 + 16 * i], ReadNInt64(rec->readings[i].status));
@@ -137,12 +137,12 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMon
 Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *name)
 {
 	UInt8 buff[1024];
-	OSInt size;
+	UOSInt size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 16);
 	WriteInt64(&buff[4], cliId);
-	size = Text::StrConcat(&buff[12], name) - buff;
+	size = (UOSInt)(Text::StrConcat(&buff[12], name) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
@@ -159,12 +159,12 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *nam
 Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char *platform)
 {
 	UInt8 buff[1024];
-	OSInt size;
+	UOSInt size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 18);
 	WriteInt64(&buff[4], cliId);
-	size = Text::StrConcat(&buff[12], platform) - buff;
+	size = (UOSInt)(Text::StrConcat(&buff[12], platform) - buff);
 	UInt8 calcVal[2];
 	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC->Clear();
@@ -185,12 +185,12 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *cpuName)
 {
 	UInt8 buff[1024];
-	OSInt size;
+	UOSInt size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 20);
 	WriteInt64(&buff[4], cliId);
-	size = Text::StrConcat(&buff[12], cpuName) - buff;
+	size = (UOSInt)(Text::StrConcat(&buff[12], cpuName) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
@@ -204,18 +204,18 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, OSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName)
 {
 	UInt8 buff[1024];
-	OSInt size;
+	UOSInt size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 22);
 	WriteInt64(&buff[4], cliId);
-	WriteInt32(&buff[12], (Int32)index);
+	WriteUInt32(&buff[12], (UInt32)index);
 	WriteInt16(&buff[16], sensorId);
 	WriteInt16(&buff[18], readingId);
-	size = Text::StrConcat(&buff[20], readingName) - buff;
+	size = (UOSInt)(Text::StrConcat(&buff[20], readingName) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
@@ -232,7 +232,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, OSInt index,
 Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersion)
 {
 	UInt8 buff[30];
-	OSInt size;
+	UOSInt size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 24);

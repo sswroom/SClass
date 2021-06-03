@@ -6,14 +6,15 @@
 Double Math::LanczosFilter::Weight(Double phase, UOSInt nTap)
 {
 	Double ret;
+	Double aphase = Math::Abs(phase);
 	
-	if(Math::Abs(phase) < DBL_EPSILON)
+	if(aphase < DBL_EPSILON)
 	{
 		return 1.0;
 	}
 	Double dnTap = Math::UOSInt2Double(nTap);
 
-	if ((Math::Abs(phase) * 2) >= dnTap){
+	if ((aphase * 2) >= dnTap){
 		return 0.0;
 	}
 

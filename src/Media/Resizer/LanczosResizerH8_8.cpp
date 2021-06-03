@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Manage/HiResClock.h"
+#include "Math/LanczosFilter.h"
 #include "Math/Math.h"
 #include "Media/IImgResizer.h"
 #include "Media/ImageCopyC.h"
@@ -9,42 +10,22 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
-#include <math.h>
-#include <float.h>
 
 #define PI 3.141592653589793
 
 extern "C"
 {
-	void LanczosResizerH8_8_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void LanczosResizerH8_8_horizontal_filter8(const UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void LanczosResizerH8_8_vertical_filter(const UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void LanczosResizerH8_8_expand(const UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
-	void LanczosResizerH8_8_collapse(const UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep);
+	void LanczosResizerH8_8_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void LanczosResizerH8_8_horizontal_filter8(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void LanczosResizerH8_8_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void LanczosResizerH8_8_expand(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+	void LanczosResizerH8_8_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 }
 
-Double Media::Resizer::LanczosResizerH8_8::lanczos3_weight(Double phase, OSInt nTap)
-{
-	Double ret;
-	
-	if(fabs(phase) < DBL_EPSILON)
-	{
-		return 1.0;
-	}
-
-	if ((fabs(phase) * 2) >= nTap){
-		return 0.0;
-	}
-
-	ret = sin(PI * phase) * sin(PI * phase / nTap * 2) / (PI * PI * phase * phase / nTap * 2);
-
-	return ret;
-}
-
-void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_v(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_v(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	OSInt n;
 	Double *work;
 	Double  sum;
@@ -57,88 +38,104 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_v(OSInt n
 
 	work = MemAlloc(Double, out->tap);
 
-	for(i=0;i<result_length;i++){
-		pos = (i+0.5)*source_length;
-		pos = pos / result_length + offsetCorr;
-		n = (Int32)floor(pos - (nTap / 2 - 0.5));//2.5);
-		pos = (n+0.5-pos);
+	i = 0;
+	while (i < result_length)
+	{
+		pos = (Math::UOSInt2Double(i) + 0.5) * source_length;
+		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+		n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+		pos = (Math::OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
-		for(j=0;j<out->tap;j++){
+	
+		j = 0;
+		while (j < out->tap)
+		{
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
-			}else if(n >= source_max_pos){
-				out->index[i * out->tap + j] = (source_max_pos - 1) * indexSep;
+			}else if((UOSInt)n >= source_max_pos){
+				out->index[i * out->tap + j] = (OSInt)(source_max_pos - 1) * indexSep;
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = lanczos3_weight(pos, nTap);
+			work[j] = Math::LanczosFilter::Weight(pos, nTap);
 			sum += work[j];
 			pos += 1;
 			n += 1;
+			j++;
 		}
 
-		for(j=0;j<out->tap;j++){
+		j = 0;
+		while (j < out->tap)
+		{
 			Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 			out->weight[i * out->tap+j] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+			j++;
 		}
+		i++;
 	}
 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_v(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_v(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	OSInt n;
 	Double *work;
 	Double  sum;
 	Double  pos, phase;
 
 	out->length = result_length;
-	out->tap = (OSInt)Math::Fix((nTap * (source_length) + (result_length - 1)) / result_length);
+	out->tap = (UOSInt)Math::Fix((Math::UOSInt2Double(nTap) * (source_length) + Math::UOSInt2Double(result_length - 1)) / Math::UOSInt2Double(result_length));
 
 	out->weight = MemAllocA(Int64, out->length * out->tap);
 	out->index = MemAllocA(OSInt, out->length * out->tap);
 	
 	work = MemAlloc(Double, out->tap);
 
-	for(i = 0; i < result_length; i++)
+	i = 0;
+	while (i < result_length)
 	{
-		pos = (i - (nTap / 2) + 0.5) * source_length / result_length + 0.5;
+		pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 0.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
 		n = (OSInt)floor(pos + offsetCorr);
 		sum = 0;
-		for (j = 0; j < out->tap; j++)
+		j = 0;
+		while (j < out->tap)
 		{
-			phase = (n+0.5)*result_length;
+			phase = (Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length);
 			phase /= source_length;
-			phase -= (i+0.5);
+			phase -= (Math::UOSInt2Double(i) + 0.5);
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
-			}else if(n >= source_max_pos){
-				out->index[i * out->tap + j] = (source_max_pos-1) * indexSep;
+			}else if((UOSInt)n >= source_max_pos){
+				out->index[i * out->tap + j] = (OSInt)(source_max_pos-1) * indexSep;
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = lanczos3_weight(phase, nTap);
+			work[j] = Math::LanczosFilter::Weight(phase, nTap);
 			sum += work[j];
 			n += 1;
+			j++;
 		}
 
-		for (j = 0; j < out->tap; j++)
+		j = 0;
+		while (j < out->tap)
 		{
 			Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 			out->weight[i * out->tap+j] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+			j++;
 		}
+		i++;
 	}
 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	OSInt n;
 	Double *work;
 	Double  sum;
@@ -159,21 +156,23 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 
 	work = MemAlloc(Double, out->tap);
 
-	for(i=0;i<result_length;i++){
-		pos = (i+0.5)*source_length;
-		pos = pos / result_length + offsetCorr;
-		n = (Int32)floor(pos - (nTap / 2 - 0.5));//2.5);
-		pos = (n+0.5-pos);
+	i = 0;
+	while (i < result_length)
+	{
+		pos = (Math::UOSInt2Double(i) + 0.5) * source_length;
+		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+		n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+		pos = (Math::OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		if ((result_length & 3) == 0 && out->tap == 8)
 		{
-			OSInt ind = 34 * (i >> 2);
+			UOSInt ind = 34 * (i >> 2);
 			OSInt index[8];
 
 			j = 0;
 			while (j < out->tap)
 			{
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				index[j] = n;
 				sum += work[j];
 				pos += 1;
@@ -194,7 +193,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos)
+			while (index[7] >= (OSInt)source_max_pos)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -210,21 +209,24 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 			}
 			*(Int32*)&out->weight[ind] = (Int32)(index[0] * indexSep);
 
-			for(j=0;j<out->tap;j++){
+			j = 0;
+			while (j < out->tap)
+			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[ind+j+2] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 
-			pos = (i + 1.5) * source_length;
-			pos = pos / result_length + offsetCorr;
-			n = (Int32)Math::Fix(pos - (nTap / 2 - 0.5));//2.5);
-			pos = (n + 0.5 - pos);
+			pos = (Math::UOSInt2Double(i) + 1.5) * source_length;
+			pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+			n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+			pos = (Math::OSInt2Double(n) + 0.5 - pos);
 			sum = 0;
 
 			j = 0;
 			while (j < out->tap)
 			{
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				index[j] = n;
 				sum += work[j];
 				pos += 1;
@@ -245,7 +247,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos)
+			while (index[7] >= (OSInt)source_max_pos)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -261,21 +263,24 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 			}
 			((Int32*)&out->weight[ind])[1] = (Int32)(index[0] * indexSep);
 
-			for(j=0;j<out->tap;j++){
+			j = 0;
+			while (j < out->tap)
+			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[ind+j+10] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 
-			pos = (i + 2.5) * source_length;
-			pos = pos / result_length + offsetCorr;
-			n = (Int32)Math::Fix(pos - (nTap / 2 - 0.5));//2.5);
-			pos = (n + 0.5 - pos);
+			pos = (Math::UOSInt2Double(i) + 2.5) * source_length;
+			pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+			n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+			pos = (Math::OSInt2Double(n) + 0.5 - pos);
 			sum = 0;
 
 			j = 0;
 			while (j < out->tap)
 			{
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				index[j] = n;
 				sum += work[j];
 				pos += 1;
@@ -296,7 +301,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos)
+			while (index[7] >= (OSInt)source_max_pos)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -317,16 +322,16 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 				out->weight[ind+j+18] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
 			}
 
-			pos = (i + 3.5) * source_length;
-			pos = pos / result_length + offsetCorr;
-			n = (Int32)Math::Fix(pos - (nTap / 2 - 0.5));//2.5);
-			pos = (n + 0.5 - pos);
+			pos = (Math::UOSInt2Double(i) + 3.5) * source_length;
+			pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+			n = (Int32)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
+			pos = (Math::OSInt2Double(n) + 0.5 - pos);
 			sum = 0;
 
 			j = 0;
 			while (j < out->tap)
 			{
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				index[j] = n;
 				sum += work[j];
 				pos += 1;
@@ -347,7 +352,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos)
+			while (index[7] >= (OSInt)source_max_pos)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -363,49 +368,59 @@ void Media::Resizer::LanczosResizerH8_8::setup_interpolation_parameter_h(OSInt n
 			}
 			((Int32*)&out->weight[ind])[3] = (Int32)(index[0] * indexSep);
 
-			for(j=0;j<out->tap;j++){
+			j = 0;
+			while (j < out->tap)
+			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[ind+j+26] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 			i += 3;
 		}
 		else
 		{
-			for(j=0;j<out->tap;j++){
+			j = 0;
+			while (j < out->tap)
+			{
 				if(n < 0){
 					out->index[i * out->tap + j] = 0;
-				}else if(n >= source_max_pos){
-					out->index[i * out->tap + j] = (source_max_pos - 1) * indexSep;
+				}else if((UOSInt)n >= source_max_pos){
+					out->index[i * out->tap + j] = (OSInt)(source_max_pos - 1) * indexSep;
 				}else{
 					out->index[i * out->tap + j] = n * indexSep;
 				}
-				work[j] = lanczos3_weight(pos, nTap);
+				work[j] = Math::LanczosFilter::Weight(pos, nTap);
 				sum += work[j];
 				pos += 1;
 				n += 1;
+				j++;
 			}
 
-			for(j=0;j<out->tap;j++){
+			j = 0;
+			while (j < out->tap)
+			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[i * out->tap+j] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 		}
+		i++;
 	}
 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	OSInt n;
 	Double *work;
 	Double  sum;
 	Double  pos, phase;
 
 	out->length = result_length;
-	out->tap = (OSInt)Math::Fix((nTap * (source_length) + (result_length - 1)) / result_length);
+	out->tap = (UOSInt)Math::Fix((Math::UOSInt2Double(nTap) * (source_length) + Math::UOSInt2Double(result_length - 1)) / Math::UOSInt2Double(result_length));
 
 	if ((result_length & 3) == 0 && out->tap == 8)
 	{
@@ -420,21 +435,22 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 	
 	work = MemAlloc(Double, out->tap);
 
-	for(i = 0; i < result_length; i++)
+	i = 0;
+	while (i < result_length)
 	{
-		pos = (i - (nTap / 2) + 0.5) * source_length / result_length + 0.5;
-		n = (OSInt)floor(pos + offsetCorr);
+		pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 0.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
+		n = (OSInt)Math::Fix(pos + offsetCorr);
 		sum = 0;
 		if ((result_length & 3) == 0 && out->tap == 8)
 		{
-			OSInt ind = 34 * (i >> 2);
+			UOSInt ind = 34 * (i >> 2);
 			OSInt index[8];
 			j = 0;
 			while (j < 8)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 0.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 0.5);
 				index[j] = n;
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
 				j++;
@@ -453,7 +469,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos - 1)
+			while (index[7] >= (OSInt)source_max_pos - 1)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -469,21 +485,23 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 			}
 			((Int32*)&out->weight[ind])[0] = (Int32)(index[0] * indexSep);
 
-			for (j = 0; j < out->tap; j++)
+			j = 0;
+			while (j < out->tap)
 			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[ind + j + 2] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 
-			pos = (i - (nTap / 2) + 1.5) * source_length / result_length + 0.5;
-			n = (OSInt)floor(pos + offsetCorr);
+			pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 1.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
+			n = (OSInt)Math::Fix(pos + offsetCorr);
 			sum = 0;
 			j = 0;
 			while (j < 8)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 1.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 1.5);
 				index[j] = n;
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
 				j++;
@@ -502,7 +520,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos - 1)
+			while (index[7] >= (OSInt)source_max_pos - 1)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -524,15 +542,15 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 				out->weight[ind + j + 10] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
 			}
 
-			pos = (i - (nTap / 2) + 2.5) * source_length / result_length + 0.5;
-			n = (OSInt)floor(pos + offsetCorr);
+			pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 2.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
+			n = (OSInt)Math::Fix(pos + offsetCorr);
 			sum = 0;
 			j = 0;
 			while (j < 8)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 2.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 2.5);
 				index[j] = n;
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
 				j++;
@@ -551,7 +569,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos - 1)
+			while (index[7] >= (OSInt)source_max_pos - 1)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -567,21 +585,23 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 			}
 			((Int32*)&out->weight[ind])[2] = (Int32)(index[0] * indexSep);
 
-			for (j = 0; j < out->tap; j++)
+			j = 0;
+			while (j < out->tap)
 			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[ind + j + 18] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 
-			pos = (i - (nTap / 2) + 3.5) * source_length / result_length + 0.5;
-			n = (OSInt)floor(pos + offsetCorr);
+			pos = (Math::UOSInt2Double(i) - Math::UOSInt2Double(nTap / 2) + 3.5) * source_length / Math::UOSInt2Double(result_length) + 0.5;
+			n = (OSInt)Math::Fix(pos + offsetCorr);
 			sum = 0;
 			j = 0;
 			while (j < 8)
 			{
-				phase = ((n + 0.5) * result_length / source_length) - (i + 3.5);
+				phase = ((Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length) / source_length) - (Math::UOSInt2Double(i) + 3.5);
 				index[j] = n;
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
 				j++;
@@ -600,7 +620,7 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 				index[7] = 0;
 				work[7] = 0.0;
 			}
-			while (index[7] >= source_max_pos - 1)
+			while (index[7] >= (OSInt)source_max_pos - 1)
 			{
 				work[7] = work[7] + work[6];
 				index[7] = index[6];
@@ -625,45 +645,50 @@ void Media::Resizer::LanczosResizerH8_8::setup_decimation_parameter_h(OSInt nTap
 		}
 		else
 		{
-			for (j = 0; j < out->tap; j++)
+			j = 0;
+			while (j < out->tap)
 			{
-				phase = (n+0.5)*result_length;
+				phase = (Math::OSInt2Double(n) + 0.5) * Math::UOSInt2Double(result_length);
 				phase /= source_length;
-				phase -= (i+0.5);
+				phase -= (Math::UOSInt2Double(i) + 0.5);
 				if(n < 0){
 					out->index[i * out->tap + j] = 0;
-				}else if(n >= source_max_pos){
-					out->index[i * out->tap + j] = (source_max_pos-1) * indexSep;
+				}else if(n >= (OSInt)source_max_pos){
+					out->index[i * out->tap + j] = (OSInt)(source_max_pos-1) * indexSep;
 				}else{
 					out->index[i * out->tap + j] = n * indexSep;
 				}
-				work[j] = lanczos3_weight(phase, nTap);
+				work[j] = Math::LanczosFilter::Weight(phase, nTap);
 				sum += work[j];
 				n += 1;
+				j++;
 			}
 
-			for (j = 0; j < out->tap; j++)
+			j = 0;
+			while (j < out->tap)
 			{
 				Int64 i64tmp = 0xffff & (Int64)((work[j] / sum) * 32767.0);
 				out->weight[i * out->tap+j] = (i64tmp << 48) | (i64tmp << 32) | (i64tmp << 16) | i64tmp;
+				j++;
 			}
 		}
+		i++;
 	}
 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerH8_8::mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerH8_8::mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Manage::HiResClock clk;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + currHeight * sstep;
-		this->params[i].outPt = outPt + currHeight * dstep;
+		currHeight = MulDivUOS(i, height, this->nThread);
+		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
+		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->params[i].width = width;
 		this->params[i].height = lastHeight - currHeight;
 		this->params[i].tap = tap;
@@ -680,17 +705,17 @@ void Media::Resizer::LanczosResizerH8_8::mt_horizontal_filter(UInt8 *inPt, UInt8
 	this->hTime = clk.GetTimeDiff();
 }
 
-void Media::Resizer::LanczosResizerH8_8::mt_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerH8_8::mt_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Manage::HiResClock clk;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + currHeight * sstep;
-		this->params[i].outPt = outPt + currHeight * dstep;
+		currHeight = MulDivUOS(i, height, this->nThread);
+		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
+		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->params[i].width = width;
 		this->params[i].height = lastHeight - currHeight;
 		this->params[i].tap = tap;
@@ -707,17 +732,17 @@ void Media::Resizer::LanczosResizerH8_8::mt_horizontal_filter8(UInt8 *inPt, UInt
 	this->hTime = clk.GetTimeDiff();
 }
 
-void Media::Resizer::LanczosResizerH8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerH8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Manage::HiResClock clk;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
+		currHeight = MulDivUOS(i, height, this->nThread);
 		this->params[i].inPt = inPt;
-		this->params[i].outPt = outPt + currHeight * dstep;
+		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->params[i].width = width;
 		this->params[i].height = lastHeight - currHeight;
 		this->params[i].tap = tap;
@@ -736,14 +761,14 @@ void Media::Resizer::LanczosResizerH8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *
 
 void Media::Resizer::LanczosResizerH8_8::mt_expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + currHeight * sstep;
-		this->params[i].outPt = outPt + currHeight * dstep;
+		currHeight = MulDivUOS(i, height, this->nThread);
+		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
+		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->params[i].width = width;
 		this->params[i].height = lastHeight - currHeight;
 		this->params[i].sstep = sstep;
@@ -759,14 +784,14 @@ void Media::Resizer::LanczosResizerH8_8::mt_expand(UInt8 *inPt, UInt8 *outPt, UO
 
 void Media::Resizer::LanczosResizerH8_8::mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + currHeight * sstep;
-		this->params[i].outPt = outPt + currHeight * dstep;
+		currHeight = MulDivUOS(i, height, this->nThread);
+		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
+		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->params[i].width = width;
 		this->params[i].height = lastHeight - currHeight;
 		this->params[i].sstep = sstep;
@@ -781,14 +806,14 @@ void Media::Resizer::LanczosResizerH8_8::mt_collapse(UInt8 *inPt, UInt8 *outPt, 
 
 void Media::Resizer::LanczosResizerH8_8::mt_copy(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	OSInt currHeight;
-	OSInt lastHeight = height;
-	OSInt i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
-		currHeight = MulDivOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + currHeight * sstep;
-		this->params[i].outPt = outPt + currHeight * dstep;
+		currHeight = MulDivUOS(i, height, this->nThread);
+		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
+		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
 		this->params[i].width = width;
 		this->params[i].height = lastHeight - currHeight;
 		this->params[i].sstep = sstep;
@@ -861,9 +886,9 @@ void Media::Resizer::LanczosResizerH8_8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(OSInt hnTap, OSInt vnTap, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType)
+Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTap, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType)
 {
-	OSInt i;
+	UOSInt i;
 	this->nThread = Sync::Thread::GetThreadCnt();
 
 	if (this->nThread > 6)
@@ -928,10 +953,10 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 
 	Double w = xOfst + swidth;
 	Double h = yOfst + sheight;
-	UOSInt siWidth = (OSInt)w;
-	UOSInt siHeight = (OSInt)h;
-	w -= siWidth;
-	h -= siHeight;
+	UOSInt siWidth = (UOSInt)w;
+	UOSInt siHeight = (UOSInt)h;
+	w -= Math::UOSInt2Double(siWidth);
+	h -= Math::UOSInt2Double(siHeight);
 	if (w > 0)
 		siWidth++;
 	if (h > 0)
@@ -944,7 +969,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			DestoryHori();
 
-			if (swidth > dwidth)
+			if (swidth > Math::UOSInt2Double(dwidth))
 			{
 				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 4, xOfst);
 			}
@@ -964,7 +989,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			DestoryVert();
 
-			if (sheight > dheight)
+			if (sheight > Math::UOSInt2Double(dheight))
 			{
 				setup_decimation_parameter_v(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
 			}
@@ -994,15 +1019,15 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		}
 		if (dheight < 16)
 		{
-			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
-			LanczosResizerH8_8_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, siWidth << 3, dbpl);
+			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			LanczosResizerH8_8_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap, hIndex, hWeight, (OSInt)siWidth << 3, dbpl);
 		}
 		else
 		{
-			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
+			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
 //			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
 //			LanczosResizerH8_8_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, siWidth << 3, dbpl);
-			mt_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, siWidth << 3, dbpl);
+			mt_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, (OSInt)siWidth << 3, dbpl);
 		}
 		mutUsage.EndUse();
 	}
@@ -1013,7 +1038,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			DestoryHori();
 
-			if (swidth > dwidth)
+			if (swidth > Math::UOSInt2Double(dwidth))
 			{
 				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 4, xOfst);
 			}
@@ -1056,7 +1081,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			DestoryVert();
 
-			if (sheight > dheight)
+			if (sheight > Math::UOSInt2Double(dheight))
 			{
 				setup_decimation_parameter_v(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
 			}
@@ -1085,13 +1110,13 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 		}
 		if (dheight < 16)
 		{
-			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
-			LanczosResizerH8_8_collapse(buffPtr, dest, siWidth, dheight, siWidth << 3, dbpl);
+			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			LanczosResizerH8_8_collapse(buffPtr, dest, siWidth, dheight, (OSInt)siWidth << 3, dbpl);
 		}
 		else
 		{
-			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
-			mt_collapse(buffPtr, dest, siWidth, dheight, siWidth << 3, dbpl);
+			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			mt_collapse(buffPtr, dest, siWidth, dheight, (OSInt)siWidth << 3, dbpl);
 		}
 		mutUsage.EndUse();
 	}
@@ -1117,7 +1142,7 @@ Bool Media::Resizer::LanczosResizerH8_8::Resize(Media::StaticImage *srcImg, Medi
 	else
 	{
 		OSInt dbpl = destImg->GetDataBpl();
-		Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(srcImg->info->dispWidth), Math::UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(srcImg->info->dispWidth), Math::UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
 		return true;
 	}
 }

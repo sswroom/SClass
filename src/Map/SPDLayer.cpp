@@ -482,7 +482,7 @@ Int32 Map::SPDLayer::GetBlockSize()
 	return this->blkScale;
 }
 
-Int32 Map::SPDLayer::GetCodePage()
+UInt32 Map::SPDLayer::GetCodePage()
 {
 	return 0;
 }

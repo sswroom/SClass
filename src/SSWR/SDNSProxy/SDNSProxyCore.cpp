@@ -5,7 +5,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, Int32 reqId, Double timeUsed)
+void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::SDNSProxy::SDNSProxyCore *me = (SSWR::SDNSProxy::SDNSProxyCore*)userObj;
 	UTF8Char sbuff[32];
@@ -25,7 +25,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 	Data::DateTime dt;
 	ClientInfo *cli;
 	dt.SetCurrTimeUTC();
-	Int32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
+	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
 	Sync::MutexUsage mutUsage(me->cliInfoMut);
 	cli = me->cliInfos->Get(cliId);
 	if (cli == 0)
@@ -88,7 +88,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	this->currCnt = 0;
 
 	NEW_CLASS(this->cliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->cliInfos, Data::Int32Map<ClientInfo*>());
+	NEW_CLASS(this->cliInfos, Data::UInt32Map<ClientInfo*>());
 
 	NEW_CLASS(this->log, IO::LogTool());
 
@@ -106,15 +106,15 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	if (cfg)
 	{
 		const UTF8Char *csptr;
-		OSInt i;
-		OSInt j;
-		Int32 ip;
+		UOSInt i;
+		UOSInt j;
+		UInt32 ip;
 		Int32 v;
 		UTF8Char *sarr[2];
 		csptr = cfg->GetValue((const UTF8Char*)"DNS");
 		if (csptr)
 		{
-			Data::ArrayList<Int32> dnsList;
+			Data::ArrayList<UInt32> dnsList;
 			Text::StringBuilderUTF8 sb;
 			sb.Append(csptr);
 			sarr[1] = sb.ToString();
@@ -172,9 +172,9 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 			}
 		}
 
-		Int32 managePort;
+		UInt16 managePort;
 		csptr = cfg->GetValue((const UTF8Char*)"ManagePort");
-		if (csptr && csptr[0] != 0 && Text::StrToInt32(csptr, &managePort))
+		if (csptr && csptr[0] != 0 && Text::StrToUInt16(csptr, &managePort))
 		{
 			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, this->hdlr, managePort, 60, 4, (const UTF8Char*)"SDNSProxy/1.0", false, true));
@@ -198,8 +198,8 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 
 SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<ClientInfo*> *cliInfoList;
 	ClientInfo *cli;
 	SDEL_CLASS(this->listener);
@@ -239,16 +239,16 @@ void SSWR::SDNSProxy::SDNSProxyCore::Run(Core::IProgControl *progCtrl)
 	this->console->WriteLine((const UTF8Char*)"SDNSProxy exiting");
 }
 
-OSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList)
+UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList)
 {
-	OSInt initSize = cliList->GetCount();
+	UOSInt initSize = cliList->GetCount();
 	Sync::MutexUsage mutUsage(this->cliInfoMut);
 	cliList->AddRange(this->cliInfos->GetValues());
 	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;
 }
 
-OSInt SSWR::SDNSProxy::SDNSProxyCore::GetRequestPerMin()
+UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetRequestPerMin()
 {
 	return this->lastCnt;
 }

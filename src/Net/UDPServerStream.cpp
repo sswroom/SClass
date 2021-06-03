@@ -30,7 +30,7 @@ void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressI
 	}
 }
 
-Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, Int32 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.UDPServerSream")
+Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.UDPServerSream")
 {
 	this->sockf = sockf;
 	this->log = log;

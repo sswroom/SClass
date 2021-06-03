@@ -43,7 +43,7 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 recCnt;
 	UInt32 fnameSize;
 	UInt32 i;
-	Int32 j;
+	UInt32 j;
 	UInt32 fileSize;
 	UInt32 fileOfst;
 	Data::DateTime dt;

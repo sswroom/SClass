@@ -12,9 +12,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Double spd1;
 	Double spd2;
-	Int32 i;
-	Int32 val;
-	Int32 val2;
+	UOSInt i;
+	OSInt val;
+	OSInt val2;
 	Manage::HiResClock *clk;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
@@ -29,7 +29,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	spd1 = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Compare value1 = ");
-	sb.AppendI32(val);
+	sb.AppendOSInt(val);
 	sb.Append((const UTF8Char*)", t = ");
 	Text::SBAppendF64(&sb, spd1);
 	console.WriteLine(sb.ToString());
@@ -43,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	spd2 = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Compare value2 = ");
-	sb.AppendI32(val2);
+	sb.AppendOSInt(val2);
 	sb.Append((const UTF8Char*)", t = ");
 	Text::SBAppendF64(&sb, spd2);
 	console.WriteLine(sb.ToString());

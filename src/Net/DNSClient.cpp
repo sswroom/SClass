@@ -24,7 +24,7 @@ void __stdcall Net::DNSClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 	mutUsage.EndUse();
 }
 
-Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(Int32 id)
+Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 {
 	RequestStatus *req = MemAlloc(RequestStatus, 1);
 	req->respSize = 0;
@@ -35,7 +35,7 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(Int32 id)
 	return req;
 }
 
-void Net::DNSClient::DelReq(Int32 id)
+void Net::DNSClient::DelReq(UInt32 id)
 {
 	RequestStatus *req;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -48,7 +48,7 @@ void Net::DNSClient::DelReq(Int32 id)
 	}
 }
 
-Int32 Net::DNSClient::NextId()
+UInt32 Net::DNSClient::NextId()
 {
 	this->lastID++;
 	if (this->lastID >= 65536)
@@ -63,7 +63,7 @@ Net::DNSClient::DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->serverAddr = *serverAddr;
 	this->lastID = random.NextInt15();
 	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->reqMap, Data::Int32Map<RequestStatus*>());
+	NEW_CLASS(this->reqMap, Data::UInt32Map<RequestStatus*>());
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, 0, PacketHdlr, this, 0, 0, 1, false));
 }
 
@@ -94,7 +94,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 	const UTF8Char *cptr1;
 	const UTF8Char *cptr2;
 	UTF8Char c;
-	Int32 currId = NextId();
+	UInt32 currId = NextId();
 
 	WriteMInt16(&buff[0], currId);
 	WriteMInt16(&buff[2], 0x100); //flags
@@ -196,10 +196,10 @@ UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, U
 	UInt8 localIP[4];
 	Char *ptr1;
 	Char *ptr2;
-	Int32 currId = NextId();
+	UInt32 currId = NextId();
 	*(UInt32*)localIP = ip;
 
-	WriteMInt16(&buff[0], currId);
+	WriteMUInt16(&buff[0], currId);
 	WriteMInt16(&buff[2], 0x100); //flags
 	WriteMInt16(&buff[4], 1); //reqCount
 	WriteMInt16(&buff[6], 0);
@@ -244,11 +244,11 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 	UInt8 buff[512];
 	Char *ptr1;
 	Char *ptr2;
-	Int32 currId = NextId();
+	UInt32 currId = NextId();
 
 	if (addr->addrType == Net::SocketUtil::AT_IPV4)
 	{
-		WriteMInt16(&buff[0], currId);
+		WriteMUInt16(&buff[0], currId);
 		WriteMInt16(&buff[2], 0x100); //flags
 		WriteMInt16(&buff[4], 1); //reqCount
 		WriteMInt16(&buff[6], 0);

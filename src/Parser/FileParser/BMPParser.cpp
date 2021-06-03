@@ -12,9 +12,9 @@
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/BMPParser.h"
 
-void BMPParser_ReadPal(Media::StaticImage *img, IO::IStreamData *fd, OSInt palStart, Int32 palType, Int32 colorUsed)
+void BMPParser_ReadPal(Media::StaticImage *img, IO::IStreamData *fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
 {
-	OSInt maxColor = 1 << img->info->storeBPP;
+	UOSInt maxColor = (UOSInt)1 << img->info->storeBPP;
 	if (palType == 0)
 	{
 		if (colorUsed <= 0 || colorUsed >= maxColor)
@@ -26,7 +26,7 @@ void BMPParser_ReadPal(Media::StaticImage *img, IO::IStreamData *fd, OSInt palSt
 			fd->GetRealData(palStart, colorUsed * 4, img->pal);
 			MemClear(&img->pal[colorUsed * 4], (maxColor - colorUsed) * 4);
 		}
-		OSInt i;
+		UOSInt i;
 		i = maxColor;
 		while (i-- > 0)
 		{
@@ -36,8 +36,8 @@ void BMPParser_ReadPal(Media::StaticImage *img, IO::IStreamData *fd, OSInt palSt
 	else if (palType == 1)
 	{
 		UInt8 palBuff[768];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		fd->GetRealData(palStart, maxColor * 3, palBuff);
 		i = 0;
 		j = 0;
@@ -91,13 +91,13 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 hdr[138];
 
-	Int32 imgWidth;
+	UInt32 imgWidth;
 	Int32 imgHeight;
-	Int32 bpp;
-	Int32 endPos;
+	UInt32 bpp;
+	UInt32 endPos;
 //	Int32 imgPos;
-	Int32 biCompression = 0;
-	Int32 colorUsed = 0;
+	UInt32 biCompression = 0;
+	UInt32 colorUsed = 0;
 //	Int32 colorImportant = 0;
 //	Int32 biSizeImage = 0;
 	Int32 headerSize;
@@ -129,7 +129,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	headerSize = ReadInt32(&hdr[14]);
 	if (headerSize == 12) //BITMAPCOREHEADER / OS21XBITMAPHEADER
 	{
-		imgWidth = ReadInt16(&hdr[18]);
+		imgWidth = ReadUInt16(&hdr[18]);
 		imgHeight = ReadInt16(&hdr[20]);
 		bpp = ReadUInt16(&hdr[24]);
 		if (bpp == 16)
@@ -147,7 +147,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else if (headerSize == 16)
 	{
-		imgWidth = ReadInt32(&hdr[18]);
+		imgWidth = ReadUInt32(&hdr[18]);
 		imgHeight = ReadInt32(&hdr[22]);
 		bpp = ReadUInt16(&hdr[28]);
 		if (bpp == 16)
@@ -165,10 +165,10 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else if (headerSize >= 40)
 	{
-		imgWidth = ReadInt32(&hdr[18]);
+		imgWidth = ReadUInt32(&hdr[18]);
 		imgHeight = ReadInt32(&hdr[22]);
 		bpp = ReadUInt16(&hdr[28]);
-		biCompression = ReadInt32(&hdr[30]);
+		biCompression = ReadUInt32(&hdr[30]);
 		if (bpp == 16)
 		{
 			pf = Media::PF_LE_R5G5B5;
@@ -182,7 +182,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 //		biSizeImage = ReadInt32(&hdr[34]);
 		hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, ReadInt32(&hdr[38]));
 		vdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, ReadInt32(&hdr[42]));
-		colorUsed = ReadInt32(&hdr[46]);
+		colorUsed = ReadUInt32(&hdr[46]);
 //		colorImportant = ReadInt32(&hdr[50]);
 		if (hdpi == 0 || vdpi == 0)
 		{
@@ -204,10 +204,10 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		if (biCompression == 3) //BI_BITFIELDS
 		{
-			rBit = ReadInt32(&hdr[54]);
-			gBit = ReadInt32(&hdr[58]);
-			bBit = ReadInt32(&hdr[62]);
-			aBit = ReadInt32(&hdr[66]);
+			rBit = ReadUInt32(&hdr[54]);
+			gBit = ReadUInt32(&hdr[58]);
+			bBit = ReadUInt32(&hdr[62]);
+			aBit = ReadUInt32(&hdr[66]);
 			if ((rBit & gBit) != 0 || (rBit & bBit) != 0 || (rBit & aBit) != 0 || (gBit & bBit) != 0 || (gBit & aBit) != 0 || (bBit & aBit) != 0)
 			{
 				headerValid = false;
@@ -245,8 +245,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			}
 			else
 			{
-				OSInt i = 32;
-				Int32 v = 1;
+				UOSInt i = 32;
+				UInt32 v = 1;
 				while (i-- > 0)
 				{
 					if (rBit & v)
@@ -296,7 +296,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else
 	{
-		imgWidth = ReadInt32(&hdr[18]);
+		imgWidth = ReadUInt32(&hdr[18]);
 		imgHeight = ReadInt32(&hdr[22]);
 		bpp = ReadUInt16(&hdr[28]);
 		if (bpp == 16)
@@ -324,8 +324,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	}
 	if (biCompression == 0 && bpp != 1 && bpp != 2 && bpp != 4 && bpp != 8 && bpp != 16 && bpp != 24 && bpp != 32 && bpp != 48 && bpp != 64)
 	{
-		Int64 fileSize = fd->GetDataSize() - endPos;
-		OSInt lineSize = (OSInt)(fileSize / imgHeight);
+		UInt64 fileSize = fd->GetDataSize() - endPos;
+		UOSInt lineSize = (UOSInt)(fileSize / (UInt32)imgHeight);
 		if (lineSize >= imgWidth * 8)
 		{
 			bpp = 64;
@@ -382,16 +382,17 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		IO::ParsedObject::ParserType pt;
 		if (this->parsers)
 		{
-			Int32 currOfst = ReadUInt32(&hdr[10]);
+			UInt32 currOfst = ReadUInt32(&hdr[10]);
 			IO::IStreamData *innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
 			pobj = this->parsers->ParseFile(innerFd, &pt);
 			DEL_CLASS(innerFd);
 			return pobj;
 		}
 	}
+	UInt32 uimgHeight = (UInt32)imgHeight;
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)
 	{
-		NEW_CLASS(outImg, Media::StaticImage(imgWidth, imgHeight, 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(outImg, Media::StaticImage(imgWidth, uimgHeight, 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
 		outImg->info->hdpi = hdpi;
 		outImg->info->vdpi = vdpi;
 		outImg->info->par2 = hdpi / vdpi;
@@ -506,8 +507,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 						lineW = imgWidth >> 3;
 					}
 					lineW2 = lineW;
-					currOfst = (lineW * imgHeight) + ReadUInt32(&hdr[10]);
-					while (imgHeight-- > 0)
+					currOfst = (lineW * uimgHeight) + ReadUInt32(&hdr[10]);
+					while (uimgHeight-- > 0)
 					{
 						currOfst -= lineW;
 						fd->GetRealData(currOfst, lineW2, pBits);
@@ -525,8 +526,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 						lineW = imgWidth >> 2;
 					}
 					lineW2 = lineW;
-					currOfst = (lineW * imgHeight) + ReadUInt32(&hdr[10]);
-					while (imgHeight-- > 0)
+					currOfst = (lineW * uimgHeight) + ReadUInt32(&hdr[10]);
+					while (uimgHeight-- > 0)
 					{
 						currOfst -= lineW;
 						fd->GetRealData(currOfst, lineW2, pBits);
@@ -541,8 +542,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						lineW = lineW + 4 - (lineW & 3);
 					}
-					currOfst = (lineW * imgHeight) + ReadUInt32(&hdr[10]);
-					while (imgHeight-- > 0)
+					currOfst = (lineW * uimgHeight) + ReadUInt32(&hdr[10]);
+					while (uimgHeight-- > 0)
 					{
 						currOfst -= lineW;
 						fd->GetRealData(currOfst, lineW2, pBits);
@@ -556,8 +557,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						lineW = lineW + 4 - (lineW & 3);
 					}
-					currOfst = (lineW * imgHeight) + ReadUInt32(&hdr[10]);
-					while (imgHeight-- > 0)
+					currOfst = (lineW * uimgHeight) + ReadUInt32(&hdr[10]);
+					while (uimgHeight-- > 0)
 					{
 						currOfst -= lineW;
 						fd->GetRealData(currOfst, imgWidth, pBits);
@@ -571,8 +572,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 						lineW = lineW + 4 - (lineW & 3);
 					}
 					lineW2 = imgWidth << 1;
-					currOfst = (lineW * imgHeight) + ReadUInt32(&hdr[10]);
-					while (imgHeight-- > 0)
+					currOfst = (lineW * uimgHeight) + ReadUInt32(&hdr[10]);
+					while (uimgHeight-- > 0)
 					{
 						currOfst -= lineW;
 						fd->GetRealData(currOfst, lineW2, pBits);
@@ -586,8 +587,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 						lineW = lineW + 4 - (lineW & 3);
 					}
 					lineW2 = imgWidth * 3;
-					currOfst = (lineW * imgHeight) + ReadUInt32(&hdr[10]);
-					while (imgHeight-- > 0)
+					currOfst = (lineW * uimgHeight) + ReadUInt32(&hdr[10]);
+					while (uimgHeight-- > 0)
 					{
 						currOfst -= lineW;
 						fd->GetRealData(currOfst, lineW2, pBits);
@@ -596,8 +597,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					break;
 				case 32:
 					currOfst = ReadUInt32(&hdr[10]);
-					pBits = pBits + imgWidth * imgHeight * 4;
-					while (imgHeight-- > 0)
+					pBits = pBits + imgWidth * uimgHeight * 4;
+					while (uimgHeight-- > 0)
 					{
 						pBits -= imgWidth << 2;
 						fd->GetRealData(currOfst, imgWidth << 2, pBits);
@@ -699,7 +700,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					OSInt bpl = outImg->GetDataBpl();
 					if (bpl != lineW)
 					{
-						while (imgHeight-- > 0)
+						while (uimgHeight-- > 0)
 						{
 							fd->GetRealData(currOfst, lineW, pBits);
 							pBits += bpl;
@@ -708,7 +709,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						fd->GetRealData(currOfst, imgHeight * lineW, pBits);
+						fd->GetRealData(currOfst, uimgHeight * lineW, pBits);
 					}
 				}
 			}
@@ -716,11 +717,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		else if (biCompression == 1 && bpp == 8) // rle8
 		{
 			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
-			OSInt dataSize = (OSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
+			UOSInt dataSize = (UOSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
 			UInt8 *rleData = MemAlloc(UInt8, dataSize);
 			UInt8 *currPtr;
 			OSInt bpl = outImg->GetDataBpl();
-			MemClear(pBits, imgHeight * bpl);
+			MemClear(pBits, uimgHeight * (UOSInt)bpl);
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 v;
@@ -772,7 +773,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						if (dataSize < c + 1)
+						if (dataSize < (UOSInt)c + 1)
 						{
 							c = (UInt8)dataSize;
 						}
@@ -821,10 +822,10 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		else if (biCompression == 2 && bpp == 4) // rle4
 		{
 			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
-			OSInt dataSize = (OSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
+			UOSInt dataSize = (UOSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
 			UInt8 *rleData = MemAlloc(UInt8, dataSize);
 			OSInt bpl = outImg->GetDataBpl() << 1;
-			UInt8 *tmpData = MemAlloc(UInt8, imgHeight * bpl);
+			UInt8 *tmpData = MemAlloc(UInt8, uimgHeight * (UOSInt)bpl);
 			UInt8 *currPtr;
 			MemClear(tmpData, (UOSInt)(imgHeight * bpl));
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
@@ -883,19 +884,19 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						c2 = c >> 1;
+						c2 = (UInt8)(c >> 1);
 						while (c2-- > 0 && dataSize > 0)
 						{
 							v = *currPtr++;
 							dataSize--;
 							if (currX < imgWidth)
 							{
-								pBits[currX] = v >> 4;
+								pBits[currX] = (UInt8)(v >> 4);
 							}
 							currX++;
 							if (currX < imgWidth)
 							{
-								pBits[currX] = v & 15;
+								pBits[currX] = (UInt8)(v & 15);
 							}
 							currX++;
 						}
@@ -905,7 +906,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 							dataSize--;
 							if (currX < imgWidth)
 							{
-								pBits[currX] = v >> 4;
+								pBits[currX] = (UInt8)(v >> 4);
 							}
 							currX++;
 						}
@@ -920,14 +921,14 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 				{
 					v = *currPtr++;
 					dataSize -= 2;
-					c2 = c >> 1;
+					c2 = (UInt8)(c >> 1);
 					while (c2-- > 0)
 					{
 						if (currX >= imgWidth)
 						{
 							break;
 						}
-						pBits[currX++] = v >> 4;
+						pBits[currX++] = (UInt8)(v >> 4);
 						if (currX >= imgWidth)
 						{
 							break;
@@ -938,7 +939,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						if (currX < imgWidth)
 						{
-							pBits[currX] = v >> 4;
+							pBits[currX] = (UInt8)(v >> 4);
 						}
 						currX++;
 					}
@@ -951,10 +952,10 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			{
 				bpl = -bpl;
 			}
-			dataSize = imgHeight * (bpl >> 1);
+			dataSize = uimgHeight * (UOSInt)(bpl >> 1);
 			while (dataSize-- > 0)
 			{
-				*pBits++ = (rleData[0] << 4) | rleData[1];
+				*pBits++ = (UInt8)((rleData[0] << 4) | rleData[1]);
 				rleData += 2;
 			}
 			MemFree(tmpData);
@@ -1198,7 +1199,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 								break;
 							}
 							pxVal = (aVal << 24) | (rVal << 16) | (gVal << 8) | bVal;
-							WriteInt32(&pBits[destI], pxVal);
+							WriteUInt32(&pBits[destI], pxVal);
 						}
 						else if (bpp == 64)
 						{

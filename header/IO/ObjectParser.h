@@ -14,7 +14,7 @@ namespace IO
 		virtual ~FileParser(){};
 
 		virtual Int32 GetName() = 0;
-		virtual void SetCodePage(Int32 codePage) {};
+		virtual void SetCodePage(UInt32 codePage) {};
 		virtual void SetParserList(Parser::ParserList *parsers) {};
 		virtual void SetWebBrowser(Net::WebBrowser *browser) {};
 		virtual void SetMapManager(Map::MapManager *mapMgr) {};

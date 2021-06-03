@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileExporter.h"
 
-void IO::FileExporter::SetCodePage(Int32 codePage)
+void IO::FileExporter::SetCodePage(UInt32 codePage)
 {
 }
 

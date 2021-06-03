@@ -40,7 +40,7 @@ IO::ParsedObject::ParserType Parser::FileParser::ISOParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::ISOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 buff[32];
-	Int64 fileSize = fd->GetDataSize();
+	UInt64 fileSize = fd->GetDataSize();
 	fd->GetRealData(0, 32, buff);
 
 	IO::FileSectorData *sectorData = 0;

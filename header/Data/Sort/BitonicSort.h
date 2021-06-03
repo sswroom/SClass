@@ -38,7 +38,7 @@ namespace Data
 				Sync::Event *notifyEvt;
 			} TaskInfo;
 		private:
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			ThreadStat *threads;
 			ThreadStat mainThread;
 			Data::SyncArrayList<TaskInfo*> *tasks;

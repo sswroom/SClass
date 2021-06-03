@@ -12,7 +12,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, Int32 codePage, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -371,7 +371,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-Int32 Map::GPSTrack::GetCodePage()
+UInt32 Map::GPSTrack::GetCodePage()
 {
 	return this->codePage;
 }

@@ -11,10 +11,10 @@
 
 IO::ConsoleWriter *console;
 
-void __stdcall OnScanResult(void *userObj, Int64 mac, Int32 rssi, const Char *name)
+void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *name)
 {
 	UInt8 buff[8];
-	WriteMInt64(buff, mac);
+	WriteMUInt64(buff, mac);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(&buff[2], 6, ':', Text::LBT_NONE);
 	sb.Append((const UTF8Char*)" RSSI=");
@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Data::ArrayList<IO::BTController*> ctrlList;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	manager.CreateControllers(&ctrlList);
-	OSInt i;
+	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	i = ctrlList.GetCount();
 	while (i-- > 0)

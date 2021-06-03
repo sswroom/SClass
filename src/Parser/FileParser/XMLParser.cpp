@@ -42,7 +42,7 @@ Int32 Parser::FileParser::XMLParser::GetName()
 	return *(Int32*)"XMLP";
 }
 
-void Parser::FileParser::XMLParser::SetCodePage(Int32 codePage)
+void Parser::FileParser::XMLParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
 }
