@@ -371,7 +371,7 @@ UInt32 Text::ChineseInfo::GetCharCode(const UTF8Char *s)
 	return b;
 }
 
-Int16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
+UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
 {
 	if (*u8s == 0)
 		return 0;
@@ -385,7 +385,7 @@ Int16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
 	Bool allowEmpty = false;
 	CantonesePronunFront cpf = CPF_NONE;
 	CantonesePronunTail cpt = CPT_NONE;
-	Int32 cpn = 0;
+	UInt32 cpn = 0;
 	c = *s;
 	switch (c)
 	{
@@ -768,7 +768,7 @@ Int16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
 	{
 		return 0;
 	}
-	return (cpf << 11) | (cpt << 4) | cpn;
+	return (UInt16)((cpf << 11) | (cpt << 4) | cpn);
 }
 
 UTF8Char *Text::ChineseInfo::Int2Cantonese(UTF8Char *buff, UInt16 iVal)

@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
 		{
 			UInt64 thisCnt = me->bforce->GetTestCnt();
 			
-			me->bforce->GetCurrKey(Text::StrConcat(Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"Processing, spd="), thisCnt - me->lastCnt), (const UTF8Char*)", key="));
+			me->bforce->GetCurrKey(Text::StrConcat(Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"Processing, spd="), thisCnt - me->lastCnt), (const UTF8Char*)", key="));
 			me->lastCnt = thisCnt;
 			me->txtStatus->SetText(sbuff);
 		}

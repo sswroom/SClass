@@ -39,10 +39,10 @@ namespace Map
 		} MapArea;
 	private:
 		Bool inited;
-		Int32 bgColor;
-		Int32 nLine;
-		Int32 nFont;
-		Int32 nStr;
+		UInt32 bgColor;
+		UInt32 nLine;
+		UInt32 nFont;
+		UInt32 nStr;
 		Data::ArrayList<MapLineStyle*> **lines;
 		Data::ArrayList<MapFontStyle*> **fonts;
 		Data::ArrayList<MapLayerStyle*> *drawList;
@@ -55,26 +55,26 @@ namespace Map
 		static void DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, OSInt nPoints, Int32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle);
 		static void DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, OSInt nPoints, Int32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds);
 		static void GetCharsSize(Media::DrawImage *img, Double *size, const UTF8Char *label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
-		static Int32 ToColor(const UTF8Char *str);
+		static UInt32 ToColor(const UTF8Char *str);
 		static Map::IMapDrawLayer *GetDrawLayer(const UTF8Char *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter);
 		static void DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Double *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
-		static void DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, Int32 maxLabels, Int32 *labelCnt, Bool *isLayerEmpty);
-		static Int32 NewLabel(MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, Int32 priority);
-		static Bool AddLabel(MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, const UTF8Char *label, Int32 nPoints, Double *points, Int32 priority, Int32 recType, Int32 fntStyle, Int32 flag, Map::MapView *view, Double xOfst, Double yOfst);
+		static void DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty);
+		static UInt32 NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Int32 priority);
+		static Bool AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, const UTF8Char *label, Int32 nPoints, Double *points, Int32 priority, Int32 recType, Int32 fntStyle, Int32 flag, Map::MapView *view, Double xOfst, Double yOfst);
 		static void SwapLabel(MapLabels2 *mapLabels, Int32 index, Int32 index2);
 		static Bool LabelOverlapped(Double *points, UOSInt nPoints, Double tlx, Double tly, Double brx, Double bry);
-		static void DrawLabels(Media::DrawImage *img, MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt);
-		static void LoadLabels(Media::DrawImage *img, Map::MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, const WChar *fileName, Int32 xId, Int32 yId, Int32 xOfst, Int32 yOfst, const WChar *dbName);
+		static void DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt);
+		static void LoadLabels(Media::DrawImage *img, Map::MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, const WChar *fileName, Int32 xId, Int32 yId, Int32 xOfst, Int32 yOfst, const WChar *dbName);
 
 	public:
 		MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale);
 		~MapConfig2();
 
 		Bool IsError();
-		Media::DrawPen *CreatePen(Media::DrawImage *img, Int32 lineStyle, Int32 lineLayer);
+		Media::DrawPen *CreatePen(Media::DrawImage *img, UInt32 lineStyle, UOSInt lineLayer);
 		UTF8Char *DrawMap(Media::DrawImage *img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime);
 
-		Int32 GetBGColor();
+		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);
 		Int32 GetLocMCCXY(Double x, Double y);
 		static void ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList);

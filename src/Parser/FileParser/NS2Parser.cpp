@@ -40,11 +40,11 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, 
 	UInt8 *hdrBuff;
 	UInt32 hdrSize;
 	Text::Encoding enc(932);
-	Int64 fileOfst;
+	UInt64 fileOfst;
 	UInt32 fileSize;
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	fd->GetRealData(0, 256, testBuff);
 	if (testBuff[4] != '"')

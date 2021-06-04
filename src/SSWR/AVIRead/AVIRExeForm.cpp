@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStrUTF8 *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, OSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStrUTF8 *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
 	UTF8Char buff[512];
 	UTF8Char *sptr;
@@ -34,7 +34,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			Bool isSucc = dasm->DasmNext(sess, sptr, &buffSize);
 			if (!isSucc)
 			{
-				OSInt sizeLeft = codeSize - sess->regs.IP;
+				UOSInt sizeLeft = codeSize - sess->regs.IP;
 				if (sizeLeft > 16)
 					sizeLeft = 16;
 				Text::StrHexBytes(Text::StrConcat(&buff[::Text::StrCharCnt(buff)], (const UTF8Char*)"Unknown opcodes: "), &sess->code[oriIP], sizeLeft, ' ');
@@ -44,7 +44,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			codes->Add(Text::StrCopyNew(buff));
 			if (sess->endStatus != 0)
 			{
-				Int32 nextAddr = sess->regs.CS;
+				UInt32 nextAddr = sess->regs.CS;
 				nextAddr = (nextAddr << 16) + sess->endIP;
 				OSInt i = sess->jmpAddrs->SortedIndexOf(nextAddr);
 				if (i < 0)
@@ -147,10 +147,10 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		{
 			UInt32 faddr = nfuncCalls->GetItem(0);
 			nfuncCalls->RemoveAt(0);
-			i = funcCalls->SortedIndexOf(faddr);
-			if (i < 0)
+			OSInt si = funcCalls->SortedIndexOf(faddr);
+			if (si < 0)
 			{
-				funcCalls->Insert(-i - 1, faddr);
+				funcCalls->Insert((UOSInt)-si - 1, faddr);
 				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(&codeSize), this->exeFile->GetDOSCodeSegm());
 				sess->regs.IP = (::UInt16)faddr;
 				NEW_CLASS(codes, Data::ArrayListStrUTF8());
@@ -166,7 +166,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				nfuncCalls->AddRange(sess->callAddrs);
 				nfuncCalls->AddRange(sess->jmpAddrs);
 				tmpArr = nfuncCalls->GetArray(&arrSize);
-				ArtificialQuickSort_SortUInt32(tmpArr, 0, arrSize - 1);
+				ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
 				dasm->DeleteSess(sess);
 			}
 		}
@@ -222,10 +222,10 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
-	OSInt modIndex = (OSInt)me->lbImport->GetSelectedItem();
+	UOSInt modIndex = (UOSInt)me->lbImport->GetSelectedItem();
 	me->lvImport->ClearItems();
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = me->exeFile->GetImportFuncCount(modIndex);
 	while (i < j)
@@ -243,9 +243,9 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"Size = ");
-		sb.AppendOSInt(res->dataSize);
+		sb.AppendUOSInt(res->dataSize);
 		sb.Append((const UTF8Char*)"\r\nCodePage = ");
-		sb.AppendI32(res->codePage);
+		sb.AppendU32(res->codePage);
 		sb.Append((const UTF8Char*)"\r\nType = ");
 		sb.Append(IO::EXEFile::GetResourceTypeName(res->rt));
 		sb.Append((const UTF8Char*)"\r\n");

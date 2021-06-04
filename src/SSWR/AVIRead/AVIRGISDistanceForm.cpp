@@ -173,7 +173,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	this->cboDistanceUnit->SetRect(244, 52, 60, 23, false);
 	this->cboDistanceUnit->HandleSelectionChange(OnDistanceUnitChg, this);
 	
-	OSInt i;
+	UOSInt i;
 	Math::Unit::Distance::DistanceUnit du = Math::Unit::Distance::DU_FIRST;
 	while (du <= Math::Unit::Distance::DU_LAST)
 	{

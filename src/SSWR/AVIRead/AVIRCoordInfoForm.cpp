@@ -8,9 +8,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(void *userObj)
 	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(&sb);
-	Int32 srid;
+	UInt32 srid;
 	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
-	if (sb.ToInt32(&srid))
+	if (sb.ToUInt32(&srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
 	}
@@ -22,15 +22,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(void *userObj
 	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(&sb);
-	Int32 srid;
+	UInt32 srid;
 	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
-	if (sb.ToInt32(&srid))
+	if (sb.ToUInt32(&srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRefPrev(srid);
 		if (srinfo)
 		{
 			sb.ClearStr();
-			sb.AppendI32(srinfo->srid);
+			sb.AppendU32(srinfo->srid);
 			me->txtSRID->SetText(sb.ToString());
 		}
 	}
@@ -42,15 +42,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(void *userObj
 	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(&sb);
-	Int32 srid;
+	UInt32 srid;
 	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
-	if (sb.ToInt32(&srid))
+	if (sb.ToUInt32(&srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRefNext(srid);
 		if (srinfo)
 		{
 			sb.ClearStr();
-			sb.AppendI32(srinfo->srid);
+			sb.AppendU32(srinfo->srid);
 			me->txtSRID->SetText(sb.ToString());
 		}
 	}

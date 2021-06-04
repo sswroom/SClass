@@ -22,7 +22,7 @@ namespace Media
 			UInt32 frameTime;
 			UOSInt frameSize;
 			OSInt pictureStart;
-			UInt32 frameNum;
+			UOSInt frameNum;
 		} FrameBuff;
 
 		Media::IStreamControl *pbc;
@@ -44,7 +44,7 @@ namespace Media
 		UOSInt syncFieldCnt;
 		Bool firstFrame;
 		OSInt frameStart;
-		Int32 frameNum;
+		UOSInt frameNum;
 		Int32 writeCnt;
 
 		Bool playing;
@@ -68,7 +68,7 @@ namespace Media
 		IO::Writer *debugLog;
 		Sync::Mutex *debugMut;
 
-		void SubmitFrame(OSInt frameSize, OSInt frameStart, OSInt pictureStart);
+		void SubmitFrame(UOSInt frameSize, UOSInt frameStart, UOSInt pictureStart);
 		void ClearPlayBuff();
 		static UInt32 __stdcall PlayThread(void *userObj);
 	public:

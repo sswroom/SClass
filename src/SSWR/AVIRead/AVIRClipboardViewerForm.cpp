@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRClipboardViewerForm *me = (SSWR::AVIRead::AVIRClipboardViewerForm*)userObj;
-	Int32 fmtId = (Int32)(OSInt)me->lbType->GetSelectedItem();
+	UInt32 fmtId = (UInt32)(UOSInt)me->lbType->GetSelectedItem();
 	if (fmtId)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -35,8 +35,8 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientCon
 	UTF8Char sbuff[256];
 	UOSInt i;
 	UOSInt j;
-	Int32 fmt;
-	Data::ArrayList<Int32> formats;
+	UInt32 fmt;
+	Data::ArrayList<UInt32> formats;
 	this->clipboard->GetDataFormats(&formats);
 	i = 0;
 	j = formats.GetCount();

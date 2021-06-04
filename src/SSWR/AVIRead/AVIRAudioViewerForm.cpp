@@ -31,7 +31,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	this->pbsSample->GetSizeP(&w, &h);
 	if (w <= 0 || h <= 0)
 		return;
-	if (this->totalSample <= 0)
+	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
 		Media::DrawBrush *b;
 		Media::DrawFont *f;
@@ -131,7 +131,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	this->pbsFreq->GetSizeP(&w, &h);
 	if (w <= 0 || h <= 0)
 		return;
-	if (this->totalSample <= 0)
+	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
 		Media::DrawBrush *b;
 		Media::DrawFont *f;
@@ -155,7 +155,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	{
 		Media::DrawBrush *b;
 		Media::DrawPen *p;
-		OSInt i;
+		UOSInt i;
 		UOSInt j;
 		Double lastX;
 		Double lastY;
@@ -165,16 +165,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		gimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 
 		UInt8 *buff = MemAlloc(UInt8, this->format->align * (FFTSAMPLE + FFTAVG - 1));
-		i = (OSInt)(currSample - FFTSAMPLE + 1);
-		if (i < 0)
-		{
-			MemClear(buff, this->format->align * (UOSInt)-i);
-			i = (OSInt)this->audSrc->ReadSample(0, FFTSAMPLE + (UOSInt)i + FFTAVG - 1, buff + (this->format->align * (UOSInt)-i)) - i;
-		}
-		else
-		{
-			i = (OSInt)this->audSrc->ReadSample(i, FFTSAMPLE + FFTAVG - 1, buff);
-		}
+		i = (currSample - FFTSAMPLE + 1);
+		i = this->audSrc->ReadSample(i, FFTSAMPLE + FFTAVG - 1, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
 		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
@@ -185,7 +177,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		i = 0;
 		while (i < this->format->nChannels)
 		{
-			Math::FFT::ForwardBits(buff + i * (this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
+			Math::FFT::ForwardBits(buff + i * (UOSInt)(this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
 			if (i == 0)
 			{
@@ -321,7 +313,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_NEXT_PAGE:
-		if (this->totalSample != -1)
+		if (this->totalSample != (UOSInt)-1)
 		{
 			if (this->currSample + 1 < this->totalSample)
 			{
@@ -351,7 +343,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_END:
-		if (this->totalSample != -1)
+		if (this->totalSample != (UOSInt)-1)
 		{
 			if (this->currSample + 1 != this->totalSample)
 			{

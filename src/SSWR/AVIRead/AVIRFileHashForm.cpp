@@ -41,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 		me->progLastCount = me->progCount;
 	}
 
-	Int64 currRead = me->readSize;
-	Int64 currTotal = me->totalRead;
+	UInt64 currRead = me->readSize;
+	UInt64 currTotal = me->totalRead;
 	me->readSize = 0;
 	me->prgFile->ProgressUpdate(me->progCurr, me->progCount);
 	mutUsage.EndUse();
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	if (timeDiff > 0)
 	{
 		Text::StrInt64(sbuff, currRead * 1000 / timeDiff);
-		spd = currRead * 1000.0 / timeDiff;
+		spd = (Double)currRead * 1000.0 / timeDiff;
 	}
 	else
 	{

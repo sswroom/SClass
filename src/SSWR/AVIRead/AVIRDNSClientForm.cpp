@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	Manage::HiResClock *clk;
 	UOSInt i;
 	UOSInt j;
-	OSInt bestInd;
+	UOSInt bestInd;
 	me->txtServer->GetText(&sb);
 	if (!Net::SocketUtil::GetIPAddr((Char*)sb.ToString(), &dnsAddr))
 	{
@@ -50,13 +50,13 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 		dnsCli->GetByIPv4Name(me->ansList, reqIP);
 		t = clk->GetTimeDiff();
 	}
-	bestInd = -1;
+	bestInd = (UOSInt)-1;
 	i = 0;
 	j = me->ansList->GetCount();
 	while (i < j)
 	{
 		ans = me->ansList->GetItem(i);
-		if (bestInd == -1 && ans->recType == 1)
+		if (bestInd == (UOSInt)-1 && ans->recType == 1)
 		{
 			bestInd = i;
 		}
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	}
 	if (j > 0)
 	{
-		if (bestInd < 0)
+		if (bestInd == (UOSInt)-1)
 		{
 			bestInd = 0;
 		}

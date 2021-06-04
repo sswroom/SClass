@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 v;
+	UInt32 v;
 	me->txtChar->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(void *userObj)
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[7];
-	Int32 v;
+	UInt32 v;
 	me->txtRadical->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
@@ -334,19 +334,19 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	b = this->charImg->NewBrushARGB(0xffffffff);
-	this->charImg->DrawRect(0, 0, Math::OSInt2Double(newW), Math::OSInt2Double(newH), 0, b);
+	this->charImg->DrawRect(0, 0, Math::UOSInt2Double(newW), Math::UOSInt2Double(newH), 0, b);
 	this->charImg->DelBrush(b);
 	if (this->currChar != 0)
 	{
 		OSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontPx(this->currFont, Math::OSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontPx(this->currFont, Math::UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
 		len = this->chinese->AppendCharCode(sbuff, this->currChar) - sbuff;
 		sbuff[len] = 0;
 		
 		this->charImg->GetTextSize(f, sbuff, len, sz);
-		this->charImg->DrawString((newW - sz[0]) * 0.5, (newH - sz[1]) * 0.5, sbuff, f, b);
+		this->charImg->DrawString((Math::UOSInt2Double(newW) - sz[0]) * 0.5, (Math::UOSInt2Double(newH) - sz[1]) * 0.5, sbuff, f, b);
 		this->charImg->DelFont(f);
 		this->charImg->DelBrush(b);
 	}

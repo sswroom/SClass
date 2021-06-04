@@ -303,10 +303,10 @@ namespace UI
 		Double GetDDPI();
 
 		Media::DrawFont *CreateDrawFont(Media::DrawImage *img);
-		Int32 GUIKey2OSKey(GUIKey guiKey);
-		GUIKey OSKey2GUIKey(Int32 osKey);
+		UInt32 GUIKey2OSKey(GUIKey guiKey);
+		GUIKey OSKey2GUIKey(UInt32 osKey);
 
 		DragErrorType HandleDropEvents(GUIDropHandler *hdlr);
 	};
-};
+}
 #endif

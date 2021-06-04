@@ -27,17 +27,17 @@ namespace UI
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF *sb);
 
-		OSInt AddItem(const UTF8Char *itemText, void *itemObj);
-		OSInt InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj);
-		void *RemoveItem(OSInt index);
+		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
+		void *RemoveItem(UOSInt index);
 		void ClearItems();
-		OSInt GetCount();
-		void SetSelectedIndex(OSInt index);
+		UOSInt GetCount();
+		void SetSelectedIndex(UOSInt index);
 		OSInt GetSelectedIndex();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		void *GetSelectedItem();
-		UTF8Char *GetItemText(UTF8Char *buff, OSInt index);
-		void *GetItem(OSInt index);
+		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
+		void *GetItem(UOSInt index);
 
 		virtual void GetSize(Double *width, Double *height);
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
@@ -51,11 +51,11 @@ namespace UI
 
 		void SetAutoComplete(Bool autoComplete);
 		void SetTextSelection(OSInt startPos, OSInt endPos);
-		OSInt GetListMinVisible();
-		Bool SetListMinVisible(OSInt itemCount);
+		UOSInt GetListMinVisible();
+		Bool SetListMinVisible(UOSInt itemCount);
 	private:
-		OSInt GetSelectionHeight();
-		Bool SetListItemHeight(OSInt itemHeight);
+		UOSInt GetSelectionHeight();
+		Bool SetListItemHeight(UOSInt itemHeight);
 	};
-};
+}
 #endif

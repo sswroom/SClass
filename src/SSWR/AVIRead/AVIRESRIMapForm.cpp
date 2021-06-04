@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 	if (me->radPredefine->IsSelected())
 	{
 		OSInt i = me->cboPredefine->GetSelectedIndex();
-		const UTF8Char *v = (const UTF8Char*)me->cboPredefine->GetItem(i);
+		const UTF8Char *v = (const UTF8Char*)me->cboPredefine->GetItem((UOSInt)i);
 		if (v)
 		{
 			me->url = Text::StrCopyNew(v);

@@ -8,9 +8,9 @@
 
 void Data::Compress::LZWDecStream::ResetTable()
 {
-	this->currTableSize = (Int32)(1 << this->minCodeSize) + 2;
+	this->currTableSize = (UOSInt)(1 << this->minCodeSize) + 2;
 	this->currCodeSize = this->minCodeSize + 1;
-	this->nextTableSize = (Int32)(1 << (this->currCodeSize));
+	this->nextTableSize = (UOSInt)(1 << (this->currCodeSize));
 	*(Int32*)&this->lzwTable[this->resetCode * 4] = 0;
 	*(Int32*)&this->lzwTable[this->endCode * 4] = 0;
 
@@ -26,10 +26,10 @@ void Data::Compress::LZWDecStream::ResetTable()
 #endif
 		i++;
 	}
-	this->localCode = -1;
+	this->localCode = (UInt32)-1;
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
+Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
 	this->tableSize = (UOSInt)(1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
@@ -52,9 +52,9 @@ Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt min
 	ResetTable();
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream((const UTF8Char*)"LZWStream")
+Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream((const UTF8Char*)"LZWStream")
 {
-	this->tableSize = (Int32)(1 << maxCodeSize);
+	this->tableSize = (UOSInt)(1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
@@ -128,7 +128,7 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 			}
 			else
 			{
-				if (this->localCode == -1)
+				if (this->localCode == (UInt32)-1)
 				{
 					*buff++ = (UInt8)code;
 					this->localCode = code;
@@ -146,11 +146,11 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 				{
 					UOSInt codeSize = 1;
 					UOSInt i;
-					*(Int16*)&this->lzwTable[this->currTableSize * 4] = this->localCode;
+					*(UInt16*)&this->lzwTable[this->currTableSize * 4] = (UInt16)this->localCode;
 					this->localCode = code;
 					while (code >= this->resetCode)
 					{
-						code = *(Int16*)&this->lzwTable[code * 4];
+						code = *(UInt16*)&this->lzwTable[code * 4];
 						codeSize++;
 					}
 					this->lzwTable[this->currTableSize * 4 + 2] = (UInt8)code;
@@ -161,7 +161,7 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 						if (this->currCodeSize < this->maxCodeSize)
 						{
 							this->currCodeSize = this->currCodeSize + 1;
-							this->nextTableSize = (1 << this->currCodeSize);
+							this->nextTableSize = (UOSInt)(1 << this->currCodeSize);
 						}
 					}
 	
@@ -173,13 +173,13 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 						while (i-- > 0)
 						{
 							this->decBuff[i] = this->lzwTable[code * 4 + 2];
-							code = *(Int16*)&this->lzwTable[code * 4];
+							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
 						i = size;
 						while (i-- > 0)
 						{
 							buff[i] = this->lzwTable[code * 4 + 2];
-							code = *(Int16*)&this->lzwTable[code * 4];
+							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
 						buff += size;
 						writeSize += size;
@@ -193,7 +193,7 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 						while (i-- > 0)
 						{
 							buff[i] = this->lzwTable[code * 4 + 2];
-							code = *(Int16*)&this->lzwTable[code * 4];
+							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
 						buff += codeSize;
 					}

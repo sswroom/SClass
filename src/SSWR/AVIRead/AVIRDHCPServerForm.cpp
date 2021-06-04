@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 			while (i < j)
 			{
 				dhcp = dhcpList->GetItem(i);
-				WriteMInt64(mac, dhcp->hwAddr);
+				WriteMUInt64(mac, dhcp->hwAddr);
 				Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 				me->lvDevices->AddItem(sbuff, dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);

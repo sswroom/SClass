@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 	Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
 	gimg->SetHDPI(dpi);
 	gimg->SetVDPI(dpi);
-	me->chart->Plot(gimg, 0, 0, Math::OSInt2Double(width), Math::OSInt2Double(height));
+	me->chart->Plot(gimg, 0, 0, Math::UOSInt2Double(width), Math::UOSInt2Double(height));
 	me->pbMain->SetImageDImg(gimg);
 	me->core->GetDrawEngine()->DeleteImage(gimg);
 }

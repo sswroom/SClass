@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 					sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
 					sptr = Text::StrInt32(sptr, (Int32)(currCnt - 1));
-					me->lbPackList->RemoveItem(j);
+					me->lbPackList->RemoveItem((UOSInt)j);
 					me->lbPackList->AddItem(sbuff, 0);
 					j++;
 				}
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 					sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
 					sptr = Text::StrInt32(sptr, (Int32)(j * PER_PAGE + PER_PAGE - 1));
-					me->lbPackList->RemoveItem(j);
+					me->lbPackList->RemoveItem((UOSInt)j);
 					me->lbPackList->AddItem(sbuff, 0);
 
 				}
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(void *userO
 	UOSInt i;
 	UOSInt j;
 	me->lbPackItems->ClearItems();
-	i = me->lbPackList->GetSelectedIndex();
+	i = (UOSInt)me->lbPackList->GetSelectedIndex();
 	if (i == (UOSInt)-1)
 		return;
 	i = i * PER_PAGE;
@@ -145,13 +145,13 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	OSInt i = me->lbPackItems->GetSelectedIndex();
-	if (i < 0)
+	UOSInt i = (UOSInt)me->lbPackItems->GetSelectedIndex();
+	if (i == (UOSInt)-1)
 	{
 		me->txtPack->SetText((const UTF8Char*)"");
 		return;
 	}
-	i = (OSInt)me->lbPackItems->GetItem(i);
+	i = (UOSInt)me->lbPackItems->GetItem(i);
 	sb.ClearStr();
 	me->file->GetFrameDetail(i, &sb);
 	me->txtPack->SetText(sb.ToString());

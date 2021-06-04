@@ -106,7 +106,7 @@ namespace Text
 		typedef struct
 		{
 			UInt16 cantonPronun[4];
-			Int32 radical;
+			UInt32 radical;
 			UInt8 strokeCount;
 			CharType charType;
 			Bool mainChar;
@@ -127,7 +127,7 @@ namespace Text
 
 		UTF8Char *AppendCharCode(UTF8Char *buff, UInt32 charCode);
 		UInt32 GetCharCode(const UTF8Char *s);
-		Int16 Cantonese2Int(const UTF8Char *s);
+		UInt16 Cantonese2Int(const UTF8Char *s);
 		UTF8Char *Int2Cantonese(UTF8Char *buff, UInt16 iVal);
 	};
 }

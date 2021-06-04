@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
-	OSInt i = me->layers->GetCount();
+	UOSInt i = me->layers->GetCount();
 	while (i-- > 0)
 	{
 		me->lbLayers->SetItemChecked(i, true);
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
-	OSInt i = me->layers->GetCount();
+	UOSInt i = me->layers->GetCount();
 	while (i-- > 0)
 	{
 		me->lbLayers->SetItemChecked(i, false);

@@ -55,7 +55,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(void *userObj, OSInt scrollPos)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
-	me->currBuffSize = scrollPos;
+	me->currBuffSize = (UOSInt)scrollPos;
 	me->UpdateFontPreview();
 }
 
@@ -129,7 +129,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	}
 
 	b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(0xffc0c0c0));
-	dimg->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+	dimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 	dimg->DelBrush(b);
 
 	if (this->currFontName)

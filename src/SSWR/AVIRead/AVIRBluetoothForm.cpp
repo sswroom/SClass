@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSrchClicked(void *userO
 	SSWR::AVIRead::AVIRBluetoothForm *me = (SSWR::AVIRead::AVIRBluetoothForm*)userObj;
 	BTStatus *btStatus = (BTStatus*)me->lbCtrl->GetSelectedItem();
 	IO::BTController::BTDevice *dev;
-	OSInt i;
+	UOSInt i;
 	if (btStatus)
 	{
 		i = btStatus->devList->GetCount();
@@ -89,8 +89,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(void *userObj)
 	me->currDev = dev;
 	if (dev)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		void *guid;
 		dev->QueryServices(me->guidList);

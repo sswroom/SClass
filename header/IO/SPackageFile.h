@@ -26,7 +26,7 @@ namespace IO
 		Bool pauseCommit;
 		IO::MemoryStream *mstm;
 		Int32 flags;
-		Int64 currOfst;
+		UInt64 currOfst;
 		Int32 customType;
 		UOSInt customSize;
 		UInt8 *customBuff;

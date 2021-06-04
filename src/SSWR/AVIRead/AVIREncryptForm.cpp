@@ -92,8 +92,8 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 
 	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList->GetEncList();
 	Text::TextBinEnc::ITextBinEnc *enc;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)

@@ -60,9 +60,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int64 startOfst;
-	Int64 endOfst;
-	Int64 fileSize;
+	UInt64 startOfst;
+	UInt64 endOfst;
+	UInt64 fileSize;
 	UInt64 sizeLeft;
 	UOSInt thisSize;
 	UOSInt readSize;
@@ -70,19 +70,19 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	IO::FileStream *srcFS;
 	IO::FileStream *destFS;
 	me->txtStartOfst->GetText(&sb);
-	if (!sb.ToInt64(&startOfst))
+	if (!sb.ToUInt64(&startOfst))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Start Offset is not valid", (const UTF8Char *)"Error", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtEndOfst->GetText(&sb);
-	if (!sb.ToInt64(&endOfst))
+	if (!sb.ToUInt64(&endOfst))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"End Offset is not valid", (const UTF8Char *)"Error", me);
 		return;
 	}
-	if (startOfst < 0 || startOfst >= endOfst)
+	if (startOfst >= endOfst)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Start Offset is out of range", (const UTF8Char *)"Error", me);
 		return;
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	{
 		thisSize = 1048576;
 		if (thisSize > sizeLeft)
-			thisSize = (OSInt)sizeLeft;
+			thisSize = (UOSInt)sizeLeft;
 		readSize = srcFS->Read(buff, thisSize);
 		if (readSize == 0)
 			break;

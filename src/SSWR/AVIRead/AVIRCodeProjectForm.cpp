@@ -207,8 +207,8 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *pa
 	UI::GUITreeView::TreeItem *tvi;
 	AddTreeObj(tvi = this->tvMain->InsertItem(0, 0, proj->GetContainerName(), proj), proj);
 	this->tvMain->ExpandItem(tvi);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::CodeProjectCfg *cfg;
 	i = 0;
 	j = this->proj->GetConfigCnt();

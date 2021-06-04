@@ -146,8 +146,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 			return;
 		}
 	}
-	OSInt xCol = -1;
-	OSInt yCol = -1;
+	UOSInt xCol = (UOSInt)-1;
+	UOSInt yCol = (UOSInt)-1;
 	UOSInt colCnt;
 	UOSInt i;
 	DB::DBReader *reader = db->GetTableData(0, 0, 0, 0);
@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		}
 	}
 	db->CloseReader(reader);
-	if (xCol == -1 || yCol == -1)
+	if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
 	{
 		DEL_CLASS(db);
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"XY Database column not found", (const UTF8Char *)"Error", me);
@@ -274,7 +274,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		while (i < colCnt)
 		{
 			sarr[i] = sptr;
-			sptr2 = reader->GetStr(i, sptr, 16384 - (sptr - strBuff));
+			sptr2 = reader->GetStr(i, sptr, 16384 - (UOSInt)(sptr - strBuff));
 			if (sptr2)
 			{
 				sptr = sptr2 + 1;
@@ -316,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 
 void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->nameList->GetCount();
 	while (i-- > 0)
 	{

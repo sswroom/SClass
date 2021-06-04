@@ -25,7 +25,7 @@ namespace SSWR
 			UInt32 currChar;
 			Media::DrawImage *charImg;
 			const UTF8Char *currFont;
-			Int32 currRadical;
+			UInt32 currRadical;
 
 			UI::GUIMainMenu *mnuMain;
 

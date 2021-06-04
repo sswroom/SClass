@@ -29,7 +29,7 @@ namespace SSWR
 			typedef struct
 			{
 				TestType tt;
-				OSInt testSize;
+				UOSInt testSize;
 				Double resultRate;
 			} TestResult;
 		private:

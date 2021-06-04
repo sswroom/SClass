@@ -14,7 +14,7 @@ namespace Net
 	public:
 		typedef struct
 		{
-			Int64 hwAddr;
+			UInt64 hwAddr;
 			UInt32 assignedIP;
 			Int64 assignTime;
 			Bool updated;

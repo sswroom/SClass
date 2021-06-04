@@ -24,7 +24,7 @@ namespace UtilUI
 		static void __stdcall OnTextPosUpd(void *userObj, Int32 textPosX, OSInt textPosY);
 		static void __stdcall OnSearchClosed(void *userObj, UI::GUIForm *frm);
 	public:
-		TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, Int32 codePage);
+		TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, UInt32 codePage);
 		virtual ~TextViewerForm();
 
 		virtual void EventMenuClicked(UInt16 cmdId);

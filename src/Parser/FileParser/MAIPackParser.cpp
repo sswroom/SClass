@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
+#include "IO/PackageFile.h"
 #include "Parser/FileParser/MAIPackParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::MAIPackParser::MAIPackParser()
 {
@@ -50,7 +51,7 @@ IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *
 		return 0;
 	}
 
-	hdrEnd = *(Int32*)&hdrbuff[8] * 24 + 16;
+	hdrEnd = ReadUInt32(&hdrbuff[8]) * 24 + 16;
 	fileOfst = hdrEnd;
 	hdrOfst = 16;
 	IO::PackageFile *pf;
@@ -59,8 +60,8 @@ IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *
 	while (hdrOfst < hdrEnd)
 	{
 		fd->GetRealData(hdrOfst, 24, recbuff);
-		thisOfst = *(Int32*)&recbuff[16];
-		thisSize = *(Int32*)&recbuff[20];
+		thisOfst = ReadUInt32(&recbuff[16]);
+		thisSize = ReadUInt32(&recbuff[20]);
 		if (thisOfst != fileOfst)
 		{
 			DEL_CLASS(pf);

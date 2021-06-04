@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 				IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(i));
 				sb.ClearStr();
 				sb.Append(dlg->GetFolder());
-				if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+				if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRCameraControlForm *me = (SSWR::AVIRead::AVIRCameraControlForm*)userObj;
-	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(index);
+	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem((UOSInt)index);
 	if (file == 0)
 		return;
 	if (file->fileType == IO::CameraControl::FT_IMAGE)
@@ -249,7 +249,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 		file = fileList.GetItem(i);
 		this->lvFiles->AddItem(file->fileName, file);
 		this->lvFiles->SetSubItem(i, 1, file->filePath);
-		Text::StrInt64(sbuff, file->fileSize);
+		Text::StrUInt64(sbuff, file->fileSize);
 		this->lvFiles->SetSubItem(i, 2, sbuff);
 		if (file->fileTimeTicks)
 		{

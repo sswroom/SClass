@@ -224,10 +224,10 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 cu
 	hdr[2] = 'p';
 	hdr[3] = 'f';
 	WriteInt32(&hdr[4], 3);
-	WriteInt64(&hdr[8], 32 + customSize);
+	WriteUInt64(&hdr[8], 32 + customSize);
 	WriteInt64(&hdr[16], 0);
 	WriteInt32(&hdr[24], customType);
-	WriteInt32(&hdr[28], (Int32)customSize);
+	WriteUInt32(&hdr[28], (UInt32)customSize);
 	this->stm->Write(hdr, 32);
 	if (customSize > 0)
 	{
@@ -257,8 +257,8 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 cu
 IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 {
 	UInt8 hdr[24];
-	Int64 flength;
-	Int64 dirSize;
+	UInt64 flength;
+	UInt64 dirSize;
 	UTF8Char sbuff[512];
 	NEW_CLASS(this->stm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NO_WRITE_BUFFER));
 	this->toRelease = true;
@@ -277,8 +277,8 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 			this->flags = ReadInt32(&hdr[4]);
 			if (this->flags & 2)
 			{
-				Int64 lastOfst = ReadInt64(&hdr[8]);
-				Int64 lastSize = ReadInt64(&hdr[16]);
+				UInt64 lastOfst = ReadUInt64(&hdr[8]);
+				UInt64 lastSize = ReadUInt64(&hdr[16]);
 				this->currOfst = lastOfst + lastSize;
 				if (this->currOfst > flength || lastOfst < 0 || lastSize < 0)
 				{

@@ -10,7 +10,7 @@ namespace Map
 	{
 		Int32 lineType;
 		Int32 lineWidth;
-		Int32 color;
+		UInt32 color;
 		UTF8Char *styles;
 	} MapLineStyle;
 
@@ -20,7 +20,7 @@ namespace Map
 		UTF8Char *fontName;
 		Int32 fontSizePt;
 		Double thick;
-		Int32 color;
+		UInt32 color;
 		Media::DrawFont *font;
 		void *other;
 	} MapFontStyle;
@@ -30,8 +30,8 @@ namespace Map
 		Int32 drawType;
 		Int32 minScale;
 		Int32 maxScale;
-		Int32 style;
-		Int32 bkColor;
+		UInt32 style;
+		UInt32 bkColor;
 		Int32 priority;
 		Media::DrawImage *img;
 		Map::IMapDrawLayer *lyr;

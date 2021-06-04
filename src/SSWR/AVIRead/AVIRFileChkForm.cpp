@@ -33,9 +33,9 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI
 	this->fileChk = fileChk;
 
 	Text::StringBuilderUTF8 sb;
-	OSInt hashSize;
-	OSInt i;
-	OSInt j;
+	UOSInt hashSize;
+	UOSInt i;
+	UOSInt j;
 	hashSize = this->fileChk->GetHashSize();
 	hash = MemAlloc(UInt8, hashSize);
 	i = 0;
@@ -73,9 +73,9 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt hashSize;
 			UInt8 *hash;
 			UInt8 *hash2;
-			OSInt i;
-			OSInt j;
-			OSInt k;
+			UOSInt i;
+			UOSInt j;
+			UOSInt k;
 			Bool eq;
 			hashSize = this->fileChk->GetHashSize();
 			hash = MemAlloc(UInt8, hashSize);

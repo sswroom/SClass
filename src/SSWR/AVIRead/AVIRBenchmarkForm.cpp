@@ -30,7 +30,7 @@ UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, UOSInt byt
 
 void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSize)
 {
-	OSInt i;
+	UOSInt i;
 	UTF8Char sbuff[32];
 	Double oriT;
 	Double t;
@@ -76,7 +76,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t * 2.0;
+				Double rate = (Double)(currSize * (UInt64)loopCnt) / t * 2.0;
 
 				ByteDisp(sbuff, currSize);
 				i = this->lvCopy->AddItem(sbuff, 0);
@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t;
+				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
 				ByteDisp(sbuff, currSize);
 				i = this->lvWrite->AddItem(sbuff, 0);
@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 			}
 			else if (t >= 1)
 			{
-				Double rate = (currSize * (Int64)loopCnt) / t;
+				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
 				ByteDisp(sbuff, currSize);
 				i = this->lvRead->AddItem(sbuff, 0);
@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 
 void SSWR::AVIRead::AVIRBenchmarkForm::ClearResult()
 {
-	OSInt i = this->resultList->GetCount();
+	UOSInt i = this->resultList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(this->resultList->GetItem(i));
@@ -219,8 +219,8 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 	SSWR::AVIRead::AVIRBenchmarkForm *me = (SSWR::AVIRead::AVIRBenchmarkForm*)userObj;
 	UTF8Char u8buff[256];
 	UI::FileDialog *dlg;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	SSWR::AVIRead::AVIRBenchmarkForm::TestResult *result;
 
 	if (me->processing)
@@ -303,15 +303,15 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 				sb.Append(ram->sn);
 			}
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendOSInt(ram->defSpdMHz);
+			sb.AppendUOSInt(ram->defSpdMHz);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendOSInt(ram->confSpdMHz);
+			sb.AppendUOSInt(ram->confSpdMHz);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI32(ram->dataWidth);
+			sb.AppendU32(ram->dataWidth);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI32(ram->totalWidth);
+			sb.AppendU32(ram->totalWidth);
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendI64(ram->memorySize);
+			sb.AppendU64(ram->memorySize);
 			writer->WriteLine(sb.ToString());
 			i++;
 		}
@@ -340,7 +340,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 				break;
 			}
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendOSInt(result->testSize);
+			sb.AppendUOSInt(result->testSize);
 			sb.Append((const UTF8Char*)"\t");
 			Text::SBAppendF64(&sb, result->resultRate);
 			writer->WriteLine(sb.ToString());

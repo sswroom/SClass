@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 		else if (pi.paramType == ::IO::FileExporter::PT_SELECTION)
 		{
 			j = ((UI::GUIComboBox *)me->ctrls[i])->GetSelectedIndex();
-			if (me->exporter->SetParamSel(me->param, i, j) == 0)
+			if (me->exporter->SetParamSel(me->param, i, (UOSInt)j) == 0)
 			{
 				Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char *)"Parameter \""), pi.name), (const UTF8Char *)"\" out of range");
 				UI::MessageDialog::ShowDialog(sbuff, (const UTF8Char *)"Export Parameter", me);
@@ -96,7 +96,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 			UI::GUIComboBox *cbo;
 			NEW_CLASS(cbo, UI::GUIComboBox(ui, this, false));
 
-			OSInt j;
+			UOSInt j;
 			j = 0;
 			while (this->exporter->GetParamSelItems(this->param, i, j, sbuff))
 			{

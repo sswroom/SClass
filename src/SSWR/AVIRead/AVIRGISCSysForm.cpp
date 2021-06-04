@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 		OSInt i = me->cboProj->GetSelectedIndex();
 		if (i >= 0)
 		{
-			const UTF8Char *projName = (const UTF8Char *)me->cboProj->GetItem(i);
+			const UTF8Char *projName = (const UTF8Char *)me->cboProj->GetItem((UOSInt)i);
 			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem(projName, projName);
 			if (me->outCSys)
 			{
@@ -87,8 +87,8 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> gcsysList;
 	Data::ArrayList<const UTF8Char *> pcsysList;
 	Math::CoordinateSystemManager::GetGeogCoordinateSystems(&gcsysList);

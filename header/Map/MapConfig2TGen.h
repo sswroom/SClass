@@ -80,10 +80,10 @@ namespace Map
 		~MapConfig2TGen();
 
 		Bool IsError();
-		Media::DrawPen *CreatePen(Media::DrawImage *img, Int32 lineStyle, Int32 lineLayer);
+		Media::DrawPen *CreatePen(Media::DrawImage *img, UInt32 lineStyle, UOSInt lineLayer);
 		WChar *DrawMap(Media::DrawImage *img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, const UTF8Char *dbOutput, DrawParam *params);
 
-		Int32 GetBGColor();
+		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);
 		Int32 GetLocMCC(Int32 lat, Int32 lon);
 		static void ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList);

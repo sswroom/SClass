@@ -220,7 +220,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		return;
 	}
 
-	Int64 dirSize;
+	UInt64 dirSize;
 	this->packList->Clear();
 	dirSize = NewCalc(this->fileList, this->packList, maxSize, minSize);
 

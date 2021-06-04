@@ -18,13 +18,13 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				OSInt width;
-				OSInt height;
-				Int32 fourcc;
-				Int32 bpp;
+				UOSInt width;
+				UOSInt height;
+				UInt32 fourcc;
+				UInt32 bpp;
 				Media::PixelFormat pf;
-				Int32 frameRateNumer;
-				Int32 frameRateDenom;
+				UInt32 frameRateNumer;
+				UInt32 frameRateDenom;
 			} CaptureFormat;
 		public:
 			Media::IVideoCapture *capture;

@@ -2615,8 +2615,8 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 	UTF8Char *sptr;
 	UTF8Char lblStr[128];
 	void *session;
-	OSInt imgWidth;
-	OSInt imgHeight;
+	UOSInt imgWidth;
+	UOSInt imgHeight;
 
 	if ((lyrs->bkColor & SFLG_SMART) == 0 && labelCnt[2] == 0)
 	{
@@ -2732,7 +2732,7 @@ OSInt Map::MapConfig2TGen::NewLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt 
 {
 	Int32 minPriority;
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	Double k;
 
 	if (*labelCnt >= maxLabel)
@@ -2785,8 +2785,8 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 	Double size;
 //	Int32 visibleSize;
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	Double *ptPtr;
 
@@ -2881,7 +2881,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 				return false;
 			}
 
-			labels[i].totalSize = Math::OSInt2Double(nPoint);
+			labels[i].totalSize = Math::UOSInt2Double(nPoint);
 			labels[i].scaleW = (xSum / nPoint);
 			labels[i].scaleH = (ySum / nPoint);
 			labels[i].label = Text::StrCopyNew(labelt);
@@ -4321,7 +4321,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 					{
 						if (reader->GetLastLineBreak(sptr) == sptr)
 						{
-							reader->ReadLine(sptr, 255 - (sptr - sbuff));
+							reader->ReadLine(sptr, 255 - (UOSInt)(sptr - sbuff));
 						}
 						else
 						{
@@ -4555,7 +4555,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 				}
 				break;
 			case 5:
-				i = Text::StrToInt32(strs[1]);
+				i = Text::StrToUInt32(strs[1]);
 				if (i >= this->nFont)
 				{
 					PrintDebug(L"Error found in MapLayer files, font id too large\r\n");
@@ -4660,8 +4660,8 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 					else
 					{
 						currLayer->priority = Text::StrToInt32(strs[4]);
-						currLayer->style = Text::StrToInt32(strs[5]);
-						currLayer->bkColor = Text::StrToInt32(strs[6]);
+						currLayer->style = Text::StrToUInt32(strs[5]);
+						currLayer->bkColor = Text::StrToUInt32(strs[6]);
 						if (currLayer->style < this->nFont)
 						{
 							this->drawList->Add(currLayer);
@@ -4787,8 +4787,8 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 
 Map::MapConfig2TGen::~MapConfig2TGen()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Map::MapLineStyle *currLine;
 	Map::MapFontStyle *currFont;
 	Map::MapLayerStyle *currLyr;
@@ -4841,7 +4841,7 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 
 	if (this->drawList)
 	{
-		OSInt i = this->drawList->GetCount();
+		UOSInt i = this->drawList->GetCount();
 		while (i-- > 0)
 		{
 			currLyr = (Map::MapLayerStyle*)this->drawList->GetItem(i);
@@ -4860,9 +4860,9 @@ Bool Map::MapConfig2TGen::IsError()
 	return this->drawList == 0;
 }
 
-Media::DrawPen *Map::MapConfig2TGen::CreatePen(Media::DrawImage *img, Int32 lineStyle, Int32 lineLayer)
+Media::DrawPen *Map::MapConfig2TGen::CreatePen(Media::DrawImage *img, UInt32 lineStyle, UOSInt lineLayer)
 {
-	if (lineStyle < 0 || lineStyle >= this->nLine)
+	if (lineStyle >= this->nLine)
 	{
 		return 0;
 	}
@@ -5248,14 +5248,14 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 
 	///////////////////////////////////////////////
 	//blkId[0], blkId[1]
-	OSInt w = view->GetScnWidth();
-	OSInt h = view->GetScnHeight();
+	UOSInt w = view->GetScnWidth();
+	UOSInt h = view->GetScnHeight();
 	if (params->labelType == 1)
 	{
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX - 1, params->tileY, Math::OSInt2Double(-w), 0, 0);
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX + 1, params->tileY, Math::OSInt2Double(w), 0, 0);
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY - 1, 0, Math::OSInt2Double(h), 0);
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY + 1, 0, Math::OSInt2Double(-h), 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX - 1, params->tileY, Math::UOSInt2Double(-w), 0, 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX + 1, params->tileY, Math::UOSInt2Double(w), 0, 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY - 1, 0, Math::UOSInt2Double(h), 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY + 1, 0, Math::UOSInt2Double(-h), 0);
 	}
 	else if (params->labelType == 2)
 	{
@@ -5310,7 +5310,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	return 0;
 }
 
-Int32 Map::MapConfig2TGen::GetBGColor()
+UInt32 Map::MapConfig2TGen::GetBGColor()
 {
 	return this->bgColor;
 }
@@ -5318,7 +5318,7 @@ Int32 Map::MapConfig2TGen::GetBGColor()
 void Map::MapConfig2TGen::ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList)
 {
 	Map::IMapDrawLayer *lyr;
-	OSInt i;
+	UOSInt i;
 	i = layerList->GetCount();
 	while (i-- > 0)
 	{

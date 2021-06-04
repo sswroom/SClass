@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 
 SSWR::AVIRead::AVIRCore::~AVIRCore()
 {
-	OSInt i;
+	UOSInt i;
 	this->CloseAllForm();
 	DEL_CLASS(this->frms);
 	DEL_CLASS(this->log);
@@ -348,13 +348,13 @@ void SSWR::AVIRead::AVIRCore::SetAudioDevice(Data::ArrayList<const UTF8Char *> *
 			j = devList->GetCount();
 			while (i < j)
 			{
-				Text::StrOSInt(Text::StrConcat(sbuff, L"AudioDevice"), i);
+				Text::StrUOSInt(Text::StrConcat(sbuff, L"AudioDevice"), i);
 				const WChar *wptr = Text::StrToWCharNew(devList->GetItem(i));
 				reg->SetValue(sbuff, wptr);
 				Text::StrDelNew(wptr);
 				i++;
 			}
-			Text::StrOSInt(Text::StrConcat(sbuff, L"AudioDevice"), j);
+			Text::StrUOSInt(Text::StrConcat(sbuff, L"AudioDevice"), j);
 			reg->DelValue(sbuff);
 		}
 		IO::Registry::CloseRegistry(reg);
@@ -397,11 +397,11 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(Media::DrawImage *img, Media::DrawE
 	Media::DrawBrush *b;
 	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(0, 0, Math::OSInt2Double(img->GetWidth()), Math::OSInt2Double(img->GetHeight()), 0, b);
+	img->DrawRect(0, 0, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
-	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), lineThick * dpi / 96.0, 0, 0);
-	img->DrawLine(0, img->GetHeight() * 0.5, Math::OSInt2Double(img->GetWidth()), img->GetHeight() * 0.5, p);
+	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), Math::UOSInt2Double(lineThick) * dpi / 96.0, 0, 0);
+	img->DrawLine(0, Math::UOSInt2Double(img->GetHeight()) * 0.5, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()) * 0.5, p);
 	img->DelPen(p);
 	return true;
 }
@@ -415,7 +415,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, Media::
 	{
 		Media::DrawFont *f = img->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		Media::DrawBrush *b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-		img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
 		img->DrawString(0, 0, (const UTF8Char*)"No line style", f, b);
@@ -431,15 +431,15 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, Media::
 	img->DelBrush(b);
 
 	UInt32 color;
-	OSInt layerId = 0;
+	UOSInt layerId = 0;
 	UOSInt thick;
 	UInt8 *pattern;
 	UOSInt npattern;
 
 	while (env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 	{
-		p = img->NewPenARGB(colorConv->ConvRGB8(color), thick * dpi / 96.0, pattern, npattern);
-		img->DrawLine(0, Math::UOSInt2Double(h >> 1), Math::UOSInt2Double(w), Math::OSInt2Double(h >> 1), p);
+		p = img->NewPenARGB(colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * dpi / 96.0, pattern, npattern);
+		img->DrawLine(0, Math::UOSInt2Double(h >> 1), Math::UOSInt2Double(w), Math::UOSInt2Double(h >> 1), p);
 		img->DelPen(p);
 	}
 	return true;
@@ -455,7 +455,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	{
 		Media::DrawFont *f = img->NewFontPt((const UTF8Char*)"Arial", 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		Media::DrawBrush *b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-		img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+		img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
 		img->DrawString(0, 0, (const UTF8Char*)"No font style", f, b);
@@ -471,7 +471,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 	Double refX;
 	Double refY;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+	img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 	img->DelBrush(b);
 
 	const UTF8Char *fontName;
@@ -484,15 +484,15 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 
 	if (env->GetFontStyle(fontStyle, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor))
 	{
-		buffSize = Math::Double2Int32(buffSize * dpi / 96.0);
+		buffSize = (UOSInt)Math::Double2Int32(Math::UOSInt2Double(buffSize) * dpi / 96.0);
 		if ((sptr = env->GetFontStyleName(fontStyle, sbuff)) == 0)
 		{
-			sptr = Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), fontStyle);
+			sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), fontStyle);
 		}
 		f = img->NewFontPt(fontName, fontSizePt, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 		img->GetTextSize(f, sbuff, (sptr - sbuff), sz);
-		refX = (w - sz[0]) * 0.5;
-		refY = (h - sz[1]) * 0.5;
+		refX = (Math::UOSInt2Double(w) - sz[0]) * 0.5;
+		refY = (Math::UOSInt2Double(h) - sz[1]) * 0.5;
 		if (buffSize > 0)
 		{
 			b = img->NewBrushARGB(colorConv->ConvRGB8(buffColor));
@@ -519,14 +519,14 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawE
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(0, 0, Math::OSInt2Double(img->GetWidth()), Math::OSInt2Double(img->GetHeight()), 0, b);
+	img->DrawRect(0, 0, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
 	b = img->NewBrushARGB(colorConv->ConvRGB8(fontColor));
 	f = img->NewFontPt(fontName, fontSizePt, Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 	strLeng = Text::StrCharCnt(fontName);
-	img->GetTextSize(f, fontName, strLeng, sz);
-	img->DrawString((img->GetWidth() - sz[0]) * 0.5, (Math::UOSInt2Double(img->GetHeight()) - sz[1]) * 0.5, fontName, f, b);
+	img->GetTextSize(f, fontName, (OSInt)strLeng, sz);
+	img->DrawString((Math::UOSInt2Double(img->GetWidth()) - sz[0]) * 0.5, (Math::UOSInt2Double(img->GetHeight()) - sz[1]) * 0.5, fontName, f, b);
 	img->DelFont(f);
 	img->DelBrush(b);
 	return true;

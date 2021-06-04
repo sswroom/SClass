@@ -570,10 +570,10 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 		{
 			UOSInt w;
 			UOSInt h;
-			OSInt i;
-			OSInt j;
-			OSInt k;
-			OSInt sampleInt;
+			UOSInt i;
+			UOSInt j;
+			UOSInt k;
+			UOSInt sampleInt;
 			Double lastX;
 			Double lastY;
 			Double thisX;
@@ -592,7 +592,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 				img->DelBrush(b);
-				sampleInt = me->nChannels * me->bitCount >> 3;
+				sampleInt = me->nChannels * (UOSInt)me->bitCount >> 3;
 				if (me->bitCount == 16)
 				{
 					i = 0;
@@ -621,8 +621,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 						j = 0;
 						while (j < FFTSAMPLE)
 						{
-							thisX = j * w / (Double)(FFTSAMPLE - 1);
-							thisY = (ReadInt16(&me->sampleBuff[k]) + 32768.0) * h / 65536.0;
+							thisX = Math::UOSInt2Double(j * w) / (Double)(FFTSAMPLE - 1);
+							thisY = (ReadInt16(&me->sampleBuff[k]) + 32768.0) * Math::UOSInt2Double(h) / 65536.0;
 							if (lastX >= 0)
 							{
 								img->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -664,8 +664,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 						j = 0;
 						while (j < FFTSAMPLE)
 						{
-							thisX = j * w / (Double)(FFTSAMPLE - 1);
-							thisY = me->sampleBuff[k] * h / 256.0;
+							thisX = Math::UOSInt2Double(j * w) / (Double)(FFTSAMPLE - 1);
+							thisY = Math::UOSInt2Double(me->sampleBuff[k] * h) / 256.0;
 							if (lastX >= 0)
 							{
 								img->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -695,9 +695,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 			{
 				img = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 				b = img->NewBrushARGB(0xffffffff);
-				img->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+				img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 				img->DelBrush(b);
-				sampleInt = me->nChannels * me->bitCount >> 3;
+				sampleInt = me->nChannels * (UOSInt)me->bitCount >> 3;
 
 				Double *data = MemAlloc(Double, FFTSAMPLE);
 				i = 0;
@@ -719,7 +719,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 					}
 					if (!err)
 					{
-						me->fft->ForwardBits(me->sampleBuff + ((me->bitCount >> 3) * i), data, st, me->nChannels, 1.0);
+						me->fft->ForwardBits(me->sampleBuff + ((UOSInt)(me->bitCount >> 3) * i), data, st, me->nChannels, 1.0);
 					}
 					if (i == 0)
 					{
@@ -748,8 +748,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 
 						if (rVal < 0)
 							rVal = -rVal;
-						thisX = j * w / (Double)(FFTSAMPLE / 2 - 1);
-						thisY = -Math::Log10(rVal / (FFTSAMPLE * 0.5)) * h / 7.0;
+						thisX = Math::UOSInt2Double(j * w) / (Double)(FFTSAMPLE / 2 - 1);
+						thisY = -Math::Log10(rVal / (FFTSAMPLE * 0.5)) * Math::UOSInt2Double(h) / 7.0;
 						if (lastX >= 0)
 						{
 							img->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -888,7 +888,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *use
 	Text::StringBuilderUTF8 sb;
 	Double startFreq;
 	Double endFreq;
-	Int32 timeSeconds;
+	UInt32 timeSeconds;
 	sb.ClearStr();
 	me->txtSweepStartFreq->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &startFreq))
@@ -905,7 +905,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *use
 	}
 	sb.ClearStr();
 	me->txtSweepDur->GetText(&sb);
-	if (!sb.ToInt32(&timeSeconds))
+	if (!sb.ToUInt32(&timeSeconds))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in duration", (const UTF8Char *)"Error", me);
 		return;

@@ -406,7 +406,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 {
 	UTF8Char sbuff[256];
 	Text::StrConcat(sbuff, str1);
-	OSInt lblSize = Text::StrCharCnt(str1);
+	UOSInt lblSize = Text::StrCharCnt(str1);
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -423,13 +423,13 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 	Double maxX;
 	Double minY;
 	Double maxY;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double angleOfst;
 	Double szThis[2];
 	Double szLast[2];
 	Int32 mode;
-	OSInt fntCount;
+	UOSInt fntCount;
 	Map::MapFontStyle *font;
 	Bool found;
 
@@ -2346,9 +2346,9 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Double *size, const UT
 	size[1] = maxY - minY;
 }
 
-Int32 Map::MapConfig2::ToColor(const UTF8Char *str)
+UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 {
-	Int32 v = Text::StrHex2Int32(str);
+	UInt32 v = Text::StrHex2UInt32(str);
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
@@ -2381,9 +2381,9 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 {
 	Data::ArrayListInt64 *arri;
 	Map::DrawObjectL *dobj;
-	OSInt imgW;
-	OSInt imgH;
-	OSInt i;
+	UOSInt imgW;
+	UOSInt imgH;
+	UOSInt i;
 #ifdef NOSCH
 	OSInt j;
 	Int32 pts[2];
@@ -2409,12 +2409,12 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 		imgW = lyrs->img->GetWidth();
 		imgH = lyrs->img->GetHeight();
 		Media::DrawImage *gimg2 = lyrs->img;
-		Media::DrawImage *gimg = eng->CreateImage32(Math::Double2Int32(imgW * img->GetHDPI() / 96.0), Math::Double2Int32(imgH * img->GetHDPI() / 96.0), gimg2->GetAlphaType());
+		Media::DrawImage *gimg = eng->CreateImage32(Math::Double2Int32(Math::UOSInt2Double(imgW) * img->GetHDPI() / 96.0), Math::Double2Int32(Math::UOSInt2Double(imgH) * img->GetHDPI() / 96.0), gimg2->GetAlphaType());
 		Bool revOrder;
 		Bool revOrder2;
 		UInt8 *bmpBits = gimg->GetImgBits(&revOrder);
 		UInt8 *bmpBits2 = gimg2->GetImgBits(&revOrder2);
-		resizer->Resize(bmpBits2, imgW << 2, Math::OSInt2Double(imgW), Math::OSInt2Double(imgH), 0, 0, bmpBits, Math::Double2Int32(imgW * img->GetHDPI() / 96.0) << 2, Math::Double2Int32(imgW * img->GetHDPI() / 96.0), Math::Double2Int32(imgH * img->GetHDPI() / 96.0));
+		resizer->Resize(bmpBits2, imgW << 2, Math::OSInt2Double(imgW), Math::UOSInt2Double(imgH), 0, 0, bmpBits, Math::Double2Int32(Math::UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, Math::Double2Int32(Math::UOSInt2Double(imgW) * img->GetHDPI() / 96.0), Math::Double2Int32(Math::UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
 		gimg->GetImgBitsEnd(true);
 		gimg2->GetImgBitsEnd(false);
 		dimg = gimg;
@@ -2464,12 +2464,12 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	DEL_CLASS(arri);
 }
 
-void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, Int32 maxLabels, Int32 *labelCnt, Bool *isLayerEmpty)
+void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
 {
 	void *arr;
 	Data::ArrayListInt64 *arri;
-	OSInt i;
-	Int32 j;
+	UOSInt i;
+	UInt32 j;
 	Map::DrawObjectL *dobj;
 	Double scaleW;
 	Double scaleH;
@@ -2477,8 +2477,8 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	UTF8Char *sptr;
 	UTF8Char lblStr[128];
 	void *session;
-	OSInt imgWidth;
-	OSInt imgHeight;
+	UOSInt imgWidth;
+	UOSInt imgHeight;
 
 	if (lyrs->img)
 	{
@@ -2581,11 +2581,11 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	DEL_CLASS(arri);
 }
 
-Int32 Map::MapConfig2::NewLabel(MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, Int32 priority)
+UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Int32 priority)
 {
 	Int32 minPriority;
-	Int32 i;
-	Int32 j;
+	UInt32 i;
+	UInt32 j;
 	Double k;
 
 	if (*labelCnt >= maxLabel)
@@ -2633,13 +2633,13 @@ Int32 Map::MapConfig2::NewLabel(MapLabels2 *labels, Int32 maxLabel, Int32 *label
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, const UTF8Char *labelt, Int32 nPoint, Double *points, Int32 priority, Int32 recType, Int32 fontStyle, Int32 flags, Map::MapView *view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, const UTF8Char *labelt, Int32 nPoint, Double *points, Int32 priority, Int32 recType, Int32 fontStyle, Int32 flags, Map::MapView *view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
 
-	Int32 i;
-	OSInt j;
+	UInt32 i;
+	UOSInt j;
 
 	Double *ptPtr;
 
@@ -3279,13 +3279,13 @@ Bool Map::MapConfig2::LabelOverlapped(Double *points, UOSInt nPoints, Double tlx
 	return false;
 }
 
-void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, Int32 maxLabel, Int32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt)
+void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt)
 {
-	Int32 i;
-	OSInt j;
+	UInt32 i;
+	UOSInt j;
 	const UTF8Char *lastLbl = 0;
-	OSInt scnWidth = img->GetWidth();
-	OSInt scnHeight = img->GetHeight();
+	UOSInt scnWidth = img->GetWidth();
+	UOSInt scnHeight = img->GetHeight();
 
 	if (*labelCnt)
 	{
@@ -3299,7 +3299,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, Int3
 		Double scnPtX;
 		Double scnPtY;
 		Double thisPts[10];
-		Int32 thisCnt = 0;
+		UInt32 thisCnt = 0;
 
 		i = 0;
 		j = *labelCnt;
@@ -4166,8 +4166,8 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 					else
 					{
 						currLayer->priority = Text::StrToInt32(strs[4]);
-						currLayer->style = Text::StrToInt32(strs[5]);
-						currLayer->bkColor = Text::StrToInt32(strs[6]);
+						currLayer->style = Text::StrToUInt32(strs[5]);
+						currLayer->bkColor = Text::StrToUInt32(strs[6]);
 						if (currLayer->style < this->nFont)
 						{
 							this->drawList->Add(currLayer);
@@ -4302,8 +4302,8 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 
 Map::MapConfig2::~MapConfig2()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Map::MapLineStyle *currLine;
 	Map::MapFontStyle *currFont;
 	Map::MapLayerStyle *currLyr;
@@ -4356,7 +4356,7 @@ Map::MapConfig2::~MapConfig2()
 
 	if (this->drawList)
 	{
-		OSInt i = this->drawList->GetCount();
+		UOSInt i = this->drawList->GetCount();
 		while (i-- > 0)
 		{
 			currLyr = (Map::MapLayerStyle*)this->drawList->GetItem(i);
@@ -4389,9 +4389,9 @@ Bool Map::MapConfig2::IsError()
 	return this->drawList == 0;
 }
 
-Media::DrawPen *Map::MapConfig2::CreatePen(Media::DrawImage *img, Int32 lineStyle, Int32 lineLayer)
+Media::DrawPen *Map::MapConfig2::CreatePen(Media::DrawImage *img, UInt32 lineStyle, UOSInt lineLayer)
 {
-	if (lineStyle < 0 || lineStyle >= this->nLine)
+	if (lineStyle >= this->nLine)
 	{
 		return 0;
 	}
@@ -4412,9 +4412,9 @@ Media::DrawPen *Map::MapConfig2::CreatePen(Media::DrawImage *img, Int32 lineStyl
 	else if (thisLine->lineType == 2)
 	{
 		UInt8 *pattern = MemAlloc(UInt8, Text::StrCharCnt(thisLine->styles));
-		Int32 currVal;
+		UInt32 currVal;
 		UTF8Char *currCh;
-		Int32 i;
+		UInt32 i;
 
 		currCh = thisLine->styles;
 		currVal = 0;
@@ -4427,7 +4427,7 @@ Media::DrawPen *Map::MapConfig2::CreatePen(Media::DrawImage *img, Int32 lineStyl
 			}
 			else
 			{
-				pattern[i++] = Math::Double2Int32(currVal * img->GetHDPI() / 96.0);
+				pattern[i++] = (UInt8)Math::Double2Int32(currVal * img->GetHDPI() / 96.0);
 				currVal = 0;
 				if (*currCh == ',')
 				{
@@ -4457,9 +4457,9 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	const UTF8Char *maxName = 0;
 	Double thisSpd = 0;
 	Double maxSpd = 0;
-	Int32 index;
-	Int32 index2;
-	OSInt layerCnt = this->drawList->GetCount();
+	UInt32 index;
+	UInt32 index2;
+	UOSInt layerCnt = this->drawList->GetCount();
 	Data::ArrayListInt64 *arr;
 	Data::ArrayList<MapFontStyle*> **myArrs;
 	Data::ArrayList<MapFontStyle*> *fontArr;
@@ -4470,15 +4470,15 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	Map::MapFontStyle *fnt2;
 	Media::DrawBrush *brush;
 	Media::DrawPen *pen;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Int64 lastId;
 	Int64 thisId;
 	Double thisScale;
-	Int32 labelCnt = 0;
-	Int32 maxLabel = this->nStr;
+	UInt32 labelCnt = 0;
+	UInt32 maxLabel = this->nStr;
 	*isLayerEmpty = true;
 	Manage::HiResClock clk;
 	Map::MapLabels2 *labels = MemAlloc(Map::MapLabels2, maxLabel);
@@ -4493,7 +4493,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 #endif
 
 	brush = img->NewBrushARGB(this->bgColor);
-	img->DrawRect(0, 0, Math::OSInt2Double(img->GetWidth()), Math::OSInt2Double(img->GetHeight()), 0, brush);
+	img->DrawRect(0, 0, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()), 0, brush);
 	img->DelBrush(brush);
 
 	myArrs = MemAlloc(Data::ArrayList<MapFontStyle*>*, this->nFont);
@@ -4836,7 +4836,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	return retPtr;
 }
 
-Int32 Map::MapConfig2::GetBGColor()
+UInt32 Map::MapConfig2::GetBGColor()
 {
 	return this->bgColor;
 }
@@ -4845,7 +4845,7 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 {
 	if (mcc == 0)
 		return true;
-	OSInt i = this->areaList->GetCount();
+	UOSInt i = this->areaList->GetCount();
 	while (i-- > 0)
 	{
 		if (((Map::MapConfig2::MapArea*)this->areaList->GetItem(i))->mcc == mcc)
@@ -4856,7 +4856,7 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 
 Int32 Map::MapConfig2::GetLocMCCXY(Double x, Double y)
 {
-	OSInt i = this->areaList->GetCount();
+	UOSInt i = this->areaList->GetCount();
 	UTF8Char buff[256];
 	while (i-- > 0)
 	{
@@ -4879,7 +4879,7 @@ Int32 Map::MapConfig2::GetLocMCCXY(Double x, Double y)
 void Map::MapConfig2::ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList)
 {
 	Map::IMapDrawLayer *lyr;
-	OSInt i;
+	UOSInt i;
 	i = layerList->GetCount();
 	while (i-- > 0)
 	{

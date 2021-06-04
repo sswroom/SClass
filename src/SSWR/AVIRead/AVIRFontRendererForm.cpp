@@ -37,8 +37,8 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	NEW_CLASS(this->pbChar, UI::GUIPictureBoxDD(ui, this->tpChar, this->colorSess, true, false));
 	this->pbChar->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	Int32 i = font->GetMinChar();
-	Int32 j = font->GetMaxChar();
+	UInt32 i = font->GetMinChar();
+	UInt32 j = font->GetMaxChar();
 	while (i <= j)
 	{
 		Text::StrHexVal32V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), i);

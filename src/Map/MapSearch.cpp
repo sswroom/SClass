@@ -20,7 +20,7 @@ Map::MapSearch::MapSearch(const UTF8Char *fileName, Map::MapSearchManager *manag
 	UTF8Char *strs[5];
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
-	OSInt i;
+	UOSInt i;
 	Int32 layerId;
 	Int32 layerType;
 	Double layerDist;
@@ -134,8 +134,8 @@ Map::MapSearch::MapSearch(const UTF8Char *fileName, Map::MapSearchManager *manag
 
 Map::MapSearch::~MapSearch()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (this->baseDir)
 	{
 		Text::StrDelNew(this->baseDir);

@@ -24,8 +24,8 @@ namespace UI
 //		void EventDoubleClick();
 //		void EventRightClick();
 
-		Bool GetItemChecked(OSInt index);
-		void SetItemChecked(OSInt index, Bool isChecked);
+		Bool GetItemChecked(UOSInt index);
+		void SetItemChecked(UOSInt index, Bool isChecked);
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(Int32 code, void *lParam);

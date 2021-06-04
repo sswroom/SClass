@@ -20,7 +20,7 @@ namespace SSWR
 			void *param;
 			IO::FileExporter *exporter;
 			UI::GUIControl **ctrls;
-			OSInt ctrlsCnt;
+			UOSInt ctrlsCnt;
 
 		private:
 			static void __stdcall OnOKClicked(void *userObj);
@@ -31,6 +31,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

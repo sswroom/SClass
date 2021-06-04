@@ -11,18 +11,18 @@
 
 #define PLAYBUFFSIZE 30
 
-void Media::M2VStreamSource::SubmitFrame(OSInt frameSize, OSInt frameStart, OSInt pictureStart)
+void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UOSInt pictureStart)
 {
-	OSInt fieldCnt = 2;
-	Int32 fieldAdd = 0;
-	Int32 startCode;
+	UOSInt fieldCnt = 2;
+	UInt32 fieldAdd = 0;
+	UInt32 startCode;
 	Media::MPEGVideoParser::MPEGFrameProp prop;
 	this->totalFrameCnt++;
 	this->totalFrameSize += frameSize;
 	pictureStart = frameStart;
 	while (pictureStart < frameSize + frameStart - 3)
 	{
-		startCode = ReadMInt32(&this->frameBuff[pictureStart]);
+		startCode = ReadMUInt32(&this->frameBuff[pictureStart]);
 		if (startCode == 0)
 		{
 			pictureStart += 2;
@@ -142,7 +142,7 @@ void Media::M2VStreamSource::SubmitFrame(OSInt frameSize, OSInt frameStart, OSIn
 			fs = Media::IVideoSource::FS_P;
 			ft = Media::FT_NON_INTERLACE;
 		}
-		this->finfoCb(this->thisFrameTime + fieldAdd, (UInt32)this->frameNum, (UInt32)frameSize, fs, ft, this->finfoData, Media::YCOFST_C_CENTER_LEFT);
+		this->finfoCb(this->thisFrameTime + fieldAdd, this->frameNum, frameSize, fs, ft, this->finfoData, Media::YCOFST_C_CENTER_LEFT);
 		this->frameNum++;
 	}
 	else if (this->frameCb)

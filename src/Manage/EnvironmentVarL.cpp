@@ -20,7 +20,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 		j = Text::StrIndexOf(environ[i], '=');
 		if (j > 0)
 		{
-			Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], j);
+			Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], (UOSInt)j);
 			this->names->Put(sbuff, (const UTF8Char*)&environ[i][j + 1]);
 		}
 		i++;

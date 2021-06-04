@@ -21,7 +21,7 @@ namespace Data
 			UOSInt tableSize;
 			UInt8 *decBuff;
 			UOSInt decBuffSize;
-			OSInt codeSizeAdj;
+			UOSInt codeSizeAdj;
 			UInt32 localCode;
 			IO::BitReader *reader;
 			Bool toRelease;
@@ -29,8 +29,8 @@ namespace Data
 		private:
 			void ResetTable();
 		public:
-			LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
-			LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
+			LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
+			LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
 			virtual ~LZWDecStream();
 
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);

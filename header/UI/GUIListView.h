@@ -60,7 +60,7 @@ namespace UI
 		void *GetItem(UOSInt index);
 		void ClearItems();
 		UOSInt GetCount();
-		void SetSelectedIndex(OSInt index);
+		void SetSelectedIndex(UOSInt index);
 		OSInt GetSelectedIndex();
 		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
 		void *GetSelectedItem();
