@@ -29,14 +29,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (cfg)
 	{
 		const UTF8Char *csptr;
-		OSInt i;
-		Int32 ip;
+		UOSInt i;
+		UInt32 ip;
 		Int32 v;
 		UTF8Char *sarr[2];
 		csptr = cfg->GetValue((const UTF8Char*)"DNS");
 		if (csptr)
 		{
-			Data::ArrayList<Int32> dnsList;
+			Data::ArrayList<UInt32> dnsList;
 			Text::StringBuilderUTF8 sb;
 			sb.Append(csptr);
 			sarr[1] = sb.ToString();

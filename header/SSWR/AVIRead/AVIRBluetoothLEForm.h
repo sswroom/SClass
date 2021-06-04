@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
-#include "Data/Int64Map.h"
+#include "Data/UInt64Map.h"
 #include "IO/BTManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Int64 mac;
+				UInt64 mac;
 				const UTF8Char *name;
 				Int32 rssi;
 				Bool updated;
@@ -34,7 +34,7 @@ namespace SSWR
 			Data::ArrayList<IO::BTController *> *btList;
 			IO::BTController *btCtrl;
 			Sync::Mutex *devMut;
-			Data::Int64Map<BTDevice*> *devMap;
+			Data::UInt64Map<BTDevice*> *devMap;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblInterface;
@@ -47,7 +47,7 @@ namespace SSWR
 			static void __stdcall OnStoreListClicked(void *userObj);
 			static void __stdcall OnDevicesDblClick(void *userObj, OSInt index);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnLEScanItem(void *userObj, Int64 mac, Int32 rssi, const Char *name);
+			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, const Char *name);
 			void ClearDevices();
 		public:
 			AVIRBluetoothLEForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

@@ -102,10 +102,10 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 		FileInfo *fi;
 		IO::FileStream *fs;
 		IO::StreamWriter *writer;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-		NEW_CLASS(writer, IO::StreamWriter(fs, 0));
+		NEW_CLASS(writer, IO::StreamWriter(fs, (UInt32)0));
 		i = 0;
 		j = me->resList->GetCount();
 		while (i < j)
@@ -198,7 +198,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
 {
-	OSInt i;
+	UOSInt i;
 	this->lbExtensions->ClearItems();
 	i = this->extList->GetCount();
 	while (i-- > 0)
@@ -210,7 +210,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()
 {
-	OSInt i;
+	UOSInt i;
 	FileInfo *fi;
 	this->lvResult->ClearItems();
 	i = this->resList->GetCount();

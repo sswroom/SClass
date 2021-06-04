@@ -15,7 +15,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 	Text::XMLNode::NodeType thisNT;
 	OSInt elementType = 0;
 	const UTF8Char *csptr;
-	OSInt strLen;
+	UOSInt strLen;
 	NEW_CLASS(reader, Text::XMLReader(encFact, stm, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
@@ -330,8 +330,8 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 			{
 				if (imgList)
 				{
-					OSInt i = 0;
-					OSInt j = reader->GetAttribCount();
+					UOSInt i = 0;
+					UOSInt j = reader->GetAttribCount();
 					Text::XMLAttrib *attr;
 					while (i < j)
 					{

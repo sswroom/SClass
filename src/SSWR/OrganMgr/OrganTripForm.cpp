@@ -79,7 +79,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	}
 
 	OSInt i = 0;
-	OSInt j = me->lbTrips->GetCount() - 1;
+	OSInt j = (OSInt)me->lbTrips->GetCount() - 1;
 	OSInt k;
 	Trip *t;
 	while (j >= i)

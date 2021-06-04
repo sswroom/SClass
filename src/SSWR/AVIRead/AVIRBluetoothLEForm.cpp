@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 		{
 			dev->shown = true;
 			dev->updated = false;
-			WriteMInt64(buff, dev->mac);
+			WriteMUInt64(buff, dev->mac);
 			Text::StrHexBytes(sbuff, &buff[2], 6, ':');
 			me->lvDevices->InsertItem(i, sbuff, dev);
 			if (dev->name)
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, Int64 mac, Int32 rssi, const Char *name)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, const Char *name)
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	BTDevice *dev;
@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->btMgr->CreateControllers(this->btList);
 	this->btCtrl = 0;
 	NEW_CLASS(this->devMut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::Int64Map<BTDevice*>());
+	NEW_CLASS(this->devMap, Data::UInt64Map<BTDevice*>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);

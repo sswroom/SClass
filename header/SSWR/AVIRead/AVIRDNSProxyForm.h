@@ -35,7 +35,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				Int32 cliId;
+				UInt32 cliId;
 				Net::SocketUtil::AddressInfo addr;
 				Sync::Mutex *mut;
 				Data::ArrayList<HourInfo*> *hourInfos;
@@ -182,7 +182,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 
 			Sync::Mutex *cliInfoMut;
-			Data::Int32Map<ClientInfo*> *cliInfos;
+			Data::UInt32Map<ClientInfo*> *cliInfos;
 			Bool cliChg;
 			UInt32 currServer;
 
@@ -213,7 +213,7 @@ namespace SSWR
 			static void __stdcall OnClientSelChg(void *userObj);
 			static void __stdcall OnDisableV6Chg(void *userObj, Bool isChecked);
 			static void __stdcall OnBlackListClicked(void *userObj);
-			static void __stdcall OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, Int32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 			void UpdateDNSList();
 			void UpdateBlackList();
@@ -224,10 +224,10 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			Bool IsError();
-			void SetDNSList(Data::ArrayList<Int32> *dnsList);
+			void SetDNSList(Data::ArrayList<UInt32> *dnsList);
 			void SetDisableV6(Bool disableV6);
 			void AddBlacklist(const UTF8Char *blackList);
 		};
-	};
-};
+	}
+}
 #endif

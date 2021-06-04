@@ -10,14 +10,14 @@ void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(void *userObj)
 
 void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 {
-	OSInt defVal = this->env->GetDefLineStyle();
+	UOSInt defVal = this->env->GetDefLineStyle();
 	OSInt currPos = this->GetVScrollPos();
-	OSInt i = 0;
-	OSInt j = this->env->GetLineStyleCount();
+	UOSInt i = 0;
+	UOSInt j = this->env->GetLineStyleCount();
 	UTF8Char sbuff[256];
 
-	OSInt w = img->GetWidth();;
-	OSInt h = img->GetHeight();
+	UOSInt w = img->GetWidth();;
+	UOSInt h = img->GetHeight();
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
 	Int32 itemH = Math::Double2Int32(22 * hdpi / ddpi);

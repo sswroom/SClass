@@ -128,7 +128,7 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *
 	return false;
 }
 
-Int32 SSWR::OrganMgr::OrganSpImgLayer::GetCodePage()
+UInt32 SSWR::OrganMgr::OrganSpImgLayer::GetCodePage()
 {
 	return 65001;
 }
@@ -204,8 +204,8 @@ void SSWR::OrganMgr::OrganSpImgLayer::ClearItems()
 
 void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> *objList)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OrganImageItem *imgItem;
 	UserFileInfo *ufile;
 	Bool found = false;
@@ -251,8 +251,8 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> 
 
 void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<UserFileInfo*> *objList)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UserFileInfo *ufile;
 	Bool found = false;
 	i = 0;

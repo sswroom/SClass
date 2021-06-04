@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(void *userObj)
 	OSInt selInd = me->lbCodePages->GetSelectedIndex();
 	if (selInd >= 0)
 	{
-		me->core->SetCodePage((Int32)(OSInt)me->lbCodePages->GetItem(selInd));
+		me->core->SetCodePage((UInt32)(UOSInt)me->lbCodePages->GetItem((UOSInt)selInd));
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -52,9 +52,9 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	UOSInt i;
 	UOSInt j;
 	UOSInt ind;
-	Int32 codePage;
-	Int32 currCodePage = this->core->GetCurrCodePage();
-	Data::ArrayListInt32 codePages;
+	UInt32 codePage;
+	UInt32 currCodePage = this->core->GetCurrCodePage();
+	Data::ArrayListUInt32 codePages;
 	Text::EncodingFactory::GetCodePages(&codePages);
 	i = 0;
 	j = codePages.GetCount();
@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 		ind = this->lbCodePages->AddItem(sbuff, (void*)(OSInt)codePage);
 		if (codePage == currCodePage)
 		{
-			this->lbCodePages->SetSelectedIndex((OSInt)ind);
+			this->lbCodePages->SetSelectedIndex(ind);
 		}
 		i++;
 	}

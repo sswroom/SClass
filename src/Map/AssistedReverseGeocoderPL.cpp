@@ -11,7 +11,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 {
 	NEW_CLASS(this->revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(this->strMap, Data::BTreeUTF8Map<const UTF8Char *>());
-	NEW_CLASS(this->lcidMap, Data::Int32Map<LCIDInfo*>());
+	NEW_CLASS(this->lcidMap, Data::UInt32Map<LCIDInfo*>());
 	NEW_CLASS(this->mut, Sync::Mutex());
 	this->conn = db;
 	this->errWriter = errWriter;
@@ -136,7 +136,7 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	DEL_CLASS(mut);
 }
 
-UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	UTF8Char *sptr = 0;
 	if (this->conn == 0)
@@ -245,7 +245,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	UTF8Char *sptr = 0;
 	if (this->conn == 0)
@@ -287,7 +287,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 		}
 	}
 
-	OSInt i = this->revGeos->GetCount();
+	UOSInt i = this->revGeos->GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos->GetItem(this->nextCoder)->CacheName(buff, buffSize, lat, lon, lcid);
@@ -307,7 +307,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 		dt.SetCurrTimeUTC();
 		NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
-		sql->AppendInt32(lcid);
+		sql->AppendInt32((Int32)lcid);
 		sql->AppendCmd((const UTF8Char*)", ");
 		sql->AppendInt32(keyx);
 		sql->AppendCmd((const UTF8Char*)", ");

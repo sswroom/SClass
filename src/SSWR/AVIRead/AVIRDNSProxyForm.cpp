@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
-		Int32 ttl;
+		UInt32 ttl;
 		Text::StringBuilderUTF8 sb;
 		sb.Append(req);
 		if (me->proxy->GetRequestInfov4(sb.ToString(), me->v4ansList, &reqTime, &ttl))
@@ -224,7 +224,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
-		Int32 ttl;
+		UInt32 ttl;
 		Text::StringBuilderUTF8 sb;
 		sb.Append(req);
 		if (me->proxy->GetRequestInfov6(sb.ToString(), me->v6ansList, &reqTime, &ttl))
@@ -307,7 +307,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
-		Int32 ttl;
+		UInt32 ttl;
 		if (me->proxy->GetRequestInfoOth(req, me->othansList, &reqTime, &ttl))
 		{
 			OSInt bestInd = -1;
@@ -548,7 +548,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
-		Int32 ttl;
+		UInt32 ttl;
 		Text::StringBuilderUTF8 sb;
 		sb.ClearStr();
 		sb.Append(req);
@@ -674,7 +674,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, Int32 reqId, Double timeUsed)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	UTF8Char sbuff[32];
@@ -1103,7 +1103,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lvClient->AddColumn((const UTF8Char*)"Count", 100);
 
 	NEW_CLASS(this->cliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->cliInfos, Data::Int32Map<ClientInfo*>());
+	NEW_CLASS(this->cliInfos, Data::UInt32Map<ClientInfo*>());
 	this->cliChg = false;
 
 	NEW_CLASS(this->log, IO::LogTool());
@@ -1127,8 +1127,8 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRDNSProxyForm::~AVIRDNSProxyForm()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<ClientInfo*> *cliInfoList;
 	ClientInfo *cli;
 	DEL_CLASS(this->proxy);
@@ -1171,10 +1171,10 @@ Bool SSWR::AVIRead::AVIRDNSProxyForm::IsError()
 	return this->proxy->IsError();
 }
 
-void SSWR::AVIRead::AVIRDNSProxyForm::SetDNSList(Data::ArrayList<Int32> *dnsList)
+void SSWR::AVIRead::AVIRDNSProxyForm::SetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	j = dnsList->GetCount();
 	if (j > 0)
 	{

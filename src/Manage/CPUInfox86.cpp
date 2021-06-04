@@ -272,7 +272,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 }
 
 
-Bool Manage::CPUInfo::GetInfoValue(OSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
 {
 	Int32 cpuInfo[4];
 	switch (index)
@@ -447,7 +447,7 @@ Bool Manage::CPUInfo::GetInfoValue(OSInt index, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-OSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
+UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
 {
 	if (this->infoCnt <= 13)
 		return 0;
@@ -500,14 +500,14 @@ Manage::CPUInfo::~CPUInfo()
 #endif
 }
 
-OSInt Manage::CPUInfo::GetInfoCnt()
+UOSInt Manage::CPUInfo::GetInfoCnt()
 {
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(OSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
 {
-	if (index < 0 || index >= this->infoCnt)
+	if (index >= this->infoCnt)
 		return false;
 	switch (index)
 	{
@@ -887,7 +887,7 @@ const UTF8Char *Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureShortName(OSInt index)
+const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
 	const UTF8Char *shortNames[64] = {
 		(const UTF8Char*)"FPU",
@@ -967,7 +967,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureShortName(OSInt index)
 	return shortNames[index];
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureName(OSInt index)
+const UTF8Char *Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
 	const UTF8Char *names[64] = {
 		(const UTF8Char*)"Floating Point Unit On-Chip",
@@ -1047,7 +1047,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureName(OSInt index)
 	return names[index];
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureDesc(OSInt index)
+const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
 	const UTF8Char *desc[64] = {
 		(const UTF8Char*)"The processor contains an x87 FPU",

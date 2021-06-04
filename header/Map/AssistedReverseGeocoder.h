@@ -13,7 +13,7 @@ namespace Map
 	{
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
-		OSInt nextCoder;
+		UOSInt nextCoder;
 		DB::DBTool *conn;
 		IO::Writer *errWriter;
 		Sync::Mutex *mut;
@@ -21,8 +21,8 @@ namespace Map
 		AssistedReverseGeocoder(DB::DBTool *db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoder();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
 		virtual void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
 	};
 }

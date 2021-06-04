@@ -280,7 +280,7 @@ IO::GPIOControl *SSWR::AVIRead::AVIRCore::GetGPIOControl()
 	return this->gpioCtrl;
 }
 
-Int32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()
+UInt32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()
 {
 	if (this->currCodePage == 0)
 		return Text::EncodingFactory::GetSystemCodePage();

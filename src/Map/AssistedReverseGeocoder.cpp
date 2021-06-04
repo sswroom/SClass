@@ -31,7 +31,7 @@ Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 	DEL_CLASS(mut);
 }
 
-UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	DB::SQLBuilder *sql;
 	DB::DBReader *r;
@@ -47,7 +47,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
-	sql->AppendInt32(lcid);
+	sql->AppendInt32((Int32)lcid);
 	sql->AppendCmd((const UTF8Char*)" and keyx = ");
 	sql->AppendInt32(keyx);
 	sql->AppendCmd((const UTF8Char*)" and keyy = ");
@@ -110,7 +110,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	DB::SQLBuilder *sql;
 	DB::DBReader *r;
@@ -124,7 +124,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
-	sql->AppendInt32(lcid);
+	sql->AppendInt32((Int32)lcid);
 	sql->AppendCmd((const UTF8Char*)" and keyx = ");
 	sql->AppendInt32(keyx);
 	sql->AppendCmd((const UTF8Char*)" and keyy = ");

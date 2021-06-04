@@ -64,7 +64,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::Writer *err
 Map::RevGeoDir::~RevGeoDir()
 {
 	RevGeoFile *file;
-	OSInt i = this->files->GetCount();
+	UOSInt i = this->files->GetCount();
 	while (i-- > 0)
 	{
 		file = this->files->GetItem(i);
@@ -75,9 +75,9 @@ Map::RevGeoDir::~RevGeoDir()
 	DEL_CLASS(mapSrchMgr);
 }
 
-UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
-	OSInt i;
+	UOSInt i;
 	RevGeoFile *file;
 	RevGeoFile *tmpFile;
 	file = this->files->GetItem(0);
@@ -100,7 +100,7 @@ UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat
 	return file->cfg->GetStreetName(buff, buffSize, lat, lon);
 }
 
-UTF8Char *Map::RevGeoDir::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::RevGeoDir::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	return SearchName(buff, buffSize, lat, lon, lcid);
 }

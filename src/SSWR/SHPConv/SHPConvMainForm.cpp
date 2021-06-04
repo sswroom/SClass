@@ -1506,10 +1506,10 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->totalVal = 1;
 	NEW_CLASS(this->globalFilters, Data::ArrayList<MapFilter*>());
 	NEW_CLASS(this->hkscsConv, Text::HKSCSFix());
-	Int32 sysCP = Text::EncodingFactory::GetSystemCodePage();
-	Int32 cp;
+	UInt32 sysCP = Text::EncodingFactory::GetSystemCodePage();
+	UInt32 cp;
 	UTF8Char sbuff[256];
-	Data::ArrayList<Int32> codePages;
+	Data::ArrayList<UInt32> codePages;
 	Text::EncodingFactory::GetCodePages(&codePages);
 	UOSInt i;
 	i = this->lstLang->AddItem((const UTF8Char*)"utf16", (void*)1200);

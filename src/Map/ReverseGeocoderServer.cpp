@@ -68,7 +68,7 @@ Map::ReverseGeocoderServer::~ReverseGeocoderServer()
 	DEL_CLASS(this->reqMut);
 }
 
-UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
@@ -121,7 +121,7 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 	return sptr;
 }
 
-UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];

@@ -54,7 +54,7 @@ namespace SSWR
 			Media::DrawEngine *eng;
 			UI::GUICore *ui;
 			Exporter::ExporterList *exporters;
-			Int32 currCodePage;
+			UInt32 currCodePage;
 			IO::LogTool *log;
 			Data::ArrayList<const UTF8Char *> *audDevList;
 			Media::AudioDevice *audDevice;
@@ -100,7 +100,7 @@ namespace SSWR
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
 			IO::GPIOControl *GetGPIOControl();
 
-			Int32 GetCurrCodePage();
+			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
 			IO::LogTool *GetLog();
 			Double GetMonitorHDPI(void *hMonitor);

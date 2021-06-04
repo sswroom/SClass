@@ -92,7 +92,7 @@ Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, DB::ColDef
 	return false;
 }
 
-Int32 SSWR::OrganMgr::OrganTimeAdjLayer::GetCodePage()
+UInt32 SSWR::OrganMgr::OrganTimeAdjLayer::GetCodePage()
 {
 	return 0;
 }

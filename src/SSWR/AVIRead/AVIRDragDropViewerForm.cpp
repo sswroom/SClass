@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj
 void SSWR::AVIRead::AVIRDragDropViewerForm::ClearDrops()
 {
 	Data::ArrayList<const UTF8Char*> *dropList = this->dropMap->GetValues();
-	OSInt i;
+	UOSInt i;
 	const UTF8Char *dropMsg;
 	i = dropList->GetCount();
 	while (i-- > 0)
@@ -99,8 +99,8 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 	this->lbType->ClearItems();
 
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *csptr;
 	i = 0;
 	j = data->GetCount();

@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 			sbData.Append(u8buff);
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateConnect(sockf, sbURL.ToString(), "POST", false);
-			Text::StrOSInt(u8buff, sbData.GetLength());
+			Text::StrUOSInt(u8buff, sbData.GetLength());
 			cli->AddHeader((const UTF8Char*)"Content-Length", u8buff);
 			cli->Write(sbData.ToString(), sbData.GetLength());
 			respStatus = cli->GetRespStatus();
@@ -129,9 +129,9 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 
 	Manage::CPUInfoDetail cpu;
 	Text::StringBuilderUTF8 sb;
-	OSInt i = 0;
-	OSInt j = cpu.GetInfoCnt();
-	OSInt k;
+	UOSInt i = 0;
+	UOSInt j = cpu.GetInfoCnt();
+	UOSInt k;
 	while (i < j)
 	{
 		sb.ClearStr();
