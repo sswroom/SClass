@@ -15,7 +15,7 @@ namespace Net
 		IO::StreamWriter *writer;
 		Bool threadToStop;
 		Bool threadRunning;
-		Int32 codePage;
+		UInt32 codePage;
 		Bool logged;
 		Bool statusChg;
 		Int32 lastStatus;
@@ -25,7 +25,7 @@ namespace Net
 		static UInt32 __stdcall FTPThread(void *userObj);
 		Int32 WaitForResult();
 	public:
-		FTPConn(const UTF8Char *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage);
+		FTPConn(const UTF8Char *host, UInt16 port, Net::SocketFactory *sockf, UInt32 codePage);
 		~FTPConn();
 
 		Bool IsLogged();

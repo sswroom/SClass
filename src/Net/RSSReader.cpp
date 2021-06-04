@@ -9,8 +9,8 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 	Data::ArrayList<RSSStatus *> *vals;
 	RSSStatus *status;
 	Data::DateTime *dt;
-	OSInt i;
-	OSInt cnt;
+	UOSInt i;
+	UOSInt cnt;
 	const UTF8Char *id;
 
 	me->threadRunning = true;
@@ -128,7 +128,7 @@ Net::RSSReader::~RSSReader()
 	Text::StrDelNew(this->url);
 
 	Data::ArrayList<RSSStatus*> *vals;
-	OSInt i;
+	UOSInt i;
 	RSSStatus *status;
 	vals = this->currRSSMaps->GetValues();
 	i = vals->GetCount();

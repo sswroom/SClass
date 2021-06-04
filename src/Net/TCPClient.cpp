@@ -404,7 +404,7 @@ UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff)
 	return this->sockf->GetLocalName(buff, this->s);
 }
 
-Int64 Net::TCPClient::GetCliId()
+UInt64 Net::TCPClient::GetCliId()
 {
 	return this->cliId;
 }

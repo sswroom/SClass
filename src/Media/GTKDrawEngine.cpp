@@ -934,14 +934,14 @@ Media::DrawBrush *Media::GTKDrawImage::NewBrushARGB(UInt32 color)
 	return b;
 }
 
-Media::DrawFont *Media::GTKDrawImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GTKDrawImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	Media::GTKDrawFont *f;
 	NEW_CLASS(f, Media::GTKDrawFont(name, ptSize * this->info->hdpi / 72.0, fontStyle));
 	return f;
 }
 
-Media::DrawFont *Media::GTKDrawImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GTKDrawImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	Media::GTKDrawFont *f;
 	NEW_CLASS(f, Media::GTKDrawFont(name, pxSize, fontStyle));

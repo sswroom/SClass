@@ -31,7 +31,7 @@ typedef struct
 	Bool hasData;
 } ClassData;
 
-void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*> *cliArr, Data::ArrayListInt64 *cliIdArr, Net::TCPClientMgr::TCPClientStatus *cliStat)
+void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*> *cliArr, Data::ArrayListUInt64 *cliIdArr, Net::TCPClientMgr::TCPClientStatus *cliStat)
 {
 	OSInt ind;
 	ind = cliIdArr->SortedIndexOf(cliStat->cli->GetCliId());
@@ -330,7 +330,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		clsData->hasData = false;
 	}
 	NEW_CLASS(cliArr, Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*>());
-	NEW_CLASS(cliIdArr, Data::ArrayListInt64());
+	NEW_CLASS(cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(cliMut, Sync::Mutex());
 	NEW_CLASS(this->workerTasks, Data::LinkedList());
 	this->clsData = clsData;
@@ -466,7 +466,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	}
 }
 
-Bool Net::TCPClientMgr::SendClientData(Int64 cliId, const UInt8 *buff, UOSInt buffSize)
+Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize)
 {
 	OSInt i;
 	Net::TCPClientMgr::TCPClientStatus *cliStat = 0;

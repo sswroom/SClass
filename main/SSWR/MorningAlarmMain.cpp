@@ -60,8 +60,8 @@ UInt32 __stdcall PlayThread(void *obj)
 	Data::ArrayList<Media::MediaFile*> *stmList;
 	Media::MediaFile *file;
 	Data::Random *random;
-	Int32 i;
-	Int32 currStm;
+	UOSInt i;
+	UOSInt currStm;
 	Net::HKOWeather::WeatherSignal currSignal;
 	Net::HKOWeather::WeatherSignal nextSignal;
 	Bool typhoonStop = false;
@@ -82,7 +82,7 @@ UInt32 __stdcall PlayThread(void *obj)
 	while (true)
 	{
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Alarm");
-		sptr = Text::StrInt32(sptr, i);
+		sptr = Text::StrUOSInt(sptr, i);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
 
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
@@ -100,7 +100,6 @@ UInt32 __stdcall PlayThread(void *obj)
 	}
 
 	NEW_CLASS(clk, Media::RefClock());
-	currStm = -1;
 
 	while (!ToStop)
 	{
@@ -180,6 +179,7 @@ UInt32 __stdcall PlayThread(void *obj)
 	{
 		console->WriteLine((const UTF8Char*)"Alerting!");
 	}
+	currStm = (UInt32)-1;
 	while (!ToStop)
 	{
 		if (stmList->GetCount() > 0)
@@ -193,7 +193,7 @@ UInt32 __stdcall PlayThread(void *obj)
 				i = currStm;
 				while (i == currStm)
 				{
-					i = random->NextInt32() % (Int32)stmList->GetCount();
+					i = (UInt32)random->NextInt32() % stmList->GetCount();
 				}
 				currStm = i;
 			}
@@ -238,7 +238,7 @@ UInt32 __stdcall PlayThread(void *obj)
 
 	DEL_CLASS(clk);
 
-	i = (Int32)stmList->GetCount();
+	i = stmList->GetCount();
 	while (i-- > 0)
 	{
 		file = (Media::MediaFile *)stmList->RemoveAt(i);
@@ -261,8 +261,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	const UTF8Char **sel;
 	ToStop = false;
 	threadRunning = false;
-	OSInt i;
-	OSInt devCnt;
+	UOSInt i;
+	UOSInt devCnt;
 	IO::ConsoleInput::InputReturnType irt;
 
 	NEW_CLASS(console, IO::ConsoleWriter());

@@ -4,7 +4,7 @@
 #include "Sync/Thread.h"
 #include "Net/FTPClient.h"
 
-Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool passiveMode, Int32 codePage) : IO::Stream(url)
+Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage) : IO::Stream(url)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

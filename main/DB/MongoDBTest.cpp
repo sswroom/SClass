@@ -24,8 +24,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToString(), database, log));
 	
 	Data::ArrayList<const UTF8Char*> nameList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	j = mongoDB->GetDatabaseNames(&nameList);
 	if (j <= 0)
 	{

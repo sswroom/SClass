@@ -401,10 +401,10 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 	return true;
 }
 
-Int32 Media::ALSARenderer::GetDeviceCount()
+UOSInt Media::ALSARenderer::GetDeviceCount()
 {
 	Int32 card = -1;
-	Int32 count = 0;
+	UOSInt count = 0;
 	card = -1;
 	while (snd_card_next(&card) >= 0 && card >= 0)
 	{
@@ -413,7 +413,7 @@ Int32 Media::ALSARenderer::GetDeviceCount()
 	return count;
 }
 
-UTF8Char *Media::ALSARenderer::GetDeviceName(UTF8Char *buff, Int32 devNo)
+UTF8Char *Media::ALSARenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
 	snd_ctl_t *handle;
 	snd_ctl_card_info_t *info;

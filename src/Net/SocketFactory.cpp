@@ -127,7 +127,7 @@ UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, UInt32 *socket)
 	}
 }
 
-Int64 Net::SocketFactory::GenSocketId(UInt32 *socket)
+UInt64 Net::SocketFactory::GenSocketId(UInt32 *socket)
 {
 	Net::SocketUtil::AddressInfo rAddr;
 	UInt16 rPort;
@@ -135,7 +135,7 @@ Int64 Net::SocketFactory::GenSocketId(UInt32 *socket)
 	UInt16 lPort;
 	this->GetLocalAddr(socket, &lAddr, &lPort);
 	this->GetRemoteAddr(socket, &rAddr, &rPort);
-	return Net::SocketUtil::CalcCliId(&rAddr) | (((Int64)rPort) << 32) | (((Int64)lPort) << 48);
+	return Net::SocketUtil::CalcCliId(&rAddr) | (((UInt64)rPort) << 32) | (((UInt64)lPort) << 48);
 }
 
 void Net::SocketFactory::FromSocketId(Int64 socketId, UInt32 *ip, UInt16 *port)

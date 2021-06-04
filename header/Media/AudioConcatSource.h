@@ -24,7 +24,7 @@ namespace Media
 		virtual ~AudioConcatSource();
 
 		Bool AppendAudio(Media::IAudioSource *audio);
-		Bool AppendSilent(Int32 time);
+		Bool AppendSilent(UInt32 time);
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Bool CanSeek();

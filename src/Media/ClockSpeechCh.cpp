@@ -20,7 +20,7 @@ void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::F
 		Media::MediaFile *file = (Media::MediaFile *)pobj;
 		Media::IMediaSource *msrc;
 		Int32 syncTime;
-		Int32 i = 0;
+		UOSInt i = 0;
 		while ((msrc = file->GetStream(i++, &syncTime)) != 0)
 		{
 			if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)

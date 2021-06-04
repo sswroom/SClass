@@ -15,12 +15,12 @@ namespace Net
 		const UTF8Char *host;
 		UInt16 port;
 		const UTF8Char *path;
-		Int32 codePage;
+		UInt32 codePage;
 		Net::FTPConn *conn;
 		Net::TCPClient *cli2;
 
 	public:
-		FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool passiveMode, Int32 codePage);
+		FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage);
 		~FTPClient();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

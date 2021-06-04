@@ -274,7 +274,7 @@ OSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return size;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, OSInt nChar)
+WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
 {
 #if defined(__CYGWIN__)
 	Char buff[512];

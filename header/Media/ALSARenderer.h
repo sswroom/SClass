@@ -28,8 +28,8 @@ namespace Media
 
 		Bool SetHWParams(Media::IAudioSource *audsrc, void *h);
 	public:
-		static Int32 GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, Int32 devNo);
+		static UOSInt GetDeviceCount();
+		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
 		
 		void OnEvent();
 

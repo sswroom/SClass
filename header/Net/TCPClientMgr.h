@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "Sync/Mutex.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListInt64.h"
+#include "Data/ArrayListUInt64.h"
 #include "Data/LinkedList.h"
 #include "Net/TCPClient.h"
 #include "Sync/MutexUsage.h"
@@ -61,7 +61,7 @@ namespace Net
 		Bool toStop;
 		Bool clientThreadRunning;
 
-		Data::ArrayListInt64 *cliIdArr;
+		Data::ArrayListUInt64 *cliIdArr;
 		Data::ArrayList<TCPClientStatus*> *cliArr;
 		Sync::Mutex *cliMut;
 
@@ -77,7 +77,7 @@ namespace Net
 		~TCPClientMgr();
 
 		void AddClient(TCPClient *cli, void *cliData);
-		Bool SendClientData(Int64 cliId, const UInt8 *buff, UOSInt buffSize);
+		Bool SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();
 		void CloseAll();
 

@@ -20,10 +20,10 @@ namespace IO
 	public:
 		static InputReturnType InputInt32(IO::ConsoleWriter *console, Int32 *output, Bool showOriVal);
 		static InputReturnType InputBool(IO::ConsoleWriter *console, Bool *output);
-		static InputReturnType InputSelect(IO::ConsoleWriter *console, const UTF8Char **names, OSInt nNames, OSInt *selection);
+		static InputReturnType InputSelect(IO::ConsoleWriter *console, const UTF8Char **names, UOSInt nNames, UOSInt *selection);
 		static InputReturnType InputDateTime(IO::ConsoleWriter *console, Data::DateTime *output);
-		static InputReturnType InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, OSInt buffSize, OSInt *inputSize);
-		static InputReturnType InputString(IO::ConsoleWriter *console, UTF8Char *output, OSInt maxCharCnt, OSInt *inputSize);
+		static InputReturnType InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, UOSInt buffSize, UOSInt *inputSize);
+		static InputReturnType InputString(IO::ConsoleWriter *console, UTF8Char *output, UOSInt maxCharCnt, UOSInt *inputSize);
 	};
-};
+}
 #endif

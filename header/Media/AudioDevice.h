@@ -21,8 +21,8 @@ namespace Media
 		Media::IAudioRenderer *currRenderer;
 
 	public:
-		static OSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, OSInt devIndex);
+		static UOSInt GetDeviceCount();
+		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);
 		static Media::IAudioRenderer *CreateRenderer(const UTF8Char *devName);
 
 		AudioDevice();
@@ -32,5 +32,5 @@ namespace Media
 
 		Media::IAudioRenderer *BindAudio(Media::IAudioSource *audsrc);
 	};
-};
+}
 #endif

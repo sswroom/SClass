@@ -13,7 +13,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		UInt32 *s;
 		UInt64 currCnt;
-		Int64 cliId;
+		UInt64 cliId;
 		Int32 flags; //1 = shutdown send, 2 = shutdown recv, 4 = closed, 8 = connect error
 
 		Sync::Event *readEvent;
@@ -48,7 +48,7 @@ namespace Net
 
 		UTF8Char *GetRemoteName(UTF8Char *buff);
 		UTF8Char *GetLocalName(UTF8Char *buff);
-		Int64 GetCliId();
+		UInt64 GetCliId();
 		Bool GetRemoteAddr(Net::SocketUtil::AddressInfo *addr);
 		UInt16 GetRemotePort();
 		UInt16 GetLocalPort();

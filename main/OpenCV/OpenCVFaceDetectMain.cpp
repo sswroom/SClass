@@ -22,9 +22,9 @@ OSInt rangeLeft;
 OSInt rangeTop;
 OSInt rangeRight;
 OSInt rangeBottom;
-Int32 preferedFormat;
-OSInt preferedWidth;
-OSInt preferedHeight;
+UInt32 preferedFormat;
+UOSInt preferedWidth;
+UOSInt preferedHeight;
 Media::CS::CSConverter *csConv;
 Exporter::GUIJPGExporter *exporter;
 
@@ -70,11 +70,11 @@ void __stdcall OnDetectResult(void *userObj, OSInt objCnt, const Media::OpenCV::
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			NEW_CLASS(simg, Media::StaticImage(frInfo->dispWidth, frInfo->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &srgb, frInfo->yuvType, Media::AT_NO_ALPHA, frInfo->ycOfst));
-			csConv->ConvertV2(imgData, simg->data, frInfo->dispWidth, frInfo->dispHeight, frInfo->storeWidth, frInfo->storeHeight, frInfo->dispWidth * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
+			csConv->ConvertV2(imgData, simg->data, frInfo->dispWidth, frInfo->dispHeight, frInfo->storeWidth, frInfo->storeHeight, (OSInt)frInfo->dispWidth * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
 			OSInt i = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data + frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, objRects[i].right - objRects[i].left, objRects[i].bottom - objRects[i].top, frInfo->dispWidth * 4, 0xffff0000);
+				ImageUtil_DrawRectNA32(simg->data + frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, objRects[i].right - objRects[i].left, (UOSInt)(objRects[i].bottom - objRects[i].top), (OSInt)frInfo->dispWidth * 4, 0xffff0000);
 				i++;
 			}
 			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"ImageCapture"));
@@ -95,13 +95,13 @@ void __stdcall OnDetectResult(void *userObj, OSInt objCnt, const Media::OpenCV::
 	lastCnt = thisCnt;
 }
 
-Media::IVideoCapture *OpenCapture(OSInt defIndex)
+Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 {
 	Media::IVideoCapture *capture = 0;
 	Media::VideoCaptureMgr *videoCap;
 	Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Media::VideoCaptureMgr::DeviceInfo *dev;
 	NEW_CLASS(videoCap, Media::VideoCaptureMgr());
 	videoCap->GetDeviceList(&devList);

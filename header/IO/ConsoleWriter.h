@@ -39,10 +39,10 @@ namespace IO
 		{
 			ConsoleColor fgColor;
 			ConsoleColor bgColor;
-			Int32 currX;
+			UInt32 currX;
 			Int32 currY;
-			Int32 consoleWidth;
-			Int32 consoleHeight;
+			UInt32 consoleWidth;
+			UInt32 consoleHeight;
 		} ConsoleState;
 	private:
 		void *hand;
@@ -61,7 +61,7 @@ namespace IO
 		virtual Bool WriteLine(const UTF8Char *str);
 		virtual Bool WriteLine();
 
-		WChar *ReadLine(WChar *sbuff, OSInt nChar);
+		WChar *ReadLine(WChar *sbuff, UOSInt nChar);
 
 		void SetTextColor(ConsoleColor fgColor, ConsoleColor bgColor);
 		void ResetTextColor();
@@ -69,7 +69,7 @@ namespace IO
 		void EnableCPFix(Bool isEnable);
 		void SetAutoFlush(Bool autoFlush);
 		Bool GetConsoleState(ConsoleState *state);
-		Bool SetCursorPos(Int32 x, Int32 y);
+		Bool SetCursorPos(UInt32 x, Int32 y);
 		Bool IsFileOutput();
 
 		void FixWrite(const WChar *str, OSInt displayWidth);

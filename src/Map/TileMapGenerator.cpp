@@ -13,14 +13,14 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
-void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, Int32 scale)
+void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale)
 {
 	view->UpdateSize((this->imgSize * this->osSize), (this->imgSize * this->osSize));
 	view->SetDPI((Math::UOSInt2Double(this->osSize) * 96.0), 96.0);
 	view->SetCenterXY((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464);
 }
 
-UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, Int32 scale, const UTF8Char *ext)
+UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, const UTF8Char *ext)
 {
 	UTF8Char *sptr;
 	sptr = Text::StrConcat(sbuff, this->tileDir);
@@ -28,7 +28,7 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrInt32(sptr, scale);
+	sptr = Text::StrUInt32(sptr, scale);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, x >> 5);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
@@ -42,7 +42,7 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 	return sptr;
 }
 
-void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, Int32 scale, Int32 xOfst, Int32 yOfst)
+void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst)
 {
 	UTF8Char sbuff2[512];
 	IO::FileStream *sfs;
@@ -82,7 +82,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, I
 	DEL_CLASS(sfs);
 }
 
-Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::MapScheduler *mapSch)
+Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	UTF8Char sbuff[512];
 	Map::MapConfig2TGen::DrawParam params;
@@ -120,7 +120,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, Int32 scale, Map::M
 	dimg2->SetVDPI(96.0 * Math::UOSInt2Double(this->osSize));
 	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, sbuff, &params);
 	mutUsage.BeginUse();
-	this->dbGenList->RemoveAt(this->dbGenList->SortedIndexOf(id));
+	this->dbGenList->RemoveAt((UOSInt)this->dbGenList->SortedIndexOf(id));
 	dbEvt->Set();
 	mutUsage.EndUse();
 	geng->DeleteImage(dimg2);
@@ -150,7 +150,7 @@ Map::TileMapGenerator::~TileMapGenerator()
 	DEL_CLASS(this->resizer);
 }
 
-Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, Int32 scale, UInt32 imgSize)
+Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, UInt32 scale, UInt32 imgSize)
 {
 	Int32 x;
 	Int32 y;
@@ -159,7 +159,7 @@ Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, Int32 scale, UInt
 	return (((Int64)x) << 32) | (0xffffffffLL & (Int64)y);
 }
 
-Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, Int32 scale, Map::MapScheduler *mapSch)
+Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	UTF8Char sbuff2[512];
 	IO::FileStream *dfs;
@@ -183,10 +183,10 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, Int32 scale, Map::MapSche
 	writer->WriteSignature();
 
 	AppendDBFile(writer, x, y, scale, 0, 0);
-	AppendDBFile(writer, x + 1, y, scale, this->imgSize, 0);
-	AppendDBFile(writer, x - 1, y, scale, -this->imgSize, 0);
-	AppendDBFile(writer, x, y + 1, scale, 0, -this->imgSize);
-	AppendDBFile(writer, x, y - 1, scale, 0, this->imgSize);
+	AppendDBFile(writer, x + 1, y, scale, (Int32)this->imgSize, 0);
+	AppendDBFile(writer, x - 1, y, scale, (Int32)-this->imgSize, 0);
+	AppendDBFile(writer, x, y + 1, scale, 0, (Int32)-this->imgSize);
+	AppendDBFile(writer, x, y - 1, scale, 0, (Int32)this->imgSize);
 	DEL_CLASS(writer);
 	mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
 	
@@ -231,7 +231,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, Int32 scale, Map::MapSche
 	return true;
 }
 
-Bool Map::TileMapGenerator::GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, Int32 scale, Map::MapScheduler *mapSch)
+Bool Map::TileMapGenerator::GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	Int64 id = GetTileID(lat1, lon1, scale, this->imgSize);
 	Int32 i;

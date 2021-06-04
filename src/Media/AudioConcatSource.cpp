@@ -24,7 +24,7 @@ Media::AudioConcatSource::AudioConcatSource()
 Media::AudioConcatSource::~AudioConcatSource()
 {
 	Media::IAudioSource *audio;
-	OSInt i = this->stmList->GetCount();
+	UOSInt i = this->stmList->GetCount();
 	while (i-- > 0)
 	{
 		audio = (Media::IAudioSource*)this->stmList->RemoveAt(i);
@@ -69,11 +69,11 @@ Bool Media::AudioConcatSource::AppendAudio(Media::IAudioSource *audio)
 	}
 }
 
-Bool Media::AudioConcatSource::AppendSilent(Int32 time)
+Bool Media::AudioConcatSource::AppendSilent(UInt32 time)
 {
 	if (time <= 0 || this->format.frequency == 0)
 		return false;
-	Int64 sampleCnt = time * (Int64)this->format.frequency / 1000;
+	UInt64 sampleCnt = time * (UInt64)this->format.frequency / 1000;
 	Media::SilentSource *src;
 	NEW_CLASS(src, Media::SilentSource(this->format.frequency, this->format.nChannels, this->format.bitpersample, (const UTF8Char*)"Silent", sampleCnt));
 	this->stmList->Add(src);
@@ -112,8 +112,8 @@ Bool Media::AudioConcatSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeE
 
 UInt32 Media::AudioConcatSource::SeekToTime(UInt32 time)
 {
-	Int32 stmTotal;
-	Int32 stmTime = 0;
+	UInt32 stmTotal;
+	UInt32 stmTime = 0;
 	UOSInt stmIndex;
 	UOSInt stmCnt;
 	stmTotal = 0;
@@ -124,8 +124,8 @@ UInt32 Media::AudioConcatSource::SeekToTime(UInt32 time)
 
 	while (stmIndex < stmCnt)
 	{
-		stmTime = ((Media::IAudioSource *)this->stmList->GetItem(stmIndex))->GetStreamTime();
-		if (stmTime > (Int32)time)
+		stmTime = (UInt32)((Media::IAudioSource *)this->stmList->GetItem(stmIndex))->GetStreamTime();
+		if (stmTime > time)
 		{
 			if (this->currStm != stmIndex && this->readEvt)
 			{

@@ -21,18 +21,18 @@ IO::ProtoHdlr::ProtoJTT808Handler::~ProtoJTT808Handler()
 void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(IO::Stream *stm)
 {
 	StreamData *data = MemAlloc(StreamData, 1);
-	Int64 devId = this->devId;
-	data->devId[5] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+	UInt64 devId = this->devId;
+	data->devId[5] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[4] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+	data->devId[4] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[3] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+	data->devId[3] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[2] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+	data->devId[2] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[1] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+	data->devId[1] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[0] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+	data->devId[0] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	return data;
 }
 
@@ -46,7 +46,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *s
 {
 	StreamData *data = (StreamData*)stmData;
 	UInt8 packetBuff[1044];
-	OSInt firstIndex = -1;
+	UOSInt firstIndex = (UOSInt)-1;
 	UOSInt parseOfst = 0;
 	UOSInt i;
 	UOSInt j;
@@ -55,7 +55,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *s
 	{
 		if (buff[i] == 0x7e)
 		{
-			if (firstIndex == -1)
+			if (firstIndex == (UOSInt)-1)
 			{
 				firstIndex = i;
 			}
@@ -84,7 +84,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *s
 				}
 				if (chk == 0)
 				{
-					if (parseOfst != (UOSInt)firstIndex)
+					if (parseOfst != firstIndex)
 					{
 						this->listener->DataSkipped(stm, stmObj, &buff[parseOfst], firstIndex - parseOfst);
 					}
@@ -156,18 +156,18 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType
 	}
 	else
 	{
-		Int64 devId = this->devId;
-		hdr[9] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+		UInt64 devId = (UInt64)this->devId;
+		hdr[9] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[8] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+		hdr[8] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[7] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+		hdr[7] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[6] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+		hdr[6] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[5] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+		hdr[5] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[4] = Data::ByteTool::Int2BCDB((Int32)(devId % 100));
+		hdr[4] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	}
 	UInt8 chk = 0;
 	UInt8 c;

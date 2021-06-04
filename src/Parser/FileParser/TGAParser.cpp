@@ -219,7 +219,7 @@ rle32exit:
 			{
 				if (outImg)
 				{
-					Int32 bpl = imgWidth * bpp >> 3;
+					UInt32 bpl = imgWidth * bpp >> 3;
 					UInt8 *tmpOfst = tmpBits + imgHeight * bpl;
 					pBits = (UInt8*)outImg->data;
 					while (imgHeight-- > 0)

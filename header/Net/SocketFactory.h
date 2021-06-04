@@ -224,7 +224,7 @@ namespace Net
 		UTF8Char *GetRemoteName(UTF8Char *buff, UInt32 *socket);
 		UTF8Char *GetLocalName(UTF8Char *buff, UInt32 *socket);
 #ifdef HAS_INT64
-		Int64 GenSocketId(UInt32 *socket);
+		UInt64 GenSocketId(UInt32 *socket);
 		static void FromSocketId(Int64 socketId, UInt32 *ip, UInt16 *port);
 #endif
 

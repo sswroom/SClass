@@ -76,7 +76,7 @@ OSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return 0;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, OSInt nChar)
+WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
 {
 #if !defined(__arm__)
 	if (fgetws(sbuff, (int)nChar, stdin) == 0)
@@ -180,7 +180,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 		if (succ)
 		{
 			col[i] = 0;
-			state->currX = Text::StrToInt32(col) - 1;
+			state->currX = Text::StrToUInt32(col) - 1;
 			state->currY = Text::StrToInt32(row) - 1;
 		}
 	}
@@ -188,7 +188,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	return succ;
 }
 
-Bool IO::ConsoleWriter::SetCursorPos(Int32 x, Int32 y)
+Bool IO::ConsoleWriter::SetCursorPos(UInt32 x, Int32 y)
 {
 	printf("\x1b[%d;%dH", y + 1, x + 1);
 	return true;

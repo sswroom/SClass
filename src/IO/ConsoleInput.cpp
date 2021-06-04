@@ -44,13 +44,13 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char cbuff[12];
-	Int32 currPos = 0;
-	Int32 currSize = 0;
+	UInt32 currPos = 0;
+	UInt32 currSize = 0;
 	Int32 i;
-	Int32 j;
+	UInt32 j;
 	if (showOriVal)
 	{
-		currSize = (Int32)(Text::StrInt32(cbuff, *output) - cbuff);
+		currSize = (UOSInt)(Text::StrInt32(cbuff, *output) - cbuff);
 		currPos = currSize;
 		console->Write(cbuff);
 	}
@@ -110,7 +110,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				{
 					cbuff[j + 1] = cbuff[j];
 				}
-				cbuff[currPos] = i;
+				cbuff[currPos] = (UTF8Char)i;
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
@@ -270,20 +270,20 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWriter *console, const UTF8Char **names, OSInt nNames, OSInt *selection)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWriter *console, const UTF8Char **names, UOSInt nNames, UOSInt *selection)
 {
 	IO::ConsoleWriter::ConsoleState state;
-	OSInt i;
-	OSInt k;
-	OSInt maxStrSize;
-	OSInt j = 0;
+	UOSInt i;
+	UOSInt k;
+	UOSInt maxStrSize;
+	UOSInt j = 0;
 	if (nNames <= 0 || console->IsFileOutput())
 		return IRT_UNKNOWN;
 	maxStrSize = 0;
 	i = nNames;
 	while (i-- > 0)
 	{
-		j = (Int32)Text::StrCharCnt(names[i]);
+		j = Text::StrCharCnt(names[i]);
 		if (j > maxStrSize)
 		{
 			maxStrSize = j;
@@ -310,14 +310,14 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 	while (true)
 	{
 		console->Write(names[k]);
-		j = (Int32)(maxStrSize - Text::StrCharCnt(names[k]));
+		j = (maxStrSize - Text::StrCharCnt(names[k]));
 		while (j-- > 0)
 		{
 			console->Write((const UTF8Char*)" ");
 		}
 		console->SetCursorPos(state.currX, state.currY);
 
-		i = IO::Console::GetKey();
+		i = (UOSInt)IO::Console::GetKey();
 		if (i == 0x1b)
 			break;
 		if (i == 0x0d)
@@ -326,7 +326,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 			break;
 		if (i == 0 || i == 0xe0)
 		{
-			i = IO::Console::GetKey();
+			i = (UOSInt)IO::Console::GetKey();
 			if (i == 0x48)
 			{
 				if (k == 0)
@@ -618,11 +618,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, OSInt buffSize, OSInt *inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, UOSInt buffSize, UOSInt *inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
-	Int32 i;
-	Int32 j;
+	UOSInt i;
+	UOSInt j;
 
 	if (console->IsFileOutput())
 	{
@@ -641,7 +641,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 		state.currX = 0;
 		state.currY += 1;
 	}
-	i = (Int32)buffSize;
+	i = buffSize;
 	while (i-- > 0)
 	{
 		console->Write((const UTF8Char*)"  ");
@@ -649,11 +649,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char *cbuff = MemAlloc(UTF8Char, (buffSize << 1) + 1);
-	Int32 currPos = 0;
-	Int32 currSize = 0;
+	UInt32 currPos = 0;
+	UInt32 currSize = 0;
 	while (true)
 	{
-		i = IO::Console::GetKey();
+		i = (UOSInt)IO::Console::GetKey();
 		if (i == 0x1b)
 			break;
 		if (i == 0x0d)
@@ -673,7 +673,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				{
 					cbuff[j + 1] = cbuff[j];
 				}
-				cbuff[currPos] = i;
+				cbuff[currPos] = (UTF8Char)i;
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
@@ -694,7 +694,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				{
 					cbuff[j + 1] = cbuff[j];
 				}
-				cbuff[currPos] = i;
+				cbuff[currPos] = (UTF8Char)i;
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
@@ -715,7 +715,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				{
 					cbuff[j + 1] = cbuff[j];
 				}
-				cbuff[currPos] = i - 32;
+				cbuff[currPos] = (UTF8Char)(i - 32);
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
@@ -747,7 +747,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 		}
 		else if (i == 0 || i == 0xe0)
 		{
-			i = IO::Console::GetKey();
+			i = (UOSInt)IO::Console::GetKey();
 			if (i == 0x4b)
 			{
 				if (currPos > 0)
@@ -797,16 +797,16 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 }
 
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWriter *console, UTF8Char *output, OSInt maxCharCnt, OSInt *inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWriter *console, UTF8Char *output, UOSInt maxCharCnt, UOSInt *inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
-	Int32 i;
-	Int32 j;
+	UOSInt i;
+	UOSInt j;
 
 	if (console->IsFileOutput())
 	{
 		WChar sbuff[256];
-		*inputSize = console->ReadLine(sbuff, maxCharCnt) - sbuff;
+		*inputSize = (UOSInt)(console->ReadLine(sbuff, maxCharCnt) - sbuff);
 		return IRT_ENTER;
 	}
 
@@ -819,7 +819,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 		state.currX = 0;
 		state.currY += 1;
 	}
-	i = (Int32)maxCharCnt;
+	i = maxCharCnt;
 	while (i-- > 0)
 	{
 		console->Write((const UTF8Char*)" ");
@@ -827,11 +827,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char *cbuff = output;
-	Int32 currPos = 0;
-	Int32 currSize = 0;
+	UOSInt currPos = 0;
+	UOSInt currSize = 0;
 	while (true)
 	{
-		i = IO::Console::GetKey();
+		i = (UOSInt)IO::Console::GetKey();
 		if (i == 0x1b)
 			break;
 		if (i == 0x0d)
@@ -864,7 +864,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 		}
 		else if (i == 0 || i == 0xe0)
 		{
-			i = IO::Console::GetKey();
+			i = (UOSInt)IO::Console::GetKey();
 			if (i == 0x4b)
 			{
 				if (currPos > 0)
@@ -895,7 +895,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 				{
 					cbuff[j + 1] = cbuff[j];
 				}
-				cbuff[currPos] = i;
+				cbuff[currPos] = (UTF8Char)i;
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);

@@ -85,7 +85,7 @@ Int32 Net::FTPConn::WaitForResult()
 		return 0;
 }
 
-Net::FTPConn::FTPConn(const UTF8Char *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage)
+Net::FTPConn::FTPConn(const UTF8Char *host, UInt16 port, Net::SocketFactory *sockf, UInt32 codePage)
 {
 	this->codePage = codePage;
 	this->threadRunning = false;

@@ -4,14 +4,14 @@
 #include "Media/AudioDevice.h"
 #include "Text/MyString.h"
 
-OSInt Media::AudioDevice::GetDeviceCount()
+UOSInt Media::AudioDevice::GetDeviceCount()
 {
 	return Media::ALSARenderer::GetDeviceCount();
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, OSInt devNo)
+UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
-	return Media::ALSARenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"ALSA: "), (Int32)devNo);
+	return Media::ALSARenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"ALSA: "), devNo);
 }
 
 Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(const UTF8Char *devName)
