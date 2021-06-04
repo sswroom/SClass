@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Media/ImageFilter/BWImgFilter.h"
 
-void BWImgFilter_ProcYUY2(UInt8 *imgData, OSInt pxCnt)
+void BWImgFilter_ProcYUY2(UInt8 *imgData, UOSInt pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
@@ -12,7 +12,7 @@ void BWImgFilter_ProcYUY2(UInt8 *imgData, OSInt pxCnt)
 	}
 }
 
-void BWImgFilter_ProcUYVY(UInt8 *imgData, OSInt pxCnt)
+void BWImgFilter_ProcUYVY(UInt8 *imgData, UOSInt pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
@@ -21,7 +21,7 @@ void BWImgFilter_ProcUYVY(UInt8 *imgData, OSInt pxCnt)
 	}
 }
 
-void BWImgFilter_ProcAYUV(UInt8 *imgData, OSInt pxCnt)
+void BWImgFilter_ProcAYUV(UInt8 *imgData, UOSInt pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
@@ -30,11 +30,11 @@ void BWImgFilter_ProcAYUV(UInt8 *imgData, OSInt pxCnt)
 	}
 }
 
-void BWImgFilter_ProcY416(UInt8 *imgData, OSInt pxCnt)
+void BWImgFilter_ProcY416(UInt8 *imgData, UOSInt pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
-		WriteInt32(&imgData[0], 0x80008000);
+		WriteUInt32(&imgData[0], 0x80008000);
 		imgData += 8;
 	}
 }

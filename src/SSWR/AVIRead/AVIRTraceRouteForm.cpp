@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt32 targetIP;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->txtTargetIP->GetText(&sb);
 	targetIP = me->sockf->DNSResolveIPv4(sb.ToString());
 	if (targetIP == 0)
@@ -57,15 +57,15 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRTraceRouteForm *me = (SSWR::AVIRead::AVIRTraceRouteForm*)userObj;
-	UInt32 ip = (UInt32)(OSInt)me->lbIP->GetSelectedItem();
+	UInt32 ip = (UInt32)(UOSInt)me->lbIP->GetSelectedItem();
 	if (ip)
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::WhoisRecord *rec = me->whois->RequestIP(ip);
 		if (rec)
 		{
-			OSInt i = 0;
-			OSInt j = rec->GetCount();
+			UOSInt i = 0;
+			UOSInt j = rec->GetCount();
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));

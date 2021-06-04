@@ -4,8 +4,8 @@
 
 extern "C"
 {
-	void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, OSInt pxCnt);
-	void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, OSInt byteCnt);
+	void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, UOSInt pxCnt);
+	void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, UOSInt byteCnt);
 }
 
 namespace Media
@@ -21,13 +21,13 @@ namespace Media
 
 			Int32 bgFormat;
 			UInt8 *bgData;
-			OSInt bgWidth;
-			OSInt bgHeight;
+			UOSInt bgWidth;
+			UOSInt bgHeight;
 		public:
 			BGImgFilter();
 			virtual ~BGImgFilter();
 
-			virtual void ProcessImage(UInt8 *imgData, Int32 imgFormat, OSInt nBits, Media::PixelFormat pf, OSInt imgWidth, OSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
+			virtual void ProcessImage(UInt8 *imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
 
 			Bool IsEnabled();
 			Bool IsAbsolute();
@@ -36,6 +36,6 @@ namespace Media
 			void ToCreateBGImg();
 
 		};
-	};
-};
+	}
+}
 #endif

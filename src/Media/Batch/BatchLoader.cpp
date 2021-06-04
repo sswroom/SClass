@@ -12,7 +12,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	const UTF8Char *fileName = 0;
 	DataInfo *info = 0;
 	Bool found;
-	OSInt i;
+	UOSInt i;
 	IO::ParsedObject *pobj;
 	IO::ParsedObject::ParserType pt;
 
@@ -127,7 +127,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 
 Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch::BatchHandler *hdlr)
 {
-	OSInt i;
+	UOSInt i;
 	Bool started;
 	this->parsers = parsers;
 	this->hdlr = hdlr;

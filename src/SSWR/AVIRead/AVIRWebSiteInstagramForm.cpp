@@ -60,8 +60,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 	{
 		Data::ArrayList<const UTF8Char*> imageList;
 		Data::ArrayList<const UTF8Char*> videoList;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		me->ctrl->GetPageImages(sb.ToString(), &imageList, &videoList);
 		i = 0;
 		j = imageList.GetCount();

@@ -27,7 +27,7 @@ namespace SSWR
 			typedef struct
 			{
 				Int64 recvTime;
-				Int32 buffSize;
+				UInt32 buffSize;
 				UInt8 *buff;
 				Net::SocketUtil::AddressInfo addr;
 				UInt16 port;

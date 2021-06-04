@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Desktop DPI is not valid", (const UTF8Char *)"Error", me);
 		return;
 	}
-	hdpi = me->hsbDPI->GetPos() * 0.1;
+	hdpi = Math::OSInt2Double(me->hsbDPI->GetPos()) * 0.1;
 	if (ddpi > hdpi)
 	{
 		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char *)"Are you sure to set larger desktop DPI (reducing object size)?", (const UTF8Char *)"Confirm", me))
@@ -104,7 +104,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 
-		f = gimg->NewFontPx((const UTF8Char*)"Arial", 12 * v * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = gimg->NewFontPx((const UTF8Char*)"Arial", 12 * Math::OSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = gimg->NewBrushARGB(0xff000000);
 		currV = 0;
@@ -113,16 +113,16 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		lastX = initX - 20.0;
 		while (true)
 		{
-			currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * v * 0.1 + initX;
-			if (currX > w)
+			currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * Math::OSInt2Double(v) * 0.1 + initX;
+			if (currX > Math::UOSInt2Double(w))
 				break;
 
 			if (currX >= lastX + 20)
 			{
 				Text::StrInt32(sbuff, currV);
 				gimg->GetTextSize(f, sbuff, -1, sz);
-				gimg->DrawLine(currX, 0, currX, h - sz[1], p);
-				gimg->DrawString(currX - sz[0] * 0.5, h - sz[1], sbuff, f, b);
+				gimg->DrawLine(currX, 0, currX, Math::UOSInt2Double(h) - sz[1], p);
+				gimg->DrawString(currX - sz[0] * 0.5, Math::UOSInt2Double(h) - sz[1], sbuff, f, b);
 				lastX = currX;
 			}
 			currV++;

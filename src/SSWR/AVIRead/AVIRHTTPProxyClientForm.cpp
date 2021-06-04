@@ -104,8 +104,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj
 {
 	SSWR::AVIRead::AVIRHTTPProxyClientForm *me = (SSWR::AVIRead::AVIRHTTPProxyClientForm*)userObj;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (me->respChanged)
 	{
 		Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);

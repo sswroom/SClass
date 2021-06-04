@@ -115,7 +115,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
 					i = 10;
 					while (i-- > 0)
 					{
-						chk ^= buff[recvSize + i];
+						chk = (UInt8)(chk ^ buff[recvSize + i]);
 					}
 					if (chk == 0)
 					{

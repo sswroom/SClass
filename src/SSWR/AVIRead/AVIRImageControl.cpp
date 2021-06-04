@@ -178,7 +178,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		resizer.SetTargetWidth(this->previewSize);
 		resizer.SetTargetHeight(this->previewSize);
 		parsers = this->core->GetParserList();
-		OSInt currCnt = 0;
+		UOSInt currCnt = 0;
 		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
 			if (pt == IO::Path::PT_FILE)
@@ -709,22 +709,22 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			status->previewImg = this->deng->LoadImage(status->cacheFile);
 			if (status->previewImg)
 			{
-				status->previewImg2 = this->deng->CreateImage32(Math::Double2Int32(status->previewImg->GetWidth() * hdpi / ddpi), Math::Double2Int32(status->previewImg->GetHeight() * hdpi / ddpi), Media::AT_NO_ALPHA);
+				status->previewImg2 = this->deng->CreateImage32(Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 				this->UpdateImgPreview(status);
 			}
 		}
 		else if (status->previewImg2 == 0)
 		{
-			status->previewImg2 = this->deng->CreateImage32(Math::Double2Int32(status->previewImg->GetWidth() * hdpi / ddpi), Math::Double2Int32(status->previewImg->GetHeight() * hdpi / ddpi), Media::AT_NO_ALPHA);
+			status->previewImg2 = this->deng->CreateImage32(Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 			this->UpdateImgPreview(status);
 		}
-		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos), Math::OSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos + itemBH), Math::OSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
+		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos + itemBH), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
 		if (status->previewImg2)
 		{
 			status->previewImg2->SetHDPI(dimg->GetHDPI());
 			status->previewImg2->SetVDPI(dimg->GetVDPI());
-			dimg->DrawImagePt(status->previewImg2, Math::OSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double(si * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
+			dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double(si * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
 		}
 		if (status->fileName)
 		{

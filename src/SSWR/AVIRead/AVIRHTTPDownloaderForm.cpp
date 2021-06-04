@@ -60,8 +60,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	UTF8Char *sarr2[2];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->threadRunning = true;
 	sbuff = MemAlloc(UTF8Char, 65536);
 	while (!me->threadToStop)
@@ -168,8 +168,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	if (me->respHdrChanged)
 	{
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 
 void SSWR::AVIRead::AVIRHTTPDownloaderForm::ClearHeaders()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->respHeaders->GetCount();
 	while (i-- > 0)
 	{

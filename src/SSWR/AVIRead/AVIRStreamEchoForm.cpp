@@ -55,7 +55,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRStreamEchoForm *me = (SSWR::AVIRead::AVIRStreamEchoForm *)userObj;
 	UInt8 buff[2048];
-	OSInt recvSize;
+	UOSInt recvSize;
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{

@@ -44,8 +44,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 	{
 		IO::IStreamData *fd;
 		UTF8Char sbuff[512];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		IO::ParsedObject *pobj;
 		Bool found = false;
 		i = me->fileIndex + 1;

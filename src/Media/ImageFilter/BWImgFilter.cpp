@@ -11,7 +11,7 @@ Media::ImageFilter::BWImgFilter::~BWImgFilter()
 {
 }
 
-void Media::ImageFilter::BWImgFilter::ProcessImage(UInt8 *imgData, Int32 imgFormat, OSInt nBits, Media::PixelFormat pf, OSInt imgWidth, OSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
+void Media::ImageFilter::BWImgFilter::ProcessImage(UInt8 *imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
 {
 	if (!this->isEnable)
 		return;

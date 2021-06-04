@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(void *userOb
 	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log File");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		OSInt i = 0;
-		OSInt j = dlg->GetFileNameCount();
+		UOSInt i = 0;
+		UOSInt j = dlg->GetFileNameCount();
 		while (i < j)
 		{
 			me->LogFileLoad(dlg->GetFileNames(i));
@@ -132,8 +132,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 		UTF8Char *sarr[12];
 		UTF8Char *sarr2[7];
 		UInt8 buff[8];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		OSInt k;
 		SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
@@ -670,8 +670,8 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::DataStore()
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
 	IO::FileStream *fs;
 	IO::WriteCacheStream *cstm;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
 	{
@@ -711,7 +711,7 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::DataStore()
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendOSInt(this->dataList->GetCount());
+	sb.AppendUOSInt(this->dataList->GetCount());
 	sb.Append((const UTF8Char*)" Records");
 	this->lblInfo->SetText(sb.ToString());
 }
@@ -783,7 +783,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::~AVIRWiFiLogManagerForm()
 		this->DataStore();
 	}
 
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::DataEntry *entry;
 	i = this->dataList->GetCount();
 	while (i-- > 0)

@@ -50,18 +50,18 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping1Thread(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	Int32 respTime;
 	Int32 ttl;
-	WriteNInt32(buff1, status->ipStart);
-	WriteNInt32(buff2, status->ipEnd);
+	WriteNUInt32(buff1, status->ipStart);
+	WriteNUInt32(buff2, status->ipEnd);
 
 	while (buff1[3] <= buff2[3])
 	{
 		if (buff1[3] != 0 && buff1[3] != 255)
 		{
-			Net::SocketUtil::SetAddrInfoV4(&addr, ReadNInt32(buff1));
+			Net::SocketUtil::SetAddrInfoV4(&addr, ReadNUInt32(buff1));
 			if (status->me->sockf->IcmpSendEcho2(&addr, &respTime, &ttl))
 			{
 				result = MemAlloc(ScanResult, 1);
-				result->ip = ReadNInt32(buff1);
+				result->ip = ReadNUInt32(buff1);
 				result->respTime = respTime / 1000000.0;
 				result->mac[0] = 0;
 				result->mac[1] = 0;
@@ -92,11 +92,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping2Thread(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Net::SocketFactory::ErrorType et;
-	OSInt readSize;
+	UOSInt readSize;
 	ScanResult *result;
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
-	OSInt ipDataSize;
+	UOSInt ipDataSize;
 	while (!me->threadToStop)
 	{
 		readSize = me->sockf->UDPReceive(me->soc, readBuff, 4096, &addr, &port, &et);
@@ -118,11 +118,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping2Thread(void *userObj)
 				if (ipData[0] == 0 && ipDataSize >= 8)
 				{
 					Sync::MutexUsage mutUsage(me->resultMut);
-					result = me->results->Get(ReadMInt32(&readBuff[12]));
+					result = me->results->Get(ReadMUInt32(&readBuff[12]));
 					if (result == 0)
 					{
 						result = MemAlloc(ScanResult, 1);
-						result->ip = ReadNInt32(&readBuff[12]);
+						result->ip = ReadNUInt32(&readBuff[12]);
 						result->respTime = me->clk->GetTimeDiff();;
 						result->mac[0] = 0;
 						result->mac[1] = 0;
@@ -130,7 +130,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRIPScanForm::Ping2Thread(void *userObj)
 						result->mac[3] = 0;
 						result->mac[4] = 0;
 						result->mac[5] = 0;
-						me->results->Put(ReadMInt32(&readBuff[12]), result);
+						me->results->Put(ReadMUInt32(&readBuff[12]), result);
 					}
 					mutUsage.EndUse();
 				}
@@ -149,14 +149,14 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 	UInt8 packetBuff[64];
 	UTF8Char sbuff[32];
 	ScanResult *result;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
 	if (ip != 0)
 	{
 		me->ClearResults();
 		UInt32 *s;
-		WriteNInt32(buff, ip);
+		WriteNUInt32(buff, ip);
 		if (buff[0] == 192 && buff[1] == 168)
 		{
 		}
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 			buff[3] = 1;
 			while (buff[3] < 255)
 			{
-				Net::SocketUtil::SetAddrInfoV4(&addr, ReadNInt32(buff));
+				Net::SocketUtil::SetAddrInfoV4(&addr, ReadNUInt32(buff));
 				me->sockf->SendTo(s, packetBuff, 64, &addr, 0);
 				buff[3]++;
 			}
@@ -217,15 +217,15 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 			PingStatus *status = MemAlloc(PingStatus, (1 << THREADLEV));
 			NEW_CLASS(status[0].evt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRIPScanForm.OnStartClicked.evt"));
 			i = 0;
-			while (i < (1 << THREADLEV))
+			while (i < (UOSInt)(1 << THREADLEV))
 			{
 				status[i].me = me;
 				status[i].evt = status[0].evt;
 				status[i].ended = false;
 				buff[3] = (UInt8)(i << (8 - THREADLEV));
-				status[i].ipStart = ReadNInt32(buff);
-				buff[3] = buff[3] + (1 << (8 - THREADLEV)) - 1;
-				status[i].ipEnd = ReadNInt32(buff);
+				status[i].ipStart = ReadNUInt32(buff);
+				buff[3] = (UInt8)(buff[3] + (1 << (8 - THREADLEV)) - 1);
+				status[i].ipEnd = ReadNUInt32(buff);
 				Sync::Thread::Create(Ping1Thread, &status[i]);
 				i++;
 			}
@@ -288,8 +288,8 @@ void SSWR::AVIRead::AVIRIPScanForm::AppendMACs(UInt32 ip)
 	Net::ARPInfo *arp;
 	UInt8 mac[6];
 	UInt32 ipAddr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ScanResult *result;
 	Net::ARPInfo::GetARPInfoList(&arpList);
 	i = 0;
@@ -347,7 +347,7 @@ void SSWR::AVIRead::AVIRIPScanForm::ClearResults()
 {
 	Data::ArrayList<ScanResult*> *resultList = this->results->GetValues();
 	ScanResult *result;
-	OSInt i = resultList->GetCount();
+	UOSInt i = resultList->GetCount();
 	while (i-- > 0)
 	{
 		result = resultList->GetItem(i);
@@ -364,7 +364,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	NEW_CLASS(this->resultMut, Sync::Mutex());
-	NEW_CLASS(this->results, Data::Int32Map<ScanResult*>());
+	NEW_CLASS(this->results, Data::UInt32Map<ScanResult*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
@@ -389,9 +389,9 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(&connInfoList);
 	i = 0;

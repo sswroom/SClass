@@ -55,9 +55,9 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	Data::ArrayList<const UTF8Char *> *audDevList = this->core->GetAudioDevices();
 	const UTF8Char *devName = audDevList->GetItem(0);
 	Bool found = false;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UTF8Char sbuff[256];
 
 	this->lbDevice->AddItem((const UTF8Char*)"Default", 0);

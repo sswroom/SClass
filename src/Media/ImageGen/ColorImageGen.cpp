@@ -23,10 +23,10 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;
 	UInt8 *imgPtr2;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	UInt16 c[4];
 	OSInt bpl = width << 3;
 	if (width < 8 || height < 4)

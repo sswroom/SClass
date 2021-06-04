@@ -196,9 +196,9 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Surface size changed to ");
-			sb.AppendOSInt(data->me->surfaceW);
+			sb.AppendUOSInt(data->me->surfaceW);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(data->me->surfaceH);
+			sb.AppendUOSInt(data->me->surfaceH);
 			sb.Append((const UTF8Char*)", hMon=");
 			sb.AppendOSInt((OSInt)data->me->GetHMonitor());
 			data->me->debugWriter->WriteLine(sb.ToString());

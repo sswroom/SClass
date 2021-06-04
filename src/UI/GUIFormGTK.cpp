@@ -177,7 +177,7 @@ UI::GUIForm::~GUIForm()
 	GUITimer *tmr;
 	if (this->timers != 0)
 	{
-		OSInt i;
+		UOSInt i;
 		i = this->timers->GetCount();
 		while (i-- > 0)
 		{
@@ -276,7 +276,7 @@ void UI::GUIForm::MakeForeground()
 void UI::GUIForm::Close()
 {
 	gtk_window_close((GtkWindow*)this->hwnd);
-	OSInt i;
+	UOSInt i;
 	i = this->closeHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -345,7 +345,7 @@ void UI::GUIForm::RemoveTimer(UI::GUITimer *tmr)
 {
 	if (this->timers)
 	{
-		OSInt i;
+		UOSInt i;
 		i = this->timers->GetCount();	
 		while (i-- > 0)
 		{
@@ -567,7 +567,7 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->menu->SetDPI(hdpi, ddpi);
 	}*/
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children->GetCount();
 	while (i-- > 0)
 	{
 		this->children->GetItem(i)->SetDPI(hdpi, ddpi);
@@ -577,7 +577,7 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIForm::EventClosed()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->closeHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -611,9 +611,9 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(const UTF8Char **files, OSInt nFiles)
+void UI::GUIForm::OnFileDrop(const UTF8Char **files, UOSInt nFiles)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->dropFileHandlers->GetCount();
 	while (i-- > 0)
 	{

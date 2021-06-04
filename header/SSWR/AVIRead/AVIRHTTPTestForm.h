@@ -37,13 +37,13 @@ namespace SSWR
 			Sync::Mutex *connMut;
 			Data::ArrayList<const UTF8Char *> *connURLs;
 			const Char *method;
-			OSInt postSize;
+			UInt32 postSize;
 			UOSInt connCurrIndex;
-			Int32 connLeftCnt;
-			Int32 threadCnt;
-			Int32 threadCurrCnt;
-			Int32 connCnt;
-			Int32 failCnt;
+			UInt32 connLeftCnt;
+			UInt32 threadCnt;
+			UInt32 threadCurrCnt;
+			UInt32 connCnt;
+			UInt32 failCnt;
 			Bool kaConn;
 			Double t;
 

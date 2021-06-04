@@ -31,12 +31,12 @@ Media::GRFilter::~GRFilter()
 	DEL_CLASS(this->layers);
 }
 
-OSInt Media::GRFilter::GetLayerCount()
+UOSInt Media::GRFilter::GetLayerCount()
 {
 	return this->layers->GetCount();
 }
 
-OSInt Media::GRFilter::AddLayer()
+UOSInt Media::GRFilter::AddLayer()
 {
 	LayerSetting *layer;
 	layer = MemAlloc(LayerSetting, 1);
@@ -47,7 +47,7 @@ OSInt Media::GRFilter::AddLayer()
 	return this->layers->Add(layer);
 }
 
-Bool Media::GRFilter::RemoveLayer(OSInt layer)
+Bool Media::GRFilter::RemoveLayer(UOSInt layer)
 {
 	LayerSetting *lyr = this->layers->RemoveAt(layer);
 	if (lyr)
@@ -61,7 +61,7 @@ Bool Media::GRFilter::RemoveLayer(OSInt layer)
 	}
 }
 
-void Media::GRFilter::SetParameter(OSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status)
+void Media::GRFilter::SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status)
 {
 	LayerSetting *lyr = this->layers->GetItem(layer);
 	if (lyr)
@@ -73,7 +73,7 @@ void Media::GRFilter::SetParameter(OSInt layer, OSInt hOfst, OSInt vOfst, OSInt 
 	}
 }
 
-Bool Media::GRFilter::GetParameter(OSInt layer, OSInt *hOfst, OSInt *vOfst, OSInt *level, Int32 *status)
+Bool Media::GRFilter::GetParameter(UOSInt layer, OSInt *hOfst, OSInt *vOfst, OSInt *level, Int32 *status)
 {
 	LayerSetting *lyr = this->layers->GetItem(layer);
 	if (lyr)
@@ -102,10 +102,10 @@ Bool Media::GRFilter::GetParameter(OSInt layer, OSInt *hOfst, OSInt *vOfst, OSIn
 	}
 }
 
-void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl)
+void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	LayerSetting *lyr;
 	UInt8 *tmpPtr1 = srcPtr;
 	UInt8 *tmpPtr2 = destPtr;
@@ -141,10 +141,10 @@ void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, OSInt width,
 	}
 }
 
-void Media::GRFilter::ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl)
+void Media::GRFilter::ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	LayerSetting *lyr;
 	UInt8 *tmpPtr1 = srcPtr;
 	UInt8 *tmpPtr2 = destPtr;

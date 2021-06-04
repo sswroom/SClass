@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 
 	IO::HIDInfo::GetHIDList(this->hidList);
 	void **arr = (void**)this->hidList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, j - 1);
+	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
 	
 	i = 0;
 	j = this->hidList->GetCount();

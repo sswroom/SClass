@@ -20,7 +20,7 @@ Win32::Clipboard::~Clipboard()
 }
 
 
-OSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<Int32> *dataTypes)
+UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 {
 	if (!this->succ)
 		return 0;
@@ -29,7 +29,7 @@ OSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<Int32> *dataTypes)
 	{
 		return false;
 	}
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	if (gtk_clipboard_wait_is_text_available(clipboard))
 	{
 		dataTypes->Add(1);
@@ -48,7 +48,7 @@ OSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<Int32> *dataTypes)
 		i = 0;
 		while (i < nTargets)
 		{
-			dataTypes->Add(128 + i);
+			dataTypes->Add(128 + (UInt32)i);
 			ret++;
 			i++;
 		}
@@ -111,7 +111,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 							if (j >= 0)
 							{
 								sb.ClearStr();
-								sb.AppendC((const UTF8Char*)&rawdata[i], j);
+								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)j);
 								i += j + 1;
 								if (sb.StartsWith((const UTF8Char*)"file:///"))
 								{
@@ -126,7 +126,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 							else
 							{
 								sb.ClearStr();
-								sb.AppendC((const UTF8Char*)&rawdata[i], leng - i);
+								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)(leng - i));
 								if (sb.StartsWith((const UTF8Char*)"file:///"))
 								{
 									Text::URLString::GetURLFilePath(sbuff, sb.ToString());
@@ -153,7 +153,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 
 void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileNames)
 {
-	OSInt i = fileNames->GetCount();;
+	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)
 	{
 		Text::StrDelNew(fileNames->GetItem(i));
@@ -193,19 +193,19 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 						const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
 						if (Text::StrEquals(typeName, "TIMESTAMP") && leng == 8)
 						{
-							sb->AppendHexBuff(rawdata, leng, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LBT_CRLF);
 /*							Data::DateTime dt;
 							dt.SetUnixTimestamp(ReadInt64(rawdata));
 							sb->Append(&dt);*/
 						}
 						else if (Text::StrEquals(typeName, "x-special/gnome-copied-files"))
 						{
-							sb->AppendHexBuff(rawdata, leng, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LBT_CRLF);
 //							sb->Append((const UTF8Char*)rawdata, leng);
 						}
 						else
 						{
-							sb->AppendHexBuff(rawdata, leng, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LBT_CRLF);
 						}
 					}
 					gtk_selection_data_free(data);
@@ -270,8 +270,8 @@ Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
 	if (clipboard == 0)
 		return false;
 
-	OSInt len = Text::StrCharCnt(s);
-	gtk_clipboard_set_text(clipboard, (const Char*)s, len);
+	UOSInt len = Text::StrCharCnt(s);
+	gtk_clipboard_set_text(clipboard, (const Char*)s, (gint)len);
 	return true;
 }
 
@@ -293,7 +293,7 @@ Bool Win32::Clipboard::GetString(void *hWndOwner, Text::StringBuilderUTF *sb)
 	}
 }
 
-UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, OSInt buffSize)
+UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
 {
 	if (fmtId >= 128)
 	{

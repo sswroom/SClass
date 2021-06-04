@@ -375,10 +375,10 @@ UOSInt UI::GUIListView::GetCount()
 	return data->rows->GetCount();
 }
 
-void UI::GUIListView::SetSelectedIndex(OSInt index)
+void UI::GUIListView::SetSelectedIndex(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	if (index == -1)
+	if (index == (UOSInt)-1)
 	{
 		//////////////////////
 		return;

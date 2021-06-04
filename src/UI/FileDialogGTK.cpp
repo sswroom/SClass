@@ -21,7 +21,7 @@ void UI::FileDialog::ClearFileNames()
 
 UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
 {
-	OSInt i;
+	UOSInt i;
 	WChar buff[256];
 	WChar *sptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
@@ -47,7 +47,7 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 
 UI::FileDialog::~FileDialog()
 {
-	OSInt i;
+	UOSInt i;
 	IO::Registry::CloseRegistry(this->reg);
 	MemFree(this->dialogName);
 	if (this->lastName)

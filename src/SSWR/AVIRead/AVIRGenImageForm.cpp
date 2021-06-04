@@ -8,12 +8,12 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGenImageForm *me = (SSWR::AVIRead::AVIRGenImageForm*)userObj;
 	UTF8Char sbuff[256];
-	Int32 width;
-	Int32 height;
+	UInt32 width;
+	UInt32 height;
 	me->txtWidth->GetText(sbuff);
-	width = Text::StrToInt32(sbuff);
+	width = Text::StrToUInt32(sbuff);
 	me->txtHeight->GetText(sbuff);
-	height = Text::StrToInt32(sbuff);
+	height = Text::StrToUInt32(sbuff);
 	if (width <= 0 || height <= 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing output size", (const UTF8Char *)"Error", me);
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 	OSInt i = me->cboGenerator->GetSelectedIndex();
 	if (i >= 0)
 	{
-		Media::ImageGenerator *imgGen = (Media::ImageGenerator*)me->cboGenerator->GetItem(i);
+		Media::ImageGenerator *imgGen = (Media::ImageGenerator*)me->cboGenerator->GetItem((UOSInt)i);
 		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)(OSInt)me->cboColorProfile->GetSelectedItem());
 
 		Media::Image *img = imgGen->GenerateImage(&colorProfile, width, height);

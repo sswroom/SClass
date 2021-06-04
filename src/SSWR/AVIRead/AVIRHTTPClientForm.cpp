@@ -11,6 +11,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/IMIMEObj.h"
+#include "Text/JSONBuilder.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/URLString.h"
@@ -196,6 +197,25 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		me->reqBody = MemAlloc(UInt8, buffSize);
 		me->reqBodyLen = buffSize;
 		MemCopyNO((UInt8*)me->reqBody, reqBuff, buffSize);
+	}
+	else if (me->cboPostFormat->GetSelectedIndex() == 1)
+	{
+		UOSInt i = 0;
+		UOSInt j = me->params->GetCount();
+		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+		Text::StringBuilderUTF8 sb2;
+		Text::JSONBuilder *json;
+		NEW_CLASS(json, Text::JSONBuilder(&sb2, Text::JSONBuilder::OT_OBJECT));
+		while (i < j)
+		{
+			param = me->params->GetItem(i);
+			json->ObjectAddStrUTF8(param->name, param->value);
+			i++;
+		}
+		DEL_CLASS(json);
+		me->reqBody = Text::StrCopyNew(sb2.ToString());
+		me->reqBodyLen = sb2.GetCharCnt();
+		me->reqBodyType = Text::StrCopyNew((const UTF8Char*)"application/json");
 	}
 	else
 	{
@@ -936,7 +956,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->tpRequest = this->tcMain->AddTabPage((const UTF8Char*)"Request");
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
-	this->pnlRequest->SetRect(0, 0, 100, 196, false);
+	this->pnlRequest->SetRect(0, 0, 100, 220, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
@@ -987,8 +1007,15 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Parse"));
 	this->btnDataStr->SetRect(504, 148, 75, 23, false);
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
+	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Post Format"));
+	this->lblPostFormat->SetRect(4, 172, 100, 23, false);
+	NEW_CLASS(this->cboPostFormat, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboPostFormat->SetRect(104, 172, 150, 23, false);
+	this->cboPostFormat->AddItem((const UTF8Char*)"application/x-www-form-urlencoded", 0);
+	this->cboPostFormat->AddItem((const UTF8Char*)"application/json", 0);
+	this->cboPostFormat->SetSelectedIndex(0);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
-	this->btnRequest->SetRect(104, 172, 75, 23, false);
+	this->btnRequest->SetRect(104, 196, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);

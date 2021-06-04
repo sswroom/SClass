@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(void *userObj)
 	OSInt i = me->cboAlgorithm->GetSelectedIndex();
 	if (i >= 0)
 	{
-		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboAlgorithm->GetItem(i));
+		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboAlgorithm->GetItem((UOSInt)i));
 		if (hash)
 		{
 			Text::StrDouble(sbuff, HashTestSpeed(hash));

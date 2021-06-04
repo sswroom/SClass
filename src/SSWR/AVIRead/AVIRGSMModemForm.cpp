@@ -242,9 +242,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 {
 	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)(OSInt)this->cboPhoneStorage->GetItem(this->cboPhoneStorage->GetSelectedIndex());
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Data::ArrayList<IO::GSMModemController::PBEntry*> phoneList;
 	IO::GSMModemController::PBEntry *ent;
 	this->modem->PBSetStorage(store);

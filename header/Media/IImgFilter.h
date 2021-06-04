@@ -8,7 +8,7 @@ namespace Media
 	{
 	public:
 		virtual ~IImgFilter(){}
-		virtual void ProcessImage(UInt8 *imgData, Int32 imgFormat, OSInt nBits, Media::PixelFormat pf, OSInt imgWidth, OSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst) = 0;
+		virtual void ProcessImage(UInt8 *imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst) = 0;
 	};
-};
+}
 #endif

@@ -809,7 +809,7 @@ void DasmX86_32_ParseModRMXMM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8
 	}
 }
 
-Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* sess, Int32 funcAddr, Int32 *outEsp)
+Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* sess, Int32 funcAddr, UInt32 *outEsp)
 {
 	Manage::DasmX86_32::DasmX86_32_Sess tmpSess;
 	Data::ArrayListUInt32 callAddrs;
@@ -6742,7 +6742,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else
 	{
-		Int32 outEsp;
+		UInt32 outEsp;
 		Int32 stackCnt = DasmX86_32_GetFuncStack(sess, addr, &outEsp);
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" ParamStack = ");
 		sess->sbuff = Text::StrInt32(sess->sbuff, stackCnt);
@@ -6861,19 +6861,19 @@ Bool __stdcall DasmX86_32_ea(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_eb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	Int32 addr = ((Int32)sess->regs.EIP) + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
-	Int32 addr2;
-	Int32 i;
+	UInt32 addr = (sess->regs.EIP) + 2 + (UInt32)(Int32)(Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
+	UInt32 addr2;
+	UOSInt i;
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp 0x");
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	sess->jmpAddrs->Add(addr);
-	addr2 = (Int32)sess->regs.EIP;
+	addr2 = sess->regs.EIP;
 
 	sess->endType = Manage::DasmX86_32::ET_JMP;
 	sess->retAddr = addr;
-	i = (Int32)sess->jmpAddrs->GetCount();
+	i = sess->jmpAddrs->GetCount();
 	while (i-- > 0)
 	{
 		addr = sess->jmpAddrs->GetItem(i);
@@ -7219,7 +7219,7 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		}
 		else
 		{
-			Int32 outEsp;
+			UInt32 outEsp;
 			Int32 stackCnt = DasmX86_32_GetFuncStack(sess, memVal, &outEsp);
 			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" (0x");
 			sess->sbuff = Text::StrHexVal32(sess->sbuff, memVal);
@@ -10802,15 +10802,15 @@ Bool __stdcall DasmX86_32_0f80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_0f81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	Int32 addr;
+	UInt32 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.EIP) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 2);
+		addr = (sess->regs.EIP) + 4 + (UInt32)(Int32)(Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 2);
 		sess->regs.EIP += 4;
 	}
 	else
 	{
-		addr = (sess->regs.EIP) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 2);
+		addr = (sess->regs.EIP) + 6 + (UInt32)(Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 2);
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
@@ -19210,7 +19210,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 	sess.stabesp = sess.regs.ESP;
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
-	*blockStart = (Int32)sess.regs.EIP;
+	*blockStart = sess.regs.EIP;
 
 	while (true)
 	{
@@ -19218,25 +19218,25 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 		Bool ret;
 
 		outStr->ClearStr();
-		outStr->AppendHex32((UInt32)sess.regs.ESP);
+		outStr->AppendHex32(sess.regs.ESP);
 		outStr->Append((const UTF8Char*)" ");
-		outStr->AppendHex32((UInt32)sess.regs.EBP);
+		outStr->AppendHex32(sess.regs.EBP);
 		outStr->Append((const UTF8Char*)" ");
-		outStr->AppendHex32((UInt32)sess.regs.EIP);
+		outStr->AppendHex32(sess.regs.EIP);
 		outStr->Append((const UTF8Char*)" ");
 		if (fullRegs)
 		{
-			outStr->AppendHex32((UInt32)sess.regs.EAX);
+			outStr->AppendHex32(sess.regs.EAX);
 			outStr->Append((const UTF8Char*)" ");
-			outStr->AppendHex32((UInt32)sess.regs.EDX);
+			outStr->AppendHex32(sess.regs.EDX);
 			outStr->Append((const UTF8Char*)" ");
-			outStr->AppendHex32((UInt32)sess.regs.ECX);
+			outStr->AppendHex32(sess.regs.ECX);
 			outStr->Append((const UTF8Char*)" ");
-			outStr->AppendHex32((UInt32)sess.regs.EBX);
+			outStr->AppendHex32(sess.regs.EBX);
 			outStr->Append((const UTF8Char*)" ");
-			outStr->AppendHex32((UInt32)sess.regs.ESI);
+			outStr->AppendHex32(sess.regs.ESI);
 			outStr->Append((const UTF8Char*)" ");
-			outStr->AppendHex32((UInt32)sess.regs.EDI);
+			outStr->AppendHex32(sess.regs.EDI);
 			outStr->Append((const UTF8Char*)" ");
 		}
 		sess.sbuff = sbuff;
@@ -19250,7 +19250,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 		}
 		if (!ret)
 		{
-			OSInt buffSize;
+			UOSInt buffSize;
 			outStr->Append((const UTF8Char*)"Unknown opcode ");
 			buffSize = sess.memReader->ReadMemory(sess.regs.EIP, buff, 16);
 			if (buffSize > 0)
@@ -19266,7 +19266,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 		writer->Write(outStr->ToString());
 		if (sess.endType == Manage::DasmX86_32::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.EIP)
 		{
-			OSInt i;
+			UOSInt i;
 			UInt32 minAddr = 0xffffffff;
 			UInt32 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -19378,7 +19378,7 @@ Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF *outStr, Manage::Addr
 		if (sess.endType != Manage::DasmX86_32::ET_NOT_END)
 		{
 			*currEip = sess.retAddr;
-			*blockEnd = (Int32)sess.regs.EIP;
+			*blockEnd = sess.regs.EIP;
 			return true;
 		}
 		sess.lastStatus = sess.thisStatus;
@@ -19444,7 +19444,7 @@ UTF8Char *Manage::DasmX86_32::DasmNext(void *sess, UTF8Char *buff)
 	if (!ret)
 	{
 		UInt8 cbuff[16];
-		OSInt buffSize;
+		UOSInt buffSize;
 		sptr = Text::StrConcat(buff, (const UTF8Char*)"Unknown opcode ");
 		buffSize = ses->memReader->ReadMemory(ses->regs.EIP, cbuff, 16);
 		if (buffSize > 0)
@@ -19463,7 +19463,7 @@ UTF8Char *Manage::DasmX86_32::DasmNext(void *sess, UTF8Char *buff)
 		return sptr;
 	}
 	ses->lastStatus = ses->thisStatus;
-	ses->thisStatus = ses->thisStatus & 0x80000000;
+	ses->thisStatus = ses->thisStatus & (Int32)0x80000000;
 	return sptr;
 }
 

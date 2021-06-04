@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(void *userObj)
 	}
 	else
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Net::WirelessLANIE *ie;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
@@ -83,7 +83,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			MemCopyNO(&id[2], bss->GetMAC(), 6);
 			id[0] = 0;
 			id[1] = 0;
-			imac = ReadMInt64(id);
+			imac = ReadMUInt64(id);
 
 			this->lvWifi->AddItem(ssid, bss);
 			Text::StrInt32(sbuff, bss->GetPHYId());
@@ -132,7 +132,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 void SSWR::AVIRead::AVIRWifiScanForm::WifiClear()
 {
 	Net::WirelessLAN::BSSInfo *bss;
-	OSInt i = this->lvWifi->GetCount();
+	UOSInt i = this->lvWifi->GetCount();
 	while (i-- > 0)
 	{
 		bss = (Net::WirelessLAN::BSSInfo*)this->lvWifi->GetItem(i);
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	Data::ArrayList<Net::WirelessLAN::Interface*> interfList;
 	this->wlan->GetInterfaces(&interfList);
 	this->wlanInterf = interfList.GetItem(0);
-	OSInt i = interfList.GetCount();
+	UOSInt i = interfList.GetCount();
 	while (i-- > 1)
 	{
 		Net::WirelessLAN::Interface *interf = interfList.GetItem(i);

@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		UOSInt maxFrameSize;
 		sb.Append((const UTF8Char*)"Media Type = Video\r\n");
 		sb.Append((const UTF8Char*)"Frame Count = ");
-		sb.AppendOSInt(videoSrc->GetFrameCount());
+		sb.AppendUOSInt(videoSrc->GetFrameCount());
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Stream Time = ");
 		me->AppendTime(&sb, videoSrc->GetStreamTime());
@@ -270,7 +270,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 
 	this->lbStream->ClearItems();
 	this->ClearDecode();
-	OSInt i;
+	UOSInt i;
 	Int32 syncTime;
 	Text::StringBuilderUTF8 sb;
 	Media::IMediaSource *mediaSrc;

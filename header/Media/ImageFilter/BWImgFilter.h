@@ -4,10 +4,10 @@
 
 extern "C"
 {
-	void BWImgFilter_ProcYUY2(UInt8 *imgData, OSInt pxCnt);
-	void BWImgFilter_ProcUYVY(UInt8 *imgData, OSInt pxCnt);
-	void BWImgFilter_ProcAYUV(UInt8 *imgData, OSInt pxCnt);
-	void BWImgFilter_ProcY416(UInt8 *imgData, OSInt pxCnt);
+	void BWImgFilter_ProcYUY2(UInt8 *imgData, UOSInt pxCnt);
+	void BWImgFilter_ProcUYVY(UInt8 *imgData, UOSInt pxCnt);
+	void BWImgFilter_ProcAYUV(UInt8 *imgData, UOSInt pxCnt);
+	void BWImgFilter_ProcY416(UInt8 *imgData, UOSInt pxCnt);
 }
 
 namespace Media
@@ -22,11 +22,11 @@ namespace Media
 			BWImgFilter(Bool enable);
 			virtual ~BWImgFilter();
 
-			virtual void ProcessImage(UInt8 *imgData, Int32 imgFormat, OSInt nBits, Media::PixelFormat pf, OSInt imgWidth, OSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
+			virtual void ProcessImage(UInt8 *imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
 
 			Bool IsEnabled();
 			void SetEnabled(Bool enable);
 		};
-	};
-};
+	}
+}
 #endif

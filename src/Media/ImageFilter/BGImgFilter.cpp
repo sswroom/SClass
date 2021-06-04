@@ -23,9 +23,9 @@ Media::ImageFilter::BGImgFilter::~BGImgFilter()
 	}
 }
 
-void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgFormat, OSInt nBits, Media::PixelFormat pf, OSInt imgWidth, OSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
+void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
 {
-	OSInt imgSize;
+	UOSInt imgSize;
 	if (this->toCreateBG)
 	{
 		this->toCreateBG = false;
@@ -36,51 +36,51 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 		}
 		imgSize = 0;
 
-		if (imgFormat == *(Int32*)"NV12")
+		if (imgFormat == *(UInt32*)"NV12")
 		{
 			imgSize = (imgWidth * imgHeight) + (imgWidth >> 1) * (imgHeight >> 1) * 2;
 		}
-		else if (imgFormat == *(Int32*)"YV12")
+		else if (imgFormat == *(UInt32*)"YV12")
 		{
 			imgSize = (imgWidth * imgHeight) + (imgWidth >> 1) * (imgHeight >> 1) * 2;
 		}
-		else if (imgFormat == *(Int32*)"I420")
+		else if (imgFormat == *(UInt32*)"I420")
 		{
 			imgSize = (imgWidth * imgHeight) + (imgWidth >> 1) * (imgHeight >> 1) * 2;
 		}
-		else if (imgFormat == *(Int32*)"YVU9")
+		else if (imgFormat == *(UInt32*)"YVU9")
 		{
 			imgSize = (imgWidth * imgHeight) + (imgWidth >> 2) * (imgHeight >> 2) * 2;
 		}
-		else if (imgFormat == *(Int32*)"YUY2")
+		else if (imgFormat == *(UInt32*)"YUY2")
 		{
 			imgSize = (imgWidth * imgHeight) * 2;
 		}
-		else if (imgFormat == *(Int32*)"UYVY" || imgFormat == *(Int32*)"Y422" || imgFormat == *(Int32*)"UYNV" || imgFormat == *(Int32*)"HDYC")
+		else if (imgFormat == *(UInt32*)"UYVY" || imgFormat == *(UInt32*)"Y422" || imgFormat == *(UInt32*)"UYNV" || imgFormat == *(UInt32*)"HDYC")
 		{
 			imgSize = (imgWidth * imgHeight) * 2;
 		}
-		else if (imgFormat == *(Int32*)"AYUV")
+		else if (imgFormat == *(UInt32*)"AYUV")
 		{
 			imgSize = (imgWidth * imgHeight) * 4;
 		}
-		else if (imgFormat == *(Int32*)"P010")
+		else if (imgFormat == *(UInt32*)"P010")
 		{
 			imgSize = ((imgWidth * imgHeight) + (imgWidth >> 1) * (imgHeight >> 1) * 2) * 2;
 		}
-		else if (imgFormat == *(Int32*)"P016")
+		else if (imgFormat == *(UInt32*)"P016")
 		{
 			imgSize = ((imgWidth * imgHeight) + (imgWidth >> 1) * (imgHeight >> 1) * 2) * 2;
 		}
-		else if (imgFormat == *(Int32*)"P210")
+		else if (imgFormat == *(UInt32*)"P210")
 		{
 			imgSize = ((imgWidth * imgHeight) + (imgWidth >> 1) * imgHeight * 2) * 2;
 		}
-		else if (imgFormat == *(Int32*)"P216")
+		else if (imgFormat == *(UInt32*)"P216")
 		{
 			imgSize = ((imgWidth * imgHeight) + (imgWidth >> 1) * imgHeight * 2) * 2;
 		}
-		else if (imgFormat == *(Int32*)"Y416")
+		else if (imgFormat == *(UInt32*)"Y416")
 		{
 			imgSize = (imgWidth * imgHeight) * 8;
 		}
@@ -101,20 +101,10 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 		return;
 	}
 
-	if (imgFormat == *(Int32*)"DIBS")
+	if (imgFormat == *(UInt32*)"DIBS")
 	{
 	}
-	else if (imgFormat == *(Int32*)"NV12")
-	{
-		if (this->isAbsolute)
-		{
-		}
-		else
-		{
-			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
-		}
-	}
-	else if (imgFormat == *(Int32*)"YV12")
+	else if (imgFormat == *(UInt32*)"NV12")
 	{
 		if (this->isAbsolute)
 		{
@@ -124,7 +114,7 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
 		}
 	}
-	else if (imgFormat == *(Int32*)"I420")
+	else if (imgFormat == *(UInt32*)"YV12")
 	{
 		if (this->isAbsolute)
 		{
@@ -134,7 +124,17 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
 		}
 	}
-	else if (imgFormat == *(Int32*)"YVU9")
+	else if (imgFormat == *(UInt32*)"I420")
+	{
+		if (this->isAbsolute)
+		{
+		}
+		else
+		{
+			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
+		}
+	}
+	else if (imgFormat == *(UInt32*)"YVU9")
 	{
 		if (this->isAbsolute)
 		{
@@ -144,7 +144,7 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight + (imgWidth >> 2) * (imgHeight >> 2) * 2);
 		}
 	}
-	else if (imgFormat == *(Int32*)"YUY2")
+	else if (imgFormat == *(UInt32*)"YUY2")
 	{
 		if (this->isAbsolute)
 		{
@@ -155,7 +155,7 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight * 2);
 		}
 	}
-	else if (imgFormat == *(Int32*)"UYVY" || imgFormat == *(Int32*)"Y422" || imgFormat == *(Int32*)"UYNV" || imgFormat == *(Int32*)"HDYC")
+	else if (imgFormat == *(UInt32*)"UYVY" || imgFormat == *(UInt32*)"Y422" || imgFormat == *(UInt32*)"UYNV" || imgFormat == *(UInt32*)"HDYC")
 	{
 		if (this->isAbsolute)
 		{
@@ -166,7 +166,7 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight * 2);
 		}
 	}
-	else if (imgFormat == *(Int32*)"AYUV")
+	else if (imgFormat == *(UInt32*)"AYUV")
 	{
 		if (this->isAbsolute)
 		{
@@ -177,19 +177,19 @@ void Media::ImageFilter::BGImgFilter::ProcessImage(UInt8 *imgData, Int32 imgForm
 			BGImgFilter_DiffYUV8(imgData, this->bgData, imgWidth * imgHeight * 4);
 		}
 	}
-	else if (imgFormat == *(Int32*)"P010")
+	else if (imgFormat == *(UInt32*)"P010")
 	{
 	}
-	else if (imgFormat == *(Int32*)"P016")
+	else if (imgFormat == *(UInt32*)"P016")
 	{
 	}
-	else if (imgFormat == *(Int32*)"P210")
+	else if (imgFormat == *(UInt32*)"P210")
 	{
 	}
-	else if (imgFormat == *(Int32*)"P216")
+	else if (imgFormat == *(UInt32*)"P216")
 	{
 	}
-	else if (imgFormat == *(Int32*)"Y416")
+	else if (imgFormat == *(UInt32*)"Y416")
 	{
 	}
 }

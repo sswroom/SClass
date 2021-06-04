@@ -33,11 +33,11 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		Media::IVideoCapture::VideoFormat fmts[80];
 		CaptureFormat *cfmt;
-		OSInt bestSize = 0;
+		UOSInt bestSize = 0;
 		UInt32 bestFmt = 0;
-		OSInt bestBPP = 0;
-		OSInt bestIndex = 0;
-		OSInt currSize;
+		UOSInt bestBPP = 0;
+		UOSInt bestIndex = 0;
+		UOSInt currSize;
 		UOSInt fmtCnt;
 		UOSInt i;
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
@@ -83,19 +83,19 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			}
 			
 			sb.ClearStr();
-			sb.AppendOSInt(cfmt->width);
+			sb.AppendUOSInt(cfmt->width);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(cfmt->height);
+			sb.AppendUOSInt(cfmt->height);
 			sb.Append((const UTF8Char*)" (");
 			if (cfmt->fourcc)
 			{
 				UInt8 fcc[4];
-				*(Int32*)&fcc = cfmt->fourcc;
+				*(UInt32*)&fcc = cfmt->fourcc;
 				sb.AppendC((const UTF8Char*)fcc, 4);
 			}
 			else
 			{
-				sb.AppendI32(cfmt->bpp);
+				sb.AppendU32(cfmt->bpp);
 				sb.Append((const UTF8Char*)" bits RGB");
 			}
 			sb.Append((const UTF8Char*)")");
@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			me->cboFormat->AddItem(sb.ToString(), cfmt);
 			me->currFormats->Add(cfmt);
 
-			devInfo.AppendOSInt(cfmt->width);
+			devInfo.AppendUOSInt(cfmt->width);
 			devInfo.Append((const UTF8Char*)" x ");
-			devInfo.AppendOSInt(cfmt->height);
+			devInfo.AppendUOSInt(cfmt->height);
 			devInfo.Append((const UTF8Char*)" (");
 			if (cfmt->fourcc)
 			{
@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			}
 			else
 			{
-				devInfo.AppendI32(cfmt->bpp);
+				devInfo.AppendU32(cfmt->bpp);
 				devInfo.Append((const UTF8Char*)" bits RGB");
 			}
 			devInfo.Append((const UTF8Char*)")");
@@ -220,9 +220,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userObj;
 	UTF8Char sbuff[32];
-	Text::StrInt32(sbuff, me->frameCnt);
+	Text::StrUInt32(sbuff, me->frameCnt);
 	me->txtFrameCnt->SetText(sbuff);
-	Text::StrInt32(sbuff, me->saveCnt);
+	Text::StrUInt32(sbuff, me->saveCnt);
 	me->txtSaveCnt->SetText(sbuff);
 }
 

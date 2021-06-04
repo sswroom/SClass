@@ -50,13 +50,13 @@ namespace SSWR
 			Media::StaticImage *previewImage;
 			Media::StaticImage *filteredImage;
 			Bool initPos;
-			OSInt selCnt;
+			UOSInt selCnt;
 
 			static void __stdcall OnFolderClicked(void *userObj);
 			static void __stdcall OnImageChanged(void *userObj, const UTF8Char *fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting);
 			static void __stdcall OnColorChg(void *userObj, OSInt newPos);
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
-			static void __stdcall OnProgressUpdated(void *userObj, OSInt finCnt);
+			static void __stdcall OnProgressUpdated(void *userObj, UOSInt finCnt);
 
 			void UpdatePreview();
 		public:
@@ -66,6 +66,6 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

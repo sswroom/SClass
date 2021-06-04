@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 	Text::StringBuilderUTF8 sb;
 	me->cboName->GetText(&sb);
 	sb.Trim();
-	OSInt i = sb.GetCharCnt();
+	UOSInt i = sb.GetCharCnt();
 	while (i-- > 0)
 	{
 		if (sb.ToString()[i] >= 0x80)
@@ -61,15 +61,16 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	Data::ArrayListStrUTF8 strList;
 	UOSInt i;
 	UOSInt j;
+	OSInt si;
 	Net::MACInfo::MACEntry *macList = Net::MACInfo::GetMACEntryList(&i);
 	while (i-- > 0)
 	{
 		if (macList[i].name[0])
 		{
-			j = strList.SortedIndexOf((const UTF8Char*)macList[i].name);
-			if (j < 0)
+			si = strList.SortedIndexOf((const UTF8Char*)macList[i].name);
+			if (si < 0)
 			{
-				strList.Insert(~j, (const UTF8Char*)macList[i].name);
+				strList.Insert((UOSInt)~si, (const UTF8Char*)macList[i].name);
 			}
 		}
 	}

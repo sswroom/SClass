@@ -164,8 +164,8 @@ void UI::GUIMapTreeView::SetEnv(Map::MapEnv *env)
 
 void UI::GUIMapTreeView::UpdateTree()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ItemIndex *ind;
 
 	if (this->GetRootCount() > 0)

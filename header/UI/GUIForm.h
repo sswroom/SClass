@@ -133,7 +133,7 @@ namespace UI
 		virtual void OnFocus();
 		virtual void OnFocusLost();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
-		void OnFileDrop(const UTF8Char **files, OSInt nFiles);
+		void OnFileDrop(const UTF8Char **files, UOSInt nFiles);
 
 		void ToFullScn();
 		void FromFullScn();

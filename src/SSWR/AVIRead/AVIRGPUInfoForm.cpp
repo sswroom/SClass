@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(void *userObj)
 	{
 		WChar sbuff[32];
 		Double val;
-		OSInt i;
+		UOSInt i;
 		me->lvMain->ClearItems();
 		if (gpu->GetTemperature(&val))
 		{

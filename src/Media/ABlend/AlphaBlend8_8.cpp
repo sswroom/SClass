@@ -6,8 +6,8 @@
 
 extern "C"
 {
-	void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
-	void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
+	void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
+	void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 }
 
 void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
@@ -24,9 +24,9 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * currHeight;
+			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * currHeight;
+			this->stats[i].src = src + sbpl * (OSInt)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -68,9 +68,9 @@ void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * currHeight;
+			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * currHeight;
+			this->stats[i].src = src + sbpl * (OSInt)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;

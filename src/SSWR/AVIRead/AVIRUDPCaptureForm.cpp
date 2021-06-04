@@ -18,9 +18,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 port;
+		UInt16 port;
 		me->txtPort->GetText(&sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port", (const UTF8Char *)"Error", me);
 			return;
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		UTF8Char sbuff[32];
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
-		i = (OSInt)me->lbData->GetItem(i);
+		i = (OSInt)me->lbData->GetItem((UOSInt)i);
 		Sync::MutexUsage mutUsage(me->packetMut);
 		sb.Append((const UTF8Char*)"Recv Time: ");
 		dt.SetTicks(me->packets[i].recvTime);
@@ -129,10 +129,10 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, O
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
-	Int32 port = (Int32)(OSInt)me->lvPorts->GetItem(index);
+	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem(index);
 	if (port != 0)
 	{
-		Text::StrInt32(sbuff, port);
+		Text::StrUInt16(sbuff, port);
 		me->txtPort->SetText(sbuff);
 	}
 }

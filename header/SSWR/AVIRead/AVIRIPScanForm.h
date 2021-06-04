@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRIPSCANFORM
 #define _SM_SSWR_AVIREAD_AVIRIPSCANFORM
-#include "Data/Int32Map.h"
+#include "Data/UInt32Map.h"
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
@@ -29,7 +29,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
 			Sync::Mutex *resultMut;
-			Data::Int32Map<ScanResult*> *results;
+			Data::UInt32Map<ScanResult*> *results;
 			Manage::HiResClock *clk;
 			UInt32 *soc;
 			Bool threadRunning;

@@ -163,10 +163,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					MemCopyNO(&id[2], bss->GetMAC(), 6);
 					id[0] = 0;
 					id[1] = 0;
-					imac = ReadMInt64(id);
+					imac = ReadMUInt64(id);
 
 					k = me->lvCurrWifi->AddItem(ssid, 0);
-					Text::StrInt32(sbuff, bss->GetPHYId());
+					Text::StrUInt32(sbuff, bss->GetPHYId());
 					me->lvCurrWifi->SetSubItem(k, 1, sbuff);
 					Text::StrHexBytes(sbuff, &id[2], 6, ':');
 					me->lvCurrWifi->SetSubItem(k, 2, sbuff);
@@ -336,7 +336,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					}
 
 					WriteInt16(id, Math::Double2Int32(bss->GetFreq() / 1000000.0));
-					bsss = me->bssMap->Get(ReadInt64(id));
+					bsss = me->bssMap->Get(ReadUInt64(id));
 					if (bsss == 0)
 					{
 						bssListUpd = true;
@@ -353,7 +353,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						{
 							bsss->ssid = 0;
 						}
-						me->bssMap->Put(ReadInt64(id), bsss);
+						me->bssMap->Put(ReadUInt64(id), bsss);
 					}
 					else if (ssid && bsss->ssid == 0)
 					{
@@ -376,12 +376,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						MemCopyNO(&id[2], bss->GetMAC(), 6);
 						id[0] = 0;
 						id[1] = 0;
-						imac = ReadMInt64(id);
+						imac = ReadMUInt64(id);
 						if (imac != maxIMAC)
 						{
 							Bool found = false;
 							Int32 minRSSI;
-							OSInt minIndex;
+							UOSInt minIndex;
 							Int32 rssi1 = Math::Double2Int32(bss->GetRSSI());
 							minRSSI = 0;
 							minIndex = 0;
@@ -394,13 +394,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 									found = true;
 									if (rssi1 > rssi2)
 									{
-										wifiLog->neighbour[k] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+										wifiLog->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 									}
 									break;
 								}
 								else if (wifiLog->neighbour[k] == 0)
 								{
-									wifiLog->neighbour[k] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+									wifiLog->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 									found = true;
 									break;
 								}
@@ -415,7 +415,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 							if (!found && minRSSI < rssi1)
 							{
-								wifiLog->neighbour[minIndex] = imac | (((Int64)rssi1 & 0xff) << 48) | (((Int64)bss->GetLinkQuality()) << 56);
+								wifiLog->neighbour[minIndex] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
 							}
 						}
 						i++;
@@ -429,7 +429,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					DEL_CLASS(bss);
 				}
 
-				Text::StrOSInt(sbuff, j);
+				Text::StrUOSInt(sbuff, j);
 				me->txtCurrWifiCnt->SetText(sbuff);
 				me->wlanInterf->Scan();
 
@@ -437,7 +437,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 				if (bssListUpd)
 				{
-					Text::StrOSInt(sbuff, me->bssMap->GetCount());
+					Text::StrUOSInt(sbuff, me->bssMap->GetCount());
 					me->txtBSSCount->SetText(sbuff);
 				}
 			}
@@ -559,12 +559,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = (UOSInt)Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
@@ -664,12 +664,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt8 macBuff[8];
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = (UOSInt)Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
@@ -802,8 +802,8 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->captureFS = 0;
 	this->captureWriter = 0;
 	NEW_CLASS(this->captureMut, Sync::Mutex());
-	NEW_CLASS(this->bssMap, Data::Int64Map<BSSStatus*>());
-	NEW_CLASS(this->wifiLogMap, Data::Int64Map<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*>());
+	NEW_CLASS(this->bssMap, Data::UInt64Map<BSSStatus*>());
+	NEW_CLASS(this->wifiLogMap, Data::UInt64Map<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*>());
 	NEW_CLASS(this->sensorMgr, IO::SensorManager());
 	UOSInt i;
 	UOSInt j;

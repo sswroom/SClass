@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Double lat, Double lon, Doub
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write((UInt8*)buff, cptr - buff);
+	this->stm->Write((UInt8*)buff, (UOSInt)(cptr - buff));
 }
 
 Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(Char *ptr, Double lat)
@@ -273,7 +273,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(Char *ptr, Char *start)
 		c = c ^ *start++;
 	}
 	*ptr++ = '*';
-	return Text::StrHexByte(ptr, c);
+	return Text::StrHexByte(ptr, (UInt8)c);
 }
 
 SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)

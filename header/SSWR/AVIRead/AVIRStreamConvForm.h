@@ -47,8 +47,8 @@ namespace SSWR
 			Bool thread1Running;
 			Bool thread1ToStop;
 			Bool remoteClosed1;
-			Int64 stm1DataSize;
-			Int64 stm1LastSize;
+			UInt64 stm1DataSize;
+			UInt64 stm1LastSize;
 
 			Sync::Mutex *mut2;
 			IO::Stream *stm2;
@@ -56,8 +56,8 @@ namespace SSWR
 			Bool thread2Running;
 			Bool thread2ToStop;
 			Bool remoteClosed2;
-			Int64 stm2DataSize;
-			Int64 stm2LastSize;
+			UInt64 stm2DataSize;
+			UInt64 stm2LastSize;
 		private:
 			static void __stdcall OnStream1Clicked(void *userObj);
 			static void __stdcall OnStream2Clicked(void *userObj);
@@ -73,6 +73,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -53,7 +53,7 @@ namespace SSWR
 
 		public:
 			typedef void (__stdcall *DispImageChanged)(void *userObj, const UTF8Char *fileName, const ImageSetting *setting);
-			typedef void (__stdcall *ProgressUpdated)(void *userObj, OSInt finCnt);
+			typedef void (__stdcall *ProgressUpdated)(void *userObj, UOSInt finCnt);
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;

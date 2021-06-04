@@ -21,7 +21,7 @@ namespace SSWR
 			typedef struct
 			{
 				AVIRUDPTestForm *me;
-				OSInt reqCnt;
+				UOSInt reqCnt;
 				Net::SocketUtil::AddressInfo destAddr;
 				UInt16 destPort;
 				Int32 status; //0 = not running, 1 = idle, 2 = procesisng

@@ -35,7 +35,7 @@ namespace Media
 			Sync::Mutex *reqMut;
 			Data::LinkedList *fileNames;
 			Data::LinkedList *datas;
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			ThreadState *threadStates;
 			OSInt nextThread;
 

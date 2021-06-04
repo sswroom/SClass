@@ -174,7 +174,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 {
 	UInt8 *buff;
 	UOSInt buffSize;
-	OSInt j;
+	UOSInt j;
 	Sync::MutexUsage mutUsage(this->recvMut);
 	buff = this->recvBuff->GetBuff(&buffSize);
 	OSInt i = this->cboRecvType->GetSelectedIndex();
@@ -218,7 +218,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 	UOSInt buffSize;
 	buff = this->sendBuff->GetBuff(&buffSize);
 	OSInt i = this->cboSendType->GetSelectedIndex();
-	OSInt j;
+	UOSInt j;
 	if (buffSize > 0)
 	{
 		if (i == 0)

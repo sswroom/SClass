@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	OSInt selInd = me->lbImages->GetSelectedIndex();
-	Media::Image *img = me->imgList->GetImage(selInd, &me->currImgDelay);
+	Media::Image *img = me->imgList->GetImage((UOSInt)selInd, &me->currImgDelay);
 	me->pbImage->SetImage(img, false);
 	me->currImg = img;
 	me->UpdateInfo();
@@ -387,7 +387,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		else if (me->currImg->info->pf == Media::PF_LE_R5G5B5)
 		{
 			sb.Append((const UTF8Char*)", R");
-			UInt16 p = ReadInt16(pixel);
+			UInt16 p = ReadUInt16(pixel);
 			sb.AppendU32((p >> 10) & 0x1f);
 			sb.Append((const UTF8Char*)"G");
 			sb.AppendU32((p >> 5) & 0x1f);
@@ -400,7 +400,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		else if (me->currImg->info->pf == Media::PF_LE_R5G6B5)
 		{
 			sb.Append((const UTF8Char*)", R");
-			UInt16 p = ReadInt16(pixel);
+			UInt16 p = ReadUInt16(pixel);
 			sb.AppendU32((p >> 11) & 0x1f);
 			sb.Append((const UTF8Char*)"G");
 			sb.AppendU32((p >> 5) & 0x3f);
@@ -526,7 +526,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.Append((const UTF8Char*)", T = ");
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / me->currImg->info->dispWidth, imgY / me->currImg->info->dispHeight));
+			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(Math::UOSInt2Double(imgX / me->currImg->info->dispWidth), imgY / Math::UOSInt2Double(me->currImg->info->dispHeight)));
 		}
 		sb.Append((const UTF8Char*)", RGB(");
 		Text::SBAppendF64(&sb, dR);
@@ -652,11 +652,11 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	mnu->AddItem((const UTF8Char*)"To 8bpp (Palette)", MNU_FILTER_PAL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
-	OSInt i = 0;
-	OSInt j = this->imgList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->imgList->GetCount();
 	while (i < j)
 	{
-		Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Image"), (Int32)i);
+		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Image"), i);
 		this->lbImages->AddItem(sbuff, 0);
 		i++;
 	}
@@ -687,7 +687,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_COLOR:
 		{
 			OSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::Image *img = this->imgList->GetImage((UOSInt)selInd, 0);
 			if (img)
 			{
 				Media::StaticImage *buffImg = img->CreateStaticImage();
@@ -701,7 +701,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				
 				if (dr == UI::GUIForm::DR_OK)
 				{
-					this->imgList->ReplaceImage(selInd, prevImg);
+					this->imgList->ReplaceImage((UOSInt)selInd, prevImg);
 					DEL_CLASS(buffImg);
 				}
 				else
@@ -719,7 +719,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_GR:
 		{
 			OSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::Image *img = this->imgList->GetImage((UOSInt)selInd, 0);
 			if (img)
 			{
 				Bool valid = false;
@@ -741,7 +741,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					
 					if (dr == UI::GUIForm::DR_OK)
 					{
-						this->imgList->ReplaceImage(selInd, prevImg);
+						this->imgList->ReplaceImage((UOSInt)selInd, prevImg);
 						DEL_CLASS(buffImg);
 						img = prevImg;
 						this->pbImage->SetImage(prevImg, true);
@@ -762,7 +762,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_RESIZE:
 		{
 			OSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::Image *img = this->imgList->GetImage((UOSInt)selInd, 0);
 			if (img)
 			{
 				Bool valid = false;
@@ -781,7 +781,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					{
 						img = frm->GetNewImage();
 						this->pbImage->SetImage(0, false);
-						this->imgList->ReplaceImage(selInd, img);
+						this->imgList->ReplaceImage((UOSInt)selInd, img);
 						this->pbImage->SetImage(img, false);
 						this->currImg = img;
 						this->UpdateInfo();
@@ -797,7 +797,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_32BIT:
 		{
 			OSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::Image *img = this->imgList->GetImage((UOSInt)selInd, 0);
 			if (img)
 			{
 				Media::StaticImage *simg = img->CreateStaticImage();
@@ -806,7 +806,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				{
 					this->pbImage->SetImage(simg, true);
 				}
-				this->imgList->ReplaceImage(selInd, simg);
+				this->imgList->ReplaceImage((UOSInt)selInd, simg);
 				this->currImg = simg;
 				this->UpdateInfo();
 			}
@@ -815,7 +815,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_64BIT:
 		{
 			OSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::Image *img = this->imgList->GetImage((UOSInt)selInd, 0);
 			if (img)
 			{
 				Media::StaticImage *simg = img->CreateStaticImage();
@@ -824,7 +824,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				{
 					this->pbImage->SetImage(simg, true);
 				}
-				this->imgList->ReplaceImage(selInd, simg);
+				this->imgList->ReplaceImage((UOSInt)selInd, simg);
 				this->currImg = simg;
 				this->UpdateInfo();
 			}
@@ -833,7 +833,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_PAL8:
 		{
 			OSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::Image *img = this->imgList->GetImage((UOSInt)selInd, 0);
 			if (img)
 			{
 				Media::StaticImage *simg = img->CreateStaticImage();
@@ -843,7 +843,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					{
 						this->pbImage->SetImage(simg, true);
 					}
-					this->imgList->ReplaceImage(selInd, simg);
+					this->imgList->ReplaceImage((UOSInt)selInd, simg);
 					this->currImg = simg;
 					this->UpdateInfo();
 				}

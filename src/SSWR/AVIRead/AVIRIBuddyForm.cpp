@@ -167,9 +167,9 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	this->btnWingDown->HandleButtonUpDown(OnWingDownDown, this);
 
 	UTF8Char sbuff[32];
-	Int32 i;
-	OSInt j;
-	Int32 k = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k = 0;
 	IO::Device::IBuddy *buddy;
 	j = IO::Device::IBuddy::GetNumDevice();
 	i = 0;
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 		}
 		else
 		{
-			Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Device "), k);
+			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Device "), k);
 			k++;
 			this->buddyList->Add(buddy);
 			this->lbDevice->AddItem(sbuff, buddy);
@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 
 SSWR::AVIRead::AVIRIBuddyForm::~AVIRIBuddyForm()
 {
-	OSInt i = this->buddyList->GetCount();
+	UOSInt i = this->buddyList->GetCount();
 	IO::Device::IBuddy *buddy;
 	while (i-- > 0)
 	{

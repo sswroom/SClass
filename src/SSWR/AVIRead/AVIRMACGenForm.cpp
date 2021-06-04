@@ -12,19 +12,19 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACGenForm *me = (SSWR::AVIRead::AVIRMACGenForm*)userObj;
 	Data::ArrayList<Net::MACInfo::MACEntry*> *macArr;
 	UTF8Char sbuff[20];
-	Int64 iMAC;
+	UInt64 iMAC;
 	UInt32 irand;
 	UInt8 macBuff[8];
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Data::RandomMT19937 random((UInt32)(dt.ToTicks() & 0xffffffff));
-	irand = random.NextInt32();
+	irand = (UInt32)random.NextInt32();
 	macArr = (Data::ArrayList<Net::MACInfo::MACEntry*>*)me->cboVendor->GetSelectedItem();
 	if (macArr == 0)
 	{
 		return;
 	}
-	OSInt cnt = macArr->GetCount();
+	UOSInt cnt = macArr->GetCount();
 	Net::MACInfo::MACEntry *ent = macArr->GetItem((irand >> 24) % cnt);
 	iMAC = (ent->rangeStart & 0xffffff000000) | (irand & 0xffffff);
 	WriteMInt64(macBuff, iMAC);
@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	}
 
 	macList = this->macMap->ToArray(&macCnt);
-	ArtificialQuickSort_SortCmp((void**)macList, ListCompare, 0, macCnt - 1);
+	ArtificialQuickSort_SortCmp((void**)macList, ListCompare, 0, (OSInt)macCnt - 1);
 	i = 0;
 	while (i < macCnt)
 	{

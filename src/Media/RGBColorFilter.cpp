@@ -158,7 +158,7 @@ void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, UOSInt gammaCnt)
 	}
 }
 
-void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, Int32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
+void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
 {
 	this->brightness = brightness;
 	this->contrast = contrast;

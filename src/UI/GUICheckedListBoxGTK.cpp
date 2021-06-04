@@ -29,7 +29,7 @@ UI::GUICheckedListBox::~GUICheckedListBox()
 {
 }
 
-Bool UI::GUICheckedListBox::GetItemChecked(OSInt index)
+Bool UI::GUICheckedListBox::GetItemChecked(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -40,7 +40,7 @@ Bool UI::GUICheckedListBox::GetItemChecked(OSInt index)
 	return ret;
 }
 
-void UI::GUICheckedListBox::SetItemChecked(OSInt index, Bool isChecked)
+void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);

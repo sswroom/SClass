@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (i >= 0)
 	{
-		entry = me->dataList->GetItem(i);
+		entry = me->dataList->GetItem((UOSInt)i);
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
 	}
 	else
@@ -72,11 +72,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 			entry->rangeFrom = log->macInt & 0xffffff000000;
 			entry->rangeTo = entry->rangeFrom | 0xffffff;
 			entry->name = frm->GetNameNew();
-			me->dataList->Insert(~i, entry);
+			me->dataList->Insert((UOSInt)~i, entry);
 			me->UpdateStatus();
 		}
 
-		OSInt j;
+		UOSInt j;
 		i = 0;
 		j = me->logList->GetCount();
 		while (i < j)
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
 	UInt8 buff[16];
 	UTF8Char sbuff[2];
-	OSInt i;
+	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	me->txtInput->GetText(&sb);
 	if (sb.GetLength() < 6 || sb.GetLength() > 28)
@@ -158,12 +158,12 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 		buff[i + 2] = 0;
 		i++;
 	}
-	i = me->DataGetIndex(ReadMInt64(buff));
+	OSInt si = me->DataGetIndex(ReadMUInt64(buff));
 	SSWR::AVIRead::AVIRMACManagerForm::DataEntry *entry = 0;
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
-	if (i >= 0)
+	if (si >= 0)
 	{
-		entry = me->dataList->GetItem(i);
+		entry = me->dataList->GetItem((UOSInt)si);
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], entry->name));
 	}
 	else
@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 		}
 
 		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
-		OSInt j;
+		UOSInt j;
 		i = 0;
 		j = me->logList->GetCount();
 		while (i < j)

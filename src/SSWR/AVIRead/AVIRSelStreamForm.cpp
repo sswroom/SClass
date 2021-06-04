@@ -504,8 +504,8 @@ void SSWR::AVIRead::AVIRSelStreamForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(SSWR::AVIRead::AVIRCore::StreamType stype)
 {
 	SSWR::AVIRead::AVIRCore::StreamType st;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->cboStreamType->GetCount();
 	while (i < j)
@@ -523,8 +523,8 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(SSWR::AVIRead::AVIRCore
 void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UOSInt port)
 {
 	UOSInt p;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->cboSerialPort->GetCount();
 	while (i < j)

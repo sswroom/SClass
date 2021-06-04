@@ -22,14 +22,14 @@ namespace Media
 		GRFilter();
 		~GRFilter();
 
-		OSInt GetLayerCount();
-		OSInt AddLayer();
-		Bool RemoveLayer(OSInt layer);
-		void SetParameter(OSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status);
-		Bool GetParameter(OSInt layer, OSInt *hOfst, OSInt *vOfst, OSInt *level, Int32 *status);
+		UOSInt GetLayerCount();
+		UOSInt AddLayer();
+		Bool RemoveLayer(UOSInt layer);
+		void SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status);
+		Bool GetParameter(UOSInt layer, OSInt *hOfst, OSInt *vOfst, OSInt *level, Int32 *status);
 
-		void ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl);
-		void ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl);
+		void ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
+		void ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
 	};
-};
+}
 #endif

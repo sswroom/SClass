@@ -21,8 +21,8 @@ void Media::Batch::BatchLimiter::SetHandler(Media::Batch::BatchHandler *hdlr)
 
 void Media::Batch::BatchLimiter::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
 {
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
 	Media::StaticImage *newImg;
 	j = 0;
 	k = imgList->GetCount();

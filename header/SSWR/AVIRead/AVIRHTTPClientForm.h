@@ -66,6 +66,8 @@ namespace SSWR
 			UI::GUILabel *lblDataStr;
 			UI::GUITextBox *txtDataStr;
 			UI::GUIButton *btnDataStr;
+			UI::GUILabel *lblPostFormat;
+			UI::GUIComboBox *cboPostFormat;
 			UI::GUIButton *btnRequest;
 			UI::GUIListView *lvReqData;
 

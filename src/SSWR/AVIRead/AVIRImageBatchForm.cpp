@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		Text::StrConcat(sptr, IO::Path::ALL_FILES);
-		OSInt fileCnt = 0;
+		UOSInt fileCnt = 0;
 		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, OSIn
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	UTF8Char sbuff[256];
 
-	Double bvalue = me->hsbBright->GetPos() * 0.1;
+	Double bvalue = Math::OSInt2Double(me->hsbBright->GetPos()) * 0.1;
 	Double cvalue = Math::OSInt2Double(me->hsbContr->GetPos());
 	Double gvalue = Math::OSInt2Double(me->hsbGamma->GetPos());
 	OSInt hdrLev = me->hsbHDRLev->GetPos();
@@ -144,7 +144,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(void *userObj, C
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(void *userObj, OSInt finCnt)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(void *userObj, UOSInt finCnt)
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	me->prgMain->ProgressUpdate(finCnt, me->selCnt);
@@ -160,9 +160,9 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
 
-		setting.brightness = this->hsbBright->GetPos() * 0.001;
-		setting.contrast = this->hsbContr->GetPos() * 0.01;
-		setting.gamma = this->hsbGamma->GetPos() * 0.01;
+		setting.brightness = Math::OSInt2Double(this->hsbBright->GetPos()) * 0.001;
+		setting.contrast = Math::OSInt2Double(this->hsbContr->GetPos()) * 0.01;
+		setting.gamma = Math::OSInt2Double(this->hsbGamma->GetPos()) * 0.01;
 		setting.flags = (Int32)(this->hsbHDRLev->GetPos() << 4);
 		this->icMain->ApplySetting(this->previewImage, this->filteredImage, &setting);
 		this->pbMain->SetImage(this->filteredImage, true);

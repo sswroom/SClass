@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPTestForm *me = (SSWR::AVIRead::AVIRUDPTestForm*)userObj;
 	Net::SocketUtil::AddressInfo addr;
-	Int32 port;
-	Int32 cnt;
+	UInt16 port;
+	UInt32 cnt;
 	Text::StringBuilderUTF8 sb;
 	if (me->udp == 0)
 	{
@@ -82,26 +82,24 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtDestPort->GetText(&sb);
-	port = sb.ToInt32();
-	if (port <= 0 || port >= 65536)
+	if (!sb.ToUInt16(&port) || port <= 0 || port >= 65536)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"UDP Test", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestCount->GetText(&sb);
-	cnt = sb.ToInt32();
-	if (cnt <= 0 || cnt > 10000000)
+	if (!sb.ToUInt32(&cnt) || cnt <= 0 || cnt > 10000000)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Count is not valid", (const UTF8Char *)"UDP Test", me);
 		return;
 	}
-	OSInt i = me->threadCnt;
-	OSInt lastCnt = cnt;
-	OSInt thisCnt;
+	UOSInt i = me->threadCnt;
+	UOSInt lastCnt = cnt;
+	UOSInt thisCnt;
 	while (i-- > 0)
 	{
-		thisCnt = (Int32)(i * (Int64)cnt / me->threadCnt);
+		thisCnt = (UOSInt)(i * (UInt64)cnt / me->threadCnt);
 		me->threads[i].reqCnt = lastCnt - thisCnt;
 		me->threads[i].destAddr = addr;
 		me->threads[i].destPort = port;
@@ -121,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 	UInt64 sendFailCnt;
 	Data::DateTime dt;
 	Int64 diffMS;
-	OSInt i;
+	UOSInt i;
 	sendSuccCnt = 0;
 	sendFailCnt = 0;
 	i = me->threadCnt;
@@ -149,13 +147,13 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 	}
 	else
 	{
-		Text::StrDouble(sbuff, (thisRecvCnt - me->lastRecvCnt) * 1000.0 / diffMS);
+		Text::StrDouble(sbuff, (Double)(thisRecvCnt - me->lastRecvCnt) * 1000.0 / (Double)diffMS);
 		me->txtRecvCntRate->SetText(sbuff);
-		Text::StrDouble(sbuff, (thisRecvSize - me->lastRecvSize) * 1000.0 / diffMS);
+		Text::StrDouble(sbuff, (Double)(thisRecvSize - me->lastRecvSize) * 1000.0 / (Double)diffMS);
 		me->txtRecvSizeRate->SetText(sbuff);
-		Text::StrDouble(sbuff, (sendSuccCnt - me->lastSentSuccCnt) * 1000.0 / diffMS);
+		Text::StrDouble(sbuff, (Double)(sendSuccCnt - me->lastSentSuccCnt) * 1000.0 / (Double)diffMS);
 		me->txtSentSuccCntRate->SetText(sbuff);
-		Text::StrDouble(sbuff, (sendFailCnt - me->lastSentFailCnt) * 1000.0 / diffMS);
+		Text::StrDouble(sbuff, (Double)(sendFailCnt - me->lastSentFailCnt) * 1000.0 / (Double)diffMS);
 		me->txtSentFailCntRate->SetText(sbuff);
 	}
 	me->lastRecvCnt = thisRecvCnt;
@@ -169,7 +167,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
 {
 	ThreadStatus *t = (ThreadStatus*)userObj;
 	UInt8 buff[32];
-	OSInt i;
+	UOSInt i;
 	Net::SocketUtil::AddressInfo destAddr;
 	UInt16 destPort;
 	t->status = 1;
