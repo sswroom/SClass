@@ -139,7 +139,7 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 			j = 0;
 			while (j < lyr->maxY)
 			{
-				outArr->Add((((UInt64)i) << 32) | j);
+				outArr->Add((Int64)((((UInt64)i) << 32) | j));
 				j++;
 			}
 			i++;
@@ -202,9 +202,9 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 		if (minY < 0)
 			minY = 0;
 		if (maxX > (Int32)lyr->maxX)
-			maxX = lyr->maxX;
+			maxX = (Int32)lyr->maxX;
 		if (maxY > (Int32)lyr->maxY)
-			maxY = lyr->maxY;
+			maxY = (Int32)lyr->maxY;
 		i = minX;
 		while (i < maxX)
 		{
@@ -216,7 +216,7 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 			}
 			i++;
 		}
-		return (maxX - minX) * (maxY - minY);
+		return (UOSInt)(maxX - minX) * (UOSInt)(maxY - minY);
 	}
 	else
 	{

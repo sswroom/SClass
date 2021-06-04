@@ -151,7 +151,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 			UInt32 blkOfst;
 			UInt32 blkSize;
 //			UInt32 blkType;
-			Int32 delay;
+			UInt32 delay;
 			tagBuff = flirMstm->GetBuff(&buffSize);
 			if (tagBuff[0] == 'F' && tagBuff[1] == 'F' && tagBuff[2] == 'F')
 			{

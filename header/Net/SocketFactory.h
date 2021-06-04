@@ -225,7 +225,7 @@ namespace Net
 		UTF8Char *GetLocalName(UTF8Char *buff, UInt32 *socket);
 #ifdef HAS_INT64
 		UInt64 GenSocketId(UInt32 *socket);
-		static void FromSocketId(Int64 socketId, UInt32 *ip, UInt16 *port);
+		static void FromSocketId(UInt64 socketId, UInt32 *ip, UInt16 *port);
 #endif
 
 		static ErrorType FromSystemError(Int32 sysErr);

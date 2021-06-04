@@ -479,7 +479,7 @@ DB::DBConn *DB::ReadingDBTool::GetDBConn()
 	return this->db;
 }
 
-Int32 DB::ReadingDBTool::GetTzQhr()
+Int8 DB::ReadingDBTool::GetTzQhr()
 {
 	if (this->db)
 	{
@@ -547,7 +547,7 @@ UTF8Char *DB::ReadingDBTool::DBDate(UTF8Char *sqlStr, Data::DateTime *val)
 	return DB::DBUtil::SDBDate(sqlStr, val, this->svrType, (Int8)this->GetTzQhr());
 }
 
-Int32 DB::ReadingDBTool::GetDataCnt()
+UInt32 DB::ReadingDBTool::GetDataCnt()
 {
 	return this->dataCnt;
 }

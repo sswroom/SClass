@@ -42,13 +42,13 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 *lineBuff;
 //	UInt8 pal[1024];
 
-	Int32 imgWidth;
-	Int32 imgHeight;
-	Int32 bpp;
-	Int32 bppl;
-	Int32 bpl;
-	Int32 bplp;
-	Int32 ncp;
+	UInt32 imgWidth;
+	UInt32 imgHeight;
+	UInt32 bpp;
+	UInt32 bppl;
+	UInt32 bpl;
+	UInt32 bplp;
+	UInt32 ncp;
 
 	Media::StaticImage *outImg;
 
@@ -58,8 +58,8 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 
-	imgWidth = ReadUInt16(&hdr[8]) - ReadUInt16(&hdr[4]) + 1;
-	imgHeight = ReadUInt16(&hdr[10]) - ReadUInt16(&hdr[6]) + 1;
+	imgWidth = ReadUInt16(&hdr[8]) - (UInt32)ReadUInt16(&hdr[4]) + 1;
+	imgHeight = ReadUInt16(&hdr[10]) - (UInt32)ReadUInt16(&hdr[6]) + 1;
 	bppl = hdr[3];
 	ncp = hdr[65];
 	bpl = ReadUInt16(&hdr[66]);
@@ -71,14 +71,14 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, 
 	if (outImg)
 	{
 		UInt8 *pBits = (UInt8*)outImg->data;
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		UInt8 c;
-		OSInt filePos = 128;
-		OSInt readSize;
-		OSInt dataSize = 0;
-		OSInt lineLeft = imgHeight;
+		UOSInt filePos = 128;
+		UOSInt readSize;
+		UOSInt dataSize = 0;
+		UOSInt lineLeft = imgHeight;
 		dataBuff = MemAlloc(UInt8, bplp << 1);
 		lineBuff = MemAlloc(UInt8, bplp);
 
@@ -133,7 +133,7 @@ lop24:
 #else
 				UInt8 *dPtr = pBits;
 				UInt8 *sPtr = lineBuff;
-				Int32 cnt = imgWidth;
+				UInt32 cnt = imgWidth;
 				while (cnt-- > 0)
 				{
 					dPtr[2] = sPtr[0];

@@ -39,7 +39,7 @@ namespace DB
 		const UTF8Char *connStr;
 		IO::LogTool *log;
 		Bool enableDebug;
-		Int32 tzQhr;
+		Int8 tzQhr;
 		Data::ArrayList<const UTF8Char *> *tableNames;
 
 	private:
@@ -57,7 +57,7 @@ namespace DB
 
 		virtual DB::DBUtil::ServerType GetSvrType();
 		virtual ConnType GetConnType();
-		virtual Int32 GetTzQhr();
+		virtual Int8 GetTzQhr();
 		virtual void GetConnName(Text::StringBuilderUTF *sb);
 		virtual void Close();
 		void Dispose();
@@ -115,11 +115,11 @@ namespace DB
 		ColumnData *colDatas;
 		Bool enableDebug;
 		OSInt rowChanged;
-		Int32 tzQhr;
+		Int8 tzQhr;
 		void *hStmt;
 
 	public:
-		ODBCReader(ODBCConn *conn, void *hStmt, Bool enableDebug, Int32 tzQhr);
+		ODBCReader(ODBCConn *conn, void *hStmt, Bool enableDebug, Int8 tzQhr);
 		~ODBCReader();
 
 		virtual Bool ReadNext();

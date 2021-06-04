@@ -117,8 +117,8 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 	if (outImg)
 	{
 		UInt8 *pBits = (UInt8*)outImg->data;
-		Int32 lineW;
-		Int32 lineW2;
+		UInt32 lineW;
+		UInt32 lineW2;
 		UInt32 currOfst;
 
 		if (hdr[2] == 10)

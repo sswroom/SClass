@@ -54,8 +54,8 @@ namespace Math
 		void GetVectorSize(Double *sizeX, Double *sizeY);
 		Bool IsScnCoord();
 		void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
-		Media::StaticImage *GetImage(Int32 *imgTimeMS);
-		Media::StaticImage *GetImage(Double width, Double height, Int32 *imgTimeMS);
+		Media::StaticImage *GetImage(UInt32 *imgTimeMS);
+		Media::StaticImage *GetImage(Double width, Double height, UInt32 *imgTimeMS);
 	};
 }
 #endif

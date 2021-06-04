@@ -157,7 +157,7 @@ Bool Math::TSPReader::ReadNext()
 	else
 	{
 		this->currRow++;
-		this->currRowPtr = this->file->GetRowPtr(this->currRow);
+		this->currRowPtr = this->file->GetRowPtr((UOSInt)this->currRow);
 	}
 	return this->currRowPtr != 0;
 }

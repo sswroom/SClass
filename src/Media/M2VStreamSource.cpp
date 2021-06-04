@@ -194,7 +194,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 				this->playBuff[this->playBuffEnd].frameNum = this->frameNum;
 				this->playBuff[this->playBuffEnd].frameSize = frameSize;
 				this->playBuff[this->playBuffEnd].frameTime = this->thisFrameTime + fieldAdd;
-				this->playBuff[this->playBuffEnd].pictureStart = pictureStart - frameStart;
+				this->playBuff[this->playBuffEnd].pictureStart = (OSInt)(pictureStart - frameStart);
 				MemCopyNO(this->playBuff[this->playBuffEnd].frame, &this->frameBuff[frameStart], frameSize);
 
 				this->playBuffEnd = nextIndex;
@@ -205,7 +205,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 		}
 		this->frameNum++;
 	}
-	this->thisFrameTime = this->syncFrameTime + MulDiv32((int)this->syncFieldCnt, 500 * this->frameRateDenorm, this->frameRateNorm);
+	this->thisFrameTime = this->syncFrameTime + MulDivU32((UInt32)this->syncFieldCnt, 500 * this->frameRateDenorm, this->frameRateNorm);
 	this->syncFieldCnt += fieldCnt;
 }
 
@@ -247,7 +247,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 			Media::MPEGVideoParser::MPEGFrameProp prop;
 			Bool ret;
 			Int32 startCode;
-			OSInt pictureStart = 0;
+			UOSInt pictureStart = 0;
 			while (true)
 			{
 				startCode = ReadMInt32(&me->playBuff[me->playBuffStart].frame[pictureStart]);
@@ -415,7 +415,7 @@ Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 	this->frameCbData = 0;
 	this->bitRate = 1000;
 	this->finfoMode = false;
-	this->info->fourcc = -1;
+	this->info->fourcc = (UInt32)-1;
 	this->info->dispWidth = 0;
 	this->info->dispHeight = 0;
 	this->info->storeWidth = 0;
@@ -426,7 +426,7 @@ Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 	this->frameBuff = MemAlloc(UInt8, this->maxFrameSize);
 	this->frameBuffSize = 0;
 	this->firstFrame = true;
-	this->frameStart = -1;
+	this->frameStart = (UOSInt)-1;
 	this->frameNum = 0;
 	this->totalFrameCnt = 0;
 	this->totalFrameSize = 0;
@@ -647,14 +647,14 @@ void Media::M2VStreamSource::ClearFrameBuff()
 	this->ClearPlayBuff();
 }
 
-void Media::M2VStreamSource::SetStreamTime(Int32 time)
+void Media::M2VStreamSource::SetStreamTime(UInt32 time)
 {
 #ifdef _DEBUG
 	if (this->debugLog)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"Set Stream Time ");
-		sb.AppendI32(time);
+		sb.AppendU32(time);
 		this->debugMut->Lock();
 		this->debugLog->WriteLine(sb.ToString());
 		this->debugMut->Unlock();
@@ -667,7 +667,7 @@ void Media::M2VStreamSource::SetStreamTime(Int32 time)
 void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 {
 	this->writeCnt++;
-	OSInt lastFrameSize = this->frameBuffSize;
+	UOSInt lastFrameSize = this->frameBuffSize;
 	UOSInt i;
 	Int32 hdr;
 	Int32 gopHdr;
@@ -743,7 +743,7 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 			return;
 		}
 		this->firstFrame = false;
-		this->frameStart = -1;
+		this->frameStart = (UOSInt)-1;
 	}
 
 	j = 0;
@@ -755,7 +755,7 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	{
 		if (*(Int32*)&this->frameBuff[i] == hdr || *(Int32*)&this->frameBuff[i] == gopHdr || *(Int32*)&this->frameBuff[i] == pictureHdr)
 		{
-			if (this->frameStart >= (OSInt)j)
+			if (this->frameStart >= j)
 			{
 				this->SubmitFrame(i - j, j, this->frameStart);
 				j = i;
@@ -778,14 +778,14 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 
 Int32 Media::M2VStreamSource::GetFrameStreamTime()
 {
-	return this->thisFrameTime;
+	return (Int32)this->thisFrameTime;
 }
 
 void Media::M2VStreamSource::EndFrameStream()
 {
 	if (this->frameBuffSize > 0 && this->frameStart >= 0)
 	{
-		this->SubmitFrame(this->frameBuffSize, 0, this->frameStart);
+		this->SubmitFrame(this->frameBuffSize, 0, (UOSInt)this->frameStart);
 		this->frameBuffSize = 0;
 	}
 	this->playEOF = true;
@@ -795,7 +795,7 @@ void Media::M2VStreamSource::EndFrameStream()
 	}
 }
 
-Int64 Media::M2VStreamSource::GetBitRate()
+UInt64 Media::M2VStreamSource::GetBitRate()
 {
 	if (this->totalFrameCnt > 10)
 	{

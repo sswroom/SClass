@@ -233,10 +233,10 @@ void Media::VOBLPCMStreamSource::ClearFrameBuff()
 	mutUsage.EndUse();
 }
 
-void Media::VOBLPCMStreamSource::SetStreamTime(Int32 time)
+void Media::VOBLPCMStreamSource::SetStreamTime(UInt32 time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	this->buffSample = MulDiv32(time, this->fmt->bitRate, 8000);
+	this->buffSample = (UInt64)time * this->fmt->bitRate / 8000;
 	mutUsage.EndUse();
 }
 
@@ -339,7 +339,7 @@ void Media::VOBLPCMStreamSource::EndFrameStream()
 {
 }
 
-Int64 Media::VOBLPCMStreamSource::GetBitRate()
+UInt64 Media::VOBLPCMStreamSource::GetBitRate()
 {
 	return this->fmt->bitRate;
 }

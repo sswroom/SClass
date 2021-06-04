@@ -13,7 +13,7 @@ DB::DBList::DBList()
 DB::DBList::~DBList()
 {
 	DBInfo *db;
-	OSInt i = this->dbList->GetCount();
+	UOSInt i = this->dbList->GetCount();
 	while (i-- > 0)
 	{
 		db = this->dbList->GetItem(i);
@@ -39,9 +39,9 @@ void DB::DBList::AddDB(DB::DBTool *db)
 DB::DBTool *DB::DBList::UseDB()
 {
 	DBInfo *dbInfo;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	if (this->dbList->GetCount() <= 0)
 		return 0;
 
@@ -93,7 +93,7 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 	mutUsage.EndUse();
 }
 
-OSInt DB::DBList::GetCount()
+UOSInt DB::DBList::GetCount()
 {
 	return this->dbList->GetCount();
 }

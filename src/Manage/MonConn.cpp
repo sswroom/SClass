@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
+#include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/Path.h"
@@ -22,14 +23,14 @@
 #include <windows.h>
 #endif
 
-OSInt Manage::MonConn::BuildPacket(UInt8 *outbuff, UInt8 *data, OSInt dataSize, Int32 cmdType, Int32 cmdSeq)
+UOSInt Manage::MonConn::BuildPacket(UInt8 *outbuff, UInt8 *data, UOSInt dataSize, UInt16 cmdType, UInt16 cmdSeq)
 {
-	*(UInt16*)&outbuff[0] = *(UInt16*)"sM";
-	*(UInt16*)&outbuff[2] = (UInt16)(dataSize + 10);
-	*(UInt16*)&outbuff[4] = cmdType;
-	*(UInt16*)&outbuff[6] = cmdSeq;
+	WriteNUInt16(&outbuff[0], ReadNUInt16("sM"));
+	WriteUInt16(&outbuff[2], (UInt16)(dataSize + 10));
+	WriteUInt16(&outbuff[4], cmdType);
+	WriteUInt16(&outbuff[6], cmdSeq);
 	MemCopyNO(&outbuff[8], data, dataSize);
-	*(UInt16*)&outbuff[dataSize + 8] = CalCheck(outbuff);
+	WriteUInt16(&outbuff[dataSize + 8], CalCheck(outbuff));
 	return dataSize + 10;
 }
 
@@ -52,38 +53,38 @@ mmccclop:
 		jnz mmccclop
 	}
 #else
-	Int32 size = *(UInt16*)&packet[2];
-	UInt8 ChkDigit1 = 0;
-	UInt8 ChkDigit2 = 0;
-	Int32 i;
-	Int32 j;
-	ChkDigit2 = 0;
+	UInt32 size = *(UInt16*)&packet[2];
+	UInt8 chkDigit1 = 0;
+	UInt8 chkDigit2 = 0;
+	UInt32 i;
+	UInt32 j;
+	chkDigit2 = 0;
 	i = 0;
 	while (i < size - 2)
 	{
-		j = ChkDigit1 + packet[i];
-		ChkDigit1 = j & 255;
-		ChkDigit2 = ((ChkDigit2 << 1) | (j >> 8)) ^ packet[i];
+		j = (UInt32)chkDigit1 + packet[i];
+		chkDigit1 = (UInt8)(j & 255);
+		chkDigit2 = (UInt8)(((UInt32)(chkDigit2 << 1) | (j >> 8)) ^ packet[i]);
 	}
-	return (((Int32)ChkDigit2) << 8) | ChkDigit1;
+	return (UInt16)((((UInt32)chkDigit2) << 8) | chkDigit1);
 #endif
 }
 
-UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, OSInt buffSize)
+UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UOSInt buffSize)
 {
-	Int32 i = 0;
+	UOSInt i = 0;
 	while (i < buffSize - 4)
 	{
-		if (*(UInt16*)&buff[i] == *(UInt16*)"sM")
+		if (ReadNUInt16(&buff[i]) == ReadNUInt16("sM"))
 		{
-			Int32 psize = *(UInt16*)&buff[i + 2];
+			UInt32 psize = ReadUInt16(&buff[i + 2]);
 			if (psize <= 3000)
 			{
 				if (psize > buffSize - i)
 					return &buff[i];
 
 				UInt16 chkVal = CalCheck(&buff[i]);
-				if (chkVal == *(UInt16*)&buff[i + psize - 2])
+				if (chkVal == ReadUInt16(&buff[i + psize - 2]))
 					return &buff[i];
 			}
 			i++;
@@ -93,28 +94,28 @@ UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, OSInt buffSize)
 	return 0;
 }
 
-Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, OSInt buffSize)
+Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, UOSInt buffSize)
 {
-	Int32 packSize;
+	UInt32 packSize;
 	if (buffSize < 10)
 		return false;
-	if (*(UInt16*)&buff[0] != *(UInt16*)"sM")
+	if (ReadNUInt16(&buff[0]) != ReadNUInt16("sM"))
 		return false;
-	packSize = *(UInt16*)&buff[2];
+	packSize = ReadUInt16(&buff[2]);
 	if (packSize > 3000)
 		return false;
 	if (packSize > buffSize)
 		return false;
-	if (*(UInt16*)&buff[packSize - 2] == CalCheck(buff))
+	if (ReadUInt16(&buff[packSize - 2]) == CalCheck(buff))
 		return true;
 	return false;
 }
 
 void Manage::MonConn::ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData)
 {
-	*cmdSize = *(UInt16*)&buff[2];
-	*cmdType = *(UInt16*)&buff[4];
-	*cmdSeq = *(UInt16*)&buff[6];
+	*cmdSize = ReadUInt16(&buff[2]);
+	*cmdType = ReadUInt16(&buff[4]);
+	*cmdSeq = ReadUInt16(&buff[6]);
 	*cmdData = &buff[8];
 }
 
@@ -122,7 +123,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 {
 	Manage::MonConn *me = (Manage::MonConn*)conn;
 	UInt8 *dataBuff;
-	OSInt buffSize;
+	UOSInt buffSize;
 
 	me->ConnRRunning = true;
 	dataBuff = MemAlloc(UInt8, 3000);
@@ -151,9 +152,9 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 			if (buffSize)
 			{
 				UInt8 *packet = dataBuff;
-				while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (packet - dataBuff))) != 0)
+				while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UOSInt)(packet - dataBuff))) != 0)
 				{
-					if (Manage::MonConn::IsCompletePacket(packet, buffSize - (packet - dataBuff)))
+					if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UOSInt)(packet - dataBuff)))
 					{
 						UInt16 cmdSize;
 						UInt16 cmdType;
@@ -167,7 +168,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 							if (me->cmdList->GetCount())
 							{
 								lastCmd = (UInt8*)me->cmdList->GetItem(0);
-								if ((cmdType & 0x7fff) == *(UInt16*)&lastCmd[4] && cmdSeq == *(UInt16*)&lastCmd[6])
+								if ((cmdType & 0x7fff) == ReadUInt16(&lastCmd[4]) && cmdSeq == ReadUInt16(&lastCmd[6]))
 								{
 									MemFree(me->cmdList->RemoveAt(0));
 									me->requesting = false;
@@ -176,9 +177,9 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 
 									if (cmdType == 0x8000)
 									{
-										if (*(UInt16*)data != 0)
+										if (ReadUInt16(data) != 0)
 										{
-											me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, *(UInt16*)data, me->userObj);
+											me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadUInt16(data), me->userObj);
 										}
 									}
 								}
@@ -254,10 +255,10 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 
 				if (me->cmdList->GetCount())
 				{
-					data = (UInt8*)me->cmdList->GetItem(0);
+					data = me->cmdList->GetItem(0);
 					me->requesting = true;
 					me->lastReqTime->SetCurrTimeUTC();
-					me->cli->Write(data, *(UInt16*)&data[2]);
+					me->cli->Write(data, ReadUInt16(&data[2]));
 				}
 			}
 		}
@@ -274,7 +275,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 	return 0;
 }
 
-void Manage::MonConn::AddCommand(UInt8 *data, OSInt dataSize, Int32 cmdType)
+void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 {
 	UInt8 *buff = MemAlloc(UInt8, dataSize + 10);
 	Sync::MutexUsage mutUsage(cmdSeqMut);
@@ -325,7 +326,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 		Sync::Thread::Create(ConnTThread, this);
 		while (!this->ConnTRunning || !this->ConnRRunning)
 			Sync::Thread::Sleep(10);
-		Int32 i = 30;
+		UInt32 i = 30;
 		while (i-- > 0)
 		{
 			if (this->svrMonConn)
@@ -379,8 +380,8 @@ void Manage::MonConn::StartProcess(Int32 name)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[8];
-	*(Int32*)&buff[0] = (Int32)(OSInt)procId;
-	*(Int32*)&buff[4] = name;
+	WriteUInt32(&buff[0], (UInt32)procId);
+	WriteInt32(&buff[4], name);
 	AddCommand(buff, 8, 0);
 }
 
@@ -388,38 +389,38 @@ void Manage::MonConn::EndProcess()
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[4];
-	*(Int32*)&buff[0] = (Int32)(OSInt)procId;
+	WriteUInt32(&buff[0], (UInt32)procId);
 	AddCommand(buff, 4, 1);
 }
 
-void Manage::MonConn::StartTCPPort(Int32 portNum)
+void Manage::MonConn::StartTCPPort(UInt16 portNum)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[6];
-	*(Int32*)&buff[0] = (Int32)(OSInt)procId;
-	*(UInt16*)&buff[4] = portNum;
+	WriteUInt32(&buff[0], (UInt32)procId);
+	WriteUInt16(&buff[4], portNum);
 	AddCommand(buff, 6, 2);
 }
 
-void Manage::MonConn::StartUDPPort(Int32 portNum)
+void Manage::MonConn::StartUDPPort(UInt16 portNum)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[4];
-	*(Int32*)&buff[0] = (Int32)(OSInt)procId;
-	*(UInt16*)&buff[4] = portNum;
+	WriteUInt32(&buff[0], (UInt32)procId);
+	WriteUInt16(&buff[4], portNum);
 	AddCommand(buff, 6, 3);
 }
 
-void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, Int32 logLevel, const UTF8Char *msg)
+void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, const UTF8Char *msg)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
-	OSInt strSize = Text::StrCharCnt(msg);
+	UOSInt strSize = Text::StrCharCnt(msg);
 	UInt8 *buff = MemAlloc(UInt8, 14 + strSize + 1);
-	*(Int32*)&buff[0] = (Int32)(OSInt)procId;
-	*(Int32*)&buff[4] = name;
-	*(Int32*)&buff[8] = name2;
-	*(UInt16*)&buff[12] = logLevel;
+	WriteUInt32(&buff[0], (UInt32)procId);
+	WriteInt32(&buff[4], name);
+	WriteInt32(&buff[8], name2);
+	WriteUInt16(&buff[12], logLevel);
 	Text::StrConcat((UTF8Char*)&buff[14], msg);
-	AddCommand(buff, 11 + strSize, 4);
+	AddCommand(buff, 14 + strSize, 4);
 	MemFree(buff);
 }

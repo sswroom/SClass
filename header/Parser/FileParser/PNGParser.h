@@ -10,7 +10,7 @@ namespace Parser
 		class PNGParser : public IO::IFileParser
 		{
 		private:
-			static void ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, Media::FrameInfo *info, Media::ImageList *imgList, Int32 imgDelay, Int32 imgX, Int32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette);
+			static void ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, Media::FrameInfo *info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette);
 		public:
 			PNGParser();
 			virtual ~PNGParser();
@@ -20,7 +20,7 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 
-			static UOSInt CalcImageSize(Int32 imgW, Int32 imgH, UInt8 bitDepth, UInt8 colorType, UInt8 interlaceMeth);
+			static UOSInt CalcImageSize(UInt32 imgW, UInt32 imgH, UInt8 bitDepth, UInt8 colorType, UInt8 interlaceMeth);
 		};
 	}
 }

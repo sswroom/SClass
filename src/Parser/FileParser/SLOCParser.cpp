@@ -218,21 +218,22 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
-	OSInt i;
-	OSInt currPos;
-	Int64 fileSize;
+	UOSInt i;
+	OSInt si;
+	UOSInt currPos;
+	UInt64 fileSize;
 	Int64 devId;
 	sptr = fd->GetFullName();
-	i = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(sbuff, &sptr[i + 1]);
+	si = Text::StrLastIndexOf(sptr, '\\');
+	Text::StrConcat(sbuff, &sptr[si + 1]);
 	if (!Text::StrStartsWithICase(sbuff, (const UTF8Char*)"LOC"))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(sbuff, (const UTF8Char*)"_");
-	if (i < 0)
+	si = Text::StrIndexOf(sbuff, (const UTF8Char*)"_");
+	if (si < 0)
 		return 0;
-	sbuff[i] = 0;
+	sbuff[si] = 0;
 	devId = Text::StrToInt64(&sbuff[3]);
 	if (devId == 0)
 		return 0;
@@ -264,9 +265,9 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 		rec.heading = ReadUInt16(&buff[18]) * 0.01;
 		rec.utcTimeTicks = ReadUInt32(&buff[20]) * 1000LL;
 		rec.altitude = ReadInt16(&buff[24]);
-		extInfo.status = ReadInt32(&buff[26]);
-		extInfo.inStatus = ReadInt32(&buff[30]);
-		extInfo.outStatus = ReadInt32(&buff[34]);
+		extInfo.status = ReadUInt32(&buff[26]);
+		extInfo.inStatus = ReadUInt32(&buff[30]);
+		extInfo.outStatus = ReadUInt32(&buff[34]);
 		rec.nSateUsed = buff[38];
 		rec.nSateView = 0;
 		rec.valid = buff[39] & 1;
@@ -281,7 +282,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 		extInfo.temper1 = ReadInt32(&buff[60]) * 0.1;
 		extInfo.temper2 = ReadInt32(&buff[64]) * 0.1;
 		extInfo.temper3 = ReadInt32(&buff[68]) * 0.1;
-		extInfo.cliIP = *(Int32*)&buff[72];
+		extInfo.cliIP = ReadNUInt32(&buff[72]);
 		extInfo.cliPort = ReadUInt16(&buff[76]);
 		extInfo.recvTimeTS = ReadUInt32(&buff[78]);
 		i = track->AddRecord(&rec);

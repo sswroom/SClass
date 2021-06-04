@@ -178,8 +178,8 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 	UTF8Char *outptr;
 	Int32 resType;
 	OSInt i;
-	OSInt j;
-	Int32 k;
+	UOSInt j;
+	UInt32 k;
 	Int32 l = 0;
 	Double thisDist;
 	Double minDist;
@@ -375,7 +375,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 			{
 				i = Text::StrIndexOf(strArrs[2], ' ');
 				if (i >= 0)
-					Text::StrConcatC(sbufftmp, strArrs[2], i);
+					Text::StrConcatC(sbufftmp, strArrs[2], (UOSInt)i);
 				else
 					Text::StrConcat(sbufftmp, strArrs[2]);
 

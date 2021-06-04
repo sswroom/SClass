@@ -37,8 +37,8 @@ typedef struct
 	UInt8 fileName[12];
 	UInt32 fileSize;
 	Int64 reserved;
-	Int32 startOfst;
-	Int32 storeSize;
+	UInt32 startOfst;
+	UInt32 storeSize;
 } NFPFileInfo;
 
 IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)

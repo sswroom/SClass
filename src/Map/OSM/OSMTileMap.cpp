@@ -47,7 +47,7 @@ Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UO
 
 Map::OSM::OSMTileMap::~OSMTileMap()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->urls->GetCount();
 	while (i-- > 0)
 	{
@@ -64,7 +64,7 @@ void Map::OSM::OSMTileMap::AddAlternateURL(const UTF8Char *url)
 	this->urls->Add(Text::StrCopyNew(url));
 }
 
-const UTF8Char *Map::OSM::OSMTileMap::GetOSMURL(OSInt index)
+const UTF8Char *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
 {
 	return this->urls->GetItem(index);
 }
@@ -121,12 +121,12 @@ UOSInt Map::OSM::OSMTileMap::GetLevelCount()
 
 Double Map::OSM::OSMTileMap::GetLevelScale(UOSInt index)
 {
-	return 204094080000.0 / this->tileWidth / (1 << index);
+	return 204094080000.0 / Math::UOSInt2Double(this->tileWidth) / (Double)(1 << index);
 }
 
 UOSInt Map::OSM::OSMTileMap::GetNearestLevel(Double scale)
 {
-	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / this->tileWidth) / Math::Log10(2));
+	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math::Log10(2));
 	if (level < 0)
 		level = 0;
 	else if (level >= (Int32)GetLevelCount())
@@ -215,12 +215,12 @@ UOSInt Map::OSM::OSMTileMap::GetImageIDs(UOSInt level, Double x1, Double y1, Dou
 		}
 		i++;
 	}
-	return (pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1);
+	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
 Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
 {
-	OSInt readSize;
+	UOSInt readSize;
 	//WChar filePath[512];
 	UTF8Char filePathU[512];
 	UTF8Char u8buff[64];
@@ -371,7 +371,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 				if (this->cacheDir)
 				{
 					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
-					fs->Write(imgBuff, (OSInt)contLeng);
+					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
 						currTime.SetCurrTimeUTC();
@@ -386,7 +386,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (OSInt)contLeng, filePathU, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, filePathU, dt.ToTicks());
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 				}
 			}
@@ -534,7 +534,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	const UTF8Char *thisUrl = this->GetNextURL();
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
-	urlSb.AppendOSInt(level);
+	urlSb.AppendUOSInt(level);
 	urlSb.Append((const UTF8Char*)"/");
 	urlSb.AppendI32(imgX);
 	urlSb.Append((const UTF8Char*)"/");
@@ -563,7 +563,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
 			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
-			while ((readSize = cli->Read(&imgBuff[currPos], (OSInt)contLeng - currPos)) > 0)
+			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
 			{
 				currPos += readSize;
 				if (currPos >= contLeng)
@@ -591,7 +591,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (OSInt)contLeng, filePathU, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, filePathU, dt.ToTicks());
 				}
 			}
 			MemFree(imgBuff);

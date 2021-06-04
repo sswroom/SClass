@@ -24,10 +24,10 @@ namespace DB
 		DB::DBConn *db;
 		IO::LogTool *log;
 		DB::DBReader *lastReader;
-		Int32 readerCnt;
-		Int32 readerFail;
+		UInt32 readerCnt;
+		UInt32 readerFail;
 //		UTF8Char *connStr;
-		Int32 openFail;
+		UInt32 openFail;
 		Bool needRelease;
 
 		const UTF8Char *logPrefix;
@@ -37,7 +37,7 @@ namespace DB
 		SQLFailedFunc trig;
 		Text::StringBuilderUTF8 *lastErrMsg;
 
-		Int32 dataCnt;
+		UInt32 dataCnt;
 
 		DBUtil::ServerType svrType;
 
@@ -61,7 +61,7 @@ namespace DB
 		Bool IsDataError(UTF8Char *errCode);
 		void GetLastErrorMsg(Text::StringBuilderUTF *sb);
 		DB::DBConn *GetDBConn();
-		Int32 GetTzQhr();
+		Int8 GetTzQhr();
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);
@@ -77,7 +77,7 @@ namespace DB
 		UTF8Char *DBIsNull(UTF8Char *sqlstr, const UTF8Char *colName);
 
 		void DelNewStr(const UTF8Char *s);
-		Int32 GetDataCnt();
+		UInt32 GetDataCnt();
 
 		DB::DBReader *GetTableData(const UTF8Char *tableName, UOSInt maxCnt, void *ordering, void *condition);
 		UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *arr);

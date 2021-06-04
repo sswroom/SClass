@@ -177,7 +177,7 @@ namespace Map
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);
 
 		UOSInt GetImageCnt();
-		Media::StaticImage *GetImage(UOSInt index, Int32 *imgDurMS);
+		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS);
 		OSInt AddImage(const UTF8Char *fileName, Parser::ParserList *parserList); // -1 = fail
 		UOSInt AddImage(const UTF8Char *fileName, Media::ImageList *imgList);
 		

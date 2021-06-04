@@ -37,8 +37,8 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 	UInt8 hdr[24];
 	UInt8 *packetBuff;
 	UInt32 maxSize = 65536;
-	Int64 currOfst;
-	Int64 fileSize = fd->GetDataSize();
+	UInt64 currOfst;
+	UInt64 fileSize = fd->GetDataSize();
 	UInt32 packetType;
 	UInt32 ifId;
 	UInt16 linkType;
@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 						timeResol = (Int8)packetBuff[i + 4];
 						break;
 					}
-					i += 4 + optLeng;
+					i += 4 + (UOSInt)optLeng;
 					if (i & 3)
 					{
 						i += 4 - (i & 3);
@@ -184,7 +184,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 						timeResol = (Int8)packetBuff[i + 4];
 						break;
 					}
-					i += 4 + optLeng;
+					i += 4 + (UOSInt)optLeng;
 					if (i & 3)
 					{
 						i += 4 - (i & 3);

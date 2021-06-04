@@ -14,7 +14,7 @@ namespace Media
 		UInt64 readOfst;
 		UInt64 bitRate;
 		UInt64 fleng;
-		Int32 startTime;
+		UInt32 startTime;
 		Media::M2VStreamSource *stm;
 
 		Bool playing;

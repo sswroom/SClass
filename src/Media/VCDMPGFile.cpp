@@ -180,7 +180,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
 							frameTime = 0;
 						if (firstVideo || frameTime > lastFrameTime)
 						{
-							me->vstm->SetStreamTime(frameTime);
+							me->vstm->SetStreamTime((UInt32)frameTime);
 							firstVideo = false;
 							lastFrameTime = frameTime;
 						}

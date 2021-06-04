@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 	Int32 colorSize = (hdr[10] & 7) + 1;
 //	Int32 colorIndex = -1;
 	Int32 transparentIndex = -1;
-	Int32 frameDelay = 0;
+	UInt32 frameDelay = 0;
 	Bool isFirst = true;
 	UInt8 blockType;
 	UInt8 readBlock[256];
@@ -721,7 +721,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 				currOfst += readSize + 1;
 				if (readSize >= 4)
 				{
-					frameDelay = ReadUInt16(&readBlock[1]) * 10;
+					frameDelay = (UInt32)ReadUInt16(&readBlock[1]) * 10;
 					if (readBlock[0] & 1)
 					{
 						transparentIndex = readBlock[3];

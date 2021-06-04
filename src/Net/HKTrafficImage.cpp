@@ -18,10 +18,10 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 	NEW_CLASS(doc, Text::XMLDocument());
 	if (doc->ParseBuff(encFact, buff, buffSize))
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		UOSInt l;
 		Text::StringBuilderUTF8 sbKey;
 		Text::StringBuilderUTF8 sbRegion;
 		Text::StringBuilderUTF8 sbDesc;

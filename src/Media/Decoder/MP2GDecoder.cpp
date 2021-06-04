@@ -9,13 +9,13 @@
 void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
-	OSInt endSize = dataSize - 4;
-	OSInt i;
-	Int32 fieldOfst;
-	OSInt endOfst;
-	OSInt startOfst;
+	UOSInt endSize = dataSize - 4;
+	UOSInt i;
+	UInt32 fieldOfst;
+	UOSInt endOfst;
+	UOSInt startOfst;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
-	Data::ArrayListInt32 frames;
+	Data::ArrayListUInt32 frames;
 	if (ReadMInt32(imgData[0]) == 0x000001b3)
 	{
 		Media::FrameInfo info;
@@ -40,19 +40,19 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 	{
 		if (*(Int32*)&imgData[0][i] == srch)
 		{
-			frames.Add((Int32)i);
+			frames.Add((UInt32)i);
 			i += 3;
 		}
 		i++;
 	}
 
-	Int32 outFrameTime;
+	UInt32 outFrameTime;
 	Media::FrameType outFrameType;
 	Media::IVideoSource::FrameFlag outFrameFlag;
 	Media::IVideoSource::FrameStruct outFrameStruct;
-	Int32 outFieldOfst;
+	UInt32 outFieldOfst;
 	Bool outRFF;
-	Int32 ftime;
+	UInt32 ftime;
 
 	Bool lastRFF = false;
 	Media::FrameType ftype = frameType;
@@ -209,11 +209,11 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 
 		if (outRFF)
 		{
-			ftime = outFrameTime + MulDiv32(outFieldOfst * 2 + 1, this->frameRateDenorm * 250, this->frameRateNorm);
+			ftime = outFrameTime + MulDivU32(outFieldOfst * 2 + 1, this->frameRateDenorm * 250, this->frameRateNorm);
 		}
 		else
 		{
-			ftime = outFrameTime + MulDiv32(outFieldOfst, this->frameRateDenorm * 500, this->frameRateNorm);
+			ftime = outFrameTime + MulDivU32(outFieldOfst, this->frameRateDenorm * 500, this->frameRateNorm);
 		}
 		if (i >= endSize || !this->started)
 		{

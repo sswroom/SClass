@@ -9,7 +9,7 @@
 Media::ImageList::ImageList(const UTF8Char *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->imgList, Data::ArrayList<Media::Image*>());
-	NEW_CLASS(this->imgTimes, Data::ArrayListInt32());
+	NEW_CLASS(this->imgTimes, Data::ArrayListUInt32());
 	NEW_CLASS(this->imgTypeList, Data::ArrayList<ImageType>());
 	NEW_CLASS(this->valTypeI32, Data::ArrayList<ValueType>());
 	NEW_CLASS(this->valI32, Data::ArrayList<Int32>());
@@ -65,7 +65,7 @@ IO::ParsedObject::ParserType Media::ImageList::GetParserType()
 	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
 }
 
-UOSInt Media::ImageList::AddImage(Media::Image *img, Int32 imageDelay)
+UOSInt Media::ImageList::AddImage(Media::Image *img, UInt32 imageDelay)
 {
 	this->imgTimes->Add(imageDelay);
 	this->imgTypeList->Add(Media::ImageList::IT_UNKNOWN);
@@ -96,7 +96,7 @@ UOSInt Media::ImageList::GetCount()
 	return imgList->GetCount();
 }
 
-Media::Image *Media::ImageList::GetImage(UOSInt index, Int32 *imageDelay)
+Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay)
 {
 	if (imageDelay)
 	{
@@ -343,7 +343,7 @@ void Media::ImageList::ToString(Text::StringBuilderUTF *sb)
 {
 	Bool hasData = this->ToValueString(sb);
 	Media::Image *img;
-	Int32 delay;
+	UInt32 delay;
 	UOSInt i = 0;
 	UOSInt j = this->GetCount();
 	while (i < j)
@@ -359,7 +359,7 @@ void Media::ImageList::ToString(Text::StringBuilderUTF *sb)
 			sb->Append((const UTF8Char*)"Image ");
 			sb->AppendUOSInt(i);
 			sb->Append((const UTF8Char*)":\r\nDelay = ");
-			sb->AppendI32(delay);
+			sb->AppendU32(delay);
 			sb->Append((const UTF8Char*)"\r\n");
 			img->ToString(sb);
 		}

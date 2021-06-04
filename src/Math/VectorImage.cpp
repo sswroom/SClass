@@ -331,12 +331,12 @@ void Math::VectorImage::SetBounds(Double minX, Double minY, Double maxX, Double 
 	this->y2 = maxY;
 }
 
-Media::StaticImage *Math::VectorImage::GetImage(Int32 *imgTimeMS)
+Media::StaticImage *Math::VectorImage::GetImage(UInt32 *imgTimeMS)
 {
 	return this->img->GetImage(imgTimeMS);
 }
 
-Media::StaticImage *Math::VectorImage::GetImage(Double width, Double height, Int32 *imgTimeMS)
+Media::StaticImage *Math::VectorImage::GetImage(Double width, Double height, UInt32 *imgTimeMS)
 {
 	if (width < 0)
 		width = -width;

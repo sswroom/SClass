@@ -43,29 +43,30 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	Bool error = false;
 	UTF8Char u8buff[256];
 	const UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt currPos;
-	OSInt readSize;
-	OSInt buffSize;
-	Int64 fileSize;
+	OSInt si;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt currPos;
+	UOSInt readSize;
+	UOSInt buffSize;
+	UInt64 fileSize;
 	Int32 cmdType;
-	Int32 cmdSize;
+	UInt32 cmdSize;
 
 	sptr = fd->GetFullName();
-	i = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(u8buff, &sptr[i + 1]);
+	si = Text::StrLastIndexOf(sptr, '\\');
+	Text::StrConcat(u8buff, &sptr[si + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"RED"))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
-	if (i < 0)
+	si = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+	if (si < 0)
 		return 0;
-	if (u8buff[i - 1] != 's' && u8buff[i - 1] != 'S')
+	if (u8buff[si - 1] != 's' && u8buff[si - 1] != 'S')
 		return 0;
-	if (Text::StrCompareICase(&u8buff[i + 1], (const UTF8Char*)"DAT") != 0)
+	if (Text::StrCompareICase(&u8buff[si + 1], (const UTF8Char*)"DAT") != 0)
 		return 0;
 
 	fileSize = fd->GetDataSize();

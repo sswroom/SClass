@@ -8,7 +8,7 @@ typedef struct
 	UInt8 devId[6];
 } StreamData;
 
-IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, Int64 devId)
+IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, UInt64 devId)
 {
 	this->listener = listener;
 	this->devId = devId;
@@ -120,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *s
 					data->devId[5] = packetBuff[10];
 					this->listener->DataParsed(stm, stmObj, ReadMUInt16(&packetBuff[1]), ReadMUInt16(&packetBuff[11]), packetBuff, parseOfst + 1);
 
-					firstIndex = -1;
+					firstIndex = (UOSInt)-1;
 					parseOfst = i + 1;
 				}
 				else

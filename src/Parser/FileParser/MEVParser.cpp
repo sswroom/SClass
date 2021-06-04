@@ -260,9 +260,9 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[20]);
 			sptr = Text::StrConcat(Text::StrConcat(sbuff, dirArr[ReadUInt32(&buff[8])]), L"\\");
 			Text::StrUTF8_WCharC(sptr, &buff[20], ReadUInt32(&buff[4]), 0);
-			if (*(Int32*)&buff[12])
+			if (ReadUInt32(&buff[12]))
 			{
-				this->parsers->SetCodePage(*(Int32*)&buff[12]);
+				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
 			const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
 			Map::IMapDrawLayer *layer = this->mapMgr->LoadLayer(u8ptr, this->parsers, env);

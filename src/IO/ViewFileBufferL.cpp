@@ -48,9 +48,9 @@ UInt8 *IO::ViewFileBuffer::GetPointer()
 
 UInt64 IO::ViewFileBuffer::GetLength()
 {
-	UInt64 pos = lseek((int)(OSInt)fileHandle, 0, SEEK_CUR);
-	UInt64 leng = lseek((int)(OSInt)fileHandle, 0, SEEK_END);
-	lseek((int)(OSInt)fileHandle, pos, SEEK_SET);
+	UInt64 pos = (UInt64)lseek((int)(OSInt)fileHandle, 0, SEEK_CUR);
+	UInt64 leng = (UInt64)lseek((int)(OSInt)fileHandle, 0, SEEK_END);
+	lseek((int)(OSInt)fileHandle, (off_t)pos, SEEK_SET);
 	return leng;
 }
 

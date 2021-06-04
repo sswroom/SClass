@@ -1041,7 +1041,7 @@ DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType()
 	return DB::DBConn::CT_MYSQLTCP;
 }
 
-Int32 Net::MySQLTCPClient::GetTzQhr()
+Int8 Net::MySQLTCPClient::GetTzQhr()
 {
 	return 0;
 }

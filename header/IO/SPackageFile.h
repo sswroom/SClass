@@ -31,7 +31,7 @@ namespace IO
 		UOSInt customSize;
 		UInt8 *customBuff;
 
-		void ReadV2DirEnt(Int64 ofst, Int64 size);
+		void ReadV2DirEnt(UInt64 ofst, UInt64 size);
 		void AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd);
 		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:

@@ -19,9 +19,9 @@ namespace Media
 		UInt8 *dataBuff;
 		UInt8 *dataBuff2;
 		UOSInt buffSize;
-		OSInt buffStart;
-		OSInt buffEnd;
-		Int64 buffSample;
+		UOSInt buffStart;
+		UOSInt buffEnd;
+		UInt64 buffSample;
 		UInt32 lastFrameSize;
 		Bool streamStarted;
 
@@ -50,11 +50,11 @@ namespace Media
 
 		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
 		virtual void ClearFrameBuff();
-		virtual void SetStreamTime(Int32 time);
+		virtual void SetStreamTime(UInt32 time);
 		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize);
 		virtual Int32 GetFrameStreamTime();
 		virtual void EndFrameStream();
-		virtual Int64 GetBitRate();
+		virtual UInt64 GetBitRate();
 	};
 }
 #endif

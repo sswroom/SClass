@@ -117,7 +117,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			sb.AppendDate(&dt1);
 			sb.Append((const UTF8Char*)", ");
 			sb.AppendDate(&dt2);
-			this->tzQhr = (Int32)(dt1.DiffMS(&dt2) / 900000);
+			this->tzQhr = (Int8)(dt1.DiffMS(&dt2) / 900000);
 		}
 	}
 }
@@ -430,7 +430,7 @@ DB::DBConn::ConnType DB::ODBCConn::GetConnType()
 	return CT_ODBC;
 }
 
-Int32 DB::ODBCConn::GetTzQhr()
+Int8 DB::ODBCConn::GetTzQhr()
 {
 	return this->tzQhr;
 }
@@ -1141,7 +1141,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid,
 	}
 }
 
-DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, Int32 tzQhr)
+DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, Int8 tzQhr)
 {
 	this->conn = conn;
 	this->hStmt = hStmt;

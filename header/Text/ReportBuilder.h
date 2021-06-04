@@ -27,15 +27,15 @@ namespace Text
 
 		typedef struct
 		{
-			OSInt col;
-			OSInt row;
+			UOSInt col;
+			UOSInt row;
 			Double lat;
 			Double lon;
 		} ColURLLatLon;
 
 		typedef struct
 		{
-			OSInt col;
+			UOSInt col;
 			const UTF8Char *fileName;
 			const UTF8Char *name;
 		} ColIcon;
@@ -46,7 +46,7 @@ namespace Text
 		} IconStatus;
 	private:
 		const UTF8Char *name;
-		OSInt colCount;
+		UOSInt colCount;
 		Data::ArrayList<const UTF8Char **> *preheaders;
 		Data::ArrayList<const UTF8Char **> *headers;
 		Data::ArrayList<const UTF8Char **> *tableContent;
@@ -59,7 +59,7 @@ namespace Text
 		Bool paperHori;
 
 	public:
-		ReportBuilder(const UTF8Char *name, OSInt colCount, const UTF8Char **columns);
+		ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns);
 		~ReportBuilder();
 
 		void SetPaperHori(Bool paperHori);
@@ -68,10 +68,10 @@ namespace Text
 		void AddHeader(const UTF8Char *name, const UTF8Char *val);
 		void AddTableContent(const UTF8Char **content);
 		void AddTableSummary(const UTF8Char **content);
-		void AddIcon(OSInt index, const UTF8Char *fileName, const UTF8Char *name);
-		void SetColumnWidth(OSInt index, Double width);
-		void SetColumnType(OSInt index, ColType colType);
-		void SetColURLLatLon(OSInt index, Double lat, Double lon);
+		void AddIcon(UOSInt index, const UTF8Char *fileName, const UTF8Char *name);
+		void SetColumnWidth(UOSInt index, Double width);
+		void SetColumnType(UOSInt index, ColType colType);
+		void SetColURLLatLon(UOSInt index, Double lat, Double lon);
 		Text::SpreadSheet::Workbook *CreateWorkbook();
 		Media::VectorDocument *CreateVDoc(Int32 id, Media::DrawEngine *deng);
 	};

@@ -42,8 +42,8 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 	UInt8 tmpBuff[1036];
 	OSInt i;
 	OSInt j;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	OSInt imgX1;
 	OSInt imgY1;
 	OSInt imgX2;
@@ -51,8 +51,8 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 
 	UInt32 imgWidth;
 	UInt32 imgHeight;
-	Int32 scaleCnt;
-	Int64 fileSize;
+	UInt32 scaleCnt;
+	UInt64 fileSize;
 	UInt8 *scaleTable;
 	
 	Media::ImageList *imgList;
@@ -82,10 +82,10 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 	}
 	imgWidth = ReadUInt32(&hdr[18]);
 	imgHeight = ReadUInt32(&hdr[22]);
-	scaleCnt = ReadInt16(&hdr[58]);
+	scaleCnt = ReadUInt16(&hdr[58]);
 	imgList = 0;
 	fd->GetRealData(fileSize - 4, 4, tmpBuff);
-	scaleCnt = (Int32)((fileSize - 4 - ReadUInt32(tmpBuff)) >> 2);
+	scaleCnt = (UInt32)((fileSize - 4 - ReadUInt32(tmpBuff)) >> 2);
 
 	UInt8 *imgBuff = MemAlloc(UInt8, 4096);
 	UInt8 *srcBuff = MemAlloc(UInt8, 8192);
@@ -101,8 +101,8 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 		UInt32 thisImgHeight;
 		UInt32 thisOfst;
 		UInt32 nextOfst;
-		OSInt xCnt;
-		OSInt yCnt;
+		UOSInt xCnt;
+		UOSInt yCnt;
 		UOSInt decSize;
 		fd->GetRealData(ReadUInt32(&scaleTable[i * 4]), 1036, tmpBuff);
 		thisImgWidth = ReadUInt32(&tmpBuff[0]);
@@ -136,8 +136,8 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 								inf.Decompress(imgBuff, &decSize, srcBuff, nextOfst - thisOfst);
 								if (decSize == 4096)
 								{
-									imgX1 = currX << 6;
-									imgY1 = currY << 6;
+									imgX1 = (OSInt)currX << 6;
+									imgY1 = (OSInt)currY << 6;
 									imgX2 = imgX1 + 64;
 									imgY2 = imgY1 + 64;
 									if (imgX1 >= (OSInt)thisImgWidth || imgY1 >= (OSInt)thisImgHeight)
@@ -153,7 +153,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 										{
 											UInt8 *srcPtr = imgBuff + 4096;
 											UInt8 *destPtr = outImg->data + thisImgWidth * imgY1 + imgX1;
-											OSInt w = thisImgWidth - imgX1;
+											UOSInt w = thisImgWidth - (UOSInt)imgX1;
 											while (imgY1 < imgY2)
 											{
 												srcPtr -= 64;

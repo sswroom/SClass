@@ -17,10 +17,10 @@ namespace Manage
 	class MonConn
 	{
 	public:
-		static OSInt BuildPacket(UInt8 *outbuff, UInt8 *data, OSInt dataSize, Int32 cmdType, Int32 cmdSeq);
+		static UOSInt BuildPacket(UInt8 *outbuff, UInt8 *data, UOSInt dataSize, UInt16 cmdType, UInt16 cmdSeq);
 		static UInt16 CalCheck(UInt8 *packet);
-		static UInt8 *FindPacket(UInt8 *buff, OSInt buffSize);
-		static Bool IsCompletePacket(UInt8 *buff, OSInt buffSize);
+		static UInt8 *FindPacket(UInt8 *buff, UOSInt buffSize);
+		static Bool IsCompletePacket(UInt8 *buff, UOSInt buffSize);
 		static void ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData);
 
 	private:
@@ -30,8 +30,8 @@ namespace Manage
 		Bool ConnTRunning;
 		Bool ToStop;
 		Sync::Mutex *cmdSeqMut;
-		Int32 cmdSeq;
-		Int32 port;
+		UInt16 cmdSeq;
+		UInt16 port;
 		Int32 svrMonConn;
 
 		Net::SocketFactory *sockf;
@@ -47,7 +47,7 @@ namespace Manage
 
 		static UInt32 __stdcall ConnTThread(void *conn);
 		static UInt32 __stdcall ConnRThread(void *conn);
-		void AddCommand(UInt8 *data, OSInt dataSize, Int32 cmdType);
+		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
 		MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter);
 		~MonConn();
@@ -56,9 +56,9 @@ namespace Manage
 
 		void StartProcess(Int32 name);
 		void EndProcess();
-		void StartTCPPort(Int32 portNum);
-		void StartUDPPort(Int32 portNum);
-		void AddLogMessage(Int32 name, Int32 name2, Int32 logLevel, const UTF8Char *msg);
+		void StartTCPPort(UInt16 portNum);
+		void StartUDPPort(UInt16 portNum);
+		void AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, const UTF8Char *msg);
 	};
-};
+}
 #endif

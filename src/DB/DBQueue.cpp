@@ -39,8 +39,8 @@ const UTF8Char *DB::DBQueue::SQLCmd::GetSQL()
 
 DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 progId, DBHdlr hdlr, void *userData, void *userData2)
 {
-	OSInt i = 0;
-	OSInt j = strs->GetCount();
+	UOSInt i = 0;
+	UOSInt j = strs->GetCount();
 	NEW_CLASS(this->strs, Data::ArrayList<const UTF8Char*>());
 	while (i < j)
 	{
@@ -55,7 +55,7 @@ DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 pr
 
 DB::DBQueue::SQLGroup::~SQLGroup()
 {
-	OSInt i = this->strs->GetCount();
+	UOSInt i = this->strs->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->strs->GetItem(i));
@@ -153,9 +153,9 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8
 DB::DBQueue::~DBQueue()
 {
 	this->ToStop();
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	DB::DBQueue::IDBCmd *c;
 	DB::DBQueue::IDBCmd **carr;
 	IO::FileStream *fs = 0;
@@ -238,7 +238,7 @@ void DB::DBQueue::ToStop()
 	if (!stopping)
 	{
 		stopping = true;
-		OSInt i;
+		UOSInt i;
 		i = dbList->GetCount();
 		while (i-- > 0)
 		{
@@ -318,8 +318,8 @@ void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBTransHdlr hdlr, void 
 
 void DB::DBQueue::RemoveSQLs(Int32 progId)
 {
-	OSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
-	OSInt j;
+	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	UOSInt j;
 	DB::DBQueue::IDBCmd *cmd;
 	Sync::MutexUsage mutUsage(mut);
 	while (i-- > 0)
@@ -338,10 +338,10 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 	mutUsage.EndUse();
 }
 
-OSInt DB::DBQueue::GetDataCnt()
+UOSInt DB::DBQueue::GetDataCnt()
 {
-	OSInt i = dbList->GetCount();
-	Int32 cnt = 0;
+	UOSInt i = dbList->GetCount();
+	UOSInt cnt = 0;
 	while (i-- > 0)
 	{
 		cnt += ((DB::DBHandler*)dbList->GetItem(i))->GetDataCnt();
@@ -349,10 +349,10 @@ OSInt DB::DBQueue::GetDataCnt()
 	return cnt;
 }
 
-OSInt DB::DBQueue::GetQueueCnt()
+UOSInt DB::DBQueue::GetQueueCnt()
 {
-	OSInt cnt = 0;
-	OSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	UOSInt cnt = 0;
+	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
 	Sync::MutexUsage mutUsage(mut);
 	while (i-- > 0)
 	{
@@ -363,7 +363,7 @@ OSInt DB::DBQueue::GetQueueCnt()
 	return cnt;
 }
 
-OSInt DB::DBQueue::GetConnCnt()
+UOSInt DB::DBQueue::GetConnCnt()
 {
 	return this->dbList->GetCount();
 }
@@ -378,18 +378,18 @@ DB::DBUtil::ServerType DB::DBQueue::GetSvrType()
 	return this->db1->GetSvrType();
 }
 
-Int32 DB::DBQueue::GetTzQhr()
+Int8 DB::DBQueue::GetTzQhr()
 {
 	return this->db1->GetTzQhr();
 }
 
-OSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
+UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	void **c;
-	OSInt i;
-	OSInt j;
-	OSInt cnt = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt cnt = 0;
 
 	i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
 	while (i-- > 0)
@@ -454,7 +454,7 @@ UTF8Char *DB::DBQueue::DBBool(UTF8Char *buff, Bool val)
 Bool DB::DBQueue::IsExecTimeout()
 {
 	DB::DBHandler *db;
-	OSInt i;
+	UOSInt i;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	i = this->dbList->GetCount();
@@ -493,7 +493,7 @@ DB::DBHandler::~DBHandler()
 	DEL_CLASS(this->mut);
 }
 
-Int32 DB::DBHandler::GetDataCnt()
+UInt32 DB::DBHandler::GetDataCnt()
 {
 	return db->GetDataCnt();
 }
@@ -520,12 +520,12 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 	me->running = true;
 
 	const UTF8Char *s;
-	OSInt i = 0;
+	UOSInt i = 0;
 	DB::DBQueue::SQLCmd *cmd;
 	DB::DBQueue::SQLGroup *grp;
 	DB::DBQueue::IDBCmd *cmds[200];
-	OSInt cmdSize;
-	OSInt l;
+	UOSInt cmdSize;
+	UOSInt l;
 	DB::DBQueue::IDBCmd *c;
 	OSInt sqlRet;
 	bool found;

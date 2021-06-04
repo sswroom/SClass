@@ -9,7 +9,7 @@ namespace Parser
 		class TARParser : public IO::IFileParser
 		{
 		private:
-			Int32 codePage;
+			UInt32 codePage;
 		public:
 			TARParser();
 			virtual ~TARParser();
@@ -20,6 +20,6 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 		};
-	};
-};
+	}
+}
 #endif

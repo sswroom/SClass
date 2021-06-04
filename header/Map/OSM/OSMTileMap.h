@@ -16,7 +16,7 @@ namespace Map
 		{
 		private:
 			Data::ArrayListStrUTF8 *urls;
-			OSInt urlNext;
+			UOSInt urlNext;
 			Sync::Mutex *urlMut;
 
 			const UTF8Char *cacheDir;
@@ -34,7 +34,7 @@ namespace Map
 			virtual ~OSMTileMap();
 
 			void AddAlternateURL(const UTF8Char *url);
-			const UTF8Char *GetOSMURL(OSInt index);
+			const UTF8Char *GetOSMURL(UOSInt index);
 			Bool HasSPackageFile();
 			Bool ImportTiles(IO::PackageFile *pkg);
 			Bool OptimizeToFile(const UTF8Char *fileName);

@@ -453,7 +453,7 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoL
 		return 0;
 	UInt8 buff[16];
 	OSInt i;
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	const UTF8Char *csptr;
 	Int32 cpuInfo[4];
 	__cpuid(cpuInfo, 2);

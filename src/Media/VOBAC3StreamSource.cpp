@@ -264,7 +264,7 @@ void Media::VOBAC3StreamSource::ClearFrameBuff()
 	mutUsage.EndUse();
 }
 
-void Media::VOBAC3StreamSource::SetStreamTime(Int32 time)
+void Media::VOBAC3StreamSource::SetStreamTime(UInt32 time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffSample = MulDivU32(time, this->fmt->bitRate, 8000);
@@ -370,7 +370,7 @@ void Media::VOBAC3StreamSource::EndFrameStream()
 {
 }
 
-Int64 Media::VOBAC3StreamSource::GetBitRate()
+UInt64 Media::VOBAC3StreamSource::GetBitRate()
 {
 	return this->fmt->bitRate;
 }

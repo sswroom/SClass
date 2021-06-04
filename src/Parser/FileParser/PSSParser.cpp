@@ -222,7 +222,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else
 		{
-			i = ReadMInt16(&buff[4]);
+			i = ReadMUInt16(&buff[4]);
 			if (buff[3] == 0xbd) //Private stream 1
 			{
 				Int64 pts = 0;

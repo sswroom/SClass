@@ -48,7 +48,7 @@ namespace Net
 
 		virtual DB::DBUtil::ServerType GetSvrType();
 		virtual DB::DBConn::ConnType GetConnType();
-		virtual Int32 GetTzQhr();
+		virtual Int8 GetTzQhr();
 		virtual void GetConnName(Text::StringBuilderUTF *sb);
 		virtual void Close();
 		virtual void Dispose();

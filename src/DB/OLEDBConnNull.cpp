@@ -55,7 +55,7 @@ DB::DBConn::ConnType DB::OLEDBConn::GetConnType()
 	return DB::DBConn::CT_OLEDB;
 }
 
-Int32 DB::OLEDBConn::GetTzQhr()
+Int8 DB::OLEDBConn::GetTzQhr()
 {
 	return 0;
 }

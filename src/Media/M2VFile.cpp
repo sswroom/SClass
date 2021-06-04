@@ -130,7 +130,7 @@ UInt32 Media::M2VFile::SeekToTime(UInt32 mediaTime)
 	if (this->playing)
 		return 0;
 	this->readOfst = mediaTime * this->bitRate / 8000;
-	this->startTime = (Int32)mediaTime;
+	this->startTime = mediaTime;
 	return mediaTime;
 }
 

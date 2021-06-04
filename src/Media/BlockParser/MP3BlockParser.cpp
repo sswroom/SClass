@@ -108,7 +108,7 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(IO:
 			break;
 		stmData->GetRealData(currOfst, 4, buff);
 	}
-	audio->UpdateBitRate((Int32)(currOfst * format.frequency / 1152 / blkCnt));
+	audio->UpdateBitRate((UInt32)(currOfst * format.frequency / 1152 / blkCnt));
 	return audio;
 }
 

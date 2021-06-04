@@ -22,7 +22,7 @@ void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 			Int64 currTime;
 			dt.SetCurrTimeUTC();
 			currTime = dt.ToTicks();
-			repBuff[0] = (vn << 3) | 4;
+			repBuff[0] = (UInt8)((vn << 3) | 4);
 			repBuff[1] = 2; //Secondary Server
 			repBuff[2] = buff[2]; //Poll
 			repBuff[3] = 3;

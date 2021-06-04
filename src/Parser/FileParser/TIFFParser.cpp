@@ -269,7 +269,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				{
 					Media::Image *innerImg;
 					Media::StaticImage *innerSImg;
-					Int32 imgDelay;
+					UInt32 imgDelay;
 					i = 0;
 					j = innerImgList->GetCount();
 					while (i < j)

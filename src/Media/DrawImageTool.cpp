@@ -12,7 +12,7 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, const UTF8Char *t
 	Double sz[2];
 	const UTF8Char *currTxt = txt;
 	UTF8Char *tmpBuff;
-	OSInt txtLen;
+	UOSInt txtLen;
 	txtLen = Text::StrCharCnt(currTxt);
 	tmpBuff = MemAlloc(UTF8Char, txtLen + 1);
 	UTF8Char c;

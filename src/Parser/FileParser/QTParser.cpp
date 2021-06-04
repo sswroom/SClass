@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Int32Map.h"
+#include "Data/UInt32Map.h"
 #include "Math/Math.h"
 #include "Media/AudioFrameSource.h"
 #include "Media/AACFrameSource.h"
@@ -45,13 +45,13 @@ IO::ParsedObject::ParserType Parser::FileParser::QTParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::QTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 hdr[16];
-	Int64 size;
-	Int64 ofst = 0;
-	Int64 endOfst = fd->GetDataSize();
+	UInt64 size;
+	UInt64 ofst = 0;
+	UInt64 endOfst = fd->GetDataSize();
 	fd->GetRealData(0, 8, hdr);
 	if (*(Int32*)&hdr[4] == *(Int32*)"ftyp")
 	{
-		ofst = ReadMInt32(&hdr[0]);
+		ofst = ReadMUInt32(&hdr[0]);
 	}
 	else if (*(Int32*)&hdr[4] == *(Int32*)"moov")
 	{
@@ -69,7 +69,7 @@ IO::ParsedObject *Parser::FileParser::QTParser::ParseFile(IO::IStreamData *fd, I
 		size = ReadMUInt32(&hdr[0]);
 		if (size == 1)
 		{
-			size = ReadMInt64(&hdr[8]);
+			size = ReadMUInt64(&hdr[8]);
 		}
 		if (size == 0 || ofst + size > endOfst)
 		{
@@ -107,13 +107,13 @@ IO::ParsedObject *Parser::FileParser::QTParser::ParseFile(IO::IStreamData *fd, I
 	return 0;
 }
 
-Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *fd, UInt64 ofst, Int64 size)
+Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *fd, UInt64 ofst, UInt64 size)
 {
-	Int64 i;
+	UInt64 i;
 	UInt8 hdr[8];
 	UInt8 buff[256];
 	UInt32 atomSize;
-	Int32 mvTimeScale = 1;
+	UInt32 mvTimeScale = 1;
 	Int32 trackSkip;
 	Int32 trackDelay;
 	Int32 vTrackDelay = 0;
@@ -139,7 +139,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *f
 		else if (*(Int32*)&hdr[4] == *(Int32*)"mvhd")
 		{
 			fd->GetRealData(ofst + i + 8, atomSize - 8, buff);
-			mvTimeScale = ReadMInt32(&buff[12]);
+			mvTimeScale = ReadMUInt32(&buff[12]);
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"clip")
 		{
@@ -155,7 +155,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *f
 					vTrackDelay = trackDelay;
 					vTrackSkip = trackSkip;
 				}
-				Int32 d1 = MulDiv32(vTrackDelay - trackDelay, 1000, mvTimeScale);
+				Int32 d1 = MulDiv32(vTrackDelay - trackDelay, 1000, (Int32)mvTimeScale);
 				Int32 d2 = (vTrackSkip - trackSkip);
 				file->AddSource(src, -d1 + d2);
 			}
@@ -196,7 +196,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::IStreamData *f
 	return file;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, Int32 mvTimeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -204,7 +204,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData
 	UInt32 atomSize;
 	Int32 sampleSkip = 0;
 	Int32 delay = 0;
-	Int32 mediaTimeScale = mvTimeScale;
+	UInt32 mediaTimeScale = mvTimeScale;
 	Media::IMediaSource *src = 0;
 	i = 8;
 	while (i < size)
@@ -276,17 +276,17 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::IStreamData
 		i += atomSize;
 	}
 	*trackDelay = delay;
-	*trackSkipMS = MulDiv32(sampleSkip, 1000, mediaTimeScale);
+	*trackSkipMS = MulDiv32(sampleSkip, 1000, (Int32)mediaTimeScale);
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Int32 *timeScaleOut)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, UInt32 *timeScaleOut)
 {
 	UInt32 i;
 	UInt8 hdr[8];
 	UInt8 buff[256];
 	UInt32 atomSize;
-	Int32 timeScale = *timeScaleOut;
+	UInt32 timeScale = *timeScaleOut;
 	Media::IMediaSource *src = 0;
 	Media::MediaType mtyp = Media::MEDIA_TYPE_UNKNOWN;
 	i = 8;
@@ -302,7 +302,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData
 		if (*(Int32*)&hdr[4] == *(Int32*)"mdhd")
 		{
 			fd->GetRealData(ofst + i + 8, atomSize, buff);
-			timeScale = ReadMInt32(&buff[12]);
+			timeScale = ReadMUInt32(&buff[12]);
 			if (timeScale == 0)
 			{
 //				timeScale = 10000000;
@@ -354,7 +354,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::IStreamData
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, Int32 timeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -400,7 +400,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::IStreamData
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, Int32 timeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -423,14 +423,14 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 	UInt32 stssAtomSize = 0;
 	UOSInt atomOfst;
 	UInt32 subAtomSize;
-	Int32 frameRate = 24;
-	Int32 frameRateDenorm = 1;
+	UInt32 frameRate = 24;
+	UInt32 frameRateDenorm = 1;
 	UInt64 avccOfst = 0;
 	UInt32 avccAtomSize = 0;
 
 	if (mtyp == Media::MEDIA_TYPE_VIDEO)
 	{
-		frInfo.fourcc = -1;
+		frInfo.fourcc = (UInt32)-1;
 		frInfo.storeWidth = 0;
 		frInfo.storeHeight = 0;
 		frInfo.dispWidth = 0;
@@ -516,27 +516,27 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"SVQ3")
 				{
-					frInfo.fourcc = *(Int32*)"SVQ3";
+					frInfo.fourcc = *(UInt32*)"SVQ3";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"mp4v")
 				{
-					frInfo.fourcc = *(Int32*)"XVID";
+					frInfo.fourcc = *(UInt32*)"XVID";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"avc1")
 				{
-					frInfo.fourcc = *(Int32*)"ravc";
+					frInfo.fourcc = *(UInt32*)"ravc";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"hvc1")
 				{
-					frInfo.fourcc = *(Int32*)"rhvc";
+					frInfo.fourcc = *(UInt32*)"rhvc";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"hev1")
 				{
-					frInfo.fourcc = *(Int32*)"HEVC";
+					frInfo.fourcc = *(UInt32*)"HEVC";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"m2v1")
 				{
-					frInfo.fourcc = *(Int32*)"m2v1";
+					frInfo.fourcc = *(UInt32*)"m2v1";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"dvc ")
 				{
@@ -579,32 +579,32 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"XVID")
 				{
-					frInfo.fourcc = *(Int32*)"XVID";
+					frInfo.fourcc = *(UInt32*)"XVID";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"VP6F")
 				{
-					frInfo.fourcc = *(Int32*)"VP6F";
+					frInfo.fourcc = *(UInt32*)"VP6F";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"FLV1")
 				{
-					frInfo.fourcc = *(Int32*)"FLV1";
+					frInfo.fourcc = *(UInt32*)"FLV1";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"CFHD")
 				{
-					frInfo.fourcc = *(Int32*)"CFHD";
+					frInfo.fourcc = *(UInt32*)"CFHD";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"VP90")
 				{
-					frInfo.fourcc = *(Int32*)"VP90";
+					frInfo.fourcc = *(UInt32*)"VP90";
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"vp09")
 				{
-					frInfo.fourcc = *(Int32*)"vp09";
+					frInfo.fourcc = *(UInt32*)"vp09";
 				}
 
 				while (atomOfst < atomSize - 8)
 				{
-					subAtomSize = ReadMInt32(&buff[atomOfst]);
+					subAtomSize = ReadMUInt32(&buff[atomOfst]);
 					if (subAtomSize == 0)
 						break;
 					if (*(Int32*)&buff[atomOfst + 4] == *(Int32*)"gama")
@@ -728,9 +728,9 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				}
 				else if (ReadMInt16(&buff[24]) == 2)
 				{
-					afmt.nChannels = ReadMInt32(&buff[56]);
-					afmt.bitpersample = ReadMInt32(&buff[64]);
-					afmt.frequency = Math::Double2Int32(ReadMDouble(&buff[48]));
+					afmt.nChannels = (UInt16)ReadMUInt32(&buff[56]);
+					afmt.bitpersample = (UInt16)ReadMUInt32(&buff[64]);
+					afmt.frequency = (UInt32)Math::Double2Int32(ReadMDouble(&buff[48]));
 					afmt.bitRate = 0;
 					bofst = 80;
 				}
@@ -807,7 +807,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_NORMAL;
 					afmt.bitpersample = 24;
-					afmt.align = 3 * afmt.nChannels;
+					afmt.align = 3 * (UInt32)afmt.nChannels;
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"in32")
@@ -815,7 +815,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					afmt.formatId = 1;
 					afmt.intType = Media::AudioFormat::IT_NORMAL;
 					afmt.bitpersample = 32;
-					afmt.align = 4 * afmt.nChannels;
+					afmt.align = 4 * (UInt32)afmt.nChannels;
 					afmt.bitRate = afmt.align * afmt.frequency << 3;
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"ulaw")
@@ -890,7 +890,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 	// ........ ......x.  depends on core coder (0)
 	// ........ .......x  extensions flag (0)
 					afmt.extra[0] = 0x10;
-					afmt.extra[1] = (afmt.nChannels << 3);
+					afmt.extra[1] = (UInt8)(afmt.nChannels << 3);
 					switch (afmt.frequency)
 					{
 					case 96000:
@@ -1020,7 +1020,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 									break;
 								if (*(Int32*)&subBuff[subOfst + 4] == *(Int32*)"dac3")
 								{
-									static Int32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
+									static UInt32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 //									Int32 fscod = (subBuff[subOfst + 8] & 0xc0) >> 6;
 //									Int32 bsid = (subBuff[subOfst + 8] & 0x3e) >> 1;
 //									Int32 bsmod = ((subBuff[subOfst + 8] & 1) << 2) | ((subBuff[subOfst + 9] & 0xc0) >> 6);
@@ -1138,7 +1138,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			Int32 chunkSample;
 			Int32 nSample;
 			Int32 currStc;
-			Int64 currChOfst;
+			UInt64 currChOfst;
 			UInt32 currSampleSize;
 
 			ttsBuff = MemAlloc(UInt8, ttsAtomSize);
@@ -1163,7 +1163,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				{
 					currSampleSize = ReadMUInt32(&stszBuff[20]);
 				}
-				*(Int16*)&afmt.extra[6] = currSampleSize; //nBlockSize
+				*(UInt16*)&afmt.extra[6] = (UInt16)currSampleSize; //nBlockSize
 				afmt.bitpersample = 0;
 			}
 
@@ -1199,7 +1199,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 
 				while (nSample < nstsz)
 				{
-					currSampleSize = ReadMInt32(&stszBuff[stszBuffOfst]);
+					currSampleSize = ReadMUInt32(&stszBuff[stszBuffOfst]);
 					stszBuffOfst += 4;
 					if (chunkSample >= samplePerChunk)
 					{
@@ -1213,7 +1213,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 						}
 						if (stco64)
 						{
-							currChOfst = ReadMInt64(&stcoBuff[stcoBuffOfst]);
+							currChOfst = ReadMUInt64(&stcoBuff[stcoBuffOfst]);
 							stcoBuffOfst += 8;
 						}
 						else
@@ -1237,8 +1237,8 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			}
 			else
 			{
-				Int64 lastOfst = -1;
-				Int64 lastEndOfst = -1;
+				UInt64 lastOfst = (UInt64)-1;
+				UInt64 lastEndOfst = (UInt64)-1;
 				UInt32 lastSampleCnt = 0;
 				while (nSample < nstsz)
 				{
@@ -1254,7 +1254,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 						}
 						if (stco64)
 						{
-							currChOfst = ReadMInt64(&stcoBuff[stcoBuffOfst]);
+							currChOfst = ReadMUInt64(&stcoBuff[stcoBuffOfst]);
 							stcoBuffOfst += 8;
 						}
 						else
@@ -1276,7 +1276,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 						{
 							if (lastSampleCnt > 0)
 							{
-								asrc->AddBlock(lastOfst, (Int32)(lastEndOfst - lastOfst), lastSampleCnt);
+								asrc->AddBlock(lastOfst, (UInt32)(lastEndOfst - lastOfst), lastSampleCnt);
 							}
 							lastSampleCnt = 0;
 							lastOfst = currChOfst;
@@ -1298,7 +1298,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				{
 					if (lastSampleCnt)
 					{
-						asrc->AddBlock(lastOfst, (Int32)(lastEndOfst - lastOfst), lastSampleCnt);
+						asrc->AddBlock(lastOfst, (UInt32)(lastEndOfst - lastOfst), lastSampleCnt);
 						lastSampleCnt = 0;
 					}
 				}
@@ -1338,10 +1338,10 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			Int32 chunkSample;
 			UInt32 nSample;
 			UInt32 currStc;
-			Int64 currChOfst;
-			Int32 currSampleSize;
+			UInt64 currChOfst;
+			UInt32 currSampleSize;
 
-			Data::Int32Map<Int32> keyMap;
+			Data::UInt32Map<Int32> keyMap;
 			keyMap.Put(0, 1);
 
 			Media::FileVideoSource *fsrc;
@@ -1356,17 +1356,17 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			fd->GetRealData(stcoOfst, stcoAtomSize, stcoBuff);
 			fd->GetRealData(stszOfst, stszAtomSize, stszBuff);
 
-			Int32 lastKey = 0;
+			UInt32 lastKey = 0;
 			if (stssOfst != 0)
 			{
 				stssBuff = MemAlloc(UInt8, stssAtomSize);
 				fd->GetRealData(stssOfst, stssAtomSize, stssBuff);
 
-				Int32 thisKey;
+				UInt32 thisKey;
 				nSample = 16;
 				while (nSample < stssAtomSize)
 				{
-					thisKey = ReadMInt32(&stssBuff[nSample]) - 1;
+					thisKey = ReadMUInt32(&stssBuff[nSample]) - 1;
 					while (thisKey - lastKey > 300)
 					{
 						lastKey += 300;
@@ -1395,12 +1395,12 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			ttsNLeft = 0;
 			ttsDur = 0;
 			currTime = 0;
-			nstc = ReadMInt32(&stcBuff[12]);
+			nstc = ReadMUInt32(&stcBuff[12]);
 			stcBuffOfst = 16;
 			stco64 = *(Int32*)&stcoBuff[4] == *(Int32*)"co64";
 //			nstco = ReadMInt32(&stcoBuff[12]);
 			stcoBuffOfst = 16;
-			nstsz = ReadMInt32(&stszBuff[16]);
+			nstsz = ReadMUInt32(&stszBuff[16]);
 			stszBuffOfst = 20;
 			chunkId = 0;
 			nSample = 0;
@@ -1418,7 +1418,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 
 			while (nSample < nstsz)
 			{
-				currSampleSize = ReadMInt32(&stszBuff[stszBuffOfst]);
+				currSampleSize = ReadMUInt32(&stszBuff[stszBuffOfst]);
 				stszBuffOfst += 4;
 				if (chunkSample >= samplePerChunk)
 				{
@@ -1432,7 +1432,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					}
 					if (stco64)
 					{
-						currChOfst = ReadMInt64(&stcoBuff[stcoBuffOfst]);
+						currChOfst = ReadMUInt64(&stcoBuff[stcoBuffOfst]);
 						stcoBuffOfst += 8;
 					}
 					else
@@ -1448,14 +1448,14 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					ttsBuffOfst += 8;
 				}
 
-				Int32 t;
+				UInt32 t;
 				if (timeScale == 0)
 				{
 					t = 0;
 				}
 				else
 				{
-					t = (Int32)(currTime * 1000 / timeScale);
+					t = (UInt32)((UInt64)currTime * 1000 / timeScale);
 				}
 				fsrc->AddNewFrame(currChOfst, currSampleSize, keyMap.Get(nSample) != 0, t);
 				currTime += ttsDur;
@@ -1513,7 +1513,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 						MemFree(tmpBuff);
 						if (flags.frameRateDenorm != 0)
 						{
-							nSample = (Int32)fsrc->GetFrameSize(0);
+							nSample = (UInt32)fsrc->GetFrameSize(0);
 							tmpBuff = MemAlloc(UInt8, nSample);
 							fsrc->ReadFrame(0, tmpBuff);
 

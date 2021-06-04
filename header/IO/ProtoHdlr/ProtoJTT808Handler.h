@@ -11,10 +11,10 @@ namespace IO
 		{
 		private:
 			IO::IProtocolHandler::DataListener *listener;
-			Int64 devId;
+			UInt64 devId;
 
 		public:
-			ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, Int64 devId);
+			ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, UInt64 devId);
 			virtual ~ProtoJTT808Handler();
 
 			virtual void *CreateStreamData(IO::Stream *stm);

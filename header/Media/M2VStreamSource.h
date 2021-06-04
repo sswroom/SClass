@@ -39,11 +39,11 @@ namespace Media
 
 		UInt8 *frameBuff;
 		UOSInt frameBuffSize;
-		Int32 thisFrameTime;
-		Int32 syncFrameTime;
+		UInt32 thisFrameTime;
+		UInt32 syncFrameTime;
 		UOSInt syncFieldCnt;
 		Bool firstFrame;
-		OSInt frameStart;
+		UOSInt frameStart;
 		UOSInt frameNum;
 		Int32 writeCnt;
 
@@ -103,11 +103,11 @@ namespace Media
 
 		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
 		virtual void ClearFrameBuff();
-		virtual void SetStreamTime(Int32 time);
+		virtual void SetStreamTime(UInt32 time);
 		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize);
 		virtual Int32 GetFrameStreamTime();
 		virtual void EndFrameStream();
-		virtual Int64 GetBitRate();
+		virtual UInt64 GetBitRate();
 	};
 }
 #endif

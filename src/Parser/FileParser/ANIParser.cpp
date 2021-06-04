@@ -43,7 +43,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt buffSize;
 	UOSInt buffOfst;
 	UInt32 tmp;
-	Int32 displayRate = 0;
+	UInt32 displayRate = 0;
 	UInt32 nFrames = 0;
 	Media::ImageList *currImage = 0;
 
@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 			buffSize = hdr[1];
 			buff = MemAlloc(UInt8, buffSize);
 			fd->GetRealData(currOfst + 8, buffSize, buff);
-			displayRate = ReadInt32(&buff[28]);
+			displayRate = ReadUInt32(&buff[28]);
 			nFrames = ReadUInt32(&buff[4]);
 			MemFree(buff);
 		}
@@ -108,9 +108,9 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 				{
 					if (currImage)
 					{
-						Int32 imgTime;
+						UInt32 imgTime;
 						Media::Image *img = currImage->GetImage(0, &imgTime)->Clone();
-						imgList->AddImage(img, MulDiv32(displayRate, 1000, 60));
+						imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
 						DEL_CLASS(currImage);
 					}
 					IO::IStreamData *data = fd->GetPartialData(currOfst + 20 + buffOfst, *(UInt32*)&buff[4]);
@@ -128,9 +128,9 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 
 			if (currImage)
 			{
-				Int32 imgTime;
+				UInt32 imgTime;
 				Media::Image *img = currImage->GetImage(0, &imgTime)->Clone();
-				imgList->AddImage(img, MulDiv32(displayRate, 1000, 60));
+				imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
 				DEL_CLASS(currImage);
 				currImage = 0;
 			}

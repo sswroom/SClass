@@ -1,9 +1,9 @@
 #ifndef _SM_MEDIA_IMAGELIST
 #define _SM_MEDIA_IMAGELIST
-#include "Media/Image.h"
-#include "IO/ParsedObject.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
+#include "IO/ParsedObject.h"
+#include "Media/Image.h"
 
 namespace Media
 {
@@ -42,7 +42,7 @@ namespace Media
 	public:
 		Data::ArrayList<Media::Image*> *imgList;
 		Data::ArrayList<ImageType> *imgTypeList;
-		Data::ArrayListInt32 *imgTimes;
+		Data::ArrayListUInt32 *imgTimes;
 		const UTF8Char *author;
 		const UTF8Char *imgName;
 		Data::ArrayList<ValueType> *valTypeI32;
@@ -66,11 +66,11 @@ namespace Media
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		UOSInt AddImage(Media::Image *img, Int32 imageDelay);
+		UOSInt AddImage(Media::Image *img, UInt32 imageDelay);
 		void ReplaceImage(UOSInt index, Media::Image *img);
 		Bool RemoveImage(UOSInt index, Bool toRelease);
 		UOSInt GetCount();
-		Media::Image *GetImage(UOSInt index, Int32 *imageDelay);
+		Media::Image *GetImage(UOSInt index, UInt32 *imageDelay);
 		ImageType GetImageType(UOSInt index);
 		void SetImageType(UOSInt index, ImageType imgType);
 		void ToStaticImage(UOSInt index);

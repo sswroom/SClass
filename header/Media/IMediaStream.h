@@ -10,11 +10,11 @@ namespace Media
 
 		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize) = 0;
 		virtual void ClearFrameBuff() = 0;
-		virtual void SetStreamTime(Int32 time) = 0;
+		virtual void SetStreamTime(UInt32 time) = 0;
 		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize) = 0;
 		virtual Int32 GetFrameStreamTime() = 0;
 		virtual void EndFrameStream() = 0;
-		virtual Int64 GetBitRate() = 0;
+		virtual UInt64 GetBitRate() = 0;
 	};
 }
 #endif

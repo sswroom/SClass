@@ -138,7 +138,7 @@ UInt64 Net::SocketFactory::GenSocketId(UInt32 *socket)
 	return Net::SocketUtil::CalcCliId(&rAddr) | (((UInt64)rPort) << 32) | (((UInt64)lPort) << 48);
 }
 
-void Net::SocketFactory::FromSocketId(Int64 socketId, UInt32 *ip, UInt16 *port)
+void Net::SocketFactory::FromSocketId(UInt64 socketId, UInt32 *ip, UInt16 *port)
 {
 	if (ip)
 	{

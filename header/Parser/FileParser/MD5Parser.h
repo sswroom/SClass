@@ -9,7 +9,7 @@ namespace Parser
 		class MD5Parser : public IO::IFileParser
 		{
 		private:
-			Int32 codePage;
+			UInt32 codePage;
 		public:
 			MD5Parser();
 			virtual ~MD5Parser();

@@ -37,7 +37,7 @@ namespace DB
 
 		virtual DB::DBUtil::ServerType GetSvrType() = 0;
 		virtual ConnType GetConnType() = 0;
-		virtual Int32 GetTzQhr() = 0;
+		virtual Int8 GetTzQhr() = 0;
 		virtual void GetConnName(Text::StringBuilderUTF *sb) = 0;
 		virtual void Close() = 0;
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql) = 0;

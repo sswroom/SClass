@@ -1390,8 +1390,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	Map::MapEnv::MapItem *item;
 	Sync::MutexUsage mutUsage(0);
 	denv->env->BeginUse(&mutUsage);
-	OSInt i = 0;
-	OSInt j = denv->env->GetItemCount(group);
+	UOSInt i = 0;
+	UOSInt j = denv->env->GetItemCount(group);
 
 	while (i < j)
 	{
@@ -1484,7 +1484,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							Media::Image *pimg = 0;
 							Double spotX;
 							Double spotY;
-							Int32 imgDurMS = 0;
+							UInt32 imgDurMS = 0;
 							if (layer.layer->HasIconStyle())
 							{
 								pimg = layer.layer->GetIconStyleImg()->GetImage(0, &imgDurMS);
@@ -1873,7 +1873,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	UOSInt maxLabel = denv->env->GetNString();
 
 	Media::Image *img = 0;
-	Int32 imgTimeMS = 0;
+	UInt32 imgTimeMS = 0;
 	if (layer->HasIconStyle())
 	{
 		img = layer->GetIconStyleImg()->GetImage(0, &imgTimeMS);
@@ -2272,7 +2272,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 			denv->view->MapXYToScnXY(minX, maxY, &scnX, &scnY);
 			denv->view->MapXYToScnXY(maxX, minY, &scnX2, &scnY2);
 		}
-		Int32 imgTimeMS;
+		UInt32 imgTimeMS;
 		Media::StaticImage *simg = vimg->GetImage(scnX2 - scnX, scnY2 - scnY, &imgTimeMS);
 		DrawImageObject(denv, simg, scnX, scnY, scnX2, scnY2, vimg->GetSrcAlpha());
 		if (imgTimeMS != 0)

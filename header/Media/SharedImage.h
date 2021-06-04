@@ -15,7 +15,7 @@ namespace Media
 			Sync::Mutex *mut;
 			Int32 useCnt;
 
-			Int32 imgDelay;
+			UInt32 imgDelay;
 			UOSInt imgIndex;
 			Int64 lastTimeTick;
 		} ImageStatus;
@@ -28,8 +28,8 @@ namespace Media
 		~SharedImage();
 
 		SharedImage *Clone();
-		Media::StaticImage *GetImage(Int32 *imgTimeMS);
-		Media::StaticImage *GetPrevImage(Double width, Double height, Int32 *imgTimeMS);
+		Media::StaticImage *GetImage(UInt32 *imgTimeMS);
+		Media::StaticImage *GetPrevImage(Double width, Double height, UInt32 *imgTimeMS);
 	};
 }
 #endif

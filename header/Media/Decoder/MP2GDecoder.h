@@ -19,11 +19,11 @@ namespace Media
 			FrameInfoCallback finfoCb;
 
 			Bool hasBFrame;
-			Int32 lastFrameTime;
+			UInt32 lastFrameTime;
 			Media::FrameType lastFrameType;
 			Media::IVideoSource::FrameFlag lastFrameFlags;
 			Media::IVideoSource::FrameStruct lastFrameStruct;
-			Int32 lastFieldOfst;
+			UInt32 lastFieldOfst;
 			Bool lastRFF;
 
 

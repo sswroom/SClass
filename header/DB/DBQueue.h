@@ -98,7 +98,7 @@ namespace DB
 	private:
 		Sync::Mutex *mut;
 		UOSInt dbSize;
-		OSInt nextDB;
+		UOSInt nextDB;
 
 	public:
 		DBQueue(DBTool *db, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize);
@@ -112,13 +112,13 @@ namespace DB
 		void AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBHdlr hdlr, void *userData, void *userData2);
 		void AddTrans(Int32 priority, Int32 progId, DBTransHdlr hdlr, void *userData, void *userData2);
 		void RemoveSQLs(Int32 progId);
-		OSInt GetDataCnt();
-		OSInt GetQueueCnt();
-		OSInt GetConnCnt();
+		UOSInt GetDataCnt();
+		UOSInt GetQueueCnt();
+		UOSInt GetConnCnt();
 		DB::DBUtil::ServerType GetSvrType();
-		Int32 GetTzQhr();
+		Int8 GetTzQhr();
 		UTF8Char *ToString(UTF8Char *buff);
-		OSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
+		UOSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
 		UTF8Char *DBDate(UTF8Char *buff, Data::DateTime *dat);
 		UTF8Char *DBInt32(UTF8Char *buff, Int32 val);
 		UTF8Char *DBInt64(UTF8Char *buff, Int64 val);
@@ -144,7 +144,7 @@ namespace DB
 		~DBHandler();
 
 	public:
-		Int32 GetDataCnt();
+		UInt32 GetDataCnt();
 
 	private:
 		void WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd);

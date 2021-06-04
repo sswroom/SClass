@@ -21,7 +21,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 	{
 		if (j > 0)
 		{
-			sb->AppendC(&val[i], j);
+			sb->AppendC(&val[i], (UOSInt)j);
 			i += j;
 		}
 		j = Text::StrIndexOf(&val[i], ')');
@@ -30,7 +30,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 		if (Text::StrStartsWith(&val[i + 2], (const UTF8Char*)"shell "))
 		{
 			Text::StringBuilderUTF8 sbCmd;
-			sbCmd.AppendC(&val[i + 8], j - 8);
+			sbCmd.AppendC(&val[i + 8], (UOSInt)j - 8);
 			i += j + 1;
 			Manage::Process::ExecuteProcess(sbCmd.ToString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
@@ -40,7 +40,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 		}
 		else
 		{
-			Text::StrConcatC(sbuff, &val[i + 2], j - 2);
+			Text::StrConcatC(sbuff, &val[i + 2], (UOSInt)j - 2);
 			i += j + 1;
 			cfg = cfgMap->Get(sbuff);
 			if (cfg)
@@ -84,7 +84,7 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg
 		{
 			if (i > 0)
 			{
-				sb->AppendC(compileCfg, i);
+				sb->AppendC(compileCfg, (UOSInt)i);
 				compileCfg += i;
 			}
 			compileCfg++;
@@ -95,7 +95,7 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg
 				break;
 			}
 			sb2.ClearStr();
-			sb2.AppendC(compileCfg, i);
+			sb2.AppendC(compileCfg, (UOSInt)i);
 			Manage::Process::ExecuteProcess(sb2.ToString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
@@ -261,7 +261,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 					sptr2 = &sptr1[i + 1];
 					Text::StrTrim(sptr2);
 					sb2.ClearStr();
-					sb2.AppendC(&sptr1[2], i - 2);
+					sb2.AppendC(&sptr1[2], (UOSInt)i - 2);
 					sptr1 = sb2.ToString();
 					if ((i = Text::StrIndexOf(sptr1, (const UTF8Char*)">=")) >= 0)
 					{
@@ -311,7 +311,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				if (i > 1)
 				{
 					Text::StringBuilderUTF8 result;
-					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, i - 2);
+					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, (UOSInt)i - 2);
 					if (Manage::Process::ExecuteProcess(cmd, &result) != 0)
 					{
 						valid = false;
@@ -339,7 +339,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				if (i > 1)
 				{
 					Text::StringBuilderUTF8 result;
-					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, i - 2);
+					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, (UOSInt)i - 2);
 					if (Manage::Process::ExecuteProcess(cmd, &result) != 0)
 					{
 						valid = false;
@@ -569,7 +569,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 						{
 							procList->SortedInsert(prog->name);
 
-							i = prog->subItems->GetCount();
+							UOSInt i = prog->subItems->GetCount();
 							while (i-- > 0)
 							{
 								if (this->debugObj && this->messageWriter && Text::StrEquals(prog->subItems->GetItem(i), this->debugObj))
@@ -645,7 +645,8 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	UTF8Char *sarr[2];
-	OSInt i;
+	UOSInt i;
+	OSInt si;
 	sb.Append(cfg->value);
 	sarr[1] = sb.ToString();
 	i = 2;
@@ -681,13 +682,13 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	sb.ClearStr();
 	sb.Append(sourceFile);
 	sb.Replace('\\', '/');
-	i = sb.LastIndexOf('/');
-	sb.TrimToLength(i);
+	si = sb.LastIndexOf('/');
+	sb.TrimToLength((UOSInt)si);
 	const UTF8Char *currHeader = headerFile;
 	while (Text::StrStartsWith(currHeader, (const UTF8Char*)"../"))
 	{
-		i = sb.LastIndexOf('/');
-		sb.TrimToLength(i);
+		si = sb.LastIndexOf('/');
+		sb.TrimToLength((UOSInt)si);
 		currHeader = currHeader + 3;
 	}
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -1192,7 +1193,7 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	UTF8Char sbuff[512];
 	if (i >= 0)
 	{
-		this->basePath = Text::StrCopyNewC(cfgFile, i + 1);
+		this->basePath = Text::StrCopyNewC(cfgFile, (UOSInt)i + 1);
 	}
 	else
 	{

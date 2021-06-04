@@ -7,7 +7,7 @@ namespace Exporter
 	class GPXExporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		GPXExporter();
 		virtual ~GPXExporter();

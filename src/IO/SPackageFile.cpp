@@ -47,22 +47,22 @@ Directory Entry:
 
 */
 
-void IO::SPackageFile::ReadV2DirEnt(Int64 ofst, Int64 size)
+void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 {
 	if (ofst == 0 || size < 16)
 		return;
-	Int64 nextOfst;
-	Int64 nextSize;
-	UInt8 *dirBuff = MemAlloc(UInt8, (OSInt)size);
-	this->stm->Seek(IO::SeekableStream::ST_BEGIN, ofst);
-	this->stm->Read(dirBuff, (OSInt)size);
-	nextOfst = ReadInt64(&dirBuff[0]);
-	nextSize = ReadInt64(&dirBuff[8]);
+	UInt64 nextOfst;
+	UInt64 nextSize;
+	UInt8 *dirBuff = MemAlloc(UInt8, (UOSInt)size);
+	this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)ofst);
+	this->stm->Read(dirBuff, (UOSInt)size);
+	nextOfst = ReadUInt64(&dirBuff[0]);
+	nextSize = ReadUInt64(&dirBuff[8]);
 	this->ReadV2DirEnt(nextOfst, nextSize);
 
 	UTF8Char *sbuff;
-	OSInt i;
-	OSInt nameSize;
+	UOSInt i;
+	UOSInt nameSize;
 	FileInfo *file;
 	sbuff = MemAlloc(UTF8Char, 512);
 	i = 16;
@@ -76,8 +76,8 @@ void IO::SPackageFile::ReadV2DirEnt(Int64 ofst, Int64 size)
 		if (file == 0)
 		{
 			file = MemAlloc(FileInfo, 1);
-			file->ofst = ReadInt64(&dirBuff[i]);
-			file->size = ReadInt64(&dirBuff[i + 8]);
+			file->ofst = ReadUInt64(&dirBuff[i]);
+			file->size = ReadUInt64(&dirBuff[i + 8]);
 			this->fileMap->Put(sbuff, file);
 		}
 		i += 26 + nameSize;
@@ -88,8 +88,8 @@ void IO::SPackageFile::ReadV2DirEnt(Int64 ofst, Int64 size)
 
 void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
 {
-	OSInt i = 0;
-	OSInt j = pkg->GetCount();
+	UOSInt i = 0;
+	UOSInt j = pkg->GetCount();
 	UTF8Char *sptr;
 	while (i < j)
 	{
@@ -128,12 +128,12 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	UOSInt i;
 	UOSInt j;
 	Bool succ = true;
-	UInt8 *dirBuff = MemAlloc(UInt8, (OSInt)dirSize);
+	UInt8 *dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);
 	this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)dirOfst);
 	if (this->stm->Read(dirBuff, (UOSInt)dirSize) == dirSize)
 	{
-		lastOfst = ReadInt64(&dirBuff[0]);
-		lastSize = ReadInt64(&dirBuff[8]);
+		lastOfst = ReadUInt64(&dirBuff[0]);
+		lastSize = ReadUInt64(&dirBuff[8]);
 		if (lastOfst != 0 && lastSize != 0)
 		{
 			if (!OptimizeFileInner(newFile, lastOfst, lastSize))
@@ -151,15 +151,15 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 		i = 16;
 		while (succ && i < dirSize)
 		{
-			thisOfst = ReadInt64(&dirBuff[i]);
-			thisSize = ReadInt64(&dirBuff[i + 8]);
+			thisOfst = ReadUInt64(&dirBuff[i]);
+			thisSize = ReadUInt64(&dirBuff[i + 8]);
 			j = ReadUInt16(&dirBuff[i + 24]);
 			MemCopyNO(sbuff, &dirBuff[i + 26], j);
 			sbuff[j] = 0;
 			fileBuff = MemAlloc(UInt8, (UOSInt)thisSize);
 			if (thisOfst != lastOfst + lastSize)
 			{
-				this->stm->Seek(IO::SeekableStream::ST_BEGIN, thisOfst);
+				this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)thisOfst);
 			}
 			if (this->stm->Read(fileBuff, (UOSInt)thisSize) == thisSize)
 			{
@@ -304,7 +304,7 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 						UInt8 customBuff[8];
 						this->stm->Read(customBuff, 8);
 						this->customType = ReadInt32(&customBuff[0]);
-						this->customSize = ReadInt32(&customBuff[4]);
+						this->customSize = ReadUInt32(&customBuff[4]);
 						if (this->customSize > 0)
 						{
 							this->customBuff = MemAlloc(UInt8, this->customSize);
@@ -313,23 +313,23 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 					}
 					this->mstm->Write(&hdr[8], 16);
 					this->ReadV2DirEnt(lastOfst, lastSize);
-					this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
+					this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
 				}
 			}
 			else
 			{
-				this->currOfst = ReadInt64(&hdr[8]);
+				this->currOfst = ReadUInt64(&hdr[8]);
 				dirSize = flength - this->currOfst;
 				if (dirSize > 0)
 				{
-					UInt8 *dirBuff = MemAlloc(UInt8, (OSInt)dirSize);
-					this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
-					this->stm->Read(dirBuff, (OSInt)dirSize);
-					this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
-					this->mstm->Write(dirBuff, (OSInt)dirSize);
+					UInt8 *dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);
+					this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
+					this->stm->Read(dirBuff, (UOSInt)dirSize);
+					this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
+					this->mstm->Write(dirBuff, (UOSInt)dirSize);
 
-					OSInt i;
-					OSInt nameSize;
+					UOSInt i;
+					UOSInt nameSize;
 					FileInfo *file;
 					i = 0;
 					while (i < dirSize)
@@ -342,8 +342,8 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 						if (file == 0)
 						{
 							file = MemAlloc(FileInfo, 1);
-							file->ofst = ReadInt64(&dirBuff[i]);
-							file->size = ReadInt64(&dirBuff[i + 8]);
+							file->ofst = ReadUInt64(&dirBuff[i]);
+							file->size = ReadUInt64(&dirBuff[i + 8]);
 							this->fileMap->Put(sbuff, file);
 						}
 						i += 26 + nameSize;
@@ -352,7 +352,7 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 				}
 				else
 				{
-					this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
+					this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
 				}
 			}
 		}
@@ -403,7 +403,7 @@ IO::SPackageFile::~SPackageFile()
 	if (!this->writeMode)
 	{
 		this->writeMode = true;
-		this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
+		this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
 	}
 	buff = this->mstm->GetBuff(&buffSize);
 	if (this->flags & 2)
@@ -412,8 +412,8 @@ IO::SPackageFile::~SPackageFile()
 		{
 			this->stm->Write(buff, buffSize);
 			this->stm->Seek(IO::SeekableStream::ST_BEGIN, 8);
-			WriteInt64(&hdr[0], this->currOfst);
-			WriteInt64(&hdr[8], buffSize);
+			WriteUInt64(&hdr[0], this->currOfst);
+			WriteUInt64(&hdr[8], buffSize);
 			this->stm->Write(hdr, 16);
 		}
 	}
@@ -424,7 +424,7 @@ IO::SPackageFile::~SPackageFile()
 			this->stm->Write(buff, buffSize);
 		}
 		this->stm->Seek(IO::SeekableStream::ST_BEGIN, 8);
-		WriteInt64(hdr, this->currOfst);
+		WriteUInt64(hdr, this->currOfst);
 		this->stm->Write(hdr, 8);
 	}
 
@@ -455,9 +455,9 @@ IO::SPackageFile::~SPackageFile()
 Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, Int64 modTimeTicks)
 {
 	UInt8 dataBuff[512];
-	OSInt strLen;
-	Int64 dataSize = fd->GetDataSize();
-	OSInt writeSize;
+	UOSInt strLen;
+	UInt64 dataSize = fd->GetDataSize();
+	UOSInt writeSize;
 	Bool needCommit = false;
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -469,26 +469,26 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 		mutUsage.EndUse();
 		return false;
 	}
-	WriteInt64(&dataBuff[0], this->currOfst);
-	WriteInt64(&dataBuff[8], dataSize);
+	WriteUInt64(&dataBuff[0], this->currOfst);
+	WriteUInt64(&dataBuff[8], dataSize);
 	WriteInt64(&dataBuff[16], modTimeTicks);
 	strLen = Text::StrCharCnt(fileName);
 	MemCopyNO(&dataBuff[26], fileName, strLen);
-	WriteInt16(&dataBuff[24], (UInt16)strLen);
+	WriteUInt16(&dataBuff[24], (UInt16)strLen);
 
 	if (!this->writeMode)
 	{
 		this->writeMode = true;
-		this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
+		this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
 	}
 
 	writeSize = 0;
 	UInt8 *fileBuff;
 	if (dataSize > 1048576)
 	{
-		OSInt readSize;
-		Int64 sizeLeft = dataSize;
-		Int64 fileOfst = 0;
+		UOSInt readSize;
+		UInt64 sizeLeft = dataSize;
+		UInt64 fileOfst = 0;
 		fileBuff = MemAlloc(UInt8, 1048576);
 		while (sizeLeft > 0)
 		{
@@ -498,7 +498,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 			}
 			else
 			{
-				readSize = (OSInt)sizeLeft;
+				readSize = (UOSInt)sizeLeft;
 			}
 			fd->GetRealData(fileOfst, readSize, fileBuff);
 			writeSize += this->stm->Write(fileBuff, readSize);
@@ -509,9 +509,9 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 	}
 	else
 	{
-		fileBuff = MemAlloc(UInt8, (OSInt)dataSize);
-		fd->GetRealData(0, (OSInt)dataSize, fileBuff);
-		writeSize = this->stm->Write(fileBuff, (OSInt)dataSize);
+		fileBuff = MemAlloc(UInt8, (UOSInt)dataSize);
+		fd->GetRealData(0, (UOSInt)dataSize, fileBuff);
+		writeSize = this->stm->Write(fileBuff, (UOSInt)dataSize);
 		MemFree(fileBuff);
 	}
 	Bool succ = false;
@@ -556,8 +556,8 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF
 		mutUsage.EndUse();
 		return false;
 	}
-	WriteInt64(&dataBuff[0], this->currOfst);
-	WriteInt64(&dataBuff[8], fileSize);
+	WriteUInt64(&dataBuff[0], this->currOfst);
+	WriteUInt64(&dataBuff[8], fileSize);
 	WriteInt64(&dataBuff[16], modTimeTicks);
 	strLen = Text::StrCharCnt(fileName);
 	MemCopyNO(&dataBuff[26], fileName, strLen);
@@ -566,7 +566,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF
 	if (!this->writeMode)
 	{
 		this->writeMode = true;
-		this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
+		this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
 	}
 	Bool succ = false;
 	if (this->stm->Write(fileBuff, fileSize) == fileSize)
@@ -620,15 +620,15 @@ Bool IO::SPackageFile::Commit()
 			if (!this->writeMode)
 			{
 				this->writeMode = true;
-				this->stm->Seek(IO::SeekableStream::ST_BEGIN, this->currOfst);
+				this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currOfst);
 			}
 
 			writeSize = this->stm->Write(buff, buffSize);
 			if (writeSize == buffSize)
 			{
 				this->stm->Seek(IO::SeekableStream::ST_BEGIN, 8);
-				WriteInt64(&hdr[0], this->currOfst);
-				WriteInt64(&hdr[8], buffSize);
+				WriteUInt64(&hdr[0], this->currOfst);
+				WriteUInt64(&hdr[8], buffSize);
 				this->stm->Write(hdr, 16);
 				this->writeMode = false;
 				this->mstm->Clear();
@@ -679,8 +679,8 @@ Bool IO::SPackageFile::OptimizeFile(const UTF8Char *newFile)
 	this->writeMode = false;
 	this->stm->Seek(IO::SeekableStream::ST_BEGIN, 0);
 	this->stm->Read(hdr, 24);
-	Int64 lastOfst = ReadInt64(&hdr[8]);
-	Int64 lastSize = ReadInt64(&hdr[16]);
+	UInt64 lastOfst = ReadUInt64(&hdr[8]);
+	UInt64 lastSize = ReadUInt64(&hdr[16]);
 	if (lastSize > 0)
 	{
 		this->OptimizeFileInner(spkg, lastOfst, lastSize);
@@ -702,9 +702,9 @@ IO::IStreamData *IO::SPackageFile::CreateStreamData(const UTF8Char *fileName)
 	FileInfo *file = this->fileMap->Get(fileName);
 	if (file)
 	{
-		UInt8 *fileBuff = MemAlloc(UInt8, (OSInt)file->size);
+		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)file->size);
 		this->writeMode = false;
-		this->stm->Seek(IO::SeekableStream::ST_BEGIN, file->ofst);
+		this->stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)file->ofst);
 		this->stm->Read(fileBuff, (UOSInt)file->size);
 		NEW_CLASS(fd, IO::StmData::MemoryData2(fileBuff, (UOSInt)file->size));
 		MemFree(fileBuff);

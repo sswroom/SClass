@@ -24,7 +24,7 @@ namespace Win32
 
 		virtual DB::DBUtil::ServerType GetSvrType();
 		virtual ConnType GetConnType();
-		virtual Int32 GetTzQhr();
+		virtual Int8 GetTzQhr();
 		virtual void GetConnName(Text::StringBuilderUTF *sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql);

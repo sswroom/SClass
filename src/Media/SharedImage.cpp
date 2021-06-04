@@ -94,9 +94,9 @@ Media::SharedImage *Media::SharedImage::Clone()
 	return newImg;
 }
 
-Media::StaticImage *Media::SharedImage::GetImage(Int32 *imgTimeMS)
+Media::StaticImage *Media::SharedImage::GetImage(UInt32 *imgTimeMS)
 {
-	Int32 currDelay;
+	UInt32 currDelay;
 	Media::StaticImage *img;
 	Int64 currTimeTick;
 	if (imgTimeMS == 0)
@@ -137,12 +137,12 @@ Media::StaticImage *Media::SharedImage::GetImage(Int32 *imgTimeMS)
 	else
 	{
 		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, &currDelay);
-		*imgTimeMS = (Int32)(this->imgStatus->imgDelay - (currTimeTick - this->imgStatus->lastTimeTick));
+		*imgTimeMS = (UInt32)(this->imgStatus->imgDelay - (UInt64)(currTimeTick - this->imgStatus->lastTimeTick));
 		return img;
 	}
 }
 
-Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, Int32 *imgTimeMS)
+Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, UInt32 *imgTimeMS)
 {
 	if (this->imgStatus->prevList == 0)
 	{

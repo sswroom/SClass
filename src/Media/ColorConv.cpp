@@ -102,7 +102,7 @@ UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 	outp[1] = rgbTable[g + 73728];
 	outp[2] = rgbTable[r + 139264];
 	outp[3] = rgbTable[a + 204800];
-	return *(Int32*)outp;
+	return ReadUInt32(outp);
 #endif
 }
 

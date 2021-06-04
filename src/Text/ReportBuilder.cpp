@@ -6,10 +6,10 @@
 #include "Text/ReportBuilder.h"
 #include "Text/StringBuilderUTF8.h"
 
-Text::ReportBuilder::ReportBuilder(const UTF8Char *name, OSInt colCount, const UTF8Char **columns)
+Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns)
 {
 	const UTF8Char **cols;
-	OSInt i;
+	UOSInt i;
 	this->name = Text::StrCopyNew(name);
 	this->colCount = colCount;
 	this->colWidth = MemAlloc(Double, this->colCount);
@@ -48,8 +48,8 @@ Text::ReportBuilder::~ReportBuilder()
 	Text::ReportBuilder::ColIcon *icon;
 	const UTF8Char **cols;
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	j = this->headers->GetCount();
 	while (j-- > 0)
 	{
@@ -144,7 +144,7 @@ void Text::ReportBuilder::AddHeader(const UTF8Char *name, const UTF8Char *val)
 void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 {
 	const UTF8Char **cols;
-	OSInt i;
+	UOSInt i;
 	cols = MemAlloc(const UTF8Char *, this->colCount);
 	i = 0;
 	while (i < this->colCount)
@@ -166,7 +166,7 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 {
 	const UTF8Char **cols;
-	OSInt i;
+	UOSInt i;
 	cols = MemAlloc(const UTF8Char *, this->colCount);
 	i = 0;
 	while (i < this->colCount)
@@ -185,7 +185,7 @@ void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 	this->tableRowType->Add(RT_SUMMARY);
 }
 
-void Text::ReportBuilder::AddIcon(OSInt index, const UTF8Char *fileName, const UTF8Char *name)
+void Text::ReportBuilder::AddIcon(UOSInt index, const UTF8Char *fileName, const UTF8Char *name)
 {
 	UOSInt cnt = this->tableContent->GetCount() - 1;
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
@@ -221,21 +221,21 @@ void Text::ReportBuilder::AddIcon(OSInt index, const UTF8Char *fileName, const U
 	iconList->Add(icon);
 }
 
-void Text::ReportBuilder::SetColumnWidth(OSInt index, Double width)
+void Text::ReportBuilder::SetColumnWidth(UOSInt index, Double width)
 {
-	if (index < 0 || index >= this->colCount)
+	if (index >= this->colCount)
 		return;
 	this->colWidth[index] = width;
 }
 
-void Text::ReportBuilder::SetColumnType(OSInt index, ColType colType)
+void Text::ReportBuilder::SetColumnType(UOSInt index, ColType colType)
 {
-	if (index < 0 || index >= this->colCount)
+	if (index >= this->colCount)
 		return;
 	this->colTypes[index] = colType;
 }
 
-void Text::ReportBuilder::SetColURLLatLon(OSInt index, Double lat, Double lon)
+void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Double lat, Double lon)
 {
 	ColURLLatLon *url;
 	url = MemAlloc(ColURLLatLon, 1);
@@ -248,11 +248,11 @@ void Text::ReportBuilder::SetColURLLatLon(OSInt index, Double lat, Double lon)
 
 Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 k;
-	OSInt l;
-	OSInt m;
+	UOSInt l;
+	UOSInt m;
 	OSInt urlAdd;
 	Text::SpreadSheet::Workbook *wb;
 	Text::SpreadSheet::Worksheet *ws;
@@ -450,10 +450,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Double sz[2];
 	Double currY;
 	const UTF8Char **strs;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Double *colMinWidth;
 	Double *colTotalWidth;
 	Double *colPos;

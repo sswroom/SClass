@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 		fnameSize = ReadUInt32(&recBuff[j + 36]);
 		dt.SetValue(ReadUInt16(&recBuff[j + 30]), recBuff[j + 29], recBuff[j + 28], recBuff[j + 26], recBuff[j + 25], recBuff[j + 24], 0, 36);
 		enc.UTF8FromBytes(fileName, &recBuff[j + 40], fnameSize, 0);
-		pf->AddData(fd, fileOfst + (Int64)dataOfst, fileSize, fileName, dt.ToTicks());
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, fileName, dt.ToTicks());
 
 		i++;
 		j += 40 + fnameSize;

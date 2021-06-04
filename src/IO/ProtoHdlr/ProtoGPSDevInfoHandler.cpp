@@ -33,9 +33,9 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(IO::Stream *stm, voi
 	while (buffSize >= 8)
 	{
 		found = false;
-		if (*(Int16*)buff == *(Int16*)"GD")
+		if (ReadNInt16(buff) == ReadNInt16("GD"))
 		{
-			UInt32 packetSize = *(UInt16*)&buff[2];
+			UInt32 packetSize = ReadUInt16(&buff[2]);
 			if (packetSize <= 14336)
 			{
 				if (packetSize > buffSize)
@@ -46,9 +46,9 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(IO::Stream *stm, voi
 				this->crc->Calc(buff, packetSize - 2);
 				this->crc->GetValue(crcVal);
 				mutUsage.EndUse();
-				if (ReadMUInt16(&crcVal[2]) == *(UInt16*)&buff[packetSize - 2])
+				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
 				{
-					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], 0, &buff[6], packetSize - 8);
+					this->listener->DataParsed(stm, stmObj, ReadUInt16(&buff[4]), 0, &buff[6], packetSize - 8);
 
 					found = true;
 					buff += packetSize;
@@ -68,9 +68,9 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(IO::Stream *stm, voi
 
 UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
-	*(Int16*)buff = *(Int16*)"GD";
-	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
-	*(Int16*)&buff[4] = cmdType;
+	WriteNInt16(buff, ReadNInt16("GD"));
+	WriteUInt16(&buff[2], (UInt16)(cmdSize + 8));
+	WriteUInt16(&buff[4], (UInt16)cmdType);
 	if (cmdSize > 0)
 	{
 		MemCopyNO(&buff[6], cmd, cmdSize);
@@ -81,6 +81,6 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmd
 	this->crc->Calc(buff, cmdSize + 6);
 	this->crc->GetValue(crcVal);
 	mutUsage.EndUse();
-	WriteInt16(&buff[cmdSize + 6], ReadMInt32(crcVal));
+	WriteUInt16(&buff[cmdSize + 6], (UInt16)ReadMUInt32(crcVal));
 	return cmdSize + 8;
 }

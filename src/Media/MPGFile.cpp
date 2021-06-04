@@ -29,7 +29,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 	me->playStarted = true;
 	me->playing = 2;
 	me->vstm->ClearFrameBuff();
-	me->vstm->SetStreamTime((Int32)me->startTime);
+	me->vstm->SetStreamTime(me->startTime);
 	buffSize = 0;
 	Bool firstAudio = true;
 	Bool firstVideo = false;
@@ -334,7 +334,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 						{
 							if (!firstAudio)
 							{
-								me->vstm->SetStreamTime(frameTime);
+								me->vstm->SetStreamTime((UInt32)frameTime);
 								lastFrameTime = frameTime;
 							}
 							firstVideo = false;
@@ -375,16 +375,16 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 	return 1002;
 }
 
-Int64 Media::MPGFile::GetBitRate()
+UInt64 Media::MPGFile::GetBitRate()
 {
 	Int32 currTime = this->vstm->GetFrameStreamTime();
 	if (currTime > 0 && this->readOfst > 0)
 	{
-		return (Int64)(this->readOfst * 8000LL / (UInt64)currTime);
+		return (this->readOfst * 8000LL / (UInt64)currTime);
 	}
 	else
 	{
-		Int64 bitRate = this->vstm->GetBitRate();
+		UInt64 bitRate = this->vstm->GetBitRate();
 		UOSInt i;
 		Data::ArrayList<Media::IMediaStream*> *stms = this->dataStms->GetValues();
 		i = stms->GetCount();
@@ -855,7 +855,7 @@ UTF8Char *Media::MPGFile::GetMediaName(UTF8Char *buff)
 
 Int32 Media::MPGFile::GetStreamTime()
 {
-	return (Int32)((Int64)this->fleng * 8000 / this->GetBitRate());
+	return (Int32)(UInt32)(this->fleng * 8000 / this->GetBitRate());
 }
 
 Bool Media::MPGFile::StartAudio()

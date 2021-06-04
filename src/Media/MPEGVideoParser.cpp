@@ -8,18 +8,18 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 	decoderFix = false;
 	if (ReadMInt32(frame) != 0x1b3)
 		return false;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 //	Bool progressive_sequence = false;
 	Bool mpg2 = false;
 
 	UOSInt ofst;
 
-	UInt32 horizontal_size = (frame[4] << 4) | (frame[5] >> 4);
-	UInt32 vertical_size = ((frame[5] & 0xf) << 8) | frame[6];
+	UInt32 horizontal_size = (UInt32)((frame[4] << 4) | (frame[5] >> 4));
+	UInt32 vertical_size = (UInt32)(((frame[5] & 0xf) << 8) | frame[6]);
 	Int32 aspect_ratio_information = frame[7] >> 4;
 	Int32 frame_rate_code = frame[7] & 0xf;
-	UInt32 bit_rate = (frame[8] << 10) | (frame[9] << 2) | (frame[10] >> 6);
+	UInt32 bit_rate = (UInt32)((frame[8] << 10) | (frame[9] << 2) | (frame[10] >> 6));
 	Int32 vbv_buffer_size = ((frame[10] & 0x1f) << 5) | (frame[11] >> 3);
 //	Int32 constrained_parameters_flag = (frame[11] & 4) >> 2;
 	Bool load_intra_quantiser_matrix = (frame[11] & 2) != 0;
@@ -88,7 +88,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 	frameInfo->storeHeight = vertical_size;
 	frameInfo->dispWidth = frameInfo->storeWidth;
 	frameInfo->dispHeight = frameInfo->storeHeight;
-	frameInfo->fourcc = *(Int32*)"MPG2"; // 0 = bmp
+	frameInfo->fourcc = *(UInt32*)"MPG2"; // 0 = bmp
 	frameInfo->storeBPP = 0;
 	frameInfo->pf = Media::PF_UNKNOWN;
 	frameInfo->byteSize = 0;
@@ -130,8 +130,8 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 			bit_rate = bit_rate | ((frame[ofst + 6] & 0x1f) << 25) | ((frame[ofst + 7] & 0xfe) << 17);
 			vbv_buffer_size = vbv_buffer_size | (frame[ofst + 8] << 10);
 //			Bool low_delay = (frame[ofst + 9] & 0x80) != 0;
-			Int32 frame_rate_extension_n = (frame[ofst + 9] & 0x60) >> 5;
-			Int32 frame_rate_extension_d = frame[ofst + 9] & 0x1f;
+			UInt32 frame_rate_extension_n = ((UInt32)frame[ofst + 9] & 0x60) >> 5;
+			UInt32 frame_rate_extension_d = (UInt32)frame[ofst + 9] & 0x1f;
 			frameRateNorm *= (frame_rate_extension_n + 1);
 			frameRateDenorm *= (frame_rate_extension_d + 1);
 
@@ -221,11 +221,11 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 				frameInfo->color->GetGTranParam()->Set(tranType, tranGamma);
 				frameInfo->color->GetBTranParam()->Set(tranType, tranGamma);
 
-				frameInfo->dispWidth = (frame[ofst + 8] << 6) | (frame[ofst + 9] >> 2);
-				frameInfo->dispHeight = ((frame[ofst + 9] & 1) << 13) | (frame[ofst + 10] << 5) | (frame[ofst + 11] >> 3);
+				frameInfo->dispWidth = (UInt32)((frame[ofst + 8] << 6) | (frame[ofst + 9] >> 2));
+				frameInfo->dispHeight = (UInt32)(((frame[ofst + 9] & 1) << 13) | (frame[ofst + 10] << 5) | (frame[ofst + 11] >> 3));
 				if (decoderFix && (frameInfo->dispWidth != horizontal_size || frameInfo->dispHeight != vertical_size))
 				{
-					frame[ofst + 8] = horizontal_size >> 6;
+					frame[ofst + 8] = (UInt8)(horizontal_size >> 6);
 					frame[ofst + 9] = (UInt8)(((horizontal_size << 2) | 2 | (vertical_size >> 13)) & 0xff);
 					frame[ofst + 10] = (UInt8)((vertical_size >> 5) & 0xff);
 					frame[ofst + 11] = (UInt8)((vertical_size << 3) & 0xff);
@@ -234,8 +234,8 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 			}
 			else
 			{
-				frameInfo->dispWidth = (frame[ofst + 5] << 6) | (frame[ofst + 6] >> 2);
-				frameInfo->dispHeight = ((frame[ofst + 6] & 1) << 13) | (frame[ofst + 7] << 5) | (frame[ofst + 8] >> 3);
+				frameInfo->dispWidth = (UInt32)((frame[ofst + 5] << 6) | (frame[ofst + 6] >> 2));
+				frameInfo->dispHeight = (UInt32)(((frame[ofst + 6] & 1) << 13) | (frame[ofst + 7] << 5) | (frame[ofst + 8] >> 3));
 				if (decoderFix && (frameInfo->dispWidth != horizontal_size || frameInfo->dispHeight != vertical_size))
 				{
 					frame[ofst + 5] = (UInt8)(horizontal_size >> 6);
@@ -353,7 +353,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 	*fRateDenorm = frameRateDenorm;
 	if (bitRate)
 	{
-		*bitRate = bit_rate * 400LL;
+		*bitRate = bit_rate * 400ULL;
 	}
 	return true;
 }
@@ -454,7 +454,7 @@ Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, 
 		prop->pictureCodingType = 0;
 		break;
 	}
-	prop->dcBits = (UInt8)intra_dc_precision + 8;
+	prop->dcBits = (UInt8)(intra_dc_precision + 8);
 	prop->tff = (flags & 0x200) != 0;
 	prop->progressive = (flags & 2) != 0;
 	prop->rff = (flags & 8) != 0;

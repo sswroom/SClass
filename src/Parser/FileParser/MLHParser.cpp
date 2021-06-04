@@ -37,7 +37,7 @@ typedef struct
 	UInt8 fileName[16];
 	UInt32 storeSize;
 	UInt32 decompSize;
-	Int32 startOfst;
+	UInt32 startOfst;
 	Int32 unk;
 } MLHFileInfo;
 

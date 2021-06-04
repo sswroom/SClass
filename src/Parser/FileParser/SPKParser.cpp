@@ -53,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 hdrBuff[24];
 	UInt64 dirOfst;
 	UInt64 fileSize;
-	Int32 fnameLen;
+	UInt32 fnameLen;
 	Int32 flags;
 	UOSInt i;
 	UOSInt j;
@@ -95,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 			fd->GetRealData(i + 8, customSize, customBuff);
 			MemCopyNO(srcPath, &customBuff[2], customBuff[1]);
 			srcPath[customBuff[1]] = 0;
-			j = 2 + customBuff[1];
+			j = 2 + (UOSInt)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()));
 			NEW_CLASS(tileMap, Map::OSM::OSMTileMap(srcPath, spkg, 18, this->sockf));
 			i = 1;
@@ -177,7 +177,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						pf2->AddData(fd, ReadInt64(&dirBuff[i]), ReadInt64(&dirBuff[i + 8]), sptr, ReadInt64(&dirBuff[i + 16]));
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), sptr, ReadInt64(&dirBuff[i + 16]));
 						break;
 					}
 				}
@@ -185,8 +185,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 
 				i += 26 + fnameLen;
 			}
-			dirOfst = ReadInt64(&dirBuff[0]);
-			dirSize = ReadInt64(&dirBuff[8]);
+			dirOfst = ReadUInt64(&dirBuff[0]);
+			dirSize = ReadUInt64(&dirBuff[8]);
 			MemFree(dirBuff);
 			
 		}
@@ -244,7 +244,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						pf2->AddData(fd, ReadInt64(&dirBuff[i]), ReadInt64(&dirBuff[i + 8]), sptr, ReadInt64(&dirBuff[i + 16]));
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), sptr, ReadInt64(&dirBuff[i + 16]));
 						break;
 					}
 				}

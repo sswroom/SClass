@@ -118,7 +118,7 @@ DB::DBConn::ConnType DB::MySQLConn::GetConnType()
 	return DB::DBConn::CT_MYSQL;
 }
 
-Int32 DB::MySQLConn::GetTzQhr()
+Int8 DB::MySQLConn::GetTzQhr()
 {
 	return 0;
 }

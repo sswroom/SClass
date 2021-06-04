@@ -1054,7 +1054,7 @@ UOSInt Map::MapEnv::GetImageCnt()
 	}
 }
 
-Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, Int32 *imgDurMS)
+Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS)
 {
 	UOSInt i;
 	ImageInfo *imgInfo;
@@ -1066,7 +1066,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, Int32 *imgDurMS)
 		{
 			if (imgInfo->isAni)
 			{
-				Int32 imgTimeMS;
+				UInt32 imgTimeMS;
 				Data::DateTime dt;
 				Int64 currTimeTick;
 				Media::StaticImage *simg;
@@ -1080,12 +1080,12 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, Int32 *imgDurMS)
 						imgInfo->aniIndex = 0;
 					}
 					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, &imgTimeMS);
-					imgInfo->aniLastTimeTick = currTimeTick + imgTimeMS;
+					imgInfo->aniLastTimeTick = currTimeTick + (Int64)imgTimeMS;
 				}
 				else
 				{
 					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, &imgTimeMS);
-					imgTimeMS = (Int32)(imgInfo->aniLastTimeTick - currTimeTick);
+					imgTimeMS = (UInt32)(imgInfo->aniLastTimeTick - currTimeTick);
 				}
 				if (imgDurMS)
 				{
@@ -1132,7 +1132,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 			i = imgInfo->cnt;
 			while (i-- > 0)
 			{
-				Int32 imgTime;
+				UInt32 imgTime;
 				imgList->ToStaticImage(i);
 				((Media::StaticImage*)imgList->GetImage(i, &imgTime))->To32bpp();
 			}
@@ -1174,7 +1174,7 @@ UOSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList
 	i = imgInfo->cnt;
 	while (i-- > 0)
 	{
-		Int32 imgTime;
+		UInt32 imgTime;
 		imgList->ToStaticImage(i);
 		((Media::StaticImage*)imgList->GetImage(i, &imgTime))->To32bpp();
 		if (imgTime != 0)

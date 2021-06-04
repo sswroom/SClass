@@ -91,13 +91,13 @@ public:
 			if (extIndex & 1)
 			{
 				sb->Append((const UTF8Char*)"AnalogVal");
-				sb->AppendOSInt((extIndex - 8) >> 1);
+				sb->AppendUOSInt((extIndex - 8) >> 1);
 				return true;
 			}
 			else
 			{
 				sb->Append((const UTF8Char*)"AnalogId");
-				sb->AppendOSInt((extIndex - 8) >> 1);
+				sb->AppendUOSInt((extIndex - 8) >> 1);
 				return true;
 			}
 		}
@@ -121,15 +121,15 @@ public:
 				return true;
 			case 1:
 				sb->Append((const UTF8Char*)"0x");
-				sb->AppendHex32(ReadInt32(&buff[8]));
+				sb->AppendHex32(ReadUInt32(&buff[8]));
 				return true;
 			case 2:
 				sb->Append((const UTF8Char*)"0x");
-				sb->AppendHex32(ReadInt32(&buff[12]));
+				sb->AppendHex32(ReadUInt32(&buff[12]));
 				return true;
 			case 3:
 				sb->Append((const UTF8Char*)"0x");
-				sb->AppendHex32(ReadInt32(&buff[16]));
+				sb->AppendHex32(ReadUInt32(&buff[16]));
 				return true;
 			case 4:
 				sb->AppendI32(ReadInt32(&buff[20]));
@@ -186,7 +186,7 @@ public:
 			else
 			{
 				sb->Append((const UTF8Char*)"0x");
-				sb->AppendHex64(ReadInt64(&buff[94 + (16 * ((extIndex - 18) >> 1)) + 8]));
+				sb->AppendHex64(ReadUInt64(&buff[94 + (16 * ((extIndex - 18) >> 1)) + 8]));
 				return true;
 			}
 		}
@@ -228,8 +228,9 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	const UTF8Char *sptr;
 	OSInt i;
 	OSInt j;
-	OSInt currPos;
-	Int64 fileSize;
+	UOSInt ui;
+	UOSInt currPos;
+	UInt64 fileSize;
 	Int32 t;
 	Int32 fileT;
 	sptr = fd->GetFullName();
@@ -267,8 +268,8 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 		Int32 status2;
 		Int32 status3;
 		Int32 reportingCode;
-		Int32 analogCnt;
-		Int32 remoteIP;
+		UInt32 analogCnt;
+		UInt32 remoteIP;
 		UInt16 remotePort;
 		Int32 procTime;
 		UInt32 extraSize;
@@ -286,37 +287,37 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 		status2 = ReadInt32(&buff[64]);
 		status3 = ReadInt32(&buff[68]);
 		reportingCode = ReadInt32(&buff[72]);
-		analogCnt = ReadInt32(&buff[76]);
-		remoteIP = ReadInt32(&buff[80]);
+		analogCnt = ReadUInt32(&buff[76]);
+		remoteIP = ReadUInt32(&buff[80]);
 		remotePort = ReadUInt16(&buff[84]);
 		procTime = ReadInt32(&buff[88]);
 		extraSize = ReadUInt32(&buff[92]);
 		rec.valid = status1 & 2;
-		i = track->AddRecord(&rec);
+		ui = track->AddRecord(&rec);
 		currPos += 96;
 		WriteInt64(&buff[0], recvTimeTick);
 		WriteInt32(&buff[8], status1);
 		WriteInt32(&buff[12], status2);
 		WriteInt32(&buff[16], status3);
 		WriteInt32(&buff[20], reportingCode);
-		WriteInt32(&buff[24], analogCnt);
-		WriteInt32(&buff[28], remoteIP);
+		WriteUInt32(&buff[24], analogCnt);
+		WriteUInt32(&buff[28], remoteIP);
 		WriteInt16(&buff[32], remotePort);
 		WriteInt32(&buff[34], procTime);
-		WriteInt32(&buff[38], extraSize);
+		WriteUInt32(&buff[38], extraSize);
 		if (analogCnt > 0 && analogCnt <= 32)
 		{
 			fd->GetRealData(currPos, 16 * analogCnt, &buff[94]);
 			currPos += 16 * analogCnt;
 			fd->GetRealData(currPos, extraSize, &buff[42]);
 			currPos += extraSize;
-			track->SetExtraDataIndex(i, buff, 94 + 16 * analogCnt);
+			track->SetExtraDataIndex(ui, buff, 94 + 16 * analogCnt);
 		}
 		else if (analogCnt == 0)
 		{
 			fd->GetRealData(currPos, extraSize, &buff[42]);
 			currPos += extraSize;
-			track->SetExtraDataIndex(i, buff, 42 + extraSize);
+			track->SetExtraDataIndex(ui, buff, 42 + extraSize);
 		}
 		else
 		{

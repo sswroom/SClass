@@ -28,7 +28,7 @@ namespace Media
 		Bool playToStop;
 
 		static UInt32 __stdcall PlayThread(void *userData);
-		Int64 GetBitRate();
+		UInt64 GetBitRate();
 
 		Bool StartPlay();
 		Bool StopPlay();
