@@ -580,8 +580,8 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 		{
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
-			}else if(n >= source_length){
-				out->index[i * out->tap + j] = (source_length - 1) * indexSep;
+			}else if((UOSInt)n >= source_length){
+				out->index[i * out->tap + j] = (OSInt)(source_length - 1) * indexSep;
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}

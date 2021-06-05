@@ -15,13 +15,13 @@ namespace UI
 		const UTF8Char *unit;
 		UOSInt lineCnt;
 		UOSInt sampleCnt;
-		Int32 *lineColor;
+		UInt32 *lineColor;
 		UInt32 bgColor;
 		UInt32 fontColor;
 
 		Bool valueChanged;
 		Double *chartVal;
-		OSInt chartOfst;
+		UOSInt chartOfst;
 		Bool chartMaxChg;
 		Double chartMax;
 		Double chartMin;
@@ -35,19 +35,19 @@ namespace UI
 		void Init(void *hInst);
 		void Deinit(void *hInst);
 	public:
-		GUIRealtimeLineChart(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, OSInt lineCnt, OSInt sampleCnt, Int32 updateInterval);
+		GUIRealtimeLineChart(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, Int32 updateInterval);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(Int32 code, void *lParam);
 
 		void AddSample(Double *samples);
-		void SetLineColor(OSInt lineId, Int32 lineColor);
+		void SetLineColor(UOSInt lineId, UInt32 lineColor);
 		void SetUnit(const UTF8Char *unit);
-		void SetBGColor(Int32 lineColor);
-		void SetFontColor(Int32 fontColor);
+		void SetBGColor(UInt32 lineColor);
+		void SetFontColor(UInt32 fontColor);
 		void ClearChart();
 
 	};
-};
+}
 #endif

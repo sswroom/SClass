@@ -6748,7 +6748,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->sbuff = Text::StrInt32(sess->sbuff, stackCnt);
 		if (outEsp != 0)
 		{
-			if ((Int32)(sess->regs.ESP + stackCnt + 64) >= outEsp && (Int32)(sess->regs.ESP + stackCnt - 64) <= outEsp)
+			if ((sess->regs.ESP + (UInt32)stackCnt + 64) >= outEsp && (sess->regs.ESP + (UInt32)stackCnt - 64) <= outEsp)
 			{
 				sess->regs.ESP += stackCnt;
 			}
@@ -7229,7 +7229,7 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			sess->sbuff = Text::StrInt32(sess->sbuff, stackCnt);
 			if (outEsp != 0)
 			{
-				if ((Int32)(sess->regs.ESP + stackCnt + 16) >= outEsp && (Int32)(sess->regs.ESP + stackCnt - 16) <= outEsp)
+				if ((sess->regs.ESP + (UInt32)stackCnt + 16) >= outEsp && (sess->regs.ESP + (UInt32)stackCnt - 16) <= outEsp)
 				{
 					sess->regs.ESP += stackCnt;
 				}
@@ -19192,7 +19192,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
 	Text::StringBuilderUTF8 *outStr;
-	OSInt initJmpCnt = jmpAddrs->GetCount();
+	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;

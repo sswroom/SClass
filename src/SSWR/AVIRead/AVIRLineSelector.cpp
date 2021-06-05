@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(void *userObj)
 void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 {
 	UOSInt defVal = this->env->GetDefLineStyle();
-	OSInt currPos = this->GetVScrollPos();
+	UOSInt currPos = this->GetVScrollPos();
 	UOSInt i = 0;
 	UOSInt j = this->env->GetLineStyleCount();
 	UTF8Char sbuff[256];

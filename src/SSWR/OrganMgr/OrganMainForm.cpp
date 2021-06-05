@@ -863,7 +863,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						}
 					}
 				}
-				else if (filePathFmt != -1)
+				else if (filePathFmt != (UInt32)-1)
 				{
 					Text::StringBuilderUTF8 sb;
 

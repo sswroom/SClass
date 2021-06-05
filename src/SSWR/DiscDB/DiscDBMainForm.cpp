@@ -20,7 +20,7 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 	IO::StmData::FileData *fd;
 	Bool succ;
 	Bool failed = false;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < nFiles)
 	{
 		succ = false;

@@ -328,9 +328,9 @@ UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device:
 Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl::FileInfo *file, IO::Stream *outStm)
 {
 	UTF8Char sbuff[2048];
-	OSInt readSize;
-	Int64 totalSize = 0;
-	Int64 totalWriteSize = 0;
+	UOSInt readSize;
+	UInt64 totalSize = 0;
+	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
 	Net::HTTPClient *cli;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");

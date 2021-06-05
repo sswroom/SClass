@@ -71,7 +71,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 	UInt16 absH;
 	UOSInt fntCount;
 	UInt32 i;
-	Int32 maxSize;
+	UInt32 maxSize;
 	UInt32 maxIndex;
 	UOSInt lblSize;
 	Map::MapFontStyle *font;
@@ -657,7 +657,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 				}
 
 			}
-			if (j == -1)
+			if (j == (UOSInt)-1)
 			{
 				j = 0;
 				startX = scnPts[0];
@@ -1246,7 +1246,7 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, 
 				}
 
 			}
-			if (j == -1)
+			if (j == (UOSInt)-1)
 			{
 				j = 0;
 				startX = scnPts[0];
@@ -1339,9 +1339,9 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, 
 		font = (Map::MapFontStyle *)fontStyle->GetItem(i);
 		UTF8Char *lbl = sbuff;
 		UTF8Char l[2];
-		OSInt currInd;
-		OSInt lastInd;
-		OSInt cnt;
+		UOSInt currInd;
+		UOSInt lastInd;
+		UOSInt cnt;
 		cnt = lblSize;
 		currX = startX;
 		currY = startY;
@@ -1887,7 +1887,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 		lastX = currX = startX;
 		lastY = currY = startY;
 		j = startInd;
-		OSInt lastInd = j;
+		UOSInt lastInd = j;
 
 		angle = angleOfst - Math::ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
 		angleDegree = angle * 180.0 / PI;
@@ -2088,7 +2088,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 							break;
 						}
 					}
-					if (j == -1)
+					if (j == (UOSInt)-1)
 					{
 						j = 0;
 						currX = currX + (dist * cosAngle);
@@ -3087,7 +3087,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 			if (sum != 0)
 			{
 				Double *finalPts;
-				Int32 finalCnt;
+				UInt32 finalCnt;
 				Double maxX;
 				Double maxY;
 				Double minX;
@@ -3445,13 +3445,13 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 				OSInt lastY;
 				OSInt thisX;
 				OSInt thisY;
-				Int32 k;
+				UInt32 k;
 				Bool hasPoint;
 
 				j = (labels[i].nPoints << 1) - 2;
 				lastX = points[j];
 				lastY = points[j + 1];
-				if (lastX >= 0 && lastX < scnWidth && lastY >= 0 && lastY < scnHeight)
+				if (lastX >= 0 && lastX < (OSInt)scnWidth && lastY >= 0 && lastY < (OSInt)scnHeight)
 				{
 					maxX = minX = lastX;
 					maxY = minY = lastY;
@@ -3471,9 +3471,9 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 					thisX = points[j];
 					thisY = points[j + 1];
 
-					if (lastX > scnWidth)
+					if (lastX > (OSInt)scnWidth)
 					{
-						if (thisX > scnWidth)
+						if (thisX > (OSInt)scnWidth)
 						{
 							continue;
 						}
@@ -3501,16 +3501,16 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 						thisY = lastY + MulDivOS(thisY - lastY, 0 - lastX, thisX - lastX);
 						thisX = 0;
 					}
-					else if (thisX > scnWidth)
+					else if (thisX > (OSInt)scnWidth)
 					{
 						thisY = lastY + MulDivOS(thisY - lastY, scnWidth - lastX, thisX - lastX);
 						thisX = scnWidth;
 					}
 
 
-					if (lastY > scnHeight)
+					if (lastY > (OSInt)scnHeight)
 					{
-						if (thisY > scnHeight)
+						if (thisY > (OSInt)scnHeight)
 						{
 							continue;
 						}
@@ -3538,7 +3538,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 						thisX = lastX + MulDivOS(thisX - lastX, 0 - lastY, thisY - lastY);
 						thisY = 0;
 					}
-					else if (thisY > scnHeight)
+					else if (thisY > (OSInt)scnHeight)
 					{
 						thisX = lastX + MulDivOS(thisX - lastX, scnHeight - lastY, thisY - lastY);
 						thisY = scnHeight;

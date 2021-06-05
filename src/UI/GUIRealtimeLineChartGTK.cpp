@@ -59,10 +59,10 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Double strWidth;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -156,16 +156,16 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	this->eng->DeleteImage(img);
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, OSInt lineCnt, OSInt sampleCnt, Int32 updateInterval) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, Int32 updateInterval) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;
 	this->sampleCnt = sampleCnt;
-	this->lineColor = MemAlloc(Int32, lineCnt);
+	this->lineColor = MemAlloc(UInt32, lineCnt);
 	this->bgColor = 0xffffffff;
 	this->fontColor = 0xff000000;
 	this->unit = 0;
-	OSInt i;
+	UOSInt i;
 	if (lineCnt >= 1)
 		this->lineColor[0] = 0xffff0000;
 	if (lineCnt >= 2)
@@ -221,8 +221,8 @@ OSInt UI::GUIRealtimeLineChart::OnNotify(Int32 code, void *lParam)
 void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 {
 	Sync::MutexUsage mutUsage(this->chartMut);
-	OSInt ofst = this->chartOfst * this->lineCnt;
-	OSInt i = 0;
+	UOSInt ofst = this->chartOfst * this->lineCnt;
+	UOSInt i = 0;
 	while (i < lineCnt)
 	{
 		if (this->chartVal[ofst + i] == this->chartMax || this->chartVal[ofst + i] == this->chartMin)
@@ -240,9 +240,9 @@ void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 	this->valueChanged = true;
 }
 
-void UI::GUIRealtimeLineChart::SetLineColor(OSInt lineId, Int32 lineColor)
+void UI::GUIRealtimeLineChart::SetLineColor(UOSInt lineId, UInt32 lineColor)
 {
-	if (lineId >= 0 && lineId < this->lineCnt)
+	if (lineId < this->lineCnt)
 	{
 		this->lineColor[lineId] = lineColor;
 		this->valueChanged = true;
@@ -257,13 +257,13 @@ void UI::GUIRealtimeLineChart::SetUnit(const UTF8Char *unit)
 	this->valueChanged = true;
 }
 
-void UI::GUIRealtimeLineChart::SetBGColor(Int32 bgColor)
+void UI::GUIRealtimeLineChart::SetBGColor(UInt32 bgColor)
 {
 	this->bgColor = bgColor;
 	this->valueChanged = true;
 }
 
-void UI::GUIRealtimeLineChart::SetFontColor(Int32 fontColor)
+void UI::GUIRealtimeLineChart::SetFontColor(UInt32 fontColor)
 {
 	this->fontColor = fontColor;
 	this->valueChanged = true;

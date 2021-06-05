@@ -18,7 +18,7 @@ namespace Map
 	{
 		Int32 fontType;
 		UTF8Char *fontName;
-		Int32 fontSizePt;
+		UInt32 fontSizePt;
 		Double thick;
 		UInt32 color;
 		Media::DrawFont *font;

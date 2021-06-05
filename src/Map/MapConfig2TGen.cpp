@@ -794,7 +794,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 				}
 
 			}
-			if (j == -1)
+			if (j == (UOSInt)-1)
 			{
 				j = 0;
 				startX = scnPts[0];
@@ -804,7 +804,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 		else
 		{
 			j++;
-			while (j < (OSInt)nPoints - 1)
+			while (j < nPoints - 1)
 			{
 				if (axDiff > ayDiff)
 				{
@@ -863,7 +863,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 
 				j++;
 			}
-			if (j >= (OSInt)nPoints - 1)
+			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
 				startX = scnPts[(j << 1) + 2];
@@ -872,15 +872,15 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 		}
 	}
 
-	if (j >= (OSInt)nPoints - 1)
-	{
-		j -= 1;
-	}
-	else if (j < 0)
+	if ((OSInt)j < 0)
 	{
 		j = 0;
 	}
-	OSInt startInd = j;
+	else if (j >= nPoints - 1)
+	{
+		j -= 1;
+	}
+	UOSInt startInd = j;
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
 	i = 0;
@@ -975,7 +975,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str
 					if (mode == 0)
 					{
 						j++;
-						if (j >= (OSInt)nPoints - 1)
+						if (j >= nPoints - 1)
 						{
 							j = nPoints - 2;
 
@@ -1383,7 +1383,7 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *st
 				}
 
 			}
-			if (j == -1)
+			if (j == (UOSInt)-1)
 			{
 				j = 0;
 				startX = scnPts[0];
@@ -1452,7 +1452,7 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *st
 
 				j++;
 			}
-			if (j >= (OSInt)nPoints - 1)
+			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
 				startX = scnPts[(j << 1) + 2];
@@ -1461,13 +1461,13 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *st
 		}
 	}
 
-	if (j >= (OSInt)nPoints - 1)
-	{
-		j -= 1;
-	}
-	else if (j < 0)
+	if ((OSInt)j < 0)
 	{
 		j = 0;
+	}
+	else if (j >= nPoints - 1)
+	{
+		j -= 1;
 	}
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
 	i = 0;
@@ -1952,7 +1952,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 	}
 	else
 	{
-		while (j < (OSInt)nPoints - 1)
+		while (j < nPoints - 1)
 		{
 			startX = scnPts[(j << 1) + 2] - centX;
 			startY = scnPts[(j << 1) + 3] - centY;
@@ -1990,7 +1990,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 			}
 
 			j++;
-			if (j >= (OSInt)nPoints - 1)
+			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
 				startX = scnPts[(j << 1) + 2];
@@ -2000,7 +2000,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 		}
 	}
 
-	OSInt startInd = j;
+	UOSInt startInd = j;
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 	i = 0;
 	while (i < fntCount)
@@ -2024,7 +2024,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 		lastX = currX = startX;
 		lastY = currY = startY;
 		j = startInd;
-		OSInt lastInd = j;
+		UOSInt lastInd = j;
 
 		angle = angleOfst - Math::ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
 		angleDegree = angle * 180.0 / PI;
@@ -2077,7 +2077,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 				if (mode == 0)
 				{
 					j++;
-					while (j < (OSInt)nPoints - 1)
+					while (j < nPoints - 1)
 					{
 						nextX = scnPts[(j << 1) + 2] - currX;
 						nextY = scnPts[(j << 1) + 3] - currY;
@@ -2146,7 +2146,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 							break;
 						}
 					}
-					if (j == (OSInt)nPoints - 1)
+					if (j == nPoints - 1)
 					{
 						j--;
 
@@ -2225,7 +2225,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 							break;
 						}
 					}
-					if (j == -1)
+					if (j == (UOSInt)-1)
 					{
 						j = 0;
 						currX = currX + (dist * cosAngle);
@@ -2808,7 +2808,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 
 		found = 0;
 		i = 0;
-		while (i < (OSInt)*labelCnt)
+		while (i < *labelCnt)
 		{
 			if (recType == labels[i].shapeType)
 			{
@@ -2936,7 +2936,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		size = 0;
 
 		i = 1;
-		while (i < (OSInt)nPoint)
+		while (i < nPoint)
 		{
 			lastPtX = points[(i << 1) - 2];
 			lastPtY = points[(i << 1) - 1];
@@ -3006,7 +3006,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		endY = points[(nPoint << 1) - 1];
 		i = 0;
 
-		while (i < (OSInt)*labelCnt)
+		while (i < *labelCnt)
 		{
 			if (recType == labels[i].shapeType)
 			{
@@ -3197,7 +3197,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		else
 		{
 			i = 0;
-			while (i < (OSInt)*labelCnt)
+			while (i < *labelCnt)
 			{
 				if (recType == labels[i].shapeType)
 				{
@@ -3235,7 +3235,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 			sumX = sumY = 0;
 			lastX = outPts[(outPtCnt << 1) - 2];
 			lastY = outPts[(outPtCnt << 1) - 1];
-			while (i < (OSInt)outPtCnt)
+			while (i < outPtCnt)
 			{
 				thisX = outPts[(i << 1)];
 				thisY = outPts[(i << 1) + 1];
@@ -4925,8 +4925,8 @@ Media::DrawPen *Map::MapConfig2TGen::CreatePen(Media::DrawImage *img, UInt32 lin
 WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, const UTF8Char *dbOutput, DrawParam *params)
 {
 //	Manage::HiResClock clk;
-	Int32 index;
-	Int32 index2;
+	UInt32 index;
+	UInt32 index2;
 	UOSInt layerCnt = this->drawList->GetCount();
 	Data::ArrayListInt64 *arr;
 	Data::ArrayList<MapFontStyle*> **myArrs;
@@ -4942,7 +4942,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	OSInt l;
+	UOSInt l;
 	Int64 lastId;
 	Int64 thisId;
 	Double thisScale;

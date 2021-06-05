@@ -65,7 +65,7 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 		vheight = vheight << 1;
 	}
 	this->CalDisplayRect(vwidth, vheight, rect);
-	if (rect[2] == vbuff->destW && rect[3] == vbuff->destH && this->surfaceBuff && vbuff->destBitDepth == this->bitDepth)
+	if (rect[2] == (OSInt)vbuff->destW && rect[3] == (OSInt)vbuff->destH && this->surfaceBuff && vbuff->destBitDepth == this->bitDepth)
 	{
 		OSInt dlineSize;
 		UInt8 *dptr = this->LockSurfaceDirect(&dlineSize);
@@ -1686,7 +1686,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 							}
 							me->CalDisplayRect(vwidth, vheight, rect);
 							toClear = false;
-							if (rect[2] == me->buffs[minIndex].destW && rect[3] == me->buffs[minIndex].destH)
+							if (rect[2] == (OSInt)me->buffs[minIndex].destW && rect[3] == (OSInt)me->buffs[minIndex].destH)
 							{
 								if (rect[2] != lastW || rect[3] != lastH || me->toClear)
 								{

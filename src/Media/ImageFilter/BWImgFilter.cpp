@@ -16,54 +16,54 @@ void Media::ImageFilter::BWImgFilter::ProcessImage(UInt8 *imgData, UInt32 imgFor
 	if (!this->isEnable)
 		return;
 
-	if (imgFormat == *(Int32*)"DIBS")
+	if (imgFormat == *(UInt32*)"DIBS")
 	{
 	}
-	else if (imgFormat == *(Int32*)"NV12")
-	{
-		MemFillB(imgData + (imgWidth * imgHeight), imgWidth * imgHeight >> 1, 0x80);
-	}
-	else if (imgFormat == *(Int32*)"YV12")
+	else if (imgFormat == *(UInt32*)"NV12")
 	{
 		MemFillB(imgData + (imgWidth * imgHeight), imgWidth * imgHeight >> 1, 0x80);
 	}
-	else if (imgFormat == *(Int32*)"I420")
+	else if (imgFormat == *(UInt32*)"YV12")
 	{
 		MemFillB(imgData + (imgWidth * imgHeight), imgWidth * imgHeight >> 1, 0x80);
 	}
-	else if (imgFormat == *(Int32*)"YVU9")
+	else if (imgFormat == *(UInt32*)"I420")
+	{
+		MemFillB(imgData + (imgWidth * imgHeight), imgWidth * imgHeight >> 1, 0x80);
+	}
+	else if (imgFormat == *(UInt32*)"YVU9")
 	{
 		MemFillB(imgData + (imgWidth * imgHeight), imgWidth * imgHeight >> 3, 0x80);
 	}
-	else if (imgFormat == *(Int32*)"YUY2")
+	else if (imgFormat == *(UInt32*)"YUY2")
 	{
 		BWImgFilter_ProcYUY2(imgData, imgWidth * imgHeight);
 	}
-	else if (imgFormat == *(Int32*)"UYVY" || imgFormat == *(Int32*)"Y422" || imgFormat == *(Int32*)"UYNV" || imgFormat == *(Int32*)"HDYC")
+	else if (imgFormat == *(UInt32*)"UYVY" || imgFormat == *(UInt32*)"Y422" || imgFormat == *(UInt32*)"UYNV" || imgFormat == *(UInt32*)"HDYC")
 	{
 		BWImgFilter_ProcUYVY(imgData, imgWidth * imgHeight);
 	}
-	else if (imgFormat == *(Int32*)"AYUV")
+	else if (imgFormat == *(UInt32*)"AYUV")
 	{
 		BWImgFilter_ProcAYUV(imgData, imgWidth * imgHeight);
 	}
-	else if (imgFormat == *(Int32*)"P010")
+	else if (imgFormat == *(UInt32*)"P010")
 	{
 		MemFillW(imgData + (imgWidth * imgHeight * 2), imgWidth * imgHeight >> 1, 0x8000);
 	}
-	else if (imgFormat == *(Int32*)"P210")
+	else if (imgFormat == *(UInt32*)"P210")
 	{
 		MemFillW(imgData + (imgWidth * imgHeight * 2), imgWidth * imgHeight, 0x8000);
 	}
-	else if (imgFormat == *(Int32*)"P016")
+	else if (imgFormat == *(UInt32*)"P016")
 	{
 		MemFillW(imgData + (imgWidth * imgHeight * 2), imgWidth * imgHeight >> 1, 0x8000);
 	}
-	else if (imgFormat == *(Int32*)"P216")
+	else if (imgFormat == *(UInt32*)"P216")
 	{
 		MemFillW(imgData + (imgWidth * imgHeight * 2), imgWidth * imgHeight, 0x8000);
 	}
-	else if (imgFormat == *(Int32*)"Y416")
+	else if (imgFormat == *(UInt32*)"Y416")
 	{
 		BWImgFilter_ProcY416(imgData, imgWidth * imgHeight);
 	}

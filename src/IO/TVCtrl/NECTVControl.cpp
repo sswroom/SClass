@@ -107,7 +107,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 			break;
 		if (this->recvSize > 0)
 		{
-			OSInt i = 0;
+			UOSInt i = 0;
 			while (i < this->recvSize)
 			{
 				if (this->recvBuff[i] == 13)
@@ -198,7 +198,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 			break;
 		if (this->recvSize > 0)
 		{
-			OSInt i = 0;
+			UOSInt i = 0;
 			while (i < this->recvSize)
 			{
 				if (this->recvBuff[i] == 13)
@@ -295,7 +295,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 			break;
 		if (this->recvSize > 0)
 		{
-			OSInt i = 0;
+			UOSInt i = 0;
 			while (i < this->recvSize)
 			{
 				if (this->recvBuff[i] == 13)

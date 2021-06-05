@@ -1026,9 +1026,10 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 				i = Text::StrIndexOf(fname, series) + seriesLen;
 				OSInt lastR = 0;
 				UOSInt endOfst = Text::StrCharCnt(fname);
-				if ((j = Text::StrIndexOfICase(fname, (const UTF8Char*)".PART")) != -1)
+				OSInt si;
+				if ((si = Text::StrIndexOfICase(fname, (const UTF8Char*)".PART")) != -1)
 				{
-					endOfst = j;
+					endOfst = (UOSInt)si;
 				}
 				while (i < endOfst)
 				{

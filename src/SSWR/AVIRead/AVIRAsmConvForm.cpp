@@ -282,7 +282,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 								sj = Text::StrIndexOf(&sarr[j][si+1], ']');
 								if (sj >= 0)
 								{
-									sarr[j][si+sj+1] = 0;
+									sarr[j][si + sj+1] = 0;
 
 									found = false;
 									sj = Text::StrIndexOf(&sarr[j][si+1], '-');
@@ -329,7 +329,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										{
 											destSb.Append((const UTF8Char*)"-");
 										}
-										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][k+1], '+');
+										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][si + 1], '+');
 										l = k;
 										while (l-- > 0)
 										{
@@ -381,7 +381,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 								}
 								else
 								{
-									sarr[j][k] = '[';
+									sarr[j][si] = '[';
 									destSb.Append(sarr[j]);
 								}
 							}
