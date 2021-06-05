@@ -13,15 +13,15 @@ namespace Map
 		typedef struct
 		{
 			Map::RevGeoCfg *cfg;
-			Int32 lcid;
+			UInt32 lcid;
 		} RevGeoFile;
 
 		Data::ArrayList<RevGeoFile*> *files;
 		Map::MapSearchManager *mapSrchMgr;
-		Int32 defLCID;
+		UInt32 defLCID;
 
 	public:
-		RevGeoDir(const UTF8Char *cfgDir, Int32 defLCID, IO::Writer *errWriter);
+		RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *errWriter);
 		virtual ~RevGeoDir();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);

@@ -16,7 +16,7 @@ Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::Writer
 
 Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 {
-	OSInt i = revGeos->GetCount();
+	UOSInt i = revGeos->GetCount();
 	while (i-- > 0)
 	{
 		Map::IReverseGeocoder *revGeo;
@@ -67,7 +67,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	}
 
 
-	OSInt i = this->revGeos->GetCount();
+	UOSInt i = this->revGeos->GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos->GetItem(this->nextCoder)->SearchName(buff, buffSize, lat, lon, lcid);
@@ -86,7 +86,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		dt.SetCurrTimeUTC();
 		sql->Clear();
 		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
-		sql->AppendInt32(lcid);
+		sql->AppendInt32((Int32)lcid);
 		sql->AppendCmd((const UTF8Char*)", ");
 		sql->AppendInt32(keyx);
 		sql->AppendCmd((const UTF8Char*)", ");
@@ -144,7 +144,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	}
 
 
-	OSInt i = this->revGeos->GetCount();
+	UOSInt i = this->revGeos->GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos->GetItem(this->nextCoder)->CacheName(buff, buffSize, lat, lon, lcid);
@@ -163,7 +163,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		dt.SetCurrTimeUTC();
 		sql->Clear();
 		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
-		sql->AppendInt32(lcid);
+		sql->AppendInt32((Int32)lcid);
 		sql->AppendCmd((const UTF8Char*)", ");
 		sql->AppendInt32(keyx);
 		sql->AppendCmd((const UTF8Char*)", ");

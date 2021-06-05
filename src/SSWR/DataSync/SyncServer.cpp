@@ -95,13 +95,13 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 
 	if (syncClients && syncClients[0])
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		UTF8Char *sarr[2];
 		UTF8Char *sarr2[2];
 		SyncClient *syncCli;
 		Text::StringBuilderUTF8 sb;
-		Int32 port;
+		UInt16 port;
 		sb.Append(syncClients);
 		sarr[1] = sb.ToString();
 		while (true)
@@ -110,7 +110,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 			j = Text::StrSplit(sarr2, 2, sarr[0], ':');
 			if (j == 2)
 			{
-				if (Text::StrToInt32(sarr2[1], &port))
+				if (Text::StrToUInt16(sarr2[1], &port))
 				{
 					if (port > 0 && port < 65536)
 					{
@@ -134,7 +134,7 @@ SSWR::DataSync::SyncServer::~SyncServer()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 	DEL_CLASS(this->protoHdlr);
-	OSInt i;
+	UOSInt i;
 	ServerInfo *svrInfo;
 	Data::ArrayList<ServerInfo*> *svrList = this->svrMap->GetValues();
 	i = svrList->GetCount();

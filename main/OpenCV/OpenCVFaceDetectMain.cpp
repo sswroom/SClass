@@ -74,7 +74,7 @@ void __stdcall OnDetectResult(void *userObj, OSInt objCnt, const Media::OpenCV::
 			OSInt i = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data + frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, objRects[i].right - objRects[i].left, (UOSInt)(objRects[i].bottom - objRects[i].top), (OSInt)frInfo->dispWidth * 4, 0xffff0000);
+				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), (OSInt)frInfo->dispWidth * 4, 0xffff0000);
 				i++;
 			}
 			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"ImageCapture"));
@@ -168,7 +168,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Media::IVideoCapture *capture;
 	IO::ConsoleWriter *console;
-	OSInt defIndex;
+	UOSInt defIndex;
 	lastCnt = 0;
 	OSInt frameSkip;
 
@@ -179,7 +179,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		defIndex = Text::StrToOSInt(argv[1]);
+		defIndex = Text::StrToUOSInt(argv[1]);
 	}
 	else
 	{
@@ -224,15 +224,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if ((csptr = cfg->GetValue((const UTF8Char*)"PreferedFormat")) != 0)
 		{
 			if (Text::StrCharCnt(csptr) == 4)
-			preferedFormat = *(Int32*)csptr;
+			preferedFormat = *(UInt32*)csptr;
 		}
 		if ((csptr = cfg->GetValue((const UTF8Char*)"PreferedWidth")) != 0)
 		{
-			preferedWidth = Text::StrToOSInt(csptr);
+			preferedWidth = Text::StrToUOSInt(csptr);
 		}
 		if ((csptr = cfg->GetValue((const UTF8Char*)"PreferedHeight")) != 0)
 		{
-			preferedHeight = Text::StrToOSInt(csptr);
+			preferedHeight = Text::StrToUOSInt(csptr);
 		}
 		DEL_CLASS(cfg);
 	}

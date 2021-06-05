@@ -67,6 +67,8 @@ namespace Net
 			virtual RequestProtocol GetProtocol() = 0;
 			virtual const UTF8Char *GetQueryValue(const UTF8Char *name) = 0;
 			UTF8Char *GetQueryValueStr(const UTF8Char *name, UTF8Char *buff, UOSInt buffSize);
+			Bool GetQueryValueI16(const UTF8Char *name, Int16 *val);
+			Bool GetQueryValueU16(const UTF8Char *name, UInt16 *val);
 			Bool GetQueryValueI32(const UTF8Char *name, Int32 *val);
 			Bool GetQueryValueU32(const UTF8Char *name, UInt32 *val);
 			Bool GetQueryValueI64(const UTF8Char *name, Int64 *val);
@@ -76,8 +78,12 @@ namespace Net
 			virtual void ParseHTTPForm() = 0;
 			virtual const UTF8Char *GetHTTPFormStr(const UTF8Char *name) = 0;
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize) = 0;
+			Bool GetHTTPFormInt16(const UTF8Char *name, Int16 *valOut);
+			Bool GetHTTPFormUInt16(const UTF8Char *name, UInt16 *valOut);
 			Bool GetHTTPFormInt32(const UTF8Char *name, Int32 *valOut);
+			Bool GetHTTPFormUInt32(const UTF8Char *name, UInt32 *valOut);
 			Bool GetHTTPFormInt64(const UTF8Char *name, Int64 *valOut);
+			Bool GetHTTPFormUInt64(const UTF8Char *name, UInt64 *valOut);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF *sb) = 0;
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;

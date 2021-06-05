@@ -4,7 +4,7 @@
 #include "Math/Ellipse.h"
 #include "Math/Math.h"
 
-Math::Ellipse::Ellipse(Int32 srid, Double tlx, Double tly, Double w, Double h) : Math::Vector2D(srid)
+Math::Ellipse::Ellipse(UInt32 srid, Double tlx, Double tly, Double w, Double h) : Math::Vector2D(srid)
 {
 	this->tlx = tlx;
 	this->tly = tly;

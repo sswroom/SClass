@@ -36,18 +36,18 @@ namespace Media
 			const UTF8Char *name;
 			Double heightPt;
 			Media::DrawEngine::DrawFontStyle fontStyle;
-			Int32 codePage;
+			UInt32 codePage;
 
 		public:
-			VectorFontStyle(UOSInt index, const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
+			VectorFontStyle(UOSInt index, const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			virtual ~VectorFontStyle();
 			
-			Bool IsSame(const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
+			Bool IsSame(const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			UOSInt GetIndex();
 			Double GetHeightPt();
 			const UTF8Char *GetName();
 			Media::DrawEngine::DrawFontStyle GetStyle();
-			Int32 GetCodePage();
+			UInt32 GetCodePage();
 			Media::DrawFont *CreateDrawFont(Double oriDPI, Media::DrawImage *dimg);
 		};
 
@@ -76,7 +76,7 @@ namespace Media
 	private:
 		Media::DrawEngine *refEng;
 		Media::ColorProfile *colorProfile;
-		Int32 srid;
+		UInt32 srid;
 		Double width;
 		Double height;
 		Math::Unit::Distance::DistanceUnit unit;
@@ -89,7 +89,7 @@ namespace Media
 		Media::DrawEngine::DrawPos align;
 		
 	public:
-		VectorGraph(Int32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile);
+		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile);
 		virtual ~VectorGraph();
 
 		virtual UOSInt GetWidth();
@@ -128,8 +128,8 @@ namespace Media
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual DrawBrush *NewBrushARGB(UInt32 color);
-		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
-		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage);
+		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual DrawFont *CloneFont(Media::DrawFont *f);
 		virtual void DelPen(DrawPen *p);
 		virtual void DelBrush(DrawBrush *b);
@@ -148,7 +148,7 @@ namespace Media
 
 		Double GetVisibleWidthMM();
 		Double GetVisibleHeightMM();
-		void DrawTo(Media::DrawImage *dimg, Int32 *imgDurMS);
+		void DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS);
 	};
 }
 #endif

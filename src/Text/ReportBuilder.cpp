@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/StringUTF8Map.h"
+#include "Math/Math.h"
 #include "Media/PaperSize.h"
 #include "Text/MyStringFloat.h"
 #include "Text/ReportBuilder.h"
@@ -253,7 +254,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	UInt32 k;
 	UOSInt l;
 	UOSInt m;
-	OSInt urlAdd;
+	UOSInt urlAdd;
 	Text::SpreadSheet::Workbook *wb;
 	Text::SpreadSheet::Worksheet *ws;
 	const UTF8Char **csarr;
@@ -555,7 +556,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 
 					if (iconSt->dimg)
 					{
-						colCurrX[icon->col] += fontHeightPt / iconSt->dimg->GetHeight() * iconSt->dimg->GetWidth();
+						colCurrX[icon->col] += fontHeightPt / Math::UOSInt2Double(iconSt->dimg->GetHeight()) * Math::UOSInt2Double(iconSt->dimg->GetWidth());
 					}
 				}
 			}
@@ -711,8 +712,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 							iconSt = iconStatus.Get(icon->fileName);
 							if (iconSt && iconSt->dimg)
 							{
-								Double w = fontHeightMM * iconSt->dimg->GetWidth() / iconSt->dimg->GetHeight();
-								Double dpi = iconSt->dimg->GetHeight() / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
+								Double w = fontHeightMM * Math::UOSInt2Double(iconSt->dimg->GetWidth()) / Math::UOSInt2Double(iconSt->dimg->GetHeight());
+								Double dpi = Math::UOSInt2Double(iconSt->dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
 								iconSt->dimg->SetHDPI(dpi);
 								iconSt->dimg->SetVDPI(dpi);
 								g->DrawImagePt(iconSt->dimg, colCurrX[icon->col], currY);

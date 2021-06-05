@@ -4,7 +4,7 @@
 #include "Math/VectorString.h"
 #include "Text/MyString.h"
 
-Math::VectorString::VectorString(Int32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::VectorString::VectorString(UInt32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = Text::StrCopyNew(s);
 	this->x = x;

@@ -32,7 +32,7 @@ namespace Map
 		UInt32 reqLCID;
 		Bool reqResult;
 
-		Net::TCPClient *GetLatestClient(OSInt retryCnt);
+		Net::TCPClient *GetLatestClient(UOSInt retryCnt);
 	public:
 		ReverseGeocoderServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port);
 		virtual ~ReverseGeocoderServer();

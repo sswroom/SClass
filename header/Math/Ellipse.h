@@ -13,7 +13,7 @@ namespace Math
 		Double h;
 		
 	public:
-		Ellipse(Int32 srid, Double tlx, Double tly, Double w, Double h);
+		Ellipse(UInt32 srid, Double tlx, Double tly, Double w, Double h);
 		virtual ~Ellipse();
 
 		virtual VectorType GetVectorType();

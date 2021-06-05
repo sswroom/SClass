@@ -3,6 +3,7 @@
 #include "Data/ArrayListDbl.h"
 #include "Data/Int32Map.h"
 #include "Data/Int64Map.h"
+#include "Data/UInt32Map.h"
 #include "Data/RandomOS.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
@@ -97,7 +98,7 @@ namespace SSWR
 				Int32 speciesId;
 				Int64 captureTimeTicks;
 				const UTF8Char *dataFileName;
-				Int32 crcVal;
+				UInt32 crcVal;
 				Int32 rotType;
 				Int32 prevUpdated;
 				Double cropLeft;
@@ -170,9 +171,9 @@ namespace SSWR
 				Int32 cateId;
 				GroupFlags flags;
 
-				OSInt photoCount;
-				OSInt myPhotoCount;
-				OSInt totalCount;
+				UOSInt photoCount;
+				UOSInt myPhotoCount;
+				UOSInt totalCount;
 				SpeciesInfo *photoSpObj;
 				Data::ArrayList<SpeciesInfo*> *species;
 				Data::ArrayList<GroupInfo *> *groups;
@@ -244,7 +245,7 @@ namespace SSWR
 			Data::Int32Map<WebUserInfo*> *userMap;
 			Data::StringUTF8Map<WebUserInfo*> *userNameMap;
 			Data::Int32Map<UserFileInfo*> *userFileMap;
-			Data::Int32Map<IO::ConfigFile*> *langMap;
+			Data::UInt32Map<IO::ConfigFile*> *langMap;
 			Data::Int32Map<LocationInfo*> *locMap;
 			Text::Locale *locale;
 
@@ -283,7 +284,7 @@ namespace SSWR
 			Bool SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF *bookNameOut);
 			Int32 GroupAdd(const UTF8Char* engName, const UTF8Char *chiName, Int32 parentId, const UTF8Char *descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
 			Bool GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId);
-			Bool GroupAddCounts(Int32 groupId, OSInt totalCount, OSInt photoCount, OSInt myPhotoCount);
+			Bool GroupAddCounts(Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
 
 			Net::WebServer::IWebSession *ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess);
 			static Bool __stdcall SvcPhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, Net::WebServer::WebServiceHandler *parent);
@@ -312,9 +313,9 @@ namespace SSWR
 			static Bool __stdcall SvcCate(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, Net::WebServer::WebServiceHandler *parent);
 			static Bool __stdcall SvcFavicon(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, Net::WebServer::WebServiceHandler *parent);
 
-			void ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, Int32 imgWidth, Int32 imgHeight, const UTF8Char *fileName);
-			void ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, Int32 imgWidth, Int32 imgHeight, Int32 photoId);
-			void ResponsePhotoWId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, Int32 imgWidth, Int32 imgHeight, Int32 photoWId);
+			void ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName);
+			void ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoId);
+			void ResponsePhotoWId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoWId);
 
 			void WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile);
 			void WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);
@@ -322,8 +323,8 @@ namespace SSWR
 			void WriteFooter(IO::Writer *writer);
 			void WriteLocator(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
 			void WriteLocatorText(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
-			void WriteGroupTable(IO::Writer *writer, Data::ArrayList<GroupInfo *> *groupList, Int32 scnWidth, Bool showSelect);
-			void WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SpeciesInfo *> *spList, Int32 scnWidth, Int32 cateId, Bool showSelect);
+			void WriteGroupTable(IO::Writer *writer, Data::ArrayList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect);
+			void WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect);
 			void WritePickObjs(IO::Writer *writer, RequestEnv *env, const UTF8Char *url);
 
 			static Bool __stdcall OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj);
@@ -332,7 +333,7 @@ namespace SSWR
 			IO::ConfigFile *LangGet(Net::WebServer::IWebRequest *req);
 			static const UTF8Char *LangGetValue(IO::ConfigFile *lang, const UTF8Char *name);
 		public:
-			OrganWebHandler(Net::SocketFactory *sockf, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, Int32 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng);
+			OrganWebHandler(Net::SocketFactory *sockf, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng);
 			virtual ~OrganWebHandler();
 
 			Bool IsError();

@@ -25,7 +25,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 		Double t1 = clk.GetTimeDiff();
 		if (r)
 		{
-			Int32 lcid;
+			UInt32 lcid;
 			Int32 keyx;
 			Int32 keyy;
 			Text::StringBuilderUTF8 sb;
@@ -36,7 +36,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 			Int32 index;
 			while (r->ReadNext())
 			{
-				lcid = r->GetInt32(0);
+				lcid = (UInt32)r->GetInt32(0);
 				keyx = r->GetInt32(1);
 				keyy = r->GetInt32(2);
 				sb.ClearStr();
@@ -178,7 +178,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		}
 	}
 
-	OSInt i = this->revGeos->GetCount();
+	UOSInt i = this->revGeos->GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos->GetItem(this->nextCoder)->SearchName(buff, buffSize, lat, lon, lcid);
@@ -198,7 +198,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		dt.SetCurrTimeUTC();
 		NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
-		sql->AppendInt32(lcid);
+		sql->AppendInt32((Int32)lcid);
 		sql->AppendCmd((const UTF8Char*)", ");
 		sql->AppendInt32(keyx);
 		sql->AppendCmd((const UTF8Char*)", ");

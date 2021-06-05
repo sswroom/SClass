@@ -11,7 +11,7 @@ namespace Media
 		Media::AudioFormat format;
 		Data::ArrayList<Media::IAudioSource*> *stmList;
 
-		Int32 stmTime;
+		UInt32 stmTime;
 		Bool canSeek;
 
 		UOSInt currStm;

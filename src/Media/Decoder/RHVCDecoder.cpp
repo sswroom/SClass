@@ -231,15 +231,15 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	oriW = info.dispWidth;
 	oriH = info.dispHeight;
 	Media::H265Parser::GetFrameInfoSPS(this->sps, this->spsSize, &info);
-	OSInt cropRight = 0;
-	OSInt cropBottom = 0;
+	UOSInt cropRight = 0;
+	UOSInt cropBottom = 0;
 	if (info.dispWidth < oriW)
 	{
-		cropRight = (OSInt)(oriW - info.dispWidth);
+		cropRight = oriW - info.dispWidth;
 	}
 	if (info.dispHeight < oriH)
 	{
-		cropBottom = (OSInt)(oriH - info.dispHeight);
+		cropBottom = oriH - info.dispHeight;
 	}
 	if (cropRight > 0 || cropBottom > 0)
 	{

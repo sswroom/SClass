@@ -447,7 +447,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	FFMPEGClassData *data = MemAlloc(FFMPEGClassData, 1);
 	this->clsData = data;
 	this->endProcessing = false;
-	this->lastFrameTime = -1;
+	this->lastFrameTime = (UInt32)-1;
 	data->inited = false;
 	data->ctx = 0;
 	data->frame = 0;
@@ -457,7 +457,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->storeWidth = 0;
 	data->storeHeight = 0;
 	data->par = 1.0;
-	data->currFmt = -1;
+	data->currFmt = (UInt32)-1;
 	data->frameBuff = 0;
 	data->seeked = false;
 	data->frameIndexE = 0;
@@ -1048,7 +1048,7 @@ void Media::Decoder::FFMPEGDecoder::Stop()
 	this->frameCb = 0;
 	this->frameCbData = 0;
 //	this->lastFrameNum = 0;
-	this->lastFrameTime = -1;
+	this->lastFrameTime = (UInt32)-1;
 	data->frameIndexS = 0;
 	data->frameIndexE = 0;
 }

@@ -44,10 +44,10 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char cbuff[12];
-	UInt32 currPos = 0;
-	UInt32 currSize = 0;
+	UOSInt currPos = 0;
+	UOSInt currSize = 0;
 	Int32 i;
-	UInt32 j;
+	UOSInt j;
 	if (showOriVal)
 	{
 		currSize = (UOSInt)(Text::StrInt32(cbuff, *output) - cbuff);
@@ -76,18 +76,18 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				}
 				else
 				{
-					i = currSize;
-					cbuff[i + 1] = 0;
-					while (i-- > 0)
+					j = currSize;
+					cbuff[j + 1] = 0;
+					while (j-- > 0)
 					{
-						cbuff[i + 1] = cbuff[i];
+						cbuff[j + 1] = cbuff[j];
 					}
 					cbuff[0] = '-';
 					currPos++;
 					currSize++;
 					console->SetCursorPos(state.currX, state.currY);
 					console->Write(cbuff);
-					console->SetCursorPos(state.currX + currPos, state.currY);
+					console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 				}
 			}
 		}
@@ -115,7 +115,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
 				console->Write(cbuff);
-				console->SetCursorPos(state.currX + currPos, state.currY);
+				console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 			}
 		}
 		else if (i == 8)
@@ -137,7 +137,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				console->SetCursorPos(state.currX, state.currY);
 				console->Write(cbuff);
 				console->Write((const UTF8Char*)" ");
-				console->SetCursorPos(state.currX + currPos, state.currY);
+				console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 			}
 		}
 		else if (i == 0 || i == 0xe0)
@@ -148,7 +148,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				if (currPos > 0)
 				{
 					currPos--;
-					console->SetCursorPos(state.currX + currPos, state.currY);
+					console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 				}
 			}
 			else if (i == 0x4d)
@@ -156,7 +156,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				if (currPos < currSize)
 				{
 					currPos++;
-					console->SetCursorPos(state.currX + currPos, state.currY);
+					console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 				}
 			}
 		}
@@ -827,8 +827,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char *cbuff = output;
-	UOSInt currPos = 0;
-	UOSInt currSize = 0;
+	UInt32 currPos = 0;
+	UInt32 currSize = 0;
 	while (true)
 	{
 		i = (UOSInt)IO::Console::GetKey();

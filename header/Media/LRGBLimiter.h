@@ -9,5 +9,5 @@ namespace Media
 		static void LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h);
 	};*/
 };
-extern "C" void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h);
+extern "C" void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, UOSInt w, UOSInt h);
 #endif

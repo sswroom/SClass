@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "Map/ReverseGeocoderServer.h"
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
@@ -7,12 +8,12 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(OSInt retryCnt)
+Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 {
 	Int64 currTime;
 	Data::DateTime dt;
 	Int64 maxTime = -1;
-	OSInt maxIndex = 0;
+	UOSInt maxIndex = 0;
 	Net::TCPClient *cli;
 	void *cliObj;
 	ClientStatus *stat;
@@ -22,7 +23,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(OSInt retryCnt)
 
 	Sync::MutexUsage mutUsage;
 	this->ctrl->UseGetCli(&mutUsage);
-	OSInt i = this->ctrl->GetCliCount();
+	UOSInt i = this->ctrl->GetCliCount();
 	if (i <= retryCnt)
 	{
 		return 0;
@@ -73,7 +74,7 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
 	Bool sent;
-	OSInt retryCnt = 0;
+	UOSInt retryCnt = 0;
 	UTF8Char *sptr = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
@@ -90,9 +91,9 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 		sent = false;
 		if (cli)
 		{
-			*(Int32*)&dataBuff[0] = this->reqLat;
-			*(Int32*)&dataBuff[4] = this->reqLon;
-			*(Int32*)&dataBuff[8] = this->reqLCID;
+			WriteInt32(&dataBuff[0], this->reqLat);
+			WriteInt32(&dataBuff[4], this->reqLon);
+			WriteUInt32(&dataBuff[8], this->reqLCID);
 			cli->Write(dataBuff2, this->protocol->BuildPacket(dataBuff2, 0, 0, dataBuff, 12, 0));
 			sent = true;
 		}
@@ -126,7 +127,7 @@ UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize,
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
 	Bool sent;
-	OSInt retryCnt = 0;
+	UOSInt retryCnt = 0;
 	UTF8Char *sptr = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
@@ -143,9 +144,9 @@ UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize,
 		sent = false;
 		if (cli)
 		{
-			*(Int32*)&dataBuff[0] = this->reqLat;
-			*(Int32*)&dataBuff[4] = this->reqLon;
-			*(Int32*)&dataBuff[8] = this->reqLCID;
+			WriteInt32(&dataBuff[0], this->reqLat);
+			WriteInt32(&dataBuff[4], this->reqLon);
+			WriteUInt32(&dataBuff[8], this->reqLCID);
 			cli->Write(dataBuff2, this->protocol->BuildPacket(dataBuff2, 2, 0, dataBuff, 12, 0));
 			sent = true;
 		}
@@ -198,12 +199,12 @@ void Map::ReverseGeocoderServer::DataParsed(IO::Stream *stm, void *cliObj, Int32
 {
 	if (cmdType == 1)
 	{
-		if (this->reqBuff && *(Int32*)&cmd[0] == this->reqLat && *(Int32*)&cmd[4] == this->reqLon && *(Int32*)&cmd[8] == this->reqLCID)
+		if (this->reqBuff && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
 		{
 			UOSInt strSize;
 			if ((cmd[12] & 0x80) != 0)
 			{
-				strSize = ((cmd[12] & 0x7f) << 8) | cmd[13];
+				strSize = (UOSInt)(((cmd[12] & 0x7f) << 8) | cmd[13]);
 				cmd += 14;
 			}
 			else
@@ -228,12 +229,12 @@ void Map::ReverseGeocoderServer::DataParsed(IO::Stream *stm, void *cliObj, Int32
 	}
 	else if (cmdType == 3)
 	{
-		if (this->reqBuff && *(Int32*)&cmd[0] == this->reqLat && *(Int32*)&cmd[4] == this->reqLon && *(Int32*)&cmd[8] == this->reqLCID)
+		if (this->reqBuff && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
 		{
 			UOSInt strSize;
 			if ((cmd[12] & 0x80) != 0)
 			{
-				strSize = ((cmd[12] & 0x7f) << 8) | cmd[13];
+				strSize = (UOSInt)(((cmd[12] & 0x7f) << 8) | cmd[13]);
 				cmd += 14;
 			}
 			else

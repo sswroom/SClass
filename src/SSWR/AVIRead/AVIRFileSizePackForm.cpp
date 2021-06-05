@@ -238,7 +238,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 			i++;
 		}
 		sb.ClearStr();
-		sb.AppendI64(dirSize);
+		sb.AppendU64(dirSize);
 		this->txtTotalSize->SetText(sb.ToString());
 	}
 	else

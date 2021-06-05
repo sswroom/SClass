@@ -46,7 +46,7 @@ Bool Media::AudioConcatSource::AppendAudio(Media::IAudioSource *audio)
 		{
 			this->canSeek = false;
 		}
-		this->stmTime = audio->GetStreamTime();
+		this->stmTime = (UInt32)audio->GetStreamTime();
 		return true;
 	}
 	else
@@ -64,7 +64,7 @@ Bool Media::AudioConcatSource::AppendAudio(Media::IAudioSource *audio)
 		if (fmt.bitpersample != this->format.bitpersample)
 			return false;
 		this->stmList->Add(audio);
-		this->stmTime += audio->GetStreamTime();
+		this->stmTime += (UInt32)audio->GetStreamTime();
 		return true;
 	}
 }
@@ -97,7 +97,7 @@ Bool Media::AudioConcatSource::CanSeek()
 
 Int32 Media::AudioConcatSource::GetStreamTime()
 {
-	return this->stmTime;
+	return (Int32)this->stmTime;
 }
 
 void Media::AudioConcatSource::GetFormat(AudioFormat *format)

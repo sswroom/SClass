@@ -15,7 +15,7 @@ namespace Media
 		Data::ArrayList<Media::VectorGraph*> *items;
 		Media::IPrintDocument *currDoc;
 		Media::DrawEngine *refEng;
-		Int32 srid;
+		UInt32 srid;
 
 		const UTF8Char *docName;
 		const UTF8Char *author;
@@ -27,8 +27,8 @@ namespace Media
 		Int64 modTimeTicks;
 
 	public:
-		VectorDocument(Int32 srid, Media::DrawEngine *refEng);
-		VectorDocument(Int32 srid, const UTF8Char *name, Media::DrawEngine *refEng);
+		VectorDocument(UInt32 srid, Media::DrawEngine *refEng);
+		VectorDocument(UInt32 srid, const UTF8Char *name, Media::DrawEngine *refEng);
 		virtual ~VectorDocument();
 
 		Media::VectorGraph *AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
@@ -57,5 +57,5 @@ namespace Media
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 	};
-};
+}
 #endif

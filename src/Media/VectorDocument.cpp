@@ -3,7 +3,7 @@
 #include "Media/VectorDocument.h"
 #include "Text/MyString.h"
 
-Media::VectorDocument::VectorDocument(Int32 srid, Media::DrawEngine *refEng) : IO::ParsedObject((const UTF8Char*)"Untitled")
+Media::VectorDocument::VectorDocument(UInt32 srid, Media::DrawEngine *refEng) : IO::ParsedObject((const UTF8Char*)"Untitled")
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;
@@ -19,7 +19,7 @@ Media::VectorDocument::VectorDocument(Int32 srid, Media::DrawEngine *refEng) : I
 	this->modTimeTicks = 0;
 }
 
-Media::VectorDocument::VectorDocument(Int32 srid, const UTF8Char *name, Media::DrawEngine *refEng) : IO::ParsedObject(name)
+Media::VectorDocument::VectorDocument(UInt32 srid, const UTF8Char *name, Media::DrawEngine *refEng) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;

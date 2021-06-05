@@ -147,6 +147,22 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(const UTF8Char *name, UT
 	return Text::StrConcatS(buff, csptr, buffSize);
 }
 
+Bool Net::WebServer::IWebRequest::GetQueryValueI16(const UTF8Char *name, Int16 *val)
+{
+	const UTF8Char *csptr = this->GetQueryValue(name);
+	if (csptr == 0)
+		return false;
+	return Text::StrToInt16(csptr, val);
+}
+
+Bool Net::WebServer::IWebRequest::GetQueryValueU16(const UTF8Char *name, UInt16 *val)
+{
+	const UTF8Char *csptr = this->GetQueryValue(name);
+	if (csptr == 0)
+		return false;
+	return Text::StrToUInt16(csptr, val);
+}
+
 Bool Net::WebServer::IWebRequest::GetQueryValueI32(const UTF8Char *name, Int32 *val)
 {
 	const UTF8Char *csptr = this->GetQueryValue(name);
@@ -179,6 +195,26 @@ Bool Net::WebServer::IWebRequest::GetQueryValueF64(const UTF8Char *name, Double 
 	return Text::StrToDouble(csptr, val);
 }
 
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(const UTF8Char *name, Int16 *valOut)
+{
+	const UTF8Char *csptr = this->GetHTTPFormStr(name);
+	if (csptr == 0)
+	{
+		return false;
+	}
+	return Text::StrToInt16(csptr, valOut);
+}
+
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(const UTF8Char *name, UInt16 *valOut)
+{
+	const UTF8Char *csptr = this->GetHTTPFormStr(name);
+	if (csptr == 0)
+	{
+		return false;
+	}
+	return Text::StrToUInt16(csptr, valOut);
+}
+
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(const UTF8Char *name, Int32 *valOut)
 {
 	const UTF8Char *csptr = this->GetHTTPFormStr(name);
@@ -189,6 +225,16 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(const UTF8Char *name, Int32 *
 	return Text::StrToInt32(csptr, valOut);
 }
 
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(const UTF8Char *name, UInt32 *valOut)
+{
+	const UTF8Char *csptr = this->GetHTTPFormStr(name);
+	if (csptr == 0)
+	{
+		return false;
+	}
+	return Text::StrToUInt32(csptr, valOut);
+}
+
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(const UTF8Char *name, Int64 *valOut)
 {
 	const UTF8Char *csptr = this->GetHTTPFormStr(name);
@@ -197,6 +243,16 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(const UTF8Char *name, Int64 *
 		return false;
 	}
 	return Text::StrToInt64(csptr, valOut);
+}
+
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(const UTF8Char *name, UInt64 *valOut)
+{
+	const UTF8Char *csptr = this->GetHTTPFormStr(name);
+	if (csptr == 0)
+	{
+		return false;
+	}
+	return Text::StrToUInt64(csptr, valOut);
 }
 
 const UTF8Char *Net::WebServer::IWebRequest::GetReqMethodStr()

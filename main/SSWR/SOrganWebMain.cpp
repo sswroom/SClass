@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	DB::DBTool *db;
 	IO::ConsoleWriter *console;
-	Int32 scnSize = 0;
+	UInt32 scnSize = 0;
 	Int32 unorganizedGroupId = 0;
 	SSWR::OrganMgr::OrganWebHandler *dataHdlr;
 	Net::SocketFactory *sockf;
@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		if ((csptr = cfg->GetValue((const UTF8Char*)"ScreenSize")) != 0)
 		{
-			scnSize = Text::StrToInt32(csptr);
+			scnSize = Text::StrToUInt32(csptr);
 		}
 		if (scnSize <= 0)
 		{
@@ -61,7 +61,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), log, (const UTF8Char*)"DB: ");
 		}
-		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), Text::StrToInt32(cfg->GetValue((const UTF8Char*)"SvrPort")), cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Core::DefaultDrawEngine::CreateDrawEngine()));
+		UInt16 port;
+		Text::StrToUInt16S(cfg->GetValue((const UTF8Char*)"SvrPort"), &port, 0);
+		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Core::DefaultDrawEngine::CreateDrawEngine()));
 		DEL_CLASS(cfg);
 
 		if (dataHdlr->IsError())

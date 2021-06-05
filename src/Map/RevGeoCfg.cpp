@@ -69,8 +69,8 @@ Map::RevGeoCfg::RevGeoCfg(const UTF8Char *fileName, Map::MapSearchManager *mapSr
 
 Map::RevGeoCfg::~RevGeoCfg()
 {
-	OSInt i = REVGEO_MAXID;
-	OSInt j;
+	UOSInt i = REVGEO_MAXID;
+	UOSInt j;
 	Map::RevGeoCfg::SearchLayer *layer;
 	while (i-- > 0)
 	{
@@ -94,9 +94,9 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 	UTF8Char sbuff[256];
 	UTF8Char *tmpStr = 0;
 	Bool hasStr = false;
-	OSInt i = 0;
-	OSInt j;
-	OSInt k;
+	UOSInt i = 0;
+	UOSInt j;
+	UOSInt k;
 	Double xposOut;
 	Double yposOut;
 	Double minDist;
@@ -124,19 +124,19 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 						minDist = thisDist;
 						if (hasStr)
 						{
-							tmpStr = Text::StrConcatS(buff, (const UTF8Char*)", ", buffEnd - buff);
-							buff = Text::StrConcatS(tmpStr, sbuff, buffEnd - tmpStr);
+							tmpStr = Text::StrConcatS(buff, (const UTF8Char*)", ", (UOSInt)(buffEnd - buff));
+							buff = Text::StrConcatS(tmpStr, sbuff, (UOSInt)(buffEnd - tmpStr));
 						}
 						else
 						{
-							buff = Text::StrConcatS(tmpStr = buff, sbuff, buffEnd - buff);
+							buff = Text::StrConcatS(tmpStr = buff, sbuff, (UOSInt)(buffEnd - buff));
 							hasStr = true;
 						}
 					}
 					else if (thisDist < minDist)
 					{
 						minDist = thisDist;
-						buff = Text::StrConcatS(tmpStr, sbuff, buffEnd - tmpStr);
+						buff = Text::StrConcatS(tmpStr, sbuff, (UOSInt)(buffEnd - tmpStr));
 						if (thisDist == 0)
 							break;
 					}
@@ -150,18 +150,18 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 					{
 						if (hasStr)
 						{
-							buff = Text::StrConcatS(buff, (const UTF8Char*)", ", buffEnd - buff);
-							buff = Text::StrConcatS(buff, sbuff, buffEnd - buff);
+							buff = Text::StrConcatS(buff, (const UTF8Char*)", ", (UOSInt)(buffEnd - buff));
+							buff = Text::StrConcatS(buff, sbuff, (UOSInt)(buffEnd - buff));
 						}
 						else
 						{
-							buff = Text::StrConcatS(buff, sbuff, buffEnd - buff);
+							buff = Text::StrConcatS(buff, sbuff, (UOSInt)(buffEnd - buff));
 							hasStr = true;
 						}
 					}
 					else
 					{
-						buff = Text::StrConcatS(tmpStr, sbuff, buffEnd - tmpStr);
+						buff = Text::StrConcatS(tmpStr, sbuff, (UOSInt)(buffEnd - tmpStr));
 					}
 					break;
 				}

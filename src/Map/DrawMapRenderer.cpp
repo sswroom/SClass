@@ -1466,7 +1466,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							}
 							else if (layer.fontType == 1)
 							{
-								OSInt fs = denv->layerFont->GetCount();
+								UOSInt fs = denv->layerFont->GetCount();
 								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
@@ -2342,8 +2342,8 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 			}
 			else
 			{
-				cimgX2 = Math::OSInt2Double(img->info->dispWidth);
-				cimgY2 = Math::OSInt2Double(img->info->dispHeight);
+				cimgX2 = Math::UOSInt2Double(img->info->dispWidth);
+				cimgY2 = Math::UOSInt2Double(img->info->dispHeight);
 				cimgX = 0;
 				cimgY = 0;
 				if (scnX1 < 0)

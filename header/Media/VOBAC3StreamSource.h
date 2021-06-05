@@ -22,7 +22,7 @@ namespace Media
 		UOSInt buffStart;
 		UOSInt buffEnd;
 		UInt64 buffSample;
-		Int32 lastFrameSize;
+		UInt32 lastFrameSize;
 
 
 	public:
