@@ -542,11 +542,11 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			}
 			if (info.par2 > 1)
 			{
-				vh = (UOSInt)Math::Double2Int32(vh * info.par2);
+				vh = (UOSInt)Math::Double2Int32(Math::UOSInt2Double(vh) * info.par2);
 			}
 			else
 			{
-				vw = (UOSInt)Math::Double2Int32(vw / info.par2);
+				vw = (UOSInt)Math::Double2Int32(Math::UOSInt2Double(vw) / info.par2);
 			}
 
 			this->SetFormState(UI::GUIForm::FS_NORMAL);

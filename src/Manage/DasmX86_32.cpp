@@ -422,9 +422,9 @@ void DasmX86_32_ParseSIB(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *me
 
 	if (addr)
 	{
-		if (addr < 0)
+		if ((Int32)addr < 0)
 		{
-			memName = Text::StrInt32(memName, addr);
+			memName = Text::StrInt32(memName, (Int32)addr);
 		}
 		else if (addr > 1024)
 		{
@@ -434,7 +434,7 @@ void DasmX86_32_ParseSIB(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *me
 		else
 		{
 			*memName++ = '+';
-			memName = Text::StrInt32(memName, addr);
+			memName = Text::StrUInt32(memName, addr);
 		}
 		srcAddr += addr;
 	}
@@ -550,7 +550,7 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 		srcAddr += (UInt32)addr;
 		if ((addr & 0xffff0000) == 0xffff0000)
 		{
-			memName = Text::StrInt32(memName, addr);
+			memName = Text::StrInt32(memName, (Int32)addr);
 		}
 		else if (addr < 1024)
 		{
@@ -809,7 +809,7 @@ void DasmX86_32_ParseModRMXMM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8
 	}
 }
 
-Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* sess, Int32 funcAddr, UInt32 *outEsp)
+Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* sess, UInt32 funcAddr, UInt32 *outEsp)
 {
 	Manage::DasmX86_32::DasmX86_32_Sess tmpSess;
 	Data::ArrayListUInt32 callAddrs;
@@ -871,7 +871,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 			Text::UTF8Writer console(&fs);
 #endif
 			UInt8 *buff;
-			OSInt buffSize;
+			UOSInt buffSize;
 			buffSize = tmpSess.regs.EIP - funcAddr;
 			if (buffSize < 256)
 				buffSize = 256;

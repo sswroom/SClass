@@ -13,8 +13,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateDiscId()
 	SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc;
 	this->lbDiscId->ClearItems();
 	this->env->GetBurntDiscs(&discList);
-	OSInt i = 0;
-	OSInt j = discList.GetCount();
+	UOSInt i = 0;
+	UOSInt j = discList.GetCount();
 	while (i < j)
 	{
 		disc = discList.GetItem(i);
@@ -26,8 +26,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateDiscId()
 void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateBrand()
 {
 	UTF8Char sbuff[128];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *dType;
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *> dTypeList;
@@ -44,7 +44,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateBrand()
 		k = brandList.SortedIndexOf(sbuff);
 		if (k < 0)
 		{
-			brandList.Insert(~k, Text::StrCopyNew(sbuff));
+			brandList.Insert((UOSInt)~k, Text::StrCopyNew(sbuff));
 		}
 		i++;
 	}
@@ -61,8 +61,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateBrand()
 
 void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *> dvdVideoList;
@@ -78,7 +78,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 		k = animeList.SortedIndexOf(dvdVideo->anime);
 		if (k < 0)
 		{
-			animeList.Insert(~k, Text::StrCopyNew(dvdVideo->anime));
+			animeList.Insert((UOSInt)~k, Text::StrCopyNew(dvdVideo->anime));
 		}
 		i++;
 	}
@@ -99,8 +99,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo*> dvdVideoList;
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
 	Data::ArrayListStrUTF8 seriesList;
 
@@ -123,7 +123,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 				k = seriesList.SortedIndexOf(dvdVideo->series);
 				if (k < 0)
 				{
-					seriesList.Insert(~k, dvdVideo->series);
+					seriesList.Insert((UOSInt)~k, dvdVideo->series);
 				}
 			}
 		}
@@ -146,8 +146,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 	Text::StringBuilderUTF8 sbSeries;
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo*> dvdVideoList;
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	this->cboDVDName->GetText(&sbName);
 	this->cboSeries->GetText(&sbSeries);
@@ -189,8 +189,8 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	Text::StringBuilderUTF8 sbVolume;
 	Int32 maxId = -1;
 	Int32 volume;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->cboDVDName->GetText(&sbName);
 	this->cboSeries->GetText(&sbSeries);
 	this->cboVolume->GetText(&sbVolume);
@@ -286,8 +286,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateType()
 	Text::StringBuilderUTF8 sbVolume;
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo*> dvdVideoList;
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *s;
 
 	this->cboDVDName->GetText(&sbName);
@@ -792,10 +792,10 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	}
 	else
 	{
-		i = Text::StrCharCnt(fname);
-		if (i > 3 && fname[i - 4] == '.')
+		UOSInt ui = Text::StrCharCnt(fname);
+		if (ui > 3 && fname[ui - 4] == '.')
 		{
-			fname[i - 4] = 0;
+			fname[ui - 4] = 0;
 			anime->remark = Text::StrToUTF8New(fname);
 		}
 		else
@@ -902,7 +902,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 		{
 			BurntFile *tmpFile = me->selectedFile;
 			me->selectedFile = 0;
-			me->lbFileName->SetSelectedIndex(me->fileList->IndexOf(tmpFile));
+			me->lbFileName->SetSelectedIndex((UOSInt)me->fileList->IndexOf(tmpFile));
 			return;
 		}
 	}
@@ -1023,7 +1023,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 				me->OnSeriesSelChg(me);
 				Bool hasVol = false;
 				const UTF8Char *fname = me->selectedFile->fname;
-				i = Text::StrIndexOf(fname, series) + seriesLen;
+				i = (UOSInt)Text::StrIndexOf(fname, series) + seriesLen;
 				OSInt lastR = 0;
 				UOSInt endOfst = Text::StrCharCnt(fname);
 				OSInt si;
@@ -1239,8 +1239,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnRemoveFileClicked(void *user
 	if (i >= 0)
 	{
 		me->selectedFile = 0;
-		me->lbFileName->RemoveItem(i);
-		me->BurntFileFree(me->fileList->RemoveAt(i));
+		me->lbFileName->RemoveItem((UOSInt)i);
+		me->BurntFileFree(me->fileList->RemoveAt((UOSInt)i));
 	}
 }
 
@@ -1293,7 +1293,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDiscIdTextChg(void *userObj)
 	{
 		i = ~i;
 	}
-    me->lbDiscId->SetSelectedIndex(i);
+    me->lbDiscId->SetSelectedIndex((UOSInt)i);
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(void *userObj)

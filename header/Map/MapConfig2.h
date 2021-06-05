@@ -61,7 +61,7 @@ namespace Map
 		static void DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty);
 		static UInt32 NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Int32 priority);
 		static Bool AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, const UTF8Char *label, UInt32 nPoints, Double *points, Int32 priority, Int32 recType, UInt32 fntStyle, Int32 flag, Map::MapView *view, Double xOfst, Double yOfst);
-		static void SwapLabel(MapLabels2 *mapLabels, Int32 index, Int32 index2);
+		static void SwapLabel(MapLabels2 *mapLabels, UInt32 index, UInt32 index2);
 		static Bool LabelOverlapped(Double *points, UOSInt nPoints, Double tlx, Double tly, Double brx, Double bry);
 		static void DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt);
 		static void LoadLabels(Media::DrawImage *img, Map::MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, const WChar *fileName, Int32 xId, Int32 yId, Int32 xOfst, Int32 yOfst, const WChar *dbName);

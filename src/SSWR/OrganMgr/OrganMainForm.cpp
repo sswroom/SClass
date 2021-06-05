@@ -87,7 +87,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 			OrganGroup *newGrp;
 			OrganGroupType *grpType;
 			NEW_CLASS(newGrp, OrganGroup());
-			grpType = (OrganGroupType*)me->cboGroupType->GetItem(me->cboGroupType->GetSelectedIndex());
+			grpType = (OrganGroupType*)me->cboGroupType->GetItem((UOSInt)me->cboGroupType->GetSelectedIndex());
 			newGrp->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
 			me->txtGroupEName->GetText(&sb);
@@ -142,14 +142,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 i;
-	i = (Int32)me->lbObj->GetSelectedIndex();
+	OSInt i;
+	i = me->lbObj->GetSelectedIndex();
     if (i == -1)
 		return;
 
 	if (me->inputMode == IM_GROUP)
 	{
-		OrganGroup *obj = (OrganGroup*)me->lbObj->GetItem(i);;
+		OrganGroup *obj = (OrganGroup*)me->lbObj->GetItem((UOSInt)i);;
 		i = me->env->GetGroupCount(obj->GetGroupId());
 
 		if (i == 0)
@@ -205,7 +205,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 	if (me->ToSaveSpecies())
 		return;
 
-	OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem(i);
+	OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem((UOSInt)i);
 	if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 	{
 		me->lastSpeciesObj = 0;
@@ -213,7 +213,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 		gi->GetItemName(u8buff);
 		me->lbDir->AddItem(u8buff, gi);
 		me->groupList->Add((OrganGroup*)gi);
-		me->groupItems->RemoveAt(i);
+		me->groupItems->RemoveAt((UOSInt)i);
 		me->lbDir->SetSelectedIndex(me->lbDir->GetCount() - 1);
 	}
 	else if (gi->GetItemType() == OrganGroupItem::IT_SPECIES)
@@ -686,7 +686,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
 		}
 		else
 		{
-            gi = (OrganGroupItem*)me->lbObj->GetItem(i);
+            gi = (OrganGroupItem*)me->lbObj->GetItem((UOSInt)i);
 			if (gi->GetItemType() == -1)
 				return;
 		}
@@ -766,8 +766,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
 			OrganImageItem *imgItem;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			i = 0;
 			j = me->imgItems->GetCount();
 			while (i < j)
@@ -937,7 +937,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
-	OSInt i;
+	UOSInt i;
 	if (me->SpeciesFormValid())
 	{
 		if (me->inputMode == IM_SPECIES || me->inputMode == IM_EMPTY)
@@ -1134,8 +1134,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(void *userObj)
 	}
 
 	me->cboSpBook->ClearItems();
-	OSInt i = 0;
-	OSInt j = items.GetCount();
+	UOSInt i = 0;
+	UOSInt j = items.GetCount();
 	while (i < j)
 	{
 		book = items.GetItem(i);
@@ -1181,7 +1181,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 
 	if (me->env->NewSpeciesBook(me->lastSpeciesObj->GetSpeciesId(), bk->GetBookId(), sb.ToString()))
 	{
-		OSInt i;
+		UOSInt i;
 		i = me->lvSpBook->AddItem(sb.ToString(), 0);
 		sb.ClearStr();
 		bk->GetString(&sb);
@@ -1848,7 +1848,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 			}
 
 			j = this->groupItems->GetCount();
-			ArtificialQuickSort_SortCmp((void**)this->groupItems->GetArray(&j), GroupCompare, 0, j - 1);
+			ArtificialQuickSort_SortCmp((void**)this->groupItems->GetArray(&j), GroupCompare, 0, (OSInt)j - 1);
 			i = 0;
 			while (i < j)
 			{
@@ -2183,7 +2183,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdatePicks()
 
 void SSWR::OrganMgr::OrganMainForm::ClearPicks()
 {
-	OSInt i;
+	UOSInt i;
 	OrganGroupItem *gi;
 	i = this->pickObjs->GetCount();
 	while (i-- > 0)
@@ -2381,7 +2381,7 @@ void SSWR::OrganMgr::OrganMainForm::ClearGroupForm()
 	this->chkGroupAdmin->SetChecked(false);
     if (this->lbObj->GetCount() == 0)
 	{
-		this->cboGroupType->SetSelectedIndex(-1);
+		this->cboGroupType->SetSelectedIndex((UOSInt)-1);
 	}
 }
 
@@ -2512,8 +2512,8 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
     this->lastSpeciesObj = 0;
     this->lastGroupObj = 0;
-	this->lastDirIndex = -1;
-	this->lastObjIndex = -1;
+	this->lastDirIndex = (UOSInt)-1;
+	this->lastObjIndex = (UOSInt)-1;
 	this->inputMode = IM_EMPTY;
 	this->dispImage = 0;
 	this->dispImageUF = 0;

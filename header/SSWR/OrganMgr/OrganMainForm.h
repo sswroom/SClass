@@ -121,8 +121,8 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			OrganEnv *env;
 			OrganGroup *rootGroup;
-			OSInt lastDirIndex;
-			OSInt lastObjIndex;
+			UOSInt lastDirIndex;
+			UOSInt lastObjIndex;
 			Bool restoreObj;
 			OrganSpecies *lastSpeciesObj;
 			OrganGroup *lastGroupObj;

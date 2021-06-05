@@ -2877,7 +2877,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 					else if (labels[i].points[0] == endX && labels[i].points[1] == endY)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
-						OSInt newSize = labels[i].nPoints + nPoint - 1;
+						UOSInt newSize = labels[i].nPoints + nPoint - 1;
 						Double* newArr = MemAlloc(Double, newSize << 1);
 
 						MemCopyNO(newArr, points, nPoint << 4);
@@ -2898,7 +2898,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 					else if (labels[i].points[(labels[i].nPoints << 1) - 2] == startX && labels[i].points[(labels[i].nPoints << 1) - 1] == startY)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
-						OSInt newSize = labels[i].nPoints + nPoint - 1;
+						UOSInt newSize = labels[i].nPoints + nPoint - 1;
 						Double* newArr = MemAlloc(Double, newSize << 1);
 
 						MemCopyNO(newArr, labels[i].points, labels[i].nPoints << 4);
@@ -3214,7 +3214,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 	return false;
 }
 
-void Map::MapConfig2::SwapLabel(MapLabels2 *mapLabels, Int32 index, Int32 index2)
+void Map::MapConfig2::SwapLabel(MapLabels2 *mapLabels, UInt32 index, UInt32 index2)
 {
 	MapLabels2 l;
 	l.label = mapLabels[index].label;
@@ -3798,8 +3798,8 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 
 					if (!j && thisCnt < 10)
 					{
-						Int32 m;
-						Int32 n = 1;
+						UInt32 m;
+						UInt32 n = 1;
 						Double tmpV;
 						m = thisCnt;
 						while (n && m > 0)
@@ -4088,7 +4088,7 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 				while (*sptr++);
 				currFont->fontName = MemAlloc(UTF8Char, (UOSInt)(sptr - strs[3]));
 				Text::StrConcat(currFont->fontName, strs[3]);
-				currFont->fontSizePt = (Text::StrToInt32(strs[4]) * 3) >> 2;
+				currFont->fontSizePt = (Text::StrToUInt32(strs[4]) * 3) >> 2;
 				currFont->thick = Text::StrToInt32(strs[5]);
 				currFont->color = ToColor(strs[6]);
 				this->fonts[i]->Add(currFont);

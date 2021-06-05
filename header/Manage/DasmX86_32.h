@@ -31,8 +31,8 @@ namespace Manage
 			EndType endType;
 			UInt32 espOfst;
 			UInt32 retAddr;
-			Int32 lastStatus;
-			Int32 thisStatus; //bit0: prefix1, bit1: ignore esp change, bit2: prefix2, bit16: segment mod, bit31: ignore esp
+			UInt32 lastStatus;
+			UInt32 thisStatus; //bit0: prefix1, bit1: ignore esp change, bit2: prefix2, bit16: segment mod, bit31: ignore esp
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 			Int32 segmId;
 			
