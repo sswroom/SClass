@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 //	UTF8Char *sptr;
 	UInt8 buff[16];
 	UInt32 ipAddr;
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm*)userObj;
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem();
 	Net::ConnectionInfo::ConnectionType connType;
@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm *)userObj;
-	OSInt i = me->tcMain->GetSelectedIndex();
+	UOSInt i = me->tcMain->GetSelectedIndex();
 	if (i == 1)
 	{
 		me->UpdateIPStats();
@@ -357,14 +357,14 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateUDPStats()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UTF8Char sbuff[64];
 //	UTF8Char *sptr;
 	UInt32 ipAddr;
 	UInt8 buff[32];
-	OSInt v;
+	UOSInt v;
 
 
 	Data::ArrayList<Net::ARPInfo *> arpList;
@@ -416,7 +416,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 void SSWR::AVIRead::AVIRNetInfoForm::ReleaseConns()
 {
 	Net::ConnectionInfo *connInfo;
-	OSInt i;
+	UOSInt i;
 	i = this->conns->GetCount();
 	while (i-- > 0)
 	{
@@ -430,8 +430,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	UTF8Char sbuff[512];
 	this->ReleaseConns();
 	this->core->GetSocketFactory()->GetConnInfoList(this->conns);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Net::ConnectionInfo *connInfo;
 	this->lbAdaptors->ClearItems();
 	i = 0;
@@ -448,7 +448,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 void SSWR::AVIRead::AVIRNetInfoForm::ReleaseWIFIIFs()
 {
 	Net::WirelessLAN::Interface *interf;
-	OSInt i = this->wlanIfs->GetCount();
+	UOSInt i = this->wlanIfs->GetCount();
 	while (i-- > 0)
 	{
 		interf = this->wlanIfs->RemoveAt(i);
@@ -458,8 +458,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::ReleaseWIFIIFs()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFIIFs()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Net::WirelessLAN::Interface *interf;
 	if (!this->wlan->IsError())
 	{
@@ -517,7 +517,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		{
 			bss = bssList.GetItem(i);
 			k = this->lvWIFIBSS->AddItem(bss->GetSSID(), 0);
-			Text::StrInt32(sbuff, bss->GetPHYId());
+			Text::StrUInt32(sbuff, bss->GetPHYId());
 			this->lvWIFIBSS->SetSubItem(k, 1, sbuff);
 			Text::StrHexBytes(sbuff, bss->GetMAC(), 6, 0);
 			this->lvWIFIBSS->SetSubItem(k, 2, sbuff);
@@ -557,9 +557,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 	Data::ArrayList<Net::SocketFactory::PortInfo2 *> portInfoList;
 	UTF8Char sbuff[64];
 	Net::SocketFactory::PortInfo2 *portInfo;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	this->lvPortInfo->ClearItems();
 	this->core->GetSocketFactory()->QueryPortInfos2(&portInfoList, Net::SocketFactory::PT_ALL, 0);
 	i = 0;

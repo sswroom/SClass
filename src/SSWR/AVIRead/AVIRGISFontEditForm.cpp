@@ -139,11 +139,11 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 		if (this->currBuffSize > 0)
 		{
 			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));
-			dimg->DrawStringB((w - sz[0]) * 0.5, (h - sz[1]) * 0.5, sbuff, f, b, Math::Double2Int32(this->currBuffSize * this->GetHDPI() / this->GetDDPI()));
+			dimg->DrawStringB((Math::UOSInt2Double(w) - sz[0]) * 0.5, (Math::UOSInt2Double(h) - sz[1]) * 0.5, sbuff, f, b, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
 			dimg->DelBrush(b);
 		}
 		b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currColor));
-		dimg->DrawString((w - sz[0]) * 0.5, (h - sz[1]) * 0.5, sbuff, f, b);
+		dimg->DrawString((Math::UOSInt2Double(w) - sz[0]) * 0.5, (Math::UOSInt2Double(h) - sz[1]) * 0.5, sbuff, f, b);
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
 	}

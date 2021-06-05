@@ -80,8 +80,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
-	OSInt i = me->lbResults->GetCount();
-	OSInt j = me->packetList->GetCount();
+	UOSInt i = me->lbResults->GetCount();
+	UOSInt j = me->packetList->GetCount();
 	SNMPPacket *packet;
 	if (i < j)
 	{

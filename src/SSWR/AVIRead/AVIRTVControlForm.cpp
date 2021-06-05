@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 		return;
 	}
 	IO::TVControl::TVType tvType = (IO::TVControl::TVType)(OSInt)me->cboTVType->GetSelectedItem();
-	OSInt i = me->cboPort->GetSelectedIndex();
-	Int32 portNum = (Int32)(OSInt)me->cboPort->GetItem(i);
+	OSInt si = me->cboPort->GetSelectedIndex();
+	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem((UOSInt)si);
 	if (portNum == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"TV Control", me);
@@ -59,7 +59,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 
 	Data::ArrayList<IO::TVControl::CommandType> cmdList;
 	Data::ArrayList<IO::TVControl::CommandFormat> cmdFormats;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	me->tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
 	i = 0;
 	j = cmdList.GetCount();
@@ -184,8 +185,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(void *userObj)
 SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<IO::TVControl::TVType> tvTypes;
 	IO::TVControl::TVInfo tvInfo;
 
@@ -237,7 +238,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	j = ports->GetCount();
 	while (i < j)
 	{
-		Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"COM"), ports->GetItem(i));
+		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"COM"), ports->GetItem(i));
 		this->cboPort->AddItem(sbuff, (void*)ports->GetItem(i));
 		i++;
 	}

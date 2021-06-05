@@ -305,7 +305,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::IStreamData *fd)
 	}
 }
 
-Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, Int32 *width, Int32 *height)
+Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
 {
 	UInt64 ofst;
 	UInt32 nextOfst;
@@ -448,7 +448,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **ex
 			if (height)
 				*height = ReadMUInt16(&buff[1]);
 			if (width)
-				*width = ReadMInt16(&buff[3]);
+				*width = ReadMUInt16(&buff[3]);
 			ofst += j + 4;
 			return true;
 		default:

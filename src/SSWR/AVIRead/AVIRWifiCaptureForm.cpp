@@ -224,7 +224,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						me->wifiLogMap->Put(imac, wifiLog);
 
 						Text::StrHexBytes(sbuff, &id[2], 6, ':');
-						k = me->lvLogWifi->InsertItem(me->wifiLogMap->GetIndex(imac), sbuff, wifiLog);
+						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), sbuff, wifiLog);
 						me->lvLogWifi->SetSubItem(k, 1, (const UTF8Char*)Net::MACInfo::GetMACInfo(imac)->name);
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
 						Text::StrInt32(sbuff, wifiLog->phyType);
@@ -248,7 +248,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					}
 					else
 					{
-						k = me->wifiLogMap->GetIndex(imac);
+						k = (UOSInt)me->wifiLogMap->GetIndex(imac);
 						if (wifiLog->manuf == 0 && bss->GetManuf())
 						{
 							wifiLog->manuf = Text::StrCopyNew(bss->GetManuf());
@@ -545,7 +545,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
-	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew(index);
+	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew((UOSInt)index);
 	if (csptr)
 	{
 		Win32::Clipboard::SetString(me->GetHandle(), csptr);

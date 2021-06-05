@@ -45,8 +45,8 @@ class MapLogger
 private:
 	Text::UTF8Writer *writer;
 	IO::FileStream *fs;
-	OSInt scnW;
-	OSInt scnH;
+	UOSInt scnW;
+	UOSInt scnH;
 public:
 	MapLogger(const UTF8Char *fileName, Map::MapView *view)
 	{
@@ -78,7 +78,7 @@ public:
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		if (this->writer == 0 || x < -scnW || x > (scnW << 1) || y < -scnH || y > (scnH << 1))
+		if (this->writer == 0 || x < -Math::UOSInt2Double(scnW) || x > Math::UOSInt2Double(scnW << 1) || y < -Math::UOSInt2Double(scnH) || y > Math::UOSInt2Double(scnH << 1))
 		{
 			return;
 		}
@@ -119,7 +119,7 @@ public:
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		UOSInt i;
-		if (this->writer == 0 || bounds[2] < -scnW || bounds[0] > (scnW << 1) || bounds[3] < -scnH || bounds[1] > (scnH << 1))
+		if (this->writer == 0 || bounds[2] < -Math::UOSInt2Double(scnW) || bounds[0] > Math::UOSInt2Double(scnW << 1) || bounds[3] < -Math::UOSInt2Double(scnH) || bounds[1] > Math::UOSInt2Double(scnH << 1))
 		{
 			return;
 		}
@@ -205,11 +205,11 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, const UTF8Char *str1,
 	Text::StrConcat(sbuff, str1);
 	Double size[2];
 	Double absH;
-	OSInt fntCount;
-	Int32 i;
-	Int32 maxSize;
-	Int32 maxIndex;
-	OSInt lblSize;
+	UOSInt fntCount;
+	UInt32 i;
+	UInt32 maxSize;
+	UInt32 maxIndex;
+	UOSInt lblSize;
 	Map::MapFontStyle *font;
 	Map::MapFontStyle *font2;
 
@@ -1899,7 +1899,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 	xDiff = 0;
 	yDiff = 0;
 
-	img->GetTextSize(font->font, str1, lblSize, szThis);
+	img->GetTextSize(font->font, str1, (OSInt)lblSize, szThis);
 	xDiff = szThis[0] * 0.5;
 	yDiff = xDiff * xDiff;
 
@@ -2373,11 +2373,11 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, cons
 	Double ySizeAdd = 0;
 
 	Map::MapFontStyle *font;
-	OSInt fntCount;
+	UOSInt fntCount;
 
-	Int32 i;
+	UInt32 i;
 	Double maxSize;
-	Int32 maxIndex;
+	UInt32 maxIndex;
 
 	fntCount = fontStyle->GetCount();;
 
@@ -3249,7 +3249,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 			if (sum != 0)
 			{
 				Double *finalPts;
-				Int32 finalCnt;
+				UInt32 finalCnt;
 				Double maxX;
 				Double maxY;
 				Double minX;
@@ -3261,7 +3261,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 				finalCnt++;
 
 				i = 2;
-				while (i < (OSInt)outPtCnt)
+				while (i < outPtCnt)
 				{
 					thisX = outPts[(i << 1) - 2];
 					thisY = outPts[(i << 1) - 1];
@@ -3356,8 +3356,8 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 				labels[i].scaleH = (maxY + minY) * 0.5; //& 1
 				labels[i].priority = priority;
 
-				labels[i].currSize = Math::OSInt2Double(outPtCnt);
-				labels[i].totalSize = Math::OSInt2Double(outPtCnt);
+				labels[i].currSize = Math::UOSInt2Double(outPtCnt);
+				labels[i].totalSize = Math::UOSInt2Double(outPtCnt);
 				labels[i].nPoints = outPtCnt;
 				labels[i].shapeType = 5;
 				if (labels[i].points)

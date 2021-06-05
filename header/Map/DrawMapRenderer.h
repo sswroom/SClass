@@ -59,7 +59,7 @@ namespace Map
 			UOSInt maxLabels;
 			UOSInt fontStyleCnt;
 			DrawFontStyle *fontStyles;
-			Int32 imgDurMS;
+			UInt32 imgDurMS;
 
 			Data::ArrayListInt64 *idArr;
 			Data::ArrayList<Media::DrawFont*> *layerFont;
@@ -79,7 +79,7 @@ namespace Map
 
 	private:
 		static UOSInt NewLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
-		static void SwapLabel(MapLabels *mapLabels, OSInt index, OSInt index2);
+		static void SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt index2);
 		static Bool LabelOverlapped(Double *points, UOSInt nPoints, Double tlx, Double tly, Double brx, Double bry);
 		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, const UTF8Char *label, UOSInt nPoints, Double *points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, Map::MapView *view, OSInt xOfst, OSInt yOfst);
 		static void DrawLabels(DrawEnv *denv);
@@ -87,9 +87,9 @@ namespace Map
 	private:
 		void DrawLayers(DrawEnv *denv, Map::MapEnv::GroupItem *group);
 		void DrawPLLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor);
-		void DrawPGLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, Int32 fillStyle, UOSInt lineThick, UInt32 lineColor);
+		void DrawPGLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);
 		void DrawPTLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex);
-		void DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontSytle, Int32 labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType);
+		void DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType);
 		void DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer);
 		void DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha);
 
@@ -101,7 +101,7 @@ namespace Map
 		DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();
 
-		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view, Int32 *imgDurMS);
+		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view, UInt32 *imgDurMS);
 		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, void *userObj);
 		Bool GetLastsLayerEmpty();
 		void SetEnv(Map::MapEnv *env);

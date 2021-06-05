@@ -16,7 +16,7 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv *env;
-			OSInt currLineStyle;
+			UOSInt currLineStyle;
 
 			UI::GUIPopupMenu *mnuLayers;
 
@@ -27,7 +27,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRLineSelector(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, OSInt initLineStyle, Media::ColorManagerSess *colorSess);
+			AVIRLineSelector(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRLineSelector();
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
@@ -36,7 +36,7 @@ namespace SSWR
 			void SetPopupMenu(UI::GUIPopupMenu *mnuLayers);
 
 			void UpdateLineStyles();
-			OSInt GetSelectedLineStyle();
+			UOSInt GetSelectedLineStyle();
 		};
 	};
 };

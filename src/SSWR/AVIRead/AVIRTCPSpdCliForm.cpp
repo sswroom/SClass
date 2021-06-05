@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
-	Int32 port;
+	UInt16 port;
 	if (me->connected)
 	{
 		me->connected = false;
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
-	if (!sb.ToInt32(&port))
+	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
 		return;
@@ -83,13 +83,13 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(void *userObj)
 			me->txtPort->SetReadOnly(false);
 		}
 		Double currTime = me->clk->GetTimeDiff();
-		Int64 currRecvSize = me->recvSize;
-		Int64 currSendSize = me->sendSize;
+		UInt64 currRecvSize = me->recvSize;
+		UInt64 currSendSize = me->sendSize;
 		if (currTime > me->lastTime)
 		{
-			Text::StrDouble(sbuff, (currSendSize - me->lastSendSize) / (currTime - me->lastTime));
+			Text::StrDouble(sbuff, (Double)(currSendSize - me->lastSendSize) / (currTime - me->lastTime));
 			me->txtSendSpeed->SetText(sbuff);
-			Text::StrDouble(sbuff, (currRecvSize - me->lastRecvSize) / (currTime - me->lastTime));
+			Text::StrDouble(sbuff, (Double)(currRecvSize - me->lastRecvSize) / (currTime - me->lastTime));
 			me->txtRecvSpeed->SetText(sbuff);
 		}
 		else
@@ -108,8 +108,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
 	UInt8 *sendBuff;
-	OSInt sendSize;
-	OSInt sendBuffSize = 9000;
+	UOSInt sendSize;
+	UOSInt sendBuffSize = 9000;
 	me->procRunning = true;
 	me->mainEvt->Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
@@ -145,7 +145,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
 	UInt8 *recvBuff;
-	OSInt recvSize;
+	UOSInt recvSize;
 	me->recvRunning = true;
 	me->mainEvt->Set();
 	recvBuff = MemAlloc(UInt8, 9000);

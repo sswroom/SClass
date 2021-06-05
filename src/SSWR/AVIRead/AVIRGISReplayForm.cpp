@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
 	me->StopThread();
-	me->currTrackId = me->cboName->GetSelectedIndex();
+	me->currTrackId = (UOSInt)me->cboName->GetSelectedIndex();
 	me->UpdateRecList();
 }
 
@@ -97,19 +97,19 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 				me->txtAddress->SetText(me->names[i]);
 			}
 		}
-		OSInt j;
-		OSInt k = me->track->GetExtraCount(me->currTrackId, i);
-		OSInt l;
+		UOSInt j;
+		UOSInt k = me->track->GetExtraCount(me->currTrackId, (UOSInt)i);
+		UOSInt l;
 		Text::StringBuilderUTF8 sb;
 		me->lvExtra->ClearItems();
 		j = 0;
 		while (j < k)
 		{
 			sb.ClearStr();
-			me->track->GetExtraName(me->currTrackId, i, j, &sb);
+			me->track->GetExtraName(me->currTrackId, (UOSInt)i, j, &sb);
 			l = me->lvExtra->AddItem(sb.ToString(), 0);
 			sb.ClearStr();
-			me->track->GetExtraValueStr(me->currTrackId, i, j, &sb);
+			me->track->GetExtraValueStr(me->currTrackId, (UOSInt)i, j, &sb);
 			me->lvExtra->SetSubItem(l, 1, sb.ToString());
 			j++;
 		}
@@ -150,7 +150,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 {
 	if (names)
 	{
-		OSInt i = namesCnt;
+		UOSInt i = namesCnt;
 		while (i-- > 0)
 		{
 			if (names[i])
@@ -328,14 +328,14 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_MARK_START:
 		{
 			this->startMark = this->lbRecord->GetSelectedIndex();
-			this->lbRecord->GetItemText(sbuff, this->startMark);
+			this->lbRecord->GetItemText(sbuff, (UOSInt)this->startMark);
 			this->txtStartMark->SetText(sbuff);
 		}
 		break;
 	case MNU_MARK_END:
 		{
 			this->endMark = this->lbRecord->GetSelectedIndex();
-			this->lbRecord->GetItemText(sbuff, this->endMark);
+			this->lbRecord->GetItemText(sbuff, (UOSInt)this->endMark);
 			this->txtEndMark->SetText(sbuff);
 		}
 		break;

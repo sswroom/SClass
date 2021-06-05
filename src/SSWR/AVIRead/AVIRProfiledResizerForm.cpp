@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	Media::ProfiledResizer::SizeType sizeType;
 	Int32 targetSizeX;
 	Int32 targetSizeY;
-	Int32 outParam;
+	UInt32 outParam;
 	Text::StringBuilderUTF8 sb;
 	Media::ProfiledResizer::OutputType outType;
 	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		outType = Media::ProfiledResizer::OT_JPEGQUALITY;
 		me->txtJPEGQuality->GetText(sbuff2);
-		outParam = Text::StrToInt32(sbuff2);
+		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 100)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter quality", (const UTF8Char *)"Error", me);
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		outType = Media::ProfiledResizer::OT_JPEGSIZE;
 		me->txtJPEGSize->GetText(sbuff2);
-		outParam = Text::StrToInt32(sbuff2);
+		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 300)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter size ratio", (const UTF8Char *)"Error", me);

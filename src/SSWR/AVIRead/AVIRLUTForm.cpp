@@ -12,11 +12,11 @@ void __stdcall SSWR::AVIRead::AVIRLUTForm::OnChannelChg(void *userObj)
 void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 {
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt currCh = (OSInt)this->cboChannels->GetSelectedItem();
-	OSInt inputLev = this->lut->GetInputLevel();
-	OSInt outputCh = this->lut->GetOutputCh();
+	UOSInt i;
+	UOSInt j;
+	UOSInt currCh = (UOSInt)this->cboChannels->GetSelectedItem();
+	UOSInt inputLev = this->lut->GetInputLevel();
+	UOSInt outputCh = this->lut->GetOutputCh();
 	Media::LUT::DataFormat fmt = this->lut->GetFormat();
 	UInt32 inputValues[4];
 	inputValues[0] = 0;
@@ -27,13 +27,13 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	if (fmt == Media::LUT::DF_UINT8)
 	{
 		UInt8 values[4];
-		if (currCh == -1)
+		if (currCh == (UOSInt)-1)
 		{
 			currCh = this->lut->GetInputCh();
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueUInt8(inputValues, values);
-				Text::StrInt32(sbuff, inputValues[0]);
+				Text::StrUInt32(sbuff, inputValues[0]);
 				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
@@ -55,7 +55,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[currCh] < inputLev)
 			{
 				this->lut->GetValueUInt8(inputValues, values);
-				Text::StrInt32(sbuff, inputValues[currCh]);
+				Text::StrUInt32(sbuff, inputValues[currCh]);
 				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[currCh]);
 				i = 1;
 				while (i < outputCh)
@@ -72,13 +72,13 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	else if (fmt == Media::LUT::DF_UINT16)
 	{
 		UInt16 values[4];
-		if (currCh == -1)
+		if (currCh == (UOSInt)-1)
 		{
 			currCh = this->lut->GetInputCh();
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueUInt16(inputValues, values);
-				Text::StrInt32(sbuff, inputValues[0]);
+				Text::StrUInt32(sbuff, inputValues[0]);
 				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[currCh] < inputLev)
 			{
 				this->lut->GetValueUInt16(inputValues, values);
-				Text::StrInt32(sbuff, inputValues[currCh]);
+				Text::StrUInt32(sbuff, inputValues[currCh]);
 				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[currCh]);
 				i = 0;
 				while (i < outputCh)
@@ -117,13 +117,13 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	else if (fmt == Media::LUT::DF_SINGLE)
 	{
 		Single values[4];
-		if (currCh == -1)
+		if (currCh == (UOSInt)-1)
 		{
 			currCh = this->lut->GetInputCh();
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueSingle(inputValues, values);
-				Text::StrInt32(sbuff, inputValues[0]);
+				Text::StrUInt32(sbuff, inputValues[0]);
 				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
@@ -145,7 +145,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[currCh] < inputLev)
 			{
 				this->lut->GetValueSingle(inputValues, values);
-				Text::StrInt32(sbuff, inputValues[currCh]);
+				Text::StrUInt32(sbuff, inputValues[currCh]);
 				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[currCh]);
 				i = 0;
 				while (i < outputCh)
@@ -164,8 +164,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::LUT *lut) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->lut = lut;
 	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"LUT Viewer - "), lut->GetSourceNameObj());
 	this->SetText(sbuff);
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	j = this->lut->GetInputCh();
 	while (i < j)
 	{
-		Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Channel "), i);
+		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Channel "), i);
 		this->cboChannels->AddItem(sbuff, (void*)i);
 		this->lvValues->AddColumn(sbuff, 60);
 		i++;

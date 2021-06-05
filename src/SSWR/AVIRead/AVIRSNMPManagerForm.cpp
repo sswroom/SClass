@@ -29,9 +29,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter community", (const UTF8Char*)"SNMP Manager", me);
 		return;
 	}
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Data::ArrayList<Net::SNMPManager::AgentInfo *> agentList;
 	j = me->mgr->AddAgents(&addr, sb.ToString(), &agentList, me->chkAgentScan->IsChecked());
 	if (j <= 0)
@@ -44,10 +44,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 		if (me->chkSendToSvr->IsChecked())
 		{
 			Int64 cliId;
-			OSInt l;
+			UOSInt l;
 			Net::SNMPManager::ReadingInfo *reading;
-			Data::Int32Map<Int32> readingMap;
-			Int32 currId;
+			Data::UInt32Map<UInt16> readingMap;
+			UInt16 currId;
 			me->SendAgentValues(&agentList);
 			Sync::Thread::Sleep(100);
 			i = 0;
@@ -83,8 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 				while (k < l)
 				{
 					reading = agent->readingList->GetItem(k);
-					currId = readingMap.Get((Int32)reading->index);
-					readingMap.Put((Int32)reading->index, currId + 1);
+					currId = readingMap.Get((UInt32)reading->index);
+					readingMap.Put((UInt32)reading->index, currId + 1);
 					if (reading->name)
 					{
 						me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name);
@@ -177,14 +177,14 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 			me->txtAgentModel->SetText((const UTF8Char*)"");	
 		}
 		me->lvAgentReading->ClearItems();
-		OSInt i = 0;
-		OSInt j = agent->readingList->GetCount();
+		UOSInt i = 0;
+		UOSInt j = agent->readingList->GetCount();
 		Net::SNMPManager::ReadingInfo *reading;
 		while (i < j)
 		{
 			reading = agent->readingList->GetItem(i);
 			me->lvAgentReading->AddItem(reading->name, reading);
-			Text::StrOSInt(sbuff, reading->index);
+			Text::StrUOSInt(sbuff, reading->index);
 			me->lvAgentReading->SetSubItem(i, 1, sbuff);
 			me->lvAgentReading->SetSubItem(i, 2, SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(reading->readingType));
 			if (reading->valValid)
@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(void *userObj)
 	{
 		Net::SNMPManager::ReadingInfo *reading;
 		me->mgr->UpdateValues();
-		OSInt i = me->lvAgentReading->GetCount();
+		UOSInt i = me->lvAgentReading->GetCount();
 		while (i-- > 0)
 		{
 			reading = (Net::SNMPManager::ReadingInfo*)me->lvAgentReading->GetItem(i);
@@ -272,7 +272,7 @@ void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(Data::ArrayList<Net::SN
 	Net::SNMPManager::AgentInfo *agent;
 	SSWR::SMonitor::ISMonitorCore::DevRecord2 devRec;
 	Int64 cliId;
-	OSInt i = agentList->GetCount();
+	UOSInt i = agentList->GetCount();
 	while (i-- > 0)
 	{
 		agent = agentList->GetItem(i);

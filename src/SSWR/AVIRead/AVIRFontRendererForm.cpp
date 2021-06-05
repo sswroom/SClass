@@ -37,11 +37,11 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	NEW_CLASS(this->pbChar, UI::GUIPictureBoxDD(ui, this->tpChar, this->colorSess, true, false));
 	this->pbChar->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	UInt32 i = font->GetMinChar();
-	UInt32 j = font->GetMaxChar();
+	UTF32Char i = font->GetMinChar();
+	UTF32Char j = font->GetMaxChar();
 	while (i <= j)
 	{
-		Text::StrHexVal32V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), i);
+		Text::StrHexVal32V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt32)i);
 		this->lbChar->AddItem(sbuff, (void*)(OSInt)i);
 		i++;
 	}

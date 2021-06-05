@@ -35,7 +35,7 @@ namespace SSWR
 			Media::ImageList *imgList;
 			Bool allowEnlarge;
 			Media::Image *currImg;
-			Int32 currImgDelay;
+			UInt32 currImgDelay;
 
 			static void __stdcall ImagesSelChg(void *userObj);
 			static Bool __stdcall OnImageMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
@@ -48,6 +48,6 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

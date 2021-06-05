@@ -24,7 +24,7 @@ IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
@@ -79,7 +79,7 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	if (!IsObjectSupported(pobj))
 		return false;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
 
 	UInt8 buff[138];

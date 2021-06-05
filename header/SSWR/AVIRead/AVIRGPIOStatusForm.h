@@ -15,7 +15,7 @@ namespace SSWR
 			typedef struct
 			{
 				Bool isHigh;
-				UInt16 pinMode;
+				UOSInt pinMode;
 			} PinState;
 			
 		private:

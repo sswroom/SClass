@@ -205,14 +205,14 @@ OSInt UI::GUIPictureList::GetSelectedIndex()
 	return this->selectedIndex;
 }
 
-void UI::GUIPictureList::SetSelectedIndex(OSInt index)
+void UI::GUIPictureList::SetSelectedIndex(UOSInt index)
 {
-	if (index >= -1 && index < (OSInt)this->imgList->GetCount())
+	if (index == (UOSInt)-1 || index < this->imgList->GetCount())
 	{
 		this->selectedIndex = index;
 	}
 	else
 	{
-		index = -1;
+		index = 0;
 	}
 }

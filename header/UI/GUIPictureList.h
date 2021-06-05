@@ -36,7 +36,7 @@ namespace UI
 		void RemoveAt(OSInt index);
 		void Clear();
 		OSInt GetSelectedIndex();
-		void SetSelectedIndex(OSInt index);
+		void SetSelectedIndex(UOSInt index);
 	};
 }
 #endif

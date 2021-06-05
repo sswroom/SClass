@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(void *userObj, OSI
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	if (!me->modifying && me->currLayer != -1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		me->grFilter->SetParameter(me->currLayer, newPos - 100, vOfst, level, status);
 		me->UpdatePreview();
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(void *userObj, OSI
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	if (!me->modifying && me->currLayer != -1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		me->grFilter->SetParameter(me->currLayer, hOfst, newPos - 100, level, status);
 		me->UpdatePreview();
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(void *userObj, OSI
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	if (!me->modifying && me->currLayer != -1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, newPos - 100, status);
 		me->UpdatePreview();
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(void *userObj)
 	OSInt vOfst;
 	OSInt level;
 	Int32 status;
-	if (!me->modifying && me->currLayer != -1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		status = (Int32)((status & ~3) | me->cboType->GetSelectedIndex());
 		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, level, status);
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnEnableChanged(void *userObj, Bo
 	OSInt vOfst;
 	OSInt level;
 	Int32 status;
-	if (!me->modifying && me->currLayer != -1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		if (newVal)
 		{
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnAddLayerClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnRemoveLayerClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
-	if (me->currLayer != -1)
+	if (me->currLayer != (UOSInt)-1)
 	{
 		me->grFilter->RemoveLayer(me->currLayer);
 		me->UpdateLayers();
@@ -112,8 +112,8 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnRemoveLayerClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
-	me->currLayer = me->lbLayers->GetSelectedIndex();
-	if (me->currLayer != -1)
+	me->currLayer = (UOSInt)me->lbLayers->GetSelectedIndex();
+	if (me->currLayer != (UOSInt)-1)
 	{
 		OSInt hOfst;
 		OSInt vOfst;
@@ -185,12 +185,12 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	UOSInt j;
 	UTF8Char sbuff[32];
 	this->lbLayers->ClearItems();
-	this->currLayer = -1;
+	this->currLayer = (UOSInt)-1;
 	i = 0;
 	j = this->grFilter->GetLayerCount();
 	while (i < j)
 	{
-		Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Layer "), i + 1);
+		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Layer "), i + 1);
 		this->lbLayers->AddItem(sbuff, (void*)i);
 		i++;
 	}
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->SetText((const UTF8Char*)"GR Filter");
 
 	this->core = core;
-	this->currLayer = -1;
+	this->currLayer = (UOSInt)-1;
 	this->srcImg = srcImg;
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;

@@ -152,7 +152,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 			{
 				h = 1;
 			}
-			this->currFontStyle += (OSInt)h;
+			this->currFontStyle += (UOSInt)h;
 			if (this->currFontStyle >= this->env->GetFontStyleCount())
 			{
 				this->currFontStyle = this->env->GetFontStyleCount() - 1;

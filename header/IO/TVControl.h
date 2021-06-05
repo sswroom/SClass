@@ -84,7 +84,7 @@ namespace IO
 		{
 			TVType tvType;
 			const UTF8Char *name;
-			Int32 defBaudRate;
+			UInt32 defBaudRate;
 		} TVInfo;
 	protected:
 		TVControl();

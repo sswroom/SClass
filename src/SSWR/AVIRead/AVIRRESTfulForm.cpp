@@ -55,14 +55,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"No database is connected", (const UTF8Char*)"RESTful Server", me);
 		return;
 	}
-	Int32 port = 0;
+	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 *sb;
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	me->txtPort->GetText(sb);
-	port = Text::StrToInt32(sb->ToString());
-
-	if (port > 0 && port <= 65535)
+	if (sb->ToUInt16(&port) && port > 0 && port <= 65535)
 	{
 		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), me->restHdlr, port, 120, Sync::Thread::GetThreadCnt(), (const UTF8Char*)"sswr", me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
@@ -97,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			UTF8Char sbuff[32];
 			UOSInt i;
 			UOSInt j;
-			OSInt k;
+			UOSInt k;
 			me->dbModel->GetTableNames(&tableNames);
 			i = 0;
 			j = tableNames.GetCount();

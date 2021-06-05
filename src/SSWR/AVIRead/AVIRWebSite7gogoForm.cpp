@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *u
 	if (sb.GetLength() > 0)
 	{
 		Data::DateTime dt;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Net::WebSite::WebSite7gogoControl::ChannelInfo chInfo;
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;

@@ -16,7 +16,7 @@ namespace Media
 		EndNotifier endHdlr;
 		void *endHdlrObj;
 		UInt32 buffTime;
-		Int64 sampleCnt;
+		UInt64 sampleCnt;
 
 		static UInt32 __stdcall PlayThread(void *obj);
 	public:
@@ -34,7 +34,7 @@ namespace Media
 
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
-		Int64 GetSampleCnt();
+		UInt64 GetSampleCnt();
 	};
 }
 #endif

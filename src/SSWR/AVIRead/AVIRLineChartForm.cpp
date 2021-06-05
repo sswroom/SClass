@@ -248,8 +248,8 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a column first", (const UTF8Char *)"Error", me);
 		return;
 	}
-	col = (UOSInt)me->cboYAxis->GetItem(i);
-	me->cboYAxis->GetItemText(sbuff, i);
+	col = (UOSInt)me->cboYAxis->GetItem((UOSInt)i);
+	me->cboYAxis->GetItemText(sbuff, (UOSInt)i);
 	me->lbYAxis->AddItem(sbuff, (void*)col);
 	me->yCols->Add((UInt32)col);
 }

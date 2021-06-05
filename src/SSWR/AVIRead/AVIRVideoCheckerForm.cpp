@@ -15,13 +15,14 @@
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
+	OSInt si;
 	UOSInt i = 0;
 	UOSInt j;
 	FileQueue *file;
 	while (i < nFiles)
 	{
-		j = Text::StrLastIndexOf(files[i], IO::Path::PATH_SEPERATOR);
-		j = me->lvFiles->AddItem(&files[i][j + 1], 0);
+		si = Text::StrLastIndexOf(files[i], IO::Path::PATH_SEPERATOR);
+		j = me->lvFiles->AddItem(&files[i][si + 1], 0);
 
 		file = MemAlloc(FileQueue, 1);
 		file->fileName = Text::StrCopyNew(files[i]);;

@@ -905,7 +905,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 	UOSInt colCnt;
 	UOSInt i;
 	UOSInt j;
-	OSInt idCol = -1;
+	UOSInt idCol = (UOSInt)-1;
 	Int32 fromId;
 	Int32 toId;
 	Int64 id;
@@ -935,7 +935,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 		}
 		i++;
 	}
-	if (idCol != -1)
+	if (idCol != (UOSInt)-1)
 	{
 		i = 0;
 		j = idArr.GetCount();

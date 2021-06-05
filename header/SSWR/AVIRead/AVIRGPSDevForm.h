@@ -112,9 +112,9 @@ namespace SSWR
 			Bool devContUpd;
 			Sync::Mutex *devContMut;
 			Data::ArrayList<const UTF8Char*> *devConts;
-			OSInt devContACnt;
+			UOSInt devContACnt;
 			DevAlert *devContAlerts;
-			OSInt devContGCnt;
+			UOSInt devContGCnt;
 			DevGuard *devContGuards;
 
 			Bool alertContUpd;

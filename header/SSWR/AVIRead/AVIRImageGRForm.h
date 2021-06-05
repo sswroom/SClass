@@ -29,7 +29,7 @@ namespace SSWR
 			Media::StaticImage *destPrevImg;
 			UI::GUIPictureBoxDD *previewCtrl;
 			Media::GRFilter *grFilter;
-			OSInt currLayer;
+			UOSInt currLayer;
 			Bool modifying;
 
 			UI::GUIPanel *pnlLayers;

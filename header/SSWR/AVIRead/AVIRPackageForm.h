@@ -69,8 +69,8 @@ namespace SSWR
 			Sync::Mutex *statusFileMut;
 			Bool statusFileChg;
 			const UTF8Char *statusFile;
-			Int64 statusFileSize;
-			Int64 statusDispSize;
+			UInt64 statusFileSize;
+			UInt64 statusDispSize;
 			Double statusDispSpd;
 			IO::ActiveStreamReader::BottleNeckType statusBNT;
 			IO::ActiveStreamReader::BottleNeckType statusDispBNT;
@@ -84,9 +84,9 @@ namespace SSWR
 			Sync::Event *threadEvt;
 
 			Sync::Mutex *readMut;
-			Int64 readTotal;
-			Int64 readCurr;
-			Int64 readLast;
+			UInt64 readTotal;
+			UInt64 readCurr;
+			UInt64 readLast;
 			const UTF8Char *readCurrFile;
 			UInt64 readFileCnt;
 			Data::DateTime *readLastTimer;

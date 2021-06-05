@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRPasswordHashForm::OnGenerateClicked(void *user
 		return;
 	}
 	Crypto::Hash::IHash *hash;
-	hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboHashType->GetItem(i));
+	hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboHashType->GetItem((UOSInt)i));
 	hash->Calc(sb.ToString(), sb.GetLength());
 	hash->GetValue(buff);
 	sb.ClearStr();

@@ -90,7 +90,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 
-			Data::ArrayListInt32 *procIds;
+			Data::ArrayListUInt32 *procIds;
 			Data::ArrayList<ProcessInfo*> *procList;
 
 			UOSInt currProc;

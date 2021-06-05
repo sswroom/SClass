@@ -87,8 +87,8 @@ namespace DB
 		Data::ArrayList<IDBCmd**> **sqlList2;
 
 	public:
-		Int64 sqlCnt;
-		Int64 lostCnt;
+		UInt64 sqlCnt;
+		UInt64 lostCnt;
 		const UTF8Char *name;
 
 	public:

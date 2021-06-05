@@ -60,6 +60,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	UTF8Char *sarr2[2];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
+	OSInt si;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -85,14 +86,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			i = Text::StrLastIndexOf(currURL, '/');
-			Text::StrConcat(sptr, &currURL[i + 1]);
-			i = Text::StrIndexOf(sptr, '?');
-			if (i > 0)
+			si = Text::StrLastIndexOf(currURL, '/');
+			Text::StrConcat(sptr, &currURL[si + 1]);
+			si = Text::StrIndexOf(sptr, '?');
+			if (si > 0)
 			{
-				sptr[i] = 0;
+				sptr[si] = 0;
 			}
-			else if (i == 0)
+			else if (si == 0)
 			{
 				Text::StrConcat(sptr, (const UTF8Char*)"download.dat");
 			}
@@ -240,11 +241,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 	}
 
 	Data::DateTime t;
-	Int64 currSize = me->currSize;
+	UInt64 currSize = me->currSize;
 	t.SetCurrTimeUTC();
-	Text::StrInt64(sbuff, currSize);
+	Text::StrUInt64(sbuff, currSize);
 	me->txtTotalSize->SetText(sbuff);
-	Text::StrDouble(sbuff, (currSize - me->lastSize) / ((t.ToTicks() - me->lastT) * 0.001));
+	Text::StrDouble(sbuff, (Double)(currSize - me->lastSize) / ((Double)(t.ToTicks() - me->lastT) * 0.001));
 	me->txtCurrSpeed->SetText(sbuff);
 	me->lastT = t.ToTicks();
 	me->lastSize = currSize;

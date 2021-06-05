@@ -325,10 +325,14 @@ Int32 Media::VOBLPCMStreamSource::GetFrameStreamTime()
 {
 	Int32 t;
 	Sync::MutexUsage mutUsage(this->buffMut);
-	OSInt buffSize = this->buffEnd - this->buffStart;
-	if (buffSize < 0)
+	UOSInt buffSize;
+	if (this->buffEnd < this->buffStart)
 	{
-		buffSize += this->buffSize;
+		buffSize = this->buffEnd - this->buffStart + this->buffSize;
+	}
+	else
+	{
+		buffSize = this->buffEnd - this->buffStart;
 	}
 	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt->bitRate);
 	mutUsage.EndUse();

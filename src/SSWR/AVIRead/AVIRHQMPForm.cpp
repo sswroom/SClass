@@ -575,7 +575,7 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 
 	this->uOfst = 0;
 	this->vOfst = 0;
-	this->storeTime = -1;
+	this->storeTime = (UInt32)-1;
 	this->vbox->SetUVOfst(this->uOfst, this->vOfst);
 
 	this->currChapInfo = this->currFile->GetChapterInfo();
@@ -628,7 +628,7 @@ void SSWR::AVIRead::AVIRHQMPForm::CloseFile()
 {
 	this->player->StopPlayback();
 	this->player->LoadMedia(0);
-	this->storeTime = -1;
+	this->storeTime = (UInt32)-1;
 	SDEL_CLASS(this->currFile);
 	SDEL_CLASS(this->playlist);
 	this->currPBC = this->player;
@@ -708,7 +708,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	}
 #endif
 	this->playlist = 0;
-	this->storeTime = -1;
+	this->storeTime = (UInt32)-1;
 
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;
@@ -1900,10 +1900,10 @@ void SSWR::AVIRead::AVIRHQMPForm::PBStart()
 	if (!this->player->IsPlaying())
 	{
 		this->currPBC->StartPlayback();
-		if (this->storeTime != -1)
+		if (this->storeTime != (UInt32)-1)
 		{
 			this->player->SeekTo(this->storeTime);
-			this->storeTime = -1;
+			this->storeTime = (UInt32)-1;
 		}
 	}
 }
@@ -1911,7 +1911,7 @@ void SSWR::AVIRead::AVIRHQMPForm::PBStart()
 void SSWR::AVIRead::AVIRHQMPForm::PBStop()
 {
 	this->currPBC->StopPlayback();
-	this->storeTime = -1;
+	this->storeTime = (UInt32)-1;
 }
 
 void SSWR::AVIRead::AVIRHQMPForm::PBPause()
@@ -1921,10 +1921,10 @@ void SSWR::AVIRead::AVIRHQMPForm::PBPause()
 		this->storeTime = this->player->GetCurrTime();
 		this->currPBC->StopPlayback();
 	}
-	else if (this->storeTime != -1)
+	else if (this->storeTime != (UInt32)-1)
 	{
 		this->currPBC->StartPlayback();
 		this->player->SeekTo(this->storeTime);
-		this->storeTime = -1;
+		this->storeTime = (UInt32)-1;
 	}
 }

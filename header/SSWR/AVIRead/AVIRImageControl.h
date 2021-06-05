@@ -80,7 +80,7 @@ namespace SSWR
 			ProgressUpdated progHdlr;
 			void *progHdlrObj;
 			Data::LinkedList *exportList;
-			OSInt exportCurrCnt;
+			UOSInt exportCurrCnt;
 			Sync::Mutex *exportMut;
 			ExportFormat exportFmt;
 

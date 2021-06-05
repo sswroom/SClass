@@ -54,7 +54,7 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv::GroupItem *group;
-			OSInt index;
+			UOSInt index;
 			Int32 lineType;
 			UOSInt lineStyle;
 			UOSInt lineThick;

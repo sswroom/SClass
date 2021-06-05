@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(void *userObj, const 
 void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(void *userObj, OSInt itemIndex)
 {
 	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
-	me->playlist->OpenItem(itemIndex);
+	me->playlist->OpenItem((UOSInt)itemIndex);
 	if (!me->playlist->IsPlaying())
 	{
 		me->playlist->StartPlayback();

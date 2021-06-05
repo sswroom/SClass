@@ -82,14 +82,14 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
 	UTF8Char sbuff[32];
-	Int64 val;
+	UInt64 val;
 	if (me->capture)
 	{
 		val = me->capture->GetPacketCnt();
 		if (val != me->currCnt)
 		{
 			me->currCnt = val;
-			Text::StrInt64(sbuff, val);
+			Text::StrUInt64(sbuff, val);
 			me->txtPacketCnt->SetText(sbuff);
 		}
 
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(void *userObj)
 		if (val != me->currDataSize)
 		{
 			me->currDataSize = val;
-			Text::StrInt64(sbuff, val);
+			Text::StrUInt64(sbuff, val);
 			me->txtDataSize->SetText(sbuff);
 		}
 	}
@@ -111,8 +111,8 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	this->capture = 0;
-	this->currCnt = -1;
-	this->currDataSize = -1;
+	this->currCnt = (UInt64)-1;
+	this->currDataSize = (UInt64)-1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this, (const UTF8Char*)"IP"));
@@ -154,9 +154,9 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(&connInfoList);
 	i = 0;

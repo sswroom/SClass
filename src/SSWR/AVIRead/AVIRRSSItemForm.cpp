@@ -7,10 +7,10 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRSSItemForm *me = (SSWR::AVIRead::AVIRRSSItemForm *)userObj;
 	UTF8Char sbuff[512];
-	OSInt i = me->cboImage->GetSelectedIndex();
-	if (i < 0)
+	OSInt si = me->cboImage->GetSelectedIndex();
+	if (si < 0)
 		return;
-	me->cboImage->GetItemText(sbuff, i);
+	me->cboImage->GetItemText(sbuff, (UOSInt)si);
 	Net::WebBrowser *browser = me->core->GetWebBrowser();
 	IO::IStreamData *fd = browser->GetData(sbuff, false, sbuff);
 	if (fd)
@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 
 SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::RSSItem *rssItem) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char sbuff[128];
 	this->SetText((const UTF8Char*)"RSS Item");
 	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);

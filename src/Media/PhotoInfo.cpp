@@ -20,7 +20,7 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 	}
 	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@aux:Lens")) != 0)
 	{
-		OSInt sz;
+		UOSInt sz;
 		UTF8Char *sbuff;
 		if (this->lens)
 			MemFree((void*)this->lens);
@@ -38,7 +38,7 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 		Text::StringBuilderUTF8 sb;
 		node->GetInnerText(&sb);
 		sb.Trim();
-		this->isoRating = Text::StrToInt32(sb.ToString());
+		this->isoRating = Text::StrToUInt32(sb.ToString());
 	}
 }
 
@@ -46,7 +46,7 @@ Double Media::PhotoInfo::ParseFraction(const UTF8Char *s)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sarr[3];
-	OSInt cnt;
+	UOSInt cnt;
 	Text::StrConcat(sbuff, s);
 	cnt = Text::StrSplit(sarr, 3, sbuff, '/');
 	if (cnt == 1)
@@ -68,8 +68,8 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 	Media::EXIFData *exif;
 	Text::XMLDocument *xmf;
 	Media::ICCProfile *icc;
-	Int32 width;
-	Int32 height;
+	UInt32 width;
+	UInt32 height;
 	this->make = 0;
 	this->model = 0;
 	this->photoDate = 0;
@@ -237,9 +237,9 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 	if (this->width != 0 && this->height != 0)
 	{
 		sb->Append((const UTF8Char*)" ");
-		sb->AppendI32(this->width);
+		sb->AppendU32(this->width);
 		sb->Append((const UTF8Char*)"x");
-		sb->AppendI32(this->height);
+		sb->AppendU32(this->height);
 	}
 
 	if (this->fNumber != 0)
@@ -282,7 +282,7 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 	if (this->isoRating != 0)
 	{
 		sb->Append((const UTF8Char*)" ISO");
-		sb->AppendI32(this->isoRating);
+		sb->AppendU32(this->isoRating);
 	}
 
 	if (this->lens)

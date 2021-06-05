@@ -19,7 +19,7 @@ namespace Media
 			Bool isAbsolute;
 			Bool toCreateBG;
 
-			Int32 bgFormat;
+			UInt32 bgFormat;
 			UInt8 *bgData;
 			UOSInt bgWidth;
 			UOSInt bgHeight;

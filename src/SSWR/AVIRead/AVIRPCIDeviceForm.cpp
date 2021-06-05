@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 
 	IO::PCIInfo::GetPCIList(this->pciList);
 	void **arr = (void**)this->pciList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, j - 1);
+	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
 	
 	i = 0;
 	j = this->pciList->GetCount();
@@ -148,7 +148,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRPCIDeviceForm::~AVIRPCIDeviceForm()
 {
 	IO::PCIInfo *pci;
-	OSInt i = this->pciList->GetCount();
+	UOSInt i = this->pciList->GetCount();
 	while (i-- > 0)
 	{
 		pci = this->pciList->GetItem(i);

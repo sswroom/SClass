@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(void *use
 	{
 		UOSInt i;
 		UOSInt j;
-		OSInt k;
+		UOSInt k;
 		Net::LDAPClient::SearchResItem *item;
 		Text::StringBuilderUTF8 sb;
 		i = 0;

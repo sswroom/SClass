@@ -261,12 +261,12 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
-	OSInt currLyr;
-	OSInt lyrCnt = tileMap->GetLevelCount();
+	UOSInt currLyr;
+	UOSInt lyrCnt = tileMap->GetLevelCount();
 	Data::ArrayList<Int64> imgIdList;
-	OSInt i;
-	OSInt j;
-	OSInt cnt;
+	UOSInt i;
+	UOSInt j;
+	UOSInt cnt;
 	OSInt err = 0;
 	Bool found;
 	this->errCnt = 0;
@@ -275,7 +275,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 	currLyr = 0;
 	while (currLyr < lyrCnt)
 	{
-		Text::StrOSInt(sbuff, currLyr);
+		Text::StrUOSInt(sbuff, currLyr);
 		this->txtLayer->SetText(sbuff);
 
 		imgIdList.Clear();
@@ -284,7 +284,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrOSInt(Text::StrConcat(Text::StrOSInt(sbuff, cnt - i), (const UTF8Char*)"/"), cnt);
+			Text::StrUOSInt(Text::StrConcat(Text::StrUOSInt(sbuff, cnt - i), (const UTF8Char*)"/"), cnt);
 			this->txtImages->SetText(sbuff);
 			this->ui->ProcessMessages();
 
@@ -483,7 +483,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 					if (stat->spkg)
 					{
 						sb->ClearStr();
-						sb->AppendOSInt(stat->lyrId);
+						sb->AppendUOSInt(stat->lyrId);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb->AppendI32(blockX);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -499,7 +499,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						dt->SetCurrTimeUTC();
 
 //						stat->pkgMut->Lock();
-						stat->spkg->AddFile(fileBuff, (OSInt)fileSize, sb->ToString(), dt->ToTicks());
+						stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb->ToString(), dt->ToTicks());
 //						stat->pkgMut->Unlock();
 					}
 					else
@@ -507,7 +507,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						sb->ClearStr();
 						sb->Append(stat->folderName);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb->AppendOSInt(stat->lyrId);
+						sb->AppendUOSInt(stat->lyrId);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb->AppendI32(blockX);
 						IO::Path::CreateDirectory(sb->ToString());
@@ -522,7 +522,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 							sb->Append((const UTF8Char*)".jpg");
 						}
 						NEW_CLASS(fs, IO::FileStream(sb->ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
-						fs->Write(fileBuff, (OSInt)fileSize);
+						fs->Write(fileBuff, (UOSInt)fileSize);
 						DEL_CLASS(fs);
 					}
 				}

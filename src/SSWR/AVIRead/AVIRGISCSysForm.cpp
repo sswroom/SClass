@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 		OSInt i = me->cboGeo->GetSelectedIndex();
 		if (i >= 0)
 		{
-			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)me->cboGeo->GetItem(i);
+			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)me->cboGeo->GetItem((UOSInt)i);
 			me->outCSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}

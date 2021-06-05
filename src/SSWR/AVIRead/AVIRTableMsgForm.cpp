@@ -33,7 +33,7 @@ void SSWR::AVIRead::AVIRTableMsgForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRTableMsgForm::AddRow(const UTF8Char **row)
 {
-	OSInt k;
+	UOSInt k;
 	UOSInt i = 1;
 	UOSInt j = this->colCnt;
 	k = this->lvTable->AddItem(row[0], 0);

@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 	{
 		Net::SNS::SNSControl::SNSItem *item;
 		Data::ArrayList<Net::SNS::SNSControl::SNSItem *> itemList;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		Sync::MutexUsage mutUsage;
@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->lvCurrItems->AddColumn((const UTF8Char*)"Title", 200);
 	this->lvCurrItems->AddColumn((const UTF8Char*)"Message", 400);
 
-	Int32 i = Net::SNS::SNSControl::ST_FIRST;
+	UOSInt i = Net::SNS::SNSControl::ST_FIRST;
 	const UTF8Char *csptr;
 	while (i <= Net::SNS::SNSControl::ST_LAST)
 	{
@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	Sync::MutexUsage mutUsage;
 	this->mgr->Use(&mutUsage);
 	Net::SNS::SNSControl *ctrl;
-	OSInt j = this->mgr->GetCount();
+	UOSInt j = this->mgr->GetCount();
 	i = 0;
 	while (i < j)
 	{

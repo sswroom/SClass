@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 	if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
 	{
 		OSInt i = me->cboGPIO->GetSelectedIndex();
-		Int32 pinNum = (Int32)(OSInt)me->cboGPIO->GetItem(i);
+		UInt16 pinNum = (UInt16)(UOSInt)me->cboGPIO->GetItem((UOSInt)i);
 		if (i < 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a GPIO", (const UTF8Char *)"Select GPIO", me);
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 	else if (iopt == SSWR::AVIRead::AVIRCore::IOPT_VIOPIN)
 	{
 		OSInt i = me->cboVirtualPin->GetSelectedIndex();
-		Int32 pinNum = (Int32)(OSInt)me->cboVirtualPin->GetItem(i);
+		UInt16 pinNum = (UInt16)(UOSInt)me->cboVirtualPin->GetItem((UOSInt)i);
 		if (i < 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a VirtualPin", (const UTF8Char *)"Select VirtualPin", me);
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(void *userObj)
 	OSInt i = me->cboPinType->GetSelectedIndex();
 	if (i >= 0)
 	{
-		SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)(OSInt)me->cboPinType->GetItem(i);
+		SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)(OSInt)me->cboPinType->GetItem((UOSInt)i);
 		if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
 		{
 			me->tcConfig->SetSelectedPage(me->tpGPIO);

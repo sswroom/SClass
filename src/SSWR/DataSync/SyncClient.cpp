@@ -11,9 +11,9 @@
 UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 {
 	SSWR::DataSync::SyncClient *me = (SSWR::DataSync::SyncClient*)userObj;
-	OSInt recvSize;
+	UOSInt recvSize;
 	UInt8 *buff;
-	OSInt buffSize;
+	UOSInt buffSize;
 	me->recvRunning = true;
 	buff = MemAlloc(UInt8, 8192);
 	buffSize = 0;

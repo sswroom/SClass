@@ -59,8 +59,8 @@ namespace SSWR
 			const UTF8Char *downPath;
 
 			Int64 lastT;
-			Int64 lastSize;
-			Int64 currSize;
+			UInt64 lastSize;
+			UInt64 currSize;
 
 			Bool respChanged;
 			Bool respHdrChanged;

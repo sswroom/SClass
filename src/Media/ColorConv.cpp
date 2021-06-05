@@ -344,7 +344,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	Media::CS::TransferFunc *drFunc = Media::CS::TransferFunc::CreateFunc(rTran);
 	Media::CS::TransferFunc *dgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
 	Media::CS::TransferFunc *dbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
-	*(Int32*)buff = c;
+	*(UInt32*)buff = c;
 	vec1.Set(srFunc->InverseTransfer(buff[2] / 255.0), sgFunc->InverseTransfer(buff[1] / 255.0), sbFunc->InverseTransfer(buff[0] / 255.0));
 	mat1.Multiply(&vec1, &vec2);
 
@@ -379,5 +379,5 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	DEL_CLASS(rTran);
 	DEL_CLASS(gTran);
 	DEL_CLASS(bTran);
-	return *(Int32*)buff;
+	return *(UInt32*)buff;
 }

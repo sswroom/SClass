@@ -179,9 +179,10 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[64];
 	if (me->statusChg)
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		OSInt si;
 		OSInt scrVPos = me->lvStatus->GetScrollVPos();
 		const UTF8Char *fname;
 		me->statusChg = false;
@@ -192,8 +193,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			fname = me->fileNames->GetItem(i);
-			k = Text::StrLastIndexOf(fname, IO::Path::PATH_SEPERATOR);
-			k = me->lvStatus->AddItem(&fname[k + 1], (void*)fname);
+			si = Text::StrLastIndexOf(fname, IO::Path::PATH_SEPERATOR);
+			k = me->lvStatus->AddItem(&fname[si + 1], (void*)fname);
 			switch (me->fileAction->GetItem(i))
 			{
 			case AT_COPY:
@@ -230,8 +231,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		me->lvStatus->ScrollTo(0, scrVPos);
 	}
 
-	Int64 readPos;
-	Int64 readCurr;
+	UInt64 readPos;
+	UInt64 readCurr;
 	Int64 timeDiff;
 	Double spd;
 	Sync::MutexUsage readMutUsage(me->readMut);
@@ -243,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	readMutUsage.EndUse();
 	if (timeDiff > 0)
 	{
-		spd = readCurr * 1000 / (Double)timeDiff;
+		spd = (Double)readCurr * 1000 / (Double)timeDiff;
 		
 	}
 	else
@@ -258,8 +259,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		me->progStarted = false;
 		me->prgStatus->ProgressStart(me->progName, me->progStartCnt);
 	}
-	Int64 progUpdateCurr = me->progUpdateCurr;
-	Int64 progUpdateNew = me->progUpdateNew;
+	UInt64 progUpdateCurr = me->progUpdateCurr;
+	UInt64 progUpdateNew = me->progUpdateNew;
 	Bool progUpdated = me->progUpdated;
 	Bool progEnd = me->progEnd;
 	me->progUpdated = false;
@@ -275,7 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 
 	Bool hasFile;
-	Int64 fileSize = 0;
+	UInt64 fileSize = 0;
 	if (me->statusFileChg)
 	{
 		Sync::MutexUsage mutUsage(me->statusFileMut);
@@ -283,7 +284,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		if (hasFile)
 		{
 			me->txtStatusFile->SetText(me->statusFile);
-			Text::StrInt64(sbuff, me->statusFileSize);
+			Text::StrUInt64(sbuff, me->statusFileSize);
 			me->txtStatusFileSize->SetText(sbuff);
 			fileSize = me->statusFileSize;
 		}
@@ -303,7 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 	if (readPos != me->statusDispSize)
 	{
-		Text::StrInt64(sbuff, readPos);
+		Text::StrUInt64(sbuff, readPos);
 		me->txtStatusCurrSize->SetText(sbuff);
 		me->statusDispSize = readPos;
 	}
@@ -315,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 	if (hasFile && fileSize != 0 && spd != 0)
 	{
-		Double t = (fileSize - readPos) / spd;
+		Double t = (Double)(fileSize - readPos) / spd;
 		Text::StrDoubleFmt(sbuff, t, "0.0");
 		me->txtStatusTimeLeft->SetText(sbuff);
 	}
@@ -347,10 +348,10 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, OSInt i
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	if (index >= 0)
 	{
-		IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
+		IO::PackageFile::PackObjectType pot = me->packFile->GetItemType((UOSInt)index);
 		if (pot == IO::PackageFile::POT_PACKAGEFILE)
 		{
-			IO::PackageFile *pkg = me->packFile->GetItemPack(index);
+			IO::PackageFile *pkg = me->packFile->GetItemPack((UOSInt)index);
 			if (pkg)
 			{
 				me->core->OpenObject(pkg);
@@ -358,7 +359,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, OSInt i
 		}
 		else if (pot == IO::PackageFile::POT_PARSEDOBJECT)
 		{
-			IO::ParsedObject *pobj = me->packFile->GetItemPObj(index);
+			IO::ParsedObject *pobj = me->packFile->GetItemPObj((UOSInt)index);
 			if (pobj)
 			{
 				me->core->OpenObject(pobj);
@@ -366,7 +367,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, OSInt i
 		}
 		else if (pot == IO::PackageFile::POT_STREAMDATA)
 		{
-			IO::IStreamData *data = me->packFile->GetItemStmData(index);
+			IO::IStreamData *data = me->packFile->GetItemStmData((UOSInt)index);
 			if (data)
 			{
 				me->core->LoadData(data, me->packFile);
@@ -382,14 +383,14 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, O
 	if (index >= 0)
 	{
 		Sync::MutexUsage mutUsage(me->fileMut);
-		if (me->fileAction->GetItem(index) == AT_COPYFAIL)
+		if (me->fileAction->GetItem((UOSInt)index) == AT_COPYFAIL)
 		{
-			me->fileAction->SetItem(index, AT_RETRYCOPY);
+			me->fileAction->SetItem((UOSInt)index, AT_RETRYCOPY);
 			me->statusChg = true;
 		}
-		else if (me->fileAction->GetItem(index) == AT_MOVEFAIL)
+		else if (me->fileAction->GetItem((UOSInt)index) == AT_MOVEFAIL)
 		{
-			me->fileAction->SetItem(index, AT_RETRYMOVE);
+			me->fileAction->SetItem((UOSInt)index, AT_RETRYMOVE);
 			me->statusChg = true;
 		}
 		mutUsage.EndUse();
@@ -400,8 +401,8 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 {
 	UTF8Char sbuff[512];
 	Data::DateTime dt;
-	OSInt maxWidth = 0;
-	OSInt w;
+	UOSInt maxWidth = 0;
+	UOSInt w;
 	this->lvFiles->ClearItems();
 	UOSInt i;
 	UOSInt j;
@@ -425,7 +426,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 		if (pot == IO::PackageFile::POT_STREAMDATA)
 		{
 			this->lvFiles->SetSubItem(k, 1, (const UTF8Char*)"File");
-			Text::StrInt64(sbuff, packFile->GetItemSize(i));
+			Text::StrUInt64(sbuff, packFile->GetItemSize(i));
 			this->lvFiles->SetSubItem(k, 2, sbuff);
 			if (packFile->IsCompressed(i))
 			{
@@ -488,7 +489,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->statusFileChg = false;
 	this->statusFile = 0;
 	this->statusFileSize = 0;
-	this->statusDispSize = -1;
+	this->statusDispSize = (UOSInt)-1;
 	this->statusDispSpd = -1;
 	this->statusBNT = IO::ActiveStreamReader::BNT_UNKNOWN;
 	this->statusDispBNT = IO::ActiveStreamReader::BNT_UNKNOWN;
@@ -636,8 +637,8 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			Win32::Clipboard clipboard(this->hwnd);
 			Data::ArrayList<const UTF8Char *> fileNames;
 			Win32::Clipboard::FilePasteType fpt;
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			fpt = clipboard.GetDataFiles(&fileNames);
 			if (fpt == Win32::Clipboard::FPT_MOVE)
 			{
@@ -745,8 +746,8 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressUpdate(UInt64 currCount, UInt64 new
 {
 	{
 		Sync::MutexUsage mutUsage(this->readMut);
-		Int64 readThis = currCount - this->readLast;
-		if (readThis < 0)
+		UInt64 readThis = currCount - this->readLast;
+		if ((Int64)readThis < 0)
 			readThis = 0;
 		this->readCurr += readThis;
 		this->readTotal += readThis;

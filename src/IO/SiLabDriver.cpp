@@ -181,7 +181,7 @@ Bool IO::SiLabDriver::GetDeviceVID(UInt32 devId, UInt32 *vid)
 	Char buff[32];
 	if (this->SI_GetProductString(devId, buff, IO::SiLabDriver::SI_RETURN_VID) == SI_SUCCESS)
 	{
-		*vid = (UInt32)Text::StrHex2Int32(buff);
+		*vid = Text::StrHex2UInt32(buff);
 		return true;
 	}
 	return false;
@@ -192,7 +192,7 @@ Bool IO::SiLabDriver::GetDevicePID(UInt32 devId, UInt32 *pid)
 	Char buff[32];
 	if (this->SI_GetProductString(devId, buff, IO::SiLabDriver::SI_RETURN_PID) == SI_SUCCESS)
 	{
-		*pid = (UInt32)Text::StrHex2Int32(buff);
+		*pid = Text::StrHex2UInt32(buff);
 		return true;
 	}
 	return false;

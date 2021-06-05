@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 		UInt64 addr = (UInt64)funcAddr;
 		UInt64 blockStart;
 		UInt64 blockEnd;
-		OSInt i;
+		UOSInt i;
 		Data::ArrayListUInt64 callAddrs;
 		Data::ArrayListUInt64 jmpAddrs;
 		NEW_CLASS(dasm, Manage::DasmX86_64());

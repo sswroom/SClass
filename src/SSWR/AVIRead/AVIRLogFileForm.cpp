@@ -15,9 +15,9 @@ typedef enum
 void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 {
 	this->lvLogs->ClearItems();
-	OSInt i;
-	OSInt j = this->logFile->GetCount(this->logLevel);
-	OSInt k;
+	UOSInt i;
+	UOSInt j = this->logFile->GetCount(this->logLevel);
+	UOSInt k;
 	i = 0;
 	if (j > 0)
 	{
@@ -100,8 +100,8 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 				IO::FileStream *fs;
 				Text::UTF8Writer *writer;
 				Text::StringBuilderUTF8 *sb;
-				OSInt i;
-				OSInt j;
+				UOSInt i;
+				UOSInt j;
 				NEW_CLASS(sb, Text::StringBuilderUTF8());
 				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));

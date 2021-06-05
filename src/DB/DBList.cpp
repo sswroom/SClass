@@ -76,7 +76,7 @@ DB::DBTool *DB::DBList::UseDB()
 
 void DB::DBList::UnuseDB(DB::DBTool *db)
 {
-	OSInt i;
+	UOSInt i;
 	DBInfo *dbInfo;
 	Sync::MutexUsage mutUsage(this->dbMut);
 	i = this->dbList->GetCount();

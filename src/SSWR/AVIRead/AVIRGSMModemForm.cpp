@@ -169,12 +169,12 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(void *userObj)
 	OSInt index = me->lvSMS->GetSelectedIndex();
 	if (index >= 0)
 	{
-		sms = me->msgList->GetItem(index);
+		sms = me->msgList->GetItem((UOSInt)index);
 		if (me->modem->SMSDeleteMessage(sms->index))
 		{
 			me->modem->SMSFreeMessage(sms);
-			me->lvSMS->RemoveItem(index);
-			me->msgList->RemoveAt(index);
+			me->lvSMS->RemoveItem((UOSInt)index);
+			me->msgList->RemoveAt((UOSInt)index);
 		}
 	}
 }
@@ -241,7 +241,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 
 void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 {
-	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)(OSInt)this->cboPhoneStorage->GetItem(this->cboPhoneStorage->GetSelectedIndex());
+	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)(OSInt)this->cboPhoneStorage->GetItem((UOSInt)this->cboPhoneStorage->GetSelectedIndex());
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -278,7 +278,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	this->lvSMS->ClearItems();
 	this->msgList->Clear();
 
-	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)(OSInt)this->cboSMSStorage->GetItem(this->cboSMSStorage->GetSelectedIndex());
+	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)(OSInt)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex());
 
 	this->modem->SMSSetStorage(store, IO::GSMModemController::SMSSTORE_SIM, IO::GSMModemController::SMSSTORE_SIM);
 	this->modem->SMSGetSMSC(sbuff);
@@ -293,7 +293,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 #if _WCHAR_SIZE == 2
 		k = this->lvSMS->AddItem(smsMsg->GetAddress(), sms);
 #elif _WCHAR_SIZE == 4
-		Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress(), -1);
+		Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress());
 		k = this->lvSMS->AddItem(wbuff, sms);
 #endif
 		smsMsg->GetMessageTime(&dt);
@@ -305,7 +305,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 #if _WCHAR_SIZE == 2
 			this->lvSMS->SetSubItem(k, 2, cont);
 #elif _WCHAR_SIZE == 4
-			Text::StrUTF16_UTF32(wbuff, cont, -1);
+			Text::StrUTF16_UTF32(wbuff, cont);
 			this->lvSMS->SetSubItem(k, 2, wbuff);
 #endif
 		}

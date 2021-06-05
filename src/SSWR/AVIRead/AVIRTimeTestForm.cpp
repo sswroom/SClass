@@ -8,11 +8,11 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRTimeTestForm *me = (SSWR::AVIRead::AVIRTimeTestForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 t;
+	UInt32 t;
 	Double tDiff;
 	me->txtSleepMS->GetText(&sb);
 	Manage::HiResClock clk;
-	if (sb.ToInt32(&t))
+	if (sb.ToUInt32(&t))
 	{
 		clk.Start();
 		Sync::Thread::Sleep(t);
@@ -31,11 +31,11 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRTimeTestForm *me = (SSWR::AVIRead::AVIRTimeTestForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 t;
+	UInt32 t;
 	Double tDiff;
 	me->txtSleepUS->GetText(&sb);
 	Manage::HiResClock clk;
-	if (sb.ToInt32(&t))
+	if (sb.ToUInt32(&t))
 	{
 		clk.Start();
 		Sync::Thread::Sleepus(t);

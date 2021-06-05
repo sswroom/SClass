@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 	UTF8Char sbuff[16];
 	if (me->env->GetLayerProp(&setting, me->group, me->index))
 	{
-		setting.labelCol = (Int32)me->cboColName->GetSelectedIndex();
+		setting.labelCol = (UOSInt)me->cboColName->GetSelectedIndex();
 		setting.flags = Map::MapEnv::SFLG_NONE;
 		if (me->chkShowLabel->IsChecked())
 		{
@@ -183,7 +183,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, OSIn
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRGISImageForm(0, me->ui, me->core, me->env, me->imgIndex));
 		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			Int32 imgDurMS;
+			UInt32 imgDurMS;
 			me->imgIndex = frm->GetImgIndex();
 			me->pbIcon->SetImage(me->env->GetImage(me->imgIndex, &imgDurMS));
 		}
@@ -446,7 +446,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		Map::DrawLayerType layerType = setting.layer->GetLayerType();
 		if (layerType == Map::DRAW_LAYER_POINT)
 		{
-			Int32 imgDurMS;
+			UInt32 imgDurMS;
 			this->pbLineStyle->SetVisible(false);
 			this->lblLineStyle->SetEnabled(false);
 			this->pbFillStyle->SetVisible(false);

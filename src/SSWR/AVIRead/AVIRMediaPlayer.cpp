@@ -209,7 +209,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 	}
 	this->currChapInfo = this->currFile->GetChapterInfo();
 
-	OSInt i = 0;
+	UOSInt i = 0;
 	Int32 syncTime;
 	videoFound = false;
 	while (true)

@@ -26,8 +26,8 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
 	UTF8Char sbuff[128];
-	OSInt i = Crypto::Hash::HT_FIRST;
-	OSInt j;
+	UOSInt i = Crypto::Hash::HT_FIRST;
+	UOSInt j;
 	Double speed;
 	Crypto::Hash::IHash *hash;
 	me->lvCompare->ClearItems();

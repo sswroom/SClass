@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			if (cfmt->fourcc)
 			{
 				UInt8 fcc[4];
-				*(Int32*)&fcc = cfmt->fourcc;
+				*(UInt32*)&fcc = cfmt->fourcc;
 				devInfo.AppendC((const UTF8Char*)fcc, 4);
 			}
 			else

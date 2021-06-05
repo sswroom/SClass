@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	if (st == SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT)
 	{
 		OSInt i = me->cboSerialPort->GetSelectedIndex();
-		UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
+		UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem((UOSInt)i);
 		if (portNum == 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"Select Serial Port", me);
@@ -44,11 +44,10 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	}
 	else if (st == SSWR::AVIRead::AVIRCore::ST_USBXPRESS)
 	{
-		Int32 baudRate;
+		UInt32 baudRate;
 		Text::StringBuilderUTF8 sb;
 		me->txtSLBaudRate->GetText(&sb);
-		baudRate = sb.ToInt32();
-		if (baudRate == 0)
+		if (!sb.ToUInt32(&baudRate) || baudRate == 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input baud rate", (const UTF8Char *)"Error", me);
 			return;
@@ -67,14 +66,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	else if (st == SSWR::AVIRead::AVIRCore::ST_TCPSERVER)
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 port;
+		UInt16 port;
 		me->txtTCPSvrPort->GetText(&sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
 			return;
 		}
-		if (port <= 0 || port > 65535)
+		if (port <= 0 || port >= 65535)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is out of range", (const UTF8Char *)"Error", me);
 			return;
@@ -118,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
-		Int32 port;
+		UInt16 port;
 		me->txtTCPCliHost->GetText(&sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
 		{
@@ -127,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		}
 		sb.ClearStr();
 		me->txtTCPCliPort->GetText(&sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
 			return;
@@ -219,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 	OSInt i = me->cboStreamType->GetSelectedIndex();
 	if (i >= 0)
 	{
-		SSWR::AVIRead::AVIRCore::StreamType st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)me->cboStreamType->GetItem(i);
+		SSWR::AVIRead::AVIRCore::StreamType st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)me->cboStreamType->GetItem((UOSInt)i);
 		if (st == SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT)
 		{
 			me->tcConfig->SetSelectedPage(me->tpSerialPort);
@@ -315,7 +314,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		currPort = ports->GetItem(i);
-		sptr = Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"COM"), currPort);
+		sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"COM"), currPort);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
 		sptr = Text::StrConcat(sptr, IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)));
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
@@ -411,17 +410,17 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		while (i < j)
 		{
 			UInt32 v;
-			Text::StrOSInt(sbuff, i);
+			Text::StrUOSInt(sbuff, i);
 			k = this->lvSLPort->AddItem(sbuff, (void*)(OSInt)i);
 			v = 0;
 			if (this->siLabDriver->GetDeviceVID((UInt32)i, &v))
 			{
-				Text::StrHexVal16(sbuff, v);
+				Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 1, sbuff);
 			}
 			if (this->siLabDriver->GetDevicePID((UInt32)i, &v))
 			{
-				Text::StrHexVal16(sbuff, v);
+				Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 2, sbuff);
 			}
 			if (this->siLabDriver->GetDeviceSN((UInt32)i, sbuff))

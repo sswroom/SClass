@@ -29,7 +29,7 @@ namespace SSWR
 				const UTF8Char *country;
 				UInt8 ouis[3][3];
 				UInt64 neighbour[20];
-				Int32 ieLen;
+				UInt32 ieLen;
 				UInt8 *ieBuff;
 			} LogFileEntry;
 
@@ -61,11 +61,11 @@ namespace SSWR
 			void LogFileLoad(const UTF8Char *fileName);
 			Bool LogFileStore();
 			void LogClear();
-			LogFileEntry *LogGet(Int64 iMAC);
+			LogFileEntry *LogGet(UInt64 iMAC);
 			OSInt LogInsert(LogFileEntry *log);
 			void LogUIUpdate();
 
-			OSInt DataGetIndex(Int64 macInt);
+			OSInt DataGetIndex(UInt64 macInt);
 			void DataLoad();
 			Bool DataStore();
 			void UpdateStatus();

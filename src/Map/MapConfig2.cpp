@@ -2633,7 +2633,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, const UTF8Char *labelt, UInt32 nPoint, Double *points, Int32 priority, Int32 recType, Int32 fontStyle, Int32 flags, Map::MapView *view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, const UTF8Char *labelt, UInt32 nPoint, Double *points, Int32 priority, Int32 recType, UInt32 fontStyle, Int32 flags, Map::MapView *view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
@@ -3056,7 +3056,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 			Double thisTX;
 			Double thisTY;
 			Double* outPts;
-			OSInt outPtCnt;
+			UOSInt outPtCnt;
 			Double sum;
 			Double sumX;
 			Double sumY;

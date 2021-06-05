@@ -12,8 +12,8 @@ namespace IO
 		DeviceManager();
 		~DeviceManager();
 
-		OSInt QueryHIDDevices(Data::ArrayList<IO::DeviceInfo*> *devList);
+		UOSInt QueryHIDDevices(Data::ArrayList<IO::DeviceInfo*> *devList);
 		void FreeDevices(Data::ArrayList<IO::DeviceInfo*> *devList);
 	};
-};
+}
 #endif

@@ -19,8 +19,9 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 	SDEL_CLASS(me->rss);
 	if (sb.GetLength() > 8)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
+		OSInt si;
 		Net::RSS *rss;
 		Net::RSSItem *item;
 		const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
@@ -89,8 +90,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		}
 		if (rss->GetCount() > 0)
 		{
-			i = me->rssList->SortedIndexOf(sb.ToString());
-			if (i < 0)
+			si = me->rssList->SortedIndexOf(sb.ToString());
+			if (si < 0)
 			{
 				j = me->rssList->SortedInsert(Text::StrCopyNew(sb.ToString()));
 				me->cboRecent->InsertItem(j, sb.ToString(), 0);
@@ -137,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
-	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem(index);
+	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem((UOSInt)index);
 	if (item)
 	{
 		SSWR::AVIRead::AVIRRSSItemForm *frm;
@@ -154,7 +155,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"RSSList.txt");
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
 	{

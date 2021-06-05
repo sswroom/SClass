@@ -69,9 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
-		Int32 port = 0;
+		UInt16 port = 0;
 		me->txtPort->GetText(&sb);
-		sb.ToInt32(&port);
+		sb.ToUInt16(&port);
 		sb.ClearStr();
 		me->txtHost->GetText(&sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr) || port <= 0 || port >= 65536)
@@ -798,10 +798,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				Text::StrInt32(sbuff, ReadInt32(&cmd[84]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"Status3"));
-				Text::StrHexVal32(sbuff, ReadInt32(&cmd[88]));
+				Text::StrHexVal32(sbuff, ReadUInt32(&cmd[88]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"LastIP"));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadInt32(&cmd[92]));
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadUInt32(&cmd[92]));
 				this->devConts->Add(Text::StrCopyNew(sbuff));
 				this->devConts->Add(Text::StrCopyNew((const UTF8Char*)"LastPort"));
 				Text::StrInt32(sbuff, ReadUInt16(&cmd[96]));
@@ -1009,7 +1009,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 		if (cmdSize >= 24)
 		{
 			UTF8Char sbuff[32];
-			UInt32 startSize = ReadInt32(&cmd[0]);
+			UInt32 startSize = ReadUInt32(&cmd[0]);
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;

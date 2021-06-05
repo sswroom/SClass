@@ -12,11 +12,11 @@ namespace Media
 		Bool succ;
 		const UTF8Char *make;
 		const UTF8Char *model;
-		Int32 width;
-		Int32 height;
+		UInt32 width;
+		UInt32 height;
 		Double fNumber;
 		Double expTime;
-		Int32 isoRating;
+		UInt32 isoRating;
 		const UTF8Char *lens;
 		Double focalLength;
 		Data::DateTime *photoDate;

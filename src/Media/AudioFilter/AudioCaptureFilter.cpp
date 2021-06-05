@@ -10,7 +10,7 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 {
 	Media::AudioFilter::AudioCaptureFilter *me = (Media::AudioFilter::AudioCaptureFilter*)userObj;
 	UInt8 *tmpBuff;
-	OSInt buffSize;
+	UOSInt buffSize;
 	me->running = true;
 	while (!me->toStop)
 	{
@@ -72,7 +72,7 @@ Media::AudioFilter::AudioCaptureFilter::~AudioCaptureFilter()
 	MemFree(this->writeBuff);
 }
 
-Int32 Media::AudioFilter::AudioCaptureFilter::SeekToTime(Int32 time)
+UInt32 Media::AudioFilter::AudioCaptureFilter::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

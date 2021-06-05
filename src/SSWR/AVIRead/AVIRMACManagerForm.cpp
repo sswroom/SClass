@@ -44,15 +44,15 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList->GetItem(index);
+	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList->GetItem((UOSInt)index);
 	if (log == 0)
 		return;
-	OSInt i = me->DataGetIndex(log->macInt);
+	OSInt si = me->DataGetIndex(log->macInt);
 	SSWR::AVIRead::AVIRMACManagerForm::DataEntry *entry = 0;
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
-	if (i >= 0)
+	if (si >= 0)
 	{
-		entry = me->dataList->GetItem((UOSInt)i);
+		entry = me->dataList->GetItem((UOSInt)si);
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
 	}
 	else
@@ -72,10 +72,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 			entry->rangeFrom = log->macInt & 0xffffff000000;
 			entry->rangeTo = entry->rangeFrom | 0xffffff;
 			entry->name = frm->GetNameNew();
-			me->dataList->Insert((UOSInt)~i, entry);
+			me->dataList->Insert((UOSInt)~si, entry);
 			me->UpdateStatus();
 		}
 
+		UOSInt i;
 		UOSInt j;
 		i = 0;
 		j = me->logList->GetCount();
@@ -217,8 +218,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 		UTF8Char *sarr[12];
 		UTF8Char *sarr2[7];
 		UInt8 buff[8];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -247,7 +248,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 					buff[5] = log->mac[3];
 					buff[6] = log->mac[4];
 					buff[7] = log->mac[5];
-					log->macInt = ReadMInt64(buff);
+					log->macInt = ReadMUInt64(buff);
 					log->ssid = Text::StrCopyNew(sarr[1]);
 					log->phyType = Text::StrToInt32(sarr[2]);
 					log->freq = Text::StrToDouble(sarr[3]);
@@ -294,15 +295,15 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 							j = 0;
 							while (Text::StrSplit(sarr2, 2, sarr2[1], ',') == 2)
 							{
-								log->neighbour[j] = Text::StrHex2Int64(sarr2[0]);
+								log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
 								j++;
 							}
-							log->neighbour[j] = Text::StrHex2Int64(sarr2[0]);
+							log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
 						}
 					}
 					if (i >= 11)
 					{
-						log->ieLen = (Int32)(Text::StrCharCnt(sarr[10]) >> 1);
+						log->ieLen = (UInt32)(Text::StrCharCnt(sarr[10]) >> 1);
 						if (log->ieLen > 0)
 						{
 							log->ieBuff = MemAlloc(UInt8, log->ieLen);
@@ -343,7 +344,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 			k = this->DataGetIndex(log->macInt);
 			if (k >= 0)
 			{
-				entry = this->dataList->GetItem(k);
+				entry = this->dataList->GetItem((UOSInt)k);
 				this->lvContent->SetSubItem(i, 1, entry->name);
 			}
 			else
@@ -378,7 +379,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 {
-	OSInt i = this->logList->GetCount();
+	UOSInt i = this->logList->GetCount();
 	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
 	while (i-- > 0)
 	{
@@ -408,7 +409,7 @@ OSInt SSWR::AVIRead::AVIRMACManagerForm::DataGetIndex(UInt64 macInt)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = this->dataList->GetItem(k);
+		entry = this->dataList->GetItem((UOSInt)k);
 		if (entry->rangeFrom > macInt)
 		{
 			j = k - 1;
@@ -456,8 +457,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::DataLoad()
 						sarr[1][Text::StrCharCnt(sarr[1]) - 2] = 0;
 					}
 					entry = MemAlloc(SSWR::AVIRead::AVIRMACManagerForm::DataEntry, 1);
-					entry->rangeFrom = Text::StrToInt64(sarr[0]);
-					entry->rangeTo = Text::StrToInt64(sarr[1]);
+					entry->rangeFrom = Text::StrToUInt64(sarr[0]);
+					entry->rangeTo = Text::StrToUInt64(sarr[1]);
 					sarr[2][Text::StrCharCnt(sarr[2]) - 3] = 0;
 					entry->name = Text::StrCopyNew(&sarr[2][1]);
 					this->dataList->Add(entry);
@@ -612,7 +613,7 @@ SSWR::AVIRead::AVIRMACManagerForm::~AVIRMACManagerForm()
 		this->DataStore();
 	}
 
-	OSInt i;
+	UOSInt i;
 	SSWR::AVIRead::AVIRMACManagerForm::DataEntry *entry;
 	i = this->dataList->GetCount();
 	while (i-- > 0)

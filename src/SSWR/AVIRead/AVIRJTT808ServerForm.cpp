@@ -24,9 +24,9 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 port;
+		UInt16 port;
 		me->txtPort->GetText(&sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"Error", me);
 		}
@@ -196,7 +196,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Packet: seq = ");
 	sptr = Text::StrInt32(sptr, seqId);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)", type = 0x");
-	sptr = Text::StrHexVal16(sptr, cmdType);
+	sptr = Text::StrHexVal16(sptr, (UInt16)cmdType);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)", size = ");
 	sptr = Text::StrUOSInt(sptr, cmdSize);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)", devId = ");
@@ -289,9 +289,9 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		break;
 	case 0x200:
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Cmd: Location: Alert = 0x");
-		sptr = Text::StrHexVal32(sptr, ReadMInt32(&packetContent[0]));
+		sptr = Text::StrHexVal32(sptr, ReadMUInt32(&packetContent[0]));
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Status = 0x");
-		sptr = Text::StrHexVal32(sptr, ReadMInt32(&packetContent[4]));
+		sptr = Text::StrHexVal32(sptr, ReadMUInt32(&packetContent[4]));
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Latitude = ");
 		sptr = Text::StrDouble(sptr, ReadMUInt32(&packetContent[8]) * 0.000001);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Longitude = ");
@@ -304,7 +304,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[20]));
 		{
 			Data::DateTime dt;
-			dt.SetValue(2000 + Data::ByteTool::GetBCD8(packetContent[22]), Data::ByteTool::GetBCD8(packetContent[23]), Data::ByteTool::GetBCD8(packetContent[24]), Data::ByteTool::GetBCD8(packetContent[25]), Data::ByteTool::GetBCD8(packetContent[26]), Data::ByteTool::GetBCD8(packetContent[27]), 0, 32);
+			dt.SetValue((UInt16)(2000 + Data::ByteTool::GetBCD8(packetContent[22])), Data::ByteTool::GetBCD8(packetContent[23]), Data::ByteTool::GetBCD8(packetContent[24]), Data::ByteTool::GetBCD8(packetContent[25]), Data::ByteTool::GetBCD8(packetContent[26]), Data::ByteTool::GetBCD8(packetContent[27]), 0, 32);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Time = ");
 			sptr = dt.ToString(sptr);
 		}
@@ -342,7 +342,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 				if (packetContent[i + 1] == 4)
 				{
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)"0x");
-					sptr = Text::StrHexVal32(sptr, ReadMInt32(&packetContent[i + 2]));
+					sptr = Text::StrHexVal32(sptr, ReadMUInt32(&packetContent[i + 2]));
 				}
 				break;
 			case 0x2A:
@@ -350,7 +350,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 				if (packetContent[i + 1] == 2)
 				{
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)"0x");
-					sptr = Text::StrHexVal16(sptr, ReadMInt16(&packetContent[i + 2]));
+					sptr = Text::StrHexVal16(sptr, ReadMUInt16(&packetContent[i + 2]));
 				}
 				break;
 			case 0x2B:
@@ -383,7 +383,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
 				break;
 			}
-			i += packetContent[i + 1] + 2;
+			i += (UOSInt)packetContent[i + 1] + 2;
 		}
 		this->log->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;

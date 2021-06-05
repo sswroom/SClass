@@ -12,8 +12,8 @@ namespace Map
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
 		virtual ~MapRenderer(){};
-		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view, Int32 *imgDurMS) = 0;
+		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view, UInt32 *imgDurMS) = 0;
 		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, void *userObj) = 0;
 	};
-};
+}
 #endif

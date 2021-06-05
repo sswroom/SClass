@@ -51,17 +51,17 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	Double spd;
 	if (timeDiff > 0)
 	{
-		Text::StrInt64(sbuff, currRead * 1000 / timeDiff);
-		spd = (Double)currRead * 1000.0 / timeDiff;
+		Text::StrUInt64(sbuff, currRead * 1000 / (UInt64)timeDiff);
+		spd = (Double)currRead * 1000.0 / (Double)timeDiff;
 	}
 	else
 	{
-		Text::StrInt64(sbuff, currRead);
+		Text::StrUInt64(sbuff, currRead);
 		spd = (Double)currRead;
 	}
 	me->txtSpeed->SetText(sbuff);
 	me->rlcSpeed->AddSample(&spd);
-	Text::StrInt64(sbuff, currTotal);
+	Text::StrUInt64(sbuff, currTotal);
 	me->txtTotalSize->SetText(sbuff);
 	me->lastTimerTime->SetValue(&currTime);
 }

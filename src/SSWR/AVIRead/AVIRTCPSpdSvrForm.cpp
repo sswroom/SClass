@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 port;
+	UInt16 port;
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		return;
 	}
 	me->txtPort->GetText(&sb);
-	if (!sb.ToInt32(&port))
+	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
 		return;
@@ -84,7 +84,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 {
 	Net::TCPClient *cli = (Net::TCPClient*)userObj;
 	UInt8 *recvBuff = MemAlloc(UInt8, 9000);
-	OSInt recvSize;
+	UOSInt recvSize;
 	while (true)
 	{
 		recvSize = cli->Read(recvBuff, 9000);

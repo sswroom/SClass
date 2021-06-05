@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userOb
 {
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	EmailInfo *email;
-	email = (EmailInfo*)me->lvEmail->GetItem(index);
+	email = (EmailInfo*)me->lvEmail->GetItem((UOSInt)index);
 	if (email)
 	{
 		Text::MIMEObj::MailMessage *mail;
@@ -393,7 +393,7 @@ UOSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, UOSInt *s
 	return retCnt;
 }
 
-Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayList<Int32> *unreadList)
+Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayList<UInt32> *unreadList)
 {
 	UOSInt totalCnt;
 	UOSInt i;
@@ -407,7 +407,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayL
 		email = this->mailList->GetItem(i);
 		if (!email->isDeleted)
 		{
-			unreadList->Add((Int32)i);
+			unreadList->Add((UInt32)i);
 		}
 		i++;
 	}
@@ -415,7 +415,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayL
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageInfo(Int32 userId, Int32 msgId, MessageInfo *info)
+Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info)
 {
 	EmailInfo *email;
 	Bool succ = false;
@@ -425,14 +425,14 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageInfo(Int32 userId, Int32 msgId
 	if (email)
 	{
 		succ = true;
-		info->size = (Int32)email->fileSize;
+		info->size = email->fileSize;
 		info->uid = email->uid;
 	}
 	mutUsage.EndUse();
 	return succ;
 }
 
-Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, Int32 msgId, IO::Stream *stm)
+Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 msgId, IO::Stream *stm)
 {
 	EmailInfo *email;
 	Bool succ = false;
@@ -466,10 +466,10 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, Int32 ms
 	return succ;
 }
 
-Int32 SSWR::AVIRead::AVIRSMTPServerForm::RemoveMessage(Int32 userId, Int32 msgId)
+SSWR::AVIRead::AVIRSMTPServerForm::RemoveStatus SSWR::AVIRead::AVIRSMTPServerForm::RemoveMessage(Int32 userId, UInt32 msgId)
 {
 	EmailInfo *email;
-	Int32 ret = 0;
+	SSWR::AVIRead::AVIRSMTPServerForm::RemoveStatus ret = RS_NOT_FOUND;
 
 	Sync::MutexUsage mutUsage(this->mailMut);
 	email = this->mailList->GetItem(msgId);
@@ -477,12 +477,12 @@ Int32 SSWR::AVIRead::AVIRSMTPServerForm::RemoveMessage(Int32 userId, Int32 msgId
 	{
 		if (email->isDeleted)
 		{
-			ret = 2;
+			ret = RS_ALREADY_DELETED;
 		}
 		else
 		{
 			email->isDeleted = true;
-			ret = 1;
+			ret = RS_SUCCESS;
 		}
 	}
 	mutUsage.EndUse();

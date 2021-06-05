@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnTimerTick(void *userObj)
 		me->remoteClosed2 = false;
 		me->StopStream2();
 	}
-	Int64 val = me->stm1DataSize;
+	UInt64 val = me->stm1DataSize;
 	Double dv = (Double)(val - me->stm1LastSize);
 	me->rlcStream1->AddSample(&dv);
 	me->stm1LastSize = val;

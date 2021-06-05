@@ -94,7 +94,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 				}
 				if (succ)
 				{
-					dt.SetYear(iVal / 10000);
+					dt.SetYear((UInt16)(iVal / 10000));
 					iVal = iVal % 10000;
 					dt.SetMonth(iVal / 100);
 					dt.SetDay(iVal % 100);
@@ -155,7 +155,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 					{
 						if ((sptr - pathEnd) >= 6 && Text::StrToInt32(sptr - 6, &iVal))
 						{
-							dt.SetDate(iVal / 100, iVal % 100, 1);
+							dt.SetDate((UInt16)(iVal / 100), iVal % 100, 1);
 							if ((dt.GetYear() == startTime->GetYear() && dt.GetMonth() == startTime->GetMonth()) || (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0))
 							{
 								*sptr++ = IO::Path::PATH_SEPERATOR;

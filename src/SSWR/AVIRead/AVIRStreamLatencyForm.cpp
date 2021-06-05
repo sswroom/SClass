@@ -88,7 +88,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
 	UInt8 buff[2060];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;
-	OSInt i;
+	UOSInt i;
 	UInt8 chk;
 	Double diff;
 	Data::DateTime *dt;

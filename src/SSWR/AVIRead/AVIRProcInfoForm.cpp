@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	me->lbDetail->SetSelectedIndex(index);
+	me->lbDetail->SetSelectedIndex((UOSInt)index);
 	me->tcMain->SetSelectedIndex(1);
 }
 
@@ -68,7 +68,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff2[12];
 	ProcessInfo *procInfo;
 	Manage::Process::ProcessInfo proc;
-	OSInt i;
+	UOSInt i;
+	OSInt si;
 	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess((const UTF8Char*)0);
 	if (sess)
 	{
@@ -81,15 +82,15 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 
 		while (Manage::Process::FindProcessNext(sbuff, sess, &proc))
 		{
-			i = me->procIds->SortedIndexOf(proc.processId);
-			if (i >= 0)
+			si = me->procIds->SortedIndexOf(proc.processId);
+			if (si >= 0)
 			{
-				procInfo = me->procList->GetItem(i);
+				procInfo = me->procList->GetItem((UOSInt)si);
 				procInfo->found = true;
 			}
 			else
 			{
-				i = ~i;
+				i = (UOSInt)~si;
 				procInfo = MemAlloc(ProcessInfo, 1);
 				procInfo->found = true;
 				procInfo->procId = proc.processId;
@@ -100,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				Text::StrUInt32(sbuff2, procInfo->procId);
 				me->lvSummary->InsertItem(i, sbuff2, procInfo);
 				me->lvSummary->SetSubItem(i, 1, sbuff);
-				Text::StrConcat(Text::StrConcat(Text::StrInt32(sbuff, procInfo->procId), (const UTF8Char*)" "), procInfo->procName);
+				Text::StrConcat(Text::StrConcat(Text::StrUInt32(sbuff, procInfo->procId), (const UTF8Char*)" "), procInfo->procName);
 				me->lbDetail->InsertItem(i, sbuff, procInfo);
 			}
 
@@ -112,15 +113,15 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 			UOSInt pageFile;
 			if (proc.GetMemoryInfo(&pageFault, &ws, &pagedPool, &nonPagedPool, &pageFile))
 			{
-				Text::StrOSIntS(sbuff, ws, ',', 3);
+				Text::StrUOSIntS(sbuff, ws, ',', 3);
 				me->lvSummary->SetSubItem(i, 2, sbuff);
-				Text::StrOSIntS(sbuff, pageFault, ',', 3);
+				Text::StrUOSIntS(sbuff, pageFault, ',', 3);
 				me->lvSummary->SetSubItem(i, 3, sbuff);
-				Text::StrOSIntS(sbuff, pagedPool, ',', 3);
+				Text::StrUOSIntS(sbuff, pagedPool, ',', 3);
 				me->lvSummary->SetSubItem(i, 4, sbuff);
-				Text::StrOSIntS(sbuff, nonPagedPool, ',', 3);
+				Text::StrUOSIntS(sbuff, nonPagedPool, ',', 3);
 				me->lvSummary->SetSubItem(i, 5, sbuff);
-				Text::StrOSIntS(sbuff, pageFile, ',', 3);
+				Text::StrUOSIntS(sbuff, pageFile, ',', 3);
 				me->lvSummary->SetSubItem(i, 6, sbuff);
 
 				Text::StrUInt32(sbuff, proc.GetGDIObjCount());
@@ -132,14 +133,14 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 			}
 			else
 			{
-				me->lvSummary->SetSubItem(i, 2, L"-");
-				me->lvSummary->SetSubItem(i, 3, L"-");
-				me->lvSummary->SetSubItem(i, 4, L"-");
-				me->lvSummary->SetSubItem(i, 5, L"-");
-				me->lvSummary->SetSubItem(i, 6, L"-");
-				me->lvSummary->SetSubItem(i, 7, L"-");
-				me->lvSummary->SetSubItem(i, 8, L"-");
-				me->lvSummary->SetSubItem(i, 9, L"-");
+				me->lvSummary->SetSubItem(i, 2, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 3, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 4, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 5, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 6, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 7, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 8, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 9, (const UTF8Char*)"-");
 			}
 		}
 		Manage::Process::FindProcessClose(sess);
@@ -177,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 			t = me->clk->GetAndRestart();
 			if (t > 0)
 			{
-				v[0] = (kernelTime.DiffMS(me->lastKernelTime) + userTime.DiffMS(me->lastUserTime)) / t / 10.0 / me->threadCnt;
+				v[0] = (Double)(kernelTime.DiffMS(me->lastKernelTime) + userTime.DiffMS(me->lastUserTime)) / t / 10.0 / Math::UOSInt2Double(me->threadCnt);
 				me->rlcDetChartCPU->AddSample(v);
 				me->lastKernelTime->SetValue(&kernelTime);
 				me->lastUserTime->SetValue(&userTime);
@@ -189,11 +190,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 		UOSInt pageFile;
 		if (proc.GetMemoryInfo(0, &workingSet, &pagePool, &nonPagePool, &pageFile))
 		{
-			v[0] = Math::OSInt2Double(pagePool);
-			v[1] = Math::OSInt2Double(nonPagePool);
+			v[0] = Math::UOSInt2Double(pagePool);
+			v[1] = Math::UOSInt2Double(nonPagePool);
 			me->rlcDetChartPage->AddSample(v);
-			v[0] = Math::OSInt2Double(workingSet);
-			v[1] = Math::OSInt2Double(pageFile);
+			v[0] = Math::UOSInt2Double(workingSet);
+			v[1] = Math::UOSInt2Double(pageFile);
 			me->rlcDetChartWS->AddSample(v);
 		}
 		v[0] = proc.GetGDIObjCount();
@@ -218,7 +219,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(void *user
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	Int32 threadId = (Int32)(OSInt)me->lvDetThread->GetItem(index);
+	UInt32 threadId = (UInt32)(UOSInt)me->lvDetThread->GetItem((UOSInt)index);
 	SSWR::AVIRead::AVIRThreadInfoForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRThreadInfoForm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId));
 	frm->ShowDialog(me);
@@ -245,10 +246,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 	if (i < 0)
 		return;
 	Text::StringBuilderUTF8 sb;
-	OSInt addr = (OSInt)me->lvDetHeap->GetItem(i);
+	UOSInt addr = (UOSInt)me->lvDetHeap->GetItem((UOSInt)i);
 	UOSInt size;
-	me->lvDetHeap->GetSubItem(i, 1, &sb);
-	size = sb.ToInt32();
+	me->lvDetHeap->GetSubItem((UOSInt)i, 1, &sb);
+	size = 0;
+	sb.ToUOSInt(&size);
 	Manage::Process proc(me->currProc, false);
 	UInt8 buff[512];
 	if (size <= 512)
@@ -303,7 +305,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 			{
 				Text::StrHexValOS(sbuff, addr);
 				this->lvDetModule->SetSubItem(k, 1, sbuff);
-				Text::StrHexVal32(sbuff, size);
+				Text::StrHexValOS(sbuff, size);
 				this->lvDetModule->SetSubItem(k, 2, sbuff);
 			}
 			DEL_CLASS(module);
@@ -326,7 +328,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		UTF8Char sbuff[512];
 		UOSInt i;
 		UOSInt j;
-		OSInt k;
+		UOSInt k;
 		OSInt l;
 		UInt64 addr;
 
@@ -337,7 +339,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		while (i < j)
 		{
 			t = threadList.GetItem(i);
-			Text::StrOSInt(sbuff, t->GetThreadId());
+			Text::StrUOSInt(sbuff, t->GetThreadId());
 			k = this->lvDetThread->AddItem(sbuff, (void*)(OSInt)t->GetThreadId(), 0);
 			addr = t->GetStartAddress();
 			Text::StrHexVal64(sbuff, addr);
@@ -455,7 +457,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->procList, Data::ArrayList<ProcessInfo*>());
-	NEW_CLASS(this->procIds, Data::ArrayListInt32());
+	NEW_CLASS(this->procIds, Data::ArrayListUInt32());
 	this->currProc = 0;
 	this->currProcObj = 0;
 	this->currProcRes = 0;

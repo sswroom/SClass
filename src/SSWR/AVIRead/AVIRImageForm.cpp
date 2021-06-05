@@ -51,11 +51,11 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		if (xPos < 0)
 			xPos = 0;
 		else if ((UOSInt)xPos >= me->currImg->info->dispWidth)
-			xPos = me->currImg->info->dispWidth - 1;
+			xPos = (OSInt)me->currImg->info->dispWidth - 1;
 		if (yPos < 0)
 			yPos = 0;
 		else if ((UOSInt)yPos >= me->currImg->info->dispHeight)
-			yPos = me->currImg->info->dispHeight - 1;
+			yPos = (OSInt)me->currImg->info->dispHeight - 1;
 		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16);
 		sb.Append((const UTF8Char*)"(x, y) = (");
 		sb.AppendOSInt(xPos);
@@ -69,28 +69,28 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			switch (xPos & 7)
 			{
 			case 0:
-				i = pixel[0] >> 7;
+				i = (UInt8)(pixel[0] >> 7);
 				break;
 			case 1:
-				i = (pixel[0] >> 6) & 1;
+				i = (UInt8)((pixel[0] >> 6) & 1);
 				break;
 			case 2:
-				i = (pixel[0] >> 5) & 1;
+				i = (UInt8)((pixel[0] >> 5) & 1);
 				break;
 			case 3:
-				i = (pixel[0] >> 4) & 1;
+				i = (UInt8)((pixel[0] >> 4) & 1);
 				break;
 			case 4:
-				i = (pixel[0] >> 3) & 1;
+				i = (UInt8)((pixel[0] >> 3) & 1);
 				break;
 			case 5:
-				i = (pixel[0] >> 2) & 1;
+				i = (UInt8)((pixel[0] >> 2) & 1);
 				break;
 			case 6:
-				i = (pixel[0] >> 1) & 1;
+				i = (UInt8)((pixel[0] >> 1) & 1);
 				break;
 			case 7:
-				i = pixel[0] & 1;
+				i = (UInt8)(pixel[0] & 1);
 				break;
 			}
 			sb.Append((const UTF8Char*)", I");
@@ -116,16 +116,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			switch (xPos & 3)
 			{
 			case 0:
-				i = pixel[0] >> 6;
+				i = (UInt8)(pixel[0] >> 6);
 				break;
 			case 1:
-				i = (pixel[0] >> 4) & 3;
+				i = (UInt8)((pixel[0] >> 4) & 3);
 				break;
 			case 2:
-				i = (pixel[0] >> 2) & 3;
+				i = (UInt8)((pixel[0] >> 2) & 3);
 				break;
 			case 3:
-				i = pixel[0] & 3;
+				i = (UInt8)(pixel[0] & 3);
 				break;
 			}
 			sb.Append((const UTF8Char*)", I");
@@ -151,10 +151,10 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			switch (xPos & 1)
 			{
 			case 0:
-				i = pixel[0] >> 4;
+				i = (UInt8)(pixel[0] >> 4);
 				break;
 			case 1:
-				i = pixel[0] & 15;
+				i = (UInt8)(pixel[0] & 15);
 				break;
 			}
 			sb.Append((const UTF8Char*)", I");
@@ -200,36 +200,36 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			switch (xPos & 7)
 			{
 			case 0:
-				i = pixel[0] >> 7;
-				a = pixel[1] >> 7;
+				i = (UInt8)(pixel[0] >> 7);
+				a = (UInt8)(pixel[1] >> 7);
 				break;
 			case 1:
-				i = (pixel[0] >> 6) & 1;
-				a = (pixel[1] >> 6) & 1;
+				i = (UInt8)((pixel[0] >> 6) & 1);
+				a = (UInt8)((pixel[1] >> 6) & 1);
 				break;
 			case 2:
-				i = (pixel[0] >> 5) & 1;
-				a = (pixel[1] >> 5) & 1;
+				i = (UInt8)((pixel[0] >> 5) & 1);
+				a = (UInt8)((pixel[1] >> 5) & 1);
 				break;
 			case 3:
-				i = (pixel[0] >> 4) & 1;
-				a = (pixel[1] >> 4) & 1;
+				i = (UInt8)((pixel[0] >> 4) & 1);
+				a = (UInt8)((pixel[1] >> 4) & 1);
 				break;
 			case 4:
-				i = (pixel[0] >> 3) & 1;
-				a = (pixel[1] >> 3) & 1;
+				i = (UInt8)((pixel[0] >> 3) & 1);
+				a = (UInt8)((pixel[1] >> 3) & 1);
 				break;
 			case 5:
-				i = (pixel[0] >> 2) & 1;
-				a = (pixel[1] >> 2) & 1;
+				i = (UInt8)((pixel[0] >> 2) & 1);
+				a = (UInt8)((pixel[1] >> 2) & 1);
 				break;
 			case 6:
-				i = (pixel[0] >> 1) & 1;
-				a = (pixel[1] >> 1) & 1;
+				i = (UInt8)((pixel[0] >> 1) & 1);
+				a = (UInt8)((pixel[1] >> 1) & 1);
 				break;
 			case 7:
-				i = pixel[0] & 1;
-				a = pixel[1] & 1;
+				i = (UInt8)(pixel[0] & 1);
+				a = (UInt8)(pixel[1] & 1);
 				break;
 			}
 			sb.Append((const UTF8Char*)", I");
@@ -255,43 +255,43 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			switch (xPos & 3)
 			{
 			case 0:
-				i = pixel[0] >> 6;
+				i = (UInt8)(pixel[0] >> 6);
 				break;
 			case 1:
-				i = (pixel[0] >> 4) & 3;
+				i = (UInt8)((pixel[0] >> 4) & 3);
 				break;
 			case 2:
-				i = (pixel[0] >> 2) & 3;
+				i = (UInt8)((pixel[0] >> 2) & 3);
 				break;
 			case 3:
-				i = pixel[0] & 3;
+				i = (UInt8)(pixel[0] & 3);
 				break;
 			}
 			switch (xPos & 7)
 			{
 			case 0:
-				a = pixel[1] >> 7;
+				a = (UInt8)(pixel[1] >> 7);
 				break;
 			case 1:
-				a = (pixel[1] >> 6) & 1;
+				a = (UInt8)((pixel[1] >> 6) & 1);
 				break;
 			case 2:
-				a = (pixel[1] >> 5) & 1;
+				a = (UInt8)((pixel[1] >> 5) & 1);
 				break;
 			case 3:
-				a = (pixel[1] >> 4) & 1;
+				a = (UInt8)((pixel[1] >> 4) & 1);
 				break;
 			case 4:
-				a = (pixel[1] >> 3) & 1;
+				a = (UInt8)((pixel[1] >> 3) & 1);
 				break;
 			case 5:
-				a = (pixel[1] >> 2) & 1;
+				a = (UInt8)((pixel[1] >> 2) & 1);
 				break;
 			case 6:
-				a = (pixel[1] >> 1) & 1;
+				a = (UInt8)((pixel[1] >> 1) & 1);
 				break;
 			case 7:
-				a = pixel[1] & 1;
+				a = (UInt8)(pixel[1] & 1);
 				break;
 			}
 			sb.Append((const UTF8Char*)", I");
@@ -317,37 +317,37 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			switch (xPos & 1)
 			{
 			case 0:
-				i = pixel[0] >> 4;
+				i = (UInt8)(pixel[0] >> 4);
 				break;
 			case 1:
-				i = pixel[0] & 15;
+				i = (UInt8)(pixel[0] & 15);
 				break;
 			}
 			switch (xPos & 7)
 			{
 			case 0:
-				a = pixel[1] >> 7;
+				a = (UInt8)(pixel[1] >> 7);
 				break;
 			case 1:
-				a = (pixel[1] >> 6) & 1;
+				a = (UInt8)((pixel[1] >> 6) & 1);
 				break;
 			case 2:
-				a = (pixel[1] >> 5) & 1;
+				a = (UInt8)((pixel[1] >> 5) & 1);
 				break;
 			case 3:
-				a = (pixel[1] >> 4) & 1;
+				a = (UInt8)((pixel[1] >> 4) & 1);
 				break;
 			case 4:
-				a = (pixel[1] >> 3) & 1;
+				a = (UInt8)((pixel[1] >> 3) & 1);
 				break;
 			case 5:
-				a = (pixel[1] >> 2) & 1;
+				a = (UInt8)((pixel[1] >> 2) & 1);
 				break;
 			case 6:
-				a = (pixel[1] >> 1) & 1;
+				a = (UInt8)((pixel[1] >> 1) & 1);
 				break;
 			case 7:
-				a = pixel[1] & 1;
+				a = (UInt8)(pixel[1] & 1);
 				break;
 			}
 			sb.Append((const UTF8Char*)", I");
@@ -526,7 +526,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.Append((const UTF8Char*)", T = ");
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(Math::UOSInt2Double(imgX / me->currImg->info->dispWidth), imgY / Math::UOSInt2Double(me->currImg->info->dispHeight)));
+			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / Math::UOSInt2Double(me->currImg->info->dispWidth), imgY / Math::UOSInt2Double(me->currImg->info->dispHeight)));
 		}
 		sb.Append((const UTF8Char*)", RGB(");
 		Text::SBAppendF64(&sb, dR);
@@ -552,7 +552,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 		const UInt8 *iccBuff = me->currImg->info->color->rawICC;
 		if (iccBuff)
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, ReadMInt32(iccBuff));
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, ReadMUInt32(iccBuff));
 			if (icc)
 			{
 				SSWR::AVIRead::AVIRICCInfoForm *frm;
@@ -571,7 +571,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 		Text::StringBuilderUTF8 sb;
 		this->currImg->ToString(&sb);
 		sb.Append((const UTF8Char*)"\r\nDelay: ");
-		sb.AppendI32(this->currImgDelay);
+		sb.AppendU32(this->currImgDelay);
 		if (this->imgList)
 		{
 			sb.Append((const UTF8Char*)"\r\n");

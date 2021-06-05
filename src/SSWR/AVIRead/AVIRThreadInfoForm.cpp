@@ -17,10 +17,11 @@
 void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
-	OSInt i = me->lbMyStack->GetSelectedIndex();
-	const UTF8Char *s = me->stacks->GetItem(i);
-	const UTF8Char *sMem = me->stacksMem->GetItem(i);
-	OSInt slen;
+	OSInt si = me->lbMyStack->GetSelectedIndex();
+	UOSInt i;
+	const UTF8Char *s = me->stacks->GetItem((UOSInt)si);
+	const UTF8Char *sMem = me->stacksMem->GetItem((UOSInt)si);
+	UOSInt slen;
 	UTF8Char *sbuff;
 	UTF8Char *sline[2];
 	UTF8Char *sarr[18];
@@ -105,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 	OSInt i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
-	me->lvMyStack->GetSubItem(index, 3, &sb);
+	me->lvMyStack->GetSubItem((UOSInt)index, 3, &sb);
 	if (sb.StartsWith((const UTF8Char*)"call 0x"))
 	{
 		Text::StrConcatS(sbuff, sb.ToString() + 7, 17);
@@ -123,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 	}
 }
 
-SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
 	this->SetText((const UTF8Char*)"Thread Info");
@@ -194,18 +195,18 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	Manage::ThreadContext *context;
 	UTF8Char sbuff[512];
 	UInt64 startAddr;
-	OSInt i;
+	OSInt si;
 	OSInt j;
 	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
 
 	startAddr = thread->GetStartAddress();
-	Text::StrInt32(sbuff, threadId);
+	Text::StrUInt32(sbuff, threadId);
 	this->txtThreadId->SetText(sbuff);
 	Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(sbuff);
 	symbol->ResolveName(sbuff, startAddr);
-	i = Text::StrLastIndexOf(sbuff, '\\');
-	this->txtStartName->SetText(&sbuff[i + 1]);
+	si = Text::StrLastIndexOf(sbuff, '\\');
+	this->txtStartName->SetText(&sbuff[si + 1]);
 
 	if (thread->IsCurrThread())
 	{
@@ -214,7 +215,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	{
 		Manage::StackTracer *tracer;
 		UInt64 currAddr;
-		OSInt callLev;
+		UOSInt callLev;
+		UOSInt i;
 		thread->Suspend();
 		context = thread->GetThreadContext();
 		NEW_CLASS(tracer, Manage::StackTracer(context));
@@ -330,7 +332,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			UInt64 rsp;
 			UInt64 rbp;
 			UInt8 buff[256];
-			OSInt buffSize;
+			UOSInt buffSize;
 			Bool ret;
 			Data::ArrayListUInt64 *callAddrs;
 			Data::ArrayListUInt64 *jmpAddrs;
@@ -379,8 +381,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendHex64(rip);
 				sb.Append((const UTF8Char*)" ");
 				symbol->ResolveName(sbuff, rip);
-				i  = Text::StrLastIndexOf(sbuff, '\\');
-				sb.Append(&sbuff[i + 1]);
+				si  = Text::StrLastIndexOf(sbuff, '\\');
+				sb.Append(&sbuff[si + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"RIP = 0x");
@@ -428,7 +430,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			UInt32 bitCnt;
 			UOSInt i;
 			UOSInt j;
-			OSInt k;
+			UOSInt k;
 			i = 0;
 			j = context->GetRegisterCnt();
 			while (i < j)
@@ -447,22 +449,22 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				}
 				else if (bitCnt == 32)
 				{
-					Text::StrHexVal32(sbuff, ReadInt32(buff));
+					Text::StrHexVal32(sbuff, ReadUInt32(buff));
 					this->lvContext->SetSubItem(k, 1, sbuff);
 				}
 				else if (bitCnt == 64)
 				{
-					Text::StrHexVal64(sbuff, ReadInt64(buff));
+					Text::StrHexVal64(sbuff, ReadUInt64(buff));
 					this->lvContext->SetSubItem(k, 1, sbuff);
 				}
 				else if (bitCnt == 128)
 				{
-					Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadInt64(buff)), ReadInt64(&buff[8]));
+					Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadUInt64(buff)), ReadUInt64(&buff[8]));
 					this->lvContext->SetSubItem(k, 1, sbuff);
 				}
 				else if (bitCnt == 80)
 				{
-					Text::StrDouble(sbuff, *(LDouble*)&buff[0]);
+					Text::StrDouble(sbuff, (Double)*(LDouble*)&buff[0]);
 					this->lvContext->SetSubItem(k, 1, sbuff);
 				}
 				else

@@ -16,11 +16,11 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Int64 recvSize;
-			Int64 sendSize;
+			UInt64 recvSize;
+			UInt64 sendSize;
 			Double lastTime;
-			Int64 lastRecvSize;
-			Int64 lastSendSize;
+			UInt64 lastRecvSize;
+			UInt64 lastSendSize;
 			Manage::HiResClock *clk;
 			Net::TCPClient *cli;
 			Sync::Mutex *cliMut;

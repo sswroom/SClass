@@ -10,7 +10,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
-	OSInt newStyle = me->env->AddLineStyle();
+	UOSInt newStyle = me->env->AddLineStyle();
 
 	SSWR::AVIRead::AVIRGISLineEditForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineEditForm(0, me->ui, me->core, me->env, me->eng, newStyle));

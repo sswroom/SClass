@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
 	UOSInt cnt = macArr->GetCount();
 	Net::MACInfo::MACEntry *ent = macArr->GetItem((irand >> 24) % cnt);
 	iMAC = (ent->rangeStart & 0xffffff000000) | (irand & 0xffffff);
-	WriteMInt64(macBuff, iMAC);
+	WriteMUInt64(macBuff, iMAC);
 	Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
 	me->txtColonFormat->SetText(sbuff);
 	Text::StrHexBytes(sbuff, &macBuff[2], 6, 0);

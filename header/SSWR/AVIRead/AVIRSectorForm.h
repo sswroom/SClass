@@ -20,7 +20,7 @@ namespace SSWR
 			IO::ISectorData *data;
 
 			UInt8 *sectorData;
-			OSInt sectorSize;
+			UOSInt sectorSize;
 
 			static void __stdcall OnParseClicked(void *userObj);
 		public:
@@ -29,6 +29,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

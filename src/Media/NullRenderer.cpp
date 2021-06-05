@@ -184,7 +184,7 @@ void Media::NullRenderer::SetBufferTime(UInt32 ms)
 	this->buffTime = ms;
 }
 
-Int64 Media::NullRenderer::GetSampleCnt()
+UInt64 Media::NullRenderer::GetSampleCnt()
 {
 	return this->sampleCnt;
 }

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 
-extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, OSInt buffSize, Int32 vol)
+extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)
 {
 	Int32 v;
 	while (buffSize-- > 0)
@@ -19,7 +19,7 @@ extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, OSInt buffSize, Int32 vol)
 	}
 }
 
-extern "C" void AudioUtil_Amplify16(UInt8 *audioBuff, OSInt buffSize, Int32 vol)
+extern "C" void AudioUtil_Amplify16(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)
 {
 	Int64 v;
 	while (buffSize > 0)

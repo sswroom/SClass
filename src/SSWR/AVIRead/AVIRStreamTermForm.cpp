@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(void *userObj)
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
-		OSInt size;
+		UOSInt size;
 		me->txtSendValue->GetText(&sb);
 		if (me->radSendText->IsSelected())
 		{
@@ -130,7 +130,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
 	UInt8 buff[2048];
-	OSInt recvSize;
+	UOSInt recvSize;
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{

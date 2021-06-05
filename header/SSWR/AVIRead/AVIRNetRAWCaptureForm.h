@@ -18,8 +18,8 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
 			Net::RAWCapture *capture;
-			Int64 currCnt;
-			Int64 currDataSize;
+			UInt64 currCnt;
+			UInt64 currDataSize;
 
 			UI::GUILabel *lblIP;
 			UI::GUIComboBox *cboIP;
@@ -48,6 +48,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(void *userObj)
 	if (me->states)
 	{
 		Bool isHigh;
-		UInt16 pinMode;
+		UOSInt pinMode;
 		UOSInt i = 0;
 		UOSInt j = me->ctrl->GetPinCount();
 		while (i < j)
@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(UI::GUIClientControl *pare
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Pin ");
 		while (i < j)
 		{
-			Text::StrOSInt(sptr, i);
+			Text::StrUOSInt(sptr, i);
 			this->lvStatus->AddItem(sbuff, 0);
 			this->states[i].pinMode = this->ctrl->GetPinMode(i);
 			this->states[i].isHigh = this->ctrl->IsPinHigh(i);

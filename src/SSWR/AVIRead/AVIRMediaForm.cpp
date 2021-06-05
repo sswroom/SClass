@@ -514,8 +514,8 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt cropTop;
 			UOSInt cropRight;
 			UOSInt cropBottom;
-			OSInt vw;
-			OSInt vh;
+			UOSInt vw;
+			UOSInt vh;
 			UInt32 tmpV;
 
 			if (this->currDecoder)
@@ -542,11 +542,11 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			}
 			if (info.par2 > 1)
 			{
-				vh = Math::Double2Int32(vh * info.par2);
+				vh = (UOSInt)Math::Double2Int32(vh * info.par2);
 			}
 			else
 			{
-				vw = Math::Double2Int32(vw / info.par2);
+				vw = (UOSInt)Math::Double2Int32(vw / info.par2);
 			}
 
 			this->SetFormState(UI::GUIForm::FS_NORMAL);
@@ -592,7 +592,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Media::IVideoSource *video;
 				UTF8Char sbuff[40];
-				OSInt j;
+				UOSInt j;
 				IO::FileStream *fs;
 				Text::UTF8Writer *writer;
 				video = (Media::IVideoSource*)this->popMedia;
@@ -603,7 +603,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				if (j >= 0)
 				{
 					i = 0;
-					while ((OSInt)i < j)
+					while (i < j)
 					{
 						Text::StrUInt32(sbuff, video->GetFrameTime(i));
 						writer->WriteLine(sbuff);

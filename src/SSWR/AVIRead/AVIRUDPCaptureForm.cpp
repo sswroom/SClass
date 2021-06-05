@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, O
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
-	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem(index);
+	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem((UOSInt)index);
 	if (port != 0)
 	{
 		Text::StrUInt16(sbuff, port);
@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(const Net::SocketU
 		MemFree(me->packets[me->packetCurr].buff);
 	}
 	me->packets[me->packetCurr].buff = MemAlloc(UInt8, dataSize);
-	me->packets[me->packetCurr].buffSize = (Int32)dataSize;
+	me->packets[me->packetCurr].buffSize = (UInt32)dataSize;
 	MemCopyNO(me->packets[me->packetCurr].buff, buff, dataSize);
 	me->packets[me->packetCurr].addr = *addr;
 	me->packets[me->packetCurr].port = port;

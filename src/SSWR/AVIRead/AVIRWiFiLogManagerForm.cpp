@@ -52,15 +52,15 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
-	SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log = (SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry*)me->logList->GetItem(index);
+	SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log = (SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry*)me->logList->GetItem((UOSInt)index);
 	if (log == 0)
 		return;
-	OSInt i = me->DataGetIndex(log->macInt);
+	OSInt si = me->DataGetIndex(log->macInt);
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::DataEntry *entry = 0;
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
-	if (i >= 0)
+	if (si >= 0)
 	{
-		entry = me->dataList->GetItem(i);
+		entry = me->dataList->GetItem((UOSInt)si);
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
 	}
 	else
@@ -80,11 +80,12 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 			entry->rangeFrom = log->macInt & 0xffffff000000;
 			entry->rangeTo = entry->rangeFrom | 0xffffff;
 			entry->name = frm->GetNameNew();
-			me->dataList->Insert(~i, entry);
+			me->dataList->Insert((UOSInt)~si, entry);
 			me->UpdateStatus();
 		}
 
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = me->logList->GetCount();
 		while (i < j)
@@ -137,7 +138,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 		OSInt k;
 		SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
-		Int64 iMAC;
+		UInt64 iMAC;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		buff[0] = 0;
@@ -155,7 +156,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 					buff[5] = Text::StrHex2Byte(sarr2[3]);
 					buff[6] = Text::StrHex2Byte(sarr2[4]);
 					buff[7] = Text::StrHex2Byte(sarr2[5]);
-					iMAC = ReadMInt64(buff);
+					iMAC = ReadMUInt64(buff);
 					log = this->LogGet(iMAC);
 					if (log)
 					{
@@ -214,11 +215,11 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 							sarr2[1] = sarr[9];
 							if (sarr2[1][0])
 							{
-								Int64 iMAC;
+								UInt64 iMAC;
 								while (true)
 								{
 									j = Text::StrSplit(sarr2, 2, sarr2[1], ',');
-									iMAC = Text::StrHex2Int64(sarr2[0]);
+									iMAC = Text::StrHex2UInt64(sarr2[0]);
 									k = 0;
 									while (k < 20)
 									{
@@ -246,7 +247,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 						}
 						if (i >= 11)
 						{
-							Int32 ieLen = (Int32)(Text::StrCharCnt(sarr[10]) >> 1);
+							UInt32 ieLen = (UInt32)(Text::StrCharCnt(sarr[10]) >> 1);
 							if (ieLen > log->ieLen)
 							{
 								log->ieLen = ieLen;
@@ -316,15 +317,15 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 								j = 0;
 								while (Text::StrSplit(sarr2, 2, sarr2[1], ',') == 2)
 								{
-									log->neighbour[j] = Text::StrHex2Int64(sarr2[0]);
+									log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
 									j++;
 								}
-								log->neighbour[j] = Text::StrHex2Int64(sarr2[0]);
+								log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
 							}
 						}
 						if (i >= 11)
 						{
-							log->ieLen = (Int32)(Text::StrCharCnt(sarr[10]) >> 1);
+							log->ieLen = (UInt32)(Text::StrCharCnt(sarr[10]) >> 1);
 							if (log->ieLen > 0)
 							{
 								log->ieBuff = MemAlloc(UInt8, log->ieLen);
@@ -363,9 +364,9 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 	Text::UTF8Writer *writer;
 	IO::WriteCacheStream *cstm;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log;
 	Bool succ = false;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -445,7 +446,7 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogClear()
 {
-	OSInt i = this->logList->GetCount();
+	UOSInt i = this->logList->GetCount();
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log;
 	while (i-- > 0)
 	{
@@ -464,18 +465,18 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogClear()
 	this->logList->Clear();
 }
 
-SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *SSWR::AVIRead::AVIRWiFiLogManagerForm::LogGet(Int64 iMAC)
+SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *SSWR::AVIRead::AVIRWiFiLogManagerForm::LogGet(UInt64 iMAC)
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log;
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	i = 0;
-	j = this->logList->GetCount() - 1;
+	j = (OSInt)this->logList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList->GetItem(k);
+		log = this->logList->GetItem((UOSInt)k);
 		if (iMAC > log->macInt)
 		{
 			i = k + 1;
@@ -499,11 +500,11 @@ OSInt SSWR::AVIRead::AVIRWiFiLogManagerForm::LogInsert(SSWR::AVIRead::AVIRWiFiLo
 	OSInt j;
 	OSInt k;
 	i = 0;
-	j = this->logList->GetCount() - 1;
+	j = (OSInt)this->logList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList->GetItem(k);
+		log = this->logList->GetItem((UOSInt)k);
 		if (newLog->macInt > log->macInt)
 		{
 			i = k + 1;
@@ -514,11 +515,11 @@ OSInt SSWR::AVIRead::AVIRWiFiLogManagerForm::LogInsert(SSWR::AVIRead::AVIRWiFiLo
 		}
 		else
 		{
-			this->logList->Insert(k, newLog);
+			this->logList->Insert((UOSInt)k, newLog);
 			return k;
 		}
 	}
-	this->logList->Insert(i, newLog);
+	this->logList->Insert((UOSInt)i, newLog);
 	return i;
 }
 
@@ -527,10 +528,10 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::DataEntry *entry;
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileEntry *log;
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt k;
-	OSInt cnt;
+	UOSInt cnt;
 	this->lvContent->ClearItems();
 	i = 0;
 	j = this->logList->GetCount();
@@ -542,7 +543,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		k = this->DataGetIndex(log->macInt);
 		if (k >= 0)
 		{
-			entry = this->dataList->GetItem(k);
+			entry = this->dataList->GetItem((UOSInt)k);
 			this->lvContent->SetSubItem(i, 1, entry->name);
 		}
 		else
@@ -576,24 +577,24 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				cnt++;
 			k++;
 		}
-		Text::StrOSInt(sbuff, cnt);
+		Text::StrUOSInt(sbuff, cnt);
 		this->lvContent->SetSubItem(i, 12, sbuff);
 		i++;
 	}
 }
 
-OSInt SSWR::AVIRead::AVIRWiFiLogManagerForm::DataGetIndex(Int64 macInt)
+OSInt SSWR::AVIRead::AVIRWiFiLogManagerForm::DataGetIndex(UInt64 macInt)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	SSWR::AVIRead::AVIRWiFiLogManagerForm::DataEntry *entry;
 	i = 0;
-	j = this->dataList->GetCount() - 1;
+	j = (OSInt)this->dataList->GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = this->dataList->GetItem(k);
+		entry = this->dataList->GetItem((UOSInt)k);
 		if (entry->rangeFrom > macInt)
 		{
 			j = k - 1;
@@ -641,8 +642,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::DataLoad()
 						sarr[1][Text::StrCharCnt(sarr[1]) - 2] = 0;
 					}
 					entry = MemAlloc(SSWR::AVIRead::AVIRWiFiLogManagerForm::DataEntry, 1);
-					entry->rangeFrom = Text::StrToInt64(sarr[0]);
-					entry->rangeTo = Text::StrToInt64(sarr[1]);
+					entry->rangeFrom = Text::StrToUInt64(sarr[0]);
+					entry->rangeTo = Text::StrToUInt64(sarr[1]);
 					sarr[2][Text::StrCharCnt(sarr[2]) - 3] = 0;
 					entry->name = Text::StrCopyNew(&sarr[2][1]);
 					this->dataList->Add(entry);

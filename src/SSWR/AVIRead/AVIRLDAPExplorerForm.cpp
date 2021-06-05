@@ -241,7 +241,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userOb
 	{
 		UOSInt i;
 		UOSInt j;
-		OSInt k;
+		UOSInt k;
 		Net::LDAPClient::SearchResItem *item;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
@@ -265,7 +265,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userOb
 	OSInt i = me->lbObjects->GetSelectedIndex();
 	if (i < 0)
 		return;
-	me->lbObjects->GetItemText(sbuff, i);
+	me->lbObjects->GetItemText(sbuff, (UOSInt)i);
 	if (Text::StrEquals(sbuff, (const UTF8Char*)"."))
 	{
 		i = me->lbPath->GetSelectedIndex();

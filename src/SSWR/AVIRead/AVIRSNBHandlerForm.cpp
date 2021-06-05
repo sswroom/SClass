@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	DEL_CLASS(fd);
 	if (imgList)
 	{
-		Int32 delay;
+		UInt32 delay;
 		imgList->ToStaticImage(0);
 		me->simg = imgList;
 		me->pbImage->SetImage((Media::StaticImage*)imgList->GetImage(0, &delay));
@@ -73,9 +73,9 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pbImage, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), false, true));
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	OSInt i = 0;
-	OSInt j = IO::SNBDongle::HT_LAST;
-	OSInt k;
+	UOSInt i = 0;
+	UOSInt j = IO::SNBDongle::HT_LAST;
+	UOSInt k;
 	while (i <= j)
 	{
 		k = this->cboType->AddItem(IO::SNBDongle::GetHandleName((IO::SNBDongle::HandleType)i), (void*)i);

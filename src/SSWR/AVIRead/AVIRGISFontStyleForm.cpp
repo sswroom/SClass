@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm*)userObj;
-	OSInt newStyle = me->env->AddFontStyle(0, (const UTF8Char*)"Arial", 12, false, 0xff000000, 0, 0xff000000);
+	UOSInt newStyle = me->env->AddFontStyle(0, (const UTF8Char*)"Arial", 12, false, 0xff000000, 0, 0xff000000);
 
 	SSWR::AVIRead::AVIRGISFontEditForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontEditForm(0, me->ui, me->core, me->env, me->eng, newStyle));

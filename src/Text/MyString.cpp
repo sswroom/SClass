@@ -293,16 +293,45 @@ Char *Text::StrUInt32(Char *oriStr, UInt32 val)
 	return oriStr;
 }
 
-Char *Text::StrInt32S(Char *oriStr, Int32 val, Char seperator, OSInt sepCnt)
+Char *Text::StrInt32S(Char *oriStr, Int32 val, Char seperator, UOSInt sepCnt)
 {
 	Char buff[20];
 	Char *str;
-	OSInt i;
+	UOSInt i;
 	if (val < 0)
 	{
 		val = -val;
 		*oriStr++ = '-';
 	}
+	str = &buff[20];
+	if (val == 0)
+		*--str = 0x30;
+	i = sepCnt;
+	while (val)
+	{
+		if (i == 0)
+		{
+			i = sepCnt;
+			*--str = seperator;
+		}
+		*--str = (Char)(0x30 + val % 10);
+		val = val / 10;
+		i--;
+	}
+	while (str < &buff[20])
+	{
+		*oriStr++ = *str++;
+	}
+	*oriStr = 0;
+	return oriStr;
+}
+
+
+Char *Text::StrUInt32S(Char *oriStr, UInt32 val, Char seperator, UOSInt sepCnt)
+{
+	Char buff[20];
+	Char *str;
+	UOSInt i;
 	str = &buff[20];
 	if (val == 0)
 		*--str = 0x30;
@@ -412,16 +441,44 @@ Char *Text::StrUInt64(Char *oriStr, UInt64 val)
 	return oriStr;
 }
 
-Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, OSInt sepCnt)
+Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 {
 	Char buff[40];
 	Char *str;
-	OSInt i;
+	UOSInt i;
 	if (val < 0)
 	{
 		val = -val;
 		*oriStr++ = '-';
 	}
+	str = &buff[40];
+	if (val == 0)
+		*--str = 0x30;
+	i = sepCnt;
+	while (val)
+	{
+		if (i == 0)
+		{
+			i = sepCnt;
+			*--str = seperator;
+		}
+		*--str = (Char)(0x30 + val % 10);
+		val = val / 10;
+		i--;
+	}
+	while (str < &buff[40])
+	{
+		*oriStr++ = *str++;
+	}
+	*oriStr = 0;
+	return oriStr;
+}
+
+Char *Text::StrInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
+{
+	Char buff[40];
+	Char *str;
+	UOSInt i;
 	str = &buff[40];
 	if (val == 0)
 		*--str = 0x30;
@@ -536,7 +593,7 @@ Char *Text::StrUInt64(Char *oriStr, UInt64 val)
 	return oriStr;
 }
 
-Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, OSInt sepCnt)
+Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 {
 	Char buff[40];
 	Char *str;
@@ -546,6 +603,34 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, OSInt sepCnt)
 		val = -val;
 		*oriStr++ = '-';
 	}
+	str = &buff[40];
+	if (val == 0)
+		*--str = 0x30;
+	i = sepCnt;
+	while (val)
+	{
+		if (i == 0)
+		{
+			i = sepCnt;
+			*--str = seperator;
+		}
+		*--str = (Char)(0x30 + val % 10);
+		val = val / 10;
+		i--;
+	}
+	while (str < &buff[40])
+	{
+		*oriStr++ = *str++;
+	}
+	*oriStr = 0;
+	return oriStr;
+}
+
+Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
+{
+	Char buff[40];
+	Char *str;
+	UOSInt i;
 	str = &buff[40];
 	if (val == 0)
 		*--str = 0x30;
@@ -688,7 +773,7 @@ Bool Text::StrEqualsICase(const Char *str1, const Char *str2)
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsICase(const Char *str1, const Char *str2, OSInt str2Len)
+Bool Text::StrEqualsICase(const Char *str1, const Char *str2, UOSInt str2Len)
 {
 	Char c1;
 	Char c2;

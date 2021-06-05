@@ -58,11 +58,11 @@ namespace SSWR
 			static void __stdcall OnMyStackChg(void *userObj);
 			static void __stdcall OnMyStackDblClk(void *userObj, OSInt index);
 		public:
-			AVIRThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
+			AVIRThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId);
 			virtual ~AVIRThreadInfoForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

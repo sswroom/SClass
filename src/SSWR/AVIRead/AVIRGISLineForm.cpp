@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, OSI
 	UTF8Char sbuff[16];
 	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
 	Text::StrOSInt(sbuff, newPos);
-	me->lineThick = newPos;
+	me->lineThick = (UOSInt)newPos;
 	me->lblThickV->SetText(sbuff);
 	me->UpdatePreview();
 }
@@ -66,7 +66,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	this->pbPreview->SetImage(this->prevImg);
 }
 
-SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, OSInt lineThick, Int32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
 	UTF8Char sbuff[16];
 	this->core = core;
@@ -93,10 +93,10 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Thick"));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlMain, 16));
-	this->hsbThick->InitScrollBar(0, 60, this->lineThick, 10);
+	this->hsbThick->InitScrollBar(0, 60, (OSInt)this->lineThick, 10);
 	this->hsbThick->SetRect(104, 4, 150, 20, false);
 	this->hsbThick->HandlePosChanged(OnThickChanged, this);
-	Text::StrOSInt(sbuff, this->lineThick);
+	Text::StrUOSInt(sbuff, this->lineThick);
 	NEW_CLASS(this->lblThickV, UI::GUILabel(ui, this->pnlMain, sbuff));
 	this->lblThickV->SetRect(254, 4, 100, 23, false);
 	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Color"));
@@ -145,12 +145,12 @@ void SSWR::AVIRead::AVIRGISLineForm::RGBParamChanged(const Media::IColorHandler:
 	this->UpdatePreview();
 }
 
-OSInt SSWR::AVIRead::AVIRGISLineForm::GetLineThick()
+UOSInt SSWR::AVIRead::AVIRGISLineForm::GetLineThick()
 {
 	return this->lineThick;
 }
 
-Int32 SSWR::AVIRead::AVIRGISLineForm::GetLineColor()
+UInt32 SSWR::AVIRead::AVIRGISLineForm::GetLineColor()
 {
 	return this->lineColor;
 }

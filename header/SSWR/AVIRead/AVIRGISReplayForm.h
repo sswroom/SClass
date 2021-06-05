@@ -46,10 +46,10 @@ namespace SSWR
 			OSInt startMark;
 			OSInt endMark;
 			const UTF8Char **names;
-			OSInt namesCnt;
+			UOSInt namesCnt;
 			Bool threadRunning;
 			Bool threadToStop;
-			OSInt currTrackId;
+			UOSInt currTrackId;
 
 		private:
 			static UInt32 __stdcall AddressThread(void *userObj);
@@ -68,6 +68,6 @@ namespace SSWR
 			void UpdateRecList();
 			void StopThread();
 		};
-	};
-};
+	}
+}
 #endif

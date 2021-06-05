@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnTimerTick(void *userObj)
 	{
 		UTF8Char sbuff[22];
 		me->recvUpdated = false;
-		Text::StrInt64(sbuff, me->recvCount);
+		Text::StrUInt64(sbuff, me->recvCount);
 		me->txtDataSize->SetText(sbuff);
 	}
 }

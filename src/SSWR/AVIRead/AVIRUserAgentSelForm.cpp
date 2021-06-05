@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(void *user
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(void *userObj, OSInt itemIndex)
 {
 	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
-	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetItem(itemIndex);
+	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetItem((UOSInt)itemIndex);
 	me->currUserAgent = (const UTF8Char*)uaList->userAgent;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }

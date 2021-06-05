@@ -6,9 +6,9 @@
 
 void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, const UTF8Char *txt, Data::ArrayList<const UTF8Char *> *outStr, Media::DrawFont *f, Double width)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Double sz[2];
 	const UTF8Char *currTxt = txt;
 	UTF8Char *tmpBuff;

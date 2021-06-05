@@ -23,8 +23,8 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Media::DrawEngine *eng;
-			OSInt lineThick;
-			Int32 lineColor;
+			UOSInt lineThick;
+			UInt32 lineColor;
 			Media::StaticImage *prevImg;
 
 			UI::GUIPictureBox *pbPreview;
@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 			void UpdatePreview();
 		public:
-			AVIRGISLineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, OSInt lineThick, Int32 lineColor);
+			AVIRGISLineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor);
 			virtual ~AVIRGISLineForm();
 
 			virtual void OnMonitorChanged();
@@ -52,9 +52,9 @@ namespace SSWR
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
 			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
 
-			OSInt GetLineThick();
-			Int32 GetLineColor();
+			UOSInt GetLineThick();
+			UInt32 GetLineColor();
 		};
-	};
-};
+	}
+}
 #endif

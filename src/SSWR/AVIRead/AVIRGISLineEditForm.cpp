@@ -33,7 +33,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, 0xffc0c0c0));
-	this->prevImage->DrawRect(0, 0, Math::OSInt2Double(w), Math::OSInt2Double(h), 0, b);
+	this->prevImage->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 	this->prevImage->DelBrush(b);
 
 	UOSInt i;
@@ -51,7 +51,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 			t = 1;
 		}
 		p = this->prevImage->NewPenARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, lyr->color), t, lyr->pattern, lyr->nPattern);
-		this->prevImage->DrawLine(0, Math::OSInt2Double(h >> 1), Math::OSInt2Double(w), Math::OSInt2Double(h >> 1), p);
+		this->prevImage->DrawLine(0, Math::UOSInt2Double(h >> 1), Math::UOSInt2Double(w), Math::UOSInt2Double(h >> 1), p);
 		this->prevImage->DelPen(p);
 		i++;
 	}
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(void *user
 	if (i >= 0)
 	{
 		me->currLayer = 0;
-		FreeLayer(me->lineLayers->RemoveAt(i));
+		FreeLayer(me->lineLayers->RemoveAt((UOSInt)i));
 		me->LineStyleUpdated();
 		me->UpdatePreview();
 	}
@@ -104,11 +104,11 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		me->currLayer = me->lineLayers->GetItem(i);
+		me->currLayer = me->lineLayers->GetItem((UOSInt)i);
 		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, me->colorSess, me->currLayer->color | 0xff000000));
 		me->pbColor->Redraw();
 		me->hsbAlpha->SetPos((me->currLayer->color >> 24) & 255);
-		Text::StrOSInt(sbuff, me->currLayer->thick);
+		Text::StrUOSInt(sbuff, me->currLayer->thick);
 		me->txtThick->SetText(sbuff);
 		if (me->currLayer->nPattern == 0)
 		{
@@ -116,11 +116,11 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		}
 		else
 		{
-			sptr = Text::StrInt32(sbuff, me->currLayer->pattern[0]);
+			sptr = Text::StrUInt16(sbuff, me->currLayer->pattern[0]);
 			UOSInt i = 1;
 			while (i < me->currLayer->nPattern)
 			{
-				sptr = Text::StrInt32(Text::StrConcat(sptr, (const UTF8Char*)","), me->currLayer->pattern[i]);
+				sptr = Text::StrUInt16(Text::StrConcat(sptr, (const UTF8Char*)","), me->currLayer->pattern[i]);
 				i++;
 			}
 			me->txtPattern->SetText(sbuff);
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(void *userObj)
 	{
 		me->thickChging = true;
 		me->txtThick->GetText(sbuff);
-		me->currLayer->thick = Text::StrToInt32(sbuff);
+		me->currLayer->thick = Text::StrToUInt32(sbuff);
 		if (me->currLayer->thick < 0)
 			me->currLayer->thick = 0;
 		if (me->currLayer->thick >= 0 && me->currLayer->thick <= 20)
@@ -209,14 +209,14 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(void *userObj)
 	}
 	else
 	{
-		OSInt i;
+		UOSInt i;
 		npattern = Text::StrSplit(sarr, 32, sbuff, ',');
 		i = npattern;
 		me->currLayer->pattern = MemAlloc(UInt8, npattern);
 		me->currLayer->nPattern = npattern;
 		while (i-- > 0)
 		{
-			me->currLayer->pattern[i] = (UInt8)Text::StrToInt32(sarr[i]);
+			me->currLayer->pattern[i] = (UInt8)Text::StrToUInt32(sarr[i]);
 			if (me->currLayer->pattern[i] <= 0)
 				me->currLayer->pattern[i] = 1;
 		}
@@ -362,8 +362,8 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	LineLayer *lyr;
 	NEW_CLASS(this->lineLayers, Data::ArrayList<LineLayer*>());
 	i = 0;
@@ -409,7 +409,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->lineLayers->GetCount();
 	while (i-- > 0)
 	{

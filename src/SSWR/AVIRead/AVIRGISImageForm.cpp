@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 	OSInt selIndex = me->plIcons->GetSelectedIndex();
 	if (selIndex != -1)
 	{
-		me->imgIndex = selIndex;
+		me->imgIndex = (UOSInt)selIndex;
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 	else
@@ -49,7 +49,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 {
 	UOSInt i = 0;
 	UOSInt j = this->env->GetImageCnt();
-	Int32 imgDurMS;
+	UInt32 imgDurMS;
 
 	this->plIcons->Clear();
 	while (i < j)

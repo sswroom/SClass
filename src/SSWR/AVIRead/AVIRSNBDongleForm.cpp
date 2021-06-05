@@ -100,9 +100,9 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 			dev->mut->LockRead();
 			dev->readingChg = false;
 			
-			Text::StrInt64(sbuff, dev->devId);
+			Text::StrUInt64(sbuff, dev->devId);
 			k = me->lvDevice->AddItem(sbuff, dev);
-			Text::StrInt32(sbuff, (UInt16)dev->shortAddr);
+			Text::StrUInt16(sbuff, (UInt16)dev->shortAddr);
 			me->lvDevice->SetSubItem(k, 1, sbuff);
 			me->lvDevice->SetSubItem(k, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			if (dev->readingTime)
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 
 	if (me->dongleUpdated)
 	{
-		Int64 id;
+		UInt64 id;
 		me->dongleUpdated = false;
 		id = me->snb->GetDongleId();
 		if (id == 0)
@@ -234,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 		}
 		else
 		{
-			Text::StrInt64(sbuff, id);
+			Text::StrUInt64(sbuff, id);
 			me->txtDongleId->SetText(sbuff);
 		}
 	}
@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(void *us
 	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
 	if (txt)
 	{
-		Int64 devId = Text::StrToInt64(txt);
+		UInt64 devId = Text::StrToUInt64(txt);
 		me->lvDevice->DelTextNew(txt);
 
 		me->snb->SendGetReportTime(devId);
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(void 
 	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
 	if (txt)
 	{
-		Int64 devId = Text::StrToInt64(txt);
+		UInt64 devId = Text::StrToUInt64(txt);
 		me->lvDevice->DelTextNew(txt);
 
 		me->snb->SendSetReportTime(devId, 30);
@@ -283,7 +283,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(void *userObj)
 	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
 	if (txt)
 	{
-		Int64 devId = Text::StrToInt64(txt);
+		UInt64 devId = Text::StrToUInt64(txt);
 		me->lvDevice->DelTextNew(txt);
 
 		me->snb->SendDevTurnOn(devId);
@@ -296,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(void *userObj)
 	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
 	if (txt)
 	{
-		Int64 devId = Text::StrToInt64(txt);
+		UInt64 devId = Text::StrToUInt64(txt);
 		me->lvDevice->DelTextNew(txt);
 
 		me->snb->SendDevTurnOff(devId);
@@ -309,7 +309,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(void *userOb
 	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
 	if (txt)
 	{
-		Int64 devId = Text::StrToInt64(txt);
+		UInt64 devId = Text::StrToUInt64(txt);
 		me->lvDevice->DelTextNew(txt);
 
 		me->snb->SendDevGetStatus(devId);
@@ -319,10 +319,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, OSInt index)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetItemTextNew(index);
+	const UTF8Char *txt = me->lvDevice->GetItemTextNew((UOSInt)index);
 	if (txt)
 	{
-		Int64 devId = Text::StrToInt64(txt);
+		UInt64 devId = Text::StrToUInt64(txt);
 		me->lvDevice->DelTextNew(txt);
 
 		DeviceInfo *dev;
@@ -341,7 +341,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, O
 				me->devHandlerMap->Put(devId, (Int32)dev->handType);
 				me->devMut->UnlockWrite();
 				me->snb->SetDevHandleType(dev->devId, dev->handType);
-				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
+				me->lvDevice->SetSubItem((UOSInt)index, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			}
 			DEL_CLASS(frm);
 	//		me->snb->SendSetReportTime(devId, 3, true);
@@ -352,8 +352,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, O
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	Int64 dongleId = me->snb->GetDongleId();
-	Int32 baudRate = me->snb->GetBaudRate();
+	UInt64 dongleId = me->snb->GetDongleId();
+	UInt32 baudRate = me->snb->GetBaudRate();
 	if (dongleId == 0 || baudRate == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Dongle info missing", (const UTF8Char *)"Error", me);
@@ -376,10 +376,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char *)"dongle_id=");
-	sb.AppendI64(dongleId);
+	sb.AppendU64(dongleId);
 	sb.Append((const UTF8Char *)"\r\n");
 	sb.Append((const UTF8Char *)"baud_rate=");
-	sb.AppendI32(baudRate);
+	sb.AppendU32(baudRate);
 	sb.Append((const UTF8Char *)"\r\n");
 	sb.Append((const UTF8Char *)"remarks=");
 	sb.Append(remarks.ToString());
@@ -388,8 +388,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	me->devMut->LockRead();
 	Data::ArrayList<DeviceInfo*> *sensors = me->devMap->GetValues();
 	DeviceInfo *dev;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (sensors->GetCount() == 0)
 	{
 		me->devMut->UnlockRead();
@@ -411,13 +411,13 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		{
 			sb.Append((const UTF8Char *)"|");
 		}
-		sb.AppendI64(dev->devId);
+		sb.AppendU64(dev->devId);
 		sb.Append((const UTF8Char *)",");
 		sb.AppendI32((Int32)dev->handType);
 		sb.Append((const UTF8Char *)",");
-		sb.AppendOSInt(dev->nReading);
+		sb.AppendUOSInt(dev->nReading);
 		sb.Append((const UTF8Char *)",");
-		sb.AppendI32(dev->shortAddr);
+		sb.AppendU16(dev->shortAddr);
 		i++;
 	}
 	sb.Append((const UTF8Char *)"\r\n");
@@ -425,7 +425,6 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 
 
 	Int32 status = 0;
-	UTF8Char sbuff[32];
 	Net::HTTPClient *cli;
 	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), 0, false, url.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(url.ToString(), "POST", 0, 0, false);
@@ -437,8 +436,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 	else
 	{
-		Text::StrOSInt(sbuff, sb.GetLength());
-		cli->AddHeader((const UTF8Char *)"Content-Length", sbuff);
+		cli->AddContentLength(sb.GetLength());
 		cli->Write(sb.ToString(), sb.GetLength());
 		cli->EndRequest(0, 0);
 		status = cli->GetRespStatus();
@@ -470,17 +468,17 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
 	{
-		Int64 flen = fs->GetLength();
+		UInt64 flen = fs->GetLength();
 		if (flen > 0 && (flen % 12) == 0)
 		{
-			UInt8 *dataBuff = MemAlloc(UInt8, (OSInt)flen);
-			OSInt i;
-			fs->Read(dataBuff, (OSInt)flen);
+			UInt8 *dataBuff = MemAlloc(UInt8, (UOSInt)flen);
+			UOSInt i;
+			fs->Read(dataBuff, (UOSInt)flen);
 			this->devMut->LockWrite();
 			i = 0;
 			while (i < flen)
 			{
-				this->devHandlerMap->Put(ReadInt64(&dataBuff[i]), ReadInt32(&dataBuff[i + 8]));
+				this->devHandlerMap->Put(ReadUInt64(&dataBuff[i]), ReadInt32(&dataBuff[i + 8]));
 				i += 12;
 			}
 			this->devMut->UnlockWrite();

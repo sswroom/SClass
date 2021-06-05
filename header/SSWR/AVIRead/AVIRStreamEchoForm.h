@@ -33,7 +33,7 @@ namespace SSWR
 			Bool threadToStop;
 			Bool remoteClosed;
 			Bool recvUpdated;
-			Int64 recvCount;
+			UInt64 recvCount;
 
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);

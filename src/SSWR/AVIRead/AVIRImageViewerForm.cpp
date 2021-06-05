@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, con
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
-	if (me->pkgFile && me->fileIndex != -1)
+	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
 		IO::IStreamData *fd;
 		UTF8Char sbuff[512];
@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
-	if (me->pkgFile && me->fileIndex != -1)
+	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
 		IO::IStreamData *fd;
 		UTF8Char sbuff[512];
@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		Int64 currTimeTick;
-		Int32 imgDurMS;
+		UInt32 imgDurMS;
 		dt.SetCurrTimeUTC();
 		currTimeTick = dt.ToTicks();
 		if (currTimeTick >= me->imgTimeoutTick)
@@ -358,7 +358,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	OSInt i;
-	OSInt j;
+	UOSInt j;
 	this->pbImage->SetImage(0, false);
 	SDEL_CLASS(this->imgList);
 	if (!sameDir)
@@ -368,7 +368,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	this->imgList = imgList;
 	if (this->imgList)
 	{
-		Int32 imgDurMS;
+		UInt32 imgDurMS;
 		this->imgIndex = 0;
 		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Image Viewer - "), this->imgList->GetSourceNameObj());
 		this->SetText(sbuff);
@@ -385,7 +385,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 
 		if (!sameDir)
 		{
-			this->fileIndex = -1;
+			this->fileIndex = (UOSInt)-1;
 			this->imgList->GetSourceName(sbuff);
 			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 			if (i != -1)
@@ -430,8 +430,8 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 	if (pobj)
 	{
 		IO::PackageFile *pf;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Bool found = false;
 		IO::ParsedObject *pobj2;
 

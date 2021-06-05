@@ -19,7 +19,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *fileName;
-				OSInt lineCnt;
+				UOSInt lineCnt;
 			} FileInfo;
 		private:
 			UI::GUIPanel *pnlConfig;

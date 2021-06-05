@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 		sdCard->GetProductName((Char*)sbuff);
 		me->txtProductName->SetText(sbuff);
 		buff[0] = sdCard->GetProductRevision();
-		sptr = Text::StrUInt16(sbuff, buff[0] >> 4);
+		sptr = Text::StrUInt16(sbuff, (UInt8)(buff[0] >> 4));
 		*sptr++ = '.';
 		sptr = Text::StrUInt16(sptr, buff[0] & 15);
 		me->txtProductRevision->SetText(sbuff);
@@ -177,14 +177,14 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::
 
 	IO::SDCardMgr::GetCardList(this->sdCardList);
 	void **arr = (void**)this->sdCardList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, j - 1);
+	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
 	
 	i = 0;
 	j = this->sdCardList->GetCount();
 	while (i < j)
 	{
 		sdCard = this->sdCardList->GetItem(i);
-		sptr = Text::StrOSInt(sbuff, i);
+		sptr = Text::StrUOSInt(sbuff, i);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
 		sptr = Text::StrConcat(sptr, sdCard->GetName());
 		this->lbDevices->AddItem(sbuff, sdCard);

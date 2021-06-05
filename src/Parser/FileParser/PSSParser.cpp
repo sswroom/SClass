@@ -284,7 +284,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 						if (resync)
 						{
 							resync = false;
-							initScr = dts - 90 * (stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate + audDelay[stmId]);
+							initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 						}
 
 					}
@@ -293,7 +293,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 						if (resync)
 						{
 							resync = false;
-							initScr = dts - 90 * (stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate + audDelay[stmId]);
+							initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 						}
 
 						stmData[stmId]->Append(currOfst + 0x17, i - 0x11);
@@ -321,7 +321,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 							}
 
 							formats[stmId]->bitRate = formats[stmId]->frequency * formats[stmId]->nChannels * formats[stmId]->bitpersample;
-							formats[stmId]->align = formats[stmId]->nChannels * (formats[stmId]->bitpersample >> 3);
+							formats[stmId]->align = formats[stmId]->nChannels * (UInt32)(formats[stmId]->bitpersample >> 3);
 							formats[stmId]->other = 0;
 							formats[stmId]->intType = Media::AudioFormat::IT_BIGENDIAN16;
 							formats[stmId]->extraSize = 0;
@@ -333,7 +333,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 						if (resync)
 						{
 							resync = false;
-							initScr = dts - 90 * (stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate + audDelay[stmId]);
+							initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 						}
 
 						stmData[stmId]->Append(currOfst + 16 + stmHdrSize, i - 10 - stmHdrSize);
@@ -362,7 +362,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 					if (resync && formats[stmId]->bitRate)
 					{
 						resync = false;
-						initScr = dts - 90 * (stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate + audDelay[stmId]);
+						initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 					}
 					stmData[stmId]->Append(currOfst + 13 + stmHdrSize, i - 7 - stmHdrSize);
 					if (formats[stmId]->bitRate == 0)
@@ -418,7 +418,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 				stmId = buff[3] & 0x1f;
 				if (formats[stmId]->formatId == 0)
 				{
-					Int32 v = ReadMInt32(&buff[j]);
+					UInt32 v = ReadMUInt32(&buff[j]);
 					if ((v & 0x80000000) != 0 && (v & 0x7fffffff) <= 2048)
 					{
 						formats[stmId]->formatId = 0x2080;
@@ -476,7 +476,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 					if (resync)
 					{
 						resync = false;
-						initScr = dts - 90 * (stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate + audDelay[stmId]);
+						initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 					}
 
 					stmData[stmId]->Append(currOfst + j, (UInt32)(i - j + 6));
@@ -491,7 +491,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 				Bool hasDTS = false;
 				if (v1)
 				{
-					Int32 buffOfst = 6;
+					UOSInt buffOfst = 6;
 					while (buff[buffOfst] & 0x80)
 					{
 						buffOfst++;
@@ -645,7 +645,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 							lastFrameTime = 0;
 						}
 						lastFrameTime = frameTime;
-						vstm->AddNewFrame(currOfst + 9 + stmHdrSize, (UInt32)(i - stmHdrSize - 3), true, frameTime);
+						vstm->AddNewFrame(currOfst + 9 + stmHdrSize, (UInt32)(i - stmHdrSize - 3), true, (UInt32)frameTime);
 					}
 					else
 					{
