@@ -24,7 +24,7 @@ DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8C
 	dt.SetCurrTime();
 
 	buff[0] = 3;
-	buff[1] = dt.GetYear() - 1900;
+	buff[1] = (UInt8)(dt.GetYear() - 1900);
 	buff[2] = dt.GetMonth();
 	buff[3] = dt.GetDay();
 	*(Int32*)&buff[4] = (Int32)this->rowCnt;
@@ -133,7 +133,7 @@ DB::DBFFixWriter::~DBFFixWriter()
 		UInt8 buff = 26;
 		stm->Write(&buff, 1);
 
-		stm->Seek(IO::SeekableStream::ST_BEGIN, refPos + 4);
+		stm->SeekFromBeginning(refPos + 4);
 		stm->Write((UInt8*)&this->rowCnt, 4);
 		MemFree(this->columns);
 		this->columns = 0;
@@ -243,8 +243,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
 {
 	Char sbuff[12];
 	Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_Int16)
@@ -257,8 +257,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (sptr - sbuff)], sbuff, sptr - sbuff);
-		i = this->columns[index].colSize - (sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
+		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';

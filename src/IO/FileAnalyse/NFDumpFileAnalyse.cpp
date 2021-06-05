@@ -13,8 +13,8 @@
 UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::NFDumpFileAnalyse *me = (IO::FileAnalyse::NFDumpFileAnalyse*)userObj;
-	Int64 endOfst;
-	Int64 ofst;
+	UInt64 endOfst;
+	UInt64 ofst;
 	UInt8 buff[12];
 	UInt32 sz;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
@@ -43,7 +43,7 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 		else
 		{
 			me->fd->GetRealData(ofst, 12, buff);
-			sz = ReadInt32(&buff[4]);
+			sz = ReadUInt32(&buff[4]);
 			if (ofst + sz + 12 > endOfst)
 			{
 				break;
@@ -68,7 +68,7 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-OSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, OSInt srcSize, UInt8 *outBlock, OSInt maxOutSize)
+UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize)
 {
 	Data::Compress::LZODecompressor dec;
 	UOSInt destSize;
@@ -203,7 +203,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->Append((const UTF8Char*)"\r\nVersion = ");
 		sb->AppendU16(ReadUInt16(&packBuff[2]));
 		sb->Append((const UTF8Char*)"\r\nFlags = 0x");
-		sb->AppendHex32V(ReadInt32(&packBuff[4]));
+		sb->AppendHex32V(ReadUInt32(&packBuff[4]));
 		if (packBuff[4] & 1)
 		{
 			sb->Append((const UTF8Char*)" Compressed");
@@ -300,8 +300,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	}
 	else if (pack->packType == 3)
 	{
-		OSInt size = pack->packSize;
-		OSInt dispSize = size;
+		UOSInt size = pack->packSize;
+		UOSInt dispSize = size;
 		if (dispSize > 256)
 			dispSize = 256;
 		packBuff = MemAlloc(UInt8, size);
@@ -317,8 +317,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			decBuffSize = this->LZODecompBlock(packBuff, size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
-				Int32 recType;
-				Int32 recSize;
+				UInt32 recType;
+				UInt32 recSize;
 				sb->Append((const UTF8Char*)"\r\n");
 				i = 0;
 				while (i < decBuffSize)
@@ -326,9 +326,9 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 					recType = ReadUInt16(&decBuff[i]);
 					recSize = ReadUInt16(&decBuff[i + 2]);
 					sb->Append((const UTF8Char*)"\r\nRec Size = ");
-					sb->AppendI32(recSize);
+					sb->AppendU32(recSize);
 					sb->Append((const UTF8Char*)", Rec Type = ");
-					sb->AppendI32(recType);
+					sb->AppendU32(recType);
 					if (recSize < 4)
 						break;
 					if (recType == 1)

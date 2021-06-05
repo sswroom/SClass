@@ -137,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm2"));
 			if (me->camera->GetFile(file, mstm))
 			{
-				mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+				mstm->SeekFromBeginning(0);
 				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(mstm, file->fileName);
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)

@@ -22,8 +22,8 @@ namespace IO
 			} PackType;
 			typedef struct
 			{
-				Int64 fileOfst;
-				OSInt packSize;
+				UInt64 fileOfst;
+				UOSInt packSize;
 				PackType packType;
 				const UTF8Char *fileName;
 			} PackInfo;
@@ -37,8 +37,8 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 
-			void ParseV1Directory(Int64 dirOfst, Int64 dirSize);
-			void ParseV2Directory(Int64 dirOfst, Int64 dirSize);
+			void ParseV1Directory(UInt64 dirOfst, UInt64 dirSize);
+			void ParseV2Directory(UInt64 dirOfst, UInt64 dirSize);
 			static UInt32 __stdcall ParseThread(void *userObj);
 			static void FreePackInfo(PackInfo *pack);
 		public:

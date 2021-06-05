@@ -1,10 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
-#include "Math/Math.h"
+#include "Data/ByteTool.h"
 #include "Exporter/CIPExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Math/Math.h"
+#include "Text/MyString.h"
 
 Exporter::CIPExporter::CIPExporter()
 {
@@ -102,7 +103,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	CIPBlock *theBlk;
 	void *sess;
 	void *nameArr;
-	OSInt stmPos = 8;
+	UOSInt stmPos = 8;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -147,7 +148,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		}
 		else
 		{
-			*(Int32*)&buff[4] = dobj->nPtOfst;
+			WriteUInt32(&buff[4], dobj->nPtOfst);
 			stm->Write(buff, 8);
 			stm->Write((UInt8*)dobj->ptOfstArr, dobj->nPtOfst * 4);
 			stmPos += 8 + dobj->nPtOfst * 4;
@@ -196,11 +197,11 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				while (k <= right)
 				{
 					l = 0;
-					m = blks->GetCount() - 1;
+					m = (OSInt)blks->GetCount() - 1;
 					while (l <= m)
 					{
 						n = (l + m) >> 1;
-						theBlk = blks->GetItem(n);
+						theBlk = blks->GetItem((UOSInt)n);
 						if (theBlk->blockX > k)
 						{
 							l = n + 1;
@@ -255,7 +256,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						theBlk->records->Add(strRec);
 						strs->Add(strRec);
 
-						blks->Insert(l, theBlk);
+						blks->Insert((UOSInt)l, theBlk);
 					}
 
 					k++;
@@ -301,7 +302,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	while (i < j)
 	{
 		theBlk = blks->GetItem(i);
-		cib->Seek(IO::SeekableStream::ST_BEGIN, 8 + i * 16);
+		cib->SeekFromBeginning(8 + i * 16);
 
 		*(Int32*)&buff[0] = theBlk->blockX;
 		*(Int32*)&buff[4] = theBlk->blockY;
@@ -309,7 +310,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		*(Int32*)&buff[12] = (Int32)stmPos;
 		cib->Write(buff, 16);
 
-		cib->Seek(IO::SeekableStream::ST_BEGIN, stmPos);
+		cib->SeekFromBeginning(stmPos);
 		k = 0;
 		while (k < theBlk->records->GetCount())
 		{
@@ -332,7 +333,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				cib->Write((UInt8*)strRec->str, l << 1);
 			}
 
-			stmPos += buff[4] + 5;
+			stmPos += (UOSInt)buff[4] + 5;
 			k += 1;
 		}
 		i += 1;
@@ -446,7 +447,7 @@ Bool Exporter::CIPExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 1)
 	{
-		p->dispCol = selCol;
+		p->dispCol = (UInt32)selCol;
 		return true;
 	}
 	return false;

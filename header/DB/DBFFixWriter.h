@@ -22,7 +22,7 @@ namespace DB
 		UOSInt colCnt;
 		DBFColumn *columns;
 		UOSInt rowCnt;
-		Int64 refPos;
+		UInt64 refPos;
 		Text::Encoding *enc;
 		UInt8 *rec;
 		UOSInt recSize;

@@ -25,7 +25,7 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
@@ -81,7 +81,7 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	UInt8 buff[256];
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
 	OSInt transparentIndex = -1;
 	UOSInt i;
@@ -166,7 +166,7 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			imgSize = 4096;
 		NEW_CLASS(mstm, IO::MemoryStream(imgSize, (const UTF8Char*)"Exporter.GIFExporter.ExportFile"));
 		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(mstm, true, 8, 12, 0));
-		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, img->info->dispWidth);
+		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, (OSInt)img->info->dispWidth);
 		lzw->Write(imgData, img->info->dispHeight * img->info->dispWidth);
 		MemFree(imgData);
 		DEL_CLASS(lzw);
@@ -185,7 +185,7 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 				buff[0] = (UInt8)(imgSize - i);
 				MemCopyNO(&buff[1], &imgData[i], buff[0]);
-				stm->Write(buff, buff[0] + 1);
+				stm->Write(buff, (UOSInt)buff[0] + 1);
 				i += buff[0];
 			}
 		}

@@ -150,8 +150,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	Int32 maxYBlk;
 	UTF8Char sbuff[512];
 	UInt32 currVal;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::POT_PACKAGEFILE)
 	{
@@ -191,7 +191,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 		
 		IO::PackageFile *xPkg;
 		Text::StrUOSInt(sbuff, this->maxLevel);
-		xPkg = pkgFile->GetItemPack(pkgFile->GetItemIndex(sbuff));
+		xPkg = pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(sbuff));
 		if (xPkg)
 		{
 			i = 0;
@@ -522,12 +522,12 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	if (xPkg)
 	{
 		Text::StrInt32(u8buff, imgX);
-		yPkg = xPkg->GetItemPack(xPkg->GetItemIndex(u8buff));
+		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(u8buff));
 		if (yPkg)
 		{
 			sptr = Text::StrInt32(u8buff, imgY);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
-			fd = yPkg->GetItemStmData(yPkg->GetItemIndex(u8buff));
+			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(u8buff));
 			if (fd)
 			{
 				if (blockX)

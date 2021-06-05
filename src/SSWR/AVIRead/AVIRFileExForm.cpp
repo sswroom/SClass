@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int64 fileSize;
+	UInt64 fileSize;
 	IO::Path::PathType pt;
 	me->txtSrc->GetText(&sb);
 	pt = IO::Path::GetPathType(sb.ToString());
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 	{
 		fileSize = IO::Path::GetFileSize(sb.ToString());
 		sb.ClearStr();
-		sb.AppendI64(fileSize);
+		sb.AppendU64(fileSize);
 		me->txtFileSize->SetText(sb.ToString());
 		me->txtEndOfst->SetText(sb.ToString());
 	}
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening dest file", (const UTF8Char *)"Error", me);
 		return;
 	}
-	srcFS->Seek(IO::SeekableStream::ST_BEGIN, startOfst);
+	srcFS->SeekFromBeginning(startOfst);
 	sizeLeft = endOfst - startOfst;
 	buff = MemAlloc(UInt8, 1048576);
 	destFS->SetLength(sizeLeft);

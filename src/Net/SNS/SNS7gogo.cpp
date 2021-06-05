@@ -32,7 +32,7 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Text::EncodingFactory *e
 		this->chDesc = Text::StrCopyNew(chInfo.detail);
 	}
 	this->ctrl->FreeChannelInfo(&chInfo);
-	OSInt i = itemList.GetCount();
+	UOSInt i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
@@ -51,7 +51,7 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Text::EncodingFactory *e
 
 Net::SNS::SNS7gogo::~SNS7gogo()
 {
-	OSInt i;
+	UOSInt i;
 	DEL_CLASS(this->ctrl);
 	SDEL_TEXT(this->chName);
 	SDEL_TEXT(this->chDesc);
@@ -91,9 +91,9 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-OSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
+UOSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
-	OSInt initCnt = itemList->GetCount();
+	UOSInt initCnt = itemList->GetCount();
 	itemList->AddRange(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
@@ -112,7 +112,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 {
 	UTF8Char sbuff[32];
 	SNSItem *snsItem;
-	OSInt j;
+	OSInt si;
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
@@ -120,17 +120,17 @@ Bool Net::SNS::SNS7gogo::Reload()
 	idList.AddRange(this->itemMap->GetKeys());
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
-	OSInt i = itemList.GetCount();
+	UOSInt i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		while (i-- > 0)
 		{
 			item = itemList.GetItem(i);
-			j = idList.SortedIndexOf(item->id);
-			if (j >= 0)
+			si = idList.SortedIndexOf(item->id);
+			if (si >= 0)
 			{
-				idList.RemoveAt(j);
+				idList.RemoveAt((UOSInt)si);
 			}
 			else
 			{

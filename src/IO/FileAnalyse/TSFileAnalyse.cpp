@@ -37,24 +37,24 @@ IO::FileAnalyse::TSFileAnalyse::~TSFileAnalyse()
 
 UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
 {
-	return (OSInt)(this->fileSize / this->packSize);
+	return (UOSInt)(this->fileSize / this->packSize);
 }
 
 Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
 {
-	Int64 fileOfst = index * this->packSize;
+	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
 		return false;
 
-	sb->AppendI64(fileOfst);
+	sb->AppendU64(fileOfst);
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI32(this->packSize);
+	sb->AppendU32(this->packSize);
 	return true;
 }
 
 Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
 {
-	Int64 fileOfst = index * this->packSize;
+	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
 		return false;
 
@@ -63,7 +63,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	sb->AppendHexBuff(buff, this->packSize, ' ', Text::LBT_CRLF);
 	sb->Append((const UTF8Char*)"\r\n");
 
-	OSInt currOfst;
+	UOSInt currOfst;
 	if (this->hasTime)
 	{
 		if (buff[4] == 0x47)
@@ -98,7 +98,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		sb->Append((const UTF8Char*)"\r\n");
 
 		sb->Append((const UTF8Char*)"transport_scrambling_control=");
-		sb->AppendU16(buff[currOfst + 3] >> 6);
+		sb->AppendU16((UInt8)(buff[currOfst + 3] >> 6));
 		sb->Append((const UTF8Char*)"\r\n");
 
 		adaptation_field_control = (buff[currOfst + 3] >> 4) & 3;
@@ -188,13 +188,13 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					sb->Append((const UTF8Char*)"private_data=");
 					sb->AppendHexBuff(&buff[currOfst], transport_private_data_length, ' ', Text::LBT_NONE);
 					sb->Append((const UTF8Char*)"\r\n");
-					currOfst += 1 + transport_private_data_length;
+					currOfst += 1 + (UOSInt)transport_private_data_length;
 				}
 				if (flags & 1)
 				{
 					UInt8 adaptation_field_extension_length = buff[currOfst];
 					UInt8 adflags = buff[currOfst + 1];
-					OSInt endOfst = currOfst + 1 + adaptation_field_extension_length;
+					UOSInt endOfst = currOfst + 1 + adaptation_field_extension_length;
 					currOfst += 2;
 
 					sb->Append((const UTF8Char*)"adaptation_field_extension_length=");
@@ -237,7 +237,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					{
 						Int64 DTS_next_AU;
 						sb->Append((const UTF8Char*)"splice_type=");
-						sb->AppendU16(buff[currOfst] >> 4);
+						sb->AppendU16((UInt8)(buff[currOfst] >> 4));
 						sb->Append((const UTF8Char*)"\r\n");
 
 						DTS_next_AU = buff[currOfst] & 0xe;

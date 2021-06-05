@@ -15,7 +15,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	UTF8Char sbuff[512];
 	UInt8 buff[2048];
 	UOSInt readSize;
-	Int32 codePage;
+	UInt32 codePage;
 	this->url = Text::StrCopyNew(url);
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->sockf = sockf;
@@ -46,7 +46,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	if (jsonBuff && readSize > 0)
 	{
 		Text::Encoding enc(codePage);
-		OSInt charsCnt;
+		UOSInt charsCnt;
 		UTF8Char *jsonStr;
 		charsCnt = enc.CountUTF8Chars(jsonBuff, readSize);
 		jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
@@ -133,8 +133,8 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 					if (v != 0 && v->GetJSType() == Text::JSONBase::JST_ARRAY)
 					{
 						Text::JSONArray *levs = (Text::JSONArray*)v;
-						OSInt i;
-						OSInt j;
+						UOSInt i;
+						UOSInt j;
 						i = 0;
 						j = levs->GetArrayLength();
 						while (i < j)
@@ -224,14 +224,14 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 			level = 0;
 		else if (level >= (Int32)GetLevelCount())
 			level = (Int32)GetLevelCount() - 1;
-		return level;
+		return (UOSInt)level;
 	}
 	else
 	{
 		Double ldiff;
 		Double minDiff;
-		OSInt minInd;
-		OSInt i;
+		UOSInt minInd;
+		UOSInt i;
 		Double logResol = Math::Log10(scale / 566928000.0);
 		minInd = 0;
 		minDiff = 100000.0;

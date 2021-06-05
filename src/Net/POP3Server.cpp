@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListUInt32.h"
 #include "Net/IMailController.h"
 #include "Net/POP3Server.h"
 #include "Text/Encoding.h"
@@ -206,10 +207,10 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			Data::ArrayListInt32 unreadList;
+			Data::ArrayListUInt32 unreadList;
 			UOSInt i;
 			UOSInt j;
-			Int32 id;
+			UInt32 id;
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -222,9 +223,9 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 					id = unreadList.GetItem(i);
 					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, &info))
 					{
-						sb.AppendI32(id + 1);
+						sb.AppendU32(id + 1);
 						sb.Append((const UTF8Char *)" ");
-						sb.AppendI32(info.size);
+						sb.AppendUOSInt(info.size);
 						sb.Append((const UTF8Char *)"\r\n");
 					}
 					i++;
@@ -246,8 +247,8 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			Int32 msgIndex;
-			msgIndex = Text::StrToInt32(&cmd[5]);
+			UInt32 msgIndex;
+			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
 				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
@@ -258,9 +259,9 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, &info))
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.AppendI32(msgIndex);
+					sb.AppendU32(msgIndex);
 					sb.Append((const UTF8Char *)" ");
-					sb.AppendI32(info.size);
+					sb.AppendUOSInt(info.size);
 					WriteMessage(cli, true, sb.ToString());
 				}
 				else
@@ -278,8 +279,8 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			Int32 msgIndex;
-			msgIndex = Text::StrToInt32(&cmd[5]);
+			UInt32 msgIndex;
+			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
 				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
@@ -315,8 +316,8 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			Int32 msgIndex;
-			msgIndex = Text::StrToInt32(&cmd[5]);
+			UInt32 msgIndex;
+			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
 				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
@@ -348,10 +349,10 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			Data::ArrayListInt32 unreadList;
+			Data::ArrayListUInt32 unreadList;
 			UOSInt i;
 			UOSInt j;
-			Int32 id;
+			UInt32 id;
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -364,7 +365,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 					id = unreadList.GetItem(i);
 					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, &info))
 					{
-						sb.AppendI32(id + 1);
+						sb.AppendU32(id + 1);
 						sb.Append((const UTF8Char *)" ");
 						sb.Append(info.uid);
 						sb.Append((const UTF8Char *)"\r\n");
@@ -388,8 +389,8 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 		}
 		else
 		{
-			Int32 msgIndex;
-			msgIndex = Text::StrToInt32(&cmd[5]);
+			UInt32 msgIndex;
+			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
 				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
@@ -400,7 +401,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, &info))
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.AppendI32(msgIndex);
+					sb.AppendU32(msgIndex);
 					sb.Append((const UTF8Char *)" ");
 					sb.Append(info.uid);
 					WriteMessage(cli, true, sb.ToString());

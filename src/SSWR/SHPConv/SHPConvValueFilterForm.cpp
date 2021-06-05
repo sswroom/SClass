@@ -17,7 +17,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(void *userObj)
 	{
 		typ = 0;
 	}
-	NEW_CLASS(me->filter, ValueFilter(me->cboCol->GetSelectedIndex(), sb.ToString(), typ));
+	NEW_CLASS(me->filter, ValueFilter((UOSInt)me->cboCol->GetSelectedIndex(), sb.ToString(), typ));
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -61,8 +61,8 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	this->SetCancelButton(this->btnCancel);
 
 	UTF8Char sbuff[256];
-	OSInt i = 0;
-	OSInt j = this->dbf->GetColCount();
+	UOSInt i = 0;
+	UOSInt j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{

@@ -136,7 +136,7 @@ Bool Exporter::WAVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		WriteUInt32(&buff[4], (UInt32)(fileSize - 8));
 		WriteUInt32(&buff[(UOSInt)(headerSize - 4)], (UInt32)(fileSize - headerSize));
 	}
-	stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)initPos);
+	stm->SeekFromBeginning(initPos);
 	stm->Write(buff, (UOSInt)headerSize);
 	MemFree(buff);
 

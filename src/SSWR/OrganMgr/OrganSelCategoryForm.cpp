@@ -44,8 +44,8 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<Category *> *cates;
 	NEW_CLASS(cates, Data::ArrayList<Category*>());
 	env->GetCategories(cates);

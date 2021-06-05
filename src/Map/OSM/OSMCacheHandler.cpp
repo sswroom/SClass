@@ -91,7 +91,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 						currTime.SetCurrTimeUTC();
 						fs->SetFileTimes(&currTime, 0, 0);
 					}
-					fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
+					fs->SeekFromBeginning(0);
 					Sync::Interlocked::Increment(&this->status.remoteSuccCnt);
 				}
 				else

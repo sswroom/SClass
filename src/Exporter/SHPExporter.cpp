@@ -467,11 +467,11 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	*(Double*)&buff[76] = zMax;
 	*(Double*)&buff[84] = 0;
 	*(Double*)&buff[92] = 0;
-	stm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+	stm->SeekFromBeginning(0);
 	stm->Write(buff, 100);
 
 	WriteMInt32(&buff[24], (Int32)(50 + (recCnt << 2)));
-	shx->Seek(IO::SeekableStream::ST_BEGIN, 0);
+	shx->SeekFromBeginning(0);
 	shx->Write(buff, 100);
 	DEL_CLASS(shx);
 

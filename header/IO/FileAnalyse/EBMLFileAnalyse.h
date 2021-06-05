@@ -15,10 +15,10 @@ namespace IO
 		private:
 			typedef struct
 			{
-				OSInt lev;
-				Int64 fileOfst;
+				UOSInt lev;
+				UInt64 fileOfst;
 				UOSInt packSize;
-				OSInt hdrSize;
+				UOSInt hdrSize;
 				UInt8 packType[4];
 			} PackInfo;
 
@@ -54,7 +54,7 @@ namespace IO
 
 			static const UInt8 *ReadInt(const UInt8 *buffPtr, UInt64 *val);
 			static const ElementInfo *GetElementInfo(UInt32 elementId);
-			void ParseRange(OSInt lev, Int64 ofst, Int64 size);
+			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			EBMLFileAnalyse(IO::IStreamData *fd);

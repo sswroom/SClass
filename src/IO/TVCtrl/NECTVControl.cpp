@@ -13,7 +13,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 {
 	IO::TVCtrl::NECTVControl *me = (IO::TVCtrl::NECTVControl *)userObj;
 	UInt8 buff[256];
-	OSInt recvSize;
+	UOSInt recvSize;
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
@@ -51,8 +51,8 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 {
 	Data::DateTime dt;
 	UInt8 buff[64];
-	OSInt cmdLen;
-	OSInt i;
+	UOSInt cmdLen;
+	UOSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
 	if (dt.CompareTo(this->nextTime) < 0)
@@ -128,7 +128,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2Int32((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2UInt32((Char*)&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3)
 			{
 				this->recvBuff[6 + cmdLen] = 0;
@@ -379,7 +379,7 @@ Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)
 			byteBuff[2] = (UInt8)(dt.GetYear() - 2000);
 			byteBuff[3] = dt.GetMonth();
 			byteBuff[4] = dt.GetDay();
-			byteBuff[5] = dt.GetWeekday();
+			byteBuff[5] = (UInt8)dt.GetWeekday();
 			byteBuff[6] = dt.GetHour();
 			byteBuff[7] = dt.GetMinute();
 			byteBuff[8] = 0;
@@ -461,7 +461,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			UInt8 byteBuff[32];
 			Data::DateTime dt;
 			Text::StrHex2Bytes(&buff[4], byteBuff);
-			dt.SetValue(2000 + byteBuff[0], byteBuff[1], byteBuff[2], byteBuff[4], byteBuff[5], 0, 0);
+			dt.SetValue((UInt16)(2000 + byteBuff[0]), byteBuff[1], byteBuff[2], byteBuff[4], byteBuff[5], 0, 0);
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm");
 			*val = (Int32)dt.ToUnixTimestamp();
 		}
@@ -565,7 +565,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			return false;
 		{
 			UInt8 serialNo[16];
-			OSInt i;
+			UOSInt i;
 			*val = 0;
 			i = Text::StrHex2Bytes(&buff[4], serialNo);
 			sbuff[i] = 0;
@@ -580,7 +580,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			return false;
 		{
 			UInt8 model[16];
-			OSInt i;
+			UOSInt i;
 			*val = 0;
 			i = Text::StrHex2Bytes(&buff[4], model);
 			sbuff[i] = 0;
@@ -595,13 +595,13 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			return false;
 		{
 			*val = 0;
-			*sbuff++ = buff[8];
-			*sbuff++ = buff[9];
-			*sbuff++ = buff[10];
-			*sbuff++ = buff[11];
-			*sbuff++ = buff[12];
-			*sbuff++ = buff[13];
-			*sbuff++ = buff[14];
+			*sbuff++ = (UTF8Char)buff[8];
+			*sbuff++ = (UTF8Char)buff[9];
+			*sbuff++ = (UTF8Char)buff[10];
+			*sbuff++ = (UTF8Char)buff[11];
+			*sbuff++ = (UTF8Char)buff[12];
+			*sbuff++ = (UTF8Char)buff[13];
+			*sbuff++ = (UTF8Char)buff[14];
 			*sbuff = 0;
 		}
 		return true;
@@ -610,13 +610,13 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			return false;
 		{
 			*val = 0;
-			*sbuff++ = buff[8];
-			*sbuff++ = buff[9];
-			*sbuff++ = buff[10];
-			*sbuff++ = buff[11];
-			*sbuff++ = buff[12];
-			*sbuff++ = buff[13];
-			*sbuff++ = buff[14];
+			*sbuff++ = (UTF8Char)buff[8];
+			*sbuff++ = (UTF8Char)buff[9];
+			*sbuff++ = (UTF8Char)buff[10];
+			*sbuff++ = (UTF8Char)buff[11];
+			*sbuff++ = (UTF8Char)buff[12];
+			*sbuff++ = (UTF8Char)buff[13];
+			*sbuff++ = (UTF8Char)buff[14];
 			*sbuff = 0;
 		}
 		return true;

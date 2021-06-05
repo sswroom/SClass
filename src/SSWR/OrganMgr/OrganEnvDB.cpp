@@ -303,7 +303,7 @@ const UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetCacheDir()
 	return this->cfgCacheDir;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp)
 {
 	DB::DBReader *r;
 	Int32 grpId;
@@ -328,7 +328,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*>
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	sql.AppendCmd((const UTF8Char*)"select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, flags from groups where parent_id = ");
 	sql.AppendInt32(grpId);
 	sql.AppendCmd((const UTF8Char*)" and cate_id = ");
@@ -431,7 +431,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*>
 	return retCnt;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp)
 {
 	UTF8Char u8buff[512];
 	UTF8Char *u8ptr;
@@ -441,7 +441,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem*
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	Bool exist;
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 
 	sql.Clear();
 	sql.AppendCmd((const UTF8Char*)"SELECT id, chi_name, sci_name, eng_name, description, dirName, photo, idKey, flags, photoId, photoWId FROM species where group_id = ");
@@ -582,7 +582,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem*
 	return retCnt;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -595,9 +595,9 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIte
 	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
-	OSInt i;
-	OSInt j;
-	OSInt retCnt = 0;
+	UOSInt i;
+	UOSInt j;
+	UOSInt retCnt = 0;
 	OrganImageItem *imgItem;
 	if (coverId != 0)
 	{
@@ -876,17 +876,17 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIte
 	return 0;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayListInt32 allId;
 	Data::ArrayListInt32 thisId;
 	DB::DBReader *r;
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
 	Int32 v;
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 
 	if (grp == 0)
 	{
@@ -973,7 +973,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpecie
 			sp->SetIDKey(sb.ToString());
 			sp->SetFlags(r->GetInt32(8));
 			sp->SetPhotoId(r->GetInt32(9));
-			sp->SetMapColor(r->GetInt32(10));
+			sp->SetMapColor((UInt32)r->GetInt32(10));
 			sp->SetPhotoWId(r->GetInt32(11));
 			items->Add(sp);
 			cnt++;
@@ -983,17 +983,17 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpecie
 	return cnt;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayListInt32 allId;
 	Data::ArrayListInt32 thisId;
 	DB::DBReader *r;
 	DB::SQLBuilder sql(this->db);
 	Int32 v;
 	Int32 c;
-	OSInt cnt = items->GetCount();
+	UOSInt cnt = items->GetCount();
 
 	if (grp == 0)
 	{
@@ -1074,14 +1074,14 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileIn
 	return items->GetCount() - cnt;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds)
 {
 	DB::DBReader *r;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	if (speciesIds->GetCount() <= 0)
 		return 0;
 
@@ -1234,7 +1234,7 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speci
 			sp->SetIDKey(sb.ToString());
 			sp->SetFlags(r->GetInt32(9));
 			sp->SetPhotoId(r->GetInt32(10));
-			sp->SetMapColor(r->GetInt32(11));
+			sp->SetMapColor((UInt32)r->GetInt32(11));
 		}
 		this->db->CloseReader(r);
 	}
@@ -1367,7 +1367,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(OrganSpecies *sp)
 	sql.AppendCmd((const UTF8Char*)", ");
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmd((const UTF8Char*)", ");
-	sql.AppendInt32(0xff4040ff);
+	sql.AppendInt32((Int32)0xff4040ff);
 	sql.AppendCmd((const UTF8Char*)")");
 	return this->db->ExecuteNonQuery(sql.ToString()) >= -1;
 }
@@ -2132,7 +2132,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 	Bool firstPhoto = false;
 	Bool found = false;
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<OrganImageItem*> *imgItems;
 	OrganImageItem *imgItem;
 	NEW_CLASS(imgItems, Data::ArrayList<OrganImageItem*>());
@@ -2164,7 +2164,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	Crypto::Hash::CRC32R crc;
 	crc.Calc(imgURL, i);
 	crc.GetValue(crcBuff);
-	crcVal = ReadMInt32(crcBuff);
+	crcVal = ReadMUInt32(crcBuff);
 	
 	i = Text::StrLastIndexOf(imgURL, '.');
 	if (Text::StrCharCnt(&imgURL[i + 1]) > 4)
@@ -2811,9 +2811,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::CombineSpecies(OrganSpecies *destSp, OrganSpeci
 	return true;
 }
 
-OSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *userList)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *userList)
 {
-	OSInt initCnt = userList->GetCount();
+	UOSInt initCnt = userList->GetCount();
 	OrganWebUser *user;
 	Text::StringBuilderUTF8 sb;
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, userName, watermark, userType from webuser");
@@ -2895,7 +2895,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, const UTF8Char *userNam
 	sql.AppendStrUTF8(userName);
 	if (pwd != 0)
 	{
-		OSInt len = Text::StrCharCnt(pwd);
+		UOSInt len = Text::StrCharCnt(pwd);
 		UInt8 md5Value[16];
 		UTF8Char sbuff[33];
 		Crypto::Hash::MD5 md5;
@@ -3022,7 +3022,7 @@ Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(const UTF8Char *title, const UTF8Char 
 {
 	OrganBook *book;
 	DB::SQLBuilder sql(this->db);
-	OSInt i;
+	UOSInt i;
 
 	sql.AppendCmd((const UTF8Char*)"insert into book (title, dispAuthor, press, publishDate, groupId, url) values (");
 	sql.AppendStrUTF8(title);
@@ -3254,7 +3254,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 {
 	Bool found = false;
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	i = this->dataFiles->GetCount();
 	while (i-- > 0)
 	{
@@ -4109,7 +4109,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 		Media::ImageList *imgList = (Media::ImageList*)pobj;
 		if (userFile->rotType != 0)
 		{
-			OSInt i = imgList->GetCount();
+			UOSInt i = imgList->GetCount();
 			Media::StaticImage *simg;
 			while (i-- > 0)
 			{
@@ -5046,7 +5046,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 
 					if (imgList)
 					{
-						Int32 delay;
+						UInt32 delay;
 						imgList->ToStaticImage(0);
 						Media::StaticImage *simg = (Media::StaticImage*)imgList->GetImage(0, &delay);
 						Media::StaticImage *newImg;

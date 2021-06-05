@@ -337,10 +337,10 @@ const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *IO::FileAnalyse::EBMLFileAn
 	return 0;
 }
 
-void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(OSInt lev, Int64 ofst, Int64 size)
+void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
 {
 	UInt8 buff[12];
-	Int64 endOfst = ofst + size;
+	UInt64 endOfst = ofst + size;
 	const UInt8 *buffPtr;
 	UInt64 id;
 	UInt64 sz;
@@ -357,22 +357,22 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(OSInt lev, Int64 ofst, Int64 s
 			this->fd->GetRealData(ofst, 12, buff);
 			buffPtr = ReadInt(buff, &id);
 			buffPtr = ReadInt(buffPtr, &sz);
-			if (ofst + (Int64)sz + (buffPtr - buff) > endOfst)
+			if (ofst + sz + (UOSInt)(buffPtr - buff) > endOfst)
 			{
 				return;
 			}
 			pack = MemAlloc(IO::FileAnalyse::EBMLFileAnalyse::PackInfo, 1);
 			pack->fileOfst = ofst;
-			pack->packSize = (UOSInt)(sz + (buffPtr - buff));
+			pack->packSize = (UOSInt)(sz + (UOSInt)(buffPtr - buff));
 			pack->lev = lev;
-			pack->hdrSize = buffPtr - buff;
+			pack->hdrSize = (UOSInt)(buffPtr - buff);
 			WriteNInt32(pack->packType, ReadNInt32(buff));
 			this->packs->Add(pack);
 			
 			const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)id);
 			if (element && element->type == ET_MASTER)
 			{
-				ParseRange(lev + 1, ofst + (buffPtr - buff), sz);
+				ParseRange(lev + 1, ofst + (UOSInt)(buffPtr - buff), sz);
 			}
 			ofst += pack->packSize;
 		}
@@ -438,7 +438,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	if (pack == 0)
 		return false;
 	sb->AppendChar('+', pack->lev);
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	if (pack->packType[0] & 0x80)
 	{
@@ -476,7 +476,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	if (pack == 0)
 		return false;
 
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)":");
 	sb->Append((const UTF8Char*)"\r\nType=");
 	if (pack->packType[0] & 0x80)
@@ -553,18 +553,18 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			sb->AppendHex8(buffPtr[2]);
 			buffPtr += 3;
 			sb->Append((const UTF8Char*)"\r\nData:\r\n");
-			OSInt sz = pack->packSize - pack->hdrSize - (buffPtr - hdr);
+			UOSInt sz = pack->packSize - pack->hdrSize - (UOSInt)(buffPtr - hdr);
 			if (sz <= 64)
 			{
 				buff = MemAlloc(UInt8, sz);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (buffPtr - hdr), sz, buff);
+				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, buff);
 				sb->AppendHexBuff(buff, sz, ' ', Text::LBT_CRLF);
 				MemFree(buff);
 			}
 			else
 			{
 				buff = MemAlloc(UInt8, 32);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (buffPtr - hdr), 32, buff);
+				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
 				sb->AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
 				sb->Append((const UTF8Char*)"\r\n..\r\n");
 				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
@@ -590,7 +590,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)
 		{
 			sb->Append((const UTF8Char*)"\r\nValue=");
-			OSInt sz = pack->packSize - pack->hdrSize;
+			UOSInt sz = pack->packSize - pack->hdrSize;
 			buff = MemAlloc(UInt8, sz);
 			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
 			if (sz == 1)
@@ -618,7 +618,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_SINT)
 		{
 			sb->Append((const UTF8Char*)"\r\nValue=");
-			OSInt sz = pack->packSize - pack->hdrSize;
+			UOSInt sz = pack->packSize - pack->hdrSize;
 			buff = MemAlloc(UInt8, sz);
 			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
 			if (sz == 1)
@@ -646,7 +646,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_FLOAT)
 		{
 			sb->Append((const UTF8Char*)"\r\nValue=");
-			OSInt sz = pack->packSize - pack->hdrSize;
+			UOSInt sz = pack->packSize - pack->hdrSize;
 			buff = MemAlloc(UInt8, sz);
 			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
 			if (sz == 4)
@@ -662,7 +662,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY)
 		{
 			sb->Append((const UTF8Char*)"\r\nData:\r\n");
-			OSInt sz = pack->packSize - pack->hdrSize;
+			UOSInt sz = pack->packSize - pack->hdrSize;
 			if (sz <= 64)
 			{
 				buff = MemAlloc(UInt8, sz);

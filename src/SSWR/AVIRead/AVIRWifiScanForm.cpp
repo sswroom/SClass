@@ -86,7 +86,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			imac = ReadMUInt64(id);
 
 			this->lvWifi->AddItem(ssid, bss);
-			Text::StrInt32(sbuff, bss->GetPHYId());
+			Text::StrUInt32(sbuff, bss->GetPHYId());
 			this->lvWifi->SetSubItem(i, 1, sbuff);
 			Text::StrHexBytes(sbuff, &id[2], 6, ':');
 			this->lvWifi->SetSubItem(i, 2, sbuff);

@@ -16,19 +16,19 @@ namespace Net
 		IO::LogTool *log;
 		Sync::Mutex *readMut;
 		Sync::Mutex *writeMut;
-		Int32 readCnt;
+		UInt32 readCnt;
 		UInt8 *readBuff;
-		OSInt readBuffPtr1;
-		OSInt readBuffPtr2;
+		UOSInt readBuffPtr1;
+		UOSInt readBuffPtr2;
 		UInt8 *writeBuff;
-		OSInt writeBuffSize;
+		UOSInt writeBuffSize;
 
 		static void __stdcall ConnHandler(UInt32 *s, void *userObj);
 		static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
 	public:
-		TCPBoardcastStream(Net::SocketFactory *sockf, Int32 port, IO::LogTool *log);
+		TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log);
 		~TCPBoardcastStream();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

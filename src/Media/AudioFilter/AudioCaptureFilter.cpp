@@ -171,17 +171,17 @@ void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 			WriteUInt64(&buff[28], this->dataSize);
 			*(Int64*)&buff[36] = 0;
 			*(Int32*)&buff[44] = 0;
-			this->waveStm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+			this->waveStm->SeekFromBeginning(0);
 			this->waveStm->Write(buff, 48);
 
-			this->waveStm->Seek(IO::SeekableStream::ST_BEGIN, dataOfst);
+			this->waveStm->SeekFromBeginning(dataOfst);
 			this->waveStm->Write(&buff[4], 4);
 		}
 		else
 		{
-			this->waveStm->Seek(IO::SeekableStream::ST_BEGIN, 4);
+			this->waveStm->SeekFromBeginning(4);
 			this->waveStm->Write((const UInt8*)&this->fileSize, 4);
-			this->waveStm->Seek(IO::SeekableStream::ST_BEGIN, dataOfst);
+			this->waveStm->SeekFromBeginning(dataOfst);
 			this->waveStm->Write((const UInt8*)&this->dataSize, 4);
 		}
 		DEL_CLASS(this->waveStm);

@@ -600,7 +600,7 @@ void UI::GUIMenu::ClearItems()
 {
 	UI::GUIMenu *item;
 	MenuItemInfo *menuItem;
-	OSInt i;
+	UOSInt i;
 	i = this->keys->GetCount();
 	while (i-- > 0)
 	{

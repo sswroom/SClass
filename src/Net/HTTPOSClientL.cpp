@@ -488,7 +488,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		curl_easy_setopt(data->curl, CURLOPT_WRITEDATA, data);
 		CURLcode res = curl_easy_perform(data->curl);
 		this->reqMstm->Clear();
-		data->respData->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		data->respData->SeekFromBeginning(0);
 		this->contLeng = data->contLen;
 		t1 = this->clk->GetTimeDiff();
 		if (timeReq)

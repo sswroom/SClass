@@ -15,7 +15,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(UInt32 *s, void *userObj)
 	{
 		UTF8Char sbuff[32];
 		Text::StringBuilderUTF8 sb;
-		OSInt size = me->writeBuffSize;
+		UOSInt size = me->writeBuffSize;
 		me->writeBuffSize = 0;
 		if (me->log)
 		{
@@ -23,7 +23,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(UInt32 *s, void *userObj)
 			me->sockf->GetRemoteName(sbuff, s);
 			sb.Append(sbuff);
 			sb.Append((const UTF8Char*)" with ");
-			sb.AppendOSInt(size);
+			sb.AppendUOSInt(size);
 			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 		}
 		cli->Write(me->writeBuff, size);
@@ -53,12 +53,12 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		cli->GetRemoteName(sbuff);
 		sb.Append(sbuff);
 		sb.Append((const UTF8Char*)" with ");
-		sb.AppendOSInt(size);
+		sb.AppendUOSInt(size);
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	Sync::MutexUsage mutUsage(me->readMut);
-	OSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
-	if (readBuffSize < 0)
+	UOSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
+	if ((OSInt)readBuffSize < 0)
 	{
 		readBuffSize += 16384;
 	}
@@ -90,7 +90,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 	{
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Recv readBuffPtr2 = ");
-		sb.AppendOSInt(me->readBuffPtr2);
+		sb.AppendUOSInt(me->readBuffPtr2);
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 }
@@ -109,7 +109,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 	}
 }
 
-Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, Int32 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.TCPBoardcastSream")
+Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.TCPBoardcastSream")
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -144,7 +144,7 @@ Net::TCPBoardcastStream::~TCPBoardcastStream()
 
 UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 {
-	OSInt readBuffSize;
+	UOSInt readBuffSize;
 
 	Sync::Interlocked::Increment(&this->readCnt);
 	while (true)
@@ -155,11 +155,11 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 			return 0;
 		}
 		readBuffSize = this->readBuffPtr2 - this->readBuffPtr1;
-		if (readBuffSize < 0)
+		if ((OSInt)readBuffSize < 0)
 		{
 			readBuffSize += 16384;
 		}
-		if (readBuffSize > 0)
+		if ((OSInt)readBuffSize > 0)
 			break;
 		Sync::Thread::Sleep(10);
 	}
@@ -193,7 +193,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"TBS ");
-		sb.AppendOSInt(size);
+		sb.AppendUOSInt(size);
 		sb.Append((const UTF8Char*)" bytes returned");
 		this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -224,7 +224,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 			cli->GetRemoteName(sbuff);
 			sb.Append(sbuff);
 			sb.Append((const UTF8Char*)" with ");
-			sb.AppendOSInt(size);
+			sb.AppendUOSInt(size);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 		}
 
@@ -233,8 +233,8 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 	mutUsage.EndUse();
 	if (!cliFound)
 	{
-		OSInt buffSizeLeft = 2048 - this->writeBuffSize;
-		if (buffSizeLeft >= (OSInt)size)
+		UOSInt buffSizeLeft = 2048 - this->writeBuffSize;
+		if (buffSizeLeft >= size)
 		{
 			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff, size);
 			this->writeBuffSize += size;

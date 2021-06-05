@@ -535,7 +535,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 	DEL_CLASS(this->chkEvt);
 
 	Data::ArrayList<SSWR::DownloadMonitor::DownMonCore::FileInfo *> *fileList;
-	OSInt i;
+	UOSInt i;
 	fileList = this->fileTypeMap->GetValues();
 	i = fileList->GetCount();
 	while (i-- > 0)

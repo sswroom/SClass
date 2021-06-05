@@ -15,7 +15,7 @@ Media::Decoder::G711muLawDecoder::G711muLawDecoder(Media::IAudioSource *sourceAu
 	if (fmt.bitpersample != 8)
 		return;
 	this->sourceAudio = sourceAudio;
-	this->align = fmt.nChannels << 1;
+	this->align = (UOSInt)fmt.nChannels << 1;
 }
 
 Media::Decoder::G711muLawDecoder::~G711muLawDecoder()
@@ -38,7 +38,7 @@ void Media::Decoder::G711muLawDecoder::GetFormat(AudioFormat *format)
 		format->frequency = fmt.frequency;
 		format->nChannels = fmt.nChannels;
 		format->bitRate = fmt.frequency * fmt.nChannels << 4;
-		format->align = fmt.nChannels * 2;
+		format->align = (UInt32)fmt.nChannels * 2;
 		format->other = 0;
 		format->intType = Media::AudioFormat::IT_NORMAL;
 		format->extraSize = 0;

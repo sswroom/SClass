@@ -61,7 +61,7 @@ namespace UI
 		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj);
 		void *RemoveItem(TreeItem *item);
 		void ClearItems();
-		OSInt GetRootCount();
+		UOSInt GetRootCount();
 		TreeItem *GetRootItem(OSInt index);
 		void ExpandItem(TreeItem *item);
 		Bool IsExpanded(TreeItem *item);

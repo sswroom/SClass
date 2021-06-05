@@ -530,7 +530,7 @@ UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
 	return oriStr;
 }
 
-Char *Text::StrDoubleDP(Char *oriStr, Double val, OSInt minDP, OSInt maxDP)
+Char *Text::StrDoubleDP(Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
@@ -553,7 +553,7 @@ Char *Text::StrDoubleDP(Char *oriStr, Double val, OSInt minDP, OSInt maxDP)
 	return StrDoubleFmt(oriStr, val, fmt);
 }
 
-UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, OSInt minDP, OSInt maxDP)
+UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
@@ -576,7 +576,7 @@ UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, OSInt minDP, OSInt m
 	return StrDoubleFmt(oriStr, val, fmt);
 }
 
-UTF32Char *Text::StrDoubleDP(UTF32Char *oriStr, Double val, OSInt minDP, OSInt maxDP)
+UTF32Char *Text::StrDoubleDP(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)

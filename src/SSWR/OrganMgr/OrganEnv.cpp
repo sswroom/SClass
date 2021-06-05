@@ -188,7 +188,7 @@ const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name)
 	return ret;
 }
 
-OSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)
+UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)
 {
 	categories->AddRange(this->categories);
 	return this->categories->GetCount();
@@ -229,24 +229,24 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(OrganSpecies *sp, Int32 mapColor)
+Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(OrganSpecies *sp, UInt32 mapColor)
 {
 	sp->SetMapColor(mapColor);
 	SaveSpecies(sp);
 	return true;
 }
 
-OSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(Data::ArrayList<OrganBook*> *items)
+UOSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(Data::ArrayList<OrganBook*> *items)
 {
 	items->AddRange(this->bookObjs);
 	return this->bookObjs->GetCount();
 }
 
-OSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(Data::ArrayList<OrganBook*> *items, Int32 year)
+UOSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(Data::ArrayList<OrganBook*> *items, Int32 year)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	OrganBook *book;
 	k = 0;
 	i = 0;

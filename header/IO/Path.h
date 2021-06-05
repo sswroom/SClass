@@ -53,8 +53,8 @@ namespace IO
 		static WChar *GetFullPathW(WChar *buff, const WChar *path);
 		static Bool FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern);
 		static Bool FileNameMatchW(const WChar *path, const WChar *searchPattern);
-		static Int64 GetFileSize(const UTF8Char *path);
-		static Int64 GetFileSizeW(const WChar *path);
+		static UInt64 GetFileSize(const UTF8Char *path);
+		static UInt64 GetFileSizeW(const WChar *path);
 		static WChar *GetSystemProgramPathW(WChar *buff);
 		static UTF8Char *GetLocAppDataPath(UTF8Char *buff);
 		static WChar *GetLocAppDataPathW(WChar *buff);

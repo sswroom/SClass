@@ -100,7 +100,7 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->currentOffset != dataOffset + offset)
 	{
-		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(dataOffset + offset))) != dataOffset + offset)
+		if ((fdh->currentOffset = fdh->file->SeekFromBeginning(dataOffset + offset)) != dataOffset + offset)
 		{
 			if (dataOffset + offset < fdh->fileLength)
 			{

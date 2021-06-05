@@ -21,7 +21,7 @@ namespace UtilUI
 		Media::MonitorMgr *monMgr;
 		
 		static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
-		static void __stdcall OnTextPosUpd(void *userObj, Int32 textPosX, OSInt textPosY);
+		static void __stdcall OnTextPosUpd(void *userObj, UInt32 textPosX, UOSInt textPosY);
 		static void __stdcall OnSearchClosed(void *userObj, UI::GUIForm *frm);
 	public:
 		TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, UInt32 codePage);

@@ -170,7 +170,7 @@ OSInt UI::GUITabControl::OnNotify(Int32 code, void *lParam)
 
 void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 {
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -210,7 +210,7 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	OSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
 		this->tabPages->GetItem(i)->SetDPI(hdpi, ddpi);

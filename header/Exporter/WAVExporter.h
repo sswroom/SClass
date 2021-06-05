@@ -7,7 +7,7 @@ namespace Exporter
 	class WAVExporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		WAVExporter();
 		virtual ~WAVExporter();

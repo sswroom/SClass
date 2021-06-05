@@ -181,8 +181,8 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 				Media::IAudioSource *audio = (Media::IAudioSource *)msrc;
 				Media::AudioFormat fmt;
 				audio->GetFormat(&fmt);
-				Int64 tdiff = audio->GetStreamTime() - (status->sampleCnt * 1000 / fmt.frequency);
-				Int64 tdiff2 = videoTime - (status->sampleCnt * 1000 / fmt.frequency);
+				Int64 tdiff = audio->GetStreamTime() - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
+				Int64 tdiff2 = (Int64)videoTime - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
 				if (this->allowTimeSkip)
 				{
 					if ((tdiff < -1000 || tdiff > 1000) && (tdiff2 < -1000 || tdiff2 > 1000))

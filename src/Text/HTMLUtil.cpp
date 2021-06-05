@@ -5,12 +5,12 @@
 #include "Text/JSText.h"
 #include "Text/XMLReader.h"
 
-Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, OSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb)
 {
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;
 	OSInt elementType = 0;

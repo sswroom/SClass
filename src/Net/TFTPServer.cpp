@@ -19,7 +19,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	UInt16 opcode;
 	UOSInt blkSize;
 	UOSInt len;
-	OSInt i;
+	UOSInt i;
 	UInt8 repBuff[32];
 	if (dataSize < 4)
 		return;
@@ -40,7 +40,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 0);
-		i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Mode not supported") - repBuff + 1;
+		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Mode not supported") - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -48,11 +48,11 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);
-		i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Access violation") - repBuff + 1;
+		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Access violation") - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
-	Int64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
+	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
 	Sync::MutexUsage mutUsage(me->mut);
 	sess = me->sessMap->Get(sessId);
@@ -61,7 +61,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
-		i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Already started") - repBuff + 1;
+		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Already started") - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -82,7 +82,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 				DEL_CLASS(fs);
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
-				i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Cannot open file") - repBuff + 1;
+				i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Cannot open file") - repBuff + 1);
 				me->svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
@@ -126,7 +126,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 1);
-			i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"File not found") - repBuff + 1;
+			i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"File not found") - repBuff + 1);
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -137,7 +137,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
-			i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"File already exists") - repBuff + 1;
+			i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"File already exists") - repBuff + 1);
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -145,7 +145,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
-			i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Directory already exists") - repBuff + 1;
+			i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Directory already exists") - repBuff + 1);
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -157,7 +157,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 				DEL_CLASS(fs);
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
-				i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Cannot open file") - repBuff + 1;
+				i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Cannot open file") - repBuff + 1);
 				me->svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
@@ -196,7 +196,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
-		i = Text::StrConcat(&repBuff[4], (const UTF8Char*)"Unknown opcode") - repBuff + 1;
+		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Unknown opcode") - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -206,7 +206,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::TFTPServer *me = (Net::TFTPServer*)userData;
-	Int64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
+	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
 	UInt8 repBuff[32];
 	Sync::MutexUsage mutUsage(me->mut);
@@ -316,7 +316,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 	Net::TFTPServer *me = (Net::TFTPServer*)userObj;
 	SessionInfo *sess;
 	Data::ArrayList<SessionInfo*> *sessList;
-	OSInt i;
+	UOSInt i;
 	Data::DateTime *dt;
 	Int64 currTime;
 	me->threadRunning = true;
@@ -366,10 +366,10 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	this->threadToStop = false;
 	NEW_CLASS(this->chkEvt, Sync::Event(true, (const UTF8Char*)"Net.TFTPServer.chkEvt"));
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->sessMap, Data::Int64Map<SessionInfo*>());
+	NEW_CLASS(this->sessMap, Data::UInt64Map<SessionInfo*>());
 	Text::StringBuilderUTF8 sb;
 	sb.Append(path);
-	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+	if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 	{
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
@@ -406,7 +406,7 @@ Net::TFTPServer::~TFTPServer()
 		}
 	}
 	Data::ArrayList<SessionInfo*> *sessList;
-	OSInt i;
+	UOSInt i;
 	sessList = this->sessMap->GetValues();
 	i = sessList->GetCount();
 	while (i-- > 0)

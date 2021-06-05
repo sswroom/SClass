@@ -47,7 +47,7 @@ namespace Net
 		static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
-		OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg);
+		UOSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg);
 		//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 		void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd, Text::LineBreakType lbt);
 	public:

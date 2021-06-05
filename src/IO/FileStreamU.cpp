@@ -93,7 +93,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	}
 	if (mode == FileStream::FILE_MODE_APPEND && clsData->hand > 0)
 	{
-		this->Seek(ST_END, 0);
+		this->SeekFromEnd(0);
 	}
 	else
 	{
@@ -186,41 +186,51 @@ Bool IO::FileStream::Recover()
 	return false;
 }
 
-UInt64 IO::FileStream::Seek(IO::SeekableStream::SeekType origin, Int64 position)
+UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)
 {
 	if (this->handle == 0)
 		return 0;
 	ClassData *clsData = (ClassData*)this->handle;
 	if (clsData->hand == 0)
 		return 0;
-	if (origin == IO::SeekableStream::ST_BEGIN)
-	{
 #if defined(__FreeBSD__) || defined(__APPLE__)
-		this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_SET);
+	this->currPos = (UInt64)lseek(clsData->hand, (Int64)position, SEEK_SET);
 #else
-		this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_SET);
+	this->currPos = (UInt64)lseek64(clsData->hand, (Int64)position, SEEK_SET);
 #endif
-		return this->currPos;
-	}
-	else if (origin == IO::SeekableStream::ST_CURRENT)
-	{
+	return this->currPos;
+}
+
+
+UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
+{
+	if (this->handle == 0)
+		return 0;
+	ClassData *clsData = (ClassData*)this->handle;
+	if (clsData->hand == 0)
+		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-		this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_CUR);
+	this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_CUR);
 #else
-		this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_CUR);
+	this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_CUR);
 #endif
-		return this->currPos;
-	}
-	else if (origin == IO::SeekableStream::ST_END)
-	{
+	return this->currPos;
+}
+
+
+UInt64 IO::FileStream::SeekFromEnd(Int64 position)
+{
+	if (this->handle == 0)
+		return 0;
+	ClassData *clsData = (ClassData*)this->handle;
+	if (clsData->hand == 0)
+		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-		this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_END);
+	this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_END);
 #else
-		this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_END);
+	this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_END);
 #endif
-		return this->currPos;
-	}
-	return 0;
+	return this->currPos;
 }
 
 UInt64 IO::FileStream::GetPosition()
@@ -231,8 +241,8 @@ UInt64 IO::FileStream::GetPosition()
 UInt64 IO::FileStream::GetLength()
 {
 	UInt64 pos = this->currPos;
-	UInt64 leng = Seek(IO::SeekableStream::ST_END, 0);
-	Seek(IO::SeekableStream::ST_BEGIN, (Int64)pos);
+	UInt64 leng = this->SeekFromEnd(0);
+	this->SeekFromBeginning(pos);
 	return leng;
 }
 

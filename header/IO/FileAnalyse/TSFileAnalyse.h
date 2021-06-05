@@ -14,8 +14,8 @@ namespace IO
 		{
 		private:
 			IO::IStreamData *fd;
-			Int32 packSize;
-			Int64 fileSize;
+			UInt32 packSize;
+			UInt64 fileSize;
 			Bool hasTime;
 
 		public:

@@ -28,7 +28,7 @@ Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	Bool fromFile = false;
 	if (this->currCharCode != charCode && this->fileSize >= startOfst + 256)
 	{
-		if (fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) == startOfst)
+		if (fs->SeekFromBeginning(startOfst) == startOfst)
 		{
 			if (fs->Read(this->currCharBuff, 256) == 256)
 			{
@@ -110,7 +110,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	if (this->fileSize < startOfst)
 	{
 		UInt8 *tmpBuff;
-		if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, this->fileSize) != this->fileSize)
+		if (this->fs->SeekFromBeginning(this->fileSize) != this->fileSize)
 		{
 			return false;
 		}
@@ -127,14 +127,14 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 			}
 			else
 			{
-				this->fs->Write(tmpBuff, (OSInt)writeSize);
+				this->fs->Write(tmpBuff, (UOSInt)writeSize);
 				writeSize = 0;
 			}
 		}
 		MemFree(tmpBuff);
 		this->fileSize = startOfst;
 	}
-	if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 	{
 		return false;
 	}
@@ -205,7 +205,7 @@ Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32>
 	{
 		return true;
 	}
-	if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
 	if (this->fs->Read(buff, 256) != 256)
 		return false;
@@ -227,7 +227,7 @@ Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32>
 		{
 			return false;
 		}
-		if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+		if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 			return false;
 		if (this->fs->Read(buff, 256) != 256)
 			return false;
@@ -245,7 +245,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	{
 		return false;
 	}
-	if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
 	if (this->fs->Read(buff, 256) != 256)
 		return false;
@@ -254,8 +254,8 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	{
 		return false;
 	}
-	WriteInt32(&buff[16], charCode);
-	if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+	WriteUInt32(&buff[16], charCode);
+	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
 
 	this->fs->Write(buff, 256);
@@ -272,7 +272,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 		{
 			return false;
 		}
-		if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+		if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 			return false;
 		if (this->fs->Read(buff, 256) != 256)
 			return false;
@@ -281,7 +281,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 		if (nextCode == 0 || nextCode == charCode)
 		{
 			WriteInt32(&buff[16], relatedCharCode);
-			if (this->fs->Seek(IO::SeekableStream::ST_BEGIN, startOfst) != startOfst)
+			if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 				return false;
 			if (this->fs->Write(buff, 256) != 256)
 				return false;

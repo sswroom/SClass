@@ -1,33 +1,33 @@
 #ifndef _SM_UI_GUITEXTFILEVIEW
 #define _SM_UI_GUITEXTFILEVIEW
+#include "Data/ArrayListUInt64.h"
 #include "IO/FileStream.h"
-#include "UI/GUIClientControl.h"
-#include "Data/ArrayListInt64.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "UI/GUIClientControl.h"
 
 namespace UI
 {
 	class GUITextFileView : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *TextPosEvent)(void *userObj, Int32 textPosX, OSInt textPosY);
+		typedef void (__stdcall *TextPosEvent)(void *userObj, UInt32 textPosX, UOSInt textPosY);
 	private:
 		Data::ArrayList<TextPosEvent> *textPosUpdHdlr;
 		Data::ArrayList<void *> *textPosUpdObj;
 		IO::FileStream *fs;
 		static OSInt useCnt;
-		Int32 codePage;
+		UInt32 codePage;
 		void *drawFont;
-		OSInt lastLineCnt;
+		UOSInt lastLineCnt;
 
 		const UTF8Char *fileName;
 		UInt8 *readBuff;
-		Int64 readBuffOfst;
-		OSInt readBuffSize;
-		Data::ArrayListInt64 *lineOfsts;
-		Int32 fileCodePage;
-		Int64 fileSize;
+		UInt64 readBuffOfst;
+		UOSInt readBuffSize;
+		Data::ArrayListUInt64 *lineOfsts;
+		UInt32 fileCodePage;
+		UInt64 fileSize;
 
 		Sync::Mutex *mut;
 		Sync::Event *evtThread;
@@ -35,7 +35,7 @@ namespace UI
 		Bool threadRunning;
 		Bool loadNewFile;
 		Bool readingFile;
-		Int32 pageLineCnt;
+		UInt32 pageLineCnt;
 		Int32 pageLineHeight;
 		void *bgBmp;
 		Int32 dispLineNumW;
@@ -64,7 +64,7 @@ namespace UI
 		void UpdateCaretPos();
 		void EnsureCaretVisible();
 		UOSInt GetLineCharCnt(UOSInt lineNum);
-		void GetPosFromByteOfst(Int64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY);
+		void GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY);
 		void UpdateCaretSel(Bool noRedraw);
 
 		void EventTextPosUpdated();

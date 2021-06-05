@@ -188,7 +188,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	AppendDBFile(writer, x, y + 1, scale, 0, (Int32)-this->imgSize);
 	AppendDBFile(writer, x, y - 1, scale, 0, (Int32)this->imgSize);
 	DEL_CLASS(writer);
-	mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+	mstm->SeekFromBeginning(0);
 	
 	Media::DrawImage *dimg;
 	Media::DrawImage *dimg2;

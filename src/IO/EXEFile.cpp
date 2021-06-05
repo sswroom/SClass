@@ -279,13 +279,13 @@ Bool IO::EXEFile::GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTime
 		DEL_CLASS(fs);
 		return false;
 	}
-	Int32 ofst = *(Int32*)&buff[60];
+	UInt32 ofst = ReadUInt32(&buff[60]);
 	if ((ofst & 7) != 0 || ofst < 64)
 	{
 		DEL_CLASS(fs);
 		return false;
 	}
-	fs->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+	fs->SeekFromBeginning(ofst);
 	if (fs->Read(buff, 64) != 64)
 	{
 		DEL_CLASS(fs);
@@ -296,7 +296,7 @@ Bool IO::EXEFile::GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTime
 		DEL_CLASS(fs);
 		return false;
 	}
-	fileTimeOut->SetUnixTimestamp(*(Int32*)&buff[8]);
+	fileTimeOut->SetUnixTimestamp(ReadUInt32(&buff[8]));
 	DEL_CLASS(fs);
 	return true;
 }

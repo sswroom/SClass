@@ -15,7 +15,7 @@ namespace Media
 	private:
 		typedef struct
 		{
-			Int64 sampleCnt;
+			UInt64 sampleCnt;
 			UInt32 lastSampleTime;
 			Bool isEnd;
 			Media::IAudioSource *adecoder;

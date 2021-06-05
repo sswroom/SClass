@@ -929,7 +929,7 @@ void UI::GUIMapControl::UpdateMap()
 		Double centerY;
 		Double t;
 		UOSInt i;
-		Int32 imgDurMS;
+		UInt32 imgDurMS;
 		centerX = this->view->GetCenterX();
 		centerY = this->view->GetCenterY();
 		Manage::HiResClock clk;

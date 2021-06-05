@@ -20,11 +20,11 @@ void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, const UTF8Char 
 	}
 }
 
-void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(void *userObj, Int32 textPosX, OSInt textPosY)
+void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(void *userObj, UInt32 textPosX, UOSInt textPosY)
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(Text::StrOSInt(sbuff, (textPosY + 1)), (const UTF8Char*)" : "), textPosX + 1);
+	Text::StrUInt32(Text::StrConcat(Text::StrUOSInt(sbuff, (textPosY + 1)), (const UTF8Char*)" : "), textPosX + 1);
 	me->txtStatus->SetText(sbuff);
 }
 

@@ -42,13 +42,13 @@ Bool Exporter::CURExporter::ImageSupported(Media::Image *img)
 
 UOSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 {
-	OSInt i;
-	OSInt j;
-	Int32 imgDelay;
-	OSInt imgSize;
-	OSInt maskSize;
+	UOSInt i;
+	UOSInt j;
+	UInt32 imgDelay;
+	UOSInt imgSize;
+	UOSInt maskSize;
 	Media::Image *img;
-	OSInt retSize = 6;
+	UOSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
@@ -141,23 +141,23 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt shiftCnt;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt shiftCnt;
 	UInt8 mask;
 	UInt8 *srcPtr;
 	UInt8 *currPtr;
 	OSInt sbpl;
 	UInt8 *maskPtr;
-	Int32 imgDelay;
-	OSInt imgSize;
-	OSInt maskSize;
-	OSInt imgAdd;
-	OSInt maskAdd;
+	UInt32 imgDelay;
+	UOSInt imgSize;
+	UOSInt maskSize;
+	UOSInt imgAdd;
+	UOSInt maskAdd;
 	Media::StaticImage *img;
-	OSInt retSize = 6;
+	UOSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	WriteInt16(&buff[0], 0);
@@ -276,7 +276,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					mask |= (UInt8)((currPtr[23] != 0) << 2);
 					mask |= (UInt8)((currPtr[27] != 0) << 1);
 					mask |= (UInt8)((currPtr[31] != 0) << 0);
-					maskPtr[0] = ~mask;
+					maskPtr[0] = (UInt8)~mask;
 					maskPtr++;
 					currPtr += 32;
 				}
@@ -393,7 +393,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					mask |= (UInt8)((currPtr[23] & 1) << 2);
 					mask |= (UInt8)((currPtr[27] & 1) << 1);
 					mask |= (UInt8)((currPtr[31] & 1) << 0);
-					maskPtr[0] = ~mask;
+					maskPtr[0] = (UInt8)~mask;
 					maskPtr++;
 					currPtr += 32;
 				}
@@ -474,8 +474,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 8;
 			retSize += 8;
 
-			sbpl = ((img->info->dispWidth + 7) >> 3) * 2;
-			srcPtr = img->data + sbpl * img->info->dispHeight;
+			sbpl = (OSInt)((img->info->dispWidth + 7) >> 3) * 2;
+			srcPtr = img->data + sbpl * (OSInt)img->info->dispHeight;
 			maskPtr = imgPtr + imgSize * img->info->dispHeight;
 			l = img->info->dispHeight;
 			while (l-- > 0)
@@ -488,7 +488,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 				k = (img->info->dispWidth + 7) >> 3;
 				while (k-- > 0)
 				{
-					maskPtr[0] = ~currPtr[0];
+					maskPtr[0] = (UInt8)~currPtr[0];
 					maskPtr++;
 					currPtr++;
 				}
@@ -550,8 +550,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 64;
 			retSize += 64;
 
-			sbpl = ((img->info->dispWidth + 7) >> 3) + ((img->info->dispWidth + 1) >> 1);
-			srcPtr = img->data + sbpl * img->info->dispHeight;
+			sbpl = (OSInt)(((img->info->dispWidth + 7) >> 3) + ((img->info->dispWidth + 1) >> 1));
+			srcPtr = img->data + sbpl * (OSInt)img->info->dispHeight;
 			maskPtr = imgPtr + imgSize * img->info->dispHeight;
 			l = img->info->dispHeight;
 			while (l-- > 0)
@@ -564,7 +564,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 				k = (img->info->dispWidth + 7) >> 3;
 				while (k-- > 0)
 				{
-					maskPtr[0] = ~currPtr[0];
+					maskPtr[0] = (UInt8)~currPtr[0];
 					maskPtr++;
 					currPtr++;
 				}
@@ -626,8 +626,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 1024;
 			retSize += 1024;
 
-			sbpl = ((img->info->dispWidth + 7) >> 3) + img->info->dispWidth;
-			srcPtr = img->data + sbpl * img->info->dispHeight;
+			sbpl = (OSInt)(((img->info->dispWidth + 7) >> 3) + img->info->dispWidth);
+			srcPtr = img->data + sbpl * (OSInt)img->info->dispHeight;
 			maskPtr = imgPtr + imgSize * img->info->dispHeight;
 			l = img->info->dispHeight;
 			while (l-- > 0)
@@ -688,9 +688,9 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	Media::Image *img;
-	OSInt i = imgList->GetCount();
+	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
 		return IO::FileExporter::ST_NOT_SUPPORTED;

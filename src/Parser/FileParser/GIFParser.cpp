@@ -158,7 +158,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 						mstm->Write(&readBlock[1], readBlock[0]);
 						currOfst += 1 + (UOSInt)readBlock[0];
 					}
-					mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+					mstm->SeekFromBeginning(0);
 					Data::Compress::LZWDecStream *lzw;
 					Media::StaticImage *simg;
 					NEW_CLASS(lzw, Data::Compress::LZWDecStream(mstm, true, blockType, 12, 0));

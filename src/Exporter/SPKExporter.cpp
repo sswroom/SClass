@@ -89,7 +89,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				IO::SPackageFile *spkg;
 				UInt8 *customBuff = MemAlloc(UInt8, 2048);
 				UOSInt buffSize = 1;
-				OSInt i = 0;
+				UOSInt i = 0;
 				UOSInt bSize;
 				const UTF8Char *url;
 				while (true)
@@ -134,9 +134,9 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			UOSInt fileSize;
 			Int64 modTimeTicks;
 
-			Int32 i;
-			Int32 j;
-			OSInt k;
+			UInt32 i;
+			UInt32 j;
+			UOSInt k;
 			NEW_CLASS(spkg, IO::SPackageFile(stm, false));
 			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Exporter.SPKExporter.ExportFile.mstm"));
 			i = 0;
@@ -156,7 +156,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					mstm->Clear();
 					if (orux->GetObjectData(objIds.GetItem(k), mstm, &tileX, &tileY, &modTimeTicks))
 					{
-						sptr = Text::StrInt32(sbuff, i);
+						sptr = Text::StrUInt32(sbuff, i);
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt32(sptr, tileX + xAdd);
 						*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -184,8 +184,8 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::PackageFile *pkgFile, UTF8Char *buff, UTF8Char *buffEnd)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UTF8Char *sptr;
 	IO::IStreamData *fd;
 	IO::PackageFile::PackObjectType pot;

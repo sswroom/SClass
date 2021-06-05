@@ -7,7 +7,7 @@ namespace Exporter
 	class SHPExporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		SHPExporter();
 		virtual ~SHPExporter();

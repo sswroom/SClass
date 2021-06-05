@@ -8,10 +8,10 @@ namespace Text
 	UTF16Char *StrDouble(UTF16Char *oriStr, Double val);
 	UTF32Char *StrDouble(UTF32Char *oriStr, Double val);
 
-	Char *StrDoubleDP(Char *oriStr, Double val, OSInt minDP, OSInt maxDP);
-	FORCEINLINE UTF8Char *StrDoubleDP(UTF8Char *oriStr, Double val, OSInt minDP, OSInt maxDP) { return (UTF8Char*)StrDoubleDP((Char*)oriStr, val, minDP, maxDP); }
-	UTF16Char *StrDoubleDP(UTF16Char *oriStr, Double val, OSInt minDP, OSInt maxDP);
-	UTF32Char *StrDoubleDP(UTF32Char *oriStr, Double val, OSInt minDP, OSInt maxDP);
+	Char *StrDoubleDP(Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP);
+	FORCEINLINE UTF8Char *StrDoubleDP(UTF8Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP) { return (UTF8Char*)StrDoubleDP((Char*)oriStr, val, minDP, maxDP); }
+	UTF16Char *StrDoubleDP(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP);
+	UTF32Char *StrDoubleDP(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP);
 
 	Char *StrDoubleFmt(Char *oriStr, Double val, const Char *format);
 	FORCEINLINE UTF8Char *StrDoubleFmt(UTF8Char *oriStr, Double val, const Char *format) { return (UTF8Char*)StrDoubleFmt((Char*)oriStr, val, format); }

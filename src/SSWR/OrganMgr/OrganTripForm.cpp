@@ -10,8 +10,8 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	Trip *trip;
 	Data::ArrayList<Trip*> *tripList = this->env->TripGetList();
 	UTF8Char sbuff[256];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	this->updating = true;
 	i = 0;
 	j = tripList->GetCount();

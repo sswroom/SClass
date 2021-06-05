@@ -8,7 +8,7 @@ void Media::TimedImageList::ScanFile()
 	UInt8 indexBuff[32];
 	this->flags &= ~2;
 	this->changed = true;
-	this->fs->Seek(IO::SeekableStream::ST_BEGIN, 16);
+	this->fs->SeekFromBeginning(16);
 	while (this->fs->Read(indexBuff, 32) == 32)
 	{
 		if (ReadUInt64(&indexBuff[16]) == currOfst + 32)
@@ -16,14 +16,14 @@ void Media::TimedImageList::ScanFile()
 			Int64 imgSize = ReadInt64(&indexBuff[24]);
 			this->indexStm->Write(indexBuff, 32);
 			currOfst += 32 + (UInt64)imgSize;
-			this->fs->Seek(IO::SeekableStream::ST_CURRENT, imgSize);
+			this->fs->SeekFromCurrent(imgSize);
 		}
 		else
 		{
 			break;
 		}
 	}
-	this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)currOfst);
+	this->fs->SeekFromBeginning(currOfst);
 	this->currFileOfst = currOfst;
 }
 
@@ -60,7 +60,7 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 	}
 	else
 	{
-		this->fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		this->fs->SeekFromBeginning(0);
 		this->fs->Read(hdr, 16);
 		if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
 		{
@@ -76,11 +76,11 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 			if (fileSize >= this->currFileOfst && (indexSize & 31) == 0)
 			{
 				UInt8 *indexBuff = MemAlloc(UInt8, (UOSInt)indexSize);
-				this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currFileOfst);
+				this->fs->SeekFromBeginning(this->currFileOfst);
 				this->fs->Read(indexBuff, (UOSInt)indexSize);
 				this->indexStm->Write(indexBuff, (UOSInt)indexSize);
 				MemFree(indexBuff);
-				this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currFileOfst);
+				this->fs->SeekFromBeginning(this->currFileOfst);
 			}
 			else if (this->flags & 1)
 			{
@@ -88,7 +88,7 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 			}
 			else
 			{
-				this->fs->Seek(IO::SeekableStream::ST_BEGIN, 16);
+				this->fs->SeekFromBeginning(16);
 				this->currFileOfst = 16;
 				this->changed = true;
 			}
@@ -99,7 +99,7 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 		}
 		else
 		{
-			this->fs->Seek(IO::SeekableStream::ST_BEGIN, 16);
+			this->fs->SeekFromBeginning(16);
 			this->currFileOfst = 16;
 			this->changed = true;
 		}
@@ -118,7 +118,7 @@ Media::TimedImageList::~TimedImageList()
 			indexBuff = this->indexStm->GetBuff(&indexSize);
 			this->fs->Write(indexBuff, indexSize);
 
-			this->fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
+			this->fs->SeekFromBeginning(0);
 			hdr[0] = 'S';
 			hdr[1] = 'T';
 			hdr[2] = 'i';
@@ -144,7 +144,7 @@ Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, const UInt8 *imgBuf
 	Bool succ = true;
 	if (!this->changed)
 	{
-		this->fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		this->fs->SeekFromBeginning(0);
 		this->flags &= ~2;
 		indexBuff[0] = 'S';
 		indexBuff[1] = 'T';
@@ -153,7 +153,7 @@ Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, const UInt8 *imgBuf
 		WriteInt32(&indexBuff[4], this->flags);
 		WriteUInt64(&indexBuff[8], this->currFileOfst);
 		this->fs->Write(indexBuff, 16);
-		this->fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)this->currFileOfst);
+		this->fs->SeekFromBeginning(this->currFileOfst);
 		this->changed = true;
 	}
 	WriteInt64(&indexBuff[0], captureTimeTicks);

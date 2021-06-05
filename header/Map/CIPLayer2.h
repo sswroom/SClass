@@ -14,7 +14,7 @@ namespace Map
 			UInt32 objCnt;
 			Int32 xblk;
 			Int32 yblk;
-			Int32 sofst;
+			UInt32 sofst;
 			Int32 *ids;
 		} CIPBlock;
 
@@ -29,7 +29,7 @@ namespace Map
 
 		//IO::FileStream *cip;
 		Int32 *ids;
-		Int32 *ofsts;
+		UInt32 *ofsts;
 		UInt32 nblks;
 		Int32 blkScale;
 		Bool missFile;

@@ -110,8 +110,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
             me->lastGroupObj = 0;
             me->UpdateDir();
 
-			OSInt i;
-			OSInt matchGrpInd = 0;
+			UOSInt i;
+			UOSInt matchGrpInd = 0;
 			Int32 matchGrpId = -1;
 			OrganGroupItem *gi;
 
@@ -810,10 +810,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 				Win32::Clipboard *clipboard;
 				NEW_CLASS(clipboard, Win32::Clipboard(me->hwnd));
 				UTF8Char sbuff[512];
-				OSInt i;
-				OSInt j;
-				Int32 fmt;
-				Data::ArrayList<Int32> formats;
+				UOSInt i;
+				UOSInt j;
+				UInt32 fmt;
+				Data::ArrayList<UInt32> formats;
 				UInt32 filePathFmt = (UInt32)-1;
 				UInt32 urlFmt = (UInt32)-1;
 				clipboard->GetDataFormats(&formats);
@@ -1300,8 +1300,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(void *userOb
 	UTF8Char sbuff[512];
 	Data::ArrayListUInt32 sels;
 	OrganGroupItem *gi;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OrganImages *imgs;
 	me->lbImage->GetSelectedIndices(&sels);
 	if (sels.GetCount() <= 0)
@@ -1346,8 +1346,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAllClicked(void *userOb
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OrganGroupItem *gi;
 	OrganImages *imgs;
 	if (me->inputMode == IM_SPECIES)
@@ -1466,8 +1466,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 
 		OrganGroup *grp = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
 		Data::ArrayList<OrganSpecies*> spList;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = me->pickObjs->GetCount();
 		while (i < j)
@@ -1496,8 +1496,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 
 		OrganGroup *grp = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
 		Data::ArrayList<OrganGroup*> grpList;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = me->pickObjs->GetCount();
 		while (i < j)
@@ -1791,7 +1791,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 	{
 		UOSInt i = (UOSInt)this->lbDir->GetSelectedIndex();
 		UOSInt j = this->lbDir->GetCount();
-		OSInt k;
+		UOSInt k;
 		while (--j > i)
 		{
             this->lbDir->RemoveItem(j);
@@ -2136,8 +2136,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBook()
 	Text::StringBuilderUTF8 sb;
 
 	this->env->GetSpeciesBooks(&spBooks, this->lastSpeciesObj->GetSpeciesId());
-	OSInt i = 0;
-	OSInt j = spBooks.GetCount();
+	UOSInt i = 0;
+	UOSInt j = spBooks.GetCount();
 	this->lvSpBook->ClearItems();
 	while (i < j)
 	{
@@ -2159,8 +2159,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBookList()
 	Data::ArrayList<OrganBook*> bookList;
 	this->env->GetBooksAll(&bookList);
 	this->cboSpBook->ClearItems();
-	OSInt i = 0;
-	OSInt j = bookList.GetCount();
+	UOSInt i = 0;
+	UOSInt j = bookList.GetCount();
 	while (i < j)
 	{
 		book = bookList.GetItem(i);
@@ -2390,8 +2390,8 @@ void SSWR::OrganMgr::OrganMainForm::FillGroupCboBox()
 	UTF8Char sbuff[64];
 	Data::ArrayList<OrganGroupType*> *grpTypes = this->env->GetGroupTypes();
 	OrganGroupType *grpType;
-	OSInt i = 0;
-	OSInt j = grpTypes->GetCount();
+	UOSInt i = 0;
+	UOSInt j = grpTypes->GetCount();
 	this->cboGroupType->ClearItems();
 	while (i < j)
 	{
@@ -2412,7 +2412,7 @@ void SSWR::OrganMgr::OrganMainForm::InitCategory()
 void SSWR::OrganMgr::OrganMainForm::SelectGroup(UI::GUIComboBox *cbo, Int32 groupType)
 {
 	Data::ArrayList<OrganGroupType*> *grpTypes = this->env->GetGroupTypes();
-	OSInt i = grpTypes->GetCount();
+	UOSInt i = grpTypes->GetCount();
 	while (i-- > 0)
 	{
 		OrganGroupType *grpType = grpTypes->GetItem(i);
@@ -2428,8 +2428,8 @@ void SSWR::OrganMgr::OrganMainForm::GoToDir(OrganGroup *grp, Int32 parentId)
 {
 	UTF8Char sbuff[256];
 	OrganGroup *group;
-	OSInt j;
-	OSInt i = this->groupList->GetCount();
+	UOSInt j;
+	UOSInt i = this->groupList->GetCount();
 	while (i-- > 1)
 	{
 		this->lbDir->RemoveItem(i);
@@ -2456,7 +2456,7 @@ void SSWR::OrganMgr::OrganMainForm::GoToDir(OrganGroup *grp, Int32 parentId)
 void SSWR::OrganMgr::OrganMainForm::ClearImgLayers()
 {
 	Data::ArrayList<OrganSpImgLayer*> *lyrs = this->mapImgLyrs->GetValues();
-	OSInt i;
+	UOSInt i;
 	OrganSpImgLayer *lyr;
 	i = lyrs->GetCount();
 	while (i-- > 0)
@@ -2477,8 +2477,8 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	Media::ImageList *imgList;
 	Map::MapEnv::LayerItem sett;
 	UTF8Char sbuff[32];
-	OSInt imgInd;
-	OSInt lyrInd;
+	UOSInt imgInd;
+	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(lyr, OrganSpImgLayer());
 	NEW_CLASS(stimg, Media::StaticImage(7, 7, 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -2529,7 +2529,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->groupList, Data::ArrayList<OrganGroup*>());
 	NEW_CLASS(this->imgItems, Data::ArrayList<OrganImageItem*>());
 	NEW_CLASS(this->pickObjs, Data::ArrayList<OrganGroupItem*>());
-	NEW_CLASS(this->mapImgLyrs, Data::Int32Map<OrganSpImgLayer*>());
+	NEW_CLASS(this->mapImgLyrs, Data::UInt32Map<OrganSpImgLayer*>());
 	NEW_CLASS(this->mapUFiles, Data::ArrayList<UserFileInfo*>());
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
@@ -3264,11 +3264,11 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				const UTF8Char *name;
-				OSInt j = data->GetCount();
-				OSInt fmtSURL = -1;
-				OSInt fmtIURL = -1;
-				OSInt fmtFile = -1;
-				OSInt fmtHDROP = -1;
+				UOSInt j = data->GetCount();
+				UOSInt fmtSURL = (UOSInt)-1;
+				UOSInt fmtIURL = (UOSInt)-1;
+				UOSInt fmtFile = (UOSInt)-1;
+				UOSInt fmtHDROP = (UOSInt)-1;
 				while (j-- > 0)
 				{
 					name = data->GetName(j);
@@ -3315,11 +3315,11 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 					}
 				}
 
-				if (fmtSURL != -1 && fmtIURL != -1 && fmtFile != -1)
+				if (fmtSURL != (UOSInt)-1 && fmtIURL != (UOSInt)-1 && fmtFile != (UOSInt)-1)
 				{
 					retEff = UI::GUIDropHandler::DE_LINK;
 				}
-				else if (fmtHDROP != -1)
+				else if (fmtHDROP != (UOSInt)-1)
 				{
 					retEff = UI::GUIDropHandler::DE_COPY;
 				}

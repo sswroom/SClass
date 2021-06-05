@@ -54,7 +54,7 @@ IO::MemFileBuffer::MemFileBuffer(const UTF8Char *fileName)
 			}
 		}
 #endif
-		file->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		file->SeekFromBeginning(0);
 		file->Read(this->filePtr, (UOSInt)fileSize);
 	}
 	else

@@ -60,10 +60,10 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
-	OSInt tableCnt;
-	OSInt colCnt;
-	OSInt i;
-	OSInt j;
+	UOSInt tableCnt;
+	UOSInt colCnt;
+	UOSInt i;
+	UOSInt j;
 	Data::DateTime dt;
 
 

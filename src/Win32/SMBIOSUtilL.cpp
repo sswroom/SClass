@@ -32,7 +32,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				if (!fs->IsError())
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
-					fs->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+					fs->SeekFromBeginning(ofst);
 					if (buffSize != fs->Read(dataBuff, buffSize))
 					{
 						MemFree(dataBuff);
@@ -46,14 +46,14 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 		{
 			if (buffSize >= 24)
 			{
-				Int64 ofst = 0;//ReadInt64(&buffTmp[0x10]);
+				UInt64 ofst = 0;//ReadInt64(&buffTmp[0x10]);
 				buffSize = ReadUInt32(&buffTmp[0x0c]);
 
 				NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/dmi/tables/DMI", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 				if (!fs->IsError())
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
-					fs->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+					fs->SeekFromBeginning(ofst);
 					if (buffSize != fs->Read(dataBuff, buffSize))
 					{
 						MemFree(dataBuff);
@@ -75,7 +75,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				if (!fs->IsError())
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
-					fs->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+					fs->SeekFromBeginning(ofst);
 					if (buffSize != fs->Read(dataBuff, buffSize))
 					{
 						MemFree(dataBuff);

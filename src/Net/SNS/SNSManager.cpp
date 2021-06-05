@@ -153,10 +153,10 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 
 	if (item->imgURL && item->imgURL[0])
 	{
-		OSInt i = 0;
-		OSInt j;
-		OSInt k;
-		OSInt retryCnt;
+		UOSInt i = 0;
+		UOSInt j;
+		UOSInt k;
+		UOSInt retryCnt;
 		UInt64 leng;
 		UTF8Char *sarr[2];
 		Net::HTTPClient *cli;
@@ -190,15 +190,15 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				{
 					if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".mp4"))
 					{
-						Text::StrConcat(Text::StrOSInt(sptr, i), (const UTF8Char*)".mp4");
+						Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".mp4");
 					}
 					else if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".png"))
 					{
-						Text::StrConcat(Text::StrOSInt(sptr, i), (const UTF8Char*)".png");
+						Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".png");
 					}
 					else
 					{
-						Text::StrConcat(Text::StrOSInt(sptr, i), (const UTF8Char*)".jpg");
+						Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".jpg");
 					}
 					leng = 0;
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -255,7 +255,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				cli = Net::HTTPClient::CreateClient(this->sockf, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
 				if (cli->Connect(sarr[0], "GET", 0, 0, true))
 				{
-					Text::StrConcat(Text::StrOSInt(sptr, i), (const UTF8Char*)".mp4");
+					Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".mp4");
 					leng = 0;
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 					while (true)
@@ -314,8 +314,8 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	OSInt i = 0;
-	OSInt j = channel->currItems->GetCount();
+	UOSInt i = 0;
+	UOSInt j = channel->currItems->GetCount();
 	while (i < j)
 	{
 		writer->WriteLine(channel->currItems->GetItem(i));
@@ -334,18 +334,18 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	channel->ctrl->GetCurrItems(&itemList);
 	Data::ArrayListStrUTF8 oldItems;
 	oldItems.AddRange(channel->currItems);
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	OSInt si;
 	i = 0;
 	j = itemList.GetCount();
 	while (i < j)
 	{
 		item = itemList.GetItem(i);
-		k = oldItems.SortedIndexOf(item->id);
-		if (k >= 0)
+		si = oldItems.SortedIndexOf(item->id);
+		if (si >= 0)
 		{
-			oldItems.RemoveAt(k);
+			oldItems.RemoveAt((UOSInt)si);
 		}
 		else
 		{
@@ -359,10 +359,10 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	i = oldItems.GetCount();
 	while (i-- > 0)
 	{
-		j = channel->currItems->SortedIndexOf(oldItems.GetItem(i));
-		if (j >= 0)
+		si = channel->currItems->SortedIndexOf(oldItems.GetItem(i));
+		if (si >= 0)
 		{
-			Text::StrDelNew(channel->currItems->RemoveAt(j));
+			Text::StrDelNew(channel->currItems->RemoveAt((UOSInt)si));
 			updated = true;
 		}
 	}
@@ -386,7 +386,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	Net::SNS::SNSManager *me = (Net::SNS::SNSManager*)userObj;
 	Data::DateTime *dt;
 	Int64 t;
-	OSInt i;
+	UOSInt i;
 	Int32 cnt;
 	Net::SNS::SNSManager::ChannelData *channel;
 	Data::Int32Map<Int32> *cntMap;
@@ -506,8 +506,8 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Text::EncodingFactor
 
 Net::SNS::SNSManager::~SNSManager()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Net::SNS::SNSManager::ChannelData *channel;
 	this->threadToStop = true;
 	this->threadEvt->Set();
@@ -540,8 +540,8 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::SNS::SNSControl *ctrl;
-	OSInt i = 0;
-	OSInt j = this->channelList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->channelList->GetCount();
 	while (i < j)
 	{
 		ctrl = this->channelList->GetItem(i)->ctrl;

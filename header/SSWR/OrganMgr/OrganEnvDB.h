@@ -34,12 +34,12 @@ namespace SSWR
 			virtual const UTF8Char *GetCacheDir();
 
 			ErrorType GetErrorType();
-			virtual OSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);
-			virtual OSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp);
-			virtual OSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp);
-			virtual OSInt GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp);
-			virtual OSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp);
-			virtual OSInt GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds);
+			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);
+			virtual UOSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp);
+			virtual UOSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp);
+			virtual UOSInt GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp);
+			virtual UOSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp);
+			virtual UOSInt GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds);
 			virtual OrganGroup *GetGroup(Int32 groupId, Int32 *parentId);
 			virtual OrganSpecies *GetSpecies(Int32 speciesId);
 			virtual UTF8Char *GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff);
@@ -66,7 +66,7 @@ namespace SSWR
 			virtual Bool MoveImages(Data::ArrayList<OrganImages*> *imgList, OrganSpecies *destSp, UI::GUIForm *frm);
 			virtual Bool CombineSpecies(OrganSpecies *destSp, OrganSpecies *srcSp);
 
-			virtual OSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList);
+			virtual UOSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList);
 			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType);
 			virtual Bool ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark);
 			virtual void ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList);

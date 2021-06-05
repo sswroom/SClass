@@ -2182,7 +2182,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Net::HTTPClient *cli;
 				UInt64 readSize;
 				UInt8 *txtBuff = MemAlloc(UInt8, (UOSInt)fileSize);
-				fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
+				fs->SeekFromBeginning(0);
 				if (fileSize != (readSize = fs->Read(txtBuff, fileSize)))
 				{
 					console->WriteLine((const UTF8Char*)"Error in reading result file");

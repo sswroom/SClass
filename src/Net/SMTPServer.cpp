@@ -37,7 +37,7 @@ void __stdcall Net::SMTPServer::ClientEvent(Net::TCPClient *cli, void *userObj, 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		MailStatus *cliStatus;
-		OSInt i;
+		UOSInt i;
 		cliStatus = (MailStatus*)cliData;
 		MemFree(cliStatus->buff);
 		if (cliStatus->cliName)
@@ -136,7 +136,7 @@ void __stdcall Net::SMTPServer::ClientTimeout(Net::TCPClient *cli, void *userObj
 {
 }
 
-OSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg)
+UOSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i = 0;
@@ -148,7 +148,7 @@ OSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const
 		{
 			sb.AppendI32(statusCode);
 			sb.Append((const UTF8Char *)"-");
-			sb.AppendC(&msg[i], j);
+			sb.AppendC(&msg[i], (UOSInt)j);
 			sb.Append((const UTF8Char *)"\r\n");
 			i += j + 2;
 		}
@@ -163,7 +163,7 @@ OSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const
 	}
 
 
-	OSInt buffSize;
+	UOSInt buffSize;
 	buffSize = cli->Write(sb.ToString(), sb.GetLength());
 	if (this->rawLog)
 	{
@@ -211,7 +211,7 @@ void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus 
 		if (cliStatus->loginMode == 1)
 		{
 			Bool succ = false;
-			OSInt len = Text::StrCharCnt(cmd);
+			UOSInt len = Text::StrCharCnt(cmd);
 			UInt8 *decBuff = MemAlloc(UInt8, len);
 			const UTF8Char *userName;
 			const UTF8Char *pwd;
@@ -241,7 +241,7 @@ void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus 
 		}
 		else if (cliStatus->loginMode == 2)
 		{
-			OSInt len = Text::StrCharCnt(cmd);
+			UOSInt len = Text::StrCharCnt(cmd);
 			UInt8 *decBuff = MemAlloc(UInt8, len);
 			Crypto::Encrypt::Base64 b64;
 			len = b64.Decrypt((UInt8*)cmd, len, decBuff, 0);
@@ -255,7 +255,7 @@ void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus 
 		else if (cliStatus->loginMode == 3)
 		{
 			Bool succ = false;
-			OSInt len = Text::StrCharCnt(cmd);
+			UOSInt len = Text::StrCharCnt(cmd);
 			UInt8 *decBuff = MemAlloc(UInt8, len);
 			Crypto::Encrypt::Base64 b64;
 			len = b64.Decrypt((UInt8*)cmd, len, decBuff, 0);
@@ -400,7 +400,7 @@ void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus 
 		else if (Text::StrStartsWithICase(&cmd[5], "PLAIN "))
 		{
 			Bool succ = false;
-			OSInt len = Text::StrCharCnt(cmd);
+			UOSInt len = Text::StrCharCnt(cmd);
 			UInt8 *decBuff = MemAlloc(UInt8, len - 10);
 			const UTF8Char *userName;
 			const UTF8Char *pwd;
@@ -429,7 +429,7 @@ void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus 
 		}
 		else if (Text::StrStartsWithICase(&cmd[5], "LOGIN "))
 		{
-			OSInt len = Text::StrCharCnt(cmd);
+			UOSInt len = Text::StrCharCnt(cmd);
 			UInt8 *decBuff = MemAlloc(UInt8, len - 10);
 			Crypto::Encrypt::Base64 b64;
 			len = b64.Decrypt((UInt8*)&cmd[11], len - 11, decBuff, 0);

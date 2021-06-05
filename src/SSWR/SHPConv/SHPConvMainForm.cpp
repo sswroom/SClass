@@ -135,7 +135,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(void *userObj)
 	IO::StmData::FileData *fd;
 	DB::DBFFile *dbf;
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-	NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)me->lstLang->GetSelectedItem()));
+	NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem()));
 	if (!dbf->IsError())
 	{
 		SSWR::SHPConv::SHPConvCurrFilterForm *frm;
@@ -157,7 +157,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 	if (fd->GetDataSize() > 0)
 	{
-		NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)me->lstLang->GetSelectedItem()));
+		NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem()));
 		if (!dbf->IsError())
 		{
 			SSWR::SHPConv::SHPConvDBFViewForm *frm;
@@ -236,7 +236,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	sb.RemoveChars(sb.GetLength() - (UOSInt)si - 1);
 	sb.Append((const UTF8Char*)"dbf");
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-	NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)this->lstLang->GetSelectedItem()));
+	NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 	r = dbf->GetTableData(0, 0, 0, 0);
 	if (r)
 	{
@@ -356,12 +356,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	{
 		if (fs->Read(buff, 8) != 8)
 			break;
-		fs->Seek(IO::SeekableStream::ST_CURRENT, ReadMUInt32(&buff[4]) * 2);
+		fs->SeekFromCurrent(ReadMUInt32(&buff[4]) * 2);
 		filePos += ReadMUInt32(&buff[4]) * 2 + 8;
 		nRecords += 1;
 	}
 
-	fs->Seek(IO::SeekableStream::ST_BEGIN, 100);
+	fs->SeekFromBeginning(100);
 	if (shpType == 3 || shpType == 5)
 	{
 		sb.ClearStr();
@@ -388,7 +388,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			}
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-			NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)this->lstLang->GetSelectedItem()));
+			NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 			dbfr = dbf->GetTableData(0, 0, 0, 0);
 			StrRecord *strRec;
 
@@ -427,7 +427,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 				}
 				else if (ReadInt32(&buff[8]) != shpType)
 				{
-					fs->Seek(IO::SeekableStream::ST_CURRENT, recSize * 2 - 4);
+					fs->SeekFromCurrent(recSize * 2 - 4);
 //					tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
 					if (dbfr)
 					{
@@ -470,7 +470,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 					}
 					if (!chkVal)
 					{
-						fs->Seek(IO::SeekableStream::ST_CURRENT, recSize * 2 - 36);
+						fs->SeekFromCurrent(recSize * 2 - 36);
 //						tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
 					}
 				}
@@ -702,7 +702,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(8 + i * 16));
+				cib->SeekFromBeginning(8 + i * 16);
 
 				WriteInt32(&buff[0], theBlk->blockX);
 				WriteInt32(&buff[4], theBlk->blockY);
@@ -710,7 +710,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 				WriteInt32(&buff[12], (Int32)filePos);
 				cib->Write(buff, 16);
 
-				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)filePos);
+				cib->SeekFromBeginning(filePos);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
@@ -804,7 +804,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			}
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-			NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)this->lstLang->GetSelectedItem()));
+			NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 			dbfr = dbf->GetTableData(0, 0, 0, 0);
 
 			StrRecord *strRec;
@@ -1031,7 +1031,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(8 + i * 16));
+				cib->SeekFromBeginning(8 + i * 16);
 
 				WriteInt32(&buff[0], theBlk->blockX);
 				WriteInt32(&buff[4], theBlk->blockY);
@@ -1039,7 +1039,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 				WriteInt32(&buff[12], (Int32)filePos);
 				cib->Write(buff, 16);
 
-				cib->Seek(IO::SeekableStream::ST_BEGIN, (Int64)filePos);
+				cib->SeekFromBeginning(filePos);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
@@ -1181,7 +1181,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		Text::StrConcat(&sbuff[i + 1], (const UTF8Char*)"dbf");
 
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-		NEW_CLASS(dbf, DB::DBFFile(fd, (Int32)(OSInt)this->lstLang->GetSelectedItem()));
+		NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 		if (!dbf->IsError())
 		{
 			this->lstRecords->ClearItems();

@@ -12,7 +12,7 @@ namespace Exporter
 		typedef struct
 		{
 			Map::IMapDrawLayer *layer;
-			Int32 dispCol;
+			UInt32 dispCol;
 			Int32 scale;
 		} CIPParam;
 

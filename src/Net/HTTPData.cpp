@@ -90,7 +90,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				Sync::MutexUsage mutUsage(fdh->mut);
 				if (fdh->currentOffset != fdh->loadSize)
 				{
-					fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)fdh->loadSize);
+					fdh->file->SeekFromBeginning(fdh->loadSize);
 					fdh->seekCnt++;
 					fdh->currentOffset = fdh->loadSize;
 				}
@@ -138,7 +138,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					Sync::MutexUsage mutUsage(fdh->mut);
 					if (fdh->currentOffset != fdh->loadSize)
 					{
-						fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)fdh->loadSize);
+						fdh->file->SeekFromBeginning(fdh->loadSize);
 						fdh->seekCnt++;
 					}
 					fdh->file->Write(buff, readSize);
@@ -296,7 +296,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 	}
 	if (fdh->currentOffset != dataOffset + offset)
 	{
-		if ((fdh->currentOffset = fdh->file->Seek(IO::SeekableStream::ST_BEGIN, (Int64)(dataOffset + offset))) != dataOffset + offset)
+		if ((fdh->currentOffset = fdh->file->SeekFromBeginning(dataOffset + offset)) != dataOffset + offset)
 		{
 			mutUsage.EndUse();
 			return 0;

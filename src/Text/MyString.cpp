@@ -474,7 +474,7 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 	return oriStr;
 }
 
-Char *Text::StrInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
+Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
 {
 	Char buff[40];
 	Char *str;

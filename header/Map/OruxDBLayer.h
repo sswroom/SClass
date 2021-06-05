@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_ORUXDBLAYER
 #define _SM_MAP_ORUXDBLAYER
+#include "Data/UInt32Map.h"
 #include "DB/DBConn.h"
 #include "Map/IMapDrawLayer.h"
 #include "Parser/ParserList.h"
@@ -11,7 +12,7 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Int32 layerId;
+			UInt32 layerId;
 			Double mapXMin;
 			Double mapXMax;
 			Double mapYMin;
@@ -23,8 +24,8 @@ namespace Map
 		} LayerInfo;
 	private:
 		Parser::ParserList *parsers;
-		Data::Int32Map<LayerInfo*> *layerMap;
-		Int32 currLayer;
+		Data::UInt32Map<LayerInfo*> *layerMap;
+		UInt32 currLayer;
 		UInt32 tileSize;
 		DB::DBConn *db;
 
@@ -33,9 +34,9 @@ namespace Map
 		virtual ~OruxDBLayer();
 
 		Bool IsError();
-		void AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize);
+		void AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize);
 
-		void SetCurrLayer(Int32 level);
+		void SetCurrLayer(UInt32 level);
 		virtual void SetCurrScale(Double scale);
 		virtual Map::MapView *CreateMapView(UOSInt width, UOSInt height);
 

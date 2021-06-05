@@ -18,7 +18,7 @@ namespace IO
 
 			Sync::Mutex *mut;
 			UInt8 *recvBuff;
-			OSInt recvSize;
+			UOSInt recvSize;
 			Bool recvRunning;
 			Bool recvToStop;
 			Sync::Event *recvEvt;

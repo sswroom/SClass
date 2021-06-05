@@ -546,14 +546,14 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				}
 				if (tstat->deint == 0)
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, (OSInt)srcWidth << 3));
 				}
 				else
 				{
 					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = tstat->diBuff;
-				tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, srcWidth << 3);
+				tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_TF)
 			{

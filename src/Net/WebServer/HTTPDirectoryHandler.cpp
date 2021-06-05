@@ -1227,7 +1227,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			{
 				sizeLeft = sizeLeft - (UInt64)start;
 			}
-			fs->Seek(IO::SeekableStream::ST_BEGIN, start);
+			fs->SeekFromBeginning((UInt64)start);
 			resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 			UTF8Char u8buff[128];
 			UTF8Char *u8ptr;
@@ -1262,7 +1262,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sizeLeft += mstm->Write(buff, readSize);
 					readSize = fs->Read(buff, 2048);
 				}
-				mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+				mstm->SeekFromBeginning(0);
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
 				DEL_CLASS(mstm);
 			}

@@ -13,11 +13,11 @@ namespace UI
 
 		Media::DrawEngine *eng;
 		const UTF8Char *unit;
-		OSInt lineCnt;
-		OSInt sampleCnt;
+		UOSInt lineCnt;
+		UOSInt sampleCnt;
 		Int32 *lineColor;
-		Int32 bgColor;
-		Int32 fontColor;
+		UInt32 bgColor;
+		UInt32 fontColor;
 
 		Bool valueChanged;
 		Double *chartVal;

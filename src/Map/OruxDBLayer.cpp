@@ -16,8 +16,8 @@
 Map::OruxDBLayer::OruxDBLayer(const UTF8Char *sourceName, const UTF8Char *layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
-	NEW_CLASS(this->layerMap, Data::Int32Map<Map::OruxDBLayer::LayerInfo*>());
-	this->currLayer = -1;
+	NEW_CLASS(this->layerMap, Data::UInt32Map<Map::OruxDBLayer::LayerInfo*>());
+	this->currLayer = (UInt32)-1;
 	this->tileSize = 1;
 	UTF8Char sbuff[512];
 	Text::StrConcat(sbuff, sourceName);
@@ -62,7 +62,7 @@ Bool Map::OruxDBLayer::IsError()
 	return this->db == 0;
 }
 
-void Map::OruxDBLayer::AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize)
+void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize)
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(layerId);
 	if (lyr == 0)
@@ -79,19 +79,17 @@ void Map::OruxDBLayer::AddLayer(Int32 layerId, Double mapXMin, Double mapYMin, D
 		lyr->maxX = maxX;
 		lyr->maxY = maxY;
 		this->layerMap->Put(layerId, lyr);
-		if (this->currLayer < layerId)
+		if (this->currLayer == (UInt32)-1 || this->currLayer < layerId)
 		{
 			this->currLayer = layerId;
 		}
 	}
 }
 
-void Map::OruxDBLayer::SetCurrLayer(Int32 level)
+void Map::OruxDBLayer::SetCurrLayer(UInt32 level)
 {
-	if (level < 0)
-		level = 0;
-	else if ((UInt32)level >= this->layerMap->GetCount())
-		level = (Int32)this->layerMap->GetCount() - 1;
+	if (level >= this->layerMap->GetCount())
+		level = (UInt32)this->layerMap->GetCount() - 1;
 	this->currLayer = level;
 }
 
@@ -102,7 +100,7 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 		level = 0;
 	else if ((UInt32)level >= this->layerMap->GetCount())
 		level = (Int32)this->layerMap->GetCount() - 1;
-	this->currLayer = level;
+	this->currLayer = (UInt32)level;
 }
 
 Map::MapView *Map::OruxDBLayer::CreateMapView(UOSInt width, UOSInt height)
@@ -323,7 +321,7 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 	sql.AppendCmd((const UTF8Char*)" and y = ");
 	sql.AppendInt32(y);
 	sql.AppendCmd((const UTF8Char*)" and z = ");
-	sql.AppendInt32(this->currLayer);
+	sql.AppendInt32((Int32)this->currLayer);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
 	if (r == 0)
 		return 0;
@@ -417,7 +415,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	sql.AppendCmd((const UTF8Char*)" and y = ");
 	sql.AppendInt32(y);
 	sql.AppendCmd((const UTF8Char*)" and z = ");
-	sql.AppendInt32(this->currLayer);
+	sql.AppendInt32((Int32)this->currLayer);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
 	if (r == 0)
 		return false;

@@ -424,7 +424,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									}
 									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"MapCalibration"))
 									{
-										Int32 layerId = -1;
+										UInt32 layerId = (UInt32)-1;
 										UInt32 maxX = 0;
 										UInt32 maxY = 0;
 										UInt32 tileSize = 0;
@@ -441,7 +441,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											attr = reader->GetAttrib(i);
 											if (Text::StrEquals(attr->name, (const UTF8Char*)"layerLevel"))
 											{
-												if (Text::StrToInt32(attr->value, &layerId))
+												if (Text::StrToUInt32(attr->value, &layerId))
 												{
 													flags |= 1;
 													break;

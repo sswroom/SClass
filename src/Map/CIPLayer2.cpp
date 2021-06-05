@@ -94,7 +94,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	if (!file->IsError())
 	{
 		i = (UOSInt)file->GetLength();
-		this->ofsts = (Int32*)MAlloc(i);
+		this->ofsts = (UInt32*)MAlloc(i);
 		file->Read((UInt8*)this->ofsts, i);
 		this->maxId = (OSInt)(i / 8) - 2;
 	}
@@ -128,12 +128,12 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 				//DebugBreak();
 				missFile = true;
 			}
-			Int32 *tmpBuff = MemAlloc(Int32, this->nblks * 4);
+			UInt32 *tmpBuff = MemAlloc(UInt32, this->nblks * 4);
 			file->Read((UInt8*)tmpBuff, this->nblks * 16);
 			i = 0;
 			while (i < this->nblks)
 			{
-				if (tmpBuff[i * 4] != this->blks[i].xblk || tmpBuff[i * 4 + 1] != this->blks[i].yblk)
+				if ((Int32)tmpBuff[i * 4] != this->blks[i].xblk || (Int32)tmpBuff[i * 4 + 1] != this->blks[i].yblk)
 				{
 					//DebugBreak();
 					missFile = true;
@@ -238,7 +238,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 		{
 			UTF16Char *strTmp;
 			UInt8 buff[5];
-			cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
+			cis->SeekFromBeginning(this->blks[k].sofst);
 			i = this->blks[k].objCnt;
 			while (i-- > 0)
 			{
@@ -268,7 +268,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 				{
 					if (buff[4])
 					{
-						cis->Seek(IO::SeekableStream::ST_CURRENT, buff[4]);
+						cis->SeekFromCurrent(buff[4]);
 					}
 				}
 			}
@@ -409,7 +409,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 			{
 				UTF16Char *strTmp;
 				UInt8 buff[5];
-				cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
+				cis->SeekFromBeginning(this->blks[k].sofst);
 				i = this->blks[k].objCnt;
 				while (i-- > 0)
 				{
@@ -441,7 +441,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 					{
 						if (buff[4])
 						{
-							cis->Seek(IO::SeekableStream::ST_CURRENT, buff[4]);
+							cis->SeekFromCurrent(buff[4]);
 						}
 					}
 				}
@@ -668,8 +668,8 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	if (id > maxId)
 		return 0;
 
-	Int32 ofst = this->ofsts[2 + (id << 1)];
-	cip->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+	UInt32 ofst = this->ofsts[2 + (id << 1)];
+	cip->SeekFromBeginning(ofst);
 	if (cip->Read((UInt8*)buff, 8) != 8)
 	{
 		return 0;

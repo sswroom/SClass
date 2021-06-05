@@ -76,27 +76,40 @@ Bool IO::StreamDataStream::Recover()
 	return false;
 }
 
-UInt64 IO::StreamDataStream::Seek(SeekType origin, Int64 position)
+UInt64 IO::StreamDataStream::SeekFromBeginning(UInt64 position)
 {
-	if (origin == IO::SeekableStream::ST_BEGIN)
+	this->currOfst = position;
+	if (this->currOfst > this->stmDataLeng)
 	{
-		this->currOfst = (UInt64)position;
+		this->currOfst = this->stmDataLeng;
 	}
-	else if (origin == IO::SeekableStream::ST_CURRENT)
+	return this->currOfst;
+}
+
+UInt64 IO::StreamDataStream::SeekFromCurrent(Int64 position)
+{
+	Int64 targetPos = (Int64)this->currOfst + position;
+	if (targetPos < 0)
 	{
-		this->currOfst += (UInt64)position;
+		return this->SeekFromBeginning(0);
 	}
-	else if (origin == IO::SeekableStream::ST_END)
+	else
 	{
-		this->currOfst = this->stmDataLeng + (UInt64)position;
+		return this->SeekFromBeginning((Int64)targetPos);
 	}
-	if ((Int64)currOfst < 0)
-		currOfst = 0;
-	else if (currOfst > this->stmDataLeng)
+}
+
+UInt64 IO::StreamDataStream::SeekFromEnd(Int64 position)
+{
+	Int64 targetPos = (Int64)this->stmDataLeng + position;
+	if (targetPos < 0)
 	{
-		currOfst = this->stmDataLeng;
+		return this->SeekFromBeginning(0);
 	}
-	return currOfst;
+	else
+	{
+		return this->SeekFromBeginning((Int64)targetPos);
+	}
 }
 
 UInt64 IO::StreamDataStream::GetPosition()

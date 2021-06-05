@@ -41,7 +41,7 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Text::EncodingFactory *encFa
 	{
 		this->chDesc = Text::StrCopyNew(rss->GetDescription());
 	}
-	OSInt i = rss->GetCount();
+	UOSInt i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	while (i-- > 0)
@@ -57,8 +57,8 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Text::EncodingFactory *encFa
 			{
 				sb2.Append(item->imgURL);
 			}
-			OSInt j = 0;
-			OSInt k = imgList.GetCount();
+			UOSInt j = 0;
+			UOSInt k = imgList.GetCount();
 			const UTF8Char *csptr;
 			while (j < k)
 			{
@@ -84,7 +84,7 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Text::EncodingFactory *encFa
 
 Net::SNS::SNSRSS::~SNSRSS()
 {
-	OSInt i;
+	UOSInt i;
 	SDEL_TEXT(this->userAgent);
 	SDEL_TEXT(this->chName);
 	SDEL_TEXT(this->chDesc);
@@ -128,9 +128,9 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-OSInt Net::SNS::SNSRSS::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
+UOSInt Net::SNS::SNSRSS::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
-	OSInt initCnt = itemList->GetCount();
+	UOSInt initCnt = itemList->GetCount();
 	itemList->AddRange(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
@@ -150,7 +150,7 @@ Int32 Net::SNS::SNSRSS::GetMinIntevalMS()
 Bool Net::SNS::SNSRSS::Reload()
 {
 	SNSItem *snsItem;
-	OSInt j;
+	OSInt si;
 	Net::RSSItem *item;
 	Data::ArrayListStrUTF8 idList;
 	Bool changed = false;
@@ -158,7 +158,7 @@ Bool Net::SNS::SNSRSS::Reload()
 
 	Net::RSS *rss;
 	NEW_CLASS(rss, Net::RSS(this->channelId, this->userAgent, this->sockf));
-	OSInt i = rss->GetCount();
+	UOSInt i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	if (i > 0)
@@ -166,10 +166,10 @@ Bool Net::SNS::SNSRSS::Reload()
 		while (i-- > 0)
 		{
 			item = rss->GetItem(i);
-			j = idList.SortedIndexOf(item->guid);
-			if (j >= 0)
+			si = idList.SortedIndexOf(item->guid);
+			if (si >= 0)
 			{
-				idList.RemoveAt(j);
+				idList.RemoveAt((UOSInt)si);
 			}
 			else
 			{
@@ -183,8 +183,8 @@ Bool Net::SNS::SNSRSS::Reload()
 					{
 						sb2.Append(item->imgURL);
 					}
-					OSInt j = 0;
-					OSInt k = imgList.GetCount();
+					UOSInt j = 0;
+					UOSInt k = imgList.GetCount();
 					const UTF8Char *csptr;
 					while (j < k)
 					{

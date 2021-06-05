@@ -239,11 +239,11 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		k = strRec->ofstList->GetCount();
 		while (k-- > 0)
 		{
-			stm->Seek(IO::SeekableStream::ST_BEGIN, strRec->ofstList->GetItem(k));
+			stm->SeekFromBeginning(strRec->ofstList->GetItem(k));
 			stm->Write((UInt8*)&stmPos, 4);
 		}
 		stmPos += strRec->byteSize;
-		stm->Seek(IO::SeekableStream::ST_BEGIN, (Int64)stmPos);
+		stm->SeekFromBeginning(stmPos);
 
 		i++;
 	}

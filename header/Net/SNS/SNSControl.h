@@ -41,7 +41,7 @@ namespace Net
 			virtual const UTF8Char *GetChannelId() = 0;
 			virtual const UTF8Char *GetName() = 0;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName) = 0;
-			virtual OSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList) = 0;
+			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList) = 0;
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item) = 0;
 			virtual Int32 GetMinIntevalMS() = 0;
 			virtual Bool Reload() = 0;

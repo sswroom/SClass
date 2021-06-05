@@ -26,7 +26,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	Media::Image *img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)

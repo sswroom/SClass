@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "IO/BufferedInputStream.h"
 #include "IO/FileStream.h"
@@ -72,7 +73,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	if (!file->IsError())
 	{
 		i = (UOSInt)file->GetLength();
-		this->ofsts = (Int32*)MAlloc(i);
+		this->ofsts = (UInt32*)MAlloc(i);
 		file->Read((UInt8*)this->ofsts, i);
 		this->maxId = (OSInt)(i / 8) - 2;
 	}
@@ -99,7 +100,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file->IsError())
 		{
-			Int32 buff[4];
+			UInt32 buff[4];
 			bstm->Read((UInt8*)buff, 8);
 			i = 0;
 			while (i < this->nblks)
@@ -190,7 +191,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 		{
 			WChar *strTmp;
 			UInt8 buff[13];
-			cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
+			cis->SeekFromBeginning(this->blks[k].sofst);
 			i = this->blks[k].objCnt;
 			while (i-- > 0)
 			{
@@ -202,7 +203,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
-					cis->Seek(IO::SeekableStream::ST_CURRENT, *(Int32*)&buff[4] - 13 - buff[12]);
+					cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
 					textSize = Text::StrWChar_UTF8Cnt(strTmp, -1) - 1;
 					if (textSize > this->maxTextSize)
 						maxTextSize = textSize;
@@ -331,7 +332,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 			{
 				WChar *strTmp;
 				UInt8 buff[13];
-				cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
+				cis->SeekFromBeginning(this->blks[k].sofst);
 				i = (Int32)this->blks[k].objCnt;
 				while (i-- > 0)
 				{
@@ -343,7 +344,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
-						cis->Seek(IO::SeekableStream::ST_CURRENT, *(Int32*)&buff[4] - 13 - buff[12]);
+						cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
 						textSize = Text::StrWChar_UTF8Cnt(strTmp, -1);
 						if (textSize > this->maxTextSize)
 						{
@@ -557,9 +558,9 @@ Map::DrawObjectL *Map::SPDLayer::GetObjectByIdD(void *session, Int64 id)
 	IO::FileStream *cip = (IO::FileStream*)session;
 
 	Int32 objBuff[2];
-	Int32 ofst = this->ofsts[2 + (id << 1)];
+	UInt32 ofst = this->ofsts[2 + (id << 1)];
 	Map::DrawObjectL *obj;
-	cip->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+	cip->SeekFromBeginning(ofst);
 	cip->Read((UInt8*)objBuff, 8);
 	obj = MemAlloc(Map::DrawObjectL, 1);
 	obj->objId = objBuff[0];
@@ -596,7 +597,7 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	Int32 buff[3];
 
 	IO::FileStream *cip = (IO::FileStream*)session;
-	Int32 ofst = this->ofsts[2 + (id << 1)];
+	UInt32 ofst = this->ofsts[2 + (id << 1)];
 	Math::PointCollection *ptColl = 0;
 	UInt32 *ptOfsts;
 	Int32 *points;
@@ -604,7 +605,7 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	UInt32 *tmpPtOfsts;
 	Double *tmpPoints;
 
-	cip->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+	cip->SeekFromBeginning(ofst);
 	cip->Read((UInt8*)buff, 8);
 	
 	if (buff[1] > 0)

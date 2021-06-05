@@ -47,7 +47,7 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
 UI::GUITreeView::TreeItem::~TreeItem()
 {
 	TreeItem *item;
-	OSInt i;
+	UOSInt i;
 	i = this->children->GetCount();
 	while (i-- > 0)
 	{
@@ -126,7 +126,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(OSInt index)
 void UI::GUITreeView::FreeItems()
 {
 	UI::GUITreeView::TreeItem *item;
-	OSInt i;
+	UOSInt i;
 	i = this->treeItems->GetCount();
 	while (i-- > 0)
 	{
@@ -183,7 +183,7 @@ UI::GUITreeView::~GUITreeView()
 
 void UI::GUITreeView::EventSelectionChange()
 {
-	OSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
@@ -276,7 +276,7 @@ void UI::GUITreeView::ClearItems()
 	FreeItems();
 }
 
-OSInt UI::GUITreeView::GetRootCount()
+UOSInt UI::GUITreeView::GetRootCount()
 {
 	return this->treeItems->GetCount();
 }

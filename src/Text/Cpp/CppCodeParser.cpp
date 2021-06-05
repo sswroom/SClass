@@ -217,8 +217,8 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 */
 
 	Text::StringBuilderUTF8 debugSB;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *phase;
 	i = 0;
 	j = codePhases->GetCount();
@@ -356,7 +356,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	}
 	else if (phase[0] >= '0' && phase[0] <= '9')
 	{
-		OSInt len = Text::StrCharCnt(phase);
+		UOSInt len = Text::StrCharCnt(phase);
 		if (phase[len - 1] == 'L')
 		{
 			((UTF8Char*)phase)[len - 1] = 0;
@@ -756,8 +756,8 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, Bool *result)
 {
 	Bool succ = true;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *phase;
 	Data::ArrayList<const UTF8Char *> codePhase;
 	if (!ParseSharpIfParam(cond, status, errMsgs, &codePhase, 0))

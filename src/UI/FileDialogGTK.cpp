@@ -11,7 +11,7 @@
 
 void UI::FileDialog::ClearFileNames()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->fileNames->GetCount();
 	while (i-- > 0)
 	{
@@ -133,8 +133,8 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 	WChar *fnameBuff;
 //	OSInt fnameBuffSize;
 	Text::StringBuilderUTF8 sb;
-	OSInt i = 0;
-	OSInt filterCnt = this->names->GetCount();
+	UOSInt i = 0;
+	UOSInt filterCnt = this->names->GetCount();
 
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
@@ -199,11 +199,11 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		i = Text::StrLastIndexOf(fname2, IO::Path::PATH_SEPERATOR);
-		if (i >= 0)
+		OSInt si = Text::StrLastIndexOf(fname2, IO::Path::PATH_SEPERATOR);
+		if (si >= 0)
 		{
-			fname2[i] = 0;
-			initFileName = &fname2[i + 1];
+			fname2[si] = 0;
+			initFileName = &fname2[si + 1];
 			initDir = fname2;
 			if (initFileName[0] == 0)
 			{
@@ -287,16 +287,16 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 	}
 	else
 	{
-		i = this->filterIndex;
+		OSInt si = this->filterIndex;
 		GSList *list = gtk_file_chooser_list_filters(chooser);
 		while (true)
 		{
-			if (i <= 0)
+			if (si <= 0)
 			{
 				gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
 				break;
 			}
-			i--;
+			si--;
 			if (list->next == 0)
 			{
 				break;
@@ -443,13 +443,13 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			}
 			if (initFileName[0])
 			{
-				i = Text::StrIndexOf(currPtr, initFileName);
-				if (i >= 0)
+				OSInt si = Text::StrIndexOf(currPtr, initFileName);
+				if (si >= 0)
 				{
-					currPtr[i] = 0;
+					currPtr[si] = 0;
 					sptr = Text::StrConcat(sptr, currPtr);
 					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
+					Text::StrConcat(sptr, &currPtr[(UOSInt)si + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{

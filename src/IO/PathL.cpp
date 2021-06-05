@@ -834,7 +834,7 @@ Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
 
 }
 
-Int64 IO::Path::GetFileSize(const UTF8Char *path)
+UInt64 IO::Path::GetFileSize(const UTF8Char *path)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
@@ -845,10 +845,10 @@ Int64 IO::Path::GetFileSize(const UTF8Char *path)
 #endif
 	if (status != 0)
 		return 0;
-	return s.st_size;
+	return (UInt64)s.st_size;
 }
 
-Int64 IO::Path::GetFileSizeW(const WChar *path)
+UInt64 IO::Path::GetFileSizeW(const WChar *path)
 {
 	const UTF8Char *utfPath = Text::StrToUTF8New(path);
 #if defined(__USE_LARGEFILE64)
@@ -861,7 +861,7 @@ Int64 IO::Path::GetFileSizeW(const WChar *path)
 	Text::StrDelNew(utfPath);
 	if (status != 0)
 		return 0;
-	return s.st_size;
+	return (UInt64)s.st_size;
 }
 
 WChar *IO::Path::GetSystemProgramPathW(WChar *buff)

@@ -31,7 +31,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Text::EncodingFa
 		this->chDesc = Text::StrCopyNew(chInfo.biography);
 	}
 	this->ctrl->FreeChannelInfo(&chInfo);
-	OSInt i = itemList.GetCount();
+	UOSInt i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
@@ -40,8 +40,8 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Text::EncodingFa
 		{
 			Data::ArrayList<const UTF8Char *> imgList;
 			Data::ArrayList<const UTF8Char *> videoList;
-			OSInt j;
-			OSInt k;
+			UOSInt j;
+			UOSInt k;
 			const UTF8Char *csptr;
 			if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
 			{
@@ -99,7 +99,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Text::EncodingFa
 
 Net::SNS::SNSInstagram::~SNSInstagram()
 {
-	OSInt i;
+	UOSInt i;
 	DEL_CLASS(this->ctrl);
 	SDEL_TEXT(this->chName);
 	SDEL_TEXT(this->chDesc);
@@ -139,9 +139,9 @@ UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-OSInt Net::SNS::SNSInstagram::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
+UOSInt Net::SNS::SNSInstagram::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
-	OSInt initCnt = itemList->GetCount();
+	UOSInt initCnt = itemList->GetCount();
 	itemList->AddRange(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
@@ -159,7 +159,7 @@ Int32 Net::SNS::SNSInstagram::GetMinIntevalMS()
 Bool Net::SNS::SNSInstagram::Reload()
 {
 	SNSItem *snsItem;
-	OSInt j;
+	OSInt si;
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
 	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
 	Data::ArrayListStrUTF8 idList;
@@ -167,17 +167,17 @@ Bool Net::SNS::SNSInstagram::Reload()
 	idList.AddRange(this->itemMap->GetKeys());
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
-	OSInt i = itemList.GetCount();
+	UOSInt i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		while (i-- > 0)
 		{
 			item = itemList.GetItem(i);
-			j = idList.SortedIndexOf(item->shortCode);
-			if (j >= 0)
+			si = idList.SortedIndexOf(item->shortCode);
+			if (si >= 0)
 			{
-				idList.RemoveAt(j);
+				idList.RemoveAt((UOSInt)si);
 			}
 			else
 			{
@@ -185,8 +185,8 @@ Bool Net::SNS::SNSInstagram::Reload()
 				{
 					Data::ArrayList<const UTF8Char *> imgList;
 					Data::ArrayList<const UTF8Char *> videoList;
-					OSInt j;
-					OSInt k;
+					UOSInt j;
+					UOSInt k;
 					const UTF8Char *csptr;
 					if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
 					{

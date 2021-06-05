@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UInt8 *buff;
 		buff = MemAlloc(UInt8, item->size);
-		me->currFile->Seek(IO::SeekableStream::ST_BEGIN, (Int64)item->fileOfst);
+		me->currFile->SeekFromBeginning(item->fileOfst);
 		me->currFile->Read(buff, item->size);
 		sb.AppendHex(buff, item->size, ' ', Text::LBT_CRLF);
 		sb.Append((const UTF8Char*)"\r\n\r\n");

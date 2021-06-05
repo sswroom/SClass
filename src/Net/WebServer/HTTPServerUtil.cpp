@@ -517,7 +517,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		{
 			sizeLeft = sizeLeft - start;
 		}
-		fs->Seek(IO::SeekableStream::ST_BEGIN, (Int64)start);
+		fs->SeekFromBeginning(start);
 		resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 		UTF8Char u8buff[128];
 		UTF8Char *u8ptr;
@@ -552,7 +552,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				sizeLeft += mstm->Write(buff, readSize);
 				readSize = fs->Read(buff, 2048);
 			}
-			mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+			mstm->SeekFromBeginning(0);
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
 			DEL_CLASS(mstm);
 		}

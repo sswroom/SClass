@@ -125,34 +125,9 @@ Bool IO::MemoryStream::Recover()
 	return true;
 }
 
-UInt64 IO::MemoryStream::Seek(SeekType origin, Int64 position)
+UInt64 IO::MemoryStream::SeekFromBeginning(UInt64 position)
 {
-	UInt64 outPos;
-	if (origin == IO::SeekableStream::ST_BEGIN)
-	{
-		if (position < 0)
-			outPos = 0;
-		else
-			outPos = (UInt64)position;
-	}
-	else if (origin == IO::SeekableStream::ST_CURRENT)
-	{
-		if (position < 0 && this->currPtr < (UInt64)-position)
-			outPos = 0;
-		else
-			outPos = (UInt64)((Int64)this->currPtr + position);
-	}
-	else if (origin == IO::SeekableStream::ST_END)
-	{
-		if (position < 0 && this->currSize < (UInt64)-position)
-			outPos = 0;
-		else
-			outPos = (UInt64)((Int64)this->currSize + position);
-	}
-	else
-	{
-		outPos = (UInt64)this->currPtr;
-	}
+	UInt64 outPos = position;
 
 	if (this->capacity == 0)
 	{
@@ -187,6 +162,28 @@ UInt64 IO::MemoryStream::Seek(SeekType origin, Int64 position)
 
 	this->currPtr = (UOSInt)outPos;
 	return outPos;
+}
+
+
+UInt64 IO::MemoryStream::SeekFromCurrent(Int64 position)
+{
+	UInt64 outPos;
+	if (position < 0 && this->currPtr < (UInt64)-position)
+		outPos = 0;
+	else
+		outPos = (UInt64)((Int64)this->currPtr + position);
+	return SeekFromBeginning(outPos);
+}
+
+
+UInt64 IO::MemoryStream::SeekFromEnd(Int64 position)
+{
+	UInt64 outPos;
+	if (position < 0 && this->currSize < (UInt64)-position)
+		outPos = 0;
+	else
+		outPos = (UInt64)((Int64)this->currSize + position);
+	return SeekFromBeginning(outPos);
 }
 
 UInt64 IO::MemoryStream::GetPosition()

@@ -43,7 +43,7 @@ DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *name, UOSInt maxCnt, voi
 	{
 		IO::StreamReader *rdr;
 		DB::CSVReader *r;
-		this->stm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		this->stm->SeekFromBeginning(0);
 		NEW_CLASS(rdr, IO::StreamReader(this->stm, codePage));
 		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader));
 		return r;

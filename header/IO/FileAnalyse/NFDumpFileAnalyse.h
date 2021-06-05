@@ -15,8 +15,8 @@ namespace IO
 		private:
 			typedef struct
 			{
-				Int64 fileOfst;
-				OSInt packSize;
+				UInt64 fileOfst;
+				UOSInt packSize;
 				Int32 packType;
 			} PackInfo;
 		private:
@@ -30,7 +30,7 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 			static UInt32 __stdcall ParseThread(void *userObj);
-			OSInt LZODecompBlock(UInt8 *srcBlock, OSInt srcSize, UInt8 *outBlock, OSInt maxOutSize);
+			UOSInt LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize);
 		public:
 			NFDumpFileAnalyse(IO::IStreamData *fd);
 			virtual ~NFDumpFileAnalyse();

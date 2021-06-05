@@ -94,7 +94,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 			{
 				mstm->Clear();
 				mstm->Write(dataBuff, i + 4);
-				mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+				mstm->SeekFromBeginning(0);
 				NEW_CLASS(reader, IO::StreamReader(mstm, 65001));
 				sptr = reader->ReadLine(sbuff, 1021);
 				if (Text::StrSplit(sarr, 3, sbuff, ' ') != 3)

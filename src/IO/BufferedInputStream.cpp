@@ -102,42 +102,42 @@ Bool IO::BufferedInputStream::Recover()
 	return this->stm->Recover();
 }
 
-UInt64 IO::BufferedInputStream::Seek(SeekType origin, Int64 position)
+
+UInt64 IO::BufferedInputStream::SeekFromBeginning(UInt64 position)
 {
-	Int64 targetPos;
-	if (origin == IO::SeekableStream::ST_END)
+	if (position >= this->stmPos && position <= this->stmPos + this->stmBuffSize)
 	{
-		targetPos = ((Int64)this->stm->GetLength() + position);
-	}
-	else if (origin == IO::SeekableStream::ST_BEGIN)
-	{
-		targetPos = position;
-	}
-	else if (origin == IO::SeekableStream::ST_CURRENT)
-	{
-		targetPos = (Int64)(this->stmPos + this->buffOfst) + position;
+		this->buffOfst = (UOSInt)(position - this->stmPos);
 	}
 	else
 	{
-		targetPos = position;
+		position = (Int64)this->stm->SeekFromBeginning(position);
+		this->buffOfst = 0;
+		this->stmPos = position;
+		this->stmBuffSize = 0;
 	}
-	
+	return position;
+}
+
+UInt64 IO::BufferedInputStream::SeekFromCurrent(Int64 position)
+{
+	Int64 targetPos = (Int64)(this->stmPos + this->buffOfst) + position;
 	if (targetPos < 0)
 	{
 		targetPos = 0;
 	}
-	if ((UInt64)targetPos >= this->stmPos && (UInt64)targetPos <= this->stmPos + this->stmBuffSize)
+	return SeekFromBeginning((UInt64)targetPos);
+}
+
+
+UInt64 IO::BufferedInputStream::SeekFromEnd(Int64 position)
+{
+	Int64 targetPos = (Int64)this->stm->GetLength() + position;
+	if (targetPos < 0)
 	{
-		this->buffOfst = (UOSInt)((UInt64)targetPos - this->stmPos);
+		targetPos = 0;
 	}
-	else
-	{
-		targetPos = (Int64)this->stm->Seek(IO::SeekableStream::ST_BEGIN, targetPos);
-		this->buffOfst = 0;
-		this->stmPos = (UInt64)targetPos;
-		this->stmBuffSize = 0;
-	}
-	return (UInt64)targetPos;
+	return SeekFromBeginning((UInt64)targetPos);
 }
 
 UInt64 IO::BufferedInputStream::GetPosition()

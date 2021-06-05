@@ -148,10 +148,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *userObj)
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
-	Data::ArrayList<Int32> formats;
-	OSInt i;
-	OSInt j;
-	Int32 fmtId = -1;
+	Data::ArrayList<UInt32> formats;
+	UOSInt i;
+	UOSInt j;
+	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
 	UTF8Char *sarr[2];
 	Data::ArrayList<const UTF8Char *> urlList;
@@ -169,7 +169,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 		}
 	}
 
-	if (fmtId != -1)
+	if (fmtId != (UInt32)-1)
 	{
 		const UTF8Char *desc;
 		const UTF8Char *url;
@@ -339,7 +339,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	Int32 maxId = me->core->FileGetMaxId(webType);
 	OSInt currPage = 1;
 	UTF8Char sbuff[32];
-	OSInt i;
+	UOSInt i;
 	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> pageList;
 	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> totalList;
 	Net::WebSite::WebSite48IdolControl::ItemData *item;
@@ -532,8 +532,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
