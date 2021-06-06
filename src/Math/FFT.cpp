@@ -104,6 +104,8 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 	Double invK;
 	UOSInt j;
 	UOSInt k;
+	Double dj;
+	Double dk;
 	switch (wtype)
 	{
 	default:
@@ -112,34 +114,37 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 
 	case WT_TRIANGULAR:
 		k = sampleCount >> 1;
+		dk = Math::UOSInt2Double(k);
 		j = 0;
 		while (j < k)
 		{
-			complexData[j * 2] = complexData[j * 2] * (j + 0.5) / k;
+			complexData[j * 2] = complexData[j * 2] * (Math::UOSInt2Double(j) + 0.5) / dk;
 			j++;
 		}
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (sampleCount - j + 0.5) / k;
+			complexData[j * 2] = complexData[j * 2] * (Math::UOSInt2Double(sampleCount - j) + 0.5) / dk;
 			j++;
 		}
 		break;
 
 	case WT_HAMMING:
 		k = sampleCount - 1;
+		dk = Math::UOSInt2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 0.53836;
 		a1 = 0.46164;
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(j * pi2 / k));
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(Math::UOSInt2Double(j) * pi2 / dk));
 			j++;
 		}
 		break;
 
 	case WT_BLACKMANN:
 		k = sampleCount - 1;
+		dk = Math::UOSInt2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 7938.0 / 18608.0;
 		a1 = 9240.0 / 18608.0;
@@ -147,13 +152,15 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk));
 			j++;
 		}
 		break;
 
 	case WT_NUTTALL:
 		k = sampleCount - 1;
+		dk = Math::UOSInt2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 0.355768;
 		a1 = 0.487396;
@@ -162,13 +169,15 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k) - a3 * Math::Cos(3 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk));
 			j++;
 		}
 		break;
 
 	case WT_BLACKMANN_NUTTALL:
 		k = sampleCount - 1;
+		dk = Math::UOSInt2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 0.3635819;
 		a1 = 0.4891775;
@@ -177,14 +186,16 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k) - a3 * Math::Cos(3 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk));
 			j++;
 		}
 		break;
 
 	case WT_BLACKMANN_HARRIS:
 		k = sampleCount - 1;
-		invK = 1.0 / k;
+		dk = Math::UOSInt2Double(k);
+		invK = 1.0 / dk;
 		pi2 = 2 * Math::PI;
 		a0 = 0.35875;
 		a1 = 0.48829;
@@ -193,13 +204,15 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(j * pi2 * invK) + a2 * Math::Cos(2 * pi2 * j * invK) - a3 * Math::Cos(3 * pi2 * j * invK));
+			dj = Math::UOSInt2Double(j);
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(dj * pi2 * invK) + a2 * Math::Cos(2 * pi2 * dj * invK) - a3 * Math::Cos(3 * pi2 * dj * invK));
 			j++;
 		}
 		break;
 
 	case WT_FLAT_TOP:
 		k = sampleCount - 1;
+		dk = Math::UOSInt2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 1;
 		a1 = 1.93;
@@ -209,7 +222,8 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(j * pi2 / k) + a2 * Math::Cos(2 * pi2 * j / k) - a3 * Math::Cos(3 * pi2 * j / k) + a4 * Math::Cos(4 * pi2 * j / k));
+			dj = Math::UOSInt2Double(j);
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk) + a4 * Math::Cos(4 * pi2 * dj / dk));
 			j++;
 		}
 		break;
@@ -245,10 +259,11 @@ Bool Math::FFT::Forward(ComplexNumber *data, UOSInt sampleCount)
 	ComplexNumber wk;
 	ComplexNumber odd;
 	ComplexNumber even;
+	Double dsampleCount = Math::UOSInt2Double(sampleCount);
 	i = 0;
 	while (i < j)
 	{
-		Double kth = -2 * i * Math::PI / sampleCount;
+		Double kth = -2 * Math::UOSInt2Double(i) * Math::PI / dsampleCount;
 		even = data[i];
 		odd = data[i + j];
 		wk = ComplexNumber(Math::Cos(kth), Math::Sin(kth)) * odd;
@@ -264,7 +279,7 @@ Bool Math::FFT::Inverse(ComplexNumber *data, UOSInt sampleCount)
 	return false;
 }
 
-Bool Math::FFT::ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, OSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify)
+Bool Math::FFT::ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, UOSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify)
 {
 	UOSInt sampleAdd = nChannels * nBitPerSample >> 3;
 	UOSInt i;

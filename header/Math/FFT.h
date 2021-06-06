@@ -24,7 +24,7 @@ namespace Math
 	public:
 		static Bool Forward(ComplexNumber *data, UOSInt sampleCount);
 		static Bool Inverse(ComplexNumber *data, UOSInt sampleCount);
-		static Bool ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, OSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify);
+		static Bool ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, UOSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify);
 
 /*	protected:
 		static void Rearrange(const complex *const Input, complex *const Output, const unsigned int N);

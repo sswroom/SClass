@@ -111,7 +111,7 @@ UInt64 IO::BufferedInputStream::SeekFromBeginning(UInt64 position)
 	}
 	else
 	{
-		position = (Int64)this->stm->SeekFromBeginning(position);
+		position = this->stm->SeekFromBeginning(position);
 		this->buffOfst = 0;
 		this->stmPos = position;
 		this->stmBuffSize = 0;
