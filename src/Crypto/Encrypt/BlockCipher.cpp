@@ -158,6 +158,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			outBuff += this->blockSize;
 			inSize = inSize - this->blockSize;
 		}
+		MemFree(blk);
 		return blkCnt * this->blockSize;
 	case CM_PCBC:
 		blk = MemAlloc(UInt8, this->blockSize);
@@ -172,6 +173,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			outBuff += this->blockSize;
 			inSize = inSize - this->blockSize;
 		}
+		MemFree(blk);
 		return blkCnt * this->blockSize;
 	case CM_CFB:
 		blk = MemAlloc(UInt8, this->blockSize);
@@ -186,6 +188,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			outBuff += this->blockSize;
 			inSize = inSize - this->blockSize;
 		}
+		MemFree(blk);
 		return blkCnt * this->blockSize;
 	case CM_OFB:
 		blk = MemAlloc(UInt8, this->blockSize);
@@ -200,6 +203,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			outBuff += this->blockSize;
 			inSize = inSize - this->blockSize;
 		}
+		MemFree(blk);
 		return blkCnt * this->blockSize;
 	default:
 		return 0;
