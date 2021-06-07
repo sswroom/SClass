@@ -22,6 +22,7 @@ nodeps:
 @CRC32RTest
 @JWTTest
 @MD5Test
+@PBKDF2Test
 @SHA3_224Test
 @SHA3_256Test
 @SHA3_384Test
@@ -185,6 +186,9 @@ JWTTest:
 @ConsoleStartup.o
 MD5Test:
 @MD5TestMain.o
+@ConsoleStartup.o
+PBKDF2Test:
+@PBKDF2Test.o
 @ConsoleStartup.o
 SHA3_224Test:
 @SHA3_224Test.o
@@ -661,6 +665,7 @@ AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
 JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
+PBKDF2Test.o: ../../main/CryptoTest/PBKDF2Test.cpp
 SHA3_224Test.o: ../../main/CryptoTest/SHA3_224Test.cpp
 SHA3_256Test.o: ../../main/CryptoTest/SHA3_256Test.cpp
 SHA3_384Test.o: ../../main/CryptoTest/SHA3_384Test.cpp
@@ -818,6 +823,8 @@ Core/ConsoleControl.h:
 Core/Core.h: ../../src/Core/Core.cpp
 @Core.o
 
+Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
+@PBKDF2.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
 @AES128.o
 Crypto/Encrypt/AES192.h: ../../src/Crypto/Encrypt/AES192.cpp
@@ -3367,6 +3374,7 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 @SMBIOS.o
 
 Core.o: ../../src/Core/Core.cpp
+PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
 AES256.o: ../../src/Crypto/Encrypt/AES256.cpp
