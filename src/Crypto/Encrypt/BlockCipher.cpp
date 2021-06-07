@@ -225,7 +225,7 @@ void Crypto::Encrypt::BlockCipher::SetChainMode(ChainMode cm)
 	this->cm = cm;
 }
 
-void Crypto::Encrypt::BlockCipher::SetIV(UInt8 *iv)
+void Crypto::Encrypt::BlockCipher::SetIV(const UInt8 *iv)
 {
 	MemCopyNO(this->iv, iv, this->blockSize);
 }

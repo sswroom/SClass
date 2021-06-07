@@ -36,7 +36,7 @@ namespace Crypto
 			virtual OSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) = 0;
 
 			void SetChainMode(ChainMode cm);
-			void SetIV(UInt8 *iv);
+			void SetIV(const UInt8 *iv);
 		};
 	}
 }

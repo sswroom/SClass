@@ -20,6 +20,7 @@ nodeps:
 @AES192Test
 @AES256Test
 @CRC32RTest
+@JasyptEncryptorTest
 @JWTTest
 @MD5Test
 @PBKDF2Test
@@ -180,6 +181,9 @@ AES256Test:
 @ConsoleStartup.o
 CRC32RTest:
 @CRC32RTestMain.o
+@ConsoleStartup.o
+JasyptEncryptorTest:
+@JasyptEncryptorTest.o
 @ConsoleStartup.o
 JWTTest:
 @JWTTest.o
@@ -663,6 +667,7 @@ AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
+JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
 PBKDF2Test.o: ../../main/CryptoTest/PBKDF2Test.cpp
@@ -823,6 +828,8 @@ Core/ConsoleControl.h:
 Core/Core.h: ../../src/Core/Core.cpp
 @Core.o
 
+Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
+@JasyptEncryptor.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
 @PBKDF2.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
@@ -3374,6 +3381,7 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 @SMBIOS.o
 
 Core.o: ../../src/Core/Core.cpp
+JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
