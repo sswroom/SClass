@@ -75,7 +75,7 @@ Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 		{
 			chInfo->cantonPronun[3] = 0;
 		}
-		chInfo->radical = ReadInt32(&this->currCharBuff[8]);
+		chInfo->radical = ReadUInt32(&this->currCharBuff[8]);
 		chInfo->strokeCount = this->currCharBuff[12];
 		chInfo->charType = (CharType)(this->currCharBuff[13] & 0xf);
 		chInfo->mainChar = ((this->currCharBuff[13] & 0x80) != 0);
@@ -144,7 +144,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	WriteInt16(&buff[2], chInfo->cantonPronun[1]);
 	WriteInt16(&buff[4], chInfo->cantonPronun[2]);
 	WriteInt16(&buff[6], chInfo->cantonPronun[3]);
-	WriteInt32(&buff[8], chInfo->radical);
+	WriteUInt32(&buff[8], chInfo->radical);
 	buff[12] = chInfo->strokeCount;
 	buff[13] = (UInt8)chInfo->charType;
 	if (chInfo->mainChar)
@@ -280,7 +280,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 		nextCode = ReadUInt32(&buff[16]);
 		if (nextCode == 0 || nextCode == charCode)
 		{
-			WriteInt32(&buff[16], relatedCharCode);
+			WriteUInt32(&buff[16], relatedCharCode);
 			if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 				return false;
 			if (this->fs->Write(buff, 256) != 256)
@@ -295,80 +295,6 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 		currCode = nextCode;
 	}
 	return false;
-}
-
-UTF8Char *Text::ChineseInfo::AppendCharCode(UTF8Char *buff, UInt32 charCode)
-{
-	if (charCode < 0x80)
-	{
-		*buff++ = (UInt8)charCode;
-	}
-	else if (charCode < 0x800)
-	{
-		*buff++ = 0xc0 | (charCode >> 6);
-		*buff++ = 0x80 | (charCode & 0x3f);
-	}
-	else if (charCode < 0x10000)
-	{
-		*buff++ = 0xe0 | (charCode >> 12);
-		*buff++ = 0x80 | ((charCode >> 6) & 0x3f);
-		*buff++ = 0x80 | (charCode & 0x3f);
-	}
-	else if (charCode < 0x200000)
-	{
-		*buff++ = 0xf0 | (charCode >> 18);
-		*buff++ = 0x80 | ((charCode >> 12) & 0x3f);
-		*buff++ = 0x80 | ((charCode >> 6) & 0x3f);
-		*buff++ = 0x80 | (charCode & 0x3f);
-	}
-	else if (charCode < 0x4000000)
-	{
-		*buff++ = 0xf8 | (charCode >> 24);
-		*buff++ = 0x80 | ((charCode >> 18) & 0x3f);
-		*buff++ = 0x80 | ((charCode >> 12) & 0x3f);
-		*buff++ = 0x80 | ((charCode >> 6) & 0x3f);
-		*buff++ = 0x80 | (charCode & 0x3f);
-	}
-	else
-	{
-		*buff++ = 0xfc | (charCode >> 30);
-		*buff++ = 0x80 | ((charCode >> 24) & 0x3f);
-		*buff++ = 0x80 | ((charCode >> 18) & 0x3f);
-		*buff++ = 0x80 | ((charCode >> 12) & 0x3f);
-		*buff++ = 0x80 | ((charCode >> 6) & 0x3f);
-		*buff++ = 0x80 | (charCode & 0x3f);
-	}
-	return buff;
-}
-
-UInt32 Text::ChineseInfo::GetCharCode(const UTF8Char *s)
-{
-	UInt8 b = *s++;
-	if (b < 0x80)
-	{
-		return b;
-	}
-	else if ((b & 0xe0) == 0xc0)
-	{
-		return ((b & 0x1f) << 6) | (*s & 0x3f);
-	}
-	else if ((b & 0xf0) == 0xe0)
-	{
-		return (((UTF32Char)b & 0x0f) << 12) | ((s[0] & 0x3f) << 6) | (s[1] & 0x3f);
-	}
-	else if ((b & 0xf8) == 0xf0)
-	{
-		return (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)s[0] & 0x3f) << 12) | ((s[1] & 0x3f) << 6) | (s[2] & 0x3f);
-	}
-	else if ((b & 0xfc) == 0xf8)
-	{
-		return (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)s[0] & 0x3f) << 18) | (((UTF32Char)s[1] & 0x3f) << 12) | ((s[2] & 0x3f) << 6) | (s[3] & 0x3f);
-	}
-	else if ((b & 0xfe) == 0xfc)
-	{
-		return (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)s[0] & 0x3f) << 24) | (((UTF32Char)s[1] & 0x3f) << 18) | (((UTF32Char)s[2] & 0x3f) << 12) | ((s[3] & 0x3f) << 6) | (s[4] & 0x3f);
-	}
-	return b;
 }
 
 UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
@@ -495,7 +421,7 @@ UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
 	sptr = Text::StrConcat(sbuff, s);
 	if (sptr[-1] <= '0' || sptr[-1] > '9')
 		return 0;
-	cpn = sptr[-1] - '0';
+	cpn = (UInt32)sptr[-1] - '0';
 	sptr[-1] = 0;
 
 	if (sbuff[0] == 'a')
@@ -768,7 +694,7 @@ UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *u8s)
 	{
 		return 0;
 	}
-	return (UInt16)((cpf << 11) | (cpt << 4) | cpn);
+	return (UInt16)((UInt32)(cpf << 11) | (UInt32)(cpt << 4) | cpn);
 }
 
 UTF8Char *Text::ChineseInfo::Int2Cantonese(UTF8Char *buff, UInt16 iVal)
@@ -1085,7 +1011,7 @@ UTF8Char *Text::ChineseInfo::Int2Cantonese(UTF8Char *buff, UInt16 iVal)
 	}
 	if (iVal & 15)
 	{
-		*buff++ = '0' + (iVal & 15);
+		*buff++ = (UInt8)('0' + (iVal & 15));
 	}
 	*buff = 0;
 	return buff;

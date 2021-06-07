@@ -473,7 +473,7 @@ Int32 Exporter::CIPExporter::GetParamSel(void *param, UOSInt index)
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 1)
 	{
-		return p->dispCol;
+		return (Int32)p->dispCol;
 	}
 	return 0;
 }

@@ -12,7 +12,7 @@ namespace Text
 		private:
 			Text::Encoding *enc;
 		public:
-			CodePageTextBinEnc(Int32 codePage);
+			CodePageTextBinEnc(UInt32 codePage);
 			virtual ~CodePageTextBinEnc();
 			virtual UOSInt EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *sbuff);

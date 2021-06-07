@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 			if (destPort == 0)
 			{
 			}
-			sb.TrimToLength(i);
+			sb.TrimToLength((UOSInt)i);
 		}
 		if (cli->GetServerTime(sb.ToString(), destPort, &dt))
 		{
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 			if (destPort == 0)
 			{
 			}
-			sb.TrimToLength(i);
+			sb.TrimToLength((UOSInt)i);
 		}
 		if (cli->GetServerTime(sb.ToString(), destPort, &dt))
 		{

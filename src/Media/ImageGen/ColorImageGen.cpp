@@ -28,7 +28,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	UOSInt k;
 	UOSInt l;
 	UInt16 c[4];
-	OSInt bpl = width << 3;
+	OSInt bpl = (OSInt)width << 3;
 	if (width < 8 || height < 4)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());

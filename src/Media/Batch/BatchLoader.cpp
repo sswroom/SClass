@@ -13,6 +13,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	DataInfo *info = 0;
 	Bool found;
 	UOSInt i;
+	OSInt si;
 	IO::ParsedObject *pobj;
 	IO::ParsedObject::ParserType pt;
 
@@ -67,8 +68,8 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						mutUsage.EndUse();
 						
 						Text::StrConcat(sbuff, fileName);
-						i = Text::StrLastIndexOf(sbuff, '.');
-						sbuff[i] = 0;
+						si = Text::StrLastIndexOf(sbuff, '.');
+						sbuff[si] = 0;
 						state->me->hdlr->ImageOutput(imgList, sbuff, (const UTF8Char*)"");
 					}
 					else
@@ -171,7 +172,7 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 
 Media::Batch::BatchLoader::~BatchLoader()
 {
-	OSInt i;
+	UOSInt i;
 	Bool exited;
 	DataInfo *data;
 
@@ -264,7 +265,7 @@ Bool Media::Batch::BatchLoader::IsProcessing()
 	}
 	else
 	{
-		OSInt i = this->threadCnt;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
 			if (this->threadStates[i].processing)

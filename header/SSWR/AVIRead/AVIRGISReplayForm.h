@@ -43,8 +43,8 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Map::GPSTrack *track;
 			IMapNavigator *navi;
-			OSInt startMark;
-			OSInt endMark;
+			UOSInt startMark;
+			UOSInt endMark;
 			const UTF8Char **names;
 			UOSInt namesCnt;
 			Bool threadRunning;

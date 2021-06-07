@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChineseForm.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FontDialog.h"
 #include "UI/MessageDialog.h"
@@ -18,13 +19,13 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	UInt32 v;
+	UTF32Char v;
 	me->txtChar->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
 		me->txtChar->SetText((const UTF8Char*)"");
 
-		v = me->chinese->GetCharCode(sb.ToString());
+		Text::StrReadChar(sb.ToString(), &v);
 		me->UpdateChar(v);
 		me->txtRadical->Focus();
 	}
@@ -65,15 +66,15 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(void *userObj)
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[7];
-	UInt32 v;
+	UTF32Char v;
 	me->txtRadical->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
 		me->txtRadical->SetText((const UTF8Char*)"");
 
-		v = me->chinese->GetCharCode(sb.ToString());
+		Text::StrReadChar(sb.ToString(), &v);
 		me->currRadical = v;
-		me->chinese->AppendCharCode(sbuff, v)[0] = 0;
+		Text::StrWriteChar(sbuff, v)[0] = 0;
 		me->lblRadicalV->SetText(sbuff);
 	}
 }
@@ -84,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	UInt32 v;
+	UTF32Char v;
 	UOSInt i;
 	UOSInt j;
 	me->txtRelatedAdd->GetText(&sb);
@@ -92,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 	{
 		me->txtRelatedAdd->SetText((const UTF8Char*)"");
 
-		v = me->chinese->GetCharCode(sb.ToString());
+		Text::StrReadChar(sb.ToString(), &v);
 		if (me->currChar != 0)
 		{
 			if (me->currChar == v)
@@ -118,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 
 				Text::StringBuilderUTF8 sb;
 				sb.Append((const UTF8Char *)"Are you sure that \"");
-				me->chinese->AppendCharCode(sbuff, me->currChar)[0] = 0;
+				Text::StrWriteChar(sbuff, me->currChar)[0] = 0;
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char *)"\" is related to \"");
 				i = 0;
@@ -126,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 				sptr = sbuff;
 				while (i < j)
 				{
-					sptr = me->chinese->AppendCharCode(sptr, relatedList.GetItem(i));
+					sptr = Text::StrWriteChar(sptr, relatedList.GetItem(i));
 					i++;
 				}
 				*sptr = 0;
@@ -256,7 +257,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 		}
 		else
 		{
-			this->chinese->AppendCharCode(sbuff, chInfo.radical)[0] = 0;
+			Text::StrWriteChar(sbuff, chInfo.radical)[0] = 0;
 			this->currRadical = chInfo.radical;
 			this->lblRadicalV->SetText(sbuff);
 		}
@@ -338,11 +339,11 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	this->charImg->DelBrush(b);
 	if (this->currChar != 0)
 	{
-		OSInt len;
+		UOSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
 		f = this->charImg->NewFontPx(this->currFont, Math::UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
-		len = this->chinese->AppendCharCode(sbuff, this->currChar) - sbuff;
+		len = (UOSInt)(Text::StrWriteChar(sbuff, this->currChar) - sbuff);
 		sbuff[len] = 0;
 		
 		this->charImg->GetTextSize(f, sbuff, len, sz);
@@ -372,7 +373,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 		j = relatedChars.GetCount();
 		while (i < j)
 		{
-			sptr = this->chinese->AppendCharCode(sptr, relatedChars.GetItem(i));
+			sptr = Text::StrWriteChar(sptr, relatedChars.GetItem(i));
 			i++;
 		}
 		*sptr = 0;

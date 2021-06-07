@@ -52,15 +52,15 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *sbuff, UInt
 			c = *sbuff++;
 			if (c >= '0' && c <= '9')
 			{
-				b = c - 0x30;
+				b = (UInt8)(c - 0x30);
 			}
 			else if (c >= 'A' && c <= 'F')
 			{
-				b = c - 0x37;
+				b = (UInt8)(c - 0x37);
 			}
 			else if (c >= 'a' && c <= 'f')
 			{
-				b = c - 0x57;
+				b = (UInt8)(c - 0x57);
 			}
 			else
 			{
@@ -71,15 +71,15 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *sbuff, UInt
 			c = *sbuff++;
 			if (c >= '0' && c <= '9')
 			{
-				b = (b << 4) | (c - 0x30);
+				b = (UInt8)((b << 4) | (c - 0x30));
 			}
 			else if (c >= 'A' && c <= 'F')
 			{
-				b = (b << 4) | (c - 0x37);
+				b = (UInt8)((b << 4) | (c - 0x37));
 			}
 			else if (c >= 'a' && c <= 'f')
 			{
-				b = (b << 4) | (c - 0x57);
+				b = (UInt8)((b << 4) | (c - 0x57));
 			}
 			else
 			{
@@ -92,13 +92,13 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *sbuff, UInt
 		}
 		else if (c >= '0' && c <= '9')
 		{
-			b = c - 0x30;
+			b = (UInt8)(c - 0x30);
 			while (true)
 			{
 				c = *sbuff++;
 				if (c >= '0' && c <= '9')
 				{
-					b = b * 10 + (c - 0x30);
+					b = (UInt8)(b * 10 + (c - 0x30));
 				}
 				else
 				{
@@ -109,7 +109,7 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *sbuff, UInt
 			}
 		}
 	}
-	return dataBuff - startPtr;
+	return (UOSInt)(dataBuff - startPtr);
 }
 
 const UTF8Char *Text::TextBinEnc::CPPByteArrBinEnc::GetName()

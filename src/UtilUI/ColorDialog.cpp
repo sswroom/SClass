@@ -38,9 +38,9 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, OSInt x, OSInt y, U
 		}
 		else if (y > (OSInt)h - 2)
 		{
-			y = h - 2;
+			y = (OSInt)h - 2;
 		}
-		newV = (y - 1) / (Double)(h - 3);
+		newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -68,7 +68,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, OSInt x, OSInt y, U
 		{
 			y = h - 2;
 		}
-		newV = (y - 1) / (Double)(h - 3);
+		newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -131,7 +131,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, 
 		}
 		else if (x > (OSInt)w - 2)
 		{
-			x = w - 2;
+			x = (OSInt)w - 2;
 		}
 		if (y < 1)
 		{
@@ -139,10 +139,10 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, 
 		}
 		else if (y > (OSInt)h - 2)
 		{
-			y = h - 2;
+			y = (OSInt)h - 2;
 		}
-		newV1 = (x - 1) / (Double)(w - 3);
-		newV2 = (y - 1) / (Double)(h - 3);
+		newV1 = Math::UOSInt2Double(x - 1) / (Double)(w - 3);
+		newV2 = Math::UOSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;

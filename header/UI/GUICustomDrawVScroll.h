@@ -52,5 +52,5 @@ namespace UI
 		OSInt GetVScrollPos();
 		Bool MakeVisible(OSInt index);
 	};
-};
+}
 #endif

@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/CodePageTextBinEnc.h"
 
-Text::TextBinEnc::CodePageTextBinEnc::CodePageTextBinEnc(Int32 codePage)
+Text::TextBinEnc::CodePageTextBinEnc::CodePageTextBinEnc(UInt32 codePage)
 {
 	NEW_CLASS(this->enc, Text::Encoding(codePage));
 }
@@ -26,12 +26,12 @@ UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(Text::StringBuilderUTF *s
 
 UOSInt Text::TextBinEnc::CodePageTextBinEnc::CalcBinSize(const UTF8Char *sbuff)
 {
-	return this->enc->UTF8CountBytes(sbuff, Text::StrCharCnt(sbuff));
+	return this->enc->UTF8CountBytes(sbuff, (OSInt)Text::StrCharCnt(sbuff));
 }
 
 UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
 {
-	return this->enc->UTF8ToBytes(dataBuff, sbuff, Text::StrCharCnt(sbuff));
+	return this->enc->UTF8ToBytes(dataBuff, sbuff, (OSInt)Text::StrCharCnt(sbuff));
 }
 
 const UTF8Char *Text::TextBinEnc::CodePageTextBinEnc::GetName()

@@ -20,7 +20,7 @@ Media::Batch::BatchResizer::~BatchResizer()
 	DEL_CLASS(this->resizeMut);
 }
 
-void Media::Batch::BatchResizer::AddTargetSize(Int32 targetWidth, Int32 targetHeight, const UTF8Char *targetId)
+void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, const UTF8Char *targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
@@ -31,7 +31,7 @@ void Media::Batch::BatchResizer::AddTargetSize(Int32 targetWidth, Int32 targetHe
 	this->targetParam->Add(param);
 }
 
-void Media::Batch::BatchResizer::AddTargetDPI(Int32 targetHDPI, Int32 targetVDPI, const UTF8Char *targetId)
+void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, const UTF8Char *targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
@@ -45,7 +45,7 @@ void Media::Batch::BatchResizer::AddTargetDPI(Int32 targetHDPI, Int32 targetVDPI
 void Media::Batch::BatchResizer::ClearTargetSizes()
 {
 	TargetParam *param;
-	OSInt i = this->targetParam->GetCount();
+	UOSInt i = this->targetParam->GetCount();
 	while (i-- > 0)
 	{
 		param = this->targetParam->RemoveAt(i);
@@ -61,9 +61,9 @@ void Media::Batch::BatchResizer::SetHandler(Media::Batch::BatchHandler *hdlr)
 
 void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	TargetParam *param;
 	Media::ImageList *newImgList;
 	Media::StaticImage *newImg;
@@ -93,8 +93,8 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 			newImg = (Media::StaticImage*)imgList->GetImage(j, 0);
 			if (param->sizeType == 1)
 			{
-				resizer->SetTargetWidth(Math::Double2Int32(newImg->info->dispWidth * param->width / newImg->info->hdpi));
-				resizer->SetTargetHeight(Math::Double2Int32(newImg->info->dispHeight * param->height / newImg->info->vdpi));
+				resizer->SetTargetWidth((UInt32)Math::Double2Int32(Math::UOSInt2Double(newImg->info->dispWidth * param->width) / newImg->info->hdpi));
+				resizer->SetTargetHeight((UInt32)Math::Double2Int32(Math::UOSInt2Double(newImg->info->dispHeight * param->height) / newImg->info->vdpi));
 				newImg = resizer->ProcessToNew(newImg);
 			}
 			else

@@ -69,15 +69,15 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		while (true)
 		{
 			f = tmpImg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-			if (!tmpImg->GetTextSize(f, this->watermark, leng, sz))
+			if (!tmpImg->GetTextSize(f, this->watermark, (OSInt)leng, sz))
 			{
 				tmpImg->DelFont(f);
 				break;
 			}
-			if (sz[0] <= simg->info->dispWidth && sz[1] <= simg->info->dispHeight)
+			if (sz[0] <= Math::UOSInt2Double(simg->info->dispWidth) && sz[1] <= Math::UOSInt2Double(simg->info->dispHeight))
 			{
-				xRand = Math::Double2Int32(simg->info->dispWidth - sz[0]);
-				yRand = Math::Double2Int32(simg->info->dispHeight - sz[1]);
+				xRand = Math::Double2Int32(Math::UOSInt2Double(simg->info->dispWidth) - sz[0]);
+				yRand = Math::Double2Int32(Math::UOSInt2Double(simg->info->dispHeight) - sz[1]);
 				iWidth = (UInt32)Math::Double2Int32(sz[0]);
 				iHeight = (UInt32)Math::Double2Int32(sz[1]);
 				gimg2 = this->deng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);

@@ -327,15 +327,15 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_MARK_START:
 		{
-			this->startMark = this->lbRecord->GetSelectedIndex();
-			this->lbRecord->GetItemText(sbuff, (UOSInt)this->startMark);
+			this->startMark = (UOSInt)this->lbRecord->GetSelectedIndex();
+			this->lbRecord->GetItemText(sbuff, this->startMark);
 			this->txtStartMark->SetText(sbuff);
 		}
 		break;
 	case MNU_MARK_END:
 		{
-			this->endMark = this->lbRecord->GetSelectedIndex();
-			this->lbRecord->GetItemText(sbuff, (UOSInt)this->endMark);
+			this->endMark = (UOSInt)this->lbRecord->GetSelectedIndex();
+			this->lbRecord->GetItemText(sbuff, this->endMark);
 			this->txtEndMark->SetText(sbuff);
 		}
 		break;
@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 				return;
 			}
 			UOSInt recCnt;
-			OSInt i;
+			UOSInt i;
 			Map::GPSTrack *newTrack;
 			NEW_CLASS(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName()));
 			newTrack->SetTrackName(track->GetTrackName(this->currTrackId));
@@ -394,7 +394,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	if (recs)
 	{
 		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();
-		Math::Polyline *pl = (Math::Polyline*)this->track->GetVectorById(0, this->currTrackId);
+		Math::Polyline *pl = (Math::Polyline*)this->track->GetVectorById(0, (Int64)this->currTrackId);
 		Double dist;
 		if (pl->Support3D())
 		{

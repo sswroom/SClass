@@ -779,7 +779,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 		UOSInt j;
 		Double hdpi = this->GetHDPI();
 		Double ddpi = this->GetDDPI();
-		Int32 scrPos = Math::Double2Int32(scrollY * hdpi / ddpi);
+		Int32 scrPos = Math::Double2Int32(Math::OSInt2Double(scrollY) * hdpi / ddpi);
 		OSInt clickIndex = (scrPos + yPos) / Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
 		if (keys & UI::GUICustomDrawVScroll::KBTN_CONTROL)
 		{

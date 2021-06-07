@@ -67,7 +67,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 		}
 		else if ((b & 0xf8) == 0xf0)
 		{
-			code = ((b & 0x7) << 18) | ((dataBuff[0] & 0x3f) << 12) | ((dataBuff[1] & 0x3f) << 6) | (dataBuff[2] & 0x3f);
+			code = (UInt32)(((b & 0x7) << 18) | ((dataBuff[0] & 0x3f) << 12) | ((dataBuff[1] & 0x3f) << 6) | (dataBuff[2] & 0x3f));
 			if (code >= 0x10000)
 			{
 				sb->AppendChar((UTF32Char)((code - 0x10000) >> 10) + 0xd800, 1);
@@ -84,7 +84,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 		}
 		else if ((b & 0xfc) == 0xf8)
 		{
-			code = ((b & 0x3) << 24) | ((dataBuff[0] & 0x3f) << 18) | ((dataBuff[1] & 0x3f) << 12) | ((dataBuff[2] & 0x3f) << 6) | (dataBuff[3] & 0x3f);
+			code = (UInt32)(((b & 0x3) << 24) | ((dataBuff[0] & 0x3f) << 18) | ((dataBuff[1] & 0x3f) << 12) | ((dataBuff[2] & 0x3f) << 6) | (dataBuff[3] & 0x3f));
 			if (code >= 0x10000)
 			{
 				sb->AppendChar((UTF32Char)((code - 0x10000) >> 10) + 0xd800, 1);
@@ -101,7 +101,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 		}
 		else if ((b & 0xfe) == 0xfc)
 		{
-			code = ((b & 0x1) << 30) | ((dataBuff[0] & 0x3f) << 24) | ((dataBuff[1] & 0x3f) << 18) | ((dataBuff[2] & 0x3f) << 12) | ((dataBuff[3] & 0x3f) << 6) | (dataBuff[4] & 0x3f);
+			code = (UInt32)(((b & 0x1) << 30) | ((dataBuff[0] & 0x3f) << 24) | ((dataBuff[1] & 0x3f) << 18) | ((dataBuff[2] & 0x3f) << 12) | ((dataBuff[3] & 0x3f) << 6) | (dataBuff[4] & 0x3f));
 			if (code >= 0x10000)
 			{
 				sb->AppendChar((UTF32Char)((code - 0x10000) >> 10) + 0xd800, 1);

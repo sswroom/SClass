@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 				{
 					reading = agent->readingList->GetItem(k);
 					currId = readingMap.Get((UInt32)reading->index);
-					readingMap.Put((UInt32)reading->index, currId + 1);
+					readingMap.Put((UInt32)reading->index, (UInt16)(currId + 1));
 					if (reading->name)
 					{
 						me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name);

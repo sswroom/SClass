@@ -832,8 +832,8 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 	UTF8Char sbuff[512];
 	UTF8Char u8buff[512];
 	Bool valid;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
 
 	fileStatus->lineNum++;
@@ -847,7 +847,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 	{
 		if (fileStatus->lineBuffWS)
 		{
-			j = fileStatus->lineBuffWS - fileStatus->lineBuffSB->ToString();
+			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB->ToString());
 			fileStatus->lineBuffSB->Append(lineBuff);
 			wordStart = fileStatus->lineBuffSB->ToString() + j;
 		}
@@ -892,7 +892,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				if (c == '*' && *sptr == '/')
 				{
 					*sptr = ' ';
-					OSInt i = fileStatus->pastModes->GetCount();
+					UOSInt i = fileStatus->pastModes->GetCount();
 					if (i > 0)
 					{
 						fileStatus->currMode = fileStatus->pastModes->RemoveAt(i - 1);
@@ -2722,7 +2722,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 
 void Text::Cpp::CppCodeParser::FreeErrMsgs(Data::ArrayListStrUTF8 *errMsgs)
 {
-	OSInt i = errMsgs->GetCount();
+	UOSInt i = errMsgs->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(errMsgs->RemoveAt(i));

@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 				j++;
 			}
 			cbo->SetRect(140, (Int32)(i * 24), 120, 23, false);
-			cbo->SetSelectedIndex(this->exporter->GetParamSel(this->param, i));
+			cbo->SetSelectedIndex((UOSInt)this->exporter->GetParamSel(this->param, i));
 			this->ctrls[i] = cbo;
 		}
 		i++;

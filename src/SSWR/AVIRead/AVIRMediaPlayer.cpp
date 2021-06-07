@@ -428,11 +428,11 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 		}
 		if (info.par2 > 1)
 		{
-			vh = Math::Double2Int32(vh * info.par2);
+			vh = (UInt32)Math::Double2Int32(Math::UOSInt2Double(vh) * info.par2);
 		}
 		else
 		{
-			vw = Math::Double2Int32(vw / info.par2);
+			vw = (UInt32)Math::Double2Int32(Math::UOSInt2Double(vw) / info.par2);
 		}
 		*w = vw;
 		*h = vh;

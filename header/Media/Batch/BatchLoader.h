@@ -37,7 +37,7 @@ namespace Media
 			Data::LinkedList *datas;
 			UOSInt threadCnt;
 			ThreadState *threadStates;
-			OSInt nextThread;
+			UOSInt nextThread;
 
 			static UInt32 __stdcall ThreadProc(void *userObj);
 		public:

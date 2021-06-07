@@ -157,7 +157,7 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 			if (inclDir)
 			{
 				UTF8Char *sarr[2];
-				OSInt cnt;
+				UOSInt cnt;
 				Text::StringBuilderUTF8 sb;
 				sb.Append(inclDir);
 				sarr[1] = sb.ToString();
@@ -194,8 +194,8 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 {
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (Text::StrIndexOf(includeFile, (const UTF8Char*)"opengl.hpp") >= 0)
 	{
 		i = 0;
