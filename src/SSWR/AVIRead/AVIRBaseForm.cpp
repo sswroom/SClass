@@ -84,6 +84,7 @@
 #include "SSWR/AVIRead/AVIRIOPinTestForm.h"
 #include "SSWR/AVIRead/AVIRIPScanDetectorForm.h"
 #include "SSWR/AVIRead/AVIRIPScanForm.h"
+#include "SSWR/AVIRead/AVIRJasyptForm.h"
 #include "SSWR/AVIRead/AVIRJSTextForm.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
@@ -364,7 +365,8 @@ typedef enum
 	MNU_COORD_INFO,
 	MNU_MSSQL_CONN,
 	MNU_DB_MANAGER,
-	MNU_TIMED_FILE_COPY
+	MNU_TIMED_FILE_COPY,
+	MNU_JASYPT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -490,10 +492,12 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"Text Encrypt", MNU_TEXT_ENCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Assembly Convert", MNU_ASM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Javascript Text", MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Password Hash", MNU_PASSWORDHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Brute Force", MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Cryptography");
+	mnu2->AddItem((const UTF8Char*)"Password Hash", MNU_PASSWORDHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Brute Force", MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Hash Speed", MNU_HASHTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Jasypt Encryptor", MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"Hash Speed", MNU_HASHTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"RAM Speed", MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Thread Speed", MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Performance Log", MNU_PERFORMANCELOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2240,6 +2244,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRTimedFileCopyForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRTimedFileCopyForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_JASYPT:
+		{
+			SSWR::AVIRead::AVIRJasyptForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRJasyptForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

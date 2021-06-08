@@ -46,7 +46,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		while (inSize >= blockSize)
 		{
 			MemXOR(blk, inBuff, blk, this->blockSize);
-			EncryptBlock(inBuff, outBuff, encParam);
+			EncryptBlock(blk, outBuff, encParam);
 			MemCopyNO(blk, outBuff, this->blockSize);
 			blkCnt++;
 			inBuff += this->blockSize;
@@ -56,7 +56,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		if (inSize > 0)
 		{
 			MemXOR(blk, inBuff, blk, inSize);
-			EncryptBlock(inBuff, outBuff, encParam);
+			EncryptBlock(blk, outBuff, encParam);
 			blkCnt++;
 		}
 		MemFree(blk);

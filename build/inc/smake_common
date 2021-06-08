@@ -2810,6 +2810,8 @@ SSWR/AVIRead/AVIRIPScanDetectorForm.h: ../../src/SSWR/AVIRead/AVIRIPScanDetector
 @AVIRIPScanDetectorForm.o
 SSWR/AVIRead/AVIRIPScanForm.h: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp
 @AVIRIPScanForm.o
+SSWR/AVIRead/AVIRJasyptForm.h: ../../src/SSWR/AVIRead/AVIRJasyptForm.cpp
+@AVIRJasyptForm.o
 SSWR/AVIRead/AVIRJavaClassForm.h: ../../src/SSWR/AVIRead/AVIRJavaClassForm.cpp
 @AVIRJavaClassForm.o
 SSWR/AVIRead/AVIRJSTextForm.h: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
@@ -4304,6 +4306,7 @@ AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
 AVIRIOPinTestForm.o: ../../src/SSWR/AVIRead/AVIRIOPinTestForm.cpp
 AVIRIPScanDetectorForm.o: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp
 AVIRIPScanForm.o: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp
+AVIRJasyptForm.o: ../../src/SSWR/AVIRead/AVIRJasyptForm.cpp
 AVIRJavaClassForm.o: ../../src/SSWR/AVIRead/AVIRJavaClassForm.cpp
 AVIRJSTextForm.o: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
 AVIRJTT808ServerForm.o: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp

@@ -5,18 +5,35 @@
 #include "Crypto/Encrypt/AES256.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA512.h"
+#include "Data/ByteTool.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
 const UInt8 *Crypto::JasyptEncryptor::DecGetSalt(const UInt8 *buff, UInt8 *salt)
 {
-	MemCopyNO(salt, buff, this->saltSize);
-	return buff + this->saltSize;
+	if (this->salt)
+	{
+		MemCopyNO(salt, this->salt, this->saltSize);
+		return buff;
+	}
+	else
+	{
+		MemCopyNO(salt, buff, this->saltSize);
+		return buff + this->saltSize;
+	}
 }
 
 const UInt8 *Crypto::JasyptEncryptor::DecGetIV(const UInt8 *buff, UInt8 *iv)
 {
-	MemCopyNO(iv, buff, this->ivSize);
-	return buff + this->ivSize;
+	if (this->iv)
+	{
+		MemCopyNO(iv, this->iv, this->ivSize);
+		return buff;
+	}
+	else
+	{
+		MemCopyNO(iv, buff, this->ivSize);
+		return buff + this->ivSize;
+	}
 }
 
 UOSInt Crypto::JasyptEncryptor::GetEncKey(const UInt8 *salt, UInt8 *key)
@@ -50,6 +67,31 @@ Crypto::Encrypt::ICrypto *Crypto::JasyptEncryptor::CreateCrypto(const UInt8 *iv,
 	}
 }
 
+void Crypto::JasyptEncryptor::GenRandomBytes(UInt8 *buff, UOSInt len)
+{
+	if (this->random == 0)
+	{
+		Data::DateTime dt;
+		dt.SetCurrTimeUTC();
+		NEW_CLASS(this->random, Data::RandomMT19937((UInt32)(dt.ToTicks() & 0xffffffff)));
+	}
+	UInt8 tmpBuff[4];
+	while (len >= 4)
+	{
+		WriteNInt32(buff, this->random->NextInt32());
+		len -= 4;
+		buff += 4;
+	}
+	if (len > 0)
+	{
+		WriteNInt32(tmpBuff, this->random->NextInt32());
+		while (len-- > 0)
+		{
+			buff[len] = tmpBuff[len];
+		}
+	}
+}
+
 Crypto::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen)
 {
 	this->keyAlgorithmn = keyAlg;
@@ -69,6 +111,9 @@ Crypto::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm ci
 		this->dkLen = 32;
 		break;
 	}
+	this->salt = 0;
+	this->iv = 0;
+	this->random = 0;
 	this->key = MemAlloc(UInt8, keyLen);
 	MemCopyNO(this->key, key, keyLen);
 	this->keyLen = keyLen;
@@ -77,6 +122,15 @@ Crypto::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm ci
 Crypto::JasyptEncryptor::~JasyptEncryptor()
 {
 	MemFree(this->key);
+	if (this->salt)
+	{
+		MemFree(this->salt);
+	}
+	if (this->iv)
+	{
+		MemFree(this->iv);
+	}
+	SDEL_CLASS(this->random);
 }
 
 UOSInt Crypto::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff)
@@ -126,4 +180,92 @@ UOSInt Crypto::JasyptEncryptor::DecryptB64(const UTF8Char *b64Buff, UInt8 *outBu
 	retSize = this->Decrypt(tmpBuff, retSize, outBuff);
 	MemFree(tmpBuff);
 	return retSize;
+}
+
+UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF *sb, const UInt8 *srcBuff, UOSInt srcLen)
+{
+	UInt8 *srcTmpBuff = 0;
+	UOSInt nBlock = srcLen / this->ivSize;
+	UOSInt destLen;
+	if (nBlock * this->ivSize != srcLen)
+	{
+		destLen = (nBlock + 1) * this->ivSize;
+		srcTmpBuff = MemAlloc(UInt8, destLen);
+		MemCopyNO(srcTmpBuff, srcBuff, srcLen);
+		MemFillB(&srcTmpBuff[srcLen], destLen - srcLen, 8);
+		srcBuff = srcTmpBuff;
+	}
+	else
+	{
+		destLen = nBlock * this->ivSize;		
+	}
+	if (this->salt == 0)
+	{
+		destLen += this->saltSize;
+	}
+	if (this->iv == 0)
+	{
+		destLen += this->ivSize;
+	}
+	UOSInt destOfst = 0;
+	UInt8 *destBuff = MemAlloc(UInt8, destLen);
+	const UInt8 *salt;
+	const UInt8 *iv;
+	if (this->salt != 0)
+	{
+		salt = this->salt;
+	}
+	else
+	{
+		salt = &destBuff[destOfst];
+		this->GenRandomBytes(&destBuff[destOfst], this->saltSize);
+		destOfst += this->saltSize;
+	}
+	if (this->iv != 0)
+	{
+		iv = this->iv;
+	}
+	else
+	{
+		iv = &destBuff[destOfst];
+		this->GenRandomBytes(&destBuff[destOfst], this->ivSize);
+		destOfst += this->ivSize;
+	}
+	UInt8 *key = MemAlloc(UInt8, this->dkLen);
+	this->GetEncKey(salt, key);
+	Crypto::Encrypt::ICrypto *enc = this->CreateCrypto(iv, key);
+	destOfst += enc->Encrypt(srcBuff, destLen - destOfst, &destBuff[destOfst], 0);
+	DEL_CLASS(enc);
+	MemFree(key);
+	if (srcTmpBuff)
+	{
+		MemFree(srcTmpBuff);
+	}
+
+	Text::TextBinEnc::Base64Enc b64;
+	b64.EncodeBin(sb, destBuff, destOfst);
+	MemFree(destBuff);
+	return sb->GetCharCnt();
+}
+
+const UTF8Char *Crypto::JasyptEncryptor::GetKeyAlgorithmName(KeyAlgorithm keyAlg)
+{
+	switch (keyAlg)
+	{
+	case KA_PBEWITHHMACSHA512:
+		return (const UTF8Char*)"PBWITHMACSHA512";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+}
+
+const UTF8Char *Crypto::JasyptEncryptor::GetCipherAlgorithmName(CipherAlgorithm cipherAlg)
+{
+	switch (cipherAlg)
+	{
+	case CA_AES256:
+		return (const UTF8Char*)"AES-256";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
 }

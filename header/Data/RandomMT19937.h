@@ -15,5 +15,5 @@ namespace Data
 		virtual Double NextDouble();
 		virtual Int32 NextInt32();
 	};
-};
+}
 #endif
