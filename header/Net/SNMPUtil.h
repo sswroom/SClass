@@ -41,7 +41,7 @@ namespace Net
 		} ErrorStatus;
 
 	public:
-		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, UInt32 *reqId, Data::ArrayList<BindingItem*> *itemList);
+		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, Int32 *reqId, Data::ArrayList<BindingItem*> *itemList);
 		static ErrorStatus PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, TrapInfo *trap, Data::ArrayList<BindingItem*> *itemList);
 
 		static OSInt OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);

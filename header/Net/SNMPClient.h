@@ -10,7 +10,7 @@ namespace Net
 	{
 	private:
 		Net::UDPServer *svr;
-		UInt32 reqId;
+		Int32 reqId;
 		Sync::Mutex *mut;
 		Sync::Event *respEvt;
 		Bool hasResp;
