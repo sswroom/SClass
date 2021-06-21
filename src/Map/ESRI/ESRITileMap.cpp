@@ -203,7 +203,7 @@ Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 {
 	if (this->isMercatorProj)
 	{
-		return 204094080000.0 / this->tileWidth / (1 << index);
+		return 204094080000.0 / Math::UOSInt2Double(this->tileWidth) / (1 << index);
 	}
 	else
 	{
@@ -219,7 +219,7 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 {
 	if (this->isMercatorProj)
 	{
-		Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / this->tileWidth) / Math::Log10(2));
+		Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math::Log10(2));
 		if (level < 0)
 			level = 0;
 		else if (level >= (Int32)GetLevelCount())
@@ -381,10 +381,10 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, D
 			return 0;
 		if (y1 == y2)
 			return 0;
-		Int32 pixX1 = (Int32)((x1 - this->oriX) / resol / this->tileWidth);
-		Int32 pixX2 = (Int32)((x2 - this->oriX) / resol / this->tileWidth);
-		Int32 pixY1 = (Int32)((this->oriY - y1) / resol / this->tileHeight);
-		Int32 pixY2 = (Int32)((this->oriY - y2) / resol / this->tileHeight);
+		Int32 pixX1 = (Int32)((x1 - this->oriX) / resol / Math::UOSInt2Double(this->tileWidth));
+		Int32 pixX2 = (Int32)((x2 - this->oriX) / resol / Math::UOSInt2Double(this->tileWidth));
+		Int32 pixY1 = (Int32)((this->oriY - y1) / resol / Math::UOSInt2Double(this->tileHeight));
+		Int32 pixY2 = (Int32)((this->oriY - y2) / resol / Math::UOSInt2Double(this->tileHeight));
 		if (pixX1 > pixX2)
 		{
 			i = pixX1;
@@ -415,7 +415,7 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, D
 Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
 {
 	UInt8 dataBuff[2048];
-	OSInt readSize;
+	UOSInt readSize;
 	UTF8Char filePath[512];
 	UTF8Char url[512];
 	UTF8Char *sptr;
@@ -446,10 +446,10 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		Double resol = this->levels->GetItem(level);
 		if (resol == 0)
 			return 0;
-		Double x1 = imgX * this->tileWidth * resol + this->oriX;
-		Double y1 = this->oriY - imgY * this->tileHeight * resol;
-		Double x2 = x1 + this->tileWidth * resol;
-		Double y2 = y1 - this->tileHeight * resol;
+		Double x1 = imgX * Math::UOSInt2Double(this->tileWidth) * resol + this->oriX;
+		Double y1 = this->oriY - imgY * Math::UOSInt2Double(this->tileHeight) * resol;
+		Double x2 = x1 + Math::UOSInt2Double(this->tileWidth) * resol;
+		Double y2 = y1 - Math::UOSInt2Double(this->tileHeight) * resol;
 
 		if (x1 > this->maxX || x2 < this->minX || y1 < minY || y2 > maxY)
 			return 0;
@@ -544,7 +544,7 @@ UTF8Char *Map::ESRI::ESRITileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int
 IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	UInt8 dataBuff[2048];
-	OSInt readSize;
+	UOSInt readSize;
 	UTF8Char filePath[512];
 	UTF8Char url[512];
 	UTF8Char *u8ptr;
@@ -574,10 +574,10 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		Double resol = this->levels->GetItem(level);
 		if (resol == 0)
 			return 0;
-		Double x1 = imgX * this->tileWidth * resol + this->oriX;
-		Double y1 = this->oriY - imgY * this->tileHeight * resol;
-		Double x2 = x1 + this->tileWidth * resol;
-		Double y2 = y1 - this->tileHeight * resol;
+		Double x1 = imgX * Math::UOSInt2Double(this->tileWidth) * resol + this->oriX;
+		Double y1 = this->oriY - imgY * Math::UOSInt2Double(this->tileHeight) * resol;
+		Double x2 = x1 + Math::UOSInt2Double(this->tileWidth) * resol;
+		Double y2 = y1 - Math::UOSInt2Double(this->tileHeight) * resol;
 
 		if (x1 > this->maxX || x2 < this->minX || y1 < minY || y2 > maxY)
 			return 0;

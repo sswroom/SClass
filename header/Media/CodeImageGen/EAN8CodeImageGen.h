@@ -13,10 +13,10 @@ namespace Media
 			virtual ~EAN8CodeImageGen();
 
 			virtual CodeType GetCodeType();
-			virtual OSInt GetMinLength();
-			virtual OSInt GetMaxLength();
-			virtual Media::DrawImage *GenCode(const UTF8Char *code, OSInt codeWidth, Media::DrawEngine *eng);
+			virtual UOSInt GetMinLength();
+			virtual UOSInt GetMaxLength();
+			virtual Media::DrawImage *GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng);
 		};
-	};
-};
+	}
+}
 #endif

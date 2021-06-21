@@ -9,7 +9,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 	IO::FileAnalyse::EXEFileAnalyse *me = (IO::FileAnalyse::EXEFileAnalyse*)userObj;
 	UInt8 buff[256];
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
-	Int32 val;
+	UInt32 val;
 	me->threadRunning = true;
 	me->threadStarted = true;
 	pack = MemAlloc(IO::FileAnalyse::EXEFileAnalyse::PackInfo, 1);
@@ -18,7 +18,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 	pack->packType = 0;
 	me->packs->Add(pack);
 	me->fd->GetRealData(0, 64, buff);
-	val = ReadInt32(&buff[60]);
+	val = ReadUInt32(&buff[60]);
 	if (val > 64)
 	{
 		me->fd->GetRealData(val, 128, buff);
@@ -37,8 +37,8 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 			me->packs->Add(pack);
 
 			UInt16 optHdrSize = ReadUInt16(&buff[20]);
-			OSInt nSection = ReadUInt16(&buff[6]);
-			OSInt tableOfst = 0;
+			UOSInt nSection = ReadUInt16(&buff[6]);
+			UOSInt tableOfst = 0;
 			if (optHdrSize > 0)
 			{
 				me->imageSize = ReadUInt32(&buff[80]);
@@ -65,8 +65,8 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					me->imageBuff = MemAlloc(UInt8, me->imageSize);
 				}
 			}
-			OSInt ofst = val + 24 + optHdrSize;
-			OSInt i = 0;
+			UOSInt ofst = val + 24 + optHdrSize;
+			UOSInt i = 0;
 			UInt32 virtualSize;
 			UInt32 sizeOfRawData;
 			UInt32 virtualAddr;
@@ -314,11 +314,11 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	sb->Append(PackTypeGetName(pack->packType));
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI64(pack->packSize);
+	sb->AppendU64(pack->packSize);
 	return true;
 }
 
@@ -330,17 +330,17 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	if (pack == 0)
 		return false;
 
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	sb->Append(PackTypeGetName(pack->packType));
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI64(pack->packSize);
+	sb->AppendU64(pack->packSize);
 	sb->Append((const UTF8Char*)"\r\n");
 
 	if (pack->packType == 0)
 	{
-		packBuff = MemAlloc(UInt8, (OSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (OSInt)pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->Append((const UTF8Char*)"Magic number = 0x");
 		sb->AppendHex16(ReadUInt16(packBuff));
@@ -381,16 +381,16 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	}
 	else if (pack->packType == 1)
 	{
-		packBuff = MemAlloc(UInt8, (OSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (OSInt)pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		sb->AppendHexBuff(packBuff, (UOSInt)pack->packSize, ' ', Text::LBT_CRLF);
 
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 2)
 	{
-		packBuff = MemAlloc(UInt8, (OSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (OSInt)pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->Append((const UTF8Char*)"Magic number = PE\\0\\0");
 		sb->Append((const UTF8Char*)"\r\nMachine = 0x");
@@ -512,8 +512,8 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	}
 	else if (pack->packType == 3 || pack->packType == 4)
 	{
-		packBuff = MemAlloc(UInt8, (OSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (OSInt)pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->Append((const UTF8Char*)"Magic number = 0x");
 		sb->AppendHex16(ReadUInt16(&packBuff[0]));
@@ -724,8 +724,8 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	}
 	else if (pack->packType == 5)
 	{
-		packBuff = MemAlloc(UInt8, (OSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (OSInt)pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->Append((const UTF8Char*)"Name = ");
 		sb->AppendS(packBuff, 8);

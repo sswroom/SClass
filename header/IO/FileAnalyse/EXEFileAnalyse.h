@@ -15,15 +15,15 @@ namespace IO
 		private:
 			typedef struct
 			{
-				Int64 fileOfst;
-				Int64 packSize;
+				UInt64 fileOfst;
+				UInt64 packSize;
 				Int32 packType;
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
 			Data::SyncArrayList<PackInfo*> *packs;
 			UInt8 *imageBuff;
-			OSInt imageSize;
+			UOSInt imageSize;
 
 			Bool pauseParsing;
 			Bool threadRunning;

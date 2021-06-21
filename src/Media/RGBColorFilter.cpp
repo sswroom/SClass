@@ -8,10 +8,10 @@
 
 extern "C"
 {
-	void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
-	void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
-	void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp);
-	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev);
+	void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, UInt32 bpp);
+	void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, UInt32 bpp);
+	void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, UInt32 bpp);
+	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, UInt32 bpp, UInt32 hdrLev);
 }
 
 UInt32 __stdcall Media::RGBColorFilter::ProcessThread(void *userObj)
@@ -173,7 +173,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		this->lut = 0;
 	}
 
-	OSInt i;
+	UOSInt i;
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParam());
 	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParam());
 	Media::CS::TransferFunc *btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParam());
@@ -191,16 +191,16 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		Double tmpD = 1 / 8192.0;
 		Int32 v;
 		Double lVal;
-		OSInt j;
+		UOSInt j;
 		if (this->gammaParam != 0 && this->gammaCnt > 0)
 		{
 			i = 256;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(i * tmp);
+				lVal = rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp);
 				if (lVal >= 0 && lVal < 1)
 				{
-					j = (Int32)(lVal * (this->gammaCnt - 1));
+					j = (UInt32)(lVal * (this->gammaCnt - 1));
 					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - j * (1.0 / (this->gammaCnt - 1))) * (this->gammaCnt - 1);
 				}
 				v = Math::Double2Int32((Math::Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
@@ -215,7 +215,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			i = 256;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(i * tmp);
+				lVal = rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp);
 				v = Math::Double2Int32((Math::Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
@@ -327,8 +327,8 @@ void Media::RGBColorFilter::ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt w
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(i, height, this->nThread);
-			this->threadStats[i].srcPtr = srcPtr + currHeight * sbpl;
-			this->threadStats[i].destPtr = destPtr + currHeight * dbpl;
+			this->threadStats[i].srcPtr = srcPtr + (OSInt)currHeight * sbpl;
+			this->threadStats[i].destPtr = destPtr + (OSInt)currHeight * dbpl;
 			this->threadStats[i].width = width;
 			this->threadStats[i].height = lastHeight - currHeight;
 			this->threadStats[i].sbpl = sbpl;

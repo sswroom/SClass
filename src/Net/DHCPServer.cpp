@@ -53,7 +53,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			}
 			else if (t == 50 && len == 4)
 			{
-				reqIP = ReadNInt32(&buff[i]);
+				reqIP = ReadNUInt32(&buff[i]);
 			}
 			else if (t == 60 && len >= 1)
 			{
@@ -70,7 +70,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			repBuff[0] = 2;
 			repBuff[1] = 1;
 			repBuff[2] = 6;
-			WriteMInt32(&repBuff[4], transactionId);
+			WriteMUInt32(&repBuff[4], transactionId);
 			WriteMInt64(&repBuff[26], hwAddr);
 			WriteNInt32(&repBuff[20], me->infIP);
 			Sync::MutexUsage mutUsage(me->devMut);
@@ -141,7 +141,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				me->devMap->Put(hwAddr, dev);
 			}
 			mutUsage.EndUse();
-			WriteNInt32(&repBuff[16], reqIP);
+			WriteNUInt32(&repBuff[16], reqIP);
 			WriteMInt32(&repBuff[236], 0x63825363);
 			i = 240;
 			repBuff[i] = 53;
@@ -150,21 +150,21 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			i += 3;
 			repBuff[i] = 1;
 			repBuff[i + 1] = 4;
-			WriteNInt32(&repBuff[i + 2], me->subnet);
+			WriteNUInt32(&repBuff[i + 2], me->subnet);
 			i += 6;
 			repBuff[i] = 51;
 			repBuff[i + 1] = 4;
-			WriteMInt32(&repBuff[i + 2], me->ipLeaseTime);
+			WriteMUInt32(&repBuff[i + 2], me->ipLeaseTime);
 			i += 6;
 			repBuff[i] = 54;
 			repBuff[i + 1] = 4;
-			WriteNInt32(&repBuff[i + 2], me->infIP);
+			WriteNUInt32(&repBuff[i + 2], me->infIP);
 			i += 6;
 			if (me->gateway)
 			{
 				repBuff[i] = 3;
 				repBuff[i + 1] = 4;
-				WriteNInt32(&repBuff[i + 2], me->gateway);
+				WriteNUInt32(&repBuff[i + 2], me->gateway);
 				i += 6;
 			}
 			if (me->dnsList->GetCount() > 0)
@@ -175,7 +175,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				j = 0;
 				while (j < me->dnsList->GetCount())
 				{
-					WriteNInt32(&repBuff[i], me->dnsList->GetItem(j));
+					WriteNUInt32(&repBuff[i], me->dnsList->GetItem(j));
 					j++;
 					i += 4;
 				}
@@ -212,7 +212,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			dev->assignTime = dt.ToTicks();
 			dev->updated = true;
 			mutUsage.EndUse();
-			WriteNInt32(&repBuff[16], reqIP);
+			WriteNUInt32(&repBuff[16], reqIP);
 			WriteMInt32(&repBuff[236], 0x63825363);
 			i = 240;
 			repBuff[i] = 53;
@@ -221,21 +221,21 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			i += 3;
 			repBuff[i] = 1;
 			repBuff[i + 1] = 4;
-			WriteNInt32(&repBuff[i + 2], me->subnet);
+			WriteNUInt32(&repBuff[i + 2], me->subnet);
 			i += 6;
 			repBuff[i] = 51;
 			repBuff[i + 1] = 4;
-			WriteMInt32(&repBuff[i + 2], me->ipLeaseTime);
+			WriteMUInt32(&repBuff[i + 2], me->ipLeaseTime);
 			i += 6;
 			repBuff[i] = 54;
 			repBuff[i + 1] = 4;
-			WriteNInt32(&repBuff[i + 2], me->infIP);
+			WriteNUInt32(&repBuff[i + 2], me->infIP);
 			i += 6;
 			if (me->gateway)
 			{
 				repBuff[i] = 3;
 				repBuff[i + 1] = 4;
-				WriteNInt32(&repBuff[i + 2], me->gateway);
+				WriteNUInt32(&repBuff[i + 2], me->gateway);
 				i += 6;
 			}
 			if (me->dnsList->GetCount() > 0)
@@ -279,8 +279,8 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 	this->devMap = 0;
 	this->devUsed = 0;
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UInt32 ip;
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;

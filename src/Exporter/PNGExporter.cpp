@@ -9,16 +9,16 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-OSInt PNGExporter_WritePal(IO::Stream *stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
+UOSInt PNGExporter_WritePal(IO::Stream *stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
 {
 	UInt8 *palPtr = img->pal;
 	if (palPtr == 0)
 		return 0;
-	OSInt colorCnt = 1 << img->info->storeBPP;
+	UOSInt colorCnt = (UOSInt)1 << img->info->storeBPP;
 	UInt8 *tmpBuff = MemAlloc(UInt8, colorCnt * 3 + 12);
 	UInt8 *tmpPtr;
-	OSInt i;
-	WriteMInt32(&tmpBuff[0], (Int32)(colorCnt * 3));
+	UOSInt i;
+	WriteMUInt32(&tmpBuff[0], (UInt32)(colorCnt * 3));
 	*(Int32*)&tmpBuff[4] = *(Int32*)"PLTE";
 	tmpPtr = &tmpBuff[8];
 	i = colorCnt;
@@ -64,12 +64,12 @@ UInt8 PNGExporter_PaethPredictor(UInt8 a, UInt8 b, UInt8 c)
 	}
 }
 
-void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
+void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 {
-	OSInt oriHeight = height;
-	OSInt i;
-	OSInt j;
-	OSInt compSize[5];
+	UOSInt oriHeight = height;
+	UOSInt i;
+	UOSInt j;
+	UOSInt compSize[5];
 	UInt8 lastPx;
 	UInt8 thisPx;
 	UInt8 *lastLineStart = 0;
@@ -83,7 +83,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	i = 1;
 	while (i < lineByteCnt)
 	{
-		thisPx = lineStart[i + 1] - lastPx;
+		thisPx = (UInt8)(lineStart[i + 1] - lastPx);
 		lastPx = lineStart[i + 1];
 		tmpBuff[i + 1] = thisPx;
 		i++;
@@ -128,7 +128,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 1;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lineStart[i];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i]);
 				i++;
 			}
 		}
@@ -138,7 +138,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
 				i++;
 			}
 		}
@@ -149,7 +149,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx) >> 1);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx) >> 1));
 				lastPx = lineStart[i + 1];
 				i++;
 			}
@@ -157,11 +157,11 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		else if (j == 4)
 		{
 			outBuff[0] = 4;
-			outBuff[1] = lineStart[1] - lastLineStart[1];
+			outBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
 			i = 1;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i], lastLineStart[i + 1], lastLineStart[i]);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i], lastLineStart[i + 1], lastLineStart[i]));
 				i++;
 			}
 		}
@@ -178,7 +178,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 1;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lineStart[i];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i]);
 			i++;
 		}
 		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -187,7 +187,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
 			i++;
 		}
 		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -197,18 +197,18 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx) >> 1);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx) >> 1));
 			lastPx = lineStart[i + 1];
 			i++;
 		}
 		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
 
 		tmpBuff[0] = 4;
-		tmpBuff[1] = lineStart[1] - lastLineStart[1];;
+		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
 		i = 1;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i], lastLineStart[i + 1], lastLineStart[i]);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i], lastLineStart[i + 1], lastLineStart[i]));
 			i++;
 		}
 		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -219,12 +219,12 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
+void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 {
-	OSInt oriHeight = height;
-	OSInt i;
-	OSInt j;
-	OSInt compSize[5];
+	UOSInt oriHeight = height;
+	UOSInt i;
+	UOSInt j;
+	UOSInt compSize[5];
 	UInt8 lastPx[2];
 	UInt8 thisPx[2];
 	UInt8 *lastLineStart = 0;
@@ -239,8 +239,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	i = 2;
 	while (i < lineByteCnt)
 	{
-		thisPx[0] = lineStart[i + 1] - lastPx[0];
-		thisPx[1] = lineStart[i + 2] - lastPx[1];
+		thisPx[0] = (UInt8)(lineStart[i + 1] - lastPx[0]);
+		thisPx[1] = (UInt8)(lineStart[i + 2] - lastPx[1]);
 		lastPx[0] = lineStart[i + 1];
 		lastPx[1] = lineStart[i + 2];
 		tmpBuff[i + 1] = thisPx[0];
@@ -288,8 +288,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 2;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lineStart[i - 1];
-				outBuff[i + 2] = lineStart[i + 2] - lineStart[i];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 1]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i]);
 				i += 2;
 			}
 		}
@@ -299,8 +299,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-				outBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
 				i += 2;
 			}
 		}
@@ -312,8 +312,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-				outBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
 				lastPx[0] = lineStart[i + 1];
 				lastPx[1] = lineStart[i + 2];
 				i += 2;
@@ -322,13 +322,13 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		else if (j == 4)
 		{
 			outBuff[0] = 4;
-			outBuff[1] = lineStart[1] - lastLineStart[1];
-			outBuff[2] = lineStart[2] - lastLineStart[2];
+			outBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+			outBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
 			i = 2;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 1], lastLineStart[i - 1]);
-				outBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 2], lastLineStart[i - 0]);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 1], lastLineStart[i - 1]));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 2], lastLineStart[i - 0]));
 				i += 2;
 			}
 		}
@@ -346,8 +346,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 2;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lineStart[i - 1];
-			tmpBuff[i + 2] = lineStart[i + 2] - lineStart[i - 0];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 1]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 0]);
 			i += 2;
 		}
 		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -356,8 +356,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-			tmpBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
 			i += 2;
 		}
 		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -368,8 +368,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-			tmpBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
 			lastPx[0] = lineStart[i + 1];
 			lastPx[1] = lineStart[i + 2];
 			i += 2;
@@ -377,13 +377,13 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
 
 		tmpBuff[0] = 4;
-		tmpBuff[1] = lineStart[1] - lastLineStart[1];
-		tmpBuff[2] = lineStart[2] - lastLineStart[2];
+		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+		tmpBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
 		i = 2;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 1], lastLineStart[i - 1]);
-			tmpBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 2], lastLineStart[i - 0]);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 1], lastLineStart[i - 1]));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 2], lastLineStart[i - 0]));
 			i += 2;
 		}
 		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -394,12 +394,12 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
+void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 {
-	OSInt oriHeight = height;
-	OSInt i;
-	OSInt j;
-	OSInt compSize[5];
+	UOSInt oriHeight = height;
+	UOSInt i;
+	UOSInt j;
+	UOSInt compSize[5];
 	UInt8 lastPx[3];
 	UInt8 thisPx[3];
 	UInt8 *lastLineStart = 0;
@@ -415,9 +415,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	i = 3;
 	while (i < lineByteCnt)
 	{
-		thisPx[0] = lineStart[i + 1] - lastPx[0];
-		thisPx[1] = lineStart[i + 2] - lastPx[1];
-		thisPx[2] = lineStart[i + 3] - lastPx[2];
+		thisPx[0] = (UInt8)(lineStart[i + 1] - lastPx[0]);
+		thisPx[1] = (UInt8)(lineStart[i + 2] - lastPx[1]);
+		thisPx[2] = (UInt8)(lineStart[i + 3] - lastPx[2]);
 		lastPx[0] = lineStart[i + 1];
 		lastPx[1] = lineStart[i + 2];
 		lastPx[2] = lineStart[i + 3];
@@ -468,9 +468,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 3;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lineStart[i - 2];
-				outBuff[i + 2] = lineStart[i + 2] - lineStart[i - 1];
-				outBuff[i + 3] = lineStart[i + 3] - lineStart[i];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 2]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 1]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i]);
 				i += 3;
 			}
 		}
@@ -480,9 +480,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-				outBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-				outBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
 				i += 3;
 			}
 		}
@@ -495,9 +495,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-				outBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-				outBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
 				lastPx[0] = lineStart[i + 1];
 				lastPx[1] = lineStart[i + 2];
 				lastPx[2] = lineStart[i + 3];
@@ -507,15 +507,15 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		else if (j == 4)
 		{
 			outBuff[0] = 4;
-			outBuff[1] = lineStart[1] - lastLineStart[1];
-			outBuff[2] = lineStart[2] - lastLineStart[2];
-			outBuff[3] = lineStart[3] - lastLineStart[3];
+			outBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+			outBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+			outBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
 			i = 3;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 1], lastLineStart[i - 2]);
-				outBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 2], lastLineStart[i - 1]);
-				outBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 3], lastLineStart[i - 0]);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 1], lastLineStart[i - 2]));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 2], lastLineStart[i - 1]));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 3], lastLineStart[i - 0]));
 				i += 3;
 			}
 		}
@@ -534,9 +534,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 3;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lineStart[i - 2];
-			tmpBuff[i + 2] = lineStart[i + 2] - lineStart[i - 1];
-			tmpBuff[i + 3] = lineStart[i + 3] - lineStart[i - 0];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 2]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 1]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 0]);
 			i += 3;
 		}
 		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -545,9 +545,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-			tmpBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-			tmpBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
 			i += 3;
 		}
 		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -559,9 +559,9 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-			tmpBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-			tmpBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
 			lastPx[0] = lineStart[i + 1];
 			lastPx[1] = lineStart[i + 2];
 			lastPx[2] = lineStart[i + 3];
@@ -570,15 +570,15 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
 
 		tmpBuff[0] = 4;
-		tmpBuff[1] = lineStart[1] - lastLineStart[1];
-		tmpBuff[2] = lineStart[2] - lastLineStart[2];
-		tmpBuff[3] = lineStart[3] - lastLineStart[3];
+		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+		tmpBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+		tmpBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
 		i = 3;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 1], lastLineStart[i - 2]);
-			tmpBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 2], lastLineStart[i - 1]);
-			tmpBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 3], lastLineStart[i - 0]);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 1], lastLineStart[i - 2]));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 2], lastLineStart[i - 1]));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 3], lastLineStart[i - 0]));
 			i += 3;
 		}
 		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -589,12 +589,12 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
+void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 {
-	OSInt oriHeight = height;
-	OSInt i;
-	OSInt j;
-	OSInt compSize[5];
+	UOSInt oriHeight = height;
+	UOSInt i;
+	UOSInt j;
+	UOSInt compSize[5];
 	UInt8 lastPx[4];
 	UInt8 thisPx[4];
 	UInt8 *lastLineStart = 0;
@@ -611,10 +611,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	i = 4;
 	while (i < lineByteCnt)
 	{
-		thisPx[0] = lineStart[i + 1] - lastPx[0];
-		thisPx[1] = lineStart[i + 2] - lastPx[1];
-		thisPx[2] = lineStart[i + 3] - lastPx[2];
-		thisPx[3] = lineStart[i + 4] - lastPx[3];
+		thisPx[0] = (UInt8)(lineStart[i + 1] - lastPx[0]);
+		thisPx[1] = (UInt8)(lineStart[i + 2] - lastPx[1]);
+		thisPx[2] = (UInt8)(lineStart[i + 3] - lastPx[2]);
+		thisPx[3] = (UInt8)(lineStart[i + 4] - lastPx[3]);
 		lastPx[0] = lineStart[i + 1];
 		lastPx[1] = lineStart[i + 2];
 		lastPx[2] = lineStart[i + 3];
@@ -668,10 +668,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 4;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lineStart[i - 3];
-				outBuff[i + 2] = lineStart[i + 2] - lineStart[i - 2];
-				outBuff[i + 3] = lineStart[i + 3] - lineStart[i - 1];
-				outBuff[i + 4] = lineStart[i + 4] - lineStart[i];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 3]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 2]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 1]);
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i]);
 				i += 4;
 			}
 		}
@@ -681,10 +681,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-				outBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-				outBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
-				outBuff[i + 4] = lineStart[i + 4] - lastLineStart[i + 4];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
 				i += 4;
 			}
 		}
@@ -698,10 +698,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-				outBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-				outBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
-				outBuff[i + 4] = lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1));
 				lastPx[0] = lineStart[i + 1];
 				lastPx[1] = lineStart[i + 2];
 				lastPx[2] = lineStart[i + 3];
@@ -712,17 +712,17 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		else if (j == 4)
 		{
 			outBuff[0] = 4;
-			outBuff[1] = lineStart[1] - lastLineStart[1];
-			outBuff[2] = lineStart[2] - lastLineStart[2];
-			outBuff[3] = lineStart[3] - lastLineStart[3];
-			outBuff[4] = lineStart[4] - lastLineStart[4];
+			outBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+			outBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+			outBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
+			outBuff[4] = (UInt8)(lineStart[4] - lastLineStart[4]);
 			i = 4;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 1], lastLineStart[i - 3]);
-				outBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 2], lastLineStart[i - 2]);
-				outBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 3], lastLineStart[i - 1]);
-				outBuff[i + 4] = lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 4], lastLineStart[i - 0]);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 1], lastLineStart[i - 3]));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 2], lastLineStart[i - 2]));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 3], lastLineStart[i - 1]));
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 4], lastLineStart[i - 0]));
 				i += 4;
 			}
 		}
@@ -742,10 +742,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 4;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lineStart[i - 3];
-			tmpBuff[i + 2] = lineStart[i + 2] - lineStart[i - 2];
-			tmpBuff[i + 3] = lineStart[i + 3] - lineStart[i - 1];
-			tmpBuff[i + 4] = lineStart[i + 4] - lineStart[i - 0];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 3]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 2]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 1]);
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i - 0]);
 			i += 4;
 		}
 		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -754,10 +754,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-			tmpBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-			tmpBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
-			tmpBuff[i + 4] = lineStart[i + 4] - lastLineStart[i + 4];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
 			i += 4;
 		}
 		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -770,10 +770,10 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-			tmpBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-			tmpBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
-			tmpBuff[i + 4] = lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1));
 			lastPx[0] = lineStart[i + 1];
 			lastPx[1] = lineStart[i + 2];
 			lastPx[2] = lineStart[i + 3];
@@ -783,17 +783,17 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
 
 		tmpBuff[0] = 4;
-		tmpBuff[1] = lineStart[1] - lastLineStart[1];
-		tmpBuff[2] = lineStart[2] - lastLineStart[2];
-		tmpBuff[3] = lineStart[3] - lastLineStart[3];
-		tmpBuff[4] = lineStart[4] - lastLineStart[4];
+		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+		tmpBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+		tmpBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
+		tmpBuff[4] = (UInt8)(lineStart[4] - lastLineStart[4]);
 		i = 4;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 1], lastLineStart[i - 3]);
-			tmpBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 2], lastLineStart[i - 2]);
-			tmpBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 3], lastLineStart[i - 1]);
-			tmpBuff[i + 4] = lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 4], lastLineStart[i - 0]);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 1], lastLineStart[i - 3]));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 2], lastLineStart[i - 2]));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 3], lastLineStart[i - 1]));
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 4], lastLineStart[i - 0]));
 			i += 4;
 		}
 		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -804,12 +804,12 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
+void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 {
-	OSInt oriHeight = height;
-	OSInt i;
-	OSInt j;
-	OSInt compSize[5];
+	UOSInt oriHeight = height;
+	UOSInt i;
+	UOSInt j;
+	UOSInt compSize[5];
 	UInt8 lastPx[6];
 	UInt8 thisPx[6];
 	UInt8 *lastLineStart = 0;
@@ -828,12 +828,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	i = 6;
 	while (i < lineByteCnt)
 	{
-		thisPx[0] = lineStart[i + 1] - lastPx[0];
-		thisPx[1] = lineStart[i + 2] - lastPx[1];
-		thisPx[2] = lineStart[i + 3] - lastPx[2];
-		thisPx[3] = lineStart[i + 4] - lastPx[3];
-		thisPx[4] = lineStart[i + 5] - lastPx[4];
-		thisPx[5] = lineStart[i + 6] - lastPx[5];
+		thisPx[0] = (UInt8)(lineStart[i + 1] - lastPx[0]);
+		thisPx[1] = (UInt8)(lineStart[i + 2] - lastPx[1]);
+		thisPx[2] = (UInt8)(lineStart[i + 3] - lastPx[2]);
+		thisPx[3] = (UInt8)(lineStart[i + 4] - lastPx[3]);
+		thisPx[4] = (UInt8)(lineStart[i + 5] - lastPx[4]);
+		thisPx[5] = (UInt8)(lineStart[i + 6] - lastPx[5]);
 		lastPx[0] = lineStart[i + 1];
 		lastPx[1] = lineStart[i + 2];
 		lastPx[2] = lineStart[i + 3];
@@ -893,12 +893,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 6;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lineStart[i - 5];
-				outBuff[i + 2] = lineStart[i + 2] - lineStart[i - 4];
-				outBuff[i + 3] = lineStart[i + 3] - lineStart[i - 3];
-				outBuff[i + 4] = lineStart[i + 4] - lineStart[i - 2];
-				outBuff[i + 5] = lineStart[i + 5] - lineStart[i - 1];
-				outBuff[i + 6] = lineStart[i + 6] - lineStart[i - 0];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 5]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 4]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 3]);
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i - 2]);
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - lineStart[i - 1]);
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - lineStart[i - 0]);
 				i += 6;
 			}
 		}
@@ -908,12 +908,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-				outBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-				outBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
-				outBuff[i + 4] = lineStart[i + 4] - lastLineStart[i + 4];
-				outBuff[i + 5] = lineStart[i + 5] - lastLineStart[i + 5];
-				outBuff[i + 6] = lineStart[i + 6] - lastLineStart[i + 6];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - lastLineStart[i + 5]);
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - lastLineStart[i + 6]);
 				i += 6;
 			}
 		}
@@ -929,12 +929,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-				outBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-				outBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
-				outBuff[i + 4] = lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1);
-				outBuff[i + 5] = lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1);
-				outBuff[i + 6] = lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1));
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1));
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1));
 				lastPx[0] = lineStart[i + 1];
 				lastPx[1] = lineStart[i + 2];
 				lastPx[2] = lineStart[i + 3];
@@ -947,21 +947,21 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		else if (j == 4)
 		{
 			outBuff[0] = 4;
-			outBuff[1] = lineStart[1] - lastLineStart[1];
-			outBuff[2] = lineStart[2] - lastLineStart[2];
-			outBuff[3] = lineStart[3] - lastLineStart[3];
-			outBuff[4] = lineStart[4] - lastLineStart[4];
-			outBuff[5] = lineStart[5] - lastLineStart[5];
-			outBuff[6] = lineStart[6] - lastLineStart[6];
+			outBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+			outBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+			outBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
+			outBuff[4] = (UInt8)(lineStart[4] - lastLineStart[4]);
+			outBuff[5] = (UInt8)(lineStart[5] - lastLineStart[5]);
+			outBuff[6] = (UInt8)(lineStart[6] - lastLineStart[6]);
 			i = 6;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 1], lastLineStart[i - 5]);
-				outBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 2], lastLineStart[i - 4]);
-				outBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 3], lastLineStart[i - 3]);
-				outBuff[i + 4] = lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 4], lastLineStart[i - 2]);
-				outBuff[i + 5] = lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 5], lastLineStart[i - 1]);
-				outBuff[i + 6] = lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 6], lastLineStart[i - 0]);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 1], lastLineStart[i - 5]));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 2], lastLineStart[i - 4]));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 3], lastLineStart[i - 3]));
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 4], lastLineStart[i - 2]));
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 5], lastLineStart[i - 1]));
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 6], lastLineStart[i - 0]));
 				i += 6;
 			}
 		}
@@ -983,12 +983,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 6;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lineStart[i - 5];
-			tmpBuff[i + 2] = lineStart[i + 2] - lineStart[i - 4];
-			tmpBuff[i + 3] = lineStart[i + 3] - lineStart[i - 3];
-			tmpBuff[i + 4] = lineStart[i + 4] - lineStart[i - 2];
-			tmpBuff[i + 5] = lineStart[i + 5] - lineStart[i - 1];
-			tmpBuff[i + 6] = lineStart[i + 6] - lineStart[i - 0];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 5]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 4]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 3]);
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i - 2]);
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - lineStart[i - 1]);
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - lineStart[i - 0]);
 			i += 6;
 		}
 		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -997,12 +997,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-			tmpBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-			tmpBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
-			tmpBuff[i + 4] = lineStart[i + 4] - lastLineStart[i + 4];
-			tmpBuff[i + 5] = lineStart[i + 5] - lastLineStart[i + 5];
-			tmpBuff[i + 6] = lineStart[i + 6] - lastLineStart[i + 6];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - lastLineStart[i + 5]);
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - lastLineStart[i + 6]);
 			i += 6;
 		}
 		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -1017,12 +1017,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-			tmpBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-			tmpBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
-			tmpBuff[i + 4] = lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1);
-			tmpBuff[i + 5] = lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1);
-			tmpBuff[i + 6] = lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1));
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1));
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1));
 			lastPx[0] = lineStart[i + 1];
 			lastPx[1] = lineStart[i + 2];
 			lastPx[2] = lineStart[i + 3];
@@ -1034,21 +1034,21 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
 
 		tmpBuff[0] = 4;
-		tmpBuff[1] = lineStart[1] - lastLineStart[1];
-		tmpBuff[2] = lineStart[2] - lastLineStart[2];
-		tmpBuff[3] = lineStart[3] - lastLineStart[3];
-		tmpBuff[4] = lineStart[4] - lastLineStart[4];
-		tmpBuff[5] = lineStart[5] - lastLineStart[5];
-		tmpBuff[6] = lineStart[6] - lastLineStart[6];
+		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+		tmpBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+		tmpBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
+		tmpBuff[4] = (UInt8)(lineStart[4] - lastLineStart[4]);
+		tmpBuff[5] = (UInt8)(lineStart[5] - lastLineStart[5]);
+		tmpBuff[6] = (UInt8)(lineStart[6] - lastLineStart[6]);
 		i = 6;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 1], lastLineStart[i - 5]);
-			tmpBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 2], lastLineStart[i - 4]);
-			tmpBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 3], lastLineStart[i - 3]);
-			tmpBuff[i + 4] = lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 4], lastLineStart[i - 2]);
-			tmpBuff[i + 5] = lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 5], lastLineStart[i - 1]);
-			tmpBuff[i + 6] = lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 6], lastLineStart[i - 0]);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 1], lastLineStart[i - 5]));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 2], lastLineStart[i - 4]));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 3], lastLineStart[i - 3]));
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 4], lastLineStart[i - 2]));
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 5], lastLineStart[i - 1]));
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 6], lastLineStart[i - 0]));
 			i += 6;
 		}
 		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -1059,12 +1059,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
+void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 {
-	OSInt oriHeight = height;
-	OSInt i;
-	OSInt j;
-	OSInt compSize[5];
+	UOSInt oriHeight = height;
+	UOSInt i;
+	UOSInt j;
+	UOSInt compSize[5];
 	UInt8 lastPx[8];
 	UInt8 thisPx[8];
 	UInt8 *lastLineStart = 0;
@@ -1085,14 +1085,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 	i = 8;
 	while (i < lineByteCnt)
 	{
-		thisPx[0] = lineStart[i + 1] - lastPx[0];
-		thisPx[1] = lineStart[i + 2] - lastPx[1];
-		thisPx[2] = lineStart[i + 3] - lastPx[2];
-		thisPx[3] = lineStart[i + 4] - lastPx[3];
-		thisPx[4] = lineStart[i + 5] - lastPx[4];
-		thisPx[5] = lineStart[i + 6] - lastPx[5];
-		thisPx[6] = lineStart[i + 7] - lastPx[6];
-		thisPx[7] = lineStart[i + 8] - lastPx[7];
+		thisPx[0] = (UInt8)(lineStart[i + 1] - lastPx[0]);
+		thisPx[1] = (UInt8)(lineStart[i + 2] - lastPx[1]);
+		thisPx[2] = (UInt8)(lineStart[i + 3] - lastPx[2]);
+		thisPx[3] = (UInt8)(lineStart[i + 4] - lastPx[3]);
+		thisPx[4] = (UInt8)(lineStart[i + 5] - lastPx[4]);
+		thisPx[5] = (UInt8)(lineStart[i + 6] - lastPx[5]);
+		thisPx[6] = (UInt8)(lineStart[i + 7] - lastPx[6]);
+		thisPx[7] = (UInt8)(lineStart[i + 8] - lastPx[7]);
 		lastPx[0] = lineStart[i + 1];
 		lastPx[1] = lineStart[i + 2];
 		lastPx[2] = lineStart[i + 3];
@@ -1158,14 +1158,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 8;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lineStart[i - 7];
-				outBuff[i + 2] = lineStart[i + 2] - lineStart[i - 6];
-				outBuff[i + 3] = lineStart[i + 3] - lineStart[i - 5];
-				outBuff[i + 4] = lineStart[i + 4] - lineStart[i - 4];
-				outBuff[i + 5] = lineStart[i + 5] - lineStart[i - 3];
-				outBuff[i + 6] = lineStart[i + 6] - lineStart[i - 2];
-				outBuff[i + 7] = lineStart[i + 7] - lineStart[i - 1];
-				outBuff[i + 8] = lineStart[i + 8] - lineStart[i - 0];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 7]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 6]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 5]);
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i - 4]);
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - lineStart[i - 3]);
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - lineStart[i - 2]);
+				outBuff[i + 7] = (UInt8)(lineStart[i + 7] - lineStart[i - 1]);
+				outBuff[i + 8] = (UInt8)(lineStart[i + 8] - lineStart[i - 0]);
 				i += 8;
 			}
 		}
@@ -1175,14 +1175,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-				outBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-				outBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
-				outBuff[i + 4] = lineStart[i + 4] - lastLineStart[i + 4];
-				outBuff[i + 5] = lineStart[i + 5] - lastLineStart[i + 5];
-				outBuff[i + 6] = lineStart[i + 6] - lastLineStart[i + 6];
-				outBuff[i + 7] = lineStart[i + 7] - lastLineStart[i + 7];
-				outBuff[i + 8] = lineStart[i + 8] - lastLineStart[i + 8];
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - lastLineStart[i + 5]);
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - lastLineStart[i + 6]);
+				outBuff[i + 7] = (UInt8)(lineStart[i + 7] - lastLineStart[i + 7]);
+				outBuff[i + 8] = (UInt8)(lineStart[i + 8] - lastLineStart[i + 8]);
 				i += 8;
 			}
 		}
@@ -1200,14 +1200,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 			i = 0;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-				outBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-				outBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
-				outBuff[i + 4] = lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1);
-				outBuff[i + 5] = lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1);
-				outBuff[i + 6] = lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1);
-				outBuff[i + 7] = lineStart[i + 7] - ((lastLineStart[i + 7] + lastPx[6]) >> 1);
-				outBuff[i + 8] = lineStart[i + 8] - ((lastLineStart[i + 8] + lastPx[7]) >> 1);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1));
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1));
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1));
+				outBuff[i + 7] = (UInt8)(lineStart[i + 7] - ((lastLineStart[i + 7] + lastPx[6]) >> 1));
+				outBuff[i + 8] = (UInt8)(lineStart[i + 8] - ((lastLineStart[i + 8] + lastPx[7]) >> 1));
 				lastPx[0] = lineStart[i + 1];
 				lastPx[1] = lineStart[i + 2];
 				lastPx[2] = lineStart[i + 3];
@@ -1222,25 +1222,25 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		else if (j == 4)
 		{
 			outBuff[0] = 4;
-			outBuff[1] = lineStart[1] - lastLineStart[1];
-			outBuff[2] = lineStart[2] - lastLineStart[2];
-			outBuff[3] = lineStart[3] - lastLineStart[3];
-			outBuff[4] = lineStart[4] - lastLineStart[4];
-			outBuff[5] = lineStart[5] - lastLineStart[5];
-			outBuff[6] = lineStart[6] - lastLineStart[6];
-			outBuff[7] = lineStart[7] - lastLineStart[7];
-			outBuff[8] = lineStart[8] - lastLineStart[8];
+			outBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+			outBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+			outBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
+			outBuff[4] = (UInt8)(lineStart[4] - lastLineStart[4]);
+			outBuff[5] = (UInt8)(lineStart[5] - lastLineStart[5]);
+			outBuff[6] = (UInt8)(lineStart[6] - lastLineStart[6]);
+			outBuff[7] = (UInt8)(lineStart[7] - lastLineStart[7]);
+			outBuff[8] = (UInt8)(lineStart[8] - lastLineStart[8]);
 			i = 8;
 			while (i < lineByteCnt)
 			{
-				outBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 7], lastLineStart[i + 1], lastLineStart[i - 7]);
-				outBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 6], lastLineStart[i + 2], lastLineStart[i - 6]);
-				outBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 3], lastLineStart[i - 5]);
-				outBuff[i + 4] = lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 4], lastLineStart[i - 4]);
-				outBuff[i + 5] = lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 5], lastLineStart[i - 3]);
-				outBuff[i + 6] = lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 6], lastLineStart[i - 2]);
-				outBuff[i + 7] = lineStart[i + 7] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 7], lastLineStart[i - 1]);
-				outBuff[i + 8] = lineStart[i + 8] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 8], lastLineStart[i - 0]);
+				outBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 7], lastLineStart[i + 1], lastLineStart[i - 7]));
+				outBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 6], lastLineStart[i + 2], lastLineStart[i - 6]));
+				outBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 3], lastLineStart[i - 5]));
+				outBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 4], lastLineStart[i - 4]));
+				outBuff[i + 5] = (UInt8)(lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 5], lastLineStart[i - 3]));
+				outBuff[i + 6] = (UInt8)(lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 6], lastLineStart[i - 2]));
+				outBuff[i + 7] = (UInt8)(lineStart[i + 7] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 7], lastLineStart[i - 1]));
+				outBuff[i + 8] = (UInt8)(lineStart[i + 8] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 8], lastLineStart[i - 0]));
 				i += 8;
 			}
 		}
@@ -1264,14 +1264,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 8;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lineStart[i - 7];
-			tmpBuff[i + 2] = lineStart[i + 2] - lineStart[i - 6];
-			tmpBuff[i + 3] = lineStart[i + 3] - lineStart[i - 5];
-			tmpBuff[i + 4] = lineStart[i + 4] - lineStart[i - 4];
-			tmpBuff[i + 5] = lineStart[i + 5] - lineStart[i - 3];
-			tmpBuff[i + 6] = lineStart[i + 6] - lineStart[i - 2];
-			tmpBuff[i + 7] = lineStart[i + 7] - lineStart[i - 1];
-			tmpBuff[i + 8] = lineStart[i + 8] - lineStart[i - 0];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i - 7]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 6]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 5]);
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i - 4]);
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - lineStart[i - 3]);
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - lineStart[i - 2]);
+			tmpBuff[i + 7] = (UInt8)(lineStart[i + 7] - lineStart[i - 1]);
+			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - lineStart[i - 0]);
 			i += 8;
 		}
 		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -1280,14 +1280,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - lastLineStart[i + 1];
-			tmpBuff[i + 2] = lineStart[i + 2] - lastLineStart[i + 2];
-			tmpBuff[i + 3] = lineStart[i + 3] - lastLineStart[i + 3];
-			tmpBuff[i + 4] = lineStart[i + 4] - lastLineStart[i + 4];
-			tmpBuff[i + 5] = lineStart[i + 5] - lastLineStart[i + 5];
-			tmpBuff[i + 6] = lineStart[i + 6] - lastLineStart[i + 6];
-			tmpBuff[i + 7] = lineStart[i + 7] - lastLineStart[i + 7];
-			tmpBuff[i + 8] = lineStart[i + 8] - lastLineStart[i + 8];
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - lastLineStart[i + 5]);
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - lastLineStart[i + 6]);
+			tmpBuff[i + 7] = (UInt8)(lineStart[i + 7] - lastLineStart[i + 7]);
+			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - lastLineStart[i + 8]);
 			i += 8;
 		}
 		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -1304,14 +1304,14 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		i = 0;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1);
-			tmpBuff[i + 2] = lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1);
-			tmpBuff[i + 3] = lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1);
-			tmpBuff[i + 4] = lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1);
-			tmpBuff[i + 5] = lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1);
-			tmpBuff[i + 6] = lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1);
-			tmpBuff[i + 7] = lineStart[i + 7] - ((lastLineStart[i + 7] + lastPx[6]) >> 1);
-			tmpBuff[i + 8] = lineStart[i + 8] - ((lastLineStart[i + 8] + lastPx[7]) >> 1);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - ((lastLineStart[i + 1] + lastPx[0]) >> 1));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - ((lastLineStart[i + 2] + lastPx[1]) >> 1));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - ((lastLineStart[i + 3] + lastPx[2]) >> 1));
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - ((lastLineStart[i + 4] + lastPx[3]) >> 1));
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - ((lastLineStart[i + 5] + lastPx[4]) >> 1));
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - ((lastLineStart[i + 6] + lastPx[5]) >> 1));
+			tmpBuff[i + 7] = (UInt8)(lineStart[i + 7] - ((lastLineStart[i + 7] + lastPx[6]) >> 1));
+			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - ((lastLineStart[i + 8] + lastPx[7]) >> 1));
 			lastPx[0] = lineStart[i + 1];
 			lastPx[1] = lineStart[i + 2];
 			lastPx[2] = lineStart[i + 3];
@@ -1325,25 +1325,25 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, OSInt lineByteCnt, OSInt height)
 		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
 
 		tmpBuff[0] = 4;
-		tmpBuff[1] = lineStart[1] - lastLineStart[1];
-		tmpBuff[2] = lineStart[2] - lastLineStart[2];
-		tmpBuff[3] = lineStart[3] - lastLineStart[3];
-		tmpBuff[4] = lineStart[4] - lastLineStart[4];
-		tmpBuff[5] = lineStart[5] - lastLineStart[5];
-		tmpBuff[6] = lineStart[6] - lastLineStart[6];
-		tmpBuff[7] = lineStart[7] - lastLineStart[7];
-		tmpBuff[8] = lineStart[8] - lastLineStart[8];
+		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
+		tmpBuff[2] = (UInt8)(lineStart[2] - lastLineStart[2]);
+		tmpBuff[3] = (UInt8)(lineStart[3] - lastLineStart[3]);
+		tmpBuff[4] = (UInt8)(lineStart[4] - lastLineStart[4]);
+		tmpBuff[5] = (UInt8)(lineStart[5] - lastLineStart[5]);
+		tmpBuff[6] = (UInt8)(lineStart[6] - lastLineStart[6]);
+		tmpBuff[7] = (UInt8)(lineStart[7] - lastLineStart[7]);
+		tmpBuff[8] = (UInt8)(lineStart[8] - lastLineStart[8]);
 		i = 8;
 		while (i < lineByteCnt)
 		{
-			tmpBuff[i + 1] = lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 7], lastLineStart[i + 1], lastLineStart[i - 7]);
-			tmpBuff[i + 2] = lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 6], lastLineStart[i + 2], lastLineStart[i - 6]);
-			tmpBuff[i + 3] = lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 3], lastLineStart[i - 5]);
-			tmpBuff[i + 4] = lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 4], lastLineStart[i - 4]);
-			tmpBuff[i + 5] = lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 5], lastLineStart[i - 3]);
-			tmpBuff[i + 6] = lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 6], lastLineStart[i - 2]);
-			tmpBuff[i + 7] = lineStart[i + 7] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 7], lastLineStart[i - 1]);
-			tmpBuff[i + 8] = lineStart[i + 8] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 8], lastLineStart[i - 0]);
+			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i - 7], lastLineStart[i + 1], lastLineStart[i - 7]));
+			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 6], lastLineStart[i + 2], lastLineStart[i - 6]));
+			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 5], lastLineStart[i + 3], lastLineStart[i - 5]));
+			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 4], lastLineStart[i + 4], lastLineStart[i - 4]));
+			tmpBuff[i + 5] = (UInt8)(lineStart[i + 5] - PNGExporter_PaethPredictor(lineStart[i - 3], lastLineStart[i + 5], lastLineStart[i - 3]));
+			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 2], lastLineStart[i + 6], lastLineStart[i - 2]));
+			tmpBuff[i + 7] = (UInt8)(lineStart[i + 7] - PNGExporter_PaethPredictor(lineStart[i - 1], lastLineStart[i + 7], lastLineStart[i - 1]));
+			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 8], lastLineStart[i - 0]));
 			i += 8;
 		}
 		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
@@ -1434,9 +1434,9 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UInt8 *tmpBuff2;
 	UInt8 *imgPtr1;
 	UInt8 *imgPtr2;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Crypto::Hash::CRC32R crc;
 	UInt8 hdr[128];
 	hdr[0] = 0x89;
@@ -1529,7 +1529,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		const UInt8 *iccBuff = img->info->color->GetRAWICC();
 		if (iccBuff)
 		{
-			Int32 iccSize = ReadMInt32(iccBuff);
+			UInt32 iccSize = ReadMUInt32(iccBuff);
 			tmpBuff = MemAlloc(UInt8, iccSize + 35 + 11);
 			*(Int32*)&tmpBuff[4] = *(Int32*)"iCCP";
 			Text::StrConcat((Char*)&tmpBuff[8], "Photoshop ICC profile");

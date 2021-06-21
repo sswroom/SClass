@@ -66,15 +66,15 @@ Bool Exporter::SHA1Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	UInt8 buff[20];
 	IO::StreamWriter *writer;
 	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
-	OSInt i = 0;
-	OSInt cnt = fchk->GetCount();
+	UOSInt i = 0;
+	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
 	{
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 20, 0);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)" *");
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
-		writer->WriteLine(sbuff, sptr - sbuff);
+		writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	DEL_CLASS(writer);

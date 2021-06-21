@@ -22,10 +22,10 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt bpl = width << 3;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt bpl = width << 3;
 	if (width < 2 || height < 2)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
@@ -37,9 +37,9 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(j / (Double)(i - 1)) * 255.0);
-		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(j / (Double)(i - 1)) * 255.0);
-		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(j / (Double)(i - 1)) * 255.0);
+		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(Math::UOSInt2Double(j) / Math::UOSInt2Double(i - 1)) * 255.0);
+		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(Math::UOSInt2Double(j) / Math::UOSInt2Double(i - 1)) * 255.0);
+		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(Math::UOSInt2Double(j) / Math::UOSInt2Double(i - 1)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
@@ -50,9 +50,9 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(j / (Double)k) * 255.0);
-		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(j / (Double)k) * 255.0);
-		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(j / (Double)k) * 255.0);
+		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(Math::UOSInt2Double(j) / Math::UOSInt2Double(k)) * 255.0);
+		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(Math::UOSInt2Double(j) / Math::UOSInt2Double(k)) * 255.0);
+		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(Math::UOSInt2Double(j) / Math::UOSInt2Double(k)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
@@ -63,9 +63,9 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(1 - j / (Double)(i - 1)) * 255.0);
-		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(1 - j / (Double)(i - 1)) * 255.0);
-		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(1 - j / (Double)(i - 1)) * 255.0);
+		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(1 - Math::UOSInt2Double(j) / Math::UOSInt2Double(i - 1)) * 255.0);
+		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(1 - Math::UOSInt2Double(j) / Math::UOSInt2Double(i - 1)) * 255.0);
+		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(1 - Math::UOSInt2Double(j) / Math::UOSInt2Double(i - 1)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
@@ -76,9 +76,9 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(1 - j / (Double)k) * 255.0);
-		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(1 - j / (Double)k) * 255.0);
-		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(1 - j / (Double)k) * 255.0);
+		imgPtr[0] = (UInt8)Math::Double2Int32(bfunc->ForwardTransfer(1 - Math::UOSInt2Double(j) / Math::UOSInt2Double(k)) * 255.0);
+		imgPtr[1] = (UInt8)Math::Double2Int32(gfunc->ForwardTransfer(1 - Math::UOSInt2Double(j) / Math::UOSInt2Double(k)) * 255.0);
+		imgPtr[2] = (UInt8)Math::Double2Int32(rfunc->ForwardTransfer(1 - Math::UOSInt2Double(j) / Math::UOSInt2Double(k)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
