@@ -258,6 +258,7 @@ namespace SSWR
 			void LoadLocations();
 			void FreeSpecies();
 			void FreeGroups();
+			void FreeGroup(GroupInfo *group);
 			void FreeBooks();
 			void FreeUsers();
 			void ClearUsers();
@@ -283,6 +284,8 @@ namespace SSWR
 			Bool UserfileUpdateRotType(Int32 userfileId, Int32 rotType);
 			Bool SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF *bookNameOut);
 			Int32 GroupAdd(const UTF8Char* engName, const UTF8Char *chiName, Int32 parentId, const UTF8Char *descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
+			Bool GroupModify(Int32 id, const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *descr, Int32 groupTypeId, GroupFlags flags);
+			Bool GroupDelete(Int32 id);
 			Bool GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId);
 			Bool GroupAddCounts(Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
 

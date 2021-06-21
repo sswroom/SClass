@@ -737,16 +737,21 @@ void SSWR::OrganMgr::OrganWebHandler::FreeGroups()
 	while (i-- > 0)
 	{
 		group = groupList->GetItem(i);
-		Text::StrDelNew(group->engName);
-		Text::StrDelNew(group->chiName);
-		Text::StrDelNew(group->descript);
-		Text::StrDelNew(group->idKey);
-		DEL_CLASS(group->species);
-		DEL_CLASS(group->groups);
-
-		MemFree(group);
+		FreeGroup(group);
 	}
 	this->groupMap->Clear();
+}
+
+void SSWR::OrganMgr::OrganWebHandler::FreeGroup(GroupInfo *group)
+{
+	Text::StrDelNew(group->engName);
+	Text::StrDelNew(group->chiName);
+	Text::StrDelNew(group->descript);
+	SDEL_TEXT(group->idKey);
+	DEL_CLASS(group->species);
+	DEL_CLASS(group->groups);
+
+	MemFree(group);
 }
 
 void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
@@ -2079,6 +2084,69 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(const UTF8Char* engName, const U
 	return 0;
 }
 
+Bool SSWR::OrganMgr::OrganWebHandler::GroupModify(Int32 id, const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *descr, Int32 groupTypeId, GroupFlags flags)
+{
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(id);
+	if (group == 0)
+		return false;
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmd((const UTF8Char*)"update groups set group_type = ");
+	sql.AppendInt32(groupTypeId);
+	sql.AppendCmd((const UTF8Char*)", eng_name = ");
+	sql.AppendStrUTF8(engName);
+	sql.AppendCmd((const UTF8Char*)", chi_name = ");
+	sql.AppendStrUTF8(chiName);
+	sql.AppendCmd((const UTF8Char*)", description = ");
+	sql.AppendStrUTF8(descr);
+	sql.AppendCmd((const UTF8Char*)", flags = ");
+	sql.AppendInt32(flags);
+	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendInt32(id);
+	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
+	{
+		group->groupType = groupTypeId;
+		SDEL_TEXT(group->engName);
+		group->engName = Text::StrCopyNew(engName);
+		SDEL_TEXT(group->chiName);
+		group->chiName = Text::StrCopyNew(chiName);
+		SDEL_TEXT(group->descript);
+		group->descript = Text::StrCopyNew(descr);
+		group->flags = flags;
+		return true;
+	}
+	return false;
+}
+
+Bool SSWR::OrganMgr::OrganWebHandler::GroupDelete(Int32 id)
+{
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(id);
+	if (group == 0)
+		return false;
+	if (group->groups->GetCount() > 0)
+		return false;
+	if (group->species->GetCount() > 0)
+		return false;
+	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate = this->cateMap->Get(group->cateId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *parentGroup = this->groupMap->Get(group->parentId);
+	if (parentGroup == 0)
+		return false;
+	if (cate == 0)
+		return false;
+
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmd((const UTF8Char*)"delete from groups where id = ");
+	sql.AppendInt32(id);
+	if (this->db->ExecuteNonQuery(sql.ToString()) == 1)
+	{
+		parentGroup->groups->Remove(group);
+		cate->groups->Remove(group);
+		this->groupMap->Remove(group->id);
+		FreeGroup(group);
+		return true;
+	}
+	return false;
+}
+
 Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId)
 {
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(groupId);
@@ -2851,9 +2919,70 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						me->dataMut->LockRead();
 					}
 				}
-				else if (Text::StrEquals(task, (const UTF8Char*)"modify"))
+				else if (Text::StrEquals(task, (const UTF8Char*)"modify") && modGroup != 0 && modGroup->cateId == cateId)
 				{
-					
+					Bool found = false;
+					i = group->groups->GetCount();
+					while (i-- > 0)
+					{
+						if (group->groups->GetItem(i) != modGroup && Text::StrEquals(group->groups->GetItem(i)->engName, ename))
+						{
+							found = true;
+							break;
+						}
+					}
+					if (found)
+					{
+						msg.Append((const UTF8Char*)"Group name already exist");
+					}
+					else
+					{
+						me->dataMut->UnlockRead();
+						me->dataMut->LockWrite();
+						if (me->GroupModify(modGroup->id, ename, cname, descr, groupTypeId, groupFlags))
+						{
+							me->dataMut->UnlockWrite();
+							sb.ClearStr();
+							sb.Append((const UTF8Char*)"group.html?id=");
+							sb.AppendI32(modGroup->id);
+							sb.Append((const UTF8Char*)"&cateId=");
+							sb.AppendI32(modGroup->cateId);
+
+							resp->RedirectURL(req, sb.ToString(), 0);
+							return true;
+						}
+						else
+						{
+							msg.Append((const UTF8Char*)"Error in modifying group");
+						}
+						me->dataMut->UnlockWrite();
+						me->dataMut->LockRead();
+					}
+				}
+				else if (Text::StrEquals(task, (const UTF8Char*)"delete") && modGroup != 0 && modGroup->groups->GetCount() == 0 && modGroup->species->GetCount() == 0)
+				{
+					Int32 id = modGroup->id;
+					Int32 cateId = modGroup->cateId;
+					me->dataMut->UnlockRead();
+					me->dataMut->LockWrite();
+					if (me->GroupDelete(modGroup->id))
+					{
+						me->dataMut->UnlockWrite();
+						sb.ClearStr();
+						sb.Append((const UTF8Char*)"group.html?id=");
+						sb.AppendI32(id);
+						sb.Append((const UTF8Char*)"&cateId=");
+						sb.AppendI32(cateId);
+
+						resp->RedirectURL(req, sb.ToString(), 0);
+						return true;
+					}
+					else
+					{
+						msg.Append((const UTF8Char*)"Error in deleting group");
+					}
+					me->dataMut->UnlockWrite();
+					me->dataMut->LockRead();
 				}
 			}
 		}
@@ -2950,7 +3079,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			writer->Write((const UTF8Char*)"<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newgroup.task.value='modify';document.forms.newgroup.submit();\"/>");
 		}
 		writer->Write((const UTF8Char*)"<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>");
-
+		if (group->species->GetCount() == 0 && group->groups->GetCount() == 0)
+		{
+			writer->Write((const UTF8Char*)"<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>");
+		}
 		writer->Write((const UTF8Char*)"<a href=\"group.html?id=");
 		sb.ClearStr();
 		sb.AppendI32(group->id);
