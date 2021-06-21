@@ -336,7 +336,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 #endif
 }
 
-Bool IO::ConsoleWriter::SetCursorPos(Int32 x, Int32 y)
+Bool IO::ConsoleWriter::SetCursorPos(UInt32 x, Int32 y)
 {
 #ifdef _WIN32_WCE
 	return false;

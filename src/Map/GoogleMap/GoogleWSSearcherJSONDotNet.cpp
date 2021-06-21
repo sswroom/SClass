@@ -164,7 +164,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 			System::Runtime::InteropServices::Marshal::Copy(readBuff, 0, System::IntPtr(databuff), readSize);
 			mstm->Write(databuff, readSize);
 		}
-		mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		mstm->SeekFromBeginning(0);
 		NEW_CLASS(reader, IO::StreamReader(mstm, 65001));
 		Text::StringBuilderUTF8 sb;
 		reader->ReadToEnd(&sb);

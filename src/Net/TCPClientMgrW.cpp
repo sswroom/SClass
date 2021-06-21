@@ -236,7 +236,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	Sync::Event *recvEvt;
 	NEW_CLASS(recvEvt, Sync::Event(false, (const UTF8Char*)"Net.TCPClientMgr.RecvEvt"));
 	NEW_CLASS(cliArr, Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*>());
-	NEW_CLASS(cliIdArr, Data::ArrayListInt64());
+	NEW_CLASS(cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(cliMut, Sync::Mutex());
 	NEW_CLASS(this->workerTasks, Data::LinkedList());
 	this->clsData = recvEvt;
@@ -342,7 +342,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	mutUsage.EndUse();
 }
 
-Bool Net::TCPClientMgr::SendClientData(Int64 cliId, const UInt8 *buff, UOSInt buffSize)
+Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize)
 {
 	OSInt i;
 	Net::TCPClientMgr::TCPClientStatus *cliStat = 0;

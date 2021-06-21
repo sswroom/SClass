@@ -13,12 +13,12 @@ UI::GUICheckedListBox::~GUICheckedListBox()
 {
 }
 
-Bool UI::GUICheckedListBox::GetItemChecked(OSInt index)
+Bool UI::GUICheckedListBox::GetItemChecked(UOSInt index)
 {
 	return ListView_GetCheckState((HWND)this->hwnd, index) != 0;
 }
 
-void UI::GUICheckedListBox::SetItemChecked(OSInt index, Bool isChecked)
+void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 {
 	ListView_SetCheckState((HWND)this->hwnd, index, isChecked?TRUE:FALSE);
 }

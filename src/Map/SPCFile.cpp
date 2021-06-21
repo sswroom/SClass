@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListInt.h"
+#include "Data/ArrayListInt32.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "IO/IStreamData.h"
@@ -23,6 +23,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 
 #define SFLG_ROTATE 1
@@ -2214,10 +2215,10 @@ Map::SPCFile::SPCFile(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<M
 		{
 			fstm->Read((UInt8*)dataBuff, 6);
 			j = (Int32)fstm->GetPosition();
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, dataBuff[0]);
+			fstm->SeekFromBeginning(dataBuff[0]);
 			dirs[i] = MemAlloc(WChar, (dataBuff[1] >> 1) + 1);
 			fstm->Read((UInt8*)dirs[i], dataBuff[1]);
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, j);
+			fstm->SeekFromBeginning(j);
 			dirs[i][dataBuff[1] >> 1] = 0;
 
 			i++;
@@ -2230,10 +2231,10 @@ Map::SPCFile::SPCFile(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<M
 		{
 			fstm->Read((UInt8*)dataBuff, 6);
 			j = (Int32)fstm->GetPosition();
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, dataBuff[0]);
+			fstm->SeekFromBeginning(dataBuff[0]);
 			grps[i] = MemAlloc(WChar, (dataBuff[1] >> 1) + 1);
 			fstm->Read((UInt8*)grps[i], dataBuff[1]);
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, j);
+			fstm->SeekFromBeginning(j);
 			grps[i][dataBuff[1] >> 1] = 0;
 
 			i++;
@@ -2253,10 +2254,10 @@ Map::SPCFile::SPCFile(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<M
 			this->fonts[i].fontColor = 0xff7f7f7f;
 #endif
 			j = (Int32)fstm->GetPosition();
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, dataBuff[0]);
+			fstm->SeekFromBeginning(dataBuff[0]);
 			this->fonts[i].fontName = MemAlloc(WChar, (((UInt16*)dataBuff)[2] >> 1) + 1);
 			fstm->Read((UInt8*)this->fonts[i].fontName, ((UInt16*)dataBuff)[2]);
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, j);
+			fstm->SeekFromBeginning(j);
 			((WChar*)this->fonts[i].fontName)[((UInt16*)dataBuff)[2] >> 1] = 0;
 
 			i++;
@@ -2321,9 +2322,9 @@ Map::SPCFile::SPCFile(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<M
 #endif
 			*sptr++ = '\\';
 			j = (Int32)fstm->GetPosition();
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, dataBuff[1]);
+			fstm->SeekFromBeginning(dataBuff[1]);
 			fstm->Read((UInt8*)sptr, dataBuff[2]);
-			fstm->Seek(IO::SeekableStream::ST_BEGIN, j);
+			fstm->SeekFromBeginning(j);
 			sptr[dataBuff[2] >> 1] = 0;
 			NEW_CLASS(currLayer->lyr, Map::SPDLayer(layerName));
 

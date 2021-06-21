@@ -29,11 +29,11 @@ Win32::Clipboard::~Clipboard()
 	}
 }
 
-OSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<Int32> *dataTypes)
+UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 {
 	if (!this->succ)
 		return 0;
-	OSInt i = 0;
+	UOSInt i = 0;
 	UInt32 val;
 	val = 0;
 	while (true)
@@ -592,7 +592,7 @@ Bool Win32::Clipboard::GetString(void *hWndOwner, Text::StringBuilderUTF *sb)
 	return succ;
 }
 
-UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, OSInt buffSize)
+UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
 {
 	switch (fmtId)
 	{

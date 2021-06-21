@@ -237,7 +237,7 @@ typedef struct
 		else if (destPos > 0)
 		{
 			fileSize -= destPos;
-			fs1->Seek(IO::SeekableStream::ST_BEGIN, destPos);
+			fs1->SeekFromBeginning(destPos);
 		}
 	}
 
@@ -361,7 +361,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	UInt8 *buff;
 	if (fea == IO::FileUtil::FEA_CONTINUE)
 	{
-		Int64 destPos = fs2->GetPosition();
+		UInt64 destPos = fs2->GetPosition();
 		if (destPos > fileSize)
 		{
 			DEL_CLASS(fs2);
@@ -377,7 +377,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		else if (destPos > 0)
 		{
 			fileSize -= destPos;
-			fs1->Seek(IO::SeekableStream::ST_BEGIN, destPos);
+			fs1->SeekFromBeginning(destPos);
 		}
 	}
 

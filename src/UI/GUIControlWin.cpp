@@ -761,7 +761,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 }
 
 
-Int32 UI::GUIControl::GUIKey2OSKey(GUIKey guiKey)
+UInt32 UI::GUIControl::GUIKey2OSKey(GUIKey guiKey)
 {
 	switch (guiKey)
 	{
@@ -1028,7 +1028,7 @@ Int32 UI::GUIControl::GUIKey2OSKey(GUIKey guiKey)
 	}
 }
 
-UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(Int32 osKey)
+UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 {
 	switch (osKey)
 	{

@@ -1087,32 +1087,32 @@ Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
 	}
 }
 
-Int64 IO::Path::GetFileSize(const UTF8Char *path)
+UInt64 IO::Path::GetFileSize(const UTF8Char *path)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attr;
 	const WChar *wptr = Text::StrToWCharNew(path);
 	if (GetFileAttributesExW(wptr, GetFileExInfoStandard, &attr) != 0)
 	{
 		Text::StrDelNew(wptr);
-		return (((Int64)attr.nFileSizeHigh) << 32) | attr.nFileSizeLow;
+		return (((UInt64)attr.nFileSizeHigh) << 32) | attr.nFileSizeLow;
 	}
 	else
 	{
 		Text::StrDelNew(wptr);
-		return -1;
+		return 0;
 	}
 }
 
-Int64 IO::Path::GetFileSizeW(const WChar *path)
+UInt64 IO::Path::GetFileSizeW(const WChar *path)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attr;
 	if (GetFileAttributesExW(path, GetFileExInfoStandard, &attr) != 0)
 	{
-		return (((Int64)attr.nFileSizeHigh) << 32) | attr.nFileSizeLow;
+		return (((UInt64)attr.nFileSizeHigh) << 32) | attr.nFileSizeLow;
 	}
 	else
 	{
-		return -1;
+		return 0;
 	}
 }
 

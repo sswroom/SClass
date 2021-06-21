@@ -69,27 +69,27 @@ HRESULT __stdcall Win32::COMStream::Write(const void *pv, ULONG cb, ULONG *pcbWr
 HRESULT __stdcall Win32::COMStream::Seek(LARGE_INTEGER dlibMove, DWORD dwOrigin, ULARGE_INTEGER *plibNewPosition)
 {
 	DebugMsg("Seek");
-	IO::SeekableStream::SeekType origin;
 	if (dwOrigin == STREAM_SEEK_SET)
 	{
-		origin = IO::SeekableStream::ST_BEGIN;
-	}
-	else if (dwOrigin == STREAM_SEEK_CUR)
-	{
-		origin = IO::SeekableStream::ST_CURRENT;
+		if (plibNewPosition)
+			plibNewPosition->QuadPart = this->stm->SeekFromBeginning(dlibMove.QuadPart);
+		else
+			this->stm->SeekFromBeginning(dlibMove.QuadPart);
 	}
 	else if (dwOrigin == STREAM_SEEK_END)
 	{
-		origin = IO::SeekableStream::ST_END;
+		if (plibNewPosition)
+			plibNewPosition->QuadPart = this->stm->SeekFromEnd(dlibMove.QuadPart);
+		else
+			this->stm->SeekFromEnd(dlibMove.QuadPart);
 	}
 	else
 	{
-		origin = IO::SeekableStream::ST_CURRENT;
+		if (plibNewPosition)
+			plibNewPosition->QuadPart = this->stm->SeekFromCurrent(dlibMove.QuadPart);
+		else
+			this->stm->SeekFromCurrent(dlibMove.QuadPart);
 	}
-	if (plibNewPosition)
-		plibNewPosition->QuadPart = this->stm->Seek(origin, dlibMove.QuadPart);
-	else
-		this->stm->Seek(origin, dlibMove.QuadPart);
 	return 0;
 }
 

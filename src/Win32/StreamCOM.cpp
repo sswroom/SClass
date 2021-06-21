@@ -55,33 +55,39 @@ Bool Win32::StreamCOM::Recover()
 	return false;
 }
 
-UInt64 Win32::StreamCOM::Seek(SeekType origin, Int64 position)
+UInt64 Win32::StreamCOM::SeekFromBeginning(UInt64 position)
 {
 	ULARGE_INTEGER li;
 	LARGE_INTEGER li2;
 	li.QuadPart = 0;
 	li2.QuadPart = position;
-	UInt32 orig;
-	switch (origin)
-	{
-	default:
-	case IO::SeekableStream::ST_BEGIN:
-		orig = STREAM_SEEK_SET;
-		break;
-	case IO::SeekableStream::ST_CURRENT:
-		orig = STREAM_SEEK_CUR;
-		break;
-	case IO::SeekableStream::ST_END:
-		orig = STREAM_SEEK_END;
-		break;
-	}
-	this->stm->Seek(li2, orig, &li);
+	this->stm->Seek(li2, STREAM_SEEK_SET, &li);
+	return li.QuadPart;
+}
+
+UInt64 Win32::StreamCOM::SeekFromCurrent(Int64 position)
+{
+	ULARGE_INTEGER li;
+	LARGE_INTEGER li2;
+	li.QuadPart = 0;
+	li2.QuadPart = position;
+	this->stm->Seek(li2, STREAM_SEEK_CUR, &li);
+	return li.QuadPart;
+}
+
+UInt64 Win32::StreamCOM::SeekFromEnd(Int64 position)
+{
+	ULARGE_INTEGER li;
+	LARGE_INTEGER li2;
+	li.QuadPart = 0;
+	li2.QuadPart = position;
+	this->stm->Seek(li2, STREAM_SEEK_END, &li);
 	return li.QuadPart;
 }
 
 UInt64 Win32::StreamCOM::GetPosition()
 {
-	return Seek(IO::SeekableStream::ST_CURRENT, 0);
+	return SeekFromCurrent(0);
 }
 
 UInt64 Win32::StreamCOM::GetLength()
