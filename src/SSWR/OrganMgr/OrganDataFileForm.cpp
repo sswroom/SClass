@@ -78,9 +78,9 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 
 	Data::ArrayList<DataFileInfo*> *dataFiles = this->env->GetDataFiles();
 	DataFileInfo *dataFile;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UTF8Char sbuff[64];
 	Data::DateTime dt;
 	i = 0;

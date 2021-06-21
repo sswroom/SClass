@@ -41,7 +41,7 @@ namespace SSWR
 			Int32 initId;
 			Bool sublocUpdating;
 			Location *currLoc;
-			OSInt currLocInd;
+			UOSInt currLocInd;
 			Location *selVal;
 			
 			void DispId(Int32 id);

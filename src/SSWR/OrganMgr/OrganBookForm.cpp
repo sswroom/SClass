@@ -14,7 +14,7 @@ SSWR::OrganMgr::BookArrayList::~BookArrayList()
 
 void SSWR::OrganMgr::BookArrayList::Sort()
 {
-	ArtificialQuickSort_SortCmp((void**)arr, (Data::IComparable::CompareFunc)CompareBook, 0, this->objCnt - 1);
+	ArtificialQuickSort_SortCmp((void**)arr, (Data::IComparable::CompareFunc)CompareBook, 0, (OSInt)this->objCnt - 1);
 }
 
 OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, OrganBook *book2)
@@ -38,7 +38,7 @@ UOSInt SSWR::OrganMgr::BookArrayList::SortedInsert(OrganBook *Val)
 	OSInt k;
 	OSInt l;
 	i = 0;
-	j = objCnt - 1;
+	j = (OSInt)objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -58,23 +58,26 @@ UOSInt SSWR::OrganMgr::BookArrayList::SortedInsert(OrganBook *Val)
 		}
 	}
 
+	UOSInt ui;
+	UOSInt uj;
 	if (objCnt == this->capacity)
 	{
 		OrganBook **newArr = MemAlloc(OrganBook*, this->capacity << 1);
-		k = this->objCnt;
-		while (k-- > 0)
+		ui = this->objCnt;
+		while (ui-- > 0)
 		{
-			newArr[k] = arr[k];
+			newArr[ui] = arr[ui];
 		}
 		this->capacity = this->capacity << 1;
 		MemFree(arr);
 		arr = newArr;
 	}
-	j = objCnt;
-	while (j > i)
+	ui = (UOSInt)i;
+	uj = objCnt;
+	while (uj > ui)
 	{
-		arr[j] = arr[j - 1];
-		j--;
+		arr[uj] = arr[uj - 1];
+		uj--;
 	}
 	objCnt++;
 	arr[i] = Val;
@@ -114,7 +117,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 	OrganBookForm *me = (OrganBookForm*)userObj;
 	Data::DateTime currTime(newDate->GetYear(), 1, 1, 0, 0, 0);
 	OSInt i = 0;
-	OSInt j = me->bookList->GetCount() - 1;
+	OSInt j = (OSInt)me->bookList->GetCount() - 1;
 	OSInt k;
 	OrganBook *book;
 	while (i <= j)
@@ -221,7 +224,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 		sb.Replace('\r', ' ');
 		sb.Replace((const UTF8Char*)"  ", (const UTF8Char*)" ");
 
-		OSInt digitCnt = 0;
+		UOSInt digitCnt = 0;
 		OSInt i = 1;
 		OSInt j;
 		OSInt k;
@@ -336,9 +339,9 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 {
 	OrganBook *book;
 	UTF8Char sbuff[32];
-	OSInt i = 0;
-	OSInt j = this->bookList->GetCount();
-	OSInt k;
+	UOSInt i = 0;
+	UOSInt j = this->bookList->GetCount();
+	UOSInt k;
 	this->lvBook->ClearItems();
 	while (i < j)
 	{

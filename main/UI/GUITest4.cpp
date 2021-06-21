@@ -38,7 +38,7 @@ void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
 void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
-	OSInt i;
+	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	i = 0;
 	while (i < nFiles)

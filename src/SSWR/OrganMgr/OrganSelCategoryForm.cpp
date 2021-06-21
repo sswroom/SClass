@@ -7,7 +7,7 @@ void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(void *userObj)
 	OSInt i = me->lbCategory->GetSelectedIndex();
 	if (i >= 0)
 	{
-		Category *cate = (Category*)me->lbCategory->GetItem(i);
+		Category *cate = (Category*)me->lbCategory->GetItem((UOSInt)i);
 		me->env->SetCurrCategory(cate);
 		me->SetDialogResult(DR_OK);
 	}

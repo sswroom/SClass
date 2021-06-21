@@ -59,7 +59,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *
 
 Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax()
 {
-	return objList->GetCount() - 1;
+	return (Int64)objList->GetCount() - 1;
 }
 
 void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(void *nameArr)
@@ -69,7 +69,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(void *nameArr)
 UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
 	UserFileInfo *ufile;
-	ufile = this->objList->GetItem((OSInt)id);
+	ufile = this->objList->GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	if (strIndex == 0)
@@ -154,7 +154,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetObjectByIdD(void *session, Int64 id)
 {
-	UserFileInfo *ufile = this->objList->GetItem((OSInt)id);
+	UserFileInfo *ufile = this->objList->GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	Map::DrawObjectL *dobj;
@@ -174,11 +174,11 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetObjectByIdD(void *session,
 
 Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetVectorById(void *session, Int64 id)
 {
-	UserFileInfo *ufile = this->objList->GetItem((OSInt)id);
+	UserFileInfo *ufile = this->objList->GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	Math::Point *pt;
-	NEW_CLASS(pt, Math::Point(ufile->lon, ufile->lat, this->csys->GetSRID()));
+	NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), ufile->lon, ufile->lat));
 	return pt;
 }
 
