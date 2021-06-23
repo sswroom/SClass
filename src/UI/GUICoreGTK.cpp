@@ -4,6 +4,8 @@
 #include "UI/GUICore.h"
 #include "UI/GUICoreGTK.h"
 #include <gtk/gtk.h>
+#include <X11/Xlib.h>
+#undef Bool
 
 UI::GUICoreGTK::GUICoreGTK()
 {
@@ -57,6 +59,9 @@ Double UI::GUICoreGTK::GetMagnifyRatio(void *hMonitor)
 
 void UI::GUICoreGTK::UseDevice(Bool useSystem, Bool useDisplay)
 {
+	Display *display = XOpenDisplay(0);
+	XResetScreenSaver(display);
+	XCloseDisplay(display);
 }
 
 void UI::GUICoreGTK::SetNoDisplayOff(Bool noDispOff)

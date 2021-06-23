@@ -159,6 +159,7 @@ GUIControl.o: ../../src/UI/GUIControlGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 GUICore.o: ../../src/UI/GUICoreGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
+!-lX11
 GUICustomDraw.o: ../../src/UI/GUICustomDrawGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 GUICustomDrawVScroll.o: ../../src/UI/GUICustomDrawVScrollGTK.cpp
