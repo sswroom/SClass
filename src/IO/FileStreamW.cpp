@@ -275,7 +275,37 @@ Bool IO::FileStream::Recover()
 	return false;
 }
 
-UInt64 IO::FileStream::Seek(IO::SeekableStream::SeekType origin, Int64 position)
+UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)
+{
+	if (handle == INVALID_HANDLE_VALUE)
+		return 0;
+	if (this->currPos == (UInt64)position)
+		return this->currPos;
+	Int32 hipos;
+	Int32 lopos;
+	lopos = (Int32)position;
+	hipos = ((Int32*)&position)[1];
+	this->currPos = SetFilePointer(handle, lopos, (PLONG)&hipos, FILE_BEGIN);
+	((Int32*)&this->currPos)[1] = hipos;
+	return this->currPos;
+}
+
+UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
+{
+	if (handle == INVALID_HANDLE_VALUE)
+		return 0;
+	if (position == 0)
+		return this->currPos;
+	Int32 hipos;
+	Int32 lopos;
+	lopos = (Int32)position;
+	hipos = ((Int32*)&position)[1];
+	this->currPos = SetFilePointer(handle, lopos, (PLONG)&hipos, FILE_CURRENT);
+	((Int32*)&this->currPos)[1] = hipos;
+	return this->currPos;
+}
+
+UInt64 IO::FileStream::SeekFromEnd(Int64 position)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return -1;
@@ -283,29 +313,9 @@ UInt64 IO::FileStream::Seek(IO::SeekableStream::SeekType origin, Int64 position)
 	Int32 lopos;
 	lopos = (Int32)position;
 	hipos = ((Int32*)&position)[1];
-	if (origin == IO::SeekableStream::ST_BEGIN)
-	{
-		if (this->currPos == (UInt64)position)
-			return this->currPos;
-		this->currPos = SetFilePointer(handle, lopos, (PLONG)&hipos, FILE_BEGIN);
-		((Int32*)&this->currPos)[1] = hipos;
-		return this->currPos;
-	}
-	else if (origin == IO::SeekableStream::ST_CURRENT)
-	{
-		if (position == 0)
-			return this->currPos;
-		this->currPos = SetFilePointer(handle, lopos, (PLONG)&hipos, FILE_CURRENT);
-		((Int32*)&this->currPos)[1] = hipos;
-		return this->currPos;
-	}
-	else if (origin == IO::SeekableStream::ST_END)
-	{
-		this->currPos = SetFilePointer(handle, lopos, (PLONG)&hipos, FILE_END);
-		((Int32*)&this->currPos)[1] = hipos;
-		return this->currPos;
-	}
-	return -1;
+	this->currPos = SetFilePointer(handle, lopos, (PLONG)&hipos, FILE_END);
+	((Int32*)&this->currPos)[1] = hipos;
+	return this->currPos;
 }
 
 UInt64 IO::FileStream::GetPosition()

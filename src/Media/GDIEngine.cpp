@@ -1,6 +1,7 @@
 //require gdiplus.lib msimg32.lib
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
@@ -233,7 +234,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 #ifdef HAS_GDIPLUS
 		Gdiplus::Bitmap *gimg;
 		Win32::COMStream *comStm;
-		fstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		fstm->SeekFromBeginning(0);
 		NEW_CLASS(comStm, Win32::COMStream(fstm));
 		gimg = Gdiplus::Bitmap::FromStream(comStm, false);
 
@@ -310,7 +311,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		bmi.bmiHeader.biWidth = *(Int16*)&hdr[18];
 		bmi.bmiHeader.biHeight = *(Int16*)&hdr[20];
 		bpp = *(Int16*)&hdr[24];
-		fstm->Seek(IO::SeekableStream::ST_BEGIN, 26);
+		fstm->SeekFromBeginning(26);
 	}
 	else
 	{
@@ -343,7 +344,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		case 8:
 			{
 				fstm->Read(pal, 1024);
-				fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
+				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				lineW = bmi.bmiHeader.biWidth;
 				if (lineW & 3)
 				{
@@ -381,7 +382,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 			break;
 		case 16:
 			{
-				fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
+				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				buff = MemAlloc(UInt8, buffSize = ((bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 1));
 				fstm->Read(buff, buffSize);
 				//////////////////////////////////////////////////////////////////////
@@ -401,7 +402,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 			break;
 		case 24:
 			{
-				fstm->Seek(IO::SeekableStream::ST_BEGIN, *(Int32*)&hdr[10]);
+				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				lineW = bmi.bmiHeader.biWidth * 3;
 				if (lineW & 3)
 				{
@@ -439,7 +440,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 			break;
 		case 32:
 			{
-				fstm->Seek(IO::SeekableStream::ST_BEGIN,  *(Int32*)&hdr[10]);
+				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				fstm->Read((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2);
 
 				Sync::MutexUsage mutUsage(this->gdiMut);
@@ -2245,7 +2246,7 @@ Media::DrawBrush *Media::GDIImage::NewBrushARGB(UInt32 color)
 	return brush;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
@@ -2254,14 +2255,14 @@ Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize,
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
 	NEW_CLASS(f, GDIFont(this->hdcBmp, name, ptSize, fontStyle, this, codePage));
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
@@ -2270,7 +2271,7 @@ Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize,
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
 	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize * 72.0 / this->info->hdpi, fontStyle, this, codePage));

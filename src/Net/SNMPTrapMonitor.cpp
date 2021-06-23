@@ -13,7 +13,7 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(const Net::SocketUtil::Address
 	{
 		if (!me->hdlr(me->hdlrObj, addr, port, &trap, &itemList))
 		{
-			OSInt i = itemList.GetCount();
+			UOSInt i = itemList.GetCount();
 			while (i-- > 0)
 			{
 				Net::SNMPUtil::FreeBindingItem(itemList.GetItem(i));
@@ -22,8 +22,8 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(const Net::SocketUtil::Address
 	}
 	else
 	{
-		OSInt i = itemList.GetCount();
-		while (i-- >0)
+		UOSInt i = itemList.GetCount();
+		while (i-- > 0)
 		{
 			Net::SNMPUtil::FreeBindingItem(itemList.GetItem(i));
 		}

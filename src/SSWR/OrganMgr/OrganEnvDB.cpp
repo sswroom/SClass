@@ -37,7 +37,7 @@
 
 SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 {
-	OSInt i;
+	UOSInt i;
 	UTF8Char sbuff[256];
 	Category *cate;
 
@@ -200,7 +200,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			sb.ClearStr();
 			r->GetStr(9, &sb);
 			userFile->dataFileName = Text::StrCopyNew(sb.ToString());
-			userFile->crcVal = r->GetInt32(10);
+			userFile->crcVal = (UInt32)r->GetInt32(10);
 			userFile->rotType = r->GetInt32(11);
 			sb.ClearStr();
 			if (r->GetStr(12, &sb))
@@ -418,7 +418,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*
 				sp->SetIDKey(sb.ToString());
 				sp->SetFlags(r->GetInt32(8));
 				sp->SetPhotoId(r->GetInt32(9));
-				sp->SetMapColor(r->GetInt32(10));
+				sp->SetMapColor((UInt32)r->GetInt32(10));
 				sp->SetPhotoWId(r->GetInt32(11));
 				if (sp->GetSpeciesId() == photoSp)
 					sp->SetIsDefault(true);
@@ -1291,8 +1291,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 	Data::ArrayListInt32 spList;
 	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 spId;
 	Bool found;
 	sql.AppendCmd((const UTF8Char*)"select species_id from species_book where dispName = ");
@@ -1398,44 +1398,44 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelSpecies(OrganSpecies *sp)
 
 SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFile(OrganSpecies *sp, const UTF8Char *fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId)
 {
-	OSInt i;
-	OSInt j;
+	OSInt si;
+	OSInt sj;
 	Int32 fileType = 0;
-	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-	j = Text::StrLastIndexOf(&fileName[i + 1], '.');
-	if (j == -1)
+	si = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	sj = Text::StrLastIndexOf(&fileName[si + 1], '.');
+	if (sj == -1)
 	{
 		return FS_NOTSUPPORT;
 	}
-	if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"JPG") == 0)
+	if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"JPG") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"TIF") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"TIF") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"PCX") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"PCX") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"GIF") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"GIF") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"PNG") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"PNG") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"AVI") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"AVI") == 0)
 	{
 		fileType = 2;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"MOV") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"MOV") == 0)
 	{
 		fileType = 2;
 	}
-	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"WAV") == 0)
+	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"WAV") == 0)
 	{
 		fileType = 3;
 	}
@@ -1456,7 +1456,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			return FS_ERROR;
 		}
 		readBuff = MemAlloc(UInt8, 1048576);
-		NEW_CLASS(mstm, IO::MemoryStream((Int32)fs->GetLength(), (const UTF8Char*)"OrganEnv.AddSpeciesFile"));
+		NEW_CLASS(mstm, IO::MemoryStream((UOSInt)fs->GetLength(), (const UTF8Char*)"OrganEnv.AddSpeciesFile"));
 		while (true)
 		{
 			readSize = fs->Read(readBuff, 1048576);
@@ -1477,7 +1477,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Double lon = 0;
 		UserFileInfo *userFile;
 		const UTF8Char *camera = 0;
-		Int32 crcVal = 0;
+		UInt32 crcVal = 0;
 		fileTime.SetTicks(0);
 		fileTime.ToLocalTime();
 
@@ -1536,7 +1536,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				Crypto::Hash::CRC32R crc;
 				crc.Calc(readBuff, readSize);
 				crc.GetValue(crcBuff);
-				crcVal = ReadMInt32(crcBuff);
+				crcVal = ReadMUInt32(crcBuff);
 			}
 			DEL_CLASS(pobj);
 		}
@@ -1545,21 +1545,23 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		{
 			WebUserInfo *webUser = this->GetWebUser(this->userId);
 			Int64 ticks = fileTime.ToTicks();
-			OSInt k;
-			j = webUser->userFileIndex->SortedIndexOf(ticks);
-			if (j >= 0)
+			UOSInt j;
+			UOSInt k;
+			sj = webUser->userFileIndex->SortedIndexOf(ticks);
+			if (sj >= 0)
 			{
-				while (j > 0)
+				while (sj > 0)
 				{
-					if (webUser->userFileIndex->GetItem(j - 1) == ticks)
+					if (webUser->userFileIndex->GetItem((UOSInt)sj - 1) == ticks)
 					{
-						j--;
+						sj--;
 					}
 					else
 					{
 						break;
 					}
 				}
+				j = (UOSInt)sj;
 				k = webUser->userFileIndex->GetCount();
 				while (j < k)
 				{
@@ -1597,8 +1599,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				j = Text::StrLastIndexOf(&fileName[i + 1], '.');
-				sptr = Text::StrConcat(sptr, &fileName[i + j + 1]);
+				sj = Text::StrLastIndexOf(&fileName[si + 1], '.');
+				sptr = Text::StrConcat(sptr, &fileName[si + sj + 1]);
 				Bool succ;
 				if (moveFile)
 				{
@@ -1614,7 +1616,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)"insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom) values (");
 					sql.AppendInt32(fileType);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendStrUTF8(&fileName[i + 1]);
+					sql.AppendStrUTF8(&fileName[si + 1]);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendDate(&fileTime);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1630,7 +1632,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendInt32(crcVal);
+					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendStrUTF8(camera);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1647,7 +1649,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(&fileName[i + 1]);
+						userFile->oriFileName = Text::StrCopyNew(&fileName[si + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
@@ -1713,9 +1715,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Crypto::Hash::CRC32R crc;
 		IO::FileStream *fs;
 		UInt8 *readBuff;
-		OSInt readSize;
+		UOSInt readSize;
 		IO::StmData::FileData *fd;
-		Int32 crcVal;
+		UInt32 crcVal;
 		IO::ParsedObject *pobj;
 		IO::ParsedObject::ParserType t;
 		Data::DateTime fileTime;
@@ -1741,7 +1743,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		DEL_CLASS(fs);
 		UInt8 crcBuff[4];
 		crc.GetValue(crcBuff);
-		crcVal = ReadMInt32(crcBuff);
+		crcVal = ReadMUInt32(crcBuff);
 
 		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 		pobj = this->parsers->ParseFile(fd, &t);
@@ -1767,21 +1769,23 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		{
 			WebUserInfo *webUser = this->GetWebUser(this->userId);
 			Int64 ticks = 0;
-			OSInt k;
-			j = webUser->userFileIndex->SortedIndexOf(ticks);
+			UOSInt j;
+			UOSInt k;
+			sj = webUser->userFileIndex->SortedIndexOf(ticks);
 			if (j >= 0)
 			{
-				while (j > 0)
+				while (sj > 0)
 				{
-					if (webUser->userFileIndex->GetItem(j - 1) == ticks)
+					if (webUser->userFileIndex->GetItem((UOSInt)sj - 1) == ticks)
 					{
-						j--;
+						sj--;
 					}
 					else
 					{
 						break;
 					}
 				}
+				j = (UOSInt)sj;
 				k = webUser->userFileIndex->GetCount();
 				while (j < k)
 				{
@@ -1819,8 +1823,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				j = Text::StrLastIndexOf(&fileName[i + 1], '.');
-				sptr = Text::StrConcat(sptr, &fileName[i + j + 1]);
+				sj = Text::StrLastIndexOf(&fileName[si + 1], '.');
+				sptr = Text::StrConcat(sptr, &fileName[si + sj + 1]);
 				Bool succ;
 				if (moveFile)
 				{
@@ -1836,7 +1840,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)"insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera) values (");
 					sql.AppendInt32(fileType);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendStrUTF8(&fileName[i + 1]);
+					sql.AppendStrUTF8(&fileName[si + 1]);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendDate(&fileTime);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1852,7 +1856,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendInt32(crcVal);
+					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendStrUTF8(0);
 					sql.AppendCmd((const UTF8Char*)")");
@@ -1861,7 +1865,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(&fileName[i + 1]);
+						userFile->oriFileName = Text::StrCopyNew(&fileName[si + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
@@ -1959,13 +1963,13 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		UTF8Char *sptr;
 		sptr = this->GetSpeciesDir(sp, sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcat(sptr, &fileName[i + 1]);
+		sptr = Text::StrConcat(sptr, &fileName[si + 1]);
 		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
 		{
 			if (firstPhoto)
 			{
-				Text::StrConcat(sbuff, &fileName[i + 1]);
-				sbuff[j] = 0;
+				Text::StrConcat(sbuff, &fileName[si + 1]);
+				sbuff[sj] = 0;
 				sp->SetPhoto(sbuff);
 				this->SaveSpecies(sp);
 			}
@@ -2019,7 +2023,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	Crypto::Hash::CRC32R crc;
 	crc.Calc(imgURL, i);
 	crc.GetValue(crcBuff);
-	crcVal = ReadMInt32(crcBuff);
+	crcVal = ReadMUInt32(crcBuff);
 	if (crcVal == 0)
 	{
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
@@ -2041,7 +2045,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	sql.AppendCmd((const UTF8Char*)"insert into webfile (species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location) values (");
 	sql.AppendInt32(sp->GetSpeciesId());
 	sql.AppendCmd((const UTF8Char*)", ");
-	sql.AppendInt32(crcVal);
+	sql.AppendInt32((Int32)crcVal);
 	sql.AppendCmd((const UTF8Char*)", ");
 	sql.AppendStrUTF8(imgURL);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -2341,7 +2345,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveSpecies(OrganSpecies *sp)
 	sql.AppendCmd((const UTF8Char*)", idKey=");
 	sql.AppendStrUTF8(sp->GetIDKey());
 	sql.AppendCmd((const UTF8Char*)", mapColor=");
-	sql.AppendInt32(sp->GetMapColor());
+	sql.AppendInt32((Int32)sp->GetMapColor());
 	sql.AppendCmd((const UTF8Char*)" where id=");
 	sql.AppendInt32(sp->GetSpeciesId());
 	return this->db->ExecuteNonQuery(sql.ToString()) >= -1;
@@ -2519,8 +2523,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveSpecies(Data::ArrayList<OrganSpecies*> *spL
 {
 	DB::SQLBuilder sql(this->db);
 	DB::SQLBuilder sql2(this->db);
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool found;
 	OrganSpecies *sp;
 	sql.AppendCmd((const UTF8Char*)"update species set group_id=");
@@ -2559,8 +2563,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 	UTF8Char *sptr2;
 	sptr = this->GetSpeciesDir(destSp, sbuff);
 	Bool moveWeb = false;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OrganImages *img;
 	i = 0;
 	j = imgList->GetCount();
@@ -2577,7 +2581,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			if (userFile->speciesId != destSp->GetSpeciesId())
 			{
 				SpeciesInfo *sp = this->speciesMap->Get(userFile->speciesId);
-				OSInt oldInd;
+				UOSInt oldInd;
 				if (sp)
 				{
 					oldInd = sp->files->GetCount();
@@ -2856,7 +2860,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8
 	sql.AppendStrUTF8(userName);
 	sql.AppendCmd((const UTF8Char*)", ");
 	{
-		OSInt len = Text::StrCharCnt(pwd);
+		UOSInt len = Text::StrCharCnt(pwd);
 		UInt8 md5Value[16];
 		UTF8Char sbuff[33];
 		Crypto::Hash::MD5 md5;
@@ -2915,7 +2919,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, const UTF8Char *userNam
 void SSWR::OrganMgr::OrganEnvDB::ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList)
 {
 	OrganWebUser *user;
-	OSInt i = userList->GetCount();
+	UOSInt i = userList->GetCount();
 	while (i-- > 0)
 	{
 		user = userList->GetItem(i);
@@ -3008,7 +3012,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(Data::ArrayList<SpeciesBook*> 
 void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items)
 {
 	SpeciesBook *spBook;
-	OSInt i;
+	UOSInt i;
 	i = items->GetCount();
 	while (i-- > 0)
 	{
@@ -3290,8 +3294,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 		j = webUser->gpsFileIndex->SortedIndexOf(dataFile->startTimeTicks);
 		if (j >= 0)
 		{
-			webUser->gpsFileIndex->RemoveAt(j);
-			webUser->gpsFileObj->RemoveAt(j);
+			webUser->gpsFileIndex->RemoveAt((UOSInt)j);
+			webUser->gpsFileObj->RemoveAt((UOSInt)j);
 		}
 	}
 	ReleaseDataFile(dataFile);
@@ -3826,7 +3830,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
 				if (userFile->rotType != 0)
 				{
-					OSInt i = imgList->GetCount();
+					UOSInt i = imgList->GetCount();
 					Media::StaticImage *simg;
 					while (i-- > 0)
 					{
@@ -4480,7 +4484,7 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr:
 			sp->SetIDKey(sb.ToString());
 			sp->SetFlags(r->GetInt32(8));
 			sp->SetPhotoId(r->GetInt32(10));
-			sp->SetMapColor(r->GetInt32(11));
+			sp->SetMapColor((UInt32)r->GetInt32(11));
 
 			parId = r->GetInt32(9);
 
@@ -4626,7 +4630,7 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 void SSWR::OrganMgr::OrganEnvDB::UpgradeDB()
 {
 	Data::ArrayList<OrganSpecies*> spList;
-	OSInt i;
+	UOSInt i;
 	OrganSpecies *sp;
 	this->GetGroupAllSpecies(&spList, 0);
 	i = spList.GetCount();
@@ -4654,9 +4658,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char *cols[4];
-	Int32 crcVal;
-	OSInt i;
-	OSInt j;
+	UInt32 crcVal;
+	UOSInt i;
+	UOSInt j;
 	Int32 id;
 	Bool allSucc;
 	Data::ArrayList<UpgradeDBSpInfo*> spList;
@@ -4730,13 +4734,13 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 						crc.Clear();
 						crc.Calc(cols[1], Text::StrCharCnt(cols[1]));
 						crc.GetValue(crcBuff);
-						crcVal = ReadMInt32(crcBuff);
+						crcVal = ReadMUInt32(crcBuff);
 
 						sql.Clear();
 						sql.AppendCmd((const UTF8Char*)"insert into webfile (species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location) values (");
 						sql.AppendInt32(sp->id);
 						sql.AppendCmd((const UTF8Char*)", ");
-						sql.AppendInt32(crcVal);
+						sql.AppendInt32((Int32)crcVal);
 						sql.AppendCmd((const UTF8Char*)", ");
 						sql.AppendStrUTF8(cols[1]);
 						sql.AppendCmd((const UTF8Char*)", ");

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Media/CodeImageGen/EAN5CodeImageGen.h"
 #include "Text/MyString.h"
 
@@ -15,25 +16,26 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::EAN5CodeImageGe
 {
 	return Media::CodeImageGen::CodeImageGen::CT_EAN5;
 }
-OSInt Media::CodeImageGen::EAN5CodeImageGen::GetMinLength()
+
+UOSInt Media::CodeImageGen::EAN5CodeImageGen::GetMinLength()
 {
 	return 5;
 }
 
-OSInt Media::CodeImageGen::EAN5CodeImageGen::GetMaxLength()
+UOSInt Media::CodeImageGen::EAN5CodeImageGen::GetMaxLength()
 {
 	return 5;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char *code, OSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
 	if (code == 0)
 		return 0;
 
-	OSInt i = 5;
-	OSInt j = 0;
-	OSInt k;
+	UOSInt i = 5;
+	UOSInt j = 0;
+	UOSInt k;
 	const UTF8Char *tmpStr = code;
 	UTF8Char c;
 	while (i-- > 0)
@@ -43,11 +45,11 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 			return 0;
 		if (i & 1)
 		{
-			j += (c - '0') * 9;
+			j += (UOSInt)(c - '0') * 9;
 		}
 		else
 		{
-			j += (c - '0') * 3;
+			j += (UOSInt)(c - '0') * 3;
 		}
 	}
 	if (*tmpStr != 0)
@@ -298,9 +300,9 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 	}
 	code = code - 5;
 
-	OSInt h = codeWidth * 70;
-	OSInt y = h - codeWidth;
-	Double fh = 12.0 * codeWidth;
+	UOSInt h = codeWidth * 70;
+	UOSInt y = h - codeWidth;
+	Double fh = 12.0 * Math::UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32((4 + 48) * codeWidth, h, Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
@@ -320,7 +322,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 			k = codeWidth;
 			while (k-- > 0)
 			{
-				dimg->DrawLine((Double)j, codeWidth + fh, (Double)j, (Double)y, p);
+				dimg->DrawLine((Double)j, Math::UOSInt2Double(codeWidth) + fh, (Double)j, (Double)y, p);
 				j++;
 			}
 		}

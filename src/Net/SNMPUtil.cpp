@@ -4,7 +4,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/SNMPUtil.h"
 
-Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, UInt32 *reqId, Data::ArrayList<BindingItem*> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, Int32 *reqId, Data::ArrayList<BindingItem*> *itemList)
 {
 	UOSInt i;
 	if (pdu[0] != 0x30)
@@ -76,23 +76,28 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 		}
 		if (pdu[i + 1] == 1)
 		{
-			*reqId = pdu[i + 2];
+			*reqId = (Int8)pdu[i + 2];
 			i += 3;
 		}
 		else if (pdu[i + 1] == 2)
 		{
-			*reqId = ReadMUInt16(&pdu[i + 2]);
+			*reqId = ReadMInt16(&pdu[i + 2]);
 			i += 4;
 		}
 		else if (pdu[i + 1] == 3)
 		{
-			*reqId = ReadMUInt24(&pdu[i + 2]);
+			*reqId = ReadMInt24(&pdu[i + 2]);
 			i += 5;
 		}
 		else if (pdu[i + 1] == 4)
 		{
-			*reqId = ReadMUInt32(&pdu[i + 2]);
+			*reqId = ReadMInt32(&pdu[i + 2]);
 			i += 6;
+		}
+		else if (pdu[i + 1] == 5)
+		{
+			*reqId = ReadMInt32(&pdu[i + 3]);
+			i += 7;
 		}
 		else
 		{

@@ -23,13 +23,13 @@ namespace Media
 			virtual ~CodeImageGen();
 
 			virtual CodeType GetCodeType() = 0;
-			virtual OSInt GetMinLength() = 0;
-			virtual OSInt GetMaxLength() = 0;
-			virtual Media::DrawImage *GenCode(const UTF8Char *code, OSInt codeWidth, Media::DrawEngine *eng) = 0;
+			virtual UOSInt GetMinLength() = 0;
+			virtual UOSInt GetMaxLength() = 0;
+			virtual Media::DrawImage *GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng) = 0;
 		public:
 			static CodeImageGen *CreateGenerator(CodeType codeType);
 			static const UTF8Char *GetCodeName(CodeType codeType);
 		};
-	};
-};
+	}
+}
 #endif

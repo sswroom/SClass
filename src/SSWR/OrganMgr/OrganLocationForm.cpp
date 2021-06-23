@@ -6,7 +6,7 @@ void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 {
 	Data::ArrayList<Location *> locList;
 	Location *l;
-	OSInt i;
+	UOSInt i;
 	while ((l = this->env->LocationGet(id)) != 0)
 	{
 		locList.Add(l);
@@ -38,7 +38,7 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 	this->sublocUpdating = true;
 	this->lbSublocations->ClearItems();
 	this->currLoc = 0;
-	this->currLocInd = -1;
+	this->currLocInd = (UOSInt)-1;
 	this->txtCName->SetText((const UTF8Char*)"");
 	this->txtEName->SetText((const UTF8Char*)"");
 	
@@ -46,8 +46,8 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 	if (locSubList)
 	{
 		Location *l;
-		OSInt i = 0;
-		OSInt j = locSubList->GetCount();
+		UOSInt i = 0;
+		UOSInt j = locSubList->GetCount();
 		while (i < j)
 		{
 			l = locSubList->GetItem(i);
@@ -94,7 +94,7 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 
 SSWR::OrganMgr::Location *SSWR::OrganMgr::OrganLocationForm::GetParentLoc()
 {
-	OSInt i = this->lbLocation->GetCount();
+	UOSInt i = this->lbLocation->GetCount();
 	if (i == 0)
 		return 0;
 	else
@@ -110,8 +110,8 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(void *userObj)
 		return;
 	}
 	
-	OSInt i = me->lbLocation->GetSelectedIndex();
-	OSInt j = me->lbLocation->GetCount() - 1;
+	UOSInt i = (UOSInt)me->lbLocation->GetSelectedIndex();
+	UOSInt j = me->lbLocation->GetCount() - 1;
 	while (j > i)
 	{
 		me->lbLocation->RemoveItem(j);
@@ -153,13 +153,13 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(void *userObj)
 {
 	OrganLocationForm *me = (OrganLocationForm*)userObj;
-	OSInt i = me->lbSublocations->GetSelectedIndex();
-	if (i != -1)
+	OSInt si = me->lbSublocations->GetSelectedIndex();
+	if (si != -1)
 	{
 		if (me->ToSave())
 			return;
-		Location *loc = (Location*)me->lbSublocations->GetItem(i);
-		i = me->lbLocation->AddItem(loc->cname, loc);
+		Location *loc = (Location*)me->lbSublocations->GetItem((UOSInt)si);
+		UOSInt i = me->lbLocation->AddItem(loc->cname, loc);
 		me->lbLocation->SetSelectedIndex(i);
 	}
 }

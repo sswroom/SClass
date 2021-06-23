@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Media/CodeImageGen/EAN13CodeImageGen.h"
 #include "Text/MyString.h"
 
@@ -15,25 +16,26 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::EAN13CodeImageG
 {
 	return Media::CodeImageGen::CodeImageGen::CT_EAN13;
 }
-OSInt Media::CodeImageGen::EAN13CodeImageGen::GetMinLength()
+
+UOSInt Media::CodeImageGen::EAN13CodeImageGen::GetMinLength()
 {
 	return 13;
 }
 
-OSInt Media::CodeImageGen::EAN13CodeImageGen::GetMaxLength()
+UOSInt Media::CodeImageGen::EAN13CodeImageGen::GetMaxLength()
 {
 	return 13;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char *code, OSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
 	if (code == 0)
 		return 0;
 
-	OSInt i = 13;
-	OSInt j = 0;
-	OSInt k;
+	UOSInt i = 13;
+	UOSInt j = 0;
+	UOSInt k;
 	const UTF8Char *tmpStr = code;
 	WChar c;
 	while (i-- > 0)
@@ -43,11 +45,11 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 			return 0;
 		if (i & 1)
 		{
-			j += (c - '0') * 3;
+			j += (UOSInt)(c - '0') * 3;
 		}
 		else
 		{
-			j += (c - '0');
+			j += (UOSInt)(c - '0');
 		}
 	}
 	if (*tmpStr != 0)
@@ -401,10 +403,10 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	j += 3;
 	code = code - 13;
 
-	OSInt h = codeWidth * 70;
-	OSInt y = h - codeWidth;
+	UOSInt h = codeWidth * 70;
+	UOSInt y = h - codeWidth;
 	Double y2;
-	Double fh = 12.0 * codeWidth;
+	Double fh = 12.0 * Math::UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32((9 + 11 + 95) * codeWidth, h, Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
@@ -429,10 +431,10 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 			case 48:
 			case 92:
 			case 94:
-				y2 = y - fh * 0.5;
+				y2 = Math::UOSInt2Double(y) - fh * 0.5;
 				break;
 			default:
-				y2 = y - fh;
+				y2 = Math::UOSInt2Double(y) - fh;
 				break;
 			}
 
@@ -455,13 +457,13 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *code++;
 	sbuff[1] = 0;
-	dimg->DrawString((Double)codeWidth, y - fh, sbuff, f, b);
+	dimg->DrawString((Double)codeWidth, Math::UOSInt2Double(y) - fh, sbuff, f, b);
 	i = codeWidth * (5 + 9);
 	j = 6;
 	while (j-- > 0)
 	{
 		sbuff[0] = *code++;
-		dimg->DrawString((Double)i, y - fh, sbuff, f, b);
+		dimg->DrawString((Double)i, Math::UOSInt2Double(y) - fh, sbuff, f, b);
 		i += 7 * codeWidth;
 	}
 	i += 5 * codeWidth;
@@ -469,7 +471,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	while (j-- > 0)
 	{
 		sbuff[0] = *code++;
-		dimg->DrawString((Double)i, y - fh, sbuff, f, b);
+		dimg->DrawString((Double)i, Math::UOSInt2Double(y) - fh, sbuff, f, b);
 		i += 7 * codeWidth;
 	}
 	dimg->DelBrush(b);

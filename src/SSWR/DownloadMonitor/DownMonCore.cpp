@@ -17,8 +17,8 @@
 
 Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile)
 {
-	Int64 fileSize1 = IO::Path::GetFileSize(videoFile);
-	Int64 fileSize2 = IO::Path::GetFileSize(audioFile);
+	UInt64 fileSize1 = IO::Path::GetFileSize(videoFile);
+	UInt64 fileSize2 = IO::Path::GetFileSize(audioFile);
 	if (fileSize1 < 1024)
 		return false;
 	if (fileSize2 < 1024)
@@ -40,7 +40,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, co
 		Sync::Thread::Sleep(100);
 	}
 	fileSize2 = IO::Path::GetFileSize(outFile);
-	if (fileSize1 > fileSize2 * 0.9 && fileSize1 < fileSize2 * 1.1)
+	if ((Double)fileSize1 > (Double)fileSize2 * 0.9 && (Double)fileSize1 < (Double)fileSize2 * 1.1)
 	{
 		return true;
 	}
@@ -52,8 +52,8 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, co
 
 Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile)
 {
-	Int64 fileSize1 = IO::Path::GetFileSize(videoFile);
-	Int64 fileSize2 = IO::Path::GetFileSize(audioFile);
+	UInt64 fileSize1 = IO::Path::GetFileSize(videoFile);
+	UInt64 fileSize2 = IO::Path::GetFileSize(audioFile);
 	if (fileSize1 < 1024)
 		return false;
 	if (fileSize2 < 1024)
@@ -75,7 +75,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 		Sync::Thread::Sleep(100);
 	}
 	fileSize2 = IO::Path::GetFileSize(outFile);
-	if (fileSize1 > fileSize2 * 0.9 && fileSize1 < fileSize2 * 1.1)
+	if ((Double)fileSize1 > (Double)fileSize2 * 0.9 && (Double)fileSize1 < (Double)fileSize2 * 1.1)
 	{
 		return true;
 	}
@@ -685,7 +685,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, void
 Int32 SSWR::DownloadMonitor::DownMonCore::FileGetMaxId(Int32 webType)
 {
 	OSInt i = this->fileTypeMap->GetKeys()->SortedIndexOf((webType << 24) | 0xffffff);
-	Int32 id = this->fileTypeMap->GetKey(~i - 1);
+	Int32 id = this->fileTypeMap->GetKey((UOSInt)(~i - 1));
 	if ((id >> 24) == webType)
 	{
 		return id & 0xffffff;

@@ -319,7 +319,7 @@ UOSInt UI::GUIListView::GetCount()
 	return SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
 }
 
-void UI::GUIListView::SetSelectedIndex(OSInt index)
+void UI::GUIListView::SetSelectedIndex(UOSInt index)
 {
 	SendMessage((HWND)this->hwnd, LVM_SETSELECTIONMARK, 0, index);
 	this->EventSelChg();

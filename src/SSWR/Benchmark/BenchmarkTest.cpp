@@ -42,7 +42,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			UTF8Char *sptr;
 			NEW_CLASS(mstm, IO::MemoryStream(leng, (const UTF8Char*)"BenchmarkWebHandler.UploadReq.mstm"));
 			mstm->Write(data, leng);
-			mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+			mstm->SeekFromBeginning(0);
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
 
 			sb.ClearStr();
@@ -286,7 +286,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				IO::MemoryStream *mstm;
 				NEW_CLASS(mstm, IO::MemoryStream(fileSize, (const UTF8Char*)"SSWR.Benchmark.BenchmarkWebHandler.CPUInfoReq.mstm"));
 				mstm->Write(fileBuff, fileSize);
-				mstm->Seek(IO::SeekableStream::ST_BEGIN, 0);
+				mstm->SeekFromBeginning(0);
 				const UTF8Char *cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				DEL_CLASS(mstm);
 

@@ -11,7 +11,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo 
 {
 	Net::SNMPClient *me = (Net::SNMPClient*)userData;
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
-	UInt32 reqId;
+	Int32 reqId;
 	Net::SNMPUtil::ErrorStatus err;
 	Sync::MutexUsage mutUsage(me->scanMut);
 	if (me->scanList)
@@ -100,7 +100,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(const Net::SocketUti
 	pdu.AppendInt32(0);
 	pdu.AppendString(community);
 	pdu.SequenceBegin(0xA0);
-	pdu.AppendUInt32(this->reqId);
+	pdu.AppendInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);
@@ -146,7 +146,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(const Net::Socke
 	pdu.AppendInt32(0);
 	pdu.AppendString(community);
 	pdu.SequenceBegin(0xA1);
-	pdu.AppendUInt32(this->reqId);
+	pdu.AppendInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);
@@ -238,7 +238,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *bro
 	pdu.AppendInt32(0);
 	pdu.AppendString(community);
 	pdu.SequenceBegin(0xA0);
-	pdu.AppendUInt32(this->reqId);
+	pdu.AppendInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);

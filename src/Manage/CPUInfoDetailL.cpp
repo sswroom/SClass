@@ -31,7 +31,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			sb.ClearStr();
 		}
 		DEL_CLASS(reader);
-		fs->Seek(IO::SeekableStream::ST_BEGIN, 0);
+		fs->SeekFromBeginning(0);
 		this->cpuModel = Manage::CPUDB::ParseCPUInfo(fs);
 		if (this->cpuModel == 0)
 		{
@@ -235,7 +235,7 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 	return 0;
 }
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(OSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 {
 	Bool ret = false;
 	UTF8Char sbuff[256];
@@ -264,7 +264,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(OSInt index, Double *temp)
 	if (ret)
 		return true;
 
-	Text::StrConcat(Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/hwmon/hwmon"), index), (const UTF8Char*)"/device/temperature");
+	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/hwmon/hwmon"), index), (const UTF8Char*)"/device/temperature");
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();

@@ -304,7 +304,7 @@ void UI::GUITreeView::ClearItems()
 	FreeItems();
 }
 
-OSInt UI::GUITreeView::GetRootCount()
+UOSInt UI::GUITreeView::GetRootCount()
 {
 	return this->treeItems->GetCount();
 }

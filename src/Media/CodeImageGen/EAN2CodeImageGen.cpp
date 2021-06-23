@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Media/CodeImageGen/EAN2CodeImageGen.h"
 #include "Text/MyString.h"
 
@@ -15,25 +16,26 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::EAN2CodeImageGe
 {
 	return Media::CodeImageGen::CodeImageGen::CT_EAN2;
 }
-OSInt Media::CodeImageGen::EAN2CodeImageGen::GetMinLength()
+
+UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMinLength()
 {
 	return 2;
 }
 
-OSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
+UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
 {
 	return 2;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char *code, OSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
 	if (code == 0)
 		return 0;
 
-	OSInt i = 2;
-	OSInt j;
-	OSInt k;
+	UOSInt i = 2;
+	UOSInt j;
+	UOSInt k;
 	const UTF8Char *tmpStr = code;
 	UTF8Char c;
 	while (i-- > 0)
@@ -44,7 +46,7 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	}
 	if (*tmpStr != 0)
 		return 0;
-	j = Text::StrToInt32(code);
+	j = Text::StrToUInt32(code);
 
 	UInt8 bitCode[21];
 	bitCode[0] = 0;
@@ -278,9 +280,9 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	}
 	code = code - 2;
 
-	OSInt h = codeWidth * 70;
-	OSInt y = h - codeWidth;
-	Double fh = 12.0 * codeWidth;
+	UOSInt h = codeWidth * 70;
+	UOSInt y = h - codeWidth;
+	Double fh = 12.0 * Math::UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32((4 + 21) * codeWidth, h, Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
@@ -316,9 +318,9 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *code++;
 	sbuff[1] = 0;
-	dimg->DrawString((Double)(2 + 5) * codeWidth, (Double)codeWidth, sbuff, f, b);
+	dimg->DrawString((Double)(2 + 5) * Math::UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
 	sbuff[0] = *code++;
-	dimg->DrawString((Double)(2 + 5 + 7 + 2) * codeWidth, (Double)codeWidth, sbuff, f, b);
+	dimg->DrawString((Double)(2 + 5 + 7 + 2) * Math::UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
 
 	dimg->DelBrush(b);
 	dimg->DelFont(f);

@@ -71,7 +71,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 
 SSWR::OrganMgr::OrganEnv::~OrganEnv()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->categories->GetCount();
 	while (i-- > 0)
 	{
@@ -294,8 +294,8 @@ void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(DataFileInfo *dataFile)
 
 void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	WebFileInfo *webFile;
 	Data::ArrayList<WebFileInfo*> *webFiles = species->wfileMap->GetValues();
 	i = 0;
@@ -324,13 +324,13 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 	MemFree(userFile);
 }
 
-OSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks)
+UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks)
 {
 	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
 	UserFileInfo *userFile;
-	OSInt initCnt = userFiles->GetCount();
-	OSInt i;
-	OSInt j;
+	UOSInt initCnt = userFiles->GetCount();
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = userFileList->GetCount();
 	while (i < j)
@@ -347,7 +347,7 @@ OSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *use
 
 void SSWR::OrganMgr::OrganEnv::TripRelease()
 {
-	OSInt i;
+	UOSInt i;
 	Trip *trip;
 	Location *loc;
 	LocationType *locTyp;
@@ -375,7 +375,7 @@ OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::DateTime *d)
 {
 	Int64 ts = d->ToUnixTimestamp();
 	OSInt i = 0;
-	OSInt j = this->trips->GetCount() - 1;
+	OSInt j = (OSInt)this->trips->GetCount() - 1;
 	OSInt k;
 	Trip *t;
 	while (i <= j)
@@ -508,7 +508,7 @@ SSWR::OrganMgr::SpeciesInfo *SSWR::OrganMgr::OrganEnv::GetSpeciesInfo(Int32 spec
 void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 {
 	OrganBook *book;
-	OSInt i;
+	UOSInt i;
 	if (this->bookObjs)
 	{
 		i = this->bookObjs->GetCount();
@@ -598,7 +598,7 @@ Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseTIFExif(const UTF8Char *fileName
 	//////////////////////////////////
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt)
+void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = Text::StrConcat(sbuff, exportDir);
@@ -613,11 +613,11 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 
 	Text::UTF8Writer *writer;
 	IO::FileStream *fs;
-	OSInt photoParsed = 0;
-	OSInt speciesParsed = 0;
-	OSInt thisPhotoCnt;
-	OSInt thisSpeciesCnt;
-	OSInt thisPhSpeciesCnt;
+	UOSInt photoParsed = 0;
+	UOSInt speciesParsed = 0;
+	UOSInt thisPhotoCnt;
+	UOSInt thisSpeciesCnt;
+	UOSInt thisPhSpeciesCnt;
 	Text::StringBuilderUTF8 *sb;
 
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -626,8 +626,8 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	ExportBeginPage(writer, this->currCate->chiName);
 	
 	OrganGroup *grp;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	const UTF8Char *csptr;
 	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
 	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
@@ -668,9 +668,9 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 				sb->Append((const UTF8Char*)" ");
 				sb->Append(grp->GetEName());
 				sb->Append((const UTF8Char*)" (");
-				sb->AppendOSInt(thisPhSpeciesCnt);
+				sb->AppendUOSInt(thisPhSpeciesCnt);
 				sb->Append((const UTF8Char*)"/");
-				sb->AppendOSInt(thisSpeciesCnt);
+				sb->AppendUOSInt(thisSpeciesCnt);
 				sb->Append((const UTF8Char*)")");
 				csptr = Text::XML::ToNewXMLText(sb->ToString());
 				writer->Write(csptr);
@@ -697,8 +697,8 @@ void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Int32Map<Data::ArrayList<Orga
 	OrganGroup *grp;
 	Data::ArrayList<OrganGroup*> *grps;
 	Data::ArrayList<Data::ArrayList<OrganGroup*>*> *grpsList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	grpsList = grpTree->GetValues();
 	i = grpsList->GetCount();
@@ -721,8 +721,8 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Int32Map<Data::ArrayList<Or
 	OrganSpecies *sp;
 	Data::ArrayList<OrganSpecies*> *sps;
 	Data::ArrayList<Data::ArrayList<OrganSpecies*>*> *spsList;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 
 	spsList = spTree->GetValues();
 	i = spsList->GetCount();
@@ -765,16 +765,16 @@ void SSWR::OrganMgr::OrganEnv::ExportEndPage(IO::Writer *writer)
 	writer->WriteLine((const UTF8Char*)"</HTML>");
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt, OSInt *phSpeciesCnt)
+void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt)
 {
-	OSInt totalPhoto = 0;
-	OSInt totalSpecies = 0;
-	OSInt totalPhSpecies = 0;
-	OSInt thisPhoto;
-	OSInt thisSpecies;
-	OSInt thisPhSpecies;
-	OSInt i;
-	OSInt j;
+	UOSInt totalPhoto = 0;
+	UOSInt totalSpecies = 0;
+	UOSInt totalPhSpecies = 0;
+	UOSInt thisPhoto;
+	UOSInt thisSpecies;
+	UOSInt thisPhSpecies;
+	UOSInt i;
+	UOSInt j;
 	OrganGroup *myGrp;
 	OrganSpecies *sp;
 
@@ -836,9 +836,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				sb->Append((const UTF8Char*)" ");
 				sb->Append(myGrp->GetEName());
 				sb->Append((const UTF8Char*)" (");
-				sb->AppendOSInt(thisPhSpecies);
+				sb->AppendUOSInt(thisPhSpecies);
 				sb->Append((const UTF8Char*)"/");
-				sb->AppendOSInt(thisSpecies);
+				sb->AppendUOSInt(thisSpecies);
 				sb->Append((const UTF8Char*)")");
 				u8ptr = Text::XML::ToNewXMLText(sb->ToString());
 				writer->Write(u8ptr);
@@ -937,10 +937,10 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 	*phSpeciesCnt = totalPhSpecies;
 }
 
-Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, Bool *hasMyPhoto)
+Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, Bool *hasMyPhoto)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OrganImageItem *imgItem;
 	OrganImageItem::FileType ft;
 	Data::ArrayList<OrganImageItem*> items;

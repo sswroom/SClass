@@ -126,37 +126,37 @@ Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF *sb)
 	return true;
 }
 
-OSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
-		return i;
+		return (UOSInt)i;
 	if (itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, i, (LPARAM)itemObj);
 	}
 	this->itemTexts->Add(Text::StrCopyNew(itemText));
-	return i;
+	return (UOSInt)i;
 }
 
-OSInt UI::GUIComboBox::InsertItem(OSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
-		return i;
+		return (UOSInt)i;
 	if (itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, i, (LPARAM)itemObj);
 	}
 	this->itemTexts->Insert(index, Text::StrCopyNew(itemText));
-	return i;
+	return (UOSInt)i;
 }
 
-void *UI::GUIComboBox::RemoveItem(OSInt index)
+void *UI::GUIComboBox::RemoveItem(UOSInt index)
 {
 	void *obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, CB_DELETESTRING, index, 0);
@@ -176,12 +176,12 @@ void UI::GUIComboBox::ClearItems()
 	}
 }
 
-OSInt UI::GUIComboBox::GetCount()
+UOSInt UI::GUIComboBox::GetCount()
 {
 	return SendMessage((HWND)hwnd, CB_GETCOUNT, 0, 0);
 }
 
-void UI::GUIComboBox::SetSelectedIndex(OSInt index)
+void UI::GUIComboBox::SetSelectedIndex(UOSInt index)
 {
 	if (index != SendMessage((HWND)hwnd, CB_GETCURSEL, 0, 0))
 	{
@@ -225,7 +225,7 @@ void *UI::GUIComboBox::GetSelectedItem()
 	return GetItem(currSel);
 }
 
-UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, OSInt index)
+UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
 	WChar sbuff[512];
 	OSInt strLen = SendMessageW((HWND)hwnd, CB_GETLBTEXT, index, (LPARAM)sbuff);
@@ -239,7 +239,7 @@ UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, OSInt index)
 	}
 }
 
-void *UI::GUIComboBox::GetItem(OSInt index)
+void *UI::GUIComboBox::GetItem(UOSInt index)
 {
 	return (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 }
@@ -330,13 +330,13 @@ void UI::GUIComboBox::SetTextSelection(OSInt startPos, OSInt endPos)
 	SendMessage((HWND)this->hwnd, CB_SETEDITSEL, 0, (startPos & 0xffff) | (endPos << 16));
 }
 
-OSInt UI::GUIComboBox::GetListMinVisible()
+UOSInt UI::GUIComboBox::GetListMinVisible()
 {
 	//return SendMessage((HWND)this->hwnd, CB_GETMINVISIBLE, 0, 0);
 	return this->minVisible;
 }
 
-Bool UI::GUIComboBox::SetListMinVisible(OSInt itemCount)
+Bool UI::GUIComboBox::SetListMinVisible(UOSInt itemCount)
 {
 	this->minVisible = itemCount;
 	this->UpdatePos(false);
@@ -344,12 +344,12 @@ Bool UI::GUIComboBox::SetListMinVisible(OSInt itemCount)
 	//return SendMessage((HWND)this->hwnd, CB_SETMINVISIBLE, itemCount, 0) == TRUE;
 }
 
-OSInt UI::GUIComboBox::GetSelectionHeight()
+UOSInt UI::GUIComboBox::GetSelectionHeight()
 {
 	return SendMessage((HWND)this->hwnd, CB_GETITEMHEIGHT, -1, 0);
 }
 
-Bool UI::GUIComboBox::SetListItemHeight(OSInt itemHeight)
+Bool UI::GUIComboBox::SetListItemHeight(UOSInt itemHeight)
 {
 	return SendMessage((HWND)this->hwnd, CB_SETITEMHEIGHT, 0, itemHeight) == TRUE;
 }

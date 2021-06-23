@@ -967,7 +967,7 @@ void UI::GUITextFileView::GetTextPos(Int32 scnPosX, Int32 scnPosY, UInt32 *textP
 
 			Text::Encoding enc(this->fileCodePage);
 			rbuff = MemAlloc(UInt8, (OSInt)(nextOfst - lineOfst));
-			this->fs->Seek(IO::SeekableStream::ST_BEGIN, lineOfst);
+			this->fs->SeekFromBeginning(lineOfst);
 			this->fs->Read(rbuff, (OSInt)(nextOfst - lineOfst));
 			OSInt charCnt = enc.CountWChars(rbuff, (OSInt)(nextOfst - lineOfst));
 			line = MemAlloc(WChar, charCnt + 1);

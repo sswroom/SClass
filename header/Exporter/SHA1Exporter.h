@@ -7,7 +7,7 @@ namespace Exporter
 	class SHA1Exporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		SHA1Exporter();
 		virtual ~SHA1Exporter();

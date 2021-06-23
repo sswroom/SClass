@@ -47,8 +47,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj
 	}
 
 	Bool changed = false;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Int32 id;
 	Sync::MutexUsage mutUsage(me->endedMut);
 	while (me->endedList->GetCount() > 0)
@@ -107,8 +107,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	UTF8Char *sarr[2];
 	UTF8Char *sarr2[2];
 	Bool changed = false;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	sarr[1] = sb.ToString();
 	while (true)
 	{
@@ -151,6 +151,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	Data::ArrayList<UInt32> formats;
 	UOSInt i;
 	UOSInt j;
+	OSInt si;
 	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
 	UTF8Char *sarr[2];
@@ -184,18 +185,18 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 				{
 					desc = 0;
 					i = Text::StrSplitLine(sarr, 2, sarr[1]);
-					j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<img class=\"lazyload\" ");
-					if (i == 2 && j >= 0)
+					si = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<img class=\"lazyload\" ");
+					if (i == 2 && si >= 0)
 					{
-						sarr[0] = &sarr[0][j + 22];
-						j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"alt=\"");
-						if (j >= 0)
+						sarr[0] = &sarr[0][si + 22];
+						si = Text::StrIndexOf(sarr[0], (const UTF8Char*)"alt=\"");
+						if (si >= 0)
 						{
-							sarr[0] = &sarr[0][j + 5];
-							j = Text::StrIndexOf(sarr[0], '\"');
-							if (j >= 0)
+							sarr[0] = &sarr[0][si + 5];
+							si = Text::StrIndexOf(sarr[0], '\"');
+							if (si >= 0)
 							{
-								sarr[0][j] = 0;
+								sarr[0][si] = 0;
 								desc = sarr[0];
 							}
 						}
@@ -203,14 +204,14 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 					if (desc)
 					{
 						i = Text::StrSplitLine(sarr, 2, sarr[1]);
-						j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<a href=\"");
-						if (i == 2 && j >= 0)
+						si = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<a href=\"");
+						if (i == 2 && si >= 0)
 						{
-							sarr[0] = &sarr[0][j + 9];
-							j = Text::StrIndexOf(sarr[0], '\"');
-							if (j >= 0)
+							sarr[0] = &sarr[0][si + 9];
+							si = Text::StrIndexOf(sarr[0], '\"');
+							if (si >= 0)
 							{
-								sarr[0][j] = 0;
+								sarr[0][si] = 0;
 								urlList.Add(sarr[0]);
 								descList.Add(desc);
 							}
@@ -268,8 +269,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = me->lvFiles->GetCount();
 	while (i < j)
@@ -309,7 +310,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *userObj, OSInt itemIndex)
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
-	Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(itemIndex);
+	Int32 id = (Int32)(OSInt)me->lvFiles->GetItem((UOSInt)itemIndex);
 	if (id)
 	{
 		me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -384,7 +385,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 			{
 				Sync::MutexUsage mutUsage;
 				SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(item->id, webType, &mutUsage);
-				OSInt j;
+				UOSInt j;
 				if (file != 0)
 				{
 					Text::StrInt32(sbuff, file->id);
@@ -471,7 +472,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 
 	UTF8Char sbuff[32];
 	UTF8Char *sarr[2];
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 4096))

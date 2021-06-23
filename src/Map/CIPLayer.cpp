@@ -16,6 +16,7 @@
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/StringBuilderW.h"
 
 Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
@@ -239,7 +240,7 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 		{
 			WChar *strTmp;
 			UInt8 buff[5];
-			cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
+			cis->SeekFromBeginning(this->blks[k].sofst);
 			i = this->blks[k].objCnt;
 			while (i-- > 0)
 			{
@@ -409,7 +410,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 			{
 				WChar *strTmp;
 				UInt8 buff[5];
-				cis->Seek(IO::SeekableStream::ST_BEGIN, this->blks[k].sofst);
+				cis->SeekFromBeginning(this->blks[k].sofst);
 				i = this->blks[k].objCnt;
 				while (i-- > 0)
 				{
@@ -682,7 +683,7 @@ Map::CIPLayer::CIPFileObject *Map::CIPLayer::GetFileObject(void *session, Int32 
 		return obj;
 
 	Int32 ofst = this->ofsts[2 + (id << 1)];
-	cip->Seek(IO::SeekableStream::ST_BEGIN, ofst);
+	cip->SeekFromBeginning(ofst);
 	if (cip->Read((UInt8*)buff, 8) != 8)
 	{
 		return 0;

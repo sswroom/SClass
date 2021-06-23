@@ -19324,7 +19324,7 @@ Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF *outStr, Manage::Addr
 	sess.codes0f = (void**)this->codes0f;
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
-	*blockStart = (Int32)sess.regs.EIP;
+	*blockStart = sess.regs.EIP;
 
 	while (sess.memReader->ReadMemUInt8(sess.regs.EIP) == 0xe9)
 	{
@@ -19463,7 +19463,7 @@ UTF8Char *Manage::DasmX86_32::DasmNext(void *sess, UTF8Char *buff)
 		return sptr;
 	}
 	ses->lastStatus = ses->thisStatus;
-	ses->thisStatus = ses->thisStatus & (Int32)0x80000000;
+	ses->thisStatus = ses->thisStatus & 0x80000000;
 	return sptr;
 }
 

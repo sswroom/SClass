@@ -69,11 +69,11 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		Sync::MutexUsage mutUsage(this->tonesMut);
 		if (this->tonesVals)
 		{
-			OSInt sampleCnt = readSize / this->format.align;
-			OSInt sampleLeft;
+			UOSInt sampleCnt = readSize / this->format.align;
+			UOSInt sampleLeft;
 			Int32 tonesOfst = this->tonesCurrSample / (this->tonesSignalSamples + this->tonesBreakSamples);
 			Int32 tonesStartOfst;
-			OSInt tonesCnt = Text::StrCharCnt(this->tonesVals);
+			UOSInt tonesCnt = Text::StrCharCnt(this->tonesVals);
 			Int32 freq1;
 			Int32 freq2;
 			i = 0;

@@ -76,7 +76,7 @@ namespace SSWR
 			Int32 speciesId;
 			Int64 captureTimeTicks;
 			const UTF8Char *dataFileName;
-			Int32 crcVal;
+			UInt32 crcVal;
 			Int32 rotType;
 			const UTF8Char *camera;
 			const UTF8Char *descript;
@@ -91,7 +91,7 @@ namespace SSWR
 		{
 			Int32 id;
 			Int32 speciesId;
-			Int32 crcVal;
+			UInt32 crcVal;
 			const UTF8Char *imgUrl;
 			const UTF8Char *srcUrl;
 			const UTF8Char *location;
@@ -237,7 +237,7 @@ namespace SSWR
 			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
 			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType) = 0;
 			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, Data::DateTime *captureTime, Double lat, Double lon) = 0;
-			OSInt GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks);
+			UOSInt GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks);
 			virtual Bool GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF *sb) = 0;
 			virtual Bool UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript) = 0;
 			virtual Bool UpdateUserFileLoc(UserFileInfo *userFile, const UTF8Char *location) = 0;
@@ -281,7 +281,7 @@ namespace SSWR
 			Media::EXIFData *ParseTIFExif(const UTF8Char *fileName);
 
 		public:
-			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt);
+			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);
 		private:
 			virtual Data::Int32Map<Data::ArrayList<OrganGroup*>*> *GetGroupTree() = 0;
 			void FreeGroupTree(Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree);
@@ -290,8 +290,8 @@ namespace SSWR
 
 			void ExportBeginPage(IO::Writer *writer, const UTF8Char *title);
 			void ExportEndPage(IO::Writer *writer);
-			void ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, OSInt *speciesCnt, OSInt *phSpeciesCnt);
-			Bool ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OSInt *photoCnt, Bool *hasMyPhoto);////////////////////
+			void ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
+			Bool ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, Bool *hasMyPhoto);////////////////////
 		public:
 			virtual void Test() = 0;
 

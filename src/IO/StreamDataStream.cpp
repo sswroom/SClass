@@ -95,7 +95,7 @@ UInt64 IO::StreamDataStream::SeekFromCurrent(Int64 position)
 	}
 	else
 	{
-		return this->SeekFromBeginning((Int64)targetPos);
+		return this->SeekFromBeginning((UInt64)targetPos);
 	}
 }
 
@@ -108,7 +108,7 @@ UInt64 IO::StreamDataStream::SeekFromEnd(Int64 position)
 	}
 	else
 	{
-		return this->SeekFromBeginning((Int64)targetPos);
+		return this->SeekFromBeginning((UInt64)targetPos);
 	}
 }
 
