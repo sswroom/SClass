@@ -1183,26 +1183,32 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 		{
 		case DB::DBUtil::CT_Char:
 		case DB::DBUtil::CT_VarChar:
+		case DB::DBUtil::CT_NChar:
+		case DB::DBUtil::CT_NVarChar:
 			NEW_CLASS(this->colDatas[i].colData, Text::StringBuilderUTF8());
 			break;
 		case DB::DBUtil::CT_Double:
 		case DB::DBUtil::CT_Float:
 			break;
 		case DB::DBUtil::CT_Int16:
-		case DB::DBUtil::CT_UInt32:
+		case DB::DBUtil::CT_UInt16:
 		case DB::DBUtil::CT_Int32:
+		case DB::DBUtil::CT_UInt32:
 		case DB::DBUtil::CT_Byte:
 		case DB::DBUtil::CT_Int64:
+		case DB::DBUtil::CT_UInt64:
 			break;
 		case DB::DBUtil::CT_Bool:
 			break;
 		case DB::DBUtil::CT_DateTime:
+		case DB::DBUtil::CT_DateTime2:
 			NEW_CLASS(this->colDatas[i].colData, Data::DateTime());
 			break;
 		case DB::DBUtil::CT_Vector:
 		case DB::DBUtil::CT_Binary:
 			this->colDatas[i].colData = 0;
 			break;
+		case DB::DBUtil::CT_Unknown:
 		default:
 			break;
 		}
@@ -1226,6 +1232,8 @@ DB::ODBCReader::~ODBCReader()
 		{
 		case DB::DBUtil::CT_Char:
 		case DB::DBUtil::CT_VarChar:
+		case DB::DBUtil::CT_NChar:
+		case DB::DBUtil::CT_NVarChar:
 			sb = (Text::StringBuilderUTF8*)this->colDatas[i].colData;
 			DEL_CLASS(sb);
 			break;
@@ -1233,14 +1241,17 @@ DB::ODBCReader::~ODBCReader()
 		case DB::DBUtil::CT_Float:
 			break;
 		case DB::DBUtil::CT_Int16:
-		case DB::DBUtil::CT_UInt32:
+		case DB::DBUtil::CT_UInt16:
 		case DB::DBUtil::CT_Int32:
+		case DB::DBUtil::CT_UInt32:
 		case DB::DBUtil::CT_Byte:
 		case DB::DBUtil::CT_Int64:
+		case DB::DBUtil::CT_UInt64:
 			break;
 		case DB::DBUtil::CT_Bool:
 			break;
 		case DB::DBUtil::CT_DateTime:
+		case DB::DBUtil::CT_DateTime2:
 			dt = (Data::DateTime*)this->colDatas[i].colData;
 			DEL_CLASS(dt);
 			break;
@@ -1558,21 +1569,27 @@ Int32 DB::ODBCReader::GetInt32(UOSInt colIndex)
 	{
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_NVarChar:
 		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		return Math::Double2Int32(*(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
-	case DB::DBUtil::CT_UInt32:
+	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int32:
+	case DB::DBUtil::CT_UInt32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
+	case DB::DBUtil::CT_UInt64:
 	case DB::DBUtil::CT_Bool:
 		return (Int32)this->colDatas[colIndex].dataVal;
 	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTime2:
 		return 0;
 	case DB::DBUtil::CT_Binary:
 		return 0;
+	case DB::DBUtil::CT_Unknown:
 	default:
 		return 0;
 	}
@@ -1589,21 +1606,27 @@ Int64 DB::ODBCReader::GetInt64(UOSInt colIndex)
 	{
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_NVarChar:
 		return Text::StrToInt64(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		return (Int64)(*(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
-	case DB::DBUtil::CT_UInt32:
+	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int32:
+	case DB::DBUtil::CT_UInt32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
+	case DB::DBUtil::CT_UInt64:
 	case DB::DBUtil::CT_Bool:
 		return this->colDatas[colIndex].dataVal;
 	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTime2:
 		return 0;
 	case DB::DBUtil::CT_Binary:
 		return 0;
+	case DB::DBUtil::CT_Unknown:
 	default:
 		break;
 	}
@@ -1621,18 +1644,23 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	{
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_NVarChar:
 		return Text::StrUTF8_WChar(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), 0);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		return Text::StrDouble(buff, *(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
-	case DB::DBUtil::CT_UInt32:
+	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int32:
+	case DB::DBUtil::CT_UInt32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
+	case DB::DBUtil::CT_UInt64:
 	case DB::DBUtil::CT_Bool:
 		return Text::StrInt64(buff, this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTime2:
 		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(u8buff);
 		return Text::StrUTF8_WChar(buff, u8buff, 0);
 	case DB::DBUtil::CT_Binary:
@@ -1647,6 +1675,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 			}
 		}
 		return 0;
+	case DB::DBUtil::CT_Unknown:
 	default:
 		return 0;
 	}

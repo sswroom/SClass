@@ -91,6 +91,7 @@ Crypto::Hash::IHash *Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashTyp
 	case Crypto::Hash::HT_SHA1_SHA1:
 		NEW_CLASS(hash, Crypto::Hash::SHA1_SHA1());
 		break;
+	case Crypto::Hash::HT_UNKNOWN:
 	default:
 		hash = 0;
 		break;

@@ -203,6 +203,7 @@ const UTF8Char *Net::ConnectionInfo::GetConnectionTypeName(ConnectionType connTy
 		return (const UTF8Char*)"Loopback";
 	case CT_DIALUP:
 		return (const UTF8Char*)"Dial-up";
+	case CT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -224,6 +225,7 @@ const UTF8Char *Net::ConnectionInfo::GetConnectionStatusName(ConnectionStatus co
 		return (const UTF8Char*)"Not Present";
 	case CS_LOWERLAYERDOWN:
 		return (const UTF8Char*)"Low Layer Down";
+	case CS_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

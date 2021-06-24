@@ -239,6 +239,7 @@ const UTF8Char *Media::FrameInfo::GetPixelFormatName(PixelFormat pf)
 		return (const UTF8Char*)"Indexed 8-bit + 1-bit Alpha";
 	case PF_B8G8R8A1:
 		return (const UTF8Char*)"B8G8R8A1";
+	case PF_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

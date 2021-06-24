@@ -19,6 +19,9 @@ Data::Compress::Decompressor *Data::Compress::Decompressor::CreateDecompressor(D
 	case CM_LZO:
 		NEW_CLASS(decomp, Data::Compress::LZODecompressor());
 		break;
+	case CM_UNKNOWN:
+	case CM_UNCOMPRESSED:
+	case CM_MLH:
 	default:
 		decomp = 0;
 		break;
@@ -38,6 +41,7 @@ const UTF8Char *Data::Compress::Decompressor::GetCompMethName(Data::Compress::De
 		return (const UTF8Char*)"MLH";
 	case CM_LZO:
 		return (const UTF8Char*)"LZO";
+	case CM_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

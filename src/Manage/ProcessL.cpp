@@ -1041,6 +1041,7 @@ const UTF8Char *Manage::Process::GetPriorityName(ProcessPriority priority)
 		return (const UTF8Char*)"Below Normal";
 	case PP_IDLE:
 		return (const UTF8Char*)"Idle";
+	case PP_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

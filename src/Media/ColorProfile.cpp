@@ -965,6 +965,8 @@ const UTF8Char *Media::ColorProfile::GetNameColorType(ColorType colorType)
 		return (const UTF8Char*)"Custom";
 	case CT_DISPLAY:
 		return (const UTF8Char*)"As Display Color";
+	case CT_PUNKNOWN:
+	case CT_VUNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -1000,6 +1002,8 @@ const UTF8Char *Media::ColorProfile::GetNameCommonProfile(CommonProfileType cpt)
 		return (const UTF8Char*)"Wide";
 	case CPT_BT2020:
 		return (const UTF8Char*)"BT.2020";
+	case CPT_BT2100:
+		return (const UTF8Char*)"BT.2100";
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

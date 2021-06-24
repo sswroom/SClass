@@ -36,6 +36,7 @@ Media::PaperSize::PaperSize(PaperType pType)
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	default:
+	case PT_DEFAULT:
 	case PT_A4:
 		this->widthMM = Math::Sqrt(62500 / sqr2);
 		this->heightMM = this->widthMM * sqr2;

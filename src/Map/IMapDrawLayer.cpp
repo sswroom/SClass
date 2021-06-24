@@ -872,6 +872,11 @@ Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Vector2D::Vect
 		return Map::DRAW_LAYER_POLYLINE;
 	case Math::Vector2D::VT_IMAGE:
 		return Map::DRAW_LAYER_IMAGE;
+	case Math::Vector2D::VT_MULTIPOINT:
+	case Math::Vector2D::VT_STRING:
+	case Math::Vector2D::VT_ELLIPSE:
+	case Math::Vector2D::VT_PIEAREA:
+	case Math::Vector2D::VT_UNKNOWN:
 	default:
 		return Map::DRAW_LAYER_UNKNOWN;
 	}

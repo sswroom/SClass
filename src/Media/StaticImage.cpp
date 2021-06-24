@@ -417,6 +417,7 @@ Bool Media::StaticImage::To32bpp()
 		this->info->storeBPP = 32;
 		this->info->pf = Media::PF_B8G8R8A8;
 		return true;
+	case Media::PF_UNKNOWN:
 	default:
 		return false;
 	}
@@ -700,6 +701,7 @@ Bool Media::StaticImage::To64bpp()
 		this->info->storeBPP = 64;
 		this->info->pf = Media::PF_LE_B16G16R16A16;
 		return true;
+	case Media::PF_UNKNOWN:
 	default:
 		return false;
 	}

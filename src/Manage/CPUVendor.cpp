@@ -50,6 +50,7 @@ const UTF8Char *Manage::CPUVendor::GetBrandName(CPU_BRAND brand)
 		return (const UTF8Char*)"Spreadtrum";
 	case CB_NXP:
 		return (const UTF8Char*)"NXP";
+	case CB_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

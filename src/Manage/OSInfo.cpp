@@ -32,6 +32,7 @@ const UTF8Char *Manage::OSInfo::GetName(OSType osType)
 		return (const UTF8Char*)"Linux i686";
 	case OT_NETCAST:
 		return (const UTF8Char*)"webOS";
+	case OT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -67,6 +68,7 @@ const UTF8Char *Manage::OSInfo::GetDefName(OSType osType)
 		return (const UTF8Char*)"OT_LINUX_I686";
 	case OT_NETCAST:
 		return (const UTF8Char*)"OT_NETCAST";
+	case OT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"OT_UNKNOWN";
 	}

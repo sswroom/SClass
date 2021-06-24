@@ -111,6 +111,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebRe
 	case CT_NO_CACHE:
 		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
 		break;
+	case CT_DEFAULT:
 	default:
 		break;
 	}

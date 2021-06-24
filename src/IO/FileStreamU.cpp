@@ -78,6 +78,10 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 		flags |= O_DSYNC;
 #endif
 		break;
+	case BT_RANDOM_ACCESS:
+	case BT_NORMAL:
+	case BT_SEQUENTIAL:
+	case BT_NO_BUFFER:
 	default:
 		break;
 	}

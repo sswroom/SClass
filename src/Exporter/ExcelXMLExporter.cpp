@@ -297,6 +297,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					case Text::SpreadSheet::CellStyle::HALIGN_JUSTIFY:
 						sb.Append((const UTF8Char*)" ss:Horizontal=\"Justify\"");
 						break;
+					case Text::SpreadSheet::CellStyle::HALIGN_UNKNOWN:
 					default:
 						break;
 					}
@@ -305,15 +306,16 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					case Text::SpreadSheet::CellStyle::VALIGN_TOP:
 						sb.Append((const UTF8Char*)" ss:Vertical=\"Top\"");
 						break;
-/*					case Text::SpreadSheet::CellStyle::VALIGN_CENTER:
-						sb.Append((const UTF8Char*)" ss:Vertical=\"Center\"");
-						break;*/
+					case Text::SpreadSheet::CellStyle::VALIGN_CENTER:
+						//sb.Append((const UTF8Char*)" ss:Vertical=\"Center\"");
+						break;
 					case Text::SpreadSheet::CellStyle::VALIGN_BOTTOM:
 						sb.Append((const UTF8Char*)" ss:Vertical=\"Bottom\"");
 						break;
 					case Text::SpreadSheet::CellStyle::VALIGN_JUSTIFY:
 						sb.Append((const UTF8Char*)" ss:Vertical=\"Justify\"");
 						break;
+					case Text::SpreadSheet::CellStyle::VALIGN_UNKNOWN:
 					default:
 						break;
 					}
@@ -626,6 +628,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 										Text::XML::FreeNewText(text2);
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
+									case Text::SpreadSheet::Worksheet::CDT_MERGEDLEFT:
+									case Text::SpreadSheet::Worksheet::CDT_MERGEDTOP:
+									case Text::SpreadSheet::Worksheet::CDT_STRING:
 									default:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"String\">");
 										text2 = Text::XML::ToNewXMLText(cell->cellValue);

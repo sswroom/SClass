@@ -106,6 +106,7 @@ const UTF8Char *Net::BrowserInfo::GetName(BrowserType btype)
 		return (const UTF8Char*)"MSNBOT";
 	case BT_LIBWWW_PERL:
 		return (const UTF8Char*)"libwww-perl";
+	case BT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -215,6 +216,7 @@ const UTF8Char *Net::BrowserInfo::GetDefName(BrowserType btype)
 		return (const UTF8Char*)"BT_NETSEEN";
 	case BT_LIBWWW_PERL:
 		return (const UTF8Char*)"BT_LIBWWW_PERL";
+	case BT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"BT_UNKNOWN";
 	}

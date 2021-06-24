@@ -1340,6 +1340,7 @@ Media::EXIFData *Media::EXIFData::Clone()
 		case ET_DOUBLE:
 			newExif->AddDouble(item->id, item->size, (Double*)item->dataBuff);
 			break;
+		case ET_UNKNOWN:
 		default:
 			break;
 		}
@@ -4046,6 +4047,7 @@ const UTF8Char *Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)
 		return (const UTF8Char*)"Casio Type 2";
 	case Media::EXIFData::EM_FLIR:
 		return (const UTF8Char*)"FLIR";
+	case Media::EXIFData::EM_STANDARD:
 	default:
 		return (const UTF8Char*)"Standard";
 	}
