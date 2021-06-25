@@ -51,6 +51,7 @@ extern "C"
 	void ImageUtil_ConvB5G6R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvB8G8R8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvR8G8B8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
+	void ImageUtil_ConvR8G8B8A8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvARGB32_64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvARGB48_64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvA2B10G10R10_64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);

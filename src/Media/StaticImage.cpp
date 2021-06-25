@@ -548,6 +548,17 @@ Bool Media::StaticImage::To64bpp()
 		this->info->storeBPP = 64;
 		this->info->pf = Media::PF_LE_B16G16R16A16;
 		return true;
+	case Media::PF_R8G8B8A8:
+		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
+		ImageUtil_ConvR8G8B8A8_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
+		MemFreeA(this->data);
+		this->data = buff;
+		this->info->storeWidth = this->info->dispWidth;
+		this->info->storeHeight = this->info->dispHeight;
+		this->info->byteSize = (dispWidth * dispWidth << 3);
+		this->info->storeBPP = 64;
+		this->info->pf = Media::PF_LE_B16G16R16A16;
+		return true;
 	case Media::PF_LE_B16G16R16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
 		ImageUtil_ConvARGB48_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 6, (OSInt)dispWidth << 3);

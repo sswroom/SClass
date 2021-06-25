@@ -96,6 +96,8 @@ global _ImageUtil_ConvB8G8R8_ARGB64
 global ImageUtil_ConvB8G8R8_ARGB64
 global _ImageUtil_ConvR8G8B8_ARGB64
 global ImageUtil_ConvR8G8B8_ARGB64
+global _ImageUtil_ConvR8G8B8A8_ARGB64
+global ImageUtil_ConvR8G8B8A8_ARGB64
 global _ImageUtil_ConvARGB32_64
 global ImageUtil_ConvARGB32_64
 global _ImageUtil_ConvARGB48_64
@@ -3905,6 +3907,52 @@ cargb24r_64lop2:
 	add edx,dword [esp+28] ;dbpl
 	dec dword [esp+20] ;h
 	jnz cargb24r_64lop
+	pop ebx
+	ret
+
+;void ImageUtil_ConvR8G8B8A8_ARGB64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 ebx
+;4 retAddr
+;8 srcPtr
+;12 destPtr
+;16 w
+;20 h
+;24 sbpl
+;28 dbpl
+	align 16
+_ImageUtil_ConvR8G8B8A8_ARGB64:
+ImageUtil_ConvR8G8B8A8_ARGB64:
+	push ebx
+	mov ecx,dword [esp+8] ;srcPtr
+	mov edx,dword [esp+12] ;destPtr
+	mov ebx,dword [esp+16] ;w
+	lea eax,[ebx*4]
+	sub dword [esp+24],eax ;sbpl
+	lea eax,[ebx*8]
+	sub dword [esp+28],eax ;dbpl
+	
+	align 16
+cargb32r_64lop:
+	mov ebx,dword [esp+16] ;w
+	align 16
+cargb32r_64lop2:
+	movzx eax,byte [ecx]
+	mov ah,byte [ecx+3]
+	shl eax,16
+	mov ah,byte [ecx+1]
+	mov al,byte [ecx+2]
+	lea ecx,[ecx+4]
+	movd xmm0,eax
+	punpcklbw xmm0,xmm0
+	movq [edx],xmm0
+	lea edx,[edx+8]
+	dec ebx
+	jnz cargb32r_64lop2
+	
+	add ecx,dword [esp+24] ;sbpl
+	add edx,dword [esp+28] ;dbpl
+	dec dword [esp+20] ;h
+	jnz cargb32r_64lop
 	pop ebx
 	ret
 
