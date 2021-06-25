@@ -236,6 +236,7 @@ void Media::ColorProfile::ColorPrimaries::SetColorType(ColorType colorType)
 		this->SetWhiteType(WPT_D65);
 		break;
 
+	case CT_PUNKNOWN:
 	default:
 		this->colorType = Media::ColorProfile::CT_PUNKNOWN;
 		rx = 0.6400;	ry = 0.3300;
@@ -1004,6 +1005,22 @@ const UTF8Char *Media::ColorProfile::GetNameCommonProfile(CommonProfileType cpt)
 		return (const UTF8Char*)"BT.2020";
 	case CPT_BT2100:
 		return (const UTF8Char*)"BT.2100";
+	case CPT_FILE:
+		return (const UTF8Char*)"File";
+	case CPT_CUSTOM:
+		return (const UTF8Char*)"Custom";
+	case CPT_PDISPLAY:
+		return (const UTF8Char*)"From Display Unit (For Picture)";
+	case CPT_VDISPLAY:
+		return (const UTF8Char*)"From Display Unit (For Video)";
+	case CPT_OS:
+		return (const UTF8Char*)"OS";
+	case CPT_EDID:
+		return (const UTF8Char*)"From EDID";
+	case CPT_VUNKNOWN:
+		return (const UTF8Char*)"Unknown (For Video)";
+	case CPT_PUNKNOWN:
+		return (const UTF8Char*)"Unknwon (For Picture)";
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

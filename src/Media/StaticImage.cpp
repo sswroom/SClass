@@ -736,6 +736,33 @@ Bool Media::StaticImage::ToPal8()
 		this->info->storeBPP = 8;
 		this->info->pf = Media::PF_PAL_8;
 		return true;
+	case PF_PAL_8:
+		return true;
+	case PF_PAL_W8:
+		this->info->pf = Media::PF_PAL_W8;
+		return true;
+	case PF_LE_A2B10G10R10:
+	case PF_LE_R5G5B5:
+	case PF_LE_R5G6B5:
+	case PF_LE_FW32:
+	case PF_LE_FW32A32:
+	case PF_LE_W16:
+	case PF_LE_W16A16:
+	case PF_PAL_1:
+	case PF_PAL_1_A1:
+	case PF_PAL_2:
+	case PF_PAL_2_A1:
+	case PF_PAL_4:
+	case PF_PAL_4_A1:
+	case PF_PAL_8_A1:
+	case PF_PAL_W1:
+	case PF_PAL_W2:
+	case PF_PAL_W4:
+	case PF_R8G8B8:
+	case PF_R8G8B8A8:
+	case PF_B8G8R8A1:
+	case PF_W8A8:
+	case PF_UNKNOWN:
 	default:
 		return false;
 	}

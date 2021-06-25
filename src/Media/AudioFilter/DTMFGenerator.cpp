@@ -71,8 +71,8 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		{
 			UOSInt sampleCnt = readSize / this->format.align;
 			UOSInt sampleLeft;
-			Int32 tonesOfst = this->tonesCurrSample / (this->tonesSignalSamples + this->tonesBreakSamples);
-			Int32 tonesStartOfst;
+			UInt32 tonesOfst = this->tonesCurrSample / (this->tonesSignalSamples + this->tonesBreakSamples);
+			UInt32 tonesStartOfst;
 			UOSInt tonesCnt = Text::StrCharCnt(this->tonesVals);
 			Int32 freq1;
 			Int32 freq2;
@@ -333,9 +333,9 @@ void Media::AudioFilter::DTMFGenerator::SetVolume(Double vol)
 	this->vol = vol;
 }
 
-Bool Media::AudioFilter::DTMFGenerator::GenTones(Int32 signalTime, Int32 breakTime, Double vol, const UTF8Char *tones)
+Bool Media::AudioFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 breakTime, Double vol, const UTF8Char *tones)
 {
-	if (tones == 0 || tones[0] == 0 || signalTime <= 0 || breakTime < 0 || vol <= 0)
+	if (tones == 0 || tones[0] == 0 || signalTime <= 0 || vol <= 0)
 		return false;
 	const UTF8Char *sptr = tones;
 	UTF8Char c;

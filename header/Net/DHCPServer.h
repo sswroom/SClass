@@ -1,7 +1,7 @@
 #ifndef _SM_NET_DHCPSERVER
 #define _SM_NET_DHCPSERVER
 #include "Data/ArrayList.h"
-#include "Data/Int64Map.h"
+#include "Data/UInt64Map.h"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -36,7 +36,7 @@ namespace Net
 
 		Sync::Mutex *devMut;
 		UInt8 *devUsed;
-		Data::Int64Map<DeviceStatus*> *devMap;
+		Data::UInt64Map<DeviceStatus*> *devMap;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:

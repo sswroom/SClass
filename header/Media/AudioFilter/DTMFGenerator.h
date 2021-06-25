@@ -19,10 +19,10 @@ namespace Media
 			Double vol;
 
 			Sync::Mutex *tonesMut;
-			Int32 tonesSignalSamples;
-			Int32 tonesBreakSamples;
+			UInt32 tonesSignalSamples;
+			UInt32 tonesBreakSamples;
 			Double tonesVol;
-			Int32 tonesCurrSample;
+			UInt32 tonesCurrSample;
 			const UTF8Char *tonesVals;
 			
 		public:
@@ -35,7 +35,7 @@ namespace Media
 			void SetTone(UTF8Char tone); // 0-9, *#, ABCD
 			void SetVolume(Double vol);
 
-			Bool GenTones(Int32 signalTime, Int32 breakTime, Double vol, const UTF8Char *tones);
+			Bool GenTones(UInt32 signalTime, UInt32 breakTime, Double vol, const UTF8Char *tones);
 		};
 	}
 }

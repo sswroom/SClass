@@ -15,7 +15,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 	if (dataSize >= 240 && buff[0] == 1 && buff[1] == 1 && buff[2] == 6 && ReadMUInt32(&buff[236]) == 0x63825363)
 	{
 		UInt8 dhcpType = 0;
-		Int64 hwAddr = ReadMInt64(&buff[26]) & 0xffffffffffffLL;
+		UInt64 hwAddr = ReadMUInt64(&buff[26]) & 0xffffffffffffLL;
 		UInt32 reqIP = 0;
 		UInt32 transactionId = ReadMUInt32(&buff[4]);
 		UOSInt i;
@@ -71,8 +71,8 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			repBuff[1] = 1;
 			repBuff[2] = 6;
 			WriteMUInt32(&repBuff[4], transactionId);
-			WriteMInt64(&repBuff[26], hwAddr);
-			WriteNInt32(&repBuff[20], me->infIP);
+			WriteMUInt64(&repBuff[26], hwAddr);
+			WriteNUInt32(&repBuff[20], me->infIP);
 			Sync::MutexUsage mutUsage(me->devMut);
 			dev = me->devMap->Get(hwAddr);
 			if (dev)
@@ -193,8 +193,8 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			repBuff[0] = 2;
 			repBuff[1] = 1;
 			repBuff[2] = 6;
-			WriteMInt32(&repBuff[4], transactionId);
-			WriteMInt64(&repBuff[26], hwAddr);
+			WriteMUInt32(&repBuff[4], transactionId);
+			WriteMUInt64(&repBuff[26], hwAddr);
 			Sync::MutexUsage mutUsage(me->devMut);
 			dev = me->devMap->Get(hwAddr);
 			if (dev == 0)
@@ -246,7 +246,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				j = 0;
 				while (j < me->dnsList->GetCount())
 				{
-					WriteNInt32(&repBuff[i], me->dnsList->GetItem(j));
+					WriteNUInt32(&repBuff[i], me->dnsList->GetItem(j));
 					j++;
 					i += 4;
 				}
@@ -321,7 +321,7 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 
 	NEW_CLASS(this->devMut, Sync::Mutex());
 	this->devUsed = MemAlloc(UInt8, this->devCount);
-	NEW_CLASS(this->devMap, Data::Int64Map<DeviceStatus*>());
+	NEW_CLASS(this->devMap, Data::UInt64Map<DeviceStatus*>());
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(&addr, infIP);
@@ -337,7 +337,7 @@ Net::DHCPServer::~DHCPServer()
 
 		Data::ArrayList<DeviceStatus*> *devList = this->devMap->GetValues();
 		DeviceStatus *dev;
-		OSInt i = devList->GetCount();
+		UOSInt i = devList->GetCount();
 		while (i-- > 0)
 		{
 			dev = devList->GetItem(i);

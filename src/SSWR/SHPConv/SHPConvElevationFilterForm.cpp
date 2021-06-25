@@ -13,7 +13,7 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(void *user
 	{
 		if (height > 0)
 		{
-			NEW_CLASS(me->filter, SSWR::SHPConv::ElevationFilter(me->cboCol->GetSelectedIndex(), height));
+			NEW_CLASS(me->filter, SSWR::SHPConv::ElevationFilter((UOSInt)me->cboCol->GetSelectedIndex(), height));
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
 	}
@@ -53,8 +53,8 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	this->SetCancelButton(this->btnCancel);
 
 	UTF8Char sbuff[256];
-	OSInt i = 0;
-	OSInt j = this->dbf->GetColCount();
+	UOSInt i = 0;
+	UOSInt j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{

@@ -513,12 +513,12 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	Int32 signalTime;
-	Int32 breakTime;
+	UInt32 signalTime;
+	UInt32 breakTime;
 	Double vol;
 	vol = Math::Pow(10, (me->tbDTMFTonesVol->GetPos() - 960) / 200.0);
 	me->txtDTMFSignalTime->GetText(&sb);
-	if (!sb.ToInt32(&signalTime))
+	if (!sb.ToUInt32(&signalTime))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Signal Time is not valid", (const UTF8Char *)"Generate Tones", me);
 		return;
@@ -530,7 +530,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	}
 	sb.ClearStr();
 	me->txtDTMFBreakTime->GetText(&sb);
-	if (!sb.ToInt32(&breakTime))
+	if (!sb.ToUInt32(&breakTime))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Break Time is not valid", (const UTF8Char *)"Generate Tones", me);
 		return;
