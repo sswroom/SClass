@@ -353,10 +353,10 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		DEL_CLASS(fs1);
 		return false;
 	}
-	Int64 fileSize = fs1->GetLength();
-	Int64 ramSize = 104857600;//MemGetRAMSize();
-	Int64 writeSize = 0;
-	Int64 writenSize;
+	UInt64 fileSize = fs1->GetLength();
+	UInt64 ramSize = 104857600;//MemGetRAMSize();
+	UInt64 writeSize = 0;
+	UInt64 writenSize;
 	Bool samePart = IO::FileUtil::IsSamePartition(file1, file2);
 	UInt8 *buff;
 	if (fea == IO::FileUtil::FEA_CONTINUE)
@@ -406,15 +406,15 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		Data::DateTime dt1;
 		Data::DateTime dt2;
 		Data::DateTime dt3;
-		OSInt readSize;
-		OSInt thisSize;
+		UOSInt readSize;
+		UOSInt thisSize;
 		if (fileSize < ramSize)
 		{
-			buff = MemAllocA(UInt8, readSize = (OSInt)fileSize);
+			buff = MemAllocA(UInt8, readSize = (UOSInt)fileSize);
 		}
 		else
 		{
-			buff = MemAllocA(UInt8, readSize = (OSInt)ramSize);
+			buff = MemAllocA(UInt8, readSize = (UOSInt)ramSize);
 		}
 		while (writeSize < fileSize)
 		{
