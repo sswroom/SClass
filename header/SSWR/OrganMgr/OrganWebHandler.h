@@ -288,6 +288,7 @@ namespace SSWR
 			Bool GroupDelete(Int32 id);
 			Bool GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId);
 			Bool GroupAddCounts(Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
+			Bool GroupSetPhotoSpecies(Int32 groupId, Int32 photoSpeciesId);
 			Bool GroupSetPhotoGroup(Int32 groupId, Int32 photoGroupId);
 
 			Net::WebServer::IWebSession *ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess);
