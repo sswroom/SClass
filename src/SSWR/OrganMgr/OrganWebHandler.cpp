@@ -1365,6 +1365,44 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId
 	}
 }
 
+Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *sciName, const UTF8Char *description, const UTF8Char *dirName)
+{
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(speciesId);
+	if (species == 0)
+		return false;
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmd((const UTF8Char*)"update species set eng_name = ");
+	sql.AppendStrUTF8(engName);
+	sql.AppendCmd((const UTF8Char*)", chi_name = ");
+	sql.AppendStrUTF8(chiName);
+	sql.AppendCmd((const UTF8Char*)", sci_name = ");
+	sql.AppendStrUTF8(sciName);
+	sql.AppendCmd((const UTF8Char*)", description = ");
+	sql.AppendStrUTF8(description);
+	sql.AppendCmd((const UTF8Char*)", dirName = ");
+	sql.AppendStrUTF8(dirName);
+	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendInt32(speciesId);
+	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
+	{
+		SDEL_TEXT(species->engName);
+		species->engName = SCOPY_TEXT(engName);
+		SDEL_TEXT(species->chiName);
+		species->chiName = SCOPY_TEXT(chiName);
+		SDEL_TEXT(species->sciName);
+		species->sciName = SCOPY_TEXT(sciName);
+		SDEL_TEXT(species->descript);
+		species->descript = SCOPY_TEXT(description);
+		SDEL_TEXT(species->dirName);
+		species->dirName = SCOPY_TEXT(dirName);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize)
 {
 	UOSInt j;
@@ -4038,9 +4076,49 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						me->dataMut->LockRead();
 					}
 				}
-				else if (Text::StrEquals(task, (const UTF8Char*)"modify"))
+				else if (Text::StrEquals(task, (const UTF8Char*)"modify") && species != 0)
 				{
+					Bool nameChg = !Text::StrEquals(species->sciName, sname);
+					sb.ClearStr();
+					if (nameChg && me->spNameMap->Get(sname) != 0)
+					{
+						msg.Append((const UTF8Char*)"Species already exist");
+					}
+					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname, &sb))
+					{
+						msg.Append((const UTF8Char *)"Species already exist in book: ");
+						msg.Append(sb.ToString());
+						msg.Append((const UTF8Char*)", continue?");
+						bookIgn = (const UTF8Char*)"1";
+					}
+					else
+					{
+						me->dataMut->UnlockRead();
+						me->dataMut->LockWrite();
+						sb.ClearStr();
+						sb.Append(sname);
+						sb.ToLower();
+						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
+						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
+						if (me->SpeciesModify(spId, ename, cname, sname, descr, sb.ToString()))
+						{
+							me->dataMut->UnlockWrite();
+							sb.ClearStr();
+							sb.Append((const UTF8Char*)"species.html?id=");
+							sb.AppendI32(spId);
+							sb.Append((const UTF8Char*)"&cateId=");
+							sb.AppendI32(cateId);
 
+							resp->RedirectURL(req, sb.ToString(), 0);
+							return true;
+						}
+						else
+						{
+							msg.Append((const UTF8Char*)"Error in modifying species");
+						}
+						me->dataMut->UnlockWrite();
+						me->dataMut->LockRead();
+					}
 				}
 			}
 		}

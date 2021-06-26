@@ -278,6 +278,7 @@ namespace SSWR
 			Bool SpeciesSetPhotoId(Int32 speciesId, Int32 photoId);
 			Bool SpeciesSetFlags(Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(Int32 speciesId, Int32 groupId, Int32 cateId);
+			Bool SpeciesModify(Int32 speciesId, const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *sciName, const UTF8Char *description, const UTF8Char *dirName);
 			Int32 UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize);
 			Bool UserfileMove(Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(Int32 userfileId, const UTF8Char *descr);
