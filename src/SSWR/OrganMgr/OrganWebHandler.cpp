@@ -2218,6 +2218,29 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupAddCounts(Int32 groupId, UOSInt total
 	return false;
 }
 
+Bool SSWR::OrganMgr::OrganWebHandler::GroupSetPhotoGroup(Int32 groupId, Int32 photoGroupId)
+{
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(groupId);
+	if (group == 0)
+		return false;
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *photoGroup = this->groupMap->Get(photoGroupId);
+	if (photoGroup == 0)
+		return false;
+
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmd((const UTF8Char*)"update groups set photo_group = ");
+	sql.AppendInt32(photoGroupId);
+	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendInt32(groupId);
+	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
+	{
+		group->photoGroup = photoGroupId;
+		group->photoSpObj = photoGroup->photoSpObj;
+		return true;
+	}
+	return false;
+}
+
 Net::WebServer::IWebSession *SSWR::OrganMgr::OrganWebHandler::ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, SSWR::OrganMgr::OrganWebHandler::RequestEnv *env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
@@ -2597,6 +2620,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
+			else if (action && Text::StrEquals(action, (const UTF8Char*)"setphoto"))
+			{
+				me->GroupSetPhotoGroup(group->parentId, group->id);
+			}
 		}
 
 		resp->AddDefHeaders(req);
@@ -2779,6 +2806,24 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			writer->Write(LangGetValue(lang, (const UTF8Char*)"Back"));
 			writer->Write((const UTF8Char*)"</a>");
 		}
+		if (env.user != 0 && env.user->userType == 0)
+		{
+			writer->Write((const UTF8Char*)"<a href=\"groupmod.html?id=");
+			sb.ClearStr();
+			sb.AppendI32(group->parentId);
+			sb.Append((const UTF8Char*)"&amp;cateId=");
+			sb.AppendI32(group->cateId);
+			sb.Append((const UTF8Char*)"&amp;groupId=");
+			sb.AppendI32(group->id);
+			writer->Write(sb.ToString(), sb.GetCharCnt());
+			writer->Write((const UTF8Char*)"\">");
+			writer->Write(LangGetValue(lang, (const UTF8Char*)"Modify"));
+			writer->Write((const UTF8Char*)"</a>");
+			writer->WriteLine((const UTF8Char*)"<br/>");
+
+			writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Set Parent Photo\" onclick=\"document.forms.groupform.action.value='setphoto';document.forms.groupform.submit();\"/>");
+		}
+
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
