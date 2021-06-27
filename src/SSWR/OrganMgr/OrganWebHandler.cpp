@@ -9260,6 +9260,13 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				Text::XML::FreeNewText(txt);
 				writer->WriteLine((const UTF8Char*)"><br/>");
 			}
+			else
+			{
+				txt = Text::XML::ToNewHTMLText(sp->sciName);
+				writer->Write(txt);
+				Text::XML::FreeNewText(txt);
+				writer->WriteLine((const UTF8Char*)"><br/>");
+			}
 			if (showSelect)
 			{
 				writer->WriteLine((const UTF8Char*)"</a>");
