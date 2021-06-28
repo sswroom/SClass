@@ -1561,7 +1561,7 @@ UInt32 Media::EXIFData::GetExifCount(Int32 id)
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap->Get(id);
 	if (item == 0)
-		return ET_UNKNOWN;
+		return 0;
 	return item->size;
 }
 
@@ -1602,6 +1602,16 @@ UInt32 *Media::EXIFData::GetExifUInt32(Int32 id)
 	{
 		return (UInt32*)&item->value;
 	}
+}
+
+Media::EXIFData *Media::EXIFData::GetExifSubexif(Int32 id)
+{
+	Media::EXIFData::EXIFItem *item = this->exifMap->Get(id);
+	if (item == 0)
+		return 0;
+	if (item->type != ET_SUBEXIF)
+		return 0;
+	return (Media::EXIFData*)item->dataBuff;
 }
 
 UInt8 *Media::EXIFData::GetExifOther(Int32 id)
@@ -1694,7 +1704,8 @@ const Char *Media::EXIFData::GetPhotoModel()
 				return (const Char*)item->dataBuff;
 			}
 		}
-	}	return 0;
+	}
+	return 0;
 }
 
 const Char *Media::EXIFData::GetPhotoLens()
@@ -1851,13 +1862,13 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 			{
 				if (item2->size == 3)
 				{
-					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / ReadInt32(&((UInt8*)item2->dataBuff)[4]);
-					val += ReadInt32(&((UInt8*)item2->dataBuff)[8]) / ReadInt32(&((UInt8*)item2->dataBuff)[12]) / 60.0;
-					val += ReadInt32(&((UInt8*)item2->dataBuff)[16]) / ReadInt32(&((UInt8*)item2->dataBuff)[20]) / 3600.0;
+					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[4]);
+					val += ReadInt32(&((UInt8*)item2->dataBuff)[8]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[12]) / 60.0;
+					val += ReadInt32(&((UInt8*)item2->dataBuff)[16]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[20]) / 3600.0;
 				}
 				else if (item2->size == 1)
 				{
-					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / ReadInt32(&((UInt8*)item2->dataBuff)[4]);
+					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[4]);
 				}
 				else
 				{
@@ -1896,13 +1907,13 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 			{
 				if (item2->size == 3)
 				{
-					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / ReadInt32(&((UInt8*)item2->dataBuff)[4]);
-					val += ReadInt32(&((UInt8*)item2->dataBuff)[8]) / ReadInt32(&((UInt8*)item2->dataBuff)[12]) / 60.0;
-					val += ReadInt32(&((UInt8*)item2->dataBuff)[16]) / ReadInt32(&((UInt8*)item2->dataBuff)[20]) / 3600.0;
+					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[4]);
+					val += ReadInt32(&((UInt8*)item2->dataBuff)[8]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[12]) / 60.0;
+					val += ReadInt32(&((UInt8*)item2->dataBuff)[16]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[20]) / 3600.0;
 				}
 				else if (item2->size == 1)
 				{
-					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / ReadInt32(&((UInt8*)item2->dataBuff)[4]);
+					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[4]);
 				}
 				else
 				{
@@ -1941,7 +1952,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 			{
 				if (item2->size == 1)
 				{
-					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / ReadInt32(&((UInt8*)item2->dataBuff)[4]);
+					val = ReadInt32(&((UInt8*)item2->dataBuff)[0]) / (Double)ReadInt32(&((UInt8*)item2->dataBuff)[4]);
 				}
 				else
 				{
@@ -4019,16 +4030,6 @@ Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffS
 		}
 	}
 	return ret;
-}
-
-Media::EXIFData *Media::EXIFData::GetExifSubexif(Int32 id)
-{
-	Media::EXIFData::EXIFItem *item = this->exifMap->Get(id);
-	if (item == 0)
-		return 0;
-	if (item->type != ET_SUBEXIF)
-		return 0;
-	return (Media::EXIFData*)item->dataBuff;
 }
 
 const UTF8Char *Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)

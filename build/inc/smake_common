@@ -70,6 +70,7 @@ nodeps:
 @LanczosFilterTest
 @GUIExportJPG
 @ImageCopy
+@ImageResize
 @MonitorInfoTest
 @NearestNeighbourResizer32_32Test
 @PrinterTest
@@ -374,6 +375,9 @@ GUIExportJPG:
 @ConsoleStartup.o
 ImageCopy:
 @ImageCopyTest.o
+@ConsoleStartup.o
+ImageResize:
+@ImageResizeMain.o
 @ConsoleStartup.o
 MonitorInfoTest:
 @MonitorInfoTest.o
@@ -726,6 +730,7 @@ MCU_SIM7000.o: ../../main/MCU/MCU_SIM7000.cpp
 AudioDeviceTest.o: ../../main/Media/AudioDeviceTest.cpp
 GUIExportJPG.o: ../../main/Media/GUIExportJPG.cpp
 ImageCopyTest.o: ../../main/Media/ImageCopyTest.cpp
+ImageResizeMain.o: ../../main/Media/ImageResizeMain.cpp
 MonitorInfoTest.o: ../../main/Media/MonitorInfoTest.cpp
 NearestNeighbourResizer32_32Test.o: ../../main/Media/NearestNeighbourResizer32_32Test.cpp
 PrinterTest.o: ../../main/Media/PrinterTest.cpp
