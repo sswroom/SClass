@@ -9265,7 +9265,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				txt = Text::XML::ToNewHTMLText(sp->sciName);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
-				writer->WriteLine((const UTF8Char*)"><br/>");
+				writer->WriteLine((const UTF8Char*)"<br/>");
 			}
 			if (showSelect)
 			{
