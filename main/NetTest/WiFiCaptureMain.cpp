@@ -693,12 +693,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console.WriteLine((const UTF8Char*)"WiFiCapture started");
 				progCtrl->WaitForExit(progCtrl);
 				threadToStop = true;
+				StoreStatus();
 				while (threadCnt > 0)
 				{
 					Sync::Thread::Sleep(10);
 				}
-
-				StoreStatus();
 			}
 			
 			i = interfaces.GetCount();
