@@ -32,8 +32,8 @@ namespace Media
 		void FreeExif(ExifValue *exif);
 		ExifValue *DupExif(ExifValue *exif);
 		ExifValue *GetExif(ExifValue *grp, Int32 id);
-		void CalExifSize(Data::ArrayList<ExifValue*> *exifArr, Int32 *size, Int32 *endOfst);
-		void GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exifArr, Int32 *startOfst, Int32 *otherOfst);
+		void CalExifSize(Data::ArrayList<ExifValue*> *exifArr, UOSInt *size, UOSInt *endOfst);
+		void GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exifArr, UOSInt *startOfst, UOSInt *otherOfst);
 	public:
 		JPEGExif();
 		~JPEGExif();

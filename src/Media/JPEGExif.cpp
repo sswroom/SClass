@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Sync/Event.h"
@@ -45,12 +45,12 @@ Media::JPEGExif::ExifValue *Media::JPEGExif::DupExif(ExifValue *exif)
 		if (exif->t == Media::JPEGExif::EXIF_TYPE_BYTE || exif->t == Media::JPEGExif::EXIF_TYPE_UNK)
 		{
 			nexif->s = MemAlloc(Char, exif->numerator);
-			MemCopy(nexif->s, exif->s, exif->numerator);
+			MemCopyNO(nexif->s, exif->s, exif->numerator);
 		}
 		else if (exif->t == Media::JPEGExif::EXIF_TYPE_NUMARR)
 		{
 			nexif->s = MemAlloc(Char, exif->numerator);
-			MemCopy(nexif->s, exif->s, exif->numerator * 8);
+			MemCopyNO(nexif->s, exif->s, exif->numerator * 8);
 		}
 		else if (exif->t == Media::JPEGExif::EXIF_TYPE_GROUP)
 		{
@@ -107,13 +107,13 @@ Media::JPEGExif::ExifValue *Media::JPEGExif::GetExif(ExifValue *grp, Int32 id)
 	return exif;
 }
 
-void Media::JPEGExif::CalExifSize(Data::ArrayList<ExifValue*> *exifArr, Int32 *size, Int32 *endOfst)
+void Media::JPEGExif::CalExifSize(Data::ArrayList<ExifValue*> *exifArr, UOSInt *size, UOSInt *endOfst)
 {
-	Int32 i = 6;
-	OSInt j = 6;
-	OSInt k;
-	OSInt l;
-	Int32 m;
+	UOSInt i = 6;
+	UOSInt j = 6;
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
 	Media::JPEGExif::ExifValue *exif;
 
 	k = exifArr->GetCount();
@@ -182,16 +182,16 @@ void Media::JPEGExif::CalExifSize(Data::ArrayList<ExifValue*> *exifArr, Int32 *s
 			j += l;
 		}
 	}
-	*size = (Int32)j;
+	*size = j;
 	*endOfst = i;
 }
 
-void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exifArr, Int32 *startOfst, Int32 *otherOfst)
+void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exifArr, UOSInt *startOfst, UOSInt *otherOfst)
 {
-	Int32 objCnt;
-	Int32 i;
-	Int32 j;
-	Int32 k;
+	UOSInt objCnt;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Media::JPEGExif::ExifValue *exif;
 
 	objCnt = 0;
@@ -241,13 +241,13 @@ void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exif
 			if (*(Int32*)&buff[j + 4] <= 4)
 			{
 				*(Int32*)&buff[j + 8] = 0;
-				MemCopy(&buff[j + 8], exif->s, exif->numerator);
+				MemCopyNO(&buff[j + 8], exif->s, exif->numerator);
 				j += 12;
 			}
 			else
 			{
 				*(Int32*)&buff[j + 8] = k;
-				MemCopy(&buff[k], exif->s, exif->numerator);
+				MemCopyNO(&buff[k], exif->s, exif->numerator);
 				k += *(Int32*)&buff[j + 4];
 				j += 12;
 			}
@@ -261,13 +261,13 @@ void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exif
 			if (*(Int32*)&buff[j + 4] <= 4)
 			{
 				*(Int32*)&buff[j + 8] = 0;
-				MemCopy(&buff[j + 8], exif->s, exif->numerator);
+				MemCopyNO(&buff[j + 8], exif->s, exif->numerator);
 				j += 12;
 			}
 			else
 			{
 				*(Int32*)&buff[j + 8] = k;
-				MemCopy(&buff[k], exif->s, exif->numerator);
+				MemCopyNO(&buff[k], exif->s, exif->numerator);
 				k += *(Int32*)&buff[j + 4];
 				j += 12;
 			}
@@ -297,7 +297,7 @@ void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exif
 			*(Int16*)&buff[j + 2] = 5;
 			*(Int32*)&buff[j + 4] = exif->numerator;
 			*(Int32*)&buff[j + 8] = k;
-			MemCopy(&buff[k], exif->s, exif->numerator * 8);
+			MemCopyNO(&buff[k], exif->s, exif->numerator * 8);
 			objCnt++;
 			j += 12;
 			k += exif->numerator * 8;
@@ -398,7 +398,7 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const U
 	val->t = Media::JPEGExif::EXIF_TYPE_BYTE;
 	val->s = MemAlloc(Char, size);
 	val->numerator = size;
-	MemCopy(val->s, s, size);
+	MemCopyNO(val->s, s, size);
 }
 
 void Media::JPEGExif::SetExifUnk(Media::JPEGExif::ExifValue *grp, Int32 id, const UInt8 *s, Int32 size)
@@ -412,7 +412,7 @@ void Media::JPEGExif::SetExifUnk(Media::JPEGExif::ExifValue *grp, Int32 id, cons
 	val->t = Media::JPEGExif::EXIF_TYPE_UNK;
 	val->s = MemAlloc(Char, size);
 	val->numerator = size;
-	MemCopy(val->s, s, size);
+	MemCopyNO(val->s, s, size);
 }
 
 void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, UInt16 val)
@@ -450,7 +450,7 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const I
 	exif->t = Media::JPEGExif::EXIF_TYPE_NUMARR;
 	exif->numerator = cnt;
 	exif->s = MemAlloc(Char, cnt * 8);
-	MemCopy(exif->s, val, cnt * 8);
+	MemCopyNO(exif->s, val, cnt * 8);
 }
 
 void Media::JPEGExif::DelExif(ExifValue *grp, Int32 id)
@@ -473,10 +473,10 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 	Int32 oexsize;
 
 	OSInt hdrSize;
-	Int32 i;
-	OSInt j;
-	OSInt k;
-	Int32 l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Bool found;
 
 	input->Read(hdr, 2);
