@@ -2208,6 +2208,8 @@ Net/LogServer.h: ../../src/Net/LogServer.cpp
 @LogServer.o
 Net/MACInfo.h: ../../src/Net/MACInfo.cpp
 @MACInfo.o
+Net/MACInfoList.h: ../../src/Net/MACInfoList.cpp
+@MACInfoList.o
 Net/MIME.h: ../../src/Net/MIME.cpp
 @MIME.o
 Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
@@ -4011,6 +4013,7 @@ LDAPClient.o: ../../src/Net/LDAPClient.cpp
 LogClient.o: ../../src/Net/LogClient.cpp
 LogServer.o: ../../src/Net/LogServer.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
+MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MIME.o: ../../src/Net/MIME.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
 MQTTClient.o: ../../src/Net/MQTTClient.cpp

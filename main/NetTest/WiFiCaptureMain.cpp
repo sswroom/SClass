@@ -40,6 +40,7 @@ Int32 threadCnt;
 Bool threadToStop;
 Data::UInt64Map<WiFiEntry*> *entryMap;
 Sync::Mutex *entryMut;
+const UTF8Char *lastFileName;
 
 class MyWebHandler : public Net::WebServer::WebStandardHandler
 {
@@ -303,6 +304,13 @@ void StoreStatus()
 		mutUsage.EndUse();
 
 		DEL_CLASS(writer);
+
+		if (lastFileName)
+		{
+			IO::Path::DeleteFile(lastFileName);
+			Text::StrDelNew(lastFileName);
+		}
+		lastFileName = Text::StrCopyNew(sbuff);
 	}
 	DEL_CLASS(fs);
 }
@@ -630,6 +638,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt16 webPort = 8080;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
+	lastFileName = 0;
 	
 	OSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
@@ -734,5 +743,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(entryMap);
 	DEL_CLASS(wlan);
 	DEL_CLASS(exHdlr);
+	SDEL_TEXT(lastFileName);
 	return 0;
 }

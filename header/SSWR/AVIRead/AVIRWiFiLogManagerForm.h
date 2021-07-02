@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRWIFILOGMANAGERFORM
 #define _SM_SSWR_AVIREAD_AVIRWIFILOGMANAGERFORM
+#include "Net/MACInfoList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -33,12 +34,6 @@ namespace SSWR
 				UInt8 *ieBuff;
 			} LogFileEntry;
 
-			typedef struct
-			{
-				UInt64 rangeFrom;
-				UInt64 rangeTo;
-				const UTF8Char *name;
-			} DataEntry;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 
@@ -50,9 +45,8 @@ namespace SSWR
 			UI::GUIVSplitter *vspFile;
 			UI::GUIListView *lvContent;
 
-			Data::ArrayList<DataEntry*> *dataList;
 			Data::ArrayList<LogFileEntry*> *logList;
-			Bool modified;
+			Net::MACInfoList *macList;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnStoreClicked(void *userObj);
@@ -65,9 +59,6 @@ namespace SSWR
 			OSInt LogInsert(LogFileEntry *log);
 			void LogUIUpdate();
 
-			OSInt DataGetIndex(UInt64 macInt);
-			void DataLoad();
-			Bool DataStore();
 			void UpdateStatus();
 		public:
 			AVIRWiFiLogManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

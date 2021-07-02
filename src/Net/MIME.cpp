@@ -1,8 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/Encoding.h"
-#include "Text/MyString.h"
 #include "Net/MIME.h"
+#include "Text/MyString.h"
 
 Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{"3gp",  "video/3gpp"},
