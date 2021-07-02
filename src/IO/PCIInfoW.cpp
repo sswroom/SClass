@@ -107,8 +107,8 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 				{
 					sb.ToString()[12] = 0;
 					sb.ToString()[21] = 0;
-					clsData.vendorId = (UInt16)(Text::StrHex2Int32(sb.ToString() + 8) & 0xffff);
-					clsData.productId = (UInt16)(Text::StrHex2Int32(sb.ToString() + 17) & 0xffff);
+					clsData.vendorId = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 8) & 0xffff);
+					clsData.productId = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
 					id = (clsData.vendorId << 16) | clsData.productId;
 					if (existList.SortedIndexOf(id) < 0)
 					{

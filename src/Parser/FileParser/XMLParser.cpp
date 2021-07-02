@@ -1415,7 +1415,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										style->lineColor = Text::StrHex2UInt32(sb.ToString());
+										style->lineColor = Text::StrHex2UInt32C(sb.ToString());
 										style->lineColor = (style->lineColor & 0xff00ff00) | ((style->lineColor & 0xff) << 16) | ((style->lineColor & 0xff0000) >> 16);
 										style->flags |= 1;
 									}
@@ -1447,7 +1447,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										style->iconColor = Text::StrHex2UInt32(sb.ToString());
+										style->iconColor = Text::StrHex2UInt32C(sb.ToString());
 										style->iconColor = (style->iconColor & 0xff00ff00) | ((style->iconColor & 0xff) << 16) | ((style->iconColor & 0xff0000) >> 16);
 									}
 									else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"ICON"))
@@ -1512,7 +1512,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									style->fillColor = Text::StrHex2UInt32(sb.ToString());
+									style->fillColor = Text::StrHex2UInt32C(sb.ToString());
 									style->fillColor = (style->fillColor & 0xff00ff00) | ((style->fillColor & 0xff) << 16) | ((style->fillColor & 0xff0000) >> 16);
 									style->flags |= 4;
 								}
@@ -1690,7 +1690,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							color = Text::StrHex2UInt32(sb.ToString());
+							color = Text::StrHex2UInt32C(sb.ToString());
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"DRAWORDER"))
 						{
@@ -1864,7 +1864,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							alpha = ((Text::StrHex2Int32(sb.ToString()) >> 24) & 0xff) / 255.0;
+							alpha = ((Text::StrHex2Int32C(sb.ToString()) >> 24) & 0xff) / 255.0;
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"DRAWORDER"))
 						{

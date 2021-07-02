@@ -12,6 +12,19 @@ Net::MACInfoList::MACInfoList()
 {
 	this->modified = false;
 	NEW_CLASS(this->dataList, Data::ArrayList<Net::MACInfo::MACEntry*>());
+	UOSInt cnt;
+	Net::MACInfo::MACEntry *ents = Net::MACInfo::GetMACEntryList(&cnt);
+	Net::MACInfo::MACEntry *entry;
+	UOSInt i = 0;
+	while (i < cnt)
+	{
+		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
+		entry->rangeStart = ents[i].rangeStart;
+		entry->rangeEnd = ents[i].rangeEnd;
+		entry->name = Text::StrCopyNew(ents[i].name);
+		this->dataList->Add(entry);
+		i++;
+	}
 	this->Load();
 }
 

@@ -212,12 +212,12 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 				{
 					log = MemAlloc(SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry, 1);
 					MemClear(log->neighbour, sizeof(log->neighbour));
-					log->mac[0] = Text::StrHex2Byte(sarr2[0]);
-					log->mac[1] = Text::StrHex2Byte(sarr2[1]);
-					log->mac[2] = Text::StrHex2Byte(sarr2[2]);
-					log->mac[3] = Text::StrHex2Byte(sarr2[3]);
-					log->mac[4] = Text::StrHex2Byte(sarr2[4]);
-					log->mac[5] = Text::StrHex2Byte(sarr2[5]);
+					log->mac[0] = Text::StrHex2UInt8C(sarr2[0]);
+					log->mac[1] = Text::StrHex2UInt8C(sarr2[1]);
+					log->mac[2] = Text::StrHex2UInt8C(sarr2[2]);
+					log->mac[3] = Text::StrHex2UInt8C(sarr2[3]);
+					log->mac[4] = Text::StrHex2UInt8C(sarr2[4]);
+					log->mac[5] = Text::StrHex2UInt8C(sarr2[5]);
 					buff[2] = log->mac[0];
 					buff[3] = log->mac[1];
 					buff[4] = log->mac[2];
@@ -271,10 +271,10 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 							j = 0;
 							while (Text::StrSplit(sarr2, 2, sarr2[1], ',') == 2)
 							{
-								log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
+								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
 								j++;
 							}
-							log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
+							log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
 						}
 					}
 					if (i >= 11)

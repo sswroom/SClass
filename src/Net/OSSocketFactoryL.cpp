@@ -1099,8 +1099,8 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 				i = Text::StrSplitWS(sarr, 4, sb.ToString());
 				if (i == 4)
 				{
-					ip = Text::StrHex2UInt32(sarr[1]);
-					gw = Text::StrHex2UInt32(sarr[2]);
+					ip = Text::StrHex2UInt32C(sarr[1]);
+					gw = Text::StrHex2UInt32C(sarr[2]);
 					if (ip == 0 && gw != 0)
 					{
 						i = connInfoList->GetCount();
@@ -1216,8 +1216,8 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 					port->protoType = protoType;
 					if (Text::StrSplit(sarr2, 3, sarr[1], ':') == 2)
 					{
-						port->localIP = (UInt32)Text::StrHex2Int32(sarr2[0]);
-						port->localPort = (UInt16)Text::StrHex2Int16(sarr2[1]);	
+						port->localIP = (UInt32)Text::StrHex2Int32C(sarr2[0]);
+						port->localPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
 					else
 					{
@@ -1226,15 +1226,15 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 					}
 					if (Text::StrSplit(sarr2, 3, sarr[2], ':') == 2)
 					{
-						port->foreignIP = (UInt32)Text::StrHex2Int32(sarr2[0]);
-						port->foreignPort = (UInt16)Text::StrHex2Int16(sarr2[1]);	
+						port->foreignIP = (UInt32)Text::StrHex2Int32C(sarr2[0]);
+						port->foreignPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
 					else
 					{
 						port->foreignIP = 0;
 						port->foreignPort = 0;
 					}
-					switch (Text::StrHex2Int32(sarr[3]))
+					switch (Text::StrHex2Int32C(sarr[3]))
 					{
 					case 1:
 						port->portState = Net::SocketFactory::PS_ESTAB;
@@ -1318,8 +1318,8 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 					port->protoType = protoType;
 					if (Text::StrSplit(sarr2, 3, sarr[1], ':') == 2)
 					{
-						Net::SocketUtil::SetAddrInfoV4(&port->localAddr, (UInt32)Text::StrHex2Int32(sarr2[0]));
-						port->localPort = (UInt16)Text::StrHex2Int16(sarr2[1]);	
+						Net::SocketUtil::SetAddrInfoV4(&port->localAddr, (UInt32)Text::StrHex2Int32C(sarr2[0]));
+						port->localPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
 					else
 					{
@@ -1328,15 +1328,15 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 					}
 					if (Text::StrSplit(sarr2, 3, sarr[2], ':') == 2)
 					{
-						Net::SocketUtil::SetAddrInfoV4(&port->foreignAddr, (UInt32)Text::StrHex2Int32(sarr2[0]));
-						port->foreignPort = (UInt16)Text::StrHex2Int16(sarr2[1]);	
+						Net::SocketUtil::SetAddrInfoV4(&port->foreignAddr, (UInt32)Text::StrHex2Int32C(sarr2[0]));
+						port->foreignPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
 					else
 					{
 						Net::SocketUtil::SetAddrInfoV4(&port->foreignAddr, 0);
 						port->foreignPort = 0;
 					}
-					switch (Text::StrHex2Int32(sarr[3]))
+					switch (Text::StrHex2Int32C(sarr[3]))
 					{
 					case 1:
 						port->portState = Net::SocketFactory::PS_ESTAB;
@@ -1423,7 +1423,7 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 					{
 						Text::StrHex2Bytes(sarr2[0], addr);
 						Net::SocketUtil::SetAddrInfoV6(&port->localAddr, addr, 0);
-						port->localPort = (UInt16)Text::StrHex2Int16(sarr2[1]);	
+						port->localPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
 					else
 					{
@@ -1435,7 +1435,7 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 					{
 						Text::StrHex2Bytes(sarr2[0], addr);
 						Net::SocketUtil::SetAddrInfoV6(&port->foreignAddr, addr, 0);
-						port->foreignPort = (UInt16)Text::StrHex2Int16(sarr2[1]);	
+						port->foreignPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
 					else
 					{
@@ -1443,7 +1443,7 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 						Net::SocketUtil::SetAddrInfoV6(&port->foreignAddr, addr, 0);
 						port->foreignPort = 0;
 					}
-					switch (Text::StrHex2Int32(sarr[3]))
+					switch (Text::StrHex2Int32C(sarr[3]))
 					{
 					case 1:
 						port->portState = Net::SocketFactory::PS_ESTAB;

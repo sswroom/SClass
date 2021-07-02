@@ -372,12 +372,12 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 					if (Text::StrSplit(macs, 6, cols[2], ':') == 6)
 					{
 						bss.bssType = BST_INFRASTRUCTURE;
-						bss.mac[0] = Text::StrHex2Byte(macs[0]);
-						bss.mac[1] = Text::StrHex2Byte(macs[1]);
-						bss.mac[2] = Text::StrHex2Byte(macs[2]);
-						bss.mac[3] = Text::StrHex2Byte(macs[3]);
-						bss.mac[4] = Text::StrHex2Byte(macs[4]);
-						bss.mac[5] = Text::StrHex2Byte(macs[5]);
+						bss.mac[0] = Text::StrHex2UInt8C(macs[0]);
+						bss.mac[1] = Text::StrHex2UInt8C(macs[1]);
+						bss.mac[2] = Text::StrHex2UInt8C(macs[2]);
+						bss.mac[3] = Text::StrHex2UInt8C(macs[3]);
+						bss.mac[4] = Text::StrHex2UInt8C(macs[4]);
+						bss.mac[5] = Text::StrHex2UInt8C(macs[5]);
 						bss.phyId = (UInt32)retVal;
 						bss.linkQuality = Text::StrToInt32(cols[4]);
 						bss.freq = 0;

@@ -243,7 +243,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 	{
 		Bool succ = false;
 		Text::StrConcatC(sbuff, &data[11], 8);
-		i = Text::StrHex2UInt32(sbuff);
+		i = Text::StrHex2UInt32C(sbuff);
 		j = Text::StrCharCnt(data);
 		if (i == addr && j == 2071)
 		{
@@ -413,7 +413,7 @@ IO::Device::MTKGPSNMEA::LogFormat IO::Device::MTKGPSNMEA::GetLogFormat()
 	OSInt i = Text::StrIndexOf(sbuff, '*');
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrHex2Int32(&sbuff[i + 1]);
+	i = Text::StrHex2Int32C(&sbuff[i + 1]);
 	Text::StrDelNew(result);
 	return (LogFormat)i;
 }
@@ -490,7 +490,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	OSInt i = Text::StrIndexOf(sbuff, '*');
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrHex2Int32(&sbuff[i + 1]);
+	i = Text::StrHex2Int32C(&sbuff[i + 1]);
 	Text::StrDelNew(result);
 	return (UOSInt)i;
 }

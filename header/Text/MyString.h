@@ -115,12 +115,16 @@ namespace Text
 	Char *StrHexVal16(Char *oriStr, UInt16 val);
 	Char *StrHexByte(Char *oriStr, UInt8 val);
 	Char *StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char seperator);
-	Int64 StrHex2Int64(const Char *str);
-	Int32 StrHex2Int32(const Char *str);
-	FORCEINLINE UInt32 StrHex2UInt32(const Char *str) { return (UInt32)StrHex2Int32(str); }
-	FORCEINLINE UInt64 StrHex2UInt64(const Char *str) { return (UInt64)StrHex2Int64(str); }
-	Int16 StrHex2Int16(const Char *str);
-	UInt8 StrHex2Byte(const Char *str);
+	Int64 StrHex2Int64C(const Char *str);
+	Bool StrHex2Int64C(const Char *str, Int64 *outVal);
+	Bool StrHex2Int64S(const Char *str, Int64 *outVal, Int64 failVal);
+	Int32 StrHex2Int32C(const Char *str);
+	FORCEINLINE UInt32 StrHex2UInt32C(const Char *str) { return (UInt32)StrHex2Int32C(str); }
+	FORCEINLINE UInt64 StrHex2UInt64C(const Char *str) { return (UInt64)StrHex2Int64C(str); }
+	FORCEINLINE Bool StrHex2UInt64C(const Char *str, UInt64 *outVal) { return StrHex2Int64C(str, (Int64*)outVal); }
+	FORCEINLINE Bool StrHex2UInt64S(const Char *str, UInt64 *outVal, UInt64 failVal) { return StrHex2Int64S(str, (Int64*)outVal, (Int64)failVal); }
+	Int16 StrHex2Int16C(const Char *str);
+	UInt8 StrHex2UInt8C(const Char *str);
 	UOSInt StrHex2Bytes(const Char *str, UInt8 *buff);
 #ifdef HAS_INT64
 	Int64 StrOct2Int64(const Char *str);
@@ -241,12 +245,12 @@ namespace Text
 	FORCEINLINE UTF8Char *StrHexVal16(UTF8Char *oriStr, UInt16 val) { return (UTF8Char*)StrHexVal16((Char*)oriStr, val); }
 	FORCEINLINE UTF8Char *StrHexByte(UTF8Char *oriStr, UInt8 val) { return (UTF8Char*)StrHexByte((Char*)oriStr, val); }
 	FORCEINLINE UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator) { return (UTF8Char*)StrHexBytes((Char*)oriStr, buff, buffSize, (Char)seperator); };
-	FORCEINLINE Int64 StrHex2Int64(const UTF8Char *str) { return StrHex2Int64((const Char*)str); };
-	FORCEINLINE Int32 StrHex2Int32(const UTF8Char *str) { return StrHex2Int32((const Char*)str); }
-	FORCEINLINE UInt32 StrHex2UInt32(const UTF8Char *str) { return (UInt32)StrHex2Int32((const Char*)str); }
-	FORCEINLINE UInt64 StrHex2UInt64(const UTF8Char *str) { return (UInt64)StrHex2Int64((const Char*)str); }
-	FORCEINLINE Int16 StrHex2Int16(const UTF8Char *str) { return StrHex2Int16((const Char*)str); }
-	FORCEINLINE UInt8 StrHex2Byte(const UTF8Char *str) { return StrHex2Byte((const Char*)str); }
+	FORCEINLINE Int64 StrHex2Int64C(const UTF8Char *str) { return StrHex2Int64C((const Char*)str); };
+	FORCEINLINE Int32 StrHex2Int32C(const UTF8Char *str) { return StrHex2Int32C((const Char*)str); }
+	FORCEINLINE UInt32 StrHex2UInt32C(const UTF8Char *str) { return (UInt32)StrHex2Int32C((const Char*)str); }
+	FORCEINLINE UInt64 StrHex2UInt64C(const UTF8Char *str) { return (UInt64)StrHex2Int64C((const Char*)str); }
+	FORCEINLINE Int16 StrHex2Int16C(const UTF8Char *str) { return StrHex2Int16C((const Char*)str); }
+	FORCEINLINE UInt8 StrHex2UInt8C(const UTF8Char *str) { return StrHex2UInt8C((const Char*)str); }
 	FORCEINLINE UOSInt StrHex2Bytes(const UTF8Char *str, UInt8 *buff) { return StrHex2Bytes((const Char*)str, buff); };
 #ifdef HAS_INT64
 	FORCEINLINE Int64 StrOct2Int64(const UTF8Char *str) { return StrOct2Int64((const Char*)str); };

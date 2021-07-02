@@ -746,7 +746,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 				if (this->reqData[j] == 13 && this->reqData[j + 1] == 10)
 				{
 					this->reqData[j] = 0;
-					leng = Text::StrHex2UInt32(&this->reqData[i]);
+					leng = Text::StrHex2UInt32C(&this->reqData[i]);
 					this->reqData[j] = 13;
 					if (j + 4 + leng <= this->reqCurrSize)
 					{

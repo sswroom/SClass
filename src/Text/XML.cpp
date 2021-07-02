@@ -989,7 +989,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 		{
 			if (chrRef[2] == 'x')
 			{
-				sbuff[0] = Text::StrHex2Byte(&chrRef[3]);
+				sbuff[0] = Text::StrHex2UInt8C(&chrRef[3]);
 				stm->Write(sbuff, 1);
 				return true;
 			}
@@ -1014,7 +1014,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 		{
 			if (chrRef[2] == 'x')
 			{
-				wcs = Text::StrHex2Byte(&chrRef[3]);
+				wcs = Text::StrHex2UInt8C(&chrRef[3]);
 			}
 			else
 			{
@@ -1047,7 +1047,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 		{
 			if (chrRef[2] == 'x')
 			{
-				wcs = Text::StrHex2Byte(&chrRef[4]);
+				wcs = Text::StrHex2UInt8C(&chrRef[4]);
 				if (chrRef[3] <= '9')
 				{
 					wcs += (chrRef[3] - '0') << 8;

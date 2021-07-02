@@ -199,7 +199,7 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 		}
 		i = (UOSInt)si;
 		this->dataBuff[i] = 0;
-		j = Text::StrHex2UInt32((Char*)this->dataBuff);
+		j = Text::StrHex2UInt32C((Char*)this->dataBuff);
 		if (j == 0 && i == 1 && this->dataBuff[0] == '0')
 		{
 			i = 3;

@@ -129,12 +129,12 @@ OSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 					data.arpType = (flags & 4)?ARPT_STATIC:ARPT_DYNAMIC;
 					if (Text::StrSplit(sarr2, 7, sarr[3], ':') == 6)
 					{
-						data.addr[0] = Text::StrHex2Byte(sarr2[0]);
-						data.addr[1] = Text::StrHex2Byte(sarr2[1]);
-						data.addr[2] = Text::StrHex2Byte(sarr2[2]);
-						data.addr[3] = Text::StrHex2Byte(sarr2[3]);
-						data.addr[4] = Text::StrHex2Byte(sarr2[4]);
-						data.addr[5] = Text::StrHex2Byte(sarr2[5]);
+						data.addr[0] = Text::StrHex2UInt8C(sarr2[0]);
+						data.addr[1] = Text::StrHex2UInt8C(sarr2[1]);
+						data.addr[2] = Text::StrHex2UInt8C(sarr2[2]);
+						data.addr[3] = Text::StrHex2UInt8C(sarr2[3]);
+						data.addr[4] = Text::StrHex2UInt8C(sarr2[4]);
+						data.addr[5] = Text::StrHex2UInt8C(sarr2[5]);
 						NEW_CLASS(arp, Net::ARPInfo(&data));
 						arpInfoList->Add(arp);
 						ret++;

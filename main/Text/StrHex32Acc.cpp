@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i-- > 0)
 	{
 		Text::StrHexVal32V(sbuff, i);
-		j = (UInt32)Text::StrHex2Int32(sbuff);
+		j = (UInt32)Text::StrHex2Int32C(sbuff);
 		if (i != j)
 		{
 			Text::StringBuilderUTF8 sb;

@@ -102,7 +102,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 
 		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
-		NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ToColor(Text::StrHex2UInt32(sarr[1])), csys));
+		NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4]));
 		fileName = baseDir;
 
@@ -150,7 +150,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					pattern = 0;
 				}
-				env->AddLineStyleLayer(j, ToColor(Text::StrHex2UInt32(sarr[4])), Text::StrToUInt32(sarr[3]), pattern, i - 5);
+				env->AddLineStyleLayer(j, ToColor(Text::StrHex2UInt32C(sarr[4])), Text::StrToUInt32(sarr[3]), pattern, i - 5);
 				if (pattern)
 				{
 					MemFree(pattern);
@@ -206,12 +206,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				if (j == 0)
 				{
 					bold = Text::StrToInt32(sarr[5]) != 0;
-					fontColor = ToColor(Text::StrHex2UInt32(sarr[6]));
+					fontColor = ToColor(Text::StrHex2UInt32C(sarr[6]));
 				}
 				else if (j == 4)
 				{
 					buffSize = Text::StrToUInt32(sarr[5]);
-					buffColor = ToColor(Text::StrHex2UInt32(sarr[6]));
+					buffColor = ToColor(Text::StrHex2UInt32C(sarr[6]));
 				}
 				else
 				{
@@ -275,7 +275,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						setting.minScale = Text::StrToUInt32(sarr[2]);
 						setting.maxScale = Text::StrToUInt32(sarr[3]);
 						setting.lineStyle = Text::StrToUInt32(sarr[4]);
-						setting.fillStyle = ToColor(Text::StrHex2UInt32(sarr[5]));
+						setting.fillStyle = ToColor(Text::StrHex2UInt32C(sarr[5]));
 						env->SetLayerProp(&setting, currGroup, i);
 					}
 				}

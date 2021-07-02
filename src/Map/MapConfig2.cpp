@@ -2348,7 +2348,7 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Double *size, const UT
 
 UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 {
-	UInt32 v = Text::StrHex2UInt32(str);
+	UInt32 v = Text::StrHex2UInt32C(str);
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 

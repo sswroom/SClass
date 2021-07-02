@@ -364,7 +364,7 @@ Bool Text::XMLReader::ReadNext()
 								}
 								else if (this->readBuff[this->parseOfst + 1] == '#')
 								{
-									sb.AppendChar(Text::StrHex2Byte(&this->readBuff[this->parseOfst + 2]), 1);
+									sb.AppendChar(Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]), 1);
 									this->parseOfst += 4;
 								}
 								else
@@ -561,7 +561,7 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else if (this->readBuff[this->parseOfst + 1] == '#')
 							{
-								sb.AppendChar(Text::StrHex2Byte(&this->readBuff[this->parseOfst + 2]), 1);
+								sb.AppendChar(Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]), 1);
 								this->parseOfst += 4;
 							}
 							else
@@ -965,7 +965,7 @@ Bool Text::XMLReader::ReadNext()
 								this->readBuff[this->parseOfst + 4] = 0;
 								if (this->readBuff[this->parseOfst + 2] == 'x')
 								{
-									wcs = Text::StrHex2Int32(&this->readBuff[this->parseOfst + 3]);
+									wcs = Text::StrHex2Int32C(&this->readBuff[this->parseOfst + 3]);
 								}
 								else
 								{
@@ -1005,7 +1005,7 @@ Bool Text::XMLReader::ReadNext()
 								this->readBuff[this->parseOfst + 5] = 0;
 								if (this->readBuff[this->parseOfst + 2] == 'x')
 								{
-									wcs = Text::StrHex2Int32(&this->readBuff[this->parseOfst + 3]);
+									wcs = Text::StrHex2Int32C(&this->readBuff[this->parseOfst + 3]);
 								}
 								else
 								{
@@ -1428,7 +1428,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else if (this->readBuff[this->parseOfst + 1] == '#')
 					{
-						b[0] = Text::StrHex2Byte(&this->readBuff[this->parseOfst + 2]);
+						b[0] = Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]);
 						mstm.Write(b, 1);
 						mstmOri.Write(&this->readBuff[this->parseOfst], 5);
 						this->parseOfst += 4;

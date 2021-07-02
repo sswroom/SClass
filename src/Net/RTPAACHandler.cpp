@@ -171,7 +171,7 @@ void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
 		}
 		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"config="))
 		{
-			this->config = Text::StrHex2Int32(&sarr[0][7]);
+			this->config = Text::StrHex2Int32C(&sarr[0][7]);
 		}
 		else
 		{

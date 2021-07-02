@@ -81,14 +81,14 @@ namespace Text
 
 	UTF16Char *StrHexBytes(UTF16Char *oriStr, const UInt8 *buff, OSInt buffSize, UTF16Char seperator);
 	UTF32Char *StrHexBytes(UTF32Char *oriStr, const UInt8 *buff, OSInt buffSize, UTF32Char seperator);
-	Int64 StrHex2Int64(const UTF16Char *str);
-	Int64 StrHex2Int64(const UTF32Char *str);
-	Int32 StrHex2Int32(const UTF16Char *str);
-	Int32 StrHex2Int32(const UTF32Char *str);
-	Int16 StrHex2Int16(const UTF16Char *str);
-	Int16 StrHex2Int16(const UTF32Char *str);
-	UInt8 StrHex2Byte(const UTF16Char *str);
-	UInt8 StrHex2Byte(const UTF32Char *str);
+	Int64 StrHex2Int64C(const UTF16Char *str);
+	Int64 StrHex2Int64C(const UTF32Char *str);
+	Int32 StrHex2Int32C(const UTF16Char *str);
+	Int32 StrHex2Int32C(const UTF32Char *str);
+	Int16 StrHex2Int16C(const UTF16Char *str);
+	Int16 StrHex2Int16C(const UTF32Char *str);
+	UInt8 StrHex2UInt8C(const UTF16Char *str);
+	UInt8 StrHex2UInt8C(const UTF32Char *str);
 	UOSInt StrHex2Bytes(const UTF16Char *str, UInt8 *buff);
 	UOSInt StrHex2Bytes(const UTF32Char *str, UInt8 *buff);
 #ifdef HAS_INT64

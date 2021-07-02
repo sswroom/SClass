@@ -311,7 +311,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		j = 14;
 		while (i-- > 2)
 		{
-			v = Text::StrHex2Int32(sarr[i]);
+			v = Text::StrHex2Int32C(sarr[i]);
 			if (v > 65535)
 			{
 				return false;
@@ -347,7 +347,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 			k = 7;
 			while ((OSInt)i-- > j)
 			{
-				v = Text::StrHex2Int32(sarr[i]);
+				v = Text::StrHex2Int32C(sarr[i]);
 				if (v > 65535)
 				{
 					return false;
@@ -372,7 +372,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		}
 		else
 		{
-			v = Text::StrHex2Int32(sarr[j]);
+			v = Text::StrHex2Int32C(sarr[j]);
 			if (v > 65535)
 			{
 				return false;
@@ -465,7 +465,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		j = 14;
 		while (i-- > 2)
 		{
-			v = Text::StrHex2Int32(sarr[i]);
+			v = Text::StrHex2Int32C(sarr[i]);
 			if (v > 65535)
 			{
 				return false;
@@ -501,7 +501,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 			k = 7;
 			while ((OSInt)i-- > j)
 			{
-				v = Text::StrHex2Int32(sarr[i]);
+				v = Text::StrHex2Int32C(sarr[i]);
 				if (v > 65535)
 				{
 					return false;
@@ -526,7 +526,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		}
 		else
 		{
-			v = Text::StrHex2Int32(sarr[j]);
+			v = Text::StrHex2Int32C(sarr[j]);
 			if (v > 65535)
 			{
 				return false;

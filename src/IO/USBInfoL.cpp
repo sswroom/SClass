@@ -78,7 +78,7 @@ UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 		}
 	}
 	DEL_CLASS(fs);
-	return (UInt16)(Text::StrHex2Int32((const UTF8Char*)buff) & 0xffff);
+	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
 OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)

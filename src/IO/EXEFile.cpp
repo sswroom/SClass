@@ -541,7 +541,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->AppendU16(ReadUInt16(&res->data[94]));
 				sb->Append((const UTF8Char*)"\r\nString Table Key = ");
 				sb->Append((UTF8Char*)&res->data[96]);
-				v = (UInt32)Text::StrHex2Int32((Char*)&res->data[96]);
+				v = (UInt32)Text::StrHex2Int32C((Char*)&res->data[96]);
 				sb->Append((const UTF8Char*)"\r\nLanguage = ");
 				sb->AppendU32((v >> 16) & 0xffff);
 				Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry((v >> 16) & 0xffff);

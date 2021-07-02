@@ -110,20 +110,20 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 						if (j >= 0 && data2[2 + 8 + j] == '&')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->vendor = Text::StrHex2Int16(&data2[2 + 4 + j]);
+							clsData->vendor = Text::StrHex2Int16C(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '&';
 						}
 						j = Text::StrIndexOf(&data2[2], L"pid_");
 						if (j >= 0 && data2[2 + 8 + j] == '&')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->product = Text::StrHex2Int16(&data2[2 + 4 + j]);
+							clsData->product = Text::StrHex2Int16C(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '&';
 						}
 						else if (j >= 0 && data2[2 + 8 + j] == '#')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->product = Text::StrHex2Int16(&data2[2 + 4 + j]);
+							clsData->product = Text::StrHex2Int16C(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '#';
 						}
 						
@@ -161,13 +161,13 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 				{
 					clsData = MemAlloc(ClassData, 1);
 					sptr[4] = 0;
-					busType = Text::StrHex2Int16(sptr);
+					busType = Text::StrHex2Int16C(sptr);
 					sptr[4] = ':';
 					sptr[9] = 0;
-					clsData->vendor = Text::StrHex2Int16(&sptr[5]);
+					clsData->vendor = Text::StrHex2Int16C(&sptr[5]);
 					sptr[9] = ':';
 					sptr[14] = 0;
-					clsData->product = Text::StrHex2Int16(&sptr[10]);
+					clsData->product = Text::StrHex2Int16C(&sptr[10]);
 					sptr[14] = '.';
 					switch (busType)
 					{

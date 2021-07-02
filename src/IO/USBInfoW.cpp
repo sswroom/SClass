@@ -77,7 +77,7 @@ UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 		}
 	}
 	DEL_CLASS(fs);
-	return (UInt16)(Text::StrHex2Int32((const UTF8Char*)buff) & 0xffff);
+	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
 OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
@@ -115,9 +115,9 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 				{
 					sb.ToString()[12] = 0;
 					sb.ToString()[21] = 0;
-					clsData.idVendor = (UInt16)(Text::StrHex2Int32(sb.ToString() + 8) & 0xffff);
-					clsData.idProduct = (UInt16)(Text::StrHex2Int32(sb.ToString() + 17) & 0xffff);
-					clsData.bcdDevice = 0xffff;//(UInt16)(Text::StrHex2Int32(sb.ToString() + 17) & 0xffff);
+					clsData.idVendor = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 8) & 0xffff);
+					clsData.idProduct = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
+					clsData.bcdDevice = 0xffff;//(UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
 					id = (clsData.idVendor << 16) | clsData.idProduct;
 					if (existList.SortedIndexOf(id) < 0)
 					{

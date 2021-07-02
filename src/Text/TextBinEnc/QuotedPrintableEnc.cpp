@@ -142,7 +142,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(const UTF8Char *b64Str, U
 			}
 			else
 			{
-				*dataBuff++ = Text::StrHex2Byte(b64Str);
+				*dataBuff++ = Text::StrHex2UInt8C(b64Str);
 				b64Str += 2;
 				cnt++;
 			}
@@ -177,7 +177,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(const UTF8Char *b64Str, U
 			}
 			else if (len >= 2)
 			{
-				*dataBuff++ = Text::StrHex2Byte(b64Str);
+				*dataBuff++ = Text::StrHex2UInt8C(b64Str);
 				b64Str += 2;
 				len -= 2;
 				cnt++;

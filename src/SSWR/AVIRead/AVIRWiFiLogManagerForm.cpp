@@ -137,12 +137,12 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 			{
 				if (Text::StrSplit(sarr2, 7, sarr[0], ':') == 6)
 				{
-					buff[2] = Text::StrHex2Byte(sarr2[0]);
-					buff[3] = Text::StrHex2Byte(sarr2[1]);
-					buff[4] = Text::StrHex2Byte(sarr2[2]);
-					buff[5] = Text::StrHex2Byte(sarr2[3]);
-					buff[6] = Text::StrHex2Byte(sarr2[4]);
-					buff[7] = Text::StrHex2Byte(sarr2[5]);
+					buff[2] = Text::StrHex2UInt8C(sarr2[0]);
+					buff[3] = Text::StrHex2UInt8C(sarr2[1]);
+					buff[4] = Text::StrHex2UInt8C(sarr2[2]);
+					buff[5] = Text::StrHex2UInt8C(sarr2[3]);
+					buff[6] = Text::StrHex2UInt8C(sarr2[4]);
+					buff[7] = Text::StrHex2UInt8C(sarr2[5]);
 					iMAC = ReadMUInt64(buff);
 					log = this->LogGet(iMAC);
 					if (log)
@@ -206,7 +206,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 								while (true)
 								{
 									j = Text::StrSplit(sarr2, 2, sarr2[1], ',');
-									iMAC = Text::StrHex2UInt64(sarr2[0]);
+									iMAC = Text::StrHex2UInt64C(sarr2[0]);
 									k = 0;
 									while (k < 20)
 									{
@@ -304,10 +304,10 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileLoad(const UTF8Char *fileName
 								j = 0;
 								while (Text::StrSplit(sarr2, 2, sarr2[1], ',') == 2)
 								{
-									log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
+									log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
 									j++;
 								}
-								log->neighbour[j] = Text::StrHex2UInt64(sarr2[0]);
+								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
 							}
 						}
 						if (i >= 11)

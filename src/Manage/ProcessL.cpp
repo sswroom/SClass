@@ -400,8 +400,8 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 				{
 					if (Text::StrSplit(sarr2, 2, sarr[0], '-') == 2)
 					{
-						UOSInt startAddr = (UOSInt)Text::StrHex2Int64(sarr2[0]);
-						UOSInt endAddr = (UOSInt)Text::StrHex2Int64(sarr2[1]);
+						UOSInt startAddr = (UOSInt)Text::StrHex2Int64C(sarr2[0]);
+						UOSInt endAddr = (UOSInt)Text::StrHex2Int64C(sarr2[1]);
 						data = dataMap.Get(inode);
 						if (data)
 						{

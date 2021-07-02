@@ -1310,7 +1310,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(void *user
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Sector Size too long", (const UTF8Char*)"Burnt Disc", me);
 		return;
 	}
-	i = Text::StrHex2UInt32(sb.ToString());
+	i = Text::StrHex2UInt32C(sb.ToString());
 	size = i * (UInt64)2048;
 	baseSize = 0;
 	i = 0;

@@ -33,7 +33,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 		{
 			c = c ^ *sptr2++;
 		}
-		if (c != Text::StrHex2Byte(&line[slen - 2]))
+		if (c != Text::StrHex2UInt8C(&line[slen - 2]))
 		{
 			return PS_NOT_NMEA;
 		}

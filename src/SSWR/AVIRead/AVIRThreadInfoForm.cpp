@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 		{
 			sbuff[i] = 0;
 		}
-		funcOfst = Text::StrHex2Int64(sbuff);
+		funcOfst = Text::StrHex2Int64C(sbuff);
 
 		SSWR::AVIRead::AVIRFunctionInfoForm *frm;
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRFunctionInfoForm(0, me->ui, me->core, me->proc, me->symbol, funcOfst));

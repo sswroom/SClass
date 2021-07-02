@@ -128,7 +128,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2UInt32((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2UInt32C((Char*)&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3)
 			{
 				this->recvBuff[6 + cmdLen] = 0;
@@ -219,7 +219,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2Int32((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2Int32C((Char*)&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3)
 			{
 				this->recvBuff[6 + cmdLen] = 0;
@@ -316,7 +316,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2Int32((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2Int32C((Char*)&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3 && cmdLen == 18)
 			{
 				return true;

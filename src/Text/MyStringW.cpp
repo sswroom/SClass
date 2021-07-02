@@ -1378,7 +1378,7 @@ UTF32Char *Text::StrHexBytes(UTF32Char *oriStr, const UInt8 *buff, OSInt buffSiz
 	return oriStr;
 }
 
-Int64 Text::StrHex2Int64(const UTF16Char *str)
+Int64 Text::StrHex2Int64C(const UTF16Char *str)
 {
 	OSInt i = 16;
 	Int64 outVal = 0;
@@ -1408,7 +1408,7 @@ Int64 Text::StrHex2Int64(const UTF16Char *str)
 	return outVal;
 }
 
-Int64 Text::StrHex2Int64(const UTF32Char *str)
+Int64 Text::StrHex2Int64C(const UTF32Char *str)
 {
 	OSInt i = 16;
 	Int64 outVal = 0;
@@ -1438,7 +1438,7 @@ Int64 Text::StrHex2Int64(const UTF32Char *str)
 	return outVal;
 }
 
-Int32 Text::StrHex2Int32(const UTF16Char *str)
+Int32 Text::StrHex2Int32C(const UTF16Char *str)
 {
 	OSInt i = 8;
 	Int32 outVal = 0;
@@ -1468,7 +1468,7 @@ Int32 Text::StrHex2Int32(const UTF16Char *str)
 	return outVal;
 }
 
-Int32 Text::StrHex2Int32(const UTF32Char *str)
+Int32 Text::StrHex2Int32C(const UTF32Char *str)
 {
 	OSInt i = 8;
 	Int32 outVal = 0;
@@ -1498,7 +1498,7 @@ Int32 Text::StrHex2Int32(const UTF32Char *str)
 	return outVal;
 }
 
-Int16 Text::StrHex2Int16(const UTF16Char *str)
+Int16 Text::StrHex2Int16C(const UTF16Char *str)
 {
 	OSInt i = 8;
 	Int16 outVal = 0;
@@ -1528,7 +1528,7 @@ Int16 Text::StrHex2Int16(const UTF16Char *str)
 	return outVal;
 }
 
-Int16 Text::StrHex2Int16(const UTF32Char *str)
+Int16 Text::StrHex2Int16C(const UTF32Char *str)
 {
 	OSInt i = 8;
 	Int16 outVal = 0;
@@ -1558,7 +1558,7 @@ Int16 Text::StrHex2Int16(const UTF32Char *str)
 	return outVal;
 }
 
-UInt8 Text::StrHex2Byte(const UTF16Char *str)
+UInt8 Text::StrHex2UInt8C(const UTF16Char *str)
 {
 	UInt8 outVal = 0;
 	UTF16Char c;
@@ -1605,7 +1605,7 @@ UInt8 Text::StrHex2Byte(const UTF16Char *str)
 	return 0;
 }
 
-UInt8 Text::StrHex2Byte(const UTF32Char *str)
+UInt8 Text::StrHex2UInt8C(const UTF32Char *str)
 {
 	UInt8 outVal = 0;
 	UTF32Char c;
@@ -2207,7 +2207,7 @@ Bool Text::StrToInt16(const UTF16Char *intStr, Int16 *outVal)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int16(&intStr[2]);
+		retVal = StrHex2Int16C(&intStr[2]);
 	}
 	else
 	{
@@ -2241,7 +2241,7 @@ Bool Text::StrToInt16(const UTF32Char *intStr, Int16 *outVal)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int16(&intStr[2]);
+		retVal = StrHex2Int16C(&intStr[2]);
 	}
 	else
 	{
@@ -2275,7 +2275,7 @@ Int16 Text::StrToInt16(const UTF16Char *intStr)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int16(&intStr[2]);
+		retVal = StrHex2Int16C(&intStr[2]);
 	}
 	else
 	{
@@ -2308,7 +2308,7 @@ Int16 Text::StrToInt16(const UTF32Char *intStr)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int16(&intStr[2]);
+		retVal = StrHex2Int16C(&intStr[2]);
 	}
 	else
 	{
@@ -2404,7 +2404,7 @@ Bool Text::StrToInt32(const UTF16Char *intStr, Int32 *outVal)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int32(&intStr[2]);
+		retVal = StrHex2Int32C(&intStr[2]);
 	}
 	else
 	{
@@ -2438,7 +2438,7 @@ Bool Text::StrToInt32(const UTF32Char *intStr, Int32 *outVal)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int32(&intStr[2]);
+		retVal = StrHex2Int32C(&intStr[2]);
 	}
 	else
 	{
@@ -2472,7 +2472,7 @@ Int32 Text::StrToInt32(const UTF16Char *intStr)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int32(&intStr[2]);
+		retVal = StrHex2Int32C(&intStr[2]);
 	}
 	else
 	{
@@ -2505,7 +2505,7 @@ Int32 Text::StrToInt32(const UTF32Char *intStr)
 	}
 	if (*intStr == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int32(&intStr[2]);
+		retVal = StrHex2Int32C(&intStr[2]);
 	}
 	else
 	{

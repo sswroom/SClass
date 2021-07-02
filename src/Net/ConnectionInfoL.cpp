@@ -152,12 +152,12 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			{
 				this->ent.physicalAddr = MemAlloc(UInt8, this->ent.physicalAddrLeng = 6);
 				sarr[5][2] = 0; 
-				this->ent.physicalAddr[0] = (UInt8)(Text::StrHex2Int32(sarr[0]) & 0xff);
-				this->ent.physicalAddr[1] = (UInt8)(Text::StrHex2Int32(sarr[1]) & 0xff);
-				this->ent.physicalAddr[2] = (UInt8)(Text::StrHex2Int32(sarr[2]) & 0xff);
-				this->ent.physicalAddr[3] = (UInt8)(Text::StrHex2Int32(sarr[3]) & 0xff);
-				this->ent.physicalAddr[4] = (UInt8)(Text::StrHex2Int32(sarr[4]) & 0xff);
-				this->ent.physicalAddr[5] = (UInt8)(Text::StrHex2Int32(sarr[5]) & 0xff);
+				this->ent.physicalAddr[0] = (UInt8)(Text::StrHex2Int32C(sarr[0]) & 0xff);
+				this->ent.physicalAddr[1] = (UInt8)(Text::StrHex2Int32C(sarr[1]) & 0xff);
+				this->ent.physicalAddr[2] = (UInt8)(Text::StrHex2Int32C(sarr[2]) & 0xff);
+				this->ent.physicalAddr[3] = (UInt8)(Text::StrHex2Int32C(sarr[3]) & 0xff);
+				this->ent.physicalAddr[4] = (UInt8)(Text::StrHex2Int32C(sarr[4]) & 0xff);
+				this->ent.physicalAddr[5] = (UInt8)(Text::StrHex2Int32C(sarr[5]) & 0xff);
 			}
 		}
 	}
@@ -228,8 +228,8 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			{
 				if (Text::StrEquals(sarr[0], this->name))
 				{
-					UInt32 dest = Text::StrHex2Int32(sarr[1]);
-					UInt32 gw = Text::StrHex2Int32(sarr[2]);
+					UInt32 dest = Text::StrHex2Int32C(sarr[1]);
+					UInt32 gw = Text::StrHex2Int32C(sarr[2]);
 					if (dest == 0 && gw != 0)
 					{
 						this->ent.defGW = gw;

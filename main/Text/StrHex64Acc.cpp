@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i-- > 0)
 	{
 		Text::StrHexVal64(sbuff, i);
-		j = (UInt64)Text::StrHex2Int64(sbuff);
+		j = (UInt64)Text::StrHex2Int64C(sbuff);
 		if (i != j)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -35,7 +35,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		while (i-- > 10000000000LL)
 		{
 			Text::StrHexVal64(sbuff, i);
-			j = (UInt64)Text::StrHex2Int64(sbuff);
+			j = (UInt64)Text::StrHex2Int64C(sbuff);
 			if (i != j)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		while (i++ != 0)
 		{
 			Text::StrHexVal64(sbuff, i);
-			j = (UInt64)Text::StrHex2Int64(sbuff);
+			j = (UInt64)Text::StrHex2Int64C(sbuff);
 			if (i != j)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -73,7 +73,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		while (i++ != (UInt64)-10000000000LL)
 		{
 			Text::StrHexVal64(sbuff, i);
-			j = (UInt64)Text::StrHex2Int64(sbuff);
+			j = (UInt64)Text::StrHex2Int64C(sbuff);
 			if (i != j)
 			{
 				Text::StringBuilderUTF8 sb;
