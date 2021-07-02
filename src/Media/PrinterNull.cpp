@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "Media/Printer.h"
 
-OSInt Media::Printer::GetPrinterCount()
+UOSInt Media::Printer::GetPrinterCount()
 {
 	return 0;
 }
 
-UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, OSInt index)
+UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UOSInt index)
 {
 	return 0;
 }

@@ -594,7 +594,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	info->dispHeight = oriH;
 	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
-	info->fourcc = ReadNUInt32("h264");
+	info->fourcc = ReadNUInt32((const UInt8*)"h264");
 
 	return true;
 }

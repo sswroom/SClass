@@ -10,6 +10,7 @@
 #include "Media/StaticEngine.h"
 #include "Media/StaticImage.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
+#include "Text/MyStringW.h"
 
 Media::StaticEngine::StaticEngine(Parser::ParserList *parsers)
 {
@@ -31,7 +32,7 @@ Media::DrawImage *Media::StaticEngine::CreateImage32(UOSInt width, UOSInt height
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImageA(const UTF8Char *fileName)
+Media::DrawImage *Media::StaticEngine::LoadImage(const UTF8Char *fileName)
 {
 	IO::StmData::FileData *fd;
 	Media::ImageList *imgList = 0;
@@ -419,7 +420,7 @@ Media::StaticImage *Media::StaticDrawImage::ToStaticImage()
 	return (Media::StaticImage*)this->Clone();
 }
 
-Int32 Media::StaticDrawImage::SaveGIF(IO::SeekableStream *stm)
+UOSInt Media::StaticDrawImage::SaveGIF(IO::SeekableStream *stm)
 {
 	Media::StaticImage *simg = (Media::StaticImage*)this->Clone();
 	if (!simg->ToPal8())

@@ -18,13 +18,13 @@ Manage::ThreadContextARM64::~ThreadContextARM64()
 	MemFree(this->context);
 }
 
-OSInt Manage::ThreadContextARM64::GetRegisterCnt()
+UOSInt Manage::ThreadContextARM64::GetRegisterCnt()
 {
-	OSInt cnt = 34;
+	UOSInt cnt = 34;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextARM64::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextARM64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	switch (index)
 	{
@@ -174,10 +174,10 @@ void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF *sb)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
-	Int32 bitCnt;
-	OSInt i = 0;
-	OSInt j = this->GetRegisterCnt();
-	OSInt k;
+	UInt32 bitCnt;
+	UOSInt i = 0;
+	UOSInt j = this->GetRegisterCnt();
+	UOSInt k;
 
 	while (i < j)
 	{
@@ -212,32 +212,32 @@ UOSInt Manage::ThreadContextARM64::GetProcessId()
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextARM64::GetInstAddr()
+UOSInt Manage::ThreadContextARM64::GetInstAddr()
 {
-	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.pc;
+	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.pc;
 }
 
-OSInt Manage::ThreadContextARM64::GetStackAddr()
+UOSInt Manage::ThreadContextARM64::GetStackAddr()
 {
-	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.sp;
+	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.sp;
 }
 
-OSInt Manage::ThreadContextARM64::GetFrameAddr()
+UOSInt Manage::ThreadContextARM64::GetFrameAddr()
 {
-	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.pstate;
+	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.pstate;
 }
 
-void Manage::ThreadContextARM64::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextARM64::SetInstAddr(UOSInt instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.pc = instAddr;
 }
 
-void Manage::ThreadContextARM64::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextARM64::SetStackAddr(UOSInt stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.sp = stackAddr;
 }
 
-void Manage::ThreadContextARM64::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextARM64::SetFrameAddr(UOSInt frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.pstate = frameAddr;
 }

@@ -3,12 +3,12 @@
 #include "Media/AudioDevice.h"
 #include "Text/MyString.h"
 
-OSInt Media::AudioDevice::GetDeviceCount()
+UOSInt Media::AudioDevice::GetDeviceCount()
 {
 	return 0;
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, OSInt devNo)
+UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
 	return 0;
 }

@@ -15,7 +15,7 @@ namespace Manage
 		virtual ~ThreadContextARM64();
 
 		virtual UOSInt GetRegisterCnt();
-		virtual UTF8Char *GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount);
+		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount);
 		virtual void ToString(Text::StringBuilderUTF *sb);
 		virtual ContextType GetType();
 		virtual UOSInt GetThreadId();
@@ -23,9 +23,9 @@ namespace Manage
 		virtual UOSInt GetInstAddr();
 		virtual UOSInt GetStackAddr();
 		virtual UOSInt GetFrameAddr();
-		virtual void SetInstAddr(OSInt instAddr);
-		virtual void SetStackAddr(OSInt stackAddr);
-		virtual void SetFrameAddr(OSInt frameAddr);
+		virtual void SetInstAddr(UOSInt instAddr);
+		virtual void SetStackAddr(UOSInt stackAddr);
+		virtual void SetFrameAddr(UOSInt frameAddr);
 		virtual ThreadContext *Clone();
 		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs);
 		virtual Manage::Dasm *CreateDasm();

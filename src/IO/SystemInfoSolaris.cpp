@@ -60,9 +60,9 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_DESKTOP;
 }
 
-OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	RAMInfo *ram;
 	WChar sbuff[128];
 	Win32::SMBIOS *smbios = Win32::SMBIOS::GetSMBIOS();
@@ -74,8 +74,8 @@ OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)
 		{
-			OSInt i = 0;
-			OSInt j = memList.GetCount();
+			UOSInt i = 0;
+			UOSInt j = memList.GetCount();
 			while (i < j)
 			{
 				mem = memList.GetItem(i);

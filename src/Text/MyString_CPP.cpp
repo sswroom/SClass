@@ -349,11 +349,11 @@ extern "C" UOSInt MyString_StrCharCntUTF32(const UTF32Char *s)
 }
 
 #ifdef HAS_INT64
-extern "C" UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, Int64 val)
+extern "C" UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, UInt64 val)
 {
 	UTF16Char *tmp = &oriStr[16];
 	*tmp = 0;
-	OSInt i = 16;
+	UOSInt i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -367,10 +367,10 @@ extern "C" UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, Int64 val)
 	return &oriStr[16];
 }
 
-extern "C" UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, Int64 val)
+extern "C" UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, UInt64 val)
 {
 	UTF16Char *tmp = &oriStr[16];
-	OSInt i = 16;
+	UOSInt i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -381,10 +381,10 @@ extern "C" UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, Int64 val)
 }
 #endif
 
-extern "C" UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, Int32 val)
+extern "C" UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, UInt32 val)
 {
 	UTF16Char *tmp = &oriStr[8];
-	OSInt i = 8;
+	UOSInt i = 8;
 	*tmp = 0;
 	while (i-- > 0)
 	{
@@ -399,10 +399,10 @@ extern "C" UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, Int32 val)
 	return &oriStr[8];
 }
 
-extern "C" UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, Int32 val)
+extern "C" UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, UInt32 val)
 {
 	UTF16Char *tmp = &oriStr[8];
-	OSInt i = 8;
+	UOSInt i = 8;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -412,10 +412,10 @@ extern "C" UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, Int32 val)
 	return &oriStr[8];
 }
 
-extern "C" UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, Int32 val)
+extern "C" UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, UInt32 val)
 {
 	UTF16Char *tmp = &oriStr[6];
-	Int32 i = 6;
+	UOSInt i = 6;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -426,11 +426,11 @@ extern "C" UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, Int32 val)
 }
 
 #ifdef HAS_INT64
-extern "C" UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, Int64 val)
+extern "C" UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, UInt64 val)
 {
 	UTF32Char *tmp = &oriStr[16];
 	*tmp = 0;
-	OSInt i = 16;
+	UOSInt i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -444,10 +444,10 @@ extern "C" UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, Int64 val)
 	return &oriStr[16];
 }
 
-extern "C" UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, Int64 val)
+extern "C" UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, UInt64 val)
 {
 	UTF32Char *tmp = &oriStr[16];
-	OSInt i = 16;
+	UOSInt i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -458,10 +458,10 @@ extern "C" UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, Int64 val)
 }
 #endif
 
-extern "C" UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, Int32 val)
+extern "C" UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, UInt32 val)
 {
 	UTF32Char *tmp = &oriStr[8];
-	OSInt i = 8;
+	UOSInt i = 8;
 	*tmp = 0;
 	while (i-- > 0)
 	{
@@ -476,10 +476,10 @@ extern "C" UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, Int32 val)
 	return &oriStr[8];
 }
 
-extern "C" UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, Int32 val)
+extern "C" UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, UInt32 val)
 {
 	UTF32Char *tmp = &oriStr[8];
-	OSInt i = 8;
+	UOSInt i = 8;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -489,10 +489,10 @@ extern "C" UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, Int32 val)
 	return &oriStr[8];
 }
 
-extern "C" UTF32Char *MyString_StrHexVal24UTF32(UTF32Char *oriStr, Int32 val)
+extern "C" UTF32Char *MyString_StrHexVal24UTF32(UTF32Char *oriStr, UInt32 val)
 {
 	UTF32Char *tmp = &oriStr[6];
-	Int32 i = 6;
+	UOSInt i = 6;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];

@@ -84,17 +84,17 @@ UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 	return 0;
 }
 
-Int64 IO::SystemInfo::GetTotalMemSize()
+UInt64 IO::SystemInfo::GetTotalMemSize()
 {
 #if defined(__APPLE__)
-	Int64 memSize;
+	UInt64 memSize;
 	size_t len;
 	len = sizeof(memSize);
 	memSize = 0;
 	sysctlbyname("hw.memsize", &memSize, &len, 0, 0);
 	return memSize;
 #else
-	Int64 memSize;
+	UInt64 memSize;
 	size_t len;
 	len = sizeof(memSize);
 	memSize = 0;
@@ -103,17 +103,17 @@ Int64 IO::SystemInfo::GetTotalMemSize()
 #endif
 }
 
-Int64 IO::SystemInfo::GetTotalUsableMemSize()
+UInt64 IO::SystemInfo::GetTotalUsableMemSize()
 {
 #if defined(__APPLE__)
-	Int64 memSize;
+	UInt64 memSize;
 	size_t len;
 	len = sizeof(memSize);
 	sysctlbyname("hw.memsize", &memSize, &len, 0, 0);
 	return memSize;
 #else
 	int mib[2];
-	Int64 memSize;
+	UInt64 memSize;
 	size_t len;
 	mib[0] = CTL_HW;
 #if defined(HW_PHYSMEM64)
@@ -133,9 +133,9 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_DESKTOP;
 }
 
-OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
-	OSInt retCnt = 0;
+	UOSInt retCnt = 0;
 	RAMInfo *ram;
 	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
@@ -146,8 +146,8 @@ OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)
 		{
-			OSInt i = 0;
-			OSInt j = memList.GetCount();
+			UOSInt i = 0;
+			UOSInt j = memList.GetCount();
 			while (i < j)
 			{
 				mem = memList.GetItem(i);

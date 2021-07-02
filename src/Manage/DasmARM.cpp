@@ -4867,7 +4867,7 @@ const UTF8Char *Manage::DasmARM::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -5035,8 +5035,8 @@ Manage::DasmARM::DasmARM_Sess *Manage::DasmARM::CreateSess(Manage::DasmARM::Dasm
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	//sess->code0fHdlrs = (void**)this->codes0f;
-	NEW_CLASS(sess->callAddrs, Data::ArrayListInt32());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListInt32());
+	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
+	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
 	MemCopyNO(&sess->regs, regs, sizeof(Manage::DasmARM::DasmARM_Regs));
 	return sess;
 }
@@ -5051,7 +5051,7 @@ void Manage::DasmARM::DeleteSess(Manage::DasmARM::DasmARM_Sess *sess)
 	}
 }
 
-Bool Manage::DasmARM::DasmNext(Manage::DasmARM::DasmARM_Sess *sess, WChar *buff, OSInt *outBuffSize)
+Bool Manage::DasmARM::DasmNext(Manage::DasmARM::DasmARM_Sess *sess, UTF8Char *buff, UOSInt *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

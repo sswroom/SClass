@@ -14,7 +14,7 @@ Int32 Exporter::GUIPNGExporter::GetName()
 	return *(Int32*)"GPPN";
 }
 
-Bool Exporter::GUIPNGExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

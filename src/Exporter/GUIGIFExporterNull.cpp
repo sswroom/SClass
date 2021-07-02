@@ -16,7 +16,7 @@ Int32 Exporter::GUIGIFExporter::GetName()
 	return *(Int32*)"GPGI";
 }
 
-Bool Exporter::GUIGIFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::GUIGIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{

@@ -83,7 +83,7 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 					ivCh = 32767;
 				if (ivCh < -32768)
 					ivCh = -32768;
-				WriteInt16(&buff[i], ivCh);
+				WriteInt16(&buff[i], (Int16)ivCh);
 				i += 2;
 			}
 			pos++;

@@ -121,6 +121,14 @@ FORCEINLINE Int16 ReadNInt16(const UInt8 *dptr)
 	return *(Int16*)tmpBuff;
 }
 
+FORCEINLINE UInt16 ReadNUInt16(const UInt8 *dptr)
+{
+	UInt8 tmpBuff[2];
+	tmpBuff[0] = dptr[0];
+	tmpBuff[1] = dptr[1];
+	return *(UInt16*)tmpBuff;
+}
+
 FORCEINLINE Int32 ReadNInt32(const UInt8 *dptr)
 {
 	UInt8 tmpBuff[4];
@@ -129,6 +137,16 @@ FORCEINLINE Int32 ReadNInt32(const UInt8 *dptr)
 	tmpBuff[2] = dptr[2];
 	tmpBuff[3] = dptr[3];
 	return *(Int32*)tmpBuff;
+}
+
+FORCEINLINE UInt32 ReadNUInt32(const UInt8 *dptr)
+{
+	UInt8 tmpBuff[4];
+	tmpBuff[0] = dptr[0];
+	tmpBuff[1] = dptr[1];
+	tmpBuff[2] = dptr[2];
+	tmpBuff[3] = dptr[3];
+	return *(UInt32*)tmpBuff;
 }
 
 FORCEINLINE Int64 ReadNInt64(const UInt8 *dptr)
@@ -152,7 +170,23 @@ FORCEINLINE void WriteNInt16(UInt8 *dptr, Int16 val)
 	dptr[1] = vPtr[1];
 }
 
+FORCEINLINE void WriteNUInt16(UInt8 *dptr, UInt16 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[0];
+	dptr[1] = vPtr[1];
+}
+
 FORCEINLINE void WriteNInt32(UInt8 *dptr, Int32 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[0];
+	dptr[1] = vPtr[1];
+	dptr[2] = vPtr[2];
+	dptr[3] = vPtr[3];
+}
+
+FORCEINLINE void WriteNUInt32(UInt8 *dptr, UInt32 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -217,7 +251,33 @@ FORCEINLINE void WriteInt64(UInt8 *dptr, Int64 val)
 	dptr[7] = vPtr[7];
 }
 
+FORCEINLINE void WriteUInt64(UInt8 *dptr, UInt64 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[0];
+	dptr[1] = vPtr[1];
+	dptr[2] = vPtr[2];
+	dptr[3] = vPtr[3];
+	dptr[4] = vPtr[4];
+	dptr[5] = vPtr[5];
+	dptr[6] = vPtr[6];
+	dptr[7] = vPtr[7];
+}
+
 FORCEINLINE void WriteMInt64(UInt8 *dptr, Int64 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[7];
+	dptr[1] = vPtr[6];
+	dptr[2] = vPtr[5];
+	dptr[3] = vPtr[4];
+	dptr[4] = vPtr[3];
+	dptr[5] = vPtr[2];
+	dptr[6] = vPtr[1];
+	dptr[7] = vPtr[0];
+}
+
+FORCEINLINE void WriteMUInt64(UInt8 *dptr, UInt64 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[7];
@@ -336,7 +396,21 @@ FORCEINLINE void WriteInt16(UInt8 *dptr, Int16 val)
 	dptr[1] = vPtr[1];
 }
 
+FORCEINLINE void WriteUInt16(UInt8 *dptr, UInt16 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[0];
+	dptr[1] = vPtr[1];
+}
+
 FORCEINLINE void WriteMInt16(UInt8 *dptr, Int16 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[1];
+	dptr[1] = vPtr[0];
+}
+
+FORCEINLINE void WriteMUInt16(UInt8 *dptr, UInt16 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[1];

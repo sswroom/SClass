@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 
-extern "C" void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val)
+extern "C" void MemFillB(UInt8 *buff, UOSInt byteCnt, UInt8 val)
 {
 	while (byteCnt--)
 	{
@@ -10,7 +10,7 @@ extern "C" void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val)
 	}
 }
 
-extern "C" void MemFillW(UInt8 *buff, OSInt wordCnt, UInt16 val)
+extern "C" void MemFillW(UInt8 *buff, UOSInt wordCnt, UInt16 val)
 {
 	UInt16 *wbuff = (UInt16*)buff;
 	while (wordCnt--)

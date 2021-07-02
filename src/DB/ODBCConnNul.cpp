@@ -28,8 +28,28 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 		Text::StrDelNew(this->connStr);
 	}
 	this->connStr = Text::StrCopyNew(connStr);
-	lastError = 1;
+	this->connErr = CE_NOT_CONNECT;
 	return false;
+}
+
+DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+{
+	connHand = 0;
+	envHand = 0;
+	lastStmtHand = 0;
+	this->tableNames = 0;
+	this->log = log;
+	this->connErr = CE_NOT_CONNECT;
+	this->lastErrorMsg = 0;
+	this->connStr = 0;
+	this->connHand = 0;
+	this->envHand = 0;
+	this->dsn = 0;
+	this->uid = 0;
+	this->pwd = 0;
+	this->schema = 0;
+	this->enableDebug = false;
+	this->tzQhr = 0;
 }
 
 DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
@@ -140,9 +160,27 @@ DB::DBConn::ConnType DB::ODBCConn::GetConnType()
 	return CT_ODBC;
 }
 
-Int32 DB::ODBCConn::GetTzQhr()
+Int8 DB::ODBCConn::GetTzQhr()
 {
 	return this->tzQhr;
+}
+
+void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
+{
+	sb->Append((const UTF8Char *)"ODBC:");
+	if (this->connStr)
+	{
+		sb->Append(this->connStr);
+	}
+	else if (this->dsn)
+	{
+		sb->Append(this->dsn);
+		if (this->schema)
+		{
+			sb->AppendChar('/', 1);
+			sb->Append(this->schema);
+		}
+	}
 }
 
 void DB::ODBCConn::Close()
@@ -156,25 +194,25 @@ void DB::ODBCConn::Dispose()
 
 OSInt DB::ODBCConn::ExecuteNonQuery(const UTF8Char *sql)
 {
-	this->lastError = 3;
+	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
 }
 
 /*OSInt DB::ODBCConn::ExecuteNonQuery(const WChar *sql)
 {
-	this->lastError = 3;
+	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
 }*/
 
 DB::DBReader *DB::ODBCConn::ExecuteReader(const UTF8Char *sql)
 {
-	this->lastError = 3;
+	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
 }
 
 /*DB::DBReader *DB::ODBCConn::ExecuteReader(const WChar *sql)
 {
-	this->lastError = 3;
+	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
 }*/
 
@@ -208,6 +246,11 @@ void DB::ODBCConn::Rollback(void *tran)
 {
 }
 
+DB::ODBCConn::ConnError DB::ODBCConn::GetConnError()
+{
+	return this->connErr;
+}
+
 void DB::ODBCConn::SetEnableDebug(Bool enableDebug)
 {
 
@@ -224,7 +267,7 @@ UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 
 DB::DBReader *DB::ODBCConn::GetTablesInfo()
 {
-	this->lastError = 3;
+	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
 }
 
@@ -233,7 +276,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name)
+DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
 {
 	return 0;
 }
@@ -256,7 +299,32 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 {
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, Bool useMut, const UTF8Char *logPrefix)
+const UTF8Char *DB::ODBCConn::GetConnStr()
+{
+	return this->connStr;
+}
+
+const UTF8Char *DB::ODBCConn::GetConnDSN()
+{
+	return this->dsn;
+}
+
+const UTF8Char *DB::ODBCConn::GetConnUID()
+{
+	return this->uid;
+}
+
+const UTF8Char *DB::ODBCConn::GetConnPWD()
+{
+	return this->pwd;
+}
+
+const UTF8Char *DB::ODBCConn::GetConnSchema()
+{
+	return this->schema;
+}
+
+DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	return 0;
 }

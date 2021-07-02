@@ -33,7 +33,7 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(IO::Stream *stm, voi
 	while (buffSize >= 8)
 	{
 		found = false;
-		if (ReadNInt16(buff) == ReadNInt16("GD"))
+		if (ReadNInt16(buff) == ReadNInt16((const UInt8*)"GD"))
 		{
 			UInt32 packetSize = ReadUInt16(&buff[2]);
 			if (packetSize <= 14336)
@@ -68,7 +68,7 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(IO::Stream *stm, voi
 
 UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
-	WriteNInt16(buff, ReadNInt16("GD"));
+	WriteNInt16(buff, ReadNInt16((const UInt8*)"GD"));
 	WriteUInt16(&buff[2], (UInt16)(cmdSize + 8));
 	WriteUInt16(&buff[4], (UInt16)cmdType);
 	if (cmdSize > 0)

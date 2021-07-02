@@ -20,14 +20,14 @@ UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 	return 0;
 }
 
-Int64 IO::SystemInfo::GetTotalMemSize()
+UInt64 IO::SystemInfo::GetTotalMemSize()
 {
-	return 2048 * (Int64)1024;
+	return 2048 * (UInt64)1024;
 }
 
-Int64 IO::SystemInfo::GetTotalUsableMemSize()
+UInt64 IO::SystemInfo::GetTotalUsableMemSize()
 {
-	return 2048 * (Int64)1024;
+	return 2048 * (UInt64)1024;
 }
 
 IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
@@ -35,7 +35,7 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_IOT_GATEWAY;
 }
 
-OSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	return 0;
 }

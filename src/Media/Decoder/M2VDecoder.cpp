@@ -209,7 +209,7 @@ Bool Media::Decoder::M2VDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *fr
 		return false;
 
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
-	info->fourcc = ReadNUInt32("MPG2");
+	info->fourcc = ReadNUInt32((const UInt8*)"MPG2");
 	info->par2 = this->par;
 
 	return true;

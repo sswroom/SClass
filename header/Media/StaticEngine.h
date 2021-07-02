@@ -18,7 +18,7 @@ namespace Media
 		virtual ~StaticEngine();
 
 		virtual DrawImage *CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype);
-		virtual DrawImage *LoadImageA(const UTF8Char *fileName);
+		virtual DrawImage *LoadImage(const UTF8Char *fileName);
 		virtual DrawImage *LoadImageW(const WChar *fileName);
 		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm); /////////////////////////
 		virtual DrawImage *ConvImage(Media::Image *img);
@@ -102,9 +102,9 @@ namespace Media
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, OSInt width, OSInt height) = 0;*/
 
 		virtual Media::StaticImage *ToStaticImage();
-//		virtual Int32 SavePng(IO::SeekableStream *stm) = 0;
-		virtual Int32 SaveGIF(IO::SeekableStream *stm);
-//		virtual Int32 SaveJPG(IO::SeekableStream *stm) = 0;
+//		virtual UOSInt SavePng(IO::SeekableStream *stm) = 0;
+		virtual UOSInt SaveGIF(IO::SeekableStream *stm);
+//		virtual UOSInt SaveJPG(IO::SeekableStream *stm) = 0;
 	};
 }
 #endif

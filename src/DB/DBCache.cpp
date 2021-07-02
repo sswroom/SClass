@@ -115,7 +115,7 @@ UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF
 		DB::DBRow *row;
 		UOSInt pageSkip = 0;
 		UOSInt pageSize = page->GetPageSize();
-		if (status != DB::DBTool::PageStatus::PS_SUCC)
+		if (status != DB::DBTool::PS_SUCC)
 		{
 			pageSkip = page->GetPageNum() * page->GetPageSize();
 		}

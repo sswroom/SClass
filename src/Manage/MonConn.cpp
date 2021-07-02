@@ -25,7 +25,7 @@
 
 UOSInt Manage::MonConn::BuildPacket(UInt8 *outbuff, UInt8 *data, UOSInt dataSize, UInt16 cmdType, UInt16 cmdSeq)
 {
-	WriteNUInt16(&outbuff[0], ReadNUInt16("sM"));
+	WriteNUInt16(&outbuff[0], ReadNUInt16((const UInt8*)"sM"));
 	WriteUInt16(&outbuff[2], (UInt16)(dataSize + 10));
 	WriteUInt16(&outbuff[4], cmdType);
 	WriteUInt16(&outbuff[6], cmdSeq);
@@ -75,7 +75,7 @@ UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UOSInt buffSize)
 	UOSInt i = 0;
 	while (i < buffSize - 4)
 	{
-		if (ReadNUInt16(&buff[i]) == ReadNUInt16("sM"))
+		if (ReadNUInt16(&buff[i]) == ReadNUInt16((const UInt8*)"sM"))
 		{
 			UInt32 psize = ReadUInt16(&buff[i + 2]);
 			if (psize <= 3000)
@@ -99,7 +99,7 @@ Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, UOSInt buffSize)
 	UInt32 packSize;
 	if (buffSize < 10)
 		return false;
-	if (ReadNUInt16(&buff[0]) != ReadNUInt16("sM"))
+	if (ReadNUInt16(&buff[0]) != ReadNUInt16((const UInt8*)"sM"))
 		return false;
 	packSize = ReadUInt16(&buff[2]);
 	if (packSize > 3000)

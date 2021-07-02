@@ -414,7 +414,7 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	info->dispHeight = oriH;
 	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
-	info->fourcc = ReadNUInt32("HEVC");
+	info->fourcc = ReadNUInt32((const UInt8*)"HEVC");
 
 	return true;
 }

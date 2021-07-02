@@ -442,7 +442,7 @@ void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
 	{
 		sb->Append(this->connStr);
 	}
-	else
+	else if (this->dsn)
 	{
 		sb->Append(this->dsn);
 		if (this->schema)
