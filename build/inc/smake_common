@@ -84,6 +84,7 @@ nodeps:
 @LogServer
 @NetRAWCapture
 @PingMonitor
+@PingScan
 @PingTest
 @WiFiCapture
 @WiFiScan
@@ -425,6 +426,9 @@ NetRAWCapture:
 PingMonitor:
 @PingMonitorMain.o
 @ConsoleStartup.o
+PingScan:
+@PingScanMain.o
+@ConsoleStartup.o
 PingTest:
 @PingTest.o
 @ConsoleStartup.o
@@ -746,6 +750,7 @@ HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
 PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
+PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
 PingTest.o: ../../main/NetTest/PingTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
@@ -2194,6 +2199,8 @@ Net/HTTPProxyTCPClient.h: ../../src/Net/HTTPProxyTCPClient.cpp
 Net/HTTPQueue.h: ../../src/Net/HTTPQueue.cpp
 @HTTPQueue.o
 Net/IMailController.h:
+Net/ICMPScanner.h: ../../src/Net/ICMPScanner.cpp
+@ICMPScanner.o
 Net/IPScanDetector.h: ../../src/Net/IPScanDetector.cpp
 @IPScanDetector.o
 Net/IRTPController.h:
@@ -4008,6 +4015,7 @@ HTTPMyClient.o: ../../src/Net/HTTPMyClient.cpp
 HTTPProxyClient.o: ../../src/Net/HTTPProxyClient.cpp
 HTTPProxyTCPClient.o: ../../src/Net/HTTPProxyTCPClient.cpp
 HTTPQueue.o: ../../src/Net/HTTPQueue.cpp
+ICMPScanner.o: ../../src/Net/ICMPScanner.cpp
 IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
 LDAPClient.o: ../../src/Net/LDAPClient.cpp
 LogClient.o: ../../src/Net/LogClient.cpp

@@ -56,7 +56,7 @@ Int32 main(int argc, char *argv[])
 {
 	Int32 ret;
 	LinuxProgControl conCtrl;
-	signal(SIGCHLD, SIG_IGN);
+	//signal(SIGCHLD, SIG_IGN);
 
 	Core::CoreStart();
 	LinuxProgControl_Create(&conCtrl, argc, argv);

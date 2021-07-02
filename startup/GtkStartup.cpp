@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
 	Int32 ret;
 	GtkProgControl ctrl;
-	signal(SIGCHLD, SIG_IGN);
+	//signal(SIGCHLD, SIG_IGN);
 
 	gtk_init(&argc, &argv);
 	Core::CoreStart();

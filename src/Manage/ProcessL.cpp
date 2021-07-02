@@ -964,7 +964,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 	int status = -1;
 	if (waitpid(pid, &status, 0) == -1)
 	{
-//		printf("execvp: waitpid failed, pid = %d, errno = %d\r\n", pid, errno);
+		//printf("execvp: waitpid failed, pid = %d, errno = %d\r\n", pid, errno);
 	}
 	else
 	{
