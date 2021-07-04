@@ -46,7 +46,7 @@ namespace Text
 		void TrimWSCRLF();
 		void TrimRight();
 		void TrimToLength(UOSInt leng);
-		StringBuilder<T> *SetSubstr(OSInt index);
+		StringBuilder<T> *SetSubstr(UOSInt index);
 		void ToUpper();
 		void ToLower();
 		void ToCapital();
@@ -68,7 +68,7 @@ namespace Text
 		T *GetEndPtr();
 		void SetEndPtr(T *ptr);
 		OSInt IndexOf(const T *s);
-		OSInt IndexOf(const T *s, OSInt index);
+		OSInt IndexOf(const T *s, UOSInt index);
 		OSInt IndexOf(T c);
 		OSInt LastIndexOf(T c);
 		Bool Equals(const T *s);
@@ -384,16 +384,16 @@ namespace Text
 		}
 	}
 
-	template<class T> Text::StringBuilder<T> *Text::StringBuilder<T>::SetSubstr(OSInt index)
+	template<class T> Text::StringBuilder<T> *Text::StringBuilder<T>::SetSubstr(UOSInt index)
 	{
-		if (index >= (this->buffEnd - this->buff))
+		if (index >= (UOSInt)(this->buffEnd - this->buff))
 		{
 			buffEnd = buff;
 			*buff = 0;
 		}
 		else if (index > 0)
 		{
-			MemCopyO(this->buff, &this->buff[index], (UOSInt)(this->buffEnd - this->buff - index + 1) * sizeof(T));
+			MemCopyO(this->buff, &this->buff[index], ((UOSInt)(this->buffEnd - this->buff) - index + 1) * sizeof(T));
 			this->buffEnd -= index;
 		}
 		return this;
@@ -500,18 +500,16 @@ namespace Text
 		return Text::StrIndexOf(this->buff, s);
 	}
 
-	template<class T> OSInt Text::StringBuilder<T>::IndexOf(const T *s, OSInt index)
+	template<class T> OSInt Text::StringBuilder<T>::IndexOf(const T *s, UOSInt index)
 	{
-		if (index < 0)
-			index = 0;
-		if (index >= (this->buffEnd - this->buff))
+		if (index >= (UOSInt)(this->buffEnd - this->buff))
 		{
 			return -1;
 		}
 		OSInt retIndex = Text::StrIndexOf(&this->buff[index], s);
 		if (retIndex < 0)
 			return -1;
-		return retIndex + index;
+		return retIndex + (OSInt)index;
 	}
 
 	template<class T> OSInt Text::StringBuilder<T>::IndexOf(T c)

@@ -37,6 +37,11 @@ namespace Net
 		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage);
 		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
 		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage);
+		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
+		Bool ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
+		Bool ApplyImports(Text::StringBuilderUTF *errMessage);
+		Bool ApplyOIDs(Text::StringBuilderUTF *errMessage);
+		Bool LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage, Bool postApply);
 	public:
 		ASN1MIB();
 		~ASN1MIB();

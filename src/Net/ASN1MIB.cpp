@@ -72,6 +72,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	const UTF8Char *oidNextLev;
 	UOSInt oidNextLen;
 	Bool isFirst = false;
+	OSInt i;
 	Text::StringBuilderUTF8 sb;
 	while (true)
 	{
@@ -84,10 +85,15 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		{
 			break;
 		}
+		else if ((i = module->objKeys->SortedIndexOf(s - 1)) >= 0)
+		{
+			ObjectInfo *obj = module->objValues->GetItem((UOSInt)i);
+			s = obj->typeVal;
+		}
 		else
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Format error: \"");
+			errMessage->Append((const UTF8Char*)": OID Format error 1: \"");
 			errMessage->Append(oriS);
 			errMessage->Append((const UTF8Char*)"\"");
 			return false;
@@ -103,7 +109,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		else if (c == '}' || c == 0)
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Format error: \"");
+			errMessage->Append((const UTF8Char*)": OID Format error 2: \"");
 			errMessage->Append(oriS);
 			errMessage->Append((const UTF8Char*)"\"");
 			return false;
@@ -125,7 +131,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		else if (c == '}' || c == 0)
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Format error: \"");
+			errMessage->Append((const UTF8Char*)": OID Format error 3: \"");
 			errMessage->Append(oriS);
 			errMessage->Append((const UTF8Char*)"\"");
 			return false;
@@ -145,7 +151,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		obj->oidLen = 1;
 		isFirst = true;
 	}
-	else if (sb.Equals((const UTF8Char*)"joint-iso-ccitt(2)") || sb.Equals((const UTF8Char*)"joint-iso-itu-t(2)"))
+	else if (sb.Equals((const UTF8Char*)"joint-iso-ccitt(2)") || sb.Equals((const UTF8Char*)"joint-iso-itu-t(2)") || sb.Equals((const UTF8Char*)"joint-iso-itu-t"))
 	{
 		obj->oid[0] = 80;
 		obj->oidLen = 1;
@@ -227,7 +233,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 					else
 					{
 						errMessage->Append(obj->objectName);
-						errMessage->Append((const UTF8Char*)": OID Format error: \"");
+						errMessage->Append((const UTF8Char*)": OID Format error 4: \"");
 						errMessage->Append(oriS);
 						errMessage->Append((const UTF8Char*)"\"");
 						return false;
@@ -245,12 +251,20 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			c = *s++;
 			if (c == ' ' || c == '}')
 			{
-				oidNextLen = (UOSInt)(s - oidNextLev - 1);
-				if (c == '}')
+				i = 0;
+				while (s[i] == ' ')
 				{
-					s--;
+					i++;
 				}
-				break;
+				if (s[i] != '(')
+				{
+					oidNextLen = (UOSInt)(s - oidNextLev - 1);
+					if (c == '}')
+					{
+						s--;
+					}
+					break;
+				}
 			}
 		}
 
@@ -263,12 +277,12 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		j = sb.IndexOf(')');
 		if (i >= 0 && j > i)
 		{
-			sb.SetSubstr(i + 1);
+			sb.SetSubstr((UOSInt)i + 1);
 			sb.TrimToLength((UOSInt)(j - i - 1));
 			if (!sb.ToUInt32(&v))
 			{
 				errMessage->Append(obj->objectName);
-				errMessage->Append((const UTF8Char*)": OID Format error: \"");
+				errMessage->Append((const UTF8Char*)": OID Format error 5: \"");
 				errMessage->Append(oriS);
 				errMessage->Append((const UTF8Char*)"\"");
 				return false;
@@ -279,7 +293,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			if (!sb.ToUInt32(&v))
 			{
 				errMessage->Append(obj->objectName);
-				errMessage->Append((const UTF8Char*)": OID Format error: \"");
+				errMessage->Append((const UTF8Char*)": OID Format error 6: \"");
 				errMessage->Append(oriS);
 				errMessage->Append((const UTF8Char*)"\"");
 				return false;
@@ -404,43 +418,6 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 			}
 			else if (sb.EndsWith((const UTF8Char*)"END"))
 			{
-				Data::ArrayList<ObjectInfo*> *objList = module->objValues;
-				ObjectInfo *obj;
-				Bool valid;
-				UOSInt ui = 0;
-				UOSInt uj = objList->GetCount();
-				while (ui < uj)
-				{
-					obj = objList->GetItem(ui);
-					valid = false;
-					if (obj->typeName && obj->typeVal && obj->oidLen == 0)
-					{
-						valid = true;
-						if (Text::StrEquals(obj->typeName, (const UTF8Char*)"TRAP-TYPE")) valid = false;
-						if (Text::StrEquals(obj->typeName, (const UTF8Char*)"INTEGER")) valid = false;
-						if (Text::StrEquals(obj->typeName, (const UTF8Char*)"NULL")) valid = false;
-						if (Text::StrStartsWith(obj->typeName, (const UTF8Char*)"OCTET STRING")) valid = false;
-
-						if (Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value")) valid = false;
-						if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)",") != -1) valid = false;
-					}
-					if (valid)
-					{
-						succ = this->ParseObjectOID(module, obj, obj->typeVal, errMessage);
-						if (!succ)
-						{
-							return false;
-						}
-						ModuleAppendOID(module, obj);
-						ModuleAppendOID(&this->globalModule, obj);
-					}
-					else if (obj->oidLen > 0)
-					{
-						ModuleAppendOID(module, obj);
-						ModuleAppendOID(&this->globalModule, obj);
-					}
-					ui++;
-				}
 				return true;
 			}
 			else if (isQuotedText)
@@ -499,52 +476,79 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							sbTmp.Append(sb.ToString());
 							Text::StrDelNew(currObj->typeVal);
 							currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
+
+							UOSInt openCnt = Text::StrCountChar(currObj->typeVal, objBrkType);
+							UOSInt closeCnt = Text::StrCountChar(currObj->typeVal, (UTF8Char)brkEndChar);
+							
+							if (openCnt <= closeCnt)
+							{
+								objBrkType = 0;
+								objIsEqual = false;
+								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
+								{
+									currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
+									currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+								}
+								sbObjValName.ClearStr();
+								sbObjValCont.ClearStr();
+								if (currObj->typeName == 0)
+								{
+									UTF8Char *typeVal = (UTF8Char*)currObj->typeVal;
+									if (typeVal)
+									{
+										UOSInt strLen = Text::StrCharCnt(typeVal);
+										UOSInt wsCnt = 0;
+										while (strLen-- > 0)
+										{
+											if (typeVal[strLen] == '\r' || typeVal[strLen] == '\n' || typeVal[strLen] == '\t' || typeVal[strLen] == ' ')
+											{
+												typeVal[strLen] = ' ';
+												wsCnt++;
+											}
+											else if (wsCnt > 0)
+											{
+												if (wsCnt > 1)
+												{
+													Text::StrLTrim(&typeVal[strLen + 2]);
+												}
+												wsCnt = 0;
+											}
+										}
+									}
+									sb.ClearStr();
+									if (reader->PeekWord(&sb))
+									{
+										if (sb.Equals((const UTF8Char*)"WITH"))
+										{
+											sb.ClearStr();
+											reader->NextWord(&sb);
+											sb.AppendChar(' ', 1);
+											reader->NextWord(&sb);
+											if (sb.Equals((const UTF8Char*)"WITH SYNTAX"))
+											{
+												sb.ClearStr();
+												if (!reader->NextWord(&sb))
+												{
+													errMessage->Append((const UTF8Char*)"WITH SYNTAX error: ");
+													errMessage->Append(sb.ToString());
+													return false;
+												}
+											}
+											else
+											{
+												errMessage->Append((const UTF8Char*)"Unexpected word after WITH: ");
+												errMessage->Append(sb.ToString());
+												return false;
+											}
+										}
+									}
+									currObj = 0;
+								}
+							}
 						}
 						else
 						{
 							sbObjValCont.Append(sb.ToString());
-						}
-
-						UOSInt openCnt = Text::StrCountChar(currObj->typeVal, objBrkType);
-						UOSInt closeCnt = Text::StrCountChar(currObj->typeVal, (UTF8Char)brkEndChar);
-						
-						if (openCnt <= closeCnt)
-						{
-							objBrkType = 0;
-							objIsEqual = false;
-							if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
-							{
-								currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-								currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
-							}
-							sbObjValName.ClearStr();
-							sbObjValCont.ClearStr();
-							if (currObj->typeName == 0)
-							{
-								UTF8Char *typeVal = (UTF8Char*)currObj->typeVal;
-								if (typeVal)
-								{
-									UOSInt strLen = Text::StrCharCnt(typeVal);
-									UOSInt wsCnt = 0;
-									while (strLen-- > 0)
-									{
-										if (typeVal[strLen] == '\r' || typeVal[strLen] == '\n' || typeVal[strLen] == '\t' || typeVal[strLen] == ' ')
-										{
-											typeVal[strLen] = ' ';
-											wsCnt++;
-										}
-										else if (wsCnt > 0)
-										{
-											if (wsCnt > 1)
-											{
-												Text::StrLTrim(&typeVal[strLen + 2]);
-											}
-											wsCnt = 0;
-										}
-									}
-								}
-								currObj = 0;
-							}
 						}
 					}
 					else if (objIsEqual)
@@ -572,6 +576,16 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							}
 							else
 							{
+								sb.ClearStr();
+								if (reader->PeekWord(&sb) && sb.StartsWith((const UTF8Char*)"{"))
+								{
+									Text::StringBuilderUTF8 sbTmp;
+									sbTmp.Append(currObj->typeVal);
+									sbTmp.AppendChar(' ', 1);
+									reader->NextWord(&sbTmp);
+									Text::StrDelNew(currObj->typeVal);
+									currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
+								}
 								currObj = 0;
 								objIsEqual = false;
 							}
@@ -697,7 +711,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 
 						if ((i = sb.IndexOf('\"')) >= 0)
 						{
-							j = sb.IndexOf((const UTF8Char*)"\"", i + 1);
+							j = sb.IndexOf((const UTF8Char*)"\"", (UOSInt)i + 1);
 							if (j < 0)
 							{
 								reader->GetLastLineBreak(&sbObjValCont);
@@ -725,7 +739,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						}
 						else if ((i = sb.IndexOf((const UTF8Char*)"(")) >= 0)
 						{
-							j = sb.IndexOf((const UTF8Char*)")", i);
+							j = sb.IndexOf((const UTF8Char*)")", (UOSInt)i);
 							if (j > i)
 							{
 								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
@@ -750,10 +764,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 					Text::StringBuilderUTF8 impObjNames;
 					Net::ASN1MIB::ModuleInfo *impModule;
 					Net::ASN1MIB::ObjectInfo *impObj;
-					Net::ASN1MIB::ObjectInfo *impObj2;
 					UTF8Char *impSarr[2];
 					UOSInt impCnt;
-					OSInt impInd;
 					sb.SetSubstr(7);
 					sb.Trim();
 
@@ -770,9 +782,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							impObjNames.AppendC(sb.ToString(), (UOSInt)i);
 							impObjNames.TrimRight();
 
-							sb.SetSubstr(i + 5);
-							i = sb.IndexOf('{');
-							if (i >= 0)
+							sb.SetSubstr((UOSInt)i + 5);
+							sb.Trim();
+							if ((i = sb.IndexOf('{')) >= 0)
 							{
 								while (true)
 								{
@@ -796,6 +808,15 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								sb.TrimToLength((UOSInt)i);
 								sb.Trim();
 							}
+							else if ((i = sb.IndexOf(' ')) >= 0)
+							{
+								if (sb.EndsWith(';'))
+								{
+									isEnd = true;
+									sb.RemoveChars(1);
+								}
+								sb.TrimToLength((UOSInt)i);
+							}
 
 							if ((impModule = this->moduleMap->Get(sb.ToString())) != 0)
 							{
@@ -807,7 +828,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								Text::StrConcat(sbuff, module->moduleFileName);
 								j = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 								Text::StrConcat(&sbuff[j + 1], sb.ToString());
-								succ = LoadFile(sbuff, errMessage);
+								succ = LoadFileInner(sbuff, errMessage, false);
 								if (!succ)
 								{
 									return false;
@@ -825,9 +846,31 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							impSarr[1] = impObjNames.ToString();
 							while (true)
 							{
+								UOSInt ui;
 								impCnt = Text::StrSplitTrim(impSarr, 2, impSarr[1], ',');
-								impInd = impModule->objKeys->SortedIndexOf(impSarr[0]);
-								if (impInd >= 0)
+
+								i = Text::StrIndexOf(impSarr[0], '{');
+								if (i >= 0 && Text::StrEndsWith(impSarr[0], (const UTF8Char*)"}"))
+								{
+									impSarr[0][i] = 0;
+									while (i > 0 && Text::CharUtil::IsWS(&impSarr[0][i - 1]))
+									{
+										impSarr[0][--i] = 0;
+									}
+								}
+								impObj = MemAlloc(ObjectInfo, 1);
+								impObj->objectName = Text::StrCopyNew(impSarr[0]);
+								impObj->typeName = Text::StrCopyNew(sb.ToString());
+								impObj->typeVal = Text::StrCopyNew((const UTF8Char*)"Imported Value");
+								impObj->oidLen = 0;
+								NEW_CLASS(impObj->valName, Data::ArrayList<const UTF8Char*>());
+								NEW_CLASS(impObj->valCont, Data::ArrayList<const UTF8Char*>());
+								ui = module->objKeys->SortedInsert(impObj->objectName);
+								module->objValues->Insert(ui, impObj);
+
+//								OSInt impInd;
+//								impInd = impModule->objKeys->SortedIndexOf(impSarr[0]);
+/*								if (impInd >= 0)
 								{
 									impObj = impModule->objValues->GetItem((UOSInt)impInd);
 									impObj2 = MemAlloc(ObjectInfo, 1);
@@ -868,7 +911,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									errMessage->Append(sb.ToString());
 									errMessage->Append((const UTF8Char *)" not found");
 									return false;
-								}
+								}*/
 								if (impCnt != 2)
 								{
 									break;
@@ -982,6 +1025,11 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							k = l;
 						}
 						else if (l >= 0 && l < k)
+						{
+							k = l;
+						}
+						l = sb.IndexOf('{');
+						if (l >= 0 && l < k)
 						{
 							k = l;
 						}
@@ -1203,88 +1251,132 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 	}
 }
 
-Net::ASN1MIB::ASN1MIB()
+Bool Net::ASN1MIB::ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF *errMessage)
 {
-	NEW_CLASS(this->moduleMap, Data::StringUTF8Map<ModuleInfo *>());
-	NEW_CLASS(this->globalModule.objKeys, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->globalModule.objValues, Data::ArrayList<ObjectInfo*>());
-	NEW_CLASS(this->globalModule.oidList, Data::ArrayList<ObjectInfo*>());
-}
-
-Net::ASN1MIB::~ASN1MIB()
-{
-	this->UnloadAll();
-	DEL_CLASS(this->moduleMap);
-	DEL_CLASS(this->globalModule.objKeys);
-	DEL_CLASS(this->globalModule.objValues);
-	DEL_CLASS(this->globalModule.oidList);
-}
-
-Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetGlobalModule()
-{
-	return &this->globalModule;	
-}
-
-Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetModuleByFileName(const UTF8Char *fileName)
-{
-	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
-	ModuleInfo *module;
-	UOSInt i = moduleList->GetCount();
-	while (i-- > 0)
-	{
-		module = moduleList->GetItem(i);
-		if (module->moduleFileName && Text::StrEquals(module->moduleFileName, fileName))
-			return module;
-	}
-	return 0;
-}
-
-void Net::ASN1MIB::UnloadAll()
-{
-	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
-	Data::ArrayList<ObjectInfo*> *objList;
+	Data::ArrayList<ObjectInfo*> *objList = module->objValues;
 	ObjectInfo *obj;
-	ModuleInfo *module;
-	UOSInt i = moduleList->GetCount();
-	UOSInt j;
-	UOSInt k;
-	while (i-- > 0)
+	UOSInt ui = 0;
+	UOSInt uj = objList->GetCount();
+	while (ui < uj)
 	{
-		module = moduleList->GetItem(i);
-		objList = module->objValues;
-		j = objList->GetCount();
-		while (j-- > 0)
+		obj = objList->GetItem(ui);
+		if (obj->typeName && obj->typeVal && Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value"))
 		{
-			obj = objList->GetItem(j);
-			Text::StrDelNew(obj->objectName);
-			SDEL_TEXT(obj->typeName);
-			SDEL_TEXT(obj->typeVal);
-			k = obj->valName->GetCount();
-			while (k-- > 0)
+			ModuleInfo *impModule = this->moduleMap->Get(obj->typeName);
+			ObjectInfo *impObj;
+			OSInt impInd;
+			impInd = impModule->objKeys->SortedIndexOf(obj->objectName);
+			if (impInd >= 0)
 			{
-				Text::StrDelNew(obj->valName->GetItem(k));
-				Text::StrDelNew(obj->valCont->GetItem(k));
+				impObj = impModule->objValues->GetItem((UOSInt)impInd);
+				SDEL_TEXT(obj->typeName);
+				if (impObj->typeName)
+				{
+					obj->typeName = Text::StrCopyNew(impObj->typeName);
+				}
+				//obj->typeVal = Text::StrCopyNew((const UTF8Char*)"Imported Value");
+				obj->oidLen = impObj->oidLen;
+				if (impObj->oidLen > 0)
+				{
+					MemCopyNO(obj->oid, impObj->oid, impObj->oidLen);
+				}
+
+				UOSInt uk = 0;
+				UOSInt ul = impObj->valName->GetCount();
+				while (uk < ul)
+				{
+					obj->valName->Add(Text::StrCopyNew(impObj->valName->GetItem(uk)));
+					obj->valCont->Add(Text::StrCopyNew(impObj->valCont->GetItem(uk)));
+					uk++;
+				}
 			}
-			DEL_CLASS(obj->valName);
-			DEL_CLASS(obj->valCont);
-			MemFree(obj);
+			else
+			{
+				errMessage->Append((const UTF8Char*)"IMPORTS object ");
+				errMessage->Append(obj->objectName);
+				errMessage->Append((const UTF8Char*)" in module ");
+				errMessage->Append(obj->typeName);
+				errMessage->Append((const UTF8Char *)" not found");
+				return false;
+			}
 		}
-
-		DEL_CLASS(module->objKeys);
-		DEL_CLASS(module->objValues);
-		SDEL_TEXT(module->moduleName);
-		SDEL_TEXT(module->moduleFileName);
-		DEL_CLASS(module->oidList);
-		MemFree(module);
+		ui++;
 	}
-	this->moduleMap->Clear();
-
-	this->globalModule.oidList->Clear();
-	this->globalModule.objKeys->Clear();
-	this->globalModule.objValues->Clear();
+	return true;
 }
 
-Bool Net::ASN1MIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage)
+Bool Net::ASN1MIB::ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF *errMessage)
+{
+	Data::ArrayList<ObjectInfo*> *objList = module->objValues;
+	ObjectInfo *obj;
+	Bool valid;
+	UOSInt ui = 0;
+	UOSInt uj = objList->GetCount();
+	while (ui < uj)
+	{
+		obj = objList->GetItem(ui);
+		valid = false;
+		if (obj->typeName && obj->typeVal && obj->oidLen == 0)
+		{
+			valid = true;
+			if (Text::StrEquals(obj->typeName, (const UTF8Char*)"TRAP-TYPE")) valid = false;
+			if (Text::StrEquals(obj->typeName, (const UTF8Char*)"ATTRIBUTE")) valid = false;
+			if (Text::StrEquals(obj->typeName, (const UTF8Char*)"INTEGER")) valid = false;
+			if (Text::StrEquals(obj->typeName, (const UTF8Char*)"NULL")) valid = false;
+			if (Text::StrStartsWith(obj->typeName, (const UTF8Char*)"OCTET STRING")) valid = false;
+
+			if (Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value")) valid = false;
+			if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)",") != -1) valid = false;
+			if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"...") != -1) valid = false;
+		}
+		if (valid)
+		{
+			if (!this->ParseObjectOID(module, obj, obj->typeVal, errMessage))
+			{
+				return false;
+			}
+			ModuleAppendOID(module, obj);
+			ModuleAppendOID(&this->globalModule, obj);
+		}
+		else if (obj->oidLen > 0)
+		{
+			ModuleAppendOID(module, obj);
+			ModuleAppendOID(&this->globalModule, obj);
+		}
+		ui++;
+	}
+	return true;
+}
+
+Bool Net::ASN1MIB::ApplyImports(Text::StringBuilderUTF *errMessage)
+{
+	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
+	UOSInt i = moduleList->GetCount();
+	while (i-- > 0)
+	{
+		if (!ApplyModuleImports(moduleList->GetItem(i), errMessage))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+Bool Net::ASN1MIB::ApplyOIDs(Text::StringBuilderUTF *errMessage)
+{
+	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
+	UOSInt i = moduleList->GetCount();
+	while (i-- > 0)
+	{
+		if (!ApplyModuleOIDs(moduleList->GetItem(i), errMessage))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage, Bool postApply)
 {
 	IO::FileStream *fs;
 	Net::MIBReader *reader;
@@ -1399,7 +1491,13 @@ Bool Net::ASN1MIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *er
 		NEW_CLASS(module->objValues, Data::ArrayList<ObjectInfo*>());
 		NEW_CLASS(module->oidList, Data::ArrayList<ObjectInfo*>());
 		this->moduleMap->Put(module->moduleName, module);
-		succ = ParseModule(reader, module, errMessage);
+		if ((succ = ParseModule(reader, module, errMessage)) == true)
+		{
+			if (postApply)
+			{
+				succ = ApplyImports(errMessage) && ApplyOIDs(errMessage);
+			}
+		}
 	}
 
 /*	
@@ -1458,4 +1556,90 @@ Bool Net::ASN1MIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *er
 	DEL_CLASS(reader);
 	DEL_CLASS(fs);
 	return succ;
+}
+
+Net::ASN1MIB::ASN1MIB()
+{
+	NEW_CLASS(this->moduleMap, Data::StringUTF8Map<ModuleInfo *>());
+	NEW_CLASS(this->globalModule.objKeys, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->globalModule.objValues, Data::ArrayList<ObjectInfo*>());
+	NEW_CLASS(this->globalModule.oidList, Data::ArrayList<ObjectInfo*>());
+}
+
+Net::ASN1MIB::~ASN1MIB()
+{
+	this->UnloadAll();
+	DEL_CLASS(this->moduleMap);
+	DEL_CLASS(this->globalModule.objKeys);
+	DEL_CLASS(this->globalModule.objValues);
+	DEL_CLASS(this->globalModule.oidList);
+}
+
+Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetGlobalModule()
+{
+	return &this->globalModule;	
+}
+
+Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetModuleByFileName(const UTF8Char *fileName)
+{
+	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
+	ModuleInfo *module;
+	UOSInt i = moduleList->GetCount();
+	while (i-- > 0)
+	{
+		module = moduleList->GetItem(i);
+		if (module->moduleFileName && Text::StrEquals(module->moduleFileName, fileName))
+			return module;
+	}
+	return 0;
+}
+
+void Net::ASN1MIB::UnloadAll()
+{
+	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
+	Data::ArrayList<ObjectInfo*> *objList;
+	ObjectInfo *obj;
+	ModuleInfo *module;
+	UOSInt i = moduleList->GetCount();
+	UOSInt j;
+	UOSInt k;
+	while (i-- > 0)
+	{
+		module = moduleList->GetItem(i);
+		objList = module->objValues;
+		j = objList->GetCount();
+		while (j-- > 0)
+		{
+			obj = objList->GetItem(j);
+			Text::StrDelNew(obj->objectName);
+			SDEL_TEXT(obj->typeName);
+			SDEL_TEXT(obj->typeVal);
+			k = obj->valName->GetCount();
+			while (k-- > 0)
+			{
+				Text::StrDelNew(obj->valName->GetItem(k));
+				Text::StrDelNew(obj->valCont->GetItem(k));
+			}
+			DEL_CLASS(obj->valName);
+			DEL_CLASS(obj->valCont);
+			MemFree(obj);
+		}
+
+		DEL_CLASS(module->objKeys);
+		DEL_CLASS(module->objValues);
+		SDEL_TEXT(module->moduleName);
+		SDEL_TEXT(module->moduleFileName);
+		DEL_CLASS(module->oidList);
+		MemFree(module);
+	}
+	this->moduleMap->Clear();
+
+	this->globalModule.oidList->Clear();
+	this->globalModule.objKeys->Clear();
+	this->globalModule.objValues->Clear();
+}
+
+Bool Net::ASN1MIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage)
+{
+	return LoadFileInner(fileName, errMessage, true);
 }

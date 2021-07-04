@@ -12,6 +12,7 @@ namespace Net
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 *sbLine;
 		UOSInt currOfst;
+		Bool multiLineComment;
 
 		Bool ReadLineInner(Text::StringBuilderUTF8 *sb);
 		Bool ReadWord(Text::StringBuilderUTF *sb, Bool move);

@@ -4,22 +4,60 @@
 
 Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 {
+	UOSInt initSize = sb->GetLength();
 	if (!this->reader->ReadLine(sb, 512))
 	{
 		return false;
 	}
 
-	OSInt i = sb->IndexOf((const UTF8Char*)"--");
-	if (i >= 0)
+	OSInt i;
+	OSInt j;
+	if (this->multiLineComment)
 	{
-		OSInt j = sb->IndexOf((const UTF8Char*)"--", i + 2);
-		if (j >= 0)
+		i = sb->IndexOf((const UTF8Char*)"*/", initSize);
+		if (i < 0)
 		{
-			sb->RemoveChars((UOSInt)i, (UOSInt)(j - i + 2));
+			sb->TrimToLength(initSize);
+			return true;
+		}
+		sb->RemoveChars(initSize, (UOSInt)i + 2 - initSize);
+		this->multiLineComment = false;
+	}
+	while (true)
+	{
+		i = sb->IndexOf((const UTF8Char*)"--", initSize);
+		j = sb->IndexOf((const UTF8Char*)"/*", initSize);
+		if (i < 0 && j < 0)
+		{
+			break;
+		}
+
+		if (i >= 0 && (j < 0 || j > i))
+		{
+			OSInt j = sb->IndexOf((const UTF8Char*)"--", (UOSInt)i + 2);
+			if (j >= 0)
+			{
+				sb->RemoveChars((UOSInt)i, (UOSInt)(j - i + 2));
+			}
+			else
+			{
+				sb->TrimToLength((UOSInt)i);
+				break;
+			}
 		}
 		else
 		{
-			sb->TrimToLength((UOSInt)i);
+			i = sb->IndexOf((const UTF8Char*)"*/", (UOSInt)j + 2);
+			if (i >= 0)
+			{
+				sb->RemoveChars((UOSInt)j, (UOSInt)(i - j + 2));
+			}
+			else
+			{
+				sb->TrimToLength((UOSInt)j);
+				this->multiLineComment = true;
+				break;
+			}
 		}
 	}
 	sb->TrimRight();
@@ -45,26 +83,43 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 	}
 	if (sptr[this->currOfst] == '{')
 	{
-		OSInt i;
+		UOSInt level = 0;
+		UOSInt i = this->currOfst;
 		while (true)
 		{
-			i = Text::StrIndexOf(&sptr[this->currOfst], '}');
-			if (i >= 0)
+			if (sptr[i] == 0)
 			{
-				break;
+				this->sbLine->AppendChar(' ', 1);
+				if (!ReadLineInner(this->sbLine))
+				{
+					return false;
+				}
+				sptr = this->sbLine->ToString();
 			}
-			if (!ReadLineInner(this->sbLine))
+			else if (sptr[i] == '{')
 			{
-				return false;
+				level++;
+				i++;
 			}
-			sptr = this->sbLine->ToString();
+			else if (sptr[i] == '}')
+			{
+				level--;
+				i++;
+				if (level == 0)
+				{
+					sb->AppendC(&sptr[this->currOfst], i - this->currOfst);
+					if (move)
+					{
+						this->currOfst = i;
+					}
+					return true;
+				}
+			}
+			else
+			{
+				i++;
+			}
 		}
-		sb->AppendC(&sptr[this->currOfst], (UOSInt)i + 1);
-		if (move)
-		{
-			this->currOfst += (UOSInt)i + 1;
-		}
-		return true;
 	}
 	else if (sptr[this->currOfst] == ':' && sptr[this->currOfst + 1] == ':' && sptr[this->currOfst + 2] == '=')
 	{
@@ -149,6 +204,7 @@ Net::MIBReader::MIBReader(IO::Stream *stm)
 	NEW_CLASS(this->reader, Text::UTF8Reader(stm));
 	NEW_CLASS(this->sbLine, Text::StringBuilderUTF8());
 	this->currOfst = 0;
+	this->multiLineComment = false;
 }
 
 Net::MIBReader::~MIBReader()

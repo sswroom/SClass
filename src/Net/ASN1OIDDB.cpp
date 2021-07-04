@@ -9019,7 +9019,41 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"id-holdinstruction-none",										7,  {0x52, 0x86, 0x48, 0xCE, 0x38, 0x02, 0x01}}, // 2.2.840.10040.2.1
 	{"id-holdinstruction-callissuer",								7,  {0x52, 0x86, 0x48, 0xCE, 0x38, 0x02, 0x02}}, // 2.2.840.10040.2.2
 	{"id-holdinstruction-reject",									7,  {0x52, 0x86, 0x48, 0xCE, 0x38, 0x02, 0x03}}, // 2.2.840.10040.2.3
-	{"id-at",														2,  {0x55, 0x04}}, // 2.5.4
+	{"ds",															1,  {0x55}}, // 2.5
+	{"module",														2,  {0x55, 0x01}}, // 2.5.1
+	{"usefulDefinitions",											4,  {0x55, 0x01, 0x00, 0x06}}, // 2.5.1.0.6
+	{"informationFramework",										4,  {0x55, 0x01, 0x01, 0x06}}, // 2.5.1.1.6
+	{"directoryAbstractService",									4,  {0x55, 0x01, 0x02, 0x06}}, // 2.5.1.2.6
+	{"distributedOperations",										4,  {0x55, 0x01, 0x03, 0x06}}, // 2.5.1.3.6
+	{"selectedAttributeTypes",										4,  {0x55, 0x01, 0x05, 0x06}}, // 2.5.1.5.6
+	{"selectedObjectClasses",										4,  {0x55, 0x01, 0x06, 0x06}}, // 2.5.1.6.6
+	{"authenticationFramework",										4,  {0x55, 0x01, 0x07, 0x06}}, // 2.5.1.7.6
+	{"algorithmObjectIdentifiers",									4,  {0x55, 0x01, 0x08, 0x06}}, // 2.5.1.8.6
+	{"directoryObjectIdentifiers",									4,  {0x55, 0x01, 0x09, 0x06}}, // 2.5.1.9.6
+	{"distributedDirectoryOIDs",									4,  {0x55, 0x01, 0x0D, 0x06}}, // 2.5.1.13.6
+	{"directoryShadowOIDs",											4,  {0x55, 0x01, 0x0E, 0x06}}, // 2.5.1.14.6
+	{"directoryShadowAbstractService",								4,  {0x55, 0x01, 0x0F, 0x06}}, // 2.5.1.15.6
+	{"opBindingManagement",											4,  {0x55, 0x01, 0x12, 0x06}}, // 2.5.1.18.6
+	{"opBindingOIDs",												4,  {0x55, 0x01, 0x13, 0x06}}, // 2.5.1.19.6
+	{"hierarchicalOperationalBindings",								4,  {0x55, 0x01, 0x14, 0x06}}, // 2.5.1.20.6
+	{"dsaOperationalAttributeTypes",								4,  {0x55, 0x01, 0x16, 0x06}}, // 2.5.1.22.6
+	{"schemaAdministration",										4,  {0x55, 0x01, 0x17, 0x06}}, // 2.5.1.23.6
+	{"basicAccessControl",											4,  {0x55, 0x01, 0x18, 0x06}}, // 2.5.1.24.6
+	{"directoryOperationalBindingTypes",							4,  {0x55, 0x01, 0x19, 0x06}}, // 2.5.1.25.6
+	{"certificateExtensions",										4,  {0x55, 0x01, 0x1A, 0x06}}, // 2.5.1.26.6
+	{"directoryManagement",											4,  {0x55, 0x01, 0x1B, 0x06}}, // 2.5.1.27.6
+	{"enhancedSecurity",											4,  {0x55, 0x01, 0x1C, 0x06}}, // 2.5.1.28.6
+	{"iDMProtocolSpecification",									4,  {0x55, 0x01, 0x1E, 0x06}}, // 2.5.1.30.6
+	{"directoryIDMProtocols",										4,  {0x55, 0x01, 0x1F, 0x06}}, // 2.5.1.31.6
+	{"attributeCertificateDefinitions",								4,  {0x55, 0x01, 0x20, 0x06}}, // 2.5.1.32.6
+	{"serviceAdministration",										4,  {0x55, 0x01, 0x21, 0x06}}, // 2.5.1.33.6
+	{"externalDefinitions",											4,  {0x55, 0x01, 0x22, 0x06}}, // 2.5.1.34.6
+	{"commonProtocolSpecification",									4,  {0x55, 0x01, 0x23, 0x06}}, // 2.5.1.35.6
+	{"oSIProtocolSpecification",									4,  {0x55, 0x01, 0x24, 0x06}}, // 2.5.1.36.6
+	{"directoryOSIProtocols",										4,  {0x55, 0x01, 0x25, 0x06}}, // 2.5.1.37.6
+	{"serviceElement",												2,  {0x55, 0x02}}, // 2.5.2
+	{"applicationContext",											2,  {0x55, 0x03}}, // 2.5.3
+	{"attributeType",												2,  {0x55, 0x04}}, // 2.5.4
 	{"id-at-commonName",											3,  {0x55, 0x04, 0x03}}, // 2.5.4.3
 	{"id-at-surname",												3,  {0x55, 0x04, 0x04}}, // 2.5.4.4
 	{"id-at-serialNumber",											3,  {0x55, 0x04, 0x05}}, // 2.5.4.5
@@ -9035,7 +9069,24 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"id-at-generationQualifier",									3,  {0x55, 0x04, 0x2C}}, // 2.5.4.44
 	{"id-at-dnQualifier",											3,  {0x55, 0x04, 0x2E}}, // 2.5.4.46
 	{"id-at-pseudonym",												3,  {0x55, 0x04, 0x41}}, // 2.5.4.65
-	{"id-ce",														2,  {0x55, 0x1D}}, // 2.5.29
+	{"attributeSyntax",												2,  {0x55, 0x05}}, // 2.5.5
+	{"id-oc",														2,  {0x55, 0x06}}, // 2.5.6
+	{"algorithm",													2,  {0x55, 0x08}}, // 2.5.8
+	{"abstractSyntax",												2,  {0x55, 0x09}}, // 2.5.9
+	{"dsaOperationalAttribute",										2,  {0x55, 0x0C}}, // 2.5.12
+	{"id-mr",														2,  {0x55, 0x0D}}, // 2.5.13
+	{"id-kmr",														2,  {0x55, 0x0E}}, // 2.5.14
+	{"id-nf",														2,  {0x55, 0x0F}}, // 2.5.15
+	{"group",														2,  {0x55, 0x10}}, // 2.5.16
+	{"id-sc",														2,  {0x55, 0x11}}, // 2.5.17
+	{"id-oa",														2,  {0x55, 0x12}}, // 2.5.18
+	{"id-ob",														2,  {0x55, 0x13}}, // 2.5.19
+	{"id-soc",														2,  {0x55, 0x14}}, // 2.5.20
+	{"id-soa",														2,  {0x55, 0x15}}, // 2.5.21
+	{"administrativeRoles",											2,  {0x55, 0x17}}, // 2.5.23
+	{"accessControlAttribute",										2,  {0x55, 0x18}}, // 2.5.24
+	{"accessControlSchemes",										2,  {0x55, 0x1C}}, // 2.5.28
+	{"certificateExtension",										2,  {0x55, 0x1D}}, // 2.5.29
 	{"id-ce-subjectDirectoryAttributes",							3,  {0x55, 0x1D, 0x09}}, // 2.5.29.9
 	{"id-ce-subjectKeyIdentifier",									3,  {0x55, 0x1D, 0x0E}}, // 2.5.29.14
 	{"id-ce-keyUsage",												3,  {0x55, 0x1D, 0x0F}}, // 2.5.29.15
@@ -9061,6 +9112,14 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"anyExtendedKeyUsage",											4,  {0x55, 0x1D, 0x25, 0x00}}, // 2.5.29.37.0
 	{"id-ce-freshestCRL",											3,  {0x55, 0x1D, 0x2E}}, // 2.5.29.46
 	{"id-ce-inhibitAnyPolicy",										3,  {0x55, 0x1D, 0x36}}, // 2.5.29.54
+	{"id-mgt",														2,  {0x55, 0x1E}}, // 2.5.30
+	{"attributeValueContext",										2,  {0x55, 0x1F}}, // 2.5.31
+	{"id-idm",														2,  {0x55, 0x21}}, // 2.5.33
+	{"id-pr",														2,  {0x55, 0x22}}, // 2.5.34
+	{"id-not",														2,  {0x55, 0x23}}, // 2.5.35
+	{"id-mre",														2,  {0x55, 0x24}}, // 2.5.36
+	{"controlAttributeType",										2,  {0x55, 0x25}}, // 2.5.37
+	{"id-kp",														2,  {0x55, 0x26}}, // 2.5.38
 	{"id-sha256",													9,  {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01}}, // 2.16.840.1.101.3.4.2.1
 	{"id-sha384",													9,  {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x02}}, // 2.16.840.1.101.3.4.2.2
 	{"id-sha512",													9,  {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03}}, // 2.16.840.1.101.3.4.2.3
