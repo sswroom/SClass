@@ -2,6 +2,8 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/ASN1Util.h"
+#include "Net/SNMPOIDDB.h"
+#include "Net/SNMPUtil.h"
 
 UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
 {
@@ -211,4 +213,173 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd
 	{
 		return 0;
 	}
+}
+
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, UOSInt level)
+{
+	while (pdu < pduEnd)
+	{
+		UInt8 type = pdu[0];
+		UInt32 len;
+		UInt32 iVal;
+		UOSInt ofst;
+		UOSInt size;
+
+		size = (UOSInt)(pduEnd - pdu);
+		ofst = PDUParseLen(pdu, 1, size, &len);
+		if (ofst > size)
+		{
+			return false;
+		}
+		else if (ofst + len > size)
+		{
+			return false;
+		}
+
+		switch (type)
+		{
+		case 0x2:
+			if (len <= 4)
+			{
+				pdu = PDUParseUInt32(pdu, pduEnd, &iVal);
+				if (pdu == 0)
+				{
+					return false;
+				}
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"INTEGER ");
+				sb->AppendU32(iVal);
+				sb->Append((const UTF8Char*)"\r\n");
+			}
+			else if (len <= 32)
+			{
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"BINARY ");
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->Append((const UTF8Char*)"\r\n");
+				pdu += ofst + len;
+			}
+			else
+			{
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"BINARY\r\n");
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_CRLF);
+				sb->Append((const UTF8Char*)"\r\n");
+				pdu += ofst + len;
+			}
+			break;
+		case 0x3:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"BIT STRING ");
+			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x5:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"NULL\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x6:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"OID ");
+			Net::SNMPUtil::OIDToString(&pdu[ofst], len, sb);
+			sb->Append((const UTF8Char*)" (");
+			Net::SNMPOIDDB::OIDToNameString(&pdu[ofst], len, sb);
+			sb->Append((const UTF8Char*)")\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x0C:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"UTF8String ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x12:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"NumericString ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x13:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"PrintableString ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x14:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"T61String ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x15:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"VideotexString ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x16:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"IA5String ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x17:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"UTCTIME ");
+			if (len == 13 && pdu[ofst + 12] == 'Z')
+			{
+				Data::DateTime dt;
+				dt.SetCurrTimeUTC();
+				dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), Str2Digit(&pdu[ofst + 2]), Str2Digit(&pdu[ofst + 4]), Str2Digit(&pdu[ofst + 6]), Str2Digit(&pdu[ofst + 8]), Str2Digit(&pdu[ofst + 10]), 0);
+				sb->AppendDate(&dt);
+			}
+			else
+			{
+				sb->AppendC(&pdu[ofst], len);
+			}
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		default:
+			if (type < 0x30)
+			{
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"UNKNOWN 0x");
+				sb->AppendHex8(type);
+				sb->Append((const UTF8Char*)" (");
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->Append((const UTF8Char*)")\r\n");
+				pdu += ofst + len;
+				break;
+			}
+			return false;
+		case 0x30:
+		case 0x31:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"SEQUENCE {\r\n");
+			pdu += ofst;
+			if (!PDUToString(pdu, pdu + len, sb, level + 1))
+			{
+				return false;
+			}
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"}\r\n");
+			pdu += len;
+			break;
+		}
+	}
+	return true;
+}
+
+UInt32 Net::ASN1Util::Str2Digit(const UTF8Char *s)
+{
+	return (UInt32)(s[0] - 0x30) * 10 + (UInt32)(s[1] - 0x30);
 }

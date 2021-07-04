@@ -1,7 +1,7 @@
 #ifndef _SM_NET_SNMPMIB
 #define _SM_NET_SNMPMIB
 #include "Data/StringUTF8Map.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
 namespace Net
@@ -37,6 +37,7 @@ namespace Net
 		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage);
 		Bool ParseObjectBegin(Text::UTF8Reader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
 		Bool ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage);
+		static Bool ReadLine(Text::UTF8Reader *reader, Text::StringBuilderUTF8 *sb);
 	public:
 		SNMPMIB();
 		~SNMPMIB();

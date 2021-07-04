@@ -14,6 +14,11 @@ namespace Net
 		static const UInt8 *PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);
 		static const UInt8 *PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
 		static const UInt8 *PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);
+
+		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, UOSInt level);
+
+	private:
+		static UInt32 Str2Digit(const UTF8Char *s);
 	};
 }
 #endif

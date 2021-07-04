@@ -32,6 +32,7 @@ nodeps:
 @SHA256Test
 @SHA384Test
 @SHA512Test
+@X509Test
 @SortSpeed
 @XLSXExporterTest
 @AM2315Test
@@ -219,6 +220,9 @@ SHA384Test:
 @ConsoleStartup.o
 SHA512Test:
 @SHA512Test.o
+@ConsoleStartup.o
+X509Test:
+@X509Test.o
 @ConsoleStartup.o
 
 #Data
@@ -687,6 +691,7 @@ SHA224Test.o: ../../main/CryptoTest/SHA224Test.cpp
 SHA256Test.o: ../../main/CryptoTest/SHA256Test.cpp
 SHA384Test.o: ../../main/CryptoTest/SHA384Test.cpp
 SHA512Test.o: ../../main/CryptoTest/SHA512Test.cpp
+X509Test.o: ../../main/CryptoTest/X509Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
@@ -2585,6 +2590,8 @@ Parser/FileParser/WPTParser.h: ../../src/Parser/FileParser/WPTParser.cpp
 @WPTParser.o
 Parser/FileParser/X13Parser.h: ../../src/Parser/FileParser/X13Parser.cpp
 @X13Parser.o
+Parser/FileParser/X509Parser.h: ../../src/Parser/FileParser/X509Parser.cpp
+@X509Parser.o
 Parser/FileParser/XLSParser.h: ../../src/Parser/FileParser/XLSParser.cpp
 @XLSParser.o
 Parser/FileParser/XMLParser.h: ../../src/Parser/FileParser/XMLParser.cpp
@@ -4203,6 +4210,7 @@ UDPParser.o: ../../src/Parser/FileParser/UDPParser.cpp
 WAVParser.o: ../../src/Parser/FileParser/WAVParser.cpp
 WPTParser.o: ../../src/Parser/FileParser/WPTParser.cpp
 X13Parser.o: ../../src/Parser/FileParser/X13Parser.cpp
+X509Parser.o: ../../src/Parser/FileParser/X509Parser.cpp
 XLSParser.o: ../../src/Parser/FileParser/XLSParser.cpp
 XMLParser.o: ../../src/Parser/FileParser/XMLParser.cpp
 XPCMParser.o: ../../src/Parser/FileParser/XPCMParser.cpp

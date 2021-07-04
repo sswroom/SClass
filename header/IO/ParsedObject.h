@@ -32,7 +32,8 @@ namespace IO
 			PT_MIME_OBJECT,
 			PT_ETHERNET_ANALYZER,
 			PT_JAVA_CLASS,
-			PT_SMAKE
+			PT_SMAKE,
+			PT_X509_FILE
 		} ParserType;
 
 	protected:

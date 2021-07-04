@@ -85,7 +85,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		}
 		else
 		{
-			errMessage->Append((const UTF8Char*)"OID Format error: \"");
+			errMessage->Append(obj->objectName);
+			errMessage->Append((const UTF8Char*)": OID Format error: \"");
 			errMessage->Append(oriS);
 			errMessage->Append((const UTF8Char*)"\"");
 			return false;
@@ -100,7 +101,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		}
 		else if (c == '}' || c == 0)
 		{
-			errMessage->Append((const UTF8Char*)"OID Format error: \"");
+			errMessage->Append(obj->objectName);
+			errMessage->Append((const UTF8Char*)": OID Format error: \"");
 			errMessage->Append(oriS);
 			errMessage->Append((const UTF8Char*)"\"");
 			return false;
@@ -121,7 +123,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		}
 		else if (c == '}' || c == 0)
 		{
-			errMessage->Append((const UTF8Char*)"OID Format error: \"");
+			errMessage->Append(obj->objectName);
+			errMessage->Append((const UTF8Char*)": OID Format error: \"");
 			errMessage->Append(oriS);
 			errMessage->Append((const UTF8Char*)"\"");
 			return false;
@@ -141,6 +144,12 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		obj->oidLen = 1;
 		isFirst = true;
 	}
+	else if (sb.Equals((const UTF8Char*)"joint-iso-ccitt(2)") || sb.Equals((const UTF8Char*)"joint-iso-itu-t(2)"))
+	{
+		obj->oid[0] = 80;
+		obj->oidLen = 1;
+		isFirst = true;
+	}
 	else if (sb.Equals((const UTF8Char*)"0"))
 	{
 		obj->oid[0] = 0;
@@ -156,7 +165,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 //			i = this->globalModule.objKeys->SortedIndexOf(sb.ToString());
 //			if (i < 0)
 //			{
-				errMessage->Append((const UTF8Char*)"OID Name \"");
+				errMessage->Append(obj->objectName);
+				errMessage->Append((const UTF8Char*)": OID Name \"");
 				errMessage->Append(sb.ToString());
 				errMessage->Append((const UTF8Char*)"\" not found");
 				return false;
@@ -182,7 +192,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		}
 		if (obj2->oidLen == 0)
 		{
-			errMessage->Append((const UTF8Char*)"OID Name \"");
+			errMessage->Append(obj->objectName);
+			errMessage->Append((const UTF8Char*)": OID Name \"");
 			errMessage->Append(sb.ToString());
 			errMessage->Append((const UTF8Char*)"\" is not OID");
 			return false;
@@ -214,7 +225,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 					}
 					else
 					{
-						errMessage->Append((const UTF8Char*)"OID Format error: \"");
+						errMessage->Append(obj->objectName);
+						errMessage->Append((const UTF8Char*)": OID Format error: \"");
 						errMessage->Append(oriS);
 						errMessage->Append((const UTF8Char*)"\"");
 						return false;
@@ -254,7 +266,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			sb.TrimToLength((UOSInt)(j - i - 1));
 			if (!sb.ToUInt32(&v))
 			{
-				errMessage->Append((const UTF8Char*)"OID Format error: \"");
+				errMessage->Append(obj->objectName);
+				errMessage->Append((const UTF8Char*)": OID Format error: \"");
 				errMessage->Append(oriS);
 				errMessage->Append((const UTF8Char*)"\"");
 				return false;
@@ -264,7 +277,8 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		{
 			if (!sb.ToUInt32(&v))
 			{
-				errMessage->Append((const UTF8Char*)"OID Format error: \"");
+				errMessage->Append(obj->objectName);
+				errMessage->Append((const UTF8Char*)": OID Format error: \"");
 				errMessage->Append(oriS);
 				errMessage->Append((const UTF8Char*)"\"");
 				return false;
@@ -373,19 +387,13 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 512))
+		if (!ReadLine(reader, &sb))
 		{
 			errMessage->Append((const UTF8Char*)"Module end not found");
 			return false;
 		}
 
-		i = sb.IndexOf((const UTF8Char*)"--");
-		if (i >= 0)
-		{
-			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
-		}
-		sb.TrimRight();
-		if (currObj && currObj->objectName && Text::StrEquals(currObj->objectName, (const UTF8Char*)"PSSEQStringEntry"))
+		if (currObj && currObj->objectName && Text::StrEquals(currObj->objectName, (const UTF8Char*)"id-sha1"))
 		{
 			i = 0;
 		}
@@ -405,12 +413,25 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 			{
 				Data::ArrayList<ObjectInfo*> *objList = module->objValues;
 				ObjectInfo *obj;
+				Bool valid;
 				UOSInt ui = 0;
 				UOSInt uj = objList->GetCount();
 				while (ui < uj)
 				{
 					obj = objList->GetItem(ui);
-					if (obj->typeName && obj->typeVal && obj->oidLen == 0 && !Text::StrEquals(obj->typeName, (const UTF8Char*)"TRAP-TYPE") && !Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value"))
+					valid = false;
+					if (obj->typeName && obj->typeVal && obj->oidLen == 0)
+					{
+						valid = true;
+						if (Text::StrEquals(obj->typeName, (const UTF8Char*)"TRAP-TYPE")) valid = false;
+						if (Text::StrEquals(obj->typeName, (const UTF8Char*)"INTEGER")) valid = false;
+						if (Text::StrEquals(obj->typeName, (const UTF8Char*)"NULL")) valid = false;
+						if (Text::StrStartsWith(obj->typeName, (const UTF8Char*)"OCTET STRING")) valid = false;
+
+						if (Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value")) valid = false;
+						if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)",") != -1) valid = false;
+					}
+					if (valid)
 					{
 						succ = this->ParseObjectOID(module, obj, obj->typeVal, errMessage);
 						if (!succ)
@@ -719,28 +740,56 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						{
 							impObjNames.AppendC(sb.ToString(), (UOSInt)i);
 							impObjNames.TrimRight();
-							if ((impModule = this->moduleMap->Get(sb.ToString() + i + 5)) != 0)
+
+							sb.SetSubstr(i + 5);
+							i = sb.IndexOf('{');
+							if (i >= 0)
 							{
-							
+								while (true)
+								{
+									j = sb.IndexOf('}');
+									if (j != -1)
+									{
+										break;
+									}
+									if (!ReadLine(reader, &sb))
+									{
+										errMessage->Append((const UTF8Char*)"Import module error: ");
+										errMessage->Append(sb.ToString());
+										return false;
+									}
+								}
+								if (sb.EndsWith(';'))
+								{
+									isEnd = true;
+									sb.RemoveChars(1);
+								}
+								sb.TrimToLength((UOSInt)i);
+								sb.Trim();
+							}
+
+							if ((impModule = this->moduleMap->Get(sb.ToString())) != 0)
+							{
+								
 							}
 							else
 							{
 								UTF8Char sbuff[512];
 								Text::StrConcat(sbuff, module->moduleFileName);
 								j = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-								Text::StrConcat(&sbuff[j + 1], sb.ToString() + i + 5);
+								Text::StrConcat(&sbuff[j + 1], sb.ToString());
 								succ = LoadFile(sbuff, errMessage);
 								if (!succ)
 								{
 									return false;
 								}
-								impModule = this->moduleMap->Get(sb.ToString() + i + 5);
+								impModule = this->moduleMap->Get(sb.ToString());
 							}
 							
 							if (impModule == 0)
 							{
 								errMessage->Append((const UTF8Char*)"IMPORTS module ");
-								errMessage->Append(sb.ToString() + i + 5);
+								errMessage->Append(sb.ToString());
 								errMessage->Append((const UTF8Char *)" not found");
 								return false;
 							}
@@ -787,7 +836,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 									errMessage->Append((const UTF8Char*)"IMPORTS object ");
 									errMessage->Append(impSarr[0]);
 									errMessage->Append((const UTF8Char*)" in module ");
-									errMessage->Append(sb.ToString() + i + 5);
+									errMessage->Append(sb.ToString());
 									errMessage->Append((const UTF8Char *)" not found");
 									return false;
 								}
@@ -807,16 +856,10 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							break;
 						}
 						sb.ClearStr();
-						if (!reader->ReadLine(&sb, 512))
+						if (!ReadLine(reader, &sb))
 						{
 							errMessage->Append((const UTF8Char*)"IMPORTS end not found");
 							return false;
-						}
-
-						i = sb.IndexOf((const UTF8Char*)"--");
-						if (i >= 0)
-						{
-							sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 						}
 						sb.Trim();
 					}
@@ -831,16 +874,10 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						}
 
 						sb.ClearStr();
-						if (!reader->ReadLine(&sb, 512))
+						if (!ReadLine(reader, &sb))
 						{
 							errMessage->Append((const UTF8Char*)"EXPORTS end not found");
 							return false;
-						}
-
-						i = sb.IndexOf((const UTF8Char*)"--");
-						if (i >= 0)
-						{
-							sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 						}
 						sb.Trim();
 					}
@@ -883,18 +920,12 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						else
 						{
 							i = (OSInt)sb.GetLength();
-							if (!reader->ReadLine(&sb, 512))
+							if (!ReadLine(reader, &sb))
 							{
 								errMessage->Append((const UTF8Char*)"Unknown format: ");
 								errMessage->Append(sb.ToString());
 								return false;
 							}
-							j = sb.IndexOf((const UTF8Char*)"--");
-							if (j >= 0)
-							{
-								sb.TrimToLength((UOSInt)j);
-							}
-							sb.TrimRight();
 							if (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
 							{
 								i = sb.IndexOf((const UTF8Char*)"::=");
@@ -974,14 +1005,17 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							objLineSpace = lineSpace;
 							objIsEqual = false;
 							objIsBrk = false;
-							if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"{"))
+							if (Text::StrStartsWith(obj->typeVal, (const UTF8Char*)"{"))
 							{
-								objIsBrk = true;
-								objIsEqual = true;
-							}
-							else if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"}"))
-							{
-								currObj = 0;
+								if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"}"))
+								{
+									currObj = 0;
+								}
+								else
+								{
+									objIsBrk = true;
+									objIsEqual = true;
+								}
 							}
 						}
 					}
@@ -1000,18 +1034,12 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						if (i < 0)
 						{
 							i = (OSInt)sb.GetLength();
-							if (!reader->ReadLine(&sb, 512))
+							if (!ReadLine(reader, &sb))
 							{
 								errMessage->Append((const UTF8Char*)"Unknown format: ");
 								errMessage->Append(sb.ToString());
 								return false;
 							}
-							j = sb.IndexOf((const UTF8Char*)"--");
-							if (j >= 0)
-							{
-								sb.TrimToLength((UOSInt)j);
-							}
-							sb.TrimRight();
 							if (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
 							{
 							}
@@ -1053,6 +1081,22 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 			}
 		}
 	}
+}
+
+Bool Net::SNMPMIB::ReadLine(Text::UTF8Reader *reader, Text::StringBuilderUTF8 *sb)
+{
+	if (!reader->ReadLine(sb, 512))
+	{
+		return false;
+	}
+
+	OSInt i = sb->IndexOf((const UTF8Char*)"--");
+	if (i >= 0)
+	{
+		sb->TrimToLength((UOSInt)i);
+	}
+	sb->TrimRight();
+	return true;
 }
 
 Net::SNMPMIB::SNMPMIB()
@@ -1158,19 +1202,13 @@ Bool Net::SNMPMIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *er
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 512))
+		if (!ReadLine(reader, &sb))
 		{
 			if (!moduleFound)
 			{
 				errMessage->Append((const UTF8Char*)"Module definition not found");
 			}
 			break;
-		}
-
-		i = sb.IndexOf((const UTF8Char*)"--");
-		if (i >= 0)
-		{
-			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
 		sb.Trim();
 		if (sb.GetLength() > 0)
