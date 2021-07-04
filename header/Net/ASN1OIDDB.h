@@ -1,10 +1,10 @@
-#ifndef _SM_NET_SNMPOIDDB
-#define _SM_NET_SNMPOIDDB
+#ifndef _SM_NET_ASN1OIDDB
+#define _SM_NET_ASN1OIDDB
 #include "Text/StringBuilderUTF.h"
 
 namespace Net
 {
-	class SNMPOIDDB
+	class ASN1OIDDB
 	{
 	public:
 		typedef struct

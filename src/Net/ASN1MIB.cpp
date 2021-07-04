@@ -2,13 +2,14 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Net/ASN1MIB.h"
+#include "Net/MIBReader.h"
 #include "Net/SNMPUtil.h"
-#include "Net/SNMPMIB.h"
+#include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/UTF8Reader.h"
 #define DEBUGOBJ "gdStatusBytes"
 
-UOSInt Net::SNMPMIB::CalcLineSpace(const UTF8Char *txt)
+UOSInt Net::ASN1MIB::CalcLineSpace(const UTF8Char *txt)
 {
 	UOSInt ret = 0;
 	UTF8Char c;
@@ -30,7 +31,7 @@ UOSInt Net::SNMPMIB::CalcLineSpace(const UTF8Char *txt)
 	return ret;
 }
 
-void Net::SNMPMIB::ModuleAppendOID(Net::SNMPMIB::ModuleInfo *module, ObjectInfo *obj)
+void Net::ASN1MIB::ModuleAppendOID(Net::ASN1MIB::ModuleInfo *module, ObjectInfo *obj)
 {
 	OSInt i;
 	OSInt j;
@@ -62,7 +63,7 @@ void Net::SNMPMIB::ModuleAppendOID(Net::SNMPMIB::ModuleInfo *module, ObjectInfo 
 	module->oidList->Insert((UOSInt)i, obj);
 }
 
-Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage)
+Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage)
 {
 	const UTF8Char *oriS = s;
 	UTF8Char c;
@@ -334,25 +335,17 @@ Bool Net::SNMPMIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	return true;
 }
 
-Bool Net::SNMPMIB::ParseObjectBegin(Text::UTF8Reader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage)
+Bool Net::ASN1MIB::ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 512))
+		if (!reader->ReadLine(&sb))
 		{
 			errMessage->Append((const UTF8Char*)"Object end not found");
 			return false;
 		}
-
-		i = sb.IndexOf((const UTF8Char*)"--");
-		if (i >= 0)
-		{
-			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
-		}
-		sb.TrimRight();
 		if (sb.GetLength() > 0)
 		{
 			if (sb.EndsWith((const UTF8Char*)"BEGIN"))
@@ -368,7 +361,7 @@ Bool Net::SNMPMIB::ParseObjectBegin(Text::UTF8Reader *reader, ObjectInfo *obj, T
 	}
 }
 
-Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage)
+Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
@@ -380,14 +373,14 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 	Text::StringBuilderUTF8 sbObjValCont;
 	UOSInt objLineSpace = 0;
 	Bool objIsEqual = false;
-	Bool objIsBrk = false;
+	UTF8Char objBrkType = 0;
 	Bool succ;
 	Bool isQuotedText = false;
 	
 	while (true)
 	{
 		sb.ClearStr();
-		if (!ReadLine(reader, &sb))
+		if (!reader->ReadLine(&sb))
 		{
 			errMessage->Append((const UTF8Char*)"Module end not found");
 			return false;
@@ -480,10 +473,24 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 			{
 				lineSpace = CalcLineSpace(sb.ToString());
 				sb.Trim();
-				if (currObj && (objIsBrk || objIsEqual || (lineSpace > objLineSpace && sb.ToString()[0] >= 'A' && sb.ToString()[0] <= 'Z') || sb.StartsWith((const UTF8Char*)"::=") || sb.StartsWith((const UTF8Char*)"{") || sb.StartsWith((const UTF8Char*)"\"")))
+				if (currObj && (objBrkType != 0 || objIsEqual || (lineSpace > objLineSpace && sb.ToString()[0] >= 'A' && sb.ToString()[0] <= 'Z') || sb.StartsWith((const UTF8Char*)"::=") || sb.StartsWith((const UTF8Char*)"{") || sb.StartsWith((const UTF8Char*)"\"")))
 				{
-					if (objIsBrk)
+					if (objBrkType)
 					{
+						Char brkEndChar;
+						if (objBrkType == '{')
+						{
+							brkEndChar = '}';
+						}
+						else if (objBrkType == '(')
+						{
+							brkEndChar = ')';
+						}
+						else
+						{
+							brkEndChar = '}';
+						}
+
 						if (objIsEqual)
 						{
 							Text::StringBuilderUTF8 sbTmp;
@@ -497,10 +504,13 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						{
 							sbObjValCont.Append(sb.ToString());
 						}
+
+						UOSInt openCnt = Text::StrCountChar(currObj->typeVal, objBrkType);
+						UOSInt closeCnt = Text::StrCountChar(currObj->typeVal, (UTF8Char)brkEndChar);
 						
-						if (sb.EndsWith((const UTF8Char*)"}"))
+						if (openCnt <= closeCnt)
 						{
-							objIsBrk = false;
+							objBrkType = 0;
 							objIsEqual = false;
 							if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 							{
@@ -557,7 +567,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 								}
 								else
 								{
-									objIsBrk = true;
+									objBrkType = '{';
 								}
 							}
 							else
@@ -586,12 +596,12 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						if (currObj->typeName != 0 && Text::StrEndsWith(currObj->typeVal, (const UTF8Char*)"}"))
 						{
 							currObj = 0;
-							objIsBrk = false;
+							objBrkType = 0;
 							objIsEqual = false;
 						}							
 						else if (Text::StrEndsWith(currObj->typeVal, (const UTF8Char*)"{"))
 						{
-							objIsBrk = true;
+							objBrkType = '{';
 							objIsEqual = true;
 						}
 					}
@@ -600,7 +610,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						sbObjValCont.Append(sb.ToString());
 						if (sb.EndsWith((const UTF8Char*)"}"))
 						{
-							objIsBrk = false;
+							objBrkType = 0;
 							objIsEqual = false;
 							if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 							{
@@ -612,7 +622,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						}
 						else
 						{
-							objIsBrk = true;
+							objBrkType = '{';
 							objIsEqual = false;
 						}
 					}
@@ -709,7 +719,26 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							}
 							else
 							{
-								objIsBrk = true;
+								objBrkType = '{';
+								objIsEqual = false;
+							}
+						}
+						else if ((i = sb.IndexOf((const UTF8Char*)"(")) >= 0)
+						{
+							j = sb.IndexOf((const UTF8Char*)")", i);
+							if (j > i)
+							{
+								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
+								{
+									currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
+									currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+								}
+								sbObjValName.ClearStr();
+								sbObjValCont.ClearStr();
+							}
+							else
+							{
+								objBrkType = '(';
 								objIsEqual = false;
 							}
 						}
@@ -719,9 +748,9 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 				{
 					Bool isEnd = false;
 					Text::StringBuilderUTF8 impObjNames;
-					Net::SNMPMIB::ModuleInfo *impModule;
-					Net::SNMPMIB::ObjectInfo *impObj;
-					Net::SNMPMIB::ObjectInfo *impObj2;
+					Net::ASN1MIB::ModuleInfo *impModule;
+					Net::ASN1MIB::ObjectInfo *impObj;
+					Net::ASN1MIB::ObjectInfo *impObj2;
 					UTF8Char *impSarr[2];
 					UOSInt impCnt;
 					OSInt impInd;
@@ -752,7 +781,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 									{
 										break;
 									}
-									if (!ReadLine(reader, &sb))
+									if (!reader->ReadLine(&sb))
 									{
 										errMessage->Append((const UTF8Char*)"Import module error: ");
 										errMessage->Append(sb.ToString());
@@ -856,7 +885,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							break;
 						}
 						sb.ClearStr();
-						if (!ReadLine(reader, &sb))
+						if (!reader->ReadLine(&sb))
 						{
 							errMessage->Append((const UTF8Char*)"IMPORTS end not found");
 							return false;
@@ -874,7 +903,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						}
 
 						sb.ClearStr();
-						if (!ReadLine(reader, &sb))
+						if (!reader->ReadLine(&sb))
 						{
 							errMessage->Append((const UTF8Char*)"EXPORTS end not found");
 							return false;
@@ -920,9 +949,9 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						else
 						{
 							i = (OSInt)sb.GetLength();
-							if (!ReadLine(reader, &sb))
+							if (!reader->ReadLine(&sb))
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format: ");
+								errMessage->Append((const UTF8Char*)"Unknown format 1: ");
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -932,7 +961,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							}
 							else
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format: ");
+								errMessage->Append((const UTF8Char*)"Unknown format 2: ");
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1004,17 +1033,108 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							sbObjValCont.ClearStr();
 							objLineSpace = lineSpace;
 							objIsEqual = false;
-							objIsBrk = false;
-							if (Text::StrStartsWith(obj->typeVal, (const UTF8Char*)"{"))
+							objBrkType = 0;
+
+							if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"{") >= 0)
 							{
-								if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"}"))
+								UOSInt startCnt = Text::StrCountChar(obj->typeVal, '{');
+								UOSInt endCnt = Text::StrCountChar(obj->typeVal, '}');
+								if (endCnt >= startCnt)
 								{
-									currObj = 0;
 								}
 								else
 								{
-									objIsBrk = true;
+									objBrkType = '{';
 									objIsEqual = true;
+								}
+							}
+							else if ((i = Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"(")) >= 0)
+							{
+								UOSInt startCnt = Text::StrCountChar(obj->typeVal, '(');
+								UOSInt endCnt = Text::StrCountChar(obj->typeVal, ')');
+								if (endCnt >= startCnt)
+								{
+								}
+								else
+								{
+									objBrkType = '(';
+									objIsEqual = true;
+								}
+							}
+
+							if (!objIsEqual)
+							{
+								if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"SIZE"))
+								{
+									sb.ClearStr();
+									sb.Append(obj->typeVal);
+									sbObjValCont.ClearStr();
+									reader->NextWord(&sbObjValCont);
+									if (sbObjValCont.ToString()[0] != '(')
+									{
+										errMessage->Append((const UTF8Char*)"Unexpected SIZE format: ");
+										errMessage->Append(sbObjValCont.ToString());
+										return false;
+									}
+									sb.Append(sbObjValCont.ToString());
+
+									sbObjValCont.ClearStr();
+									reader->PeekWord(&sbObjValCont);
+									if (sbObjValCont.Equals((const UTF8Char*)"OF"))
+									{
+										sb.AppendChar(' ', 1);
+										reader->NextWord(&sb);
+										sb.AppendChar(' ', 1);
+										reader->NextWord(&sb);
+									}
+									sbObjValCont.ClearStr();
+									Text::StrDelNew(obj->typeVal);
+									obj->typeVal = Text::StrCopyNew(sb.ToString());
+								}
+								else if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)" OF"))
+								{
+									sb.ClearStr();
+									sb.Append(obj->typeVal);
+									sb.AppendChar(' ', 1);
+									reader->NextWord(&sb);
+									Text::StrDelNew(obj->typeVal);
+									obj->typeVal = Text::StrCopyNew(sb.ToString());
+								}
+								else
+								{
+									sbObjValCont.ClearStr();
+									reader->PeekWord(&sbObjValCont);
+									if (sbObjValCont.Equals((const UTF8Char*)"OF"))
+									{
+										sb.ClearStr();
+										sb.Append(obj->typeVal);
+										sb.AppendChar(' ', 1);
+										reader->NextWord(&sb);
+										sb.AppendChar(' ', 1);
+										reader->NextWord(&sb);
+										Text::StrDelNew(obj->typeVal);
+										obj->typeVal = Text::StrCopyNew(sb.ToString());
+									}
+									else if (sbObjValCont.StartsWith((const UTF8Char*)"("))
+									{
+										sb.ClearStr();
+										sb.Append(obj->typeVal);
+										sb.AppendChar(' ', 1);
+										reader->NextWord(&sb);
+
+										sbObjValCont.ClearStr();
+										reader->PeekWord(&sbObjValCont);
+										if (sbObjValCont.Equals((const UTF8Char*)"OF"))
+										{
+											sb.AppendChar(' ', 1);
+											reader->NextWord(&sb);
+											sb.AppendChar(' ', 1);
+											reader->NextWord(&sb);
+										}
+										Text::StrDelNew(obj->typeVal);
+										obj->typeVal = Text::StrCopyNew(sb.ToString());
+									}
+									sbObjValCont.ClearStr();
 								}
 							}
 						}
@@ -1034,9 +1154,9 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 						if (i < 0)
 						{
 							i = (OSInt)sb.GetLength();
-							if (!ReadLine(reader, &sb))
+							if (!reader->ReadLine(&sb))
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format: ");
+								errMessage->Append((const UTF8Char*)"Unknown format 3: ");
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1045,7 +1165,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 							}
 							else
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format: ");
+								errMessage->Append((const UTF8Char*)"Unknown format 4: ");
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1083,23 +1203,7 @@ Bool Net::SNMPMIB::ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Tex
 	}
 }
 
-Bool Net::SNMPMIB::ReadLine(Text::UTF8Reader *reader, Text::StringBuilderUTF8 *sb)
-{
-	if (!reader->ReadLine(sb, 512))
-	{
-		return false;
-	}
-
-	OSInt i = sb->IndexOf((const UTF8Char*)"--");
-	if (i >= 0)
-	{
-		sb->TrimToLength((UOSInt)i);
-	}
-	sb->TrimRight();
-	return true;
-}
-
-Net::SNMPMIB::SNMPMIB()
+Net::ASN1MIB::ASN1MIB()
 {
 	NEW_CLASS(this->moduleMap, Data::StringUTF8Map<ModuleInfo *>());
 	NEW_CLASS(this->globalModule.objKeys, Data::ArrayListStrUTF8());
@@ -1107,7 +1211,7 @@ Net::SNMPMIB::SNMPMIB()
 	NEW_CLASS(this->globalModule.oidList, Data::ArrayList<ObjectInfo*>());
 }
 
-Net::SNMPMIB::~SNMPMIB()
+Net::ASN1MIB::~ASN1MIB()
 {
 	this->UnloadAll();
 	DEL_CLASS(this->moduleMap);
@@ -1116,12 +1220,12 @@ Net::SNMPMIB::~SNMPMIB()
 	DEL_CLASS(this->globalModule.oidList);
 }
 
-Net::SNMPMIB::ModuleInfo *Net::SNMPMIB::GetGlobalModule()
+Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetGlobalModule()
 {
 	return &this->globalModule;	
 }
 
-Net::SNMPMIB::ModuleInfo *Net::SNMPMIB::GetModuleByFileName(const UTF8Char *fileName)
+Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetModuleByFileName(const UTF8Char *fileName)
 {
 	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
 	ModuleInfo *module;
@@ -1135,7 +1239,7 @@ Net::SNMPMIB::ModuleInfo *Net::SNMPMIB::GetModuleByFileName(const UTF8Char *file
 	return 0;
 }
 
-void Net::SNMPMIB::UnloadAll()
+void Net::ASN1MIB::UnloadAll()
 {
 	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
 	Data::ArrayList<ObjectInfo*> *objList;
@@ -1180,14 +1284,11 @@ void Net::SNMPMIB::UnloadAll()
 	this->globalModule.objValues->Clear();
 }
 
-Bool Net::SNMPMIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage)
+Bool Net::ASN1MIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage)
 {
-	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	OSInt i;
+	Net::MIBReader *reader;
 	ModuleInfo *module;
-	Bool moduleFound = false;
 	Bool succ;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
@@ -1198,11 +1299,116 @@ Bool Net::SNMPMIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *er
 		return false;
 	}
 	succ = false;
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	NEW_CLASS(reader, Net::MIBReader(fs));
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbModuleName;
+	Text::StringBuilderUTF8 sbOID;
+	if (!reader->NextWord(&sbModuleName))
+	{
+		errMessage->Append((const UTF8Char*)"Module definition not found");
+	}
+	else if (!Text::CharUtil::IsAlphaNumeric(sbModuleName.ToString()[0]))
+	{
+		errMessage->Append((const UTF8Char*)"Module name not found");
+	}
+	else if (!reader->NextWord(&sbOID))
+	{
+		errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 1");
+	}
+	else
+	{
+		succ = true;
+		if (sbOID.ToString()[0] == '{')
+		{
+			if (!reader->NextWord(&sb))
+			{
+				errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 2");
+				succ = false;
+			}
+		}
+		else
+		{
+			sb.Append(sbOID.ToString());
+			sbOID.ClearStr();
+		}
+		if (succ && !sb.Equals((const UTF8Char*)"DEFINITIONS"))
+		{
+			errMessage->Append((const UTF8Char*)"Invalid file format: Expected DEFINITIONS: ");
+			errMessage->Append(sb.ToString());
+			succ = false;
+		}
+		sb.ClearStr();
+		if (succ && !reader->NextWord(&sb))
+		{
+			errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 3");
+			succ = false;
+		}
+		if (succ && (sb.Equals((const UTF8Char*)"IMPLICIT") || sb.Equals((const UTF8Char*)"EXPLICIT")))
+		{
+			sb.ClearStr();
+			if (!reader->NextWord(&sb))
+			{
+				errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 4");
+				succ = false;
+			}
+			else if (!sb.Equals((const UTF8Char*)"TAGS"))
+			{
+				errMessage->Append((const UTF8Char*)"Invalid file format: Expected TAGS: ");
+				errMessage->Append(sb.ToString());
+				succ = false;
+			}
+			else
+			{
+				sb.ClearStr();
+				if (!reader->NextWord(&sb))
+				{
+					errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 5");
+					succ = false;
+				}
+			}
+		}
+		if (succ && !sb.Equals((const UTF8Char*)"::="))
+		{
+			errMessage->Append((const UTF8Char*)"Invalid file format: Expected ::= : ");
+			errMessage->Append(sb.ToString());
+			succ = false;
+		}
+		if (succ)
+		{
+			sb.ClearStr();
+			if (!reader->NextWord(&sb))
+			{
+				errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 6");
+				succ = false;
+			}
+			else if (!sb.Equals((const UTF8Char*)"BEGIN"))
+			{
+				errMessage->Append((const UTF8Char*)"Invalid file format: Expected BEGIN: ");
+				errMessage->Append(sb.ToString());
+				succ = false;
+			}
+		}
+	}
+
+	if (succ)
+	{
+		module = MemAlloc(ModuleInfo, 1);
+		module->moduleName = Text::StrCopyNew(sbModuleName.ToString());
+		module->moduleFileName = Text::StrCopyNew(fileName);
+		NEW_CLASS(module->objKeys, Data::ArrayListStrUTF8());
+		NEW_CLASS(module->objValues, Data::ArrayList<ObjectInfo*>());
+		NEW_CLASS(module->oidList, Data::ArrayList<ObjectInfo*>());
+		this->moduleMap->Put(module->moduleName, module);
+		succ = ParseModule(reader, module, errMessage);
+	}
+
+/*	
+	Bool moduleFound = false;
+	OSInt i;
 	while (true)
 	{
 		sb.ClearStr();
-		if (!ReadLine(reader, &sb))
+		if (!reader->ReadLine(&sb))
 		{
 			if (!moduleFound)
 			{
@@ -1248,8 +1454,7 @@ Bool Net::SNMPMIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *er
 				break;
 			}
 		}
-
-	}
+	}*/
 	DEL_CLASS(reader);
 	DEL_CLASS(fs);
 	return succ;

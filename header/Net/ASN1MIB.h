@@ -1,12 +1,12 @@
-#ifndef _SM_NET_SNMPMIB
-#define _SM_NET_SNMPMIB
+#ifndef _SM_NET_ASN1MIB
+#define _SM_NET_ASN1MIB
 #include "Data/StringUTF8Map.h"
+#include "Net/MIBReader.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/UTF8Reader.h"
 
 namespace Net
 {
-	class SNMPMIB
+	class ASN1MIB
 	{
 	public:
 		typedef struct
@@ -35,12 +35,11 @@ namespace Net
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
 		static void ModuleAppendOID(ModuleInfo *module, ObjectInfo *obj);
 		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage);
-		Bool ParseObjectBegin(Text::UTF8Reader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
-		Bool ParseModule(Text::UTF8Reader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage);
-		static Bool ReadLine(Text::UTF8Reader *reader, Text::StringBuilderUTF8 *sb);
+		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
+		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage);
 	public:
-		SNMPMIB();
-		~SNMPMIB();
+		ASN1MIB();
+		~ASN1MIB();
 
 		ModuleInfo *GetGlobalModule();
 		ModuleInfo *GetModuleByFileName(const UTF8Char *fileName);

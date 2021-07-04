@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Net/SNMPInfo.h"
-#include "Net/SNMPOIDDB.h"
+#include "Net/ASN1OIDDB.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "Sync/MutexUsage.h"
 #include "UI/MessageDialog.h"
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 	Net::SNMPUtil::OIDToString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
 	me->txtEnterpriseOID->SetText(sb.ToString());
 	sb.ClearStr();
-	Net::SNMPOIDDB::OIDToNameString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
+	Net::ASN1OIDDB::OIDToNameString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
 	me->txtEnterpriseName->SetText(sb.ToString());
 	Net::SocketUtil::GetAddrName(sbuff, &packet->addr);
 	me->txtRemoteIP->SetText(sbuff);
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 		Net::SNMPUtil::OIDToString(item->oid, item->oidLen, &sb);
 		me->lvResults->AddItem(sb.ToString(), 0);
 		sb.ClearStr();
-		Net::SNMPOIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
+		Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 		me->lvResults->SetSubItem(i, 1, sb.ToString());
 		me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 		if (item->valBuff)

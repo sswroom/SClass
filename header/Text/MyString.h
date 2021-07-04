@@ -204,7 +204,7 @@ namespace Text
 	const Char *StrToNewCSVRec(const Char *str1);
 	UOSInt StrCSVSplit(Char **strs, UOSInt maxStrs, Char *strToSplit);
 	Char *StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs);
-	UOSInt StrCountChar(Char *str1, Char c);
+	UOSInt StrCountChar(const Char *str1, Char c);
 
 
 	FORCEINLINE UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin) { return (UTF8Char*)StrConcat((Char*)oriStr, (const Char*)strToJoin); }
@@ -328,6 +328,6 @@ namespace Text
 	FORCEINLINE const UTF8Char *StrToNewCSVRec(const UTF8Char *str1) { return (const UTF8Char*)StrToNewCSVRec((const Char*)str1); }
 	FORCEINLINE UOSInt StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit) { return StrCSVSplit((Char**)strs, maxStrs, (Char*)strToSplit); };
 	FORCEINLINE UTF8Char *StrCSVJoin(UTF8Char *oriStr, const UTF8Char **strs, UOSInt nStrs) { return (UTF8Char*)StrCSVJoin((Char*)oriStr, (const Char**)strs, nStrs); };
-	FORCEINLINE UOSInt StrCountChar(UTF8Char *str1, UTF8Char c) { return StrCountChar((Char*)str1, (Char)c); };
+	FORCEINLINE UOSInt StrCountChar(const UTF8Char *str1, UTF8Char c) { return StrCountChar((const Char*)str1, (Char)c); };
 }
 #endif

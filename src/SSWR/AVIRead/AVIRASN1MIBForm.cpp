@@ -2,23 +2,23 @@
 #include "Data/ByteTool.h"
 #include "Net/SNMPInfo.h"
 #include "Net/SNMPUtil.h"
-#include "SSWR/AVIRead/AVIRSNMPMIBForm.h"
+#include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnFileDroped(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
-	SSWR::AVIRead::AVIRSNMPMIBForm *me = (SSWR::AVIRead::AVIRSNMPMIBForm*)userObj;
+	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
 	me->LoadFile(files[0]);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 {
-	SSWR::AVIRead::AVIRSNMPMIBForm *me = (SSWR::AVIRead::AVIRSNMPMIBForm*)userObj;
+	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UI::FileDialog *dlg;
 	me->txtFile->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SNMPMIB", false));
+	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->LoadFile(dlg->GetFileName());
@@ -26,10 +26,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnBrowseClicked(void *userObj)
 	DEL_CLASS(dlg);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnObjectsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
 {
-	SSWR::AVIRead::AVIRSNMPMIBForm *me = (SSWR::AVIRead::AVIRSNMPMIBForm*)userObj;
-	Net::SNMPMIB::ObjectInfo *obj = (Net::SNMPMIB::ObjectInfo*)me->lvObjects->GetSelectedItem();
+	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
+	Net::ASN1MIB::ObjectInfo *obj = (Net::ASN1MIB::ObjectInfo*)me->lvObjects->GetSelectedItem();
 	me->lvObjectsVal->ClearItems();
 	if (obj)
 	{
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPMIBForm::OnObjectsSelChg(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRSNMPMIBForm::LoadFile(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtFile->SetText(fileName);
@@ -64,13 +64,13 @@ void SSWR::AVIRead::AVIRSNMPMIBForm::LoadFile(const UTF8Char *fileName)
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	Net::SNMPMIB::ObjectInfo *obj;
-	Net::SNMPMIB::ModuleInfo *module = this->mib->GetModuleByFileName(fileName);
+	Net::ASN1MIB::ObjectInfo *obj;
+	Net::ASN1MIB::ModuleInfo *module = this->mib->GetModuleByFileName(fileName);
 	if (module == 0)
 	{
 		module = this->mib->GetGlobalModule();
 	}
-	Data::ArrayList<Net::SNMPMIB::ObjectInfo *> *objList = module->objValues;
+	Data::ArrayList<Net::ASN1MIB::ObjectInfo *> *objList = module->objValues;
 	i = 0;
 	j = objList->GetCount();
 	while (i < j)
@@ -142,14 +142,14 @@ void SSWR::AVIRead::AVIRSNMPMIBForm::LoadFile(const UTF8Char *fileName)
 	this->txtOIDText->SetText(sbOIDText.ToString());
 }
 
-SSWR::AVIRead::AVIRSNMPMIBForm::AVIRSNMPMIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
 	this->SetText((const UTF8Char*)"SNMP MIB");
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->mib, Net::SNMPMIB());
+	NEW_CLASS(this->mib, Net::ASN1MIB());
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
@@ -200,12 +200,12 @@ SSWR::AVIRead::AVIRSNMPMIBForm::AVIRSNMPMIBForm(UI::GUIClientControl *parent, UI
 	this->HandleDropFiles(OnFileDroped, this);
 }
 
-SSWR::AVIRead::AVIRSNMPMIBForm::~AVIRSNMPMIBForm()
+SSWR::AVIRead::AVIRASN1MIBForm::~AVIRASN1MIBForm()
 {
 	DEL_CLASS(this->mib);
 }
 
-void SSWR::AVIRead::AVIRSNMPMIBForm::OnMonitorChanged()
+void SSWR::AVIRead::AVIRASN1MIBForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }

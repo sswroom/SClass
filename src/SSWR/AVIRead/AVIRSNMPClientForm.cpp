@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Net/SNMPInfo.h"
-#include "Net/SNMPOIDDB.h"
+#include "Net/ASN1OIDDB.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
 #include "UI/MessageDialog.h"
 
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 			Net::SNMPUtil::OIDToString(item->oid, item->oidLen, &sb);
 			me->lvResults->AddItem(sb.ToString(), 0);
 			sb.ClearStr();
-			Net::SNMPOIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
+			Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 			me->lvResults->SetSubItem(i, 1, sb.ToString());
 			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 			if (item->valBuff)

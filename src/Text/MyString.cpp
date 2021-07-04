@@ -2446,7 +2446,7 @@ Char *Text::StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs)
 	return oriStr;
 }
 
-UOSInt Text::StrCountChar(Char *str1, Char c)
+UOSInt Text::StrCountChar(const Char *str1, Char c)
 {
 	UOSInt cnt = 0;
 	Char c2;

@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Net/SNMPOIDDB.h"
+#include "Net/ASN1OIDDB.h"
 #include "Net/SNMPUtil.h"
 
-Net::SNMPOIDDB::OIDInfo Net::SNMPOIDDB::oidList[] = {
+Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"zeroDotZero",													1,  {0x00}}, // 0.0
 	{"id-domainComponent",											10, {0x09, 0x92, 0x26, 0x89, 0x93, 0xF2, 0x2C, 0x64, 0x01, 0x19}}, // 0.9.2342.19200300.100.1.25
 	{"pkcs-1",														8,  {0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01}}, // 1.2.840.113549.1.1
@@ -9067,9 +9067,9 @@ Net::SNMPOIDDB::OIDInfo Net::SNMPOIDDB::oidList[] = {
 	{"id-sha224",													9,  {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x04}}, // 2.16.840.1.101.3.4.2.4
 };
 
-void Net::SNMPOIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
+void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
 {
-	Net::SNMPOIDDB::OIDInfo *oid;
+	Net::ASN1OIDDB::OIDInfo *oid;
 	UInt32 v;
 	UOSInt checkSize = pduSize;
 	while (checkSize > 0)
@@ -9096,9 +9096,9 @@ void Net::SNMPOIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::Str
 	}
 }
 
-Net::SNMPOIDDB::OIDInfo *Net::SNMPOIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
+Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
 {
-	Net::SNMPOIDDB::OIDInfo *oid;
+	Net::ASN1OIDDB::OIDInfo *oid;
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(oidList) / sizeof(oidList[0])) - 1;
 	OSInt k;

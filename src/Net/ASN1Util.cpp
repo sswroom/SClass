@@ -2,8 +2,9 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/ASN1Util.h"
-#include "Net/SNMPOIDDB.h"
+#include "Net/ASN1OIDDB.h"
 #include "Net/SNMPUtil.h"
+#include "Text/StringBuilderUTF8.h"
 
 UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
 {
@@ -217,6 +218,7 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd
 
 Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, UOSInt level)
 {
+	Text::StringBuilderUTF8 *innerSb;
 	while (pdu < pduEnd)
 	{
 		UInt8 type = pdu[0];
@@ -285,7 +287,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			sb->Append((const UTF8Char*)"OID ");
 			Net::SNMPUtil::OIDToString(&pdu[ofst], len, sb);
 			sb->Append((const UTF8Char*)" (");
-			Net::SNMPOIDDB::OIDToNameString(&pdu[ofst], len, sb);
+			Net::ASN1OIDDB::OIDToNameString(&pdu[ofst], len, sb);
 			sb->Append((const UTF8Char*)")\r\n");
 			pdu += ofst + len;
 			break;
@@ -348,6 +350,20 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			sb->Append((const UTF8Char*)"\r\n");
 			pdu += ofst + len;
 			break;
+		case 0x1C:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"UniversalString ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
+		case 0x1E:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"BMPString ");
+			sb->AppendC(&pdu[ofst], len);
+			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
+			break;
 		default:
 			if (type < 0x30)
 			{
@@ -373,6 +389,26 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			sb->AppendChar('\t', level);
 			sb->Append((const UTF8Char*)"}\r\n");
 			pdu += len;
+			break;
+		case 0xA0:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"CONTEXT SPECIFIC ");
+			NEW_CLASS(innerSb, Text::StringBuilderUTF8());
+			if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
+			{
+				sb->Append((const UTF8Char*)"{\r\n");
+				sb->Append(innerSb->ToString());
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"}\r\n");
+			}
+			else
+			{
+				sb->Append((const UTF8Char*)"(");
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->Append((const UTF8Char*)")\r\n");
+			}
+			DEL_CLASS(innerSb);
+			pdu += ofst + len;
 			break;
 		}
 	}

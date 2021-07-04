@@ -137,7 +137,7 @@
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
 #include "SSWR/AVIRead/AVIRSNMPManagerForm.h"
-#include "SSWR/AVIRead/AVIRSNMPMIBForm.h"
+#include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "SSWR/AVIRead/AVIRSNSManagerForm.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
@@ -327,7 +327,7 @@ typedef enum
 	MNU_DHCPSERVER,
 	MNU_SNMPCLIENT,
 	MNU_SNMPTRAPMON,
-	MNU_SNMPMIB,
+	MNU_ASN1MIB,
 	MNU_SNMPMANAGER,
 	MNU_MACGEN,
 	MNU_XMLWALK,
@@ -574,7 +574,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"SNMP");
 	mnu2->AddItem((const UTF8Char*)"SNMP Client", MNU_SNMPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"SNMP Trap Monitor", MNU_SNMPTRAPMON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SNMP MIB", MNU_SNMPMIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"SNMP MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"SNMP Manager", MNU_SNMPMANAGER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"LDAP");
 	mnu2->AddItem((const UTF8Char*)"LDAP Client", MNU_LDAPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1947,10 +1947,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 		}
 		break;
-	case MNU_SNMPMIB:
+	case MNU_ASN1MIB:
 		{
-			SSWR::AVIRead::AVIRSNMPMIBForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSNMPMIBForm(0, this->ui, this->core));
+			SSWR::AVIRead::AVIRASN1MIBForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1MIBForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

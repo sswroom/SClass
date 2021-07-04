@@ -99,6 +99,7 @@
 #include "Parser/FileParser/WAVParser.h"
 #include "Parser/FileParser/WPTParser.h"
 #include "Parser/FileParser/X13Parser.h"
+#include "Parser/FileParser/X509Parser.h"
 #include "Parser/FileParser/XLSParser.h"
 #include "Parser/FileParser/XMLParser.h"
 #include "Parser/FileParser/XPCMParser.h"
@@ -237,11 +238,13 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::ClassParser());
 	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::X509Parser());
+	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::CABParser()); ///////////////////////////////
 	this->AddFileParser(parser);
-
+	
 	NEW_CLASS(parser, Parser::FileParser::CUEParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::TARParser());

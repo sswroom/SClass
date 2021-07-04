@@ -1,6 +1,6 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRSNMPMIBFORM
-#define _SM_SSWR_AVIREAD_AVIRSNMPMIBFORM
-#include "Net/SNMPMIB.h"
+#ifndef _SM_SSWR_AVIREAD_AVIRASN1MIBFORM
+#define _SM_SSWR_AVIREAD_AVIRASN1MIBFORM
+#include "Net/ASN1MIB.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -16,11 +16,11 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRSNMPMIBForm : public UI::GUIForm
+		class AVIRASN1MIBForm : public UI::GUIForm
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SNMPMIB *mib;
+			Net::ASN1MIB *mib;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblFile;
@@ -44,8 +44,8 @@ namespace SSWR
 			static void __stdcall OnObjectsSelChg(void *userObj);
 			void LoadFile(const UTF8Char *fileName);
 		public:
-			AVIRSNMPMIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
-			virtual ~AVIRSNMPMIBForm();
+			AVIRASN1MIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			virtual ~AVIRASN1MIBForm();
 
 			virtual void OnMonitorChanged();
 		};

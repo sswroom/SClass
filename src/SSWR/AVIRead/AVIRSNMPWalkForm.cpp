@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Net/SNMPClient.h"
 #include "Net/SNMPInfo.h"
-#include "Net/SNMPOIDDB.h"
+#include "Net/ASN1OIDDB.h"
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
 #include "UI/MessageDialog.h"
 
@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 				Net::SNMPUtil::OIDToString(item->oid, item->oidLen, &sb);
 				this->lvResults->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
-				Net::SNMPOIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
+				Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 				this->lvResults->SetSubItem(i, 1, sb.ToString());
 				this->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 				if (item->valBuff)

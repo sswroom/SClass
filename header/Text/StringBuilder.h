@@ -41,6 +41,7 @@ namespace Text
 		void AllocLeng(UOSInt leng);
 		UOSInt GetLength();
 		void RemoveChars(UOSInt cnt);
+		void RemoveChars(UOSInt index, UOSInt cnt);
 		void Trim();
 		void TrimWSCRLF();
 		void TrimRight();
@@ -344,6 +345,19 @@ namespace Text
 			buffEnd -= cnt;
 		}
 		*buffEnd = 0;
+	}
+
+	template<class T> void Text::StringBuilder<T>::RemoveChars(UOSInt index, UOSInt cnt)
+	{
+		UOSInt endOfst = index + cnt;
+		if (endOfst >= (UOSInt)(buffEnd - buff))
+		{
+			this->TrimToLength(index); 
+		}
+		else
+		{
+			buffEnd = Text::StrConcat(&buff[index], &buff[endOfst]);
+		}
 	}
 
 	template<class T> void Text::StringBuilder<T>::Trim()

@@ -847,6 +847,8 @@ Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
 @JasyptEncryptor.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
 @PBKDF2.o
+Crypto/X509File.h: ../../src/Crypto/X509File.cpp
+@X509File.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
 @AES128.o
 Crypto/Encrypt/AES192.h: ../../src/Crypto/Encrypt/AES192.cpp
@@ -2222,6 +2224,8 @@ Net/MACInfo.h: ../../src/Net/MACInfo.cpp
 @MACInfo.o
 Net/MACInfoList.h: ../../src/Net/MACInfoList.cpp
 @MACInfoList.o
+Net/MIBReader.h: ../../src/Net/MIBReader.cpp
+@MIBReader.o
 Net/MIME.h: ../../src/Net/MIME.cpp
 @MIME.o
 Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
@@ -2278,10 +2282,10 @@ Net/SNMPInfo.h: ../../src/Net/SNMPInfo.cpp
 @SNMPInfo.o
 Net/SNMPManager.h: ../../src/Net/SNMPManager.cpp
 @SNMPManager.o
-Net/SNMPMIB.h: ../../src/Net/SNMPMIB.cpp
-@SNMPMIB.o
-Net/SNMPOIDDB.h: ../../src/Net/SNMPOIDDB.cpp
-@SNMPOIDDB.o
+Net/ASN1MIB.h: ../../src/Net/ASN1MIB.cpp
+@ASN1MIB.o
+Net/ASN1OIDDB.h: ../../src/Net/ASN1OIDDB.cpp
+@ASN1OIDDB.o
 Net/SNMPTrapMonitor.h: ../../src/Net/SNMPTrapMonitor.cpp
 @SNMPTrapMonitor.o
 Net/SNMPUtil.h: ../../src/Net/SNMPUtil.cpp
@@ -2972,8 +2976,8 @@ SSWR/AVIRead/AVIRSNMPClientForm.h: ../../src/SSWR/AVIRead/AVIRSNMPClientForm.cpp
 @AVIRSNMPClientForm.o
 SSWR/AVIRead/AVIRSNMPManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
 @AVIRSNMPManagerForm.o
-SSWR/AVIRead/AVIRSNMPMIBForm.h: ../../src/SSWR/AVIRead/AVIRSNMPMIBForm.cpp
-@AVIRSNMPMIBForm.o
+SSWR/AVIRead/AVIRASN1MIBForm.h: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
+@AVIRASN1MIBForm.o
 SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 @AVIRSNMPTrapMonitorForm.o
 SSWR/AVIRead/AVIRSNMPWalkForm.h: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
@@ -3066,6 +3070,8 @@ SSWR/AVIRead/AVIRWMIForm.h: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 @AVIRWMIForm.o
 SSWR/AVIRead/AVIRWOLForm.h: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
 @AVIRWOLForm.o
+SSWR/AVIRead/AVIRX509FileForm.h: ../../src/SSWR/AVIRead/AVIRX509FileForm.cpp
+@AVIRX509FileForm.o
 SSWR/AVIRead/AVIRXMLWalkForm.h: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
 @AVIRXMLWalkForm.o
 SSWR/AVIRead/IMapNavigator.h:
@@ -3406,6 +3412,7 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 Core.o: ../../src/Core/Core.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
+X509File.o: ../../src/Crypto/X509File.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
 AES256.o: ../../src/Crypto/Encrypt/AES256.cpp
@@ -4029,6 +4036,7 @@ LogClient.o: ../../src/Net/LogClient.cpp
 LogServer.o: ../../src/Net/LogServer.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
+MIBReader.o: ../../src/Net/MIBReader.cpp
 MIME.o: ../../src/Net/MIME.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
 MQTTClient.o: ../../src/Net/MQTTClient.cpp
@@ -4056,8 +4064,8 @@ SMTPServer.o: ../../src/Net/SMTPServer.cpp
 SNMPClient.o: ../../src/Net/SNMPClient.cpp
 SNMPInfo.o: ../../src/Net/SNMPInfo.cpp
 SNMPManager.o: ../../src/Net/SNMPManager.cpp
-SNMPMIB.o: ../../src/Net/SNMPMIB.cpp
-SNMPOIDDB.o: ../../src/Net/SNMPOIDDB.cpp
+ASN1MIB.o: ../../src/Net/ASN1MIB.cpp
+ASN1OIDDB.o: ../../src/Net/ASN1OIDDB.cpp
 SNMPPDUBuilder.o: ../../src/Net/SNMPPDUBuilder.cpp
 SNMPTrapMonitor.o: ../../src/Net/SNMPTrapMonitor.cpp
 SNMPUtil.o: ../../src/Net/SNMPUtil.cpp
@@ -4400,7 +4408,7 @@ AVIRSNBDongleForm.o: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
 AVIRSNBHandlerForm.o: ../../src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
 AVIRSNMPClientForm.o: ../../src/SSWR/AVIRead/AVIRSNMPClientForm.cpp
 AVIRSNMPManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
-AVIRSNMPMIBForm.o: ../../src/SSWR/AVIRead/AVIRSNMPMIBForm.cpp
+AVIRASN1MIBForm.o: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
 AVIRSNMPTrapMonitorForm.o: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
@@ -4447,6 +4455,7 @@ AVIRWiFiLogManagerForm.o: ../../src/SSWR/AVIRead/AVIRWiFiLogManagerForm.cpp
 AVIRWifiScanForm.o: ../../src/SSWR/AVIRead/AVIRWifiScanForm.cpp
 AVIRWMIForm.o: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 AVIRWOLForm.o: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
+AVIRX509FileForm.o: ../../src/SSWR/AVIRead/AVIRX509FileForm.cpp
 AVIRXMLWalkForm.o: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
 AVIRMailViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMailViewer.cpp
 AVIRMIMEHTMLViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.cpp

@@ -23,6 +23,7 @@
 #include "SSWR/AVIRead/AVIRSectorForm.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
+#include "SSWR/AVIRead/AVIRX509FileForm.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -205,9 +206,19 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
+	case IO::ParsedObject::PT_X509_FILE:
+		{
+			SSWR::AVIRead::AVIRX509FileForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRX509FileForm(0, this->ui, this, (Crypto::X509File*)pobj));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
 	case IO::ParsedObject::PT_TEXT_DOCUMENT:
 	case IO::ParsedObject::PT_WORKBOOK:
 	case IO::ParsedObject::PT_COORDINATE_SYSTEM:
+	case IO::ParsedObject::PT_VECTOR_DOCUMENT:
+	case IO::ParsedObject::PT_UNKNOWN:
 	default:
 		DEL_CLASS(pobj);
 		break;

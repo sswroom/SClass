@@ -10,5 +10,5 @@ namespace Parser
 		FullParserList();
 		virtual ~FullParserList();
 	};
-};
+}
 #endif

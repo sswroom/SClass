@@ -12,6 +12,7 @@ namespace Text
 		virtual UOSInt GetCharCnt() = 0;
 		virtual Bool EndsWith(Char c) = 0;
 		virtual void RemoveChars(UOSInt cnt) = 0;
+		virtual void RemoveChars(UOSInt index, UOSInt cnt) = 0;
 
 		virtual StringBuilderUTF *AppendI16(Int16 iVal) = 0;
 		virtual StringBuilderUTF *AppendU16(UInt16 iVal) = 0;
@@ -49,6 +50,7 @@ namespace Text
 		virtual Bool EndsWith(Char c) { if (this->buff == this->buffEnd) return false; return this->buffEnd[-1] == c; }
 		virtual Bool EndsWith(const T *s) { UOSInt l = Text::StrCharCnt(s); if (this->GetLength() < l) return false; return Text::StrEquals(&this->buffEnd[-(OSInt)l], s); }
 		virtual void RemoveChars(UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(cnt); }
+		virtual void RemoveChars(UOSInt index, UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(index, cnt); }
 		virtual StringBuilderUTF *AppendI16(Int16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendI16(iVal); }
 		virtual StringBuilderUTF *AppendU16(UInt16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendU16(iVal); }
 		virtual StringBuilderUTF *AppendI32(Int32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendI32(iVal); }

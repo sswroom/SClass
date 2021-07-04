@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
-#include "Net/SNMPOIDDB.h"
+#include "Net/ASN1OIDDB.h"
 #include "SSWR/AVIRead/AVIRSNMPManagerForm.h"
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
 #include "Sync/Thread.h"
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 			Net::SNMPUtil::OIDToString(agent->objId, agent->objIdLen, &sb);
 			me->txtAgentOID->SetText(sb.ToString());
 			sb.ClearStr();
-			Net::SNMPOIDDB::OIDToNameString(agent->objId, agent->objIdLen, &sb);
+			Net::ASN1OIDDB::OIDToNameString(agent->objId, agent->objIdLen, &sb);
 			me->txtAgentOIDName->SetText(sb.ToString());
 		}
 		else
