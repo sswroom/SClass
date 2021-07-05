@@ -7,7 +7,7 @@
 #include "Net/SNMPUtil.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
-#define DEBUGOBJ "MAPPING-BASED-MATCHING"
+#define DEBUGOBJ "ManualHandlingInstructions"
 
 UOSInt Net::ASN1MIB::CalcLineSpace(const UTF8Char *txt)
 {
@@ -547,15 +547,25 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												return false;
 											}
 										}
-										else if (sb.StartsWith((const UTF8Char*)"(WITH") || sb.StartsWith((const UTF8Char*)"( WITH") || sb.StartsWith((const UTF8Char*)"(ALL") || sb.StartsWith((const UTF8Char*)"( ALL"))
+										else
 										{
-											sb.ClearStr();
-											sb.Append(currObj->typeVal);
-											sb.AppendChar(' ', 1);
-											reader->NextWord(&sb);
-											Text::StrDelNew(currObj->typeVal);
-											currObj->typeVal = Text::StrCopyNew(sb.ToString());
-											RemoveSpace((UTF8Char*)currObj->typeVal);
+											while (sb.StartsWith((const UTF8Char*)"(WITH") ||
+												sb.StartsWith((const UTF8Char*)"( WITH") ||
+												sb.StartsWith((const UTF8Char*)"(CONSTRAINED") ||
+												sb.StartsWith((const UTF8Char*)"(ALL") ||
+												sb.StartsWith((const UTF8Char*)"( ALL"))
+											{
+												sb.ClearStr();
+												sb.Append(currObj->typeVal);
+												sb.AppendChar(' ', 1);
+												reader->NextWord(&sb);
+												Text::StrDelNew(currObj->typeVal);
+												currObj->typeVal = Text::StrCopyNew(sb.ToString());
+												RemoveSpace((UTF8Char*)currObj->typeVal);
+												sb.ClearStr();
+												reader->PeekWord(&sb);
+												RemoveSpace(sb.ToString());
+											}
 										}
 									}
 									currObj = 0;
@@ -577,10 +587,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						{
 							currObj->typeVal = Text::StrCopyNew(sb.ToString());
 							i = Text::StrIndexOf(currObj->typeVal, '{');
-							j = Text::StrIndexOf(currObj->typeVal, '}');
 							if (i >= 0)
 							{
-								if (j > i)
+								if (Text::StrCountChar(currObj->typeVal, '{') <= Text::StrCountChar(currObj->typeVal, '}'))
 								{
 									currObj = 0;
 									objIsEqual = false;
@@ -600,9 +609,17 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									errMessage->Append((const UTF8Char*)"Unexpected end of file after OF");
 									return false;
 								}
+
+								Text::StringBuilderUTF8 sbTmp;
+								reader->PeekWord(&sbTmp);
+								if (sbTmp.StartsWith((const UTF8Char*)"{"))
+								{
+									reader->NextWord(&sb);
+								}
 								Text::StrDelNew(currObj->typeVal);
 								currObj->typeVal = Text::StrCopyNew(sb.ToString());
 								sb.ClearStr();
+								currObj = 0;
 							}
 							else
 							{
@@ -1210,6 +1227,13 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									sb.Append(obj->typeVal);
 									sb.AppendChar(' ', 1);
 									reader->NextWord(&sb);
+
+									Text::StringBuilderUTF8 sbTmp;
+									reader->PeekWord(&sbTmp);
+									if (sbTmp.StartsWith((const UTF8Char*)"{"))
+									{
+										reader->NextWord(&sb);
+									}
 									Text::StrDelNew(obj->typeVal);
 									obj->typeVal = Text::StrCopyNew(sb.ToString());
 								}
@@ -1556,10 +1580,18 @@ Bool Net::ASN1MIB::ApplyImports(Text::StringBuilderUTF *errMessage)
 
 Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage, Bool postApply)
 {
+	Text::StringBuilderUTF8 sbFileName;
 	IO::FileStream *fs;
 	Net::MIBReader *reader;
 	ModuleInfo *module;
 	Bool succ;
+	if (IO::Path::GetPathType(fileName) != IO::Path::PT_FILE)
+	{
+		sbFileName.ClearStr();
+		sbFileName.Append(fileName);
+		sbFileName.Append((const UTF8Char*)".asn");
+		fileName = sbFileName.ToString();
+	}
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
 	{
@@ -1573,6 +1605,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbModuleName;
 	Text::StringBuilderUTF8 sbOID;
+	sb.ClearStr();
 	if (!reader->NextWord(&sbModuleName))
 	{
 		errMessage->Append((const UTF8Char*)"Module definition not found");
