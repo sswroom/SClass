@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Net/ASN1OIDDB.h"
 #include "Net/SNMPInfo.h"
 #include "Net/SNMPUtil.h"
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
@@ -102,7 +103,12 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 		sb.ClearStr();
 		Net::SNMPUtil::OIDToString(obj->oid, obj->oidLen, &sb);
 		this->lvOID->AddItem(sb.ToString(), obj);
-		this->lvOID->SetSubItem(i, 1, obj->objectName);
+		Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
+		if (entry)
+		{
+			this->lvOID->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+		}
+		this->lvOID->SetSubItem(i, 2, obj->objectName);
 
 		sbOIDText.AppendChar('\t', 1);
 		sbOIDText.Append((const UTF8Char*)"{\"");
@@ -145,7 +151,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
-	this->SetText((const UTF8Char*)"SNMP MIB");
+	this->SetText((const UTF8Char*)"ASN1 MIB");
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -174,7 +180,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	this->lvObjectsVal->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvObjectsVal->AddColumn((const UTF8Char*)"Value", 600);
 	NEW_CLASS(this->vspObjects, UI::GUIVSplitter(ui, this->tpObjects, 3, true));
-	NEW_CLASS(this->lvObjects, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvObjects, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvObjects->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvObjects->SetShowGrid(true);
 	this->lvObjects->SetFullRowSelect(true);
@@ -185,11 +191,12 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	this->lvObjects->HandleSelChg(OnObjectsSelChg, this);
 
 	this->tpOID = this->tcMain->AddTabPage((const UTF8Char*)"OID");
-	NEW_CLASS(this->lvOID, UI::GUIListView(ui, this->tpOID, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvOID, UI::GUIListView(ui, this->tpOID, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvOID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvOID->SetShowGrid(true);
 	this->lvOID->SetFullRowSelect(true);
 	this->lvOID->AddColumn((const UTF8Char*)"OID", 200);
+	this->lvOID->AddColumn((const UTF8Char*)"DB Name", 200);
 	this->lvOID->AddColumn((const UTF8Char*)"Name", 200);
 
 	this->tpOIDText = this->tcMain->AddTabPage((const UTF8Char*)"OIDText");

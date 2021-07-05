@@ -14,6 +14,7 @@ const UTF8Char *Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSTy
 		return (const UTF8Char*)"7gogo";
 	case ST_INSTAGRAM:
 		return (const UTF8Char*)"Instagram";
+	case ST_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

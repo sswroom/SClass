@@ -614,6 +614,7 @@ const UTF8Char *IO::SNBDongle::GetHandleName(HandleType handType)
 		return (const UTF8Char*)"Air Quality";
 	case HT_WATERLEAKAGE:
 		return (const UTF8Char*)"Water Leakage";
+	case HT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -663,6 +664,9 @@ const UTF8Char *IO::SNBDongle::GetReadingName(ReadingType readingType)
 		return (const UTF8Char*)"Particle 10um";
 	case IO::SNBDongle::RT_ALERT:
 		return (const UTF8Char*)"Alert";
+	case IO::SNBDongle::RT_GAS_CH4:
+		return (const UTF8Char*)"Gas CH4 Level";
+	case IO::SNBDongle::RT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Value";
 	}

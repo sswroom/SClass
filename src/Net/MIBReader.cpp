@@ -12,7 +12,8 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 
 	OSInt i;
 	OSInt j;
-	if (this->multiLineComment)
+	OSInt k;
+	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
 		i = sb->IndexOf((const UTF8Char*)"*/", initSize);
 		if (i < 0)
@@ -21,23 +22,35 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 			return true;
 		}
 		sb->RemoveChars(initSize, (UOSInt)i + 2 - initSize);
-		this->multiLineComment = false;
+		this->escapeType = ET_NONE;
+	}
+	else if (this->escapeType == ET_STRING)
+	{
+		i = sb->IndexOf((const UTF8Char*)"\"", initSize);
+		if (i < 0)
+		{
+			return true;
+		}
+		initSize = (UOSInt)i + 1;
+		this->escapeType = ET_NONE;
 	}
 	while (true)
 	{
 		i = sb->IndexOf((const UTF8Char*)"--", initSize);
 		j = sb->IndexOf((const UTF8Char*)"/*", initSize);
-		if (i < 0 && j < 0)
+		k = sb->IndexOf((const UTF8Char*)"\"", initSize);
+		if (i < 0 && j < 0 && k < 0)
 		{
 			break;
 		}
 
-		if (i >= 0 && (j < 0 || j > i))
+		if (i >= 0 && (j < 0 || j > i) && (k < 0 || k > i))
 		{
 			OSInt j = sb->IndexOf((const UTF8Char*)"--", (UOSInt)i + 2);
 			if (j >= 0)
 			{
 				sb->RemoveChars((UOSInt)i, (UOSInt)(j - i + 2));
+				initSize = (UOSInt)i;
 			}
 			else
 			{
@@ -45,7 +58,7 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 				break;
 			}
 		}
-		else
+		else if (j >= 0 && (k < 0 || k > j))
 		{
 			i = sb->IndexOf((const UTF8Char*)"*/", (UOSInt)j + 2);
 			if (i >= 0)
@@ -55,7 +68,20 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 			else
 			{
 				sb->TrimToLength((UOSInt)j);
-				this->multiLineComment = true;
+				this->escapeType = ET_MULTILINE_COMMENT;
+				break;
+			}
+		}
+		else
+		{
+			i = sb->IndexOf((const UTF8Char*)"\"", (UOSInt)k + 1);
+			if (i >= 0)
+			{
+				initSize = (UOSInt)i + 1;
+			}
+			else
+			{
+				this->escapeType = ET_STRING;
 				break;
 			}
 		}
@@ -133,9 +159,20 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 	else if (Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst]))
 	{
 		UOSInt i = this->currOfst;
-		while (Text::CharUtil::IsAlphaNumeric(sptr[i]) || sptr[i] == '-' || sptr[i] == '_')
+		if (Text::StrStartsWith(&sptr[this->currOfst], (const UTF8Char*)"OCTET STRING") && !Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst + 12]))
 		{
-			i++;
+			i += 12;
+		}
+		else if (Text::StrStartsWith(&sptr[this->currOfst], (const UTF8Char*)"OBJECT IDENTIFIER") && !Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst + 17]))
+		{
+			i += 17;
+		}
+		else
+		{
+			while (Text::CharUtil::IsAlphaNumeric(sptr[i]) || sptr[i] == '-' || sptr[i] == '_')
+			{
+				i++;
+			}
 		}
 		sb->AppendC(&sptr[this->currOfst], i - this->currOfst);
 		if (move)
@@ -193,6 +230,27 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 			}
 		}
 	}
+	else if (sptr[this->currOfst] == '"')
+	{
+		OSInt i;
+		while (true)
+		{
+			i = Text::StrIndexOf(&sptr[this->currOfst + 1], '"');
+			if (i >= 0)
+			{
+				break;
+			}
+			reader->GetLastLineBreak(this->sbLine);
+			if (!ReadLineInner(this->sbLine))
+			{
+				return false;
+			}
+			sptr = this->sbLine->ToString();
+		}
+		sb->AppendC(&sptr[this->currOfst], (UOSInt)i + 2);
+		this->currOfst += (UOSInt)i + 2;
+		return true;
+	}
 	else
 	{
 		return false;
@@ -204,7 +262,7 @@ Net::MIBReader::MIBReader(IO::Stream *stm)
 	NEW_CLASS(this->reader, Text::UTF8Reader(stm));
 	NEW_CLASS(this->sbLine, Text::StringBuilderUTF8());
 	this->currOfst = 0;
-	this->multiLineComment = false;
+	this->escapeType = ET_NONE;
 }
 
 Net::MIBReader::~MIBReader()

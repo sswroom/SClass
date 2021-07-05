@@ -716,6 +716,7 @@ const UTF8Char *Text::XMLNode::NodeTypeGetName(NodeType ntype)
 		return (const UTF8Char*)"Element End";
 	case NT_DOCTYPE:
 		return (const UTF8Char*)"DocType";
+	case NT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

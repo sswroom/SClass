@@ -175,7 +175,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						sampleLeft = sampleCnt;
 					}
 					sampleCnt -= sampleLeft;
-					this->tonesCurrSample += (Int32)sampleLeft;
+					this->tonesCurrSample += (UInt32)sampleLeft;
 					while (sampleLeft-- > 0)
 					{
 						v = (Math::Sin(freq1Curr) + Math::Sin(freq2Curr)) * 0.5;
@@ -206,7 +206,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						sampleLeft = sampleCnt;
 					}
 					sampleCnt -= sampleLeft;
-					this->tonesCurrSample += (Int32)sampleLeft;
+					this->tonesCurrSample += (UInt32)sampleLeft;
 					i += sampleLeft * this->format.align;
 				}
 
@@ -237,7 +237,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 					ivCh = 255;
 				if (ivCh < 0)
 					ivCh = 0;
-				buff[i] = ivCh;
+				buff[i] = (UInt8)ivCh;
 				i += 1;
 			}
 		}

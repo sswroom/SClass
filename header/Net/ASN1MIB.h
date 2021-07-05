@@ -9,7 +9,9 @@ namespace Net
 	class ASN1MIB
 	{
 	public:
-		typedef struct
+		struct ModuleInfo;
+
+		struct ObjectInfo
 		{
 			const UTF8Char *objectName;
 			const UTF8Char *typeName;
@@ -18,16 +20,18 @@ namespace Net
 			UOSInt oidLen;
 			Data::ArrayList<const UTF8Char *> *valName;
 			Data::ArrayList<const UTF8Char *> *valCont;
-		} ObjectInfo;
+			ModuleInfo *impModule;
+			Bool parsed;
+		};
 
-		typedef struct
+		struct ModuleInfo
 		{
 			const UTF8Char *moduleName;
 			const UTF8Char *moduleFileName;
 			Data::ArrayListStrUTF8 *objKeys;
 			Data::ArrayList<ObjectInfo*> *objValues;
 			Data::ArrayList<ObjectInfo *> *oidList;
-		} ModuleInfo;
+		};
 	private:
 		Data::StringUTF8Map<ModuleInfo *> *moduleMap;
 		ModuleInfo globalModule;
@@ -37,11 +41,17 @@ namespace Net
 		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage);
 		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
 		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage);
-		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
+		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
 		Bool ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
-		Bool ApplyImports(Text::StringBuilderUTF *errMessage);
 		Bool ApplyOIDs(Text::StringBuilderUTF *errMessage);
+		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
+		Bool ApplyImports(Text::StringBuilderUTF *errMessage);
 		Bool LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage, Bool postApply);
+
+		static void RemoveSpace(UTF8Char *s);
+		static Bool IsType(const UTF8Char *s);
+		static Bool IsKnownType(const UTF8Char *s);
+		static Bool IsUnknownType(const UTF8Char *s);
 	public:
 		ASN1MIB();
 		~ASN1MIB();

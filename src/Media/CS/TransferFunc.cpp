@@ -360,6 +360,14 @@ const UTF8Char *Media::CS::TransferFunc::GetTransferFuncName(Media::CS::Transfer
 		return (const UTF8Char*)"LUT";
 	case Media::CS::TRANT_PARAM1:
 		return (const UTF8Char*)"Parameter Function1";
+	case Media::CS::TRANT_VDISPLAY:
+		return (const UTF8Char*)"As Display (Video)";
+	case Media::CS::TRANT_PDISPLAY:
+		return (const UTF8Char*)"As Display (Picture)";
+	case Media::CS::TRANT_VUNKNOWN:
+		return (const UTF8Char*)"Unknown (Video)";
+	case Media::CS::TRANT_PUNKNOWN:
+		return (const UTF8Char*)"Unknown (Picture)";
 	default:
 		return (const UTF8Char*)"Unknown function";
 	}

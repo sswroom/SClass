@@ -110,8 +110,12 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 			sizeLeft -= thisSize;
 			i += 2;
 		}
-
 		break;
+	case AACM_GENERIC:
+	case AACM_AAC_LBR:
+	case AACM_CELP_CBR:
+	case AACM_CELP_VBR:
+	case AACM_UNKNOWN:
 	default:
 		mutUsage.EndUse();
 		return;

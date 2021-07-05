@@ -24,8 +24,8 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(void *userO
 	OSInt i = me->lbFilters->GetSelectedIndex();
 	if (i != -1)
 	{
-		MapFilter *filter = me->filters->RemoveAt(i);
-		me->lbFilters->RemoveItem(i);
+		MapFilter *filter = me->filters->RemoveAt((UOSInt)i);
+		me->lbFilters->RemoveItem((UOSInt)i);
 		DEL_CLASS(filter);
 	}
 }
@@ -60,8 +60,8 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl
 	this->btnOK->HandleButtonClick(OnOkClicked, this);
 
 	UTF8Char sbuff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	MapFilter *filter;
 	i = 0;
 	j = this->filters->GetCount();

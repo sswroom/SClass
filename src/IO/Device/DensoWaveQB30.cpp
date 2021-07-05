@@ -350,9 +350,9 @@ void IO::Device::DensoWaveQB30::HandleCodeScanned(ScanHandler hdlr, void *userOb
 	this->scanHdlrObj = userObj;
 }
 
-OSInt IO::Device::DensoWaveQB30::GetCommandList(Data::ArrayList<DeviceCommand> *cmdList)
+UOSInt IO::Device::DensoWaveQB30::GetCommandList(Data::ArrayList<DeviceCommand> *cmdList)
 {
-	OSInt initCnt = cmdList->GetCount();
+	UOSInt initCnt = cmdList->GetCount();
 	cmdList->Add(DC_GET_READ_MODE);
 	cmdList->Add(DC_SET_READ_MODE);
 	cmdList->Add(DC_GET_BW_MODE);
@@ -1870,49 +1870,49 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 	{
 	case DC_SET_READ_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR01#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BW_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR02#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_READ_REPEAT_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR04#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR04#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BRIGHTNESS:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR07#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SHT_SIGNAL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR09#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SCAN_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0B#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SHUTTER_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0G#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0G#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_GAIN:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0K#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0K#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_LED_LEVEL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0L#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_LED_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR0M#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_OUTPUT_TIMING:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR11#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_UNREAD_DATA_SEND:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR12#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_INDIR_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR15#00"), val), "\r");
@@ -1920,7 +1920,7 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR15#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR15#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_TRIGGER_DELAY:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR16#00"), val), "\r");
@@ -1928,7 +1928,7 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR16#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR16#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SIGNAL_ON_DUR:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR17#00"), val), "\r");
@@ -1936,19 +1936,19 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR17#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR17#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SIGNAL_DELAY:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR18#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR18#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_LIGHT_LED:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1C#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_MARKER_LIGHT:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1J#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_DECODE_TIME_LIMIT:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1D#00"), val), "\r");
@@ -1956,139 +1956,139 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1D#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1D#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_OUTPUT1_TYPE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1E#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_OUTPUT2_TYPE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1G#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_AUTO_SENSE_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1H#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CONT_READ_MODE_B:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR1I#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_QRCODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR41#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_MICRO_QRCODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR42#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_PDF417:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR43#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_DATAMATRIX:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR44#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BARCODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR45#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_INTERLEAVED_2OF5:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR46#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CODABAR:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR47#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CODEBAR_START_STOP:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR48#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CODE39:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR49#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CODE128:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4A#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_QRCODE_REVERSE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4B#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_QRLINK_CODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4F#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_GS1_DATABAR:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4I#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_GS1_COMPOSITE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4J#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_MICRO_PDF417:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4K#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BARCODE_READ_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4L#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SQRC:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4M#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SQRC_KEY_UNMATCH:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4P#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_SQRC_KEY_MATCH:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4O#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_IQRCODE_SQUARE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4Q#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_IQRCODE_RECT:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4R#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_AZTEC_FULL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4V#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_AZTEC_COMPACT:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4W#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_MENU_READ:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR4Z#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_COMM_SEQ:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR21#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BAUD_RATE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR22#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CODE_MARK:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR25#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_LINE_NUM:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR26#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BCC:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR27#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CTS_SIGNAL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR28#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_CTS_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR29#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR29#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_ACK_NAK_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR2A#0"), val), "\r");
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR2A#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_RECV_HDR:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR2C#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BUZZER:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR33#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_READ_ERR_BUZZER:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR35#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_MAGIC_KEY:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR37#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_POWER_ON_BUZZER:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR38#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	case DC_SET_BUZZER_OFF:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(cbuff, "WR39#"), val), "\r");
-		return this->WriteCommand(cbuff, csptr - cbuff);
+		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
 	default:
 		return false;
 	}

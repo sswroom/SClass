@@ -169,7 +169,7 @@ namespace IO
 		virtual Bool ResetDefault() = 0;
 		virtual void HandleCodeScanned(ScanHandler hdlr, void *userObj) = 0;
 
-		virtual OSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList) = 0;
+		virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList) = 0;
 		virtual const UTF8Char *GetCommandName(DeviceCommand dcmd) = 0;
 		virtual CommandType GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal) = 0;
 		virtual const UTF8Char *GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal) = 0;

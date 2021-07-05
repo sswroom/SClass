@@ -340,9 +340,9 @@ void IO::Device::DensoWaveQK30U::HandleCodeScanned(ScanHandler hdlr, void *userO
 	this->scanHdlrObj = userObj;
 }
 
-OSInt IO::Device::DensoWaveQK30U::GetCommandList(Data::ArrayList<DeviceCommand> *cmdList)
+UOSInt IO::Device::DensoWaveQK30U::GetCommandList(Data::ArrayList<DeviceCommand> *cmdList)
 {
-	OSInt initCnt = cmdList->GetCount();
+	UOSInt initCnt = cmdList->GetCount();
 /*	cmdList->Add(DC_GET_READ_MODE);
 	cmdList->Add(DC_SET_READ_MODE);
 	cmdList->Add(DC_GET_BW_MODE);

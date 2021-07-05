@@ -129,6 +129,12 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			json->ObjectEnd();
 		}
 		break;
+	case Math::Vector2D::VT_MULTIPOINT:
+	case Math::Vector2D::VT_IMAGE:
+	case Math::Vector2D::VT_STRING:
+	case Math::Vector2D::VT_ELLIPSE:
+	case Math::Vector2D::VT_PIEAREA:
+	case Math::Vector2D::VT_UNKNOWN:
 	default:
 		json->ObjectAddStrUTF8(name, (const UTF8Char*)"?");
 		break;

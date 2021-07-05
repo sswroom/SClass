@@ -9,10 +9,17 @@ namespace Net
 	class MIBReader
 	{
 	private:
+		typedef enum
+		{
+			ET_NONE,
+			ET_MULTILINE_COMMENT,
+			ET_STRING
+		} EscapeType;
+	private:
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 *sbLine;
 		UOSInt currOfst;
-		Bool multiLineComment;
+		EscapeType escapeType;
 
 		Bool ReadLineInner(Text::StringBuilderUTF8 *sb);
 		Bool ReadWord(Text::StringBuilderUTF *sb, Bool move);
