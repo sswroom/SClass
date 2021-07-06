@@ -23,6 +23,31 @@
 #endif
 
 #include <linux/wireless.h>
+/*
+==5258== Warning: set address range perms: large range [0x1b13d040, 0x2b13d044) (undefined)
+==5258== Warning: set address range perms: large range [0x1b13d028, 0x2b13d05c) (noaccess)
+==5258== Warning: set address range perms: large range [0x2b13e040, 0x4b13e044) (undefined)
+==5258== Warning: set address range perms: large range [0x2b13e028, 0x4b13e05c) (noaccess)
+==5258== Warning: set address range perms: large range [0x59c8a040, 0x99c8a044) (undefined)
+==5258== Warning: set address range perms: large range [0x59c8a028, 0x99c8a05c) (noaccess)
+==5258== Warning: set address range perms: large range [0x99c8b040, 0x119c8b044) (undefined)
+==5258== Warning: set address range perms: large range [0x99c8b028, 0x119c8b05c) (noaccess)
+==5258== Warning: set address range perms: large range [0x119c8c040, 0x219c8c044) (undefined)
+==5258== Warning: set address range perms: large range [0x119c8c028, 0x219c8c05c) (noaccess)
+==5258== Warning: set address range perms: large range [0x219c8d040, 0x419c8d044) (undefined)
+==5258== Warning: set address range perms: large range [0x219c8d028, 0x419c8d05c) (noaccess)
+==5258== Thread 9:
+==5258== Invalid free() / delete / delete[] / realloc()
+==5258==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==5258==    by 0x21BAE7: MemFree(void*) (MyMemoryL.cpp:255)
+==5258==    by 0x2643D3: Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*>*) (WirelessLANL.cpp:597)
+==5258==    by 0x25CDC6: ScanThread(void*) (WiFiCaptureMain.cpp:354)
+==5258==    by 0x4917FA2: start_thread (pthread_create.c:486)
+==5258==    by 0x4D4D4CE: clone (clone.S:95)
+==5258==  Address 0xfffffffffffffffc is not stack'd, malloc'd or (recently) free'd
+==5258== 
+==5258== Warning: set address range perms: large range [0x1b13d040, 0x2b13d044) (undefined)
+*/
 
 typedef struct
 {
@@ -202,6 +227,12 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 	return this->ieList->GetItem(index);
 }
 
+void Net::WirelessLAN::Interface::Reopen()
+{
+	close(-1 + (int)(OSInt)this->id);
+	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
+}
+
 Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData)
 {
 	if (clsData)
@@ -218,7 +249,7 @@ Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE
 		this->clsData = 0;
 	}
 	this->name = Text::StrCopyNew(name);
-	this->id = id;
+	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 	this->state = state;
 }
 
@@ -230,6 +261,7 @@ Net::WirelessLAN::Interface::~Interface()
 		MemFree(cmds);
 	}
 	Text::StrDelNew(this->name);
+	close(-1 + (int)(OSInt)this->id);
 }
 
 const UTF8Char *Net::WirelessLAN::Interface::GetName()
@@ -263,7 +295,14 @@ Bool Net::WirelessLAN::Interface::Scan()
 	wrq.u.data.flags = 0;
 	wrq.u.data.length = 0;
 	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
-//	printf("SIOCSIWSCAN ret = %d, errno = %d\r\n", ret, errno);
+	if (ret < 0)
+	{
+		printf("SIOCSIWSCAN ret = %d, errno = %d\r\n", ret, errno);
+		if (errno == 14)
+		{
+			this->Reopen();
+		}
+	}
 	return ret >= 0;
 }
 
@@ -560,6 +599,10 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 				}
 			}
 		}
+		else
+		{
+			printf("get_site_survey return %d, errno = %d, len = %d\r\n", ret, errno, wrq.u.data.length);
+		}
 		MemFree(buff);
 		DEL_CLASS(bss.ieList);
 		return 0;
@@ -589,11 +632,16 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 			else
 			{
 				buffSize = buffSize << 1;
+				if (buffSize >= 65536)
+				{
+					buffSize = 65535;
+				}
 			}
 			MemFree(buff);
 		}
-		else
+		else if (errno == EFAULT)
 		{
+			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(OSInt)buff);
 			MemFree(buff);
 			DEL_CLASS(bss.ieList);
 			return 0;

@@ -89,6 +89,7 @@ namespace Net
 			void *id;
 			INTERFACE_STATE state;
 
+			void Reopen();
 		public:
 			Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData);
 			~Interface();
