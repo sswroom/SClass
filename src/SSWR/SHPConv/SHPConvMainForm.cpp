@@ -1257,7 +1257,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 		}
 		sb.ToString()[i] = 0;
 		dbCols->Add(Text::StrCopyNew(sb.ToString()));
-		sb.SetSubstr(i + 3);
+		sb.SetSubstr((UOSInt)i + 3);
 		i = sb.IndexOf((const UTF8Char*)"%>");
 		if (i >= 0)
 		{
@@ -1299,7 +1299,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 
 		if (i >= 0)
 		{
-			sb.SetSubstr(i + 2);
+			sb.SetSubstr((UOSInt)i + 2);
 		}
 		else
 		{

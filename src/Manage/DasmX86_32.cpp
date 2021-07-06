@@ -11065,12 +11065,12 @@ Bool __stdcall DasmX86_32_0f8E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr;
 	if (sess->thisStatus & 1)
 	{
-		addr = (sess->regs.EIP) + 4 + (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 2);
+		addr = (sess->regs.EIP) + 4 + (UInt32)(Int32)(Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 2);
 		sess->regs.EIP += 4;
 	}
 	else
 	{
-		addr = (sess->regs.EIP) + 6 + (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 2);
+		addr = (sess->regs.EIP) + 6 + (UInt32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 2);
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);

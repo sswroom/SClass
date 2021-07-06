@@ -5,11 +5,11 @@
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 
-void IO::FileAnalyse::QTFileAnalyse::ParseRange(Int64 ofst, Int64 size)
+void IO::FileAnalyse::QTFileAnalyse::ParseRange(UInt64 ofst, UInt64 size)
 {
 	UInt8 buff[16];
-	Int64 endOfst = ofst + size;
-	Int64 sz;
+	UInt64 endOfst = ofst + size;
+	UInt64 sz;
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	Data::ArrayListInt32 contList;
 	contList.SortedInsert(*(Int32*)"dinf");
@@ -31,7 +31,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(Int64 ofst, Int64 size)
 			sz = ReadMUInt32(&buff[0]);
 			if (sz == 1)
 			{
-				sz = ReadMInt64(&buff[8]);
+				sz = ReadMUInt64(&buff[8]);
 			}
 			if (sz < 8 || ofst + sz > endOfst)
 			{
@@ -77,7 +77,7 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::IStreamData *fd)
 	{
 		return;
 	}
-	UInt32 size = ReadMInt32(&buff[0]);
+	UInt32 size = ReadMUInt32(&buff[0]);
 	if (size > 32)
 	{
 		return;
@@ -117,13 +117,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
 	sb->Append((UTF8Char*)buff);
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI64(pack->packSize);
+	sb->AppendU64(pack->packSize);
 	return true;
 }
 
@@ -132,39 +132,39 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
 	UInt8 buff[5];
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return false;
 
-	sb->AppendI64(pack->fileOfst);
+	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=");
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
 	sb->Append((UTF8Char*)buff);
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendI64(pack->packSize);
+	sb->AppendU64(pack->packSize);
 	sb->Append((const UTF8Char*)"\r\n");
 
 	if (pack->packType == *(Int32*)"ftyp")
 	{
-		packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-		this->fd->GetRealData(pack->fileOfst + 8, (OSInt)pack->packSize - 8, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+		this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
 
 		sb->Append((const UTF8Char*)"\r\nMajor_Brand = ");
 		*(Int32*)buff = *(Int32*)&packBuff[0];
 		sb->Append((UTF8Char*)buff);
 		sb->Append((const UTF8Char*)"\r\nMinor_Version = ");
-		sb->AppendHex32(ReadMInt32(&packBuff[4]));
+		sb->AppendHex32(ReadMUInt32(&packBuff[4]));
 		i = 8;
-		j = (OSInt)(pack->packSize - 8);
+		j = (UOSInt)(pack->packSize - 8);
 		while (i < j)
 		{
 			sb->Append((const UTF8Char*)"\r\nCompatible_Brands[");
-			sb->AppendI32((Int32)i);
+			sb->AppendU32((UInt32)i);
 			sb->Append((const UTF8Char*)"] = ");
 			*(Int32*)buff = *(Int32*)&packBuff[i];
 			sb->Append((UTF8Char*)buff);
@@ -178,11 +178,11 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize > 8)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nData:\r\n");
-			sb->AppendHexBuff(packBuff, (OSInt)(pack->packSize - 8), ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(packBuff, (UOSInt)(pack->packSize - 8), ' ', Text::LBT_CRLF);
 
 			MemFree(packBuff);
 		}
@@ -191,8 +191,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nModification date = ");
 			sb->AppendI32(ReadMInt32(&packBuff[0]));
@@ -211,8 +211,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		if (pack->packSize >= 108)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -276,8 +276,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		if (pack->packSize >= 92)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -337,8 +337,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		if (pack->packSize >= 32)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -366,8 +366,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 32)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -386,7 +386,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->Append((const UTF8Char*)"\r\nComponent flags mask = ");
 			sb->AppendI32(ReadMInt32(&packBuff[20]));
 			sb->Append((const UTF8Char*)"\r\nComponent name = ");
-			sb->AppendC((UTF8Char*)&packBuff[24], (OSInt)(pack->packSize - 32));
+			sb->AppendC((UTF8Char*)&packBuff[24], (UOSInt)(pack->packSize - 32));
 
 			MemFree(packBuff);
 		}
@@ -395,8 +395,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -418,8 +418,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -437,20 +437,20 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			k = 8;
 			i = 0;
 			while (i < j)
 			{
-				l = ReadMInt32(&packBuff[k]);
+				l = ReadMUInt32(&packBuff[k]);
 				if (l < 12 || (UInt32)(l + k) > pack->packSize - 8)
 				{
 					break;
@@ -475,22 +475,22 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			k = 8;
 			i = 0;
 			while (i < j)
 			{
 				Int32 dataType = 0;
-				l = ReadMInt32(&packBuff[k]);
-				if (l < 12 || (UInt32)(l + k) > pack->packSize - 8)
+				l = ReadMUInt32(&packBuff[k]);
+				if (l < 12 || (l + k) > pack->packSize - 8)
 				{
 					break;
 				}
@@ -507,20 +507,20 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				sb->AppendHex16(ReadMUInt16(&packBuff[k + 14]));
 				if (dataType == 2)
 				{
-					UInt16 version = ReadMInt16(&packBuff[k + 16]);
-					OSInt endOfst;
+					UInt16 version = ReadMUInt16(&packBuff[k + 16]);
+					UOSInt endOfst;
 					sb->Append((const UTF8Char*)"\r\nVersion = ");
 					sb->AppendU16(version);
 					sb->Append((const UTF8Char*)"\r\nRevision level = ");
-					sb->AppendU16(ReadMInt16(&packBuff[k + 18]));
+					sb->AppendU16(ReadMUInt16(&packBuff[k + 18]));
 					sb->Append((const UTF8Char*)"\r\nVendor = ");
-					sb->AppendU32(ReadMInt32(&packBuff[k + 20]));
+					sb->AppendU32(ReadMUInt32(&packBuff[k + 20]));
 					if (version == 0)
 					{
 						sb->Append((const UTF8Char*)"\r\nNumber of channels = ");
-						sb->AppendU16(ReadMInt16(&packBuff[k + 24]));
+						sb->AppendU16(ReadMUInt16(&packBuff[k + 24]));
 						sb->Append((const UTF8Char*)"\r\nSample size (bits) = ");
-						sb->AppendU16(ReadMInt16(&packBuff[k + 26]));
+						sb->AppendU16(ReadMUInt16(&packBuff[k + 26]));
 						sb->Append((const UTF8Char*)"\r\nCompression ID = ");
 						sb->AppendI16(ReadMInt16(&packBuff[k + 28]));
 						sb->Append((const UTF8Char*)"\r\nPacket size = ");
@@ -532,9 +532,9 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					else if (version == 1)
 					{
 						sb->Append((const UTF8Char*)"\r\nNumber of channels = ");
-						sb->AppendU16(ReadMInt16(&packBuff[k + 24]));
+						sb->AppendU16(ReadMUInt16(&packBuff[k + 24]));
 						sb->Append((const UTF8Char*)"\r\nSample size (bits) = ");
-						sb->AppendU16(ReadMInt16(&packBuff[k + 26]));
+						sb->AppendU16(ReadMUInt16(&packBuff[k + 26]));
 						sb->Append((const UTF8Char*)"\r\nCompression ID = ");
 						sb->AppendI16(ReadMInt16(&packBuff[k + 28]));
 						sb->Append((const UTF8Char*)"\r\nPacket size = ");
@@ -554,9 +554,9 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					else if (version == 2)
 					{
 						sb->Append((const UTF8Char*)"\r\nalways3 = ");
-						sb->AppendU16(ReadMInt16(&packBuff[k + 24]));
+						sb->AppendU16(ReadMUInt16(&packBuff[k + 24]));
 						sb->Append((const UTF8Char*)"\r\nalways16 = ");
-						sb->AppendU16(ReadMInt16(&packBuff[k + 26]));
+						sb->AppendU16(ReadMUInt16(&packBuff[k + 26]));
 						sb->Append((const UTF8Char*)"\r\nalwaysMinus2 = ");
 						sb->AppendI16(ReadMInt16(&packBuff[k + 28]));
 						sb->Append((const UTF8Char*)"\r\nalways0 = ");
@@ -607,15 +607,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			k = 8;
 			i = 0;
 			while (i < j)
@@ -639,15 +639,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nEntry count = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -675,15 +675,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -711,15 +711,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -749,8 +749,8 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
@@ -759,7 +759,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->Append((const UTF8Char*)"\r\nSample size = ");
 			sb->AppendI32(ReadMInt32(&packBuff[4]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[8])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[8])));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -787,15 +787,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -823,15 +823,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (OSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (OSInt)(pack->packSize - 8), packBuff);
+			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nVersion = ");
 			sb->AppendU16(packBuff[0]);
 			sb->Append((const UTF8Char*)"\r\nFlags = ");
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->Append((const UTF8Char*)"\r\nNumber of entries = ");
-			sb->AppendI32((Int32)(j = ReadMInt32(&packBuff[4])));
+			sb->AppendU32((UInt32)(j = ReadMUInt32(&packBuff[4])));
 			if (j > 3000)
 			{
 				j = 3000;

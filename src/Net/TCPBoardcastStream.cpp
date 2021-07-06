@@ -37,6 +37,9 @@ void __stdcall Net::TCPBoardcastStream::ClientEvent(Net::TCPClient *cli, void *u
 	case Net::TCPClientMgr::TCP_EVENT_DISCONNECT:
 		DEL_CLASS(cli);
 		break;
+	case Net::TCPClientMgr::TCP_EVENT_CONNECT:
+	case Net::TCPClientMgr::TCP_EVENT_HASDATA:
+	case Net::TCPClientMgr::TCP_EVENT_SHUTDOWN:
 	default:
 		break;
 	}

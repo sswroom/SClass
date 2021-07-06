@@ -14,8 +14,8 @@ namespace IO
 		private:
 			typedef struct
 			{
-				Int64 fileOfst;
-				Int64 packSize;
+				UInt64 fileOfst;
+				UInt64 packSize;
 				Int32 packType;
 			} PackInfo;
 		private:
@@ -27,7 +27,7 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 
-			void ParseRange(Int64 ofst, Int64 size);
+			void ParseRange(UInt64 ofst, UInt64 size);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			QTFileAnalyse(IO::IStreamData *fd);

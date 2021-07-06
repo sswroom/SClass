@@ -1277,12 +1277,12 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	i = Text::StrLastIndexOf(containerNameSb.ToString(), '/');
 	if (i >= 0)
 	{
-		containerNameSb.SetSubstr(i + 1);
+		containerNameSb.SetSubstr((UOSInt)i + 1);
 	}
 	i = Text::StrLastIndexOf(containerNameSb.ToString(), '\\');
 	if (i >= 0)
 	{
-		containerNameSb.SetSubstr(i + 1);
+		containerNameSb.SetSubstr((UOSInt)i + 1);
 	}
 
 	while (reader->ReadNext())
