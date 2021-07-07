@@ -641,7 +641,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 		}
 		else if (errno == EFAULT)
 		{
-			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(OSInt)buff);
+//			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(OSInt)buff);
 			MemFree(buff);
 			DEL_CLASS(bss.ieList);
 			return 0;
