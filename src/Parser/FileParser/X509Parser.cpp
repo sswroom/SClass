@@ -23,7 +23,8 @@ void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_X509_FILE)
 	{
-		selector->AddFilter((const UTF8Char*)"*.x13", (const UTF8Char*)"X13 (Hooligans) Package File");
+		selector->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"X.509 Certification File");
+		selector->AddFilter((const UTF8Char*)"*.p12", (const UTF8Char*)"PKCS 12 KeyStore File");
 	}
 }
 
@@ -69,6 +70,15 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[35], len - 69, dataBuff);
 		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_CERT_REQ);
+	}
+	else
+	{
+		const UTF8Char *name = fd->GetShortName();
+		if (!Text::StrEndsWithICase(name, (const UTF8Char*)".P12") && !Text::StrEndsWithICase(name, (const UTF8Char*)".DER"))
+		{
+			return 0;
+		}
+		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), buff, len, Crypto::X509File::FT_CERT);
 	}
 	return ret;
 }

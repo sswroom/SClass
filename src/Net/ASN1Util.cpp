@@ -277,6 +277,26 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			sb->Append((const UTF8Char*)"\r\n");
 			pdu += ofst + len;
 			break;
+		case 0x4:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"OCTET STRING ");
+			NEW_CLASS(innerSb, Text::StringBuilderUTF8());
+			if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
+			{
+				sb->Append((const UTF8Char*)"{\r\n");
+				sb->Append(innerSb->ToString());
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"}\r\n");
+			}
+			else
+			{
+				sb->Append((const UTF8Char*)"(");
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->Append((const UTF8Char*)")\r\n");
+			}
+			DEL_CLASS(innerSb);
+			pdu += ofst + len;
+			break;
 		case 0x5:
 			sb->AppendChar('\t', level);
 			sb->Append((const UTF8Char*)"NULL\r\n");
@@ -359,9 +379,9 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			break;
 		case 0x1E:
 			sb->AppendChar('\t', level);
-			sb->Append((const UTF8Char*)"BMPString ");
-			sb->AppendC(&pdu[ofst], len);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->Append((const UTF8Char*)"BMPString (");
+			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+			sb->Append((const UTF8Char*)")\r\n");
 			pdu += ofst + len;
 			break;
 		default:
