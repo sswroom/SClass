@@ -55,17 +55,22 @@ private:
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<WiFiEntry*> *entryList;
 		WiFiEntry *entry;
-		sb.Append((const UTF8Char*)"<html><head><title>WiFiCapture</title>\r\n");
-		sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
-		sb.Append((const UTF8Char*)"</head><body>\r\n");
-		sb.Append((const UTF8Char*)"<a href=\"download\">Download</a><br/>\r\n");
-		sb.Append((const UTF8Char*)"<table border=\"1\">\r\n");
-		sb.Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>SSID</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n");
-		
+
 		Sync::MutexUsage mutUsage(entryMut);
 		entryList = entryMap->GetValues();
 		i = 0;
 		j = entryList->GetCount();
+
+		sb.Append((const UTF8Char*)"<html><head><title>WiFiCapture</title>\r\n");
+		sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
+		sb.Append((const UTF8Char*)"</head><body>\r\n");
+		sb.Append((const UTF8Char*)"<a href=\"download\">Download</a><br/>\r\n");
+		sb.Append((const UTF8Char*)"Count = ");
+		sb.AppendUOSInt(j);
+		sb.Append((const UTF8Char*)"<br/>\r\n");
+		sb.Append((const UTF8Char*)"<table border=\"1\">\r\n");
+		sb.Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>SSID</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n");
+		
 		while (i < j)
 		{
 			entry = entryList->GetItem(i);
