@@ -52,6 +52,9 @@ namespace Net
 		static Bool IsType(const UTF8Char *s);
 		static Bool IsKnownType(const UTF8Char *s);
 		static Bool IsUnknownType(const UTF8Char *s);
+		static OSInt BranketEnd(const UTF8Char *s, UTF8Char *brkType);
+		static const UTF8Char *SkipWS(const UTF8Char *s);
+		static UTF8Char NextChar(const UTF8Char *s);
 	public:
 		ASN1MIB();
 		~ASN1MIB();
