@@ -1,8 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Net/ASN1OIDDB.h"
-#include "Net/SNMPInfo.h"
-#include "Net/SNMPUtil.h"
+#include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
@@ -64,7 +63,6 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 	this->lvOID->ClearItems();
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
 	Net::ASN1MIB::ObjectInfo *obj;
 	Net::ASN1MIB::ModuleInfo *module = this->mib->GetModuleByFileName(fileName);
 	if (module == 0)
@@ -81,7 +79,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 		if (obj->oidLen > 0)
 		{
 			sb.ClearStr();
-			Net::SNMPUtil::OIDToString(obj->oid, obj->oidLen, &sb);
+			Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
 			this->lvObjects->SetSubItem(i, 1, sb.ToString());
 		}
 		if (obj->typeName)
@@ -101,7 +99,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 	{
 		obj = module->oidList->GetItem(i);
 		sb.ClearStr();
-		Net::SNMPUtil::OIDToString(obj->oid, obj->oidLen, &sb);
+		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
 		this->lvOID->AddItem(sb.ToString(), obj);
 		Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
 		if (entry)
@@ -110,39 +108,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 		}
 		this->lvOID->SetSubItem(i, 2, obj->objectName);
 
-		sbOIDText.AppendChar('\t', 1);
-		sbOIDText.Append((const UTF8Char*)"{\"");
-		sbOIDText.Append(obj->objectName);
-		sbOIDText.Append((const UTF8Char*)"\",");
-		k = (OSInt)(60 - Text::StrCharCnt(obj->objectName));
-		if (k > 0)
-		{
-			sbOIDText.AppendChar('\t', (UOSInt)(k + 3) >> 2);
-		}
-		if (obj->oidLen < 10)
-		{
-			sbOIDText.AppendUOSInt(obj->oidLen);
-			sbOIDText.Append((const UTF8Char*)",  {");
-		}
-		else
-		{
-			sbOIDText.AppendUOSInt(obj->oidLen);
-			sbOIDText.Append((const UTF8Char*)", {");
-		}
-		k = 0;
-		while (k < (OSInt)obj->oidLen)
-		{
-			if (k > 0)
-			{
-				sbOIDText.Append((const UTF8Char*)", ");
-			}
-			sbOIDText.Append((const UTF8Char*)"0x");
-			sbOIDText.AppendHex8(obj->oid[k]);
-			k++;
-		}
-		sbOIDText.Append((const UTF8Char*)"}}, // ");
-		sbOIDText.Append(sb.ToString());
-		sbOIDText.Append((const UTF8Char*)"\r\n");
+		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName, &sbOIDText);
 		i++;
 	}
 	this->txtOIDText->SetText(sbOIDText.ToString());
@@ -151,7 +117,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
-	this->SetText((const UTF8Char*)"ASN1 MIB");
+	this->SetText((const UTF8Char*)"ASN.1 MIB");
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

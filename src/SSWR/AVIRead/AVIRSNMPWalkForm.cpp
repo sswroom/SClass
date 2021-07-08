@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Net/ASN1OIDDB.h"
+#include "Net/ASN1Util.h"
 #include "Net/SNMPClient.h"
 #include "Net/SNMPInfo.h"
-#include "Net/ASN1OIDDB.h"
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
 #include "UI/MessageDialog.h"
 
@@ -56,7 +57,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 			{
 				item = itemList.GetItem(i);
 				sb.ClearStr();
-				Net::SNMPUtil::OIDToString(item->oid, item->oidLen, &sb);
+				Net::ASN1Util::OIDToString(item->oid, item->oidLen, &sb);
 				this->lvResults->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
 				Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);

@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Net/SNMPInfo.h"
 #include "Net/ASN1OIDDB.h"
+#include "Net/ASN1Util.h"
+#include "Net/SNMPInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "Sync/MutexUsage.h"
 #include "UI/MessageDialog.h"
@@ -31,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	me->txtCommunity->SetText(packet->trap.community);
-	Net::SNMPUtil::OIDToString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
+	Net::ASN1Util::OIDToString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
 	me->txtEnterpriseOID->SetText(sb.ToString());
 	sb.ClearStr();
 	Net::ASN1OIDDB::OIDToNameString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
@@ -61,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 	{
 		item = packet->itemList->GetItem(i);
 		sb.ClearStr();
-		Net::SNMPUtil::OIDToString(item->oid, item->oidLen, &sb);
+		Net::ASN1Util::OIDToString(item->oid, item->oidLen, &sb);
 		me->lvResults->AddItem(sb.ToString(), 0);
 		sb.ClearStr();
 		Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);

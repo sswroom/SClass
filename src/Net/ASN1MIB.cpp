@@ -3,8 +3,8 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/ASN1MIB.h"
+#include "Net/ASN1Util.h"
 #include "Net/MIBReader.h"
-#include "Net/SNMPUtil.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #define DEBUGOBJ "ManualHandlingInstructions"
@@ -46,7 +46,7 @@ void Net::ASN1MIB::ModuleAppendOID(Net::ASN1MIB::ModuleInfo *module, ObjectInfo 
 	{
 		k = (i + j) >> 1;
 		obj2 = module->oidList->GetItem((UOSInt)k);
-		l = Net::SNMPUtil::OIDCompare(obj2->oid, obj2->oidLen, obj->oid, obj->oidLen);
+		l = Net::ASN1Util::OIDCompare(obj2->oid, obj2->oidLen, obj->oid, obj->oidLen);
 		if (l > 0)
 		{
 			j = k - 1;

@@ -2635,6 +2635,10 @@ SSWR/AVIRead/AVIRARPScanForm.h: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
 @AVIRARPScanForm.o
 SSWR/AVIRead/AVIRAsmConvForm.h: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
 @AVIRAsmConvForm.o
+SSWR/AVIRead/AVIRASN1MIBForm.h: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
+@AVIRASN1MIBForm.o
+SSWR/AVIRead/AVIRASN1OIDForm.h: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
+@AVIRASN1OIDForm.o
 SSWR/AVIRead/AVIRAudioFilterForm.h: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 @AVIRAudioFilterForm.o
 SSWR/AVIRead/AVIRAudioViewerForm.h: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
@@ -2976,8 +2980,6 @@ SSWR/AVIRead/AVIRSNMPClientForm.h: ../../src/SSWR/AVIRead/AVIRSNMPClientForm.cpp
 @AVIRSNMPClientForm.o
 SSWR/AVIRead/AVIRSNMPManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
 @AVIRSNMPManagerForm.o
-SSWR/AVIRead/AVIRASN1MIBForm.h: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
-@AVIRASN1MIBForm.o
 SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 @AVIRSNMPTrapMonitorForm.o
 SSWR/AVIRead/AVIRSNMPWalkForm.h: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
@@ -3346,6 +3348,8 @@ Text/SpreadSheet/Worksheet.h: ../../src/Text/SpreadSheet/Worksheet.cpp
 @Worksheet.o
 Text/TextBinEnc/ANSITextBinEnc.h: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
 @ANSITextBinEnc.o
+Text/TextBinEnc/ASN1OIDBinEnc.h: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
+@ASN1OIDBinEnc.o
 Text/TextBinEnc/Base64Enc.h: ../../src/Text/TextBinEnc/Base64Enc.cpp
 @Base64Enc.o
 Text/TextBinEnc/CodePageTextBinEnc.h: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
@@ -3359,8 +3363,6 @@ Text/TextBinEnc/HexTextBinEnc.h: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
 Text/TextBinEnc/ITextBinEnc.h:
 Text/TextBinEnc/QuotedPrintableEnc.h: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
 @QuotedPrintableEnc.o
-Text/TextBinEnc/SNMPOIDBinEnc.h: ../../src/Text/TextBinEnc/SNMPOIDBinEnc.cpp
-@SNMPOIDBinEnc.o
 Text/TextBinEnc/TextBinEncList.h: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 @TextBinEncList.o
 Text/TextBinEnc/UCS2TextBinEnc.h: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
@@ -4238,6 +4240,8 @@ AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 AVIRARPPingForm.o: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 AVIRARPScanForm.o: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
 AVIRAsmConvForm.o: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
+AVIRASN1MIBForm.o: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
+AVIRASN1OIDForm.o: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
 AVIRAudioFilterForm.o: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 AVIRAudioViewerForm.o: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
 AVIRBaseForm.o: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
@@ -4408,7 +4412,6 @@ AVIRSNBDongleForm.o: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
 AVIRSNBHandlerForm.o: ../../src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
 AVIRSNMPClientForm.o: ../../src/SSWR/AVIRead/AVIRSNMPClientForm.cpp
 AVIRSNMPManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
-AVIRASN1MIBForm.o: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
 AVIRSNMPTrapMonitorForm.o: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
@@ -4587,13 +4590,13 @@ Workbook.o: ../../src/Text/SpreadSheet/Workbook.cpp
 WorkbookFont.o: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 Worksheet.o: ../../src/Text/SpreadSheet/Worksheet.cpp
 ANSITextBinEnc.o: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
+ASN1OIDBinEnc.o: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
 Base64Enc.o: ../../src/Text/TextBinEnc/Base64Enc.cpp
 CodePageTextBinEnc.o: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
 CPPByteArrBinEnc.o: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp
 CPPTextBinEnc.o: ../../src/Text/TextBinEnc/CPPTextBinEnc.cpp
 HexTextBinEnc.o: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
 QuotedPrintableEnc.o: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
-SNMPOIDBinEnc.o: ../../src/Text/TextBinEnc/SNMPOIDBinEnc.cpp
 TextBinEncList.o: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 UCS2TextBinEnc.o: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp

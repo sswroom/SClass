@@ -26,6 +26,8 @@
 #include "SSWR/AVIRead/AVIRARPPingForm.h"
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
 #include "SSWR/AVIRead/AVIRAsmConvForm.h"
+#include "SSWR/AVIRead/AVIRASN1MIBForm.h"
+#include "SSWR/AVIRead/AVIRASN1OIDForm.h"
 #include "SSWR/AVIRead/AVIRAudioFilterForm.h"
 #include "SSWR/AVIRead/AVIRBaseForm.h"
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
@@ -137,7 +139,6 @@
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
 #include "SSWR/AVIRead/AVIRSNMPManagerForm.h"
-#include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "SSWR/AVIRead/AVIRSNSManagerForm.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
@@ -366,7 +367,8 @@ typedef enum
 	MNU_MSSQL_CONN,
 	MNU_DB_MANAGER,
 	MNU_TIMED_FILE_COPY,
-	MNU_JASYPT
+	MNU_JASYPT,
+	MNU_ASN1OID
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -497,6 +499,9 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"Brute Force", MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Hash Speed", MNU_HASHTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Jasypt Encryptor", MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu((const UTF8Char*)"ASN.1");
+	mnu2->AddItem((const UTF8Char*)"ASN.1 MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"ASN.1 OID", MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem((const UTF8Char*)"RAM Speed", MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Thread Speed", MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -574,7 +579,6 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"SNMP");
 	mnu2->AddItem((const UTF8Char*)"SNMP Client", MNU_SNMPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"SNMP Trap Monitor", MNU_SNMPTRAPMON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SNMP MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"SNMP Manager", MNU_SNMPMANAGER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"LDAP");
 	mnu2->AddItem((const UTF8Char*)"LDAP Client", MNU_LDAPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2251,6 +2255,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRJasyptForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRJasyptForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_ASN1OID:
+		{
+			SSWR::AVIRead::AVIRASN1OIDForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1OIDForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
