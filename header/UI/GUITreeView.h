@@ -28,8 +28,8 @@ namespace UI
 			void *GetHItem();
 			void SetText(const UTF8Char *txt);
 			const UTF8Char *GetText();
-			OSInt GetChildCount();
-			TreeItem *GetChild(OSInt index);
+			UOSInt GetChildCount();
+			TreeItem *GetChild(UOSInt index);
 		};
 	private:
 		Data::ArrayList<UI::UIEvent> *selChgHdlrs;

@@ -48,7 +48,7 @@ UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool
 
 UI::GUIComboBox::~GUIComboBox()
 {
-	OSInt i = this->itemTexts->GetCount();
+	UOSInt i = this->itemTexts->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->itemTexts->GetItem(i));
@@ -61,7 +61,7 @@ UI::GUIComboBox::~GUIComboBox()
 
 void UI::GUIComboBox::EventSelectionChange()
 {
-	OSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
@@ -104,7 +104,7 @@ void UI::GUIComboBox::SetText(const UTF8Char *text)
 	}
 	else
 	{
-		OSInt i = this->itemTexts->GetCount();
+		UOSInt i = this->itemTexts->GetCount();
 		while (i-- > 0)
 		{
 			if (Text::StrEquals(text, this->itemTexts->GetItem(i)))
@@ -146,7 +146,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 		index = cnt;
 	this->itemTexts->Insert(index, Text::StrCopyNew(itemText));
 	this->items->Insert(index, itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, index, 0, (const Char*)itemText);
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText);
 	return index;
 }
 
@@ -158,7 +158,7 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 	const UTF8Char *txt = this->itemTexts->RemoveAt(index);
 	void *item = this->items->RemoveAt(index);
 	Text::StrDelNew(txt);
-	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, index);
+	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, (gint)index);
 	return item;
 }
 
@@ -181,7 +181,7 @@ UOSInt UI::GUIComboBox::GetCount()
 
 void UI::GUIComboBox::SetSelectedIndex(UOSInt index)
 {
-	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd, index);
+	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd, (gint)index);
 }
 
 OSInt UI::GUIComboBox::GetSelectedIndex()
@@ -194,12 +194,12 @@ UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 	OSInt i = this->GetSelectedIndex();
 	if (i == -1)
 		return 0;
-	return Text::StrConcat(sbuff, this->itemTexts->GetItem(i));
+	return Text::StrConcat(sbuff, this->itemTexts->GetItem((UOSInt)i));
 }
 
 void *UI::GUIComboBox::GetSelectedItem()
 {
-	return this->items->GetItem(this->GetSelectedIndex());
+	return this->items->GetItem((UOSInt)this->GetSelectedIndex());
 }
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
@@ -265,11 +265,11 @@ void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)
 	this->autoComplete = autoComplete;
 }
 
-void UI::GUIComboBox::SetTextSelection(OSInt startPos, OSInt endPos)
+void UI::GUIComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
 {
 	if (this->allowEdit)
 	{
 		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd);
-		gtk_editable_select_region((GtkEditable*)entry, 0, 1);
+		gtk_editable_select_region((GtkEditable*)entry, (gint)startPos, (gint)endPos);
 	}
 }

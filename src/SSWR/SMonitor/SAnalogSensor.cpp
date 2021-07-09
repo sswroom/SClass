@@ -85,6 +85,9 @@ const UTF8Char *SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(ReadingType re
 		return (const UTF8Char*)"AC Frequency";
 	case RT_RSSI: //dBm
 		return (const UTF8Char*)"RSSI";
+	case RT_GAS_CH4: //ppm
+		return (const UTF8Char*)"Methane (CH4)";
+	case RT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -122,6 +125,9 @@ const UTF8Char *SSWR::SMonitor::SAnalogSensor::GetSensorTypeName(SensorType sens
 		return (const UTF8Char*)"Panasonic AMGU4241";
 	case ST_TH10SB:
 		return (const UTF8Char*)"TH10S-B";
+	case ST_SNMP:
+		return (const UTF8Char*)"SNMP";
+	case ST_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

@@ -833,6 +833,10 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	case Media::ColorProfile::YUVT_SMPTE240M:
 		this->radYUVDefSMPTE240M->Select();
 		break;
+	case Media::ColorProfile::YUVT_BT2020:
+	case Media::ColorProfile::YUVT_FLAG_YUV_0_255:
+	case Media::ColorProfile::YUVT_UNKNOWN:
+		break;
 	}
 	Text::StrDouble(sbuff, rgbParam->monLuminance);
 	this->txtLuminance->SetText(sbuff);

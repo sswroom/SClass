@@ -122,7 +122,8 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 		}
 		else if (bpp <= 8)
 		{
-			this->pal = MemAlloc(UInt8, (UOSInt)(4 << bpp));
+			UOSInt palSize = (UOSInt)(4 << bpp);
+			this->pal = MemAlloc(UInt8, palSize);
 		}
 	}
 }

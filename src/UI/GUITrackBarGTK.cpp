@@ -15,7 +15,7 @@ gboolean GUITrackBar_ValueChanged(void *window, void *userObj)
 
 void UI::GUITrackBar::EventScrolled()
 {
-	OSInt i;
+	UOSInt i;
 	Int32 pos;
 	pos = Math::Double2Int32(gtk_range_get_value((GtkRange*)this->hwnd));
 	i = this->scrollHandlers->GetCount();

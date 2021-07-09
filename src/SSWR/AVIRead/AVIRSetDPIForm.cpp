@@ -108,7 +108,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = gimg->NewBrushARGB(0xff000000);
 		currV = 0;
-		gimg->GetTextSize(f, (const UTF8Char*)"0", -1, sz);
+		gimg->GetTextSize(f, (const UTF8Char*)"0", sz);
 		initX = sz[0] * 0.5;
 		lastX = initX - 20.0;
 		while (true)
@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 			if (currX >= lastX + 20)
 			{
 				Text::StrInt32(sbuff, currV);
-				gimg->GetTextSize(f, sbuff, -1, sz);
+				gimg->GetTextSize(f, sbuff, sz);
 				gimg->DrawLine(currX, 0, currX, Math::UOSInt2Double(h) - sz[1], p);
 				gimg->DrawString(currX - sz[0] * 0.5, Math::UOSInt2Double(h) - sz[1], sbuff, f, b);
 				lastX = currX;

@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 	{
 		me->currWeightUpd = false;
 		UTF8Char sbuff[64];
-		OSInt strSize;
-		strSize = Text::StrDouble(sbuff, Math::Unit::Mass::Convert(me->currWeightUnit, Math::Unit::Mass::MU_GRAM, me->currWeight)) - sbuff;
+		UOSInt strSize;
+		strSize = (UOSInt)(Text::StrDouble(sbuff, Math::Unit::Mass::Convert(me->currWeightUnit, Math::Unit::Mass::MU_GRAM, me->currWeight)) - sbuff);
 		me->txtWeight->SetText(sbuff);
 
 		UOSInt w;
@@ -76,9 +76,9 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 
 				Double fontHeight;
 				Double sz[2];
-				fontHeight = Math::UOSInt2Double(w) / Math::OSInt2Double(strSize);
+				fontHeight = Math::UOSInt2Double(w) / Math::UOSInt2Double(strSize);
 				f = me->dimg->NewFontPx((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
-				me->dimg->GetTextSize(f, sbuff, strSize, sz);
+				me->dimg->GetTextSizeC(f, sbuff, strSize, sz);
 				me->dimg->DelFont(f);
 				if (Math::UOSInt2Double(w) * sz[1] > Math::UOSInt2Double(h) * sz[0]) //w / sz[0] > h / sz[1]
 				{
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 				}
 				f = me->dimg->NewFontPx((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				b = me->dimg->NewBrushARGB(0xff000000);
-				me->dimg->GetTextSize(f, sbuff, strSize, sz);
+				me->dimg->GetTextSizeC(f, sbuff, strSize, sz);
 				me->dimg->DrawString((Math::UOSInt2Double(w) - sz[0]) * 0.5, (Math::UOSInt2Double(h) - sz[1]) * 0.5, sbuff, f, b);
 				me->dimg->DelFont(f);
 				me->dimg->DelBrush(b);

@@ -60,7 +60,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 					sb.Append((const UTF8Char*)"Prog ");
 					sb.Append(prog->progName);
 					sb.Append((const UTF8Char*)": Updated procId as ");
-					sb.AppendOSInt(prog->procId);
+					sb.AppendUOSInt(prog->procId);
 					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					break;
 				}
@@ -71,7 +71,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 	return ret;
 }
 
-void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, Int32 procId)
+void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 {
 	Manage::Process proc(procId, false);
 	if (proc.IsRunning())
@@ -131,8 +131,8 @@ void SSWR::ProcMonForm::SaveProgList()
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	ProgInfo *prog;
 
 	IO::Path::GetProcessFileName(sbuff);
@@ -173,7 +173,7 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(void *userObj)
 	}
 	if (prog)
 	{
-		Text::StrOSInt(sbuff, prog->procId);
+		Text::StrUOSInt(sbuff, prog->procId);
 		me->txtProcId->SetText(sbuff);
 	}
 	else
@@ -189,9 +189,9 @@ void __stdcall SSWR::ProcMonForm::OnProcIdClicked(void *userObj)
 	if (prog)
 	{
 		Text::StringBuilderUTF8 sb;
-		Int32 procId;
+		UInt32 procId;
 		me->txtProcId->GetText(&sb);
-		if (sb.ToInt32(&procId))
+		if (sb.ToUInt32(&procId))
 		{
 			me->SetByProcId(prog, procId);
 		}
@@ -202,9 +202,9 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 {
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	Int32 procId;
+	UInt32 procId;
 	me->txtProgAddId->GetText(&sb);
-	if (sb.ToInt32(&procId))
+	if (sb.ToUInt32(&procId))
 	{
 		sb.ClearStr();
 		me->txtProgAddName->GetText(&sb);
@@ -243,7 +243,7 @@ void __stdcall SSWR::ProcMonForm::OnLogSelChg(void *userObj)
 void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 {
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
-	OSInt i;
+	UOSInt i;
 	ProgInfo *prog;
 	i = me->progList->GetCount();
 	while (i-- > 0)
@@ -276,7 +276,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 						sb.Append((const UTF8Char*)"Prog ");
 						sb.Append(prog->progName);
 						sb.Append((const UTF8Char*)" restarted, procId = ");
-						sb.AppendOSInt(prog->procId);
+						sb.AppendUOSInt(prog->procId);
 						me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 						
 						if (me->notifyCmd)
@@ -373,7 +373,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 SSWR::ProcMonForm::~ProcMonForm()
 {
 	ProgInfo *prog;
-	OSInt i = this->progList->GetCount();
+	UOSInt i = this->progList->GetCount();
 	while (i-- > 0)
 	{
 		prog = this->progList->GetItem(i);

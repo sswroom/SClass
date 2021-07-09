@@ -7,7 +7,7 @@ namespace Exporter
 	class MapCSVExporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		MapCSVExporter();
 		virtual ~MapCSVExporter();

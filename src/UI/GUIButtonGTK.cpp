@@ -144,7 +144,7 @@ void UI::GUIButton::OnFocusLost()
 
 void UI::GUIButton::EventButtonClick()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->btnClkHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -154,7 +154,7 @@ void UI::GUIButton::EventButtonClick()
 
 void UI::GUIButton::EventButtonDown()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->btnUpDownHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -164,7 +164,7 @@ void UI::GUIButton::EventButtonDown()
 
 void UI::GUIButton::EventButtonUp()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->btnUpDownHandlers->GetCount();
 	while (i-- > 0)
 	{

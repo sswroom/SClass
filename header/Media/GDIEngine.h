@@ -165,7 +165,8 @@ namespace Media
 		virtual void DelBrush(DrawBrush *b);
 		virtual void DelFont(DrawFont *f);
 
-		virtual Bool GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz);
+		virtual Bool GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz);
+		virtual Bool GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz);
 		Bool GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Double *sz);
 		virtual void SetTextAlign(DrawEngine::DrawPos pos);
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY);

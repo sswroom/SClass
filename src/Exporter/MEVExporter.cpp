@@ -387,10 +387,10 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			if (ltype == Map::DRAW_LAYER_POINT || ltype == Map::DRAW_LAYER_POINT3D)
 			{
 				*(Int32*)&buff[20] = 1;
-				Int32 i = (Int32)env->GetImageFileIndex(setting.imgIndex);
+				UInt32 i = (UInt32)env->GetImageFileIndex(setting.imgIndex);
 				Map::MapEnv::ImageInfo imgInfo;
 				env->GetImageFileInfo(i, &imgInfo);
-				*(Int32*)&buff[48] = i;
+				*(UInt32*)&buff[48] = i;
 				*(Int32*)&buff[52] = (Int32)(setting.imgIndex - imgInfo.index);
 
 				stm->Write(buff, 56);

@@ -53,7 +53,7 @@ OSInt UI::GUIGroupBox::OnNotify(Int32 code, void *lParam)
 void UI::GUIGroupBox::OnSizeChanged(Bool updateScn)
 {
 	this->UpdateChildrenSize(updateScn);
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));

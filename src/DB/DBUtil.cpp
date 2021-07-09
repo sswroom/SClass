@@ -1765,6 +1765,14 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			return DB::DBUtil::CT_NVarChar;
 		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"ntext"))
+		{
+			return DB::DBUtil::CT_NVarChar;
+		}
+		else if (Text::StrEquals(typeName, (const UTF8Char*)"nchar"))
+		{
+			return DB::DBUtil::CT_NChar;
+		}
 		else if (Text::StrEquals(typeName, (const UTF8Char*)"numeric"))
 		{
 			return DB::DBUtil::CT_Double;

@@ -490,7 +490,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 			sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), fontStyle);
 		}
 		f = img->NewFontPt(fontName, fontSizePt, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
-		img->GetTextSize(f, sbuff, (sptr - sbuff), sz);
+		img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
 		refX = (Math::UOSInt2Double(w) - sz[0]) * 0.5;
 		refY = (Math::UOSInt2Double(h) - sz[1]) * 0.5;
 		if (buffSize > 0)
@@ -525,7 +525,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawE
 	b = img->NewBrushARGB(colorConv->ConvRGB8(fontColor));
 	f = img->NewFontPt(fontName, fontSizePt, Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 	strLeng = Text::StrCharCnt(fontName);
-	img->GetTextSize(f, fontName, (OSInt)strLeng, sz);
+	img->GetTextSizeC(f, fontName, strLeng, sz);
 	img->DrawString((Math::UOSInt2Double(img->GetWidth()) - sz[0]) * 0.5, (Math::UOSInt2Double(img->GetHeight()) - sz[1]) * 0.5, fontName, f, b);
 	img->DelFont(f);
 	img->DelBrush(b);

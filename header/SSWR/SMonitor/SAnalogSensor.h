@@ -50,7 +50,8 @@ namespace SSWR
 				RT_TOTALREACTIVEENERGY, //kVArh
 				RT_SYSTEMVOLTAGE, //V
 				RT_ACFREQUENCY, //Hz
-				RT_RSSI //dBm
+				RT_RSSI, //dBm
+				RT_GAS_CH4 //ppm
 			} ReadingType;
 
 			typedef enum

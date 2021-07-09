@@ -283,7 +283,7 @@ OSInt UI::GUICustomDrawVScroll::OnNotify(Int32 code, void *lParam)
 
 void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 {
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -312,7 +312,7 @@ void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, void *userObj)
 
 void UI::GUICustomDrawVScroll::EventSelChg()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -322,7 +322,7 @@ void UI::GUICustomDrawVScroll::EventSelChg()
 
 void UI::GUICustomDrawVScroll::EventDblClk()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->dblClkHdlrs->GetCount();
 	while (i-- > 0)
 	{

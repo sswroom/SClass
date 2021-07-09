@@ -113,12 +113,12 @@ const UTF8Char *UI::GUITreeView::TreeItem::GetText()
 	return this->txt;
 }
 
-OSInt UI::GUITreeView::TreeItem::GetChildCount()
+UOSInt UI::GUITreeView::TreeItem::GetChildCount()
 {
 	return this->children->GetCount();
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(OSInt index)
+UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(UOSInt index)
 {
 	return this->children->GetItem(index);
 }
@@ -196,7 +196,7 @@ void UI::GUITreeView::EventDoubleClick()
 
 void UI::GUITreeView::EventRightClicked()
 {
-	OSInt i = this->rightClkHdlrs->GetCount();
+	UOSInt i = this->rightClkHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->rightClkHdlrs->GetItem(i)(this->rightClkObjs->GetItem(i));
@@ -259,7 +259,7 @@ void *UI::GUITreeView::RemoveItem(TreeItem *item)
 	{
 		void *obj = item->GetItemObj();
 		gtk_tree_store_remove(data->treeStore, (GtkTreeIter*)item->GetHItem());
-		this->treeItems->RemoveAt(i);
+		this->treeItems->RemoveAt((UOSInt)i);
 		DEL_CLASS(item);
 		return obj;
 	}
@@ -323,7 +323,7 @@ void UI::GUITreeView::SetAutoFocus(Bool autoFocus)
 
 UI::GUITreeView::TreeItem *GUITreeView_SearchChildSelected(GUITreeViewData *data, GtkTreePath *selPath, UI::GUITreeView::TreeItem *item)
 {
-	OSInt i = item->GetChildCount();
+	UOSInt i = item->GetChildCount();
 	GtkTreePath *itemPath;
 	UI::GUITreeView::TreeItem *child;
 	while (i-- > 0)

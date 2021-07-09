@@ -977,21 +977,25 @@ void Media::GTKDrawImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
+Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz)
 {
 	GTKDrawFont *font = (GTKDrawFont*)fnt;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
-	if (txtLen != -1)
-	{
-		const UTF8Char *utf8 = Text::StrCopyNewC(txt, (UOSInt)txtLen);;
-		cairo_text_extents((cairo_t *)this->cr, (const Char*)utf8, &extents);
-		Text::StrDelNew(utf8);
-	}
-	else
-	{
-		cairo_text_extents((cairo_t *)this->cr, (const Char*)txt, &extents);
-	}
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt, &extents);
+	sz[0] = extents.width + 2;
+	sz[1] = font->GetHeight() + 2;
+	return true;
+}
+
+Bool Media::GTKDrawImage::GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz)
+{
+	GTKDrawFont *font = (GTKDrawFont*)fnt;
+	cairo_text_extents_t extents;
+	font->Init(this->cr);
+	const UTF8Char *utf8 = Text::StrCopyNewC(txt, txtLen);;
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)utf8, &extents);
+	Text::StrDelNew(utf8);
 	sz[0] = extents.width + 2;
 	sz[1] = font->GetHeight() + 2;
 	return true;

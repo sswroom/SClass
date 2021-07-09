@@ -52,6 +52,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cl
 			DEL_CLASS(cli);
 		}
 		break;
+	case Net::TCPClientMgr::TCP_EVENT_CONNECT:
+	case Net::TCPClientMgr::TCP_EVENT_HASDATA:
+	case Net::TCPClientMgr::TCP_EVENT_SHUTDOWN:
 	default:
 		break;
 	}

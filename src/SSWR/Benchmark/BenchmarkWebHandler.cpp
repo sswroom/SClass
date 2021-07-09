@@ -403,11 +403,17 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 						case Manage::ThreadContext::CT_MIPS:
 							sbOut.Append((const UTF8Char*)"MIPS 32-bit");
 							break;
+						case Manage::ThreadContext::CT_MIPS64:
+							sbOut.Append((const UTF8Char*)"MIPS 64-bit");
+							break;
 						case Manage::ThreadContext::CT_X86_32:
 							sbOut.Append((const UTF8Char*)"x86 32-bit");
 							break;
 						case Manage::ThreadContext::CT_X86_64:
 							sbOut.Append((const UTF8Char*)"x86 64-bit");
+							break;
+						case Manage::ThreadContext::CT_AVR:
+							sbOut.Append((const UTF8Char*)"AVR");
 							break;
 						default:
 							sbOut.Append((const UTF8Char*)"?");

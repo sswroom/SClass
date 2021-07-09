@@ -135,7 +135,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	if (this->currFontName)
 	{
 		f = dimg->NewFontPt(this->currFontName, this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
-		dimg->GetTextSize(f, sbuff, -1, sz);
+		dimg->GetTextSize(f, sbuff, sz);
 		if (this->currBuffSize > 0)
 		{
 			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));

@@ -34,9 +34,9 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	this->lvUser->ClearItems();
 	this->env->ReleaseWebUsers(this->userList);
 	this->env->GetWebUsers(this->userList);
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UTF8Char sbuff[12];
 	OrganWebUser *user;
 	i = 0;

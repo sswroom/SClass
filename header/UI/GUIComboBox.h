@@ -51,7 +51,7 @@ namespace UI
 		virtual void UpdatePos(Bool redraw);
 
 		void SetAutoComplete(Bool autoComplete);
-		void SetTextSelection(OSInt startPos, OSInt endPos);
+		void SetTextSelection(UOSInt startPos, UOSInt endPos);
 		UOSInt GetListMinVisible();
 		Bool SetListMinVisible(UOSInt itemCount);
 	private:

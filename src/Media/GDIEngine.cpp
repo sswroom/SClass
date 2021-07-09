@@ -2313,26 +2313,23 @@ void Media::GDIImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
+Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz)
 {
 	UOSInt strLen;
-	if (txtLen < 0)
-	{
-		strLen = Text::StrUTF8_WCharCnt(txt);
-	}
-	else
-	{
-		strLen = Text::StrUTF8_WCharCntC(txt, (UOSInt)txtLen);
-	}
+	strLen = Text::StrUTF8_WCharCnt(txt);
 	WChar *wptr = MemAlloc(WChar, strLen + 1);
-	if (txtLen < 0)
-	{
-		Text::StrUTF8_WChar(wptr, txt, 0);
-	}
-	else
-	{
-		Text::StrUTF8_WCharC(wptr, txt, (UOSInt)txtLen, 0);
-	}
+	Text::StrUTF8_WChar(wptr, txt, 0);
+	Bool ret = GetTextSize(fnt, wptr, strLen, sz);
+	MemFree(wptr);
+	return ret;
+}
+
+Bool Media::GDIImage::GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz)
+{
+	UOSInt strLen;
+	strLen = Text::StrUTF8_WCharCntC(txt, txtLen);
+	WChar *wptr = MemAlloc(WChar, strLen + 1);
+	Text::StrUTF8_WCharC(wptr, txt, txtLen, 0);
 	Bool ret = GetTextSize(fnt, wptr, strLen, sz);
 	MemFree(wptr);
 	return ret;

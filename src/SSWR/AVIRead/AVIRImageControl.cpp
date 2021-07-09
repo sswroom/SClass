@@ -731,7 +731,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			Text::StringBuilderUTF8 sb;
 			sb.Append(status->fileName);
 			strLen = Text::StrCharCnt(sb.ToString());
-			if (f && dimg->GetTextSize(f, sb.ToString(), (OSInt)strLen, strSz))
+			if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
 			{
 				dimg->DrawString((Math::UOSInt2Double(scnW) - strSz[0]) * 0.5, Math::OSInt2Double(si * itemTH - scrPos + itemH), sb.ToString(), f, b);
 			}

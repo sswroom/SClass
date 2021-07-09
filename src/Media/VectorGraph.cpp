@@ -606,7 +606,7 @@ void Media::VectorGraph::DelFont(DrawFont *f)
 {
 }
 
-Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt txtLen, Double *sz)
+Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz)
 {
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
@@ -615,7 +615,7 @@ Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt t
 	if (fntSizePt < 100)
 	{
 		f = tmpImg->NewFontPt(fntStyle->GetName(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
-		tmpImg->GetTextSize(f, txt, txtLen, sz);
+		tmpImg->GetTextSize(f, txt, sz);
 		tmpImg->DelFont(f);
 		sz[0] *= fntSizePt / 100.0;
 		sz[1] *= fntSizePt / 100.0;
@@ -623,7 +623,31 @@ Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, OSInt t
 	else
 	{
 		f = tmpImg->NewFontPt(fntStyle->GetName(), fntSizePt, fntStyle->GetStyle(), fntStyle->GetCodePage());
-		tmpImg->GetTextSize(f, txt, txtLen, sz);
+		tmpImg->GetTextSize(f, txt, sz);
+		tmpImg->DelFont(f);
+	}
+	this->refEng->DeleteImage(tmpImg);
+	return true;
+}
+
+Bool Media::VectorGraph::GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz)
+{
+	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
+	Media::DrawFont *f;
+	Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
+	Double fntSizePt = fntStyle->GetHeightPt();
+	if (fntSizePt < 100)
+	{
+		f = tmpImg->NewFontPt(fntStyle->GetName(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
+		tmpImg->GetTextSizeC(f, txt, txtLen, sz);
+		tmpImg->DelFont(f);
+		sz[0] *= fntSizePt / 100.0;
+		sz[1] *= fntSizePt / 100.0;
+	}
+	else
+	{
+		f = tmpImg->NewFontPt(fntStyle->GetName(), fntSizePt, fntStyle->GetStyle(), fntStyle->GetCodePage());
+		tmpImg->GetTextSizeC(f, txt, txtLen, sz);
 		tmpImg->DelFont(f);
 	}
 	this->refEng->DeleteImage(tmpImg);

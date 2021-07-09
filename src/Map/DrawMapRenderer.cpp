@@ -2422,7 +2422,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, const UTF8Char *label, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Double szTmp[2];
-	denv->img->GetTextSize(denv->fontStyles[fontStyle].font, label, (OSInt)Text::StrCharCnt(label), szTmp);
+	denv->img->GetTextSize(denv->fontStyles[fontStyle].font, label, szTmp);
 
 	if (scaleH == 0)
 	{
@@ -2507,7 +2507,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 	{
 		scaleH = 0;
 	}
-	denv->img->GetTextSize(df, str1, (OSInt)lblSize, size);
+	denv->img->GetTextSizeC(df, str1, lblSize, size);
 
 	if (scaleH == 0)
 	{
@@ -2554,7 +2554,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		Int32 type;
 		Double szThis[2];
 		Double dlblSize = Math::UOSInt2Double(lblSize);
-		denv->img->GetTextSize(df, str1, (OSInt)lblSize, szThis);
+		denv->img->GetTextSizeC(df, str1, lblSize, szThis);
 
 		if ((szThis[0] * absH) < (szThis[1] * dlblSize * scaleW))
 		{
@@ -2601,7 +2601,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 
 			while (cnt--)
 			{
-				denv->img->GetTextSize(font->font, lbl, 1, szThis);
+				denv->img->GetTextSizeC(font->font, lbl, 1, szThis);
 
 				if (type)
 				{
@@ -2637,7 +2637,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 
 		while (cnt--)
 		{
-			denv->img->GetTextSize(df, lbl, 1, szThis);
+			denv->img->GetTextSizeC(df, lbl, 1, szThis);
 
 			if (type)
 			{
@@ -2680,7 +2680,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, UOSInt fontStyle, Double *realBounds)
 {
 	UTF8Char sbuff[256];
-	OSInt lblSize = Text::StrConcat(sbuff, str1) - sbuff;
+	UOSInt lblSize = (UOSInt)(Text::StrConcat(sbuff, str1) - sbuff);
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -2753,7 +2753,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 	xDiff = 0;
 	yDiff = 0;
 
-	denv->img->GetTextSize(df, str1, lblSize, szThis);
+	denv->img->GetTextSizeC(df, str1, lblSize, szThis);
 	xDiff = szThis[0] * 0.5;
 	yDiff = xDiff * xDiff;
 
@@ -2952,7 +2952,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			
 		}
 
-		denv->img->GetTextSize(df, lbl, nextPos - lbl, szThis);
+		denv->img->GetTextSizeC(df, lbl, (UOSInt)(nextPos - lbl), szThis);
 		dist = (szLast[0] + szThis[0]) * 0.5;
 		nextX = currX + (dist * cosAngle);
 		nextY = currY - (dist * sinAngle);
@@ -3343,7 +3343,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 
 	while (i-- > 0)
 	{
-		denv->img->GetTextSize(df, &str1[i], 1, szThis);
+		denv->img->GetTextSizeC(df, &str1[i], 1, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -3625,7 +3625,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		nextChar = *nextPos;
 		*nextPos = 0;
 
-		denv->img->GetTextSize(df, lbl, nextPos - lbl, szThis);
+		denv->img->GetTextSizeC(df, lbl, (UOSInt)(nextPos - lbl), szThis);
 		while (true)
 		{
 			if (angleDegree <= 90)

@@ -69,7 +69,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		while (true)
 		{
 			f = tmpImg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-			if (!tmpImg->GetTextSize(f, this->watermark, (OSInt)leng, sz))
+			if (!tmpImg->GetTextSizeC(f, this->watermark, leng, sz))
 			{
 				tmpImg->DelFont(f);
 				break;

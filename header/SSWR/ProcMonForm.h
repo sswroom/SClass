@@ -52,7 +52,7 @@ namespace SSWR
 
 		void AddProg(const UTF8Char *progName, const UTF8Char *progPath);
 		Bool SearchProcId(ProgInfo *prog);
-		void SetByProcId(ProgInfo *prog, Int32 procId);
+		void SetByProcId(ProgInfo *prog, UOSInt procId);
 		void LoadProgList();
 		void SaveProgList();
 		static void __stdcall OnProgSelChange(void *userObj);

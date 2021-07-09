@@ -494,10 +494,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	while (i-- > 0)
 	{
 		strs = this->headers->GetItem(i);
-		g->GetTextSize(f, strs[0], -1, sz);
+		g->GetTextSize(f, strs[0], sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1], -1, sz);
+		g->GetTextSize(f, strs[1], sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -505,10 +505,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	while (i-- > 0)
 	{
 		strs = this->preheaders->GetItem(i);
-		g->GetTextSize(f, strs[0], -1, sz);
+		g->GetTextSize(f, strs[0], sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1], -1, sz);
+		g->GetTextSize(f, strs[1], sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -533,7 +533,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			colCurrX[j] = 0;
 			if (strs[j])
 			{
-				g->GetTextSize(f, strs[j], -1, sz);
+				g->GetTextSize(f, strs[j], sz);
 				colCurrX[j] = sz[0];
 			}
 		}
@@ -692,7 +692,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					{
 						if (strs[i])
 						{
-							g->GetTextSize(f, strs[i], -1, sz);
+							g->GetTextSize(f, strs[i], sz);
 							colCurrX[i] = colPos[i] + sz[0];
 						}
 						else
@@ -735,7 +735,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			}
 			pageId++;
 			Text::StrInt32(sbuff, pageId);
-			g->GetTextSize(f, sbuff, -1, sz);
+			g->GetTextSize(f, sbuff, sz);
 			g->DrawString(border + (drawWidth - sz[0]) * 0.5, paperSize.GetHeightMM() - border, sbuff, f, b);
 		}
 

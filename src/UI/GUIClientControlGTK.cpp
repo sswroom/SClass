@@ -56,8 +56,8 @@ UI::GUIClientControl::~GUIClientControl()
 
 void UI::GUIClientControl::UpdateFont()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 //	void *font = GetFont();
 /*	if (font)
 	{
@@ -74,7 +74,7 @@ void UI::GUIClientControl::UpdateFont()
 
 void UI::GUIClientControl::ClearChildren()
 {
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children->GetCount();
 	while (i-- > 0)
 	{
 		GUIControl *ctrl = this->children->RemoveAt(i);
