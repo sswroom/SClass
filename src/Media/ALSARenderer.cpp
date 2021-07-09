@@ -174,6 +174,9 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			case SND_PCM_STATE_DISCONNECTED:
 				printf("State: DISCONNECTED\r\n");
 				break;
+			case SND_PCM_STATE_PRIVATE1:
+				printf("State: PRIVATE1\r\n");
+				break;
 			default:
 				printf("State: Unknown\r\n");
 				break;

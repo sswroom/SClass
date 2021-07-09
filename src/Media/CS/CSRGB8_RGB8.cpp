@@ -153,8 +153,9 @@ Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, U
 	this->rgbParam->Set(colorSess->GetRGBParam());
 	if (this->srcNBits <= 8)
 	{
-		this->srcPal = MemAlloc(UInt8, (UOSInt)(4 << this->srcNBits));
-		this->destPal = MemAlloc(UInt8, (UOSInt)(4 << this->srcNBits));
+		UOSInt palSize = (UOSInt)(4 << this->srcNBits);
+		this->srcPal = MemAlloc(UInt8, palSize);
+		this->destPal = MemAlloc(UInt8, palSize);
 	}
 	this->rgbTable = 0;
 	this->rgbUpdated = true;

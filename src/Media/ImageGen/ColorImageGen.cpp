@@ -134,7 +134,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, bpl);
+		MemCopyNO(imgPtr2, imgPtr, (UOSInt)bpl);
 		imgPtr2 += bpl;
 		k++;
 	}
@@ -334,7 +334,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, bpl);
+		MemCopyNO(imgPtr2, imgPtr, (UOSInt)bpl);
 		imgPtr2 += bpl;
 		k++;
 	}
@@ -434,7 +434,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, bpl);
+		MemCopyNO(imgPtr2, imgPtr, (UOSInt)bpl);
 		imgPtr2 += bpl;
 		k++;
 	}

@@ -271,8 +271,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
 {
 	Char sbuff[12];
 	Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_Int32)
@@ -285,8 +285,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (sptr - sbuff)], sbuff, sptr - sbuff);
-		i = this->columns[index].colSize - (sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
+		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';
@@ -299,8 +299,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
 {
 	Char sbuff[24];
 	Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_Int64)
@@ -313,8 +313,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (sptr - sbuff)], sbuff, sptr - sbuff);
-		i = this->columns[index].colSize - (sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
+		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';

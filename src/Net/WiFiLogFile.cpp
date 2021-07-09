@@ -3,6 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/WriteCacheStream.h"
 #include "Net/WiFiLogFile.h"
+#include "Net/WirelessLAN.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
@@ -415,6 +416,34 @@ const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::Get(UInt64 iMAC)
 	return 0;
 }
 
+OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
+{
+	Net::WiFiLogFile::LogFileEntry *log;
+	OSInt i;
+	OSInt j;
+	OSInt k;
+	i = 0;
+	j = (OSInt)this->logList->GetCount() - 1;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		log = this->logList->GetItem((UOSInt)k);
+		if (iMAC > log->macInt)
+		{
+			i = k + 1;
+		}
+		else if (iMAC < log->macInt)
+		{
+			j = k - 1;
+		}
+		else
+		{
+			return k;
+		}
+	}
+	return ~i;
+}
+
 Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *Net::WiFiLogFile::GetLogList()
 {
 	return this->logList;
@@ -423,4 +452,185 @@ Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *Net::WiFiLogFile::GetLogList()
 const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::GetItem(UOSInt index)
 {
 	return this->logList->GetItem(index);
+}
+
+const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex)
+{
+	UInt8 buff[8];
+	UInt64 imac;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
+	UOSInt ieLen;
+	const UInt8 *ieBuff;
+	Net::WirelessLANIE *ie;
+	MemCopyNO(&buff[2], bss->GetMAC(), 6);
+	buff[0] = 0;
+	buff[1] = 0;
+	imac = ReadMUInt64(buff);
+	Net::WiFiLogFile::LogFileEntry *log = (Net::WiFiLogFile::LogFileEntry*)this->Get(imac);
+	const UInt8 *oui1 = bss->GetChipsetOUI(0);
+	const UInt8 *oui2 = bss->GetChipsetOUI(1);
+	const UInt8 *oui3 = bss->GetChipsetOUI(2);
+	ieLen = 0;
+	k = bss->GetIECount();
+	while (k-- > 0)
+	{
+		ie = bss->GetIE(k);
+		ieLen += (UOSInt)ie->GetIEBuff()[1] + 2;
+	}
+	if (log == 0)
+	{
+		log = MemAlloc(Net::WiFiLogFile::LogFileEntry, 1);
+		MemClear(log->neighbour, sizeof(log->neighbour));
+		MemCopyNO(log->mac, &buff[2], 6);
+		log->macInt = imac;
+		log->ssid = Text::StrCopyNew(bss->GetSSID());
+		log->phyType = bss->GetPHYType();
+		log->freq = bss->GetFreq();
+		log->manuf = SCOPY_TEXT(bss->GetManuf());
+		log->model = SCOPY_TEXT(bss->GetModel());
+		log->serialNum = SCOPY_TEXT(bss->GetSN());
+		log->country = SCOPY_TEXT(bss->GetCountry());
+		log->ouis[0][0] = oui1[0];
+		log->ouis[0][1] = oui1[1];
+		log->ouis[0][2] = oui1[2];
+		log->ouis[1][0] = oui2[0];
+		log->ouis[1][1] = oui2[1];
+		log->ouis[1][2] = oui2[2];
+		log->ouis[2][0] = oui3[0];
+		log->ouis[2][1] = oui3[1];
+		log->ouis[2][2] = oui3[2];
+		log->ieLen = ieLen;
+		if (ieLen > 0)
+		{
+			log->ieBuff = MemAlloc(UInt8, ieLen);
+			k = 0;
+			l = bss->GetIECount();
+			m = 0;
+			while (k < l)
+			{
+				ie = bss->GetIE(k);
+				ieBuff = ie->GetIEBuff();
+				MemCopyNO(&log->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+				m += (UOSInt)ieBuff[1] + 2;
+				k++;
+			}
+		}
+		else
+		{
+			log->ieBuff = 0;
+		}
+		DirectInsert(log);
+		*lastIndex = -1;
+		return log;
+	}
+	else
+	{
+		OSInt sk = this->GetIndex(imac);
+		if (sk >= 0)
+		{
+			if (log->manuf == 0 && bss->GetManuf())
+			{
+				log->manuf = Text::StrCopyNew(bss->GetManuf());
+			}
+			if (log->model == 0 && bss->GetModel())
+			{
+				log->model = Text::StrCopyNew(bss->GetModel());
+			}
+			if (log->serialNum == 0 && bss->GetSN())
+			{
+				log->serialNum = Text::StrCopyNew(bss->GetSN());
+			}
+			if (log->country == 0 && bss->GetCountry())
+			{
+				log->country = Text::StrCopyNew(bss->GetCountry());
+			}
+		}
+		UOSInt l;
+		const UInt8 *oui;
+		oui = oui1;
+		if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
+		{
+			l = 0;
+			while (l < 3)
+			{
+				if (log->ouis[l][0] == oui[0] && log->ouis[l][1] == oui[1] && log->ouis[l][2] == oui[2])
+				{
+					break;
+				}
+				else if (log->ouis[l][0] == 0 && log->ouis[l][1] == 0 && log->ouis[l][2] == 0)
+				{
+					log->ouis[l][0] = oui[0];
+					log->ouis[l][1] = oui[1];
+					log->ouis[l][2] = oui[2];
+				}
+				l++;
+			}
+		}
+
+		oui = oui2;
+		if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
+		{
+			l = 0;
+			while (l < 3)
+			{
+				if (log->ouis[l][0] == oui[0] && log->ouis[l][1] == oui[1] && log->ouis[l][2] == oui[2])
+				{
+					break;
+				}
+				else if (log->ouis[l][0] == 0 && log->ouis[l][1] == 0 && log->ouis[l][2] == 0)
+				{
+					log->ouis[l][0] = oui[0];
+					log->ouis[l][1] = oui[1];
+					log->ouis[l][2] = oui[2];
+				}
+				l++;
+			}
+		}
+
+		oui = oui3;
+		if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
+		{
+			l = 0;
+			while (l < 3)
+			{
+				if (log->ouis[l][0] == oui[0] && log->ouis[l][1] == oui[1] && log->ouis[l][2] == oui[2])
+				{
+					break;
+				}
+				else if (log->ouis[l][0] == 0 && log->ouis[l][1] == 0 && log->ouis[l][2] == 0)
+				{
+					log->ouis[l][0] = oui[0];
+					log->ouis[l][1] = oui[1];
+					log->ouis[l][2] = oui[2];
+				}
+				l++;
+			}
+		}
+
+		if (ieLen > log->ieLen)
+		{
+			if (log->ieBuff)
+			{
+				MemFree(log->ieBuff);
+			}
+			log->ieBuff = MemAlloc(UInt8, ieLen);
+			k = 0;
+			l = bss->GetIECount();
+			m = 0;
+			while (k < l)
+			{
+				ie = bss->GetIE(k);
+				ieBuff = ie->GetIEBuff();
+				MemCopyNO(&log->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+				m += (UOSInt)ieBuff[1] + 2;
+				k++;
+			}
+		}
+		*lastIndex = sk;
+		return log;
+	}
 }

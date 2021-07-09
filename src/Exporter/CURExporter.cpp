@@ -640,7 +640,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 				k = (img->info->dispWidth + 7) >> 3;
 				while (k-- > 0)
 				{
-					maskPtr[0] = ~currPtr[0];
+					maskPtr[0] = (UInt8)(~currPtr[0]);
 					maskPtr++;
 					currPtr++;
 				}

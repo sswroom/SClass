@@ -36,8 +36,11 @@ namespace Net
 		Bool StoreFile(const UTF8Char *fileName);
 		void Clear();
 		const LogFileEntry *Get(UInt64 iMAC);
+		OSInt GetIndex(UInt64 iMAC);
 		Data::ArrayList<LogFileEntry*> *GetLogList();
 		const LogFileEntry *GetItem(UOSInt index);
+
+		const LogFileEntry *AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex);
 	};
 }
 #endif

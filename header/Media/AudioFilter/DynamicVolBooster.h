@@ -15,8 +15,8 @@ namespace Media
 			Int32 maxVol;
 			Int32 lastVol;
 			Int32 thisVol;
-			OSInt maxIndex;
-			OSInt soundIndex;
+			UOSInt maxIndex;
+			UOSInt soundIndex;
 			UInt32 nChannels;
 			UInt32 bitCount;
 			Bool enabled;
@@ -29,12 +29,12 @@ namespace Media
 			virtual ~DynamicVolBooster();
 
 			virtual void GetFormat(AudioFormat *format);
-			virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
 			void SetEnabled(Bool enabled);
 			void SetBGLevel(Double bgLevel);
 		};
-	};
-};
+	}
+}
 #endif

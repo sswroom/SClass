@@ -671,3 +671,23 @@ const UTF8Char *IO::SNBDongle::GetReadingName(ReadingType readingType)
 		return (const UTF8Char*)"Value";
 	}
 }
+
+const UTF8Char *IO::SNBDongle::SensorTypeGetName(SensorType sensorType)
+{
+	switch (sensorType)
+	{
+	case IO::SNBDongle::ST_DOOR_CONTACT:
+		return (const UTF8Char*)"Door Contact";
+	case IO::SNBDongle::ST_MOTION:
+		return (const UTF8Char*)"Motion";
+	case IO::SNBDongle::ST_SENSOR:
+		return (const UTF8Char*)"Mixed";
+	case IO::SNBDongle::ST_TEMPERATURE:
+		return (const UTF8Char*)"Temperature";
+	case IO::SNBDongle::ST_RETURN_NORMAL:
+		return (const UTF8Char*)"Return normal";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+
+}

@@ -143,6 +143,7 @@ namespace IO
 
 		static const UTF8Char *GetHandleName(HandleType handType);
 		static const UTF8Char *GetReadingName(ReadingType readingType);
+		static const UTF8Char *SensorTypeGetName(SensorType sensorType);
 	};
 }
 

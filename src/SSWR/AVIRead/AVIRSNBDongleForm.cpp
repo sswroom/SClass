@@ -113,26 +113,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 				me->lvDevice->SetSubItem(k, 3, sbuff);
 
 				sb.ClearStr();
-				switch (dev->sensorType)
-				{
-				case IO::SNBDongle::ST_DOOR_CONTACT:
-					sb.Append((const UTF8Char*)"Sensor Type = Door Contact");
-					break;
-				case IO::SNBDongle::ST_MOTION:
-					sb.Append((const UTF8Char*)"Sensor Type = Motion");
-					break;
-				case IO::SNBDongle::ST_SENSOR:
-					sb.Append((const UTF8Char*)"Sensor Type = Mixed");
-					break;
-				case IO::SNBDongle::ST_TEMPERATURE:
-					sb.Append((const UTF8Char*)"Sensor Type = Temperature");
-					break;
-				case IO::SNBDongle::ST_RETURN_NORMAL:
-					sb.Append((const UTF8Char*)"Sensor Type = Return normal");
-					break;
-				default:
-					break;
-				}
+				sb.Append((const UTF8Char*)"Sensor Type = ");
+				sb.Append(IO::SNBDongle::SensorTypeGetName(dev->sensorType));
 				l = 0;
 				while (l < dev->nReading)
 				{
@@ -184,26 +166,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 				me->lvDevice->SetSubItem(i, 3, sbuff);
 
 				sb.ClearStr();
-				switch (dev->sensorType)
-				{
-				case IO::SNBDongle::ST_DOOR_CONTACT:
-					sb.Append((const UTF8Char*)"Sensor Type = Door Contact");
-					break;
-				case IO::SNBDongle::ST_MOTION:
-					sb.Append((const UTF8Char*)"Sensor Type = Motion");
-					break;
-				case IO::SNBDongle::ST_SENSOR:
-					sb.Append((const UTF8Char*)"Sensor Type = Mixed");
-					break;
-				case IO::SNBDongle::ST_TEMPERATURE:
-					sb.Append((const UTF8Char*)"Sensor Type = Temperature");
-					break;
-				case IO::SNBDongle::ST_RETURN_NORMAL:
-					sb.Append((const UTF8Char*)"Sensor Type = Return normal");
-					break;
-				default:
-					break;
-				}
+				sb.Append((const UTF8Char*)"Sensor Type = ");
+				sb.Append(IO::SNBDongle::SensorTypeGetName(dev->sensorType));
 				l = 0;
 				while (l < dev->nReading)
 				{
