@@ -35,6 +35,7 @@ UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool
 	}
 	this->allowEdit = allowEdit;
 	this->autoComplete = false;
+	this->nonUIEvent = false;
 	parent->AddChild(this);
 	this->Show();
 	g_signal_connect(this->hwnd, "changed", G_CALLBACK(GUIComboBox_EventChanged), this);
@@ -69,23 +70,26 @@ void UI::GUIComboBox::EventSelectionChange()
 
 void UI::GUIComboBox::EventTextChanged()
 {
-	if (this->autoComplete)
+	if (this->autoComplete || !this->nonUIEvent)
 	{
 		Text::StringBuilderUTF8 sb;
 		this->GetText(&sb);
 		if (sb.GetLength() > this->lastTextLeng)
 		{
-			OSInt i = 0;
-			OSInt j = this->itemTexts->GetCount();
+			this->nonUIEvent = true;
+			UOSInt i = 0;
+			UOSInt j = this->itemTexts->GetCount();
 			while (i < j)
 			{
 				if (Text::StrStartsWith(this->itemTexts->GetItem(i), sb.ToString()))
 				{
 					this->SetSelectedIndex(i);
 					this->SetTextSelection(sb.GetLength(), Text::StrCharCnt(this->itemTexts->GetItem(i)));
+					break;
 				}
 				i++;
 			}
+			this->nonUIEvent = false;
 		}
 		this->lastTextLeng = sb.GetLength();
 	}
@@ -266,6 +270,6 @@ void UI::GUIComboBox::SetTextSelection(OSInt startPos, OSInt endPos)
 	if (this->allowEdit)
 	{
 		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd);
-		gtk_editable_select_region((GtkEditable*)entry, startPos, -1);//endPos);
+		gtk_editable_select_region((GtkEditable*)entry, 0, 1);
 	}
 }

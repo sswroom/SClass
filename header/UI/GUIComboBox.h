@@ -15,6 +15,7 @@ namespace UI
 		Bool allowEdit;
 		Bool autoComplete;
 		UOSInt lastTextLeng;
+		Bool nonUIEvent;
 
 	public:
 		GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool allowEditing);

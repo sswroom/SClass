@@ -31,13 +31,13 @@ void GUITextBox_InsText(GtkEntryBuffer *buffer, guint position, char *chars, gui
 
 void GUITextBox_InitTextBox(TextBoxData *txt, const UTF8Char *lbl, Bool multiLine, UI::GUITextBox *me)
 {
-	OSInt lblLeng = Text::StrCharCnt(lbl);
+	UOSInt lblLeng = Text::StrCharCnt(lbl);
 	if (multiLine)
 	{
 		txt->multiLine = true;
 		txt->widget = gtk_text_view_new();
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
-		gtk_text_buffer_set_text(buff, (const Char*)lbl, lblLeng);
+		gtk_text_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
 		g_signal_connect(buff, "changed", G_CALLBACK(GUITextBox_Changed), me);
 	}
 	else
@@ -45,7 +45,7 @@ void GUITextBox_InitTextBox(TextBoxData *txt, const UTF8Char *lbl, Bool multiLin
 		txt->multiLine = false;
 		txt->widget = gtk_entry_new();
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)lbl, lblLeng);
+		gtk_entry_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
 		gtk_widget_set_vexpand(txt->widget, false);
 		gtk_widget_set_hexpand(txt->widget, false);
 		g_signal_connect(buff, "deleted-text", G_CALLBACK(GUITextBox_DelText), me);
@@ -129,7 +129,7 @@ void UI::GUITextBox::SetPasswordChar(WChar c)
 	else
 	{
 		gtk_entry_set_visibility((GtkEntry*)txt->widget, false);
-		gtk_entry_set_invisible_char((GtkEntry*)txt->widget, c);
+		gtk_entry_set_invisible_char((GtkEntry*)txt->widget, (gunichar)c);
 	}
 }
 
@@ -140,12 +140,12 @@ void UI::GUITextBox::SetText(const UTF8Char *lbl)
 	if (txt->multiLine)
 	{
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
-		gtk_text_buffer_set_text(buff, (const Char*)lbl, lblLeng);
+		gtk_text_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
 	}
 	else
 	{
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)lbl, lblLeng);
+		gtk_entry_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
 	}
 }
 
@@ -222,7 +222,6 @@ void UI::GUITextBox::SelectAll()
 	}
 	else
 	{
-		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
-		gtk_editable_select_region((GtkEditable*)buff, 0, -1);
+		gtk_editable_select_region((GtkEditable*)txt->widget, 0, -1);
 	}
 }

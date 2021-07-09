@@ -2336,6 +2336,8 @@ Net/WhoisHandler.h: ../../src/Net/WhoisHandler.cpp
 @WhoisHandler.o
 Net/WhoisRecord.h: ../../src/Net/WhoisRecord.cpp
 @WhoisRecord.o
+Net/WiFiLogFile.h: ../../src/Net/WiFiLogFile.cpp
+@WiFiLogFile.o
 Net/WirelessLANIE.h: ../../src/Net/WirelessLANIE.cpp
 @WirelessLANIE.o
 Net/WOLClient.h: ../../src/Net/WOLClient.cpp
@@ -4093,6 +4095,7 @@ WhoisClient.o: ../../src/Net/WhoisClient.cpp
 WhoisGlobalClient.o: ../../src/Net/WhoisGlobalClient.cpp
 WhoisHandler.o: ../../src/Net/WhoisHandler.cpp
 WhoisRecord.o: ../../src/Net/WhoisRecord.cpp
+WiFiLogFile.o: ../../src/Net/WiFiLogFile.cpp
 WirelessLANIE.o: ../../src/Net/WirelessLANIE.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
 SNS7gogo.o: ../../src/Net/SNS/SNS7gogo.cpp

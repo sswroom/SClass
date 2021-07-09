@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	UTF8Char sbuff[32];
 	Text::StrHexBytes(sbuff, mac, 6, ':');
 	this->txtMAC->SetText(sbuff);
-	if (name)
+	if (name && name[0])
 	{
 		this->cboName->SetText(name);
 		this->cboName->Focus();

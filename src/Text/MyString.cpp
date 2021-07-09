@@ -1781,7 +1781,7 @@ Bool Text::StrToUInt64S(const Char *intStr, UInt64 *outVal, UInt64 failVal)
 	}
 	if (intStr[0] == '0' && intStr[1] == 'x')
 	{
-		return Text::StrHex2UInt64S(intStr, outVal, failVal);
+		return Text::StrHex2UInt64S(intStr + 2, outVal, failVal);
 	}
 	Char c;
 	UInt64 v = 0;
