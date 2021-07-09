@@ -3,7 +3,6 @@
 #include "Data/ByteTool.h"
 #include "Net/ASN1Util.h"
 #include "Net/ASN1OIDDB.h"
-#include "Net/SNMPUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
@@ -305,7 +304,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 		case 0x6:
 			sb->AppendChar('\t', level);
 			sb->Append((const UTF8Char*)"OID ");
-			Net::SNMPUtil::OIDToString(&pdu[ofst], len, sb);
+			Net::ASN1Util::OIDToString(&pdu[ofst], len, sb);
 			sb->Append((const UTF8Char*)" (");
 			Net::ASN1OIDDB::OIDToNameString(&pdu[ofst], len, sb);
 			sb->Append((const UTF8Char*)")\r\n");
@@ -433,6 +432,229 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 		}
 	}
 	return true;
+}
+
+
+OSInt Net::ASN1Util::OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
+{
+	UOSInt i = 0;
+	while (true)
+	{
+		if (i == oid1Len && i == oid2Len)
+		{
+			return 0;
+		}
+		else if (i >= oid1Len)
+		{
+			return -1;
+		}
+		else if (i >= oid2Len)
+		{
+			return 1;
+		}
+		else if (oid1[i] > oid2[i])
+		{
+			return 1;
+		}
+		else if (oid1[i] < oid2[i])
+		{
+			return -1;
+		}
+		i++;
+	}
+}
+
+Bool Net::ASN1Util::OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
+{
+	if (oid1Len < oid2Len)
+		return false;
+	UOSInt i = 0;
+	while (i < oid2Len)
+	{
+		if (oid1[i] != oid2[i])
+			return false;
+		i++;
+	}
+	return true;
+}
+
+void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
+{
+	UInt32 v = 0;
+	UOSInt i = 1;
+	sb->AppendU16(pdu[0] / 40);
+	sb->AppendChar('.', 1);
+	sb->AppendU16(pdu[0] % 40);
+	while (i < pduSize)
+	{
+		v = (v << 7) | (pdu[i] & 0x7f);
+		if ((pdu[i] & 0x80) == 0)
+		{
+			sb->AppendChar('.', 1);
+			sb->AppendU32(v);
+			v = 0;
+		}
+		i++;
+	}
+}
+
+UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oid)
+{
+	UInt32 v;
+	UOSInt retSize = 1;
+	UOSInt len = Text::StrCharCnt(oid);
+	UTF8Char *buff = MemAlloc(UTF8Char, len + 1);
+	Text::StrConcatC(buff, oid, len);
+	UTF8Char *sarr[3];
+	UOSInt i;
+	i = Text::StrSplit(sarr, 3, buff, '.');
+	if (i == 1 || i == 2)
+	{
+		MemFree(buff);
+		return 1;
+	}
+	sarr[1] = sarr[2];
+	while (true)
+	{
+		i = Text::StrSplit(sarr, 2, sarr[1], '.');
+		if (!Text::StrToUInt32(sarr[0], &v))
+		{
+			MemFree(buff);
+			return retSize;
+		}
+		while (v >= 128)
+		{
+			retSize++;
+			v = v >> 7;
+		}
+		retSize++;
+		if (i != 2)
+			break;
+	}
+	MemFree(buff);
+	return retSize;
+}
+
+UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oid, UInt8 *pduBuff)
+{
+	UInt32 v;
+	UOSInt retSize = 1;
+	UOSInt len = Text::StrCharCnt(oid);
+	UTF8Char *buff = MemAlloc(UTF8Char, len + 1);
+	Text::StrConcatC(buff, oid, len);
+	UTF8Char *sarr[3];
+	UOSInt i;
+	i = Text::StrSplit(sarr, 3, buff, '.');
+	if (i == 1)
+	{
+		if (!Text::StrToUInt8(sarr[0], &pduBuff[0]))
+		{
+			MemFree(buff);
+			return 0;
+		}
+		pduBuff[0] = (UInt8)(pduBuff[0] * 40);
+		MemFree(buff);
+		return 1;
+	}
+	if (!Text::StrToUInt8(sarr[0], &pduBuff[0]) || !Text::StrToUInt8(sarr[1], &pduBuff[1]))
+	{
+		MemFree(buff);
+		return 0;
+	}
+	pduBuff[0] = (UInt8)(pduBuff[0] * 40 + pduBuff[1]);
+	if (i == 2)
+	{
+		MemFree(buff);
+		return 1;
+	}
+	sarr[1] = sarr[2];
+	while (true)
+	{
+		i = Text::StrSplit(sarr, 2, sarr[1], '.');
+		if (!Text::StrToUInt32(sarr[0], &v))
+		{
+			MemFree(buff);
+			return 0;
+		}
+		if (v < 128)
+		{
+			pduBuff[retSize] = (UInt8)v;
+			retSize++;
+		}
+		else if (v < 0x4000)
+		{
+			pduBuff[retSize] = 0x80 | (UInt8)(v >> 7);
+			pduBuff[retSize + 1] = (UInt8)(v & 0x7f);
+			retSize += 2;
+		}
+		else if (v < 0x200000)
+		{
+			pduBuff[retSize] = 0x80 | (UInt8)(v >> 14);
+			pduBuff[retSize + 1] = 0x80 | (UInt8)((v >> 7) & 0x7f);
+			pduBuff[retSize + 2] = (UInt8)(v & 0x7f);
+			retSize += 3;
+		}
+		else if (v < 0x10000000)
+		{
+			pduBuff[retSize] = 0x80 | (UInt8)(v >> 21);
+			pduBuff[retSize + 1] = 0x80 | (UInt8)((v >> 14) & 0x7f);
+			pduBuff[retSize + 2] = 0x80 | (UInt8)((v >> 7) & 0x7f);
+			pduBuff[retSize + 3] = (UInt8)(v & 0x7f);
+			retSize += 4;
+		}
+		else
+		{
+			pduBuff[retSize] = 0x80 | (UInt8)(v >> 28);
+			pduBuff[retSize + 1] = 0x80 | (UInt8)((v >> 21) & 0x7f);
+			pduBuff[retSize + 2] = 0x80 | (UInt8)((v >> 14) & 0x7f);
+			pduBuff[retSize + 3] = 0x80 | (UInt8)((v >> 7) & 0x7f);
+			pduBuff[retSize + 4] = (UInt8)(v & 0x7f);
+			retSize += 5;
+		}
+		
+		if (i != 2)
+			break;
+	}
+	MemFree(buff);
+	return retSize;
+}
+
+void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF *sb)
+{
+	OSInt k;
+	sb->AppendChar('\t', 1);
+	sb->Append((const UTF8Char*)"{\"");
+	sb->Append(objectName);
+	sb->Append((const UTF8Char*)"\",");
+	k = (OSInt)(60 - Text::StrCharCnt(objectName));
+	if (k > 0)
+	{
+		sb->AppendChar('\t', (UOSInt)(k + 3) >> 2);
+	}
+	if (oidLen < 10)
+	{
+		sb->AppendUOSInt(oidLen);
+		sb->Append((const UTF8Char*)",  {");
+	}
+	else
+	{
+		sb->AppendUOSInt(oidLen);
+		sb->Append((const UTF8Char*)", {");
+	}
+	k = 0;
+	while (k < (OSInt)oidLen)
+	{
+		if (k > 0)
+		{
+			sb->Append((const UTF8Char*)", ");
+		}
+		sb->Append((const UTF8Char*)"0x");
+		sb->AppendHex8(oid[k]);
+		k++;
+	}
+	sb->Append((const UTF8Char*)"}}, // ");
+	OIDToString(oid, oidLen, sb);
+	sb->Append((const UTF8Char*)"\r\n");
 }
 
 UInt32 Net::ASN1Util::Str2Digit(const UTF8Char *s)

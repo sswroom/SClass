@@ -44,11 +44,6 @@ namespace Net
 		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, Int32 *reqId, Data::ArrayList<BindingItem*> *itemList);
 		static ErrorStatus PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, TrapInfo *trap, Data::ArrayList<BindingItem*> *itemList);
 
-		static OSInt OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
-		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
-		static void OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb);
-		static UOSInt OIDCalcPDUSize(const UTF8Char *oid);
-		static UOSInt OIDText2PDU(const UTF8Char *oid, UInt8 *pduBuff);
 		static const UTF8Char *TypeGetName(UInt8 type);
 		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, Int32 *outVal);
 		static void FreeBindingItem(BindingItem *item);

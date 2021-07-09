@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Net/ASN1PDUBuilder.h"
+#include "Net/ASN1Util.h"
 #include "Net/SNMPClient.h"
 #include "Net/SNMPInfo.h"
 #include "Sync/MutexUsage.h"
@@ -85,7 +86,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(const Net::SocketUtil::
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
-	oidLen = Net::SNMPUtil::OIDText2PDU(oid, pduBuff);
+	oidLen = Net::ASN1Util::OIDText2PDU(oid, pduBuff);
 	return V1GetRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
@@ -131,7 +132,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(const Net::SocketUt
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
-	oidLen = Net::SNMPUtil::OIDText2PDU(oid, pduBuff);
+	oidLen = Net::ASN1Util::OIDText2PDU(oid, pduBuff);
 	return V1GetNextRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
@@ -188,7 +189,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(const Net::SocketUtil::Addres
 	while (thisList.GetCount() == 1)
 	{
 		item = thisList.GetItem(0);
-		if (lastItem && lastItem->oidLen == item->oidLen && Net::SNMPUtil::OIDCompare(lastItem->oid, lastItem->oidLen, item->oid, item->oidLen) == 0)
+		if (lastItem && lastItem->oidLen == item->oidLen && Net::ASN1Util::OIDCompare(lastItem->oid, lastItem->oidLen, item->oid, item->oidLen) == 0)
 		{
 			break;
 		}
@@ -243,7 +244,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *bro
 	pdu.AppendInt32(0);
 	pdu.SequenceBegin(0x30);
 	pdu.SequenceBegin(0x30);
-	oidLen = Net::SNMPUtil::OIDText2PDU(oid, pduBuff);
+	oidLen = Net::ASN1Util::OIDText2PDU(oid, pduBuff);
 	pdu.AppendOID(pduBuff, oidLen);
 	pdu.AppendNull();
 	pdu.SequenceEnd();

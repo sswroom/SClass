@@ -3,8 +3,8 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/ASN1MIB.h"
+#include "Net/ASN1Util.h"
 #include "Net/MIBReader.h"
-#include "Net/SNMPUtil.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #define DEBUGOBJ "ManualHandlingInstructions"
@@ -46,7 +46,7 @@ void Net::ASN1MIB::ModuleAppendOID(Net::ASN1MIB::ModuleInfo *module, ObjectInfo 
 	{
 		k = (i + j) >> 1;
 		obj2 = module->oidList->GetItem((UOSInt)k);
-		l = Net::SNMPUtil::OIDCompare(obj2->oid, obj2->oidLen, obj->oid, obj->oidLen);
+		l = Net::ASN1Util::OIDCompare(obj2->oid, obj2->oidLen, obj->oid, obj->oidLen);
 		if (l > 0)
 		{
 			j = k - 1;
@@ -302,6 +302,10 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 				return false;
 			}
 		}
+		else if (sb.Equals((const UTF8Char*)"standard"))
+		{
+			v = 0;
+		}
 		else
 		{
 			if (!sb.ToUInt32(&v))
@@ -491,10 +495,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							Text::StrDelNew(currObj->typeVal);
 							currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
 
-							UOSInt openCnt = Text::StrCountChar(currObj->typeVal, objBrkType);
-							UOSInt closeCnt = Text::StrCountChar(currObj->typeVal, (UTF8Char)brkEndChar);
-							
-							if (openCnt <= closeCnt)
+							OSInt brkEndIndex = BranketEnd(currObj->typeVal, (UTF8Char*)&brkEndChar);
+							if (brkEndIndex >= 0)
 							{
 								objBrkType = 0;
 								objIsEqual = false;
@@ -512,59 +514,121 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 
 								if (currObj->typeName == 0 || currObj->typeName[0] == '{')
 								{
-									RemoveSpace((UTF8Char*)currObj->typeVal);
-									sb.ClearStr();
-									if (reader->PeekWord(&sb))
+									const UTF8Char *sptr = SkipWS(&currObj->typeVal[brkEndIndex]);
+									if (sptr[0] == '(')
 									{
-										RemoveSpace(sb.ToString());
-										if (sb.Equals((const UTF8Char*)"WITH"))
+										OSInt nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+										while (nextEndIndex < 0)
 										{
 											sb.ClearStr();
-											reader->NextWord(&sb);
+											sb.Append(currObj->typeVal);
 											sb.AppendChar(' ', 1);
-											reader->NextWord(&sb);
-											if (sb.Equals((const UTF8Char*)"WITH SYNTAX"))
+											if (!reader->ReadLine(&sb))
 											{
-												sb.AppendChar(' ', 1);
-												if (!reader->NextWord(&sb))
-												{
-													errMessage->Append((const UTF8Char*)"WITH SYNTAX error: ");
-													errMessage->Append(sb.ToString());
-													return false;
-												}
-												Text::StringBuilderUTF8 sbTmp;
-												sbTmp.Append(currObj->typeVal);
-												sbTmp.AppendChar(' ', 1);
-												sbTmp.Append(sb.ToString());
-												Text::StrDelNew(currObj->typeVal);
-												currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
-												RemoveSpace((UTF8Char*)currObj->typeVal);
-											}
-											else
-											{
-												errMessage->Append((const UTF8Char*)"Unexpected word after WITH: ");
+												errMessage->Append((const UTF8Char*)"Unexpected end of file: ");
 												errMessage->Append(sb.ToString());
 												return false;
 											}
+											Text::StrDelNew(currObj->typeVal);
+											currObj->typeVal = Text::StrCopyNew(sb.ToString());
+											nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
 										}
-										else
+										RemoveSpace((UTF8Char*)currObj->typeVal);
+									}
+									else if (Text::StrStartsWith(sptr, (const UTF8Char*)"WITH SYNTAX") || Text::StrStartsWith(sptr, (const UTF8Char*)"WITH COMPONENTS"))
+									{
+										if (Text::StrIndexOf(sptr, (const UTF8Char*)"{") >= 0)
 										{
-											while (sb.StartsWith((const UTF8Char*)"(WITH") ||
-												sb.StartsWith((const UTF8Char*)"( WITH") ||
-												sb.StartsWith((const UTF8Char*)"(CONSTRAINED") ||
-												sb.StartsWith((const UTF8Char*)"(ALL") ||
-												sb.StartsWith((const UTF8Char*)"( ALL"))
+											OSInt nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+											while (nextEndIndex < 0)
 											{
 												sb.ClearStr();
 												sb.Append(currObj->typeVal);
 												sb.AppendChar(' ', 1);
-												reader->NextWord(&sb);
+												if (!reader->ReadLine(&sb))
+												{
+													errMessage->Append((const UTF8Char*)"Unexpected end of file: ");
+													errMessage->Append(sb.ToString());
+													return false;
+												}
 												Text::StrDelNew(currObj->typeVal);
 												currObj->typeVal = Text::StrCopyNew(sb.ToString());
-												RemoveSpace((UTF8Char*)currObj->typeVal);
+												nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+											}
+											RemoveSpace((UTF8Char*)currObj->typeVal);
+										}
+										else
+										{
+											sb.ClearStr();
+											sb.Append(currObj->typeVal);
+											sb.AppendChar(' ', 1);
+											if (!reader->ReadLine(&sb))
+											{
+												errMessage->Append((const UTF8Char*)"Unexpected end of file: ");
+												errMessage->Append(sb.ToString());
+												return false;
+											}
+											Text::StrDelNew(currObj->typeVal);
+											currObj->typeVal = Text::StrCopyNew(sb.ToString());
+										}
+									}
+									else
+									{
+										
+										RemoveSpace((UTF8Char*)currObj->typeVal);
+										sb.ClearStr();
+										if (reader->PeekWord(&sb))
+										{
+											RemoveSpace(sb.ToString());
+											if (sb.Equals((const UTF8Char*)"WITH"))
+											{
 												sb.ClearStr();
-												reader->PeekWord(&sb);
-												RemoveSpace(sb.ToString());
+												reader->NextWord(&sb);
+												sb.AppendChar(' ', 1);
+												reader->NextWord(&sb);
+												if (sb.Equals((const UTF8Char*)"WITH SYNTAX") || sb.Equals((const UTF8Char*)"WITH COMPONENTS"))
+												{
+													sb.AppendChar(' ', 1);
+													if (!reader->NextWord(&sb))
+													{
+														errMessage->Append((const UTF8Char*)"WITH SYNTAX error: ");
+														errMessage->Append(sb.ToString());
+														return false;
+													}
+													Text::StringBuilderUTF8 sbTmp;
+													sbTmp.Append(currObj->typeVal);
+													sbTmp.AppendChar(' ', 1);
+													sbTmp.Append(sb.ToString());
+													Text::StrDelNew(currObj->typeVal);
+													currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
+													RemoveSpace((UTF8Char*)currObj->typeVal);
+												}
+												else
+												{
+													errMessage->Append((const UTF8Char*)"Unexpected word after WITH: ");
+													errMessage->Append(sb.ToString());
+													return false;
+												}
+											}
+											else
+											{
+												while (sb.StartsWith((const UTF8Char*)"(WITH") ||
+													sb.StartsWith((const UTF8Char*)"( WITH") ||
+													sb.StartsWith((const UTF8Char*)"(CONSTRAINED") ||
+													sb.StartsWith((const UTF8Char*)"(ALL") ||
+													sb.StartsWith((const UTF8Char*)"( ALL"))
+												{
+													sb.ClearStr();
+													sb.Append(currObj->typeVal);
+													sb.AppendChar(' ', 1);
+													reader->NextWord(&sb);
+													Text::StrDelNew(currObj->typeVal);
+													currObj->typeVal = Text::StrCopyNew(sb.ToString());
+													RemoveSpace((UTF8Char*)currObj->typeVal);
+													sb.ClearStr();
+													reader->PeekWord(&sb);
+													RemoveSpace(sb.ToString());
+												}
 											}
 										}
 									}
@@ -582,6 +646,32 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						if (sb.StartsWith((const UTF8Char*)"[") && sb.EndsWith((const UTF8Char*)"]"))
 						{
 
+						}
+						else if (sb.Equals((const UTF8Char*)"OCTET") || sb.Equals((const UTF8Char*)"BIT"))
+						{
+							sb.AppendChar(' ', 1);
+							reader->NextWord(&sb);
+							if (sb.Equals((const UTF8Char*)"OCTET STRING") || sb.Equals((const UTF8Char*)"BIT STRING"))
+							{
+								Text::StringBuilderUTF8 sbTmp;
+								reader->PeekWord(&sbTmp);
+								if (sbTmp.StartsWith((const UTF8Char*)"{") || sbTmp.StartsWith((const UTF8Char*)"("))
+								{
+									sb.AppendChar(' ', 1);
+									reader->NextWord(&sb);
+									sbTmp.ClearStr();
+									reader->PeekWord(&sbTmp);
+								}
+								currObj->typeVal = Text::StrCopyNew(sb.ToString());
+								currObj = 0;
+								objIsEqual = false;
+							}
+							else
+							{
+								errMessage->Append((const UTF8Char*)"Unexpected words: ");
+								errMessage->Append(sb.ToString());
+								return false;
+							}
 						}
 						else
 						{
@@ -654,13 +744,15 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							i++;
 						}
 						currObj->typeVal = Text::StrCopyNew(sb.ToString() + i);
-						if (currObj->typeName != 0 && Text::StrEndsWith(currObj->typeVal, (const UTF8Char*)"}"))
+						UOSInt startCnt = Text::StrCountChar(currObj->typeVal, '{');
+						UOSInt endCnt = Text::StrCountChar(currObj->typeVal, '}');
+						if (endCnt >= startCnt)
 						{
 							currObj = 0;
 							objBrkType = 0;
 							objIsEqual = false;
 						}							
-						else if (Text::StrEndsWith(currObj->typeVal, (const UTF8Char*)"{"))
+						else
 						{
 							objBrkType = '{';
 							objIsEqual = true;
@@ -1706,7 +1798,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		{
 			if (postApply)
 			{
-				succ = ApplyImports(errMessage) && ApplyOIDs(errMessage);
+				succ = ApplyImports(errMessage) && ApplyModuleOIDs(module, errMessage);
 			}
 		}
 	}
@@ -1826,6 +1918,79 @@ Bool Net::ASN1MIB::IsKnownType(const UTF8Char *s)
 Bool Net::ASN1MIB::IsUnknownType(const UTF8Char *s)
 {
 	return IsType(s) && !IsKnownType(s);
+}
+
+OSInt Net::ASN1MIB::BranketEnd(const UTF8Char *s, UTF8Char *brkType)
+{
+	OSInt i = 0;
+	UTF8Char c;
+	UTF8Char brkStart;
+	UTF8Char brkEnd;
+	UOSInt level;
+	while (true)
+	{
+		c = s[i++];
+		if (c == 0)
+		{
+			return -1;
+		}
+		if (c == '{')
+		{
+			brkStart = '{';
+			brkEnd = '}';
+			break;
+		}
+		else if (c == '(')
+		{
+			brkStart = '(';
+			brkEnd = ')';
+			break;
+		}
+	}
+	level = 1;
+	while ((c = s[i++]) != 0)
+	{
+		if (c == brkStart)
+		{
+			level++;
+		}
+		else if (c == brkEnd)
+		{
+			level--;
+			if (level == 0)
+			{
+				if (brkType)
+				{
+					*brkType = brkStart;
+				}
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+const UTF8Char *Net::ASN1MIB::SkipWS(const UTF8Char *s)
+{
+	UTF8Char c;
+	while (true)
+	{
+		c = *s;
+		if (c == 0)
+		{
+			return s;
+		}
+		else if (c != ' ' && c != '\t' && c != '\r' && c != '\n')
+		{
+			return s;
+		}
+		s++;
+	}
+}
+
+UTF8Char Net::ASN1MIB::NextChar(const UTF8Char *s)
+{
+	return SkipWS(s)[0];
 }
 
 Net::ASN1MIB::ASN1MIB()

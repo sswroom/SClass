@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Net/SNMPInfo.h"
 #include "Net/ASN1OIDDB.h"
+#include "Net/ASN1Util.h"
+#include "Net/SNMPInfo.h"
 #include "Net/SNMPUtil.h"
 #include "Net/SocketUtil.h"
 
@@ -147,7 +148,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		return len + hdrSize;
 	case 6:
 		sb->Append((const UTF8Char*)"OBJECT IDENTIFIER ");
-		Net::SNMPUtil::OIDToString(&pdu[hdrSize], len, sb);
+		Net::ASN1Util::OIDToString(&pdu[hdrSize], len, sb);
 		sb->Append((const UTF8Char*)" (");
 		Net::ASN1OIDDB::OIDToNameString(&pdu[hdrSize], len, sb);
 		sb->Append((const UTF8Char*)")");
@@ -326,7 +327,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		break;
 	case 6:
-		Net::SNMPUtil::OIDToString(pduBuff, valLen, sb);
+		Net::ASN1Util::OIDToString(pduBuff, valLen, sb);
 		sb->Append((const UTF8Char*)" (");
 		Net::ASN1OIDDB::OIDToNameString(pduBuff, valLen, sb);
 		sb->Append((const UTF8Char*)")");

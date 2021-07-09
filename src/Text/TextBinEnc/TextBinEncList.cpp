@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/TextBinEnc/ANSITextBinEnc.h"
+#include "Text/TextBinEnc/ASN1OIDBinEnc.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/CPPByteArrBinEnc.h"
 #include "Text/TextBinEnc/CPPTextBinEnc.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
 #include "Text/TextBinEnc/QuotedPrintableEnc.h"
-#include "Text/TextBinEnc/SNMPOIDBinEnc.h"
 #include "Text/TextBinEnc/TextBinEncList.h"
 #include "Text/TextBinEnc/UCS2TextBinEnc.h"
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
@@ -31,7 +31,7 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::UCS2TextBinEnc());
 	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::SNMPOIDBinEnc());
+	NEW_CLASS(enc, Text::TextBinEnc::ASN1OIDBinEnc());
 	this->encList->Add(enc);
 }
 
