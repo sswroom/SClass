@@ -67,31 +67,6 @@ Crypto::Encrypt::ICrypto *Crypto::JasyptEncryptor::CreateCrypto(const UInt8 *iv,
 	}
 }
 
-void Crypto::JasyptEncryptor::GenRandomBytes(UInt8 *buff, UOSInt len)
-{
-	if (this->random == 0)
-	{
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		NEW_CLASS(this->random, Data::RandomMT19937((UInt32)(dt.ToTicks() & 0xffffffff)));
-	}
-	UInt8 tmpBuff[4];
-	while (len >= 4)
-	{
-		WriteNInt32(buff, this->random->NextInt32());
-		len -= 4;
-		buff += 4;
-	}
-	if (len > 0)
-	{
-		WriteNInt32(tmpBuff, this->random->NextInt32());
-		while (len-- > 0)
-		{
-			buff[len] = tmpBuff[len];
-		}
-	}
-}
-
 Crypto::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen)
 {
 	this->keyAlgorithmn = keyAlg;
@@ -113,7 +88,7 @@ Crypto::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm ci
 	}
 	this->salt = 0;
 	this->iv = 0;
-	this->random = 0;
+	NEW_CLASS(this->random, Data::RandomBytesGenerator());
 	this->key = MemAlloc(UInt8, keyLen);
 	MemCopyNO(this->key, key, keyLen);
 	this->keyLen = keyLen;
@@ -218,7 +193,7 @@ UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF *sb, const U
 	else
 	{
 		salt = &destBuff[destOfst];
-		this->GenRandomBytes(&destBuff[destOfst], this->saltSize);
+		this->random->NextBytes(&destBuff[destOfst], this->saltSize);
 		destOfst += this->saltSize;
 	}
 	if (this->iv != 0)
@@ -228,7 +203,7 @@ UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF *sb, const U
 	else
 	{
 		iv = &destBuff[destOfst];
-		this->GenRandomBytes(&destBuff[destOfst], this->ivSize);
+		this->random->NextBytes(&destBuff[destOfst], this->ivSize);
 		destOfst += this->ivSize;
 	}
 	UInt8 *key = MemAlloc(UInt8, this->dkLen);

@@ -2,7 +2,7 @@
 #define _SM_CRYPTO_JASYPTENCRYPTOR
 #include "Crypto/Encrypt/ICrypto.h"
 #include "Crypto/Hash/IHash.h"
-#include "Data/RandomMT19937.h"
+#include "Data/RandomBytesGenerator.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Crypto
@@ -37,13 +37,12 @@ namespace Crypto
 		UOSInt ivSize;
 		UOSInt iterCnt;
 		UOSInt dkLen;
-		Data::RandomMT19937 *random;
+		Data::RandomBytesGenerator *random;
 
 		const UInt8 *DecGetSalt(const UInt8 *buff, UInt8 *salt);
 		const UInt8 *DecGetIV(const UInt8 *buff, UInt8 *iv);
 		UOSInt GetEncKey(const UInt8 *salt, UInt8 *key);
 		Crypto::Encrypt::ICrypto *CreateCrypto(const UInt8 *iv, const UInt8 *keyBuff);
-		void GenRandomBytes(UInt8 *buff, UOSInt len);
 
 	public:
 		JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen);

@@ -20,6 +20,7 @@ nodeps:
 @AES192Test
 @AES256Test
 @CRC32RTest
+@HOTPTest
 @JasyptEncryptorTest
 @JWTTest
 @MD5Test
@@ -184,6 +185,9 @@ AES256Test:
 @ConsoleStartup.o
 CRC32RTest:
 @CRC32RTestMain.o
+@ConsoleStartup.o
+HOTPTest:
+@HOTPTest.o
 @ConsoleStartup.o
 JasyptEncryptorTest:
 @JasyptEncryptorTest.o
@@ -679,6 +683,7 @@ AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
+HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
@@ -843,10 +848,14 @@ Core/ConsoleControl.h:
 Core/Core.h: ../../src/Core/Core.cpp
 @Core.o
 
+Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
+@HOTP.o
 Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
 @JasyptEncryptor.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
 @PBKDF2.o
+Crypto/TOTP.h: ../../src/Crypto/TOTP.cpp
+@TOTP.o
 Crypto/X509File.h: ../../src/Crypto/X509File.cpp
 @X509File.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
@@ -982,6 +991,8 @@ Data/LinkedList.h: ../../src/Data/LinkedList.cpp
 @LinkedList.o
 Data/List.h:
 Data/Random.h:
+Data/RandomBytesGenerator.h: ../../src/Data/RandomBytesGenerator.cpp
+@RandomBytesGenerator.o
 Data/RandomMT19937.h: ../../src/Data/RandomMT19937.cpp
 @RandomMT19937.o
 Data/RandomOS.h: ../../src/Data/RandomOS.cpp
@@ -3352,6 +3363,8 @@ Text/TextBinEnc/ANSITextBinEnc.h: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
 @ANSITextBinEnc.o
 Text/TextBinEnc/ASN1OIDBinEnc.h: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
 @ASN1OIDBinEnc.o
+Text/TextBinEnc/Base32Enc.h: ../../src/Text/TextBinEnc/Base32Enc.cpp
+@Base32Enc.o
 Text/TextBinEnc/Base64Enc.h: ../../src/Text/TextBinEnc/Base64Enc.cpp
 @Base64Enc.o
 Text/TextBinEnc/CodePageTextBinEnc.h: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
@@ -3414,8 +3427,10 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 @SMBIOS.o
 
 Core.o: ../../src/Core/Core.cpp
+HOTP.o: ../../src/Crypto/HOTP.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
+TOTP.o: ../../src/Crypto/TOTP.cpp
 X509File.o: ../../src/Crypto/X509File.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
@@ -3478,6 +3493,7 @@ DateTime.o: ../../src/Data/DateTime.cpp
 IChart.o: ../../src/Data/IChart.cpp
 LineChart.o: ../../src/Data/LineChart.cpp
 LinkedList.o: ../../src/Data/LinkedList.cpp
+RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
 Usage.o: ../../src/Data/Usage.cpp
@@ -4594,6 +4610,7 @@ WorkbookFont.o: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 Worksheet.o: ../../src/Text/SpreadSheet/Worksheet.cpp
 ANSITextBinEnc.o: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
 ASN1OIDBinEnc.o: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
+Base32Enc.o: ../../src/Text/TextBinEnc/Base32Enc.cpp
 Base64Enc.o: ../../src/Text/TextBinEnc/Base64Enc.cpp
 CodePageTextBinEnc.o: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
 CPPByteArrBinEnc.o: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp
