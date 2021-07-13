@@ -39,7 +39,7 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 		OSInt i = me->GetSelectedIndex();
 		if (i >= 0)
 		{
-			me->EventDblClk(i);
+			me->EventDblClk((UOSInt)i);
 		}
 	}
 	return false;
@@ -589,7 +589,7 @@ void UI::GUIListView::EventSelChg()
 	}
 }
 
-void UI::GUIListView::EventDblClk(OSInt itemIndex)
+void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 {
 	UOSInt i;
 	i = this->dblClkHdlrs->GetCount();

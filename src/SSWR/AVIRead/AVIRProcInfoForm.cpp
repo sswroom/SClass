@@ -5,10 +5,10 @@
 #include "SSWR/AVIRead/AVIRThreadInfoForm.h"
 #include "Sync/Thread.h"
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	me->lbDetail->SetSelectedIndex((UOSInt)index);
+	me->lbDetail->SetSelectedIndex(index);
 	me->tcMain->SetSelectedIndex(1);
 }
 
@@ -216,10 +216,10 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(void *user
 	me->UpdateProcThreads();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	UInt32 threadId = (UInt32)(UOSInt)me->lvDetThread->GetItem((UOSInt)index);
+	UInt32 threadId = (UInt32)(UOSInt)me->lvDetThread->GetItem(index);
 	SSWR::AVIRead::AVIRThreadInfoForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRThreadInfoForm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId));
 	frm->ShowDialog(me);
@@ -431,6 +431,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 			case Manage::Process::HT_FREE:
 				tStr = (const UTF8Char*)"Free";
 				break;
+			case Manage::Process::HT_UNKNOWN:
 			default:
 				tStr = (const UTF8Char*)"Unknown";
 				break;

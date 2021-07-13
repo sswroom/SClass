@@ -10,6 +10,8 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UInt8 key[20];
+	UInt8 decKey[20];
+	UTF8Char sbuff[32];
 	Data::RandomBytesGenerator random;
 	random.NextBytes(key, 10);
 	IO::ConsoleWriter console;
@@ -22,6 +24,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.Append((const UTF8Char*)"B32: ");
 	b32.EncodeBin(&sb, key, 10);
 	console.WriteLine(sb.ToString());
+	UOSInt decLen = b32.DecodeBin(sb.ToString() + 5, decKey);
+	sb.ClearStr();
+	sb.AppendHexBuff(decKey, decLen, 0, Text::LBT_NONE);
+	console.WriteLine(sb.ToString());
+	console.WriteLine();
 	
 	Crypto::HOTP hotp(key, 10, 1);
 	UOSInt i = 0;
@@ -31,7 +38,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.Append((const UTF8Char*)"Code ");
 		sb.AppendUOSInt(i);
 		sb.Append((const UTF8Char*)": ");
-		sb.AppendU32(hotp.NextCode());
+		hotp.CodeString(sbuff, hotp.NextCode());
+		sb.Append(sbuff);
 		console.WriteLine(sb.ToString());
 		i++;
 	}

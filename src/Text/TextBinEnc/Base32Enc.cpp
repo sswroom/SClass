@@ -161,7 +161,6 @@ UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UInt8 *dat
 					break;
 				case 2:
 					b2 = (UInt8)(b2 | (code << 1));
-					decSize++;
 					b = 3;
 					break;
 				case 3:
@@ -180,7 +179,6 @@ UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UInt8 *dat
 					break;
 				case 5:
 					b2 = (UInt8)(b2 | (code << 2));
-					decSize++;
 					b = 6;
 					break;
 				case 6:
@@ -207,4 +205,21 @@ UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UInt8 *dat
 const UTF8Char *Text::TextBinEnc::Base32Enc::GetName()
 {
 	return (const UTF8Char*)"Base32";
+}
+
+Bool Text::TextBinEnc::Base32Enc::IsValid(const UTF8Char *b32Str)
+{
+	UTF8Char c;
+	while ((c = *b32Str++) != 0)
+	{
+		if ((c >= 'A' && c <= 'Z') || (c >= '2' && c <= '7'))
+		{
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
 }

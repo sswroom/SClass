@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUIButton *btnStartTime;
 
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
-			static void __stdcall OnFilesDblClk(void *userObj, OSInt itemIndex);
+			static void __stdcall OnFilesDblClk(void *userObj, UOSInt itemIndex);
 			static void __stdcall OnDeleteClicked(void *userObj);
 			static void __stdcall OnStartTimeClicked(void *userObj);
 			void UpdateFileList();

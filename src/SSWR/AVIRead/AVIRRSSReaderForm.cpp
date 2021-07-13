@@ -135,10 +135,10 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
-	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem((UOSInt)index);
+	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem(index);
 	if (item)
 	{
 		SSWR::AVIRead::AVIRRSSItemForm *frm;

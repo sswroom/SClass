@@ -32,11 +32,11 @@ UOSInt Net::WiFiLogFile::DirectInsert(LogFileEntry *newLog)
 		else
 		{
 			this->logList->Insert((UOSInt)k, newLog);
-			return k;
+			return (UOSInt)k;
 		}
 	}
 	this->logList->Insert((UOSInt)i, newLog);
-	return i;
+	return (UOSInt)i;
 }
 
 Net::WiFiLogFile::WiFiLogFile()
@@ -458,8 +458,6 @@ const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::Wireless
 {
 	UInt8 buff[8];
 	UInt64 imac;
-	UOSInt i;
-	UOSInt j;
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
@@ -503,7 +501,7 @@ const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::Wireless
 		log->ouis[2][0] = oui3[0];
 		log->ouis[2][1] = oui3[1];
 		log->ouis[2][2] = oui3[2];
-		log->ieLen = ieLen;
+		log->ieLen = (UInt32)ieLen;
 		if (ieLen > 0)
 		{
 			log->ieBuff = MemAlloc(UInt8, ieLen);

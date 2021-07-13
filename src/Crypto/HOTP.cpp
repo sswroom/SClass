@@ -4,20 +4,26 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Data/ByteTool.h"
+#include "Text/TextBinEnc/Base32Enc.h"
+#include "Text/TextEnc/URIEncoding.h"
 
 //RFC 4226
-Crypto::HOTP::HOTP(const UInt8 *key, UOSInt keySize, UInt64 counter)
+Crypto::HOTP::HOTP(const UInt8 *key, UOSInt keySize, UInt64 counter) : OTP(6)
 {
 	this->key = MemAlloc(UInt8, keySize);
 	this->keySize = keySize;
 	MemCopyNO(this->key, key, keySize);
-	this->nDigits = 6;
-	this->counter = 0;
+	this->counter = counter;
 }
 
 Crypto::HOTP::~HOTP()
 {
 	MemFree(this->key);
+}
+
+Crypto::OTP::OTPType Crypto::HOTP::GetType()
+{
+	return Crypto::OTP::OT_HOTP;
 }
 
 UInt64 Crypto::HOTP::GetCounter()
@@ -30,8 +36,20 @@ UInt32 Crypto::HOTP::NextCode()
 	return CalcCode(this->key, this->keySize, this->counter++, this->nDigits);
 }
 
-Bool Crypto::HOTP::IsValid(UInt64 code)
+Bool Crypto::HOTP::IsValid(UInt32 code)
 {
+	UInt32 cnt = 0;
+	UInt32 calCode;
+	while (cnt < 10)
+	{
+		calCode = CalcCode(this->key, this->keySize, this->counter + cnt, this->nDigits);
+		if (calCode == code)
+		{
+			this->counter += cnt + 1;
+			return true;
+		}
+		cnt++;
+	}
 	return false;
 }
 
@@ -60,4 +78,16 @@ UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, 
 	{
 		return v;
 	}
+}
+
+void Crypto::HOTP::GenURI(Text::StringBuilderUTF *sb, const UTF8Char *name)
+{
+	UTF8Char sbuff[512];
+	sb->Append((const UTF8Char*)"otpauth://hotp/");
+	Text::TextEnc::URIEncoding::URIEncode(sbuff, name);
+	sb->Append(sbuff);
+	sb->Append((const UTF8Char*)"?secret=");
+	Text::TextBinEnc::Base32Enc b32;
+	b32.EncodeBin(sb, this->key, this->keySize);
+
 }

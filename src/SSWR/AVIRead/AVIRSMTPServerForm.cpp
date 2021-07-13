@@ -85,11 +85,11 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnLogFileClicked(void *userObj
 	me->btnLogFile->SetEnabled(false);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	EmailInfo *email;
-	email = (EmailInfo*)me->lvEmail->GetItem((UOSInt)index);
+	email = (EmailInfo*)me->lvEmail->GetItem(index);
 	if (email)
 	{
 		Text::MIMEObj::MailMessage *mail;

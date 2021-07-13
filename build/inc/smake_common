@@ -852,6 +852,8 @@ Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
 @HOTP.o
 Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
 @JasyptEncryptor.o
+Crypto/OTP.h: ../../src/Crypto/OTP.cpp
+@OTP.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
 @PBKDF2.o
 Crypto/TOTP.h: ../../src/Crypto/TOTP.cpp
@@ -2933,6 +2935,8 @@ SSWR/AVIRead/AVIROSMCacheCfgForm.h: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.c
 @AVIROSMCacheCfgForm.o
 SSWR/AVIRead/AVIROSMCacheForm.h: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
 @AVIROSMCacheForm.o
+SSWR/AVIRead/AVIROTPForm.h: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
+@AVIROTPForm.o
 SSWR/AVIRead/AVIRPackageForm.h: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 @AVIRPackageForm.o
 SSWR/AVIRead/AVIRPaintCntForm.h: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
@@ -3429,6 +3433,7 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 Core.o: ../../src/Core/Core.cpp
 HOTP.o: ../../src/Crypto/HOTP.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
+OTP.o: ../../src/Crypto/OTP.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 TOTP.o: ../../src/Crypto/TOTP.cpp
 X509File.o: ../../src/Crypto/X509File.cpp
@@ -4401,6 +4406,7 @@ AVIRODBCStrForm.o: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
 AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
 AVIROSMCacheCfgForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
 AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
+AVIROTPForm.o: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
 AVIRPackageForm.o: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 AVIRPaintCntForm.o: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
 AVIRPasswordHashForm.o: ../../src/SSWR/AVIRead/AVIRPasswordHashForm.cpp

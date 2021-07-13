@@ -41,10 +41,10 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList->GetItem((UOSInt)index);
+	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList->GetItem(index);
 	if (log == 0)
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);

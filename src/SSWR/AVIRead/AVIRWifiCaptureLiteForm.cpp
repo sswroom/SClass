@@ -382,10 +382,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
-	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew((UOSInt)index);
+	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew(index);
 	if (csptr)
 	{
 		Win32::Clipboard::SetString(me->GetHandle(), csptr);

@@ -307,10 +307,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 	Win32::Clipboard::SetString(me->GetHandle(), sb.ToString());
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *userObj, OSInt itemIndex)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *userObj, UOSInt itemIndex)
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
-	Int32 id = (Int32)(OSInt)me->lvFiles->GetItem((UOSInt)itemIndex);
+	Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(itemIndex);
 	if (id)
 	{
 		me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());

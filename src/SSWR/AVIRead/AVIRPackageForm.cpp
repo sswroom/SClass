@@ -52,6 +52,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			case AT_RETRYMOVE:
 				found = true;
 				break;
+			case AT_DELETE:
+			case AT_DELETEFAIL:
+			case AT_COPYFAIL:
+			case AT_MOVEFAIL:
+			case AT_SUCCEED:
 			default:
 				break;
 			}
@@ -343,58 +348,52 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
-	if (index >= 0)
+	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
+	if (pot == IO::PackageFile::POT_PACKAGEFILE)
 	{
-		IO::PackageFile::PackObjectType pot = me->packFile->GetItemType((UOSInt)index);
-		if (pot == IO::PackageFile::POT_PACKAGEFILE)
+		IO::PackageFile *pkg = me->packFile->GetItemPack(index);
+		if (pkg)
 		{
-			IO::PackageFile *pkg = me->packFile->GetItemPack((UOSInt)index);
-			if (pkg)
-			{
-				me->core->OpenObject(pkg);
-			}
+			me->core->OpenObject(pkg);
 		}
-		else if (pot == IO::PackageFile::POT_PARSEDOBJECT)
+	}
+	else if (pot == IO::PackageFile::POT_PARSEDOBJECT)
+	{
+		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index);
+		if (pobj)
 		{
-			IO::ParsedObject *pobj = me->packFile->GetItemPObj((UOSInt)index);
-			if (pobj)
-			{
-				me->core->OpenObject(pobj);
-			}
+			me->core->OpenObject(pobj);
 		}
-		else if (pot == IO::PackageFile::POT_STREAMDATA)
+	}
+	else if (pot == IO::PackageFile::POT_STREAMDATA)
+	{
+		IO::IStreamData *data = me->packFile->GetItemStmData(index);
+		if (data)
 		{
-			IO::IStreamData *data = me->packFile->GetItemStmData((UOSInt)index);
-			if (data)
-			{
-				me->core->LoadData(data, me->packFile);
-				DEL_CLASS(data);
-			}
+			me->core->LoadData(data, me->packFile);
+			DEL_CLASS(data);
 		}
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
-	if (index >= 0)
+	Sync::MutexUsage mutUsage(me->fileMut);
+	if (me->fileAction->GetItem(index) == AT_COPYFAIL)
 	{
-		Sync::MutexUsage mutUsage(me->fileMut);
-		if (me->fileAction->GetItem((UOSInt)index) == AT_COPYFAIL)
-		{
-			me->fileAction->SetItem((UOSInt)index, AT_RETRYCOPY);
-			me->statusChg = true;
-		}
-		else if (me->fileAction->GetItem((UOSInt)index) == AT_MOVEFAIL)
-		{
-			me->fileAction->SetItem((UOSInt)index, AT_RETRYMOVE);
-			me->statusChg = true;
-		}
-		mutUsage.EndUse();
+		me->fileAction->SetItem(index, AT_RETRYCOPY);
+		me->statusChg = true;
 	}
+	else if (me->fileAction->GetItem(index) == AT_MOVEFAIL)
+	{
+		me->fileAction->SetItem(index, AT_RETRYMOVE);
+		me->statusChg = true;
+	}
+	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)

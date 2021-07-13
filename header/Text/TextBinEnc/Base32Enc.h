@@ -15,10 +15,12 @@ namespace Text
 			Base32Enc();
 			virtual ~Base32Enc();
 			virtual UOSInt EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize);
-			virtual UOSInt CalcBinSize(const UTF8Char *b64Str);
+			virtual UOSInt CalcBinSize(const UTF8Char *b32Str);
 			virtual UOSInt CalcBinSize(const WChar *sbuff);
-			virtual UOSInt DecodeBin(const UTF8Char *b64Str, UInt8 *dataBuff);
+			virtual UOSInt DecodeBin(const UTF8Char *b32Str, UInt8 *dataBuff);
 			virtual const UTF8Char *GetName();
+
+			static Bool IsValid(const UTF8Char *b32Str);
 		};
 	}
 }

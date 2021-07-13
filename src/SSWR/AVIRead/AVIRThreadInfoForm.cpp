@@ -99,14 +99,14 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
 	UTF8Char sbuff[18];
 	OSInt i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
-	me->lvMyStack->GetSubItem((UOSInt)index, 3, &sb);
+	me->lvMyStack->GetSubItem(index, 3, &sb);
 	if (sb.StartsWith((const UTF8Char*)"call 0x"))
 	{
 		Text::StrConcatS(sbuff, sb.ToString() + 7, 17);

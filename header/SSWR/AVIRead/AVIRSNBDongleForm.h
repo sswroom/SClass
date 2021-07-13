@@ -95,7 +95,7 @@ namespace SSWR
 			static void __stdcall OnDevOnClicked(void *userObj);
 			static void __stdcall OnDevOffClicked(void *userObj);
 			static void __stdcall OnDevStatusClicked(void *userObj);
-			static void __stdcall OnDeviceDblClk(void *userObj, OSInt index);
+			static void __stdcall OnDeviceDblClk(void *userObj, UOSInt index);
 			static void __stdcall OnUploadClicked(void *userObj);
 
 			void LoadFile();

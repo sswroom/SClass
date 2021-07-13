@@ -101,10 +101,10 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRCameraControlForm *me = (SSWR::AVIRead::AVIRCameraControlForm*)userObj;
-	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem((UOSInt)index);
+	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(index);
 	if (file == 0)
 		return;
 	if (file->fileType == IO::CameraControl::FT_IMAGE)
