@@ -42,10 +42,10 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		Data::DateTime dt;
 		dt.SetCurrTime();
 		timeDiff = dt.GetTimeZoneQHR() * 15 * -60000LL;
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		UOSInt l;
 		if (jsBase)
 		{
 			if (jsBase->GetJSType() == Text::JSONBase::JST_OBJECT)
@@ -126,7 +126,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 											{
 												file->fileType = IO::CameraControl::FT_IMAGE;
 											}
-											file->fileSize = Text::StrToInt64(fileSize);
+											file->fileSize = Text::StrToUInt64(fileSize);
 											if (modTime == 0)
 											{
 												file->fileTimeTicks = 0;
@@ -228,7 +228,7 @@ IO::Device::GoProCameraControl::GoProCameraControl(Net::SocketFactory *sockf, co
 
 IO::Device::GoProCameraControl::~GoProCameraControl()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->fileList)
 	{
 		IO::CameraControl::FileInfo *file;
@@ -252,7 +252,7 @@ UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayList<const UTF8Cha
 
 void IO::Device::GoProCameraControl::FreeInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
 {
-	OSInt i = nameList->GetCount();
+	UOSInt i = nameList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(nameList->GetItem(i));

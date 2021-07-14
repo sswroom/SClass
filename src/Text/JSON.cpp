@@ -932,6 +932,16 @@ void Text::JSONObject::GetObjectNames(Data::ArrayList<const UTF8Char *> *names)
 	names->AddRange(this->objVals->GetKeys());
 }
 
+const UTF8Char *Text::JSONObject::GetObjectString(const UTF8Char *name)
+{
+	Text::JSONBase *baseObj = this->objVals->Get(name);
+	if (baseObj == 0 || baseObj->GetJSType() != Text::JSONBase::JST_STRINGUTF8)
+	{
+		return 0;
+	}
+	return ((Text::JSONStringUTF8*)baseObj)->GetValue();
+}
+
 Text::JSONArray::JSONArray()
 {
 	NEW_CLASS(this->arrVals, Data::ArrayList<Text::JSONBase*>());

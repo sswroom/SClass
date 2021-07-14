@@ -172,6 +172,7 @@ namespace Text
 		void SetObjectValue(const UTF8Char *name, JSONBase *val);
 		JSONBase *GetObjectValue(const UTF8Char *name);
 		void GetObjectNames(Data::ArrayList<const UTF8Char *> *names);
+		const UTF8Char *GetObjectString(const UTF8Char *name);
 	};
 
 	class JSONArray : public JSONBase

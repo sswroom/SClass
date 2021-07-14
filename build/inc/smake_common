@@ -2247,6 +2247,8 @@ Net/MQTTClient.h: ../../src/Net/MQTTClient.cpp
 @MQTTClient.o
 Net/MQTTHandler.h: ../../src/Net/MQTTHandler.cpp
 @MQTTHandler.o
+Net/MQTTUtil.h: ../../src/Net/MQTTUtil.cpp
+@MQTTUtil.o
 Net/MySQLServer.h: ../../src/Net/MySQLServer.cpp
 @MySQLServer.o
 Net/MySQLTCPClient.h: ../../src/Net/MySQLTCPClient.cpp
@@ -2728,6 +2730,8 @@ SSWR/AVIRead/AVIREncryptForm.h: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 @AVIREncryptForm.o
 SSWR/AVIRead/AVIRESRIMapForm.h: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
 @AVIRESRIMapForm.o
+SSWR/AVIRead/AVIREWDTU01Form.h: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
+@AVIREWDTU01Form.o
 SSWR/AVIRead/AVIRExeForm.h: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
 @AVIRExeForm.o
 SSWR/AVIRead/AVIRExportParamForm.h: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
@@ -4066,6 +4070,7 @@ MIME.o: ../../src/Net/MIME.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
 MQTTClient.o: ../../src/Net/MQTTClient.cpp
 MQTTHandler.o: ../../src/Net/MQTTHandler.cpp
+MQTTUtil.o: ../../src/Net/MQTTUtil.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
@@ -4303,6 +4308,7 @@ AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
 AVIREncryptForm.o: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
+AVIREWDTU01Form.o: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
 AVIRExeForm.o: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
 AVIRExportParamForm.o: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
 AVIRFileAnalyseForm.o: ../../src/SSWR/AVIRead/AVIRFileAnalyseForm.cpp
