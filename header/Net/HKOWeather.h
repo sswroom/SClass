@@ -59,5 +59,5 @@ namespace Net
 		virtual void ItemRemoved(Net::RSSItem *item);
 		WeatherSignal GetCurrentSignal();
 	};
-};
+}
 #endif

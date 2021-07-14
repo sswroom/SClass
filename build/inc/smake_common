@@ -2202,6 +2202,8 @@ Net/FTPClient.h: ../../src/Net/FTPClient.cpp
 @FTPClient.o
 Net/FTPConn.h: ../../src/Net/FTPConn.cpp
 @FTPConn.o
+Net/GoogleQRCode.h: ../../src/Net/GoogleQRCode.cpp
+@GoogleQRCode.o
 Net/HKOWeather.h: ../../src/Net/HKOWeather.cpp
 @HKOWeather.o
 Net/HKTrafficImage.h: ../../src/Net/HKTrafficImage.cpp
@@ -4050,6 +4052,7 @@ EthernetAnalyzer.o: ../../src/Net/EthernetAnalyzer.cpp
 EthernetWebHandler.o: ../../src/Net/EthernetWebHandler.cpp
 FTPClient.o: ../../src/Net/FTPClient.cpp
 FTPConn.o: ../../src/Net/FTPConn.cpp
+GoogleQRCode.o: ../../src/Net/GoogleQRCode.cpp
 HKTrafficImage.o: ../../src/Net/HKTrafficImage.cpp
 HKOWeather.o: ../../src/Net/HKOWeather.cpp
 HTTPClient.o: ../../src/Net/HTTPClient.cpp

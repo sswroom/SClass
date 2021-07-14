@@ -24,6 +24,30 @@ static UInt8 URIAllow[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+void Text::TextEnc::FormEncoding::FormEncode(Text::StringBuilderUTF *sb, const UTF8Char *uri)
+{
+	UInt8 b;
+	while ((b = *uri++) != 0)
+	{
+		if (URIAllow[b])
+		{
+			sb->AppendChar(b, 1);
+		}
+		else
+		{
+			if (b == ' ')
+			{
+				sb->AppendChar('+', 1);
+			}
+			else
+			{
+				sb->AppendChar('%', 1);
+				sb->AppendHex8(b);
+			}
+		}
+	}
+}
+
 UTF8Char *Text::TextEnc::FormEncoding::FormEncode(UTF8Char *buff, const UTF8Char *uri)
 {
 	const UTF8Char *src;

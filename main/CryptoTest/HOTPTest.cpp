@@ -4,6 +4,7 @@
 #include "Crypto/HOTP.h"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/ConsoleWriter.h"
+#include "Net/GoogleQRCode.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base32Enc.h"
 
@@ -43,5 +44,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLine(sb.ToString());
 		i++;
 	}
+	sb.ClearStr();
+	hotp.GenURI(&sb, (const UTF8Char*)"Test By Counter");
+	Net::GoogleQRCode qrCode(200, 200, sb.ToString());
+	sb.ClearStr();
+	qrCode.GetImageURL(&sb);
+	console.WriteLine(sb.ToString());
 	return 0;
 }
