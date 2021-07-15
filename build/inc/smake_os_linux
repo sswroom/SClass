@@ -12,6 +12,10 @@ IO/BTController.h: ../../src/IO/BTControllerL.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerL.cpp
 @BTManager.o
+IO/BTManagerDBus.h: ../../src/IO/BTManagerDBus.cpp
+@BTManagerDBus.o
+IO/DBusManager.h: ../../src/IO/DBusManager.cpp
+@DBusManager.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
@@ -79,6 +83,10 @@ BTController.o: ../../src/IO/BTControllerL.cpp
 !-lbluetooth
 BTManager.o: ../../src/IO/BTManagerL.cpp
 !-lbluetooth
+BTManagerDBus.o: ../../src/IO/BTManagerDBus.cpp
+DBusManager.o: ../../src/IO/DBusManager.cpp
+$`pkg-config --cflags dbus-1`
+!-ldbus-1
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSL.cpp

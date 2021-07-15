@@ -68,5 +68,5 @@ namespace IO
 		Bool LEScanBegin();
 		Bool LEScanEnd();
 	};
-};
+}
 #endif

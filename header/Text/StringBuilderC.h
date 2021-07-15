@@ -11,13 +11,13 @@ namespace Text
 		virtual ~StringBuilderC();
 
 		StringBuilderC *Append(const Char *s);
-		StringBuilderC *Append(const Char *s, OSInt charCnt);
-		StringBuilderC *Append(Char c, OSInt repeatCnt);
-		StringBuilderC *AppendCSV(const Char **sarr, OSInt nStr);
+		StringBuilderC *Append(const Char *s, UOSInt charCnt);
+		StringBuilderC *AppendChar(Char c, UOSInt repeatCnt);
+		StringBuilderC *AppendCSV(const Char **sarr, UOSInt nStr);
 		StringBuilderC *AppendToUpper(const Char *s);
 		StringBuilderC *AppendToLower(const Char *s);
-		StringBuilderC *AppendASCII(Char *s);
-		StringBuilderC *AppendASCII(Char *s, OSInt charCnt);
+		StringBuilderC *AppendASCII(const Char *s);
+		StringBuilderC *AppendASCII(const Char *s, UOSInt charCnt);
 	};
-};
+}
 #endif
