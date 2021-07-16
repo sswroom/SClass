@@ -963,6 +963,8 @@ Data/ArrayListInt32.h: ../../src/Data/ArrayListInt32.cpp
 @ArrayListInt32.o
 Data/ArrayListInt64.h: ../../src/Data/ArrayListInt64.cpp
 @ArrayListInt64.o
+Data/ArrayListStrC.h: ../../src/Data/ArrayListStrC.cpp
+@ArrayListStrC.o
 Data/ArrayListString.h: ../../src/Data/ArrayListString.cpp
 @ArrayListString.o
 Data/ArrayListStrUTF8.h: ../../src/Data/ArrayListStrUTF8.cpp
@@ -1001,6 +1003,7 @@ Data/RandomOS.h: ../../src/Data/RandomOS.cpp
 @RandomOS.o
 Data/ReadingList.h:
 Data/SortableArrayList.h:
+Data/StringCMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
 Data/UInt32Map.h:
@@ -3495,6 +3498,7 @@ ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
 ArrayListICaseStrUTF8.o: ../../src/Data/ArrayListICaseStrUTF8.cpp
 ArrayListInt32.o: ../../src/Data/ArrayListInt32.cpp
 ArrayListInt64.o: ../../src/Data/ArrayListInt64.cpp
+ArrayListStrC.o: ../../src/Data/ArrayListStrC.cpp
 ArrayListStrW.o: ../../src/Data/ArrayListStrW.cpp
 ArrayListString.o: ../../src/Data/ArrayListString.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp

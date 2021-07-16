@@ -12,25 +12,6 @@
 #define DBUS_INTERFACE_OBJECT_MANAGER DBUS_INTERFACE_DBUS ".ObjectManager"
 #endif
 
-
-static void DBusManager_GenericUnregister(DBusConnection *connection, void *user_data)
-{
-	IO::DBusManager::GenericData *data = (IO::DBusManager::GenericData*)user_data;
-	data->me->GenericUnregister(data);
-}
-
-DBusHandlerResult DBusManager_GenericMessage(DBusConnection *connection, DBusMessage *message, void *user_data)
-{
-	IO::DBusManager::GenericData *data = (IO::DBusManager::GenericData*)user_data;
-	IO::DBusManager::Message msg(message);
-	return (DBusHandlerResult)data->me->GenericMessage(data, &msg);
-}
-
-static DBusObjectPathVTable generic_table = {
-	.unregister_function	= DBusManager_GenericUnregister,
-	.message_function	= DBusManager_GenericMessage,
-};
-
 struct DBusManagerTimeoutHandler {
 	guint id;
 	DBusTimeout *timeout;
@@ -118,6 +99,24 @@ typedef struct
 	Data::ArrayList<IO::DBusManager::GenericData*> *pending;
 	IO::DBusManager::PropertyFlags globalFlags;
 } ClassData;
+
+static void DBusManager_GenericUnregister(DBusConnection *connection, void *user_data)
+{
+	IO::DBusManager::GenericData *data = (IO::DBusManager::GenericData*)user_data;
+	data->me->GenericUnregister(data);
+}
+
+DBusHandlerResult DBusManager_GenericMessage(DBusConnection *connection, DBusMessage *message, void *user_data)
+{
+	IO::DBusManager::GenericData *data = (IO::DBusManager::GenericData*)user_data;
+	IO::DBusManager::Message msg(message);
+	return (DBusHandlerResult)data->me->GenericMessage(data, &msg);
+}
+
+static DBusObjectPathVTable DBusManager_genericTable = {
+	.unregister_function	= DBusManager_GenericUnregister,
+	.message_function	= DBusManager_GenericMessage,
+};
 
 
 /*static gboolean DBusManager_DisconnectedSignal(DBusConnection *conn, DBusMessage *msg, void *data)
@@ -546,7 +545,7 @@ IO::DBusManager::GenericData *IO::DBusManager::ObjectPathRef(const Char *path)
 	data->refcount = 1;
 	data->introspect = Text::StrCopyNew(DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE "<node></node>");
 
-	if (!dbus_connection_register_object_path(clsData->conn, path, &generic_table, data))
+	if (!dbus_connection_register_object_path(clsData->conn, path, &DBusManager_genericTable, data))
 	{
 		GenericDataFree(data);
 		return NULL;
@@ -657,7 +656,6 @@ IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *
 	GenericData *child = NULL;
 	GenericData *parent = NULL;
 	Text::StringBuilderC sbParentPath;
-	const Char *slash;
 	OSInt i;
 
 	sbParentPath.Append(childPath);

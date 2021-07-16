@@ -121,7 +121,6 @@ void IO::DBusClient::OnServiceDisconnect(IO::DBusManager *dbusManager, void *use
 Bool IO::DBusClient::OnInterfacesAdded(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData)
 {
 	IO::DBusClient *me = (IO::DBusClient*)userData;
-	ClassData *client = (ClassData*)me->clsData;
 
 	DBusMessageIter iter;
 	const Char *path;
@@ -147,7 +146,6 @@ Bool IO::DBusClient::OnInterfacesAdded(IO::DBusManager *dbusManager, IO::DBusMan
 Bool IO::DBusClient::OnInterfacesRemoved(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData)
 {
 	IO::DBusClient *me = (IO::DBusClient*)userData;
-	ClassData *client = (ClassData*)me->clsData;
 	DBusMessageIter iter;
 	DBusMessageIter entry;
 	const Char *path;
@@ -878,7 +876,6 @@ Bool IO::DBusClient::ModifyMatch(const Char *member, const Char *rule)
 
 void IO::DBusClient::GetAllPropertiesReply(void *pending, ProxyData *proxy)
 {
-	ClassData *client = (ClassData*)this->clsData;
 	DBusMessage *reply = dbus_pending_call_steal_reply((DBusPendingCall*)pending);
 	DBusMessageIter iter;
 	DBusError error;

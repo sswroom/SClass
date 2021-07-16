@@ -14,6 +14,8 @@ IO/BTManager.h: ../../src/IO/BTManagerL.cpp
 @BTManager.o
 IO/BTManagerDBus.h: ../../src/IO/BTManagerDBus.cpp
 @BTManagerDBus.o
+IO/DBusClient.h: ../../src/IO/DBusClient.cpp
+@DBusClient.o
 IO/DBusManager.h: ../../src/IO/DBusManager.cpp
 @DBusManager.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
@@ -87,8 +89,11 @@ BTManagerDBus.o: ../../src/IO/BTManagerDBus.cpp
 DBusManager.o: ../../src/IO/DBusManager.cpp
 $`pkg-config --cflags dbus-1`
 $`pkg-config --cflags glib-2.0`
-!-ldbus-1
+!`pkg-config --libs dbus-1`
 !`pkg-config --libs glib-2.0`
+DBusClient.o: ../../src/IO/DBusClient.cpp
+$`pkg-config --cflags dbus-1`
+!`pkg-config --libs dbus-1`
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSL.cpp
