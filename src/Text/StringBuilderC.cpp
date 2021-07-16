@@ -13,7 +13,7 @@ Text::StringBuilderC::~StringBuilderC()
 
 Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	if (slen < 8)
 	{
@@ -82,7 +82,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt 
 
 Text::StringBuilderC *Text::StringBuilderC::AppendToUpper(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToUpper(buffEnd, s);
 	return this;
@@ -90,7 +90,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendToUpper(const Char *s)
 
 Text::StringBuilderC *Text::StringBuilderC::AppendToLower(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToLower(buffEnd, s);
 	return this;

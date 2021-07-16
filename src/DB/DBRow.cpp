@@ -354,7 +354,7 @@ DB::DBRow::DBRow(TableDef *table)
 DB::DBRow::~DBRow()
 {
 	Data::ArrayList<Field*> *fieldList = this->dataMap->GetValues();
-	DEL_LIST_FUNC(fieldList, this->FreeField);
+	LIST_FREE_FUNC(fieldList, this->FreeField);
 	DEL_CLASS(this->dataMap);
 }
 

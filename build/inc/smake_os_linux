@@ -86,7 +86,9 @@ BTManager.o: ../../src/IO/BTManagerL.cpp
 BTManagerDBus.o: ../../src/IO/BTManagerDBus.cpp
 DBusManager.o: ../../src/IO/DBusManager.cpp
 $`pkg-config --cflags dbus-1`
+$`pkg-config --cflags glib-2.0`
 !-ldbus-1
+!`pkg-config --libs glib-2.0`
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSL.cpp

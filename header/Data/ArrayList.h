@@ -339,6 +339,7 @@ namespace Data
 	}
 }
 
-#define DEL_LIST_FUNC(list, func) { UOSInt i = list->GetCount(); while (i-- > 0) func(list->GetItem(i)); }
+#define LIST_CALL_FUNC(list, func) { UOSInt i = list->GetCount(); while (i-- > 0) func(list->GetItem(i)); }
+#define LIST_FREE_FUNC(list, func) { LIST_CALL_FUNC(list, func); list->Clear(); }
 
 #endif

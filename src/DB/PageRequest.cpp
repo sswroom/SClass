@@ -15,7 +15,7 @@ DB::PageRequest::~PageRequest()
 {
 	if (this->sortList)
 	{
-		DEL_LIST_FUNC(this->sortList, Text::StrDelNew);
+		LIST_FREE_FUNC(this->sortList, Text::StrDelNew);
 		DEL_CLASS(this->sortList);
 		DEL_CLASS(this->sortDescList);
 	}

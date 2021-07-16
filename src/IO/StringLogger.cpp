@@ -13,7 +13,7 @@ IO::StringLogger::StringLogger()
 
 IO::StringLogger::~StringLogger()
 {
-	DEL_LIST_FUNC(this->strList, Text::StrDelNew);
+	LIST_FREE_FUNC(this->strList, Text::StrDelNew);
 	DEL_CLASS(this->strList);
 	DEL_CLASS(this->mut);
 }

@@ -162,9 +162,9 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	DEL_LIST_FUNC(this->packs, FreePackInfo);
+	LIST_FREE_FUNC(this->packs, FreePackInfo);
 	Data::ArrayList<UInt8*> *extList = this->extMap->GetValues();
-	DEL_LIST_FUNC(extList, MemFree);
+	LIST_FREE_FUNC(extList, MemFree);
 	DEL_CLASS(this->extMap);
 	DEL_CLASS(this->packs);
 }

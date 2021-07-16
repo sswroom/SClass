@@ -8,59 +8,130 @@
 #include <glib.h>
 #include <stdio.h>
 
-typedef void (* GDBusWatchFunction) (DBusConnection *connection, void *user_data);
+#ifndef DBUS_INTERFACE_OBJECT_MANAGER
+#define DBUS_INTERFACE_OBJECT_MANAGER DBUS_INTERFACE_DBUS ".ObjectManager"
+#endif
+
+
+static void DBusManager_GenericUnregister(DBusConnection *connection, void *user_data)
+{
+	IO::DBusManager::GenericData *data = (IO::DBusManager::GenericData*)user_data;
+	data->me->GenericUnregister(data);
+}
+
+DBusHandlerResult DBusManager_GenericMessage(DBusConnection *connection, DBusMessage *message, void *user_data)
+{
+	IO::DBusManager::GenericData *data = (IO::DBusManager::GenericData*)user_data;
+	IO::DBusManager::Message msg(message);
+	return (DBusHandlerResult)data->me->GenericMessage(data, &msg);
+}
+
+static DBusObjectPathVTable generic_table = {
+	.unregister_function	= DBusManager_GenericUnregister,
+	.message_function	= DBusManager_GenericMessage,
+};
 
 struct DBusManagerTimeoutHandler {
 	guint id;
 	DBusTimeout *timeout;
 };
 
-struct DBusManagerWatchInfo {
-	guint id;
+struct IO::DBusManager::WatchInfo
+{
+	UInt32 id;
 	DBusWatch *watch;
+	IO::DBusManager *me;
 	DBusConnection *conn;
 };
 
 struct DBusManagerDisconnectData {
-	GDBusWatchFunction function;
-	void *user_data;
+	IO::DBusManager::WatchFunction function;
+	void *userData;
 };
 
-struct DBusManagerGenericData {
-	unsigned int refcount;
-	DBusConnection *conn;
-	char *path;
-	GSList *interfaces;
-	GSList *objects;
-	GSList *added;
-	GSList *removed;
-	guint process_id;
-	gboolean pending_prop;
-	char *introspect;
-	struct generic_data *parent;
+struct IO::DBusManager::InterfaceData
+{
+	const Char *name;
+	const MethodTable *methods;
+	const SignalTable *signals;
+	const PropertyTable *properties;
+	Data::ArrayList<PropertyTable*> *pendingProp;
+	void *userData;
+	DestroyFunction destroy;	
+};
+
+struct IO::DBusManager::ArgInfo
+{
+	const Char *name;
+	const Char *signature;
+};
+
+struct IO::DBusManager::GenericData
+{
+	UOSInt refcount;
+	IO::DBusManager *me;
+	const Char *path;
+	Data::ArrayList<InterfaceData*> *interfaces;
+	Data::ArrayList<GenericData*> *objects;
+	Data::ArrayList<InterfaceData*> *added;
+	Data::ArrayList<const Char*> *removed;
+	UInt32 processId;
+	Bool pendingProp;
+	const Char *introspect;
+	IO::DBusManager::GenericData *parent;
+};
+
+struct IO::DBusManager::PropertyTable
+{
+	const Char *name;
+	const Char *type;
+	PropertyGetter get;
+	PropertySetter set;
+	PropertyExists exists;
+	PropertyFlags flags;
+};
+
+struct IO::DBusManager::MethodTable
+{
+	const Char *name;
+	MethodFunction function;
+	MethodFlags flags;
+	unsigned int privilege;
+	const ArgInfo *inArgs;
+	const ArgInfo *outArgs;
+};
+
+struct IO::DBusManager::SignalTable
+{
+	const Char *name;
+	SignalFlags flags;
+	const ArgInfo *args;
 };
 
 typedef struct
 {
 	Int32 refCount;
 	DBusConnection *conn;
-	DBusManagerGenericData *root;
+	IO::DBusManager::GenericData *root;
 	Data::ArrayList<IO::DBusManager::Listener*> *listeners;
+	UOSInt listenerId;
+	Data::ArrayList<IO::DBusManager::GenericData*> *pending;
+	IO::DBusManager::PropertyFlags globalFlags;
 } ClassData;
 
 
-static gboolean DBusManager_DisconnectedSignal(DBusConnection *conn, DBusMessage *msg, void *data)
+/*static gboolean DBusManager_DisconnectedSignal(DBusConnection *conn, DBusMessage *msg, void *data)
 {
 	struct DBusManagerDisconnectData *dc_data = (DBusManagerDisconnectData*)data;
 
 	//error("Got disconnected from the system message bus");
 
-	dc_data->function(conn, dc_data->user_data);
+	dc_data->function(conn, dc_data->userData);
 
 	dbus_connection_unref(conn);
 
 	return TRUE;
-}
+}*/
 
 static gboolean DBusManager_MessageDispatch(void *data)
 {
@@ -74,15 +145,9 @@ static gboolean DBusManager_MessageDispatch(void *data)
 	return FALSE;
 }
 
-static inline void DBusManager_QueueDispatch(DBusConnection *conn, DBusDispatchStatus status)
-{
-	if (status == DBUS_DISPATCH_DATA_REMAINS)
-		g_idle_add(DBusManager_MessageDispatch, dbus_connection_ref(conn));
-}
-
 static gboolean DBusManager_WatchFunc(GIOChannel *chan, GIOCondition cond, gpointer data)
 {
-	struct DBusManagerWatchInfo *info = (DBusManagerWatchInfo*)data;
+	IO::DBusManager::WatchInfo *info = (IO::DBusManager::WatchInfo*)data;
 	unsigned int flags = 0;
 	DBusDispatchStatus status;
 	DBusConnection *conn;
@@ -98,7 +163,7 @@ static gboolean DBusManager_WatchFunc(GIOChannel *chan, GIOCondition cond, gpoin
 	dbus_watch_handle(info->watch, flags);
 
 	status = dbus_connection_get_dispatch_status(conn);
-	DBusManager_QueueDispatch(conn, status);
+	info->me->QueueDispatch(status);
 
 	dbus_connection_unref(conn);
 
@@ -107,7 +172,7 @@ static gboolean DBusManager_WatchFunc(GIOChannel *chan, GIOCondition cond, gpoin
 
 static void DBusManager_WatchInfoFree(void *data)
 {
-	struct DBusManagerWatchInfo *info = (DBusManagerWatchInfo*)data;
+	IO::DBusManager::WatchInfo *info = (IO::DBusManager::WatchInfo*)data;
 
 	if (info->id > 0) {
 		g_source_remove(info->id);
@@ -116,7 +181,7 @@ static void DBusManager_WatchInfoFree(void *data)
 
 	dbus_connection_unref(info->conn);
 
-	g_free(info);
+	MemFree(info);
 }
 
 static dbus_bool_t DBusManager_OnAddWatch(DBusWatch *watch, void *data)
@@ -125,14 +190,15 @@ static dbus_bool_t DBusManager_OnAddWatch(DBusWatch *watch, void *data)
 	DBusConnection *conn = (DBusConnection*)me->GetHandle();
 	GIOCondition cond = (GIOCondition)(G_IO_HUP | G_IO_ERR);
 	GIOChannel *chan;
-	struct DBusManagerWatchInfo *info;
+	IO::DBusManager::WatchInfo *info;
 	unsigned int flags;
 	int fd;
 
 	if (!dbus_watch_get_enabled(watch))
 		return TRUE;
 
-	info = g_new0(struct DBusManagerWatchInfo, 1);
+	info = MemAlloc(IO::DBusManager::WatchInfo, 1);
+	info->me = me;
 
 	fd = dbus_watch_get_unix_fd(watch);
 	chan = g_io_channel_unix_new(fd);
@@ -179,7 +245,6 @@ static gboolean DBusManager_TimeoutHandlerDispatch(gpointer data)
 
 	handler->id = 0;
 
-	/* if not enabled should not be polled by the main loop */
 	if (!dbus_timeout_get_enabled(handler->timeout))
 		return FALSE;
 
@@ -211,7 +276,7 @@ static dbus_bool_t DBusManager_OnAddTimeout(DBusTimeout *timeout, void *data)
 	handler = g_new0(struct DBusManagerTimeoutHandler, 1);
 	handler->timeout = timeout;
 	dbus_timeout_set_data(timeout, handler, DBusManager_TimeoutHandlerFree);
-	handler->id = g_timeout_add(interval, DBusManager_TimeoutHandlerDispatch,	handler);
+	handler->id = g_timeout_add((guint)interval, DBusManager_TimeoutHandlerDispatch,	handler);
 
 	return TRUE;
 }
@@ -232,46 +297,14 @@ static void DBusManager_OnTimeoutToggled(DBusTimeout *timeout, void *data)
 
 static void DBusManager_OnDispatchStatus(DBusConnection *conn, DBusDispatchStatus status, void *data)
 {
+	IO::DBusManager *me = (IO::DBusManager*)data;
 	if (!dbus_connection_get_is_connected(conn))
 		return;
 
-	DBusManager_QueueDispatch(conn, status);
+	me->QueueDispatch(status);
 }
 
-/*static struct DBusManagerGenericData *DBusManager_ObjectPathRef(DBusConnection *connection, const char *path)
-{
-	struct DBusManagerGenericData *data;
-	if (dbus_connection_get_object_path_data(connection, path, (void **) &data) == TRUE)
-	{
-		if (data != NULL)
-		{
-			data->refcount++;
-			return data;
-		}
-	}
-
-	data = g_new0(struct DBusManagerGenericData, 1);
-	data->conn = dbus_connection_ref(connection);
-	data->path = g_strdup(path);
-	data->refcount = 1;
-
-	data->introspect = g_strdup(DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE "<node></node>");
-
-	if (!dbus_connection_register_object_path(connection, path, &generic_table, data)) {
-		dbus_connection_unref(data->conn);
-		g_free(data->path);
-		g_free(data->introspect);
-		g_free(data);
-		return NULL;
-	}
-
-	invalidate_parent_data(connection, path);
-
-	add_interface(data, DBUS_INTERFACE_INTROSPECTABLE, introspect_methods, NULL, NULL, data, NULL);
-
-	return data;
-}
-
+/*
 static void DBusManager_ObjectPathUnref(DBusConnection *connection, const char *path)
 {
 	struct DBusManagerGenericData *data = NULL;
@@ -295,20 +328,6 @@ static void DBusManager_ObjectPathUnref(DBusConnection *connection, const char *
 	dbus_connection_unregister_object_path(data->conn, data->path);
 }
 
-gboolean DBusManager_AttachObjectManager(ClassData *clsData)
-{
-	struct DBusManagerGenericData *data;
-
-	data = DBusManager_ObjectPathRef(clsData->conn, "/");
-	if (data == NULL)
-		return FALSE;
-
-	DBusManager_AddInterface(data, DBUS_INTERFACE_OBJECT_MANAGER, manager_methods, manager_signals, NULL, data, NULL);
-	clsData->root = data;
-
-	return TRUE;
-}
-
 gboolean DBusManager_detach_object_manager(ClassData *clsData)
 {
 	if (!g_dbus_unregister_interface(connection, "/", DBUS_INTERFACE_OBJECT_MANAGER))
@@ -317,6 +336,106 @@ gboolean DBusManager_detach_object_manager(ClassData *clsData)
 	clsData->root = 0;
 	return TRUE;
 }*/
+
+DBusHandlerResult DBusManager_WatchMessageFilter(DBusConnection *connection, DBusMessage *message, void *userData)
+{
+	IO::DBusManager *me = (IO::DBusManager*)userData;
+	IO::DBusManager::Message msg(message);
+	return (DBusHandlerResult)me->WatchMessageFilter(&msg);
+}
+
+IO::DBusManager::Message::Message(void *message)
+{
+	this->message = message;
+}
+
+IO::DBusManager::Message::~Message()
+{
+
+}
+
+IO::DBusManager::MessageType IO::DBusManager::Message::GetType()
+{
+	switch (dbus_message_get_type((DBusMessage*)message))
+	{
+	default:
+	case DBUS_MESSAGE_TYPE_INVALID:
+		return MT_INVALID;
+	case DBUS_MESSAGE_TYPE_METHOD_CALL:
+		return MT_METHOD_CALL;
+	case DBUS_MESSAGE_TYPE_METHOD_RETURN:
+		return MT_METHOD_RETURN;
+	case DBUS_MESSAGE_TYPE_ERROR:
+		return MT_ERROR;
+	case DBUS_MESSAGE_TYPE_SIGNAL:
+		return MT_SIGNAL;
+	}
+}
+
+const Char *IO::DBusManager::Message::GetSender()
+{
+	return dbus_message_get_sender((DBusMessage*)this->message);
+}
+
+const Char *IO::DBusManager::Message::GetPath()
+{
+	return dbus_message_get_path((DBusMessage*)this->message);
+
+}
+
+const Char *IO::DBusManager::Message::GetInterface()
+{
+	return dbus_message_get_interface((DBusMessage*)this->message);
+
+}
+
+const Char *IO::DBusManager::Message::GetMember()
+{
+	return dbus_message_get_member((DBusMessage*)this->message);
+
+}
+
+const Char *IO::DBusManager::Message::GetArguments()
+{
+	const Char *arg = 0;
+	dbus_message_get_args((DBusMessage*)this->message, NULL, DBUS_TYPE_STRING, &arg, DBUS_TYPE_INVALID);
+	return arg;
+}
+
+void *IO::DBusManager::Message::GetHandle()
+{
+	return this->message;
+}
+
+void IO::DBusManager::SetupDbusWithMainLoop()
+{
+	ClassData *data = (ClassData*)this->clsData;
+	dbus_connection_set_watch_functions(data->conn, DBusManager_OnAddWatch, DBusManager_OnRemoveWatch, DBusManager_OnWatchToggled, this, 0);
+	dbus_connection_set_timeout_functions(data->conn, DBusManager_OnAddTimeout, DBusManager_OnRemoveTimeout, DBusManager_OnTimeoutToggled, this, 0);
+	dbus_connection_set_dispatch_status_function(data->conn, DBusManager_OnDispatchStatus, this, 0);
+}
+
+Bool IO::DBusManager::SetupBus(const Char *name)
+{
+	ClassData *data = (ClassData*)this->clsData;
+
+	if (name)
+	{
+		int result = dbus_bus_request_name(data->conn, name, DBUS_NAME_FLAG_DO_NOT_QUEUE, 0);
+		if (result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
+		{
+			dbus_connection_unref(data->conn);
+			data->conn = 0;
+			return false;
+		}
+	}
+
+	DBusDispatchStatus status;
+	status = dbus_connection_get_dispatch_status(data->conn);
+	this->QueueDispatch(status);
+
+	return true;
+}
 
 IO::DBusManager::DBusManager(DBusType dbType, const Char *name)
 {
@@ -340,29 +459,18 @@ IO::DBusManager::DBusManager(DBusType dbType, const Char *name)
 			break;
 	}
 	data->conn = dbus_bus_get(type, 0);
+	NEW_CLASS(data->pending, Data::ArrayList<GenericData*>());
 	if (data->conn == 0)
 	{
 		return;
 	}
-	if (name)
+
+	if (!this->SetupBus(name))
 	{
-		int result = dbus_bus_request_name(data->conn, name, DBUS_NAME_FLAG_DO_NOT_QUEUE, 0);
-		if (result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
-		{
-			dbus_connection_unref(data->conn);
-			data->conn = 0;
-			return;
-		}
+		dbus_connection_unref(data->conn);
+		data->conn = 0;
+		return;
 	}
-	dbus_connection_set_watch_functions(data->conn, DBusManager_OnAddWatch, DBusManager_OnRemoveWatch, DBusManager_OnWatchToggled, this, 0);
-	dbus_connection_set_timeout_functions(data->conn, DBusManager_OnAddTimeout, DBusManager_OnRemoveTimeout, DBusManager_OnTimeoutToggled, this, 0);
-	dbus_connection_set_dispatch_status_function(data->conn, DBusManager_OnDispatchStatus, this, 0);
-
-	DBusDispatchStatus status;
-	status = dbus_connection_get_dispatch_status(data->conn);
-	DBusManager_QueueDispatch(data->conn, status);
-
-//	DBusManager_AttachObjectManager(data);
 }
 
 IO::DBusManager::~DBusManager()
@@ -372,6 +480,7 @@ IO::DBusManager::~DBusManager()
 	{
 		dbus_connection_unref(data->conn);
 	}
+	DEL_CLASS(data->pending);
 	MemFree(data);
 }
 
@@ -388,6 +497,7 @@ IO::DBusManager *IO::DBusManager::Ref()
 	{
 		Sync::Interlocked::Increment(&data->refCount);
 	}
+	return this;
 }
 
 void IO::DBusManager::Unref()
@@ -408,6 +518,590 @@ void *IO::DBusManager::GetHandle()
 	return data->conn;
 }
 
+void IO::DBusManager::QueueDispatch(Int32 status)
+{
+	ClassData *data = (ClassData*)this->clsData;
+
+	if (status == DBUS_DISPATCH_DATA_REMAINS)
+		g_idle_add(DBusManager_MessageDispatch, dbus_connection_ref(data->conn));
+}
+
+IO::DBusManager::GenericData *IO::DBusManager::ObjectPathRef(const Char *path)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	GenericData *data;
+	if (dbus_connection_get_object_path_data(clsData->conn, path, (void **) &data) == TRUE)
+	{
+		if (data != NULL)
+		{
+			data->refcount++;
+			return data;
+		}
+	}
+
+	data = MemAlloc(GenericData, 1);
+	MemClear(data, sizeof(GenericData));
+	data->me = this;
+	data->path = Text::StrCopyNew(path);
+	data->refcount = 1;
+	data->introspect = Text::StrCopyNew(DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE "<node></node>");
+
+	if (!dbus_connection_register_object_path(clsData->conn, path, &generic_table, data))
+	{
+		GenericDataFree(data);
+		return NULL;
+	}
+	NEW_CLASS(data->objects, Data::ArrayList<GenericData*>());
+	NEW_CLASS(data->added, Data::ArrayList<InterfaceData*>());
+	NEW_CLASS(data->interfaces, Data::ArrayList<InterfaceData*>());
+
+	this->InvalidateParentData(path);
+
+	this->AddInterface(data, DBUS_INTERFACE_INTROSPECTABLE, introspect_methods, NULL, NULL, data, NULL);
+
+	return data;
+}
+
+Bool IO::DBusManager::AttachObjectManager()
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	GenericData *data;
+
+	data = this->ObjectPathRef("/");
+	if (data == NULL)
+		return FALSE;
+
+	this->AddInterface(data, DBUS_INTERFACE_OBJECT_MANAGER, manager_methods, manager_signals, NULL, data, NULL);
+	clsData->root = data;
+
+	return TRUE;
+}
+
+void IO::DBusManager::GenericDataFree(GenericData *data)
+{
+	SDEL_CLASS(data->objects);
+	SDEL_CLASS(data->interfaces);
+	SDEL_CLASS(data->added);
+	Text::StrDelNew(data->path);
+	Text::StrDelNew(data->introspect);
+	MemFree(data);
+}
+
+void IO::DBusManager::GenericUnregister(GenericData *data)
+{
+	GenericData *parent = data->parent;
+
+	if (parent != NULL)
+		parent->objects->Remove(data);
+
+	if (data->processId > 0)
+	{
+		g_source_remove(data->processId);
+		data->processId = 0;
+		this->ProcessChanges(data);
+	}
+
+	UOSInt i = data->objects->GetCount();
+	while (i-- > 0)
+	{
+		data->objects->GetItem(i)->parent = parent;
+	}
+
+	GenericDataFree(data);
+}
+
+IO::DBusManager::HandlerResult IO::DBusManager::GenericMessage(GenericData *data, Message *message)
+{
+	InterfaceData *iface;
+	const MethodTable *method;
+	const Char *interface;
+
+	interface = dbus_message_get_interface((DBusMessage*)message->GetHandle());
+
+	iface = this->FindInterface(data, interface);
+	if (iface == NULL)
+		return HR_NOT_YET_HANDLED;
+
+	method = iface->methods;
+	while (method && method->name && method->function)
+	{
+
+		if (dbus_message_is_method_call((DBusMessage*)message->GetHandle(), iface->name, method->name) == FALSE)
+		{
+			method++;
+			continue;
+		}
+
+		if (this->CheckExperimental(method->flags, MF_EXPERIMENTAL))
+			return HR_NOT_YET_HANDLED;
+
+		if (g_dbus_args_have_signature(method->inArgs, message) == FALSE)
+		{
+			method++;
+			continue;
+		}
+
+		if (check_privilege(connection, message, method, iface->userData) == TRUE)
+			return HR_HANDLED;
+
+		return process_message(connection, message, method, iface->userData);
+	}
+
+	return HR_NOT_YET_HANDLED;
+}
+
+IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *childPath)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	GenericData *data = NULL;
+	GenericData *child = NULL;
+	GenericData *parent = NULL;
+	Text::StringBuilderC sbParentPath;
+	const Char *slash;
+	OSInt i;
+
+	sbParentPath.Append(childPath);
+	i = sbParentPath.LastIndexOf('/');
+	if (i < 0)
+	{
+		return data;
+	}
+
+	if (i == 0 && sbParentPath.ToString()[1] != 0)
+		sbParentPath.TrimToLength(1);
+	else
+		sbParentPath.TrimToLength((UOSInt)i);
+
+	if (sbParentPath.GetLength() == 0)
+	{
+		return data;
+	}
+
+	if (dbus_connection_get_object_path_data(clsData->conn, sbParentPath.ToString(), (void **)&data) == FALSE)
+	{
+		return data;
+	}
+
+	parent = this->InvalidateParentData(sbParentPath.ToString());
+
+	if (data == NULL)
+	{
+		data = parent;
+		if (data == NULL)
+		{
+			return data;
+		}
+	}
+
+	SDEL_TEXT(data->introspect);
+
+	if (!dbus_connection_get_object_path_data(clsData->conn, childPath, (void **) &child))
+	{
+		return data;
+	}
+
+	if (child == NULL || data->objects->IndexOf(child) >= 0)
+	{
+		return data;
+	}
+
+	data->objects->Add(child);
+	child->parent = data;
+	return data;
+}
+
+void IO::DBusManager::AddPending(GenericData *data)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	UInt32 oldId = data->processId;
+
+	data->processId = g_idle_add((GSourceFunc)ProcessChanges, data);
+
+	if (oldId > 0)
+	{
+		g_source_remove(oldId);
+		return;
+	}
+
+	clsData->pending->Add(data);
+}
+
+IO::DBusManager::InterfaceData *IO::DBusManager::FindInterface(GenericData *data, const Char *name)
+{
+	if (name == 0)
+		return 0;
+
+	UOSInt i = data->interfaces->GetCount();
+	while (i-- > 0)
+	{
+		InterfaceData *iface = data->interfaces->GetItem(i);
+		if (Text::StrEquals(name, iface->name)) //!strcmp ?
+		{
+			return iface;
+		}
+	}
+	return 0;
+}
+
+Bool IO::DBusManager::AddInterface(GenericData *data, const Char *name, const MethodTable *methods, const SignalTable *signals, const PropertyTable *properties, void *userData, DestroyFunction destroy)
+{
+	InterfaceData *iface;
+	const MethodTable *method;
+	const SignalTable *signal;
+	const PropertyTable *property;
+	Bool found = false;
+	method = methods;
+	if (!found && method)
+	{
+		while (method->name)
+		{
+			if (!this->CheckExperimental(method->flags, MF_EXPERIMENTAL))
+			{
+				found = true;
+				break;
+			}
+			method++;
+		}
+	}
+
+	signal = signals;
+	if (!found && signal)
+	{
+		while (signal->name)
+		{
+			if (!this->CheckExperimental(signal->flags, SF_EXPERIMENTAL))
+			{
+				found = true;
+				break;
+			}
+			signal++;
+		}
+	}
+
+	property = properties;
+	if (!found && property)
+	{
+		while (property->name)
+		{
+			if (!this->CheckExperimental(property->flags, PF_EXPERIMENTAL))
+			{
+				found = true;
+				break;
+			}
+			property++;
+		}
+	}
+
+	if (!found)
+	{
+		return false;
+	}
+
+	iface = MemAlloc(InterfaceData, 1);
+	MemClear(iface, sizeof(InterfaceData));
+	iface->name = Text::StrCopyNew(name);
+	iface->methods = methods;
+	iface->signals = signals;
+	iface->properties = properties;
+	iface->userData = userData;
+	iface->destroy = destroy;
+
+	data->interfaces->Add(iface);
+	if (data->parent == NULL)
+		return true;
+
+	data->added->Add(iface);
+
+	this->AddPending(data);
+
+	return true;
+}
+
+Bool IO::DBusManager::CheckExperimental(Int32 flags, Int32 flag)
+{
+	ClassData *data = (ClassData*)this->clsData;
+	if (!(flags & flag))
+		return false;
+	
+	return !(data->globalFlags & PF_EXPERIMENTAL);
+}
+
+void IO::DBusManager::AppendName(const Char *name, void *itera)
+{
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+
+	dbus_message_iter_append_basic(iter, DBUS_TYPE_STRING, &name);
+}
+
+void IO::DBusManager::AppendProperty(InterfaceData *iface, const PropertyTable *p, void *itera)
+{
+	DBusMessageIter *dict = (DBusMessageIter*)itera;
+	DBusMessageIter entry;
+	DBusMessageIter value;
+
+	dbus_message_iter_open_container(dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+	dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &p->name);
+	dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, p->type, &value);
+
+	p->get(p, &value, iface->userData);
+
+	dbus_message_iter_close_container(&entry, &value);
+	dbus_message_iter_close_container(dict, &entry);
+}
+
+void IO::DBusManager::AppendProperties(InterfaceData *iface, void *itera)
+{
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+	DBusMessageIter dict;
+	const PropertyTable *p;
+
+	dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY,
+				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+				DBUS_TYPE_STRING_AS_STRING
+				DBUS_TYPE_VARIANT_AS_STRING
+				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
+
+	p = iface->properties;
+	while (p && p->name)
+	{
+		if (this->CheckExperimental(p->flags, PF_EXPERIMENTAL))
+			continue;
+
+		if (p->get == NULL)
+			continue;
+
+		if (p->exists != NULL && !p->exists(p, iface->userData))
+			continue;
+
+		this->AppendProperty(iface, p, &dict);
+
+		p++;
+	}
+
+	dbus_message_iter_close_container(iter, &dict);
+}
+
+void IO::DBusManager::AppendInterface(InterfaceData *iface, void *itera)
+{
+	DBusMessageIter *array = (DBusMessageIter*)itera;
+	DBusMessageIter entry;
+
+	dbus_message_iter_open_container(array, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+	dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &iface->name);
+	this->AppendProperties(iface, &entry);
+	dbus_message_iter_close_container(array, &entry);
+}
+
+void IO::DBusManager::ProcessPropertyChanges(GenericData *data)
+{
+	InterfaceData *iface;
+	data->pendingProp = FALSE;
+	if (data->interfaces)
+	{
+		UOSInt i = data->interfaces->GetCount();
+		while (i-- > 0)
+		{
+			iface = data->interfaces->GetItem(i);
+			this->ProcessPropertiesFromInterface(data, iface);
+		}
+	}
+}
+
+void IO::DBusManager::ProcessPropertiesFromInterface(GenericData *data, InterfaceData *iface)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	DBusMessage *signal;
+	DBusMessageIter iter;
+	DBusMessageIter dict;
+	DBusMessageIter array;
+	Data::ArrayList<PropertyTable*> invalidated;
+
+	if (iface->pendingProp == NULL)
+		return;
+
+	signal = dbus_message_new_signal(data->path, DBUS_INTERFACE_PROPERTIES, "PropertiesChanged");
+	if (signal == NULL)
+	{
+		printf("Unable to allocate new " DBUS_INTERFACE_PROPERTIES ".PropertiesChanged signal\r\n");
+		return;
+	}
+
+	dbus_message_iter_init_append(signal, &iter);
+	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING,	&iface->name);
+	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
+			DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+			DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
+			DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
+
+	UOSInt i = iface->pendingProp->GetCount();
+	while (i-- > 0)
+	{
+		PropertyTable *p = iface->pendingProp->GetItem(i);
+
+		if (p->get == NULL)
+			continue;
+
+		if (p->exists != NULL && !p->exists(p, iface->userData))
+		{
+			invalidated.Add(p);
+			continue;
+		}
+
+		this->AppendProperty(iface, p, &dict);
+	}
+
+	dbus_message_iter_close_container(&iter, &dict);
+
+	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &array);
+	i = invalidated.GetCount();
+	while (i-- > 0)
+	{
+		PropertyTable *p = invalidated.GetItem(i);
+
+		dbus_message_iter_append_basic(&array, DBUS_TYPE_STRING, &p->name);
+	}
+	dbus_message_iter_close_container(&iter, &array);
+	SDEL_CLASS(iface->pendingProp);
+
+	dbus_connection_send(clsData->conn, signal, NULL);
+	dbus_message_unref(signal);
+}
+
+void IO::DBusManager::EmitInterfacesAdded(GenericData *data)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	DBusMessage *signal;
+	DBusMessageIter iter, array;
+
+	if (clsData->root == NULL || data == clsData->root)
+		return;
+
+	signal = dbus_message_new_signal(clsData->root->path, DBUS_INTERFACE_OBJECT_MANAGER, "InterfacesAdded");
+	if (signal == NULL)
+		return;
+
+	dbus_message_iter_init_append(signal, &iter);
+	dbus_message_iter_append_basic(&iter, DBUS_TYPE_OBJECT_PATH, &data->path);
+
+	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
+				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+				DBUS_TYPE_STRING_AS_STRING
+				DBUS_TYPE_ARRAY_AS_STRING
+				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+				DBUS_TYPE_STRING_AS_STRING
+				DBUS_TYPE_VARIANT_AS_STRING
+				DBUS_DICT_ENTRY_END_CHAR_AS_STRING
+				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &array);
+
+	UOSInt i = data->added->GetCount();
+	while (i-- > 0)
+	{
+		this->AppendInterface(data->added->GetItem(i), &array);
+	}
+	SDEL_CLASS(data->added);
+
+	dbus_message_iter_close_container(&iter, &array);
+
+	dbus_connection_send(clsData->conn, signal, NULL);
+	dbus_message_unref(signal);	
+}
+
+void IO::DBusManager::EmitInterfacesRemoved(GenericData *data)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	DBusMessage *signal;
+	DBusMessageIter iter;
+	DBusMessageIter array;
+
+	if (clsData->root == NULL || data == clsData->root)
+		return;
+
+	signal = dbus_message_new_signal(clsData->root->path, DBUS_INTERFACE_OBJECT_MANAGER, "InterfacesRemoved");
+	if (signal == NULL)
+		return;
+
+	dbus_message_iter_init_append(signal, &iter);
+	dbus_message_iter_append_basic(&iter, DBUS_TYPE_OBJECT_PATH, &data->path);
+	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &array);
+
+	UOSInt i = data->removed->GetCount();
+	while (i-- > 0)
+	{
+		this->AppendName(data->removed->GetItem(i), &array);		
+	}
+	LIST_FREE_FUNC(data->removed, Text::StrDelNew);
+	DEL_CLASS(data->removed);
+
+	dbus_message_iter_close_container(&iter, &array);
+
+	dbus_connection_send(clsData->conn, signal, NULL);
+	dbus_message_unref(signal);
+}
+
+void IO::DBusManager::Flush()
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	GenericData *data;
+	UOSInt i = clsData->pending->GetCount();
+	while (i-- > 0)
+	{
+		data = clsData->pending->GetItem(i);
+		ProcessChanges(data);
+	}
+}
+
+void IO::DBusManager::RemovePending(GenericData *data)
+{
+	if (data->processId > 0)
+	{
+		g_source_remove(data->processId);
+		data->processId = 0;
+	}
+
+	ClassData *clsData = (ClassData*)this->clsData;
+	clsData->pending->Remove(data);
+}
+
+Bool IO::DBusManager::ProcessChanges(void *userData)
+{
+	GenericData *data = (GenericData*)userData;
+	IO::DBusManager *me = data->me;
+
+	me->RemovePending(data);
+
+	if (data->added != NULL)
+		me->EmitInterfacesAdded(data);
+
+	if (data->pendingProp)
+		me->ProcessPropertyChanges(data);
+
+	if (data->removed != NULL)
+		me->EmitInterfacesRemoved(data);
+
+	data->processId = 0;
+
+	return FALSE;
+
+}
+
+Bool IO::DBusManager::SendMessageWithReply(void *message, void **call, Int32 timeout)
+{
+	ClassData *data = (ClassData*)this->clsData;
+	Bool ret;
+
+	this->Flush();
+
+	ret = dbus_connection_send_with_reply(data->conn, (DBusMessage*)message, (DBusPendingCall**)call, timeout);
+
+	if (ret == TRUE && call != NULL && *call == NULL)
+	{
+		printf("Unable to send message (passing fd blocked?)\r\n");
+		return false;
+	}
+
+	return ret;
+}
+
 void IO::DBusManager::ServiceDataFree(ServiceData *data)
 {
 	ListenerCallbacks *callback = data->callback;
@@ -422,6 +1116,147 @@ void IO::DBusManager::ServiceDataFree(ServiceData *data)
 	MemFree(data);
 
 	callback->data = 0;
+}
+
+Bool IO::DBusManager::UpdateService(void *userObj)
+{
+	ServiceData *data = (ServiceData*)userObj;
+	IO::DBusManager *me = data->me;
+	ListenerCallbacks *cb = data->callback;
+		
+	me->ServiceDataFree(data);
+
+	if (cb->connFunc)
+		cb->connFunc(me, cb->userData);
+
+	return false;
+}
+
+void IO::DBusManager::ServiceReply(void *pending, void *userObj)
+{
+	ServiceData *data = (ServiceData*)userObj;
+	IO::DBusManager *me = data->me;
+	DBusMessage *reply;
+	DBusError err;
+
+	reply = dbus_pending_call_steal_reply((DBusPendingCall*)pending);
+	if (reply == NULL)
+		return;
+
+	dbus_error_init(&err);
+
+	if (dbus_set_error_from_message(&err, reply) ||
+		dbus_message_get_args(reply, &err, DBUS_TYPE_STRING, &data->owner, DBUS_TYPE_INVALID) == FALSE)
+	{
+		printf("%s\n", err.message);
+		dbus_error_free(&err);
+		me->ServiceDataFree(data);
+	}
+	else
+	{
+		me->UpdateService(data);
+	}
+	dbus_message_unref(reply);
+}
+
+IO::DBusManager::HandlerResult IO::DBusManager::ServiceFilter(void *connection, void *message, void *userData)
+{
+	Listener *listener = (Listener*)userData;
+	IO::DBusManager *me = listener->me;
+	ListenerCallbacks *cb;
+	const Char *name;
+	const Char *oldName;
+	const Char *newName;
+
+	if (!dbus_message_get_args((DBusMessage*)message, NULL, DBUS_TYPE_STRING, &name, DBUS_TYPE_STRING, &oldName, DBUS_TYPE_STRING, &newName, DBUS_TYPE_INVALID))
+	{
+		printf("Invalid arguments for NameOwnerChanged signal\r\n");
+		return HR_NOT_YET_HANDLED;
+	}
+
+	me->ListenerUpdateNameCache(name, newName);
+
+	UOSInt i = listener->callbacks->GetCount();
+	while (i-- > 0)
+	{
+		cb = listener->callbacks->GetItem(i);
+
+		if (*newName == '\0')
+		{
+			if (cb->discFunc)
+				cb->discFunc(me, cb->userData);
+		} else {
+			if (cb->connFunc)
+				cb->connFunc(me, cb->userData);
+		}
+
+		if (listener->callbacks->IndexOf(cb) < 0)
+			continue;
+
+		/* Only auto remove if it is a bus name watch */
+		if (listener->argument[0] == ':' && (cb->connFunc == NULL || cb->discFunc == NULL))
+		{
+			if (me->ListenerRemoveCallback(listener, cb))
+				break;
+
+			continue;
+		}
+
+		listener->callbacks->Remove(cb);
+		listener->processed->Remove(cb);
+	}
+
+	return HR_NOT_YET_HANDLED;
+}
+
+IO::DBusManager::HandlerResult IO::DBusManager::SignalFilter(void *connection, void *message, void *userData)
+{
+	Listener *listener = (Listener*)userData;
+	IO::DBusManager *me = listener->me;
+	ListenerCallbacks *cb;
+
+	UOSInt i = listener->callbacks->GetCount();
+	while (i-- > 0)
+	{
+		cb = listener->callbacks->GetItem(i);
+		IO::DBusManager::Message msg(message);
+
+		if (cb->signalFunc && !cb->signalFunc(listener->me, &msg, cb->userData))
+		{
+			if (me->ListenerRemoveCallback(listener, cb))
+				break;
+
+			continue;
+		}
+
+		if (listener->callbacks->IndexOf(cb) < 0)
+			continue;
+
+		listener->callbacks->Remove(cb);
+		listener->processed->Remove(cb);
+	}
+
+	return HR_NOT_YET_HANDLED;
+}
+
+Bool IO::DBusManager::ListenerUpdateService(void *userObj)
+{
+	ServiceData *data = (ServiceData*)userObj;
+	ListenerCallbacks *cb = data->callback;
+	IO::DBusManager *me = data->me;
+
+	me->ServiceDataFree(data);
+
+	if (cb->connFunc)
+		cb->connFunc(me, cb->userData);
+
+	return FALSE;
+}
+
+IO::DBusManager::Listener *IO::DBusManager::ListenerFind()
+{
+	ClassData *data = (ClassData*)this->clsData;
+	return data->listeners->GetItem(0);
 }
 
 void IO::DBusManager::ListenerBuildRule(Listener *listener, Text::StringBuilderC *sb)
@@ -461,7 +1296,7 @@ void IO::DBusManager::ListenerBuildRule(Listener *listener, Text::StringBuilderC
 	}
 }
 
-Bool IO::DBusManager::ListenerAddMatch(Listener *listener, void *hdlr)
+Bool IO::DBusManager::ListenerAddMatch(Listener *listener, RawMessageFunction hdlr)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	DBusError err;
@@ -475,11 +1310,10 @@ Bool IO::DBusManager::ListenerAddMatch(Listener *listener, void *hdlr)
 	{
 		printf("Adding match rule \"%s\" failed: %s", sb.ToString(), err.message);
 		dbus_error_free(&err);
-		return FALSE;
+		return false;
 	}
 
-	///////////////////////////////////
-	//listener->handleFunc = hdlr;
+	listener->handleFunc = hdlr;
 	listener->registered = true;
 
 	return TRUE;
@@ -501,6 +1335,110 @@ Bool IO::DBusManager::ListenerRemoveMatch(Listener *listener)
 		return false;
 	}
 	return true;
+}
+
+IO::DBusManager::Listener *IO::DBusManager::ListenerFindMatch(const Char *name, const Char *owner, const Char *path, const Char *interface, const Char *member, const Char *argument)
+{
+	ClassData *data = (ClassData *)this->clsData;
+	Listener *listener;
+	UOSInt i = data->listeners->GetCount();
+	while (i-- > 0)
+	{
+		listener = data->listeners->GetItem(i);
+
+		if (!Text::StrEqualsN(name, listener->name))
+			continue;
+
+		if (!Text::StrEqualsN(owner, listener->owner))
+			continue;
+
+		if (!Text::StrEqualsN(path, listener->path))
+			continue;
+
+		if (!Text::StrEqualsN(interface, listener->interface))
+			continue;
+
+		if (!Text::StrEqualsN(member, listener->member))
+			continue;
+
+		if (!Text::StrEqualsN(argument, listener->argument))
+			continue;
+
+	}
+
+	return NULL;
+}
+
+IO::DBusManager::Listener *IO::DBusManager::ListenerGet(RawMessageFunction filter, const Char *sender, const Char *path, const Char *interface, const Char *member, const Char *argument)
+{
+	ClassData *data = (ClassData*)this->clsData;
+	Listener *listener;
+	const Char *name = 0;
+	const Char *owner = 0;
+
+	if (this->ListenerFind() == 0)
+	{
+		if (!dbus_connection_add_filter(data->conn, DBusManager_WatchMessageFilter, NULL, NULL))
+		{
+			printf("dbus_connection_add_filter() failed\r\n");
+			return NULL;
+		}
+	}
+
+	if (sender != NULL)
+	{
+		if (sender[0] == ':')
+			owner = sender;
+		else
+			name = sender;
+	}
+
+	listener = this->ListenerFindMatch(name, owner, path, interface, member, argument);
+	if (listener)
+		return listener;
+
+	listener = MemAlloc(Listener, 1);
+	MemClear(listener, sizeof(Listener));
+	listener->me = this;
+	listener->name = SCOPY_TEXT(name);
+	listener->owner = SCOPY_TEXT(owner);
+	listener->path = SCOPY_TEXT(path);
+	listener->interface = SCOPY_TEXT(interface);
+	listener->member = SCOPY_TEXT(member);
+	listener->argument = SCOPY_TEXT(argument);
+	NEW_CLASS(listener->callbacks, Data::ArrayList<ListenerCallbacks*>());
+	NEW_CLASS(listener->processed, Data::ArrayList<ListenerCallbacks*>());
+
+	if (!this->ListenerAddMatch(listener, filter))
+	{
+		this->ListenerFree(listener);
+		return 0;
+	}
+
+	data->listeners->Add(listener);
+
+	return listener;
+}
+
+IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerAddCallback(Listener *listener, WatchFunction connect, WatchFunction disconnect, SignalFunction signal, DestroyFunction destroy, void *userData)
+{
+	ClassData *data = (ClassData*)this->clsData;
+	ListenerCallbacks *cb = MemAlloc(ListenerCallbacks, 1);
+	MemClear(cb, sizeof(ListenerCallbacks));
+
+	cb->connFunc = connect;
+	cb->discFunc = disconnect;
+	cb->signalFunc = signal;
+	cb->destroyFunc = destroy;
+	cb->userData = userData;
+	cb->id = ++(data->listenerId);
+
+	if (listener->lock)
+		listener->processed->Add(cb);
+	else
+		listener->callbacks->Add(cb);
+
+	return cb;
 }
 
 IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerFindCallback(Listener *listener, UOSInt id)
@@ -571,7 +1509,7 @@ void IO::DBusManager::ListenerFree(Listener *listener)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (data->listeners->GetCount() == 0)
-		dbus_connection_remove_filter(data->conn, WatchMessageFilter, 0);
+		dbus_connection_remove_filter(data->conn, DBusManager_WatchMessageFilter, this);
 
 	UOSInt i = listener->callbacks->GetCount();
 	while (i-- > 0)
@@ -579,6 +1517,7 @@ void IO::DBusManager::ListenerFree(Listener *listener)
 		MemFree(listener->callbacks->GetItem(i));
 	}
 	DEL_CLASS(listener->callbacks);
+	DEL_CLASS(listener->processed);
 	this->RemoveWatch(listener->nameWatch);
 	Text::StrDelNew(listener->name);
 	Text::StrDelNew(listener->owner);
@@ -587,6 +1526,229 @@ void IO::DBusManager::ListenerFree(Listener *listener)
 	Text::StrDelNew(listener->member);
 	Text::StrDelNew(listener->argument);
 	MemFree(listener);
+}
+
+void IO::DBusManager::ListenerCheckService(const Char *name, ListenerCallbacks *callback)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	DBusMessage *message;
+	ServiceData *data;
+
+	data = MemAlloc(ServiceData, 1);
+	if (data == 0)
+	{
+		printf("Can't allocate data structure\r\n");
+		return;
+	}
+	MemClear(data, sizeof(ServiceData));
+	data->me = this;
+	data->name = Text::StrCopyNew(name);
+	data->callback = callback;
+	callback->data = data;
+
+	data->owner = this->ListenerCheckNameCache(name);
+	if (data->owner != NULL)
+	{
+		data->id = g_idle_add((GSourceFunc)ListenerUpdateService, data);
+		return;
+	}
+
+	message = dbus_message_new_method_call(DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS, "GetNameOwner");
+	if (message == NULL)
+	{
+		printf("Can't allocate new message\r\n");
+		MemFree(data);
+		return;
+	}
+
+	dbus_message_append_args(message, DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID);
+
+	if (dbus_connection_send_with_reply(clsData->conn, message, (DBusPendingCall**)&data->call, -1) == FALSE)
+	{
+		printf("Failed to execute method call\r\n");
+		MemFree(data);
+	}
+	else if (data->call == 0)
+	{
+		printf("D-Bus connection not available\r\n");
+		g_free(data);
+	}
+	else
+	{
+		dbus_pending_call_set_notify((DBusPendingCall*)data->call, (DBusPendingCallNotifyFunction)ServiceReply, data, 0);
+	}
+
+	dbus_message_unref(message);
+}
+
+const Char *IO::DBusManager::ListenerCheckNameCache(const Char *name)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	Listener *listener;
+	UOSInt i = clsData->listeners->GetCount();
+	while (i-- > 0)
+	{
+		listener = clsData->listeners->GetItem(i);
+		if (Text::StrEqualsN(listener->name, name))
+		{
+			return listener->owner;
+		}
+	}
+	return 0;
+}
+
+void IO::DBusManager::ListenerUpdateNameCache(const Char *name, const Char *owner)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	Listener *listener;
+	UOSInt i = clsData->listeners->GetCount();
+	while (i-- > 0)
+	{
+		listener = clsData->listeners->GetItem(i);
+		if (Text::StrEqualsN(listener->name, name))
+		{
+			SDEL_TEXT(listener->owner);
+			listener->owner = SCOPY_TEXT(owner);
+		}
+	}
+}
+
+IO::DBusManager::HandlerResult IO::DBusManager::WatchMessageFilter(Message *message)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	IO::DBusManager::Listener *listener;
+	const Char *sender;
+	const Char *path;
+	const Char *iface;
+	const Char *member;
+	const Char *arg = 0;
+	Data::ArrayList<Listener*> deleteListener;
+
+	if (message->GetType() != MT_SIGNAL)
+		return HR_NOT_YET_HANDLED;
+
+	sender = message->GetSender();
+	path = message->GetPath();
+	iface = message->GetInterface();
+	member = message->GetMember();
+	arg = message->GetArguments();
+
+	UOSInt i = clsData->listeners->GetCount();
+	while (i-- > 0)
+	{
+		listener = clsData->listeners->GetItem(i);	
+
+		if (!sender && listener->owner)
+			continue;
+
+		if (listener->owner && !Text::StrEquals(sender, listener->owner))
+			continue;
+
+		if (listener->path && !Text::StrEquals(path, listener->path))
+			continue;
+
+		if (listener->interface && !Text::StrEquals(iface, listener->interface))
+			continue;
+
+		if (listener->member && !Text::StrEquals(member, listener->member))
+			continue;
+
+		if (listener->argument && !Text::StrEquals(arg, listener->argument))
+			continue;
+
+		if (listener->handleFunc)
+		{
+			listener->lock = TRUE;
+
+			listener->handleFunc(clsData->conn, (DBusMessage*)message->GetHandle(), listener);
+
+			listener->callbacks->Clear();
+			listener->callbacks->AddRange(listener->processed);
+			listener->processed->Clear();
+			listener->lock = false;
+		}
+
+		if (listener->callbacks == 0 || listener->callbacks->GetCount() == 0)
+		{
+			deleteListener.Add(listener);
+		}
+	}
+
+	if (deleteListener.GetCount() == 0)
+		return HR_NOT_YET_HANDLED;
+
+	i = deleteListener.GetCount();
+	while (i-- > 0)
+	{
+		listener = deleteListener.GetItem(i);		
+		if (listener->callbacks != 0)
+			continue;
+
+		this->ListenerRemoveMatch(listener);
+		clsData->listeners->Remove(listener);
+		this->ListenerFree(listener);
+	}
+	return HR_NOT_YET_HANDLED;
+}
+
+UOSInt IO::DBusManager::AddServiceWatch(const Char *name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy)
+{
+	Listener *listener;
+	ListenerCallbacks *cb;
+
+	if (name == NULL)
+		return 0;
+
+	listener = this->ListenerGet(ServiceFilter, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS, "NameOwnerChanged", name);
+	if (listener == NULL)
+		return 0;
+
+	cb = this->ListenerAddCallback(listener, connect, disconnect, NULL, destroy, userData);
+	if (cb == NULL)
+		return 0;
+
+	if (connect)
+		this->ListenerCheckService(name, cb);
+
+	return cb->id;
+}
+
+UOSInt IO::DBusManager::AddSignalWatch(const Char *sender, const Char *path, const Char *interface, const Char *member, SignalFunction function, void *userData, DestroyFunction destroy)
+{
+	Listener *listener;
+	ListenerCallbacks *cb;
+
+	listener = this->ListenerGet(SignalFilter, sender, path, interface, member, NULL);
+	if (listener == NULL)
+		return 0;
+
+	cb = this->ListenerAddCallback(listener, NULL, NULL, function, destroy, userData);
+	if (cb == NULL)
+		return 0;
+
+	if (listener->name != NULL && listener->nameWatch == 0)
+		listener->nameWatch = this->AddServiceWatch(listener->name, NULL, NULL, NULL, NULL);
+
+	return cb->id;
+}
+
+UOSInt IO::DBusManager::AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy)
+{
+	Listener *listener;
+	ListenerCallbacks *cb;
+
+	listener = this->ListenerGet(SignalFilter, sender, path, DBUS_INTERFACE_PROPERTIES, "PropertiesChanged", interface);
+	if (listener == NULL)
+		return 0;
+
+	cb = this->ListenerAddCallback(listener, NULL, NULL, function, destroy, userData);
+	if (cb == NULL)
+		return 0;
+
+	if (listener->name != NULL && listener->nameWatch == 0)
+		listener->nameWatch = this->AddServiceWatch(listener->name, NULL, NULL, NULL, NULL);
+
+	return cb->id;
 }
 
 Bool IO::DBusManager::RemoveWatch(UOSInt id)

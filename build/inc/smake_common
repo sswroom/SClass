@@ -3298,6 +3298,8 @@ Text/SMSUtil.h: ../../src/Text/SMSUtil.cpp
 Text/String.h: ../../src/Text/String.cpp
 @String.o
 Text/StringBuilder.h:
+Text/StringBuilderC.h: ../../src/Text/StringBuilderC.cpp
+@StringBuilderC.o
 Text/StringBuilderUTF.h:
 Text/StringBuilderUTF8.h: ../../src/Text/StringBuilderUTF8.cpp
 @StringBuilderUTF8.o

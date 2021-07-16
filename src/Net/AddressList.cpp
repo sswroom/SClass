@@ -65,7 +65,7 @@ OSInt Net::AddressList::IndexOf(const Net::SocketUtil::AddressInfo *val)
 
 void Net::AddressList::Clear()
 {
-	DEL_LIST_FUNC(this->addrList, FreeItem);
+	LIST_FREE_FUNC(this->addrList, FreeItem);
 	this->addrList->Clear();
 }
 

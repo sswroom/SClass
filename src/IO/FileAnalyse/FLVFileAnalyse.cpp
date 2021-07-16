@@ -181,7 +181,7 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	DEL_LIST_FUNC(this->tags, MemFree);
+	LIST_FREE_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
 }
 
