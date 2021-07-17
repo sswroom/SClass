@@ -4,13 +4,31 @@
 #include "IO/DBusManager.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
+#include "Text/XML.h"
 #include <dbus/dbus.h>
 #include <glib.h>
 #include <stdio.h>
 
+#define AUTHORITY_DBUS	"org.freedesktop.PolicyKit1"
+#define AUTHORITY_INTF	"org.freedesktop.PolicyKit1.Authority"
+#define AUTHORITY_PATH	"/org/freedesktop/PolicyKit1/Authority"
+#define DBUS_ANNOTATE(name_, value_)				\
+	"<annotation name=\"org.freedesktop.DBus." name_ "\" "	\
+	"value=\"" value_ "\"/>"
+
+#define DBUS_ANNOTATE_DEPRECATED \
+	DBUS_ANNOTATE("Deprecated", "true")
+
+#define DBUS_ANNOTATE_NOREPLY \
+	DBUS_ANNOTATE("Method.NoReply", "true")
+
 #ifndef DBUS_INTERFACE_OBJECT_MANAGER
 #define DBUS_INTERFACE_OBJECT_MANAGER DBUS_INTERFACE_DBUS ".ObjectManager"
 #endif
+
+#define GDBUS_ARGS(args...) (const ArgInfo[]) { args, { } }
+#define GDBUS_METHOD(_name, _in_args, _out_args, _function) _name, _function, (IO::DBusManager::MethodFlags)0, 0, _in_args, _out_args
+#define GDBUS_SIGNAL(_name, _args) _name, (IO::DBusManager::SignalFlags)0, _args
 
 struct DBusManagerTimeoutHandler {
 	guint id;
@@ -39,6 +57,26 @@ struct IO::DBusManager::InterfaceData
 	Data::ArrayList<PropertyTable*> *pendingProp;
 	void *userData;
 	DestroyFunction destroy;	
+};
+
+struct IO::DBusManager::SecurityData
+{
+	UInt32 pending;
+	DBusMessage *message;
+	const MethodTable *method;
+	void *ifaceUserData;
+};
+
+struct IO::DBusManager::BuiltinSecurityData
+{
+	IO::DBusManager *me;
+	UInt32 pending;
+};
+
+struct IO::DBusManager::AuthorizationData
+{
+	PolkitFunction function;
+	void *userData;
 };
 
 struct IO::DBusManager::ArgInfo
@@ -89,6 +127,14 @@ struct IO::DBusManager::SignalTable
 	const ArgInfo *args;
 };
 
+struct IO::DBusManager::SecurityTable
+{
+	UInt32 privilege;
+	const Char *action;
+	SecurityFlags flags;
+	SecurityFunction function;
+};
+
 typedef struct
 {
 	Int32 refCount;
@@ -98,7 +144,31 @@ typedef struct
 	UOSInt listenerId;
 	Data::ArrayList<IO::DBusManager::GenericData*> *pending;
 	IO::DBusManager::PropertyFlags globalFlags;
+	UInt32 nextPending;
+	Data::ArrayList<IO::DBusManager::SecurityData*> *pendingSecurity;
+	const IO::DBusManager::SecurityTable *securityTable;
 } ClassData;
+
+const IO::DBusManager::MethodTable IO::DBusManager::managerMethods[] = {
+	{ GDBUS_METHOD("GetManagedObjects", NULL,
+		GDBUS_ARGS({ "objects", "a{oa{sa{sv}}}" }), GetObjects) },
+	{ }
+};
+
+const IO::DBusManager::SignalTable IO::DBusManager::managerSignals[] = {
+	{ GDBUS_SIGNAL("InterfacesAdded",
+		GDBUS_ARGS({ "object", "o" },
+				{ "interfaces", "a{sa{sv}}" })) },
+	{ GDBUS_SIGNAL("InterfacesRemoved",
+		GDBUS_ARGS({ "object", "o" }, { "interfaces", "as" })) },
+	{ }
+};
+
+const IO::DBusManager::MethodTable IO::DBusManager::introspectMethods[] = {
+	{ GDBUS_METHOD("Introspect", NULL,
+			GDBUS_ARGS({ "xml", "s" }), Introspect) },
+	{ }
+};
 
 static void DBusManager_GenericUnregister(DBusConnection *connection, void *user_data)
 {
@@ -346,11 +416,12 @@ DBusHandlerResult DBusManager_WatchMessageFilter(DBusConnection *connection, DBu
 IO::DBusManager::Message::Message(void *message)
 {
 	this->message = message;
+	dbus_message_ref((DBusMessage*)this->message);
 }
 
 IO::DBusManager::Message::~Message()
 {
-
+	dbus_message_unref((DBusMessage*)this->message);
 }
 
 IO::DBusManager::MessageType IO::DBusManager::Message::GetType()
@@ -399,6 +470,17 @@ const Char *IO::DBusManager::Message::GetArguments()
 	const Char *arg = 0;
 	dbus_message_get_args((DBusMessage*)this->message, NULL, DBUS_TYPE_STRING, &arg, DBUS_TYPE_INVALID);
 	return arg;
+}
+
+const Char *IO::DBusManager::Message::GetSignature()
+{
+	return dbus_message_get_signature((DBusMessage*)this->message);
+}
+
+
+Bool IO::DBusManager::Message::GetNoReply()
+{
+	return dbus_message_get_no_reply((DBusMessage*)this->message);
 }
 
 void *IO::DBusManager::Message::GetHandle()
@@ -459,6 +541,10 @@ IO::DBusManager::DBusManager(DBusType dbType, const Char *name)
 	}
 	data->conn = dbus_bus_get(type, 0);
 	NEW_CLASS(data->pending, Data::ArrayList<GenericData*>());
+	data->nextPending = 1;
+	NEW_CLASS(data->pendingSecurity, Data::ArrayList<IO::DBusManager::SecurityData*>());
+	data->securityTable = 0;
+
 	if (data->conn == 0)
 	{
 		return;
@@ -480,6 +566,7 @@ IO::DBusManager::~DBusManager()
 		dbus_connection_unref(data->conn);
 	}
 	DEL_CLASS(data->pending);
+	DEL_CLASS(data->pendingSecurity);
 	MemFree(data);
 }
 
@@ -525,6 +612,329 @@ void IO::DBusManager::QueueDispatch(Int32 status)
 		g_idle_add(DBusManager_MessageDispatch, dbus_connection_ref(data->conn));
 }
 
+void *IO::DBusManager::GetObjects(IO::DBusManager *dbusManager, Message *message, void *userData)
+{
+	GenericData *data = (GenericData*)userData;
+	DBusMessage *reply;
+	DBusMessageIter iter;
+	DBusMessageIter array;
+
+	reply = dbus_message_new_method_return((DBusMessage*)message->GetHandle());
+	if (reply == NULL)
+		return NULL;
+
+	dbus_message_iter_init_append(reply, &iter);
+
+	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
+					DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+					DBUS_TYPE_OBJECT_PATH_AS_STRING
+					DBUS_TYPE_ARRAY_AS_STRING
+					DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+					DBUS_TYPE_STRING_AS_STRING
+					DBUS_TYPE_ARRAY_AS_STRING
+					DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+					DBUS_TYPE_STRING_AS_STRING
+					DBUS_TYPE_VARIANT_AS_STRING
+					DBUS_DICT_ENTRY_END_CHAR_AS_STRING
+					DBUS_DICT_ENTRY_END_CHAR_AS_STRING
+					DBUS_DICT_ENTRY_END_CHAR_AS_STRING,
+					&array);
+
+	UOSInt i = 0;
+	UOSInt j = data->objects->GetCount();
+	while (i < j)
+	{
+		dbusManager->AppendObject(data->objects->GetItem(i), &array);
+		i++;
+	}
+
+	dbus_message_iter_close_container(&iter, &array);
+
+	return reply;
+}
+
+void *IO::DBusManager::Introspect(IO::DBusManager *dbusManager, Message *message, void *userData)
+{
+	GenericData *data = (GenericData*)userData;
+	DBusMessage *reply;
+
+	if (data->introspect == NULL)
+		dbusManager->GenerateIntrospectionXml(data, message->GetPath());
+
+	reply = dbus_message_new_method_return((DBusMessage*)message->GetHandle());
+	if (reply == NULL)
+		return NULL;
+
+	dbus_message_append_args(reply, DBUS_TYPE_STRING, &data->introspect, DBUS_TYPE_INVALID);
+	return reply;
+}
+
+void IO::DBusManager::PrintArguments(Text::StringBuilderC *sb, const ArgInfo *args, const Char *direction)
+{
+	const UTF8Char *csptr;
+	while (args && args->name)
+	{
+		sb->Append("<arg name=");
+		csptr = Text::XML::ToNewAttrText((const UTF8Char*)args->name);
+		sb->Append((const Char*)csptr);
+		Text::XML::FreeNewText(csptr);
+		sb->Append(" type=");
+		csptr = Text::XML::ToNewAttrText((const UTF8Char*)args->signature);
+		sb->Append((const Char*)csptr);
+		Text::XML::FreeNewText(csptr);
+
+		if (direction)
+		{
+			sb->Append(" direction=");
+			csptr = Text::XML::ToNewAttrText((const UTF8Char*)direction);
+			sb->Append((const Char*)csptr);
+			Text::XML::FreeNewText(csptr);
+			sb->Append("/>\n");
+		}
+		else
+		{
+			sb->Append("/>\n");
+		}
+		args++;
+	}
+}
+
+void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceData *iface)
+{
+	const UTF8Char *csptr;
+	const MethodTable *method;
+	const SignalTable *signal;
+	const PropertyTable *property;
+
+	method = iface->methods;
+	while (method && method->name)
+	{
+		if (!this->CheckExperimental(method->flags, MF_EXPERIMENTAL))
+		{
+			sb->Append("<method name=");
+			csptr = Text::XML::ToNewAttrText((const UTF8Char*)method->name);
+			sb->Append((const Char*)csptr);
+			Text::XML::FreeNewText(csptr);
+			sb->Append(">");
+			this->PrintArguments(sb, method->inArgs, "in");
+			this->PrintArguments(sb, method->outArgs, "out");
+
+			if (method->flags & MF_DEPRECATED)
+				sb->Append(DBUS_ANNOTATE_DEPRECATED);
+
+			if (method->flags & MF_NOREPLY)
+				sb->Append(DBUS_ANNOTATE_NOREPLY);
+
+			sb->Append("</method>");
+		}
+		method++;
+	}
+
+	signal = iface->signals;
+	while (signal && signal->name)
+	{
+		if (!this->CheckExperimental(signal->flags, SF_EXPERIMENTAL))
+		{
+			sb->Append("<signal name=");
+			csptr = Text::XML::ToNewAttrText((const UTF8Char*)signal->name);
+			sb->Append((const Char*)csptr);
+			Text::XML::FreeNewText(csptr);
+			sb->Append(">");
+			this->PrintArguments(sb, signal->args, NULL);
+
+			if (signal->flags & SF_DEPRECATED)
+				sb->Append(DBUS_ANNOTATE_DEPRECATED);
+
+			sb->Append("</signal>\n");
+		}
+		signal++;
+	}
+
+	property = iface->properties;
+	while (property && property->name)
+	{
+		if (!this->CheckExperimental(property->flags, PF_EXPERIMENTAL))
+		{
+			sb->Append("<property name=");
+			csptr = Text::XML::ToNewAttrText((const UTF8Char*)property->name);
+			sb->Append((const Char*)csptr);
+			Text::XML::FreeNewText(csptr);
+			sb->Append(" type=");
+			csptr = Text::XML::ToNewAttrText((const UTF8Char*)property->type);
+			sb->Append((const Char*)csptr);
+			Text::XML::FreeNewText(csptr);
+			sb->Append(" access=\"");
+			if (property->get) sb->Append("read");
+			if (property->set) sb->Append("write");
+			sb->Append("\">");
+
+			if (property->flags & PF_DEPRECATED)
+				sb->Append(DBUS_ANNOTATE_DEPRECATED);
+
+			sb->Append("</property>");
+		}
+		property++;
+	}
+}
+
+void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *path)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	const UTF8Char *csptr;
+	Text::StringBuilderC sb;
+	Char **children;
+
+	SDEL_TEXT(data->introspect);
+
+	sb.Append(DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE);
+	sb.Append("<node>");
+
+	UOSInt i = 0;
+	UOSInt j = data->interfaces->GetCount();
+	while (i < j)
+	{
+		InterfaceData *iface = data->interfaces->GetItem(i);
+
+		sb.Append("<interface name=");
+		csptr = Text::XML::ToNewAttrText((const UTF8Char*)iface->name);
+		sb.Append((const Char*)csptr);
+		Text::XML::FreeNewText(csptr);
+		sb.Append(">");
+
+		this->GenerateInterfaceXml(&sb, iface);
+
+		sb.Append("</interface>");
+		i++;
+	}
+
+	if (dbus_connection_list_registered(clsData->conn, path, &children))
+	{
+		i = 0;
+		while (children[i])
+		{
+			sb.Append("<node name=");
+			csptr = Text::XML::ToNewAttrText((const UTF8Char*)children[i]);
+			sb.Append((const Char*)csptr);
+			Text::XML::FreeNewText(csptr);
+			sb.Append("/>");
+			i++;
+		}
+
+		dbus_free_string_array(children);
+	}
+	sb.Append("</node>");
+	data->introspect = Text::StrCopyNew(sb.ToString());
+}
+
+void IO::DBusManager::AppendInterfaces(GenericData *data, void *itera)
+{
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+	DBusMessageIter array;
+
+	dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY,
+				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+				DBUS_TYPE_STRING_AS_STRING
+				DBUS_TYPE_ARRAY_AS_STRING
+				DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+				DBUS_TYPE_STRING_AS_STRING
+				DBUS_TYPE_VARIANT_AS_STRING
+				DBUS_DICT_ENTRY_END_CHAR_AS_STRING
+				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &array);
+
+	UOSInt i = 0;
+	UOSInt j = data->interfaces->GetCount();
+	while (i < j)
+	{
+		this->AppendInterface(data->interfaces->GetItem(i), &array);
+		i++;
+	}
+
+	dbus_message_iter_close_container(iter, &array);
+}
+
+void IO::DBusManager::AppendObject(GenericData *child, void *itera)
+{
+	DBusMessageIter *array = (DBusMessageIter*)itera;
+	DBusMessageIter entry;
+
+	dbus_message_iter_open_container(array, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+	dbus_message_iter_append_basic(&entry, DBUS_TYPE_OBJECT_PATH, &child->path);
+	this->AppendInterfaces(child, &entry);
+	dbus_message_iter_close_container(array, &entry);
+
+	UOSInt i = 0;
+	UOSInt j = child->objects->GetCount();
+	while (i < j)
+	{
+		this->AppendObject(child->objects->GetItem(i), array);
+		i++;
+	}
+}
+
+void IO::DBusManager::PendingSuccess(UInt32 pending)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	SecurityData *secdata;
+	UOSInt i = 0;
+	UOSInt j = clsData->pendingSecurity->GetCount();
+	while (i < j)
+	{
+		secdata = clsData->pendingSecurity->GetItem(i);
+		if (secdata->pending == pending)
+		{
+			clsData->pendingSecurity->RemoveAt(i);
+			{
+				IO::DBusManager::Message message(secdata->message);
+				this->ProcessMessage(&message, secdata->method, secdata->ifaceUserData);
+			}
+
+
+			dbus_message_unref(secdata->message);
+			MemFree(secdata);
+		}
+		i++;
+	}
+}
+
+void *IO::DBusManager::CreateError(void *message, const Char *name, const Char *errMsg)
+{
+	if (dbus_message_get_no_reply((DBusMessage*)message))
+		return 0;
+
+	return dbus_message_new_error((DBusMessage*)message, name, errMsg?errMsg:"");
+}
+
+Bool IO::DBusManager::SendError(void *message, const Char *name, const Char *errMsg)
+{
+	void *error;
+	error = this->CreateError(message, name, errMsg);
+	if (error == NULL)
+		return FALSE;
+
+	return this->SendMessage(error);
+}
+
+void IO::DBusManager::PendingError(UInt32 pending, const Char *name, const Char *errMsg)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	SecurityData *secdata;
+	UOSInt i = 0;
+	UOSInt j = clsData->pendingSecurity->GetCount();
+	while (i < j)
+	{
+		secdata = clsData->pendingSecurity->GetItem(i);
+		if (secdata->pending == pending)
+		{
+			clsData->pendingSecurity->RemoveAt(i);
+			this->SendError(secdata->message, name, errMsg);
+
+			dbus_message_unref(secdata->message);
+			MemFree(secdata);
+		}
+		i++;
+	}
+}
+
 IO::DBusManager::GenericData *IO::DBusManager::ObjectPathRef(const Char *path)
 {
 	ClassData *clsData = (ClassData*)this->clsData;
@@ -556,7 +966,7 @@ IO::DBusManager::GenericData *IO::DBusManager::ObjectPathRef(const Char *path)
 
 	this->InvalidateParentData(path);
 
-	this->AddInterface(data, DBUS_INTERFACE_INTROSPECTABLE, introspect_methods, NULL, NULL, data, NULL);
+	this->AddInterface(data, DBUS_INTERFACE_INTROSPECTABLE, introspectMethods, NULL, NULL, data, NULL);
 
 	return data;
 }
@@ -570,7 +980,7 @@ Bool IO::DBusManager::AttachObjectManager()
 	if (data == NULL)
 		return FALSE;
 
-	this->AddInterface(data, DBUS_INTERFACE_OBJECT_MANAGER, manager_methods, manager_signals, NULL, data, NULL);
+	this->AddInterface(data, DBUS_INTERFACE_OBJECT_MANAGER, managerMethods, managerSignals, NULL, data, NULL);
 	clsData->root = data;
 
 	return TRUE;
@@ -634,19 +1044,45 @@ IO::DBusManager::HandlerResult IO::DBusManager::GenericMessage(GenericData *data
 		if (this->CheckExperimental(method->flags, MF_EXPERIMENTAL))
 			return HR_NOT_YET_HANDLED;
 
-		if (g_dbus_args_have_signature(method->inArgs, message) == FALSE)
+		if (!this->ArgsHaveSignature(method->inArgs, message))
 		{
 			method++;
 			continue;
 		}
 
-		if (check_privilege(connection, message, method, iface->userData) == TRUE)
+		if (this->CheckPrivilege(message, method, iface->userData))
 			return HR_HANDLED;
 
-		return process_message(connection, message, method, iface->userData);
+		return this->ProcessMessage(message, method, iface->userData);
 	}
 
 	return HR_NOT_YET_HANDLED;
+}
+
+IO::DBusManager::HandlerResult IO::DBusManager::ProcessMessage(Message *message, const MethodTable *method, void *ifaceUserData)
+{
+	void *reply;
+
+	reply = method->function(this, message, ifaceUserData);
+
+	if (method->flags & MF_NOREPLY || message->GetNoReply())
+	{
+		dbus_message_unref((DBusMessage*)reply);
+		return HR_HANDLED;
+	}
+
+	if (method->flags & MF_ASYNC)
+	{
+		if (reply == NULL)
+			return HR_HANDLED;
+	}
+
+	if (reply == NULL)
+		return HR_NEED_MEMORY;
+
+	this->SendMessage(reply);
+
+	return HR_HANDLED;
 }
 
 IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *childPath)
@@ -813,6 +1249,140 @@ Bool IO::DBusManager::AddInterface(GenericData *data, const Char *name, const Me
 	this->AddPending(data);
 
 	return true;
+}
+
+Bool IO::DBusManager::ArgsHaveSignature(const ArgInfo *args, Message *message)
+{
+	const Char *sig = message->GetSignature();
+	const Char *p = NULL;
+
+	while (args && args->signature && *sig)
+	{
+		p = args->signature;
+
+		while (*sig && *p)
+		{
+			if (*p != *sig)
+				return FALSE;
+			sig++;
+			p++;
+		}
+		args++;
+	}
+
+	if (*sig || (p && *p) || (args && args->signature))
+		return FALSE;
+
+	return TRUE;
+}
+
+void IO::DBusManager::BuiltinSecurityResult(Bool authorized, void *userData)
+{
+	BuiltinSecurityData *data = (BuiltinSecurityData*)userData;
+
+	if (authorized == true)
+		data->me->PendingSuccess(data->pending);
+	else
+		data->me->PendingError(data->pending, DBUS_ERROR_AUTH_FAILED, NULL);
+
+	MemFree(data);
+}
+
+void IO::DBusManager::BuiltinSecurityFunction(const Char *action, Bool interaction, UInt32 pending)
+{
+	BuiltinSecurityData *data;
+
+	data = MemAlloc(BuiltinSecurityData, 1);
+	data->me = this;
+	data->pending = pending;
+
+	if (this->PolkitCheckAuthorization(action, interaction, BuiltinSecurityResult, data, 30000) != ET_SUCCESS)
+		this->PendingError(pending, NULL, NULL);
+}
+
+Bool IO::DBusManager::CheckPrivilege(Message *message, const MethodTable *method, void *ifaceUserData)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	const SecurityTable *security;
+
+	security = clsData->securityTable;
+	while (security && security->privilege)
+	{
+		SecurityData *secdata;
+		Bool interaction;
+
+		if (security->privilege != method->privilege)
+		{
+			security++;
+			continue;
+		}
+
+		secdata = MemAlloc(SecurityData, 1);
+		secdata->pending = clsData->nextPending++;
+		secdata->message = dbus_message_ref((DBusMessage*)message->GetHandle());
+		secdata->method = method;
+		secdata->ifaceUserData = ifaceUserData;
+		clsData->pendingSecurity->Add(secdata);
+
+		if (security->flags & SECF_ALLOW_INTERACTION)
+			interaction = true;
+		else
+			interaction = false;
+
+		if (!(security->flags & SECF_BUILTIN) && security->function)
+			security->function(this, security->action, interaction, secdata->pending);
+		else
+			this->BuiltinSecurityFunction(security->action, interaction, secdata->pending);
+
+		return true;
+	}
+
+	return false;
+}
+
+Bool IO::DBusManager::CheckSignal(const Char *path, const Char *interface, const Char *name, const ArgInfo **args)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	GenericData *data = NULL;
+	InterfaceData *iface;
+	const SignalTable *signal;
+
+	*args = NULL;
+	if (!dbus_connection_get_object_path_data(clsData->conn, path, (void **) &data) || data == NULL)
+	{
+		printf("dbus_connection_emit_signal: path %s isn't registered\r\n", path);
+		return false;
+	}
+
+	iface = this->FindInterface(data, interface);
+	if (iface == NULL)
+	{
+		printf("dbus_connection_emit_signal: %s does not implement %s\r\n", path, interface);
+		return false;
+	}
+
+	signal = iface->signals;
+	while (signal && signal->name)
+	{
+		if (!Text::StrEquals(signal->name, name))
+		{
+			signal++;
+			continue;			
+		}
+
+		if (signal->flags & SF_EXPERIMENTAL)
+		{
+			const Char *env = g_getenv("GDBUS_EXPERIMENTAL");
+			if (!Text::StrEquals(env, "1"))
+				break;
+		}
+
+		*args = signal->args;
+		return true;
+	}
+
+	printf("No signal named %s on interface %s\r\n", name, interface);
+	return false;
 }
 
 Bool IO::DBusManager::CheckExperimental(Int32 flags, Int32 flag)
@@ -1098,6 +1668,42 @@ Bool IO::DBusManager::SendMessageWithReply(void *message, void **call, Int32 tim
 	}
 
 	return ret;
+}
+
+Bool IO::DBusManager::SendMessage(void *msg)
+{
+	ClassData *data = (ClassData*)this->clsData;
+	DBusMessage *message = (DBusMessage*)msg;
+	Bool result = false;
+	Bool skip = false;
+
+	if (message == 0)
+		return false;
+
+	if (dbus_message_get_type(message) == DBUS_MESSAGE_TYPE_METHOD_CALL)
+		dbus_message_set_no_reply(message, TRUE);
+	else if (dbus_message_get_type(message) == DBUS_MESSAGE_TYPE_SIGNAL)
+	{
+		const char *path = dbus_message_get_path(message);
+		const char *interface = dbus_message_get_interface(message);
+		const char *name = dbus_message_get_member(message);
+		const ArgInfo *args;
+
+		if (!this->CheckSignal(path, interface, name, &args))
+		{
+			skip = true;
+		}
+	}
+
+	if (!skip)
+	{
+		this->Flush();
+
+		result = dbus_connection_send(data->conn, message, NULL);
+	}
+	dbus_message_unref(message);
+
+	return result;
 }
 
 void IO::DBusManager::ServiceDataFree(ServiceData *data)
@@ -1797,4 +2403,154 @@ void IO::DBusManager::RemoveAllWatches()
 			this->ListenerFree(listener);
 		}
 	}
+}
+
+void IO::DBusManager::AddDictWithStringValue(void *itera, const Char *key, const Char *str)
+{
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+	DBusMessageIter dict;
+	DBusMessageIter entry;
+	DBusMessageIter value;
+
+	dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY,
+			DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+			DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
+			DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
+	dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+	dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
+
+	dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, DBUS_TYPE_STRING_AS_STRING, &value);
+	dbus_message_iter_append_basic(&value, DBUS_TYPE_STRING, &str);
+	dbus_message_iter_close_container(&entry, &value);
+
+	dbus_message_iter_close_container(&dict, &entry);
+	dbus_message_iter_close_container(iter, &dict);
+}
+
+void IO::DBusManager::AddEmptyStringDict(void *itera)
+{
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+	DBusMessageIter dict;
+
+	dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY,
+			DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+			DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_STRING_AS_STRING
+			DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
+
+	dbus_message_iter_close_container(iter, &dict);
+}
+
+void IO::DBusManager::AddArguments(void *itera, const Char *action, UInt32 flags)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+	const Char *busname = dbus_bus_get_unique_name(clsData->conn);
+	const Char *kind = "system-bus-name";
+	const Char *cancel = "";
+	DBusMessageIter subject;
+
+	dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, NULL, &subject);
+	dbus_message_iter_append_basic(&subject, DBUS_TYPE_STRING, &kind);
+	this->AddDictWithStringValue(&subject, "name", busname);
+	dbus_message_iter_close_container(iter, &subject);
+
+	dbus_message_iter_append_basic(iter, DBUS_TYPE_STRING, &action);
+	this->AddEmptyStringDict(iter);
+	dbus_message_iter_append_basic(iter, DBUS_TYPE_UINT32, &flags);
+	dbus_message_iter_append_basic(iter, DBUS_TYPE_STRING, &cancel);
+}
+
+Bool IO::DBusManager::PolkitParseResult(void *itera)
+{
+	DBusMessageIter *iter = (DBusMessageIter*)itera;
+	DBusMessageIter result;
+	Bool authorized;
+	Bool challenge;
+
+	dbus_message_iter_recurse(iter, &result);
+	dbus_message_iter_get_basic(&result, &authorized);
+	dbus_message_iter_get_basic(&result, &challenge);
+	return authorized;
+}
+
+void IO::DBusManager::AuthorizationReply(void *pcall, void *userData)
+{
+	DBusPendingCall *call = (DBusPendingCall*)pcall;
+	AuthorizationData *data = (AuthorizationData*)userData;
+	DBusMessage *reply;
+	DBusMessageIter iter;
+	Bool authorized = false;
+
+	reply = dbus_pending_call_steal_reply(call);
+	if ((dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_ERROR) ||
+		(dbus_message_has_signature(reply, "(bba{ss})") == FALSE))
+	{
+
+	}
+	else
+	{
+		dbus_message_iter_init(reply, &iter);
+		authorized = PolkitParseResult(&iter);
+	}
+
+	if (data->function != NULL)
+		data->function(authorized, data->userData);
+
+	dbus_message_unref(reply);
+	dbus_pending_call_unref(call);
+}
+
+IO::DBusManager::ErrorType IO::DBusManager::PolkitCheckAuthorization(const Char *action, Bool interaction, PolkitFunction function, void *userData, Int32 timeout)
+{
+	ClassData *clsData = (ClassData*)this->clsData;
+	AuthorizationData *data;
+	DBusMessage *msg;
+	DBusMessageIter iter;
+	DBusPendingCall *call;
+	UInt32 flags = 0x00000000;
+
+	if (clsData->conn == NULL)
+		return ET_INVAL;
+
+	data = MemAlloc(AuthorizationData, 1);
+	if (data == NULL)
+		return ET_NOMEM;
+
+	msg = dbus_message_new_method_call(AUTHORITY_DBUS, AUTHORITY_PATH, AUTHORITY_INTF, "CheckAuthorization");
+	if (msg == NULL)
+	{
+		MemFree(data);
+		return ET_NOMEM;
+	}
+
+	if (interaction == TRUE)
+		flags |= 0x00000001;
+
+	if (action == NULL)
+		action = "org.freedesktop.policykit.exec";
+
+	dbus_message_iter_init_append(msg, &iter);
+	this->AddArguments(&iter, action, flags);
+
+	if (dbus_connection_send_with_reply(clsData->conn, msg, &call, timeout) == FALSE)
+	{
+		dbus_message_unref(msg);
+		MemFree(data);
+		return ET_IO_ERROR;
+	}
+
+	if (call == NULL)
+	{
+		dbus_message_unref(msg);
+		MemFree(data);
+		return ET_IO_ERROR;
+	}
+
+	data->function = function;
+	data->userData = userData;
+
+	dbus_pending_call_set_notify(call, (DBusPendingCallNotifyFunction)AuthorizationReply, data, MemFree);
+	dbus_message_unref(msg);
+
+	return ET_SUCCESS;
 }

@@ -31,6 +31,14 @@ namespace IO
 			HR_NEED_MEMORY
 		} HandlerResult;
 
+		typedef enum
+		{
+			ET_SUCCESS,
+			ET_NOMEM,
+			ET_INVAL,
+			ET_IO_ERROR
+		} ErrorType;
+
 		typedef HandlerResult (* RawMessageFunction)(void *connection, void *message, void *userData);
 
 		class Message
@@ -48,16 +56,22 @@ namespace IO
 			const Char *GetInterface();
 			const Char *GetMember();
 			const Char *GetArguments();
+			const Char *GetSignature();
+			Bool GetNoReply();
 
 			void *GetHandle();
 		};
 
 		struct GenericData;
 		struct InterfaceData;
+		struct SecurityData;
+		struct BuiltinSecurityData;
+		struct AuthorizationData;
 		struct ListenerCallbacks;
 		struct PropertyTable;
 		struct MethodTable;
 		struct SignalTable;
+		struct SecurityTable;
 		struct WatchInfo;
 		struct ArgInfo;
 
@@ -68,7 +82,9 @@ namespace IO
 		typedef Bool (__stdcall* SignalFunction) (DBusManager *dbusManager, Message *message, void *userData);
 		typedef void (__stdcall* WatchFunction) (DBusManager *dbusManager, void *userData);
 		typedef void (__stdcall* DestroyFunction) (void *userData);
-		typedef Message *(__stdcall* MethodFunction) (DBusManager *dbusManager, Message *message, void *userData);
+		typedef void *(__stdcall* MethodFunction) (DBusManager *dbusManager, Message *message, void *userData);
+		typedef void (__stdcall* SecurityFunction) (DBusManager *dbusManager, const Char *action, Bool interaction, UInt32 pending);
+		typedef void (__stdcall *PolkitFunction) (Bool authorized, void *userData);
 
 		enum PropertyFlags
 		{
@@ -88,6 +104,13 @@ namespace IO
 		{
 			SF_DEPRECATED   = (1 << 0),
 			SF_EXPERIMENTAL = (1 << 1),
+		};
+
+		enum SecurityFlags
+		{
+			SECF_DEPRECATED        = (1 << 0),
+			SECF_BUILTIN           = (1 << 1),
+			SECF_ALLOW_INTERACTION = (1 << 2),
 		};
 
 		typedef struct
@@ -131,6 +154,9 @@ namespace IO
 
 	private:
 		void *clsData;
+		static const struct MethodTable managerMethods[];
+		static const struct SignalTable managerSignals[];
+		static const struct MethodTable introspectMethods[];
 
 		void SetupDbusWithMainLoop();
 		Bool SetupBus(const Char *name);
@@ -145,17 +171,35 @@ namespace IO
 		void QueueDispatch(Int32 status);
 
 		//Object
+		static void *GetObjects(IO::DBusManager *dbusManager, Message *message, void *userData);
+		static void *Introspect(IO::DBusManager *dbusManager, Message *message, void *userData);
+		void PrintArguments(Text::StringBuilderC *sb, const ArgInfo *args, const Char *direction);
+		void GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceData *iface);
+		void GenerateIntrospectionXml(GenericData *data, const Char *path);
+		void AppendInterfaces(GenericData *data, void *itera);
+		void AppendObject(GenericData *data, void *itera);
+		void PendingSuccess(UInt32 pending);
+		void *CreateError(void *message, const Char *name, const Char *errMsg);
+		Bool SendError(void *message, const Char *name, const Char *errMsg);
+		void PendingError(UInt32 pending, const Char *name, const Char *errMsg);
+
 		GenericData *ObjectPathRef(const Char *path);
 		Bool AttachObjectManager();
 		void GenericDataFree(GenericData *data);
 		void GenericUnregister(GenericData *data);
 		HandlerResult GenericMessage(GenericData *data, Message *message);
+		HandlerResult ProcessMessage(Message *message, const MethodTable *method, void *ifaceUserData);
 		GenericData *InvalidateParentData(const Char *childPath);
 		void AddPending(GenericData *data);
 		InterfaceData *FindInterface(GenericData *data, const Char *name);
-
 		Bool AddInterface(GenericData *data, const Char *name, const MethodTable *methods, const SignalTable *signals, const PropertyTable *properties, void *userData, DestroyFunction destroy);
+		Bool ArgsHaveSignature(const ArgInfo *args, Message *message);
 
+		static void BuiltinSecurityResult(Bool authorized, void *userData);
+		void BuiltinSecurityFunction(const Char *action, Bool interaction, UInt32 pending);
+		Bool CheckPrivilege(Message *message, const MethodTable *method, void *ifaceUserData);
+
+		Bool CheckSignal(const Char *path, const Char *interface, const Char *name, const ArgInfo **args);
 		Bool CheckExperimental(Int32 flags, Int32 flag);
 		void AppendName(const Char *name, void *itera);
 		void AppendProperty(InterfaceData *iface, const PropertyTable *p, void *itera);
@@ -170,6 +214,7 @@ namespace IO
 		void RemovePending(GenericData *data);
 		static Bool ProcessChanges(void *userData);
 		Bool SendMessageWithReply(void *message, void **call, Int32 timeout);
+		Bool SendMessage(void *message);
 
 		//Watch
 	private:
@@ -201,6 +246,15 @@ namespace IO
 		UOSInt AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy);
 		Bool RemoveWatch(UOSInt id);
 		void RemoveAllWatches();
+
+		//polkit
+	private:
+		void AddDictWithStringValue(void *itera, const Char *key, const Char *str);
+		void AddEmptyStringDict(void *itera);
+		void AddArguments(void *itera, const Char *action, UInt32 flags);
+		static Bool PolkitParseResult(void *itera);
+		static void AuthorizationReply(void *call, void *userData);
+		ErrorType PolkitCheckAuthorization(const Char *action, Bool interaction, PolkitFunction function, void *userData, Int32 timeout);
 	};
 }
 #endif
