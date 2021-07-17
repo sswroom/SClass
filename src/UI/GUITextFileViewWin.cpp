@@ -50,7 +50,7 @@ OSInt __stdcall UI::GUITextFileView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 w
 {
 	UI::GUITextFileView *me = (UI::GUITextFileView*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
-	OSInt currLineCnt;
+	UOSInt currLineCnt;
 	NMHDR *nmhdr;
 	SCROLLINFO si;
 	UInt32 xPos;
@@ -503,7 +503,7 @@ OSInt __stdcall UI::GUITextFileView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 w
 
 UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 {
-	OSInt lineCurr;
+	UOSInt lineCurr;
 	WChar lastC;
 	WChar c;
 	UI::GUITextFileView *me = (UI::GUITextFileView*)userObj;
@@ -710,7 +710,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 		}
 		else if (me->fs)
 		{
-			Int64 size;
+			UInt64 size;
 			Sync::MutexUsage mutUsage(me->mut);
 			size = me->fs->GetLength();
 			mutUsage.EndUse();

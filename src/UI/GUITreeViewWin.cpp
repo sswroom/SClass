@@ -85,12 +85,12 @@ const UTF8Char *UI::GUITreeView::TreeItem::GetText()
 	return this->txt;
 }
 
-OSInt UI::GUITreeView::TreeItem::GetChildCount()
+UOSInt UI::GUITreeView::TreeItem::GetChildCount()
 {
 	return this->children->GetCount();
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(OSInt index)
+UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(UOSInt index)
 {
 	return this->children->GetItem(index);
 }
