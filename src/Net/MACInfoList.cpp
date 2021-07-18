@@ -4,6 +4,7 @@
 #include "IO/Path.h"
 #include "IO/WriteCacheStream.h"
 #include "Net/MACInfoList.h"
+#include "Text/CPPText.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -97,9 +98,15 @@ const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntry(UInt64 macInt)
 
 UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, const UTF8Char *name)
 {
+	UInt64 mask = 0xffffff;
+	return SetEntry(macInt & ~mask, macInt | mask, name);
+}
+
+UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, const UTF8Char *name)
+{
 	Net::MACInfo::MACEntry *entry;
 	this->modified = true;
-	OSInt si = this->GetIndex(macInt);
+	OSInt si = this->GetIndex(rangeStart);
 	if (si >= 0)
 	{
 		entry = this->dataList->GetItem((UOSInt)si);
@@ -110,8 +117,8 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, const UTF8Char *name)
 	else
 	{
 		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
-		entry->rangeStart = macInt & 0xffffff000000;
-		entry->rangeEnd = entry->rangeStart | 0xffffff;
+		entry->rangeStart = rangeStart;
+		entry->rangeEnd = rangeEnd;
 		entry->name = (const Char*)Text::StrCopyNew(name);
 		this->dataList->Insert((UOSInt)~si, entry);
 		return (UOSInt)~si;
@@ -128,6 +135,7 @@ void Net::MACInfoList::Load()
 	UTF8Char *sarr[3];
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbName;
 	UInt64 rangeStart;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
@@ -149,8 +157,10 @@ void Net::MACInfoList::Load()
 						sarr[1][Text::StrCharCnt(sarr[1]) - 2] = 0;
 					}
 					rangeStart = Text::StrToUInt64(sarr[0]);
-					sarr[2][Text::StrCharCnt(sarr[2]) - 3] = 0;
-					this->SetEntry(rangeStart, &sarr[2][1]);
+					sarr[2][Text::StrCharCnt(sarr[2]) - 2] = 0;
+					sbName.ClearStr();
+					Text::CPPText::FromCPPString(&sbName, sarr[2]);
+					this->SetEntry(rangeStart, sbName.ToString());
 				}
 			}
 			else
@@ -195,9 +205,9 @@ Bool Net::MACInfoList::Store()
 		sb.AppendHex64(entry->rangeStart);
 		sb.Append((const UTF8Char*)"LL, 0x");
 		sb.AppendHex64(entry->rangeEnd);
-		sb.Append((const UTF8Char*)"LL, \"");
-		sb.Append((const UTF8Char*)entry->name);
-		sb.Append((const UTF8Char*)"\"},");
+		sb.Append((const UTF8Char*)"LL, ");
+		Text::CPPText::ToCPPString(&sb, (const UTF8Char*)entry->name);
+		sb.Append((const UTF8Char*)"},");
 		writer->WriteLine(sb.ToString());
 		i++;
 	}

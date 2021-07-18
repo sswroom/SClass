@@ -3254,6 +3254,8 @@ Test/TestModem.h: ../../src/Test/TestModem.cpp
 Test/TestSIM7000.h: ../../src/Test/TestSIM7000.cpp
 @TestSIM7000.o
 
+Text/CPPText.h: ../../src/Text/CPPText.cpp
+@CPPText.o
 Text/CharUtil.h: ../../src/Text/CharUtil.cpp
 @CharUtil.o
 Text/ChineseInfo.h: ../../src/Text/ChineseInfo.cpp
@@ -4576,6 +4578,7 @@ ParallelTask.o: ../../src/Sync/ParallelTask.cpp
 RWMutexUsage.o: ../../src/Sync/RWMutexUsage.cpp
 TestModem.o: ../../src/Test/TestModem.cpp
 TestSIM7000.o: ../../src/Test/TestSIM7000.cpp
+CPPText.o: ../../src/Text/CPPText.cpp
 CharUtil.o: ../../src/Text/CharUtil.cpp
 ChineseInfo.o: ../../src/Text/ChineseInfo.cpp
 CodeProject.o: ../../src/Text/CodeProject.cpp

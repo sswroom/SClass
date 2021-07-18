@@ -1261,9 +1261,7 @@ UInt8 Text::StrHex2UInt8C(const Char *str)
 	{
 		return 0;
 	}
-	if (*str == 0)
-		return outVal;
-	return 0;
+	return outVal;
 }
 
 UOSInt Text::StrHex2Bytes(const Char *str, UInt8 *buff)

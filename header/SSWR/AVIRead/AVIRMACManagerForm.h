@@ -57,6 +57,9 @@ namespace SSWR
 			UI::GUITextBox *txtInput;
 			UI::GUIButton *btnInput;
 
+			UI::GUITabPage *tpWireshark;
+			UI::GUIButton *btnWireshark;
+
 			Data::ArrayList<LogFileEntry*> *logList;
 			Net::MACInfoList *macList;
 
@@ -65,6 +68,7 @@ namespace SSWR
 			static void __stdcall OnContentDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnContentSelChg(void *userObj);
 			static void __stdcall OnInputClicked(void *userObj);
+			static void __stdcall OnWiresharkClicked(void *userObj);
 			void LogFileLoad(const UTF8Char *fileName);
 			void LogFileClear();
 

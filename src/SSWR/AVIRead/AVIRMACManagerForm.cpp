@@ -14,6 +14,7 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
+#include <stdio.h>
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
@@ -180,7 +181,110 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 		}
 	}
 	DEL_CLASS(frm);
+}
 
+void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
+	UI::FileDialog *dlg;
+	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false));
+	dlg->SetAllowMultiSel(false);
+	dlg->AddFilter((const UTF8Char*)"manuf", (const UTF8Char*)"Wireshark manuf File");
+	if (dlg->ShowDialog(me->GetHandle()))
+	{
+		IO::FileStream *fs;
+		Text::UTF8Reader *reader;
+		Text::StringBuilderUTF8 sb;
+		UTF8Char *sarr[3];
+		OSInt i;
+		UOSInt j;
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		while (true)
+		{
+			sb.ClearStr();
+			if (!reader->ReadLine(&sb, 512))
+			{
+				break;
+			}
+
+			i = sb.IndexOf('#');
+			if (i >= 0)
+			{
+				sb.TrimToLength((UOSInt)i);
+			}
+			sb.TrimRight();
+			j = Text::StrSplit(sarr, 3, sb.ToString(), '\t');
+			if (j == 2 || j == 3)
+			{
+				UInt8 buff[8];
+				UOSInt bitCnt;
+				Bool succ;
+				UInt64 startAddr;
+				UInt64 endAddr;
+				if (j == 2)
+				{
+					sarr[2] = sarr[1];
+				}
+				succ = false;
+				j = Text::StrCharCnt(sarr[0]);
+				if (j == 8 && sarr[0][2] == ':' && sarr[0][5] == ':')
+				{
+					buff[0] = 0;
+					buff[1] = 0;
+					buff[2] = Text::StrHex2UInt8C(&sarr[0][0]);
+					buff[3] = Text::StrHex2UInt8C(&sarr[0][3]);
+					buff[4] = Text::StrHex2UInt8C(&sarr[0][6]);
+					buff[5] = 0;
+					buff[6] = 0;
+					buff[7] = 0;
+					startAddr = ReadMUInt64(buff);
+					endAddr = startAddr | 0xffffff;
+					succ = true;
+				}
+				else if (j > 18 && sarr[0][17] == '/' && Text::StrToUOSInt(&sarr[0][18], &bitCnt))
+				{
+					buff[0] = 0;
+					buff[1] = 0;
+					buff[2] = Text::StrHex2UInt8C(&sarr[0][0]);
+					buff[3] = Text::StrHex2UInt8C(&sarr[0][3]);
+					buff[4] = Text::StrHex2UInt8C(&sarr[0][6]);
+					buff[5] = Text::StrHex2UInt8C(&sarr[0][9]);
+					buff[6] = Text::StrHex2UInt8C(&sarr[0][12]);
+					buff[7] = Text::StrHex2UInt8C(&sarr[0][15]);
+					startAddr = ReadMUInt64(buff);
+					endAddr = startAddr | ((UInt64)(1 << (48 - bitCnt)) - 1);
+					succ = true;
+				}
+				else
+				{
+					printf("Error in file2: %s\r\n", sarr[0]);
+				}
+
+				if (succ)
+				{
+					const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(startAddr);
+					if (Text::StrEquals(sarr[2], (const UTF8Char*)"IEEE Registration Authority"))
+					{
+
+					}
+					else if (entry && (entry->rangeStart != startAddr || entry->rangeEnd != endAddr))
+					{
+						printf("Range mismatch: %llx - %llx\r\n", startAddr, endAddr);
+					}
+					else
+					{
+						me->macList->SetEntry(startAddr, endAddr, sarr[2]);
+					}
+				}
+			}
+		}
+		DEL_CLASS(reader);
+		DEL_CLASS(fs);
+		me->UpdateStatus();
+	}
+	DEL_CLASS(dlg);
+	
 }
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
@@ -444,6 +548,11 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnInput, UI::GUIButton(ui, this->tpInput, (const UTF8Char*)"&Edit"));
 	this->btnInput->SetRect(104, 28, 75, 23, false);
 	this->btnInput->HandleButtonClick(OnInputClicked, this);
+
+	this->tpWireshark = this->tcMain->AddTabPage((const UTF8Char*)"Wireshark");
+	NEW_CLASS(this->btnWireshark, UI::GUIButton(ui, this->tpWireshark, (const UTF8Char*)"Load manuf"));
+	this->btnWireshark->SetRect(4, 4, 75, 23, false);
+	this->btnWireshark->HandleButtonClick(OnWiresharkClicked, this);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();
