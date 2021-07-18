@@ -1523,14 +1523,21 @@ UInt8 Text::StrToUInt8(const Char *intStr)
 Bool Text::StrToUInt16(const Char *intStr, UInt16 *outVal)
 {
 	UInt32 retVal = 0;
-	while (*intStr)
+	if (intStr[0] == '0' && intStr[1] == 'x')
 	{
-		if (*intStr < '0' || *intStr > '9')
-			return false;
-		retVal = retVal * 10 + (UInt32)*intStr - 48;
-		intStr++;
-		if (retVal & 0xffff0000)
-			return false;
+		retVal = (UInt16)StrHex2Int16C(&intStr[2]);
+	}
+	else
+	{
+		while (*intStr)
+		{
+			if (*intStr < '0' || *intStr > '9')
+				return false;
+			retVal = retVal * 10 + (UInt32)*intStr - 48;
+			intStr++;
+			if (retVal & 0xffff0000)
+				return false;
+		}
 	}
 	*outVal = (UInt16)retVal;
 	return true;
@@ -1539,19 +1546,26 @@ Bool Text::StrToUInt16(const Char *intStr, UInt16 *outVal)
 Bool Text::StrToUInt16S(const Char *intStr, UInt16 *outVal, UInt16 failVal)
 {
 	UInt32 retVal = 0;
-	while (*intStr)
+	if (intStr[0] == '0' && intStr[1] == 'x')
 	{
-		if (*intStr < '0' || *intStr > '9')
+		retVal = (UInt16)StrHex2Int16C(&intStr[2]);
+	}
+	else
+	{
+		while (*intStr)
 		{
-			*outVal = failVal;
-			return false;
-		}
-		retVal = retVal * 10 + (UInt32)*intStr - 48;
-		intStr++;
-		if (retVal & 0xffff0000)
-		{
-			*outVal = failVal;
-			return false;
+			if (*intStr < '0' || *intStr > '9')
+			{
+				*outVal = failVal;
+				return false;
+			}
+			retVal = retVal * 10 + (UInt32)*intStr - 48;
+			intStr++;
+			if (retVal & 0xffff0000)
+			{
+				*outVal = failVal;
+				return false;
+			}
 		}
 	}
 	*outVal = (UInt16)retVal;
@@ -1628,12 +1642,19 @@ Int16 Text::StrToInt16(const Char *intStr)
 Bool Text::StrToUInt32(const Char *intStr, UInt32 *outVal)
 {
 	UInt32 retVal = 0;
-	while (*intStr)
+	if (intStr[0] == '0' && intStr[1] == 'x')
 	{
-		if (*intStr < '0' || *intStr > '9')
-			return false;
-		retVal = retVal * 10 + (UInt32)*intStr - 48;
-		intStr++;
+		retVal = StrHex2UInt32C(&intStr[2]);
+	}
+	else
+	{
+		while (*intStr)
+		{
+			if (*intStr < '0' || *intStr > '9')
+				return false;
+			retVal = retVal * 10 + (UInt32)*intStr - 48;
+			intStr++;
+		}
 	}
 	*outVal = retVal;
 	return true;

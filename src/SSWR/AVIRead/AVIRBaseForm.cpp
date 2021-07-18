@@ -31,6 +31,7 @@
 #include "SSWR/AVIRead/AVIRAudioFilterForm.h"
 #include "SSWR/AVIRead/AVIRBaseForm.h"
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
+#include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothLEForm.h"
 #include "SSWR/AVIRead/AVIRBruteForceForm.h"
@@ -372,7 +373,8 @@ typedef enum
 	MNU_JASYPT,
 	MNU_ASN1OID,
 	MNU_OTP,
-	MNU_EW_DTU01
+	MNU_EW_DTU01,
+	MNU_BLUETOOTHCTL
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -675,8 +677,10 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"&WIA Device", MNU_WIA_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"CP&U Info", MNU_CPUINFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"GPU Info", MNU_GPUINFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Bluetooth", MNU_BLUETOOTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Bluetooth LE", MNU_BLUETOOTHLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Bluetooth");
+	mnu2->AddItem((const UTF8Char*)"Bluetooth", MNU_BLUETOOTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Bluetooth LE", MNU_BLUETOOTHLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Bluetooth Ctrl", MNU_BLUETOOTHCTL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Accelerometer", MNU_ACCELEROMETER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Power Control", MNU_POWERCONTROL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"IOPin");
@@ -2282,6 +2286,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIREWDTU01Form *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIREWDTU01Form(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_BLUETOOTHCTL:
+		{
+			SSWR::AVIRead::AVIRBluetoothCtlForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRBluetoothCtlForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

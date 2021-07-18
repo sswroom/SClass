@@ -7,10 +7,6 @@
 
 #include <stdio.h>
 
-/*
-[NEW] Descriptor
-*/
-
 UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 {
 	IO::ProgCtrl::BluetoothCtlProgCtrl *me = (IO::ProgCtrl::BluetoothCtlProgCtrl*)obj;
@@ -111,6 +107,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 					{
 						SDEL_TEXT(dev->name);
 						dev->name = Text::StrCopyNew(&sarr[0][31]);
+						dev->inRange = true;
 						if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
 					}
 					else
@@ -137,11 +134,26 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 					dev = me->DeviceGetByStr(&sarr[0][13]);
 					if (dev)
 					{
+						dev->inRange = true;
 						//[CHG] Device ED:8E:0E:77:6E:15 Connected: yes
 						//[CHG] Device ED:8E:0E:77:6E:15 Connected: no
 						if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Connected: "))
 						{
 							dev->connected = Text::StrEquals(&sarr[0][42], (const UTF8Char*)"yes");
+							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+						}
+						//[CHG] Device 19:08:19:32:09:3A Name: Ble T70939
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Name: "))
+						{
+							SDEL_TEXT(dev->name);
+							dev->name = Text::StrCopyNew(&sarr[0][37]);
+							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+						}
+						//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Alias: "))
+						{
+							SDEL_TEXT(dev->name);
+							dev->name = Text::StrCopyNew(&sarr[0][38]);
 							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
@@ -150,13 +162,42 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 							dev->rssi = Text::StrToInt32(&sarr[0][37]);
 							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
 						}
+						//[CHG] Device 90:DD:5D:C2:E6:DA TxPower: 12
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"TxPower: "))
+						{
+							dev->txPower = Text::StrToInt32(&sarr[0][40]);
+							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+						}
 						//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"ManufacturerData Key: "))
+						{
+							UInt16 key;
+							if (Text::StrToUInt16(&sarr[0][53], &key))
+							{
+								if (dev->keys->SortedIndexOf(key) < 0)
+								{
+									dev->keys->SortedInsert(key);
+									if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+								}
+							}
+						}
+						//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData Value:
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"ManufacturerData Value:"))
+						{
+
+						}
+						//[CHG] Device E8:50:BD:A8:07:D4 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"UUIDs: "))
 						{
 
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 ServicesResolved: yes
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"ServicesResolved: "))
+						{
+
+						}
+						//[CHG] Device 00:1C:88:30:A0:B9 LegacyPairing: yes
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"LegancyPairing: "))
 						{
 
 						}
@@ -171,11 +212,26 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Error in getting device \"%s\"\r\n", &sarr[0][13]);
 					}
 				}
+				else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"[NEW] Device "))
+				{
+					//[DEL] Device ED:8E:0E:77:6D:15 RAPOO BT4.0 MS
+					sarr[0][30] = 0;
+					dev = me->DeviceGetByStr(&sarr[0][13]);
+					if (dev)
+					{
+						dev->inRange = false;
+						if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+					}
+					else
+					{
+						printf("Error in getting device \"%s\"\r\n", &sarr[0][13]);
+					}
+				}
 				else if (sarr[0][0] == '[' && Text::StrIndexOf(sarr[0], (const UTF8Char*)"]# ") >= 0)
 				{
 					if (!me->cmdReady)
 					{
-						printf("cmdReady = true\r\n");
+						//printf("cmdReady = true\r\n");
 					}
 					me->cmdReady = true;
 				}
@@ -190,7 +246,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 		{
 			if (!me->cmdReady)
 			{
-				printf("cmdReady = true\r\n");
+				//printf("cmdReady = true\r\n");
 			}
 			me->cmdReady = true;
 		}
@@ -207,12 +263,12 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const Char *cmd)
 	{
 		return;
 	}
-	printf("Sending cmd %s\r\n", cmd);
+	//printf("Sending cmd %s\r\n", cmd);
 	UInt8 sbuff[256];
 	UOSInt cmdLen = Text::StrCharCnt(cmd);
 
 	this->WaitForCmdReady();
-	printf("cmdReady = false\r\n");
+	//printf("cmdReady = false\r\n");
 	this->cmdReady = false;
 	{
 		Sync::MutexUsage mutUsage(this->lastCmdMut);
@@ -273,6 +329,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *IO::ProgCtrl::BluetoothCtlProgCt
 	dev->mac[4] = macBuff[6];
 	dev->mac[5] = macBuff[7];
 	dev->macInt = macInt;
+	NEW_CLASS(dev->keys, Data::ArrayListUInt32());
 	this->devMap->Put(macInt, dev);
 	return dev;
 }
@@ -280,6 +337,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *IO::ProgCtrl::BluetoothCtlProgCt
 void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(DeviceInfo *dev)
 {
 	SDEL_TEXT(dev->name);
+	DEL_CLASS(dev->keys);
 	MemFree(dev);
 }
 
@@ -316,13 +374,18 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 	DEL_CLASS(this->devMap);
 	DEL_CLASS(this->devMut);
 	SDEL_TEXT(this->lastCmd);
-	DEL_CLASS(this->lastCmd);
+	DEL_CLASS(this->lastCmdMut);
 }
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::HandleDeviceUpdate(DeviceHandler hdlr, void *userObj)
 {
 	this->devHdlrObj = userObj;
 	this->devHdlr = hdlr;
+}
+
+Bool IO::ProgCtrl::BluetoothCtlProgCtrl::IsScanOn()
+{
+	return this->scanOn;
 }
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::ScanOn()

@@ -2671,6 +2671,8 @@ SSWR/AVIRead/AVIRBaseForm.h: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
 @AVIRBaseForm.o
 SSWR/AVIRead/AVIRBenchmarkForm.h: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
 @AVIRBenchmarkForm.o
+SSWR/AVIRead/AVIRBluetoothCtlForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
+@AVIRBluetoothCtlForm.o
 SSWR/AVIRead/AVIRBluetoothForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
 @AVIRBluetoothForm.o
 SSWR/AVIRead/AVIRBluetoothLEForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
@@ -4287,6 +4289,7 @@ AVIRAudioFilterForm.o: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 AVIRAudioViewerForm.o: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
 AVIRBaseForm.o: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
 AVIRBenchmarkForm.o: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
+AVIRBluetoothCtlForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
 AVIRBluetoothForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
 AVIRBluetoothLEForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
 AVIRBruteForceForm.o: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp

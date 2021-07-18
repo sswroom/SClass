@@ -1,5 +1,6 @@
 #ifndef _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #define _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
+#include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"
@@ -21,6 +22,7 @@ namespace IO
 				Int32 rssi;
 				Int32 txPower;
 				Bool connected;
+				Data::ArrayListUInt32 *keys;
 			} DeviceInfo;
 
 			typedef void (__stdcall *DeviceHandler)(DeviceInfo *dev, void *userObj);
@@ -49,6 +51,7 @@ namespace IO
 
 			void HandleDeviceUpdate(DeviceHandler hdlr, void *userObj);
 			
+			Bool IsScanOn();
 			void ScanOn();
 			void ScanOff();
 			void Exit();
