@@ -31,7 +31,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	Int32 wdId;
 	UTF8Char **argv;
-	OSInt argc;
+	UOSInt argc;
 	running = false;
 	toStop = false;
 	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));

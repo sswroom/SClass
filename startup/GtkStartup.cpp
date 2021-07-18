@@ -18,14 +18,14 @@ void __stdcall GtkProgControl_WaitForExit(Core::IProgControl *progCtrl)
 {
 }
 
-UTF8Char ** __stdcall GtkProgControl_GetCommandLines(Core::IProgControl *progCtrl, OSInt *cmdCnt)
+UTF8Char ** __stdcall GtkProgControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	GtkProgControl *ctrl = (GtkProgControl*)progCtrl;
 	*cmdCnt = ctrl->argc;
 	return ctrl->argv;
 }
 
-void GtkProgControl_Create(GtkProgControl *ctrl, OSInt argc, Char **argv)
+void GtkProgControl_Create(GtkProgControl *ctrl, UOSInt argc, Char **argv)
 {
 	ctrl->argv = (UTF8Char**)argv;
 	ctrl->argc = argc;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
 	gtk_init(&argc, &argv);
 	Core::CoreStart();
-	GtkProgControl_Create(&ctrl, argc, argv);
+	GtkProgControl_Create(&ctrl, (UOSInt)argc, argv);
 	ret = MyMain(&ctrl);
 	GtkProgControl_Destroy(&ctrl);
 	Core::CoreEnd();

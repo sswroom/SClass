@@ -11,7 +11,7 @@ Int32 MyMain(Core::IProgControl *progCtrl);
 struct LinuxProgControl : public Core::IProgControl
 {
 	UTF8Char **argv;
-	OSInt argc;
+	UOSInt argc;
 };
 
 void LinuxProgControl_OnSignal(Int32 sigNum)
@@ -32,14 +32,14 @@ UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(Core::IProgControl *pro
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(Core::IProgControl *progCtrl, OSInt *cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl;
 	*cmdCnt = ctrl->argc;
 	return ctrl->argv;
 }
 
-void LinuxProgControl_Create(LinuxProgControl *ctrl, OSInt argc, Char **argv)
+void LinuxProgControl_Create(LinuxProgControl *ctrl, UOSInt argc, Char **argv)
 {
 	ctrl->argv = (UTF8Char**)argv;
 	ctrl->argc = argc;
@@ -61,7 +61,7 @@ Int32 main(int argc, char *argv[])
 	//signal(SIGCHLD, SIG_IGN);
 
 	Core::CoreStart();
-	LinuxProgControl_Create(&conCtrl, argc, argv);
+	LinuxProgControl_Create(&conCtrl, (UOSInt)argc, argv);
 	ret = MyMain(&conCtrl);
 	LinuxProgControl_Destroy(&conCtrl);
 	Core::CoreEnd();

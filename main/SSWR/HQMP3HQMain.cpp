@@ -27,7 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
 	frm->SetExitOnClose(true);
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	while (argc-- > 1)
 	{

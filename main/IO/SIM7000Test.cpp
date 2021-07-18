@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt portNum = Test::TestModem::ListPorts(console);
 	UInt32 baudRate = 115200;
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
@@ -182,8 +182,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Net::SocketUtil::SetAddrInfoV4(&addr, 0x08080808);
 					console->WriteLine((const UTF8Char*)"Ping to 8.8.8.8...");
 					OSInt i = 4;
-					Int32 respTime;
-					Int32 ttl;
+					UInt32 respTime;
+					UInt32 ttl;
 					while (i-- > 0)
 					{
 						if (sockf->IcmpSendEcho2(&addr, &respTime, &ttl))
@@ -192,7 +192,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							sb.Append((const UTF8Char*)"Resp time = ");
 							Text::SBAppendF64(&sb, respTime / 1000000.0);
 							sb.Append((const UTF8Char*)"s, TTL = ");
-							sb.AppendI32(ttl);
+							sb.AppendU32(ttl);
 							console->WriteLine(sb.ToString());
 							Sync::Thread::Sleep(1000);
 						}

@@ -1116,6 +1116,28 @@ UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::DBUtil::ServerType svrType)
 	return (UOSInt)(Text::StrInt64(buff, val) - buff);
 }
 
+UTF8Char *DB::DBUtil::SDBUInt32(UTF8Char *sqlstr, UInt32 val, DB::DBUtil::ServerType svrType)
+{
+	return Text::StrUInt32(sqlstr, val);
+}
+
+UOSInt DB::DBUtil::SDBUInt32Leng(UInt32 val, DB::DBUtil::ServerType svrType)
+{
+	UTF8Char buff[12];
+	return (UOSInt)(Text::StrUInt32(buff, val) - buff);
+}
+
+UTF8Char *DB::DBUtil::SDBUInt64(UTF8Char *sqlstr, UInt64 val, DB::DBUtil::ServerType svrType)
+{
+	return Text::StrUInt64(sqlstr, val);
+}
+
+UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::DBUtil::ServerType svrType)
+{
+	UTF8Char buff[22];
+	return (UOSInt)(Text::StrUInt64(buff, val) - buff);
+}
+
 UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::ServerType svrType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
@@ -1335,7 +1357,7 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::DBUtil::Server
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, Int32 srId, DB::DBUtil::ServerType svrType)
+UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUtil::ServerType svrType)
 {
 	if (vec == 0)
 	{
@@ -1347,7 +1369,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, Int32 srI
 		{
 			Math::Point *pt = (Math::Point*)vec;
 			UInt8 buff[22];
-			WriteInt32(buff, srId);
+			WriteUInt32(buff, vec->GetSRID());
 			buff[4] = 1;
 			buff[5] = 12;
 			pt->GetCenter((Double*)&buff[6], (Double*)&buff[14]);

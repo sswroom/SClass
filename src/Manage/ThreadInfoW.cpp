@@ -48,7 +48,7 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 #else
 	
 #if defined(CPU_X86_64)
-	Manage::Process proc((Int32)procId, false);
+	Manage::Process proc(procId, false);
 	Manage::ThreadContext::ContextType ct = proc.GetContextType();
 	if (ct == Manage::ThreadContext::CT_X86_64)
 	{

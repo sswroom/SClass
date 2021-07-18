@@ -71,7 +71,7 @@ void IO::ConsoleWriter::ResetTextColor()
 	printf("\x1b[0m");
 }
 		
-OSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
+UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 {
 	return 0;
 }
@@ -199,16 +199,16 @@ Bool IO::ConsoleWriter::IsFileOutput()
 	return false;
 }
 
-void IO::ConsoleWriter::FixWrite(const WChar *str, OSInt displayWidth)
+void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 {
 }
 
-OSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
+UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
 	return 80;
 }
 
-OSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
+UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	if (c < 128)
 		return 1;

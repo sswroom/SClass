@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char *sptr;
 	NEW_CLASS(console, IO::ConsoleWriter());
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 
 	if (argc != 3)

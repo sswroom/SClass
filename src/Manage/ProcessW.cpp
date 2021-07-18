@@ -186,7 +186,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 {
 	if (this->handle)
 	{
-		Int32 retSize;
+		UInt32 retSize;
 #ifdef _WIN32_WCE
 		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
 #else
@@ -206,7 +206,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 {
 	if (this->handle)
 	{
-		Int32 retSize;
+		UInt32 retSize;
 		WChar *buff = MemAlloc(WChar, 1024);
 #ifdef _WIN32_WCE
 		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
@@ -377,7 +377,7 @@ UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *thread
 	return threadCnt;
 }
 
-UOSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
+UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
 {
 	HEAPLIST32 heapListInfo;
 	HANDLE hSnapShot;
@@ -391,7 +391,7 @@ UOSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
 		{
 			if (heapListInfo.th32ProcessID == this->procId)
 			{
-				heapList->Add((Int32)heapListInfo.th32HeapID);
+				heapList->Add((UInt32)heapListInfo.th32HeapID);
 				i++;
 			}
 
@@ -405,7 +405,7 @@ UOSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
 	return i;
 }
 
-UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, UOSInt maxCount)
+UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount)
 {
 	HEAPENTRY32 ent;
 	HeapInfo *heap;
@@ -1006,7 +1006,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
 	UTF8Char tmpFile[MAX_PATH];
-	OSInt cmdLen = Text::StrCharCnt(cmd);
+	UOSInt cmdLen = Text::StrCharCnt(cmd);
 	WChar *cmdLine = MemAlloc(WChar, cmdLen + 512);
 	UTF8Char *sptr;
 	Text::StrConcat(cmdLine, cmd);
@@ -1091,7 +1091,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 		}
 		IO::FileUtil::DeleteFile(tmpFile, false);
 		MemFree(cmdLine);
-		return exitCode;
+		return (Int32)exitCode;
 	}
 	else
 	{
@@ -1143,7 +1143,7 @@ Bool Manage::Process::OpenPath(const UTF8Char *path)
 #ifdef _WIN32_WCE
 	return false;
 #else
-	OSInt strLen = Text::StrUTF8_WCharCnt(path);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(path);
 	WChar *s = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(s, path, 0);
 	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", s, 0, 0, SW_SHOW);
@@ -1178,6 +1178,7 @@ const UTF8Char *Manage::Process::GetPriorityName(ProcessPriority priority)
 		return (const UTF8Char*)"Below Normal";
 	case PP_IDLE:
 		return (const UTF8Char*)"Idle";
+	case PP_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

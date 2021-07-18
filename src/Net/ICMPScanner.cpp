@@ -45,8 +45,8 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(void *userObj)
 	UInt8 buff2[4];
 	ScanResult *result;
 	Net::SocketUtil::AddressInfo addr;
-	Int32 respTime;
-	Int32 ttl;
+	UInt32 respTime;
+	UInt32 ttl;
 	WriteNUInt32(buff1, status->ipStart);
 	WriteNUInt32(buff2, status->ipEnd);
 

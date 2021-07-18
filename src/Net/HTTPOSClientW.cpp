@@ -154,7 +154,7 @@ UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
 
 	if (size > (this->contLeng - this->contRead))
 	{
-		if ((size = (OSInt)(this->contLeng - this->contRead)) <= 0)
+		if ((size = (UOSInt)(this->contLeng - this->contRead)) <= 0)
 		{
 			return 0;
 		}
@@ -225,7 +225,8 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UTF8Char svrname[256];
 	Bool https = false;
 
-	OSInt i;
+	UOSInt i;
+	OSInt si;
 	const UTF8Char *ptr1;
 	const UTF8Char *ptr2;
 	UTF8Char *ptrs[2];
@@ -251,12 +252,12 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
 		ptr1 = &url[7];
-		i = Text::StrIndexOf(ptr1, '/');
-		if (i >= 0)
+		si = Text::StrIndexOf(ptr1, '/');
+		if (si >= 0)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
-			ptr2 = &ptr1[i];
+			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
+			urltmp[si] = 0;
+			ptr2 = &ptr1[si];
 		}
 		else
 		{
@@ -271,12 +272,12 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
 	{
 		ptr1 = &url[8];
-		i = Text::StrIndexOf(ptr1, '/');
-		if (i >= 0)
+		si = Text::StrIndexOf(ptr1, '/');
+		if (si >= 0)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
-			ptr2 = &ptr1[i];
+			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
+			urltmp[si] = 0;
+			ptr2 = &ptr1[si];
 		}
 		else
 		{
@@ -304,19 +305,19 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 
 	if (urltmp[0] == '[')
 	{
-		i = Text::StrIndexOf(urltmp, ']');
-		if (i < 0)
+		si = Text::StrIndexOf(urltmp, ']');
+		if (si < 0)
 		{
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
-		Text::StrConcatC(svrname, &urltmp[1], i - 1);
-		if (urltmp[i + 1] == ':')
+		Text::StrConcatC(svrname, &urltmp[1], (UOSInt)si - 1);
+		if (urltmp[si + 1] == ':')
 		{
 			port = 0;
-			Text::StrToUInt16(&urltmp[i + 2], &port);
-			urltmp[i + 1] = 0;
+			Text::StrToUInt16(&urltmp[si + 2], &port);
+			urltmp[si + 1] = 0;
 		}
 		else
 		{
@@ -346,7 +347,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
 		{
 			this->svrAddr.addrType = Net::SocketUtil::AT_IPV4;
-			*(Int32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1");
+			*(UInt32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1");
 		}
 		else if (!sockf->DNSResolveIP(svrname, &this->svrAddr))
 		{
@@ -476,7 +477,7 @@ void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
 			sb.Append(name);
 			sb.Append((const UTF8Char*)": ");
 			sb.Append(value);
-			WinHttpAddRequestHeaders(data->hRequest, sb.ToString(), -1, WINHTTP_ADDREQ_FLAG_ADD);
+			WinHttpAddRequestHeaders(data->hRequest, sb.ToString(), (DWORD)sb.GetLength(), WINHTTP_ADDREQ_FLAG_ADD);
 		}
 	}
 }
@@ -586,7 +587,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 
 								if (Text::StrStartsWith(sptr, (const UTF8Char*)"Content-Length: "))
 								{
-									this->contLeng = Text::StrToInt32(&sptr[16]);
+									this->contLeng = Text::StrToUInt64(&sptr[16]);
 								}
 							}
 							wptr = &wptr[i + 2];

@@ -26,7 +26,7 @@ Double Manage::HiResClock::GetTimeDiff()
 	LARGE_INTEGER liFreq;
 	QueryPerformanceCounter(&liEd);
 	QueryPerformanceFrequency(&liFreq);
-	return (liEd.QuadPart - stTime) / (Double)liFreq.QuadPart;
+	return (Double)(liEd.QuadPart - stTime) / (Double)liFreq.QuadPart;
 }
 
 Int64 Manage::HiResClock::GetTimeDiffus()
@@ -35,7 +35,7 @@ Int64 Manage::HiResClock::GetTimeDiffus()
 	LARGE_INTEGER liFreq;
 	QueryPerformanceCounter(&liEd);
 	QueryPerformanceFrequency(&liFreq);
-	return (Int64)((liEd.QuadPart - stTime) / (Double)liFreq.QuadPart * 1000000.0);
+	return (Int64)((Double)(liEd.QuadPart - stTime) / (Double)liFreq.QuadPart * 1000000.0);
 }
 
 Double Manage::HiResClock::GetAndRestart()
@@ -45,7 +45,7 @@ Double Manage::HiResClock::GetAndRestart()
 	Double t;
 	QueryPerformanceCounter(&liEd);
 	QueryPerformanceFrequency(&liFreq);
-	t = (liEd.QuadPart - this->stTime) / (Double)liFreq.QuadPart;
+	t = (Double)(liEd.QuadPart - this->stTime) / (Double)liFreq.QuadPart;
 	this->stTime = liEd.QuadPart;
 	return t;
 }

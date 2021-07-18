@@ -12,7 +12,7 @@ namespace Media
 		const WChar *drvName;
 		void *bufferInfos;
 		Int32 *sampleTypes;
-		Int32 bufferSize;
+		UInt32 bufferSize;
 		Bool bufferCreated;
 		Bool playing;
 		Bool toStop;
@@ -33,7 +33,7 @@ namespace Media
 
 		static Int32 GetDeviceIndex(const UTF8Char *buff);
 		static UInt32 __stdcall PlayThread(void *obj);
-		void InitDevice(Int32 devId);
+		void InitDevice(UInt32 devId);
 
 	public:
 		static UOSInt GetDeviceCount();
@@ -42,7 +42,7 @@ namespace Media
 		Int64 SwitchBuffer(Int32 index);
 
 		ASIOOutRenderer(const UTF8Char *devName);
-		ASIOOutRenderer(Int32 devId);
+		ASIOOutRenderer(UInt32 devId);
 		virtual ~ASIOOutRenderer();
 
 		virtual Bool IsError();

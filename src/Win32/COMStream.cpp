@@ -72,9 +72,9 @@ HRESULT __stdcall Win32::COMStream::Seek(LARGE_INTEGER dlibMove, DWORD dwOrigin,
 	if (dwOrigin == STREAM_SEEK_SET)
 	{
 		if (plibNewPosition)
-			plibNewPosition->QuadPart = this->stm->SeekFromBeginning(dlibMove.QuadPart);
+			plibNewPosition->QuadPart = this->stm->SeekFromBeginning((UInt64)dlibMove.QuadPart);
 		else
-			this->stm->SeekFromBeginning(dlibMove.QuadPart);
+			this->stm->SeekFromBeginning((UInt64)dlibMove.QuadPart);
 	}
 	else if (dwOrigin == STREAM_SEEK_END)
 	{
@@ -102,12 +102,12 @@ HRESULT __stdcall Win32::COMStream::SetSize(ULARGE_INTEGER libNewSize)
 HRESULT __stdcall Win32::COMStream::CopyTo(IStream *pstm, ULARGE_INTEGER cb, ULARGE_INTEGER *pcbRead, ULARGE_INTEGER *pcbWritten)
 {
 	DebugMsg("CopyTo");
-	void *buff = MAlloc((OSInt)cb.QuadPart);
-	OSInt readSize;
+	void *buff = MAlloc((UOSInt)cb.QuadPart);
+	UOSInt readSize;
 	if (pcbRead)
-		readSize = (OSInt)(pcbRead->QuadPart = stm->Read((UInt8*)buff, (OSInt)cb.QuadPart));
+		readSize = (UOSInt)(pcbRead->QuadPart = stm->Read((UInt8*)buff, (UOSInt)cb.QuadPart));
 	else
-		readSize = stm->Read((UInt8*)buff, (OSInt)cb.QuadPart);
+		readSize = stm->Read((UInt8*)buff, (UOSInt)cb.QuadPart);
 	ULONG ul;
 	pstm->Write(buff, (ULONG)readSize, &ul);
 	if (pcbWritten)

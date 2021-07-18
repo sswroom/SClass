@@ -21,13 +21,13 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	Data::DateTime *currTime;
 	Manage::HiResClock *clk;
 	Double t;
-	Int32 waitPeriod = 1;
+	UInt32 waitPeriod = 1;
 	Int64 intT;
 
 	NEW_CLASS(currTime, Data::DateTime());
 	NEW_CLASS(clk, Manage::HiResClock());
-	OSInt i;
-	OSInt readSize;
+	UOSInt i;
+	UOSInt readSize;
 	Bool found;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	me->clientThreadRunning = true;
@@ -58,7 +58,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						}
 						else
 						{
-							readSize = -1;
+							readSize = 0;
 						}
 					}
 					else
@@ -210,7 +210,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliStat)
 {
 	this->workerTasks->Put(cliStat);
-	OSInt i = this->workerCnt;
+	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
 		if (this->workers[i].cliStat == 0)
@@ -256,7 +256,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 
 Net::TCPClientMgr::~TCPClientMgr()
 {
-	OSInt i = cliArr->GetCount();
+	UOSInt i = cliArr->GetCount();
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	if (i)
 	{
@@ -350,7 +350,7 @@ Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt b
 	i = this->cliIdArr->SortedIndexOf(cliId);
 	if (i >= 0)
 	{
-		cliStat = this->cliArr->GetItem(i);
+		cliStat = this->cliArr->GetItem((UOSInt)i);
 	}
 	mutUsage.EndUse();
 	if (cliStat)
@@ -370,7 +370,7 @@ Bool Net::TCPClientMgr::IsError()
 
 void Net::TCPClientMgr::CloseAll()
 {
-	OSInt i = this->cliArr->GetCount();
+	UOSInt i = this->cliArr->GetCount();
 	Sync::MutexUsage mutUsage(this->cliMut);
 	while (i-- > 0)
 	{
@@ -400,7 +400,7 @@ void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
 	OSInt i = this->cliIdArr->SortedIndexOf(cli->GetCliId());
 	if (i >= 0)
 	{
-		Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem(i);
+		Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem((UOSInt)i);
 		cliStat->lastDataTime->SetCurrTimeUTC();
 	}
 }

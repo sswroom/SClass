@@ -47,12 +47,12 @@ void IO::Console::PutChar(UTF32Char c)
 {
 	if (c >= 0x10000)
 	{
-		ungetwc((0xd800 + (c >> 10)), stdin);
-		ungetwc((c & 0x3ff) + 0xdc00, stdin);
+		ungetwc((wint_t)(0xd800 + (c >> 10)), stdin);
+		ungetwc((wint_t)((c & 0x3ff) + 0xdc00), stdin);
 	}
 	else
 	{
-		ungetwc(c, stdin);
+		ungetwc((wint_t)c, stdin);
 	}
 }
 
@@ -102,7 +102,15 @@ void IO::Console::PrintStrO(const UTF8Char *str1)
 UOSInt IO::Console::WriteStdOut(UInt8 *buff, UOSInt size)
 {
 #if defined(WIN32) && !defined(_WIN32_WCE) && !defined(__CYGWIN__)
-	return _write(1, buff, size);
+	Int32 ret = _write(1, buff, (UInt32)size);
+	if (ret < 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return (UOSInt)ret;
+	}
 #else
 	return fwrite(buff, 1, size, stdout);
 #endif

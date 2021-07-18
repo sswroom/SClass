@@ -14,8 +14,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char **argv;
 	IO::StmData::FileData *fd;
 	Bool succ;
-	OSInt argc;
-	Int32 i;
+	UOSInt argc;
+	UInt32 i;
 	ui = progCtrl->CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, ui, core));

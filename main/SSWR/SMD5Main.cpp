@@ -207,7 +207,7 @@ Bool ParseFile(const UTF8Char *fileName)
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	OSInt cmdCnt;
+	UOSInt cmdCnt;
 	UTF8Char sbuff[512];
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());

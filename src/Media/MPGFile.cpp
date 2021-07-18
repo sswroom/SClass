@@ -380,7 +380,7 @@ UInt64 Media::MPGFile::GetBitRate()
 	Int32 currTime = this->vstm->GetFrameStreamTime();
 	if (currTime > 0 && this->readOfst > 0)
 	{
-		return (this->readOfst * 8000LL / (UInt64)currTime);
+		return (this->readOfst * 8000LL / (UInt64)(UInt32)currTime);
 	}
 	else
 	{

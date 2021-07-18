@@ -168,7 +168,7 @@ void MemSetBreakPoint(OSInt address)
 	mcBreakSize = 0;
 }
 
-void MemSetBreakPoint(OSInt address, OSInt size)
+void MemSetBreakPoint(OSInt address, UOSInt size)
 {
 	mcBreakPt = address;
 	mcBreakSize = size;
@@ -183,7 +183,7 @@ void MemSetLogFile(const UTF8Char *logFile)
 	}
 	if (logFile)
 	{
-		OSInt size = Text::StrCharCnt(logFile);
+		UOSInt size = Text::StrCharCnt(logFile);
 		mcLogFile = (const UTF8Char *)HeapAlloc(mcIntHandle, 0, (size + 1) * sizeof(UTF8Char));
 		Text::StrConcat((UTF8Char*)mcLogFile, logFile);
 	}
@@ -443,9 +443,9 @@ Int32 MemCheckError()
 					break;
 				}
 				sptr = Text::StrConcat(buff, (const UTF8Char*)"(");
-				sptr = Text::StrHexVal32(sptr, (Int32)(OSInt)ent.lpData);
+				sptr = Text::StrHexVal32(sptr, (UInt32)(UOSInt)ent.lpData);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)") size = ");
-				sptr = Text::StrInt32(sptr, ent.cbData - 8);
+				sptr = Text::StrUInt32(sptr, ent.cbData - 8);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)": ");
 				if (ent.cbData > 24)
 				{
@@ -458,14 +458,14 @@ Int32 MemCheckError()
 					sptr = Text::StrHexBytes(sptr, (UInt8*)ent.lpData + 8, ent.cbData - 8, ' ');
 				}
 
-				OSInt address = *(OSInt*)ent.lpData;
+				UOSInt address = *(UOSInt*)ent.lpData;
 				if (address)
 				{
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)" Alloc from ");
 					if (SymFromAddr(procHand, address, &disp, symb))
 					{
 						cptr = symb->Name;
-						while ((*sptr++ = *cptr++) != 0);
+						while ((*sptr++ = (UTF8Char)*cptr++) != 0);
 						sptr--;
 
 						if (SymGetLineFromAddr64(procHand, address, (DWORD*)&displacement, &line))
@@ -474,7 +474,7 @@ Int32 MemCheckError()
 							cptr = line.FileName;
 							i = Text::StrLastIndexOf(cptr, '\\');
 							cptr = &cptr[i + 1];
-							while ((*sptr++ = *cptr++) != 0);
+							while ((*sptr++ = (UTF8Char)*cptr++) != 0);
 							sptr = Text::StrConcat(sptr - 1, (const UTF8Char*)"(");
 							sptr = Text::StrInt32(sptr, (Int32)line.LineNumber);
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)")");

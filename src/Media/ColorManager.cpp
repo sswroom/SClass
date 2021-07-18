@@ -655,7 +655,7 @@ void Media::MonitorColorManager::SetOSProfile()
 	WChar sbuff2[512];
 	Bool succ = false;
 	DISPLAY_DEVICEW dev;
-	Int32 i = 0;
+	UInt32 i = 0;
 	OSInt j;
 	dev.cb = sizeof(DISPLAY_DEVICEW);
 	if (this->profileName != 0)

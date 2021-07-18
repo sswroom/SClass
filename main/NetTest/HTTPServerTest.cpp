@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt16 port = 80;
 	NEW_CLASS(console, IO::ConsoleWriter());
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

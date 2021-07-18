@@ -17,7 +17,7 @@ namespace Core
 	struct IProgControl
 	{
 		typedef void (__stdcall *WaitForExitFunc)(IProgControl *progCtrl);
-		typedef UTF8Char **(__stdcall *GetCommandLinesFunc)(IProgControl *progCtrl, OSInt *cmdCnt);
+		typedef UTF8Char **(__stdcall *GetCommandLinesFunc)(IProgControl *progCtrl, UOSInt *cmdCnt);
 
 		WaitForExitFunc WaitForExit;
 		GetCommandLinesFunc GetCommandLines;

@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt portNum = Test::TestModem::ListPorts(&console);
 	UInt32 baudRate = 115200;
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

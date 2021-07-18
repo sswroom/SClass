@@ -65,17 +65,17 @@ namespace IO
 
 		void SetTextColor(ConsoleColor fgColor, ConsoleColor bgColor);
 		void ResetTextColor();
-		OSInt CalDisplaySize(const WChar *str);
+		UOSInt CalDisplaySize(const WChar *str);
 		void EnableCPFix(Bool isEnable);
 		void SetAutoFlush(Bool autoFlush);
 		Bool GetConsoleState(ConsoleState *state);
 		Bool SetCursorPos(UInt32 x, Int32 y);
 		Bool IsFileOutput();
 
-		void FixWrite(const WChar *str, OSInt displayWidth);
-		OSInt GetDisplayWidth(const WChar *str);
+		void FixWrite(const WChar *str, UOSInt displayWidth);
+		UOSInt GetDisplayWidth(const WChar *str);
 	private:
-		OSInt GetDisplayCharWidth(WChar c);
+		UOSInt GetDisplayCharWidth(WChar c);
 	};
 }
 #endif

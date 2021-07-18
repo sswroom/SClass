@@ -39,8 +39,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	IO::StmData::FileData *fd;
-	OSInt argc;
-	Int32 i;
+	UOSInt argc;
+	UOSInt i;
 	UTF8Char **argv;
 
 //	MemSetBreakPoint(0x014746E8);

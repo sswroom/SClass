@@ -118,7 +118,7 @@ Bool IO::ConsoleWriter::Write(const UTF8Char *s)
 	}
 	else
 	{
-		OSInt nBytes;
+		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
 		nBytes = this->enc->UTF8CountBytes(s, nChar);
@@ -179,7 +179,7 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *s)
 	}
 	else
 	{
-		OSInt nBytes;
+		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
 		nBytes = this->enc->UTF8CountBytes(s, nChar);
@@ -232,7 +232,7 @@ Bool IO::ConsoleWriter::WriteLine()
 void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgColor, IO::ConsoleWriter::ConsoleColor bgColor)
 {
 #ifndef _WIN32_WCE
-	SetConsoleTextAttribute((HANDLE)this->hand, (fgColor & 0xf) | ((bgColor & 0xf) << 4));
+	SetConsoleTextAttribute((HANDLE)this->hand, (UInt16)((fgColor & 0xf) | ((bgColor & 0xf) << 4)));
 #endif
 }
 
@@ -241,10 +241,10 @@ void IO::ConsoleWriter::ResetTextColor()
 	SetTextColor(CC_GRAY, CC_BLACK);
 }
 
-OSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
+UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 {
 	WChar c;
-	OSInt size = 0;
+	UOSInt size = 0;
 	while ((c = *str++) != 0)
 	{
 		if (c < 32)
@@ -328,10 +328,10 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 		return false;
 	state->fgColor = (ConsoleColor)(info.wAttributes & 0xf);
 	state->bgColor = (ConsoleColor)((info.wAttributes >> 4) & 0xf);
-	state->currX = info.dwCursorPosition.X;
-	state->currY = info.dwCursorPosition.Y;
-	state->consoleWidth = info.dwSize.X;
-	state->consoleHeight = info.dwSize.Y;
+	state->currX = (UInt32)info.dwCursorPosition.X;
+	state->currY = (UInt32)info.dwCursorPosition.Y;
+	state->consoleWidth = (UInt32)info.dwSize.X;
+	state->consoleHeight = (UInt32)info.dwSize.Y;
 	return true;
 #endif
 }
@@ -342,8 +342,8 @@ Bool IO::ConsoleWriter::SetCursorPos(UInt32 x, Int32 y)
 	return false;
 #else
 	COORD tmp;
-	tmp.X = x;
-	tmp.Y = y;
+	tmp.X = (SHORT)x;
+	tmp.Y = (SHORT)y;
 	return SetConsoleCursorPosition((HANDLE)this->hand, tmp) != 0;
 #endif
 }
@@ -353,13 +353,13 @@ Bool IO::ConsoleWriter::IsFileOutput()
 	return this->fileOutput;
 }
 
-void IO::ConsoleWriter::FixWrite(const WChar *str, OSInt displayWidth)
+void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 {
 	if (this->fileOutput || this->enc == 0)
 	{
 		return;
 	}
-	OSInt width = GetDisplayWidth(str);
+	UOSInt width = GetDisplayWidth(str);
 	if (width <= displayWidth)
 	{
 		const UTF8Char *csptr = Text::StrToUTF8New(str);
@@ -417,13 +417,13 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, OSInt displayWidth)
 	}
 }
 
-OSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
+UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
 	if (this->fileOutput || this->enc == 0)
 	{
 		return Text::StrCharCnt(str);
 	}
-	OSInt size = 0;
+	UOSInt size = 0;
 	WChar c;
 	while ((c = *str++) != 0)
 	{
@@ -433,10 +433,10 @@ OSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 	return size;
 }
 
-OSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
+UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	UInt8 buff[4];
-	OSInt size = this->enc->WToBytes(buff, &c, 1);
+	UOSInt size = this->enc->WToBytes(buff, &c, 1);
 	if (size == 1 && buff[0] < 128)
 		return 1;
 
@@ -457,7 +457,7 @@ OSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 	}
 	else
 	{
-		size = info2.dwCursorPosition.X;
+		size = (UOSInt)info2.dwCursorPosition.X;
 	}
 	SetConsoleCursorPosition((HANDLE)this->hand, info.dwCursorPosition);
 	return size;

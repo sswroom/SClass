@@ -50,8 +50,8 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 	{
 		Int32 paperWidth;
 		Int32 paperHeight;
-		devMode->dmPaperWidth = Math::Double2Int32(me->paperWidth * 10.0);
-		devMode->dmPaperLength = Math::Double2Int32(me->paperHeight * 10.0);
+		devMode->dmPaperWidth = (Int16)Math::Double2Int32(me->paperWidth * 10.0);
+		devMode->dmPaperLength = (Int16)Math::Double2Int32(me->paperHeight * 10.0);
 		if (me->po == PO_LANDSCAPE)
 		{
 			devMode->dmOrientation = DMORIENT_LANDSCAPE;
@@ -66,7 +66,7 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 		}
 		devMode->dmFields |= DM_PAPERLENGTH | DM_PAPERWIDTH | DM_ORIENTATION;
 		ResetDCW((HDC)me->hdcPrinter, devMode);
-		NEW_CLASS(img, Media::GDIImage(me->eng, 0, 0, MulDiv(MulDiv(paperWidth, 100, devMode->dmScale), devMode->dmPrintQuality, 254), MulDiv(MulDiv(paperHeight, 100, devMode->dmScale), devMode->dmPrintQuality, 254), 32, 0, 0, me->hdcPrinter, Media::AT_NO_ALPHA));
+		NEW_CLASS(img, Media::GDIImage(me->eng, 0, 0, (UOSInt)MulDiv32(MulDiv32(paperWidth, 100, devMode->dmScale), devMode->dmPrintQuality, 254), (UOSInt)MulDiv32(MulDiv32(paperHeight, 100, devMode->dmScale), devMode->dmPrintQuality, 254), 32, 0, 0, me->hdcPrinter, Media::AT_NO_ALPHA));
 		img->SetHDPI(devMode->dmPrintQuality);
 		img->SetVDPI(devMode->dmPrintQuality);
 		StartPage((HDC)me->hdcPrinter);
@@ -315,7 +315,8 @@ Media::Printer::Printer(const UTF8Char *printerName)
 	}
 
 	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, 0);
-	this->devMode = MemAlloc(UInt8, lReturn);
+	UOSInt size = (UOSInt)lReturn;
+	this->devMode = MemAlloc(UInt8, size);
 	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
 	Text::StrDelNew(wptr);
 	if (lReturn < 0)

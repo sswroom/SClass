@@ -40,7 +40,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UInt16 port = 1234;
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

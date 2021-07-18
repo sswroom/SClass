@@ -461,7 +461,7 @@ Bool IO::Device::SIM7000::NetSetDisableNagle(Bool disable)
 	return this->SendBoolCommand(disable?"AT+CIPOPTION=1":"AT+CIPOPTION=0");
 }
 
-Bool IO::Device::SIM7000::NetPing(const UTF8Char *addr, Int32 *respTime, Int32 *ttl)
+Bool IO::Device::SIM7000::NetPing(const UTF8Char *addr, UInt32 *respTime, UInt32 *ttl)
 {
 	UTF8Char sbuff[256];
 	Char *sptr = (Char*)sbuff;
@@ -484,11 +484,11 @@ Bool IO::Device::SIM7000::NetPing(const UTF8Char *addr, Int32 *respTime, Int32 *
 
 	if (respTime)
 	{
-		*respTime = Text::StrToInt32(sarr[2]);
+		*respTime = Text::StrToUInt32(sarr[2]);
 	}
 	if (ttl)
 	{
-		*ttl = Text::StrToInt32(sarr[3]);
+		*ttl = Text::StrToUInt32(sarr[3]);
 	}
 	return true;
 }

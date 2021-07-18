@@ -329,10 +329,14 @@ void ASIOHdlrSRChg(ASIOSampleRate sRate)
 Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
 {
 	HKEY hkEnum;
-	const WChar *wbuff = Text::StrToWCharNew(buff);
+	const WChar *wbuff = 0;
+	if (buff)
+	{
+		wbuff = Text::StrToWCharNew(buff);
+	}
 	WChar keyname[MAXDRVNAMELEN];
 	DWORD nameSize = MAXDRVNAMELEN;
-	Int32 index = 0;
+	UInt32 index = 0;
 	Int32 ret = -1;
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	while (cr == ERROR_SUCCESS)
@@ -341,17 +345,17 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
 		{
 			if (buff == 0)
 			{
-				ret = index;
+				ret = (Int32)index;
 				break;
 			}
 			else if (Text::StrEquals(keyname, wbuff) == 0)
 			{
-				ret = index;
+				ret = (Int32)index;
 				break;
 			}
 			else if (Text::StrEndsWith(keyname, wbuff))
 			{
-				ret = index;
+				ret = (Int32)index;
 				break;
 			}
 			index++;
@@ -359,7 +363,7 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
 	}
 	if (hkEnum)
 		RegCloseKey(hkEnum);
-	Text::StrDelNew(wbuff);
+	SDEL_TEXT(wbuff);
 	return ret;
 }
 
@@ -368,16 +372,16 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	Media::ASIOOutRenderer *me = (Media::ASIOOutRenderer*)obj;
 	IASIO *asio = (IASIO*)me->asiodrv;
 	AudioFormat fmt;
-	Int32 ch;
-	Int32 nSamples;
+	UInt32 ch;
+	UInt32 nSamples;
 //	Int32 nextSample;
-	Int32 audStartTime;
+	UInt32 audStartTime;
 	UInt8 *sampleBuff;
-	Int32 blkAlign;
+	UInt32 blkAlign;
 	Sync::Event *evt;
-	Int32 i;
-	Int32 j;
-	Int32 k;
+	UInt32 i;
+	UInt32 j;
+	UInt32 k;
 
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	ASIOBufferInfo *buffInfos = (ASIOBufferInfo *)me->bufferInfos;
@@ -418,7 +422,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	}
 	nSamples = me->bufferSize;
 	NEW_CLASS(evt, Sync::Event((const UTF8Char*)"Media.ASIOOutRenderer.PlayThread.evt"));
-	blkAlign = fmt.nChannels * fmt.bitpersample >> 3;
+	blkAlign = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
 	sampleBuff = MemAlloc(UInt8, nSamples * blkAlign);
 	audStartTime = me->audSrc->GetCurrTime();
 	me->audSrc->Start(evt, nSamples * blkAlign);
@@ -429,7 +433,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	{
 		if (!me->bufferFilled)
 		{
-			me->clk->Start(audStartTime + (Int32)(me->bufferOfst * 1000 / fmt.frequency));
+			me->clk->Start(audStartTime + (UInt32)(me->bufferOfst * 1000 / fmt.frequency));
 			if (me->sampleTypes[0] == ASIOSTInt16LSB)
 			{
 				if (fmt.bitpersample == 16)
@@ -452,7 +456,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 				}
 				else if (fmt.bitpersample == 24 || fmt.bitpersample == 32)
 				{
-					k = fmt.nChannels * fmt.bitpersample >> 3;
+					k = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
 					UInt8 *srcPtr = (UInt8*)sampleBuff;
 					Int16 *destPtr;
 					ch = fmt.nChannels;
@@ -488,7 +492,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 						while (i < nSamples)
 						{
 							*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j];
-							*(UInt8*)&destPtr[k] = (*(Int16*)&srcPtr[j]) >> 8;
+							*(UInt8*)&destPtr[k] = (UInt8)((*(Int16*)&srcPtr[j]) >> 8);
 							i += 1;
 							j += fmt.nChannels;
 							k += 3;
@@ -511,7 +515,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 							*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j + 1];
 							*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j];
 							i += 1;
-							j += fmt.nChannels * 3;
+							j += (UInt32)fmt.nChannels * 3;
 							k += 3;
 						}
 					}
@@ -532,7 +536,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 							*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j + 2];
 							*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j + 1];
 							i += 1;
-							j += fmt.nChannels << 2;
+							j += (UInt32)fmt.nChannels << 2;
 							k += 3;
 						}
 					}
@@ -590,7 +594,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 								*(UInt8*)&destPtr[k + 1] = *(UInt8*)&srcPtr[j];
 								*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j + 2];
 								i += 1;
-								j += fmt.nChannels * 3;
+								j += (UInt32)fmt.nChannels * 3;
 								k += 4;
 							}
 						}
@@ -633,7 +637,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	return 0;
 }
 
-void Media::ASIOOutRenderer::InitDevice(Int32 devId)
+void Media::ASIOOutRenderer::InitDevice(UInt32 devId)
 {
 	HKEY hkEnum;
 	HKEY hkDrv;
@@ -750,10 +754,10 @@ Media::ASIOOutRenderer::ASIOOutRenderer(const UTF8Char *devName)
 	asiodrv = 0;
 	drvName = 0;
 	this->endHdlr = 0;
-	InitDevice(GetDeviceIndex(devName));
+	InitDevice((UInt32)GetDeviceIndex(devName));
 }
 
-Media::ASIOOutRenderer::ASIOOutRenderer(Int32 devId)
+Media::ASIOOutRenderer::ASIOOutRenderer(UInt32 devId)
 {
 	asiodrv = 0;
 	drvName = 0;
@@ -865,13 +869,14 @@ Bool Media::ASIOOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 	asio->getBufferSize(&minSize, &maxSize, &preferredSize, &g);
 	if (this->buffTime)
 	{
-		preferredSize = (this->buffTime * format.frequency / 1000) * format.align;
+		preferredSize = (long)((this->buffTime * format.frequency / 1000) * format.align);
 		if (preferredSize < minSize)
 			preferredSize = minSize;
 		if (preferredSize > maxSize)
 			preferredSize = maxSize;
 	}
-	err = asio->createBuffers(buffInfos, format.nChannels, this->bufferSize = preferredSize, &asioCallbacks);
+	this->bufferSize = (UInt32)preferredSize;
+	err = asio->createBuffers(buffInfos, format.nChannels, preferredSize, &asioCallbacks);
 	this->playing = false;
 	if (err != ASE_OK)
 	{

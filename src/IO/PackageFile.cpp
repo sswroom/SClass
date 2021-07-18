@@ -793,7 +793,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 						{
 							DEL_CLASS(pf);
 						}
-						sb.SetSubstr(j + 1);
+						sb.SetSubstr((UOSInt)j + 1);
 						pf = pf2;
 						needRel = true;
 						break;

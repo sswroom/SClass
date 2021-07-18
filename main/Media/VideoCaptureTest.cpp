@@ -69,7 +69,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt8 tmpBuff[4];
 	UInt32 prefFmt = 0;
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

@@ -143,7 +143,7 @@ public:
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Bool showHelp = true;
-	OSInt cmdCnt;
+	UOSInt cmdCnt;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	if (cmdCnt == 2)

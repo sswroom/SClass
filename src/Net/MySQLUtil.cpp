@@ -96,6 +96,8 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		case DB::DBUtil::CT_DateTime:
 			return Net::MySQLUtil::MYSQL_TYPE_DATETIME;
+		case DB::DBUtil::CT_DateTime2:
+			return Net::MySQLUtil::MYSQL_TYPE_DATETIME2;
 		case DB::DBUtil::CT_Double:
 			return Net::MySQLUtil::MYSQL_TYPE_DOUBLE;
 		case DB::DBUtil::CT_Float:
@@ -115,7 +117,13 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 		case DB::DBUtil::CT_Binary:
 			return Net::MySQLUtil::MYSQL_TYPE_BLOB;
 		case DB::DBUtil::CT_Vector:
-			return Net::MySQLUtil::MYSQL_TYPE_BLOB;
+			return Net::MySQLUtil::MYSQL_TYPE_GEOMETRY;
+		case DB::DBUtil::CT_NVarChar:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_NChar:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_Unknown:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		default:
 			return Net::MySQLUtil::MYSQL_TYPE_NULL;
 	}

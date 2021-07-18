@@ -51,7 +51,7 @@ Manage::EnvironmentVar::~EnvironmentVar()
 {
 	if (this->names)
 	{
-		OSInt i;
+		UOSInt i;
 		Data::ArrayList<const UTF8Char*> *nameList = this->names->GetValues();
 		i = nameList->GetCount();
 		while (i-- > 0)

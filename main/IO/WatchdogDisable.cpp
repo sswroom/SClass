@@ -13,7 +13,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::Watchdog *wd;
 	Int32 wdId;
 	UTF8Char **argv;
-	OSInt argc;
+	UOSInt argc;
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2 && Text::StrToInt32(argv[1], &wdId))
 	{

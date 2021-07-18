@@ -1629,12 +1629,12 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 			}
 			else
 			{
-				*oriStr++ = c;
+				*oriStr++ = (UTF32Char)c;
 			}
 		}
 		else
 		{
-			*oriStr++ = c;
+			*oriStr++ = (UTF32Char)c;
 		}
 	}
 
@@ -1849,7 +1849,7 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 					else
 					{
 						buff++;
-						*oriStr++ = c;
+						*oriStr++ = (UTF32Char)c;
 						digit--;
 						if (digit != 0 && (digit % groupCnt) == 0)
 						{
@@ -1879,7 +1879,7 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 					else
 					{
 						buff++;
-						*oriStr++ = c;
+						*oriStr++ = (UTF32Char)c;
 						digit--;
 					}
 				}
@@ -1919,7 +1919,7 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 				{
 					buff++;
 					afterDigitZ--;
-					*oriStr++ = c;
+					*oriStr++ = (UTF32Char)c;
 				}
 			}
 			while (afterDigitS > 0)
@@ -1929,7 +1929,7 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 					break;
 				buff++;
 				afterDigitS--;
-				*oriStr++ = c;
+				*oriStr++ = (UTF32Char)c;
 			}
 		}
 
@@ -2203,7 +2203,7 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 			c = *str1++;
 			if (c < '0' || c > '9')
 				break;
-			expV = expV * 10 + c - '0';
+			expV = expV * 10 + (Int32)(c - '0');
 		}
 		if (eneg)
 		{

@@ -17,7 +17,7 @@ void Media::KSRenderer::FillFormat(void *formatEx, Media::AudioFormat *fmt)
 	format->Format.wFormatTag = 1;
 	format->Format.nChannels = fmt->nChannels;
 	format->Format.wBitsPerSample = fmt->bitpersample;
-	format->Format.nBlockAlign = format->Format.nChannels * format->Format.wBitsPerSample >> 3;
+	format->Format.nBlockAlign = (UInt16)(format->Format.nChannels * format->Format.wBitsPerSample >> 3);
 	format->Format.nSamplesPerSec = fmt->frequency;
 	format->Format.nAvgBytesPerSec = format->Format.nBlockAlign * format->Format.nSamplesPerSec;
 	format->Format.cbSize = 0;
@@ -56,13 +56,13 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 {
 	Media::KSRenderer *me = (Media::KSRenderer *)obj;
 	Media::AudioFormat af;
-	OSInt i;
-	Int32 audStartTime;
+	UOSInt i;
+	UInt32 audStartTime;
 //	CKsAudRenFilter *pFilter;
 	CKsAudRenPin *pPin;
 	Sync::Event *evt;
 //	HRESULT hr;
-	OSInt buffLeng = 8192;
+	UOSInt buffLeng = 8192;
 
 //	pFilter = (CKsAudRenFilter*)me->pFilter;
 	pPin = (CKsAudRenPin*)me->pPin;
@@ -82,15 +82,15 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 	me->playing = true;
 	me->audsrc->Start(evt, buffLeng);
 
-	OSInt cPackets = (af.bitRate >> 17) + 1;
-	OSInt buffEndCnt = 0;
+	UOSInt cPackets = (af.bitRate >> 17) + 1;
+	UOSInt buffEndCnt = 0;
 	DATA_PACKET *Packets = MemAlloc(DATA_PACKET, cPackets);
 	HANDLE *hEventPool = MemAlloc(HANDLE, cPackets + 1);
 	UInt8 *pcmBuffer = MemAlloc(UInt8, buffLeng * cPackets);
-	ZeroMemory(&Packets[0], sizeof(DATA_PACKET) * cPackets);
+	MemClear(&Packets[0], sizeof(DATA_PACKET) * cPackets);
 
-	i = -1;
-	while (++i < cPackets)
+	i = 0;
+	while (i < cPackets)
 	{
         hEventPool[i] = CreateEvent(NULL, TRUE, TRUE, NULL);	// NO autoreset!
 
@@ -101,16 +101,16 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
         Packets[i].Header.Size = sizeof(Packets[i].Header);
         Packets[i].Header.PresentationTime.Numerator = 1;
         Packets[i].Header.PresentationTime.Denominator = 1;
-
+		i++;
 	}
 
 	KSAUDIO_POSITION pos;
     pPin->SetState(KSSTATE_PAUSE);
     pPin->SetState(KSSTATE_RUN);
 
-	OSInt blkReadSize = buffLeng - (buffLeng % af.align);
-	Int64 skipSize = 0;
-	Int64 initSize = 0;
+	UOSInt blkReadSize = buffLeng - (buffLeng % af.align);
+	UInt64 skipSize = 0;
+	UInt64 initSize = 0;
 	i = 0;
 	while (i < cPackets)
 	{
@@ -134,7 +134,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 		i = cPackets;
 		if (pPin->GetPosition(&pos) == 0)
 		{
-			me->clk->Start(audStartTime + (Int32)((pos.PlayOffset + skipSize) * 8000 / af.bitRate));
+			me->clk->Start(audStartTime + (UInt32)((pos.PlayOffset + skipSize) * 8000 / af.bitRate));
 		}
 
 		i = WaitForMultipleObjects((UInt32)cPackets + 1, hEventPool, FALSE, 1000);
@@ -244,7 +244,7 @@ UOSInt Media::KSRenderer::GetDeviceCount()
 
 UTF8Char *Media::KSRenderer::GetDeviceName(UTF8Char *buff, UOSInt devIndex)
 {
-	return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"Device "), devIndex);
+	return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"Device "), devIndex);
 }
 
 OSInt Media::KSRenderer::GetDeviceId(const UTF8Char *devName)

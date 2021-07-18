@@ -64,7 +64,7 @@ UOSInt Text::Encoding::CountWChars(const UInt8 *bytes, UOSInt byteSize)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
+		return (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
 #else
 		return byteSize;
 #endif
@@ -145,7 +145,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 		const UInt8 *oriBytes = bytes;
 		tmpPtr = dataBuff;
 		UInt8 b;
-		Int32 currCP = 850;
+		UInt32 currCP = 850;
 		while (byteSize > 0)
 		{
 			b = *bytes;
@@ -206,7 +206,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 		}
 		if (byteConv)
 		{
-			*byteConv = (Int32)(bytes - oriBytes);
+			*byteConv = (UOSInt)(bytes - oriBytes);
 		}
 		return buff;
 	}
@@ -216,7 +216,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		if (byteConv && byteConv != &tmp)
 		{
-			OSInt convSize = byteSize;
+			UOSInt convSize = byteSize;
 			Int32 iRet = 0;
 			while (iRet <= 0)
 			{
@@ -224,7 +224,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 				
 				if (iRet <= 0)
 				{
-					UInt32 err = GetLastError();
+					//UInt32 err = GetLastError();
 					iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes, (Int32)--convSize, buff, (Int32)size);
 				}
 				if (iRet <= 0)
@@ -368,7 +368,7 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		OSInt charCnt = MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
+		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
 		WChar *buff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, buff, (Int32)charCnt);
 		charCnt = Text::StrWChar_UTF8Cnt(buff, -1);
@@ -537,7 +537,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		OSInt charCnt = MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
+		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
 		WChar *wbuff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, wbuff, (Int32)charCnt);
 		wbuff[charCnt] = 0;
@@ -545,7 +545,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		MemFree(wbuff);
 		if (byteConv)
 		{
-			*byteConv = dest - buff;
+			*byteConv = (UOSInt)(dest - buff);
 		}
 		return dest;
 #else
@@ -580,7 +580,7 @@ UOSInt Text::Encoding::WCountBytes(const WChar *stri, OSInt strLen)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return WideCharToMultiByte(this->codePage, 0, stri, (Int32)strLen, 0, 0, 0, 0);
+		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri, (Int32)strLen, 0, 0, 0, 0);
 #else
 		return (UOSInt)strLen;
 #endif
@@ -663,11 +663,11 @@ UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr, OSInt strLen)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		size = (Int32)(strLen * 3);
+		size = (UOSInt)(strLen * 3);
 		if (strLen == -1)
 			size = 1024;
 		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, (Int32)strLen, (LPSTR)bytes, (Int32)size, 0, 0);
-		return iRet;
+		return (UOSInt)iRet;
 #else
 		return 0;
 #endif
@@ -777,17 +777,17 @@ UOSInt Text::Encoding::UTF8CountBytes(const UTF8Char *str, OSInt strLen)
 		if (strLen < 0)
 		{
 			const WChar *wptr = Text::StrToWCharNew(str);
-			strLen = Text::StrCharCnt(wptr);
-			UOSInt ret = WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, 0, 0, 0, 0) + 1;
+			strLen = (OSInt)Text::StrCharCnt(wptr);
+			UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, 0, 0, 0, 0) + 1;
 			Text::StrDelNew(wptr);
 			return ret;
 		}
 		else
 		{
-			OSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
+			UOSInt ret = Text::StrUTF8_WCharCntC(str, (UOSInt)strLen);
 			WChar *wptr = MemAlloc(WChar, ret + 1);
-			Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-			ret = WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
+			Text::StrUTF8_WCharC(wptr, str, (UOSInt)strLen, 0);
+			ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
 			MemFree(wptr);
 			return ret;
 		}
@@ -1048,17 +1048,17 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str, OSInt strL
 		if (strLen < 0)
 		{
 			const WChar *wptr = Text::StrToWCharNew(str);
-			strLen = Text::StrCharCnt(wptr);
-			UOSInt ret = WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes, (Int32)(strLen * 3), 0, 0);
+			strLen = (OSInt)Text::StrCharCnt(wptr);
+			UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes, (Int32)(strLen * 3), 0, 0);
 			Text::StrDelNew(wptr);
 			return ret;
 		}
 		else
 		{
-			UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
+			UOSInt ret = Text::StrUTF8_WCharCntC(str, (UOSInt)strLen);
 			WChar *wptr = MemAlloc(WChar, ret + 1);
-			Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-			ret = WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes, (Int32)(ret * 3), 0, 0) + 1;
+			Text::StrUTF8_WCharC(wptr, str, (UOSInt)strLen, 0);
+			ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes, (Int32)(ret * 3), 0, 0) + 1;
 			MemFree(wptr);
 			return ret;
 		}
@@ -1131,13 +1131,13 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 		else if ((buff[0] & 0xf0) == 0xe0)
 		{
 			this->lastHigh = false;
-			*outputChar = (buff[2] & 0x3f) | ((buff[1] & 0x3f) << 6) | ((buff[0] & 0x0f) << 12);
+			*outputChar = (WChar)((buff[2] & 0x3f) | ((buff[1] & 0x3f) << 6) | ((buff[0] & 0x0f) << 12));
 			return &buff[3];
 		}
 		else if ((buff[0] & 0xe0) == 0xc0)
 		{
 			this->lastHigh = false;
-			*outputChar = (buff[1] & 0x3f) | ((buff[0] & 0x1f) << 6);
+			*outputChar = (WChar)((buff[1] & 0x3f) | ((buff[0] & 0x1f) << 6));
 			return &buff[2];
 		}
 		else
@@ -1154,7 +1154,7 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 	}
 	else if (this->codePage == 1201)
 	{
-		*outputChar = (buff[0] << 8) | buff[1];
+		*outputChar = (WChar)((buff[0] << 8) | buff[1]);
 		return buff + 2;
 	}
 	else

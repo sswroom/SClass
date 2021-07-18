@@ -51,7 +51,7 @@ Media::DDCReader::DDCReader(void *hMon)
 					monVID[2] = ddMon.DeviceID[k + 2];
 					monVID[3] = 0;
 					Text::StrConcatS(sbuff, &ddMon.DeviceID[k + 3], 4);
-					monPID = Text::StrHex2Int32C(sbuff);
+					monPID = (UInt32)Text::StrHex2Int32C(sbuff);
 
 					HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT, NULL, NULL, NULL);
 					if (devInfo)
@@ -73,12 +73,12 @@ Media::DDCReader::DDCReader(void *hMon)
 									WChar nameEnt[128];
 									DWORD nameLeng;
 									DWORD dwType;
-									Int32 j = 0;
+									UInt32 j = 0;
 									while (true)
 									{
 										nameLeng = 128;
 										edidSize = 1024;
-										DWORD retVal = RegEnumValueW(hDevRegKey, j, &nameEnt[0], &nameLeng, NULL, &dwType, edidData, &edidSize);
+										LONG retVal = RegEnumValueW(hDevRegKey, j, &nameEnt[0], &nameLeng, NULL, &dwType, edidData, &edidSize);
 										if (retVal != ERROR_SUCCESS)
 										{
 											break;
@@ -158,7 +158,7 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 				monVID[2] = (UTF8Char)ddMon.DeviceID[k + 2];
 				monVID[3] = 0;
 				Text::StrWChar_UTF8(u8buff, &ddMon.DeviceID[k + 3], 4);
-				monPID = Text::StrHex2Int32C(u8buff);
+				monPID = (UInt32)Text::StrHex2Int32C(u8buff);
 
 				if (Text::StrStartsWith(monitorId, monVID) && Text::StrEqualsICase(&monitorId[3], u8buff))
 				{
@@ -182,12 +182,12 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 									WChar nameEnt[128];
 									DWORD nameLeng;
 									DWORD dwType;
-									Int32 j = 0;
+									UInt32 j = 0;
 									while (true)
 									{
 										nameLeng = 128;
 										edidSize = 1024;
-										DWORD retVal = RegEnumValueW(hDevRegKey, j, &nameEnt[0], &nameLeng, NULL, &dwType, edidData, &edidSize);
+										LONG retVal = RegEnumValueW(hDevRegKey, j, &nameEnt[0], &nameLeng, NULL, &dwType, edidData, &edidSize);
 										if (retVal != ERROR_SUCCESS)
 										{
 											break;
@@ -293,7 +293,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 				monVID[2] = ddMon.DeviceID[k + 2];
 				monVID[3] = 0;
 				Text::StrConcatS(sbuff, &ddMon.DeviceID[k + 3], 4);
-				monPID = Text::StrHex2Int32C(sbuff);
+				monPID = (UInt32)Text::StrHex2Int32C(sbuff);
 
 				HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT, NULL, NULL, NULL);
 				if (devInfo)
@@ -315,12 +315,12 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 								WChar nameEnt[128];
 								DWORD nameLeng;
 								DWORD dwType;
-								Int32 j = 0;
+								UInt32 j = 0;
 								while (true)
 								{
 									nameLeng = 128;
 									edidSize = 1024;
-									DWORD retVal = RegEnumValueW(hDevRegKey, j, &nameEnt[0], &nameLeng, NULL, &dwType, edidData, &edidSize);
+									LONG retVal = RegEnumValueW(hDevRegKey, j, &nameEnt[0], &nameLeng, NULL, &dwType, edidData, &edidSize);
 									if (retVal != ERROR_SUCCESS)
 									{
 										break;

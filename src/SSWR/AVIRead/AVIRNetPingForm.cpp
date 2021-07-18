@@ -33,8 +33,8 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 		}
 		else
 		{
-			Int32 t1;
-			Int32 ttl;
+			UInt32 t1;
+			UInt32 ttl;
 			Double t2;
 			sb.ClearStr();
 			Manage::HiResClock clk;
@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRNetPingForm *me = (SSWR::AVIRead::AVIRNetPingForm*)userObj;
 	if (me->targetAddr.addrType != Net::SocketUtil::AT_UNKNOWN)
 	{
-		Int32 t1;
-		Int32 ttl;
+		UInt32 t1;
+		UInt32 ttl;
 		Double t2;
 		Double t[2];
 		Manage::HiResClock clk;

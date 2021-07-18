@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	UInt8 sensorId[7];
 	UInt16 pinNum = 7;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

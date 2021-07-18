@@ -41,6 +41,17 @@ void DB::SQLBuilder::AppendInt64(Int64 val)
 	sb->SetEndPtr(DB::DBUtil::SDBInt64(sb->GetEndPtr(), val, this->svrType));
 }
 
+void DB::SQLBuilder::AppendUInt32(UInt32 val)
+{
+	sb->AllocLeng(DB::DBUtil::SDBUInt32Leng(val, this->svrType));
+	sb->SetEndPtr(DB::DBUtil::SDBUInt32(sb->GetEndPtr(), val, this->svrType));
+}
+
+void DB::SQLBuilder::AppendUInt64(UInt64 val)
+{
+	sb->AllocLeng(DB::DBUtil::SDBUInt64Leng(val, this->svrType));
+	sb->SetEndPtr(DB::DBUtil::SDBUInt64(sb->GetEndPtr(), val, this->svrType));
+}
 void DB::SQLBuilder::AppendStrUTF8(const UTF8Char *val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val, this->svrType));
@@ -73,10 +84,10 @@ void DB::SQLBuilder::AppendBool(Bool val)
 	sb->SetEndPtr(DB::DBUtil::SDBBool(sb->GetEndPtr(), val, this->svrType));
 }
 
-void DB::SQLBuilder::AppendVector(Math::Vector2D *vec, Int32 srId)
+void DB::SQLBuilder::AppendVector(Math::Vector2D *vec)
 {
 	sb->AllocLeng(DB::DBUtil::SDBVectorLeng(vec, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBVector(sb->GetEndPtr(), vec, srId, this->svrType));
+	sb->SetEndPtr(DB::DBUtil::SDBVector(sb->GetEndPtr(), vec, this->svrType));
 }
 
 void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)

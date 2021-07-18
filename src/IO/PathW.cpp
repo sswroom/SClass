@@ -155,7 +155,7 @@ UTF8Char *IO::Path::GetFileDirectory(UTF8Char *buff, const UTF8Char *fileName)
 		OSInt i = Text::StrLastIndexOf(fileName, '\\');
 		if (i >= 0)
 		{
-			return Text::StrConcatC(buff, fileName, i);
+			return Text::StrConcatC(buff, fileName, (UOSInt)i);
 		}
 		else
 		{
@@ -213,7 +213,7 @@ WChar *IO::Path::GetFileDirectoryW(WChar *buff, const WChar *fileName)
 
 UTF8Char *IO::Path::GetProcessFileName(UTF8Char *buff)
 {
-	Int32 retSize;
+	UInt32 retSize;
 	WChar tmpBuff[1024];
 #ifdef _WIN32_WCE
 	retSize = GetModuleFileNameW(0, tmpBuff, 1024);
@@ -226,7 +226,7 @@ UTF8Char *IO::Path::GetProcessFileName(UTF8Char *buff)
 
 WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 {
-	Int32 retSize;
+	UInt32 retSize;
 #ifdef _WIN32_WCE
 	retSize = GetModuleFileNameW(0, buff, 1024);
 #else
@@ -238,7 +238,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 
 Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF *sb)
 {
-	Int32 retSize;
+	UInt32 retSize;
 	WChar *sptr = MemAlloc(WChar, 1024);
 #ifdef _WIN32_WCE
 	retSize = GetModuleFileNameW(0, sptr, 1024);
@@ -341,9 +341,9 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	UTF8Char *lastSep;
 	UTF8Char *firstSep;
 	UTF8Char *pathArr[5];
-	OSInt pathCnt;
-	OSInt j;
-	Int32 i;
+	UOSInt pathCnt;
+	UOSInt j;
+	UInt32 i;
 	Int32 k;
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
 	{
@@ -479,9 +479,9 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	WChar *lastSep;
 	WChar *firstSep;
 	WChar *pathArr[5];
-	OSInt pathCnt;
-	OSInt j;
-	Int32 i;
+	UOSInt pathCnt;
+	UOSInt j;
+	UInt32 i;
 	Int32 k;
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
 	{
@@ -617,9 +617,9 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	UTF8Char *lastSep;
 	UTF8Char *firstSep;
 	UTF8Char *pathArr[5];
-	OSInt pathCnt;
-	OSInt j;
-	Int32 i;
+	UOSInt pathCnt;
+	UOSInt j;
+	UInt32 i;
 	Int32 k;
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
 	{

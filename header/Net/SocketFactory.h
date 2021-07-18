@@ -167,7 +167,7 @@ namespace Net
 		virtual Bool GetLocalAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
 
 		virtual void SetDontLinger(UInt32 *socket, Bool val) = 0;
-		virtual void SetLinger(UInt32 *socket, Int32 ms) = 0;
+		virtual void SetLinger(UInt32 *socket, UInt32 ms) = 0;
 		virtual void SetRecvBuffSize(UInt32 *socket, Int32 buffSize) = 0;
 		virtual void SetNoDelay(UInt32 *socket, Bool val) = 0;
 		virtual void SetRecvTimeout(UInt32 *socket, Int32 ms) = 0;
@@ -186,7 +186,7 @@ namespace Net
 		virtual UOSInt SendTo(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
 		virtual UOSInt SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName) = 0;
 
-		virtual Bool IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, Int32 *respTime_us, Int32 *ttl) = 0;
+		virtual Bool IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl) = 0;
 
 		virtual Bool Connect(UInt32 *socket, UInt32 ip, UInt16 port) = 0;
 		virtual Bool Connect(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;

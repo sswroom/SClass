@@ -2912,7 +2912,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			}
 			else if ((nextChar & 0xf0) == 0xe0)
 			{
-				u32c = ((nextChar & 0x0f) << 12) | ((nextPos[1] & 0x3f) << 6) | (nextPos[2] & 0x3f);
+				u32c = (UTF32Char)(((nextChar & 0x0f) << 12) | ((nextPos[1] & 0x3f) << 6) | (nextPos[2] & 0x3f));
 				nextPos += 3;
 				if (u32c >= 0x3f00 && u32c <= 0x9f00)
 				{

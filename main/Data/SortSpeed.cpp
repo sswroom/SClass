@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt recordCnt = NUM_RECORD;
 
 	UInt32 seed = 0;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

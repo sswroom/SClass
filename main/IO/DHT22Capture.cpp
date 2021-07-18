@@ -23,7 +23,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double rh;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

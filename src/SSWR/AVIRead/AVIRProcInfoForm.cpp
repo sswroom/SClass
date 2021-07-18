@@ -367,7 +367,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 	else
 	{
 		Manage::Process proc(this->currProc, false);
-		Data::ArrayListInt32 heapList;
+		Data::ArrayListUInt32 heapList;
 		UTF8Char sbuff[20];
 		UOSInt i;
 		UOSInt j;
@@ -379,7 +379,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		j = heapList.GetCount();
 		while (i < j)
 		{
-			Text::StrInt32(sbuff, heapList.GetItem(i));
+			Text::StrUInt32(sbuff, heapList.GetItem(i));
 			this->lbDetHeap->AddItem(sbuff, (void*)(OSInt)heapList.GetItem(i));
 			i++;
 		}

@@ -48,7 +48,7 @@ Manage::SymbolResolver::~SymbolResolver()
 {
 	DEL_CLASS(this->modSizes);
 	DEL_CLASS(this->modBaseAddrs);
-	OSInt i = this->modNames->GetCount();
+	UOSInt i = this->modNames->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->modNames->GetItem(i));
@@ -59,7 +59,7 @@ Manage::SymbolResolver::~SymbolResolver()
 
 UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 {
-	OSInt i;
+	UOSInt i;
 	OSInt j;
 	SYMBOL_INFO *symb;
 	UInt8 tmpBuff[sizeof(SYMBOL_INFO) + 256];
@@ -93,7 +93,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 		{
 			if (jmpBuff[0] == 0xe9)
 			{
-				address = address + 5 + *(Int32*)&jmpBuff[1];
+				address = address + 5 + (UInt64)(Int64)*(Int32*)&jmpBuff[1];
 				ret = SymFromAddr(this->proc->GetHandle(), address, &disp, symb);
 			}
 		}

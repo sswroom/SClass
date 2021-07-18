@@ -152,9 +152,9 @@ Bool Manage::StackTracer::GoToNextLevel()
 		if (this->addrArr->SortedIndexOf(sf->AddrPC.Offset) >= 0)
 			return false;
 		this->addrArr->SortedInsert(sf->AddrPC.Offset);
-		this->winContext->SetInstAddr((OSInt)sf->AddrPC.Offset);
-		this->winContext->SetStackAddr((OSInt)sf->AddrStack.Offset);
-		this->winContext->SetFrameAddr((OSInt)sf->AddrFrame.Offset);
+		this->winContext->SetInstAddr((UOSInt)sf->AddrPC.Offset);
+		this->winContext->SetStackAddr((UOSInt)sf->AddrStack.Offset);
+		this->winContext->SetFrameAddr((UOSInt)sf->AddrFrame.Offset);
 		return true;
 	}
 	else

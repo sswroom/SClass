@@ -11,7 +11,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	Int32 pinNum;
 	Int32 val;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{

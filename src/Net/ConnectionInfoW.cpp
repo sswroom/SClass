@@ -44,7 +44,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		if (ipaddrs->Address.lpSockaddr->sa_family == AF_INET)
 		{
-			this->ent.ipaddr->Add((Int32)((sockaddr_in*)ipaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
+			this->ent.ipaddr->Add((UInt32)((sockaddr_in*)ipaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
 		}
 		ipaddrs = ipaddrs->Next;
 	}
@@ -52,7 +52,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		if (dnsaddrs->Address.lpSockaddr->sa_family == AF_INET)
 		{
-			this->ent.dnsaddr->Add((Int32)((sockaddr_in*)dnsaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
+			this->ent.dnsaddr->Add((UInt32)((sockaddr_in*)dnsaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
 		}
 		dnsaddrs = dnsaddrs->Next;
 	}

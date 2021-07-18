@@ -18,7 +18,7 @@ extern "C"
 {
 	void Thread_NanoSleep(Int64 clk);
 };
-static Int64 Thread_Freq = 0;
+static UInt64 Thread_Freq = 0;
 
 void Sync::Thread::Sleepus(UOSInt us)
 {
@@ -32,9 +32,9 @@ void Sync::Thread::Sleepus(UOSInt us)
 	{
 		LARGE_INTEGER liFreq;
 		QueryPerformanceFrequency(&liFreq);
-		Thread_Freq = liFreq.QuadPart;
+		Thread_Freq = (UInt64)liFreq.QuadPart;
 	}
-	Int64 clkCount = Thread_Freq * ((us << 1) + 1) / 2000LL;
+	Int64 clkCount = (Int64)(Thread_Freq * ((us << 1) + 1) / 2000LL);
 	if (us >= 1000)
 	{
 		LARGE_INTEGER liStart;

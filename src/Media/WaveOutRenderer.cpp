@@ -102,14 +102,14 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 	Media::AudioFormat af;
 	Sync::Event *evt;
 	WAVEHDR hdrs[4];
-	Int32 i;
-	Int32 refStart;
-	Int32 audStartTime;
+	UInt32 i;
+	UInt32 refStart;
+	UInt32 audStartTime;
 	MMTIME mmt;
-	OSInt buffLeng = BUFFLENG;
-	OSInt minLeng;
-	Int32 thisT;
-	Int32 lastT;
+	UOSInt buffLeng = BUFFLENG;
+	UOSInt minLeng;
+	UInt32 thisT;
+	UInt32 lastT;
 	Int32 stmEnd;
 	Bool needNotify = false;
 
@@ -131,7 +131,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 		buffLeng = minLeng;
 
 	me->clk->Start(audStartTime);
-	me->audsrc->Start(evt, (Int32)buffLeng);
+	me->audsrc->Start(evt, buffLeng);
 
 	waveOutRestart((HWAVEOUT)me->hwo);
 	waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
@@ -229,7 +229,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 	return 0;
 }
 
-Int32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, AudioFormat *fmt)
+UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, AudioFormat *fmt)
 {
 	MMTIME *mmt = (MMTIME *)mmTime;
 	if (mmt->wType == TIME_MS)
@@ -238,15 +238,18 @@ Int32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, AudioFormat *fmt)
 	}
 	else if (mmt->wType == TIME_SAMPLES)
 	{
-		return MulDiv(mmt->u.sample, 1000, fmt->frequency);
+		return MulDivU32(mmt->u.sample, 1000, fmt->frequency);
 	}
 	else if (mmt->wType == TIME_BYTES)
 	{
-		return MulDiv(mmt->u.cb, 1000, fmt->frequency * fmt->nChannels * fmt->bitpersample >> 3);
+		return MulDivU32(mmt->u.cb, 1000, fmt->frequency * fmt->nChannels * fmt->bitpersample >> 3);
 	}
 	else if (mmt->wType == TIME_SMPTE)
 	{
-		return mmt->u.smpte.hour * 3600000 + mmt->u.smpte.min * 60000 + mmt->u.smpte.sec * 1000 + MulDiv(mmt->u.smpte.frame, 1000, mmt->u.smpte.fps);
+		return (UInt32)mmt->u.smpte.hour * 3600000 + 
+			(UInt32)mmt->u.smpte.min * 60000 + 
+			(UInt32)mmt->u.smpte.sec * 1000 + 
+			MulDivU32(mmt->u.smpte.frame, 1000, mmt->u.smpte.fps);
 	}
 	else
 	{
@@ -268,7 +271,7 @@ UTF8Char *Media::WaveOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 
 Media::WaveOutRenderer::WaveOutRenderer(const UTF8Char *devName)
 {
-	OSInt i = GetDeviceCount();
+	UOSInt i = GetDeviceCount();
 	UTF8Char buff[256];
 	this->devId = -1;
 	if (devName == 0)
@@ -281,9 +284,9 @@ Media::WaveOutRenderer::WaveOutRenderer(const UTF8Char *devName)
 		{
 			if (GetDeviceName(buff, i))
 			{
-				if (Text::StrCompare(buff, devName) == 0)
+				if (Text::StrEquals(buff, devName))
 				{
-					this->devId = i;
+					this->devId = (OSInt)i;
 					break;
 				}
 			}
@@ -348,7 +351,7 @@ Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 		format.Format.nSamplesPerSec = fmt.frequency;
 		format.Format.wBitsPerSample = fmt.bitpersample;
 		format.Format.nChannels = fmt.nChannels;
-		format.Format.nBlockAlign = fmt.nChannels * fmt.bitpersample >> 3;
+		format.Format.nBlockAlign = (UInt16)(fmt.nChannels * fmt.bitpersample >> 3);
 		format.Format.nAvgBytesPerSec = fmt.frequency * format.Format.nBlockAlign;
 		format.Format.cbSize = 0;
 	}
@@ -358,7 +361,7 @@ Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 		format.Format.nSamplesPerSec = fmt.frequency;
 		format.Format.wBitsPerSample = fmt.bitpersample;
 		format.Format.nChannels = fmt.nChannels;
-		format.Format.nBlockAlign = fmt.nChannels * fmt.bitpersample >> 3;
+		format.Format.nBlockAlign = (UInt16)(fmt.nChannels * fmt.bitpersample >> 3);
 		format.Format.nAvgBytesPerSec = fmt.frequency * format.Format.nBlockAlign;
 		format.Format.cbSize = 22;
 		format.Samples.wValidBitsPerSample = fmt.bitpersample;

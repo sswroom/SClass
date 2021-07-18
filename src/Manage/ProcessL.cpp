@@ -467,12 +467,12 @@ UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *thread
 	return retCnt;
 }
 
-UOSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
+UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
 {
 	return 0;
 }
 
-UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, UOSInt maxCount)
+UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount)
 {
 	return 0;
 

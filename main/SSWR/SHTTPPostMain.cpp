@@ -12,7 +12,7 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter *console;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv;
 	UInt8 buff[2048];
 	NEW_CLASS(console, IO::ConsoleWriter());
@@ -27,6 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		const UTF8Char *file = argv[2];
 
 		OSInt i;
+		OSInt j;
 		UInt8 *fileBuff = 0;
 		UOSInt fileSize = 0;
 		IO::FileStream *fs;
@@ -115,19 +116,19 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					const UTF8Char *fileName = 0;
 					sb.ClearStr();
 					sb.Append(url);
-					argc = sb.IndexOf('?');
-					if (argc >= 0)
+					j = sb.IndexOf('?');
+					if (j >= 0)
 					{
-						sb.TrimToLength((UOSInt)argc);
+						sb.TrimToLength((UOSInt)j);
 					}
 					if (sb.EndsWith('/'))
 					{
 						sb.TrimToLength(sb.GetLength() - 1);
 					}
-					argc = Text::StrLastIndexOf(sb.ToString(), '/');
-					if (argc >= 8)
+					j = Text::StrLastIndexOf(sb.ToString(), '/');
+					if (j >= 8)
 					{
-						fileName = Text::StrCopyNew(sb.ToString() + argc + 1);
+						fileName = Text::StrCopyNew(sb.ToString() + j + 1);
 					}
 					else
 					{

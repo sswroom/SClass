@@ -13,7 +13,7 @@ Media::MonitorInfo::MonitorInfo(void *hMonitor)
 {
 	WChar sbuff[512];
 	WChar *sarr[3];
-	OSInt i;
+	UOSInt i;
 	MONITORINFOEXW info;
 	info.cbSize = sizeof(info);
 	if (GetMonitorInfoW((HMONITOR)hMonitor, &info))

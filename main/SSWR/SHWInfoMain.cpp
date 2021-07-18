@@ -1170,6 +1170,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sensor->DisableSensor();
 					}
 					break;
+				case IO::Sensor::ST_UNKNOWN:
 				default:
 					break;
 				}

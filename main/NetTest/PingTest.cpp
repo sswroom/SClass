@@ -9,8 +9,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Net::SocketFactory *sockf;
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	Int32 respTime;
-	Int32 ttl;
+	UInt32 respTime;
+	UInt32 ttl;
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::GetIPAddr("127.0.0.1", &addr);
 	while (true)

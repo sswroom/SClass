@@ -135,7 +135,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #endif
 	if (fileName)
 	{
-		Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (OSInt)info->ExceptionRecord->ExceptionAddress, tCont);
+		Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (UOSInt)info->ExceptionRecord->ExceptionAddress, tCont);
 	}
 	DEL_CLASS(tCont);
 

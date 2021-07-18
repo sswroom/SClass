@@ -12,7 +12,7 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter *console;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv;
 	UInt8 buff[2048];
 	NEW_CLASS(console, IO::ConsoleWriter());

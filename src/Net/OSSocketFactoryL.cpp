@@ -332,11 +332,11 @@ void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 	}
 }
 
-void Net::OSSocketFactory::SetLinger(UInt32 *socket, Int32 ms)
+void Net::OSSocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
 {
 	linger ling;
 	ling.l_onoff = 1;
-	ling.l_linger = ms / 1000;
+	ling.l_linger = (Int32)ms / 1000;
 	setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
 }
 
@@ -635,7 +635,7 @@ UInt16 ICMPChecksum(UInt8 *buff, OSInt buffSize)
     return (UInt16)~sum;
 }
 
-Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, Int32 *respTime_us, Int32 *ttl)
+Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl)
 {
 	int rs;
 	if (addr->addrType == Net::SocketUtil::AT_IPV4)
@@ -1066,7 +1066,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	if (ioctl(sock, SIOCGIFCONF, &ifc) >= 0)
 	{
 		ifrcurr = ifc.ifc_req;
-		ifrend = ifrcurr + ((UOSInt)ifc.ifc_len / sizeof(ifreq));
+		ifrend = ifrcurr + ((UOSInt)(UInt32)ifc.ifc_len / sizeof(ifreq));
 		while (ifrcurr != ifrend)
 		{
 			data.sock = sock;

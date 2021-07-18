@@ -26,7 +26,7 @@ IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream:
 	Text::StrUTF8_WChar(wfileName, fileName, 0);
 	handle = INVALID_HANDLE_VALUE;
 	SECURITY_ATTRIBUTES secAttr;
-	Int32 shflag;
+	UInt32 shflag;
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = TRUE;
@@ -123,11 +123,11 @@ Bool IO::SimpleFileWriter::WriteW(const WChar *str, UOSInt nChar)
 		*bptr++ = (UInt8)*str++;
 		if ((bptr - buff) >= 512)
 		{
-			writeCnt += WriteBuff(buff, bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
 	}
-	writeCnt += WriteBuff(buff, bptr - buff);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 	return writeCnt > 0;
 }
 
@@ -141,10 +141,10 @@ Bool IO::SimpleFileWriter::WriteW(const WChar *str)
 	while ((*bptr++ = (UInt8)*str++) != 0)
 		if ((bptr - buff) >= 512)
 		{
-			writeCnt += WriteBuff(buff, bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
-	writeCnt += WriteBuff(buff, bptr - buff - 1);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff - 1));
 	return writeCnt > 0;
 }
 
@@ -160,13 +160,13 @@ Bool IO::SimpleFileWriter::WriteLineW(const WChar *str, UOSInt nChar)
 		*bptr++ = (UInt8)*str++;
 		if ((bptr - buff) >= 510)
 		{
-			writeCnt += WriteBuff(buff, bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
 	}
 	bptr[0] = 13;
 	bptr[1] = 10;
-	writeCnt += WriteBuff(buff, bptr - buff + 2);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff + 2));
 	return writeCnt > 0;
 }
 
@@ -180,12 +180,12 @@ Bool IO::SimpleFileWriter::WriteLineW(const WChar *str)
 	while ((*bptr++ = (UInt8)*str++) != 0)
 		if ((bptr - buff) >= 510)
 		{
-			writeCnt += WriteBuff(buff, bptr - buff);
+			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
 			bptr = buff;
 		}
 	bptr[-1] = 13;
 	bptr[0] = 10;
-	writeCnt += WriteBuff(buff, bptr - buff + 1);
+	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff + 1));
 	return writeCnt > 0;
 }
 

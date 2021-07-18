@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum1 = 15;
 	UInt16 pinNum2 = 14;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{

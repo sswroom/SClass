@@ -25,12 +25,14 @@ namespace DB
 		void AppendCmd(const UTF8Char *val);
 		void AppendInt32(Int32 val);
 		void AppendInt64(Int64 val);
+		void AppendUInt32(UInt32 val);
+		void AppendUInt64(UInt64 val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 		void AppendDate(Data::DateTime *val);
 		void AppendDbl(Double val);
 		void AppendBool(Bool val);
-		void AppendVector(Math::Vector2D *vec, Int32 srId);
+		void AppendVector(Math::Vector2D *vec);
 		void AppendBinary(const UInt8 *buff, UOSInt buffSize);
 
 		void AppendTableName(DB::TableDef *table);

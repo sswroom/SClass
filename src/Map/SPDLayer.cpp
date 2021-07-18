@@ -610,8 +610,8 @@ Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
 	
 	if (buff[1] > 0)
 	{
-		ptOfsts = MemAlloc(UInt32, (UOSInt)buff[1]);
-		cip->Read((UInt8*)ptOfsts, sizeof(UInt32) * (UOSInt)buff[1]);
+		ptOfsts = MemAlloc(UInt32, (UInt32)buff[1]);
+		cip->Read((UInt8*)ptOfsts, sizeof(UInt32) * (UInt32)buff[1]);
 	}
 	else
 	{

@@ -12,8 +12,8 @@ namespace Core
 		Bool ending;
 		Bool ended;
 
-		OSInt argc;
+		UOSInt argc;
 		UTF8Char **argv;
 	};		
-};
+}
 #endif

@@ -368,8 +368,8 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xc0 | (c >> 6);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xc0 | (c >> 6));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 2;
 				src++;
 				currPos++;
@@ -387,9 +387,9 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 							this->wcPos = currPos;
 							return dest;
 						}
-						*dest++ = 0xe0 | (c >> 12);
-						*dest++ = 0x80 | ((c >> 6) & 0x3f);
-						*dest++ = 0x80 | (c & 0x3f);
+						*dest++ = (UTF8Char)(0xe0 | (c >> 12));
+						*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 						maxCharCnt -= 3;
 						src++;
 						currPos++;
@@ -401,7 +401,7 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 				}
 				else if (src[1] >= 0xdc00 && src[1] < 0xe000)
 				{
-					code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (src[1] - 0xdc00);
+					code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (UTF32Char)(src[1] - 0xdc00);
 					if (code < 0x200000)
 					{
 						if (maxCharCnt <= 3)
@@ -411,10 +411,10 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 							this->wcPos = currPos;
 							return dest;
 						}
-						*dest++ = 0xf0 | (code >> 18);
-						*dest++ = 0x80 | ((code >> 12) & 0x3f);
-						*dest++ = 0x80 | ((code >> 6) & 0x3f);
-						*dest++ = 0x80 | (code & 0x3f);
+						*dest++ = (UTF8Char)(0xf0 | (code >> 18));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | (code & 0x3f));
 						maxCharCnt -= 4;
 					}
 					else if (code < 0x4000000)
@@ -426,11 +426,11 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 							this->wcPos = currPos;
 							return dest;
 						}
-						*dest++ = 0xf8 | (code >> 24);
-						*dest++ = 0x80 | ((code >> 18) & 0x3f);
-						*dest++ = 0x80 | ((code >> 12) & 0x3f);
-						*dest++ = 0x80 | ((code >> 6) & 0x3f);
-						*dest++ = 0x80 | (code & 0x3f);
+						*dest++ = (UTF8Char)(0xf8 | (code >> 24));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | (code & 0x3f));
 						maxCharCnt -= 5;
 					}
 					else
@@ -442,12 +442,12 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 							this->wcPos = currPos;
 							return dest;
 						}
-						*dest++ = 0xfc | (code >> 30);
-						*dest++ = 0x80 | ((code >> 24) & 0x3f);
-						*dest++ = 0x80 | ((code >> 18) & 0x3f);
-						*dest++ = 0x80 | ((code >> 12) & 0x3f);
-						*dest++ = 0x80 | ((code >> 6) & 0x3f);
-						*dest++ = 0x80 | (code & 0x3f);
+						*dest++ = (UTF8Char)(0xfc | (code >> 30));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 24) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+						*dest++ = (UTF8Char)(0x80 | (code & 0x3f));
 						maxCharCnt -= 6;
 					}
 					src += 2;
@@ -462,9 +462,9 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 						this->wcPos = currPos;
 						return dest;
 					}
-					*dest++ = 0xe0 | (c >> 12);
-					*dest++ = 0x80 | ((c >> 6) & 0x3f);
-					*dest++ = 0x80 | (c & 0x3f);
+					*dest++ = (UTF8Char)(0xe0 | (c >> 12));
+					*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+					*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 					maxCharCnt -= 3;
 					src++;
 					currPos++;
@@ -479,9 +479,9 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 					this->wcPos = currPos;
 					return dest;
 				}
-				*dest++ = 0xe0 | (c >> 12);
-				*dest++ = 0x80 | ((c >> 6) & 0x3f);
-				*dest++ = 0x80 | (c & 0x3f);
+				*dest++ = (UTF8Char)(0xe0 | (c >> 12));
+				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
 				maxCharCnt -= 3;
 				src++;
 				currPos++;

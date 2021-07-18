@@ -12,19 +12,19 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	handle = (void*)-1;
 	if (fileName == 0)
 	{
-		this->currPos = -1;
+		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
 		return;
 	}
 	else if (*fileName == 0)
 	{
-		this->currPos = -1;
+		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
 		return;
 	}
 
 	SECURITY_ATTRIBUTES secAttr;
-	Int32 shflag;
+	UInt32 shflag;
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE; ////////////////////////////////////
@@ -45,7 +45,7 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 		shflag = 0;
 	}
 
-	Int32 fileFlag;
+	UInt32 fileFlag;
 	switch (buffType)
 	{
 	case BT_RANDOM_ACCESS:
@@ -83,7 +83,7 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
 		{
-			this->currPos = -1;
+			this->currPos = 0;
 		}
 		else
 		{
@@ -120,19 +120,19 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 	handle = (void*)-1;
 	if (fileName == 0)
 	{
-		this->currPos = -1;
+		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
 		return;
 	}
 	else if (*fileName == 0)
 	{
-		this->currPos = -1;
+		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
 		return;
 	}
 
 	SECURITY_ATTRIBUTES secAttr;
-	Int32 shflag;
+	UInt32 shflag;
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE;////////////////////////////
@@ -153,7 +153,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 		shflag = 0;
 	}
 
-	Int32 fileFlag;
+	UInt32 fileFlag;
 	switch (buffType)
 	{
 	case BT_RANDOM_ACCESS:
@@ -193,7 +193,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
 		{
-			this->currPos = -1;
+			this->currPos = 0;
 		}
 		else
 		{
@@ -308,7 +308,7 @@ UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
 UInt64 IO::FileStream::SeekFromEnd(Int64 position)
 {
 	if (handle == INVALID_HANDLE_VALUE)
-		return -1;
+		return 0;
 	Int32 hipos;
 	Int32 lopos;
 	lopos = (Int32)position;
@@ -330,7 +330,7 @@ UInt64 IO::FileStream::GetLength()
 	DWORD fsLow = GetFileSize(handle, &fsHigh);
 	if (fsLow == INVALID_FILE_SIZE && (dwError = GetLastError()) != NO_ERROR)
 	{
-		return -1;
+		return 0;
 	}
 	else
 	{

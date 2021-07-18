@@ -204,7 +204,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 			{
 				scr_base = (((Int64)(buff[4] & 0x38)) << 27) | ((buff[4] & 3) << 28) | (buff[5] << 20) | ((buff[6] & 0xf8) << 12) | ((buff[6] & 3) << 13) | (buff[7] << 5) | (buff[8] >> 3);
 //				scr_ext = ((buff[8] & 3) << 7) | (buff[9] >> 1);
-				currOfst += (UOSInt)(14 + (buff[13] & 7));
+				currOfst += (UOSInt)(14 + (UInt32)(buff[13] & 7));
 			}
 			if (initScr == -1)
 			{

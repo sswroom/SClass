@@ -138,7 +138,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);

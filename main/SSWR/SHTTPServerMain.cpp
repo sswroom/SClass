@@ -38,7 +38,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	port = 80;
 #endif
 
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

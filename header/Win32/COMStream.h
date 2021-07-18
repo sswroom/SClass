@@ -9,7 +9,7 @@ namespace Win32
 	{
 	private:
 		IO::SeekableStream *stm;
-		Int32 cnt;
+		UInt32 cnt;
 		Data::DateTime *dt;
 
 	public:

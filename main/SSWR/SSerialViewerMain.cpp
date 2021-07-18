@@ -47,7 +47,7 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv;
 	UInt32 baudRate = 115200;
 	NEW_CLASS(console, IO::ConsoleWriter());

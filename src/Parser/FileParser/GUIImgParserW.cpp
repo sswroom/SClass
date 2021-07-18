@@ -6,6 +6,7 @@
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Math.h"
 #include "Math/VectorImage.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
@@ -116,7 +117,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 	{
 		Gdiplus::BitmapData bmpd;
 		Gdiplus::Status stat;
-		Gdiplus::Rect rect(0, 0, bmp->GetWidth(), bmp->GetHeight());
+		Gdiplus::Rect rect(0, 0, (INT)bmp->GetWidth(), (INT)bmp->GetHeight());
 		Gdiplus::PixelFormat pxFmt = bmp->GetPixelFormat();
 		if (pxFmt == PixelFormat48bppRGB)
 		{
@@ -205,7 +206,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 				ImageCopy_ImgCopy(imgSrc, imgDest, bmpd.Width, bmpd.Height, bmpd.Stride, img->GetDataBpl());
 				bmp->UnlockBits(&bmpd);
 				Int32 size = bmp->GetPaletteSize();
-				pal = (Gdiplus::ColorPalette*)MemAlloc(UInt8, size);
+				pal = (Gdiplus::ColorPalette*)MemAlloc(UInt8, (UInt32)size);
 				bmp->GetPalette(pal, size);
 				MemCopyNO(img->pal, &pal->Entries, pal->Count * 4);
 				MemFree(pal);
@@ -363,7 +364,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (img->info->dispHeight - 0.5), xCoord + xPxSize * (img->info->dispWidth - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
+					NEW_CLASS(vimg, Math::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (Math::UOSInt2Double(img->info->dispHeight) - 0.5), xCoord + xPxSize * (Math::UOSInt2Double(img->info->dispWidth) - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
 					lyr->AddVector(vimg, 0);
 					DEL_CLASS(simg);
 					

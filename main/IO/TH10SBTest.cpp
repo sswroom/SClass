@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt32 portNum = 33;
 	UInt32 baudRate = 9600;
 	UInt8 addr = 1;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{

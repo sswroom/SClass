@@ -341,7 +341,7 @@ void IO::Device::SIM7000SocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 
 }
 
-void IO::Device::SIM7000SocketFactory::SetLinger(UInt32 *socket, Int32 ms)
+void IO::Device::SIM7000SocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
 {
 
 }
@@ -499,7 +499,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendToIF(UInt32 *socket, const UInt8 *b
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, Int32 *respTime_us, Int32 *ttl)
+Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl)
 {
 	UTF8Char sbuff[32];
 	if (addr->addrType != Net::SocketUtil::AT_IPV4)
@@ -507,7 +507,7 @@ Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::Addr
 		return false;
 	}
 	Net::SocketUtil::GetAddrName(sbuff, addr);
-	Int32 respTimeMS;
+	UInt32 respTimeMS;
 	Bool succ = this->modem->NetPing(sbuff, &respTimeMS, ttl);
 	if (succ && respTime_us)
 	{

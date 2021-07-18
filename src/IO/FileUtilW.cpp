@@ -178,9 +178,9 @@ Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
 typedef struct
 {
 	IO::FileStream *destStm;
-	Int64 writeSize;
+	UInt64 writeSize;
 	IO::IProgressHandler *progHdlr;
-	Int64 fileSize;
+	UInt64 fileSize;
 } CopySess;
 
 /*Bool FileUtil_CopyFile(const WChar *file1, const WChar *file2, IO::FileUtil::FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
@@ -390,9 +390,9 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		Data::DateTime dt1;
 		Data::DateTime dt2;
 		Data::DateTime dt3;
-		buff = MemAlloc(UInt8, (OSInt)1048576);
-		writeSize = fs1->Read(buff, (OSInt)1048576);
-		writeSize = fs2->Write(buff, (OSInt)writeSize);
+		buff = MemAlloc(UInt8, (UOSInt)1048576);
+		writeSize = fs1->Read(buff, (UOSInt)1048576);
+		writeSize = fs2->Write(buff, (UOSInt)writeSize);
 		MemFree(buff);
 		fs1->GetFileTimes(&dt1, &dt2, &dt3);
 		fs2->SetFileTimes(&dt1, &dt2, &dt3);

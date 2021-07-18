@@ -498,7 +498,7 @@ UTF32Char *Text::StrInt32S(UTF32Char *oriStr, Int32 val, UTF32Char seperator, OS
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = 0x30 + val % 10;
+		*--str = (UTF32Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -1480,15 +1480,15 @@ Int32 Text::StrHex2Int32C(const UTF32Char *str)
 			return outVal;
 		if (c >= '0' && c <= '9')
 		{
-			outVal = (outVal << 4) | (c - 48);
+			outVal = (outVal << 4) | (Int32)(c - 48);
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			outVal = (outVal << 4) | (c - 0x37);
+			outVal = (outVal << 4) | (Int32)(c - 0x37);
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			outVal = (outVal << 4) | (c - 0x57);
+			outVal = (outVal << 4) | (Int32)(c - 0x57);
 		}
 		else
 		{
@@ -1540,15 +1540,15 @@ Int16 Text::StrHex2Int16C(const UTF32Char *str)
 			return outVal;
 		if (c >= '0' && c <= '9')
 		{
-			outVal = (Int16)((outVal << 4) | (c - 48));
+			outVal = (Int16)((outVal << 4) | (Int16)(c - 48));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			outVal = (Int16)((outVal << 4) | (c - 0x37));
+			outVal = (Int16)((outVal << 4) | (Int16)(c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			outVal = (Int16)((outVal << 4) | (c - 0x57));
+			outVal = (Int16)((outVal << 4) | (Int16)(c - 0x57));
 		}
 		else
 		{
@@ -1633,15 +1633,15 @@ UInt8 Text::StrHex2UInt8C(const UTF32Char *str)
 		return outVal;
 	if (c >= '0' && c <= '9')
 	{
-		outVal = (UInt8)((outVal << 4) | (c - 48));
+		outVal = (UInt8)((outVal << 4) | (UInt8)(c - 48));
 	}
 	else if (c >= 'A' && c <= 'F')
 	{
-		outVal = (UInt8)((outVal << 4) | (c - 0x37));
+		outVal = (UInt8)((outVal << 4) | (UInt8)(c - 0x37));
 	}
 	else if (c >= 'a' && c <= 'f')
 	{
-		outVal = (UInt8)((outVal << 4) | (c - 0x57));
+		outVal = (UInt8)((outVal << 4) | (UInt8)(c - 0x57));
 	}
 	else
 	{
@@ -1806,7 +1806,7 @@ Int64 Text::StrOct2Int64(const UTF32Char *str)
 			return outVal;
 		if (c >= '0' && c <= '7')
 		{
-			outVal = (outVal << 3) | (c - 48);
+			outVal = (outVal << 3) | (Int32)(c - 48);
 		}
 		else
 		{
@@ -2446,7 +2446,7 @@ Bool Text::StrToInt32(const UTF32Char *intStr, Int32 *outVal)
 		{
 			if (*intStr < '0' || *intStr > '9')
 				return false;
-			retVal = retVal * 10 + *intStr - 48;
+			retVal = retVal * 10 + (Int32)(*intStr - 48);
 			intStr++;
 		}
 	}
@@ -2513,7 +2513,7 @@ Int32 Text::StrToInt32(const UTF32Char *intStr)
 		{
 			if (*intStr < '0' || *intStr > '9')
 				return 0;
-			retVal = retVal * 10 + *intStr - 48;
+			retVal = retVal * 10 + (Int32)(*intStr - 48);
 			intStr++;
 		}
 	}
@@ -3546,7 +3546,7 @@ Bool Text::StrIsInt32(const UTF32Char *intStr)
 				return false;
 		}
 
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (Int32)(*intStr - 48);
 		intStr++;
 	}
 	return true;
@@ -4451,7 +4451,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *b
 		}
 		else if ((b & 0xe0) == 0xc0)
 		{
-			*buff++ = ((b & 0x1f) << 6) | (*bytes & 0x3f);
+			*buff++ = (UTF32Char)(((b & 0x1f) << 6) | (*bytes & 0x3f));
 			bytes++;
 		}
 		else if ((b & 0xf0) == 0xe0)
@@ -4549,7 +4549,7 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strL
 			}
 			else if (c >= 0xd800 && c < 0xdc00 && wstr[0] >= 0xdc00 && wstr[0] < 0xe000)
 			{
-				code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (wstr[0] - 0xdc00);
+				code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (UTF32Char)(wstr[0] - 0xdc00);
 				wstr++;
 				if (code < 0x200000)
 				{
@@ -4601,7 +4601,7 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strL
 			}
 			else if (c >= 0xd800 && c < 0xdc00 && wstr[0] >= 0xdc00 && wstr[0] < 0xe000 && strLen > 0)
 			{
-				code = 0x10000 + ((c - 0xd800) << 10) + (wstr[0] - 0xdc00);
+				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (wstr[0] - 0xdc00));
 				wstr++;
 				strLen--;
 				if (code < 0x200000)
@@ -4658,7 +4658,7 @@ UOSInt Text::StrUTF16_UTF8Cnt(const UTF16Char *stri, OSInt strLen)
 				byteCnt += 2;
 			else if (c >= 0xd800 && c < 0xdc00 && stri[0] >= 0xdc00 && stri[0] < 0xe000)
 			{
-				code = 0x10000 + ((c - 0xd800) << 10) + (stri[0] - 0xdc00);
+				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (stri[0] - 0xdc00));
 				stri++;
 				if (code < 0x200000)
 				{
@@ -4691,7 +4691,7 @@ UOSInt Text::StrUTF16_UTF8Cnt(const UTF16Char *stri, OSInt strLen)
 				byteCnt += 2;
 			else if (c >= 0xd800 && c < 0xdc00 && stri[0] >= 0xdc00 && stri[0] < 0xe000 && strLen > 0)
 			{
-				code = 0x10000 + ((c - 0xd800) << 10) + (stri[0] - 0xdc00);
+				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (stri[0] - 0xdc00));
 				stri++;
 				strLen--;
 				if (code < 0x200000)
@@ -4874,7 +4874,7 @@ UTF32Char *Text::StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin)
 	{
 		if (c >= 0xd800 && c < 0xdc00 && strToJoin[0] >= 0xdc00 && strToJoin[0] < 0xe000)
 		{
-			*oriStr++ = 0x10000 + ((c - 0xd800) << 10) + (strToJoin[0] - 0xdc00);
+			*oriStr++ = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (strToJoin[0] - 0xdc00));
 			strToJoin++;
 		}
 		else
@@ -4894,7 +4894,7 @@ UTF32Char *Text::StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin, U
 		c = *strToJoin++;
 		if (c >= 0xd800 && c < 0xdc00 && strToJoin[0] >= 0xdc00 && strToJoin[0] < 0xe000)
 		{
-			*oriStr++ = 0x10000 + ((c - 0xd800) << 10) + (strToJoin[0] - 0xdc00);
+			*oriStr++ = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (strToJoin[0] - 0xdc00));
 			strToJoin++;
 		}
 		else
@@ -5065,7 +5065,7 @@ const UTF16Char *Text::StrReadChar(const UTF16Char *sptr, UTF32Char *outChar)
 	UTF16Char c = *sptr++;
 	if (c >= 0xd800 && c < 0xdc00 && sptr[0] >= 0xdc00 && sptr[0] < 0xe000)
 	{
-		*outChar = 0x10000 + ((c - 0xd800) << 10) + (sptr[0] - 0xdc00);
+		*outChar = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (sptr[0] - 0xdc00));
 		sptr++;
 	}
 	else

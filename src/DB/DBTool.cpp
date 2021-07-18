@@ -439,6 +439,8 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 		}
 		else
 		{
+			Math::Vector2D *vec;
+			UInt8 *binBuff;
 			UOSInt colSize;
 			colType = r->GetColType(i, &colSize);
 			switch (colType)
@@ -447,6 +449,7 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 				sql->AppendBool(r->GetBool(i));
 				break;
 			case DB::DBUtil::CT_DateTime:
+			case DB::DBUtil::CT_DateTime2:
 				r->GetDate(i, dt);
 				sql->AppendDate(dt);
 				break;
@@ -454,12 +457,45 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 				sql->AppendInt64(r->GetInt64(i));
 				break;
 			case DB::DBUtil::CT_Int32:
+			case DB::DBUtil::CT_Int16:
 				sql->AppendInt32(r->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_UInt64:
+				sql->AppendUInt64((UInt64)r->GetInt64(i));
+				break;
+			case DB::DBUtil::CT_UInt32:
+			case DB::DBUtil::CT_UInt16:
+			case DB::DBUtil::CT_Byte:
+				sql->AppendUInt32((UInt32)r->GetInt32(i));
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
 				sql->AppendDbl(r->GetDbl(i));
 				break;
+			case DB::DBUtil::CT_Vector:
+				vec = r->GetVector(i);
+				sql->AppendVector(vec);
+				SDEL_CLASS(vec);
+				break;
+			case DB::DBUtil::CT_Binary:
+				if (r->IsNull(i))
+				{
+					sql->AppendStrUTF8(0);
+				}
+				else
+				{
+					UOSInt sz = r->GetBinarySize(i);
+					binBuff = MemAlloc(UInt8, sz);
+					r->GetBinary(i, binBuff);
+					sql->AppendBinary(binBuff, sz);
+					MemFree(binBuff);
+				}
+				break;
+			case DB::DBUtil::CT_VarChar:
+			case DB::DBUtil::CT_Char:
+			case DB::DBUtil::CT_NVarChar:
+			case DB::DBUtil::CT_NChar:
+			case DB::DBUtil::CT_Unknown:
 			default:
 				sb->ClearStr();
 				r->GetStr(i, sb);

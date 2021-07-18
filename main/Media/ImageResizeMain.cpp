@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt32 pxSize;
 	const UTF8Char *srcFile;
 	const UTF8Char *destFile;
-	OSInt cmdCnt;
+	UOSInt cmdCnt;
 	Int32 ret = 1;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 /*	if (cmdCnt != 4)

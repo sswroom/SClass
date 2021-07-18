@@ -172,7 +172,7 @@ Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::Add
 	{
 		sockaddr_in saddr;
 		saddr.sin_family = AF_INET;
-		saddr.sin_addr.s_addr = *(Int32*)addr->addr;
+		saddr.sin_addr.s_addr = *(UInt32*)addr->addr;
 		saddr.sin_port = htons(port);
 		return bind((SOCKET)socket, (sockaddr*)&saddr, sizeof(saddr)) != SOCKET_ERROR;
 	}
@@ -214,11 +214,11 @@ Bool Net::OSSocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::Addres
 			if (addr)
 			{
 				addr->addrType = Net::SocketUtil::AT_IPV4;
-				*(Int32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
+				*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
 			}
 			if (port)
 			{
-				*port = ReadMInt16(&addrBuff[2]);
+				*port = ReadMUInt16(&addrBuff[2]);
 			}
 			return true;
 		}
@@ -231,7 +231,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::Addres
 			}
 			if (port)
 			{
-				*port = ReadMInt16(&addrBuff[2]);
+				*port = ReadMUInt16(&addrBuff[2]);
 			}
 			return true;
 		}
@@ -250,11 +250,11 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 			if (addr)
 			{
 				addr->addrType = Net::SocketUtil::AT_IPV4;
-				*(Int32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
+				*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
 			}
 			if (port)
 			{
-				*port = ReadMInt16(&addrBuff[2]);
+				*port = ReadMUInt16(&addrBuff[2]);
 			}
 			return true;
 		}
@@ -267,7 +267,7 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 			}
 			if (port)
 			{
-				*port = ReadMInt16(&addrBuff[2]);
+				*port = ReadMUInt16(&addrBuff[2]);
 			}
 			return true;
 		}
@@ -293,11 +293,11 @@ void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 	}
 }
 
-void Net::OSSocketFactory::SetLinger(UInt32 *socket, Int32 ms)
+void Net::OSSocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
 {
 	linger ling;
 	ling.l_onoff = 1;
-	ling.l_linger = ms / 1000;
+	ling.l_linger = (UInt16)(ms / 1000);
 //	Int32 ret = setsockopt((SOCKET)socket, SOL_SOCKET, SO_LINGER, (const char*)&ling, sizeof(ling));
 	setsockopt((SOCKET)socket, SOL_SOCKET, SO_LINGER, (const char*)&ling, sizeof(ling));
 }
@@ -444,7 +444,7 @@ UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *in
 	}
 	else
 	{
-		DWORD lastErr = WSAGetLastError();
+		int lastErr = WSAGetLastError();
 		if (lastErr == WSA_IO_INCOMPLETE)
 		{
 			*incomplete = true;
@@ -486,15 +486,15 @@ UOSInt Net::OSSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buff
 		{
 			addr->addrType = Net::SocketUtil::AT_IPV4;
 			*(Int32*)addr->addr = *(Int32*)&addrBuff[4];
-			*port = ReadMInt16(&addrBuff[2]);
+			*port = ReadMUInt16(&addrBuff[2]);
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
 			addr->addrType = Net::SocketUtil::AT_IPV6;
 			MemCopyNO(addr->addr, &addrBuff[8], 20);
-			*port = ReadMInt16(&addrBuff[2]);
+			*port = ReadMUInt16(&addrBuff[2]);
 		}
-		return recvSize;
+		return (UOSInt)recvSize;
 	}
 }
 
@@ -506,7 +506,15 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 		*(Int16*)&addrBuff[0] = AF_INET;
 		WriteMInt16(&addrBuff[2], port);
 		*(Int32*)&addrBuff[4] = *(Int32*)addr->addr;
-		return sendto((SOCKET)socket, (const char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, sizeof(sockaddr_in));
+		int ret = sendto((SOCKET)socket, (const char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, sizeof(sockaddr_in));
+		if (ret == SOCKET_ERROR)
+		{
+			return 0;
+		}
+		else
+		{
+			return (UOSInt)ret;
+		}
 	}
 	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
 	{
@@ -514,7 +522,15 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 		WriteMInt16(&addrBuff[2], port);
 		WriteMInt32(&addrBuff[4], 0);
 		MemCopyNO(&addrBuff[8], addr->addr, 20);
-		return sendto((SOCKET)socket, (const char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, 28);
+		int ret = sendto((SOCKET)socket, (const char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, 28);
+		if (ret == SOCKET_ERROR)
+		{
+			return 0;
+		}
+		else
+		{
+			return (UOSInt)ret;
+		}
 	}
 	return 0;
 }
@@ -524,7 +540,7 @@ UOSInt Net::OSSocketFactory::SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt 
 	return 0;
 }
 
-Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, Int32 *respTime_us, Int32 *ttl)
+Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl)
 {
 	UInt8 sendData[32];
 	UInt8 replyBuff[sizeof(ICMP_ECHO_REPLY) + sizeof(sendData)];
@@ -617,7 +633,7 @@ Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::Ad
 		if (result->ai_addr->sa_family ==AF_INET)
 		{
 			addr->addrType = Net::SocketUtil::AT_IPV4;
-			*(Int32*)&addr->addr = ((sockaddr_in*)result->ai_addr)->sin_addr.S_un.S_addr;
+			*(UInt32*)&addr->addr = ((sockaddr_in*)result->ai_addr)->sin_addr.S_un.S_addr;
 			succ = true;
 		}
 		else if (result->ai_addr->sa_family == AF_INET6)
@@ -660,7 +676,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 	{
 		UInt32 defDNS = 0;
 		UInt32 defGW;
-		OSInt i;
+		UOSInt i;
 		Net::ConnectionInfo *connInfo;
 		Data::ArrayList<Net::ConnectionInfo*> connInfos;
 		if (this->GetConnInfoList(&connInfos))
@@ -761,7 +777,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
 	Net::SocketUtil::AddressInfo addr;
-	OSInt i;
+	UOSInt i;
 	UTF8Char *sarr[2];
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
@@ -862,7 +878,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 
 		if (ERROR_SUCCESS == GetAdaptersInfo(infos, (PULONG)&size))
 		{
-			OSInt i = 0;
+			UOSInt i = 0;
 			info = infos;
 			while (info)
 			{
@@ -1012,7 +1028,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfo
 
 void Net::OSSocketFactory::FreePortInfos(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList)
 {
-	OSInt i = portInfoList->GetCount();
+	UOSInt i = portInfoList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(portInfoList->RemoveAt(i));
@@ -1133,7 +1149,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 
 void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList)
 {
-	OSInt i = portInfoList->GetCount();
+	UOSInt i = portInfoList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(portInfoList->RemoveAt(i));

@@ -52,6 +52,10 @@ namespace DB
 		static UOSInt SDBInt32Leng(Int32 val, ServerType svrType);
 		static UTF8Char *SDBInt64(UTF8Char *sqlstr, Int64 val, ServerType svrType);
 		static UOSInt SDBInt64Leng(Int64 val, ServerType svrType);
+		static UTF8Char *SDBUInt32(UTF8Char *sqlstr, UInt32 val, ServerType svrType);
+		static UOSInt SDBUInt32Leng(UInt32 val, ServerType svrType);
+		static UTF8Char *SDBUInt64(UTF8Char *sqlstr, UInt64 val, ServerType svrType);
+		static UOSInt SDBUInt64Leng(UInt64 val, ServerType svrType);
 		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, ServerType svrType, Int8 tzQhr);
 		static UOSInt SDBDateLeng(Data::DateTime *dat, ServerType svrType);
 		static UTF8Char *SDBDbl(UTF8Char *sqlstr, Double val, ServerType svrType);
@@ -62,7 +66,7 @@ namespace DB
 		static UOSInt SDBBoolLeng(Bool val, ServerType svrType);
 		static UTF8Char *SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, ServerType svrType);
 		static UOSInt SDBBinLeng(const UInt8 *buff, UOSInt size, ServerType svrType);
-		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, Int32 srId, ServerType svrType);
+		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, ServerType svrType);
 		static UOSInt SDBVectorLeng(Math::Vector2D *vec, ServerType svrType);
 		static UTF8Char *SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, ServerType svrType);
 		static UOSInt SDBColUTF8Leng(const UTF8Char *colName, ServerType svrType);
