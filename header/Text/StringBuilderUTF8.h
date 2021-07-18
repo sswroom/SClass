@@ -19,6 +19,7 @@ namespace Text
 		StringBuilderUTF8 *AppendCSV(const UTF8Char **sarr, UOSInt nStr);
 		StringBuilderUTF8 *AppendToUpper(const UTF8Char *s);
 		StringBuilderUTF8 *AppendToLower(const UTF8Char *s);
+		StringBuilderUTF8 *RemoveANSIEscapes();
  	};
 }
 #endif

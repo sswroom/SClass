@@ -2456,6 +2456,69 @@ UOSInt Text::StrCountChar(const Char *str1, Char c)
 	return cnt;
 }
 
+Char *Text::StrRemoveANSIEscapes(Char *str1)
+{
+	Char c;
+	Char *dest = str1;
+	while (true)
+	{
+		c = *str1++;
+		if (c == 0)
+		{
+			*dest = 0;
+			return dest;
+		}
+		else if (c == 27)
+		{
+			switch (*str1)
+			{
+			case '[': //Control Sequence Introducer
+				str1++;
+				if (*str1 == '?')
+				{
+					str1++;
+				}
+				while (true)
+				{
+					c = *str1++;
+					if (c == 0)
+					{
+						str1--;
+						break;
+					}
+					else if (c == ';')
+					{
+
+					}
+					else if (c >= '0' && c <= '9')
+					{
+
+					}
+					else
+					{
+						break;
+					}
+				}
+				break;
+			default:
+			case 'M': //Single Shift Two
+			case 'O': //Single Shift Three
+			case 'P': //Device Control String
+			case '\\': //String Terminator
+			case 'X': //Start Of String
+			case '^': //Privacy Message
+			case '_': //Application Program Command
+				str1++;
+				break;
+			}
+		}
+		else
+		{
+			*dest++ = c;
+		}
+	}
+}
+
 const UTF8Char *Text::StrCopyNew(const UTF8Char *str1)
 {
 	UTF8Char *s = MemAlloc(UTF8Char, Text::StrCharCnt(str1) + 1);

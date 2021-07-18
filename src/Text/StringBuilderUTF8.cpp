@@ -175,3 +175,9 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToLower(const UTF8Char *
 	this->buffEnd = Text::StrToLower(this->buffEnd, s);
 	return this;
 }
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::RemoveANSIEscapes()
+{
+	this->buffEnd = Text::StrRemoveANSIEscapes(this->buff);
+	return this;
+}

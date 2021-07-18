@@ -205,7 +205,7 @@ namespace Text
 	UOSInt StrCSVSplit(Char **strs, UOSInt maxStrs, Char *strToSplit);
 	Char *StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs);
 	UOSInt StrCountChar(const Char *str1, Char c);
-
+	Char *StrRemoveANSIEscapes(Char *str1);
 
 	FORCEINLINE UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin) { return (UTF8Char*)StrConcat((Char*)oriStr, (const Char*)strToJoin); }
 	FORCEINLINE UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize) { return (UTF8Char*)StrConcatS((Char*)oriStr, (const Char*)strToJoin, buffSize); }
@@ -329,5 +329,6 @@ namespace Text
 	FORCEINLINE UOSInt StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit) { return StrCSVSplit((Char**)strs, maxStrs, (Char*)strToSplit); };
 	FORCEINLINE UTF8Char *StrCSVJoin(UTF8Char *oriStr, const UTF8Char **strs, UOSInt nStrs) { return (UTF8Char*)StrCSVJoin((Char*)oriStr, (const Char**)strs, nStrs); };
 	FORCEINLINE UOSInt StrCountChar(const UTF8Char *str1, UTF8Char c) { return StrCountChar((const Char*)str1, (Char)c); };
+	FORCEINLINE UTF8Char *StrRemoveANSIEscapes(UTF8Char *str1) { return (UTF8Char*)StrRemoveANSIEscapes((Char*)str1); };
 }
 #endif

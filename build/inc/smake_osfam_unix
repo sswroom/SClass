@@ -51,6 +51,8 @@ Manage/ModuleInfo.h: ../../src/Manage/ModuleInfoL.cpp
 @ModuleInfo.o
 Manage/Process.h: ../../src/Manage/ProcessL.cpp
 @Process.o
+Manage/ProcessExecution.h: ../../src/Manage/ProcessExecutionL.cpp
+@ProcessExecution.o
 Manage/StackTracer.h: ../../src/Manage/StackTracerL.cpp
 @StackTracer.o
 
@@ -121,6 +123,7 @@ ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderL.cpp
 HiResClock.o: ../../src/Manage/HiResClockL.cpp
 ModuleInfo.o: ../../src/Manage/ModuleInfoL.cpp
 Process.o: ../../src/Manage/ProcessL.cpp
+ProcessExecution.o: ../../src/Manage/ProcessExecutionL.cpp
 StackTracer.o: ../../src/Manage/StackTracerL.cpp
 ColorManager.o: ../../src/Media/ColorManager.cpp
 RefClock.o: ../../src/Media/RefClockL.cpp
