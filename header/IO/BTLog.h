@@ -19,6 +19,8 @@ namespace IO
 		} LogEntry;		
 	private:
 		Data::UInt64Map<LogEntry*> *logs;
+
+		static Bool IsDefaultName(const UTF8Char *name);
 	public:
 		BTLog();
 		~BTLog();

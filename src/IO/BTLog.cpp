@@ -6,6 +6,22 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
+Bool IO::BTLog::IsDefaultName(const UTF8Char *name)
+{
+	if (Text::StrCharCnt(name) == 17)
+	{
+		if (name[2] == '-' &&
+			name[5] == '-' &&
+			name[8] == '-' &&
+			name[11] == '-' &&
+			name[14] == '-')
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 IO::BTLog::BTLog()
 {
 	NEW_CLASS(this->logs, Data::UInt64Map<LogEntry*>());
@@ -29,6 +45,11 @@ IO::BTLog::LogEntry *IO::BTLog::AddEntry(UInt64 macInt, const UTF8Char *name, In
 		}
 		if (log->name == 0 && name != 0)
 		{
+			log->name = Text::StrCopyNew(name);
+		}
+		else if (log->name != 0 && name != 0 && IsDefaultName(log->name) && !IsDefaultName(name))
+		{
+			Text::StrDelNew(log->name);
 			log->name = Text::StrCopyNew(name);
 		}
 		return log;
