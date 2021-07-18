@@ -3,6 +3,7 @@
 #include "IO/BTLog.h"
 #include "IO/FileStream.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
 IO::BTLog::BTLog()
@@ -88,7 +89,65 @@ void IO::BTLog::ClearList()
 	this->logs->Clear();
 }
 
-Bool IO::BTLog::Store(const UTF8Char *fileName)
+Bool IO::BTLog::LoadFile(const UTF8Char *fileName)
+{
+	Text::StringBuilderUTF8 sb;
+	IO::FileStream *fs;
+	Text::UTF8Reader *reader;
+	UTF8Char *sarr[5];
+	UInt8 macBuff[8];
+	UInt64 macInt;
+	LogEntry *log;
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	if (fs->IsError())
+	{
+		DEL_CLASS(fs);
+		return false;
+	}
+	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	while (reader->ReadLine(&sb, 512))
+	{
+		if (Text::StrSplit(sarr, 4, sb.ToString(), '\t') == 4 && Text::StrCharCnt(sarr[0]) == 17)
+		{
+			macBuff[0] = 0;
+			macBuff[1] = 0;
+			macBuff[2] = Text::StrHex2UInt8C(&sarr[0][0]);
+			macBuff[3] = Text::StrHex2UInt8C(&sarr[0][3]);
+			macBuff[4] = Text::StrHex2UInt8C(&sarr[0][6]);
+			macBuff[5] = Text::StrHex2UInt8C(&sarr[0][9]);
+			macBuff[6] = Text::StrHex2UInt8C(&sarr[0][12]);
+			macBuff[7] = Text::StrHex2UInt8C(&sarr[0][15]);
+			macInt = ReadMUInt64(macBuff);
+			const UTF8Char *name = sarr[1];
+			if (name[0] == 0)
+			{
+				name = 0;
+			}
+			log = this->AddEntry(macInt, name, Text::StrToInt32(sarr[2]));
+			if (sarr[3][0])
+			{
+				sarr[1] = sarr[3];
+				UOSInt i = 2;
+				UInt16 key;
+				while (i == 2)
+				{
+					i = Text::StrSplit(sarr, 2, sarr[1], ',');
+					key = (UInt16)Text::StrHex2Int16C(sarr[0]);
+					if (log->keys->SortedIndexOf(key) < 0)
+					{
+						log->keys->SortedInsert(key);
+					}
+				}
+			}
+		}
+		sb.ClearStr();
+	}
+	DEL_CLASS(reader);
+	DEL_CLASS(fs);
+	return true;
+}
+
+Bool IO::BTLog::StoreFile(const UTF8Char *fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
@@ -136,4 +195,9 @@ Bool IO::BTLog::Store(const UTF8Char *fileName)
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);
 	return true;
+}
+
+Data::ArrayList<IO::BTLog::LogEntry*> *IO::BTLog::GetLogList()
+{
+	return this->logs->GetValues();
 }

@@ -26,7 +26,10 @@ namespace IO
 		LogEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower);
 		void AppendList(Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap);
 		void ClearList();
-		Bool Store(const UTF8Char *fileName);
+		Bool LoadFile(const UTF8Char *fileName);
+		Bool StoreFile(const UTF8Char *fileName);
+
+		Data::ArrayList<IO::BTLog::LogEntry*> *GetLogList();
 	};
 }
 #endif

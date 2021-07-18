@@ -90,7 +90,7 @@ void StoreFile(IO::ProgCtrl::BluetoothCtlProgCtrl *bt)
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"bt");
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
-	if (btLog.Store(sbuff))
+	if (btLog.StoreFile(sbuff))
 	{
 		if (lastFileName)
 		{

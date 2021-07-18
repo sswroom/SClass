@@ -83,7 +83,8 @@ void UI::GUIComboBox::EventTextChanged()
 			{
 				if (Text::StrStartsWith(this->itemTexts->GetItem(i), sb.ToString()))
 				{
-					this->SetSelectedIndex(i);
+					this->SetText(this->itemTexts->GetItem(i));
+					//this->SetSelectedIndex(i);
 					this->SetTextSelection(sb.GetLength(), Text::StrCharCnt(this->itemTexts->GetItem(i)));
 					break;
 				}
@@ -134,7 +135,10 @@ UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	UOSInt cnt = this->itemTexts->GetCount();
 	this->itemTexts->Add(Text::StrCopyNew(itemText));
 	this->items->Add(itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText);
+	if (!this->autoComplete)
+	{
+		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText);
+	}
 	return cnt;
 }
 

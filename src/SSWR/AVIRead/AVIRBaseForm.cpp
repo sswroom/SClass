@@ -34,6 +34,7 @@
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothLEForm.h"
+#include "SSWR/AVIRead/AVIRBluetoothLogForm.h"
 #include "SSWR/AVIRead/AVIRBruteForceForm.h"
 #include "SSWR/AVIRead/AVIRCalculator1Form.h"
 #include "SSWR/AVIRead/AVIRCameraControlForm.h"
@@ -374,7 +375,8 @@ typedef enum
 	MNU_ASN1OID,
 	MNU_OTP,
 	MNU_EW_DTU01,
-	MNU_BLUETOOTHCTL
+	MNU_BLUETOOTHCTL,
+	MNU_BLUETOOTHLOG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -681,6 +683,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"Bluetooth", MNU_BLUETOOTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Bluetooth LE", MNU_BLUETOOTHLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Bluetooth Ctrl", MNU_BLUETOOTHCTL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Bluetooth Log", MNU_BLUETOOTHLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Accelerometer", MNU_ACCELEROMETER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Power Control", MNU_POWERCONTROL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"IOPin");
@@ -2293,6 +2296,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRBluetoothCtlForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBluetoothCtlForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_BLUETOOTHLOG:
+		{
+			SSWR::AVIRead::AVIRBluetoothLogForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRBluetoothLogForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

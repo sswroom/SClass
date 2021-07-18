@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	Sync::MutexUsage mutUsage;
 	btLog.AppendList(me->bt->GetDeviceMap(&mutUsage));
 	mutUsage.EndUse();
-	if (btLog.Store(sbuff))
+	if (btLog.StoreFile(sbuff))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"Stored as ");
