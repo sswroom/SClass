@@ -23,7 +23,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, cons
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(void *userObj, OSInt itemIndex)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(void *userObj, UOSInt itemIndex)
 {
 	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
 	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetItem(itemIndex);

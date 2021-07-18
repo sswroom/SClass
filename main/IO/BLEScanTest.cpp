@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Data/ByteTool.h"
+/*#include "Data/ByteTool.h"
 #include "IO/BTManager.h"
 #include "IO/BTUtil.h"
 #include "IO/ConsoleWriter.h"
@@ -60,5 +60,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		DEL_CLASS(ctrl);
 	}
 	DEL_CLASS(console);
+	return 0;
+}*/
+
+#include "IO/BTManagerDBus.h"
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+	IO::BTManagerDBus manager;
+
 	return 0;
 }

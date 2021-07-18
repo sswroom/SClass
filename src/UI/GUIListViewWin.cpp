@@ -528,7 +528,7 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 	{
 		SendMessage((HWND)this->hwnd, LVM_ARRANGE, LVA_DEFAULT, 0);
 	}
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -537,7 +537,7 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 
 void UI::GUIListView::EventSelChg()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -545,9 +545,9 @@ void UI::GUIListView::EventSelChg()
 	}
 }
 
-void UI::GUIListView::EventDblClk(OSInt itemIndex)
+void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->dblClkHdlrs->GetCount();
 	while (i-- > 0)
 	{

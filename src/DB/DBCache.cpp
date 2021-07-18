@@ -194,12 +194,12 @@ void DB::DBCache::FreeTableData(Data::ArrayList<DB::DBRow*> *rows)
 		DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(table);
 		if (tableInfo->dataCnt >= this->cacheCnt)
 		{
-			DEL_LIST_FUNC(rows, DEL_CLASS);
+			LIST_FREE_FUNC(rows, DEL_CLASS);
 		}
 		else
 		{
 			/////////////////////////////
-			DEL_LIST_FUNC(rows, DEL_CLASS);
+			LIST_FREE_FUNC(rows, DEL_CLASS);
 		}
 	}
 }

@@ -123,13 +123,13 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
-	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem((UOSInt)index);
+	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem(index);
 	if (port != 0)
 	{
 		Text::StrUInt16(sbuff, port);

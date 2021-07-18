@@ -422,7 +422,7 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	DEL_LIST_FUNC(this->packs, MemFree);
+	LIST_FREE_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
 }
 

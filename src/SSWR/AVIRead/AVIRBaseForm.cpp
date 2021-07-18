@@ -59,6 +59,7 @@
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
+#include "SSWR/AVIRead/AVIREWDTU01Form.h"
 #include "SSWR/AVIRead/AVIRFileAnalyseForm.h"
 #include "SSWR/AVIRead/AVIRFileExForm.h"
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
@@ -116,6 +117,7 @@
 #include "SSWR/AVIRead/AVIROLEDBForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
+#include "SSWR/AVIRead/AVIROTPForm.h"
 #include "SSWR/AVIRead/AVIRPaintCntForm.h"
 #include "SSWR/AVIRead/AVIRPasswordHashForm.h"
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
@@ -368,7 +370,9 @@ typedef enum
 	MNU_DB_MANAGER,
 	MNU_TIMED_FILE_COPY,
 	MNU_JASYPT,
-	MNU_ASN1OID
+	MNU_ASN1OID,
+	MNU_OTP,
+	MNU_EW_DTU01
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -499,6 +503,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"Brute Force", MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Hash Speed", MNU_HASHTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Jasypt Encryptor", MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"One-Time Password (OTP)", MNU_OTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"ASN.1");
 	mnu2->AddItem((const UTF8Char*)"ASN.1 MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"ASN.1 OID", MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -700,6 +705,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"Any Camera", MNU_CAMERACONTROLANY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Olympus Camera", MNU_OLYMPUSCAMERA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"GoPro Camera", MNU_GOPROCAMERA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"EasyWay EW-DTU01", MNU_EW_DTU01, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Help");
 	mnu->AddItem((const UTF8Char*)"&About...", MNU_ABOUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2262,6 +2268,20 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRASN1OIDForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1OIDForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_OTP:
+		{
+			SSWR::AVIRead::AVIROTPForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIROTPForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_EW_DTU01:
+		{
+			SSWR::AVIRead::AVIREWDTU01Form *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIREWDTU01Form(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

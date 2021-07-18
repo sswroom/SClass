@@ -20,6 +20,7 @@ nodeps:
 @AES192Test
 @AES256Test
 @CRC32RTest
+@HOTPTest
 @JasyptEncryptorTest
 @JWTTest
 @MD5Test
@@ -184,6 +185,9 @@ AES256Test:
 @ConsoleStartup.o
 CRC32RTest:
 @CRC32RTestMain.o
+@ConsoleStartup.o
+HOTPTest:
+@HOTPTest.o
 @ConsoleStartup.o
 JasyptEncryptorTest:
 @JasyptEncryptorTest.o
@@ -679,6 +683,7 @@ AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
+HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
@@ -843,10 +848,16 @@ Core/ConsoleControl.h:
 Core/Core.h: ../../src/Core/Core.cpp
 @Core.o
 
+Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
+@HOTP.o
 Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
 @JasyptEncryptor.o
+Crypto/OTP.h: ../../src/Crypto/OTP.cpp
+@OTP.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
 @PBKDF2.o
+Crypto/TOTP.h: ../../src/Crypto/TOTP.cpp
+@TOTP.o
 Crypto/X509File.h: ../../src/Crypto/X509File.cpp
 @X509File.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
@@ -952,6 +963,8 @@ Data/ArrayListInt32.h: ../../src/Data/ArrayListInt32.cpp
 @ArrayListInt32.o
 Data/ArrayListInt64.h: ../../src/Data/ArrayListInt64.cpp
 @ArrayListInt64.o
+Data/ArrayListStrC.h: ../../src/Data/ArrayListStrC.cpp
+@ArrayListStrC.o
 Data/ArrayListString.h: ../../src/Data/ArrayListString.cpp
 @ArrayListString.o
 Data/ArrayListStrUTF8.h: ../../src/Data/ArrayListStrUTF8.cpp
@@ -982,12 +995,15 @@ Data/LinkedList.h: ../../src/Data/LinkedList.cpp
 @LinkedList.o
 Data/List.h:
 Data/Random.h:
+Data/RandomBytesGenerator.h: ../../src/Data/RandomBytesGenerator.cpp
+@RandomBytesGenerator.o
 Data/RandomMT19937.h: ../../src/Data/RandomMT19937.cpp
 @RandomMT19937.o
 Data/RandomOS.h: ../../src/Data/RandomOS.cpp
 @RandomOS.o
 Data/ReadingList.h:
 Data/SortableArrayList.h:
+Data/StringCMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
 Data/UInt32Map.h:
@@ -2189,6 +2205,8 @@ Net/FTPClient.h: ../../src/Net/FTPClient.cpp
 @FTPClient.o
 Net/FTPConn.h: ../../src/Net/FTPConn.cpp
 @FTPConn.o
+Net/GoogleQRCode.h: ../../src/Net/GoogleQRCode.cpp
+@GoogleQRCode.o
 Net/HKOWeather.h: ../../src/Net/HKOWeather.cpp
 @HKOWeather.o
 Net/HKTrafficImage.h: ../../src/Net/HKTrafficImage.cpp
@@ -2234,6 +2252,8 @@ Net/MQTTClient.h: ../../src/Net/MQTTClient.cpp
 @MQTTClient.o
 Net/MQTTHandler.h: ../../src/Net/MQTTHandler.cpp
 @MQTTHandler.o
+Net/MQTTUtil.h: ../../src/Net/MQTTUtil.cpp
+@MQTTUtil.o
 Net/MySQLServer.h: ../../src/Net/MySQLServer.cpp
 @MySQLServer.o
 Net/MySQLTCPClient.h: ../../src/Net/MySQLTCPClient.cpp
@@ -2715,6 +2735,8 @@ SSWR/AVIRead/AVIREncryptForm.h: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 @AVIREncryptForm.o
 SSWR/AVIRead/AVIRESRIMapForm.h: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
 @AVIRESRIMapForm.o
+SSWR/AVIRead/AVIREWDTU01Form.h: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
+@AVIREWDTU01Form.o
 SSWR/AVIRead/AVIRExeForm.h: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
 @AVIRExeForm.o
 SSWR/AVIRead/AVIRExportParamForm.h: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
@@ -2922,6 +2944,8 @@ SSWR/AVIRead/AVIROSMCacheCfgForm.h: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.c
 @AVIROSMCacheCfgForm.o
 SSWR/AVIRead/AVIROSMCacheForm.h: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
 @AVIROSMCacheForm.o
+SSWR/AVIRead/AVIROTPForm.h: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
+@AVIROTPForm.o
 SSWR/AVIRead/AVIRPackageForm.h: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 @AVIRPackageForm.o
 SSWR/AVIRead/AVIRPaintCntForm.h: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
@@ -3277,6 +3301,8 @@ Text/SMSUtil.h: ../../src/Text/SMSUtil.cpp
 Text/String.h: ../../src/Text/String.cpp
 @String.o
 Text/StringBuilder.h:
+Text/StringBuilderC.h: ../../src/Text/StringBuilderC.cpp
+@StringBuilderC.o
 Text/StringBuilderUTF.h:
 Text/StringBuilderUTF8.h: ../../src/Text/StringBuilderUTF8.cpp
 @StringBuilderUTF8.o
@@ -3352,6 +3378,8 @@ Text/TextBinEnc/ANSITextBinEnc.h: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
 @ANSITextBinEnc.o
 Text/TextBinEnc/ASN1OIDBinEnc.h: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
 @ASN1OIDBinEnc.o
+Text/TextBinEnc/Base32Enc.h: ../../src/Text/TextBinEnc/Base32Enc.cpp
+@Base32Enc.o
 Text/TextBinEnc/Base64Enc.h: ../../src/Text/TextBinEnc/Base64Enc.cpp
 @Base64Enc.o
 Text/TextBinEnc/CodePageTextBinEnc.h: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
@@ -3414,8 +3442,11 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 @SMBIOS.o
 
 Core.o: ../../src/Core/Core.cpp
+HOTP.o: ../../src/Crypto/HOTP.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
+OTP.o: ../../src/Crypto/OTP.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
+TOTP.o: ../../src/Crypto/TOTP.cpp
 X509File.o: ../../src/Crypto/X509File.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
@@ -3467,6 +3498,7 @@ ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
 ArrayListICaseStrUTF8.o: ../../src/Data/ArrayListICaseStrUTF8.cpp
 ArrayListInt32.o: ../../src/Data/ArrayListInt32.cpp
 ArrayListInt64.o: ../../src/Data/ArrayListInt64.cpp
+ArrayListStrC.o: ../../src/Data/ArrayListStrC.cpp
 ArrayListStrW.o: ../../src/Data/ArrayListStrW.cpp
 ArrayListString.o: ../../src/Data/ArrayListString.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp
@@ -3478,6 +3510,7 @@ DateTime.o: ../../src/Data/DateTime.cpp
 IChart.o: ../../src/Data/IChart.cpp
 LineChart.o: ../../src/Data/LineChart.cpp
 LinkedList.o: ../../src/Data/LinkedList.cpp
+RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
 Usage.o: ../../src/Data/Usage.cpp
@@ -4025,6 +4058,7 @@ EthernetAnalyzer.o: ../../src/Net/EthernetAnalyzer.cpp
 EthernetWebHandler.o: ../../src/Net/EthernetWebHandler.cpp
 FTPClient.o: ../../src/Net/FTPClient.cpp
 FTPConn.o: ../../src/Net/FTPConn.cpp
+GoogleQRCode.o: ../../src/Net/GoogleQRCode.cpp
 HKTrafficImage.o: ../../src/Net/HKTrafficImage.cpp
 HKOWeather.o: ../../src/Net/HKOWeather.cpp
 HTTPClient.o: ../../src/Net/HTTPClient.cpp
@@ -4045,6 +4079,7 @@ MIME.o: ../../src/Net/MIME.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
 MQTTClient.o: ../../src/Net/MQTTClient.cpp
 MQTTHandler.o: ../../src/Net/MQTTHandler.cpp
+MQTTUtil.o: ../../src/Net/MQTTUtil.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
@@ -4282,6 +4317,7 @@ AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
 AVIREncryptForm.o: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
+AVIREWDTU01Form.o: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
 AVIRExeForm.o: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
 AVIRExportParamForm.o: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
 AVIRFileAnalyseForm.o: ../../src/SSWR/AVIRead/AVIRFileAnalyseForm.cpp
@@ -4385,6 +4421,7 @@ AVIRODBCStrForm.o: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
 AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
 AVIROSMCacheCfgForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
 AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
+AVIROTPForm.o: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
 AVIRPackageForm.o: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 AVIRPaintCntForm.o: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
 AVIRPasswordHashForm.o: ../../src/SSWR/AVIRead/AVIRPasswordHashForm.cpp
@@ -4594,6 +4631,7 @@ WorkbookFont.o: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 Worksheet.o: ../../src/Text/SpreadSheet/Worksheet.cpp
 ANSITextBinEnc.o: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
 ASN1OIDBinEnc.o: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
+Base32Enc.o: ../../src/Text/TextBinEnc/Base32Enc.cpp
 Base64Enc.o: ../../src/Text/TextBinEnc/Base64Enc.cpp
 CodePageTextBinEnc.o: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
 CPPByteArrBinEnc.o: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp

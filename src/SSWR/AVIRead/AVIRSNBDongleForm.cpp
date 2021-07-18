@@ -280,10 +280,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetItemTextNew((UOSInt)index);
+	const UTF8Char *txt = me->lvDevice->GetItemTextNew(index);
 	if (txt)
 	{
 		UInt64 devId = Text::StrToUInt64(txt);
@@ -305,7 +305,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, O
 				me->devHandlerMap->Put(devId, (Int32)dev->handType);
 				me->devMut->UnlockWrite();
 				me->snb->SetDevHandleType(dev->devId, dev->handType);
-				me->lvDevice->SetSubItem((UOSInt)index, 2, IO::SNBDongle::GetHandleName(dev->handType));
+				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			}
 			DEL_CLASS(frm);
 	//		me->snb->SendSetReportTime(devId, 3, true);

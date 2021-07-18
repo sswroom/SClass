@@ -66,7 +66,7 @@ namespace SSWR
 			UI::GUIButton *btnLogWifiSaveF;
 
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnLogWifiDblClicked(void *userObj, OSInt index);
+			static void __stdcall OnLogWifiDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnLogWifiSaveClicked(void *userObj);
 			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);

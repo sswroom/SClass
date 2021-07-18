@@ -184,7 +184,7 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	DEL_LIST_FUNC(this->blockList, MemFree);
+	LIST_FREE_FUNC(this->blockList, MemFree);
 	DEL_CLASS(this->blockList);
 	MemFree(this->packetBuff);
 }

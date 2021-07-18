@@ -45,7 +45,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnStoreListClicked(void *userObj);
-			static void __stdcall OnDevicesDblClick(void *userObj, OSInt index);
+			static void __stdcall OnDevicesDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, const Char *name);
 			void ClearDevices();
@@ -55,6 +55,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

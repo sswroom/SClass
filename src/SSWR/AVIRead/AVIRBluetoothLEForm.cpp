@@ -45,12 +45,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStoreListClicked(void *user
 
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	UTF8Char sbuff[32];
 	UInt8 mac[8];
-	BTDevice *dev = (BTDevice*)me->lvDevices->GetItem((UOSInt)index);
+	BTDevice *dev = (BTDevice*)me->lvDevices->GetItem(index);
 	if (dev)
 	{
 		WriteMUInt64(mac, dev->mac);

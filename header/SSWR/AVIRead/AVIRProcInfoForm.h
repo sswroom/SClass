@@ -101,13 +101,13 @@ namespace SSWR
 			Data::DateTime *lastKernelTime;
 			UOSInt threadCnt;
 
-			static void __stdcall OnSumDblClicked(void *userObj, OSInt index);
+			static void __stdcall OnSumDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnProcSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnTimerCPUTick(void *userObj);
 			static void __stdcall OnDetModuleRefClicked(void *userObj);
 			static void __stdcall OnDetThreadRefClicked(void *userObj);
-			static void __stdcall OnDetThreadDblClicked(void *userObj, OSInt index);
+			static void __stdcall OnDetThreadDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnDetHeapRefClicked(void *userObj);
 			static void __stdcall OnDetHeapSelChg(void *userObj);
 			static void __stdcall OnDetHeapItemSelChg(void *userObj);

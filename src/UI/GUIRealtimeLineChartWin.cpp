@@ -57,10 +57,10 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	Double strWidth;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -106,13 +106,13 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSize(f, sbuff, sptr - sbuff, sz);
+	img->GetTextSizeC(f, sbuff, sptr - sbuff, sz);
 	strWidth = sz[0];
 	img->DrawString(0, 0, sbuff, f, b);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSize(f, sbuff, sptr - sbuff, sz);
+	img->GetTextSizeC(f, sbuff, sptr - sbuff, sz);
 	if (sz[0] > strWidth)
 		strWidth = sz[0];
 	img->DrawString(0, dimg->GetHeight() - sz[1], sbuff, f, b);
@@ -255,8 +255,8 @@ OSInt UI::GUIRealtimeLineChart::OnNotify(Int32 code, void *lParam)
 void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 {
 	Sync::MutexUsage mutUsage(this->chartMut);
-	OSInt ofst = this->chartOfst * this->lineCnt;
-	OSInt i = 0;
+	UOSInt ofst = this->chartOfst * this->lineCnt;
+	UOSInt i = 0;
 	while (i < lineCnt)
 	{
 		if (this->chartVal[ofst + i] == this->chartMax || this->chartVal[ofst + i] == this->chartMin)

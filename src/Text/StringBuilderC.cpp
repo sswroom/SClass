@@ -13,7 +13,7 @@ Text::StringBuilderC::~StringBuilderC()
 
 Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	if (slen < 8)
 	{
@@ -31,7 +31,7 @@ Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s)
 	return this;
 }
 
-Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s, OSInt charCnt)
+Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s, UOSInt charCnt)
 {
 	AllocLeng(charCnt);
 	if (charCnt < 8)
@@ -50,7 +50,7 @@ Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s, OSInt charCnt)
 	return this;
 }
 
-Text::StringBuilderC *Text::StringBuilderC::Append(Char c, OSInt repeatCnt)
+Text::StringBuilderC *Text::StringBuilderC::AppendChar(Char c, UOSInt repeatCnt)
 {
 	if (c == 0)
 		return this;
@@ -63,10 +63,10 @@ Text::StringBuilderC *Text::StringBuilderC::Append(Char c, OSInt repeatCnt)
 	return this;
 }
 
-Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, OSInt nStr)
+Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt nStr)
 {
 	const Char *csptr;
-	OSInt i;
+	UOSInt i;
 	i = 0;
 	while (i < nStr)
 	{
@@ -82,7 +82,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, OSInt n
 
 Text::StringBuilderC *Text::StringBuilderC::AppendToUpper(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToUpper(buffEnd, s);
 	return this;
@@ -90,22 +90,22 @@ Text::StringBuilderC *Text::StringBuilderC::AppendToUpper(const Char *s)
 
 Text::StringBuilderC *Text::StringBuilderC::AppendToLower(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToLower(buffEnd, s);
 	return this;
 }
 
-Text::StringBuilderC *Text::StringBuilderC::AppendASCII(Char *s)
+Text::StringBuilderC *Text::StringBuilderC::AppendASCII(const Char *s)
 {
-	OSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCnt(s);
 	AllocLeng(slen);
 	while ((*buffEnd++ = *s++) != 0);
 	buffEnd--;
 	return this;
 }
 
-Text::StringBuilderC *Text::StringBuilderC::AppendASCII(Char *s, OSInt charCnt)
+Text::StringBuilderC *Text::StringBuilderC::AppendASCII(const Char *s, UOSInt charCnt)
 {
 	AllocLeng(charCnt);
 	while (charCnt-- > 0)

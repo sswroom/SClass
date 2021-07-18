@@ -88,8 +88,6 @@ namespace Net
 		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 		void UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
-		Bool TopicValid(const UTF8Char *topic);
-		Bool TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeTopic);
 		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);
 	public:
 		MQTTBroker(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Bool sysInfo);

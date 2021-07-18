@@ -47,7 +47,7 @@ IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(s
 IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
 {
 	this->stm->Close();
-	DEL_LIST_FUNC(this->cmdWResults, Text::StrDelNew);
+	LIST_FREE_FUNC(this->cmdWResults, Text::StrDelNew);
 	DEL_CLASS(this->cmdWResults);
 	DEL_CLASS(this->cmdEvt);
 	DEL_CLASS(this->cmdMut);

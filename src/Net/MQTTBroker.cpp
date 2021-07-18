@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Net/MQTTBroker.h"
+#include "Net/MQTTUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -409,6 +410,11 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			case CS_NOT_AUTHORIZED:
 				packet[1] = 5;
 				break;
+			case CS_UNSPECIFIED_ERROR:
+			case CS_MALFORMED_PACKET:
+			case CS_PROTOCOL_ERROR:
+			case CS_IMPL_ERROR:
+			case CS_SERVER_BUSY:
 			default:
 				packet[1] = 6;
 				break;
@@ -650,7 +656,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			{
 				cs = CS_CLI_ID_NOT_VALID;
 			}
-			else if (!this->TopicValid(sbTopic.ToString()))
+			else if (!Net::MQTTUtil::TopicValid(sbTopic.ToString()))
 			{
 				cs = CS_MALFORMED_PACKET;
 			}
@@ -695,7 +701,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				while (i < j)
 				{
 					topicInfo = topicList->GetItem(i);
-					if (this->TopicMatch(topicInfo->topic, sbTopic.ToString()))
+					if (Net::MQTTUtil::TopicMatch(topicInfo->topic, sbTopic.ToString()))
 					{
 						this->TopicSend(stm, data->cliData, topicInfo);
 					}
@@ -856,7 +862,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, U
 	while (i-- > 0)
 	{
 		subscribe = this->subscribeList->GetItem(i);
-		if (this->TopicMatch(topic, subscribe->topic))
+		if (Net::MQTTUtil::TopicMatch(topic, subscribe->topic))
 		{
 			topicMutUsage.BeginUse();
 			this->TopicSend(subscribe->cli, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
@@ -864,100 +870,6 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, U
 		}
 	}
 	subscribeMutUsage.EndUse();
-}
-
-Bool Net::MQTTBroker::TopicValid(const UTF8Char *topic)
-{
-	OSInt i;
-	OSInt j;
-	i = Text::StrIndexOf(topic, '#');
-	if (i >= 0)
-	{
-		if (topic[i + 1])
-		{
-			return false;
-		}
-		if (i > 0 && topic[i - 1] != '/')
-		{
-			return false;
-		}
-	}
-	i = 0;
-	while (true)
-	{
-		j = Text::StrIndexOf(&topic[i], '+');
-		if (j < 0)
-			break;
-		if (i + j > 0 && topic[i + j - 1] != '/')
-		{
-			return false;
-		}
-		if (topic[i + j + 1] != '/' && topic[i + j + 1] != 0)
-		{
-			return false;
-		}
-		i += j + 2;
-	}
-	return true;
-}
-
-Bool Net::MQTTBroker::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeTopic)
-{
-	if (subscribeTopic[0] == '#' && subscribeTopic[1] == 0)
-	{
-		if (!Text::StrStartsWith(topic, (const UTF8Char*)"$SYS/"))
-		{
-			return true;
-		}
-		return false;
-	}
-	OSInt i;
-	Text::StringBuilderUTF8 sb;
-	while (true)
-	{
-		i = Text::StrIndexOf(subscribeTopic, '+');
-		if (i < 0)
-			break;
-		if (i > 0)
-		{
-			sb.ClearStr();
-			sb.AppendC(subscribeTopic, (UOSInt)i);
-			if (!Text::StrStartsWith(topic, sb.ToString()))
-			{
-				return false;
-			}
-			topic += i;
-			subscribeTopic += i;
-		}
-		i = Text::StrIndexOf(topic, '/');
-		if (subscribeTopic[1] == 0)
-		{
-			return (i < 0);
-		}
-		else if (i < 0)
-		{
-			return false;
-		}
-		subscribeTopic++;
-		topic += i;
-	}
-	i = Text::StrIndexOf(subscribeTopic, '#');
-	if (i < 0)
-	{
-		return Text::StrEquals(topic, subscribeTopic);
-	}
-	else if (i == 0)
-	{
-		return true;
-	}
-
-	sb.ClearStr();
-	sb.AppendC(subscribeTopic, (UOSInt)i);
-	if (!Text::StrStartsWith(topic, sb.ToString()))
-	{
-		return false;
-	}
-	return true;
 }
 
 Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic)

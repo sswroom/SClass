@@ -9,7 +9,7 @@
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
                 "/usr/include/**",
-                "/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+                "/usr/lib/x86_64-linux-gnu/**",
                 "/usr/lib/jvm/java-11-openjdk-amd64/include",
                 "/usr/lib/jvm/java-11-openjdk-amd64/include/linux"
             ],

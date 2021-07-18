@@ -43,7 +43,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, OSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, UOSInt itemIndex)
 {
 	SSWR::AVIRead::AVIRLogFileForm *me = (SSWR::AVIRead::AVIRLogFileForm *)userObj;
 	Text::StringBuilderUTF8 sb;

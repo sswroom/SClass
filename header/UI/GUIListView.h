@@ -16,7 +16,7 @@ namespace UI
 			LVSTYLE_SMALLICON
 		} ListViewStyle;
 
-		typedef void (__stdcall *ItemEvent)(void *userObj, OSInt itemIndex);
+		typedef void (__stdcall *ItemEvent)(void *userObj, UOSInt itemIndex);
 	protected:
 		void *clsData;
 	private:
@@ -83,7 +83,7 @@ namespace UI
 		virtual OSInt OnNotify(Int32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		void EventSelChg();
-		void EventDblClk(OSInt index);
+		void EventDblClk(UOSInt index);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void HandleSelChg(UI::UIEvent hdlr, void *userObj);

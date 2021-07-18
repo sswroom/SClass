@@ -325,7 +325,7 @@ void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)
 	this->autoComplete = autoComplete;
 }
 
-void UI::GUIComboBox::SetTextSelection(OSInt startPos, OSInt endPos)
+void UI::GUIComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
 {
 	SendMessage((HWND)this->hwnd, CB_SETEDITSEL, 0, (startPos & 0xffff) | (endPos << 16));
 }

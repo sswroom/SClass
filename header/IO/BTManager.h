@@ -15,5 +15,5 @@ namespace IO
 	public:
 		OSInt CreateControllers(Data::ArrayList<IO::BTController*> *ctrlList);
 	};
-};
+}
 #endif

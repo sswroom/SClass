@@ -12,7 +12,7 @@ DB::DBModel::DBModel()
 DB::DBModel::~DBModel()
 {
 	DEL_CLASS(this->tableMap);
-	DEL_LIST_FUNC(this->tables, DEL_CLASS);
+	LIST_FREE_FUNC(this->tables, DEL_CLASS);
 	DEL_CLASS(this->tables);
 }
 

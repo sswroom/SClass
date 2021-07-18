@@ -11,7 +11,7 @@ SSWR::DataSync::SyncClientDataMgr::SyncClientDataMgr()
 
 SSWR::DataSync::SyncClientDataMgr::~SyncClientDataMgr()
 {
-	DEL_LIST_FUNC(this->dataList, MemFree);
+	LIST_FREE_FUNC(this->dataList, MemFree);
 	DEL_CLASS(this->dataList);
 	DEL_CLASS(this->mut);
 

@@ -49,10 +49,10 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *userObj, OSInt index)
+void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
-	const Net::WiFiLogFile::LogFileEntry *log = (const Net::WiFiLogFile::LogFileEntry*)me->lvContent->GetItem((UOSInt)index);
+	const Net::WiFiLogFile::LogFileEntry *log = (const Net::WiFiLogFile::LogFileEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);

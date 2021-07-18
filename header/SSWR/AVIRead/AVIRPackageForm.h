@@ -103,8 +103,8 @@ namespace SSWR
 
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall LVDblClick(void *userObj, OSInt index);
-			static void __stdcall OnStatusDblClick(void *userObj, OSInt index);
+			static void __stdcall LVDblClick(void *userObj, UOSInt index);
+			static void __stdcall OnStatusDblClick(void *userObj, UOSInt index);
 			void DisplayPackFile(IO::PackageFile *packFile);
 		public:
 			AVIRPackageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::PackageFile *packFile);

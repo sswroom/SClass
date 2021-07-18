@@ -358,7 +358,7 @@ UInt8 Net::MQTTClient::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
 void Net::MQTTClient::ClearPackets()
 {
 	Sync::MutexUsage mutUsage(this->packetMut);
-	DEL_LIST_FUNC(this->packetList, MemFree);
+	LIST_FREE_FUNC(this->packetList, MemFree);
 	this->packetList->Clear();
 	mutUsage.EndUse();
 }

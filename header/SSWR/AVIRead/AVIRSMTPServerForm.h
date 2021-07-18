@@ -78,7 +78,7 @@ namespace SSWR
 			static void __stdcall OnSMTPStartClicked(void *userObj);
 			static void __stdcall OnPOP3StartClicked(void *userObj);
 			static void __stdcall OnLogFileClicked(void *userObj);
-			static void __stdcall OnEmailDblClicked(void *userObj, OSInt index);
+			static void __stdcall OnEmailDblClicked(void *userObj, UOSInt index);
 			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::SMTPServer::MailStatus *mail);
 			static Bool __stdcall OnMailLogin(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
 			static void __stdcall OnTimerTick(void *userObj);
