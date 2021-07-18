@@ -63,6 +63,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	return 0;
 }*/
 
+#include "IO/BTLog.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -84,56 +85,19 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		printf("Bluetooth daemon is not running\r\n");
 	}
+	UTF8Char sbuff[128];
+	IO::BTLog btLog;
+	Sync::MutexUsage mutUsage;
+	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = bt.GetDeviceMap(&mutUsage);
+	btLog.AppendList(devMap);
+	Data::DateTime dt;
+	dt.SetCurrTime();
+	Text::StrConcat(Text::StrInt64(sbuff, dt.ToTicks()), (const UTF8Char*)"bt.txt");
+	btLog.Store(sbuff);
+	printf("Store as %s\r\n", sbuff);
+
 	printf("Closing...\r\n");
 	bt.Exit();
 
-	printf("\r\nDetected devices:\r\n");
-	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = bt.GetDeviceMap(&mutUsage);
-	Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devList = devMap->GetValues();
-	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev;
-	UOSInt i = 0;
-	UOSInt j = devList->GetCount();
-	Text::StringBuilderUTF8 sb;
-	while (i < j)
-	{
-		dev = devList->GetItem(i);
-		sb.ClearStr();
-		sb.AppendHexBuff(dev->mac, 6, ':', Text::LBT_NONE);
-		sb.AppendChar(' ', 1);
-		if (dev->name)
-		{
-			sb.Append(dev->name);
-		}
-		if (sb.GetLength() < 50)
-		{
-			sb.AppendChar(' ', 50 - sb.GetLength());
-		}
-		else
-		{
-			sb.AppendChar(' ', 1);
-		}
-		sb.AppendI32(dev->rssi);
-		if (sb.GetLength() < 56)
-		{
-			sb.AppendChar(' ', 56 - sb.GetLength());
-		}
-		else
-		{
-			sb.AppendChar(' ', 1);
-		}
-		sb.AppendI32(dev->txPower);
-		if (sb.GetLength() < 61)
-		{
-			sb.AppendChar(' ', 61 - sb.GetLength());
-		}
-		else
-		{
-			sb.AppendChar(' ', 1);
-		}
-		sb.Append((const UTF8Char*)(dev->connected?"y":"n"));
-		printf("%s\r\n", sb.ToString());
-		i++;
-	}
 	return 0;
 }

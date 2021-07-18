@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/BTLog.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "Sync/MutexUsage.h"
@@ -24,8 +25,26 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(void *userObj
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *userObj)
 {
-//	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
-
+	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
+	UTF8Char sbuff[128];
+	Data::DateTime dt;
+	IO::BTLog btLog;
+	dt.SetCurrTimeUTC();
+	Text::StrConcat(Text::StrInt64(sbuff, dt.ToTicks()), (const UTF8Char*)"bt.txt");
+	Sync::MutexUsage mutUsage;
+	btLog.AppendList(me->bt->GetDeviceMap(&mutUsage));
+	mutUsage.EndUse();
+	if (btLog.Store(sbuff))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append((const UTF8Char*)"Stored as ");
+		sb.Append(sbuff);
+		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Bluetooth Ctrl", me);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing file", (const UTF8Char*)"Bluetooth Ctrl", me);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *userObj, UOSInt index)

@@ -1190,6 +1190,8 @@ IO/BitWriterLSB.h: ../../src/IO/BitWriterLSB.cpp
 @BitWriterLSB.o
 IO/BitWriterMSB.h: ../../src/IO/BitWriterMSB.cpp
 @BitWriterMSB.o
+IO/BTLog.h: ../../src/IO/BTLog.cpp
+@BTLog.o
 IO/BTUtil.h: ../../src/IO/BTUtil.cpp
 @BTUtil.o
 IO/BufferedInputStream.h: ../../src/IO/BufferedInputStream.cpp
@@ -3606,6 +3608,7 @@ BitReaderLSB.o: ../../src/IO/BitReaderLSB.cpp
 BitReaderMSB.o: ../../src/IO/BitReaderMSB.cpp
 BitWriterLSB.o: ../../src/IO/BitWriterLSB.cpp
 BitWriterMSB.o: ../../src/IO/BitWriterMSB.cpp
+BTLog.o: ../../src/IO/BTLog.cpp
 BTUtil.o: ../../src/IO/BTUtil.cpp
 BufferedInputStream.o: ../../src/IO/BufferedInputStream.cpp
 BufferedOutputStream.o: ../../src/IO/BufferedOutputStream.cpp
