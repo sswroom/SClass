@@ -64,6 +64,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 }*/
 
 #include "IO/BTLog.h"
+#include "IO/Path.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -85,14 +86,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		printf("Bluetooth daemon is not running\r\n");
 	}
-	UTF8Char sbuff[128];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::BTLog btLog;
 	Sync::MutexUsage mutUsage;
 	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = bt.GetDeviceMap(&mutUsage);
 	btLog.AppendList(devMap);
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	Text::StrConcat(Text::StrInt64(sbuff, dt.ToTicks()), (const UTF8Char*)"bt.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"bt");
+	sptr = Text::StrInt64(sptr, dt.ToTicks());
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
 	btLog.Store(sbuff);
 	printf("Store as %s\r\n", sbuff);
 
