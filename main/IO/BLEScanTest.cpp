@@ -66,31 +66,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #include "IO/BTLog.h"
 #include "IO/Path.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 #include <stdio.h>
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+const UTF8Char *lastFileName;
+Bool threadRunning;
+Bool threadToStop;
+Sync::Event *threadEvt;
+
+void StoreFile(IO::ProgCtrl::BluetoothCtlProgCtrl *bt)
 {
-	IO::ProgCtrl::BluetoothCtlProgCtrl bt;
-	printf("Waiting...\r\n");
-	if (bt.WaitForCmdReady())
-	{
-		printf("Scan On...\r\n");
-		bt.ScanOn();
-		progCtrl->WaitForExit(progCtrl);
-		printf("Scan Off...\r\n");
-		bt.ScanOff();
-	}
-	else
-	{
-		printf("Bluetooth daemon is not running\r\n");
-	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::BTLog btLog;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = bt.GetDeviceMap(&mutUsage);
+	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = bt->GetDeviceMap(&mutUsage);
 	btLog.AppendList(devMap);
 	Data::DateTime dt;
 	dt.SetCurrTime();
@@ -98,11 +90,77 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"bt");
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
-	btLog.Store(sbuff);
-	printf("Store as %s\r\n", sbuff);
+	if (btLog.Store(sbuff))
+	{
+		if (lastFileName)
+		{
+			IO::Path::DeleteFile(lastFileName);
+			Text::StrDelNew(lastFileName);
+		}
+		lastFileName = Text::StrCopyNew(sbuff);
+		printf("Store as %s\r\n", sbuff);
+	}
+}
+
+UInt32 __stdcall TimerThread(void *userObj)
+{
+	Data::DateTime *dt;
+	Int64 lastTime;
+	threadRunning = true;
+	NEW_CLASS(dt, Data::DateTime());
+	dt->SetCurrTimeUTC();
+	lastTime = dt->ToTicks();
+	while (!threadToStop)
+	{
+		dt->SetCurrTimeUTC();
+		if ((dt->ToTicks() - lastTime) >= 300000)
+		{
+			lastTime = dt->ToTicks();
+			StoreFile((IO::ProgCtrl::BluetoothCtlProgCtrl*)userObj);
+		}
+		threadEvt->Wait(10000);
+	}
+	DEL_CLASS(dt);
+	threadRunning = false;
+	return 0;
+}
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+	lastFileName = 0;
+	IO::ProgCtrl::BluetoothCtlProgCtrl bt;
+	printf("Waiting...\r\n");
+	if (bt.WaitForCmdReady())
+	{
+		threadRunning = false;
+		threadToStop = false;
+		NEW_CLASS(threadEvt, Sync::Event(true, (const UTF8Char*)"threadEvt"));
+		Sync::Thread::Create(TimerThread, &bt);
+
+		printf("Scan On...\r\n");
+		bt.ScanOn();
+		progCtrl->WaitForExit(progCtrl);
+
+		StoreFile(&bt);
+		threadToStop = true;
+		threadEvt->Set();
+		while (threadRunning)
+		{
+			Sync::Thread::Sleep(10);
+		}
+		DEL_CLASS(threadEvt);
+
+		printf("Scan Off...\r\n");
+		bt.ScanOff();
+	}
+	else
+	{
+		printf("Bluetooth daemon is not running\r\n");
+	}
 
 	printf("Closing...\r\n");
 	bt.Exit();
 
+	SDEL_TEXT(lastFileName);
 	return 0;
 }

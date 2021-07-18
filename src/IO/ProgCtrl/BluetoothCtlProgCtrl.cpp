@@ -212,7 +212,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Error in getting device \"%s\"\r\n", &sarr[0][13]);
 					}
 				}
-				else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"[NEW] Device "))
+				else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"[DEL] Device "))
 				{
 					//[DEL] Device ED:8E:0E:77:6D:15 RAPOO BT4.0 MS
 					sarr[0][30] = 0;
