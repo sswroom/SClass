@@ -63,104 +63,59 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	return 0;
 }*/
 
-#include "IO/BTLog.h"
-#include "IO/Path.h"
-#include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
-#include "Sync/Thread.h"
+#include "IO/BTCapturer.h"
+#include "IO/ConsoleWriter.h"
+#include "Net/OSSocketFactory.h"
+#include "Net/WebServer/CapturerWebHandler.h"
+#include "Net/WebServer/WebListener.h"
 #include "Text/StringBuilderUTF8.h"
 
 #include <stdio.h>
 
-const UTF8Char *lastFileName;
-Bool threadRunning;
-Bool threadToStop;
-Sync::Event *threadEvt;
-
-void StoreFile(IO::ProgCtrl::BluetoothCtlProgCtrl *bt)
-{
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	IO::BTLog btLog;
-	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = bt->GetDeviceMap(&mutUsage);
-	btLog.AppendList(devMap);
-	Data::DateTime dt;
-	dt.SetCurrTime();
-	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"bt");
-	sptr = Text::StrInt64(sptr, dt.ToTicks());
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
-	if (btLog.StoreFile(sbuff))
-	{
-		if (lastFileName)
-		{
-			IO::Path::DeleteFile(lastFileName);
-			Text::StrDelNew(lastFileName);
-		}
-		lastFileName = Text::StrCopyNew(sbuff);
-		printf("Store as %s\r\n", sbuff);
-	}
-}
-
-UInt32 __stdcall TimerThread(void *userObj)
-{
-	Data::DateTime *dt;
-	Int64 lastTime;
-	threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
-	dt->SetCurrTimeUTC();
-	lastTime = dt->ToTicks();
-	while (!threadToStop)
-	{
-		dt->SetCurrTimeUTC();
-		if ((dt->ToTicks() - lastTime) >= 300000)
-		{
-			lastTime = dt->ToTicks();
-			StoreFile((IO::ProgCtrl::BluetoothCtlProgCtrl*)userObj);
-		}
-		threadEvt->Wait(10000);
-	}
-	DEL_CLASS(dt);
-	threadRunning = false;
-	return 0;
-}
-
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	lastFileName = 0;
-	IO::ProgCtrl::BluetoothCtlProgCtrl bt;
-	printf("Waiting...\r\n");
-	if (bt.WaitForCmdReady())
+	IO::ConsoleWriter console;
+	Net::SocketFactory *sockf;
+	Net::WebServer::CaptuererWebHandler *webHdlr;
+	Net::WebServer::WebListener *listener;
+	UInt16 webPort = 8081;
+	IO::BTCapturer *capturer;
+	NEW_CLASS(capturer, IO::BTCapturer());
+	if (capturer->IsError())
 	{
-		threadRunning = false;
-		threadToStop = false;
-		NEW_CLASS(threadEvt, Sync::Event(true, (const UTF8Char*)"threadEvt"));
-		Sync::Thread::Create(TimerThread, &bt);
-
-		printf("Scan On...\r\n");
-		bt.ScanOn();
-		progCtrl->WaitForExit(progCtrl);
-
-		StoreFile(&bt);
-		threadToStop = true;
-		threadEvt->Set();
-		while (threadRunning)
-		{
-			Sync::Thread::Sleep(10);
-		}
-		DEL_CLASS(threadEvt);
-
-		printf("Scan Off...\r\n");
-		bt.ScanOff();
+		console.WriteLine((const UTF8Char*)"Error in initializing Bluetooth");
 	}
 	else
 	{
-		printf("Bluetooth daemon is not running\r\n");
+		Text::StringBuilderUTF8 sb;
+		NEW_CLASS(sockf, Net::OSSocketFactory(true));
+		NEW_CLASS(webHdlr, Net::WebServer::CaptuererWebHandler(0, capturer));
+		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, webHdlr, webPort, 120, 4, (const UTF8Char*)"BLEScanTest/1.0", false, true));
+		if (listener->IsError())
+		{
+			sb.Append((const UTF8Char*)"Error in starting web server at port ");
+			sb.AppendI32(webPort);
+			console.WriteLine(sb.ToString());
+		}
+		else
+		{
+			if (!capturer->Start())
+			{
+				console.WriteLine((const UTF8Char*)"No BT interface found");
+			}
+			else
+			{
+				console.WriteLine((const UTF8Char*)"BLEScanTest started");
+				progCtrl->WaitForExit(progCtrl);
+				capturer->StoreStatus();
+				capturer->Stop();
+			}
+		}
+		DEL_CLASS(listener);
+		DEL_CLASS(webHdlr);
+		DEL_CLASS(sockf);
 	}
 
-	printf("Closing...\r\n");
-	bt.Exit();
-
-	SDEL_TEXT(lastFileName);
+	DEL_CLASS(capturer);
 	return 0;
 }

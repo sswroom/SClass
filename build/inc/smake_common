@@ -52,6 +52,7 @@ nodeps:
 @MODBUSTest
 @NoiseSensorTest
 @QQZMSerialCameraTest
+@RadioCapture
 @SDM120MTest
 @SerialReset
 @SerialTerminal
@@ -292,6 +293,9 @@ NoiseSensorTest:
 @ConsoleStartup.o
 QQZMSerialCameraTest:
 @QQZMSerialCameraTest.o
+@ConsoleStartup.o
+RadioCapture:
+@RadioCaptureMain.o
 @ConsoleStartup.o
 SDM120MTest:
 @SDM120MTest.o
@@ -716,6 +720,7 @@ JavaClassTest.o: ../../main/IO/JavaClassTest.cpp
 MODBUSTest.o: ../../main/IO/MODBUSTest.cpp
 NoiseSensorTest.o: ../../main/IO/NoiseSensorTest.cpp
 QQZMSerialCameraTest.o: ../../main/IO/QQZMSerialCameraTest.cpp
+RadioCaptureMain.o: ../../main/IO/RadioCaptureMain.cpp
 SDM120MTest.o: ../../main/IO/SDM120MTest.cpp
 SerialResetMain.o: ../../main/IO/SerialResetMain.cpp
 SerialTerminalMain.o: ../../main/IO/SerialTerminalMain.cpp
@@ -1190,6 +1195,8 @@ IO/BitWriterLSB.h: ../../src/IO/BitWriterLSB.cpp
 @BitWriterLSB.o
 IO/BitWriterMSB.h: ../../src/IO/BitWriterMSB.cpp
 @BitWriterMSB.o
+IO/BTCapturer.h: ../../src/IO/BTCapturer.cpp
+@BTCapturer.o
 IO/BTLog.h: ../../src/IO/BTLog.cpp
 @BTLog.o
 IO/BTUtil.h: ../../src/IO/BTUtil.cpp
@@ -2360,6 +2367,8 @@ Net/WhoisHandler.h: ../../src/Net/WhoisHandler.cpp
 @WhoisHandler.o
 Net/WhoisRecord.h: ../../src/Net/WhoisRecord.cpp
 @WhoisRecord.o
+Net/WiFiCapturer.h: ../../src/Net/WiFiCapturer.cpp
+@WiFiCapturer.o
 Net/WiFiLogFile.h: ../../src/Net/WiFiLogFile.cpp
 @WiFiLogFile.o
 Net/WirelessLANIE.h: ../../src/Net/WirelessLANIE.cpp
@@ -2378,6 +2387,8 @@ Net/SNS/SNSRSS.h: ../../src/Net/SNS/SNSRSS.cpp
 @SNSRSS.o
 Net/SNS/SNSTwitter.h: ../../src/Net/SNS/SNSTwitter.cpp
 @SNSTwitter.o
+Net/WebServer/CapturerWebHandler.h: ../../src/Net/WebServer/CapturerWebHandler.cpp
+@CapturerWebHandler.o
 Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
 @EGaugeHandler.o
 Net/WebServer/HTTPDirectoryHandler.h: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
@@ -3610,6 +3621,7 @@ BitReaderLSB.o: ../../src/IO/BitReaderLSB.cpp
 BitReaderMSB.o: ../../src/IO/BitReaderMSB.cpp
 BitWriterLSB.o: ../../src/IO/BitWriterLSB.cpp
 BitWriterMSB.o: ../../src/IO/BitWriterMSB.cpp
+BTCapturer.o: ../../src/IO/BTCapturer.cpp
 BTLog.o: ../../src/IO/BTLog.cpp
 BTUtil.o: ../../src/IO/BTUtil.cpp
 BufferedInputStream.o: ../../src/IO/BufferedInputStream.cpp
@@ -4144,6 +4156,7 @@ WhoisClient.o: ../../src/Net/WhoisClient.cpp
 WhoisGlobalClient.o: ../../src/Net/WhoisGlobalClient.cpp
 WhoisHandler.o: ../../src/Net/WhoisHandler.cpp
 WhoisRecord.o: ../../src/Net/WhoisRecord.cpp
+WiFiCapturer.o: ../../src/Net/WiFiCapturer.cpp
 WiFiLogFile.o: ../../src/Net/WiFiLogFile.cpp
 WirelessLANIE.o: ../../src/Net/WirelessLANIE.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
@@ -4153,6 +4166,7 @@ SNSInstagram.o: ../../src/Net/SNS/SNSInstagram.cpp
 SNSManager.o: ../../src/Net/SNS/SNSManager.cpp
 SNSRSS.o: ../../src/Net/SNS/SNSRSS.cpp
 SNSTwitter.o: ../../src/Net/SNS/SNSTwitter.cpp
+CapturerWebHandler.o: ../../src/Net/WebServer/CapturerWebHandler.cpp
 EGaugeHandler.o: ../../src/Net/WebServer/EGaugeHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp

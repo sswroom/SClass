@@ -66,6 +66,10 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 				{
 					me->scanOn = true;
 				}
+				else if (Text::StrEquals(sarr[0], (const UTF8Char*)"Discovery stopped"))
+				{
+					me->scanOn = false;
+				}
 				else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"[CHG] Controller "))
 				{
 					//[CHG] Controller 04:EA:56:8E:0C:46 Discovering: yes
@@ -221,8 +225,18 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						{
 
 						}
-						//[CHG] Device 04:23:09:C3:75:46 Icon: audio-card
-						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Icon: "))
+						//[CHG] Device 00:7C:2D:08:6B:8D Modalias: bluetooth:v04E8p8080d0000
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Modalias: "))
+						{
+
+						}
+						//[CHG] Device 10:00:18:28:57:54 RSSI is nil
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"RSSI is nil"))
+						{
+
+						}
+						//[CHG] Device 68:BF:A1:3A:57:F1 TxPower is nil
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"TxPower is nil"))
 						{
 
 						}
