@@ -17,8 +17,10 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 	UTF8Char *sarr[2];
 	UOSInt i;
 	DeviceInfo *dev;
+	Data::DateTime *dt;
 
 	me->threadRunning = true;
+	NEW_CLASS(dt, Data::DateTime());
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	NEW_CLASS(sbBuff, Text::StringBuilderUTF8());
 	while (!me->threadToStop)
@@ -112,6 +114,8 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						SDEL_TEXT(dev->name);
 						dev->name = Text::StrCopyNew(&sarr[0][31]);
 						dev->inRange = true;
+						dt->SetCurrTimeUTC();
+						dev->lastSeenTime = dt->ToTicks();
 						if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
 					}
 					else
@@ -138,7 +142,9 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 					dev = me->DeviceGetByStr(&sarr[0][13]);
 					if (dev)
 					{
+						dt->SetCurrTimeUTC();
 						dev->inRange = true;
+						dev->lastSeenTime = dt->ToTicks();
 						//[CHG] Device ED:8E:0E:77:6E:15 Connected: yes
 						//[CHG] Device ED:8E:0E:77:6E:15 Connected: no
 						if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Connected: "))
@@ -293,6 +299,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 	}
 	DEL_CLASS(sbBuff);
 	DEL_CLASS(sb);
+	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return 0;
 }

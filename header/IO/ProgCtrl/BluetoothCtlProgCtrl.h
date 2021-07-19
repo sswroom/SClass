@@ -22,6 +22,7 @@ namespace IO
 				Int32 rssi;
 				Int32 txPower;
 				Bool connected;
+				Int64 lastSeenTime;
 				Data::ArrayListUInt32 *keys;
 			} DeviceInfo;
 

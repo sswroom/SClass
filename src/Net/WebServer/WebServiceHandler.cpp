@@ -22,6 +22,15 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	service = this->services->Get(subReq);
+	if (service == 0 && (Text::StrEquals(subReq, (const UTF8Char*)"/") || Text::StrEquals(subReq, (const UTF8Char*)"")))
+	{
+		if (service == 0) service = this->services->Get((const UTF8Char*)"/Default.htm");
+		if (service == 0) service = this->services->Get((const UTF8Char*)"/Default.asp");
+		if (service == 0) service = this->services->Get((const UTF8Char*)"/index.htm");
+		if (service == 0) service = this->services->Get((const UTF8Char*)"/index.html");
+		if (service == 0) service = this->services->Get((const UTF8Char*)"/iisstart.htm");
+		if (service == 0) service = this->services->Get((const UTF8Char*)"/default.aspx");
+	}
 	if (service != 0)
 	{
 

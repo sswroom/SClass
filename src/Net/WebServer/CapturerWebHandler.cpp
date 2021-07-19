@@ -5,6 +5,8 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
+#define BTTIMEOUT 30000
+
 Bool __stdcall Net::WebServer::CaptuererWebHandler::IndexFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
@@ -43,8 +45,12 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::IndexFunc(Net::WebServer::IW
 	}
 	if (me->btCapture)
 	{
+		Int64 currTime;
+		dt.SetCurrTimeUTC();
+		currTime = dt.ToTicks();
 		Sync::MutexUsage mutUsage;
 		Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *logList = me->btCapture->GetLogList(&mutUsage);
+		IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *entry;
 		sb.Append((const UTF8Char*)"<a href=\"btdet.html\">");
 		sb.Append((const UTF8Char*)"BT Record count = ");
 		sb.AppendUOSInt(logList->GetCount());
@@ -53,7 +59,8 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::IndexFunc(Net::WebServer::IW
 		UOSInt j = 0;
 		while (i-- > 0)
 		{
-			if (logList->GetItem(i)->inRange)
+			entry = logList->GetItem(i);
+			if (entry->inRange && (currTime - entry->lastSeenTime) <= BTTIMEOUT)
 			{
 				j++;
 			}
@@ -331,19 +338,23 @@ void Net::WebServer::CaptuererWebHandler::AppendWiFiTable(Text::StringBuilderUTF
 
 void Net::WebServer::CaptuererWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList, Bool inRangeOnly)
 {
+	Data::DateTime dt;
+	Int64 currTime;
+	dt.SetCurrTimeUTC();
+	currTime = dt.ToTicks();
 	UOSInt k;
 	UOSInt l;
 	UOSInt i;
 	UOSInt j;
 	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *entry;
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
-	sb->Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>Name</td><td>RSSI</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>Keys</td></tr>\r\n");
+	sb->Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>Name</td><td>RSSI</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Keys</td></tr>\r\n");
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
 	{
 		entry = entryList->GetItem(i);
-		if (!inRangeOnly || entry->inRange)
+		if (!inRangeOnly || (entry->inRange && (currTime - entry->lastSeenTime) <= BTTIMEOUT))
 		{
 			sb->Append((const UTF8Char*)"<tr><td>");
 			sb->AppendHexBuff(entry->mac, 6, ':', Text::LBT_NONE);
@@ -362,6 +373,10 @@ void Net::WebServer::CaptuererWebHandler::AppendBTTable(Text::StringBuilderUTF *
 			sb->Append((const UTF8Char*)(entry->inRange?"Y":"N"));
 			sb->Append((const UTF8Char*)"</td><td>");
 			sb->Append((const UTF8Char*)(entry->connected?"Y":"N"));
+			sb->Append((const UTF8Char*)"</td><td>");
+			dt.SetTicks(entry->lastSeenTime);
+			dt.ToLocalTime();
+			sb->AppendDate(&dt);
 			sb->Append((const UTF8Char*)"</td><td>");
 			k = 0;
 			l = entry->keys->GetCount();
