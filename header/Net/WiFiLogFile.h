@@ -23,6 +23,7 @@ namespace Net
 			UInt64 neighbour[20];
 			UInt32 ieLen;
 			UInt8 *ieBuff;
+			Int64 lastScanTimeTicks;
 		} LogFileEntry;
 
 	private:
@@ -36,12 +37,12 @@ namespace Net
 		void LoadFile(const UTF8Char *fileName);
 		Bool StoreFile(const UTF8Char *fileName);
 		void Clear();
-		const LogFileEntry *Get(UInt64 iMAC);
+		LogFileEntry *Get(UInt64 iMAC);
 		OSInt GetIndex(UInt64 iMAC);
 		Data::ArrayList<LogFileEntry*> *GetLogList();
 		const LogFileEntry *GetItem(UOSInt index);
 
-		const LogFileEntry *AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex);
+		LogFileEntry *AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex);
 	};
 }
 #endif

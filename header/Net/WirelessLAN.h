@@ -105,7 +105,7 @@ namespace Net
 		~WirelessLAN();
 
 		Bool IsError();
-		Int32 GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr);
+		UOSInt GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr);
 	};
-};
+}
 #endif

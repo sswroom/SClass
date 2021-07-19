@@ -8,6 +8,7 @@
 #include "Math/Math.h"
 #include "Net/MACInfo.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/WiFiLogFile.h"
 #include "Net/WirelessLAN.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebStandardHandler.h"
@@ -18,28 +19,11 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-typedef struct
-{
-	UInt8 mac[6];
-	UInt64 imac;
-	const UTF8Char *ssid;
-	Int32 phyType;
-	Double freq;
-	const UTF8Char *manuf;
-	const UTF8Char *model;
-	const UTF8Char *serialNum;
-	const UTF8Char *country;
-	UInt8 ouis[3][3];
-	UInt64 neighbour[20];
-	UOSInt ieLen;
-	UInt8 *ieBuff;
-} WiFiEntry;
-
 Net::WirelessLAN *wlan;
 Int32 threadCnt;
 Bool threadToStop;
-Data::UInt64Map<WiFiEntry*> *entryMap;
-Sync::Mutex *entryMut;
+Net::WiFiLogFile *wifiLog;
+Sync::Mutex *logMut;
 const UTF8Char *lastFileName;
 
 class MyWebHandler : public Net::WebServer::WebStandardHandler
@@ -53,11 +37,11 @@ private:
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<WiFiEntry*> *entryList;
-		WiFiEntry *entry;
+		Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList;
+		Net::WiFiLogFile::LogFileEntry *entry;
 
-		Sync::MutexUsage mutUsage(entryMut);
-		entryList = entryMap->GetValues();
+		Sync::MutexUsage mutUsage(logMut);
+		entryList = wifiLog->GetLogList();
 		i = 0;
 		j = entryList->GetCount();
 
@@ -77,7 +61,7 @@ private:
 			sb.Append((const UTF8Char*)"<tr><td>");
 			sb.AppendHexBuff(entry->mac, 6, ':', Text::LBT_NONE);
 			sb.Append((const UTF8Char*)"</td><td>");
-			sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->imac)->name);
+			sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
 			sb.Append((const UTF8Char*)"</td><td>");
 			if (entry->ssid)
 			{
@@ -114,10 +98,10 @@ private:
 		UOSInt j;
 		UOSInt k;
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<WiFiEntry*> *entryList;
-		WiFiEntry *entry;
-		Sync::MutexUsage mutUsage(entryMut);
-		entryList = entryMap->GetValues();
+		Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList;
+		Net::WiFiLogFile::LogFileEntry *entry;
+		Sync::MutexUsage mutUsage(logMut);
+		entryList = wifiLog->GetLogList();
 		i = 0;
 		j = entryList->GetCount();
 		while (i < j)
@@ -227,91 +211,18 @@ void StoreStatus()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Data::DateTime dt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
 	OSInt si;
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	IO::Path::GetProcessFileName(sbuff);
 	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[si + 1];
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)"wifi");
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-	if (!fs->IsError())
+
+	Sync::MutexUsage mutUsage(logMut);
+	if (wifiLog->StoreFile(sbuff))
 	{
-		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<WiFiEntry*> *entryList;
-		WiFiEntry *entry;
-
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		writer->WriteSignature();
-
-		Sync::MutexUsage mutUsage(entryMut);
-		entryList = entryMap->GetValues();
-		i = 0;
-		j = entryList->GetCount();
-		while (i < j)
-		{
-			entry = entryList->GetItem(i);
-			sb.ClearStr();
-			sb.AppendHexBuff(entry->mac, 6, ':', Text::LBT_NONE);
-			sb.AppendChar('\t', 1);
-			if (entry->ssid)
-			{
-				sb.Append(entry->ssid);
-			}
-			sb.AppendChar('\t', 1);
-			sb.AppendI32(entry->phyType);
-			sb.AppendChar('\t', 1);
-			Text::SBAppendF64(&sb, entry->freq);
-			sb.AppendChar('\t', 1);
-			if (entry->manuf)
-				sb.Append(entry->manuf);
-			sb.AppendChar('\t', 1);
-			if (entry->model)
-				sb.Append(entry->model);
-			sb.AppendChar('\t', 1);
-			if (entry->serialNum)
-				sb.Append(entry->serialNum);
-			sb.AppendChar('\t', 1);
-			sb.AppendHexBuff(entry->ouis[0], 3, 0, Text::LBT_NONE);
-			sb.AppendChar(',', 1);
-			sb.AppendHexBuff(entry->ouis[1], 3, 0, Text::LBT_NONE);
-			sb.AppendChar(',', 1);
-			sb.AppendHexBuff(entry->ouis[2], 3, 0, Text::LBT_NONE);
-			sb.AppendChar('\t', 1);
-			if (entry->country)
-			{
-				sb.Append(entry->country);
-			}
-			sb.AppendChar('\t', 1);
-			k = 0;
-			while (k < 20)
-			{
-				if (entry->neighbour[k] == 0)
-					break;
-				if (k > 0)
-				{
-					sb.AppendChar(',', 1);
-				}
-				sb.AppendHex64(entry->neighbour[k]);
-				k++;
-			}
-			sb.Append((const UTF8Char*)"\t");
-			if (entry->ieLen > 0)
-			{
-				sb.AppendHexBuff(entry->ieBuff, entry->ieLen, 0, Text::LBT_NONE);
-			}
-			writer->WriteLine(sb.ToString());
-			i++;
-		}
-		mutUsage.EndUse();
-
-		DEL_CLASS(writer);
-
 		if (lastFileName)
 		{
 			IO::Path::DeleteFile(lastFileName);
@@ -319,7 +230,6 @@ void StoreStatus()
 		}
 		lastFileName = Text::StrCopyNew(sbuff);
 	}
-	DEL_CLASS(fs);
 }
 
 UInt32 __stdcall ScanThread(void *userObj)
@@ -330,21 +240,16 @@ UInt32 __stdcall ScanThread(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UOSInt l;
-	UOSInt m;
+	OSInt si;
 	UInt64 imac;
 	UInt8 mac[8];
 	const UInt8 *macPtr;
-	WiFiEntry *entry;
-	const UTF8Char *namePtr;
+	Net::WiFiLogFile::LogFileEntry *entry;
 	Data::DateTime *dt;
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Int64 lastStoreTime;
 	Int64 currTime;
-	UOSInt ieLen;
-	Net::WirelessLANIE *ie;
-	const UInt8 *ieBuff;
 
 	Sync::Interlocked::Increment(&threadCnt);
 	mac[0] = 0;
@@ -374,186 +279,21 @@ UInt32 __stdcall ScanThread(void *userObj)
 				mac[6] = macPtr[4];
 				mac[7] = macPtr[5];
 				imac = ReadMUInt64(mac);
-				if (maxRSSI < bss->GetRSSI())
+				if (maxRSSI < bss->GetRSSI() && bss->GetRSSI() < 0)
 				{
 					maxRSSI = Math::Double2Int32(bss->GetRSSI());
 					maxIMAC = imac;
 				}
-				Sync::MutexUsage mutUsage(entryMut);
-				entry = entryMap->Get(imac);
-				const UInt8 *oui1 = bss->GetChipsetOUI(0);
-				const UInt8 *oui2 = bss->GetChipsetOUI(1);
-				const UInt8 *oui3 = bss->GetChipsetOUI(2);
-				ieLen = 0;
-				k = bss->GetIECount();
-				while (k-- > 0)
-				{
-					ie = bss->GetIE(k);
-					ieLen += (UOSInt)ie->GetIEBuff()[1] + 2;
-				}
-				if (entry == 0)
-				{
-					entry = MemAlloc(WiFiEntry, 1);
-					MemClear(entry->neighbour, sizeof(entry->neighbour));
-					entry->imac = imac;
-					MemCopyNO(entry->mac, macPtr, 6);
-					entry->phyType = bss->GetPHYType();
-					entry->freq = bss->GetFreq();
-					namePtr = bss->GetSSID();
-					if (namePtr)
-					{
-						entry->ssid = Text::StrCopyNew(namePtr);
-					}
-					else
-					{
-						entry->ssid = 0;
-					}
-					namePtr = bss->GetManuf();
-					entry->manuf = namePtr?Text::StrCopyNew(namePtr):0;
-					namePtr = bss->GetModel();
-					entry->model = namePtr?Text::StrCopyNew(namePtr):0;
-					namePtr = bss->GetSN();
-					entry->serialNum = namePtr?Text::StrCopyNew(namePtr):0;
-					namePtr = bss->GetCountry();
-					entry->country = namePtr?Text::StrCopyNew(namePtr):0;
-					entry->ouis[0][0] = oui1[0];
-					entry->ouis[0][1] = oui1[1];
-					entry->ouis[0][2] = oui1[2];
-					entry->ouis[1][0] = oui2[0];
-					entry->ouis[1][1] = oui2[1];
-					entry->ouis[1][2] = oui2[2];
-					entry->ouis[2][0] = oui3[0];
-					entry->ouis[2][1] = oui3[1];
-					entry->ouis[2][2] = oui3[2];
-					entry->ieLen = ieLen;
-					if (ieLen > 0)
-					{
-						entry->ieBuff = MemAlloc(UInt8, ieLen);
-						k = 0;
-						l = bss->GetIECount();
-						m = 0;
-						while (k < l)
-						{
-							ie = bss->GetIE(k);
-							ieBuff = ie->GetIEBuff();
-							MemCopyNO(&entry->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
-							m += (UOSInt)ieBuff[1] + 2;
-							k++;
-						}
-					}
-					else
-					{
-						entry->ieBuff = 0;
-					}
-					entryMap->Put(imac, entry);
-				}
-				else
-				{
-					if (entry->manuf == 0 && bss->GetManuf())
-					{
-						entry->manuf = Text::StrCopyNew(bss->GetManuf());
-					}
-					if (entry->model == 0 && bss->GetModel())
-					{
-						entry->model = Text::StrCopyNew(bss->GetModel());
-					}
-					if (entry->serialNum == 0 && bss->GetSN())
-					{
-						entry->serialNum = Text::StrCopyNew(bss->GetSN());
-					}
-					if (entry->country == 0 && bss->GetCountry())
-					{
-						entry->country = Text::StrCopyNew(bss->GetCountry());
-					}
-					UOSInt l;
-					const UInt8 *oui;
-					oui = oui1;
-					if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-					{
-						l = 0;
-						while (l < 3)
-						{
-							if (entry->ouis[l][0] == oui[0] && entry->ouis[l][1] == oui[1] && entry->ouis[l][2] == oui[2])
-							{
-								break;
-							}
-							else if (entry->ouis[l][0] == 0 && entry->ouis[l][1] == 0 && entry->ouis[l][2] == 0)
-							{
-								entry->ouis[l][0] = oui[0];
-								entry->ouis[l][1] = oui[1];
-								entry->ouis[l][2] = oui[2];
-							}
-							l++;
-						}
-					}
-
-					oui = oui2;
-					if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-					{
-						l = 0;
-						while (l < 3)
-						{
-							if (entry->ouis[l][0] == oui[0] && entry->ouis[l][1] == oui[1] && entry->ouis[l][2] == oui[2])
-							{
-								break;
-							}
-							else if (entry->ouis[l][0] == 0 && entry->ouis[l][1] == 0 && entry->ouis[l][2] == 0)
-							{
-								entry->ouis[l][0] = oui[0];
-								entry->ouis[l][1] = oui[1];
-								entry->ouis[l][2] = oui[2];
-							}
-							l++;
-						}
-					}
-
-					oui = oui3;
-					if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-					{
-						l = 0;
-						while (l < 3)
-						{
-							if (entry->ouis[l][0] == oui[0] && entry->ouis[l][1] == oui[1] && entry->ouis[l][2] == oui[2])
-							{
-								break;
-							}
-							else if (entry->ouis[l][0] == 0 && entry->ouis[l][1] == 0 && entry->ouis[l][2] == 0)
-							{
-								entry->ouis[l][0] = oui[0];
-								entry->ouis[l][1] = oui[1];
-								entry->ouis[l][2] = oui[2];
-							}
-							l++;
-						}
-					}
-
-					if (ieLen > entry->ieLen)
-					{
-						if (entry->ieBuff)
-						{
-							MemFree(entry->ieBuff);
-						}
-						entry->ieBuff = MemAlloc(UInt8, ieLen);
-						k = 0;
-						l = bss->GetIECount();
-						m = 0;
-						while (k < l)
-						{
-							ie = bss->GetIE(k);
-							ieBuff = ie->GetIEBuff();
-							MemCopyNO(&entry->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
-							m += (UOSInt)ieBuff[1] + 2;
-							k++;
-						}
-					}
-				}
+				Sync::MutexUsage mutUsage(logMut);
+				entry = wifiLog->AddBSSInfo(bss, &si);
 				mutUsage.EndUse();
 				i++;
 			}
 
 			if (maxRSSI >= -60 && maxRSSI < 0)
 			{
-				entry = entryMap->Get(maxIMAC);
+				Sync::MutexUsage mutUsage(logMut);
+				entry = wifiLog->Get(maxIMAC);
 				i = 0;
 				j = bssList->GetCount();
 				while (i < j)
@@ -656,8 +396,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"Error.txt");
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
-	NEW_CLASS(entryMap, Data::UInt64Map<WiFiEntry*>());
-	NEW_CLASS(entryMut, Sync::Mutex());
+	NEW_CLASS(wifiLog, Net::WiFiLogFile());
+	NEW_CLASS(logMut, Sync::Mutex());
 	NEW_CLASS(wlan, Net::WirelessLAN());
 	threadCnt = 0;
 	threadToStop = false;
@@ -728,26 +468,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		DEL_CLASS(sockf);
 	}
 
-	Data::ArrayList<WiFiEntry*> *entryList;
-	WiFiEntry *entry;
-	entryList = entryMap->GetValues();
-	i = entryList->GetCount();
-	while (i-- > 0)
-	{
-		entry = entryList->GetItem(i);
-		SDEL_TEXT(entry->ssid);
-		SDEL_TEXT(entry->manuf);
-		SDEL_TEXT(entry->model);
-		SDEL_TEXT(entry->serialNum);
-		SDEL_TEXT(entry->country);
-		if (entry->ieBuff)
-		{
-			MemFree(entry->ieBuff);
-		}
-		MemFree(entry);
-	}
-	DEL_CLASS(entryMut);
-	DEL_CLASS(entryMap);
+	DEL_CLASS(logMut);
+	DEL_CLASS(wifiLog);
 	DEL_CLASS(wlan);
 	DEL_CLASS(exHdlr);
 	SDEL_TEXT(lastFileName);

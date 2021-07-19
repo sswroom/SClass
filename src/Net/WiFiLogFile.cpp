@@ -191,6 +191,7 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 					{
 						log = MemAlloc(Net::WiFiLogFile::LogFileEntry, 1);
 						MemClear(log->neighbour, sizeof(log->neighbour));
+						log->lastScanTimeTicks = 0;
 						log->mac[0] = buff[2];
 						log->mac[1] = buff[3];
 						log->mac[2] = buff[4];
@@ -388,7 +389,7 @@ void Net::WiFiLogFile::Clear()
 	this->logList->Clear();
 }
 
-const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::Get(UInt64 iMAC)
+Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::Get(UInt64 iMAC)
 {
 	Net::WiFiLogFile::LogFileEntry *log;
 	OSInt i;
@@ -454,7 +455,7 @@ const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::GetItem(UOSInt index)
 	return this->logList->GetItem(index);
 }
 
-const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex)
+Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex)
 {
 	UInt8 buff[8];
 	UInt64 imac;
@@ -482,6 +483,7 @@ const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::Wireless
 	if (log == 0)
 	{
 		log = MemAlloc(Net::WiFiLogFile::LogFileEntry, 1);
+		log->lastScanTimeTicks = 0;
 		MemClear(log->neighbour, sizeof(log->neighbour));
 		MemCopyNO(log->mac, &buff[2], 6);
 		log->macInt = imac;

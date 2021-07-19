@@ -1067,11 +1067,11 @@ Bool Net::WirelessLAN::IsError()
 	return thisData->fd == 0;
 }
 
-Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
+UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
 {
 	WirelessLANData *thisData = (WirelessLANData*)this->clsData;
 	IO::FileStream *fs;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	Net::WirelessLAN::Interface *interf;
 /*	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/wireless", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
@@ -1128,13 +1128,13 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 			{
 				sb.TrimToLength((UOSInt)i);
 				Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString());
-				printf("Trying interface = %s\r\n", sb.ToString());
+//				printf("Trying interface = %s\r\n", sb.ToString());
 				wrq.u.data.pointer = buff;
 				wrq.u.data.flags = 0;
 				wrq.u.data.length = 16;
-				printf("SIOCGIWSCAN before\r\n");
+//				printf("SIOCGIWSCAN before\r\n");
 				ioret = ioctl(-1 + thisData->fd, SIOCGIWSCAN, &wrq);
-				printf("SIOCGIWSCAN return %d, errno = %d\r\n", ioret, errno);
+//				printf("SIOCGIWSCAN return %d, errno = %d\r\n", ioret, errno);
 				if (ioret >= 0 || errno == E2BIG)
 				{
 					NEW_CLASS(interf, Net::WirelessLAN::Interface(sb.ToString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED, 0));
@@ -1149,14 +1149,14 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 					while (true)
 					{
 						ioret = ioctl(-1 + thisData->fd, SIOCGIWPRIV, &wrq);
-						printf("SIOCGIWPRIV ret = %d, errno = %d\r\n", ioret, errno);
+//						printf("SIOCGIWPRIV ret = %d, errno = %d\r\n", ioret, errno);
 						if (ioret >= 0)
 						{
 							PrivCommands cmds;
 							cmds.siteSurveyCmd = 0;
 							cmds.setCmd = 0;
 							cmds.mut = thisData->mut;
-							printf("SIOCGIWPRIV if = %s:\r\n", wrq.ifr_ifrn.ifrn_name);
+//							printf("SIOCGIWPRIV if = %s:\r\n", wrq.ifr_ifrn.ifrn_name);
 							iw_priv_args *args = (iw_priv_args*)buff;
 							OSInt j;
 							j = 0;
@@ -1197,7 +1197,7 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 						}
 						else
 						{
-							printf("SIOCGIWPRIV if = %s, return %d, errno = %d\r\n", wrq.ifr_ifrn.ifrn_name, ioret, errno);
+//							printf("SIOCGIWPRIV if = %s, return %d, errno = %d\r\n", wrq.ifr_ifrn.ifrn_name, ioret, errno);
 							break;
 						}
 					}
@@ -1211,5 +1211,5 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 	}
 	DEL_CLASS(fs);
 
-	return (Int32)ret;
+	return ret;
 }

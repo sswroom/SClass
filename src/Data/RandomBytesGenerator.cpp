@@ -37,5 +37,4 @@ void Data::RandomBytesGenerator::NextBytes(UInt8 *buff, UOSInt len)
 			buff[len] = tmpBuff[len];
 		}
 	}
-
 }

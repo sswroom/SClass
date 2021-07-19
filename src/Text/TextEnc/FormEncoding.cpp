@@ -4,8 +4,6 @@
 #include "Text/MyString.h"
 #include "Text/TextEnc/FormEncoding.h"
 
-extern Char MyString_STRHEXARR[];
-
 static UInt8 URIAllow[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
