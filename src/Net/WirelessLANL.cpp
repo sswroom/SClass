@@ -56,7 +56,7 @@ typedef struct
 	Net::WirelessLAN::BSSType bssType;
 	Int32 phyType;
 	Double rssi;
-	Int32 linkQuality;
+	UInt32 linkQuality;
 	Double freq; //Hz
 	const UTF8Char *devManuf;
 	const UTF8Char *devModel;
@@ -175,7 +175,7 @@ Double Net::WirelessLAN::BSSInfo::GetRSSI()
 	return this->rssi;
 }
 
-Int32 Net::WirelessLAN::BSSInfo::GetLinkQuality()
+UInt32 Net::WirelessLAN::BSSInfo::GetLinkQuality()
 {
 	return this->linkQuality;
 }
@@ -418,7 +418,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 						bss.mac[4] = Text::StrHex2UInt8C(macs[4]);
 						bss.mac[5] = Text::StrHex2UInt8C(macs[5]);
 						bss.phyId = (UInt32)retVal;
-						bss.linkQuality = Text::StrToInt32(cols[4]);
+						bss.linkQuality = Text::StrToUInt32(cols[4]);
 						bss.freq = 0;
 						bss.devManuf = 0;
 						bss.devModel = 0;

@@ -12,7 +12,7 @@
 #undef FindNextFile
 
 #define IOCTL_SFFDISK_DEVICE_COMMAND CTL_CODE( FILE_DEVICE_DISK, 0x7a1, METHOD_BUFFERED, FILE_WRITE_ACCESS)
-typedef enum SFFDISK_DCMD
+enum SFFDISK_DCMD
 {
 	SFFDISK_DC_GET_VERSION     ,
 	SFFDISK_DC_LOCK_CHANNEL    ,
@@ -31,13 +31,13 @@ typedef struct _SFFDISK_DEVICE_COMMAND_DATA
 	UCHAR        Data[];
 } SFFDISK_DEVICE_COMMAND_DATA, *PSFFDISK_DEVICE_COMMAND_DATA;
 
-typedef enum SD_COMMAND_CLASS
+enum SD_COMMAND_CLASS
 {
 	SDCC_STANDARD  ,
 	SDCC_APP_CMD
 };
 
-typedef enum SD_RESPONSE_TYPE
+enum SD_RESPONSE_TYPE
 {
 	SDRT_UNSPECIFIED  ,
 	SDRT_NONE         ,
@@ -51,7 +51,7 @@ typedef enum SD_RESPONSE_TYPE
 	SDRT_6
 } ;
 
-typedef enum SD_TRANSFER_TYPE
+enum SD_TRANSFER_TYPE
 {
 	SDTT_UNSPECIFIED           ,
 	SDTT_CMD_ONLY              ,
@@ -86,7 +86,7 @@ typedef struct _SDCMD_DESCRIPTOR
 IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 {
     BOOL bResult=FALSE;                 // results flag
-    int nSizeofCmd = 0;
+    UInt32 nSizeofCmd = 0;
     DWORD dwBytesReturned = 0;
 	UInt8 cid[16];
 	UInt8 csd[16];
@@ -120,7 +120,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	if (bResult == 0)
 	{
 		valid = false;
-		Int32 result = GetLastError();
+		DWORD result = GetLastError();
 		if (result == 5)
 		{
 //			wprintf(L"Error: Access Denied\r\n");
@@ -147,7 +147,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	if (bResult == 0)
 	{
 		valid = false;
-		Int32 result = GetLastError();
+		DWORD result = GetLastError();
 		if (result == 5)
 		{
 //			wprintf(L"Error: Access Denied\r\n");
@@ -183,7 +183,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 
 Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
 {
-	OSInt i;
+	UOSInt i;
 	Bool ret = false;
 	UInt8 fileBuff[64];
 	IO::FileStream *fs;

@@ -53,7 +53,7 @@ namespace Net
 			BSSType bssType;
 			Int32 phyType;
 			Double rssi;
-			Int32 linkQuality;
+			UInt32 linkQuality;
 			Double freq; //Hz
 			const UTF8Char *devManuf;
 			const UTF8Char *devModel;
@@ -70,7 +70,7 @@ namespace Net
 			BSSType GetBSSType();
 			Int32 GetPHYType();
 			Double GetRSSI();
-			Int32 GetLinkQuality();
+			UInt32 GetLinkQuality();
 			Double GetFreq();
 			const UTF8Char *GetManuf();
 			const UTF8Char *GetModel();

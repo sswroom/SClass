@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/PCIInfo.h"
@@ -51,7 +51,7 @@ const UTF8Char *IO::PCIInfo::GetDispName()
 UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
 {
 	UInt8 buff[33];
-	OSInt readSize;
+	UOSInt readSize;
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	readSize = fs->Read(buff, 32);
@@ -75,7 +75,7 @@ UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
 UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 {
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListInt32 existList;
+	Data::ArrayListUInt32 existList;
 	IO::PCIInfo *pci;
 	ClassData clsData;
 	UInt32 id;
@@ -109,7 +109,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 					sb.ToString()[21] = 0;
 					clsData.vendorId = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 8) & 0xffff);
 					clsData.productId = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
-					id = (clsData.vendorId << 16) | clsData.productId;
+					id = (UInt32)(clsData.vendorId << 16) | clsData.productId;
 					if (existList.SortedIndexOf(id) < 0)
 					{
 						existList.SortedInsert(id);

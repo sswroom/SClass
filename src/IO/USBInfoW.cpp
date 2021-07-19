@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/USBInfo.h"
@@ -59,7 +59,7 @@ const UTF8Char *IO::USBInfo::GetDispName()
 UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 {
 	UInt8 buff[33];
-	OSInt readSize;
+	UOSInt readSize;
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	readSize = fs->Read(buff, 32);
@@ -83,7 +83,7 @@ UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 {
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListInt32 existList;
+	Data::ArrayListUInt32 existList;
 	IO::USBInfo *usb;
 	ClassData clsData;
 	UInt32 id;
@@ -118,7 +118,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					clsData.idVendor = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 8) & 0xffff);
 					clsData.idProduct = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
 					clsData.bcdDevice = 0xffff;//(UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
-					id = (clsData.idVendor << 16) | clsData.idProduct;
+					id = (UInt32)(clsData.idVendor << 16) | clsData.idProduct;
 					if (existList.SortedIndexOf(id) < 0)
 					{
 						existList.SortedInsert(id);
@@ -137,7 +137,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	else //wine
 	{
 		UInt8 cbuff[256];
-		OSInt readSize;
+		UOSInt readSize;
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
 		IO::Path::FindFileSession *sess;

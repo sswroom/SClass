@@ -445,7 +445,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 	{
 		WChar sbuff2[256];
 		console->ReadLine(sbuff2, 256);
-		Text::StrWChar_UTF8(sbuff, sbuff2, -1);
+		Text::StrWChar_UTF8(sbuff, sbuff2);
 		output->SetValue(sbuff);
 		return IRT_ENTER;
 	}

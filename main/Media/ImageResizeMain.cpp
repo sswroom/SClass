@@ -17,9 +17,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt32 pxSize;
 	const UTF8Char *srcFile;
 	const UTF8Char *destFile;
-	UOSInt cmdCnt;
+	//UOSInt cmdCnt;
 	Int32 ret = 1;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 /*	if (cmdCnt != 4)
 	{
 		console.WriteLine((const UTF8Char*)"Error in parameters, should be ImageResize [srcFile] [destFile] [size]");

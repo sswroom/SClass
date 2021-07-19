@@ -96,25 +96,25 @@ namespace SSWR
 			Double GetMonitorDDPI(void *hMon);
 
 			const BurntDiscInfo *NewBurntDisc(const UTF8Char *discId, const UTF8Char *discTypeId, Data::DateTime *dt);
-			OSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
+			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
 			const BurntDiscInfo *GetBurntDisc(const UTF8Char *discId);
 			OSInt GetBurntDiscIndex(const UTF8Char *discId);
 			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, const UTF8Char *category, Int32 videoId);
-			OSInt GetBurntFiles(const UTF8Char *discId, Data::ArrayList<DiscFileInfo*> *fileList);
+			UOSInt GetBurntFiles(const UTF8Char *discId, Data::ArrayList<DiscFileInfo*> *fileList);
 			void FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList);
-			OSInt GetDVDTypeCount();
-			const DVDTypeInfo *GetDVDType(OSInt index);
+			UOSInt GetDVDTypeCount();
+			const DVDTypeInfo *GetDVDType(UOSInt index);
 			OSInt GetDVDTypeIndex(const UTF8Char *discTypeID);
 			Bool ModifyDVDType(const UTF8Char *discTypeID, const UTF8Char *name, const UTF8Char *desc);
 			const DVDTypeInfo *NewDVDType(const UTF8Char *discTypeID, const UTF8Char *name, const UTF8Char *desc);
-			OSInt GetCategories(Data::ArrayList<CategoryInfo*> *cateList);
+			UOSInt GetCategories(Data::ArrayList<CategoryInfo*> *cateList);
 			const DiscTypeInfo *GetDiscType(const UTF8Char *discTypeId);
-			OSInt GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList);
-			OSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand);
+			UOSInt GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList);
+			UOSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand);
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);
-			OSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
+			UOSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
 			const DVDVideoInfo *GetDVDVideo(Int32 videoId);
-			Bool NewMovies(const UTF8Char *discId, OSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
+			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
 			Bool AddMD5(IO::IStreamData *fd);
 		};
 	}

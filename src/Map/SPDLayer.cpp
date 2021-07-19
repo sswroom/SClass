@@ -204,7 +204,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
 					cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
-					textSize = Text::StrWChar_UTF8Cnt(strTmp, -1) - 1;
+					textSize = Text::StrWChar_UTF8Cnt(strTmp) - 1;
 					if (textSize > this->maxTextSize)
 						maxTextSize = textSize;
 				}
@@ -345,7 +345,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
 						cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
-						textSize = Text::StrWChar_UTF8Cnt(strTmp, -1);
+						textSize = Text::StrWChar_UTF8Cnt(strTmp);
 						if (textSize > this->maxTextSize)
 						{
 							this->maxTextSize = textSize;
@@ -416,7 +416,7 @@ UTF8Char *Map::SPDLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 	WChar *s = tmpArr->GetItem((UOSInt)id);
 	if (s)
 	{
-		return Text::StrWChar_UTF8(buff, s, -1);
+		return Text::StrWChar_UTF8(buff, s);
 	}
 	else
 	{

@@ -62,6 +62,8 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
+	case Text::VSProject::VSV_VS6:
+	case Text::VSProject::VSV_UNKNOWN:
 	default:
 		return 0;
 	}
@@ -176,7 +178,7 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 
 Text::Cpp::CppEnv::~CppEnv()
 {
-	OSInt i = this->includePaths->GetCount();
+	UOSInt i = this->includePaths->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->includePaths->GetItem(i));
@@ -196,6 +198,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
+	OSInt si;
 	if (Text::StrIndexOf(includeFile, (const UTF8Char*)"opengl.hpp") >= 0)
 	{
 		i = 0;
@@ -203,8 +206,8 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	if (sourceFile)
 	{
 		Text::StrConcat(buff, sourceFile);
-		i = Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR);
-		sptr2 = Text::StrConcat(&buff[i + 1], includeFile);
+		si = Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR);
+		sptr2 = Text::StrConcat(&buff[si + 1], includeFile);
 		if (IO::Path::GetPathType(buff) == IO::Path::PT_FILE)
 			return sptr2;
 	}
@@ -343,6 +346,8 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
+	case Text::VSProject::VSV_VS6:
+	case Text::VSProject::VSV_UNKNOWN:
 	default:
 		return 0;
 	}
@@ -468,6 +473,8 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 		case Text::VSProject::VSV_VS12:
 			reg2 = reg->OpenSubReg(L"12.0");
 			break;
+		case Text::VSProject::VSV_VS6:
+		case Text::VSProject::VSV_UNKNOWN:
 		default:
 			break;
 		}
@@ -475,7 +482,7 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 		{
 			if (reg2->GetValueStr(L"InstallDir", wbuff))
 			{
-				Text::StrWChar_UTF8(sbuff, wbuff, -1);
+				Text::StrWChar_UTF8(sbuff, wbuff);
 				if (vsv == Text::VSProject::VSV_VS71)
 				{
 					sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"..\\..\\Vc7\\");
@@ -521,7 +528,7 @@ UTF8Char *Text::Cpp::CppEnv::GetWindowsSdkDir(UTF8Char *sbuff)
 	IO::Registry::CloseRegistry(reg);
 	if (sptr)
 	{
-		return Text::StrWChar_UTF8(sbuff, wbuff, -1);
+		return Text::StrWChar_UTF8(sbuff, wbuff);
 	}
 	else
 	{

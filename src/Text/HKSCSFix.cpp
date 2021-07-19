@@ -65,7 +65,7 @@ void Text::HKSCSFix::FixString(UTF32Char *s)
 	{
 		if (c >= 0xe000 && c < 0x10000)
 		{
-			if ((c = this->tab[c - 0xe000]) != 0)
+			if ((c = (UTF32Char)this->tab[c - 0xe000]) != 0)
 				s[-1] = c;
 		}
 	}

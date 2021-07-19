@@ -45,8 +45,8 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	r = db->ExecuteReader(L"select * from MSSMBios_RawSMBiosTables");
 	if (r)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		dataBuff = 0;
 		buffSize = 0;
 		if (r->ReadNext())

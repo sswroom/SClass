@@ -101,7 +101,7 @@ UTF8Char *Media::DShow::DShowVideoCapture::GetSourceName(UTF8Char *buff)
 	if (this->baseFilter->QueryFilterInfo(&finfo) != S_OK)
 		return 0;
 	return Text::StrConcat(buff, finfo.achName);*/
-	return Text::StrWChar_UTF8(buff, this->devName, -1);
+	return Text::StrWChar_UTF8(buff, this->devName);
 }
 
 const UTF8Char *Media::DShow::DShowVideoCapture::GetFilterName()
@@ -133,8 +133,8 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 			info->pf = Media::FrameInfo::GetDefPixelFormat(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
 			info->byteSize = format->bmiHeader.biSizeImage;
 			info->ftype = Media::FT_NON_INTERLACE;
-			info->dispWidth = format->bmiHeader.biWidth;
-			info->dispHeight = format->bmiHeader.biHeight;
+			info->dispWidth = (ULONG)format->bmiHeader.biWidth;
+			info->dispHeight = (ULONG)format->bmiHeader.biHeight;
 			info->storeWidth = info->dispWidth;
 			info->storeHeight = info->dispHeight;
 			info->par2 = 1;
@@ -145,18 +145,18 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 
 			if ((::Math::Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 			{
-				*frameRateNorm = ::Math::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
+				*frameRateNorm = (UInt32)::Math::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
 				*frameRateDenorm = 1;
 			}
 			else if ((::Math::Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 			{
-				*frameRateNorm = ::Math::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
+				*frameRateNorm = (UInt32)::Math::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
 				*frameRateDenorm = 1001;
 			}
 			else
 			{
 				*frameRateNorm = 10000000;
-				*frameRateDenorm = (Int32)format->AvgTimePerFrame;
+				*frameRateDenorm = (UInt32)format->AvgTimePerFrame;
 			}
 			if (info->byteSize == 0)
 			{
@@ -184,17 +184,17 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
 {
 	Bool found = false;
-	Int32 minRate = 0;
+	UInt32 minRate = 0;
 	IEnumMediaTypes *mediaTypes;
 	UInt32 fcc = 0;
 
-	OSInt nearDiff = (width + 1) * (height + 1);
-	OSInt nearWidth = 0;
-	OSInt nearHeight = 0;
-	Int32 nearRate = 0;
-	OSInt thisDiff;
-	OSInt absWidth;
-	OSInt absHeight;
+	UOSInt nearDiff = (width + 1) * (height + 1);
+	UOSInt nearWidth = 0;
+	UOSInt nearHeight = 0;
+	UInt32 nearRate = 0;
+	UOSInt thisDiff;
+	UOSInt absWidth;
+	UOSInt absHeight;
 	AM_MEDIA_TYPE *foundMediaType = 0;
 
 	if (this->pin1->EnumMediaTypes(&mediaTypes) == S_OK)
@@ -212,9 +212,9 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 					{
 						if (found)
 						{
-							if (format->AvgTimePerFrame < minRate)
+							if ((UInt32)format->AvgTimePerFrame < minRate)
 							{
-								minRate = (Int32)format->AvgTimePerFrame;
+								minRate = (UInt32)format->AvgTimePerFrame;
 								fcc = format->bmiHeader.biCompression;
 								isMatch = true;
 							}
@@ -230,7 +230,7 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 						else
 						{
 							found = true;
-							minRate = (Int32)format->AvgTimePerFrame;
+							minRate = (UInt32)format->AvgTimePerFrame;
 							fcc = format->bmiHeader.biCompression;
 							isMatch = true;
 						}
@@ -239,27 +239,27 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 					{
 						if (format->bmiHeader.biWidth > (LONG)width)
 						{
-							absWidth = format->bmiHeader.biWidth - width + 1;
+							absWidth = (ULONG)format->bmiHeader.biWidth - width + 1;
 						}
 						else
 						{
-							absWidth = width - format->bmiHeader.biWidth + 1;
+							absWidth = width - (ULONG)format->bmiHeader.biWidth + 1;
 						}
 						if (format->bmiHeader.biHeight > (LONG)height)
 						{
-							absHeight = format->bmiHeader.biHeight - height + 1;
+							absHeight = (ULONG)format->bmiHeader.biHeight - height + 1;
 						}
 						else
 						{
-							absHeight = height - format->bmiHeader.biHeight + 1;
+							absHeight = height - (ULONG)format->bmiHeader.biHeight + 1;
 						}
 						thisDiff = absWidth * absHeight;
 						if (nearDiff > thisDiff)
 						{
 							nearDiff = thisDiff;
-							nearWidth = format->bmiHeader.biWidth;
-							nearHeight = format->bmiHeader.biHeight;
-							nearRate = (Int32)format->AvgTimePerFrame;
+							nearWidth = (ULONG)format->bmiHeader.biWidth;
+							nearHeight = (ULONG)format->bmiHeader.biHeight;
+							nearRate = (UInt32)format->AvgTimePerFrame;
 							fcc = format->bmiHeader.biCompression;
 							isMatch = true;
 						}
@@ -267,10 +267,10 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 						{
 							if (format->AvgTimePerFrame < nearRate)
 							{
-								nearRate = (Int32)format->AvgTimePerFrame;
+								nearRate = (UInt32)format->AvgTimePerFrame;
 								fcc = format->bmiHeader.biCompression;
-								nearWidth = format->bmiHeader.biWidth;
-								nearHeight = format->bmiHeader.biHeight;
+								nearWidth = (ULONG)format->bmiHeader.biWidth;
+								nearHeight = (ULONG)format->bmiHeader.biHeight;
 								isMatch = true;
 							}
 						}
@@ -438,21 +438,21 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 
 				if ((::Math::Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					fmtArr[outCnt].frameRateNorm = ::Math::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
+					fmtArr[outCnt].frameRateNorm = (UInt32)::Math::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
 					fmtArr[outCnt].frameRateDenorm = 1;
 				}
 				else if ((::Math::Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					fmtArr[outCnt].frameRateNorm = ::Math::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
+					fmtArr[outCnt].frameRateNorm = (UInt32)::Math::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
 					fmtArr[outCnt].frameRateDenorm = 1001;
 				}
 				else
 				{
 					fmtArr[outCnt].frameRateNorm = 10000000;
-					fmtArr[outCnt].frameRateDenorm = (Int32)format->AvgTimePerFrame;
+					fmtArr[outCnt].frameRateDenorm = (UInt32)format->AvgTimePerFrame;
 				}
-				fmtArr[outCnt].info.dispWidth = format->bmiHeader.biWidth;
-				fmtArr[outCnt].info.dispHeight = format->bmiHeader.biHeight;
+				fmtArr[outCnt].info.dispWidth = (ULONG)format->bmiHeader.biWidth;
+				fmtArr[outCnt].info.dispHeight = (ULONG)format->bmiHeader.biHeight;
 				fmtArr[outCnt].info.storeWidth = fmtArr[outCnt].info.dispWidth;
 				fmtArr[outCnt].info.storeHeight = fmtArr[outCnt].info.dispWidth;
 				fmtArr[outCnt].info.fourcc = format->bmiHeader.biCompression;
@@ -649,7 +649,7 @@ UTF8Char *Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSIn
 			}
 			if (SUCCEEDED(hr))
 			{
-				sptr = Text::StrWChar_UTF8(buff, var.bstrVal, -1);
+				sptr = Text::StrWChar_UTF8(buff, var.bstrVal);
 				VariantClear(&var);
 			}
 

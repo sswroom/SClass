@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			this->lvWifi->SetSubItem(i, 5, sbuff);
 			Text::StrDouble(sbuff, bss->GetRSSI());
 			this->lvWifi->SetSubItem(i, 6, sbuff);
-			Text::StrInt32(sbuff, bss->GetLinkQuality());
+			Text::StrUInt32(sbuff, bss->GetLinkQuality());
 			this->lvWifi->SetSubItem(i, 7, sbuff);
 			Text::StrDouble(sbuff, bss->GetFreq());
 			this->lvWifi->SetSubItem(i, 8, sbuff);

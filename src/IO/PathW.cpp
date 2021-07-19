@@ -39,7 +39,7 @@ UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
 	Path::CreateDirectoryW(tmpBuff);
-	return Text::StrConcat(Text::StrWChar_UTF8(buff, tmpBuff, -1), fileName);
+	return Text::StrConcat(Text::StrWChar_UTF8(buff, tmpBuff), fileName);
 }
 
 WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
@@ -172,7 +172,7 @@ UTF8Char *IO::Path::GetFileDirectory(UTF8Char *buff, const UTF8Char *fileName)
 		{
 			ptr[-1] = 0;
 		}
-		ptr2 = Text::StrWChar_UTF8(buff, ptr3, -1);
+		ptr2 = Text::StrWChar_UTF8(buff, ptr3);
 		MemFree(ptr3);
 		return ptr2;
 	}
@@ -221,7 +221,7 @@ UTF8Char *IO::Path::GetProcessFileName(UTF8Char *buff)
 	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, tmpBuff, 1024);
 #endif
 	tmpBuff[retSize] = 0;
-	return Text::StrWChar_UTF8(buff, tmpBuff, -1);
+	return Text::StrWChar_UTF8(buff, tmpBuff);
 }
 
 WChar *IO::Path::GetProcessFileNameW(WChar *buff)
@@ -816,7 +816,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 	UTF8Char *outPtr;
 	if (sess->lastFound)
 	{
-		outPtr = Text::StrWChar_UTF8(buff, sess->findData.cFileName, -1);
+		outPtr = Text::StrWChar_UTF8(buff, sess->findData.cFileName);
 		if (modTime)
 		{
 			SYSTEMTIME st;
@@ -1137,7 +1137,7 @@ UTF8Char *IO::Path::GetLocAppDataPath(UTF8Char *buff)
 	{
 		return 0;
 	}
-	return Text::StrWChar_UTF8(buff, sbuff, -1);
+	return Text::StrWChar_UTF8(buff, sbuff);
 #endif
 }
 
@@ -1209,7 +1209,7 @@ UTF8Char *IO::Path::GetCurrDirectory(UTF8Char *buff)
 #else
 	WChar sbuff[512];
 	sbuff[GetCurrentDirectoryW(512, sbuff)] = 0;
-	return Text::StrWChar_UTF8(buff, sbuff, -1);
+	return Text::StrWChar_UTF8(buff, sbuff);
 #endif
 }
 

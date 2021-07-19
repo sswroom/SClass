@@ -33,10 +33,10 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 		{
 			if (reg2->GetValueStr(L"SystemManufacturer", wbuff))
 			{
-				ret = Text::StrWChar_UTF8(sbuff, wbuff, -1);
+				ret = Text::StrWChar_UTF8(sbuff, wbuff);
 				*ret++ = ' ';
 				reg2->GetValueStr(L"BaseBoardProduct", wbuff);
-				ret = Text::StrWChar_UTF8(ret, wbuff, -1);
+				ret = Text::StrWChar_UTF8(ret, wbuff);
 			}
 			IO::Registry::CloseRegistry(reg2);
 		}
@@ -272,14 +272,14 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
-		OSInt devLocCol = -1;
-		OSInt manuCol = -1;
-		OSInt partNoCol = -1;
-		OSInt snCol = -1;
-		OSInt spdCol = -1;
-		OSInt dataWCol = -1;
-		OSInt totalWCol = -1;
-		OSInt i;
+		UOSInt devLocCol = (UOSInt)-1;
+		UOSInt manuCol = (UOSInt)-1;
+		UOSInt partNoCol = (UOSInt)-1;
+		UOSInt snCol = (UOSInt)-1;
+		UOSInt spdCol = (UOSInt)-1;
+		UOSInt dataWCol = (UOSInt)-1;
+		UOSInt totalWCol = (UOSInt)-1;
+		UOSInt i;
 		i = r->ColCount();
 		while (i-- > 0)
 		{
@@ -316,7 +316,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 			}
 		}
 
-		if (devLocCol != -1 && manuCol != -1 && partNoCol != -1 && snCol != -1 && spdCol != -1 && dataWCol != -1 && totalWCol != -1)
+		if (devLocCol != (UOSInt)-1 && manuCol != (UOSInt)-1 && partNoCol != (UOSInt)-1 && snCol != (UOSInt)-1 && spdCol != (UOSInt)-1 && dataWCol != (UOSInt)-1 && totalWCol != (UOSInt)-1)
 		{
 			while (r->ReadNext())
 			{
@@ -333,10 +333,10 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				sb.ClearStr();
 				r->GetStr(snCol, &sb);
 				ram->sn = Text::StrCopyNew(sb.ToString());
-				ram->defSpdMHz = r->GetInt32(spdCol);
+				ram->defSpdMHz = (UInt32)r->GetInt32(spdCol);
 				ram->confSpdMHz = 0;
-				ram->dataWidth = r->GetInt32(dataWCol);
-				ram->totalWidth = r->GetInt32(totalWCol);
+				ram->dataWidth = (UInt32)r->GetInt32(dataWCol);
+				ram->totalWidth = (UInt32)r->GetInt32(totalWCol);
 				ram->memorySize = 0;
 				ramList->Add(ram);
 				retCnt++;
@@ -351,7 +351,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 
 void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
-	OSInt i;
+	UOSInt i;
 	RAMInfo *ram;
 	i = ramList->GetCount();
 	while (i-- > 0)

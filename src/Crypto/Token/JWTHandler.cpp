@@ -102,6 +102,18 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		DEL_CLASS(ihash);
 		break;
+	case PS256:
+	case PS384:
+	case PS512:
+	case RS256:
+	case RS384:
+	case RS512:
+	case ES256:
+	case ES256K:
+	case ES384:
+	case ES512:
+	case EDDSA:
+	case UNKNOWN:
 	default:
 		return false;
 	}
@@ -174,6 +186,18 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		DEL_CLASS(ihash);
 		break;
+	case PS256:
+	case PS384:
+	case PS512:
+	case RS256:
+	case RS384:
+	case RS512:
+	case ES256:
+	case ES256K:
+	case ES384:
+	case ES512:
+	case EDDSA:
+	case UNKNOWN:
 	default:
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
@@ -308,6 +332,18 @@ Crypto::Token::JWTHandler *Crypto::Token::JWTHandler::CreateHMAC(Algorithm alg, 
 	case HS512:
 		NEW_CLASS(jwt, JWTHandler(alg, key, keyLeng));
 		return jwt;
+	case PS256:
+	case PS384:
+	case PS512:
+	case RS256:
+	case RS384:
+	case RS512:
+	case ES256:
+	case ES256K:
+	case ES384:
+	case ES512:
+	case EDDSA:
+	case UNKNOWN:
 	default:
 		return 0;
 	}
@@ -345,6 +381,7 @@ const UTF8Char *Crypto::Token::JWTHandler::GetAlgorithmName(Algorithm alg)
 		return (const UTF8Char*)"ES512";
 	case EDDSA:
 		return (const UTF8Char*)"EdDSA";
+	case UNKNOWN:
 	default:
 		return (const UTF8Char*)"UNK";
 	}

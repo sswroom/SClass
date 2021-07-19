@@ -52,9 +52,9 @@ Bool Text::UTF8Writer::WriteLine(const UTF8Char *str)
 
 Bool Text::UTF8Writer::WriteW(const UTF16Char *str, UOSInt nChar)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str, (OSInt)nChar);
+	UOSInt utf8Len = Text::StrUTF16_UTF8CntC(str, nChar);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 1);
-	Text::StrUTF16_UTF8(utf8, str, (OSInt)nChar);
+	Text::StrUTF16_UTF8C(utf8, str, nChar);
 	UOSInt ret = this->stm->Write(utf8, utf8Len);
 	MemFree(utf8);
 	return ret == utf8Len;
@@ -62,9 +62,9 @@ Bool Text::UTF8Writer::WriteW(const UTF16Char *str, UOSInt nChar)
 
 Bool Text::UTF8Writer::WriteW(const UTF16Char *str)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str, -1);
+	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 1);
-	Text::StrUTF16_UTF8(utf8, str, -1);
+	Text::StrUTF16_UTF8(utf8, str);
 	UOSInt ret = this->stm->Write(utf8, utf8Len);
 	MemFree(utf8);
 	return ret == utf8Len;
@@ -72,10 +72,10 @@ Bool Text::UTF8Writer::WriteW(const UTF16Char *str)
 
 Bool Text::UTF8Writer::WriteLineW(const UTF16Char *str, UOSInt nChar)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str, (OSInt)nChar);
+	UOSInt utf8Len = Text::StrUTF16_UTF8CntC(str, nChar);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 2);
 	UTF8Char *sptr;
-	sptr = Text::StrUTF16_UTF8(utf8, str, (OSInt)nChar);
+	sptr = Text::StrUTF16_UTF8C(utf8, str, nChar);
 	sptr[0] = 13;
 	sptr[1] = 10;
 	UOSInt ret = this->stm->Write(utf8, utf8Len + 2);
@@ -85,10 +85,10 @@ Bool Text::UTF8Writer::WriteLineW(const UTF16Char *str, UOSInt nChar)
 
 Bool Text::UTF8Writer::WriteLineW(const UTF16Char *str)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str, -1);
+	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 2);
 	UTF8Char *sptr;
-	sptr = Text::StrUTF16_UTF8(utf8, str, -1);
+	sptr = Text::StrUTF16_UTF8(utf8, str);
 	sptr[0] = 13;
 	sptr[1] = 10;
 	UOSInt ret = this->stm->Write(utf8, utf8Len + 2);
@@ -98,9 +98,9 @@ Bool Text::UTF8Writer::WriteLineW(const UTF16Char *str)
 
 Bool Text::UTF8Writer::WriteW(const UTF32Char *str, UOSInt nChar)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str, (OSInt)nChar);
+	UOSInt utf8Len = Text::StrUTF32_UTF8CntC(str, nChar);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 1);
-	Text::StrUTF32_UTF8(utf8, str, (OSInt)nChar);
+	Text::StrUTF32_UTF8C(utf8, str, nChar);
 	UOSInt ret = this->stm->Write(utf8, utf8Len);
 	MemFree(utf8);
 	return ret == utf8Len;
@@ -108,9 +108,9 @@ Bool Text::UTF8Writer::WriteW(const UTF32Char *str, UOSInt nChar)
 
 Bool Text::UTF8Writer::WriteW(const UTF32Char *str)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str, -1);
+	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 1);
-	Text::StrUTF32_UTF8(utf8, str, -1);
+	Text::StrUTF32_UTF8(utf8, str);
 	UOSInt ret = this->stm->Write(utf8, utf8Len);
 	MemFree(utf8);
 	return ret == utf8Len;
@@ -118,10 +118,10 @@ Bool Text::UTF8Writer::WriteW(const UTF32Char *str)
 
 Bool Text::UTF8Writer::WriteLineW(const UTF32Char *str, UOSInt nChar)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str, (OSInt)nChar);
+	UOSInt utf8Len = Text::StrUTF32_UTF8CntC(str, nChar);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 2);
 	UTF8Char *sptr;
-	sptr = Text::StrUTF32_UTF8(utf8, str, (OSInt)nChar);
+	sptr = Text::StrUTF32_UTF8C(utf8, str, nChar);
 	sptr[0] = 13;
 	sptr[1] = 10;
 	UOSInt ret = this->stm->Write(utf8, utf8Len + 2);
@@ -131,10 +131,10 @@ Bool Text::UTF8Writer::WriteLineW(const UTF32Char *str, UOSInt nChar)
 
 Bool Text::UTF8Writer::WriteLineW(const UTF32Char *str)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str, -1);
+	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str);
 	UTF8Char *utf8 = MemAlloc(UTF8Char, utf8Len + 2);
 	UTF8Char *sptr;
-	sptr = Text::StrUTF32_UTF8(utf8, str, -1);
+	sptr = Text::StrUTF32_UTF8(utf8, str);
 	sptr[0] = 13;
 	sptr[1] = 10;
 	UOSInt ret = this->stm->Write(utf8, utf8Len + 2);

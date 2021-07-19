@@ -209,7 +209,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->monMgr);
 
-	OSInt i;
+	UOSInt i;
 	BurntDiscInfo *disc;
 	Data::ArrayList<BurntDiscInfo *> *discList = this->discMap->GetValues();
 	i = discList->GetCount();
@@ -326,7 +326,7 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 	}
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList)
 {
 	discList->AddRange(this->discMap->GetValues());
 	return this->discMap->GetCount();
@@ -361,10 +361,10 @@ Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId
 	return this->db->ExecuteNonQuery(sql.ToString()) > 0;
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::ArrayList<DiscFileInfo*> *fileList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::ArrayList<DiscFileInfo*> *fileList)
 {
 	DiscFileInfo *file;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select FileID, Name, FileSize, Category, VIDEOID from BurntFile where DiscID = ");
 	sql.AppendStrUTF8(discId);
@@ -377,11 +377,11 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::Array
 		while (r->ReadNext())
 		{
 			file = MemAlloc(DiscFileInfo, 1);
-			file->fileId = r->GetInt32(0);
+			file->fileId = (UInt32)r->GetInt32(0);
 			sb.ClearStr();
 			r->GetStr(1, &sb);
 			file->fileName = Text::StrCopyNew(sb.ToString());
-			file->fileSize = r->GetInt64(2);
+			file->fileSize = (UInt64)r->GetInt64(2);
 			sb.ClearStr();
 			r->GetStr(3, &sb);
 			Text::StrConcat(file->category, sb.ToString());
@@ -396,7 +396,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::Array
 
 void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList)
 {
-	OSInt i;
+	UOSInt i;
 	DiscFileInfo *file;
 	i = fileList->GetCount();
 	while (i-- > 0)
@@ -408,12 +408,12 @@ void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fil
 	fileList->Clear();
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeCount()
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeCount()
 {
 	return this->dvdTypeMap->GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDVDType(OSInt index)
+const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDVDType(UOSInt index)
 {
 	return this->dvdTypeMap->GetValues()->GetItem(index);
 }
@@ -475,7 +475,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 	return 0;
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetCategories(Data::ArrayList<CategoryInfo*> *cateList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(Data::ArrayList<CategoryInfo*> *cateList)
 {
 	cateList->AddRange(this->cateMap->GetValues());
 	return this->cateMap->GetCount();
@@ -486,17 +486,17 @@ const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDiscTyp
 	return this->discTypeMap->Get(discTypeId);
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList)
 {
 	discTypeList->AddRange(this->discTypeMap->GetValues());
 	return this->discTypeMap->GetCount();
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand)
 {
-	OSInt ret;
-	OSInt i;
-	OSInt j;
+	UOSInt ret;
+	UOSInt i;
+	UOSInt j;
 	Data::ArrayList<DiscTypeInfo *> *myDiscTypes = this->discTypeMap->GetValues();
 	DiscTypeInfo *discType;
 	ret = 0;
@@ -558,7 +558,7 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 	}
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList)
 {
 	dvdVideoList->AddRange(this->dvdVideoMap->GetValues());
 	return this->dvdVideoMap->GetCount();
@@ -569,13 +569,13 @@ const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *SSWR::DiscDB::DiscDBEnv::GetDVDVide
 	return this->dvdVideoMap->Get(videoId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, OSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
+Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into Movies (DiscID, FileID, MainTitle, Type, Chapter, ChapterTitle, VideoFormat, Width, Height, fps, length, AudioFormat, SamplingRate, Bitrate, AspectRatio, Remarks) values (");
 	sql.AppendStrUTF8(discId);
 	sql.AppendCmd((const UTF8Char*)", ");
-	sql.AppendInt32((Int32)fileId);
+	sql.AppendInt32((Int32)(UInt32)fileId);
 	sql.AppendCmd((const UTF8Char*)", ");
 	sql.AppendStrUTF8(mainTitle);
 	sql.AppendCmd((const UTF8Char*)", ");
@@ -624,15 +624,15 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 	}
 	Text::StringBuilderUTF8 sbDiscId;
 	const UTF8Char *fileName = fd->GetFullName();
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-	sbDiscId.Append(&fileName[i + 1]);
-	i = sbDiscId.IndexOf('.');
-	if (i >= 0)
+	OSInt si;
+	UOSInt i;
+	UOSInt j;
+	si = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	sbDiscId.Append(&fileName[si + 1]);
+	si = sbDiscId.IndexOf('.');
+	if (si >= 0)
 	{
-		sbDiscId.RemoveChars(sbDiscId.GetCharCnt() - i);
+		sbDiscId.RemoveChars(sbDiscId.GetCharCnt() - (UOSInt)si);
 	}
 
 	Data::StringUTF8Map<Int32> nameMap;
@@ -669,16 +669,16 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 		sql.AppendCmd((const UTF8Char*)" where DiscID = ");
 		sql.AppendStrUTF8(sbDiscId.ToString());
 		fileName = fileChk->GetEntryName(i);
-		k = Text::StrIndexOf(&fileName[1], '\\');
-		if (nameMap.GetIndex(&fileName[k + 2]) >= 0)
+		si = Text::StrIndexOf(&fileName[1], '\\');
+		if (nameMap.GetIndex(&fileName[si + 2]) >= 0)
 		{
 			sql.AppendCmd((const UTF8Char*)" and FileID = ");
-			sql.AppendInt32(nameMap.Get(&fileName[k + 2]));
+			sql.AppendInt32(nameMap.Get(&fileName[si + 2]));
 		}
 		else
 		{
 			sql.AppendCmd((const UTF8Char*)" and Name = ");
-			sql.AppendStrUTF8(&fileName[k + 2]);
+			sql.AppendStrUTF8(&fileName[si + 2]);
 		}
 		db->ExecuteNonQuery(sql.ToString());
 		i++;

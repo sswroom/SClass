@@ -82,7 +82,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *
 			return 0;
 		}
 		dt.SetValue(ReadUInt16(&recBuff[6]), recBuff[8], recBuff[9], recBuff[10], recBuff[11], recBuff[12], 0, 36);
-		Text::StrUTF16_UTF8(fileName, (const UTF16Char*)&recBuff[15], fnameSize >> 1);
+		Text::StrUTF16_UTF8C(fileName, (const UTF16Char*)&recBuff[15], (UOSInt)fnameSize >> 1);
 		fileName[fnameSize >> 1] = 0;
 		pf->AddData(fd, currOfst + 15 + fnameSize, recSize - fnameSize - 15, fileName, dt.ToTicks());
 

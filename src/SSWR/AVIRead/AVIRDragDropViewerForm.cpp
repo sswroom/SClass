@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj
 	UTF8Char u8buff[256];
 	if (me->lbType->GetSelectedItemText(sbuff))
 	{
-		Text::StrWChar_UTF8(u8buff, sbuff, -1);
+		Text::StrWChar_UTF8(u8buff, sbuff);
 		const UTF8Char *msg = me->dropMap->Get(u8buff);
 		if (msg)
 		{

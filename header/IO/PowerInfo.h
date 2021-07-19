@@ -18,8 +18,8 @@ namespace IO
 			ACStatus acStatus;
 			Bool hasBattery;
 			Bool batteryCharging;
-			Int32 batteryPercent;
-			Int32 timeLeftSec;
+			UInt32 batteryPercent;
+			UInt32 timeLeftSec;
 			Double batteryVoltage; //V
 			Double batteryChargeCurrent; //A
 			Double batteryTemp; //degree C
@@ -27,6 +27,6 @@ namespace IO
 	public:
 		static Bool GetPowerStatus(PowerStatus *power);
 	};
-};
+}
 
 #endif

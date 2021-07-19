@@ -97,7 +97,7 @@ UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, const UTF8Char *na
 	else if (retSize > 512)
 		return 0;
 	else
-		return Text::StrWChar_UTF8(buff, sbuff, retSize);;
+		return Text::StrWChar_UTF8C(buff, sbuff, retSize);
 #else
 	return 0;
 #endif

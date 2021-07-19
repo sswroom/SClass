@@ -14,7 +14,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::DiscDB::DiscDBEnv *env;
-			OSInt currIndex;
+			UOSInt currIndex;
 			Bool newRec;
 			const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *currRec;
 

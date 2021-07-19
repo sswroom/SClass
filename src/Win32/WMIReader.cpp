@@ -57,7 +57,7 @@ Win32::WMIReader::WMIReader(void *pEnum)
 
 Win32::WMIReader::~WMIReader()
 {
-	OSInt i;
+	UOSInt i;
 	WMIColumn *col;
 
 	if (this->pObject)
@@ -243,7 +243,7 @@ Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
 				ret = V_I8(&v);
 				break;
 			case CIM_UINT64:
-				ret = V_UI8(&v);
+				ret = (Int64)V_UI8(&v);
 				break;
 			case CIM_REAL32:
 				ret = Math::Double2Int32(V_R4(&v));
@@ -613,7 +613,7 @@ UTF8Char *Win32::WMIReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					buff = Text::StrWChar_UTF8(buff, bs, -1);
+					buff = Text::StrWChar_UTF8(buff, bs);
 				}
 				break;
 			case CIM_DATETIME:
@@ -851,7 +851,7 @@ UTF8Char *Win32::WMIReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)
 		return 0;
-	return Text::StrWChar_UTF8(buff, col->name, -1);
+	return Text::StrWChar_UTF8(buff, col->name);
 }
 
 DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, UOSInt *colSize)

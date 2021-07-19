@@ -1931,7 +1931,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			this->env->GetGroupImages(this->imgItems, grp);
 
 			Data::ArrayList<UserFileInfo*> ufileList;
-			Data::ArrayList<Int32> ufileColor;
+			Data::ArrayList<UInt32> ufileColor;
 			this->env->GetGroupAllUserFile(&ufileList, &ufileColor, grp);
 			i = ufileList.GetCount();
 			while (i-- > 0)
@@ -2111,7 +2111,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		if (o)
 		{
 			Data::ArrayList<UserFileInfo*> ufileList;
-			Data::ArrayList<Int32> ufileColor;
+			Data::ArrayList<UInt32> ufileColor;
 			OrganSpImgLayer *lyr;
 			this->env->GetGroupAllUserFile(&ufileList, &ufileColor, o);
 			i = ufileList.GetCount();
@@ -2176,7 +2176,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdatePicks()
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->env->GetLang((const UTF8Char*)"MainFormPick1"));
-	sb.AppendOSInt(this->pickObjs->GetCount());
+	sb.AppendUOSInt(this->pickObjs->GetCount());
 	sb.Append(this->env->GetLang((const UTF8Char*)"MainFormPick2"));
 	this->lblPickMsg->SetText(sb.ToString());
 }
@@ -2208,7 +2208,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 
 			OrganGroupType *grpType;
 			i = this->cboGroupType->GetSelectedIndex();
-			grpType = (OrganGroupType*)this->cboGroupType->GetItem(i);
+			grpType = (OrganGroupType*)this->cboGroupType->GetItem((UOSInt)i);
 			this->lastGroupObj->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
 			this->txtGroupEName->GetText(&sb);
@@ -2924,7 +2924,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 
 			NEW_CLASS(g, OrganGroup());
 			g->SetGroupId(-1);
-			Text::StrWChar_UTF8(sbuff, L"所有品種", -1);
+			Text::StrWChar_UTF8(sbuff, L"所有品種");
 			g->SetCName(sbuff);
 			g->SetEName((const UTF8Char*)"All species");
 			g->SetGroupType(0);
@@ -3149,10 +3149,10 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			i = this->lbDir->GetSelectedIndex();
 			if (i > 0)
 			{
-				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i);
+				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem((UOSInt)i);
 				SDEL_TEXT(this->initSelObj);
 				this->initSelObj = Text::StrCopyNew(groupO->GetEName());
-				this->lbDir->SetSelectedIndex(i - 1);
+				this->lbDir->SetSelectedIndex((UOSInt)i - 1);
 			}
 		}
 		break;
@@ -3201,9 +3201,9 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			OSInt i = this->lbObj->GetSelectedIndex();
 			if (i > 0)
 			{
-				this->lbObj->SetSelectedIndex(i - 1);
+				this->lbObj->SetSelectedIndex((UOSInt)i - 1);
 			}
-			i = this->tcMain->GetSelectedIndex();
+			i = (OSInt)this->tcMain->GetSelectedIndex();
 			if (i == 0)
 			{
 				this->txtGroupEName->Focus();
@@ -3221,7 +3221,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			{
 				this->lbObj->SetSelectedIndex((UOSInt)i + 1);
 			}
-			i = this->tcMain->GetSelectedIndex();
+			i = (UOSInt)this->tcMain->GetSelectedIndex();
 			if (i == 0)
 			{
 				this->txtGroupEName->Focus();
@@ -3260,7 +3260,7 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 		OSInt i = this->lbObj->GetSelectedIndex();
 		if (i != -1)
 		{
-			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem(i);
+			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem((UOSInt)i);
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				const UTF8Char *name;
@@ -3337,7 +3337,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 		OSInt i = this->lbObj->GetSelectedIndex();
 		if (i != -1)
 		{
-			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem(i);
+			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem((UOSInt)i);
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				const UTF8Char *fmtSURL = 0;

@@ -16,8 +16,8 @@ IO::GPUManager::GPUManager()
 	NEW_CLASS(clsData->amdGPUMgr, IO::AMDGPUManager());
 	NEW_CLASS(clsData->gpuList, Data::ArrayList<IO::IGPUControl*>());
 	this->classObj = clsData;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = clsData->amdGPUMgr->GetGPUCount();
 	while (i < j)
@@ -31,7 +31,7 @@ IO::GPUManager::~GPUManager()
 {
 	ClassData *clsData = (ClassData*)this->classObj;
 	IO::IGPUControl *gpu;
-	OSInt i;
+	UOSInt i;
 	i = clsData->gpuList->GetCount();
 	while (i-- > 0)
 	{
@@ -43,13 +43,13 @@ IO::GPUManager::~GPUManager()
 	MemFree(clsData);
 }
 
-OSInt IO::GPUManager::GetGPUCount()
+UOSInt IO::GPUManager::GetGPUCount()
 {
 	ClassData *clsData = (ClassData*)this->classObj;
 	return clsData->gpuList->GetCount();
 }
 
-IO::IGPUControl *IO::GPUManager::GetGPUControl(OSInt index)
+IO::IGPUControl *IO::GPUManager::GetGPUControl(UOSInt index)
 {
 	ClassData *clsData = (ClassData*)this->classObj;
 	return clsData->gpuList->GetItem(index);

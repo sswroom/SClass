@@ -12,9 +12,9 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 
 	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->GetBurntDisc(sb.ToString());
 	SSWR::DiscDB::DiscDBEnv::DiscFileInfo *file;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	if (disc)
 	{
 		UTF8Char sbuff[32];
@@ -41,7 +41,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 		{
 			file = fileList.GetItem(i);
 			k = me->lvFiles->AddItem(file->fileName, 0);
-			Text::StrInt64(sbuff, file->fileSize);
+			Text::StrUInt64(sbuff, file->fileSize);
 			me->lvFiles->SetSubItem(k, 1, sbuff);
 			me->lvFiles->SetSubItem(k, 2, file->category);
 			i++;

@@ -250,20 +250,21 @@ namespace Text
 	UTF32Char *StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *byteConv);
 	UOSInt StrUTF8_UTF32Cnt(const UTF8Char *bytes);
 
-	//end with null if strLen = -1 only
-	UTF8Char *StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr, OSInt strLen);
-	UOSInt StrUTF16_UTF8Cnt(const UTF16Char *stri, OSInt strLen);
-	UTF8Char *StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr, OSInt strLen);
-	UOSInt StrUTF32_UTF8Cnt(const UTF32Char *stri, OSInt strLen);
+	UTF8Char *StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr);
+	UTF8Char *StrUTF16_UTF8C(UTF8Char *bytes, const UTF16Char *wstr, UOSInt strLen);
+	UOSInt StrUTF16_UTF8Cnt(const UTF16Char *stri);
+	UOSInt StrUTF16_UTF8CntC(const UTF16Char *stri, UOSInt strLen);
+	UTF8Char *StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr);
+	UTF8Char *StrUTF32_UTF8C(UTF8Char *bytes, const UTF32Char *wstr, UOSInt strLen);
+	UOSInt StrUTF32_UTF8Cnt(const UTF32Char *stri);
+	UOSInt StrUTF32_UTF8CntC(const UTF32Char *stri, UOSInt strLen);
 
 	FORCEINLINE UTF16Char *StrUTF8_UTF16(UTF16Char *oriStr, const UTF8Char *strToJoin) { return StrUTF8_UTF16(oriStr, strToJoin, 0); }
 	FORCEINLINE UTF32Char *StrUTF8_UTF32(UTF32Char *oriStr, const UTF8Char *strToJoin) { return StrUTF8_UTF32(oriStr, strToJoin, 0); }
-	FORCEINLINE UTF8Char *StrUTF16_UTF8(UTF8Char *oriStr, const UTF16Char *strToJoin) { return StrUTF16_UTF8(oriStr, strToJoin, -1); }
 	UTF32Char *StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin);
 	UTF32Char *StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin, UOSInt charCnt);
 	UOSInt StrUTF16_UTF32Cnt(const UTF16Char *strToJoin);
 	UOSInt StrUTF16_UTF32Cnt(const UTF16Char *strToJoin, UOSInt charCnt);
-	FORCEINLINE UTF8Char *StrUTF32_UTF8(UTF8Char *oriStr, const UTF32Char *strToJoin) { return StrUTF32_UTF8(oriStr, strToJoin, -1); }
 	UTF16Char *StrUTF32_UTF16(UTF16Char *oriStr, const UTF32Char *strToJoin);
 	UTF16Char *StrUTF32_UTF16(UTF16Char *oriStr, const UTF32Char *strToJoin, UOSInt charCnt);
 	UOSInt StrUTF32_UTF16Cnt(const UTF32Char *strToJoin);
@@ -274,15 +275,19 @@ namespace Text
 	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF32CntC(bytes, byteSize); }
 	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt *byteConv) { return StrUTF8_UTF32(buff, bytes, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF32Cnt(bytes); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr, OSInt strLen) { return StrUTF32_UTF8(bytes, wstr, strLen); }
-	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF32_UTF8Cnt(stri, strLen); }
+	FORCEINLINE UTF8Char *StrWChar_UTF8C(UTF8Char *bytes, const WChar *wstr, UOSInt strLen) { return StrUTF32_UTF8C(bytes, wstr, strLen); }
+	FORCEINLINE UOSInt StrWChar_UTF8CntC(const WChar *stri, UOSInt strLen) { return StrUTF32_UTF8CntC(stri, strLen); }
+	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF32_UTF8(bytes, wstr); }
+	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF32_UTF8Cnt(stri); }
 #elif _WCHAR_SIZE == 2
 	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF16C(buff, bytes, byteSize, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF16CntC(bytes, byteSize); }
 	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt *byteConv) { return StrUTF8_UTF16(buff, bytes, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF16Cnt(bytes); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr, OSInt strLen) { return StrUTF16_UTF8(bytes, wstr, strLen); }
-	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri, OSInt strLen) { return StrUTF16_UTF8Cnt(stri, strLen); }
+	FORCEINLINE UTF8Char *StrWChar_UTF8C(UTF8Char *bytes, const WChar *wstr, UOSInt strLen) { return StrUTF16_UTF8C(bytes, wstr, strLen); }
+	FORCEINLINE UOSInt StrWChar_UTF8CntC(const WChar *stri, UOSInt strLen) { return StrUTF16_UTF8CntC(stri, strLen); }
+	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF16_UTF8(bytes, wstr); }
+	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF16_UTF8Cnt(stri); }
 #endif
 	const UTF8Char *StrReadChar(const UTF8Char *sptr, UTF32Char *outChar);
 	const UTF16Char *StrReadChar(const UTF16Char *sptr, UTF32Char *outChar);

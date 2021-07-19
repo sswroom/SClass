@@ -31,8 +31,8 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 	GList *list = gdk_drag_context_list_targets((GdkDragContext*)context);
 	if (list)
 	{
-		OSInt i;
-		OSInt j;
+		guint i;
+		guint j;
 		GdkAtom target;
 		i = 0;
 		j = g_list_length(list);
@@ -67,7 +67,7 @@ UI::GUIDragDataGTK::~GUIDragDataGTK()
 	GUIDragDataGTK_currData = 0;
 	DEL_CLASS(this->targetMap);
 	Data::ArrayList<const UTF8Char*> *targetList = this->targetText->GetValues();
-	OSInt i = targetList->GetCount();
+	UOSInt i = targetList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(targetList->GetItem(i));
@@ -101,7 +101,7 @@ Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, Text::StringBuilderUT
 	OSInt fmt = this->targetMap->Get(name);
 	if (fmt == 0)
 		return false;
-	const UTF8Char *txt = this->targetText->Get(fmt);
+	const UTF8Char *txt = this->targetText->Get((Int32)fmt);
 	if (txt)
 	{
 		sb->Append(txt);
@@ -122,7 +122,7 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 {
 	GdkAtom target = gtk_selection_data_get_target((GtkSelectionData*)selData);
 	Int32 itarget = (Int32)(OSInt)target;
-	OSInt dataSize = gtk_selection_data_get_length((GtkSelectionData*)selData);
+	UOSInt dataSize = (UInt32)gtk_selection_data_get_length((GtkSelectionData*)selData);
 	GdkAtom dataType = gtk_selection_data_get_data_type((GtkSelectionData*)selData);
 	const char *csptr = gdk_atom_name(target);
 	if (csptr == 0)

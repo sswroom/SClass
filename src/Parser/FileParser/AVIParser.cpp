@@ -722,7 +722,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			chapTime = MulDivU32(frameNum, scale * 1000, rate);
 			if (chap[chapOfst] == 0xff && chap[chapOfst + 1] == 0xfe)
 			{
-				Text::StrUTF16_UTF8(sbuff, (UTF16Char*)&chap[chapOfst + 2], -1);
+				Text::StrUTF16_UTF8(sbuff, (UTF16Char*)&chap[chapOfst + 2]);
 				chapters->AddChapter(chapTime, sbuff, 0);
 			}
 			else

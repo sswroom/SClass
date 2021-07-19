@@ -225,9 +225,10 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 		sb.Replace((const UTF8Char*)"  ", (const UTF8Char*)" ");
 
 		UOSInt digitCnt = 0;
-		OSInt i = 1;
-		OSInt j;
-		OSInt k;
+		UOSInt i = 1;
+		UOSInt j;
+		UOSInt k;
+		OSInt si;
 		UTF8Char *chars = sb.ToString();
 		Bool found = false;
 		j = sb.GetLength();
@@ -304,14 +305,14 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 							me->txtBookTitle->SetText(sb2.ToString());
 							sb.SetSubstr(k);
 							sb.Trim();
-							k = sb.IndexOf((const UTF8Char*)"http://");
+							si = sb.IndexOf((const UTF8Char*)"http://");
 							if (k >= 0)
 							{
 								sb2.ClearStr();
-								sb2.AppendC(sb.ToString(), k);
+								sb2.AppendC(sb.ToString(), (UOSInt)si);
 								sb2.Trim();
 								me->txtBookSource->SetText(sb2.ToString());
-								sb.SetSubstr(k)->Trim();
+								sb.SetSubstr((UOSInt)si)->Trim();
 								me->txtBookURL->SetText(sb.ToString());
 							}
 							else

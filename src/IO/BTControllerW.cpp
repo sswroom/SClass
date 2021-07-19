@@ -173,7 +173,7 @@ OSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList
 
 void IO::BTController::BTDevice::FreeServices(Data::ArrayList<void*> *guidList)
 {
-	OSInt i = guidList->GetCount();
+	UOSInt i = guidList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(guidList->GetItem(i));

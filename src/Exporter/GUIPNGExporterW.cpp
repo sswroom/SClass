@@ -126,7 +126,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				{
 					break;
 				}
-				chunkSize = ReadMInt32(&pngBuff[i]);
+				chunkSize = ReadMUInt32(&pngBuff[i]);
 				chunkType = ReadInt32(&pngBuff[i + 4]);
 				if (chunkType == ReadInt32("sRGB"))
 				{
@@ -138,7 +138,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				}
 				else if (chunkType == ReadInt32("IDAT"))
 				{
-					Int32 iccSize = ReadMInt32(iccBuff);
+					UInt32 iccSize = ReadMUInt32(iccBuff);
 					UInt8 *chunkBuff = MemAlloc(UInt8, iccSize + 32);
 					WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 					Text::StrConcat((Char*)&chunkBuff[8], "Photoshop ICC profile");
@@ -159,10 +159,10 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					{
 						UInt8 crcBuff[4];
 						Crypto::Hash::CRC32R crc;
-						WriteMInt32(chunkBuff, 23 + dstm.total_out);
+						WriteMUInt32(chunkBuff, 23 + dstm.total_out);
 						crc.Calc(&chunkBuff[4], 27 + dstm.total_out);
 						crc.GetValue(crcBuff);
-						WriteMInt32(&chunkBuff[31 + dstm.total_out], ReadMInt32(crcBuff));
+						WriteMUInt32(&chunkBuff[31 + dstm.total_out], ReadMUInt32(crcBuff));
 						stm->Write(chunkBuff, 35 + dstm.total_out);
 					}
 					MemFree(chunkBuff);

@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 					me->lvCurrWifi->SetSubItem(k, 5, sbuff);
 					Text::StrDouble(sbuff, bss->GetRSSI());
 					me->lvCurrWifi->SetSubItem(k, 6, sbuff);
-					Text::StrInt32(sbuff, bss->GetLinkQuality());
+					Text::StrUInt32(sbuff, bss->GetLinkQuality());
 					me->lvCurrWifi->SetSubItem(k, 7, sbuff);
 					Text::StrDouble(sbuff, bss->GetFreq());
 					me->lvCurrWifi->SetSubItem(k, 8, sbuff);

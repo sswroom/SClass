@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		if (power.hasBattery)
 		{
-			Text::StrConcat(Text::StrInt32(sbuff, power.batteryPercent), (const UTF8Char*)"%");
+			Text::StrConcat(Text::StrUInt32(sbuff, power.batteryPercent), (const UTF8Char*)"%");
 			me->txtBattery->SetText(sbuff);
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
@@ -177,7 +177,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					me->lvCurrWifi->SetSubItem(k, 5, sbuff);
 					Text::StrDouble(sbuff, bss->GetRSSI());
 					me->lvCurrWifi->SetSubItem(k, 6, sbuff);
-					Text::StrInt32(sbuff, bss->GetLinkQuality());
+					Text::StrUInt32(sbuff, bss->GetLinkQuality());
 					me->lvCurrWifi->SetSubItem(k, 7, sbuff);
 					Text::StrDouble(sbuff, bss->GetFreq());
 					me->lvCurrWifi->SetSubItem(k, 8, sbuff);

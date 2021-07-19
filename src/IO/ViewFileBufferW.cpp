@@ -59,7 +59,7 @@ UInt64 IO::ViewFileBuffer::GetLength()
 	LARGE_INTEGER li;
 	if (GetFileSizeEx(this->fileHandle, &li))
 	{
-		return li.QuadPart;
+		return (UInt64)li.QuadPart;
 	}
 	else
 	{

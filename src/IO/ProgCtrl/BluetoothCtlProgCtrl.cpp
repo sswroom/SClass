@@ -201,6 +201,31 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						{
 
 						}
+						//[CHG] Device D8:16:35:2D:60:F3 Appearance: 0x00c0
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Appearance: "))
+						{
+
+						}
+						//[CHG] Device FF:02:2F:D2:23:49 ServiceData Key: 000002a0-0000-1000-8000-00805f9b34fb
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"ServiceData Key: "))
+						{
+
+						}
+						//[CHG] Device C9:CE:83:47:9A:0E ServiceData Value:
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"ServiceData Value:"))
+						{
+
+						}
+						//[CHG] Device 04:23:09:C3:75:46 Class: 0x00040424
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Class: "))
+						{
+
+						}
+						//[CHG] Device 04:23:09:C3:75:46 Icon: audio-card
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Icon: "))
+						{
+
+						}
 						else
 						{
 							sarr[0][30] = ' ';

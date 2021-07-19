@@ -506,7 +506,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 				WChar tbuff[2];
 				tbuff[0] = 0x8FD1;
 				tbuff[1] = 0;
-				outptr = Text::StrWChar_UTF8(outptr, tbuff, -1);
+				outptr = Text::StrWChar_UTF8(outptr, tbuff);
 				outptr = Text::StrConcat(outptr, strArrs[3]);
 			}
 			else
@@ -562,13 +562,13 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 					tbuff[1] = 0;
 					if (buff[0] == 0)
 					{
-						outptr = Text::StrWChar_UTF8(outptr, tbuff, -1);
+						outptr = Text::StrWChar_UTF8(outptr, tbuff);
 						outptr = Text::StrConcat(outptr, strArrs[3]);
 					}
 					else
 					{
 						outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
-						outptr = Text::StrWChar_UTF8(outptr, tbuff, -1);
+						outptr = Text::StrWChar_UTF8(outptr, tbuff);
 						outptr = Text::StrConcat(outptr, strArrs[3]);
 					}
 				}

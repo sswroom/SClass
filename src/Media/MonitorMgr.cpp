@@ -109,6 +109,37 @@ Double Media::MonitorMgr::GetMonitorHDPI(void *hMonitor)
 				case IO::SystemInfo::CT_NOTEBOOK:
 					ddpi = 144.0;
 					break;
+				case IO::SystemInfo::CT_UNKNOWN:
+				case IO::SystemInfo::CT_DESKTOP:
+				case IO::SystemInfo::CT_LPDESKTOP:
+				case IO::SystemInfo::CT_PIZZABOX:
+				case IO::SystemInfo::CT_MINITOWER:
+				case IO::SystemInfo::CT_TOWER:
+				case IO::SystemInfo::CT_PORTABLE:
+				case IO::SystemInfo::CT_DOCKINGSTATION:
+				case IO::SystemInfo::CT_AIO:
+				case IO::SystemInfo::CT_SUBNOTEBOOk:
+				case IO::SystemInfo::CT_SPACESAVING:
+				case IO::SystemInfo::CT_LUNCHBOX:
+				case IO::SystemInfo::CT_MAINSERVER:
+				case IO::SystemInfo::CT_EXPANSION:
+				case IO::SystemInfo::CT_SUBCHASSIS:
+				case IO::SystemInfo::CT_BUSEXPANSION:
+				case IO::SystemInfo::CT_PERIPHERAL:
+				case IO::SystemInfo::CT_RAID:
+				case IO::SystemInfo::CT_RACKMOUNT:
+				case IO::SystemInfo::CT_SEALED_CASE_PC:
+				case IO::SystemInfo::CT_MULTISYSTEM:
+				case IO::SystemInfo::CT_COMPACT_PCI:
+				case IO::SystemInfo::CT_ADVANCEDTCA:
+				case IO::SystemInfo::CT_BLADE:
+				case IO::SystemInfo::CT_BLADEENCLOSURE:
+				case IO::SystemInfo::CT_CONVERTIBLE:
+				case IO::SystemInfo::CT_DETACHABLE:
+				case IO::SystemInfo::CT_IOT_GATEWAY:
+				case IO::SystemInfo::CT_EMBEDDEDPC:
+				case IO::SystemInfo::CT_MINI_PC:
+				case IO::SystemInfo::CT_STICK_PC:
 				default:
 					ddpi = 96.0;
 					break;

@@ -19,7 +19,7 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganParentItem::GetIte
 
 UTF8Char *SSWR::OrganMgr::OrganParentItem::GetItemName(UTF8Char *buff)
 {
-	return Text::StrWChar_UTF8(buff, L"上移", -1);
+	return Text::StrWChar_UTF8(buff, L"上移");
 }
 
 UTF8Char *SSWR::OrganMgr::OrganParentItem::GetEngName(UTF8Char *buff)

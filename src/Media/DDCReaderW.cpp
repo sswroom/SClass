@@ -157,7 +157,7 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 				monVID[1] = (UTF8Char)ddMon.DeviceID[k + 1];
 				monVID[2] = (UTF8Char)ddMon.DeviceID[k + 2];
 				monVID[3] = 0;
-				Text::StrWChar_UTF8(u8buff, &ddMon.DeviceID[k + 3], 4);
+				Text::StrWChar_UTF8C(u8buff, &ddMon.DeviceID[k + 3], 4);
 				monPID = (UInt32)Text::StrHex2Int32C(u8buff);
 
 				if (Text::StrStartsWith(monitorId, monVID) && Text::StrEqualsICase(&monitorId[3], u8buff))

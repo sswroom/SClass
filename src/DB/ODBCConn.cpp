@@ -2091,7 +2091,7 @@ UTF8Char *DB::ODBCReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	Int16 notNull;
 	SQLWCHAR sbuff[256];
 	SQLDescribeColW((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(colIndex + 1), sbuff, 512, &nameLen, &dataType, (SQLULEN*)&colSize, &decimalDigit, &notNull);
-	return Text::StrUTF16_UTF8(buff, sbuff, -1);
+	return Text::StrUTF16_UTF8(buff, sbuff);
 }
 
 Bool DB::ODBCReader::IsNull(UOSInt colIndex)

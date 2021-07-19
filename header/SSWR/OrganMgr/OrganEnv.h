@@ -181,7 +181,7 @@ namespace SSWR
 			virtual UOSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp) = 0;
 			virtual UOSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp) = 0;
 			virtual UOSInt GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp) = 0;
-			virtual UOSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp) = 0;
+			virtual UOSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<UInt32> *colors, OrganGroup *grp) = 0;
 			virtual UOSInt GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds) = 0;
 			Data::ArrayList<OrganGroupType*> *GetGroupTypes();
 			virtual OrganGroup *GetGroup(Int32 groupId, Int32 *parentId) = 0;

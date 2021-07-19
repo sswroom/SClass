@@ -371,7 +371,7 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
 		WChar *buff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, buff, (Int32)charCnt);
-		charCnt = Text::StrWChar_UTF8Cnt(buff, -1);
+		charCnt = Text::StrWChar_UTF8Cnt(buff);
 		MemFree(buff);
 		return charCnt;
 #else
@@ -541,7 +541,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		WChar *wbuff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, wbuff, (Int32)charCnt);
 		wbuff[charCnt] = 0;
-		UTF8Char *dest = Text::StrWChar_UTF8(buff, wbuff, -1);
+		UTF8Char *dest = Text::StrWChar_UTF8(buff, wbuff);
 		MemFree(wbuff);
 		if (byteConv)
 		{
@@ -562,11 +562,11 @@ UOSInt Text::Encoding::WCountBytes(const WChar *stri, OSInt strLen)
 	{
 		if (strLen < 0)
 		{
-			return StrWChar_UTF8Cnt(stri, strLen) + 1;
+			return StrWChar_UTF8Cnt(stri) + 1;
 		}
 		else
 		{
-			return StrWChar_UTF8Cnt(stri, strLen);
+			return StrWChar_UTF8CntC(stri, (UOSInt)strLen);
 		}
 	}
 	else if (this->codePage == 1200)
@@ -594,11 +594,11 @@ UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr, OSInt strLen)
 	{
 		if (strLen < 0)
 		{
-			return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr, strLen) - bytes + 1);
+			return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
 		}
 		else
 		{
-			return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr, strLen) - bytes);
+			return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, (UOSInt)strLen) - bytes);
 		}
 	}
 	else if (this->codePage == 1200)

@@ -224,7 +224,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
-	OSInt i = this->ieList->GetCount();
+	UOSInt i = this->ieList->GetCount();
 	Net::WirelessLANIE *ie;
 	while (i-- > 0)
 	{
@@ -268,7 +268,7 @@ Double Net::WirelessLAN::BSSInfo::GetRSSI()
 	return this->rssi;
 }
 
-Int32 Net::WirelessLAN::BSSInfo::GetLinkQuality()
+UInt32 Net::WirelessLAN::BSSInfo::GetLinkQuality()
 {
 	return this->linkQuality;
 }
@@ -440,8 +440,8 @@ Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfac
 	Int32 retVal = 0;
 	if (ERROR_SUCCESS == WirelessLAN_EnumInterfaces(clsData, 0, (void**)&list))
 	{
-		Int32 i;
-		Int32 j;
+		UInt32 i;
+		UInt32 j;
 		i = 0;
 		j = list->dwNumberOfItems;
 		while (i < j)

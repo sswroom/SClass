@@ -211,7 +211,7 @@ DB::OLEDBConn::~OLEDBConn()
 	}
 	if (data->tableNames)
 	{
-		OSInt i = data->tableNames->GetCount();
+		UOSInt i = data->tableNames->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew(data->tableNames->GetItem(i));
@@ -235,7 +235,7 @@ DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 			OSInt j = Text::StrIndexOf(&data->connStr[i + 9], ';');
 			if (j >= 0)
 			{
-				const WChar *wptr = Text::StrCopyNewC(&data->connStr[i + 9], j);
+				const WChar *wptr = Text::StrCopyNewC(&data->connStr[i + 9], (UOSInt)j);
 				const UTF8Char *csptr = Text::StrToUTF8New(wptr);
 				sb.Append(csptr);
 				Text::StrDelNew(csptr);
@@ -507,7 +507,7 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		if (SUCCEEDED(hr))
 		{
 			VARIANT rgRestrictions[CRESTRICTIONS_DBSCHEMA_TABLES];
-			OSInt i = CRESTRICTIONS_DBSCHEMA_TABLES;
+			UOSInt i = CRESTRICTIONS_DBSCHEMA_TABLES;
 			while (i-- > 0)
 			{
 				VariantInit(&rgRestrictions[i]);
@@ -518,7 +518,7 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 			VariantClear(&rgRestrictions[3]);
 			if (SUCCEEDED(hr))
 			{
-				OSInt tableNameCol = 3;
+				UOSInt tableNameCol = 3;
 				DB::OLEDBReader *rdr;
 				NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1));
 				i = rdr->ColCount();
@@ -545,8 +545,8 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 			pIDBSchemaRowset->Release();
 		}
 	}
-	OSInt i = 0;
-	OSInt j = data->tableNames->GetCount();
+	UOSInt i = 0;
+	UOSInt j = data->tableNames->GetCount();
 	while (i < j)
 	{
 		names->Add(data->tableNames->GetItem(i));
@@ -1189,7 +1189,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
+			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
@@ -1209,7 +1209,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 		if (*valLen == 16)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
@@ -1318,7 +1318,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
+			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
 			sb->AppendDate(&dt);
 			return true;
 		}
@@ -1336,7 +1336,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 		if (*valLen == 16)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
 			sb->AppendDate(&dt);
 			return true;
 		}
@@ -1456,12 +1456,12 @@ UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 		}
 		return 0;
 	case DBTYPE_WSTR:
-		return Text::StrWChar_UTF8(buff, (const WChar*)val, *valLen / sizeof(WChar));
+		return Text::StrWChar_UTF8C(buff, (const WChar*)val, (UOSInt)*valLen / sizeof(WChar));
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
+			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
 			return dt.ToString(buff);
 		}
 		return 0;
@@ -1477,7 +1477,7 @@ UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 		if (*valLen == 16)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
 			return dt.ToString(buff);
 		}
 		return 0;
@@ -1504,7 +1504,7 @@ DB::DBReader::DateErrType DB::OLEDBReader::GetDate(UOSInt colIndex, Data::DateTi
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			outVal->SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
+			outVal->SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
 			return DB::DBReader::DET_OK;
 		}
 		return DB::DBReader::DET_ERROR;
@@ -1518,7 +1518,7 @@ DB::DBReader::DateErrType DB::OLEDBReader::GetDate(UOSInt colIndex, Data::DateTi
 	case DBTYPE_DBTIMESTAMP:
 		if (*valLen == 16)
 		{
-			outVal->SetValue(ReadInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			outVal->SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
 			return DB::DBReader::DET_OK;
 		}
 		return DB::DBReader::DET_ERROR;
@@ -1655,7 +1655,7 @@ UTF8Char *DB::OLEDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 		return 0;
 	if (data->dbColInfo[colIndex].pwszName == 0)
 		return 0;
-	return Text::StrWChar_UTF8(buff, data->dbColInfo[colIndex].pwszName, -1);
+	return Text::StrWChar_UTF8(buff, data->dbColInfo[colIndex].pwszName);
 }
 
 Bool DB::OLEDBReader::IsNull(UOSInt colIndex)

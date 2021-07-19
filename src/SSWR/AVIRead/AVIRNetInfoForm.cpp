@@ -527,7 +527,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 			this->lvWIFIBSS->SetSubItem(k, 4, sbuff);
 			Text::StrDouble(sbuff, bss->GetRSSI());
 			this->lvWIFIBSS->SetSubItem(k, 5, sbuff);
-			Text::StrInt32(sbuff, bss->GetLinkQuality());
+			Text::StrUInt32(sbuff, bss->GetLinkQuality());
 			this->lvWIFIBSS->SetSubItem(k, 6, sbuff);
 			if ((csptr = bss->GetManuf()) != 0)
 			{

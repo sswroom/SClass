@@ -483,13 +483,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Battery Percent = ");
-		sb.AppendI32(pstatus.batteryPercent);
+		sb.AppendU32(pstatus.batteryPercent);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Time Left (sec.) = ");
-		sb.AppendI32(pstatus.timeLeftSec);
+		sb.AppendU32(pstatus.timeLeftSec);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
@@ -1170,6 +1170,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sensor->DisableSensor();
 					}
 					break;
+				case IO::Sensor::ST_ORIENTATION:
 				case IO::Sensor::ST_UNKNOWN:
 				default:
 					break;

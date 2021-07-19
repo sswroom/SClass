@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 		sptr = Text::StrInt32(sptr, sms->index);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
-		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress(), -1);
+		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress());
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".sms");
 		dlg->SetFileName(sbuff);
 

@@ -54,6 +54,8 @@ Manage/ModuleInfo.h: ../../src/Manage/ModuleInfoW.cpp
 @ModuleInfo.o
 Manage/Process.h: ../../src/Manage/ProcessW.cpp
 @Process.o
+Manage/ProcessExecution.h: ../../src/Manage/ProcessExecutionW.cpp
+@ProcessExecution.o
 Manage/StackTracer.h: ../../src/Manage/StackTracerW.cpp
 @StackTracer.o
 
@@ -137,6 +139,7 @@ HiResClock.o: ../../src/Manage/HiResClockW.cpp
 ModuleInfo.o: ../../src/Manage/ModuleInfoW.cpp
 Process.o: ../../src/Manage/ProcessW.cpp
 !-lpsapi
+ProcessExecution.o: ../../src/Manage/ProcessExecutionW.cpp
 StackTracer.o: ../../src/Manage/StackTracerW.cpp
 ColorManager.o: ../../src/Media/ColorManager.cpp
 !-lgdi32

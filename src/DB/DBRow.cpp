@@ -840,7 +840,7 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
 		{
 			if (c >= 'a' && c <= 'z')
 			{
-				sb->AppendChar(c - 0x20, 1);
+				sb->AppendChar((UTF32Char)(c - 0x20), 1);
 			}
 			else
 			{
@@ -852,7 +852,7 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
 		{
 			if (c >= 'A' && c <= 'Z')
 			{
-				sb->AppendChar(c + 0x20, 1);
+				sb->AppendChar((UTF32Char)(c + 0x20), 1);
 			}
 			else
 			{
@@ -879,7 +879,7 @@ void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF *sb, const UTF8Char *co
 		{
 			if (c >= 'a' && c <= 'z')
 			{
-				sb->AppendChar(c - 0x20, 1);
+				sb->AppendChar((UTF32Char)(c - 0x20), 1);
 			}
 			else
 			{
@@ -891,7 +891,7 @@ void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF *sb, const UTF8Char *co
 		{
 			if (c >= 'A' && c <= 'Z')
 			{
-				sb->AppendChar(c + 0x20, 1);
+				sb->AppendChar((UTF32Char)(c + 0x20), 1);
 			}
 			else
 			{

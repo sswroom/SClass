@@ -66,8 +66,8 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, UI
 	this->lvMain->AddColumn((const UTF8Char*)"Name", 150);
 	this->lvMain->AddColumn((const UTF8Char*)"Value", 300);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	IO::IGPUControl *gpu;
 	i = 0;
 	j = this->gpuMgr->GetGPUCount();

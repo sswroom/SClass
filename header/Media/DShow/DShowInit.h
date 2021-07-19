@@ -38,6 +38,6 @@ inline unsigned long min(unsigned long a, unsigned long b) {return (a > b)?b:a;}
 #if defined(__MINGW32__)
 constexpr long long int operator "" I64 (unsigned long long int v)
 {
-	return v;
+	return (long long int)v;
 }
 #endif

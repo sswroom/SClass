@@ -67,7 +67,7 @@ Win32::WMIQuery::~WMIQuery()
 	this->Close();
 	if (this->tabNames)
 	{
-		OSInt i = this->tabNames->GetCount();
+		UOSInt i = this->tabNames->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew(this->tabNames->GetItem(i));
@@ -291,7 +291,7 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 
 void Win32::WMIQuery::FreeNSList(Data::ArrayList<const WChar *> *nsList)
 {
-	OSInt i = nsList->GetCount();
+	UOSInt i = nsList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(nsList->GetItem(i));

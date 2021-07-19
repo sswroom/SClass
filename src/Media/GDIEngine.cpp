@@ -2658,7 +2658,7 @@ UOSInt Media::GDIImage::SavePng(IO::SeekableStream *stm)
 	if(stat == Gdiplus::Ok)
 		return 0;
 	else
-		return stat | 0x10000; 
+		return (UOSInt)stat | 0x10000; 
 #else
 	return 0x10000;
 #endif
@@ -2737,7 +2737,7 @@ UOSInt Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
 	if(stat == Gdiplus::Ok)
 		return 0;
 	else
-		return stat | 0x10000; 
+		return (UOSInt)stat | 0x10000; 
 #else
 	return 0x10000;
 #endif
@@ -2775,7 +2775,7 @@ UOSInt Media::GDIImage::SaveJPG(IO::SeekableStream *stm)
 	if(stat == Gdiplus::Ok)
 		return 0;
 	else
-		return stat | 0x10000; 
+		return (UOSInt)stat | 0x10000; 
 #else
 	return 0x10000;
 #endif
@@ -2795,29 +2795,29 @@ void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSIn
 {
 	if (left < 0)
 	{
-		width += left;
+		width += (UOSInt)left;
 		left = 0;
 	}
 	if (top < 0)
 	{
-		height += top;
+		height += (UOSInt)top;
 		top = 0;
 	}
 	if (left >= (OSInt)this->width || top >= (OSInt)this->height)
 		return;
 	if (left + (OSInt)width > (OSInt)this->width)
 	{
-		width = this->width - left;
+		width = this->width - (UOSInt)left;
 	}
 	if (top + (OSInt)height > (OSInt)this->height)
 	{
-		height = this->height - top;
+		height = this->height - (UOSInt)top;
 	}
 	UOSInt lineSize = (width * this->bitCount) >> 3;
-	OSInt srcBpl = (this->width * this->bitCount) >> 3;
+	OSInt srcBpl = (OSInt)(this->width * this->bitCount) >> 3;
 	
 	UInt8 *srcPtr = (UInt8*)this->bmpBits;
-	srcPtr = srcPtr + (this->height - top) * srcBpl + ((left * this->bitCount) >> 3);
+	srcPtr = srcPtr + (this->height - (UOSInt)top) * srcBpl + ((left * this->bitCount) >> 3);
 	UOSInt i = height;
 	while (i-- > 0)
 	{
@@ -3135,7 +3135,7 @@ void *Media::GDIImage::CreateGDIImage()
 		Gdiplus::BitmapData *bitmapData = new Gdiplus::BitmapData();
 		Gdiplus::Bitmap *bmp = new Gdiplus::Bitmap((INT)this->width, (INT)this->height, PixelFormat32bppARGB);
 		bmp->LockBits(&rect, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, bitmapData);
-		i = this->height;
+		i = (OSInt)this->height;
 		sbpl = this->GetDataBpl();
 		dbpl = bitmapData->Stride;
 		sptr = i * sbpl + (UInt8*)this->bmpBits;
@@ -3144,7 +3144,7 @@ void *Media::GDIImage::CreateGDIImage()
 		while (i-- > 0)
 		{
 			sptr -= sbpl;
-			MemCopyNO(dptr, sptr, sbpl);
+			MemCopyNO(dptr, sptr, (UOSInt)sbpl);
 			dptr += dbpl;
 		}
 

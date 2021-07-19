@@ -266,7 +266,7 @@ UTF8Char *Media::WaveOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
 	WAVEOUTCAPSW caps;
 	waveOutGetDevCapsW(devNo, &caps, sizeof(caps));
-	return Text::StrWChar_UTF8(buff, caps.szPname, -1);
+	return Text::StrWChar_UTF8(buff, caps.szPname);
 }
 
 Media::WaveOutRenderer::WaveOutRenderer(const UTF8Char *devName)

@@ -33,14 +33,14 @@ Bool IO::SerialPort::InitStream()
 	DCB dcb;
 	if (portNum >= 10)
 	{
-		Text::StrOSInt(Text::StrConcat(buff, L"\\\\.\\COM"), portNum);
+		Text::StrUOSInt(Text::StrConcat(buff, L"\\\\.\\COM"), portNum);
 	}
 	else
 	{
 #ifdef _WIN32_WCE
 		Text::StrConcat(Text::StrInt32(Text::StrConcat(buff, L"COM"), portNum), L":");
 #else
-		Text::StrOSInt(Text::StrConcat(buff, L"COM"), portNum);
+		Text::StrUOSInt(Text::StrConcat(buff, L"COM"), portNum);
 #endif
 	}
 
@@ -161,7 +161,7 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 				{
 					if (Text::StrStartsWith(sbuff2, L"COM"))
 					{
-						ports->Add(Text::StrToOSInt(&sbuff2[3]));
+						ports->Add(Text::StrToUOSInt(&sbuff2[3]));
 						if (portTypes)
 						{
 							if (Text::StrStartsWith(sbuff, L"\\Device\\com0com"))
@@ -263,7 +263,7 @@ UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
 						{
 							if (Text::StrStartsWith(sbuff2, L"COM"))
 							{
-								port = Text::StrToOSInt(&sbuff2[3]);
+								port = Text::StrToUOSInt(&sbuff2[3]);
 								break;
 							}
 						}
@@ -297,7 +297,7 @@ UOSInt IO::SerialPort::GetBTPort()
 
 UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 {
-	return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"COM"), portNum);
+	return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"COM"), portNum);
 }
 
 Bool IO::SerialPort::ResetPort(UOSInt portNum)
@@ -439,7 +439,7 @@ UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
 struct ReadEvent
 {
 	UInt8 *buff;
-	OSInt size;	
+	UOSInt size;	
 	Sync::Event *evt;
 	UInt32 readSize;
 	OVERLAPPED ol;

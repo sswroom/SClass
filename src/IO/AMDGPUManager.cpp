@@ -82,7 +82,7 @@ typedef struct
 
 void* __stdcall ADL_Main_Memory_Alloc(int iSize)
 {
-	UInt8* lpBuffer = MemAlloc(UInt8, iSize);
+	UInt8* lpBuffer = MemAlloc(UInt8, (UOSInt)(UInt32)iSize);
 	return lpBuffer;
 }
 
@@ -169,19 +169,19 @@ IO::AMDGPUManager::AMDGPUManager()
 				{
 					cnt = 0;
 				}
-				this->adapterInfos = MemAlloc(UInt8, sizeof(AdapterInfo) * cnt);
+				this->adapterInfos = MemAlloc(UInt8, sizeof(AdapterInfo) * (UOSInt)(UInt32)cnt);
 				NEW_CLASS(this->adapterList, Data::ArrayList<UInt8*>());
 				AdapterInfo *adapter;
 				if (cnt > 0)
 				{
-					MemClear(this->adapterInfos, sizeof(AdapterInfo) * cnt);
+					MemClear(this->adapterInfos, sizeof(AdapterInfo) * (UOSInt)(UInt32)cnt);
 					if (adlFuncs->ADL_Adapter_AdapterInfo_Get)
-						adlFuncs->ADL_Adapter_AdapterInfo_Get((LPAdapterInfo)this->adapterInfos, sizeof(AdapterInfo) * cnt);
+						adlFuncs->ADL_Adapter_AdapterInfo_Get((LPAdapterInfo)this->adapterInfos, (int)sizeof(AdapterInfo) * cnt);
 				}
 				i = 0;
 				while (i < cnt)
 				{
-					adapter = (AdapterInfo*)&this->adapterInfos[sizeof(AdapterInfo) * i];
+					adapter = (AdapterInfo*)&this->adapterInfos[sizeof(AdapterInfo) * (UInt32)i];
 					if (adapter->iVendorID == AMDVENDORID)
 					{
 						int active = 0;
@@ -233,14 +233,14 @@ IO::AMDGPUManager::~AMDGPUManager()
 	SDEL_CLASS(this->lib);
 }
 
-OSInt IO::AMDGPUManager::GetGPUCount()
+UOSInt IO::AMDGPUManager::GetGPUCount()
 {
 	if (this->adapterList == 0)
 		return 0;
 	return this->adapterList->GetCount();
 }
 
-IO::IGPUControl *IO::AMDGPUManager::CreateGPUControl(OSInt index)
+IO::IGPUControl *IO::AMDGPUManager::CreateGPUControl(UOSInt index)
 {
 	IO::AMDGPUControl *gpuCtrl;
 	if (this->adapterList == 0)

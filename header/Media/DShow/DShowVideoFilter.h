@@ -25,18 +25,18 @@ namespace Media
 		{
 		private:
 			Int32 initRes;
-			OSInt preferWidth;
-			OSInt preferHeight;
-			Int32 preferRate;
+			UOSInt preferWidth;
+			UOSInt preferHeight;
+			UInt32 preferRate;
 			UInt32 preferFCC;
-			Int32 preferBPP;
-			Int32 frameNum;
-			Int32 frameMul;
+			UInt32 preferBPP;
+			UInt32 frameNum;
+			UInt32 frameMul;
 			
 			UInt32 frameFCC;
-			Int32 frameWidth;
-			Int32 frameHeight;
-			Int32 frameSize;
+			UInt32 frameWidth;
+			UInt32 frameHeight;
+			UInt32 frameSize;
 			Manage::HiResClock *clk;
 			Media::IRealtimeVideoSource::FrameCallback cb;
 			Media::IRealtimeVideoSource::FrameChangeCallback fcCb;
@@ -51,7 +51,7 @@ namespace Media
 				this->preferWidth = 0;
 				this->preferHeight = 0;
 				this->preferRate = 0;
-				this->preferFCC = -1;
+				this->preferFCC = (UInt32)-1;
 				this->preferBPP = 0;
 				this->frameMul = 8;
 				this->frameNum = 0;
@@ -85,16 +85,16 @@ namespace Media
 
 				if (this->preferWidth)
 				{
-					if (format->bmiHeader.biWidth != this->preferWidth)
+					if ((ULONG)format->bmiHeader.biWidth != this->preferWidth)
 						return S_FALSE;
 				}
-				this->frameWidth = format->bmiHeader.biWidth;
+				this->frameWidth = (ULONG)format->bmiHeader.biWidth;
 				if (this->preferHeight)
 				{
-					if (format->bmiHeader.biHeight != this->preferHeight)
+					if ((ULONG)format->bmiHeader.biHeight != this->preferHeight)
 						return S_FALSE;
 				}
-				this->frameHeight = format->bmiHeader.biHeight;
+				this->frameHeight = (ULONG)format->bmiHeader.biHeight;
 				if (this->preferRate)
 				{
 					if (format->AvgTimePerFrame != this->preferRate)
@@ -155,7 +155,7 @@ namespace Media
 				BYTE *dataPtr;
 				if (sample->GetPointer(&dataPtr) == S_OK)
 				{
-					Int32 frameSize = sample->GetSize();
+					UInt32 frameSize = (UInt32)sample->GetSize();
 					if (frameSize > this->frameWidth * this->frameHeight * this->frameMul >> 3)
 					{
 						frameSize = this->frameWidth * this->frameHeight * this->frameMul >> 3;
@@ -247,7 +247,7 @@ namespace Media
 						sample->GetTime(&t1, &t2);
 						t = (Int32)(t1 / 10);
 					}
-					cb(t, this->frameNum++, &dataPtr, frameSize, fs, ud, ftype, (sample->IsDiscontinuity() == S_OK)?((Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_REALTIME)):(Media::IVideoSource::FF_REALTIME), Media::YCOFST_C_CENTER_LEFT);
+					cb((UInt32)t, this->frameNum++, &dataPtr, frameSize, fs, ud, ftype, (sample->IsDiscontinuity() == S_OK)?((Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_REALTIME)):(Media::IVideoSource::FF_REALTIME), Media::YCOFST_C_CENTER_LEFT);
 					return S_OK;
 				}
 				else
@@ -256,7 +256,7 @@ namespace Media
 				}
 			}
 
-			void SetPreferSize(OSInt width, OSInt height, Int32 rate, Int32 fcc, Int32 bpp)
+			void SetPreferSize(UOSInt width, UOSInt height, UInt32 rate, UInt32 fcc, UInt32 bpp)
 			{
 				this->preferWidth = width;
 				this->preferHeight = height;
@@ -280,7 +280,7 @@ namespace Media
 				}
 			}
 
-			Int32 GetFrameMul()
+			UInt32 GetFrameMul()
 			{
 				return this->frameMul;
 			}

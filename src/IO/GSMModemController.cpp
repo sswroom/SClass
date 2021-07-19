@@ -964,6 +964,7 @@ Bool IO::GSMModemController::PBSetStorage(PBStorage storage)
 	case PBSTORE_SERVICE_DIALING_NUMBERS:
 		cmd = "AT+CPBS=\"SN\"";
 		break;
+	case PBSTORE_UNKNOWN:
 	default:
 		return false;
 	}
@@ -1211,6 +1212,7 @@ Int32 IO::GSMModemController::GetRSSIdBm(RSSI rssi)
 		return -53;
 	case RSSI_51:
 		return -51;
+	case RSSI_UNKNOWN:
 	default:
 		return 0;
 	}
@@ -1284,6 +1286,7 @@ UTF8Char *IO::GSMModemController::GetRSSIString(UTF8Char *buff, RSSI rssi)
 		return Text::StrConcat(buff, (const UTF8Char*)"-53 dBm");
 	case RSSI_51:
 		return Text::StrConcat(buff, (const UTF8Char*)"-51 dBm");
+	case RSSI_UNKNOWN:
 	default:
 		return Text::StrConcat(buff, (const UTF8Char*)"Unknown");
 	}
@@ -1309,6 +1312,7 @@ UTF8Char *IO::GSMModemController::GetBERString(UTF8Char *buff, BER ber)
 		return Text::StrConcat(buff, (const UTF8Char*)"6.4% - 12.8%");
 	case BER_RXQUAL_7:
 		return Text::StrConcat(buff, (const UTF8Char*)"12.8%");
+	case BER_UNKNWON:
 	default:
 		return Text::StrConcat(buff, (const UTF8Char*)"Unknown");
 	}

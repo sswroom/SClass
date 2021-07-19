@@ -225,7 +225,7 @@ UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UOSInt index)
 	if (index > cReturned)
 		return 0;
 	_PRINTER_INFO_1W *info = (_PRINTER_INFO_1W*)buff;
-	return Text::StrWChar_UTF8(sbuff, info[index].pName, -1);
+	return Text::StrWChar_UTF8(sbuff, info[index].pName);
 }
 
 Media::Printer *Media::Printer::SelectPrinter(void *hWnd)

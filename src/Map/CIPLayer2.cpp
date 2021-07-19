@@ -252,7 +252,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 						strTmp[buff[4] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Put(*(Int32*)buff, strTmp);
-						textSize = Text::StrUTF16_UTF8Cnt(strTmp, -1) - 1;
+						textSize = Text::StrUTF16_UTF8Cnt(strTmp) - 1;
 						if (textSize > this->maxTextSize)
 							maxTextSize = textSize;
 					}
@@ -423,7 +423,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 							strTmp[buff[4] >> 1] = 0;
 							outArr->Add(*(Int32*)buff);
 							tmpArr->Put(*(Int32*)buff, strTmp);
-							textSize = Text::StrUTF16_UTF8Cnt(strTmp, -1) - 1;
+							textSize = Text::StrUTF16_UTF8Cnt(strTmp) - 1;
 							if (textSize > this->maxTextSize)
 							{
 								this->maxTextSize = textSize;
@@ -527,7 +527,7 @@ UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, void *nameA
 	WChar *s = tmpMap->Get((Int32)id);
 	if (s)
 	{
-		return Text::StrWChar_UTF8(buff, s, -1);
+		return Text::StrWChar_UTF8(buff, s);
 	}
 	else
 	{

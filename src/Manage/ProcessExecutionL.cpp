@@ -150,6 +150,10 @@ void Manage::ProcessExecution::Close()
 		close(clsData->in[1]);
 		close(clsData->out[0]);
 		close(clsData->out[1]);
+		clsData->in[0] = 0;
+		clsData->in[1] = 0;
+		clsData->out[0] = 0;
+		clsData->out[1] = 0;
 	}
 }
 

@@ -983,7 +983,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpeci
 	return cnt;
 }
 
-UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<UInt32> *colors, OrganGroup *grp)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1291,6 +1291,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 	Data::ArrayListInt32 spList;
 	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
+	OSInt si;
 	UOSInt i;
 	UOSInt j;
 	Int32 spId;
@@ -1303,10 +1304,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 		while (r->ReadNext())
 		{
 			spId = r->GetInt32(0);
-			i = spList.SortedIndexOf(spId);
-			if (i < 0)
+			si = spList.SortedIndexOf(spId);
+			if (si < 0)
 			{
-				spList.Insert(~i, spId);
+				spList.Insert(~si, spId);
 			}
 		}
 		this->db->CloseReader(r);

@@ -27,7 +27,7 @@ UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
 #else
 	GetModuleFileNameExW((HANDLE)this->hProc, (HMODULE)this->hMod, sbuff, 512 * sizeof(WChar));
 #endif
-	return Text::StrWChar_UTF8(buff, sbuff, -1);
+	return Text::StrWChar_UTF8(buff, sbuff);
 }
 
 Bool Manage::ModuleInfo::GetModuleAddress(UOSInt *baseAddr, UOSInt *size)

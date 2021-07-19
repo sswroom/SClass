@@ -47,7 +47,7 @@ UTF8Char *Text::TextEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)
 		}
 	}*/
 
-	return Text::StrWChar_UTF8(buff, strToEnc, -1);
+	return Text::StrWChar_UTF8(buff, strToEnc);
 /*
 	punycode_uint n, delta, h, b, out, max_out, bias, j, m, q, k, t;
 
@@ -106,7 +106,7 @@ UTF8Char *Text::TextEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)
   *output_length = out;
   return punycode_success;
   */
-	return Text::StrWChar_UTF8(buff, strToEnc, -1);
+	return Text::StrWChar_UTF8(buff, strToEnc);
 }
 
 WChar *Text::TextEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)

@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	Text::TextEnc::Punycode::Decode(wbuff, L"xn--d9juau41awczczp");
 	console.Write((const UTF8Char*)"WChar: ");
-	Text::StrWChar_UTF8(sbuff, wbuff, -1);
+	Text::StrWChar_UTF8(sbuff, wbuff);
 	console.WriteLine(sbuff);
 	return 0;
 }

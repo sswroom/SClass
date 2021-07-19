@@ -890,7 +890,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				info->parentId = pe32.th32ParentProcessID;
 				info->processId = pe32.th32ProcessID;
 				info->threadCnt = pe32.cntThreads;
-				return Text::StrWChar_UTF8(processNameBuff, pe32.szExeFile, -1);
+				return Text::StrWChar_UTF8(processNameBuff, pe32.szExeFile);
 			}
 		}
 		else
@@ -898,7 +898,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 			info->parentId = pe32.th32ParentProcessID;
 			info->processId = pe32.th32ProcessID;
 			info->threadCnt = pe32.cntThreads;
-			return Text::StrWChar_UTF8(processNameBuff, pe32.szExeFile, -1);
+			return Text::StrWChar_UTF8(processNameBuff, pe32.szExeFile);
 		}
 		ret = Process32NextW(pfsess->hand, &pe32);
 	}

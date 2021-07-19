@@ -722,7 +722,7 @@ UTF8Char *Media::ASIOOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	{
 		if ((cr = RegEnumKeyW(hkEnum, (UInt32)devNo, sbuff, nameLen))== ERROR_SUCCESS)
 		{
-			ret = Text::StrWChar_UTF8(buff, sbuff, -1);
+			ret = Text::StrWChar_UTF8(buff, sbuff);
 		}
 	}
 	if (hkEnum)

@@ -187,6 +187,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			case Text::Doc::DocItem::HALIGN_CENTER:
 				writer->Write((const UTF8Char*)" style=\"text-align: center;\"");
 				break;
+			case Text::Doc::DocItem::HALIGN_NONE:
 			default:
 				break;
 			}
@@ -204,6 +205,13 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			writer->WriteLine((const UTF8Char*)"\t<a href=\"http://validator.w3.org/check?uri=referer\"><img");
 			writer->WriteLine((const UTF8Char*)"\tsrc=\"http://www.w3.org/Icons/valid-xhtml11\" alt=\"Valid XHTML 1.1\" height=\"31\" width=\"88\" /></a>");
 			writer->WriteLine((const UTF8Char*)"</p>");
+			break;
+		case Text::Doc::DocItem::DIT_HORICENTER:
+			writer->Write((const UTF8Char*)"<center>");
+			text = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
+			writer->Write(text);
+			Text::XML::FreeNewText(text);
+			writer->Write((const UTF8Char*)"</center>");
 			break;
 		default:
 			break;

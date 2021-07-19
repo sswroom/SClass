@@ -678,7 +678,7 @@ UTF8Char *DB::MySQLReader::GetName(UOSInt colIndex, UTF8Char *buff)
 		return 0;
 	if (colIndex >= this->colCount)
 		return 0;
-	return Text::StrWChar_UTF8(buff, this->names[colIndex], -1);
+	return Text::StrWChar_UTF8(buff, this->names[colIndex]);
 }
 
 Bool DB::MySQLReader::IsNull(UOSInt colIndex)

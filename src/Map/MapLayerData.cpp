@@ -203,7 +203,7 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 
 					if (n & 1)
 					{
-						buff = Text::StrUTF16_UTF8(buff, (UTF16Char*)&strRec[5], strRec[4] >> 1);
+						buff = Text::StrUTF16_UTF8C(buff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
 						*buff = 0;
 						return buff;
 					}
@@ -417,7 +417,7 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 				if (currFound)
 				{
 					foundRec = 1;
-					buffSize = Text::StrUTF16_UTF8(buff, (UTF16Char*)&strRec[5], strRec[4] >> 1) - buff;
+					buffSize = Text::StrUTF16_UTF8C(buff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1) - buff;
 					buff[buffSize] = 0;
 					if (xposOut)
 					{

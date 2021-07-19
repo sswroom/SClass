@@ -573,7 +573,7 @@ UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *u8buff)
 			IO::Registry::CloseRegistry(reg2);
 			if (sptr)
 			{
-				ret = Text::StrWChar_UTF8(u8buff, sbuff, -1);
+				ret = Text::StrWChar_UTF8(u8buff, sbuff);
 				ret = Text::StrTrim(u8buff);
 			}
 		}

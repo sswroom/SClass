@@ -11,12 +11,12 @@ IO::GPUManager::~GPUManager()
 {
 }
 
-OSInt IO::GPUManager::GetGPUCount()
+UOSInt IO::GPUManager::GetGPUCount()
 {
 	return 0;
 }
 
-IO::IGPUControl *IO::GPUManager::GetGPUControl(OSInt index)
+IO::IGPUControl *IO::GPUManager::GetGPUControl(UOSInt index)
 {
 	return 0;
 }

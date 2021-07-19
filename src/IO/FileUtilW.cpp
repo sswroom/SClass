@@ -133,7 +133,7 @@ UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, const UTF8Char *fileName)
 	if (GetVolumePathNameW(wptr, sbuff, 512))
 	{
 		Text::StrDelNew(wptr);
-		return Text::StrWChar_UTF8(buff, sbuff, -1);
+		return Text::StrWChar_UTF8(buff, sbuff);
 	}
 	else
 	{

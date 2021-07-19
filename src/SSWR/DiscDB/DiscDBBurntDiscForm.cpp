@@ -1490,7 +1490,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 		if (reg->GetValueStr(L"DiscType", wbuff))
 		{
 			
-			Text::StrWChar_UTF8(sbuff, wbuff, -1);
+			Text::StrWChar_UTF8(sbuff, wbuff);
 			this->txtDiscType->SetText(sbuff);
 			const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *discType = this->env->GetDiscType(sbuff);
 			if (discType)

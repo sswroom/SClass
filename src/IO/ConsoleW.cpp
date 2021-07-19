@@ -81,7 +81,7 @@ UTF8Char *IO::Console::GetLine(UTF8Char *buff)
 #endif
 	if (ptr)
 	{
-		return Text::StrWChar_UTF8(buff, sbuff, -1);
+		return Text::StrWChar_UTF8(buff, sbuff);
 	}
 	else
 	{
