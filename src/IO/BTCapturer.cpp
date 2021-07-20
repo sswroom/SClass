@@ -127,3 +127,8 @@ Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *IO::BTCapturer
 {
 	return this->clsData->bt->GetDeviceMap(mutUsage)->GetValues();
 }
+
+void IO::BTCapturer::SetUpdateHandler(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceHandler hdlr, void *userObj)
+{
+	this->clsData->bt->HandleDeviceUpdate(hdlr, userObj);
+}

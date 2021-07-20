@@ -26,7 +26,17 @@ namespace IO
 				Data::ArrayListUInt32 *keys;
 			} DeviceInfo;
 
-			typedef void (__stdcall *DeviceHandler)(DeviceInfo *dev, void *userObj);
+			typedef enum
+			{
+				UT_NEW_DEVICE,
+				UT_RSSI,
+				UT_TXPOWER,
+				UT_CONNECT,
+				UT_NAME,
+				UT_OTHER
+			} UpdateType;
+			
+			typedef void (__stdcall *DeviceHandler)(DeviceInfo *dev, UpdateType updateType, void *userObj);
 		private:
 			Manage::ProcessExecution *prog;
 			Sync::Mutex *devMut;

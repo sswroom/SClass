@@ -70,6 +70,16 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::IndexFunc(Net::WebServer::IW
 		sb.AppendUOSInt(j);
 		sb.Append((const UTF8Char*)"</a><br/>\r\n");
 	}
+	if (me->radioLogger)
+	{
+		sb.Append((const UTF8Char*)"Log Wifi count = ");
+		sb.AppendU64(me->radioLogger->GetWiFiCount());
+		sb.Append((const UTF8Char*)"<br/>\r\n");
+		sb.Append((const UTF8Char*)"Log BT count = ");
+		sb.AppendU64(me->radioLogger->GetBTCount());
+		sb.Append((const UTF8Char*)"<br/>\r\n");
+
+	}
 	sb.Append((const UTF8Char*)"</table></body><html>");
 
 	resp->AddDefHeaders(req);
@@ -396,10 +406,11 @@ void Net::WebServer::CaptuererWebHandler::AppendBTTable(Text::StringBuilderUTF *
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-Net::WebServer::CaptuererWebHandler::CaptuererWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture)
+Net::WebServer::CaptuererWebHandler::CaptuererWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger)
 {
 	this->wifiCapture = wifiCapture;
 	this->btCapture = btCapture;
+	this->radioLogger = radioLogger;
 
 	this->AddService((const UTF8Char*)"/index.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, IndexFunc);
 	this->AddService((const UTF8Char*)"/btcurr.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTCurrentFunc);

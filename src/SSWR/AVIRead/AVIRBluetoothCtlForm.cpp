@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev, IO::ProgCtrl::BluetoothCtlProgCtrl::UpdateType updateType, void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	Sync::MutexUsage mutUsage(me->devMut);

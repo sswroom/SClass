@@ -116,7 +116,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						dev->inRange = true;
 						dt->SetCurrTimeUTC();
 						dev->lastSeenTime = dt->ToTicks();
-						if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+						if (me->devHdlr) me->devHdlr(dev, UT_NEW_DEVICE, me->devHdlrObj);
 					}
 					else
 					{
@@ -150,33 +150,33 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Connected: "))
 						{
 							dev->connected = Text::StrEquals(&sarr[0][42], (const UTF8Char*)"yes");
-							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+							if (me->devHdlr) me->devHdlr(dev, UT_CONNECT, me->devHdlrObj);
 						}
 						//[CHG] Device 19:08:19:32:09:3A Name: Ble T70939
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Name: "))
 						{
 							SDEL_TEXT(dev->name);
 							dev->name = Text::StrCopyNew(&sarr[0][37]);
-							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+							if (me->devHdlr) me->devHdlr(dev, UT_NAME, me->devHdlrObj);
 						}
 						//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Alias: "))
 						{
 							SDEL_TEXT(dev->name);
 							dev->name = Text::StrCopyNew(&sarr[0][38]);
-							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+							if (me->devHdlr) me->devHdlr(dev, UT_NAME, me->devHdlrObj);
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"RSSI: "))
 						{
 							dev->rssi = Text::StrToInt32(&sarr[0][37]);
-							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+							if (me->devHdlr) me->devHdlr(dev, UT_RSSI, me->devHdlrObj);
 						}
 						//[CHG] Device 90:DD:5D:C2:E6:DA TxPower: 12
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"TxPower: "))
 						{
 							dev->txPower = Text::StrToInt32(&sarr[0][40]);
-							if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+							if (me->devHdlr) me->devHdlr(dev, UT_TXPOWER, me->devHdlrObj);
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"ManufacturerData Key: "))
@@ -187,7 +187,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 								if (dev->keys->SortedIndexOf(key) < 0)
 								{
 									dev->keys->SortedInsert(key);
-									if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+									if (me->devHdlr) me->devHdlr(dev, UT_OTHER, me->devHdlrObj);
 								}
 							}
 						}
@@ -265,7 +265,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 					if (dev)
 					{
 						dev->inRange = false;
-						if (me->devHdlr) me->devHdlr(dev, me->devHdlrObj);
+						if (me->devHdlr) me->devHdlr(dev, UT_OTHER, me->devHdlrObj);
 					}
 					else
 					{

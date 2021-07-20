@@ -1,0 +1,144 @@
+#include "Stdafx.h"
+#include "IO/Path.h"
+#include "IO/RadioSignalLogger.h"
+#include "Text/MyStringFloat.h"
+
+void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bss, Int64 scanTime, void *userObj)
+{
+	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
+	if (me->fs)
+	{
+		Data::DateTime dt;
+		Sync::MutexUsage mutUsage(me->fsMut);
+		Text::StringBuilderUTF8 sb;
+		dt.SetTicks(scanTime);
+		dt.ToLocalTime();
+		sb.AppendDate(&dt);
+		sb.AppendChar('\t', 1);
+		sb.Append((const UTF8Char*)"wifi");
+		sb.AppendChar('\t', 1);
+		sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LBT_NONE);
+		sb.AppendChar('\t', 1);
+		Text::SBAppendF64(&sb, bss->GetRSSI());
+		sb.Append((const UTF8Char*)"\r\n");
+		me->fs->Write(sb.ToString(), sb.GetLength());
+		me->wifiCnt++;
+	}
+}
+
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev, IO::ProgCtrl::BluetoothCtlProgCtrl::UpdateType updateType, void *userObj)
+{
+	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
+	if (updateType == IO::ProgCtrl::BluetoothCtlProgCtrl::UT_RSSI)
+	{
+		Data::DateTime dt;
+		Sync::MutexUsage mutUsage(me->fsMut);
+		Text::StringBuilderUTF8 sb;
+		dt.SetTicks(dev->lastSeenTime);
+		dt.ToLocalTime();
+		sb.AppendDate(&dt);
+		sb.AppendChar('\t', 1);
+		sb.Append((const UTF8Char*)"bt");
+		sb.AppendChar('\t', 1);
+		sb.AppendHexBuff(dev->mac, 6, ':', Text::LBT_NONE);
+		sb.AppendChar('\t', 1);
+		sb.AppendI32(dev->rssi);
+		sb.Append((const UTF8Char*)"\r\n");
+		me->fs->Write(sb.ToString(), sb.GetLength());
+		me->btCnt++;
+	}
+}
+
+IO::RadioSignalLogger::RadioSignalLogger()
+{
+	this->fs = 0;
+	this->fsMut = 0;
+	this->wifiCapture = 0;
+	this->btCapture = 0;
+	this->wifiCnt = 0;
+	this->btCnt = 0;
+
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	OSInt si;
+	Data::DateTime dt;
+	dt.SetCurrTime();
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[si + 1];
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)"radio");
+	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	NEW_CLASS(this->fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	if (this->fs->IsError())
+	{
+		DEL_CLASS(this->fs);
+		this->fs = 0;
+	}
+	else
+	{
+		NEW_CLASS(this->fsMut, Sync::Mutex());
+	}
+}
+
+IO::RadioSignalLogger::~RadioSignalLogger()
+{
+	this->Stop();
+}
+
+void IO::RadioSignalLogger::CaptureWiFi(Net::WiFiCapturer *wifiCapture)
+{
+	if (this->fs)
+	{
+		if (this->wifiCapture)
+		{
+			this->wifiCapture->SetUpdateHandler(0, 0);
+		}
+		this->wifiCapture = wifiCapture;
+		this->wifiCapture->SetUpdateHandler(OnWiFiUpdate, this);
+	}
+}
+
+void IO::RadioSignalLogger::CaptureBT(IO::BTCapturer *btCapture)
+{
+	if (this->fs)
+	{
+		if (this->btCapture)
+		{
+			this->btCapture->SetUpdateHandler(0, 0);
+		}
+		this->btCapture = btCapture;
+		this->btCapture->SetUpdateHandler(OnBTUpdate, this);
+	}
+}
+
+void IO::RadioSignalLogger::Stop()
+{
+	if (this->fs)
+	{
+		if (this->btCapture)
+		{
+			this->btCapture->SetUpdateHandler(0, 0);
+			this->btCapture = 0;
+		}
+		if (this->wifiCapture)
+		{
+			this->wifiCapture->SetUpdateHandler(0, 0);
+			this->wifiCapture = 0;
+		}
+		DEL_CLASS(this->fs);
+		this->fs = 0;
+		DEL_CLASS(this->fsMut);
+		this->fsMut = 0;
+	}
+}
+
+UInt64 IO::RadioSignalLogger::GetWiFiCount()
+{
+	return this->wifiCnt;
+}
+
+UInt64 IO::RadioSignalLogger::GetBTCount()
+{
+	return this->btCnt;
+}

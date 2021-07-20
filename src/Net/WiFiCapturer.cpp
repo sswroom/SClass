@@ -67,6 +67,11 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 				entry = me->wifiLog->AddBSSInfo(bss, &si);
 				entry->lastScanTimeTicks = currTime;
 				mutUsage.EndUse();
+
+				if (me->hdlr)
+				{
+					me->hdlr(bss, currTime, me->hdlrObj);
+				}
 				i++;
 			}
 
@@ -164,6 +169,8 @@ Net::WiFiCapturer::WiFiCapturer()
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->interf = 0;
+	this->hdlr = 0;
+	this->hdlrObj = 0;
 }
 
 Net::WiFiCapturer::~WiFiCapturer()
@@ -278,4 +285,10 @@ Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *Net::WiFiCapturer::GetLogList(
 {
 	mutUsage->ReplaceMutex(this->logMut);
 	return wifiLog->GetLogList();
+}
+
+void Net::WiFiCapturer::SetUpdateHandler(UpdateHandler hdlr, void *hdlrObj)
+{
+	this->hdlrObj = hdlrObj;
+	this->hdlr = hdlr;
 }

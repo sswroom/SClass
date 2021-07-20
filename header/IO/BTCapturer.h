@@ -29,6 +29,7 @@ namespace IO
 
 		void StoreStatus();
 		Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *GetLogList(Sync::MutexUsage *mutUsage);
+		void SetUpdateHandler(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceHandler hdlr, void *userObj);
 	};
 }
 #endif

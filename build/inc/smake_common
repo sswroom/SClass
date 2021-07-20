@@ -1302,6 +1302,8 @@ IO/PackageFile.h: ../../src/IO/PackageFile.cpp
 @PackageFile.o
 IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
+IO/RadioSignalLogger.h: ../../src/IO/RadioSignalLogger.cpp
+@RadioSignalLogger.o
 IO/Reader.h:
 IO/RS232GPIO.h: ../../src/IO/RS232GPIO.cpp
 @RS232GPIO.o
@@ -3670,6 +3672,7 @@ OneWireGPIO.o: ../../src/IO/OneWireGPIO.cpp
 PackageFile.o: ../../src/IO/PackageFile.cpp
 ParsedObject.o: ../../src/IO/ParsedObject.cpp
 ProtoCortexHandler.o: ../../src/IO/ProtoCortexHandler.cpp
+RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp
 RS232GPIO.o: ../../src/IO/RS232GPIO.cpp
 SDCardInfo.o: ../../src/IO/SDCardInfo.cpp
 Sensor.o: ../../src/IO/Sensor.cpp

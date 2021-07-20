@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_CAPTURERWEBHANDLER
 #define _SM_NET_WEBSERVER_CAPTURERWEBHANDLER
 #include "IO/BTCapturer.h"
+#include "IO/RadioSignalLogger.h"
 #include "Net/WiFiCapturer.h"
 #include "Net/WebServer/WebServiceHandler.h"
 #include "Text/StringBuilderUTF.h"
@@ -14,6 +15,7 @@ namespace Net
 		private:
 			IO::BTCapturer *btCapture;
 			Net::WiFiCapturer *wifiCapture;
+			IO::RadioSignalLogger *radioLogger;
 
 			static Bool __stdcall IndexFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc);
 			static Bool __stdcall BTCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc);
@@ -25,7 +27,7 @@ namespace Net
 			static void AppendWiFiTable(Text::StringBuilderUTF *sb, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime);
 			static void AppendBTTable(Text::StringBuilderUTF *sb, Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList, Bool inRangeOnly);
 		public:
-			CaptuererWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture);
+			CaptuererWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger);
 			virtual ~CaptuererWebHandler();
 		};
 	}

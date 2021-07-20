@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnStoreListClicked(void *userObj);
 			static void __stdcall OnDevicesDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDeviceUpdated(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev, void *userObj);
+			static void __stdcall OnDeviceUpdated(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev, IO::ProgCtrl::BluetoothCtlProgCtrl::UpdateType updateType, void *userObj);
 		public:
 			AVIRBluetoothCtlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBluetoothCtlForm();
