@@ -1,15 +1,17 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/Sort/ArtificialQuickSortC.h"
 #include "Net/MACInfo.h"
 #include "Net/WebServer/CapturerWebHandler.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/XML.h"
 
 #define BTTIMEOUT 30000
 
-Bool __stdcall Net::WebServer::CaptuererWebHandler::IndexFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
-	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
@@ -90,9 +92,9 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::IndexFunc(Net::WebServer::IW
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CaptuererWebHandler::BTCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
-	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -105,9 +107,10 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::BTCurrentFunc(Net::WebServer
 	entryList = me->btCapture->GetLogList(&mutUsage);
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
+	sb.Append((const UTF8Char*)"<meta http-equiv=\"refresh\" content=\"10\">\r\n");
 	sb.Append((const UTF8Char*)"</head><body>\r\n");
 	sb.Append((const UTF8Char*)"Current Bluetooth:<br/>\r\n");
-	AppendBTTable(&sb, entryList, true);
+	AppendBTTable(&sb, req, entryList, true);
 	mutUsage.EndUse();
 	sb.Append((const UTF8Char*)"</body><html>");
 
@@ -120,9 +123,9 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::BTCurrentFunc(Net::WebServer
 
 }
 
-Bool __stdcall Net::WebServer::CaptuererWebHandler::BTDetailFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
-	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -139,7 +142,7 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::BTDetailFunc(Net::WebServer:
 	sb.Append((const UTF8Char*)"All Bluetooth Count = ");
 	sb.AppendUOSInt(entryList->GetCount());
 	sb.Append((const UTF8Char*)"<br/>\r\n");
-	AppendBTTable(&sb, entryList, false);
+	AppendBTTable(&sb, req, entryList, false);
 	mutUsage.EndUse();
 	sb.Append((const UTF8Char*)"</body><html>");
 
@@ -151,9 +154,9 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::BTDetailFunc(Net::WebServer:
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
-	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -166,6 +169,7 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiCurrentFunc(Net::WebServ
 	entryList = me->wifiCapture->GetLogList(&mutUsage);
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
+	sb.Append((const UTF8Char*)"<meta http-equiv=\"refresh\" content=\"10\">\r\n");
 	sb.Append((const UTF8Char*)"</head><body>\r\n");
 	sb.Append((const UTF8Char*)"<h2>Current WiFi List</h2>\r\n");
 	Int64 lastScanTimeTicks = me->wifiCapture->GetLastScanTimeTicks();
@@ -175,7 +179,7 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiCurrentFunc(Net::WebServ
 	sb.Append((const UTF8Char*)"Wifi Last Scan Time = ");
 	sb.AppendDate(&dt);
 	sb.Append((const UTF8Char*)"<br/>\r\n");
-	AppendWiFiTable(&sb, entryList, lastScanTimeTicks);
+	AppendWiFiTable(&sb, req, entryList, lastScanTimeTicks);
 	mutUsage.EndUse();
 	sb.Append((const UTF8Char*)"</body><html>");
 
@@ -187,9 +191,9 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiCurrentFunc(Net::WebServ
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiDetailFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
-	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -207,7 +211,7 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiDetailFunc(Net::WebServe
 	sb.Append((const UTF8Char*)"All WiFi Count = ");
 	sb.AppendUOSInt(entryList->GetCount());
 	sb.Append((const UTF8Char*)"<br/>\r\n");
-	AppendWiFiTable(&sb, entryList, 0);
+	AppendWiFiTable(&sb, req, entryList, 0);
 	mutUsage.EndUse();
 	sb.Append((const UTF8Char*)"</body><html>");
 
@@ -219,9 +223,9 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiDetailFunc(Net::WebServe
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiDownloadFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
-	Net::WebServer::CaptuererWebHandler *me = (Net::WebServer::CaptuererWebHandler*)svc;
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->wifiCapture)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -306,13 +310,37 @@ Bool __stdcall Net::WebServer::CaptuererWebHandler::WiFiDownloadFunc(Net::WebSer
 	return true;
 }
 
-void Net::WebServer::CaptuererWebHandler::AppendWiFiTable(Text::StringBuilderUTF *sb, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime)
 {
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UInt32 sort = 0;
 	UOSInt i;
 	UOSInt j;
+	const UTF8Char *csptr;
 	Net::WiFiLogFile::LogFileEntry *entry;
+	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
-	sb->Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>SSID</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n");
+	sb->Append((const UTF8Char*)"<tr><td><a href=");
+	csptr = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)">MAC</a></td><td>Vendor</td><td>SSID</td><td><a href=");
+	Text::StrConcat(sptr, (const UTF8Char*)"?sort=1");
+	csptr = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)">RSSI</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n");
+
+	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> sortList;
+	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
+	if (sort == 1)
+	{
+		sortList.AddRange(entryList);
+		entryList = &sortList;
+		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), WiFiLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
+	}
+
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
@@ -330,6 +358,8 @@ void Net::WebServer::CaptuererWebHandler::AppendWiFiTable(Text::StringBuilderUTF
 				sb->Append(entry->ssid);
 			}
 			sb->Append((const UTF8Char*)"</td><td>");
+			Text::SBAppendF64(sb, entry->lastRSSI);
+			sb->Append((const UTF8Char*)"</td><td>");
 			sb->AppendI32(entry->phyType);
 			sb->Append((const UTF8Char*)"</td><td>");
 			Text::SBAppendF64(sb, entry->freq);
@@ -346,8 +376,12 @@ void Net::WebServer::CaptuererWebHandler::AppendWiFiTable(Text::StringBuilderUTF
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-void Net::WebServer::CaptuererWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList, Bool inRangeOnly)
 {
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UInt32 sort = 0;
+	const UTF8Char *csptr;
 	Data::DateTime dt;
 	Int64 currTime;
 	dt.SetCurrTimeUTC();
@@ -357,8 +391,28 @@ void Net::WebServer::CaptuererWebHandler::AppendBTTable(Text::StringBuilderUTF *
 	UOSInt i;
 	UOSInt j;
 	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *entry;
+	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
-	sb->Append((const UTF8Char*)"<tr><td>MAC</td><td>Vendor</td><td>Name</td><td>RSSI</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Keys</td></tr>\r\n");
+	sb->Append((const UTF8Char*)"<tr><td><a href=");
+	csptr = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)">MAC</a></td><td>Vendor</td><td>Name</td><td><a href=");
+	Text::StrConcat(sptr, (const UTF8Char*)"?sort=1");
+	csptr = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)">RSSI</a></td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Keys</td></tr>\r\n");
+
+	Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> sortList;
+	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
+	if (sort == 1)
+	{
+		sortList.AddRange(entryList);
+		entryList = &sortList;
+		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), BTLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
+	}
+
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
@@ -406,7 +460,97 @@ void Net::WebServer::CaptuererWebHandler::AppendBTTable(Text::StringBuilderUTF *
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-Net::WebServer::CaptuererWebHandler::CaptuererWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj1, void *obj2)
+{
+	Net::WiFiLogFile::LogFileEntry *log1 = (Net::WiFiLogFile::LogFileEntry*)obj1;
+	Net::WiFiLogFile::LogFileEntry *log2 = (Net::WiFiLogFile::LogFileEntry*)obj2;
+	if (log1->lastRSSI == log2->lastRSSI)
+	{
+		if (log1->ssid == log2->ssid)
+		{
+			return 0;
+		}
+		else if (log1->ssid == 0)
+		{
+			return -1;
+		}
+		else if (log2->ssid == 0)
+		{
+			return 1;
+		}
+		else
+		{
+			return Text::StrCompare(log1->ssid, log2->ssid);
+		}
+	}
+	else if (log1->lastRSSI == 0)
+	{
+		return 1;
+	}
+	else if (log2->lastRSSI == 0)
+	{
+		return -1;
+	}
+	else if (log1->lastRSSI > log2->lastRSSI)
+	{
+		return -1;
+	}
+	else if (log1->lastRSSI < log2->lastRSSI)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1, void *obj2)
+{
+	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *log1 = (IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*)obj1;
+	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *log2 = (IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*)obj2;
+	if (log1->rssi == log2->rssi)
+	{
+		if (log1->name == log2->name)
+		{
+			return 0;
+		}
+		else if (log1->name == 0)
+		{
+			return -1;
+		}
+		else if (log2->name == 0)
+		{
+			return 1;
+		}
+		else
+		{
+			return Text::StrCompare(log1->name, log2->name);
+		}
+	}
+	else if (log1->rssi == 0)
+	{
+		return 1;
+	}
+	else if (log2->rssi == 0)
+	{
+		return -1;
+	}
+	else if (log1->rssi > log2->rssi)
+	{
+		return -1;
+	}
+	else if (log1->rssi < log2->rssi)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+Net::WebServer::CapturerWebHandler::CapturerWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger)
 {
 	this->wifiCapture = wifiCapture;
 	this->btCapture = btCapture;
@@ -420,6 +564,6 @@ Net::WebServer::CaptuererWebHandler::CaptuererWebHandler(Net::WiFiCapturer *wifi
 	this->AddService((const UTF8Char*)"/wifidown.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiDownloadFunc);
 }
 
-Net::WebServer::CaptuererWebHandler::~CaptuererWebHandler()
+Net::WebServer::CapturerWebHandler::~CapturerWebHandler()
 {
 }

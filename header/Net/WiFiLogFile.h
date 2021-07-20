@@ -24,6 +24,7 @@ namespace Net
 			UInt32 ieLen;
 			UInt8 *ieBuff;
 			Int64 lastScanTimeTicks;
+			Double lastRSSI;
 		} LogFileEntry;
 
 	private:

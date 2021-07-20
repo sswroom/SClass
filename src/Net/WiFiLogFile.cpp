@@ -192,6 +192,7 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 						log = MemAlloc(Net::WiFiLogFile::LogFileEntry, 1);
 						MemClear(log->neighbour, sizeof(log->neighbour));
 						log->lastScanTimeTicks = 0;
+						log->lastRSSI = 0;
 						log->mac[0] = buff[2];
 						log->mac[1] = buff[3];
 						log->mac[2] = buff[4];
@@ -494,6 +495,7 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		log->model = SCOPY_TEXT(bss->GetModel());
 		log->serialNum = SCOPY_TEXT(bss->GetSN());
 		log->country = SCOPY_TEXT(bss->GetCountry());
+		log->lastRSSI = bss->GetRSSI();
 		log->ouis[0][0] = oui1[0];
 		log->ouis[0][1] = oui1[1];
 		log->ouis[0][2] = oui1[2];

@@ -171,6 +171,7 @@ Net::WiFiCapturer::WiFiCapturer()
 	this->interf = 0;
 	this->hdlr = 0;
 	this->hdlrObj = 0;
+	this->lastScanTimeTicks = 0;
 }
 
 Net::WiFiCapturer::~WiFiCapturer()

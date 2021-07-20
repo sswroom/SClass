@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::RadioSignalLogger *radioLogger;
 	IO::ConsoleWriter console;
 	Net::SocketFactory *sockf;
-	Net::WebServer::CaptuererWebHandler *webHdlr;
+	Net::WebServer::CapturerWebHandler *webHdlr;
 	Net::WebServer::WebListener *listener;
 	UInt16 webPort = 8080;
 	Manage::ExceptionRecorder *exHdlr;
@@ -49,7 +49,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		radioLogger->CaptureBT(btCapturer);
 		radioLogger->CaptureWiFi(wifiCapturer);
 		NEW_CLASS(sockf, Net::OSSocketFactory(true));
-		NEW_CLASS(webHdlr, Net::WebServer::CaptuererWebHandler(wifiCapturer, btCapturer, radioLogger));
+		NEW_CLASS(webHdlr, Net::WebServer::CapturerWebHandler(wifiCapturer, btCapturer, radioLogger));
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, webHdlr, webPort, 120, 4, (const UTF8Char*)"WiFiCapture/1.0", false, true));
 		if (listener->IsError())
 		{
