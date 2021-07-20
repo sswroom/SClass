@@ -11,10 +11,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::SMake *smake;
 	Bool showHelp;
 	Bool asmListing = false;
-	OSInt cmdCnt;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt cmdCnt;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;

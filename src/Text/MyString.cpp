@@ -2487,6 +2487,10 @@ Char *Text::StrRemoveANSIEscapes(Char *str1)
 			*dest = 0;
 			return dest;
 		}
+		else if (c == 1 || c == 2)
+		{
+			
+		}
 		else if (c == 27)
 		{
 			switch (*str1)
