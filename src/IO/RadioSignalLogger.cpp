@@ -8,12 +8,14 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
 	if (me->fs)
 	{
+		UTF8Char sbuff[64];
 		Data::DateTime dt;
 		Sync::MutexUsage mutUsage(me->fsMut);
 		Text::StringBuilderUTF8 sb;
 		dt.SetTicks(scanTime);
 		dt.ToLocalTime();
-		sb.AppendDate(&dt);
+		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sb.Append(sbuff);
 		sb.AppendChar('\t', 1);
 		sb.Append((const UTF8Char*)"wifi");
 		sb.AppendChar('\t', 1);
@@ -31,12 +33,14 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::ProgCtrl::BluetoothCtlProgC
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
 	if (updateType == IO::ProgCtrl::BluetoothCtlProgCtrl::UT_RSSI)
 	{
+		UTF8Char sbuff[64];
 		Data::DateTime dt;
 		Sync::MutexUsage mutUsage(me->fsMut);
 		Text::StringBuilderUTF8 sb;
 		dt.SetTicks(dev->lastSeenTime);
 		dt.ToLocalTime();
-		sb.AppendDate(&dt);
+		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sb.Append(sbuff);
 		sb.AppendChar('\t', 1);
 		sb.Append((const UTF8Char*)"bt");
 		sb.AppendChar('\t', 1);
