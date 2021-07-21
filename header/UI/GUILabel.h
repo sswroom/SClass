@@ -15,7 +15,7 @@ namespace UI
 
 		virtual void SetText(const UTF8Char *text);
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		Bool HasTextColor();
 		Int32 GetTextColor();
 		void SetTextColor(Int32 textColor);

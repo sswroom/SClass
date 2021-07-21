@@ -235,8 +235,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapRefClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	OSInt id = (OSInt)me->lbDetHeap->GetSelectedItem();
-	me->UpdateProcHeapDetail((Int32)id);
+	UOSInt id = (UOSInt)me->lbDetHeap->GetSelectedItem();
+	me->UpdateProcHeapDetail((UInt32)id);
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userObj)
@@ -380,13 +380,13 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		while (i < j)
 		{
 			Text::StrUInt32(sbuff, heapList.GetItem(i));
-			this->lbDetHeap->AddItem(sbuff, (void*)(OSInt)heapList.GetItem(i));
+			this->lbDetHeap->AddItem(sbuff, (void*)(UOSInt)heapList.GetItem(i));
 			i++;
 		}
 	}
 }
 
-void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
+void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 {
 	if (this->currProc == 0)
 	{

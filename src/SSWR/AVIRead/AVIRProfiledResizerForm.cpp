@@ -45,8 +45,8 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[16];
 	Media::ProfiledResizer::SizeType sizeType;
-	Int32 targetSizeX;
-	Int32 targetSizeY;
+	UInt32 targetSizeX;
+	UInt32 targetSizeY;
 	UInt32 outParam;
 	Text::StringBuilderUTF8 sb;
 	Media::ProfiledResizer::OutputType outType;
@@ -61,14 +61,14 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		sizeType = Media::ProfiledResizer::ST_MAXSIZE;
 		me->txtWidth->GetText(sbuff2);
-		targetSizeX = Text::StrToInt32(sbuff2);
+		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter max width", (const UTF8Char *)"Error", me);
 			return;
 		}
 		me->txtHeight->GetText(sbuff2);
-		targetSizeY = Text::StrToInt32(sbuff2);
+		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter max height", (const UTF8Char *)"Error", me);
@@ -79,14 +79,14 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		sizeType = Media::ProfiledResizer::ST_DPI;
 		me->txtHDPI->GetText(sbuff2);
-		targetSizeX = Text::StrToInt32(sbuff2);
+		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter H-DPI", (const UTF8Char *)"Error", me);
 			return;
 		}
 		me->txtVDPI->GetText(sbuff2);
-		targetSizeY = Text::StrToInt32(sbuff2);
+		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter V-DPI", (const UTF8Char *)"Error", me);

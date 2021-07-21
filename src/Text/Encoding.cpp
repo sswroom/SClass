@@ -556,18 +556,35 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 	}
 }
 
-UOSInt Text::Encoding::WCountBytes(const WChar *stri, OSInt strLen)
+UOSInt Text::Encoding::WCountBytes(const WChar *stri)
 {
 	if (this->codePage == 65001)
 	{
-		if (strLen < 0)
-		{
-			return StrWChar_UTF8Cnt(stri) + 1;
-		}
-		else
-		{
-			return StrWChar_UTF8CntC(stri, (UOSInt)strLen);
-		}
+		return StrWChar_UTF8Cnt(stri) + 1;
+	}
+	else if (this->codePage == 1200)
+	{
+		return (Text::StrCharCnt(stri) + 1) << 1;
+	}
+	else if (this->codePage == 1201)
+	{
+		return (Text::StrCharCnt(stri) + 1) << 1;
+	}
+	else
+	{
+#if defined(_MSC_VER) || defined(__MINGW32__)
+		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri, -1, 0, 0, 0, 0);
+#else
+		return StrWChar_UTF8Cnt(stri) + 1;
+#endif
+	}
+}
+
+UOSInt Text::Encoding::WCountBytesC(const WChar *stri, UOSInt strLen)
+{
+	if (this->codePage == 65001)
+	{
+		return StrWChar_UTF8CntC(stri, (UOSInt)strLen);
 	}
 	else if (this->codePage == 1200)
 	{
@@ -587,76 +604,83 @@ UOSInt Text::Encoding::WCountBytes(const WChar *stri, OSInt strLen)
 	}
 }
 
-UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr, OSInt strLen)
+UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr)
 {
 	UOSInt size;
 	if (this->codePage == 65001)
 	{
-		if (strLen < 0)
-		{
-			return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
-		}
-		else
-		{
-			return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, (UOSInt)strLen) - bytes);
-		}
+		return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
 	}
 	else if (this->codePage == 1200)
 	{
 		WChar c;
-		if (strLen == -1)
+		size = 0;
+		while (true)
 		{
-			size = 0;
-			while (true)
-			{
-				c = *wstr++;
-				size += 2;
-				WriteInt16(bytes, c);
-				if (c == 0)
-					break;
-				bytes += 2;
-			}
-		}
-		else
-		{
-			size = (UOSInt)strLen << 1;
-			while (strLen-- > 0)
-			{
-				c = *wstr++;
-				size += 2;
-				WriteInt16(bytes, c);
-				bytes += 2;
-			}
+			c = *wstr++;
+			size += 2;
+			WriteInt16(bytes, c);
+			if (c == 0)
+				break;
+			bytes += 2;
 		}
 		return size;
 	}
 	else if (this->codePage == 1201)
 	{
-		if (strLen == -1)
+		WChar c;
+		size = 0;
+		while (true)
 		{
-			WChar c;
-			size = 0;
-			while (true)
-			{
-				c = *wstr++;
-				size += 2;
-				WriteMInt16(bytes, c);
-				if (c == 0)
-					break;
-				bytes += 2;
-			}
+			c = *wstr++;
+			size += 2;
+			WriteMInt16(bytes, c);
+			if (c == 0)
+				break;
+			bytes += 2;
 		}
-		else
+		return size;
+	}
+	else
+	{
+#if defined(_MSC_VER) || defined(__MINGW32__)
+		size = 1024;
+		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, -1, (LPSTR)bytes, (Int32)size, 0, 0);
+		return (UOSInt)iRet;
+#else
+		return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
+#endif
+	}
+}
+
+UOSInt Text::Encoding::WToBytesC(UInt8 *bytes, const WChar *wstr, UOSInt strLen)
+{
+	UOSInt size;
+	if (this->codePage == 65001)
+	{
+		return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
+	}
+	else if (this->codePage == 1200)
+	{
+		WChar c;
+		size = strLen << 1;
+		while (strLen-- > 0)
 		{
-			WChar c;
-			size = (UOSInt)strLen << 1;
-			while (strLen-- > 0)
-			{
-				c = *wstr++;
-				size += 2;
-				WriteMInt16(bytes, c);
-				bytes += 2;
-			}
+			c = *wstr++;
+			WriteInt16(bytes, c);
+			bytes += 2;
+		}
+		return size;
+	}
+	else if (this->codePage == 1201)
+	{
+		WChar c;
+		size = strLen << 1;
+		while (strLen-- > 0)
+		{
+			c = *wstr++;
+			WriteMInt16(bytes, c);
+			bytes += 2;
 		}
 		return size;
 	}
@@ -664,417 +688,403 @@ UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr, OSInt strLen)
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		size = (UOSInt)(strLen * 3);
-		if (strLen == -1)
-			size = 1024;
 		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, (Int32)strLen, (LPSTR)bytes, (Int32)size, 0, 0);
 		return (UOSInt)iRet;
 #else
-		return 0;
+		return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
 #endif
 	}
 }
 
-UOSInt Text::Encoding::UTF8CountBytes(const UTF8Char *str, OSInt strLen)
+UOSInt Text::Encoding::UTF8CountBytes(const UTF8Char *str)
 {
 	if (this->codePage == 65001)
 	{
-		if (strLen < 0)
-		{
-			return Text::StrCharCnt(str) + 1;
-		}
-		else
-		{
-			return (UOSInt)strLen;
-		}
+		return Text::StrCharCnt(str) + 1;
 	}
 	else if (this->codePage == 1200 || this->codePage == 1201)
 	{
 		UOSInt charCnt = 0;
-		if (strLen < 0)
+		while (str[0])
 		{
-			while (str[0])
+			if ((str[0] & 0x80) == 0)
 			{
-				if ((str[0] & 0x80) == 0)
-				{
-					charCnt++;
-					str++;
-				}
-				else if ((str[0] & 0xe0) == 0xc0)
-				{
-					charCnt++;
-					str += 2;
-				}
-				else if ((str[0] & 0xf0) == 0xe0)
-				{
-					charCnt++;
-					str += 3;
-				}
-				else if ((str[0] & 0xf8) == 0xf0)
-				{
-					charCnt += 2;
-					str += 4;
-				}
-				else if ((str[0] & 0xfc) == 0xf8)
-				{
-					charCnt += 2;
-					str += 5;
-				}
-				else
-				{
-					charCnt += 2;
-					str += 6;
-				}
+				charCnt++;
+				str++;
 			}
-			return (charCnt + 1) << 1;
-		}
-		else
-		{
-			while (strLen > 0)
+			else if ((str[0] & 0xe0) == 0xc0)
 			{
-				if ((str[0] & 0x80) == 0)
-				{
-					charCnt++;
-					strLen--;
-					str++;
-				}
-				else if ((str[0] & 0xe0) == 0xc0)
-				{
-					charCnt++;
-					strLen -= 2;
-					str += 2;
-				}
-				else if ((str[0] & 0xf0) == 0xe0)
-				{
-					charCnt++;
-					strLen -= 3;
-					str += 3;
-				}
-				else if ((str[0] & 0xf8) == 0xf0)
-				{
-					charCnt += 2;
-					strLen -= 4;
-					str += 4;
-				}
-				else if ((str[0] & 0xfc) == 0xf8)
-				{
-					charCnt += 2;
-					strLen -= 5;
-					str += 5;
-				}
-				else
-				{
-					charCnt += 2;
-					strLen -= 6;
-					str += 6;
-				}
+				charCnt++;
+				str += 2;
 			}
-			return charCnt << 1;
+			else if ((str[0] & 0xf0) == 0xe0)
+			{
+				charCnt++;
+				str += 3;
+			}
+			else if ((str[0] & 0xf8) == 0xf0)
+			{
+				charCnt += 2;
+				str += 4;
+			}
+			else if ((str[0] & 0xfc) == 0xf8)
+			{
+				charCnt += 2;
+				str += 5;
+			}
+			else
+			{
+				charCnt += 2;
+				str += 6;
+			}
 		}
+		return (charCnt + 1) << 1;
 	}
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		if (strLen < 0)
-		{
-			const WChar *wptr = Text::StrToWCharNew(str);
-			strLen = (OSInt)Text::StrCharCnt(wptr);
-			UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, 0, 0, 0, 0) + 1;
-			Text::StrDelNew(wptr);
-			return ret;
-		}
-		else
-		{
-			UOSInt ret = Text::StrUTF8_WCharCntC(str, (UOSInt)strLen);
-			WChar *wptr = MemAlloc(WChar, ret + 1);
-			Text::StrUTF8_WCharC(wptr, str, (UOSInt)strLen, 0);
-			ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
-			MemFree(wptr);
-			return ret;
-		}
+		const WChar *wptr = Text::StrToWCharNew(str);
+		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
+		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, 0, 0, 0, 0) + 1;
+		Text::StrDelNew(wptr);
+		return ret;
 #else
-		if (strLen < 0)
-		{
-			return Text::StrCharCnt(str) + 1;
-		}
-		else
-		{
-			return (UOSInt)strLen;
-		}
+		return Text::StrCharCnt(str) + 1;
 #endif
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str, OSInt strLen)
+UOSInt Text::Encoding::UTF8CountBytesC(const UTF8Char *str, UOSInt strLen)
 {
 	if (this->codePage == 65001)
 	{
-		if (strLen < 0)
+		return strLen;
+	}
+	else if (this->codePage == 1200 || this->codePage == 1201)
+	{
+		UOSInt charCnt = 0;
+		while (strLen > 0)
 		{
-			return (UOSInt)(Text::StrConcat(bytes, str) - bytes + 1);
+			if ((str[0] & 0x80) == 0)
+			{
+				charCnt++;
+				strLen--;
+				str++;
+			}
+			else if ((str[0] & 0xe0) == 0xc0)
+			{
+				charCnt++;
+				strLen -= 2;
+				str += 2;
+			}
+			else if ((str[0] & 0xf0) == 0xe0)
+			{
+				charCnt++;
+				strLen -= 3;
+				str += 3;
+			}
+			else if ((str[0] & 0xf8) == 0xf0)
+			{
+				charCnt += 2;
+				strLen -= 4;
+				str += 4;
+			}
+			else if ((str[0] & 0xfc) == 0xf8)
+			{
+				charCnt += 2;
+				strLen -= 5;
+				str += 5;
+			}
+			else
+			{
+				charCnt += 2;
+				strLen -= 6;
+				str += 6;
+			}
 		}
-		else
-		{
-			MemCopyNO(bytes, str, (UOSInt)strLen);
-			return (UOSInt)strLen;
-		}
+		return charCnt << 1;
+	}
+	else
+	{
+#if defined(_MSC_VER) || defined(__MINGW32__)
+		UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
+		WChar *wptr = MemAlloc(WChar, ret + 1);
+		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
+		ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
+		MemFree(wptr);
+		return ret;
+#else
+		return strLen;
+#endif
+	}
+}
+
+UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
+{
+	if (this->codePage == 65001)
+	{
+		return (UOSInt)(Text::StrConcat(bytes, str) - bytes + 1);
 	}
 	else if (this->codePage == 1200)
 	{
 		UInt8 *oriBytes = bytes;
 		UInt16 c;
 		UInt32 code;
-		if (strLen < 0)
+		while (str[0])
 		{
-			while (str[0])
+			if ((str[0] & 0x80) == 0)
 			{
-				if ((str[0] & 0x80) == 0)
-				{
-					c = str[0];
-					WriteInt16(bytes, c);
-					bytes += 2;
-					str++;
-				}
-				else if ((str[0] & 0xe0) == 0xc0)
-				{
-					c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
-					WriteInt16(bytes, c);
-					bytes += 2;
-					str += 2;
-				}
-				else if ((str[0] & 0xf0) == 0xe0)
-				{
-					c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
-					WriteInt16(bytes, c);
-					bytes += 2;
-					str += 3;
-				}
-				else if ((str[0] & 0xf8) == 0xf0)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
-					WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 4;
-				}
-				else if ((str[0] & 0xfc) == 0xf8)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
-					WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 5;
-				}
-				else
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
-					WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 6;
-				}
+				c = str[0];
+				WriteInt16(bytes, c);
+				bytes += 2;
+				str++;
 			}
-			WriteInt16(bytes, 0);
-			bytes += 2;
-			return (UOSInt)(bytes - oriBytes);
-		}
-		else
-		{
-			while (strLen > 0)
+			else if ((str[0] & 0xe0) == 0xc0)
 			{
-				if ((str[0] & 0x80) == 0)
-				{
-					c = str[0];
-					WriteInt16(bytes, c);
-					bytes += 2;
-					str++;
-				}
-				else if ((str[0] & 0xe0) == 0xc0)
-				{
-					c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
-					WriteInt16(bytes, c);
-					bytes += 2;
-					str += 2;
-				}
-				else if ((str[0] & 0xf0) == 0xe0)
-				{
-					c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
-					WriteInt16(bytes, c);
-					bytes += 2;
-					str += 3;
-				}
-				else if ((str[0] & 0xf8) == 0xf0)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
-					WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 4;
-				}
-				else if ((str[0] & 0xfc) == 0xf8)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
-					WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 5;
-				}
-				else
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
-					WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 6;
-				}
+				c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
+				WriteInt16(bytes, c);
+				bytes += 2;
+				str += 2;
 			}
-			return (UOSInt)(bytes - oriBytes);
+			else if ((str[0] & 0xf0) == 0xe0)
+			{
+				c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
+				WriteInt16(bytes, c);
+				bytes += 2;
+				str += 3;
+			}
+			else if ((str[0] & 0xf8) == 0xf0)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 4;
+			}
+			else if ((str[0] & 0xfc) == 0xf8)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 5;
+			}
+			else
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 6;
+			}
 		}
+		WriteInt16(bytes, 0);
+		bytes += 2;
+		return (UOSInt)(bytes - oriBytes);
 	}
 	else if (this->codePage == 1201)
 	{
 		UInt8 *oriBytes = bytes;
 		UInt16 c;
 		UInt32 code;
-		if (strLen < 0)
+		while (str[0])
 		{
-			while (str[0])
+			if ((str[0] & 0x80) == 0)
 			{
-				if ((str[0] & 0x80) == 0)
-				{
-					c = str[0];
-					WriteMInt16(bytes, c);
-					bytes += 2;
-					str++;
-				}
-				else if ((str[0] & 0xe0) == 0xc0)
-				{
-					c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
-					WriteMInt16(bytes, c);
-					bytes += 2;
-					str += 2;
-				}
-				else if ((str[0] & 0xf0) == 0xe0)
-				{
-					c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
-					WriteMInt16(bytes, c);
-					bytes += 2;
-					str += 3;
-				}
-				else if ((str[0] & 0xf8) == 0xf0)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
-					WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 4;
-				}
-				else if ((str[0] & 0xfc) == 0xf8)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
-					WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 5;
-				}
-				else
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
-					WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 6;
-				}
+				c = str[0];
+				WriteMInt16(bytes, c);
+				bytes += 2;
+				str++;
 			}
-			WriteMInt16(bytes, 0);
-			bytes += 2;
-			return (UOSInt)(bytes - oriBytes);
-		}
-		else
-		{
-			while (strLen > 0)
+			else if ((str[0] & 0xe0) == 0xc0)
 			{
-				if ((str[0] & 0x80) == 0)
-				{
-					c = str[0];
-					WriteMInt16(bytes, c);
-					bytes += 2;
-					str++;
-				}
-				else if ((str[0] & 0xe0) == 0xc0)
-				{
-					c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
-					WriteMInt16(bytes, c);
-					bytes += 2;
-					str += 2;
-				}
-				else if ((str[0] & 0xf0) == 0xe0)
-				{
-					c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
-					WriteMInt16(bytes, c);
-					bytes += 2;
-					str += 3;
-				}
-				else if ((str[0] & 0xf8) == 0xf0)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
-					WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 4;
-				}
-				else if ((str[0] & 0xfc) == 0xf8)
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
-					WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 5;
-				}
-				else
-				{
-					code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
-					WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
-					WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
-					bytes += 4;
-					str += 6;
-				}
+				c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
+				WriteMInt16(bytes, c);
+				bytes += 2;
+				str += 2;
 			}
-			return (UOSInt)(bytes - oriBytes);
+			else if ((str[0] & 0xf0) == 0xe0)
+			{
+				c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
+				WriteMInt16(bytes, c);
+				bytes += 2;
+				str += 3;
+			}
+			else if ((str[0] & 0xf8) == 0xf0)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 4;
+			}
+			else if ((str[0] & 0xfc) == 0xf8)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 5;
+			}
+			else
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 6;
+			}
 		}
+		WriteMInt16(bytes, 0);
+		bytes += 2;
+		return (UOSInt)(bytes - oriBytes);
 	}
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		if (strLen < 0)
-		{
-			const WChar *wptr = Text::StrToWCharNew(str);
-			strLen = (OSInt)Text::StrCharCnt(wptr);
-			UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes, (Int32)(strLen * 3), 0, 0);
-			Text::StrDelNew(wptr);
-			return ret;
-		}
-		else
-		{
-			UOSInt ret = Text::StrUTF8_WCharCntC(str, (UOSInt)strLen);
-			WChar *wptr = MemAlloc(WChar, ret + 1);
-			Text::StrUTF8_WCharC(wptr, str, (UOSInt)strLen, 0);
-			ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes, (Int32)(ret * 3), 0, 0) + 1;
-			MemFree(wptr);
-			return ret;
-		}
+		const WChar *wptr = Text::StrToWCharNew(str);
+		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
+		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes, (Int32)(strLen * 3), 0, 0);
+		Text::StrDelNew(wptr);
+		return ret;
 #else
-		if (strLen < 0)
-		{
-			return (UOSInt)(Text::StrConcat(bytes, str) - bytes + 1);
-		}
-		else
-		{
-			return (UOSInt)(Text::StrConcatC(bytes, str, (UOSInt)strLen) - bytes);
-		}
+		return (UOSInt)(Text::StrConcat(bytes, str) - bytes + 1);
 #endif
 	}
 }
 
+UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt strLen)
+{
+	if (this->codePage == 65001)
+	{
+		MemCopyNO(bytes, str, strLen);
+		return strLen;
+	}
+	else if (this->codePage == 1200)
+	{
+		UInt8 *oriBytes = bytes;
+		UInt16 c;
+		UInt32 code;
+
+		while (strLen > 0)
+		{
+			if ((str[0] & 0x80) == 0)
+			{
+				c = str[0];
+				WriteInt16(bytes, c);
+				bytes += 2;
+				str++;
+			}
+			else if ((str[0] & 0xe0) == 0xc0)
+			{
+				c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
+				WriteInt16(bytes, c);
+				bytes += 2;
+				str += 2;
+			}
+			else if ((str[0] & 0xf0) == 0xe0)
+			{
+				c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
+				WriteInt16(bytes, c);
+				bytes += 2;
+				str += 3;
+			}
+			else if ((str[0] & 0xf8) == 0xf0)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 4;
+			}
+			else if ((str[0] & 0xfc) == 0xf8)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 5;
+			}
+			else
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 6;
+			}
+		}
+		return (UOSInt)(bytes - oriBytes);
+	}
+	else if (this->codePage == 1201)
+	{
+		UInt8 *oriBytes = bytes;
+		UInt16 c;
+		UInt32 code;
+		while (strLen > 0)
+		{
+			if ((str[0] & 0x80) == 0)
+			{
+				c = str[0];
+				WriteMInt16(bytes, c);
+				bytes += 2;
+				str++;
+			}
+			else if ((str[0] & 0xe0) == 0xc0)
+			{
+				c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
+				WriteMInt16(bytes, c);
+				bytes += 2;
+				str += 2;
+			}
+			else if ((str[0] & 0xf0) == 0xe0)
+			{
+				c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
+				WriteMInt16(bytes, c);
+				bytes += 2;
+				str += 3;
+			}
+			else if ((str[0] & 0xf8) == 0xf0)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 4;
+			}
+			else if ((str[0] & 0xfc) == 0xf8)
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 5;
+			}
+			else
+			{
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
+				bytes += 4;
+				str += 6;
+			}
+		}
+		return (UOSInt)(bytes - oriBytes);
+	}
+	else
+	{
+#if defined(_MSC_VER) || defined(__MINGW32__)
+		UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
+		WChar *wptr = MemAlloc(WChar, ret + 1);
+		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
+		ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes, (Int32)(ret * 3), 0, 0) + 1;
+		MemFree(wptr);
+		return ret;
+#else
+		return (UOSInt)(Text::StrConcatC(bytes, str, strLen) - bytes);
+#endif
+	}
+}
 
 const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 {

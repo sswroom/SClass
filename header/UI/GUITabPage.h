@@ -21,7 +21,7 @@ namespace UI
 		virtual Bool IsFormFocused();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual GUIClientControl *GetParent();
 
 		void SetCustObj(void *custObj);

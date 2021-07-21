@@ -7,15 +7,13 @@
 #include "Crypto/Cert/CertRequest.h"
 #include "Crypto/Encrypt/Base64.h"
 
-Crypto::Cert::CertRequest::CertRequest(const WChar *fileName)
+Crypto::Cert::CertRequest::CertRequest(const UTF8Char *fileName)
 {
-	WChar sbuff[2048];
-	UInt8 buff[2048];
-	OSInt buffSize;
+	UTF8Char sbuff[2048];
 	UInt8 obuff[2048];
-	OSInt obuffSize;
-	WChar *sptr;
-	WChar *sptr2;
+	UOSInt obuffSize;
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	this->reqBuff = 0;
@@ -25,7 +23,7 @@ Crypto::Cert::CertRequest::CertRequest(const WChar *fileName)
 	NEW_CLASS(reader, IO::StreamReader(fs, 65001));
 	if (reader->ReadLine(sbuff, 2048))
 	{
-		if (Text::StrCompare(sbuff, L"-----BEGIN NEW CERTIFICATE REQUEST-----") == 0)
+		if (Text::StrEquals(sbuff, (const UTF8Char*)"-----BEGIN NEW CERTIFICATE REQUEST-----"))
 		{
 			sptr = sbuff;
 			while (true)
@@ -33,16 +31,14 @@ Crypto::Cert::CertRequest::CertRequest(const WChar *fileName)
 				sptr2 = reader->ReadLine(sptr, &sbuff[2048] - sptr);
 				if (sptr2 == 0)
 					break;
-				if (Text::StrCompare(sptr, L"-----END NEW CERTIFICATE REQUEST-----") == 0)
+				if (Text::StrEquals(sptr, (const UTF8Char*)"-----END NEW CERTIFICATE REQUEST-----"))
 				{
 					*sptr = 0;
-					Text::Encoding enc(65001);
-					buffSize = enc.ToBytes(buff, sbuff, sptr - sbuff);
 					Crypto::Encrypt::Base64 b64;
-					obuffSize = b64.Decrypt(buff, (Int32)buffSize, obuff, 0);
+					obuffSize = b64.Decrypt(sbuff, (UOSInt)(sptr-  sbuff), obuff, 0);
 					this->reqBuff = MemAlloc(UInt8, obuffSize);
 					this->reqBuffSize = obuffSize;
-					MemCopy(this->reqBuff, obuff, obuffSize);
+					MemCopyNO(this->reqBuff, obuff, obuffSize);
 					break;
 				}
 				else

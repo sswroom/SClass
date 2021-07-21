@@ -48,7 +48,7 @@ namespace UI
 		virtual ~GUIPictureView();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetDirectory(const UTF8Char *currDir);
 		virtual void OnSurfaceCreated();

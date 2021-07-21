@@ -38,7 +38,7 @@ const UTF8Char *UI::GUICheckBox::GetObjectClass()
 	return (const UTF8Char*)"CheckBox";
 }
 
-OSInt UI::GUICheckBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUICheckBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

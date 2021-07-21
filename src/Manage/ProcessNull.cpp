@@ -195,7 +195,7 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	return 0;
 }
 
-OSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, OSInt reqSize)
+UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 {
 	const UInt8 *srcPtr = (const UInt8*)(UOSInt)addr;
 	MemCopyNO(buff, srcPtr, reqSize);

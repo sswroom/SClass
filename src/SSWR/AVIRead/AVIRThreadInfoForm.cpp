@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			UInt32 esp;
 			UInt32 ebp;
 			UInt8 buff[256];
-			OSInt buffSize;
+			UOSInt buffSize;
 			Bool ret;
 			Data::ArrayListUInt32 *callAddrs;
 			Data::ArrayListUInt32 *jmpAddrs;
@@ -284,8 +284,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendHex32(eip);
 				sb.Append((const UTF8Char*)" ");
 				symbol->ResolveName(sbuff, eip);
-				i  = Text::StrLastIndexOf(sbuff, '\\');
-				sb.Append(&sbuff[i + 1]);
+				si  = Text::StrLastIndexOf(sbuff, '\\');
+				sb.Append(&sbuff[si + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"EIP = 0x");

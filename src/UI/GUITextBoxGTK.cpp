@@ -197,7 +197,7 @@ const UTF8Char *UI::GUITextBox::GetObjectClass()
 	return (const UTF8Char*)"TextBox";
 }
 
-OSInt UI::GUITextBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

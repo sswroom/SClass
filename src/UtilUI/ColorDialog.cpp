@@ -170,7 +170,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, OSInt x, OSInt y, 
 		}
 		else if (x > (OSInt)w - 2)
 		{
-			x = w - 2;
+			x = (OSInt)w - 2;
 		}
 		if (y < 1)
 		{
@@ -178,10 +178,10 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, OSInt x, OSInt y, 
 		}
 		else if (y > (OSInt)h - 2)
 		{
-			y = h - 2;
+			y = (OSInt)h - 2;
 		}
-		newV1 = (x - 1) / (Double)(w - 3);
-		newV2 = (y - 1) / (Double)(h - 3);
+		newV1 = Math::OSInt2Double(x - 1) / (Double)(w - 3);
+		newV2 = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;

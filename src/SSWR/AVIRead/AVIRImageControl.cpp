@@ -587,7 +587,7 @@ const UTF8Char *SSWR::AVIRead::AVIRImageControl::GetObjectClass()
 	return (const UTF8Char*)"AVIRImageControl";
 }
 
-OSInt SSWR::AVIRead::AVIRImageControl::OnNotify(Int32 code, void *lParam)
+OSInt SSWR::AVIRead::AVIRImageControl::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

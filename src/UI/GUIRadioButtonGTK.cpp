@@ -80,7 +80,7 @@ const UTF8Char *UI::GUIRadioButton::GetObjectClass()
 	return (const UTF8Char*)"RadioButton";
 }
 
-OSInt UI::GUIRadioButton::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

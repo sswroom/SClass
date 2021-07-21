@@ -25,7 +25,7 @@ namespace UI
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF *sb);
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);
 		void SelectAll();

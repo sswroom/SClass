@@ -86,7 +86,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 		Int32 eff = *(Int32*)GetClipboardData(deff);
 		Bool valid = true;
 		HDROP hDrop = (HDROP)GetClipboardData(fnameW);
-		UInt32 fileCnt = DragQueryFileW(hDrop, -1, sbuff, 512);
+		UInt32 fileCnt = DragQueryFileW(hDrop, (UINT)-1, sbuff, 512);
 		UInt32 i;
 		if (eff == 5) //Copy
 		{
@@ -118,7 +118,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 
 void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileNames)
 {
-	OSInt i = fileNames->GetCount();;
+	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)
 	{
 		Text::StrDelNew(fileNames->GetItem(i));
@@ -132,8 +132,8 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	UTF8Char u8buff[512];
 	UTF8Char *tmpBuff;
 	const UTF8Char *csptr;
-	OSInt leng;
-	OSInt leng2;
+	UOSInt leng;
+	UOSInt leng2;
 	if (hand == 0)
 		return false;
 	switch (fmtId)
@@ -191,17 +191,17 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	case CF_LOCALE: //16
 		{
 			memptr = (UInt8*)GlobalLock(hand);
-			Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry(*(Int32*)memptr);
+			Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry(*(UInt32*)memptr);
 			GlobalUnlock(hand);
 			if (locale)
 			{
-				sb->AppendI32(locale->lcid);
+				sb->AppendU32(locale->lcid);
 				sb->Append((const UTF8Char*)", ");
 				sb->Append(locale->shortName);
 				sb->Append((const UTF8Char*)", ");
 				sb->Append(locale->desc);
 				sb->Append((const UTF8Char*)", ");
-				sb->AppendI32(locale->defCodePage);
+				sb->AppendU32(locale->defCodePage);
 				return true;
 			}
 		}
@@ -224,7 +224,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		sb->Append((const UTF8Char*)"\r\nBitCount = ");
 		sb->AppendI16(ReadInt16(&memptr[14]));
 		sb->Append((const UTF8Char*)"\r\nCompression = 0x");
-		sb->AppendHex32V(ReadInt32(&memptr[16]));
+		sb->AppendHex32V(ReadUInt32(&memptr[16]));
 		sb->Append((const UTF8Char*)"\r\nSizeImage = ");
 		sb->AppendI32(ReadInt32(&memptr[20]));
 		sb->Append((const UTF8Char*)"\r\nXPelsPerMeter = ");
@@ -251,7 +251,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		sb->Append((const UTF8Char*)"\r\nBitCount = ");
 		sb->AppendI16(ReadInt16(&memptr[14]));
 		sb->Append((const UTF8Char*)"\r\nCompression = 0x");
-		sb->AppendHex32V(ReadInt32(&memptr[16]));
+		sb->AppendHex32V(ReadUInt32(&memptr[16]));
 		sb->Append((const UTF8Char*)"\r\nSizeImage = ");
 		sb->AppendI32(ReadInt32(&memptr[20]));
 		sb->Append((const UTF8Char*)"\r\nXPelsPerMeter = ");
@@ -295,9 +295,9 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Preferred DropEffect"))
 	{
 		Bool found;
-		Int32 eff;
+		UInt32 eff;
 		memptr = (UInt8*)GlobalLock(hand);
-		eff = *(Int32*)memptr;
+		eff = *(UInt32*)memptr;
 		GlobalUnlock(hand);
 	
 		found = false;
@@ -548,7 +548,7 @@ Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
 	const WChar *wptr = Text::StrToWCharNew(s);
-	OSInt len = Text::StrCharCnt(wptr);
+	UOSInt len = Text::StrCharCnt(wptr);
 	HGLOBAL hglbCopy;
 	hglbCopy = GlobalAlloc(GMEM_MOVEABLE, (len + 1) * sizeof(WChar));
 	if (hglbCopy == 0)
@@ -658,7 +658,7 @@ UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt 
 			Int32 ret = GetClipboardFormatNameW(fmtId, wbuff, (int)255);
 			if (ret == 0)
 				return 0;
-			return Text::StrWChar_UTF8(sbuff, wbuff, -1);
+			return Text::StrWChar_UTF8(sbuff, wbuff);
 		}
 	}
 }

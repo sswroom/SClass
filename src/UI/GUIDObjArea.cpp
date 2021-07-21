@@ -243,7 +243,7 @@ const UTF8Char *UI::GUIDObjArea::GetObjectClass()
 	return (const UTF8Char*)"DObjArea";
 }
 
-OSInt UI::GUIDObjArea::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

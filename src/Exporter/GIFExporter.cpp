@@ -83,7 +83,7 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
-	OSInt transparentIndex = -1;
+	UOSInt transparentIndex = (UOSInt)-1;
 	UOSInt i;
 	UOSInt j;
 	if (img->info->pf == Media::PF_PAL_8 || img->info->pf == Media::PF_PAL_W8)
@@ -136,7 +136,7 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		stm->Write(palBuff, 768);
 		MemFree(palBuff);
 
-		if (transparentIndex != -1)
+		if (transparentIndex != (UOSInt)-1)
 		{
 			buff[0] = 0x21;
 			buff[1] = 0xf9;

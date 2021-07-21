@@ -221,7 +221,7 @@ const UTF8Char *UI::GUIPictureBox::GetObjectClass()
 	return (const UTF8Char*)"PictureBox";
 }
 
-OSInt UI::GUIPictureBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIPictureBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -271,7 +271,7 @@ void UI::GUIPictureBox::SetNoBGColor(Bool noBGColor)
 
 void UI::GUIPictureBox::EventButtonDown(OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->mouseDownHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -281,7 +281,7 @@ void UI::GUIPictureBox::EventButtonDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 
 void UI::GUIPictureBox::EventButtonUp(OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->mouseUpHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -291,7 +291,7 @@ void UI::GUIPictureBox::EventButtonUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 
 void UI::GUIPictureBox::EventMouseMove(OSInt x, OSInt y)
 {
-	OSInt i = this->mouseMoveHdlrs->GetCount();
+	UOSInt i = this->mouseMoveHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), x, y, MBTN_MIDDLE);

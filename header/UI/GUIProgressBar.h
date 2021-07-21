@@ -15,7 +15,7 @@ namespace UI
 		virtual ~GUIProgressBar();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void ProgressStart(const UTF8Char *name, UInt64 count);
 		virtual void ProgressUpdate(UInt64 currCount, UInt64 newTotalCount);

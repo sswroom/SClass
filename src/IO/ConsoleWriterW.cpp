@@ -121,9 +121,9 @@ Bool IO::ConsoleWriter::Write(const UTF8Char *s)
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->enc->UTF8CountBytes(s, nChar);
+		nBytes = this->enc->UTF8CountBytesC(s, nChar);
 		tmpBuff = MemAlloc(UInt8, nBytes + 1);
-		this->enc->UTF8ToBytes(tmpBuff, s, nChar);
+		this->enc->UTF8ToBytesC(tmpBuff, s, nChar);
 		if (fileOutput)
 		{
 			WriteFile((HANDLE)this->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
@@ -182,9 +182,9 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *s)
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->enc->UTF8CountBytes(s, nChar);
+		nBytes = this->enc->UTF8CountBytesC(s, nChar);
 		tmpBuff = MemAlloc(UInt8, nBytes + 2);
-		this->enc->UTF8ToBytes(tmpBuff, s, nChar);
+		this->enc->UTF8ToBytesC(tmpBuff, s, nChar);
 		tmpBuff[nBytes++] = '\n';
 		if (fileOutput)
 		{
@@ -436,7 +436,7 @@ UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	UInt8 buff[4];
-	UOSInt size = this->enc->WToBytes(buff, &c, 1);
+	UOSInt size = this->enc->WToBytesC(buff, &c, 1);
 	if (size == 1 && buff[0] < 128)
 		return 1;
 

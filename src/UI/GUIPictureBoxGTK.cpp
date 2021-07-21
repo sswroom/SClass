@@ -328,7 +328,7 @@ const UTF8Char *UI::GUIPictureBox::GetObjectClass()
 	return (const UTF8Char*)"PictureBox";
 }
 
-OSInt UI::GUIPictureBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIPictureBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

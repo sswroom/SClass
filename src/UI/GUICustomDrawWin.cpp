@@ -258,7 +258,7 @@ const UTF8Char *UI::GUICustomDraw::GetObjectClass()
 	return (const UTF8Char*)"CustomDraw";
 }
 
-OSInt UI::GUICustomDraw::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -37,7 +37,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	UI::GUIControl *ctrl;
 	RECT rc;
 	NMHDR *nmhdr;
-	OSInt i;
+	UOSInt i;
 	switch (msg)
 	{
 	case WM_COMMAND:
@@ -354,7 +354,7 @@ void UI::GUIForm::UpdateHAcc()
 	}
 	if (this->menu)
 	{
-		OSInt i;
+		UOSInt i;
 		ACCEL *accels;
 		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
 		UI::GUIMenu::ShortcutKey *key;
@@ -539,7 +539,7 @@ UI::GUIForm::~GUIForm()
 	}
 	else
 	{
-		OSInt i = this->timers->GetCount();
+		UOSInt i = this->timers->GetCount();
 		while (i-- > 0)
 		{
 			UI::GUITimer *tmr = this->timers->GetItem(i);
@@ -714,7 +714,7 @@ UI::GUITimer *UI::GUIForm::AddTimer(Int32 interval, UI::UIEvent handler, void *u
 
 void UI::GUIForm::RemoveTimer(UI::GUITimer *tmr)
 {
-	OSInt i = this->timers->GetCount();
+	UOSInt i = this->timers->GetCount();
 	while (i-- > 0)
 	{
 		if (tmr == this->timers->GetItem(i))
@@ -781,7 +781,7 @@ const UTF8Char *UI::GUIForm::GetObjectClass()
 	return (const UTF8Char*)"WinForm";
 }
 
-OSInt UI::GUIForm::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -826,7 +826,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 			files[i] = Text::StrToUTF8New(sbuff);
 			i++;
 		}
-		OSInt j = this->dropFileHandlers->GetCount();
+		UOSInt j = this->dropFileHandlers->GetCount();
 		while (j-- > 0)
 		{
 			this->dropFileHandlers->GetItem(j)(this->dropFileHandlersObj->GetItem(j), files, (OSInt)fileCnt);

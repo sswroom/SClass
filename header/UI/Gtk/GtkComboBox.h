@@ -37,7 +37,7 @@ namespace UI
 			void *GetItem(OSInt index);
 
 			virtual const WChar *GetObjectClass();
-			virtual OSInt OnNotify(Int32 code, void *lParam);
+			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 			virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);
 		};

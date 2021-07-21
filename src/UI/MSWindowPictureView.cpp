@@ -313,7 +313,7 @@ const WChar *UI::MSWindowPictureView::GetObjectClass()
 	return L"PictureView";
 }
 
-OSInt UI::MSWindowPictureView::OnNotify(Int32 code, void *lParam)
+OSInt UI::MSWindowPictureView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

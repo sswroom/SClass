@@ -9,7 +9,7 @@ namespace UI
 	private:
 		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
 		Data::ArrayList<void *> *selChgObjs;
-		OSInt minVisible;
+		UOSInt minVisible;
 		Data::ArrayList<void *> *items;
 		Data::ArrayList<const UTF8Char *> *itemTexts;
 		Bool allowEdit;
@@ -44,7 +44,7 @@ namespace UI
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);
 

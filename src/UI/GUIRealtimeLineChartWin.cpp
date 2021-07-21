@@ -75,7 +75,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	this->valueChanged = false;
 	img = this->eng->CreateImage32(dimg->GetWidth(), dimg->GetHeight(), Media::AT_NO_ALPHA);
 	b = img->NewBrushARGB(this->bgColor);
-	img->DrawRect(0, 0, Math::OSInt2Double(img->GetWidth()), Math::OSInt2Double(img->GetHeight()), 0, b);
+	img->DrawRect(0, 0, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
 	Sync::MutexUsage mutUsage(this->chartMut);
@@ -106,17 +106,17 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSizeC(f, sbuff, sptr - sbuff, sz);
+	img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
 	strWidth = sz[0];
 	img->DrawString(0, 0, sbuff, f, b);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSizeC(f, sbuff, sptr - sbuff, sz);
+	img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
 	if (sz[0] > strWidth)
 		strWidth = sz[0];
-	img->DrawString(0, dimg->GetHeight() - sz[1], sbuff, f, b);
-	img->DrawLine(strWidth, 0, strWidth, Math::OSInt2Double(dimg->GetHeight()), p);
+	img->DrawString(0, Math::UOSInt2Double(dimg->GetHeight()) - sz[1], sbuff, f, b);
+	img->DrawLine(strWidth, 0, strWidth, Math::UOSInt2Double(dimg->GetHeight()), p);
 	img->DelBrush(b);
 	img->DelPen(p);
 	img->DelFont(f);
@@ -132,8 +132,8 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 		l = 0;
 		while (l < this->sampleCnt)
 		{
-			thisX = l * (dimg->GetWidth() - strWidth - 1) / this->sampleCnt;
-			thisY = dimg->GetHeight() - 1 - ((this->chartVal[i] - this->chartMin) * (dimg->GetHeight() - 1) / (this->chartMax - this->chartMin));
+			thisX = Math::UOSInt2Double(l) * (Math::UOSInt2Double(dimg->GetWidth()) - strWidth - 1) / Math::UOSInt2Double(this->sampleCnt);
+			thisY = Math::UOSInt2Double(dimg->GetHeight()) - 1 - ((this->chartVal[i] - this->chartMin) * (Math::UOSInt2Double(dimg->GetHeight()) - 1) / (this->chartMax - this->chartMin));
 			if (lastX > 0)
 			{
 				img->DrawLine(lastX + strWidth + 1, lastY, thisX + strWidth + 1, thisY, p);
@@ -179,7 +179,7 @@ void UI::GUIRealtimeLineChart::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, Int32 updateInterval) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;
@@ -247,7 +247,7 @@ const UTF8Char *UI::GUIRealtimeLineChart::GetObjectClass()
 	return (const UTF8Char*)"RealtimeLineChart";
 }
 
-OSInt UI::GUIRealtimeLineChart::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIRealtimeLineChart::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -32,7 +32,7 @@ const UTF8Char *UI::GUICheckBox::GetObjectClass()
 	return (const UTF8Char*)"CheckBox";
 }
 
-OSInt UI::GUICheckBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUICheckBox::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -45,7 +45,7 @@ OSInt UI::GUICheckBox::OnNotify(Int32 code, void *lParam)
 
 void UI::GUICheckBox::EventCheckedChange(Bool newState)
 {
-	OSInt i = this->checkedChangeHdlrs->GetCount();
+	UOSInt i = this->checkedChangeHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->checkedChangeHdlrs->GetItem(i)(this->checkedChangeObjs->GetItem(i), newState);

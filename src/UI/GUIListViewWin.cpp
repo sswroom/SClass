@@ -382,7 +382,7 @@ UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 	item.cchTextMax = 256;
 	item.pszText = sbuff;
 	SendMessage((HWND)this->hwnd, LVM_GETITEMTEXTW, index, (LPARAM)&item);
-	return Text::StrWChar_UTF8(buff, sbuff, -1);
+	return Text::StrWChar_UTF8(buff, sbuff);
 }
 
 const UTF8Char *UI::GUIListView::GetItemTextNew(UOSInt index)
@@ -392,8 +392,8 @@ const UTF8Char *UI::GUIListView::GetItemTextNew(UOSInt index)
 	UTF8Char *sptr = GetItemText(sbuff, index);
 	if (sptr == 0)
 		return 0;
-	sout = MemAlloc(UTF8Char, sptr - sbuff + 1);
-	MemCopyNO(sout, sbuff, sizeof(UTF8Char) * (sptr - sbuff + 1));
+	sout = MemAlloc(UTF8Char, (UOSInt)(sptr - sbuff) + 1);
+	MemCopyNO(sout, sbuff, sizeof(UTF8Char) * (UOSInt)(sptr - sbuff + 1));
 	return sout;
 }
 
@@ -467,7 +467,7 @@ const UTF8Char *UI::GUIListView::GetObjectClass()
 	return (const UTF8Char*)"ListView";
 }
 
-OSInt UI::GUIListView::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIListView::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{

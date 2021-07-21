@@ -44,7 +44,7 @@ const UTF8Char *UI::GUIGroupBox::GetObjectClass()
 	return (const UTF8Char*)"GroupBox";
 }
 
-OSInt UI::GUIGroupBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

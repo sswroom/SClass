@@ -276,7 +276,7 @@ const UTF8Char *UI::GUICustomDrawVScroll::GetObjectClass()
 	return (const UTF8Char*)"CustomDrawVScroll";
 }
 
-OSInt UI::GUICustomDrawVScroll::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

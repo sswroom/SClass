@@ -31,7 +31,7 @@ Media::ImageGen::ImageGenMgr::ImageGenMgr()
 Media::ImageGen::ImageGenMgr::~ImageGenMgr()
 {
 	Media::ImageGenerator *imgGen;
-	OSInt i = this->imgGenArr->GetCount();
+	UOSInt i = this->imgGenArr->GetCount();
 	while (i-- > 0)
 	{
 		imgGen = this->imgGenArr->GetItem(i);
@@ -40,12 +40,12 @@ Media::ImageGen::ImageGenMgr::~ImageGenMgr()
 	DEL_CLASS(imgGenArr);
 }
 
-OSInt Media::ImageGen::ImageGenMgr::GetCount()
+UOSInt Media::ImageGen::ImageGenMgr::GetCount()
 {
 	return this->imgGenArr->GetCount();
 }
 
-Media::ImageGenerator *Media::ImageGen::ImageGenMgr::GetGenerator(OSInt index)
+Media::ImageGenerator *Media::ImageGen::ImageGenMgr::GetGenerator(UOSInt index)
 {
 	return this->imgGenArr->GetItem(index);
 }

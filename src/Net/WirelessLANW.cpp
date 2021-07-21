@@ -433,11 +433,11 @@ Bool Net::WirelessLAN::IsError()
 	return clsData->apiLib->IsError();
 }
 
-Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
+UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
 {
 	ClassData *clsData = (ClassData*)this->clsData;
 	WLAN_INTERFACE_INFO_LIST *list;
-	Int32 retVal = 0;
+	UOSInt retVal = 0;
 	if (ERROR_SUCCESS == WirelessLAN_EnumInterfaces(clsData, 0, (void**)&list))
 	{
 		UInt32 i;

@@ -430,7 +430,7 @@ const UTF8Char *UI::GUIForm::GetObjectClass()
 	return (const UTF8Char*)"WinForm";
 }
 
-OSInt UI::GUIForm::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -493,7 +493,7 @@ Bool UI::GUIForm::OnPaint()
 
 void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->menuClickedHandlers->GetCount();
 	while (i-- > 0)
 	{

@@ -22,7 +22,7 @@ UOSInt IO::DeviceManager::QueryHIDDevices(Data::ArrayList<IO::DeviceInfo*> *devL
 
 	if (devInfo)
 	{
-		Int32 i = 0;
+		DWORD i = 0;
 		SP_DEVICE_INTERFACE_DATA data;
 		while (true)
 		{
@@ -46,7 +46,7 @@ UOSInt IO::DeviceManager::QueryHIDDevices(Data::ArrayList<IO::DeviceInfo*> *devL
 }
 void IO::DeviceManager::FreeDevices(Data::ArrayList<IO::DeviceInfo*> *devList)
 {
-	OSInt i;
+	UOSInt i;
 	IO::DeviceInfo *dev;	
 	i = devList->GetCount();
 	while (i-- > 0)

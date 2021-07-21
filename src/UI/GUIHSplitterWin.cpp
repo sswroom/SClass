@@ -320,7 +320,7 @@ const UTF8Char *UI::GUIHSplitter::GetObjectClass()
 	return (const UTF8Char*)"HSplitter";
 }
 
-OSInt UI::GUIHSplitter::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIHSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

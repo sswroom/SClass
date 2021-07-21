@@ -463,7 +463,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			if (currTime < 0)
 				currTime = 0;
 			this->PBStart(currTime);
-			this->pbLastChapter = -1;
+			this->pbLastChapter = (UOSInt)-1;
 		}
 		break;
 	case MNU_PB_CHAP_PREV:

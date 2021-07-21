@@ -26,7 +26,7 @@ namespace UI
 	private:
 		void RemoveItems();
 		void FreeItem(UI::GUITreeView::TreeItem *item);
-		void AddTreeNode(UI::GUITreeView::TreeItem *item, Map::MapEnv::GroupItem *group, OSInt index);
+		void AddTreeNode(UI::GUITreeView::TreeItem *item, Map::MapEnv::GroupItem *group, UOSInt index);
 		void UpdateTreeStatus(UI::GUITreeView::TreeItem *item);
 	public:
 		GUIMapTreeView(UI::GUICore *ui, UI::GUIClientControl *parent, Map::MapEnv *env);

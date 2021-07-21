@@ -110,7 +110,7 @@ UI::GUITabControl::~GUITabControl()
 {
 	UI::GUITabPage *tp;
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
-	OSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
 		tp = this->tabPages->GetItem(i);
@@ -166,7 +166,7 @@ void UI::GUITabControl::SetSelectedIndex(UOSInt index)
 		this->selIndex = index;
 		SendMessage((HWND)this->hwnd, TCM_SETCURSEL, index, 0);
 
-		OSInt i;
+		UOSInt i;
 		i = this->selChgHdlrs->GetCount();
 		while (i-- > 0)
 		{
@@ -185,7 +185,7 @@ void UI::GUITabControl::SetSelectedPage(UI::GUITabPage *page)
 {
 	if (page == 0)
 		return;
-	OSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
 		if (page == this->tabPages->GetItem(i))
@@ -206,7 +206,7 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, const UTF8Char *name)
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(name);
 	item.cchTextMax = 0;
-	index = SendMessageW((HWND)this->hwnd, TCM_SETITEMW, index, (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_SETITEMW, index, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 }
 
@@ -218,8 +218,8 @@ UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 	item.pszText = (LPWSTR)sbuff;
 	item.cchTextMax = 512;
 	sbuff[0] = 0;
-	index = SendMessageW((HWND)this->hwnd, TCM_GETITEMW, index, (LPARAM)&item);
-	return Text::StrWChar_UTF8(buff, sbuff, -1);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_GETITEMW, index, (LPARAM)&item);
+	return Text::StrWChar_UTF8(buff, sbuff);
 }
 
 void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, OSInt *w, OSInt *h)
@@ -252,15 +252,15 @@ const UTF8Char *UI::GUITabControl::GetObjectClass()
 	return (const UTF8Char*)"TabControl";
 }
 
-OSInt UI::GUITabControl::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITabControl::OnNotify(UInt32 code, void *lParam)
 {
 	UOSInt newIndex;
-	OSInt i;
+	UOSInt i;
 	UI::GUITabPage *tp;
 	switch (code)
 	{
 	case TCN_SELCHANGE:
-		newIndex = SendMessage((HWND)this->hwnd, TCM_GETCURSEL, 0, 0);
+		newIndex = (UOSInt)SendMessage((HWND)this->hwnd, TCM_GETCURSEL, 0, 0);
 		if (newIndex != this->selIndex)
 		{
 			tp = this->tabPages->GetItem(this->selIndex);
@@ -285,7 +285,7 @@ OSInt UI::GUITabControl::OnNotify(Int32 code, void *lParam)
 
 void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 {
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -324,7 +324,7 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	OSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
 		this->tabPages->GetItem(i)->SetDPI(hdpi, ddpi);

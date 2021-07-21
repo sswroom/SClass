@@ -20,7 +20,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 	UInt8 *buff = MemAlloc(UInt8, 2048);
 	while (!stat->toStop)
 	{
-		OSInt recvSize;
+		UOSInt recvSize;
 		Net::SocketUtil::AddressInfo recvAddr;
 		UInt16 recvPort;
 
@@ -185,7 +185,7 @@ Net::IPScanDetector::IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdl
 
 Net::IPScanDetector::~IPScanDetector()
 {
-	OSInt i;
+	UOSInt i;
 	if (this->threadStats)
 	{
 		i = this->threadCnt;

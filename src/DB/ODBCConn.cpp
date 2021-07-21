@@ -893,7 +893,7 @@ void DB::ODBCConn::SetTraceFile(const WChar *fileName)
 	Text::Encoding enc;
 	UOSInt i;
 	SQLSetConnectAttr(this->connHand, SQL_ATTR_TRACE, &en, sizeof(en));
-	i = enc.WToBytes(buff, fileName, -1);
+	i = enc.WToBytes(buff, fileName);
 	SQLSetConnectAttr(this->connHand, SQL_ATTR_TRACEFILE, buff, (SQLINTEGER)(i - 1));
 }
 

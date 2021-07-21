@@ -9,11 +9,11 @@ namespace Crypto
 		{
 		private:
 			UInt8 *reqBuff;
-			OSInt reqBuffSize;
+			UOSInt reqBuffSize;
 		public:
 			CertRequest(const UTF8Char *fileName);
 			~CertRequest();
 		};
-	};
-};
+	}
+}
 #endif

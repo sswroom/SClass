@@ -47,7 +47,7 @@ Bool IO::StreamWriter::Write(const UTF8Char *str, UOSInt nChar)
 			MemFree(this->buff);
 			this->buff = MemAlloc(UInt8, this->buffSize);
 		}
-		nChar = enc->WToBytes(this->buff, ws, (OSInt)wnChar);
+		nChar = enc->WToBytesC(this->buff, ws, wnChar);
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}
@@ -89,7 +89,7 @@ Bool IO::StreamWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 			MemFree(this->buff);
 			this->buff = MemAlloc(UInt8, this->buffSize);
 		}
-		nChar = enc->WToBytes(this->buff, ws, (OSInt)wnChar + 2);
+		nChar = enc->WToBytesC(this->buff, ws, wnChar + 2);
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}
@@ -114,7 +114,7 @@ Bool IO::StreamWriter::WriteW(const WChar *str, UOSInt nChar)
 		MemFree(this->buff);
 		this->buff = MemAlloc(UInt8, this->buffSize);
 	}
-	nChar = enc->WToBytes(this->buff, str, (OSInt)nChar);
+	nChar = enc->WToBytesC(this->buff, str, nChar);
 	return this->stm->Write(this->buff, nChar) == nChar;
 }
 
@@ -135,7 +135,7 @@ Bool IO::StreamWriter::WriteLineW(const WChar *str, UOSInt nChar)
 		MemFree(this->buff);
 		this->buff = MemAlloc(UInt8, this->buffSize);
 	}
-	nChar = enc->WToBytes(this->buff, str, (OSInt)nChar);
+	nChar = enc->WToBytesC(this->buff, str, nChar);
 	this->buff[nChar] = 0xd;
 	this->buff[nChar + 1] = 0xa;
 	return this->stm->Write(this->buff, nChar + 2) == nChar + 2;

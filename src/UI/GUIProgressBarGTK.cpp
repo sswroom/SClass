@@ -62,7 +62,7 @@ const UTF8Char *UI::GUIProgressBar::GetObjectClass()
 	return (const UTF8Char*)"ProgressBar";
 }
 
-OSInt UI::GUIProgressBar::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIProgressBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

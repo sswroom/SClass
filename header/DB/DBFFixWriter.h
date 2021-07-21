@@ -28,7 +28,7 @@ namespace DB
 		UOSInt recSize;
 
 	public:
-		DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8Char **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, Int32 codePage);
+		DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8Char **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage);
 		~DBFFixWriter();
 		void AddRecord(const UTF8Char **rowValues);
 

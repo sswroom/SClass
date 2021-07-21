@@ -73,7 +73,7 @@ namespace UI
 		virtual ~GUITextFileView();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void UpdateFont();
 
 		Bool IsLoading();

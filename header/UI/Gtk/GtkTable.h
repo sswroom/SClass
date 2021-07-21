@@ -21,7 +21,7 @@ namespace UI
 			virtual void SetText(const WChar *text);
 
 			virtual const WChar *GetObjectClass();
-			virtual OSInt OnNotify(Int32 code, void *lParam);
+			virtual OSInt OnNotify(UInt32 code, void *lParam);
 			OSInt AddItem(const WChar *text);
 			OSInt SetSubItem(OSInt row, OSInt col, const WChar *text);
 		};

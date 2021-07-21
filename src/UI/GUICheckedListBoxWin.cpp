@@ -28,7 +28,7 @@ const UTF8Char *UI::GUICheckedListBox::GetObjectClass()
 	return (const UTF8Char*)"CheckedListBox";
 }
 
-OSInt UI::GUICheckedListBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUICheckedListBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

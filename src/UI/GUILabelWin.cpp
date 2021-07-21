@@ -36,7 +36,7 @@ const UTF8Char *UI::GUILabel::GetObjectClass()
 	return (const UTF8Char*)"Label";
 }
 
-OSInt UI::GUILabel::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUILabel::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

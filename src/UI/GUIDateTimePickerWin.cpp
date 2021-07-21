@@ -51,10 +51,10 @@ const UTF8Char *UI::GUIDateTimePicker::GetObjectClass()
 	return (const UTF8Char*)"DateTimePicker";
 }
 
-OSInt UI::GUIDateTimePicker::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 {
 	Data::DateTime dt;
-	OSInt i;
+	UOSInt i;
 	LPNMDATETIMECHANGE chg;
 
 	switch (code)
@@ -92,7 +92,7 @@ OSInt UI::GUIDateTimePicker::OnNotify(Int32 code, void *lParam)
 void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
 {
 	SYSTEMTIME t;
-	Int32 tz = dt->GetTimeZoneQHR();
+	Int8 tz = dt->GetTimeZoneQHR();
 	dt->SetTimeZoneQHR(0);
 	dt->ToSYSTEMTIME(&t);
 	dt->SetTimeZoneQHR(tz);
@@ -103,7 +103,7 @@ void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
 {
 	SYSTEMTIME t;
 	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
-	Int32 tz = dt->GetTimeZoneQHR();
+	Int8 tz = dt->GetTimeZoneQHR();
 	dt->ToUTCTime();
 	dt->SetValueSYSTEMTIME(&t);
 	dt->SetTimeZoneQHR(tz);

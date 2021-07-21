@@ -257,7 +257,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			wfile = MemAlloc(WebFileInfo, 1);
 			wfile->id = r->GetInt32(0);
 			wfile->speciesId = r->GetInt32(1);
-			wfile->crcVal = r->GetInt32(2);
+			wfile->crcVal = (UInt32)r->GetInt32(2);
 			sb.ClearStr();
 			r->GetStr(3, &sb);
 			wfile->imgUrl = Text::StrCopyNew(sb.ToString());
@@ -597,6 +597,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	IO::Path::PathType pt;
 	UOSInt i;
 	UOSInt j;
+	OSInt si;
 	UOSInt retCnt = 0;
 	OrganImageItem *imgItem;
 	if (coverId != 0)
@@ -729,8 +730,8 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					isCoverPhoto = false;
 				}
 
-				i = Text::StrLastIndexOf(sptr, '.');
-				if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
+				si = Text::StrLastIndexOf(sptr, '.');
+				if (Text::StrCompareICase(&sptr[si], (const UTF8Char*)".JPG") == 0)
 				{
 					Media::EXIFData *exif = ParseJPGExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -758,7 +759,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					i++;
 				}
-				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".TIF") == 0)
+				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".TIF") == 0)
 				{
 					Media::EXIFData *exif = ParseTIFExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -785,7 +786,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".PCX") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".GIF") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".PNG") == 0)
+				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".PCX") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".GIF") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".PNG") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -797,7 +798,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".AVI") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MOV") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MTS") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".M2TS") == 0)
+				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".AVI") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MOV") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".MTS") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".M2TS") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -809,7 +810,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 2;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".WAV") == 0)
+				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".WAV") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -992,7 +993,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileI
 	DB::DBReader *r;
 	DB::SQLBuilder sql(this->db);
 	Int32 v;
-	Int32 c;
+	UInt32 c;
 	UOSInt cnt = items->GetCount();
 
 	if (grp == 0)
@@ -1056,7 +1057,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileI
 		while (r->ReadNext())
 		{
 			v = r->GetInt32(0);
-			c = r->GetInt32(1);
+			c = (UInt32)r->GetInt32(1);
 			species = this->speciesMap->Get(v);
 			if (species != 0)
 			{
@@ -1131,7 +1132,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(Data::ArrayList<OrganGroupIte
 			sp->SetIDKey(sb.ToString());
 			sp->SetFlags(r->GetInt32(8));
 			sp->SetPhotoId(r->GetInt32(9));
-			sp->SetMapColor(r->GetInt32(10));
+			sp->SetMapColor((UInt32)r->GetInt32(10));
 			sp->SetPhotoWId(r->GetInt32(11));
 			sp->SetIsDefault(false);
 			items->Add(sp);
@@ -1307,7 +1308,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 			si = spList.SortedIndexOf(spId);
 			if (si < 0)
 			{
-				spList.Insert(~si, spId);
+				spList.Insert((UOSInt)~si, spId);
 			}
 		}
 		this->db->CloseReader(r);

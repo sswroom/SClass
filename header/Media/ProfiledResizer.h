@@ -31,8 +31,8 @@ namespace Media
 		{
 			const UTF8Char *profileName;
 			const UTF8Char *suffix;
-			Int32 targetSizeX;
-			Int32 targetSizeY;
+			UInt32 targetSizeX;
+			UInt32 targetSizeY;
 			SizeType sizeType;
 			OutputType outType;
 			UInt32 outParam;
@@ -63,7 +63,7 @@ namespace Media
 		const ResizeProfile *GetCurrProfile();
 		void SetCurrentProfile(UOSInt index);
 		const ResizeProfile *GetProfile(UOSInt index);
-		Bool AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, Int32 targetWidth, Int32 targetHeight, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType);
+		Bool AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType);
 		Bool RemoveProfile(UOSInt index);
 
 		void ProcessFile(const UTF8Char *fileName);

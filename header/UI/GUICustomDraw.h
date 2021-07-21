@@ -36,7 +36,7 @@ namespace UI
 		virtual ~GUICustomDraw();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual Bool OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
 		virtual Bool OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);

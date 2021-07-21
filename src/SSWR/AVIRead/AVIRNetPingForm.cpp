@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 				sb.Append((const UTF8Char*)"ms, calc time = ");
 				Text::SBAppendF64(&sb, t2 * 1000);
 				sb.Append((const UTF8Char*)"ms, ttl = ");
-				sb.AppendI32(ttl);
+				sb.AppendU32(ttl);
 				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 			else
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 			sb.Append((const UTF8Char*)"ms, calc time = ");
 			Text::SBAppendF64(&sb, t2 * 1000);
 			sb.Append((const UTF8Char*)"ms, ttl = ");
-			sb.AppendI32(ttl);
+			sb.AppendU32(ttl);
 			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			me->rlcPing->AddSample(t);
 		}

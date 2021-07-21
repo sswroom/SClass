@@ -26,7 +26,7 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 	WChar *sptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
-	this->filterIndex = -1;
+	this->filterIndex = (UOSInt)-1;
 	this->allowMulti = false;
 	i = Text::StrCharCnt(dialogName);
 	this->dialogName = MemAlloc(WChar, i + 7);
@@ -80,7 +80,7 @@ void UI::FileDialog::AddFilter(const UTF8Char *pattern, const UTF8Char *name)
 
 OSInt UI::FileDialog::GetFilterIndex()
 {
-	return this->filterIndex;
+	return (OSInt)this->filterIndex;
 }
 
 void UI::FileDialog::SetFileName(const UTF8Char *fileName)
@@ -264,7 +264,7 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 		}
 	}
 
-	if (this->filterIndex == -1)
+	if (this->filterIndex == (UOSInt)-1)
 	{
 		if (isSave && filterCnt > 0 && initFileName[0])
 		{
@@ -387,7 +387,7 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			Text::StrDelNew(this->fileName);
 			this->fileName = 0;
 		}
-		this->filterIndex = -1;
+		this->filterIndex = (UOSInt)-1;
 		GtkFileFilter *filter = gtk_file_chooser_get_filter(chooser);
 		if (filter)
 		{
@@ -402,7 +402,7 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 				this->filterIndex++;
 				if (list->next == 0)
 				{
-					this->filterIndex = -1;
+					this->filterIndex = (UOSInt)-1;
 					break;
 				}
 				list = list->next;

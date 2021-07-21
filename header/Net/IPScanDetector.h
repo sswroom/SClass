@@ -38,7 +38,7 @@ namespace Net
 		Sync::Mutex *adapterMut;
 
 		ThreadStat *threadStats;
-		OSInt threadCnt;
+		UOSInt threadCnt;
 		Sync::Event *ctrlEvt;
 
 	private:

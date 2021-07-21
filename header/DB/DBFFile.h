@@ -58,7 +58,7 @@ namespace DB
 		Bool ReadRowData(UOSInt row, UInt8 *recordBuff);
 
 		static Int32 GetCodePage(UInt8 langDriver);
-		static UInt8 GetLangDriver(Int32 codePage);
+		static UInt8 GetLangDriver(UInt32 codePage);
 	};
 
 	class DBFReader : public DB::DBReader

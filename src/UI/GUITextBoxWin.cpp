@@ -49,7 +49,7 @@ UI::GUITextBox::~GUITextBox()
 
 void UI::GUITextBox::EventTextChange()
 {
-	OSInt i = this->txtChgHdlrs->GetCount();
+	UOSInt i = this->txtChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->txtChgHdlrs->GetItem(i)(this->txtChgObjs->GetItem(i));
@@ -75,17 +75,17 @@ void UI::GUITextBox::SetText(const UTF8Char *txt)
 
 UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 {
-	OSInt leng = GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *sptr = MemAlloc(WChar, leng + 1);
 	GetWindowTextW((HWND)hwnd, sptr, (int)(leng + 1));
-	buff = Text::StrWChar_UTF8(buff, sptr, -1);
+	buff = Text::StrWChar_UTF8(buff, sptr);
 	MemFree(sptr);
 	return buff;
 }
 
 Bool UI::GUITextBox::GetText(Text::StringBuilderUTF *sb)
 {
-	OSInt leng = GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
 	GetWindowTextW((HWND)hwnd, wptr, (int)leng + 1);
 	const UTF8Char *csptr = Text::StrToUTF8New(wptr);
@@ -100,7 +100,7 @@ const UTF8Char *UI::GUITextBox::GetObjectClass()
 	return (const UTF8Char*)"TextBox";
 }
 
-OSInt UI::GUITextBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{

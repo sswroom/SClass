@@ -20,7 +20,7 @@ namespace UI
 			virtual void SetText(const WChar *text);
 
 			virtual const WChar *GetObjectClass();
-			virtual OSInt OnNotify(Int32 code, void *lParam);
+			virtual OSInt OnNotify(UInt32 code, void *lParam);
 			Int32 GetTextColor();
 			void SetTextColor(Int32 textColor);
 		};

@@ -104,7 +104,7 @@ nodeps:
 @SHTTPServer
 @SHWInfo
 @SignalTest
-#smake
+@smake
 @SMD5
 @SMonitorSvr
 @SProcMonitor

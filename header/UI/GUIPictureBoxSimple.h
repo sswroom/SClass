@@ -32,7 +32,7 @@ namespace UI
 		virtual ~GUIPictureBoxSimple();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
 		void HandleMouseMove(MouseEventHandler hdlr, void *userObj);

@@ -49,9 +49,9 @@ namespace UI
 		void AddSeperator();
 		GUIMenu *AddSubMenu(const UTF8Char *name);
 		void *GetHMenu();
-		OSInt GetAllKeys(Data::ArrayList<ShortcutKey*> *keys);
-		OSInt GetShortcutKeyCnt();
-		ShortcutKey *GetShortcutKey(OSInt index);
+		UOSInt GetAllKeys(Data::ArrayList<ShortcutKey*> *keys);
+		UOSInt GetShortcutKeyCnt();
+		ShortcutKey *GetShortcutKey(UOSInt index);
 		void SetItemEnabled(UInt16 cmdId, Bool enabled); /////////////////////////
 		void ClearItems();
 		void SetDPI(Double hdpi, Double ddpi);

@@ -19,7 +19,7 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 		SendMessage((HWND)this->hwnd, BM_SETCHECK, BST_UNCHECKED, 0);
 		this->selected = false;
 	}
-	OSInt i = this->selectedChangeHdlrs->GetCount();
+	UOSInt i = this->selectedChangeHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->selectedChangeHdlrs->GetItem(i)(this->selectedChangeObjs->GetItem(i), this->selected);
@@ -53,7 +53,7 @@ const UTF8Char *UI::GUIRadioButton::GetObjectClass()
 	return (const UTF8Char*)"RadioButton";
 }
 
-OSInt UI::GUIRadioButton::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -74,8 +74,8 @@ void UI::GUIRadioButton::Select()
 	if (this->selected)
 		return;
 
-	OSInt i = 0;
-	OSInt j = this->parent->GetChildCount();
+	UOSInt i = 0;
+	UOSInt j = this->parent->GetChildCount();
 	while (i < j)
 	{
 		UI::GUIControl *ctrl = this->parent->GetChild(i);

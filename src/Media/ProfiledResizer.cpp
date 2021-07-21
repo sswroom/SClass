@@ -21,7 +21,7 @@ void Media::ProfiledResizer::ReleaseProfile(Media::ProfiledResizer::ResizeProfil
 
 Media::ProfiledResizer::ProfiledResizer(Parser::ParserList *parsers, Media::ColorManagerSess *colorSess, Media::DrawEngine *deng)
 {
-	this->currProfile = -1;
+	this->currProfile = (UOSInt)-1;
 	this->saver = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
@@ -125,7 +125,7 @@ const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetProfile(
 	return this->profiles->GetItem(index);
 }
 
-Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, Int32 targetSizeX, Int32 targetSizeY, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType)
+Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType)
 {
 	ResizeProfile *profile;
 	if (outType == OT_TIFF)
@@ -191,7 +191,7 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 	{
 		if (this->profiles->GetCount() == 0)
 		{
-			this->currProfile = -1;
+			this->currProfile = (UOSInt)-1;
 			bresizer->ClearTargetSizes();
 		}
 		else if (this->profiles->GetCount() <= this->currProfile)
@@ -200,7 +200,7 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 		}
 		else
 		{
-			this->currProfile = -1;
+			this->currProfile = (UOSInt)-1;
 			SetCurrentProfile(index);
 		}
 	}
@@ -248,9 +248,9 @@ Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
 		cols[0] = profile->profileName;
 		cols[1] = profile->suffix;
 		cols[2] = sbuff2;
-		sptr = Text::StrInt32(sbuff2, profile->targetSizeX) + 1;
+		sptr = Text::StrUInt32(sbuff2, profile->targetSizeX) + 1;
 		cols[3] = sptr;
-		sptr = Text::StrInt32(sptr, profile->targetSizeY) + 1;
+		sptr = Text::StrUInt32(sptr, profile->targetSizeY) + 1;
 		cols[4] = sptr;
 		sptr = Text::StrInt32(sptr, (Int32)profile->outType) + 1;
 		cols[5] = sptr;
@@ -280,8 +280,8 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[32];
-	Int32 targetSizeX;
-	Int32 targetSizeY;
+	UInt32 targetSizeX;
+	UInt32 targetSizeY;
 	Int32 outType;
 	UInt32 outParam;
 	Int32 sizeType;
@@ -307,7 +307,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 			Sync::Thread::Sleep(100);
 		}
 
-		this->currProfile = -1;
+		this->currProfile = (UOSInt)-1;
 		bresizer->ClearTargetSizes();
 		i = profiles->GetCount();
 		while (i-- > 0)
@@ -319,8 +319,8 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 		{
 			if (r->ColCount() == 6)
 			{
-				targetSizeX = r->GetInt32(2);
-				targetSizeY = r->GetInt32(3);
+				targetSizeX = (UInt32)r->GetInt32(2);
+				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
 				r->GetStr(0, sbuff, sizeof(sbuff));
@@ -329,8 +329,8 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 			}
 			else if (r->ColCount() == 7)
 			{
-				targetSizeX = r->GetInt32(2);
-				targetSizeY = r->GetInt32(3);
+				targetSizeX = (UInt32)r->GetInt32(2);
+				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
 				r->GetStr(0, sbuff, sizeof(sbuff));
@@ -341,8 +341,8 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 			}
 			else if (r->ColCount() == 8)
 			{
-				targetSizeX = r->GetInt32(2);
-				targetSizeY = r->GetInt32(3);
+				targetSizeX = (UInt32)r->GetInt32(2);
+				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
 				r->GetStr(0, sbuff, sizeof(sbuff));

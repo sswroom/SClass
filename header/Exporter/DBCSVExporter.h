@@ -12,12 +12,12 @@ namespace Exporter
 		typedef struct
 		{
 			DB::ReadingDB *db;
-			OSInt tableIndex;
+			UOSInt tableIndex;
 			Data::ArrayListStrUTF8 *names;
 		} DBParam;
 
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 
 	public:
 		DBCSVExporter();

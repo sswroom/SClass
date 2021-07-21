@@ -49,13 +49,13 @@ void Media::Decoder::ACMDecoder::InitACM()
 	WAVEFORMATEX *acmFmt;
 	sourceAudio->GetFormat(&format);
 	fmt = (WAVEFORMATEX*)MAlloc(18 + format.extraSize);
-	fmt->wFormatTag = format.formatId;
+	fmt->wFormatTag = (WORD)format.formatId;
 	fmt->nChannels = format.nChannels;
 	fmt->nSamplesPerSec = format.frequency;
-	fmt->nBlockAlign = format.align;
+	fmt->nBlockAlign = (WORD)format.align;
 	fmt->nAvgBytesPerSec = format.bitRate >> 3;
 	fmt->wBitsPerSample = format.bitpersample;
-	fmt->cbSize = format.extraSize;
+	fmt->cbSize = (WORD)format.extraSize;
 	if (format.extraSize > 0)
 	{
 		MemCopyNO(18 + (UInt8*)fmt, format.extra, fmt->cbSize);
@@ -303,7 +303,7 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		{
 			convFlag = ACM_STREAMCONVERTF_BLOCKALIGN;
 		}
-		Int32 ret;
+		MMRESULT ret;
 		if ((ret = acmStreamConvert((HACMSTREAM)hAcmStream, acmsh, convFlag)) != 0)
 		{
 			if (this->readEvt)

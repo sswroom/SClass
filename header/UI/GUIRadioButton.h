@@ -20,7 +20,7 @@ namespace UI
 		virtual ~GUIRadioButton();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		Bool IsSelected();
 		void Select();

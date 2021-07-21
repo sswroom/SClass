@@ -47,7 +47,7 @@ const UTF8Char *UI::GUITabPage::GetObjectClass()
 	return (const UTF8Char*)"TabPage";
 }
 
-OSInt UI::GUITabPage::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITabPage::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

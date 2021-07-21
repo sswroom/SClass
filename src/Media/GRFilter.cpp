@@ -5,12 +5,12 @@
 
 extern "C"
 {
-	void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
 }
 
 Media::GRFilter::GRFilter()
@@ -21,7 +21,7 @@ Media::GRFilter::GRFilter()
 Media::GRFilter::~GRFilter()
 {
 	LayerSetting *lyr;
-	OSInt i;
+	UOSInt i;
 	i = this->layers->GetCount();
 	while (i-- > 0)
 	{

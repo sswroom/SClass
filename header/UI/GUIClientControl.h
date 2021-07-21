@@ -30,8 +30,8 @@ namespace UI
 		virtual void AddChild(GUIControl *child);
 		virtual Bool IsChildVisible() = 0;
 		
-		OSInt GetChildCount();
-		UI::GUIControl *GetChild(OSInt index);
+		UOSInt GetChildCount();
+		UI::GUIControl *GetChild(UOSInt index);
 		void FocusChild(GUIControl *child);
 
 		void UpdateChildrenSize(Bool redraw);
@@ -40,5 +40,5 @@ namespace UI
 
 		void *GetContainer();
 	};
-};
+}
 #endif

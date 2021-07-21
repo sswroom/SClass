@@ -33,7 +33,7 @@ const UTF8Char *UI::Gtk::GtkTextView::GetObjectClass()
 	return (const UTF8Char*)"TextView";
 }
 
-OSInt UI::Gtk::GtkTextView::OnNotify(Int32 code, void *lParam)
+OSInt UI::Gtk::GtkTextView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

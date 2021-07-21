@@ -89,8 +89,8 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	this->SetDefaultButton(btnGenerate);
 	this->SetCancelButton(btnCancel);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(this->imgGenMgr, Media::ImageGen::ImageGenMgr());
 	i = 0;
 	j = this->imgGenMgr->GetCount();

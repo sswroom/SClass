@@ -18,7 +18,7 @@ namespace UI
 		Data::ArrayListStrUTF8 *patterns;
 		Data::ArrayListStrUTF8 *names;
 		Data::ArrayListStrUTF8 *fileNames;
-		OSInt filterIndex;
+		UOSInt filterIndex;
 
 		void ClearFileNames();
 	public:

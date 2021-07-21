@@ -42,7 +42,7 @@ const UTF8Char *UI::GUICalendar::GetObjectClass()
 	return (const UTF8Char*)"Calendar";
 }
 
-OSInt UI::GUICalendar::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUICalendar::OnNotify(UInt32 code, void *lParam)
 {
 	Data::DateTime dt;
 	OSInt i;

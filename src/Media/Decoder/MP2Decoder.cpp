@@ -556,7 +556,7 @@ void Media::Decoder::MP2Decoder::GetFormat(AudioFormat *format)
 		format->frequency = fmt.frequency;
 		format->nChannels = 2;
 		format->bitRate = fmt.frequency * fmt.nChannels << 4;
-		format->align = format->nChannels * format->bitpersample >> 3;
+		format->align = (UInt32)format->nChannels * format->bitpersample >> 3;
 	}
 	else
 	{

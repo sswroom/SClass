@@ -101,7 +101,7 @@ UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, Int32 devNo)
 {
 	WAVEINCAPSW caps;
 	waveInGetDevCapsW(devNo, &caps, sizeof(caps));
-	return Text::StrWChar_UTF8(u8buff, caps.szPname, -1);
+	return Text::StrWChar_UTF8(u8buff, caps.szPname);
 }
 
 Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)

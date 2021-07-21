@@ -2169,7 +2169,7 @@ const UTF8Char *UI::GUIVideoBoxDD::GetObjectClass()
 	return (const UTF8Char*)"VideoBoxDD";
 }
 
-OSInt UI::GUIVideoBoxDD::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIVideoBoxDD::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

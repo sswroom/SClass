@@ -192,7 +192,7 @@ void UI::GUIPictureList::RemoveAt(OSInt index)
 
 void UI::GUIPictureList::Clear()
 {
-	OSInt i = this->imgList->GetCount();
+	UOSInt i = this->imgList->GetCount();
 	while (i-- > 0)
 	{
 		Media::DrawImage *img = this->imgList->RemoveAt(i);

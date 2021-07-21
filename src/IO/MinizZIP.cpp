@@ -37,8 +37,8 @@ Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)
 				break;
 			}
 
-			this->enc->UTF8ToBytes((UInt8*)sbuff, dirPath, -1);
-			this->enc->UTF8ToBytes((UInt8*)sbuff2, zipPath, -1);
+			this->enc->UTF8ToBytes((UInt8*)sbuff, dirPath);
+			this->enc->UTF8ToBytes((UInt8*)sbuff2, zipPath);
 			Text::StrReplace(sbuff2, '\\', '/');
 			if (mz_zip_writer_add_file(zip, sbuff2, sbuff, 0, 0, MZ_BEST_COMPRESSION) == MZ_FALSE)
 			{
@@ -68,7 +68,7 @@ IO::MinizZIP::MinizZIP(const UTF8Char *zipFile)
 	NEW_CLASS(this->enc, Text::Encoding());
 	zip = MemAlloc(mz_zip_archive, 1);
 	MemClear(zip, sizeof(mz_zip_archive));
-	this->enc->UTF8ToBytes((UInt8*)sbuff, zipFile, -1);
+	this->enc->UTF8ToBytes((UInt8*)sbuff, zipFile);
 	if (mz_zip_writer_init_file(zip, sbuff, 0))
 	{
 		this->hand = zip;
@@ -102,7 +102,7 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 	{
 		Char sbuff[512];
 		OSInt i;
-		this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile, -1);
+		this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile);
 		i = Text::StrLastIndexOf(sbuff, (Char)IO::Path::PATH_SEPERATOR);
 		return mz_zip_writer_add_file(zip, &sbuff[i + 1], sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
 	}
@@ -140,7 +140,7 @@ Bool IO::MinizZIP::AddContent(const UInt8 *content, UOSInt contLeng, const UTF8C
 		return false;
 	}
 
-	this->enc->UTF8ToBytes((UInt8*)sbuff2, fileName, -1);
+	this->enc->UTF8ToBytes((UInt8*)sbuff2, fileName);
 	Text::StrReplace(sbuff2, '\\', '/');
 	if (mz_zip_writer_add_mem(zip, sbuff2, content, contLeng, MZ_BEST_COMPRESSION) == MZ_FALSE)
 	{

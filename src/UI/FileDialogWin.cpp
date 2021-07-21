@@ -19,7 +19,7 @@
 
 void UI::FileDialog::ClearFileNames()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->fileNames->GetCount();
 	while (i-- > 0)
 	{
@@ -29,12 +29,12 @@ void UI::FileDialog::ClearFileNames()
 
 UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
 {
-	OSInt i;
+	UOSInt i;
 	WChar buff[256];
 	WChar *sptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
-	this->filterIndex = -1;
+	this->filterIndex = (UOSInt)-1;
 	this->allowMulti = false;
 	i = Text::StrCharCnt(dialogName);
 	this->dialogName = MemAlloc(WChar, i + 7);
@@ -55,7 +55,7 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 
 UI::FileDialog::~FileDialog()
 {
-	OSInt i;
+	UOSInt i;
 	IO::Registry::CloseRegistry(this->reg);
 	MemFree(this->dialogName);
 	if (this->lastName)
@@ -141,8 +141,9 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 	WChar *fnameBuff;
 	OSInt fnameBuffSize;
 	Text::StringBuilderUTF16 sb;
-	OSInt i = 0;
-	OSInt filterCnt = this->names->GetCount();
+	UOSInt i = 0;
+	OSInt si;
+	UOSInt filterCnt = this->names->GetCount();
 
 	OPENFILENAMEW ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -196,11 +197,11 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		i = Text::StrLastIndexOf(fname2, '\\');
-		if (i >= 0)
+		si = Text::StrLastIndexOf(fname2, '\\');
+		if (si >= 0)
 		{
-			fname2[i] = 0;
-			initFileName = &fname2[i + 1];
+			fname2[si] = 0;
+			initFileName = &fname2[si + 1];
 			initDir = fname2;
 			if (initFileName[0] == 0)
 			{
@@ -212,10 +213,10 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			initFileName = fname2;
 			initDir = L".";
 		}
-		i = Text::StrLastIndexOf(initFileName, '.');
-		if (i >= 0)
+		si = Text::StrLastIndexOf(initFileName, '.');
+		if (si >= 0)
 		{
-			initFileName[i] = 0;
+			initFileName[si] = 0;
 		}
 	}
 	else
@@ -269,7 +270,7 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 	ofn.lpstrFilter = sb.ToString();
 	ofn.lpstrCustomFilter = 0; 
 	ofn.nMaxCustFilter = 0;
-	if (this->filterIndex == -1)
+	if (this->filterIndex == (UOSInt)-1)
 	{
 		if (this->isSave && fnameBuff && fnameBuff[0] != 0)
 		{
@@ -407,13 +408,13 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			}
 			if (initFileName[0])
 			{
-				i = Text::StrIndexOf(currPtr, initFileName);
-				if (i >= 0)
+				si = Text::StrIndexOf(currPtr, initFileName);
+				if (si >= 0)
 				{
-					currPtr[i] = 0;
+					currPtr[si] = 0;
 					sptr = Text::StrConcat(sptr, currPtr);
 					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
+					Text::StrConcat(sptr, &currPtr[si + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{

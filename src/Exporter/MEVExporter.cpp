@@ -98,7 +98,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	WriteUInt32(&buff[12], env->GetBGColor());
 	WriteUInt32(&buff[16], (UInt32)env->GetNString());
 	*(Int32*)&buff[20] = 0;
-	*(Int32*)&buff[24] = AddString(strArr, fileName, 20);
+	*(UInt32*)&buff[24] = AddString(strArr, fileName, 20);
 	*(Int32*)&buff[28] = (Int32)dirArr->GetCount();
 	*(Int32*)&buff[32] = (Int32)env->GetImageFileCnt();
 	*(Int32*)&buff[36] = (Int32)env->GetFontStyleCount();
@@ -115,7 +115,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		tmpStr = dirArr->GetItem(i);
 		*(Int32*)&buff[0] = 0;
-		*(Int32*)&buff[4] = AddString(strArr, tmpStr, stmPos);
+		*(UInt32*)&buff[4] = AddString(strArr, tmpStr, stmPos);
 
 		stm->Write(buff, 8);
 		stmPos += 8;
@@ -129,11 +129,11 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		env->GetImageFileInfo(i, &imgInfo);
 		Text::StrConcat(u8buff, imgInfo.fileName);
-		k = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
+		si = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
-		WriteUInt32(&buff[4], AddString(strArr, &u8buff[k + 1], stmPos));
-		u8buff[k] = 0;
+		WriteUInt32(&buff[4], AddString(strArr, &u8buff[si + 1], stmPos));
+		u8buff[si] = 0;
 		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOf(u8buff);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
 
@@ -188,11 +188,11 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		*(Int32*)&buff[0] = 0;
 		if (u8ptr)
 		{
-			*(Int32*)&buff[4] = AddString(strArr, u8buff, stmPos);
+			*(UInt32*)&buff[4] = AddString(strArr, u8buff, stmPos);
 		}
 		else
 		{
-			*(Int32*)&buff[4] = 0;
+			*(UInt32*)&buff[4] = 0;
 		}
 		*(Int32*)&buff[8] = (Int32)(l = env->GetLineStyleLayerCnt(i));
 
@@ -344,11 +344,11 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			*(Int32*)&buff[4] = 0;
 			if (u8ptr)
 			{
-				*(Int32*)&buff[8] = AddString(strArr, u8ptr, 4 + *stmPos);
+				*(UInt32*)&buff[8] = AddString(strArr, u8ptr, 4 + *stmPos);
 			}
 			else
 			{
-				*(Int32*)&buff[8] = 0;
+				*(UInt32*)&buff[8] = 0;
 			}
 			*(Int32*)&buff[12] = (Int32)env->GetItemCount((Map::MapEnv::GroupItem*)item);
 			stm->Write(buff, 16);
@@ -365,7 +365,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			layer->GetSourceName(u8buff);
 			*(Int32*)&buff[4] = 0;
 			k = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
-			*(Int32*)&buff[8] = AddString(strArr, &u8buff[k + 1], 4 + *stmPos);
+			*(UInt32*)&buff[8] = AddString(strArr, &u8buff[k + 1], 4 + *stmPos);
 			if (k >= 0)
 			{
 				u8buff[k] = 0;
@@ -377,7 +377,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			}
 			env->GetLayerProp(&setting, group, i);
 			ltype = layer->GetLayerType();
-			*(Int32*)&buff[16] = layer->GetCodePage();
+			*(UInt32*)&buff[16] = layer->GetCodePage();
 			WriteUInt32(&buff[24], (UInt32)setting.labelCol);
 			*(Int32*)&buff[28] = setting.flags;
 			*(Int32*)&buff[32] = Math::Double2Int32(setting.minScale);

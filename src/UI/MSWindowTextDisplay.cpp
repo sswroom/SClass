@@ -20,7 +20,7 @@ const WChar *UI::MSWindowTextDisplay::GetObjectClass()
 	return L"TextDisplay";
 }
 
-OSInt UI::MSWindowTextDisplay::OnNotify(Int32 code, void *lParam)
+OSInt UI::MSWindowTextDisplay::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

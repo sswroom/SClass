@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *ctrl);
 struct WinProgControl : public Core::IProgControl
 {
 	void *hInst;
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv;
 };
 
@@ -105,17 +105,17 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 }
 #endif
 
-UTF8Char **__stdcall WinProgControl_GetCommandLines(Core::IProgControl *progCtrl, OSInt *cmdCnt)
+UTF8Char **__stdcall WinProgControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl;
 	if (ctrl->argv == 0)
 	{
 		Int32 argc;
-		OSInt i;
+		UOSInt i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 		ctrl->argv = MemAlloc(UTF8Char *, argc);
-		ctrl->argc = argc;
-		i = argc;
+		ctrl->argc = (UOSInt)argc;
+		i = ctrl->argc;
 		while (i-- > 0)
 		{
 			ctrl->argv[i] = (UTF8Char*)Text::StrToUTF8New(argv[i]);

@@ -437,7 +437,7 @@ Int32 DB::DBFFile::GetCodePage(UInt8 langDriver)
 	}
 }
 
-UInt8 DB::DBFFile::GetLangDriver(Int32 codePage)
+UInt8 DB::DBFFile::GetLangDriver(UInt32 codePage)
 {
 	switch (codePage)
 	{

@@ -49,7 +49,7 @@ namespace UI
 		OSInt GetItemHeight();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);
 		virtual void HandleDoubleClicked(UI::UIEvent hdlr, void *userObj);

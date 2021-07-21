@@ -76,7 +76,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
 	Net::SocketFactory *sockf;
-	Net::WebServer::CaptuererWebHandler *webHdlr;
+	Net::WebServer::CapturerWebHandler *webHdlr;
 	Net::WebServer::WebListener *listener;
 	UInt16 webPort = 8081;
 	IO::BTCapturer *capturer;
@@ -89,7 +89,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		Text::StringBuilderUTF8 sb;
 		NEW_CLASS(sockf, Net::OSSocketFactory(true));
-		NEW_CLASS(webHdlr, Net::WebServer::CaptuererWebHandler(0, capturer, 0));
+		NEW_CLASS(webHdlr, Net::WebServer::CapturerWebHandler(0, capturer, 0));
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, webHdlr, webPort, 120, 4, (const UTF8Char*)"BLEScanTest/1.0", false, true));
 		if (listener->IsError())
 		{

@@ -40,7 +40,7 @@ extern "C" void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 		destPtr += vOfst * dbpl;
 	}
 	UInt8x4 zeroU8x4 = PUInt8x4Clear();
-	Int16x4 levelx4 = PInt16x4SetA(level);
+	Int16x4 levelx4 = PInt16x4SetA((Int16)level);
 	Int16x4 lastSrc;
 	Int16x4 thisSrc;
 	sAdd = sbpl - loopX * 4;

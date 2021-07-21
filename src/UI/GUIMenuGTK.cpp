@@ -426,6 +426,7 @@ UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI
 	case UI::GUIControl::GK_OEM_7:
 		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[']");
 		break;
+	case UI::GUIControl::GK_NONE:
 	default:
 		break;
 	}
@@ -455,7 +456,7 @@ UI::GUIMenu::~GUIMenu()
 {
 	UI::GUIMenu *item;
 	MenuItemInfo *menuItem;
-	OSInt i;
+	UOSInt i;
 	i = this->keys->GetCount();
 	while (i-- > 0)
 	{
@@ -577,12 +578,12 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-OSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
+UOSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
 {
-	OSInt keyCnt = this->keys->GetCount();
+	UOSInt keyCnt = this->keys->GetCount();
 	keys->AddRange(this->keys);
-	OSInt j = this->subMenus->GetCount();
-	OSInt i = 0;
+	UOSInt j = this->subMenus->GetCount();
+	UOSInt i = 0;
 	while (i < j)
 	{
 		keyCnt += this->subMenus->GetItem(i)->GetAllKeys(keys);
@@ -633,7 +634,7 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 void UI::GUIMenu::SetMenuForm(GUIForm *mnuForm)
 {
 	UI::GUIMenu *item;
-	OSInt i;
+	UOSInt i;
 	this->mnuForm = mnuForm;
 	i = this->subMenus->GetCount();
 	while (i-- > 0)

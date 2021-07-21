@@ -26,7 +26,7 @@ namespace UI
 		virtual void SetFont(const UTF8Char *name, Double fontHeightPt, Bool isBold);
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnFocus();
 		virtual void OnFocusLost();
 		void EventButtonClick();

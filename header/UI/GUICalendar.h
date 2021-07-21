@@ -20,7 +20,7 @@ namespace UI
 		virtual ~GUICalendar();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void GetSelectedTime(Data::DateTime *dt);
 		void HandleDateChange(DateChangedHandler hdlr, void *obj);

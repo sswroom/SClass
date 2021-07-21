@@ -26,12 +26,12 @@ UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(Text::StringBuilderUTF *s
 
 UOSInt Text::TextBinEnc::CodePageTextBinEnc::CalcBinSize(const UTF8Char *sbuff)
 {
-	return this->enc->UTF8CountBytes(sbuff, (OSInt)Text::StrCharCnt(sbuff));
+	return this->enc->UTF8CountBytesC(sbuff, Text::StrCharCnt(sbuff));
 }
 
 UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
 {
-	return this->enc->UTF8ToBytes(dataBuff, sbuff, (OSInt)Text::StrCharCnt(sbuff));
+	return this->enc->UTF8ToBytesC(dataBuff, sbuff, Text::StrCharCnt(sbuff));
 }
 
 const UTF8Char *Text::TextBinEnc::CodePageTextBinEnc::GetName()

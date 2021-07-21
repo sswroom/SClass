@@ -460,7 +460,7 @@ const UTF8Char *UI::GUIListBox::GetObjectClass()
 	return (const UTF8Char*)"ListBox";
 }
 
-OSInt UI::GUIListBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIListBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

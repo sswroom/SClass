@@ -195,12 +195,12 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	WChar sbuff[256];
 	sbuff[0] = 0;
 	GetWindowTextW((HWND)hwnd, sbuff, 256);
-	return Text::StrWChar_UTF8(buff, sbuff, -1);
+	return Text::StrWChar_UTF8(buff, sbuff);
 }
 
 Bool UI::GUIControl::GetText(Text::StringBuilderUTF *sb)
 {
-	OSInt leng = GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
 	GetWindowTextW((HWND)hwnd, wptr, (int)leng + 1);
 	const UTF8Char *csptr = Text::StrToUTF8New(wptr);
@@ -501,7 +501,7 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 		this->currHMon = hMon;
 		this->OnMonitorChanged();
 	}
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));

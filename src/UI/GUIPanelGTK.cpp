@@ -78,7 +78,7 @@ const UTF8Char *UI::GUIPanel::GetObjectClass()
 	return (const UTF8Char*)"Panel";
 }
 
-OSInt UI::GUIPanel::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIPanel::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

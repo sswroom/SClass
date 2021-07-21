@@ -53,14 +53,14 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 		}
 		else if ((b & 0xe0) == 0xc0)
 		{
-			sb->AppendChar(((b & 0x1f) << 6) | (*dataBuff & 0x3f), 1);
+			sb->AppendChar((UTF32Char)(((b & 0x1f) << 6) | (*dataBuff & 0x3f)), 1);
 			dataBuff++;
 			buffSize--;
 			ret += 1;
 		}
 		else if ((b & 0xf0) == 0xe0)
 		{
-			sb->AppendChar(((b & 0x0f) << 12) | ((dataBuff[0] & 0x3f) << 6) | (dataBuff[1] & 0x3f), 1);
+			sb->AppendChar((UTF32Char)(((b & 0x0f) << 12) | ((dataBuff[0] & 0x3f) << 6) | (dataBuff[1] & 0x3f)), 1);
 			dataBuff += 2;
 			buffSize -= 2;
 			ret += 1;

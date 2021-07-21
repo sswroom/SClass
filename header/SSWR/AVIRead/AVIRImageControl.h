@@ -105,7 +105,7 @@ namespace SSWR
 			virtual ~AVIRImageControl();
 
 			virtual const UTF8Char *GetObjectClass();
-			virtual OSInt OnNotify(Int32 code, void *lParam);
+			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
 			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);

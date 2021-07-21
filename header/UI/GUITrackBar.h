@@ -20,7 +20,7 @@ namespace UI
 		virtual ~GUITrackBar();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetPos(Int32 pos);
 		void SetRange(Int32 minVal, Int32 maxVal);

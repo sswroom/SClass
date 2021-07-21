@@ -481,7 +481,7 @@ const UTF8Char *UI::GUIForm::GetObjectClass()
 	return (const UTF8Char*)"WinForm";
 }
 
-OSInt UI::GUIForm::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

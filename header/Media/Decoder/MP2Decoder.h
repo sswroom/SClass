@@ -9,10 +9,10 @@ namespace Media
 		class MP2Decoder : public Media::Decoder::ADecoderBase
 		{
 		private:
-			Int32 nChannel;
+			UInt32 nChannel;
 			void *context;
 			UOSInt blkSize;
-			Int64 totalReadSize;
+			UInt64 totalReadSize;
 
 			Sync::Event *readEvt;
 		public:

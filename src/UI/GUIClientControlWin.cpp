@@ -29,8 +29,8 @@ UI::GUIClientControl::~GUIClientControl()
 
 void UI::GUIClientControl::UpdateFont()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	void *font = GetFont();
 	if (font)
 	{
@@ -47,7 +47,7 @@ void UI::GUIClientControl::UpdateFont()
 
 void UI::GUIClientControl::ClearChildren()
 {
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children->GetCount();
 	while (i-- > 0)
 	{
 		GUIControl *ctrl = this->children->RemoveAt(i);
@@ -98,20 +98,20 @@ void UI::GUIClientControl::AddChild(GUIControl *child)
 	this->children->Add(child);
 }
 
-OSInt UI::GUIClientControl::GetChildCount()
+UOSInt UI::GUIClientControl::GetChildCount()
 {
 	return this->children->GetCount();
 }
 
-UI::GUIControl *UI::GUIClientControl::GetChild(OSInt index)
+UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
 {
 	return this->children->GetItem(index);
 }
 
 void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double left = 0;
 	Double top = 0;
 	Double right;
@@ -194,7 +194,7 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 		this->currHMon = hMon;
 		this->OnMonitorChanged();
 	}
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -215,7 +215,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children->GetCount();
 	while (i-- > 0)
 	{
 		this->children->GetItem(i)->SetDPI(hdpi, ddpi);

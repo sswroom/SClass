@@ -129,7 +129,7 @@ const UTF8Char *UI::GUIButton::GetObjectClass()
 	return (const UTF8Char*)"Button";
 }
 
-OSInt UI::GUIButton::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIButton::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

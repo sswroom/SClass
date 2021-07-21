@@ -96,7 +96,7 @@ const UTF8Char *UI::GUIGroupBox::GetObjectClass()
 	return (const UTF8Char*)"GroupBox";
 }
 
-OSInt UI::GUIGroupBox::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -105,7 +105,7 @@ OSInt UI::GUIGroupBox::OnNotify(Int32 code, void *lParam)
 void UI::GUIGroupBox::OnSizeChanged(Bool updateScn)
 {
 	this->UpdateChildrenSize(updateScn);
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));

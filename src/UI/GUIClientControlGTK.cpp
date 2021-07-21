@@ -106,12 +106,12 @@ void UI::GUIClientControl::AddChild(GUIControl *child)
 	this->selfResize = false;
 }
 
-OSInt UI::GUIClientControl::GetChildCount()
+UOSInt UI::GUIClientControl::GetChildCount()
 {
 	return this->children->GetCount();
 }
 
-UI::GUIControl *UI::GUIClientControl::GetChild(OSInt index)
+UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
 {
 	return this->children->GetItem(index);
 }
@@ -244,7 +244,7 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	}
 
 	this->UpdateChildrenSize(false);
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));

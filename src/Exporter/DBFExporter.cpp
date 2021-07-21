@@ -63,7 +63,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	}
 	UTF8Char sbuff[1024];
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
-	OSInt tableCnt;
+	UOSInt tableCnt;
 	Data::ArrayList<const UTF8Char *> *tableNames;
 	NEW_CLASS(tableNames, Data::ArrayList<const UTF8Char*>());
 	conn->GetTableNames(tableNames);
@@ -79,14 +79,14 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	DB::DBReader *r = conn->GetTableData(tableName, 0, 0, 0);
 	if (r == 0)
 		return false;
-	OSInt nCol;
+	UOSInt nCol;
 
 	const UTF8Char **colNames;
 	UOSInt *colSize;
 	UOSInt *colDP;
 	DB::DBUtil::ColType *colTypes;
 	DB::ColDef *colDef;
-	OSInt i;
+	UOSInt i;
 	DB::DBFFixWriter *writer;
 	Data::DateTime dt;
 

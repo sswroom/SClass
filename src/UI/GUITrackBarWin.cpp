@@ -52,7 +52,7 @@ const UTF8Char *UI::GUITrackBar::GetObjectClass()
 	return (const UTF8Char*)"TrackBar";
 }
 
-OSInt UI::GUITrackBar::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{

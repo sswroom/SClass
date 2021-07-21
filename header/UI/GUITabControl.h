@@ -31,7 +31,7 @@ namespace UI
 		void *GetTabPageFont();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		void HandleSelChanged(UIEvent hdlr, void *userObj);
 		virtual void SetDPI(Double hdpi, Double ddpi);

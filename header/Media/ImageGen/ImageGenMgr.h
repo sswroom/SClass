@@ -16,9 +16,9 @@ namespace Media
 			ImageGenMgr();
 			~ImageGenMgr();
 
-			OSInt GetCount();
-			Media::ImageGenerator *GetGenerator(OSInt index);
+			UOSInt GetCount();
+			Media::ImageGenerator *GetGenerator(UOSInt index);
 		};
-	};
-};
+	}
+}
 #endif

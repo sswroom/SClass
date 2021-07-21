@@ -558,7 +558,7 @@ const UTF8Char *UI::GUIListView::GetObjectClass()
 	return (const UTF8Char*)"ListView";
 }
 
-OSInt UI::GUIListView::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIListView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

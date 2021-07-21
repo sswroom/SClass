@@ -22,14 +22,14 @@ void UI::GUIMapTreeView::FreeItem(UI::GUITreeView::TreeItem *item)
 {
 	ItemIndex *ind = (ItemIndex*)item->GetItemObj();
 	MemFree(ind);
-	OSInt i = item->GetChildCount();
+	UOSInt i = item->GetChildCount();
 	while (i-- > 0)
 	{
 		FreeItem(item->GetChild(i));
 	}
 }
 
-void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::MapEnv::GroupItem *group, OSInt index)
+void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::MapEnv::GroupItem *group, UOSInt index)
 {
 	Map::MapEnv::MapItem *item;
 
@@ -54,8 +54,8 @@ void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::M
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
 			Map::MapEnv::GroupItem *grp = (Map::MapEnv::GroupItem*)item;
-			OSInt i;
-			OSInt j = this->env->GetItemCount(grp);
+			UOSInt i;
+			UOSInt j = this->env->GetItemCount(grp);
 			ind = MemAlloc(ItemIndex, 1);
 			ind->group = group;
 			ind->index = index;
@@ -91,7 +91,7 @@ void UI::GUIMapTreeView::UpdateTreeStatus(UI::GUITreeView::TreeItem *item)
 	}
 	if (ind->itemType != Map::MapEnv::IT_UNKNOWN)
 	{
-		OSInt i = item->GetChildCount();
+		UOSInt i = item->GetChildCount();
 		while (i-- > 0)
 		{
 			UpdateTreeStatus(item->GetChild(i));
@@ -175,7 +175,7 @@ void UI::GUIMapTreeView::UpdateTree()
 	this->RemoveItems();
 	ind = MemAlloc(ItemIndex, 1);
 	ind->group = 0;
-	ind->index = -1;
+	ind->index = (UOSInt)-1;
 	ind->itemType = Map::MapEnv::IT_GROUP;
 	ind->item = 0;
 	UI::GUIMapTreeView::TreeItem *item = this->InsertItem(0, 0, (const UTF8Char*)"ROOT", ind);

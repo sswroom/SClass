@@ -6,7 +6,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8Char **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, Int32 codePage)
+DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8Char **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage)
 {
 	UInt8 buff[128];
 	UOSInt i;
@@ -68,7 +68,7 @@ DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8C
 	k = nCol;
 	while (i < k)
 	{
-		j = enc->UTF8ToBytes((UInt8*)buff, colNames[i], -1);
+		j = enc->UTF8ToBytes((UInt8*)buff, colNames[i]);
 		while (j < 11)
 		{
 			buff[j++] = 0;
@@ -157,7 +157,7 @@ void DB::DBFFixWriter::AddRecord(const UTF8Char **rowValues)
 	j = 0;
 	while (j < this->colCnt)
 	{
-		k = enc->UTF8ToBytes(buff, rowValues[j], -1);
+		k = enc->UTF8ToBytes(buff, rowValues[j]);
 		if (this->columns[j].colType == DB::DBUtil::CT_DateTime || this->columns[j].colType == DB::DBUtil::CT_Double || this->columns[j].colType == DB::DBUtil::CT_Byte || this->columns[j].colType == DB::DBUtil::CT_Int16 || this->columns[j].colType == DB::DBUtil::CT_Int32 || this->columns[j].colType == DB::DBUtil::CT_Int64 || this->columns[j].colType == DB::DBUtil::CT_UInt32 || this->columns[j].colType == DB::DBUtil::CT_Bool)
 		{
 			if (this->columns[j].colSize <= k)
@@ -195,7 +195,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::DateTime *val)
 	if (this->columns[index].colType != DB::DBUtil::CT_DateTime)
 		return false;
 	val->ToString(sbuff, "yyyyMMdd");
-	enc->UTF8ToBytes(outBuff, sbuff, 8);
+	enc->UTF8ToBytesC(outBuff, sbuff, 8);
 	MemCopyNO(&this->rec[this->columns[index].colOfst], outBuff, 8);
 	return true;
 }
@@ -221,7 +221,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Double val)
 	{
 		sptr = Text::StrDoubleDP(sbuff, val, i, i);
 	}
-	i = this->enc->UTF8ToBytes(outBuff, sbuff, sptr - sbuff);
+	i = this->enc->UTF8ToBytesC(outBuff, sbuff, (UOSInt)(sptr - sbuff));
 	if (i >= this->columns[index].colSize)
 	{
 		MemCopyNO(&this->rec[this->columns[index].colOfst], &outBuff[i - this->columns[index].colSize], this->columns[index].colSize);
@@ -327,8 +327,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, UInt32 val)
 {
 	Char sbuff[24];
 	Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_UInt32)
@@ -341,8 +341,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, UInt32 val)
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (sptr - sbuff)], sbuff, sptr - sbuff);
-		i = this->columns[index].colSize - (sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
+		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';
@@ -376,7 +376,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, UTF8Char *val)
 	if (this->columns[index].colType != DB::DBUtil::CT_Char && this->columns[index].colType != DB::DBUtil::CT_VarChar)
 		return false;
 	UOSInt i;
-	i = enc->UTF8ToBytes(buff, val, -1);
+	i = enc->UTF8ToBytes(buff, val);
 	i--;
 	while (i < this->columns[index].colSize)
 		buff[i++] = 32;

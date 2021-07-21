@@ -533,6 +533,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY:
 			sb->Append((const UTF8Char*)"Binary Element");
 			break;
+		case IO::FileAnalyse::EBMLFileAnalyse::ET_UNKNOWN:
 		default:
 			sb->Append((const UTF8Char*)"Unknown Element");
 			break;

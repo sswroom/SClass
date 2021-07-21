@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(void *userObj)
 	UOSInt w;
 	UOSInt h;
 	me->pbChar->GetSizeP(&w, &h);
-	Media::StaticImage *newImg = me->font->CreateImage((Int32)(OSInt)me->lbChar->GetSelectedItem(), w, h);
+	Media::StaticImage *newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem(), w, h);
 	me->pbChar->SetImage(newImg, false);
 	me->pbChar->ZoomToFit();
 	SDEL_CLASS(me->currImg);

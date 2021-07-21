@@ -193,7 +193,7 @@ const UTF8Char *UI::GUIHScrollBar::GetObjectClass()
 	return (const UTF8Char*)"HScrollBar";
 }
 
-OSInt UI::GUIHScrollBar::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIHScrollBar::OnNotify(UInt32 code, void *lParam)
 {
 	if (code == WM_HSCROLL)
 	{
@@ -253,7 +253,7 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 void UI::GUIHScrollBar::EventPosChanged()
 {
 	Int32 newPos = GetScrollPos((HWND)this->hwnd, SB_HORZ);
-	OSInt i;
+	UOSInt i;
 	i = this->posChgHdlrs->GetCount();
 	while (i-- > 0)
 	{

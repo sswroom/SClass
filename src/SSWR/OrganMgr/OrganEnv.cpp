@@ -381,7 +381,7 @@ OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::DateTime *d)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		t = this->trips->GetItem(k);
+		t = this->trips->GetItem((UOSInt)k);
 		if (t->fromDate > ts)
 		{
 			j = k - 1;
@@ -404,7 +404,7 @@ SSWR::OrganMgr::Trip *SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, Data::Date
 	if (i < 0)
 		return 0;
 	else
-		return this->trips->GetItem(i);
+		return this->trips->GetItem((UOSInt)i);
 }
 
 Data::ArrayList<SSWR::OrganMgr::Trip*> *SSWR::OrganMgr::OrganEnv::TripGetList()
@@ -415,13 +415,13 @@ Data::ArrayList<SSWR::OrganMgr::Trip*> *SSWR::OrganMgr::OrganEnv::TripGetList()
 OSInt SSWR::OrganMgr::OrganEnv::LocationGetIndex(Int32 locId)
 {
 	OSInt i = 0;
-	OSInt j = this->locs->GetCount() - 1;
+	OSInt j = (OSInt)this->locs->GetCount() - 1;
 	OSInt k;
 	Int32 l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = this->locs->GetItem(k)->id;
+		l = this->locs->GetItem((UOSInt)k)->id;
 		if (locId > l)
 		{
 			i = k + 1;
@@ -444,15 +444,15 @@ SSWR::OrganMgr::Location *SSWR::OrganMgr::OrganEnv::LocationGet(Int32 locId)
 	if (i < 0)
 		return 0;
 	else
-		return this->locs->GetItem(i);
+		return this->locs->GetItem((UOSInt)i);
 }
 
 Data::ArrayList<SSWR::OrganMgr::Location*> *SSWR::OrganMgr::OrganEnv::LocationGetSub(Int32 locId)
 {
 	Data::ArrayList<Location *> *outArr;
 	NEW_CLASS(outArr, Data::ArrayList<Location*>());
-	OSInt i = 0;
-	OSInt j = this->locs->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->locs->GetCount();
 	Location *loc;
 	while (i < j)
 	{
@@ -467,13 +467,13 @@ Data::ArrayList<SSWR::OrganMgr::Location*> *SSWR::OrganMgr::OrganEnv::LocationGe
 OSInt SSWR::OrganMgr::OrganEnv::LocationGetTypeIndex(Int32 lType)
 {
 	OSInt i = 0;
-	OSInt j = this->locType->GetCount() - 1;
+	OSInt j = (OSInt)this->locType->GetCount() - 1;
 	OSInt k;
 	Int32 l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = this->locType->GetItem(k)->id;
+		l = this->locType->GetItem((UOSInt)k)->id;
 		if (l > lType)
 		{
 			j = k - 1;

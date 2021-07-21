@@ -23,7 +23,7 @@ namespace UI
 			virtual void SetFont(const WChar *name, Single size, Bool isBold);
 
 			virtual const WChar *GetObjectClass();
-			virtual OSInt OnNotify(Int32 code, void *lParam);
+			virtual OSInt OnNotify(UInt32 code, void *lParam);
 			
 			void HandleButtonClick(UIEvent handler, void *userObj);
 		};

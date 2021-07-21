@@ -7,7 +7,7 @@ namespace Exporter
 	class DBFExporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 
 	public:
 		DBFExporter();

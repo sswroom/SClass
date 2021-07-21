@@ -114,10 +114,10 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 					Text::JSONObject *tinfo = (Text::JSONObject*)o;
 					v = tinfo->GetObjectValue((const UTF8Char*)"rows");
 					if (v != 0 && v->GetJSType() == Text::JSONBase::JST_NUMBER)
-						this->tileHeight = Math::Double2Int32(((Text::JSONNumber*)v)->GetValue());
+						this->tileHeight = (UOSInt)Math::Double2Int32(((Text::JSONNumber*)v)->GetValue());
 					v = tinfo->GetObjectValue((const UTF8Char*)"cols");
 					if (v != 0 && v->GetJSType() == Text::JSONBase::JST_NUMBER)
-						this->tileWidth = Math::Double2Int32(((Text::JSONNumber*)v)->GetValue());
+						this->tileWidth = (UOSInt)Math::Double2Int32(((Text::JSONNumber*)v)->GetValue());
 					v = tinfo->GetObjectValue((const UTF8Char*)"origin");
 					if (v != 0 && v->GetJSType() == Text::JSONBase::JST_OBJECT)
 					{
@@ -351,7 +351,7 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, D
 			}
 			i++;
 		}
-		return (pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1);
+		return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 	}
 	else
 	{
@@ -408,7 +408,7 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, D
 			}
 			i++;
 		}
-		return (pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1);
+		return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 	}
 }
 

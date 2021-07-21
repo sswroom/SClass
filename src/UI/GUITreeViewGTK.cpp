@@ -391,7 +391,7 @@ const UTF8Char *UI::GUITreeView::GetObjectClass()
 	return (const UTF8Char*)"TreeView";
 }
 
-OSInt UI::GUITreeView::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

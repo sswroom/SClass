@@ -156,7 +156,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	this->eng->DeleteImage(img);
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, Int32 updateInterval) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;
@@ -213,7 +213,7 @@ const UTF8Char *UI::GUIRealtimeLineChart::GetObjectClass()
 	return (const UTF8Char*)"RealtimeLineChart";
 }
 
-OSInt UI::GUIRealtimeLineChart::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIRealtimeLineChart::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -70,8 +70,8 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
-	OSInt colCnt;
-	OSInt i;
+	UOSInt colCnt;
+	UOSInt i;
 	Bool firstCol;
 
 	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
@@ -106,7 +106,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 		}
 		i++;
 	}
-	writer->WriteLine(lineBuff2, sptr - lineBuff2);
+	writer->WriteLine(lineBuff2, (UOSInt)(sptr - lineBuff2));
 
 	while (r->ReadNext())
 	{
@@ -135,7 +135,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 			}
 			i++;
 		}
-		writer->WriteLine(lineBuff2, sptr - lineBuff2);
+		writer->WriteLine(lineBuff2, (UOSInt)(sptr - lineBuff2));
 	}
 	
 	MemFree(lineBuff2);
@@ -199,7 +199,7 @@ Bool Exporter::DBCSVExporter::SetParamSel(void *param, UOSInt index, Int32 selCo
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		dbParam->tableIndex = selCol;
+		dbParam->tableIndex = (UOSInt)selCol;
 		return true;
 	}
 	return false;

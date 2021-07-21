@@ -163,7 +163,7 @@ const UTF8Char *UI::GUITabControl::GetObjectClass()
 	return (const UTF8Char*)"TabControl";
 }
 
-OSInt UI::GUITabControl::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITabControl::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

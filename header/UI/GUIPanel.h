@@ -29,7 +29,7 @@ namespace UI
 		virtual void GetClientOfst(Double *x, Double *y);
 		virtual void GetClientSize(Double *w, Double *h);
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetMinSize(Int32 minW, Int32 minH);
 	};

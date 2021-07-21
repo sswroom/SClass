@@ -411,9 +411,9 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			{
 				Text::Encoding enc(me->fileCodePage);
 				strLen = Text::StrCharCnt(me->srchText);
-				srchTxtLen = enc.UTF8CountBytes(me->srchText, (OSInt)strLen);
+				srchTxtLen = enc.UTF8CountBytesC(me->srchText, strLen);
 				srchTxt = MemAlloc(UInt8, srchTxtLen + 1);
-				enc.UTF8ToBytes(srchTxt, me->srchText, (OSInt)strLen);
+				enc.UTF8ToBytesC(srchTxt, me->srchText, strLen);
 				srchTxt[srchTxtLen] = 0;
 
 				srchBuff = MemAlloc(UInt8, READBUFFSIZE + 1);
@@ -861,7 +861,7 @@ const UTF8Char *UI::GUITextFileView::GetObjectClass()
 	return (const UTF8Char*)"TextFileView";
 }
 
-OSInt UI::GUITextFileView::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUITextFileView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -49,7 +49,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *
 		ufile = this->objList->GetItem(i);
 		if (x1 <= ufile->lon && x2 >= ufile->lon && y1 <= ufile->lat && y2 >= ufile->lat)
 		{
-			outArr->Add(i);
+			outArr->Add((Int64)i);
 			cnt++;
 		}
 		i++;

@@ -35,11 +35,11 @@ namespace UI
 		void Init(void *hInst);
 		void Deinit(void *hInst);
 	public:
-		GUIRealtimeLineChart(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, Int32 updateInterval);
+		GUIRealtimeLineChart(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(Int32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void AddSample(Double *samples);
 		void SetLineColor(UOSInt lineId, UInt32 lineColor);

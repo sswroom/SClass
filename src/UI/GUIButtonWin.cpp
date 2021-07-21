@@ -99,7 +99,7 @@ const UTF8Char *UI::GUIButton::GetObjectClass()
 	return (const UTF8Char*)"BUTTON";
 }
 
-OSInt UI::GUIButton::OnNotify(Int32 code, void *lParam)
+OSInt UI::GUIButton::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -132,7 +132,7 @@ void UI::GUIButton::OnFocusLost()
 
 void UI::GUIButton::EventButtonClick()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->btnClkHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -142,7 +142,7 @@ void UI::GUIButton::EventButtonClick()
 
 void UI::GUIButton::EventButtonDown()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->btnUpDownHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -152,7 +152,7 @@ void UI::GUIButton::EventButtonDown()
 
 void UI::GUIButton::EventButtonUp()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->btnUpDownHandlers->GetCount();
 	while (i-- > 0)
 	{
