@@ -128,7 +128,7 @@ UOSInt Crypto::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UIn
 	MemFree(key);
 	MemFree(iv);
 	MemFree(salt);
-	while (outSize > 0 && outBuff[outSize - 1] == 8)
+	while (outSize > 0 && outBuff[outSize - 1] < 32)
 	{
 		outSize--;
 	}
@@ -167,7 +167,7 @@ UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF *sb, const U
 		destLen = (nBlock + 1) * this->ivSize;
 		srcTmpBuff = MemAlloc(UInt8, destLen);
 		MemCopyNO(srcTmpBuff, srcBuff, srcLen);
-		MemFillB(&srcTmpBuff[srcLen], destLen - srcLen, 8);
+		MemFillB(&srcTmpBuff[srcLen], destLen - srcLen, (UInt8)(destLen - srcLen));
 		srcBuff = srcTmpBuff;
 	}
 	else

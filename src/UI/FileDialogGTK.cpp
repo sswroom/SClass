@@ -78,9 +78,9 @@ void UI::FileDialog::AddFilter(const UTF8Char *pattern, const UTF8Char *name)
 	this->names->Add(Text::StrCopyNew(name));
 }
 
-OSInt UI::FileDialog::GetFilterIndex()
+UOSInt UI::FileDialog::GetFilterIndex()
 {
-	return (OSInt)this->filterIndex;
+	return this->filterIndex;
 }
 
 void UI::FileDialog::SetFileName(const UTF8Char *fileName)
@@ -287,11 +287,11 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 	}
 	else
 	{
-		OSInt si = this->filterIndex;
+		UOSInt si = this->filterIndex;
 		GSList *list = gtk_file_chooser_list_filters(chooser);
 		while (true)
 		{
-			if (si <= 0)
+			if (si == (UOSInt)-1)
 			{
 				gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
 				break;

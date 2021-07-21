@@ -446,11 +446,11 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			{
 				if (tly > 0)
 				{
-					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2, this->surfaceW * tly, 0xffcccccc);
+					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2, this->surfaceW * (UOSInt)tly, 0xffcccccc);
 				}
 				if (tlx > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2, tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2, (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
 				if (tlx + drawW < (OSInt)this->surfaceW)
 				{

@@ -105,7 +105,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	return false;
 }
 
-OSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
+UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
 {
 	///////////////////////////////
 	return 0;

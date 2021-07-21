@@ -265,7 +265,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children->GetCount();
 	while (i-- > 0)
 	{
 		this->children->GetItem(i)->SetDPI(hdpi, ddpi);
