@@ -141,7 +141,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	return ERROR_SUCCESS == RemoveDev(&dev->Address);
 }
 
-OSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
+UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
 {
 	InternalData *me = (InternalData*)internalData;
 	BluetoothEnumerateInstalledServicesFunc EnumServices = (BluetoothEnumerateInstalledServicesFunc)me->lib->GetFunc("BluetoothEnumerateInstalledServices");

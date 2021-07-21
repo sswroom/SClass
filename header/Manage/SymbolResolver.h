@@ -24,7 +24,7 @@ namespace Manage
 		UOSInt GetModuleCount();
 		const UTF8Char *GetModuleName(UOSInt index);
 		UInt64 GetModuleAddr(UOSInt index);
-		UOSInt GetModuleSize(UOSInt index);
+		UInt64 GetModuleSize(UOSInt index);
 	};
 }
 #endif

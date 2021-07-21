@@ -44,8 +44,8 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 OSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 {
 	UInt32 size;
-	OSInt cnt;
-	OSInt i;
+	UOSInt cnt;
+	UOSInt i;
 	size = 0;
 	if (GetIpNetTable(0, (ULONG*)&size, TRUE) == ERROR_INSUFFICIENT_BUFFER)
 	{

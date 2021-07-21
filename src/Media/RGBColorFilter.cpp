@@ -292,22 +292,12 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 65536;
 		while (i-- > 32768)
 		{
-			v = Math::Double2Int32(rtFunc->ForwardTransfer((i - 65536) * tmpD) * 65535.0);
-			if (v >= 65536)
-				v = 65535;
-			else if (v < 0)
-				v = 0;
-			destLUT[i] = (Int16)v;
+			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer((i - 65536) * tmpD) * 65535.0);
 		}
 		i = 32768;
 		while (i-- > 0)
 		{
-			v = Math::Double2Int32(rtFunc->ForwardTransfer(i * tmpD) * 65535.0);
-			if (v >= 65536)
-				v = 65535;
-			else if (v < 0)
-				v = 0;
-			destLUT[i] = (Int16)v;
+			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(i * tmpD) * 65535.0);
 		}
 	}
 	DEL_CLASS(rtFunc);

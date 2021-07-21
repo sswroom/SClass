@@ -114,7 +114,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	OSInt gBitCnt = 0;
 	OSInt bBitCnt = 0;
 	OSInt aBitCnt = 0;
-	OSInt srcBpp = 0;
+	UOSInt srcBpp = 0;
 	OSInt bitDefault = false;
 	Bool headerValid = true;
 
@@ -318,6 +318,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		inv = false;
 		imgHeight = -imgHeight;
 	}
+	UInt32 uimgHeight = (UInt32)imgHeight;
 	if (imgWidth < 0)
 	{
 		imgWidth = -imgWidth;
@@ -389,7 +390,6 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			return pobj;
 		}
 	}
-	UInt32 uimgHeight = (UInt32)imgHeight;
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)
 	{
 		NEW_CLASS(outImg, Media::StaticImage(imgWidth, uimgHeight, 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
@@ -698,7 +698,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 				if (outImg)
 				{
 					OSInt bpl = outImg->GetDataBpl();
-					if (bpl != lineW)
+					if (bpl != (OSInt)lineW)
 					{
 						while (uimgHeight-- > 0)
 						{
@@ -725,8 +725,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 v;
-			OSInt currX;
-			OSInt currY = 0;
+			UOSInt currX;
+			UOSInt currY = 0;
 			currPtr = rleData;
 			currX = 0;
 			if (inv)
@@ -738,7 +738,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			{
 				dataSize -= 1;
 			}
-			while (currY < imgHeight && dataSize >= 2)
+			while (currY < uimgHeight && dataSize >= 2)
 			{
 				c = *currPtr++;
 				if (c == 0)
@@ -832,8 +832,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			UInt8 c;
 			UInt8 c2;
 			UInt8 v;
-			OSInt currX;
-			OSInt currY = 0;
+			UOSInt currX;
+			UOSInt currY = 0;
 			currPtr = rleData;
 			currX = 0;
 			if (inv)
@@ -849,7 +849,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			{
 				dataSize -= 1;
 			}
-			while (currY < imgHeight && dataSize >= 2)
+			while (currY < uimgHeight && dataSize >= 2)
 			{
 				c = *currPtr++;
 				if (c == 0)
@@ -969,9 +969,9 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			UInt32 pxVal;
 			UInt8 *readBuff;
 			OSInt bpl = outImg->GetDataBpl();
-			OSInt currW;
+			UOSInt currW;
 			OSInt srcI;
-			OSInt destI;
+			UOSInt destI;
 			UInt32 bitVal;
 			OSInt bitCnt;
 			if (srcBpp == 16)

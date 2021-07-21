@@ -139,7 +139,7 @@ UInt32 Net::ConnectionInfo::GetDefaultGW()
 	return this->ent.defGW;
 }
 
-OSInt Net::ConnectionInfo::GetIndex()
+UOSInt Net::ConnectionInfo::GetIndex()
 {
 	return this->ent.index;
 }

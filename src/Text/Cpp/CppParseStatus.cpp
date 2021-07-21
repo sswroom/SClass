@@ -28,7 +28,7 @@ Text::Cpp::CppParseStatus::CppParseStatus(const UTF8Char *rootFile)
 
 Text::Cpp::CppParseStatus::~CppParseStatus()
 {
-	OSInt i;
+	UOSInt i;
 	Text::StrDelNew(this->fileName);
 	i = this->statuses->GetCount();
 	while (i-- > 0)
@@ -62,12 +62,12 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(const UTF8Char *fileName)
 	OSInt i = this->fileNames->SortedIndexOf(fileName);
 	if (i >= 0)
 	{
-		fname = this->fileNames->GetItem(i);
+		fname = this->fileNames->GetItem((UOSInt)i);
 	}
 	else
 	{
 		fname = Text::StrCopyNew(fileName);
-		this->fileNames->Insert(~i, fname);
+		this->fileNames->Insert((UOSInt)~i, fname);
 	}
 
 	FileParseStatus *status = MemAlloc(FileParseStatus, 1);
@@ -86,7 +86,7 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(const UTF8Char *fileName)
 Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName)
 {
 	FileParseStatus *status;
-	OSInt i = this->statuses->GetCount() - 1;
+	UOSInt i = this->statuses->GetCount() - 1;
 	status = this->statuses->GetItem(i);
 	if (status == 0)
 		return false;
@@ -325,12 +325,12 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 
 }
 
-OSInt Text::Cpp::CppParseStatus::GetDefineCount()
+UOSInt Text::Cpp::CppParseStatus::GetDefineCount()
 {
 	return this->defines->GetCount();
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineInfo(OSInt index, DefineInfo *defInfo)
+Bool Text::Cpp::CppParseStatus::GetDefineInfo(UOSInt index, DefineInfo *defInfo)
 {
 	DefineInfo *def = this->defines->GetValues()->GetItem(index);
 	if (def == 0)
@@ -339,19 +339,19 @@ Bool Text::Cpp::CppParseStatus::GetDefineInfo(OSInt index, DefineInfo *defInfo)
 	return true;
 }
 
-OSInt Text::Cpp::CppParseStatus::GetFileCount()
+UOSInt Text::Cpp::CppParseStatus::GetFileCount()
 {
 	return this->fileNames->GetCount();
 }
 
-const UTF8Char *Text::Cpp::CppParseStatus::GetFileName(OSInt index)
+const UTF8Char *Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
 {
 	return this->fileNames->GetItem(index);
 }
 
 const UTF8Char *Text::Cpp::CppParseStatus::GetCurrCodeFile()
 {
-	OSInt i = this->statuses->GetCount();
+	UOSInt i = this->statuses->GetCount();
 	if (i > 0)
 	{
 		return this->statuses->GetItem(i - 1)->fileName;

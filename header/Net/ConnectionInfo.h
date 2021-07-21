@@ -32,7 +32,7 @@ namespace Net
 
 		typedef struct
 		{
-			OSInt index;
+			UOSInt index;
 			const Char *internalName;
 			const UTF8Char *name;
 			const UTF8Char *description;
@@ -67,7 +67,7 @@ namespace Net
 		UInt32 GetIPAddress(UOSInt index);
 		UInt32 GetDNSAddress(UOSInt index);
 		UInt32 GetDefaultGW();
-		OSInt GetIndex();
+		UOSInt GetIndex();
 		UOSInt GetPhysicalAddress(UInt8 *buff, UOSInt buffSize);
 		UInt32 GetMTU();
 		Bool IsDhcpEnabled();

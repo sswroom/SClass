@@ -32,29 +32,29 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 	Double *avgData = MemAlloc(Double, me->sampleCnt);
 	UInt8 *tmpBuff = MemAlloc(UInt8, me->sampleBuffSize);
 	Double v;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt align;
-	OSInt ind697;
-	OSInt ind770;
-	OSInt ind852;
-	OSInt ind941;
-	OSInt ind1209;
-	OSInt ind1336;
-	OSInt ind1477;
-	OSInt ind1633;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt align;
+	UOSInt ind697;
+	UOSInt ind770;
+	UOSInt ind852;
+	UOSInt ind941;
+	UOSInt ind1209;
+	UOSInt ind1336;
+	UOSInt ind1477;
+	UOSInt ind1633;
 	Double maxLo;
 	Double maxHi;
-	OSInt maxHiInd;
-	OSInt maxLoInd;
+	UOSInt maxHiInd;
+	UOSInt maxLoInd;
 
 	Int32 minAbsVol;
 	Int32 maxAbsVol;
 	Int32 currAbsVol;
 	Int32 thisVol;
 	Int32 thisAbsVol;
-	Int32 volSamples = (me->frequency / 697 / 2 + 1) * me->nChannels * (me->bitCount >> 3);
+	UInt32 volSamples = (me->frequency / 697 / 2 + 1) * me->nChannels * (me->bitCount >> 3);
 	Double maxAbsVolD;
 	Double minAbsVolD;
 	Math::FFTCalc *fft;
@@ -64,14 +64,14 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 	WChar tone;
 	Double dSampleCnt = Math::UOSInt2Double(me->sampleCnt);
 	Double dFreq = dSampleCnt / (Double)me->frequency;
-	ind697 = Math::Double2Int32(697.0 * dFreq);
-	ind770 = Math::Double2Int32(770.0 * dFreq);
-	ind852 = Math::Double2Int32(852.0 * dFreq);
-	ind941 = Math::Double2Int32(941.0 * dFreq);
-	ind1209 = Math::Double2Int32(1209.0 * dFreq);
-	ind1336 = Math::Double2Int32(1336.0 * dFreq);
-	ind1477 = Math::Double2Int32(1477.0 * dFreq);
-	ind1633 = Math::Double2Int32(1633.0 * dFreq);
+	ind697 = (UInt32)Math::Double2Int32(697.0 * dFreq);
+	ind770 = (UInt32)Math::Double2Int32(770.0 * dFreq);
+	ind852 = (UInt32)Math::Double2Int32(852.0 * dFreq);
+	ind941 = (UInt32)Math::Double2Int32(941.0 * dFreq);
+	ind1209 = (UInt32)Math::Double2Int32(1209.0 * dFreq);
+	ind1336 = (UInt32)Math::Double2Int32(1336.0 * dFreq);
+	ind1477 = (UInt32)Math::Double2Int32(1477.0 * dFreq);
+	ind1633 = (UInt32)Math::Double2Int32(1633.0 * dFreq);
 	maxAbsVolD = 0;
 	minAbsVolD = 0;
 	maxAbsVol = 0;
@@ -448,9 +448,9 @@ void Media::AudioFilter::DTMFDecoder::ResetStatus()
 	mutUsage.EndUse();
 }
 
-Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, OSInt calcInt) : Media::IAudioFilter(audSrc)
+Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc)
 {
-	OSInt i;
+	UOSInt i;
 	Media::AudioFormat fmt;
 	audSrc->GetFormat(&fmt);
 	i = 1;
@@ -495,7 +495,7 @@ Media::AudioFilter::DTMFDecoder::~DTMFDecoder()
 	MemFree(this->calcBuff);
 }
 
-Int32 Media::AudioFilter::DTMFDecoder::SeekToTime(Int32 time)
+UInt32 Media::AudioFilter::DTMFDecoder::SeekToTime(UInt32 time)
 {
 	if (this->sourceAudio)
 	{

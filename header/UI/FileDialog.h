@@ -26,7 +26,7 @@ namespace UI
 		virtual ~FileDialog();
 
 		virtual void AddFilter(const UTF8Char *pattern, const UTF8Char *name);
-		OSInt GetFilterIndex();
+		UOSInt GetFilterIndex();
 
 		void SetFileName(const UTF8Char *fileName);
 		const UTF8Char *GetFileName();

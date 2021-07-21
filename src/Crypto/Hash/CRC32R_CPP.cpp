@@ -3,8 +3,8 @@
 
 extern "C" void CRC32R_InitTable(UInt32 *tab, UInt32 rpn)
 {
-	Int32 i = 256;
-	Int32 j;
+	UInt32 i = 256;
+	UInt32 j;
 	UInt32 v;
 	while (i-- > 0)
 	{

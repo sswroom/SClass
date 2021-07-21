@@ -1485,7 +1485,7 @@ Bool DB::ODBCReader::ReadNext()
 						{
 							this->colDatas[i].isNull = false;
 							OSInt ms;
-							ms = ts.fraction / 1000000;
+							ms = (OSInt)(ts.fraction / 1000000);
 							dt->SetValue((UInt16)ts.year, (UInt8)ts.month, (UInt8)ts.day, (UInt8)ts.hour, (UInt8)ts.minute, (UInt8)ts.second, ms, (Int8)this->tzQhr);
 						}
 					}
@@ -2069,7 +2069,7 @@ Math::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 	{
 		if (this->colDatas[colIndex].colType == DB::DBUtil::CT_Binary || this->colDatas[colIndex].colType == DB::DBUtil::CT_Vector)
 		{
-			OSInt dataSize = (OSInt)this->colDatas[colIndex].dataVal;
+			UOSInt dataSize = (UOSInt)this->colDatas[colIndex].dataVal;
 			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
 			UInt32 srId;
 			return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);

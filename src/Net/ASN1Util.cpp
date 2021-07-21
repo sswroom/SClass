@@ -66,7 +66,7 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 
 const UInt8 *Net::ASN1Util::PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd)
 {
-	OSInt len;
+	UOSInt len;
 	if (pduEnd - pdu < 2)
 		return 0;
 	*type = pdu[0];
@@ -141,7 +141,7 @@ const UInt8 *Net::ASN1Util::PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd
 
 const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb)
 {
-	OSInt len;
+	UOSInt len;
 	if (pduEnd - pdu < 2)
 		return 0;
 	if (pdu[0] != 4)
@@ -179,7 +179,7 @@ const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd
 	{
 		return 0;
 	}
-	sb->AppendC(pdu, (UOSInt)len);
+	sb->AppendC(pdu, len);
 	return pdu + len;
 }
 
@@ -359,7 +359,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			{
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
-				dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), Str2Digit(&pdu[ofst + 2]), Str2Digit(&pdu[ofst + 4]), Str2Digit(&pdu[ofst + 6]), Str2Digit(&pdu[ofst + 8]), Str2Digit(&pdu[ofst + 10]), 0);
+				dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), (OSInt)Str2Digit(&pdu[ofst + 2]), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), 0);
 				sb->AppendDate(&dt);
 			}
 			else

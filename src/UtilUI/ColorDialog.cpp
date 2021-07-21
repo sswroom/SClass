@@ -66,7 +66,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, OSInt x, OSInt y, U
 		}
 		else if (y > (OSInt)h - 2)
 		{
-			y = h - 2;
+			y = (OSInt)h - 2;
 		}
 		newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
@@ -98,7 +98,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, OSInt x, OSInt y, UI:
 			}
 			else if (y > (OSInt)h - 2)
 			{
-				y = h - 2;
+				y = (OSInt)h - 2;
 			}
 			newV = (y - 1) / (Double)(h - 3);
 			if (me->mainZ != newV)
@@ -141,8 +141,8 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, 
 		{
 			y = (OSInt)h - 2;
 		}
-		newV1 = Math::UOSInt2Double(x - 1) / (Double)(w - 3);
-		newV2 = Math::UOSInt2Double(y - 1) / (Double)(h - 3);
+		newV1 = Math::OSInt2Double(x - 1) / (Double)(w - 3);
+		newV2 = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -213,7 +213,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, OSInt x, OSInt y, UI
 			}
 			else if (x > (OSInt)w - 2)
 			{
-				x = w - 2;
+				x = (OSInt)w - 2;
 			}
 			if (y < 1)
 			{
@@ -221,7 +221,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, OSInt x, OSInt y, UI
 			}
 			else if (y > (OSInt)h - 2)
 			{
-				y = h - 2;
+				y = (OSInt)h - 2;
 			}
 			newV1 = (x - 1) / (Double)(w - 3);
 			newV2 = (y - 1) / (Double)(h - 3);
@@ -596,6 +596,7 @@ void UtilUI::ColorDialog::XYZ2RGB(Double x, Double y, Double z, Double *r, Doubl
 	case CT_HSVV:
 		HSV2RGB(x, y, z, r, g, b);
 		break;
+	case CT_UNKNOWN:
 	default:
 		*r = x;
 		*g = y;
@@ -713,6 +714,7 @@ void UtilUI::ColorDialog::RGB2XYZ(Double r, Double g, Double b, Double *x, Doubl
 	case CT_HSVV:
 		RGB2HSV(r, g, b, x, y, z);
 		break;
+	case CT_UNKNOWN:
 	default:
 		*x = r;
 		*y = g;
@@ -908,30 +910,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 			rgbv.val[0] = dispRTran->ForwardTransfer(rgbv2.val[0] * rMul);
 			rgbv.val[1] = dispGTran->ForwardTransfer(rgbv2.val[1] * gMul);
 			rgbv.val[2] = dispBTran->ForwardTransfer(rgbv2.val[2] * bMul);
-			Int32 rV;
-			Int32 gV;
-			Int32 bV;
-			rV = Math::Double2Int32((rBright - 1.0 + Math::Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
-			gV = Math::Double2Int32((gBright - 1.0 + Math::Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
-			bV = Math::Double2Int32((bBright - 1.0 + Math::Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
-			if (bV > 255)
-				imgPtr[0] = 255;
-			else if (bV < 0)
-				imgPtr[0] = 0;
-			else
-				imgPtr[0] = (bV & 255);
-			if (gV > 255)
-				imgPtr[1] = 255;
-			else if (gV < 0)
-				imgPtr[1] = 0;
-			else
-				imgPtr[1] = (gV & 255);
-			if (rV > 255)
-				imgPtr[2] = 255;
-			else if (rV < 0)
-				imgPtr[2] = 0;
-			else
-				imgPtr[2] = (rV & 255);
+			imgPtr[0] = Math::SDouble2UInt8((bBright - 1.0 + Math::Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
+			imgPtr[1] = Math::SDouble2UInt8((gBright - 1.0 + Math::Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
+			imgPtr[2] = Math::SDouble2UInt8((rBright - 1.0 + Math::Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
 			imgPtr[3] = 255;
 
 			imgPtr += 4;

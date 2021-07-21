@@ -872,7 +872,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 	return exef;
 }
 
-void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, OSInt resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
 {
 	OSInt i;
 	OSInt j;
@@ -927,7 +927,7 @@ void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resT
 	}
 }
 
-void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, OSInt resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
 {
 	UInt32 dataRVA = ReadUInt32(&resBuff[resOfst]);
 	UInt32 size = ReadUInt32(&resBuff[resOfst + 4]);

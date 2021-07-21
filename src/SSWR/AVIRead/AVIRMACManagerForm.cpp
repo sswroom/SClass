@@ -93,12 +93,12 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(void *userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	OSInt i = 0;
+	UOSInt i = 0;
 	while (i < log->ieLen)
 	{
 		Net::WirelessLANIE::ToString(&log->ieBuff[i], &sb);
 		sb.Append((const UTF8Char*)"\r\n");
-		i += log->ieBuff[i + 1] + 2;
+		i += (UOSInt)log->ieBuff[i + 1] + 2;
 	}
 	me->txtFileIE->SetText(sb.ToString());
 }

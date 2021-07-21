@@ -708,7 +708,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			}
 			else if (mtyp == Media::MEDIA_TYPE_AUDIO)
 			{
-				OSInt bofst;
+				UOSInt bofst;
 				if (ReadMInt16(&buff[24]) == 0)
 				{
 					afmt.nChannels = ReadMUInt16(&buff[32]);
@@ -980,7 +980,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 
 				if (bofst != 0)
 				{
-					while (bofst < (Int32)atomSize - 8)
+					while (bofst < atomSize - 8)
 					{
 						subAtomSize = ReadMUInt32(&buff[bofst]);
 						if (subAtomSize == 0)
@@ -1011,7 +1011,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 						else if (*(Int32*)&buff[bofst + 4] == *(Int32*)"wave")
 						{
 							UInt8 *subBuff = &buff[bofst + 8];
-							OSInt subOfst = 0;
+							UOSInt subOfst = 0;
 							Int32 subSubAtomSize;
 							while (subOfst < subAtomSize - 8)
 							{
@@ -1029,7 +1029,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 									Int32 bit_rate_code = ((subBuff[subOfst + 9] & 3) << 3) | ((subBuff[subOfst + 10] & 0xe0) >> 5);
 									afmt.bitRate = bitrate[bit_rate_code] * 1000;
 								}
-								subOfst += subSubAtomSize;
+								subOfst += (UInt32)subSubAtomSize;
 							}
 						}
 
@@ -1126,7 +1126,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 			Int32 nstc;
 //			Int32 nstco;
 			Int32 nstsz;
-			OSInt ttsBuffOfst;
+			UOSInt ttsBuffOfst;
 			OSInt stcBuffOfst;
 			OSInt stcoBuffOfst;
 			OSInt stszBuffOfst;

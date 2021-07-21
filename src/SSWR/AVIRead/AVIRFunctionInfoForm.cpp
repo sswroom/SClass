@@ -42,9 +42,9 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 		UInt32 addr = (UInt32)funcAddr;
 		UInt32 blockStart;
 		UInt32 blockEnd;
-		OSInt i;
-		Data::ArrayListInt32 callAddrs;
-		Data::ArrayListInt32 jmpAddrs;
+		UOSInt i;
+		Data::ArrayListUInt32 callAddrs;
+		Data::ArrayListUInt32 jmpAddrs;
 		NEW_CLASS(dasm, Manage::DasmX86_32());
 		dasm->Disasm32In(&sb, symbol, &addr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, proc);
 		DEL_CLASS(dasm);

@@ -337,7 +337,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		}
 
 	}
-	return (OSInt)modCnt;
+	return modCnt;
 #endif
 }
 

@@ -13,8 +13,8 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 		return;
 	UOSInt ofst = 0;
 	UInt8 *buff;
-	buff = MemAlloc(UInt8, dirSize);
-	this->fd->GetRealData(dirOfst, dirSize, buff);
+	buff = MemAlloc(UInt8, (UOSInt)dirSize);
+	this->fd->GetRealData(dirOfst, (UOSInt)dirSize, buff);
 	while (dirSize - ofst >= 26)
 	{
 		UInt64 fileOfst = ReadUInt64(&buff[ofst]);
@@ -27,7 +27,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 
 		IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
 		pack->fileOfst = fileOfst;
-		pack->packSize = fileSize;
+		pack->packSize = (UOSInt)fileSize;
 		pack->packType = PT_FILE;
 		pack->fileName = Text::StrCopyNewC(&buff[ofst + 26], fileNameSize);
 		this->packs->Add(pack);
@@ -57,7 +57,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
 	pack->fileOfst = dirOfst;
-	pack->packSize = dirSize;
+	pack->packSize = (UOSInt)dirSize;
 	pack->packType = PT_V2DIRECTORY;
 	pack->fileName = 0;
 	this->packs->Add(pack);
@@ -107,7 +107,7 @@ UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
 
 		pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
 		pack->fileOfst = lastOfst;
-		pack->packSize = me->fd->GetDataSize() - lastOfst;
+		pack->packSize = (UOSInt)(me->fd->GetDataSize() - lastOfst);
 		pack->packType = PT_V1DIRECTORY;
 		pack->fileName = 0;
 		me->packs->Add(pack);

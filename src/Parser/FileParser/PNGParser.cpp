@@ -2607,7 +2607,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 					}
 					UInt8 *palPtr = palette;
 					UInt8 *dataBuff = chunkData;
-					OSInt sizeLeft = size;
+					UOSInt sizeLeft = size;
 					while (sizeLeft > 0)
 					{
 						palPtr[0] = dataBuff[2];

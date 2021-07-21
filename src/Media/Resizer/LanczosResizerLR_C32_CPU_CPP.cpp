@@ -744,16 +744,16 @@ extern "C" void LanczosResizerLR_C32_CPU_vertical_filter_na(UInt8 *inPt, UInt8 *
 	}
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_hv_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt dheight, OSInt swidth, OSInt htap, OSInt *hindex, Int64 *hweight, OSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UInt8 *buffPt)
+extern "C" void LanczosResizerLR_C32_CPU_hv_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, OSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UInt8 *buffPt)
 {
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	UOSInt i;
 	UInt32 v;
-	sstep = sstep - width * 8;
-	dstep = dstep - width * 4;
+	sstep = sstep - (OSInt)width * 8;
+	dstep = dstep - (OSInt)width * 4;
 	while (height-- > 0)
 	{
 		i = width;
@@ -763,7 +763,7 @@ extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, OSI
 			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[2]) * 4 + 262144]);
 			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[4]) * 4 + 524288]);
 			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[6]) * 4 + 786432]);
-			WriteInt32(outPt, v);
+			WriteUInt32(outPt, v);
 			inPt += 8;
 			outPt += 4;
 		}
@@ -772,12 +772,12 @@ extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, OSI
 	}
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	UOSInt i;
 	UInt32 v;
-	sstep = sstep - width * 8;
-	dstep = dstep - width * 4;
+	sstep = sstep - (OSInt)width * 8;
+	dstep = dstep - (OSInt)width * 4;
 	while (height-- > 0)
 	{
 		i = width;
@@ -786,7 +786,7 @@ extern "C" void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, 
 			v  = ReadUInt32(&rgbTable[ReadUInt16(&inPt[0]) * 4 + 0]) | 0xff000000;
 			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[2]) * 4 + 262144]);
 			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[4]) * 4 + 524288]);
-			WriteInt32(outPt, v);
+			WriteUInt32(outPt, v);
 			inPt += 8;
 			outPt += 4;
 		}

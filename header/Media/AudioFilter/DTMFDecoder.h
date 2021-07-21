@@ -23,7 +23,7 @@ namespace Media
 			UOSInt sampleCnt;
 			Sync::Mutex *sampleMut;
 			UOSInt calcLeft;
-			OSInt calcInt;
+			UOSInt calcInt;
 			UInt8 *calcBuff;
 			Bool calcReady;
 			Sync::Mutex *calcMut;
@@ -40,10 +40,10 @@ namespace Media
 			static UInt32 __stdcall CalcThread(void *userObj);
 			void ResetStatus();
 		public:
-			DTMFDecoder(Media::IAudioSource *audSrc, OSInt calcInt);
+			DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt);
 			virtual ~DTMFDecoder();
 
-			virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
 			void HandleToneChange(ToneChangeEvent hdlr, void *userObj);

@@ -183,8 +183,8 @@ void Net::NTPServer::ReadTime(const UInt8 *buff, Data::DateTime *time)
 	UInt32 v = ReadMUInt32(&buff[0]);
 	UInt32 v2 = ReadMUInt32(&buff[4]);
 
-	time->AddMinute(v / 60);
-	time->AddMS((v % 60) * 1000 + ((v2 * 1000LL) >> 32));
+	time->AddMinute((OSInt)v / 60);
+	time->AddMS((OSInt)((v % 60) * 1000 + ((v2 * 1000LL) >> 32)));
 }
 
 void Net::NTPServer::WriteTime(UInt8 *buff, Data::DateTime *time)

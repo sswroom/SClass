@@ -20,7 +20,7 @@ POLYGON ((50.497600000351667 10.510199999436736, 74.660500000230968 51.707599999
 00 00 00 01 00 00 00 FF FF FF FF 00 00 00 00 03
 */
 
-Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, OSInt buffSize, UInt32 *srIdOut)
+Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, UInt32 *srIdOut)
 {
 	if (buffSize < 6)
 	{
@@ -51,7 +51,7 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, OSInt buffS
 			const UInt8 *pointPtr;
 			//const UInt8 *figurePtr;
 			const UInt8 *shapePtr;
-			OSInt ind;
+			UOSInt ind;
 			if (buffSize < 10)
 			{
 				return 0;

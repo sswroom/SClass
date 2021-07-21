@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	}
 	
 	
-	OSInt i;
+	UOSInt i;
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
@@ -246,7 +246,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 {
 	if (this->threadCurrCnt > 0)
 	{
-		OSInt i = this->threadCnt;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
 			this->threadStatus[i].threadToStop = true;
@@ -259,7 +259,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 	}
 	if (this->threadStatus)
 	{
-		OSInt i = this->threadCnt;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
 			DEL_CLASS(this->threadStatus[i].evt);

@@ -306,6 +306,16 @@ namespace Math
 			return (Int16)Math::Double2Int32(val);
 	}
 
+	FORCEINLINE UInt16 SDouble2UInt16(Double val)
+	{
+		if (val < 0.0)
+			return 0;
+		else if (val > 65535.0)
+			return 65535;
+		else
+			return (UInt16)Math::Double2Int32(val);
+	}
+
 	FORCEINLINE UInt8 SDouble2UInt8(Double val)
 	{
 		if (val > 255.0)
@@ -314,6 +324,16 @@ namespace Math
 			return 0;
 		else
 			return (UInt8)Math::Double2Int32(val);
+	}
+
+	FORCEINLINE UInt8 SInt32_UInt8(Int32 val)
+	{
+		if (val > 255)
+			return 255;
+		else if (val < 0)
+			return 0;
+		else
+			return (UInt8)val;
 	}
 
 	FORCEINLINE Double Fix(Double val)

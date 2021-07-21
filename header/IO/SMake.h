@@ -59,7 +59,7 @@ namespace IO
 		Bool ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, const UTF8Char *headerFile, const UTF8Char *sourceFile);
 		Bool ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog);
 
-		static void CompileTask(void *userObj);
+		static void __stdcall CompileTask(void *userObj);
 		void CompileObject(Bool *errorState, const UTF8Char *cmd);
 		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing);
 

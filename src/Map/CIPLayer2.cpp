@@ -350,7 +350,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 	if (this->nblks > 10)
 	{
 		i = 0;
-		j = this->nblks - 1;
+		j = (Int32)this->nblks - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
@@ -382,7 +382,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 		j = 0;
 	}
 
-	if (j & 0x80000000)
+	if (j < 0)
 		j = 0;
 
 	k = j;
@@ -410,7 +410,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 				UTF16Char *strTmp;
 				UInt8 buff[5];
 				cis->SeekFromBeginning(this->blks[k].sofst);
-				i = this->blks[k].objCnt;
+				i = (Int32)this->blks[k].objCnt;
 				while (i-- > 0)
 				{
 					cis->Read(buff, 5);
@@ -618,7 +618,7 @@ Bool Map::CIPLayer2::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Doub
 		Int32 minYBlk;
 		maxXBlk = minXBlk = this->blks[0].xblk;
 		maxYBlk = minYBlk = this->blks[0].yblk;
-		OSInt i = this->nblks;
+		UOSInt i = this->nblks;
 		while (i-- > 0)
 		{
 			if (this->blks[i].xblk > maxXBlk)

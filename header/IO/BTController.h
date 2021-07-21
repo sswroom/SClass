@@ -33,7 +33,7 @@ namespace IO
 			Bool Pair(const UTF8Char *key);
 			Bool Unpair();
 
-			OSInt QueryServices(Data::ArrayList<void*> *guidList);
+			UOSInt QueryServices(Data::ArrayList<void*> *guidList);
 			void FreeServices(Data::ArrayList<void*> *guidList);
 			Bool EnableService(void *guid, Bool toEnable);
 		};

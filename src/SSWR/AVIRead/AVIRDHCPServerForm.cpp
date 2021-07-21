@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 3, sbuff);
-				dt.AddSecond(me->svr->GetIPLeaseTime());
+				dt.AddSecond((OSInt)me->svr->GetIPLeaseTime());
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 4, sbuff);
 				if (dhcp->hostName)

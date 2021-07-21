@@ -165,8 +165,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		gimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 
 		UInt8 *buff = MemAlloc(UInt8, this->format->align * (FFTSAMPLE + FFTAVG - 1));
-		i = (currSample - FFTSAMPLE + 1);
-		i = this->audSrc->ReadSample(i, FFTSAMPLE + FFTAVG - 1, buff);
+		i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
 		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);

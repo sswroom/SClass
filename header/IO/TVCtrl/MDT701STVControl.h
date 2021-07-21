@@ -18,13 +18,13 @@ namespace IO
 
 			Sync::Mutex *mut;
 			UInt8 *recvBuff;
-			OSInt recvSize;
+			UOSInt recvSize;
 			Bool recvRunning;
 			Bool recvToStop;
 			Sync::Event *recvEvt;
 
 			static UInt32 __stdcall RecvThread(void *userObj);
-			Bool SendBasicCommand(const Char *buff, OSInt buffSize, const Char *cmdReply, OSInt replySize, Int32 cmdTimeout, Int32 cmdInterval);
+			Bool SendBasicCommand(const Char *buff, UOSInt buffSize, const Char *cmdReply, UOSInt replySize, UInt32 cmdTimeout, UInt32 cmdInterval);
 		public:
 			MDT701STVControl(IO::Stream *stm, Int32 monId);
 			virtual ~MDT701STVControl();

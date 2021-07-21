@@ -8,7 +8,7 @@
 void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->soundBuffLeng;
+	UOSInt i = this->soundBuffLeng;
 	while (i-- > 0)
 	{
 		this->soundBuff[i] = 0;

@@ -42,7 +42,7 @@ void Media::DDrawManager::ReleaseAll()
 		this->defDD = 0;
 	}
 	Data::ArrayList<void*> *monList;
-	OSInt i;
+	UOSInt i;
 	monList = this->monMap->GetValues();
 	i = monList->GetCount();
 	while (i-- > 0)

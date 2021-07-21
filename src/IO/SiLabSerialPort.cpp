@@ -177,7 +177,7 @@ UOSInt IO::SiLabSerialPort::EndRead(void *reqData)
 {
 	ReadEvent *re = (ReadEvent*)reqData;
 #if defined(_WIN32) && !defined(_WIN32_WCE)
-	Int32 retVal;
+	DWORD retVal;
 	Int32 result = GetOverlappedResult(this->handle, &re->ol, (DWORD*)&retVal, TRUE);
 	MemFree(re);
 	if (result)

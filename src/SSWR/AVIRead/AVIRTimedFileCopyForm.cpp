@@ -114,10 +114,10 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 							UOSInt readSize;
 							if (fileLeng > 0)
 							{
-								fileBuff = MemAlloc(UInt8, fileLeng);
+								fileBuff = MemAlloc(UInt8, (UOSInt)fileLeng);
 								while (totalRead < fileLeng)
 								{
-									readSize = fs->Read(&fileBuff[totalRead], fileLeng - totalRead);
+									readSize = fs->Read(&fileBuff[totalRead], (UOSInt)(fileLeng - totalRead));
 									if (readSize <= 0)
 									{
 										break;

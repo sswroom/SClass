@@ -102,8 +102,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 
 void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(Text::StringBuilderUTF *sb, Text::Cpp::CppParseStatus *status)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	j = status->GetFileCount();
 	if (j > 0)
 	{

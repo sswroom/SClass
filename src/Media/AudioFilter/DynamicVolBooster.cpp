@@ -6,7 +6,7 @@
 
 void Media::AudioFilter::DynamicVolBooster::ResetStatus()
 {
-	OSInt i = soundBuffLeng;
+	UOSInt i = soundBuffLeng;
 	while (i-- > 0)
 	{
 		soundBuff[i] = 0;

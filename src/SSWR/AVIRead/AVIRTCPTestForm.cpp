@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	
-	OSInt i;
+	UOSInt i;
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
@@ -138,7 +138,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 {
 	if (this->threadCurrCnt > 0)
 	{
-		OSInt i = this->threadCnt;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
 			this->threadStatus[i].threadToStop = true;
@@ -151,7 +151,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 	}
 	if (this->threadStatus)
 	{
-		OSInt i = this->threadCnt;
+		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
 			DEL_CLASS(this->threadStatus[i].evt);

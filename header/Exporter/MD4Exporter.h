@@ -7,7 +7,7 @@ namespace Exporter
 	class MD4Exporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 	public:
 		MD4Exporter();
 		virtual ~MD4Exporter();

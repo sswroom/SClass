@@ -533,10 +533,10 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->AppendU16(ReadUInt16(&res->data[74]));
 				sb->Append((const UTF8Char*)"\r\nString File Key = ");
 				sb->Append((UTF8Char*)&res->data[76]);
-				OSInt strLen = ReadUInt16(&res->data[92]);
-				OSInt i;
+				UOSInt strLen = ReadUInt16(&res->data[92]);
+				UOSInt i;
 				sb->Append((const UTF8Char*)"\r\nString Table Length = ");
-				sb->AppendOSInt(strLen);
+				sb->AppendUOSInt(strLen);
 				sb->Append((const UTF8Char*)"\r\nString Table Value Length = ");
 				sb->AppendU16(ReadUInt16(&res->data[94]));
 				sb->Append((const UTF8Char*)"\r\nString Table Key = ");

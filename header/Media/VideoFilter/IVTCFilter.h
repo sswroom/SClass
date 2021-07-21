@@ -65,7 +65,7 @@ namespace Media
 			Bool enabled;
 
 			Sync::Event *mainEvt;
-			OSInt threadCnt;
+			UOSInt threadCnt;
 			ThreadStat *threadStats;
 			IO::FileStream *debugFS;
 			IO::Writer *debugLog;

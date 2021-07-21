@@ -237,7 +237,7 @@ UOSInt Media::KSRenderer::GetDeviceCount()
 	{
 		return 0;
 	}
-	cnt = (OSInt)pEnumerator->m_listFilters.GetCount();
+	cnt = pEnumerator->m_listFilters.GetCount();
 	delete pEnumerator;
 	return cnt;
 }

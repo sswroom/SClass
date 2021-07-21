@@ -7,7 +7,7 @@ namespace Exporter
 	class KMLExporter : public IO::FileExporter
 	{
 	private:
-		Int32 codePage;
+		UInt32 codePage;
 		Text::EncodingFactory *encFact;
 	public:
 		KMLExporter();

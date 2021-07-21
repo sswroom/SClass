@@ -86,7 +86,7 @@ void UI::FileDialog::AddFilter(const UTF8Char *pattern, const UTF8Char *name)
 	this->names->Add(Text::StrCopyNew(name));
 }
 
-OSInt UI::FileDialog::GetFilterIndex()
+UOSInt UI::FileDialog::GetFilterIndex()
 {
 	return this->filterIndex;
 }
@@ -414,7 +414,7 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 					currPtr[si] = 0;
 					sptr = Text::StrConcat(sptr, currPtr);
 					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[si + Text::StrCharCnt(initFileName)]);
+					Text::StrConcat(sptr, &currPtr[(UOSInt)si + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{

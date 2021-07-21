@@ -14,7 +14,7 @@ namespace IO
 		private:
 			typedef struct
 			{
-				Int64 ofst;
+				UInt64 ofst;
 				UInt32 blockType;
 				UInt32 blockLength;
 				UInt16 linkType;

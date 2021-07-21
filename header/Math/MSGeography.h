@@ -7,7 +7,7 @@ namespace Math
 	class MSGeography
 	{
 	public:
-		static Math::Vector2D *ParseBinary(const UInt8 *buffPtr, OSInt buffSize, UInt32 *srIdOut);
+		static Math::Vector2D *ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, UInt32 *srIdOut);
 	};
 }
 #endif

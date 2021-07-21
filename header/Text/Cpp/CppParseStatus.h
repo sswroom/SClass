@@ -78,13 +78,13 @@ namespace Text
 			Bool Undefine(const UTF8Char *defName);
 			Bool GetDefineVal(const UTF8Char *defName, const UTF8Char *defParams, Text::StringBuilderUTF *sb);
 
-			OSInt GetDefineCount();
-			Bool GetDefineInfo(OSInt index, DefineInfo *defInfo);
+			UOSInt GetDefineCount();
+			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);
 
-			OSInt GetFileCount();
-			const UTF8Char *GetFileName(OSInt index);
+			UOSInt GetFileCount();
+			const UTF8Char *GetFileName(UOSInt index);
 			const UTF8Char *GetCurrCodeFile();
 		};
-	};
-};
+	}
+}
 #endif

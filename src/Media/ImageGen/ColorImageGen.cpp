@@ -28,7 +28,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	UOSInt k;
 	UOSInt l;
 	UInt16 c[4];
-	OSInt bpl = (OSInt)width << 3;
+	UOSInt bpl = width << 3;
 	if (width < 8 || height < 4)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
@@ -134,7 +134,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, (UOSInt)bpl);
+		MemCopyNO(imgPtr2, imgPtr, bpl);
 		imgPtr2 += bpl;
 		k++;
 	}
@@ -434,7 +434,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, (UOSInt)bpl);
+		MemCopyNO(imgPtr2, imgPtr, bpl);
 		imgPtr2 += bpl;
 		k++;
 	}

@@ -14,7 +14,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	Text::XMLReader *reader;
 	Text::StringBuilderUTF8 sb;
 	Text::XMLAttrib *attr;
-	OSInt i;
+	UOSInt i;
 	OSInt j;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
@@ -121,11 +121,11 @@ void IO::Device::OlympusCameraControl::GetImageList()
 				file = MemAlloc(IO::Device::OlympusCameraControl::FileInfo, 1);
 				Text::StrConcat(file->fileName, sarr[1]);
 				Text::StrConcat(file->filePath, sarr[0]);
-				file->fileSize = Text::StrToInt64(sarr[2]);
+				file->fileSize = Text::StrToUInt64(sarr[2]);
 				dateVal = Text::StrToInt32(sarr[4]);
 				timeVal = Text::StrToInt32(sarr[5]);
 				dt.ToLocalTime();
-				dt.SetValue(1980 + (dateVal >> 9), (dateVal >> 5) & 15, dateVal & 31, timeVal >> 11, (timeVal >> 5) & 63, (timeVal & 31) << 1, 0);
+				dt.SetValue((UInt16)(1980 + (dateVal >> 9)), (dateVal >> 5) & 15, dateVal & 31, timeVal >> 11, (timeVal >> 5) & 63, (timeVal & 31) << 1, 0);
 				file->fileTimeTicks = dt.ToTicks();
 				if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".MOV"))
 				{
@@ -177,10 +177,10 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 				file = MemAlloc(IO::CameraControl::FileInfo, 1);
 				Text::StrConcat(file->fileName, sarr[1]);
 				Text::StrConcat(file->filePath, sarr[0]);
-				file->fileSize = Text::StrToInt64(sarr[2]);
+				file->fileSize = Text::StrToUInt64(sarr[2]);
 				dateVal = Text::StrToInt32(sarr[6]);
 				dt.ToUTCTime();
-				dt.SetValue(dateVal / 10000, (dateVal / 100) % 100, dateVal % 100, (sarr[7][0] - 48) * 10 + (sarr[7][1] - 48), (sarr[7][2] - 48) * 10 + (sarr[7][3] - 48), (sarr[7][4] - 48) * 10 + (sarr[7][5] - 48), 0);
+				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7][0] - 48) * 10 + (sarr[7][1] - 48), (sarr[7][2] - 48) * 10 + (sarr[7][3] - 48), (sarr[7][4] - 48) * 10 + (sarr[7][5] - 48), 0);
 				file->fileTimeTicks = dt.ToTicks();
 				file->fileType = IO::CameraControl::FT_GPSLOG;
 				this->fileList->Add(file);
@@ -226,10 +226,10 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 				file = MemAlloc(IO::CameraControl::FileInfo, 1);
 				Text::StrConcat(file->fileName, sarr[1]);
 				Text::StrConcat(file->filePath, sarr[0]);
-				file->fileSize = Text::StrToInt64(sarr[2]);
+				file->fileSize = Text::StrToUInt64(sarr[2]);
 				dateVal = Text::StrToInt32(sarr[6]);
 				dt.ToUTCTime();
-				dt.SetValue(dateVal / 10000, (dateVal / 100) % 100, dateVal % 100, (sarr[7][0] - 48) * 10 + (sarr[7][1] - 48), (sarr[7][2] - 48) * 10 + (sarr[7][3] - 48), (sarr[7][4] - 48) * 10 + (sarr[7][5] - 48), 0);
+				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7][0] - 48) * 10 + (sarr[7][1] - 48), (sarr[7][2] - 48) * 10 + (sarr[7][3] - 48), (sarr[7][4] - 48) * 10 + (sarr[7][5] - 48), 0);
 				file->fileTimeTicks = dt.ToTicks();
 				file->fileType = IO::CameraControl::FT_SENSORLOG;
 				this->fileList->Add(file);
@@ -299,7 +299,7 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<const UTF8C
 
 void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
 {
-	OSInt i = nameList->GetCount();
+	UOSInt i = nameList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(nameList->GetItem(i));
@@ -361,8 +361,8 @@ Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl:
 Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCameraControl::FileInfo *file, IO::Stream *outStm)
 {
 	UTF8Char sbuff[2048];
-	OSInt readSize;
-	Int64 totalSize = 0;
+	UOSInt readSize;
+	UInt64 totalSize = 0;
 	UTF8Char *sptr;
 	Net::HTTPClient *cli;
 	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
@@ -454,7 +454,7 @@ IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateContro
 	if (sockf->GetConnInfoList(&connInfoList) == 0)
 		return 0;
 	UInt32 ip = Net::SocketUtil::GetIPAddr((const UTF8Char*)"192.168.0.10");
-	OSInt i = connInfoList.GetCount();
+	UOSInt i = connInfoList.GetCount();
 	while (i-- > 0)
 	{
 		connInfo = connInfoList.GetItem(i);

@@ -162,7 +162,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			if (this->buffSize >= this->nBlockAlign)
 			{
 				dest = &buff[2];
-				OSInt j;
+				UOSInt j;
 				j = this->nBlockAlign >> 5;
 				while (j-- > 0)
 				{

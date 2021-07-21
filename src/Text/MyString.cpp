@@ -539,7 +539,7 @@ Char *Text::StrInt64(Char *oriStr, Int64 val)
 		else
 		{
 			str -= 1;
-			*str = MyString_StrDigit100U8[i32Val * 2 + 1];
+			*str = (Char)MyString_StrDigit100U8[i32Val * 2 + 1];
 		}
 	}
 	while (str < &buff[20])
@@ -582,7 +582,7 @@ Char *Text::StrUInt64(Char *oriStr, UInt64 val)
 		else
 		{
 			str -= 1;
-			*str = MyString_StrDigit100U8[i32Val * 2 + 1];
+			*str = (Char)MyString_StrDigit100U8[i32Val * 2 + 1];
 		}
 	}
 	while (str < &buff[20])
@@ -597,7 +597,7 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 {
 	Char buff[40];
 	Char *str;
-	OSInt i;
+	UOSInt i;
 	if (val < 0)
 	{
 		val = -val;

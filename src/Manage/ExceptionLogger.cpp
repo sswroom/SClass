@@ -386,9 +386,9 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 		sb.ClearStr();
 		sb.Append(symResol->GetModuleName(i));
 		sb.Append((const UTF8Char*)", Addr=");
-		sb.AppendHexOS(symResol->GetModuleAddr(i));
+		sb.AppendHexOS((UOSInt)symResol->GetModuleAddr(i));
 		sb.Append((const UTF8Char*)",size=");
-		sb.AppendHexOS(symResol->GetModuleSize(i));
+		sb.AppendHexOS((UOSInt)symResol->GetModuleSize(i));
 		writer.WriteLine(sb.ToString());
 
 		i++;

@@ -435,7 +435,7 @@ public:
 		this->nextRowReady = true;
 	}
 
-	void AddColumnDef41(const UInt8 *colDef, OSInt buffSize)
+	void AddColumnDef41(const UInt8 *colDef, UOSInt buffSize)
 	{
 		UInt64 v;
 		ColumnDef *col = MemAlloc(ColumnDef, 1);

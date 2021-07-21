@@ -144,14 +144,15 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	this->minY = 0;
 	this->maxY = 0;
 
-	Int32 minXBlk;
-	Int32 maxXBlk;
-	Int32 minYBlk;
-	Int32 maxYBlk;
+	UInt32 minXBlk;
+	UInt32 maxXBlk;
+	UInt32 minYBlk;
+	UInt32 maxYBlk;
 	UTF8Char sbuff[512];
 	UInt32 currVal;
 	UOSInt i;
 	UOSInt j;
+	OSInt si;
 
 	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::POT_PACKAGEFILE)
 	{
@@ -186,8 +187,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	}
 	if (this->maxLevel >= 0)
 	{
-		minXBlk = -1;
-		maxXBlk = -1;
+		minXBlk = (UInt32)-1;
+		maxXBlk = (UInt32)-1;
 		
 		IO::PackageFile *xPkg;
 		Text::StrUOSInt(sbuff, this->maxLevel);
@@ -205,11 +206,11 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 					{
 						if (Text::StrToUInt32(sbuff, &currVal))
 						{
-							if (minXBlk == -1 || minXBlk > (OSInt)currVal)
+							if (minXBlk == (UInt32)-1 || minXBlk > currVal)
 							{
 								minXBlk = currVal;
 							}
-							if (maxXBlk == -1 || maxXBlk < (OSInt)currVal)
+							if (maxXBlk == (UInt32)-1 || maxXBlk < currVal)
 							{
 								maxXBlk = currVal;
 							}
@@ -218,14 +219,14 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 				}
 				i++;
 			}
-			if (minXBlk != -1)
+			if (minXBlk != (UInt32)-1)
 			{
-				minYBlk = -1;
-				maxYBlk = -1;
+				minYBlk = (UInt32)-1;
+				maxYBlk = (UInt32)-1;
 
 				IO::PackageFile *yPkg;
-				Text::StrInt32(sbuff, minXBlk);
-				yPkg = xPkg->GetItemPack(xPkg->GetItemIndex(sbuff));
+				Text::StrUInt32(sbuff, minXBlk);
+				yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(sbuff));
 				if (yPkg)
 				{
 					i = yPkg->GetCount();
@@ -234,17 +235,17 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 						if (yPkg->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
 						{
 							yPkg->GetItemName(sbuff, i);
-							j = Text::StrIndexOf(sbuff, '.');
-							if (j >= 0)
+							si = Text::StrIndexOf(sbuff, '.');
+							if (si >= 0)
 							{
-								sbuff[j] = 0;
+								sbuff[si] = 0;
 								if (Text::StrToUInt32(sbuff, &currVal))
 								{
-									if (minYBlk == -1 || minYBlk > (OSInt)currVal)
+									if (minYBlk == (UInt32)-1 || minYBlk > currVal)
 									{
 										minYBlk = currVal;
 									}
-									if (maxYBlk == -1 || maxYBlk < (OSInt)currVal)
+									if (maxYBlk == (UInt32)-1 || maxYBlk < currVal)
 									{
 										maxYBlk = currVal;
 									}
@@ -254,12 +255,12 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 					}
 					DEL_CLASS(yPkg);
 
-					if (minYBlk != -1)
+					if (minYBlk != (UInt32)-1)
 					{
-						this->minX = Map::OSM::OSMTileMap::TileX2Lon(minXBlk, this->maxLevel);
-						this->maxX = Map::OSM::OSMTileMap::TileX2Lon(maxXBlk + 1, this->maxLevel);
-						this->minY = Map::OSM::OSMTileMap::TileY2Lat(maxYBlk + 1, this->maxLevel);
-						this->maxY = Map::OSM::OSMTileMap::TileY2Lat(minYBlk, this->maxLevel);
+						this->minX = Map::OSM::OSMTileMap::TileX2Lon((Int32)minXBlk, this->maxLevel);
+						this->maxX = Map::OSM::OSMTileMap::TileX2Lon((Int32)maxXBlk + 1, this->maxLevel);
+						this->minY = Map::OSM::OSMTileMap::TileY2Lat((Int32)maxYBlk + 1, this->maxLevel);
+						this->maxY = Map::OSM::OSMTileMap::TileY2Lat((Int32)minYBlk, this->maxLevel);
 					}
 				}
 			}
@@ -397,7 +398,7 @@ UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Double x1, Double y1
 		}
 		i++;
 	}
-	return (pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1);
+	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
 Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
@@ -518,7 +519,7 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	IO::PackageFile *yPkg;
 	fd = 0;
 	Text::StrUOSInt(u8buff, level);
-	xPkg = this->pkgFile->GetItemPack(this->pkgFile->GetItemIndex(u8buff));
+	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(u8buff));
 	if (xPkg)
 	{
 		Text::StrInt32(u8buff, imgX);

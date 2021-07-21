@@ -2038,7 +2038,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	Data::ArrayListInt64 *arri;
 	UOSInt i;
 	UInt32 j;
-	OSInt k;
+	UOSInt k;
 	Map::DrawObjectL *dobj;
 	Double scaleW;
 	Double scaleH;

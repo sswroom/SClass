@@ -105,7 +105,7 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 
 		if(SUCCEEDED(hr))
 		{
-			if ((OSInt)ulCount > index)
+			if (ulCount > index)
 			{
 				ISensor *pSensor;
 				if (SUCCEEDED(pSensorColl->GetAt((ULONG)index, &pSensor)))
@@ -158,7 +158,7 @@ IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
 
 		if(SUCCEEDED(hr))
 		{
-			if ((OSInt)ulCount > index)
+			if (ulCount > index)
 			{
 				ISensor *pSensor;
 				if (SUCCEEDED(pSensorColl->GetAt((ULONG)index, &pSensor)))
