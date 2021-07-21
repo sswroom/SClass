@@ -12,9 +12,7 @@ namespace Data
 		ArrayListString(UOSInt capacity);
 
 		virtual Data::ArrayList<Text::String*> *Clone();
-
-		virtual UOSInt SortedInsert(Text::String *val);
-		virtual OSInt SortedIndexOf(Text::String *val);
+		virtual OSInt CompareItem(Text::String* obj1, Text::String* obj2);
 		Text::String *JoinString();
 	};
 }

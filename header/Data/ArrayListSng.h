@@ -11,9 +11,7 @@ namespace Data
 		ArrayListSng(OSInt Capacity);
 
 		virtual Data::ArrayList<Single> *Clone();
-
-		virtual UOSInt SortedInsert(Single Val);
-		virtual OSInt SortedIndexOf(Single Val);
+		virtual OSInt CompareItem(Single obj1, Single obj2);
 	};
 }
 #endif

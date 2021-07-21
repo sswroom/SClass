@@ -18,87 +18,18 @@ Data::ArrayList<Int32> *Data::ArrayListInt32::Clone()
 	return newArr;
 }
 
-UOSInt Data::ArrayListInt32::SortedInsert(Int32 Val)
+OSInt Data::ArrayListInt32::CompareItem(Int32 obj1, Int32 obj2)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	Int32 l;
-	i = 0;
-	j = (OSInt)objCnt - 1;
-	while (i <= j)
+	if (obj1 > obj2)
 	{
-		k = (i + j) >> 1;
-		l = arr[k];
-		if (l > Val)
-		{
-			j = k - 1;
-		}
-		else if (l < Val)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			i = k + 1;
-			break;
-		}
+		return 1;
 	}
-
-	if (objCnt == this->capacity)
+	else if (obj1 < obj2)
 	{
-		Int32 *newArr = MemAlloc(Int32, this->capacity << 1);
-		if (i > 0)
-		{
-			MemCopyNO(&newArr[0], &arr[0], (UOSInt)(i) * sizeof(Int32));
-		}
-		newArr[i] = Val;
-		if ((UOSInt)i < this->objCnt)
-		{
-			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - (UOSInt)i) * sizeof(Int32));
-		}
-		this->capacity = this->capacity << 1;
-		MemFree(arr);
-		arr = newArr;
+		return -1;
 	}
 	else
 	{
-		j = (OSInt)this->objCnt;
-		while (j > i)
-		{
-			arr[j] = arr[j - 1];
-			j--;
-		}
-		arr[i] = Val;
+		return 0;
 	}
-	this->objCnt++;
-	return (UOSInt)i;
-}
-
-OSInt Data::ArrayListInt32::SortedIndexOf(Int32 Val)
-{
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	Int32 l;
-	i = 0;
-	j = (OSInt)objCnt - 1;
-	while (i <= j)
-	{
-		k = (i + j) >> 1;
-		l = arr[k];
-		if (l > Val)
-		{
-			j = k - 1;
-		}
-		else if (l < Val)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			return k;
-		}
-	}
-	return -i - 1;
 }

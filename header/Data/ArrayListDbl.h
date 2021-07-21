@@ -11,8 +11,7 @@ namespace Data
 		ArrayListDbl(UOSInt capacity);
 
 		virtual ArrayList<Double> *Clone();
-		virtual UOSInt SortedInsert(Double val);
-		virtual OSInt SortedIndexOf(Double val);
+		virtual OSInt CompareItem(Double obj1, Double obj2);
 	};
 }
 #endif

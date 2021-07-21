@@ -19,89 +19,20 @@ Data::ArrayList<UInt64> *Data::ArrayListUInt64::Clone()
 	return newArr;
 }
 
-UOSInt Data::ArrayListUInt64::SortedInsert(UInt64 val)
+OSInt Data::ArrayListUInt64::CompareItem(UInt64 obj1, UInt64 obj2)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	UInt64 l;
-	i = 0;
-	j = (OSInt)objCnt - 1;
-	while (i <= j)
+	if (obj1 > obj2)
 	{
-		k = (i + j) >> 1;
-		l = arr[k];
-		if (l > val)
-		{
-			j = k - 1;
-		}
-		else if (l < val)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			i = k + 1;
-			break;
-		}
+		return 1;
 	}
-
-	if (objCnt == this->capacity)
+	else if (obj1 < obj2)
 	{
-		UInt64 *newArr = MemAlloc(UInt64, this->capacity << 1);
-		if (i > 0)
-		{
-			MemCopyNO(&newArr[0], &arr[0], (UOSInt)(i) * sizeof(UInt64));
-		}
-		newArr[i] = val;
-		if ((UOSInt)i < this->objCnt)
-		{
-			MemCopyNO(&newArr[i + 1], &arr[i], (this->objCnt - (UOSInt)i) * sizeof(UInt64));
-		}
-		this->capacity = this->capacity << 1;
-		MemFree(arr);
-		arr = newArr;
+		return -1;
 	}
 	else
 	{
-		j = (OSInt)this->objCnt;
-		while (j > i)
-		{
-			arr[j] = arr[j - 1];
-			j--;
-		}
-		arr[i] = val;
+		return 0;
 	}
-	this->objCnt++;
-	return (UOSInt)i;
-}
-
-OSInt Data::ArrayListUInt64::SortedIndexOf(UInt64 val)
-{
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	UInt64 l;
-	i = 0;
-	j = (OSInt)objCnt - 1;
-	while (i <= j)
-	{
-		k = (i + j) >> 1;
-		l = arr[k];
-		if (l > val)
-		{
-			j = k - 1;
-		}
-		else if (l < val)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			return k;
-		}
-	}
-	return -i - 1;
 }
 
 void Data::ArrayListUInt64::AddRangeU32(UInt32 *arr, UOSInt cnt)

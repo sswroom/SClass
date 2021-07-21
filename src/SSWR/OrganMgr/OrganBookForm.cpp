@@ -31,85 +31,9 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, Org
 	return ret;
 }
 
-UOSInt SSWR::OrganMgr::BookArrayList::SortedInsert(OrganBook *Val)
+OSInt SSWR::OrganMgr::BookArrayList::CompareItem(OrganBook *book1, OrganBook *book2)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	i = 0;
-	j = (OSInt)objCnt - 1;
-	while (i <= j)
-	{
-		k = (i + j) >> 1;
-		l = CompareBook(arr[k], Val);
-		if (l > 0)
-		{
-			j = k - 1;
-		}
-		else if (l < 0)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			i = k + 1;
-			break;
-		}
-	}
-
-	UOSInt ui;
-	UOSInt uj;
-	if (objCnt == this->capacity)
-	{
-		OrganBook **newArr = MemAlloc(OrganBook*, this->capacity << 1);
-		ui = this->objCnt;
-		while (ui-- > 0)
-		{
-			newArr[ui] = arr[ui];
-		}
-		this->capacity = this->capacity << 1;
-		MemFree(arr);
-		arr = newArr;
-	}
-	ui = (UOSInt)i;
-	uj = objCnt;
-	while (uj > ui)
-	{
-		arr[uj] = arr[uj - 1];
-		uj--;
-	}
-	objCnt++;
-	arr[i] = Val;
-	return i;
-}
-
-OSInt SSWR::OrganMgr::BookArrayList::SortedIndexOf(OrganBook *Val)
-{
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	i = 0;
-	j = objCnt - 1;
-	while (i <= j)
-	{
-		k = (i + j) >> 1;
-		l = CompareBook(arr[k], Val);
-		if (l > 0)
-		{
-			j = k - 1;
-		}
-		else if (l < 0)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			return k;
-		}
-	}
-	return -i - 1;
+	return CompareBook(book1, book2);
 }
 
 void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Data::DateTime *newDate)

@@ -20,80 +20,18 @@ Data::ArrayList<Single> *Data::ArrayListSng::Clone()
 	return newArr;
 }
 
-UOSInt Data::ArrayListSng::SortedInsert(Single Val)
+OSInt Data::ArrayListSng::CompareItem(Single obj1, Single obj2)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	Single l;
-	i = 0;
-	j = objCnt - 1;
-	while (i <= j)
+	if (obj1 > obj2)
 	{
-		k = (i + j) >> 1;
-		l = arr[k];
-		if (l > Val)
-		{
-			j = k - 1;
-		}
-		else if (l < Val)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			i = k + 1;
-			break;
-		}
+		return 1;
 	}
-
-	if (objCnt == this->capacity)
+	else if (obj1 < obj2)
 	{
-		Single *newArr = MemAlloc(Single, this->capacity << 1);
-		k = this->objCnt;
-		while (k-- > 0)
-		{
-			newArr[k] = arr[k];
-		}
-		this->capacity = this->capacity << 1;
-		MemFree(arr);
-		arr = newArr;
+		return -1;
 	}
-	j = objCnt;
-	while (j > i)
+	else
 	{
-		arr[j] = arr[j - 1];
-		j--;
+		return 0;
 	}
-	objCnt++;
-	arr[i] = Val;
-	return (UOSInt)i;
-}
-
-OSInt Data::ArrayListSng::SortedIndexOf(Single Val)
-{
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	Single l;
-	i = 0;
-	j = objCnt - 1;
-	while (i <= j)
-	{
-		k = (i + j) >> 1;
-		l = arr[k];
-		if (l > Val)
-		{
-			j = k - 1;
-		}
-		else if (l < Val)
-		{
-			i = k + 1;
-		}
-		else
-		{
-			return k;
-		}
-	}
-	return -i - 1;
 }

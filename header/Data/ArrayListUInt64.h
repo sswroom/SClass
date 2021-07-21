@@ -11,9 +11,8 @@ namespace Data
 		ArrayListUInt64(UOSInt capacity);
 
 		virtual ArrayList<UInt64> *Clone();
+		virtual OSInt CompareItem(UInt64 obj1, UInt64 obj2);
 
-		virtual UOSInt SortedInsert(UInt64 val);
-		virtual OSInt SortedIndexOf(UInt64 val);
 		void AddRangeU32(UInt32 *arr, UOSInt cnt);
 		void AddRangeU32(Data::ArrayList<UInt32> *arr);
 	};

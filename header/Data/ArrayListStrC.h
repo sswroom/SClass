@@ -11,9 +11,7 @@ namespace Data
 		ArrayListStrC(UOSInt capacity);
 
 		virtual Data::ArrayList<const Char*> *Clone();
-
-		virtual UOSInt SortedInsert(const Char *val);
-		virtual OSInt SortedIndexOf(const Char *val);
+		virtual OSInt CompareItem(const Char* obj1, const Char* obj2);
 	};
 }
 #endif

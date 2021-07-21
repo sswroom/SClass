@@ -12,9 +12,7 @@ namespace Data
 		ArrayListCmp(UOSInt Capacity);
 
 		virtual Data::ArrayList<Data::IComparable*> *Clone();
-
-		virtual UOSInt SortedInsert(Data::IComparable *val);
-		virtual OSInt SortedIndexOf(Data::IComparable *val);
+		virtual OSInt CompareItem(Data::IComparable* obj1, Data::IComparable* obj2);
 	};
 }
 #endif

@@ -11,9 +11,7 @@ namespace Data
 		ArrayListUInt32(UOSInt capacity);
 
 		virtual ArrayList<UInt32> *Clone();
-
-		virtual UOSInt SortedInsert(UInt32 Val);
-		virtual OSInt SortedIndexOf(UInt32 Val);
+		virtual OSInt CompareItem(UInt32 obj1, UInt32 obj2);
 	};
 }
 #endif
