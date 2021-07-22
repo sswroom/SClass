@@ -100,7 +100,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, OSInt x, OSInt y, UI:
 			{
 				y = (OSInt)h - 2;
 			}
-			newV = (y - 1) / (Double)(h - 3);
+			newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 			if (me->mainZ != newV)
 			{
 				me->mainZ = newV;
@@ -223,8 +223,8 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, OSInt x, OSInt y, UI
 			{
 				y = (OSInt)h - 2;
 			}
-			newV1 = (x - 1) / (Double)(w - 3);
-			newV2 = (y - 1) / (Double)(h - 3);
+			newV1 = Math::OSInt2Double(x - 1) / (Double)(w - 3);
+			newV2 = Math::OSInt2Double(y - 1) / (Double)(h - 3);
 			if (me->mainX != newV1 || me->mainY != newV2)
 			{
 				me->mainX = newV1;
@@ -897,11 +897,11 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	i = startIndex;
 	while (i < endIndex)
 	{
-		v3 = i * v3R;
+		v3 = Math::UOSInt2Double(i) * v3R;
 		j = 0;
 		while (j < w)
 		{
-			v2 = j * v2R;
+			v2 = Math::UOSInt2Double(j) * v2R;
 			XYZ2RGB(v2, v3, v1, &rgbv.val[0], &rgbv.val[1], &rgbv.val[2]);
 			rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
 			rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);

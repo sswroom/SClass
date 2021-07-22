@@ -126,22 +126,22 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 			}
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		Int32 fcc = info->fourcc;
+		UInt32 fcc = info->fourcc;
 		if (fcc == FFMT_YUV444P10LE)
 		{
 			fcc = FFMT_YUV444P10LEP;
 		}
 		else if (fcc == FFMT_YUV420P10LE)
 		{
-			fcc = *(Int32*)"P016";
+			fcc = *(UInt32*)"P016";
 		}
 		else if (fcc == FFMT_YUV420P12LE)
 		{
-			fcc = *(Int32*)"P016";
+			fcc = *(UInt32*)"P016";
 		}
 		else if (fcc == FFMT_YUV420P8)
 		{
-			fcc = *(Int32*)"YV12";
+			fcc = *(UInt32*)"YV12";
 		}
 		Media::CS::CSConverter *csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
 		if (csconv)
@@ -260,7 +260,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_TF)
 			{
@@ -285,7 +285,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_BF)
 			{
@@ -309,7 +309,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_TF)
 			{
@@ -333,7 +333,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_BF)
 			{
@@ -357,7 +357,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 			{
@@ -381,7 +381,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 			{
@@ -405,7 +405,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + (((cropDY >> 1) + 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + (((cropDY >> 1) + 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 			{
@@ -429,7 +429,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else
 			{
@@ -464,11 +464,11 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
 				{
-					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH);
+					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH, false);
 				}
 				else
 				{
-					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH);
+					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH, false);
 				}
 				mutUsage.BeginUse();
 				vbuff2->isOutputReady = true;
@@ -788,22 +788,22 @@ void UI::GUIVideoBoxDD::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info)
 		}
 	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_VDISPLAY);
-	Int32 fcc = info->fourcc;
+	UInt32 fcc = info->fourcc;
 	if (fcc == FFMT_YUV444P10LE)
 	{
 		fcc = FFMT_YUV444P10LEP;
 	}
 	else if (fcc == FFMT_YUV420P10LE)
 	{
-		fcc = *(Int32*)"P016";
+		fcc = *(UInt32*)"P016";
 	}
 	else if (fcc == FFMT_YUV420P12LE)
 	{
-		fcc = *(Int32*)"P016";
+		fcc = *(UInt32*)"P016";
 	}
 	else if (fcc == FFMT_YUV420P8)
 	{
-		fcc = *(Int32*)"YV12";
+		fcc = *(UInt32*)"YV12";
 	}
 
 	if (tstat->procType == 2)
@@ -867,7 +867,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 	UI::GUIVideoBoxDD *me = (UI::GUIVideoBoxDD*)userData;
 	if (me->ignoreFrameTime)
 	{
-		frameTime = MulDiv32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
+		frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
 	}
 #ifdef _DEBUG
 	if (me->debugLog)
@@ -1318,11 +1318,11 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoChange(Media::IVideoSource::FrameChange
 UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 {
 	ThreadStat *tstat = (ThreadStat*)userObj;
-	OSInt i;
+	UOSInt i;
 	VideoBuff *buff = 0;
 	VideoBuff *buff2;
 	Bool found;
-	OSInt minIndex = 0;
+	UOSInt minIndex = 0;
 	UInt32 minTime = 0;
 	UInt32 minFrame = 0;
 

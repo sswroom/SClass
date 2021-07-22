@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/WriteCacheStream.h"
@@ -96,6 +97,25 @@ const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntry(UInt64 macInt)
 	return 0;
 }
 
+const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntryOUI(const UInt8 *oui)
+{
+	UInt8 macBuff[8];
+	macBuff[0] = 0;
+	macBuff[1] = 0;
+	macBuff[2] = oui[0];
+	macBuff[3] = oui[1];
+	macBuff[4] = oui[2];
+	macBuff[5] = 0;
+	macBuff[6] = 0;
+	macBuff[7] = 0;
+	OSInt si = this->GetIndex(ReadMUInt64(macBuff));
+	if (si >= 0)
+	{
+		return this->dataList->GetItem((UOSInt)si);
+	}
+	return 0;
+}
+
 UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, const UTF8Char *name)
 {
 	UInt64 mask = 0xffffff;
@@ -137,6 +157,7 @@ void Net::MACInfoList::Load()
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbName;
 	UInt64 rangeStart;
+	UInt64 rangeEnd;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
 	{
@@ -157,10 +178,11 @@ void Net::MACInfoList::Load()
 						sarr[1][Text::StrCharCnt(sarr[1]) - 2] = 0;
 					}
 					rangeStart = Text::StrToUInt64(sarr[0]);
+					rangeEnd = Text::StrToUInt64(sarr[1]);
 					sarr[2][Text::StrCharCnt(sarr[2]) - 2] = 0;
 					sbName.ClearStr();
 					Text::CPPText::FromCPPString(&sbName, sarr[2]);
-					this->SetEntry(rangeStart, sbName.ToString());
+					this->SetEntry(rangeStart, rangeEnd, sbName.ToString());
 				}
 			}
 			else

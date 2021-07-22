@@ -102,7 +102,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	}
 	if (ioctl(data->sock, SIOCGIFINDEX, &ifr) == 0)
 	{
-		this->ent.index = ifr.ifr_ifru.ifru_ivalue;
+		this->ent.index = (UInt32)ifr.ifr_ifru.ifru_ivalue;
 	}
 	else
 	{

@@ -12,9 +12,9 @@
 
 extern "C"
 {
-	void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt sstep, OSInt dstep);
+	void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt sstep, OSInt dstep);
+	void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt sstep, OSInt dstep);
 }
 
 /*void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, Int32 *index, Int64 *weight, OSInt sstep, OSInt dstep)
@@ -553,7 +553,7 @@ Double Media::Deinterlace8::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, UOSInt indexSep, Double offsetCorr)
 {
 	UInt32 i,j;
 	Int32 n;
@@ -571,8 +571,8 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i+0.5)*source_length;
-		pos = pos / result_length + offsetCorr;
+		pos = (i+0.5) * Math::UOSInt2Double(source_length);
+		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
 		n = (Int32)floor(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
 		pos = (n+0.5-pos);
 		sum = 0;
@@ -581,9 +581,9 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
 			}else if((UOSInt)n >= source_length){
-				out->index[i * out->tap + j] = (OSInt)(source_length - 1) * indexSep;
+				out->index[i * out->tap + j] = (OSInt)((source_length - 1) * indexSep);
 			}else{
-				out->index[i * out->tap + j] = n * indexSep;
+				out->index[i * out->tap + j] = (OSInt)((UInt32)n * indexSep);
 			}
 			work[j] = lanczos3_weight(pos);
 			sum += work[j];
@@ -649,7 +649,7 @@ UInt32 __stdcall Media::Deinterlace8::ProcThread(void *obj)
 	return 0;
 }
 
-Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, OSInt fieldSep)
+Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
 {
 	this->oddParam.index = 0;
 	this->oddParam.weight = 0;
@@ -733,7 +733,7 @@ Media::Deinterlace8::~Deinterlace8()
 	}
 }
 
-void Media::Deinterlace8::Reinit(UOSInt fieldCnt, OSInt fieldSep)
+void Media::Deinterlace8::Reinit(UOSInt fieldCnt, UOSInt fieldSep)
 {
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
@@ -772,7 +772,7 @@ void Media::Deinterlace8::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField,
 			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * thisLine;
+			stats[i].outPt = dest + dstep * (OSInt)thisLine;
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = oddParam.tap;
@@ -816,7 +816,7 @@ void Media::Deinterlace8::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField,
 			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * thisLine;
+			stats[i].outPt = dest + dstep * (OSInt)thisLine;
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = evenParam.tap;

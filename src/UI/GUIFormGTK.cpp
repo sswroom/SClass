@@ -299,9 +299,9 @@ void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)
 		GdkRectangle rect;
 		gdk_window_get_frame_extents(wnd, &rect);
 		if (width)
-			*width = rect.width;
+			*width = (UInt32)rect.width;
 		if (height)
-			*height = rect.height;
+			*height = (UInt32)rect.height;
 	}
 	else
 	{
@@ -309,9 +309,9 @@ void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)
 		int h;
 		gtk_window_get_size((GtkWindow*)this->hwnd, &w, &h);
 		if (width)
-			*width = w;
+			*width = (UInt32)w;
 		if (height)
-			*height = h;
+			*height = (UInt32)h;
 	}
 }
 
@@ -329,7 +329,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-UI::GUITimer *UI::GUIForm::AddTimer(Int32 interval, UI::UIEvent handler, void *userObj)
+UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
 	if (this->timers == 0)
 	{
@@ -477,7 +477,7 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		}
 		this->UpdateChildrenSize(false);
 		this->selfResize = true;
-		OSInt i = this->resizeHandlers->GetCount();
+		UOSInt i = this->resizeHandlers->GetCount();
 		while (i-- > 0)
 		{
 			this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));

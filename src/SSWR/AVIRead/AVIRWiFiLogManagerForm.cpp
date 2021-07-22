@@ -14,6 +14,8 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
+#define MAX_ROW 5000
+
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
@@ -116,6 +118,19 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnUnkOnlyChkChg(void *user
 	me->LogUIUpdate();	
 }
 
+void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFilterClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtFilter->GetText(&sb);
+	SDEL_TEXT(me->filterText);
+	if (sb.GetLength() > 0)
+	{
+		me->filterText = Text::StrCopyNew(sb.ToString());
+	}
+	me->LogUIUpdate();
+}
+
 Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
@@ -127,6 +142,7 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
+	const Net::MACInfo::MACEntry *entry2;
 	Net::WiFiLogFile::LogFileEntry *log;
 	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *logList = this->wifiLogFile->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
@@ -136,6 +152,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	UOSInt k;
 	UOSInt l;
 	UOSInt cnt;
+	UOSInt recCnt = 0;
+	Bool valid;
 	this->lvContent->ClearItems();
 	i = 0;
 	j = logList->GetCount();
@@ -143,11 +161,56 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	{
 		log = logList->GetItem(i);
 		entry = this->macList->GetEntry(log->macInt);
+		valid = true;
 		if (unkOnly && (entry != 0 && entry->name != 0 && entry->name[0] != 0))
 		{
-
+			valid = false;
 		}
-		else
+		else if (this->filterText)
+		{
+			valid = false;
+			if (log->ssid && Text::StrIndexOfICase(log->ssid, this->filterText) >= 0)
+			{
+				valid = true;
+			}
+			else if (log->manuf && Text::StrIndexOfICase(log->manuf, this->filterText) >= 0)
+			{
+				valid = true;
+			}
+			else if (entry && Text::StrIndexOfICase((const UTF8Char*)entry->name, this->filterText) >= 0)
+			{
+				valid = true;
+			}
+			else
+			{
+				if (!valid && (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0))
+				{
+					entry2 = this->macList->GetEntryOUI(log->ouis[0]);
+					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) >= 0)
+					{
+						valid = true;
+					}
+				}
+				if (!valid && (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0))
+				{
+					entry2 = this->macList->GetEntryOUI(log->ouis[1]);
+					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) >= 0)
+					{
+						valid = true;
+					}
+				}
+				if (!valid && (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0))
+				{
+					entry2 = this->macList->GetEntryOUI(log->ouis[2]);
+					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) >= 0)
+					{
+						valid = true;
+					}
+				}
+			}
+		}
+
+		if (valid)
 		{
 			Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			l = this->lvContent->AddItem(sbuff, log);
@@ -188,6 +251,12 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			}
 			Text::StrUOSInt(sbuff, cnt);
 			this->lvContent->SetSubItem(l, 12, sbuff);
+
+			recCnt++;
+			if (recCnt >= MAX_ROW)
+			{
+				break;
+			}
 		}
 
 		i++;
@@ -210,6 +279,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->core = core;
 	NEW_CLASS(this->wifiLogFile, Net::WiFiLogFile());
 	NEW_CLASS(this->macList, Net::MACInfoList());
+	this->filterText = 0;
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -220,11 +290,16 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Unknown Only", true));
 	this->chkUnkOnly->SetRect(84, 4, 100, 23, false);
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
+	NEW_CLASS(this->txtFilter, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)""));
+	this->txtFilter->SetRect(184, 4, 150, 23, false);
+	NEW_CLASS(this->btnFilter, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Filter"));
+	this->btnFilter->SetRect(334, 4, 75, 23, false);
+	this->btnFilter->HandleButtonClick(OnFilterClicked, this);
 	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store MACList"));
-	this->btnStore->SetRect(184, 4, 75, 23, false);
+	this->btnStore->SetRect(414, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
-	this->lblInfo->SetRect(264, 4, 200, 23, false);
+	this->lblInfo->SetRect(494, 4, 200, 23, false);
 	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
 	this->txtFileIE->SetRect(0, 0, 100, 255, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -264,6 +339,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::~AVIRWiFiLogManagerForm()
 {
 	DEL_CLASS(this->wifiLogFile);
 	DEL_CLASS(this->macList);
+	SDEL_TEXT(this->filterText);
 }
 
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::OnMonitorChanged()

@@ -704,7 +704,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-UI::GUITimer *UI::GUIForm::AddTimer(Int32 interval, UI::UIEvent handler, void *userObj)
+UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
 	UI::GUITimer *tmr;
 	NEW_CLASS(tmr, UI::GUITimer(ui, this, this->nextTmrId++, interval, handler, userObj));

@@ -41,18 +41,18 @@ namespace Media
 		UOSInt nCore;
 		Sync::Event *evtMain;
 		UOSInt fieldCnt;
-		OSInt fieldSep;
+		UOSInt fieldSep;
 
 
 		static Double lanczos3_weight(Double phase);
-		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, OSInt indexSep, Double offsetCorr);
+		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
 		static UInt32 __stdcall ProcThread(void *obj);
 	public:
-		DeinterlaceLR(UOSInt fieldCnt, OSInt fieldSep);
+		DeinterlaceLR(UOSInt fieldCnt, UOSInt fieldSep);
 		virtual ~DeinterlaceLR();
 
-		virtual void Reinit(UOSInt fieldCnt, OSInt fieldSep);
+		virtual void Reinit(UOSInt fieldCnt, UOSInt fieldSep);
 		virtual void Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep);
 	};
 }

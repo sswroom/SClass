@@ -33,6 +33,34 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 		return IO::FileExporter::ST_NORMAL_STREAM;
 	case Media::PF_B8G8R8:
 		return IO::FileExporter::ST_NORMAL_STREAM;
+	case Media::PF_R8G8B8:
+	case Media::PF_R8G8B8A8:
+	case Media::PF_PAL_1:
+	case Media::PF_PAL_2:
+	case Media::PF_PAL_4:
+	case Media::PF_PAL_8:
+	case Media::PF_PAL_W1:
+	case Media::PF_PAL_W2:
+	case Media::PF_PAL_W4:
+	case Media::PF_PAL_W8:
+	case Media::PF_LE_R5G5B5:
+	case Media::PF_LE_R5G6B5:
+	case Media::PF_LE_B16G16R16A16:
+	case Media::PF_LE_B16G16R16:
+	case Media::PF_LE_W16:
+	case Media::PF_LE_A2B10G10R10:
+	case Media::PF_W8A8:
+	case Media::PF_LE_W16A16:
+	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FW32A32:
+	case Media::PF_LE_FW32:
+	case Media::PF_PAL_1_A1:
+	case Media::PF_PAL_2_A1:
+	case Media::PF_PAL_4_A1:
+	case Media::PF_PAL_8_A1:
+	case Media::PF_B8G8R8A1:
+	case Media::PF_UNKNOWN:
 	default:
 		return IO::FileExporter::ST_NOT_SUPPORTED;
 	}
@@ -84,6 +112,34 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info->dispWidth, (int)img->info->dispHeight, (int)img->info->storeWidth * 3, 0, 0);
 		*relBuff = tmpBuff;
 		return pixBuf;
+	case Media::PF_R8G8B8A8:
+	case Media::PF_R8G8B8:
+	case Media::PF_PAL_1:
+	case Media::PF_PAL_2:
+	case Media::PF_PAL_4:
+	case Media::PF_PAL_8:
+	case Media::PF_PAL_W1:
+	case Media::PF_PAL_W2:
+	case Media::PF_PAL_W4:
+	case Media::PF_PAL_W8:
+	case Media::PF_LE_R5G5B5:
+	case Media::PF_LE_R5G6B5:
+	case Media::PF_LE_B16G16R16A16:
+	case Media::PF_LE_B16G16R16:
+	case Media::PF_LE_W16:
+	case Media::PF_LE_A2B10G10R10:
+	case Media::PF_W8A8:
+	case Media::PF_LE_W16A16:
+	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FW32A32:
+	case Media::PF_LE_FW32:
+	case Media::PF_PAL_1_A1:
+	case Media::PF_PAL_2_A1:
+	case Media::PF_PAL_4_A1:
+	case Media::PF_PAL_8_A1:
+	case Media::PF_B8G8R8A1:
+	case Media::PF_UNKNOWN:
 	default:
 		return 0;
 	}

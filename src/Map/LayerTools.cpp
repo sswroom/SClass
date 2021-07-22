@@ -8,11 +8,12 @@
 
 Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLayer*> *layers, const UTF8Char *lyrName)
 {
-	OSInt layerCnt = layers->GetCount();
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt layerCnt = layers->GetCount();
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	OSInt si;
 	Map::IMapDrawLayer *lyr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -58,8 +59,8 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 		{
 			lyr->GetColumnName(sbuff, j);
 			r->GetColDef(j, &colDef);
-			l = nameIndex->SortedIndexOf(sbuff);
-			if (l >= 0)
+			si = nameIndex->SortedIndexOf(sbuff);
+			if (si >= 0)
 			{
 				if (nameSizes->GetItem(i) < colDef.GetColSize())
 				{
@@ -69,10 +70,10 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 			else
 			{
 				const UTF8Char *name = Text::StrCopyNew(sbuff);
-				nameIndex->Insert(~l, name);
-				nameSizes->Insert(~l, colDef.GetColSize());
-				nameDPs->Insert(~l, colDef.GetColDP());
-				colTypeArr->Insert(~l, colDef.GetColType());
+				nameIndex->Insert((UOSInt)~si, name);
+				nameSizes->Insert((UOSInt)~si, colDef.GetColSize());
+				nameDPs->Insert((UOSInt)~si, colDef.GetColDP());
+				colTypeArr->Insert((UOSInt)~si, colDef.GetColType());
 				names->Add(name);
 			}
 			j++;
@@ -87,7 +88,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	DB::DBUtil::ColType *colTypes;
 	UOSInt *colSizes;
 	UOSInt *colDPs;
-	OSInt nameCol = lyr->GetNameCol();
+	UOSInt nameCol = lyr->GetNameCol();
 	i = names->GetCount();
 	namesArr = MemAlloc(const UTF8Char *, i);
 	colTypes = MemAlloc(DB::DBUtil::ColType, i);
@@ -96,10 +97,10 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	while (i-- > 0)
 	{
 		namesArr[i] = names->GetItem(i);
-		j = nameIndex->SortedIndexOf(namesArr[i]);
-		colTypes[i] = colTypeArr->GetItem(j);
-		colSizes[i] = nameSizes->GetItem(j);
-		colDPs[i] = nameDPs->GetItem(j);
+		si = nameIndex->SortedIndexOf(namesArr[i]);
+		colTypes[i] = colTypeArr->GetItem((UOSInt)si);
+		colSizes[i] = nameSizes->GetItem((UOSInt)si);
+		colDPs[i] = nameDPs->GetItem((UOSInt)si);
 	}
 	NEW_CLASS(newLyr, Map::VectorLayer(lyrType, sourceName, names->GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
 	MemFree(colTypes);

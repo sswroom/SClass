@@ -56,7 +56,7 @@ void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
 		OSInt leng;
 		leng = dt->ToString(sbuff, data->format) - sbuff;
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, leng);
+		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, (gint)leng);
 	}
 }
 

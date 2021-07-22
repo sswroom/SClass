@@ -186,8 +186,8 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	else
 	{
 		Sync::MutexUsage mutUsage(data->me->surfaceMut);
-		data->me->surfaceW = data->allocation->width;
-		data->me->surfaceH = data->allocation->height;
+		data->me->surfaceW = (UOSInt)data->allocation->width;
+		data->me->surfaceH = (UOSInt)data->allocation->height;
 		data->me->ReleaseSubSurface();
 		data->me->CreateSubSurface();
 		mutUsage.EndUse();

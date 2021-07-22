@@ -399,7 +399,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-UI::GUITimer *UI::GUIForm::AddTimer(Int32 interval, UI::UIEvent handler, void *userObj)
+UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
 	if (this->timers == 0)
 	{

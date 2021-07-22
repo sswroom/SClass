@@ -99,7 +99,7 @@ namespace UI
 		virtual void GetSizeP(UOSInt *width, UOSInt *height);
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
-		virtual UI::GUITimer *AddTimer(Int32 interval, UI::UIEvent handler, void *userObj);
+		virtual UI::GUITimer *AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);
 		virtual void RemoveTimer(UI::GUITimer *tmr);
 		virtual void SetMenu(UI::GUIMainMenu *menu);
 		virtual UI::GUIMainMenu *GetMenu();

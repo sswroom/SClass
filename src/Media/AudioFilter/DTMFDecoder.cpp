@@ -168,8 +168,8 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 				}
 				i++;
 			}
-			maxLo = maxLo / me->sampleCnt;
-			maxHi = maxHi / me->sampleCnt;
+			maxLo = maxLo / Math::UOSInt2Double(me->sampleCnt);
+			maxHi = maxHi / Math::UOSInt2Double(me->sampleCnt);
 
 			if (maxLo > 0.04)
 			{
@@ -288,7 +288,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 						}
 						i += align;
 					}
-					if (lowCnt > j / align * 0.3)
+					if (Math::OSInt2Double(lowCnt) > Math::UOSInt2Double(j / align) * 0.3)
 					{
 						valid = false;
 					}

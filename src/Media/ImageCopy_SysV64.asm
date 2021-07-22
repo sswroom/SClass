@@ -1,7 +1,33 @@
 section .text
 
+global ImageCopy_ImgCopyR
+global _ImageCopy_ImgCopyR
+
 global ImageCopy_ImgCopy
 global _ImageCopy_ImgCopy
+
+;void ImageCopy_ImgCopyR(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+
+;0 retAddr
+;rdi inPt
+;rsi outPt
+;rdx copySize
+;rcx height
+;r8 sbpl
+;r9 dbpl
+;8 upsideDown
+	align 16
+ImageCopy_ImgCopyR:
+_ImageCopy_ImgCopyR:
+	cmp dword [rsi+8],0
+	jz ImageCopy_ImgCopy
+	mov r10,rdx
+	mov r9,rax
+	mul rcx
+	sub rax,r9
+	add rsi,rax
+	mov rdx,r10
+	jmp ImageCopy_ImgCopy
 
 ;void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, OSInt copySize, OSInt height, OSInt sstep, OSInt dstep);
 

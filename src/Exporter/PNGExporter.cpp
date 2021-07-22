@@ -1513,6 +1513,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		hdr[24] = 8;
 		hdr[25] = 4;
 		break;
+	case Media::PF_UNKNOWN:
 	default:
 		return false;
 	}

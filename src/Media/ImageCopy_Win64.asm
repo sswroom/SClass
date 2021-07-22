@@ -1,9 +1,30 @@
 section .text
 
+global ImageCopy_ImgCopyR
 global ImageCopy_ImgCopy
 
 extern CPUBrand
 extern UseAVX
+
+;void ImageCopy_ImgCopyR(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+;0 retAddr
+;rcx inPt r10
+;rdx outPt r11
+;r8 copySize
+;r9 height
+;40 sbpl
+;48 dbpl
+;56 upaideDown
+	align 16
+ImageCopy_ImgCopyR:
+	cmp dword [rsi+56], 0
+	jz ImageCopy_ImgCopy
+	mov r11,rdx
+	mov rax,qword [rsi+48]
+	mul r9
+	sub rax,qword [rsi+48]
+	lea rdx,[r11+rax]
+	jmp ImageCopy_ImgCopy
 
 ;void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, OSInt copySize, OSInt height, OSInt sstep, OSInt dstep);
 

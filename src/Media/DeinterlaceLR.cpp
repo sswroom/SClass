@@ -12,9 +12,9 @@
 
 extern "C"
 {
-	void DeinterlaceLR_VerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void DeinterlaceLR_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-	void DeinterlaceLR_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void DeinterlaceLR_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void DeinterlaceLR_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+	void DeinterlaceLR_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
 }
 
 Double Media::DeinterlaceLR::lanczos3_weight(Double phase)
@@ -36,7 +36,7 @@ Double Media::DeinterlaceLR::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, UOSInt indexSep, Double offsetCorr)
 {
 	UInt32 i,j;
 	Int32 n;
@@ -66,9 +66,9 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOS
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
 			}else if(n >= (OSInt)source_length){
-				out->index[i * out->tap + j] = (source_length - 1) * indexSep;
+				out->index[i * out->tap + j] = (OSInt)((source_length - 1) * indexSep);
 			}else{
-				out->index[i * out->tap + j] = n * indexSep;
+				out->index[i * out->tap + j] = (OSInt)((UInt32)n * indexSep);
 			}
 			work[j] = lanczos3_weight(pos);
 			sum += work[j];
@@ -133,7 +133,7 @@ UInt32 __stdcall Media::DeinterlaceLR::ProcThread(void *obj)
 	return 0;
 }
 
-Media::DeinterlaceLR::DeinterlaceLR(UOSInt fieldCnt, OSInt fieldSep)
+Media::DeinterlaceLR::DeinterlaceLR(UOSInt fieldCnt, UOSInt fieldSep)
 {
 	this->oddParam.index = 0;
 	this->oddParam.weight = 0;
@@ -217,7 +217,7 @@ Media::DeinterlaceLR::~DeinterlaceLR()
 	}
 }
 
-void Media::DeinterlaceLR::Reinit(UOSInt fieldCnt, OSInt fieldSep)
+void Media::DeinterlaceLR::Reinit(UOSInt fieldCnt, UOSInt fieldSep)
 {
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
@@ -256,13 +256,13 @@ void Media::DeinterlaceLR::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField
 			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * thisLine;
+			stats[i].outPt = dest + dstep * (OSInt)thisLine;
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = oddParam.tap;
 			stats[i].index = oddParam.index + thisLine * oddParam.tap;
 			stats[i].weight = oddParam.weight + thisLine * oddParam.tap;
-			stats[i].sstep = this->fieldSep;
+			stats[i].sstep = (OSInt)this->fieldSep;
 			stats[i].dstep = dstep;
 
 			stats[i].status = 5;

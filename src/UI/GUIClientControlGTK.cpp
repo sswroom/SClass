@@ -130,8 +130,8 @@ void UI::GUIClientControl::FocusChild(GUIControl *child)
 
 void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Double left = 0;
 	Double top = 0;
 	Double right;

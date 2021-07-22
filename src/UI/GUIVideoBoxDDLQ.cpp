@@ -63,14 +63,14 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 2));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 2));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 2);
+			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_FIELD_BF)
 	{
@@ -147,14 +147,14 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		if (tstat->deint == 0)
 		{
-			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, (OSInt)srcWidth << 2));
+			NEW_CLASS(tstat->deint, Media::Deinterlace8(srcHeight >> 1, srcWidth << 2));
 		}
 		else
 		{
-			tstat->deint->Reinit(srcHeight >> 1, (OSInt)srcWidth << 2);
+			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 	{

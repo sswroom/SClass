@@ -14,12 +14,12 @@ namespace Media
 		UInt8 *inPt;
 		UInt8 *inPtCurr;
 		UInt8 *outPt;
-		OSInt width;
-		OSInt height;
-		OSInt tap;
+		UOSInt width;
+		UOSInt height;
+		UOSInt tap;
 		OSInt *index;
 		Int64 *weight;
-		OSInt sstep;
+		UOSInt sstep;
 		OSInt dstep;
 	} DI8THREADSTAT;
 
@@ -41,18 +41,18 @@ namespace Media
 		UOSInt nCore;
 		Sync::Event *evtMain;
 		UOSInt fieldCnt;
-		OSInt fieldSep;
+		UOSInt fieldSep;
 
 
 		static Double lanczos3_weight(Double phase);
-		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, OSInt indexSep, Double offsetCorr);
+		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
 		static UInt32 __stdcall ProcThread(void *obj);
 	public:
-		Deinterlace8(UOSInt fieldCnt, OSInt fieldSep);
+		Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep);
 		virtual ~Deinterlace8();
 
-		virtual void Reinit(UOSInt fieldCnt, OSInt fieldSep);
+		virtual void Reinit(UOSInt fieldCnt, UOSInt fieldSep);
 		virtual void Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep);
 	};
 }

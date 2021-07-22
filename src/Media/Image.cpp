@@ -141,36 +141,41 @@ Media::Image::~Image()
 	DEL_CLASS(this->info);
 }
 
-OSInt Media::Image::GetDataBpl()
+UOSInt Media::Image::GetDataBpl()
 {
 	if (this->info->fourcc == *(UInt32*)"LRGB")
 	{
-		return (OSInt)(this->info->storeWidth << 3);
+		return (this->info->storeWidth << 3);
 	}
 	if (this->info->fourcc != 0 && this->info->fourcc != *(UInt32*)"DIBS")
 		return 0;
 	if (this->info->pf == Media::PF_PAL_1_A1)
 	{
-		return (OSInt)((this->info->dispWidth + 7) >> 3) * 2;
+		return ((this->info->dispWidth + 7) >> 3) * 2;
 	}
 	else if (this->info->pf == Media::PF_PAL_2_A1)
 	{
-		return (OSInt)(((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 3) >> 2));
+		return (((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 3) >> 2));
 	}
 	else if (this->info->pf == Media::PF_PAL_4_A1)
 	{
-		return (OSInt)(((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 1) >> 1));
+		return (((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 1) >> 1));
 	}
 	else if (this->info->pf == Media::PF_PAL_8_A1)
 	{
-		return (OSInt)(((this->info->dispWidth + 7) >> 3) + this->info->dispWidth);
+		return (((this->info->dispWidth + 7) >> 3) + this->info->dispWidth);
 	}
 	else if (this->info->storeBPP <= 0)
-		return (OSInt)(this->info->storeWidth * (this->info->storeBPP >> 3));
+		return (this->info->storeWidth * (this->info->storeBPP >> 3));
 	else if (this->info->storeBPP == 4)
-		return (OSInt)((this->info->storeWidth >> 1) + (this->info->storeWidth & 1));
+		return ((this->info->storeWidth >> 1) + (this->info->storeWidth & 1));
 	else
-		return (OSInt)((this->info->storeWidth * this->info->storeBPP) >> 3);
+		return ((this->info->storeWidth * this->info->storeBPP) >> 3);
+}
+
+Bool Media::Image::IsUpsideDown()
+{
+	return false;
 }
 
 void Media::Image::SetHotSpot(OSInt hotSpotX, OSInt hotSpotY)

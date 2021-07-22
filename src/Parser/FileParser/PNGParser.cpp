@@ -212,11 +212,11 @@ UInt8 *PNGParser_ParsePixelsByte(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd)
+UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[2];
@@ -368,11 +368,11 @@ UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSI
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd)
+UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[3];
@@ -545,11 +545,11 @@ UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OS
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd)
+UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[6];
@@ -785,11 +785,11 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OS
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd, Bool *alphaFound)
+UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[4];
@@ -1025,11 +1025,11 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, O
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd, Bool *alphaFound)
+UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[8];
@@ -1350,11 +1350,11 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, O
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd, Bool *alphaFound)
+UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[2];
@@ -1548,11 +1548,11 @@ UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSI
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, OSInt bpl, OSInt initX, OSInt initY, OSInt maxX, OSInt maxY, OSInt xAdd, OSInt yAdd, Bool *alphaFound)
+UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	OSInt currX;
-	OSInt currY;
+	UOSInt currX;
+	UOSInt currY;
 	UInt8 px;
 	UInt8 *lastLineStart;
 	UInt8 lastPx[4];
@@ -1997,7 +1997,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
 
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
@@ -2042,7 +2042,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
@@ -2084,7 +2084,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
@@ -2288,7 +2288,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
@@ -2335,7 +2335,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
@@ -2386,7 +2386,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
@@ -2433,7 +2433,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASS(simg, Media::StaticImage(info));
 			}
-			OSInt bpl = simg->GetDataBpl();
+			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1

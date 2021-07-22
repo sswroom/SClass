@@ -56,7 +56,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF
 				NEW_CLASS(dimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, this->destProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dimg->info->hdpi = simg->info->hdpi;
 				dimg->info->vdpi = simg->info->vdpi;
-				this->csconv->ConvertV2(&simg->data, dimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				this->csconv->ConvertV2(&simg->data, dimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				imgList->ReplaceImage(i, dimg);
 			}
 			mutUsage.EndUse();

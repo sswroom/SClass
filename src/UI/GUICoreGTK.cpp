@@ -111,8 +111,8 @@ void UI::GUICoreGTK::GetDesktopSize(UOSInt *w, UOSInt *h)
 		}
 		i++;
 	}
-	*w = maxX - minX;
-	*h = maxY - minY;
+	*w = (UOSInt)(maxX - minX);
+	*h = (UOSInt)(maxY - minY);
 #else
 	GdkScreen *scn = gdk_screen_get_default();
 	*w = gdk_screen_get_width(scn);

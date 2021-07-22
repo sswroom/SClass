@@ -94,7 +94,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		int bps = gdk_pixbuf_get_bits_per_sample(pixBuf);
 		int width = gdk_pixbuf_get_width(pixBuf);
 		int height = gdk_pixbuf_get_height(pixBuf);
-		int bpl = gdk_pixbuf_get_rowstride(pixBuf);
+		UInt32 bpl = (UInt32)gdk_pixbuf_get_rowstride(pixBuf);
 		Double xdpi = 72.0;
 		Double ydpi = 72.0;
 		const gchar *cptr;
@@ -112,7 +112,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			UInt8 *imgDest = (UInt8*)img->data;
 			if (imgDest)
 			{
-				ImageCopy_ImgCopy(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl());
+				ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);
 			}
@@ -128,7 +128,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			UInt8 *imgDest = (UInt8*)img->data;
 			if (imgDest)
 			{
-				ImageCopy_ImgCopy(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl());
+				ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);
 			}
@@ -144,7 +144,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			UInt8 *imgDest = (UInt8*)img->data;
 			if (imgDest)
 			{
-				ImageCopy_ImgCopy(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl());
+				ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);
 			}

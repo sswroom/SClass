@@ -48,7 +48,7 @@ namespace UI
 			void MakeForeground();
 			virtual void SetExitOnClose(Bool exitOnClose);
 			virtual void SetNoResize(Bool noResize);
-			virtual UI::Gtk::GtkTimer *AddTimer(Int32 interval, UI::UIEvent handler, void *userObj);
+			virtual UI::Gtk::GtkTimer *AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);
 			virtual void RemoveTimer(UI::Gtk::GtkTimer *tmr);
 
 			virtual Bool IsChildVisible();

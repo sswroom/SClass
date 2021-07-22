@@ -45,11 +45,11 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		Media::DrawBrush *b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawRect(0, 0, SCROLLWIDTH, height, 0, b);
+		dimg->DrawRect(0, 0, SCROLLWIDTH, Math::OSInt2Double(height), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xffcccccc);
 		OSInt range = clsData->max - clsData->min;
-		dimg->DrawRect(0, height * (clsData->currPos - clsData->min) / range, SCROLLWIDTH, height * clsData->pageSize / range, 0, b);
+		dimg->DrawRect(0, Math::OSInt2Double(height * (clsData->currPos - clsData->min) / range), SCROLLWIDTH, Math::OSInt2Double(height * (OSInt)clsData->pageSize / range), 0, b);
 		me->deng->DeleteImage(dimg);
 	}
 	else
@@ -92,22 +92,22 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		if ((clsData->max - clsData->min) > (OSInt)clsData->pageSize && evt->x >= width - SCROLLWIDTH)
+		if ((clsData->max - clsData->min) > (OSInt)clsData->pageSize && evt->x >= Math::OSInt2Double(width - SCROLLWIDTH))
 		{
 			if (btn == UI::GUIControl::MBTN_LEFT)
 			{
 				OSInt range = clsData->max - clsData->min;
 				OSInt scrollY1 = height * (clsData->currPos - clsData->min) / range;
-				OSInt scrollY2 = height * clsData->pageSize / range + scrollY1;
-				if (evt->y >= scrollY1 && evt->y < scrollY2)
+				OSInt scrollY2 = height * (OSInt)clsData->pageSize / range + scrollY1;
+				if (evt->y >= Math::OSInt2Double(scrollY1) && evt->y < Math::OSInt2Double(scrollY2))
 				{
-					clsData->scrollDownY = evt->y;
+					clsData->scrollDownY = Math::Double2Int32(evt->y);
 					clsData->scrollDownPos = clsData->currPos;
 					clsData->scrollDown = true;
 				}
 				else
 				{
-					clsData->currPos = evt->y * (clsData->max - clsData->min - clsData->pageSize) / height;
+					clsData->currPos = Math::Double2Int32(evt->y * Math::OSInt2Double(clsData->max - clsData->min - (OSInt)clsData->pageSize) / Math::OSInt2Double(height));
 					me->Redraw();
 				}
 			}
@@ -174,7 +174,7 @@ gboolean GUICustomDrawVScroll_OnMouseMove(GtkWidget *widget, GdkEvent *event, gp
 	if (clsData->scrollDown)
 	{
 		OSInt range = clsData->max - clsData->min;
-		OSInt scrollPos = clsData->scrollDownPos + (evt->y - clsData->scrollDownY) * range / height;
+		OSInt scrollPos = clsData->scrollDownPos + (Math::Double2Int32(evt->y) - clsData->scrollDownY) * range / height;
 		if (scrollPos < clsData->min)
 		{
 			clsData->currPos = clsData->min;
@@ -200,7 +200,7 @@ gboolean GUICustomDrawVScroll_OnMouseWheel(GtkWidget *widget, GdkEvent *event, g
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
 	ClassData *clsData = (ClassData*)me->clsData;
-	OSInt scrollSize = clsData->pageSize >> 2;
+	UOSInt scrollSize = clsData->pageSize >> 2;
 	if (scrollSize < 1)
 	{
 		scrollSize = 1;
@@ -208,7 +208,7 @@ gboolean GUICustomDrawVScroll_OnMouseWheel(GtkWidget *widget, GdkEvent *event, g
 	GdkEventScroll *evt = (GdkEventScroll*)event;
 	if (evt->direction == GDK_SCROLL_UP || (evt->direction == GDK_SCROLL_SMOOTH && evt->delta_y < 0))
 	{
-		clsData->currPos -= scrollSize;
+		clsData->currPos -= (OSInt)scrollSize;
 		if (clsData->currPos < clsData->min)
 			clsData->currPos = clsData->min;
 		me->Redraw();
@@ -216,9 +216,9 @@ gboolean GUICustomDrawVScroll_OnMouseWheel(GtkWidget *widget, GdkEvent *event, g
 	}
 	else if (evt->direction == GDK_SCROLL_DOWN || (evt->direction == GDK_SCROLL_SMOOTH && evt->delta_y > 0))
 	{
-		clsData->currPos += scrollSize;
+		clsData->currPos += (OSInt)scrollSize;
 		if (clsData->currPos > clsData->max - (OSInt)clsData->pageSize)
-			clsData->currPos = clsData->max - clsData->pageSize;
+			clsData->currPos = clsData->max - (OSInt)clsData->pageSize;
 		me->Redraw();
 		return true;
 	}
@@ -230,7 +230,7 @@ void UI::GUICustomDrawVScroll::ClearBackground(Media::DrawImage *img)
 {
 	GtkStyleContext *context;
 	context = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
-	gtk_render_background(context, (cairo_t*)((Media::GTKDrawImage*)img)->GetCairo(), 0, 0, img->GetWidth(), img->GetHeight());
+	gtk_render_background(context, (cairo_t*)((Media::GTKDrawImage*)img)->GetCairo(), 0, 0, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()));
 }
 
 UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
@@ -338,7 +338,7 @@ void UI::GUICustomDrawVScroll::SetVScrollBar(OSInt min, OSInt max, UOSInt pageSi
 	data->pageSize = pageSize;
 	if (data->currPos > data->max - (OSInt)data->pageSize + 1)
 	{
-		data->currPos = data->max - data->pageSize + 1;
+		data->currPos = data->max - (OSInt)data->pageSize + 1;
 	}
 	if (data->currPos < data->min)
 	{

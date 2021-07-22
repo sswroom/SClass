@@ -24,6 +24,8 @@ namespace SSWR
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnFile;
 			UI::GUICheckBox *chkUnkOnly;
+			UI::GUITextBox *txtFilter;
+			UI::GUIButton *btnFilter;
 			UI::GUIButton *btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUITextBox *txtFileIE;
@@ -32,12 +34,14 @@ namespace SSWR
 
 			Net::WiFiLogFile *wifiLogFile;
 			Net::MACInfoList *macList;
+			const UTF8Char *filterText;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnStoreClicked(void *userObj);
 			static void __stdcall OnContentDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnContentSelChg(void *userObj);
 			static void __stdcall OnUnkOnlyChkChg(void *userObj, Bool checked);
+			static void __stdcall OnFilterClicked(void *userObj);
 			Bool LogFileStore();
 			void LogUIUpdate();
 
