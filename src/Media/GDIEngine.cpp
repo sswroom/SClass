@@ -1864,7 +1864,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			}
 			if (w > 0 && h > 0)
 			{
-				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (-y) * bpl + (x << 2), bpl, w, h, true);
+				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (this->height - h - y) * bpl + (x << 2), bpl, w, h, true);
 			}
 		}
 		else
@@ -2093,7 +2093,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 			}
 			if (w > 0 && h > 0)
 			{
-				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (-y) * bpl + (x << 2), bpl, w, h, true);
+				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (this->height - h - y) * bpl + (x << 2), bpl, w, h, true);
 			}
 		}
 		else
