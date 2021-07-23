@@ -319,9 +319,9 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		imgHeight = -imgHeight;
 	}
 	UInt32 uimgHeight = (UInt32)imgHeight;
-	if (imgWidth < 0)
+	if ((Int32)imgWidth < 0)
 	{
-		imgWidth = -imgWidth;
+		imgWidth = (UInt32)-(Int32)imgWidth;
 	}
 	if (biCompression == 0 && bpp != 1 && bpp != 2 && bpp != 4 && bpp != 8 && bpp != 16 && bpp != 24 && bpp != 32 && bpp != 48 && bpp != 64)
 	{

@@ -48,7 +48,7 @@ namespace Map
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
 		virtual const UTF8Char *GetNewStr(UOSInt colIndex);
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff);
+		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal); //return 0 = ok, 1 = NULL, 2 = Error
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);

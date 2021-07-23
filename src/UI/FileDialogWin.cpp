@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/Path.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
+#include "IO/Path.h"
 #include "Text/StringBuilderUTF16.h"
 #include "UI/FileDialog.h"
 #include <windows.h>

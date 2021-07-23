@@ -9,9 +9,19 @@ Int32 Sync::Interlocked::Increment(Int32 *val)
 	return InterlockedIncrement((LONG*)val);
 }
 
+UInt32 Sync::Interlocked::Increment(UInt32 *val)
+{
+	return InterlockedIncrement((ULONG*)val);
+}
+
 Int32 Sync::Interlocked::Decrement(Int32 *val)
 {
 	return InterlockedDecrement((LONG*)val);
+}
+
+UInt32 Sync::Interlocked::Decrement(UInt32 *val)
+{
+	return InterlockedDecrement((ULONG*)val);
 }
 
 Int32 Sync::Interlocked::Add(Int32 *val, Int32 aval)
@@ -30,9 +40,19 @@ Int64 Sync::Interlocked::Increment(Int64 *val)
 	return InterlockedIncrement64(val);
 }
 
+UInt64 Sync::Interlocked::Increment(UInt64 *val)
+{
+	return (UInt64)InterlockedIncrement64((Int64*)val);
+}
+
 Int64 Sync::Interlocked::Decrement(Int64 *val)
 {
 	return InterlockedDecrement64(val);
+}
+
+UInt64 Sync::Interlocked::Decrement(UInt64 *val)
+{
+	return (UInt64)InterlockedDecrement64((Int64*)val);
 }
 
 Int64 Sync::Interlocked::Add(Int64 *val, Int64 aval)
@@ -40,12 +60,23 @@ Int64 Sync::Interlocked::Add(Int64 *val, Int64 aval)
 	return InterlockedExchangeAdd64(val, aval) + aval;
 }
 
+UInt64 Sync::Interlocked::Add(UInt64 *val, UInt64 aval)
+{
+	return (UInt64)Add((Int64*)val, (Int64)aval);
+}
+
 Int64 Sync::Interlocked::Subtract(Int64 *val, Int64 sval)
 {
 	return InterlockedExchangeAdd64(val, -sval) - sval;
 }
+
 #else
 Int64 Sync::Interlocked::Increment(Int64 *val)
+{
+	return ++*val;
+}
+
+UInt64 Sync::Interlocked::Increment(UInt64 *val)
 {
 	return ++*val;
 }
@@ -55,10 +86,20 @@ Int64 Sync::Interlocked::Decrement(Int64 *val)
 	return --*val;
 }
 
+UInt64 Sync::Interlocked::Decrement(UInt64 *val)
+{
+	return --*val;
+}
+
 Int64 Sync::Interlocked::Add(Int64 *val, Int64 aval)
 {
 	*val += aval;
 	return *val;
+}
+
+UInt64 Sync::Interlocked::Add(UInt64 *val, UInt64 aval)
+{
+	return (UInt64)Add((Int64*)val, (Int64)aval);
 }
 
 Int64 Sync::Interlocked::Subtract(Int64 *val, Int64 sval)

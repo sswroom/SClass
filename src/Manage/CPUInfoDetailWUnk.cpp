@@ -19,4 +19,9 @@ const UTF8Char *Manage::CPUInfoDetail::GetCPUModel()
 {
 	return this->cpuModel;
 }
+
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
+{
+	return false;
+}
 #endif

@@ -1983,9 +1983,9 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	this->cropBottom = 0;
 
 #ifdef _DEBUG
-	NEW_CLASS(this->debugFS, IO::FileStream(L"videoProc.log", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(this->debugFS, IO::FileStream((const UTF8Char*)"videoProc.log", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(this->debugLog, IO::StreamWriter(this->debugFS, 65001));
-	NEW_CLASS(this->debugFS2, IO::FileStream(L"videoDisp.log", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(this->debugFS2, IO::FileStream((const UTF8Char*)"videoDisp.log", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	NEW_CLASS(this->debugLog2, IO::StreamWriter(this->debugFS2, 65001));
 #endif
 	this->playing = false;

@@ -88,7 +88,7 @@
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "SSWR/AVIRead/AVIRNetPingForm.h"
 #include "SSWR/AVIRead/AVIRNTPClientForm.h"
-#include "SSWR/AVIRead/AVIRODBCForm.h"
+#include "SSWR/AVIRead/AVIRODBCStrForm.h"
 #include "SSWR/AVIRead/AVIROLEDBForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"

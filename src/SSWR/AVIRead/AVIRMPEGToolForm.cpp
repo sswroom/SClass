@@ -1,6 +1,6 @@
 #include "stdafx.h"
+#include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/StmData/FileData.h"
-#include "Media/FileAnalyse/MPEGFileAnalyse.h"
 #include "SSWR/AVIRead/AVIRMPEGToolForm.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"

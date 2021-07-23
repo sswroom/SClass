@@ -5,6 +5,7 @@
 #include "Map/SHPData.h"
 #include "Math/Point3D.h"
 #include "Text/MyString.h"
+#include "Text/MyStringFloat.h"
 
 #if defined(__APPLE__)
 
@@ -47,7 +48,12 @@ void Map::FileGDB::Reconnect()
 #if defined(__MINGW32__)
 #define __linux__
 #endif
+
 #include <FileGDBAPI.h>
+
+#if !defined(S_OK)
+#define S_OK 0
+#endif
 
 Map::FileGDB::FileGDB(const UTF8Char *filePath) : DB::ReadingDB(filePath)
 {
@@ -141,7 +147,7 @@ DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *name, UOSInt maxCnt, vo
 	FileGDBAPI::Geodatabase *geodatabase;
 	geodatabase = (FileGDBAPI::Geodatabase*)this->gdb;
 	sbuff[0] = '\\';
-	Text::StrUTF8_WChar(&sbuff[1], name, -1, 0);
+	Text::StrUTF8_WChar(&sbuff[1], name, 0);
 
 	FileGDBAPI::Table *table;
 	table = new FileGDBAPI::Table();
@@ -245,13 +251,13 @@ Bool Map::FileGDBReader::ReadNext()
 	return hr == S_OK;
 }
 
-OSInt Map::FileGDBReader::ColCount()
+UOSInt Map::FileGDBReader::ColCount()
 {
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
 	return fields->size();
 }
 
-Int32 Map::FileGDBReader::GetInt32(OSInt colIndex)
+Int32 Map::FileGDBReader::GetInt32(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
@@ -287,7 +293,7 @@ Int32 Map::FileGDBReader::GetInt32(OSInt colIndex)
 	}
 }
 
-Int64 Map::FileGDBReader::GetInt64(OSInt colIndex)
+Int64 Map::FileGDBReader::GetInt64(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	Int32 v;
@@ -299,7 +305,7 @@ Int64 Map::FileGDBReader::GetInt64(OSInt colIndex)
 	return v;
 }
 
-WChar *Map::FileGDBReader::GetStr(OSInt colIndex, WChar *buff)
+WChar *Map::FileGDBReader::GetStr(UOSInt colIndex, WChar *buff)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
@@ -375,7 +381,9 @@ WChar *Map::FileGDBReader::GetStr(OSInt colIndex, WChar *buff)
 		}
 		Data::DateTime dt;
 		dt.SetValue(v.tm_year, v.tm_mon, v.tm_mday, v.tm_hour, v.tm_min, v.tm_sec, 0);
-		return dt.ToString(buff);
+		UTF8Char sbuff[64];
+		dt.ToString(sbuff);
+		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	}
 	case FileGDBAPI::fieldTypeOID:
 	{
@@ -421,14 +429,14 @@ WChar *Map::FileGDBReader::GetStr(OSInt colIndex, WChar *buff)
 		{
 			return 0;
 		}
-		return Text::StrUTF8_WChar(buff, (const UTF8Char*)v.data(), -1, 0);
+		return Text::StrUTF8_WChar(buff, (const UTF8Char*)v.data(), 0);
 	}
 
 	}
 	return 0;
 }
 
-Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
+Bool Map::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
@@ -452,7 +460,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->Append(v);
+		sb->AppendI16(v);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeInteger:
@@ -463,7 +471,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->Append(v);
+		sb->AppendI32(v);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeSingle:
@@ -474,7 +482,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->Append(v);
+		Text::SBAppendF32(sb, v);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeDouble:
@@ -485,7 +493,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->Append(v);
+		Text::SBAppendF64(sb, v);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeString:
@@ -496,7 +504,9 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->AppendW(v.data());
+		const UTF8Char *sptr = Text::StrToUTF8New(v.data());
+		sb->Append(sptr);
+		Text::StrDelNew(sptr);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeDate:
@@ -509,7 +519,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		}
 		Data::DateTime dt;
 		dt.SetValue(v.tm_year, v.tm_mon, v.tm_mday, v.tm_hour, v.tm_min, v.tm_sec, 0);
-		sb->Append(&dt);
+		sb->AppendDate(&dt);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeOID:
@@ -520,7 +530,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->Append(v);
+		sb->AppendI32(v);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeGeometry:
@@ -567,7 +577,7 @@ Bool Map::FileGDBReader::GetStr(OSInt colIndex, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-const UTF8Char *Map::FileGDBReader::GetNewStr(OSInt colIndex)
+const UTF8Char *Map::FileGDBReader::GetNewStr(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
@@ -636,7 +646,7 @@ const UTF8Char *Map::FileGDBReader::GetNewStr(OSInt colIndex)
 		{
 			return 0;
 		}
-		return Text::StrCopyNew(v.data());
+		return Text::StrToUTF8New(v.data());
 	}
 	case FileGDBAPI::fieldTypeDate:
 	{
@@ -687,7 +697,7 @@ const UTF8Char *Map::FileGDBReader::GetNewStr(OSInt colIndex)
 	return 0;
 }
 
-UTF8Char *Map::FileGDBReader::GetStr(OSInt colIndex, UTF8Char *buff)
+UTF8Char *Map::FileGDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
@@ -751,7 +761,7 @@ UTF8Char *Map::FileGDBReader::GetStr(OSInt colIndex, UTF8Char *buff)
 		{
 			return 0;
 		}
-		return Text::StrWChar_UTF8(buff, v.data(), -1);
+		return Text::StrWChar_UTF8(buff, v.data());
 	}
 	case FileGDBAPI::fieldTypeDate:
 	{
@@ -809,14 +819,14 @@ UTF8Char *Map::FileGDBReader::GetStr(OSInt colIndex, UTF8Char *buff)
 		{
 			return 0;
 		}
-		return Text::StrConcat(buff, (const UTF8Char*)v.data());
+		return Text::StrConcatS(buff, (const UTF8Char*)v.data(), buffSize);
 	}
 
 	}
 	return 0;
 }
 
-DB::DBReader::DateErrType Map::FileGDBReader::GetDate(OSInt colIndex, Data::DateTime *outVal)
+DB::DBReader::DateErrType Map::FileGDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	fgdbError hr;
@@ -836,7 +846,7 @@ DB::DBReader::DateErrType Map::FileGDBReader::GetDate(OSInt colIndex, Data::Date
 	return DB::DBReader::DET_OK;
 }
 
-Double Map::FileGDBReader::GetDbl(OSInt colIndex)
+Double Map::FileGDBReader::GetDbl(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	Double v;
@@ -848,7 +858,7 @@ Double Map::FileGDBReader::GetDbl(OSInt colIndex)
 	return v;
 }
 
-Bool Map::FileGDBReader::GetBool(OSInt colIndex)
+Bool Map::FileGDBReader::GetBool(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	Int32 v;
@@ -860,7 +870,7 @@ Bool Map::FileGDBReader::GetBool(OSInt colIndex)
 	return v != 0;
 }
 
-OSInt Map::FileGDBReader::GetBinarySize(OSInt colIndex)
+UOSInt Map::FileGDBReader::GetBinarySize(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	FileGDBAPI::ByteArray v;
@@ -872,7 +882,7 @@ OSInt Map::FileGDBReader::GetBinarySize(OSInt colIndex)
 	return v.inUseLength;
 }
 
-OSInt Map::FileGDBReader::GetBinary(OSInt colIndex, UInt8 *buff)
+UOSInt Map::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	FileGDBAPI::ByteArray v;
@@ -885,7 +895,7 @@ OSInt Map::FileGDBReader::GetBinary(OSInt colIndex, UInt8 *buff)
 	return v.inUseLength;
 }
 
-Math::Vector2D *Map::FileGDBReader::GetVector(OSInt colIndex)
+Math::Vector2D *Map::FileGDBReader::GetVector(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	std::vector<FileGDBAPI::FieldDef> *fields = (std::vector<FileGDBAPI::FieldDef> *)this->fieldDefs;
@@ -940,7 +950,7 @@ Math::Vector2D *Map::FileGDBReader::GetVector(OSInt colIndex)
 			Double *z;
 			if (v.GetPoint(p) == S_OK && v.GetZ(z) == S_OK)
 			{
-				NEW_CLASS(pt, Math::Point3D(p->x, p->y, z[0]));
+				NEW_CLASS(pt, Math::Point3D(0, p->x, p->y, z[0]));
 				return pt;
 			}
 		}
@@ -950,7 +960,7 @@ Math::Vector2D *Map::FileGDBReader::GetVector(OSInt colIndex)
 			Math::Point *pt;
 			if (v.GetPoint(p) == S_OK)
 			{
-				NEW_CLASS(pt, Math::Point(p->x, p->y));
+				NEW_CLASS(pt, Math::Point(0, p->x, p->y));
 				return pt;
 			}
 		}
@@ -981,11 +991,11 @@ Math::Vector2D *Map::FileGDBReader::GetVector(OSInt colIndex)
 			return 0;
 
 		Math::Polygon *pg;
-		Int32 *parts2;
+		UInt32 *parts2;
 		Double *points2;
-		OSInt tmpV;
-		NEW_CLASS(pg, Math::Polygon(nParts, nPoints));
-		parts2 = pg->GetPartList(&tmpV);
+		UOSInt tmpV;
+		NEW_CLASS(pg, Math::Polygon(0, nParts, nPoints));
+		parts2 = pg->GetPtOfstList(&tmpV);
 		tmpV = 0;
 		while (tmpV < nParts)
 		{
@@ -1027,11 +1037,11 @@ Math::Vector2D *Map::FileGDBReader::GetVector(OSInt colIndex)
 			return 0;
 
 		Math::Polyline *pl;
-		Int32 *parts2;
+		UInt32 *parts2;
 		Double *points2;
-		OSInt tmpV;
-		NEW_CLASS(pl, Math::Polyline(nParts, nPoints));
-		parts2 = pl->GetPartList(&tmpV);
+		UOSInt tmpV;
+		NEW_CLASS(pl, Math::Polyline(0, nParts, nPoints));
+		parts2 = pl->GetPtOfstList(&tmpV);
 		tmpV = 0;
 		while (tmpV < nParts)
 		{
@@ -1053,7 +1063,7 @@ Math::Vector2D *Map::FileGDBReader::GetVector(OSInt colIndex)
 	}
 }
 
-Bool Map::FileGDBReader::IsNull(OSInt colIndex)
+Bool Map::FileGDBReader::IsNull(UOSInt colIndex)
 {
 	FileGDBAPI::Row *row = (FileGDBAPI::Row *)this->currRow;
 	Bool v;
@@ -1065,7 +1075,7 @@ Bool Map::FileGDBReader::IsNull(OSInt colIndex)
 	return v;
 }
 
-UTF8Char *Map::FileGDBReader::GetName(OSInt colIndex, UTF8Char *buff)
+UTF8Char *Map::FileGDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	FileGDBAPI::Table *tab = (FileGDBAPI::Table *)this->table;
 	fgdbError hr;
@@ -1082,13 +1092,13 @@ UTF8Char *Map::FileGDBReader::GetName(OSInt colIndex, UTF8Char *buff)
 		hr = field.GetName(wstr);
 		if (hr == S_OK)
 		{
-			return Text::StrWChar_UTF8(buff, wstr.data(), -1);
+			return Text::StrWChar_UTF8(buff, wstr.data());
 		}
 	}
 	return 0;
 }
 
-DB::DBUtil::ColType Map::FileGDBReader::GetColType(OSInt colIndex, OSInt *colSize)
+DB::DBUtil::ColType Map::FileGDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 {
 	FileGDBAPI::Table *tab = (FileGDBAPI::Table *)this->table;
 	fgdbError hr;
@@ -1142,7 +1152,7 @@ DB::DBUtil::ColType Map::FileGDBReader::GetColType(OSInt colIndex, OSInt *colSiz
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::FileGDBReader::GetColDef(OSInt colIndex, DB::ColDef *colDef)
+Bool Map::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	FileGDBAPI::Table *tab = (FileGDBAPI::Table *)this->table;
 	fgdbError hr;
@@ -1187,7 +1197,7 @@ Bool Map::FileGDBReader::GetColDef(OSInt colIndex, DB::ColDef *colDef)
 			break;
 		case FileGDBAPI::fieldTypeOID:
 			colDef->SetColType(DB::DBUtil::CT_Int32);
-			colDef->SetIsPK(true);
+			colDef->SetPK(true);
 			break;
 		case FileGDBAPI::fieldTypeGeometry:
 			colDef->SetColType(DB::DBUtil::CT_Vector);
@@ -1248,18 +1258,20 @@ Bool Map::FileGDBReader::GetColDef(OSInt colIndex, DB::ColDef *colDef)
 		hr = field.GetIsNullable(allowNull);
 		if (hr != S_OK)
 			return false;
-		colDef->SetIsNotNull(!allowNull);
+		colDef->SetNotNull(!allowNull);
 		std::wstring wstr;
 		hr = field.GetName(wstr);
 		if (hr != S_OK)
 			return false;
-		colDef->SetColNameW(wstr.data());
+		const UTF8Char *csptr = Text::StrToUTF8New(wstr.data());
+		colDef->SetColName(csptr);
+		Text::StrDelNew(csptr);
 		return true;
 	}
 	return false;
 }
 
-void Map::FileGDBReader::DelNewStr(const WChar *s)
+void Map::FileGDBReader::DelNewStr(const UTF8Char *s)
 {
 	Text::StrDelNew(s);
 }

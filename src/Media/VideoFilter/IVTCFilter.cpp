@@ -275,7 +275,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 			{
 				if (frameType == Media::FT_FIELD_TF || frameType == Media::FT_FIELD_BF)
 				{
-					if (this->fieldBuffSize < (OSInt)(dataSize * 2))
+					if (this->fieldBuffSize < (dataSize * 2))
 					{
 						if (this->fieldBuff)
 						{
@@ -335,7 +335,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 				}
 				else if (frameType == Media::FT_MERGED_TF)
 				{
-					if (this->fieldBuffSize < (OSInt)dataSize)
+					if (this->fieldBuffSize < dataSize)
 					{
 						if (this->fieldBuff)
 						{
@@ -356,7 +356,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 				}
 				else if (frameType == Media::FT_MERGED_BF)
 				{
-					if (this->fieldBuffSize < (OSInt)dataSize)
+					if (this->fieldBuffSize < dataSize)
 					{
 						if (this->fieldBuff)
 						{
@@ -414,7 +414,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 			}
 			UInt32 outFrameTime = frameTime;
 			Bool mergedFrame = false;
-			if (this->ivtcFrameBuffSize < (OSInt)dataSize)
+			if (this->ivtcFrameBuffSize < dataSize)
 			{
 				this->ivtcFrameBuffSize = dataSize;
 				if (this->ivtcLastFrame)

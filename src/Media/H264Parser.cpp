@@ -544,7 +544,7 @@ Bool Media::H264Parser::ParseSVari(IO::BitReaderMSB *reader, Int32 *val)
 		}
 		else
 		{
-			*val = (Int32)-(v >> 1);
+			*val = -(Int32)(v >> 1);
 		}
 	}
 	return ret;

@@ -4,7 +4,9 @@
 #include "Text/MyStringW.h"
 #include <stdio.h>
 #include <stdlib.h>
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 #include <windows.h>
 
 typedef struct

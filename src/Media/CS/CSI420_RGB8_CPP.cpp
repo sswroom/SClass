@@ -13,8 +13,8 @@ extern "C" void CSI420_RGB8_do_yv12rgb(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UI
 	height = (height >> 1) - ((isLast & 1) << 1);
 
 	UInt8 *tmpPtr;
-	Int32 widthLeft;
-	Int32 buffTemp;
+	OSInt widthLeft;
+//	Int32 buffTemp;
 	OSInt i;
 
 	i = width;

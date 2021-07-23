@@ -1,5 +1,7 @@
 #ifndef _SM_TEXT_STRINGBUILDERUTF
 #define _SM_TEXT_STRINGBUILDERUTF
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/StringBuilder.h"
 
 namespace Text
@@ -48,7 +50,7 @@ namespace Text
 		virtual void AllocLeng(UOSInt leng) { ::Text::StringBuilder<T>::AllocLeng(leng); }
 		virtual UOSInt GetCharCnt() { return this->GetLength(); }
 		virtual Bool EndsWith(Char c) { if (this->buff == this->buffEnd) return false; return this->buffEnd[-1] == c; }
-		virtual Bool EndsWith(const T *s) { UOSInt l = Text::StrCharCnt(s); if (this->GetLength() < l) return false; return Text::StrEquals(&this->buffEnd[-(OSInt)l], s); }
+		virtual Bool EndsWith(const T *s) { UOSInt l = Text::StrCharCnt(s); if (this->GetLength() < l) return false; return Text::StrEquals((const T*)&this->buffEnd[-(OSInt)l], s); }
 		virtual void RemoveChars(UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(cnt); }
 		virtual void RemoveChars(UOSInt index, UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(index, cnt); }
 		virtual StringBuilderUTF *AppendI16(Int16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendI16(iVal); }
