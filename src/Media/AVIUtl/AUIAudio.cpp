@@ -36,18 +36,18 @@ Bool Media::AVIUtl::AUIAudio::CanSeek()
 
 Int32 Media::AVIUtl::AUIAudio::GetStreamTime()
 {
-	return MulDiv((Int32)this->nSamples, 1000, this->format->frequency);
+	return (Int32)MulDivU32((UInt32)this->nSamples, 1000, this->format->frequency);
 }
 
-Int32 Media::AVIUtl::AUIAudio::SeekToTime(Int32 time)
+UInt32 Media::AVIUtl::AUIAudio::SeekToTime(UInt32 time)
 {
-	this->currSample = MulDiv(time, this->format->frequency, 1000);
+	this->currSample = MulDivU32(time, this->format->frequency, 1000);
 	if (this->currSample > this->nSamples)
 		this->currSample = this->nSamples;
-	return MulDiv((Int32)this->currSample, 1000, this->format->frequency);
+	return MulDivU32((UInt32)this->currSample, 1000, this->format->frequency);
 }
 
-Bool Media::AVIUtl::AUIAudio::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AVIUtl::AUIAudio::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	//////////////////////////////////////
 	return false;
@@ -86,9 +86,9 @@ UOSInt Media::AVIUtl::AUIAudio::GetMinBlockSize()
 	return this->format->align;
 }
 
-Int32 Media::AVIUtl::AUIAudio::GetCurrTime()
+UInt32 Media::AVIUtl::AUIAudio::GetCurrTime()
 {
-	return MulDiv((Int32)this->currSample, 1000, this->format->frequency);
+	return MulDivU32((UInt32)this->currSample, 1000, this->format->frequency);
 }
 
 Bool Media::AVIUtl::AUIAudio::IsEnd()

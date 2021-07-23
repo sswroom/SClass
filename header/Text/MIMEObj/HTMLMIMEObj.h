@@ -22,7 +22,7 @@ namespace Text
 
 			virtual const UTF8Char *GetClassName();
 			virtual const UTF8Char *GetContentType();
-			virtual OSInt WriteStream(IO::Stream *stm);
+			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 
 			void GetText(Text::StringBuilderUTF *sb);

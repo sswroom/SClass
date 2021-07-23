@@ -22,8 +22,8 @@ namespace Media
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Bool CanSeek();
 		virtual Int32 GetStreamTime();
-		virtual Int32 SeekToTime(Int32 time);
-		virtual Bool TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime);
+		virtual UInt32 SeekToTime(UInt32 time);
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
 		virtual void GetFormat(AudioFormat *format);
 
@@ -31,7 +31,7 @@ namespace Media
 		virtual void Stop();
 		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize);
 		virtual UOSInt GetMinBlockSize();
-		virtual Int32 GetCurrTime();
+		virtual UInt32 GetCurrTime();
 		virtual Bool IsEnd();
 	};
 }

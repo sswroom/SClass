@@ -1,7 +1,8 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
-#include "Sync/Thread.h"
 #include "Media/VFVideoStream.h"
+#include "Sync/Thread.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 #include "Media/VFAPI.h"
 
@@ -145,7 +146,7 @@ Media::VFVideoStream::~VFVideoStream()
 
 UTF8Char *Media::VFVideoStream::GetSourceName(UTF8Char *buff)
 {
-	return Text::StrWChar_UTF8(buff, this->mfile->fileName, -1);
+	return Text::StrWChar_UTF8(buff, this->mfile->fileName);
 }
 
 const UTF8Char *Media::VFVideoStream::GetFilterName()
@@ -153,7 +154,7 @@ const UTF8Char *Media::VFVideoStream::GetFilterName()
 	return (const UTF8Char*)"VFVideoStream";
 }
 
-Bool Media::VFVideoStream::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::VFVideoStream::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	info->Set(this->info);
 	*maxFrameSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
@@ -207,7 +208,7 @@ Bool Media::VFVideoStream::CanSeek()
 	return true;
 }
 
-Int32 Media::VFVideoStream::SeekToTime(Int32 time)
+UInt32 Media::VFVideoStream::SeekToTime(UInt32 time)
 {
 	Int32 newFrameNum = MulDiv(time, this->frameRate, this->frameRateScale * 1000);
 	if (newFrameNum >= this->frameCnt)
@@ -222,7 +223,7 @@ Bool Media::VFVideoStream::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::VFVideoStream::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VFVideoStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	////////////////////////////////////////////
 	return false;
@@ -234,12 +235,12 @@ Bool Media::VFVideoStream::SetPreferFrameType(Media::FrameType ftype)
 	return true;
 }
 
-OSInt Media::VFVideoStream::GetDataSeekCount()
+UOSInt Media::VFVideoStream::GetDataSeekCount()
 {
 	return 0;
 }
 
-OSInt Media::VFVideoStream::GetFrameCount()
+UOSInt Media::VFVideoStream::GetFrameCount()
 {
 	return this->frameCnt;
 }
@@ -263,7 +264,7 @@ void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 	}
 }
 
-OSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
 	if (this->currFrameNum >= this->frameCnt)

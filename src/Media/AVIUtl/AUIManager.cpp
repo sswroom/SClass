@@ -10,7 +10,7 @@ Media::AVIUtl::AUIManager::AUIManager()
 	Media::AVIUtl::AUIPlugin *plugin;
 	NEW_CLASS(this->plugins, Data::ArrayList<Media::AVIUtl::AUIPlugin *>());
 
-	void *sess = IO::Path::FindFileW(L"*.aui");
+	IO::Path::FindFileSession *sess = IO::Path::FindFileW(L"*.aui");
 	if (sess)
 	{
 		while (IO::Path::FindNextFileW(sbuff, sess, 0, &pt, 0))
@@ -42,7 +42,7 @@ OSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::ArrayL
 {
 	Char sbuff[512];
 	Text::Encoding enc;
-	enc.UTF8ToBytes((UInt8*)sbuff, fileName, -1);
+	enc.UTF8ToBytes((UInt8*)sbuff, fileName);
 
 	OSInt retSize = 0;
 	OSInt i;

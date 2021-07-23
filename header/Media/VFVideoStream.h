@@ -34,7 +34,7 @@ namespace Media
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual const UTF8Char *GetFilterName();
 
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize);
+		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userObj);
 		virtual Bool Start();
 		virtual void Stop();
@@ -42,9 +42,9 @@ namespace Media
 
 		virtual Int32 GetStreamTime(); //ms, -1 = infinity
 		virtual Bool CanSeek();
-		virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool IsRealTimeSrc();
-		virtual Bool TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime);
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
 
 		virtual UOSInt GetDataSeekCount();

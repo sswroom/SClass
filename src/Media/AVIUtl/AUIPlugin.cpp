@@ -5,6 +5,7 @@
 #include "Media/AVIUtl/AUIVideo.h"
 #include "Sync/Interlocked.h"
 #include "Text/Encoding.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 #include <Mmreg.h>
 #undef FindNextFile

@@ -54,7 +54,7 @@ public:
 			if (*ft == FORMAT_VideoInfo)
 			{
 				VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)pmt->Format();
-				Data::ArrayListInt32 csList;
+				Data::ArrayListUInt32 csList;
 				OSInt i;
 				Media::CS::CSConverter::GetSupportedCS(&csList);
 				i = csList.GetCount();
@@ -81,7 +81,7 @@ public:
 			else if (*ft == FORMAT_VideoInfo2)
 			{
 				VIDEOINFOHEADER2 *format = (VIDEOINFOHEADER2 *)pmt->Format();
-				Data::ArrayListInt32 csList;
+				Data::ArrayListUInt32 csList;
 				OSInt i;
 				Media::CS::CSConverter::GetSupportedCS(&csList);
 				i = csList.GetCount();

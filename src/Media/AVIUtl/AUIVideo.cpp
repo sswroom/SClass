@@ -10,7 +10,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
 	Media::AVIUtl::AUIVideo *me = (Media::AVIUtl::AUIVideo *)userObj;
 	UInt8 *frameBuff;
 	Int32 lastFrameNum = -2;
-	Int32 thisFrameNum;
+	UInt32 thisFrameNum;
 	OSInt buffSize;
 
 	me->threadRunning = true;
@@ -60,7 +60,7 @@ UOSInt Media::AVIUtl::AUIVideo::GetMaxFrameSize()
 	}
 }
 
-Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, Media::FrameInfo *frameInfo, Int32 frameRateNorm, Int32 frameRateDenorm, Int32 frameCnt)
+Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt)
 {
 	this->plugin = plugin;
 	this->input = input;
@@ -116,7 +116,7 @@ const UTF8Char *Media::AVIUtl::AUIVideo::GetFilterName()
 	return (const UTF8Char*)"AUIVideo";
 }
 
-Bool Media::AVIUtl::AUIVideo::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::AVIUtl::AUIVideo::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	info->Set(this->frameInfo);
 	*frameRateNorm = this->frameRateNorm;
@@ -167,15 +167,13 @@ Bool Media::AVIUtl::AUIVideo::CanSeek()
 	return true;
 }
 
-Int32 Media::AVIUtl::AUIVideo::SeekToTime(Int32 time)
+UInt32 Media::AVIUtl::AUIVideo::SeekToTime(UInt32 time)
 {
 	this->frameNumMut->Lock();
-	this->currFrameNum = MulDiv(time, this->frameRateNorm, this->frameRateDenorm * 1000);
-	if (this->currFrameNum < 0)
-		this->currFrameNum = 0;
-	else if (this->currFrameNum > this->frameCnt)
+	this->currFrameNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
+	if (this->currFrameNum > this->frameCnt)
 		this->currFrameNum = this->frameCnt;
-	Int32 t = MulDiv(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);
+	UInt32 t = MulDivU32(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);
 	this->frameNumMut->Unlock();
 	return t;
 }
@@ -185,18 +183,18 @@ Bool Media::AVIUtl::AUIVideo::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::AVIUtl::AUIVideo::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AVIUtl::AUIVideo::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	/////////////////////////////////////////
 	return false;
 }
 
-OSInt Media::AVIUtl::AUIVideo::GetDataSeekCount()
+UOSInt Media::AVIUtl::AUIVideo::GetDataSeekCount()
 {
 	return 0;
 }
 
-OSInt Media::AVIUtl::AUIVideo::GetFrameCount()
+UOSInt Media::AVIUtl::AUIVideo::GetFrameCount()
 {
 	return this->frameCnt;
 }
@@ -221,7 +219,7 @@ void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, void *userDat
 	}
 }
 
-OSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

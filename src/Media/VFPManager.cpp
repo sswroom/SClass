@@ -1,12 +1,13 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
-#include "Text/Encoding.h"
 #include "IO/Registry.h"
 #include "IO/Path.h"
-#include "Sync/Interlocked.h"
+#include "Media/VFAudioStream.h"
 #include "Media/VFPManager.h"
 #include "Media/VFVideoStream.h"
-#include "Media/VFAudioStream.h"
+#include "Sync/Interlocked.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
+#include "Text/Encoding.h"
 #include <windows.h>
 #include "Media/VFAPI.h"
 
@@ -57,7 +58,7 @@ Media::VFPManager::VFPManager()
 	sptr = IO::Path::GetFileDirectoryW(sbuff2, sbuff);
 	*sptr++ = '\\';
 	Text::StrConcat(sptr, L"*.vfp");
-	void *sess = IO::Path::FindFileW(sbuff2);
+	IO::Path::FindFileSession *sess = IO::Path::FindFileW(sbuff2);
 	if (sess)
 	{
 		if (IO::Path::FindNextFileW(sptr, sess, 0, 0, 0))
@@ -78,10 +79,10 @@ OSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Medi
 	VF_FileHandle fhand;
 	VF_FileInfo finfo;
 	WChar sbuff[512];
-	OSInt charCnt = enc.UTF8CountBytes(fileName, -1);
+	UOSInt charCnt = enc.UTF8CountBytes(fileName);
 	cFile = MemAlloc(Char, charCnt + 1);
-	enc.UTF8ToBytes((UInt8*)cFile, fileName, -1);
-	OSInt i = this->plugins->GetCount();
+	enc.UTF8ToBytes((UInt8*)cFile, fileName);
+	UOSInt i = this->plugins->GetCount();
 	while (i-- > 0)
 	{
 		plugin = this->plugins->GetItem(i);

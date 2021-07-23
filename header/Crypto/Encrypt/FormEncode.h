@@ -14,11 +14,11 @@ namespace Crypto
 			FormEncode();
 			virtual ~FormEncode();
 
-			virtual OSInt Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam);
-			virtual OSInt Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam);
+			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam);
+			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam);
 
-			virtual OSInt GetEncBlockSize();
-			virtual OSInt GetDecBlockSize();
+			virtual UOSInt GetEncBlockSize();
+			virtual UOSInt GetDecBlockSize();
 		};
 	};
 };

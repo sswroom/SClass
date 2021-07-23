@@ -39,8 +39,8 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 tmpBuff[1024];
 	OSInt readSize = fd->GetRealData(0, 1024, tmpBuff);
 	Media::FrameInfo info;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, &info, &frameRateNorm, &frameRateDenorm, 0, false))
 		return 0;
 

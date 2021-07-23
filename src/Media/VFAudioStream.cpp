@@ -1,6 +1,7 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
 #include "Media/VFAudioStream.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 #include "Media/VFAPI.h"
 
@@ -48,7 +49,7 @@ Media::VFAudioStream::~VFAudioStream()
 
 UTF8Char *Media::VFAudioStream::GetSourceName(UTF8Char *buff)
 {
-	return Text::StrWChar_UTF8(buff, this->mfile->fileName, -1);
+	return Text::StrWChar_UTF8(buff, this->mfile->fileName);
 }
 
 Bool Media::VFAudioStream::CanSeek()
@@ -61,13 +62,13 @@ Int32 Media::VFAudioStream::GetStreamTime()
 	return (Int32)(this->sampleCnt * 1000 / this->fmt.frequency);
 }
 
-Int32 Media::VFAudioStream::SeekToTime(Int32 time)
+UInt32 Media::VFAudioStream::SeekToTime(UInt32 time)
 {
-	currSample = MulDiv(time, this->fmt.frequency, 1000);
-	return (Int32)(currSample * 1000 / this->fmt.frequency);
+	currSample = MulDivU32(time, this->fmt.frequency, 1000);
+	return (UInt32)(currSample * 1000 / this->fmt.frequency);
 }
 
-Bool Media::VFAudioStream::TrimStream(Int32 trimTimeStart, Int32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VFAudioStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
 	////////////////////////////////////////////
 	return false;
@@ -126,7 +127,7 @@ UOSInt Media::VFAudioStream::GetMinBlockSize()
 	return this->fmt.nChannels * (this->fmt.bitpersample >> 3);
 }
 
-Int32 Media::VFAudioStream::GetCurrTime()
+UInt32 Media::VFAudioStream::GetCurrTime()
 {
 	return (Int32)(currSample * 1000 / this->fmt.frequency);
 }

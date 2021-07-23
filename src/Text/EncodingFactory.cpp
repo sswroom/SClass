@@ -1,6 +1,7 @@
 #include "Stdafx.h"
-#include "Text/EncodingFactory.h"
 #include "Data/ICaseStringUTF8Map.h"
+#include "Text/EncodingFactory.h"
+#include "Text/MyStringW.h"
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
@@ -320,20 +321,20 @@ UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
 }
 
 #ifdef _MSC_VER
-Int32 Text::EncodingFactory::GetSystemCodePage()
+UInt32 Text::EncodingFactory::GetSystemCodePage()
 {
-	return (Int32)GetACP();
+	return GetACP();
 }
 
-Int32 Text::EncodingFactory::GetSystemLCID()
+UInt32 Text::EncodingFactory::GetSystemLCID()
 {
-	return (Int32)GetUserDefaultLCID();
+	return GetUserDefaultLCID();
 }
 
-Data::ArrayList<Int32> *EncodingFactory_codePageResult;
+Data::ArrayList<UInt32> *EncodingFactory_codePageResult;
 Int32 __stdcall EncodingFactory_CodePageResult(WChar *codePageName);
 
-void Text::EncodingFactory::GetCodePages(Data::ArrayList<Int32> *codePages)
+void Text::EncodingFactory::GetCodePages(Data::ArrayList<UInt32> *codePages)
 {
 	EncodingFactory_codePageResult = codePages;
 	EnumSystemCodePagesW(EncodingFactory_CodePageResult, CP_INSTALLED);

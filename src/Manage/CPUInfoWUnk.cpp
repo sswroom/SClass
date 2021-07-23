@@ -18,11 +18,10 @@ Manage::CPUInfo::CPUInfo()
 	OSInt sysType = 0;
 
 	this->infoCnt = 0;
-	this->brand = Manage::CPUDB::CB_UNKNOWN;
+	this->brand = Manage::CPUVendor::CB_UNKNOWN;
 	this->familyId = 0;
 	this->model = 0;
 	this->steppingId = 0;
-	this->cpuModel = 0;
 	this->clsData = 0;
 }
 
@@ -32,7 +31,7 @@ Bool Manage::CPUInfo::HasInstruction(InstructionType instType)
 	return false;
 }
 
-Manage::CPUDB::CPU_BRAND Manage::CPUInfo::GetBrand()
+Manage::CPUVendor::CPU_BRAND Manage::CPUInfo::GetBrand()
 {
 	return this->brand;
 }
@@ -52,29 +51,19 @@ Int32 Manage::CPUInfo::GetStepping()
 	return this->steppingId;
 }
 
-const UTF8Char *Manage::CPUInfo::GetCPUModel()
-{
-	return this->cpuModel;
-}
-
 Bool Manage::CPUInfo::SupportIntelDTS()
 {
 	return false;
 }
 
-Int32 Manage::CPUInfo::GetTCC()
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	return false;
+}
+
+UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
 {
 	return 0;
-}
-
-Bool Manage::CPUInfo::GetInfoValue(OSInt index, Text::StringBuilderUTF *sb)
-{
-	return false;
-}
-
-OSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
-{
-	return false;
 }
 
 void Manage::CPUInfo::GetFeatureFlags(Int32 *flag1, Int32 *flag2)
@@ -89,14 +78,14 @@ Manage::CPUInfo::~CPUInfo()
 		Text::StrDelNew((const UTF8Char*)this->clsData);
 }
 
-OSInt Manage::CPUInfo::GetInfoCnt()
+UOSInt Manage::CPUInfo::GetInfoCnt()
 {
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(OSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
 {
-	if (index < 0 || index >= this->infoCnt)
+	if (index >= this->infoCnt)
 		return false;
 	switch (index)
 	{
@@ -118,11 +107,6 @@ UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *sbuff)
 	return 0;
 }
 
-Bool Manage::CPUInfo::GetCPUTemp(OSInt index, Double *temp)
-{
-	return false;
-}
-
 Bool Manage::CPUInfo::GetCPURatio(Int32 *ratio)
 {
 	return false;
@@ -138,31 +122,31 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 	return false;
 }
 
-const UTF8Char *Manage::CPUInfo::GetCacheInfo(Manage::CPUDB::CPU_BRAND brand, UInt8 descType)
+const UTF8Char *Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureShortName(OSInt index)
+const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureName(OSInt index)
+const UTF8Char *Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureDesc(OSInt index)
+const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
 	return 0;
 }
 
-void Manage::CPUInfo::AppendNameInfo10(Int32 ecxv, Int32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
 {
 }
 
-void Manage::CPUInfo::AppendNameInfo11(Int32 ecxv, Int32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
 {
 }
 #endif

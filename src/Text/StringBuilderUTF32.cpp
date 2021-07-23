@@ -14,22 +14,22 @@ Text::StringBuilderUTF32::~StringBuilderUTF32()
 
 Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(const UTF8Char *s)
 {
-	OSInt slen = Text::StrUTF8_UTF32Cnt(s, -1);
+	OSInt slen = Text::StrUTF8_UTF32Cnt(s);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF32(this->buffEnd, s, -1, 0);
+		this->buffEnd = Text::StrUTF8_UTF32(this->buffEnd, s, 0);
 	}
 	return this;
 }
 
 Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendC(const UTF8Char *s, UOSInt charCnt)
 {
-	OSInt slen = Text::StrUTF8_UTF32Cnt(s, charCnt);
+	OSInt slen = Text::StrUTF8_UTF32CntC(s, charCnt);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF32(this->buffEnd, s, charCnt, 0);
+		this->buffEnd = Text::StrUTF8_UTF32C(this->buffEnd, s, charCnt, 0);
 	}
 	return this;
 }
@@ -37,11 +37,11 @@ Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendC(const UTF8Char *s, UOS
 Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendS(const UTF8Char *s, UOSInt maxLen)
 {
 	OSInt len = Text::StrCharCntS(s, maxLen);
-	OSInt slen = Text::StrUTF8_UTF32Cnt(s, len);
+	OSInt slen = Text::StrUTF8_UTF32CntC(s, len);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF32(this->buffEnd, s, len, 0);
+		this->buffEnd = Text::StrUTF8_UTF32C(this->buffEnd, s, len, 0);
 	}
 	return this;
 }

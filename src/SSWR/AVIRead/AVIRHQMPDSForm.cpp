@@ -9,6 +9,7 @@
 #include "SSWR/AVIRead/AVIRHQMPPlaylistForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
+#include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIVideoBoxDDLQ.h"
 #include "UI/MessageDialog.h"
@@ -128,7 +129,7 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
 	OSInt i;
@@ -186,11 +187,11 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.frameSkip2);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"ProcTimes: ");
-		sb.AppendF64(dbg.hTime);
+		Text::SBAppendF64(&sb, dbg.hTime);
 		sb.Append((const UTF8Char*)", ");
-		sb.AppendF64(dbg.vTime);
+		Text::SBAppendF64(&sb, dbg.vTime);
 		sb.Append((const UTF8Char*)", ");
-		sb.AppendF64(dbg.csTime);
+		Text::SBAppendF64(&sb, dbg.csTime);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Buff: ");
 		sb.AppendI32(dbg.buffProc);
@@ -203,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendOSInt(dbg.srcHeight);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"PAR: ");
-		sb.AppendF64(dbg.par);
+		Text::SBAppendF64(&sb, dbg.par);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Format: ");
 		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));
@@ -224,31 +225,31 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetBTranParam()->GetTranType()));
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Src Gamma: ");
-		sb.AppendF64(dbg.color->GetRTranParam()->GetGamma());
+		Text::SBAppendF64(&sb, dbg.color->GetRTranParam()->GetGamma());
 		sb.Append((const UTF8Char*)"\r\n");
 		Media::ColorProfile::ColorPrimaries *primaries = dbg.color->GetPrimaries(); 
 		sb.Append((const UTF8Char*)"Src RGB Primary: ");
 		sb.Append(Media::ColorProfile::GetNameColorType(primaries->colorType));
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"-Red:   ");
-		sb.AppendF64(primaries->rx);
+		Text::SBAppendF64(&sb, primaries->rx);
 		sb.Append((const UTF8Char*)", ");
-		sb.AppendF64(primaries->ry);
+		Text::SBAppendF64(&sb, primaries->ry);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"-Green: ");
-		sb.AppendF64(primaries->gx);
+		Text::SBAppendF64(&sb, primaries->gx);
 		sb.Append((const UTF8Char*)", ");
-		sb.AppendF64(primaries->gy);
+		Text::SBAppendF64(&sb, primaries->gy);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"-Blue:  ");
-		sb.AppendF64(primaries->bx);
+		Text::SBAppendF64(&sb, primaries->bx);
 		sb.Append((const UTF8Char*)", ");
-		sb.AppendF64(primaries->by);
+		Text::SBAppendF64(&sb, primaries->by);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"-White: ");
-		sb.AppendF64(primaries->wx);
+		Text::SBAppendF64(&sb, primaries->wx);
 		sb.Append((const UTF8Char*)", ");
-		sb.AppendF64(primaries->wy);
+		Text::SBAppendF64(&sb, primaries->wy);
 		sb.Append((const UTF8Char*)"\r\n");
 		me->txtDebug->SetText(sb.ToString());
 		DEL_CLASS(dbg.color);

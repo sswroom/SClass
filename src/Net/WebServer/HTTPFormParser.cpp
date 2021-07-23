@@ -23,14 +23,14 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 	}
 	else if (Text::StrCompare(v, (const UTF8Char*)"application/x-www-form-urlencoded") == 0)
 	{
-		OSInt buffSize;
+		UOSInt buffSize;
 		const UInt8 *buff;
 		UInt8 *tmpBuff = 0;
 		UTF8Char *tmpBuff2 = 0;
 		OSInt tmpBuffSize = 0;
 		OSInt tmpBuffSize2 = 0;
 		OSInt size1;
-		OSInt size2;
+		UOSInt size2;
 		OSInt i;
 		OSInt j;
 		OSInt k;

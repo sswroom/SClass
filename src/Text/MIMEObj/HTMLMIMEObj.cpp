@@ -42,7 +42,7 @@ const UTF8Char *Text::MIMEObj::HTMLMIMEObj::GetContentType()
 	return this->contType;
 }
 
-OSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(IO::Stream *stm)
 {
 	return stm->Write(this->textBuff, this->buffSize);
 }
