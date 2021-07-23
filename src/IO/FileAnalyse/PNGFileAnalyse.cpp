@@ -11,10 +11,10 @@
 UInt32 __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::PNGFileAnalyse *me = (IO::FileAnalyse::PNGFileAnalyse*)userObj;
-	Int64 dataSize;
-	Int64 ofst;
-	Int32 lastSize;
-	OSInt readSize;
+	UInt64 dataSize;
+	UInt64 ofst;
+	UInt32 lastSize;
+	UOSInt readSize;
 	UInt8 tagHdr[12];
 	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag;
 	me->threadRunning = true;
@@ -33,11 +33,11 @@ UInt32 __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(void *userObj)
 		
 		if (tag)
 		{
-			tag->crc = ReadMInt32(tagHdr);
+			tag->crc = ReadMUInt32(tagHdr);
 		}
 		if (readSize < 12)
 			break;
-		lastSize = ReadMInt32(&tagHdr[4]);
+		lastSize = ReadMUInt32(&tagHdr[4]);
 
 		tag = MemAlloc(IO::FileAnalyse::PNGFileAnalyse::PNGTag, 1);
 		tag->ofst = ofst + 4;
@@ -101,11 +101,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags->GetItem(index);
 	if (tag == 0)
 		return false;
-	sb->AppendI64(tag->ofst);
+	sb->AppendU64(tag->ofst);
 	sb->Append((const UTF8Char*)": Type=");
 	sb->AppendC((UTF8Char*)&tag->tagType, 4);
 	sb->Append((const UTF8Char*)", size=");
-	sb->AppendOSInt(tag->size);
+	sb->AppendUOSInt(tag->size);
 	sb->Append((const UTF8Char*)", CRC=0x");
 	sb->AppendHex32(tag->crc);
 	return true;
@@ -118,11 +118,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	if (tag == 0)
 		return false;
 	sb->Append((const UTF8Char*)"Tag");
-	sb->AppendOSInt(index);
+	sb->AppendUOSInt(index);
 	sb->Append((const UTF8Char*)"\r\nTagType = ");
 	sb->AppendC((UTF8Char*)&tag->tagType, 4);
 	sb->Append((const UTF8Char*)"\r\nSize = ");
-	sb->AppendOSInt(tag->size);
+	sb->AppendUOSInt(tag->size);
 	sb->Append((const UTF8Char*)"\r\nCRC = 0x");
 	sb->AppendHex32(tag->crc);
 	if (tag->tagType == *(Int32*)"IHDR")
@@ -253,7 +253,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	}
 	else if (tag->tagType == *(Int32*)"iCCP")
 	{
-		OSInt i;
+		UOSInt i;
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((Char*)&tagData[8]) + 9;
@@ -269,7 +269,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			sb->Append((const UTF8Char*)"\r\nAdditional flags = ");
 			sb->AppendU16(tagData[i + 2]);
 			sb->Append((const UTF8Char*)"\r\nCheck value = 0x");
-			sb->AppendHex32(ReadMInt32(&tagData[tag->size - 8]));
+			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
 			IO::MemoryStream *mstm;
 			IO::IStreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
@@ -296,8 +296,8 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		if (tag->size <= 768 + 12 && (tag->size % 3) == 0)
 		{
-			OSInt i;
-			OSInt j;
+			UOSInt i;
+			UOSInt j;
 			tagData = MemAlloc(UInt8, tag->size - 12);
 			this->fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
 			i = 0;
@@ -305,7 +305,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			while (j < tag->size - 12)
 			{
 				sb->Append((const UTF8Char*)"\r\nEntry ");
-				sb->AppendOSInt(i);
+				sb->AppendUOSInt(i);
 				sb->AppendChar(' ', 1);
 				sb->AppendChar('R', 1);
 				sb->AppendU16(tagData[j + 0]);

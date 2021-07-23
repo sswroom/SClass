@@ -128,7 +128,7 @@ namespace Media
 		virtual void SetVDPI(Double dpi);
 		virtual UInt8 *GetImgBits(Bool *revOrder);
 		virtual void GetImgBitsEnd(Bool modified);
-		virtual OSInt GetImgBpl();
+		virtual UOSInt GetImgBpl();
 		virtual Media::EXIFData *GetEXIF();
 		virtual Media::PixelFormat GetPixelFormat();
 
@@ -173,7 +173,7 @@ namespace Media
 		void GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
 		void GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height);
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown);
 
 		virtual Media::StaticImage *ToStaticImage();
 		virtual UOSInt SavePng(IO::SeekableStream *stm);
@@ -182,7 +182,7 @@ namespace Media
 
 		virtual Media::Image *Clone();
 		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl);
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
 		virtual Int32 GetPixel32(OSInt x, OSInt y);
 
 		static void PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height);

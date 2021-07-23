@@ -1042,7 +1042,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, M
 	Sync::MutexUsage mutUsage(this->filterMut);
 	this->filter->SetParameter((setting->brightness - 1.0) * setting->contrast, setting->contrast, setting->gamma, srcImg->info->color, srcImg->info->storeBPP, srcImg->info->pf, (setting->flags & 240) >> 4);
 	this->filter->SetGammaCorr(gammaParam, gammaCnt);
-	this->filter->ProcessImage(srcImg->data, destImg->data, srcImg->info->dispWidth, srcImg->info->dispHeight, (OSInt)(srcImg->info->storeWidth * (srcImg->info->storeBPP >> 3)), (OSInt)(destImg->info->storeWidth * (srcImg->info->storeBPP >> 3)));
+	this->filter->ProcessImage(srcImg->data, destImg->data, srcImg->info->dispWidth, srcImg->info->dispHeight, (srcImg->info->storeWidth * (srcImg->info->storeBPP >> 3)), (destImg->info->storeWidth * (srcImg->info->storeBPP >> 3)), false);
 	mutUsage.EndUse();
 }
 
@@ -1052,12 +1052,12 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	Media::DrawImage *destImg = img->previewImg2;
 	UOSInt sWidth = srcImg->GetWidth();
 	UOSInt sHeight = srcImg->GetHeight();
-	OSInt sbpl = srcImg->GetImgBpl();
+	UOSInt sbpl = srcImg->GetImgBpl();
 	Bool srev;
 	UInt8 *sptr = srcImg->GetImgBits(&srev);
 	UOSInt dWidth = destImg->GetWidth();
 	UOSInt dHeight = destImg->GetHeight();
-	OSInt dbpl = destImg->GetImgBpl();
+	UOSInt dbpl = destImg->GetImgBpl();
 	Bool drev;
 	UInt8 *dptr = destImg->GetImgBits(&drev);
 
@@ -1079,8 +1079,8 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	Sync::MutexUsage mutUsage(this->filterMut);
 	this->filter->SetParameter((img->setting.brightness - 1.0) * img->setting.contrast, img->setting.contrast, img->setting.gamma, srcImg->GetColorProfile(), srcImg->GetBitCount(), srcImg->GetPixelFormat(), (img->setting.flags & 240) >> 4);
 	this->filter->SetGammaCorr(gammaParam, gammaCnt);
-	this->filter->ProcessImage(sptr, tmpBuff, sWidth, sHeight, sbpl, sbpl);
-	this->dispResizer->Resize(tmpBuff, sbpl, Math::UOSInt2Double(sWidth), Math::UOSInt2Double(sHeight), 0, 0, dptr, dbpl, dWidth, dHeight);
+	this->filter->ProcessImage(sptr, tmpBuff, sWidth, sHeight, sbpl, sbpl, srev ^ drev);
+	this->dispResizer->Resize(tmpBuff, (OSInt)sbpl, Math::UOSInt2Double(sWidth), Math::UOSInt2Double(sHeight), 0, 0, dptr, (OSInt)dbpl, dWidth, dHeight);
 	mutUsage.EndUse();
 	MemFreeA(tmpBuff);
 	srcImg->GetImgBitsEnd(false);

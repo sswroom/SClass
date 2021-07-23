@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Text/MyString.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
@@ -41,7 +42,7 @@ UI::GUITabControl::~GUITabControl()
 {
 	UI::GUITabPage *tp;
 	PageInfo *page;
-	OSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
 		tp = this->tabPages->GetItem(i);
@@ -67,10 +68,10 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
 	OSInt x;
 	OSInt y;
-	OSInt w;
-	OSInt h;
+	UOSInt w;
+	UOSInt h;
 	this->GetTabPageRect(&x, &y, &w, &h);
-	tp->SetRect(0, 0, w, h, false);
+	tp->SetRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
 	this->tabPages->Add(tp);
@@ -81,7 +82,7 @@ void UI::GUITabControl::SetSelectedIndex(UOSInt index)
 {
 	if (this->selIndex != index)
 	{
-		gtk_notebook_set_current_page((GtkNotebook*)this->hwnd, index);
+		gtk_notebook_set_current_page((GtkNotebook*)this->hwnd, (gint)(OSInt)index);
 		this->EventSelChange(index);
 	}
 }
@@ -125,7 +126,7 @@ UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 	return Text::StrConcat(buff, page->txt);
 }
 
-void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, OSInt *w, OSInt *h)
+void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 {
 	UOSInt width;
 	UOSInt height;
@@ -150,7 +151,7 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, OSInt *w, OSInt *h)
 	if (w)
 		*w = width - 2;
 	if (h)
-		*h = height - btnH - 2;
+		*h = height - (UOSInt)btnH - 2;
 }
 
 void *UI::GUITabControl::GetTabPageFont()
@@ -178,8 +179,8 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 
 	UOSInt w1;
 	UOSInt h1;
-	OSInt w2;
-	OSInt h2;
+	UOSInt w2;
+	UOSInt h2;
 	GetSizeP(&w1, &h1);
 	GetTabPageRect(0, 0, &w2, &h2);
 	i = this->tabPages->GetCount();
@@ -228,7 +229,7 @@ void UI::GUITabControl::EventSelChange(UOSInt index)
 	if (this->selIndex != index)
 	{
 		this->selIndex = index;
-		OSInt i;
+		UOSInt i;
 		i = this->selChgHdlrs->GetCount();
 		while (i-- > 0)
 		{

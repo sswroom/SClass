@@ -28,7 +28,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	Media::DrawImage *tmpBmp;
 	if (w >= itemW)
 	{
-		tmpBmp = deng->CreateImage32(Math::Double2Int32(110 * hdpi / ddpi), itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32((UInt32)Math::Double2Int32(110 * hdpi / ddpi), itemH, Media::AT_NO_ALPHA);
 	}
 	else if (w >= 10)
 	{

@@ -248,7 +248,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	}
 	this->surfaceBuff = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
 	this->surfaceBuff2 = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
-	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar *)this->surfaceBuff2, GDK_COLORSPACE_RGB, true, 8, this->surfaceW, this->surfaceH, this->surfaceW * 4, 0, 0);
+	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar *)this->surfaceBuff2, GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
 	if (buf == 0)
 	{
 		MemFreeA(this->surfaceBuff);
@@ -283,7 +283,7 @@ Bool UI::GUIDDrawControl::CreateClipper(void *lpDD)
 	return false;
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OSInt *bpl)
+UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
 {
 	if (this->surfaceW == targetWidth && this->surfaceH == targetHeight)
 	{
@@ -297,7 +297,7 @@ void UI::GUIDDrawControl::LockSurfaceEnd()
 {
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(OSInt *bpl)
+UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
 {
 	return 0;
 }
@@ -383,7 +383,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	if (this->surfaceBuff && this->surfaceBuff2)
 	{
 //		printf("Draw to screen 1\r\n");
-		ImageUtil_ConvR8G8B8N8_ARGB32((const UTF8Char*)this->surfaceBuff, (UTF8Char*)this->surfaceBuff2, this->surfaceW, this->surfaceH, this->surfaceW * 4, this->surfaceW * 4);
+		ImageUtil_ConvR8G8B8N8_ARGB32((const UTF8Char*)this->surfaceBuff, (UTF8Char*)this->surfaceBuff2, this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
 		if (this->focusing)
 		{
 
@@ -436,11 +436,11 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			}
 			if (tlx + drawW > (OSInt)this->surfaceW)
 			{
-				drawW = this->surfaceW - tlx;
+				drawW = (OSInt)this->surfaceW - tlx;
 			}
 			if (tly + drawH > (OSInt)this->surfaceH)
 			{
-				drawH = this->surfaceH - tly;
+				drawH = (OSInt)this->surfaceH - tly;
 			}
 			if (drawW > 0 && drawH > 0)
 			{
@@ -454,12 +454,12 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 				}
 				if (tlx + drawW < (OSInt)this->surfaceW)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2 + (tlx + drawW) * 4, this->surfaceW - tlx - drawW, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2 + (tlx + drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
-				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * this->surfaceW * 4 + tlx * 4 + (UInt8*)this->surfaceBuff2, drawW, drawH, bpl, this->surfaceW * 4);
+				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + (UInt8*)this->surfaceBuff2, (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
 				if (tly + drawH < (OSInt)this->surfaceH)
 				{
-					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2 + this->surfaceW * 4 * (tly + drawH), this->surfaceW * (this->surfaceH - tly - drawH), 0xffcccccc);
+					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2 + (OSInt)this->surfaceW * 4 * (tly + drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - drawH), 0xffcccccc);
 				}
 			}
 			else

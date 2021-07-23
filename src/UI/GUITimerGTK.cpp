@@ -21,7 +21,7 @@ UI::GUITimer::GUITimer(UI::GUICore *ui, UI::GUIForm *parent, UOSInt id, UInt32 i
 
 UI::GUITimer::~GUITimer()
 {
-	g_source_remove(this->id);
+	g_source_remove((guint)this->id);
 }
 
 void UI::GUITimer::OnTick()

@@ -24,7 +24,7 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	{
 		this->selected = false;
 	}
-	OSInt i = this->selectedChangeHdlrs->GetCount();
+	UOSInt i = this->selectedChangeHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->selectedChangeHdlrs->GetItem(i)(this->selectedChangeObjs->GetItem(i), this->selected);
@@ -38,8 +38,8 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 	NEW_CLASS(this->selectedChangeObjs, Data::ArrayList<void *>());
 
 	GUIRadioButton *radioBtn = 0;
-	OSInt i = 0;
-	OSInt j = this->parent->GetChildCount();
+	UOSInt i = 0;
+	UOSInt j = this->parent->GetChildCount();
 	while (i < j)
 	{
 		UI::GUIControl *ctrl = this->parent->GetChild(i);

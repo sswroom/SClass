@@ -5,7 +5,7 @@
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 
-UI::GUITabPage::GUITabPage(UI::GUICore *ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, OSInt index) : UI::GUIPanel(ui, ctrl->GetHandle())
+UI::GUITabPage::GUITabPage(UI::GUICore *ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, UOSInt index) : UI::GUIPanel(ui, ctrl->GetHandle())
 {
 	this->ctrl = ctrl;
 	this->index = index;

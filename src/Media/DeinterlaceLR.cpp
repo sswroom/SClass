@@ -300,13 +300,13 @@ void Media::DeinterlaceLR::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField
 			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * thisLine;
+			stats[i].outPt = dest + dstep * (OSInt)thisLine;
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = evenParam.tap;
 			stats[i].index = evenParam.index + thisLine * evenParam.tap;
 			stats[i].weight = evenParam.weight + thisLine * evenParam.tap;
-			stats[i].sstep = this->fieldSep;
+			stats[i].sstep = (OSInt)this->fieldSep;
 			stats[i].dstep = dstep;
 
 			stats[i].status = 6;

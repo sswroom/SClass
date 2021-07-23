@@ -14,8 +14,8 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 	IO::Device::DensoWaveQK30U *me = (IO::Device::DensoWaveQK30U*)userObj;
 	UInt8 buff[256];
 	UTF8Char *sbuff;
-	OSInt recvSize;
-	OSInt i;
+	UOSInt recvSize;
+	UOSInt i;
 	Bool found;
 	me->recvRunning = true;
 	sbuff = MemAlloc(UTF8Char, RECVBUFFSIZE + 1);
@@ -130,14 +130,14 @@ void IO::Device::DensoWaveQK30U::ToIdleMode()
 	}
 }
 
-Bool IO::Device::DensoWaveQK30U::WaitForReply(Int32 timeToWait)
+Bool IO::Device::DensoWaveQK30U::WaitForReply(UInt32 timeToWait)
 {
 	Data::DateTime startTime;
 	Data::DateTime currTime;
 	Int32 t;
-	OSInt currBuffSize = 0;
-	OSInt startIndex;
-	OSInt i;
+	UOSInt currBuffSize = 0;
+	UOSInt startIndex;
+	UOSInt i;
 	startTime.SetCurrTimeUTC();
 	i = 0;
 	while (true)
@@ -161,22 +161,22 @@ Bool IO::Device::DensoWaveQK30U::WaitForReply(Int32 timeToWait)
 				i++;
 			}
 		}
-		if (t >= timeToWait)
+		if (t >= (Int32)timeToWait)
 		{
 			return false;
 		}
-		this->recvEvt->Wait(timeToWait - t);
+		this->recvEvt->Wait(timeToWait - (UInt32)t);
 	}
 }
 
-Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(Int32 timeToWait, Int32 *retVal)
+Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(UInt32 timeToWait, Int32 *retVal)
 {
 	Data::DateTime startTime;
 	Data::DateTime currTime;
 	Int32 t;
-	OSInt currBuffSize = 0;
-	OSInt startIndex;
-	OSInt i;
+	UOSInt currBuffSize = 0;
+	UOSInt startIndex;
+	UOSInt i;
 	startTime.SetCurrTimeUTC();
 	i = 0;
 	while (true)
@@ -197,11 +197,11 @@ Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(Int32 timeToWait, Int32 *retVal
 				i++;
 			}
 		}
-		if (t >= timeToWait)
+		if (t >= (Int32)timeToWait)
 		{
 			return false;
 		}
-		this->recvEvt->Wait(timeToWait - t);
+		this->recvEvt->Wait(timeToWait - (UInt32)t);
 	}
 }
 
@@ -479,7 +479,130 @@ IO::Device::DensoWaveQK30U::CommandType IO::Device::DensoWaveQK30U::GetCommandPa
 {
 	switch (dcmd)
 	{
-	case 0:
+	case DC_GET_READ_MODE:
+	case DC_SET_READ_MODE:
+	case DC_GET_BW_MODE:
+	case DC_SET_BW_MODE:
+	case DC_GET_READ_REPEAT_TIME:
+	case DC_SET_READ_REPEAT_TIME:
+	case DC_GET_BRIGHTNESS:
+	case DC_SET_BRIGHTNESS:
+	case DC_GET_SHT_SIGNAL:
+	case DC_SET_SHT_SIGNAL:
+	case DC_GET_SCAN_MODE:
+	case DC_SET_SCAN_MODE:
+	case DC_GET_SHUTTER_TIME:
+	case DC_SET_SHUTTER_TIME:
+	case DC_GET_GAIN:
+	case DC_SET_GAIN:
+	case DC_GET_LED_LEVEL:
+	case DC_SET_LED_LEVEL:
+	case DC_GET_LED_MODE:
+	case DC_SET_LED_MODE:
+	case DC_GET_OUTPUT_TIMING:
+	case DC_SET_OUTPUT_TIMING:
+	case DC_GET_UNREAD_DATA_SEND:
+	case DC_SET_UNREAD_DATA_SEND:
+	case DC_GET_INDIR_TIME:
+	case DC_SET_INDIR_TIME:
+	case DC_GET_TRIGGER_DELAY:
+	case DC_SET_TRIGGER_DELAY:
+	case DC_GET_SIGNAL_ON_DUR:
+	case DC_SET_SIGNAL_ON_DUR:
+	case DC_GET_SIGNAL_DELAY:
+	case DC_SET_SIGNAL_DELAY:
+	case DC_GET_LIGHT_LED:
+	case DC_SET_LIGHT_LED:
+	case DC_GET_MARKER_LIGHT:
+	case DC_SET_MARKER_LIGHT:
+	case DC_GET_DECODE_TIME_LIMIT:
+	case DC_SET_DECODE_TIME_LIMIT:
+	case DC_GET_OUTPUT1_TYPE:
+	case DC_SET_OUTPUT1_TYPE:
+	case DC_GET_OUTPUT2_TYPE:
+	case DC_SET_OUTPUT2_TYPE:
+	case DC_GET_AUTO_SENSE_MODE:
+	case DC_SET_AUTO_SENSE_MODE:
+	case DC_GET_CONT_READ_MODE_B:
+	case DC_SET_CONT_READ_MODE_B:
+	case DC_GET_QRCODE:
+	case DC_SET_QRCODE:
+	case DC_GET_MICRO_QRCODE:
+	case DC_SET_MICRO_QRCODE:
+	case DC_GET_PDF417:
+	case DC_SET_PDF417:
+	case DC_GET_DATAMATRIX:
+	case DC_SET_DATAMATRIX:
+	case DC_GET_BARCODE:
+	case DC_SET_BARCODE:
+	case DC_GET_INTERLEAVED_2OF5:
+	case DC_SET_INTERLEAVED_2OF5:
+	case DC_GET_CODABAR:
+	case DC_SET_CODABAR:
+	case DC_GET_CODABAR_START_STOP:
+	case DC_SET_CODEBAR_START_STOP:
+	case DC_GET_CODE39:
+	case DC_SET_CODE39:
+	case DC_GET_CODE128:
+	case DC_SET_CODE128:
+	case DC_GET_QRCODE_REVERSE:
+	case DC_SET_QRCODE_REVERSE:
+	case DC_GET_QRLINK_CODE:
+	case DC_SET_QRLINK_CODE:
+	case DC_GET_GS1_DATABAR:
+	case DC_SET_GS1_DATABAR:
+	case DC_GET_GS1_COMPOSITE:
+	case DC_SET_GS1_COMPOSITE:
+	case DC_GET_MICRO_PDF417:
+	case DC_SET_MICRO_PDF417:
+	case DC_GET_BARCODE_READ_MODE:
+	case DC_SET_BARCODE_READ_MODE:
+	case DC_GET_SQRC:
+	case DC_SET_SQRC:
+	case DC_GET_SQRC_KEY_UNMATCH:
+	case DC_SET_SQRC_KEY_UNMATCH:
+	case DC_GET_SQRC_KEY_MATCH:
+	case DC_SET_SQRC_KEY_MATCH:
+	case DC_GET_IQRCODE_SQUARE:
+	case DC_SET_IQRCODE_SQUARE:
+	case DC_GET_IQRCODE_RECT:
+	case DC_SET_IQRCODE_RECT:
+	case DC_GET_AZTEC_FULL:
+	case DC_SET_AZTEC_FULL:
+	case DC_GET_AZTEC_COMPACT:
+	case DC_SET_AZTEC_COMPACT:
+	case DC_GET_MENU_READ:
+	case DC_SET_MENU_READ:
+	case DC_GET_COMM_SEQ:
+	case DC_SET_COMM_SEQ:
+	case DC_GET_BAUD_RATE:
+	case DC_SET_BAUD_RATE:
+	case DC_GET_CODE_MARK:
+	case DC_SET_CODE_MARK:
+	case DC_GET_LINE_NUM:
+	case DC_SET_LINE_NUM:
+	case DC_GET_BCC:
+	case DC_SET_BCC:
+	case DC_GET_CTS_SIGNAL:
+	case DC_SET_CTS_SIGNAL:
+	case DC_GET_CTS_TIME:
+	case DC_SET_CTS_TIME:
+	case DC_GET_ACK_NAK_TIME:
+	case DC_SET_ACK_NAK_TIME:
+	case DC_GET_RECV_HDR:
+	case DC_SET_RECV_HDR:
+	case DC_GET_RECV_TERMINATOR:
+	case DC_GET_SEND_TERMINATOR:
+	case DC_GET_BUZZER:
+	case DC_SET_BUZZER:
+	case DC_GET_READ_ERR_BUZZER:
+	case DC_SET_READ_ERR_BUZZER:
+	case DC_GET_MAGIC_KEY:
+	case DC_SET_MAGIC_KEY:
+	case DC_GET_POWER_ON_BUZZER:
+	case DC_SET_POWER_ON_BUZZER:
+	case DC_GET_BUZZER_OFF:
+	case DC_SET_BUZZER_OFF:
 	default:
 		return IO::Device::DensoWaveQK30U::CT_UNKNOWN;
 	}
@@ -489,7 +612,130 @@ const UTF8Char *IO::Device::DensoWaveQK30U::GetCommandParamName(DeviceCommand dc
 {
 	switch (dcmd)
 	{
-	case 0:
+	case DC_GET_READ_MODE:
+	case DC_SET_READ_MODE:
+	case DC_GET_BW_MODE:
+	case DC_SET_BW_MODE:
+	case DC_GET_READ_REPEAT_TIME:
+	case DC_SET_READ_REPEAT_TIME:
+	case DC_GET_BRIGHTNESS:
+	case DC_SET_BRIGHTNESS:
+	case DC_GET_SHT_SIGNAL:
+	case DC_SET_SHT_SIGNAL:
+	case DC_GET_SCAN_MODE:
+	case DC_SET_SCAN_MODE:
+	case DC_GET_SHUTTER_TIME:
+	case DC_SET_SHUTTER_TIME:
+	case DC_GET_GAIN:
+	case DC_SET_GAIN:
+	case DC_GET_LED_LEVEL:
+	case DC_SET_LED_LEVEL:
+	case DC_GET_LED_MODE:
+	case DC_SET_LED_MODE:
+	case DC_GET_OUTPUT_TIMING:
+	case DC_SET_OUTPUT_TIMING:
+	case DC_GET_UNREAD_DATA_SEND:
+	case DC_SET_UNREAD_DATA_SEND:
+	case DC_GET_INDIR_TIME:
+	case DC_SET_INDIR_TIME:
+	case DC_GET_TRIGGER_DELAY:
+	case DC_SET_TRIGGER_DELAY:
+	case DC_GET_SIGNAL_ON_DUR:
+	case DC_SET_SIGNAL_ON_DUR:
+	case DC_GET_SIGNAL_DELAY:
+	case DC_SET_SIGNAL_DELAY:
+	case DC_GET_LIGHT_LED:
+	case DC_SET_LIGHT_LED:
+	case DC_GET_MARKER_LIGHT:
+	case DC_SET_MARKER_LIGHT:
+	case DC_GET_DECODE_TIME_LIMIT:
+	case DC_SET_DECODE_TIME_LIMIT:
+	case DC_GET_OUTPUT1_TYPE:
+	case DC_SET_OUTPUT1_TYPE:
+	case DC_GET_OUTPUT2_TYPE:
+	case DC_SET_OUTPUT2_TYPE:
+	case DC_GET_AUTO_SENSE_MODE:
+	case DC_SET_AUTO_SENSE_MODE:
+	case DC_GET_CONT_READ_MODE_B:
+	case DC_SET_CONT_READ_MODE_B:
+	case DC_GET_QRCODE:
+	case DC_SET_QRCODE:
+	case DC_GET_MICRO_QRCODE:
+	case DC_SET_MICRO_QRCODE:
+	case DC_GET_PDF417:
+	case DC_SET_PDF417:
+	case DC_GET_DATAMATRIX:
+	case DC_SET_DATAMATRIX:
+	case DC_GET_BARCODE:
+	case DC_SET_BARCODE:
+	case DC_GET_INTERLEAVED_2OF5:
+	case DC_SET_INTERLEAVED_2OF5:
+	case DC_GET_CODABAR:
+	case DC_SET_CODABAR:
+	case DC_GET_CODABAR_START_STOP:
+	case DC_SET_CODEBAR_START_STOP:
+	case DC_GET_CODE39:
+	case DC_SET_CODE39:
+	case DC_GET_CODE128:
+	case DC_SET_CODE128:
+	case DC_GET_QRCODE_REVERSE:
+	case DC_SET_QRCODE_REVERSE:
+	case DC_GET_QRLINK_CODE:
+	case DC_SET_QRLINK_CODE:
+	case DC_GET_GS1_DATABAR:
+	case DC_SET_GS1_DATABAR:
+	case DC_GET_GS1_COMPOSITE:
+	case DC_SET_GS1_COMPOSITE:
+	case DC_GET_MICRO_PDF417:
+	case DC_SET_MICRO_PDF417:
+	case DC_GET_BARCODE_READ_MODE:
+	case DC_SET_BARCODE_READ_MODE:
+	case DC_GET_SQRC:
+	case DC_SET_SQRC:
+	case DC_GET_SQRC_KEY_UNMATCH:
+	case DC_SET_SQRC_KEY_UNMATCH:
+	case DC_GET_SQRC_KEY_MATCH:
+	case DC_SET_SQRC_KEY_MATCH:
+	case DC_GET_IQRCODE_SQUARE:
+	case DC_SET_IQRCODE_SQUARE:
+	case DC_GET_IQRCODE_RECT:
+	case DC_SET_IQRCODE_RECT:
+	case DC_GET_AZTEC_FULL:
+	case DC_SET_AZTEC_FULL:
+	case DC_GET_AZTEC_COMPACT:
+	case DC_SET_AZTEC_COMPACT:
+	case DC_GET_MENU_READ:
+	case DC_SET_MENU_READ:
+	case DC_GET_COMM_SEQ:
+	case DC_SET_COMM_SEQ:
+	case DC_GET_BAUD_RATE:
+	case DC_SET_BAUD_RATE:
+	case DC_GET_CODE_MARK:
+	case DC_SET_CODE_MARK:
+	case DC_GET_LINE_NUM:
+	case DC_SET_LINE_NUM:
+	case DC_GET_BCC:
+	case DC_SET_BCC:
+	case DC_GET_CTS_SIGNAL:
+	case DC_SET_CTS_SIGNAL:
+	case DC_GET_CTS_TIME:
+	case DC_SET_CTS_TIME:
+	case DC_GET_ACK_NAK_TIME:
+	case DC_SET_ACK_NAK_TIME:
+	case DC_GET_RECV_HDR:
+	case DC_SET_RECV_HDR:
+	case DC_GET_RECV_TERMINATOR:
+	case DC_GET_SEND_TERMINATOR:
+	case DC_GET_BUZZER:
+	case DC_SET_BUZZER:
+	case DC_GET_READ_ERR_BUZZER:
+	case DC_SET_READ_ERR_BUZZER:
+	case DC_GET_MAGIC_KEY:
+	case DC_SET_MAGIC_KEY:
+	case DC_GET_POWER_ON_BUZZER:
+	case DC_SET_POWER_ON_BUZZER:
+	case DC_GET_BUZZER_OFF:
+	case DC_SET_BUZZER_OFF:
 	default:
 		return 0;
 	}

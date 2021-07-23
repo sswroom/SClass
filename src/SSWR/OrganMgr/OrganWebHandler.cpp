@@ -8065,7 +8065,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				}
 				if (this->csconv)
 				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				}
 				else
 				{
@@ -8349,7 +8349,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			}
 			if (this->csconv)
 			{
-				this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
 			else
 			{
@@ -8648,7 +8648,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 				}
 				if (this->csconv)
 				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				}
 				else
 				{

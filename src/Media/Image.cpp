@@ -208,7 +208,7 @@ Media::StaticImage *Media::Image::CreateStaticImage()
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl());
+	this->GetImageData(outImg->data, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), false);
 	if (this->pal)
 	{
 		UOSInt size;

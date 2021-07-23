@@ -16,7 +16,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
 	if (this->imgBuff && this->currImage && this->surfaceBuff)
 	{
-		OSInt bpl;
+		UOSInt bpl;
 		if (this->drawHdlrs->GetCount() > 0)
 		{
 			if (this->bgBuff == 0 || this->surfaceW != this->bgBuffW || this->surfaceH != this->bgBuffH)
@@ -332,7 +332,7 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(void *userObj)
 
 void UI::GUIPictureBoxDD::DrawFromBG()
 {
-	OSInt bpl;
+	UOSInt bpl;
 	UInt8 *dptr = this->LockSurfaceBegin(this->bgBuffW, this->bgBuffH, &bpl);
 	if (dptr)
 	{
@@ -564,7 +564,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			else
 			{
 				UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info->storeHeight);
-				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl());
+				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
 				this->csconv->ConvertV2(&imgData, this->imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
 				MemFreeA(imgData);
 			}
@@ -630,7 +630,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 		else
 		{
 			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info->storeHeight);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl());
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
 			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
 			MemFreeA(imgData);
 		}
@@ -683,7 +683,7 @@ void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 
 		else
 		{
 			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info->dispHeight);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl());
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
 			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
 			MemFreeA(imgData);
 		}
@@ -801,8 +801,8 @@ void UI::GUIPictureBoxDD::OnMouseMove(OSInt x, OSInt y)
 {
 	this->mouseCurrX = x;
 	this->mouseCurrY = y;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->mouseMoveHdlrs->GetCount();
 	while (i < j)
@@ -1037,8 +1037,8 @@ void UI::GUIPictureBoxDD::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt 
 
 void UI::GUIPictureBoxDD::EventMoveToNext()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->moveToNextHdlrs->GetCount();
 	while (i < j)
@@ -1050,8 +1050,8 @@ void UI::GUIPictureBoxDD::EventMoveToNext()
 
 void UI::GUIPictureBoxDD::EventMoveToPrev()
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = this->moveToPrevHdlrs->GetCount();
 	while (i < j)

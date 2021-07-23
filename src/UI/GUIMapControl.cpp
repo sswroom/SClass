@@ -63,8 +63,8 @@ Bool UI::GUIMapControl::OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
 		{
 			OSInt diffX = this->mouseCurrX - this->mouseDownX;
 			OSInt diffY = this->mouseCurrY - this->mouseDownY;
-			Double newCentX = this->currWidth * 0.5 - diffX;
-			Double newCentY = this->currHeight * 0.5 - diffY;
+			Double newCentX = Math::UOSInt2Double(this->currWidth) * 0.5 - Math::OSInt2Double(diffX);
+			Double newCentY = Math::UOSInt2Double(this->currHeight) * 0.5 - Math::OSInt2Double(diffY);
 			Double mapX;
 			Double mapY;
 			this->view->ScnXYToMapXY(newCentX, newCentY, &mapX, &mapY);
@@ -89,7 +89,7 @@ void UI::GUIMapControl::OnMouseMove(OSInt scnX, OSInt scnY)
 	{
 		OSInt x = scnX;
 		OSInt y = scnY;
-		OSInt i = this->mouseMoveHdlrs->GetCount();
+		UOSInt i = this->mouseMoveHdlrs->GetCount();
 		while (i-- > 0)
 		{
 			this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), x, y);
@@ -117,7 +117,7 @@ Bool UI::GUIMapControl::OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta)
 		this->view->SetMapScale(this->view->GetMapScale() * 0.5);
 	}
 	this->view->MapXYToScnXY(ptX, ptY, &newPtX, &newPtY);
-	this->view->ScnXYToMapXY(newPtX - scnX + (this->currWidth * 0.5), newPtY - scnY + (this->currHeight * 0.5), &ptX, &ptY);
+	this->view->ScnXYToMapXY(newPtX - Math::OSInt2Double(scnX) + (Math::UOSInt2Double(this->currWidth) * 0.5), newPtY - Math::OSInt2Double(scnY) + (Math::UOSInt2Double(this->currHeight) * 0.5), &ptX, &ptY);
 	this->view->SetCenterXY(ptX, ptY);
 	this->EventScaleChanged(this->view->GetMapScale());
 	this->UpdateMap();
@@ -161,9 +161,9 @@ void UI::GUIMapControl::OnGestureEnd(OSInt scnX, OSInt scnY, UInt64 dist)
 
 		this->gZoom = false;
 		this->view->ScnXYToMapXY(Math::OSInt2Double(this->gZoomX), Math::OSInt2Double(this->gZoomY), &ptX, &ptY);
-		this->view->SetMapScale(this->view->GetMapScale() * this->gZoomDist /(Double)dist);
+		this->view->SetMapScale(this->view->GetMapScale() * (Double)this->gZoomDist /(Double)dist);
 		this->view->MapXYToScnXY(ptX, ptY, &newPtX, &newPtY);
-		this->view->ScnXYToMapXY(newPtX - this->gZoomCurrX + (this->currWidth * 0.5), newPtY - this->gZoomCurrY + (this->currHeight * 0.5), &ptX, &ptY);
+		this->view->ScnXYToMapXY(newPtX - Math::OSInt2Double(this->gZoomCurrX) + (Math::UOSInt2Double(this->currWidth) * 0.5), newPtY - Math::OSInt2Double(this->gZoomCurrY) + (Math::UOSInt2Double(this->currHeight) * 0.5), &ptX, &ptY);
 		this->view->SetCenterXY(ptX, ptY);
 		this->EventScaleChanged(this->view->GetMapScale());
 		this->UpdateMap();
@@ -205,8 +205,8 @@ void UI::GUIMapControl::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt ax
 	{
 		OSInt diffX = axis1;
 		OSInt diffY = axis2;
-		Double newCentX = this->currWidth * 0.5 - diffX;
-		Double newCentY = this->currHeight * 0.5 - diffY;
+		Double newCentX = Math::UOSInt2Double(this->currWidth) * 0.5 - Math::OSInt2Double(diffX);
+		Double newCentY = Math::UOSInt2Double(this->currHeight) * 0.5 - Math::OSInt2Double(diffY);
 		Double mapX;
 		Double mapY;
 		this->view->ScnXYToMapXY(newCentX, newCentY, &mapX, &mapY);
@@ -263,8 +263,8 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		Media::StaticImage *drawImg = 0;
 		Media::StaticImage *srcImg;
 		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
-		OSInt w;
-		OSInt h;
+		UOSInt w;
+		UOSInt h;
 
 		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
@@ -287,10 +287,10 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			h = this->currHeight;
 			NEW_CLASS(drawImg, Media::StaticImage(this->currWidth, this->currHeight, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Double rate = (Double)this->gZoomDist / (Double)this->gZoomCurrDist;
-			Double srcW = this->currWidth * rate;
-			Double srcH = this->currHeight * rate;
-			Double srcX = this->gZoomX - this->gZoomCurrX * rate;
-			Double srcY = this->gZoomY - this->gZoomCurrY * rate;
+			Double srcW = Math::UOSInt2Double(this->currWidth) * rate;
+			Double srcH = Math::UOSInt2Double(this->currHeight) * rate;
+			Double srcX = Math::OSInt2Double(this->gZoomX) - Math::OSInt2Double(this->gZoomCurrX) * rate;
+			Double srcY = Math::OSInt2Double(this->gZoomY) - Math::OSInt2Double(this->gZoomCurrY) * rate;
 			drawImg->info->hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info->vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info->color->Set(this->colorSess->GetRGBParam()->monProfile);
@@ -300,37 +300,37 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 				tlx = -srcX / rate;
 				srcX = 0;
 			}
-			else if (srcX + srcW > this->currWidth)
+			else if (srcX + srcW > Math::UOSInt2Double(this->currWidth))
 			{
-				tlx = (this->currWidth - srcW - srcX) / rate;
-				srcX = this->currWidth - srcW;
+				tlx = (Math::UOSInt2Double(this->currWidth) - srcW - srcX) / rate;
+				srcX = Math::UOSInt2Double(this->currWidth) - srcW;
 			}
 			if (srcY < 0)
 			{
 				tly = -srcY / rate;
 				srcY = 0;
 			}
-			else if (srcY + srcH > this->currHeight)
+			else if (srcY + srcH > Math::UOSInt2Double(this->currHeight))
 			{
-				tly = (this->currHeight - srcH - srcY) / rate;
-				srcY = this->currHeight - srcH;
+				tly = (Math::UOSInt2Double(this->currHeight) - srcH - srcY) / rate;
+				srcY = Math::UOSInt2Double(this->currHeight) - srcH;
 			}
 			Int32 srcIX = (Int32)srcX;
 			Int32 srcIY = (Int32)srcY;
-			resizer.Resize((srcIX * 4) + (srcIY * (srcImg->info->storeWidth * 4)) + srcImg->data, srcImg->info->storeWidth * 4, srcW, srcH, srcX - srcIX, srcY - srcIY, drawImg->data, drawImg->info->storeWidth * 4, w, h);
+			resizer.Resize((srcIX * 4) + (srcIY * (OSInt)(srcImg->info->storeWidth * 4)) + srcImg->data, (OSInt)srcImg->info->storeWidth * 4, srcW, srcH, srcX - srcIX, srcY - srcIY, drawImg->data, (OSInt)drawImg->info->storeWidth * 4, w, h);
 		}
 		else
 		{
 			Double rate = (Double)this->gZoomCurrDist / (Double)this->gZoomDist;
-			w = Math::Double2Int32(this->currWidth * rate);
-			h = Math::Double2Int32(this->currHeight * rate);
-			tlx = this->gZoomCurrX - this->gZoomX * rate;
-			tly = this->gZoomCurrY - this->gZoomY * rate;
+			w = (UOSInt)Math::Double2OSInt(Math::UOSInt2Double(this->currWidth) * rate);
+			h = (UOSInt)Math::Double2OSInt(Math::UOSInt2Double(this->currHeight) * rate);
+			tlx = Math::OSInt2Double(this->gZoomCurrX) - Math::OSInt2Double(this->gZoomX) * rate;
+			tly = Math::OSInt2Double(this->gZoomCurrY) - Math::OSInt2Double(this->gZoomY) * rate;
 			NEW_CLASS(drawImg, Media::StaticImage(this->currWidth, this->currHeight, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			drawImg->info->hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info->vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info->color->Set(this->colorSess->GetRGBParam()->monProfile);
-			resizer.Resize(srcImg->data, srcImg->info->storeWidth * 4, Math::UOSInt2Double(this->currWidth), Math::UOSInt2Double(this->currHeight), 0, 0, drawImg->data, drawImg->info->storeWidth * 4, w, h);
+			resizer.Resize(srcImg->data, (OSInt)srcImg->info->storeWidth * 4, Math::UOSInt2Double(this->currWidth), Math::UOSInt2Double(this->currHeight), 0, 0, drawImg->data, (OSInt)drawImg->info->storeWidth * 4, w, h);
 		}
 		mutUsage.EndUse();
 		DEL_CLASS(srcImg);
@@ -344,17 +344,17 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		{
 			img->DrawRect(0, 0, tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
-		if (tlx + w < this->currWidth)
+		if (tlx + Math::UOSInt2Double(w) < Math::UOSInt2Double(this->currWidth))
 		{
-			img->DrawRect(w + tlx, 0, this->currWidth - w - tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
+			img->DrawRect(Math::UOSInt2Double(w) + tlx, 0, Math::UOSInt2Double(this->currWidth - w) - tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
 		if (tly > 0)
 		{
 			img->DrawRect(0, 0, Math::UOSInt2Double(this->currWidth), tly, 0, bgBrush);
 		}
-		if (tly + h < this->currHeight)
+		if (tly + Math::UOSInt2Double(h) < Math::UOSInt2Double(this->currHeight))
 		{
-			img->DrawRect(0, h + tly, Math::UOSInt2Double(this->currWidth), this->currHeight - h - tly, 0, bgBrush);
+			img->DrawRect(0, Math::UOSInt2Double(h) + tly, Math::UOSInt2Double(this->currWidth), Math::UOSInt2Double(this->currHeight - h) - tly, 0, bgBrush);
 		}
 		img->DelBrush(bgBrush);
 	}
@@ -367,7 +367,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		}
 		else if (tlx < 0)
 		{
-			img->DrawRect(this->currWidth + tlx, 0, -tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
+			img->DrawRect(Math::UOSInt2Double(this->currWidth) + tlx, 0, -tlx, Math::UOSInt2Double(this->currHeight), 0, bgBrush);
 		}
 		if (tly > 0)
 		{
@@ -375,7 +375,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		}
 		else if (tly < 0)
 		{
-			img->DrawRect(0, this->currHeight + tly, Math::UOSInt2Double(this->currWidth), -tly, 0, bgBrush);
+			img->DrawRect(0, Math::UOSInt2Double(this->currHeight) + tly, Math::UOSInt2Double(this->currWidth), -tly, 0, bgBrush);
 		}
 		img->DelBrush(bgBrush);
 

@@ -104,6 +104,7 @@ const UTF8Char *Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Boo
 		return (const UTF8Char*)"byte[]";
 	case DB::DBUtil::CT_Vector:
 		return (const UTF8Char*)"Geometry";
+	case DB::DBUtil::CT_Unknown:
 	default:
 		return (const UTF8Char*)"?";
 	}

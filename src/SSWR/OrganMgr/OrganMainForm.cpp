@@ -536,7 +536,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, OSIn
 	return false;
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *imgPtr, OSInt w, OSInt h, OSInt bpl)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	Double x1;

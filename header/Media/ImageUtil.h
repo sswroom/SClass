@@ -11,12 +11,12 @@ extern "C"
 	void ImageUtil_ImageColorReplace32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, UInt32 col); //Replace non-zero color to specific color
 	void ImageUtil_ImageMaskABlend32(const UInt8 *maskPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, UInt32 col);
 	void ImageUtil_ImageMask2ABlend32(const UInt8 *maskPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, UInt32 col1, UInt32 col2);
-	void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UOSInt buffSize);
-	void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt32 col);
-	void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt32 col);
-	void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt8 a);
-	void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt32 a); //65536 = 1.0
-	void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt32 c);
+	void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UOSInt buffSize);
+	void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 col);
+	void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 col);
+	void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt8 a);
+	void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 a); //65536 = 1.0
+	void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 c);
 	void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt32 col); //no alpha
 	void ImageUtil_ConvP1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal);
 	void ImageUtil_ConvP2_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal);

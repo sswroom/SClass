@@ -21,8 +21,8 @@ OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UIn
 	case 0:
 		{
 			cairo_t *cr = (cairo_t*)lParam;
-			UInt32 w = gtk_widget_get_allocated_width((GtkWidget*)me->hwnd);
-			UInt32 h = gtk_widget_get_allocated_height((GtkWidget*)me->hwnd);
+			UInt32 w = (UInt32)gtk_widget_get_allocated_width((GtkWidget*)me->hwnd);
+			UInt32 h = (UInt32)gtk_widget_get_allocated_height((GtkWidget*)me->hwnd);
 			Media::DrawImage *scn = ((Media::GTKDrawEngine*)me->eng)->CreateImageScn(cr, 0, 0, w, h);
 			me->OnPaint(scn);
 			me->eng->DeleteImage(scn);
@@ -115,8 +115,8 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
 	if (sz[0] > strWidth)
 		strWidth = sz[0];
-	img->DrawString(0, dimg->GetHeight() - sz[1], sbuff, f, b);
-	img->DrawLine(strWidth, 0, strWidth, Math::OSInt2Double(dimg->GetHeight()), p);
+	img->DrawString(0, Math::UOSInt2Double(dimg->GetHeight()) - sz[1], sbuff, f, b);
+	img->DrawLine(strWidth, 0, strWidth, Math::UOSInt2Double(dimg->GetHeight()), p);
 	img->DelBrush(b);
 	img->DelPen(p);
 	img->DelFont(f);
@@ -132,8 +132,8 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 		l = 0;
 		while (l < this->sampleCnt)
 		{
-			thisX = l * (dimg->GetWidth() - strWidth - 1) / this->sampleCnt;
-			thisY = dimg->GetHeight() - 1 - ((this->chartVal[i] - this->chartMin) * (dimg->GetHeight() - 1) / (this->chartMax - this->chartMin));
+			thisX = Math::UOSInt2Double(l) * (Math::UOSInt2Double(dimg->GetWidth()) - strWidth - 1) / Math::UOSInt2Double(this->sampleCnt);
+			thisY = Math::UOSInt2Double(dimg->GetHeight()) - 1 - ((this->chartVal[i] - this->chartMin) * (Math::UOSInt2Double(dimg->GetHeight()) - 1) / (this->chartMax - this->chartMin));
 			if (lastX > 0)
 			{
 				img->DrawLine(lastX + strWidth + 1, lastY, thisX + strWidth + 1, thisY, p);
@@ -196,12 +196,12 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientCon
 	this->Show();
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUIRealtimeLineChart_Draw), this);
 
-	this->clsData = (void*)(OSInt)g_timeout_add(updateInterval, GUIRealtimeLineChart_OnTick, this);
+	this->clsData = (void*)(UOSInt)g_timeout_add(updateInterval, GUIRealtimeLineChart_OnTick, this);
 }
 
 UI::GUIRealtimeLineChart::~GUIRealtimeLineChart()
 {
-	g_source_remove((OSInt)this->clsData);
+	g_source_remove((guint)(UOSInt)this->clsData);
 	DEL_CLASS(this->chartMut);
 	MemFree(this->chartVal);
 	SDEL_TEXT(this->unit);

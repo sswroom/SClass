@@ -177,7 +177,7 @@ namespace SSWR
 			static Bool __stdcall OnImgMouseDown(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
 			static Bool __stdcall OnImgMouseUp(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
 			static Bool __stdcall OnImgMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
-			static void __stdcall OnImgDraw(void *userObj, UInt8 *imgPtr, OSInt w, OSInt h, OSInt bpl);
+			static void __stdcall OnImgDraw(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 			static void __stdcall OnImgDblClicked(void *userObj);
 			static void __stdcall OnImgDirClicked(void *userObj);
 			static void __stdcall OnImageRotateClicked(void *userObj);

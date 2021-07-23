@@ -297,12 +297,12 @@ UOSInt Map::OSM::OSMLocalTileMap::GetLevelCount()
 
 Double Map::OSM::OSMLocalTileMap::GetLevelScale(UOSInt index)
 {
-	return 204094080000.0 / this->tileWidth / (1 << index);
+	return 204094080000.0 / Math::UOSInt2Double(this->tileWidth) / (1 << index);
 }
 
 UOSInt Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale)
 {
-	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / this->tileWidth) / Math::Log10(2));
+	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math::Log10(2));
 	if (level < 0)
 		level = 0;
 	else if (level >= (Int32)GetLevelCount())

@@ -586,6 +586,6 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(Me
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + srcImage->GetDataBpl() * tly + (tlx << 3), srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, img->GetDataBpl(), destInfo.dispWidth, destInfo.dispHeight);
+	Resize(srcImage->data + (OSInt)srcImage->GetDataBpl() * tly + (tlx << 3), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, (OSInt)img->GetDataBpl(), destInfo.dispWidth, destInfo.dispHeight);
 	return img;
 }

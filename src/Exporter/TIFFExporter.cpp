@@ -862,7 +862,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		UOSInt imgSize = img->info->dispHeight * ((img->info->dispWidth * img->info->storeBPP + 7) >> 3);
 		UInt8 *imgData;
 		imgData = MemAlloc(UInt8, imgSize);
-		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, (OSInt)(img->info->dispWidth * img->info->storeBPP + 7) >> 3);
+		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, (img->info->dispWidth * img->info->storeBPP + 7) >> 3, false);
 		switch (img->info->pf)
 		{
 		case Media::PF_B8G8R8A8:

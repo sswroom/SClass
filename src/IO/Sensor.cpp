@@ -38,6 +38,7 @@ const UTF8Char *IO::Sensor::GetSensorTypeName(SensorType sensorType)
 		return (const UTF8Char*)"Magnetometer";
 	case ST_ORIENTATION:
 		return (const UTF8Char*)"Orientation";
+	case ST_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

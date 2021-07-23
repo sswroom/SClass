@@ -28,7 +28,7 @@ namespace Media
 
 		virtual Media::Image *Clone();
 		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl);
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
 
 		Bool To32bpp();
 		Bool To64bpp();

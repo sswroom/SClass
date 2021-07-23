@@ -30,8 +30,8 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, 
 	if (converter)
 	{
 		cv::Mat *fr;
-		fr = new cv::Mat(dispHeight, dispWidth, CV_8UC1);
-		converter->ConvertV2(imgData, fr->ptr(0), dispWidth, dispHeight, storeWidth, dispHeight, dispWidth, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+		fr = new cv::Mat((int)dispHeight, (int)dispWidth, CV_8UC1);
+		converter->ConvertV2(imgData, fr->ptr(0), dispWidth, dispHeight, storeWidth, dispHeight, (OSInt)dispWidth, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 
 		DEL_CLASS(converter);
 		Media::OpenCV::OCVFrame *frame;
@@ -47,7 +47,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, 
 		else
 		{
 			UTF8Char sbuff[5];
-			*(Int32*)sbuff = fourcc;
+			*(UInt32*)sbuff = fourcc;
 			sbuff[4] = 0;
 			printf("OCVFrame: Unsupported Format: %s\r\n", sbuff);
 		}

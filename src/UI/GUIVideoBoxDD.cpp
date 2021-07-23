@@ -67,7 +67,7 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 	this->CalDisplayRect(vwidth, vheight, rect);
 	if (rect[2] == (OSInt)vbuff->destW && rect[3] == (OSInt)vbuff->destH && this->surfaceBuff && vbuff->destBitDepth == this->bitDepth)
 	{
-		OSInt dlineSize;
+		UOSInt dlineSize;
 		UInt8 *dptr = this->LockSurfaceDirect(&dlineSize);
 		if (dptr)
 		{
@@ -630,7 +630,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				}
 				if (tstat->deint == 0)
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, (OSInt)srcWidth << 4));
+					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 4));
 				}
 				else
 				{

@@ -123,20 +123,20 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 
 	if (dType == Media::IDeintResizer::DT_TOP_FIELD)
 	{
-		if (swidth != dwidth)
+		if (swidth != Math::UOSInt2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > dwidth)
+				if (swidth > Math::UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, 0);
+					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth,&prm, 8, 0);
+					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth,&prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -150,69 +150,69 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVertO();
 
-				if (sheight > dheight)
+				if (sheight > Math::UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
+					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
+					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
 				}
 				osSize = sheight;
 				odSize = dheight;
-				osStep = dwidth << 3;
+				osStep = (OSInt)dwidth << 3;
 				oIndex = prm.index;
 				oWeight = prm.weight;
 				oTap = prm.tap;
 				this->oFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, oFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, oFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else
 		{
 			Sync::MutexUsage mutUsage(mut);
-			if (osSize != sheight || odSize != dheight || osStep != sbpl)
+			if (osSize != sheight || odSize != dheight || osStep != (OSInt)sbpl)
 			{
 				DestoryVertO();
 
-				if (sheight > dheight)
+				if (sheight > Math::UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sstep, 0.25);
+					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sstep, 0.25);
+					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0.25);
 				}
 				osSize = sheight;
 				odSize = dheight;
-				osStep = sbpl;
+				osStep = (OSInt)sbpl;
 				oIndex = prm.index;
 				oWeight = prm.weight;
 				oTap = prm.tap;
 				oFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
-			action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, oFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, oFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 	}
 	else if (dType == Media::IDeintResizer::DT_BOTTOM_FIELD)
 	{
-		if (swidth != dwidth)
+		if (swidth != Math::UOSInt2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > dwidth)
+				if (swidth > Math::UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, 0);
+					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth,&prm, 8, 0);
+					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth,&prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -226,69 +226,69 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVertE();
 
-				if (sheight > dheight)
+				if (sheight > Math::UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
+					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
+					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
 				}
 				esSize = sheight;
 				edSize = dheight;
-				esStep = dwidth << 3;
+				esStep = (OSInt)dwidth << 3;
 				eIndex = prm.index;
 				eWeight = prm.weight;
 				eTap = prm.tap;
 				eFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, eFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, eFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else
 		{
 			Sync::MutexUsage mutUsage(mut);
-			if (esSize != sheight || edSize != dheight || esStep != sbpl)
+			if (esSize != sheight || edSize != dheight || esStep != (OSInt)sbpl)
 			{
 				DestoryVertE();
 
-				if (sheight > dheight)
+				if (sheight > Math::UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sstep, -0.25);
+					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, -0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sstep, -0.25);
+					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, -0.25);
 				}
 				esSize = sheight;
 				edSize = dheight;
-				esStep = sbpl;
+				esStep = (OSInt)sbpl;
 				eIndex = prm.index;
 				eWeight = prm.weight;
 				eTap = prm.tap;
 				eFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
-			action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, eFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, eFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 	}
 	else
 	{
-		if (swidth != dwidth && sheight != dheight)
+		if (swidth != Math::UOSInt2Double(dwidth) && sheight != Math::UOSInt2Double(dheight))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > dwidth)
+				if (swidth > Math::UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, 0);
+					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth,&prm, 8, 0);
+					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth,&prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -302,40 +302,40 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVert();
 
-				if (sheight > dheight)
+				if (sheight > Math::UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
+					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
+					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
 				}
 				vsSize = sheight;
 				vdSize = dheight;
-				vsStep = dwidth << 3;
+				vsStep = (OSInt)dwidth << 3;
 				vIndex = prm.index;
 				vWeight = prm.weight;
 				vTap = prm.tap;
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, siHeight, dheight, hFilter, vFilter, sstep, sstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, sstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
-		else if (swidth != dwidth)
+		else if (swidth != Math::UOSInt2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (hsSize != swidth || hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > dwidth)
+				if (swidth > Math::UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, 0);
+					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, 0);
+					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -348,36 +348,36 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
-		else if (sheight != dheight)
+		else if (sheight != Math::UOSInt2Double(dheight))
 		{
 			Sync::MutexUsage mutUsage(mut);
-			if (vsSize != sheight || vdSize != dheight || vsStep != sbpl)
+			if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)sbpl)
 			{
 				DestoryVert();
 
-				if (sheight > dheight)
+				if (sheight > Math::UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sstep, 0);
+					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sstep, 0);
+					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0);
 				}
 				vsSize = sheight;
 				vdSize = dheight;
-				vsStep = sbpl;
+				vsStep = (OSInt)sbpl;
 				vIndex = prm.index;
 				vWeight = prm.weight;
 				vTap = prm.tap;
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
-			action->DoVerticalFilter(src, dest, siWidth, siHeight, dheight, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else
 		{
 			Sync::MutexUsage mutUsage(mut);
-			action->DoCollapse(src, dest, siWidth, dheight, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoCollapse(src, dest, (UInt32)siWidth, dheight, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 
 		}

@@ -17,7 +17,7 @@ namespace Media
 				OSInt right;
 				OSInt bottom;
 			} ObjectRect;
-			typedef void (__stdcall *DetectResultFunc)(void *userObj, OSInt objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData);
+			typedef void (__stdcall *DetectResultFunc)(void *userObj, UOSInt objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData);
 			
 		private:
 			void *cascade;

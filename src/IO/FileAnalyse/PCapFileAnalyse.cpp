@@ -8,8 +8,8 @@
 UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 {
 	IO::FileAnalyse::PCapFileAnalyse *me = (IO::FileAnalyse::PCapFileAnalyse*)userObj;
-	Int64 dataSize;
-	Int64 ofst;
+	UInt64 dataSize;
+	UInt64 ofst;
 	UInt32 thisSize;
 	UInt8 packetHdr[16];
 	me->threadRunning = true;
@@ -197,8 +197,8 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		}
 		return true;
 	}
-	Int64 ofst;
-	Int64 size;
+	UInt64 ofst;
+	UInt64 size;
 	UInt32 psize;
 	if (index > this->ofstList->GetCount())
 	{
@@ -210,9 +210,9 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sb->Append((const UTF8Char*)"Offset=");
-	sb->AppendI64(ofst);
+	sb->AppendU64(ofst);
 	sb->Append((const UTF8Char*)"\r\nTotalSize=");
-	sb->AppendI64(size);
+	sb->AppendU64(size);
 	Data::DateTime dt;
 	if (this->isBE)
 	{

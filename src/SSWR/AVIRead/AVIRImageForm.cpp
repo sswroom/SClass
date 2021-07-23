@@ -56,7 +56,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			yPos = 0;
 		else if ((UOSInt)yPos >= me->currImg->info->dispHeight)
 			yPos = (OSInt)me->currImg->info->dispHeight - 1;
-		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16);
+		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16, false);
 		sb.Append((const UTF8Char*)"(x, y) = (");
 		sb.AppendOSInt(xPos);
 		sb.Append((const UTF8Char*)", ");

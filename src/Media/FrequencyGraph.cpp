@@ -137,7 +137,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		Double thisMin;
 		Media::CS::TransferParam tranParam(Media::CS::TRANT_sRGB, 2.2);
 		Media::CS::TransferFunc *trans = Media::CS::TransferFunc::CreateFunc(&tranParam);
-		OSInt sbpl;
+		UOSInt sbpl;
 		UInt8 *imgPtr;
 		UInt8 v;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);

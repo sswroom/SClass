@@ -122,7 +122,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 			{
 				if (Text::StrCompareICase(names->GetItem(l), sbuff) == 0)
 				{
-					colDPs[j] = (Int32)l;
+					colDPs[j] = l;
 					break;
 				}
 			}

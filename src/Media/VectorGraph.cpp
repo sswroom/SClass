@@ -292,7 +292,7 @@ Media::PixelFormat Media::VectorGraph::GetPixelFormat()
 	return Media::PF_UNKNOWN;
 }
 
-OSInt Media::VectorGraph::GetImgBpl()
+UOSInt Media::VectorGraph::GetImgBpl()
 {
 	return 0;
 }
@@ -669,7 +669,7 @@ void Media::VectorGraph::GetStringBoundRot(Int32 *pos, Double centX, Double cent
 	////////////////////////////////////////
 }
 
-void Media::VectorGraph::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height)
+void Media::VectorGraph::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown)
 {
 }
 

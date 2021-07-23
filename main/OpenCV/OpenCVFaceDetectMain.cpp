@@ -17,7 +17,7 @@
 #include "Media/OpenCV/OCVUtil.h"
 #include "Text/MyString.h"
 
-OSInt lastCnt;
+UOSInt lastCnt;
 OSInt rangeLeft;
 OSInt rangeTop;
 OSInt rangeRight;
@@ -28,13 +28,13 @@ UOSInt preferedHeight;
 Media::CS::CSConverter *csConv;
 Exporter::GUIJPGExporter *exporter;
 
-void __stdcall OnDetectResult(void *userObj, OSInt objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData)
+void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData)
 {
 	IO::ConsoleWriter *console = (IO::ConsoleWriter*)userObj;
-	OSInt thisCnt = objCnt;
+	UOSInt thisCnt = objCnt;
 	if (rangeLeft < rangeRight && rangeTop < rangeBottom)
 	{
-		OSInt i = 0;
+		UOSInt i = 0;
 		thisCnt = 0;
 		while (i < objCnt)
 		{
@@ -49,7 +49,7 @@ void __stdcall OnDetectResult(void *userObj, OSInt objCnt, const Media::OpenCV::
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"People detected, cnt = ");
-		sb.AppendOSInt(thisCnt);
+		sb.AppendUOSInt(thisCnt);
 		console->WriteLine(sb.ToString());
 
 		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
@@ -71,7 +71,7 @@ void __stdcall OnDetectResult(void *userObj, OSInt objCnt, const Media::OpenCV::
 			UTF8Char *sptr;
 			NEW_CLASS(simg, Media::StaticImage(frInfo->dispWidth, frInfo->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &srgb, frInfo->yuvType, Media::AT_NO_ALPHA, frInfo->ycOfst));
 			csConv->ConvertV2(imgData, simg->data, frInfo->dispWidth, frInfo->dispHeight, frInfo->storeWidth, frInfo->storeHeight, (OSInt)frInfo->dispWidth * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
-			OSInt i = 0;
+			UOSInt i = 0;
 			while (i < objCnt)
 			{
 				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), (OSInt)frInfo->dispWidth * 4, 0xffff0000);

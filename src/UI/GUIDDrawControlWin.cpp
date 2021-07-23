@@ -525,7 +525,7 @@ Bool UI::GUIDDrawControl::CreateClipper(void *lpDD)
 	return false;
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OSInt *bpl)
+UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
 {
 	RECT rcSrc;
 	this->surfaceMut->Lock();
@@ -547,7 +547,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 		}
 		if (hRes == DD_OK)
 		{
-			*bpl = ddsd2.lPitch;
+			*bpl = (ULONG)ddsd2.lPitch;
 			return (UInt8*)ddsd2.lpSurface;
 		}
 	}
@@ -561,7 +561,7 @@ void UI::GUIDDrawControl::LockSurfaceEnd()
 	this->surfaceMut->Unlock();
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(OSInt *bpl)
+UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
 {
 	if (this->surfaceBuff == 0)
 		return 0;
@@ -582,7 +582,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(OSInt *bpl)
 	}
 	if (hRes == DD_OK)
 	{
-		*bpl = ddsd2.lPitch;
+		*bpl = (ULONG)ddsd2.lPitch;
 		return (UInt8*)ddsd2.lpSurface;
 	}
 	return 0;

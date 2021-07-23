@@ -85,7 +85,7 @@ namespace Media
 		virtual void SetVDPI(Double dpi) = 0;
 		virtual UInt8 *GetImgBits(Bool *revOrder) = 0;
 		virtual void GetImgBitsEnd(Bool modified) = 0;
-		virtual OSInt GetImgBpl() = 0;
+		virtual UOSInt GetImgBpl() = 0;
 		virtual Media::EXIFData *GetEXIF() = 0;
 		virtual Media::PixelFormat GetPixelFormat() = 0;
 
@@ -120,7 +120,7 @@ namespace Media
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos) = 0;
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY) = 0;
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height) = 0;
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) = 0;
 
 		virtual Media::StaticImage *ToStaticImage() = 0;
 		virtual UOSInt SavePng(IO::SeekableStream *stm) = 0;

@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, OSIn
 	me->currCVal = cvalue * 0.01;
 	me->currGVal = gvalue * 0.01;
 	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, me->srcPrevImg->info->storeBPP, me->srcPrevImg->info->pf, 0);
-	me->rgbFilter->ProcessImage(me->srcPrevImg->data, me->destPrevImg->data, me->srcPrevImg->info->dispWidth, me->srcPrevImg->info->dispHeight, (OSInt)(me->srcPrevImg->info->storeWidth * (me->srcPrevImg->info->storeBPP >> 3)), (OSInt)(me->srcPrevImg->info->storeWidth * (me->srcPrevImg->info->storeBPP >> 3)));
+	me->rgbFilter->ProcessImage(me->srcPrevImg->data, me->destPrevImg->data, me->srcPrevImg->info->dispWidth, me->srcPrevImg->info->dispHeight, (me->srcPrevImg->info->storeWidth * (me->srcPrevImg->info->storeBPP >> 3)), (me->srcPrevImg->info->storeWidth * (me->srcPrevImg->info->storeBPP >> 3)), false);
 	me->previewCtrl->SetImage(me->destPrevImg, true);
 }
 
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(void *userObj)
 		color = me->core->GetColorMgr()->GetDefPProfile();
 	}
 	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, me->srcImg->info->storeBPP, me->srcImg->info->pf, 0);
-	me->rgbFilter->ProcessImage(me->srcImg->data, me->destImg->data, me->srcImg->info->dispWidth, me->srcImg->info->dispHeight, (OSInt)(me->srcImg->info->storeWidth * (me->srcImg->info->storeBPP >> 3)), (OSInt)(me->srcImg->info->storeWidth * (me->srcImg->info->storeBPP >> 3)));
+	me->rgbFilter->ProcessImage(me->srcImg->data, me->destImg->data, me->srcImg->info->dispWidth, me->srcImg->info->dispHeight, (me->srcImg->info->storeWidth * (me->srcImg->info->storeBPP >> 3)), (me->srcImg->info->storeWidth * (me->srcImg->info->storeBPP >> 3)), false);
 	me->previewCtrl->SetImage(me->destImg, true);
 
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");

@@ -712,7 +712,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		case 8:
 		case 0:
 			*ttl = iphdrptr->ttl;
-			*respTime_us = (Int32)timeStart;
+			*respTime_us = (UInt32)(UInt64)timeStart;
 			succ = true;
 			break;
 		case 3:
@@ -754,8 +754,8 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 				{
 					if (Text::StrSplitWS(sarr, 4, sarr[1]) == 4)
 					{
-						*ttl = Text::StrToInt32(&sarr[1][4]);
-						*respTime_us = Math::Double2Int32(Text::StrToDouble(&sarr[2][5]) * 1000.0);
+						*ttl = Text::StrToUInt32(&sarr[1][4]);
+						*respTime_us = (UInt32)Math::Double2Int32(Text::StrToDouble(&sarr[2][5]) * 1000.0);
 						return true;
 					}
 					else

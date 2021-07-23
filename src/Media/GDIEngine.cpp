@@ -331,7 +331,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 	if ((hBmp = CreateDIBSection((HDC)this->hdc, &bmi, 0, &pBits, 0, 0)) != 0)
 	{
 		UInt8 *buff;
-		Int32 buffSize;
+		UInt32 buffSize;
 		Int32 lineW;
 		Int32 i;
 		Int32 j;
@@ -491,8 +491,8 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
-			OSInt sbpl = simg->info->storeWidth << 2;
-			OSInt dbpl = simg->info->dispWidth << 2;
+			OSInt sbpl = (OSInt)simg->info->storeWidth << 2;
+			OSInt dbpl = (OSInt)simg->info->dispWidth << 2;
 			ImageCopy_ImgCopy(sptr, dptr + (dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
 		}
 	}
@@ -503,8 +503,8 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
-			OSInt sbpl = simg->info->storeWidth << 2;
-			OSInt dbpl = simg->info->dispWidth << 2;
+			OSInt sbpl = (OSInt)simg->info->storeWidth << 2;
+			OSInt dbpl = (OSInt)simg->info->dispWidth << 2;
 			ImageCopy_ImgCopy(sptr, dptr + (dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
 		}
 		DEL_CLASS(simg);
@@ -808,7 +808,7 @@ void Media::GDIImage::GetImgBitsEnd(Bool modified)
 {
 }
 
-OSInt Media::GDIImage::GetImgBpl()
+UOSInt Media::GDIImage::GetImgBpl()
 {
 	return this->GetDataBpl();
 }
@@ -1864,7 +1864,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			}
 			if (w > 0 && h > 0)
 			{
-				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (this->height - y - 1) * bpl + (x << 2), -bpl, w, h);
+				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (-y) * bpl + (x << 2), bpl, w, h, true);
 			}
 		}
 		else
@@ -2093,7 +2093,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 			}
 			if (w > 0 && h > 0)
 			{
-				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (this->height - y - 1) * bpl + (x << 2), -bpl, w, h);
+				img->CopyBits(sx, sy, ((UInt8*)this->bmpBits) + (-y) * bpl + (x << 2), bpl, w, h, true);
 			}
 		}
 		else
@@ -2573,12 +2573,18 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 	}
 }
 
-void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height)
+void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSInt width, UOSInt height, Bool upsideDown)
 {
 	UInt8 *iptr = (UInt8*)imgPtr;
 	UInt8 *sptr = (UInt8*)this->bmpBits;
-	OSInt sbpl = this->width << 2;
-	OSInt sheight = this->height;
+	UOSInt sbpl = this->width << 2;
+	OSInt dAdd = (OSInt)dbpl;
+	if (upsideDown)
+	{
+		iptr += (height - 1) * dbpl;
+		dAdd = -dAdd;
+	}
+	UOSInt sheight = this->height;
 	if (x < 0)
 	{
 		iptr = iptr - (x << 2);
@@ -2587,7 +2593,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt
 	}
 	if (y < 0)
 	{
-		iptr = iptr - bpl * y;
+		iptr = iptr - dAdd * y;
 		height += y;
 		y = 0;
 	}
@@ -2607,7 +2613,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt
 		{
 			sptr -= sbpl;
 			MemCopyNO(iptr, sptr, width << 2);
-			iptr += bpl;
+			iptr += dAdd;
 		}
 	}
 	else
@@ -2617,7 +2623,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt
 		{
 			sptr -= sbpl;
 			MemCopyNANC(iptr, sptr, width << 2);
-			iptr += bpl;
+			iptr += dAdd;
 		}
 	}
 }
@@ -2791,40 +2797,9 @@ Media::Image::ImageType Media::GDIImage::GetImageType()
 	return IT_GUIIMAGE;
 }
 
-void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl)
+void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
 {
-	if (left < 0)
-	{
-		width += (UOSInt)left;
-		left = 0;
-	}
-	if (top < 0)
-	{
-		height += (UOSInt)top;
-		top = 0;
-	}
-	if (left >= (OSInt)this->width || top >= (OSInt)this->height)
-		return;
-	if (left + (OSInt)width > (OSInt)this->width)
-	{
-		width = this->width - (UOSInt)left;
-	}
-	if (top + (OSInt)height > (OSInt)this->height)
-	{
-		height = this->height - (UOSInt)top;
-	}
-	UOSInt lineSize = (width * this->bitCount) >> 3;
-	OSInt srcBpl = (OSInt)(this->width * this->bitCount) >> 3;
-	
-	UInt8 *srcPtr = (UInt8*)this->bmpBits;
-	srcPtr = srcPtr + (this->height - (UOSInt)top) * srcBpl + ((left * this->bitCount) >> 3);
-	UOSInt i = height;
-	while (i-- > 0)
-	{
-		srcPtr -= srcBpl;
-		MemCopyNO(destBuff, srcPtr, lineSize);
-		destBuff += destBpl;
-	}
+	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }
 
 Int32 Media::GDIImage::GetPixel32(OSInt x, OSInt y)
@@ -3127,15 +3102,15 @@ void *Media::GDIImage::CreateGDIImage()
 	{
 		UInt8 *dptr;
 		UInt8 *sptr;
-		OSInt i;
-		OSInt sbpl;
-		OSInt dbpl;
+		UOSInt i;
+		UOSInt sbpl;
+		UOSInt dbpl;
 
 		Gdiplus::Rect rect(0, 0, (INT)this->width, (INT)this->height);
 		Gdiplus::BitmapData *bitmapData = new Gdiplus::BitmapData();
 		Gdiplus::Bitmap *bmp = new Gdiplus::Bitmap((INT)this->width, (INT)this->height, PixelFormat32bppARGB);
 		bmp->LockBits(&rect, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, bitmapData);
-		i = (OSInt)this->height;
+		i = this->height;
 		sbpl = this->GetDataBpl();
 		dbpl = bitmapData->Stride;
 		sptr = i * sbpl + (UInt8*)this->bmpBits;
@@ -3144,7 +3119,7 @@ void *Media::GDIImage::CreateGDIImage()
 		while (i-- > 0)
 		{
 			sptr -= sbpl;
-			MemCopyNO(dptr, sptr, (UOSInt)sbpl);
+			MemCopyNO(dptr, sptr, sbpl);
 			dptr += dbpl;
 		}
 

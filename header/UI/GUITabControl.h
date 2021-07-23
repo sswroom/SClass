@@ -27,7 +27,7 @@ namespace UI
 		UOSInt GetSelectedIndex();
 		void SetTabPageName(UOSInt index, const UTF8Char *name);
 		UTF8Char *GetTabPageName(UOSInt index, UTF8Char *buff);
-		void GetTabPageRect(OSInt *x, OSInt *y, OSInt *w, OSInt *h);
+		void GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h);
 		void *GetTabPageFont();
 
 		virtual const UTF8Char *GetObjectClass();

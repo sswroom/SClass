@@ -11,7 +11,7 @@ Int32 MyMain(Core::IProgControl *ctrl);
 struct GtkProgControl : public Core::IProgControl
 {
 	UTF8Char **argv;
-	OSInt argc;
+	UOSInt argc;
 };
 
 void __stdcall GtkProgControl_WaitForExit(Core::IProgControl *progCtrl)

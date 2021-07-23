@@ -286,6 +286,15 @@ namespace Math
 		}
 	}
 
+	FORCEINLINE OSInt Double2OSInt(Double val)
+	{
+#if _OSINT_SIZE == 64
+		return Double2Int64(val);
+#else
+		return Double2Int32(val);
+#endif
+	}
+
 	FORCEINLINE Double OSInt2Double(OSInt val)
 	{
 		return (Double)val;

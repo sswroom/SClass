@@ -46,12 +46,12 @@ Bool UI::GUILabel::HasTextColor()
 	return this->hasTextColor;
 }
 
-Int32 UI::GUILabel::GetTextColor()
+UInt32 UI::GUILabel::GetTextColor()
 {
 	return this->textColor;
 }
 
-void UI::GUILabel::SetTextColor(Int32 textColor)
+void UI::GUILabel::SetTextColor(UInt32 textColor)
 {
 	this->textColor = textColor;
 	this->hasTextColor = true;

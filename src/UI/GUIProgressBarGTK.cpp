@@ -8,8 +8,8 @@
 typedef struct
 {
 	GtkProgressBar *bar;
-	Int64 currCnt;
-	Int64 totalCnt;
+	UInt64 currCnt;
+	UInt64 totalCnt;
 	UOSInt timerId;
 	Bool cntUpdated;
 } ClassData;
@@ -27,7 +27,7 @@ Int32 GUIProgressBar_OnTick(void *userObj)
 		}
 		else
 		{
-			f = data->currCnt / (Double)data->totalCnt;
+			f = (Double)data->currCnt / (Double)data->totalCnt;
 		}
 		gtk_progress_bar_set_fraction(data->bar, f);
 	}
@@ -53,7 +53,7 @@ UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent
 UI::GUIProgressBar::~GUIProgressBar()
 {
 	ClassData *data = (ClassData*)this->clsData;
-	g_source_remove(data->timerId);
+	g_source_remove((guint)data->timerId);
 	MemFree(data);
 }
 

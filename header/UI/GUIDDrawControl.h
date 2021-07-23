@@ -76,9 +76,9 @@ namespace UI
 		void ReleaseSubSurface();
 		Bool CreateClipper(void *lpDD);
 
-		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OSInt *bpl);
+		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl);
 		void LockSurfaceEnd();
-		UInt8 *LockSurfaceDirect(OSInt *bpl);
+		UInt8 *LockSurfaceDirect(UOSInt *bpl);
 		void LockSurfaceUnlock();
 		Media::PixelFormat GetPixelFormat();
 

@@ -9,7 +9,7 @@
 
 void UI::GUITrackBar::EventScrolled()
 {
-	OSInt i;
+	UOSInt i;
 	Int32 pos;
 	pos = (Int32)SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
 	i = this->scrollHandlers->GetCount();

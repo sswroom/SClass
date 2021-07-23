@@ -40,7 +40,7 @@ namespace Media
 			UInt8 *ivtcLastFrame;
 			UInt8 *ivtcCurrFrame;
 			OSInt ivtcLastFrameSize;
-			OSInt ivtcFrameBuffSize;
+			UOSInt ivtcFrameBuffSize;
 			Bool ivtcLastExist;
 			Media::FrameType ivtcLastFrameType;
 			Int32 ivtcLastFrameNum;
@@ -54,11 +54,11 @@ namespace Media
 
 			Bool fieldExist;
 			UInt8 *fieldBuff;
-			OSInt fieldBuffSize;
+			UOSInt fieldBuffSize;
 			Media::FrameType fieldFrameType;
 			UInt32 fieldTime;
 			UInt32 fieldNum;
-			OSInt fieldDataSize;
+			UOSInt fieldDataSize;
 			Bool fieldIsDiscont;
 
 			Sync::Mutex *mut;
@@ -77,7 +77,7 @@ namespace Media
             UInt32 ivtcTFrameTime;
 			UInt32 ivtcTFrameNum;
 			UInt8 *ivtcTImgData;
-			OSInt ivtcTDataSize;
+			UOSInt ivtcTDataSize;
 			Media::IVideoSource::FrameStruct ivtcTFrameStruct;
 			Media::FrameType ivtcTFrameType;
 			Media::IVideoSource::FrameFlag ivtcTFlags;

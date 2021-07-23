@@ -1448,13 +1448,13 @@ void UI::GUITextFileView::CopySelected()
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Failed to copy because selected area is too long", (const UTF8Char*)"TextViewer", this);
 			return;
 		}
-		rbuff = MemAlloc(UInt8, (OSInt)(endOfst - startOfst));
+		rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));
 		this->fs->SeekFromBeginning(startOfst);
-		this->fs->Read(rbuff, (OSInt)(endOfst - startOfst));
+		this->fs->Read(rbuff, (UOSInt)(endOfst - startOfst));
 
-		j = enc->CountUTF8Chars(rbuff, (OSInt)(endOfst - startOfst));
+		j = enc->CountUTF8Chars(rbuff, (UOSInt)(endOfst - startOfst));
 		line = MemAlloc(UTF8Char, j + 1);
-		enc->UTF8FromBytes(line, rbuff, (OSInt)(endOfst - startOfst), 0);
+		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
 		sb.Append(&line[selTopX]);
 		MemFree(line);
 		MemFree(rbuff);
@@ -1467,13 +1467,13 @@ void UI::GUITextFileView::CopySelected()
 			return;
 //			endOfst = this->fs->GetLength();
 		}
-		rbuff = MemAlloc(UInt8, (OSInt)(endOfst - startOfst));
+		rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));
 		this->fs->SeekFromBeginning(startOfst);
-		this->fs->Read(rbuff, (OSInt)(endOfst - startOfst));
+		this->fs->Read(rbuff, (UOSInt)(endOfst - startOfst));
 		mutUsage.EndUse();
-		j = enc->CountUTF8Chars(rbuff, (OSInt)(endOfst - startOfst));
+		j = enc->CountUTF8Chars(rbuff, (UOSInt)(endOfst - startOfst));
 		line = MemAlloc(UTF8Char, j + 1);
-		enc->UTF8FromBytes(line, rbuff, (OSInt)(endOfst - startOfst), 0);
+		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
 		line[selBottomX] = 0;
 		sb.Append(line);
 		MemFree(line);
@@ -1589,10 +1589,10 @@ void UI::GUITextFileView::EnsureCaretVisible()
 			SIZE sz;
 
 			Text::Encoding enc(this->fileCodePage);
-			rbuff = MemAlloc(UInt8, (OSInt)(nextOfst - lineOfst));
+			rbuff = MemAlloc(UInt8, (UOSInt)(nextOfst - lineOfst));
 			this->fs->SeekFromBeginning(lineOfst);
-			this->fs->Read(rbuff, (OSInt)(nextOfst - lineOfst));
-			UOSInt charCnt = enc.CountWChars(rbuff, (OSInt)(nextOfst - lineOfst));
+			this->fs->Read(rbuff, (UOSInt)(nextOfst - lineOfst));
+			UOSInt charCnt = enc.CountWChars(rbuff, (UOSInt)(nextOfst - lineOfst));
 			if (charCnt < this->caretX)
 			{
 				this->caretX = (Int32)charCnt;

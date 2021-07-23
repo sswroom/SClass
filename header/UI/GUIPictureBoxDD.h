@@ -12,7 +12,7 @@ namespace UI
 	class GUIPictureBoxDD : public GUIDDrawControl, public Media::IColorHandler
 	{
 	public:
-		typedef void (__stdcall *DrawHandler32)(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, OSInt bpl);
+		typedef void (__stdcall *DrawHandler32)(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 	private:
 		Data::ArrayList<MouseEventHandler> *mouseDownHdlrs;
 		Data::ArrayList<void *> *mouseDownObjs;
@@ -34,8 +34,8 @@ namespace UI
 		Media::CS::CSConverter *csconv;
 		Media::ColorManagerSess *colorSess;
 		Media::Image *currImage;
-		OSInt currImageW;
-		OSInt currImageH;
+		UOSInt currImageW;
+		UOSInt currImageH;
 		Media::IImgResizer *resizer;
 		UInt8 *imgBuff;
 		Bool allowEnlarge;

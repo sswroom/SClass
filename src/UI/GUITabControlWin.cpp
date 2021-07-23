@@ -44,8 +44,8 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 			RECT rc;
 			OSInt tcLeft;
 			OSInt tcTop;
-			OSInt tcWidth;
-			OSInt tcHeight;
+			UOSInt tcWidth;
+			UOSInt tcHeight;
 			UOSInt w;
 			UOSInt h;
 			me->GetTabPageRect(&tcLeft, &tcTop, &tcWidth, &tcHeight);
@@ -139,10 +139,10 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 		this->tabPages->Add(page);
 		OSInt x;
 		OSInt y;
-		OSInt w;
-		OSInt h;
+		UOSInt w;
+		UOSInt h;
 		GetTabPageRect(&x, &y, &w, &h);
-		page->SetAreaP(x, y, x + w, y + h, false);
+		page->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
 		if (this->tabPages->GetCount() > 1)
 		{
 			page->SetVisible(false);
@@ -222,7 +222,7 @@ UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, sbuff);
 }
 
-void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, OSInt *w, OSInt *h)
+void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 {
 	RECT rc;
 	RECT rcTc;
@@ -237,9 +237,9 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, OSInt *w, OSInt *h)
 	if (y)
 		*y = rc.top;
 	if (w)
-		*w = rcTc.right + rc.right - rc.left;
+		*w = (UOSInt)(rcTc.right + rc.right - rc.left);
 	if (h)
-		*h = rcTc.bottom + rc.bottom - rc.top;
+		*h = (UOSInt)(rcTc.bottom + rc.bottom - rc.top);
 }
 
 void *UI::GUITabControl::GetTabPageFont()
@@ -292,14 +292,14 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 	}
 	OSInt x;
 	OSInt y;
-	OSInt w;
-	OSInt h;
+	UOSInt w;
+	UOSInt h;
 	GetTabPageRect(&x, &y, &w, &h);
 
 	i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetAreaP(x, y, x + w, y + h, false);
+		this->tabPages->GetItem(i)->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
 //		this->tabPages->GetItem(i)->UpdateChildrenSize(false);
 	}
 }
@@ -332,13 +332,13 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 
 	OSInt x;
 	OSInt y;
-	OSInt w;
-	OSInt h;
+	UOSInt w;
+	UOSInt h;
 	GetTabPageRect(&x, &y, &w, &h);
 
 	i = this->tabPages->GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetAreaP(x, y, x + w, y + h, false);
+		this->tabPages->GetItem(i)->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
 	}
 }

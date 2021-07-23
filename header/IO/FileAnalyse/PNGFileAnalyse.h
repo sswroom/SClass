@@ -15,14 +15,14 @@ namespace IO
 			typedef struct
 			{
 				Int32 tagType;
-				Int32 crc;
-				Int64 ofst;
-				OSInt size;
+				UInt32 crc;
+				UInt64 ofst;
+				UOSInt size;
 			} PNGTag;
 		private:
 			IO::IStreamData *fd;
 			Data::SyncArrayList<PNGTag*> *tags;
-			OSInt hdrSize;
+			UOSInt hdrSize;
 
 			Bool pauseParsing;
 			Bool threadRunning;

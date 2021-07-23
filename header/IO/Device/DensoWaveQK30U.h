@@ -14,14 +14,14 @@ namespace IO
 		private:
 			IO::Stream *stm;
 			ModeType currMode;
-			Int32 scanDelay;
+			UInt32 scanDelay;
 
 			ScanHandler scanHdlr;
 			void *scanHdlrObj;
 			Sync::Mutex *reqMut;
 			Sync::Mutex *recvMut;
 			UInt8 *recvBuff;
-			OSInt recvSize;
+			UOSInt recvSize;
 			Bool recvRunning;
 			Bool recvToStop;
 			Sync::Event *recvEvt;
@@ -32,8 +32,8 @@ namespace IO
 			Bool SettingModeStart();
 			Bool SettingModeEnd();
 			void ToIdleMode();
-			Bool WaitForReply(Int32 timeToWait);
-			Bool WaitForReplyVal(Int32 timeToWait, Int32 *retVal);
+			Bool WaitForReply(UInt32 timeToWait);
+			Bool WaitForReplyVal(UInt32 timeToWait, Int32 *retVal);
 			Int32 ReadCommand(const Char *cmdStr, UOSInt cmdLen);
 			Bool WriteCommand(const Char *cmdStr, UOSInt cmdLen);
 		public:

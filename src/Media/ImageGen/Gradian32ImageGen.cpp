@@ -25,7 +25,7 @@ Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProf
 	UOSInt j;
 	UInt8 hv;
 	UInt8 vv;
-	OSInt bpl;
+	UOSInt bpl;
 	if (width < 16 || height < 16)
 		return 0;
 //	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
@@ -42,9 +42,9 @@ Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProf
 		while (j < width)
 		{
 			hv = (UInt8)((j << 4) / width);
-			imgPtr[(j << 2)] = hv + (vv << 4);
-			imgPtr[(j << 2) + 1] = hv + (vv << 4);
-			imgPtr[(j << 2) + 2] = hv + (vv << 4);
+			imgPtr[(j << 2)] = (UInt8)(hv + (vv << 4));
+			imgPtr[(j << 2) + 1] = (UInt8)(hv + (vv << 4));
+			imgPtr[(j << 2) + 2] = (UInt8)(hv + (vv << 4));
 			imgPtr[(j << 2) + 3] = 0xff;
 			j++;
 		}

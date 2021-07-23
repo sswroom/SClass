@@ -1621,7 +1621,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1637,7 +1637,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1692,7 +1692,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1708,7 +1708,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1732,7 +1732,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1748,7 +1748,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1859,7 +1859,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1875,7 +1875,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1900,7 +1900,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1916,7 +1916,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1966,7 +1966,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -1982,7 +1982,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2007,7 +2007,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -2023,7 +2023,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2048,7 +2048,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -2064,7 +2064,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2089,7 +2089,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLine((const UTF8Char*)"Initialized");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Resize (1st): t = ");
@@ -2105,7 +2105,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
 			sb.ClearStr();

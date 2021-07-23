@@ -8,7 +8,7 @@ namespace UI
 	{
 	private:
 		Bool hasTextColor;
-		Int32 textColor;
+		UInt32 textColor;
 	public:
 		GUILabel(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText);
 		virtual ~GUILabel();
@@ -17,9 +17,9 @@ namespace UI
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		Bool HasTextColor();
-		Int32 GetTextColor();
-		void SetTextColor(Int32 textColor);
+		UInt32 GetTextColor();
+		void SetTextColor(UInt32 textColor);
 	};
-};
+}
 
 #endif

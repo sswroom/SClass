@@ -412,7 +412,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				diFrameType = Media::FT_INTERLACED_TFF;
 				diFrameType2 = Media::FT_INTERLACED_TFF;
 			}
-			Int32 outFrameTime = frameTime;
+			UInt32 outFrameTime = frameTime;
 			Bool mergedFrame = false;
 			if (this->ivtcFrameBuffSize < (OSInt)dataSize)
 			{
@@ -500,10 +500,10 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 							UInt8 *evenPtr;
 							FieldStat iFieldStat;
 							FieldStat pFieldStat;
-							OSInt sw = this->videoInfo->storeWidth;
+							UOSInt sw = this->videoInfo->storeWidth;
 //							OSInt sh = this->videoInfo->storeHeight;
 //							OSInt dw = this->videoInfo->dispWidth;
-							OSInt dh = this->videoInfo->dispHeight;
+							UOSInt dh = this->videoInfo->dispHeight;
 //							OSInt sw2 = sw << 1;
 //							OSInt sw4 = sw << 2;
 //							OSInt dw2 = dw << 1;
@@ -1826,7 +1826,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStat(Media::VideoFilter::IVTCFilte
 	h = (h - 2) >> 1;
 	OSInt currH;
 	OSInt lastH = h;
-	OSInt i;
+	UOSInt i;
 	Bool found;
 	fieldStat->fieldDiff = 0;
 	fieldStat->fieldMDiff = 0;
@@ -1839,7 +1839,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStat(Media::VideoFilter::IVTCFilte
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		currH = MulDivOS(h, i, this->threadCnt);
+		currH = MulDivUOS(h, i, this->threadCnt);
 		this->threadStats[i].oddPtr = oddPtr + w * 2 * currH;
 		this->threadStats[i].evenPtr = evenPtr + w * 2 * currH;
 		this->threadStats[i].sw = w;
@@ -1884,7 +1884,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStatP(FieldStat *fieldStat, UInt8 
 	h = h - 2;
 	OSInt currH;
 	OSInt lastH = h;
-	OSInt i;
+	UOSInt i;
 	Bool found;
 	fieldStat->fieldDiff = 0;
 	fieldStat->fieldMDiff = 0;
@@ -1938,7 +1938,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStatP(FieldStat *fieldStat, UInt8 
 
 Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Media::VideoFilter::VideoFilterBase(srcVideo)
 {
-	OSInt i;
+	UOSInt i;
 	Bool found;
 	this->enabled = true;
 	NEW_CLASS(this->mut, Sync::Mutex());
@@ -2003,7 +2003,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 
 Media::VideoFilter::IVTCFilter::~IVTCFilter()
 {
-	OSInt i;
+	UOSInt i;
 	Bool found = true;
 	this->ivtcTToStop = true;
 	this->ivtcTEvt->Set();

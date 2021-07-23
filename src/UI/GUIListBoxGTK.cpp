@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "UI/GUIListBox.h"
@@ -35,7 +36,7 @@ gboolean GUIListBox_ButtonPress(GtkWidget *widget, GdkEvent *event, gpointer dat
 	}
 	else if (event->button.button == 3)
 	{
-		me->EventRightClick(event->button.x, event->button.y);
+		me->EventRightClick(Math::Double2OSInt(event->button.x), Math::Double2OSInt(event->button.y));
 	}
 	return false;
 }
@@ -139,7 +140,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	UOSInt i = this->rightClickHdlrs->GetCount();
-	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, y);
+	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, (gint)y);
 	if (row)
 	{
 		gtk_list_box_select_row((GtkListBox*)data->listbox, row);
@@ -228,7 +229,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *
 	gtk_widget_show(item->lbl);
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
-	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, index);
+	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, (gint)(OSInt)index);
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
@@ -262,7 +263,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *ite
 	gtk_widget_show(item->lbl);
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
-	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, index);
+	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, (gint)(OSInt)index);
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
@@ -337,7 +338,7 @@ void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 
 	int h = gtk_widget_get_allocated_height(data->listbox);
 	Double itemH = h / (Double)this->items->GetCount();
-	Double targetTop = itemH * index;
+	Double targetTop = itemH * Math::UOSInt2Double(index);
 	Double targetBottom = targetTop + itemH;
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd);
 	Double pageSize = gtk_adjustment_get_page_size(adj);

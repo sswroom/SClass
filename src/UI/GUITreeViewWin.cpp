@@ -156,7 +156,7 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 void UI::GUITreeView::FreeItems()
 {
 	TreeItem *item;
-	OSInt i;
+	UOSInt i;
 	i = this->treeItems->GetCount();
 	while (i-- > 0)
 	{
@@ -200,7 +200,7 @@ UI::GUITreeView::~GUITreeView()
 
 void UI::GUITreeView::EventSelectionChange()
 {
-	OSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
@@ -213,7 +213,7 @@ void UI::GUITreeView::EventDoubleClick()
 
 void UI::GUITreeView::EventRightClicked()
 {
-	OSInt i = this->rightClkHdlrs->GetCount();
+	UOSInt i = this->rightClkHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->rightClkHdlrs->GetItem(i)(this->rightClkObjs->GetItem(i));

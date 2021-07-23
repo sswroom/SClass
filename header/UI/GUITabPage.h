@@ -10,10 +10,10 @@ namespace UI
 	{
 	private:
 		UI::GUITabControl *ctrl;
-		OSInt index;
+		UOSInt index;
 		void *custObj;
 	public:
-		GUITabPage(GUICore *ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, OSInt index);
+		GUITabPage(GUICore *ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, UOSInt index);
 		virtual ~GUITabPage();
 
 		virtual void *GetFont();
@@ -27,5 +27,5 @@ namespace UI
 		void SetCustObj(void *custObj);
 		void *GetCustObj();
 	};
-};
+}
 #endif

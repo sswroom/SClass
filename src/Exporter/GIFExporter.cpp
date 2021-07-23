@@ -166,7 +166,7 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			imgSize = 4096;
 		NEW_CLASS(mstm, IO::MemoryStream(imgSize, (const UTF8Char*)"Exporter.GIFExporter.ExportFile"));
 		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(mstm, true, 8, 12, 0));
-		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, (OSInt)img->info->dispWidth);
+		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, img->info->dispWidth, false);
 		lzw->Write(imgData, img->info->dispHeight * img->info->dispWidth);
 		MemFree(imgData);
 		DEL_CLASS(lzw);

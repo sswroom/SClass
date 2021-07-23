@@ -59,8 +59,8 @@ void Media::OpenCV::OCVObjectDetector::NextFrame(Media::OpenCV::OCVFrame *frame,
 		printf("Frame detect count = %d\r\n", (Int32)objs.size());
 		if (this->detectResultHdlr)
 		{
-			OSInt i;
-			OSInt j = objs.size();
+			UOSInt i;
+			UOSInt j = objs.size();
 			if (j > 0)
 			{
 				ObjectRect *objRects = MemAlloc(ObjectRect, j);

@@ -152,11 +152,11 @@ Media::DrawImage *Media::GTKDrawEngine::CloneImage(DrawImage *img)
 	Media::GTKDrawImage *newImg = 0;
 	if (dimg->GetSurface())
 	{
-		Bool revOrder;
+		Bool upsideDown;
 		UInt8 *dptr;
 		newImg = (GTKDrawImage*)this->CreateImage32(width, height, atype);
-		dptr = newImg->GetImgBits(&revOrder);
-		((Media::GTKDrawImage*)img)->CopyBits(0, 0, dptr, newImg->GetDataBpl(), width, height);
+		dptr = newImg->GetImgBits(&upsideDown);
+		((Media::GTKDrawImage*)img)->CopyBits(0, 0, dptr, newImg->GetDataBpl(), width, height, upsideDown);
 	}
 	return newImg;
 }
@@ -374,9 +374,9 @@ void Media::GTKDrawImage::GetImgBitsEnd(Bool modified)
 	}
 }
 
-OSInt Media::GTKDrawImage::GetImgBpl()
+UOSInt Media::GTKDrawImage::GetImgBpl()
 {
-	return (OSInt)(this->info->storeWidth * this->info->storeBPP) >> 3;
+	return (this->info->storeWidth * this->info->storeBPP) >> 3;
 }
 
 Media::EXIFData *Media::GTKDrawImage::GetEXIF()
@@ -710,12 +710,12 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 			//gimg->SetTextAlign(this->strAlign);
 			gimg->DrawString(Math::OSInt2Double(sx) + Math::UOSInt2Double(buffSize), Math::OSInt2Double(sy) + Math::UOSInt2Double(buffSize), str, f, whiteB);
 
-			OSInt bpl = (OSInt)(sz[0] + (buffSize << 1)) << 2;
-			OSInt dbpl = (OSInt)this->info->dispWidth << 2;
+			UOSInt bpl = (sz[0] + (buffSize << 1)) << 2;
+			UOSInt dbpl = this->info->dispWidth << 2;
 			UInt32 color = brush->GetOriColor();
 			UInt8 *pbits = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 			UInt8 *dbits = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-			ImageUtil_ImageColorBuffer32(pbits + bpl * (OSInt)buffSize + (OSInt)buffSize * 4, sz[0], sz[1], bpl, buffSize);
+			ImageUtil_ImageColorBuffer32(pbits + bpl * buffSize + buffSize * 4, sz[0], sz[1], bpl, buffSize);
 			if (py + (OSInt)sheight > (OSInt)this->info->dispHeight)
 			{
 				sheight = this->info->dispHeight - (UOSInt)py;
@@ -728,24 +728,24 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 			{
 				if (dbits)
 				{
-					pbits = ((UInt8*)pbits) + (sy * bpl) + (sx << 2);
-					dbits = ((UInt8*)dbits) + (py * dbpl) + (px << 2);
+					pbits = ((UInt8*)pbits) + (sy * (OSInt)bpl) + (sx << 2);
+					dbits = ((UInt8*)dbits) + (py * (OSInt)dbpl) + (px << 2);
 
 					if ((color & 0xff000000) == 0xff000000)
 					{
-						ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, bpl, dbpl, color);
+						ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, (OSInt)bpl, (OSInt)dbpl, color);
 					}
 					else
 					{
-						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, bpl, dbpl, color);
+						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, (OSInt)bpl, (OSInt)dbpl, color);
 					}
 				}
 				else
 				{
-					pbits = ((UInt8*)pbits) + (sy * bpl) + (sx << 2);
-					dbits = ((UInt8*)dbits) + (py * dbpl) + (px << 2);
+					pbits = ((UInt8*)pbits) + (sy * (OSInt)bpl) + (sx << 2);
+					dbits = ((UInt8*)dbits) + (py * (OSInt)dbpl) + (px << 2);
 
-					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, swidth, sheight, bpl, bpl, color);
+					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, swidth, sheight, (OSInt)bpl, (OSInt)bpl, color);
 					gimg->SetHDPI(this->GetHDPI());
 					gimg->SetVDPI(this->GetVDPI());
 					this->DrawImagePt(gimg, Math::OSInt2Double(px - sx), Math::OSInt2Double(py - sy));
@@ -1013,15 +1013,25 @@ void Media::GTKDrawImage::GetStringBoundRot(Int32 *pos, Double centX, Double cen
 {
 }
 
-void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, UOSInt width, UOSInt height)
+void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown)
 {
 	if (this->surface)
 	{
+		if (x < 0)
+		{
+			width = (UOSInt)((OSInt)width + x);
+			x = 0;
+		}
+		if (y < 0)
+		{
+			height = (UOSInt)((OSInt)height + y);
+			y = 0;
+		}
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		UInt8 *srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData)
 		{
-			ImageCopy_ImgCopy(srcData + x * 4 + y * (OSInt)this->info->storeWidth * 4, (UInt8*)imgPtr, width * 4, height, (OSInt)this->info->storeWidth * 4, bpl);
+			ImageCopy_ImgCopyR(srcData + x * 4 + y * (OSInt)this->info->storeWidth * 4, (UInt8*)imgPtr, width * 4, height, this->info->storeWidth * 4, bpl, upsideDown);
 		}
 	}
 }
@@ -1130,8 +1140,9 @@ Media::Image::ImageType Media::GTKDrawImage::GetImageType()
 	return Media::Image::IT_GUIIMAGE;
 }
 
-void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl)
+void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
 {
+	this->CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }
 
 Int32 Media::GTKDrawImage::GetPixel32(OSInt x, OSInt y)

@@ -63,7 +63,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.Append(sbuff);
 					sb.Append((const UTF8Char*)", Index = ");
-					sb.AppendOSInt(connInfo->GetIndex());
+					sb.AppendUOSInt(connInfo->GetIndex());
 					console->WriteLine(sb.ToString());
 					connInfo->GetName(sbuff);
 					NEW_CLASS(arp, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));

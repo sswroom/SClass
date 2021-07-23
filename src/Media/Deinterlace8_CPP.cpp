@@ -8,8 +8,8 @@ void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt
 {
 	UInt8 *sptr;
 	UInt8 *dptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt *iindex;
 	Int64 *wweight;
 	Int32x4 v1;
@@ -60,8 +60,8 @@ void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, 
 {
 	UInt8 *sptr;
 	UInt8 *dptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt *iindex;
 	Int64 *wweight;
 	Int32x4 v1;
@@ -117,8 +117,8 @@ void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt,
 {
 	UInt8 *sptr;
 	UInt8 *dptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	OSInt *iindex;
 	Int64 *wweight;
 	Int32x4 v1;

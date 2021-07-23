@@ -35,14 +35,14 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 {
 	UOSInt w = img->GetWidth();
 	UOSInt h = img->GetHeight();
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	OSInt currY = this->GetVScrollPos();
 	OSInt ofst;
 	OSInt x;
 	OSInt y;
-	OSInt iconPerRow;
+	UOSInt iconPerRow;
 	Media::DrawImage *gimg;
 	this->ClearBackground(img);
 

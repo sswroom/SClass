@@ -52,9 +52,9 @@ Media::Image::ImageType Media::StaticImage::GetImageType()
 	return Media::Image::IT_STATIC;
 }
 
-void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, OSInt destBpl)
+void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
 {
-	OSInt srcBpl = this->GetDataBpl();
+	UOSInt srcBpl = this->GetDataBpl();
 	if (this->info->pf == Media::PF_PAL_1_A1 || this->info->pf == Media::PF_PAL_2_A1 || this->info->pf == Media::PF_PAL_4_A1 || this->info->pf == Media::PF_PAL_8_A1)
 	{
 		if (left < 0)
@@ -65,7 +65,7 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 		}
 		if (top < 0)
 		{
-			destBuff += -top * destBpl;
+			destBuff += (UOSInt)-top * destBpl;
 			height = (UOSInt)((OSInt)height + top);
 			top = 0;
 		}
@@ -83,8 +83,8 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 			UInt8 *srcBuff2 = srcBuff + ((this->info->storeWidth * (this->info->storeBPP - 1) + 7) >> 3);
 			UOSInt lineSize1 = (width * (this->info->storeBPP - 1) + 7) >> 3;
 			UOSInt lineSize2 = (width + 7) >> 3;
-			srcBuff = srcBuff + ((left * (this->info->storeBPP - 1)) >> 3) + top * srcBpl;
-			srcBuff2 = srcBuff2 + (left >> 3) + top * srcBpl;
+			srcBuff = srcBuff + (((UOSInt)left * (this->info->storeBPP - 1)) >> 3) + (UOSInt)top * srcBpl;
+			srcBuff2 = srcBuff2 + (UOSInt)(left >> 3) + (UOSInt)top * srcBpl;
 			while (height-- > 0)
 			{
 				MemCopyNANC(destBuff, srcBuff, lineSize1);
@@ -105,7 +105,7 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 		}
 		if (top < 0)
 		{
-			destBuff += -top * destBpl;
+			destBuff += (UOSInt)-top * destBpl;
 			height = (UOSInt)((OSInt)height + top);
 			top = 0;
 		}
@@ -121,7 +121,7 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 		{
 			UInt8 *srcBuff = this->data;
 			UOSInt lineSize = (width * this->info->storeBPP + 7) >> 3;
-			srcBuff = srcBuff + ((left * this->info->storeBPP) >> 3) + top * srcBpl;
+			srcBuff = srcBuff + (((UOSInt)left * this->info->storeBPP) >> 3) + (UOSInt)top * srcBpl;
 			while (height-- > 0)
 			{
 				MemCopyNANC(destBuff, srcBuff, lineSize);
@@ -738,7 +738,7 @@ Bool Media::StaticImage::ToPal8()
 		{
 			this->pal = MemAlloc(UInt8, 1024);
 		}
-		Media::ImageTo8Bit::From32bpp(this->data, buff, this->pal, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), (OSInt)this->info->dispWidth);
+		Media::ImageTo8Bit::From32bpp(this->data, buff, this->pal, this->info->dispWidth, this->info->dispHeight, (OSInt)this->GetDataBpl(), (OSInt)this->info->dispWidth);
 		MemFreeA(this->data);
 		this->data = buff;
 		this->info->storeWidth = this->info->dispWidth;
@@ -850,7 +850,7 @@ Bool Media::StaticImage::MultiplyColor(UInt32 color)
 {
 	if (this->info->fourcc == 0 && this->info->storeBPP == 32 && this->info->pf == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ImageColorMul32(this->data, this->info->storeWidth, this->info->storeHeight, (OSInt)this->info->storeWidth << 2, color);
+		ImageUtil_ImageColorMul32(this->data, this->info->storeWidth, this->info->storeHeight, this->info->storeWidth << 2, color);
 		return true;
 	}
 	return false;
