@@ -80,7 +80,7 @@ namespace Media
 		virtual Bool ReadFrameBegin();
 		virtual Bool ReadFrameEnd();
 
-		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype) = 0; //ret 0 = no more frames
+		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype) = 0; //ret 0 = no more frames
 		void SetProp(Int32 propName, const UInt8 *propBuff, UInt32 propBuffSize);
 		virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
 

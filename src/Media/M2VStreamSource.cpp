@@ -625,7 +625,7 @@ UOSInt Media::M2VStreamSource::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return 0;
 }
 
-UOSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

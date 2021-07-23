@@ -63,12 +63,27 @@ Media/ColorManager.h: ../../src/Media/ColorManager.cpp
 @ColorManager.o
 Media/RefClock.h: ../../src/Media/RefClockW.cpp
 @RefClock.o
+Media/VFAPI.h:
+Media/VFAudioStream.h: ../../src/Media/VFAudioStream.cpp
+@VFAudioStream.o
+Media/VFPManager.h: ../../src/Media/VFPManager.cpp
+@VFPManager.o
+Media/VFVideoStream.h: ../../src/Media/VFVideoStream.cpp
+@VFVideoStream.o
 Media/WaveInSource.h: ../../src/Media/WaveInSource.cpp
 @WaveInSource.o
 Media/WaveOutRenderer.h: ../../src/Media/WaveOutRenderer.cpp
 @WaveOutRenderer.o
 Media/WIAManager.h: ../../src/Media/WIAManager.cpp
 @WIAManager.o
+Media/AVIUtl/AUIAudio.h: ../../src/Media/AVIUtl/AUIAudio.cpp
+@AUIAudio.o
+Media/AVIUtl/AUIManager.h: ../../src/Media/AVIUtl/AUIManager.cpp
+@AUIManager.o
+Media/AVIUtl/AUIPlugin.h: ../../src/Media/AVIUtl/AUIPlugin.cpp
+@AUIPlugin.o
+Media/AVIUtl/AUIVideo.h: ../../src/Media/AVIUtl/AUIVideo.cpp
+@AUIVideo.o
 Media/Decoder/ACMDecoder.h: ../../src/Media/Decoder/ACMDecoder.cpp
 @ACMDecoder.o
 Media/Decoder/IMSDKDecoder.h:
@@ -84,6 +99,11 @@ Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryW.cpp
 @OSSocketFactory.o
 Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrW.cpp
 @TCPClientMgr.o
+
+Parser/FileParser/AUIParser.h: ../../src/Parser/FileParser/AUIParser.cpp
+@AUIParser.o
+Parser/FileParser/VFPParser.h: ../../src/Parser/FileParser/VFPParser.cpp
+@VFPParser.o
 
 SSWR/AVIRead/AVIRCoreWin.h: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
 @AVIRCoreWin.o
@@ -144,10 +164,17 @@ StackTracer.o: ../../src/Manage/StackTracerW.cpp
 ColorManager.o: ../../src/Media/ColorManager.cpp
 !-lgdi32
 RefClock.o: ../../src/Media/RefClockW.cpp
+VFAudioStream.o: ../../src/Media/VFAudioStream.cpp
+VFPManager.o: ../../src/Media/VFPManager.cpp
+VFVideoStream.o: ../../src/Media/VFVideoStream.cpp
 WaveInSource.o: ../../src/Media/WaveInSource.cpp
 WaveOutRenderer.o: ../../src/Media/WaveOutRenderer.cpp
 !-lwinmm
 WIAManager.o: ../../src/Media/WIAManager.cpp
+AUIAudio.o: ../../src/Media/AVIUtl/AUIAudio.cpp
+AUIManager.o: ../../src/Media/AVIUtl/AUIManager.cpp
+AUIPlugin.o: ../../src/Media/AVIUtl/AUIPlugin.cpp
+AUIVideo.o: ../../src/Media/AVIUtl/AUIVideo.cpp
 ACMDecoder.o: ../../src/Media/Decoder/ACMDecoder.cpp
 !-lmsacm32
 VFWDecoder.o: ../../src/Media/Decoder/VFWDecoder.cpp
@@ -160,6 +187,8 @@ OSSocketFactory.o: ../../src/Net/OSSocketFactoryW.cpp
 !-liphlpapi
 !-ldnsapi
 TCPClientMgr.o: ../../src/Net/TCPClientMgrW.cpp
+AUIParser.o: ../../src/Parser/FileParser/AUIParser.cpp
+VFPParser.o: ../../src/Parser/FileParser/VFPParser.cpp
 AVIRCoreWin.o: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
 AVIROLEDBForm.o: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
 EventPool.o: ../../src/Sync/EventPoolW.cpp

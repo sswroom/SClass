@@ -284,7 +284,7 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 
 	NEW_CLASS(parser, Parser::FileParser::GUIImgParser());
 	this->AddFileParser(parser);
-#if defined(_MSC_VER) && !defined(_WIN32_WCE)
+#if (defined(_MSC_VER) || defined(__MINGW32__)) && !defined(_WIN32_WCE)
 #ifndef DISABLE_VFP
 	NEW_CLASS(parser, Parser::FileParser::VFPParser());
 	this->AddFileParser(parser);

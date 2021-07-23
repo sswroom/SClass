@@ -9,9 +9,9 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
 {
 	Media::AVIUtl::AUIVideo *me = (Media::AVIUtl::AUIVideo *)userObj;
 	UInt8 *frameBuff;
-	Int32 lastFrameNum = -2;
+	UInt32 lastFrameNum = (UInt32)-2;
 	UInt32 thisFrameNum;
-	OSInt buffSize;
+	UOSInt buffSize;
 
 	me->threadRunning = true;
 	frameBuff = MemAlloc(UInt8, me->GetMaxFrameSize());
@@ -30,7 +30,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
 			else
 			{
 				buffSize = me->plugin->GetVideoFrame(me->input->hand, thisFrameNum, frameBuff);
-				me->playCb(MulDiv(thisFrameNum, 1000 * me->frameRateDenorm, me->frameRateNorm), thisFrameNum, &frameBuff, (UInt32)buffSize, me->plugin->IsVideoKeyFrame(me->input->hand, thisFrameNum)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), me->playCbData, Media::FT_INTERLACED_TFF, (thisFrameNum != lastFrameNum + 1)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+				me->playCb(MulDivU32(thisFrameNum, 1000 * me->frameRateDenorm, me->frameRateNorm), thisFrameNum, &frameBuff, (UInt32)buffSize, me->plugin->IsVideoKeyFrame(me->input->hand, thisFrameNum)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), me->playCbData, Media::FT_INTERLACED_TFF, (thisFrameNum != lastFrameNum + 1)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 				lastFrameNum = thisFrameNum;
 			}
 		}
@@ -159,7 +159,7 @@ Bool Media::AVIUtl::AUIVideo::IsRunning()
 
 Int32 Media::AVIUtl::AUIVideo::GetStreamTime()
 {
-	return MulDiv(this->frameCnt, this->frameRateDenorm * 1000, this->frameRateNorm);
+	return (Int32)MulDivU32(this->frameCnt, this->frameRateDenorm * 1000, this->frameRateNorm);
 }
 
 Bool Media::AVIUtl::AUIVideo::CanSeek()
@@ -194,6 +194,11 @@ UOSInt Media::AVIUtl::AUIVideo::GetDataSeekCount()
 	return 0;
 }
 
+Bool Media::AVIUtl::AUIVideo::HasFrameCount()
+{
+	return true;
+}
+
 UOSInt Media::AVIUtl::AUIVideo::GetFrameCount()
 {
 	return this->frameCnt;
@@ -201,17 +206,17 @@ UOSInt Media::AVIUtl::AUIVideo::GetFrameCount()
 
 UInt32 Media::AVIUtl::AUIVideo::GetFrameTime(UOSInt frameIndex)
 {
-	return MulDiv((Int32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
+	return MulDivU32((UInt32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
 }
 
 void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 {
-	Int32 i;
+	UInt32 i;
 	UInt32 dataSize = (UInt32)this->GetMaxFrameSize();
 	i = 0;
 	while (i < this->frameCnt)
 	{
-		if (!cb(MulDiv(i, this->frameRateDenorm * 1000, this->frameRateNorm), i, dataSize, Media::IVideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
+		if (!cb(MulDivU32(i, this->frameRateDenorm * 1000, this->frameRateNorm), i, dataSize, Media::IVideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
 		{
 			break;
 		}
@@ -219,7 +224,7 @@ void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, void *userDat
 	}
 }
 
-UOSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

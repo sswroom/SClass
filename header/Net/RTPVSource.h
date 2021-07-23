@@ -37,7 +37,7 @@ namespace Net
 		virtual UInt32 GetFrameTime(UOSInt frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
+		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 	};
 }
 #endif

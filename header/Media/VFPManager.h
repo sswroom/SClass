@@ -24,7 +24,7 @@ namespace Media
 		Media::VFPluginFile *plugin;
 		UInt32 file;
 		const WChar *fileName;
-		Int32 useCnt;
+		UInt32 useCnt;
 		Sync::Mutex *mut;
 	} VFMediaFile;
 

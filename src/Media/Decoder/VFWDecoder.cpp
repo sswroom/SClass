@@ -11,7 +11,7 @@
 #include "Media/H264Parser.h"
 #include "IO/DebugWriter.h"
 
-Bool Media::Decoder::VFWDecoder::GetFCCHandlers(Int32 fourcc, Data::ArrayListInt32 *fccHdlrs, Data::ArrayListInt32 *outFccs, EncodingType *encType)
+Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUInt32 *fccHdlrs, Data::ArrayListUInt32 *outFccs, EncodingType *encType)
 {
 	switch (fourcc)
 	{
@@ -22,16 +22,16 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(Int32 fourcc, Data::ArrayListInt
 	case mmioFOURCC('x', 'v', 'i', 'd'):
 	case mmioFOURCC('X', 'V', 'I', 'D'):
 	case mmioFOURCC('F', 'M', 'P', '4'):
-		fccHdlrs->Add(*(Int32*)"xvid");
-		fccHdlrs->Add(*(Int32*)"ffds");
-		outFccs->Add(*(Int32*)"YV12");
-		outFccs->Add(*(Int32*)"YUY2");
+		fccHdlrs->Add(*(UInt32*)"xvid");
+		fccHdlrs->Add(*(UInt32*)"ffds");
+		outFccs->Add(*(UInt32*)"YV12");
+		outFccs->Add(*(UInt32*)"YUY2");
 		*encType = ET_MP4V;
 		break;
 	case mmioFOURCC('M', 'P', '4', '2'):
-		fccHdlrs->Add(*(Int32*)"ffds");
-		fccHdlrs->Add(*(Int32*)"MP42");
-		outFccs->Add(*(Int32*)"YV12");
+		fccHdlrs->Add(*(UInt32*)"ffds");
+		fccHdlrs->Add(*(UInt32*)"MP42");
+		outFccs->Add(*(UInt32*)"YV12");
 		outFccs->Add(0);
 		*encType = ET_UNKNOWN;
 		break;
@@ -42,25 +42,25 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(Int32 fourcc, Data::ArrayListInt
 	case mmioFOURCC('A', 'V', 'C', '1'):
 	case mmioFOURCC('a', 'v', 'c', '1'):
 	case mmioFOURCC('V', 'S', 'S', 'H'):
-		fccHdlrs->Add(*(Int32*)"x264");
-		fccHdlrs->Add(*(Int32*)"X264");
-		fccHdlrs->Add(*(Int32*)"ffds");
-//		outFccs->Add(*(Int32*)"P210");
-//		outFccs->Add(*(Int32*)"P216");
-//		outFccs->Add(*(Int32*)"P010");
-//		outFccs->Add(*(Int32*)"NV12");
-		outFccs->Add(*(Int32*)"YV12");
-		outFccs->Add(*(Int32*)"YUY2");
-		outFccs->Add(*(Int32*)"UYVY");
-		outFccs->Add(*(Int32*)"AYUV");
+		fccHdlrs->Add(*(UInt32*)"x264");
+		fccHdlrs->Add(*(UInt32*)"X264");
+		fccHdlrs->Add(*(UInt32*)"ffds");
+//		outFccs->Add(*(UInt32*)"P210");
+//		outFccs->Add(*(UInt32*)"P216");
+//		outFccs->Add(*(UInt32*)"P010");
+//		outFccs->Add(*(UInt32*)"NV12");
+		outFccs->Add(*(UInt32*)"YV12");
+		outFccs->Add(*(UInt32*)"YUY2");
+		outFccs->Add(*(UInt32*)"UYVY");
+		outFccs->Add(*(UInt32*)"AYUV");
 		*encType = ET_H264;
 		break;
 	case mmioFOURCC('M', 'P', 'G', '2'):
-		fccHdlrs->Add(*(Int32*)"MPG2");
-		fccHdlrs->Add(*(Int32*)"ffds");
-		outFccs->Add(*(Int32*)"YV12");
-		outFccs->Add(*(Int32*)"YUY2");
-		outFccs->Add(*(Int32*)"UYVY");
+		fccHdlrs->Add(*(UInt32*)"MPG2");
+		fccHdlrs->Add(*(UInt32*)"ffds");
+		outFccs->Add(*(UInt32*)"YV12");
+		outFccs->Add(*(UInt32*)"YUY2");
+		outFccs->Add(*(UInt32*)"UYVY");
 		*encType = ET_MP2V;
 		break;
 	case mmioFOURCC('H', 'E', 'V', 'C'):
@@ -68,20 +68,20 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(Int32 fourcc, Data::ArrayListInt
 	case mmioFOURCC('x', '2', '6', '5'):
 	case mmioFOURCC('H', '2', '6', '5'):
 	case mmioFOURCC('h', '2', '6', '5'):
-		fccHdlrs->Add(*(Int32*)"HEVC");
-		fccHdlrs->Add(*(Int32*)"X265");
-		fccHdlrs->Add(*(Int32*)"x265");
-		fccHdlrs->Add(*(Int32*)"H265");
-		fccHdlrs->Add(*(Int32*)"h265");
-		outFccs->Add(*(Int32*)"YV12");
-		outFccs->Add(*(Int32*)"YUY2");
+		fccHdlrs->Add(*(UInt32*)"HEVC");
+		fccHdlrs->Add(*(UInt32*)"X265");
+		fccHdlrs->Add(*(UInt32*)"x265");
+		fccHdlrs->Add(*(UInt32*)"H265");
+		fccHdlrs->Add(*(UInt32*)"h265");
+		outFccs->Add(*(UInt32*)"YV12");
+		outFccs->Add(*(UInt32*)"YUY2");
 		outFccs->Add(0);
 		break;
 	default:
 		fccHdlrs->Add(fourcc);
-		fccHdlrs->Add(*(Int32*)"ffds");
-		outFccs->Add(*(Int32*)"YV12");
-		outFccs->Add(*(Int32*)"YUY2");
+		fccHdlrs->Add(*(UInt32*)"ffds");
+		outFccs->Add(*(UInt32*)"YV12");
+		outFccs->Add(*(UInt32*)"YUY2");
 		outFccs->Add(0);
 		*encType = ET_UNKNOWN;
 		break;
@@ -231,8 +231,8 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	Media::FrameInfo frameInfo;
 	if (!sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
 		return;
-	Data::ArrayListInt32 fccHdlrs;
-	Data::ArrayListInt32 outFccs;
+	Data::ArrayListUInt32 fccHdlrs;
+	Data::ArrayListUInt32 outFccs;
 
 	GetFCCHandlers(frameInfo.fourcc, &fccHdlrs, &outFccs, &this->encType);
 
@@ -242,7 +242,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	bmih.biWidth = (LONG)frameInfo.storeWidth;
 	bmih.biHeight = (LONG)frameInfo.storeHeight;
 	bmih.biPlanes = 1;
-	bmih.biBitCount = frameInfo.storeBPP;
+	bmih.biBitCount = (WORD)frameInfo.storeBPP;
 	bmih.biCompression = frameInfo.fourcc;
 	bmih.biSizeImage = (DWORD)maxFrameSize;
 	bmih.biXPelsPerMeter = 72;
@@ -252,8 +252,8 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 
 	UOSInt fccIndex = 0;
 	UOSInt j = fccHdlrs.GetCount();
-	Int32 fcc;
-	Int32 outFcc;
+	UInt32 fcc;
+	UInt32 outFcc;
 	UOSInt k;
 	UOSInt l;
 	while (fccIndex < j)
@@ -279,11 +279,11 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 		while (k < l)
 		{
 			outFcc = outFccs.GetItem(k);
-			if (outFcc == *(Int32*)"NV12")
+			if (outFcc == *(UInt32*)"NV12")
 			{
-				if (fcc == *(Int32*)"ffds")
+				if (fcc == *(UInt32*)"ffds")
 				{
-					outFcc = *(Int32*)"YV12";
+					outFcc = *(UInt32*)"YV12";
 					bmihOut.biCompression = *(UInt32*)"YV12";
 				}
 				else
@@ -291,71 +291,71 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 					bmihOut.biCompression = *(UInt32*)"NV12";
 				}
 				bmihOut.biBitCount = 12;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * 3) >> 1;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * 3) >> 1;
 				this->vOfst = bmihOut.biWidth * bmihOut.biHeight;
 				this->uOfst = (bmihOut.biWidth * bmihOut.biHeight >> 2) + this->vOfst;
 			}
-			else if (outFcc == *(Int32*)"YV12")
+			else if (outFcc == *(UInt32*)"YV12")
 			{
 				bmihOut.biCompression = *(UInt32*)"YV12";
 				bmihOut.biBitCount = 12;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 				this->vOfst = bmihOut.biWidth * bmihOut.biHeight;
 				this->uOfst = (bmihOut.biWidth * bmihOut.biHeight >> 2) + this->vOfst;
 			}
-			else if (outFcc == *(Int32*)"YUY2")
+			else if (outFcc == *(UInt32*)"YUY2")
 			{
 				bmihOut.biCompression = *(UInt32*)"YUY2";
 				bmihOut.biBitCount = 16;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 				this->uOfst = 1;
 				this->vOfst = 3;
 			}
-			else if (outFcc == *(Int32*)"UYVY")
+			else if (outFcc == *(UInt32*)"UYVY")
 			{
 				bmihOut.biCompression = *(UInt32*)"UYVY";
 				bmihOut.biBitCount = 16;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 				this->uOfst = 0;
 				this->vOfst = 2;
 			}
-			else if (outFcc == *(Int32*)"AYUV")
+			else if (outFcc == *(UInt32*)"AYUV")
 			{
 				bmihOut.biCompression = *(UInt32*)"AYUV";
 				bmihOut.biBitCount = 32;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 				this->uOfst = 2;
 				this->vOfst = 3;
 			}
-			else if (outFcc == *(Int32*)"P010")
+			else if (outFcc == *(UInt32*)"P010")
 			{
 				bmihOut.biCompression = *(UInt32*)"P010";
 				bmihOut.biBitCount = 24;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 			}
-			else if (outFcc == *(Int32*)"P210")
+			else if (outFcc == *(UInt32*)"P210")
 			{
 				bmihOut.biCompression = *(UInt32*)"P210";
 				bmihOut.biBitCount = 32;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 			}
-			else if (outFcc == *(Int32*)"P016")
+			else if (outFcc == *(UInt32*)"P016")
 			{
 				bmihOut.biCompression = *(UInt32*)"P016";
 				bmihOut.biBitCount = 24;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 			}
-			else if (outFcc == *(Int32*)"P216")
+			else if (outFcc == *(UInt32*)"P216")
 			{
 				bmihOut.biCompression = *(UInt32*)"P216";
 				bmihOut.biBitCount = 32;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 			}
-			else if (outFcc == *(Int32*)"Y416")
+			else if (outFcc == *(UInt32*)"Y416")
 			{
 				bmihOut.biCompression = *(UInt32*)"Y416";
 				bmihOut.biBitCount = 64;
-				bmihOut.biSizeImage = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+				bmihOut.biSizeImage = (UInt32)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 			}
 
 			if (ICDecompressBegin(hic, &bmih, &bmihOut) == ICERR_OK)
@@ -366,7 +366,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 				MemCopyNO(this->bmihDest, &bmihOut, bmih.biSize);
 				this->frameRateNorm = frameRateNorm;
 				this->frameRateDenorm = frameRateDenorm;
-				if (outFcc == *(Int32*)"YV12" || outFcc == *(Int32*)"NV12")
+				if (outFcc == *(UInt32*)"YV12" || outFcc == *(UInt32*)"NV12")
 				{
 					Int32 storeWidth;
 					Int32 storeHeight;
@@ -387,11 +387,11 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 						storeHeight = bmihOut.biHeight;
 					}
 
-					this->maxFrameSize = (storeWidth * storeHeight * bmihOut.biBitCount) >> 3;
+					this->maxFrameSize = (UOSInt)(storeWidth * storeHeight * bmihOut.biBitCount) >> 3;
 				}
 				else
 				{
-					this->maxFrameSize = (bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+					this->maxFrameSize = (UOSInt)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 				}
 				this->hic = hic;
 				this->sourceFCC = fcc;
@@ -454,8 +454,8 @@ Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *fr
 	*frameRateNorm = this->frameRateNorm;
 	*frameRateDenorm = this->frameRateDenorm;
 	*maxFrameSize = this->maxFrameSize;
-	info->storeWidth = bmih->biWidth;
-	info->storeHeight = bmih->biHeight;
+	info->storeWidth = (UOSInt)bmih->biWidth;
+	info->storeHeight = (UOSInt)bmih->biHeight;
 	info->dispWidth = info->storeWidth;
 	info->dispHeight = info->storeHeight;
 	info->storeBPP = bmih->biBitCount;

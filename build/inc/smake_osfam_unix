@@ -60,10 +60,13 @@ Media/ColorManager.h: ../../src/Media/ColorManager.cpp
 @ColorManager.o
 Media/RefClock.h: ../../src/Media/RefClockL.cpp
 @RefClock.o
+Media/VFPManager.h:
 Media/WaveInSource.h: ../../src/Media/WaveInSourceNull.cpp
 @WaveInSource.o
 Media/WIAManager.h: ../../src/Media/WIAManagerNull.cpp
 @WIAManager.o
+Media/AVIUtl/AUIManager.h:
+Media/AVIUtl/AUIPlugin.h:
 Media/Decoder/ACMDecoder.h: ../../src/Media/Decoder/ACMDecoderNull.cpp
 @ACMDecoder.o
 Media/Decoder/IMSDKDecoder.h:
@@ -79,6 +82,9 @@ Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryL.cpp
 @OSSocketFactory.o
 Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrL.cpp
 @TCPClientMgr.o
+
+Parser/FileParser/AUIParser.h:
+Parser/FileParser/VFPParser.h:
 
 SSWR/AVIRead/AVIRCoreWin.h: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
 @AVIRCoreWin.o

@@ -7,7 +7,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
-#include <Mmreg.h>
+#include <mmreg.h>
 #undef FindNextFile
 
 typedef struct {
@@ -119,7 +119,7 @@ Media::AVIUtl::AUIPlugin *Media::AVIUtl::AUIPlugin::Clone()
 	return plugin;
 }
 
-OSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr)
+UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr)
 {
 	INPUT_HANDLE hand;
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
@@ -138,9 +138,9 @@ OSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<M
 
 	Media::IMediaSource *media;
 
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
-	Int32 frameCnt;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
+	UInt32 frameCnt;
 	if (this->GetInputVideoInfo(input->hand, frameInfo, &frameRateNorm, &frameRateDenorm, &frameCnt))
 	{
 		NEW_CLASS(media, Media::AVIUtl::AUIVideo(this->Clone(), input, frameInfo, frameRateNorm, frameRateDenorm, frameCnt));
@@ -151,7 +151,7 @@ OSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<M
 	{
 		DEL_CLASS(frameInfo);
 	}
-	Int32 nSamples;
+	UInt32 nSamples;
 	if (this->GetInputAudioInfo(input->hand, audioFormat, &nSamples))
 	{
 		NEW_CLASS(media, Media::AVIUtl::AUIAudio(this->Clone(), input, audioFormat, nSamples));
@@ -181,7 +181,7 @@ Bool Media::AVIUtl::AUIPlugin::CloseInput(void *hand)
 	return pluginTab->func_close((INPUT_HANDLE)hand) == TRUE;
 }
 
-Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *frameInfo, Int32 *frameRateNorm, Int32 *frameRateDenorm, Int32 *frameCnt)
+Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *frameInfo, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UInt32 *frameCnt)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	INPUT_INFO info;
@@ -192,8 +192,8 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 	if ((info.flag & INPUT_INFO_FLAG_VIDEO) == 0)
 		return false;
 	
-	frameInfo->storeWidth = info.format->biWidth;
-	frameInfo->storeHeight = info.format->biHeight;
+	frameInfo->storeWidth = (ULONG)info.format->biWidth;
+	frameInfo->storeHeight = (ULONG)info.format->biHeight;
 	frameInfo->dispWidth = frameInfo->storeWidth;
 	frameInfo->dispHeight = frameInfo->storeHeight;
 	frameInfo->fourcc = info.format->biCompression;
@@ -238,13 +238,13 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	}
-	*frameRateNorm = info.rate;
-	*frameRateDenorm = info.scale;
-	*frameCnt = info.n;
+	*frameRateNorm = (UInt32)info.rate;
+	*frameRateDenorm = (UInt32)info.scale;
+	*frameCnt = (UInt32)info.n;
 	return true;
 }
 
-Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, Media::AudioFormat *af, Int32 *nSamples)
+Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, Media::AudioFormat *af, UInt32 *nSamples)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	INPUT_INFO info;
@@ -255,28 +255,28 @@ Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, Media::AudioFormat 
 	if ((info.flag & INPUT_INFO_FLAG_AUDIO) == 0)
 		return false;
 	af->FromWAVEFORMATEX((UInt8*)info.audio_format);
-	*nSamples = info.audio_n;
+	*nSamples = (UInt32)info.audio_n;
 	return true;
 }
 
 UOSInt Media::AVIUtl::AUIPlugin::GetVideoFrame(void *hand, UOSInt frameNum, UInt8 *buff)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
-	return pluginTab->func_read_video((INPUT_HANDLE)hand, (int)frameNum, buff);
+	return (UInt32)pluginTab->func_read_video((INPUT_HANDLE)hand, (int)frameNum, buff);
 }
 
 UOSInt Media::AVIUtl::AUIPlugin::GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
-	return pluginTab->func_read_audio((INPUT_HANDLE)hand, (int)startSample, (int)sampleLength, buff);
+	return (UInt32)pluginTab->func_read_audio((INPUT_HANDLE)hand, (int)startSample, (int)sampleLength, buff);
 }
 
-Bool Media::AVIUtl::AUIPlugin::IsVideoKeyFrame(void *hand, Int32 frameNum)
+Bool Media::AVIUtl::AUIPlugin::IsVideoKeyFrame(void *hand, UInt32 frameNum)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	if (pluginTab->func_is_keyframe)
 	{
-		return pluginTab->func_is_keyframe((INPUT_HANDLE)hand, frameNum) == TRUE;
+		return pluginTab->func_is_keyframe((INPUT_HANDLE)hand, (int)frameNum) == TRUE;
 	}
 	return true;
 }
@@ -296,8 +296,8 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(IO::IFileSelector *selector)
 	WChar *sptr;
 	WChar *sarr[3];
 	Char *filter = pluginTab->filefilter;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = Text::StrCharCnt(filter);
 	j = enc.CountWChars((UInt8*)filter, i);
 	sptr = MemAlloc(WChar, j + 1);

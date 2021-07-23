@@ -40,8 +40,8 @@ IO::ParsedObject *Parser::FileParser::AUIParser::ParseFile(IO::IStreamData *fd, 
 	{
 		Media::MediaFile *file;
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
-		OSInt i = 0;
-		OSInt j = mediaArr.GetCount();
+		UOSInt i = 0;
+		UOSInt j = mediaArr.GetCount();
 		while (i < j)
 		{
 			file->AddSource(mediaArr.GetItem(i++), 0);

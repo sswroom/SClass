@@ -74,7 +74,7 @@ void Media::AVIUtl::AUIAudio::Stop()
 UOSInt Media::AVIUtl::AUIAudio::ReadBlock(UInt8 *buff, UOSInt blkSize)
 {
 	UOSInt nSample = blkSize / this->format->align;
-	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, (Int32)this->currSample, nSample, buff);
+	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, this->currSample, nSample, buff);
 	this->currSample += readCnt;
 	if (this->playEvt)
 		this->playEvt->Set();

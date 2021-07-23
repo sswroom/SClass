@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_VFWDECODER
 #define _SM_MEDIA_DECODER_VFWDECODER
-#include "Data/ArrayListInt32.h"
+#include "Data/ArrayListUInt32.h"
 #include "Media/IVideoSource.h"
 #include "Media/Decoder/VDecoderBase.h"
 //require vfw32.lib
@@ -22,8 +22,8 @@ namespace Media
 
 			typedef struct
 			{
-				Int32 frameNum;
-				Int32 frameTime;
+				UInt32 frameNum;
+				UInt32 frameTime;
 				Media::FrameType frameType;
 			} BFrameStatus;
 		private:
@@ -57,7 +57,7 @@ namespace Media
 			Int32 vOfst;
 			Bool endProcessing;
 
-			static Bool GetFCCHandlers(Int32 fourcc, Data::ArrayListInt32 *fccHdlrs, Data::ArrayListInt32 *outFccs, EncodingType *encType);
+			static Bool GetFCCHandlers(UInt32 fourcc, Data::ArrayListUInt32 *fccHdlrs, Data::ArrayListUInt32 *outFccs, EncodingType *encType);
 
 			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:

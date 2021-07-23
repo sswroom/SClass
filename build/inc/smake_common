@@ -1865,7 +1865,6 @@ Media/VectorDocument.h: ../../src/Media/VectorDocument.cpp
 @VectorDocument.o
 Media/VectorGraph.h: ../../src/Media/VectorGraph.cpp
 @VectorGraph.o
-Media/VFPManager.h:
 Media/VideoChecker.h: ../../src/Media/VideoChecker.cpp
 @VideoChecker.o
 Media/VideoSourceBase.h: ../../src/Media/VideoSourceBase.cpp
@@ -1905,8 +1904,6 @@ Media/AudioFilter/SoundGen/BellSoundGen.h: ../../src/Media/AudioFilter/SoundGen/
 @BellSoundGen.o
 Media/AudioFilter/SoundGen/ISoundGen.h: ../../src/Media/AudioFilter/SoundGen/ISoundGen.cpp
 @ISoundGen.o
-Media/AVIUtl/AUIManager.h:
-Media/AVIUtl/AUIPlugin.h:
 Media/Batch/BatchHandler.h:
 Media/Batch/BatchLimiter.h: ../../src/Media/Batch/BatchLimiter.cpp
 @BatchLimiter.o
@@ -2451,7 +2448,6 @@ Parser/FileParser/ANIParser.h: ../../src/Parser/FileParser/ANIParser.cpp
 Parser/FileParser/AOSParser.h: ../../src/Parser/FileParser/AOSParser.cpp
 @AOSParser.o
 Parser/FileParser/APEParser.h:
-Parser/FileParser/AUIParser.h:
 Parser/FileParser/AVIParser.h: ../../src/Parser/FileParser/AVIParser.cpp
 @AVIParser.o
 Parser/FileParser/BMPParser.h: ../../src/Parser/FileParser/BMPParser.cpp
@@ -2626,7 +2622,6 @@ Parser/FileParser/TXTParser.h: ../../src/Parser/FileParser/TXTParser.cpp
 @TXTParser.o
 Parser/FileParser/UDPParser.h: ../../src/Parser/FileParser/UDPParser.cpp
 @UDPParser.o
-Parser/FileParser/VFPParser.h:
 Parser/FileParser/WAVParser.h: ../../src/Parser/FileParser/WAVParser.cpp
 @WAVParser.o
 Parser/FileParser/WPTParser.h: ../../src/Parser/FileParser/WPTParser.cpp

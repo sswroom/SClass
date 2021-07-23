@@ -16,7 +16,7 @@ namespace Media
 			typedef struct
 			{
 				void *hMod;
-				Int32 useCnt;
+				UInt32 useCnt;
 				void *pluginTable;
 			} PluginDetail;
 
@@ -24,7 +24,7 @@ namespace Media
 			typedef struct
 			{
 				void *hand;
-				Int32 useCnt;
+				UInt32 useCnt;
 			} AUIInput;
 
 		private:
@@ -36,14 +36,14 @@ namespace Media
 			~AUIPlugin();
 
 			AUIPlugin *Clone();
-			OSInt LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
+			UOSInt LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
 
 			Bool CloseInput(void *hand);
-			Bool GetInputVideoInfo(void *hand, Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, Int32 *frameCnt);
-			Bool GetInputAudioInfo(void *hand, Media::AudioFormat *af, Int32 *sampleCnt);
+			Bool GetInputVideoInfo(void *hand, Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UInt32 *frameCnt);
+			Bool GetInputAudioInfo(void *hand, Media::AudioFormat *af, UInt32 *sampleCnt);
 			UOSInt GetVideoFrame(void *hand, UOSInt frameNum, UInt8 *buff);
 			UOSInt GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff);
-			Bool IsVideoKeyFrame(void *hand, Int32 frameNum);
+			Bool IsVideoKeyFrame(void *hand, UInt32 frameNum);
 			Bool ConfigInput(void *hInst, void *hWnd);
 			void PrepareSelector(IO::IFileSelector *selector);
 

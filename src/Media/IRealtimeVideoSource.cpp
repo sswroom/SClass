@@ -78,7 +78,7 @@ void Media::IRealtimeVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *use
 {
 }
 
-UOSInt Media::IRealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::IRealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
 {
 	///////////////////////////////////////
 	return 0;

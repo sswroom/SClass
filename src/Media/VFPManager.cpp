@@ -145,7 +145,7 @@ OSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Medi
 Media::VFPManager::~VFPManager()
 {
 	VFPluginFile *plugin;
-	OSInt i = this->plugins->GetCount();
+	UOSInt i = this->plugins->GetCount();
 	while (i-- > 0)
 	{
 		plugin = plugins->GetItem(i);
@@ -176,9 +176,9 @@ void Media::VFPManager::PrepareSelector(IO::IFileSelector *selector)
 	Text::Encoding enc(932);
 	WChar *sarr[3];
 	WChar *sptr;
-	OSInt k;
-	OSInt j;
-	OSInt i = this->plugins->GetCount();
+	UOSInt k;
+	UOSInt j;
+	UOSInt i = this->plugins->GetCount();
 	while (i-- > 0)
 	{
 		plugin = plugins->GetItem(i);

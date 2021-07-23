@@ -10,9 +10,9 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
 {
 	Media::VFVideoStream *me = (Media::VFVideoStream*)userObj;
 	UInt8 *frameBuff;
-	Int32 frameTime;
+	UInt32 frameTime;
 	Media::FrameType ft;
-	OSInt frameSize;
+	UOSInt frameSize;
 	UInt32 frameNum;
 	me->threadRunning = true;
 	frameNum = 0;
@@ -73,7 +73,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info->hdpi = 96;
 	Bool isNTSC = false;
-	Bool isPAL = false;
+	//Bool isPAL = false;
 	if (this->frameRateScale == 1001 && this->frameRate == 24000)
 	{
 		isNTSC = true;
@@ -200,7 +200,7 @@ Bool Media::VFVideoStream::IsRunning()
 
 Int32 Media::VFVideoStream::GetStreamTime()
 {
-	return MulDiv(this->frameCnt, this->frameRateScale * 1000, this->frameRate);
+	return (Int32)MulDivU32(this->frameCnt, this->frameRateScale * 1000, this->frameRate);
 }
 
 Bool Media::VFVideoStream::CanSeek()
@@ -210,12 +210,12 @@ Bool Media::VFVideoStream::CanSeek()
 
 UInt32 Media::VFVideoStream::SeekToTime(UInt32 time)
 {
-	Int32 newFrameNum = MulDiv(time, this->frameRate, this->frameRateScale * 1000);
+	UInt32 newFrameNum = MulDivU32(time, this->frameRate, this->frameRateScale * 1000);
 	if (newFrameNum >= this->frameCnt)
 		newFrameNum = this->frameCnt;
 	this->currFrameNum = newFrameNum;
 	this->seeked = true;
-	return MulDiv(newFrameNum, this->frameRateScale * 1000, this->frameRate);
+	return MulDivU32(newFrameNum, this->frameRateScale * 1000, this->frameRate);
 }
 
 Bool Media::VFVideoStream::IsRealTimeSrc()
@@ -240,23 +240,28 @@ UOSInt Media::VFVideoStream::GetDataSeekCount()
 	return 0;
 }
 
+Bool Media::VFVideoStream::HasFrameCount()
+{
+	return true;
+}
+
 UOSInt Media::VFVideoStream::GetFrameCount()
 {
 	return this->frameCnt;
 }
 UInt32 Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
 {
-	return MulDiv((Int32)frameIndex, this->frameRateScale * 1000, this->frameRate);
+	return MulDivU32((UInt32)frameIndex, this->frameRateScale * 1000, this->frameRate);
 }
 
 void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 {
-	Int32 i;
-	OSInt dataSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
+	UInt32 i;
+	UOSInt dataSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
 	i = 0;
 	while (i < this->frameCnt)
 	{
-		if (!cb(MulDiv(i, this->frameRateScale * 1000, this->frameRate), i, dataSize, Media::IVideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
+		if (!cb(MulDivU32(i, this->frameRateScale * 1000, this->frameRate), i, dataSize, Media::IVideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
 		{
 			break;
 		}
@@ -264,7 +269,7 @@ void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 	}
 }
 
-UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
 	if (this->currFrameNum >= this->frameCnt)
@@ -277,8 +282,8 @@ UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, M
 	rd.lpData = frameBuff;
 	rd.lPitch = (int)(this->info->storeWidth * (this->info->storeBPP >> 3));
 	funcs->ReadData(mfile->file, VF_STREAM_VIDEO, &rd);
-	*frameTime = MulDiv(this->currFrameNum, this->frameRateScale * 1000, this->frameRate);
+	*frameTime = MulDivU32(this->currFrameNum, this->frameRateScale * 1000, this->frameRate);
 	*ftype = this->info->ftype;
 	this->currFrameNum++;
-	return rd.lPitch * this->info->storeHeight;
+	return (UInt32)rd.lPitch * this->info->storeHeight;
 }

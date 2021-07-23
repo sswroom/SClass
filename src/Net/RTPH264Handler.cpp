@@ -420,7 +420,7 @@ Bool Net::RTPH264Handler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 	return false;
 }
 
-UOSInt Net::RTPH264Handler::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Net::RTPH264Handler::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

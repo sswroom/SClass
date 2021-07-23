@@ -12,12 +12,12 @@ namespace Media
 		Media::VFMediaFile *mfile;
 		
 		Media::FrameInfo *info;
-		Int32 frameRate;
-		Int32 frameRateScale;
-		Int32 frameCnt;
+		UInt32 frameRate;
+		UInt32 frameRateScale;
+		UInt32 frameCnt;
 		Bool seeked;
 
-		Int32 currFrameNum;
+		UInt32 currFrameNum;
 		Bool playing;
 		FrameCallback frameCb;
 		FrameChangeCallback fcCb;
@@ -54,7 +54,7 @@ namespace Media
 		virtual UInt32 GetFrameTime(UOSInt frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
+		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 	};
 }
 #endif

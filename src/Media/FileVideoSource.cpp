@@ -563,7 +563,7 @@ UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UInt8 *frameBuff)
 	return this->data->GetRealData(this->frameOfsts->GetItem(frameIndex), frameSize, frameBuff);
 }
 
-UOSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
 {
 	return 0;
 }

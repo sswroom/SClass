@@ -596,11 +596,11 @@ Media::DShow::DShowVideoCaptureMgr::~DShowVideoCaptureMgr()
 	CoUninitialize();
 }
 
-OSInt Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
+UOSInt Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
-	OSInt cnt;
+	UOSInt cnt;
 	if (pEnum == 0)
 	{
 		return 0;
@@ -615,12 +615,12 @@ OSInt Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
 	return cnt;
 }
 
-UTF8Char *Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSInt devNo)
+UTF8Char *Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
-	Int32 cnt;
+	UInt32 cnt;
 	UTF8Char *sptr = 0;
 
 	if (pEnum == 0)
@@ -663,12 +663,12 @@ UTF8Char *Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSIn
 	return 0;
 }
 
-WChar *Media::DShow::DShowVideoCaptureMgr::GetDeviceId(WChar *buff, OSInt devNo)
+WChar *Media::DShow::DShowVideoCaptureMgr::GetDeviceId(WChar *buff, UOSInt devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
-	Int32 cnt;
+	UInt32 cnt;
 	WChar *sptr = 0;
 
 	if (pEnum == 0)
@@ -707,7 +707,7 @@ WChar *Media::DShow::DShowVideoCaptureMgr::GetDeviceId(WChar *buff, OSInt devNo)
 	return 0;
 }
 
-Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(OSInt devNo)
+Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(UOSInt devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;

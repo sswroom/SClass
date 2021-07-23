@@ -28,7 +28,7 @@ Media::AVIUtl::AUIManager::AUIManager()
 Media::AVIUtl::AUIManager::~AUIManager()
 {
 	Media::AVIUtl::AUIPlugin *plugin;
-	OSInt i;
+	UOSInt i;
 	i = this->plugins->GetCount();
 	while (i-- > 0)
 	{
@@ -38,14 +38,14 @@ Media::AVIUtl::AUIManager::~AUIManager()
 	DEL_CLASS(this->plugins);
 }
 
-OSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr)
+UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr)
 {
 	Char sbuff[512];
 	Text::Encoding enc;
 	enc.UTF8ToBytes((UInt8*)sbuff, fileName);
 
-	OSInt retSize = 0;
-	OSInt i;
+	UOSInt retSize = 0;
+	UOSInt i;
 	i = this->plugins->GetCount();
 	while (i-- > 0)
 	{
@@ -58,7 +58,7 @@ OSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::ArrayL
 
 void Media::AVIUtl::AUIManager::PrepareSelector(IO::IFileSelector *selector)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->plugins->GetCount();
 	while (i-- > 0)
 	{

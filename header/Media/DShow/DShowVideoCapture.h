@@ -68,11 +68,11 @@ namespace Media
 		public:
 			DShowVideoCaptureMgr();
 			~DShowVideoCaptureMgr();
-			OSInt GetDeviceCount();
-			UTF8Char *GetDeviceName(UTF8Char *buff, OSInt devNo);
-			WChar *GetDeviceId(WChar *buff, OSInt devNo);
-			DShowVideoCapture *GetDevice(OSInt devNo);
+			UOSInt GetDeviceCount();
+			UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
+			WChar *GetDeviceId(WChar *buff, UOSInt devNo);
+			DShowVideoCapture *GetDevice(UOSInt devNo);
 		};
-	};
-};
+	}
+}
 #endif

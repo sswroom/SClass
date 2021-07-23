@@ -99,7 +99,7 @@ namespace Media
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
 		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
 
-		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
+		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 
 		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
 		virtual void ClearFrameBuff();
