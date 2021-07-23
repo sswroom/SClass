@@ -3,6 +3,12 @@
 #include "Data/ByteTool.h"
 #include "Net/MACInfo.h"
 
+#if defined(_MSC_VER)
+Net::MACInfo::MACEntry Net::MACInfo::macList[] = {
+	{0x0000000000000000LL, 0x0000000000000000LL, "Unknown"},
+	{0x0000FFFFFFFFFFFFLL, 0x0000FFFFFFFFFFFFLL, "Broadcast"},
+};
+#else
 Net::MACInfo::MACEntry Net::MACInfo::macList[] = {
 	{0x0000000000000000LL, 0x0000000000000000LL, "Unknown"},
 	{0x0000000000000001LL, 0x0000000000FFFFFFLL, "Xerox Corporation"},
@@ -46555,6 +46561,7 @@ Net::MACInfo::MACEntry Net::MACInfo::macList[] = {
 	{0x0000FFFFFF000000LL, 0x0000FFFFFFFFFFFELL, ""},
 	{0x0000FFFFFFFFFFFFLL, 0x0000FFFFFFFFFFFFLL, "Broadcast"},
 };
+#endif
 
 Net::MACInfo::MACEntry Net::MACInfo::uncMac = {0, 0, "Unknown"};
 
