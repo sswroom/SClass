@@ -3,6 +3,11 @@
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 
+#if defined(_MSC_VER)
+Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
+	{"zeroDotZero",													1,  {0x00}}, // 0.0
+};
+#else
 Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"zeroDotZero",													1,  {0x00}}, // 0.0
 	{"id-domainComponent",											10, {0x09, 0x92, 0x26, 0x89, 0x93, 0xF2, 0x2C, 0x64, 0x01, 0x19}}, // 0.9.2342.19200300.100.1.25
@@ -10518,6 +10523,7 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"id-sha512",													9,  {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03}}, // 2.16.840.1.101.3.4.2.3
 	{"id-sha224",													9,  {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x04}}, // 2.16.840.1.101.3.4.2.4
 };
+#endif
 
 void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
 {

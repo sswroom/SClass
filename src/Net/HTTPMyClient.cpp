@@ -385,7 +385,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 #endif
 		ptr1 = &url[7];
 		si = Text::StrIndexOf(ptr1, '/');
-		if (i >= 0)
+		if (si >= 0)
 		{
 			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
 			urltmp[si] = 0;
