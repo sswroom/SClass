@@ -89,9 +89,9 @@ UOSInt Data::LinkedList::GetCount()
 	return cnt;
 }
 
-OSInt Data::LinkedList::IndexOf(void *item)
+UOSInt Data::LinkedList::IndexOf(void *item)
 {
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	Data::LinkedListItem *llItem = this->firstItem;
 	while (llItem)
@@ -104,5 +104,5 @@ OSInt Data::LinkedList::IndexOf(void *item)
 		cnt++;
 		llItem = llItem->nextItem;
 	}
-	return -1;
+	return INVALID_INDEX;
 }

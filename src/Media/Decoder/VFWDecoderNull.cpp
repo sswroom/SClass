@@ -9,7 +9,7 @@
 #include "Media/H264Parser.h"
 #include "IO/DebugWriter.h"
 
-Bool Media::Decoder::VFWDecoder::GetFCCHandlers(Int32 fourcc, Data::ArrayListInt32 *fccHdlrs, Data::ArrayListInt32 *outFccs, EncodingType *encType)
+Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUInt32 *fccHdlrs, Data::ArrayListUInt32 *outFccs, EncodingType *encType)
 {
 
 	return true;

@@ -487,7 +487,7 @@ UInt64 IO::PackageFile::GetItemSize(UOSInt index)
 	return 0;
 }
 
-OSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
+UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -500,21 +500,21 @@ OSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 			if (item->name)
 			{
 				if (Text::StrEqualsICase(item->name, name))
-					return (OSInt)i;
+					return i;
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 			{
 				if (Text::StrEqualsICase(item->fd->GetShortName(), name))
-					return (OSInt)i;
+					return i;
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 			{
 				if (Text::StrEqualsICase(item->pobj->GetSourceNameObj(), name))
-					return (OSInt)i;
+					return i;
 			}
 		}
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
 Bool IO::PackageFile::IsCompressed(UOSInt index)
