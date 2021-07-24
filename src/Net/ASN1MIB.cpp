@@ -397,7 +397,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
-	OSInt j;
+	UOSInt j;
 	UOSInt lineSpace;
 	ObjectInfo *obj;
 	ObjectInfo *currObj = 0;

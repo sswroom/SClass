@@ -91,7 +91,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 			reader->ReadStream(&bnt);
 			if (fileSize == readSess.readSize)
 			{
-				OSInt i = Text::StrLastIndexOf(path, IO::Path::PATH_SEPERATOR);
+				UOSInt i = Text::StrLastIndexOf(path, IO::Path::PATH_SEPERATOR);
 				hash->GetValue(hashBuff);
 				fchk->AddEntry(&path[i + 1], hashBuff);
 			}
@@ -118,7 +118,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	else if (pt == IO::Path::PT_DIRECTORY)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
-		OSInt i = Text::StrConcat(&sbuff[2], path) - sbuff;
+		UOSInt i = (UOSInt)(Text::StrConcat(&sbuff[2], path) - sbuff);
 		sbuff[0] = '.';
 		sbuff[1] = IO::Path::PATH_SEPERATOR;
 		if (sbuff[i - 1] == IO::Path::PATH_SEPERATOR)
@@ -354,7 +354,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt i;
+	UOSInt i;
 	Crypto::Hash::IHash *hash;
 	IO::FileStream *fs;
 
@@ -363,7 +363,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 		return false;
 	sptr = Text::StrConcat(sbuff, this->sourceName);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	if (i < 0)
+	if (i == INVALID_INDEX)
 		return false;
 	sptr = &sbuff[i];
 	if (fileName[0] == IO::Path::PATH_SEPERATOR)

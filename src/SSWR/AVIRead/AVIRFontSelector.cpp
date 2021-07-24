@@ -132,7 +132,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 				h = 1;
 			}
 			this->currFontStyle -= (UOSInt)h;
-			if (this->currFontStyle < 0)
+			if (this->currFontStyle == INVALID_INDEX)
 			{
 				this->currFontStyle = 0;
 			}

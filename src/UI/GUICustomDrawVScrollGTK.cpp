@@ -16,9 +16,9 @@
 
 typedef struct
 {
-	OSInt currPos;
-	OSInt min;
-	OSInt max;
+	UOSInt currPos;
+	UOSInt min;
+	UOSInt max;
 	UOSInt pageSize;
 	Bool scrollDown;
 	OSInt scrollDownY;
@@ -330,15 +330,15 @@ void UI::GUICustomDrawVScroll::EventDblClk()
 	}
 }
 
-void UI::GUICustomDrawVScroll::SetVScrollBar(OSInt min, OSInt max, UOSInt pageSize)
+void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	data->min = min;
 	data->max = max;
 	data->pageSize = pageSize;
-	if (data->currPos > data->max - (OSInt)data->pageSize + 1)
+	if (data->currPos > data->max - data->pageSize + 1)
 	{
-		data->currPos = data->max - (OSInt)data->pageSize + 1;
+		data->currPos = data->max - data->pageSize + 1;
 	}
 	if (data->currPos < data->min)
 	{
@@ -347,13 +347,13 @@ void UI::GUICustomDrawVScroll::SetVScrollBar(OSInt min, OSInt max, UOSInt pageSi
 	this->Redraw();
 }
 
-OSInt UI::GUICustomDrawVScroll::GetVScrollPos()
+UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
 {
 	ClassData *data = (ClassData*)this->clsData;
 	return data->currPos;
 }
 
-Bool UI::GUICustomDrawVScroll::MakeVisible(OSInt index)
+Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt index)
 {
 	ClassData *data = (ClassData*)this->clsData;
 
@@ -368,13 +368,13 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(OSInt index)
 		this->Redraw();
 		return true;
 	}
-	else if ((data->currPos + (OSInt)data->pageSize) > index)
+	else if ((data->currPos + data->pageSize) > index)
 	{
 		return false;
 	}
 	else
 	{
-		data->currPos = index - (OSInt)data->pageSize + 1;
+		data->currPos = index - data->pageSize + 1;
 		this->Redraw();
 		return true;
 	}

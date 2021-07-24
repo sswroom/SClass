@@ -48,9 +48,9 @@ namespace UI
 		void HandleDblClk(UI::UIEvent hdlr, void *userObj);
 		void EventSelChg();
 		void EventDblClk();
-		void SetVScrollBar(OSInt min, OSInt max, UOSInt pageSize);
-		OSInt GetVScrollPos();
-		Bool MakeVisible(OSInt index);
+		void SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize);
+		UOSInt GetVScrollPos();
+		Bool MakeVisible(UOSInt index);
 	};
 }
 #endif

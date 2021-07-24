@@ -254,12 +254,12 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 void *UI::GUITreeView::RemoveItem(TreeItem *item)
 {
 	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
-	OSInt i = this->treeItems->IndexOf(item);
-	if (i >= 0)
+	UOSInt i = this->treeItems->IndexOf(item);
+	if (i != INVALID_INDEX)
 	{
 		void *obj = item->GetItemObj();
 		gtk_tree_store_remove(data->treeStore, (GtkTreeIter*)item->GetHItem());
-		this->treeItems->RemoveAt((UOSInt)i);
+		this->treeItems->RemoveAt(i);
 		DEL_CLASS(item);
 		return obj;
 	}

@@ -25,7 +25,7 @@ namespace Data
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
-		virtual OSInt IndexOf(T val);
+		virtual UOSInt IndexOf(T val);
 		virtual void Clear();
 		virtual ArrayList<T> *Clone();
 
@@ -206,13 +206,13 @@ namespace Data
 		objCnt++;
 	}
 
-	template <class T> OSInt ArrayList<T>::IndexOf(T Val)
+	template <class T> UOSInt ArrayList<T>::IndexOf(T val)
 	{
-		OSInt i = (OSInt)objCnt;
+		UOSInt i = objCnt;
 		while (i-- > 0)
-			if (arr[i] == Val)
+			if (arr[i] == val)
 				return i;
-		return -1;
+		return INVALID_INDEX;
 	}
 
 	template <class T> void ArrayList<T>::Clear()

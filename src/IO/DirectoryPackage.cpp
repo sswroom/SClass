@@ -120,7 +120,7 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index)
 UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index)
 {
 	const UTF8Char *fileName = this->files->GetItem(index);
-	OSInt i;
+	UOSInt i;
 	if (fileName == 0)
 		return 0;
 	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
@@ -178,10 +178,10 @@ UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index)
 	return this->fileSizes->GetItem(index);
 }
 
-OSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
+UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
 {
 	UOSInt j = this->files->GetCount();
-	OSInt i;
+	UOSInt i;
 	while (j-- > 0)
 	{
 		const UTF8Char *fileName = this->files->GetItem(j);
@@ -190,11 +190,11 @@ OSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
 			i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 			if (Text::StrEquals(&fileName[i + 1], name))
 			{
-				return (OSInt)j;
+				return j;
 			}
 		}
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
 Bool IO::DirectoryPackage::IsCompressed(UOSInt index)
@@ -227,7 +227,7 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 	if (pt == IO::Path::PT_FILE)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -245,7 +245,7 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 	else if (pt == IO::Path::PT_DIRECTORY)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -271,7 +271,7 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 	if (pt == IO::Path::PT_FILE)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -289,7 +289,7 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 	else if (pt == IO::Path::PT_DIRECTORY)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -315,7 +315,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 	if (pt == IO::Path::PT_FILE)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -333,7 +333,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 	else if (pt == IO::Path::PT_DIRECTORY)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -359,7 +359,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 	if (pt == IO::Path::PT_FILE)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -377,7 +377,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 	else if (pt == IO::Path::PT_DIRECTORY)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		UTF8Char *sptr = Text::StrConcat(sbuff, this->dirName);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{

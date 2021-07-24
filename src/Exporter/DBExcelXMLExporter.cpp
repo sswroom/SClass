@@ -94,7 +94,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 		r = db->GetTableData(tableName, 0, 0, 0);
 		if (r)
 		{
-			OSInt ind = Text::StrLastIndexOf(tableName, '\\');
+			UOSInt ind = Text::StrLastIndexOf(tableName, '\\');
 			sptr = Text::StrConcat(Text::XML::ToAttrText(Text::StrConcat(lineBuff1, (const UTF8Char*)" <Worksheet ss:Name="), &tableName[ind + 1]), (const UTF8Char*)">");
 			Text::StrReplace(lineBuff1, '?', '_');
 			Text::StrReplace(lineBuff1, '\\', '_');

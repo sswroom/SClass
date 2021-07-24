@@ -604,10 +604,10 @@ void Media::MonitorColorManager::AddSess(Media::ColorManagerSess *colorSess)
 
 void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 {
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(this->sessMut);
 	i = this->sessList->IndexOf(colorSess);
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		this->sessList->RemoveAt((UOSInt)i);
 	}
@@ -960,8 +960,8 @@ void Media::ColorManagerSess::AddHandler(Media::IColorHandler *hdlr)
 void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	OSInt index = this->hdlrs->IndexOf(hdlr);
-	if (index >= 0)
+	UOSInt index = this->hdlrs->IndexOf(hdlr);
+	if (index != INVALID_INDEX)
 	{
 		this->hdlrs->RemoveAt((UOSInt)index);
 	}

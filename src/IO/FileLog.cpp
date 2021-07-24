@@ -95,7 +95,7 @@ IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyl
 	this->groupStyle = groupStyle;
 	this->closed = false;
 
-	OSInt i;
+	UOSInt i;
 
 	this->fileName = Text::StrCopyNew(fileName);
 	if (this->groupStyle != IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
@@ -107,7 +107,7 @@ IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyl
 	{
 		this->extName = 0;
 		i = Text::StrLastIndexOf(this->fileName, IO::Path::PATH_SEPERATOR);
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			((UTF8Char*)this->fileName)[i] = 0;
 			if (!IO::Path::IsDirectoryExist(this->fileName))

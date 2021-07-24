@@ -180,12 +180,12 @@ namespace Text
 	OSInt StrIndexOf(const UTF16Char *str1, UTF16Char c);
 	OSInt StrIndexOf(const UTF32Char *str1, const UTF32Char *str2);
 	OSInt StrIndexOf(const UTF32Char *str1, UTF32Char c);
-	OSInt StrIndexOfICase(const UTF16Char *str1, const UTF16Char *str2);
-	OSInt StrIndexOfICase(const UTF32Char *str1, const UTF32Char *str2);
-	OSInt StrLastIndexOf(const UTF16Char *str1, UTF16Char c);
-	OSInt StrLastIndexOf(const UTF32Char *str1, UTF32Char c);
-	OSInt StrLastIndexOf(const UTF16Char *str1, const UTF16Char *str2);
-	OSInt StrLastIndexOf(const UTF32Char *str1, const UTF32Char *str2);
+	UOSInt StrIndexOfICase(const UTF16Char *str1, const UTF16Char *str2);
+	UOSInt StrIndexOfICase(const UTF32Char *str1, const UTF32Char *str2);
+	UOSInt StrLastIndexOf(const UTF16Char *str1, UTF16Char c);
+	UOSInt StrLastIndexOf(const UTF32Char *str1, UTF32Char c);
+	UOSInt StrLastIndexOf(const UTF16Char *str1, const UTF16Char *str2);
+	UOSInt StrLastIndexOf(const UTF32Char *str1, const UTF32Char *str2);
 	UTF16Char *StrRTrim(UTF16Char* str1);
 	UTF32Char *StrRTrim(UTF32Char* str1);
 	UTF16Char *StrLTrim(UTF16Char* str1);

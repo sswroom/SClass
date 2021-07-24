@@ -102,13 +102,13 @@ void IO::BTCapturer::StoreStatus()
 	IO::BTLog btLog;
 	Sync::MutexUsage mutUsage;
 	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = this->clsData->bt->GetDeviceMap(&mutUsage);
-	OSInt si;
+	UOSInt i;
 	btLog.AppendList(devMap);
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[si + 1];
+	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"bt");
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");

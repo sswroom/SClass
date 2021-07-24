@@ -24,7 +24,7 @@
 void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(void *userObj, UI::GUIForm *frm)
 {
 	SSWR::AVIRead::AVIRCore *me = (SSWR::AVIRead::AVIRCore *)userObj;
-	me->frms->RemoveAt((UOSInt)me->frms->IndexOf(frm));
+	me->frms->RemoveAt(me->frms->IndexOf(frm));
 	if (me->gisForm == frm)
 	{
 		me->gisForm = 0;

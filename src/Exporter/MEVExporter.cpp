@@ -73,10 +73,10 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		env->GetImageFileInfo(i, &imgInfo);
 		Text::StrConcat(u8buff, imgInfo.fileName);
-		si = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
-		if (si >= 0)
+		j = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
+		if (j != INVALID_INDEX)
 		{
-			u8buff[si] = 0;
+			u8buff[j] = 0;
 			si = dirArr->SortedIndexOf(u8buff);
 			if (si < 0)
 			{
@@ -129,11 +129,11 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		env->GetImageFileInfo(i, &imgInfo);
 		Text::StrConcat(u8buff, imgInfo.fileName);
-		si = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
+		k = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
-		WriteUInt32(&buff[4], AddString(strArr, &u8buff[si + 1], stmPos));
-		u8buff[si] = 0;
+		WriteUInt32(&buff[4], AddString(strArr, &u8buff[k + 1], stmPos));
+		u8buff[k] = 0;
 		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOf(u8buff);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
 
@@ -275,7 +275,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListStrUTF8 
 {
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
-	OSInt k;
+	UOSInt k;
 	UTF8Char sbuff[256];
 
 	while (i < j)
@@ -292,7 +292,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListStrUTF8 
 			if (layer->GetSourceName(sbuff))
 			{
 				k = Text::StrLastIndexOf(sbuff, '\\');
-				if (k >= 0)
+				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;
 					k = dirArr->SortedIndexOf(sbuff);
@@ -331,7 +331,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 	Map::MapEnv::LayerItem setting;
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
-	OSInt k;
+	UOSInt k;
 	while (i < j)
 	{
 		Map::MapEnv::MapItem *item = env->GetItem(group, i);
@@ -366,7 +366,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			*(Int32*)&buff[4] = 0;
 			k = Text::StrLastIndexOf(u8buff, IO::Path::PATH_SEPERATOR);
 			*(UInt32*)&buff[8] = AddString(strArr, &u8buff[k + 1], 4 + *stmPos);
-			if (k >= 0)
+			if (k != INVALID_INDEX)
 			{
 				u8buff[k] = 0;
 				*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOf(u8buff);

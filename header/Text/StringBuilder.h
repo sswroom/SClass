@@ -70,7 +70,7 @@ namespace Text
 		OSInt IndexOf(const T *s);
 		OSInt IndexOf(const T *s, UOSInt index);
 		OSInt IndexOf(T c);
-		OSInt LastIndexOf(T c);
+		UOSInt LastIndexOf(T c);
 		Bool Equals(const T *s);
 		Bool EqualsICase(const T *s);
 		Bool StartsWith(const T *s);
@@ -517,7 +517,7 @@ namespace Text
 		return Text::StrIndexOf(this->buff, c);
 	}
 
-	template<class T> OSInt Text::StringBuilder<T>::LastIndexOf(T c)
+	template<class T> UOSInt Text::StringBuilder<T>::LastIndexOf(T c)
 	{
 		return Text::StrLastIndexOf(this->buff, c);
 	}
@@ -621,13 +621,13 @@ namespace Text
 		else
 		{
 			UOSInt i;
-			OSInt j;
+			UOSInt j;
 			changeCnt = 0;
 			i = 0;
 			while (true)
 			{
 				j = Text::StrIndexOfICase(&this->buff[i], fromStr);
-				if (j < 0)
+				if (j == INVALID_INDEX)
 					break;
 				i += j + fromCharSize;
 				changeCnt++;

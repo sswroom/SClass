@@ -180,9 +180,9 @@ namespace Text
 	Bool StrToBool(const Char *str);
 	OSInt StrIndexOf(const Char *str1, const Char *str2);
 	OSInt StrIndexOf(const Char *str1, Char c);
-	OSInt StrIndexOfICase(const Char *str1, const Char *str2);
-	OSInt StrLastIndexOf(const Char *str1, Char c);
-	OSInt StrLastIndexOf(const Char *str1, const Char *str2);
+	UOSInt StrIndexOfICase(const Char *str1, const Char *str2);
+	UOSInt StrLastIndexOf(const Char *str1, Char c);
+	UOSInt StrLastIndexOf(const Char *str1, const Char *str2);
 	Char *StrRTrim(Char* str1);
 	Char *StrLTrim(Char* str1);
 	Char *StrTrim(Char* str1);
@@ -304,9 +304,9 @@ namespace Text
 
 	FORCEINLINE OSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOf((const Char*)str1, (const Char*)str2); }
 	FORCEINLINE OSInt StrIndexOf(const UTF8Char *str1, UTF8Char c) { return StrIndexOf((const Char*)str1, (Char)c); }
-	FORCEINLINE OSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOfICase((const Char*)str1, (const Char*)str2); };
-	FORCEINLINE OSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c) { return StrLastIndexOf((const Char*)str1, (Char)c); }
-	FORCEINLINE OSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrLastIndexOf((const Char*)str1, (const Char *)str2); }
+	FORCEINLINE UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOfICase((const Char*)str1, (const Char*)str2); };
+	FORCEINLINE UOSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c) { return StrLastIndexOf((const Char*)str1, (Char)c); }
+	FORCEINLINE UOSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrLastIndexOf((const Char*)str1, (const Char *)str2); }
 	FORCEINLINE UTF8Char *StrRTrim(UTF8Char* str1) { return (UTF8Char*)StrRTrim((Char*)str1); };
 	FORCEINLINE UTF8Char *StrLTrim(UTF8Char* str1) { return (UTF8Char*)StrLTrim((Char*)str1); };
 	FORCEINLINE UTF8Char *StrTrim(UTF8Char* str1) { return (UTF8Char*)StrTrim((Char*)str1); };

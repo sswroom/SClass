@@ -45,7 +45,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(void *obj);
 
 	public:
-		IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdlr, void *userData, OSInt workerCnt);
+		IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdlr, void *userData, UOSInt workerCnt);
 		~IPScanDetector();
 
 		Bool IsError();

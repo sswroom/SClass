@@ -29,7 +29,7 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(const UTF8Char *fileName, Parser:
 	Map::MapManager::MapLayerInfo *info = this->layerArr->Get(fileName);
 	if (info)
 	{
-		if (info->envList->IndexOf(env) == -1)
+		if (info->envList->IndexOf(env) == INVALID_INDEX)
 		{
 			info->envList->Add(env);
 		}
@@ -62,15 +62,15 @@ void Map::MapManager::ClearMap(Map::MapEnv *env)
 {
 	Data::ArrayList<Map::MapManager::MapLayerInfo *> *infoArr = this->layerArr->GetValues();
 	UOSInt i = infoArr->GetCount();
-	OSInt j;
+	UOSInt j;
 	Map::MapManager::MapLayerInfo *info;
 	while (i-- > 0)
 	{
 		info = infoArr->GetItem(i);
 		j = info->envList->IndexOf(env);
-		if (j >= 0)
+		if (j != INVALID_INDEX)
 		{
-			info->envList->RemoveAt((UOSInt)j);
+			info->envList->RemoveAt(j);
 			if (info->envList->GetCount() == 0)
 			{
 				this->layerArr->Remove(this->layerArr->GetKey(i));

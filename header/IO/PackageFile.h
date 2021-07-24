@@ -98,7 +98,7 @@ namespace IO
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);
 		virtual UInt64 GetItemSize(UOSInt index);
-		virtual OSInt GetItemIndex(const UTF8Char *name);
+		virtual UOSInt GetItemIndex(const UTF8Char *name);
 		virtual Bool IsCompressed(UOSInt index);
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
 		virtual PackageFile *Clone();

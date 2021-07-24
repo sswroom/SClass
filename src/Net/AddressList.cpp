@@ -31,8 +31,8 @@ UOSInt Net::AddressList::AddRange(const Net::SocketUtil::AddressInfo **arr, UOSI
 
 Bool Net::AddressList::Remove(const Net::SocketUtil::AddressInfo *val)
 {
-	OSInt i = this->IndexOf(val);
-	if (i < 0)
+	UOSInt i = this->IndexOf(val);
+	if (i == INVALID_INDEX)
 		return false;
 	this->FreeItem(this->addrList->RemoveAt(i));
 	return true;

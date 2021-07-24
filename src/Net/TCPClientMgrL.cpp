@@ -34,6 +34,7 @@ typedef struct
 void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*> *cliArr, Data::ArrayListUInt64 *cliIdArr, Net::TCPClientMgr::TCPClientStatus *cliStat)
 {
 	OSInt ind;
+	UOSInt i;
 	ind = cliIdArr->SortedIndexOf(cliStat->cli->GetCliId());
 	if (ind < 0)
 	{
@@ -46,11 +47,11 @@ void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStat
 	}
 	else
 	{
-		ind = cliArr->IndexOf(cliStat);
-		if (ind != -1)
+		i = cliArr->IndexOf(cliStat);
+		if (i != INVALID_INDEX)
 		{
-			cliArr->RemoveAt((UOSInt)ind);
-			cliIdArr->RemoveAt((UOSInt)ind);
+			cliArr->RemoveAt(i);
+			cliIdArr->RemoveAt(i);
 		}
 		else
 		{

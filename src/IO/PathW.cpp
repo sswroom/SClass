@@ -76,8 +76,8 @@ Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
 	if (IsDirectoryExist(dirInput))
 		return true;
 	Text::StrUTF8_WChar(dir, dirInput, 0);
-	OSInt i = Text::StrLastIndexOf(dir, '\\');
-	if (i == -1)
+	UOSInt i = Text::StrLastIndexOf(dir, '\\');
+	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
 	if (dir[i - 1] != ':')
 	{
@@ -94,8 +94,8 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	Text::StrConcat(dir, dirInput);
 	if (IsDirectoryExistW(dir))
 		return true;
-	OSInt i = Text::StrLastIndexOf(dir, '\\');
-	if (i == -1)
+	UOSInt i = Text::StrLastIndexOf(dir, '\\');
+	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
 	if (dir[i - 1] != ':')
 	{
@@ -152,8 +152,8 @@ UTF8Char *IO::Path::GetFileDirectory(UTF8Char *buff, const UTF8Char *fileName)
 	WChar *ptr3 = 0;
 	if (fileName[1] == ':')
 	{
-		OSInt i = Text::StrLastIndexOf(fileName, '\\');
-		if (i >= 0)
+		UOSInt i = Text::StrLastIndexOf(fileName, '\\');
+		if (i != INVALID_INDEX)
 		{
 			return Text::StrConcatC(buff, fileName, (UOSInt)i);
 		}
@@ -301,13 +301,13 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 
 UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path)
 {
-	OSInt i = Text::StrLastIndexOf(path, '\\');
-	if (i >= 0)
+	UOSInt i = Text::StrLastIndexOf(path, '\\');
+	if (i != INVALID_INDEX)
 	{
 		path = &path[i + 1];
 	}
 	i = Text::StrLastIndexOf(path, '.');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		return Text::StrConcat(fileBuff, &path[i + 1]);
 	}
@@ -319,13 +319,13 @@ UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path)
 
 WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 {
-	OSInt i = Text::StrLastIndexOf(path, '\\');
-	if (i >= 0)
+	UOSInt i = Text::StrLastIndexOf(path, '\\');
+	if (i != INVALID_INDEX)
 	{
 		path = &path[i + 1];
 	}
 	i = Text::StrLastIndexOf(path, '.');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		return Text::StrConcat(fileBuff, &path[i + 1]);
 	}
@@ -936,7 +936,7 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern)
 {
 	UTF8Char sbuff[256];
-	OSInt i = Text::StrLastIndexOf(path, '\\');
+	UOSInt i = Text::StrLastIndexOf(path, '\\');
 	const UTF8Char *fileName = &path[i + 1];
 	Text::StrConcat(sbuff, searchPattern);
 	Bool isWC = false;
@@ -1013,7 +1013,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
 {
 	WChar sbuff[256];
-	OSInt i = Text::StrLastIndexOf(path, '\\');
+	UOSInt i = Text::StrLastIndexOf(path, '\\');
 	const WChar *fileName = &path[i + 1];
 	Text::StrConcat(sbuff, searchPattern);
 	Bool isWC = false;

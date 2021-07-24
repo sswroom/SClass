@@ -204,7 +204,7 @@ IO::MTFileLog::MTFileLog(const UTF8Char *fileName, LogType style, LogGroup group
 {
 	UTF8Char buff[256];
 	Char cbuff[256];
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(mut, Sync::Mutex());
 	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"IO.MTFileLog.evt"));
 	NEW_CLASS(dateList, Data::ArrayListInt64());
@@ -233,7 +233,7 @@ IO::MTFileLog::MTFileLog(const UTF8Char *fileName, LogType style, LogGroup group
 	{
 		this->extName = 0;
 		i = Text::StrLastIndexOf(this->fileName, IO::Path::PATH_SEPERATOR);
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			((UTF8Char*)this->fileName)[i] = 0;
 			if (!IO::Path::IsDirectoryExist(this->fileName))

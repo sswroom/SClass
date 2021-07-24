@@ -26,8 +26,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		const UTF8Char *url = argv[1];
 		const UTF8Char *file = argv[2];
 
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		UInt8 *fileBuff = 0;
 		UOSInt fileSize = 0;
 		IO::FileStream *fs;
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			const UTF8Char *mime = 0;
 			i = Text::StrLastIndexOf(file, '.');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				mime = Net::MIME::GetMIMEFromExt(&file[i + 1]);
 			}
@@ -117,7 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					sb.Append(url);
 					j = sb.IndexOf('?');
-					if (j >= 0)
+					if (j != INVALID_INDEX)
 					{
 						sb.TrimToLength((UOSInt)j);
 					}
@@ -126,7 +126,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.TrimToLength(sb.GetLength() - 1);
 					}
 					j = Text::StrLastIndexOf(sb.ToString(), '/');
-					if (j >= 8)
+					if (j != INVALID_INDEX && j >= 8)
 					{
 						fileName = Text::StrCopyNew(sb.ToString() + j + 1);
 					}

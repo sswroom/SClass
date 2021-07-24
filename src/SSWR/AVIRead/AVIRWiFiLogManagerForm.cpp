@@ -169,15 +169,15 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		else if (this->filterText)
 		{
 			valid = false;
-			if (log->ssid && Text::StrIndexOfICase(log->ssid, this->filterText) >= 0)
+			if (log->ssid && Text::StrIndexOfICase(log->ssid, this->filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
-			else if (log->manuf && Text::StrIndexOfICase(log->manuf, this->filterText) >= 0)
+			else if (log->manuf && Text::StrIndexOfICase(log->manuf, this->filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
-			else if (entry && Text::StrIndexOfICase((const UTF8Char*)entry->name, this->filterText) >= 0)
+			else if (entry && Text::StrIndexOfICase((const UTF8Char*)entry->name, this->filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[0]);
-					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) >= 0)
+					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[1]);
-					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) >= 0)
+					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -202,7 +202,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[2]);
-					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) >= 0)
+					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText) != INVALID_INDEX)
 					{
 						valid = true;
 					}

@@ -95,7 +95,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	}
 	if (this->svrType == DB::DBUtil::SVR_TYPE_UNKNOWN)
 	{
-		if (Text::StrIndexOfICase(this->connStr, (const UTF8Char*)"DRIVER=MDBTOOLS;") >= 0)
+		if (Text::StrIndexOfICase(this->connStr, (const UTF8Char*)"DRIVER=MDBTOOLS;") != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::SVR_TYPE_MDBTOOLS;
 		}

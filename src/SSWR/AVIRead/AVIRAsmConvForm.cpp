@@ -40,8 +40,8 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	OSInt si;
-	OSInt sj;
+	UOSInt i2;
+	UOSInt j2;
 	UOSInt thisTabCnt = 0;
 	UOSInt allTabCnt = 0;
 	UTF8Char *lineStart;
@@ -232,10 +232,10 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 					j = sarrCnt;
 					while (j-- > 0)
 					{
-						si = Text::StrIndexOfICase(sarr[j], (const UTF8Char*)" ptr ");
-						if (si >= 0)
+						i2 = Text::StrIndexOfICase(sarr[j], (const UTF8Char*)" ptr ");
+						if (i2 != INVALID_INDEX)
 						{
-							sarr[j][si] = 0;
+							sarr[j][i2] = 0;
 							if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"BYTE"))
 							{
 								destSb.Append((const UTF8Char*)"b");
@@ -252,7 +252,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 							{
 								destSb.Append((const UTF8Char*)"q");
 							}
-							sarr[j] = &sarr[j][si + 5];
+							sarr[j] = &sarr[j][i2 + 5];
 							Text::StrTrim(sarr[j]);
 						}
 					}
@@ -276,38 +276,38 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 						}
 						else
 						{
-							si = Text::StrIndexOf(sarr[j], '[');
-							if (si >= 0)
+							i2 = Text::StrIndexOf(sarr[j], '[');
+							if (i2 != INVALID_INDEX)
 							{
-								sj = Text::StrIndexOf(&sarr[j][si+1], ']');
-								if (sj >= 0)
+								j2 = Text::StrIndexOf(&sarr[j][i2 + 1], ']');
+								if (j2 != INVALID_INDEX)
 								{
-									sarr[j][si + sj+1] = 0;
+									sarr[j][i2 + j2+1] = 0;
 
 									found = false;
-									sj = Text::StrIndexOf(&sarr[j][si+1], '-');
-									if (sj == 0)
+									j2 = Text::StrIndexOf(&sarr[j][i2 + 1], '-');
+									if (j2 == 0)
 									{
-										sarr[j][si+1] = ' ';
+										sarr[j][i2 + 1] = ' ';
 										found = true;
 									}
-									else if (sj > 0)
+									else if (j2 != INVALID_INDEX)
 									{
-										sarr[j][si+sj+1] = '+';
+										sarr[j][i2 + j2 + 1] = '+';
 										found = true;
 									}
 
-									if (si > 0)
+									if (i2 != INVALID_INDEX && i2 > 0)
 									{
-										sarr[j][si] = 0;
-										destSb.Append(sarr[si]);
+										sarr[j][i2] = 0;
+										destSb.Append(sarr[i2]);
 										destSb.Append((const UTF8Char*)"(");
 										if (found)
 										{
 											destSb.Append((const UTF8Char*)"-");
 										}
 										found = false;
-										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][si+1], '+');
+										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][i2 + 1], '+');
 										l = k;
 										while (l-- > 0)
 										{
@@ -329,7 +329,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										{
 											destSb.Append((const UTF8Char*)"-");
 										}
-										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][si + 1], '+');
+										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][i2 + 1], '+');
 										l = k;
 										while (l-- > 0)
 										{
@@ -365,8 +365,8 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										if (sarr2[l])
 										{
 											destSb.Append((const UTF8Char*)",");
-											si = Text::StrIndexOf(sarr2[l], '*');
-											sarr2[l][si] = 0;
+											i2 = Text::StrIndexOf(sarr2[l], '*');
+											sarr2[l][i2] = 0;
 											Text::StrTrim(sarr2[l]);
 											destSb.Append((const UTF8Char*)"%");
 											destSb.Append(sarr2[l]);
@@ -381,7 +381,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 								}
 								else
 								{
-									sarr[j][si] = '[';
+									sarr[j][i2] = '[';
 									destSb.Append(sarr[j]);
 								}
 							}

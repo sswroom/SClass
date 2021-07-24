@@ -1919,7 +1919,7 @@ OSInt Text::StrIndexOf(const Char *str1, Char c)
 	return -1;
 }
 
-OSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)
+UOSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)
 {
 	const Char *ptr = str1;
 	const Char *ptr2;
@@ -1950,13 +1950,13 @@ OSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)
 			}
 		}
 		if (i == 0)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		ptr++;
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
-OSInt Text::StrLastIndexOf(const Char *str1, Char c)
+UOSInt Text::StrLastIndexOf(const Char *str1, Char c)
 {
 	const Char *sptr;
 	const Char *cpos = str1 - 1;
@@ -1967,15 +1967,15 @@ OSInt Text::StrLastIndexOf(const Char *str1, Char c)
 		if (ch == c)
 			cpos = &sptr[-1];
 	}
-	return cpos - str1;
+	return (UOSInt)(cpos - str1);
 }
 
-OSInt Text::StrLastIndexOf(const Char *str1, const Char *str2)
+UOSInt Text::StrLastIndexOf(const Char *str1, const Char *str2)
 {
 	UOSInt leng1 = Text::StrCharCnt(str1);
 	UOSInt leng2 = Text::StrCharCnt(str2);
 	if (leng2 > leng1)
-		return -1;
+		return INVALID_INDEX;
 	const Char *ptr = str1 + leng1 - leng2;
 	const Char *ptr2;
 	const Char *ptr3;
@@ -1995,11 +1995,11 @@ OSInt Text::StrLastIndexOf(const Char *str1, const Char *str2)
 		}
 		if (!found)
 		{
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		}
 		ptr--;
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
 Char *Text::StrRTrim(Char* str1)

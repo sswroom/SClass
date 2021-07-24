@@ -421,7 +421,7 @@ Int32 MemCheckError()
 		UInt32 displacement;
 		line.SizeOfStruct = sizeof(line);
 		SymInitialize(procHand, 0, TRUE);
-		OSInt i;
+		UOSInt i;
 
 		symb = (SYMBOL_INFO*)tmpBuff;
 		symb->SizeOfStruct = sizeof(SYMBOL_INFO);

@@ -283,8 +283,8 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 
 void *UI::GUITreeView::RemoveItem(UI::GUITreeView::TreeItem *item)
 {
-	OSInt i = this->treeItems->IndexOf(item);
-	if (i >= 0)
+	UOSInt i = this->treeItems->IndexOf(item);
+	if (i != INVALID_INDEX)
 	{
 		void *obj = item->GetItemObj();
 		SendMessage((HWND)hwnd, TVM_DELETEITEM, 0, (LPARAM)item->GetHItem());

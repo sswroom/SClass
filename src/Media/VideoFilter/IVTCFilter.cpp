@@ -783,11 +783,11 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 								oddBuff = this->ivtcLastFrame;
 								evenBuff = imgData[0];
 							}
-							OSInt ivtcW = this->videoInfo->dispWidth;
-							OSInt ivtcH = this->videoInfo->dispHeight;
-							OSInt ivtcW2 = ivtcW << 1;
-							OSInt ivtcWH = ivtcW >> 1;
-							OSInt ivtcCnt = ivtcH;
+							UOSInt ivtcW = this->videoInfo->dispWidth;
+							UOSInt ivtcH = this->videoInfo->dispHeight;
+							UOSInt ivtcW2 = ivtcW << 1;
+							UOSInt ivtcWH = ivtcW >> 1;
+							UOSInt ivtcCnt = ivtcH;
 							while (ivtcCnt > 0)
 							{
 								MemCopyNANC(outBuff, oddBuff, ivtcW);
@@ -1256,7 +1256,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 			UInt32 frameTime = me->ivtcTFrameTime;
 			UInt32 frameNum = me->ivtcTFrameNum;
 			UInt8 *imgData = me->ivtcTImgData;
-			OSInt dataSize = me->ivtcTDataSize;
+			UOSInt dataSize = me->ivtcTDataSize;
 			Media::IVideoSource::FrameStruct frameStruct = me->ivtcTFrameStruct;
 			Media::FrameType frameType = me->ivtcTFrameType;
 			Media::IVideoSource::FrameFlag flags = me->ivtcTFlags;

@@ -116,7 +116,7 @@ public:
 
 	virtual void ProgressStart(const UTF8Char *name, UInt64 count)
 	{
-		OSInt i;
+		UOSInt i;
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_TEXT(this->name);
 		this->name = Text::StrCopyNew(name);
@@ -214,9 +214,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	showHelp = true;
 	if (cmdCnt == 2)
 	{
-		OSInt i = Text::StrIndexOf(cmdLines[1], '*');
-		OSInt j = Text::StrIndexOf(cmdLines[1], '?');
-		if (i < 0 && j < 0)
+		UOSInt i = Text::StrIndexOf(cmdLines[1], '*');
+		UOSInt j = Text::StrIndexOf(cmdLines[1], '?');
+		if (i == INVALID_INDEX && j == INVALID_INDEX)
 		{
 			IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1]);
 			if (pt == IO::Path::PT_UNKNOWN)

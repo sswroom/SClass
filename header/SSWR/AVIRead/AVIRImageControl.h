@@ -70,7 +70,7 @@ namespace SSWR
 			Bool imgMapUpdated;
 			Bool imgUpdated;
 			UInt32 previewSize;
-			OSInt currSel;
+			UOSInt currSel;
 			ImageStatus *dispImg;
 			Bool dispImgChg;
 			Sync::Mutex *filterMut;

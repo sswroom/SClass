@@ -780,7 +780,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 		Double hdpi = this->GetHDPI();
 		Double ddpi = this->GetDDPI();
 		Int32 scrPos = Math::Double2Int32(Math::OSInt2Double(scrollY) * hdpi / ddpi);
-		OSInt clickIndex = (scrPos + yPos) / Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
+		UOSInt clickIndex = (UInt32)((scrPos + yPos) / Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi));
 		if (keys & UI::GUICustomDrawVScroll::KBTN_CONTROL)
 		{
 			Sync::MutexUsage mutUsage(this->imgMut);
@@ -812,7 +812,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 				i = this->currSel;
 				j = clickIndex;
 			}
-			if ((UOSInt)j >= imgList->GetCount())
+			if (j >= imgList->GetCount())
 			{
 				j = imgList->GetCount() - 1;
 			}
@@ -837,7 +837,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 				status = imgList->GetItem(i);
 				status->setting.flags &= ~1;
 			}
-			status = imgList->GetItem(clickIndex);
+			status = imgList->GetItem((UOSInt)clickIndex);
 			if (status)
 			{
 				status->setting.flags |= 1;
@@ -1202,7 +1202,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	{
 		i = (OSInt)nameList->GetCount() - 1;
 	}
-	this->currSel = i;
+	this->currSel = (UOSInt)i;
 	j = imgList->GetCount();
 	while (j-- > 0)
 	{
@@ -1267,7 +1267,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	{
 		i = 0;
 	}
-	this->currSel = i;
+	this->currSel = (UOSInt)i;
 	j = imgList->GetCount();
 	while (j-- > 0)
 	{

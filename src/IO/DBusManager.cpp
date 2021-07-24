@@ -1134,7 +1134,7 @@ IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *
 		return data;
 	}
 
-	if (child == NULL || data->objects->IndexOf(child) >= 0)
+	if (child == NULL || data->objects->IndexOf(child) != INVALID_INDEX)
 	{
 		return data;
 	}
@@ -1794,7 +1794,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::ServiceFilter(void *connection, 
 				cb->connFunc(me, cb->userData);
 		}
 
-		if (listener->callbacks->IndexOf(cb) < 0)
+		if (listener->callbacks->IndexOf(cb) == INVALID_INDEX)
 			continue;
 
 		/* Only auto remove if it is a bus name watch */
@@ -1833,7 +1833,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::SignalFilter(void *connection, v
 			continue;
 		}
 
-		if (listener->callbacks->IndexOf(cb) < 0)
+		if (listener->callbacks->IndexOf(cb) == INVALID_INDEX)
 			continue;
 
 		listener->callbacks->Remove(cb);

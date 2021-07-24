@@ -97,7 +97,7 @@ Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
 				while (i-- > 0)
 				{
 					threadId = newThreads->GetItem(i);
-					if (currThreads->IndexOf(threadId) < 0)
+					if (currThreads->IndexOf(threadId) == INVALID_INDEX)
 					{
 						Manage::ThreadInfo thread(proc.GetCurrProcId(), threadId);
 						thread.WaitForThreadExit(10000);
@@ -249,7 +249,7 @@ Bool IO::WindowZIP::ExtractFile(const WChar *fileName, const WChar *destPath)
 						while (i-- > 0)
 						{
 							threadId = newThreads->GetItem(i);
-							if (currThreads->IndexOf(threadId) < 0)
+							if (currThreads->IndexOf(threadId) == INVALID_INDEX)
 							{
 								Manage::ThreadInfo thread(proc.GetCurrProcId(), threadId);
 								thread.WaitForThreadExit(10000);

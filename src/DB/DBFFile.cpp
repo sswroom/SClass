@@ -51,10 +51,10 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 
 	this->name = 0;
 	Text::StrConcat(u8buff, this->stmData->GetShortName());
-	OSInt si = Text::StrLastIndexOf(u8buff, '.');
-	if (si != -1)
+	i = Text::StrLastIndexOf(u8buff, '.');
+	if (i != INVALID_INDEX)
 	{
-		u8buff[si] = 0;
+		u8buff[i] = 0;
 	}
 	this->name = Text::StrCopyNew(u8buff);
 }

@@ -136,9 +136,9 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 	return 0;
 }
 
-Net::IPScanDetector::IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdlr, void *userData, OSInt threadCnt)
+Net::IPScanDetector::IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdlr, void *userData, UOSInt threadCnt)
 {
-	OSInt i;
+	UOSInt i;
 	this->threadCnt = threadCnt;
 	this->sockf = sockf;
 	this->hdlr = hdlr;

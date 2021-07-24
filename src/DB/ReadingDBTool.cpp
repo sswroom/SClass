@@ -1051,10 +1051,10 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 	{
 		Text::StringBuilderUTF8 sb;
 		const UTF8Char *name = this->db->GetSourceNameObj();
-		OSInt i = Text::StrLastIndexOf(name, (UTF8Char)IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOf(name, (UTF8Char)IO::Path::PATH_SEPERATOR);
 		sb.Append(&name[i + 1]);
 		i = sb.IndexOf('.');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}

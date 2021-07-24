@@ -841,7 +841,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStartClicked(void *u
 	if (me->audioCapture)
 	{
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		Data::DateTime dt;
 		IO::Path::GetProcessFileName(sbuff);
 		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);

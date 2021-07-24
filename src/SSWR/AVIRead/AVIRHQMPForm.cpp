@@ -355,14 +355,14 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	{
 		me->pbEnd = false;
 		UTF8Char u8buff[512];
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		UTF8Char *u8ptr;
 		Int32 partNum;
 		me->currFile->GetSourceName(u8buff);
 		i = Text::StrLastIndexOf(u8buff, '.');
 		j = Text::StrIndexOfICase(u8buff, (const UTF8Char*)"part");
-		if (i > j && j >= 0)
+		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
 		{
 			u8buff[i] = 0;
 			partNum = Text::StrToInt32(&u8buff[j + 4]);
@@ -613,11 +613,11 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	}
 	this->UpdateMenu();
 	this->currFile->GetSourceName(sbuff);
-	if (Text::StrIndexOfICase(sbuff, (const UTF8Char*)"sRGB") >= 0)
+	if (Text::StrIndexOfICase(sbuff, (const UTF8Char*)"sRGB") != INVALID_INDEX)
 	{
 		this->vbox->SetSrcRGBType(Media::CS::TRANT_sRGB);
 	}
-	else if (Text::StrIndexOfICase(sbuff, (const UTF8Char*)"BT709") >= 0)
+	else if (Text::StrIndexOfICase(sbuff, (const UTF8Char*)"BT709") != INVALID_INDEX)
 	{
 		this->vbox->SetSrcRGBType(Media::CS::TRANT_BT709);
 	}

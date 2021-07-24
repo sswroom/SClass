@@ -266,8 +266,8 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 		}
 		if (pobj->GetSourceName(u8buff))
 		{
-			OSInt si;
-			if ((si = Text::StrLastIndexOf(u8buff, '.')) >= 0)
+			UOSInt si;
+			if ((si = Text::StrLastIndexOf(u8buff, '.')) != INVALID_INDEX)
 			{
 				u8buff[si] = 0;
 			}

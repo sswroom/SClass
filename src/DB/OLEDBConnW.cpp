@@ -228,12 +228,12 @@ DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 	ClassData *data = (ClassData *)this->clsData;
 	if (data->connStr)
 	{
-		OSInt i = Text::StrIndexOfICase(data->connStr, L"Provider=");
-		if (i >= 0)
+		UOSInt i = Text::StrIndexOfICase(data->connStr, L"Provider=");
+		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sb;
-			OSInt j = Text::StrIndexOf(&data->connStr[i + 9], ';');
-			if (j >= 0)
+			UOSInt j = Text::StrIndexOf(&data->connStr[i + 9], ';');
+			if (j != INVALID_INDEX)
 			{
 				const WChar *wptr = Text::StrCopyNewC(&data->connStr[i + 9], (UOSInt)j);
 				const UTF8Char *csptr = Text::StrToUTF8New(wptr);

@@ -10,13 +10,13 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 		return false;
 	}
 
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
 		i = sb->IndexOf((const UTF8Char*)"*/", initSize);
-		if (i < 0)
+		if (i == INVALID_INDEX)
 		{
 			sb->TrimToLength(initSize);
 			return true;
@@ -27,11 +27,11 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	else if (this->escapeType == ET_STRING)
 	{
 		i = sb->IndexOf((const UTF8Char*)"\"", initSize);
-		if (i < 0)
+		if (i == INVALID_INDEX)
 		{
 			return true;
 		}
-		initSize = (UOSInt)i + 1;
+		initSize = i + 1;
 		this->escapeType = ET_NONE;
 	}
 	while (true)
@@ -39,45 +39,45 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 		i = sb->IndexOf((const UTF8Char*)"--", initSize);
 		j = sb->IndexOf((const UTF8Char*)"/*", initSize);
 		k = sb->IndexOf((const UTF8Char*)"\"", initSize);
-		if (i < 0 && j < 0 && k < 0)
+		if (i == INVALID_INDEX && j == INVALID_INDEX && k == INVALID_INDEX)
 		{
 			break;
 		}
 
-		if (i >= 0 && (j < 0 || j > i) && (k < 0 || k > i))
+		if (i != INVALID_INDEX && (j == INVALID_INDEX || j > i) && (k == INVALID_INDEX || k > i))
 		{
-			OSInt j = sb->IndexOf((const UTF8Char*)"--", (UOSInt)i + 2);
-			if (j >= 0)
+			UOSInt j = sb->IndexOf((const UTF8Char*)"--", i + 2);
+			if (j != INVALID_INDEX)
 			{
-				sb->RemoveChars((UOSInt)i, (UOSInt)(j - i + 2));
-				initSize = (UOSInt)i;
+				sb->RemoveChars(i, (j - i + 2));
+				initSize = i;
 			}
 			else
 			{
-				sb->TrimToLength((UOSInt)i);
+				sb->TrimToLength(i);
 				break;
 			}
 		}
-		else if (j >= 0 && (k < 0 || k > j))
+		else if (j != INVALID_INDEX && (k == INVALID_INDEX || k > j))
 		{
-			i = sb->IndexOf((const UTF8Char*)"*/", (UOSInt)j + 2);
-			if (i >= 0)
+			i = sb->IndexOf((const UTF8Char*)"*/", j + 2);
+			if (i != INVALID_INDEX)
 			{
-				sb->RemoveChars((UOSInt)j, (UOSInt)(i - j + 2));
+				sb->RemoveChars(j, (i - j + 2));
 			}
 			else
 			{
-				sb->TrimToLength((UOSInt)j);
+				sb->TrimToLength(j);
 				this->escapeType = ET_MULTILINE_COMMENT;
 				break;
 			}
 		}
 		else
 		{
-			i = sb->IndexOf((const UTF8Char*)"\"", (UOSInt)k + 1);
-			if (i >= 0)
+			i = sb->IndexOf((const UTF8Char*)"\"", k + 1);
+			if (i != INVALID_INDEX)
 			{
-				initSize = (UOSInt)i + 1;
+				initSize = i + 1;
 			}
 			else
 			{

@@ -115,7 +115,7 @@ public:
 
 	virtual void ProgressStart(const UTF8Char *name, UInt64 count)
 	{
-		OSInt i;
+		UOSInt i;
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_TEXT(this->name);
 		this->name = Text::StrCopyNew(name);

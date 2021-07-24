@@ -87,7 +87,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	Map::TileMap *tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
 	Text::UTF8Writer *writer;
-	OSInt i;
+	UOSInt i;
 	UOSInt j;
 	UOSInt level;
 	const UTF8Char *csptr;
@@ -106,7 +106,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(fileName2, &fileName[i + 1]);
 	i = Text::StrLastIndexOf(fileName2, '.');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		fileName2[i] = 0;
 	}

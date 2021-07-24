@@ -159,13 +159,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 					mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 					mstm.Write((const UInt8*)"\"; ", 3);
 				}
-				si = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+				k = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
 				mstm.Write((const UInt8*)"filename=\"", 10);
-				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &csptr[si + 1]);
+				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &csptr[k + 1]);
 				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
-				IO::Path::GetFileExt(sbuff, &csptr[si]);
+				IO::Path::GetFileExt(sbuff, &csptr[k]);
 				csptr2 = Net::MIME::GetMIMEFromExt(sbuff);
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
 				mstm.Write(csptr2, Text::StrCharCnt(csptr2));

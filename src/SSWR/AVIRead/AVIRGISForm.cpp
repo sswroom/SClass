@@ -391,7 +391,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::G
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(void *userObj, UI::GUIForm *frm)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->subForms->RemoveAt((UOSInt)me->subForms->IndexOf(frm));
+	me->subForms->RemoveAt(me->subForms->IndexOf(frm));
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(void *userObj)
