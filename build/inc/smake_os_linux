@@ -77,7 +77,9 @@ $`pkg-config --cflags libmongoc-1.0`
 !-lbson-1.0
 MySQLConn.o: ../../src/DB/MySQLConn.cpp
 $`mysql_config --cflags`
+$`mariadb_config --cflags`
 !`mysql_config --libs`
+!`mariadb_config --libs`
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc
 !-lodbcinst
