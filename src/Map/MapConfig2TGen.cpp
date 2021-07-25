@@ -4190,7 +4190,6 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	UTF8Char *strs[15];
 	UTF8Char *sptr;
 	UOSInt i;
-	OSInt si;
 	if (dbStream)
 	{
 		NEW_CLASS(reader, IO::StreamReader(dbStream));
@@ -4198,11 +4197,11 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	else
 	{
 		sptr = Text::StrConcat(sbuff, fileName);
-		si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-		UTF8Char *fname = &sbuff[si + 1];
+		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		UTF8Char *fname = &sbuff[i + 1];
 		fname[-1] = 0;
-		si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-		UTF8Char *fpath = &sbuff[si + 1];
+		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		UTF8Char *fpath = &sbuff[i + 1];
 		sptr = Text::StrInt32(fpath, xId >> 5);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 		sptr = Text::StrInt32(sptr, yId >> 5);

@@ -39,14 +39,14 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::FileCheck *fchk;
-	OSInt i;
+	UOSInt i;
 	IO::FileCheck::CheckType ctype;
 	UInt8 chk[8];
 	UOSInt chkSize;
 
 	Text::StrConcat(u8buff, fd->GetFullName());
 	i = Text::StrLastIndexOf(u8buff, '.');
-	if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".SFV") == 0)
+	if (i != INVALID_INDEX && Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".SFV"))
 	{
 		ctype = IO::FileCheck::CT_CRC32;
 		chkSize = 4;

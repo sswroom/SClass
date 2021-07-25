@@ -38,7 +38,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 		return false;
 
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
 	i = Text::StrLastIndexOf(prog->progPath, IO::Path::PATH_SEPERATOR);

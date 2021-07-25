@@ -597,7 +597,6 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	IO::Path::PathType pt;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
 	UOSInt retCnt = 0;
 	OrganImageItem *imgItem;
 	if (coverId != 0)
@@ -730,8 +729,12 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					isCoverPhoto = false;
 				}
 
-				si = Text::StrLastIndexOf(sptr, '.');
-				if (Text::StrCompareICase(&sptr[si], (const UTF8Char*)".JPG") == 0)
+				i = Text::StrLastIndexOf(sptr, '.');
+				if (i == INVALID_INDEX)
+				{
+
+				}
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
 				{
 					Media::EXIFData *exif = ParseJPGExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -759,7 +762,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					i++;
 				}
-				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".TIF") == 0)
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".TIF") == 0)
 				{
 					Media::EXIFData *exif = ParseTIFExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -786,7 +789,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".PCX") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".GIF") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".PNG") == 0)
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".PCX") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".GIF") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".PNG") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -798,7 +801,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".AVI") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MOV") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".MTS") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".M2TS") == 0)
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".AVI") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MOV") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MTS") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".M2TS") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -810,7 +813,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 2;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[si], (const UTF8Char *)".WAV") == 0)
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".WAV") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -1400,44 +1403,44 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelSpecies(OrganSpecies *sp)
 
 SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFile(OrganSpecies *sp, const UTF8Char *fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId)
 {
-	OSInt si;
-	OSInt sj;
+	UOSInt i;
+	UOSInt j;
 	Int32 fileType = 0;
-	si = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-	sj = Text::StrLastIndexOf(&fileName[si + 1], '.');
-	if (sj == -1)
+	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	j = Text::StrLastIndexOf(&fileName[i + 1], '.');
+	if (j == INVALID_INDEX)
 	{
 		return FS_NOTSUPPORT;
 	}
-	if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"JPG") == 0)
+	if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"JPG") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"TIF") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"TIF") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"PCX") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"PCX") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"GIF") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"GIF") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"PNG") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"PNG") == 0)
 	{
 		fileType = 1;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"AVI") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"AVI") == 0)
 	{
 		fileType = 2;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"MOV") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"MOV") == 0)
 	{
 		fileType = 2;
 	}
-	else if (Text::StrCompareICase(&fileName[si + sj + 2], (const UTF8Char*)"WAV") == 0)
+	else if (Text::StrCompareICase(&fileName[i + j + 2], (const UTF8Char*)"WAV") == 0)
 	{
 		fileType = 3;
 	}
@@ -1547,23 +1550,24 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		{
 			WebUserInfo *webUser = this->GetWebUser(this->userId);
 			Int64 ticks = fileTime.ToTicks();
+			OSInt si;
 			UOSInt j;
 			UOSInt k;
-			sj = webUser->userFileIndex->SortedIndexOf(ticks);
-			if (sj >= 0)
+			si = webUser->userFileIndex->SortedIndexOf(ticks);
+			if (si >= 0)
 			{
-				while (sj > 0)
+				while (si > 0)
 				{
-					if (webUser->userFileIndex->GetItem((UOSInt)sj - 1) == ticks)
+					if (webUser->userFileIndex->GetItem((UOSInt)si - 1) == ticks)
 					{
-						sj--;
+						si--;
 					}
 					else
 					{
 						break;
 					}
 				}
-				j = (UOSInt)sj;
+				j = (UOSInt)si;
 				k = webUser->userFileIndex->GetCount();
 				while (j < k)
 				{
@@ -1601,8 +1605,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				sj = Text::StrLastIndexOf(&fileName[si + 1], '.');
-				sptr = Text::StrConcat(sptr, &fileName[si + sj + 1]);
+				j = Text::StrLastIndexOf(&fileName[i + 1], '.');
+				sptr = Text::StrConcat(sptr, &fileName[i + j + 1]);
 				Bool succ;
 				if (moveFile)
 				{
@@ -1618,7 +1622,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)"insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom) values (");
 					sql.AppendInt32(fileType);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendStrUTF8(&fileName[si + 1]);
+					sql.AppendStrUTF8(&fileName[i + 1]);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendDate(&fileTime);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1651,7 +1655,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(&fileName[si + 1]);
+						userFile->oriFileName = Text::StrCopyNew(&fileName[i + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
@@ -1674,8 +1678,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						species->files->Add(userFile);
 
 						webUser = this->GetWebUser(userFile->webuserId);
-						j = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
-						webUser->userFileObj->Insert(j, userFile);
+						k = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
+						webUser->userFileObj->Insert(k, userFile);
 						
 						if (firstPhoto)
 						{
@@ -1773,21 +1777,22 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			Int64 ticks = 0;
 			UOSInt j;
 			UOSInt k;
-			sj = webUser->userFileIndex->SortedIndexOf(ticks);
-			if (j >= 0)
+			OSInt si;
+			si = webUser->userFileIndex->SortedIndexOf(ticks);
+			if (si >= 0)
 			{
-				while (sj > 0)
+				while (si > 0)
 				{
-					if (webUser->userFileIndex->GetItem((UOSInt)sj - 1) == ticks)
+					if (webUser->userFileIndex->GetItem((UOSInt)si - 1) == ticks)
 					{
-						sj--;
+						si--;
 					}
 					else
 					{
 						break;
 					}
 				}
-				j = (UOSInt)sj;
+				j = (UOSInt)si;
 				k = webUser->userFileIndex->GetCount();
 				while (j < k)
 				{
@@ -1825,8 +1830,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				sj = Text::StrLastIndexOf(&fileName[si + 1], '.');
-				sptr = Text::StrConcat(sptr, &fileName[si + sj + 1]);
+				j = Text::StrLastIndexOf(&fileName[i + 1], '.');
+				sptr = Text::StrConcat(sptr, &fileName[i + j + 1]);
 				Bool succ;
 				if (moveFile)
 				{
@@ -1842,7 +1847,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)"insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera) values (");
 					sql.AppendInt32(fileType);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendStrUTF8(&fileName[si + 1]);
+					sql.AppendStrUTF8(&fileName[i + 1]);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendDate(&fileTime);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1867,7 +1872,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(&fileName[si + 1]);
+						userFile->oriFileName = Text::StrCopyNew(&fileName[i + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
@@ -1965,13 +1970,13 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		UTF8Char *sptr;
 		sptr = this->GetSpeciesDir(sp, sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcat(sptr, &fileName[si + 1]);
+		sptr = Text::StrConcat(sptr, &fileName[i + 1]);
 		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
 		{
 			if (firstPhoto)
 			{
-				Text::StrConcat(sbuff, &fileName[si + 1]);
-				sbuff[sj] = 0;
+				Text::StrConcat(sbuff, &fileName[i + 1]);
+				sbuff[j] = 0;
 				sp->SetPhoto(sbuff);
 				this->SaveSpecies(sp);
 			}
@@ -3180,7 +3185,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 		sptr = Text::StrInt64(sptr, startDT.ToTicks());
 		i = Text::StrLastIndexOf(fileName, '.');
-		Text::StrConcat(sptr, &fileName[i]);
+		if (i != INVALID_INDEX)
+		{
+			Text::StrConcat(sptr, &fileName[i]);
+		}
 		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
 		{
 			DB::SQLBuilder sql(this->db);
@@ -4014,7 +4022,11 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 			if (pt == IO::Path::PT_FILE)
 			{
 				i = Text::StrLastIndexOf(sptr, '.');
-				if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
+				if (i == INVALID_INDEX)
+				{
+
+				}
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
 				{
 					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 					pobj = this->parsers->ParseFile(fd, 0);
@@ -4878,7 +4890,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
-	OSInt i;
+	UOSInt i;
 	if (coverName && coverName[0] == '*')
 	{
 		coverName = &coverName[1];
@@ -4916,7 +4928,11 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 				}
 
 				i = Text::StrLastIndexOf(sptr, '.');
-				if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".JPG") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
+				if (i == INVALID_INDEX)
+				{
+
+				}
+				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".JPG") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
 				{
 					Int32 fileId = 0;
 					this->AddSpeciesFile(sp, sbuff, isCoverPhoto, true, &fileId);

@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		const UTF8Char *fileName = dlg->GetFileName();
-		OSInt i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 		Net::TFTPClient *cli;
 		NEW_CLASS(cli, Net::TFTPClient(me->core->GetSocketFactory(), &addr, port));
 		if (cli->IsError())

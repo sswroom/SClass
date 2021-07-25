@@ -81,17 +81,19 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	}
 	else
 	{
-		sbc->AppendW(s);
+		const UTF8Char *u8ptr = Text::StrToUTF8New(s);
+		sbc->Append(u8ptr);
+		Text::StrDelNew(u8ptr);
 	}
 }
 
-Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, OSInt buffSize, Int32 codePage, const UTF8Char *htmlPath)
+Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize, UInt32 codePage, const UTF8Char *htmlPath)
 {
-	OSInt j;
-	OSInt endOfst = buffSize - 6;
-	OSInt i;
-	OSInt k;
-	OSInt l;
+	UOSInt j;
+	UOSInt endOfst = buffSize - 6;
+	UOSInt i;
+	UOSInt k;
+	UOSInt l;
 	Data::ArrayList<Text::IMIMEObj*> imgs;
 	Text::IMIMEObj *obj;
 	Text::StringBuilderUTF8 sbc;
@@ -121,7 +123,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, OSInt buffSize,
 			{
 				if (buff[k] == '\"')
 				{
-					OSInt tmpI;
+					UOSInt tmpI;
 					found = false;
 					sptr = Text::StrConcat(sbuff, htmlPath);
 					l = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR );
@@ -437,10 +439,10 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 		Text::MIMEObj::MultipartMIMEObj *mpart;
 		Text::IMIMEObj *obj;
 		Text::StringBuilderUTF8 sbc;
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		UOSInt l;
 		const UTF8Char *fname;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj((const UTF8Char*)"multipart/mixed", (const UTF8Char*)"This is a multi-part message in MIME format."));
 		if (this->content)

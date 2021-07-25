@@ -55,10 +55,10 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	const UTF8Char *titles[100];
 	UInt32 stmTime[100];
 	UInt32 lastTime;
-	OSInt i;
+	UOSInt i;
 	Bool errorFound = false;
 	i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i < 0)
+	if (i == INVALID_INDEX)
 		return 0;
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"CUE") != 0)
 		return 0;

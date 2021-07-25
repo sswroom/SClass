@@ -60,7 +60,7 @@ Manage::SymbolResolver::~SymbolResolver()
 UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 {
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	SYMBOL_INFO *symb;
 	UInt8 tmpBuff[sizeof(SYMBOL_INFO) + 256];
 	DWORD64 disp;
@@ -126,7 +126,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	line.SizeOfStruct = sizeof(line);
 	if (SymGetLineFromAddr64(this->proc->GetHandle(), address, (DWORD*)&displacement, &line))
 	{
-		OSInt i = Text::StrLastIndexOf(line.FileName, '\\');
+		UOSInt i = Text::StrLastIndexOf(line.FileName, '\\');
 		buff = Text::StrConcat(buff, (const UTF8Char*)" ");
 		buff = Text::StrConcat(buff, (const UTF8Char*)&line.FileName[i + 1]);
 		buff = Text::StrConcat(buff, (const UTF8Char*)"(");

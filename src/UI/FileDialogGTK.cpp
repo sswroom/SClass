@@ -199,11 +199,11 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		OSInt si = Text::StrLastIndexOf(fname2, IO::Path::PATH_SEPERATOR);
-		if (si >= 0)
+		UOSInt i = Text::StrLastIndexOf(fname2, IO::Path::PATH_SEPERATOR);
+		if (i != INVALID_INDEX)
 		{
-			fname2[si] = 0;
-			initFileName = &fname2[si + 1];
+			fname2[i] = 0;
+			initFileName = &fname2[i + 1];
 			initDir = fname2;
 			if (initFileName[0] == 0)
 			{

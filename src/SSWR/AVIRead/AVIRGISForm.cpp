@@ -1526,8 +1526,8 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 
 	Map::IMapDrawLayer *layer;
 	Bool needPan = this->env->GetItemCount(0) == 0;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = 0;
 	j = lyrColl->GetCount();
 	while (i < j)

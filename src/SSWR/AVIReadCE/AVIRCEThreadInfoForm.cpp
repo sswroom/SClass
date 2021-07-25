@@ -160,8 +160,8 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	Manage::ThreadContext *context;
 	UTF8Char sbuff[512];
 	UInt64 startAddr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
 
 	startAddr = thread->GetStartAddress();
@@ -180,7 +180,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	{
 		Manage::StackTracer *tracer;
 		UInt64 currAddr;
-		OSInt callLev;
+		UOSInt callLev;
 		thread->Suspend();
 		context = thread->GetThreadContext();
 		NEW_CLASS(tracer, Manage::StackTracer(context));
@@ -208,10 +208,10 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 			UInt32 esp;
 			UInt32 ebp;
 			UInt8 buff[256];
-			OSInt buffSize;
+			UOSInt buffSize;
 			Bool ret;
-			Data::ArrayListInt32 *callAddrs;
-			Data::ArrayListInt32 *jmpAddrs;
+			Data::ArrayListUInt32 *callAddrs;
+			Data::ArrayListUInt32 *jmpAddrs;
 			UInt32 blockStart;
 			UInt32 blockEnd;
 			Text::StringBuilderUTF8 sb;

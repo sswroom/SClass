@@ -58,14 +58,17 @@ UInt32 __stdcall UI::MSWindowPictureView::ThreadProc(void *userObj)
 
 					if (pt == IO::Path::PT_DIRECTORY)
 					{
-						if (Text::StrCompare(sptr, L".") == 0)
+						if (Text::StrEquals(sptr, L"."))
 						{
 						}
-						else if (Text::StrCompare(sptr, L"..") == 0)
+						else if (Text::StrEquals(sptr, L".."))
 						{
 							sptr[-1] = 0;
 							i = Text::StrLastIndexOf(sbuff, '\\');
-							sbuff[i] = 0;
+							if (i != INVALID_INDEX)
+							{
+								sbuff[i] = 0;
+							}
 							item = MemAlloc(ScreenItem, 1);
 							item->previewImg = me->GenFolderImage();
 							item->fileName = Text::StrCopyNew(sptr);
@@ -270,8 +273,11 @@ UI::MSWindowPictureView::MSWindowPictureView(void *hInst, UI::MSWindowClientCont
 
 	WChar sbuff[512];
 	IO::Path::GetProcessFileName(sbuff);
-	OSInt i = Text::StrLastIndexOf(sbuff, '\\');
-	sbuff[i] = 0;
+	UOSInt i = Text::StrLastIndexOf(sbuff, '\\');
+	if (i != INVALID_INDEX)
+	{
+		sbuff[i] = 0;
+	}
 	this->currDir = Text::StrCopyNew(sbuff);
 	this->dirChanged = true;
 	this->threadRunning = false;

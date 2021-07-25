@@ -187,7 +187,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"RESTful Server");
 	this->SetFont(0, 8.25, false);

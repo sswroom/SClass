@@ -40,12 +40,12 @@ namespace SSWR
 			virtual const UTF8Char *GetCacheDir();
 
 			ErrorType GetErrorType();
-			virtual OSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);
-			virtual OSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp);
-			virtual OSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp);
-			virtual OSInt GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp);
-			virtual OSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp);
-			virtual OSInt GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds);
+			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);
+			virtual UOSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp);
+			virtual UOSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp);
+			virtual UOSInt GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp);
+			virtual UOSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<Int32> *colors, OrganGroup *grp);
+			virtual UOSInt GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds);
 			virtual OrganGroup *GetGroup(Int32 groupId, Int32 *parentId);
 			virtual OrganSpecies *GetSpecies(Int32 speciesId);
 			virtual UTF8Char *GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff);
@@ -61,8 +61,8 @@ namespace SSWR
 			Bool UpdateSpeciesWebFileOld(OrganSpecies *sp, const UTF8Char *webFileName, const UTF8Char *srcURL);
 			virtual Bool SaveSpecies(OrganSpecies *sp);
 			virtual Bool SaveGroup(OrganGroup *grp);
-			virtual Int32 GetGroupCount(Int32 groupId);
-			virtual Int32 GetSpeciesCount(Int32 groupId);
+			virtual UOSInt GetGroupCount(Int32 groupId);
+			virtual UOSInt GetSpeciesCount(Int32 groupId);
 			virtual Bool AddGroup(OrganGroup *grp, Int32 parGroupId);
 			virtual Bool DelGroup(Int32 groupId);
 			virtual Bool SetGroupDefSp(OrganGroup *grp, OrganImageItem *img);
@@ -72,14 +72,14 @@ namespace SSWR
 			virtual Bool MoveImages(Data::ArrayList<OrganImages*> *imgList, OrganSpecies *destSp, UI::GUIForm *frm);
 			virtual Bool CombineSpecies(OrganSpecies *destSp, OrganSpecies *srcSp);
 
-			virtual OSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList);
+			virtual UOSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList);
 			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark);
 			virtual Bool ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark);
 			virtual void ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList);
 
 			virtual Bool IsSpeciesBookExist(Int32 speciesId, Int32 bookId);
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName);
-			virtual OSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId);
+			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId);
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items);
 			virtual Int32 NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url);
 

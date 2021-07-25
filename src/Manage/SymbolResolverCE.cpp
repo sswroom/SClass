@@ -55,8 +55,8 @@ Manage::SymbolResolver::~SymbolResolver()
 
 UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool found = false;
 	const UTF8Char *name;
 
@@ -93,22 +93,22 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	}
 }
 
-OSInt Manage::SymbolResolver::GetModuleCount()
+UOSInt Manage::SymbolResolver::GetModuleCount()
 {
 	return this->modNames->GetCount();
 }
 
-const UTF8Char *Manage::SymbolResolver::GetModuleName(OSInt index)
+const UTF8Char *Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
 	return this->modNames->GetItem(index);
 }
 
-Int64 Manage::SymbolResolver::GetModuleAddr(OSInt index)
+UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
 {
 	return this->modBaseAddrs->GetItem(index);
 }
 
-Int32 Manage::SymbolResolver::GetModuleSize(OSInt index)
+UInt32 Manage::SymbolResolver::GetModuleSize(UOSInt index)
 {
 	return this->modSizes->GetItem(index);
 }

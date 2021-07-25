@@ -357,7 +357,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	OSInt i;
+	UOSInt i;
 	UOSInt j;
 	this->pbImage->SetImage(0, false);
 	SDEL_CLASS(this->imgList);
@@ -385,10 +385,10 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 
 		if (!sameDir)
 		{
-			this->fileIndex = (UOSInt)-1;
+			this->fileIndex = INVALID_INDEX;
 			this->imgList->GetSourceName(sbuff);
 			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-			if (i != -1)
+			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
 				NEW_CLASS(this->pkgFile, IO::DirectoryPackage(sbuff));

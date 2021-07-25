@@ -395,7 +395,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	UTF8Char *sptr;
 	Data::DateTime t;
 	const UTF8Char *mime;
-	OSInt i;
+	UOSInt i;
 	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
@@ -409,7 +409,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	if (this->packageMap)
 	{
 		i = Text::StrIndexOf(subReq, '?');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sb.ClearStr();
 			sb.AppendC(subReq, (UOSInt)i);
@@ -419,7 +419,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.Append(subReq);
 		}
 		i = Text::StrIndexOf(&sb.ToString()[1], '/');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sb.ToString()[i + 1] = 0;
 		}
@@ -429,7 +429,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		this->packageMut->UnlockRead();
 		if (package)
 		{
-			if (i < 0)
+			if (i == INVALID_INDEX)
 			{
 				sb.ClearStr();
 				sb.Append(subReq);
@@ -537,16 +537,16 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.ClearStr();
 			sb.Append(subReq);
 			i = sb.LastIndexOf('/');
-			sb.TrimToLength((UOSInt)i);
+			sb.TrimToLength(i);
 			Sync::MutexUsage statMutUsage(this->statMut);
 			stat = this->statMap->Get(sb.ToString());
 			if (stat)
 			{
 				sb.Append(&subReq[i + 1]);
 				i = sb.IndexOf('?');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
-					sb.TrimToLength((UOSInt)i);
+					sb.TrimToLength(i);
 				}
 				if (sb.ToString()[0] == 0)
 				{
@@ -565,7 +565,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		t.ToLocalTime();
 		resp->AddLastModified(&t);
 		i = Text::StrIndexOf(subReq, '?');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sbc;
 			sbc.AppendC(subReq, (UOSInt)i);
@@ -609,7 +609,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	sptr = sb.ToString();
 	UTF8Char *sptr2 = 0;
 	i = Text::StrIndexOf(sptr, '?');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		sptr2 = &sptr[i + 1];
 		sptr2[-1] = 0;
@@ -716,9 +716,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				sb2.ClearStr();
 				sb2.Append(req->GetRequestURI());
 				i = sb2.IndexOf('?');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
-					sb2.TrimToLength((UOSInt)i);
+					sb2.TrimToLength(i);
 				}
 				if (!sb2.EndsWith('/'))
 				{
@@ -1104,9 +1104,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb2.ClearStr();
 			sb2.Append(subReq);
 			i = sb2.IndexOf('?');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
-				sb2.TrimToLength((UOSInt)i);
+				sb2.TrimToLength(i);
 			}
 			i = sb2.LastIndexOf('/');
 			sptr2 = sb2.ToString() + i + 1;
@@ -1165,7 +1165,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				DEL_CLASS(fs);
 				return true;
 			}
-			if (sb2.IndexOf(',') >= 0)
+			if (sb2.IndexOf(',') != INVALID_INDEX)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 				resp->AddDefHeaders(req);
@@ -1178,7 +1178,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			Int64 start = 0;
 			Int64 end = -1;
 			i = sb2.IndexOf('-');
-			if (i < 0)
+			if (i == INVALID_INDEX)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 				resp->AddDefHeaders(req);
@@ -1200,7 +1200,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				DEL_CLASS(fs);
 				return true;
 			}
-			if ((UOSInt)(i + 1) < sb2.GetLength())
+			if (i + 1 < sb2.GetLength())
 			{
 				if (!Text::StrToInt64(&sptr[i + 1], &end))
 				{
@@ -1373,7 +1373,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 		IO::Path::PathType pt;
 		IO::StmData::FileData *fd;
 		IO::PackageFile *pf;
-		OSInt i;
+		UOSInt i;
 		PackageInfo *package;
 
 		while (IO::Path::FindNextFile(sptr, sess, &dt, &pt, 0))
@@ -1389,7 +1389,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 					package->packageFile = pf;
 					package->modTime = dt.ToTicks();
 					i = Text::StrLastIndexOf(sptr, '.');
-					if (i > 0)
+					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
 					}

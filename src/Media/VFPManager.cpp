@@ -15,9 +15,9 @@
 
 Media::VFPManager::VFPManager()
 {
-	OSInt j;
+	UOSInt j;
 	this->useCnt = 1;
-	OSInt i = 0;
+	UOSInt i = 0;
 	WChar sbuff[256];
 	WChar sbuff2[256];
 	WChar *sptr;
@@ -70,7 +70,7 @@ Media::VFPManager::VFPManager()
 
 }
 
-OSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource *> *outArr)
+UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource *> *outArr)
 {
 	Char *cFile;
 	Text::Encoding enc;

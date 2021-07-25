@@ -260,30 +260,30 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[384];
 	UTF8Char u8buff[256];
 	const UTF8Char *sptr;
-	OSInt si;
+	UOSInt i;
 	UInt64 currPos;
 	UInt64 fileSize;
 	Int64 devId;
 	UInt32 idevId;
 	sptr = fd->GetFullName();
-	si = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(u8buff, &sptr[si + 1]);
+	i = Text::StrLastIndexOf(sptr, '\\');
+	Text::StrConcat(u8buff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"GLOC"))
 	{
 		return 0;
 	}
-	si = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
-	if (si < 0)
+	i = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
+	if (i == INVALID_INDEX)
 	{
-		si = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
-		if (si < 0)
+		i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+		if (i == INVALID_INDEX)
 			return 0;
-		u8buff[si] = 0;
+		u8buff[i] = 0;
 		devId = Text::StrToInt64(&u8buff[4]);
 	}
 	else
 	{
-		u8buff[si] = 0;
+		u8buff[i] = 0;
 		devId = Text::StrToInt64(&u8buff[4]);
 	}
 	if (devId == 0)
@@ -293,7 +293,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 	idevId = (UInt32)(devId & 0xffffffffLL);
 
-	UOSInt i = fd->GetRealData(0, 384, buff);
+	i = fd->GetRealData(0, 384, buff);
 	if (*(UInt32*)&buff[0] != idevId || (i > 128 && *(UInt32*)&buff[128] != idevId) || (i > 256 && *(UInt32*)&buff[256] != idevId))
 		return 0;
 

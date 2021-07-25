@@ -204,29 +204,28 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	UTF8Char u8buff[256];
 	const UTF8Char *u8ptr;
 	UOSInt i;
-	OSInt si;
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int32 devId;
 	u8ptr = fd->GetFullName();
-	si = Text::StrLastIndexOf(u8ptr, IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(u8buff, &u8ptr[si + 1]);
+	i = Text::StrLastIndexOf(u8ptr, IO::Path::PATH_SEPERATOR);
+	Text::StrConcat(u8buff, &u8ptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"LOC"))
 	{
 		return 0;
 	}
-	si = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
-	if (si < 0)
+	i = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
+	if (i == INVALID_INDEX)
 	{
-		si = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
-		if (si < 0)
+		i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+		if (i == INVALID_INDEX)
 			return 0;
-		u8buff[si] = 0;
+		u8buff[i] = 0;
 		devId = Text::StrToInt32(&u8buff[3]);
 	}
 	else
 	{
-		u8buff[si] = 0;
+		u8buff[i] = 0;
 		devId = Text::StrToInt32(&u8buff[3]);
 	}
 	if (devId == 0)

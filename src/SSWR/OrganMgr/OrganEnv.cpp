@@ -202,7 +202,7 @@ Data::ArrayList<SSWR::OrganMgr::OrganGroupType*> *SSWR::OrganMgr::OrganEnv::GetG
 Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img)
 {
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	if (img->GetFileType() == OrganImageItem::FT_USERFILE)
 	{
 		sp->SetPhotoId(img->GetUserFile()->id);
@@ -217,7 +217,7 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 	{
 		Text::StrConcat(sbuff, img->GetDispName());
 		i = Text::StrLastIndexOf(sbuff, '.');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sbuff[i] = 0;
 		}

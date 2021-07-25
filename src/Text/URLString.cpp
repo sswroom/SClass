@@ -194,8 +194,8 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url)
 
 UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 {
-	OSInt i = Text::StrIndexOf(path, (const UTF8Char*)"://");
-	if (i >= 0)
+	UOSInt i = Text::StrIndexOf(path, (const UTF8Char*)"://");
+	if (i != INVALID_INDEX)
 	{
 		return Text::StrConcat(sbuff, path);
 	}
@@ -214,13 +214,13 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 		}
 	}
 	i = Text::StrIndexOf(sbuff, (const UTF8Char*)"://");
-	if (i < 0)
+	if (i == INVALID_INDEX)
 		return 0;
 	sbuff = &sbuff[3];
 	if (path[0] == '/')
 	{
 		i = Text::StrIndexOf(sbuff, (const UTF8Char*)"/");
-		if (i < 0)
+		if (i == INVALID_INDEX)
 		{
 			return Text::StrConcat(&sbuff[Text::StrCharCnt(sbuff)], path);
 		}
@@ -234,14 +234,14 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 		while (path[0] == '.' && path[1] == '.' && path[2] == '/')
 		{
 			i = Text::StrLastIndexOf(sbuff, '/');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
 			}
 			path = &path[3];
 		}
 		i = Text::StrLastIndexOf(sbuff, '/');
-		if (i < 0)
+		if (i == INVALID_INDEX)
 		{
 			return Text::StrConcat(&sbuff[Text::StrCharCnt(sbuff)], path);
 		}

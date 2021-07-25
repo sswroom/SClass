@@ -198,7 +198,6 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
 	if (Text::StrIndexOf(includeFile, (const UTF8Char*)"opengl.hpp") >= 0)
 	{
 		i = 0;
@@ -206,8 +205,8 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	if (sourceFile)
 	{
 		Text::StrConcat(buff, sourceFile);
-		si = Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR);
-		sptr2 = Text::StrConcat(&buff[si + 1], includeFile);
+		i = Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR);
+		sptr2 = Text::StrConcat(&buff[i + 1], includeFile);
 		if (IO::Path::GetPathType(buff) == IO::Path::PT_FILE)
 			return sptr2;
 	}

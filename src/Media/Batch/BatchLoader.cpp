@@ -68,8 +68,11 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						mutUsage.EndUse();
 						
 						Text::StrConcat(sbuff, fileName);
-						si = Text::StrLastIndexOf(sbuff, '.');
-						sbuff[si] = 0;
+						i = Text::StrLastIndexOf(sbuff, '.');
+						if (i != INVALID_INDEX)
+						{
+							sbuff[i] = 0;
+						}
 						state->me->hdlr->ImageOutput(imgList, sbuff, (const UTF8Char*)"");
 					}
 					else

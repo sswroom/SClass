@@ -34,12 +34,12 @@ IO::ParsedObject::ParserType Parser::FileParser::CIPParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
-	OSInt i;
+	UOSInt i;
 	if (!fd->IsFullFile())
 		return 0;
 	Text::StrConcat(sbuff, fd->GetFullFileName());
 	i = Text::StrLastIndexOf(sbuff, '.');
-	if (i < 0 || Text::StrCompareICase(&sbuff[i], (const UTF8Char*)".CIP") != 0)
+	if (i == INVALID_INDEX || Text::StrCompareICase(&sbuff[i], (const UTF8Char*)".CIP") != 0)
 	{
 		return 0;
 	}

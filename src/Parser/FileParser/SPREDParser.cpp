@@ -43,7 +43,6 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	Bool error = false;
 	UTF8Char u8buff[256];
 	const UTF8Char *sptr;
-	OSInt si;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -55,18 +54,18 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	UInt32 cmdSize;
 
 	sptr = fd->GetFullName();
-	si = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(u8buff, &sptr[si + 1]);
+	i = Text::StrLastIndexOf(sptr, '\\');
+	Text::StrConcat(u8buff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"RED"))
 	{
 		return 0;
 	}
-	si = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
-	if (si < 0)
+	i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+	if (i == INVALID_INDEX)
 		return 0;
-	if (u8buff[si - 1] != 's' && u8buff[si - 1] != 'S')
+	if (u8buff[i - 1] != 's' && u8buff[i - 1] != 'S')
 		return 0;
-	if (Text::StrCompareICase(&u8buff[si + 1], (const UTF8Char*)"DAT") != 0)
+	if (Text::StrCompareICase(&u8buff[i + 1], (const UTF8Char*)"DAT") != 0)
 		return 0;
 
 	fileSize = fd->GetDataSize();

@@ -1406,42 +1406,42 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, const UTF8C
 Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize)
 {
 	UOSInt j;
-	OSInt si;
+	UOSInt i;
 	Int32 fileType = 0;
-	si = Text::StrLastIndexOf(fileName, '.');
-	if (si == -1)
+	i = Text::StrLastIndexOf(fileName, '.');
+	if (i == INVALID_INDEX)
 	{
 		return 0;
 	}
-	if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"JPG"))
+	if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"JPG"))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"TIF"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"TIF"))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"PCX"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"PCX"))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"GIF"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"GIF"))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"PNG"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"PNG"))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"AVI"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"AVI"))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"MOV"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"MOV"))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICase(&fileName[si + 1], (const UTF8Char*)"WAV"))
+	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"WAV"))
 	{
 		fileType = 3;
 	}
@@ -1528,6 +1528,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 			SSWR::OrganMgr::OrganWebHandler::WebUserInfo *webUser = this->userMap->Get(userId);
 			Int64 ticks = fileTime.ToTicks();
 			UOSInt k;
+			OSInt si;
 			si = webUser->userFileIndex->SortedIndexOf(ticks);
 			if (si >= 0)
 			{
@@ -1580,8 +1581,11 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				si = Text::StrLastIndexOf(fileName, '.');
-				sptr = Text::StrConcat(sptr, &fileName[si]);
+				i = Text::StrLastIndexOf(fileName, '.');
+				if (i != INVALID_INDEX)
+				{
+					sptr = Text::StrConcat(sptr, &fileName[i]);
+				}
 
 				IO::FileStream *fs;
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
@@ -1729,6 +1733,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 			SSWR::OrganMgr::OrganWebHandler::WebUserInfo *webUser = this->userMap->Get(userId);
 			Int64 ticks = 0;
 			UOSInt k;
+			OSInt si;
 			si = webUser->userFileIndex->SortedIndexOf(ticks);
 			if (si >= 0)
 			{
@@ -1781,8 +1786,11 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				si = Text::StrLastIndexOf(fileName, '.');
-				sptr = Text::StrConcat(sptr, &fileName[si]);
+				i = Text::StrLastIndexOf(fileName, '.');
+				if (i != INVALID_INDEX)
+				{
+					sptr = Text::StrConcat(sptr, &fileName[i]);
+				}
 				IO::FileStream *fs;
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 				Bool succ = (fs->Write(fileCont, fileSize) == fileSize);
@@ -3568,10 +3576,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sptr2 = Text::StrConcat(sptr, (const UTF8Char*)"web");
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					sptr2 = Text::StrConcat(sptr2, sarr[0]);
-					si = Text::StrLastIndexOf(sptr, '.');
-					if (si > 0)
+					i = Text::StrLastIndexOf(sptr, '.');
+					if (i != INVALID_INDEX)
 					{
-						sptr[si] = 0;
+						sptr[i] = 0;
 					}
 					fileNameList->Add(Text::StrCopyNew(sptr));
 				}
@@ -4651,9 +4659,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								u8ptr2 = Text::StrConcat(u8buff2, (const UTF8Char*)"web");
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 								Text::StrConcat(u8ptr2, sarr[0]);
-								si = Text::StrLastIndexOf(u8buff2, '.');
-								if (si >= 0)
-									u8buff2[si] = 0;
+								i = Text::StrLastIndexOf(u8buff2, '.');
+								if (i != INVALID_INDEX)
+									u8buff2[i] = 0;
 								break;
 							}
 							sb.ClearStr();
@@ -5019,9 +5027,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								u8ptr2 = Text::StrConcat(u8buff2, (const UTF8Char*)"web");
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 								Text::StrConcat(u8ptr2, sarr[0]);
-								si = Text::StrLastIndexOf(u8buff2, '.');
-								if (si >= 0)
-									u8buff2[si] = 0;
+								i = Text::StrLastIndexOf(u8buff2, '.');
+								if (i != INVALID_INDEX)
+									u8buff2[i] = 0;
 								break;
 							}
 							sb.ClearStr();
@@ -5218,9 +5226,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						u8ptr2 = Text::StrConcat(u8buff, (const UTF8Char*)"web");
 						*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 						Text::StrConcat(u8ptr2, u8buff2);
-						si = Text::StrLastIndexOf(u8buff, '.');
-						if (si >= 0)
-							u8buff[si] = 0;
+						i = Text::StrLastIndexOf(u8buff, '.');
+						if (i != INVALID_INDEX)
+							u8buff[i] = 0;
 						Text::TextEnc::URIEncoding::URIEncode(u8buff2, u8buff);
 						sb.Append(u8buff2);
 					}
@@ -5399,9 +5407,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								u8ptr2 = Text::StrConcat(u8buff2, (const UTF8Char*)"web");
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 								Text::StrConcat(u8ptr2, sarr[0]);
-								si = Text::StrLastIndexOf(u8buff2, '.');
-								if (si >= 0)
-									u8buff2[si] = 0;
+								i = Text::StrLastIndexOf(u8buff2, '.');
+								if (i != INVALID_INDEX)
+									u8buff2[i] = 0;
 								break;
 							}
 							sb.ClearStr();

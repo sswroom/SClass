@@ -287,7 +287,8 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	OSInt i;
+	UOSInt i;
+	OSInt si;
 	UTF8Char *sptr;
 	if (portNum <= 32)
 	{
@@ -296,18 +297,18 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	else if (portNum <= 64)
 	{
 		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/usb-serial/devices/ttyUSB"), portNum - 33);
-		if ((i = readlink((const Char*)sbuff, (Char*)sbuff2, 511)) <= 0)
+		if ((si = readlink((const Char*)sbuff, (Char*)sbuff2, 511)) <= 0)
 		{
 			return false;
 		}
-		sbuff2[i] = 0;
+		sbuff2[si] = 0;
 		IO::Path::AppendPath(sbuff, sbuff2);
 		i = Text::StrLastIndexOf(sbuff, '/');
-		if (i < 0)
+		if (i == INVALID_INDEX)
 			return false;
 		sbuff[i] = 0;
 		i = Text::StrLastIndexOf(sbuff, '/');
-		if (i < 0)
+		if (i == INVALID_INDEX)
 			return false;
 		sptr = &sbuff[i + 1];
 		Text::StrConcat(sptr, (const UTF8Char*)"authorized");

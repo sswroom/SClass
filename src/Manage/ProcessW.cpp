@@ -1110,12 +1110,12 @@ Bool Manage::Process::IsAlreadyStarted()
 	Manage::Process::FindProcSess *sess;
 	Bool found = false;
 	UOSInt procId = GetCurrProcId();
-	OSInt i;
+	UOSInt i;
 	IO::Path::GetProcessFileNameW(sbuff);
 	Manage::Process::ProcessInfo info;
 
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		sess = Manage::Process::FindProcessW(&sbuff[i + 1]);
 	}

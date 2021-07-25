@@ -624,15 +624,15 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 	}
 	Text::StringBuilderUTF8 sbDiscId;
 	const UTF8Char *fileName = fd->GetFullName();
-	OSInt si;
 	UOSInt i;
 	UOSInt j;
-	si = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-	sbDiscId.Append(&fileName[si + 1]);
-	si = sbDiscId.IndexOf('.');
-	if (si >= 0)
+	UOSInt k;
+	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	sbDiscId.Append(&fileName[i + 1]);
+	i = sbDiscId.IndexOf('.');
+	if (i != INVALID_INDEX)
 	{
-		sbDiscId.RemoveChars(sbDiscId.GetCharCnt() - (UOSInt)si);
+		sbDiscId.RemoveChars(sbDiscId.GetCharCnt() - i);
 	}
 
 	Data::StringUTF8Map<Int32> nameMap;
@@ -669,16 +669,16 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 		sql.AppendCmd((const UTF8Char*)" where DiscID = ");
 		sql.AppendStrUTF8(sbDiscId.ToString());
 		fileName = fileChk->GetEntryName(i);
-		si = Text::StrIndexOf(&fileName[1], '\\');
-		if (nameMap.GetIndex(&fileName[si + 2]) >= 0)
+		k = Text::StrIndexOf(&fileName[1], '\\');
+		if (nameMap.GetIndex(&fileName[k + 2]) >= 0)
 		{
 			sql.AppendCmd((const UTF8Char*)" and FileID = ");
-			sql.AppendInt32(nameMap.Get(&fileName[si + 2]));
+			sql.AppendInt32(nameMap.Get(&fileName[k + 2]));
 		}
 		else
 		{
 			sql.AppendCmd((const UTF8Char*)" and Name = ");
-			sql.AppendStrUTF8(&fileName[si + 2]);
+			sql.AppendStrUTF8(&fileName[k + 2]);
 		}
 		db->ExecuteNonQuery(sql.ToString());
 		i++;

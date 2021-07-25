@@ -45,7 +45,7 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::FileCheck *fchk;
-	OSInt i;
+	UOSInt i;
 	UInt8 chk[20];
 	IO::FileCheck::CheckType ctype;
 	UOSInt chkSize;
@@ -56,7 +56,11 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	}
 	Text::StrConcat(u8buff, fd->GetFullName());
 	i = Text::StrLastIndexOf(u8buff, '.');
-	if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD5") == 0)
+	if (i == INVALID_INDEX)
+	{
+		return 0;
+	}
+	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD5") == 0)
 	{
 		ctype = IO::FileCheck::CT_MD5;
 		chkSize = 16;

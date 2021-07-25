@@ -83,18 +83,22 @@ IO::ParsedObject::ParserType Parser::FileParser::XMLParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UTF8Char u8buff[512];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	Bool valid = false;
 
 	Text::StrConcat(u8buff, fd->GetFullName());
 	i = Text::StrLastIndexOf(u8buff, '.');
 	j = Text::StrIndexOf(&u8buff[i + 1], '?');
-	if (j > 0)
+	if (j != INVALID_INDEX)
 	{
 		u8buff[i + j + 1] = 0;
 	}
-	if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".XML"))
+	if (i == INVALID_INDEX)
+	{
+
+	}
+	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".XML"))
 	{
 		valid = true;
 	}
@@ -181,14 +185,14 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 		Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 		KMLStyle *style;
-/*		OSInt i;
-		OSInt j;
+/*		UOSInt i;
+		UOSInt j;
 		const UTF8Char *shortName;
 		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
 			j = Text::StrLastIndexOf(fileName, '/');
-			if (j > i)
+			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
 			}
@@ -228,14 +232,14 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"gpx"))
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		const UTF8Char *shortName;
 		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
 			j = Text::StrLastIndexOf(fileName, '/');
-			if (j > i)
+			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
 			}
@@ -1096,14 +1100,14 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"fme:xml-tables"))
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		const UTF8Char *shortName;
 		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
 			j = Text::StrLastIndexOf(fileName, '/');
-			if (j > i)
+			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
 			}
@@ -1262,8 +1266,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringUTF8Map<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	KMLStyle *style;
-	OSInt i;
-	UOSInt ui;
+	UOSInt i;
 	Text::XMLAttrib *attr;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -1275,14 +1278,14 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	containerNameSb.Append(sourceName);
 	Map::IMapDrawLayer *lyr;
 	i = Text::StrLastIndexOf(containerNameSb.ToString(), '/');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
-		containerNameSb.SetSubstr((UOSInt)i + 1);
+		containerNameSb.SetSubstr(i + 1);
 	}
 	i = Text::StrLastIndexOf(containerNameSb.ToString(), '\\');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
-		containerNameSb.SetSubstr((UOSInt)i + 1);
+		containerNameSb.SetSubstr(i + 1);
 	}
 
 	while (reader->ReadNext())
@@ -1382,10 +1385,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				style->lineWidth = 0;
 				style->fillColor = 0;
 				style->flags = 0;
-				ui = reader->GetAttribCount();
-				while (ui-- > 0)
+				i = reader->GetAttribCount();
+				while (i-- > 0)
 				{
-					attr = reader->GetAttrib(ui);
+					attr = reader->GetAttrib(i);
 					if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"ID"))
 					{
 						styleId = Text::StrCopyNew(attr->value);
@@ -1476,10 +1479,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									}
 									else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"HOTSPOT"))
 									{
-										ui = reader->GetAttribCount();
-										while (ui-- > 0)
+										i = reader->GetAttribCount();
+										while (i-- > 0)
 										{
-											attr = reader->GetAttrib(ui);
+											attr = reader->GetAttrib(i);
 											if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 											{
 												style->iconSpotX = Text::StrToInt32(attr->value);
@@ -1553,10 +1556,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				style->lineWidth = 0;
 				style->fillColor = 0;
 				style->flags = 0;
-				ui = reader->GetAttribCount();
-				while (ui-- > 0)
+				i = reader->GetAttribCount();
+				while (i-- > 0)
 				{
-					attr = reader->GetAttrib(ui);
+					attr = reader->GetAttrib(i);
 					if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"ID"))
 					{
 						styleId = Text::StrCopyNew(attr->value);
@@ -1752,10 +1755,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"SCREENXY"))
 						{
-							ui = reader->GetAttribCount();
-							while (ui-- > 0)
+							i = reader->GetAttribCount();
+							while (i-- > 0)
 							{
-								attr = reader->GetAttrib(ui);
+								attr = reader->GetAttrib(i);
 								if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 								{
 									minX = Text::StrToDouble(attr->value);
@@ -1769,10 +1772,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"OVERLAYXY"))
 						{
-							ui = reader->GetAttribCount();
-							while (ui-- > 0)
+							i = reader->GetAttribCount();
+							while (i-- > 0)
 							{
-								attr = reader->GetAttrib(ui);
+								attr = reader->GetAttrib(i);
 								if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 								{
 									oX = Text::StrToDouble(attr->value);
@@ -2049,13 +2052,13 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 		Map::MapLayerCollection *lyrColl;
 		UOSInt j;
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToString()));
-		ui = 0;
+		i = 0;
 		j = layers.GetCount();
-		while (ui < j)
+		while (i < j)
 		{
-			lyr = layers.GetItem(ui);
+			lyr = layers.GetItem(i);
 			lyrColl->Add(lyr);
-			ui++;
+			i++;
 		}
 		return lyrColl;
 	}

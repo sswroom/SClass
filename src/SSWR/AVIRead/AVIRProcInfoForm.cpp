@@ -329,7 +329,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		OSInt l;
+		UOSInt l;
 		UInt64 addr;
 
 		proc.GetThreads(&threadList);

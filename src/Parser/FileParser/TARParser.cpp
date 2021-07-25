@@ -43,14 +43,14 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UInt8 buff[512];
-	OSInt i;
+	UOSInt i;
 	UInt64 currOfst;
 	UInt64 fileSize;
 	UInt64 itemSize;
 	Int64 t;
 	Text::StrConcat(sbuff, fd->GetFullName());
 	i = Text::StrLastIndexOf(sbuff, '.');
-	if (Text::StrCompareICase(&sbuff[i], (const UTF8Char*)".TAR") != 0)
+	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".TAR"))
 	{
 		return 0;
 	}
@@ -94,7 +94,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 				while (true)
 				{
 					i = Text::StrIndexOf(sptr, '/');
-					if (i >= 0)
+					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
 						sb.Append((const UTF8Char*)"\\");
@@ -136,7 +136,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 		while (true)
 		{
 			i = Text::StrIndexOf(sptr, '/');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				sptr[i] = 0;
 				sb.Append((const UTF8Char*)"\\");

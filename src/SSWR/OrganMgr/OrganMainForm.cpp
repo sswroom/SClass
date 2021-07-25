@@ -890,7 +890,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 							{
 								if (!chg)
 								{
-									OSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
+									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
 									me->initSelImg = Text::StrCopyNew(&sarr[0][tmp + 1]);
 								}
 								chg = true;
@@ -901,7 +901,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 							}
 							else
 							{
-								OSInt i;
+								UOSInt i;
 								const UTF8Char *csptr;
 								Text::StringBuilderUTF8 sb;
 								i = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
@@ -2241,7 +2241,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 {
 	UTF8Char u8buff[512];
 	UTF8Char u8buff2[512];
-	OSInt i;
+	UOSInt i;
 	if (this->lastSpeciesObj == 0)
 		return false;
 
@@ -3481,7 +3481,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							{
 								if (!chg)
 								{
-									OSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
+									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
 									this->initSelImg = Text::StrCopyNew(&sarr[0][tmp + 1]);
 								}
 								chg = true;
@@ -3492,7 +3492,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							}
 							else
 							{
-								OSInt i;
+								UOSInt i;
 								const UTF8Char *csptr;
 								Text::StringBuilderUTF8 sb;
 								i = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);

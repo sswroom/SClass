@@ -148,7 +148,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 		{
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			OSInt i;
+			UOSInt i;
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			NEW_CLASS(simg, Media::StaticImage(info->dispWidth, info->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));

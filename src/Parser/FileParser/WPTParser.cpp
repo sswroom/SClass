@@ -45,10 +45,10 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 	Math::Point3D *pt;
 	Bool valid;
 
-	OSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i < 0)
+	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
+	if (i == INVALID_INDEX)
 		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"WPT") != 0)
+	if (!Text::StrEqualsICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"WPT"))
 		return 0;
 
 	IO::StreamDataStream *stm;

@@ -104,10 +104,13 @@ VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 	UTF8Char sbuff[512];
 	ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
 
-	OSInt i;
+	UOSInt i;
 	IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '\\');
-	sbuff[i] = 0;
+	if (i != INVALID_INDEX)
+	{
+		sbuff[i] = 0;
+	}
 	IO::Path::SetCurrDirectory(sbuff);
 	MyMain(progCtrl);
 	ReportSvcStatus( SERVICE_STOPPED, NO_ERROR, 0);

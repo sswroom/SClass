@@ -219,21 +219,20 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
 	UOSInt i;
-	OSInt si;
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int64 devId;
 	sptr = fd->GetFullName();
-	si = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(sbuff, &sptr[si + 1]);
+	i = Text::StrLastIndexOf(sptr, '\\');
+	Text::StrConcat(sbuff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(sbuff, (const UTF8Char*)"LOC"))
 	{
 		return 0;
 	}
-	si = Text::StrIndexOf(sbuff, (const UTF8Char*)"_");
-	if (si < 0)
+	i = Text::StrIndexOf(sbuff, (const UTF8Char*)"_");
+	if (i == INVALID_INDEX)
 		return 0;
-	sbuff[si] = 0;
+	sbuff[i] = 0;
 	devId = Text::StrToInt64(&sbuff[3]);
 	if (devId == 0)
 		return 0;

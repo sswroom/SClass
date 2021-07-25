@@ -198,8 +198,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			fname = me->fileNames->GetItem(i);
-			si = Text::StrLastIndexOf(fname, IO::Path::PATH_SEPERATOR);
-			k = me->lvStatus->AddItem(&fname[si + 1], (void*)fname);
+			k = Text::StrLastIndexOf(fname, IO::Path::PATH_SEPERATOR);
+			k = me->lvStatus->AddItem(&fname[k + 1], (void*)fname);
 			switch (me->fileAction->GetItem(i))
 			{
 			case AT_COPY:

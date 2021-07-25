@@ -70,11 +70,11 @@ void Text::VSContainer::AddChild(Text::CodeObject *obj)
 Text::VSProject::VSProject(const UTF8Char *name, VisualStudioVersion ver) : Text::CodeProject(name)
 {
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	i = Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(sbuff, &name[i + 1]);
 	i = Text::StrLastIndexOf(sbuff, '.');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
 	}

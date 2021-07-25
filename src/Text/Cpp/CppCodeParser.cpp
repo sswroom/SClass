@@ -26,7 +26,7 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 	Text::StringBuilderUTF8 sb;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
 	const UTF8Char *fname = fileStatus->fileName;
-	OSInt i = Text::StrLastIndexOf(fname, '\\');
+	UOSInt i = Text::StrLastIndexOf(fname, '\\');
 	sb.Append(&fname[i + 1]);
 	sb.Append((const UTF8Char*)" (");
 	sb.AppendI32(fileStatus->lineNum);
@@ -2660,7 +2660,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 {
 	UTF8Char *lineBuff;
 	UTF8Char *sptr;
-	OSInt i;
+	UOSInt i;
 	IO::StreamReader *reader;
 	IO::FileStream *fs;
 

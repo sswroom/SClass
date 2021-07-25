@@ -32,10 +32,10 @@ IO::ParsedObject::ParserType Parser::FileParser::UDPParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::UDPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt8 buff[256];
-	OSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i < 0)
+	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
+	if (i == INVALID_INDEX)
 		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"UDP") != 0)
+	if (!Text::StrEqualsICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"UDP"))
 		return 0;
 
 	fd->GetRealData(0, 256, buff);

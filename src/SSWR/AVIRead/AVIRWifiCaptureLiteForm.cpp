@@ -399,14 +399,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UOSInt ui;
-	UOSInt uj;
-	UOSInt uk;
-	OSInt si;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[si + 1];
+	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
@@ -421,11 +420,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 		writer->WriteSignature();
 		SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
 		Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
-		ui = 0;
-		uj = wifiLogList->GetCount();
-		while (ui < uj)
+		i = 0;
+		j = wifiLogList->GetCount();
+		while (i < j)
 		{
-			wifiLog = wifiLogList->GetItem(ui);
+			wifiLog = wifiLogList->GetItem(i);
 			sb.ClearStr();
 			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LBT_NONE);
 			sb.Append((const UTF8Char*)"\t");
@@ -461,17 +460,17 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 				sb.Append(wifiLog->country);
 			}
 			sb.Append((const UTF8Char*)"\t");
-			uk = 0;
-			while (uk < 20)
+			k = 0;
+			while (k < 20)
 			{
-				if (wifiLog->neighbour[uk] == 0)
+				if (wifiLog->neighbour[k] == 0)
 					break;
-				if (uk > 0)
+				if (k > 0)
 				{
 					sb.AppendChar(',', 1);
 				}
-				sb.AppendHex64(wifiLog->neighbour[uk]);
-				uk++;
+				sb.AppendHex64(wifiLog->neighbour[k]);
+				k++;
 			}
 			sb.Append((const UTF8Char*)"\t");
 			if (wifiLog->ieLen > 0)
@@ -483,7 +482,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 				succ = false;
 			}
 
-			ui++;
+			i++;
 		}
 		DEL_CLASS(writer);
 	}
@@ -510,14 +509,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt si;
-	UOSInt ui;
-	UOSInt uj;
+	UOSInt i;
+	UOSInt j;
 	UInt8 macBuff[8];
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[si + 1];
+	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
@@ -532,11 +530,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 		writer->WriteSignature();
 		SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
 		Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
-		ui = 0;
-		uj = wifiLogList->GetCount();
-		while (ui < uj)
+		i = 0;
+		j = wifiLogList->GetCount();
+		while (i < j)
 		{
-			wifiLog = wifiLogList->GetItem(ui);
+			wifiLog = wifiLogList->GetItem(i);
 			MemCopyNO(&macBuff[2], wifiLog->mac, 6);
 			macBuff[0] = 0;
 			macBuff[1] = 0;
@@ -556,7 +554,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 				}
 			}
 
-			ui++;
+			i++;
 		}
 		DEL_CLASS(writer);
 	}

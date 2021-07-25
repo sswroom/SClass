@@ -109,11 +109,10 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 	}
 	else
 	{
-		OSInt si;
 		ent = MemAlloc(PlaylistEntry, 1);
 		ent->fileName = Text::StrCopyNew(fileName);
-		si = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-		ent->title = Text::StrCopyNew(&fileName[si + 1]);
+		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		ent->title = Text::StrCopyNew(&fileName[i + 1]);
 		ent->artist = 0;
 		ent->timeStart = 0;
 		ent->timeEnd = -1;

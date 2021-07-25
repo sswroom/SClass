@@ -74,14 +74,14 @@ namespace IO
 			Bool ParseLog(Map::GPSTrack *gps);
 			Bool DelLogData();
 			Bool SetLogFormat(LogFormat lf);
-			Bool SetLogInterval(Int32 sec);
-			Bool SetLogDistance(Int32 meter);
-			Bool SetLogSpeed(Int32 meter);
+			Bool SetLogInterval(UInt32 sec);
+			Bool SetLogDistance(UInt32 meter);
+			Bool SetLogSpeed(UInt32 meter);
 			Bool SetLogMode(LogMode lm);
 			LogFormat GetLogFormat();
-			Int32 GetLogInterval();
-			Int32 GetLogDistance();
-			Int32 GetLogSpeed();
+			UInt32 GetLogInterval();
+			UInt32 GetLogDistance();
+			UInt32 GetLogSpeed();
 			LogMode GetLogMode();
 			UOSInt GetLogSize(); //Bytes
 			const UTF8Char *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, Int32 timeoutMS);

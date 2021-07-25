@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *user
 	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)(OSInt)me->cboFormat->GetSelectedItem();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt i;
+	UOSInt i;
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);

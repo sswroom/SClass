@@ -146,10 +146,14 @@ Bool IO::Device::MTKGPSNMEA::IsLogEnabled()
 	if (result == 0)
 		return false;
 	Text::StrConcat(sbuff, result);
-	OSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	if (i == INVALID_INDEX)
+	{
+		return false;
+	}
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrToInt32(&sbuff[i + 1]);
+	i = Text::StrToUInt32(&sbuff[i + 1]);
 	Text::StrDelNew(result);
 	return (i & 2) != 0;
 }
@@ -351,11 +355,11 @@ Bool IO::Device::MTKGPSNMEA::SetLogFormat(LogFormat lf)
 	return true;
 }
 
-Bool IO::Device::MTKGPSNMEA::SetLogInterval(Int32 sec)
+Bool IO::Device::MTKGPSNMEA::SetLogInterval(UInt32 sec)
 {
 	UTF8Char sbuff[32];
 	UInt8 buff[64];
-	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"$PMTK182,1,3,"), sec * 10);
+	Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"$PMTK182,1,3,"), sec * 10);
 	UOSInt cmdSize = GenNMEACommand(sbuff, buff);
 	const UTF8Char *result = SendMTKCommand(buff, cmdSize, (const UTF8Char*)"$PMTK001,182,1,3", 2000);
 	if (result == 0)
@@ -364,11 +368,11 @@ Bool IO::Device::MTKGPSNMEA::SetLogInterval(Int32 sec)
 	return true;
 }
 
-Bool IO::Device::MTKGPSNMEA::SetLogDistance(Int32 meter)
+Bool IO::Device::MTKGPSNMEA::SetLogDistance(UInt32 meter)
 {
 	UTF8Char sbuff[32];
 	UInt8 buff[64];
-	Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"$PMTK182,1,4,"), meter * 10);
+	Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"$PMTK182,1,4,"), meter * 10);
 	UOSInt cmdSize = GenNMEACommand(sbuff, buff);
 	const UTF8Char *result = SendMTKCommand(buff, cmdSize, (const UTF8Char*)"$PMTK001,182,1,3", 2000);
 	if (result == 0)
@@ -410,15 +414,19 @@ IO::Device::MTKGPSNMEA::LogFormat IO::Device::MTKGPSNMEA::GetLogFormat()
 	if (result == 0)
 		return LF_UNKNOWN;
 	Text::StrConcat(sbuff, result);
-	OSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	if (i == INVALID_INDEX)
+	{
+		return LF_UNKNOWN;
+	}
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrHex2Int32C(&sbuff[i + 1]);
+	i = (UInt32)Text::StrHex2Int32C(&sbuff[i + 1]);
 	Text::StrDelNew(result);
 	return (LogFormat)i;
 }
 
-Int32 IO::Device::MTKGPSNMEA::GetLogInterval()
+UInt32 IO::Device::MTKGPSNMEA::GetLogInterval()
 {
 	UTF8Char sbuff[128];
 	UInt8 buff[64];
@@ -427,15 +435,19 @@ Int32 IO::Device::MTKGPSNMEA::GetLogInterval()
 	if (result == 0)
 		return 0;
 	Text::StrConcat(sbuff, result);
-	OSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	if (i == INVALID_INDEX)
+	{
+		return 0;
+	}
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrToInt32(&sbuff[i + 1]);
+	i = Text::StrToUInt32(&sbuff[i + 1]);
 	Text::StrDelNew(result);
-	return (Int32)i / 10;
+	return (UInt32)i / 10;
 }
 
-Int32 IO::Device::MTKGPSNMEA::GetLogDistance()
+UInt32 IO::Device::MTKGPSNMEA::GetLogDistance()
 {
 	UTF8Char sbuff[128];
 	UInt8 buff[64];
@@ -444,12 +456,16 @@ Int32 IO::Device::MTKGPSNMEA::GetLogDistance()
 	if (result == 0)
 		return 0;
 	Text::StrConcat(sbuff, result);
-	OSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	if (i == INVALID_INDEX)
+	{
+		return 0;
+	}
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrToInt32(&sbuff[i + 1]);
+	i = Text::StrToUInt32(&sbuff[i + 1]);
 	Text::StrDelNew(result);
-	return (Int32)i / 10;
+	return (UInt32)i / 10;
 }
 
 IO::Device::MTKGPSNMEA::LogMode IO::Device::MTKGPSNMEA::GetLogMode()
@@ -462,10 +478,14 @@ IO::Device::MTKGPSNMEA::LogMode IO::Device::MTKGPSNMEA::GetLogMode()
 	if (result == 0)
 		return LM_UNKNOWN;
 	Text::StrConcat(sbuff, result);
-	OSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	if (i == INVALID_INDEX)
+	{
+		return LM_UNKNOWN;
+	}
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrToInt32(&sbuff[i + 1]);
+	i = Text::StrToUInt32(&sbuff[i + 1]);
 	Text::StrDelNew(result);
 	if (i == 1)
 	{
@@ -487,12 +507,16 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	if (result == 0)
 		return 0;
 	Text::StrConcat(sbuff, result);
-	OSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	if (i == INVALID_INDEX)
+	{
+		return 0;
+	}
 	sbuff[i] = 0;
 	i = Text::StrLastIndexOf(sbuff, ',');
-	i = Text::StrHex2Int32C(&sbuff[i + 1]);
+	i = (UInt32)Text::StrHex2Int32C(&sbuff[i + 1]);
 	Text::StrDelNew(result);
-	return (UOSInt)i;
+	return i;
 }
 
 const UTF8Char *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, Int32 timeoutMS)

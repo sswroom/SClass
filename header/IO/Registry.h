@@ -28,7 +28,7 @@ namespace IO
 
 	public:
 		Registry *OpenSubReg(const WChar *name);
-		WChar *GetSubReg(WChar *buff, OSInt index);
+		WChar *GetSubReg(WChar *buff, UOSInt index);
 
 		void SetValue(const WChar *name, Int32 value);
 		void SetValue(const WChar *name, const WChar *value);
@@ -39,7 +39,7 @@ namespace IO
 
 		Bool GetValueI32(const WChar *name, Int32 *value);
 
-		WChar *GetName(WChar *nameBuff, OSInt index);
+		WChar *GetName(WChar *nameBuff, UOSInt index);
 	};
-};
+}
 #endif

@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 
 	UOSInt i = 0;
 	UOSInt cnt = this->layers->GetCount();
-	OSInt j;
+	UOSInt j;
 	Map::IMapDrawLayer *lyr;
 	const UTF8Char *name;
 	this->lbLayers->ClearItems();
@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 		lyr = this->layers->GetItem(i);
 		name = lyr->GetName();
 		j = ::Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
-		if (j >= 0)
+		if (j != INVALID_INDEX)
 		{
 			name = &name[j + 1];
 		}

@@ -162,7 +162,7 @@ void IO::StmData::FileData::SetFullName(const UTF8Char *fullName)
 	}
 	if (fullName)
 	{
-		OSInt i;
+		UOSInt i;
 		this->fdn = MemAlloc(FILEDATANAME, 1);
 		this->fdn->objectCnt = 1;
 		this->fdn->fullName = Text::StrCopyNew(fullName);

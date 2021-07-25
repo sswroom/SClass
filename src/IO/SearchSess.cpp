@@ -6,7 +6,7 @@
 
 IO::SearchSess::SearchSess(const UTF8Char *searchName)
 {
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(this->modTime, Data::DateTime());
 	this->nameBuff = MemAlloc(UTF8Char, 256);
 	Text::StrConcat(this->nameBuff, searchName);

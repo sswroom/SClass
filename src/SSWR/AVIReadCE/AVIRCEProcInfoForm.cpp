@@ -289,10 +289,10 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcThreads()
 		Data::ArrayList<Manage::ThreadInfo *> threadList;
 		Manage::ThreadInfo *t;
 		UTF8Char sbuff[512];
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		UOSInt i;
+		UOSInt j;
+		UUOSInt k;
+		UOSInt l;
 		Int64 addr;
 
 		proc.GetThreads(&threadList);

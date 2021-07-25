@@ -126,7 +126,7 @@ OSInt IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 	OSInt retCnt = 0;
 	OSInt i;
 	long j;
-	OSInt k;
+	UOSInt k;
 	IShellDispatch *pISD;
 	HRESULT hResult;
 	Folder *pToFolder = 0;

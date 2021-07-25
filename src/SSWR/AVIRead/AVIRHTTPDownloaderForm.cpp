@@ -60,7 +60,6 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	UTF8Char *sarr2[2];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
-	OSInt si;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -86,18 +85,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			si = Text::StrLastIndexOf(currURL, '/');
-			Text::StrConcat(sptr, &currURL[si + 1]);
-			si = Text::StrIndexOf(sptr, '?');
-			if (si > 0)
-			{
-				sptr[si] = 0;
-			}
-			else if (si == 0)
+			i = Text::StrLastIndexOf(currURL, '/');
+			Text::StrConcat(sptr, &currURL[i + 1]);
+			i = Text::StrIndexOf(sptr, '?');
+			if (i == 0)
 			{
 				Text::StrConcat(sptr, (const UTF8Char*)"download.dat");
 			}
-
+			else if (i != INVALID_INDEX)
+			{
+				sptr[i] = 0;
+			}
 			Net::HTTPClient *cli;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), 0, false, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
@@ -358,10 +356,11 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->lvHeaders->AddColumn((const UTF8Char*)"Header", 1000);
 	
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sbuff[i] = 0;
+	if (i != INVALID_INDEX)
+		sbuff[i] = 0;
 	this->txtDownloadDir->SetText(sbuff);
 
 	this->SetDefaultButton(this->btnRequest);

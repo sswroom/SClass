@@ -266,10 +266,9 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 		}
 		if (pobj->GetSourceName(u8buff))
 		{
-			UOSInt si;
-			if ((si = Text::StrLastIndexOf(u8buff, '.')) != INVALID_INDEX)
+			if ((i = Text::StrLastIndexOf(u8buff, '.')) != INVALID_INDEX)
 			{
-				u8buff[si] = 0;
+				u8buff[i] = 0;
 			}
 			sfd->SetFileName(u8buff);
 		}

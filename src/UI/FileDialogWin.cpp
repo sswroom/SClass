@@ -197,11 +197,11 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		si = Text::StrLastIndexOf(fname2, '\\');
-		if (si >= 0)
+		i = Text::StrLastIndexOf(fname2, '\\');
+		if (i != INVALID_INDEX)
 		{
-			fname2[si] = 0;
-			initFileName = &fname2[si + 1];
+			fname2[i] = 0;
+			initFileName = &fname2[i + 1];
 			initDir = fname2;
 			if (initFileName[0] == 0)
 			{
@@ -213,10 +213,10 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			initFileName = fname2;
 			initDir = L".";
 		}
-		si = Text::StrLastIndexOf(initFileName, '.');
-		if (si >= 0)
+		i = Text::StrLastIndexOf(initFileName, '.');
+		if (i != INVALID_INDEX)
 		{
-			initFileName[si] = 0;
+			initFileName[i] = 0;
 		}
 	}
 	else

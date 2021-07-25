@@ -226,8 +226,8 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt ui;
 	UOSInt currPos;
 	UInt64 fileSize;

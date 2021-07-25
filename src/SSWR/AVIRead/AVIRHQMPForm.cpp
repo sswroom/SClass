@@ -448,8 +448,7 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
-	OSInt sj;
+	UOSInt k;
 
 	this->player->LoadMedia(0);
 	SDEL_CLASS(this->currFile);
@@ -478,37 +477,37 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	if (hasVideo && !hasAudio)
 	{
 		Text::StrConcat(sbuff, mf->GetSourceNameObj());
-		si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-		if (si >= 0)
+		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		if (i != INVALID_INDEX)
 		{
-			sj = Text::StrLastIndexOf(&sbuff[si + 1], '.');
-			if (sj >= 0)
+			j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
+			if (j != INVALID_INDEX)
 			{
-				Text::StrConcat(&sbuff[si + sj + 1], IO::Path::ALL_FILES);
+				Text::StrConcat(&sbuff[i + j + 1], IO::Path::ALL_FILES);
 				sess = IO::Path::FindFile(sbuff);
 				if (sess)
 				{
 					Parser::ParserList *parsers = this->core->GetParserList();
 
-					while (IO::Path::FindNextFile(&sbuff[si + 1], sess, 0, &pt, &fileSize))
+					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize))
 					{
-						sj = Text::StrLastIndexOf(&sbuff[si + 1], '.');
-						if (sj >= 0)
+						j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
+						if (j != INVALID_INDEX)
 						{
 							Bool audFile = false;
-							if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"m4a"))
+							if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"m4a"))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"aac"))
+							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"aac"))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"ac3"))
+							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"ac3"))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[si + sj + 2], (const UTF8Char*)"wav"))
+							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"wav"))
 							{
 								audFile = true;
 							}
@@ -523,12 +522,12 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 								if (audFile)
 								{
 									Int32 syncTime;
-									i = 0;
-									while ((msrc = audFile->GetStream(i, &syncTime)) != 0)
+									k = 0;
+									while ((msrc = audFile->GetStream(k, &syncTime)) != 0)
 									{
-										audFile->KeepStream(i, true);
+										audFile->KeepStream(k, true);
 										mf->AddSource(msrc, syncTime);
-										i++;
+										k++;
 									}
 									DEL_CLASS(audFile);
 								}
@@ -1504,10 +1503,9 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
 	Text::StrConcat(sbuff, this->currFile->GetSourceNameObj());
-	si = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[si + 1];
+	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[i + 1];
 
 	if (fname)
 	{

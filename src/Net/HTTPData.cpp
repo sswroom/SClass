@@ -191,7 +191,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 
 Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload)
 {
-	OSInt i;
+	UOSInt i;
 	Bool needReload = forceReload;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
 	fdh = 0;
@@ -231,7 +231,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const 
 			fdh->loadSize = 0;
 			fdh->cli = 0;
 			i = Text::StrLastIndexOf(fdh->url, '/');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				fdh->fileName = &fdh->url[i + 1];
 			}
@@ -259,7 +259,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const 
 		fdh->sockf = sockf;
 		fdh->queue = queue;
 		i = Text::StrLastIndexOf(fdh->url, '/');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			fdh->fileName = &fdh->url[i + 1];
 		}
@@ -353,12 +353,12 @@ void Net::HTTPData::SetFullName(const UTF8Char *fullName)
 {
 	if (fdh == 0 || fullName == 0)
 		return;
-	OSInt i;
+	UOSInt i;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	SDEL_TEXT(fdh->url);
 	fdh->url = Text::StrCopyNew(fullName);
 	i = Text::StrLastIndexOf(fdh->url, '/');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		fdh->fileName = &fdh->url[i + 1];
 	}

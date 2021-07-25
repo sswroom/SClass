@@ -43,8 +43,8 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, 
 	Map::GPSTrack *track = 0;
 	Bool valid;
 
-/*	OSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i < 0)
+/*	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
+	if (i == INVALID_INDEX)
 		return 0;
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], L"PLT") != 0)
 		return 0;*/

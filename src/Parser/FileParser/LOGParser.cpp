@@ -48,12 +48,12 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 //	WChar *filePath;
 //	WChar *fileName;
 //	WChar *sarr[10];
-	OSInt i;
+	UOSInt i;
 //	OSInt j;
 //	OSInt k;
 	Text::StrConcat(sbuff, fd->GetFullName());
 	i = Text::StrLastIndexOf(sbuff, '.');
-	if (Text::StrCompareICase(&sbuff[i], (const UTF8Char*)".LOG") != 0)
+	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".LOG"))
 	{
 		return 0;
 	}

@@ -73,10 +73,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	OSInt si;
 	Text::StrConcat(u8buff, fd->GetFullName());
-	si = Text::StrLastIndexOf(u8buff, '.');
-	if (Text::StrCompareICase(&u8buff[si], (const UTF8Char*)".TXT") != 0)
+	i = Text::StrLastIndexOf(u8buff, '.');
+	if (i == INVALID_INDEX || !Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".TXT"))
 	{
 		return 0;
 	}

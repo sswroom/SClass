@@ -5,10 +5,10 @@
 #include "Net/OSMGPXDownloader.h"
 #include "Sync/Thread.h"
 
-Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const WChar *storeDir, IO::Writer *writer)
+Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const UTF8Char *storeDir, IO::Writer *writer)
 {
-	WChar sbuff[512];
-	WChar *sptr;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	sptr = Text::StrConcat(sbuff, storeDir);
 	if (sptr[-1] != '\\')
 	{
@@ -18,7 +18,7 @@ Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const WChar *
 	this->writer = writer;
 	this->storeDir = Text::StrCopyNew(sbuff);
 	this->sockf = sockf;
-	NEW_CLASS(reader, Net::RSSReader(L"http://www.openstreetmap.org/traces/rss", sockf, 900, this));
+	NEW_CLASS(reader, Net::RSSReader((const UTF8Char*)"http://www.openstreetmap.org/traces/rss", sockf, 900, this));
 }
 
 Net::OSMGPXDownloader::~OSMGPXDownloader()
@@ -29,21 +29,21 @@ Net::OSMGPXDownloader::~OSMGPXDownloader()
 
 void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 {
-	WChar gpxId[16];
-	WChar sbuff[512];
-	WChar sbuff2[512];
-	WChar *sptr;
-	WChar *sptr2;
-	OSInt i;
+	UTF8Char gpxId[16];
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	UOSInt i;
 	IO::Path::PathType pt;
 
 	Text::StrConcat(sbuff, item->link);
 	i = Text::StrLastIndexOf(sbuff, '/');
 	sptr = &sbuff[i + 1];
 	Text::StrConcat(gpxId, sptr);
-	sptr2 = Text::StrConcat(sbuff2, L"http://www.openstreetmap.org/trace/");
+	sptr2 = Text::StrConcat(sbuff2, (const UTF8Char*)"http://www.openstreetmap.org/trace/");
 	sptr2 = Text::StrConcat(sptr2, gpxId);
-	sptr2 = Text::StrConcat(sptr2, L"/data");
+	sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/data");
 
 	sptr = Text::StrConcat(sbuff, this->storeDir);
 	sptr = Text::StrConcat(sptr, item->author);
@@ -52,31 +52,31 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	{
 		IO::Path::CreateDirectory(sbuff);
 	}
-	sptr = Text::StrConcat(sptr, L"\\");
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\");
 	sptr = Text::StrConcat(sptr, gpxId);
-	sptr = Text::StrConcat(sptr, L".gpx");
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)".gpx");
 	pt = IO::Path::GetPathType(sbuff);
 	if (pt == IO::Path::PT_FILE)
 	{
 	}
 	else
 	{
-		Text::StringBuilder sb;
+		Text::StringBuilderUTF8 sb;
 		Net::HTTPClient *cli;
 		UInt8 buff[2048];
-		OSInt readSize;
-		Int64 totalSize;
+		UOSInt readSize;
+		UInt64 totalSize;
 		IO::FileStream *fs;
-		OSInt retryCnt = 3;
+		UOSInt retryCnt = 3;
 
-		sb.Append(L"Downloading: ");
+		sb.Append((const UTF8Char*)"Downloading: ");
 		sb.Append(sbuff2);
 		this->writer->WriteLine(sb.ToString());
 
 		while (retryCnt-- > 0)
 		{
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
-			NEW_CLASS(cli, Net::HTTPClient(sockf, sbuff2, L"GET", true));
+			cli = Net::HTTPClient::CreateConnect(sockf, sbuff2, "GET", true);
 
 			totalSize = 0;
 			while (true)

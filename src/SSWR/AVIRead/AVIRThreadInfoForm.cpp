@@ -195,8 +195,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	Manage::ThreadContext *context;
 	UTF8Char sbuff[512];
 	UInt64 startAddr;
-	OSInt si;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
 
 	startAddr = thread->GetStartAddress();
@@ -205,8 +205,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(sbuff);
 	symbol->ResolveName(sbuff, startAddr);
-	si = Text::StrLastIndexOf(sbuff, '\\');
-	this->txtStartName->SetText(&sbuff[si + 1]);
+	i = Text::StrLastIndexOf(sbuff, '\\');
+	this->txtStartName->SetText(&sbuff[i + 1]);
 
 	if (thread->IsCurrThread())
 	{
@@ -216,7 +216,6 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		Manage::StackTracer *tracer;
 		UInt64 currAddr;
 		UOSInt callLev;
-		UOSInt i;
 		thread->Suspend();
 		context = thread->GetThreadContext();
 		NEW_CLASS(tracer, Manage::StackTracer(context));
@@ -284,8 +283,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendHex32(eip);
 				sb.Append((const UTF8Char*)" ");
 				symbol->ResolveName(sbuff, eip);
-				si  = Text::StrLastIndexOf(sbuff, '\\');
-				sb.Append(&sbuff[si + 1]);
+				i  = Text::StrLastIndexOf(sbuff, '\\');
+				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"EIP = 0x");
@@ -381,8 +380,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendHex64(rip);
 				sb.Append((const UTF8Char*)" ");
 				symbol->ResolveName(sbuff, rip);
-				si  = Text::StrLastIndexOf(sbuff, '\\');
-				sb.Append(&sbuff[si + 1]);
+				i  = Text::StrLastIndexOf(sbuff, '\\');
+				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"RIP = 0x");

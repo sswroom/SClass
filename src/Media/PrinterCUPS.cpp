@@ -57,7 +57,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
 	Int64 t;
-	OSInt i;
+	UOSInt i;
 	Double paperWidth;
 	Double paperHeight;
 	Data::DateTime dt;

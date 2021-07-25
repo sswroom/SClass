@@ -52,8 +52,8 @@ void SSWR::MapReplay::MapReplayForm::LoadMap(Int32 mapType)
 
 void SSWR::MapReplay::MapReplayForm::UpdateList()
 {
-	OSInt cnt = this->env->GetItemCount(0);
-	OSInt i;
+	UOSInt cnt = this->env->GetItemCount(0);
+	UOSInt i;
 	Map::MapEnv::ItemType itemType;
 	const WChar *name;
 	this->lbLayers->ClearItems();

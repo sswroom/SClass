@@ -383,7 +383,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	OSInt i;
+	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Server");
 	this->SetFont(0, 8.25, false);
@@ -418,7 +418,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->lblDocDir->SetRect(8, 32, 100, 23, false);
 	IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
 	}

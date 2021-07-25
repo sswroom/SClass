@@ -55,10 +55,10 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt currCol;
 	Data::ArrayListStrUTF8 *colNames;
 
-	OSInt si = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (si < 0)
+	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
+	if (i == INVALID_INDEX)
 		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[si + 1], (const UTF8Char*)"CSV") != 0)
+	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"CSV") != 0)
 		return 0;
 
 	IO::StreamDataStream *stm;
@@ -66,18 +66,18 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
 
-	UOSInt dateCol = (UOSInt)-1;
-	UOSInt timeCol = (UOSInt)-1;
-	UOSInt dtCol = (UOSInt)-1;
-	UOSInt validCol = (UOSInt)-1;
-	UOSInt latCol = (UOSInt)-1;
-	UOSInt lonCol = (UOSInt)-1;
-	UOSInt latDirCol = (UOSInt)-1;
-	UOSInt lonDirCol = (UOSInt)-1;
-	UOSInt altCol = (UOSInt)-1;
-	UOSInt speedCol = (UOSInt)-1;
-	UOSInt headingCol = (UOSInt)-1;
-	UOSInt nSateCol = (UOSInt)-1;
+	UOSInt dateCol = INVALID_INDEX;
+	UOSInt timeCol = INVALID_INDEX;
+	UOSInt dtCol = INVALID_INDEX;
+	UOSInt validCol = INVALID_INDEX;
+	UOSInt latCol = INVALID_INDEX;
+	UOSInt lonCol = INVALID_INDEX;
+	UOSInt latDirCol = INVALID_INDEX;
+	UOSInt lonDirCol = INVALID_INDEX;
+	UOSInt altCol = INVALID_INDEX;
+	UOSInt speedCol = INVALID_INDEX;
+	UOSInt headingCol = INVALID_INDEX;
+	UOSInt nSateCol = INVALID_INDEX;
 
 	NEW_CLASS(colNames, Data::ArrayListStrUTF8());
 	reader->ReadLine(sbuff, 1024);
@@ -169,12 +169,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		colCnt = Text::StrCSVSplit(tmpArr, 2, tmpArr[1]);
 	}
 
-	if (((dateCol != (UOSInt)-1 && timeCol != (UOSInt)-1) || (dtCol != (UOSInt)-1)) && latCol != (UOSInt)-1 && lonCol != (UOSInt)-1)
+	if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::GPSTrack *track;
 		Map::GPSTrack::GPSRecord rec;
 		Data::DateTime dt;
-		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != (UOSInt)-1, this->codePage, 0));
+		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
 		track->SetTrackName(fd->GetShortName());
 		
 		tmpArr2 = MemAlloc(UTF8Char*, currCol + 1);
@@ -182,7 +182,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpArr2, currCol + 1, sbuff))
 			{
-				if (dtCol != (UOSInt)-1)
+				if (dtCol != INVALID_INDEX)
 				{
 					dt.SetValue(tmpArr2[dtCol]);
 				}
@@ -194,17 +194,17 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				rec.utcTimeTicks = dt.ToTicks();
 				rec.lat = Text::StrToDouble(tmpArr2[latCol]);
 				rec.lon = Text::StrToDouble(tmpArr2[lonCol]);
-				if (latDirCol != (UOSInt)-1)
+				if (latDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[latDirCol][0] == 'S')
 						rec.lat = -rec.lat;
 				}
-				if (lonDirCol != (UOSInt)-1)
+				if (lonDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[lonDirCol][0] == 'W')
 						rec.lon = -rec.lon;
 				}
-				if (validCol != (UOSInt)-1)
+				if (validCol != INVALID_INDEX)
 				{
 					if (Text::StrCompareICase(tmpArr2[validCol], (const UTF8Char*)"DGPS"))
 					{
@@ -223,12 +223,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.valid = 0;
 				}
-				if (altCol != (UOSInt)-1)
+				if (altCol != INVALID_INDEX)
 				{
-					si = Text::StrIndexOf(tmpArr2[altCol], (const UTF8Char*)" ");
-					if (si >= 0)
+					i = Text::StrIndexOf(tmpArr2[altCol], (const UTF8Char*)" ");
+					if (i != INVALID_INDEX)
 					{
-						tmpArr2[altCol][si] = 0;
+						tmpArr2[altCol][i] = 0;
 					}
 					rec.altitude = Text::StrToDouble(tmpArr2[altCol]);
 				}
@@ -236,12 +236,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.altitude = 0;
 				}
-				if (speedCol != (UOSInt)-1)
+				if (speedCol != INVALID_INDEX)
 				{
-					si = Text::StrIndexOf(tmpArr2[speedCol], (const UTF8Char*)" ");
-					if (si >= 0)
+					i = Text::StrIndexOf(tmpArr2[speedCol], (const UTF8Char*)" ");
+					if (i != INVALID_INDEX)
 					{
-						tmpArr2[speedCol][si] = 0;
+						tmpArr2[speedCol][i] = 0;
 					}
 					rec.speed = Text::StrToDouble(tmpArr2[speedCol]) / 1.852;
 				}
@@ -249,7 +249,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.speed = 0;
 				}
-				if (headingCol != (UOSInt)-1)
+				if (headingCol != INVALID_INDEX)
 				{
 					rec.heading = Text::StrToDouble(tmpArr2[headingCol]);
 				}
@@ -257,16 +257,16 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					rec.heading = 0;
 				}
-				if (nSateCol != (UOSInt)-1)
+				if (nSateCol != INVALID_INDEX)
 				{
-					si = Text::StrIndexOf(tmpArr2[nSateCol], (const UTF8Char*)"/");
-					if (si >= 0)
+					i = Text::StrIndexOf(tmpArr2[nSateCol], (const UTF8Char*)"/");
+					if (i != INVALID_INDEX)
 					{
-						tmpArr2[nSateCol][si] = 0;
+						tmpArr2[nSateCol][i] = 0;
 						Text::StrTrim(tmpArr2[nSateCol]);
-						Text::StrTrim(&tmpArr2[nSateCol][si + 1]);
+						Text::StrTrim(&tmpArr2[nSateCol][i + 1]);
 						rec.nSateUsed = Text::StrToInt32(tmpArr2[nSateCol]);
-						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol][si + 1]);
+						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol][i + 1]);
 					}
 					else
 					{
@@ -289,7 +289,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		DEL_CLASS(colNames);
 		return track;
 	}
-	else if (latCol != (UOSInt)-1 && lonCol != (UOSInt)-1)
+	else if (latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
 		Math::Point *pt;

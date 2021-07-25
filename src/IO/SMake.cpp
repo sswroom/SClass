@@ -1189,11 +1189,11 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
 	this->errorMsg = 0;
-	OSInt i = Text::StrLastIndexOf(cfgFile, IO::Path::PATH_SEPERATOR);
+	UOSInt i = Text::StrLastIndexOf(cfgFile, IO::Path::PATH_SEPERATOR);
 	UTF8Char sbuff[512];
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
-		this->basePath = Text::StrCopyNewC(cfgFile, (UOSInt)i + 1);
+		this->basePath = Text::StrCopyNewC(cfgFile, i + 1);
 	}
 	else
 	{

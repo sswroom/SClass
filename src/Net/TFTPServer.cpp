@@ -245,7 +245,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 					if (me->log)
 					{
 						Text::StringBuilderUTF8 sb;
-						OSInt i;
+						UOSInt i;
 						sb.Append((const UTF8Char*)"End receiving ");
 						i = Text::StrLastIndexOf(sess->fileName, IO::Path::PATH_SEPERATOR);
 						sb.Append(&sess->fileName[i + 1]);
@@ -276,7 +276,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 					if (me->log)
 					{
 						Text::StringBuilderUTF8 sb;
-						OSInt i;
+						UOSInt i;
 						sb.Append((const UTF8Char*)"End sending ");
 						i = Text::StrLastIndexOf(sess->fileName, IO::Path::PATH_SEPERATOR);
 						sb.Append(&sess->fileName[i + 1]);
