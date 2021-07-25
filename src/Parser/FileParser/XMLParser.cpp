@@ -1115,9 +1115,9 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		shortName = &fileName[i + 1];
 		Text::StringBuilderUTF8 sbTableName;
 		i = Text::StrIndexOf(shortName, '.');
-		if (i > 0)
+		if (i != INVALID_INDEX && i > 0)
 		{
-			sbTableName.AppendC(shortName, (UOSInt)i);
+			sbTableName.AppendC(shortName, i);
 		}
 		else
 		{
@@ -1789,10 +1789,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						}
 						else if (Text::StrEqualsICase(reader->GetNodeText(), (const UTF8Char*)"SIZE"))
 						{
-							ui = reader->GetAttribCount();
-							while (ui--)
+							i = reader->GetAttribCount();
+							while (i--)
 							{
-								attr = reader->GetAttrib(ui);
+								attr = reader->GetAttrib(i);
 								if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"X"))
 								{
 									sizeX = Text::StrToDouble(attr->value);

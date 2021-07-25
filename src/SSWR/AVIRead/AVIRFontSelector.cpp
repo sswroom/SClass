@@ -255,7 +255,7 @@ void SSWR::AVIRead::AVIRFontSelector::UpdateFontStyles()
 	UOSInt pageCnt = (UOSInt)Math::Double2Int32(h / 80);
 	if (pageCnt <= 0)
 		pageCnt = 1;
-	this->SetVScrollBar(0, (Int32)this->env->GetFontStyleCount(), pageCnt);
+	this->SetVScrollBar(0, this->env->GetFontStyleCount(), pageCnt);
 }
 
 UOSInt SSWR::AVIRead::AVIRFontSelector::GetSelectedFontStyle()

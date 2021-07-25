@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(void *userObj)
 	Int32 status;
 	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
-		status = (Int32)((status & ~3) | me->cboType->GetSelectedIndex());
+		status = ((status & ~3) | (Int32)(UInt32)me->cboType->GetSelectedIndex());
 		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, level, status);
 		me->UpdatePreview();
 	}

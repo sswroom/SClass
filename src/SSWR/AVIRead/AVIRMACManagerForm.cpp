@@ -196,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
 		UTF8Char *sarr[3];
-		OSInt i;
+		UOSInt i;
 		UOSInt j;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -209,9 +209,9 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 			}
 
 			i = sb.IndexOf('#');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
-				sb.TrimToLength((UOSInt)i);
+				sb.TrimToLength(i);
 			}
 			sb.TrimRight();
 			j = Text::StrSplit(sarr, 3, sb.ToString(), '\t');

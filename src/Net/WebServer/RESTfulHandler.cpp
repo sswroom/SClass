@@ -161,8 +161,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
 	{
-		OSInt i = Text::StrIndexOf(&subReq[1], '/');
-		if (i >= 0)
+		UOSInt i = Text::StrIndexOf(&subReq[1], '/');
+		if (i != INVALID_INDEX)
 		{
 			DB::DBRow *row;
 			const UTF8Char *tableName;
@@ -379,7 +379,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 		sb.Append(sort);
 		UTF8Char *sarr[2];
 		UOSInt i;
-		OSInt j;
+		UOSInt j;
 		Bool desc;
 		sarr[1] = sb.ToString();
 		while (true)
@@ -387,7 +387,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 			i = Text::StrSplit(sarr, 2, sarr[1], Net::WebServer::IWebRequest::PARAM_SEPERATOR);
 			j = Text::StrIndexOf(sarr[0], ',');
 			desc = false;
-			if (j >= 0)
+			if (j != INVALID_INDEX)
 			{
 				sarr[0][j] = 0;
 				desc = Text::StrEqualsICase(&sarr[0][j + 1], (const UTF8Char*)"DESC");

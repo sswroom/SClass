@@ -281,7 +281,7 @@ UOSInt UI::GUITreeView::GetRootCount()
 	return this->treeItems->GetCount();
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(OSInt index)
+UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(UOSInt index)
 {
 	return this->treeItems->GetItem(index);
 }

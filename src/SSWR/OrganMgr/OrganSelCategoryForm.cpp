@@ -4,10 +4,10 @@
 void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(void *userObj)
 {
 	OrganSelCategoryForm *me = (OrganSelCategoryForm*)userObj;
-	OSInt i = me->lbCategory->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbCategory->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		Category *cate = (Category*)me->lbCategory->GetItem((UOSInt)i);
+		Category *cate = (Category*)me->lbCategory->GetItem(i);
 		me->env->SetCurrCategory(cate);
 		me->SetDialogResult(DR_OK);
 	}

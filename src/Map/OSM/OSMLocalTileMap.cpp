@@ -27,7 +27,7 @@
 	WChar *sptr;
 	IO::Path::FindFileSession *sess;
 	Int32 currVal;
-	OSInt i;
+	UOSInt i;
 	IO::Path::PathType pt;
 
 	sptr = Text::StrConcat(sbuff, this->tileDir);
@@ -97,7 +97,7 @@
 					if (pt == IO::Path::PT_FILE)
 					{
 						i = Text::StrIndexOf(sptr, '.');
-						if (i >= 0)
+						if (i != INVALID_INDEX)
 						{
 							sptr[i] = 0;
 							if (Text::StrToInt32(sptr, &currVal))
@@ -152,7 +152,6 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	UInt32 currVal;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
 
 	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::POT_PACKAGEFILE)
 	{
@@ -235,10 +234,10 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 						if (yPkg->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
 						{
 							yPkg->GetItemName(sbuff, i);
-							si = Text::StrIndexOf(sbuff, '.');
-							if (si >= 0)
+							j = Text::StrIndexOf(sbuff, '.');
+							if (j != INVALID_INDEX)
 							{
-								sbuff[si] = 0;
+								sbuff[j] = 0;
 								if (Text::StrToUInt32(sbuff, &currVal))
 								{
 									if (minYBlk == (UInt32)-1 || minYBlk > currVal)
@@ -558,7 +557,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 {
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	Int32 x;
 	Int32 y;
 	Bool found = false;
@@ -626,7 +625,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 							if (xPkg->GetItemType(j) == IO::PackageFile::POT_STREAMDATA)
 							{
 								k = Text::StrIndexOf(u8buff, (const UTF8Char*)".png");
-								if (k >= 0)
+								if (k != INVALID_INDEX)
 								{
 									u8buff[k] = 0;
 									if (Text::StrToInt32(u8buff, &y))

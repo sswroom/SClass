@@ -42,7 +42,7 @@ UI::GUIWindowDragData::~GUIWindowDragData()
 	{
 		FORMATETC *fmt;
 		Data::ArrayList<FORMATETC *> *fmtList = this->dataMap->GetValues();
-		OSInt i = fmtList->GetCount();
+		UOSInt i = fmtList->GetCount();
 		while (i-- > 0)
 		{
 			fmt = fmtList->GetItem(i);

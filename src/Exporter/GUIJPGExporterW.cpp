@@ -145,7 +145,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				const UInt8 *iccBuff = srcImg->info->color->GetRAWICC();
 				if (iccBuff)
 				{
-					OSInt iccLeng = ReadMInt32(iccBuff);
+					UOSInt iccLeng = ReadMUInt32(iccBuff);
 					UInt8 iccHdr[18];
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;
@@ -186,11 +186,11 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			}
 			else if (jpgBuff[i + 1] == 0xe1)
 			{
-				i += ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				i += (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 			}
 			else
 			{
-				j = ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 				stm->Write(&jpgBuff[i], j);
 				i += j;
 			}

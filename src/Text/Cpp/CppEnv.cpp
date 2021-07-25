@@ -16,7 +16,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	UTF8Char c;
 	const UTF8Char *csptr;
 	IO::ConfigFile *cfg;
-	OSInt i;
+	UOSInt i;
 	if (!IsCompilerExist(vsv))
 		return false;
 	sptr = IO::Path::GetLocAppDataPath(sbuff);
@@ -81,7 +81,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 			if (c == 0 || c == ';')
 			{
 				*sptr = 0;
-				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(VCInstallDir)")) >= 0)
+				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(VCInstallDir)")) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -96,7 +96,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 					sptr = Text::StrConcat(sptr, &sbuff[i + 15]);
 					Text::StrConcat(sbuff, sbuff3);
 				}
-				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(WindowsSdkDir)")) >= 0)
+				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(WindowsSdkDir)")) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -111,7 +111,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 					sptr = Text::StrConcat(sptr, &sbuff[i + 16]);
 					Text::StrConcat(sbuff, sbuff3);
 				}
-				if (Text::StrIndexOf(sbuff, (const UTF8Char*)"$(") >= 0)
+				if (Text::StrIndexOf(sbuff, (const UTF8Char*)"$(") != INVALID_INDEX)
 				{
 				}
 				else
@@ -198,7 +198,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
-	if (Text::StrIndexOf(includeFile, (const UTF8Char*)"opengl.hpp") >= 0)
+	if (Text::StrIndexOf(includeFile, (const UTF8Char*)"opengl.hpp") != INVALID_INDEX)
 	{
 		i = 0;
 	}
@@ -299,7 +299,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	UTF8Char c;
 	const UTF8Char *csptr;
 	IO::ConfigFile *cfg;
-	OSInt i;
+	UOSInt i;
 	if (!IsCompilerExist(vsv))
 		return 0;
 	sptr = IO::Path::GetLocAppDataPath(sbuff);
@@ -367,7 +367,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 			if (c == 0 || c == ';')
 			{
 				*sptr = 0;
-				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(VCInstallDir)")) >= 0)
+				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(VCInstallDir)")) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -382,7 +382,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 					sptr = Text::StrConcat(sptr, &sbuff[i + 15]);
 					Text::StrConcat(sbuff, sbuff3);
 				}
-				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(WindowsSdkDir)")) >= 0)
+				while ((i = Text::StrIndexOf(sbuff, (const UTF8Char*)"$(WindowsSdkDir)")) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -397,7 +397,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 					sptr = Text::StrConcat(sptr, &sbuff[i + 16]);
 					Text::StrConcat(sbuff, sbuff3);
 				}
-				if (Text::StrIndexOf(sbuff, (const UTF8Char*)"$(") >= 0)
+				if (Text::StrIndexOf(sbuff, (const UTF8Char*)"$(") != INVALID_INDEX)
 				{
 				}
 				else

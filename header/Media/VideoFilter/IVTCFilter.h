@@ -14,14 +14,14 @@ namespace Media
 		private:
 			typedef struct
 			{
-				OSInt fieldCnt;
-				OSInt fieldDiff;
-				OSInt fieldMDiff;
-				OSInt field2Cnt;
-				OSInt field2Diff;
-				OSInt field2MDiff;
-//				OSInt field3Cnt;
-//				OSInt field4Cnt;
+				UOSInt fieldCnt;
+				UOSInt fieldDiff;
+				UOSInt fieldMDiff;
+				UOSInt field2Cnt;
+				UOSInt field2Diff;
+				UOSInt field2MDiff;
+//				UOSInt field3Cnt;
+//				UOSInt field4Cnt;
 			} FieldStat;
 
 			typedef struct
@@ -33,22 +33,22 @@ namespace Media
 				FieldStat fieldStat;
 				UInt8 *oddPtr;
 				UInt8 *evenPtr;
-				OSInt sw;
-				OSInt h;
+				UOSInt sw;
+				UOSInt h;
 			} ThreadStat;
 		private:
 			UInt8 *ivtcLastFrame;
 			UInt8 *ivtcCurrFrame;
-			OSInt ivtcLastFrameSize;
+			UOSInt ivtcLastFrameSize;
 			UOSInt ivtcFrameBuffSize;
 			Bool ivtcLastExist;
 			Media::FrameType ivtcLastFrameType;
-			Int32 ivtcLastFrameNum;
-			Int32 ivtcLastFrameTime;
+			UInt32 ivtcLastFrameNum;
+			UInt32 ivtcLastFrameTime;
 			Bool ivtcLastFieldUsed;
-			OSInt ivtcLastField;
-			Int32 ivtcLastOdd;
-			Int32 ivtcLastEven;
+			UOSInt ivtcLastField;
+			UInt32 ivtcLastOdd;
+			UInt32 ivtcLastEven;
 			Int32 ivtcLastSC;
 			Int32 ivtcExist;
 
@@ -91,10 +91,10 @@ namespace Media
 
 			static UInt32 __stdcall IVTCThread(void *userObj);
 			static UInt32 __stdcall CalcThread(void *userObj);
-			static void do_CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, OSInt w, OSInt h);
-			static void do_CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, OSInt w, OSInt h);
-			void CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, OSInt w, OSInt h);
-			void CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, OSInt w, OSInt h);
+			static void do_CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h);
+			static void do_CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, UOSInt w, UOSInt h);
+			void CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h);
+			void CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, UOSInt w, UOSInt h);
 		public:
 			IVTCFilter(Media::IVideoSource *srcVideo);
 			virtual ~IVTCFilter();

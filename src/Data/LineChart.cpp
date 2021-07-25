@@ -272,14 +272,14 @@ void Data::LineChart::SetDblFormat(const Char *format)
 		Text::StrDelNew(this->dblFormat);
 	}
 	this->dblFormat = Text::StrCopyNew(format);
-	OSInt i = Text::StrIndexOf(format, ".");
-	if (i < 0)
+	UOSInt i = Text::StrIndexOf(format, ".");
+	if (i == INVALID_INDEX)
 	{
 		this->minDblVal = 1.0;
 	}
 	else
 	{
-		i = (OSInt)Text::StrCharCnt(format) - i - 1;
+		i = Text::StrCharCnt(format) - i - 1;
 		this->minDblVal = 1.0;
 		while (i-- > 0)
 		{

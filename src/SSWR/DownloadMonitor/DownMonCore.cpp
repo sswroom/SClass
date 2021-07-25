@@ -377,7 +377,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 			}
 			else if (Text::StrEndsWithICase(sptr, (const UTF8Char*)".RAR"))
 			{
-				if (Text::StrIndexOf(sptr, (const UTF8Char*)".part") >= 0)
+				if (Text::StrIndexOf(sptr, (const UTF8Char*)".part") != INVALID_INDEX)
 				{
 
 				}

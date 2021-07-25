@@ -74,8 +74,8 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 	}
 	else
 	{
-		OSInt typ = me->cboType->GetSelectedIndex();
-		OSInt i;
+		UOSInt typ = me->cboType->GetSelectedIndex();
+		UOSInt i;
 		Bool hasData;
 		IO::FileStream *fs1;
 		IO::FileStream *fs2;
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 
 				sb1.Append(sbSuffix.ToString());
 				i = sb1.IndexOf('\t');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					if (typ == 0)
 					{

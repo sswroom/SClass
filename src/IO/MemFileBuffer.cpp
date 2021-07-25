@@ -35,10 +35,10 @@ IO::MemFileBuffer::MemFileBuffer(const UTF8Char *fileName)
 				}
 				else
 				{
-					Int32 addSize = 0;
+					UInt32 addSize = 0;
 					if (fileSize & 1048575)
 					{
-						addSize = (Int32)(1048576 - (fileSize & 1048575));
+						addSize = (UInt32)(1048576 - (fileSize & 1048575));
 					}
 					res = SetProcessWorkingSetSize(hProc, (UInt32)(minSize + fileSize + addSize), (UInt32)(maxSize + fileSize + addSize));
 					if (res == 0)

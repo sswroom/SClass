@@ -1118,7 +1118,7 @@ Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *
 	csConv->ConvertV2(&image->data, prevImgData, image->info->dispWidth, image->info->dispHeight, image->info->storeWidth, image->info->storeHeight, image->info->dispWidth * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASS(outImage, Media::StaticImage(image->info->dispWidth, image->info->dispHeight, 0, 32, pf, 0, image->info->color, Media::ColorProfile::YUVT_UNKNOWN, image->info->atype, image->info->ycOfst));
-	resizer->Resize(prevImgData, image->info->dispWidth * 8, Math::OSInt2Double(image->info->dispWidth), Math::OSInt2Double(image->info->dispHeight), 0, 0, outImage->data, outImage->GetDataBpl(), outImage->info->dispWidth, outImage->info->dispHeight);
+	resizer->Resize(prevImgData, image->info->dispWidth * 8, Math::UOSInt2Double(image->info->dispWidth), Math::UOSInt2Double(image->info->dispHeight), 0, 0, outImage->data, outImage->GetDataBpl(), outImage->info->dispWidth, outImage->info->dispHeight);
 
 	DEL_CLASS(resizer);
 	DEL_CLASS(csConv);
@@ -1210,21 +1210,21 @@ void UI::GUIPictureBoxDD::Image2ScnPos(Double imgX, Double imgY, Double *scnX, D
 
 void UI::GUIPictureBoxDD::ZoomToFit()
 {
-	this->zoomCenterX = this->currImageW * 0.5;
-	this->zoomCenterY = this->currImageH * 0.5;
+	this->zoomCenterX = Math::UOSInt2Double(this->currImageW) * 0.5;
+	this->zoomCenterY = Math::UOSInt2Double(this->currImageH) * 0.5;
 	Double outZoomScale;
 	Double outW;
 //	Double outH;
-	OSInt srcW = this->currImageW;
-	OSInt srcH = this->currImageH;
-	if (srcW * this->currImage->info->par2 * this->surfaceH > this->surfaceW * (Double)srcH)
+	Double srcW = Math::UOSInt2Double(this->currImageW);
+	Double srcH = Math::UOSInt2Double(this->currImageH);
+	if (srcW * this->currImage->info->par2 * Math::UOSInt2Double(this->surfaceH) > Math::UOSInt2Double(this->surfaceW) * srcH)
 	{
-		outW = Math::OSInt2Double(this->surfaceW);
+		outW = Math::UOSInt2Double(this->surfaceW);
 //		outH = this->surfaceW / this->currImage->info->par2 * srcH / srcW;
 	}
 	else
 	{
-		outW = this->surfaceH * this->currImage->info->par2 * srcW / srcH;
+		outW = Math::UOSInt2Double(this->surfaceH) * this->currImage->info->par2 * srcW / srcH;
 //		outH = Math::OSInt2Double(this->surfaceH);
 	}
 	outZoomScale = outW / srcW;

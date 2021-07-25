@@ -76,13 +76,13 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 	GdkAtom *targets;
 	UTF8Char sbuff[512];
 	gint nTargets;
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
 	{
 		const Char *typeName;
 		i = 0;
-		while (i < nTargets)
+		while (i < (UInt32)nTargets)
 		{
 			typeName = gdk_atom_name(targets[i]);
 			if (Text::StrEquals(typeName, "x-special/gnome-copied-files"))
@@ -108,7 +108,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 						while (true)
 						{
 							j = Text::StrIndexOf((const UTF8Char*)&rawdata[i], 10);
-							if (j >= 0)
+							if (j != INVALID_INDEX)
 							{
 								sb.ClearStr();
 								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)j);
@@ -126,7 +126,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 							else
 							{
 								sb.ClearStr();
-								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)(leng - i));
+								sb.AppendC((const UTF8Char*)&rawdata[i], (UInt32)leng - i);
 								if (sb.StartsWith((const UTF8Char*)"file:///"))
 								{
 									Text::URLString::GetURLFilePath(sbuff, sb.ToString());

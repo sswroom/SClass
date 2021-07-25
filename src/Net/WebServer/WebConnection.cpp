@@ -56,7 +56,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 	UOSInt i;
 	UOSInt j;
 	UOSInt lineStart;
-	OSInt strIndex;
+	UOSInt strIndex;
 	UOSInt strLen;
 	if (this->proxyMode)
 	{
@@ -321,7 +321,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				else
 				{
 					strIndex = Text::StrIndexOf((Char*)&this->dataBuff[lineStart], ':');
-					if (strIndex >= 0)
+					if (strIndex != INVALID_INDEX)
 					{
 						this->dataBuff[lineStart + (UOSInt)strIndex] = 0;
 						strIndex++;
@@ -469,10 +469,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	{
 		Net::TCPClient *proxyCli;
 		UTF8Char sbuff[512];
-		OSInt i;
+		UOSInt i;
 		Text::StrConcat(sbuff, reqURI);
 		i = Text::StrIndexOf(sbuff, ':');
-		if (i <= 0)
+		if (i == INVALID_INDEX || i == 0)
 		{
 			this->respStatus = Net::WebStatus::SC_BAD_REQUEST;
 			this->AddDefHeaders(this->currReq);
@@ -551,7 +551,6 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
-				OSInt si;
 				const UTF8Char *csptr;
 				Bool lengFound = false;
 				
@@ -597,10 +596,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					{
 						lengFound = true;
 					}
-					si = Text::StrIndexOf(sbuffHdr, (const UTF8Char*)": ");
-					if (si >= 0)
+					k = Text::StrIndexOf(sbuffHdr, (const UTF8Char*)": ");
+					if (k != INVALID_INDEX)
 					{
-						sbuffHdr[si] = 0;
+						sbuffHdr[k] = 0;
 						if (Text::StrEquals(sbuffHdr, (const UTF8Char*)"Server"))
 						{
 						}
@@ -612,7 +611,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						}
 						else
 						{
-							this->AddHeader(sbuffHdr, &sbuffHdr[si + 2]);
+							this->AddHeader(sbuffHdr, &sbuffHdr[k + 2]);
 						}
 					}
 					else

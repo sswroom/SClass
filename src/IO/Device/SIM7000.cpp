@@ -11,7 +11,6 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[4];
 	UOSInt i;
-	OSInt si;
 	IO::Device::SIM7000 *me = (IO::Device::SIM7000*)userObj;
 	if (me->nextReceive)
 	{
@@ -34,14 +33,14 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 		{
 			if (sarr[1][0] == '"')
 			{
-				si = Text::StrIndexOf(&sarr[1][1], '"');
-				sarr[1][si + 1] = 0;
+				i = Text::StrIndexOf(&sarr[1][1], '"');
+				sarr[1][i + 1] = 0;
 				sarr[1]++;
 			}
 			if (sarr[2][0] == '"')
 			{
-				si = Text::StrIndexOf(&sarr[2][1], '"');
-				sarr[2][si + 1] = 0;
+				i = Text::StrIndexOf(&sarr[2][1], '"');
+				sarr[2][i + 1] = 0;
 				sarr[2]++;
 			}
 			Sync::MutexUsage mutUsage(me->dnsMut);
@@ -65,13 +64,13 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 		{
 			me->recvIndex = Text::StrToUInt32(sarr[0]);
 			me->recvSize = Text::StrToUInt32(sarr[1]);
-			si = Text::StrIndexOf(sarr[2], ':');
-			if (si >= 0)
+			i = Text::StrIndexOf(sarr[2], ':');
+			if (i != INVALID_INDEX)
 			{
-				sarr[2][si] = 0;
+				sarr[2][i] = 0;
 				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2]);
 				me->recvPort = 0;
-				Text::StrToUInt16(&sarr[2][si + 1], &me->recvPort);
+				Text::StrToUInt16(&sarr[2][i + 1], &me->recvPort);
 			}
 			else
 			{
@@ -390,13 +389,13 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 	{
 		UOSInt i = 0;
 		UOSInt j = resList.GetCount();
-		OSInt k;
+		UOSInt k;
 		while (i < j)
 		{
 			const Char *sptr;
 			sptr = resList.GetItem(i);
 			k = Text::StrIndexOf(sptr, "Dns: ");
-			if (k > 0)
+			if (k != INVALID_INDEX && k > 0)
 			{
 				dnsList->Add(Net::SocketUtil::GetIPAddr(&sptr[k + 5]));
 			}

@@ -219,7 +219,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientCon
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CHILD;
+	UInt32 style = WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

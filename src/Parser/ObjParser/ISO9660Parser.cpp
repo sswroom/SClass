@@ -246,10 +246,10 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 			}
 			else
 			{
-				OSInt i;
+				UOSInt i;
 				enc.UTF8FromBytes(fileNameEnd, &recBuff[33], recBuff[32], 0);
 				i = Text::StrIndexOf(fileNameEnd, ';');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					fileNameEnd[i] = 0;
 				}

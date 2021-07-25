@@ -21,11 +21,11 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(void *userObj)
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvCurrFilterForm *me = (SSWR::SHPConv::SHPConvCurrFilterForm*)userObj;
-	OSInt i = me->lbFilters->GetSelectedIndex();
-	if (i != -1)
+	UOSInt i = me->lbFilters->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		MapFilter *filter = me->filters->RemoveAt((UOSInt)i);
-		me->lbFilters->RemoveItem((UOSInt)i);
+		MapFilter *filter = me->filters->RemoveAt(i);
+		me->lbFilters->RemoveItem(i);
 		DEL_CLASS(filter);
 	}
 }

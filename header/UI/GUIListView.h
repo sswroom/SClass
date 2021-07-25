@@ -61,7 +61,7 @@ namespace UI
 		void ClearItems();
 		UOSInt GetCount();
 		void SetSelectedIndex(UOSInt index);
-		OSInt GetSelectedIndex();
+		UOSInt GetSelectedIndex();
 		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);

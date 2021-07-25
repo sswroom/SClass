@@ -152,7 +152,7 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 		comreg = reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM");
 		if (comreg)
 		{
-			OSInt i;
+			UOSInt i;
 			succ = true;
 			i = 0;
 			while (comreg->GetName(sbuff, i))
@@ -251,13 +251,13 @@ UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
 		comreg = reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM");
 		if (comreg)
 		{
-			OSInt i;
+			UOSInt i;
 			i = 0;
 			while (comreg->GetName(sbuff, i))
 			{
 				if (comreg->GetValueStr(sbuff, sbuff2))
 				{
-					if (Text::StrIndexOf(sbuff, wportName) >= 0)
+					if (Text::StrIndexOf(sbuff, wportName) != INVALID_INDEX)
 					{
 						if (comreg->GetValueStr(sbuff, sbuff2))
 						{

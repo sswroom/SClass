@@ -74,7 +74,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			UOSInt i = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), (OSInt)frInfo->dispWidth * 4, 0xffff0000);
+				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispWidth * 4, 0xffff0000);
 				i++;
 			}
 			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"ImageCapture"));

@@ -132,7 +132,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	return 0;
 }
 
-WChar *IO::Registry::GetSubReg(WChar *buff, OSInt index)
+WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 {
 	DWORD buffSize = 256;
 	if (RegEnumKeyExW((HKEY)this->hand, (DWORD)index, buff, &buffSize, 0, 0, 0, 0) == ERROR_SUCCESS)
@@ -254,7 +254,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 	}
 }
 
-WChar *IO::Registry::GetName(WChar *nameBuff, OSInt index)
+WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 {
 	Int32 result;
 	UInt32 buffSize = 256;

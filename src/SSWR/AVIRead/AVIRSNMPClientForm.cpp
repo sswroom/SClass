@@ -31,14 +31,14 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter OID", (const UTF8Char*)"SNMP Client", me);
 		return;
 	}
-	OSInt si = me->cboCommandType->GetSelectedIndex();
+	UOSInt i = me->cboCommandType->GetSelectedIndex();
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Net::SNMPUtil::ErrorStatus err;
-	if (si == 0)
+	if (i == 0)
 	{
 		err = me->cli->V1GetRequest(&addr, sbComm.ToString(), sbOID.ToString(), &itemList);
 	}
-	else if (si == 1)
+	else if (i == 1)
 	{
 		err = me->cli->V1GetNextRequest(&addr, sbComm.ToString(), sbOID.ToString(), &itemList);
 	}
@@ -46,7 +46,6 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	{
 		err = me->cli->V1Walk(&addr, sbComm.ToString(), sbOID.ToString(), &itemList);
 	}
-	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	Net::SNMPUtil::BindingItem *item;

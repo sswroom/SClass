@@ -912,7 +912,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	ent->os = Manage::OSInfo::OT_UNKNOWN;
 	ent->userAgent = (const Char *)userAgent;
 
-	OSInt si;
+	UOSInt i;
 	if (Text::StrEquals(ent->userAgent, "Microsoft Windows Network Diagnostics"))
 	{
 		ent->browser = Net::BrowserInfo::BT_WINDIAG;
@@ -927,10 +927,10 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	else if (Text::StrStartsWith(ent->userAgent, "Sogou web spider/"))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUWEB;
-		si = Text::StrIndexOf(ent->userAgent, '(');
-		if (si > 0)
+		i = Text::StrIndexOf(ent->userAgent, '(');
+		if (i != INVALID_INDEX)
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], (UOSInt)si - 17);
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
 		}
 		else
 		{
@@ -941,10 +941,10 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	else if (Text::StrStartsWith(ent->userAgent, "Sogou Pic Spider/"))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUPIC;
-		si = Text::StrIndexOf(ent->userAgent, '(');
-		if (si > 0)
+		i = Text::StrIndexOf(ent->userAgent, '(');
+		if (i != INVALID_INDEX)
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], (UOSInt)si - 17);
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
 		}
 		else
 		{
@@ -979,9 +979,8 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	Char c;
 	UOSInt nstrs;
 	UOSInt nstrs2;
-	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	Bool bst;
 	Bool lastIsAndroid;
 	UOSInt strLen = Text::StrCharCnt(userAgent);
@@ -1114,7 +1113,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				{
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][7], ' ');
-					if (k > 0)
+					if (k != INVALID_INDEX)
 					{
 						strs2[j][k + 7] = 0;
 					}
@@ -1125,7 +1124,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				{
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][14], ' ');
-					if (k > 0)
+					if (k != INVALID_INDEX)
 					{
 						strs2[j][k + 14] = 0;
 					}
@@ -1136,7 +1135,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				{
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][15], ' ');
-					if (k > 0)
+					if (k != INVALID_INDEX)
 					{
 						strs2[j][k + 15] = 0;
 					}
@@ -1247,13 +1246,13 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				else if (lastIsAndroid)
 				{
 					k = Text::StrIndexOf(strs2[j], " Build/");
-					if (k > 0)
+					if (k != INVALID_INDEX)
 					{
 						strs2[j][k] = 0;
 					}
 
 					k = Text::StrIndexOf(strs2[j], " MIUI/");
-					if (k > 0)
+					if (k != INVALID_INDEX)
 					{
 						strs2[j][k] = 0;
 					}

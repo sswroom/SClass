@@ -16,7 +16,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
 
-	Int32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
+	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
@@ -29,7 +29,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
 
-	Int32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
+	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

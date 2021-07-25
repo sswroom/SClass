@@ -40,7 +40,7 @@ Manage::CPUInfo::CPUInfo()
 {
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	OSInt i;
+	UOSInt i;
 	OSInt sysType = 0;
 
 	this->infoCnt = 0;
@@ -61,57 +61,57 @@ Manage::CPUInfo::CPUInfo()
 			if (sb.StartsWith((const UTF8Char*)"Hardware")) //ARM
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
-				if (i >= 0 && sysType <= 1)
+				if (i != INVALID_INDEX && sysType <= 1)
 				{
 					if (this->clsData)
 						Text::StrDelNew((const UTF8Char*)this->clsData);
 					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
 					sysType = 2;
 				}
-				if (sb.IndexOf((const UTF8Char*)": BCM") >= 0)
+				if (sb.IndexOf((const UTF8Char*)": BCM") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_BROADCOM;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" AM33") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" AM33") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_TI;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" MSM") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" MSM") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_QUALCOMM;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" RK30board") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" RK30board") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ROCKCHIP;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Amlogic") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" Amlogic") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_AMLOGIC;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Qualcomm ") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" Qualcomm ") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_QUALCOMM;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Annapurna Labs Alpine") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" Annapurna Labs Alpine") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ANNAPURNA;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Feroceon") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" Feroceon") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_MARVELL;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" rda") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" rda") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_RDA;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Atmel") >= 0)
+				else if (sb.IndexOf((const UTF8Char*)" Atmel") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ATMEL;
 				}
 			}
 			else if (sb.StartsWith((const UTF8Char*)"system type")) //MIPS
 			{
-				if (sb.IndexOf((const UTF8Char*)": Qualcomm Atheros") >= 0)
+				if (sb.IndexOf((const UTF8Char*)": Qualcomm Atheros") != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ATHEROS;
 				}
@@ -139,7 +139,7 @@ Manage::CPUInfo::CPUInfo()
 			else if (sb.StartsWith((const UTF8Char*)"model name")) //x86
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
-				if (i >= 0 && sysType <= 0)
+				if (i != INVALID_INDEX && sysType <= 0)
 				{
 					if (this->clsData)
 						Text::StrDelNew((const UTF8Char*)this->clsData);

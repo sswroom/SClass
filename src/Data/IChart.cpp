@@ -130,7 +130,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 	Bool hasSecond = true;
 	if (timeFormat)
 	{
-		if (Text::StrIndexOf(timeFormat, 's') == -1)
+		if (Text::StrIndexOf(timeFormat, 's') == INVALID_INDEX)
 		{
 			hasSecond = false;
 		}

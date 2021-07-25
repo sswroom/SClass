@@ -142,16 +142,14 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
 
 	sb2.ClearStr();
 	sb2.Append(req->GetRequestURI());
 	sptr = sb2.ToString();
-	si = Text::StrIndexOf(sptr, '?');
-	if (si >= 0)
+	i = Text::StrIndexOf(sptr, '?');
+	if (i != INVALID_INDEX)
 	{
-		sptr[si] = 0;
-		i = (UOSInt)si;
+		sptr[i] = 0;
 	}
 	else
 	{

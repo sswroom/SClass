@@ -77,7 +77,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(void *hMon)
 		}
 		info.dispWidth = ddsd.dwWidth;
 		info.dispHeight = ddsd.dwHeight;
-		info.storeWidth = ddsd.lPitch / (info.storeBPP >> 3);
+		info.storeWidth = (UOSInt)ddsd.lPitch / (info.storeBPP >> 3);
 		info.storeHeight = ddsd.dwHeight;
 		info.byteSize = info.storeWidth * info.storeHeight * (info.storeBPP >> 3);
 		info.par2 = 1.0;

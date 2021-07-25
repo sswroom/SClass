@@ -36,10 +36,10 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	if (event->type == GDK_DOUBLE_BUTTON_PRESS)
 	{
 		UI::GUIListView *me = (UI::GUIListView*)user_data;
-		OSInt i = me->GetSelectedIndex();
-		if (i >= 0)
+		UOSInt i = me->GetSelectedIndex();
+		if (i != INVALID_INDEX)
 		{
-			me->EventDblClk((UOSInt)i);
+			me->EventDblClk(i);
 		}
 	}
 	return false;
@@ -391,7 +391,7 @@ void UI::GUIListView::SetSelectedIndex(UOSInt index)
 	this->EventSelChg();
 }
 
-OSInt UI::GUIListView::GetSelectedIndex()
+UOSInt UI::GUIListView::GetSelectedIndex()
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
@@ -400,11 +400,11 @@ OSInt UI::GUIListView::GetSelectedIndex()
 	{
 		GtkTreePath *path = gtk_tree_model_get_path(GTK_TREE_MODEL(data->listStore), &iter);
 		int *i = gtk_tree_path_get_indices(path);
-		return i[0];
+		return (UOSInt)(OSInt)i[0];
 	}
 	else
 	{
-		return -1;
+		return INVALID_INDEX;
 	}
 }
 
@@ -435,25 +435,25 @@ UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 
 void *UI::GUIListView::GetSelectedItem()
 {
-	OSInt i = GetSelectedIndex();
-	if (i >= 0)
-		return this->GetItem((UOSInt)i);
+	UOSInt i = GetSelectedIndex();
+	if (i != INVALID_INDEX)
+		return this->GetItem(i);
 	return 0;
 }
 
 UTF8Char *UI::GUIListView::GetSelectedItemText(UTF8Char *buff)
 {
-	OSInt i = GetSelectedIndex();
-	if (i >= 0)
-		return this->GetItemText(buff, (UOSInt)i);
+	UOSInt i = GetSelectedIndex();
+	if (i != INVALID_INDEX)
+		return this->GetItemText(buff, i);
 	return 0;
 }
 
 const UTF8Char *UI::GUIListView::GetSelectedItemTextNew()
 {
-	OSInt i = GetSelectedIndex();
-	if (i >= 0)
-		return this->GetItemTextNew((UOSInt)i);
+	UOSInt i = GetSelectedIndex();
+	if (i != INVALID_INDEX)
+		return this->GetItemTextNew(i);
 	return 0;
 }
 

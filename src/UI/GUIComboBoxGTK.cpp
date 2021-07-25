@@ -188,22 +188,22 @@ void UI::GUIComboBox::SetSelectedIndex(UOSInt index)
 	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd, (gint)index);
 }
 
-OSInt UI::GUIComboBox::GetSelectedIndex()
+UOSInt UI::GUIComboBox::GetSelectedIndex()
 {
-	return gtk_combo_box_get_active((::GtkComboBox*)this->hwnd);
+	return (UOSInt)(OSInt)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd);
 }
 
 UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 {
-	OSInt i = this->GetSelectedIndex();
-	if (i == -1)
+	UOSInt i = this->GetSelectedIndex();
+	if (i == INVALID_INDEX)
 		return 0;
-	return Text::StrConcat(sbuff, this->itemTexts->GetItem((UOSInt)i));
+	return Text::StrConcat(sbuff, this->itemTexts->GetItem(i));
 }
 
 void *UI::GUIComboBox::GetSelectedItem()
 {
-	return this->items->GetItem((UOSInt)this->GetSelectedIndex());
+	return this->items->GetItem(this->GetSelectedIndex());
 }
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)

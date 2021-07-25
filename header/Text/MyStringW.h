@@ -87,6 +87,12 @@ namespace Text
 	Int32 StrHex2Int32C(const UTF32Char *str);
 	Int16 StrHex2Int16C(const UTF16Char *str);
 	Int16 StrHex2Int16C(const UTF32Char *str);
+	FORCEINLINE UInt64 StrHex2UInt64C(const UTF16Char *str) { return (UInt64)StrHex2Int64C(str); }
+	FORCEINLINE UInt64 StrHex2UInt64C(const UTF32Char *str) { return (UInt64)StrHex2Int64C(str); }
+	FORCEINLINE UInt32 StrHex2UInt32C(const UTF16Char *str) { return (UInt32)StrHex2Int32C(str); }
+	FORCEINLINE UInt32 StrHex2UInt32C(const UTF32Char *str) { return (UInt32)StrHex2Int32C(str); }
+	FORCEINLINE UInt16 StrHex2UInt16C(const UTF16Char *str) { return (UInt16)StrHex2Int16C(str); }
+	FORCEINLINE UInt16 StrHex2UInt16C(const UTF32Char *str) { return (UInt16)StrHex2Int16C(str); }
 	UInt8 StrHex2UInt8C(const UTF16Char *str);
 	UInt8 StrHex2UInt8C(const UTF32Char *str);
 	UOSInt StrHex2Bytes(const UTF16Char *str, UInt8 *buff);
@@ -176,10 +182,10 @@ namespace Text
 
 	Bool StrToBool(const UTF16Char *str);
 	Bool StrToBool(const UTF32Char *str);
-	OSInt StrIndexOf(const UTF16Char *str1, const UTF16Char *str2);
-	OSInt StrIndexOf(const UTF16Char *str1, UTF16Char c);
-	OSInt StrIndexOf(const UTF32Char *str1, const UTF32Char *str2);
-	OSInt StrIndexOf(const UTF32Char *str1, UTF32Char c);
+	UOSInt StrIndexOf(const UTF16Char *str1, const UTF16Char *str2);
+	UOSInt StrIndexOf(const UTF16Char *str1, UTF16Char c);
+	UOSInt StrIndexOf(const UTF32Char *str1, const UTF32Char *str2);
+	UOSInt StrIndexOf(const UTF32Char *str1, UTF32Char c);
 	UOSInt StrIndexOfICase(const UTF16Char *str1, const UTF16Char *str2);
 	UOSInt StrIndexOfICase(const UTF32Char *str1, const UTF32Char *str2);
 	UOSInt StrLastIndexOf(const UTF16Char *str1, UTF16Char c);

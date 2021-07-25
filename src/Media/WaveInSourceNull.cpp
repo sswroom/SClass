@@ -14,19 +14,19 @@ void __stdcall Media::WaveInSource::AudioBlock(void *hwi, UInt32 uMsg, UInt32 *d
 //	Media::WaveInSource *me = (Media::WaveInSource*)dwInstance;
 }
 
-Int32 Media::WaveInSource::GetDeviceCount()
+UInt32 Media::WaveInSource::GetDeviceCount()
 {
 	return 0;
 }
 
-UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, Int32 devNo)
+UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, UInt32 devNo)
 {
 	return 0;
 }
 
 Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
-	this->devId = -1;
+	this->devId = (UInt32)-1;
 	this->freq = freq;
 	this->nbits = nbits;
 	this->nChannels = nChannels;
@@ -36,7 +36,7 @@ Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 n
 	NEW_CLASS(this->dataEvt, Sync::Event(true, (const UTF8Char*)"Media.WaveInSource.dataEvt"));
 }
 
-Media::WaveInSource::WaveInSource(Int32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels)
+Media::WaveInSource::WaveInSource(UInt32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	this->devId = devId;
 	this->freq = freq;

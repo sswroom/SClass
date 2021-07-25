@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(void *userObj, co
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRVideoInfoForm *me = (SSWR::AVIRead::AVIRVideoInfoForm*)userObj;
-	OSInt i = me->lbStream->GetSelectedIndex();
+	UOSInt i = me->lbStream->GetSelectedIndex();
 	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *decStatus;
 	if (me->currFile == 0)
 	{
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 			sb.Append((const UTF8Char*)"\r\n");
 			frameInfo.ToString(&sb);
 		}
-		decStatus = me->decStatus->GetItem((UOSInt)i);
+		decStatus = me->decStatus->GetItem(i);
 		if (decStatus)
 		{
 			sb.Append((const UTF8Char*)"\r\nDecoded Frame Count = ");
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		sb.Append((const UTF8Char*)"\r\n");
 		audioSrc->GetFormat(&fmt);
 		fmt.ToString(&sb);
-		decStatus = me->decStatus->GetItem((UOSInt)i);
+		decStatus = me->decStatus->GetItem(i);
 		if (decStatus)
 		{
 			sb.Append((const UTF8Char*)"\r\nDecoded sample Count = ");

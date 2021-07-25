@@ -139,12 +139,12 @@ void __stdcall Net::SMTPServer::ClientTimeout(Net::TCPClient *cli, void *userObj
 UOSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i = 0;
-	OSInt j;
+	UOSInt i = 0;
+	UOSInt j;
 	while (true)
 	{
 		j = Text::StrIndexOf(&msg[i], '\r');
-		if (j >= 0)
+		if (j != INVALID_INDEX)
 		{
 			sb.AppendI32(statusCode);
 			sb.Append((const UTF8Char *)"-");
@@ -175,12 +175,12 @@ UOSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, cons
 /*OSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg)
 {
 	Text::StringBuilderC sb;
-	OSInt i = 0;
-	OSInt j;
+	UOSInt i = 0;
+	UOSInt j;
 	while (true)
 	{
 		j = Text::StrIndexOf(&msg[i], '\r');
-		if (j >= 0)
+		if (j != INVALID_INDEX)
 		{
 			sb.Append(statusCode);
 			sb.Append("-");

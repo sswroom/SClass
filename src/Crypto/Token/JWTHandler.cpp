@@ -128,24 +128,24 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 
 Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF8Char *token, JWTParam *param)
 {
-	OSInt i1 = Text::StrIndexOf(token, '.');;
-	OSInt i2 = Text::StrIndexOf(&token[i1 + 1], '.');
-	if (i1 >= 0 && i2 >= 0)
+	UOSInt i1 = Text::StrIndexOf(token, '.');;
+	UOSInt i2 = Text::StrIndexOf(&token[i1 + 1], '.');
+	if (i1 != INVALID_INDEX && i2 != INVALID_INDEX)
 	{
 		i2 += i1 + 1;
 	}
-	OSInt i3 = Text::StrIndexOf(&token[i2 + 1], '.');
-	if (i2 < 0 || i3 >= 0)
+	UOSInt i3 = Text::StrIndexOf(&token[i2 + 1], '.');
+	if (i2 == INVALID_INDEX || i3 != INVALID_INDEX)
 	{
 		return 0;
 	}
 	Text::TextBinEnc::Base64Enc b64url(Text::TextBinEnc::Base64Enc::CS_URL, true);
-	UInt8 *headerBuff = MemAlloc(UInt8, (UOSInt)i1);
+	UInt8 *headerBuff = MemAlloc(UInt8, i1);
 	UOSInt headerSize;
-	UInt8 *payloadBuff = MemAlloc(UInt8, (UOSInt)(i2 - i1));
+	UInt8 *payloadBuff = MemAlloc(UInt8, (i2 - i1));
 	UOSInt payloadSize;
-	headerSize = b64url.DecodeBin(token, (UOSInt)i1, headerBuff);
-	payloadSize = b64url.DecodeBin(&token[i1 + 1], (UOSInt)(i2 - i1 - 1), payloadBuff);
+	headerSize = b64url.DecodeBin(token, i1, headerBuff);
+	payloadSize = b64url.DecodeBin(&token[i1 + 1], i2 - i1 - 1, payloadBuff);
 	Text::JSONBase *hdrJson = Text::JSONBase::ParseJSONStrLen(headerBuff, headerSize);
 	Algorithm tokenAlg = UNKNOWN;
 	if (hdrJson != 0)

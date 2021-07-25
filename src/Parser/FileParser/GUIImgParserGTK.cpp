@@ -200,11 +200,11 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(fd->GetFullFileName());
-			OSInt i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
-			OSInt j = sb.LastIndexOf('.');
-			if (j > i)
+			UOSInt i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
+			UOSInt j = sb.LastIndexOf('.');
+			if (j != INVALID_INDEX && (i == INVALID_INDEX || j > i))
 			{
-				sb.RemoveChars(sb.GetCharCnt() - (UOSInt)j);
+				sb.RemoveChars(sb.GetCharCnt() - j);
 			}
 			sb.Append((const UTF8Char*)".tfw");
 			if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PT_FILE)

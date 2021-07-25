@@ -385,7 +385,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	}
 	else
 	{
-		if (Text::StrIndexOf(lastSep, '*') != -1)
+		if (Text::StrIndexOf(lastSep, '*') != INVALID_INDEX)
 		{
 		}
 		else if (IO::Path::GetPathType(path) == PT_DIRECTORY)
@@ -523,7 +523,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 	else
 	{
-		if (Text::StrIndexOf(lastSep, '*') != -1)
+		if (Text::StrIndexOf(lastSep, '*') != INVALID_INDEX)
 		{
 		}
 		else if (IO::Path::GetPathTypeW(path) == PT_DIRECTORY)
@@ -668,7 +668,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	}
 	else
 	{
-		if (Text::StrIndexOf(lastSep, '*') != -1)
+		if (Text::StrIndexOf(lastSep, '*') != INVALID_INDEX)
 		{
 		}
 		else if (IO::Path::GetPathType(path) == PT_DIRECTORY)
@@ -970,7 +970,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) < 0)
+				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;
@@ -1047,7 +1047,7 @@ Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) < 0)
+				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;

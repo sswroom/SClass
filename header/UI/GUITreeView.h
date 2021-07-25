@@ -62,7 +62,7 @@ namespace UI
 		void *RemoveItem(TreeItem *item);
 		void ClearItems();
 		UOSInt GetRootCount();
-		TreeItem *GetRootItem(OSInt index);
+		TreeItem *GetRootItem(UOSInt index);
 		void ExpandItem(TreeItem *item);
 		Bool IsExpanded(TreeItem *item);
 		void SetHasLines(Bool hasLines);

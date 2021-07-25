@@ -21,7 +21,7 @@ void Media::WaveInSource::OpenAudio()
 		format.Format.nSamplesPerSec = this->freq;
 		format.Format.wBitsPerSample = this->nbits;
 		format.Format.nChannels = this->nChannels;
-		format.Format.nBlockAlign = this->nChannels * this->nbits >> 3;
+		format.Format.nBlockAlign = (UInt16)(this->nChannels * this->nbits >> 3);
 		format.Format.nAvgBytesPerSec = this->freq * format.Format.nBlockAlign;
 		format.Format.cbSize = 0;
 	}
@@ -31,7 +31,7 @@ void Media::WaveInSource::OpenAudio()
 		format.Format.nSamplesPerSec = this->freq;
 		format.Format.wBitsPerSample = this->nbits;
 		format.Format.nChannels = this->nChannels;
-		format.Format.nBlockAlign = this->nChannels * this->nbits >> 3;
+		format.Format.nBlockAlign = (UInt16)(this->nChannels * this->nbits >> 3);
 		format.Format.nAvgBytesPerSec = this->freq * format.Format.nBlockAlign;
 		format.Format.cbSize = 22;
 		format.Samples.wValidBitsPerSample = this->nbits;
@@ -92,12 +92,12 @@ void __stdcall Media::WaveInSource::AudioBlock(void *hwi, UInt32 uMsg, UInt32 *d
 	}
 }
 
-Int32 Media::WaveInSource::GetDeviceCount()
+UInt32 Media::WaveInSource::GetDeviceCount()
 {
 	return waveInGetNumDevs();
 }
 
-UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, Int32 devNo)
+UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, UInt32 devNo)
 {
 	WAVEINCAPSW caps;
 	waveInGetDevCapsW(devNo, &caps, sizeof(caps));
@@ -107,8 +107,8 @@ UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, Int32 devNo)
 Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	UTF8Char u8buff[256];
-	Int32 i;
-	this->devId = -1;
+	UInt32 i;
+	this->devId = (UInt32)-1;
 	this->freq = freq;
 	this->nbits = nbits;
 	this->nChannels = nChannels;
@@ -127,13 +127,13 @@ Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 n
 			break;
 		}
 	}
-	if (this->devId == -1)
+	if (this->devId == (UInt32)-1)
 		return;
 	
 	OpenAudio();
 }
 
-Media::WaveInSource::WaveInSource(Int32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels)
+Media::WaveInSource::WaveInSource(UInt32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	this->devId = devId;
 	this->freq = freq;
@@ -194,22 +194,22 @@ void Media::WaveInSource::GetFormat(AudioFormat *format)
 	format->frequency = this->freq;
 	format->nChannels = this->nChannels;
 	format->bitRate = this->freq * this->nChannels * this->nbits;
-	format->align = this->nChannels * this->nbits >> 3;
+	format->align = this->nChannels * (UInt32)this->nbits >> 3;
 }
 
 Bool Media::WaveInSource::Start(Sync::Event *evt, UOSInt blkSize)
 {
 	Stop();
-	UOSInt bSize = blkSize / (this->nChannels * this->nbits >> 3);
+	UOSInt bSize = blkSize / (this->nChannels * (UOSInt)this->nbits >> 3);
 	if (bSize < 10)
 		bSize = 10;
-	blkSize = bSize * (this->nChannels * this->nbits >> 3);
+	blkSize = bSize * (this->nChannels * (UOSInt)this->nbits >> 3);
 	this->evt = evt;
 
 	this->hdrsCnt = 4;
 	this->hdrs = MemAlloc(WAVEHDR, this->hdrsCnt);
 	MemClear(this->hdrs, sizeof(WAVEHDR) * this->hdrsCnt);
-	Int32 i = this->hdrsCnt;
+	UInt32 i = this->hdrsCnt;
 	while (i-- > 0)
 	{
 		((WAVEHDR*)hdrs)[i].dwBufferLength = (DWORD)blkSize;
@@ -231,7 +231,7 @@ void Media::WaveInSource::Stop()
 	waveInReset((HWAVEIN)this->hWaveIn);
 	if (this->hdrs)
 	{
-		Int32 i = this->hdrsCnt;
+		UInt32 i = this->hdrsCnt;
 		while (i-- > 0)
 		{
 			MemFree(((WAVEHDR*)this->hdrs)[i].lpData);
@@ -244,9 +244,9 @@ void Media::WaveInSource::Stop()
 
 UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 {
-	Int32 j = -1;
-	Int32 k = this->nextId;
-	Int32 i = this->hdrsCnt;
+	UInt32 j = (UInt32)-1;
+	UOSInt k = this->nextId;
+	UInt32 i = this->hdrsCnt;
 	WAVEHDR *hdr;
 	while (i-- > 0)
 	{
@@ -256,11 +256,11 @@ UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			if (hdr->dwUser <= (UInt32)k)
 			{
 				j = i;
-				k = (Int32)hdr->dwUser;
+				k = hdr->dwUser;
 			}
 		}
 	}
-	if (j == -1 && this->started)
+	if (j == (UInt32)-1 && this->started)
 	{
 		this->dataEvt->Wait(1000);
 		i = this->hdrsCnt;
@@ -269,15 +269,15 @@ UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			hdr = &((WAVEHDR*)hdrs)[i];
 			if (hdr->dwFlags & WHDR_DONE)
 			{
-				if (hdr->dwUser <= (UInt32)k)
+				if (hdr->dwUser <= k)
 				{
 					j = i;
-					k = (Int32)hdr->dwUser;
+					k = hdr->dwUser;
 				}
 			}
 		}
 	}
-	if (j != -1 && this->started)
+	if (j != (UInt32)-1 && this->started)
 	{
 		UInt32 retSize;
 		hdr = &((WAVEHDR*)hdrs)[j];
@@ -291,7 +291,7 @@ UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 
 UOSInt Media::WaveInSource::GetMinBlockSize()
 {
-	return this->nChannels * this->nbits >> 3;
+	return this->nChannels * (UOSInt)this->nbits >> 3;
 }
 
 UInt32 Media::WaveInSource::GetCurrTime()

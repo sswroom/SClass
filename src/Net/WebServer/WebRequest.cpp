@@ -497,12 +497,11 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 		else if (Text::StrStartsWith(sb->ToString(), (const UTF8Char*)"multipart/form-data"))
 		{
 			UTF8Char *sptr = sb->ToString();
-			OSInt si = Text::StrIndexOf(sptr, (const UTF8Char*)"boundary=");
-			UOSInt i;
-			if (si >= 0)
+			UOSInt i = Text::StrIndexOf(sptr, (const UTF8Char*)"boundary=");
+			if (i != INVALID_INDEX)
 			{
-				UInt8 *boundary = &sptr[si + 9];
-				UOSInt boundSize = Text::StrCharCnt(&sptr[si + 9]);
+				UInt8 *boundary = &sptr[i + 9];
+				UOSInt boundSize = Text::StrCharCnt(&sptr[i + 9]);
 				NEW_CLASS(this->formMap, Data::StringUTF8Map<const UTF8Char *>());
 				NEW_CLASS(this->formFileList, Data::ArrayList<FormFileInfo *>());
 

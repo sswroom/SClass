@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "IO/StreamReader.h"
@@ -6,7 +6,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/UDPSimulator.h"
 
-Net::UDPSimulator::UDPSimulator(const WChar *logFileName, const WChar *rawFileName, UDPPacketHdlr hdlr, void *userObj)
+Net::UDPSimulator::UDPSimulator(const UTF8Char *logFileName, const UTF8Char *rawFileName, UDPPacketHdlr hdlr, void *userObj)
 {
 	this->logFileName = Text::StrCopyNew(logFileName);
 	this->rawFileName = Text::StrCopyNew(rawFileName);
@@ -22,13 +22,13 @@ Net::UDPSimulator::~UDPSimulator()
 
 void Net::UDPSimulator::Run()
 {
-	WChar sbuff[2048];
-	WChar *sptr;
-	WChar *sarr[3];
+	UTF8Char sbuff[2048];
+	UTF8Char *sptr;
+	UTF8Char *sarr[3];
 	UInt8 buff[4096];
-	OSInt i;
-	OSInt j;
-	OSInt byteSize;
+	UOSInt i;
+	UOSInt j;
+	UOSInt byteSize;
 	Data::DateTime *dt;
 	UInt32 ip;
 	UInt16 port;
@@ -44,11 +44,11 @@ void Net::UDPSimulator::Run()
 	{
 		if (Text::StrSplit(sarr, 3, sbuff, '\t') == 2)
 		{
-			i = Text::StrIndexOf(sarr[1], L"Received ");
-			if (i >= 0)
+			i = Text::StrIndexOf(sarr[1], (const UTF8Char*)"Received ");
+			if (i != INVALID_INDEX)
 			{
-				j = Text::StrIndexOf(&(sarr[1])[i + 9], L" bytes from ");
-				if (j >= 1)
+				j = Text::StrIndexOf(&(sarr[1])[i + 9], (const UTF8Char*)" bytes from ");
+				if (j != INVALID_INDEX && j >= 1)
 				{
 					sarr[1][i + 9 + j] = 0;
 					byteSize = Text::StrToInt32(&sarr[1][i + 9]);
@@ -57,12 +57,12 @@ void Net::UDPSimulator::Run()
 
 					port = 0;
 					i = Text::StrIndexOf(sarr[2], ':');
-					if (i >= 0)
+					if (i != INVALID_INDEX)
 					{
 						sarr[2][i] = 0;
 						port = (UInt16)Text::StrToInt32(&sarr[2][i + 1]);
 					}
-					ip = Net::SocketFactory::GetIPAddr(sarr[2]);
+					ip = Net::SocketUtil::GetIPAddr(sarr[2]);
 
 					dt->ToLocalTime();
 					dt->SetValue(sarr[0]);

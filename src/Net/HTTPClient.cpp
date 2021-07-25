@@ -215,14 +215,13 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 	UTF8Char *ptrs2[3];
 	UTF8Char *ptrs3[3];
 	UTF8Char sbuff[64];
-	OSInt si;
 	UOSInt i;
 	UOSInt j;
-	if ((si = Text::StrIndexOf(dateStr, (const UTF8Char*)", ")) != -1)
+	if ((i = Text::StrIndexOf(dateStr, (const UTF8Char*)", ")) != INVALID_INDEX)
 	{
-		Text::StrConcat(sbuff, &dateStr[si + 2]);
+		Text::StrConcat(sbuff, &dateStr[i + 2]);
 		tmps = sbuff;
-		if (Text::StrIndexOf(tmps, '-') == -1)
+		if (Text::StrIndexOf(tmps, '-') == INVALID_INDEX)
 		{
 			i = Text::StrSplit(ptrs, 6, tmps, ' ');
 			if (i >= 4)

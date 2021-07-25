@@ -27,7 +27,7 @@
 #define SetWindowLongPtr(a, b, c) SetWindowLongW(a, b, c)
 #endif
 
-void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, Int32 style, Int32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	HDC hdc = GetDC((HWND)parentHWnd);
 	this->hdpi = GetDeviceCaps(hdc, LOGPIXELSY);
@@ -46,7 +46,7 @@ void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *cla
 	UpdateFont();
 }
 
-void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, const WChar *className, const UTF8Char *txt, Int32 style, Int32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	this->fontHeightPt = 0.0;
 	if (parent)
@@ -217,7 +217,7 @@ void UI::GUIControl::SetSize(Double width, Double height)
 
 void UI::GUIControl::SetSizeP(UOSInt width, UOSInt height)
 {
-	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width * this->ddpi / this->hdpi, this->lyPos + height * this->ddpi / this->hdpi, true);
+	this->SetArea(this->lxPos, this->lyPos, this->lxPos + Math::UOSInt2Double(width) * this->ddpi / this->hdpi, this->lyPos + Math::UOSInt2Double(height) * this->ddpi / this->hdpi, true);
 }
 
 void UI::GUIControl::GetSize(Double *width, Double *height)
@@ -231,9 +231,9 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 void UI::GUIControl::GetSizeP(UOSInt *width, UOSInt *height)
 {
 	if (width)
-		*width = Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
+		*width = (UOSInt)(OSInt)Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
 	if (height)
-		*height = Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+		*height = (UOSInt)(OSInt)Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 }
 
 void UI::GUIControl::SetPosition(Double x, Double y)
@@ -289,14 +289,14 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	{
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 	}
-	this->lxPos = left * this->ddpi / this->hdpi;
-	this->lyPos = top * this->ddpi / this->hdpi;
+	this->lxPos = Math::OSInt2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = Math::OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Math::Double2Int32(left + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(top + yOfst * this->hdpi / this->ddpi), (int)(right - left), (int)(bottom - top), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, Math::Double2Int32(Math::OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(Math::OSInt2Double(top) + yOfst * this->hdpi / this->ddpi), (int)(right - left), (int)(bottom - top), updateScn?TRUE:FALSE);
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
-	this->lxPos2 = (left + rect.right - rect.left) * this->ddpi / this->hdpi;
-	this->lyPos2 = (top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
+	this->lxPos2 = Math::OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
+	this->lyPos2 = Math::OSInt2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
 }
@@ -1023,6 +1023,7 @@ UInt32 UI::GUIControl::GUIKey2OSKey(GUIKey guiKey)
 	case UI::GUIControl::GK_OEM_7:
 		return VK_OEM_7;
 #endif
+	case UI::GUIControl::GK_NONE:
 	default:
 		return 0;
 	}

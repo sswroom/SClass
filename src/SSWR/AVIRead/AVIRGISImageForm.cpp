@@ -6,10 +6,10 @@
 void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISImageForm *me = (SSWR::AVIRead::AVIRGISImageForm*)userObj;
-	OSInt selIndex = me->plIcons->GetSelectedIndex();
-	if (selIndex != -1)
+	UOSInt selIndex = me->plIcons->GetSelectedIndex();
+	if (selIndex != INVALID_INDEX)
 	{
-		me->imgIndex = (UOSInt)selIndex;
+		me->imgIndex = selIndex;
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 	else

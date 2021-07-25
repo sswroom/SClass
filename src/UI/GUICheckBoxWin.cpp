@@ -12,7 +12,7 @@ UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UT
 	NEW_CLASS(this->checkedChangeHdlrs, Data::ArrayList<CheckedChangeHandler>());
 	NEW_CLASS(this->checkedChangeObjs, Data::ArrayList<void *>());
 
-	Int32 style = WS_TABSTOP | WS_CHILD | BS_CHECKBOX;
+	UInt32 style = WS_TABSTOP | WS_CHILD | BS_CHECKBOX;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

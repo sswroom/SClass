@@ -4,22 +4,22 @@
 extern "C"
 {
 
-void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, OSInt w, OSInt h, Int32 *fieldStats)
+void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h, UInt32 *fieldStats)
 {
-	OSInt w2 = w << 1;
-	OSInt hLeft;
-	OSInt wLeft;
-	OSInt v1;
-	OSInt v2;
-	OSInt v3;
-	OSInt v4;
-	OSInt v5;
-	Int32 fieldDiff = 0;
-	Int32 fieldMDiff = 0;
-	Int32 fieldCnt = 0;
-	Int32 field2Diff = 0;
-	Int32 field2MDiff = 0;
-	Int32 field2Cnt = 0;
+	UOSInt w2 = w << 1;
+	UOSInt hLeft;
+	UOSInt wLeft;
+	UInt32 v1;
+	UInt32 v2;
+	UInt32 v3;
+	UInt32 v4;
+	UInt32 v5;
+	UInt32 fieldDiff = 0;
+	UInt32 fieldMDiff = 0;
+	UInt32 fieldCnt = 0;
+	UInt32 field2Diff = 0;
+	UInt32 field2MDiff = 0;
+	UInt32 field2Cnt = 0;
 //	field3Cnt = 0;
 //	field4Cnt = 0;
 
@@ -290,21 +290,21 @@ void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, OSInt w, OSInt h, Int32
 	fieldStats[5] = field2MDiff;
 }
 
-void IVTCFilter_CalcFieldP(UInt8 *framePtr, OSInt w, OSInt h, Int32 *fieldStats)
+void IVTCFilter_CalcFieldP(UInt8 *framePtr, UOSInt w, UOSInt h, UInt32 *fieldStats)
 {
-	OSInt wLeft;
-	OSInt v1;
-	OSInt v2;
-	OSInt v3;
-	OSInt v4;
-	OSInt v5;
-	OSInt w2 = w << 1;
-	Int32 fieldDiff = 0;
-	Int32 fieldMDiff = 0;
-	Int32 fieldCnt = 0;
-	Int32 field2Diff = 0;
-	Int32 field2MDiff = 0;
-	Int32 field2Cnt = 0;
+	UOSInt wLeft;
+	UInt32 v1;
+	UInt32 v2;
+	UInt32 v3;
+	UInt32 v4;
+	UInt32 v5;
+	UOSInt w2 = w << 1;
+	UInt32 fieldDiff = 0;
+	UInt32 fieldMDiff = 0;
+	UInt32 fieldCnt = 0;
+	UInt32 field2Diff = 0;
+	UInt32 field2MDiff = 0;
+	UInt32 field2Cnt = 0;
 //	field3Cnt = 0;
 //	field4Cnt = 0;
 

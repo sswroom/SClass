@@ -820,8 +820,8 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
 {
 	const UTF8Char *tableName = this->table->GetTableName();
-	OSInt i = Text::StrIndexOf(tableName, '.');
-	if (i >= 0)
+	UOSInt i = Text::StrIndexOf(tableName, '.');
+	if (i != INVALID_INDEX)
 	{
 		tableName = tableName + i + 1;
 	}

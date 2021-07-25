@@ -73,8 +73,8 @@ void UI::GUIPictureBox::OnPaint()
 
 	if (this->prevImageD)
 	{
-		OSInt x = (rc.right - rc.left - this->prevImageD->GetWidth()) >> 1;
-		OSInt y = (rc.bottom - rc.top - this->prevImageD->GetHeight()) >> 1;
+		OSInt x = (rc.right - rc.left - (OSInt)this->prevImageD->GetWidth()) >> 1;
+		OSInt y = (rc.bottom - rc.top - (OSInt)this->prevImageD->GetHeight()) >> 1;
 
 		if (this->prevImageD->GetAlphaType() == Media::AT_ALPHA)
 		{
@@ -177,7 +177,7 @@ UI::GUIPictureBox::GUIPictureBox(UI::GUICore *ui, UI::GUIClientControl *parent, 
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CLIPSIBLINGS | WS_CHILD;
+	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

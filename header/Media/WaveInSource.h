@@ -9,14 +9,14 @@ namespace Media
 	{
 	private:
 		void *hWaveIn;
-		Int32 devId;
+		UInt32 devId;
 		UInt32 freq;
 		UInt16 nbits;
 		UInt16 nChannels;
 
-		Int32 nextId;
+		UInt32 nextId;
 		void *hdrs;
-		Int32 hdrsCnt;
+		UInt32 hdrsCnt;
 		Sync::Event *evt;
 
 		Sync::Event *dataEvt;
@@ -25,11 +25,11 @@ namespace Media
 		void OpenAudio();
 		static void __stdcall AudioBlock(void *hwi, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
 	public:
-		static Int32 GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *u8buff, Int32 devNo);
+		static UInt32 GetDeviceCount();
+		static UTF8Char *GetDeviceName(UTF8Char *u8buff, UInt32 devNo);
 
 		WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels);
-		WaveInSource(Int32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels);
+		WaveInSource(UInt32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels);
 		virtual ~WaveInSource();
 
 		Bool IsError();

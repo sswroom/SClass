@@ -5,10 +5,10 @@
 
 Bool Net::MQTTUtil::TopicValid(const UTF8Char *topic)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	i = Text::StrIndexOf(topic, '#');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		if (topic[i + 1])
 		{
@@ -23,7 +23,7 @@ Bool Net::MQTTUtil::TopicValid(const UTF8Char *topic)
 	while (true)
 	{
 		j = Text::StrIndexOf(&topic[i], '+');
-		if (j < 0)
+		if (j == INVALID_INDEX)
 			break;
 		if (i + j > 0 && topic[i + j - 1] != '/')
 		{
@@ -48,12 +48,12 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 		}
 		return false;
 	}
-	OSInt i;
+	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	while (true)
 	{
 		i = Text::StrIndexOf(subscribeTopic, '+');
-		if (i < 0)
+		if (i == INVALID_INDEX)
 			break;
 		if (i > 0)
 		{
@@ -69,9 +69,9 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 		i = Text::StrIndexOf(topic, '/');
 		if (subscribeTopic[1] == 0)
 		{
-			return (i < 0);
+			return (i == INVALID_INDEX);
 		}
-		else if (i < 0)
+		else if (i == INVALID_INDEX)
 		{
 			return false;
 		}
@@ -79,7 +79,7 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 		topic += i;
 	}
 	i = Text::StrIndexOf(subscribeTopic, '#');
-	if (i < 0)
+	if (i == INVALID_INDEX)
 	{
 		return Text::StrEquals(topic, subscribeTopic);
 	}

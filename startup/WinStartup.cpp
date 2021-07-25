@@ -113,7 +113,7 @@ UTF8Char **__stdcall WinProgControl_GetCommandLines(Core::IProgControl *progCtrl
 		Int32 argc;
 		UOSInt i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-		ctrl->argv = MemAlloc(UTF8Char *, argc);
+		ctrl->argv = MemAlloc(UTF8Char *, (UInt32)argc);
 		ctrl->argc = (UOSInt)argc;
 		i = ctrl->argc;
 		while (i-- > 0)
@@ -139,7 +139,7 @@ void WinProgControl_Destroy(WinProgControl *ctrl)
 {
 	if (ctrl->argv)
 	{
-		OSInt i = ctrl->argc;
+		UOSInt i = ctrl->argc;
 		while (i-- > 0)
 		{
 			Text::StrDelNew(ctrl->argv[i]);

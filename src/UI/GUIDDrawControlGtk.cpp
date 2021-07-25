@@ -409,7 +409,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, OSInt drawW, OSInt drawH, Bool clearScn)
+void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->surfaceBuff2)

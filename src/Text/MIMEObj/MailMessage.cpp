@@ -197,8 +197,8 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 {
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
-	OSInt sj;
+	UOSInt k;
+	UOSInt l;
 	const UTF8Char *cptr;
 	UTF8Char sbuff[512];
 	Text::MIMEObj::MultipartMIMEObj::PartInfo *part;
@@ -220,31 +220,31 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 					if (index == 0)
 					{
 						ParseHeaderStr(sbuff, cptr);
-						si = Text::StrIndexOf(sbuff, (const UTF8Char*)"filename=");
-						if (si > 0)
+						k = Text::StrIndexOf(sbuff, (const UTF8Char*)"filename=");
+						if (k != INVALID_INDEX)
 						{
-							if (sbuff[si + 9] == '\"')
+							if (sbuff[k + 9] == '\"')
 							{
-								sj = Text::StrIndexOf(&sbuff[si + 10], '\"');
-								if (sj >= 0)
+								l = Text::StrIndexOf(&sbuff[k + 10], '\"');
+								if (l != INVALID_INDEX)
 								{
-									name->AppendC(&sbuff[si + 10], (UOSInt)sj);
+									name->AppendC(&sbuff[k + 10], l);
 								}
 								else
 								{
-									name->Append(&sbuff[si + 10]);
+									name->Append(&sbuff[k + 10]);
 								}
 							}
 							else
 							{
-								sj = Text::StrIndexOf(&sbuff[si + 9], ' ');
-								if (sj >= 0)
+								l = Text::StrIndexOf(&sbuff[k + 9], ' ');
+								if (l != INVALID_INDEX)
 								{
-									name->AppendC(&sbuff[si + 9], (UOSInt)sj);
+									name->AppendC(&sbuff[k + 9], l);
 								}
 								else
 								{
-									name->Append(&sbuff[si + 9]);
+									name->Append(&sbuff[k + 9]);
 								}
 							}
 						}

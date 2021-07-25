@@ -226,7 +226,6 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	Bool https = false;
 
 	UOSInt i;
-	OSInt si;
 	const UTF8Char *ptr1;
 	const UTF8Char *ptr2;
 	UTF8Char *ptrs[2];
@@ -252,12 +251,12 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
 		ptr1 = &url[7];
-		si = Text::StrIndexOf(ptr1, '/');
-		if (si >= 0)
+		i = Text::StrIndexOf(ptr1, '/');
+		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
-			urltmp[si] = 0;
-			ptr2 = &ptr1[si];
+			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			urltmp[i] = 0;
+			ptr2 = &ptr1[i];
 		}
 		else
 		{
@@ -272,12 +271,12 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
 	{
 		ptr1 = &url[8];
-		si = Text::StrIndexOf(ptr1, '/');
-		if (si >= 0)
+		i = Text::StrIndexOf(ptr1, '/');
+		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
-			urltmp[si] = 0;
-			ptr2 = &ptr1[si];
+			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			urltmp[i] = 0;
+			ptr2 = &ptr1[i];
 		}
 		else
 		{
@@ -305,19 +304,19 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 
 	if (urltmp[0] == '[')
 	{
-		si = Text::StrIndexOf(urltmp, ']');
-		if (si < 0)
+		i = Text::StrIndexOf(urltmp, ']');
+		if (i == INVALID_INDEX)
 		{
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
-		Text::StrConcatC(svrname, &urltmp[1], (UOSInt)si - 1);
-		if (urltmp[si + 1] == ':')
+		Text::StrConcatC(svrname, &urltmp[1], i - 1);
+		if (urltmp[i + 1] == ':')
 		{
 			port = 0;
-			Text::StrToUInt16(&urltmp[si + 2], &port);
-			urltmp[si + 1] = 0;
+			Text::StrToUInt16(&urltmp[i + 2], &port);
+			urltmp[i + 1] = 0;
 		}
 		else
 		{
@@ -573,8 +572,8 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 					{
 						WChar *wptr = buff;
 						const UTF8Char *sptr;
-						OSInt i;
-						while ((i = Text::StrIndexOf(wptr, L"\r\n")) > 0)
+						UOSInt i;
+						while ((i = Text::StrIndexOf(wptr, L"\r\n")) != INVALID_INDEX && i > 0)
 						{
 							if (Text::StrStartsWith(wptr, L"HTTP/"))
 							{

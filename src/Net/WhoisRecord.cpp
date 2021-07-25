@@ -33,7 +33,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 	}
 	if (startIP == 0)
 	{
-		OSInt i;
+		UOSInt i;
 		UOSInt j;
 		UTF8Char *sarr[4];
 		Int32 bitCnt;
@@ -46,10 +46,10 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 			sb.Trim();
 			sptr = sb.ToString();
 			i = Text::StrIndexOf(sptr, (const UTF8Char*)" - ");
-			if (i == -1)
+			if (i == INVALID_INDEX)
 			{
 				i = Text::StrIndexOf(sptr, '/');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					*(Int32*)ip = 0;
 					sptr[i] = 0;
@@ -64,7 +64,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 				}
 				else
 				{
-					i = -1;
+					i = INVALID_INDEX;
 				}
 			}
 			else
@@ -82,9 +82,9 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 			sb.Trim();
 			sptr = sb.ToString();
 			i = Text::StrIndexOf(sptr, (const UTF8Char*)" - ");
-			if (i == -1)
+			if (i == INVALID_INDEX)
 			{
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					*(Int32*)ip = 0;
 					sptr[i] = 0;
@@ -99,7 +99,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 				}
 				else
 				{
-					i = -1;
+					i = INVALID_INDEX;
 				}
 			}
 			else

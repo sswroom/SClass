@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 		me->txtFileName->Focus();
 		return;
 	}
-	if (sb.IndexOf(IO::Path::PATH_SEPERATOR) >= 0)
+	if (sb.IndexOf(IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"File Name is not valid", (const UTF8Char*)"TFTP Client", me);
 		me->txtFileName->Focus();

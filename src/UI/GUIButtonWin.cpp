@@ -39,7 +39,7 @@ OSInt __stdcall UI::GUIButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam,
 
 UI::GUIButton::GUIButton(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *txt) : UI::GUIControl(ui, parent)
 {
-	Int32 style = WS_CHILD | WS_TABSTOP;
+	UInt32 style = WS_CHILD | WS_TABSTOP;
 	if (parent->IsChildVisible())
 	{
 		style |= WS_VISIBLE;

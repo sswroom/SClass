@@ -31,7 +31,7 @@ Cond table
 
 Bool DasmARM_IsEndFunc(const UTF8Char *funcName)
 {
-	if (Text::StrIndexOf(funcName, (const UTF8Char*)"(exit+0)") >= 0)
+	if (Text::StrIndexOf(funcName, (const UTF8Char*)"(exit+0)") != INVALID_INDEX)
 	{
 		return true;
 	}

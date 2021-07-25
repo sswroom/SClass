@@ -23,18 +23,18 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(void *userObj)
 {
 	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
-	OSInt i = me->lbProfile->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbProfile->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		me->lbProfile->RemoveItem((UOSInt)i);
-		if (me->resizer->GetCurrProfileIndex() == (UOSInt)i)
+		me->lbProfile->RemoveItem(i);
+		if (me->resizer->GetCurrProfileIndex() == i)
 		{
-			me->resizer->RemoveProfile((UOSInt)i);
+			me->resizer->RemoveProfile(i);
 			me->UpdateProfileDisp();
 		}
 		else
 		{
-			me->resizer->RemoveProfile((UOSInt)i);
+			me->resizer->RemoveProfile(i);
 		}
 		me->resizer->SaveProfile(0);
 	}

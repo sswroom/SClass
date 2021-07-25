@@ -142,7 +142,6 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 	OSInt fnameBuffSize;
 	Text::StringBuilderUTF16 sb;
 	UOSInt i = 0;
-	OSInt si;
 	UOSInt filterCnt = this->names->GetCount();
 
 	OPENFILENAMEW ofn;
@@ -408,13 +407,13 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			}
 			if (initFileName[0])
 			{
-				si = Text::StrIndexOf(currPtr, initFileName);
-				if (si >= 0)
+				i = Text::StrIndexOf(currPtr, initFileName);
+				if (i >= 0)
 				{
-					currPtr[si] = 0;
+					currPtr[i] = 0;
 					sptr = Text::StrConcat(sptr, currPtr);
 					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[(UOSInt)si + Text::StrCharCnt(initFileName)]);
+					Text::StrConcat(sptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{

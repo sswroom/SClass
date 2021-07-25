@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 		return;
 	}
 	Map::OSM::OSMCacheHandler *hdlr = 0;
-	OSInt selItem = me->cboMapType->GetSelectedIndex();
+	UOSInt selItem = me->cboMapType->GetSelectedIndex();
 	switch (selItem)
 	{
 	case 0://MNU_OSM_TILE:

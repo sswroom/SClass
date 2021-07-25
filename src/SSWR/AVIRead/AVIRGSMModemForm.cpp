@@ -166,15 +166,15 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
 	IO::GSMModemController::SMSMessage *sms;
-	OSInt index = me->lvSMS->GetSelectedIndex();
-	if (index >= 0)
+	UOSInt index = me->lvSMS->GetSelectedIndex();
+	if (index != INVALID_INDEX)
 	{
-		sms = me->msgList->GetItem((UOSInt)index);
+		sms = me->msgList->GetItem(index);
 		if (me->modem->SMSDeleteMessage(sms->index))
 		{
 			me->modem->SMSFreeMessage(sms);
-			me->lvSMS->RemoveItem((UOSInt)index);
-			me->msgList->RemoveAt((UOSInt)index);
+			me->lvSMS->RemoveItem(index);
+			me->msgList->RemoveAt(index);
 		}
 	}
 }

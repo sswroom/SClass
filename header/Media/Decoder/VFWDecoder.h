@@ -39,7 +39,7 @@ namespace Media
 			void *imgCbData;
 			EncodingType encType;
 			Bool frameChg;
-			Int32 sourceFCC;
+			UInt32 sourceFCC;
 
 //			Bool hasBFrame;
 //			Bool bFrameDrop;

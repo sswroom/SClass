@@ -23,7 +23,7 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
 UI::GUITreeView::TreeItem::~TreeItem()
 {
 	TreeItem *item;
-	OSInt i;
+	UOSInt i;
 	i = this->children->GetCount();
 	while (i-- > 0)
 	{
@@ -175,7 +175,7 @@ UI::GUITreeView::GUITreeView(UI::GUICore *ui, UI::GUIClientControl *parent) : UI
 	NEW_CLASS(this->rightClkObjs, Data::ArrayList<void *>());
 	NEW_CLASS(this->treeItems, Data::ArrayList<TreeItem*>());
 	parent->GetClientSize(&w, &h);
-	Int32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER | TVS_EDITLABELS;
+	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER | TVS_EDITLABELS;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
@@ -309,7 +309,7 @@ UOSInt UI::GUITreeView::GetRootCount()
 	return this->treeItems->GetCount();
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(OSInt index)
+UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(UOSInt index)
 {
 	return this->treeItems->GetItem(index);
 }

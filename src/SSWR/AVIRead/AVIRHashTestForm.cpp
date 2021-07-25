@@ -52,10 +52,10 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
 	UTF8Char sbuff[64];
-	OSInt i = me->cboAlgorithm->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboAlgorithm->GetItem((UOSInt)i));
+		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboAlgorithm->GetItem(i));
 		if (hash)
 		{
 			Text::StrDouble(sbuff, HashTestSpeed(hash));

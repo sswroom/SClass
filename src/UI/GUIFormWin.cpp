@@ -169,7 +169,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 			{
 				if (lbl->HasTextColor())
 				{
-					Int32 c = lbl->GetTextColor();
+					UInt32 c = lbl->GetTextColor();
 					SetTextColor((HDC)wParam, ((c & 0xff) << 16) | (c & 0xff00) | ((c & 0xff0000) >> 16));
 				}
 			}
@@ -373,7 +373,7 @@ void UI::GUIForm::UpdateHAcc()
 					accels[i].fVirt |= FCONTROL;
 				if (key->keyModifier & UI::GUIMenu::KM_SHIFT)
 					accels[i].fVirt |= FSHIFT;
-				accels[i].key = GUIKey2OSKey(key->shortcutKey);
+				accels[i].key = (WORD)GUIKey2OSKey(key->shortcutKey);
 				accels[i].cmd = key->cmdId;
 			}
 			this->hAcc = CreateAcceleratorTable(accels, (int)keys.GetCount());
@@ -681,9 +681,9 @@ void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
 	if (width)
-		*width = rect.right - rect.left;
+		*width = (UOSInt)(OSInt)(rect.right - rect.left);
 	if (height)
-		*height = rect.bottom - rect.top;
+		*height = (UOSInt)(OSInt)(rect.bottom - rect.top);
 }
 
 void UI::GUIForm::SetExitOnClose(Bool exitOnClose)
@@ -798,7 +798,7 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		this->currHMon = hMon;
 		this->OnMonitorChanged();
 	}
-	OSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers->GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
@@ -813,7 +813,7 @@ Bool UI::GUIForm::OnPaint()
 void UI::GUIForm::OnDropFiles(void *hDrop)
 {
 #ifndef _WIN32_WCE
-	UInt32 fileCnt = DragQueryFileW((HDROP)hDrop, -1, 0, 0);
+	UInt32 fileCnt = DragQueryFileW((HDROP)hDrop, (UINT)-1, 0, 0);
 	if (fileCnt > 0)
 	{
 		UInt32 i;
@@ -842,7 +842,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 
 void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->menuClickedHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -933,7 +933,7 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->menu->SetDPI(hdpi, ddpi);
 	}
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children->GetCount();
 	while (i-- > 0)
 	{
 		this->children->GetItem(i)->SetDPI(hdpi, ddpi);
@@ -952,7 +952,7 @@ void UI::GUIForm::EventClosed()
 void UI::GUIForm::EventTimer(UOSInt tmrId)
 {
 	UI::GUITimer *tmr;
-	OSInt i = this->timers->GetCount();
+	UOSInt i = this->timers->GetCount();
 	while (i-- > 0)
 	{
 		tmr = this->timers->GetItem(i);
@@ -1012,12 +1012,12 @@ void UI::GUIForm::ToFullScn()
 	this->fsH = wndInfo.rcWindow.bottom - wndInfo.rcWindow.top;
 	this->fsStyle = wndInfo.dwStyle;
 	UInt32 dwStyle  = this->fsStyle;
-	dwStyle &= ~WS_SYSMENU;
-	dwStyle &= ~WS_OVERLAPPED;
-	dwStyle &= ~WS_CAPTION;
-	dwStyle &= ~WS_THICKFRAME;
-	dwStyle &= ~WS_MINIMIZEBOX;
-	SetWindowLong(hWnd, GWL_STYLE, dwStyle);
+	dwStyle &= (UInt32)~WS_SYSMENU;
+	dwStyle &= (UInt32)~WS_OVERLAPPED;
+	dwStyle &= (UInt32)~WS_CAPTION;
+	dwStyle &= (UInt32)~WS_THICKFRAME;
+	dwStyle &= (UInt32)~WS_MINIMIZEBOX;
+	SetWindowLong(hWnd, GWL_STYLE, (LONG)dwStyle);
 
 	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE); 
 
@@ -1030,7 +1030,7 @@ void UI::GUIForm::FromFullScn()
 	if (!this->fs)
 		return;
 	this->fs = false;
-	SetWindowLong((HWND)this->hwnd, GWL_STYLE, this->fsStyle);
+	SetWindowLong((HWND)this->hwnd, GWL_STYLE, (LONG)this->fsStyle);
 	MoveWindow((HWND)this->hwnd, this->fsX, this->fsY, this->fsW, this->fsH, TRUE);
 
 	SetWindowPos((HWND)this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE); 

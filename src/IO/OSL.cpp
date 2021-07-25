@@ -60,8 +60,8 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	{
 		UTF8Char line[512];
 		Text::UTF8Reader *reader;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/release", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -69,11 +69,11 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		reader->ReadLine(line, 512);
 		DEL_CLASS(reader);
 		DEL_CLASS(fs);
-		i = -1;
+		i = INVALID_INDEX;
 		while (true)
 		{
 			j = Text::StrIndexOf(&line[i + 1], ' ');
-			if (j >= 0)
+			if (j != INVALID_INDEX)
 			{
 				i = i + j + 1;
 				if (line[i + 1] >= 0x30 && line[i + 1] <= 0x39 && line[i + 2] == '.')
@@ -238,8 +238,8 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	{
 		UTF8Char line[512];
 		Text::UTF8Reader *reader;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/release", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -247,17 +247,17 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		reader->ReadLine(line, 512);
 		DEL_CLASS(reader);
 		DEL_CLASS(fs);
-		i = -1;
+		i = INVALID_INDEX;
 		while (true)
 		{
 			j = Text::StrIndexOf(&line[i + 1], ' ');
-			if (j >= 0)
+			if (j != INVALID_INDEX)
 			{
 				i = i + j + 1;
 				if (line[i + 1] >= 0x30 && line[i + 1] <= 0x39 && line[i + 2] == '.')
 				{
 					j = Text::StrIndexOf(&line[i + 1], ' ');
-					if (j >= 0)
+					if (j != INVALID_INDEX)
 					{
 						line[i + 1 + j] = 0;
 					}

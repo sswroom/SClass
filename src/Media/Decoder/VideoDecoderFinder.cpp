@@ -33,7 +33,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 
 	Data::ArrayListUInt32 suppCSList;
 	Media::CS::CSConverter::GetSupportedCS(&suppCSList);
-	if (suppCSList.IndexOf(frameInfo.fourcc) != -1)
+	if (suppCSList.IndexOf(frameInfo.fourcc) != INVALID_INDEX)
 	{
 		return 0;
 	}

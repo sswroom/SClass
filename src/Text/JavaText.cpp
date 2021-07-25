@@ -15,7 +15,7 @@ void Text::JavaText::ToJavaName(Text::StringBuilderUTF *sb, const UTF8Char *usNa
 		{
 			if (c >= 'a' && c <= 'z')
 			{
-				sb->AppendChar(c - 32, 1);
+				sb->AppendChar((UTF32Char)(c - 32), 1);
 			}
 			else
 			{

@@ -26,7 +26,7 @@ Media::DDCReader::DDCReader(void *hMon)
 	WChar sbuff[16];
 	WChar monVID[4];
 	UInt32 monPID;
-	OSInt k;
+	UOSInt k;
 
 	DISPLAY_DEVICEW dd;
 	MemClear(&dd, sizeof(dd));
@@ -135,7 +135,7 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 	UTF8Char u8buff[16];
 	UTF8Char monVID[4];
 	UInt32 monPID;
-	OSInt k;
+	UOSInt k;
 
 	DISPLAY_DEVICEW dd;
 	MemClear(&dd, sizeof(dd));
@@ -268,7 +268,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 	WChar sbuff[16];
 	WChar monVID[4];
 	UInt32 monPID;
-	OSInt k;
+	UOSInt k;
 	Bool found;
 
 	DISPLAY_DEVICEW dd;

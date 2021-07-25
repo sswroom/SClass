@@ -75,7 +75,7 @@ Media::WIAManager::~WIAManager()
 	{
 		((DEVMGRTYPE*)this->pWiaDevMgr)->Release();
 	}
-	OSInt i = this->devNames->GetCount();
+	UOSInt i = this->devNames->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->devNames->GetItem(i));
@@ -87,17 +87,17 @@ Media::WIAManager::~WIAManager()
 }
 
 
-OSInt Media::WIAManager::GetDeviceCount()
+UOSInt Media::WIAManager::GetDeviceCount()
 {
 	return this->devNames->GetCount();
 }
 
-const UTF8Char *Media::WIAManager::GetDeviceName(OSInt index)
+const UTF8Char *Media::WIAManager::GetDeviceName(UOSInt index)
 {
 	return this->devNames->GetItem(index);
 }
 
-Media::WIADevice *Media::WIAManager::CreateDevice(OSInt index)
+Media::WIADevice *Media::WIAManager::CreateDevice(UOSInt index)
 {
 	const UTF8Char *devId = this->devIds->GetItem(index);
 	if (devId == 0)

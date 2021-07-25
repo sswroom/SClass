@@ -47,7 +47,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		book = me->bookList->GetItem(k);
+		book = me->bookList->GetItem((UOSInt)k);
 		if (book->GetPublishDate()->CompareTo(&currTime) >= 0)
 		{
 			j = k - 1;
@@ -70,14 +70,14 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 		UOSInt w;
 		UOSInt h;
 		me->lvBook->GetSizeP(&w, &h);
-		j = h >> 1;
+		j = (OSInt)h >> 1;
 		Int32 rect[4];
-		me->lvBook->GetItemRectP(i, rect);
+		me->lvBook->GetItemRectP((UOSInt)i, rect);
 		if (rect[1] > j)
 		{
 			k = i + j / rect[3];
 			if (k >= (OSInt)me->bookList->GetCount())
-				k = me->bookList->GetCount() - 1;
+				k = (OSInt)me->bookList->GetCount() - 1;
 		}
 		else
 		{
@@ -85,8 +85,8 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 			if (k < 0)
 				k = 0;
 		}
-		me->lvBook->EnsureVisible(k);
-		me->lvBook->SetSelectedIndex(i);
+		me->lvBook->EnsureVisible((UOSInt)k);
+		me->lvBook->SetSelectedIndex((UOSInt)i);
 	}
 }
 
@@ -152,7 +152,6 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 		UOSInt i = 1;
 		UOSInt j;
 		UOSInt k;
-		OSInt si;
 		UTF8Char *chars = sb.ToString();
 		Bool found = false;
 		j = sb.GetLength();
@@ -196,7 +195,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 					while (true)
 					{
 						i = sb.IndexOf((const UTF8Char*)".", i);
-						if (i == -1)
+						if (i == INVALID_INDEX)
 						{
 							me->txtBookTitle->SetText(sb.ToString());
 							me->txtBookSource->SetText((const UTF8Char*)"");
@@ -229,14 +228,14 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 							me->txtBookTitle->SetText(sb2.ToString());
 							sb.SetSubstr(k);
 							sb.Trim();
-							si = sb.IndexOf((const UTF8Char*)"http://");
-							if (k >= 0)
+							k = sb.IndexOf((const UTF8Char*)"http://");
+							if (k != INVALID_INDEX)
 							{
 								sb2.ClearStr();
-								sb2.AppendC(sb.ToString(), (UOSInt)si);
+								sb2.AppendC(sb.ToString(), k);
 								sb2.Trim();
 								me->txtBookSource->SetText(sb2.ToString());
-								sb.SetSubstr((UOSInt)si)->Trim();
+								sb.SetSubstr(k)->Trim();
 								me->txtBookURL->SetText(sb.ToString());
 							}
 							else

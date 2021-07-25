@@ -241,15 +241,15 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
 	UTF8Char sbuff[512];
-	OSInt i = me->cboYAxis->GetSelectedIndex();
+	UOSInt i = me->cboYAxis->GetSelectedIndex();
 	UOSInt col;
-	if (i < 0)
+	if (i == INVALID_INDEX)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a column first", (const UTF8Char *)"Error", me);
 		return;
 	}
-	col = (UOSInt)me->cboYAxis->GetItem((UOSInt)i);
-	me->cboYAxis->GetItemText(sbuff, (UOSInt)i);
+	col = (UOSInt)me->cboYAxis->GetItem(i);
+	me->cboYAxis->GetItemText(sbuff, i);
 	me->lbYAxis->AddItem(sbuff, (void*)col);
 	me->yCols->Add((UInt32)col);
 }
@@ -257,32 +257,32 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
-	OSInt selInd = me->lbStrCols->GetSelectedIndex();
-	if (selInd >= 0)
+	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
+	if (selInd != INVALID_INDEX)
 	{
-		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem((UOSInt)selInd);
+		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Double;
-		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew((UOSInt)selInd);
+		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew(selInd);
 		me->cboXAxis->AddItem(csptr, (void*)colInd);
 		me->cboYAxis->AddItem(csptr, (void*)colInd);
 		me->lbStrCols->DelTextNew(csptr);
-		me->lbStrCols->RemoveItem((UOSInt)selInd);
+		me->lbStrCols->RemoveItem(selInd);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
-	OSInt selInd = me->lbStrCols->GetSelectedIndex();
-	if (selInd >= 0)
+	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
+	if (selInd != INVALID_INDEX)
 	{
-		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem((UOSInt)selInd);
+		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
-		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew((UOSInt)selInd);
+		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew(selInd);
 		me->cboXAxis->AddItem(csptr, (void*)colInd);
 		me->cboYAxis->AddItem(csptr, (void*)colInd);
 		me->lbStrCols->DelTextNew(csptr);
-		me->lbStrCols->RemoveItem((UOSInt)selInd);
+		me->lbStrCols->RemoveItem(selInd);
 	}
 }
 

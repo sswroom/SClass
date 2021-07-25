@@ -34,7 +34,7 @@ UI::GUIListView::GUIListView(UI::GUICore *ui, UI::GUIClientControl *parent, List
 	this->himgList = 0;
 	this->lvStyle = lvstyle;
 	parent->GetClientSize(&w, &h);
-	Int32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER;
+	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER;
 	if (lvstyle == LVSTYLE_ICON)
 	{
 		style |= LVS_ICON;
@@ -78,7 +78,7 @@ void UI::GUIListView::ResetImages(UInt32 width, UInt32 height)
 	{
 		ImageList_Destroy((HIMAGELIST)this->himgList);
 	}
-	this->himgList = ImageList_Create(width, height, ILC_COLOR24, 0, 0);
+	this->himgList = ImageList_Create((int)width, (int)height, ILC_COLOR24, 0, 0);
 	this->imgW = width;
 	this->imgH = height;
 }
@@ -87,7 +87,7 @@ UOSInt UI::GUIListView::AddImage(Media::DrawImage *img)
 {
 //	IMAGEINFO imgInfo;
 	if (this->himgList == 0)
-		return -1;
+		return INVALID_INDEX;
 	OSInt retIndex = ImageList_AddMasked((HIMAGELIST)this->himgList, (HBITMAP)((Media::GDIImage*)img)->hBmp, 0);
 /*	ImageList_GetImageInfo((HIMAGELIST)this->himgList, retIndex, &imgInfo);
 
@@ -184,7 +184,7 @@ UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj)
 	item.lParam = (LPARAM)itemObj;
 	item.pszText = (LPWSTR)ws;
 	item.cchTextMax = 256;
-	strLen = SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
+	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 	Text::StrDelNew(ws);
 	return strLen;
 }
@@ -198,7 +198,7 @@ UOSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
 	item.lParam = (LPARAM)itemObj;
 	item.pszText = (LPWSTR)itemText;
 	item.cchTextMax = 256;
-	return SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
+	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
 
 UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, UOSInt imageIndex)
@@ -211,7 +211,7 @@ UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, UOSInt 
 	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText);
 	item.cchTextMax = (int)Text::StrCharCnt(itemText);
 	item.iImage = (Int32)imageIndex;
-	UOSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	return ret;
 }
@@ -274,7 +274,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 	const WChar *wptr = Text::StrToWCharNew(itemText);
 	item.pszText = (LPWSTR)wptr;
 	item.cchTextMax = 256;
-	UOSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew(wptr);
 	return ret;
 }
@@ -288,7 +288,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *it
 	item.lParam = (LPARAM)itemObj;
 	item.pszText = (LPWSTR)itemText;
 	item.cchTextMax = 256;
-	return SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 }
 
 void *UI::GUIListView::RemoveItem(UOSInt index)
@@ -316,24 +316,24 @@ void UI::GUIListView::ClearItems()
 
 UOSInt UI::GUIListView::GetCount()
 {
-	return SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
 }
 
 void UI::GUIListView::SetSelectedIndex(UOSInt index)
 {
-	SendMessage((HWND)this->hwnd, LVM_SETSELECTIONMARK, 0, index);
+	SendMessage((HWND)this->hwnd, LVM_SETSELECTIONMARK, 0, (LPARAM)index);
 	this->EventSelChg();
 }
 
-OSInt UI::GUIListView::GetSelectedIndex()
+UOSInt UI::GUIListView::GetSelectedIndex()
 {
-	return SendMessage((HWND)this->hwnd, LVM_GETSELECTIONMARK, 0, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETSELECTIONMARK, 0, 0);
 }
 
 UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 {
-	OSInt cnt = SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
-	OSInt i;
+	UOSInt cnt = (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
+	UOSInt i;
 	UOSInt ret = 0;
 	i = 0;
 	while (i < cnt)
@@ -350,24 +350,24 @@ UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 
 void *UI::GUIListView::GetSelectedItem()
 {
-	OSInt i = GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = GetSelectedIndex();
+	if (i != INVALID_INDEX)
 		return this->GetItem(i);
 	return 0;
 }
 
 UTF8Char *UI::GUIListView::GetSelectedItemText(UTF8Char *buff)
 {
-	OSInt i = GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = GetSelectedIndex();
+	if (i != INVALID_INDEX)
 		return this->GetItemText(buff, i);
 	return 0;
 }
 
 const UTF8Char *UI::GUIListView::GetSelectedItemTextNew()
 {
-	OSInt i = GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = GetSelectedIndex();
+	if (i != INVALID_INDEX)
 		return this->GetItemTextNew(i);
 	return 0;
 }
@@ -417,14 +417,14 @@ UOSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
 	UOSInt strLen = Text::StrUTF8_WCharCnt(s);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(ws, s, 0);
-	strLen = SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
+	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
 	MemFree(ws);
 	return strLen;
 }
 
 UOSInt UI::GUIListView::GetStringWidth(const WChar *s)
 {
-	return SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)s);
+	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)s);
 }
 
 void UI::GUIListView::GetItemRectP(UOSInt index, Int32 *rect)
@@ -511,7 +511,7 @@ OSInt UI::GUIListView::OnNotify(UInt32 code, void *lParam)
 		{
 			NMITEMACTIVATE *ia;
 			ia = (NMITEMACTIVATE*)lParam;
-			this->EventDblClk(ia->iItem);
+			this->EventDblClk((UInt32)ia->iItem);
 		}
 #endif
 		break;

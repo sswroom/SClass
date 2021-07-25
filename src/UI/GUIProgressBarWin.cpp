@@ -15,7 +15,7 @@ UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent
     icex.dwICC = ICC_PROGRESS_CLASS;
     InitCommonControlsEx(&icex);
 
-	Int32 style = WS_CHILD | PBS_SMOOTH;
+	UInt32 style = WS_CHILD | PBS_SMOOTH;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

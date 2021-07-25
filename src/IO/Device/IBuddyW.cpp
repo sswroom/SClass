@@ -44,9 +44,9 @@ OSInt IO::IBuddy::GetNumDevice()
 					*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
-						if (Text::StrIndexOf(&data2[2], L"vid_1130&pid_") >= 0)
+						if (Text::StrIndexOf(&data2[2], L"vid_1130&pid_") != INVALID_INDEX)
 						{
-							if (Text::StrIndexOf(&data2[2], L"mi_01") >= 0)
+							if (Text::StrIndexOf(&data2[2], L"mi_01") != INVALID_INDEX)
 							{
 								ret++;
 							}
@@ -90,9 +90,9 @@ IO::IBuddy::IBuddy(OSInt devNo)
 					*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
-						if (Text::StrIndexOf(&data2[2], L"vid_1130&pid_") >= 0)
+						if (Text::StrIndexOf(&data2[2], L"vid_1130&pid_") != INVALID_INDEX)
 						{
-							if (Text::StrIndexOf(&data2[2], L"mi_01") >= 0)
+							if (Text::StrIndexOf(&data2[2], L"mi_01") != INVALID_INDEX)
 							{
 								if (currId == devNo)
 								{

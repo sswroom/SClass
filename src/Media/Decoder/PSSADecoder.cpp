@@ -269,10 +269,10 @@ void Media::Decoder::PSSADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleB
 		adxSample2[channel] = adxSample1[channel];
 		if (x > 0x7fffffff)
 			x = 0x7fffffff;
-		else if (((long*)&x)[1] < -1)
+		else if (((Int32*)&x)[1] < -1)
 			x = (Int64)0xffffffff80000000;
-		else if (((long*)&x)[1] == -1)
-			if (((*(long*)&x) & 0x80000000) == 0)
+		else if (((Int32*)&x)[1] == -1)
+			if (((*(UInt32*)&x) & 0x80000000) == 0)
 				x = (Int64)0xffffffff80000000;
 		adxSample1[channel] = x;
 		*(Int16*)dest = (Int16)(x >> 16);

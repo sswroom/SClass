@@ -547,7 +547,7 @@ void UI::GUIMenu::ClearItems()
 	i = 0;
 	while (DeleteMenu((HMENU)this->hMenu, (UInt32)i++, MF_BYPOSITION) != 0);
 #else
-	i = GetMenuItemCount((HMENU)this->hMenu);
+	i = (UInt32)GetMenuItemCount((HMENU)this->hMenu);
 	while (i-- > 0)
 	{
 		DeleteMenu((HMENU)this->hMenu, (UInt32)i, MF_BYPOSITION);

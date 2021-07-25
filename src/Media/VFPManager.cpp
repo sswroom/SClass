@@ -94,7 +94,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 				finfo.dwSize = sizeof(finfo);
 				if (funcs->GetFileInfo(fhand, &finfo) == VF_OK)
 				{
-					OSInt outCnt = 0;
+					UOSInt outCnt = 0;
 					VFMediaFile *mfile = MemAlloc(VFMediaFile, 1);
 					mfile->vfpmgr = this;
 					mfile->plugin = plugin;

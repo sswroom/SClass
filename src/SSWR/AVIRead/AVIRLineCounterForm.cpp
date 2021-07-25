@@ -30,11 +30,11 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
-	OSInt i = me->lbExtensions->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbExtensions->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		Text::StrDelNew(me->extList->RemoveAt((UOSInt)i));
-		me->lbExtensions->RemoveItem((UOSInt)i);
+		Text::StrDelNew(me->extList->RemoveAt(i));
+		me->lbExtensions->RemoveItem(i);
 	}
 }
 

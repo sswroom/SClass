@@ -20,10 +20,10 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		return;
 	}
 
-	OSInt i = me->cboGenerator->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->cboGenerator->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		Media::ImageGenerator *imgGen = (Media::ImageGenerator*)me->cboGenerator->GetItem((UOSInt)i);
+		Media::ImageGenerator *imgGen = (Media::ImageGenerator*)me->cboGenerator->GetItem(i);
 		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)(OSInt)me->cboColorProfile->GetSelectedItem());
 
 		Media::Image *img = imgGen->GenerateImage(&colorProfile, width, height);

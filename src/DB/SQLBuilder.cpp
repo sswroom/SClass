@@ -105,10 +105,10 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 		sb->AppendChar('.', 1);
 	}
 	name = table->GetTableName();
-	OSInt i = Text::StrIndexOf(name, '.');
-	if (i >= 0)
+	UOSInt i = Text::StrIndexOf(name, '.');
+	if (i != INVALID_INDEX)
 	{
-		const UTF8Char *catalog = Text::StrCopyNewC(name, (UOSInt)i);
+		const UTF8Char *catalog = Text::StrCopyNewC(name, i);
 		this->AppendCol(catalog);
 		sb->AppendChar('.', 1);
 		Text::StrDelNew(catalog);

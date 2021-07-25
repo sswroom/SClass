@@ -58,15 +58,15 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 			rc.left = 0;
 			rc.top = (LONG)tcTop;
 			rc.right = (LONG)tcLeft;
-			rc.bottom = (LONG)(tcTop + tcHeight);
+			rc.bottom = (LONG)(tcTop + (OSInt)tcHeight);
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
-			rc.left = (LONG)(tcLeft + tcWidth);
+			rc.left = (LONG)(tcLeft + (OSInt)tcWidth);
 			rc.top = (LONG)tcTop;
 			rc.right = (LONG)w;
-			rc.bottom = (LONG)(tcTop + tcHeight);
+			rc.bottom = (LONG)(tcTop + (OSInt)tcHeight);
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
 			rc.left = 0;
-			rc.top = (LONG)(tcTop + tcHeight);
+			rc.top = (LONG)(tcTop + (OSInt)tcHeight);
 			rc.right = (LONG)w;
 			rc.bottom = (LONG)h;
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
@@ -88,7 +88,7 @@ UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) 
     icex.dwICC = ICC_TAB_CLASSES;
     InitCommonControlsEx(&icex);
 
-	Int32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_TABSTOP;
+	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_TABSTOP;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
@@ -123,14 +123,14 @@ UI::GUITabControl::~GUITabControl()
 
 UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 {
-	OSInt index;
+	UOSInt index;
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName);
 	item.cchTextMax = 0;
-	index = SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages->GetCount(), (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages->GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
-	if (index >= 0)
+	if (index != INVALID_INDEX)
 	{
 		UI::GUITabPage *page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));

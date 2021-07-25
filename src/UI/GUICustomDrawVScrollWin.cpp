@@ -43,10 +43,10 @@ OSInt __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UI
 			si.nPos += 1;
 			break;
 		case SB_PAGELEFT:
-			si.nPos -= si.nPage;
+			si.nPos -= (INT)si.nPage;
 			break;
 		case SB_PAGERIGHT:
-			si.nPos += si.nPage;
+			si.nPos += (INT)si.nPage;
 			break;
 		case SB_THUMBTRACK: 
 			si.nPos = si.nTrackPos;
@@ -87,7 +87,7 @@ OSInt __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UI
 			si.fMask  = SIF_ALL;
 
 			GetScrollInfo((HWND)hWnd, SB_VERT, &si);
-			xPos = si.nPage >> 2;
+			xPos = (Int32)si.nPage >> 2;
 			if (xPos <= 0)
 			{
 				xPos = 1;
@@ -178,7 +178,7 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientCon
 	}
 	this->deng = deng;
 
-	Int32 style = WS_CHILD | WS_VSCROLL | WS_TABSTOP;
+	UInt32 style = WS_CHILD | WS_VSCROLL | WS_TABSTOP;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
@@ -290,7 +290,7 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt index)
 	if (index >= (UInt32)si.nMax)
 		return false;
 
-	if (si.nPos > index)
+	if (si.nPos > (OSInt)index)
 	{
 		si.fMask = SIF_POS;
 		si.nPos = (Int32)(OSInt)index;
@@ -299,7 +299,7 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt index)
 		this->Redraw();
 		return true;
 	}
-	else if ((si.nPos + (Int32)si.nPage) > index)
+	else if ((si.nPos + (Int32)si.nPage) > (OSInt)index)
 	{
 		return false;
 	}

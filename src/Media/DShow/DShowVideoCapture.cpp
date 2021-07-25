@@ -712,7 +712,7 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
-	Int32 cnt;
+	UOSInt cnt;
 	WChar sbuff[256];
 
 	if (pEnum == 0)

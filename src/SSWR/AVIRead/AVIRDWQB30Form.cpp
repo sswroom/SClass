@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			stm = frm->stm;
-			OSInt i = me->cboDevType->GetSelectedIndex();
+			UOSInt i = me->cboDevType->GetSelectedIndex();
 			if (i == 0)
 			{
 				NEW_CLASS(me->scanner, IO::Device::DensoWaveQB30(stm));
@@ -129,10 +129,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(void *userObj)
 	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
 	if (me->scanner)
 	{
-		OSInt i = me->cboSetCmd->GetSelectedIndex();
-		if (i >= 0)
+		UOSInt i = me->cboSetCmd->GetSelectedIndex();
+		if (i != INVALID_INDEX)
 		{
-			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)(OSInt)me->cboSetCmd->GetItem((UOSInt)i);
+			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)(OSInt)me->cboSetCmd->GetItem(i);
 			me->cmdCurr = dcmd;
 			me->cmdType = me->scanner->GetCommandParamType(dcmd, &me->cmdMin, &me->cmdMax);
 			if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
@@ -207,10 +207,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 		else if (me->cmdType == IO::CodeScanner::CT_SELECT_COMMAND)
 		{
 			Int32 val;
-			OSInt i = me->cboSetParam->GetSelectedIndex();
-			if (i >= 0)
+			UOSInt i = me->cboSetParam->GetSelectedIndex();
+			if (i != INVALID_INDEX)
 			{
-				val = (Int32)(OSInt)me->cboSetParam->GetItem((UOSInt)i);
+				val = (Int32)(OSInt)me->cboSetParam->GetItem(i);
 				if (me->scanner->SetCommand(me->cmdCurr, val))
 				{
 					me->txtSetCmd->SetText((const UTF8Char*)"Success");

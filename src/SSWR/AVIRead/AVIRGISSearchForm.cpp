@@ -18,13 +18,13 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISSearchForm *me = (SSWR::AVIRead::AVIRGISSearchForm*)userObj;
-	OSInt i = me->lbResults->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbResults->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		Double x;
 		Double y;
 		void *sess;
-		const UTF8Char *s = me->lbResults->GetItemTextNew((UOSInt)i);
+		const UTF8Char *s = me->lbResults->GetItemTextNew(i);
 
 		sess = me->layer->BeginGetObject();
 		Math::Vector2D *vec = me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s, me->strIndex);

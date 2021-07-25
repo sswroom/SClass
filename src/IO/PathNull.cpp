@@ -248,7 +248,7 @@ Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) < 0)
+				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;
@@ -326,7 +326,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) < 0)
+				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;

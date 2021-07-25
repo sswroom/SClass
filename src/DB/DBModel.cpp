@@ -27,7 +27,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, const UTF8Char *dbName)
 	DB::TableDef *table;
 	const UTF8Char *tableName;
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	db->GetTableNames(&tableNames);
 	i = tableNames.GetCount();
 	while (i-- > 0)

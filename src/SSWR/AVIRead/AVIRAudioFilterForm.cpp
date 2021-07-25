@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 			Media::WaveInSource *wiSrc;
 			UTF8Char sbuff[512];
 			Media::WaveInSource::GetDeviceName(sbuff, 0);
-			NEW_CLASS(wiSrc, Media::WaveInSource(0, frequency, bitCount, nChannel));
+			NEW_CLASS(wiSrc, Media::WaveInSource((UInt32)0, frequency, bitCount, nChannel));
 			if (wiSrc->IsError())
 			{
 				DEL_CLASS(wiSrc);

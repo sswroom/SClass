@@ -935,7 +935,7 @@ Bool Text::XMLReader::ReadNext()
 								UTF8Char sbuff[6];
 								UTF32Char wcs;
 								this->readBuff[this->parseOfst + 3] = 0;
-								wcs = Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
+								wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
 								sbuff[0] = (UTF8Char)wcs;
 								mstm.Write(sbuff, 1);
 								this->parseOfst += 3;
@@ -965,11 +965,11 @@ Bool Text::XMLReader::ReadNext()
 								this->readBuff[this->parseOfst + 4] = 0;
 								if (this->readBuff[this->parseOfst + 2] == 'x')
 								{
-									wcs = Text::StrHex2Int32C(&this->readBuff[this->parseOfst + 3]);
+									wcs = (UTF32Char)Text::StrHex2Int32C(&this->readBuff[this->parseOfst + 3]);
 								}
 								else
 								{
-									wcs = Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
+									wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
 								}
 								sbuff[0] = (UTF8Char)wcs;
 								mstm.Write(sbuff, 1);
@@ -1005,11 +1005,11 @@ Bool Text::XMLReader::ReadNext()
 								this->readBuff[this->parseOfst + 5] = 0;
 								if (this->readBuff[this->parseOfst + 2] == 'x')
 								{
-									wcs = Text::StrHex2Int32C(&this->readBuff[this->parseOfst + 3]);
+									wcs = (UTF32Char)Text::StrHex2Int32C(&this->readBuff[this->parseOfst + 3]);
 								}
 								else
 								{
-									wcs = Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
+									wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
 								}
 								sbuff[0] = (UTF8Char)wcs;
 								mstm.Write(sbuff, 1);

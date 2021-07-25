@@ -39,7 +39,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const C
 	UInt8 *ipAddr = (UInt8*)&ip;
 	Char *sptr;
 	Char cbuff[32];
-	OSInt i;
+	UOSInt i;
 	if (prefix)
 	{
 		sptr = Text::StrConcat(cbuff, prefix);
@@ -66,7 +66,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const C
 		else
 		{
 			i = Text::StrIndexOf(sbuff, '#');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
 			}

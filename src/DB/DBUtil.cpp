@@ -1606,7 +1606,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 {
 	UTF8Char typeName[64];
 	UOSInt tmp;
-	OSInt i;
+	UOSInt i;
 	if (colSize == 0)
 	{
 		colSize = &tmp;
@@ -1620,9 +1620,16 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			if (typeName[7] == '(')
 			{
 				i = Text::StrIndexOf(typeName, (const UTF8Char*)")");
-				typeName[i] = 0;
-				*colSize = Text::StrToUInt32(&typeName[8]);
-				typeName[i] = ')';
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[8]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[8]);
+				}
 			}
 			else
 			{
@@ -1635,9 +1642,16 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			if (typeName[4] == '(')
 			{
 				i = Text::StrIndexOf(typeName, (const UTF8Char*)")");
-				typeName[i] = 0;
-				*colSize = Text::StrToUInt32(&typeName[5]);
-				typeName[i] = ')';
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[5]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[5]);
+				}
 			}
 			else
 			{
@@ -1647,7 +1661,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"bigint"))
 		{
-			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == -1)
+			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == INVALID_INDEX)
 			{
 				*colSize = 21;
 				return DB::DBUtil::CT_Int64;
@@ -1660,7 +1674,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"int"))
 		{
-			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == -1)
+			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == INVALID_INDEX)
 			{
 				*colSize = 11;
 				return DB::DBUtil::CT_Int32;
@@ -1673,7 +1687,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"smallint"))
 		{
-			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == -1)
+			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == INVALID_INDEX)
 			{
 				*colSize = 6;
 				return DB::DBUtil::CT_Int16;

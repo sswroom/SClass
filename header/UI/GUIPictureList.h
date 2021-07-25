@@ -16,7 +16,7 @@ namespace UI
 	private:
 		static Int32 useCnt;
 		Data::ArrayList<Media::DrawImage *> *imgList;
-		OSInt selectedIndex;
+		UOSInt selectedIndex;
 		Media::IImgResizer *resizer;
 		UOSInt iconWidth;
 		UOSInt iconHeight;
@@ -30,12 +30,12 @@ namespace UI
 		virtual void OnDraw(Media::DrawImage *img);
 		virtual void OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 
-		OSInt IndexFromPoint(Int32 x, Int32 y);
+		UOSInt IndexFromPoint(Int32 x, Int32 y);
 		void Add(Media::Image *img);
-		OSInt GetCount();
-		void RemoveAt(OSInt index);
+		UOSInt GetCount();
+		void RemoveAt(UOSInt index);
 		void Clear();
-		OSInt GetSelectedIndex();
+		UOSInt GetSelectedIndex();
 		void SetSelectedIndex(UOSInt index);
 	};
 }

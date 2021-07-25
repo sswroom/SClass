@@ -1296,8 +1296,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();
-				OSInt i = Text::StrIndexOf(fname, ':');
-				if (i < 0 || i == 1)
+				UOSInt i = Text::StrIndexOf(fname, ':');
+				if (i == INVALID_INDEX || i == 1)
 				{
 					IO::StmData::FileData *fd;
 					NEW_CLASS(fd, IO::StmData::FileData(fname, false));
@@ -1335,7 +1335,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sptr;
 			UTF8Char sbuff[10];
-			OSInt i;
+			UOSInt i;
 			Data::DateTime dt;
 			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), (const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml", "GET", false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
@@ -1347,7 +1347,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					break;
 				sptr = sb.ToString();
 				i = Text::StrIndexOf(sptr, (const UTF8Char*)"=\"");
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					sptr = sptr + i + 2;
 					i = Text::StrIndexOf(sptr, ',');

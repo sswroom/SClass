@@ -12,7 +12,9 @@
 #include <streams.h>
 #include <dvdmedia.h>
 #include <initguid.h>
+#if defined(_MSC_VER)
 #pragma comment(lib, "strmiids")
+#endif
 
 namespace Media
 {

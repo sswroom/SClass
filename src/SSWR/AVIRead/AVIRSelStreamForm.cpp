@@ -15,8 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 
 	if (st == SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT)
 	{
-		OSInt i = me->cboSerialPort->GetSelectedIndex();
-		UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem((UOSInt)i);
+		UOSInt i = me->cboSerialPort->GetSelectedIndex();
+		UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
 		if (portNum == 0)
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"Select Serial Port", me);
@@ -215,10 +215,10 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
-	OSInt i = me->cboStreamType->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->cboStreamType->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		SSWR::AVIRead::AVIRCore::StreamType st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)me->cboStreamType->GetItem((UOSInt)i);
+		SSWR::AVIRead::AVIRCore::StreamType st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)me->cboStreamType->GetItem(i);
 		if (st == SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT)
 		{
 			me->tcConfig->SetSelectedPage(me->tpSerialPort);

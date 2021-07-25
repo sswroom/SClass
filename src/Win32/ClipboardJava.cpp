@@ -116,7 +116,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 	GdkAtom *targets;
 	gint nTargets;
 	OSInt i;
-	OSInt j;
+	UOSInt j;
 	if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
 	{
 		const Char *typeName;
@@ -147,7 +147,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 						while (true)
 						{
 							j = Text::StrIndexOf((const UTF8Char*)&rawdata[i], 10);
-							if (j >= 0)
+							if (j != INVALID_INDEX)
 							{
 								sb.ClearStr();
 								sb.AppendC((const UTF8Char*)&rawdata[i], j);

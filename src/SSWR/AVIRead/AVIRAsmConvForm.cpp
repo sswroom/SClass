@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 									l = 0;
 									while (l < k)
 									{
-										if (sarr2[l] && Text::StrIndexOf(sarr2[l], '*') < 0)
+										if (sarr2[l] && Text::StrIndexOf(sarr2[l], '*') == INVALID_INDEX)
 										{
 											if (found)
 											{

@@ -82,7 +82,7 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 	HDEVINFO devInfo = SetupDiGetClassDevs((GUID*)hidGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
 	if (devInfo)
 	{
-		Int32 i = 0;
+		UInt32 i = 0;
 		SP_DEVICE_INTERFACE_DATA data;
 		while (true)
 		{
@@ -100,30 +100,30 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 					*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
-						OSInt j;
+						UOSInt j;
 						clsData = MemAlloc(ClassData, 1);
 						clsData->busType = IO::HIDInfo::BT_USB;
 						clsData->devPath = Text::StrToUTF8New(&data2[2]);
 						clsData->product = 0;
 						clsData->vendor = 0;
 						j = Text::StrIndexOf(&data2[2], L"vid_");
-						if (j >= 0 && data2[2 + 8 + j] == '&')
+						if (j != INVALID_INDEX && data2[2 + 8 + j] == '&')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->vendor = Text::StrHex2Int16C(&data2[2 + 4 + j]);
+							clsData->vendor = Text::StrHex2UInt16C(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '&';
 						}
 						j = Text::StrIndexOf(&data2[2], L"pid_");
-						if (j >= 0 && data2[2 + 8 + j] == '&')
+						if (j != INVALID_INDEX && data2[2 + 8 + j] == '&')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->product = Text::StrHex2Int16C(&data2[2 + 4 + j]);
+							clsData->product = Text::StrHex2UInt16C(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '&';
 						}
-						else if (j >= 0 && data2[2 + 8 + j] == '#')
+						else if (j != INVALID_INDEX && data2[2 + 8 + j] == '#')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->product = Text::StrHex2Int16C(&data2[2 + 4 + j]);
+							clsData->product = Text::StrHex2UInt16C(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '#';
 						}
 						
@@ -161,13 +161,13 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 				{
 					clsData = MemAlloc(ClassData, 1);
 					sptr[4] = 0;
-					busType = Text::StrHex2Int16C(sptr);
+					busType = Text::StrHex2UInt16C(sptr);
 					sptr[4] = ':';
 					sptr[9] = 0;
-					clsData->vendor = Text::StrHex2Int16C(&sptr[5]);
+					clsData->vendor = Text::StrHex2UInt16C(&sptr[5]);
 					sptr[9] = ':';
 					sptr[14] = 0;
-					clsData->product = Text::StrHex2Int16C(&sptr[10]);
+					clsData->product = Text::StrHex2UInt16C(&sptr[10]);
 					sptr[14] = '.';
 					switch (busType)
 					{

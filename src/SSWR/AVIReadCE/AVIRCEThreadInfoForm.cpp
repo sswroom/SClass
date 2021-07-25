@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 {
 	SSWR::AVIReadCE::AVIRCEThreadInfoForm *me = (SSWR::AVIReadCE::AVIRCEThreadInfoForm*)userObj;
 	UTF8Char sbuff[18];
-	OSInt i;
+	UOSInt i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
 	me->lvMyStack->GetSubItem(index, 3, &sb);
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 	{
 		Text::StrConcatC(sbuff, sb.ToString() + 7, 17);
 		i = Text::StrIndexOf(sbuff, ' ');
-		if (i > 0)
+		if (i != INVALID_INDEX && i > 0)
 		{
 			sbuff[i] = 0;
 		}

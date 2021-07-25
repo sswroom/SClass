@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
-	OSInt i;
+	UOSInt i;
 	i = me->lbData->GetSelectedIndex();
-	if (i < 0)
+	if (i == INVALID_INDEX)
 	{
 		me->txtData->SetText((const UTF8Char*)"");
 	}
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		UTF8Char sbuff[32];
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
-		i = (OSInt)me->lbData->GetItem((UOSInt)i);
+		i = (UOSInt)me->lbData->GetItem(i);
 		Sync::MutexUsage mutUsage(me->packetMut);
 		sb.Append((const UTF8Char*)"Recv Time: ");
 		dt.SetTicks(me->packets[i].recvTime);

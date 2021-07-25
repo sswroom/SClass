@@ -181,8 +181,8 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 	Int32 lev = Text::StrToInt32(sarr[1]);
 	Int32 xTile = Text::StrToInt32(sarr[2]);
 	Int32 yTile;
-	OSInt si = Text::StrIndexOf(sarr[3], (const UTF8Char*)".png");
-	sarr[3][si] = 0;
+	i = Text::StrIndexOf(sarr[3], (const UTF8Char*)".png");
+	sarr[3][i] = 0;
 	yTile = Text::StrToInt32(sarr[3]);
 
 	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile);

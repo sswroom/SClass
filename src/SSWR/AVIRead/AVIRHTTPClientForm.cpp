@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		UOSInt j = me->params->GetCount();
 		if (j > 0)
 		{
-			if (sb.IndexOf('?') >= 0)
+			if (sb.IndexOf('?') != INVALID_INDEX)
 			{
 				sb.AppendChar('&', 1);
 			}
@@ -113,7 +113,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		UOSInt i = 0;
 		UOSInt j = me->params->GetCount();
 		UOSInt k;
-		OSInt si;
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 		const UTF8Char *csptr;
 		while (i < j)
@@ -315,19 +314,19 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 	if (sb.GetCharCnt() > 0)
 	{
 		UTF8Char *sptr = sb.ToString();
-		OSInt spInd;
-		OSInt eqInd;
+		UOSInt spInd;
+		UOSInt eqInd;
 		UOSInt i;
 		while (true)
 		{
 			spInd = Text::StrIndexOf(sptr, '&');
-			if (spInd >= 0)
+			if (spInd != INVALID_INDEX)
 			{
 				sptr[spInd] = 0;
 			}
 			eqInd = Text::StrIndexOf(sptr, '=');
 			param = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::ParamValue, 1);
-			if (eqInd >= 0)
+			if (eqInd != INVALID_INDEX)
 			{
 				sptr[eqInd] = 0;
 				Text::TextEnc::FormEncoding::FormDecode(sbuff, sptr);
@@ -802,7 +801,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	UTF8Char *sarr[2];
 	UTF8Char *cookieValue;
 	UOSInt cnt;
-	OSInt i;
+	UOSInt i;
 	Bool secure = false;
 	Int64 expiryTime = 0;
 	Bool valid = true;
@@ -813,7 +812,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	cnt = Text::StrSplitTrim(sarr, 2, sb.ToString(), ';');
 	cookieValue = sarr[0];
 	i = Text::StrIndexOf(cookieValue, '=');
-	if (i < 0)
+	if (i == INVALID_INDEX)
 	{
 		return 0;
 	}

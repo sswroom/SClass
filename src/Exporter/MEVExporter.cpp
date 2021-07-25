@@ -276,6 +276,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListStrUTF8 
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
 	UOSInt k;
+	OSInt si;
 	UTF8Char sbuff[256];
 
 	while (i < j)
@@ -295,10 +296,10 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListStrUTF8 
 				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;
-					k = dirArr->SortedIndexOf(sbuff);
-					if (k < 0)
+					si = dirArr->SortedIndexOf(sbuff);
+					if (si < 0)
 					{
-						dirArr->Insert((UOSInt)~k, Text::StrCopyNew(sbuff));
+						dirArr->Insert((UOSInt)~si, Text::StrCopyNew(sbuff));
 					}
 				}
 			}

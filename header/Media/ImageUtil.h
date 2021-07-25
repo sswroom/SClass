@@ -17,7 +17,7 @@ extern "C"
 	void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt8 a);
 	void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 a); //65536 = 1.0
 	void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 c);
-	void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, OSInt bpl, UInt32 col); //no alpha
+	void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, UInt32 col); //no alpha
 	void ImageUtil_ConvP1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal);
 	void ImageUtil_ConvP2_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal);
 	void ImageUtil_ConvP4_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal);

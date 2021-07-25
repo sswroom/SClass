@@ -234,10 +234,10 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 				{
 					if (linkId == 0)
 					{
-						OSInt i = Text::StrIndexOf(&attr->value[13], '\'');
-						if (i >= 0)
+						UOSInt i = Text::StrIndexOf(&attr->value[13], '\'');
+						if (i != INVALID_INDEX)
 						{
-							link->AppendC(&attr->value[13], (UOSInt)i);
+							link->AppendC(&attr->value[13], i);
 							found = true;
 						}
 					}
@@ -291,27 +291,27 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 
 void Net::WebSite::WebSite48IdolControl::Title2DisplayName(const UTF8Char *title, Text::StringBuilderUTF *dispName)
 {
-	OSInt i;
+	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(title);
 	sb.Trim();
 	while (sb.EndsWith(')'))
 	{
 		i = sb.LastIndexOf('(');
-		if (i < 0)
+		if (i == INVALID_INDEX)
 			break;
 		if (Text::StrStartsWith(&sb.ToString()[i], (const UTF8Char*)"(GYAO"))
 		{
 			break;
 		}
-		sb.TrimToLength((UOSInt)i);
+		sb.TrimToLength(i);
 		sb.Trim();
 	}
 
 	i = sb.IndexOf('|');
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
-		sb.TrimToLength((UOSInt)i);
+		sb.TrimToLength(i);
 		sb.Trim();
 	}
 	UTF8Char sbuff[4];
@@ -327,7 +327,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(const UTF8Char *title
 	while (sb.EndsWith(')'))
 	{
 		i = sb.LastIndexOf('(');
-		if (i < 0)
+		if (i == INVALID_INDEX)
 			break;
 		if (Text::StrStartsWith(&sb.ToString()[i], (const UTF8Char*)"(GYAO"))
 		{

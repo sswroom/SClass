@@ -2304,7 +2304,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 			if (c == '<')
 			{
 				i = Text::StrIndexOf(sptr, L">");
-				if (i < 0)
+				if (i == INVALID_INDEX)
 					return false;
 				sptr[i] = 0;
 				sptr = env->GetIncludeFilePath(sbuff, sptr);
@@ -2320,7 +2320,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 			else if (c == '"')
 			{
 				i = Text::StrIndexOf(sptr, L"\"");
-				if (i < 0)
+				if (i == INVALID_INDEX)
 					return false;
 				sptr[i] = 0;
 				sptr = env->GetIncludeFilePath(sbuff, sptr);

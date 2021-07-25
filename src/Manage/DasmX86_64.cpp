@@ -28,7 +28,7 @@ Bool DasmX86_64_IsEndFunc(const UTF8Char *funcName)
 	{
 		return true;
 	}
-	else if (Text::StrIndexOf(funcName, (const UTF8Char*)"(exit+0)") >= 0)
+	else if (Text::StrIndexOf(funcName, (const UTF8Char*)"(exit+0)") != INVALID_INDEX)
 	{
 		return true;
 	}

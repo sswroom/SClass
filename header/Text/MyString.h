@@ -178,8 +178,8 @@ namespace Text
 	UOSInt StrToUOSInt(const Char *str);
 	Bool StrToUOSInt(const Char *intStr, UOSInt *outVal);
 	Bool StrToBool(const Char *str);
-	OSInt StrIndexOf(const Char *str1, const Char *str2);
-	OSInt StrIndexOf(const Char *str1, Char c);
+	UOSInt StrIndexOf(const Char *str1, const Char *str2);
+	UOSInt StrIndexOf(const Char *str1, Char c);
 	UOSInt StrIndexOfICase(const Char *str1, const Char *str2);
 	UOSInt StrLastIndexOf(const Char *str1, Char c);
 	UOSInt StrLastIndexOf(const Char *str1, const Char *str2);
@@ -250,6 +250,7 @@ namespace Text
 	FORCEINLINE UInt32 StrHex2UInt32C(const UTF8Char *str) { return (UInt32)StrHex2Int32C((const Char*)str); }
 	FORCEINLINE UInt64 StrHex2UInt64C(const UTF8Char *str) { return (UInt64)StrHex2Int64C((const Char*)str); }
 	FORCEINLINE Int16 StrHex2Int16C(const UTF8Char *str) { return StrHex2Int16C((const Char*)str); }
+	FORCEINLINE UInt16 StrHex2UInt16C(const UTF8Char *str) { return (UInt16)StrHex2Int16C((const Char*)str); }
 	FORCEINLINE UInt8 StrHex2UInt8C(const UTF8Char *str) { return StrHex2UInt8C((const Char*)str); }
 	FORCEINLINE UOSInt StrHex2Bytes(const UTF8Char *str, UInt8 *buff) { return StrHex2Bytes((const Char*)str, buff); };
 #ifdef HAS_INT64
@@ -302,8 +303,8 @@ namespace Text
 	FORCEINLINE Bool StrToUOSInt(const UTF8Char *intStr, UOSInt *outVal) { return StrToUOSInt((const Char*)intStr, outVal); };
 	FORCEINLINE Bool StrToBool(const UTF8Char *str) { return StrToBool((const Char*)str); };
 
-	FORCEINLINE OSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOf((const Char*)str1, (const Char*)str2); }
-	FORCEINLINE OSInt StrIndexOf(const UTF8Char *str1, UTF8Char c) { return StrIndexOf((const Char*)str1, (Char)c); }
+	FORCEINLINE UOSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOf((const Char*)str1, (const Char*)str2); }
+	FORCEINLINE UOSInt StrIndexOf(const UTF8Char *str1, UTF8Char c) { return StrIndexOf((const Char*)str1, (Char)c); }
 	FORCEINLINE UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOfICase((const Char*)str1, (const Char*)str2); };
 	FORCEINLINE UOSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c) { return StrLastIndexOf((const Char*)str1, (Char)c); }
 	FORCEINLINE UOSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrLastIndexOf((const Char*)str1, (const Char *)str2); }

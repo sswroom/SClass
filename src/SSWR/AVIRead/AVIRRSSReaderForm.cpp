@@ -128,10 +128,10 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
-	OSInt i = me->cboRecent->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->cboRecent->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
-		me->txtURL->SetText(me->rssList->GetItem((UOSInt)i));
+		me->txtURL->SetText(me->rssList->GetItem(i));
 	}
 }
 

@@ -238,9 +238,9 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append((const UTF8Char*)"Surface size changed to ");
-			sb.AppendOSInt(me->surfaceW);
+			sb.AppendUOSInt(me->surfaceW);
 			sb.Append((const UTF8Char*)" x ");
-			sb.AppendOSInt(me->surfaceH);
+			sb.AppendUOSInt(me->surfaceH);
 			sb.Append((const UTF8Char*)", hMon=");
 			sb.AppendOSInt((OSInt)me->GetHMonitor());
 			me->debugWriter->WriteLine(sb.ToString());
@@ -372,7 +372,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append((const UTF8Char*)"Error in creating primary surface: 0x");
-				sb.AppendHex32(res);
+				sb.AppendHex32((UInt32)res);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
 			if (res == DDERR_NOCOOPERATIVELEVELSET)
@@ -462,8 +462,8 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		ddsd.dwSize = sizeof(ddsd);
 		ddsd.dwFlags        = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_DEPTH;
 		ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-		ddsd.dwWidth = rc.right - rc.left;
-		ddsd.dwHeight = rc.bottom - rc.top;
+		ddsd.dwWidth = (UInt32)(rc.right - rc.left);
+		ddsd.dwHeight = (UInt32)(rc.bottom - rc.top);
 		ddsd.dwDepth = this->bitDepth;
 		if (this->surfaceW != ddsd.dwWidth || this->surfaceH != ddsd.dwHeight)
 		{
@@ -639,7 +639,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	}
 	this->HandleSizeChanged(OnResized, this);
 
-	Int32 style = WS_CHILD;
+	UInt32 style = WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
@@ -816,7 +816,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.Append((const UTF8Char*)"DrawToScreen: Error in subsurface: 0x");
-						sb.AppendHex32(hRes);
+						sb.AppendHex32((UInt32)hRes);
 						this->debugWriter->WriteLine(sb.ToString());
 					}
 					hRes = 0;
@@ -829,7 +829,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.Append((const UTF8Char*)"DrawToScreen: Error in primary surface: 0x");
-					sb.AppendHex32(hRes);
+					sb.AppendHex32((UInt32)hRes);
 					this->debugWriter->WriteLine(sb.ToString());
 				}
 				hRes = 0;
@@ -944,7 +944,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.Append((const UTF8Char*)"DrawToScreen: Error in surface blt: 0x");
-						sb.AppendHex32(hRes);
+						sb.AppendHex32((UInt32)hRes);
 						this->debugWriter->WriteLine(sb.ToString());
 					}
 					hRes = 0;
@@ -964,7 +964,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, OSInt drawW, OSInt drawH, Bool clearScn)
+void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	RECT rcSrc;
 	RECT rcDest;
@@ -1009,38 +1009,38 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 				((LPDIRECTDRAW7)this->currDD)->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, 0);
 				if (this->bitDepth == 32)
 				{
-					this->imgCopy->Copy32(buff, bpl, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
+					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
 				else if (this->bitDepth == 16)
 				{
-					this->imgCopy->Copy16(buff, bpl, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
+					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
 				if (clearScn)
 				{
 					if (tly > 0)
 					{
-						MemClear(ddsd.lpSurface, ddsd.lPitch * tly);
+						MemClear(ddsd.lpSurface, (UOSInt)(ddsd.lPitch * tly));
 					}
-					if (tly + drawH < (OSInt)this->surfaceH)
+					if (tly + (OSInt)drawH < (OSInt)this->surfaceH)
 					{
-						MemClear(((UInt8*)ddsd.lpSurface) + ddsd.lPitch * (tly + drawH), ddsd.lPitch * (this->surfaceH - drawH - tly));
+						MemClear(((UInt8*)ddsd.lpSurface) + ddsd.lPitch * (tly + (OSInt)drawH), (ULONG)ddsd.lPitch * (this->surfaceH - drawH - (UOSInt)tly));
 					}
 					if (tlx > 0)
 					{
 						UInt8 *dptr = ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly;
-						OSInt byteSize = tlx * (this->bitDepth >> 3);
-						OSInt i = drawH;
+						UOSInt byteSize = (UOSInt)tlx * (this->bitDepth >> 3);
+						UOSInt i = drawH;
 						while (i-- > 0)
 						{
 							MemClear(dptr, byteSize);
 							dptr += ddsd.lPitch;
 						}
 					}
-					if (tlx + drawW < (OSInt)this->surfaceW)
+					if (tlx + (OSInt)drawW < (OSInt)this->surfaceW)
 					{
-						UInt8 *dptr = ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx + drawW) * (this->bitDepth >> 3);
-						OSInt byteSize = (this->surfaceW - tlx - drawW) * (this->bitDepth >> 3);
-						OSInt i = drawH;
+						UInt8 *dptr = ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx + (OSInt)drawW) * (this->bitDepth >> 3);
+						UOSInt byteSize = (this->surfaceW - (UOSInt)tlx - drawW) * (this->bitDepth >> 3);
+						UOSInt i = drawH;
 						while (i-- > 0)
 						{
 							MemClear(dptr, byteSize);
@@ -1080,11 +1080,11 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			{
 				if (this->bitDepth == 32)
 				{
-					this->imgCopy->Copy32(buff, bpl, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
+					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
 				else if (this->bitDepth == 16)
 				{
-					this->imgCopy->Copy16(buff, bpl, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
+					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
 				((LPDIRECTDRAWSURFACE7)this->pSurface)->Unlock(0);
 			}
@@ -1101,11 +1101,11 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			{
 				if (this->bitDepth == 32)
 				{
-					this->imgCopy->Copy32(buff, bpl, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
+					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
 				else if (this->bitDepth == 16)
 				{
-					this->imgCopy->Copy16(buff, bpl, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
+					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
 				((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
 			}
@@ -1150,7 +1150,7 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 						{
 							Text::StringBuilderUTF8 sb;
 							sb.Append((const UTF8Char*)"DrawFromBuff: Error in surface blt: 0x");
-							sb.AppendHex32(hRes);
+							sb.AppendHex32((UInt32)hRes);
 							this->debugWriter->WriteLine(sb.ToString());
 						}
 					}

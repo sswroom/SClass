@@ -30,7 +30,7 @@ namespace Net
 		UInt32 GetIPAddress();
 		ARPType GetARPType();
 
-		static OSInt GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList);
+		static UOSInt GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList);
 	};
 }
 #endif

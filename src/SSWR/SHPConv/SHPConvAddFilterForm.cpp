@@ -7,7 +7,7 @@
 void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvAddFilterForm *me = (SSWR::SHPConv::SHPConvAddFilterForm*)userObj;
-	OSInt i = me->cboFilter->GetSelectedIndex();
+	UOSInt i = me->cboFilter->GetSelectedIndex();
 	if (i == 0)
 	{
 		SSWR::SHPConv::SHPConvValueFilterForm *frm;

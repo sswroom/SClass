@@ -45,11 +45,11 @@ namespace UI
 		Sync::Mutex *surfaceMut;
 		UOSInt surfaceW;
 		UOSInt surfaceH;
-		Int32 bitDepth;
+		UInt32 bitDepth;
 		OSInt scnX;
 		OSInt scnY;
-		OSInt scnW;
-		OSInt scnH;
+		UOSInt scnW;
+		UOSInt scnH;
 		void *currMon;
 		ScreenMode currScnMode;
 		ScreenMode fullScnMode;
@@ -88,7 +88,7 @@ namespace UI
 
 		void SetUserFSMode(ScreenMode fullScnMode);
 		void DrawToScreen();
-		void DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, OSInt drawW, OSInt drawH, Bool clearScn);
+		void DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(void *hMon);

@@ -59,7 +59,7 @@ Bool IO::FileUtil::DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile)
 	if (pt == IO::Path::PT_DIRECTORY)
 	{
 		UTF8Char sbuff[512];
-		Text::StrWChar_UTF8(sbuff, file, -1);
+		Text::StrWChar_UTF8(sbuff, file);
 		return DeleteDir(sbuff, deleteRdonlyFile);
 	}
 	BOOL ret = ::DeleteFileW(file);

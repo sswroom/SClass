@@ -44,7 +44,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
-	if (Text::StrIndexOf(fileName, IO::Path::PATH_SEPERATOR) >= 0)
+	if (Text::StrIndexOf(fileName, IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);

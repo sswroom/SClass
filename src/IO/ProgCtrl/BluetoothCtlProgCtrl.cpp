@@ -272,7 +272,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Error in getting device \"%s\"\r\n", &sarr[0][13]);
 					}
 				}
-				else if (sarr[0][0] == '[' && Text::StrIndexOf(sarr[0], (const UTF8Char*)"]# ") >= 0)
+				else if (sarr[0][0] == '[' && Text::StrIndexOf(sarr[0], (const UTF8Char*)"]# ") != INVALID_INDEX)
 				{
 					if (!me->cmdReady)
 					{
@@ -287,7 +287,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 			}
 		}
 
-		if (sarr[0][0] == '[' && Text::StrIndexOf(sarr[0], (const UTF8Char*)"]# ") >= 0)
+		if (sarr[0][0] == '[' && Text::StrIndexOf(sarr[0], (const UTF8Char*)"]# ") != INVALID_INDEX)
 		{
 			if (!me->cmdReady)
 			{

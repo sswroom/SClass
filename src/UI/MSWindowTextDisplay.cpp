@@ -41,8 +41,8 @@ void UI::MSWindowTextDisplay::UpdateScreen()
 {
 	if (this->currText)
 	{
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		WChar *strBuff;
 		Double sz[2];
 		Double currY;
@@ -55,7 +55,7 @@ void UI::MSWindowTextDisplay::UpdateScreen()
 		{
 			strArr.Add(&strBuff[i]);
 			j = Text::StrIndexOf(&strBuff[i], '\r');
-			if (j < 0)
+			if (j == INVALID_INDEX)
 				break;
 			strBuff[i + j] = 0;
 			if (strBuff[i + j + 1] == '\n')

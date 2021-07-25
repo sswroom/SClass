@@ -55,8 +55,8 @@ namespace SSWR
 			Bool UpdateSpeciesWebFileOld(OrganSpecies *sp, const UTF8Char *webFileName, const UTF8Char *srcURL);
 			virtual Bool SaveSpecies(OrganSpecies *sp);
 			virtual Bool SaveGroup(OrganGroup *grp);
-			virtual Int32 GetGroupCount(Int32 groupId);
-			virtual Int32 GetSpeciesCount(Int32 groupId);
+			virtual UOSInt GetGroupCount(Int32 groupId);
+			virtual UOSInt GetSpeciesCount(Int32 groupId);
 			virtual Bool AddGroup(OrganGroup *grp, Int32 parGroupId);
 			virtual Bool DelGroup(Int32 groupId);
 			virtual Bool SetGroupDefSp(OrganGroup *grp, OrganImageItem *img);

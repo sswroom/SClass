@@ -23,7 +23,7 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 	UI::GUIVSplitter *me = (UI::GUIVSplitter*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	POINT pt;
 	HDC hdc;
-	OSInt i;
+	UOSInt i;
 	UI::GUIControl *ctrl;
 
 	if (me == 0)
@@ -93,7 +93,7 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					{
 						ctrl->GetPositionP(&x, &y);
 						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, drawY, x + w, y + h, false);
+						ctrl->SetAreaP(x, drawY, x + (OSInt)w, y + (OSInt)h, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -101,7 +101,7 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					{
 						ctrl->GetPositionP(&x, &y);
 						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, y, x + w, drawY, false);
+						ctrl->SetAreaP(x, y, x + (OSInt)w, drawY, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -200,7 +200,7 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 
 void UI::GUIVSplitter::CalDragRange()
 {
-	OSInt i;
+	UOSInt i;
 	OSInt max;
 	OSInt min;
 	UOSInt tmp;
@@ -234,7 +234,7 @@ void UI::GUIVSplitter::CalDragRange()
 						foundBottom = true;
 						ctrl->GetPositionP(0, &max);
 						ctrl->GetSizeP(0, &tmp);
-						max += tmp;
+						max += (OSInt)tmp;
 					}
 				}
 				else if (dockType == UI::GUIControl::DOCK_TOP)
@@ -244,7 +244,7 @@ void UI::GUIVSplitter::CalDragRange()
 						foundTop = true;
 						ctrl->GetPositionP(0, &min);
 						ctrl->GetSizeP(0, &tmp);
-						min += tmp;
+						min += (OSInt)tmp;
 					}
 				}
 			}
@@ -295,7 +295,7 @@ UI::GUIVSplitter::GUIVSplitter(UI::GUICore *ui, UI::GUIClientControl *parent, In
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CHILD;
+	UInt32 style = WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

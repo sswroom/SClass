@@ -158,15 +158,15 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 		GdkPixbuf *buf;
 		if (this->currImage->info->atype == Media::AT_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth << 2, 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->currImage->info->dispWidth, (int)(UInt32)this->currImage->info->dispHeight, (int)(UInt32)(this->currImage->info->storeWidth << 2), 0, 0);
 		}
 		else if (this->currImage->info->atype == Media::AT_PREMUL_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth << 2, 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->currImage->info->dispWidth, (int)(UInt32)this->currImage->info->dispHeight, (int)(UInt32)(this->currImage->info->storeWidth << 2), 0, 0);
 		}
 		else
 		{
-			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth << 2, 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->currImage->info->dispWidth, (int)(UInt32)this->currImage->info->dispHeight, (int)(UInt32)(this->currImage->info->storeWidth << 2), 0, 0);
 		}
 		data->pixbuf = buf;
 		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd, buf);

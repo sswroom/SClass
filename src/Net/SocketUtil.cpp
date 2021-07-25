@@ -253,8 +253,8 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 	WChar *sarr[9];
 	WChar *sptr;
 	UOSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
 	Int32 v;
 	sptr = Text::StrConcatS(sbuff,ipName, 51);
 	if ((sptr - sbuff) >= 50)
@@ -280,7 +280,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		return true;
 	}
 	j = Text::StrIndexOf(sarr[i - 1], '%');
-	if (j >= 0)
+	if (j != INVALID_INDEX)
 	{
 		if (Text::StrToInt32(&sarr[i - 1][j + 1], &v))
 		{
@@ -335,17 +335,17 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		return true;
 	}
 	j = 0;
-	while (j < (OSInt)i)
+	while (j < i)
 	{
 		if (sarr[j][0] == 0)
 		{
-			if (j + 1 >= (OSInt)i)
+			if (j + 1 >= i)
 			{
 				return false;
 			}
 			j++;
 			k = 7;
-			while ((OSInt)i-- > j)
+			while (i-- > j)
 			{
 				v = Text::StrHex2Int32C(sarr[i]);
 				if (v > 65535)
@@ -407,8 +407,8 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 	UTF8Char *sarr[9];
 	UTF8Char *sptr;
 	UOSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt j;
+	UOSInt k;
 	Int32 v;
 	sptr = Text::StrConcatS(sbuff,ipName, 51);
 	if ((sptr - sbuff) >= 50)
@@ -434,7 +434,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		return true;
 	}
 	j = Text::StrIndexOf(sarr[i - 1], '%');
-	if (j >= 0)
+	if (j != INVALID_INDEX)
 	{
 		if (Text::StrToInt32(&sarr[i - 1][j + 1], &v))
 		{
@@ -489,17 +489,17 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		return true;
 	}
 	j = 0;
-	while (j < (OSInt)i)
+	while (j < i)
 	{
 		if (sarr[j][0] == 0)
 		{
-			if (j + 1 >= (OSInt)i)
+			if (j + 1 >= i)
 			{
 				return false;
 			}
 			j++;
 			k = 7;
-			while ((OSInt)i-- > j)
+			while (i-- > j)
 			{
 				v = Text::StrHex2Int32C(sarr[i]);
 				if (v > 65535)

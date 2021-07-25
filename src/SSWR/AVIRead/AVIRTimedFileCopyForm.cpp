@@ -69,7 +69,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 	IO::Path::PathType pt;
 	Int32 iVal;
 	Bool succ;
-	OSInt i;
+	UOSInt i;
 	Data::DateTime dt(startTime);
 	Data::DateTime modTime;
 	Text::StrConcat(pathEnd, IO::Path::ALL_FILES);
@@ -82,13 +82,13 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 			{
 				succ = false;
 				i = Text::StrIndexOf(pathEnd, '.');
-				if (i >= 8)
+				if (i != INVALID_INDEX && i >= 8)
 				{
 					pathEnd[i] = 0;
 					succ = Text::StrToInt32(&pathEnd[i - 8], &iVal);
 					pathEnd[i] = '.';
 				}
-				else if (i < 0 && (sptr - pathEnd) >= 8)
+				else if (i == INVALID_INDEX && (sptr - pathEnd) >= 8)
 				{
 					succ = Text::StrToInt32(sptr - 8, &iVal);
 				}

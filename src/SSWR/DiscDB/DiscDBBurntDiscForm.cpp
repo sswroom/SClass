@@ -495,7 +495,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm:
 	{
 		file->cate = (const UTF8Char*)"PG";
 	}
-	else if (Text::StrIndexOf(wfileName, L"ゲーム") != -1)
+	else if (Text::StrIndexOf(wfileName, L"ゲーム") != INVALID_INDEX)
 	{
 		if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"DVD") != INVALID_INDEX)
 		{
@@ -707,7 +707,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 					if (chapterTitle[0] == 0)
 					{
 						mainTitle[j] = 0;
-						j = Text::StrConcat(chapterTitle, &mainTitle[j + 1]) - chapterTitle;
+						j = (UOSInt)(Text::StrConcat(chapterTitle, &mainTitle[j + 1]) - chapterTitle);
 						if (j > 3 && chapterTitle[j - 4] == '.')
 						{
 							chapterTitle[j - 4] = 0;
@@ -941,7 +941,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 		{
 			Text::StringBuilderUTF8 sbBegText;
 			BurntFile *bFile;
-			sbBegText.AppendC(me->selectedFile->fname, (UOSInt)prefix);
+			sbBegText.AppendC(me->selectedFile->fname, prefix);
 
 			i = 0;
 			j = me->fileList->GetCount();
@@ -1235,12 +1235,12 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnVolumeSelChg(void *userObj)
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnRemoveFileClicked(void *userObj)
 {
 	SSWR::DiscDB::DiscDBBurntDiscForm *me = (SSWR::DiscDB::DiscDBBurntDiscForm*)userObj;
-	OSInt i = me->lbFileName->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbFileName->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		me->selectedFile = 0;
-		me->lbFileName->RemoveItem((UOSInt)i);
-		me->BurntFileFree(me->fileList->RemoveAt((UOSInt)i));
+		me->lbFileName->RemoveItem(i);
+		me->BurntFileFree(me->fileList->RemoveAt(i));
 	}
 }
 

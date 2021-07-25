@@ -222,6 +222,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 
 Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2)
 {
+	UOSInt i;
 	OSInt si;
 	IO::StmData::FileData *fd;
 	DB::DBFFile *dbf;
@@ -232,8 +233,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	const UTF8Char *s;
 
 	sb.Append(sourceFile);
-	si = sb.LastIndexOf('.');
-	sb.RemoveChars(sb.GetLength() - (UOSInt)si - 1);
+	i = sb.LastIndexOf('.');
+	sb.RemoveChars(sb.GetLength() - i - 1);
 	sb.Append((const UTF8Char*)"dbf");
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 	NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
@@ -258,7 +259,6 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	Text::StringBuilderUTF8 sb2;
 	Data::ArrayList<MapFilter*> newFilters;
 	MapFilter *filter;
-	UOSInt i;
 	newFilters.AddRange(filters);
 	i = names.GetCount();
 	while (i-- > 0)
@@ -381,10 +381,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		{
 			sb.ClearStr();
 			sb.Append(sourceFile);
-			si = sb.LastIndexOf('.');
-			if (si >= 0)
+			i = sb.LastIndexOf('.');
+			if (i != INVALID_INDEX)
 			{
-				sb.RemoveChars(sb.GetLength() - (UOSInt)si);
+				sb.RemoveChars(sb.GetLength() - i);
 			}
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
@@ -797,10 +797,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		{
 			sb.ClearStr();
 			sb.Append(sourceFile);
-			si = sb.LastIndexOf('.');
-			if (si >= 0)
+			i = sb.LastIndexOf('.');
+			if (i != INVALID_INDEX)
 			{
-				sb.RemoveChars(sb.GetLength() - (UOSInt)si);
+				sb.RemoveChars(sb.GetLength() - i);
 			}
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
@@ -1240,7 +1240,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(labelStr);
-	OSInt i;
+	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt strType;
@@ -1250,7 +1250,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 	while (true)
 	{
 		i = sb.IndexOf((const UTF8Char*)"<%=");
-		if (i < 0)
+		if (i == INVALID_INDEX)
 		{
 			dbCols->Add(Text::StrCopyNew(sb.ToString()));
 			break;
@@ -1259,7 +1259,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 		dbCols->Add(Text::StrCopyNew(sb.ToString()));
 		sb.SetSubstr((UOSInt)i + 3);
 		i = sb.IndexOf((const UTF8Char*)"%>");
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sb.ToString()[i] = 0;
 		}

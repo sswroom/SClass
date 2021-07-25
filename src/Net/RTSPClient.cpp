@@ -24,7 +24,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 	UOSInt thisSize;
 	UOSInt i;
 	UOSInt j;
-	OSInt k;
+	UOSInt k;
 	Bool content;
 	IO::MemoryStream *mstm;
 	IO::StreamReader *reader;
@@ -126,7 +126,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 						{
 							SDEL_TEXT(cliData->reqStrs);
 							k = Text::StrIndexOf(&sbuff[9], ';');
-							if (k >= 0)
+							if (k != INVALID_INDEX)
 							{
 								sbuff[9 + k] = 0;
 							}

@@ -9,20 +9,20 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 	SSWR::AVIRead::AVIRGISCSysForm *me = (SSWR::AVIRead::AVIRGISCSysForm*)userObj;
 	if (me->radGeo->IsSelected())
 	{
-		OSInt i = me->cboGeo->GetSelectedIndex();
-		if (i >= 0)
+		UOSInt i = me->cboGeo->GetSelectedIndex();
+		if (i != INVALID_INDEX)
 		{
-			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)me->cboGeo->GetItem((UOSInt)i);
+			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)me->cboGeo->GetItem(i);
 			me->outCSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
 	}
 	else if (me->radProj->IsSelected())
 	{
-		OSInt i = me->cboProj->GetSelectedIndex();
-		if (i >= 0)
+		UOSInt i = me->cboProj->GetSelectedIndex();
+		if (i != INVALID_INDEX)
 		{
-			const UTF8Char *projName = (const UTF8Char *)me->cboProj->GetItem((UOSInt)i);
+			const UTF8Char *projName = (const UTF8Char *)me->cboProj->GetItem(i);
 			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem(projName, projName);
 			if (me->outCSys)
 			{

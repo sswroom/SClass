@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 		return;
 	}
 
-	OSInt type = me->cboType->GetSelectedIndex();
+	UOSInt type = me->cboType->GetSelectedIndex();
 	UInt8 buff[32];
 	UOSInt keySize;
 	Text::TextBinEnc::Base32Enc b32;

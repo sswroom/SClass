@@ -73,11 +73,11 @@ void DB::ODBCConn::UpdateConnInfo()
 		{
 			this->svrType = DB::DBUtil::SVR_TYPE_MSSQL;
 		}
-		else if (Text::StrIndexOf(buff, "sqlite") >= 0)
+		else if (Text::StrIndexOf(buff, "sqlite") != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::SVR_TYPE_SQLITE;
 		}
-		else if (Text::StrIndexOf(buff, "odbcjt32") >= 0)
+		else if (Text::StrIndexOf(buff, "odbcjt32") != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::SVR_TYPE_ACCESS;
 		}
@@ -85,7 +85,7 @@ void DB::ODBCConn::UpdateConnInfo()
 		{
 			this->svrType = DB::DBUtil::SVR_TYPE_ACCESS;
 		}
-		else if (Text::StrIndexOf(buff, "msodbcsql") >= 0)
+		else if (Text::StrIndexOf(buff, "msodbcsql") != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::SVR_TYPE_MSSQL;
 		}
@@ -1006,12 +1006,12 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, vo
 		}
 	}
 	sb.Append((const UTF8Char*)"* from ");
-	OSInt i = 0;
-	OSInt j;
+	UOSInt i = 0;
+	UOSInt j;
 	while (true)
 	{
 		j = Text::StrIndexOf(&name[i], '.');
-		if (j < 0)
+		if (j == INVALID_INDEX)
 		{
 			DB::DBUtil::SDBColUTF8(sbuff, &name[i], this->svrType);
 			sb.Append(sbuff);

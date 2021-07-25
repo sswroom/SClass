@@ -17,9 +17,9 @@ namespace Media
 		WIAManager();
 		~WIAManager();
 
-		OSInt GetDeviceCount();
-		const UTF8Char *GetDeviceName(OSInt index);
-		WIADevice *CreateDevice(OSInt index);
+		UOSInt GetDeviceCount();
+		const UTF8Char *GetDeviceName(UOSInt index);
+		WIADevice *CreateDevice(UOSInt index);
 	};
 
 	class WIADevice
@@ -30,5 +30,5 @@ namespace Media
 		WIADevice(void *pWiaItem);
 		~WIADevice();
 	};
-};
+}
 #endif

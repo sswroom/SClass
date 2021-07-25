@@ -357,13 +357,13 @@ void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 //	this->EventSelectionChange();
 }
 
-OSInt UI::GUIListBox::GetSelectedIndex()
+UOSInt UI::GUIListBox::GetSelectedIndex()
 {
 	ListBoxData *data = (ListBoxData*)this->clsData;
 	GtkListBoxRow *row = gtk_list_box_get_selected_row((GtkListBox*)data->listbox);
 	if (row == 0)
-		return -1;
-	return gtk_list_box_row_get_index(row);
+		return INVALID_INDEX;
+	return (UInt32)gtk_list_box_row_get_index(row);
 }
 
 Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
@@ -382,34 +382,34 @@ Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 
 void *UI::GUIListBox::GetSelectedItem()
 {
-	OSInt currSel = GetSelectedIndex();
-	if (currSel <= -1)
+	UOSInt currSel = GetSelectedIndex();
+	if (currSel == INVALID_INDEX)
 		return 0;
-	return GetItem((UOSInt)currSel);
+	return GetItem(currSel);
 }
 
 UTF8Char *UI::GUIListBox::GetSelectedItemText(UTF8Char *buff)
 {
-	OSInt currSel = GetSelectedIndex();
-	if (currSel <= -1)
+	UOSInt currSel = GetSelectedIndex();
+	if (currSel == INVALID_INDEX)
 		return 0;
-	return GetItemText(buff, (UOSInt)currSel);
+	return GetItemText(buff, currSel);
 }
 
 WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 {
-	OSInt currSel = GetSelectedIndex();
-	if (currSel <= -1)
+	UOSInt currSel = GetSelectedIndex();
+	if (currSel == INVALID_INDEX)
 		return 0;
-	return GetItemText(buff, (UOSInt)currSel);
+	return GetItemText(buff, currSel);
 }
 
 const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
 {
-	OSInt currSel = GetSelectedIndex();
-	if (currSel <= -1)
+	UOSInt currSel = GetSelectedIndex();
+	if (currSel == INVALID_INDEX)
 		return 0;
-	return GetItemTextNew((UOSInt)currSel);
+	return GetItemTextNew(currSel);
 }
 
 UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)

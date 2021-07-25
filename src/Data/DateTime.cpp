@@ -366,7 +366,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 	Char *strs[3];
 	UOSInt nStrs;
 	Bool succ = true;
-	if (dateStr[3] == ',' && Text::StrIndexOf(&dateStr[4], ',') == -1)
+	if (dateStr[3] == ',' && Text::StrIndexOf(&dateStr[4], ',') == INVALID_INDEX)
 	{
 		dateStr += 4;
 		while (*dateStr == ' ')
@@ -547,8 +547,8 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		this->ms = 0;
 		this->tzQhr = 0;
 
-		OSInt j = 0;
-		OSInt i;
+		UOSInt j = 0;
+		UOSInt i;
 		UOSInt splitCnt;
 		while (true)
 		{
@@ -591,7 +591,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 				else
 				{
 					i = Text::StrIndexOf(strs2[j], '/');
-					if (i > 0)
+					if (i != INVALID_INDEX && i > 0)
 					{
 						if (Text::StrSplit(strs, 3, strs2[0], '/') == 3)
 						{
@@ -600,14 +600,13 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 					}
 					else
 					{
-						i = Text::StrIndexOf(strs2[j], '-');
 						if (Text::StrSplit(strs, 3, strs2[0], '-') == 3)
 						{
 							SetDate(strs);
 						}
 						else
 						{
-							i = Text::StrToInt32(strs2[j]);
+							i = Text::StrToUInt32(strs2[j]);
 							if (i <= 0)
 							{
 								i = ParseMonthStr(strs2[j]);

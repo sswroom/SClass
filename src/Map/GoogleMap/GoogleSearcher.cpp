@@ -96,18 +96,19 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	UInt8 databuff[2048];
 	UOSInt databuffSize;
 	Data::DateTime currDt;
-	Int32 i;
+	OSInt si;
+	UOSInt i;
 	Char *ptrs[3];
 
 	Sync::MutexUsage mutUsage(mut);
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
-	if ((i = (Int32)currDt.DiffMS(this->lastSrchDate)) < 200)
+	if ((si = (OSInt)currDt.DiffMS(this->lastSrchDate)) < 200)
 	{
-		if (i >= 0)
+		if (si >= 0)
 		{
-			Sync::Thread::Sleep((UOSInt)(200 - i));
+			Sync::Thread::Sleep((UOSInt)(200 - si));
 		}
 	}
 
@@ -169,12 +170,12 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 			sptr = buff;
 			if (*ptrs[2] == '"')
 			{
-				status = (Int32)Text::StrIndexOf(&ptrs[2][1], '"');
-				if (status >= 0)
+				i = Text::StrIndexOf(&ptrs[2][1], '"');
+				if (i != INVALID_INDEX)
 				{
-					if ((UOSInt)status < buffSize)
+					if (i < buffSize)
 					{
-						buff = Text::StrConcatC(buff, (const UTF8Char*)&ptrs[2][1], (UOSInt)status);
+						buff = Text::StrConcatC(buff, (const UTF8Char*)&ptrs[2][1], i);
 					}
 					else
 					{

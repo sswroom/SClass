@@ -151,7 +151,6 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	Data::ArrayList<UInt32> formats;
 	UOSInt i;
 	UOSInt j;
-	OSInt si;
 	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
 	UTF8Char *sarr[2];
@@ -181,22 +180,22 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 			while (true)
 			{
 				i = Text::StrSplitLine(sarr, 2, sarr[1]);
-				if (i == 2 && Text::StrIndexOf(sarr[0], (const UTF8Char*)"<div class=\"post-thumb\">") >= 0)
+				if (i == 2 && Text::StrIndexOf(sarr[0], (const UTF8Char*)"<div class=\"post-thumb\">") != INVALID_INDEX)
 				{
 					desc = 0;
 					i = Text::StrSplitLine(sarr, 2, sarr[1]);
-					si = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<img class=\"lazyload\" ");
-					if (i == 2 && si >= 0)
+					j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<img class=\"lazyload\" ");
+					if (i == 2 && j != INVALID_INDEX)
 					{
-						sarr[0] = &sarr[0][si + 22];
-						si = Text::StrIndexOf(sarr[0], (const UTF8Char*)"alt=\"");
-						if (si >= 0)
+						sarr[0] = &sarr[0][j + 22];
+						j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"alt=\"");
+						if (j != INVALID_INDEX)
 						{
-							sarr[0] = &sarr[0][si + 5];
-							si = Text::StrIndexOf(sarr[0], '\"');
-							if (si >= 0)
+							sarr[0] = &sarr[0][j + 5];
+							j = Text::StrIndexOf(sarr[0], '\"');
+							if (j != INVALID_INDEX)
 							{
-								sarr[0][si] = 0;
+								sarr[0][j] = 0;
 								desc = sarr[0];
 							}
 						}
@@ -204,14 +203,14 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 					if (desc)
 					{
 						i = Text::StrSplitLine(sarr, 2, sarr[1]);
-						si = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<a href=\"");
-						if (i == 2 && si >= 0)
+						j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<a href=\"");
+						if (i == 2 && j != INVALID_INDEX)
 						{
-							sarr[0] = &sarr[0][si + 9];
-							si = Text::StrIndexOf(sarr[0], '\"');
-							if (si >= 0)
+							sarr[0] = &sarr[0][j + 9];
+							j = Text::StrIndexOf(sarr[0], '\"');
+							if (j != INVALID_INDEX)
 							{
-								sarr[0][si] = 0;
+								sarr[0][j] = 0;
 								urlList.Add(sarr[0]);
 								descList.Add(desc);
 							}

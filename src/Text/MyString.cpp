@@ -1882,7 +1882,7 @@ Bool Text::StrToBool(const Char *str)
 	}
 }
 
-OSInt Text::StrIndexOf(const Char *str1, const Char *str2)
+UOSInt Text::StrIndexOf(const Char *str1, const Char *str2)
 {
 	const Char *ptr = str1;
 	const Char *ptr2;
@@ -1902,21 +1902,21 @@ OSInt Text::StrIndexOf(const Char *str1, const Char *str2)
 			}
 		}
 		if (i == 0)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		ptr++;
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
-OSInt Text::StrIndexOf(const Char *str1, Char c)
+UOSInt Text::StrIndexOf(const Char *str1, Char c)
 {
 	const Char *ptr = str1;
 	while (*ptr)
 		if (*ptr == c)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		else
 			ptr++;
-	return -1;
+	return INVALID_INDEX;
 }
 
 UOSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)

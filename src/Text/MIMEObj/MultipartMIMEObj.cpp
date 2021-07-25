@@ -407,7 +407,7 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 	}
 
 	UOSInt i = Text::StrCharCnt(contentType);
-	OSInt k;
+	UOSInt k;
 	while (contentType[j] == '\r' || contentType[j] == '\n' || contentType[j] == '\t' || contentType[j] == ' ')
 	{
 		j++;
@@ -419,9 +419,9 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		UOSInt buffSize;
 		UInt8 *buff;
 		k = Text::StrIndexOf(&contentType[j], ';');
-		if (k >= 0)
+		if (k != INVALID_INDEX)
 		{
-			i = j + (UOSInt)k;
+			i = j + k;
 		}
 
 		boundary.Append((const UTF8Char*)"--");
@@ -440,7 +440,7 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		buff[buffSize] = 0;
 
 		k = Text::StrIndexOf(buff, boundary.ToString());
-		if (k < 0)
+		if (k == INVALID_INDEX)
 		{
 			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, 0, boundary.ToString()));
 			i = 0;
@@ -449,7 +449,7 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		{
 			buff[k] = 0;
 			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, buff, boundary.ToString()));
-			i = (UOSInt)k + boundary.GetLength();
+			i = k + boundary.GetLength();
 			if (buff[i] == '\r' && buff[i + 1] == '\n')
 			{
 				i += 2;
@@ -458,12 +458,12 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		while (true)
 		{
 			k = Text::StrIndexOf(&buff[i], boundary.ToString());
-			if (k < 0)
+			if (k == INVALID_INDEX)
 				break;
-			k += (OSInt)i;
+			k += i;
 
-			obj->ParsePart(&buff[i], (UOSInt)k - i);
-			i = (UOSInt)k + boundary.GetLength();
+			obj->ParsePart(&buff[i], k - i);
+			i = k + boundary.GetLength();
 			if (buff[i] == '\r' && buff[i + 1] == '\n')
 			{
 				i += 2;

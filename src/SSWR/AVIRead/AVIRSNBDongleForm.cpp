@@ -333,7 +333,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 
 	Text::StringBuilderUTF8 remarks;
 	me->txtRemarks->GetText(&remarks);
-	if (remarks.IndexOf('\r') >= 0 || remarks.IndexOf('\n') >= 0 || remarks.IndexOf('\'') >= 0)
+	if (remarks.IndexOf('\r') != INVALID_INDEX || remarks.IndexOf('\n') != INVALID_INDEX || remarks.IndexOf('\'') != INVALID_INDEX)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Remarks contain invalid characters", (const UTF8Char *)"Error", me);
 		return;

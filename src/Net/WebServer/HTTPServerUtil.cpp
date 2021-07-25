@@ -454,7 +454,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			DEL_CLASS(fs);
 			return true;
 		}
-		if (sb2.IndexOf(',') >= 0)
+		if (sb2.IndexOf(',') != INVALID_INDEX)
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			resp->AddDefHeaders(req);
@@ -466,8 +466,8 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		UInt64 start = 0;
 		Int64 end = -1;
-		OSInt i = sb2.IndexOf('-');
-		if (i < 0)
+		UOSInt i = sb2.IndexOf('-');
+		if (i == INVALID_INDEX)
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			resp->AddDefHeaders(req);
@@ -489,7 +489,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			DEL_CLASS(fs);
 			return true;
 		}
-		if ((UOSInt)(i + 1) < sb2.GetLength())
+		if (i + 1 < sb2.GetLength())
 		{
 			if (!Text::StrToInt64(&sptr[i + 1], &end))
 			{

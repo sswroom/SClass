@@ -168,8 +168,8 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 	Double k0 = 0.9996;
 	Double rad2deg = 180.0 / Math::PI;
 
-	Int32 zoneNumber;
-	Int32 latZone;
+	UInt32 zoneNumber;
+	UOSInt latZone;
 	Double easting;
 	Double northing;
 
@@ -181,39 +181,40 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 	Double lat;
 	Double lon;
 
-	Int32 eastZone;
-	Int32 northZone;
+	UOSInt eastZone;
+	UOSInt northZone;
 	
 	const UTF8Char *letters = (const UTF8Char*)"ABCDEFGHJKLMNPQRSTUVWXYZ";
 	UTF8Char ch;
 	
-	Int32 i;
+	UOSInt i;
+	Int32 v;
 	zoneNumber = 0;
 	while (true)
 	{
 		ch = *grid++;
 		if (ch < 48 || ch >= 58)
 			break;
-		zoneNumber = zoneNumber * 10 + (ch - 0x30);
+		zoneNumber = zoneNumber * 10 + (UInt32)(ch - 0x30);
 	}
-	latZone = (Int32)Text::StrIndexOf(letters, ch);
-	eastZone = (Int32)Text::StrIndexOf(letters, *grid++);
-	northZone = (Int32)Text::StrIndexOf(letters, *grid++);;
-	if (latZone == -1 || eastZone == -1 || northZone == -1)
+	latZone = Text::StrIndexOf(letters, ch);
+	eastZone = Text::StrIndexOf(letters, *grid++);
+	northZone = Text::StrIndexOf(letters, *grid++);;
+	if (latZone == INVALID_INDEX || eastZone == INVALID_INDEX || northZone == INVALID_INDEX)
 		return false;
 
-	i = (Int32)Text::StrCharCnt(grid);
+	i = Text::StrCharCnt(grid);
 	if (i == 6)
 	{
-		i = Text::StrToInt32(grid);
-		easting = (i / 1000) * 100 + 50;
-		northing = (i % 1000) * 100 + 50;
+		v = Text::StrToInt32(grid);
+		easting = (v / 1000) * 100 + 50;
+		northing = (v % 1000) * 100 + 50;
 	}
 	else if (i == 8)
 	{
-		i = Text::StrToInt32(grid);
-		easting = (i / 10000) * 10 + 5;
-		northing = (i % 10000) * 10 + 5;
+		v = Text::StrToInt32(grid);
+		easting = (v / 10000) * 10 + 5;
+		northing = (v % 10000) * 10 + 5;
 	}
 	else if (i == 10)
 	{
@@ -224,12 +225,12 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 	{
 		return false;
 	}
-	easting += (eastZone - (((zoneNumber + 2) % 3) << 3) + 1) * 100000;
+	easting += Math::UOSInt2Double((eastZone - (((zoneNumber + 2) % 3) << 3) + 1) * 100000);
 	if ((zoneNumber & 1) == 0)
 	{
 		northZone = (northZone + 15) % 20;
 	}
-	northing += northZone * 100000;
+	northing += Math::UOSInt2Double(northZone * 100000);
 	if (latZone < 12)
 	{
 		northing -= 10000000.0;
@@ -262,7 +263,7 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 		lon = (d - (1 + 2 * t1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * t1 * t1) * d *d * d * d * d / 120) / Math::Cos(phi1Rad);
 		lon = longOrigin + lon * rad2deg;
 		
-		if (latZone == (((Int32)lat) >> 3) + 12)
+		if (latZone == (UInt32)(((Int32)lat) >> 3) + 12)
 			break;
 		northing += 2000000.0;
 	}

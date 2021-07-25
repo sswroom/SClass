@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 		return;
 	}
 	IO::TVControl::TVType tvType = (IO::TVControl::TVType)(OSInt)me->cboTVType->GetSelectedItem();
-	OSInt si = me->cboPort->GetSelectedIndex();
-	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem((UOSInt)si);
+	UOSInt i = me->cboPort->GetSelectedIndex();
+	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem(i);
 	if (portNum == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"TV Control", me);
@@ -59,7 +59,6 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 
 	Data::ArrayList<IO::TVControl::CommandType> cmdList;
 	Data::ArrayList<IO::TVControl::CommandFormat> cmdFormats;
-	UOSInt i;
 	UOSInt j;
 	me->tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
 	i = 0;

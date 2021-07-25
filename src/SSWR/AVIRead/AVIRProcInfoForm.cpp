@@ -242,8 +242,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	OSInt i = me->lvDetHeap->GetSelectedIndex();
-	if (i < 0)
+	UOSInt i = me->lvDetHeap->GetSelectedIndex();
+	if (i == INVALID_INDEX)
 		return;
 	Text::StringBuilderUTF8 sb;
 	UOSInt addr = (UOSInt)me->lvDetHeap->GetItem((UOSInt)i);

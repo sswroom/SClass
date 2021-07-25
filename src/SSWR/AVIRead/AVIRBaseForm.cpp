@@ -1003,8 +1003,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();
-				OSInt i = Text::StrIndexOf(fname, ':');
-				if (i < 0 || i == 1)
+				UOSInt i = Text::StrIndexOf(fname, ':');
+				if (i == INVALID_INDEX || i == 1)
 				{
 					if (IO::Path::GetPathType(fname) == IO::Path::PT_DIRECTORY)
 					{

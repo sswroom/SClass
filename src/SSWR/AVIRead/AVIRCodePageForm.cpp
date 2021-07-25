@@ -9,10 +9,10 @@
 void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCodePageForm *me = (SSWR::AVIRead::AVIRCodePageForm*)userObj;
-	OSInt selInd = me->lbCodePages->GetSelectedIndex();
-	if (selInd >= 0)
+	UOSInt selInd = me->lbCodePages->GetSelectedIndex();
+	if (selInd != INVALID_INDEX)
 	{
-		me->core->SetCodePage((UInt32)(UOSInt)me->lbCodePages->GetItem((UOSInt)selInd));
+		me->core->SetCodePage((UInt32)(UOSInt)me->lbCodePages->GetItem(selInd));
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }

@@ -84,11 +84,11 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
-	OSInt i = me->lbLayer->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbLayer->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		me->currLayer = 0;
-		FreeLayer(me->lineLayers->RemoveAt((UOSInt)i));
+		FreeLayer(me->lineLayers->RemoveAt(i));
 		me->LineStyleUpdated();
 		me->UpdatePreview();
 	}
@@ -97,14 +97,14 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(void *user
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
-	OSInt i = me->lbLayer->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbLayer->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		me->currLayer = me->lineLayers->GetItem((UOSInt)i);
+		me->currLayer = me->lineLayers->GetItem(i);
 		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, me->colorSess, me->currLayer->color | 0xff000000));
 		me->pbColor->Redraw();
 		me->hsbAlpha->SetPos((me->currLayer->color >> 24) & 255);
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		else
 		{
 			sptr = Text::StrUInt16(sbuff, me->currLayer->pattern[0]);
-			UOSInt i = 1;
+			i = 1;
 			while (i < me->currLayer->nPattern)
 			{
 				sptr = Text::StrUInt16(Text::StrConcat(sptr, (const UTF8Char*)","), me->currLayer->pattern[i]);

@@ -343,12 +343,12 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, v
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"select * from ");
-	OSInt i = 0;
-	OSInt j;
+	UOSInt i = 0;
+	UOSInt j;
 	while (true)
 	{
 		j = Text::StrIndexOf(&name[i], '.');
-		if (j < 0)
+		if (j == INVALID_INDEX)
 		{
 			DB::DBUtil::SDBColUTF8(sbuff, &name[i], DB::DBUtil::SVR_TYPE_MYSQL);
 			sb.Append(sbuff);

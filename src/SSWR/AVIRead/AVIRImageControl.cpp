@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 		UOSInt scnW;
 		UOSInt scnH;
 		me->GetSizeP(&scnW, &scnH);
-		me->SetVScrollBar(0, (OSInt)totalHeight, (UInt32)Math::Double2Int32(Math::UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
+		me->SetVScrollBar(0, totalHeight, (UInt32)Math::Double2Int32(Math::UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
 		me->imgUpdated = true;
 	}
 
@@ -657,9 +657,8 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	Media::DrawBrush *barr[5];
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	UOSInt ui;
-	OSInt si;
-	OSInt sj;
+	UOSInt i;
+	UOSInt j;
 	UOSInt scnW = dimg->GetWidth();
 	UOSInt scnH = dimg->GetHeight();
 
@@ -672,37 +671,33 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
-	Int32 itemTH = Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
-	Int32 itemBH = Math::Double2Int32((20 + 12 + this->previewSize) * hdpi / ddpi);
-	Int32 itemH = Math::Double2Int32((20 + this->previewSize) * hdpi / ddpi);
-	Int32 scrPos = Math::Double2Int32(Math::OSInt2Double(this->GetVScrollPos()) * hdpi / ddpi);
+	UInt32 itemTH = (UInt32)Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
+	UInt32 itemBH = (UInt32)Math::Double2Int32((20 + 12 + this->previewSize) * hdpi / ddpi);
+	UInt32 itemH = (UInt32)Math::Double2Int32((20 + this->previewSize) * hdpi / ddpi);
+	UInt32 scrPos = (UInt32)Math::Double2Int32(Math::UOSInt2Double(this->GetVScrollPos()) * hdpi / ddpi);
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
-	ui = imgList->GetCount();
-	while (ui-- > 0)
+	i = imgList->GetCount();
+	while (i-- > 0)
 	{
-		status = imgList->GetItem(ui);
+		status = imgList->GetItem(i);
 		status->setting.flags &= ~8;
 	}
-	si = this->GetVScrollPos() / (OSInt)(20 + 12 + 12 + this->previewSize);
-	sj = Math::Double2Int32(Math::OSInt2Double(this->GetVScrollPos()) + Math::UOSInt2Double(scnH) * ddpi / hdpi) / (OSInt)(20 + 12 + 12 + this->previewSize);
+	i = this->GetVScrollPos() / (20 + 12 + 12 + this->previewSize);
+	j = (UInt32)Math::Double2Int32(Math::UOSInt2Double(this->GetVScrollPos()) + Math::UOSInt2Double(scnH) * ddpi / hdpi) / (20 + 12 + 12 + this->previewSize);
 
-	if (si < 0)
+	if (j >= imgList->GetCount())
 	{
-		si = 0;
-	}
-	if ((UOSInt)sj >= imgList->GetCount())
-	{
-		sj = (OSInt)imgList->GetCount() - 1;
+		j = imgList->GetCount() - 1;
 	}
 	f = dimg->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	UOSInt strLen;
 	Double strSz[2];
-	while (si <= sj)
+	while (i <= j)
 	{
-		status = imgList->GetItem((UOSInt)si);
+		status = imgList->GetItem(i);
 		status->setting.flags |= 8;
 		if (status->previewImg == 0)
 		{
@@ -718,13 +713,13 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 			this->UpdateImgPreview(status);
 		}
-		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-		dimg->DrawRect(0, Math::OSInt2Double(si * itemTH - scrPos + itemBH), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+		dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
+		dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos + itemBH), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
 		if (status->previewImg2)
 		{
 			status->previewImg2->SetHDPI(dimg->GetHDPI());
 			status->previewImg2->SetVDPI(dimg->GetVDPI());
-			dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double(si * itemTH - scrPos + ((itemH - (OSInt)status->previewImg2->GetHeight()) >> 1)));
+			dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::UOSInt2Double(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
 		}
 		if (status->fileName)
 		{
@@ -733,21 +728,21 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			strLen = Text::StrCharCnt(sb.ToString());
 			if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
 			{
-				dimg->DrawString((Math::UOSInt2Double(scnW) - strSz[0]) * 0.5, Math::OSInt2Double(si * itemTH - scrPos + itemH), sb.ToString(), f, b);
+				dimg->DrawString((Math::UOSInt2Double(scnW) - strSz[0]) * 0.5, Math::UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
 			}
 		}
-		si++;
+		i++;
 	}
-	if ((sj + 1) * itemTH - scrPos < (OSInt)scnH)
+	if ((j + 1) * itemTH - scrPos < scnH)
 	{
-		dimg->DrawRect(0, Math::OSInt2Double((sj + 1) * itemTH - scrPos), Math::UOSInt2Double(scnW), Math::UOSInt2Double(scnH) - Math::OSInt2Double((sj + 1) * itemTH - scrPos), 0, barr[4]);
+		dimg->DrawRect(0, Math::UOSInt2Double((j + 1) * itemTH - scrPos), Math::UOSInt2Double(scnW), Math::UOSInt2Double(scnH) - Math::UOSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
 	}
 	dimg->DelBrush(b);
 	dimg->DelFont(f);
-	ui = imgList->GetCount();
-	while (ui-- > 0)
+	i = imgList->GetCount();
+	while (i-- > 0)
 	{
-		status = imgList->GetItem(ui);
+		status = imgList->GetItem(i);
 		if ((status->setting.flags & 8) == 0)
 		{
 			if (status->previewImg != 0)
@@ -1231,7 +1226,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	this->imgUpdated = true;
 	if (i >= 0)
 	{
-		this->MakeVisible(i * (20 + 12 + 12 + this->previewSize));
+		this->MakeVisible((UOSInt)i * (20 + 12 + 12 + this->previewSize));
 	}
 }
 
@@ -1296,7 +1291,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	this->imgUpdated = true;
 	if (i >= 0)
 	{
-		this->MakeVisible((i - 1) * (20 + 12 + 12 + this->previewSize));
+		this->MakeVisible((UOSInt)(i - 1) * (20 + 12 + 12 + this->previewSize));
 	}
 }
 

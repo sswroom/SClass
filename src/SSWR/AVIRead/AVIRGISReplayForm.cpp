@@ -58,8 +58,8 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
-	OSInt i = me->lbRecord->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbRecord->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		UTF8Char sbuff[64];
 		UOSInt recCnt = 0;

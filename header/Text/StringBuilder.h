@@ -67,15 +67,15 @@ namespace Text
 		T *ToString();
 		T *GetEndPtr();
 		void SetEndPtr(T *ptr);
-		OSInt IndexOf(const T *s);
-		OSInt IndexOf(const T *s, UOSInt index);
-		OSInt IndexOf(T c);
+		UOSInt IndexOf(const T *s);
+		UOSInt IndexOf(const T *s, UOSInt index);
+		UOSInt IndexOf(T c);
 		UOSInt LastIndexOf(T c);
 		Bool Equals(const T *s);
 		Bool EqualsICase(const T *s);
 		Bool StartsWith(const T *s);
 		Bool EndsWith(T c);
-		T *SubString(T *buff, OSInt start, OSInt length);
+		T *SubString(T *buff, UOSInt start, UOSInt length);
 		UOSInt Replace(T fromChar, T toChar);
 		UOSInt Replace(const T *fromStr, const T *toStr);
 		UOSInt ReplaceICase(const T *fromStr, const T *toStr);
@@ -495,24 +495,24 @@ namespace Text
 		this->buffEnd = ptr;
 	}
 
-	template<class T> OSInt Text::StringBuilder<T>::IndexOf(const T *s)
+	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(const T *s)
 	{
 		return Text::StrIndexOf(this->buff, s);
 	}
 
-	template<class T> OSInt Text::StringBuilder<T>::IndexOf(const T *s, UOSInt index)
+	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(const T *s, UOSInt index)
 	{
 		if (index >= (UOSInt)(this->buffEnd - this->buff))
 		{
-			return -1;
+			return INVALID_INDEX;
 		}
-		OSInt retIndex = Text::StrIndexOf(&this->buff[index], s);
-		if (retIndex < 0)
-			return -1;
-		return retIndex + (OSInt)index;
+		UOSInt retIndex = Text::StrIndexOf(&this->buff[index], s);
+		if (retIndex == INVALID_INDEX)
+			return INVALID_INDEX;
+		return retIndex + index;
 	}
 
-	template<class T> OSInt Text::StringBuilder<T>::IndexOf(T c)
+	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(T c)
 	{
 		return Text::StrIndexOf(this->buff, c);
 	}
@@ -544,20 +544,15 @@ namespace Text
 		return this->buffEnd[-1] == c;
 	}
 
-	template<class T> T *Text::StringBuilder<T>::SubString(T *buff, OSInt start, OSInt length)
+	template<class T> T *Text::StringBuilder<T>::SubString(T *buff, UOSInt start, UOSInt length)
 	{
-		OSInt strLen = (this->buffEnd - this->buff);
+		UOSInt strLen = (UOSInt)(this->buffEnd - this->buff);
 		if (start >= strLen)
 		{
 			*buff = 0;
 			return buff;
 		}
-		else if (start < 0)
-		{
-			length += start;
-			start = 0;
-		}
-		OSInt end = start + length;
+		UOSInt end = start + length;
 		if (end > strLen)
 		{
 			end = strLen;
@@ -591,15 +586,15 @@ namespace Text
 		else
 		{
 			UOSInt i;
-			OSInt j;
+			UOSInt j;
 			changeCnt = 0;
 			i = 0;
 			while (true)
 			{
 				j = Text::StrIndexOf(&this->buff[i], fromStr);
-				if (j < 0)
+				if (j == INVALID_INDEX)
 					break;
-				i += (UOSInt)j + fromCharSize;
+				i += j + fromCharSize;
 				changeCnt++;
 			}
 			this->AllocLeng((UOSInt)(buffEnd - buff) + (toCharSize - fromCharSize) * changeCnt);

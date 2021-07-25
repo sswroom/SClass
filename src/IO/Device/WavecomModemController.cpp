@@ -19,8 +19,8 @@ UTF8Char *IO::Device::WavecomModemController::GetSIMCardID(UTF8Char *cardID)
 		return 0;
 	if (Text::StrStartsWith(sbuff, (const UTF8Char*)"+CCID: \""))
 	{
-		OSInt i = Text::StrIndexOf(&sbuff[8], '\"');
-		if (i >= 0)
+		UOSInt i = Text::StrIndexOf(&sbuff[8], '\"');
+		if (i != INVALID_INDEX)
 		{
 			sbuff[i + 8] = 0;
 		}

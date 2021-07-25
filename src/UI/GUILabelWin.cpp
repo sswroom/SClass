@@ -12,7 +12,7 @@ UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8
 {
 	this->hasTextColor = false;
 	this->textColor = 0;
-	Int32 style = WS_CHILD;
+	UInt32 style = WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

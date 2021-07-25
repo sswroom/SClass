@@ -194,10 +194,10 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 				adxSample2[0] = adxSample1[0];
 				if (x > 0x7fffffff)
 					x = 0x7fffffff;
-				else if (((long*)&x)[1] < -1)
+				else if (((Int32*)&x)[1] < -1)
 					x = (Int64)0xffffffff80000000LL;
-				else if (((long*)&x)[1] == -1)
-					if (((*(long*)&x) & 0x80000000) == 0)
+				else if (((Int32*)&x)[1] == -1)
+					if (((*(UInt32*)&x) & 0x80000000) == 0)
 						x = (Int64)0xffffffff80000000LL;
 				adxSample1[0] = x;
 				*(Int16*)dest = (Int16)(x >> 16);
@@ -213,10 +213,10 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 				adxSample2[1] = adxSample1[1];
 				if (x > 0x7fffffff)
 					x = 0x7fffffff;
-				else if (((long*)&x)[1] < -1)
+				else if (((Int32*)&x)[1] < -1)
 					x = (Int64)0xffffffff80000000LL;
-				else if (((long*)&x)[1] == -1)
-					if (((*(long*)&x) & 0x80000000) == 0)
+				else if (((Int32*)&x)[1] == -1)
+					if (((*(UInt32*)&x) & 0x80000000) == 0)
 						x = (Int64)0xffffffff80000000LL;
 				adxSample1[1] = x;
 				*(Int16*)dest = (Int16)(x >> 16);

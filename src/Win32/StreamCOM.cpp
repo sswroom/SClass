@@ -60,7 +60,7 @@ UInt64 Win32::StreamCOM::SeekFromBeginning(UInt64 position)
 	ULARGE_INTEGER li;
 	LARGE_INTEGER li2;
 	li.QuadPart = 0;
-	li2.QuadPart = position;
+	li2.QuadPart = (Int64)position;
 	this->stm->Seek(li2, STREAM_SEEK_SET, &li);
 	return li.QuadPart;
 }

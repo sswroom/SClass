@@ -285,7 +285,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 		topicSt->lastRecvTime = dt.ToTicks();
 	}
 	Double dVal;
-	OSInt i;
+	UOSInt i;
 	topicSt->dateList[(topicSt->recvCnt - 1) & 255] = topicSt->lastRecvTime;
 	if (Text::StrToDouble(topicSt->currValue, &dVal))
 	{
@@ -295,7 +295,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	{
 		dVal = 0;
 		i = Text::StrIndexOf(topicSt->currValue, (const UTF8Char*)" seconds");
-		if (i > 0)
+		if (i != INVALID_INDEX && i > 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(topicSt->currValue, (UOSInt)i);

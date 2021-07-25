@@ -17,16 +17,16 @@ IO::ConfigFile *IO::WSConfigFile::Parse(const UTF8Char *fileName)
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 	UTF8Char *sarr[2];
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	NEW_CLASS(cfg, IO::ConfigFile());
 	while (reader->ReadLine(&sb, 4096))
 	{
 		i = sb.IndexOf('#');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
-			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
+			sb.RemoveChars(sb.GetLength() - i);
 		}
 		sb.TrimWSCRLF();
 		if (Text::StrSplitWS(sarr, 2, sb.ToString()) == 2)

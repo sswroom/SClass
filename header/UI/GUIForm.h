@@ -36,7 +36,7 @@ namespace UI
 		} CloseReason;
 		typedef Bool (__stdcall *FormClosingEvent)(void *userObj, CloseReason reason); //true to cancel
 		typedef void (__stdcall *FormClosedEvent)(void *userObj, UI::GUIForm *frm);
-		typedef void (__stdcall *KeyEvent)(void *userObj, OSInt keyCode, Bool extendedKey);
+		typedef void (__stdcall *KeyEvent)(void *userObj, UOSInt keyCode, Bool extendedKey);
 
 	private:
 		Bool virtualMode;

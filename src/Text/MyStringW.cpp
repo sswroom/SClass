@@ -2767,7 +2767,7 @@ Bool Text::StrToBool(const UTF32Char *str)
 	}
 }
 
-OSInt Text::StrIndexOf(const UTF16Char *str1, const UTF16Char *str2)
+UOSInt Text::StrIndexOf(const UTF16Char *str1, const UTF16Char *str2)
 {
 	const UTF16Char *ptr = str1;
 	const UTF16Char *ptr2;
@@ -2787,24 +2787,24 @@ OSInt Text::StrIndexOf(const UTF16Char *str1, const UTF16Char *str2)
 			}
 		}
 		if (i == 0)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		ptr++;
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
-OSInt Text::StrIndexOf(const UTF16Char *str1, UTF16Char c)
+UOSInt Text::StrIndexOf(const UTF16Char *str1, UTF16Char c)
 {
 	const UTF16Char *ptr = str1;
 	while (*ptr)
 		if (*ptr == c)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		else
 			ptr++;
-	return -1;
+	return INVALID_INDEX;
 }
 
-OSInt Text::StrIndexOf(const UTF32Char *str1, const UTF32Char *str2)
+UOSInt Text::StrIndexOf(const UTF32Char *str1, const UTF32Char *str2)
 {
 	const UTF32Char *ptr = str1;
 	const UTF32Char *ptr2;
@@ -2824,21 +2824,21 @@ OSInt Text::StrIndexOf(const UTF32Char *str1, const UTF32Char *str2)
 			}
 		}
 		if (i == 0)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		ptr++;
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
-OSInt Text::StrIndexOf(const UTF32Char *str1, UTF32Char c)
+UOSInt Text::StrIndexOf(const UTF32Char *str1, UTF32Char c)
 {
 	const UTF32Char *ptr = str1;
 	while (*ptr)
 		if (*ptr == c)
-			return ptr - str1;
+			return (UOSInt)(ptr - str1);
 		else
 			ptr++;
-	return -1;
+	return INVALID_INDEX;
 }
 
 UOSInt Text::StrIndexOfICase(const UTF16Char *str1, const UTF16Char *str2)

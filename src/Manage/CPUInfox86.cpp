@@ -143,7 +143,7 @@ Manage::CPUInfo::CPUInfo()
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (!fs->IsError())
 	{

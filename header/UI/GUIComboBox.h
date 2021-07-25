@@ -34,7 +34,7 @@ namespace UI
 		void ClearItems();
 		UOSInt GetCount();
 		void SetSelectedIndex(UOSInt index);
-		OSInt GetSelectedIndex();
+		UOSInt GetSelectedIndex();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		void *GetSelectedItem();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);

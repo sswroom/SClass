@@ -160,7 +160,7 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 	case WM_ERASEBKGND:
 		return 0;
 	case WM_KEYDOWN:
-		if (me->OnKeyDown(me->OSKey2GUIKey((Int32)wParam)))
+		if (me->OnKeyDown(me->OSKey2GUIKey((UInt32)wParam)))
 		{
 			return 0;
 		}
@@ -234,7 +234,7 @@ UI::GUICustomDraw::GUICustomDraw(UI::GUICore *ui, UI::GUIClientControl *parent, 
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CHILD;
+	UInt32 style = WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

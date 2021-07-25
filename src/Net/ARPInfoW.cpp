@@ -41,7 +41,7 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 	return this->arpType;
 }
 
-OSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
+UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 {
 	UInt32 size;
 	UOSInt cnt;

@@ -94,10 +94,10 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 				busType = Text::StrHex2Int16C(sptr);
 				sptr[4] = ':';
 				sptr[9] = 0;
-				clsData->vendor = Text::StrHex2Int16C(&sptr[5]);
+				clsData->vendor = Text::StrHex2UInt16C(&sptr[5]);
 				sptr[9] = ':';
 				sptr[14] = 0;
-				clsData->product = Text::StrHex2Int16C(&sptr[10]);
+				clsData->product = Text::StrHex2UInt16C(&sptr[10]);
 				sptr[14] = '.';
 				switch (busType)
 				{

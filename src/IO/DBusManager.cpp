@@ -1092,11 +1092,11 @@ IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *
 	GenericData *child = NULL;
 	GenericData *parent = NULL;
 	Text::StringBuilderC sbParentPath;
-	OSInt i;
+	UOSInt i;
 
 	sbParentPath.Append(childPath);
 	i = sbParentPath.LastIndexOf('/');
-	if (i < 0)
+	if (i == INVALID_INDEX)
 	{
 		return data;
 	}

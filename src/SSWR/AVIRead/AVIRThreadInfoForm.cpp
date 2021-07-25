@@ -17,10 +17,9 @@
 void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
-	OSInt si = me->lbMyStack->GetSelectedIndex();
-	UOSInt i;
-	const UTF8Char *s = me->stacks->GetItem((UOSInt)si);
-	const UTF8Char *sMem = me->stacksMem->GetItem((UOSInt)si);
+	UOSInt i = me->lbMyStack->GetSelectedIndex();
+	const UTF8Char *s = me->stacks->GetItem(i);
+	const UTF8Char *sMem = me->stacksMem->GetItem(i);
 	UOSInt slen;
 	UTF8Char *sbuff;
 	UTF8Char *sline[2];
@@ -103,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 {
 	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
 	UTF8Char sbuff[18];
-	OSInt i;
+	UOSInt i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
 	me->lvMyStack->GetSubItem(index, 3, &sb);
@@ -111,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 	{
 		Text::StrConcatS(sbuff, sb.ToString() + 7, 17);
 		i = Text::StrIndexOf(sbuff, ' ');
-		if (i > 0)
+		if (i != INVALID_INDEX && i > 0)
 		{
 			sbuff[i] = 0;
 		}

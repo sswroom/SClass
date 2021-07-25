@@ -13,7 +13,6 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	DataInfo *info = 0;
 	Bool found;
 	UOSInt i;
-	OSInt si;
 	IO::ParsedObject *pobj;
 	IO::ParsedObject::ParserType pt;
 

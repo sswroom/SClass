@@ -65,7 +65,7 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 	return this->arpType;
 }
 
-OSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
+UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 {
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 	if (sock == -1)
@@ -93,7 +93,7 @@ OSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	}
 	close(sock);
 
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	UTF8Char *sarr[7];
 	UTF8Char *sarr2[7];
 	Text::StringBuilderUTF8 sb;

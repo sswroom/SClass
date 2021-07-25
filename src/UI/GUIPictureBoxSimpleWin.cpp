@@ -17,7 +17,7 @@ Int32 UI::GUIPictureBoxSimple::useCnt = 0;
 OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
 	UI::GUIPictureBoxSimple *me = (UI::GUIPictureBoxSimple*)UI::GUICoreWin::MSGetWindowObj(hWnd, GWL_USERDATA);
-	OSInt i;
+	UOSInt i;
 	switch (msg)
 	{
 	case WM_SIZE:
@@ -101,8 +101,8 @@ void UI::GUIPictureBoxSimple::OnPaint()
 
 	if (this->prevImageD)
 	{
-		OSInt x = (rc.right - rc.left - this->prevImageD->GetWidth()) >> 1;
-		OSInt y = (rc.bottom - rc.top - this->prevImageD->GetHeight()) >> 1;
+		OSInt x = (rc.right - rc.left - (OSInt)this->prevImageD->GetWidth()) >> 1;
+		OSInt y = (rc.bottom - rc.top - (OSInt)this->prevImageD->GetHeight()) >> 1;
 
 		if (this->noBGColor || this->prevImageD->GetAlphaType() == Media::AT_NO_ALPHA)
 		{
@@ -196,7 +196,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientContr
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CLIPSIBLINGS | WS_CHILD;
+	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

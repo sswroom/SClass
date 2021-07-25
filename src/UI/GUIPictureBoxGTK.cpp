@@ -233,12 +233,12 @@ void UI::GUIPictureBox::UpdatePreview()
 			Media::StaticImage *tmpImage = resizer->ProcessToNew(this->currImage);
 			if (tmpImage)
 			{
-				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data, GDK_COLORSPACE_RGB, tmpImage->info->storeBPP == 32, 8, tmpImage->info->dispWidth, tmpImage->info->dispHeight, tmpImage->info->storeWidth << 2, 0, 0);
+				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data, GDK_COLORSPACE_RGB, tmpImage->info->storeBPP == 32, 8, (int)(OSInt)tmpImage->info->dispWidth, (int)(OSInt)tmpImage->info->dispHeight, (int)(OSInt)tmpImage->info->storeWidth << 2, 0, 0);
 				guchar *pixels = gdk_pixbuf_get_pixels(buf);
-				ImageUtil_SwapRGB(pixels, gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info->dispHeight, 32);
+				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info->dispHeight, 32);
 				if (this->currImage->info->atype != Media::AT_ALPHA)
 				{
-					ImageUtil_ImageFillAlpha32(pixels, this->currImage->info->dispWidth, this->currImage->info->dispHeight, gdk_pixbuf_get_rowstride(buf), 255);
+					ImageUtil_ImageFillAlpha32(pixels, this->currImage->info->dispWidth, this->currImage->info->dispHeight, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
 				}
 				data->pixbuf = buf;
 				data->tmpImage = tmpImage;
@@ -247,12 +247,12 @@ void UI::GUIPictureBox::UpdatePreview()
 		}
 		else
 		{
-			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, this->currImage->info->storeBPP == 32, 8, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth << 2, 0, 0);
+			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, this->currImage->info->storeBPP == 32, 8, (int)(OSInt)this->currImage->info->dispWidth, (int)(OSInt)this->currImage->info->dispHeight, (int)(OSInt)this->currImage->info->storeWidth << 2, 0, 0);
 			guchar *pixels = gdk_pixbuf_get_pixels(buf);
-			ImageUtil_SwapRGB(pixels, gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info->dispHeight, 32);
+			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info->dispHeight, 32);
 			if (this->currImage->info->atype != Media::AT_ALPHA)
 			{
-				ImageUtil_ImageFillAlpha32(pixels, this->currImage->info->dispWidth, this->currImage->info->dispHeight, gdk_pixbuf_get_rowstride(buf), 255);
+				ImageUtil_ImageFillAlpha32(pixels, this->currImage->info->dispWidth, this->currImage->info->dispHeight, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
 			}
 			data->pixbuf = buf;
 			gtk_image_set_from_pixbuf((GtkImage*)data->gtkImage, buf);
@@ -378,7 +378,7 @@ void UI::GUIPictureBox::SetNoBGColor(Bool noBGColor)
 
 void UI::GUIPictureBox::EventButtonDown(OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->mouseDownHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -388,7 +388,7 @@ void UI::GUIPictureBox::EventButtonDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 
 void UI::GUIPictureBox::EventButtonUp(OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
 {
-	OSInt i;
+	UOSInt i;
 	i = this->mouseUpHdlrs->GetCount();
 	while (i-- > 0)
 	{
@@ -398,7 +398,7 @@ void UI::GUIPictureBox::EventButtonUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 
 void UI::GUIPictureBox::EventMouseMove(OSInt x, OSInt y)
 {
-	OSInt i = this->mouseMoveHdlrs->GetCount();
+	UOSInt i = this->mouseMoveHdlrs->GetCount();
 	while (i-- > 0)
 	{
 		this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), x, y, MBTN_MIDDLE);

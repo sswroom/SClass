@@ -11,16 +11,16 @@ extern char **environ;
 Manage::EnvironmentVar::EnvironmentVar()
 {
 	UTF8Char sbuff[64];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	NEW_CLASS(this->names, Data::ICaseStringUTF8Map<const UTF8Char *>());
 	i = 0;
 	while (environ[i])
 	{
 		j = Text::StrIndexOf(environ[i], '=');
-		if (j > 0)
+		if (j != INVALID_INDEX && j > 0)
 		{
-			Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], (UOSInt)j);
+			Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], j);
 			this->names->Put(sbuff, (const UTF8Char*)&environ[i][j + 1]);
 		}
 		i++;

@@ -176,8 +176,7 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 			}
 			this->buffSize += i;
 		}
-		OSInt si;
-		while (-1 == (si = Text::StrIndexOf((Char*)this->dataBuff, "\r\n")))
+		while (INVALID_INDEX == (i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n")))
 		{
 			if ((BUFFSIZE - 1 - this->buffSize) == 0)
 			{
@@ -197,7 +196,6 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 			this->buffSize += i;
 			this->dataBuff[this->buffSize] = 0;
 		}
-		i = (UOSInt)si;
 		this->dataBuff[i] = 0;
 		j = Text::StrHex2UInt32C((Char*)this->dataBuff);
 		if (j == 0 && i == 1 && this->dataBuff[0] == '0')
@@ -367,7 +365,6 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UTF8Char svrname[256];
 	UTF8Char host[256];
 
-	OSInt si;
 	UOSInt i;
 	UOSInt hostLen;
 	const UTF8Char *ptr1;
@@ -384,12 +381,12 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		printf("Request URL: %s %s\r\n", method, url);
 #endif
 		ptr1 = &url[7];
-		si = Text::StrIndexOf(ptr1, '/');
-		if (si >= 0)
+		i = Text::StrIndexOf(ptr1, '/');
+		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
-			urltmp[si] = 0;
-			ptr2 = &ptr1[si];
+			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			urltmp[i] = 0;
+			ptr2 = &ptr1[i];
 		}
 		else
 		{
@@ -405,8 +402,8 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		hostLen = (UOSInt)(cptr - host);
 		if (urltmp[0] == '[')
 		{
-			si = Text::StrIndexOf(urltmp, ']');
-			if (si < 0)
+			i = Text::StrIndexOf(urltmp, ']');
+			if (i == INVALID_INDEX)
 			{
 				this->cli = 0;
 
@@ -414,11 +411,11 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 				this->canWrite = false;
 				return false;
 			}
-			Text::StrConcatC(svrname, &urltmp[1], (UOSInt)si - 1);
-			if (urltmp[si + 1] == ':')
+			Text::StrConcatC(svrname, &urltmp[1], i - 1);
+			if (urltmp[i + 1] == ':')
 			{
-				Text::StrToUInt16S(&urltmp[si + 2], &port, 0);
-				urltmp[si + 1] = 0;
+				Text::StrToUInt16S(&urltmp[i + 2], &port, 0);
+				urltmp[i + 1] = 0;
 			}
 			else
 			{
@@ -761,10 +758,10 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			Char *ptrs[3];
 			Char *ptr;
 			UTF8Char *sptr;
-			OSInt si;
-			si = Text::StrIndexOf((Char*)this->dataBuff, "\r\n");
-			MemCopyNO(buff, this->dataBuff, (UOSInt)si);
-			buff[si] = 0;
+			UOSInt i;
+			i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n");
+			MemCopyNO(buff, this->dataBuff, i);
+			buff[i] = 0;
 			Text::StrSplit(ptrs, 3, buff, ' ');
 			this->respStatus = (Net::WebStatus::StatusCode)Text::StrToInt32(ptrs[1]);
 
@@ -776,29 +773,29 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				this->respStatus = Net::WebStatus::SC_UNKNOWN;
 			}
 
-			ptr = (Char*)&this->dataBuff[si + 2];
+			ptr = (Char*)&this->dataBuff[i + 2];
 			this->contLeng = 0x7fffffff;
 			this->contRead = 0;
 			Bool header = true;
 			while (header)
 			{
-				while ((si = Text::StrIndexOf(ptr, "\n")) > 0)
+				while ((i = Text::StrIndexOf(ptr, "\n")) != INVALID_INDEX && i > 0)
 				{
-					if (si == 1 && ptr[0] == '\r')
+					if (i == 1 && ptr[0] == '\r')
 					{
 						ptr++;
-						si = 0;
+						i = 0;
 						break;
 					}
-					if (ptr[si - 1] == '\r')
+					if (ptr[i - 1] == '\r')
 					{
-						MemCopyNO(sptr = MemAlloc(UTF8Char, (UOSInt)si), ptr, (UOSInt)si - 1);
-						sptr[si - 1] = 0;
+						MemCopyNO(sptr = MemAlloc(UTF8Char, i), ptr, i - 1);
+						sptr[i - 1] = 0;
 					}
 					else
 					{
-						MemCopyNO(sptr = MemAlloc(UTF8Char, (UOSInt)si + 1), ptr, (UOSInt)si);
-						sptr[si] = 0;
+						MemCopyNO(sptr = MemAlloc(UTF8Char, i + 1), ptr, i);
+						sptr[i] = 0;
 					}
 #ifdef SHOWDEBUG
 					printf("Read Header: %s\r\n", sptr);
@@ -818,9 +815,9 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 						}
 					}
 
-					ptr = &ptr[si + 1];
+					ptr = &ptr[i + 1];
 				}
-				if (si == 0)
+				if (i == 0)
 				{
 					ptr = &ptr[1];
 					this->buffSize -= (UOSInt)(ptr - (Char*)this->dataBuff);
@@ -831,7 +828,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				}
 				this->buffSize = Text::StrCharCnt(ptr);
 				MemCopyO(this->dataBuff, ptr, this->buffSize);
-				UOSInt i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+				i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
 				if (i <= 0)
 				{
 					header = false;

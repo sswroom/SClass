@@ -10,16 +10,16 @@ namespace Net
 		typedef Bool (__stdcall *UDPPacketHdlr)(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData, Data::DateTime *recvTime); //return true to continue
 
 	private:
-		const WChar *logFileName;
-		const WChar *rawFileName;
+		const UTF8Char *logFileName;
+		const UTF8Char *rawFileName;
 		UDPPacketHdlr hdlr;
 		void *userObj;
 
 	public:
-		UDPSimulator(const WChar *logFileName, const WChar *rawFileName, UDPPacketHdlr hdlr, void *userObj);
+		UDPSimulator(const UTF8Char *logFileName, const UTF8Char *rawFileName, UDPPacketHdlr hdlr, void *userObj);
 		~UDPSimulator();
 
 		void Run();
 	};
-};
+}
 #endif

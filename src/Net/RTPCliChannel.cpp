@@ -608,7 +608,7 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 		else if (Text::StrStartsWith(desc, (const UTF8Char*)"a=control:"))
 		{
 			ctrlFound = true;
-			if (Text::StrIndexOf(&desc[10], (const UTF8Char*)"://") >= 0)
+			if (Text::StrIndexOf(&desc[10], (const UTF8Char*)"://") != INVALID_INDEX)
 			{
 				ch->SetControlURL(&desc[10]);
 			}

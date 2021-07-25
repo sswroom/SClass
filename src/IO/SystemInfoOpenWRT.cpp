@@ -20,7 +20,7 @@ IO::SystemInfo::SystemInfo()
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 
 	SystemData *data = MemAlloc(SystemData, 1);
 	data->platformName = 0;

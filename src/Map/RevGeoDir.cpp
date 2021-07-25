@@ -38,12 +38,12 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 			
 			Map::RevGeoCfg *revGeo;
 			RevGeoFile *file;
-			OSInt i;
+			UOSInt i;
 			NEW_CLASS(revGeo, Map::RevGeoCfg(sbuff, this->mapSrchMgr));
 			file = MemAlloc(RevGeoFile, 1);
 			file->cfg = revGeo;
 			i = Text::StrIndexOf(sptr, (const UTF8Char*)".");
-			if (i >= 7)
+			if (i != INVALID_INDEX && i >= 7)
 			{
 				sptr[i] = 0;
 				file->lcid = Text::StrToUInt32(&sptr[7]);

@@ -194,7 +194,6 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
 
-	OSInt si;
 	UOSInt i;
 	const UTF8Char *ptr1;
 	UTF8Char *ptrs[2];
@@ -220,11 +219,11 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
 		ptr1 = &url[7];
-		si = Text::StrIndexOf(ptr1, '/');
-		if (si >= 0)
+		i = Text::StrIndexOf(ptr1, '/');
+		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
-			urltmp[si] = 0;
+			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			urltmp[i] = 0;
 		}
 		else
 		{
@@ -238,11 +237,11 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
 	{
 		ptr1 = &url[8];
-		si = Text::StrIndexOf(ptr1, '/');
-		if (si >= 0)
+		i = Text::StrIndexOf(ptr1, '/');
+		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, (UOSInt)si * sizeof(UTF8Char));
-			urltmp[si] = 0;
+			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			urltmp[i] = 0;
 		}
 		else
 		{
@@ -268,19 +267,19 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 
 	if (urltmp[0] == '[')
 	{
-		si = Text::StrIndexOf(urltmp, ']');
-		if (si < 0)
+		i = Text::StrIndexOf(urltmp, ']');
+		if (i == INVALID_INDEX)
 		{
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
-		Text::StrConcatC(svrname, &urltmp[1], (UOSInt)si - 1);
-		if (urltmp[si + 1] == ':')
+		Text::StrConcatC(svrname, &urltmp[1], i - 1);
+		if (urltmp[i + 1] == ':')
 		{
 			port = 0;
-			Text::StrToUInt16(&urltmp[si + 2], &port);
-			urltmp[si + 1] = 0;
+			Text::StrToUInt16(&urltmp[i + 2], &port);
+			urltmp[i + 1] = 0;
 		}
 		else
 		{

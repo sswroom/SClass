@@ -200,8 +200,8 @@ namespace SSWR
 			Bool SetSpeciesMapColor(OrganSpecies *sp, UInt32 mapColor);
 			virtual Bool SaveSpecies(OrganSpecies *sp) = 0;
 			virtual Bool SaveGroup(OrganGroup *grp) = 0;
-			virtual Int32 GetGroupCount(Int32 groupId) = 0;
-			virtual Int32 GetSpeciesCount(Int32 groupId) = 0;
+			virtual UOSInt GetGroupCount(Int32 groupId) = 0;
+			virtual UOSInt GetSpeciesCount(Int32 groupId) = 0;
 			virtual Bool AddGroup(OrganGroup *grp, Int32 parGroupId) = 0;
 			virtual Bool DelGroup(Int32 groupId) = 0;
 			virtual Bool SetGroupDefSp(OrganGroup *grp, OrganImageItem *img) = 0;

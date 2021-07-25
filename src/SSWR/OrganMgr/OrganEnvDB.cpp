@@ -801,7 +801,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".AVI") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MOV") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MTS") == 0 || Text::StrCompareICase(&sptr[si], (const UTF8Char *)".M2TS") == 0)
+				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char *)".AVI") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MOV") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".MTS") == 0 || Text::StrCompareICase(&sptr[i], (const UTF8Char *)".M2TS") == 0)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -1248,7 +1248,7 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speci
 UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff)
 {
 	UTF8Char *sptr;
-	if (Text::StrIndexOf(this->currCate->srcDir, (const UTF8Char*)":\\") != -1)
+	if (Text::StrIndexOf(this->currCate->srcDir, (const UTF8Char*)":\\") != INVALID_INDEX)
 	{
 		sptr = Text::StrConcat(sbuff, this->currCate->srcDir);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -2383,7 +2383,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(OrganGroup *grp)
 	return this->db->ExecuteNonQuery(sql.ToString()) >= -1;
 }
 
-Int32 SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 {
 	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
@@ -2394,21 +2394,21 @@ Int32 SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 	r = this->db->ExecuteReader(sql.ToString());
 	if (r)
 	{
-		Int32 cnt = -1;
+		UOSInt cnt = 0;
 		if (r->ReadNext())
 		{
-			cnt = r->GetInt32(0);
+			cnt = (UInt32)r->GetInt32(0);
 		}
 		this->db->CloseReader(r);
 		return cnt;
 	}
 	else
 	{
-		return -1;
+		return 0;
 	}
 }
 
-Int32 SSWR::OrganMgr::OrganEnvDB::GetSpeciesCount(Int32 groupId)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesCount(Int32 groupId)
 {
 	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
@@ -2419,17 +2419,17 @@ Int32 SSWR::OrganMgr::OrganEnvDB::GetSpeciesCount(Int32 groupId)
  	r = this->db->ExecuteReader(sql.ToString());
 	if (r)
 	{
-		Int32 cnt = -1;
+		UOSInt cnt = 0;
 		if (r->ReadNext())
 		{
-			cnt = r->GetInt32(0);
+			cnt = (UInt32)r->GetInt32(0);
 		}
 		this->db->CloseReader(r);
 		return cnt;
 	}
 	else
 	{
-		return -1;
+		return 0;
 	}
 }
 
@@ -3001,7 +3001,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(Data::ArrayList<SpeciesBook*> 
 		i = this->bookIds->SortedIndexOf(r->GetInt32(0));
 		if (i >= 0)
 		{
-			book = this->bookObjs->GetItem(i);
+			book = this->bookObjs->GetItem((UOSInt)i);
 			spBook = MemAlloc(SpeciesBook, 1);
 			spBook->book = book;
 			sb.ClearStr();
@@ -3244,7 +3244,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 						}
 						while (startIndex <= endIndex)
 						{
-							SSWR::OrganMgr::UserFileInfo *userFile = webUser->userFileObj->GetItem(startIndex);
+							SSWR::OrganMgr::UserFileInfo *userFile = webUser->userFileObj->GetItem((UOSInt)startIndex);
 							if (userFile->lat == 0 && userFile->lon == 0)
 							{
 								Double lat = 0;
@@ -3330,7 +3330,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 		{
 			i = ~i - 1;
 		}
-		dataFile = webUser->gpsFileObj->GetItem(i);
+		dataFile = webUser->gpsFileObj->GetItem((UOSInt)i);
 		if (dataFile != 0)
 		{
 			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
@@ -3469,7 +3469,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 	dt.SetTicks(userFile->fileTimeTicks);
 	dt.ToUTCTime();
 	sb->Append(this->cfgDataPath);
-	if (!sb->EndsWith(IO::Path::PATH_SEPERATOR))
+	if (!sb->EndsWith((Char)IO::Path::PATH_SEPERATOR))
 	{
 		sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
@@ -3638,7 +3638,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(Data::DateTime *fromDate, Data::DateTim
 			{
 				Trip *t;
 				NEW_CLASS(t, Trip(fromDate, toDate, locId));
-				this->trips->Insert(-i - 1, t);
+				this->trips->Insert((UOSInt)(-i - 1), t);
 				return true;
 			}
 			else
@@ -3703,7 +3703,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, const UTF8Char *engNam
 	
 	if ((UOSInt)lType + 1 >= this->locType->GetCount())
 		return false;
-	lType = this->locType->GetItem(lType + 1)->id;
+	lType = this->locType->GetItem((UInt32)lType + 1)->id;
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"insert into location (parentId, ename, cname, cate_id, locType) values (");
 	sql.AppendInt32(locId);
@@ -3969,7 +3969,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	const UTF8Char *coverName = sp->GetPhoto();
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
-	OSInt i;
+	UOSInt i;
 	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj = 0;
 	if (sp->GetPhotoId() != 0)

@@ -153,13 +153,13 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(void *userObj)
 {
 	OrganLocationForm *me = (OrganLocationForm*)userObj;
-	OSInt si = me->lbSublocations->GetSelectedIndex();
-	if (si != -1)
+	UOSInt i = me->lbSublocations->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		if (me->ToSave())
 			return;
-		Location *loc = (Location*)me->lbSublocations->GetItem((UOSInt)si);
-		UOSInt i = me->lbLocation->AddItem(loc->cname, loc);
+		Location *loc = (Location*)me->lbSublocations->GetItem(i);
+		i = me->lbLocation->AddItem(loc->cname, loc);
 		me->lbLocation->SetSelectedIndex(i);
 	}
 }

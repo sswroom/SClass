@@ -48,17 +48,17 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	}
 	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"text/plain"))
 	{
-		OSInt i = Text::StrIndexOf(contentType, (const UTF8Char*)"charset=");
+		UOSInt i = Text::StrIndexOf(contentType, (const UTF8Char*)"charset=");
 		UInt32 codePage = 0;
-		if (i > 0)
+		if (i != INVALID_INDEX && i > 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			OSInt j;
+			UOSInt j;
 			sb.Append(&contentType[i + 8]);
 			j = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)";");
-			if (j >= 0)
+			if (j != INVALID_INDEX)
 			{
-				sb.TrimToLength((UOSInt)j);
+				sb.TrimToLength(j);
 			}
 			Text::EncodingFactory encFact;
 			codePage = encFact.GetCodePage(sb.ToString());

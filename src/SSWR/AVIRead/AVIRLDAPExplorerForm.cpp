@@ -126,12 +126,11 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
-	OSInt si = me->lbPath->GetSelectedIndex();
-	if (si < 0)
+	UOSInt i = me->lbPath->GetSelectedIndex();
+	if (i == INVALID_INDEX)
 	{
 		return;
 	}
-	UOSInt i = (UOSInt)si;
 	Net::LDAPClient::SearchResultsFree(me->dispResults);
 	me->lbObjects->ClearItems();
 	me->lvValues->ClearItems();
@@ -262,16 +261,16 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userOb
 {
 	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
 	UTF8Char sbuff[256];
-	OSInt i = me->lbObjects->GetSelectedIndex();
-	if (i < 0)
+	UOSInt i = me->lbObjects->GetSelectedIndex();
+	if (i == INVALID_INDEX)
 		return;
-	me->lbObjects->GetItemText(sbuff, (UOSInt)i);
+	me->lbObjects->GetItemText(sbuff, i);
 	if (Text::StrEquals(sbuff, (const UTF8Char*)"."))
 	{
 		i = me->lbPath->GetSelectedIndex();
-		if (i >= (OSInt)me->rootLev)
+		if (i >= me->rootLev)
 		{
-			me->lbPath->SetSelectedIndex((UOSInt)i - 1);
+			me->lbPath->SetSelectedIndex(i - 1);
 		}
 	}
 	else

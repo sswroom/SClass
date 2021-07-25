@@ -24,7 +24,7 @@ UI::GUIDateTimePicker::GUIDateTimePicker(GUICore *ui, UI::GUIClientControl *pare
 	}
 	this->showWeeknum = false;
 
-	Int32 style = WS_BORDER | WS_TABSTOP | WS_CHILD;
+	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD;
 	if (st == ST_UPDOWN)
 	{
 		style = style | DTS_UPDOWN;
@@ -77,9 +77,9 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 				RECT rcCal;
 				if (hwndCal == 0)
 					return 0;
-				UInt32 style = GetWindowLong(hwndCal, GWL_STYLE);
+				UInt32 style = (UInt32)GetWindowLong(hwndCal, GWL_STYLE);
 				style = style | MCS_WEEKNUMBERS;
-				SetWindowLong(hwndCal, GWL_STYLE, style);
+				SetWindowLong(hwndCal, GWL_STYLE, (Int32)style);
 				GetWindowRect(hwndCal, &rcCal);
 				MoveWindow(hwndCal, rcCal.left, rcCal.top, rcCal.right - rcCal.left + 30, rcCal.bottom - rcCal.top, FALSE);
 			}

@@ -39,13 +39,13 @@ Bool IO::FileUtil::DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile)
 	if (pt == IO::Path::PT_DIRECTORY)
 	{
 		UTF8Char sbuff[512];
-		Text::StrWChar_UTF8(sbuff, file, -1);
+		Text::StrWChar_UTF8(sbuff, file);
 		return DeleteDir(sbuff, deleteRdonlyFile);
 	}
 
-	OSInt len = Text::StrWChar_UTF8Cnt(file, -1);
+	UOSInt len = Text::StrWChar_UTF8Cnt(file);
 	Char *tmpBuff = MemAlloc(Char, len + 1);
-	Text::StrWChar_UTF8((UTF8Char*)tmpBuff, file, -1);
+	Text::StrWChar_UTF8((UTF8Char*)tmpBuff, file);
 	Int32 ret = unlink(tmpBuff);
 	MemFree(tmpBuff);
 	if (ret == 0)
@@ -69,10 +69,10 @@ Bool IO::FileUtil::RenameFile(const UTF8Char *srcFile, const UTF8Char *destFile)
 
 /*Bool IO::FileUtil::RenameFile(const WChar *srcFile, const WChar *destFile)
 {
-	OSInt len = Text::StrWChar_UTF8Cnt(srcFile, -1) + Text::StrWChar_UTF8Cnt(destFile, -1);
+	UOSInt len = Text::StrWChar_UTF8Cnt(srcFile) + Text::StrWChar_UTF8Cnt(destFile);
 	Char *tmpBuff = MemAlloc(Char, len + 3);
-	Char *tmpBuff2 = (Char*)Text::StrWChar_UTF8((UTF8Char*)tmpBuff, srcFile, -1) + 1;
-	Text::StrWChar_UTF8((UTF8Char*)tmpBuff2, destFile, -1);
+	Char *tmpBuff2 = (Char*)Text::StrWChar_UTF8((UTF8Char*)tmpBuff, srcFile) + 1;
+	Text::StrWChar_UTF8((UTF8Char*)tmpBuff2, destFile);
 	Int32 retV = rename(tmpBuff, tmpBuff2);
 	MemFree(tmpBuff);
 	if (retV == 0)
@@ -88,12 +88,12 @@ Bool FileUtil_Stat(const UTF8Char *fileName, struct stat *outStat)
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 	sb.Append(fileName);
 	while (true)
 	{
 		i = sb.LastIndexOf('/');
-		if (i <= 0)
+		if (i == INVALID_INDEX || i == 0)
 		{
 			break;
 		}
@@ -130,10 +130,10 @@ Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
 /*Bool IO::FileUtil::IsSamePartition(const WChar *file1, const WChar *file2)
 {
 	Bool ret;
-	OSInt len = Text::StrWChar_UTF8Cnt(file1, -1) + Text::StrWChar_UTF8Cnt(file2, -1);
+	UOSInt len = Text::StrWChar_UTF8Cnt(file1) + Text::StrWChar_UTF8Cnt(file2);
 	Char *tmpBuff = MemAlloc(Char, len + 3);
-	Char *tmpBuff2 = (Char*)Text::StrWChar_UTF8((UTF8Char*)tmpBuff, file1, -1) + 1;
-	Text::StrWChar_UTF8((UTF8Char*)tmpBuff2, file2, -1);
+	Char *tmpBuff2 = (Char*)Text::StrWChar_UTF8((UTF8Char*)tmpBuff, file1) + 1;
+	Text::StrWChar_UTF8((UTF8Char*)tmpBuff2, file2);
 
 	struct stat s1;
 	struct stat s2;
@@ -515,8 +515,8 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char *dptr;
 	IO::Path::FindFileSession *sess;
 //	UInt32 attr = GetFileAttributesW(srcDir);
-	sptr = Text::StrWChar_UTF8(sbuff, srcDir, -1);
-	dptr = Text::StrWChar_UTF8(dbuff, destDir, -1);
+	sptr = Text::StrWChar_UTF8(sbuff, srcDir);
+	dptr = Text::StrWChar_UTF8(dbuff, destDir);
 	IO::Path::CreateDirectory(destDir);
 //	if (attr != 0xffffffff)
 //		SetFileAttributesW(destDir, attr);
@@ -733,8 +733,8 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 			return false;
 	}
 	IO::Path::CreateDirectory(destDir);
-	sptr = Text::StrWChar_UTF8(sbuff, srcDir, -1);
-	dptr = Text::StrWChar_UTF8(dbuff, destDir, -1);
+	sptr = Text::StrWChar_UTF8(sbuff, srcDir);
+	dptr = Text::StrWChar_UTF8(dbuff, destDir);
 	if (sptr != sbuff && sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;

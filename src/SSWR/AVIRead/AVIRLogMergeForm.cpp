@@ -93,8 +93,8 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 	{
 		Bool succ1;
 		Bool succ2;
-		OSInt i;
-		OSInt j;
+		UOSInt i;
+		UOSInt j;
 		Data::DateTime dt;
 		Int64 t1;
 		Int64 t2;
@@ -129,11 +129,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					Bool is2 = false;
 					i = sb1.IndexOf('\t');
 					j = sb2.IndexOf('\t');
-					if (i < 0)
+					if (i == INVALID_INDEX)
 					{
 						is2 = false;
 					}
-					else if (j < 0)
+					else if (j == INVALID_INDEX)
 					{
 						is2 = true;
 					}

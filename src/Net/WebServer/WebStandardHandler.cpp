@@ -147,9 +147,9 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 		}
 		return;
 	}
-	OSInt i = Text::StrIndexOf(&absolutePath[1], '/');
+	UOSInt i = Text::StrIndexOf(&absolutePath[1], '/');
 	UTF8Char *sbuff;
-	if (i == -1)
+	if (i == INVALID_INDEX)
 	{
 		this->hdlrs->Put(&absolutePath[1], hdlr);
 		if (needRelease)
@@ -159,8 +159,8 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 	}
 	else
 	{
-		sbuff = MemAlloc(UTF8Char, (UOSInt)i + 1);
-		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * (UOSInt)i);
+		sbuff = MemAlloc(UTF8Char, i + 1);
+		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 
 		subHdlr = this->hdlrs->Get(sbuff);

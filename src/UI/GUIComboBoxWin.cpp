@@ -19,7 +19,7 @@ UI::GUIComboBox::GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool all
 	this->autoComplete = false;
 	this->minVisible = 5;
 	this->allowEdit = allowTyping;
-	Int32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL;
+	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
@@ -136,7 +136,7 @@ UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 		return (UOSInt)i;
 	if (itemObj)
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
 	this->itemTexts->Add(Text::StrCopyNew(itemText));
 	return (UOSInt)i;
@@ -191,11 +191,11 @@ void UI::GUIComboBox::SetSelectedIndex(UOSInt index)
 	}
 }
 
-OSInt UI::GUIComboBox::GetSelectedIndex()
+UOSInt UI::GUIComboBox::GetSelectedIndex()
 {
 	OSInt si = SendMessage((HWND)hwnd, CB_GETCURSEL, 0, 0);
 	if (si >= 0)
-		return si;
+		return (UOSInt)si;
 	if (this->autoComplete)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -204,26 +204,26 @@ OSInt UI::GUIComboBox::GetSelectedIndex()
 		while (i-- > 0)
 		{
 			if (Text::StrEquals(this->itemTexts->GetItem(i), sb.ToString()))
-				return (OSInt)i;
+				return i;
 		}
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
 UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *buff)
 {
-	OSInt currSel = GetSelectedIndex();
-	if (currSel <= -1)
+	UOSInt currSel = GetSelectedIndex();
+	if (currSel == INVALID_INDEX)
 		return 0;
-	return GetItemText(buff, (UOSInt)currSel);
+	return GetItemText(buff, currSel);
 }
 
 void *UI::GUIComboBox::GetSelectedItem()
 {
-	OSInt currSel = GetSelectedIndex();
-	if (currSel <= -1)
+	UOSInt currSel = GetSelectedIndex();
+	if (currSel == INVALID_INDEX)
 		return 0;
-	return GetItem((UOSInt)currSel);
+	return GetItem(currSel);
 }
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
@@ -312,7 +312,7 @@ void UI::GUIComboBox::UpdatePos(Bool redraw)
 	{
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 	}
-	MoveWindow((HWND)hwnd, (int)((this->lxPos + xOfst) * this->hdpi / this->ddpi), (int)((this->lyPos + yOfst) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + (itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, (int)((this->lxPos + xOfst) * this->hdpi / this->ddpi), (int)((this->lyPos + yOfst) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + Math::UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 }
 
 void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)

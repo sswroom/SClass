@@ -291,7 +291,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 concatType)
 {
 	UTF8Char *outptr = 0;
-	OSInt i = 0;
+	UOSInt i = 0;
 	UTF8Char sbufftmp[128];
 	UTF8Char *stmp[2];
 	while (i < MAPSEARCH_LAYER_TYPES)
@@ -374,13 +374,13 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 			else
 			{
 				i = Text::StrIndexOf(strArrs[2], ' ');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 					Text::StrConcatC(sbufftmp, strArrs[2], (UOSInt)i);
 				else
 					Text::StrConcat(sbufftmp, strArrs[2]);
 
 				i = Text::StrIndexOf(strArrs[3], sbufftmp);
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					outptr = Text::StrConcat(outptr, strArrs[3]);
 				}
@@ -514,13 +514,13 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 				Text::StrConcat(sbufftmp, strArrs[2]);
 				Text::StrSplit(stmp, 2, sbufftmp, ' ');
 				i = Text::StrIndexOf(sbufftmp, '-');
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					Text::StrConcat(sbufftmp, &sbufftmp[i + 1]);
 				}
 
 				i = Text::StrIndexOf(strArrs[3], sbufftmp);
-				if (i >= 0)
+				if (i != INVALID_INDEX)
 				{
 					outptr = Text::StrConcat(outptr, strArrs[3]);
 				}

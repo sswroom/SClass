@@ -32,7 +32,7 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 	NEW_CLASS(this->selectedChangeHdlrs, Data::ArrayList<SelectedChangeHandler>());
 	NEW_CLASS(this->selectedChangeObjs, Data::ArrayList<void *>());
 
-	Int32 style = WS_TABSTOP | WS_CHILD | BS_RADIOBUTTON;
+	UInt32 style = WS_TABSTOP | WS_CHILD | BS_RADIOBUTTON;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

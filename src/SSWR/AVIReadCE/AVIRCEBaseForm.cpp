@@ -512,8 +512,8 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const WChar *fname = frm->GetFileName();
-				OSInt i = Text::StrIndexOf(fname, ':');
-				if (i < 0 || i == 1)
+				UOSInt i = Text::StrIndexOf(fname, ':');
+				if (i == INVALID_INDEX || i == 1)
 				{
 					IO::StmData::FileData *fd;
 					NEW_CLASS(fd, IO::StmData::FileData(fname, false));

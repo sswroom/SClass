@@ -48,8 +48,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	Media::MediaFile *mf = 0;
 	IO::StreamDataStream *stm;
 	IO::StreamReader *reader;
-	OSInt currTrack;
-	OSInt maxTrack = 0;
+	UOSInt currTrack;
+	UOSInt maxTrack = 0;
 	const UTF8Char *fileName = 0;
 	const UTF8Char *artists[100];
 	const UTF8Char *titles[100];
@@ -110,7 +110,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"TRACK "))
 		{
 			ReadString(sbuff2, &sbuff[6]);
-			currTrack = Text::StrToInt32(sbuff2);
+			currTrack = Text::StrToUInt32(sbuff2);
 			if(currTrack == 0)
 			{
 				errorFound = true;
@@ -124,7 +124,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"INDEX "))
 		{
 			ReadString(sbuff2, &sbuff[6]);
-			i = Text::StrToInt32(sbuff2);
+			i = Text::StrToUInt32(sbuff2);
 			if (i == 1)
 			{
 				if (currTrack == 0)

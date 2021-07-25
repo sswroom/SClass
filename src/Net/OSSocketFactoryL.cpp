@@ -742,13 +742,13 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		if (ret == 0)
 		{
 			UTF8Char *sarr[4];
-			UOSInt ui = Text::StrSplitLine(sarr, 3, sb.ToString());
-			if (ui == 3)
+			UOSInt i = Text::StrSplitLine(sarr, 3, sb.ToString());
+			if (i == 3)
 			{
-				OSInt si = Text::StrIndexOf(sarr[1], (const UTF8Char*)": ");
-				if (si >= 0)
+				i = Text::StrIndexOf(sarr[1], (const UTF8Char*)": ");
+				if (i != INVALID_INDEX)
 				{
-					sarr[1] = &sarr[1][si + 2];
+					sarr[1] = &sarr[1][i + 2];
 				}
 				if (Text::StrStartsWith(sarr[1], (const UTF8Char*)"icmp_seq="))
 				{

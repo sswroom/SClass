@@ -362,9 +362,9 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 			Char *cols[11];
 			Char *macs[6];
 			UOSInt ui;
-			OSInt channelInd = -1;
-			OSInt ssidInd = -1;
-			OSInt bssidInd = -1;
+			UOSInt channelInd = INVALID_INDEX;
+			UOSInt ssidInd = INVALID_INDEX;
+			UOSInt bssidInd = INVALID_INDEX;
 			buff[wrq.u.data.length] = 0;
 //			printf("%s\r\n", buff);
 			lineCnt = Text::StrSplitLine(lines, 2, (Char*)buff);
@@ -376,17 +376,17 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 			while (lineCnt == 2)
 			{
 				lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
-				if (channelInd == -1)
+				if (channelInd == INVALID_INDEX)
 				{
 					bssidInd = Text::StrIndexOf(lines[0], ':') - 2;
-					if (bssidInd < 0)
+					if (bssidInd == INVALID_INDEX)
 					{
 						continue;
 					}
 					lines[0][bssidInd - 1] = 0;
 					colCnt = Text::StrSplitWS(cols, 11, lines[0]);
-					ssidInd = cols[colCnt - 1] - lines[0];
-					channelInd = cols[colCnt - 2] - lines[0];
+					ssidInd = (UOSInt)(cols[colCnt - 1] - lines[0]);
+					channelInd = (UOSInt)(cols[colCnt - 2] - lines[0]);
 				}
 				else
 				{
@@ -1078,7 +1078,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader *reader;
-		OSInt i;
+		UOSInt i;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		reader->ReadLine(&sb, 1024);
@@ -1089,7 +1089,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		{
 			sb.Trim();
 			i = sb.IndexOf(':');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				sb.TrimToLength(i);
 				NEW_CLASS(interf, Net::WirelessLAN::Interface(sb.ToString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED, 0));
@@ -1107,7 +1107,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader *reader;
-		OSInt i;
+		UOSInt i;
 		struct iwreq wrq;
 		UInt8 *buff;
 		UOSInt buffSize = 16;
@@ -1124,7 +1124,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		{
 			sb.Trim();
 			i = sb.IndexOf(':');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				sb.TrimToLength((UOSInt)i);
 				Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString());

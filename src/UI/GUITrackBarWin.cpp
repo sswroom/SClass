@@ -30,7 +30,7 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, Int3
 	NEW_CLASS(this->scrollHandlers, Data::ArrayList<ScrollEvent>());
 	NEW_CLASS(this->scrollHandlersObj, Data::ArrayList<void *>());
 
-	Int32 style = WS_CHILD | TBS_NOTICKS;
+	UInt32 style = WS_CHILD | TBS_NOTICKS;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

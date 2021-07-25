@@ -50,10 +50,10 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 				si.nPos += 1;
 				break;
 			case SB_PAGELEFT:
-				si.nPos -= si.nPage;
+				si.nPos -= (int)si.nPage;
 				break;
 			case SB_PAGERIGHT:
-				si.nPos += si.nPage;
+				si.nPos += (int)si.nPage;
 				break;
 			case SB_THUMBTRACK: 
 				si.nPos = si.nTrackPos;
@@ -92,10 +92,10 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 				si.nPos += 1;
 				break;
 			case SB_PAGELEFT:
-				si.nPos -= si.nPage;
+				si.nPos -= (int)si.nPage;
 				break;
 			case SB_PAGERIGHT:
-				si.nPos += si.nPage;
+				si.nPos += (int)si.nPage;
 				break;
 			case SB_THUMBTRACK: 
 				si.nPos = si.nTrackPos;
@@ -157,7 +157,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 					UI::GUILabel *lbl = (UI::GUILabel*)ctrl;
 					if (lbl->HasTextColor())
 					{
-						Int32 c = lbl->GetTextColor();
+						UInt32 c = lbl->GetTextColor();
 						SetTextColor(hdcStatic, ((c & 0xff) << 16) | (c & 0xff00) | ((c & 0xff0000) >> 16));
 						if (b == 0)
 						{
@@ -249,7 +249,7 @@ void UI::GUIPanel::UpdateScrollBars()
 			info.fMask = SIF_PAGE | SIF_RANGE; //SIF_POS
 			info.nMax = this->minH;
 			info.nMin = 0;
-			info.nPage = h - hsSize;
+			info.nPage = (UInt32)(h - hsSize);
 //			info.nPos = this->currScrY;
 			SetScrollInfo((HWND)this->hwnd, SB_VERT, &info, TRUE);
 			w -= vsSize;
@@ -266,7 +266,7 @@ void UI::GUIPanel::UpdateScrollBars()
 		info.fMask = SIF_PAGE | SIF_RANGE; // | SIF_POS
 		info.nMax = this->minW;
 		info.nMin = 0;
-		info.nPage = w;
+		info.nPage = (UInt32)w;
 //		info.nPos = this->currScrX;
 		SetScrollInfo((HWND)this->hwnd, SB_HORZ, &info, TRUE);
 	}
@@ -292,7 +292,7 @@ void UI::GUIPanel::UpdateScrollBars()
 			info.fMask = SIF_PAGE | SIF_RANGE; //SIF_POS
 			info.nMax = this->minW;
 			info.nMin = 0;
-			info.nPage = w - vsSize;
+			info.nPage = (UInt32)(w - vsSize);
 //			info.nPos = this->currScrX;
 			SetScrollInfo((HWND)this->hwnd, SB_HORZ, &info, TRUE);
 			h -= hsSize;
@@ -309,7 +309,7 @@ void UI::GUIPanel::UpdateScrollBars()
 		info.fMask = SIF_PAGE | SIF_RANGE; // | SIF_POS
 		info.nMax = this->minH;
 		info.nMin = 0;
-		info.nPage = h;
+		info.nPage = (UInt32)h;
 //		info.nPos = this->currScrY;
 		SetScrollInfo((HWND)this->hwnd, SB_VERT, &info, TRUE);
 	}
@@ -328,7 +328,7 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, void *parentHWnd) : UI::GUIClientControl
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_VISIBLE;
+	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_VISIBLE;
 #ifdef _WIN32_WCE
 	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
@@ -349,7 +349,7 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIC
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	Int32 style = WS_CLIPSIBLINGS | WS_CHILD;
+	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

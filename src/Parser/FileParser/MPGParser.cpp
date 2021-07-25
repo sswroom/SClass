@@ -96,7 +96,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 			else if (pkgFile)
 			{
 				Int32 stmId;
-				OSInt ind;
+				UOSInt ind;
 				IO::StmData::ConcatStreamData *data;
 				stmId = 2;
 				NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
@@ -107,11 +107,11 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 				{
 					Text::StrConcat(Text::StrInt32(sptr, stmId), (const UTF8Char*)".vob");
 					ind = pkgFile->GetItemIndex(sbuff);
-					if (ind < 0)
+					if (ind == INVALID_INDEX)
 					{
 						break;
 					}
-					concatFile = pkgFile->GetItemStmData((UOSInt)ind);
+					concatFile = pkgFile->GetItemStmData(ind);
 					if (concatFile == 0)
 					{
 						break;

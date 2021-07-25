@@ -880,7 +880,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 	Int32 cpuFamily = 0;
 	Int32 cpuModel = 0;
 	Int32 cpuStepping = 0;
-	OSInt i;
+	UOSInt i;
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 	while (true)
 	{
@@ -977,7 +977,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
 		i = Text::StrIndexOf(sbSysType.ToString() + 17, ' ');
-		if (i >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sbSysType.ToString()[17 + i] = 0;
 		}
@@ -1000,18 +1000,18 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 	else if (sbHW.GetLength() > 0)
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
-		OSInt i;
+		UOSInt i;
 		if (sbHW.StartsWith((const UTF8Char*)"Qualcomm"))
 		{
-			if ((i = sbHW.IndexOf((const UTF8Char*)"MSM")) > 0)
+			if ((i = sbHW.IndexOf((const UTF8Char*)"MSM")) != INVALID_INDEX)
 			{
 				cpu = GetCPUSpec(sbHW.ToString() + i);
 			}
-			else if ((i = sbHW.IndexOf((const UTF8Char*)"SDM")) > 0)
+			else if ((i = sbHW.IndexOf((const UTF8Char*)"SDM")) != INVALID_INDEX)
 			{
 				cpu = GetCPUSpec(sbHW.ToString() + i);
 			}
-			else if ((i = sbHW.IndexOf((const UTF8Char*)"APQ")) > 0)
+			else if ((i = sbHW.IndexOf((const UTF8Char*)"APQ")) != INVALID_INDEX)
 			{
 				cpu = GetCPUSpec(sbHW.ToString() + i);
 			}
@@ -1044,7 +1044,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 		}
 		else if (sbHW.Equals((const UTF8Char*)"Annapurna Labs Alpine"))
 		{
-			if (sbModelName.IndexOf((const UTF8Char*)" AL314 ") >= 0)
+			if (sbModelName.IndexOf((const UTF8Char*)" AL314 ") != INVALID_INDEX)
 			{
 				return (const UTF8Char*)"AL314";
 			}

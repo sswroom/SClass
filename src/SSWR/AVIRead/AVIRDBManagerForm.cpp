@@ -44,8 +44,8 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	OSInt i = me->lbConn->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbConn->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		me->mnuConn->ShowMenu(me->lbConn, scnX, scnY);
 	}
@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	OSInt i = me->lbTable->GetSelectedIndex();
-	if (i >= 0)
+	UOSInt i = me->lbTable->GetSelectedIndex();
+	if (i != INVALID_INDEX)
 	{
 		me->mnuTable->ShowMenu(me->lbTable, scnX, scnY);
 	}
@@ -506,12 +506,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_CONN_REMOVE:
 		{
-			OSInt i = this->lbConn->GetSelectedIndex();
-			if (i >= 0)
+			UOSInt i = this->lbConn->GetSelectedIndex();
+			if (i != INVALID_INDEX)
 			{
-				DB::DBTool *db = this->dbList->RemoveAt((UOSInt)i);
+				DB::DBTool *db = this->dbList->RemoveAt(i);
 				DEL_CLASS(db);
-				this->lbConn->RemoveItem((UOSInt)i);
+				this->lbConn->RemoveItem(i);
 			}
 		}
 		break;
@@ -536,14 +536,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_JAVA:
 		{
 			Text::StringBuilderUTF8 sb;
-			OSInt i;
+			UOSInt i;
 			const UTF8Char *csptr;
 			sb.Append((const UTF8Char*)"@Entity\r\n");
 			sb.Append((const UTF8Char*)"@Table(name=");
 			const UTF8Char *tableName = this->lbTable->GetSelectedItemTextNew();
 			i = Text::StrIndexOf(tableName, '.');
 			Text::JSText::ToJSTextDQuote(&sb, &tableName[i + 1]);
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				csptr = Text::StrCopyNewC(tableName, (UOSInt)i);
 				sb.Append((const UTF8Char*)", schema=");

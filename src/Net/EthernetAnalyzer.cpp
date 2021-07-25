@@ -1573,11 +1573,11 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
 							sb.Append(sbuff);
 //							ipData[udpLeng] = 0;
-							OSInt i = Text::StrIndexOf(&ipData[8], (const UTF8Char*)" * ");
-							if (i > 0)
+							UOSInt i = Text::StrIndexOf(&ipData[8], (const UTF8Char*)" * ");
+							if (i != INVALID_INDEX && i > 0)
 							{
 								sb.Append((const UTF8Char*)", method = ");
-								sb.AppendC(&ipData[8], (UOSInt)i);
+								sb.AppendC(&ipData[8], i);
 							}
 							Sync::MutexUsage mutUsage(ipLog->mut);
 							while (ipLog->logList->GetCount() >= IPLOGCNT)

@@ -187,7 +187,6 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		OSInt si;
 		OSInt scrVPos = me->lvStatus->GetScrollVPos();
 		const UTF8Char *fname;
 		me->statusChg = false;

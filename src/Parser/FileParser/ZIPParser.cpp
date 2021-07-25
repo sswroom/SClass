@@ -72,7 +72,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UInt8 buff[512];
-	OSInt i;
+	UOSInt i;
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
 
@@ -208,7 +208,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 				while (true)
 				{
 					i = Text::StrIndexOf(sptr, '/');
-					if (i >= 0)
+					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
 						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -254,7 +254,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 				while (true)
 				{
 					i = Text::StrIndexOf(sptr, '/');
-					if (i >= 0)
+					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
 						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);

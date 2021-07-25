@@ -480,8 +480,8 @@ Bool IO::GSMModemController::GSMGetModemTime(Data::DateTime *date)
 		return false;
 	if (Text::StrStartsWith(sbuff, (const UTF8Char*)"+CCLK: \""))
 	{
-		OSInt i = Text::StrIndexOf(&sbuff[8], '\"');
-		if (i >= 0)
+		UOSInt i = Text::StrIndexOf(&sbuff[8], '\"');
+		if (i != INVALID_INDEX)
 		{
 			sbuff[8 + i] = 0;
 			sbuff[6] = '2';
@@ -680,7 +680,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 				}
 				else
 				{
-					if (Text::StrIndexOf(val, ',') == -1)
+					if (Text::StrIndexOf(val, ',') == INVALID_INDEX)
 					{
 						strLen = Text::StrCharCnt(val);
 						lastIndex++;

@@ -753,7 +753,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 
 IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 {
-	if (Text::StrIndexOf(fileName, ':') >= 0)
+	if (Text::StrIndexOf(fileName, ':') != INVALID_INDEX)
 	{
 		return 0;
 	}
@@ -761,7 +761,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 	IO::IStreamData *retFD = 0;
 	UTF8Char sbuff[512];
 	UOSInt i;
-	OSInt j;
+	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(fileName);
 	sb.Replace('\\', '/');
@@ -772,7 +772,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 
 	pf = this;
 	j = sb.IndexOf('/');
-	while (j >= 0)
+	while (j != INVALID_INDEX)
 	{
 		sb.ToString()[j] = 0;
 		found = false;

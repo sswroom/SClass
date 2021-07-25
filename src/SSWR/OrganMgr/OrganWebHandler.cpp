@@ -999,28 +999,28 @@ e = c
 		}
 		else
 		{
-			if (Text::StrIndexOf(species->sciName, searchStr) >= 0)
+			if (Text::StrIndexOf(species->sciName, searchStr) != INVALID_INDEX)
 			{
 				strLen2 = Text::StrCharCnt(species->sciName);
 				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
 				if (rating < currRating)
 					rating = currRating;
 			}
-			if (Text::StrIndexOf(species->chiName, searchStr) >= 0)
+			if (Text::StrIndexOf(species->chiName, searchStr) != INVALID_INDEX)
 			{
 				strLen2 = Text::StrCharCnt(species->chiName);
 				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
 				if (rating < currRating)
 					rating = currRating;
 			}
-			if (Text::StrIndexOf(species->engName, searchStr) >= 0)
+			if (Text::StrIndexOf(species->engName, searchStr) != INVALID_INDEX)
 			{
 				strLen2 = Text::StrCharCnt(species->engName);
 				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
 				if (rating < currRating)
 					rating = currRating;
 			}
-			if (Text::StrIndexOf(species->descript, searchStr) >= 0)
+			if (Text::StrIndexOf(species->descript, searchStr) != INVALID_INDEX)
 			{
 				strLen2 = Text::StrCharCnt(species->descript);
 				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
@@ -1036,7 +1036,7 @@ e = c
 					rating = 1.0;
 					break;
 				}
-				else if (Text::StrIndexOf(bookSp->dispName, searchStr) >= 0)
+				else if (Text::StrIndexOf(bookSp->dispName, searchStr) != INVALID_INDEX)
 				{
 					strLen2 = Text::StrCharCnt(bookSp->dispName);
 					currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
@@ -1069,14 +1069,14 @@ e = c
 			}
 			else
 			{
-				if (Text::StrIndexOf(subGroup->engName, searchStr) >= 0)
+				if (Text::StrIndexOf(subGroup->engName, searchStr) != INVALID_INDEX)
 				{
 					strLen2 = Text::StrCharCnt(subGroup->engName);
 					currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
 					if (rating < currRating)
 						rating = currRating;
 				}
-				if (Text::StrIndexOf(subGroup->chiName, searchStr) >= 0)
+				if (Text::StrIndexOf(subGroup->chiName, searchStr) != INVALID_INDEX)
 				{
 					strLen2 = Text::StrCharCnt(subGroup->chiName);
 					currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
@@ -3273,7 +3273,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
-		OSInt si;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
@@ -4474,7 +4473,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		IO::Writer *writer;
 		UOSInt buffSize;
 		UInt8 *buff;
-		OSInt si;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char u8buff[512];

@@ -200,7 +200,7 @@ Media::GDIImage *Media::GDIEngine::CreateImage24(UOSInt width, UOSInt height)
 Media::DrawImage *Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom)
 {
 	GDIImage *img;
-	NEW_CLASS(img, GDIImage(this, left, top, right - left, bottom - top, 32, 0, 0, hdc, Media::AT_NO_ALPHA));
+	NEW_CLASS(img, GDIImage(this, left, top, (UOSInt)(right - left), (UOSInt)(bottom - top), 32, 0, 0, hdc, Media::AT_NO_ALPHA));
 	return img;
 }
 
@@ -245,7 +245,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		}
 		Gdiplus::BitmapData bmpd;
 		Gdiplus::Status stat;
-		Gdiplus::Rect rect(0, 0, gimg->GetWidth(), gimg->GetHeight());
+		Gdiplus::Rect rect(0, 0, (INT)gimg->GetWidth(), (INT)gimg->GetHeight());
 		if ((stat = gimg->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpd)) == Gdiplus::Ok)
 		{
 			void *pBits;

@@ -1022,7 +1022,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 				sbuff[1] = chrRef[3];
 				sbuff[2] = chrRef[4];
 				sbuff[3] = 0;
-				wcs = Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToInt32(sbuff);
 			}
 			return WriteUTF8Char(stm, wcs);
 		}
@@ -1050,15 +1050,15 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 				wcs = Text::StrHex2UInt8C(&chrRef[4]);
 				if (chrRef[3] <= '9')
 				{
-					wcs += (chrRef[3] - '0') << 8;
+					wcs += (UTF32Char)(chrRef[3] - '0') << 8;
 				}
 				else if (chrRef[3] <= 'F')
 				{
-					wcs += (chrRef[3] - 0x37) << 8;
+					wcs += (UTF32Char)(chrRef[3] - 0x37) << 8;
 				}
 				else if (chrRef[3] <= 'f')
 				{
-					wcs += (chrRef[3] - 0x57) << 8;
+					wcs += (UTF32Char)(chrRef[3] - 0x57) << 8;
 				}
 			}
 			else
@@ -1068,7 +1068,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 				sbuff[2] = chrRef[4];
 				sbuff[3] = chrRef[5];
 				sbuff[4] = 0;
-				wcs = Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToInt32(sbuff);
 			}
 			return WriteUTF8Char(stm, wcs);
 		}

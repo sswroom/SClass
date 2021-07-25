@@ -232,11 +232,11 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 	}
 	else if (sptr[this->currOfst] == '"')
 	{
-		OSInt i;
+		UOSInt i;
 		while (true)
 		{
 			i = Text::StrIndexOf(&sptr[this->currOfst + 1], '"');
-			if (i >= 0)
+			if (i != INVALID_INDEX)
 			{
 				break;
 			}
@@ -247,8 +247,8 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 			}
 			sptr = this->sbLine->ToString();
 		}
-		sb->AppendC(&sptr[this->currOfst], (UOSInt)i + 2);
-		this->currOfst += (UOSInt)i + 2;
+		sb->AppendC(&sptr[this->currOfst], i + 2);
+		this->currOfst += i + 2;
 		return true;
 	}
 	else

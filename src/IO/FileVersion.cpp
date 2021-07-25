@@ -43,7 +43,7 @@ UTF8Char *IO::FileVersion::GetInternalName(Int32 lang, UTF8Char *sbuff)
 	UInt32 size;
 	if (VerQueryValueW(this->buff, sbuff2, (LPVOID*)&sptr, &size) != 0)
 	{
-		return Text::StrWChar_UTF8(sbuff, sptr, -1);
+		return Text::StrWChar_UTF8(sbuff, sptr);
 	}
 	return 0;
 }
@@ -59,7 +59,7 @@ UTF8Char *IO::FileVersion::GetFileDescription(Int32 lang, UTF8Char *sbuff)
 	UInt32 size;
 	if (VerQueryValueW(this->buff, sbuff2, (LPVOID*)&sptr, &size) != 0)
 	{
-		return Text::StrWChar_UTF8(sbuff, sptr, -1);
+		return Text::StrWChar_UTF8(sbuff, sptr);
 	}
 	return 0;
 }

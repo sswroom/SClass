@@ -1227,7 +1227,7 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvWeb::GetSpecies(Int32 spec
 UTF8Char *SSWR::OrganMgr::OrganEnvWeb::GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff)
 {
 	UTF8Char *sptr;
-	if (Text::StrIndexOf(this->currCate->srcDir, (const UTF8Char*)":\\") != -1)
+	if (Text::StrIndexOf(this->currCate->srcDir, (const UTF8Char*)":\\") != INVALID_INDEX)
 	{
 		sptr = Text::StrConcat(sbuff, this->currCate->srcDir);
 		*sptr++ = IO::Path::PATH_SEPERATOR;

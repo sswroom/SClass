@@ -443,13 +443,13 @@ Bool UI::FileDialog::ShowDialog(void *ownerHandle)
 			}
 			if (initFileName[0])
 			{
-				OSInt si = Text::StrIndexOf(currPtr, initFileName);
-				if (si >= 0)
+				i = Text::StrIndexOf(currPtr, initFileName);
+				if (i != INVALID_INDEX)
 				{
-					currPtr[si] = 0;
+					currPtr[i] = 0;
 					sptr = Text::StrConcat(sptr, currPtr);
 					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[(UOSInt)si + Text::StrCharCnt(initFileName)]);
+					Text::StrConcat(sptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{

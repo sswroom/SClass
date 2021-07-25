@@ -258,7 +258,7 @@ Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 	UTF8Char *sptr;
 	UTF8Char *sarr[7];
 	UInt8 buff[6];
-	OSInt i;
+	UOSInt i;
 	this->msgRet = sbuff;
 	this->statusChg = false;
 	writer->WriteLine((const UTF8Char *)"PASV");
@@ -271,7 +271,7 @@ Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 		}
 		sptr = &sbuff[23];
 		i = Text::StrIndexOf(sptr, (const UTF8Char *)")");
-		if (i <= 0)
+		if (i == INVALID_INDEX || i == 0)
 			return false;
 		sptr[i] = 0;
 		if (Text::StrSplit(sarr, 7, sptr, ',') != 6)
