@@ -94,9 +94,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 			me->previewImage = me->resizer->ProcessToNew(img);
 			me->filteredImage = me->previewImage->CreateStaticImage();
 			me->initPos = true;
-			me->hsbBright->SetPos(Math::Double2Int32(setting->brightness * 1000));
-			me->hsbContr->SetPos(Math::Double2Int32(setting->contrast * 100));
-			me->hsbGamma->SetPos(Math::Double2Int32(setting->gamma * 100));
+			me->hsbBright->SetPos((UOSInt)Math::Double2OSInt(setting->brightness * 1000));
+			me->hsbContr->SetPos((UOSInt)Math::Double2OSInt(setting->contrast * 100));
+			me->hsbGamma->SetPos((UOSInt)Math::Double2OSInt(setting->gamma * 100));
 			me->hsbHDRLev->SetPos((setting->flags & 240) >> 4);
 			me->initPos = false;
 			me->UpdatePreview();
@@ -104,22 +104,22 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, UOSInt newPos)
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	UTF8Char sbuff[256];
 
-	Double bvalue = Math::OSInt2Double(me->hsbBright->GetPos()) * 0.1;
-	Double cvalue = Math::OSInt2Double(me->hsbContr->GetPos());
-	Double gvalue = Math::OSInt2Double(me->hsbGamma->GetPos());
-	OSInt hdrLev = me->hsbHDRLev->GetPos();
+	Double bvalue = Math::UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
+	Double cvalue = Math::UOSInt2Double(me->hsbContr->GetPos());
+	Double gvalue = Math::UOSInt2Double(me->hsbGamma->GetPos());
+	UOSInt hdrLev = me->hsbHDRLev->GetPos();
 	Text::StrConcat(Text::StrDouble(sbuff, bvalue), (const UTF8Char*)"%");
 	me->lblBrightV->SetText(sbuff);
 	Text::StrConcat(Text::StrDouble(sbuff, cvalue), (const UTF8Char*)"%");
 	me->lblContrV->SetText(sbuff);
 	Text::StrConcat(Text::StrDouble(sbuff, gvalue), (const UTF8Char*)"%");
 	me->lblGammaV->SetText(sbuff);
-	Text::StrOSInt(sbuff, hdrLev);
+	Text::StrUOSInt(sbuff, hdrLev);
 	me->lblHDRLevV->SetText(sbuff);
 
 	if (!me->initPos)
@@ -160,9 +160,9 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
 
-		setting.brightness = Math::OSInt2Double(this->hsbBright->GetPos()) * 0.001;
-		setting.contrast = Math::OSInt2Double(this->hsbContr->GetPos()) * 0.01;
-		setting.gamma = Math::OSInt2Double(this->hsbGamma->GetPos()) * 0.01;
+		setting.brightness = Math::UOSInt2Double(this->hsbBright->GetPos()) * 0.001;
+		setting.contrast = Math::UOSInt2Double(this->hsbContr->GetPos()) * 0.01;
+		setting.gamma = Math::UOSInt2Double(this->hsbGamma->GetPos()) * 0.01;
 		setting.flags = (Int32)(this->hsbHDRLev->GetPos() << 4);
 		this->icMain->ApplySetting(this->previewImage, this->filteredImage, &setting);
 		this->pbMain->SetImage(this->filteredImage, true);

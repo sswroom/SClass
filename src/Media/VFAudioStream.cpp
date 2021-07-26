@@ -76,7 +76,7 @@ Bool Media::VFAudioStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, 
 
 void Media::VFAudioStream::GetFormat(AudioFormat *format)
 {
-	MemCopyNO(format, &this->fmt, sizeof(AudioFormat));
+	format->FromAudioFormat(&this->fmt);
 }
 
 Bool Media::VFAudioStream::Start(Sync::Event *evt, UOSInt blkSize)

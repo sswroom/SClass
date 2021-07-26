@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRImageGRForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(void *userObj, UOSInt newPos)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
 	OSInt hOfst;
@@ -12,16 +12,16 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(void *userObj, OSI
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
-		me->grFilter->SetParameter(me->currLayer, newPos - 100, vOfst, level, status);
+		me->grFilter->SetParameter(me->currLayer, (OSInt)newPos - 100, vOfst, level, status);
 		me->UpdatePreview();
-		Text::StrOSInt(sbuff, newPos - 100);
+		Text::StrOSInt(sbuff, (OSInt)newPos - 100);
 		me->txtHOfst->SetText(sbuff);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(void *userObj, UOSInt newPos)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
 	OSInt hOfst;
@@ -29,16 +29,16 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(void *userObj, OSI
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
-		me->grFilter->SetParameter(me->currLayer, hOfst, newPos - 100, level, status);
+		me->grFilter->SetParameter(me->currLayer, hOfst, (OSInt)newPos - 100, level, status);
 		me->UpdatePreview();
-		Text::StrOSInt(sbuff, newPos - 100);
+		Text::StrOSInt(sbuff, (OSInt)newPos - 100);
 		me->txtVOfst->SetText(sbuff);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(void *userObj, UOSInt newPos)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
 	OSInt hOfst;
@@ -46,11 +46,11 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(void *userObj, OSI
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
-		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, newPos - 100, status);
+		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, (OSInt)newPos - 100, status);
 		me->UpdatePreview();
-		Text::StrOSInt(sbuff, newPos - 100);
+		Text::StrOSInt(sbuff, (OSInt)newPos - 100);
 		me->txtLevel->SetText(sbuff);
 	}
 }
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(void *userObj)
 	OSInt vOfst;
 	OSInt level;
 	Int32 status;
-	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		status = ((status & ~3) | (Int32)(UInt32)me->cboType->GetSelectedIndex());
 		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, level, status);
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnEnableChanged(void *userObj, Bo
 	OSInt vOfst;
 	OSInt level;
 	Int32 status;
-	if (!me->modifying && me->currLayer != (UOSInt)-1 && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
+	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		if (newVal)
 		{
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnAddLayerClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnRemoveLayerClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
-	if (me->currLayer != (UOSInt)-1)
+	if (me->currLayer != INVALID_INDEX)
 	{
 		me->grFilter->RemoveLayer(me->currLayer);
 		me->UpdateLayers();
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageGRForm *me = (SSWR::AVIRead::AVIRImageGRForm*)userObj;
 	me->currLayer = (UOSInt)me->lbLayers->GetSelectedIndex();
-	if (me->currLayer != (UOSInt)-1)
+	if (me->currLayer != INVALID_INDEX)
 	{
 		OSInt hOfst;
 		OSInt vOfst;
@@ -125,13 +125,13 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(void *userObj)
 			me->modifying = true;
 			Text::StrOSInt(sbuff, hOfst);
 			me->txtHOfst->SetText(sbuff);
-			me->hsbHOfst->SetPos(hOfst + 100);
+			me->hsbHOfst->SetPos((UOSInt)(hOfst + 100));
 			Text::StrOSInt(sbuff, vOfst);
 			me->txtVOfst->SetText(sbuff);
-			me->hsbVOfst->SetPos(vOfst + 100);
+			me->hsbVOfst->SetPos((UOSInt)(vOfst + 100));
 			Text::StrOSInt(sbuff, level);
 			me->txtLevel->SetText(sbuff);
-			me->hsbLevel->SetPos(level + 100);
+			me->hsbLevel->SetPos((UOSInt)(level + 100));
 			me->cboType->SetSelectedIndex(status & 3);
 			me->chkEnable->SetChecked((status & 4) == 0);
 			me->modifying = false;
@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	UOSInt j;
 	UTF8Char sbuff[32];
 	this->lbLayers->ClearItems();
-	this->currLayer = (UOSInt)-1;
+	this->currLayer = INVALID_INDEX;
 	i = 0;
 	j = this->grFilter->GetLayerCount();
 	while (i < j)
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->SetText((const UTF8Char*)"GR Filter");
 
 	this->core = core;
-	this->currLayer = (UOSInt)-1;
+	this->currLayer = INVALID_INDEX;
 	this->srcImg = srcImg;
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;

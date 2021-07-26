@@ -26,7 +26,7 @@
 #define PROCDELAYBUFF 32
 #define DISPDELAYBUFF 32
 
-void UI::GUIVideoBoxDD::CalDisplayRect(OSInt srcWidth, OSInt srcHeight, OSInt *rect)
+void UI::GUIVideoBoxDD::CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect)
 {
 	Double par;
 	if (this->forcePAR == 0)
@@ -38,23 +38,23 @@ void UI::GUIVideoBoxDD::CalDisplayRect(OSInt srcWidth, OSInt srcHeight, OSInt *r
 		par = this->forcePAR / this->monPAR;
 	}
 
-	if (this->surfaceW * srcHeight * par > this->surfaceH * srcWidth)
+	if (Math::UOSInt2Double(this->surfaceW) * Math::UOSInt2Double(srcHeight) * par > Math::UOSInt2Double(this->surfaceH) * Math::UOSInt2Double(srcWidth))
 	{
-		rect[3] = this->surfaceH;
-		rect[2] = Math::Double2Int32(this->surfaceH / par * srcWidth / srcHeight);
+		rect->height = this->surfaceH;
+		rect->width = (UOSInt)Math::Double2OSInt(Math::UOSInt2Double(this->surfaceH) / par * Math::UOSInt2Double(srcWidth) / Math::UOSInt2Double(srcHeight));
 	}
 	else
 	{
-		rect[2] = this->surfaceW;
-		rect[3] = Math::Double2Int32(this->surfaceW * srcHeight * par / srcWidth);
+		rect->width = this->surfaceW;
+		rect->height = (UOSInt)Math::Double2OSInt(Math::UOSInt2Double(this->surfaceW) * Math::UOSInt2Double(srcHeight) * par / Math::UOSInt2Double(srcWidth));
 	}
-	rect[0] = (this->surfaceW - rect[2]) >> 1;
-	rect[1] = (this->surfaceH - rect[3]) >> 1;
+	rect->left = (OSInt)(this->surfaceW - rect->width) >> 1;
+	rect->top = (OSInt)(this->surfaceH - rect->height) >> 1;
 }
 
 void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 {
-	OSInt rect[4];
+	DrawRect rect;
 
 	this->VideoBeginProc();
 	Sync::MutexUsage mutUsage(this->surfaceMut);
@@ -64,21 +64,21 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 	{
 		vheight = vheight << 1;
 	}
-	this->CalDisplayRect(vwidth, vheight, rect);
-	if (rect[2] == (OSInt)vbuff->destW && rect[3] == (OSInt)vbuff->destH && this->surfaceBuff && vbuff->destBitDepth == this->bitDepth)
+	this->CalDisplayRect(vwidth, vheight, &rect);
+	if (rect.width == vbuff->destW && rect.height == vbuff->destH && this->surfaceBuff && vbuff->destBitDepth == this->bitDepth)
 	{
 		UOSInt dlineSize;
 		UInt8 *dptr = this->LockSurfaceDirect(&dlineSize);
 		if (dptr)
 		{
-			dptr = dptr + (rect[1] * dlineSize + rect[0] * (this->bitDepth >> 3));
+			dptr = dptr + (rect.top * (OSInt)dlineSize + rect.left * (OSInt)(this->bitDepth >> 3));
 			if (this->bitDepth == 16)
 			{
-				this->outputCopier->Copy16(vbuff->destBuff, rect[2] * 2, dptr, dlineSize, rect[2], rect[3]);
+				this->outputCopier->Copy16(vbuff->destBuff, (OSInt)rect.width * 2, dptr, (OSInt)dlineSize, rect.width, rect.height);
 			}
 			else
 			{
-				this->outputCopier->Copy16(vbuff->destBuff, rect[2] * 4, dptr, dlineSize, rect[2], rect[3]);
+				this->outputCopier->Copy16(vbuff->destBuff, (OSInt)rect.width * 4, dptr, (OSInt)dlineSize, rect.width, rect.height);
 			}
 			this->LockSurfaceUnlock();
 		}
@@ -90,7 +90,7 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 
 void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
-	OSInt rect[4];
+	DrawRect rect;
 	UOSInt srcWidth = 0;
 	UOSInt srcHeight = 0;
 	UOSInt cropWidth;
@@ -98,7 +98,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 	UOSInt cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
 	UOSInt sizeNeeded;
-	OSInt cropTotal = tstat->me->cropLeft + tstat->me->cropRight + tstat->me->cropTop + tstat->me->cropBottom;
+	UOSInt cropTotal = tstat->me->cropLeft + tstat->me->cropRight + tstat->me->cropTop + tstat->me->cropBottom;
 	Double par;
 	if (tstat->me->forcePAR == 0)
 	{
@@ -152,7 +152,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			NEW_CLASS(simg, Media::StaticImage(info->dispWidth, info->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
-			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispWidth, info->dispHeight, info->storeWidth, info->storeHeight, simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
+			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispWidth, info->dispHeight, info->storeWidth, info->storeHeight, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data, info->dispWidth, info->dispHeight, simg->GetDataBpl(), 0xff);
 			this->video->GetSourceName(sbuff);
 			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
@@ -199,7 +199,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 			vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 		}
 		Manage::HiResClock clk;
-		tstat->csconv->ConvertV2(&vbuff->srcBuff, vbuff->destBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, tstat->me->videoInfo->dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
+		tstat->csconv->ConvertV2(&vbuff->srcBuff, vbuff->destBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, (OSInt)tstat->me->videoInfo->dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
 		Sync::MutexUsage mutUsage(tstat->me->buffMut);
@@ -233,7 +233,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 		}
 
 		Manage::HiResClock clk;
-		tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, tstat->me->videoInfo->dispWidth * 8, vbuff->frameType, vbuff->ycOfst);
+		tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, (OSInt)tstat->me->videoInfo->dispWidth * 8, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
 		if (tstat->procType == 1)
@@ -247,9 +247,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -260,7 +260,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_TF)
 			{
@@ -272,9 +272,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				sizeNeeded = srcWidth * srcHeight << 3;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -285,7 +285,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_BF)
 			{
@@ -296,9 +296,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop << 1;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -309,7 +309,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_TF)
 			{
@@ -320,9 +320,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -333,7 +333,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_BF)
 			{
@@ -344,9 +344,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -357,7 +357,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 			{
@@ -368,9 +368,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -381,7 +381,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 			{
@@ -392,9 +392,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -405,7 +405,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + (((cropDY >> 1) + 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, srcBuff + (((cropDY >> 1) + 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight >> 1), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 			{
@@ -416,9 +416,9 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				cropDY = tstat->me->cropTop;
 				srcBuff = tstat->lrBuff;
 
-				tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
-				vbuff->destW = rect[2];
-				vbuff->destH = rect[3];
+				tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
+				vbuff->destW = rect.width;
+				vbuff->destH = rect.height;
 				vbuff->destBitDepth = tstat->resizerBitDepth;
 				if (vbuff->destSize < vbuff->destW * vbuff->destH)
 				{
@@ -429,7 +429,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					}
 					vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 				}
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
+				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH, false);
 			}
 			else
 			{
@@ -464,11 +464,11 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
 				{
-					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH, false);
+					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_BOTTOM_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH, false);
 				}
 				else
 				{
-					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH, false);
+					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_TOP_FIELD, tstat->lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH, false);
 				}
 				mutUsage.BeginUse();
 				vbuff2->isOutputReady = true;
@@ -518,7 +518,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				}
 				if (tstat->deint == 0)
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, (OSInt)srcWidth << 3));
+					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
 				}
 				else
 				{
@@ -546,7 +546,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				}
 				if (tstat->deint == 0)
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, (OSInt)srcWidth << 3));
+					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
 				}
 				else
 				{
@@ -581,7 +581,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = tstat->diBuff;
-				tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 3);
+				tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_BF)
 			{
@@ -609,7 +609,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = tstat->diBuff;
-				tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, srcWidth << 3);
+				tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 			{
@@ -665,7 +665,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 4);
 				}
 				srcBuff = tstat->diBuff;
-				tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 8), tstat->diBuff, 1, srcWidth, srcWidth << 3);
+				tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 8), tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 			{
@@ -684,10 +684,10 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 			}
 			
 		//	tstat->me->VideoBeginProc();
-			tstat->me->CalDisplayRect(cropWidth, cropHeight, rect);
+			tstat->me->CalDisplayRect(cropWidth, cropHeight, &rect);
 		//	tstat->me->VideoEndProc();
-			vbuff->destW = rect[2];
-			vbuff->destH = rect[3];
+			vbuff->destW = rect.width;
+			vbuff->destH = rect.height;
 			vbuff->destBitDepth = tstat->resizerBitDepth;
 			if (vbuff->destSize < vbuff->destW * vbuff->destH)
 			{
@@ -698,7 +698,7 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 				}
 				vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 			}
-			tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), 0, 0, vbuff->destBuff, vbuff->destW * vbuff->destBitDepth >> 3, vbuff->destW, vbuff->destH);
+			tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), (OSInt)srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), 0, 0, vbuff->destBuff, (OSInt)(vbuff->destW * vbuff->destBitDepth >> 3), vbuff->destW, vbuff->destH);
 
 			if ((vbuff->frameType == Media::FT_INTERLACED_TFF || vbuff->frameType == Media::FT_INTERLACED_BFF) && vbuff2)
 			{
@@ -726,13 +726,13 @@ void UI::GUIVideoBoxDD::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoB
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
 				{
-					tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 8), tstat->diBuff, 1, srcWidth, srcWidth << 3);
+					tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 8), tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 3);
 				}
 				else
 				{
-					tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, srcWidth << 3);
+					tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 3);
 				}
-				tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, Math::OSInt2Double(cropWidth), Math::OSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, vbuff2->destW * vbuff2->destBitDepth >> 3, vbuff2->destW, vbuff2->destH);
+				tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), (OSInt)srcWidth << 3, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, (OSInt)(vbuff2->destW * vbuff2->destBitDepth >> 3), vbuff2->destW, vbuff2->destH);
 				mutUsage.BeginUse();
 				vbuff2->isOutputReady = true;
 				vbuff2->isProcessing = false;
@@ -822,7 +822,7 @@ void UI::GUIVideoBoxDD::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info)
 		color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 		color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 		color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
-		tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, *(Int32*)"LRGB", 64, Media::PF_UNKNOWN, &color, yuvType, this->colorSess);
+		tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, yuvType, this->colorSess);
 		if (info->dispWidth * info->dispHeight > tstat->lrSize)
 		{
 			tstat->lrSize = info->dispWidth * info->dispHeight;
@@ -999,7 +999,7 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 			me->dispEvt->Wait(100);
 		}
 		me->dispMut->LockRead();
-		me->dispClk->Start(frameTime - me->timeDelay - me->avOfst);
+		me->dispClk->Start((UInt32)((Int32)frameTime - me->timeDelay - me->avOfst));
 		me->dispMut->UnlockRead();
 	}
 	if (frameType == Media::FT_DISCARD)
@@ -1396,7 +1396,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 				buff2 = 0;
 			}
 
-			Int32 currTime = -1;
+			UInt32 currTime = 0;
 			Bool toSkip = false;
 
 			tstat->me->dispMut->LockRead();
@@ -1404,18 +1404,18 @@ UInt32 __stdcall UI::GUIVideoBoxDD::ProcessThread(void *userObj)
 			{
 				if (!tstat->me->dispClk->Running() || buff->discontTime)
 				{
-					tstat->me->dispClk->Start(buff->frameTime - tstat->me->timeDelay - tstat->me->avOfst);
+					tstat->me->dispClk->Start((UInt32)((Int32)buff->frameTime - tstat->me->timeDelay - tstat->me->avOfst));
 					currTime = buff->frameTime;
 				}
 				else
 				{
 					Int32 procDelay = tstat->me->CalProcDelay();
 					Int32 dispDelay = tstat->me->CalDispDelay();
-					currTime = tstat->me->dispClk->GetCurrTime() + tstat->me->timeDelay + tstat->me->avOfst + procDelay + dispDelay + PREPROCTIME;
+					currTime = (UInt32)((Int32)tstat->me->dispClk->GetCurrTime() + tstat->me->timeDelay + tstat->me->avOfst + procDelay + dispDelay + PREPROCTIME);
 					if (buff->flags & Media::IVideoSource::FF_FORCEDISP)
 					{
 					}
-					else if (currTime > (Int32)buff->frameTime && ((buff->flags & Media::IVideoSource::FF_REALTIME) == 0 || tstat->me->hasAudio))
+					else if (currTime > buff->frameTime && ((buff->flags & Media::IVideoSource::FF_REALTIME) == 0 || tstat->me->hasAudio))
 					{
 						toSkip = true;
 					}
@@ -1483,10 +1483,10 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 	UInt32 minFrame2 = 0;
 	UInt32 minTime = 0;
 	UInt32 minTime2 = 0;
-	OSInt lastW = 0;
-	OSInt lastH = 0;
+	UOSInt lastW = 0;
+	UOSInt lastH = 0;
 	Bool toClear;
-	OSInt minIndex = 0;
+	UOSInt minIndex = 0;
 	me->dispRunning = true;
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
 	while (!me->dispToStop)
@@ -1548,7 +1548,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 						Int32 t;
 //						Int32 dispDelay = me->CalDispDelay();
 						Bool skipFrame = false;;
-						t = (me->dispClk->GetCurrTime() + me->timeDelay + me->avOfst);
+						t = ((Int32)me->dispClk->GetCurrTime() + me->timeDelay + me->avOfst);
 						if (found2 && (me->buffs[minIndex].flags & Media::IVideoSource::FF_FORCEDISP) == 0)
 						{
 							if (t > (Int32)(minTime2 + 17) && ((me->buffs[minIndex].flags & Media::IVideoSource::FF_REALTIME) == 0 || me->hasAudio))
@@ -1640,7 +1640,7 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 							Double dispT;
 							Media::IVideoSource::FrameFlag flags = me->buffs[minIndex].flags;
 							UInt32 frameTime = me->buffs[minIndex].frameTime;
-							Int32 frameNum = me->buffs[minIndex].frameNum;
+							UInt32 frameNum = me->buffs[minIndex].frameNum;
 							////////////////////////////////
 							
 							if ((flags & Media::IVideoSource::FF_REALTIME) && !me->hasAudio)
@@ -1659,13 +1659,13 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 								}
 								else
 								{
-									dispJitter = 1000 / me->refRate;
+									dispJitter = 1000 / (Int32)me->refRate;
 								}
-								while ((t = (me->dispClk->GetCurrTime() + me->timeDelay + me->avOfst + dispJitter)) < (Int32)frameTime)
+								while ((t = ((Int32)me->dispClk->GetCurrTime() + me->timeDelay + me->avOfst + dispJitter)) < (Int32)frameTime)
 								{
-									if (frameTime - t > 3000 && me->videoDelay > -3000)
+									if ((Int32)frameTime - t > 3000 && me->videoDelay > -3000)
 										break;
-									me->dispEvt->Wait(frameTime - t);
+									me->dispEvt->Wait((UOSInt)(OSInt)((Int32)frameTime - t));
 									if (me->dispToStop || !me->playing)
 										break;
 								}
@@ -1677,32 +1677,32 @@ UInt32 __stdcall UI::GUIVideoBoxDD::DisplayThread(void *userObj)
 							me->VideoBeginProc();
 							Sync::MutexUsage mutUsage(me->surfaceMut);
 
-							OSInt rect[4];
+							DrawRect rect;
 							UOSInt vwidth = me->videoInfo->dispWidth - me->cropLeft - me->cropRight;
 							UOSInt vheight = me->videoInfo->dispHeight - me->cropTop - me->cropBottom;
 							if (me->videoInfo->ftype == Media::FT_FIELD_BF || me->videoInfo->ftype == Media::FT_FIELD_TF)
 							{
 								vheight = vheight << 1;
 							}
-							me->CalDisplayRect(vwidth, vheight, rect);
+							me->CalDisplayRect(vwidth, vheight, &rect);
 							toClear = false;
-							if (rect[2] == (OSInt)me->buffs[minIndex].destW && rect[3] == (OSInt)me->buffs[minIndex].destH)
+							if (rect.width == me->buffs[minIndex].destW && rect.height == me->buffs[minIndex].destH)
 							{
-								if (rect[2] != lastW || rect[3] != lastH || me->toClear)
+								if (rect.width != lastW || rect.height != lastH || me->toClear)
 								{
 									toClear = true;
-									lastW = rect[2];
-									lastH = rect[3];
+									lastW = rect.width;
+									lastH = rect.height;
 									me->toClear = false;
 								}
 								if (me->buffs[minIndex].destBitDepth == 16)
 								{
-									me->DrawFromBuff(me->buffs[minIndex].destBuff, rect[2] << 1, rect[0], rect[1], rect[2], rect[3], toClear);
+									me->DrawFromBuff(me->buffs[minIndex].destBuff, (OSInt)rect.width << 1, rect.left, rect.top, rect.width, rect.height, toClear);
 								}
 								else
 								{
 									UInt8 *dispBuff = me->buffs[minIndex].destBuff;
-									me->DrawFromBuff(dispBuff, rect[2] << 2, rect[0], rect[1], rect[2], rect[3], toClear);
+									me->DrawFromBuff(dispBuff, (OSInt)rect.width << 2, rect.left, rect.top, rect.width, rect.height, toClear);
 								}
 							}
 							me->buffs[minIndex].isEmpty = true;

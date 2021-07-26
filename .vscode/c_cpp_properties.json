@@ -129,6 +129,7 @@
             "includePath": [
                 "${workspaceFolder}/../SClass/header",
                 "/usr/x86_64-w64-mingw32/include",
+                "${workspaceFolder}/../ffmpeg-3.3.1-win64-dev/include",
                 "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
                 "${workspaceFolder}/../opencv/build/include",
                 "${workspaceFolder}/../SClass/ThirdParty/miniz",

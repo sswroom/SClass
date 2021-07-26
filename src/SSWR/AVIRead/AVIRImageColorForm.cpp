@@ -5,14 +5,14 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSInt newPos)
 {
 	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
 	UTF8Char sbuff[256];
 
-	Double bvalue = Math::OSInt2Double(me->hsbBright->GetPos()) * 0.1;
-	Double cvalue = Math::OSInt2Double(me->hsbContr->GetPos());
-	Double gvalue = Math::OSInt2Double(me->hsbGamma->GetPos());
+	Double bvalue = Math::UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
+	Double cvalue = Math::UOSInt2Double(me->hsbContr->GetPos());
+	Double gvalue = Math::UOSInt2Double(me->hsbGamma->GetPos());
 	Text::StrConcat(Text::StrDouble(sbuff, bvalue), (const UTF8Char*)"%");
 	me->lblBrightV->SetText(sbuff);
 	Text::StrConcat(Text::StrDouble(sbuff, cvalue), (const UTF8Char*)"%");
@@ -80,11 +80,11 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj
 	{
 		Int32 v;
 		if (reg->GetValueI32(L"LastImgColorBright", &v))
-			me->hsbBright->SetPos(v);
+			me->hsbBright->SetPos((UInt32)v);
 		if (reg->GetValueI32(L"LastImgColorContr", &v))
-			me->hsbContr->SetPos(v);
+			me->hsbContr->SetPos((UInt32)v);
 		if (reg->GetValueI32(L"LastImgColorGamma", &v))
-			me->hsbGamma->SetPos(v);
+			me->hsbGamma->SetPos((UInt32)v);
 		IO::Registry::CloseRegistry(reg);
 	}
 }

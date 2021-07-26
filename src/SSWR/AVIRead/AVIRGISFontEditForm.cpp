@@ -52,10 +52,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userOb
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(void *userObj, OSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(void *userObj, UOSInt scrollPos)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
-	me->currBuffSize = (UOSInt)scrollPos;
+	me->currBuffSize = scrollPos;
 	me->UpdateFontPreview();
 }
 

@@ -213,6 +213,24 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSIn
 					case RT_AIR_VOC:
 						readingVals[k] = ReadInt16(&cmd[i + 1]) * 0.001;
 						break;
+					case RT_UNKNOWN:
+					case RT_GAS_CH4:
+					case RT_DOOR_CONTACT:
+					case RT_MOVING_SENSOR:
+					case RT_AIR_CO:
+					case RT_AIR_PM25:
+					case RT_AIR_PM10:
+					case RT_AIR_CO2:
+					case RT_PARTICLE_0_3UM:
+					case RT_PARTICLE_0_5UM:
+					case RT_PARTICLE_1_0UM:
+					case RT_PARTICLE_2_5UM:
+					case RT_PARTICLE_5_0UM:
+					case RT_PARTICLE_10UM:
+					case RT_VOLTAGE:
+					case RT_ONOFF:
+					case RT_POWER:
+					case RT_ALERT:
 					default:
 						readingVals[k] = ReadInt16(&cmd[i + 1]);
 						break;
@@ -686,6 +704,25 @@ const UTF8Char *IO::SNBDongle::SensorTypeGetName(SensorType sensorType)
 		return (const UTF8Char*)"Temperature";
 	case IO::SNBDongle::ST_RETURN_NORMAL:
 		return (const UTF8Char*)"Return normal";
+	case IO::SNBDongle::ST_LUX:
+		return (const UTF8Char*)"LUX";
+	case IO::SNBDongle::ST_HUMIDITY_TEMP:
+		return (const UTF8Char*)"Humidity and Temperature";
+	case IO::SNBDongle::ST_AIR:
+		return (const UTF8Char*)"Air Quality";
+	case IO::SNBDongle::ST_VIBRATE:
+		return (const UTF8Char*)"Vibration";
+	case IO::SNBDongle::ST_POSITION:
+		return (const UTF8Char*)"Position";
+	case IO::SNBDongle::ST_PANIC_BUTTON:
+		return (const UTF8Char*)"Panic Button";
+	case IO::SNBDongle::ST_WAKEUP:
+		return (const UTF8Char*)"Wakeup";
+	case IO::SNBDongle::ST_DOOROPEN:
+		return (const UTF8Char*)"Door Open";
+	case IO::SNBDongle::ST_WATERSENSOR:
+		return (const UTF8Char*)"Water Sensor";
+	case IO::SNBDongle::ST_CUSTOM:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

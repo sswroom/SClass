@@ -65,12 +65,12 @@ extern "C"
 	void ImageUtil_ConvW16_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvW16A16_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvW8A8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
-	void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl, OSInt dbpl);
-	void ImageUtil_Rotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl, OSInt dbpl);
-	void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl, OSInt dbpl);
-	void ImageUtil_Rotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl, OSInt dbpl);
-	void ImageUtil_Rotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl, OSInt dbpl);
-	void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl, OSInt dbpl);
+	void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_Rotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_Rotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_Rotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
 
 	void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt byteSize, UOSInt shiftCnt); //Assume aligned
 	void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, const UInt8 *uptr, const UInt8 *vptr, UOSInt pixelCnt, UOSInt shiftCnt); //Assume aligned

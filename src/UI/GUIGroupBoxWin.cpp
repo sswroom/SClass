@@ -53,7 +53,7 @@ OSInt __stdcall UI::GUIGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 
 UI::GUIGroupBox::GUIGroupBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *text) : UI::GUIClientControl(ui, parent)
 {
-	Int32 style = WS_CLIPSIBLINGS | WS_CHILD | BS_GROUPBOX;
+	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | BS_GROUPBOX;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;

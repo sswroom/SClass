@@ -890,7 +890,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				if (rtype == RT_CW90)
 				{
 					outBuff = MemAllocA(UInt8, (this->info->dispWidth * this->info->dispHeight << 2) + 4);
-					ImageUtil_Rotate32_CW90(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, (OSInt)this->info->storeWidth << 2, (OSInt)this->info->dispHeight << 2);
+					ImageUtil_Rotate32_CW90(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, this->info->storeWidth << 2, this->info->dispHeight << 2);
 					MemFreeA(this->data);
 					this->data = outBuff;
 					this->info->dispWidth = srcHeight;
@@ -902,7 +902,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RT_CW180)
 				{
 					outBuff = MemAllocA(UInt8, (this->info->dispWidth * this->info->dispHeight << 2) + 4);
-					ImageUtil_Rotate32_CW180(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, (OSInt)this->info->storeWidth << 2, (OSInt)this->info->dispWidth << 2);
+					ImageUtil_Rotate32_CW180(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, this->info->storeWidth << 2, this->info->dispWidth << 2);
 					MemFreeA(this->data);
 					this->data = outBuff;
 					this->info->storeWidth = this->info->dispWidth;
@@ -912,7 +912,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RT_CW270)
 				{
 					outBuff = MemAllocA(UInt8, (this->info->dispWidth * this->info->dispHeight << 2) + 4);
-					ImageUtil_Rotate32_CW270(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, (OSInt)this->info->storeWidth << 2, (OSInt)this->info->dispHeight << 2);
+					ImageUtil_Rotate32_CW270(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, this->info->storeWidth << 2, this->info->dispHeight << 2);
 					MemFreeA(this->data);
 					this->data = outBuff;
 					this->info->dispWidth = srcHeight;
@@ -930,7 +930,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				if (rtype == RT_CW90)
 				{
 					outBuff = MemAllocA(UInt8, (this->info->dispWidth * this->info->dispHeight << 3) + 4);
-					ImageUtil_Rotate64_CW90(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, (OSInt)this->info->storeWidth << 3, (OSInt)this->info->dispHeight << 3);
+					ImageUtil_Rotate64_CW90(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, this->info->storeWidth << 3, this->info->dispHeight << 3);
 					MemFreeA(this->data);
 					this->data = outBuff;
 					this->info->dispWidth = srcHeight;
@@ -942,7 +942,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RT_CW180)
 				{
 					outBuff = MemAllocA(UInt8, (this->info->dispWidth * this->info->dispHeight << 3) + 4);
-					ImageUtil_Rotate64_CW180(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, (OSInt)this->info->storeWidth << 3, (OSInt)this->info->dispWidth << 3);
+					ImageUtil_Rotate64_CW180(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, this->info->storeWidth << 3, this->info->dispWidth << 3);
 					MemFreeA(this->data);
 					this->data = outBuff;
 					this->info->storeWidth = this->info->dispWidth;
@@ -952,7 +952,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RT_CW270)
 				{
 					outBuff = MemAllocA(UInt8, (this->info->dispWidth * this->info->dispHeight << 3) + 4);
-					ImageUtil_Rotate64_CW270(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, (OSInt)this->info->storeWidth << 3, (OSInt)this->info->dispHeight << 3);
+					ImageUtil_Rotate64_CW270(this->data, outBuff, this->info->dispWidth, this->info->dispHeight, this->info->storeWidth << 3, this->info->dispHeight << 3);
 					MemFreeA(this->data);
 					this->data = outBuff;
 					this->info->dispWidth = srcHeight;

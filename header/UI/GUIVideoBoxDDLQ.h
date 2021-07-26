@@ -12,8 +12,8 @@ namespace UI
 		virtual void CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(ThreadStat *tstat);
 	public:
-		GUIVideoBoxDDLQ(GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, OSInt buffCnt, OSInt threadCnt);
+		GUIVideoBoxDDLQ(GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~GUIVideoBoxDDLQ();
 	};
-};
+}
 #endif

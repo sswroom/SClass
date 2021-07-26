@@ -53,9 +53,9 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 
-			static void __stdcall OnHOfstChanged(void *userObj, OSInt newPos);
-			static void __stdcall OnVOfstChanged(void *userObj, OSInt newPos);
-			static void __stdcall OnLevelChanged(void *userObj, OSInt newPos);
+			static void __stdcall OnHOfstChanged(void *userObj, UOSInt newPos);
+			static void __stdcall OnVOfstChanged(void *userObj, UOSInt newPos);
+			static void __stdcall OnLevelChanged(void *userObj, UOSInt newPos);
 			static void __stdcall OnTypeChanged(void *userObj);
 			static void __stdcall OnEnableChanged(void *userObj, Bool newVal);
 			static void __stdcall OnAddLayerClicked(void *userObj);

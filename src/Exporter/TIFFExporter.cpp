@@ -902,6 +902,30 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				}
 			}
 			break;
+		case Media::PF_UNKNOWN:
+		case Media::PF_PAL_1:
+		case Media::PF_PAL_2:
+		case Media::PF_PAL_4:
+		case Media::PF_PAL_8:
+		case Media::PF_LE_R5G5B5:
+		case Media::PF_LE_R5G6B5:
+		case Media::PF_LE_W16:
+		case Media::PF_LE_A2B10G10R10:
+		case Media::PF_PAL_W1:
+		case Media::PF_PAL_W2:
+		case Media::PF_PAL_W4:
+		case Media::PF_PAL_W8:
+		case Media::PF_W8A8:
+		case Media::PF_LE_W16A16:
+		case Media::PF_LE_FW32A32:
+		case Media::PF_LE_FW32:
+		case Media::PF_R8G8B8A8:
+		case Media::PF_R8G8B8:
+		case Media::PF_PAL_1_A1:
+		case Media::PF_PAL_2_A1:
+		case Media::PF_PAL_4_A1:
+		case Media::PF_PAL_8_A1:
+		case Media::PF_B8G8R8A1:
 		default:
 			break;
 		}

@@ -305,6 +305,16 @@ namespace Math
 		return (Double)val;
 	}
 
+	FORCEINLINE Double Int64_Double(Int64 val)
+	{
+		return (Double)val;
+	}
+
+	FORCEINLINE Double UInt64_Double(UInt64 val)
+	{
+		return (Double)val;
+	}
+
 	FORCEINLINE Int16 SDouble2Int16(Double val)
 	{
 		if (val < -32768.0)

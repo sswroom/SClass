@@ -2721,6 +2721,8 @@ SSWR/AVIRead/AVIRCore.h: ../../src/SSWR/AVIRead/AVIRCore.cpp
 @AVIRCore.o
 SSWR/AVIRead/AVIRCOVID19Form.h: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
 @AVIRCOVID19Form.o
+SSWR/AVIRead/AVIRCppEnumForm.h: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
+@AVIRCppEnumForm.o
 SSWR/AVIRead/AVIRCPUInfoForm.h: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 @AVIRCPUInfoForm.o
 SSWR/AVIRead/AVIRDBForm.h: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
@@ -3359,6 +3361,8 @@ Text/Cpp/CppEnv.h: ../../src/Text/Cpp/CppEnv.cpp
 @CppEnv.o
 Text/Cpp/CppParseStatus.h: ../../src/Text/Cpp/CppParseStatus.cpp
 @CppParseStatus.o
+Text/Cpp/CppReader.h: ../../src/Text/Cpp/CppReader.cpp
+@CppReader.o
 Text/Doc/DocHeading.h: ../../src/Text/Doc/DocHeading.cpp
 @DocHeading.o
 Text/Doc/DocItem.h: ../../src/Text/Doc/DocItem.cpp
@@ -4328,6 +4332,7 @@ AVIRCoordConvForm.o: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
 AVIRCoordInfoForm.o: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
 AVIRCore.o: ../../src/SSWR/AVIRead/AVIRCore.cpp
 AVIRCOVID19Form.o: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
+AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 AVIRCPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 AVIRDBForm.o: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
 AVIRDBManagerForm.o: ../../src/SSWR/AVIRead/AVIRDBManagerForm.cpp
@@ -4640,6 +4645,7 @@ XMLReader.o: ../../src/Text/XMLReader.cpp
 CppCodeParser.o: ../../src/Text/Cpp/CppCodeParser.cpp
 CppEnv.o: ../../src/Text/Cpp/CppEnv.cpp
 CppParseStatus.o: ../../src/Text/Cpp/CppParseStatus.cpp
+CppReader.o: ../../src/Text/Cpp/CppReader.cpp
 DocHeading.o: ../../src/Text/Doc/DocHeading.cpp
 DocItem.o: ../../src/Text/Doc/DocItem.cpp
 DocLink.o: ../../src/Text/Doc/DocLink.cpp

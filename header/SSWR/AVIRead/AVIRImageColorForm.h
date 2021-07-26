@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUIButton *btnCancel;
 			UI::GUIButton *btnLastValue;
 
-			static void __stdcall OnColorChg(void *userObj, OSInt newPos);
+			static void __stdcall OnColorChg(void *userObj, UOSInt newPos);
 			static void __stdcall OnOKClick(void *userObj);
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnLastValueClick(void *userObj);
@@ -50,6 +50,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

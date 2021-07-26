@@ -10,6 +10,7 @@ namespace Text
 		static Bool IsWS(const UTF8Char *sptr);
 		static Bool IsPunctuation(UTF8Char c);
 		static Bool IsAlphaNumeric(UTF8Char c);
+		static Bool IsAlphabet(UTF8Char c);
 	};
 }
 #endif

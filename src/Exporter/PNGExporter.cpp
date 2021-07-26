@@ -1513,6 +1513,20 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		hdr[24] = 8;
 		hdr[25] = 4;
 		break;
+	case Media::PF_LE_R5G5B5:
+	case Media::PF_LE_R5G6B5:
+	case Media::PF_LE_A2B10G10R10:
+	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FW32A32:
+	case Media::PF_LE_FW32:
+	case Media::PF_R8G8B8A8:
+	case Media::PF_R8G8B8:
+	case Media::PF_PAL_1_A1:
+	case Media::PF_PAL_2_A1:
+	case Media::PF_PAL_4_A1:
+	case Media::PF_PAL_8_A1:
+	case Media::PF_B8G8R8A1:
 	case Media::PF_UNKNOWN:
 	default:
 		return false;
@@ -1987,6 +2001,21 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
+	case Media::PF_LE_R5G5B5:
+	case Media::PF_LE_R5G6B5:
+	case Media::PF_LE_A2B10G10R10:
+	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FW32A32:
+	case Media::PF_LE_FW32:
+	case Media::PF_R8G8B8A8:
+	case Media::PF_R8G8B8:
+	case Media::PF_PAL_1_A1:
+	case Media::PF_PAL_2_A1:
+	case Media::PF_PAL_4_A1:
+	case Media::PF_PAL_8_A1:
+	case Media::PF_B8G8R8A1:
+	case Media::PF_UNKNOWN:
 	default:
 		break;
 	}

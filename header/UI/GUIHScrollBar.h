@@ -7,7 +7,7 @@ namespace UI
 	class GUIHScrollBar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *PosChgEvent)(void *userObj, OSInt newPos);
+		typedef void (__stdcall *PosChgEvent)(void *userObj, UOSInt newPos);
 
 	private:
 		Data::ArrayList<PosChgEvent> *posChgHdlrs;
@@ -23,9 +23,9 @@ namespace UI
 		GUIHScrollBar(GUICore *ui, UI::GUIClientControl *parent, Int32 width);
 		virtual ~GUIHScrollBar();
 
-		void InitScrollBar(OSInt minVal, OSInt maxVal, OSInt currVal, OSInt largeChg);
-		void SetPos(OSInt pos);
-		OSInt GetPos();
+		void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);
+		void SetPos(UOSInt pos);
+		UOSInt GetPos();
 
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
@@ -38,5 +38,5 @@ namespace UI
 
 		static Int32 GetSystemSize();
 	};
-};
+}
 #endif

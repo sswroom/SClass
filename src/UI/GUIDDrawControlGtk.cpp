@@ -426,23 +426,23 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			}
 			if (tlx < 0)
 			{
-				drawW += tlx;
+				drawW += (UOSInt)tlx;
 				tlx = 0;
 			}
 			if (tly < 0)
 			{
-				drawH += tly;
+				drawH += (UOSInt)tly;
 				tly = 0;
 			}
-			if (tlx + drawW > (OSInt)this->surfaceW)
+			if (tlx + (OSInt)drawW > (OSInt)this->surfaceW)
 			{
-				drawW = (OSInt)this->surfaceW - tlx;
+				drawW = this->surfaceW - (UOSInt)tlx;
 			}
-			if (tly + drawH > (OSInt)this->surfaceH)
+			if (tly + (OSInt)drawH > (OSInt)this->surfaceH)
 			{
-				drawH = (OSInt)this->surfaceH - tly;
+				drawH = this->surfaceH - (UOSInt)tly;
 			}
-			if (drawW > 0 && drawH > 0)
+			if ((OSInt)drawW > 0 && (OSInt)drawH > 0)
 			{
 				if (tly > 0)
 				{
@@ -452,14 +452,14 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 				{
 					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2, (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
-				if (tlx + drawW < (OSInt)this->surfaceW)
+				if (tlx + (OSInt)drawW < (OSInt)this->surfaceW)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2 + (tlx + drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2 + (tlx + (OSInt)drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - (OSInt)drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
 				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + (UInt8*)this->surfaceBuff2, (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
-				if (tly + drawH < (OSInt)this->surfaceH)
+				if (tly + (OSInt)drawH < (OSInt)this->surfaceH)
 				{
-					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2 + (OSInt)this->surfaceW * 4 * (tly + drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - drawH), 0xffcccccc);
+					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2 + (OSInt)this->surfaceW * 4 * (tly + (OSInt)drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - (OSInt)drawH), 0xffcccccc);
 				}
 			}
 			else

@@ -47,6 +47,7 @@
 #include "SSWR/AVIRead/AVIRCoordConvForm.h"
 #include "SSWR/AVIRead/AVIRCoordInfoForm.h"
 #include "SSWR/AVIRead/AVIRCOVID19Form.h"
+#include "SSWR/AVIRead/AVIRCppEnumForm.h"
 #include "SSWR/AVIRead/AVIRCPUInfoForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
 #include "SSWR/AVIRead/AVIRDHCPServerForm.h"
@@ -376,7 +377,8 @@ typedef enum
 	MNU_OTP,
 	MNU_EW_DTU01,
 	MNU_BLUETOOTHCTL,
-	MNU_BLUETOOTHLOG
+	MNU_BLUETOOTHLOG,
+	MNU_CPP_ENUM
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -499,9 +501,11 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"COVID-19", MNU_COVID19, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem((const UTF8Char*)"Protocol Decoder", MNU_PROTODEC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Text Encrypt", MNU_TEXT_ENCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Assembly Convert", MNU_ASM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Javascript Text", MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Text");
+	mnu2->AddItem((const UTF8Char*)"Text Encrypt", MNU_TEXT_ENCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Assembly MASM to GCC", MNU_ASM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Javascript Text", MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"C++ Enum to Switch Case", MNU_CPP_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Cryptography");
 	mnu2->AddItem((const UTF8Char*)"Password Hash", MNU_PASSWORDHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Brute Force", MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2303,6 +2307,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRBluetoothLogForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBluetoothLogForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_CPP_ENUM:
+		{
+			SSWR::AVIRead::AVIRCppEnumForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRCppEnumForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

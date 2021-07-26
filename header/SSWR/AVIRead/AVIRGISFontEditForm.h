@@ -51,7 +51,7 @@ namespace SSWR
 
 			static void __stdcall FontNameClicked(void *userObj);
 			static Bool __stdcall FontColorClicked(void *userObj, OSInt x, OSInt y, MouseButton mouseBtn);
-			static void __stdcall BufferSizeChanged(void *userObj, OSInt scrollPos);
+			static void __stdcall BufferSizeChanged(void *userObj, UOSInt scrollPos);
 			static Bool __stdcall BufferColorClicked(void *userObj, OSInt x, OSInt y, MouseButton mouseBtn);
 			static void __stdcall FontsDoubleClicked(void *userObj);
 			static void __stdcall OKClicked(void *userObj);

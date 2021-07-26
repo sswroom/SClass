@@ -148,14 +148,14 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj, UOSInt newPos)
 {
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
 	UTF8Char sbuff[16];
 	if (me->currLayer && !me->thickChging)
 	{
 		me->thickChging = true;
-		Text::StrOSInt(sbuff, newPos);
+		Text::StrUOSInt(sbuff, newPos);
 		me->txtThick->SetText(sbuff);
 		me->currLayer->thick = newPos;
 		me->thickChging = false;

@@ -28,6 +28,8 @@
 #define UINT64_C(c) (c ## ULL)
 #endif
 
+#define VERSION_FROM(major, minor) ((LIBAVCODEC_VERSION_MAJOR > major) || ((LIBAVCODEC_VERSION_MAJOR == major) && (LIBAVCODEC_VERSION_MINOR >= minor)))
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1400
 extern "C" 
 {
@@ -35,7 +37,7 @@ extern "C"
 }
 
 #if !defined(__MINGW32__) && defined(__GNUC__)
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 #define FFMPEGDecoder_av_frame_alloc av_frame_alloc
 #define FFMPEGDecoder_av_frame_free av_frame_free
 #else
@@ -48,7 +50,7 @@ extern "C"
 #define FFMPEGDecoder_avcodec_receive_frame avcodec_receive_frame
 #define FFMPEGDecoder_avcodec_find_decoder avcodec_find_decoder
 #define FFMPEGDecoder_avcodec_alloc_context3 avcodec_alloc_context3
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 #define FFMPEGDecoder_avcodec_free_context avcodec_free_context
 #else
 #define FFMPEGDecoder_avcodec_free_context av_free
@@ -183,7 +185,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		data->seekTime = frameTime;
 	}
 
-#if (LIBAVCODEC_VERSION_MAJOR >= 58) || ((LIBAVCODEC_VERSION_MAJOR == 57) && (LIBAVCODEC_VERSION_MINOR >= 41))
+#if VERSION_FROM(57, 41)
 	ret = FFMPEGDecoder_avcodec_send_packet(data->ctx, &avpkt);
 	if (ret < 0)
 	{
@@ -206,7 +208,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		case AV_PICTURE_TYPE_I:
 		case AV_PICTURE_TYPE_SI:
 		case AV_PICTURE_TYPE_S:
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 		case AV_PICTURE_TYPE_NONE:
 #endif
 		default:
@@ -283,7 +285,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		case AV_PIX_FMT_YUV420P10LE:
 			outFrameBuff = data->frame->data;
 			break;
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 		case AV_PIX_FMT_YUV420P12LE:
 			outFrameBuff = data->frame->data;
 			break;
@@ -482,7 +484,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->srcFCC = frameInfo.fourcc;
 	switch (frameInfo.fourcc)
 	{
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 	case FOURCC('V', 'P', '9', '0'):
 	case FOURCC('v', 'p', '0', '9'):
 		codecId = AV_CODEC_ID_VP9;
@@ -500,7 +502,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	case FOURCC('M', 'P', 'G', '2'):
 		codecId = AV_CODEC_ID_MPEG2VIDEO;
 		break;
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 	case FOURCC('H', 'E', 'V', 'C'):
 	case FOURCC('X', '2', '6', '5'):
 	case FOURCC('x', '2', '6', '5'):
@@ -538,7 +540,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		return;
 	}
 
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 	if ((data->codec->capabilities & AV_CODEC_CAP_TRUNCATED) != 0)
 	{
 		data->ctx->flags |= AV_CODEC_FLAG_TRUNCATED; // we do not send complete frames
@@ -559,7 +561,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 			data->ctx->extradata = buff;
 		}
 	}	
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 	else if (codecId == AV_CODEC_ID_HEVC)
 	{
 		UInt32 sz;
@@ -606,7 +608,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		sourceVideo->ReadFrameBegin();
 		while (true)
 		{
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 			firstFrame = MemAlloc(UInt8, frameSize + AV_INPUT_BUFFER_PADDING_SIZE);
 #else
 			firstFrame = MemAlloc(UInt8, frameSize);
@@ -615,11 +617,11 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 
 			avpkt.data = firstFrame;
 			avpkt.size = (int)frameSize;
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 			MemClear(firstFrame + frameSize, AV_INPUT_BUFFER_PADDING_SIZE);
 #endif
 
-#if (LIBAVCODEC_VERSION_MAJOR >= 58) || ((LIBAVCODEC_VERSION_MAJOR == 57) && (LIBAVCODEC_VERSION_MINOR >= 41))
+#if VERSION_FROM(57, 41)
 			ret = FFMPEGDecoder_avcodec_send_packet(data->ctx, &avpkt);
 			MemFree(firstFrame);
 			if (ret != 0)
@@ -700,7 +702,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		{
 			switch (data->currFmt)
 			{
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 			case AV_PIX_FMT_YUV420P12LE:
 				data->storeWidth = (UInt32)data->frame->linesize[0] >> 1;
 				break;
@@ -720,7 +722,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 				break;
 			}
 			data->storeHeight = (UInt32)data->dispHeight;
-#if LIBAVCODEC_VERSION_MAJOR >= 55 //not sure
+#if VERSION_FROM(55, 0) //not sure
 			data->colorPrimaries = data->frame->color_primaries;
 			data->colorTrc = data->frame->color_trc;
 			data->yuvColor = data->frame->colorspace;
@@ -882,8 +884,14 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	case AVCOL_SPC_BT2020_CL:
 		info->yuvType = Media::ColorProfile::YUVT_BT2020;
 		break;
-#if defined(AVCOL_SPC_SMPTE2085)
+
+#if VERSION_FROM(56, 0)
 	case AVCOL_SPC_SMPTE2085:
+#endif
+#if VERSION_FROM(57, 90)
+	case AVCOL_SPC_CHROMA_DERIVED_CL:
+	case AVCOL_SPC_CHROMA_DERIVED_NCL:
+	case AVCOL_SPC_ICTCP:
 #endif
 	case AVCOL_SPC_NB:
 		info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
@@ -949,6 +957,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->color->btransfer->Set(Media::CS::TRANT_BT1361, 2.2);
 		break;
 	case AVCOL_TRC_IEC61966_2_4:
+	case AVCOL_TRC_IEC61966_2_1:
 		info->color->rtransfer->Set(Media::CS::TRANT_sRGB, 2.2);
 		info->color->gtransfer->Set(Media::CS::TRANT_sRGB, 2.2);
 		info->color->btransfer->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -959,18 +968,20 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->color->gtransfer->Set(Media::CS::TRANT_BT709, 2.2);
 		info->color->btransfer->Set(Media::CS::TRANT_BT709, 2.2);
 		break;
-#ifdef AVCOL_TRC_SMPTE2084
+#if VERSION_FROM(56, 0)
 	case AVCOL_TRC_SMPTE2084: //BT2100
 		info->color->rtransfer->Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color->gtransfer->Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color->btransfer->Set(Media::CS::TRANT_BT2100, 2.2);
 		break;
 #endif
-#ifdef AVCOL_TRC_SMPTE428
-	case AVCOL_TRC_SMPTE428:
-#endif
-#ifdef AVCOL_TRC_ARIB_STD_B67
+#if VERSION_FROM(56, 0)
 	case AVCOL_TRC_ARIB_STD_B67:
+		info->color->rtransfer->Set(Media::CS::TRANT_HLG, 2.2);
+		info->color->gtransfer->Set(Media::CS::TRANT_HLG, 2.2);
+		info->color->btransfer->Set(Media::CS::TRANT_HLG, 2.2);
+		break;
+	case AVCOL_TRC_SMPTE428:
 #endif
 	case AVCOL_TRC_NB:
 		info->color->rtransfer->Set(Media::CS::TRANT_VUNKNOWN, 2.2);
@@ -1007,22 +1018,22 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	case AVCOL_PRI_BT2020:
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT2020);
 		break;
-#ifdef AVCOL_PRI_SMPTE428
+#if VERSION_FROM(56, 0)
 	case AVCOL_PRI_SMPTE428:
 #endif
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
-#ifdef AVCOL_PRI_SMPTE431
+#if VERSION_FROM(56, 0)
 	case AVCOL_PRI_SMPTE431:
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 #endif
-#ifdef AVCOL_PRI_SMPTE432
+#if VERSION_FROM(56, 0)
 	case AVCOL_PRI_SMPTE432:
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 #endif
-#ifdef AVCOL_PRI_JEDEC_P22
+#if VERSION_FROM(56, 0)
 	case AVCOL_PRI_JEDEC_P22:
 #endif
 	default:
@@ -1309,7 +1320,7 @@ public:
 			this->decFmt->formatId = 1;
 			this->decFmt->bitpersample = 32;
 			break;
-#ifdef AV_SAMPLE_FMT_S64
+#if VERSION_FROM(56, 0)
 		case AV_SAMPLE_FMT_S64:
 		case AV_SAMPLE_FMT_S64P:
 			this->decFmt->formatId = 1;
@@ -1326,6 +1337,8 @@ public:
 			this->decFmt->formatId = 3;
 			this->decFmt->bitpersample = 64;
 			break;
+		case AV_SAMPLE_FMT_NONE:
+		case AV_SAMPLE_FMT_NB:
 		default:
 			break;
 		}

@@ -141,27 +141,27 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 
-			static void __stdcall OnCalRedBChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalRedCChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalRedGChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalGreenBChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalGreenCChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalGreenGChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalBlueBChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalBlueCChg(void *userObj, OSInt newPos);
-			static void __stdcall OnCalBlueGChg(void *userObj, OSInt newPos);
+			static void __stdcall OnCalRedBChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalRedCChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalRedGChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalGreenBChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalGreenCChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalGreenGChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalBlueBChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalBlueCChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalBlueGChg(void *userObj, UOSInt newPos);
 
-			static void __stdcall OnMonVBrigChg(void *userObj, OSInt newPos);
-			static void __stdcall OnMonPBrigChg(void *userObj, OSInt newPos);
-			static void __stdcall OnMonRBrigChg(void *userObj, OSInt newPos);
-			static void __stdcall OnMonGBrigChg(void *userObj, OSInt newPos);
-			static void __stdcall OnMonBBrigChg(void *userObj, OSInt newPos);
+			static void __stdcall OnMonVBrigChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnMonPBrigChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnMonRBrigChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnMonGBrigChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnMonBBrigChg(void *userObj, UOSInt newPos);
 
-			static void __stdcall OnYUVBrigChg(void *userObj, OSInt newPos);
-			static void __stdcall OnYUVContChg(void *userObj, OSInt newPos);
-			static void __stdcall OnYUVSatChg(void *userObj, OSInt newPos);
-			static void __stdcall OnYUVYGammaChg(void *userObj, OSInt newPos);
-			static void __stdcall OnYUVCGammaChg(void *userObj, OSInt newPos);
+			static void __stdcall OnYUVBrigChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnYUVContChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnYUVSatChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnYUVYGammaChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnYUVCGammaChg(void *userObj, UOSInt newPos);
 			static void __stdcall OnYUVDefBT601Chg(void *userObj, Bool checked);
 			static void __stdcall OnYUVDefBT709Chg(void *userObj, Bool checked);
 			static void __stdcall OnYUVDefFCCChg(void *userObj, Bool checked);

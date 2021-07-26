@@ -1,6 +1,9 @@
 #include "Stdafx.h"
+#include "IO/MemoryStream.h"
+#include "Text/CharUtil.h"
 #include "Text/CPPText.h"
 #include "Text/MyStringW.h"
+#include "Text/Cpp/CppReader.h"
 
 void Text::CPPText::ToCPPString(Text::StringBuilderUTF *sb, const UTF8Char *str)
 {
@@ -186,6 +189,71 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF *sb, const UTF8Char *st
 			{
 				sb->AppendChar(c, 1);
 			}
+		}
+	}
+}
+
+Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr)
+{
+	IO::MemoryStream mstm((UInt8*)cppEnumStr, Text::StrCharCnt(cppEnumStr), (const UTF8Char*)"Text.CPPText.ParseEnum");
+	Text::Cpp::CppReader reader(&mstm);
+	Text::StringBuilderUTF8 sb;
+	if (!reader.NextWord(&sb))
+	{
+		return false;
+	}
+	if (!sb.Equals((const UTF8Char*)"{"))
+	{
+		return false;
+	}
+	while (true)
+	{
+		sb.ClearStr();
+		if (!reader.NextWord(&sb))
+		{
+			return false;
+		}
+		if (sb.Equals((const UTF8Char*)"}"))
+		{
+			return true;
+		}
+		else if (Text::CharUtil::IsAlphabet(sb.ToString()[0]))
+		{
+			enumEntries->Add(Text::StrCopyNew(sb.ToString()));
+			sb.ClearStr();
+			if (!reader.NextWord(&sb))
+			{
+				return false;
+			}
+			if (sb.Equals((const UTF8Char*)"="))
+			{
+				sb.ClearStr();
+				if (!reader.NextWord(&sb))
+				{
+					return false;
+				}
+				if (!Text::CharUtil::IsAlphaNumeric(sb.ToString()[0]))
+				{
+					return false;
+				}
+				sb.ClearStr();
+				if (!reader.NextWord(&sb))
+				{
+					return false;
+				}
+			}
+			if (sb.Equals((const UTF8Char*)"}"))
+			{
+				return true;
+			}
+			else if (!sb.Equals((const UTF8Char*)","))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
 		}
 	}
 }

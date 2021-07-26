@@ -36,13 +36,21 @@ namespace UI
 
 		typedef struct
 		{
+			OSInt left;
+			OSInt top;
+			UOSInt width;
+			UOSInt height;
+		} DrawRect;
+
+		typedef struct
+		{
 			UInt32 currTime;
 			Int32 procDelay;
 			Int32 dispDelay;
 			Int32 dispJitter;
 			Int32 videoDelay;
 			UInt32 dispFrameTime;
-			Int32 dispFrameNum;
+			UInt32 dispFrameNum;
 			Int32 frameDispCnt;
 			Int32 frameSkip1;
 			Int32 frameSkip2;
@@ -55,7 +63,7 @@ namespace UI
 			UOSInt dispHeight;
 			UOSInt seekCnt;
 			Double par;
-			Int32 dispBitDepth;
+			UInt32 dispBitDepth;
 			Media::ColorProfile *color;
 			Media::ColorProfile::YUVType srcYUVType;
 			const UTF8Char *decoderName;
@@ -90,7 +98,7 @@ namespace UI
 			UInt8 *destBuff;
 			UOSInt destW;
 			UOSInt destH;
-			Int32 destBitDepth;
+			UInt32 destBitDepth;
 			Media::FrameType frameType;
 			Media::YCOffset ycOfst;
 			Media::IVideoSource::FrameFlag flags;
@@ -102,7 +110,7 @@ namespace UI
 			Int32 procType;
 			Media::IImgResizer *resizer;
 			Media::IDeintResizer *dresizer;
-			Int32 resizerBitDepth;
+			UInt32 resizerBitDepth;
 			Bool resizer10Bit;
 			Media::CS::CSConverter *csconv;
 			UInt8 *lrBuff;
@@ -184,7 +192,7 @@ namespace UI
 		Int32 debugFrameNum;
 		Int32 videoDelay;
 		UInt32 dispFrameTime;
-		Int32 dispFrameNum;
+		UInt32 dispFrameNum;
 		Int32 debugFrameDisp;
 		Int32 debugFrameSkip1;
 		Int32 debugFrameSkip2;
@@ -211,7 +219,7 @@ namespace UI
 		Int64 maDownTime;
 
 	protected:
-		void CalDisplayRect(OSInt srcWidth, OSInt srcHeight, OSInt *rect);
+		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 		void UpdateFromBuff(VideoBuff *vbuff);
 
 		virtual void ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2);

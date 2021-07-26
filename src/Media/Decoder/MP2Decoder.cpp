@@ -372,15 +372,15 @@ unsigned long kjmp2_decode_frame(
     frame_pos = &frame[3];
 
     // read the rest of the header
-    bit_rate_index_minus1 = get_bits(4) - 1;
+    bit_rate_index_minus1 = (unsigned int)get_bits(4) - 1;
     if (bit_rate_index_minus1 > 13)
         return 0;  // invalid bit rate or 'free format'
-    sampling_frequency = get_bits(2);
+    sampling_frequency = (unsigned int)get_bits(2);
     if (sampling_frequency == 3)
         return 0;
-    padding_bit = get_bits(1);
+    padding_bit = (unsigned int)get_bits(1);
     get_bits(1);  // discard private_bit
-    mode = get_bits(2);
+    mode = (unsigned int)get_bits(2);
 
     // parse the mode_extension, set up the stereo bound
     if (mode == JOINT_STEREO) {
@@ -396,7 +396,7 @@ unsigned long kjmp2_decode_frame(
         get_bits(16);
 
     // compute the frame size
-    frame_size = (144000 * bitrates[bit_rate_index_minus1]
+    frame_size = (unsigned long)(144000 * bitrates[bit_rate_index_minus1]
                / sample_rates[sampling_frequency]) + padding_bit;
     if (!pcm)
         return frame_size;  // no decoding

@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendU32(dbg.dispFrameTime);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Disp Frame Num: ");
-		sb.AppendI32(dbg.dispFrameNum);
+		sb.AppendU32(dbg.dispFrameNum);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Proc Delay: ");
 		sb.AppendI32(dbg.procDelay);
@@ -303,7 +303,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Output Bitdepth: ");
-		sb.AppendI32(dbg.dispBitDepth);
+		sb.AppendU32(dbg.dispBitDepth);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Src YUV Type: ");
 		sb.Append(Media::ColorProfile::GetNameYUVType(dbg.srcYUVType));
@@ -1758,7 +1758,7 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		sb.AppendU32(dbg.dispFrameTime);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Disp Frame Num: ");
-		sb.AppendI32(dbg.dispFrameNum);
+		sb.AppendU32(dbg.dispFrameNum);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Proc Delay: ");
 		sb.AppendI32(dbg.procDelay);
@@ -1831,7 +1831,7 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Output Bitdepth: ");
-		sb.AppendI32(dbg.dispBitDepth);
+		sb.AppendU32(dbg.dispBitDepth);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Src YUV Type: ");
 		sb.Append(Media::ColorProfile::GetNameYUVType(dbg.srcYUVType));

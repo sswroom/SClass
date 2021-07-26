@@ -45,24 +45,24 @@ UI::GUIHScrollBar::~GUIHScrollBar()
 	DEL_CLASS(this->posChgObjs);
 }
 
-void UI::GUIHScrollBar::InitScrollBar(OSInt minVal, OSInt maxVal, OSInt currVal, OSInt largeChg)
+void UI::GUIHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
-	gtk_adjustment_configure(adj, Math::OSInt2Double(currVal), Math::OSInt2Double(minVal), Math::OSInt2Double(maxVal), 1, Math::OSInt2Double(largeChg), Math::OSInt2Double(largeChg));
+	gtk_adjustment_configure(adj, Math::UOSInt2Double(currVal), Math::UOSInt2Double(minVal), Math::UOSInt2Double(maxVal), 1, Math::UOSInt2Double(largeChg), Math::UOSInt2Double(largeChg));
 	this->EventPosChanged();
 }
 
-void UI::GUIHScrollBar::SetPos(OSInt pos)
+void UI::GUIHScrollBar::SetPos(UOSInt pos)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
-	gtk_adjustment_set_value(adj, Math::OSInt2Double(pos));
+	gtk_adjustment_set_value(adj, Math::UOSInt2Double(pos));
 	this->EventPosChanged();
 }
 
-OSInt UI::GUIHScrollBar::GetPos()
+UOSInt UI::GUIHScrollBar::GetPos()
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
-	return Math::Double2Int32(gtk_adjustment_get_value(adj));
+	return (UOSInt)Math::Double2OSInt(gtk_adjustment_get_value(adj));
 }
 
 void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
@@ -214,7 +214,7 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 
 void UI::GUIHScrollBar::EventPosChanged()
 {
-	OSInt newPos = this->GetPos();
+	UOSInt newPos = this->GetPos();
 	UOSInt i;
 	i = this->posChgHdlrs->GetCount();
 	while (i-- > 0)

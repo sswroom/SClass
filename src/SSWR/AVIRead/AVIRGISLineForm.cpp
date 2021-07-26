@@ -7,12 +7,12 @@
 
 #define MNU_SET_DEFAULT 101
 
-void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, OSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[16];
 	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
-	Text::StrOSInt(sbuff, newPos);
-	me->lineThick = (UOSInt)newPos;
+	Text::StrUOSInt(sbuff, newPos);
+	me->lineThick = newPos;
 	me->lblThickV->SetText(sbuff);
 	me->UpdatePreview();
 }
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Thick"));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlMain, 16));
-	this->hsbThick->InitScrollBar(0, 60, (OSInt)this->lineThick, 10);
+	this->hsbThick->InitScrollBar(0, 60, this->lineThick, 10);
 	this->hsbThick->SetRect(104, 4, 150, 20, false);
 	this->hsbThick->HandlePosChanged(OnThickChanged, this);
 	Text::StrUOSInt(sbuff, this->lineThick);
