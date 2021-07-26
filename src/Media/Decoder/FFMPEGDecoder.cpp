@@ -28,7 +28,8 @@
 #define UINT64_C(c) (c ## ULL)
 #endif
 
-#define VERSION_FROM(major, minor) ((LIBAVCODEC_VERSION_MAJOR > major) || ((LIBAVCODEC_VERSION_MAJOR == major) && (LIBAVCODEC_VERSION_MINOR >= minor)))
+#define VERSION_FROM(major, minor, micro) ((LIBAVCODEC_VERSION_MAJOR > major) || ((LIBAVCODEC_VERSION_MAJOR == major) && (LIBAVCODEC_VERSION_MINOR > minor)) || ((LIBAVCODEC_VERSION_MAJOR == major) && (LIBAVCODEC_VERSION_MINOR == minor) && (LIBAVCODEC_VERSION_MICRO == micro)))
+#define UTIL_VERSION_FROM(major, minor, micro) ((LIBAVUTIL_VERSION_MAJOR > major) || ((LIBAVUTIL_VERSION_MAJOR == major) && (LIBAVUTIL_VERSION_MINOR > minor)) || ((LIBAVUTIL_VERSION_MAJOR == major) && (LIBAVUTIL_VERSION_MINOR == minor) && (LIBAVUTIL_VERSION_MICRO == micro)))
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1400
 extern "C" 
@@ -37,7 +38,7 @@ extern "C"
 }
 
 #if !defined(__MINGW32__) && defined(__GNUC__)
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 #define FFMPEGDecoder_av_frame_alloc av_frame_alloc
 #define FFMPEGDecoder_av_frame_free av_frame_free
 #else
@@ -45,12 +46,19 @@ extern "C"
 #define FFMPEGDecoder_av_frame_free avcodec_free_frame
 #endif
 #define FFMPEGDecoder_av_init_packet av_init_packet
+#if VERSION_FROM(58, 10, 100)
+void FFMPEGDecoder_avcodec_register_all()
+{
+	
+}
+#else
 #define FFMPEGDecoder_avcodec_register_all avcodec_register_all
+#endif
 #define FFMPEGDecoder_avcodec_send_packet avcodec_send_packet
 #define FFMPEGDecoder_avcodec_receive_frame avcodec_receive_frame
 #define FFMPEGDecoder_avcodec_find_decoder avcodec_find_decoder
 #define FFMPEGDecoder_avcodec_alloc_context3 avcodec_alloc_context3
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 #define FFMPEGDecoder_avcodec_free_context avcodec_free_context
 #else
 #define FFMPEGDecoder_avcodec_free_context av_free
@@ -58,7 +66,30 @@ extern "C"
 #define FFMPEGDecoder_avcodec_open2 avcodec_open2
 #define FFMPEGDecoder_avcodec_close avcodec_close
 #define FFMPEGDecoder_av_packet_unref av_packet_unref
+#if VERSION_FROM(55, 0, 0) // not sure
+static int FFMPEGDecoder_avcodec_decode_audio4(AVCodecContext *avctx, AVFrame *frame, int *got_frame_ptr, const AVPacket *avpkt)
+{
+	int ret = avcodec_receive_frame(avctx, frame);
+	if (ret == 0)
+		*got_frame_ptr = true;
+	if (ret == AVERROR(EAGAIN))
+		ret = 0;
+	if (ret == 0)
+		ret = avcodec_send_packet(avctx, avpkt);
+	if (ret == AVERROR(EAGAIN))
+		ret = 0;
+	else if (ret < 0)
+	{
+		ret = 0;
+//        Debug(3, "codec/audio: audio decode error: %1 (%2)\n",av_make_error_string(error, sizeof(error), ret),got_frame);
+	}
+	else
+		ret = avpkt->size;
+	return ret;
+}
+#else
 #define FFMPEGDecoder_avcodec_decode_audio4 avcodec_decode_audio4
+#endif
 #define FFMPEGDecoder_avcodec_decode_video2 avcodec_decode_video2
 #else
 IO::Library *FFMPEGDecoder_lib1 = 0;
@@ -185,7 +216,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		data->seekTime = frameTime;
 	}
 
-#if VERSION_FROM(57, 41)
+#if VERSION_FROM(57, 41, 0)
 	ret = FFMPEGDecoder_avcodec_send_packet(data->ctx, &avpkt);
 	if (ret < 0)
 	{
@@ -208,7 +239,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		case AV_PICTURE_TYPE_I:
 		case AV_PICTURE_TYPE_SI:
 		case AV_PICTURE_TYPE_S:
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 		case AV_PICTURE_TYPE_NONE:
 #endif
 		default:
@@ -285,7 +316,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		case AV_PIX_FMT_YUV420P10LE:
 			outFrameBuff = data->frame->data;
 			break;
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(57, 27, 2) //not sure
 		case AV_PIX_FMT_YUV420P12LE:
 			outFrameBuff = data->frame->data;
 			break;
@@ -484,7 +515,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->srcFCC = frameInfo.fourcc;
 	switch (frameInfo.fourcc)
 	{
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 	case FOURCC('V', 'P', '9', '0'):
 	case FOURCC('v', 'p', '0', '9'):
 		codecId = AV_CODEC_ID_VP9;
@@ -502,7 +533,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	case FOURCC('M', 'P', 'G', '2'):
 		codecId = AV_CODEC_ID_MPEG2VIDEO;
 		break;
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 	case FOURCC('H', 'E', 'V', 'C'):
 	case FOURCC('X', '2', '6', '5'):
 	case FOURCC('x', '2', '6', '5'):
@@ -540,7 +571,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		return;
 	}
 
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 	if ((data->codec->capabilities & AV_CODEC_CAP_TRUNCATED) != 0)
 	{
 		data->ctx->flags |= AV_CODEC_FLAG_TRUNCATED; // we do not send complete frames
@@ -561,7 +592,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 			data->ctx->extradata = buff;
 		}
 	}	
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 	else if (codecId == AV_CODEC_ID_HEVC)
 	{
 		UInt32 sz;
@@ -608,7 +639,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		sourceVideo->ReadFrameBegin();
 		while (true)
 		{
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 			firstFrame = MemAlloc(UInt8, frameSize + AV_INPUT_BUFFER_PADDING_SIZE);
 #else
 			firstFrame = MemAlloc(UInt8, frameSize);
@@ -617,11 +648,11 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 
 			avpkt.data = firstFrame;
 			avpkt.size = (int)frameSize;
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 			MemClear(firstFrame + frameSize, AV_INPUT_BUFFER_PADDING_SIZE);
 #endif
 
-#if VERSION_FROM(57, 41)
+#if VERSION_FROM(57, 41, 0)
 			ret = FFMPEGDecoder_avcodec_send_packet(data->ctx, &avpkt);
 			MemFree(firstFrame);
 			if (ret != 0)
@@ -702,7 +733,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		{
 			switch (data->currFmt)
 			{
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(57, 27, 2) //not sure
 			case AV_PIX_FMT_YUV420P12LE:
 				data->storeWidth = (UInt32)data->frame->linesize[0] >> 1;
 				break;
@@ -722,7 +753,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 				break;
 			}
 			data->storeHeight = (UInt32)data->dispHeight;
-#if VERSION_FROM(55, 0) //not sure
+#if VERSION_FROM(55, 0, 0) //not sure
 			data->colorPrimaries = data->frame->color_primaries;
 			data->colorTrc = data->frame->color_trc;
 			data->yuvColor = data->frame->colorspace;
@@ -885,10 +916,10 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->yuvType = Media::ColorProfile::YUVT_BT2020;
 		break;
 
-#if VERSION_FROM(56, 0)
+#if VERSION_FROM(57, 22, 2)
 	case AVCOL_SPC_SMPTE2085:
 #endif
-#if VERSION_FROM(57, 90)
+#if UTIL_VERSION_FROM(55, 73, 0)
 	case AVCOL_SPC_CHROMA_DERIVED_CL:
 	case AVCOL_SPC_CHROMA_DERIVED_NCL:
 	case AVCOL_SPC_ICTCP:
@@ -968,14 +999,14 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->color->gtransfer->Set(Media::CS::TRANT_BT709, 2.2);
 		info->color->btransfer->Set(Media::CS::TRANT_BT709, 2.2);
 		break;
-#if VERSION_FROM(56, 0)
+#if VERSION_FROM(56, 0, 0)
 	case AVCOL_TRC_SMPTE2084: //BT2100
 		info->color->rtransfer->Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color->gtransfer->Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color->btransfer->Set(Media::CS::TRANT_BT2100, 2.2);
 		break;
 #endif
-#if VERSION_FROM(56, 0)
+#if VERSION_FROM(56, 0, 0)
 	case AVCOL_TRC_ARIB_STD_B67:
 		info->color->rtransfer->Set(Media::CS::TRANT_HLG, 2.2);
 		info->color->gtransfer->Set(Media::CS::TRANT_HLG, 2.2);
@@ -1018,22 +1049,20 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	case AVCOL_PRI_BT2020:
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT2020);
 		break;
-#if VERSION_FROM(56, 0)
+#if VERSION_FROM(56, 0, 0)
 	case AVCOL_PRI_SMPTE428:
 #endif
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
-#if VERSION_FROM(56, 0)
+#if VERSION_FROM(57, 22, 2)
 	case AVCOL_PRI_SMPTE431:
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
-#endif
-#if VERSION_FROM(56, 0)
 	case AVCOL_PRI_SMPTE432:
 		info->color->primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 #endif
-#if VERSION_FROM(56, 0)
+#if VERSION_FROM(56, 0, 0)
 	case AVCOL_PRI_JEDEC_P22:
 #endif
 	default:
@@ -1320,7 +1349,7 @@ public:
 			this->decFmt->formatId = 1;
 			this->decFmt->bitpersample = 32;
 			break;
-#if VERSION_FROM(56, 0)
+#if UTIL_VERSION_FROM(55, 29, 0)
 		case AV_SAMPLE_FMT_S64:
 		case AV_SAMPLE_FMT_S64P:
 			this->decFmt->formatId = 1;
