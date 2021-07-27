@@ -4,12 +4,6 @@
 #include "IO/Path.h"
 #include "Sync/Thread.h"
 
-struct IO::BTCapturer::ClassData
-{
-	IO::ProgCtrl::BluetoothCtlProgCtrl *bt;
-	Bool running;
-};
-
 UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
 {
 	IO::BTCapturer *me = (IO::BTCapturer*)userObj;
@@ -36,32 +30,28 @@ UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
 
 IO::BTCapturer::BTCapturer()
 {
-	this->clsData = MemAlloc(ClassData, 1);
 	this->lastFileName = 0;
-	this->clsData->running = false;
-	NEW_CLASS(this->clsData->bt, IO::ProgCtrl::BluetoothCtlProgCtrl());
+	this->bt = IO::BTScanner::CreateScanner();
 	this->threadRunning = false;
 	this->threadToStop = false;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"threadEvt"));
-	if (this->clsData->bt->WaitForCmdReady())
-	{
-		this->clsData->running = true;
-	}
 }
 
 IO::BTCapturer::~BTCapturer()
 {
 	this->Stop();
-	this->clsData->bt->Exit();
-	DEL_CLASS(this->threadEvt);
-	DEL_CLASS(this->clsData->bt);
-	MemFree(this->clsData);
+	if (this->bt)
+	{
+		this->bt->Close();
+		DEL_CLASS(this->threadEvt);
+		DEL_CLASS(this->bt);
+	}
 	SDEL_TEXT(this->lastFileName);
 }
 
 Bool IO::BTCapturer::IsError()
 {
-	return !this->clsData->running;
+	return this->bt == 0;
 }
 
 Bool IO::BTCapturer::IsStarted()
@@ -77,7 +67,7 @@ Bool IO::BTCapturer::Start()
 	}
 	this->threadToStop = false;
 	Sync::Thread::Create(CheckThread, this);
-	this->clsData->bt->ScanOn();
+	this->bt->ScanOn();
 	return true;
 }
 
@@ -91,7 +81,7 @@ void IO::BTCapturer::Stop()
 		{
 			Sync::Thread::Sleep(10);
 		}
-		this->clsData->bt->ScanOff();
+		this->bt->ScanOff();
 	}
 }
 
@@ -101,7 +91,7 @@ void IO::BTCapturer::StoreStatus()
 	UTF8Char *sptr;
 	IO::BTLog btLog;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap = this->clsData->bt->GetDeviceMap(&mutUsage);
+	Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap = this->bt->GetRecordMap(&mutUsage);
 	UOSInt i;
 	btLog.AppendList(devMap);
 	Data::DateTime dt;
@@ -123,12 +113,12 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
+Data::ArrayList<IO::BTScanner::ScanRecord*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
 {
-	return this->clsData->bt->GetDeviceMap(mutUsage)->GetValues();
+	return this->bt->GetRecordMap(mutUsage)->GetValues();
 }
 
-void IO::BTCapturer::SetUpdateHandler(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceHandler hdlr, void *userObj)
+void IO::BTCapturer::SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj)
 {
-	this->clsData->bt->HandleDeviceUpdate(hdlr, userObj);
+	this->bt->HandleRecordUpdate(hdlr, userObj);
 }

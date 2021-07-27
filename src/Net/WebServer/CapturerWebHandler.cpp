@@ -51,8 +51,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
 		Sync::MutexUsage mutUsage;
-		Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *logList = me->btCapture->GetLogList(&mutUsage);
-		IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *entry;
+		Data::ArrayList<IO::BTScanner::ScanRecord*> *logList = me->btCapture->GetLogList(&mutUsage);
+		IO::BTScanner::ScanRecord *entry;
 		sb.Append((const UTF8Char*)"<a href=\"btdet.html\">");
 		sb.Append((const UTF8Char*)"BT Record count = ");
 		sb.AppendUOSInt(logList->GetCount());
@@ -101,7 +101,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList;
+	Data::ArrayList<IO::BTScanner::ScanRecord*> *entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetLogList(&mutUsage);
@@ -132,7 +132,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList;
+	Data::ArrayList<IO::BTScanner::ScanRecord*> *entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetLogList(&mutUsage);
@@ -376,7 +376,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanner::ScanRecord*> *entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -390,7 +390,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	UOSInt l;
 	UOSInt i;
 	UOSInt j;
-	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *entry;
+	IO::BTScanner::ScanRecord *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
 	sb->Append((const UTF8Char*)"<tr><td><a href=");
@@ -404,7 +404,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	Text::XML::FreeNewText(csptr);
 	sb->Append((const UTF8Char*)">RSSI</a></td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Keys</td></tr>\r\n");
 
-	Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> sortList;
+	Data::ArrayList<IO::BTScanner::ScanRecord*> sortList;
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
 	if (sort == 1)
 	{
@@ -507,8 +507,8 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 
 OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1, void *obj2)
 {
-	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *log1 = (IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*)obj1;
-	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *log2 = (IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*)obj2;
+	IO::BTScanner::ScanRecord *log1 = (IO::BTScanner::ScanRecord*)obj1;
+	IO::BTScanner::ScanRecord *log2 = (IO::BTScanner::ScanRecord*)obj2;
 	if (log1->rssi == log2->rssi)
 	{
 		if (log1->name == log2->name)

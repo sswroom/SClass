@@ -14,6 +14,8 @@ IO/BTManager.h: ../../src/IO/BTManagerL.cpp
 @BTManager.o
 IO/BTManagerDBus.h: ../../src/IO/BTManagerDBus.cpp
 @BTManagerDBus.o
+IO/BTScanner.h: ../../src/IO/BTScannerL.cpp
+@BTScanner.o
 IO/DBusClient.h: ../../src/IO/DBusClient.cpp
 @DBusClient.o
 IO/DBusManager.h: ../../src/IO/DBusManager.cpp
@@ -88,6 +90,7 @@ BTController.o: ../../src/IO/BTControllerL.cpp
 BTManager.o: ../../src/IO/BTManagerL.cpp
 !-lbluetooth
 BTManagerDBus.o: ../../src/IO/BTManagerDBus.cpp
+BTScanner.o: ../../src/IO/BTScannerL.cpp
 DBusManager.o: ../../src/IO/DBusManager.cpp
 $`pkg-config --cflags dbus-1`
 $`pkg-config --cflags glib-2.0`

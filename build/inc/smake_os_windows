@@ -18,6 +18,8 @@ IO/BTController.h: ../../src/IO/BTControllerW.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerW.cpp
 @BTManager.o
+IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
+@BTScanner.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoW.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
@@ -122,6 +124,7 @@ AMDGPUManager.o: ../../src/IO/AMDGPUManager.cpp
 $-I ../../ThirdParty/adl
 BTController.o: ../../src/IO/BTControllerW.cpp
 BTManager.o: ../../src/IO/BTManagerW.cpp
+BTScanner.o: ../../src/IO/BTScannerNull.cpp
 HIDInfo.o: ../../src/IO/HIDInfoW.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
 OS.o: ../../src/IO/OSW.cpp

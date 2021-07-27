@@ -70,25 +70,25 @@ IO::BTLog::LogEntry *IO::BTLog::AddEntry(UInt64 macInt, const UTF8Char *name, In
 	return log;
 }
 
-void IO::BTLog::AppendList(Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap)
+void IO::BTLog::AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap)
 {
-	IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev;
+	IO::BTScanner::ScanRecord *rec;
 	LogEntry *log;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devList = devMap->GetValues();
-	UOSInt i = devList->GetCount();
+	Data::ArrayList<IO::BTScanner::ScanRecord*> *recList = devMap->GetValues();
+	UOSInt i = recList->GetCount();
 	while (i-- > 0)
 	{
-		dev = devList->GetItem(i);
-		log = this->AddEntry(dev->macInt, dev->name, dev->txPower);
+		rec = recList->GetItem(i);
+		log = this->AddEntry(rec->macInt, rec->name, rec->txPower);
 		j = 0;
-		k = dev->keys->GetCount();
+		k = rec->keys->GetCount();
 		while (j < k)
 		{
-			if (log->keys->SortedIndexOf(dev->keys->GetItem(j)) < 0)
+			if (log->keys->SortedIndexOf(rec->keys->GetItem(j)) < 0)
 			{
-				log->keys->SortedInsert(dev->keys->GetItem(j));
+				log->keys->SortedInsert(rec->keys->GetItem(j));
 			}
 			j++;
 		}

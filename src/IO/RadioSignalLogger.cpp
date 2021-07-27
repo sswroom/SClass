@@ -28,10 +28,10 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo *dev, IO::ProgCtrl::BluetoothCtlProgCtrl::UpdateType updateType, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanner::ScanRecord *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
-	if (updateType == IO::ProgCtrl::BluetoothCtlProgCtrl::UT_RSSI)
+	if (updateType == IO::BTScanner::UT_RSSI)
 	{
 		UTF8Char sbuff[64];
 		Data::DateTime dt;

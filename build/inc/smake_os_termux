@@ -12,6 +12,8 @@ IO/BTController.h: ../../src/IO/BTControllerNull.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
 @BTManager.o
+IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
+@BTScanner.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
@@ -68,6 +70,7 @@ MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
+BTScanner.o: ../../src/IO/BTScannerNull.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSAndroid.cpp

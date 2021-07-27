@@ -1,16 +1,15 @@
 #ifndef _SM_IO_BTCAPTURER
 #define _SM_IO_BTCAPTURER
-#include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
+#include "IO/BTScanner.h"
 #include "Sync/Event.h"
+#include "Sync/MutexUsage.h"
 
 namespace IO
 {
 	class BTCapturer
 	{
 	private:
-		struct ClassData;
-
-		struct ClassData *clsData;
+		IO::BTScanner *bt;
 		const UTF8Char *lastFileName;
 		Bool threadRunning;
 		Bool threadToStop;
@@ -28,8 +27,8 @@ namespace IO
 		void Stop();
 
 		void StoreStatus();
-		Data::ArrayList<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *GetLogList(Sync::MutexUsage *mutUsage);
-		void SetUpdateHandler(IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceHandler hdlr, void *userObj);
+		Data::ArrayList<IO::BTScanner::ScanRecord*> *GetLogList(Sync::MutexUsage *mutUsage);
+		void SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj);
 	};
 }
 #endif

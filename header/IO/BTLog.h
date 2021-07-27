@@ -2,7 +2,7 @@
 #define _SM_IO_BTLOG
 #include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
-#include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
+#include "IO/BTScanner.h"
 
 namespace IO
 {
@@ -26,7 +26,7 @@ namespace IO
 		~BTLog();
 
 		LogEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower);
-		void AppendList(Data::UInt64Map<IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceInfo*> *devMap);
+		void AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);
 		Bool StoreFile(const UTF8Char *fileName);

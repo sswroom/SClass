@@ -13,6 +13,8 @@ IO/BTController.h: ../../src/IO/BTControllerL.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerL.cpp
 @BTManager.o
+IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
+@BTScanner.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
@@ -78,6 +80,7 @@ BTController.o: ../../src/IO/BTControllerL.cpp
 !-lbluetooth
 BTManager.o: ../../src/IO/BTManagerL.cpp
 !-lbluetooth
+BTScanner.o: ../../src/IO/BTScannerNull.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSSolaris.cpp

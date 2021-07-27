@@ -2,6 +2,7 @@
 #define _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
+#include "IO/BTScanner.h"
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
@@ -10,41 +11,16 @@ namespace IO
 {
 	namespace ProgCtrl
 	{
-		class BluetoothCtlProgCtrl
+		class BluetoothCtlProgCtrl : public IO::BTScanner
 		{
-		public:
-			typedef struct
-			{
-				UInt8 mac[6];
-				UInt64 macInt;
-				Bool inRange;
-				const UTF8Char *name;
-				Int32 rssi;
-				Int32 txPower;
-				Bool connected;
-				Int64 lastSeenTime;
-				Data::ArrayListUInt32 *keys;
-			} DeviceInfo;
-
-			typedef enum
-			{
-				UT_NEW_DEVICE,
-				UT_RSSI,
-				UT_TXPOWER,
-				UT_CONNECT,
-				UT_NAME,
-				UT_OTHER
-			} UpdateType;
-			
-			typedef void (__stdcall *DeviceHandler)(DeviceInfo *dev, UpdateType updateType, void *userObj);
 		private:
 			Manage::ProcessExecution *prog;
 			Sync::Mutex *devMut;
-			Data::UInt64Map<DeviceInfo*> *devMap;
+			Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap;
 			Sync::Mutex *lastCmdMut;
 			const UTF8Char *lastCmd;
-			DeviceHandler devHdlr;
-			void *devHdlrObj;
+			IO::BTScanner::RecordHandler recHdlr;
+			void *recHdlrObj;
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool agentOn;
@@ -54,22 +30,22 @@ namespace IO
 			static UInt32 __stdcall ReadThread(void *obj);
 			void SendCmd(const Char *cmd);
 
-			DeviceInfo *DeviceGetByStr(const UTF8Char *s);
-			void DeviceFree(DeviceInfo *dev);
+			IO::BTScanner::ScanRecord *DeviceGetByStr(const UTF8Char *s);
+			void DeviceFree(IO::BTScanner::ScanRecord *dev);
 		public:
 			BluetoothCtlProgCtrl();
-			~BluetoothCtlProgCtrl();
+			virtual ~BluetoothCtlProgCtrl();
 
-			void HandleDeviceUpdate(DeviceHandler hdlr, void *userObj);
+			virtual void HandleRecordUpdate(RecordHandler hdlr, void *userObj);
 			
-			Bool IsScanOn();
-			void ScanOn();
-			void ScanOff();
-			void Exit();
+			virtual Bool IsScanOn();
+			virtual void ScanOn();
+			virtual void ScanOff();
+			virtual void Close();
+
+			virtual Data::UInt64Map<IO::BTScanner::ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage);
 
 			Bool WaitForCmdReady();
-
-			Data::UInt64Map<DeviceInfo*> *GetDeviceMap(Sync::MutexUsage *mutUsage);
 		};
 	}
 }
