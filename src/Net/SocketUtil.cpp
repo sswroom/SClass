@@ -480,7 +480,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 			WriteMInt16(&addr->addr[j], v);
 			j -= 2;
 		}
-		while (j >= 0)
+		while ((OSInt)j >= 0)
 		{
 			WriteMInt16(&addr->addr[j], 0);
 			j-= 2;
