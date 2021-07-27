@@ -40,8 +40,8 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 {
 	UInt8 hdr[62];
 	UInt8 tmpBuff[1036];
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	UOSInt currX;
 	UOSInt currY;
 	OSInt imgX1;

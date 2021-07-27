@@ -33,7 +33,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	}
 	if (contentType == 0)
 	{
-		buffSize = data->GetDataSize();
+		buffSize = (UOSInt)data->GetDataSize();
 		buff = MemAlloc(UInt8, buffSize);
 		data->GetRealData(0, buffSize, buff);
 		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff, buffSize, 0));

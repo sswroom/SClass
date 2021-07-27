@@ -271,7 +271,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, Math::UOSInt2Double(sampleCnt) / (Double)fmt.frequency, Math::UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, Math::UInt64_Double(sampleCnt) / (Double)fmt.frequency, Math::UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{

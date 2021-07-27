@@ -1428,7 +1428,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							{
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 								}
 							}
 							else if (layer.fontType == 1)
@@ -1438,7 +1438,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
-								DrawLabel(denv, layer.layer, -fs - 1, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 							}
 						}
 					}
@@ -1461,7 +1461,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							{
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 								}
 							}
 							else if (layer.fontType == 1)
@@ -1471,7 +1471,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
-								DrawLabel(denv, layer.layer, -fs - 1, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 							}
 						}
 					}
@@ -1517,11 +1517,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								{
 									if (pimg)
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
 									}
 									else
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 									}
 								}
 							}
@@ -1534,11 +1534,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								denv->layerFontColor->Add(b);
 								if (pimg)
 								{
-									DrawLabel(denv, layer.layer, -fs - 1, layer.labelCol, layer.priority, layer.flags, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
 								}
 								else
 								{
-									DrawLabel(denv, layer.layer, -fs - 1, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 								}
 							}
 						}
@@ -1569,12 +1569,12 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
 								}
 								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON, layer.fontType);
 								}
 							}
 							else if (layer.fontType == 1)
@@ -1585,9 +1585,9 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
 								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
-								DrawLabel(denv, layer.layer, -fs - 1, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
 								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
-								DrawLabel(denv, layer.layer, -fs - 1, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON, layer.fontType);
 							}
 						}
 					}
@@ -2032,7 +2032,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	DEL_CLASS(arri);
 }
 
-void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType)
+void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType, Int32 fontType)
 {
 	void *arr;
 	Data::ArrayListInt64 *arri;

@@ -75,6 +75,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
+	IO::RadioSignalLogger *radioLogger;
 	Net::SocketFactory *sockf;
 	Net::WebServer::CapturerWebHandler *webHdlr;
 	Net::WebServer::WebListener *listener;
@@ -88,8 +89,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
+		NEW_CLASS(radioLogger, IO::RadioSignalLogger());
+		radioLogger->CaptureBT(capturer);
 		NEW_CLASS(sockf, Net::OSSocketFactory(true));
-		NEW_CLASS(webHdlr, Net::WebServer::CapturerWebHandler(0, capturer, 0));
+		NEW_CLASS(webHdlr, Net::WebServer::CapturerWebHandler(0, capturer, radioLogger));
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, webHdlr, webPort, 120, 4, (const UTF8Char*)"BLEScanTest/1.0", false, true));
 		if (listener->IsError())
 		{
@@ -114,6 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		DEL_CLASS(listener);
 		DEL_CLASS(webHdlr);
 		DEL_CLASS(sockf);
+		DEL_CLASS(radioLogger);
 	}
 
 	DEL_CLASS(capturer);

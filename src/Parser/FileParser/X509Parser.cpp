@@ -45,11 +45,11 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[4096];
 	UInt8 dataBuff[2048];
 	UOSInt dataLen;
-	fd->GetRealData(0, len, buff);
+	fd->GetRealData(0, (UOSInt)len, buff);
 	if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE-----") && Text::StrStartsWith(&buff[len - 26], (const UTF8Char*)"-----END CERTIFICATE-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[27], len - 53, dataBuff);
+		dataLen = b64.DecodeBin(&buff[27], (UOSInt)len - 53, dataBuff);
 		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_CERT);
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN RSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 30], (const UTF8Char*)"-----END RSA PRIVATE KEY-----\n"))
@@ -61,14 +61,14 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		else
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[31], len - 61, dataBuff);
+			dataLen = b64.DecodeBin(&buff[31], (UOSInt)len - 61, dataBuff);
 			ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_RSA_KEY);
 		}
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----") && Text::StrStartsWith(&buff[len - 34], (const UTF8Char*)"-----END CERTIFICATE REQUEST-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[35], len - 69, dataBuff);
+		dataLen = b64.DecodeBin(&buff[35], (UOSInt)len - 69, dataBuff);
 		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_CERT_REQ);
 	}
 	else
@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		{
 			return 0;
 		}
-		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), buff, len, Crypto::X509File::FT_CERT);
+		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), buff, (UOSInt)len, Crypto::X509File::FT_CERT);
 	}
 	return ret;
 }

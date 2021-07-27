@@ -207,6 +207,14 @@ Int32 __inline BSWAP32(Int32 v)
 	}
 }
 
+UInt32 __inline BSWAPU32(UInt32 v)
+{
+	_asm
+	{
+		mov eax, v
+		bswap eax
+	}
+}
 
 Int64 __inline BSWAP64(Int64 v)
 {

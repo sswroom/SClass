@@ -39,8 +39,8 @@ Bool IO::DebugWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 	WChar *wstr = MemAlloc(WChar, strLen + 3);
 	Text::StrUTF8_WCharC(wstr, str, nChar, 0);
 	wstr[strLen] = 13;
-	wstr[strLen] = 10;
-	wstr[strLen] = 0;
+	wstr[strLen + 1] = 10;
+	wstr[strLen + 2] = 0;
 	OutputDebugStringW(wstr);
 	MemFree(wstr);
 	return true;
@@ -52,8 +52,8 @@ Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
 	WChar *wstr = MemAlloc(WChar, strLen + 3);
 	Text::StrUTF8_WChar(wstr, str, 0);
 	wstr[strLen] = 13;
-	wstr[strLen] = 10;
-	wstr[strLen] = 0;
+	wstr[strLen + 1] = 10;
+	wstr[strLen + 2] = 0;
 	OutputDebugStringW(wstr);
 	MemFree(wstr);
 	return true;

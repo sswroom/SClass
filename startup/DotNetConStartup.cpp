@@ -51,7 +51,7 @@ void __stdcall ConsoleControl_WaitForExit(Core::IProgControl *progCtrl)
 	}
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(Core::IProgControl *progCtrl, OSInt *cmdCnt)
+UTF8Char **__stdcall ConsoleControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
 	if (ctrl->argv == 0)
@@ -60,7 +60,7 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(Core::IProgControl *progCtrl
 		OSInt i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 		ctrl->argv = MemAlloc(UTF8Char *, argc);
-		ctrl->argc = argc;
+		ctrl->argc = (UOSInt)(OSInt)argc;
 		i = argc;
 		while (i-- > 0)
 		{

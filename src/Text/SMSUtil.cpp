@@ -367,7 +367,7 @@ Bool Text::SMSUtil::TrimGSMText(UTF16Char *msg)
 
 UTF16Char *Text::SMSUtil::TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg, UInt32 dataLen)
 {
-	OSInt len = 0;
+	UOSInt len = 0;
 	UInt16 v;
 	UTF16Char c;
 	const UTF16Char *src;

@@ -16,7 +16,7 @@
 #include "Text/StringBuilderUTF8.h"
 #ifndef _WIN32_WCE
 
-#if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
+#if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 #include <windows.h>
 #else
 #include "IO/IniFile.h"

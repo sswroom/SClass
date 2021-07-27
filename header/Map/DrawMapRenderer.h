@@ -89,7 +89,7 @@ namespace Map
 		void DrawPLLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor);
 		void DrawPGLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);
 		void DrawPTLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex);
-		void DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType);
+		void DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType, Int32 fontType);
 		void DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer);
 		void DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha);
 

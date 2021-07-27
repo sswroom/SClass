@@ -720,8 +720,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			UOSInt dataSize = (UOSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
 			UInt8 *rleData = MemAlloc(UInt8, dataSize);
 			UInt8 *currPtr;
-			UOSInt bpl = outImg->GetDataBpl();
-			MemClear(pBits, uimgHeight * bpl);
+			OSInt dAdd = (OSInt)outImg->GetDataBpl();
+			MemClear(pBits, uimgHeight * (UOSInt)dAdd);
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 v;
@@ -731,8 +731,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			currX = 0;
 			if (inv)
 			{
-				pBits = pBits + (UInt32)(imgHeight - 1) * bpl;
-				bpl = -bpl;
+				pBits = pBits + (imgHeight - 1) * dAdd;
+				dAdd = -dAdd;
 			}
 			if (dataSize & 1)
 			{
@@ -749,7 +749,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						currY++;
 						currX = 0;
-						pBits += bpl;
+						pBits += dAdd;
 					}
 					else if (c == 1)
 					{
@@ -764,7 +764,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 							currX += c;
 							c = *currPtr++;
 							currY += c;
-							pBits += bpl * c;
+							pBits += dAdd * c;
 						}
 						else
 						{
@@ -824,10 +824,10 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
 			UOSInt dataSize = (UOSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
 			UInt8 *rleData = MemAlloc(UInt8, dataSize);
-			UOSInt bpl = outImg->GetDataBpl() << 1;
-			UInt8 *tmpData = MemAlloc(UInt8, uimgHeight * (UOSInt)bpl);
+			OSInt dAdd = (OSInt)outImg->GetDataBpl() << 1;
+			UInt8 *tmpData = MemAlloc(UInt8, uimgHeight * (UOSInt)dAdd);
 			UInt8 *currPtr;
-			MemClear(tmpData, (UInt32)imgHeight * bpl);
+			MemClear(tmpData, (UInt32)imgHeight * (UOSInt)dAdd);
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 c2;
@@ -838,8 +838,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			currX = 0;
 			if (inv)
 			{
-				pBits = tmpData + ((UInt32)imgHeight - 1) * bpl;
-				bpl = -bpl;
+				pBits = tmpData + (imgHeight - 1) * dAdd;
+				dAdd = -dAdd;
 			}
 			else
 			{
@@ -860,7 +860,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						currY++;
 						currX = 0;
-						pBits += bpl;
+						pBits += dAdd;
 					}
 					else if (c == 1)
 					{
@@ -875,7 +875,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 							currX += c;
 							c = *currPtr++;
 							currY += c;
-							pBits += bpl * c;
+							pBits += dAdd * c;
 						}
 						else
 						{
@@ -948,11 +948,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			MemFree(rleData);
 			pBits = outImg->data;
 			rleData = tmpData;
-			if (bpl < 0)
+			if (dAdd < 0)
 			{
-				bpl = -bpl;
+				dAdd = -dAdd;
 			}
-			dataSize = uimgHeight * (UOSInt)(bpl >> 1);
+			dataSize = uimgHeight * (UOSInt)(dAdd >> 1);
 			while (dataSize-- > 0)
 			{
 				*pBits++ = (UInt8)((rleData[0] << 4) | rleData[1]);
@@ -968,7 +968,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 			UInt32 aVal;
 			UInt32 pxVal;
 			UInt8 *readBuff;
-			UOSInt bpl = outImg->GetDataBpl();
+			OSInt dAdd = (OSInt)outImg->GetDataBpl();
 			UOSInt currW;
 			OSInt srcI;
 			UOSInt destI;
@@ -985,8 +985,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 				currOfst = ReadUInt32(&hdr[10]);
 				if (inv)
 				{
-					pBits = pBits + bpl * (UInt32)(imgHeight - 1);
-					bpl = -bpl;
+					pBits = pBits + dAdd * (imgHeight - 1);
+					dAdd = -dAdd;
 				}
 				while (imgHeight-- > 0)
 				{
@@ -1424,7 +1424,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 						srcI += 2;
 						destI += bpp >> 3;
 					}
-					pBits += bpl;
+					pBits += dAdd;
 				}
 				MemFree(readBuff);
 			}
@@ -1435,8 +1435,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 				currOfst = ReadUInt32(&hdr[10]);
 				if (inv)
 				{
-					pBits = pBits + bpl * (UInt32)(imgHeight - 1);
-					bpl = -bpl;
+					pBits = pBits + dAdd * (imgHeight - 1);
+					dAdd = -dAdd;
 				}
 				while (imgHeight-- > 0)
 				{
@@ -1874,7 +1874,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 						srcI += 4;
 						destI += bpp >> 3;
 					}
-					pBits += bpl;
+					pBits += dAdd;
 				}
 				MemFree(readBuff);
 			}

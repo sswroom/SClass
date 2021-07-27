@@ -42,7 +42,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 IO::StmData::FileViewData::FileViewData(const IO::StmData::FileViewData *fd, UInt64 offset, UInt64 length)
 {
 	dataOffset = offset + fd->dataOffset;
-	Int64 endOffset = fd->dataOffset + fd->dataLength;
+	UInt64 endOffset = fd->dataOffset + fd->dataLength;
 	dataLength = length;
 	if (dataOffset > endOffset)
 	{
@@ -67,8 +67,8 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt
 	if (fdh == 0)
 		return 0;
 	fdh->mut->Lock();
-	Int64 startOfst = dataOffset + offset;
-	Int64 endOfst = startOfst + length;
+	UInt64 startOfst = dataOffset + offset;
+	UInt64 endOfst = startOfst + length;
 	if (startOfst < 0)
 		return 0;
 	if (startOfst >= dataOffset + dataLength)
@@ -79,10 +79,10 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt
 	{
 		endOfst = dataOffset + dataLength;
 	}
-	MemCopyNO(buffer, &fdh->fptr[startOfst], (OSInt)(endOfst - startOfst));
+	MemCopyNO(buffer, &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
 	
 	fdh->mut->Unlock();
-	return (OSInt)(endOfst - startOfst);
+	return (UOSInt)(endOfst - startOfst);
 }
 
 UInt64 IO::StmData::FileViewData::GetDataSize()

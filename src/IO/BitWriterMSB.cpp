@@ -27,7 +27,7 @@ Bool IO::BitWriterMSB::WriteBits(UInt32 code, UOSInt bitCount)
 {
 	if (this->currBitPos != 0)
 	{
-		UOSInt rShift = (bitCount - 8 + this->currBitPos);
+		OSInt rShift = (OSInt)(bitCount - 8 + this->currBitPos);
 		if (rShift > 0)
 		{
 			this->buff[this->currBytePos] = (UInt8)((this->buff[this->currBytePos] | (code >> rShift)) & 0xff);

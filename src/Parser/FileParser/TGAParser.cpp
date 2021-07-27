@@ -123,9 +123,9 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 
 		if (hdr[2] == 10)
 		{
-			UInt8 *tmpBuff = MemAlloc(UInt8, ds - 26 - imgPos);
+			UInt8 *tmpBuff = MemAlloc(UInt8, (UOSInt)ds - 26 - imgPos);
 			UInt8 *tmpBits = 0;
-			fd->GetRealData(imgPos, ds - 26 - imgPos, tmpBuff);
+			fd->GetRealData(imgPos, (UOSInt)ds - 26 - imgPos, tmpBuff);
 
 			if ((hdr[17] & 30) != 20)
 			{

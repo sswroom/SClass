@@ -2945,7 +2945,7 @@ UTF8Char *IO::JavaClass::GetLVName(UTF8Char *sbuff, UInt16 index, const UInt8 *l
 				UInt16 length = ReadMUInt16(&lvTable[2 + i * 10 + 2]);
 				UOSInt varI = ReadMUInt16(&lvTable[2 + i * 10 + 8]);
 
-				if (varI == index && pcOfst <= codeOfst && pcOfst + length > codeOfst)
+				if (varI == index && pcOfst <= codeOfst && pcOfst + (UOSInt)length > codeOfst)
 				{
 					UTF8Char *ret = this->GetConstName(sbuff, ReadMUInt16(&lvTable[2 + i * 10 + 4]));
 					if (ret)
