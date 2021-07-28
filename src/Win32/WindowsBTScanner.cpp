@@ -1,11 +1,14 @@
 #include "Stdafx.h"
 #include "IO/DebugWriter.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/WindowsBTScanner.h"
 #include "Win32/WinRTCore.h"
 #include "Data/ByteTool.h"
 
 using namespace winrt;
+using namespace Windows::Foundation;
+using namespace Windows::Devices::Bluetooth;
 using namespace Windows::Devices::Bluetooth::Advertisement;
 
 void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const &sender,
@@ -17,6 +20,23 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	rec->lastSeenTime = dt.ToTicks();
 	rec->rssi = args.RawSignalStrengthInDBm();
 	rec->inRange = true;
+	hstring hstr = args.Advertisement().LocalName();
+	const WChar *wptr = hstr.c_str();
+	if (wptr[0] != 0)
+	{
+		const UTF8Char *sptr = Text::StrToUTF8New(wptr);
+		if (rec->name == 0 || !Text::StrEquals(sptr, rec->name))
+		{
+			SDEL_TEXT(rec->name);
+			rec->name = sptr;
+			if (this->recHdlr)
+				this->recHdlr(rec, IO::BTScanner::UT_NAME, this->recHdlrObj);
+		}
+		else
+		{
+			Text::StrDelNew(sptr);
+		}
+	}
 	if (this->recHdlr)
 		this->recHdlr(rec, IO::BTScanner::UT_RSSI, this->recHdlrObj);
 }
