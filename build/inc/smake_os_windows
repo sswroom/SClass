@@ -109,6 +109,10 @@ Sync/Thread.h: ../../src/Sync/ThreadW.cpp
 @Thread.o
 @Thread_CPP.o
 
+Win32/WindowsBTScanner.h: ../../src/Win32/WindowsBTScanner.cpp
+@WindowsBTScanner.o
+Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
+@WinRTCore.o
 
 ConsoleStartup.o: ../../startup/ConStartup.cpp
 MDBFile.o: ../../src/DB/MDBFile.cpp
@@ -166,6 +170,9 @@ HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
 !-lwinhttp
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
+WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp
+WinRTCore.o: ../../src/Win32/WinRTCore.cpp
+!-lWindowsApp
 
 amfilter.o: ../../ThirdParty/baseclasses/amfilter.cpp
 $-I ../../ThirdParty/baseclasses
