@@ -5,6 +5,7 @@
 #include "Net/WirelessLANIE.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "Text/StringBuilderUTF8.h"
 
 Net::WirelessLANIE::WirelessLANIE(const UInt8 *ieBuff)
 {
@@ -1099,6 +1100,10 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 						sb->AppendChar('.', 1);
 						sb->AppendU16(ieBuff[i + 6] & 15);
 					}
+					else
+					{
+						sb->AppendHexBuff(&ieBuff[i + 6], itemSize, ' ', Text::LBT_NONE);
+					}
 					break;
 				case 0x1054:
 					sb->Append((const UTF8Char*)"\r\n\tPrimary Device Type = ");
@@ -1128,4 +1133,112 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 	}
 	sb->Append((const UTF8Char*)"IE ");
 	sb->AppendHexBuff(ieBuff, size + 2, 0, Text::LBT_NONE);
+}
+
+void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, const UTF8Char **manuf, const UTF8Char **model, const UTF8Char **serialNum)
+{
+	Text::StringBuilderUTF8 sb;
+	const UInt8 *endPtr = iebuff + ieLen;
+	while (iebuff + 2 < endPtr)
+	{
+		UInt8 cmd = iebuff[0];
+		UOSInt size = iebuff[1];
+		if (iebuff + 2 + size > endPtr)
+		{
+			break;
+		}
+		if (cmd == 0xDD && size >= 4)
+		{
+			UInt32 v32 = ReadMUInt32(&iebuff[2]);
+			if (v32 == 0x0050F204)
+			{
+				UOSInt i;
+				UInt16 itemId;
+				UOSInt itemSize;
+				i = 4;
+				while (i <= size - 4)
+				{
+					itemId = ReadMUInt16(&iebuff[i + 2]);
+					itemSize = ReadMUInt16(&iebuff[i + 4]);
+					if (i + 4 + itemSize > size)
+					{
+						break;
+					}
+					switch (itemId)
+					{
+					case 0x1011: //Device Name
+						sb.ClearStr();
+						sb.AppendC(&iebuff[i + 6], itemSize);
+						if (*model != 0 && Text::StrEquals(*model, (const UTF8Char*)"WAP"))
+						{
+							SDEL_TEXT(*model);
+							*model = Text::StrCopyNew(sb.ToString());
+						}
+						break;
+					case 0x1021: //Manufacture
+						sb.ClearStr();
+						sb.AppendC(&iebuff[i + 6], itemSize);
+						SDEL_TEXT(*manuf);
+						if (sb.Equals((const UTF8Char*)"NETGEAR, Inc."))
+						{
+							*manuf = Text::StrCopyNew((const UTF8Char*)"Netgear");
+						}
+						else if (sb.Equals((const UTF8Char*)"NTGR"))
+						{
+							*manuf = Text::StrCopyNew((const UTF8Char*)"Netgear");
+						}
+						else if (sb.Equals((const UTF8Char*)"ASUSTeK Computer Inc."))
+						{
+							*manuf = Text::StrCopyNew((const UTF8Char*)"ASUS");
+						}
+						else if (sb.Equals((const UTF8Char*)"ASUSTek Computer Inc."))
+						{
+							*manuf = Text::StrCopyNew((const UTF8Char*)"ASUS");
+						}
+						else
+						{
+							sb.Equals((const UTF8Char*)"ASUSTeK Computer Inc.");
+							*manuf = Text::StrCopyNew(sb.ToString());
+						}
+						break;
+					case 0x1023: //Model
+						sb.ClearStr();
+						sb.AppendC(&iebuff[i + 6], itemSize);
+						if (*manuf != 0 && Text::StrEquals(*manuf, (const UTF8Char*)"ASUS"))
+						{
+						}
+						else
+						{
+							SDEL_TEXT(*model);
+							*model = Text::StrCopyNew(sb.ToString());
+						}
+						break;
+					case 0x1024: //Model Number
+						sb.ClearStr();
+						sb.AppendC(&iebuff[i + 6], itemSize);
+						if (*manuf != 0 && Text::StrEquals(*manuf, (const UTF8Char*)"ASUS"))
+						{
+							SDEL_TEXT(*model);
+							*model = Text::StrCopyNew(sb.ToString());
+						}
+						else if (*model != 0 && Text::StrEquals(*model, (const UTF8Char*)"NETGEAR Wireless Access Point"))
+						{
+							SDEL_TEXT(*model);
+							*model = Text::StrCopyNew(sb.ToString());
+						}
+						break;
+					case 0x1042: //Serial
+						sb.ClearStr();
+						sb.AppendC(&iebuff[i + 6], itemSize);
+						SDEL_TEXT(*serialNum);
+						*serialNum = Text::StrCopyNew(sb.ToString());
+						break;
+					}
+					i += 4 + itemSize; 
+				}
+			}
+		}
+		iebuff += 2 + size;
+	}
+
 }
