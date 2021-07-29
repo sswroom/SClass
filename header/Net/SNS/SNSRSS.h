@@ -3,6 +3,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/StringUTF8Map.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"
 #include "Sync/Mutex.h"
 #include "Text/EncodingFactory.h"
@@ -15,6 +16,7 @@ namespace Net
 		{
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			const UTF8Char *userAgent;
 			const UTF8Char *channelId;
@@ -26,7 +28,7 @@ namespace Net
 
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
 		public:
-			SNSRSS(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId);
+			SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId);
 			virtual ~SNSRSS();
 
 			virtual Bool IsError();

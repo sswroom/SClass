@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSITE_WEBSITE7GOGOCONTROL
 #define _SM_NET_WEBSITE_WEBSITE7GOGOCONTROL
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
 #include "Text/JSON.h"
 
@@ -31,12 +32,13 @@ namespace Net
 			
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			const UTF8Char *userAgent;
 
 			ItemData *ParsePost(Text::JSONObject *postObj);
 		public:
-			WebSite7gogoControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSite7gogoControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSite7gogoControl();
 
 			OSInt GetChannelItems(const UTF8Char *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);

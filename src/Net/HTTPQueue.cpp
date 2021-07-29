@@ -4,9 +4,10 @@
 #include "Sync/Thread.h"
 #include "Text/URLString.h"
 
-Net::HTTPQueue::HTTPQueue(Net::SocketFactory *sockf)
+Net::HTTPQueue::HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	NEW_CLASS(this->statusMap, Data::StringUTF8Map<DomainStatus*>());
 	NEW_CLASS(this->statusMut, Sync::Mutex());
 	NEW_CLASS(this->statusEvt, Sync::Event(true, (const UTF8Char*)"Net.HTTPQueue.statusEvt"));
@@ -58,13 +59,13 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, const Char *me
 		{
 			if (status->req1 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, url, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 				status->req1 = cli;
 				found = true;
 			}
 			else if (status->req2 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, url, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 				status->req2 = cli;
 				found = true;
 			}
@@ -74,7 +75,7 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, const Char *me
 			status = MemAlloc(DomainStatus, 1);
 			status->req1 = 0;
 			status->req2 = 0;
-			cli = Net::HTTPClient::CreateConnect(this->sockf, url, method, noShutdown);
+			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 			status->req1 = cli;
 			this->statusMap->Put(sbuff, status);
 			found = true;

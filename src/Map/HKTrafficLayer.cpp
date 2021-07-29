@@ -806,7 +806,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	{
 		Int32 status;
 		Net::HTTPClient *cli;
-		cli = Net::HTTPClient::CreateConnect(this->sockf, this->url, "GET", true);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url, "GET", true);
 		while (true)
 		{
 			status = cli->GetRespStatus();
@@ -841,7 +841,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Text::EncodingFactory *encFact) : Map::IMapDrawLayer((const UTF8Char*)"HKTraffic", 0, (const UTF8Char*)"HKTraffic")
+Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::IMapDrawLayer((const UTF8Char*)"HKTraffic", 0, (const UTF8Char*)"HKTraffic")
 {
 	this->sockf = sockf;
 	this->encFact = encFact;

@@ -3,6 +3,7 @@
 #include "Data/Int64Map.h"
 #include "Map/IMapDrawLayer.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
 #include "Text/EncodingFactory.h"
 
@@ -54,6 +55,7 @@ namespace Map
 
 		const UTF8Char *url;
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;
 		Sync::Mutex *roadMut;
 		Data::Int64Map<RoadInfo*> *roadMap;
@@ -63,7 +65,7 @@ namespace Map
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);
 		IO::Stream *OpenURLStream();
 	public:
-		HKTrafficLayer(Net::SocketFactory *sockf, Text::EncodingFactory *encFact);
+		HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 		virtual ~HKTrafficLayer();
 
 		void SetURL(const UTF8Char *url);

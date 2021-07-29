@@ -4,6 +4,7 @@
 #include "IO/Writer.h"
 #include "Map/IReverseGeocoder.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
 #include "Text/EncodingFactory.h"
 
@@ -15,6 +16,7 @@ namespace Map
 		{
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			IO::Writer *errWriter;
 			Data::DateTime *lastSrchDate;
 			Sync::Mutex *mut;
@@ -27,7 +29,7 @@ namespace Map
 			const UTF8Char *gooAPIKey;
 
 		public:
-			GoogleWSSearcherJSON(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherJSON(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherJSON();
 
 			void SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);

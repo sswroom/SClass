@@ -113,7 +113,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	}
 }
 
-Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
+Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
 {
 	this->sockf = sockf;
 	this->encFact = encFact;
@@ -135,7 +135,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(const UTF8Char *channel
 	Data::ArrayListInt64 idList;
 	Text::XMLReader *reader;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->userAgent, true, true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, true);
 	cli->Connect(sb.ToString(), "GET", 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())

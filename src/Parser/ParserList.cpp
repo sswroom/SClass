@@ -129,6 +129,23 @@ void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 	}
 }
 
+void Parser::ParserList::SetSSLEngine(Net::SSLEngine *ssl)
+{
+	IO::IParser *parser;
+	UOSInt i = this->filePArr->GetCount();
+	while (i-- > 0)
+	{
+		parser = this->filePArr->GetItem(i);
+		parser->SetSSLEngine(ssl);
+	}
+	i = this->objPArr->GetCount();
+	while (i-- > 0)
+	{
+		parser = this->objPArr->GetItem(i);
+		parser->SetSSLEngine(ssl);
+	}
+}
+
 void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
 {
 	IO::IParser *parser;

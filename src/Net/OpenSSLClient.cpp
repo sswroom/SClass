@@ -1,14 +1,14 @@
 #include "Stdafx.h"
-#include "Net/SSLClient.h"
+#include "Net/OpenSSLClient.h"
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-struct Net::SSLClient::ClassData
+struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
 };
 
-UInt32 Net::SSLClient::GetLastErrorCode()
+UInt32 Net::OpenSSLClient::GetLastErrorCode()
 {
 	UInt32 lastError = 0;
 	UInt32 thisError;
@@ -19,19 +19,19 @@ UInt32 Net::SSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::SSLClient::SSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : TCPClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : TCPClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
 }
 
-Net::SSLClient::~SSLClient()
+Net::OpenSSLClient::~OpenSSLClient()
 {
 	SSL_free(this->clsData->ssl);
 	MemFree(this->clsData);
 }
 
-UOSInt Net::SSLClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::OpenSSLClient::Read(UInt8 *buff, UOSInt size)
 {
 	if (s && (this->flags & 6) == 0)
 	{
@@ -55,7 +55,7 @@ UOSInt Net::SSLClient::Read(UInt8 *buff, UOSInt size)
 	}
 }
 
-UOSInt Net::SSLClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::OpenSSLClient::Write(const UInt8 *buff, UOSInt size)
 {
 	if (s && (this->flags & 5) == 0)
 	{
@@ -74,7 +74,7 @@ UOSInt Net::SSLClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::SSLClient::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *Net::OpenSSLClient::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
 	UOSInt ret = this->Read(buff, size);
 	if (ret)
@@ -84,18 +84,18 @@ void *Net::SSLClient::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 	return (void*)ret;
 }
 
-UOSInt Net::SSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt Net::OpenSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
 	*incomplete = false;
 	return (UOSInt)reqData;
 }
 
-void Net::SSLClient::CancelRead(void *reqData)
+void Net::OpenSSLClient::CancelRead(void *reqData)
 {
 
 }
 
-void *Net::SSLClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *Net::OpenSSLClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
 	UOSInt ret = this->Write(buff, size);
 	if (ret)
@@ -105,22 +105,22 @@ void *Net::SSLClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *ev
 	return (void*)ret;
 }
 
-UOSInt Net::SSLClient::EndWrite(void *reqData, Bool toWait)
+UOSInt Net::OpenSSLClient::EndWrite(void *reqData, Bool toWait)
 {
 	return (UOSInt)reqData;
 }
 
-void Net::SSLClient::CancelWrite(void *reqData)
+void Net::OpenSSLClient::CancelWrite(void *reqData)
 {
 
 }
 
-Int32 Net::SSLClient::Flush()
+Int32 Net::OpenSSLClient::Flush()
 {
 	return 0;
 }
 
-void Net::SSLClient::Close()
+void Net::OpenSSLClient::Close()
 {
 	if (this->s)
 	{
@@ -129,7 +129,7 @@ void Net::SSLClient::Close()
 	this->Net::TCPClient::Close();
 }
 
-Bool Net::SSLClient::Recover()
+Bool Net::OpenSSLClient::Recover()
 {
 	return false;
 }

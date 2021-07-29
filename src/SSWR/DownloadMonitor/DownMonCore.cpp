@@ -6,6 +6,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Manage/Process.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/WebSite/WebSite48IdolControl.h"
 #include "Parser/FullParserList.h"
@@ -472,6 +473,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 	this->chkRunning = false;
 	this->chkToStop = false;
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf);
 	NEW_CLASS(this->chkEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DownloadMonitor.DownMonCore.chkEvt"));
 	this->chkStatus = CS_IDLE;
 	NEW_CLASS(this->fileMut, Sync::Mutex());
@@ -546,6 +548,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 	DEL_CLASS(this->fileNameMap);
 	DEL_CLASS(this->fileTypeMap);
 	DEL_CLASS(this->fileMut);
+	SDEL_CLASS(this->ssl);
 	DEL_CLASS(this->sockf);
 }
 
@@ -557,6 +560,11 @@ Bool SSWR::DownloadMonitor::DownMonCore::IsError()
 Net::SocketFactory *SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()
 {
 	return this->sockf;
+}
+
+Net::SSLEngine *SSWR::DownloadMonitor::DownMonCore::GetSSLEngine()
+{
+	return this->ssl;
 }
 
 SSWR::DownloadMonitor::DownMonCore::CheckStatus SSWR::DownloadMonitor::DownMonCore::GetCurrStatus()

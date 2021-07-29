@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONNECTION
 #define _SM_NET_WEBSERVER_WEBCONNECTION
 #include "IO/FileStream.h"
+#include "Net/SSLEngine.h"
 #include "Net/WebServer/IWebHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebRequest.h"
@@ -16,6 +17,7 @@ namespace Net
 			typedef void (__stdcall *SendLogger)(void *userObj, UOSInt buffSize);
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Net::TCPClient *cli;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::IWebHandler *hdlr;
@@ -39,7 +41,7 @@ namespace Net
 			void *loggerObj;
 
 		public:
-			WebConnection(Net::SocketFactory *sockf, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA);
+			WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA);
 			virtual ~WebConnection();
 
 			void ReceivedData(const UInt8 *buff, UOSInt size);

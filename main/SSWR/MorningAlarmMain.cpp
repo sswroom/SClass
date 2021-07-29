@@ -22,6 +22,7 @@
 #include "Media/RefClock.h"
 #include "Media/ClockSpeechCh.h"
 
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HKOWeather.h"
 #include "Net/NTPClient.h"
 #include "Net/OSSocketFactory.h"
@@ -43,6 +44,7 @@ Data::DateTime *startDt;
 const UTF8Char *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
 Net::SocketFactory *sockf;
+Net::SSLEngine *ssl;
 Text::EncodingFactory *encFact;
 Net::NTPClient *timeCli;
 Data::DateTime *tmpDt;
@@ -112,7 +114,7 @@ UInt32 __stdcall PlayThread(void *obj)
 				tmpDt->SetAsComputerTime();
 			}
 
-			nextSignal = Net::HKOWeather::GetSignalSummary(sockf, encFact);
+			nextSignal = Net::HKOWeather::GetSignalSummary(sockf, ssl, encFact);
 			if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0 || (currSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0)
 			{
 				sptr = currDt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
@@ -267,6 +269,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	ssl = Net::DefaultSSLEngine::Create(sockf);
 	NEW_CLASS(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
 	NEW_CLASS(tmpDt, Data::DateTime());
@@ -357,6 +360,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(tmpDt);
 	DEL_CLASS(timeCli);
 	DEL_CLASS(encFact);
+	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 	return 0;

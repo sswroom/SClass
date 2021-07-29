@@ -9,6 +9,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/MemoryData2.h"
 #include "Math/Math.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/WebBrowser.h"
 #include "Parser/FullParserList.h"
@@ -53,7 +54,12 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->encFact, Text::EncodingFactory());
 	NEW_CLASS(this->exporters, Exporter::ExporterList());
-	NEW_CLASS(this->browser, Net::WebBrowser(sockf, u8buff));
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf);
+	if (this->ssl)
+	{
+		this->ssl->SetSkipCertCheck(true);
+	}
+	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, u8buff));
 	NEW_CLASS(this->frms, Data::ArrayList<UI::GUIForm*>());
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
@@ -74,6 +80,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	this->parsers->SetMapManager(this->mapMgr);
 	this->parsers->SetWebBrowser(this->browser);
 	this->parsers->SetSocketFactory(this->sockf);
+	this->parsers->SetSSLEngine(ssl);
 	this->batchLyrs = 0;
 	this->batchLoad = false;
 	NEW_CLASS(this->audDevList, Data::ArrayList<const UTF8Char *>());
@@ -117,6 +124,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	DEL_CLASS(this->encFact);
 	DEL_CLASS(this->mapMgr);
 	DEL_CLASS(this->colorMgr);
+	SDEL_CLASS(this->ssl);
 	DEL_CLASS(this->sockf);
 	DEL_CLASS(this->eng);
 	this->ui->SetMonitorMgr(0);
@@ -278,6 +286,11 @@ IO::VirtualIOPinMgr *SSWR::AVIRead::AVIRCore::GetVirtualIOPinMgr()
 IO::GPIOControl *SSWR::AVIRead::AVIRCore::GetGPIOControl()
 {
 	return this->gpioCtrl;
+}
+
+Net::SSLEngine *SSWR::AVIRead::AVIRCore::GetSSLEngine()
+{
+	return this->ssl;
 }
 
 UInt32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()

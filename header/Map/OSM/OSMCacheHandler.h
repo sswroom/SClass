@@ -4,6 +4,7 @@
 #include "Data/LinkedList.h"
 #include "IO/FileStream.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Sync/Mutex.h"
 
@@ -45,6 +46,7 @@ namespace Map
 			const UTF8Char *cacheDir;
 			Int32 maxLevel;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			CacheStatus status;
 
 			OSInt threadCnt;
@@ -54,7 +56,7 @@ namespace Map
 
 			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile);
 		public:
-			OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf);
+			OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMCacheHandler();
 
 			void AddAlternateURL(const UTF8Char *url);

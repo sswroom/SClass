@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "Data/StringUTF8Map.h"
 #include "Net/RSS.h"
+#include "Net/SSLEngine.h"
 
 namespace Net
 {
@@ -24,11 +25,12 @@ namespace Net
 	private:
 		const UTF8Char *url;
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		RSSHandler *hdlr;
 		Data::StringUTF8Map<RSSStatus *> *currRSSMaps;
 		Data::DateTime *nextDT;
 		Net::RSS *lastRSS;
-		Int32 refreshSecond;
+		UInt32 refreshSecond;
 
 		Sync::Event *threadEvt;
 		Bool threadRunning;
@@ -36,10 +38,10 @@ namespace Net
 
 		static UInt32 __stdcall RSSThread(void *userObj);
 	public:
-		RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Int32 refreshSecond, RSSHandler *hdlr);
+		RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, RSSHandler *hdlr);
 		~RSSReader();
 
 		Bool IsError();
 	};
-};
+}
 #endif

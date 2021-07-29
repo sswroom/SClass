@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSITE_WEBSITEINSTAGRAMCONTROL
 #define _SM_NET_WEBSITE_WEBSITEINSTAGRAMCONTROL
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
 #include "Text/JSON.h"
 
@@ -32,12 +33,13 @@ namespace Net
 			
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			const UTF8Char *userAgent;
 
 			Text::JSONBase *ParsePageJSON(const UTF8Char *url);
 		public:
-			WebSiteInstagramControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSiteInstagramControl();
 
 			OSInt GetChannelItems(const UTF8Char *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);

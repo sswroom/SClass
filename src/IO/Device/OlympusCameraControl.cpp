@@ -19,7 +19,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/get_commandlist.cgi");
-	cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())
 	{
@@ -107,7 +107,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
 		sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"/get_imglist.cgi?DIR=/DCIM/100OLYMP");
-		cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 		NEW_CLASS(reader, Text::UTF8Reader(cli));
 		while (true)
 		{
@@ -161,7 +161,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/get_gpsloglist.cgi");
-	cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	while (true)
 	{
@@ -210,7 +210,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/get_snsloglist.cgi");
-	cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	while (true)
 	{
@@ -348,7 +348,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl:
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"/DCIM/100OLYMP/");
 	}
 	sptr = Text::StrConcat(sptr, file->fileName);
-	cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{
 		totalSize += readSize;
@@ -377,7 +377,7 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCamer
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/get_thumbnail.cgi?DIR=/DCIM/100OLYMP/");
 	sptr = Text::StrConcat(sptr, file->fileName);
-	cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{
 		totalSize += readSize;
@@ -407,7 +407,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF *sb)
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/get_caminfo.cgi");
-	cli = Net::HTTPClient::CreateConnect(this->sockf, sbuff, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())
 	{

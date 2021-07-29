@@ -23,12 +23,13 @@
 
 #define BUFFSIZE 2048
 
-Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	if (userAgent == 0)
 	{
 		userAgent = (const UTF8Char*)"sswr/1.0";
 	}
+	this->ssl = ssl;
 	this->cli = 0;
 	this->cliHost = 0;
 	this->writing = false;
@@ -372,250 +373,19 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UTF8Char *ptrs[2];
 	UTF8Char *cptr;
 	UInt16 port;
+	Bool secure = false;
 
 	SDEL_TEXT(this->url);
 	this->url = Text::StrCopyNew(url);
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
-#ifdef SHOWDEBUG
-		printf("Request URL: %s %s\r\n", method, url);
-#endif
 		ptr1 = &url[7];
-		i = Text::StrIndexOf(ptr1, '/');
-		if (i != INVALID_INDEX)
-		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
-			ptr2 = &ptr1[i];
-		}
-		else
-		{
-			i = Text::StrCharCnt(ptr1);
-			ptr2 = 0;
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
-			urltmp[i] = 0;
-		}
-		Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
-		cptr = Text::StrConcat(host, (UTF8Char*)"Host: ");
-		cptr = Text::StrConcat(cptr, urltmp);
-		cptr = Text::StrConcat(cptr, (UTF8Char*)"\r\n");
-		hostLen = (UOSInt)(cptr - host);
-		if (urltmp[0] == '[')
-		{
-			i = Text::StrIndexOf(urltmp, ']');
-			if (i == INVALID_INDEX)
-			{
-				this->cli = 0;
-
-				this->writing = true;
-				this->canWrite = false;
-				return false;
-			}
-			Text::StrConcatC(svrname, &urltmp[1], i - 1);
-			if (urltmp[i + 1] == ':')
-			{
-				Text::StrToUInt16S(&urltmp[i + 2], &port, 0);
-				urltmp[i + 1] = 0;
-			}
-			else
-			{
-				port = 80;
-			}
-		}
-		else
-		{
-			i = Text::StrSplit(ptrs, 2, urltmp, ':');
-			if (i == 2)
-			{
-				Text::StrToUInt16S(ptrs[1], &port, 0);
-				Text::StrConcat(svrname, ptrs[0]);
-			}
-			else
-			{
-				port = 80;
-				Text::StrConcat(svrname, ptrs[0]);
-			}
-		}
-
-		this->clk->Start();
-		if (this->cliHost == 0)
-		{
-			this->cliHost = Text::StrCopyNew(urltmp);
-
-			Double t1;
-			Net::SocketUtil::AddressInfo addr;
-			if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
-			{
-				addr.addrType = Net::SocketUtil::AT_IPV4;
-				WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1"));
-			}
-			else if (!sockf->DNSResolveIP(svrname, &addr))
-			{
-				this->cli = 0;
-
-				this->writing = true;
-				this->canWrite = false;
-				return false;
-			}
-			if (timeDNS)
-			{
-				*timeDNS = clk->GetTimeDiff();
-			}
-			this->svrAddr = addr;
-			if (addr.addrType != Net::SocketUtil::AT_UNKNOWN)
-			{
-#ifdef SHOWDEBUG
-				Net::SocketUtil::GetAddrName(svrname, &this->svrAddr);
-				printf("Server IP: %s:%d, t = %d\r\n", svrname, port, this->svrAddr.addrType);
-#endif
-				NEW_CLASS(this->cli, Net::TCPClient(sockf, &this->svrAddr, port));
-			}
-			else
-			{
-				this->cli = 0;
-
-				this->writing = true;
-				this->canWrite = false;
-				return false;
-			}
-			t1 = clk->GetTimeDiff();
-			if (timeConn)
-			{
-				*timeConn = t1;
-			}
-#ifdef DEBUGSPEED
-			if (t1 > 0.01)
-			{
-				printf("Time in connect: %lf\n", t1);
-			}
-#endif
-			if (this->cli->IsConnectError())
-			{
-#ifdef SHOWDEBUG
-				printf("Error in connect to server\r\n");
-#endif
-				DEL_CLASS(this->cli);
-				this->cli = 0;
-
-				this->writing = true;
-				this->canWrite = false;
-				return false;
-			}
-			this->sockf->SetLinger(this->cli->GetSocket(), 0);
-			this->sockf->SetNoDelay(this->cli->GetSocket(), true);
-		}
-		else if (Text::StrEquals(this->cliHost, urltmp))
-		{
-			if (this->buffSize > 0)
-			{
-				this->contRead += this->buffSize;
-				this->buffSize = 0;
-			}
-			while (this->contRead != this->contLeng)
-			{
-				UOSInt size = BUFFSIZE;
-				if (size > (this->contLeng - this->contRead))
-				{
-					size = (UOSInt)(this->contLeng - this->contRead);
-				}
-				size = this->cli->Read(this->dataBuff, size);
-#ifdef SHOWDEBUG
-				printf("Read from remote, size = %d\r\n", (Int32)size);
-#endif
-				if (size == 0)
-				{
-					if (timeDNS)
-					{
-						*timeDNS = -1;
-					}
-					if (timeConn)
-					{
-						*timeConn = -1;
-					}
-					return false;
-				}
-				this->contRead += size;
-			}
-			if (timeDNS)
-			{
-				*timeDNS = 0;
-			}
-			if (timeConn)
-			{
-				*timeConn = 0;
-			}
-			this->contRead = 0;
-			i = this->headers->GetCount();
-			while (i-- > 0)
-			{
-				MemFree(this->headers->RemoveAt(i));
-			}
-			this->headers->Clear();
-		}
-		else
-		{
-			if (timeDNS)
-			{
-				*timeDNS = -1;
-			}
-			if (timeConn)
-			{
-				*timeConn = -1;
-			}
-			return false;
-		}
-
-		if (ptr2 == 0)
-		{
-			ptr2 = (const UTF8Char*)"/";
-		}
-		i = Text::StrCharCnt(ptr2);
-		if ((i + 16) > BUFFSIZE)
-		{
-			MemFree(this->dataBuff);
-			this->dataBuff = MemAlloc(UInt8, (i + 16));
-		}
-		if (method)
-		{
-			if (Text::StrCompareICase(method, "POST") == 0)
-			{
-				this->canWrite = true;
-				this->writing = false;
-				cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"POST ");
-			}
-			else
-			{
-				this->canWrite = false;
-				this->writing = false;
-				cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
-			}
-		}
-		else
-		{
-			this->canWrite = false;
-			this->writing = false;
-			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
-		}
-		cptr = Text::StrConcat(cptr, ptr2);
-		cptr = Text::StrConcat(cptr, (const UTF8Char*)" HTTP/1.1\r\n");
-		this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
-		this->reqMstm->Write((UInt8*)host, hostLen);
-
-		this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
-		if (defHeaders)
-		{
-			this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-			this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
-			if (this->kaConn)
-			{
-				this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
-			}
-			else
-			{
-				this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
-			}
-		}
-		return true;
+		secure = false;
+	}
+	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
+	{
+		ptr1 = &url[8];
+		secure = true;
 	}
 	else
 	{
@@ -629,6 +399,279 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		return false;
 	}
+
+	if (secure && this->ssl == 0)
+	{
+		if (timeDNS)
+		{
+			*timeDNS = -1;
+		}
+		if (timeConn)
+		{
+			*timeConn = -1;
+		}
+		return false;
+	}
+
+#ifdef SHOWDEBUG
+	printf("Request URL: %s %s\r\n", method, url);
+#endif
+	i = Text::StrIndexOf(ptr1, '/');
+	if (i != INVALID_INDEX)
+	{
+		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+		urltmp[i] = 0;
+		ptr2 = &ptr1[i];
+	}
+	else
+	{
+		i = Text::StrCharCnt(ptr1);
+		ptr2 = 0;
+		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+		urltmp[i] = 0;
+	}
+	Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+	cptr = Text::StrConcat(host, (UTF8Char*)"Host: ");
+	cptr = Text::StrConcat(cptr, urltmp);
+	cptr = Text::StrConcat(cptr, (UTF8Char*)"\r\n");
+	hostLen = (UOSInt)(cptr - host);
+	if (urltmp[0] == '[')
+	{
+		i = Text::StrIndexOf(urltmp, ']');
+		if (i == INVALID_INDEX)
+		{
+			this->cli = 0;
+
+			this->writing = true;
+			this->canWrite = false;
+			return false;
+		}
+		Text::StrConcatC(svrname, &urltmp[1], i - 1);
+		if (urltmp[i + 1] == ':')
+		{
+			Text::StrToUInt16S(&urltmp[i + 2], &port, 0);
+			urltmp[i + 1] = 0;
+		}
+		else
+		{
+			port = 80;
+		}
+	}
+	else
+	{
+		i = Text::StrSplit(ptrs, 2, urltmp, ':');
+		if (i == 2)
+		{
+			Text::StrToUInt16S(ptrs[1], &port, 0);
+			Text::StrConcat(svrname, ptrs[0]);
+		}
+		else
+		{
+			port = 80;
+			Text::StrConcat(svrname, ptrs[0]);
+		}
+	}
+
+	this->clk->Start();
+	if (this->cliHost == 0)
+	{
+		this->cliHost = Text::StrCopyNew(urltmp);
+
+		Double t1;
+		Net::SocketUtil::AddressInfo addr;
+		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
+		{
+			addr.addrType = Net::SocketUtil::AT_IPV4;
+			WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1"));
+		}
+		else if (!sockf->DNSResolveIP(svrname, &addr))
+		{
+			this->cli = 0;
+
+			this->writing = true;
+			this->canWrite = false;
+			return false;
+		}
+		if (timeDNS)
+		{
+			*timeDNS = clk->GetTimeDiff();
+		}
+		this->svrAddr = addr;
+		if (addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+		{
+#ifdef SHOWDEBUG
+			Net::SocketUtil::GetAddrName(svrname, &this->svrAddr);
+			printf("Server IP: %s:%d, t = %d\r\n", svrname, port, this->svrAddr.addrType);
+#endif
+			if (secure)
+			{
+				Net::SSLEngine::ErrorType err;
+				this->cli = this->ssl->Connect(svrname, port, &err);
+#ifdef SHOWDEBUG				
+				if (this->cli == 0)
+				{
+					printf("Connect error: %s\r\n", Net::SSLEngine::ErrorTypeGetName(err));
+				}
+#endif
+			}
+			else
+			{
+				NEW_CLASS(this->cli, Net::TCPClient(sockf, &this->svrAddr, port));
+			}
+		}
+		else
+		{
+			this->cli = 0;
+
+			this->writing = true;
+			this->canWrite = false;
+			return false;
+		}
+		t1 = clk->GetTimeDiff();
+		if (timeConn)
+		{
+			*timeConn = t1;
+		}
+#ifdef DEBUGSPEED
+		if (t1 > 0.01)
+		{
+			printf("Time in connect: %lf\n", t1);
+		}
+#endif
+
+		if (this->cli == 0)
+		{
+			this->writing = true;
+			this->canWrite = false;
+			return false;
+		}
+		else if (this->cli->IsConnectError())
+		{
+#ifdef SHOWDEBUG
+			printf("Error in connect to server\r\n");
+#endif
+			DEL_CLASS(this->cli);
+			this->cli = 0;
+
+			this->writing = true;
+			this->canWrite = false;
+			return false;
+		}
+		this->sockf->SetLinger(this->cli->GetSocket(), 0);
+		this->sockf->SetNoDelay(this->cli->GetSocket(), true);
+	}
+	else if (Text::StrEquals(this->cliHost, urltmp))
+	{
+		if (this->buffSize > 0)
+		{
+			this->contRead += this->buffSize;
+			this->buffSize = 0;
+		}
+		while (this->contRead != this->contLeng)
+		{
+			UOSInt size = BUFFSIZE;
+			if (size > (this->contLeng - this->contRead))
+			{
+				size = (UOSInt)(this->contLeng - this->contRead);
+			}
+			size = this->cli->Read(this->dataBuff, size);
+#ifdef SHOWDEBUG
+			printf("Read from remote, size = %d\r\n", (Int32)size);
+#endif
+			if (size == 0)
+			{
+				if (timeDNS)
+				{
+					*timeDNS = -1;
+				}
+				if (timeConn)
+				{
+					*timeConn = -1;
+				}
+				return false;
+			}
+			this->contRead += size;
+		}
+		if (timeDNS)
+		{
+			*timeDNS = 0;
+		}
+		if (timeConn)
+		{
+			*timeConn = 0;
+		}
+		this->contRead = 0;
+		i = this->headers->GetCount();
+		while (i-- > 0)
+		{
+			MemFree(this->headers->RemoveAt(i));
+		}
+		this->headers->Clear();
+	}
+	else
+	{
+		if (timeDNS)
+		{
+			*timeDNS = -1;
+		}
+		if (timeConn)
+		{
+			*timeConn = -1;
+		}
+		return false;
+	}
+
+	if (ptr2 == 0)
+	{
+		ptr2 = (const UTF8Char*)"/";
+	}
+	i = Text::StrCharCnt(ptr2);
+	if ((i + 16) > BUFFSIZE)
+	{
+		MemFree(this->dataBuff);
+		this->dataBuff = MemAlloc(UInt8, (i + 16));
+	}
+	if (method)
+	{
+		if (Text::StrCompareICase(method, "POST") == 0)
+		{
+			this->canWrite = true;
+			this->writing = false;
+			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"POST ");
+		}
+		else
+		{
+			this->canWrite = false;
+			this->writing = false;
+			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
+		}
+	}
+	else
+	{
+		this->canWrite = false;
+		this->writing = false;
+		cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
+	}
+	cptr = Text::StrConcat(cptr, ptr2);
+	cptr = Text::StrConcat(cptr, (const UTF8Char*)" HTTP/1.1\r\n");
+	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
+	this->reqMstm->Write((UInt8*)host, hostLen);
+
+	this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
+	if (defHeaders)
+	{
+		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
+		this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+		if (this->kaConn)
+		{
+			this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+		}
+		else
+		{
+			this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+		}
+	}
+	return true;
 }
 
 void Net::HTTPMyClient::AddHeader(const UTF8Char *name, const UTF8Char *value)

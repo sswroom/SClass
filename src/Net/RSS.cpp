@@ -226,7 +226,7 @@ const UTF8Char *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory *sockf)
+Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	this->isError = true;
 	this->title = 0;
@@ -246,7 +246,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 	Text::StringBuilderUTF8 *sb;
 	IO::ParsedObject *pobj;
 	IO::Stream *stm;
-	pobj = Net::URL::OpenObject(url, userAgent, sockf);
+	pobj = Net::URL::OpenObject(url, userAgent, sockf, ssl);
 	if (pobj == 0)
 	{
 		return;

@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
+Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
 {
 	this->sockf = sockf;
 	this->encFact = encFact;
@@ -43,7 +43,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chan
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->userAgent, true, true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, true);
 	cli->Connect(sb.ToString(), "GET", 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())

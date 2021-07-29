@@ -2190,7 +2190,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				else
 				{
 					NEW_CLASS(sockf, Net::OSSocketFactory(false));
-					cli = Net::HTTPClient::CreateConnect(sockf, (const UTF8Char*)"http://sswroom.no-ip.org:5080/benchmark/upload", "POST", false);
+					cli = Net::HTTPClient::CreateConnect(sockf, 0, (const UTF8Char*)"http://sswroom.no-ip.org:5080/benchmark/upload", "POST", false);
 					cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)"text/plain");
 					Text::StrUInt64(u8buff, fileSize);
 					cli->AddHeader((const UTF8Char*)"Content-Length", u8buff);

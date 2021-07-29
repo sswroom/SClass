@@ -10,7 +10,7 @@
 #include "Net/HTTPClient.h"
 #include "Map/ESRI/ESRITileMap.h"
 
-Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf)
+Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[2048];
@@ -19,6 +19,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	this->url = Text::StrCopyNew(url);
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->minX = 0;
 	this->minY = 0;
 	this->maxX = 0;
@@ -32,7 +33,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 
 	IO::MemoryStream *mstm;
 	Text::StrConcat(Text::StrConcat(sbuff, url), (const UTF8Char*)"?f=json");
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, sbuff, "GET", true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, sbuff, "GET", true);
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.ESRI.ESRITileMap.ESRITileMap"));
 	while ((readSize = cli->Read(buff, 2048)) > 0)
 	{
@@ -498,7 +499,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
 	sptr = Text::StrInt32(sptr, imgX);
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, url, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);
 	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
@@ -622,7 +623,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)"/");
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, url, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);
 	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{

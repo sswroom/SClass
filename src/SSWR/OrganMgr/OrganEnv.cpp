@@ -19,6 +19,7 @@
 #include "Media/MediaFile.h"
 #include "Media/StaticImage.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/OrganMgr/OrganImageItem.h"
@@ -39,6 +40,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	NEW_CLASS(this->colorMgr, Media::ColorManager());
 	this->drawEng = Core::DefaultDrawEngine::CreateDrawEngine();
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->currCate = 0;
 	this->trips = 0;
@@ -143,6 +145,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	DEL_CLASS(this->categories);
 	DEL_CLASS(this->drawEng);
 	DEL_CLASS(this->parsers);
+	SDEL_CLASS(this->ssl);
 	DEL_CLASS(this->sockf);
 	DEL_CLASS(this->colorMgr);
 	DEL_CLASS(this->monMgr);
@@ -161,6 +164,11 @@ Parser::ParserList *SSWR::OrganMgr::OrganEnv::GetParserList()
 Net::SocketFactory *SSWR::OrganMgr::OrganEnv::GetSocketFactory()
 {
 	return this->sockf;
+}
+
+Net::SSLEngine *SSWR::OrganMgr::OrganEnv::GetSSLEngine()
+{
+	return this->ssl;
 }
 
 Media::ColorManager *SSWR::OrganMgr::OrganEnv::GetColorMgr()

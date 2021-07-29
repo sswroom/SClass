@@ -1,10 +1,10 @@
-#ifndef _SM_NET_SSLCLIENT
-#define _SM_NET_SSLCLIENT
+#ifndef _SM_NET_OPENSSLCLIENT
+#define _SM_NET_OPENSSLCLIENT
 #include "Net/TCPClient.h"
 
 namespace Net
 {
-	class SSLClient : public Net::TCPClient
+	class OpenSSLClient : public Net::TCPClient
 	{
 	protected:
 		struct ClassData;
@@ -12,8 +12,8 @@ namespace Net
 
 		UInt32 GetLastErrorCode();
 	public:
-		SSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s);
-		virtual ~SSLClient();
+		OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s);
+		virtual ~OpenSSLClient();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);

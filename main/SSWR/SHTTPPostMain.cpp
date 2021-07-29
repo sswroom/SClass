@@ -4,6 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/MIME.h"
 #include "Net/OSSocketFactory.h"
@@ -63,9 +64,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			UOSInt totalSize = 0;
 			UOSInt writeSize;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
-			cli = Net::HTTPClient::CreateConnect(sockf, url, "POST", false);
+			ssl = Net::DefaultSSLEngine::Create(sockf);
+			cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, "POST", false);
 			if (mime)
 			{
 				cli->AddHeader((const UTF8Char*)"Content-Type", mime);
@@ -155,6 +158,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				DEL_CLASS(mstm);
 			}
 			DEL_CLASS(cli);	
+			SDEL_CLASS(ssl);
 			DEL_CLASS(sockf);
 		}
 		else

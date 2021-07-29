@@ -19,9 +19,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->lastIsError = 0;
 	this->srchCnt = 0;
@@ -148,7 +149,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&key=");
 	}
-	cli = Net::HTTPClient::CreateConnect(this->sockf, url, 0, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, 0, true);
 	if (!cli->IsError())
 	{
 		if (lang)

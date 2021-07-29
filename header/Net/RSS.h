@@ -1,7 +1,8 @@
 #ifndef _SM_NET_RSS
 #define _SM_NET_RSS
-#include "Text/XMLDOM.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
+#include "Text/XMLDOM.h"
 
 namespace Net
 {
@@ -54,7 +55,7 @@ namespace Net
 		Data::ArrayList<RSSItem*> *items;
 
 	public:
-		RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory *sockf);
+		RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 		virtual ~RSS();
 
 		Bool IsError();

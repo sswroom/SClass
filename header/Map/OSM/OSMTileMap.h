@@ -6,6 +6,7 @@
 #include "IO/SPackageFile.h"
 #include "Map/TileMap.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
 
 namespace Map
@@ -22,6 +23,7 @@ namespace Map
 			const UTF8Char *cacheDir;
 			IO::SPackageFile *spkg;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			UOSInt maxLevel;
 
 			UOSInt tileWidth;
@@ -29,8 +31,8 @@ namespace Map
 
 			const UTF8Char *GetNextURL();
 		public:
-			OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf);
-			OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf);
+			OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMTileMap();
 
 			void AddAlternateURL(const UTF8Char *url);

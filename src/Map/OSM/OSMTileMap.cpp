@@ -17,7 +17,7 @@ const UTF8Char *Map::OSM::OSMTileMap::GetNextURL()
 	return thisUrl;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf)
+Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	NEW_CLASS(this->urls, Data::ArrayListStrUTF8());
 	this->urls->Add(Text::StrCopyNew(url));
@@ -26,12 +26,13 @@ Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, 
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->spkg = 0;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->maxLevel = maxLevel;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf)
+Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	NEW_CLASS(this->urls, Data::ArrayListStrUTF8());
 	this->urls->Add(Text::StrCopyNew(url));
@@ -40,6 +41,7 @@ Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UO
 	this->cacheDir = 0;
 	this->spkg = spkg;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->maxLevel = maxLevel;
@@ -334,7 +336,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	urlSb.Append((const UTF8Char*)".png");
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
-	cli = Net::HTTPClient::CreateClient(this->sockf, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 	if (hasTime)
 	{
@@ -541,7 +543,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	urlSb.AppendI32(imgY);
 	urlSb.Append((const UTF8Char*)".png");
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 	if (hasTime)
 	{

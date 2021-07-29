@@ -13,7 +13,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8C
 	Text::StringBuilderUTF8 sb;
 	Text::JSONBase *baseData = 0;
 	Text::XMLReader *reader;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->userAgent, true, true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, true);
 	cli->Connect(url, "GET", 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
@@ -40,9 +40,10 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8C
 	return baseData;
 }
 
-Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
+Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = userAgent?Text::StrCopyNew(userAgent):0;
 }

@@ -47,12 +47,13 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 	}
 }
 
-Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, const UTF8Char *cacheDir)
+Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *cacheDir)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	NEW_CLASS(this->hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32R::GetPolynormialIEEE()));
-	NEW_CLASS(this->queue, Net::HTTPQueue(sockf));
+	NEW_CLASS(this->queue, Net::HTTPQueue(sockf, ssl));
 }
 
 Net::WebBrowser::~WebBrowser()
@@ -94,14 +95,14 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 	{
 		Net::HTTPData *data;
 		GetLocalFileName(sbuff, url);
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->queue, url, sbuff, forceReload));
+		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
 		return data;
 	}
 	else if (Text::StrCompareICase(sbuff, (const UTF8Char*)"HTTPS") == 0)
 	{
 		Net::HTTPData *data;
 		GetLocalFileName(sbuff, url);
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->queue, url, sbuff, forceReload));
+		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
 		return data;
 	}
 	else if (Text::StrCompareICase(sbuff, (const UTF8Char*)"FTP") == 0)

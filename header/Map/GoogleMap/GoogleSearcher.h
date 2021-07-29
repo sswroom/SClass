@@ -2,9 +2,10 @@
 #define _SM_MAP_GOOGLEMAP_GOOGLESEARCHER
 #include "Data/DateTime.h"
 #include "IO/Writer.h"
-#include "Sync/Mutex.h"
-#include "Net/SocketFactory.h"
 #include "Map/IReverseGeocoder.h"
+#include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
+#include "Sync/Mutex.h"
 
 namespace Map
 {
@@ -18,6 +19,7 @@ namespace Map
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Data::DateTime *lastSrchDate;
 			Sync::Mutex *mut;
 			IO::Writer *errWriter;
@@ -25,7 +27,7 @@ namespace Map
 			UInt32 srchCnt;
 			
 		public:
-			GoogleSearcher(Net::SocketFactory *sockf, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter);
+			GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter);
 			virtual ~GoogleSearcher();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw

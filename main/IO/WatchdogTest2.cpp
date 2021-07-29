@@ -5,8 +5,10 @@
 #include "IO/FileStream.h"
 #include "IO/Watchdog.h"
 #include "IO/Device/AM2315.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -23,6 +25,7 @@ Sync::Event *evt;
 Sync::Event *httpEvt;
 IO::Device::AM2315 *am2315;
 Net::SocketFactory *sockf;
+Net::SSLEngine *ssl;
 IO::ConsoleWriter *consoleWriter;
 
 UInt32 __stdcall WatchdogThread(void *userObj)
@@ -82,7 +85,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 	{
 		consoleWriter->Write((const UTF8Char*)"Requesting to ");
 		consoleWriter->WriteLine(TESTURL);
-		cli = Net::HTTPClient::CreateClient(sockf, USERAGENT, false, Text::StrStartsWith(TESTURL, (const UTF8Char*)"https://"));
+		cli = Net::HTTPClient::CreateClient(sockf, ssl, USERAGENT, false, Text::StrStartsWith(TESTURL, (const UTF8Char*)"https://"));
 		cli->Connect(TESTURL, "GET", 0, 0, false);
 		cli->AddHeader((const UTF8Char*)"User-Agent", USERAGENT);
 		cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
@@ -155,6 +158,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));
 	NEW_CLASS(httpEvt, Sync::Event(true, (const UTF8Char*)"evt"));
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	ssl = Net::DefaultSSLEngine::Create(sockf);
 
 	wd = IO::Watchdog::Create(1);
 	if (wd && wd->IsError())
@@ -212,6 +216,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	DEL_CLASS(evt);
 	DEL_CLASS(httpEvt);
+	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);
 	DEL_CLASS(am2315);
 	return 0;

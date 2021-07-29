@@ -347,7 +347,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	Text::EncodingFactory *encFact;
 	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NEW_CLASS(encFact, Text::EncodingFactory());
-	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), encFact, userAgent));
+	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, userAgent));
 	while (true)
 	{
 		ctrl->GetTVPageItems(currPage, &pageList);
@@ -490,7 +490,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					if (ctrl == 0)
 					{
 						NEW_CLASS(encFact, Text::EncodingFactory());
-						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), encFact, userAgent));
+						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, userAgent));
 					}
 					sb2.ClearStr();
 					if (ctrl->GetVideoName(id, &sb2))

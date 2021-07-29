@@ -49,7 +49,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		urlSb.Append((const UTF8Char*)".png");
 
 		Net::HTTPClient *cli;
-		cli = Net::HTTPClient::CreateClient(this->sockf, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
+		cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
 		cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 
 		if (cli->GetRespStatus() == 304)
@@ -124,7 +124,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	}
 }
 
-Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf)
+Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	NEW_CLASS(this->urls, Data::ArrayListStrUTF8());
 	this->urls->Add(Text::StrCopyNew(url));
@@ -133,6 +133,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->maxLevel = maxLevel;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	MemClear(&this->status, sizeof(this->status));
 }
 

@@ -1,8 +1,9 @@
 #ifndef _SM_NET_HKOWEATHER
 #define _SM_NET_HKOWEATHER
-#include "Net/SocketFactory.h"
-#include "Text/EncodingFactory.h"
 #include "Net/RSSReader.h"
+#include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
+#include "Text/EncodingFactory.h"
 
 namespace Net
 {
@@ -44,15 +45,16 @@ namespace Net
 	private:
 		UpdateHandler hdlr;
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;
 		Net::RSSReader *rss;
 		WeatherSignal currSignal;
 
 		static WeatherSignal String2Signal(const UTF8Char *textMessage);
 	public:
-		static WeatherSignal GetSignalSummary(Net::SocketFactory *sockf, Text::EncodingFactory *encFact);
+		static WeatherSignal GetSignalSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 
-		HKOWeather(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, UpdateHandler hdlr);
+		HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr);
 		virtual ~HKOWeather();
 
 		virtual void ItemAdded(Net::RSSItem *item);

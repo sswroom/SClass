@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 
 	this->core = core;
 	const UTF8Char *userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(core->GetSocketFactory(), core->GetEncFactory(), userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(core->GetSocketFactory(), core->GetSSLEngine(), core->GetEncFactory(), userAgent));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));

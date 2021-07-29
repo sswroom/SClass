@@ -9,6 +9,7 @@
 #include "Media/ColorManager.h"
 #include "Media/ImageList.h"
 #include "Media/MonitorMgr.h"
+#include "Net/SSLEngine.h"
 #include "Parser/ParserList.h"
 #include "SSWR/OrganMgr/OrganGroup.h"
 #include "SSWR/OrganMgr/OrganGroupType.h"
@@ -139,6 +140,7 @@ namespace SSWR
 			Parser::ParserList *parsers;
 			Media::DrawEngine *drawEng;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Media::MonitorMgr *monMgr;
 			ErrorType errType;
 			IO::ConfigFile *langFile;
@@ -170,6 +172,7 @@ namespace SSWR
 			Media::DrawEngine *GetDrawEngine();
 			Parser::ParserList *GetParserList();
 			Net::SocketFactory *GetSocketFactory();
+			Net::SSLEngine *GetSSLEngine();
 			Media::ColorManager *GetColorMgr();
 			Media::MonitorMgr *GetMonitorMgr();
 			ErrorType GetErrorType();

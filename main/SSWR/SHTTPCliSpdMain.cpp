@@ -4,8 +4,10 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -36,9 +38,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::StringBuilderUTF8 sb;
 			Int32 httpStatus;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
-			cli = Net::HTTPClient::CreateClient(sockf, (const UTF8Char*)"Test/1.0", false, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+			ssl = Net::DefaultSSLEngine::Create(sockf);
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, (const UTF8Char*)"Test/1.0", false, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (!cli->Connect(url, "GET", &respTimeDNS, &respTimeConn, false))
 			{
 				console->WriteLine((const UTF8Char*)"Error in requesting to server");
@@ -108,6 +112,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 			}
 			DEL_CLASS(cli);	
+			SDEL_CLASS(ssl);
 			DEL_CLASS(sockf);
 		}
 		else

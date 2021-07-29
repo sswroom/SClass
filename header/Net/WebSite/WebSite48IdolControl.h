@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSITE_WEBSITE48IDOLCONTROL
 #define _SM_NET_WEBSITE_WEBSITE48IDOLCONTROL
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
 
 namespace Net
@@ -19,11 +20,12 @@ namespace Net
 			
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			const UTF8Char *userAgent;
 
 		public:
-			WebSite48IdolControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSite48IdolControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSite48IdolControl();
 
 			OSInt GetTVPageItems(OSInt pageNo, Data::ArrayList<ItemData*> *itemList);

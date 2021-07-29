@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), core->GetEncFactory(), userAgent, 0));
+	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), core->GetSSLEngine(), core->GetEncFactory(), userAgent, 0));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlChannel, UI::GUIPanel(ui, this));

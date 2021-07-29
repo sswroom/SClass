@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		Net::RSS *rss;
 		Net::RSSItem *item;
 		const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-		NEW_CLASS(rss, Net::RSS(sb.ToString(), userAgent, me->core->GetSocketFactory()));
+		NEW_CLASS(rss, Net::RSS(sb.ToString(), userAgent, me->core->GetSocketFactory(), me->core->GetSSLEngine()));
 		if (!rss->IsError())
 		{
 			const UTF8Char *csptr;

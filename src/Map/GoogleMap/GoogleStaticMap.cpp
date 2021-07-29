@@ -17,9 +17,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	if (gooCliId && gooPrivKey)
 	{
 		Crypto::Encrypt::Base64 b64;
@@ -223,7 +224,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	}
 
 //	wprintf(L"%s\r\n", url);
-	cli = Net::HTTPClient::CreateConnect(sockf, url, 0, true);
+	cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, 0, true);
 	if (!cli->IsError())
 	{
 		if (lang)

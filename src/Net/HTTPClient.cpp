@@ -269,27 +269,27 @@ UTF8Char *Net::HTTPClient::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 	return Text::StrConcat(t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)wds[wd]), "dd MMM yyyy HH:mm:ss"), (const UTF8Char*)" GMT");
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, Bool kaConn, Bool isSecure)
+Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn, Bool isSecure)
 {
 	Net::HTTPClient *cli;
-	if (isSecure)
+	if (isSecure && ssl == 0)
 	{
 		NEW_CLASS(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::HTTPMyClient(sockf, userAgent, kaConn));
+		NEW_CLASS(cli, Net::HTTPMyClient(sockf, ssl, userAgent, kaConn));
 	}
 	return cli;
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, const UTF8Char *url, const Char *method, Bool kaConn)
+Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn)
 {
 	if (method == 0)
 	{
 		method = "GET";
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, 0, kaConn, Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"));
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, kaConn, Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"));
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }

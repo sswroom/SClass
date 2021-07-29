@@ -24,6 +24,7 @@ namespace Net
 
 			Net::HTTPClient *cli;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Net::HTTPQueue *queue;
 			UInt64 loadSize;
 			Bool isLoading;
@@ -41,7 +42,7 @@ namespace Net
 		static UInt32 __stdcall LoadThread(void *userObj);
 	public:
 		HTTPData(const HTTPData *fd, UInt64 offset, UInt64 length);
-		HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload);
+		HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload);
 		virtual ~HTTPData();
 
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);

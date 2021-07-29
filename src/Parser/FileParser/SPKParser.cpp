@@ -35,6 +35,11 @@ void Parser::FileParser::SPKParser::SetSocketFactory(Net::SocketFactory *sockf)
 	this->sockf = sockf;
 }
 
+void Parser::FileParser::SPKParser::SetSSLEngine(Net::SSLEngine *ssl)
+{
+	this->ssl = ssl;
+}
+
 void Parser::FileParser::SPKParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
 {
 	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
@@ -97,7 +102,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UOSInt)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()));
-			NEW_CLASS(tileMap, Map::OSM::OSMTileMap(srcPath, spkg, 18, this->sockf));
+			NEW_CLASS(tileMap, Map::OSM::OSMTileMap(srcPath, spkg, 18, this->sockf, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
 			{

@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSITE_WEBSITETWITTERCONTROL
 #define _SM_NET_WEBSITE_WEBSITETWITTERCONTROL
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
 
 namespace Net
@@ -26,11 +27,12 @@ namespace Net
 			
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			const UTF8Char *userAgent;
 
 		public:
-			WebSiteTwitterControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSiteTwitterControl();
 
 			UOSInt GetChannelItems(const UTF8Char *channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);

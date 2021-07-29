@@ -2,6 +2,7 @@
 #define _SM_NET_SNS_SNS7GOGO
 #include "Data/Int64Map.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"
 #include "Net/WebSite/WebSite7gogoControl.h"
 #include "Text/EncodingFactory.h"
@@ -21,7 +22,7 @@ namespace Net
 			Data::Int64Map<SNSItem *> *itemMap;
 
 		public:
-			SNS7gogo(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId);
+			SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId);
 			virtual ~SNS7gogo();
 
 			virtual Bool IsError();

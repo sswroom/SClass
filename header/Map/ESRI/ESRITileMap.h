@@ -1,8 +1,9 @@
 #ifndef _SM_MAP_ESRI_ESRITILEMAP
 #define _SM_MAP_ESRI_ESRITILEMAP
-#include "Net/SocketFactory.h"
 #include "Data/ArrayListDbl.h"
 #include "Map/TileMap.h"
+#include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 
 namespace Map
 {
@@ -14,6 +15,7 @@ namespace Map
 			const UTF8Char *url;
 			const UTF8Char *cacheDir;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Double oriX;
 			Double oriY;
 			Double minX;
@@ -27,7 +29,7 @@ namespace Map
 			Data::ArrayListDbl *levels;
 
 		public:
-			ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf);
+			ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~ESRITileMap();
 
 			virtual const UTF8Char *GetName();

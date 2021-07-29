@@ -14,9 +14,10 @@
 #include "Text/MyStringFloat.h"
 #include "Text/Locale.h"
 
-Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->encFact = encFact;
 	this->lastIsError = 0;
@@ -146,7 +147,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		sptr = Text::StrConcat(sptr, this->gooAPIKey);
 	}
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, url, "GET", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);
 	if (!cli->IsError())
 	{
 		if (lang)

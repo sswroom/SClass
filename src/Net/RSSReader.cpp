@@ -20,7 +20,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 		dt->SetCurrTimeUTC();
 		if (dt->CompareTo(me->nextDT) > 0)
 		{
-			NEW_CLASS(rss, Net::RSS(me->url, 0, me->sockf));
+			NEW_CLASS(rss, Net::RSS(me->url, 0, me->sockf, me->ssl));
 			if (rss->IsError())
 			{
 				DEL_CLASS(rss);
@@ -90,10 +90,11 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 	return false;
 }
 
-Net::RSSReader::RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Int32 refreshSecond, Net::RSSHandler *hdlr)
+Net::RSSReader::RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr)
 {
 	this->url = Text::StrCopyNew(url);
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->refreshSecond = refreshSecond;
 	this->hdlr = hdlr;
 	this->lastRSS = 0;

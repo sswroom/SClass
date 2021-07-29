@@ -4,6 +4,7 @@
 #include "Data/List.h"
 #include "Data/Usable.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"
 #include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"
@@ -24,6 +25,7 @@ namespace Net
 			
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			const UTF8Char *userAgent;
 			const UTF8Char *dataPath;
@@ -42,7 +44,7 @@ namespace Net
 
 			static UInt32 __stdcall ThreadProc(void *userObj);
 		public:
-			SNSManager(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *dataPath);
+			SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *dataPath);
 			virtual ~SNSManager();
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId);

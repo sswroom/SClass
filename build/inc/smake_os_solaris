@@ -53,6 +53,8 @@ Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 @OCVUtil.o
 
+Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
+@DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientL.cpp
 @HTTPOSClient.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
@@ -110,6 +112,7 @@ OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 #$`pkg-config --cflags opencv4`
 !`pkg-config --libs opencv`
+DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
 !-lcurl
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp

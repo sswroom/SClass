@@ -13,6 +13,7 @@
 #include "Media/MonitorMgr.h"
 #include "Media/Printer.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Parser/ParserList.h"
 #include "UI/GUICore.h"
 #include "UI/GUIForm.h"
@@ -44,6 +45,7 @@ namespace SSWR
 			} IOPinType;
 
 		protected:
+			Net::SSLEngine *ssl;
 			Parser::ParserList *parsers;
 			Map::MapManager *mapMgr;
 			Media::ColorManager *colorMgr;
@@ -99,6 +101,7 @@ namespace SSWR
 			Net::WebBrowser *GetWebBrowser();
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
 			IO::GPIOControl *GetGPIOControl();
+			Net::SSLEngine *GetSSLEngine();
 
 			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
@@ -126,7 +129,6 @@ namespace SSWR
 			static const UTF8Char *GetStreamTypeName(StreamType st);
 			static const UTF8Char *GetIOPinTypeName(IOPinType iopt);
 		};
-
 	}
 }
 #endif

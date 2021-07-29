@@ -78,6 +78,12 @@ Media/Resizer/LanczosResizerLR_C32_OCL.h:
 
 Net/ARPInfo.h: ../../src/Net/ARPInfoL.cpp
 @ARPInfo.o
+Net/OpenSSLClient.h: ../../src/Net/OpenSSLClient.cpp
+@OpenSSLClient.o
+Net/OpenSSLCore.h: ../../src/Net/OpenSSLCore.cpp
+@OpenSSLCore.o
+Net/OpenSSLEngine.h: ../../src/Net/OpenSSLEngine.cpp
+@OpenSSLEngine.o
 Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryL.cpp
 @OSSocketFactory.o
 Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrL.cpp
@@ -140,6 +146,11 @@ VFWDecoder.o: ../../src/Media/Decoder/VFWDecoderNull.cpp
 VPXDecoder.o: ../../src/Media/Decoder/VPXDecoder.cpp
 ARPInfo.o: ../../src/Net/ARPInfoL.cpp
 ConnectionInfo_CPP.o: ../../src/Net/ConnectionInfoL.cpp
+OpenSSLClient.o: ../../src/Net/OpenSSLClient.cpp
+OpenSSLCore.o: ../../src/Net/OpenSSLCore.cpp
+!-lssl
+!-lcrypto
+OpenSSLEngine.o: ../../src/Net/OpenSSLEngine.cpp
 OSSocketFactory.o: ../../src/Net/OSSocketFactoryL.cpp
 TCPClientMgr.o: ../../src/Net/TCPClientMgrL.cpp
 AVIRCoreWin.o: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp

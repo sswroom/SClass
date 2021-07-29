@@ -29,6 +29,7 @@ namespace Parser
 		void SetWebBrowser(Net::WebBrowser *browser);
 		void SetProgressHandler(IO::IProgressHandler *progHdlr);
 		void SetSocketFactory(Net::SocketFactory *sockf);
+		void SetSSLEngine(Net::SSLEngine *ssl);
 		void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);
 		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t, IO::ParsedObject::ParserType targetType);
 		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t);
@@ -36,5 +37,5 @@ namespace Parser
 		IO::ParsedObject *ParseFileType(IO::IStreamData *fd, IO::ParsedObject::ParserType t);
 		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParsedObject::ParserType *t);
 	};
-};
+}
 #endif

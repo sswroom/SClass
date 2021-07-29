@@ -100,6 +100,8 @@ node.h:
 tlist.h:
 util.h:
 
+Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineNull.cpp
+@DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientW.cpp
 @HTTPOSClient.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANW.cpp
@@ -166,6 +168,7 @@ OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
+DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineNull.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
 !-lwinhttp
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp

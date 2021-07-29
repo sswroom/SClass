@@ -65,7 +65,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(const UTF8Char *te
 	return signal;
 }
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFactory *sockf, Text::EncodingFactory *encFact)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact)
 {
 	UInt8 buff[1024];
 	UInt8 *mbuff;
@@ -74,7 +74,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
 
-	cli = Net::HTTPClient::CreateClient(sockf, (const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", "GET", false);
+	cli = Net::HTTPClient::CreateClient(sockf, ssl, (const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", "GET", false);
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);
@@ -118,12 +118,13 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	return signal;
 }
 
-Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, UpdateHandler hdlr)
+Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rss, Net::RSSReader((const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", this->sockf, 10, this));
+	NEW_CLASS(this->rss, Net::RSSReader((const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", this->sockf, this->ssl, 10, this));
 }
 
 Net::HKOWeather::~HKOWeather()

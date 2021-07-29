@@ -12,6 +12,7 @@ namespace Map
 namespace Net
 {
 	class SocketFactory;
+	class SSLEngine;
 	class WebBrowser;
 }
 namespace Parser
@@ -37,9 +38,10 @@ namespace IO
 		virtual void SetEncFactory(Text::EncodingFactory *encFact) {};
 		virtual void SetProgressHandler(IO::IProgressHandler *progHdlr) {};
 		virtual void SetSocketFactory(Net::SocketFactory *sockf) {};
+		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
 		virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t) = 0;
 		virtual IO::ParsedObject::ParserType GetParserType() = 0;
 	};
-};
+}
 #endif
 

@@ -22,7 +22,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->url, "GET", true);
+		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url, "GET", true);
 	}
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile) == IO::Path::PT_FILE)
@@ -54,7 +54,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			else
 			{
 				DEL_CLASS(fdh->cli);
-				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, sb.ToString(), "GET", true);
+				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToString(), "GET", true);
 			}
 		}
 		else
@@ -189,7 +189,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	fdh->objectCnt++;
 }
 
-Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload)
+Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;
@@ -257,6 +257,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::HTTPQueue *queue, const 
 		fdh->isLoading = true;
 		fdh->loadSize = 0;
 		fdh->sockf = sockf;
+		fdh->ssl = ssl;
 		fdh->queue = queue;
 		i = Text::StrLastIndexOf(fdh->url, '/');
 		if (i != INVALID_INDEX)

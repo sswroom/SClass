@@ -19,19 +19,19 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::
 	Net::SNS::SNSControl *ctrl = 0;
 	if (type == Net::SNS::SNSControl::ST_TWITTER)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSTwitter(this->sockf, this->encFact, this->userAgent, channelId));
+		NEW_CLASS(ctrl, Net::SNS::SNSTwitter(this->sockf, this->ssl, this->encFact, this->userAgent, channelId));
 	}
 	else if (type == Net::SNS::SNSControl::ST_RSS)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSRSS(this->sockf, this->encFact, this->userAgent, channelId));
+		NEW_CLASS(ctrl, Net::SNS::SNSRSS(this->sockf, this->ssl, this->encFact, this->userAgent, channelId));
 	}
 	else if (type == Net::SNS::SNSControl::ST_7GOGO)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNS7gogo(this->sockf, this->encFact, this->userAgent, channelId));
+		NEW_CLASS(ctrl, Net::SNS::SNS7gogo(this->sockf, this->ssl, this->encFact, this->userAgent, channelId));
 	}
 	else if (type == Net::SNS::SNSControl::ST_INSTAGRAM)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSInstagram(this->sockf, this->encFact, this->userAgent, channelId));
+		NEW_CLASS(ctrl, Net::SNS::SNSInstagram(this->sockf, this->ssl, this->encFact, this->userAgent, channelId));
 	}
 	if (ctrl && ctrl->IsError())
 	{
@@ -185,7 +185,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			retryCnt = 0;
 			while (retryCnt < 3)
 			{
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
 				if (cli->Connect(sarr[0], "GET", 0, 0, true))
 				{
 					if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".mp4"))
@@ -252,7 +252,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			while (true)
 			{
 				j = Text::StrSplit(sarr, 2, sarr[1], ' ');
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
 				if (cli->Connect(sarr[0], "GET", 0, 0, true))
 				{
 					Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".mp4");
@@ -424,12 +424,13 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	return 0;
 }
 
-Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *dataPath)
+Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *dataPath)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = userAgent?Text::StrCopyNew(userAgent):0;
 	NEW_CLASS(this->mut, Sync::Mutex());

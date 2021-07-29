@@ -435,7 +435,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqPassword = 0;
 			
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 //			NEW_CLASS(cli, Net::HTTPOSClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown));
 			if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
@@ -503,7 +503,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 					if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 					{
 						contType = 0;

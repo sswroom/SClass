@@ -11,9 +11,10 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
-Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse((const UTF8Char*)"WebConnection")
+Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse((const UTF8Char*)"WebConnection")
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->cli = cli;
 	this->svr = svr;
 	this->hdlr = hdlr;
@@ -519,7 +520,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		clk.Start();
 		if (this->allowProxy)
 		{
-			httpCli = Net::HTTPClient::CreateClient(this->sockf, 0, true, Text::StrStartsWith(reqURI, (const UTF8Char*)"https://"));
+			httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, 0, true, Text::StrStartsWith(reqURI, (const UTF8Char*)"https://"));
 			httpCli->SetTimeout(5000);
 			if (reqMeth == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
 			{
