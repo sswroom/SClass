@@ -275,6 +275,11 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 	return false;
 }
 
+Int32 Net::OSSocketFactory::SocketGetFD(UInt32 *socket)
+{
+	return (Int32)(SOCKET)socket;
+}
+
 void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 {
 	BOOL ling;

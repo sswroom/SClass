@@ -62,6 +62,12 @@ Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientL.cpp
 @HTTPOSClient.o
+Net/OpenSSLCore.h: ../../src/Net/OpenSSLCore.cpp
+@OpenSSLCore.o
+Net/SSLClient.h: ../../src/Net/SSLClientOpenSSL.cpp
+@SSLClient.o
+Net/SSLServer.h: ../../src/Net/SSLServerOpenSSL.cpp
+@SSLServer.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
 
@@ -135,6 +141,11 @@ $@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
 !@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
 HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
 !-lcurl
+OpenSSLCore.o: ../../src/Net/OpenSSLCore.cpp
+!-lssl
+!-lcrypto
+SSLClient.o: ../../src/Net/SSLClientOpenSSL.cpp
+SSLServer.o: ../../src/Net/SSLServerOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

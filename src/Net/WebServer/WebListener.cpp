@@ -13,10 +13,20 @@ void __stdcall Net::WebServer::WebListener::ConnHdlr(UInt32 *s, void *userObj)
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::TCPClient *cli;
 	Net::WebServer::WebConnection *conn;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
-	NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, cli, me, me->hdlr, me->allowProxy, me->allowKA));
-	conn->SetSendLogger(OnDataSent, me);
-	me->cliMgr->AddClient(cli, conn);
+	if (me->sslSvr)
+	{
+		cli = me->sslSvr->CreateClient(s);
+	}
+	else
+	{
+		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	}
+	if (cli)
+	{
+		NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, cli, me, me->hdlr, me->allowProxy, me->allowKA));
+		conn->SetSendLogger(OnDataSent, me);
+		me->cliMgr->AddClient(cli, conn);
+	}
 	Sync::MutexUsage mutUsage(me->statusMut);
 	me->status.connCnt++;
 	mutUsage.EndUse();
@@ -93,13 +103,14 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buf
 	mutUsage.EndUse();
 }
 
-Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA)
+Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLServer *sslSvr, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA)
 {
 	this->hdlr = hdlr;
 
 	this->sockf = sockf;
 	this->accLog = 0;
 	this->reqLog = 0;
+	this->sslSvr = sslSvr;
 	this->allowProxy = allowProxy;
 	this->allowKA = allowKA;
 	this->timeoutHdlr = 0;
@@ -134,6 +145,7 @@ Net::WebServer::WebListener::~WebListener()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 	SDEL_CLASS(this->proxyCliMgr);
+	SDEL_CLASS(this->sslSvr);
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->accLogMut);
 	DEL_CLASS(this->statusMut);

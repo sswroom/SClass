@@ -9745,7 +9745,7 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, IO::
 		this->AddService((const UTF8Char*)"/cate.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, SvcCate);
 		this->AddService((const UTF8Char*)"/favicon.ico", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, SvcFavicon);
 
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, this, port, 30, 10, (const UTF8Char*)"OrganWeb/1.0", false, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, (const UTF8Char*)"OrganWeb/1.0", false, true));
 		this->Reload();
 	}
 }

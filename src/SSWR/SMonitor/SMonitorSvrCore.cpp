@@ -1261,7 +1261,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					hdlr->HandlePath((const UTF8Char*)"/benchmark", benchhdlr, true);
 					hdlr->ExpandPackageFiles(this->parsers);
 					this->webHdlr = hdlr;
-					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, hdlr, port, 60, 4, (const UTF8Char*)"SSWRServer/1.0", false, true));
+					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, (const UTF8Char*)"SSWRServer/1.0", false, true));
 					if (this->listener->IsError())
 					{
 						DEL_CLASS(this->listener);

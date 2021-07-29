@@ -1043,7 +1043,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_HTTP_ENABLE:
 		if (this->listener == 0)
 		{
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), this, 8080, 10, 2, (const UTF8Char*)"HQMP/1.0", false, true));
+			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, this, 8080, 10, 2, (const UTF8Char*)"HQMP/1.0", false, true));
 			if (this->listener->IsError())
 			{
 				DEL_CLASS(this->listener);

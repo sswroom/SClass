@@ -50,7 +50,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		radioLogger->CaptureWiFi(wifiCapturer);
 		NEW_CLASS(sockf, Net::OSSocketFactory(true));
 		NEW_CLASS(webHdlr, Net::WebServer::CapturerWebHandler(wifiCapturer, btCapturer, radioLogger));
-		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, webHdlr, webPort, 120, 4, (const UTF8Char*)"WiFiCapture/1.0", false, true));
+		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 4, (const UTF8Char*)"WiFiCapture/1.0", false, true));
 		if (listener->IsError())
 		{
 			sb.Append((const UTF8Char*)"Error in starting web server at port ");

@@ -1,9 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Net/ClientDataMgr.h"
-#include <memory.h>
 
-Net::ClientDataMgr::ClientDataMgr(Int32 maxBuffSize)
+Net::ClientDataMgr::ClientDataMgr(UOSInt maxBuffSize)
 {
 	this->maxBuffSize = maxBuffSize;
 	this->buff = MemAlloc(UInt8, maxBuffSize);
@@ -15,36 +14,36 @@ Net::ClientDataMgr::~ClientDataMgr()
 	MemFree(this->buff);
 }
 
-void Net::ClientDataMgr::AddData(UInt8 *buff, OSInt buffSize)
+void Net::ClientDataMgr::AddData(UInt8 *buff, UOSInt buffSize)
 {
 	if (this->currDataSize + buffSize > this->currDataSize)
 	{
 		this->currDataSize = 0;
 		if (this->maxBuffSize < buffSize)
 		{
-			MemCopy(this->buff, &buff[buffSize - this->maxBuffSize], this->maxBuffSize);
+			MemCopyNO(this->buff, &buff[buffSize - this->maxBuffSize], this->maxBuffSize);
 			this->currDataSize = this->maxBuffSize;
 		}
 		else
 		{
-			MemCopy(this->buff, buff, buffSize);
+			MemCopyNO(this->buff, buff, buffSize);
 			this->currDataSize = buffSize;
 		}
 	}
 	else
 	{
-		MemCopy(&this->buff[this->currDataSize], buff, buffSize);
+		MemCopyNO(&this->buff[this->currDataSize], buff, buffSize);
 		this->currDataSize += buffSize;
 	}
 }
 
-UInt8 *Net::ClientDataMgr::GetData(OSInt *dataSize)
+UInt8 *Net::ClientDataMgr::GetData(UOSInt *dataSize)
 {
 	*dataSize = this->currDataSize;
 	return this->buff;
 }
 
-void Net::ClientDataMgr::HandleData(OSInt handleSize)
+void Net::ClientDataMgr::HandleData(UOSInt handleSize)
 {
 	if (handleSize >= this->currDataSize)
 	{
@@ -52,7 +51,7 @@ void Net::ClientDataMgr::HandleData(OSInt handleSize)
 	}
 	else
 	{
-		MemCopy(this->buff, &this->buff[handleSize], this->currDataSize - handleSize);
+		MemCopyNO(this->buff, &this->buff[handleSize], this->currDataSize - handleSize);
 		this->currDataSize -= handleSize;
 	}
 }

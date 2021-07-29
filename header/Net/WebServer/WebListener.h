@@ -3,6 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "IO/StreamWriter.h"
+#include "Net/SSLServer.h"
 #include "Net/TCPServer.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/WebServer/IReqLogger.h"
@@ -32,6 +33,7 @@ namespace Net
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			Net::TCPClientMgr *proxyCliMgr;
+			Net::SSLServer *sslSvr;
 			Net::SocketFactory *sockf;
 			IO::LogTool *log;
 			const UTF8Char *svrName;
@@ -61,7 +63,7 @@ namespace Net
 
 			static void __stdcall OnDataSent(void *userObj, UOSInt buffSize);
 		public:
-			WebListener(Net::SocketFactory *sockf, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA);
+			WebListener(Net::SocketFactory *sockf, Net::SSLServer *sslSvr, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA);
 			~WebListener();
 
 			Bool IsError();

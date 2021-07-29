@@ -7,18 +7,18 @@ namespace Net
 	{
 	private:
 		UInt8 *buff;
-		OSInt currDataSize;
-		OSInt maxBuffSize;
+		UOSInt currDataSize;
+		UOSInt maxBuffSize;
 	public:
 		void *userData;
 
 	public:
-		ClientDataMgr(Int32 maxBuffSize);
+		ClientDataMgr(UOSInt maxBuffSize);
 		~ClientDataMgr();
 
-		void AddData(UInt8 *buff, OSInt buffSize);
-		UInt8 *GetData(OSInt *dataSize);
-		void HandleData(OSInt handleSize);
+		void AddData(UInt8 *buff, UOSInt buffSize);
+		UInt8 *GetData(UOSInt *dataSize);
+		void HandleData(UOSInt handleSize);
 	};
-};
+}
 #endif

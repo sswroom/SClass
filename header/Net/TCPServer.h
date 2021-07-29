@@ -52,5 +52,5 @@ namespace Net
 		Bool IsV4Error();
 		Bool IsV6Error();
 	};
-};
+}
 #endif

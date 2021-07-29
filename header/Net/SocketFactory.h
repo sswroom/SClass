@@ -165,6 +165,7 @@ namespace Net
 		virtual Int32 SocketGetLastError() = 0;
 		virtual Bool GetRemoteAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
 		virtual Bool GetLocalAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
+		virtual Int32 SocketGetFD(UInt32 *socket) = 0;
 
 		virtual void SetDontLinger(UInt32 *socket, Bool val) = 0;
 		virtual void SetLinger(UInt32 *socket, UInt32 ms) = 0;

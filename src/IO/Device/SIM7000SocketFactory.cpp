@@ -336,6 +336,11 @@ Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketU
 	return false;
 }
 
+Int32 IO::Device::SIM7000SocketFactory::SocketGetFD(UInt32 *socket)
+{
+	return false;
+}
+
 void IO::Device::SIM7000SocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 {
 

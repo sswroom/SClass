@@ -78,6 +78,7 @@ namespace IO
 			virtual Int32 SocketGetLastError(); ////////////////////////
 			virtual Bool GetRemoteAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port); ////////////////////////
 			virtual Bool GetLocalAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port); ////////////////////////
+			virtual Int32 SocketGetFD(UInt32 *socket);
 
 			virtual void SetDontLinger(UInt32 *socket, Bool val); ////////////////////////
 			virtual void SetLinger(UInt32 *socket, UInt32 ms); ////////////////////////

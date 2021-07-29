@@ -158,8 +158,9 @@ UInt32 *Net::OSSocketFactory::CreateRAWSocket()
 
 void Net::OSSocketFactory::DestroySocket(UInt32 *socket)
 {
-	shutdown(-1 + (int)(OSInt)socket, SHUT_RDWR);
-	close(-1 + (int)(OSInt)socket);
+	int fd = this->SocketGetFD(socket);
+	shutdown(fd, SHUT_RDWR);
+	close(fd);
 }
 
 Bool Net::OSSocketFactory::SocketIsInvalid(UInt32 *socket)
@@ -173,7 +174,7 @@ Bool Net::OSSocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port)
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = ip;
 	addr.sin_port = htons(port);
-	return bind(-1 + (int)(OSInt)socket, (sockaddr*)&addr, sizeof(addr)) != -1;
+	return bind(this->SocketGetFD(socket), (sockaddr*)&addr, sizeof(addr)) != -1;
 }
 
 Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
@@ -192,7 +193,7 @@ Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::Add
 		{
 			MemCopyNO(&addrBuff[8], addr->addr, 20);
 		}
-		return bind(-1 + (int)(OSInt)socket, (sockaddr*)&addrBuff, 28) != -1;
+		return bind(this->SocketGetFD(socket), (sockaddr*)&addrBuff, 28) != -1;
 	}
 	else if (addr->addrType == Net::SocketUtil::AT_IPV4)
 	{
@@ -200,7 +201,7 @@ Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::Add
 		saddr.sin_family = AF_INET;
 		saddr.sin_addr.s_addr = *(in_addr_t*)addr->addr;
 		saddr.sin_port = htons(port);
-		return bind(-1 + (int)(OSInt)socket, (sockaddr*)&saddr, sizeof(saddr)) != -1;
+		return bind(this->SocketGetFD(socket), (sockaddr*)&saddr, sizeof(saddr)) != -1;
 	}
 	else
 	{
@@ -210,7 +211,7 @@ Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::Add
 
 Bool Net::OSSocketFactory::SocketListen(UInt32 *socket)
 {
-	return listen(-1 + (int)(OSInt)socket, SOMAXCONN) != -1;
+	return listen(this->SocketGetFD(socket), SOMAXCONN) != -1;
 }
 
 UInt32 *Net::OSSocketFactory::SocketAccept(UInt32 *socket)
@@ -218,7 +219,7 @@ UInt32 *Net::OSSocketFactory::SocketAccept(UInt32 *socket)
 	sockaddr_in saddr;
 	socklen_t addrlen = sizeof(saddr);
 	int s;
-	s = accept(-1 + (int)(OSInt)socket, (sockaddr*)&saddr, &addrlen) + 1;
+	s = accept(this->SocketGetFD(socket), (sockaddr*)&saddr, &addrlen) + 1;
 	return (UInt32*)(OSInt)s;
 }
 
@@ -232,7 +233,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::Addres
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
 	socklen_t size = sizeof(addrBuff);
-	if (getpeername(-1 + (int)(OSInt)socket, saddr, &size) == 0)
+	if (getpeername(this->SocketGetFD(socket), saddr, &size) == 0)
 	{
 		if (saddr->sa_family == AF_INET)
 		{
@@ -273,7 +274,7 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
 	socklen_t size = sizeof(addrBuff);
-	if (getsockname(-1 + (int)(OSInt)socket, saddr, &size) == 0)
+	if (getsockname(this->SocketGetFD(socket), saddr, &size) == 0)
 	{
 		if (saddr->sa_family == AF_INET)
 		{
@@ -309,11 +310,17 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 	}
 }
 
+Int32 Net::OSSocketFactory::SocketGetFD(UInt32 *socket)
+{
+	return -1 + (int)(OSInt)socket;
+}
+
+
 void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 {
 	linger ling;
 	socklen_t leng = sizeof(ling);
-	Int32 ret = getsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_LINGER, &ling, &leng);
+	Int32 ret = getsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_LINGER, &ling, &leng);
 	if (ret != 0)
 	{
 		ling.l_linger = 30;
@@ -326,7 +333,7 @@ void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 	{
 		ling.l_onoff = 0;
 	}
-	ret = setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
+	ret = setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
 	if (ret != 0)
 	{
 	}
@@ -337,18 +344,18 @@ void Net::OSSocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
 	linger ling;
 	ling.l_onoff = 1;
 	ling.l_linger = (Int32)ms / 1000;
-	setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
+	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
 }
 
 void Net::OSSocketFactory::SetRecvBuffSize(UInt32 *socket, Int32 buffSize)
 {
-	setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_RCVBUF, &buffSize, sizeof(Int32));
+	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_RCVBUF, &buffSize, sizeof(Int32));
 }
 
 void Net::OSSocketFactory::SetNoDelay(UInt32 *socket, Bool val)
 {
 	int v = val?1:0;
-	setsockopt(-1 + (int)(OSInt)socket, IPPROTO_TCP, TCP_NODELAY, (char*)&v, sizeof(v));
+	setsockopt(this->SocketGetFD(socket), IPPROTO_TCP, TCP_NODELAY, (char*)&v, sizeof(v));
 }
 
 void Net::OSSocketFactory::SetRecvTimeout(UInt32 *socket, Int32 ms)
@@ -356,7 +363,7 @@ void Net::OSSocketFactory::SetRecvTimeout(UInt32 *socket, Int32 ms)
 	struct timeval tv;
 	tv.tv_sec = ms / 1000;
 	tv.tv_usec = (ms % 1000) * 1000;
-	if (setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv)))
+	if (setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv)))
 	{
 		printf("Error in set SO_RCVTIMEO\r\n");
 	}
@@ -365,18 +372,18 @@ void Net::OSSocketFactory::SetRecvTimeout(UInt32 *socket, Int32 ms)
 void Net::OSSocketFactory::SetReuseAddr(UInt32 *socket, Bool val)
 {
 	int v = val?1:0;
-	setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_REUSEADDR, (char*)&v, sizeof(v));
+	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_REUSEADDR, (char*)&v, sizeof(v));
 }
 
 void Net::OSSocketFactory::SetIPv4TTL(UInt32 *socket, Int32 ttl)
 {
-	setsockopt(-1 + (int)(OSInt)socket, IPPROTO_IP, IP_TTL, (char*)&ttl, sizeof(ttl));
+	setsockopt(this->SocketGetFD(socket), IPPROTO_IP, IP_TTL, (char*)&ttl, sizeof(ttl));
 }
 
 void Net::OSSocketFactory::SetBroadcast(UInt32 *socket, Bool val)
 {
 	int v = val?1:0;
-	setsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_BROADCAST, (char*)&v, sizeof(v));
+	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_BROADCAST, (char*)&v, sizeof(v));
 }
 
 void Net::OSSocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
@@ -384,7 +391,7 @@ void Net::OSSocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
 	struct ip_mreq mreq;
 	mreq.imr_multiaddr.s_addr = ip;
 	mreq.imr_interface.s_addr = 0;
-	setsockopt(-1 + (int)(OSInt)socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
+	setsockopt(this->SocketGetFD(socket), IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
 UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
@@ -393,7 +400,7 @@ UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt 
 #if defined(MSG_NOSIGNAL)
 	flags = MSG_NOSIGNAL;
 #endif
-	OSInt ret = send(-1 + (int)(OSInt)socket, (const char*)buff, (size_t)buffSize, flags);
+	OSInt ret = send(this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, flags);
 	if (ret == -1)
 	{
 		if (et)
@@ -433,8 +440,8 @@ UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt 
 
 UOSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
-	OSInt ret = recv(-1 + (int)(OSInt)socket, (char*)buff, (size_t)buffSize, 0);
-//	OSInt ret = read(-1 + (int)(OSInt)socket, (char*)buff, (int)buffSize);
+	OSInt ret = recv(this->SocketGetFD(socket), (char*)buff, (size_t)buffSize, 0);
+//	OSInt ret = read(this->SocketGetFD(socket), (char*)buff, (int)buffSize);
 	if (ret == -1)
 	{
 		if (et)
@@ -499,7 +506,7 @@ UOSInt Net::OSSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buff
 	sockaddr *saddr = (sockaddr*)&addrBuff;
 	socklen_t size = sizeof(addrBuff);
 	saddr->sa_family = 0;
-	recvSize = recvfrom(-1 + (int)(OSInt)socket, (Char*)buff, (size_t)buffSize, 0, saddr, (socklen_t*)&size);
+	recvSize = recvfrom(this->SocketGetFD(socket), (Char*)buff, (size_t)buffSize, 0, saddr, (socklen_t*)&size);
 	if (recvSize <= 0)
 	{
 		if (et)
@@ -584,7 +591,7 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 	{
 		return 0;
 	}
-	OSInt ret = sendto(-1 + (int)(OSInt)socket, (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
+	OSInt ret = sendto(this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
 	if (ret == -1)
 	{
 		return 0;
@@ -605,7 +612,7 @@ UOSInt Net::OSSocketFactory::SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt 
 	Text::StrConcat(addrBuff->sa_data, (const Char*)ifName);
 	addrSize = sizeof(sockaddr);
 
-	OSInt ret = sendto(-1 + (int)(OSInt)socket, (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
+	OSInt ret = sendto(this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
 	if (ret == -1)
 	{
 		return 0;
@@ -788,22 +795,22 @@ Bool Net::OSSocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
 	struct timeval tv;
 
 	Bool succ = false;
-	long arg = fcntl(-1 + (int)(OSInt)socket, F_GETFL, 0);
-    fcntl(-1 + (int)(OSInt)socket, F_SETFL, arg | O_NONBLOCK);
+	long arg = fcntl(this->SocketGetFD(socket), F_GETFL, 0);
+    fcntl(this->SocketGetFD(socket), F_SETFL, arg | O_NONBLOCK);
 
-    connect(-1 + (int)(OSInt)socket, (struct sockaddr *)&addr, sizeof(addr));
+    connect(this->SocketGetFD(socket), (struct sockaddr *)&addr, sizeof(addr));
 
     FD_ZERO(&fdset);
-    FD_SET(-1 + (int)(OSInt)socket, &fdset);
+    FD_SET(this->SocketGetFD(socket), &fdset);
     tv.tv_sec = 10;
     tv.tv_usec = 0;
 
-    if (select((int)(OSInt)socket, NULL, &fdset, NULL, &tv) == 1) //sock + 1
+    if (select(this->SocketGetFD(socket), NULL, &fdset, NULL, &tv) == 1) //sock + 1
     {
         int so_error;
         socklen_t len = sizeof so_error;
 
-        getsockopt(-1 + (int)(OSInt)socket, SOL_SOCKET, SO_ERROR, &so_error, &len);
+        getsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_ERROR, &so_error, &len);
 
         if (so_error == 0)
 		{
@@ -811,10 +818,10 @@ Bool Net::OSSocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
         }
     }
 
-    fcntl(-1 + (int)(OSInt)socket, F_SETFL, arg);
+    fcntl(this->SocketGetFD(socket), F_SETFL, arg);
 
 	return succ;*/
-    return connect(-1 + (int)(OSInt)socket, (struct sockaddr *)&addr, sizeof(addr)) == 0;
+    return connect(this->SocketGetFD(socket), (struct sockaddr *)&addr, sizeof(addr)) == 0;
 }
 
 Bool Net::OSSocketFactory::Connect(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
@@ -840,12 +847,12 @@ Bool Net::OSSocketFactory::Connect(UInt32 *socket, const Net::SocketUtil::Addres
 	{
 		return false;
 	}
-	return connect(-1 + (int)(OSInt)socket, (const sockaddr*)addrBuff, socklen) == 0;
+	return connect(this->SocketGetFD(socket), (const sockaddr*)addrBuff, socklen) == 0;
 }
 
 void Net::OSSocketFactory::ShutdownSend(UInt32 *socket)
 {
-	shutdown(-1 + (int)(OSInt)socket, SHUT_WR);
+	shutdown(this->SocketGetFD(socket), SHUT_WR);
 }
 
 Bool Net::OSSocketFactory::SocketGetReadBuff(UInt32 *socket, UInt32 *size)
@@ -855,20 +862,20 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(UInt32 *socket, UInt32 *size)
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
 	FD_ZERO(&readset);
-	FD_SET(-1 + (int)(OSInt)socket, &readset);
+	FD_SET(this->SocketGetFD(socket), &readset);
 	int result = select(1, &readset, 0, 0, &tv);
 	Bool ret = false;
 	if (result <= 0)
 	{
 		*size = 0;
 	}
-	else if (FD_ISSET(-1 + (int)(OSInt)socket, &readset))
+	else if (FD_ISSET(this->SocketGetFD(socket), &readset))
 	{
 		ret = true;
 		*size = 1;
 	}*/
 
-	return ioctl(-1 + (int)(OSInt)socket, FIONREAD, (int*)size) == 0;
+	return ioctl(this->SocketGetFD(socket), FIONREAD, (int*)size) == 0;
 }
 
 Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr)

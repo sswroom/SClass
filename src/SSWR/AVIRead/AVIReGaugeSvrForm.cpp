@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 		{
 			NEW_CLASS(me->dirHdlr, Net::WebServer::EGaugeHandler());
 			me->dirHdlr->HandleEGaugeData(OnEGaugeData, me);
-			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), (const UTF8Char*)"eGauge/1.0", false, false));
+			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), (const UTF8Char*)"eGauge/1.0", false, false));
 			if (me->svr->IsError())
 			{
 				valid = false;
