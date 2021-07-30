@@ -100,10 +100,14 @@ node.h:
 tlist.h:
 util.h:
 
-Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineNull.cpp
+Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineWin.cpp
 @DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientW.cpp
 @HTTPOSClient.o
+Net/WinSSLClient.h: ../../src/Net/WinSSLClient.cpp
+@WinSSLClient.o
+Net/WinSSLEngine.h: ../../src/Net/WinSSLEngine.cpp
+@WinSSLEngine.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANW.cpp
 @WirelessLAN.o
 
@@ -168,9 +172,12 @@ OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineNull.cpp
+DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineWin.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
 !-lwinhttp
+WinSSLClient.o: ../../src/Net/WinSSLClient.cpp
+WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
+!-lsecur32
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp

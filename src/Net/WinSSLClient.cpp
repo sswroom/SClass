@@ -2,7 +2,7 @@
 #include "Net/WinSSLClient.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include <Windows.h>
+#include <windows.h>
 #define SECURITY_WIN32
 #include <sspi.h>
 
@@ -108,7 +108,11 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *hCre
 		SecBufferDesc_Set(&inputDesc, inputBuff, 2);
 
 		SecBuffer_Set(&outputBuff[0], SECBUFFER_TOKEN, 0, 0);
+#if defined(SECBUFFER_ALERT)
 		SecBuffer_Set(&outputBuff[1], SECBUFFER_ALERT, 0, 0);
+#else
+		SecBuffer_Set(&outputBuff[1], SECBUFFER_EMPTY, 0, 0);
+#endif
 		SecBuffer_Set(&outputBuff[2], SECBUFFER_EMPTY, 0, 0);
 		SecBufferDesc_Set(&outputDesc, outputBuff, 3);
 

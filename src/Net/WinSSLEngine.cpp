@@ -3,7 +3,7 @@
 #include "Net/WinSSLClient.h"
 #include "Net/WinSSLEngine.h"
 #include "Text/MyString.h"
-#include <Windows.h>
+#include <windows.h>
 #include <ntsecapi.h>
 #define SECURITY_WIN32
 #include <sspi.h>
@@ -28,6 +28,7 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 			return SP_PROT_SSL3;
 		case Net::SSLEngine::M_SSLV23:
 			return SP_PROT_SSL2 || SP_PROT_SSL3;
+		#if defined(SP_PROT_TLS1_2)
 		case Net::SSLEngine::M_TLS:
 			return SP_PROT_TLS1_0 || SP_PROT_TLS1_1 || SP_PROT_TLS1_2;
 		case Net::SSLEngine::M_TLSV1:
@@ -44,6 +45,24 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 			return SP_PROT_DTLS1_2;
 		default:
 			return SP_PROT_TLS1_0 || SP_PROT_TLS1_1 || SP_PROT_TLS1_2 || SP_PROT_TLS1_3;
+		#else
+		case Net::SSLEngine::M_TLS:
+			return SP_PROT_TLS1;
+		case Net::SSLEngine::M_TLSV1:
+			return SP_PROT_TLS1;
+		case Net::SSLEngine::M_TLSV1_1:
+			return SP_PROT_TLS1;
+		case Net::SSLEngine::M_TLSV1_2:
+			return SP_PROT_TLS1;
+		case Net::SSLEngine::M_DTLS:
+			return SP_PROT_TLS1;
+		case Net::SSLEngine::M_DTLSV1:
+			return SP_PROT_TLS1;
+		case Net::SSLEngine::M_DTLSV1_2:
+			return SP_PROT_TLS1;
+		default:
+			return SP_PROT_TLS1;
+		#endif
 		}
 	}
 	else
@@ -54,6 +73,7 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 			return SP_PROT_SSL3_CLIENT;
 		case Net::SSLEngine::M_SSLV23:
 			return SP_PROT_SSL3_CLIENT;
+		#if defined(SP_PROT_TLS1_2)
 		case Net::SSLEngine::M_TLS:
 			return SP_PROT_TLS1_2_CLIENT;
 		case Net::SSLEngine::M_TLSV1:
@@ -70,6 +90,24 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 			return SP_PROT_DTLS1_2_CLIENT;
 		default:
 			return SP_PROT_TLS1_2_CLIENT;
+		#else
+		case Net::SSLEngine::M_TLS:
+			return SP_PROT_TLS1_CLIENT;
+		case Net::SSLEngine::M_TLSV1:
+			return SP_PROT_TLS1_CLIENT;
+		case Net::SSLEngine::M_TLSV1_1:
+			return SP_PROT_TLS1_CLIENT;
+		case Net::SSLEngine::M_TLSV1_2:
+			return SP_PROT_TLS1_CLIENT;
+		case Net::SSLEngine::M_DTLS:
+			return SP_PROT_TLS1_CLIENT;
+		case Net::SSLEngine::M_DTLSV1:
+			return SP_PROT_TLS1_CLIENT;
+		case Net::SSLEngine::M_DTLSV1_2:
+			return SP_PROT_TLS1_CLIENT;
+		default:
+			return SP_PROT_TLS1_CLIENT;
+		#endif
 		}
 	}
 }
