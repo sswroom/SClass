@@ -2,8 +2,6 @@
 #include "Net/DefaultSSLEngine.h"
 #include "Net/SSLEngine.h"
 #include "Text/MyString.h"
-#include <openssl/ssl.h>
-#include <openssl/err.h>
 
 Net::SSLEngine::SSLEngine(Net::SocketFactory *sockf)
 {

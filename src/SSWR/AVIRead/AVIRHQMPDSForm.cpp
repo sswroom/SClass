@@ -132,7 +132,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
-	OSInt i;
+	UOSInt i;
 
 	me->player->StopPlayback();
 	i = 0;
@@ -588,7 +588,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, (const UTF8Char*)"HQMP/1.0", this->core->GetSocketFactory());
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, (const UTF8Char*)"HQMP/1.0", this->core->GetSocketFactory(), this->core->GetSSLEngine());
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"HQMP", this);
