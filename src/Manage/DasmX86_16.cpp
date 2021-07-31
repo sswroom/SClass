@@ -9,7 +9,7 @@
 
 UTF8Char *DasmX86_16_AppInt32(Manage::DasmX86_16::DasmX86_16_Sess *sess, UTF8Char *buff, Int32 val)
 {
-	if ((val & 0x80000000) == 0 && (((val % 100) == 0) || val < 200))
+	if (val >= 0 && (((val % 100) == 0) || val < 200))
 	{
 		buff = Text::StrInt32(buff, val);
 	}
@@ -19,7 +19,7 @@ UTF8Char *DasmX86_16_AppInt32(Manage::DasmX86_16::DasmX86_16_Sess *sess, UTF8Cha
 		{
 			buff = Text::StrConcat(buff, (const UTF8Char*)"0");
 		}
-		buff = Text::StrHexVal32(buff, val);
+		buff = Text::StrHexVal32(buff, (UInt32)val);
 		buff = Text::StrConcat(buff, (const UTF8Char*)"h");
 	}
 	return buff;
@@ -2800,7 +2800,7 @@ Bool __stdcall DasmX86_16_70(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jo ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2817,7 +2817,7 @@ Bool __stdcall DasmX86_16_71(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jno ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2834,7 +2834,7 @@ Bool __stdcall DasmX86_16_72(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jb ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2851,7 +2851,7 @@ Bool __stdcall DasmX86_16_73(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jnb ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2868,7 +2868,7 @@ Bool __stdcall DasmX86_16_74(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jz ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2885,7 +2885,7 @@ Bool __stdcall DasmX86_16_75(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jnz ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2902,7 +2902,7 @@ Bool __stdcall DasmX86_16_76(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jbe ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2919,7 +2919,7 @@ Bool __stdcall DasmX86_16_77(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"ja ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2936,7 +2936,7 @@ Bool __stdcall DasmX86_16_78(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"js ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2953,7 +2953,7 @@ Bool __stdcall DasmX86_16_79(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jns ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2970,7 +2970,7 @@ Bool __stdcall DasmX86_16_7A(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -2987,7 +2987,7 @@ Bool __stdcall DasmX86_16_7B(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jnp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -3004,7 +3004,7 @@ Bool __stdcall DasmX86_16_7C(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jl ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -3021,7 +3021,7 @@ Bool __stdcall DasmX86_16_7D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jge ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -3038,7 +3038,7 @@ Bool __stdcall DasmX86_16_7E(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jle ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -3055,7 +3055,7 @@ Bool __stdcall DasmX86_16_7F(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jg ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -5254,7 +5254,7 @@ Bool __stdcall DasmX86_16_E8(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->callAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->callAddrs->Insert(-i - 1, addr);
+		sess->callAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"call ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -5269,7 +5269,7 @@ Bool __stdcall DasmX86_16_E9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jmp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -5292,7 +5292,7 @@ Bool __stdcall DasmX86_16_EB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jmp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6515,7 +6515,7 @@ Bool __stdcall DasmX86_16_0F80(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jo ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6532,7 +6532,7 @@ Bool __stdcall DasmX86_16_0F81(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jno ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6549,7 +6549,7 @@ Bool __stdcall DasmX86_16_0F82(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jb ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6566,7 +6566,7 @@ Bool __stdcall DasmX86_16_0F83(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jnb ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6583,7 +6583,7 @@ Bool __stdcall DasmX86_16_0F84(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jz ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6600,7 +6600,7 @@ Bool __stdcall DasmX86_16_0F85(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jnz ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6617,7 +6617,7 @@ Bool __stdcall DasmX86_16_0F86(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jbe ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6634,7 +6634,7 @@ Bool __stdcall DasmX86_16_0F87(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"ja ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6651,7 +6651,7 @@ Bool __stdcall DasmX86_16_0F88(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"js ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6668,7 +6668,7 @@ Bool __stdcall DasmX86_16_0F89(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jns ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6685,7 +6685,7 @@ Bool __stdcall DasmX86_16_0F8A(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6702,7 +6702,7 @@ Bool __stdcall DasmX86_16_0F8B(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jnp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6719,7 +6719,7 @@ Bool __stdcall DasmX86_16_0F8C(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jl ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6736,7 +6736,7 @@ Bool __stdcall DasmX86_16_0F8D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jge ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6753,7 +6753,7 @@ Bool __stdcall DasmX86_16_0F8E(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jle ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
@@ -6770,7 +6770,7 @@ Bool __stdcall DasmX86_16_0F8F(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	OSInt i = sess->jmpAddrs->SortedIndexOf(addr);
 	if (i < 0)
 	{
-		sess->jmpAddrs->Insert(-i - 1, addr);
+		sess->jmpAddrs->Insert((UOSInt)(-i - 1), addr);
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jg ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
