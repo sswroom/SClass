@@ -1,11 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
+#include "Data/ByteTool.h"
 #include "Manage/DasmX86_16.h"
+#include "Text/MyString.h"
 //#include <memory.h>
 #ifndef __GNUC__
 #pragma warning( disable : 4311 4312)
 #endif
+
+#define BIT1 (-1)
 
 UTF8Char *DasmX86_16_AppInt32(Manage::DasmX86_16::DasmX86_16_Sess *sess, UTF8Char *buff, Int32 val)
 {
@@ -607,11 +610,11 @@ Bool __stdcall DasmX86_16_00(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (modRM & 4)
 		{
-			((UInt8*)&sess->regs.indexes[modRM & 3])[1] += val;
+			AddEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[modRM & 3] += val;
+			AddEqU8((UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 	}
 	return true;
@@ -622,7 +625,7 @@ Bool __stdcall DasmX86_16_01(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	UTF8Char mem[64];
 	Int32 regNo;
 	UInt8 modRM;
-	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
+	AddEqU16(&sess->regs.IP, 1);
 	modRM = sess->code[sess->regs.IP];
 	if (sess->thisStatus & 8)
 	{
@@ -649,7 +652,7 @@ Bool __stdcall DasmX86_16_01(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[regNo];
-			*(UInt16*)&sess->regs.indexes[modRM & 7] += val;
+			AddEqU16((UInt16*)&sess->regs.indexes[modRM & 7], val);
 		}
 	}
 	return true;
@@ -680,11 +683,11 @@ Bool __stdcall DasmX86_16_02(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (regNo & 4)
 		{
-			((UInt8*)&sess->regs.indexes[regNo & 3])[1] += val;
+			AddEqU8(1 + (UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[regNo & 3] += val;
+			AddEqU8((UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 	}
 	return true;
@@ -695,7 +698,7 @@ Bool __stdcall DasmX86_16_03(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	UTF8Char mem[64];
 	Int32 regNo;
 	UInt8 modRM;
-	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
+	AddEqU16(&sess->regs.IP, 1);
 	modRM = sess->code[sess->regs.IP];
 	if (sess->thisStatus & 8)
 	{
@@ -722,7 +725,7 @@ Bool __stdcall DasmX86_16_03(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[modRM & 7];
-			*(UInt16*)&sess->regs.indexes[regNo] += val;
+			AddEqU16((UInt16*)&sess->regs.indexes[regNo], val);
 		}
 	}
 	return true;
@@ -736,7 +739,7 @@ Bool __stdcall DasmX86_16_04(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"add AL");
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 	sess->outSPtr = DasmX86_16_AppInt8(sess, sess->outSPtr, val);
-	*(UInt8*)&sess->regs.EAX += val;
+	AddEqU8((UInt8*)&sess->regs.EAX, val);
 	return true;
 }
 
@@ -746,7 +749,7 @@ Bool __stdcall DasmX86_16_05(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		Int32 val;
 		val = *(Int32*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"add EAX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
@@ -756,11 +759,11 @@ Bool __stdcall DasmX86_16_05(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		UInt16 val;
 		val = *(UInt16*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"add AX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
-		*(UInt16*)&sess->regs.EAX += val;
+		AddEqU16((UInt16*)&sess->regs.EAX, val);
 	}
 	return true;
 }
@@ -945,7 +948,7 @@ Bool __stdcall DasmX86_16_0D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		Int32 val;
 		val = *(Int32*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"or EAX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
@@ -955,7 +958,7 @@ Bool __stdcall DasmX86_16_0D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		UInt16 val;
 		val = *(UInt16*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"or AX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
@@ -1002,11 +1005,11 @@ Bool __stdcall DasmX86_16_10(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (modRM & 4)
 		{
-			((UInt8*)&sess->regs.indexes[modRM & 3])[1] += val;
+			AddEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[modRM & 3] += val;
+			AddEqU8((UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 	}
 	return true;
@@ -1044,7 +1047,7 @@ Bool __stdcall DasmX86_16_11(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[regNo];
-			*(UInt16*)&sess->regs.indexes[modRM & 7] += val;
+			AddEqU16((UInt16*)&sess->regs.indexes[modRM & 7], val);
 		}
 	}
 	return true;
@@ -1075,11 +1078,11 @@ Bool __stdcall DasmX86_16_12(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (regNo & 4)
 		{
-			((UInt8*)&sess->regs.indexes[regNo & 3])[1] += val;
+			AddEqU8(1 + (UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[regNo & 3] += val;
+			AddEqU8((UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 	}
 	return true;
@@ -1117,7 +1120,7 @@ Bool __stdcall DasmX86_16_13(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[modRM & 7];
-			*(UInt16*)&sess->regs.indexes[regNo] += val;
+			AddEqU16((UInt16*)&sess->regs.indexes[regNo], val);
 		}
 	}
 	return true;
@@ -1131,7 +1134,7 @@ Bool __stdcall DasmX86_16_14(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"adc AL");
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 	sess->outSPtr = DasmX86_16_AppInt8(sess, sess->outSPtr, val);
-	*(UInt8*)&sess->regs.EAX += val;
+	AddEqU8((UInt8*)&sess->regs.EAX, val);
 	return true;
 }
 
@@ -1141,7 +1144,7 @@ Bool __stdcall DasmX86_16_15(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		Int32 val;
 		val = *(Int32*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"adc EAX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
@@ -1151,11 +1154,11 @@ Bool __stdcall DasmX86_16_15(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		UInt16 val;
 		val = *(UInt16*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"adc AX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
-		*(UInt16*)&sess->regs.EAX += val;
+		AddEqU16((UInt16*)&sess->regs.EAX, val);
 	}
 	return true;
 }
@@ -1201,11 +1204,11 @@ Bool __stdcall DasmX86_16_18(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (modRM & 4)
 		{
-			((UInt8*)&sess->regs.indexes[modRM & 3])[1] -= val;
+			SubEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[modRM & 3] -= val;
+			SubEqU8((UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 	}
 	return true;
@@ -1243,7 +1246,7 @@ Bool __stdcall DasmX86_16_19(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[regNo];
-			*(UInt16*)&sess->regs.indexes[modRM & 7] -= val;
+			SubEqU16((UInt16*)&sess->regs.indexes[modRM & 7], val);
 		}
 	}
 	return true;
@@ -1274,11 +1277,11 @@ Bool __stdcall DasmX86_16_1A(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (regNo & 4)
 		{
-			((UInt8*)&sess->regs.indexes[regNo & 3])[1] -= val;
+			SubEqU8(1 + (UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[regNo & 3] -= val;
+			SubEqU8((UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 	}
 	return true;
@@ -1316,7 +1319,7 @@ Bool __stdcall DasmX86_16_1B(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[modRM & 7];
-			*(UInt16*)&sess->regs.indexes[regNo] -= val;
+			SubEqU16((UInt16*)&sess->regs.indexes[regNo], val);
 		}
 	}
 	return true;
@@ -1330,7 +1333,7 @@ Bool __stdcall DasmX86_16_1C(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sbb AL");
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 	sess->outSPtr = DasmX86_16_AppInt8(sess, sess->outSPtr, val);
-	*(UInt8*)&sess->regs.EAX -= val;
+	SubEqU8((UInt8*)&sess->regs.EAX, val);
 	return true;
 }
 
@@ -1340,7 +1343,7 @@ Bool __stdcall DasmX86_16_1D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		Int32 val;
 		val = *(Int32*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sbb EAX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
@@ -1350,11 +1353,11 @@ Bool __stdcall DasmX86_16_1D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		UInt16 val;
 		val = *(UInt16*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sbb AX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
-		*(UInt16*)&sess->regs.EAX -= val;
+		SubEqU16((UInt16*)&sess->regs.EAX, val);
 	}
 	return true;
 }
@@ -1539,7 +1542,7 @@ Bool __stdcall DasmX86_16_25(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		Int32 val;
 		val = *(Int32*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"and EAX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
@@ -1549,7 +1552,7 @@ Bool __stdcall DasmX86_16_25(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		UInt16 val;
 		val = *(UInt16*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"and AX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
@@ -1597,11 +1600,11 @@ Bool __stdcall DasmX86_16_28(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (modRM & 4)
 		{
-			((UInt8*)&sess->regs.indexes[modRM & 3])[1] -= val;
+			SubEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[modRM & 3] -= val;
+			SubEqU8((UInt8*)&sess->regs.indexes[modRM & 3], val);
 		}
 	}
 	return true;
@@ -1639,7 +1642,7 @@ Bool __stdcall DasmX86_16_29(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[regNo];
-			*(UInt16*)&sess->regs.indexes[modRM & 7] -= val;
+			SubEqU16((UInt16*)&sess->regs.indexes[modRM & 7], val);
 		}
 	}
 	return true;
@@ -1670,11 +1673,11 @@ Bool __stdcall DasmX86_16_2A(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		if (regNo & 4)
 		{
-			((UInt8*)&sess->regs.indexes[regNo & 3])[1] -= val;
+			SubEqU8(1 + (UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 		else
 		{
-			*(UInt8*)&sess->regs.indexes[regNo & 3] -= val;
+			SubEqU8((UInt8*)&sess->regs.indexes[regNo & 3], val);
 		}
 	}
 	return true;
@@ -1712,7 +1715,7 @@ Bool __stdcall DasmX86_16_2B(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			UInt16 val;
 			val = *(UInt16*)&sess->regs.indexes[modRM & 7];
-			*(UInt16*)&sess->regs.indexes[regNo] -= val;
+			SubEqU16((UInt16*)&sess->regs.indexes[regNo], val);
 		}
 	}
 	return true;
@@ -1726,7 +1729,7 @@ Bool __stdcall DasmX86_16_2C(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sub AL");
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 	sess->outSPtr = DasmX86_16_AppInt8(sess, sess->outSPtr, val);
-	*(UInt8*)&sess->regs.EAX -= val;
+	SubEqU8((UInt8*)&sess->regs.EAX, val);
 	return true;
 }
 
@@ -1736,7 +1739,7 @@ Bool __stdcall DasmX86_16_2D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		Int32 val;
 		val = *(Int32*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sub EAX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
@@ -1746,11 +1749,11 @@ Bool __stdcall DasmX86_16_2D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		UInt16 val;
 		val = *(UInt16*)&sess->code[sess->regs.IP + 1];
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sub AX");
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", ");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
-		*(UInt16*)&sess->regs.EAX -= val;
+		SubEqU16((UInt16*)&sess->regs.EAX, val);
 	}
 	return true;
 }
@@ -1921,7 +1924,7 @@ Bool __stdcall DasmX86_16_35(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"xor EAX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.EAX ^= val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -1929,7 +1932,7 @@ Bool __stdcall DasmX86_16_35(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"xor AX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		sess->regs.EAX ^= val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -2036,13 +2039,13 @@ Bool __stdcall DasmX86_16_3D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"cmp EAX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, *(Int32*)&sess->code[sess->regs.IP + 1]);
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"cmp AX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP + 1]);
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -2709,11 +2712,11 @@ Bool __stdcall DasmX86_16_6C(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
 	if (sess->regs.DF)
 	{
-		sess->regs.DI -= 1;
+		SubEqU16(&sess->regs.DI, 1);
 	}
 	else
 	{
-		sess->regs.DI += 1;
+		AddEqU16(&sess->regs.DI, 1);
 	}
 	return true;
 }
@@ -2726,11 +2729,11 @@ Bool __stdcall DasmX86_16_6D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"insd");
 		if (sess->regs.DF)
 		{
-			sess->regs.DI -= 4;
+			SubEqU16(&sess->regs.DI, 4);
 		}
 		else
 		{
-			sess->regs.DI += 4;
+			AddEqU16(&sess->regs.DI, 4);
 		}
 	}
 	else
@@ -2738,11 +2741,11 @@ Bool __stdcall DasmX86_16_6D(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"insw");
 		if (sess->regs.DF)
 		{
-			sess->regs.DI -= 2;
+			SubEqU16(&sess->regs.DI, 2);
 		}
 		else
 		{
-			sess->regs.DI += 2;
+			AddEqU16(&sess->regs.DI, 2);
 		}
 	}
 	return true;
@@ -2754,11 +2757,11 @@ Bool __stdcall DasmX86_16_6E(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
 	if (sess->regs.DF)
 	{
-		sess->regs.SI -= 1;
+		SubEqU16(&sess->regs.SI, 1);
 	}
 	else
 	{
-		sess->regs.SI += 1;
+		AddEqU16(&sess->regs.SI, 1);
 	}
 	return true;
 }
@@ -2771,11 +2774,11 @@ Bool __stdcall DasmX86_16_6F(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"outsd");
 		if (sess->regs.DF)
 		{
-			sess->regs.SI -= 4;
+			SubEqU16(&sess->regs.SI, 4);
 		}
 		else
 		{
-			sess->regs.SI += 4;
+			AddEqU16(&sess->regs.SI, 4);
 		}
 	}
 	else
@@ -2783,11 +2786,11 @@ Bool __stdcall DasmX86_16_6F(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"outsw");
 		if (sess->regs.DF)
 		{
-			sess->regs.SI -= 2;
+			SubEqU16(&sess->regs.SI, 2);
 		}
 		else
 		{
-			sess->regs.SI += 2;
+			AddEqU16(&sess->regs.SI, 2);
 		}
 	}
 	return true;
@@ -3082,11 +3085,11 @@ Bool __stdcall DasmX86_16_80(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			if (modRM & 4)
 			{
-				((UInt8*)&sess->regs.indexes[modRM & 3])[1] += sess->code[sess->regs.IP];
+				AddEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 			else
 			{
-				*(UInt8*)&sess->regs.indexes[modRM & 3] += sess->code[sess->regs.IP];
+				AddEqU8((UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"add ");
@@ -3112,11 +3115,11 @@ Bool __stdcall DasmX86_16_80(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			if (modRM & 4)
 			{
-				((UInt8*)&sess->regs.indexes[modRM & 3])[1] += sess->code[sess->regs.IP];
+				AddEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 			else
 			{
-				*(UInt8*)&sess->regs.indexes[modRM & 3] += sess->code[sess->regs.IP];
+				AddEqU8((UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"adc ");
@@ -3127,11 +3130,11 @@ Bool __stdcall DasmX86_16_80(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			if (modRM & 4)
 			{
-				((UInt8*)&sess->regs.indexes[modRM & 3])[1] -= sess->code[sess->regs.IP];
+				SubEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 			else
 			{
-				*(UInt8*)&sess->regs.indexes[modRM & 3] -= sess->code[sess->regs.IP];
+				SubEqU8((UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sbb ");
@@ -3157,11 +3160,11 @@ Bool __stdcall DasmX86_16_80(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		{
 			if (modRM & 4)
 			{
-				((UInt8*)&sess->regs.indexes[modRM & 3])[1] -= sess->code[sess->regs.IP];
+				SubEqU8(1 + (UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 			else
 			{
-				*(UInt8*)&sess->regs.indexes[modRM & 3] -= sess->code[sess->regs.IP];
+				SubEqU8((UInt8*)&sess->regs.indexes[modRM & 3], sess->code[sess->regs.IP]);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sub ");
@@ -3225,7 +3228,7 @@ Bool __stdcall DasmX86_16_81(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] += (UInt16)val;
+				AddEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"add ");
@@ -3248,7 +3251,7 @@ Bool __stdcall DasmX86_16_81(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] += (UInt16)val;
+				AddEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"adc ");
@@ -3263,7 +3266,7 @@ Bool __stdcall DasmX86_16_81(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] -= (UInt16)val;
+				SubEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sbb ");
@@ -3286,7 +3289,7 @@ Bool __stdcall DasmX86_16_81(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] -= (UInt16)val;
+				SubEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sub ");
@@ -3348,7 +3351,7 @@ Bool __stdcall DasmX86_16_83(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] += (UInt16)val;
+				AddEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"add ");
@@ -3371,7 +3374,7 @@ Bool __stdcall DasmX86_16_83(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] += (UInt16)val;
+				AddEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"adc ");
@@ -3386,7 +3389,7 @@ Bool __stdcall DasmX86_16_83(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] -= (UInt16)val;
+				SubEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sbb ");
@@ -3409,7 +3412,7 @@ Bool __stdcall DasmX86_16_83(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 			}
 			else
 			{
-				*(UInt16*)&sess->regs.indexes[modRM & 7] -= (UInt16)val;
+				SubEqU16((UInt16*)&sess->regs.indexes[modRM & 7], (UInt16)val);
 			}
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sub ");
@@ -3893,7 +3896,7 @@ Bool __stdcall DasmX86_16_A0(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 {
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov AL,BYTE PTR ");
 	sess->outSPtr = DasmX86_16_AppAddrM(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP+1]);
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	return true;
 }
 
@@ -3908,7 +3911,7 @@ Bool __stdcall DasmX86_16_A1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov AX,WORD PTR ");
 	}
 	sess->outSPtr = DasmX86_16_AppAddrM(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP+1]);
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	return true;
 }
 
@@ -3917,7 +3920,7 @@ Bool __stdcall DasmX86_16_A2(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov BYTE PTR ");
 	sess->outSPtr = DasmX86_16_AppAddrM(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP+1]);
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", AL");
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	return true;
 }
 
@@ -3926,7 +3929,7 @@ Bool __stdcall DasmX86_16_A3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	if (sess->thisStatus & 8)
 	{
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov DWORD PTR ");
-	sess->outSPtr = DasmX86_16_AppAddrM(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP+1]);
+		sess->outSPtr = DasmX86_16_AppAddrM(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP+1]);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", EAX");
 	}
 	else
@@ -3935,7 +3938,7 @@ Bool __stdcall DasmX86_16_A3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = DasmX86_16_AppAddrM(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP+1]);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)", AX");
 	}
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	return true;
 }
 
@@ -3944,15 +3947,15 @@ Bool __stdcall DasmX86_16_A4(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"movsb");
 	if (sess->regs.DF)
 	{
-		sess->regs.SI -= 1;
-		sess->regs.DI -= 1;
+		sess->regs.SI--;
+		sess->regs.DI--;
 	}
 	else
 	{
-		sess->regs.SI += 1;
-		sess->regs.DI += 1;
+		sess->regs.SI++;
+		sess->regs.DI++;
 	}
-	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
+	sess->regs.IP++;
 	return true;
 }
 
@@ -3963,13 +3966,13 @@ Bool __stdcall DasmX86_16_A5(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"movsd");
 		if (sess->regs.DF)
 		{
-			sess->regs.SI -= 4;
-			sess->regs.DI -= 4;
+			SubEqU16(&sess->regs.SI, 4);
+			SubEqU16(&sess->regs.DI, 4);
 		}
 		else
 		{
-			sess->regs.SI += 4;
-			sess->regs.DI += 4;
+			AddEqU16(&sess->regs.SI, 4);
+			AddEqU16(&sess->regs.DI, 4);
 		}
 	}
 	else
@@ -3977,16 +3980,16 @@ Bool __stdcall DasmX86_16_A5(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"movsw");
 		if (sess->regs.DF)
 		{
-			sess->regs.SI -= 2;
-			sess->regs.DI -= 2;
+			SubEqU16(&sess->regs.SI, 2);
+			SubEqU16(&sess->regs.DI, 2);
 		}
 		else
 		{
-			sess->regs.SI += 2;
-			sess->regs.DI += 2;
+			AddEqU16(&sess->regs.SI, 2);
+			AddEqU16(&sess->regs.DI, 2);
 		}
 	}
-	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
+	AddEqU16(&sess->regs.IP, 1);
 	return true;
 }
 
@@ -4014,13 +4017,13 @@ Bool __stdcall DasmX86_16_A9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	{
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"test EAX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, *(Int32*)&sess->code[sess->regs.IP + 1]);
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"test AX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP + 1]);
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4030,11 +4033,11 @@ Bool __stdcall DasmX86_16_AA(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"stosb");
 	if (sess->regs.DF)
 	{
-		sess->regs.DI -= 1;
+		SubEqU16(&sess->regs.DI, 1);
 	}
 	else
 	{
-		sess->regs.DI += 1;
+		AddEqU16(&sess->regs.DI, 1);
 	}
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
 	return true;
@@ -4047,11 +4050,11 @@ Bool __stdcall DasmX86_16_AB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"stosd");
 		if (sess->regs.DF)
 		{
-			sess->regs.DI -= 4;
+			SubEqU16(&sess->regs.DI, 4);
 		}
 		else
 		{
-			sess->regs.DI += 4;
+			AddEqU16(&sess->regs.DI, 4);
 		}
 	}
 	else
@@ -4059,11 +4062,11 @@ Bool __stdcall DasmX86_16_AB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"stosw");
 		if (sess->regs.DF)
 		{
-			sess->regs.DI -= 2;
+			SubEqU16(&sess->regs.DI, 2);
 		}
 		else
 		{
-			sess->regs.DI += 2;
+			AddEqU16(&sess->regs.DI, 2);
 		}
 	}
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
@@ -4075,11 +4078,11 @@ Bool __stdcall DasmX86_16_AC(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"lodsb");
 	if (sess->regs.DF)
 	{
-		sess->regs.SI -= 1;
+		SubEqU16(&sess->regs.SI, 1);
 	}
 	else
 	{
-		sess->regs.SI += 1;
+		AddEqU16(&sess->regs.SI, 1);
 	}
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
 	return true;
@@ -4092,11 +4095,11 @@ Bool __stdcall DasmX86_16_AD(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"lodsd");
 		if (sess->regs.DF)
 		{
-			sess->regs.SI -= 4;
+			SubEqU16(&sess->regs.SI, 4);
 		}
 		else
 		{
-			sess->regs.SI += 4;
+			AddEqU16(&sess->regs.SI, 4);
 		}
 	}
 	else
@@ -4104,11 +4107,11 @@ Bool __stdcall DasmX86_16_AD(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"lodsw");
 		if (sess->regs.DF)
 		{
-			sess->regs.SI -= 2;
+			SubEqU16(&sess->regs.SI, 2);
 		}
 		else
 		{
-			sess->regs.SI += 2;
+			AddEqU16(&sess->regs.SI, 2);
 		}
 	}
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
@@ -4121,11 +4124,11 @@ Bool __stdcall DasmX86_16_AE(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
 	if (sess->regs.DF)
 	{
-		sess->regs.DI -= 1;
+		SubEqU16(&sess->regs.DI, 1);
 	}
 	else
 	{
-		sess->regs.DI += 1;
+		AddEqU16(&sess->regs.DI,  1);
 	}
 	return true;
 }
@@ -4137,11 +4140,11 @@ Bool __stdcall DasmX86_16_AF(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"scasd");
 		if (sess->regs.DF)
 		{
-			sess->regs.DI -= 4;
+			SubEqU16(&sess->regs.DI, 4);
 		}
 		else
 		{
-			sess->regs.DI += 4;
+			AddEqU16(&sess->regs.DI, 4);
 		}
 	}
 	else
@@ -4149,11 +4152,11 @@ Bool __stdcall DasmX86_16_AF(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"scasw");
 		if (sess->regs.DF)
 		{
-			sess->regs.DI -= 2;
+			SubEqU16(&sess->regs.DI, 2);
 		}
 		else
 		{
-			sess->regs.DI += 2;
+			AddEqU16(&sess->regs.DI, 2);
 		}
 	}
 	sess->regs.IP = (UInt16)(sess->regs.IP + 1);
@@ -4248,7 +4251,7 @@ Bool __stdcall DasmX86_16_B8(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov EAX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.EAX = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4256,7 +4259,7 @@ Bool __stdcall DasmX86_16_B8(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov AX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.EAX = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 
 	return true;
@@ -4270,7 +4273,7 @@ Bool __stdcall DasmX86_16_B9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov ECX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.ECX = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4278,7 +4281,7 @@ Bool __stdcall DasmX86_16_B9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov CX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.ECX = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4291,7 +4294,7 @@ Bool __stdcall DasmX86_16_BA(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov EDX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.EDX = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4299,7 +4302,7 @@ Bool __stdcall DasmX86_16_BA(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov DX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.EDX = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4312,7 +4315,7 @@ Bool __stdcall DasmX86_16_BB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov EBX,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.EBX = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4320,7 +4323,7 @@ Bool __stdcall DasmX86_16_BB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov BX,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.EBX = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4333,7 +4336,7 @@ Bool __stdcall DasmX86_16_BC(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov ESP,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.ESP = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4341,7 +4344,7 @@ Bool __stdcall DasmX86_16_BC(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov SP,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.ESP = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4354,7 +4357,7 @@ Bool __stdcall DasmX86_16_BD(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov EBP,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.EBP = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4362,7 +4365,7 @@ Bool __stdcall DasmX86_16_BD(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov BP,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.EBP = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4375,7 +4378,7 @@ Bool __stdcall DasmX86_16_BE(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov ESI,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.ESI = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4383,7 +4386,7 @@ Bool __stdcall DasmX86_16_BE(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov SI,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.ESI = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4396,7 +4399,7 @@ Bool __stdcall DasmX86_16_BF(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov EDI,");
 		sess->outSPtr = DasmX86_16_AppInt32(sess, sess->outSPtr, val);
 		sess->regs.EDI = val;
-		sess->regs.IP += 5;
+		AddEqU16(&sess->regs.IP, 5);
 	}
 	else
 	{
@@ -4404,7 +4407,7 @@ Bool __stdcall DasmX86_16_BF(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov DI,");
 		sess->outSPtr = DasmX86_16_AppInt16(sess, sess->outSPtr, val);
 		*(UInt16*)&sess->regs.EDI = val;
-		sess->regs.IP += 3;
+		AddEqU16(&sess->regs.IP, 3);
 	}
 	return true;
 }
@@ -4454,17 +4457,17 @@ Bool __stdcall DasmX86_16_C0(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	}
     else if (regNo == 4)
 	{
-		*regPtr <<= val;
+		ShlEqU8(regPtr, val);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shl ");
 	}
 	else if (regNo == 5)
 	{
-		*regPtr >>= val;
+		ShrEq8(regPtr, val);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shr ");
 	}
 	else if (regNo == 7)
 	{
-		*(Int8*)regPtr >>= val;
+		SarEq8((Int8*)regPtr, val);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sar ");
 	}
 	else
@@ -4528,7 +4531,7 @@ Bool __stdcall DasmX86_16_C1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(UInt16*)regPtr <<= val;
+			ShlEqU16((UInt16*)regPtr, val);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shl ");
 	}
@@ -4540,7 +4543,7 @@ Bool __stdcall DasmX86_16_C1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(UInt16*)regPtr >>= val;
+			ShrEq16((UInt16*)regPtr, val);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shr ");
 	}
@@ -4552,7 +4555,7 @@ Bool __stdcall DasmX86_16_C1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(Int16*)regPtr >>= val;
+			SarEq16((Int16*)regPtr, val);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sar ");
 	}
@@ -4571,7 +4574,7 @@ Bool __stdcall DasmX86_16_C2(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->endStatus = 3;
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"ret ");
 	sess->outSPtr = Text::StrInt32(sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP + 1]);
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	sess->endIP = sess->regs.IP;
 	return true;
 }
@@ -4621,7 +4624,7 @@ Bool __stdcall DasmX86_16_C6(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	modRM = sess->code[sess->regs.IP];
 	DasmX86_16_ParseModRM8(sess, mem, &regNo);
 	val = sess->code[sess->regs.IP];
-	sess->regs.IP+=1;
+	AddEqU16(&sess->regs.IP, 1);
 	if (regNo == 0)
 	{
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"mov ");
@@ -4710,7 +4713,7 @@ Bool __stdcall DasmX86_16_C8(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 Bool __stdcall DasmX86_16_C9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 {
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"leave");
-	sess->regs.IP+= 1;
+	AddEqU16(&sess->regs.IP, 1);
 	return true;
 }
 
@@ -4719,7 +4722,7 @@ Bool __stdcall DasmX86_16_CA(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->endStatus = 3;
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"ret ");
 	sess->outSPtr = Text::StrInt32(sess->outSPtr, *(UInt16*)&sess->code[sess->regs.IP + 1]);
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	sess->endIP = sess->regs.IP;
 	return true;
 }
@@ -4819,17 +4822,17 @@ Bool __stdcall DasmX86_16_D0(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	}
 	else if (regNo == 4)
 	{
-		*regPtr <<= 1;
+		ShlEqU8(regPtr, 1);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shl ");
 	}
 	else if (regNo == 5)
 	{
-		*regPtr >>= 1;
+		ShrEq8(regPtr, 1);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shr ");
 	}
 	else if (regNo == 7)
 	{
-		*(Int8*)regPtr >>= 1;
+		SarEq8((Int8*)regPtr, 1);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sar ");
 	}
 	else
@@ -4889,7 +4892,7 @@ Bool __stdcall DasmX86_16_D1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(UInt16*)regPtr <<= 1;
+			ShlEqU16((UInt16*)regPtr, 1);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shl ");
 	}
@@ -4901,7 +4904,7 @@ Bool __stdcall DasmX86_16_D1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(UInt16*)regPtr >>= 1;
+			ShrEq16((UInt16*)regPtr, 1);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shr ");
 	}
@@ -4913,7 +4916,7 @@ Bool __stdcall DasmX86_16_D1(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(Int16*)regPtr >>= 1;
+			SarEq16((Int16*)regPtr, 1);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sar ");
 	}
@@ -4968,17 +4971,17 @@ Bool __stdcall DasmX86_16_D2(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	}
 	else if (regNo == 4)
 	{
-		*regPtr <<= (UInt8)sess->regs.ECX;
+		ShlEqU8(regPtr, (UInt8)sess->regs.ECX);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shl ");
 	}
 	else if (regNo == 5)
 	{
-		*regPtr >>= (UInt8)sess->regs.ECX;
+		ShrEq8(regPtr, (UInt8)sess->regs.ECX);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shr ");
 	}
 	else if (regNo == 7)
 	{
-		*(Int8*)regPtr >>= (UInt8)sess->regs.ECX;
+		SarEq8((Int8*)regPtr, (UInt8)sess->regs.ECX);
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sar ");
 	}
 	else
@@ -5038,7 +5041,7 @@ Bool __stdcall DasmX86_16_D3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(UInt16*)regPtr <<= (UInt8)sess->regs.ECX;
+			ShlEqU16((UInt16*)regPtr, (UInt8)sess->regs.ECX);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shl ");
 	}
@@ -5050,7 +5053,7 @@ Bool __stdcall DasmX86_16_D3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(UInt16*)regPtr >>= (UInt8)sess->regs.ECX;
+			ShrEq16((UInt16*)regPtr, (UInt8)sess->regs.ECX);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"shr ");
 	}
@@ -5062,7 +5065,7 @@ Bool __stdcall DasmX86_16_D3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		}
 		else
 		{
-			*(Int16*)regPtr >>= (UInt8)sess->regs.ECX;
+			SarEq16((Int16*)regPtr, (UInt8)sess->regs.ECX);
 		}
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sar ");
 	}
@@ -5258,7 +5261,7 @@ Bool __stdcall DasmX86_16_E8(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"call ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	return true;
 }
 
@@ -5273,7 +5276,7 @@ Bool __stdcall DasmX86_16_E9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	}
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jmp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
-	sess->regs.IP += 3;
+	AddEqU16(&sess->regs.IP, 3);
 	sess->endStatus = 1;
 	sess->endIP = sess->regs.IP;
 	sess->regs.IP = (UInt16)addr;
@@ -5297,7 +5300,7 @@ Bool __stdcall DasmX86_16_EB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"jmp ");
 	sess->outSPtr = DasmX86_16_AppAddrN(sess, sess->outSPtr, addr);
 	sess->endStatus = 1;
-	sess->endIP = sess->regs.IP + 2;
+	sess->endIP = AddU16(sess->regs.IP, 2);
 	sess->regs.IP = (UInt16)addr;
 	sess->jmpAddrs->SortedInsert(addr);
 	return true;
@@ -5419,11 +5422,11 @@ Bool __stdcall DasmX86_16_F3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"rep insb");
 		if (sess->regs.DF)
 		{
-			*(UInt16*)&sess->regs.EDI -= *(UInt16*)&sess->regs.ECX;
+			SubEqU16((UInt16*)&sess->regs.EDI, *(UInt16*)&sess->regs.ECX);
 		}
 		else
 		{
-			*(UInt16*)&sess->regs.EDI += *(UInt16*)&sess->regs.ECX;
+			AddEqU16((UInt16*)&sess->regs.EDI, *(UInt16*)&sess->regs.ECX);
 		}
 		*(UInt16*)&sess->regs.ECX = 0;
 	}
@@ -5443,11 +5446,11 @@ Bool __stdcall DasmX86_16_F3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"rep outsb");
 		if (sess->regs.DF)
 		{
-			*(UInt16*)&sess->regs.ESI -= *(UInt16*)&sess->regs.ECX;
+			SubEqU16((UInt16*)&sess->regs.ESI, *(UInt16*)&sess->regs.ECX);
 		}
 		else
 		{
-			*(UInt16*)&sess->regs.ESI += *(UInt16*)&sess->regs.ECX;
+			AddEqU16((UInt16*)&sess->regs.ESI, *(UInt16*)&sess->regs.ECX);
 		}
 		*(UInt16*)&sess->regs.ECX = 0;
 	}
@@ -5467,13 +5470,13 @@ Bool __stdcall DasmX86_16_F3(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 		sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"rep movsb");
 		if (sess->regs.DF)
 		{
-			*(UInt16*)&sess->regs.ESI -= *(UInt16*)&sess->regs.ECX;
-			*(UInt16*)&sess->regs.EDI -= *(UInt16*)&sess->regs.ECX;
+			SubEqU16((UInt16*)&sess->regs.ESI, *(UInt16*)&sess->regs.ECX);
+			SubEqU16((UInt16*)&sess->regs.EDI, *(UInt16*)&sess->regs.ECX);
 		}
 		else
 		{
-			*(UInt16*)&sess->regs.ESI += *(UInt16*)&sess->regs.ECX;
-			*(UInt16*)&sess->regs.EDI += *(UInt16*)&sess->regs.ECX;
+			AddEqU16((UInt16*)&sess->regs.ESI, *(UInt16*)&sess->regs.ECX);
+			AddEqU16((UInt16*)&sess->regs.EDI, *(UInt16*)&sess->regs.ECX);
 		}
 		*(UInt16*)&sess->regs.ECX = 0;
 	}
@@ -5564,7 +5567,7 @@ Bool __stdcall DasmX86_16_F4(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 Bool __stdcall DasmX86_16_F5(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 {
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"cmc");
-	sess->regs.CF ^= 1;
+	sess->regs.CF ^= BIT1;
 	sess->regs.IP++;
 	return true;
 }
@@ -5698,7 +5701,7 @@ Bool __stdcall DasmX86_16_F8(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 Bool __stdcall DasmX86_16_F9(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 {
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"stc");
-	sess->regs.CF = 1;
+	sess->regs.CF = BIT1;
 	sess->regs.IP++;
 	return true;
 }
@@ -5714,7 +5717,7 @@ Bool __stdcall DasmX86_16_FA(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 Bool __stdcall DasmX86_16_FB(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 {
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"sti");
-	sess->regs.IF = 1;
+	sess->regs.IF = BIT1;
 	sess->regs.IP++;
 	return true;
 }
@@ -5730,7 +5733,7 @@ Bool __stdcall DasmX86_16_FC(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 Bool __stdcall DasmX86_16_FD(Manage::DasmX86_16::DasmX86_16_Sess* sess)
 {
 	sess->outSPtr = Text::StrConcat(sess->outSPtr, (const UTF8Char*)"std");
-	sess->regs.DF = 1;
+	sess->regs.DF = BIT1;
 	sess->regs.IP++;
 	return true;
 }
@@ -7993,6 +7996,6 @@ Bool Manage::DasmX86_16::DasmNext(Manage::DasmX86_16::DasmX86_16_Sess *sess, UTF
 //		return false;
 	}
 	Bool isSucc = this->codes[sess->code[sess->regs.IP]](sess);
-	*outBuffSize = sess->outSPtr - buff;
+	*outBuffSize = (UOSInt)(sess->outSPtr - buff);
 	return isSucc;
 } //True = succ

@@ -603,30 +603,64 @@ namespace Data
 
 #define WriteMUInt32(uint8Ptr, val) WriteMInt32(uint8Ptr, (Int32)(val))
 
-FORCEINLINE void AddEq16(UInt16 *dptr, UInt16 val)
+FORCEINLINE UInt16 AddU16(UInt16 val1, UInt16 val2)
+{
+	return (UInt16)(val1 + val2);
+}
+
+FORCEINLINE void AddEqU16(UInt16 *dptr, UInt16 val)
 {
 	*dptr = (UInt16)(*dptr + val);
 }
 
-FORCEINLINE void AddEq8(UInt8 *dptr, UInt8 val)
+FORCEINLINE void AddEqU8(UInt8 *dptr, UInt8 val)
 {
 	*dptr = (UInt8)(*dptr + val);
 }
 
-FORCEINLINE void SubEq16(UInt16 *dptr, UInt16 val)
+FORCEINLINE void SubEqU16(UInt16 *dptr, UInt16 val)
 {
 	*dptr = (UInt16)(*dptr - val);
 }
 
-FORCEINLINE void SubEq8(UInt8 *dptr, UInt8 val)
+FORCEINLINE void SubEqU8(UInt8 *dptr, UInt8 val)
 {
 	*dptr = (UInt8)(*dptr - val);
 }
 
-FORCEINLINE void OrEq16(UInt16 *dptr, UInt16 val)
+FORCEINLINE void OrEqU16(UInt16 *dptr, UInt16 val)
 {
 	*dptr = (UInt16)(*dptr | val);
 }
 
+FORCEINLINE void ShlEqU16(UInt16 *dptr, UInt32 val)
+{
+	*dptr = (UInt16)(*dptr << val);
+}
+
+FORCEINLINE void ShrEq16(UInt16 *dptr, UInt32 val)
+{
+	*dptr = (UInt16)(*dptr >> val);
+}
+
+FORCEINLINE void SarEq16(Int16 *dptr, UInt32 val)
+{
+	*dptr = (Int16)(*dptr >> val);
+}
+
+FORCEINLINE void ShlEqU8(UInt8 *dptr, UInt32 val)
+{
+	*dptr = (UInt8)(*dptr << val);
+}
+
+FORCEINLINE void SarEq8(Int8 *dptr, UInt32 val)
+{
+	*dptr = (Int8)(*dptr >> val);
+}
+
+FORCEINLINE void ShrEq8(UInt8 *dptr, UInt32 val)
+{
+	*dptr = (UInt8)(*dptr >> val);
+}
 
 #endif
