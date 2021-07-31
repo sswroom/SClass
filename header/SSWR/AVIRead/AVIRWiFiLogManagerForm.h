@@ -28,6 +28,8 @@ namespace SSWR
 			UI::GUIButton *btnFilter;
 			UI::GUIButton *btnStore;
 			UI::GUILabel *lblInfo;
+			UI::GUILabel *lblDblClk;
+			UI::GUIComboBox *cboDblClk;
 			UI::GUITextBox *txtFileIE;
 			UI::GUIVSplitter *vspFile;
 			UI::GUIListView *lvContent;
@@ -44,6 +46,7 @@ namespace SSWR
 			static void __stdcall OnFilterClicked(void *userObj);
 			Bool LogFileStore();
 			void LogUIUpdate();
+			void EntryUpdated(const Net::MACInfo::MACEntry *entry);
 
 			void UpdateStatus();
 		public:

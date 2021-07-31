@@ -13,6 +13,7 @@
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
+#include "Win32/Clipboard.h"
 
 #define MAX_ROW 5000
 
@@ -57,39 +58,41 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 	const Net::WiFiLogFile::LogFileEntry *log = (const Net::WiFiLogFile::LogFileEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
-	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
-	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
-	if (entry)
+	
+	UOSInt dblType = me->cboDblClk->GetSelectedIndex();
+	if (dblType == 1)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, (const UTF8Char*)entry->name));
+		Text::StringBuilderUTF8 sb;
+		if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
+		{
+			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToString());
+			me->UpdateStatus();
+			me->EntryUpdated(me->macList->GetItem(i));
+		}
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, 0));
-	}
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
-	{
-		const UTF8Char *name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name);
-		Text::StrDelNew(name);
-		entry = me->macList->GetItem(i);
-		me->UpdateStatus();
-
-		UOSInt j;
-		i = 0;
-		j = me->lvContent->GetCount();
-		while (i < j)
+		const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
+		SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
+		if (entry)
 		{
-			log = (const Net::WiFiLogFile::LogFileEntry*)me->lvContent->GetItem(i);
-			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
-			{
-				me->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
-			}
-			i++;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, (const UTF8Char*)entry->name));
 		}
+		else
+		{
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, 0));
+		}
+		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			const UTF8Char *name = frm->GetNameNew();
+			UOSInt i = me->macList->SetEntry(log->macInt, name);
+			Text::StrDelNew(name);
+			entry = me->macList->GetItem(i);
+			me->UpdateStatus();
+			me->EntryUpdated(entry);
+		}
+		DEL_CLASS(frm);
 	}
-	DEL_CLASS(frm);
-
 }
 
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentSelChg(void *userObj)
@@ -276,6 +279,24 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	}
 }
 
+void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(const Net::MACInfo::MACEntry *entry)
+{
+	const Net::WiFiLogFile::LogFileEntry *log;
+	UOSInt i;
+	UOSInt j;
+	i = 0;
+	j = this->lvContent->GetCount();
+	while (i < j)
+	{
+		log = (const Net::WiFiLogFile::LogFileEntry*)this->lvContent->GetItem(i);
+		if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
+		{
+			this->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+		}
+		i++;
+	}
+}
+
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
@@ -313,6 +334,13 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(494, 4, 200, 23, false);
+	NEW_CLASS(this->lblDblClk, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Dbl-Clk Action"));
+	this->lblDblClk->SetRect(694, 4, 100, 23, false);
+	NEW_CLASS(this->cboDblClk, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboDblClk->SetRect(794, 4, 100, 23, false);
+	this->cboDblClk->AddItem((const UTF8Char*)"Edit", 0);
+	this->cboDblClk->AddItem((const UTF8Char*)"Paste", 0);
+	this->cboDblClk->SetSelectedIndex(0);
 	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
 	this->txtFileIE->SetRect(0, 0, 100, 255, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
