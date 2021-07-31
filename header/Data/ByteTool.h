@@ -603,4 +603,30 @@ namespace Data
 
 #define WriteMUInt32(uint8Ptr, val) WriteMInt32(uint8Ptr, (Int32)(val))
 
+FORCEINLINE void AddEq16(UInt16 *dptr, UInt16 val)
+{
+	*dptr = (UInt16)(*dptr + val);
+}
+
+FORCEINLINE void AddEq8(UInt8 *dptr, UInt8 val)
+{
+	*dptr = (UInt8)(*dptr + val);
+}
+
+FORCEINLINE void SubEq16(UInt16 *dptr, UInt16 val)
+{
+	*dptr = (UInt16)(*dptr - val);
+}
+
+FORCEINLINE void SubEq8(UInt8 *dptr, UInt8 val)
+{
+	*dptr = (UInt8)(*dptr - val);
+}
+
+FORCEINLINE void OrEq16(UInt16 *dptr, UInt16 val)
+{
+	*dptr = (UInt16)(*dptr | val);
+}
+
+
 #endif

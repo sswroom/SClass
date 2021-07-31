@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "Manage/DasmX86_32.h"
@@ -844,7 +845,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 		UInt8 b = tmpSess.memReader->ReadMemUInt8(tmpSess.regs.EIP);
 		if (b == 0xc2)
 		{
-			tmpSess.regs.ESP += 4 + sess->memReader->ReadMemUInt16(tmpSess.regs.EIP + 1);
+			tmpSess.regs.ESP += 4 + (UInt32)sess->memReader->ReadMemUInt16(tmpSess.regs.EIP + 1);
 			if (outEsp)
 			{
 				*outEsp = tmpSess.regs.ESP;
@@ -1010,7 +1011,7 @@ Bool __stdcall DasmX86_32_03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
 	if (sess->thisStatus & 1)
 	{
-		*(UInt16*)regPtr = ((UInt16)(memVal & 0xffff)) + *(UInt16*)regPtr;
+		AddEq16((UInt16*)regPtr,(UInt16)(memVal & 0xffff));
 	}
 	else
 	{
@@ -1145,7 +1146,7 @@ Bool __stdcall DasmX86_32_0b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	if (sess->thisStatus)
 	{
-		*(UInt16*)regPtr |= memVal;
+		OrEq16((UInt16*)regPtr, (UInt16)memVal);
 	}
 	else
 	{
@@ -1262,7 +1263,7 @@ Bool __stdcall DasmX86_32_12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	*regPtr = *regPtr + memVal;
+	AddEq8(regPtr, memVal);
 	return true;
 }
 
@@ -1285,7 +1286,7 @@ Bool __stdcall DasmX86_32_13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	if (sess->thisStatus & 1)
 	{
-		*(UInt16*)regPtr = *(UInt16*)regPtr + (UInt16)(memVal & 0xffff);
+		AddEq16((UInt16*)regPtr, (UInt16)(memVal & 0xffff));
 	}
 	else
 	{
@@ -1396,7 +1397,7 @@ Bool __stdcall DasmX86_32_1a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	*regPtr -= memVal;
+	SubEq8(regPtr, memVal);
 	return true;
 }
 
@@ -1417,7 +1418,7 @@ Bool __stdcall DasmX86_32_1b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	if (sess->thisStatus & 1)
 	{
-		*(UInt16*)regPtr -= (UInt16)(memVal & 0xffff);
+		SubEq16((UInt16*)regPtr, (UInt16)(memVal & 0xffff));
 	}
 	else
 	{
@@ -1433,7 +1434,7 @@ Bool __stdcall DasmX86_32_1c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	sess->regs.EIP += 2;
-	*(UInt8*)&sess->regs.EAX -= v;
+	SubEq8((UInt8*)&sess->regs.EAX, v);
 	return true;
 }
 
@@ -1679,7 +1680,7 @@ Bool __stdcall DasmX86_32_2a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
-	*regPtr -= memVal;
+	SubEq8(regPtr, memVal);
 	return true;
 }
 
@@ -1702,7 +1703,7 @@ Bool __stdcall DasmX86_32_2b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	if (sess->thisStatus & 1)
 	{
-		*(UInt16*)regPtr -= (UInt16)(memVal & 0xffff);
+		SubEq16((UInt16*)regPtr, (UInt16)(memVal & 0xffff));
 	}
 	else
 	{
@@ -1718,7 +1719,7 @@ Bool __stdcall DasmX86_32_2c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
 	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
 	sess->regs.EIP += 2;
-	*(UInt8*)&sess->regs.EAX -= v;
+	SubEq8((UInt8*)&sess->regs.EAX, v);
 	return true;
 }
 
@@ -1730,7 +1731,7 @@ Bool __stdcall DasmX86_32_2d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub AX, 0x");
 		sess->sbuff = Text::StrHexVal16(sess->sbuff, v);
 		sess->regs.EIP += 3;
-		*(UInt16*)&sess->regs.EAX -= v;
+		SubEq16((UInt16*)&sess->regs.EAX, v);
 	}
 	else
 	{
@@ -6750,7 +6751,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			if ((sess->regs.ESP + (UInt32)stackCnt + 64) >= outEsp && (sess->regs.ESP + (UInt32)stackCnt - 64) <= outEsp)
 			{
-				sess->regs.ESP += stackCnt;
+				sess->regs.ESP += (UInt32)stackCnt;
 			}
 			else
 			{
@@ -6759,7 +6760,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		}
 		else if (stackCnt > 0)
 		{
-			sess->regs.ESP += stackCnt;
+			sess->regs.ESP += (UInt32)stackCnt;
 		}
 	}
 	if (sess->addrResol)
@@ -7240,7 +7241,7 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			}
 			else if (stackCnt > 0)
 			{
-				sess->regs.ESP += stackCnt;
+				sess->regs.ESP += (UInt32)stackCnt;
 			}
 		}
 		if (sess->addrResol)
