@@ -23,6 +23,6 @@ include ../inc/makefile_common
 include ../inc/makefile_os_linux
 include ../inc/makefile_cpua_sysvarm64
 include ../inc/makefile_ui_gtk
-include ../inc/makefile_dev_rpi3_novc
+include ../inc/makefile_dev_rpi
 include ../inc/makefile_cpu_bcm2836
 include ../inc/Makefile_linuxtest

@@ -221,8 +221,6 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 
 Manage::CPUInfoDetail::~CPUInfoDetail()
 {
-	if (this->clsData)
-		Text::StrDelNew((const UTF8Char*)this->clsData);
 }
 
 const UTF8Char *Manage::CPUInfoDetail::GetCPUModel()

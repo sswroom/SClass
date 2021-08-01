@@ -229,6 +229,7 @@ Manage::CPUInfo::~CPUInfo()
 {
 	if (this->clsData)
 		Text::StrDelNew((const UTF8Char*)this->clsData);
+	this->clsData = 0;
 }
 
 UOSInt Manage::CPUInfo::GetInfoCnt()
