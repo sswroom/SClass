@@ -32,9 +32,36 @@ namespace Net
 			ET_SELF_SIGN,
 			ET_INVALID_PERIOD
 		} ErrorType;
+
+		typedef enum
+		{
+			TS_NOT_RUNNING,
+			TS_STARTING,
+			TS_RUNNING,
+			TS_PROCESSING
+		} ThreadStatus;
+
+		typedef void (__stdcall *ClientReadyHandler)(Net::TCPClient *cli, void *userObj);
+
+		typedef struct
+		{
+			ThreadStatus status;
+			UInt32 *s;
+			ClientReadyHandler clientReady;
+			void *clientReadyObj;
+			Sync::Event *evt;
+			SSLEngine *me;
+		} ThreadState;
 	protected:
 		Net::SocketFactory *sockf;
+		UOSInt maxThreadCnt;
+		UOSInt currThreadCnt;
+		Bool threadToStop;
+		Sync::Mutex *threadMut;
+		ThreadState *threadSt;
 
+		static UInt32 __stdcall ServerThread(void *userObj);
+		virtual Net::TCPClient *CreateServerConn(UInt32 *s) = 0;
 		SSLEngine(Net::SocketFactory *sockf);
 	public:
 		virtual ~SSLEngine();
@@ -43,8 +70,8 @@ namespace Net
 		virtual Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile) = 0;
 		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
-		virtual Net::TCPClient *CreateServerConn(UInt32 *s) = 0;
 		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;
+		void ServerInit(UInt32 *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		static const UTF8Char *ErrorTypeGetName(ErrorType err);
 	};

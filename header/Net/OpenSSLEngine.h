@@ -11,6 +11,7 @@ namespace Net
 		struct ClassData *clsData;
 		Bool skipCertCheck;
 
+		virtual Net::TCPClient *CreateServerConn(UInt32 *s);
 	public:
 		OpenSSLEngine(Net::SocketFactory *sockf, Method method);
 		virtual ~OpenSSLEngine();
@@ -19,7 +20,6 @@ namespace Net
 		virtual Bool IsError();
 		virtual Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
-		virtual Net::TCPClient *CreateServerConn(UInt32 *s);
 		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err);
 	};
 }

@@ -62,6 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 
 	me->noShutdown = me->chkNoShutdown->IsChecked();
 	me->reqMeth = (const Char*)me->cboMethod->GetSelectedItem();
+	me->reqOSClient = me->chkOSClient->IsChecked();
 	if (Text::StrEqualsICase(me->reqMeth, "GET") || Text::StrEqualsICase(me->reqMeth, "DELETE"))
 	{
 		UOSInt i = 0;
@@ -405,6 +406,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	const UTF8Char *currUserName;
 	const UTF8Char *currPassword;
 	const Char *currMeth;
+	Bool currOSClient;
 	UInt8 buff[4096];
 	UTF8Char *pathPtr;
 	UTF8Char *sbuff;
@@ -427,6 +429,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			currMeth = me->reqMeth;
 			currUserName = me->reqUserName;
 			currPassword = me->reqPassword;
+			currOSClient = me->reqOSClient;
 			me->reqURL = 0;
 			me->reqBody = 0;
 			me->reqBodyLen = 0;
@@ -435,7 +438,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqPassword = 0;
 			
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->core->GetSSLEngine(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 //			NEW_CLASS(cli, Net::HTTPOSClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown));
 			if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
@@ -973,6 +976,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboMethod->AddItem((const UTF8Char*)"PATCH", (void*)"PATCH");
 	this->cboMethod->AddItem((const UTF8Char*)"DELETE", (void*)"DELETE");
 	this->cboMethod->SetSelectedIndex(0);
+	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"OS Client", false));
+	this->chkOSClient->SetRect(204, 28, 100, 23, false);
 	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"User Agent"));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);

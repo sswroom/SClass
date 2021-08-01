@@ -12,6 +12,26 @@ struct Net::OpenSSLEngine::ClassData
 	SSL_CTX *ctx;
 };
 
+Net::TCPClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
+{
+	SSL *ssl = SSL_new(this->clsData->ctx);
+	this->sockf->SetRecvTimeout(s, 2000);
+	this->sockf->SetNoDelay(s, true);
+	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
+	if (SSL_accept(ssl) <= 0)
+	{
+		SSL_free(ssl);
+		this->sockf->DestroySocket(s);
+		return 0;
+	}
+	else
+	{
+		Net::TCPClient *cli;
+		NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
+		return cli;
+	}
+}
+
 Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Net::SSLEngine(sockf)
 {
 	Net::OpenSSLCore::Init();
@@ -127,23 +147,6 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Net::TCPClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
-{
-	SSL *ssl = SSL_new(this->clsData->ctx);
-	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
-	if (SSL_accept(ssl) <= 0)
-	{
-		SSL_free(ssl);
-		return 0;
-	}
-	else
-	{
-		Net::TCPClient *cli;
-		NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
-		return cli;
-	}
-}
-
 Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
 {
 	Net::SocketUtil::AddressInfo addr;
@@ -191,6 +194,8 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 			*err = ET_CANNOT_CONNECT;
 		return 0;
 	}
+	this->sockf->SetNoDelay(s, true);
+	this->sockf->SetRecvTimeout(s, 2000);
 	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
 	if (SSL_connect(ssl) <= 0)
 	{

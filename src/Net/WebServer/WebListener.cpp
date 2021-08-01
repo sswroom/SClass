@@ -8,24 +8,27 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
+void __stdcall Net::WebServer::WebListener::ClientReady(Net::TCPClient *cli, void *userObj)
+{
+	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
+	Net::WebServer::WebConnection *conn;
+	NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->allowKA));
+	conn->SetSendLogger(OnDataSent, me);
+	me->cliMgr->AddClient(cli, conn);
+}
+
 void __stdcall Net::WebServer::WebListener::ConnHdlr(UInt32 *s, void *userObj)
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::TCPClient *cli;
-	Net::WebServer::WebConnection *conn;
 	if (me->ssl)
 	{
-		cli = me->ssl->CreateServerConn(s);
+		me->ssl->ServerInit(s, ClientReady, me);
 	}
 	else
 	{
 		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
-	}
-	if (cli)
-	{
-		NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->allowKA));
-		conn->SetSendLogger(OnDataSent, me);
-		me->cliMgr->AddClient(cli, conn);
+		ClientReady(cli, me);
 	}
 	Sync::MutexUsage mutUsage(me->statusMut);
 	me->status.connCnt++;

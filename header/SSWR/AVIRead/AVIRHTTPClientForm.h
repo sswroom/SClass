@@ -52,6 +52,7 @@ namespace SSWR
 			UI::GUICheckBox *chkNoShutdown;
 			UI::GUILabel *lblMethod;
 			UI::GUIComboBox *cboMethod;
+			UI::GUICheckBox *chkOSClient;
 			UI::GUIButton *btnUserAgent;
 			UI::GUILabel *lblUserAgent;
 			UI::GUILabel *lblUserName;
@@ -110,6 +111,7 @@ namespace SSWR
 			const UTF8Char *reqPassword;
 			UOSInt reqBodyLen;
 			const Char *reqMeth;
+			Bool reqOSClient;
 			Bool noShutdown;
 			const UTF8Char *userAgent;
 
