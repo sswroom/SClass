@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_COMPARSER
 #define _SM_PARSER_COMPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class COMParser : public IO::IFileParser
+		class COMParser : public IO::FileParser
 		{
 		public:
 			COMParser();

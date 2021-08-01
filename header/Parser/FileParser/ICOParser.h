@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_ICOPARSER
 #define _SM_PARSER_FILEPARSER_ICOPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class ICOParser : public IO::IFileParser
+		class ICOParser : public IO::FileParser
 		{
 		public:
 			ICOParser();

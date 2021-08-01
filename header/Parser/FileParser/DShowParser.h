@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_DSHOWPARSER
 #define _SM_PARSER_FILEPARSER_DSHOWPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class DShowParser : public IO::IFileParser
+		class DShowParser : public IO::FileParser
 		{
 		public:
 			DShowParser();

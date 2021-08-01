@@ -239,6 +239,34 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 
 		switch (type)
 		{
+		case 0x1:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"BOOLEAN ");
+			if (len == 1)
+			{
+				if (pdu[ofst] == 0xFF)
+				{
+					sb->Append((const UTF8Char*)"(0xFF TRUE)");
+				}
+				else if (pdu[ofst] == 0)
+				{
+					sb->Append((const UTF8Char*)"(0x00 FALSE)");
+				}
+				else
+				{
+					sb->Append((const UTF8Char*)"(0x");
+					sb->AppendHex8(pdu[ofst]);
+					sb->AppendChar(')', 1);
+				}
+			}
+			else
+			{
+				sb->AppendChar('(', 1);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->AppendChar(')', 1);
+			}
+			sb->Append((const UTF8Char*)"\r\n");
+			break;
 		case 0x2:
 			if (len <= 4)
 			{
@@ -395,11 +423,44 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				pdu += ofst + len;
 				break;
 			}
-			return false;
+			else
+			{
+				sb->AppendChar('\t', level);
+				sb->Append((const UTF8Char*)"UNKNOWN 0x");
+				sb->AppendHex8(type);
+				NEW_CLASS(innerSb, Text::StringBuilderUTF8());
+				if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
+				{
+					sb->Append((const UTF8Char*)" {\r\n");
+					sb->Append(innerSb->ToString());
+					sb->AppendChar('\t', level);
+					sb->Append((const UTF8Char*)"}\r\n");
+				}
+				else
+				{
+					sb->Append((const UTF8Char*)" (");
+					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+					sb->Append((const UTF8Char*)")\r\n");
+				}
+				DEL_CLASS(innerSb);
+				pdu += ofst + len;
+				break;
+			}
 		case 0x30:
-		case 0x31:
 			sb->AppendChar('\t', level);
 			sb->Append((const UTF8Char*)"SEQUENCE {\r\n");
+			pdu += ofst;
+			if (!PDUToString(pdu, pdu + len, sb, level + 1))
+			{
+				return false;
+			}
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"}\r\n");
+			pdu += len;
+			break;
+		case 0x31:
+			sb->AppendChar('\t', level);
+			sb->Append((const UTF8Char*)"SET {\r\n");
 			pdu += ofst;
 			if (!PDUToString(pdu, pdu + len, sb, level + 1))
 			{

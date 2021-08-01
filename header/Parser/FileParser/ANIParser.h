@@ -6,7 +6,7 @@ namespace Parser
 {
 	namespace FileParser
 	{
-		class ANIParser : public IO::IFileParser
+		class ANIParser : public IO::FileParser
 		{
 		private:
 			Parser::FileParser::ICOParser *icop;

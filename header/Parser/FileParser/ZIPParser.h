@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_ZIPPARSER
 #define _SM_PARSER_FILEPARSER_ZIPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class ZIPParser : public IO::IFileParser
+		class ZIPParser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

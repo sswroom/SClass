@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_MEDPARSER
 #define _SM_PARSER_FILEPARSER_MEDPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class MEDParser : public IO::IFileParser
+		class MEDParser : public IO::FileParser
 		{
 		public:
 			MEDParser();

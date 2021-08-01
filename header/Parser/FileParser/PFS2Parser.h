@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_PFS2PARSER
 #define _SM_PARSER_FILEPARSER_PFS2PARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class PFS2Parser : public IO::IFileParser
+		class PFS2Parser : public IO::FileParser
 		{
 		public:
 			PFS2Parser();

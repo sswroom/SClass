@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_LUTPARSER
 #define _SM_PARSER_FILEPARSER_LUTPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class LUTParser : public IO::IFileParser
+		class LUTParser : public IO::FileParser
 		{
 		public:
 			LUTParser();

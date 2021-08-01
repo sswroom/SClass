@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/DefaultSSLEngine.h"
 #include "Net/SSLEngine.h"
+#include "Parser/FileParser/X509Parser.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -83,6 +84,32 @@ Net::SSLEngine::~SSLEngine()
 	}
 	MemFree(this->threadSt);
 	DEL_CLASS(this->threadMut);
+}
+
+Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile)
+{
+	Parser::FileParser::X509Parser parser;
+	Crypto::X509File *certASN1 = 0;
+	Crypto::X509File *keyASN1 = 0;
+	if (certFile)
+	{
+		if ((certASN1 = (Crypto::X509File*)parser.ParseFilePath(certFile)) == 0)
+		{
+			return false;
+		}
+	}
+	if (keyFile)
+	{
+		if ((keyASN1 = (Crypto::X509File*)parser.ParseFilePath(keyFile)) == 0)
+		{
+			SDEL_CLASS(certASN1);
+			return false;
+		}
+	}
+	Bool ret = this->SetServerCertsASN1(certASN1, keyASN1);
+	SDEL_CLASS(certASN1);
+	SDEL_CLASS(keyASN1);
+	return ret;
 }
 
 void Net::SSLEngine::ServerInit(UInt32 *s, ClientReadyHandler readyHdlr, void *userObj)

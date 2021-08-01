@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_YKCPARSER
 #define _SM_PARSER_FILEPARSER_YKCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class YKCParser : public IO::IFileParser
+		class YKCParser : public IO::FileParser
 		{
 		public:
 			YKCParser();

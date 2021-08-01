@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_BMPPARSER
 #define _SM_PARSER_FILEPARSER_BMPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class BMPParser : public IO::IFileParser
+		class BMPParser : public IO::FileParser
 		{
 		private:
 			Parser::ParserList *parsers;

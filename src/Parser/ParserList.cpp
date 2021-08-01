@@ -9,7 +9,7 @@
 
 Parser::ParserList::ParserList()
 {
-	NEW_CLASS(this->filePArr, Data::ArrayList<IO::IFileParser*>());
+	NEW_CLASS(this->filePArr, Data::ArrayList<IO::FileParser*>());
 	NEW_CLASS(this->objPArr, Data::ArrayList<IO::IObjectParser*>());
 }
 
@@ -32,7 +32,7 @@ Parser::ParserList::~ParserList()
 	DEL_CLASS(this->objPArr);
 }
 
-void Parser::ParserList::AddFileParser(IO::IFileParser *parser)
+void Parser::ParserList::AddFileParser(IO::FileParser *parser)
 {
 	this->filePArr->Add(parser);
 	parser->SetParserList(this);
@@ -172,7 +172,7 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::Package
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr->GetCount();
-	IO::IFileParser *parser;
+	IO::FileParser *parser;
 	IO::ParsedObject *result;
 	if (fd->GetDataSize() <= 0)
 		return 0;

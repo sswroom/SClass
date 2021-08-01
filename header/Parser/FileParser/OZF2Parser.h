@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_OZF2PARSER
 #define _SM_PARSER_FILEPARSER_OZF2PARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class OZF2Parser : public IO::IFileParser
+		class OZF2Parser : public IO::FileParser
 		{
 		public:
 			OZF2Parser();

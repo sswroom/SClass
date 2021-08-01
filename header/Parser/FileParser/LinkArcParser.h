@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_LINKARCPARSER
 #define _SM_PARSER_FILEPARSER_LINKARCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class LinkArcParser : public IO::IFileParser
+		class LinkArcParser : public IO::FileParser
 		{
 		public:
 			LinkArcParser();

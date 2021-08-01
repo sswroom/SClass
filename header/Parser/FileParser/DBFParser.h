@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_DBFPARSER
 #define _SM_PARSER_FILEPARSER_DBFPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class DBFParser : public IO::IFileParser
+		class DBFParser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_TSUYOSHIARCPARSER
 #define _SM_PARSER_FILEPARSER_TSUYOSHIARCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class TsuyoshiArcParser : public IO::IFileParser
+		class TsuyoshiArcParser : public IO::FileParser
 		{
 		public:
 			TsuyoshiArcParser();

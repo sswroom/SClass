@@ -4,7 +4,7 @@
 #include "Data/ArrayListInt32.h"
 #include "IO/Console.h"
 #include "IO/FileStream.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "IO/IStreamData.h"
 #include "IO/Path.h"
 #include "IO/Stream.h"

@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_MDBPARSER
 #define _SM_PARSER_FILEPARSER_MDBPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class MDBParser : public IO::IFileParser
+		class MDBParser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

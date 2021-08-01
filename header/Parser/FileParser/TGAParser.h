@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_TGAPARSER
 #define _SM_PARSER_FILEPARSER_TGAPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class TGAParser : public IO::IFileParser
+		class TGAParser : public IO::FileParser
 		{
 		public:
 			TGAParser();

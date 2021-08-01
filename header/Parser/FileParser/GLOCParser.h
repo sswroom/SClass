@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_GLOCPARSER
 #define _SM_PARSER_FILEPARSER_GLOCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class GLOCParser : public IO::IFileParser
+		class GLOCParser : public IO::FileParser
 		{
 		public:
 			GLOCParser();

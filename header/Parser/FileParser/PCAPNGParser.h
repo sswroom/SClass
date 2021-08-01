@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_PCAPNGPARSER
 #define _SM_PARSER_FILEPARSER_PCAPNGPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class PCAPNGParser : public IO::IFileParser
+		class PCAPNGParser : public IO::FileParser
 		{
 		public:
 			PCAPNGParser();

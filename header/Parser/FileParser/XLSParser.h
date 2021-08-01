@@ -1,7 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_XLSPARSER
 #define _SM_PARSER_FILEPARSER_XLSPARSER
 #include "Data/Int32Map.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Text/StringBuilderUTF.h"
 #include "Text/SpreadSheet/Workbook.h"
 
@@ -9,7 +9,7 @@ namespace Parser
 {
 	namespace FileParser
 	{
-		class XLSParser : public IO::IFileParser
+		class XLSParser : public IO::FileParser
 		{
 		private:
 			typedef struct

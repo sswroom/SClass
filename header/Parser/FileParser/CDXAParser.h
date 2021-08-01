@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_CDXAPARSER
 #define _SM_PARSER_FILEPARSER_CDXAPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class CDXAParser : public IO::IFileParser
+		class CDXAParser : public IO::FileParser
 		{
 		private:
 			ParserList *parsers;

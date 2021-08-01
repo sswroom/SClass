@@ -1,7 +1,7 @@
 #ifndef _SM_PARSER_PARSERLIST
 #define _SM_PARSER_PARSERLIST
 #include "Data/ArrayList.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "IO/IFileSelector.h"
 #include "IO/IObjectParser.h"
 #include "IO/IStreamData.h"
@@ -12,7 +12,7 @@ namespace Parser
 	class ParserList
 	{
 	private:
-		Data::ArrayList<IO::IFileParser*> *filePArr;
+		Data::ArrayList<IO::FileParser*> *filePArr;
 		Data::ArrayList<IO::IObjectParser*> *objPArr;
 
 	protected:
@@ -20,7 +20,7 @@ namespace Parser
 	public:
 		virtual ~ParserList();
 
-		void AddFileParser(IO::IFileParser *parser);
+		void AddFileParser(IO::FileParser *parser);
 		void AddObjectParser(IO::IObjectParser *parser);
 
 		void SetCodePage(UInt32 codePage);

@@ -11,7 +11,7 @@
 #include "IO/ConsoleInput.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "IO/IStreamData.h"
 #include "IO/StmData/FileData.h"
 

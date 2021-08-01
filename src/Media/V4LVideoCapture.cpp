@@ -314,6 +314,8 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 	struct v4l2_fmtdesc fmt;
 	struct v4l2_frmsizeenum fsize;
 	struct v4l2_frmivalenum frmival;
+	MemClear(&fsize, sizeof(fsize));
+	MemClear(&frmival, sizeof(frmival));
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	fmt.index = 0;
 	while (ret < maxCnt && ioctl(this->fd, VIDIOC_ENUM_FMT, &fmt) == 0)

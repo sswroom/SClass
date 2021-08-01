@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_X509PARSER
 #define _SM_PARSER_FILEPARSER_X509PARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class X509Parser : public IO::IFileParser
+		class X509Parser : public IO::FileParser
 		{
 		public:
 			X509Parser();

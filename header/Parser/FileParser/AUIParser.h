@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_AUIPARSER
 #define _SM_PARSER_FILEPARSER_AUIPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/AVIUtl/AUIManager.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class AUIParser : public IO::IFileParser
+		class AUIParser : public IO::FileParser
 		{
 		private:
 			Media::AVIUtl::AUIManager *auiMgr;

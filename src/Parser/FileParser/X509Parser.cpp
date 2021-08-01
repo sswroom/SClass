@@ -65,6 +65,12 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 			ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_RSA_KEY);
 		}
 	}
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 26], (const UTF8Char*)"-----END PRIVATE KEY-----\n"))
+	{
+		Text::TextBinEnc::Base64Enc b64;
+		dataLen = b64.DecodeBin(&buff[27], (UOSInt)len - 53, dataBuff);
+		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_PRIV_KEY);
+	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----") && Text::StrStartsWith(&buff[len - 34], (const UTF8Char*)"-----END CERTIFICATE REQUEST-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;

@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_MKVPARSER
 #define _SM_PARSER_FILEPARSER_MKVPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/AudioFormat.h"
 #include "Media/FrameInfo.h"
 
@@ -9,7 +9,7 @@ namespace Parser
 	namespace FileParser
 	{
 		///////////////////////////////////////////
-		class MKVParser : public IO::IFileParser
+		class MKVParser : public IO::FileParser
 		{
 		private:
 			typedef struct

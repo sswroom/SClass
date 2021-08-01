@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_JSONPARSER
 #define _SM_PARSER_FILEPARSER_JSONPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Math/Vector2D.h"
 #include "Text/JSON.h"
 
@@ -8,7 +8,7 @@ namespace Parser
 {
 	namespace FileParser
 	{
-		class JSONParser : public IO::IFileParser
+		class JSONParser : public IO::FileParser
 		{
 		public:
 			JSONParser();

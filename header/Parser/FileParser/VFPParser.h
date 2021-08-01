@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_VFPPARSER
 #define _SM_PARSER_FILEPARSER_VFPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/VFPManager.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class VFPParser : public IO::IFileParser
+		class VFPParser : public IO::FileParser
 		{
 		private:
 			Media::VFPManager *vfpMgr;

@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_SLOCPARSER
 #define _SM_PARSER_FILEPARSER_SLOCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class SLOCParser : public IO::IFileParser
+		class SLOCParser : public IO::FileParser
 		{
 		public:
 			SLOCParser();

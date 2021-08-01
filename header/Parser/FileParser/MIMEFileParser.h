@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_MIMEFILEPARSER
 #define _SM_PARSER_FILEPARSER_MIMEFILEPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class MIMEFileParser : public IO::IFileParser
+		class MIMEFileParser : public IO::FileParser
 		{
 		public:
 			MIMEFileParser();

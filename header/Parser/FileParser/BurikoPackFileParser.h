@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_BURIKOPACKFILEPARSER
 #define _SM_PARSER_FILEPARSER_BURIKOPACKFILEPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class BurikoPackFileParser : public IO::IFileParser
+		class BurikoPackFileParser : public IO::FileParser
 		{
 		public:
 			BurikoPackFileParser();

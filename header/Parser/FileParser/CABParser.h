@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_CABPARSER
 #define _SM_PARSER_FILEPARSER_CABPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class CABParser : public IO::IFileParser
+		class CABParser : public IO::FileParser
 		{
 		public:
 			CABParser();

@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_GUIIMGPARSER
 #define _SM_PARSER_FILEPARSER_GUIIMGPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Sync/Mutex.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class GUIImgParser : public IO::IFileParser
+		class GUIImgParser : public IO::FileParser
 		{
 		private:
 			void *clsData;

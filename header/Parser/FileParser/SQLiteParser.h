@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_SQLITEPARSER
 #define _SM_PARSER_FILEPARSER_SQLITEPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class SQLiteParser : public IO::IFileParser
+		class SQLiteParser : public IO::FileParser
 		{
 		public:
 			SQLiteParser();

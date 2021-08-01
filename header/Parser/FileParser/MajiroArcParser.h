@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_MAJIROARCPARSER
 #define _SM_PARSER_FILEPARSER_MAJIROARCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class MajiroArcParser : public IO::IFileParser
+		class MajiroArcParser : public IO::FileParser
 		{
 		public:
 			MajiroArcParser();

@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_ID3PARSER
 #define _SM_PARSER_FILEPARSER_ID3PARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class ID3Parser : public IO::IFileParser
+		class ID3Parser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

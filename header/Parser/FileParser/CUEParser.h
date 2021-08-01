@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_CUEPARSER
 #define _SM_PARSER_FILEPARSER_CUEPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class CUEParser : public IO::IFileParser
+		class CUEParser : public IO::FileParser
 		{
 		private:
 			Parser::ParserList *parsers;

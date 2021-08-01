@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_CLASSPARSER
 #define _SM_PARSER_FILEPARSER_CLASSPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "IO/JavaClass.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class ClassParser : public IO::IFileParser
+		class ClassParser : public IO::FileParser
 		{
 		public:
 			ClassParser();

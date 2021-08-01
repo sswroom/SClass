@@ -1246,7 +1246,8 @@ IO/I2CChannel.h:
 IO/I2CMODBUS.h: ../../src/IO/I2CMODBUS.cpp
 @I2CMODBUS.o
 IO/IFileBuffer.h:
-IO/IFileParser.h:
+IO/FileParser.h: ../../src/IO/FileParser.cpp
+@FileParser.o
 IO/IFileSelector.h:
 IO/IGPUControl.h:
 IO/IniFile.h: ../../src/IO/IniFile.cpp
@@ -1498,6 +1499,8 @@ Map/AssistedReverseGeocoder.h: ../../src/Map/AssistedReverseGeocoder.cpp
 @AssistedReverseGeocoder.o
 Map/AssistedReverseGeocoderPL.h: ../../src/Map/AssistedReverseGeocoderPL.cpp
 @AssistedReverseGeocoderPL.o
+Map/BaseMapLayer.h: ../../src/Map/BaseMapLayer.cpp
+@BaseMapLayer.o
 Map/CIPLayer2.h: ../../src/Map/CIPLayer2.cpp
 @CIPLayer2.o
 Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
@@ -3643,6 +3646,7 @@ FileCheck.o: ../../src/IO/FileCheck.cpp
 FileExporter.o: ../../src/IO/FileExporter.cpp
 FileFindRecur.o: ../../src/IO/FileFindRecur.cpp
 FileLog.o: ../../src/IO/FileLog.cpp
+FileParser.o: ../../src/IO/FileParser.cpp
 FileSectorData.o: ../../src/IO/FileSectorData.cpp
 GPIOPin.o: ../../src/IO/GPIOPin.cpp
 GPSNMEA.o: ../../src/IO/GPSNMEA.cpp
@@ -3765,6 +3769,7 @@ DasmX86_16.o: ../../src/Manage/DasmX86_16.cpp
 ExceptionLogger.o: ../../src/Manage/ExceptionLogger.cpp
 MonConn.o: ../../src/Manage/MonConn.cpp
 OSInfo.o: ../../src/Manage/OSInfo.cpp
+BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp

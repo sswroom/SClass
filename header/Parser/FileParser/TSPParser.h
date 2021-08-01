@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_TSPPARSER
 #define _SM_PARSER_FILEPARSER_TSPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class TSPParser : public IO::IFileParser
+		class TSPParser : public IO::FileParser
 		{
 		public:
 			TSPParser();

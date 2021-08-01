@@ -115,14 +115,29 @@ Bool Net::OpenSSLEngine::IsError()
 	return this->clsData->ctx == 0;
 }
 
-Bool Net::OpenSSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile)
+Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
 {
 	if (this->clsData->ctx == 0)
 	{
 		return false;
 	}
+	
+	if (certASN1 != 0 && certASN1->GetFileType() == Crypto::X509File::FT_CERT && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::X509File::FT_PRIV_KEY)
+	{
+		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
+		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
+		{
+			return false;
+		}
+		if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
 
-	SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
+/*	SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 	if (SSL_CTX_use_certificate_file(this->clsData->ctx, (const Char*)certFile, SSL_FILETYPE_PEM) <= 0)
 	{
 		return false;
@@ -132,7 +147,7 @@ Bool Net::OpenSSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char
 	{
 		return false;
 	}
-	return true;
+	return true;*/
 }
 
 UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)

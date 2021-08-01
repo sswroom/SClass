@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_PNGPARSER
 #define _SM_PARSER_FILEPARSER_PNGPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/ImageList.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class PNGParser : public IO::IFileParser
+		class PNGParser : public IO::FileParser
 		{
 		private:
 			static void ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, Media::FrameInfo *info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette);

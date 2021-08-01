@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_ELFPARSER
 #define _SM_PARSER_FILEPARSER_ELFPARSER
 #include "IO/EXEFile.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class ELFParser : public IO::IFileParser
+		class ELFParser : public IO::FileParser
 		{
 		private:
 			static Int64 __stdcall TReadInt64(UInt8 *pVal);

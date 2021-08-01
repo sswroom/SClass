@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_EXEPARSER
 #define _SM_PARSER_FILEPARSER_EXEPARSER
 #include "IO/EXEFile.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class EXEParser : public IO::IFileParser
+		class EXEParser : public IO::FileParser
 		{
 		public:
 			EXEParser();

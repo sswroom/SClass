@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_HTRECPARSER
 #define _SM_PARSER_FILEPARSER_HTRECPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class HTRecParser : public IO::IFileParser
+		class HTRecParser : public IO::FileParser
 		{
 		public:
 			HTRecParser();

@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_OZIMAPPARSER
 #define _SM_PARSER_FILEPARSER_OZIMAPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class OziMapParser : public IO::IFileParser
+		class OziMapParser : public IO::FileParser
 		{
 		private:
 			Parser::ParserList *parsers;

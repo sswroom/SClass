@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_GIFPARSER
 #define _SM_PARSER_FILEPARSER_GIFPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class GIFParser : public IO::IFileParser
+		class GIFParser : public IO::FileParser
 		{
 		public:
 			GIFParser();

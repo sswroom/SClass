@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_DTSPARSER
 #define _SM_PARSER_FILEPARSER_DTSPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class DTSParser : public IO::IFileParser
+		class DTSParser : public IO::FileParser
 		{
 		public:
 			DTSParser();

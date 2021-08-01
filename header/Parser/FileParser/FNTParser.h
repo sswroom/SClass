@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_FNTPARSER
 #define _SM_PARSER_FILEPARSER_FNTPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/FontRenderer.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -8,7 +8,7 @@ namespace Parser
 {
 	namespace FileParser
 	{
-		class FNTParser : public IO::IFileParser
+		class FNTParser : public IO::FileParser
 		{
 		public:
 			FNTParser();

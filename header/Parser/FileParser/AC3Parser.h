@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_AC3PARSER
 #define _SM_PARSER_FILEPARSER_AC3PARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class AC3Parser : public IO::IFileParser
+		class AC3Parser : public IO::FileParser
 		{
 		public:
 			AC3Parser();

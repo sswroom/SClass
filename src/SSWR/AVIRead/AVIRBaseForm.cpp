@@ -12,6 +12,7 @@
 #include "IO/Device/OlympusCameraControl.h"
 #include "IO/Device/RockwellModemController.h"
 #include "IO/StmData/FileData.h"
+#include "Map/BaseMapLayer.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -880,77 +881,28 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMTile");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.openstreetmap.org/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.openstreetmap.org/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.openstreetmap.org/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_CYCLE:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMOpenCycleMap");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/cycle/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/cycle/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/cycle/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_TRANSP:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMTransport");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/transport/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/transport/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/transport/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_LANDSCAPE:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMLandscape");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/landscape/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/landscape/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/landscape/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_OUTDOORS:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMOutdoors");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/outdoors/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/outdoors/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/outdoors/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMTransportDark");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/transport-dark/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/transport-dark/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/transport-dark/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_SPINAL:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMSpinalMap");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/spinal-map/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/spinal-map/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/spinal-map/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_OSM_MAPQUEST:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMMapQuest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://otile1.mqcdn.com/tiles/1.0.0/osm/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://otile2.mqcdn.com/tiles/1.0.0/osm/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://otile3.mqcdn.com/tiles/1.0.0/osm/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://otile4.mqcdn.com/tiles/1.0.0/osm/");
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-		this->core->OpenObject(mapLyr);
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
 		break;
 	case MNU_ESRI_MAP:
 		{

@@ -38,10 +38,39 @@ Bool UI::GUIMapControl::OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
 				return true;
 			}
 		}
+		Data::DateTime dt;
+		dt.SetCurrTimeUTC();
+		Int64 currTime = dt.ToTicks();
+		if (currTime - this->mouseLDownTime < 250)
+		{
+			this->OnMouseWheel(scnX, scnY, 1);
+			this->mouseLDownTime = 0;
+			return true;
+		}
+		else
+		{
+			this->mouseLDownTime = currTime;
+		}	
 		this->mouseCurrX = this->mouseDownX = scnX;
 		this->mouseCurrY = this->mouseDownY = scnY;
 		this->mouseDown = true;
 		this->Focus();
+	}
+	else if (btn == UI::GUIControl::MBTN_RIGHT)
+	{
+		Data::DateTime dt;
+		dt.SetCurrTimeUTC();
+		Int64 currTime = dt.ToTicks();
+		if (currTime - this->mouseRDownTime < 250)
+		{
+			this->OnMouseWheel(scnX, scnY, -1);
+			this->mouseRDownTime = 0;
+			return true;
+		}
+		else
+		{
+			this->mouseRDownTime = currTime;
+		}	
 	}
 	return false;
 }
@@ -696,6 +725,8 @@ UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	this->mouseCurrY = 0;
 	this->mouseDownX = 0;
 	this->mouseDownY = 0;
+	this->mouseLDownTime = 0;
+	this->mouseRDownTime = 0;
 	this->gZoom = false;
 	this->bgColor = bgColor;
 	this->bgUpdated = false;

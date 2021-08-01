@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_CSVPARSER
 #define _SM_PARSER_FILEPARSER_CSVPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class CSVParser : public IO::IFileParser
+		class CSVParser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

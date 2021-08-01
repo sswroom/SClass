@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_AOSPARSER
 #define _SM_PARSER_FILEPARSER_AOSPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class AOSParser : public IO::IFileParser
+		class AOSParser : public IO::FileParser
 		{
 		public:
 			AOSParser();

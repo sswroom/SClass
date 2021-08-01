@@ -5,7 +5,7 @@
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "IO/IStreamData.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/IImgResizer.h"
 #include "Media/FrameInfo.h"
 #include "Media/ImageList.h"

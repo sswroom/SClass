@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_LNKPARSER
 #define _SM_PARSER_FILEPARSER_LNKPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class LNKParser : public IO::IFileParser
+		class LNKParser : public IO::FileParser
 		{
 		public:
 			LNKParser();

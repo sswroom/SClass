@@ -115,7 +115,7 @@
 
 Parser::FullParserList::FullParserList() : Parser::ParserList()
 {
-	IO::IFileParser *parser;
+	IO::FileParser *parser;
 	NEW_CLASS(parser, Parser::FileParser::WAVParser())
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::BMPParser());

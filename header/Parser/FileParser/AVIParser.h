@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_AVIPARSER
 #define _SM_PARSER_FILEPARSER_AVIPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/AudioFormat.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class AVIParser : public IO::IFileParser
+		class AVIParser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

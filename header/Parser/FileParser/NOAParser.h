@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_NOAPARSER
 #define _SM_PARSER_FILEPARSER_NOAPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class NOAParser : public IO::IFileParser
+		class NOAParser : public IO::FileParser
 		{
 		public:
 			NOAParser();

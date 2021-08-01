@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_SEGPACKPARSER
 #define _SM_PARSER_FILEPARSER_SEGPACKPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class SEGPackParser : public IO::IFileParser
+		class SEGPackParser : public IO::FileParser
 		{
 		public:
 			SEGPackParser();

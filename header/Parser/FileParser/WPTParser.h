@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_WPTPARSER
 #define _SM_PARSER_FILEPARSER_WPTPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class WPTParser : public IO::IFileParser
+		class WPTParser : public IO::FileParser
 		{
 		public:
 			WPTParser();

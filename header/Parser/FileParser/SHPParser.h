@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_SHPPARSER
 #define _SM_PARSER_FILEPARSER_SHPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class SHPParser : public IO::IFileParser
+		class SHPParser : public IO::FileParser
 		{
 		private:
 			UInt32 codePage;

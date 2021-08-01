@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_GZIPPARSER
 #define _SM_PARSER_FILEPARSER_GZIPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class GZIPParser : public IO::IFileParser
+		class GZIPParser : public IO::FileParser
 		{
 		public:
 			GZIPParser();

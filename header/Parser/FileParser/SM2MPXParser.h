@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_SM2MPXPARSER
 #define _SM_PARSER_FILEPARSER_SM2MPXPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class SM2MPXParser : public IO::IFileParser
+		class SM2MPXParser : public IO::FileParser
 		{
 		public:
 			SM2MPXParser();

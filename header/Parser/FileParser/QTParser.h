@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_QTPARSER
 #define _SM_PARSER_FILEPARSER_QTPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/MediaFile.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class QTParser : public IO::IFileParser
+		class QTParser : public IO::FileParser
 		{
 		public:
 			QTParser();

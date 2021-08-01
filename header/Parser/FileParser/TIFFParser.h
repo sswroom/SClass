@@ -1,13 +1,13 @@
 #ifndef _SM_PARSER_FILEPARSER_TIFFPARSER
 #define _SM_PARSER_FILEPARSER_TIFFPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Media/EXIFData.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class TIFFParser : public IO::IFileParser
+		class TIFFParser : public IO::FileParser
 		{
 		private:
 			Parser::ParserList *parsers;

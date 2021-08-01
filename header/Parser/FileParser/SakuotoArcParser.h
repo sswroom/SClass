@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_SAKUOTOARCPARSER
 #define _SM_PARSER_FILEPARSER_SAKUOTOARCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class SakuotoArcParser : public IO::IFileParser
+		class SakuotoArcParser : public IO::FileParser
 		{
 		public:
 			SakuotoArcParser();

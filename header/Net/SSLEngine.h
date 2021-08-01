@@ -1,5 +1,6 @@
 #ifndef _SM_NET_SSLENGINE
 #define _SM_NET_SSLENGINE
+#include "Crypto/X509File.h"
 #include "Net/TCPClient.h"
 
 namespace Net
@@ -67,10 +68,12 @@ namespace Net
 		virtual ~SSLEngine();
 		
 		virtual Bool IsError() = 0;
-		virtual Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile) = 0;
+		virtual Bool SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1) = 0;
 		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
 		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;
+
+		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
 		void ServerInit(UInt32 *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		static const UTF8Char *ErrorTypeGetName(ErrorType err);

@@ -6,7 +6,7 @@
 #include "IO/FileStream.h"
 #include "IO/IStreamData.h"
 #include "IO/StmData/FileData.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "IO/Path.h"
 #include "Map/IMapDrawLayer.h"
 #include "Map/MapView.h"

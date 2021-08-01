@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_RLOCPARSER
 #define _SM_PARSER_FILEPARSER_RLOCPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class RLOCParser : public IO::IFileParser
+		class RLOCParser : public IO::FileParser
 		{
 		public:
 			RLOCParser();

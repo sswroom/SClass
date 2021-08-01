@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_NWAPARSER
 #define _SM_PARSER_FILEPARSER_NWAPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class NWAParser : public IO::IFileParser
+		class NWAParser : public IO::FileParser
 		{
 		public:
 			NWAParser();

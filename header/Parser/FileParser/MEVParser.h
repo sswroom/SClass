@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_MEVPARSER
 #define _SM_PARSER_FILEPARSER_MEVPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Map/MapEnv.h"
 #include "Text/Encoding.h"
 
@@ -8,7 +8,7 @@ namespace Parser
 {
 	namespace FileParser
 	{
-		class MEVParser : public IO::IFileParser
+		class MEVParser : public IO::FileParser
 		{
 		private:
 			typedef struct

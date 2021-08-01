@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_PCAPPARSER
 #define _SM_PARSER_FILEPARSER_PCAPPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class PCAPParser : public IO::IFileParser
+		class PCAPParser : public IO::FileParser
 		{
 		public:
 			PCAPParser();

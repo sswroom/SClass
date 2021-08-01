@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_TILPARSER
 #define _SM_PARSER_FILEPARSER_TILPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class TILParser : public IO::IFileParser
+		class TILParser : public IO::FileParser
 		{
 		public:
 			TILParser();

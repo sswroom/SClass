@@ -30,6 +30,8 @@ namespace UI
 		Bool bgUpdated;
 		UInt32 bgColor;
 		UInt32 bgDispColor;
+		Int64 mouseLDownTime;
+		Int64 mouseRDownTime;
 		Bool mouseDown;
 		OSInt mouseDownX;
 		OSInt mouseDownY;

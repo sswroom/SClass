@@ -1,7 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_XMLPARSER
 #define _SM_PARSER_FILEPARSER_XMLPARSER
 #include "Data/ICaseStringUTF8Map.h"
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 #include "Map/VectorLayer.h"
 #include "Map/GPSTrack.h"
 #include "Text/VSProject.h"
@@ -11,7 +11,7 @@ namespace Parser
 {
 	namespace FileParser
 	{
-		class XMLParser : public IO::IFileParser
+		class XMLParser : public IO::FileParser
 		{
 		private:
 			typedef struct

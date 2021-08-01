@@ -18,7 +18,7 @@ namespace Net
 		
 		virtual void SetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool IsError();
-		virtual Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
+		virtual Bool SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1);
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err);
 	};

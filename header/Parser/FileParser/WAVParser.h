@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_WAVPARSER
 #define _SM_PARSER_FILEPARSER_WAVPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class WAVParser : public IO::IFileParser
+		class WAVParser : public IO::FileParser
 		{
 		public:
 			WAVParser();

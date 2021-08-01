@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_FILEPARSER_PLTPARSER
 #define _SM_PARSER_FILEPARSER_PLTPARSER
-#include "IO/IFileParser.h"
+#include "IO/FileParser.h"
 
 namespace Parser
 {
 	namespace FileParser
 	{
-		class PLTParser : public IO::IFileParser
+		class PLTParser : public IO::FileParser
 		{
 		public:
 			PLTParser();
