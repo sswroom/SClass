@@ -21,6 +21,7 @@ namespace Net
 		virtual Bool SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1);
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err);
+		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1);
 	};
 }
 #endif

@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "Data/DateTime.h"
+#include "IO/StmData/MemoryData.h"
 #include "Net/OpenSSLClient.h"
 #include "Net/OpenSSLCore.h"
 #include "Net/OpenSSLEngine.h"
+#include "Parser/FileParser/X509Parser.h"
 #include "Text/MyString.h"
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -300,4 +302,85 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
 	return cli;
+}
+
+Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1)
+{
+	if (certASN1 == 0 || keyASN1 == 0)
+	{
+		return false;
+	}
+
+	Bool succ = false;
+	BIGNUM *bn = BN_new();
+	BN_set_word(bn, RSA_F4);
+	RSA *rsa = RSA_new();
+	if (RSA_generate_key_ex(rsa, 2048, bn, 0) > 0)
+	{
+		EVP_PKEY *pkey = EVP_PKEY_new();
+		X509 *cert = X509_new();
+		EVP_PKEY_assign(pkey, EVP_PKEY_RSA, rsa);
+		ASN1_INTEGER_set(X509_get_serialNumber(cert), 1);
+
+		X509_gmtime_adj(X509_get_notBefore(cert), 0);
+		X509_gmtime_adj(X509_get_notAfter(cert), 365 * 24 * 3600);
+
+		X509_set_pubkey(cert, pkey);
+
+		X509_name_st *name = X509_get_subject_name(cert);
+		X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC, country, -1, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC, company, -1, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, commonName, -1, -1, 0);
+
+		X509_set_issuer_name(cert, name);
+		X509_sign(cert, pkey, EVP_sha256());
+
+		BIO *bio1;
+		BIO *bio2;
+		UInt8 buff[4096];
+		Crypto::X509File *pobjKey = 0;
+		Crypto::X509File *pobjCert = 0;
+		IO::StmData::MemoryData *mdata;
+		Parser::FileParser::X509Parser parser;
+
+		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
+		int ret  = PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
+		int readSize = BIO_read(bio2, buff, 4096);
+		if (readSize > 0)
+		{
+			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
+			pobjKey = (Crypto::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			DEL_CLASS(mdata);
+		}
+		int ret2 = PEM_write_bio_X509(bio1, cert);
+		readSize = BIO_read(bio2, buff, 4096);
+		if (readSize > 0)
+		{
+			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
+			pobjCert = (Crypto::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			DEL_CLASS(mdata);
+		}
+		BIO_free(bio1);
+		BIO_free(bio2);
+		X509_free(cert);
+		EVP_PKEY_free(pkey);
+
+		if (pobjCert && pobjKey)
+		{
+			succ = true;
+			*certASN1 = pobjCert;
+			*keyASN1 = pobjKey;
+		}
+		else
+		{
+			SDEL_CLASS(pobjCert);
+			SDEL_CLASS(pobjKey);
+		}
+	}
+	else
+	{
+		RSA_free(rsa);
+	}
+	BN_free(bn);
+	return succ;
 }

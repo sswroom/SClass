@@ -90,6 +90,14 @@ namespace SSWR
 			UI::GUICheckBox *chkCrossOrigin;
 			UI::GUILabel *lblDownloadCnt;
 			UI::GUICheckBox *chkDownloadCnt;
+			UI::GUIGroupBox *grpSSL;
+			UI::GUICheckBox *chkSSL;
+			UI::GUILabel *lblSSLCountry;
+			UI::GUITextBox *txtSSLCountry;
+			UI::GUILabel *lblSSLCompany;
+			UI::GUITextBox *txtSSLCompany;
+			UI::GUILabel *lblSSLCommonName;
+			UI::GUITextBox *txtSSLCommonName;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
 
