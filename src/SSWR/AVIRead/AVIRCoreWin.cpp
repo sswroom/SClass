@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryData2.h"
+#include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
 #include "SSWR/AVIRead/AVIRCoreWin.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
@@ -23,7 +24,6 @@
 #include "SSWR/AVIRead/AVIRSectorForm.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
-#include "SSWR/AVIRead/AVIRX509FileForm.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -206,10 +206,10 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_X509_FILE:
+	case IO::ParsedObject::PT_ASN1_DATA:
 		{
-			SSWR::AVIRead::AVIRX509FileForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRX509FileForm(0, this->ui, this, (Crypto::X509File*)pobj));
+			SSWR::AVIRead::AVIRASN1DataForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1DataForm(0, this->ui, this, (Net::ASN1Data*)pobj));
 			InitForm(frm);
 			frm->Show();
 		}

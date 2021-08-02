@@ -1,0 +1,31 @@
+#ifndef _SM_NET_ASN1DATA
+#define _SM_NET_ASN1DATA
+#include "IO/ParsedObject.h"
+#include "Text/StringBuilderUTF.h"
+
+namespace Net
+{
+	class ASN1Data : public IO::ParsedObject
+	{
+	public:
+		typedef enum
+		{
+			AT_X509
+		} ASN1Type;
+	protected:
+		UInt8 *buff;
+		UOSInt buffSize;
+
+		ASN1Data(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+	public:
+		virtual ~ASN1Data();
+
+		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual ASN1Type GetASN1Type() = 0;
+
+		Bool ToASN1String(Text::StringBuilderUTF *sb);
+		const UInt8 *GetASN1Buff();
+		UOSInt GetASN1BuffSize();
+	};
+}
+#endif

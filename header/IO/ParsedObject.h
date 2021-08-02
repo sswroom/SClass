@@ -33,7 +33,7 @@ namespace IO
 			PT_ETHERNET_ANALYZER,
 			PT_JAVA_CLASS,
 			PT_SMAKE,
-			PT_X509_FILE
+			PT_ASN1_DATA
 		} ParserType;
 
 	protected:

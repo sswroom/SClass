@@ -21,7 +21,7 @@ Int32 Parser::FileParser::X509Parser::GetName()
 
 void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_X509_FILE)
+	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_ASN1_DATA)
 	{
 		selector->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"X.509 Certification File");
 		selector->AddFilter((const UTF8Char*)"*.p12", (const UTF8Char*)"PKCS 12 KeyStore File");
@@ -30,13 +30,13 @@ void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector
 
 IO::ParsedObject::ParserType Parser::FileParser::X509Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_X509_FILE;
+	return IO::ParsedObject::PT_ASN1_DATA;
 }
 
 IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
 {
 	UInt64 len = fd->GetDataSize();
-	if (len > 4096 || (targetType != IO::ParsedObject::PT_UNKNOWN && targetType != IO::ParsedObject::PT_X509_FILE))
+	if (len > 4096 || (targetType != IO::ParsedObject::PT_UNKNOWN && targetType != IO::ParsedObject::PT_ASN1_DATA))
 	{
 		return 0;
 	}

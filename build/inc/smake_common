@@ -2191,6 +2191,8 @@ Media/VideoFilter/VideoFilterBase.h: ../../src/Media/VideoFilter/VideoFilterBase
 
 Net/ARPHandler.h: ../../src/Net/ARPHandler.cpp
 @ARPHandler.o
+Net/ASN1Data.h: ../../src/Net/ASN1Data.cpp
+@ASN1Data.o
 Net/ASN1MIB.h: ../../src/Net/ASN1MIB.cpp
 @ASN1MIB.o
 Net/ASN1OIDDB.h: ../../src/Net/ASN1OIDDB.cpp
@@ -2674,6 +2676,8 @@ SSWR/AVIRead/AVIRARPScanForm.h: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
 @AVIRARPScanForm.o
 SSWR/AVIRead/AVIRAsmConvForm.h: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
 @AVIRAsmConvForm.o
+SSWR/AVIRead/AVIRASN1DataForm.h: ../../src/SSWR/AVIRead/AVIRASN1DataForm.cpp
+@AVIRASN1DataForm.o
 SSWR/AVIRead/AVIRASN1MIBForm.h: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
 @AVIRASN1MIBForm.o
 SSWR/AVIRead/AVIRASN1OIDForm.h: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
@@ -3121,8 +3125,6 @@ SSWR/AVIRead/AVIRWMIForm.h: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 @AVIRWMIForm.o
 SSWR/AVIRead/AVIRWOLForm.h: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
 @AVIRWOLForm.o
-SSWR/AVIRead/AVIRX509FileForm.h: ../../src/SSWR/AVIRead/AVIRX509FileForm.cpp
-@AVIRX509FileForm.o
 SSWR/AVIRead/AVIRXMLWalkForm.h: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
 @AVIRXMLWalkForm.o
 SSWR/AVIRead/IMapNavigator.h:
@@ -4078,6 +4080,7 @@ IVTCFilter.o: ../../src/Media/VideoFilter/IVTCFilter.cpp
 UVOffsetFilter.o: ../../src/Media/VideoFilter/UVOffsetFilter.cpp
 VideoFilterBase.o: ../../src/Media/VideoFilter/VideoFilterBase.cpp
 ARPHandler.o: ../../src/Net/ARPHandler.cpp
+ASN1Data.o: ../../src/Net/ASN1Data.cpp
 ASN1MIB.o: ../../src/Net/ASN1MIB.cpp
 ASN1OIDDB.o: ../../src/Net/ASN1OIDDB.cpp
 ASN1PDUBuilder.o: ../../src/Net/ASN1PDUBuilder.cpp
@@ -4314,6 +4317,7 @@ AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 AVIRARPPingForm.o: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 AVIRARPScanForm.o: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
 AVIRAsmConvForm.o: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
+AVIRASN1DataForm.o: ../../src/SSWR/AVIRead/AVIRASN1DataForm.cpp
 AVIRASN1MIBForm.o: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
 AVIRASN1OIDForm.o: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
 AVIRAudioFilterForm.o: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
@@ -4537,7 +4541,6 @@ AVIRWiFiLogManagerForm.o: ../../src/SSWR/AVIRead/AVIRWiFiLogManagerForm.cpp
 AVIRWifiScanForm.o: ../../src/SSWR/AVIRead/AVIRWifiScanForm.cpp
 AVIRWMIForm.o: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 AVIRWOLForm.o: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
-AVIRX509FileForm.o: ../../src/SSWR/AVIRead/AVIRX509FileForm.cpp
 AVIRXMLWalkForm.o: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
 AVIRMailViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMailViewer.cpp
 AVIRMIMEHTMLViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.cpp

@@ -1,11 +1,10 @@
 #ifndef _SM_CRYPTO_X509FILE
 #define _SM_CRYPTO_X509FILE
-#include "IO/ParsedObject.h"
-#include "Text/StringBuilderUTF.h"
+#include "Net/ASN1Data.h"
 
 namespace Crypto
 {
-	class X509File : public IO::ParsedObject
+	class X509File : public Net::ASN1Data
 	{
 	public:
 		typedef enum
@@ -16,20 +15,14 @@ namespace Crypto
 			FT_PRIV_KEY
 		} FileType;
 	private:
-		UInt8 *buff;
-		UOSInt buffSize;
 		FileType fileType;
 
 		X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize, FileType fileType);
 	public:
 		virtual ~X509File();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
-
-		Bool ToASN1String(Text::StringBuilderUTF *sb);
+		virtual Net::ASN1Data::ASN1Type GetASN1Type();
 		FileType GetFileType();
-		const UInt8 *GetASN1Buff();
-		UOSInt GetASN1BuffSize();
 
 		static X509File *LoadFile(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize, FileType fileType);
 	};

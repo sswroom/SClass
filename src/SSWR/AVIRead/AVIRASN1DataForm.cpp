@@ -1,14 +1,14 @@
 #include "Stdafx.h"
-#include "SSWR/AVIRead/AVIRX509FileForm.h"
+#include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-SSWR::AVIRead::AVIRX509FileForm::AVIRX509FileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Crypto::X509File *file) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"X509 File");
+	this->SetText((const UTF8Char*)"ASN1 Data");
 	this->SetFont(0, 8.25, false);
 
 	this->core = core;
-	this->file = file;
+	this->asn1 = asn1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -19,16 +19,16 @@ SSWR::AVIRead::AVIRX509FileForm::AVIRX509FileForm(UI::GUIClientControl *parent, 
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	Text::StringBuilderUTF8 sb;
-	this->file->ToASN1String(&sb);
+	this->asn1->ToASN1String(&sb);
 	this->txtASN1->SetText(sb.ToString());
 }
 
-SSWR::AVIRead::AVIRX509FileForm::~AVIRX509FileForm()
+SSWR::AVIRead::AVIRASN1DataForm::~AVIRASN1DataForm()
 {
-	DEL_CLASS(this->file);
+	DEL_CLASS(this->asn1);
 }
 
-void SSWR::AVIRead::AVIRX509FileForm::OnMonitorChanged()
+void SSWR::AVIRead::AVIRASN1DataForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
