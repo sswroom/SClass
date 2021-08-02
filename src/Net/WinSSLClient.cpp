@@ -33,157 +33,18 @@ void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs)
 	desc->cBuffers = nBuffs;
 }
 
-Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *hCred, const UTF8Char *hostName, Bool skipCertCheck) : TCPClient(sockf, s)
+Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *ctxt) : TCPClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
-	this->clsData->hCred = (CredHandle*)hCred;
+	this->clsData->ctxt = *(CredHandle*)ctxt;
+	this->clsData->hCred = 0;
 	this->clsData->step = 0;
 	this->clsData->recvBuff = 0;
 	this->clsData->decBuff = 0;
-
-	const WChar *wptr = Text::StrToWCharNew(hostName);
-	UInt32 retFlags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_STREAM;
-	TimeStamp ts;
-	SecBuffer outputBuff[3];
-	SecBuffer_Set(&outputBuff[0], SECBUFFER_EMPTY, 0, 0);
-	SecBufferDesc inputDesc;
-	SecBufferDesc outputDesc;
-	SecBufferDesc_Set(&outputDesc, outputBuff, 1);
-
-	if (skipCertCheck)
-	{
-		retFlags |= ISC_REQ_MANUAL_CRED_VALIDATION;
-	}
-
-	SECURITY_STATUS status;
-	status = InitializeSecurityContext(
-		this->clsData->hCred,
-		0,
-		(WChar*)wptr,
-		(unsigned long)retFlags,
-		0,
-		0,
-		0,
-		0,
-		&this->clsData->ctxt,
-		&outputDesc,
-		(unsigned long*)&retFlags,
-		&ts
-		);
-	if (status != SEC_I_CONTINUE_NEEDED)
-	{
-		Text::StrDelNew(wptr);
-		return;
-	}
-	Net::SocketFactory::ErrorType et;
-	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, &et) != outputBuff[0].cbBuffer)
-	{
-		FreeContextBuffer(outputBuff[0].pvBuffer);
-		Text::StrDelNew(wptr);
-		return;
-	}
-	FreeContextBuffer(outputBuff[0].pvBuffer);
-
-	this->sockf->SetRecvTimeout(s, 3000);
-	SecBuffer inputBuff[2];
-	UInt8 recvBuff[2048];
-	UOSInt recvOfst = 0;
-	UOSInt recvSize;
-	UOSInt i;
-	while (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_INCOMPLETE_MESSAGE)
-	{
-		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
-		{
-			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, &et);
-			if (recvSize <= 0)
-			{
-				Text::StrDelNew(wptr);
-				return;
-			}
-			recvOfst += recvSize;
-		}
-
-		SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvOfst);
-		SecBuffer_Set(&inputBuff[1], SECBUFFER_EMPTY, 0, 0);
-		SecBufferDesc_Set(&inputDesc, inputBuff, 2);
-
-		SecBuffer_Set(&outputBuff[0], SECBUFFER_TOKEN, 0, 0);
-#if defined(SECBUFFER_ALERT)
-		SecBuffer_Set(&outputBuff[1], SECBUFFER_ALERT, 0, 0);
-#else
-		SecBuffer_Set(&outputBuff[1], SECBUFFER_EMPTY, 0, 0);
-#endif
-		SecBuffer_Set(&outputBuff[2], SECBUFFER_EMPTY, 0, 0);
-		SecBufferDesc_Set(&outputDesc, outputBuff, 3);
-
-		status = InitializeSecurityContext(
-			this->clsData->hCred,
-			&this->clsData->ctxt,
-			(WChar*)wptr,
-			retFlags,
-			0,
-			0,
-			&inputDesc,
-			0,
-			0,
-			&outputDesc,
-			(unsigned long*)&retFlags,
-			&ts);
-
-		if (status == SEC_E_INCOMPLETE_MESSAGE)
-		{
-
-		}
-		else if (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_OK)
-		{
-			Bool succ = true;
-			i = 0;
-			while (i < 3)
-			{
-				if (outputBuff[i].BufferType == SECBUFFER_TOKEN && outputBuff[i].cbBuffer > 0)
-				{
-					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
-					{
-						succ = false;
-					}
-				}
-
-				if (outputBuff[i].pvBuffer)
-				{
-					FreeContextBuffer(outputBuff[i].pvBuffer);
-				}
-				i++;
-			}
-			if (!succ)
-			{
-				Text::StrDelNew(wptr);
-				return;
-			}
-			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
-			{
-				MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
-				recvOfst = inputBuff[1].cbBuffer;
-			}
-			else
-			{
-				recvOfst = 0;
-			}
-		}
-		else
-		{
-			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
-			{
-
-			}
-			Text::StrDelNew(wptr);
-			return;
-		}
-	}
-
-	Text::StrDelNew(wptr);
 	this->clsData->step = 1;
 	MemClear(&this->clsData->stmSizes, sizeof(this->clsData->stmSizes));
-	status = QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_STREAM_SIZES, &this->clsData->stmSizes);
+	
+	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_STREAM_SIZES, &this->clsData->stmSizes);
 	this->clsData->recvBuffSize = this->clsData->stmSizes.cbHeader + this->clsData->stmSizes.cbMaximumMessage + this->clsData->stmSizes.cbTrailer;
 	this->clsData->recvBuff = MemAlloc(UInt8, this->clsData->recvBuffSize);
 	this->clsData->recvOfst = 0;
@@ -194,6 +55,11 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *hCre
 Net::WinSSLClient::~WinSSLClient()
 {
 	//SSL_free(this->clsData->ssl);
+	if (this->clsData->step != 0)
+	{
+		DeleteSecurityContext(&this->clsData->ctxt);
+		this->clsData->step = 0;
+	}
 	if (this->clsData->recvBuff)
 	{
 		MemFree(this->clsData->recvBuff);

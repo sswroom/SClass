@@ -12,6 +12,7 @@ namespace Net
 		Bool skipCertCheck;
 
 		Bool InitClient(Method method);
+		Bool InitServer(Method method, void *cred);
 		virtual Net::TCPClient *CreateServerConn(UInt32 *s);
 	public:
 		WinSSLEngine(Net::SocketFactory *sockf, Method method);
