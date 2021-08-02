@@ -85,6 +85,7 @@ Win32::WindowsBTScanner::WindowsBTScanner()
 	NEW_CLASS(this->devMut, Sync::Mutex());
 	NEW_CLASS(this->devMap, Data::UInt64Map<ScanRecord*>());
 	
+	this->watcher = BluetoothLEAdvertisementWatcher();
 	this->watcher.ScanningMode(BluetoothLEScanningMode::Active);
 	this->watcher.Received({ this, &Win32::WindowsBTScanner::ReceivedHandler });
 	this->watcher.Stopped({ this, &Win32::WindowsBTScanner::StoppedHandler });

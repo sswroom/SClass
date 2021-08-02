@@ -10,7 +10,7 @@ namespace Win32
 	class WindowsBTScanner : public IO::BTScanner
 	{
 	private:
-		winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher watcher;
+		winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher watcher = nullptr;
 		Data::UInt64Map<ScanRecord*> *devMap;
 		Sync::Mutex *devMut;
 		RecordHandler recHdlr;

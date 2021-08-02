@@ -135,6 +135,17 @@ Bool Net::WinSSLEngine::InitClient(Method method)
 	return status == 0;
 }
 
+Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
+{
+	if (!this->clsData->svrInit)
+	{
+		return 0;
+	}
+
+	////////////////////////////////
+	return 0;
+}
+
 Net::WinSSLEngine::WinSSLEngine(Net::SocketFactory *sockf, Method method) : Net::SSLEngine(sockf)
 {
 	this->clsData = MemAlloc(ClassData, 1);
@@ -167,7 +178,7 @@ Bool Net::WinSSLEngine::IsError()
 	return false;
 }
 
-Bool Net::WinSSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile)
+Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
 {
 	if (this->clsData->svrInit)
 	{
@@ -189,17 +200,6 @@ UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 {
 	*sbuff = 0;
 	return sbuff;
-}
-
-Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
-{
-	if (!this->clsData->svrInit)
-	{
-		return 0;
-	}
-
-	////////////////////////////////
-	return 0;
 }
 
 Net::TCPClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
@@ -255,4 +255,9 @@ Net::TCPClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &this->clsData->hCredCli, hostName, this->skipCertCheck));
 	return cli;
+}
+
+Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1)
+{
+	return false;
 }
