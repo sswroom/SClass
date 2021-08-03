@@ -238,7 +238,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			UInt8 oidPDU[64];
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU((const UTF8Char *)"1.3.6.1.4.1.24681", oidPDU); //QNAP
+				pduSize = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.24681", oidPDU); //QNAP
 				if (Net::ASN1Util::OIDCompare(oidPDU, pduSize, agent->objId, agent->objIdLen) == 0)
 				{
 					ReadingInfo *reading;
@@ -276,7 +276,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							reading = MemAlloc(ReadingInfo, 1);
 							reading->name = Text::StrCopyNew((const UTF8Char*)"System Temp");
 							reading->index = 0;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU((const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.7.1", reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.7.1", reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -296,7 +296,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							reading = MemAlloc(ReadingInfo, 1);
 							reading->name = Text::StrCopyNew((const UTF8Char*)"System Fan Speed");
 							reading->index = 1;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU((const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.1", reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.1", reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_ENGINERPM;
@@ -316,7 +316,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							reading = MemAlloc(ReadingInfo, 1);
 							reading->name = Text::StrCopyNew((const UTF8Char*)"Power Fan Speed");
 							reading->index = 2;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU((const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.5.1", reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.5.1", reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_ENGINERPM;
@@ -336,7 +336,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							reading = MemAlloc(ReadingInfo, 1);
 							reading->name = Text::StrCopyNew((const UTF8Char*)"Power Temp");
 							reading->index = 3;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU((const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.6.1", reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.6.1", reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -364,7 +364,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								reading = MemAlloc(ReadingInfo, 1);
 								reading->name = 0;
 								reading->index = 4 + i;
-								reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, reading->objId);
+								reading->objIdLen = Net::ASN1Util::OIDUText2PDU(sbuff, reading->objId);
 								reading->mulVal = 1.0;
 								reading->invVal = -1;
 								reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -409,7 +409,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU((const UTF8Char *)"1.3.6.1.4.1.8072.3.2.10", oidPDU); //Linux
+				pduSize = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.8072.3.2.10", oidPDU); //Linux
 				if (Net::ASN1Util::OIDCompare(oidPDU, pduSize, agent->objId, agent->objIdLen) == 0)
 				{
 					if (agent->mac[0] == 0x00 && agent->mac[1] == 0x11 && agent->mac[2] == 0x32) //Synology
@@ -440,7 +440,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								reading = MemAlloc(ReadingInfo, 1);
 								reading->name = Text::StrCopyNew((const UTF8Char*)"System Temp");
 								reading->index = 0;
-								reading->objIdLen = Net::ASN1Util::OIDText2PDU((const UTF8Char*)"1.3.6.1.4.1.6574.1.2.0", reading->objId);
+								reading->objIdLen = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.6574.1.2.0", reading->objId);
 								reading->mulVal = 1.0;
 								reading->invVal = 0;
 								reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -464,7 +464,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = 4 + i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDUText2PDU(sbuff, reading->objId);
 									reading->mulVal = 1.0;
 									reading->invVal = 0;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -526,7 +526,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU((const UTF8Char *)"1.3.6.1.4.1.1602", oidPDU); //Canon
+				pduSize = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.1602", oidPDU); //Canon
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					Int32 iVal;
@@ -559,7 +559,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								reading = MemAlloc(ReadingInfo, 1);
 								reading->name = 0;
 								reading->index = i - 1;
-								reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, reading->objId);
+								reading->objIdLen = Net::ASN1Util::OIDUText2PDU(sbuff, reading->objId);
 								reading->mulVal = 1.0;
 								reading->invVal = -1;
 								reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_COUNT;
@@ -597,7 +597,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU((const UTF8Char *)"1.3.6.1.4.1.26696", oidPDU); //HP
+				pduSize = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.26696", oidPDU); //HP
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					found = true;
@@ -617,7 +617,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU((const UTF8Char *)"1.3.6.1.4.1.3854.1", oidPDU); //AKCP sensorProbe
+				pduSize = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.3854.1", oidPDU); //AKCP sensorProbe
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					ReadingInfo *reading;
@@ -652,7 +652,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDUText2PDU(sbuff, reading->objId);
 									reading->mulVal = 0.1;
 									reading->invVal = -512;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -716,7 +716,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDUText2PDU(sbuff, reading->objId);
 									reading->mulVal = 1.0;
 									reading->invVal = -1;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY;
@@ -780,7 +780,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDUText2PDU(sbuff, reading->objId);
 									reading->mulVal = 1.0;
 									reading->invVal = -1;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_ONOFF;
@@ -831,7 +831,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU((const UTF8Char *)"1.3.6.1.4.1.311.1.1.3.1.1", oidPDU); //workstation (Windows NT)
+				pduSize = Net::ASN1Util::OIDText2PDU("1.3.6.1.4.1.311.1.1.3.1.1", oidPDU); //workstation (Windows NT)
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					found = true;

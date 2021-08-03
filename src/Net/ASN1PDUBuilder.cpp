@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/ASN1PDUBuilder.h"
+#include "Net/ASN1Util.h"
 #include "Text/MyString.h"
 
 //SNMP / LDAP
@@ -34,7 +35,7 @@ void Net::ASN1PDUBuilder::AllocateSize(UOSInt size)
 	}
 }
 
-void Net::ASN1PDUBuilder::SequenceBegin(UInt8 type)
+void Net::ASN1PDUBuilder::BeginOther(UInt8 type)
 {
 	this->AllocateSize(2);
 	this->buff[this->currOffset] = type;
@@ -43,7 +44,17 @@ void Net::ASN1PDUBuilder::SequenceBegin(UInt8 type)
 	this->currLev++;
 }
 
-void Net::ASN1PDUBuilder::SequenceEnd()
+void Net::ASN1PDUBuilder::BeginSequence()
+{
+	this->BeginOther(0x30);
+}
+
+void Net::ASN1PDUBuilder::BeginSet()
+{
+	this->BeginOther(0x31);
+}
+
+void Net::ASN1PDUBuilder::EndLevel()
 {
 	if (this->currLev > 0)
 	{
@@ -82,6 +93,15 @@ void Net::ASN1PDUBuilder::SequenceEnd()
 		}
 	}
 }
+
+void Net::ASN1PDUBuilder::EndAll()
+{
+	while (this->currLev > 0)
+	{
+		this->EndLevel();
+	}
+}
+
 
 void Net::ASN1PDUBuilder::AppendBool(Bool v)
 {
@@ -164,7 +184,17 @@ void Net::ASN1PDUBuilder::AppendUInt32(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendString(const UTF8Char *s)
+void Net::ASN1PDUBuilder::AppendBitString(const UInt8 *buff, UOSInt len)
+{
+	this->AppendOther(3, buff, len);
+}
+
+void Net::ASN1PDUBuilder::AppendOctetString(const UInt8 *buff, UOSInt len)
+{
+	this->AppendOther(4, buff, len);
+}
+
+void Net::ASN1PDUBuilder::AppendOctetStringS(const UTF8Char *s)
 {
 	if (s == 0)
 	{
@@ -175,41 +205,7 @@ void Net::ASN1PDUBuilder::AppendString(const UTF8Char *s)
 		return;
 	}
 	UOSInt len = Text::StrCharCnt(s);
-	if (len < 128)
-	{
-		this->AllocateSize(len + 2);
-		this->buff[this->currOffset] = 4;
-		this->buff[this->currOffset + 1] = (UInt8)len;
-		MemCopyNO(&this->buff[this->currOffset + 2], s, len);
-		this->currOffset += len + 2;
-	}
-	else if (len < 256)
-	{
-		this->AllocateSize(len + 3);
-		this->buff[this->currOffset] = 4;
-		this->buff[this->currOffset + 1] = 0x81;
-		this->buff[this->currOffset + 2] = (UInt8)len;
-		MemCopyNO(&this->buff[this->currOffset + 3], s, len);
-		this->currOffset += len + 3;
-	}
-	else if (len < 65536)
-	{
-		this->AllocateSize(len + 4);
-		this->buff[this->currOffset] = 4;
-		this->buff[this->currOffset + 1] = 0x82;
-		WriteMInt16(&this->buff[this->currOffset + 2], len);
-		MemCopyNO(&this->buff[this->currOffset + 4], s, len);
-		this->currOffset += len + 4;
-	}
-	else
-	{
-		this->AllocateSize(len + 5);
-		this->buff[this->currOffset] = 4;
-		this->buff[this->currOffset + 1] = 0x83;
-		WriteMInt24(&this->buff[this->currOffset + 2], len);
-		MemCopyNO(&this->buff[this->currOffset + 5], s, len);
-		this->currOffset += len + 5;
-	}
+	this->AppendOther(4, s, len);
 }
 
 void Net::ASN1PDUBuilder::AppendNull()
@@ -227,6 +223,13 @@ void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, UOSInt len)
 	this->buff[this->currOffset + 1] = (UInt8)len;
 	MemCopyNO(&this->buff[this->currOffset + 2], oid, len);
 	this->currOffset += len + 2;
+}
+
+void Net::ASN1PDUBuilder::AppendOIDString(const Char *oidStr)
+{
+	UInt8 buff[32];
+	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr, buff);
+	this->AppendOID(buff, buffSize);
 }
 
 void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
@@ -265,7 +268,7 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendBuff(UInt8 type, const UInt8 *buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize == 0)
 	{
@@ -314,6 +317,13 @@ void Net::ASN1PDUBuilder::AppendBuff(UInt8 type, const UInt8 *buff, UOSInt buffS
 
 const UInt8 *Net::ASN1PDUBuilder::GetBuff(UOSInt *buffSize)
 {
-	*buffSize = this->currOffset;
+	this->EndAll();
+	if (buffSize) *buffSize = this->currOffset;
 	return this->buff;
+}
+
+UOSInt Net::ASN1PDUBuilder::GetBuffSize()
+{
+	this->EndAll();
+	return this->currOffset;
 }

@@ -385,7 +385,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	while (Text::CharUtil::PtrIsWS(&filter));
 	if (filter[0] == '&')
 	{
-		pdu->SequenceBegin(0xA0);
+		pdu->BeginOther(0xA0);
 		filter++;
 
 		while (true)
@@ -401,7 +401,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 			}
 			else if (filter[0] == ')')
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return filter + 1;
 			}
 			else
@@ -412,7 +412,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	}
 	else if (filter[0] == '|')
 	{
-		pdu->SequenceBegin(0xA1);
+		pdu->BeginOther(0xA1);
 		while (true)
 		{
 			while (Text::CharUtil::PtrIsWS(&filter));
@@ -421,18 +421,18 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 				filter = ParseFilter(pdu, filter, true);
 				if (filter == 0)
 				{
-					pdu->SequenceEnd();
+					pdu->EndLevel();
 					return 0;
 				}
 			}
 			else if (filter[0] == ')')
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return filter + 1;
 			}
 			else
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return 0;
 			}
 		}
@@ -444,18 +444,18 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		{
 			return 0;
 		}
-		pdu->SequenceBegin(complex?0xA2:0x82);
+		pdu->BeginOther(complex?0xA2:0x82);
 		filterStart = filter;
 		while (true)
 		{
 			if (filter[0] == ')' || filter[0] == 0)
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return 0;
 			}
 			else if (filter[0] == '=')
 			{
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
 				filter++;
 				break;
 			}
@@ -466,13 +466,13 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		{
 			if (filter[0] == ')')
 			{
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
-				pdu->SequenceEnd();
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->EndLevel();
 				return filter + 1;
 			}
 			else if (filter[0] == '=' || filter[0] == 0)
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return 0;
 			}
 			filter++;
@@ -494,46 +494,46 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		{
 			if (filter[0] == ')' || filter[0] == 0)
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return 0;
 			}
 			else if (filter[0] == '=' && filter[1] == '*' && filter[2] == ')')
 			{
-				pdu->AppendBuff(complex?0xA7:0x87, filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOther(complex?0xA7:0x87, filterStart, (UOSInt)(filter - filterStart));
 				return filter + 3;
 			}
 			else if (filter[0] == '=' && filter[1] == '*')
 			{
-				pdu->SequenceBegin(complex?0xA4:0x84);
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
+				pdu->BeginOther(complex?0xA4:0x84);
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '=')
 			{
-				pdu->SequenceBegin(complex?0xA3:0x83);
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
+				pdu->BeginOther(complex?0xA3:0x83);
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
 				filter += 1;
 				break;
 			}
 			else if (filter[0] == '>' && filter[1] == '=')
 			{
-				pdu->SequenceBegin(complex?0xA5:0x85);
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
+				pdu->BeginOther(complex?0xA5:0x85);
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '<' && filter[1] == '=')
 			{
-				pdu->SequenceBegin(complex?0xA6:0x86);
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
+				pdu->BeginOther(complex?0xA6:0x86);
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '~' && filter[1] == '=')
 			{
-				pdu->SequenceBegin(complex?0xA8:0x88);
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
+				pdu->BeginOther(complex?0xA8:0x88);
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
 				filter += 2;
 				break;
 			}
@@ -544,13 +544,13 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		{
 			if (filter[0] == ')')
 			{
-				pdu->AppendBuff(4, filterStart, (UOSInt)(filter - filterStart));
-				pdu->SequenceEnd();
+				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->EndLevel();
 				return filter + 1;
 			}
 			else if (filter[0] == '=' || filter[0] == 0)
 			{
-				pdu->SequenceEnd();
+				pdu->EndLevel();
 				return 0;
 			}
 			filter++;
@@ -610,28 +610,28 @@ Bool Net::LDAPClient::Bind(const UTF8Char *userDN, const UTF8Char *password)
 	Net::LDAPClient::ReqStatus status;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
-	pdu->SequenceBegin(0x30);
+	pdu->BeginSequence();
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	status.msgId = ++(this->lastMsgId);
 	pdu->AppendUInt32(status.msgId);
 	msgIdMutUsage.EndUse();
 	
-	pdu->SequenceBegin(0x60); //BindRequest
+	pdu->BeginOther(0x60); //BindRequest
 	pdu->AppendUInt32(3); //version
 	if (userDN == 0 || password == 0)
 	{
-		pdu->AppendString(0); //name
-		pdu->AppendBuff(0x80, 0, 0); //authentication
+		pdu->AppendOctetStringS(0); //name
+		pdu->AppendOther(0x80, 0, 0); //authentication
 	}
 	else
 	{
 		UOSInt len = Text::StrCharCnt(password);
-		pdu->AppendString(userDN); //name
-		pdu->AppendBuff(0x80, password, len); //authentication
+		pdu->AppendOctetStringS(userDN); //name
+		pdu->AppendOther(0x80, password, len); //authentication
 	}
-	pdu->SequenceEnd();
+	pdu->EndLevel();
 
-	pdu->SequenceEnd();
+	pdu->EndLevel();
 	buff = pdu->GetBuff(&buffSize);
 
 	status.isFin = false;
@@ -669,19 +669,19 @@ Bool Net::LDAPClient::Unbind()
 	const UInt8 *buff;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
-	pdu->SequenceBegin(0x30);
+	pdu->BeginSequence();
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	pdu->AppendUInt32(++(this->lastMsgId));
 	msgIdMutUsage.EndUse();
-	pdu->AppendBuff(0x42, 0, 0); //UnbindRequest
+	pdu->AppendOther(0x42, 0, 0); //UnbindRequest
 
-	pdu->SequenceBegin(0xA0); //control
-	pdu->SequenceBegin(0x30); //Control
-	pdu->AppendString((const UTF8Char*)"2.16.840.1.113730.3.4.2"); //controlType
-	pdu->SequenceEnd();
-	pdu->SequenceEnd();
+	pdu->BeginOther(0xA0); //control
+	pdu->BeginSequence(); //Control
+	pdu->AppendOctetStringS((const UTF8Char*)"2.16.840.1.113730.3.4.2"); //controlType
+	pdu->EndLevel();
+	pdu->EndLevel();
 
-	pdu->SequenceEnd();
+	pdu->EndLevel();
 
 	buff = pdu->GetBuff(&buffSize);
 	valid = (this->cli->Write(buff, buffSize) == buffSize);
@@ -698,15 +698,15 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> resObjs;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
-	pdu->SequenceBegin(0x30);
+	pdu->BeginSequence();
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	status.msgId = ++(this->lastMsgId);
 	pdu->AppendUInt32(status.msgId);
 	msgIdMutUsage.EndUse();
 	status.searchObjs = &resObjs;
 
-	pdu->SequenceBegin(0x63); //SearchRequest
-	pdu->AppendString(baseObject);
+	pdu->BeginOther(0x63); //SearchRequest
+	pdu->AppendOctetStringS(baseObject);
 	pdu->AppendChoice((UInt32)scope);
 	pdu->AppendChoice((UInt32)derefAliases);
 	pdu->AppendUInt32(sizeLimit);
@@ -723,17 +723,17 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 		return false;
 	}
 
-	pdu->SequenceBegin(0x30); //attributes
-	pdu->SequenceEnd();
-	pdu->SequenceEnd();
+	pdu->BeginSequence(); //attributes
+	pdu->EndLevel();
+	pdu->EndLevel();
 
-	pdu->SequenceBegin(0xA0); //control
-	pdu->SequenceBegin(0x30); //Control
-	pdu->AppendString((const UTF8Char*)"2.16.840.1.113730.3.4.2"); //controlType
-	pdu->SequenceEnd();
-	pdu->SequenceEnd();
+	pdu->BeginOther(0xA0); //control
+	pdu->BeginSequence(); //Control
+	pdu->AppendOctetStringS((const UTF8Char*)"2.16.840.1.113730.3.4.2"); //controlType
+	pdu->EndLevel();
+	pdu->EndLevel();
 
-	pdu->SequenceEnd();
+	pdu->EndLevel();
 
 	buff = pdu->GetBuff(&buffSize);
 

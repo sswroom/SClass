@@ -25,7 +25,7 @@ UOSInt Text::TextBinEnc::ASN1OIDBinEnc::CalcBinSize(const UTF8Char *sbuff)
 
 UOSInt Text::TextBinEnc::ASN1OIDBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
 {
-	return Net::ASN1Util::OIDText2PDU(sbuff, dataBuff);
+	return Net::ASN1Util::OIDUText2PDU(sbuff, dataBuff);
 }
 
 const UTF8Char *Text::TextBinEnc::ASN1OIDBinEnc::GetName()

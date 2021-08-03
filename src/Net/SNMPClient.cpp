@@ -86,7 +86,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(const Net::SocketUtil::
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
-	oidLen = Net::ASN1Util::OIDText2PDU(oid, pduBuff);
+	oidLen = Net::ASN1Util::OIDUText2PDU(oid, pduBuff);
 	return V1GetRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
@@ -97,21 +97,18 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(const Net::SocketUti
 	Net::SNMPUtil::ErrorStatus ret;
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
-	pdu.SequenceBegin(0x30);
+	pdu.BeginSequence();
 	pdu.AppendInt32(0);
-	pdu.AppendString(community);
-	pdu.SequenceBegin(0xA0);
+	pdu.AppendOctetStringS(community);
+	pdu.BeginOther(0xA0);
 	pdu.AppendInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
-	pdu.SequenceBegin(0x30);
-	pdu.SequenceBegin(0x30);
+	pdu.BeginSequence();
+	pdu.BeginSequence();
 	pdu.AppendOID(oid, oidLen);
 	pdu.AppendNull();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
+	pdu.EndAll();
 	buff = pdu.GetBuff(&buffSize);
 	this->respList = itemList;
 	this->respStatus = Net::SNMPUtil::ES_NORESP;
@@ -132,7 +129,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(const Net::SocketUt
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
-	oidLen = Net::ASN1Util::OIDText2PDU(oid, pduBuff);
+	oidLen = Net::ASN1Util::OIDUText2PDU(oid, pduBuff);
 	return V1GetNextRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
@@ -143,21 +140,18 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(const Net::Socke
 	Net::SNMPUtil::ErrorStatus ret;
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
-	pdu.SequenceBegin(0x30);
+	pdu.BeginSequence();
 	pdu.AppendInt32(0);
-	pdu.AppendString(community);
-	pdu.SequenceBegin(0xA1);
+	pdu.AppendOctetStringS(community);
+	pdu.BeginOther(0xA1);
 	pdu.AppendInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
-	pdu.SequenceBegin(0x30);
-	pdu.SequenceBegin(0x30);
+	pdu.BeginSequence();
+	pdu.BeginSequence();
 	pdu.AppendOID(oid, oidLen);
 	pdu.AppendNull();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
+	pdu.EndAll();
 	buff = pdu.GetBuff(&buffSize);
 	this->respList = itemList;
 	this->respStatus = Net::SNMPUtil::ES_NORESP;
@@ -235,22 +229,19 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *bro
 	UOSInt initCnt = addrList->GetCount();
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
-	pdu.SequenceBegin(0x30);
+	pdu.BeginSequence();
 	pdu.AppendInt32(0);
-	pdu.AppendString(community);
-	pdu.SequenceBegin(0xA0);
+	pdu.AppendOctetStringS(community);
+	pdu.BeginOther(0xA0);
 	pdu.AppendInt32(this->reqId);
 	pdu.AppendInt32(0);
 	pdu.AppendInt32(0);
-	pdu.SequenceBegin(0x30);
-	pdu.SequenceBegin(0x30);
-	oidLen = Net::ASN1Util::OIDText2PDU(oid, pduBuff);
+	pdu.BeginSequence();
+	pdu.BeginSequence();
+	oidLen = Net::ASN1Util::OIDUText2PDU(oid, pduBuff);
 	pdu.AppendOID(pduBuff, oidLen);
 	pdu.AppendNull();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
-	pdu.SequenceEnd();
+	pdu.EndAll();
 	buff = pdu.GetBuff(&buffSize);
 	Sync::MutexUsage scanMutUsage(this->scanMut);
 	this->scanList = addrList;

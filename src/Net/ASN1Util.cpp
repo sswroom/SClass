@@ -266,6 +266,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				sb->AppendChar(')', 1);
 			}
 			sb->Append((const UTF8Char*)"\r\n");
+			pdu += ofst + len;
 			break;
 		case 0x2:
 			if (len <= 4)
@@ -596,14 +597,14 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oid)
 	return retSize;
 }
 
-UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oid, UInt8 *pduBuff)
+UOSInt Net::ASN1Util::OIDText2PDU(const Char *oid, UInt8 *pduBuff)
 {
 	UInt32 v;
 	UOSInt retSize = 1;
 	UOSInt len = Text::StrCharCnt(oid);
-	UTF8Char *buff = MemAlloc(UTF8Char, len + 1);
+	Char *buff = MemAlloc(Char, len + 1);
 	Text::StrConcatC(buff, oid, len);
-	UTF8Char *sarr[3];
+	Char *sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
 	if (i == 1)
@@ -678,6 +679,11 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oid, UInt8 *pduBuff)
 	}
 	MemFree(buff);
 	return retSize;
+}
+
+UOSInt Net::ASN1Util::OIDUText2PDU(const UTF8Char *oid, UInt8 *pduBuff)
+{
+	return OIDText2PDU((const Char*)oid, pduBuff);
 }
 
 void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF *sb)

@@ -21,7 +21,8 @@ namespace Net
 		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 		static void OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb);
 		static UOSInt OIDCalcPDUSize(const UTF8Char *oid);
-		static UOSInt OIDText2PDU(const UTF8Char *oid, UInt8 *pduBuff);
+		static UOSInt OIDText2PDU(const Char *oid, UInt8 *pduBuff);
+		static UOSInt OIDUText2PDU(const UTF8Char *oid, UInt8 *pduBuff);
 
 		static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF *sb);
 	private:

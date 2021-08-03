@@ -11,5 +11,6 @@ Net::SSLEngine *Net::DefaultSSLEngine::Create(Net::SocketFactory *sockf)
 		DEL_CLASS(ssl);
 		return 0;
 	}
+	//ssl->SetServerCerts((const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.crt", (const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.key");
 	return ssl;
 }

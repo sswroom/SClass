@@ -1,5 +1,7 @@
 #include "Stdafx.h"
 #include "Data/DateTime.h"
+#include "IO/DebugWriter.h"
+#include "Net/ASN1PDUBuilder.h"
 #include "Net/WinSSLClient.h"
 #include "Net/WinSSLEngine.h"
 #include "Text/MyString.h"
@@ -206,6 +208,14 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 	SecBuffer_Set(&outputBuff[2], SECBUFFER_EMPTY, 0, 0);
 	SecBufferDesc_Set(&outputDesc, outputBuff, 3);
 
+	IO::DebugWriter debug;
+	Text::StringBuilderW sb;
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"Received ");
+	sb.AppendU32(recvSize);
+	sb.Append((const UTF8Char*)" bytes");
+	debug.WriteLineW(sb.ToString());
+
 	Bool succ = true;
 	UOSInt i;
 	SECURITY_STATUS status;
@@ -225,6 +235,7 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 		this->sockf->DestroySocket(s);
 		return 0;
 	}
+	recvOfst = 0;
 	i = 0;
 	while (i < 3)
 	{
@@ -236,6 +247,11 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 			}
 		}
 
+		if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
+		{
+			MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
+			recvOfst = inputBuff[1].cbBuffer;
+		}
 		if (outputBuff[i].pvBuffer)
 		{
 			FreeContextBuffer(outputBuff[i].pvBuffer);
@@ -260,6 +276,13 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 				this->sockf->DestroySocket(s);
 				return 0;
 			}
+			recvOfst += recvSize;
+
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"Received ");
+			sb.AppendU32(recvSize);
+			sb.Append((const UTF8Char*)" bytes");
+			debug.WriteLineW(sb.ToString());
 		}
 		SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvOfst);
 		SecBuffer_Set(&inputBuff[1], SECBUFFER_EMPTY, 0, 0);
@@ -276,7 +299,7 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 
 		status = AcceptSecurityContext(
 			&this->clsData->hCredSvr,
-			0,
+			&ctxt,
 			&inputDesc,
 			retFlags,
 			0,
@@ -293,6 +316,7 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 		else if (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_OK)
 		{
 			succ = true;
+			recvOfst = 0;
 			i = 0;
 			while (i < 3)
 			{
@@ -304,6 +328,11 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 					}
 				}
 
+				if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
+				{
+					MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
+					recvOfst = inputBuff[1].cbBuffer;
+				}
 				if (outputBuff[i].pvBuffer)
 				{
 					FreeContextBuffer(outputBuff[i].pvBuffer);
@@ -316,18 +345,13 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 				this->sockf->DestroySocket(s);
 				return 0;
 			}
-			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
-			{
-				MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
-				recvOfst = inputBuff[1].cbBuffer;
-			}
-			else
-			{
-				recvOfst = 0;
-			}
 		}
 		else
 		{
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"Error in initializing SSL Server connection: 0x");
+			sb.AppendHex32(status);
+			debug.WriteLineW(sb.ToString());
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
 			{
 
@@ -375,27 +399,96 @@ Bool Net::WinSSLEngine::IsError()
 	return false;
 }
 
+Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
+	_In_ HCRYPTPROV hProv,
+	_In_ const UInt8 *pbKey,
+	_In_ ULONG cbKey)
+{
+	ULONG cb;
+	PCRYPT_PRIVATE_KEY_INFO PrivateKeyInfo;
+
+	BOOL succ = CryptDecodeObjectEx(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, PKCS_PRIVATE_KEY_INFO,
+		pbKey, cbKey, CRYPT_DECODE_ALLOC_FLAG | CRYPT_DECODE_NOCOPY_FLAG, 0, (void**)&PrivateKeyInfo, &cb);
+
+	if (succ)
+	{
+		PUBLICKEYSTRUC* ppks;
+
+		succ = CryptDecodeObjectEx(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
+			PKCS_RSA_PRIVATE_KEY, PrivateKeyInfo->PrivateKey.pbData, PrivateKeyInfo->PrivateKey.cbData,
+			CRYPT_DECODE_ALLOC_FLAG, 0, (void**)&ppks, &cb);
+
+		LocalFree(PrivateKeyInfo);
+
+		if (succ)
+		{
+			succ = CryptImportKey(hProv, (PUCHAR)ppks, cb, 0, CRYPT_EXPORTABLE, phKey);
+			LocalFree(ppks);
+		}
+	}
+
+	return succ;
+}
+
 Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
 {
 	if (this->clsData->svrInit)
 	{
 		return false;
 	}
-	if (certASN1 == 0)
+	if (certASN1 == 0 || keyASN1 == 0)
 	{
 		return false;
 	}
+	const WChar *containerName = L"SelfSign";
+//	const WChar *containerName = L"ServerCert";
+	HCRYPTKEY hKey;
+	HCRYPTPROV hProv;
+	if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	{
+		if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
+		{
+			return false;
+		}
+	}
+	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+	{
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+
+
 	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
+	CRYPT_KEY_PROV_INFO keyProvInfo;
+	MemClear(&keyProvInfo, sizeof(keyProvInfo));
+	keyProvInfo.pwszContainerName = (WChar*)containerName;
+	keyProvInfo.pwszProvName = NULL;
+	keyProvInfo.dwProvType = PROV_RSA_FULL;
+	keyProvInfo.dwFlags = CRYPT_MACHINE_KEYSET;
+	keyProvInfo.cProvParam = 0;
+	keyProvInfo.rgProvParam = NULL;
+	keyProvInfo.dwKeySpec = AT_SIGNATURE;
+	BOOL succ = CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
+
+	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = NULL;
+	BOOL fCallerFreeProvOrNCryptKey = FALSE;
+	DWORD dwKeySpec;
+	succ = CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
+
 	if (!this->InitServer(this->clsData->method, (void*)serverCert) &&
 		!this->InitServer(M_TLSV1_2, (void*)serverCert) &&
 		!this->InitServer(M_TLSV1_1, (void*)serverCert) &&
 		!this->InitServer(M_TLSV1, (void*)serverCert))
 	{
 		CertFreeCertificateContext(serverCert);
+		CryptDestroyKey(hKey);
+		CryptReleaseContext(hProv, 0);
 		return false;
 	}
 	this->clsData->svrInit = true;
 	CertFreeCertificateContext(serverCert);
+	CryptDestroyKey(hKey);
+	CryptReleaseContext(hProv, 0);
 	return true;
 }
 
@@ -683,8 +776,11 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	DWORD dwKeySpec;
-	if (!CryptAcquireCertificatePrivateKey(pCertContext, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey))
+	UInt8 privKeyBuff[2048];
+	UInt8 certBuff[4096];
+	DWORD certBuffSize = 4096;
+	DWORD privKeySize = 2048;
+	if (!CryptExportKey(hKey, 0, PRIVATEKEYBLOB, 0, privKeyBuff, &privKeySize))
 	{
 		CertFreeCertificateContext(pCertContext);
 		MemFree(pbEncoded);
@@ -692,11 +788,27 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-
+	if (!CryptEncodeObjectEx(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, PKCS_RSA_PRIVATE_KEY, privKeyBuff, 0, 0, certBuff, &certBuffSize))
+	{
+		CertFreeCertificateContext(pCertContext);
+		MemFree(pbEncoded);
+		CryptDestroyKey(hKey);
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+	Net::ASN1PDUBuilder keyPDU;
+	keyPDU.BeginSequence();
+	keyPDU.AppendInt32(0);
+	keyPDU.BeginSequence();
+	keyPDU.AppendOIDString("1.2.840.113549.1.1.1");
+	keyPDU.AppendNull();
+	keyPDU.EndLevel();
+	keyPDU.AppendOctetString(certBuff, certBuffSize);
+	keyPDU.EndLevel();
 	*certASN1 = Crypto::X509File::LoadFile((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded, Crypto::X509File::FT_CERT);
-	*keyASN1 = 0; ////////////////////////////////////////
+	*keyASN1 = Crypto::X509File::LoadFile((const UTF8Char *)"SelfSignedKey", keyPDU.GetBuff(0), keyPDU.GetBuffSize(), Crypto::X509File::FT_PRIV_KEY);
 	CertFreeCertificateContext(pCertContext);
-	CryptReleaseContext(hCryptProvOrNCryptKey, 0);
+	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
