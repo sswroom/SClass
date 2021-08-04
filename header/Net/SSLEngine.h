@@ -10,6 +10,7 @@ namespace Net
 	public:
 		typedef enum
 		{
+			M_DEFAULT,
 			M_SSLV3,
 			M_SSLV23,
 			M_TLS,

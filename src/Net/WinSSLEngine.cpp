@@ -31,6 +31,8 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 	{
 		switch (method)
 		{
+		case Net::SSLEngine::M_DEFAULT:
+			return 0;
 		case Net::SSLEngine::M_SSLV3:
 			return SP_PROT_SSL3_SERVER;
 		case Net::SSLEngine::M_SSLV23:
@@ -76,6 +78,8 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 	{
 		switch (method)
 		{
+		case Net::SSLEngine::M_DEFAULT:
+			return 0;
 		case Net::SSLEngine::M_SSLV3:
 			return SP_PROT_SSL3_CLIENT;
 		case Net::SSLEngine::M_SSLV23:
@@ -149,7 +153,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred)
 	TimeStamp lifetime;
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCHANNEL_CRED_VERSION;
-	credData.grbitEnabledProtocols = 0; // WinSSLEngine_GetProtocols(method, true);
+	credData.grbitEnabledProtocols = WinSSLEngine_GetProtocols(method, true);
 	credData.paCred = (PCCERT_CONTEXT*)&cred;
 	credData.cCreds = 1;
 
@@ -212,7 +216,7 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 	Text::StringBuilderW sb;
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Received ");
-	sb.AppendU32(recvSize);
+	sb.AppendUOSInt(recvSize);
 	sb.Append((const UTF8Char*)" bytes");
 	debug.WriteLineW(sb.ToString());
 
@@ -280,7 +284,7 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Received ");
-			sb.AppendU32(recvSize);
+			sb.AppendUOSInt(recvSize);
 			sb.Append((const UTF8Char*)" bytes");
 			debug.WriteLineW(sb.ToString());
 		}
@@ -425,6 +429,16 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 			succ = CryptImportKey(hProv, (PUCHAR)ppks, cb, 0, CRYPT_EXPORTABLE, phKey);
 			LocalFree(ppks);
 		}
+
+/*		if (succ)
+		{
+			ALG_ID algId = AT_SIGNATURE;
+			BOOL succ2 = CryptSetKeyParam(*phKey, KP_ALGID, (const BYTE*)&algId, CRYPT_EXPORTABLE);
+			if (succ2)
+			{
+				succ = TRUE;
+			}
+		}*/
 	}
 
 	return succ;
@@ -475,10 +489,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X
 	DWORD dwKeySpec;
 	succ = CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
 
-	if (!this->InitServer(this->clsData->method, (void*)serverCert) &&
-		!this->InitServer(M_TLSV1_2, (void*)serverCert) &&
-		!this->InitServer(M_TLSV1_1, (void*)serverCert) &&
-		!this->InitServer(M_TLSV1, (void*)serverCert))
+	if (!this->InitServer(this->clsData->method, (void*)serverCert))
 	{
 		CertFreeCertificateContext(serverCert);
 		CryptDestroyKey(hKey);
@@ -708,7 +719,7 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 			return false;
 		}
 	}
-	if (!CryptGenKey(hProv, AT_SIGNATURE, CRYPT_EXPORTABLE, &hKey))
+	if (!CryptGenKey(hProv, AT_SIGNATURE, 0x08000000 | CRYPT_EXPORTABLE, &hKey))
 	{
 		CryptReleaseContext(hProv, 0);
 		return false;
