@@ -50,6 +50,7 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 	case M_SSLV23:
 		m = SSLv23_method();
 		break;
+	case M_DEFAULT:
 	case M_TLS:
 		m = TLS_method();
 		break;
@@ -344,7 +345,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		Parser::FileParser::X509Parser parser;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
-		int ret  = PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
+		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
@@ -352,7 +353,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 			pobjKey = (Crypto::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
 			DEL_CLASS(mdata);
 		}
-		int ret2 = PEM_write_bio_X509(bio1, cert);
+		PEM_write_bio_X509(bio1, cert);
 		readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{

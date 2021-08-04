@@ -99,6 +99,25 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		me->reqBodyLen = 0;
 		me->reqBodyType = 0;
 	}
+	else if (me->fileList->GetCount() == 1 && me->cboPostFormat->GetSelectedIndex() == 2)
+	{
+		const UTF8Char *fileName = me->fileList->GetItem(0);
+		UTF8Char sbuff[32];
+		IO::FileStream *fs;
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		me->reqBodyLen = (UOSInt)fs->GetLength();
+		me->reqBody = MemAlloc(UInt8, me->reqBodyLen);
+		fs->Read((UInt8*)me->reqBody, me->reqBodyLen);
+		DEL_CLASS(fs);
+		if (IO::Path::GetFileExt(sbuff, fileName))
+		{
+			me->reqBodyType = Text::StrCopyNew(Net::MIME::GetMIMEFromExt(sbuff));
+		}
+		else
+		{
+			me->reqBodyType = 0;
+		}
+	}
 	else if (me->fileList->GetCount() > 0)
 	{
 		Text::StringBuilderUTF8 sbBoundary;
@@ -1017,6 +1036,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboPostFormat->SetRect(104, 172, 150, 23, false);
 	this->cboPostFormat->AddItem((const UTF8Char*)"application/x-www-form-urlencoded", 0);
 	this->cboPostFormat->AddItem((const UTF8Char*)"application/json", 0);
+	this->cboPostFormat->AddItem((const UTF8Char*)"RAW", 0);
 	this->cboPostFormat->SetSelectedIndex(0);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
 	this->btnRequest->SetRect(104, 196, 75, 23, false);
