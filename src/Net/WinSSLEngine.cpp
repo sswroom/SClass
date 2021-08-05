@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/DateTime.h"
-#include "IO/DebugWriter.h"
+//#include "IO/DebugWriter.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/WinSSLClient.h"
 #include "Net/WinSSLEngine.h"
@@ -212,13 +212,13 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 	SecBuffer_Set(&outputBuff[2], SECBUFFER_EMPTY, 0, 0);
 	SecBufferDesc_Set(&outputDesc, outputBuff, 3);
 
-	IO::DebugWriter debug;
+/*	IO::DebugWriter debug;
 	Text::StringBuilderW sb;
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Received ");
 	sb.AppendUOSInt(recvSize);
 	sb.Append((const UTF8Char*)" bytes");
-	debug.WriteLineW(sb.ToString());
+	debug.WriteLineW(sb.ToString());*/
 
 	Bool succ = true;
 	UOSInt i;
@@ -282,11 +282,11 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 			}
 			recvOfst += recvSize;
 
-			sb.ClearStr();
+/*			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Received ");
 			sb.AppendUOSInt(recvSize);
 			sb.Append((const UTF8Char*)" bytes");
-			debug.WriteLineW(sb.ToString());
+			debug.WriteLineW(sb.ToString());*/
 		}
 		SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvOfst);
 		SecBuffer_Set(&inputBuff[1], SECBUFFER_EMPTY, 0, 0);
@@ -352,10 +352,10 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 		}
 		else
 		{
-			sb.ClearStr();
+/*			sb.ClearStr();
 			sb.Append((const UTF8Char*)"Error in initializing SSL Server connection: 0x");
 			sb.AppendHex32(status);
-			debug.WriteLineW(sb.ToString());
+			debug.WriteLineW(sb.ToString());*/
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
 			{
 
@@ -401,6 +401,154 @@ void Net::WinSSLEngine::SetSkipCertCheck(Bool skipCertCheck)
 Bool Net::WinSSLEngine::IsError()
 {
 	return false;
+}
+
+void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
+{
+	UInt8 buff[4096];
+	DWORD dataLen;
+	ALG_ID algId;
+	dataLen = sizeof(algId);
+	if (CryptGetKeyParam(hKey, KP_ALGID, (BYTE*)&algId, &dataLen, 0))
+	{
+		sb->Append((const UTF8Char*)"Key ALG ID = 0x");
+		sb->AppendHex32(algId);
+		sb->Append((const UTF8Char*)", Class=");
+		switch (GET_ALG_CLASS(algId))
+		{
+		case ALG_CLASS_ANY:
+			sb->Append((const UTF8Char*)"Any");
+			break;
+		case ALG_CLASS_SIGNATURE:
+			sb->Append((const UTF8Char*)"Signature");
+			break;
+		case ALG_CLASS_MSG_ENCRYPT:
+			sb->Append((const UTF8Char*)"Message Encrypt");
+			break;
+		case ALG_CLASS_DATA_ENCRYPT:
+			sb->Append((const UTF8Char*)"Data Encrypt");
+			break;
+		case ALG_CLASS_HASH:
+			sb->Append((const UTF8Char*)"Hash");
+			break;
+		case ALG_CLASS_KEY_EXCHANGE:
+			sb->Append((const UTF8Char*)"Key Exchange");
+			break;
+		case ALG_CLASS_ALL:
+			sb->Append((const UTF8Char*)"All");
+			break;
+		default:
+			sb->Append((const UTF8Char*)"Unknown");
+			break;
+		}
+		sb->Append((const UTF8Char*)", Type=");
+		switch (GET_ALG_TYPE(algId))
+		{
+		case ALG_TYPE_ANY:
+			sb->Append((const UTF8Char*)"Any");
+			break;
+		case ALG_TYPE_DSS:
+			sb->Append((const UTF8Char*)"DSS");
+			break;
+		case ALG_TYPE_RSA:
+			sb->Append((const UTF8Char*)"RSA");
+			break;
+		case ALG_TYPE_BLOCK:
+			sb->Append((const UTF8Char*)"Block");
+			break;
+		case ALG_TYPE_STREAM:
+			sb->Append((const UTF8Char*)"Stream");
+			break;
+		case ALG_TYPE_DH:
+			sb->Append((const UTF8Char*)"DH");
+			break;
+		case ALG_TYPE_SECURECHANNEL:
+			sb->Append((const UTF8Char*)"Secure Channel");
+			break;
+#if (NTDDI_VERSION >= NTDDI_VISTA)
+		case ALG_TYPE_ECDH:
+			sb->Append((const UTF8Char*)"ECDH");
+			break;
+#endif
+#if (NTDDI_VERSION >= NTDDI_WIN10_RS1)
+		case ALG_TYPE_THIRDPARTY:
+			sb->Append((const UTF8Char*)"ThirdParty");
+			break;
+#endif
+		default:
+			sb->Append((const UTF8Char*)"Unknown");
+			break;
+		}
+		sb->Append((const UTF8Char*)", SID=");
+		sb->AppendU32(GET_ALG_SID(algId));
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+	DWORD blockLen;
+	dataLen = sizeof(blockLen);
+	if (CryptGetKeyParam(hKey, KP_BLOCKLEN, (BYTE*)&blockLen, &dataLen, 0))
+	{
+		sb->Append((const UTF8Char*)"Key BlockLen=");
+		sb->AppendU32(blockLen);
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+	dataLen = sizeof(buff);
+	if (CryptGetKeyParam(hKey, KP_CERTIFICATE, buff, &dataLen, 0))
+	{
+		sb->Append((const UTF8Char*)"Key Certificate=\r\n");
+		sb->AppendHexBuff(buff, dataLen, ' ', Text::LBT_CRLF);
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+	dataLen = sizeof(blockLen);
+	if (CryptGetKeyParam(hKey, KP_KEYLEN, (BYTE*)&blockLen, &dataLen, 0))
+	{
+		sb->Append((const UTF8Char*)"Key Len=");
+		sb->AppendU32(blockLen);
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+	dataLen = sizeof(buff);
+	if (CryptGetKeyParam(hKey, KP_SALT, buff, &dataLen, 0))
+	{
+		sb->Append((const UTF8Char*)"Key Salt=");
+		sb->AppendHexBuff(buff, dataLen, ' ', Text::LBT_NONE);
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+	dataLen = sizeof(blockLen);
+	if (CryptGetKeyParam(hKey, KP_PERMISSIONS, (BYTE*)&blockLen, &dataLen, 0))
+	{
+		sb->Append((const UTF8Char*)"Key Permissions=0x");
+		sb->AppendHex32(blockLen);
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+}
+
+void WinSSLEngine_HCRYPTPROV_ToString(HCRYPTPROV hProv, Text::StringBuilderUTF *sb)
+{
+	HCRYPTKEY hKey;
+	if (CryptGetUserKey(hProv, AT_KEYEXCHANGE, &hKey))
+	{
+		sb->Append((const UTF8Char*)"KEYEXCHANGE: Success,\r\n");
+		WinSSLEngine_HCRYPTKEY_ToString(hKey, sb);
+		CryptDestroyKey(hKey);
+	}
+	else
+	{
+		sb->Append((const UTF8Char*)"KEYEXCHANGE: Failed, code = 0x");
+		sb->AppendHex32(GetLastError());
+		sb->Append((const UTF8Char*)"\r\n");
+	}
+
+	if (CryptGetUserKey(hProv, AT_SIGNATURE, &hKey))
+	{
+		sb->Append((const UTF8Char*)"SIGNATURE: Success,\r\n");
+		WinSSLEngine_HCRYPTKEY_ToString(hKey, sb);
+		CryptDestroyKey(hKey);
+	}
+	else
+	{
+		sb->Append((const UTF8Char*)"SIGNATURE: Failed, code = 0x");
+		sb->AppendHex32(GetLastError());
+		sb->Append((const UTF8Char*)"\r\n");
+	}
 }
 
 Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
@@ -454,8 +602,8 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X
 	{
 		return false;
 	}
-	const WChar *containerName = L"SelfSign";
-//	const WChar *containerName = L"ServerCert";
+//	const WChar *containerName = L"SelfSign";
+	const WChar *containerName = L"ServerCert";
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
 	if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
@@ -471,6 +619,10 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X
 		return false;
 	}
 
+/*	IO::DebugWriter debug;
+	Text::StringBuilderUTF16 sbDebug;
+	WinSSLEngine_HCRYPTPROV_ToString(hProv, &sbDebug);
+	debug.WriteLineW(sbDebug.ToString());*/
 
 	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
 	CRYPT_KEY_PROV_INFO keyProvInfo;
@@ -481,7 +633,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X
 	keyProvInfo.dwFlags = CRYPT_MACHINE_KEYSET;
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
-	keyProvInfo.dwKeySpec = AT_SIGNATURE;
+	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
 	BOOL succ = CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
 
 	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = NULL;

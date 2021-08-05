@@ -154,6 +154,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 
 	if (me->chkSSL->IsChecked())
 	{
+		ssl = me->core->GetSSLEngine();
+/*		if (!ssl->SetServerCerts((const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.crt", (const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.key"))
+		{
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in setting certs", (const UTF8Char*)"HTTP Server", me);
+			return;
+		}*/
+		
 		Text::StringBuilderUTF8 sbCountry;
 		Text::StringBuilderUTF8 sbCompany;
 		Text::StringBuilderUTF8 sbCommonName;
@@ -177,7 +184,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		}
 		Crypto::X509File *certASN1;
 		Crypto::X509File *keyASN1;
-		ssl = me->core->GetSSLEngine();
 		if (ssl->GenerateCert(sbCountry.ToString(), sbCompany.ToString(), sbCommonName.ToString(), &certASN1, &keyASN1))
 		{
 			ssl->SetServerCertsASN1(certASN1, keyASN1);
