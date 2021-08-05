@@ -1,6 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/X509Cert.h"
+#include "Crypto/X509CertReq.h"
 #include "Crypto/X509File.h"
+#include "Crypto/X509PrivKey.h"
+#include "Crypto/X509RSAKey.h"
 #include "Net/ASN1Util.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/MyString.h"
@@ -50,7 +54,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 	{
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[27], (UOSInt)len - 53, dataBuff);
-		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_CERT);
+		NEW_CLASS(ret, Crypto::X509Cert(fd->GetFullFileName(), dataBuff, dataLen));
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN RSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 30], (const UTF8Char*)"-----END RSA PRIVATE KEY-----\n"))
 	{
@@ -62,20 +66,20 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			dataLen = b64.DecodeBin(&buff[31], (UOSInt)len - 61, dataBuff);
-			ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_RSA_KEY);
+			NEW_CLASS(ret, Crypto::X509RSAKey(fd->GetFullFileName(), dataBuff, dataLen));
 		}
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 26], (const UTF8Char*)"-----END PRIVATE KEY-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[27], (UOSInt)len - 53, dataBuff);
-		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_PRIV_KEY);
+		NEW_CLASS(ret, Crypto::X509PrivKey(fd->GetFullFileName(), dataBuff, dataLen));
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----") && Text::StrStartsWith(&buff[len - 34], (const UTF8Char*)"-----END CERTIFICATE REQUEST-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[35], (UOSInt)len - 69, dataBuff);
-		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), dataBuff, dataLen, Crypto::X509File::FT_CERT_REQ);
+		NEW_CLASS(ret, Crypto::X509CertReq(fd->GetFullFileName(), dataBuff, dataLen));
 	}
 	else
 	{
@@ -84,7 +88,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		{
 			return 0;
 		}
-		ret = Crypto::X509File::LoadFile(fd->GetFullFileName(), buff, (UOSInt)len, Crypto::X509File::FT_CERT);
+		NEW_CLASS(ret, Crypto::X509Cert(fd->GetFullFileName(), buff, (UOSInt)len));
 	}
 	return ret;
 }

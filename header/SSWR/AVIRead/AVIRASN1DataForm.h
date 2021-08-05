@@ -19,6 +19,9 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
+			UI::GUITabPage *tpDesc;
+			UI::GUITextBox *txtDesc;
+			
 			UI::GUITabPage *tpASN1;
 			UI::GUITextBox *txtASN1;
 

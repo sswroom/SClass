@@ -215,6 +215,17 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
+Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::DateTime *dt)
+{
+	if (len == 13 && pdu[12] == 'Z')
+	{
+		dt->SetCurrTimeUTC();
+		dt->SetValue((UInt16)((UInt32)(dt->GetYear() / 100) * 100 + Str2Digit(pdu)), (OSInt)Str2Digit(&pdu[2]), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), 0);
+		return true;
+	}
+	return false;
+}
+
 Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, UOSInt level)
 {
 	Text::StringBuilderUTF8 *innerSb;
@@ -284,7 +295,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			else if (len <= 32)
 			{
 				sb->AppendChar('\t', level);
-				sb->Append((const UTF8Char*)"BINARY ");
+				sb->Append((const UTF8Char*)"INTEGER ");
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
 				sb->Append((const UTF8Char*)"\r\n");
 				pdu += ofst + len;
@@ -292,7 +303,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			else
 			{
 				sb->AppendChar('\t', level);
-				sb->Append((const UTF8Char*)"BINARY\r\n");
+				sb->Append((const UTF8Char*)"INTEGER\r\n");
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_CRLF);
 				sb->Append((const UTF8Char*)"\r\n");
 				pdu += ofst + len;
@@ -472,8 +483,13 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			pdu += len;
 			break;
 		case 0xA0:
+		case 0xA1:
+		case 0xA2:
+		case 0xA3:
 			sb->AppendChar('\t', level);
-			sb->Append((const UTF8Char*)"CONTEXT SPECIFIC ");
+			sb->Append((const UTF8Char*)"CONTEXT SPECIFIC[");
+			sb->AppendU16((UInt16)(type - 0xA0));
+			sb->Append((const UTF8Char*)"] ");
 			NEW_CLASS(innerSb, Text::StringBuilderUTF8());
 			if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
 			{
@@ -496,6 +512,156 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 	return true;
 }
 
+const UInt8 *Net::ASN1Util::PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType)
+{
+	if (len)
+	{
+		*len = 0;
+	}
+	if (itemType)
+	{
+		*itemType = IT_UNKNOWN;
+	}
+	Char sbuff[11];
+	UInt32 itemLen;
+	UOSInt size;
+	UOSInt cnt;
+	UOSInt ofst;
+	if (path == 0 || path[0] == 0)
+	{
+		return 0;
+	}
+	size = Text::StrIndexOf(path, '.');
+	if (size == INVALID_INDEX)
+	{
+		cnt = Text::StrToUOSInt(path);
+		path = 0;
+	}
+	else if (size > 0 && size < 11)
+	{
+		Text::StrConcatC(sbuff, path, size);
+		cnt = Text::StrToUOSInt(sbuff);
+		path += size + 1;
+	}
+	else
+	{
+		return 0;
+	}
+
+	if (cnt == 0)
+	{
+		return 0;
+	}
+
+	while (pdu < pduEnd)
+	{
+		size = (UOSInt)(pduEnd - pdu);
+		ofst = PDUParseLen(pdu, 1, size, &itemLen);
+		if (ofst > size)
+		{
+			return 0;
+		}
+		else if (ofst + itemLen > size)
+		{
+			return 0;
+		}
+
+		cnt--;
+		if (cnt == 0)
+		{
+			if (path == 0)
+			{
+				if (len)
+					*len = itemLen;
+				if (itemType)
+					*itemType = (ItemType)pdu[0];
+				return &pdu[ofst];
+			}
+			return PDUGetItem(&pdu[ofst], &pdu[ofst + itemLen], path, len, itemType);
+		}
+		pdu += ofst + itemLen;
+	}
+	return 0;
+}
+
+Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+{
+	Net::ASN1Util::ItemType itemType;
+	PDUGetItem(pdu, pduEnd, path, 0, &itemType);
+	return itemType;
+}
+
+UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+{
+	Char sbuff[11];
+	UInt32 len;
+	UOSInt size;
+	UOSInt cnt;
+	UOSInt ofst;
+	if (path == 0 || path[0] == 0)
+	{
+		cnt = 0;
+		while (pdu < pduEnd)
+		{
+			size = (UOSInt)(pduEnd - pdu);
+			ofst = PDUParseLen(pdu, 1, size, &len);
+			if (ofst > size)
+			{
+				return 0;
+			}
+			else if (ofst + len > size)
+			{
+				return 0;
+			}
+			cnt++;
+			pdu += ofst + len;
+		}
+		return cnt;
+	}
+	size = Text::StrIndexOf(path, '.');
+	if (size == INVALID_INDEX)
+	{
+		cnt = Text::StrToUOSInt(path);
+		path = 0;
+	}
+	else if (size > 0 && size < 11)
+	{
+		Text::StrConcatC(sbuff, path, size);
+		cnt = Text::StrToUOSInt(sbuff);
+		path += size + 1;
+	}
+	else
+	{
+		return 0;
+	}
+
+	if (cnt == 0)
+	{
+		return 0;
+	}
+
+	while (pdu < pduEnd)
+	{
+		size = (UOSInt)(pduEnd - pdu);
+		ofst = PDUParseLen(pdu, 1, size, &len);
+		if (ofst > size)
+		{
+			return 0;
+		}
+		else if (ofst + len > size)
+		{
+			return 0;
+		}
+
+		cnt--;
+		if (cnt == 0)
+		{
+			return PDUCountItem(pdu + ofst, pdu + ofst + len, path);
+		}
+		pdu += ofst + len;
+	}
+	return 0;
+}
 
 OSInt Net::ASN1Util::OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
 {
@@ -538,6 +704,13 @@ Bool Net::ASN1Util::OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8
 		i++;
 	}
 	return true;
+}
+
+Bool Net::ASN1Util::OIDEqualsText(const UInt8 *oid, UOSInt oidLen, const Char *oidText)
+{
+	UInt8 oid2[32];
+	UOSInt oidLen2 = OIDText2PDU(oidText, oid2);
+	return OIDCompare(oid, oidLen, oid2, oidLen2) == 0;
 }
 
 void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)

@@ -14,17 +14,31 @@ namespace Crypto
 			FT_CERT_REQ,
 			FT_PRIV_KEY
 		} FileType;
-	private:
-		FileType fileType;
+	protected:
+		static Bool IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
+		static void AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
+		static Bool IsTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
+		static void AppendTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
+		static Bool IsCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
+		static void AppendCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
+		static Bool IsPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-8
+		static void AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // PKCS-8
 
-		X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize, FileType fileType);
+		static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
+
+		static void AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // PKCS-5
+		static void AppendValidity(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // AuthenticationFramework
+		static void AppendSubjectPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // AuthenticationFramework
+		static void AppendName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
+		static void AppendRelativeDistinguishedName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
+		static void AppendAttributeTypeAndDistinguishedValue(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
+
+		X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 	public:
 		virtual ~X509File();
 
 		virtual Net::ASN1Data::ASN1Type GetASN1Type();
-		FileType GetFileType();
-
-		static X509File *LoadFile(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize, FileType fileType);
+		virtual FileType GetFileType() = 0;
 	};
 }
 #endif

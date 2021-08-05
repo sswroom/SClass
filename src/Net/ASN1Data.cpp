@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteTool.h"
 #include "Net/ASN1Data.h"
 #include "Net/ASN1Util.h"
 
@@ -32,4 +33,32 @@ const UInt8 *Net::ASN1Data::GetASN1Buff()
 UOSInt Net::ASN1Data::GetASN1BuffSize()
 {
 	return this->buffSize;
+}
+
+void Net::ASN1Data::AppendInteger(Text::StringBuilderUTF *sb, const UInt8 *pdu, UOSInt len)
+{
+	if (len == 1)
+	{
+		sb->AppendU16(pdu[0]);
+	}
+	else if (len == 2)
+	{
+		sb->AppendI16(ReadMInt16(pdu));
+	}
+	else if (len == 3)
+	{
+		sb->AppendI32(ReadMInt24(pdu));
+	}
+	else if (len == 4)
+	{
+		sb->AppendI32(ReadMInt32(pdu));
+	}
+	else if (len == 8)
+	{
+		sb->AppendI64(ReadMInt64(pdu));
+	}
+	else
+	{
+		sb->AppendHexBuff(pdu, len, ' ', Text::LBT_NONE);
+	}
 }

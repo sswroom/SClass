@@ -1,7 +1,8 @@
 #include "Stdafx.h"
+#include "Crypto/X509Cert.h"
+#include "Crypto/X509PrivKey.h"
 #include "Data/DateTime.h"
 //#include "IO/DebugWriter.h"
-#include "Net/ASN1PDUBuilder.h"
 #include "Net/WinSSLClient.h"
 #include "Net/WinSSLEngine.h"
 #include "Text/MyString.h"
@@ -959,17 +960,8 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	Net::ASN1PDUBuilder keyPDU;
-	keyPDU.BeginSequence();
-	keyPDU.AppendInt32(0);
-	keyPDU.BeginSequence();
-	keyPDU.AppendOIDString("1.2.840.113549.1.1.1");
-	keyPDU.AppendNull();
-	keyPDU.EndLevel();
-	keyPDU.AppendOctetString(certBuff, certBuffSize);
-	keyPDU.EndLevel();
-	*certASN1 = Crypto::X509File::LoadFile((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded, Crypto::X509File::FT_CERT);
-	*keyASN1 = Crypto::X509File::LoadFile((const UTF8Char *)"SelfSignedKey", keyPDU.GetBuff(0), keyPDU.GetBuffSize(), Crypto::X509File::FT_PRIV_KEY);
+	NEW_CLASS(*certASN1, Crypto::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
+	*keyASN1 = Crypto::X509PrivKey::CreateFromRSAKey(certBuff, certBuffSize);
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);

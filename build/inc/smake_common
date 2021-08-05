@@ -863,8 +863,16 @@ Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
 @PBKDF2.o
 Crypto/TOTP.h: ../../src/Crypto/TOTP.cpp
 @TOTP.o
+Crypto/X509Cert.h: ../../src/Crypto/X509Cert.cpp
+@X509Cert.o
+Crypto/X509CertReq.h: ../../src/Crypto/X509CertReq.cpp
+@X509CertReq.o
 Crypto/X509File.h: ../../src/Crypto/X509File.cpp
 @X509File.o
+Crypto/X509PrivKey.h: ../../src/Crypto/X509PrivKey.cpp
+@X509PrivKey.o
+Crypto/X509RSAKey.h: ../../src/Crypto/X509RSAKey.cpp
+@X509RSAKey.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
 @AES128.o
 Crypto/Encrypt/AES192.h: ../../src/Crypto/Encrypt/AES192.cpp
@@ -3476,7 +3484,11 @@ JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
 OTP.o: ../../src/Crypto/OTP.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 TOTP.o: ../../src/Crypto/TOTP.cpp
+X509Cert.o: ../../src/Crypto/X509Cert.cpp
+X509CertReq.o: ../../src/Crypto/X509CertReq.cpp
 X509File.o: ../../src/Crypto/X509File.cpp
+X509PrivKey.o: ../../src/Crypto/X509PrivKey.cpp
+X509RSAKey.o: ../../src/Crypto/X509RSAKey.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
 AES256.o: ../../src/Crypto/Encrypt/AES256.cpp
