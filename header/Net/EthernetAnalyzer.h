@@ -230,6 +230,7 @@ namespace Net
 		static const UTF8Char *LinkTypeGetName(UInt32 linkType);
 		static const UTF8Char *LSAPGetName(UInt8 lsap);
 		static const UTF8Char *DHCPOptionGetName(UInt8 t);
+		static const UTF8Char *BluetoothCmdGetName(UInt16 cmd);
 	};
 }
 #endif

@@ -2,6 +2,7 @@
 #define _SM_IO_BTSCANNER
 #include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
+#include "IO/BTScanLog.h"
 #include "Sync/MutexUsage.h"
 
 namespace IO
@@ -14,13 +15,15 @@ namespace IO
 			UInt8 mac[6];
 			UInt64 macInt;
 			Bool inRange;
+			IO::BTScanLog::RadioType radioType;
+			IO::BTScanLog::AddressType addrType;
 			const UTF8Char *name;
-			Int32 rssi;
-			Int32 txPower;
+			Int8 rssi;
+			Int8 txPower;
 			Bool connected;
 			Int64 lastSeenTime;
 			Data::ArrayListUInt32 *keys;
-		} ScanRecord;
+		} ScanRecord2;
 
 		typedef enum
 		{
@@ -38,7 +41,7 @@ namespace IO
 			SM_PASSIVE
 		} ScanMode;
 		
-		typedef void (__stdcall *RecordHandler)(ScanRecord *rec, UpdateType updateType, void *userObj);
+		typedef void (__stdcall *RecordHandler)(ScanRecord2 *rec, UpdateType updateType, void *userObj);
 	public:
 		virtual ~BTScanner() {};
 
@@ -50,7 +53,7 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
-		virtual Data::UInt64Map<ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual Data::UInt64Map<ScanRecord2*> *GetRecordMap(Sync::MutexUsage *mutUsage) = 0;
 
 		static BTScanner *CreateScanner();
 	};

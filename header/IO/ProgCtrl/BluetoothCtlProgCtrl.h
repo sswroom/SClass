@@ -16,7 +16,7 @@ namespace IO
 		private:
 			Manage::ProcessExecution *prog;
 			Sync::Mutex *devMut;
-			Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap;
+			Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap;
 			Sync::Mutex *lastCmdMut;
 			const UTF8Char *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
@@ -30,8 +30,8 @@ namespace IO
 			static UInt32 __stdcall ReadThread(void *obj);
 			void SendCmd(const Char *cmd);
 
-			IO::BTScanner::ScanRecord *DeviceGetByStr(const UTF8Char *s);
-			void DeviceFree(IO::BTScanner::ScanRecord *dev);
+			IO::BTScanner::ScanRecord2 *DeviceGetByStr(const UTF8Char *s);
+			void DeviceFree(IO::BTScanner::ScanRecord2 *dev);
 		public:
 			BluetoothCtlProgCtrl();
 			virtual ~BluetoothCtlProgCtrl();
@@ -44,7 +44,7 @@ namespace IO
 			virtual void Close();
 			virtual Bool SetScanMode(ScanMode scanMode);
 
-			virtual Data::UInt64Map<IO::BTScanner::ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage);
+			virtual Data::UInt64Map<IO::BTScanner::ScanRecord2*> *GetRecordMap(Sync::MutexUsage *mutUsage);
 
 			Bool WaitForCmdReady();
 		};

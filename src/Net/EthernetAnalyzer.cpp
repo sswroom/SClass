@@ -1932,8 +1932,113 @@ Bool Net::EthernetAnalyzer::PacketIPDataGetName(UInt8 protocol, const UInt8 *pac
 
 Bool Net::EthernetAnalyzer::PacketBluetoothGetname(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"Bluetooth");
-	return true;
+	UInt8 mac[6];
+	const UTF8Char *name;
+	switch (packet[4])
+	{
+	case 1:
+		name = BluetoothCmdGetName(ReadUInt16(&packet[5]));
+		if (name)
+		{
+			sb->Append(name);
+		}
+		else
+		{
+			sb->Append((const UTF8Char*)"Bluetooth");
+		}
+		return true;
+	case 2:
+		sb->Append((const UTF8Char*)"HCI ACL Packet");
+		return true;
+	case 4:
+		switch (packet[5])
+		{
+		case 1:
+			if (packet[7] == 0)
+			{
+				sb->Append((const UTF8Char*)"HCI Inquiry Success");
+			}
+			else
+			{
+				sb->Append((const UTF8Char*)"HCI Inquiry Complete");
+			}
+			return true;
+		case 0x0E:
+			name = BluetoothCmdGetName(ReadUInt16(&packet[8]));
+			if (name)
+			{
+				sb->Append(name);
+				sb->Append((const UTF8Char*)" Accept");
+			}
+			else
+			{
+				sb->Append((const UTF8Char*)"Bluetooth");
+			}
+			return true;
+		case 0x0F:
+			name = BluetoothCmdGetName(ReadUInt16(&packet[9]));
+			if (name)
+			{
+				if (packet[7] == 0)
+				{
+					sb->Append(name);
+					sb->Append((const UTF8Char*)" Pending");
+				}
+				else
+				{
+					sb->Append((const UTF8Char*)"Bluetooth");
+				}
+			}
+			else
+			{
+				sb->Append((const UTF8Char*)"Bluetooth");
+			}
+			return true;
+		case 0x2F:
+			sb->Append((const UTF8Char*)"HCI Result: ");
+			mac[0] = packet[13];
+			mac[1] = packet[12];
+			mac[2] = packet[11];
+			mac[3] = packet[10];
+			mac[4] = packet[9];
+			mac[5] = packet[8];
+			sb->AppendHexBuff(mac, 6, ':', Text::LBT_NONE);
+			return true;
+		case 0x3E:
+			switch (packet[7])
+			{
+			case 0x2:
+				sb->Append((const UTF8Char*)"LE AdvEx: ");
+				mac[0] = packet[17];
+				mac[1] = packet[16];
+				mac[2] = packet[15];
+				mac[3] = packet[14];
+				mac[4] = packet[13];
+				mac[5] = packet[12];
+				sb->AppendHexBuff(mac, 6, ':', Text::LBT_NONE);
+				return true;
+			case 0xd:
+				sb->Append((const UTF8Char*)"LE AdvEx: ");
+				mac[0] = packet[16];
+				mac[1] = packet[15];
+				mac[2] = packet[14];
+				mac[3] = packet[13];
+				mac[4] = packet[12];
+				mac[5] = packet[11];
+				sb->AppendHexBuff(mac, 6, ':', Text::LBT_NONE);
+				return true;
+			default:
+				sb->Append((const UTF8Char*)"Bluetooth");
+				return true;
+			}
+		default:
+			sb->Append((const UTF8Char*)"Bluetooth");
+			return true;
+		}
+	default:
+		sb->Append((const UTF8Char*)"Bluetooth");
+		return true;
+	}
 }
 
 void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
@@ -4782,8 +4887,28 @@ void Net::EthernetAnalyzer::PacketBluetoothGetDetail(const UInt8 *packet, UOSInt
 		}
 		break;
 	case 4:
-		sb->Append((const UTF8Char*)" (HCI Event)\r\n");
-		sb->AppendHexBuff(packet + 5, packetSize - 5, ' ', Text::LBT_CRLF);
+		sb->Append((const UTF8Char*)" (HCI Event)");
+		sb->Append((const UTF8Char*)"\r\nEvent Code=0x");
+		sb->AppendHex8(packet[5]);
+		switch (packet[5])
+		{
+		case 0x3E:
+			sb->Append((const UTF8Char*)" (LE Meta)");
+			sb->Append((const UTF8Char*)"\r\nParameter Total Length=");
+			sb->AppendU16(packet[6]);
+			sb->Append((const UTF8Char*)"\r\nParameter:\r\n");
+			sb->AppendHexBuff(packet + 7, packetSize - 7, ' ', Text::LBT_CRLF);
+			
+			break;
+		default:
+			sb->Append((const UTF8Char*)" (Unknown)");
+			sb->Append((const UTF8Char*)"\r\nParameter Total Length=");
+			sb->AppendU16(packet[6]);
+			sb->Append((const UTF8Char*)"\r\nParameter:\r\n");
+			sb->AppendHexBuff(packet + 7, packetSize - 7, ' ', Text::LBT_CRLF);
+			break;
+		}
+
 		break;
 	default:
 		sb->Append((const UTF8Char*)" (Unknown)\r\n");
@@ -5300,4 +5425,21 @@ const UTF8Char *Net::EthernetAnalyzer::DHCPOptionGetName(UInt8 t)
 		return (const UTF8Char*)"End";
 	}
 	return 0;
+}
+
+const UTF8Char *Net::EthernetAnalyzer::BluetoothCmdGetName(UInt16 cmd)
+{
+	switch (cmd)
+	{
+	case 0x0401:
+		return (const UTF8Char*)"HCI Inquiry";
+	case 0x2005:
+		return (const UTF8Char*)"LE Set Random Address";
+	case 0x200B:
+		return (const UTF8Char*)"LE Set Scan Parameter";
+	case 0x200C:
+		return (const UTF8Char*)"LE Set Scan Enable";
+	default:
+		return 0;
+	}
 }

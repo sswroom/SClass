@@ -27,7 +27,7 @@ IO::ParsedObject::ParserType IO::BTScanLog::GetParserType()
 	return IO::ParsedObject::PT_BTSCANLOG;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, AddressType addrType, const UTF8Char *name, Int8 rssi, Int8 txPower)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, const UTF8Char *name, Int8 rssi, Int8 txPower)
 {
 	LogEntry *log = MemAlloc(LogEntry, 1);
 	log->macInt = macInt;
@@ -40,6 +40,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	{
 		dev = MemAlloc(DevEntry, 1);
 		dev->macInt = macInt;
+		dev->radioType = radioType;
 		dev->addrType = addrType;
 		dev->name = SCOPY_TEXT(name);
 		NEW_CLASS(dev->logs, Data::ArrayList<LogEntry*>());
@@ -172,7 +173,61 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 		{
 			name = 0;
 		}
-		this->AddEntry(timeTicks, ReadMUInt64(mac), aType, name, rssi, txPower);
+		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_LE, aType, name, rssi, txPower);
+	}
+	else if (buff[4] == 4 && buff[5] == 0x2F) //HCI Event, Extended Inquiry Result
+	{
+		UInt8 len = buff[6];
+		if ((UOSInt)len + 7 > buffSize || len < 15)
+		{
+			return;
+		}
+		Int8 rssi = (Int8)buff[21];
+		UInt8 mac[8];
+		UOSInt optEnd;
+		UOSInt i;
+		UInt8 numReports = buff[7];
+		if (numReports != 1)
+		{
+			return;
+		}
+		mac[0] = 0;
+		mac[1] = 0;
+		mac[2] = buff[13];
+		mac[3] = buff[12];
+		mac[4] = buff[11];
+		mac[5] = buff[10];
+		mac[6] = buff[9];
+		mac[7] = buff[8];
+		optEnd = buffSize;
+		i = 22;
+
+		sbuff[0] = 0;
+		while (i + 1 < optEnd)
+		{
+			UInt8 optLen = buff[i];
+			if (optLen == 0 || optLen + i + 1 > optEnd)
+			{
+				break;
+			}
+			if (buff[i + 1] == 8 || buff[i + 1] == 9)
+			{
+				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
+			}
+			i += 1 + (UOSInt)optLen;	
+		}
+
+		AddressType aType = AT_PUBLIC;
+		const UTF8Char *name;
+		if (sbuff[0])
+		{
+			name = sbuff;
+		}
+		else
+		{
+			name = 0;
+		}
+		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_HCI, aType, name, rssi, 0);
 	}
 }
 
@@ -188,4 +243,32 @@ void IO::BTScanLog::ClearList()
 Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetDevList()
 {
 	return this->devs->GetValues();
+}
+
+const UTF8Char *IO::BTScanLog::RadioTypeGetName(RadioType radioType)
+{
+	switch (radioType)
+	{
+	case RT_HCI:
+		return (const UTF8Char*)"HCI";
+	case RT_LE:
+		return (const UTF8Char*)"LE";
+	case RT_UNKNOWN:
+	default:
+		return (const UTF8Char*)"UNK";
+	}
+}
+
+const UTF8Char *IO::BTScanLog::AddressTypeGetName(AddressType addrType)
+{
+	switch (addrType)
+	{
+	case AT_PUBLIC:
+		return (const UTF8Char*)"Public";
+	case AT_RANDOM:
+		return (const UTF8Char*)"Random";
+	case AT_UNKNOWN:
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
 }

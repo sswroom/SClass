@@ -16,6 +16,13 @@ namespace IO
 			AT_RANDOM
 		};
 
+		enum RadioType
+		{
+			RT_UNKNOWN,
+			RT_HCI,
+			RT_LE
+		};
+
 		struct LogEntry
 		{
 			UInt64 macInt;
@@ -27,6 +34,7 @@ namespace IO
 		struct DevEntry
 		{
 			UInt64 macInt;
+			RadioType radioType;
 			AddressType addrType;
 			const UTF8Char *name;
 			Data::ArrayList<LogEntry*> *logs;
@@ -42,10 +50,13 @@ namespace IO
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, AddressType addrType, const UTF8Char *name, Int8 rssi, Int8 txPower);
+		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, const UTF8Char *name, Int8 rssi, Int8 txPower);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
 		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetDevList();
+
+		static const UTF8Char *RadioTypeGetName(RadioType radioType);
+		static const UTF8Char *AddressTypeGetName(AddressType addrType);
 	};
 }
 #endif

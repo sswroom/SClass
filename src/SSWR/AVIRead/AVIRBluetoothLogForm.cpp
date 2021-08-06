@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
-	const IO::BTDevLog::DevEntry *log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(index);
+	const IO::BTDevLog::DevEntry2 *log = (const IO::BTDevLog::DevEntry2*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 		j = me->lvContent->GetCount();
 		while (i < j)
 		{
-			log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(i);
+			log = (const IO::BTDevLog::DevEntry2*)me->lvContent->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
@@ -111,8 +111,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
 	Text::StringBuilderUTF8 sb;
-	IO::BTDevLog::DevEntry *log;
-	Data::ArrayList<IO::BTDevLog::DevEntry*> *logList = this->btLog->GetLogList();
+	IO::BTDevLog::DevEntry2 *log;
+	Data::ArrayList<IO::BTDevLog::DevEntry2*> *logList = this->btLog->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UOSInt i;
@@ -126,7 +126,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	{
 		log = logList->GetItem(i);
 		entry = this->macList->GetEntry(log->macInt);
-		if (unkOnly && (entry != 0 && entry->name != 0 && entry->name[0] != 0))
+		if (unkOnly && (entry != 0 && entry->name != 0 && entry->name[0] != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{
 
 		}
@@ -134,18 +134,20 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 		{
 			Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			l = this->lvContent->AddItem(sbuff, log);
+			this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
+			this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 1, (const UTF8Char*)entry->name);
+				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)entry->name);
 			}
 			else
 			{
-				this->lvContent->SetSubItem(l, 1, (const UTF8Char*)"?");
+				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"?");
 			}
 			if (log->name)
-				this->lvContent->SetSubItem(l, 2, log->name);
+				this->lvContent->SetSubItem(l, 4, log->name);
 			Text::StrInt32(sbuff, log->txPower);
-			this->lvContent->SetSubItem(l, 3, sbuff);
+			this->lvContent->SetSubItem(l, 5, sbuff);
 			sb.ClearStr();
 			k = 0;
 			while (k < log->keys->GetCount())
@@ -157,7 +159,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 				sb.AppendHex16((UInt16)log->keys->GetItem(k));
 				k++;
 			}
-			this->lvContent->SetSubItem(l, 4, sb.ToString());
+			this->lvContent->SetSubItem(l, 6, sb.ToString());
 		}
 
 		i++;
@@ -195,13 +197,15 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);
 	this->lvContent->HandleSelChg(OnContentSelChg, this);
 	this->lvContent->AddColumn((const UTF8Char*)"MAC", 120);
+	this->lvContent->AddColumn((const UTF8Char*)"Type", 60);
+	this->lvContent->AddColumn((const UTF8Char*)"AddrType", 80);
 	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 120);
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"TX Power", 60);

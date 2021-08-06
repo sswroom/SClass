@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *user
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UTF8Char sbuff[32];
-	IO::BTScanner::ScanRecord *dev = (IO::BTScanner::ScanRecord*)me->lvDevices->GetItem(index);
+	IO::BTScanner::ScanRecord2 *dev = (IO::BTScanner::ScanRecord2*)me->lvDevices->GetItem(index);
 	if (dev)
 	{
 		Text::StrHexBytes(sbuff, dev->mac, 6, ':');
@@ -72,9 +72,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[32];
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap = me->bt->GetRecordMap(&mutUsage);
-	Data::ArrayList<IO::BTScanner::ScanRecord*> *devList = devMap->GetValues();
-	IO::BTScanner::ScanRecord *dev;
+	Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap = me->bt->GetRecordMap(&mutUsage);
+	Data::ArrayList<IO::BTScanner::ScanRecord2*> *devList = devMap->GetValues();
+	IO::BTScanner::ScanRecord2 *dev;
 	Text::StringBuilderUTF8 sb;
 
 	i = 0;
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanner::ScanRecord *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanner::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	Sync::MutexUsage mutUsage(me->devMut);

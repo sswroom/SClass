@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/BTCapturer.h"
-#include "IO/BTLog.h"
+#include "IO/BTDevLog.h"
 #include "IO/Path.h"
 #include "Sync/Thread.h"
 
@@ -93,9 +93,9 @@ void IO::BTCapturer::StoreStatus()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::BTLog btLog;
+	IO::BTDevLog btLog;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap = this->bt->GetRecordMap(&mutUsage);
+	Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap = this->bt->GetRecordMap(&mutUsage);
 	UOSInt i;
 	btLog.AppendList(devMap);
 	Data::DateTime dt;
@@ -117,7 +117,7 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-Data::ArrayList<IO::BTScanner::ScanRecord*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
+Data::ArrayList<IO::BTScanner::ScanRecord2*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
 {
 	return this->bt->GetRecordMap(mutUsage)->GetValues();
 }

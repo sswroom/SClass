@@ -128,35 +128,28 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		WriteMUInt64(mac, log->macInt);
 		Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 		l = this->lvContent->AddItem(sbuff, log);
+		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
+		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
 		if (log->addrType == IO::BTScanLog::AT_RANDOM)
 		{
-			this->lvContent->SetSubItem(l, 1, (const UTF8Char*)"Random");
-			this->lvContent->SetSubItem(l, 2, (const UTF8Char*)"-");
+			this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"-");
 		}
 		else
 		{
-			if (log->addrType == IO::BTScanLog::AT_PUBLIC)
-			{
-				this->lvContent->SetSubItem(l, 1, (const UTF8Char*)"Public");
-			}
-			else
-			{
-				this->lvContent->SetSubItem(l, 1, (const UTF8Char*)"Unknown");
-			}
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 2, (const UTF8Char*)entry->name);
+				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)entry->name);
 			}
 			else
 			{
-				this->lvContent->SetSubItem(l, 2, (const UTF8Char*)"?");
+				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"?");
 			}
 		}
 		if (log->name)
-			this->lvContent->SetSubItem(l, 3, log->name);
+			this->lvContent->SetSubItem(l, 4, log->name);
 		Text::StrUOSInt(sbuff, log->logs->GetCount());
-		this->lvContent->SetSubItem(l, 4, sbuff);
+		this->lvContent->SetSubItem(l, 5, sbuff);
 
 		i++;
 	}
@@ -190,15 +183,16 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);
 	this->lvContent->HandleSelChg(OnContentSelChg, this);
 	this->lvContent->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Type", 80);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 120);
+	this->lvContent->AddColumn((const UTF8Char*)"Type", 60);
+	this->lvContent->AddColumn((const UTF8Char*)"AddrType", 80);
+	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 160);
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"Count", 60);
 

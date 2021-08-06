@@ -28,7 +28,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanner::ScanRecord *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanner::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
 	if (updateType == IO::BTScanner::UT_RSSI)
@@ -42,7 +42,18 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanner::ScanRecord *dev,
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb.Append(sbuff);
 		sb.AppendChar('\t', 1);
-		sb.Append((const UTF8Char*)"bt");
+		if (dev->radioType == IO::BTScanLog::RT_HCI)
+		{
+			sb.Append((const UTF8Char*)"hci");
+		}
+		else if (dev->radioType == IO::BTScanLog::RT_LE)
+		{
+			sb.Append((const UTF8Char*)"le");
+		}
+		else
+		{
+			sb.Append((const UTF8Char*)"bt");
+		}
 		sb.AppendChar('\t', 1);
 		sb.AppendHexBuff(dev->mac, 6, ':', Text::LBT_NONE);
 		sb.AppendChar('\t', 1);
