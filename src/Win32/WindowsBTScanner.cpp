@@ -129,6 +129,20 @@ void Win32::WindowsBTScanner::Close()
 	}
 }
 
+Bool Win32::WindowsBTScanner::SetScanMode(ScanMode scanMode)
+{
+	switch (scanMode)
+	{
+	case SM_ACTIVE:
+		this->watcher.ScanningMode(BluetoothLEScanningMode::Active);
+		return true;
+	case SM_PASSIVE:
+		this->watcher.ScanningMode(BluetoothLEScanningMode::Passive);
+		return true;
+	}
+	return false;
+}
+
 Data::UInt64Map<IO::BTScanner::ScanRecord*> *Win32::WindowsBTScanner::GetRecordMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);

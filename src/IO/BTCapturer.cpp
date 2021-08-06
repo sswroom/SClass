@@ -32,6 +32,10 @@ IO::BTCapturer::BTCapturer()
 {
 	this->lastFileName = 0;
 	this->bt = IO::BTScanner::CreateScanner();
+	if (this->bt)
+	{
+		//this->bt->SetScanMode(IO::BTScanner::SM_ACTIVE);
+	}
 	this->threadRunning = false;
 	this->threadToStop = false;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"threadEvt"));

@@ -31,6 +31,12 @@ namespace IO
 			UT_NAME,
 			UT_OTHER
 		} UpdateType;
+
+		typedef enum
+		{
+			SM_ACTIVE,
+			SM_PASSIVE
+		} ScanMode;
 		
 		typedef void (__stdcall *RecordHandler)(ScanRecord *rec, UpdateType updateType, void *userObj);
 	public:
@@ -42,6 +48,7 @@ namespace IO
 		virtual void ScanOn() = 0;
 		virtual void ScanOff() = 0;
 		virtual void Close() = 0;
+		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
 		virtual Data::UInt64Map<ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage) = 0;
 

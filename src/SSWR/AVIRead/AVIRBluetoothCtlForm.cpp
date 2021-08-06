@@ -70,6 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	UOSInt k;
 	UOSInt l;
 	UTF8Char sbuff[32];
+	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
 	Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap = me->bt->GetRecordMap(&mutUsage);
 	Data::ArrayList<IO::BTScanner::ScanRecord*> *devList = devMap->GetValues();
@@ -97,10 +98,14 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 			}
 			Text::StrInt32(sbuff, dev->rssi);
 			me->lvDevices->SetSubItem(i, 3, sbuff);
-			Text::StrInt32(sbuff, dev->txPower);
+			dt.SetTicks(dev->lastSeenTime);
+			dt.ToLocalTime();
+			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			me->lvDevices->SetSubItem(i, 4, sbuff);
-			me->lvDevices->SetSubItem(i, 5, (const UTF8Char*)(dev->inRange?"Y":"N"));
-			me->lvDevices->SetSubItem(i, 6, (const UTF8Char*)(dev->connected?"Y":"N"));
+			Text::StrInt32(sbuff, dev->txPower);
+			me->lvDevices->SetSubItem(i, 5, sbuff);
+			me->lvDevices->SetSubItem(i, 6, (const UTF8Char*)(dev->inRange?"Y":"N"));
+			me->lvDevices->SetSubItem(i, 7, (const UTF8Char*)(dev->connected?"Y":"N"));
 			k = 0;
 			l = dev->keys->GetCount();
 			if (l > 0)
@@ -115,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 					sb.AppendHex16((UInt16)dev->keys->GetItem(k));
 					k++;
 				}
-				me->lvDevices->SetSubItem(i, 7, sb.ToString());
+				me->lvDevices->SetSubItem(i, 8, sb.ToString());
 			}
 			me->devMap->Put(dev->macInt, 0);
 		}
@@ -154,7 +159,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnStoreList, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store Devices"));
 	this->btnStoreList->SetRect(84, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 8));
+	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 9));
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
@@ -163,6 +168,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	this->lvDevices->AddColumn((const UTF8Char*)"Name", 150);
 	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 150);
 	this->lvDevices->AddColumn((const UTF8Char*)"RSSI", 60);
+	this->lvDevices->AddColumn((const UTF8Char*)"RecvTime", 150);
 	this->lvDevices->AddColumn((const UTF8Char*)"TX Power", 60);
 	this->lvDevices->AddColumn((const UTF8Char*)"Range", 60);
 	this->lvDevices->AddColumn((const UTF8Char*)"Connect", 60);

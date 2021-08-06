@@ -36,6 +36,7 @@ namespace Win32
 		virtual void ScanOn();
 		virtual void ScanOff();
 		virtual void Close();
+		virtual Bool SetScanMode(ScanMode scanMode);
 
 		virtual Data::UInt64Map<ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage);
 	};
