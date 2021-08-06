@@ -206,6 +206,7 @@ namespace Net
 		static Bool PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static Bool PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static Bool PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketBluetoothGetname(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static void PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static void PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
@@ -218,6 +219,7 @@ namespace Net
 		static void PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static void PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static void PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketBluetoothGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 
 		static UOSInt HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 

@@ -474,6 +474,11 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::Close()
 	}
 }
 
+Bool IO::ProgCtrl::BluetoothCtlProgCtrl::SetScanMode(ScanMode scanMode)
+{
+	return false;
+}
+
 Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 {
 	if ((this->threadRunning || !this->threadToStop) && !this->cmdReady)

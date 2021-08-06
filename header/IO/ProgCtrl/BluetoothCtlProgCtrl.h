@@ -42,6 +42,7 @@ namespace IO
 			virtual void ScanOn();
 			virtual void ScanOff();
 			virtual void Close();
+			virtual Bool SetScanMode(ScanMode scanMode);
 
 			virtual Data::UInt64Map<IO::BTScanner::ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage);
 

@@ -1766,6 +1766,8 @@ Bool Net::EthernetAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *pack
 		return PacketIPv4GetName(packet, packetSize, sb);
 	case 113:
 		return PacketLinuxGetName(packet, packetSize, sb);
+	case 201:
+		return PacketBluetoothGetname(packet, packetSize, sb);
 	}
 	return false;
 }
@@ -1928,6 +1930,12 @@ Bool Net::EthernetAnalyzer::PacketIPDataGetName(UInt8 protocol, const UInt8 *pac
 	}
 }
 
+Bool Net::EthernetAnalyzer::PacketBluetoothGetname(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	sb->Append((const UTF8Char*)"Bluetooth");
+	return true;
+}
+
 void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
 	switch (linkType)
@@ -1943,6 +1951,9 @@ void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *pa
 		break;
 	case 113:
 		PacketLinuxGetDetail(packet, packetSize, sb);
+		break;
+	case 201:
+		PacketBluetoothGetDetail(packet, packetSize, sb);
 		break;
 	default:
 		sb->Append((const UTF8Char*)"\r\n");
@@ -4634,6 +4645,151 @@ void Net::EthernetAnalyzer::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt p
 
 	sb->Append((const UTF8Char*)"\r\nMIC=");
 	sb->AppendHexBuff(&packet[packetSize - 4], 4, ' ', Text::LBT_NONE);
+}
+
+void Net::EthernetAnalyzer::PacketBluetoothGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	UInt32 dir = ReadMUInt32(&packet[0]);
+	sb->Append((const UTF8Char*)"\r\nDirection=");
+	switch (dir)
+	{
+	case 0:
+		sb->Append((const UTF8Char*)"Sent");
+		break;
+	case 1:
+		sb->Append((const UTF8Char*)"Rcvd");
+		break;
+	default:
+		sb->Append((const UTF8Char*)"Unknown (0x");
+		sb->AppendHex32(dir);
+		sb->AppendChar(')', 1);
+		break;
+	}
+	sb->Append((const UTF8Char*)"\r\nHCI Packet Type=0x");
+	sb->AppendHex8(packet[4]);
+	switch (packet[4])
+	{
+	case 1:
+		{
+			sb->Append((const UTF8Char*)" (HCI Command)");
+			UInt16 cmd = ReadUInt16(&packet[5]);
+			UInt8 cmdLen = packet[7];
+			sb->Append((const UTF8Char*)"\r\nCommand Opcode=0x");
+			sb->AppendHex16(cmd);
+			if (8 + (UOSInt)cmdLen <= packetSize)
+			{
+				switch (cmd)
+				{
+				case 0x2005:
+					sb->Append((const UTF8Char*)" (LE Set Random Address)");
+					sb->Append((const UTF8Char*)"\r\nParameter Total Length=");
+					sb->AppendU16(cmdLen);
+					if (cmdLen == 6)
+					{
+						sb->Append((const UTF8Char*)"\r\nBD_ADDR=");
+						sb->AppendHexBuff(packet + 8, 6, ':', Text::LBT_NONE);
+					}
+					else
+					{
+						sb->Append((const UTF8Char*)"\r\nUnknown:");
+						sb->AppendHexBuff(packet + 8, cmdLen, ':', Text::LBT_NONE);
+					}
+					break;
+				case 0x2041:
+					sb->Append((const UTF8Char*)" (LE Set Extended Scan Parameters)");
+					sb->Append((const UTF8Char*)"\r\nParameter Total Length=");
+					sb->AppendU16(cmdLen);
+					if (cmdLen == 8)
+					{
+						UInt16 u16v;
+						sb->Append((const UTF8Char*)"\r\nOwn Address Type=0x");
+						sb->AppendHex8(packet[8]);
+						switch (packet[8])
+						{
+						case 1:
+							sb->Append((const UTF8Char*)" (Random Address Type)");
+							break;
+						default:
+							sb->Append((const UTF8Char*)" (Unknown)");
+							break;
+						}
+						sb->Append((const UTF8Char*)"\r\nScan Filter Policy=0x");
+						sb->AppendHex8(packet[9]);
+						switch (packet[8])
+						{
+						case 0:
+							sb->Append((const UTF8Char*)" (Scan Filter Policy: Accept all advertisements, except directed advertisements not addressed to this device)");
+							break;
+						default:
+							sb->Append((const UTF8Char*)" (Unknown)");
+							break;
+						}
+						sb->Append((const UTF8Char*)"\r\nScanning PHYs=0x");
+						sb->AppendHex8(packet[10]);
+						switch (packet[10])
+						{
+						case 1:
+							sb->Append((const UTF8Char*)" (LE 1M)");
+							sb->Append((const UTF8Char*)"\r\nScan Type=0x");
+							sb->AppendHex8(packet[11]);
+							switch (packet[11])
+							{
+							case 1:
+								sb->Append((const UTF8Char*)" (Active)");
+								break;
+							default:
+								sb->Append((const UTF8Char*)" (Unknown)");
+								break;
+							}
+							sb->Append((const UTF8Char*)"\r\nScan Interval=");
+							sb->AppendU16(u16v = ReadUInt16(&packet[12]));
+							sb->Append((const UTF8Char*)" (");
+							Text::SBAppendF64(sb, 0.625 * u16v);
+							sb->Append((const UTF8Char*)"ms)");
+							sb->Append((const UTF8Char*)"\r\nScan Window=");
+							sb->AppendU16(u16v = ReadUInt16(&packet[14]));
+							sb->Append((const UTF8Char*)" (");
+							Text::SBAppendF64(sb, 0.625 * u16v);
+							sb->Append((const UTF8Char*)"ms)");
+							break;
+						default:
+							sb->Append((const UTF8Char*)" (Unknown)");
+							sb->Append((const UTF8Char*)"\r\nScan PHY:\r\n");
+							sb->AppendHexBuff(packet + 11, packetSize - 11, ' ', Text::LBT_CRLF);
+							break;
+						}
+					}
+					else
+					{
+						sb->Append((const UTF8Char*)"\r\nUnknown:");
+						sb->AppendHexBuff(packet + 8, cmdLen, ':', Text::LBT_NONE);
+					}
+					break;
+				default:
+					sb->Append((const UTF8Char*)" (Unknown)");
+					sb->Append((const UTF8Char*)"\r\nParameter Total Length=");
+					sb->AppendU16(cmdLen);
+					sb->Append((const UTF8Char*)"\r\nParameter:");
+					sb->AppendHexBuff(packet + 8, cmdLen, ':', Text::LBT_NONE);
+					break;
+				}
+				if (8 + (UOSInt)cmdLen < packetSize)
+				{
+					sb->Append((const UTF8Char*)"\r\nExtra:\r\n");
+					sb->AppendHexBuff(packet + 8 + cmdLen, packetSize - 8 - cmdLen, ' ', Text::LBT_CRLF);
+				}
+			}
+		}
+		break;
+	case 4:
+		sb->Append((const UTF8Char*)" (HCI Event)\r\n");
+		sb->AppendHexBuff(packet + 5, packetSize - 5, ' ', Text::LBT_CRLF);
+		break;
+	default:
+		sb->Append((const UTF8Char*)" (Unknown)\r\n");
+		sb->AppendHexBuff(packet + 5, packetSize - 5, ' ', Text::LBT_CRLF);
+		break;		
+	}
 }
 
 UOSInt Net::EthernetAnalyzer::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
