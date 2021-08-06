@@ -3,6 +3,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryData2.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
+#include "SSWR/AVIRead/AVIRBTScanLogForm.h"
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
 #include "SSWR/AVIRead/AVIRCoreWin.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
@@ -210,6 +211,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		{
 			SSWR::AVIRead::AVIRASN1DataForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1DataForm(0, this->ui, this, (Net::ASN1Data*)pobj));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
+	case IO::ParsedObject::PT_BTSCANLOG:
+		{
+			SSWR::AVIRead::AVIRBTScanLogForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRBTScanLogForm(0, this->ui, this, (IO::BTScanLog*)pobj));
 			InitForm(frm);
 			frm->Show();
 		}

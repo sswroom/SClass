@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/BTScanLog.h"
 #include "IO/FileStream.h"
 #include "IO/IStreamData.h"
+#include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Parser/FileParser/PCAPNGParser.h"
 
@@ -45,7 +47,11 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 	UInt32 inclLen;
 	UInt32 packetSize;
 	Int8 timeResol;
+
+	Bool isBTLink = false;
+	IO::BTScanLog *scanLog;
 	Net::EthernetAnalyzer *analyzer;
+	Data::DateTime dt;
 
 	if (fd->GetRealData(0, 24, hdr) != 24)
 		return 0;
@@ -59,6 +65,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 		Data::ArrayList<UInt16> linkTypeList;
 
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
 		packetBuff = MemAlloc(UInt8, maxSize);
 		currOfst = 0;
 		while (currOfst + 12 < fileSize)
@@ -88,6 +95,10 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 				UInt16 optLeng;
 				UOSInt i = 16;
 				timeResol = 0;
+				if (ReadUInt16(&packetBuff[8]) == 201)
+				{
+					isBTLink = true;
+				}
 				linkTypeList.Add(ReadUInt16(&packetBuff[8]));
 				while (i < packetSize - 4)
 				{
@@ -119,17 +130,39 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 				ifId = ReadUInt32(&packetBuff[8]);
 				linkType = linkTypeList.GetItem(ifId);
 				inclLen = ReadUInt32(&packetBuff[20]);
-				if (inclLen < 14 || inclLen > packetSize - 32)
+				if (linkType == 201)
 				{
-					break;
+					if (inclLen > packetSize - 32)
+					{
+						break;
+					}
+					Int64 ts = (((Int64)ReadInt32(&packetBuff[12])) << 32) | ReadUInt32(&packetBuff[16]);
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(&dt, ts, resolList.GetItem(0));
+					scanLog->AddBTRAWPacket(dt.ToTicks(), &packetBuff[28], inclLen);
 				}
-				analyzer->PacketData(linkType, &packetBuff[28], inclLen);
+				else
+				{
+					if (inclLen < 14 || inclLen > packetSize - 32)
+					{
+						break;
+					}
+					analyzer->PacketData(linkType, &packetBuff[28], inclLen);
+				}
 			}
 
 			currOfst += packetSize;
 		}
 		MemFree(packetBuff);
-		return analyzer;
+		if (isBTLink)
+		{
+			DEL_CLASS(analyzer);
+			return scanLog;
+		}
+		else
+		{
+			DEL_CLASS(scanLog);
+			return analyzer;
+		}
 	}
 	else if (ReadMInt32(&hdr[8]) == 0x1a2b3c4d)
 	{
@@ -137,6 +170,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 		Data::ArrayList<UInt16> linkTypeList;
 
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
 		packetBuff = MemAlloc(UInt8, maxSize);
 		currOfst = 0;
 		while (currOfst + 12 < fileSize)
@@ -166,6 +200,10 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 				UInt16 optLeng;
 				UOSInt i = 16;
 				timeResol = 0;
+				if (ReadMUInt16(&packetBuff[8]) == 201)
+				{
+					isBTLink = true;
+				}
 				linkTypeList.Add(ReadMUInt16(&packetBuff[8]));
 				while (i < packetSize - 4)
 				{
@@ -197,17 +235,38 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *f
 				ifId = ReadMUInt32(&packetBuff[8]);
 				linkType = linkTypeList.GetItem(ifId);
 				inclLen = ReadMUInt32(&packetBuff[20]);
-				if (inclLen < 14 || inclLen > packetSize - 32)
+				if (linkType == 201)
 				{
-					break;
+					if (inclLen > packetSize - 32)
+					{
+						break;
+					}
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(&dt, ReadMInt64(&packetBuff[12]), resolList.GetItem(0));
+					scanLog->AddBTRAWPacket(dt.ToTicks(), &packetBuff[28], inclLen);
 				}
-				analyzer->PacketData(linkType, &packetBuff[28], inclLen);
+				else
+				{
+					if (inclLen < 14 || inclLen > packetSize - 32)
+					{
+						break;
+					}
+					analyzer->PacketData(linkType, &packetBuff[28], inclLen);
+				}
 			}
 
 			currOfst += packetSize;
 		}
 		MemFree(packetBuff);
-		return analyzer;
+		if (isBTLink)
+		{
+			DEL_CLASS(analyzer);
+			return scanLog;
+		}
+		else
+		{
+			DEL_CLASS(scanLog);
+			return analyzer;
+		}
 	}
 	return 0;
 }

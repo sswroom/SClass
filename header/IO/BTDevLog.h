@@ -1,12 +1,12 @@
-#ifndef _SM_IO_BTLOG
-#define _SM_IO_BTLOG
+#ifndef _SM_IO_BTDEVLOG
+#define _SM_IO_BTDEVLOG
 #include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
 #include "IO/BTScanner.h"
 
 namespace IO
 {
-	class BTLog
+	class BTDevLog
 	{
 	public:
 		typedef struct
@@ -16,22 +16,22 @@ namespace IO
 			const UTF8Char *name;
 			Int32 txPower;
 			Data::ArrayListUInt32 *keys;
-		} LogEntry;		
+		} DevEntry;		
 	private:
-		Data::UInt64Map<LogEntry*> *logs;
+		Data::UInt64Map<DevEntry*> *logs;
 
 		static Bool IsDefaultName(const UTF8Char *name);
 	public:
-		BTLog();
-		~BTLog();
+		BTDevLog();
+		~BTDevLog();
 
-		LogEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower);
+		DevEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower);
 		void AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);
 		Bool StoreFile(const UTF8Char *fileName);
 
-		Data::ArrayList<IO::BTLog::LogEntry*> *GetLogList();
+		Data::ArrayList<IO::BTDevLog::DevEntry*> *GetLogList();
 	};
 }
 #endif

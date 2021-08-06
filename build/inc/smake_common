@@ -1205,8 +1205,10 @@ IO/BitWriterMSB.h: ../../src/IO/BitWriterMSB.cpp
 @BitWriterMSB.o
 IO/BTCapturer.h: ../../src/IO/BTCapturer.cpp
 @BTCapturer.o
-IO/BTLog.h: ../../src/IO/BTLog.cpp
-@BTLog.o
+IO/BTDevLog.h: ../../src/IO/BTDevLog.cpp
+@BTDevLog.o
+IO/BTScanLog.h: ../../src/IO/BTScanLog.cpp
+@BTScanLog.o
 IO/BTUtil.h: ../../src/IO/BTUtil.cpp
 @BTUtil.o
 IO/BufferedInputStream.h: ../../src/IO/BufferedInputStream.cpp
@@ -2708,6 +2710,10 @@ SSWR/AVIRead/AVIRBluetoothLogForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothLogForm
 @AVIRBluetoothLogForm.o
 SSWR/AVIRead/AVIRBruteForceForm.h: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
 @AVIRBruteForceForm.o
+SSWR/AVIRead/AVIRBTScanLogDevForm.h: ../../src/SSWR/AVIRead/AVIRBTScanLogDevForm.cpp
+@AVIRBTScanLogDevForm.o
+SSWR/AVIRead/AVIRBTScanLogForm.h: ../../src/SSWR/AVIRead/AVIRBTScanLogForm.cpp
+@AVIRBTScanLogForm.o
 SSWR/AVIRead/AVIRCalculator1Form.h: ../../src/SSWR/AVIRead/AVIRCalculator1Form.cpp
 @AVIRCalculator1Form.o
 SSWR/AVIRead/AVIRCameraControlForm.h: ../../src/SSWR/AVIRead/AVIRCameraControlForm.cpp
@@ -3642,7 +3648,8 @@ BitReaderMSB.o: ../../src/IO/BitReaderMSB.cpp
 BitWriterLSB.o: ../../src/IO/BitWriterLSB.cpp
 BitWriterMSB.o: ../../src/IO/BitWriterMSB.cpp
 BTCapturer.o: ../../src/IO/BTCapturer.cpp
-BTLog.o: ../../src/IO/BTLog.cpp
+BTDevLog.o: ../../src/IO/BTDevLog.cpp
+BTScanLog.o: ../../src/IO/BTScanLog.cpp
 BTUtil.o: ../../src/IO/BTUtil.cpp
 BufferedInputStream.o: ../../src/IO/BufferedInputStream.cpp
 BufferedOutputStream.o: ../../src/IO/BufferedOutputStream.cpp
@@ -4341,6 +4348,8 @@ AVIRBluetoothForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
 AVIRBluetoothLEForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
 AVIRBluetoothLogForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothLogForm.cpp
 AVIRBruteForceForm.o: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
+AVIRBTScanLogDevForm.o: ../../src/SSWR/AVIRead/AVIRBTScanLogDevForm.cpp
+AVIRBTScanLogForm.o: ../../src/SSWR/AVIRead/AVIRBTScanLogForm.cpp
 AVIRCalculator1Form.o: ../../src/SSWR/AVIRead/AVIRCalculator1Form.cpp
 AVIRCameraControlForm.o: ../../src/SSWR/AVIRead/AVIRCameraControlForm.cpp
 AVIRCaptureDevForm.o: ../../src/SSWR/AVIRead/AVIRCaptureDevForm.cpp

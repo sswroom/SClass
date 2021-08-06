@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "IO/BTLog.h"
+#include "IO/BTDevLog.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "Sync/MutexUsage.h"
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UTF8Char sbuff[128];
 	Data::DateTime dt;
-	IO::BTLog btLog;
+	IO::BTDevLog btLog;
 	dt.SetCurrTimeUTC();
 	Text::StrConcat(Text::StrInt64(sbuff, dt.ToTicks()), (const UTF8Char*)"bt.txt");
 	Sync::MutexUsage mutUsage;

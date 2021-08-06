@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "IO/BTLog.h"
+#include "IO/BTDevLog.h"
 #include "IO/FileStream.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-Bool IO::BTLog::IsDefaultName(const UTF8Char *name)
+Bool IO::BTDevLog::IsDefaultName(const UTF8Char *name)
 {
 	if (Text::StrCharCnt(name) == 17)
 	{
@@ -22,21 +22,21 @@ Bool IO::BTLog::IsDefaultName(const UTF8Char *name)
 	return false;
 }
 
-IO::BTLog::BTLog()
+IO::BTDevLog::BTDevLog()
 {
-	NEW_CLASS(this->logs, Data::UInt64Map<LogEntry*>());
+	NEW_CLASS(this->logs, Data::UInt64Map<DevEntry*>());
 }
 
-IO::BTLog::~BTLog()
+IO::BTDevLog::~BTDevLog()
 {
 	this->ClearList();
 	DEL_CLASS(this->logs);
 }
 
-IO::BTLog::LogEntry *IO::BTLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower)
+IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower)
 {
 	UInt8 mac[8];
-	LogEntry *log = this->logs->Get(macInt);
+	DevEntry *log = this->logs->Get(macInt);
 	if (log)
 	{
 		if (log->txPower == 0 || txPower != 0)
@@ -55,7 +55,7 @@ IO::BTLog::LogEntry *IO::BTLog::AddEntry(UInt64 macInt, const UTF8Char *name, In
 		return log;
 	}
 	WriteMUInt64(mac, macInt);
-	log = MemAlloc(LogEntry, 1);
+	log = MemAlloc(DevEntry, 1);
 	log->mac[0] = mac[2];
 	log->mac[1] = mac[3];
 	log->mac[2] = mac[4];
@@ -70,10 +70,10 @@ IO::BTLog::LogEntry *IO::BTLog::AddEntry(UInt64 macInt, const UTF8Char *name, In
 	return log;
 }
 
-void IO::BTLog::AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap)
+void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap)
 {
 	IO::BTScanner::ScanRecord *rec;
-	LogEntry *log;
+	DevEntry *log;
 	UOSInt j;
 	UOSInt k;
 	Data::ArrayList<IO::BTScanner::ScanRecord*> *recList = devMap->GetValues();
@@ -95,10 +95,10 @@ void IO::BTLog::AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord*> *devMap)
 	}
 }
 
-void IO::BTLog::ClearList()
+void IO::BTDevLog::ClearList()
 {
-	LogEntry *log;
-	Data::ArrayList<LogEntry*> *logList = this->logs->GetValues();
+	DevEntry *log;
+	Data::ArrayList<DevEntry*> *logList = this->logs->GetValues();
 	UOSInt i = logList->GetCount();
 	while (i-- > 0)
 	{
@@ -110,7 +110,7 @@ void IO::BTLog::ClearList()
 	this->logs->Clear();
 }
 
-Bool IO::BTLog::LoadFile(const UTF8Char *fileName)
+Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
@@ -118,7 +118,7 @@ Bool IO::BTLog::LoadFile(const UTF8Char *fileName)
 	UTF8Char *sarr[5];
 	UInt8 macBuff[8];
 	UInt64 macInt;
-	LogEntry *log;
+	DevEntry *log;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
 	{
@@ -168,7 +168,7 @@ Bool IO::BTLog::LoadFile(const UTF8Char *fileName)
 	return true;
 }
 
-Bool IO::BTLog::StoreFile(const UTF8Char *fileName)
+Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
@@ -180,8 +180,8 @@ Bool IO::BTLog::StoreFile(const UTF8Char *fileName)
 		return false;
 	}
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	Data::ArrayList<LogEntry*> *logList = this->logs->GetValues();
-	LogEntry *log;
+	Data::ArrayList<DevEntry*> *logList = this->logs->GetValues();
+	DevEntry *log;
 	UOSInt k;
 	UOSInt l;
 	UOSInt i = 0;
@@ -218,7 +218,7 @@ Bool IO::BTLog::StoreFile(const UTF8Char *fileName)
 	return true;
 }
 
-Data::ArrayList<IO::BTLog::LogEntry*> *IO::BTLog::GetLogList()
+Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetLogList()
 {
 	return this->logs->GetValues();
 }

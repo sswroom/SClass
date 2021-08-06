@@ -33,7 +33,8 @@ namespace IO
 			PT_ETHERNET_ANALYZER,
 			PT_JAVA_CLASS,
 			PT_SMAKE,
-			PT_ASN1_DATA
+			PT_ASN1_DATA,
+			PT_BTSCANLOG
 		} ParserType;
 
 	protected:

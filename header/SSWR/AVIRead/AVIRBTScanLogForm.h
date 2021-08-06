@@ -1,6 +1,6 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHLOGFORM
-#define _SM_SSWR_AVIREAD_AVIRBLUETOOTHLOGFORM
-#include "IO/BTDevLog.h"
+#ifndef _SM_SSWR_AVIREAD_AVIRBTSCANLOGFORM
+#define _SM_SSWR_AVIREAD_AVIRBTSCANLOGFORM
+#include "IO/BTScanLog.h"
 #include "Net/MACInfoList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -15,33 +15,31 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRBluetoothLogForm : public UI::GUIForm
+		class AVIRBTScanLogForm : public UI::GUIForm
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnFile;
-			UI::GUICheckBox *chkUnkOnly;
 			UI::GUIButton *btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUIListView *lvContent;
 
-			IO::BTDevLog *btLog;
+			IO::BTScanLog *btLog;
 			Net::MACInfoList *macList;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnStoreClicked(void *userObj);
 			static void __stdcall OnContentDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnContentSelChg(void *userObj);
-			static void __stdcall OnUnkOnlyChkChg(void *userObj, Bool checked);
 			Bool LogFileStore();
 			void LogUIUpdate();
 
 			void UpdateStatus();
 		public:
-			AVIRBluetoothLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
-			virtual ~AVIRBluetoothLogForm();
+			AVIRBTScanLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::BTScanLog *btLog);
+			virtual ~AVIRBTScanLogForm();
 
 			virtual void OnMonitorChanged();
 		};
