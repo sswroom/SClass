@@ -15,7 +15,7 @@ namespace IO
 
 		static __stdcall UInt32 RecvThread(void *userObj);
 	public:
-		RAWBTScanner();
+		RAWBTScanner(Bool noCtrl);
 		virtual ~RAWBTScanner();
 
 		Bool IsError();

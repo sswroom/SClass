@@ -11,6 +11,7 @@ struct IO::RAWBTScanner::ClassData
 	pcap_t *pcap;
 	RecordHandler hdlr;
 	void *hdlrObj;
+	Bool noCtrl;
 	Bool threadRunning;
 	Bool threadToStop;
 	IO::ProgCtrl::BluetoothCtlProgCtrl *btCtrl;
@@ -34,11 +35,12 @@ UInt32 __stdcall IO::RAWBTScanner::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::RAWBTScanner::RAWBTScanner()
+IO::RAWBTScanner::RAWBTScanner(Bool noCtrl)
 {
 	NEW_CLASS(this->recMap, Data::UInt64Map<IO::BTScanLog::ScanRecord*>());
 	NEW_CLASS(this->recMut, Sync::Mutex());
 	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData->noCtrl = noCtrl;
 	this->clsData->pcap = 0;
 	this->clsData->hdlr = 0;
 	this->clsData->hdlrObj = 0;
@@ -51,11 +53,14 @@ IO::RAWBTScanner::RAWBTScanner()
 		this->clsData->pcap = pcap_create("bluetooth0", errbuf);
 		if (this->clsData->pcap)
 		{
-			NEW_CLASS(this->clsData->btCtrl, IO::ProgCtrl::BluetoothCtlProgCtrl());
-			if (!this->clsData->btCtrl->WaitForCmdReady())
+			if (!this->clsData->noCtrl)
 			{
-				DEL_CLASS(this->clsData->btCtrl);
-				this->clsData->btCtrl = 0;
+				NEW_CLASS(this->clsData->btCtrl, IO::ProgCtrl::BluetoothCtlProgCtrl());
+				if (!this->clsData->btCtrl->WaitForCmdReady())
+				{
+					DEL_CLASS(this->clsData->btCtrl);
+					this->clsData->btCtrl = 0;
+				}
 			}
 		}
 	}
@@ -82,7 +87,7 @@ IO::RAWBTScanner::~RAWBTScanner()
 
 Bool IO::RAWBTScanner::IsError()
 {
-	return this->clsData->pcap == 0 || this->clsData->btCtrl == 0;
+	return this->clsData->pcap == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0);
 }
 
 void IO::RAWBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
@@ -98,7 +103,7 @@ Bool IO::RAWBTScanner::IsScanOn()
 
 void IO::RAWBTScanner::ScanOn()
 {
-	if (this->clsData->pcap == 0 || this->clsData->btCtrl == 0 || this->clsData->threadRunning)
+	if (this->clsData->pcap == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0) || this->clsData->threadRunning)
 	{
 		return;
 	}
@@ -109,7 +114,8 @@ void IO::RAWBTScanner::ScanOn()
 		return;
 	}
 	Sync::Thread::Create(RecvThread, this);
-	this->clsData->btCtrl->ScanOn();
+	if (this->clsData->btCtrl)
+		this->clsData->btCtrl->ScanOn();
 	while (!this->clsData->threadRunning)
 	{
 		Sync::Thread::Sleep(1);
@@ -122,7 +128,8 @@ void IO::RAWBTScanner::ScanOff()
 	{
 		this->clsData->threadToStop = true;
 		pcap_breakloop(this->clsData->pcap);
-		this->clsData->btCtrl->ScanOff();
+		if (this->clsData->btCtrl)
+			this->clsData->btCtrl->ScanOff();
 		while (this->clsData->threadRunning)
 		{
 			Sync::Thread::Sleep(1);
@@ -145,7 +152,11 @@ void IO::RAWBTScanner::Close()
 
 Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 {
-	return this->clsData->btCtrl->SetScanMode(scanMode);
+	if (this->clsData->btCtrl)
+	{
+		return this->clsData->btCtrl->SetScanMode(scanMode);
+	}
+	return false;
 }
 
 Data::UInt64Map<IO::BTScanLog::ScanRecord*> *IO::RAWBTScanner::GetRecordMap(Sync::MutexUsage *mutUsage)

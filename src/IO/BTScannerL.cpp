@@ -6,7 +6,7 @@
 IO::BTScanner *IO::BTScanner::CreateScanner()
 {
 	IO::RAWBTScanner *rawBT;
-	NEW_CLASS(rawBT, IO::RAWBTScanner());
+	NEW_CLASS(rawBT, IO::RAWBTScanner(false));
 	if (!rawBT->IsError())
 	{
 		return rawBT;
