@@ -642,17 +642,17 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 						MemCopyANC(simg->data, scnImg, scnWidth * scnHeight);
 						if (localColorTable)
 						{
-							readSize = (UOSInt)(1 << ((imgDesc[8] & 7) + 1));
+							readSize = (UInt32)(1 << ((imgDesc[8] & 7) + 1));
 							tmpPtr = localColorTable;
 						}
 						else if (screenColorTable)
 						{
-							readSize = (UOSInt)(1 << colorSize);
+							readSize = (UInt32)(1 << colorSize);
 							tmpPtr = screenColorTable;
 						}
 						else if (globalColorTable)
 						{
-							readSize = (UOSInt)(1 << colorSize);
+							readSize = (UInt32)(1 << colorSize);
 							tmpPtr = globalColorTable;
 						}
 						else

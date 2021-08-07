@@ -11,7 +11,7 @@ namespace Win32
 	{
 	private:
 		winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher watcher = nullptr;
-		Data::UInt64Map<ScanRecord*> *devMap;
+		Data::UInt64Map<ScanRecord2*> *devMap;
 		Sync::Mutex *devMut;
 		RecordHandler recHdlr;
 		void *recHdlrObj;
@@ -24,8 +24,8 @@ namespace Win32
 		void DevCompleted(winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Devices::Bluetooth::BluetoothLEDevice> asyncInfo,
 			winrt::Windows::Foundation::AsyncStatus asyncStatus);
 
-		ScanRecord *DeviceGet(UInt64 mac);
-		void DeviceFree(ScanRecord *rec);
+		ScanRecord2 *DeviceGet(UInt64 mac);
+		void DeviceFree(ScanRecord2 *rec);
 	public:
 		WindowsBTScanner();
 		virtual ~WindowsBTScanner();
@@ -38,7 +38,7 @@ namespace Win32
 		virtual void Close();
 		virtual Bool SetScanMode(ScanMode scanMode);
 
-		virtual Data::UInt64Map<ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage);
+		virtual Data::UInt64Map<ScanRecord2*> *GetRecordMap(Sync::MutexUsage *mutUsage);
 	};
 }
 #endif
