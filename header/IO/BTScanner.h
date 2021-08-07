@@ -10,21 +10,6 @@ namespace IO
 	class BTScanner
 	{
 	public:
-		typedef struct
-		{
-			UInt8 mac[6];
-			UInt64 macInt;
-			Bool inRange;
-			IO::BTScanLog::RadioType radioType;
-			IO::BTScanLog::AddressType addrType;
-			const UTF8Char *name;
-			Int8 rssi;
-			Int8 txPower;
-			Bool connected;
-			Int64 lastSeenTime;
-			UInt16 company;
-		} ScanRecord2;
-
 		typedef enum
 		{
 			UT_NEW_DEVICE,
@@ -42,7 +27,7 @@ namespace IO
 			SM_PASSIVE
 		} ScanMode;
 		
-		typedef void (__stdcall *RecordHandler)(ScanRecord2 *rec, UpdateType updateType, void *userObj);
+		typedef void (__stdcall *RecordHandler)(IO::BTScanLog::ScanRecord *rec, UpdateType updateType, void *userObj);
 	public:
 		virtual ~BTScanner() {};
 
@@ -54,7 +39,7 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
-		virtual Data::UInt64Map<ScanRecord2*> *GetRecordMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage) = 0;
 
 		static BTScanner *CreateScanner();
 	};

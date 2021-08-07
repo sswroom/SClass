@@ -52,8 +52,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
 		Sync::MutexUsage mutUsage;
-		Data::ArrayList<IO::BTScanner::ScanRecord2*> *logList = me->btCapture->GetLogList(&mutUsage);
-		IO::BTScanner::ScanRecord2 *entry;
+		Data::ArrayList<IO::BTScanLog::ScanRecord*> *logList = me->btCapture->GetLogList(&mutUsage);
+		IO::BTScanLog::ScanRecord *entry;
 		sb.Append((const UTF8Char*)"<a href=\"btdet.html\">");
 		sb.Append((const UTF8Char*)"BT Record count = ");
 		sb.AppendUOSInt(logList->GetCount());
@@ -102,7 +102,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanner::ScanRecord2*> *entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord*> *entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetLogList(&mutUsage);
@@ -133,7 +133,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanner::ScanRecord2*> *entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord*> *entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetLogList(&mutUsage);
@@ -377,7 +377,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanner::ScanRecord2*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord*> *entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -389,7 +389,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	currTime = dt.ToTicks();
 	UOSInt i;
 	UOSInt j;
-	IO::BTScanner::ScanRecord2 *entry;
+	IO::BTScanLog::ScanRecord *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
 	sb->Append((const UTF8Char*)"<tr><td><a href=");
@@ -403,7 +403,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	Text::XML::FreeNewText(csptr);
 	sb->Append((const UTF8Char*)">RSSI</a></td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td></tr>\r\n");
 
-	Data::ArrayList<IO::BTScanner::ScanRecord2*> sortList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord*> sortList;
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
 	if (sort == 1)
 	{
@@ -426,7 +426,14 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 			sb->Append((const UTF8Char*)"</td><td>");
 			sb->Append(IO::BTScanLog::AddressTypeGetName(entry->addrType));
 			sb->Append((const UTF8Char*)"</td><td>");
-			sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
+			if (entry->addrType == IO::BTScanLog::AT_RANDOM)
+			{
+				sb->Append((const UTF8Char*)"-");
+			}
+			else
+			{
+				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
+			}
 			sb->Append((const UTF8Char*)"</td><td>");
 			if (entry->name)
 			{
@@ -515,8 +522,8 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 
 OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1, void *obj2)
 {
-	IO::BTScanner::ScanRecord2 *log1 = (IO::BTScanner::ScanRecord2*)obj1;
-	IO::BTScanner::ScanRecord2 *log2 = (IO::BTScanner::ScanRecord2*)obj2;
+	IO::BTScanLog::ScanRecord *log1 = (IO::BTScanLog::ScanRecord*)obj1;
+	IO::BTScanLog::ScanRecord *log2 = (IO::BTScanLog::ScanRecord*)obj2;
 	if (log1->rssi == log2->rssi)
 	{
 		if (log1->name == log2->name)

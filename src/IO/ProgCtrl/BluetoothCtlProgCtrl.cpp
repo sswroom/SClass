@@ -16,7 +16,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 	UOSInt readSize;
 	UTF8Char *sarr[2];
 	UOSInt i;
-	IO::BTScanner::ScanRecord2 *dev;
+	IO::BTScanLog::ScanRecord *dev;
 	Data::DateTime *dt;
 
 	me->threadRunning = true;
@@ -335,7 +335,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const Char *cmd)
 	}
 }
 
-IO::BTScanner::ScanRecord2 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(const UTF8Char *s)
+IO::BTScanLog::ScanRecord *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(const UTF8Char *s)
 {
 	UTF8Char sbuff[18];
 	UTF8Char *sarr[7];
@@ -358,13 +358,13 @@ IO::BTScanner::ScanRecord2 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 	macBuff[6] = Text::StrHex2UInt8C(sarr[4]);
 	macBuff[7] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
-	IO::BTScanner::ScanRecord2 *dev;
+	IO::BTScanLog::ScanRecord *dev;
 	Sync::MutexUsage mutUsage(this->devMut);
 	dev = this->devMap->Get(macInt);
 	if (dev)
 		return dev;
-	dev = MemAlloc(IO::BTScanner::ScanRecord2, 1);
-	MemClear(dev, sizeof(IO::BTScanner::ScanRecord2));
+	dev = MemAlloc(IO::BTScanLog::ScanRecord, 1);
+	MemClear(dev, sizeof(IO::BTScanLog::ScanRecord));
 	dev->mac[0] = macBuff[2];
 	dev->mac[1] = macBuff[3];
 	dev->mac[2] = macBuff[4];
@@ -379,7 +379,7 @@ IO::BTScanner::ScanRecord2 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 	return dev;
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(IO::BTScanner::ScanRecord2 *dev)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(IO::BTScanLog::ScanRecord *dev)
 {
 	SDEL_TEXT(dev->name);
 	MemFree(dev);
@@ -387,7 +387,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(IO::BTScanner::ScanRecord2 *
 
 IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl()
 {
-	NEW_CLASS(this->devMap, Data::UInt64Map<IO::BTScanner::ScanRecord2*>());
+	NEW_CLASS(this->devMap, Data::UInt64Map<IO::BTScanLog::ScanRecord*>());
 	NEW_CLASS(this->devMut, Sync::Mutex());
 	NEW_CLASS(this->lastCmdMut, Sync::Mutex());
 	this->lastCmd = 0;
@@ -413,7 +413,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 {
 	this->Close();
 	DEL_CLASS(this->prog);
-	Data::ArrayList<IO::BTScanner::ScanRecord2*> *devList = this->devMap->GetValues();
+	Data::ArrayList<IO::BTScanLog::ScanRecord*> *devList = this->devMap->GetValues();
 	LIST_CALL_FUNC(devList, DeviceFree);
 	DEL_CLASS(this->devMap);
 	DEL_CLASS(this->devMut);
@@ -498,7 +498,7 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 	return this->cmdReady;
 }
 
-Data::UInt64Map<IO::BTScanner::ScanRecord2*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetRecordMap(Sync::MutexUsage *mutUsage)
+Data::UInt64Map<IO::BTScanLog::ScanRecord*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetRecordMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;

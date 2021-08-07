@@ -18,7 +18,7 @@ namespace IO
 		Net::WiFiCapturer *wifiCapture;
 		
 		static void __stdcall OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bss, Int64 scanTime, void *userObj);
-		static void __stdcall OnBTUpdate(IO::BTScanner::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj);
+		static void __stdcall OnBTUpdate(IO::BTScanLog::ScanRecord *dev, IO::BTScanner::UpdateType updateType, void *userObj);
 	public:
 		RadioSignalLogger();
 		~RadioSignalLogger();

@@ -20,6 +20,8 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
+IO/RAWBTScanner.h: ../../src/IO/RAWBTScanner.cpp
+@RAWBTScanner.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorAccelerometer.h:

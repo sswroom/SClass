@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *user
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UTF8Char sbuff[32];
-	IO::BTScanner::ScanRecord2 *dev = (IO::BTScanner::ScanRecord2*)me->lvDevices->GetItem(index);
+	IO::BTScanLog::ScanRecord *dev = (IO::BTScanLog::ScanRecord*)me->lvDevices->GetItem(index);
 	if (dev)
 	{
 		Text::StrHexBytes(sbuff, dev->mac, 6, ':');
@@ -71,9 +71,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[32];
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap = me->bt->GetRecordMap(&mutUsage);
-	Data::ArrayList<IO::BTScanner::ScanRecord2*> *devList = devMap->GetValues();
-	IO::BTScanner::ScanRecord2 *dev;
+	Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap = me->bt->GetRecordMap(&mutUsage);
+	Data::ArrayList<IO::BTScanLog::ScanRecord*> *devList = devMap->GetValues();
+	IO::BTScanLog::ScanRecord *dev;
 
 	i = 0;
 	j = devList->GetCount();
@@ -85,39 +85,41 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 		{
 			Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 			me->lvDevices->InsertItem(i, sbuff, dev);
-			me->lvDevices->SetSubItem(i, 2, (const UTF8Char*)Net::MACInfo::GetMACInfo(dev->macInt)->name);
+			me->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType));
+			me->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType));
+			me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)Net::MACInfo::GetMACInfo(dev->macInt)->name);
 			me->devMap->Put(dev->macInt, 1);
 		}
 		if (me->devMap->Get(dev->macInt) != 0)
 		{
 			if (dev->name)
 			{
-				me->lvDevices->SetSubItem(i, 1, dev->name);
+				me->lvDevices->SetSubItem(i, 3, dev->name);
 			}
 			Text::StrInt32(sbuff, dev->rssi);
-			me->lvDevices->SetSubItem(i, 3, sbuff);
+			me->lvDevices->SetSubItem(i, 5, sbuff);
 			dt.SetTicks(dev->lastSeenTime);
 			dt.ToLocalTime();
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevices->SetSubItem(i, 4, sbuff);
+			me->lvDevices->SetSubItem(i, 6, sbuff);
 			Text::StrInt32(sbuff, dev->txPower);
-			me->lvDevices->SetSubItem(i, 5, sbuff);
-			me->lvDevices->SetSubItem(i, 6, (const UTF8Char*)(dev->inRange?"Y":"N"));
-			me->lvDevices->SetSubItem(i, 7, (const UTF8Char*)(dev->connected?"Y":"N"));
+			me->lvDevices->SetSubItem(i, 7, sbuff);
+			me->lvDevices->SetSubItem(i, 8, (const UTF8Char*)(dev->inRange?"Y":"N"));
+			me->lvDevices->SetSubItem(i, 9, (const UTF8Char*)(dev->connected?"Y":"N"));
 			if (dev->company == 0)
 			{
-				me->lvDevices->SetSubItem(i, 8, (const UTF8Char*)"-");
+				me->lvDevices->SetSubItem(i, 10, (const UTF8Char*)"-");
 			}
 			else
 			{
 				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
 				if (csptr)
 				{
-					me->lvDevices->SetSubItem(i, 8, csptr);
+					me->lvDevices->SetSubItem(i, 10, csptr);
 				}
 				else
 				{
-					me->lvDevices->SetSubItem(i, 8, (const UTF8Char*)"?");
+					me->lvDevices->SetSubItem(i, 10, (const UTF8Char*)"?");
 				}
 			}
 			me->devMap->Put(dev->macInt, 0);
@@ -127,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanner::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -157,12 +159,14 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnStoreList, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store Devices"));
 	this->btnStoreList->SetRect(84, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 9));
+	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 11));
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->HandleDblClk(OnDevicesDblClick, this);
 	this->lvDevices->AddColumn((const UTF8Char*)"MAC", 120);
+	this->lvDevices->AddColumn((const UTF8Char*)"Type", 60);
+	this->lvDevices->AddColumn((const UTF8Char*)"AddrType", 80);
 	this->lvDevices->AddColumn((const UTF8Char*)"Name", 150);
 	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 150);
 	this->lvDevices->AddColumn((const UTF8Char*)"RSSI", 60);

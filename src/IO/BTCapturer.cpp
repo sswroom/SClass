@@ -95,7 +95,7 @@ void IO::BTCapturer::StoreStatus()
 	UTF8Char *sptr;
 	IO::BTDevLog btLog;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap = this->bt->GetRecordMap(&mutUsage);
+	Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap = this->bt->GetRecordMap(&mutUsage);
 	UOSInt i;
 	btLog.AppendList(devMap);
 	Data::DateTime dt;
@@ -117,7 +117,7 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-Data::ArrayList<IO::BTScanner::ScanRecord2*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
+Data::ArrayList<IO::BTScanLog::ScanRecord*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
 {
 	return this->bt->GetRecordMap(mutUsage)->GetValues();
 }

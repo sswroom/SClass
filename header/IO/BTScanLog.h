@@ -23,6 +23,21 @@ namespace IO
 			RT_LE
 		};
 
+		typedef struct
+		{
+			UInt8 mac[6];
+			UInt64 macInt;
+			Bool inRange;
+			RadioType radioType;
+			AddressType addrType;
+			const UTF8Char *name;
+			Int8 rssi;
+			Int8 txPower;
+			Bool connected;
+			Int64 lastSeenTime;
+			UInt16 company;
+		} ScanRecord;
+
 		struct LogEntry
 		{
 			UInt64 macInt;
@@ -52,12 +67,14 @@ namespace IO
 		virtual IO::ParsedObject::ParserType GetParserType();
 
 		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower);
+		LogEntry *AddScanRec(const ScanRecord *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
 		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetDevList();
 
 		static const UTF8Char *RadioTypeGetName(RadioType radioType);
 		static const UTF8Char *AddressTypeGetName(AddressType addrType);
+		static Bool ParseBTRAWPacket(ScanRecord *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

@@ -76,10 +76,10 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 	return log;
 }
 
-void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap)
+void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap)
 {
-	IO::BTScanner::ScanRecord2 *rec;
-	Data::ArrayList<IO::BTScanner::ScanRecord2*> *recList = devMap->GetValues();
+	IO::BTScanLog::ScanRecord *rec;
+	Data::ArrayList<IO::BTScanLog::ScanRecord*> *recList = devMap->GetValues();
 	UOSInt i = recList->GetCount();
 	while (i-- > 0)
 	{

@@ -2,7 +2,7 @@
 #define _SM_IO_BTDEVLOG
 #include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
-#include "IO/BTScanner.h"
+#include "IO/BTScanLog.h"
 
 namespace IO
 {
@@ -28,7 +28,7 @@ namespace IO
 		~BTDevLog();
 
 		DevEntry2 *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company);
-		void AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap);
+		void AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);
 		Bool StoreFile(const UTF8Char *fileName);
