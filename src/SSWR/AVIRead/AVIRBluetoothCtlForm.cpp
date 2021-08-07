@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/BTDevLog.h"
 #include "Net/MACInfo.h"
+#include "Net/PacketAnalyzerBluetooth.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
@@ -67,15 +68,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
-	UOSInt l;
 	UTF8Char sbuff[32];
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
 	Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap = me->bt->GetRecordMap(&mutUsage);
 	Data::ArrayList<IO::BTScanner::ScanRecord2*> *devList = devMap->GetValues();
 	IO::BTScanner::ScanRecord2 *dev;
-	Text::StringBuilderUTF8 sb;
 
 	i = 0;
 	j = devList->GetCount();
@@ -106,21 +104,21 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 			me->lvDevices->SetSubItem(i, 5, sbuff);
 			me->lvDevices->SetSubItem(i, 6, (const UTF8Char*)(dev->inRange?"Y":"N"));
 			me->lvDevices->SetSubItem(i, 7, (const UTF8Char*)(dev->connected?"Y":"N"));
-			k = 0;
-			l = dev->keys->GetCount();
-			if (l > 0)
+			if (dev->company == 0)
 			{
-				sb.ClearStr();
-				while (k < l)
+				me->lvDevices->SetSubItem(i, 8, (const UTF8Char*)"-");
+			}
+			else
+			{
+				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
+				if (csptr)
 				{
-					if (k > 0)
-					{
-						sb.Append((const UTF8Char*)", ");
-					}
-					sb.AppendHex16((UInt16)dev->keys->GetItem(k));
-					k++;
+					me->lvDevices->SetSubItem(i, 8, csptr);
 				}
-				me->lvDevices->SetSubItem(i, 8, sb.ToString());
+				else
+				{
+					me->lvDevices->SetSubItem(i, 8, (const UTF8Char*)"?");
+				}
 			}
 			me->devMap->Put(dev->macInt, 0);
 		}
@@ -172,7 +170,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	this->lvDevices->AddColumn((const UTF8Char*)"TX Power", 60);
 	this->lvDevices->AddColumn((const UTF8Char*)"Range", 60);
 	this->lvDevices->AddColumn((const UTF8Char*)"Connect", 60);
-	this->lvDevices->AddColumn((const UTF8Char*)"Keys", 200);
+	this->lvDevices->AddColumn((const UTF8Char*)"Company", 200);
 
 	if (this->bt)
 	{

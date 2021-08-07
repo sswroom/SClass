@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "Net/MACInfo.h"
+#include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/WebServer/CapturerWebHandler.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -386,8 +387,6 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	Int64 currTime;
 	dt.SetCurrTimeUTC();
 	currTime = dt.ToTicks();
-	UOSInt k;
-	UOSInt l;
 	UOSInt i;
 	UOSInt j;
 	IO::BTScanner::ScanRecord2 *entry;
@@ -402,7 +401,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	csptr = Text::XML::ToNewAttrText(sbuff);
 	sb->Append(csptr);
 	Text::XML::FreeNewText(csptr);
-	sb->Append((const UTF8Char*)">RSSI</a></td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Keys</td></tr>\r\n");
+	sb->Append((const UTF8Char*)">RSSI</a></td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td></tr>\r\n");
 
 	Data::ArrayList<IO::BTScanner::ScanRecord2*> sortList;
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
@@ -446,16 +445,21 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 			dt.ToLocalTime();
 			sb->AppendDate(&dt);
 			sb->Append((const UTF8Char*)"</td><td>");
-			k = 0;
-			l = entry->keys->GetCount();
-			while (k < l)
+			if (entry->company == 0)
 			{
-				if (k > 0)
+				sb->Append((const UTF8Char*)"-");
+			}
+			else
+			{
+				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(entry->company);
+				if (csptr)
 				{
-					sb->AppendChar(',', 1);
+					sb->Append(csptr);
 				}
-				sb->AppendHex16((UInt16)entry->keys->GetItem(k));
-				k++;
+				else
+				{
+					sb->Append((const UTF8Char*)"?");
+				}
 			}
 			sb->Append((const UTF8Char*)"</td></tr>\r\n");
 		}

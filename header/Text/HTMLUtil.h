@@ -12,6 +12,7 @@ namespace Text
 		static Bool HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb);
 		static Bool CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb);
 		static Bool HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF *sb, Data::ArrayList<const UTF8Char*> *imgList);
+		static Bool XMLWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb);
 	};
 }
 #endif

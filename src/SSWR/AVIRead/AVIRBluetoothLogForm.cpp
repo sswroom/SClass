@@ -4,6 +4,7 @@
 #include "IO/Path.h"
 #include "IO/WriteCacheStream.h"
 #include "Net/MACInfo.h"
+#include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/WirelessLANIE.h"
 #include "SSWR/AVIRead/AVIRMACManagerEntryForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothLogForm.h"
@@ -110,14 +111,12 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
-	Text::StringBuilderUTF8 sb;
 	IO::BTDevLog::DevEntry2 *log;
 	Data::ArrayList<IO::BTDevLog::DevEntry2*> *logList = this->btLog->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
 	UOSInt l;
 	this->lvContent->ClearItems();
 	i = 0;
@@ -148,18 +147,22 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 				this->lvContent->SetSubItem(l, 4, log->name);
 			Text::StrInt32(sbuff, log->txPower);
 			this->lvContent->SetSubItem(l, 5, sbuff);
-			sb.ClearStr();
-			k = 0;
-			while (k < log->keys->GetCount())
+			if (log->company == 0)
 			{
-				if (k > 0)
-				{
-					sb.AppendChar(',', 1);
-				}
-				sb.AppendHex16((UInt16)log->keys->GetItem(k));
-				k++;
+				this->lvContent->SetSubItem(l, 6, (const UTF8Char*)"-");
 			}
-			this->lvContent->SetSubItem(l, 6, sb.ToString());
+			else
+			{
+				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
+				if (csptr == 0)
+				{
+					this->lvContent->SetSubItem(l, 6, (const UTF8Char*)"?");
+				}
+				else
+				{
+					this->lvContent->SetSubItem(l, 6, csptr);
+				}
+			}
 		}
 
 		i++;
@@ -209,7 +212,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 120);
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"TX Power", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"Keys", 150);
+	this->lvContent->AddColumn((const UTF8Char*)"Company", 150);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();

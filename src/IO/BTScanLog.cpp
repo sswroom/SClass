@@ -27,7 +27,7 @@ IO::ParsedObject::ParserType IO::BTScanLog::GetParserType()
 	return IO::ParsedObject::PT_BTSCANLOG;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, const UTF8Char *name, Int8 rssi, Int8 txPower)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower)
 {
 	LogEntry *log = MemAlloc(LogEntry, 1);
 	log->macInt = macInt;
@@ -40,6 +40,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	{
 		dev = MemAlloc(DevEntry, 1);
 		dev->macInt = macInt;
+		dev->company = company;
 		dev->radioType = radioType;
 		dev->addrType = addrType;
 		dev->name = SCOPY_TEXT(name);
@@ -49,6 +50,10 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	if (name && dev->name == 0)
 	{
 		dev->name = Text::StrCopyNew(name);
+	}
+	if (company && dev->company == 0)
+	{
+		dev->company = company;
 	}
 	dev->logs->Add(log);
 	return log;
@@ -79,6 +84,7 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 		UInt8 mac[8];
 		UOSInt optEnd;
 		UOSInt i;
+		UInt16 company = 0;
 		if (buff[7] == 0xd) //Sub Event: LE Extended Advertising Report (0x0d)
 		{
 			UInt8 numReports = buff[8];
@@ -151,7 +157,11 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 			{
 				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
 			}
-			i += 1 + (UOSInt)optLen;	
+			else if (buff[i + 1] == 0xFF)
+			{
+				company = ReadUInt16(&buff[i + 2]);
+			}
+			i += 1 + (UOSInt)optLen;
 		}
 
 
@@ -173,7 +183,7 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 		{
 			name = 0;
 		}
-		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_LE, aType, name, rssi, txPower);
+		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_LE, aType, company, name, rssi, txPower);
 	}
 	else if (buff[4] == 4 && buff[5] == 0x2F) //HCI Event, Extended Inquiry Result
 	{
@@ -187,6 +197,7 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 		UOSInt optEnd;
 		UOSInt i;
 		UInt8 numReports = buff[7];
+		UInt16 company = 0;
 		if (numReports != 1)
 		{
 			return;
@@ -214,6 +225,10 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 			{
 				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
 			}
+			else if (buff[i + 1] == 0xff)
+			{
+				company = ReadUInt16(&buff[i + 2]);
+			}
 			i += 1 + (UOSInt)optLen;	
 		}
 
@@ -227,7 +242,7 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 		{
 			name = 0;
 		}
-		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_HCI, aType, name, rssi, 0);
+		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_HCI, aType, company, name, rssi, 0);
 	}
 }
 

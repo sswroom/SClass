@@ -22,7 +22,7 @@ namespace IO
 			Int8 txPower;
 			Bool connected;
 			Int64 lastSeenTime;
-			Data::ArrayListUInt32 *keys;
+			UInt16 company;
 		} ScanRecord2;
 
 		typedef enum
@@ -32,6 +32,7 @@ namespace IO
 			UT_TXPOWER,
 			UT_CONNECT,
 			UT_NAME,
+			UT_COMPANY,
 			UT_OTHER
 		} UpdateType;
 

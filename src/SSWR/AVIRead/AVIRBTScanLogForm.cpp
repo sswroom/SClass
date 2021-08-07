@@ -4,6 +4,7 @@
 #include "IO/Path.h"
 #include "IO/WriteCacheStream.h"
 #include "Net/MACInfo.h"
+#include "Net/PacketAnalyzerBluetooth.h"
 #include "SSWR/AVIRead/AVIRMACManagerEntryForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogDevForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
@@ -115,6 +116,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	IO::BTScanLog::DevEntry *log;
 	Data::ArrayList<IO::BTScanLog::DevEntry*> *logList = this->btLog->GetDevList();
 	UTF8Char sbuff[64];
+	const UTF8Char *csptr;
 	UInt8 mac[8];
 	UOSInt i;
 	UOSInt j;
@@ -130,20 +132,37 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		l = this->lvContent->AddItem(sbuff, log);
 		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
 		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
-		if (log->addrType == IO::BTScanLog::AT_RANDOM)
+		if (log->company == 0)
 		{
 			this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"-");
+		}
+		else
+		{
+			csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
+			if (csptr)
+			{
+				this->lvContent->SetSubItem(l, 3, csptr);
+			}
+			else
+			{
+				Text::StrHexVal16(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), log->company);
+				this->lvContent->SetSubItem(l, 3, sbuff);
+			}
+		}
+		if (log->addrType == IO::BTScanLog::AT_RANDOM)
+		{
+			this->lvContent->SetSubItem(l, 4, (const UTF8Char*)"-");
 		}
 		else
 		{
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)entry->name);
+				this->lvContent->SetSubItem(l, 4, (const UTF8Char*)entry->name);
 			}
 			else
 			{
-				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"?");
+				this->lvContent->SetSubItem(l, 4, (const UTF8Char*)"?");
 			}
 		}
 		if (log->name)
@@ -183,7 +202,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 6));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
@@ -192,6 +211,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->lvContent->AddColumn((const UTF8Char*)"MAC", 120);
 	this->lvContent->AddColumn((const UTF8Char*)"Type", 60);
 	this->lvContent->AddColumn((const UTF8Char*)"AddrType", 80);
+	this->lvContent->AddColumn((const UTF8Char*)"Company", 100);
 	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 160);
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"Count", 60);

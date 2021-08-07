@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Net/EthernetAnalyzer.h"
+#include "Net/PacketAnalyzerEthernet.h"
 #include "SSWR/AVIRead/AVIRTCPPortScanForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 				port = portList.GetItem(i);
 				Text::StrUInt16(sbuff, port);
 				me->lvPort->AddItem(sbuff, (void*)(UOSInt)port);
-				csptr = Net::EthernetAnalyzer::TCPPortGetName(port);
+				csptr = Net::PacketAnalyzerEthernet::TCPPortGetName(port);
 				if (csptr)
 				{
 					me->lvPort->SetSubItem(i, 1, csptr);

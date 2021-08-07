@@ -2293,6 +2293,10 @@ Net/NTPClient.h: ../../src/Net/NTPClient.cpp
 @NTPClient.o
 Net/NTPServer.h: ../../src/Net/NTPServer.cpp
 @NTPServer.o
+Net/PacketAnalyzerBluetooth.h: ../../src/Net/PacketAnalyzerBluetooth.cpp
+@PacketAnalyzerBluetooth.o
+Net/PacketAnalyzerEthernet.h: ../../src/Net/PacketAnalyzerEthernet.cpp
+@PacketAnalyzerEthernet.o
 Net/PingMonitor.h: ../../src/Net/PingMonitor.cpp
 @PingMonitor.o
 Net/POP3Server.h: ../../src/Net/POP3Server.cpp
@@ -4142,6 +4146,8 @@ MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp
 NTPServer.o: ../../src/Net/NTPServer.cpp
+PacketAnalyzerBluetooth.o: ../../src/Net/PacketAnalyzerBluetooth.cpp
+PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp
 POP3Server.o: ../../src/Net/POP3Server.cpp
 ProxyServer.o: ../../src/Net/ProxyServer.cpp

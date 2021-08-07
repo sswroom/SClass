@@ -184,11 +184,8 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 							UInt16 key;
 							if (Text::StrToUInt16(&sarr[0][53], &key))
 							{
-								if (dev->keys->SortedIndexOf(key) < 0)
-								{
-									dev->keys->SortedInsert(key);
-									if (me->recHdlr) me->recHdlr(dev, UT_OTHER, me->recHdlrObj);
-								}
+								dev->company = key;
+								if (me->recHdlr) me->recHdlr(dev, UT_COMPANY, me->recHdlrObj);
 							}
 						}
 						//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData Value:
@@ -377,7 +374,7 @@ IO::BTScanner::ScanRecord2 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 	dev->macInt = macInt;
 	dev->addrType = IO::BTScanLog::AT_UNKNOWN;
 	dev->radioType = IO::BTScanLog::RT_UNKNOWN;
-	NEW_CLASS(dev->keys, Data::ArrayListUInt32());
+	dev->company = 0;
 	this->devMap->Put(macInt, dev);
 	return dev;
 }
@@ -385,7 +382,6 @@ IO::BTScanner::ScanRecord2 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(IO::BTScanner::ScanRecord2 *dev)
 {
 	SDEL_TEXT(dev->name);
-	DEL_CLASS(dev->keys);
 	MemFree(dev);
 }
 

@@ -36,6 +36,7 @@ namespace IO
 			UInt64 macInt;
 			RadioType radioType;
 			AddressType addrType;
+			UInt16 company;
 			const UTF8Char *name;
 			Data::ArrayList<LogEntry*> *logs;
 		};
@@ -50,7 +51,7 @@ namespace IO
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, const UTF8Char *name, Int8 rssi, Int8 txPower);
+		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
 		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetDevList();

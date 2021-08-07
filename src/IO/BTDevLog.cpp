@@ -33,7 +33,7 @@ IO::BTDevLog::~BTDevLog()
 	DEL_CLASS(this->logs);
 }
 
-IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType)
+IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company)
 {
 	UInt8 mac[8];
 	DevEntry2 *log = this->logs->Get(macInt);
@@ -42,6 +42,10 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 		if (log->txPower == 0 || txPower != 0)
 		{
 			log->txPower = txPower;
+		}
+		if (log->company == 0 && company != 0)
+		{
+			log->company = company;
 		}
 		if (log->name == 0 && name != 0)
 		{
@@ -67,7 +71,7 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 	log->radioType = radioType;
 	log->addrType = addrType;
 	log->txPower = txPower;
-	NEW_CLASS(log->keys, Data::ArrayListUInt32());
+	log->company = company;
 	this->logs->Put(macInt, log);
 	return log;
 }
@@ -75,25 +79,12 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap)
 {
 	IO::BTScanner::ScanRecord2 *rec;
-	DevEntry2 *log;
-	UOSInt j;
-	UOSInt k;
 	Data::ArrayList<IO::BTScanner::ScanRecord2*> *recList = devMap->GetValues();
 	UOSInt i = recList->GetCount();
 	while (i-- > 0)
 	{
 		rec = recList->GetItem(i);
-		log = this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->radioType, rec->addrType);
-		j = 0;
-		k = rec->keys->GetCount();
-		while (j < k)
-		{
-			if (log->keys->SortedIndexOf(rec->keys->GetItem(j)) < 0)
-			{
-				log->keys->SortedInsert(rec->keys->GetItem(j));
-			}
-			j++;
-		}
+		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->radioType, rec->addrType, rec->company);
 	}
 }
 
@@ -106,7 +97,6 @@ void IO::BTDevLog::ClearList()
 	{
 		log = logList->GetItem(i);
 		SDEL_TEXT(log->name);
-		DEL_CLASS(log->keys);
 		MemFree(log);
 	}
 	this->logs->Clear();
@@ -121,7 +111,6 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	UOSInt colCnt;
 	UInt8 macBuff[8];
 	UInt64 macInt;
-	DevEntry2 *log;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
 	{
@@ -170,22 +159,18 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 					addrType = IO::BTScanLog::AT_RANDOM;
 				}
 			}
-			log = this->AddEntry(macInt, name, Text::StrToInt32(sarr[2]), radioType, addrType);
+			UInt16 company = 0;
 			if (sarr[3][0])
 			{
 				sarr[1] = sarr[3];
 				UOSInt i = 2;
-				UInt16 key;
 				while (i == 2)
 				{
 					i = Text::StrSplit(sarr, 2, sarr[1], ',');
-					key = (UInt16)Text::StrHex2Int16C(sarr[0]);
-					if (log->keys->SortedIndexOf(key) < 0)
-					{
-						log->keys->SortedInsert(key);
-					}
+					company = Text::StrHex2UInt16C(sarr[0]);
 				}
 			}
+			this->AddEntry(macInt, name, (Int8)Text::StrToInt32(sarr[2]), radioType, addrType, company);
 		}
 		sb.ClearStr();
 	}
@@ -208,8 +193,6 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	Data::ArrayList<DevEntry2*> *logList = this->logs->GetValues();
 	DevEntry2 *log;
-	UOSInt k;
-	UOSInt l;
 	UOSInt i = 0;
 	UOSInt j = logList->GetCount();
 	while (i < j)
@@ -225,17 +208,7 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 		sb.AppendChar('\t', 1);
 		sb.AppendI32(log->txPower);
 		sb.AppendChar('\t', 1);
-		k = 0;
-		l = log->keys->GetCount();
-		while (k < l)
-		{
-			if (k > 0)
-			{
-				sb.AppendChar(',', 1);
-			}
-			sb.AppendHex16((UInt16)log->keys->GetItem(k));
-			k++;
-		}
+		sb.AppendHex16(log->company);
 		sb.AppendChar('\t', 1);
 		switch (log->radioType)
 		{

@@ -16,8 +16,8 @@ namespace IO
 			const UTF8Char *name;
 			IO::BTScanLog::RadioType radioType;
 			IO::BTScanLog::AddressType addrType;
-			Int32 txPower;
-			Data::ArrayListUInt32 *keys;
+			Int8 txPower;
+			UInt16 company;
 		} DevEntry2;
 	private:
 		Data::UInt64Map<DevEntry2*> *logs;
@@ -27,7 +27,7 @@ namespace IO
 		BTDevLog();
 		~BTDevLog();
 
-		DevEntry2 *AddEntry(UInt64 macInt, const UTF8Char *name, Int32 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType);
+		DevEntry2 *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company);
 		void AppendList(Data::UInt64Map<IO::BTScanner::ScanRecord2*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);

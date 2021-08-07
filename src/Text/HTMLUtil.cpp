@@ -362,3 +362,127 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	DEL_CLASS(wmstm);
 	return true;
 }
+
+Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb)
+{
+	UOSInt startOfst = 0;
+	UOSInt currOfst = 0;
+	UTF8Char lastC = 0;
+	UTF8Char c;
+	UInt8 startType = 0;
+	while (currOfst < buffSize)
+	{
+		c = buff[currOfst];
+		if (c == '<')
+		{
+			if (startType == 0)
+			{
+				if (startOfst < currOfst)
+				{
+					sb->AppendC(&buff[startOfst], currOfst - startOfst);
+				}
+				if (buff[currOfst + 1] == '?')
+				{
+					startOfst = currOfst;
+					startType = 1;
+				}
+				else if (buff[currOfst + 1] == '/')
+				{
+					startOfst = currOfst;
+					startType = 3;
+				}
+				else
+				{
+					startOfst = currOfst;
+					startType = 2;
+				}
+			}
+			else if (startType == 4 && buff[currOfst + 1] == '/')
+			{
+				startType = 5;
+			}
+		}
+		else if (c == '>')
+		{
+			if (startType == 1)
+			{
+				if (lev > 0)
+				{
+					sb->AppendChar(' ', lev << 1);
+				}
+				sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
+				sb->Append((const UTF8Char*)"\r\n");
+				startType = 0;
+				startOfst = currOfst + 1;
+			}
+			else if (startType == 2)
+			{
+				if (lastC == '/')
+				{
+					if (lev > 0)
+					{
+						sb->AppendChar(' ', lev << 1);
+					}
+					sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
+					sb->Append((const UTF8Char*)"\r\n");
+					startType = 0;
+					startOfst = currOfst + 1;
+				}
+				else if (buff[currOfst + 1] == '<' && buff[currOfst + 2] == '/')
+				{
+					startType = 5;
+				}
+				else if (buff[currOfst + 1] == '<')
+				{
+					if (lev > 0)
+					{
+						sb->AppendChar(' ', lev << 1);
+					}
+					lev++;
+					sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
+					sb->Append((const UTF8Char*)"\r\n");
+					startType = 0;
+					startOfst = currOfst + 1;
+				}
+				else
+				{
+					startType = 4;
+				}
+			}
+			else if (startType == 5)
+			{
+				if (lev > 0)
+				{
+					sb->AppendChar(' ', lev << 1);
+				}
+				sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
+				sb->Append((const UTF8Char*)"\r\n");
+				startType = 0;
+				startOfst = currOfst + 1;
+			}
+			else if (startType == 3)
+			{
+				if (lev > 0)
+				{
+					lev--;
+					if (lev > 0)
+					{
+						sb->AppendChar(' ', lev << 1);
+					}
+				}
+				sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
+				sb->Append((const UTF8Char*)"\r\n");
+				startType = 0;
+				startOfst = currOfst + 1;
+			}
+		}
+
+		currOfst++;
+		lastC = c;
+	}
+	if (startOfst < buffSize)
+	{
+		sb->AppendC(&buff[startOfst], buffSize - startOfst);
+	}
+	return true;
+}
