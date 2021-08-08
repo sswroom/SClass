@@ -18,6 +18,7 @@ struct UI::GUIDDrawControl::ClassData
 	Bool pSurfaceUpdated;
 	GtkWidget *imgCtrl;
 	UInt8 *bufferSurfaceData;
+	UOSInt drawPause;
 };
 
 gboolean GUIDDrawControl_ToGenDrawSignal(gpointer user_data)
@@ -272,7 +273,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 
 void UI::GUIDDrawControl::ReleaseSubSurface()
 {
-	gtk_image_clear((GtkImage*)this->surfaceMon);
+	gtk_image_clear((GtkImage*)this->clsData->imgCtrl);
 	if (this->pSurface)
 	{
 		g_object_unref((GdkPixbuf*)this->pSurface);
@@ -323,6 +324,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->pSurfaceUpdated = true;
 	this->clsData->bufferSurfaceData = 0;
+	this->clsData->drawPause = 0;
 	
 	this->inited = false;
 	this->clipper = 0;
@@ -332,7 +334,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->surfaceNoRelease = false;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
-	this->focusing = false;
 	NEW_CLASS(this->drawEvt, Sync::Event(false, (const UTF8Char*)"UI.GUIDDrawControl.drawEvt"));
 	NEW_CLASS(this->surfaceMut, Sync::Mutex());
 	this->rootForm = parent->GetRootForm();
@@ -393,21 +394,21 @@ void UI::GUIDDrawControl::DrawToScreen()
 	{
 //		printf("Draw to screen 1\r\n");
 		ImageUtil_ConvR8G8B8N8_ARGB32((const UInt8*)this->surfaceBuff, this->clsData->bufferSurfaceData, this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
-		if (this->focusing)
+		if (this->clsData->drawPause)
 		{
-
+			this->clsData->drawPause--;
 		}
 		else
 		{
-			this->focusing = true;
+			this->clsData->drawPause = 10;
 			if (this->clsData->pSurfaceUpdated)
 			{
 				this->clsData->pSurfaceUpdated = false;
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 			else
 			{
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 			while (gtk_events_pending())
 			{
@@ -423,9 +424,9 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->clsData->bufferSurfaceData)
 	{
-		if (this->focusing)
+		if (this->clsData->drawPause)
 		{
-
+			this->clsData->drawPause--;
 		}
 		else
 		{
@@ -479,15 +480,15 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 //			dt.SetCurrTimeUTC();
 //			Int64 t = dt.ToTicks();
 //			printf("Draw from buff 1 %lld\r\n", t);
-			this->focusing = true;
+			this->clsData->drawPause = 10;
 			if (this->clsData->pSurfaceUpdated)
 			{
 				this->clsData->pSurfaceUpdated = false;
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 			else
 			{
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 //			printf("Draw from buff 2 %lld\r\n", t);
 		}
@@ -589,7 +590,7 @@ void UI::GUIDDrawControl::UseDrawSurface(Sync::MutexUsage *mutUsage)
 
 void UI::GUIDDrawControl::UnuseDrawSurface(Sync::MutexUsage *mutUsage)
 {
-	this->focusing = false;
+	this->clsData->drawPause = 0;
 	mutUsage->EndUse();
 	this->drawEvt->Set();
 }
