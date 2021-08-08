@@ -319,7 +319,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, sstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else if (swidth != Math::UOSInt2Double(dwidth))

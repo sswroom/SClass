@@ -1304,7 +1304,7 @@ vfexit:
 ;24 r12
 ;32 xmm8
 ;48 rbx
-;26 rbp
+;56 rbp
 ;64 retAddr
 ;rdi inPt
 ;rsi outPt
