@@ -93,7 +93,7 @@ Media::DrawEngine *UI::GUICoreWin::CreateDrawEngine()
 
 typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR hmonitor, OSInt dpiType, UINT *dpiX, UINT *dpiY);
 
-Double UI::GUICoreWin::GetMagnifyRatio(void *hMonitor)
+Double UI::GUICoreWin::GetMagnifyRatio(MonitorHandle *hMonitor)
 {
 	Double osdpi = 0;
 	IO::Library lib((const UTF8Char*)"Shcore.dll");
@@ -192,7 +192,7 @@ void UI::GUICoreWin::GetCursorPos(OSInt *x, OSInt *y)
 
 typedef BOOL (WINAPI* SETAUTOROTATION)(BOOL bEnable);
 
-void UI::GUICoreWin::SetDisplayRotate(void *hMonitor, DisplayRotation rot)
+void UI::GUICoreWin::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
 {
 	IO::Library lib((const UTF8Char*)"user32.dll");
 	SETAUTOROTATION SetAutoRotation = (SETAUTOROTATION)lib.GetFuncNum(2507);
@@ -202,7 +202,7 @@ void UI::GUICoreWin::SetDisplayRotate(void *hMonitor, DisplayRotation rot)
 	}
 }
 
-void UI::GUICoreWin::GetMonitorDPIs(void *hMonitor, Double *hdpi, Double *ddpi)
+void UI::GUICoreWin::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
 {
 	if (this->monMgr)
 	{
@@ -225,7 +225,7 @@ void UI::GUICoreWin::SetMonitorMgr(Media::MonitorMgr *monMgr)
 	this->monMgr = monMgr;
 }
 
-OSInt UI::GUICoreWin::MSGetWindowObj(void *hWnd, OSInt index)
+OSInt UI::GUICoreWin::MSGetWindowObj(ControlHandle *hWnd, OSInt index)
 {
 #ifdef _WIN32_WCE
 	return (OSInt)GetWindowLong((HWND)hWnd, (int)index);
@@ -234,7 +234,7 @@ OSInt UI::GUICoreWin::MSGetWindowObj(void *hWnd, OSInt index)
 #endif
 }
 
-OSInt UI::GUICoreWin::MSSetWindowObj(void *hWnd, OSInt index, OSInt value)
+OSInt UI::GUICoreWin::MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt value)
 {
 #ifdef _WIN32_WCE
 	return (OSInt)SetWindowLong((HWND)hWnd, (int)index, value);
@@ -245,7 +245,7 @@ OSInt UI::GUICoreWin::MSSetWindowObj(void *hWnd, OSInt index, OSInt value)
 #endif
 }
 
-OSInt UI::GUICoreWin::MSSetClassObj(void *hWnd, OSInt index, OSInt value)
+OSInt UI::GUICoreWin::MSSetClassObj(ControlHandle *hWnd, OSInt index, OSInt value)
 {
 #ifdef _WIN32_WCE
 	return (OSInt)SetClassLong((HWND)hWnd, (int)index, value);

@@ -18,13 +18,13 @@
 
 OSInt __stdcall UI::GUIGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIGroupBox *me = (UI::GUIGroupBox*)UI::GUICoreWin::MSGetWindowObj(hWnd, GWL_USERDATA);
+	UI::GUIGroupBox *me = (UI::GUIGroupBox*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	NMHDR *nmhdr;
 	switch (msg)
 	{
 	case WM_COMMAND:
-		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((void*)lParam, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)lParam, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(HIWORD(wParam), 0);
@@ -32,7 +32,7 @@ OSInt __stdcall UI::GUIGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 		break;
 	case WM_NOTIFY:
 		nmhdr = (NMHDR*)lParam;
-		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj(nmhdr->hwndFrom, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(nmhdr->code, (void*)lParam);

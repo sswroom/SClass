@@ -16,7 +16,7 @@ Int32 UI::GUIPictureBoxSimple::useCnt = 0;
 
 OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIPictureBoxSimple *me = (UI::GUIPictureBoxSimple*)UI::GUICoreWin::MSGetWindowObj(hWnd, GWL_USERDATA);
+	UI::GUIPictureBoxSimple *me = (UI::GUIPictureBoxSimple*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UOSInt i;
 	switch (msg)
 	{

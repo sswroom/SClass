@@ -913,13 +913,13 @@ Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(const UTF8Ch
 	return monColor;
 }
 
-Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(void *hMon)
+Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(MonitorHandle *hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
 	return GetMonColorManager(monInfo.GetMonitorID());
 }
 
-Media::ColorManagerSess *Media::ColorManager::CreateSess(void *hMon)
+Media::ColorManagerSess *Media::ColorManager::CreateSess(MonitorHandle *hMon)
 {
 	Media::MonitorColorManager *monColor;
 	monColor = this->GetMonColorManager(hMon);
@@ -1006,7 +1006,7 @@ Bool Media::ColorManagerSess::Get10BitColor()
 	return this->monColor->Get10BitColor();
 }
 
-void Media::ColorManagerSess::ChangeMonitor(void *hMon)
+void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
 	const UTF8Char *monName = monInfo.GetMonitorID();

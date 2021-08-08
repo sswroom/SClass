@@ -21,7 +21,7 @@ Int32 UI::GUIRealtimeLineChart::useCnt = 0;
 
 OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
 {
-	UI::GUIRealtimeLineChart *me = (UI::GUIRealtimeLineChart*)UI::GUICoreWin::MSGetWindowObj(hWnd, GWL_USERDATA);
+	UI::GUIRealtimeLineChart *me = (UI::GUIRealtimeLineChart*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
 	{
 	case WM_SIZE:

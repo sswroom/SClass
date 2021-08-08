@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_COLORMANAGER
 #define _SM_MEDIA_COLORMANAGER
+#include "Handles.h"
 #include "Data/ArrayList.h"
 #include "Data/StringUTF8Map.h"
 #include "Media/ColorSess.h"
@@ -104,8 +105,8 @@ namespace Media
 		Media::ColorProfile::YUVType GetDefYUVType();
 
 		MonitorColorManager *GetMonColorManager(const UTF8Char *profileName);
-		MonitorColorManager *GetMonColorManager(void *hMon);
-		ColorManagerSess *CreateSess(void *hMon);
+		MonitorColorManager *GetMonColorManager(MonitorHandle *hMon);
+		ColorManagerSess *CreateSess(MonitorHandle *hMon);
 		void DeleteSess(ColorManagerSess *sess);
 	};
 
@@ -131,7 +132,7 @@ namespace Media
 		Media::ColorProfile::YUVType GetDefYUVType();
 		Bool Get10BitColor();
 
-		void ChangeMonitor(void *hMon);
+		void ChangeMonitor(MonitorHandle *hMon);
 
 		void RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam);
 		void YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam);

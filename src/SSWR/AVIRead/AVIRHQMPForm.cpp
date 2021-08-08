@@ -731,10 +731,10 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"&Start", MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
 	mnu->AddItem((const UTF8Char*)"S&top", MNU_PB_STOP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
 	mnu->AddItem((const UTF8Char*)"&Pause", MNU_PB_PAUSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_Q);
-	mnu->AddItem((const UTF8Char*)"&Forward 10 Seconds", MNU_PB_FWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ADD);
-	mnu->AddItem((const UTF8Char*)"&Backward 10 Seconds", MNU_PB_BWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SUBTRACT);
-	mnu->AddItem((const UTF8Char*)"&Forward 1 Minute", MNU_PB_FWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_ADD);
-	mnu->AddItem((const UTF8Char*)"&Backward 1 Minute", MNU_PB_BWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_SUBTRACT);
+	mnu->AddItem((const UTF8Char*)"&Forward 10 Seconds", MNU_PB_FWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_PERIOD);
+	mnu->AddItem((const UTF8Char*)"&Backward 10 Seconds", MNU_PB_BWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_COMMA);
+	mnu->AddItem((const UTF8Char*)"&Forward 1 Minute", MNU_PB_FWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_OEM_PERIOD);
+	mnu->AddItem((const UTF8Char*)"&Backward 1 Minute", MNU_PB_BWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_OEM_COMMA);
 //	mnu->AddItem((const UTF8Char*)"Store Curr Time", MNU_PB_STORE_TIME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_Q);
 //	mnu->AddItem((const UTF8Char*)"Resume Stored Time", MNU_PB_RESUME_TIME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_W);
 	mnu->AddSeperator();
@@ -1485,7 +1485,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	
 void SSWR::AVIRead::AVIRHQMPForm::OnMonitorChanged()
 {
-	void *hMon = this->GetHMonitor();
+	MonitorHandle *hMon = this->GetHMonitor();
 	this->colorSess->ChangeMonitor(hMon);
 	this->vbox->ChangeMonitor(hMon);
 }

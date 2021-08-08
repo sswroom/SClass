@@ -9,7 +9,7 @@
 #define GetMonitorInfoW GetMonitorInfo
 #endif
 
-Media::MonitorInfo::MonitorInfo(void *hMonitor)
+Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 {
 	WChar sbuff[512];
 	WChar *sarr[3];

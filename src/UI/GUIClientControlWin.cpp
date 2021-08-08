@@ -189,9 +189,9 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 		return;
 	}
 	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
-	if (hMon != this->currHMon)
+	if (hMon != (HMONITOR)this->currHMon)
 	{
-		this->currHMon = hMon;
+		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
 	}
 	UOSInt i = this->resizeHandlers->GetCount();

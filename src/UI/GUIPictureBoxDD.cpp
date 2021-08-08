@@ -371,7 +371,7 @@ void UI::GUIPictureBoxDD::OnPaint()
 	}
 }
 
-UI::GUIPictureBoxDD::GUIPictureBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, Bool allowEnlarge, Bool directMode) : UI::GUIDDrawControl(ui, parent, directMode)
+UI::GUIPictureBoxDD::GUIPictureBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, Bool allowEnlarge, Bool directMode) : UI::GUIDDrawControl(ui, parent, directMode, colorSess)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(this);
@@ -453,7 +453,7 @@ OSInt UI::GUIPictureBoxDD::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIPictureBoxDD::ChangeMonitor(void *hMon)
+void UI::GUIPictureBoxDD::ChangeMonitor(MonitorHandle *hMon)
 {
 	this->currMon = hMon;
 

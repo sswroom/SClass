@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_MONITORINFO
 #define _SM_MEDIA_MONITORINFO
+#include "Handles.h"
 
 namespace Media
 {
@@ -16,7 +17,7 @@ namespace Media
 		const UTF8Char *monId;
 
 	public:
-		MonitorInfo(void *hMonitor);
+		MonitorInfo(MonitorHandle *hMonitor);
 		~MonitorInfo();
 
 		const UTF8Char *GetName();
@@ -28,5 +29,5 @@ namespace Media
 		Int32 GetPixelHeight();
 		Bool IsPrimary();
 	};
-};
+}
 #endif

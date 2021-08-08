@@ -13,7 +13,8 @@ namespace Media
 		typedef enum
 		{
 			IT_STATIC,
-			IT_GUIIMAGE
+			IT_GUIIMAGE,
+			IT_MONITORSURFACE
 		} ImageType;
 
 	public:
@@ -25,6 +26,7 @@ namespace Media
 		UInt8 *pal;
 		
 	public:
+		Image(UOSInt dispWidth, UOSInt dispHeight);
 		Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		virtual ~Image();
 

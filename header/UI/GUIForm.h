@@ -78,7 +78,7 @@ namespace UI
 		static void Deinit(void *hInst);
 
 		void UpdateHAcc();
-		GUIForm(void *hWnd);
+		GUIForm(ControlHandle *hWnd);
 	public:
 		static GUIForm *FindForm(const UTF8Char *formName);
 

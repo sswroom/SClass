@@ -106,10 +106,10 @@ namespace SSWR
 			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
 			IO::LogTool *GetLog();
-			Double GetMonitorHDPI(void *hMonitor);
-			void SetMonitorHDPI(void *hMonitor, Double monitorHDPI);
-			Double GetMonitorDDPI(void *hMonitor);
-			void SetMonitorDDPI(void *hMonitor, Double monitorDDPI);
+			Double GetMonitorHDPI(MonitorHandle *hMonitor);
+			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
+			Double GetMonitorDDPI(MonitorHandle *hMonitor);
+			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 			Media::MonitorMgr *GetMonitorMgr();
 			
 			void SetAudioDevice(Data::ArrayList<const UTF8Char *> *audDevList);

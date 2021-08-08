@@ -312,22 +312,22 @@ IO::LogTool *SSWR::AVIRead::AVIRCore::GetLog()
 	return this->log;
 }
 
-Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(void *hMonitor)
+Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)
 {
 	return this->monMgr->GetMonitorHDPI(hMonitor);
 }
 
-void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(void *hMonitor, Double monitorHDPI)
+void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
 {
 	this->monMgr->SetMonitorHDPI(hMonitor, monitorHDPI);
 }
 
-Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(void *hMonitor)
+Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(MonitorHandle *hMonitor)
 {
 	return this->monMgr->GetMonitorDDPI(hMonitor);
 }
 
-void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(void *hMonitor, Double monitorDDPI)
+void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI)
 {
 	this->monMgr->SetMonitorDDPI(hMonitor, monitorDDPI);
 }

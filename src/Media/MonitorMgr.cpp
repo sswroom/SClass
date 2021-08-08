@@ -32,7 +32,7 @@ Media::MonitorMgr::~MonitorMgr()
 	DEL_CLASS(this->monMap);
 }
 
-Double Media::MonitorMgr::GetMonitorHDPI(void *hMonitor)
+Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	const UTF8Char *monName = monInfo.GetMonitorID();
@@ -156,7 +156,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(void *hMonitor)
 	return hdpi;
 }
 
-void Media::MonitorMgr::SetMonitorHDPI(void *hMonitor, Double monitorHDPI)
+void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	const UTF8Char *monName = monInfo.GetMonitorID();
@@ -198,7 +198,7 @@ void Media::MonitorMgr::SetMonitorHDPI(void *hMonitor, Double monitorHDPI)
 	}
 }
 
-Double Media::MonitorMgr::GetMonitorDDPI(void *hMonitor)
+Double Media::MonitorMgr::GetMonitorDDPI(MonitorHandle *hMonitor)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	const UTF8Char *monName = monInfo.GetMonitorID();
@@ -235,7 +235,7 @@ Double Media::MonitorMgr::GetMonitorDDPI(void *hMonitor)
 	return ddpi;
 }
 
-void Media::MonitorMgr::SetMonitorDDPI(void *hMonitor, Double monitorDDPI)
+void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	const UTF8Char *monName = monInfo.GetMonitorID();

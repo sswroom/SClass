@@ -199,7 +199,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 	Media::DDCReader *reader;
 	UOSInt edidSize;
 	UInt8 *edid;
-	void *hMon = this->GetHMonitor();
+	MonitorHandle *hMon = this->GetHMonitor();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	if (this->edid)

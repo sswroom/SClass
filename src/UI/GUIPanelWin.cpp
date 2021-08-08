@@ -21,7 +21,7 @@ Int32 UI::GUIPanel::useCnt = 0;
 
 OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIPanel *me = (UI::GUIPanel*)UI::GUICoreWin::MSGetWindowObj(hWnd, GWL_USERDATA);
+	UI::GUIPanel *me = (UI::GUIPanel*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	SCROLLINFO si;
 	Bool upd;
@@ -145,7 +145,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		{
 			HDC hdcStatic = (HDC) wParam;
 			HWND hwndStatic = (HWND)lParam;
-			UI::GUIControl *ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj(hwndStatic, GWL_USERDATA);
+			UI::GUIControl *ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hwndStatic, GWL_USERDATA);
 			if (ctrl == 0)
 			{
 			}

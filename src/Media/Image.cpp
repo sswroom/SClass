@@ -5,6 +5,32 @@
 #include "Media/Image.h"
 #include "Media/StaticImage.h"
 
+Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight)
+{
+	this->exif = 0;
+	this->hasHotSpot = false;
+	this->hotSpotX = 0;
+	this->hotSpotY = 0;
+	NEW_CLASS(this->info, Media::FrameInfo());
+	info->dispWidth = dispWidth;
+	info->dispHeight = dispHeight;
+	info->storeWidth = dispWidth;
+	info->storeHeight = dispHeight;
+	info->fourcc = 0;
+	info->storeBPP = 32;
+	info->pf = Media::PF_B8G8R8A8;
+	info->byteSize = dispWidth * dispHeight * 4;
+	info->par2 = 1;
+	info->hdpi = 96;
+	info->vdpi = 96;
+	info->color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
+	info->atype = Media::AT_ALPHA;
+	info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	info->ftype = Media::FT_NON_INTERLACE;
+	this->pal = 0;
+}
+
 Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
 	this->exif = 0;

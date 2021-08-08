@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUICONTROL
 #define _SM_UI_GUICONTROL
+#include "Handles.h"
 #include "Data/ArrayList.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorInfo.h"
@@ -215,7 +216,7 @@ namespace UI
 		Data::ArrayList<UIEvent> *resizeHandlers;
 		Data::ArrayList<void *> *resizeHandlersObjs;
 		Bool inited;
-		void *hwnd;
+		ControlHandle *hwnd;
 		void *hFont;
 		void *hbrBackground;
 		GUICore *ui;
@@ -226,7 +227,7 @@ namespace UI
 		Double lxPos2;
 		Double lyPos2;
 		Bool selfResize;
-		void *currHMon;
+		MonitorHandle *currHMon;
 
 		const UTF8Char *fontName;
 		Double fontHeightPt;
@@ -295,16 +296,17 @@ namespace UI
 
 		virtual GUIClientControl *GetParent();
 		GUIForm *GetRootForm();
-		void *GetHandle();
-		void *GetHMonitor();
+		ControlHandle *GetHandle();
+		MonitorHandle *GetHMonitor();
 		Media::MonitorInfo *GetMonitorInfo();
 		virtual void SetDPI(Double hdpi, Double ddpi);
 		Double GetHDPI();
 		Double GetDDPI();
 
 		Media::DrawFont *CreateDrawFont(Media::DrawImage *img);
-		UInt32 GUIKey2OSKey(GUIKey guiKey);
-		GUIKey OSKey2GUIKey(UInt32 osKey);
+		static UInt32 GUIKey2OSKey(GUIKey guiKey);
+		static GUIKey OSKey2GUIKey(UInt32 osKey);
+		static const UTF8Char *GUIKeyGetName(GUIKey guiKey);
 
 		DragErrorType HandleDropEvents(GUIDropHandler *hdlr);
 	};

@@ -27,7 +27,7 @@ namespace SSWR
 			Media::MonitorColorManager *monColor;
 			Bool normalClose;
 			const UTF8Char *monFileName;
-			void *hMon;
+			MonitorHandle *hMon;
 
 			UI::GUIPanel *pnlMonitor;
 			UI::GUILabel *lblMonitor;
@@ -170,11 +170,11 @@ namespace SSWR
 			static void __stdcall OnYUVDefSMPTE240MChg(void *userObj, Bool checked);
 			
 		public:
-			AVIRColorSettingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, void *hMon);
+			AVIRColorSettingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, MonitorHandle *hMon);
 			virtual ~AVIRColorSettingForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -16,7 +16,7 @@ OSInt UI::GUIButton::nextId = 100;
 
 OSInt __stdcall UI::GUIButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
 {
-	UI::GUIButton *me = (UI::GUIButton*)UI::GUICoreWin::MSGetWindowObj(hWnd, GWL_USERDATA);
+	UI::GUIButton *me = (UI::GUIButton*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
 	{
 	case WM_LBUTTONDOWN:

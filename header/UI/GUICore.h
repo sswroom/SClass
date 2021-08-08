@@ -25,15 +25,15 @@ namespace UI
 		virtual void WaitForMessages() = 0;
 		virtual void Exit() = 0;
 		virtual Media::DrawEngine *CreateDrawEngine() = 0;
-		virtual Double GetMagnifyRatio(void *hMonitor) = 0;
+		virtual Double GetMagnifyRatio(MonitorHandle *hMonitor) = 0;
 		virtual void UseDevice(Bool useSystem, Bool useDisplay) = 0;
 		virtual void SetNoDisplayOff(Bool noDispOff) = 0;
 		virtual void DisplayOff() = 0;
 		virtual void Suspend() = 0;
 		virtual void GetDesktopSize(UOSInt *w, UOSInt *h) = 0;
 		virtual void GetCursorPos(OSInt *x, OSInt *y) = 0;
-		virtual void SetDisplayRotate(void *hMonitor, DisplayRotation rot) = 0;
-		virtual void GetMonitorDPIs(void *hMonitor, Double *hdpi, Double *ddpi) = 0;
+		virtual void SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot) = 0;
+		virtual void GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi) = 0;
 		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr) = 0;
 	};
 }

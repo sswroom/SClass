@@ -126,6 +126,6 @@ SSWR::AVIRead::AVIRHIDDeviceForm::~AVIRHIDDeviceForm()
 
 void SSWR::AVIRead::AVIRHIDDeviceForm::OnMonitorChanged()
 {
-	void *hMon = this->GetHMonitor();
+	MonitorHandle *hMon = this->GetHMonitor();
 	this->SetDPI(this->core->GetMonitorHDPI(hMon), this->core->GetMonitorDDPI(hMon));
 }

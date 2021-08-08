@@ -17,6 +17,15 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(void *userOb
 	me->ui->DisplayOff();
 }
 
+void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(void *userObj, UOSInt keyCode, Bool extendedKey)
+{
+	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"Key Down - ");
+	sb.Append(GUIKeyGetName(OSKey2GUIKey((UInt32)keyCode)));
+	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+}
+
 SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 8.25, false);
@@ -42,6 +51,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->HandleKeyDown(OnKeyDown, this);
 }
 
 SSWR::AVIRead::AVIRGUIEventForm::~AVIRGUIEventForm()

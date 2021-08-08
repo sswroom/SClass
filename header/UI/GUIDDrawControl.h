@@ -23,13 +23,12 @@ namespace UI
 			SM_WINDOWED_DIR
 		} ScreenMode;
 	private:
-		void *rootHwnd;
 		UI::GUIForm *rootForm;
 		Media::ImageCopy *imgCopy;
 
 		Sync::Event *drawEvt;
-		Media::DDrawManager *ddMgr;
-		void *currDD;
+		Media::DDrawManager *surfaceMgr;
+		MonitorHandle *surfaceMon;
 		void *pSurface;
 		Bool pSurfaceUpdated;
 		void *surfaceBuff2;
@@ -50,7 +49,7 @@ namespace UI
 		OSInt scnY;
 		UOSInt scnW;
 		UOSInt scnH;
-		void *currMon;
+		MonitorHandle *currMon;
 		ScreenMode currScnMode;
 		ScreenMode fullScnMode;
 		Bool directMode;
@@ -83,7 +82,7 @@ namespace UI
 		Media::PixelFormat GetPixelFormat();
 
 	public:
-		GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode);
+		GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess);
 		virtual ~GUIDDrawControl();
 
 		void SetUserFSMode(ScreenMode fullScnMode);
@@ -91,7 +90,7 @@ namespace UI
 		void DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
-		virtual void ChangeMonitor(void *hMon);
+		virtual void ChangeMonitor(MonitorHandle *hMon);
 		UInt32 GetRefreshRate();
 	public:
 		virtual void OnSurfaceCreated() = 0;

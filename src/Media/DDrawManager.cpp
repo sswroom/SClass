@@ -1,17 +1,28 @@
 #include "Stdafx.h"
 #include "Media/DDrawManager.h"
+#include "Media/DDrawSurface.h"
 #include <windows.h>
 #include <ddraw.h>
+
+struct Media::DDrawManager::ClassData
+{
+	Data::Int64Map<LPDIRECTDRAW7> *monMap;
+	LPDIRECTDRAW7 defDD;
+	Media::MonitorMgr *monMgr;
+	Media::ColorManager *colorMgr;
+	Media::ColorManagerSess *colorSess;
+	UI::GUICore *ui;
+};
 
 Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc, Char *driverName, void *context, void *hMonitor)
 {
 	Media::DDrawManager *me = (Media::DDrawManager*)context;
 	LPDIRECTDRAW7 lpDD;
-	if (hMonitor == 0 && me->defDD != 0)
+	if (hMonitor == 0 && me->clsData->defDD != 0)
 	{
 		return 1;
 	}
-	if (me->monMap->Get((OSInt)hMonitor) != 0)
+	if (me->clsData->monMap->Get((OSInt)hMonitor) != 0)
 	{
 		return 1;
 	}
@@ -23,11 +34,11 @@ Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc,
 	{
 		if (hMonitor == 0)
 		{
-			me->defDD = lpDD;
+			me->clsData->defDD = lpDD;
 		}
 		else
 		{
-			me->monMap->Put((OSInt)hMonitor, lpDD);
+			me->clsData->monMap->Put((OSInt)hMonitor, lpDD);
 		}
 	}
 
@@ -36,55 +47,73 @@ Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc,
 
 void Media::DDrawManager::ReleaseAll()
 {
-	if (this->defDD)
+	if (this->clsData->defDD)
 	{
-		((LPDIRECTDRAW7)this->defDD)->Release();
-		this->defDD = 0;
+		this->clsData->defDD->Release();
+		this->clsData->defDD = 0;
 	}
-	Data::ArrayList<void*> *monList;
+	Data::ArrayList<LPDIRECTDRAW7> *monList;
 	UOSInt i;
-	monList = this->monMap->GetValues();
+	monList = this->clsData->monMap->GetValues();
 	i = monList->GetCount();
 	while (i-- > 0)
 	{
-		((LPDIRECTDRAW7)monList->GetItem(i))->Release();
+		monList->GetItem(i)->Release();
 	}
-	this->monMap->Clear();
+	this->clsData->monMap->Clear();
 }
 
-Media::DDrawManager::DDrawManager()
+Media::DDrawManager::DDrawManager(UI::GUICore *ui, Media::ColorManagerSess *colorSess)
 {
-	NEW_CLASS(this->monMap, Data::Int64Map<void*>());
-	this->defDD = 0;
+	this->clsData = MemAlloc(ClassData, 1);
+	NEW_CLASS(this->clsData->monMap, Data::Int64Map<LPDIRECTDRAW7>());
+	this->clsData->defDD = 0;
+	this->clsData->monMgr = 0;
+	this->clsData->colorMgr = 0;
+	this->clsData->colorSess = colorSess;
+	this->clsData->ui = ui;
+	this->RecheckMonitor();
+}
+
+Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+{
+	this->clsData = MemAlloc(ClassData, 1);
+	NEW_CLASS(this->clsData->monMap, Data::Int64Map<LPDIRECTDRAW7>());
+	this->clsData->defDD = 0;
+	this->clsData->monMgr = monMgr;
+	this->clsData->colorMgr = colorMgr;
+	this->clsData->colorSess = 0;
+	this->clsData->ui = 0;
 	this->RecheckMonitor();
 }
 
 Media::DDrawManager::~DDrawManager()
 {
 	this->ReleaseAll();
-	DEL_CLASS(this->monMap);
+	DEL_CLASS(this->clsData->monMap);
+	MemFree(this->clsData);
 }
 
 Bool Media::DDrawManager::IsError()
 {
-	return this->defDD == 0;
+	return this->clsData->defDD == 0;
 }
 
-void *Media::DDrawManager::GetDD7(void *hMonitor)
+void *Media::DDrawManager::GetDD7(MonitorHandle *hMonitor)
 {
 	this->RecheckMonitor();
-	void *ret = this->monMap->Get((OSInt)hMonitor);
+	LPDIRECTDRAW7 ret = this->clsData->monMap->Get((OSInt)hMonitor);
 	if (ret)
 		return ret;
-	return this->defDD;
+	return this->clsData->defDD;
 }
 
-void Media::DDrawManager::ReleaseDD7(void *hMonitor)
+void Media::DDrawManager::ReleaseDD7(MonitorHandle *hMonitor)
 {
-	void *ret = this->monMap->Remove((OSInt)hMonitor);
+	LPDIRECTDRAW7 ret = this->clsData->monMap->Remove((OSInt)hMonitor);
 	if (ret)
 	{
-		((LPDIRECTDRAW7)ret)->Release();
+		ret->Release();
 	}
 }
 
@@ -97,4 +126,200 @@ void Media::DDrawManager::Reinit()
 {
 	this->ReleaseAll();
 	this->RecheckMonitor();
+}
+
+Double Media::DDrawManager::GetMonitorDPI(MonitorHandle *hMonitor)
+{
+	if (hMonitor == 0)
+	{
+		return 96.0;
+	}
+
+	if (this->clsData->ui)
+	{
+		Double hdpi;
+		Double vdpi;
+		this->clsData->ui->GetMonitorDPIs(hMonitor, &hdpi, &vdpi);
+		return hdpi;
+	}
+	else if (this->clsData->monMgr)
+	{
+		return this->clsData->monMgr->GetMonitorHDPI(hMonitor);
+	}
+	return 96.0;
+}
+
+Bool Media::DDrawManager::Is10BitColor(MonitorHandle *hMonitor)
+{
+	if (this->clsData->colorMgr)
+	{
+		return this->clsData->colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
+	}
+	else if (this->clsData->colorSess)
+	{
+		return this->clsData->colorSess->Get10BitColor();
+	}
+	return false;
+}
+
+Media::ColorProfile *Media::DDrawManager::GetMonProfile(MonitorHandle *hMonitor)
+{
+	if (this->clsData->colorMgr)
+	{
+		return this->clsData->colorMgr->GetMonColorManager(hMonitor)->GetRGBParam()->monProfile;
+	}
+	else if (this->clsData->colorSess)
+	{
+		return this->clsData->colorSess->GetRGBParam()->monProfile;
+	}
+	return 0;
+}
+
+Bool Media::DDrawManager::SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs)
+{
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
+	if (lpDD == 0) return false;
+	if (fs)
+	{
+		return lpDD->SetCooperativeLevel((HWND)hWnd, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN) == DD_OK;
+	}
+	else
+	{
+		return lpDD->SetCooperativeLevel((HWND)hWnd, DDSCL_NORMAL) == DD_OK;
+	}
+}
+
+void Media::DDrawManager::WaitForVBlank(MonitorHandle *hMon)
+{
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
+	if (lpDD)
+	{
+		lpDD->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, 0);
+	}
+}
+
+UInt32 Media::DDrawManager::GetRefreshRate(MonitorHandle *hMon)
+{
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
+	if (lpDD == 0)
+		return 0;
+	DDSURFACEDESC2 ddsd;
+	ddsd.dwSize = sizeof(ddsd);
+	if (lpDD->GetDisplayMode(&ddsd) == DD_OK)
+	{
+		return ddsd.dwRefreshRate;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+Media::MonitorSurface *Media::DDrawManager::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
+{
+	if (this->IsError())
+	{
+		return 0;
+	}
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(0);
+	if (lpDD == 0)
+	{
+		return 0;
+	}
+	DDSURFACEDESC2 ddsd;
+	LPDIRECTDRAWSURFACE7 surface;
+
+	ZeroMemory(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_DEPTH;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	ddsd.dwWidth = (UInt32)width;
+	ddsd.dwHeight = (UInt32)height;
+	ddsd.dwDepth = (UInt32)bitDepth;
+	surface = 0;
+	HRESULT res = lpDD->CreateSurface(&ddsd, &surface, NULL);
+	if (res != DD_OK)
+	{
+		return 0;
+	}
+	Media::DDrawSurface *retSurface;
+	NEW_CLASS(retSurface, Media::DDrawSurface(this, lpDD, surface, 0, true));
+	return retSurface;
+}
+
+Media::MonitorSurface *Media::DDrawManager::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
+{
+	if (this->IsError())
+	{
+		return 0;
+	}
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
+	if (lpDD == 0)
+	{
+		return 0;
+	}
+	DDSURFACEDESC2 ddsd;
+	LPDIRECTDRAWSURFACE7 primarySurface;
+
+	ZeroMemory(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+	primarySurface = 0;
+	HRESULT res = lpDD->CreateSurface(&ddsd, &primarySurface, NULL);
+	if (res == DDERR_NOCOOPERATIVELEVELSET)
+	{
+		lpDD->SetCooperativeLevel((HWND)0, DDSCL_NORMAL);
+		res = lpDD->CreateSurface(&ddsd, &primarySurface, NULL);
+	}
+	if (res != DD_OK)
+	{
+		return 0;
+	}
+	Media::DDrawSurface *surface;
+	NEW_CLASS(surface, Media::DDrawSurface(this, lpDD, primarySurface, hMon, true));
+	if (clipWindow)
+		surface->SetClipWindow(clipWindow);
+	return surface;
+}
+
+Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface)
+{
+	if (this->IsError())
+	{
+		return false;
+	}
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
+	if (lpDD == 0)
+	{
+		return false;
+	}
+	DDSURFACEDESC2 ddsd;
+	LPDIRECTDRAWSURFACE7 surface1;
+
+	ZeroMemory(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
+	ddsd.dwBackBufferCount = 2;
+	primarySurface = 0;
+	HRESULT res = lpDD->CreateSurface(&ddsd, &surface1, NULL);
+	if (res != DD_OK)
+	{
+		return false;
+	}
+	LPDIRECTDRAWSURFACE7 surface2;
+	DDSCAPS2 ddscaps;
+	ZeroMemory(&ddscaps, sizeof(ddscaps));
+	ddscaps.dwCaps = DDSCAPS_BACKBUFFER;
+
+	surface1->GetAttachedSurface(&ddscaps, &surface2);
+
+	Media::DDrawSurface *ddSurface1;
+	Media::DDrawSurface *ddSurface2;
+	NEW_CLASS(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true));
+	NEW_CLASS(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false));
+	*primarySurface = ddSurface1;
+	*bufferSurface = ddSurface2;
+	return true;
 }

@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_MONITORMGR
 #define _SM_MEDIA_MONITORMGR
+#include "Handles.h"
 #include "Data/StringUTF8Map.h"
 #include "Sync/Mutex.h"
 
@@ -21,10 +22,10 @@ namespace Media
 		MonitorMgr();
 		~MonitorMgr();
 
-		Double GetMonitorHDPI(void *hMonitor);
-		void SetMonitorHDPI(void *hMonitor, Double monitorHDPI);
-		Double GetMonitorDDPI(void *hMonitor);
-		void SetMonitorDDPI(void *hMonitor, Double monitorDDPI);
+		Double GetMonitorHDPI(MonitorHandle *hMonitor);
+		void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
+		Double GetMonitorDDPI(MonitorHandle *hMonitor);
+		void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 	};
 };
 #endif

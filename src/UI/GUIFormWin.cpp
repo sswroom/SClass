@@ -385,7 +385,7 @@ void UI::GUIForm::UpdateHAcc()
 		((UI::GUICoreWin*)this->ui)->SetFocusWnd(this->hwnd, this->hAcc);
 	}
 }
-UI::GUIForm::GUIForm(void *hWnd) : UI::GUIClientControl(0, 0)
+UI::GUIForm::GUIForm(ControlHandle *hWnd) : UI::GUIClientControl(0, 0)
 {
 	this->hwnd = hWnd;
 	this->hAcc = 0;
@@ -403,7 +403,7 @@ UI::GUIForm *UI::GUIForm::FindForm(const UTF8Char *formName)
 	if (hWnd == 0)
 		return 0;
 	UI::GUIForm *frm;
-	NEW_CLASS(frm, UI::GUIForm(hWnd));
+	NEW_CLASS(frm, UI::GUIForm((ControlHandle*)hWnd));
 	return frm;
 }
 
@@ -457,7 +457,7 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 		HMONITOR hMon = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
 		if (hMon)
 		{
-			this->ui->GetMonitorDPIs(hMon, &this->hdpi, &this->ddpi);
+			this->ui->GetMonitorDPIs((MonitorHandle*)hMon, &this->hdpi, &this->ddpi);
 			initW = initW * this->hdpi / this->ddpi;
 			initH = initH * this->hdpi / this->ddpi;
 #if defined(_WIN32_WCE)
@@ -793,9 +793,9 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		return;
 	}
 	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
-	if (hMon != this->currHMon)
+	if (hMon != (HMONITOR)this->currHMon)
 	{
-		this->currHMon = hMon;
+		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
 	}
 	UOSInt i = this->resizeHandlers->GetCount();
