@@ -34,7 +34,7 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, Int3
 	{
 		maxVal = minVal + 1;
 	}
-	this->hwnd = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, minVal, maxVal, 1);
+	this->hwnd = (ControlHandle*)gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, minVal, maxVal, 1);
 	gtk_scale_set_draw_value((GtkScale*)this->hwnd, false);
 	gtk_range_set_value((GtkRange*)this->hwnd, currVal);
 	g_signal_connect((GtkRange*)this->hwnd, "value-changed", G_CALLBACK(GUITrackBar_ValueChanged), this);

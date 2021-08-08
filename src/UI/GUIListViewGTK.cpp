@@ -93,7 +93,7 @@ UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyl
 	data->lvstyle = lvstyle;
 	this->clsData = data;
 	this->colCnt = 0;
-	this->hwnd = gtk_scrolled_window_new(0, 0);
+	this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
 	gtk_container_add(GTK_CONTAINER(this->hwnd), data->treeView);
 	parent->AddChild(this);
 	g_signal_connect(data->treeView, "cursor-changed", G_CALLBACK(GUIListView_SelChange), this);

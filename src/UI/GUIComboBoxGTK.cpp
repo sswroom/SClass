@@ -27,11 +27,11 @@ UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool
 	NEW_CLASS(this->itemTexts, Data::ArrayList<const UTF8Char *>());
 	if (allowEdit)
 	{
-		this->hwnd = gtk_combo_box_text_new_with_entry();
+		this->hwnd = (ControlHandle*)gtk_combo_box_text_new_with_entry();
 	}
 	else
 	{
-		this->hwnd = gtk_combo_box_text_new();
+		this->hwnd = (ControlHandle*)gtk_combo_box_text_new();
 	}
 	this->allowEdit = allowEdit;
 	this->autoComplete = false;

@@ -198,7 +198,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void *>());
 	NEW_CLASS(this->mouseUpHdlrs, Data::ArrayList<MouseEventHandler>());
 	NEW_CLASS(this->mouseUpObjs, Data::ArrayList<void *>());
-	this->hwnd = gtk_image_new();
+	this->hwnd = (ControlHandle*)gtk_image_new();
 	parent->AddChild(this);
 	this->Show();
 }

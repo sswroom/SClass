@@ -17,7 +17,7 @@ UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UT
 	NEW_CLASS(this->checkedChangeHdlrs, Data::ArrayList<CheckedChangeHandler>());
 	NEW_CLASS(this->checkedChangeObjs, Data::ArrayList<void *>());
 
-	this->hwnd = gtk_check_button_new_with_label((const Char*)initText);
+	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText);
 	parent->AddChild(this);
 	if (checked)
 	{

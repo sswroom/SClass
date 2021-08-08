@@ -92,8 +92,8 @@ namespace SSWR
 
 			ErrorType GetErrorType();
 
-			Double GetMonitorHDPI(void *hMon);
-			Double GetMonitorDDPI(void *hMon);
+			Double GetMonitorHDPI(MonitorHandle *hMon);
+			Double GetMonitorDDPI(MonitorHandle *hMon);
 
 			const BurntDiscInfo *NewBurntDisc(const UTF8Char *discId, const UTF8Char *discTypeId, Data::DateTime *dt);
 			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);

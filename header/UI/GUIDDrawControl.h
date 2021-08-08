@@ -23,6 +23,9 @@ namespace UI
 			SM_WINDOWED_DIR
 		} ScreenMode;
 	private:
+		struct ClassData;
+
+		ClassData *clsData;
 		UI::GUIForm *rootForm;
 		Media::ImageCopy *imgCopy;
 
@@ -30,8 +33,6 @@ namespace UI
 		Media::DDrawManager *surfaceMgr;
 		MonitorHandle *surfaceMon;
 		void *pSurface;
-		Bool pSurfaceUpdated;
-		void *surfaceBuff2;
 		void *clipper;
 		IO::Stream *debugFS;
 		IO::Writer *debugWriter;

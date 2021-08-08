@@ -49,7 +49,7 @@ Media::DrawEngine *UI::GUICoreGTK::CreateDrawEngine()
 	return deng;
 };
 
-Double UI::GUICoreGTK::GetMagnifyRatio(void *hMonitor)
+Double UI::GUICoreGTK::GetMagnifyRatio(MonitorHandle *hMonitor)
 {
 	Double v = gdk_screen_get_resolution(gdk_screen_get_default()) / 96.0;
 	if (v <= 0)
@@ -146,11 +146,11 @@ void UI::GUICoreGTK::GetCursorPos(OSInt *x, OSInt *y)
 #endif
 }
 
-void UI::GUICoreGTK::SetDisplayRotate(void *hMonitor, DisplayRotation rot)
+void UI::GUICoreGTK::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
 {
 }
 
-void UI::GUICoreGTK::GetMonitorDPIs(void *hMonitor, Double *hdpi, Double *ddpi)
+void UI::GUICoreGTK::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
 {
 	if (this->monMgr)
 	{

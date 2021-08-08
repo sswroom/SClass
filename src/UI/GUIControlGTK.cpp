@@ -650,28 +650,28 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 	return 0;
 }
 
-void *UI::GUIControl::GetHandle()
+ControlHandle *UI::GUIControl::GetHandle()
 {
 	return this->hwnd;
 }
 
-void *UI::GUIControl::GetHMonitor()
+MonitorHandle *UI::GUIControl::GetHMonitor()
 {
 #if GDK_VERSION_AFTER(3, 22)
 	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd);
 	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd);
 	if (display == 0)
 		return 0;
-	void *ret;
+	MonitorHandle *ret;
 	if (wnd == 0)
 	{
-		ret = (void*)(OSInt)1;
+		ret = (MonitorHandle*)(OSInt)1;
 	}
 	else
 	{
 		GdkMonitor *mon = gdk_display_get_monitor_at_window(display, wnd);
 		GdkMonitor *mon2;
-		ret = (void*)(OSInt)1;
+		ret = (MonitorHandle*)(OSInt)1;
 		int i = 0;
 		int j = gdk_display_get_n_monitors(display);
 		while (i < j)
@@ -679,7 +679,7 @@ void *UI::GUIControl::GetHMonitor()
 			mon2 = gdk_display_get_monitor(display, i);
 			if (mon == mon2)
 			{
-				ret = (void*)(OSInt)(1 + i);
+				ret = (MonitorHandle*)(OSInt)(1 + i);
 				break;
 			}
 			i++;
@@ -695,14 +695,14 @@ void *UI::GUIControl::GetHMonitor()
 	{
 		wnd = gdk_screen_get_active_window(scn);
 	}
-	void *ret;
+	MonitorHandle *ret;
 	if (wnd == 0)
 	{
-		ret = (void*)(OSInt)1;
+		ret = (MonitorHandle*)(OSInt)1;
 	}
 	else
 	{
-		ret = (void*)(OSInt)(1 + gdk_screen_get_monitor_at_window(scn, wnd));
+		ret = (MonitorHandle*)(OSInt)(1 + gdk_screen_get_monitor_at_window(scn, wnd));
 	}
 	return ret;
 #endif
@@ -1260,6 +1260,274 @@ UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 		return UI::GUIControl::GK_SCROLLLOCK;
 	default:
 		return UI::GUIControl::GK_NONE;
+	}
+}
+
+const UTF8Char *UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
+{
+	switch (guiKey)
+	{
+	case UI::GUIControl::GK_BACKSPACE:
+		return (const UTF8Char*)"GK_BACKSPACE";
+	case UI::GUIControl::GK_TAB:
+		return (const UTF8Char*)"GK_TAB";
+	case UI::GUIControl::GK_CLEAR:
+		return (const UTF8Char*)"GK_CLEAR";
+	case UI::GUIControl::GK_ENTER:
+		return (const UTF8Char*)"GK_ENTER";
+	case UI::GUIControl::GK_SHIFT:
+		return (const UTF8Char*)"GK_SHIFT";
+	case UI::GUIControl::GK_CONTROL:
+		return (const UTF8Char*)"GK_CONTROL";
+	case UI::GUIControl::GK_ALT:
+		return (const UTF8Char*)"GK_ALT";
+	case UI::GUIControl::GK_PAUSE:
+		return (const UTF8Char*)"GK_PAUSE";
+	case UI::GUIControl::GK_CAPITAL:
+		return (const UTF8Char*)"GK_CAPITAL";
+	case UI::GUIControl::GK_KANA:
+		return (const UTF8Char*)"GK_KANA";
+	case UI::GUIControl::GK_JUNJA:
+		return (const UTF8Char*)"GK_JUNJA";
+	case UI::GUIControl::GK_FINAL:
+		return (const UTF8Char*)"GK_FINAL";
+	case UI::GUIControl::GK_KANJI:
+		return (const UTF8Char*)"GK_KANJI";
+	case UI::GUIControl::GK_ESCAPE:
+		return (const UTF8Char*)"GK_ESCAPE";
+	case UI::GUIControl::GK_CONVERT:
+		return (const UTF8Char*)"GK_CONVERT";
+#ifndef _WIN32_WCE
+	case UI::GUIControl::GK_NONCONVERT:
+		return (const UTF8Char*)"GK_NONCONVERT";
+	case UI::GUIControl::GK_ACCEPT:
+		return (const UTF8Char*)"GK_ACCEPT";
+	case UI::GUIControl::GK_MODECHANGE:
+		return (const UTF8Char*)"GK_MODECHANGE";
+#endif
+	case UI::GUIControl::GK_SPACE:
+		return (const UTF8Char*)"GK_SPACE";
+	case UI::GUIControl::GK_PAGEUP:
+		return (const UTF8Char*)"GK_PAGEUP";
+	case UI::GUIControl::GK_PAGEDOWN:
+		return (const UTF8Char*)"GK_PAGEDOWN";
+	case UI::GUIControl::GK_END:
+		return (const UTF8Char*)"GK_END";
+	case UI::GUIControl::GK_HOME:
+		return (const UTF8Char*)"GK_HOME";
+	case UI::GUIControl::GK_LEFT:
+		return (const UTF8Char*)"GK_LEFT";
+	case UI::GUIControl::GK_UP:
+		return (const UTF8Char*)"GK_UP";
+	case UI::GUIControl::GK_RIGHT:
+		return (const UTF8Char*)"GK_RIGHT";
+	case UI::GUIControl::GK_DOWN:
+		return (const UTF8Char*)"GK_DOWN";
+	case UI::GUIControl::GK_SELECT:
+		return (const UTF8Char*)"GK_SELECT";
+	case UI::GUIControl::GK_PRINT:
+		return (const UTF8Char*)"GK_PRINT";
+	case UI::GUIControl::GK_EXECUTE:
+		return (const UTF8Char*)"GK_EXECUTE";
+	case UI::GUIControl::GK_PRINTSCREEN:
+		return (const UTF8Char*)"GK_PRINTSCREEN";
+	case UI::GUIControl::GK_INSERT:
+		return (const UTF8Char*)"GK_INSERT";
+	case UI::GUIControl::GK_DELETE:
+		return (const UTF8Char*)"GK_DELETE";
+	case UI::GUIControl::GK_HELP:
+		return (const UTF8Char*)"GK_HELP";
+	case UI::GUIControl::GK_0:
+		return (const UTF8Char*)"GK_0";
+	case UI::GUIControl::GK_1:
+		return (const UTF8Char*)"GK_1";
+	case UI::GUIControl::GK_2:
+		return (const UTF8Char*)"GK_2";
+	case UI::GUIControl::GK_3:
+		return (const UTF8Char*)"GK_3";
+	case UI::GUIControl::GK_4:
+		return (const UTF8Char*)"GK_4";
+	case UI::GUIControl::GK_5:
+		return (const UTF8Char*)"GK_5";
+	case UI::GUIControl::GK_6:
+		return (const UTF8Char*)"GK_6";
+	case UI::GUIControl::GK_7:
+		return (const UTF8Char*)"GK_7";
+	case UI::GUIControl::GK_8:
+		return (const UTF8Char*)"GK_8";
+	case UI::GUIControl::GK_9:
+		return (const UTF8Char*)"GK_9";
+	case UI::GUIControl::GK_A:
+		return (const UTF8Char*)"GK_A";
+	case UI::GUIControl::GK_B:
+		return (const UTF8Char*)"GK_B";
+	case UI::GUIControl::GK_C:
+		return (const UTF8Char*)"GK_C";
+	case UI::GUIControl::GK_D:
+		return (const UTF8Char*)"GK_D";
+	case UI::GUIControl::GK_E:
+		return (const UTF8Char*)"GK_E";
+	case UI::GUIControl::GK_F:
+		return (const UTF8Char*)"GK_F";
+	case UI::GUIControl::GK_G:
+		return (const UTF8Char*)"GK_G";
+	case UI::GUIControl::GK_H:
+		return (const UTF8Char*)"GK_H";
+	case UI::GUIControl::GK_I:
+		return (const UTF8Char*)"GK_I";
+	case UI::GUIControl::GK_J:
+		return (const UTF8Char*)"GK_J";
+	case UI::GUIControl::GK_K:
+		return (const UTF8Char*)"GK_K";
+	case UI::GUIControl::GK_L:
+		return (const UTF8Char*)"GK_L";
+	case UI::GUIControl::GK_M:
+		return (const UTF8Char*)"GK_M";
+	case UI::GUIControl::GK_N:
+		return (const UTF8Char*)"GK_N";
+	case UI::GUIControl::GK_O:
+		return (const UTF8Char*)"GK_O";
+	case UI::GUIControl::GK_P:
+		return (const UTF8Char*)"GK_P";
+	case UI::GUIControl::GK_Q:
+		return (const UTF8Char*)"GK_Q";
+	case UI::GUIControl::GK_R:
+		return (const UTF8Char*)"GK_R";
+	case UI::GUIControl::GK_S:
+		return (const UTF8Char*)"GK_S";
+	case UI::GUIControl::GK_T:
+		return (const UTF8Char*)"GK_T";
+	case UI::GUIControl::GK_U:
+		return (const UTF8Char*)"GK_U";
+	case UI::GUIControl::GK_V:
+		return (const UTF8Char*)"GK_V";
+	case UI::GUIControl::GK_W:
+		return (const UTF8Char*)"GK_W";
+	case UI::GUIControl::GK_X:
+		return (const UTF8Char*)"GK_X";
+	case UI::GUIControl::GK_Y:
+		return (const UTF8Char*)"GK_Y";
+	case UI::GUIControl::GK_Z:
+		return (const UTF8Char*)"GK_Z";
+	case UI::GUIControl::GK_LWIN:
+		return (const UTF8Char*)"GK_LWIN";
+	case UI::GUIControl::GK_RWIN:
+		return (const UTF8Char*)"GK_RWIN";
+	case UI::GUIControl::GK_APPS:
+		return (const UTF8Char*)"GK_APPS";
+	case UI::GUIControl::GK_SLEEP:
+		return (const UTF8Char*)"GK_SLEEP";
+	case UI::GUIControl::GK_NUMPAD0:
+		return (const UTF8Char*)"GK_NUMPAD0";
+	case UI::GUIControl::GK_NUMPAD1:
+		return (const UTF8Char*)"GK_NUMPAD1";
+	case UI::GUIControl::GK_NUMPAD2:
+		return (const UTF8Char*)"GK_NUMPAD2";
+	case UI::GUIControl::GK_NUMPAD3:
+		return (const UTF8Char*)"GK_NUMPAD3";
+	case UI::GUIControl::GK_NUMPAD4:
+		return (const UTF8Char*)"GK_NUMPAD4";
+	case UI::GUIControl::GK_NUMPAD5:
+		return (const UTF8Char*)"GK_NUMPAD5";
+	case UI::GUIControl::GK_NUMPAD6:
+		return (const UTF8Char*)"GK_NUMPAD6";
+	case UI::GUIControl::GK_NUMPAD7:
+		return (const UTF8Char*)"GK_NUMPAD7";
+	case UI::GUIControl::GK_NUMPAD8:
+		return (const UTF8Char*)"GK_NUMPAD8";
+	case UI::GUIControl::GK_NUMPAD9:
+		return (const UTF8Char*)"GK_NUMPAD9";
+	case UI::GUIControl::GK_MULTIPLY:
+		return (const UTF8Char*)"GK_MULTIPLY";
+	case UI::GUIControl::GK_ADD:
+		return (const UTF8Char*)"GK_ADD";
+	case UI::GUIControl::GK_SEPARATOR:
+		return (const UTF8Char*)"GK_SEPARATOR";
+	case UI::GUIControl::GK_SUBTRACT:
+		return (const UTF8Char*)"GK_SUBTRACT";
+	case UI::GUIControl::GK_DECIMAL:
+		return (const UTF8Char*)"GK_DECIMAL";
+	case UI::GUIControl::GK_DIVIDE:
+		return (const UTF8Char*)"GK_DIVIDE";
+	case UI::GUIControl::GK_F1:
+		return (const UTF8Char*)"GK_F1";
+	case UI::GUIControl::GK_F2:
+		return (const UTF8Char*)"GK_F2";
+	case UI::GUIControl::GK_F3:
+		return (const UTF8Char*)"GK_F3";
+	case UI::GUIControl::GK_F4:
+		return (const UTF8Char*)"GK_F4";
+	case UI::GUIControl::GK_F5:
+		return (const UTF8Char*)"GK_F5";
+	case UI::GUIControl::GK_F6:
+		return (const UTF8Char*)"GK_F6";
+	case UI::GUIControl::GK_F7:
+		return (const UTF8Char*)"GK_F7";
+	case UI::GUIControl::GK_F8:
+		return (const UTF8Char*)"GK_F8";
+	case UI::GUIControl::GK_F9:
+		return (const UTF8Char*)"GK_F9";
+	case UI::GUIControl::GK_F10:
+		return (const UTF8Char*)"GK_F10";
+	case UI::GUIControl::GK_F11:
+		return (const UTF8Char*)"GK_F11";
+	case UI::GUIControl::GK_F12:
+		return (const UTF8Char*)"GK_F12";
+	case UI::GUIControl::GK_F13:
+		return (const UTF8Char*)"GK_F13";
+	case UI::GUIControl::GK_F14:
+		return (const UTF8Char*)"GK_F14";
+	case UI::GUIControl::GK_F15:
+		return (const UTF8Char*)"GK_F15";
+	case UI::GUIControl::GK_F16:
+		return (const UTF8Char*)"GK_F16";
+	case UI::GUIControl::GK_F17:
+		return (const UTF8Char*)"GK_F17";
+	case UI::GUIControl::GK_F18:
+		return (const UTF8Char*)"GK_F18";
+	case UI::GUIControl::GK_F19:
+		return (const UTF8Char*)"GK_F19";
+	case UI::GUIControl::GK_F20:
+		return (const UTF8Char*)"GK_F20";
+	case UI::GUIControl::GK_F21:
+		return (const UTF8Char*)"GK_F21";
+	case UI::GUIControl::GK_F22:
+		return (const UTF8Char*)"GK_F22";
+	case UI::GUIControl::GK_F23:
+		return (const UTF8Char*)"GK_F23";
+	case UI::GUIControl::GK_F24:
+		return (const UTF8Char*)"GK_F24";
+	case UI::GUIControl::GK_NUMLOCK:
+		return (const UTF8Char*)"GK_NUMLOCK";
+	case UI::GUIControl::GK_SCROLLLOCK:
+		return (const UTF8Char*)"GK_SCROLLLOCK";
+#ifndef _WIN32_WCE
+	case UI::GUIControl::GK_OEM_1:
+		return (const UTF8Char*)"GK_OEM_1";
+	case UI::GUIControl::GK_OEM_PLUS:
+		return (const UTF8Char*)"GK_OEM_PLUS";
+	case UI::GUIControl::GK_OEM_COMMA:
+		return (const UTF8Char*)"GK_OEM_COMMA";
+	case UI::GUIControl::GK_OEM_MINUS:
+		return (const UTF8Char*)"GK_OEM_MINUS";
+	case UI::GUIControl::GK_OEM_PERIOD:
+		return (const UTF8Char*)"GK_OEM_PERIOD";
+	case UI::GUIControl::GK_OEM_2:
+		return (const UTF8Char*)"GK_OEM_2";
+	case UI::GUIControl::GK_OEM_3:
+		return (const UTF8Char*)"GK_OEM_3";
+	case UI::GUIControl::GK_OEM_4:
+		return (const UTF8Char*)"GK_OEM_4";
+	case UI::GUIControl::GK_OEM_5:
+		return (const UTF8Char*)"GK_OEM_5";
+	case UI::GUIControl::GK_OEM_6:
+		return (const UTF8Char*)"GK_OEM_6";
+	case UI::GUIControl::GK_OEM_7:
+		return (const UTF8Char*)"GK_OEM_7";
+#endif
+	case UI::GUIControl::GK_NONE:
+	default:
+		return (const UTF8Char*)"GK_NONE";
 	}
 }
 

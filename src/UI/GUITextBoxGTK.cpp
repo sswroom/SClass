@@ -61,7 +61,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	TextBoxData *txt = MemAlloc(TextBoxData, 1);
 	GUITextBox_InitTextBox(txt, initText, false, this);
 	this->clsData = txt;
-	this->hwnd = txt->widget;
+	this->hwnd = (ControlHandle*)txt->widget;
 	parent->AddChild(this);
 	this->Show();
 }
@@ -76,14 +76,14 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	this->clsData = txt;
 	if (isMultiline)
 	{
-		this->hwnd = gtk_scrolled_window_new(0, 0);
+		this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
 		gtk_container_add(GTK_CONTAINER(this->hwnd), txt->widget);
 		parent->AddChild(this);
 		gtk_widget_show(txt->widget);
 	}
 	else
 	{
-		this->hwnd = txt->widget;
+		this->hwnd = (ControlHandle*)txt->widget;
 		parent->AddChild(this);
 	}
 	this->Show();

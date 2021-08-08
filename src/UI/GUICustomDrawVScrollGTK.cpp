@@ -251,7 +251,7 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientCon
 	data->scrollDownPos = 0;
 	data->scrollDownY = 0;
 
-	this->hwnd = gtk_drawing_area_new();
+	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUICustomDrawVScroll_OnDraw), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseDown), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseUp), this);

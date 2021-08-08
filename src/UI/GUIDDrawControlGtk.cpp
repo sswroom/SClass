@@ -13,6 +13,13 @@
 #include "UI/GUIForm.h"
 #include <gtk/gtk.h>
 
+struct UI::GUIDDrawControl::ClassData
+{
+	Bool pSurfaceUpdated;
+	GtkWidget *imgCtrl;
+	UInt8 *bufferSurfaceData;
+};
+
 gboolean GUIDDrawControl_ToGenDrawSignal(gpointer user_data)
 {
 	gtk_widget_queue_draw((GtkWidget*)user_data);
@@ -247,34 +254,34 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		return;
 	}
 	this->surfaceBuff = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
-	this->surfaceBuff2 = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
-	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar *)this->surfaceBuff2, GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
+	this->clsData->bufferSurfaceData = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
+	GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->clsData->bufferSurfaceData, GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
 	if (buf == 0)
 	{
 		MemFreeA(this->surfaceBuff);
-		MemFreeA(this->surfaceBuff2);
+		MemFreeA(this->clsData->bufferSurfaceData);
 	}
 	else
 	{
-		ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2, this->surfaceW * this->surfaceH, 0xff000000);
+		ImageUtil_ColorFill32(this->clsData->bufferSurfaceData, this->surfaceW * this->surfaceH, 0xff000000);
 		g_object_ref(buf);
 		this->pSurface = buf;
-		this->pSurfaceUpdated = true;
+		this->clsData->pSurfaceUpdated = true;
 	}
 }
 
 void UI::GUIDDrawControl::ReleaseSubSurface()
 {
-	gtk_image_clear((GtkImage*)this->currDD);
+	gtk_image_clear((GtkImage*)this->surfaceMon);
 	if (this->pSurface)
 	{
 		g_object_unref((GdkPixbuf*)this->pSurface);
 		this->pSurface = 0;
-		this->pSurfaceUpdated = true;
+		this->clsData->pSurfaceUpdated = true;
 		MemFreeA(this->surfaceBuff);
-		MemFreeA(this->surfaceBuff2);
+		MemFreeA(this->clsData->bufferSurfaceData);
 		this->surfaceBuff = 0;
-		this->surfaceBuff2 = 0;
+		this->clsData->bufferSurfaceData = 0;
 	}
 }
 
@@ -311,14 +318,16 @@ Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
 	return Media::PF_B8G8R8A8;
 }
 
-UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode) : UI::GUIControl(ui, parent)
+UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
 {
+	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData->pSurfaceUpdated = true;
+	this->clsData->bufferSurfaceData = 0;
+	
 	this->inited = false;
 	this->clipper = 0;
 	this->pSurface = 0;
-	this->pSurfaceUpdated = true;
 	this->surfaceBuff = 0;
-	this->surfaceBuff2 = 0;
 	this->imgCopy = 0;
 	this->surfaceNoRelease = false;
 	this->joystickId = 0;
@@ -327,7 +336,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	NEW_CLASS(this->drawEvt, Sync::Event(false, (const UTF8Char*)"UI.GUIDDrawControl.drawEvt"));
 	NEW_CLASS(this->surfaceMut, Sync::Mutex());
 	this->rootForm = parent->GetRootForm();
-	this->rootHwnd = this->rootForm->GetHandle();
 	this->fullScnMode = SM_WINDOWED;
 	this->directMode = directMode;
 	this->switching = false;
@@ -337,9 +345,9 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->HandleSizeChanged(OnResized, this);
 	this->currScnMode = SM_VFS;
 	this->clipper = 0;
-	this->currDD = gtk_image_new();
-	this->hwnd = gtk_event_box_new();
-	gtk_container_add((GtkContainer*)this->hwnd, (GtkWidget*)this->currDD);
+	this->clsData->imgCtrl = gtk_image_new();
+	this->hwnd = (ControlHandle*)gtk_event_box_new();
+	gtk_container_add((GtkContainer*)this->hwnd, this->clsData->imgCtrl);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUIDDrawControl_OnMouseDown), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUIDDrawControl_OnMouseUp), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUIDDrawControl_OnMouseMove), this);
@@ -349,8 +357,8 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
 	parent->AddChild(this);
-	g_signal_connect(G_OBJECT(this->currDD), "draw", G_CALLBACK(GUIDDrawControl_OnDDDraw), this);
-	gtk_widget_show((GtkWidget*)this->currDD);
+	g_signal_connect(G_OBJECT(this->clsData->imgCtrl), "draw", G_CALLBACK(GUIDDrawControl_OnDDDraw), this);
+	gtk_widget_show(this->clsData->imgCtrl);
 	this->Show();
 	this->inited = true;
 }
@@ -371,6 +379,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 		this->debugFS = 0;
 		this->debugWriter = 0;
 	}
+	MemFree(this->clsData);
 }
 
 void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
@@ -380,10 +389,10 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	if (this->surfaceBuff && this->surfaceBuff2)
+	if (this->surfaceBuff && this->clsData->bufferSurfaceData)
 	{
 //		printf("Draw to screen 1\r\n");
-		ImageUtil_ConvR8G8B8N8_ARGB32((const UTF8Char*)this->surfaceBuff, (UTF8Char*)this->surfaceBuff2, this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
+		ImageUtil_ConvR8G8B8N8_ARGB32((const UInt8*)this->surfaceBuff, this->clsData->bufferSurfaceData, this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
 		if (this->focusing)
 		{
 
@@ -391,14 +400,14 @@ void UI::GUIDDrawControl::DrawToScreen()
 		else
 		{
 			this->focusing = true;
-			if (this->pSurfaceUpdated)
+			if (this->clsData->pSurfaceUpdated)
 			{
-				this->pSurfaceUpdated = false;
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->currDD);
+				this->clsData->pSurfaceUpdated = false;
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
 			}
 			else
 			{
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->currDD);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
 			}
 			while (gtk_events_pending())
 			{
@@ -412,7 +421,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	if (this->surfaceBuff2)
+	if (this->clsData->bufferSurfaceData)
 	{
 		if (this->focusing)
 		{
@@ -446,39 +455,39 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			{
 				if (tly > 0)
 				{
-					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2, this->surfaceW * (UOSInt)tly, 0xffcccccc);
+					ImageUtil_ColorFill32(this->clsData->bufferSurfaceData, this->surfaceW * (UOSInt)tly, 0xffcccccc);
 				}
 				if (tlx > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2, (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32(this->clsData->bufferSurfaceData, (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
 				if (tlx + (OSInt)drawW < (OSInt)this->surfaceW)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->surfaceBuff2 + (tlx + (OSInt)drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - (OSInt)drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32(this->clsData->bufferSurfaceData + (tlx + (OSInt)drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - (OSInt)drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
-				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + (UInt8*)this->surfaceBuff2, (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
+				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + this->clsData->bufferSurfaceData, (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
 				if (tly + (OSInt)drawH < (OSInt)this->surfaceH)
 				{
-					ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2 + (OSInt)this->surfaceW * 4 * (tly + (OSInt)drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - (OSInt)drawH), 0xffcccccc);
+					ImageUtil_ColorFill32(this->clsData->bufferSurfaceData + (OSInt)this->surfaceW * 4 * (tly + (OSInt)drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - (OSInt)drawH), 0xffcccccc);
 				}
 			}
 			else
 			{
-				ImageUtil_ColorFill32((UInt8*)this->surfaceBuff2, this->surfaceW * this->surfaceH, 0xffcccccc);
+				ImageUtil_ColorFill32(this->clsData->bufferSurfaceData, this->surfaceW * this->surfaceH, 0xffcccccc);
 			}
 //			Data::DateTime dt;
 //			dt.SetCurrTimeUTC();
 //			Int64 t = dt.ToTicks();
 //			printf("Draw from buff 1 %lld\r\n", t);
 			this->focusing = true;
-			if (this->pSurfaceUpdated)
+			if (this->clsData->pSurfaceUpdated)
 			{
-				this->pSurfaceUpdated = false;
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->currDD);
+				this->clsData->pSurfaceUpdated = false;
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
 			}
 			else
 			{
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->currDD);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->surfaceMon);
 			}
 //			printf("Draw from buff 2 %lld\r\n", t);
 		}
@@ -495,7 +504,7 @@ Bool UI::GUIDDrawControl::IsFullScreen()
 	return this->currScnMode == SM_FS || this->currScnMode == SM_VFS;
 }
 
-void UI::GUIDDrawControl::ChangeMonitor(void *hMon)
+void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
 {
 	this->OnMonitorChanged();
 }

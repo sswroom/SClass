@@ -49,7 +49,7 @@ UI::GUIButton::GUIButton(UI::GUICore *ui, UI::GUIClientControl *parent, const UT
 	NEW_CLASS(this->btnUpDownHandlers, Data::ArrayList<UpDownEvent>());
 	NEW_CLASS(this->btnUpDownHandlersObjs, Data::ArrayList<void *>());
 
-	this->hwnd = gtk_button_new();
+	this->hwnd = (ControlHandle*)gtk_button_new();
 	this->SetText(label);
 //	gtk_container_set_border_width((GtkContainer*)this->hwnd, 0);
 //	GtkStyleContext *context;

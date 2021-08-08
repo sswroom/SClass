@@ -122,7 +122,7 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 	this->menu = 0;
 	this->hAcc = 0;
 
-	this->hwnd = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	this->hwnd = (ControlHandle*)gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect((GtkWidget*)this->hwnd, "destroy", G_CALLBACK(GUIForm_EventDestroy), this);
 
 	this->selfResize = true;

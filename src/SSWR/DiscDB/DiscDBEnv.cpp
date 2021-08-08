@@ -287,12 +287,12 @@ SSWR::DiscDB::DiscDBEnv::ErrorType SSWR::DiscDB::DiscDBEnv::GetErrorType()
 	return this->err;
 }
 
-Double SSWR::DiscDB::DiscDBEnv::GetMonitorHDPI(void *hMon)
+Double SSWR::DiscDB::DiscDBEnv::GetMonitorHDPI(MonitorHandle *hMon)
 {
 	return this->monMgr->GetMonitorHDPI(hMon);
 }
 
-Double SSWR::DiscDB::DiscDBEnv::GetMonitorDDPI(void *hMon)
+Double SSWR::DiscDB::DiscDBEnv::GetMonitorDDPI(MonitorHandle *hMon)
 {
 	return this->monMgr->GetMonitorDDPI(hMon);
 }

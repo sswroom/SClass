@@ -1046,17 +1046,17 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	return true;
 }
 
-Double SSWR::OrganMgr::OrganEnv::GetMonitorHDPI(void *hMonitor)
+Double SSWR::OrganMgr::OrganEnv::GetMonitorHDPI(MonitorHandle *hMonitor)
 {
 	return this->monMgr->GetMonitorHDPI(hMonitor);
 }
 
-Double SSWR::OrganMgr::OrganEnv::GetMonitorDDPI(void *hMonitor)
+Double SSWR::OrganMgr::OrganEnv::GetMonitorDDPI(MonitorHandle *hMonitor)
 {
 	return this->monMgr->GetMonitorDDPI(hMonitor);
 }
 
-void SSWR::OrganMgr::OrganEnv::SetMonitorHDPI(void *hMonitor, Double monitorHDPI)
+void SSWR::OrganMgr::OrganEnv::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
 {
 	this->monMgr->SetMonitorHDPI(hMonitor, monitorHDPI);
 }

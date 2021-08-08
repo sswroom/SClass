@@ -55,11 +55,11 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 	
 	if (radioBtn)
 	{
-		this->hwnd = gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText);
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText);
 	}
 	else
 	{
-		this->hwnd = gtk_radio_button_new_with_label(0, (const Char*)initText);
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText);
 	}
 	parent->AddChild(this);
 	this->Show();

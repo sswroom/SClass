@@ -6,7 +6,7 @@
 
 UI::GUIGroupBox::GUIGroupBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *text) : UI::GUIClientControl(ui, parent)
 {
-	this->hwnd = gtk_frame_new((const Char*)text);
+	this->hwnd = (ControlHandle*)gtk_frame_new((const Char*)text);
 	parent->AddChild(this);
 	this->Show();
 }

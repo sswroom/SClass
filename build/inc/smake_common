@@ -845,6 +845,7 @@ GUITest7.o: ../../main/UI/GUITest7.cpp
 GUITest8.o: ../../main/UI/GUITest8.cpp
 GUITest9.o: ../../main/UI/GUITest9.cpp
 
+Handles.h:
 sdefs.h:
 Stdafx.h:
 SIMD.h:
@@ -1836,6 +1837,8 @@ Media/MediaFile.h: ../../src/Media/MediaFile.cpp
 @MediaFile.o
 Media/MonitorMgr.h: ../../src/Media/MonitorMgr.cpp
 @MonitorMgr.o
+Media/MonitorSurface.h:
+Media/MonitorSurfaceMgr.h:
 Media/MPAStreamSource.h: ../../src/Media/MPAStreamSource.cpp
 @MPAStreamSource.o
 Media/MPEG4V.h:

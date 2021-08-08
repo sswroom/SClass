@@ -10,7 +10,7 @@
 
 UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *label) : UI::GUIControl(ui, parent)
 {
-	this->hwnd = gtk_label_new((const Char*)label);
+	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label);
 	parent->AddChild(this);
 #if GDK_VERSION_AFTER(3, 16)
 	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)this->hwnd), 0.0);

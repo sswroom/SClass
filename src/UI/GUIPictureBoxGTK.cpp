@@ -294,7 +294,7 @@ UI::GUIPictureBox::GUIPictureBox(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	g_signal_connect(G_OBJECT(data->eventBox), "button-release-event", G_CALLBACK(GUIPictureBox_ButtonRelease), this);
 	g_signal_connect(G_OBJECT(data->eventBox), "motion-notify-event", G_CALLBACK(GUIPictureBox_OnMouseMove), this);
 
-	this->hwnd = data->eventBox;
+	this->hwnd = (ControlHandle*)data->eventBox;
 	parent->AddChild(this);
 	gtk_widget_show((GtkWidget*)data->gtkImage);
 	this->Show();

@@ -28,7 +28,7 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, void *parentHWnd) : UI::GUIClientControl
 	this->scrollV = false;
 	this->currScrX = 0;
 	this->currScrY = 0;
-	this->hwnd = gtk_fixed_new();
+	this->hwnd = (ControlHandle*)gtk_fixed_new();
 }
 
 UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIClientControl(ui, parent)
@@ -40,7 +40,7 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIC
 	this->currScrX = 0;
 	this->currScrY = 0;
 
-	this->hwnd = gtk_fixed_new();
+	this->hwnd = (ControlHandle*)gtk_fixed_new();
 	parent->AddChild(this);
 	this->Show();
 }

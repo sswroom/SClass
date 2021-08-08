@@ -31,7 +31,7 @@ UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) 
 	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UIEvent>());
 	NEW_CLASS(this->selChgObjs, Data::ArrayList<void *>());
 	this->selIndex = 0;
-	this->hwnd = gtk_notebook_new();
+	this->hwnd = (ControlHandle*)gtk_notebook_new();
 	g_signal_connect((GtkWidget*)this->hwnd, "switch-page", G_CALLBACK(GUITabControl_SelChange), this);
 	parent->AddChild(this);
 	this->Show();

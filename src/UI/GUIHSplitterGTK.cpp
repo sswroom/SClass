@@ -10,7 +10,7 @@ UI::GUIHSplitter::GUIHSplitter(UI::GUICore *ui, UI::GUIClientControl *parent, In
 {
 	this->dragMode = false;
 	this->isRight = isRight;
-	this->hwnd = gtk_drawing_area_new();
+	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
 	parent->AddChild(this);
 	this->Show();
 

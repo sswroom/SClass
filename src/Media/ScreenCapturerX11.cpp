@@ -16,7 +16,7 @@ Media::ScreenCapturer::~ScreenCapturer()
 {
 }
 
-Media::StaticImage *Media::ScreenCapturer::CaptureScreen(void *hMon)
+Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 {
     Display *dis = XOpenDisplay((char *)0);
     Screen *scr = ScreenOfDisplay(dis, -1 + (int)(OSInt)hMon);

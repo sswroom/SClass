@@ -317,7 +317,7 @@ UI::GUICustomDraw::GUICustomDraw(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
 
-	this->hwnd = gtk_drawing_area_new();
+	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUICustomDraw_OnDraw), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUICustomDraw_OnMouseDown), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUICustomDraw_OnMouseUp), this);

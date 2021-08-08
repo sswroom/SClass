@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include <gtk/gtk.h>
 
-Media::MonitorInfo::MonitorInfo(void *hMonitor)
+Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 {
 	OSInt monNum = ((OSInt)hMonitor) - 1;
 	GdkRectangle rect;

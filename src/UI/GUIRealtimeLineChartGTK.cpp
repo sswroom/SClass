@@ -191,7 +191,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientCon
 	NEW_CLASS(this->chartMut, Sync::Mutex());
 	ClearChart();
 
-	this->hwnd = gtk_drawing_area_new();
+	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
 	parent->AddChild(this);
 	this->Show();
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUIRealtimeLineChart_Draw), this);

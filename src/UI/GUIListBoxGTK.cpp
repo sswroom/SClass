@@ -69,7 +69,7 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 	{
 		gtk_list_box_set_selection_mode((GtkListBox*)data->listbox, GTK_SELECTION_MULTIPLE);
 	}
-	this->hwnd = gtk_scrolled_window_new(0, 0);
+	this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
 	gtk_container_add(GTK_CONTAINER(this->hwnd), data->listbox);
 	parent->AddChild(this);
 	g_signal_connect(data->listbox, "row-selected", G_CALLBACK(GUIListBox_SelChange), this);
