@@ -1,22 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Int64Map.h"
-#include "Net/DNSClient.h"
 #include "Net/EthernetAnalyzer.h"
-#include "Net/MACInfo.h"
 #include "Net/NTPServer.h"
-#include "Net/PacketAnalyzerBluetooth.h"
-#include "Net/PacketAnalyzerEthernet.h"
-#include "Net/SNMPInfo.h"
 #include "Sync/Interlocked.h"
-#include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
-#include "Text/JSON.h"
-#include "Text/JSText.h"
-#include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextBinEnc/Base64Enc.h"
 
 #define IPLOGCNT 300
 
@@ -1754,69 +1742,4 @@ void Net::EthernetAnalyzer::HandlePingv4Request(Pingv4Handler pingv4Hdlr, void *
 {
 	this->pingv4ReqObj = userObj;
 	this->pingv4ReqHdlr = pingv4Hdlr;
-}
-
-Bool Net::EthernetAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
-{
-	switch (linkType)
-	{
-	case 0:
-		return Net::PacketAnalyzerEthernet::PacketNullGetName(packet, packetSize, sb);
-	case 1:
-		return Net::PacketAnalyzerEthernet::PacketEthernetGetName(packet, packetSize, sb);
-	case 101:
-		return Net::PacketAnalyzerEthernet::PacketIPv4GetName(packet, packetSize, sb);
-	case 113:
-		return Net::PacketAnalyzerEthernet::PacketLinuxGetName(packet, packetSize, sb);
-	case 201:
-		return Net::PacketAnalyzerBluetooth::PacketGetName(packet, packetSize, sb);
-	}
-	return false;
-}
-
-void Net::EthernetAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
-{
-	switch (linkType)
-	{
-	case 0:
-		Net::PacketAnalyzerEthernet::PacketNullGetDetail(packet, packetSize, sb);
-		break;
-	case 1:
-		Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(packet, packetSize, sb);
-		break;
-	case 101:
-		Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(packet, packetSize, sb);
-		break;
-	case 113:
-		Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(packet, packetSize, sb);
-		break;
-	case 201:
-		Net::PacketAnalyzerBluetooth::PacketGetDetail(packet, packetSize, sb);
-		break;
-	default:
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
-	}
-}
-
-const UTF8Char *Net::EthernetAnalyzer::LinkTypeGetName(UInt32 linkType)
-{
-	switch (linkType)
-	{
-	case 0:
-		return (const UTF8Char*)"Null";
-	case 1:
-		return (const UTF8Char*)"Ethernet";
-	case 3:
-		return (const UTF8Char*)"AX 25";
-	case 6:
-		return (const UTF8Char*)"IEEE802.5";
-	case 7:
-		return (const UTF8Char*)"ARCNET";
-	case 8:
-		return (const UTF8Char*)"SLIP";
-	case 9:
-		return (const UTF8Char*)"PPP";
-	}
-	return 0;
 }

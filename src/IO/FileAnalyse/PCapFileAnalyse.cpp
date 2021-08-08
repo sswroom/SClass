@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/RAWMonitor.h"
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
-#include "Net/EthernetAnalyzer.h"
+#include "Net/PacketAnalyzer.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
@@ -138,7 +139,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	}
 	sb->AppendU32(psize);
 	sb->Append((const UTF8Char*)", ");
-	if (!Net::EthernetAnalyzer::PacketDataGetName(this->linkType, &this->packetBuff[16], psize, sb))
+	if (!Net::PacketAnalyzer::PacketDataGetName(this->linkType, &this->packetBuff[16], psize, sb))
 	{
 		sb->Append((const UTF8Char*)"Unknown");
 	}
@@ -188,7 +189,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		sb->AppendU32(snaplen);
 		sb->Append((const UTF8Char*)"\r\nNetwork=");
 		sb->AppendU32(network);
-		csptr = Net::EthernetAnalyzer::LinkTypeGetName(network);
+		csptr = IO::RAWMonitor::LinkTypeGetName(network);
 		if (csptr)
 		{
 			sb->Append((const UTF8Char*)" (");
@@ -233,7 +234,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	sb->Append(sbuff);
 	sb->Append((const UTF8Char*)"\r\nPacketSize=");
 	sb->AppendU32(psize);
-	Net::EthernetAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
+	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
 	return true;
 }
 

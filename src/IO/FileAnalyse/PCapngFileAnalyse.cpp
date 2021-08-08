@@ -1,7 +1,9 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/RAWMonitor.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
-#include "Net/EthernetAnalyzer.h"
+#include "Net/PacketAnalyzer.h"
+#include "Net/SocketUtil.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
@@ -229,7 +231,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 		if (psize + 32 <= block->blockLength)
 		{
 			sb->Append((const UTF8Char*)", ");
-			if (!Net::EthernetAnalyzer::PacketDataGetName(block->linkType, &this->packetBuff[28], psize, sb))
+			if (!Net::PacketAnalyzer::PacketDataGetName(block->linkType, &this->packetBuff[28], psize, sb))
 			{
 				sb->Append((const UTF8Char*)"Unknown");
 			}
@@ -250,7 +252,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 		if (psize + 32 <= block->blockLength)
 		{
 			sb->Append((const UTF8Char*)", ");
-			if (!Net::EthernetAnalyzer::PacketDataGetName(block->linkType, &this->packetBuff[28], psize, sb))
+			if (!Net::PacketAnalyzer::PacketDataGetName(block->linkType, &this->packetBuff[28], psize, sb))
 			{
 				sb->Append((const UTF8Char*)"Unknown");
 			}
@@ -402,7 +404,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		}
 		sb->Append((const UTF8Char*)"\r\nLinkType=");
 		sb->AppendU16(linkType);
-		const UTF8Char *csptr = Net::EthernetAnalyzer::LinkTypeGetName(linkType);
+		const UTF8Char *csptr = IO::RAWMonitor::LinkTypeGetName(linkType);
 		if (csptr)
 		{
 			sb->Append((const UTF8Char*)" (");
@@ -602,7 +604,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->AppendU32(oriPSize);
 		if (capPSize + 32 <= block->blockLength)
 		{
-			Net::EthernetAnalyzer::PacketDataGetDetail(block->linkType, &this->packetBuff[28], capPSize, sb);
+			Net::PacketAnalyzer::PacketDataGetDetail(block->linkType, &this->packetBuff[28], capPSize, sb);
 
 			UInt16 optCode;
 			UInt16 optLeng;

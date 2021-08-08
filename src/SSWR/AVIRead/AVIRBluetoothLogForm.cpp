@@ -135,13 +135,34 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 			l = this->lvContent->AddItem(sbuff, log);
 			this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
 			this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
-			if (entry)
+			if (log->addrType == IO::BTScanLog::AT_RANDOM)
 			{
-				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)entry->name);
+				switch (log->mac[0] & 0xc0)
+				{
+				case 0x00:
+					this->lvContent->SetSubItem(i, 3, (const UTF8Char*)"Non-resolvable Random");
+					break;
+				case 0x40:
+					this->lvContent->SetSubItem(i, 3, (const UTF8Char*)"Resolvable Random");
+					break;
+				case 0xC0:
+					this->lvContent->SetSubItem(i, 3, (const UTF8Char*)"Static Random");
+					break;
+				default:
+					this->lvContent->SetSubItem(i, 3, (const UTF8Char*)"-");
+					break;
+				}
 			}
 			else
 			{
-				this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"?");
+				if (entry)
+				{
+					this->lvContent->SetSubItem(l, 3, (const UTF8Char*)entry->name);
+				}
+				else
+				{
+					this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"?");
+				}
 			}
 			if (log->name)
 				this->lvContent->SetSubItem(l, 4, log->name);

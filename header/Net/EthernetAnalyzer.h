@@ -197,11 +197,6 @@ namespace Net
 
 		AnalyzeType GetAnalyzeType();
 		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, void *userObj);
-
-		static Bool PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
-
-		static const UTF8Char *LinkTypeGetName(UInt32 linkType);
 	};
 }
 #endif

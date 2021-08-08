@@ -428,7 +428,21 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 			sb->Append((const UTF8Char*)"</td><td>");
 			if (entry->addrType == IO::BTScanLog::AT_RANDOM)
 			{
-				sb->Append((const UTF8Char*)"-");
+				switch (entry->mac[0] & 0xC0)
+				{
+				case 0x00:
+					sb->Append((const UTF8Char*)"Non-resolvable Random");
+					break;
+				case 0x40:
+					sb->Append((const UTF8Char*)"Resolvable Random");
+					break;
+				case 0xC0:
+					sb->Append((const UTF8Char*)"Static Random");
+					break;
+				default:
+					sb->Append((const UTF8Char*)"-");
+					break;
+				}
 			}
 			else
 			{

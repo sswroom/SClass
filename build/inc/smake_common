@@ -1315,6 +1315,8 @@ IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
 IO/RadioSignalLogger.h: ../../src/IO/RadioSignalLogger.cpp
 @RadioSignalLogger.o
+IO/RAWMonitor.h: ../../src/IO/RAWMonitor.cpp
+@RAWMonitor.o
 IO/Reader.h:
 IO/RS232GPIO.h: ../../src/IO/RS232GPIO.cpp
 @RS232GPIO.o
@@ -2293,6 +2295,8 @@ Net/NTPClient.h: ../../src/Net/NTPClient.cpp
 @NTPClient.o
 Net/NTPServer.h: ../../src/Net/NTPServer.cpp
 @NTPServer.o
+Net/PacketAnalyzer.h: ../../src/Net/PacketAnalyzer.cpp
+@PacketAnalyzer.o
 Net/PacketAnalyzerBluetooth.h: ../../src/Net/PacketAnalyzerBluetooth.cpp
 @PacketAnalyzerBluetooth.o
 Net/PacketAnalyzerEthernet.h: ../../src/Net/PacketAnalyzerEthernet.cpp
@@ -3703,6 +3707,7 @@ PackageFile.o: ../../src/IO/PackageFile.cpp
 ParsedObject.o: ../../src/IO/ParsedObject.cpp
 ProtoCortexHandler.o: ../../src/IO/ProtoCortexHandler.cpp
 RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp
+RAWMonitor.o: ../../src/IO/RAWMonitor.cpp
 RS232GPIO.o: ../../src/IO/RS232GPIO.cpp
 SDCardInfo.o: ../../src/IO/SDCardInfo.cpp
 Sensor.o: ../../src/IO/Sensor.cpp
@@ -4146,6 +4151,7 @@ MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp
 NTPServer.o: ../../src/Net/NTPServer.cpp
+PacketAnalyzer.o: ../../src/Net/PacketAnalyzer.cpp
 PacketAnalyzerBluetooth.o: ../../src/Net/PacketAnalyzerBluetooth.cpp
 PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp

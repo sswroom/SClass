@@ -1,14 +1,14 @@
 #include "Stdafx.h"
 #include "IO/BTScanner.h"
+#include "IO/RAWBTMonitor.h"
 #include "IO/RAWBTScanner.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Sync/Thread.h"
-#include <pcap/pcap.h>
-#include <unistd.h>
 
 struct IO::RAWBTScanner::ClassData
 {
-	pcap_t *pcap;
+	UOSInt devCnt;
+	IO::RAWBTMonitor *btMon;
 	RecordHandler hdlr;
 	void *hdlrObj;
 	Bool noCtrl;
@@ -17,20 +17,23 @@ struct IO::RAWBTScanner::ClassData
 	IO::ProgCtrl::BluetoothCtlProgCtrl *btCtrl;
 };
 
-void RAWBTScanner_Packet(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes)
-{
-	IO::RAWBTScanner *me = (IO::RAWBTScanner*)user;
-	me->OnPacket(1000 * (Int64)h->ts.tv_sec + h->ts.tv_usec / 1000, bytes, h->len);
-}
-
 UInt32 __stdcall IO::RAWBTScanner::RecvThread(void *userObj)
 {
 	IO::RAWBTScanner *me = (IO::RAWBTScanner*)userObj;
+	UInt8 *buff;
+	UOSInt packetSize;
+	Int64 timeTicks;
 	me->clsData->threadRunning = true;
+	buff = MemAlloc(UInt8, me->clsData->btMon->GetMTU());
 	while (!me->clsData->threadToStop)
 	{
-		pcap_loop(me->clsData->pcap, 0, RAWBTScanner_Packet, (u_char*)me);
+		packetSize = me->clsData->btMon->NextPacket(buff, &timeTicks);
+		if (packetSize > 0)
+		{
+			me->OnPacket(timeTicks, buff, packetSize);
+		}
 	}
+	MemFree(buff);
 	me->clsData->threadRunning = false;
 	return 0;
 }
@@ -41,27 +44,20 @@ IO::RAWBTScanner::RAWBTScanner(Bool noCtrl)
 	NEW_CLASS(this->recMut, Sync::Mutex());
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->noCtrl = noCtrl;
-	this->clsData->pcap = 0;
+	this->clsData->btMon = 0;
 	this->clsData->hdlr = 0;
 	this->clsData->hdlrObj = 0;
 	this->clsData->threadRunning = false;
 	this->clsData->threadToStop = false;
 	this->clsData->btCtrl = 0;
-	Char errbuf[PCAP_ERRBUF_SIZE];
-	if (geteuid() == 0)
+	this->clsData->devCnt = IO::RAWBTMonitor::GetDevCount();
+	if (this->clsData->devCnt > 0 && !this->clsData->noCtrl)
 	{
-		this->clsData->pcap = pcap_create("bluetooth0", errbuf);
-		if (this->clsData->pcap)
+		NEW_CLASS(this->clsData->btCtrl, IO::ProgCtrl::BluetoothCtlProgCtrl());
+		if (!this->clsData->btCtrl->WaitForCmdReady())
 		{
-			if (!this->clsData->noCtrl)
-			{
-				NEW_CLASS(this->clsData->btCtrl, IO::ProgCtrl::BluetoothCtlProgCtrl());
-				if (!this->clsData->btCtrl->WaitForCmdReady())
-				{
-					DEL_CLASS(this->clsData->btCtrl);
-					this->clsData->btCtrl = 0;
-				}
-			}
+			DEL_CLASS(this->clsData->btCtrl);
+			this->clsData->btCtrl = 0;
 		}
 	}
 }
@@ -87,7 +83,7 @@ IO::RAWBTScanner::~RAWBTScanner()
 
 Bool IO::RAWBTScanner::IsError()
 {
-	return this->clsData->pcap == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0);
+	return this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0);
 }
 
 void IO::RAWBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
@@ -103,14 +99,16 @@ Bool IO::RAWBTScanner::IsScanOn()
 
 void IO::RAWBTScanner::ScanOn()
 {
-	if (this->clsData->pcap == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0) || this->clsData->threadRunning)
+	if (this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0) || this->clsData->threadRunning)
 	{
 		return;
 	}
 	this->clsData->threadToStop = false;
-	int ret = pcap_activate(this->clsData->pcap);
-	if (ret != 0)
+	NEW_CLASS(this->clsData->btMon, IO::RAWBTMonitor(0));
+	if (this->clsData->btMon->IsError())
 	{
+		DEL_CLASS(this->clsData->btMon);
+		this->clsData->btMon = 0;
 		return;
 	}
 	Sync::Thread::Create(RecvThread, this);
@@ -127,23 +125,21 @@ void IO::RAWBTScanner::ScanOff()
 	if (this->clsData->threadRunning)
 	{
 		this->clsData->threadToStop = true;
-		pcap_breakloop(this->clsData->pcap);
+		this->clsData->btMon->Close();
 		if (this->clsData->btCtrl)
 			this->clsData->btCtrl->ScanOff();
 		while (this->clsData->threadRunning)
 		{
 			Sync::Thread::Sleep(1);
 		}
+		DEL_CLASS(this->clsData->btMon);
+		this->clsData->btMon = 0;
 	}
 }
 
 void IO::RAWBTScanner::Close()
 {
-	if (this->clsData->pcap)
-	{
-		pcap_close(this->clsData->pcap);
-		this->clsData->pcap = 0;
-	}
+	this->ScanOff();
 	if (this->clsData->btCtrl)
 	{
 		this->clsData->btCtrl->Close();

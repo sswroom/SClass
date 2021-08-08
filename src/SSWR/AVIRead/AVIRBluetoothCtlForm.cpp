@@ -87,7 +87,28 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 			me->lvDevices->InsertItem(i, sbuff, dev);
 			me->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType));
 			me->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType));
-			me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)Net::MACInfo::GetMACInfo(dev->macInt)->name);
+			if (dev->addrType == IO::BTScanLog::AT_RANDOM)
+			{
+				switch (dev->mac[0] & 0xC0)
+				{
+				case 0x00:
+					me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"Non-resolvable Random");
+					break;
+				case 0x40:
+					me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"Resolvable Random");
+					break;
+				case 0xC0:
+					me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"Static Random");
+					break;
+				default:
+					me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"-");
+					break;
+				}
+			}
+			else
+			{
+				me->lvDevices->SetSubItem(i, 4, (const UTF8Char*)Net::MACInfo::GetMACInfo(dev->macInt)->name);
+			}
 			me->devMap->Put(dev->macInt, 1);
 		}
 		if (me->devMap->Get(dev->macInt) != 0)

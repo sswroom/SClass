@@ -151,7 +151,21 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		if (log->addrType == IO::BTScanLog::AT_RANDOM)
 		{
-			this->lvContent->SetSubItem(l, 4, (const UTF8Char*)"-");
+			switch ((log->macInt >> 40) & 0xc0)
+			{
+			case 0x00:
+				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"Non-resolvable Random");
+				break;
+			case 0x40:
+				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"Resolvable Random");
+				break;
+			case 0xC0:
+				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"Static Random");
+				break;
+			default:
+				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"-");
+				break;
+			}
 		}
 		else
 		{
@@ -166,9 +180,9 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			}
 		}
 		if (log->name)
-			this->lvContent->SetSubItem(l, 4, log->name);
+			this->lvContent->SetSubItem(l, 5, log->name);
 		Text::StrUOSInt(sbuff, log->logs->GetCount());
-		this->lvContent->SetSubItem(l, 5, sbuff);
+		this->lvContent->SetSubItem(l, 6, sbuff);
 
 		i++;
 	}

@@ -29,5 +29,5 @@ namespace Net
 
 		Net::EthernetAnalyzer *GetAnalyzer();
 	};
-};
+}
 #endif
