@@ -3,6 +3,7 @@
 #include "Handles.h"
 #include "Media/ColorManager.h"
 #include "Media/MonitorMgr.h"
+#include "Media/MonitorSurfaceMgr.h"
 #include "Media/StaticImage.h"
 
 namespace Media
@@ -10,9 +11,7 @@ namespace Media
 	class ScreenCapturer
 	{
 	private:
-		struct ClassData;
-
-		ClassData *clsData;
+		Media::MonitorSurfaceMgr *surfaceMgr;
 		Media::MonitorMgr *monMgr;
 		Media::ColorManager *colorMgr;
 
