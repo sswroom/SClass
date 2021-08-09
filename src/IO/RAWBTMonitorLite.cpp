@@ -5,8 +5,45 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
+//#include <bluetooth/bluetooth.h>
+//#include <bluetooth/hci.h>
+
+#include <stdio.h>
+
+typedef UInt32 uint32_t;
+typedef UInt16 uint16_t;
+
+#define HCI_MAX_DEV	16
+#define BTPROTO_HCI	1
+#define SOL_HCI		0
+#define HCI_DATA_DIR	1
+#define HCI_FILTER	2
+#define HCI_TIME_STAMP	3
+#define HCI_CMSG_DIR	0x0001
+#define HCI_CMSG_TSTAMP	0x0002
+#define HCIGETDEVLIST	_IOR('H', 210, int)
+
+struct sockaddr_hci {
+	sa_family_t	hci_family;
+	unsigned short	hci_dev;
+	unsigned short  hci_channel;
+};
+
+struct hci_filter {
+	uint32_t type_mask;
+	uint32_t event_mask[2];
+	uint16_t opcode;
+};
+
+struct hci_dev_req {
+	uint16_t dev_id;
+	uint32_t dev_opt;
+};
+
+struct hci_dev_list_req {
+	uint16_t dev_num;
+	struct hci_dev_req dev_req[0];	/* hci_dev_req structures */
+};
 
 #define MAX_PACKET_SIZE 2048
 
@@ -133,7 +170,9 @@ UOSInt IO::RAWBTMonitor::GetDevCount()
 	struct hci_dev_req *dev_req;
 	int sock;
 
+	printf("GetDevCount\r\n");
 	sock  = socket(AF_BLUETOOTH, SOCK_RAW, BTPROTO_HCI);
+	printf("sock = %d\r\n", sock);
 	if (sock < 0)
 	{
 		return 0;
@@ -150,12 +189,14 @@ UOSInt IO::RAWBTMonitor::GetDevCount()
 
 	if (ioctl(sock, HCIGETDEVLIST, (void *) dev_list) < 0)
 	{
+		printf("HCIGETDEVLIST failed\r\n", sock);
 		MemFree(dev_list);
 		close(sock);
 		return 0;
 	}
 
 	UOSInt cnt = dev_list->dev_num;
+	printf("devcnt = %d\r\n", cnt);
 	MemFree(dev_list);
 	close(sock);
 	return cnt;

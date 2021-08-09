@@ -20,6 +20,10 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
+IO/RAWBTMonitor.h: ../../src/IO/RAWBTMonitorLite.cpp
+@RAWBTMonitor.o
+IO/RAWBTScanner.h: ../../src/IO/RAWBTScanner.cpp
+@RAWBTScanner.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorAccelerometer.h:
@@ -74,6 +78,8 @@ BTScanner.o: ../../src/IO/BTScannerL.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSL.cpp
+RAWBTMonitor.o: ../../src/IO/RAWBTMonitorLite.cpp
+RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
