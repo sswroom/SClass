@@ -11,14 +11,16 @@ void IO::BTScanLog::FreeDev(DevEntry* dev)
 
 IO::BTScanLog::BTScanLog(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
-	NEW_CLASS(this->devs, Data::UInt64Map<DevEntry*>());
+	NEW_CLASS(this->pubDevs, Data::UInt64Map<DevEntry*>());
+	NEW_CLASS(this->randDevs, Data::UInt64Map<DevEntry*>());
 	NEW_CLASS(this->logs, Data::ArrayList<LogEntry*>());
 }
 
 IO::BTScanLog::~BTScanLog()
 {
 	this->ClearList();
-	DEL_CLASS(this->devs);
+	DEL_CLASS(this->pubDevs);
+	DEL_CLASS(this->randDevs);
 	DEL_CLASS(this->logs);
 }
 
@@ -27,7 +29,7 @@ IO::ParsedObject::ParserType IO::BTScanLog::GetParserType()
 	return IO::ParsedObject::PT_BTSCANLOG;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower)
 {
 	LogEntry *log = MemAlloc(LogEntry, 1);
 	log->macInt = macInt;
@@ -35,7 +37,15 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	log->rssi = rssi;
 	log->txPower = txPower;
 	this->logs->Add(log);
-	DevEntry *dev = this->devs->Get(macInt);
+	DevEntry *dev;
+	if (addrType == AT_RANDOM)
+	{
+		dev = this->randDevs->Get(macInt);
+	}
+	else
+	{
+		dev = this->pubDevs->Get(macInt);
+	}
 	if (dev == 0)
 	{
 		dev = MemAlloc(DevEntry, 1);
@@ -43,9 +53,17 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 		dev->company = company;
 		dev->radioType = radioType;
 		dev->addrType = addrType;
+		dev->measurePower = measurePower;
 		dev->name = SCOPY_TEXT(name);
 		NEW_CLASS(dev->logs, Data::ArrayList<LogEntry*>());
-		this->devs->Put(macInt, dev);
+		if (addrType == AT_RANDOM)
+		{
+			this->randDevs->Put(macInt, dev);
+		}
+		else
+		{
+			this->pubDevs->Put(macInt, dev);
+		}
 	}
 	if (name && dev->name == 0)
 	{
@@ -59,216 +77,43 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	return log;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddScanRec(const IO::BTScanLog::ScanRecord *rec)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddScanRec(const IO::BTScanLog::ScanRecord2 *rec)
 {
-	return this->AddEntry(rec->lastSeenTime, rec->macInt, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower);
+	return this->AddEntry(rec->lastSeenTime, rec->macInt, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower);
 }
 
 void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
 {
-	IO::BTScanLog::ScanRecord rec;
+	IO::BTScanLog::ScanRecord2 rec;
 	if (ParseBTRAWPacket(&rec, timeTicks, buff, buffSize))
 	{
 		this->AddScanRec(&rec);
 		SDEL_TEXT(rec.name);
-	}
-	UTF8Char sbuff[256];
-	if (buffSize < 19)
-	{
 		return;
-	}
-	UInt32 dir = ReadMUInt32(&buff[0]);
-	if (dir != 1) //Rcvd
-	{
-		return;
-	}
-	if (buff[4] == 4 && buff[5] == 0x3E) //HCI Event, LE Meta
-	{
-		UInt8 len = buff[6];
-		if ((UOSInt)len + 7 > buffSize)
-		{
-			return;
-		}
-		UInt8 addrType;
-		Int8 txPower;
-		Int8 rssi;
-		UInt8 mac[8];
-		UOSInt optEnd;
-		UOSInt i;
-		UInt16 company = 0;
-		if (buff[7] == 0xd) //Sub Event: LE Extended Advertising Report (0x0d)
-		{
-			UInt8 numReports = buff[8];
-			if (numReports != 1)
-			{
-				return;
-			}
-			addrType = buff[11];
-			mac[0] = 0;
-			mac[1] = 0;
-			mac[2] = buff[17];
-			mac[3] = buff[16];
-			mac[4] = buff[15];
-			mac[5] = buff[14];
-			mac[6] = buff[13];
-			mac[7] = buff[12];
-			rssi = (Int8)buff[22];
-			txPower = (Int8)buff[21];
-
-			optEnd = (UOSInt)buff[32] + 33;
-			i = 33;
-		}
-		else if (buff[7] == 0x2)
-		{
-			UInt8 numReports = buff[8];
-			if (numReports != 1)
-			{
-				return;
-			}
-			addrType = buff[10];
-			mac[0] = 0;
-			mac[1] = 0;
-			mac[2] = buff[16];
-			mac[3] = buff[15];
-			mac[4] = buff[14];
-			mac[5] = buff[13];
-			mac[6] = buff[12];
-			mac[7] = buff[11];
-			txPower = 0;
-
-			optEnd = (UOSInt)buff[17] + 18;
-			i = 18;
-			if (optEnd < buffSize)
-			{
-				rssi = (Int8)buff[optEnd];
-			}
-			else
-			{
-				rssi = 0;
-			}
-		}
-		else
-		{
-			return;
-		}
-
-		if (optEnd > buffSize)
-		{
-			optEnd = buffSize;
-		}
-		sbuff[0] = 0;
-		while (i + 1 < optEnd)
-		{
-			UInt8 optLen = buff[i];
-			if (optLen == 0 || optLen + i + 1 > optEnd)
-			{
-				break;
-			}
-			if (buff[i + 1] == 8 || buff[i + 1] == 9)
-			{
-				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
-			}
-			else if (buff[i + 1] == 0xFF)
-			{
-				company = ReadUInt16(&buff[i + 2]);
-			}
-			i += 1 + (UOSInt)optLen;
-		}
-
-
-		AddressType aType = AT_UNKNOWN;
-		if (addrType == 0)
-		{
-			aType = AT_PUBLIC;
-		}
-		else if (addrType == 1)
-		{
-			aType = AT_RANDOM;
-		}
-		const UTF8Char *name;
-		if (sbuff[0])
-		{
-			name = sbuff;
-		}
-		else
-		{
-			name = 0;
-		}
-		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_LE, aType, company, name, rssi, txPower);
-	}
-	else if (buff[4] == 4 && buff[5] == 0x2F) //HCI Event, Extended Inquiry Result
-	{
-		UInt8 len = buff[6];
-		if ((UOSInt)len + 7 > buffSize || len < 15)
-		{
-			return;
-		}
-		Int8 rssi = (Int8)buff[21];
-		UInt8 mac[8];
-		UOSInt optEnd;
-		UOSInt i;
-		UInt8 numReports = buff[7];
-		UInt16 company = 0;
-		if (numReports != 1)
-		{
-			return;
-		}
-		mac[0] = 0;
-		mac[1] = 0;
-		mac[2] = buff[13];
-		mac[3] = buff[12];
-		mac[4] = buff[11];
-		mac[5] = buff[10];
-		mac[6] = buff[9];
-		mac[7] = buff[8];
-		optEnd = buffSize;
-		i = 22;
-
-		sbuff[0] = 0;
-		while (i + 1 < optEnd)
-		{
-			UInt8 optLen = buff[i];
-			if (optLen == 0 || optLen + i + 1 > optEnd)
-			{
-				break;
-			}
-			if (buff[i + 1] == 8 || buff[i + 1] == 9)
-			{
-				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
-			}
-			else if (buff[i + 1] == 0xff)
-			{
-				company = ReadUInt16(&buff[i + 2]);
-			}
-			i += 1 + (UOSInt)optLen;	
-		}
-
-		AddressType aType = AT_PUBLIC;
-		const UTF8Char *name;
-		if (sbuff[0])
-		{
-			name = sbuff;
-		}
-		else
-		{
-			name = 0;
-		}
-		this->AddEntry(timeTicks, ReadMUInt64(mac), RT_HCI, aType, company, name, rssi, 0);
 	}
 }
 
 void IO::BTScanLog::ClearList()
 {
 	LIST_FREE_FUNC(this->logs, MemFree);
-	Data::ArrayList<IO::BTScanLog::DevEntry*> *devList = this->GetDevList();
+	Data::ArrayList<IO::BTScanLog::DevEntry*> *devList;
+	devList = this->GetPublicList();
+	LIST_FREE_FUNC(devList, this->FreeDev);
+	devList = this->GetRandomList();
 	LIST_FREE_FUNC(devList, this->FreeDev);
 	this->logs->Clear();
-	this->devs->Clear();
+	this->pubDevs->Clear();
+	this->randDevs->Clear();
 }
 
-Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetDevList()
+Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetPublicList()
 {
-	return this->devs->GetValues();
+	return this->pubDevs->GetValues();
+}
+
+Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList()
+{
+	return this->randDevs->GetValues();
 }
 
 const UTF8Char *IO::BTScanLog::RadioTypeGetName(RadioType radioType)
@@ -299,7 +144,7 @@ const UTF8Char *IO::BTScanLog::AddressTypeGetName(AddressType addrType)
 	}
 }
 
-Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
+Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[256];
 	if (buffSize < 19)
@@ -315,6 +160,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord *rec, Int64 timeT
 	rec->connected = false;
 	rec->company = 0;
 	rec->lastSeenTime = timeTicks;
+	rec->measurePower = 0;
 	UInt8 mac[8];
 	UInt8 addrType;
 	if (buff[4] == 4 && buff[5] == 0x3E) //HCI Event, LE Meta
@@ -401,10 +247,13 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord *rec, Int64 timeT
 			else if (buff[i + 1] == 0xFF)
 			{
 				rec->company = ReadUInt16(&buff[i + 2]);
+				if (rec->company == 0x4C && optLen == 26)
+				{
+					rec->measurePower = (Int8)buff[i + 26];
+				}
 			}
 			i += 1 + (UOSInt)optLen;
 		}
-
 
 		rec->addrType = AT_UNKNOWN;
 		if (addrType == 0)
@@ -474,6 +323,10 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord *rec, Int64 timeT
 			else if (buff[i + 1] == 0xff)
 			{
 				rec->company = ReadUInt16(&buff[i + 2]);
+				if (rec->company == 0x4C && optLen == 26)
+				{
+					rec->measurePower = (Int8)buff[i + 26];
+				}
 			}
 			i += 1 + (UOSInt)optLen;	
 		}

@@ -22,21 +22,37 @@ Bool IO::BTDevLog::IsDefaultName(const UTF8Char *name)
 	return false;
 }
 
+void IO::BTDevLog::FreeDev(DevEntry *dev)
+{
+	SDEL_TEXT(dev->name);
+	MemFree(dev);
+}
+
 IO::BTDevLog::BTDevLog()
 {
-	NEW_CLASS(this->logs, Data::UInt64Map<DevEntry2*>());
+	NEW_CLASS(this->pubDevs, Data::UInt64Map<DevEntry*>());
+	NEW_CLASS(this->randDevs, Data::UInt64Map<DevEntry*>());
 }
 
 IO::BTDevLog::~BTDevLog()
 {
 	this->ClearList();
-	DEL_CLASS(this->logs);
+	DEL_CLASS(this->pubDevs);
+	DEL_CLASS(this->randDevs);
 }
 
-IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company)
+IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company)
 {
 	UInt8 mac[8];
-	DevEntry2 *log = this->logs->Get(macInt);
+	DevEntry *log;
+	if (addrType == IO::BTScanLog::AT_RANDOM)
+	{
+		log = this->randDevs->Get(macInt);
+	}
+	else
+	{
+		log = this->pubDevs->Get(macInt);
+	}
 	if (log)
 	{
 		if (log->txPower == 0 || txPower != 0)
@@ -46,6 +62,10 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 		if (log->company == 0 && company != 0)
 		{
 			log->company = company;
+		}
+		if (log->measurePower == 0 && measurePower != 0)
+		{
+			log->measurePower = measurePower;
 		}
 		if (log->name == 0 && name != 0)
 		{
@@ -59,7 +79,7 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 		return log;
 	}
 	WriteMUInt64(mac, macInt);
-	log = MemAlloc(DevEntry2, 1);
+	log = MemAlloc(DevEntry, 1);
 	log->mac[0] = mac[2];
 	log->mac[1] = mac[3];
 	log->mac[2] = mac[4];
@@ -71,35 +91,40 @@ IO::BTDevLog::DevEntry2 *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *n
 	log->radioType = radioType;
 	log->addrType = addrType;
 	log->txPower = txPower;
+	log->measurePower = measurePower;
 	log->company = company;
-	this->logs->Put(macInt, log);
+	if (addrType == IO::BTScanLog::AT_RANDOM)
+	{
+		this->randDevs->Put(macInt, log);
+	}
+	else
+	{
+		this->pubDevs->Put(macInt, log);
+	}
 	return log;
 }
 
-void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap)
+void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *devMap)
 {
-	IO::BTScanLog::ScanRecord *rec;
-	Data::ArrayList<IO::BTScanLog::ScanRecord*> *recList = devMap->GetValues();
+	IO::BTScanLog::ScanRecord2 *rec;
+	Data::ArrayList<IO::BTScanLog::ScanRecord2*> *recList = devMap->GetValues();
 	UOSInt i = recList->GetCount();
 	while (i-- > 0)
 	{
 		rec = recList->GetItem(i);
-		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->radioType, rec->addrType, rec->company);
+		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company);
 	}
 }
 
 void IO::BTDevLog::ClearList()
 {
-	DevEntry2 *log;
-	Data::ArrayList<DevEntry2*> *logList = this->logs->GetValues();
-	UOSInt i = logList->GetCount();
-	while (i-- > 0)
-	{
-		log = logList->GetItem(i);
-		SDEL_TEXT(log->name);
-		MemFree(log);
-	}
-	this->logs->Clear();
+	Data::ArrayList<DevEntry*> *logList;
+	logList = this->randDevs->GetValues();
+	LIST_FREE_FUNC(logList, this->FreeDev);
+	logList = this->pubDevs->GetValues();
+	LIST_FREE_FUNC(logList, this->FreeDev);
+	this->randDevs->Clear();
+	this->pubDevs->Clear();
 }
 
 Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
@@ -107,7 +132,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	UTF8Char *sarr[7];
+	UTF8Char *sarr[8];
 	UOSInt colCnt;
 	UInt8 macBuff[8];
 	UInt64 macInt;
@@ -120,8 +145,8 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 512))
 	{
-		colCnt = Text::StrSplit(sarr, 7, sb.ToString(), '\t');
-		if ((colCnt == 4 || colCnt == 6) && Text::StrCharCnt(sarr[0]) == 17)
+		colCnt = Text::StrSplit(sarr, 8, sb.ToString(), '\t');
+		if ((colCnt == 4 || colCnt == 6 || colCnt == 7) && Text::StrCharCnt(sarr[0]) == 17)
 		{
 			macBuff[0] = 0;
 			macBuff[1] = 0;
@@ -139,6 +164,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 			}
 			IO::BTScanLog::RadioType radioType = IO::BTScanLog::RT_UNKNOWN;
 			IO::BTScanLog::AddressType addrType = IO::BTScanLog::AT_UNKNOWN;
+			Int8 measurePower = 0;
 			if (colCnt >= 6)
 			{
 				if (Text::StrEquals(sarr[4], (const UTF8Char*)"HCI"))
@@ -159,6 +185,10 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 					addrType = IO::BTScanLog::AT_RANDOM;
 				}
 			}
+			if (colCnt >= 7)
+			{
+				measurePower = (Int8)Text::StrToInt32(sarr[6]);
+			}
 			UInt16 company = 0;
 			if (sarr[3][0])
 			{
@@ -170,7 +200,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 					company = Text::StrHex2UInt16C(sarr[0]);
 				}
 			}
-			this->AddEntry(macInt, name, (Int8)Text::StrToInt32(sarr[2]), radioType, addrType, company);
+			this->AddEntry(macInt, name, (Int8)Text::StrToInt32(sarr[2]), measurePower, radioType, addrType, company);
 		}
 		sb.ClearStr();
 	}
@@ -191,13 +221,15 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 		return false;
 	}
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	Data::ArrayList<DevEntry2*> *logList = this->logs->GetValues();
-	DevEntry2 *log;
+	Data::ArrayList<DevEntry*> logList;
+	logList.AddRange(this->pubDevs->GetValues());
+	logList.AddRange(this->randDevs->GetValues());
+	DevEntry *log;
 	UOSInt i = 0;
-	UOSInt j = logList->GetCount();
+	UOSInt j = logList.GetCount();
 	while (i < j)
 	{
-		log = logList->GetItem(i);
+		log = logList.GetItem(i);
 		sb.ClearStr();
 		sb.AppendHexBuff(log->mac, 6, ':', Text::LBT_NONE);
 		sb.AppendChar('\t', 1);
@@ -237,6 +269,8 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 			sb.Append((const UTF8Char*)"Unknown");
 			break;
 		}
+		sb.AppendChar('\t', 1);
+		sb.AppendI32(log->measurePower);
 		writer->WriteLine(sb.ToString());
 		i++;
 	}
@@ -245,7 +279,12 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 	return true;
 }
 
-Data::ArrayList<IO::BTDevLog::DevEntry2*> *IO::BTDevLog::GetLogList()
+Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList()
 {
-	return this->logs->GetValues();
+	return this->pubDevs->GetValues();
+}
+
+Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList()
+{
+	return this->randDevs->GetValues();
 }

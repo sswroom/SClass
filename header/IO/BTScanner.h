@@ -27,7 +27,7 @@ namespace IO
 			SM_PASSIVE
 		} ScanMode;
 		
-		typedef void (__stdcall *RecordHandler)(IO::BTScanLog::ScanRecord *rec, UpdateType updateType, void *userObj);
+		typedef void (__stdcall *RecordHandler)(IO::BTScanLog::ScanRecord2 *rec, UpdateType updateType, void *userObj);
 	public:
 		virtual ~BTScanner() {};
 
@@ -39,7 +39,8 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord*> *GetRecordMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *GetPublicMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *GetRandomMap(Sync::MutexUsage *mutUsage) = 0;
 
 		static BTScanner *CreateScanner();
 	};

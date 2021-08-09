@@ -32,11 +32,12 @@ namespace IO
 			AddressType addrType;
 			const UTF8Char *name;
 			Int8 rssi;
+			Int8 measurePower;
 			Int8 txPower;
 			Bool connected;
 			Int64 lastSeenTime;
 			UInt16 company;
-		} ScanRecord;
+		} ScanRecord2;
 
 		struct LogEntry
 		{
@@ -52,11 +53,13 @@ namespace IO
 			RadioType radioType;
 			AddressType addrType;
 			UInt16 company;
+			Int8 measurePower;
 			const UTF8Char *name;
 			Data::ArrayList<LogEntry*> *logs;
 		};
 	private:
-		Data::UInt64Map<DevEntry*> *devs;
+		Data::UInt64Map<DevEntry*> *pubDevs;
+		Data::UInt64Map<DevEntry*> *randDevs;
 		Data::ArrayList<LogEntry*> *logs;
 
 		void FreeDev(DevEntry* dev);
@@ -66,15 +69,16 @@ namespace IO
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower);
-		LogEntry *AddScanRec(const ScanRecord *rec);
+		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower);
+		LogEntry *AddScanRec(const ScanRecord2 *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
-		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetDevList();
+		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetPublicList();
+		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetRandomList();
 
 		static const UTF8Char *RadioTypeGetName(RadioType radioType);
 		static const UTF8Char *AddressTypeGetName(AddressType addrType);
-		static Bool ParseBTRAWPacket(ScanRecord *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
+		static Bool ParseBTRAWPacket(ScanRecord2 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

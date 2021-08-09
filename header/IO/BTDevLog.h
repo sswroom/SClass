@@ -17,23 +17,27 @@ namespace IO
 			IO::BTScanLog::RadioType radioType;
 			IO::BTScanLog::AddressType addrType;
 			Int8 txPower;
+			Int8 measurePower;
 			UInt16 company;
-		} DevEntry2;
+		} DevEntry;
 	private:
-		Data::UInt64Map<DevEntry2*> *logs;
+		Data::UInt64Map<DevEntry*> *pubDevs;
+		Data::UInt64Map<DevEntry*> *randDevs;
 
 		static Bool IsDefaultName(const UTF8Char *name);
+		void FreeDev(DevEntry *dev);
 	public:
 		BTDevLog();
 		~BTDevLog();
 
-		DevEntry2 *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company);
-		void AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap);
+		DevEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company);
+		void AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);
 		Bool StoreFile(const UTF8Char *fileName);
 
-		Data::ArrayList<IO::BTDevLog::DevEntry2*> *GetLogList();
+		Data::ArrayList<IO::BTDevLog::DevEntry*> *GetPublicList();
+		Data::ArrayList<IO::BTDevLog::DevEntry*> *GetRandomList();
 	};
 }
 #endif

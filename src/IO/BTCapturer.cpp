@@ -95,9 +95,9 @@ void IO::BTCapturer::StoreStatus()
 	UTF8Char *sptr;
 	IO::BTDevLog btLog;
 	Sync::MutexUsage mutUsage;
-	Data::UInt64Map<IO::BTScanLog::ScanRecord*> *devMap = this->bt->GetRecordMap(&mutUsage);
+	btLog.AppendList(this->bt->GetPublicMap(&mutUsage));
+	btLog.AppendList(this->bt->GetRandomMap(&mutUsage));
 	UOSInt i;
-	btLog.AppendList(devMap);
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	sptr = IO::Path::GetProcessFileName(sbuff);
@@ -117,9 +117,14 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-Data::ArrayList<IO::BTScanLog::ScanRecord*> *IO::BTCapturer::GetLogList(Sync::MutexUsage *mutUsage)
+Data::ArrayList<IO::BTScanLog::ScanRecord2*> *IO::BTCapturer::GetPublicList(Sync::MutexUsage *mutUsage)
 {
-	return this->bt->GetRecordMap(mutUsage)->GetValues();
+	return this->bt->GetPublicMap(mutUsage)->GetValues();
+}
+
+Data::ArrayList<IO::BTScanLog::ScanRecord2*> *IO::BTCapturer::GetRandomList(Sync::MutexUsage *mutUsage)
+{
+	return this->bt->GetRandomMap(mutUsage)->GetValues();
 }
 
 void IO::BTCapturer::SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj)

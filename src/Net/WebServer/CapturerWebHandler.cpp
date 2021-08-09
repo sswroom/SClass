@@ -52,17 +52,23 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
 		Sync::MutexUsage mutUsage;
-		Data::ArrayList<IO::BTScanLog::ScanRecord*> *logList = me->btCapture->GetLogList(&mutUsage);
-		IO::BTScanLog::ScanRecord *entry;
-		sb.Append((const UTF8Char*)"<a href=\"btdet.html\">");
-		sb.Append((const UTF8Char*)"BT Record count = ");
-		sb.AppendUOSInt(logList->GetCount());
+		IO::BTScanLog::ScanRecord2 *entry;
+		Data::ArrayList<IO::BTScanLog::ScanRecord2*> logList;
+		logList.AddRange(me->btCapture->GetPublicList(&mutUsage));
+		sb.Append((const UTF8Char*)"<a href=\"btdetpub.html\">");
+		sb.Append((const UTF8Char*)"BT Public count = ");
+		sb.AppendUOSInt(logList.GetCount());
 		sb.Append((const UTF8Char*)"</a><br/>\r\n");
-		UOSInt i = logList->GetCount();
+		logList.AddRange(me->btCapture->GetRandomList(&mutUsage));
+		sb.Append((const UTF8Char*)"<a href=\"btdet.html\">");
+		sb.Append((const UTF8Char*)"BT Total count = ");
+		sb.AppendUOSInt(logList.GetCount());
+		sb.Append((const UTF8Char*)"</a><br/>\r\n");
+		UOSInt i = logList.GetCount();
 		UOSInt j = 0;
 		while (i-- > 0)
 		{
-			entry = logList->GetItem(i);
+			entry = logList.GetItem(i);
 			if (entry->inRange && (currTime - entry->lastSeenTime) <= BTTIMEOUT)
 			{
 				j++;
@@ -102,16 +108,17 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord*> *entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord2*> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList = me->btCapture->GetLogList(&mutUsage);
+	entryList.AddRange(me->btCapture->GetPublicList(&mutUsage));
+	entryList.AddRange(me->btCapture->GetRandomList(&mutUsage));
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"refresh\" content=\"10\">\r\n");
 	sb.Append((const UTF8Char*)"</head><body>\r\n");
 	sb.Append((const UTF8Char*)"Current Bluetooth:<br/>\r\n");
-	AppendBTTable(&sb, req, entryList, true);
+	AppendBTTable(&sb, req, &entryList, true);
 	mutUsage.EndUse();
 	sb.Append((const UTF8Char*)"</body><html>");
 
@@ -133,14 +140,47 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord*> *entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord2*> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList = me->btCapture->GetLogList(&mutUsage);
+	entryList.AddRange(me->btCapture->GetPublicList(&mutUsage));
+	entryList.AddRange(me->btCapture->GetRandomList(&mutUsage));
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
 	sb.Append((const UTF8Char*)"</head><body>\r\n");
 	sb.Append((const UTF8Char*)"All Bluetooth Count = ");
+	sb.AppendUOSInt(entryList.GetCount());
+	sb.Append((const UTF8Char*)"<br/>\r\n");
+	AppendBTTable(&sb, req, &entryList, false);
+	mutUsage.EndUse();
+	sb.Append((const UTF8Char*)"</body><html>");
+
+	resp->AddDefHeaders(req);
+	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
+	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToString(), sb.GetLength());
+	return true;
+}
+
+
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
+{
+	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	if (me->btCapture == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
+		return true;
+	}
+	Text::StringBuilderUTF8 sb;
+	Data::ArrayList<IO::BTScanLog::ScanRecord2*> *entryList;
+
+	Sync::MutexUsage mutUsage;
+	entryList = me->btCapture->GetPublicList(&mutUsage);
+	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
+	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
+	sb.Append((const UTF8Char*)"</head><body>\r\n");
+	sb.Append((const UTF8Char*)"Public Bluetooth Count = ");
 	sb.AppendUOSInt(entryList->GetCount());
 	sb.Append((const UTF8Char*)"<br/>\r\n");
 	AppendBTTable(&sb, req, entryList, false);
@@ -377,7 +417,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord2*> *entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -389,7 +429,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	currTime = dt.ToTicks();
 	UOSInt i;
 	UOSInt j;
-	IO::BTScanLog::ScanRecord *entry;
+	IO::BTScanLog::ScanRecord2 *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
 	sb->Append((const UTF8Char*)"<tr><td><a href=");
@@ -401,9 +441,9 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	csptr = Text::XML::ToNewAttrText(sbuff);
 	sb->Append(csptr);
 	Text::XML::FreeNewText(csptr);
-	sb->Append((const UTF8Char*)">RSSI</a></td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td></tr>\r\n");
+	sb->Append((const UTF8Char*)">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td></tr>\r\n");
 
-	Data::ArrayList<IO::BTScanLog::ScanRecord*> sortList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord2*> sortList;
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
 	if (sort == 1)
 	{
@@ -456,6 +496,8 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 			sb->Append((const UTF8Char*)"</td><td>");
 			sb->AppendI32(entry->rssi);
 			sb->Append((const UTF8Char*)"</td><td>");
+			sb->AppendI32(entry->measurePower);
+			sb->Append((const UTF8Char*)"</td><td>");
 			sb->AppendI32(entry->txPower);
 			sb->Append((const UTF8Char*)"</td><td>");
 			sb->Append((const UTF8Char*)(entry->inRange?"Y":"N"));
@@ -479,7 +521,8 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"?");
+					sb->Append((const UTF8Char*)"0x");
+					sb->AppendHex16(entry->company);
 				}
 			}
 			sb->Append((const UTF8Char*)"</td></tr>\r\n");
@@ -536,8 +579,8 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 
 OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1, void *obj2)
 {
-	IO::BTScanLog::ScanRecord *log1 = (IO::BTScanLog::ScanRecord*)obj1;
-	IO::BTScanLog::ScanRecord *log2 = (IO::BTScanLog::ScanRecord*)obj2;
+	IO::BTScanLog::ScanRecord2 *log1 = (IO::BTScanLog::ScanRecord2*)obj1;
+	IO::BTScanLog::ScanRecord2 *log2 = (IO::BTScanLog::ScanRecord2*)obj2;
 	if (log1->rssi == log2->rssi)
 	{
 		if (log1->name == log2->name)
@@ -588,6 +631,7 @@ Net::WebServer::CapturerWebHandler::CapturerWebHandler(Net::WiFiCapturer *wifiCa
 	this->AddService((const UTF8Char*)"/index.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, IndexFunc);
 	this->AddService((const UTF8Char*)"/btcurr.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTCurrentFunc);
 	this->AddService((const UTF8Char*)"/btdet.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTDetailFunc);
+	this->AddService((const UTF8Char*)"/btdetpub.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTDetailPubFunc);
 	this->AddService((const UTF8Char*)"/wificurr.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiCurrentFunc);
 	this->AddService((const UTF8Char*)"/wifidet.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiDetailFunc);
 	this->AddService((const UTF8Char*)"/wifidown.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiDownloadFunc);

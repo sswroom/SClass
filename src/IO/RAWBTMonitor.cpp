@@ -40,6 +40,7 @@ IO::RAWBTMonitor::RAWBTMonitor(UOSInt devNum)
 	}
 
 	struct sockaddr_hci addr;
+	MemClear(&addr, sizeof(addr));
 	addr.hci_family = AF_BLUETOOTH;
 	addr.hci_dev = (UInt16)devNum;
 #ifdef HAVE_STRUCT_SOCKADDR_HCI_HCI_CHANNEL
@@ -145,7 +146,7 @@ UOSInt IO::RAWBTMonitor::GetDevCount()
 		close(sock);
 		return 0;
 	}
-
+	MemClear(dev_list, HCI_MAX_DEV * sizeof(*dev_req) + sizeof(*dev_list));
 	dev_list->dev_num = HCI_MAX_DEV;
 
 	if (ioctl(sock, HCIGETDEVLIST, (void *) dev_list) < 0)

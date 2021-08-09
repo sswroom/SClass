@@ -28,7 +28,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
 	if (updateType == IO::BTScanner::UT_RSSI)
@@ -48,7 +48,14 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord *dev,
 		}
 		else if (dev->radioType == IO::BTScanLog::RT_LE)
 		{
-			sb.Append((const UTF8Char*)"le");
+			if (dev->addrType == IO::BTScanLog::AT_RANDOM)
+			{
+				sb.Append((const UTF8Char*)"ler");
+			}
+			else
+			{
+				sb.Append((const UTF8Char*)"le");
+			}
 		}
 		else
 		{

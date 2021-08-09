@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
-	const IO::BTDevLog::DevEntry2 *log = (const IO::BTDevLog::DevEntry2*)me->lvContent->GetItem(index);
+	const IO::BTDevLog::DevEntry *log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 		j = me->lvContent->GetCount();
 		while (i < j)
 		{
-			log = (const IO::BTDevLog::DevEntry2*)me->lvContent->GetItem(i);
+			log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
@@ -111,8 +111,10 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
-	IO::BTDevLog::DevEntry2 *log;
-	Data::ArrayList<IO::BTDevLog::DevEntry2*> *logList = this->btLog->GetLogList();
+	IO::BTDevLog::DevEntry *log;
+	Data::ArrayList<IO::BTDevLog::DevEntry*> logList;
+	logList.AddRange(this->btLog->GetPublicList());
+	logList.AddRange(this->btLog->GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UOSInt i;
@@ -120,10 +122,10 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	UOSInt l;
 	this->lvContent->ClearItems();
 	i = 0;
-	j = logList->GetCount();
+	j = logList.GetCount();
 	while (i < j)
 	{
-		log = logList->GetItem(i);
+		log = logList.GetItem(i);
 		entry = this->macList->GetEntry(log->macInt);
 		if (unkOnly && (entry != 0 && entry->name != 0 && entry->name[0] != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{
@@ -184,6 +186,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 					this->lvContent->SetSubItem(l, 6, csptr);
 				}
 			}
+			Text::StrInt32(sbuff, log->measurePower);
+			this->lvContent->SetSubItem(l, 7, sbuff);
 		}
 
 		i++;
@@ -221,7 +225,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
@@ -234,6 +238,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"TX Power", 60);
 	this->lvContent->AddColumn((const UTF8Char*)"Company", 150);
+	this->lvContent->AddColumn((const UTF8Char*)"Measure Power", 60);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();

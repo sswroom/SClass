@@ -114,7 +114,9 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	const Net::MACInfo::MACEntry *entry;
 	Text::StringBuilderUTF8 sb;
 	IO::BTScanLog::DevEntry *log;
-	Data::ArrayList<IO::BTScanLog::DevEntry*> *logList = this->btLog->GetDevList();
+	Data::ArrayList<IO::BTScanLog::DevEntry*> logList;
+	logList.AddRange(this->btLog->GetPublicList());
+	logList.AddRange(this->btLog->GetRandomList());
 	UTF8Char sbuff[64];
 	const UTF8Char *csptr;
 	UInt8 mac[8];
@@ -123,10 +125,10 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	UOSInt l;
 	this->lvContent->ClearItems();
 	i = 0;
-	j = logList->GetCount();
+	j = logList.GetCount();
 	while (i < j)
 	{
-		log = logList->GetItem(i);
+		log = logList.GetItem(i);
 		WriteMUInt64(mac, log->macInt);
 		Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 		l = this->lvContent->AddItem(sbuff, log);
@@ -183,6 +185,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			this->lvContent->SetSubItem(l, 5, log->name);
 		Text::StrUOSInt(sbuff, log->logs->GetCount());
 		this->lvContent->SetSubItem(l, 6, sbuff);
+		Text::StrInt16(sbuff, log->measurePower);
+		this->lvContent->SetSubItem(l, 7, sbuff);
 
 		i++;
 	}
@@ -216,7 +220,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
@@ -229,6 +233,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 160);
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"Count", 60);
+	this->lvContent->AddColumn((const UTF8Char*)"Measure Power", 60);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();
