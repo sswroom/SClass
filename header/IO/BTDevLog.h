@@ -19,6 +19,7 @@ namespace IO
 			Int8 txPower;
 			Int8 measurePower;
 			UInt16 company;
+			IO::BTScanLog::AdvType advType;
 		} DevEntry;
 	private:
 		Data::UInt64Map<DevEntry*> *pubDevs;
@@ -30,8 +31,8 @@ namespace IO
 		BTDevLog();
 		~BTDevLog();
 
-		DevEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company);
-		void AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *devMap);
+		DevEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
+		void AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);
 		Bool StoreFile(const UTF8Char *fileName);

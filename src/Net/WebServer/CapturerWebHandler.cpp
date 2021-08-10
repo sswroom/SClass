@@ -52,8 +52,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
 		Sync::MutexUsage mutUsage;
-		IO::BTScanLog::ScanRecord2 *entry;
-		Data::ArrayList<IO::BTScanLog::ScanRecord2*> logList;
+		IO::BTScanLog::ScanRecord3 *entry;
+		Data::ArrayList<IO::BTScanLog::ScanRecord3*> logList;
 		logList.AddRange(me->btCapture->GetPublicList(&mutUsage));
 		sb.Append((const UTF8Char*)"<a href=\"btdetpub.html\">");
 		sb.Append((const UTF8Char*)"BT Public count = ");
@@ -108,7 +108,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList.AddRange(me->btCapture->GetPublicList(&mutUsage));
@@ -140,7 +140,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList.AddRange(me->btCapture->GetPublicList(&mutUsage));
@@ -173,7 +173,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> *entryList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetPublicList(&mutUsage);
@@ -417,7 +417,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->Append((const UTF8Char*)"</table>");
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord2*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -429,7 +429,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	currTime = dt.ToTicks();
 	UOSInt i;
 	UOSInt j;
-	IO::BTScanLog::ScanRecord2 *entry;
+	IO::BTScanLog::ScanRecord3 *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
 	sb->Append((const UTF8Char*)"<tr><td><a href=");
@@ -441,9 +441,9 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	csptr = Text::XML::ToNewAttrText(sbuff);
 	sb->Append(csptr);
 	Text::XML::FreeNewText(csptr);
-	sb->Append((const UTF8Char*)">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td></tr>\r\n");
+	sb->Append((const UTF8Char*)">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n");
 
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> sortList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> sortList;
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
 	if (sort == 1)
 	{
@@ -525,6 +525,8 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 					sb->AppendHex16(entry->company);
 				}
 			}
+			sb->Append((const UTF8Char*)"</td><td>");
+			sb->Append(IO::BTScanLog::AdvTypeGetName(entry->advType));
 			sb->Append((const UTF8Char*)"</td></tr>\r\n");
 		}
 		i++;
@@ -579,8 +581,8 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 
 OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1, void *obj2)
 {
-	IO::BTScanLog::ScanRecord2 *log1 = (IO::BTScanLog::ScanRecord2*)obj1;
-	IO::BTScanLog::ScanRecord2 *log2 = (IO::BTScanLog::ScanRecord2*)obj2;
+	IO::BTScanLog::ScanRecord3 *log1 = (IO::BTScanLog::ScanRecord3*)obj1;
+	IO::BTScanLog::ScanRecord3 *log2 = (IO::BTScanLog::ScanRecord3*)obj2;
 	if (log1->rssi == log2->rssi)
 	{
 		if (log1->name == log2->name)

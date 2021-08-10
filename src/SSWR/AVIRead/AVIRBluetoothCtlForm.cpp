@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *user
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UTF8Char sbuff[32];
-	IO::BTScanLog::ScanRecord2 *dev = (IO::BTScanLog::ScanRecord2*)me->lvDevices->GetItem(index);
+	IO::BTScanLog::ScanRecord3 *dev = (IO::BTScanLog::ScanRecord3*)me->lvDevices->GetItem(index);
 	if (dev)
 	{
 		Text::StrHexBytes(sbuff, dev->mac, 6, ':');
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 	me->UpdateList(me->bt->GetRandomMap(&mutUsage), me->randDevMap, i);
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLo
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *devMap, Data::UInt64Map<UInt32> *statusMap, UOSInt baseIndex)
+UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap, Data::UInt64Map<UInt32> *statusMap, UOSInt baseIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -101,8 +101,8 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 	UTF8Char sbuff[32];
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> *devList = devMap->GetValues();
-	IO::BTScanLog::ScanRecord2 *dev;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = devMap->GetValues();
+	IO::BTScanLog::ScanRecord3 *dev;
 
 	j = 0;
 	k = devList->GetCount();
@@ -173,6 +173,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 					this->lvDevices->SetSubItem(i, 10, (const UTF8Char*)"?");
 				}
 			}
+			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
 			statusMap->Put(dev->macInt, 0);
 		}
 		i++;
@@ -201,7 +202,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnStoreList, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store Devices"));
 	this->btnStoreList->SetRect(84, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 11));
+	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 12));
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
@@ -217,6 +218,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	this->lvDevices->AddColumn((const UTF8Char*)"Range", 60);
 	this->lvDevices->AddColumn((const UTF8Char*)"Connect", 60);
 	this->lvDevices->AddColumn((const UTF8Char*)"Company", 200);
+	this->lvDevices->AddColumn((const UTF8Char*)"AdvType", 80);
 
 	if (this->bt)
 	{

@@ -29,7 +29,7 @@ IO::ParsedObject::ParserType IO::BTScanLog::GetParserType()
 	return IO::ParsedObject::PT_BTSCANLOG;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
 {
 	LogEntry *log = MemAlloc(LogEntry, 1);
 	log->macInt = macInt;
@@ -55,6 +55,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 		dev->addrType = addrType;
 		dev->measurePower = measurePower;
 		dev->name = SCOPY_TEXT(name);
+		dev->lastAdvType = advType;
 		NEW_CLASS(dev->logs, Data::ArrayList<LogEntry*>());
 		if (addrType == AT_RANDOM)
 		{
@@ -73,18 +74,22 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	{
 		dev->company = company;
 	}
+	if (advType != ADVT_UNKNOWN)
+	{
+		dev->lastAdvType = advType;
+	}
 	dev->logs->Add(log);
 	return log;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddScanRec(const IO::BTScanLog::ScanRecord2 *rec)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddScanRec(const IO::BTScanLog::ScanRecord3 *rec)
 {
-	return this->AddEntry(rec->lastSeenTime, rec->macInt, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower);
+	return this->AddEntry(rec->lastSeenTime, rec->macInt, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower, rec->advType);
 }
 
 void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
 {
-	IO::BTScanLog::ScanRecord2 rec;
+	IO::BTScanLog::ScanRecord3 rec;
 	if (ParseBTRAWPacket(&rec, timeTicks, buff, buffSize))
 	{
 		this->AddScanRec(&rec);
@@ -144,9 +149,50 @@ const UTF8Char *IO::BTScanLog::AddressTypeGetName(AddressType addrType)
 	}
 }
 
-Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
+const UTF8Char *IO::BTScanLog::AdvTypeGetName(AdvType advType)
 {
-	UTF8Char sbuff[256];
+	switch (advType)
+	{
+	case ADVT_IBEACON:
+		return (const UTF8Char*)"iBeacon";
+	case ADVT_FINDMY_BROADCAST:
+		return (const UTF8Char*)"AirTag";
+	case ADVT_HOMEKIT:
+		return (const UTF8Char*)"HomeKit";
+	case ADVT_AIRDROP:
+		return (const UTF8Char*)"AirDrop";
+	case ADVT_AIRPLAY_TARGET:
+		return (const UTF8Char*)"Airplay Target";
+	case ADVT_AIRPLAY_SRC:
+		return (const UTF8Char*)"Airplay Source";
+	case ADVT_AIRPRINT:
+		return (const UTF8Char*)"AirPrint";
+	case ADVT_HANDOFF:
+		return (const UTF8Char*)"Handoff";
+	case ADVT_MAGIC_SWITCH:
+		return (const UTF8Char*)"Magic Switch";
+	case ADVT_NEARBY_ACTION:
+		return (const UTF8Char*)"Nearby Action";
+	case ADVT_NEARBY_INFO:
+		return (const UTF8Char*)"Nearby Info";
+	case ADVT_PROXIMITY_PAIRING:
+		return (const UTF8Char*)"Proximity Pairing";
+	case ADVT_TETHERING_SRC:
+		return (const UTF8Char*)"Tethering Source";
+	case ADVT_TETHERING_TARGET:
+		return (const UTF8Char*)"Teghering Target";
+	case ADVT_EDDYSTONE:
+		return (const UTF8Char*)"Eddystone";
+	case ADVT_ALTBEACON:
+		return (const UTF8Char*)"AltBeacon";
+	case ADVT_UNKNOWN:
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+}
+
+Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
+{
 	if (buffSize < 19)
 	{
 		return false;
@@ -161,6 +207,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 time
 	rec->company = 0;
 	rec->lastSeenTime = timeTicks;
 	rec->measurePower = 0;
+	rec->advType = ADVT_UNKNOWN;
 	UInt8 mac[8];
 	UInt8 addrType;
 	if (buff[4] == 4 && buff[5] == 0x3E) //HCI Event, LE Meta
@@ -232,28 +279,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 time
 		{
 			optEnd = buffSize;
 		}
-		sbuff[0] = 0;
-		while (i + 1 < optEnd)
-		{
-			UInt8 optLen = buff[i];
-			if (optLen == 0 || optLen + i + 1 > optEnd)
-			{
-				break;
-			}
-			if (buff[i + 1] == 8 || buff[i + 1] == 9)
-			{
-				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
-			}
-			else if (buff[i + 1] == 0xFF)
-			{
-				rec->company = ReadUInt16(&buff[i + 2]);
-				if (rec->company == 0x4C && optLen == 26)
-				{
-					rec->measurePower = (Int8)buff[i + 26];
-				}
-			}
-			i += 1 + (UOSInt)optLen;
-		}
+		ParseAdvisement(rec, buff, i, optEnd);
 
 		rec->addrType = AT_UNKNOWN;
 		if (addrType == 0)
@@ -263,14 +289,6 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 time
 		else if (addrType == 1)
 		{
 			rec->addrType = AT_RANDOM;
-		}
-		if (sbuff[0])
-		{
-			rec->name = Text::StrCopyNew(sbuff);
-		}
-		else
-		{
-			rec->name = 0;
 		}
 		rec->radioType = RT_LE;
 		rec->macInt = ReadMUInt64(mac);
@@ -308,38 +326,9 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 time
 		optEnd = buffSize;
 		i = 22;
 
-		sbuff[0] = 0;
-		while (i + 1 < optEnd)
-		{
-			UInt8 optLen = buff[i];
-			if (optLen == 0 || optLen + i + 1 > optEnd)
-			{
-				break;
-			}
-			if (buff[i + 1] == 8 || buff[i + 1] == 9)
-			{
-				Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
-			}
-			else if (buff[i + 1] == 0xff)
-			{
-				rec->company = ReadUInt16(&buff[i + 2]);
-				if (rec->company == 0x4C && optLen == 26)
-				{
-					rec->measurePower = (Int8)buff[i + 26];
-				}
-			}
-			i += 1 + (UOSInt)optLen;	
-		}
+		ParseAdvisement(rec, buff, i, optEnd);
 
 		rec->addrType = AT_PUBLIC;
-		if (sbuff[0])
-		{
-			rec->name = Text::StrCopyNew(sbuff);
-		}
-		else
-		{
-			rec->name = 0;
-		}
 		rec->txPower = 0;
 		rec->radioType = RT_HCI;
 		rec->macInt = ReadMUInt64(mac);
@@ -352,4 +341,112 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord2 *rec, Int64 time
 		return true;
 	}
 	return false;
+}
+
+void IO::BTScanLog::ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst)
+{
+	UTF8Char sbuff[256];
+	UOSInt i = ofst;
+	UOSInt j;
+
+	sbuff[0] = 0;
+	while (i + 1 < endOfst)
+	{
+		UInt8 optLen = buff[i];
+		if (optLen == 0 || optLen + i + 1 > endOfst)
+		{
+			break;
+		}
+		if (buff[i + 1] == 8 || buff[i + 1] == 9)
+		{
+			Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
+		}
+		else if (buff[i + 1] == 3) //UUIDs
+		{
+			UInt16 uuid;
+			j = 2;
+			while (j < optLen)
+			{
+				uuid = ReadUInt16(&buff[i + j]);
+				if (uuid == 0xFEAA)
+				{
+					rec->advType = ADVT_EDDYSTONE;
+				}
+				j += 2;
+			}
+		}
+		else if (buff[i + 1] == 0xFF)
+		{
+			rec->company = ReadUInt16(&buff[i + 2]);
+			if (rec->company == 0x4C)
+			{
+				switch (buff[i + 4])
+				{
+				case 2:
+					rec->advType = ADVT_IBEACON;
+					if (optLen == 26)
+					{
+						rec->measurePower = (Int8)buff[i + 26];
+					}
+					break;
+				case 3:
+					rec->advType = ADVT_AIRPRINT;
+					break;
+				case 5:
+					rec->advType = ADVT_AIRDROP;
+					break;
+				case 6:
+					rec->advType = ADVT_HOMEKIT;
+					break;
+				case 7:
+					rec->advType = ADVT_PROXIMITY_PAIRING;
+					break;
+				case 9:
+					rec->advType = ADVT_AIRPLAY_TARGET;
+					break;
+				case 10:
+					rec->advType = ADVT_AIRPLAY_SRC;
+					break;
+				case 11:
+					rec->advType = ADVT_MAGIC_SWITCH;
+					break;
+				case 12:
+					rec->advType = ADVT_HANDOFF;
+					break;
+				case 13:
+					rec->advType = ADVT_TETHERING_TARGET;
+					break;
+				case 14:
+					rec->advType = ADVT_TETHERING_SRC;
+					break;
+				case 15:
+					rec->advType = ADVT_NEARBY_ACTION;
+					break;
+				case 16:
+					rec->advType = ADVT_NEARBY_INFO;
+					break;
+				case 18:
+					rec->advType = ADVT_FINDMY_BROADCAST;
+					break;
+				default:
+					rec->advType = ADVT_UNKNOWN;
+					break;
+				}
+			}
+			else if (optLen == 27 && ReadMUInt16(&buff[i + 4]) == 0xBEAC)
+			{
+				rec->advType = ADVT_ALTBEACON;
+				rec->measurePower = (Int8)buff[i + 26];
+			}
+		}
+		i += 1 + (UOSInt)optLen;
+	}
+	if (sbuff[0])
+	{
+		rec->name = Text::StrCopyNew(sbuff);
+	}
+	else
+	{
+		rec->name = 0;
+	}
 }

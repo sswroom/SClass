@@ -26,7 +26,7 @@ namespace Net
 			static Bool __stdcall WiFiDownloadFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc);
 
 			static void AppendWiFiTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime);
-			static void AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord2*> *entryList, Bool inRangeOnly);
+			static void AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly);
 			static OSInt __stdcall WiFiLogRSSICompare(void *obj1, void *obj2);
 			static OSInt __stdcall BTLogRSSICompare(void *obj1, void *obj2);
 		public:

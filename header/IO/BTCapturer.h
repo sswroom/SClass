@@ -27,8 +27,8 @@ namespace IO
 		void Stop();
 
 		void StoreStatus();
-		Data::ArrayList<IO::BTScanLog::ScanRecord2*> *GetPublicList(Sync::MutexUsage *mutUsage);
-		Data::ArrayList<IO::BTScanLog::ScanRecord2*> *GetRandomList(Sync::MutexUsage *mutUsage);
+		Data::ArrayList<IO::BTScanLog::ScanRecord3*> *GetPublicList(Sync::MutexUsage *mutUsage);
+		Data::ArrayList<IO::BTScanLog::ScanRecord3*> *GetRandomList(Sync::MutexUsage *mutUsage);
 		void SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj);
 	};
 }

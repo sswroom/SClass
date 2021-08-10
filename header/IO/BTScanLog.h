@@ -23,6 +23,27 @@ namespace IO
 			RT_LE
 		};
 
+		enum AdvType
+		{
+			ADVT_UNKNOWN,
+			ADVT_IBEACON,
+			ADVT_FINDMY_BROADCAST,
+			ADVT_HOMEKIT,
+			ADVT_AIRDROP,
+			ADVT_AIRPLAY_SRC,
+			ADVT_AIRPLAY_TARGET,
+			ADVT_AIRPRINT,
+			ADVT_HANDOFF,
+			ADVT_MAGIC_SWITCH,
+			ADVT_NEARBY_ACTION,
+			ADVT_NEARBY_INFO,
+			ADVT_PROXIMITY_PAIRING,
+			ADVT_TETHERING_SRC,
+			ADVT_TETHERING_TARGET,
+			ADVT_EDDYSTONE,
+			ADVT_ALTBEACON
+		};
+
 		typedef struct
 		{
 			UInt8 mac[6];
@@ -37,7 +58,8 @@ namespace IO
 			Bool connected;
 			Int64 lastSeenTime;
 			UInt16 company;
-		} ScanRecord2;
+			AdvType advType;
+		} ScanRecord3;
 
 		struct LogEntry
 		{
@@ -54,6 +76,7 @@ namespace IO
 			AddressType addrType;
 			UInt16 company;
 			Int8 measurePower;
+			AdvType lastAdvType;
 			const UTF8Char *name;
 			Data::ArrayList<LogEntry*> *logs;
 		};
@@ -69,8 +92,8 @@ namespace IO
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 
-		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower);
-		LogEntry *AddScanRec(const ScanRecord2 *rec);
+		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
+		LogEntry *AddScanRec(const ScanRecord3 *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
 		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetPublicList();
@@ -78,7 +101,9 @@ namespace IO
 
 		static const UTF8Char *RadioTypeGetName(RadioType radioType);
 		static const UTF8Char *AddressTypeGetName(AddressType addrType);
-		static Bool ParseBTRAWPacket(ScanRecord2 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
+		static const UTF8Char *AdvTypeGetName(AdvType advType);
+		static Bool ParseBTRAWPacket(ScanRecord3 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
+		static void ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst);
 	};
 }
 #endif

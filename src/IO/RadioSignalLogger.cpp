@@ -28,7 +28,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord2 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
 	if (updateType == IO::BTScanner::UT_RSSI)

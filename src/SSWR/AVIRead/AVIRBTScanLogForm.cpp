@@ -187,6 +187,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		this->lvContent->SetSubItem(l, 6, sbuff);
 		Text::StrInt16(sbuff, log->measurePower);
 		this->lvContent->SetSubItem(l, 7, sbuff);
+		this->lvContent->SetSubItem(l, 8, IO::BTScanLog::AdvTypeGetName(log->lastAdvType));
 
 		i++;
 	}
@@ -220,7 +221,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 8));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 9));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
@@ -234,6 +235,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvContent->AddColumn((const UTF8Char*)"Count", 60);
 	this->lvContent->AddColumn((const UTF8Char*)"Measure Power", 60);
+	this->lvContent->AddColumn((const UTF8Char*)"AdvType", 80);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();

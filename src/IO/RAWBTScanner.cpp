@@ -38,7 +38,7 @@ UInt32 __stdcall IO::RAWBTScanner::RecvThread(void *userObj)
 	return 0;
 }
 
-void IO::RAWBTScanner::FreeRec(IO::BTScanLog::ScanRecord2* rec)
+void IO::RAWBTScanner::FreeRec(IO::BTScanLog::ScanRecord3* rec)
 {
 	SDEL_TEXT(rec->name);
 	MemFree(rec);
@@ -46,8 +46,8 @@ void IO::RAWBTScanner::FreeRec(IO::BTScanLog::ScanRecord2* rec)
 
 IO::RAWBTScanner::RAWBTScanner(Bool noCtrl)
 {
-	NEW_CLASS(this->pubRecMap, Data::UInt64Map<IO::BTScanLog::ScanRecord2*>());
-	NEW_CLASS(this->randRecMap, Data::UInt64Map<IO::BTScanLog::ScanRecord2*>());
+	NEW_CLASS(this->pubRecMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
+	NEW_CLASS(this->randRecMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
 	NEW_CLASS(this->recMut, Sync::Mutex());
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->noCtrl = noCtrl;
@@ -76,7 +76,7 @@ IO::RAWBTScanner::~RAWBTScanner()
 	SDEL_CLASS(this->clsData->btCtrl);
 	MemFree(this->clsData);
 	DEL_CLASS(this->recMut);
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> *recList;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList;
 	recList = this->pubRecMap->GetValues();
 	LIST_FREE_FUNC(recList, this->FreeRec);
 	recList = this->randRecMap->GetValues();
@@ -159,13 +159,13 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
+Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->pubRecMap;	
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
+Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->randRecMap;	
@@ -173,10 +173,10 @@ Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *IO::RAWBTScanner::GetRandomMap(Syn
 
 void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt packetSize)
 {
-	IO::BTScanLog::ScanRecord2 rec;
+	IO::BTScanLog::ScanRecord3 rec;
 	if (IO::BTScanLog::ParseBTRAWPacket(&rec, timeTicks, packet, packetSize))
 	{
-		IO::BTScanLog::ScanRecord2 *dev;
+		IO::BTScanLog::ScanRecord3 *dev;
 		Sync::MutexUsage mutUsage(this->recMut);
 		if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 		{
@@ -188,8 +188,8 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		}
 		if (dev == 0)
 		{
-			dev = MemAlloc(IO::BTScanLog::ScanRecord2, 1);
-			MemCopyNO(dev, &rec, sizeof(IO::BTScanLog::ScanRecord2));
+			dev = MemAlloc(IO::BTScanLog::ScanRecord3, 1);
+			MemCopyNO(dev, &rec, sizeof(IO::BTScanLog::ScanRecord3));
 			dev->name = SCOPY_TEXT(rec.name);
 			if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 			{

@@ -41,7 +41,7 @@ IO::BTDevLog::~BTDevLog()
 	DEL_CLASS(this->randDevs);
 }
 
-IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company)
+IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
 {
 	UInt8 mac[8];
 	DevEntry *log;
@@ -55,6 +55,10 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *na
 	}
 	if (log)
 	{
+		if (advType != IO::BTScanLog::ADVT_UNKNOWN)
+		{
+			log->advType = advType;
+		}
 		if (log->txPower == 0 || txPower != 0)
 		{
 			log->txPower = txPower;
@@ -93,6 +97,7 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *na
 	log->txPower = txPower;
 	log->measurePower = measurePower;
 	log->company = company;
+	log->advType = advType;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
 		this->randDevs->Put(macInt, log);
@@ -104,15 +109,15 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *na
 	return log;
 }
 
-void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord2*> *devMap)
+void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap)
 {
-	IO::BTScanLog::ScanRecord2 *rec;
-	Data::ArrayList<IO::BTScanLog::ScanRecord2*> *recList = devMap->GetValues();
+	IO::BTScanLog::ScanRecord3 *rec;
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList = devMap->GetValues();
 	UOSInt i = recList->GetCount();
 	while (i-- > 0)
 	{
 		rec = recList->GetItem(i);
-		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company);
+		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company, rec->advType);
 	}
 }
 
@@ -132,10 +137,11 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	UTF8Char *sarr[8];
+	UTF8Char *sarr[9];
 	UOSInt colCnt;
 	UInt8 macBuff[8];
 	UInt64 macInt;
+	UInt32 advType;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
 	{
@@ -145,8 +151,8 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 512))
 	{
-		colCnt = Text::StrSplit(sarr, 8, sb.ToString(), '\t');
-		if ((colCnt == 4 || colCnt == 6 || colCnt == 7) && Text::StrCharCnt(sarr[0]) == 17)
+		colCnt = Text::StrSplit(sarr, 9, sb.ToString(), '\t');
+		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && Text::StrCharCnt(sarr[0]) == 17)
 		{
 			macBuff[0] = 0;
 			macBuff[1] = 0;
@@ -165,6 +171,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 			IO::BTScanLog::RadioType radioType = IO::BTScanLog::RT_UNKNOWN;
 			IO::BTScanLog::AddressType addrType = IO::BTScanLog::AT_UNKNOWN;
 			Int8 measurePower = 0;
+			advType = 0;
 			if (colCnt >= 6)
 			{
 				if (Text::StrEquals(sarr[4], (const UTF8Char*)"HCI"))
@@ -189,6 +196,10 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 			{
 				measurePower = (Int8)Text::StrToInt32(sarr[6]);
 			}
+			if (colCnt >= 8)
+			{
+				advType = Text::StrToUInt32(sarr[7]);
+			}
 			UInt16 company = 0;
 			if (sarr[3][0])
 			{
@@ -200,7 +211,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 					company = Text::StrHex2UInt16C(sarr[0]);
 				}
 			}
-			this->AddEntry(macInt, name, (Int8)Text::StrToInt32(sarr[2]), measurePower, radioType, addrType, company);
+			this->AddEntry(macInt, name, (Int8)Text::StrToInt32(sarr[2]), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
 		}
 		sb.ClearStr();
 	}
@@ -271,6 +282,8 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 		}
 		sb.AppendChar('\t', 1);
 		sb.AppendI32(log->measurePower);
+		sb.AppendChar('\t', 1);
+		sb.AppendU32((UInt32)log->advType);
 		writer->WriteLine(sb.ToString());
 		i++;
 	}
