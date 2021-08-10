@@ -63,7 +63,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		
 		if ((imgData[0][imgOfst] & 0x1f) == 5 && !found && !this->spsFound)
 		{
-			UOSInt size = this->BuildIFrameHeader(frameBuff);
+			UOSInt size = this->BuildIFrameHeader(frameBuff, false);
 			frameBuff += size;
 			this->frameSize += size;
 			found = true;
@@ -396,7 +396,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 //	OSInt oriH;
 //	oriW = info.dispWidth;
 //	oriH = info.dispHeight;
-	size = this->BuildIFrameHeader(this->frameBuff);
+	size = this->BuildIFrameHeader(this->frameBuff, true);
 	Media::H264Parser::GetFrameInfo(this->frameBuff, size, &info, &this->h264Flags);
 /*	OSInt cropRight = 0;
 	OSInt cropBottom = 0;
@@ -541,7 +541,7 @@ UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 		
 		if ((imgData[imgOfst] & 0x1f) == 5 && !found && !this->spsFound)
 		{
-			UOSInt size = this->BuildIFrameHeader(frameBuff);
+			UOSInt size = this->BuildIFrameHeader(frameBuff, false);
 			frameBuff += size;
 			outSize += size;
 			found = true;
@@ -585,7 +585,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 		return false;
 
 	Sync::MutexUsage mutUsage(this->frameMut);
-	UOSInt size = this->BuildIFrameHeader(this->frameBuff);
+	UOSInt size = this->BuildIFrameHeader(this->frameBuff, true);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	UOSInt oriW = info->dispWidth;
 	UOSInt oriH = info->dispHeight;
@@ -599,9 +599,9 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	return true;
 }
 
-UOSInt Media::Decoder::RAVCDecoder::BuildIFrameHeader(UInt8 *buff)
+UOSInt Media::Decoder::RAVCDecoder::BuildIFrameHeader(UInt8 *buff, Bool forceBuild)
 {
-	if (this->skipHeader)
+	if (this->skipHeader && !forceBuild)
 	{
 		return 0;
 	}

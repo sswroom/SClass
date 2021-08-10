@@ -50,7 +50,7 @@ namespace Media
 
 			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 		private:
-			UOSInt BuildIFrameHeader(UInt8 *buff);
+			UOSInt BuildIFrameHeader(UInt8 *buff, Bool forceBuild);
 		};
 	}
 }

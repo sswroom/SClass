@@ -2049,6 +2049,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, 
 		this->tstats[i].vTime = 0;
 		this->tstats[i].csTime = 0;
 		this->tstats[i].resizerBitDepth = 0;
+		this->tstats[i].resizerSrcRefLuminance = 0;
 		this->tstats[i].resizer10Bit = false;
 		this->tstats[i].me = this;
 		NEW_CLASS(this->tstats[i].evt, Sync::Event(true, (const UTF8Char*)"UI.MSWindowVideoBoxDD.tstats.evt"));
