@@ -18,6 +18,7 @@ namespace Media
 
 		Bool IsError();
 		
+		void WaitForVSync();
 		virtual Media::Image *Clone();
 		virtual Media::Image::ImageType GetImageType();
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);

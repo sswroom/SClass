@@ -10,6 +10,10 @@
 
 #include "Sync/Thread.h"
 
+#ifndef FBIO_WAITFORVSYNC
+  #define FBIO_WAITFORVSYNC _IOW('F', 0x20, __u32)
+#endif
+
 struct Media::FBSurface::ClassData
 {
 	MonitorHandle *hMon;
@@ -73,6 +77,12 @@ Bool Media::FBSurface::IsError()
 	return this->clsData->fd < 0;
 }
 
+void Media::FBSurface::WaitForVSync()
+{
+	int arg = 0;
+	ioctl(this->clsData->fd, FBIO_WAITFORVSYNC, &arg);
+}
+
 Media::Image *Media::FBSurface::Clone()
 {
 	Media::FBSurface *surface;
@@ -121,5 +131,4 @@ void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSI
 		height = (UOSInt)(bottom - top);
 		ImageCopy_ImgCopyR(this->clsData->dataPtr + (left * (OSInt)(this->info->storeBPP >> 3)) + (top * (OSInt)this->clsData->finfo.line_length), destBuff, width * this->info->storeBPP >> 3, height, this->clsData->finfo.line_length, destBpl, upsideDown);
 	}
-	//////////////////////////
 }
