@@ -7,6 +7,7 @@
 #include "Parser/FileParser/ANIParser.h"
 #include "Parser/FileParser/AOSParser.h"
 #include "Parser/FileParser/APEParser.h"
+#include "Parser/FileParser/ASN1Parser.h"
 #include "Parser/FileParser/AUIParser.h"
 #include "Parser/FileParser/AVIParser.h"
 #include "Parser/FileParser/BMPParser.h"
@@ -334,6 +335,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::MIMEFileParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::SMakeParser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::ASN1Parser());
 	this->AddFileParser(parser);
 
 	IO::IObjectParser *oparser;

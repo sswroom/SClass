@@ -20,6 +20,6 @@ namespace Parser
 			virtual IO::ParsedObject::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
 		};
-	};
-};
+	}
+}
 #endif

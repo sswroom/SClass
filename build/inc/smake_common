@@ -858,6 +858,8 @@ Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
 @HOTP.o
 Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
 @JasyptEncryptor.o
+Crypto/JKSFile.h: ../../src/Crypto/JKSFile.cpp
+@JKSFile.o
 Crypto/OTP.h: ../../src/Crypto/OTP.cpp
 @OTP.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
@@ -2476,6 +2478,8 @@ Parser/FileParser/ANIParser.h: ../../src/Parser/FileParser/ANIParser.cpp
 Parser/FileParser/AOSParser.h: ../../src/Parser/FileParser/AOSParser.cpp
 @AOSParser.o
 Parser/FileParser/APEParser.h:
+Parser/FileParser/ASN1Parser.h: ../../src/Parser/FileParser/ASN1Parser.cpp
+@ASN1Parser.o
 Parser/FileParser/AVIParser.h: ../../src/Parser/FileParser/AVIParser.cpp
 @AVIParser.o
 Parser/FileParser/BMPParser.h: ../../src/Parser/FileParser/BMPParser.cpp
@@ -3498,6 +3502,7 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 Core.o: ../../src/Core/Core.cpp
 HOTP.o: ../../src/Crypto/HOTP.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
+JKSFile.o: ../../src/Crypto/JKSFile.cpp
 OTP.o: ../../src/Crypto/OTP.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 TOTP.o: ../../src/Crypto/TOTP.cpp
@@ -4242,6 +4247,7 @@ ADXParser.o: ../../src/Parser/FileParser/ADXParser.cpp
 AFSParser.o: ../../src/Parser/FileParser/AFSParser.cpp
 ANIParser.o: ../../src/Parser/FileParser/ANIParser.cpp
 AOSParser.o: ../../src/Parser/FileParser/AOSParser.cpp
+ASN1Parser.o: ../../src/Parser/FileParser/ASN1Parser.cpp
 AVIParser.o: ../../src/Parser/FileParser/AVIParser.cpp
 BMPParser.o: ../../src/Parser/FileParser/BMPParser.cpp
 BSAParser.o: ../../src/Parser/FileParser/BSAParser.cpp

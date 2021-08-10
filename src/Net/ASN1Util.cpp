@@ -663,6 +663,35 @@ UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const 
 	return 0;
 }
 
+Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
+{
+	UInt32 len;
+	UOSInt size;
+	UOSInt ofst;
+	while (pdu < pduEnd)
+	{
+		size = (UOSInt)(pduEnd - pdu);
+		ofst = PDUParseLen(pdu, 1, size, &len);
+		if (ofst > size)
+		{
+			return false;
+		}
+		else if (ofst + len > size)
+		{
+			return false;
+		}
+		if (pdu[0] >= 0x30 && pdu[0] < 0x40)
+		{
+			if (!PDUIsValid(pdu + ofst, pdu + ofst + size))
+			{
+				return false;
+			}
+		}
+		pdu += ofst + len;
+	}
+	return true;
+}
+
 OSInt Net::ASN1Util::OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
 {
 	UOSInt i = 0;

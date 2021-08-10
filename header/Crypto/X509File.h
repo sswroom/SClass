@@ -12,7 +12,8 @@ namespace Crypto
 			FT_CERT,
 			FT_RSA_KEY,
 			FT_CERT_REQ,
-			FT_PRIV_KEY
+			FT_PRIV_KEY,
+			FT_JKS
 		} FileType;
 	protected:
 		static Bool IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework

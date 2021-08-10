@@ -48,6 +48,7 @@ namespace Net
 		static const UInt8 *PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType);
 		static ItemType PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static UOSInt PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
+		static Bool PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd);
 
 		static OSInt OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
