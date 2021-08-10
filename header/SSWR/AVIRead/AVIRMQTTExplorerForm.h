@@ -4,6 +4,7 @@
 #include "Net/MQTTClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -50,6 +51,7 @@ namespace SSWR
 			UI::GUITextBox *txtUsername;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
+			UI::GUICheckBox *chkSSL;
 			UI::GUIButton *btnStart;
 			UI::GUIListView *lvTopic;
 			UI::GUIVSplitter *vspTopic;

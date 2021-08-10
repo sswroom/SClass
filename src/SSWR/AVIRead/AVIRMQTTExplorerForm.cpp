@@ -21,10 +21,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		me->txtPort->SetReadOnly(false);
 		me->txtUsername->SetReadOnly(false);
 		me->txtPassword->SetReadOnly(false);
+		me->chkSSL->SetEnabled(true);
 		me->lvTopic->ClearItems();
 	}
 	else
 	{
+		Bool useSSL = me->chkSSL->IsChecked();
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
 		Int32 port;
@@ -47,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			return;
 		}
 
-		NEW_CLASS(me->client, Net::MQTTClient(me->core->GetSocketFactory(), &addr, (UInt16)port));
+		NEW_CLASS(me->client, Net::MQTTClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), &addr, (UInt16)port, useSSL));
 		if (me->client->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);
@@ -389,8 +391,10 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->lblPassword->SetRect(254, 28, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlConnect, (const UTF8Char*)""));
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
+	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->pnlConnect, (const UTF8Char*)"Use SSL", false));
+	this->chkSSL->SetRect(504, 4, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlConnect, (const UTF8Char*)"Start"));
-	this->btnStart->SetRect(504, 4, 75, 23, false);
+	this->btnStart->SetRect(504, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->pbTopic, UI::GUIPictureBoxSimple(ui, this, this->core->GetDrawEngine(), false));
 	this->pbTopic->SetRect(0, 0, 100, 300, false);

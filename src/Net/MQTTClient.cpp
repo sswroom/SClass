@@ -133,9 +133,10 @@ Net::MQTTClient::PacketInfo *Net::MQTTClient::GetNextPacket(UInt8 packetType, UO
 	}
 }
 
-Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->recvRunning = false;
 	this->recvStarted = false;
 	NEW_CLASS(this->hdlrList, Data::ArrayList<PublishMessageHdlr>());
@@ -145,8 +146,22 @@ Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, const Net::SocketUtil::Ad
 	NEW_CLASS(this->packetList, Data::ArrayList<PacketInfo*>());
 	NEW_CLASS(this->packetEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTClient.packetEvt"));
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
-	if (this->cli->IsConnectError() != 0)
+	if (this->ssl && sslConn)
+	{
+		Net::SSLEngine::ErrorType err;
+		UTF8Char sbuff[128];
+		Net::SocketUtil::GetAddrName(sbuff, addr);
+		this->cli = this->ssl->Connect(sbuff, port, &err);
+	}
+	else
+	{
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
+	}
+	if (this->cli == 0)
+	{
+
+	}
+	else if (this->cli->IsConnectError() != 0)
 	{
 		DEL_CLASS(this->cli);
 		this->cli = 0;
@@ -367,7 +382,7 @@ Bool Net::MQTTClient::PublishMessage(Net::SocketFactory *sockf, const Net::Socke
 {
 	Net::MQTTClient *cli;
 	UTF8Char sbuff[64];
-	NEW_CLASS(cli, Net::MQTTClient(sockf, addr, port));
+	NEW_CLASS(cli, Net::MQTTClient(sockf, 0, addr, port, false));
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);

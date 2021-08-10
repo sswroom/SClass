@@ -2,6 +2,7 @@
 #define _SM_NET_MQTTCLIENT
 #include "Data/ArrayList.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
+#include "Net/SSLEngine.h"
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -32,6 +33,7 @@ namespace Net
 		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, const UTF8Char *topic, const UInt8 *buff, UOSInt buffSize);
 	private:
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		IO::ProtoHdlr::ProtoMQTTHandler *protoHdlr;
 		Net::TCPClient *cli;
 		void *cliData;
@@ -52,7 +54,7 @@ namespace Net
 		void OnPublishMessage(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
 	public:
-		MQTTClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
+		MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn);
 		virtual ~MQTTClient();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);

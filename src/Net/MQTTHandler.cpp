@@ -24,7 +24,7 @@ Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::
 	this->kaSeconds = kaSeconds;
 	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTThandler.kaEvt"));
 
-	NEW_CLASS(this->client, Net::MQTTClient(sockf, addr, port));
+	NEW_CLASS(this->client, Net::MQTTClient(sockf, 0, addr, port, false));
 	if (this->client->IsError())
 	{
 		DEL_CLASS(this->client);
