@@ -1,13 +1,18 @@
 #ifndef _SM_MEDIA_GTKMONITORSURFACEMGR
 #define _SM_MEDIA_GTKMONITORSURFACEMGR
+#include "Media/ColorManager.h"
+#include "Media/MonitorMgr.h"
 #include "Media/MonitorSurfaceMgr.h"
 
 namespace Media
 {
-	class GTKMonitorSurfaceMgr : MonitorSurfaceMgr
+	class GTKMonitorSurfaceMgr : public MonitorSurfaceMgr
 	{
+	private:
+		Media::MonitorMgr *monMgr;
+		Media::ColorManager *colorMgr;
 	public:
-		GTKMonitorSurfaceMgr();
+		GTKMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 		virtual ~GTKMonitorSurfaceMgr();
 
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);

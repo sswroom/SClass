@@ -330,6 +330,8 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->clipper = 0;
 	this->pSurface = 0;
 	this->surfaceBuff = 0;
+	this->surfaceW = 0;
+	this->surfaceH = 0;
 	this->imgCopy = 0;
 	this->surfaceNoRelease = false;
 	this->joystickId = 0;

@@ -1,11 +1,34 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Media/GTKMonitorSurfaceMgr.h"
 #include "Media/ScreenCapturer.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xmd.h> 
 #include <X11/Xatom.h>
 
+Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+{
+	this->monMgr = monMgr;
+	this->colorMgr = colorMgr;
+	NEW_CLASS(this->surfaceMgr, Media::GTKMonitorSurfaceMgr(monMgr, colorMgr));
+}
+
+Media::ScreenCapturer::~ScreenCapturer()
+{
+	DEL_CLASS(this->surfaceMgr);
+}
+
+Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
+{
+	Media::MonitorSurface *surface = this->surfaceMgr->CreatePrimarySurface(hMon, 0);
+	if (surface == 0) return 0;
+	Media::StaticImage *retImg = surface->CreateStaticImage();
+	DEL_CLASS(surface);
+	return retImg;
+}
+
+/*
 Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
 	this->monMgr = monMgr;
@@ -62,3 +85,4 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
     XCloseDisplay(dis); 
 	return retImg;
 }
+*/

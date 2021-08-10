@@ -687,58 +687,62 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	i = this->GetVScrollPos() / (20 + 12 + 12 + this->previewSize);
 	j = (UInt32)Math::Double2Int32(Math::UOSInt2Double(this->GetVScrollPos()) + Math::UOSInt2Double(scnH) * ddpi / hdpi) / (20 + 12 + 12 + this->previewSize);
 
-	if (j >= imgList->GetCount())
+	if (imgList->GetCount() > 0)
 	{
-		j = imgList->GetCount() - 1;
-	}
-	f = dimg->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
-	b = dimg->NewBrushARGB(0xff000000);
-	UOSInt strLen;
-	Double strSz[2];
-	while (i <= j)
-	{
-		status = imgList->GetItem(i);
-		status->setting.flags |= 8;
-		if (status->previewImg == 0)
+		if (j >= imgList->GetCount())
 		{
-			status->previewImg = this->deng->LoadImage(status->cacheFile);
-			if (status->previewImg)
+			j = imgList->GetCount() - 1;
+		}
+		f = dimg->NewFontPt((const UTF8Char*)"Arial", 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		b = dimg->NewBrushARGB(0xff000000);
+		UOSInt strLen;
+		Double strSz[2];
+		while (i <= j)
+		{
+			status = imgList->GetItem(i);
+			status->setting.flags |= 8;
+			if (status->previewImg == 0)
+			{
+				status->previewImg = this->deng->LoadImage(status->cacheFile);
+				if (status->previewImg)
+				{
+					status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
+					this->UpdateImgPreview(status);
+				}
+			}
+			else if (status->previewImg2 == 0)
 			{
 				status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 				this->UpdateImgPreview(status);
 			}
-		}
-		else if (status->previewImg2 == 0)
-		{
-			status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
-			this->UpdateImgPreview(status);
-		}
-		dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-		dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos + itemBH), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
-		if (status->previewImg2)
-		{
-			status->previewImg2->SetHDPI(dimg->GetHDPI());
-			status->previewImg2->SetVDPI(dimg->GetVDPI());
-			dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::UOSInt2Double(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
-		}
-		if (status->fileName)
-		{
-			Text::StringBuilderUTF8 sb;
-			sb.Append(status->fileName);
-			strLen = Text::StrCharCnt(sb.ToString());
-			if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
+			dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
+			dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos + itemBH), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+			if (status->previewImg2)
 			{
-				dimg->DrawString((Math::UOSInt2Double(scnW) - strSz[0]) * 0.5, Math::UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
+				status->previewImg2->SetHDPI(dimg->GetHDPI());
+				status->previewImg2->SetVDPI(dimg->GetVDPI());
+				dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::UOSInt2Double(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
 			}
+			if (status->fileName)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(status->fileName);
+				strLen = Text::StrCharCnt(sb.ToString());
+				if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
+				{
+					dimg->DrawString((Math::UOSInt2Double(scnW) - strSz[0]) * 0.5, Math::UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
+				}
+			}
+			i++;
 		}
-		i++;
+		if ((j + 1) * itemTH - scrPos < scnH)
+		{
+			dimg->DrawRect(0, Math::UOSInt2Double((j + 1) * itemTH - scrPos), Math::UOSInt2Double(scnW), Math::UOSInt2Double(scnH) - Math::UOSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
+		}
+		dimg->DelBrush(b);
+		dimg->DelFont(f);
 	}
-	if ((j + 1) * itemTH - scrPos < scnH)
-	{
-		dimg->DrawRect(0, Math::UOSInt2Double((j + 1) * itemTH - scrPos), Math::UOSInt2Double(scnW), Math::UOSInt2Double(scnH) - Math::UOSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
-	}
-	dimg->DelBrush(b);
-	dimg->DelFont(f);
+
 	i = imgList->GetCount();
 	while (i-- > 0)
 	{

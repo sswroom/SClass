@@ -50,6 +50,10 @@ Media/ALSARenderer.h: ../../src/Media/ALSARenderer.cpp
 @ALSARenderer.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceL.cpp
 @AudioDevice.o
+Media/FBSurface.h: ../../src/Media/FBSurface.cpp
+@FBSurface.o
+Media/GTKMonitorSurfaceMgr.h: ../../src/Media/GTKMonitorSurfaceMgr.cpp
+@GTKMonitorSurfaceMgr.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
@@ -119,6 +123,8 @@ ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 ALSARenderer.o: ../../src/Media/ALSARenderer.cpp
 !-lasound
 AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
+FBSurface.o: ../../src/Media/FBSurface.cpp
+GTKMonitorSurfaceMgr.o: ../../src/Media/GTKMonitorSurfaceMgr.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
