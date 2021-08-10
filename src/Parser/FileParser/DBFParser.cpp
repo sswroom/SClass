@@ -48,7 +48,10 @@ IO::ParsedObject *Parser::FileParser::DBFParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 	
-	fd->GetRealData((UOSInt)ReadUInt16(&hdr[8]) - 1, 1, &hdr2);
+	if (fd->GetRealData((UOSInt)ReadUInt16(&hdr[8]) - 1, 1, &hdr2) != 1)
+	{
+		return 0;
+	}
 	if (hdr2 != 0xd)
 	{
 		return 0;

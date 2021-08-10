@@ -53,7 +53,10 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 	Media::StaticImage *outImg;
 
 	UInt64 ds = fd->GetDataSize();
-	fd->GetRealData(ds - 26, 26, footer);
+	if (fd->GetRealData(ds - 26, 26, footer) != 26)
+	{
+		return 0;
+	}
 
 	if (*(Int32*)&footer[8] != 0x45555254 || *(Int32*)&footer[12] != 0x49534956 || *(Int32*)&footer[16] != 0x582D4E4F || *(Int32*)&footer[20] != 0x454C4946 || *(Int16*)&footer[24] != 0x2E)
 	{
