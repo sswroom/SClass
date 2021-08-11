@@ -35,6 +35,11 @@ global MyString_StrHexVal64UTF16
 global MyString_StrHexVal32VUTF16
 global MyString_StrHexVal32UTF16
 global MyString_StrHexVal24UTF16
+global MyString_StrHexVal64VUTF32
+global MyString_StrHexVal64UTF32
+global MyString_StrHexVal32VUTF32
+global MyString_StrHexVal32UTF32
+global MyString_StrHexVal24UTF32
 
 ;global MyString_StrToInt32UTF8
 ;global MyString_StrToInt32UTF16
@@ -2254,6 +2259,356 @@ MyString_StrHexVal24UTF16:
 	lea rax,[rcx+12]
 	ret
 
+;UTF16Char *MyString_StrHexVal64VUTF32(UTF16Char *oriStr, Int64 val)
+;0 rbx
+;8 retAddr
+;rcx oriStr
+;rdx val
+	align 16
+MyString_StrHexVal64VUTF32:
+	push rbx
+	lea r8,[rel MyString_StrHexArrU16]
+	mov rax,rdx
+	shr rax,32
+	jz shv64vu32lop8v
+	test eax,0xfffffff0
+	jz shv64vu32lop9
+	test eax,0xffffff00
+	jz shv64vu32lop10
+	test eax,0xfffff000
+	jz shv64vu32lop11
+	test eax,0xffff0000
+	jz shv64vu32lop12
+	test eax,0xfff00000
+	jz shv64vu32lop13
+	test eax,0xff000000
+	jz shv64vu32lop14
+	test eax,0xf0000000
+	jz shv64vu32lop15
+	jmp shv64vu32lop16
+	
+	align 16
+shv64vu32lop15:
+	mov ebx,eax
+	shr ebx,24
+	movzx rbx,bl
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop14
+	
+	align 16
+shv64vu32lop13:
+	mov ebx,eax
+	shr ebx,16
+	movzx rbx,bl
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop12
+	
+	align 16
+shv64vu32lop11:
+	mov ebx,eax
+	shr ebx,8
+	movzx rbx,bl
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop10
+	
+	align 16
+shv64vu32lop9:
+	movzx ebx,word [rax*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop8
+	
+	align 16
+shv64vu32lop8v:
+	mov rax,rdx
+	test eax,0xfffffff0
+	jz shv64vu32lop1
+	test eax,0xffffff00
+	jz shv64vu32lop2
+	test eax,0xfffff000
+	jz shv64vu32lop3
+	test eax,0xffff0000
+	jz shv64vu32lop4
+	test eax,0xfff00000
+	jz shv64vu32lop5
+	test eax,0xff000000
+	jz shv64vu32lop6
+	test eax,0xf0000000
+	jz shv64vu32lop7
+	
+	mov ebx,eax
+	shr ebx,24
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	jmp shv64vu32lop6
+
+	align 16
+shv64vu32lop7:
+	mov ebx,eax
+	shr ebx,24
+	movzx rbx,bl
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop6
+	
+	align 16
+shv64vu32lop5:
+	mov ebx,eax
+	shr ebx,16
+	movzx rbx,bl
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop4
+	
+	align 16
+shv64vu32lop3:
+	mov ebx,eax
+	shr ebx,8
+	movzx rbx,bl
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	jmp shv64vu32lop2
+	
+	align 16
+shv64vu32lop1:
+	movzx ebx,word [rax*4+r8+2]
+	mov dword [rcx],ebx
+	lea rcx,[rcx+4]
+	mov dword [rcx],0
+	jmp shv64vu32exit
+	
+	align 16
+shv64vu32lop16:
+	mov ebx,eax
+	shr ebx,24
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop14:
+	mov ebx,eax
+	shr ebx,16
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop12:
+	mov ebx,eax
+	shr ebx,8
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop10:
+	movzx rbx,al
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop8:
+	mov ebx,edx
+	shr ebx,24
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop6:
+	mov ebx,edx
+	shr ebx,16
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop4:
+	mov ebx,edx
+	shr ebx,8
+	movzx rbx,bl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	align 16
+shv64vu32lop2:
+	movzx rbx,dl
+	movzx r9d,word [rbx*4+r8]
+	movzx ebx,word [rbx*4+r8+2]
+	mov dword [rcx],r9d
+	mov dword [rcx+4],ebx
+	lea rcx,[rcx+8]
+	mov dword [rcx],0
+	align 16
+shv64vu32exit:
+	mov rax,rcx
+	pop rbx
+	ret
+
+;UTF16Char *MyString_StrHexVal64UTF32(UTF16Char *oriStr, Int64 val)
+;0 retAddr
+;rcx oriStr
+;rdx val
+	align 16
+MyString_StrHexVal64UTF32:
+	lea r8,[rel MyString_StrHexArrU16]
+	mov dword [rcx+64],0
+
+	movzx rax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+56],r9d
+	mov dword [rcx+60],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+48],r9d
+	mov dword [rcx+52],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+40],r9d
+	mov dword [rcx+44],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+32],r9d
+	mov dword [rcx+36],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+24],r9d
+	mov dword [rcx+28],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+16],r9d
+	mov dword [rcx+20],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+8],r9d
+	mov dword [rcx+12],eax
+	shr rdx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+0],r9d
+	mov dword [rcx+4],eax
+
+	lea rax,[rcx+64]
+	ret
+
+;UTF16Char *MyString_StrHexVal32VUTF32(UTF16Char *oriStr, Int32 val)
+;0 rbx
+;8 retAddr
+;rcx oriStr
+;rdx val
+	align 16
+MyString_StrHexVal32VUTF32:
+	push rbx
+	lea r8,[rel MyString_StrHexArrU16]
+	jmp shv64vu32lop8v
+
+;UTF16Char *MyString_StrHexVal32UTF32(UTF16Char *oriStr, Int32 val)
+;0 retAddr
+;rcx oriStr
+;rdx val
+	align 16
+MyString_StrHexVal32UTF32:
+	lea r8,[rel MyString_StrHexArrU16]
+	mov dword [rcx+32],0
+
+	movzx rax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+24],r9d
+	mov dword [rcx+28],eax
+	shr edx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+16],r9d
+	mov dword [rcx+20],eax
+	shr edx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+8],r9d
+	mov dword [rcx+12],eax
+	shr edx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+0],r9d
+	mov dword [rcx+4],eax
+
+	lea rax,[rcx+32]
+	ret
+	
+;UTF16Char *MyString_StrHexVal24UTF32(UTF16Char *oriStr, Int32 val)
+;0 retAddr
+;rcx oriStr
+;rdx val
+	align 16
+MyString_StrHexVal24UTF32:
+	lea r8,[rel MyString_StrHexArrU16]
+	mov word [rcx+24],0
+
+	movzx rax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+16],r9d
+	mov dword [rcx+20],eax
+	shr edx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+8],r9d
+	mov dword [rcx+12],eax
+	shr edx,8
+	movzx eax,dl
+	movzx r9d,word [rax*4+r8]
+	movzx eax,word [rax*4+r8+2]
+	mov dword [rcx+0],r9d
+	mov dword [rcx+4],eax
+
+	lea rax,[rcx+24]
+	ret
 
 ;Int32 MyString_StrToInt32UTF8(const UTF8Char *intStr)
 ;0 retAddr

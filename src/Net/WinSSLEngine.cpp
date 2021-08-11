@@ -471,7 +471,7 @@ void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
 			sb->Append((const UTF8Char*)"ECDH");
 			break;
 #endif
-#if (NTDDI_VERSION >= NTDDI_WIN10_RS1)
+#if defined(_MSC_VER) && (NTDDI_VERSION >= NTDDI_WIN10_RS1)
 		case ALG_TYPE_THIRDPARTY:
 			sb->Append((const UTF8Char*)"ThirdParty");
 			break;

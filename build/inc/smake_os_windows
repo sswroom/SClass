@@ -54,6 +54,8 @@ Media/ASIOOutRenderer.h: ../../src/Media/ASIOOutRenderer.cpp
 @ASIOOutRenderer.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceW.cpp
 @AudioDevice.o
+Media/DDrawSurface.h: ../../src/Media/DDrawSurface.cpp
+@DDrawSurface.o
 Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @KSRenderer.o
 @audfilter.o
@@ -150,6 +152,7 @@ ThreadInfo.o: ../../src/Manage/ThreadInfoW.cpp
 ASIOOutRenderer.o: ../../src/Media/ASIOOutRenderer.cpp
 !-lole32
 AudioDevice.o: ../../src/Media/AudioDeviceW.cpp
+DDrawSurface.o: ../../src/Media/DDrawSurface.cpp
 KSRenderer.o: ../../src/Media/KSRenderer.cpp
 $-I ../../ThirdParty/KSSample
 !-luuid
@@ -178,6 +181,7 @@ HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
 WinSSLClient.o: ../../src/Net/WinSSLClient.cpp
 WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 !-lsecur32
+!-lcrypt32
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp

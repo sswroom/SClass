@@ -3366,6 +3366,7 @@ Text/StringBuilderUTF16.h: ../../src/Text/StringBuilderUTF16.cpp
 @StringBuilderUTF16.o
 Text/StringBuilderUTF32.h: ../../src/Text/StringBuilderUTF32.cpp
 @StringBuilderUTF32.o
+Text/StringBuilderW.h:
 Text/StringBuilderWriter.h: ../../src/Text/StringBuilderWriter.cpp
 @StringBuilderWriter.o
 Text/StringTool.h: ../../src/Text/StringTool.cpp
