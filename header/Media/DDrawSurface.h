@@ -23,7 +23,13 @@ namespace Media
 		virtual Media::Image::ImageType GetImageType();
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
 
+		virtual void WaitForVBlank();
+		virtual void *GetHandle();
+
+		virtual Bool DrawFromBuff();
+
 		void SetClipWindow(ControlHandle *clipWindow);
+		void SetBuffSurface(Media::DDrawSurface *buffSurface);
 	};
 }
 #endif

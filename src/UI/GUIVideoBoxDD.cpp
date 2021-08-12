@@ -65,7 +65,7 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 		vheight = vheight << 1;
 	}
 	this->CalDisplayRect(vwidth, vheight, &rect);
-	if (rect.width == vbuff->destW && rect.height == vbuff->destH && this->surfaceBuff && vbuff->destBitDepth == this->bitDepth)
+	if (rect.width == vbuff->destW && rect.height == vbuff->destH && this->IsSurfaceReady() && vbuff->destBitDepth == this->bitDepth)
 	{
 		UOSInt dlineSize;
 		UInt8 *dptr = this->LockSurfaceDirect(&dlineSize);
@@ -1003,6 +1003,8 @@ void __stdcall UI::GUIVideoBoxDD::OnVideoFrame(UInt32 frameTime, UInt32 frameNum
 		me->dispMut->UnlockRead();
 	}
 	if (frameType == Media::FT_DISCARD)
+		return;
+	if (me->switching)
 		return;
 
 	UOSInt buffCnt = me->buffCnt;
@@ -2177,6 +2179,8 @@ OSInt UI::GUIVideoBoxDD::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 {
+	if (this->switching)
+		return;
 	Bool curr10Bit = false;
 	if (this->currScnMode == SM_VFS || this->currScnMode == SM_FS)
 	{

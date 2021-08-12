@@ -303,44 +303,15 @@ Bool UI::GUIDDrawControl::CreateSurface()
 
 	if (this->currScnMode == SM_FS)
 	{
-		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(this->surfaceMon);
 		this->surfaceMon = this->GetHMonitor();
-
-		ZeroMemory(&ddsd, sizeof(ddsd));
-		ddsd.dwSize = sizeof(ddsd);
-		ddsd.dwFlags        = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-		ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
-		ddsd.dwBackBufferCount = 2;
-		HRESULT res = lpDD->CreateSurface( &ddsd, &primarySurface, NULL );
-		if (res != DD_OK)
+		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, &this->primarySurface, &this->buffSurface);
+		if (succ)
 		{
-			if (res == DDERR_UNSUPPORTEDMODE)
-			{
-				this->surfaceMgr->Reinit();
-				lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(this->surfaceMon = this->GetHMonitor());
-			}
+			this->bitDepth = this->primarySurface->info->storeBPP;
+			this->scnW = this->primarySurface->info->dispWidth;
+			this->scnH = this->primarySurface->info->dispHeight;
 		}
-		this->pSurface = primarySurface;
-		if (primarySurface)
-		{
-			ddsd.dwSize = sizeof(ddsd);
-			primarySurface->GetSurfaceDesc(&ddsd);
-			this->bitDepth = ddsd.ddpfPixelFormat.dwRGBBitCount;
-			this->scnW = ddsd.dwWidth;
-			this->scnH = ddsd.dwHeight;
-
-			DDSCAPS2 ddscaps;
-			ZeroMemory( &ddscaps, sizeof( ddscaps ) );
-			ddscaps.dwCaps = DDSCAPS_BACKBUFFER;
-			
-			primarySurface->GetAttachedSurface( &ddscaps, (LPDIRECTDRAWSURFACE7*)&this->surfaceBuff);
-			this->surfaceNoRelease = true;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return succ;
 	}
 	else
 	{
@@ -348,82 +319,37 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		LPDIRECTDRAW7 lpDD;
 		if (this->currScnMode == SM_VFS)
 		{
-			lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(hMon = this->surfaceMon);
+			this->surfaceMon = this->GetHMonitor();
 		}
 		else if (this->currScnMode == SM_WINDOWED_DIR)
 		{
-			lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(hMon = this->surfaceMon);
+			this->surfaceMon = this->GetHMonitor();
 		}
 		else
 		{
-			lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(hMon = 0);
+			this->surfaceMon = 0;
 		}
-		this->surfaceMon = hMon;
-
-		ZeroMemory(&ddsd, sizeof(ddsd));
-		ddsd.dwSize = sizeof(ddsd);
-		ddsd.dwFlags        = DDSD_CAPS;
-		ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-		primarySurface = 0;
-		HRESULT res = lpDD->CreateSurface( &ddsd, &primarySurface, NULL );
-		if (res != DD_OK)
+		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, this->GetHandle());
+		if (this->primarySurface)
 		{
-			if (this->debugWriter)
-			{
-				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Error in creating primary surface: 0x");
-				sb.AppendHex32((UInt32)res);
-				this->debugWriter->WriteLine(sb.ToString());
-			}
-			if (res == DDERR_NOCOOPERATIVELEVELSET)
-			{
-				lpDD->SetCooperativeLevel((HWND)this->hwnd, DDSCL_NORMAL);
-				res = lpDD->CreateSurface( &ddsd, &primarySurface, NULL );
-			}
-			else if (res == DDERR_UNSUPPORTEDMODE)
-			{
-				this->surfaceMgr->Reinit();
-				if (this->currScnMode == SM_VFS)
-				{
-					lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(hMon = this->GetHMonitor());
-				}
-				else if (this->currScnMode == SM_WINDOWED_DIR)
-				{
-					lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(hMon = this->GetHMonitor());
-				}
-				else
-				{
-					lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(hMon = 0);
-				}
-				this->surfaceMon = hMon;
-			}
-		}
-		this->pSurface = primarySurface;
-		if (primarySurface)
-		{
-			ddsd.dwSize = sizeof(ddsd);
-			primarySurface->GetSurfaceDesc(&ddsd);
-
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append((const UTF8Char*)"Primary surface desc: Size = ");
-				sb.AppendU32(ddsd.dwWidth);
+				sb.AppendUOSInt(this->primarySurface->info->dispWidth);
 				sb.Append((const UTF8Char*)" x ");
-				sb.AppendU32(ddsd.dwHeight);
+				sb.AppendUOSInt(this->primarySurface->info->dispHeight);
 				sb.Append((const UTF8Char*)", bpl = ");
-				sb.AppendI32(ddsd.lPitch);
+				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
 				sb.Append((const UTF8Char*)", hMon = ");
 				sb.AppendOSInt((OSInt)hMon);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
-			this->bitDepth = ddsd.ddpfPixelFormat.dwRGBBitCount;
-			this->scnW = ddsd.dwWidth;
-			this->scnH = ddsd.dwHeight;
+			this->bitDepth = this->primarySurface->info->storeBPP;
+			this->scnW = this->primarySurface->info->dispWidth;
+			this->scnH = this->primarySurface->info->dispHeight;
 
 			CreateSubSurface();
-			if (clipper)
-				primarySurface->SetClipper((LPDIRECTDRAWCLIPPER)clipper);
 			return true;
 		}
 		else
@@ -435,17 +361,11 @@ Bool UI::GUIDDrawControl::CreateSurface()
 
 void UI::GUIDDrawControl::ReleaseSurface()
 {
-	if (this->pSurface)
-	{
-		((LPDIRECTDRAWSURFACE7)this->pSurface)->Release();
-		this->pSurface = 0;
-	}
+	SDEL_CLASS(this->primarySurface);
 }
 
 void UI::GUIDDrawControl::CreateSubSurface()
 {
-	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(this->surfaceMon);
-	DDSURFACEDESC2 ddsd;
 	RECT rc;
 	GetDrawingRect(&rc);
 	if (this->debugWriter)
@@ -458,71 +378,29 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	}
 	else
 	{
-		ZeroMemory(&ddsd, sizeof(ddsd));
-		ddsd.dwSize = sizeof(ddsd);
-		ddsd.dwFlags        = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_DEPTH;
-		ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-		ddsd.dwWidth = (UInt32)(rc.right - rc.left);
-		ddsd.dwHeight = (UInt32)(rc.bottom - rc.top);
-		ddsd.dwDepth = this->bitDepth;
-		if (this->surfaceW != ddsd.dwWidth || this->surfaceH != ddsd.dwHeight)
+		UInt32 w = (UInt32)(rc.right - rc.left);
+		UInt32 h = (UInt32)(rc.bottom - rc.top);
+		if (this->surfaceW != w || this->surfaceH != h)
 		{
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append((const UTF8Char*)"(CreateSubSurface) Surface size changed to ");
-				sb.AppendU32(ddsd.dwWidth);
+				sb.AppendU32(w);
 				sb.Append((const UTF8Char*)" x ");
-				sb.AppendU32(ddsd.dwHeight);
+				sb.AppendU32(h);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
-			this->surfaceW = ddsd.dwWidth;
-			this->surfaceH = ddsd.dwHeight;
+			this->surfaceW = w;
+			this->surfaceH = h;
 		}
-		void *surface = 0;
-		HRESULT res = lpDD->CreateSurface( &ddsd, (LPDIRECTDRAWSURFACE7*)&surface, NULL );
-		this->surfaceBuff = surface;
-		this->surfaceNoRelease = false;
+		this->buffSurface = this->surfaceMgr->CreateSurface(w, h, this->primarySurface->info->storeBPP);
 	}
 }
 
 void UI::GUIDDrawControl::ReleaseSubSurface()
 {
-	if (this->surfaceNoRelease)
-	{
-		this->surfaceBuff = 0;
-	}
-	else
-	{
-		if (this->surfaceBuff)
-		{
-			((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Release();
-			this->surfaceBuff = 0;
-		}
-	}
-}
-
-Bool UI::GUIDDrawControl::CreateClipper(void *lpDD)
-{
-	LPDIRECTDRAWCLIPPER pcClipper = (LPDIRECTDRAWCLIPPER)this->clipper;
-	if (pcClipper)
-	{
-		pcClipper->Release();
-		this->clipper = 0;
-	}
-
-	((LPDIRECTDRAW7)lpDD)->CreateClipper( 0, &pcClipper, NULL );
-	if (pcClipper->SetHWnd( 0, (HWND)this->hwnd ) != DD_OK)
-	{
-		pcClipper->Release();
-		pcClipper = 0;
-	}
-	else
-	{
-		this->clipper = pcClipper;
-		return true;
-	}
-	return false;
+	SDEL_CLASS(this->buffSurface);
 }
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
@@ -540,10 +418,10 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 		rcSrc.right = (LONG)this->surfaceW;
 		rcSrc.bottom = (LONG)this->surfaceH;
 
-		hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+		hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 		if (hRes == DDERR_SURFACELOST)
 		{
-			hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+			hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 		}
 		if (hRes == DD_OK)
 		{
@@ -557,13 +435,13 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
-	((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
+	((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
 	this->surfaceMut->Unlock();
 }
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
 {
-	if (this->surfaceBuff == 0)
+	if (this->buffSurface == 0)
 		return 0;
 	RECT rcSrc;
 	HRESULT hRes;
@@ -575,10 +453,10 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
 	rcSrc.right = (LONG)this->surfaceW;
 	rcSrc.bottom = (LONG)this->surfaceH;
 
-	hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+	hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 	if (hRes == DDERR_SURFACELOST)
 	{
-		hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+		hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 	}
 	if (hRes == DD_OK)
 	{
@@ -590,7 +468,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
 
 void UI::GUIDDrawControl::LockSurfaceUnlock()
 {
-	((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
+	((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
 }
 
 Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
@@ -607,11 +485,9 @@ Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
 UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
 {
 	this->inited = false;
-	this->clipper = 0;
-	this->pSurface = 0;
-	this->surfaceBuff = 0;
+	this->primarySurface = 0;
+	this->buffSurface = 0;
 	this->imgCopy = 0;
-	this->surfaceNoRelease = false;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
 	this->focusing = false;
@@ -646,7 +522,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->InitControl(((GUICoreWin*)ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"DDrawControl", style, 0, 0, 0, 640, 480);
 
 	this->currScnMode = SM_VFS;
-	this->clipper = 0;
 	this->surfaceMon = 0;
 	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui, colorSess));
 	if (this->surfaceMgr->IsError())
@@ -716,11 +591,6 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	this->ReleaseSubSurface();
 
 	DEL_CLASS(this->surfaceMut);
-	if (clipper)
-	{
-		((LPDIRECTDRAWCLIPPER)clipper)->Release();
-		clipper = 0;
-	}
 	DEL_CLASS(this->surfaceMgr);
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
@@ -741,6 +611,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	RECT rcSrc;
 	RECT rcDest;
 	if (this->debugWriter)
@@ -754,17 +625,9 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	if (this->currScnMode == SM_FS)
 	{
-		if (this->pSurface)
+		if (this->primarySurface)
 		{
-			if (((LPDIRECTDRAWSURFACE7)this->pSurface)->Flip(0, 0) == DDERR_SURFACELOST)
-			{
-				((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
-				if (this->surfaceBuff)
-				{
-					((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Restore();
-				}
-			}
-			//ValidateRect((HWND)this->hwnd, 0);
+			this->primarySurface->DrawFromBuff();
 		}
 	}
 	else if (this->currScnMode == SM_VFS)
@@ -774,7 +637,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 		rcSrc.top = 0;
 		rcSrc.right = (LONG)this->surfaceW;
 		rcSrc.bottom = (LONG)this->surfaceH;
-		if (this->pSurface && this->surfaceBuff)
+		if (this->primarySurface && this->buffSurface)
 		{
 			DDSURFACEDESC2 ddsd;
 			DDSURFACEDESC2 ddsd2;
@@ -783,22 +646,22 @@ void UI::GUIDDrawControl::DrawToScreen()
 			ddsd.dwSize = sizeof(ddsd);
 			ddsd2.dwSize = sizeof(ddsd2);
 
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
  			if (hRes == DDERR_SURFACELOST)
 			{
-				((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
-				hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
+				hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
 			}
 			if (hRes == DD_OK)
 			{
-				hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+				hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 				if (hRes == DDERR_SURFACELOST)
 				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+					hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 				}
 				if (hRes == DD_OK)
 				{
-					this->surfaceMgr->WaitForVBlank(this->surfaceMon);
+					this->primarySurface->WaitForVBlank();
 					if (this->bitDepth == 32)
 					{
 						this->imgCopy->Copy32((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
@@ -807,7 +670,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 					{
 						this->imgCopy->Copy16((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
 					}
- 					((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
+ 					((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
 				}
 				else
 				{
@@ -820,7 +683,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 					}
 					hRes = 0;
 				}
-				((LPDIRECTDRAWSURFACE7)this->pSurface)->Unlock(0);
+				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
 			}
 			else
 			{
@@ -859,7 +722,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 			rcSrc.top = 0;
 			rcSrc.right = (LONG)this->surfaceW;
 			rcSrc.bottom = (LONG)this->surfaceH;
-			if (this->pSurface && this->surfaceBuff)
+			if (this->primarySurface && this->buffSurface)
 			{
 				DDSURFACEDESC2 ddsd;
 				DDSURFACEDESC2 ddsd2;
@@ -873,22 +736,22 @@ void UI::GUIDDrawControl::DrawToScreen()
 				rcDest.right -= (LONG)this->scnX;
 				rcDest.bottom -= (LONG)this->scnY;
 
-				HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
+				HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
  				if (hRes == DDERR_SURFACELOST)
 				{
-					((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
-					hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
+					((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
+					hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
 				}
 				if (hRes == DD_OK)
 				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+					hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 					if (hRes == DDERR_SURFACELOST)
 					{
-						hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
+						hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
 					}
 					if (hRes == DD_OK)
 					{
-						this->surfaceMgr->WaitForVBlank(this->surfaceMon);
+						this->primarySurface->WaitForVBlank();
 						if (this->bitDepth == 32)
 						{
 							this->imgCopy->Copy32((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
@@ -897,13 +760,13 @@ void UI::GUIDDrawControl::DrawToScreen()
 						{
 							this->imgCopy->Copy16((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
 						}
- 						((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
+ 						((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
 					}
 					else
 					{
 						hRes = 0;
 					}
-					((LPDIRECTDRAWSURFACE7)this->pSurface)->Unlock(0);
+					((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
 				}
 				else
 				{
@@ -921,20 +784,20 @@ void UI::GUIDDrawControl::DrawToScreen()
 			rcSrc.top = 0;
 			rcSrc.right = (LONG)this->surfaceW;
 			rcSrc.bottom = (LONG)this->surfaceH;
-			if (this->pSurface && this->surfaceBuff)
+			if (this->primarySurface && this->buffSurface)
 			{
 				HRESULT hRes;
-				this->surfaceMgr->WaitForVBlank(this->surfaceMon);
-				if ((hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->surfaceBuff, &rcSrc, 0, 0)) == DDERR_SURFACELOST)
+				this->primarySurface->WaitForVBlank();
+				if ((hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0)) == DDERR_SURFACELOST)
 				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
+					hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
 					if (hRes == DDERR_WRONGMODE)
 					{
 						this->CreateSurface();
 					}
 					else
 					{
-						((LPDIRECTDRAWSURFACE7)this->pSurface)->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->surfaceBuff, &rcSrc, 0, 0);
+						((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0);
 					}
 				}
 				else if (hRes != DD_OK)
@@ -980,32 +843,32 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 		rcSrc.top = 0;
 		rcSrc.right = (LONG)this->surfaceW;
 		rcSrc.bottom = (LONG)this->surfaceH;
-		if (this->pSurface)
+		if (this->primarySurface)
 		{
 			DDSURFACEDESC2 ddsd;
 			MemClear(&ddsd, sizeof(ddsd));
 			ddsd.dwSize = sizeof(ddsd);
 
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
  			if (hRes == DDERR_SURFACELOST)
 			{
-				hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
+				hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
 				if (hRes == DDERR_WRONGMODE)
 				{
 					this->CreateSurface();
-					if (this->pSurface)
+					if (this->primarySurface)
 					{
-						hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+						hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
 					}
 				}
 				else
 				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+					hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
 				}
 			}
 			if (hRes == DD_OK)
 			{
-				this->surfaceMgr->WaitForVBlank(this->surfaceMon);
+				this->primarySurface->WaitForVBlank();
 				if (this->bitDepth == 32)
 				{
 					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
@@ -1047,7 +910,7 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 						}
 					}
 				}
-				((LPDIRECTDRAWSURFACE7)this->pSurface)->Unlock(0);
+				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
 			}
 			else
 			{
@@ -1055,7 +918,7 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 			}
 		}
 	}
-	else if (this->surfaceBuff)
+	else if (this->buffSurface)
 	{
 		DDSURFACEDESC2 ddsd;
 		MemClear(&ddsd, sizeof(ddsd));
@@ -1069,11 +932,11 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 		if (this->currScnMode == SM_WINDOWED_DIR)
 		{
 			GetDrawingRect(&rcDest);
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
+			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
  			if (hRes == DDERR_SURFACELOST)
 			{
-				((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
-				hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
+				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
+				hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
 			}
 			if (hRes == DD_OK)
 			{
@@ -1085,16 +948,16 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 				{
 					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
-				((LPDIRECTDRAWSURFACE7)this->pSurface)->Unlock(0);
+				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
 			}
 		}
 		else
 		{
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
  			if (hRes == DDERR_SURFACELOST)
 			{
-				((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Restore();
-				hRes = ((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+				((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Restore();
+				hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
 			}
 			if (hRes == DD_OK)
 			{
@@ -1106,41 +969,33 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 				{
 					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
 				}
-				((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Unlock(0);
+				((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
 			}
 
 			if (this->currScnMode == SM_FS)
 			{
-				if (this->pSurface)
+				if (this->primarySurface)
 				{
-					if (((LPDIRECTDRAWSURFACE7)this->pSurface)->Flip(0, 0) == DDERR_SURFACELOST)
-					{
-						((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
-						if (this->surfaceBuff)
-						{
-							((LPDIRECTDRAWSURFACE7)this->surfaceBuff)->Restore();
-						}
-					}
-					//ValidateRect((HWND)this->hwnd, 0);
+					this->primarySurface->DrawFromBuff();
 				}
 			}
 			else if (GetVisible())
 			{
 				GetDrawingRect(&rcDest);
-				if (this->pSurface && this->surfaceBuff)
+				if (this->primarySurface && this->buffSurface)
 				{
 					HRESULT hRes;
-					this->surfaceMgr->WaitForVBlank(this->surfaceMon);
-					if ((hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->surfaceBuff, &rcSrc, 0, 0)) == DDERR_SURFACELOST)
+					this->primarySurface->WaitForVBlank();
+					if ((hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0)) == DDERR_SURFACELOST)
 					{
-						hRes = ((LPDIRECTDRAWSURFACE7)this->pSurface)->Restore();
+						hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
 						if (hRes == DDERR_WRONGMODE)
 						{
 							this->CreateSurface();
 						}
 						else
 						{
-							((LPDIRECTDRAWSURFACE7)this->pSurface)->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->surfaceBuff, &rcSrc, 0, 0);
+							((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0);
 						}
 					}
 					else if (hRes != DD_OK)
@@ -1190,13 +1045,6 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		DDSURFACEDESC2 ddsd;
 		ddsd.dwSize = sizeof(ddsd);
 
-		LPDIRECTDRAWCLIPPER pcClipper = (LPDIRECTDRAWCLIPPER)this->clipper;
-		if (pcClipper)
-		{
-			pcClipper->Release();
-			this->clipper = 0;
-		}
-
 		this->rootForm->ToFullScn();
 		this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), true);
 		if (lpDD->GetDisplayMode(&ddsd) != DD_OK)
@@ -1220,7 +1068,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		this->surfaceH = ddsd.dwHeight;
 
 		CreateSurface();
-		if (this->pSurface == 0)
+		if (this->primarySurface == 0)
 		{
 			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 			mutUsage.EndUse();
@@ -1297,7 +1145,6 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			this->rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 		}
 
-		this->CreateClipper(lpDD);
 		this->CreateSurface();
 		mutUsage.EndUse();
 		this->switching = false;
@@ -1319,7 +1166,6 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(0);
 		this->surfaceMgr->SetFSMode(0, this->rootForm->GetHandle(), false);
 
-		this->CreateClipper(lpDD);
 		this->CreateSurface();
 		mutUsage.EndUse();
 		this->switching = false;
@@ -1351,6 +1197,11 @@ void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
 UInt32 UI::GUIDDrawControl::GetRefreshRate()
 {
 	return this->surfaceMgr->GetRefreshRate(this->GetHMonitor());
+}
+
+Bool UI::GUIDDrawControl::IsSurfaceReady()
+{
+	return this->buffSurface != 0;
 }
 
 void UI::GUIDDrawControl::OnMouseWheel(OSInt x, OSInt y, Int32 amount)

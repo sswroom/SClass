@@ -9,6 +9,11 @@ namespace Media
 	public:
 		MonitorSurface() : Media::Image(0, 0) {};
 		virtual ~MonitorSurface() {};
+
+		virtual void WaitForVBlank() = 0;
+		virtual void *GetHandle() = 0;
+
+		virtual Bool DrawFromBuff() = 0;
 	};
 }
 #endif

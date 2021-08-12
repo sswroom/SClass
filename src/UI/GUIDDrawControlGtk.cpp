@@ -517,6 +517,11 @@ UInt32 UI::GUIDDrawControl::GetRefreshRate()
 	return 0;
 }
 
+Bool UI::GUIDDrawControl::IsSurfaceReady()
+{
+	return this->buffSurface != 0;
+}
+
 void UI::GUIDDrawControl::OnMouseWheel(OSInt x, OSInt y, Int32 amount)
 {
 }

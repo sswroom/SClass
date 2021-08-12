@@ -319,6 +319,7 @@ Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, Mo
 	Media::DDrawSurface *ddSurface2;
 	NEW_CLASS(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true));
 	NEW_CLASS(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false));
+	ddSurface1->SetBuffSurface(ddSurface2);
 	*primarySurface = ddSurface1;
 	*bufferSurface = ddSurface2;
 	return true;

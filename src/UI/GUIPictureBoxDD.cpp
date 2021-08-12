@@ -14,7 +14,7 @@
 
 void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
-	if (this->imgBuff && this->currImage && this->surfaceBuff)
+	if (this->imgBuff && this->currImage && this->IsSurfaceReady())
 	{
 		UOSInt bpl;
 		if (this->drawHdlrs->GetCount() > 0)
@@ -359,9 +359,7 @@ void UI::GUIPictureBoxDD::OnPaint()
 			DrawFromBG();
 		}
 
-		Sync::MutexUsage mutUsage(this->surfaceMut);
 		DrawToScreen();
-		mutUsage.EndUse();
 	}
 	else
 	{

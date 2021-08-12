@@ -13,6 +13,7 @@ struct Media::DDrawSurface::ClassData
 	MonitorHandle *hMon;
 	LPDIRECTDRAWCLIPPER clipper;
 	Bool needRelease;
+	Media::DDrawSurface *buffSurface;
 };
 
 Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease)
@@ -24,6 +25,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->clsData->hMon = hMon;
 	this->clsData->clipper = 0;
 	this->clsData->needRelease = needRelease;
+	this->clsData->buffSurface = 0;
 
 	DDSURFACEDESC2 ddsd;
 	MemClear(&ddsd, sizeof(ddsd));
@@ -102,6 +104,34 @@ void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, U
 	}
 }
 
+void Media::DDrawSurface::WaitForVBlank()
+{
+	if (this->clsData->lpDD)
+	{
+		this->clsData->lpDD->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, 0);
+	}
+}
+
+void *Media::DDrawSurface::GetHandle()
+{
+	return this->clsData->surface;
+}
+
+Bool Media::DDrawSurface::DrawFromBuff()
+{
+	if (this->clsData->buffSurface == 0)
+	{
+		return false;
+	}
+	HRESULT hRes = this->clsData->surface->Flip(0, 0);
+	if (hRes == DDERR_SURFACELOST)
+	{
+		this->clsData->surface->Restore();
+		((LPDIRECTDRAWSURFACE7)this->clsData->buffSurface->GetHandle())->Restore();
+	}
+	return hRes == DD_OK;
+}
+
 void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
 {
 	if (this->clsData->clipper)
@@ -120,4 +150,9 @@ void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
 	{
 		this->clsData->surface->SetClipper(this->clsData->clipper);
 	}
+}
+
+void Media::DDrawSurface::SetBuffSurface(Media::DDrawSurface *buffSurface)
+{
+	this->clsData->buffSurface = buffSurface;
 }

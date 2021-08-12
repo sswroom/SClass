@@ -32,16 +32,16 @@ namespace UI
 		Sync::Event *drawEvt;
 		Media::DDrawManager *surfaceMgr;
 		MonitorHandle *surfaceMon;
-		void *pSurface;
-		void *clipper;
+		Media::MonitorSurface *primarySurface;
+		Media::MonitorSurface *buffSurface;
 		IO::Stream *debugFS;
 		IO::Writer *debugWriter;
 		UInt32 joystickId;
 		UInt32 jsLastButtons;
 		Bool focusing;
+		Bool directMode;
+		Bool inited;
 	protected:
-		void *surfaceBuff;
-		Bool surfaceNoRelease;
 		Sync::Mutex *surfaceMut;
 		UOSInt surfaceW;
 		UOSInt surfaceH;
@@ -53,9 +53,7 @@ namespace UI
 		MonitorHandle *currMon;
 		ScreenMode currScnMode;
 		ScreenMode fullScnMode;
-		Bool directMode;
 		Bool switching;
-		Bool inited;
 		IO::Library *lib;
 
 	private:
@@ -74,7 +72,6 @@ namespace UI
 		void ReleaseSurface();
 		void CreateSubSurface();
 		void ReleaseSubSurface();
-		Bool CreateClipper(void *lpDD);
 
 		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl);
 		void LockSurfaceEnd();
@@ -93,6 +90,7 @@ namespace UI
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(MonitorHandle *hMon);
 		UInt32 GetRefreshRate();
+		Bool IsSurfaceReady();
 	public:
 		virtual void OnSurfaceCreated() = 0;
 		virtual void OnMouseWheel(OSInt x, OSInt y, Int32 amount);
