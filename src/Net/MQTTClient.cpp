@@ -6,8 +6,16 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
+//#define DEBUG_PRINT
+#if defined(DEBUG_PRINT)
+#include <stdio.h>
+#endif
+
 void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
+#if defined(DEBUG_PRINT)
+	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
+#endif
 	if ((cmdType & 0xf0) == 0x30 && cmdSize >= 2)
 	{
 		UInt8 qosLev = (cmdType & 6) >> 1;
