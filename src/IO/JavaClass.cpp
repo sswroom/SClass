@@ -4851,11 +4851,45 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
+		case 0x4F: //iastore
+			if (env->stacks->GetCount() < 3)
+			{
+				sb->AppendChar(' ', lev << 2);
+				sb->Append((const UTF8Char*)"// iastore stack invalid");
+				sb->Append((const UTF8Char*)"\r\n");
+				return ET_ERROR;
+			}
+			else
+			{
+				const UTF8Char *nameStr = env->stacks->GetItem(env->stacks->GetCount() - 3);
+				const UTF8Char *indexStr = env->stacks->GetItem(env->stacks->GetCount() - 2);
+				const UTF8Char *valueStr = env->stacks->GetItem(env->stacks->GetCount() - 1);
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+
+				sb->AppendChar(' ', lev << 2);
+				sb->Append(nameStr);
+				sb->AppendChar('[', 1);
+				sb->Append(indexStr);
+				sb->Append((const UTF8Char*)"] = ");
+				sb->Append(valueStr);
+				sb->Append((const UTF8Char*)";\r\n");
+				Text::StrDelNew(nameStr);
+				Text::StrDelNew(indexStr);
+				Text::StrDelNew(valueStr);
+			}
+			
+			codePtr++;
+			break;
 		case 0x52: //dastore
 			if (env->stacks->GetCount() < 3)
 			{
 				sb->AppendChar(' ', lev << 2);
-				sb->Append((const UTF8Char*)"// pop stack invalid");
+				sb->Append((const UTF8Char*)"// dastore stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
 				return ET_ERROR;
 			}
@@ -4889,7 +4923,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 3)
 			{
 				sb->AppendChar(' ', lev << 2);
-				sb->Append((const UTF8Char*)"// pop stack invalid");
+				sb->Append((const UTF8Char*)"// aastore stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
 				return ET_ERROR;
 			}
