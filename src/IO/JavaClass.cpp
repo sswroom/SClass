@@ -191,6 +191,30 @@ void IO::JavaClass::DetailAccessFlags(UInt16 accessFlags, Text::StringBuilderUTF
 	}
 }
 
+void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv)
+{
+	if (Text::StrEquals(env->stackTypes->GetItem(index), (const UTF8Char*)"boolean"))
+	{
+		if (ct == CT_NE && !inv && Text::StrEquals(env->stacks->GetItem(index + 1), (const UTF8Char*)"0"))
+		{
+			sb->Append(env->stacks->GetItem(index));
+			return;	
+		}
+	}
+	sb->Append(env->stacks->GetItem(index));
+	sb->AppendChar(' ', 1);
+	if (inv)
+	{
+		sb->Append(CondType2IString(ct));
+	}
+	else
+	{
+		sb->Append(CondType2String(ct));
+	}
+	sb->AppendChar(' ', 1);
+	sb->Append(env->stacks->GetItem(index + 1));
+}
+
 const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[256];
@@ -463,6 +487,23 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			sb->AppendChar(' ', (lev + 1) << 1);
 			ptr = this->DetailAnnotation(ptr, &attr[6 + len], sb);
 			sb->Append((const UTF8Char*)"\r\n");
+
+			i++;
+		}
+	}
+	else if (Text::StrEquals(sbuff, (const UTF8Char*)"StackMapTable"))
+	{
+		UInt16 number_of_entries = ReadMUInt16(&attr[6]);
+		UInt16 i = 0;
+		const UInt8 *ptr = &attr[8];
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Attr StackMapTable number_of_entries = ");
+		sb->AppendU16(number_of_entries);
+		sb->Append((const UTF8Char*)"\r\n");
+
+		while (i < number_of_entries)
+		{
+			ptr = this->DetailStackMapFrame(ptr, &attr[6 + len], lev + 1, sb);
 
 			i++;
 		}
@@ -2867,6 +2908,193 @@ const UInt8 *IO::JavaClass::DetailElementValue(const UInt8 *annoPtr, const UInt8
 	}
 }
 
+const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, Text::StringBuilderUTF *sb)
+{
+	if (currPtr >= ptrEnd)
+	{
+		return currPtr;
+	}
+	if (currPtr[0] >= 0 && currPtr[0] < 64)
+	{
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = SAME (");
+		sb->AppendU16(currPtr[0]);
+		sb->Append((const UTF8Char*)")\r\n");
+		return currPtr + 1;
+	}
+	else if (currPtr[0] >= 64 && currPtr[0] < 128)
+	{
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = SAME_LOCALS_1_STACK_ITEM (");
+		sb->AppendU16(currPtr[0]);
+		sb->Append((const UTF8Char*)")\r\n");
+		return this->DetailVerificationTypeInfo(currPtr + 1, ptrEnd, lev + 1, sb);
+	}
+	else if (currPtr[0] == 247)
+	{
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = SAME_LOCALS_1_STACK_ITEM_EXTENDED\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendU16(ReadMUInt16(&currPtr[1]));
+		sb->Append((const UTF8Char*)"\r\n");
+		return this->DetailVerificationTypeInfo(currPtr + 3, ptrEnd, lev + 1, sb);
+	}
+	else if (currPtr[0] >= 248 && currPtr[0] <= 250)
+	{
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = CHOP (");
+		sb->AppendU16(currPtr[0]);
+		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendU16(ReadMUInt16(&currPtr[1]));
+		sb->Append((const UTF8Char*)"\r\n");
+		return currPtr + 3;
+	}
+	else if (currPtr[0] == 251)
+	{
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = SAME_FRAME_EXTENDED\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendU16(ReadMUInt16(&currPtr[1]));
+		sb->Append((const UTF8Char*)"\r\n");
+		return currPtr + 3;
+	}
+	else if (currPtr[0] >= 252 && currPtr[0] <= 254)
+	{
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = APPEND (");
+		sb->AppendU16(currPtr[0]);
+		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendU16(ReadMUInt16(&currPtr[1]));
+		sb->Append((const UTF8Char*)"\r\n");
+		UOSInt i = (UOSInt)currPtr[0];
+		i -= 251;
+		currPtr += 3;
+		while (i-- > 0)
+		{
+			currPtr = this->DetailVerificationTypeInfo(currPtr, ptrEnd, lev + 1, sb);
+		}
+		return currPtr;
+	}
+	else if (currPtr[0] == 255)
+	{
+		UOSInt i;
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame Type = FULL_FRAME\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendU16(ReadMUInt16(&currPtr[1]));
+		sb->Append((const UTF8Char*)"\r\n");
+		currPtr += 3;
+		if (currPtr + 2 <= ptrEnd)
+		{
+			i = ReadMUInt16(currPtr);
+			sb->AppendChar(' ', lev << 1);
+			sb->Append((const UTF8Char*)"Frame number_of_locals = ");
+			sb->AppendUOSInt(i);
+			sb->Append((const UTF8Char*)"\r\n");
+			while (i-- > 0)
+			{
+				currPtr = this->DetailVerificationTypeInfo(currPtr, ptrEnd, lev + 1, sb);
+			}
+		}
+		if (currPtr + 2 <= ptrEnd)
+		{
+			i = ReadMUInt16(currPtr);
+			sb->AppendChar(' ', lev << 1);
+			sb->Append((const UTF8Char*)"Frame number_of_stack_items = ");
+			sb->AppendUOSInt(i);
+			sb->Append((const UTF8Char*)"\r\n");
+			while (i-- > 0)
+			{
+				currPtr = this->DetailVerificationTypeInfo(currPtr, ptrEnd, lev + 1, sb);
+			}
+		}
+		return currPtr;
+	}
+	else
+	{
+		sb->Append((const UTF8Char*)"Frame Type = UNKNOWN (");
+		sb->AppendU16(currPtr[0]);
+		sb->AppendChar(')', 1);
+		return currPtr + 1;
+	}
+}
+
+const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, Text::StringBuilderUTF *sb)
+{
+	if (currPtr >= ptrEnd)
+	{
+		return currPtr;
+	}
+	UInt16 sindex;
+	UInt16 strLen;
+	UInt8 *ptr;
+	sb->AppendChar(' ', lev << 1);
+	sb->Append((const UTF8Char*)"VerificationType = ");
+	switch (currPtr[0])
+	{
+	case 0:
+		sb->Append((const UTF8Char*)"Top\r\n");
+		return currPtr + 1;
+	case 1:
+		sb->Append((const UTF8Char*)"Integer\r\n");
+		return currPtr + 1;
+	case 2:
+		sb->Append((const UTF8Char*)"Float\r\n");
+		return currPtr + 1;
+	case 3:
+		sb->Append((const UTF8Char*)"Double\r\n");
+		return currPtr + 1;
+	case 4:
+		sb->Append((const UTF8Char*)"Long\r\n");
+		return currPtr + 1;
+	case 5:
+		sb->Append((const UTF8Char*)"Null\r\n");
+		return currPtr + 1;
+	case 6:
+		sb->Append((const UTF8Char*)"UninitializedThis\r\n");
+		return currPtr + 1;
+	case 7:
+		sb->Append((const UTF8Char*)"Object\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Verification cinfo_index = ");
+		sindex = ReadMUInt16(&currPtr[1]);
+		sb->AppendU16(sindex);
+		ptr = this->constPool[sindex];
+		if (ptr[0] == 1)
+		{
+			strLen = ReadMUInt16(&ptr[1]);
+			Text::StringBuilderUTF8 sbTmp;
+			sbTmp.AppendC(ptr + 3, strLen);
+			sbTmp.Replace('/', '.');
+			sb->Append((const UTF8Char*)" (");
+			sb->Append(sbTmp.ToString());
+			sb->Append((const UTF8Char*)")");
+		}
+		sb->Append((const UTF8Char*)"\r\n");
+		return currPtr + 3;
+	case 8:
+		sb->Append((const UTF8Char*)"Uninitialized\r\n");
+		sb->AppendChar(' ', lev << 1);
+		sb->Append((const UTF8Char*)"Verification offset = ");
+		sindex = ReadMUInt16(&currPtr[1]);
+		sb->AppendU16(sindex);
+		sb->Append((const UTF8Char*)"\r\n");
+		return currPtr + 3;
+	default:
+		sb->Append((const UTF8Char*)"Unknown (");
+		sb->AppendU16(currPtr[0]);
+		sb->Append((const UTF8Char*)"\r\n");
+		return currPtr + 1;
+	}
+}
+
 UTF8Char *IO::JavaClass::GetConstName(UTF8Char *sbuff, UInt16 index)
 {
 	if (index == 0 || index >= this->constPoolCnt)
@@ -4623,6 +4851,40 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
+		case 0x52: //dastore
+			if (env->stacks->GetCount() < 3)
+			{
+				sb->AppendChar(' ', lev << 2);
+				sb->Append((const UTF8Char*)"// pop stack invalid");
+				sb->Append((const UTF8Char*)"\r\n");
+				return ET_ERROR;
+			}
+			else
+			{
+				const UTF8Char *nameStr = env->stacks->GetItem(env->stacks->GetCount() - 3);
+				const UTF8Char *indexStr = env->stacks->GetItem(env->stacks->GetCount() - 2);
+				const UTF8Char *valueStr = env->stacks->GetItem(env->stacks->GetCount() - 1);
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+
+				sb->AppendChar(' ', lev << 2);
+				sb->Append(nameStr);
+				sb->AppendChar('[', 1);
+				sb->Append(indexStr);
+				sb->Append((const UTF8Char*)"] = ");
+				sb->Append(valueStr);
+				sb->Append((const UTF8Char*)";\r\n");
+				Text::StrDelNew(nameStr);
+				Text::StrDelNew(indexStr);
+				Text::StrDelNew(valueStr);
+			}
+			
+			codePtr++;
+			break;
 		case 0x53: //aastore
 			if (env->stacks->GetCount() < 3)
 			{
@@ -4745,6 +5007,130 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				codePtr++;
 			}
 			break;
+		case 0x63: //dadd
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// dadd stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" + ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x67: //dsub
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// dsub stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" - ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x6B: //dmul
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// dmul stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" * ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x6F: //ddiv
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// ddiv stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" * ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
 		case 0x70: //irem
 			{
 				if (env->stacks->GetCount() <= 1)
@@ -4762,6 +5148,66 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x77: //dneg
+			{
+				if (env->stacks->GetCount() <= 0)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// dneg stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.ClearStr();
+				sbTmp.AppendChar('-', 1);
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-*/"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+				}
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				codePtr++;
+			}
+			break;
+		case 0x82: //ixor
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// ixor stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				if (Text::StrEquals(env->stacks->GetItem(env->stacks->GetCount() - 1), (const UTF8Char*)"-1"))
+				{
+					sbTmp.AppendChar('~', 1);
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+					sbTmp.Append((const UTF8Char*)" % ");
+					csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+				}
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 				codePtr++;
@@ -4833,9 +5279,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				Int16 codeOfst = ReadMInt16(&codePtr[1]);
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"0"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_EQ, env, lev, sb);
+				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"return ");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_EQ, true);
+					sb->Append((const UTF8Char*)";\r\n");
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					env->endPtr = codePtr + 7;
+					return ET_RETURN;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_EQ, env, lev, sb);
 				if (et == ET_ERROR)
 				{
 					return et;
@@ -4853,9 +5313,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				Int16 codeOfst = ReadMInt16(&codePtr[1]);
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"0"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_NE, env, lev, sb);
+				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"return ");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_NE, true);
+					sb->Append((const UTF8Char*)";\r\n");
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					env->endPtr = codePtr + 7;
+					return ET_RETURN;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_NE, env, lev, sb);
 				if (et == ET_ERROR)
 				{
 					return et;
@@ -4873,9 +5347,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				Int16 codeOfst = ReadMInt16(&codePtr[1]);
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"0"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_LT, env, lev, sb);
+				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"return ");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_LT, true);
+					sb->Append((const UTF8Char*)";\r\n");
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					env->endPtr = codePtr + 7;
+					return ET_RETURN;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_LT, env, lev, sb);
 				if (et == ET_ERROR)
 				{
 					return et;
@@ -4893,9 +5381,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				Int16 codeOfst = ReadMInt16(&codePtr[1]);
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"0"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_GE, env, lev, sb);
+				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"return ");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_GE, true);
+					sb->Append((const UTF8Char*)";\r\n");
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					env->endPtr = codePtr + 7;
+					return ET_RETURN;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_GE, env, lev, sb);
 				if (et == ET_ERROR)
 				{
 					return et;
@@ -4913,9 +5415,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				Int16 codeOfst = ReadMInt16(&codePtr[1]);
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"0"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_GT, env, lev, sb);
+				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"return ");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_GT, true);
+					sb->Append((const UTF8Char*)";\r\n");
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					env->endPtr = codePtr + 7;
+					return ET_RETURN;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_GT, env, lev, sb);
 				if (et == ET_ERROR)
 				{
 					return et;
@@ -4933,9 +5449,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				Int16 codeOfst = ReadMInt16(&codePtr[1]);
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"0"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_LE, env, lev, sb);
+				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"return ");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_LE, true);
+					sb->Append((const UTF8Char*)";\r\n");
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					env->endPtr = codePtr + 7;
+					return ET_RETURN;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_LE, env, lev, sb);
 				if (et == ET_ERROR)
 				{
 					return et;
@@ -5990,11 +6520,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			sb->AppendChar(' ', lev << 2);
 			sb->Append((const UTF8Char*)"while (");
-			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
-			sb->AppendChar(' ', 1);
-			sb->Append(CondType2String(ct));
-			sb->AppendChar(' ', 1);
-			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, false);
 			sb->Append((const UTF8Char*)")\r\n");
 			sb->AppendChar(' ', lev << 2);
 			sb->Append((const UTF8Char*)"{\r\n");
@@ -6016,11 +6542,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			sb->AppendChar(' ', lev << 2);
 			sb->Append((const UTF8Char*)"while (");
-			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
-			sb->AppendChar(' ', 1);
-			sb->Append(CondType2String(ct));
-			sb->AppendChar(' ', 1);
-			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, false);
 			sb->Append((const UTF8Char*)")\r\n");
 			sb->AppendChar(' ', lev << 2);
 			sb->Append((const UTF8Char*)"{\r\n");
@@ -6049,11 +6571,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	{
 		sb->AppendChar(' ', lev << 2);
 		sb->Append((const UTF8Char*)"if (");
-		sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
-		sb->AppendChar(' ', 1);
-		sb->Append(CondType2IString(ct));
-		sb->AppendChar(' ', 1);
-		sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+		AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
 		sb->Append((const UTF8Char*)")\r\n");
 		sb->AppendChar(' ', lev << 2);
 		sb->Append((const UTF8Char*)"{\r\n");
@@ -6086,11 +6604,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		{
 			sbTmp.ClearStr();
 			sbTmp.AppendChar('(', 1);
-			sbTmp.Append(env->stacks->GetItem(initStackCnt - 2));
-			sbTmp.AppendChar(' ', 1);
-			sbTmp.Append(CondType2IString(ct));
-			sbTmp.AppendChar(' ', 1);
-			sbTmp.Append(env->stacks->GetItem(initStackCnt - 1));
+			AppendCond(sb, env, initStackCnt - 2, ct, true);
 			sbTmp.AppendChar(')', 1);
 			sbTmp.AppendChar('?', 1);
 			sbTmp.Append(env->stacks->GetItem(initStackCnt + 0));
@@ -6120,11 +6634,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		{
 			sb->AppendChar(' ', lev << 2);
 			sb->Append((const UTF8Char*)"if (");
-			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
-			sb->AppendChar(' ', 1);
-			sb->Append(CondType2IString(ct));
-			sb->AppendChar(' ', 1);
-			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
 			sb->Append((const UTF8Char*)")\r\n");
 			sb->AppendChar(' ', lev << 2);
 			sb->Append((const UTF8Char*)"{\r\n");
@@ -6149,11 +6659,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	{
 		sb->AppendChar(' ', lev << 2);
 		sb->Append((const UTF8Char*)"if (");
-		sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
-		sb->AppendChar(' ', 1);
-		sb->Append(CondType2IString(ct));
-		sb->AppendChar(' ', 1);
-		sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+		AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
 		sb->Append((const UTF8Char*)")\r\n");
 		sb->AppendChar(' ', lev << 2);
 		sb->Append((const UTF8Char*)"{\r\n");

@@ -2002,6 +2002,28 @@ UOSInt Text::StrLastIndexOf(const Char *str1, const Char *str2)
 	return INVALID_INDEX;
 }
 
+Bool Text::StrContainChars(const Char *str, const Char *chars)
+{
+	const Char *cptr;
+	Char c;
+	while ((c = *str++) != 0)
+	{
+		cptr = chars;
+		while (true)
+		{
+			if (c == *cptr)
+			{
+				return true;
+			}
+			if (*cptr++ == 0)
+			{
+				break;
+			}
+		}
+	}
+	return false;
+}
+
 Char *Text::StrRTrim(Char* str1)
 {
 	Char *sp = str1;

@@ -61,6 +61,7 @@ namespace IO
 		static const UInt8 *CondType2String(CondType ct);
 		static const UInt8 *CondType2IString(CondType ct);
 		static void DetailAccessFlags(UInt16 accessFlags, Text::StringBuilderUTF *sb);
+		static void AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv);
 		const UInt8 *DetailAttribute(const UInt8 *attr, UOSInt lev, Text::StringBuilderUTF *sb);
 		void DetailConstVal(UInt16 index, Text::StringBuilderUTF *sb, Bool brankets);
 		void DetailName(UInt16 index, Text::StringBuilderUTF *sb, Bool brankets);
@@ -74,6 +75,8 @@ namespace IO
 		void DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Text::StringBuilderUTF *sb);
 		const UInt8 *DetailAnnotation(const UInt8 *annoPtr, const UInt8 *annoEnd, Text::StringBuilderUTF *sb);
 		const UInt8 *DetailElementValue(const UInt8 *annoPtr, const UInt8 *annoEnd, Text::StringBuilderUTF *sb);
+		const UInt8 *DetailStackMapFrame(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, Text::StringBuilderUTF *sb);
+		const UInt8 *DetailVerificationTypeInfo(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, Text::StringBuilderUTF *sb);
 		UTF8Char *GetConstName(UTF8Char *sbuff, UInt16 index);
 		void ClassNameString(UInt16 index, Text::StringBuilderUTF *sb);
 		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const UInt8 *lvTable, UOSInt lvTableLen, UOSInt codeOfst);

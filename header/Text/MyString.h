@@ -183,6 +183,7 @@ namespace Text
 	UOSInt StrIndexOfICase(const Char *str1, const Char *str2);
 	UOSInt StrLastIndexOf(const Char *str1, Char c);
 	UOSInt StrLastIndexOf(const Char *str1, const Char *str2);
+	Bool StrContainChars(const Char *str, const Char *chars);
 	Char *StrRTrim(Char* str1);
 	Char *StrLTrim(Char* str1);
 	Char *StrTrim(Char* str1);
@@ -308,6 +309,7 @@ namespace Text
 	FORCEINLINE UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2) { return StrIndexOfICase((const Char*)str1, (const Char*)str2); };
 	FORCEINLINE UOSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c) { return StrLastIndexOf((const Char*)str1, (Char)c); }
 	FORCEINLINE UOSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2) { return StrLastIndexOf((const Char*)str1, (const Char *)str2); }
+	FORCEINLINE Bool StrContainChars(const UTF8Char *str, const UTF8Char *chars) { return StrContainChars((const Char*)str, (const Char*)chars); }
 	FORCEINLINE UTF8Char *StrRTrim(UTF8Char* str1) { return (UTF8Char*)StrRTrim((Char*)str1); };
 	FORCEINLINE UTF8Char *StrLTrim(UTF8Char* str1) { return (UTF8Char*)StrLTrim((Char*)str1); };
 	FORCEINLINE UTF8Char *StrTrim(UTF8Char* str1) { return (UTF8Char*)StrTrim((Char*)str1); };
