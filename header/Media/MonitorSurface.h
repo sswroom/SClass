@@ -14,6 +14,7 @@ namespace Media
 		virtual void *GetHandle() = 0;
 
 		virtual Bool DrawFromBuff() = 0;
+		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank) = 0;
 	};
 }
 #endif

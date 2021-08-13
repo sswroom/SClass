@@ -150,6 +150,17 @@ Bool Media::FBSurface::DrawFromBuff()
 	return false;
 }
 
+Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank)
+{
+	if (surface && surface->info->dispWidth == this->info->dispWidth && surface->info->dispHeight == this->info->dispHeight && surface->info->storeBPP == this->info->storeBPP)
+	{
+		if (waitForVBlank) this->WaitForVBlank();
+		surface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->finfo.line_length, false);
+		return true;
+	}
+	return false;
+}
+
 void Media::FBSurface::SetBuffSurface(Media::MonitorSurface *buffSurface)
 {
 	this->clsData->buffSurface = buffSurface;

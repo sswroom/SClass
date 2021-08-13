@@ -27,6 +27,7 @@ namespace Media
 		virtual void *GetHandle();
 
 		virtual Bool DrawFromBuff();
+		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank);
 
 		void SetClipWindow(ControlHandle *clipWindow);
 		void SetBuffSurface(Media::DDrawSurface *buffSurface);

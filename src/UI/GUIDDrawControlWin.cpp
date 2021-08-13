@@ -532,16 +532,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 		this->scnY = monInfo.rcMonitor.top;
 		SwitchFullScreen(false, false);
 /*		lpDD->SetCooperativeLevel((HWND)this->hwnd, DDSCL_NORMAL);
-		LPDIRECTDRAWCLIPPER pcClipper;
-		lpDD->CreateClipper( 0, &pcClipper, NULL );
-		if (pcClipper->SetHWnd( 0, (HWND)this->hwnd ) != DD_OK)
-		{
-			pcClipper->Release();
-			pcClipper = 0;
-			return;
-		}
-		this->clipper = pcClipper;
-
 		CreateSurface();*/
 	}
 
@@ -627,70 +617,13 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	else if (this->currScnMode == SM_VFS)
 	{
-		GetDrawingRect(&rcDest);
 		rcSrc.left = 0;
 		rcSrc.top = 0;
 		rcSrc.right = (LONG)this->surfaceW;
 		rcSrc.bottom = (LONG)this->surfaceH;
 		if (this->primarySurface && this->buffSurface)
 		{
-			DDSURFACEDESC2 ddsd;
-			DDSURFACEDESC2 ddsd2;
-			MemClear(&ddsd, sizeof(ddsd));
-			MemClear(&ddsd2, sizeof(ddsd2));
-			ddsd.dwSize = sizeof(ddsd);
-			ddsd2.dwSize = sizeof(ddsd2);
-
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
- 			if (hRes == DDERR_SURFACELOST)
-			{
-				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
-				hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
-			}
-			if (hRes == DD_OK)
-			{
-				hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-				if (hRes == DDERR_SURFACELOST)
-				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-				}
-				if (hRes == DD_OK)
-				{
-					this->primarySurface->WaitForVBlank();
-					if (this->bitDepth == 32)
-					{
-						this->imgCopy->Copy32((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
-					}
-					else if (this->bitDepth == 16)
-					{
-						this->imgCopy->Copy16((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
-					}
- 					((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
-				}
-				else
-				{
-					if (this->debugWriter)
-					{
-						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"DrawToScreen: Error in subsurface: 0x");
-						sb.AppendHex32((UInt32)hRes);
-						this->debugWriter->WriteLine(sb.ToString());
-					}
-					hRes = 0;
-				}
-				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
-			}
-			else
-			{
-				if (this->debugWriter)
-				{
-					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"DrawToScreen: Error in primary surface: 0x");
-					sb.AppendHex32((UInt32)hRes);
-					this->debugWriter->WriteLine(sb.ToString());
-				}
-				hRes = 0;
-			}
+			this->primarySurface->DrawFromSurface(this->buffSurface, true);
 		}
 		else
 		{
@@ -706,7 +639,8 @@ void UI::GUIDDrawControl::DrawToScreen()
 	{
 		if (GetVisible())
 		{
-			if (this->imgCopy == 0)
+			this->primarySurface->DrawFromSurface(this->buffSurface, true);
+/*			if (this->imgCopy == 0)
 			{
 				NEW_CLASS(this->imgCopy, Media::ImageCopy());
 				this->imgCopy->SetThreadPriority(Sync::Thread::TP_HIGHEST);
@@ -767,21 +701,23 @@ void UI::GUIDDrawControl::DrawToScreen()
 				{
 					hRes = 0;
 				}
-			}
+			}*/
 		}
 	}
 	else
 	{
 		if (GetVisible())
 		{
-			GetDrawingRect(&rcDest);
-			rcSrc.left = 0;
-			rcSrc.top = 0;
-			rcSrc.right = (LONG)this->surfaceW;
-			rcSrc.bottom = (LONG)this->surfaceH;
 			if (this->primarySurface && this->buffSurface)
 			{
-				HRESULT hRes;
+				this->primarySurface->DrawFromSurface(this->buffSurface, true);
+/*				HRESULT hRes;
+				GetDrawingRect(&rcDest);
+				rcSrc.left = 0;
+				rcSrc.top = 0;
+				rcSrc.right = (LONG)this->surfaceW;
+				rcSrc.bottom = (LONG)this->surfaceH;
+
 				this->primarySurface->WaitForVBlank();
 				if ((hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0)) == DDERR_SURFACELOST)
 				{
@@ -805,7 +741,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 						this->debugWriter->WriteLine(sb.ToString());
 					}
 					hRes = 0;
-				}
+				}*/
 			}
 			else
 			{

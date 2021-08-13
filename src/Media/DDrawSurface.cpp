@@ -132,6 +132,93 @@ Bool Media::DDrawSurface::DrawFromBuff()
 	return hRes == DD_OK;
 }
 
+Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank)
+{
+	OSInt drawWidth = (OSInt)this->info->dispWidth;
+	OSInt drawHeight = (OSInt)this->info->dispHeight;
+	RECT rc;
+	HWND hWnd;
+	if (this->clsData->clipper)
+	{
+		this->clsData->clipper->GetHWnd(&hWnd);
+		GetClientRect(hWnd, &rc);
+		ClientToScreen(hWnd, (POINT*)&rc.left);
+		ClientToScreen(hWnd, (POINT*)&rc.right);
+		drawWidth = (UInt32)(rc.right - rc.left);
+		drawHeight = (UInt32)(rc.bottom - rc.top);
+
+		MONITORINFOEXW info;
+		info.cbSize = sizeof(info);
+		if (GetMonitorInfoW((HMONITOR)this->clsData->hMon, &info))
+		{
+			rc.left -= info.rcMonitor.left;
+			rc.top -= info.rcMonitor.top;
+			rc.right -= info.rcMonitor.left;
+			rc.bottom -= info.rcMonitor.bottom;
+		}
+	}
+	if (surface && (OSInt)surface->info->dispWidth == drawWidth && (OSInt)surface->info->dispHeight == drawHeight && surface->info->storeBPP == this->info->storeBPP)
+	{
+		Bool succ = false;
+		RECT rcSrc;
+		DDSURFACEDESC2 ddsd;
+		rcSrc.left = 0;
+		rcSrc.top = 0;
+		rcSrc.right = (LONG)this->info->dispWidth;
+		rcSrc.bottom = (LONG)this->info->dispHeight;
+		MemClear(&ddsd, sizeof(ddsd));
+		ddsd.dwSize = sizeof(ddsd);
+
+		HRESULT hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+		if (hRes == DDERR_SURFACELOST)
+		{
+			this->clsData->surface->Release();
+			hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+		}
+		if (hRes == DD_OK)
+		{
+			if (waitForVBlank) this->WaitForVBlank();
+			if (this->clsData->clipper)
+			{
+				if (rc.right > (OSInt)this->info->dispWidth)
+				{
+					rc.right = (LONG)(OSInt)this->info->dispWidth;
+				}
+				if (rc.bottom > (OSInt)this->info->dispHeight)
+				{
+					rc.bottom = (LONG)(OSInt)this->info->dispHeight;
+				}
+				OSInt drawX = 0;
+				OSInt drawY = 0;
+				if (rc.left < 0)
+				{
+					drawX = -rc.left;
+					rc.left = 0;
+				}
+				if (rc.top < 0)
+				{
+					drawY = -rc.top;
+					rc.top = 0;
+				}
+				drawWidth = rc.right - rc.left;
+				drawHeight = rc.bottom - rc.top;
+				if (drawWidth > 0 && drawHeight > 0)
+				{
+					surface->GetImageData((UInt8*)ddsd.lpSurface + rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), drawX, drawY, (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, false);
+				}
+			}
+			else
+			{
+				surface->GetImageData((UInt8*)ddsd.lpSurface, 0, 0, this->info->dispWidth, this->info->dispHeight, (UInt32)ddsd.lPitch, false);
+			}
+			this->clsData->surface->Unlock(0);
+			succ = true;
+		}
+		return succ;
+	}
+	return false;
+}
+
 void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
 {
 	if (this->clsData->clipper)
