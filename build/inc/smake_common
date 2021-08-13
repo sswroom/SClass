@@ -1837,6 +1837,8 @@ Media/M2VStreamSource.h: ../../src/Media/M2VStreamSource.cpp
 @M2VStreamSource.o
 Media/MediaFile.h: ../../src/Media/MediaFile.cpp
 @MediaFile.o
+Media/MemorySurface.h: ../../src/Media/MemorySurface.cpp
+@MemorySurface.o
 Media/MonitorMgr.h: ../../src/Media/MonitorMgr.cpp
 @MonitorMgr.o
 Media/MonitorSurface.h:
@@ -3951,6 +3953,7 @@ LUT.o: ../../src/Media/LUT.cpp
 M2VFile.o: ../../src/Media/M2VFile.cpp
 M2VStreamSource.o: ../../src/Media/M2VStreamSource.cpp
 MediaFile.o: ../../src/Media/MediaFile.cpp
+MemorySurface.o: ../../src/Media/MemorySurface.cpp
 MonitorMgr.o: ../../src/Media/MonitorMgr.cpp
 MPAStreamSource.o: ../../src/Media/MPAStreamSource.cpp
 MPEGVideoParser.o: ../../src/Media/MPEGVideoParser.cpp

@@ -1,20 +1,17 @@
-#ifndef _SM_MEDIA_FBSURFACE
-#define _SM_MEDIA_FBSURFACE
-#include "Handles.h"
+#ifndef _SM_MEDIA_MEMORYSURFACE
+#define _SM_MEDIA_MEMORYSURFACE
 #include "Media/MonitorSurface.h"
 
 namespace Media
 {
-	class FBSurface : public Media::MonitorSurface
+	class MemorySurface : public Media::MonitorSurface
 	{
 	private:
-		struct ClassData;
-
-		ClassData *clsData;
+		UInt8 *buffPtr;
 
 	public:
-		FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi);
-		virtual ~FBSurface();
+		MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, Media::ColorProfile *color, Double dpi);
+		virtual ~MemorySurface();
 
 		Bool IsError();
 		
@@ -24,10 +21,7 @@ namespace Media
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();
-
 		virtual Bool DrawFromBuff();
-
-		void SetBuffSurface(Media::MonitorSurface *buffSurface);
 	};
 }
 #endif

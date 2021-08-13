@@ -11,9 +11,17 @@ namespace Media
 	private:
 		Media::MonitorMgr *monMgr;
 		Media::ColorManager *colorMgr;
+		Media::ColorManagerSess *colorSess;
+		UI::GUICore *ui;
+
 	public:
+		GTKMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess);
 		GTKMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 		virtual ~GTKMonitorSurfaceMgr();
+
+		Double GetMonitorDPI(MonitorHandle *hMonitor);
+		Media::ColorProfile *GetMonitorColor(MonitorHandle *hMonitor);
+		Bool Is10BitColor(MonitorHandle *hMonitor);
 
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);
 		virtual void WaitForVBlank(MonitorHandle *hMon);

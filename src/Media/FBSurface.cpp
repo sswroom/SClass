@@ -21,12 +21,14 @@ struct Media::FBSurface::ClassData
 	struct fb_fix_screeninfo finfo;
 	struct fb_var_screeninfo vinfo;
 	UInt8 *dataPtr;
+	MonitorSurface *buffSurface;
 };
 
 Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->hMon = hMon;
+	this->clsData->buffSurface = 0;
 	Char sbuff[64];
 	Text::StrUOSInt(Text::StrConcat(sbuff, "/dev/fb"), ((UOSInt)hMon) - 1);
 	this->clsData->fd = open(sbuff, O_RDWR);
@@ -77,12 +79,6 @@ Bool Media::FBSurface::IsError()
 	return this->clsData->fd < 0;
 }
 
-void Media::FBSurface::WaitForVSync()
-{
-	int arg = 0;
-	ioctl(this->clsData->fd, FBIO_WAITFORVSYNC, &arg);
-}
-
 Media::Image *Media::FBSurface::Clone()
 {
 	Media::FBSurface *surface;
@@ -131,4 +127,30 @@ void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSI
 		height = (UOSInt)(bottom - top);
 		ImageCopy_ImgCopyR(this->clsData->dataPtr + (left * (OSInt)(this->info->storeBPP >> 3)) + (top * (OSInt)this->clsData->finfo.line_length), destBuff, width * this->info->storeBPP >> 3, height, this->clsData->finfo.line_length, destBpl, upsideDown);
 	}
+}
+
+void Media::FBSurface::WaitForVBlank()
+{
+	int arg = 0;
+	ioctl(this->clsData->fd, FBIO_WAITFORVSYNC, &arg);
+}
+
+void *Media::FBSurface::GetHandle()
+{
+	return (void*)(OSInt)(1 + this->clsData->fd);
+}
+
+Bool Media::FBSurface::DrawFromBuff()
+{
+	if (this->clsData->buffSurface)
+	{
+		this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->finfo.line_length, false);
+		return true;
+	}
+	return false;
+}
+
+void Media::FBSurface::SetBuffSurface(Media::MonitorSurface *buffSurface)
+{
+	this->clsData->buffSurface = buffSurface;
 }

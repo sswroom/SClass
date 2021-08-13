@@ -30,7 +30,7 @@ namespace UI
 		Media::ImageCopy *imgCopy;
 
 		Sync::Event *drawEvt;
-		Media::DDrawManager *surfaceMgr;
+		Media::MonitorSurfaceMgr *surfaceMgr;
 		MonitorHandle *surfaceMon;
 		Media::MonitorSurface *primarySurface;
 		Media::MonitorSurface *buffSurface;
@@ -105,7 +105,7 @@ namespace UI
 		virtual void OnJSButtonUp(OSInt buttonId);
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 
-		void *GetSurface();
+		void *GetPixBuf();
 		void UseDrawSurface(Sync::MutexUsage *mut);
 		void UnuseDrawSurface(Sync::MutexUsage *mut);
 	};

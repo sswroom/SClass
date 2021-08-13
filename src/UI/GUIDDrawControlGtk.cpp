@@ -3,6 +3,7 @@
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
+#include "Media/GTKMonitorSurfaceMgr.h"
 #include "Media/ImageUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -17,8 +18,8 @@ struct UI::GUIDDrawControl::ClassData
 {
 	Bool pSurfaceUpdated;
 	GtkWidget *imgCtrl;
-	UInt8 *bufferSurfaceData;
 	UOSInt drawPause;
+	GdkPixbuf *pixBuf;
 };
 
 gboolean GUIDDrawControl_ToGenDrawSignal(gpointer user_data)
@@ -32,7 +33,7 @@ gboolean GUIDDrawControl_OnDDDraw(GtkWidget *widget, cairo_t *cr, gpointer user_
 	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)user_data;
 	Sync::MutexUsage mutUsage;
 	me->UseDrawSurface(&mutUsage);
-	GdkPixbuf *pixBuf = (GdkPixbuf*)me->GetSurface();
+	GdkPixbuf *pixBuf = (GdkPixbuf*)me->GetPixBuf();
 	if (pixBuf)
 	{
 		gdk_cairo_set_source_pixbuf(cr, pixBuf, 0, 0);
@@ -246,7 +247,7 @@ void UI::GUIDDrawControl::ReleaseSurface()
 
 void UI::GUIDDrawControl::CreateSubSurface()
 {
-	if (this->pSurface)
+	if (this->primarySurface)
 	{
 		return;
 	}
@@ -254,19 +255,21 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	{
 		return;
 	}
-	this->surfaceBuff = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
-	this->clsData->bufferSurfaceData = MemAllocA(UInt8, this->surfaceW * this->surfaceH * 4);
-	GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->clsData->bufferSurfaceData, GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
+	this->primarySurface = this->surfaceMgr->CreateSurface(this->surfaceW, this->surfaceH, 32);
+	this->buffSurface = this->surfaceMgr->CreateSurface(this->surfaceW, this->surfaceH, 32);
+	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->primarySurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
 	if (buf == 0)
 	{
-		MemFreeA(this->surfaceBuff);
-		MemFreeA(this->clsData->bufferSurfaceData);
+		DEL_CLASS(this->primarySurface);
+		DEL_CLASS(this->buffSurface);
+		this->primarySurface = 0;
+		this->buffSurface = 0;
 	}
 	else
 	{
-		ImageUtil_ColorFill32(this->clsData->bufferSurfaceData, this->surfaceW * this->surfaceH, 0xff000000);
+		ImageUtil_ColorFill32((UInt8*)this->primarySurface->GetHandle(), this->surfaceW * this->surfaceH, 0xff000000);
 		g_object_ref(buf);
-		this->pSurface = buf;
+		this->clsData->pixBuf = buf;
 		this->clsData->pSurfaceUpdated = true;
 	}
 }
@@ -274,21 +277,16 @@ void UI::GUIDDrawControl::CreateSubSurface()
 void UI::GUIDDrawControl::ReleaseSubSurface()
 {
 	gtk_image_clear((GtkImage*)this->clsData->imgCtrl);
-	if (this->pSurface)
+	if (this->primarySurface)
 	{
-		g_object_unref((GdkPixbuf*)this->pSurface);
-		this->pSurface = 0;
+		g_object_unref(this->clsData->pixBuf);
+		this->clsData->pixBuf = 0;
 		this->clsData->pSurfaceUpdated = true;
-		MemFreeA(this->surfaceBuff);
-		MemFreeA(this->clsData->bufferSurfaceData);
-		this->surfaceBuff = 0;
-		this->clsData->bufferSurfaceData = 0;
+		DEL_CLASS(this->buffSurface);
+		DEL_CLASS(this->primarySurface);
+		this->buffSurface = 0;
+		this->primarySurface = 0;
 	}
-}
-
-Bool UI::GUIDDrawControl::CreateClipper(void *lpDD)
-{
-	return false;
 }
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
@@ -296,7 +294,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 	if (this->surfaceW == targetWidth && this->surfaceH == targetHeight)
 	{
 		*bpl = this->surfaceW * 4;
-		return (UInt8*)this->surfaceBuff;
+		return (UInt8*)this->buffSurface->GetHandle();
 	}
 	return 0;
 }
@@ -323,17 +321,15 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->pSurfaceUpdated = true;
-	this->clsData->bufferSurfaceData = 0;
 	this->clsData->drawPause = 0;
 	
+	NEW_CLASS(this->surfaceMgr, Media::GTKMonitorSurfaceMgr(ui, colorSess));
 	this->inited = false;
-	this->clipper = 0;
-	this->pSurface = 0;
-	this->surfaceBuff = 0;
+	this->primarySurface = 0;
+	this->buffSurface = 0;
 	this->surfaceW = 0;
 	this->surfaceH = 0;
 	this->imgCopy = 0;
-	this->surfaceNoRelease = false;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
 	NEW_CLASS(this->drawEvt, Sync::Event(false, (const UTF8Char*)"UI.GUIDDrawControl.drawEvt"));
@@ -347,7 +343,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->bitDepth = 32;
 	this->HandleSizeChanged(OnResized, this);
 	this->currScnMode = SM_VFS;
-	this->clipper = 0;
 	this->clsData->imgCtrl = gtk_image_new();
 	this->hwnd = (ControlHandle*)gtk_event_box_new();
 	gtk_container_add((GtkContainer*)this->hwnd, this->clsData->imgCtrl);
@@ -382,6 +377,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 		this->debugFS = 0;
 		this->debugWriter = 0;
 	}
+	DEL_CLASS(this->surfaceMgr);
 	MemFree(this->clsData);
 }
 
@@ -392,10 +388,10 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	if (this->surfaceBuff && this->clsData->bufferSurfaceData)
+	if (this->primarySurface && this->buffSurface)
 	{
 //		printf("Draw to screen 1\r\n");
-		ImageUtil_ConvR8G8B8N8_ARGB32((const UInt8*)this->surfaceBuff, this->clsData->bufferSurfaceData, this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
+		ImageUtil_ConvR8G8B8N8_ARGB32((const UInt8*)this->buffSurface->GetHandle(), (UInt8*)this->primarySurface->GetHandle(), this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
 		if (this->clsData->drawPause)
 		{
 			this->clsData->drawPause--;
@@ -424,7 +420,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	if (this->clsData->bufferSurfaceData)
+	if (this->primarySurface)
 	{
 		if (this->clsData->drawPause)
 		{
@@ -458,25 +454,25 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 			{
 				if (tly > 0)
 				{
-					ImageUtil_ColorFill32(this->clsData->bufferSurfaceData, this->surfaceW * (UOSInt)tly, 0xffcccccc);
+					ImageUtil_ColorFill32((UInt8*)this->primarySurface->GetHandle(), this->surfaceW * (UOSInt)tly, 0xffcccccc);
 				}
 				if (tlx > 0)
 				{
-					ImageUtil_ImageColorFill32(this->clsData->bufferSurfaceData, (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32((UInt8*)this->primarySurface->GetHandle(), (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
 				if (tlx + (OSInt)drawW < (OSInt)this->surfaceW)
 				{
-					ImageUtil_ImageColorFill32(this->clsData->bufferSurfaceData + (tlx + (OSInt)drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - (OSInt)drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
+					ImageUtil_ImageColorFill32(((UInt8*)this->primarySurface->GetHandle()) + (tlx + (OSInt)drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - (OSInt)drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
 				}
-				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + this->clsData->bufferSurfaceData, (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
+				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + (UInt8*)this->primarySurface->GetHandle(), (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
 				if (tly + (OSInt)drawH < (OSInt)this->surfaceH)
 				{
-					ImageUtil_ColorFill32(this->clsData->bufferSurfaceData + (OSInt)this->surfaceW * 4 * (tly + (OSInt)drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - (OSInt)drawH), 0xffcccccc);
+					ImageUtil_ColorFill32(((UInt8*)this->primarySurface->GetHandle()) + (OSInt)this->surfaceW * 4 * (tly + (OSInt)drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - (OSInt)drawH), 0xffcccccc);
 				}
 			}
 			else
 			{
-				ImageUtil_ColorFill32(this->clsData->bufferSurfaceData, this->surfaceW * this->surfaceH, 0xffcccccc);
+				ImageUtil_ColorFill32((UInt8*)this->primarySurface->GetHandle(), this->surfaceW * this->surfaceH, 0xffcccccc);
 			}
 //			Data::DateTime dt;
 //			dt.SetCurrTimeUTC();
@@ -585,9 +581,9 @@ void UI::GUIDDrawControl::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt 
 {
 }
 
-void *UI::GUIDDrawControl::GetSurface()
+void *UI::GUIDDrawControl::GetPixBuf()
 {
-	return this->pSurface;
+	return this->clsData->pixBuf;
 }
 
 void UI::GUIDDrawControl::UseDrawSurface(Sync::MutexUsage *mutUsage)
