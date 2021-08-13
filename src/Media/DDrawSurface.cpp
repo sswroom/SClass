@@ -98,7 +98,7 @@ void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, U
 		}
 		else
 		{
-			ImageCopy_ImgCopyR((UInt8*)ddsd.lpSurface + top * ddsd.lPitch + left * (Int32)(ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), destBuff, width, height, (UOSInt)(OSInt)ddsd.lPitch, destBpl, upsideDown);
+			ImageCopy_ImgCopyR((UInt8*)ddsd.lpSurface + top * ddsd.lPitch + left * (Int32)(ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), destBuff, width * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), height, (UOSInt)(OSInt)ddsd.lPitch, destBpl, upsideDown);
 		}
 		this->clsData->surface->Unlock(0);
 	}

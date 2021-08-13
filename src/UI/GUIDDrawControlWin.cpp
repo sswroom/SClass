@@ -640,68 +640,6 @@ void UI::GUIDDrawControl::DrawToScreen()
 		if (GetVisible())
 		{
 			this->primarySurface->DrawFromSurface(this->buffSurface, true);
-/*			if (this->imgCopy == 0)
-			{
-				NEW_CLASS(this->imgCopy, Media::ImageCopy());
-				this->imgCopy->SetThreadPriority(Sync::Thread::TP_HIGHEST);
-			}
-
-			GetDrawingRect(&rcDest);
-			rcSrc.left = 0;
-			rcSrc.top = 0;
-			rcSrc.right = (LONG)this->surfaceW;
-			rcSrc.bottom = (LONG)this->surfaceH;
-			if (this->primarySurface && this->buffSurface)
-			{
-				DDSURFACEDESC2 ddsd;
-				DDSURFACEDESC2 ddsd2;
-				MemClear(&ddsd, sizeof(ddsd));
-				MemClear(&ddsd2, sizeof(ddsd2));
-				ddsd.dwSize = sizeof(ddsd);
-				ddsd2.dwSize = sizeof(ddsd2);
-
-				rcDest.left -= (LONG)this->scnX;
-				rcDest.top -= (LONG)this->scnY;
-				rcDest.right -= (LONG)this->scnX;
-				rcDest.bottom -= (LONG)this->scnY;
-
-				HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
- 				if (hRes == DDERR_SURFACELOST)
-				{
-					((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
-					hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
-				}
-				if (hRes == DD_OK)
-				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-					if (hRes == DDERR_SURFACELOST)
-					{
-						hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-					}
-					if (hRes == DD_OK)
-					{
-						this->primarySurface->WaitForVBlank();
-						if (this->bitDepth == 32)
-						{
-							this->imgCopy->Copy32((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
-						}
-						else if (this->bitDepth == 16)
-						{
-							this->imgCopy->Copy16((UInt8*)ddsd2.lpSurface, ddsd2.lPitch, (UInt8*)ddsd.lpSurface, ddsd.lPitch, this->surfaceW, this->surfaceH);
-						}
- 						((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
-					}
-					else
-					{
-						hRes = 0;
-					}
-					((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
-				}
-				else
-				{
-					hRes = 0;
-				}
-			}*/
 		}
 	}
 	else

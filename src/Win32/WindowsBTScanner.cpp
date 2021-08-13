@@ -15,30 +15,38 @@ using namespace Windows::Devices::Bluetooth::Advertisement;
 void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const &sender,
 	winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const &args)
 {
-	IO::BTScanLog::ScanRecord *rec = this->DeviceGet(args.BluetoothAddress());
+	IO::BTScanLog::AddressType addrType;
+	Int8 txPower;
+#if _MSC_VER >= 1920
+	if (args.BluetoothAddressType() == BluetoothLEAdvertisementAddressType::Public)
+	{
+		addrType = IO::BTScanLog::AT_PUBLIC;
+	}
+	else if (args.BluetoothAddressType() == BluetoothLEAdvertisementAddressType::Random)
+	{
+		addrType = IO::BTScanLog::AT_RANDOM;
+	}
+	else
+	{
+		addrType = IO::BTScanLog::AT_UNKNOWN;
+	}
+	txPower = (Int8)args.TransmitPowerLevelInDBm();
+#else
+	addrType = IO::BTScanLog::AT_UNKNOWN;
+	txPower = 0;
+#endif
+
+	IO::BTScanLog::ScanRecord3 *rec = this->DeviceGet(args.BluetoothAddress(), addrType);
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	rec->lastSeenTime = dt.ToTicks();
 	rec->rssi = (Int8)args.RawSignalStrengthInDBm();
 	rec->inRange = true;
-#if _MSC_VER >= 1920
-	if (args.BluetoothAddressType() == BluetoothLEAdvertisementAddressType::Public)
-	{
-		rec->addrType = IO::BTScanLog::AT_PUBLIC;
-	}
-	else if (args.BluetoothAddressType() == BluetoothLEAdvertisementAddressType::Random)
-	{
-		rec->addrType = IO::BTScanLog::AT_RANDOM;
-	}
-	else
-	{
-		rec->addrType = IO::BTScanLog::AT_UNKNOWN;
-	}
-	rec->txPower = args.TransmitPowerLevelInDBm();
-#else
-	rec->addrType = IO::BTScanLog::AT_UNKNOWN;
-	rec->txPower = 0;
-#endif
+	rec->addrType = addrType;
+	rec->txPower = txPower;
+	rec->advType = IO::BTScanLog::ADVT_UNKNOWN;
+	rec->company = 0;
+
 	hstring hstr = args.Advertisement().LocalName();
 	const WChar *wptr = hstr.c_str();
 	if (wptr[0] != 0)
@@ -65,16 +73,24 @@ void Win32::WindowsBTScanner::StoppedHandler(winrt::Windows::Devices::Bluetooth:
 {
 }
 
-IO::BTScanLog::ScanRecord *Win32::WindowsBTScanner::DeviceGet(UInt64 mac)
+IO::BTScanLog::ScanRecord3 *Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType)
 {
 	Sync::MutexUsage mutUsage(this->devMut);
-	IO::BTScanLog::ScanRecord *rec = this->devMap->Get(mac);
+	IO::BTScanLog::ScanRecord3 *rec;
+	if (addrType == IO::BTScanLog::AT_RANDOM)
+	{
+		rec = this->randDevMap->Get(mac);
+	}
+	else
+	{
+		rec = this->pubDevMap->Get(mac);
+	}
 	if (rec)
 	{
 		return rec;
 	}
-	rec = MemAlloc(IO::BTScanLog::ScanRecord, 1);
-	MemClear(rec, sizeof(IO::BTScanLog::ScanRecord));
+	rec = MemAlloc(IO::BTScanLog::ScanRecord3, 1);
+	MemClear(rec, sizeof(IO::BTScanLog::ScanRecord3));
 	UInt8 buff[8];
 	rec->macInt = mac;
 	WriteMUInt64(buff, mac);
@@ -86,11 +102,19 @@ IO::BTScanLog::ScanRecord *Win32::WindowsBTScanner::DeviceGet(UInt64 mac)
 	rec->mac[5] = buff[7];
 	rec->radioType = IO::BTScanLog::RT_LE;
 	rec->company = 0;
-	this->devMap->Put(mac, rec);
+	rec->addrType = addrType;
+	if (addrType == IO::BTScanLog::AT_RANDOM)
+	{
+		this->randDevMap->Put(mac, rec);
+	}
+	else
+	{
+		this->pubDevMap->Put(mac, rec);
+	}
 	return rec;
 }
 
-void Win32::WindowsBTScanner::DeviceFree(IO::BTScanLog::ScanRecord *rec)
+void Win32::WindowsBTScanner::DeviceFree(IO::BTScanLog::ScanRecord3 *rec)
 {
 	SDEL_TEXT(rec->name);
 	MemFree(rec);
@@ -102,8 +126,9 @@ Win32::WindowsBTScanner::WindowsBTScanner()
 	this->recHdlr = 0;
 	this->recHdlrObj = 0;
 	NEW_CLASS(this->devMut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::UInt64Map<IO::BTScanLog::ScanRecord*>());
-	
+	NEW_CLASS(this->pubDevMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
+	NEW_CLASS(this->randDevMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
+
 	this->watcher = BluetoothLEAdvertisementWatcher();
 	this->watcher.ScanningMode(BluetoothLEScanningMode::Active);
 	this->watcher.Received({ this, &Win32::WindowsBTScanner::ReceivedHandler });
@@ -113,9 +138,12 @@ Win32::WindowsBTScanner::WindowsBTScanner()
 Win32::WindowsBTScanner::~WindowsBTScanner()
 {
 	this->Close();
-	Data::ArrayList<IO::BTScanLog::ScanRecord*> *devList = this->devMap->GetValues();
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->pubDevMap->GetValues();
 	LIST_FREE_FUNC(devList, DeviceFree);
-	DEL_CLASS(this->devMap);
+	devList = this->randDevMap->GetValues();
+	LIST_FREE_FUNC(devList, DeviceFree);
+	DEL_CLASS(this->pubDevMap);
+	DEL_CLASS(this->randDevMap);
 	DEL_CLASS(this->devMut);
 }
 
@@ -162,8 +190,14 @@ Bool Win32::WindowsBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord*> *Win32::WindowsBTScanner::GetRecordMap(Sync::MutexUsage *mutUsage)
+Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
-	return this->devMap;
+	return this->pubDevMap;
+}
+
+Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
+{
+	mutUsage->ReplaceMutex(this->devMut);
+	return this->pubDevMap;
 }
