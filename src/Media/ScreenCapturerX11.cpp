@@ -7,7 +7,9 @@
 #include <X11/Xmd.h> 
 #include <X11/Xatom.h>
 
-Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+#include <stdio.h>
+
+/*Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
@@ -26,9 +28,9 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 	Media::StaticImage *retImg = surface->CreateStaticImage();
 	DEL_CLASS(surface);
 	return retImg;
-}
+}*/
 
-/*
+
 Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
 	this->monMgr = monMgr;
@@ -42,8 +44,9 @@ Media::ScreenCapturer::~ScreenCapturer()
 Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 {
     Display *dis = XOpenDisplay((char *)0);
+	printf("nScreen = %d\r\n", ScreenCount(dis));
     Screen *scr = ScreenOfDisplay(dis, -1 + (int)(OSInt)hMon);
-    Drawable drawable = XRootWindow(dis, -1 + (int)(OSInt)hMon);
+    Drawable drawable = XRootWindowOfScreen(scr);
 
 	Media::StaticImage *retImg = 0;
     XImage *image = XGetImage(dis, drawable, 0, 0, (UInt32)scr->width, (UInt32)scr->height, AllPlanes, ZPixmap);
@@ -85,4 +88,3 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
     XCloseDisplay(dis); 
 	return retImg;
 }
-*/
