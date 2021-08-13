@@ -290,9 +290,6 @@ void UI::GUIDDrawControl::OnPaint()
 
 Bool UI::GUIDDrawControl::CreateSurface()
 {
-	DDSURFACEDESC2 ddsd;
-	LPDIRECTDRAWSURFACE7 primarySurface;
-
 	this->ReleaseSurface();
 	this->ReleaseSubSurface();
 
@@ -315,8 +312,6 @@ Bool UI::GUIDDrawControl::CreateSurface()
 	}
 	else
 	{
-		MonitorHandle *hMon;
-		LPDIRECTDRAW7 lpDD;
 		if (this->currScnMode == SM_VFS)
 		{
 			this->surfaceMon = this->GetHMonitor();
@@ -342,7 +337,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.Append((const UTF8Char*)", bpl = ");
 				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
 				sb.Append((const UTF8Char*)", hMon = ");
-				sb.AppendOSInt((OSInt)hMon);
+				sb.AppendOSInt((OSInt)this->surfaceMon);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
 			this->bitDepth = this->primarySurface->info->storeBPP;
@@ -524,7 +519,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
 	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui, colorSess));
-	if (this->surfaceMgr->IsError())
+	if (((Media::DDrawManager*)this->surfaceMgr)->IsError())
 	{
 	}
 	else
@@ -1040,7 +1035,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	if (fullScn && !vfs)
 	{
 		this->switching = true;
-		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(this->GetHMonitor());
+		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)((Media::DDrawManager*)this->surfaceMgr)->GetDD7(this->GetHMonitor());
 		this->currScnMode = SM_FS;
 		DDSURFACEDESC2 ddsd;
 		ddsd.dwSize = sizeof(ddsd);
@@ -1090,7 +1085,6 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			NEW_CLASS(this->imgCopy, Media::ImageCopy());
 			this->imgCopy->SetThreadPriority(Sync::Thread::TP_HIGHEST);
 		}
-		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(this->GetHMonitor());
 		this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 		if (this->debugWriter)
 		{
@@ -1163,7 +1157,6 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		{
 			this->currScnMode = SM_WINDOWED;
 		}
-		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->surfaceMgr->GetDD7(0);
 		this->surfaceMgr->SetFSMode(0, this->rootForm->GetHandle(), false);
 
 		this->CreateSurface();
@@ -1181,7 +1174,7 @@ Bool UI::GUIDDrawControl::IsFullScreen()
 void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
 {
 	MONITORINFOEXW monInfo;
-	this->surfaceMgr->ReleaseDD7(this->currMon);
+	((Media::DDrawManager*)this->surfaceMgr)->ReleaseDD7(this->currMon);
 	this->currMon = hMon;
 	monInfo.cbSize = sizeof(monInfo);
 	GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
