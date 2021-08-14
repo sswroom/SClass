@@ -2,6 +2,7 @@
 #include "Media/DDrawManager.h"
 #include "Media/DDrawSurface.h"
 #include "Media/ImageCopyC.h"
+#include "Media/ImageUtil.h"
 #include <windows.h>
 #include <ddraw.h>
 
@@ -217,6 +218,167 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 		return succ;
 	}
 	return false;
+}
+
+Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
+{
+	OSInt drawWidth = (OSInt)this->info->dispWidth;
+	OSInt drawHeight = (OSInt)this->info->dispHeight;
+	RECT rc;
+	HWND hWnd;
+	if (this->clsData->clipper)
+	{
+		this->clsData->clipper->GetHWnd(&hWnd);
+		GetClientRect(hWnd, &rc);
+		ClientToScreen(hWnd, (POINT*)&rc.left);
+		ClientToScreen(hWnd, (POINT*)&rc.right);
+		drawWidth = (UInt32)(rc.right - rc.left);
+		drawHeight = (UInt32)(rc.bottom - rc.top);
+
+		MONITORINFOEXW info;
+		info.cbSize = sizeof(info);
+		if (GetMonitorInfoW((HMONITOR)this->clsData->hMon, &info))
+		{
+			rc.left -= info.rcMonitor.left;
+			rc.top -= info.rcMonitor.top;
+			rc.right -= info.rcMonitor.left;
+			rc.bottom -= info.rcMonitor.bottom;
+		}
+	}
+	else
+	{
+		rc.left = 0;
+		rc.top = 0;
+		rc.right = (LONG)drawWidth;
+		rc.bottom = (LONG)drawHeight;
+	}
+	Bool succ = false;
+	RECT rcSrc;
+	DDSURFACEDESC2 ddsd;
+	rcSrc.left = 0;
+	rcSrc.top = 0;
+	rcSrc.right = (LONG)this->info->dispWidth;
+	rcSrc.bottom = (LONG)this->info->dispHeight;
+	MemClear(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+
+	HRESULT hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+	if (hRes == DDERR_SURFACELOST)
+	{
+		this->clsData->surface->Release();
+		hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+	}
+	if (hRes == DD_OK)
+	{
+		if (waitForVBlank) this->WaitForVBlank();
+		OSInt drawX = 0;
+		OSInt drawY = 0;
+		if (destX < 0)
+		{
+			drawX = -destX;
+			buffW += destX;
+			destX = 0;
+		}
+		if (destY < 0)
+		{
+			drawY = -destY;
+			buffH += destY;
+			destY = 0;
+		}
+		if (rc.right > (OSInt)this->info->dispWidth)
+		{
+			rc.right = (LONG)(OSInt)this->info->dispWidth;
+		}
+		if (rc.bottom > (OSInt)this->info->dispHeight)
+		{
+			rc.bottom = (LONG)(OSInt)this->info->dispHeight;
+		}
+		if (rc.left < 0)
+		{
+			drawX += -rc.left;
+			rc.left = 0;
+		}
+		if (rc.top < 0)
+		{
+			drawY += -rc.top;
+			rc.top = 0;
+		}
+		drawWidth = rc.right - rc.left;
+		drawHeight = rc.bottom - rc.top;
+		if (destX + (OSInt)buffW > (OSInt)drawWidth)
+		{
+			buffW = drawWidth - destX;
+		}
+		if (destY + (OSInt)buffH > (OSInt)drawHeight)
+		{
+			buffH = drawHeight - destY;
+		}
+		if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+		{
+			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
+				(UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (rc.left + destX) * ((OSInt)this->info->storeBPP >> 3),
+				buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)ddsd.lPitch, false);
+
+			if (clearScn)
+			{
+				if (destY > 0)
+				{
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destY, (UInt32)ddsd.lPitch, 0);
+				}
+				if (destY + (OSInt)buffH < (OSInt)drawHeight)
+				{
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY + (OSInt)buffH) * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)(drawHeight - (OSInt)buffH - destY), (UInt32)ddsd.lPitch, 0);
+				}
+				if (destX > 0)
+				{
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch, (UOSInt)destX, buffH, (UInt32)ddsd.lPitch, 0);
+				}
+				if (destX + (OSInt)buffW < (OSInt)drawWidth)
+				{
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (destX + (OSInt)buffW) * (OSInt)(this->info->storeBPP >> 3), (UOSInt)drawWidth - (UOSInt)destX - buffW, buffH, (UInt32)ddsd.lPitch, 0);
+				}
+			}
+		}
+		else if (clearScn)
+		{
+			ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, 0);
+		}
+
+		this->clsData->surface->Unlock(0);
+		succ = true;
+	}
+	return succ;
+}
+
+UInt8 *Media::DDrawSurface::LockSurface(OSInt *lineAdd)
+{
+	RECT rcSrc;
+	HRESULT hRes;
+	DDSURFACEDESC2 ddsd;
+	MemClear(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	rcSrc.left = 0;
+	rcSrc.top = 0;
+	rcSrc.right = (LONG)this->info->dispWidth;
+	rcSrc.bottom = (LONG)this->info->dispHeight;
+
+	hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+	if (hRes == DDERR_SURFACELOST)
+	{
+		this->clsData->surface->Release();
+		hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
+	}
+	if (hRes == DD_OK)
+	{
+		*lineAdd = ddsd.lPitch;
+		return (UInt8*)ddsd.lpSurface;
+	}
+	return 0;
+}
+
+void Media::DDrawSurface::UnlockSurface()
+{
+	this->clsData->surface->Unlock(0);
 }
 
 void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)

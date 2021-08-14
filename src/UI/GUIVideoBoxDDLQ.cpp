@@ -313,8 +313,25 @@ void UI::GUIVideoBoxDDLQ::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info
 			yuvType = Media::ColorProfile::YUVT_BT601;
 		}
 	}
+	UInt32 fcc = info->fourcc;
+	if (fcc == FFMT_YUV444P10LE)
+	{
+		fcc = FFMT_YUV444P10LEP;
+	}
+	else if (fcc == FFMT_YUV420P10LE)
+	{
+		fcc = *(UInt32*)"P016";
+	}
+	else if (fcc == FFMT_YUV420P12LE)
+	{
+		fcc = *(UInt32*)"P016";
+	}
+	else if (fcc == FFMT_YUV420P8)
+	{
+		fcc = *(UInt32*)"YV12";
+	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_VDISPLAY);
-	tstat->csconv = Media::CS::CSConverter::NewConverter(info->fourcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
+	tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
 	if (info->dispWidth * info->dispHeight > tstat->lrSize)
 	{
 		tstat->lrSize = info->dispWidth * info->dispHeight;

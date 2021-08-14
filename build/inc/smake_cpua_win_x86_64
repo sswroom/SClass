@@ -53,7 +53,7 @@ Math_CPP.o: ../../src/Math/Math_Win64.asm
 Deinterlace8_CPP.o: ../../src/Media/Deinterlace8_CPP.cpp
 DeinterlaceLR_CPP.o: ../../src/Media/DeinterlaceLR_CPP.cpp
 GRFilter_CPP.o: ../../src/Media/GRFilter_CPP.cpp
-ImageCopy_CPP.o: ../../src/Media/ImageCopy_Win64.asm
+ImageCopy_CPP.o: ../../src/Media/ImageCopy_CPP.cpp
 ImageTo8Bit_CPP.o: ../../src/Media/ImageTo8Bit_Win64.asm
 ImageUtil_CPP.o: ../../src/Media/ImageUtil_Win64.asm
 LRGBLimiter_CPP.o: ../../src/Media/LRGBLimiter_Win64.asm

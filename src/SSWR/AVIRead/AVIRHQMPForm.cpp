@@ -22,6 +22,8 @@
 #include "UI/GUIVideoBoxDDLQ.h"
 #include "UI/MessageDialog.h"
 
+#include "IO/DebugWriter.h"
+
 #define VFSMODE true
 
 typedef enum
@@ -1112,6 +1114,22 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		{
 			UOSInt vw;
 			UOSInt vh;
+			IO::DebugWriter debug;
+			Text::StringBuilderUTF8 sb;
+			Data::DateTime dt;
+			dt.SetCurrTimeUTC();
+			sb.AppendDate(&dt);
+			sb.Append((const UTF8Char*)" a");
+			debug.WriteLine(sb.ToString());
+			if (this->vbox->IsFullScreen())
+			{
+				this->vbox->SwitchFullScreen(false, false);
+			}
+			dt.SetCurrTimeUTC();
+			sb.ClearStr();
+			sb.AppendDate(&dt);
+			sb.Append((const UTF8Char*)" b");
+			debug.WriteLine(sb.ToString());
 			if (this->player->GetVideoSize(&vw, &vh))
 			{
 				UOSInt w1;
@@ -1119,22 +1137,48 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt w2;
 				UOSInt h2;
 
-				if (this->vbox->IsFullScreen())
-				{
-					this->vbox->SwitchFullScreen(false, false);
-				}
+				dt.SetCurrTimeUTC();
+				sb.ClearStr();
+				sb.AppendDate(&dt);
+				sb.Append((const UTF8Char*)" c");
+				debug.WriteLine(sb.ToString());
 				this->vbox->GetSizeP(&w1, &h1);
+				dt.SetCurrTimeUTC();
+				sb.ClearStr();
+				sb.AppendDate(&dt);
+				sb.Append((const UTF8Char*)" d");
+				debug.WriteLine(sb.ToString());
 				this->GetSizeP(&w2, &h2);
 
+				dt.SetCurrTimeUTC();
+				sb.ClearStr();
+				sb.AppendDate(&dt);
+				sb.Append((const UTF8Char*)" e");
+				debug.WriteLine(sb.ToString());
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
 				if (w1 == vw && h1 == vh)
 				{
+					dt.SetCurrTimeUTC();
+					sb.ClearStr();
+					sb.AppendDate(&dt);
+					sb.Append((const UTF8Char*)" f");
+					debug.WriteLine(sb.ToString());
 					this->vbox->OnSizeChanged(false);
 				}
 				else
 				{
+					dt.SetCurrTimeUTC();
+					sb.ClearStr();
+					sb.AppendDate(&dt);
+					sb.Append((const UTF8Char*)" g");
+					debug.WriteLine(sb.ToString());
 					this->SetSizeP(w2 - w1 + vw, h2 - h1 + vh);
 				}
+				dt.SetCurrTimeUTC();
+				sb.ClearStr();
+				sb.AppendDate(&dt);
+				sb.Append((const UTF8Char*)" h");
+				debug.WriteLine(sb.ToString());
 			}
 		}
 		break;

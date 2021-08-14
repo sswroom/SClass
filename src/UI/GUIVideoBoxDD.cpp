@@ -65,10 +65,13 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 		vheight = vheight << 1;
 	}
 	this->CalDisplayRect(vwidth, vheight, &rect);
+	UOSInt surfaceW = this->surfaceW;
+	UOSInt surfaceH = this->surfaceH;
+	mutUsage.EndUse();
 	if (rect.width == vbuff->destW && rect.height == vbuff->destH && this->IsSurfaceReady() && vbuff->destBitDepth == this->bitDepth)
 	{
 		UOSInt dlineSize;
-		UInt8 *dptr = this->LockSurfaceDirect(&dlineSize);
+		UInt8 *dptr = this->LockSurfaceBegin(surfaceW, surfaceH, &dlineSize);
 		if (dptr)
 		{
 			dptr = dptr + (rect.top * (OSInt)dlineSize + rect.left * (OSInt)(this->bitDepth >> 3));
@@ -80,10 +83,9 @@ void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 			{
 				this->outputCopier->Copy16(vbuff->destBuff, (OSInt)rect.width * 4, dptr, (OSInt)dlineSize, rect.width, rect.height);
 			}
-			this->LockSurfaceUnlock();
+			this->LockSurfaceEnd();
 		}
 	}
-	mutUsage.EndUse();
 	this->VideoEndProc();
 	
 }

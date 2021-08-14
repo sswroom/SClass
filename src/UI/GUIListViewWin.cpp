@@ -218,15 +218,24 @@ UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, UOSInt 
 
 Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text)
 {
-	const WChar *ws = Text::StrToWCharNew(text);
+	const WChar *ws = 0;
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
 	item.mask = LVIF_TEXT;
-	item.pszText = (LPWSTR)ws;
-	item.cchTextMax = (int)Text::StrCharCnt(ws);
+	if (text != 0)
+	{
+		ws = Text::StrToWCharNew(text);
+		item.pszText = (LPWSTR)ws;
+		item.cchTextMax = (int)Text::StrCharCnt(ws);
+	}
+	else
+	{
+		item.pszText = 0;
+		item.cchTextMax = 0;
+	}
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
-	Text::StrDelNew(ws);
+	SDEL_TEXT(ws);
 	return ret;
 }
 

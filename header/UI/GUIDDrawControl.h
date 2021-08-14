@@ -75,8 +75,6 @@ namespace UI
 
 		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl);
 		void LockSurfaceEnd();
-		UInt8 *LockSurfaceDirect(UOSInt *bpl);
-		void LockSurfaceUnlock();
 		Media::PixelFormat GetPixelFormat();
 
 	public:

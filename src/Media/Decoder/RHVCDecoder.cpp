@@ -402,7 +402,6 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	if (this->pps == 0 || this->sps == 0)
 		return false;
 
-	Sync::MutexUsage mutUsage(this->frameMut);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	UOSInt oriW = info->dispWidth;
 	UOSInt oriH = info->dispHeight;
@@ -412,7 +411,6 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	}
 	info->dispWidth = oriW;
 	info->dispHeight = oriH;
-	mutUsage.EndUse();
 	*maxFrameSize = this->maxFrameSize;
 	info->fourcc = ReadNUInt32((const UInt8*)"HEVC");
 

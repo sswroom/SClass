@@ -312,19 +312,23 @@ Bool UI::GUIDDrawControl::CreateSurface()
 	}
 	else
 	{
+		ControlHandle *hWnd;
 		if (this->currScnMode == SM_VFS)
 		{
 			this->surfaceMon = this->GetHMonitor();
+			hWnd = 0;
 		}
 		else if (this->currScnMode == SM_WINDOWED_DIR)
 		{
 			this->surfaceMon = this->GetHMonitor();
+			hWnd = this->GetHandle();
 		}
 		else
 		{
 			this->surfaceMon = 0;
+			hWnd = this->GetHandle();
 		}
-		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, this->GetHandle());
+		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd);
 		if (this->primarySurface)
 		{
 			if (this->debugWriter)
@@ -338,6 +342,8 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
 				sb.Append((const UTF8Char*)", hMon = ");
 				sb.AppendOSInt((OSInt)this->surfaceMon);
+				sb.Append((const UTF8Char*)", hWnd = ");
+				sb.AppendOSInt((OSInt)hWnd);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
 			this->bitDepth = this->primarySurface->info->storeBPP;
@@ -400,28 +406,18 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
 {
-	RECT rcSrc;
 	this->surfaceMut->Lock();
+	if (this->buffSurface == 0)
+	{
+		this->surfaceMut->Unlock();
+		return 0;
+	}
 	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
 	{
-		HRESULT hRes;
-		DDSURFACEDESC2 ddsd2;
-		MemClear(&ddsd2, sizeof(ddsd2));
-		ddsd2.dwSize = sizeof(ddsd2);
-		rcSrc.left = 0;
-		rcSrc.top = 0;
-		rcSrc.right = (LONG)this->surfaceW;
-		rcSrc.bottom = (LONG)this->surfaceH;
-
-		hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-		if (hRes == DDERR_SURFACELOST)
+		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
+		if (dptr)
 		{
-			hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-		}
-		if (hRes == DD_OK)
-		{
-			*bpl = (ULONG)ddsd2.lPitch;
-			return (UInt8*)ddsd2.lpSurface;
+			return dptr;
 		}
 	}
 	this->surfaceMut->Unlock();
@@ -430,40 +426,8 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
-	((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
+	this->buffSurface->UnlockSurface();
 	this->surfaceMut->Unlock();
-}
-
-UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
-{
-	if (this->buffSurface == 0)
-		return 0;
-	RECT rcSrc;
-	HRESULT hRes;
-	DDSURFACEDESC2 ddsd2;
-	MemClear(&ddsd2, sizeof(ddsd2));
-	ddsd2.dwSize = sizeof(ddsd2);
-	rcSrc.left = 0;
-	rcSrc.top = 0;
-	rcSrc.right = (LONG)this->surfaceW;
-	rcSrc.bottom = (LONG)this->surfaceH;
-
-	hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-	if (hRes == DDERR_SURFACELOST)
-	{
-		hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd2, DDLOCK_WAIT, 0);
-	}
-	if (hRes == DD_OK)
-	{
-		*bpl = (ULONG)ddsd2.lPitch;
-		return (UInt8*)ddsd2.lpSurface;
-	}
-	return 0;
-}
-
-void UI::GUIDDrawControl::LockSurfaceUnlock()
-{
-	((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
 }
 
 Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
@@ -531,8 +495,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 		this->scnX = monInfo.rcMonitor.left;
 		this->scnY = monInfo.rcMonitor.top;
 		SwitchFullScreen(false, false);
-/*		lpDD->SetCooperativeLevel((HWND)this->hwnd, DDSCL_NORMAL);
-		CreateSurface();*/
 	}
 
 	UInt32 nPad = joyGetNumDevs();
@@ -598,7 +560,6 @@ void UI::GUIDDrawControl::DrawToScreen()
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	RECT rcSrc;
-	RECT rcDest;
 	if (this->debugWriter)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -623,7 +584,13 @@ void UI::GUIDDrawControl::DrawToScreen()
 		rcSrc.bottom = (LONG)this->surfaceH;
 		if (this->primarySurface && this->buffSurface)
 		{
-			this->primarySurface->DrawFromSurface(this->buffSurface, true);
+			if (!this->primarySurface->DrawFromSurface(this->buffSurface, true))
+			{
+				if (this->debugWriter)
+				{
+					this->debugWriter->WriteLine((const UTF8Char*)"DrawToScreen: failed");
+				}
+			}
 		}
 		else
 		{
@@ -649,37 +616,6 @@ void UI::GUIDDrawControl::DrawToScreen()
 			if (this->primarySurface && this->buffSurface)
 			{
 				this->primarySurface->DrawFromSurface(this->buffSurface, true);
-/*				HRESULT hRes;
-				GetDrawingRect(&rcDest);
-				rcSrc.left = 0;
-				rcSrc.top = 0;
-				rcSrc.right = (LONG)this->surfaceW;
-				rcSrc.bottom = (LONG)this->surfaceH;
-
-				this->primarySurface->WaitForVBlank();
-				if ((hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0)) == DDERR_SURFACELOST)
-				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
-					if (hRes == DDERR_WRONGMODE)
-					{
-						this->CreateSurface();
-					}
-					else
-					{
-						((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0);
-					}
-				}
-				else if (hRes != DD_OK)
-				{
-					if (this->debugWriter)
-					{
-						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"DrawToScreen: Error in surface blt: 0x");
-						sb.AppendHex32((UInt32)hRes);
-						this->debugWriter->WriteLine(sb.ToString());
-					}
-					hRes = 0;
-				}*/
 			}
 			else
 			{
@@ -697,189 +633,9 @@ void UI::GUIDDrawControl::DrawToScreen()
 
 void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
-	RECT rcSrc;
-	RECT rcDest;
-	if (this->imgCopy == 0)
+	if (primarySurface)
 	{
-		NEW_CLASS(this->imgCopy, Media::ImageCopy());
-		this->imgCopy->SetThreadPriority(Sync::Thread::TP_HIGHEST);
-	}
-
-	if (this->currScnMode == SM_VFS)
-	{
-		GetDrawingRect(&rcDest);
-		rcSrc.left = 0;
-		rcSrc.top = 0;
-		rcSrc.right = (LONG)this->surfaceW;
-		rcSrc.bottom = (LONG)this->surfaceH;
-		if (this->primarySurface)
-		{
-			DDSURFACEDESC2 ddsd;
-			MemClear(&ddsd, sizeof(ddsd));
-			ddsd.dwSize = sizeof(ddsd);
-
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
- 			if (hRes == DDERR_SURFACELOST)
-			{
-				hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
-				if (hRes == DDERR_WRONGMODE)
-				{
-					this->CreateSurface();
-					if (this->primarySurface)
-					{
-						hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
-					}
-				}
-				else
-				{
-					hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
-				}
-			}
-			if (hRes == DD_OK)
-			{
-				this->primarySurface->WaitForVBlank();
-				if (this->bitDepth == 32)
-				{
-					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
-				}
-				else if (this->bitDepth == 16)
-				{
-					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
-				}
-				if (clearScn)
-				{
-					if (tly > 0)
-					{
-						MemClear(ddsd.lpSurface, (UOSInt)(ddsd.lPitch * tly));
-					}
-					if (tly + (OSInt)drawH < (OSInt)this->surfaceH)
-					{
-						MemClear(((UInt8*)ddsd.lpSurface) + ddsd.lPitch * (tly + (OSInt)drawH), (ULONG)ddsd.lPitch * (this->surfaceH - drawH - (UOSInt)tly));
-					}
-					if (tlx > 0)
-					{
-						UInt8 *dptr = ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly;
-						UOSInt byteSize = (UOSInt)tlx * (this->bitDepth >> 3);
-						UOSInt i = drawH;
-						while (i-- > 0)
-						{
-							MemClear(dptr, byteSize);
-							dptr += ddsd.lPitch;
-						}
-					}
-					if (tlx + (OSInt)drawW < (OSInt)this->surfaceW)
-					{
-						UInt8 *dptr = ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx + (OSInt)drawW) * (this->bitDepth >> 3);
-						UOSInt byteSize = (this->surfaceW - (UOSInt)tlx - drawW) * (this->bitDepth >> 3);
-						UOSInt i = drawH;
-						while (i-- > 0)
-						{
-							MemClear(dptr, byteSize);
-							dptr += ddsd.lPitch;
-						}
-					}
-				}
-				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
-			}
-			else
-			{
-				hRes = 0;
-			}
-		}
-	}
-	else if (this->buffSurface)
-	{
-		DDSURFACEDESC2 ddsd;
-		MemClear(&ddsd, sizeof(ddsd));
-		ddsd.dwSize = sizeof(ddsd);
-
-		rcSrc.left = 0;
-		rcSrc.top = 0;
-		rcSrc.right = (LONG)this->surfaceW;
-		rcSrc.bottom = (LONG)this->surfaceH;
-
-		if (this->currScnMode == SM_WINDOWED_DIR)
-		{
-			GetDrawingRect(&rcDest);
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
- 			if (hRes == DDERR_SURFACELOST)
-			{
-				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
-				hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Lock(&rcDest, &ddsd, DDLOCK_WAIT, 0);
-			}
-			if (hRes == DD_OK)
-			{
-				if (this->bitDepth == 32)
-				{
-					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
-				}
-				else if (this->bitDepth == 16)
-				{
-					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
-				}
-				((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Unlock(0);
-			}
-		}
-		else
-		{
-			HRESULT hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
- 			if (hRes == DDERR_SURFACELOST)
-			{
-				((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Restore();
-				hRes = ((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
-			}
-			if (hRes == DD_OK)
-			{
-				if (this->bitDepth == 32)
-				{
-					this->imgCopy->Copy32(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
-				}
-				else if (this->bitDepth == 16)
-				{
-					this->imgCopy->Copy16(buff, lineAdd, ((UInt8*)ddsd.lpSurface) + ddsd.lPitch * tly + (tlx << 2), ddsd.lPitch, drawW, drawH);
-				}
-				((LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle())->Unlock(0);
-			}
-
-			if (this->currScnMode == SM_FS)
-			{
-				if (this->primarySurface)
-				{
-					this->primarySurface->DrawFromBuff();
-				}
-			}
-			else if (GetVisible())
-			{
-				GetDrawingRect(&rcDest);
-				if (this->primarySurface && this->buffSurface)
-				{
-					HRESULT hRes;
-					this->primarySurface->WaitForVBlank();
-					if ((hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0)) == DDERR_SURFACELOST)
-					{
-						hRes = ((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Restore();
-						if (hRes == DDERR_WRONGMODE)
-						{
-							this->CreateSurface();
-						}
-						else
-						{
-							((LPDIRECTDRAWSURFACE7)this->primarySurface->GetHandle())->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)this->buffSurface->GetHandle(), &rcSrc, 0, 0);
-						}
-					}
-					else if (hRes != DD_OK)
-					{
-						if (this->debugWriter)
-						{
-							Text::StringBuilderUTF8 sb;
-							sb.Append((const UTF8Char*)"DrawFromBuff: Error in surface blt: 0x");
-							sb.AppendHex32((UInt32)hRes);
-							this->debugWriter->WriteLine(sb.ToString());
-						}
-					}
-				}
-			}
-		}
+		this->primarySurface->DrawFromMem(buff, lineAdd, tlx, tly, drawW, drawH, clearScn, true);
 	}
 }
 
