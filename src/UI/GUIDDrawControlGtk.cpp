@@ -85,6 +85,30 @@ gboolean GUIDDrawControl_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointe
 		}
 		me->OnMouseDown(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
 	}
+	else if (evt->type == GDK_DOUBLE_BUTTON_PRESS)
+	{
+		UI::GUIControl::MouseButton btn;
+		switch (evt->button)
+		{
+			default:
+			case 1:
+				btn = UI::GUIControl::MBTN_LEFT;
+				break;
+			case 2:
+				btn = UI::GUIControl::MBTN_MIDDLE;
+				break;
+			case 3:
+				btn = UI::GUIControl::MBTN_RIGHT;
+				break;
+			case 4:
+				btn = UI::GUIControl::MBTN_X1;
+				break;
+			case 5:
+				btn = UI::GUIControl::MBTN_X2;
+				break;
+		}
+		me->OnMouseDblClick(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
+	}
 	return false;
 }
 
@@ -418,7 +442,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->debugWriter = 0;
 	this->bitDepth = 32;
 	this->HandleSizeChanged(OnResized, this);
-	this->currScnMode = SM_VFS;
+	this->currScnMode = SM_WINDOWED;
 	this->clsData->imgCtrl = gtk_image_new();
 	this->hwnd = (ControlHandle*)gtk_event_box_new();
 	gtk_container_add((GtkContainer*)this->hwnd, this->clsData->imgCtrl);
@@ -528,6 +552,16 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 
 void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 {
+	if (fullScn)
+	{
+		this->GetRootForm()->ToFullScn();
+		this->currScnMode = SM_VFS;
+	}
+	else
+	{
+		this->GetRootForm()->FromFullScn();
+		this->currScnMode = SM_WINDOWED;
+	}
 }
 
 Bool UI::GUIDDrawControl::IsFullScreen()

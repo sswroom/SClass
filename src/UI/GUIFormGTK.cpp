@@ -410,10 +410,13 @@ void UI::GUIForm::GetClientSize(Double *w, Double *h)
 	if (this->menu)
 	{
 		GtkWidget *menuBar = (GtkWidget*)this->menu->GetHMenu();
-		gint iheight = gtk_widget_get_allocated_height(menuBar);
-		if (iheight > 0)
+		if (gtk_widget_get_visible(menuBar))
 		{
-			height -= iheight;
+			gint iheight = gtk_widget_get_allocated_height(menuBar);
+			if (iheight > 0)
+			{
+				height -= iheight;
+			}
 		}
 	}
 	*w = width * this->ddpi / this->hdpi;
@@ -623,12 +626,22 @@ void UI::GUIForm::OnFileDrop(const UTF8Char **files, UOSInt nFiles)
 
 void UI::GUIForm::ToFullScn()
 {
+	if (this->menu)
+	{
+		GtkWidget *menuBar = (GtkWidget*)this->menu->GetHMenu();
+		gtk_widget_set_visible(menuBar, FALSE);
+	}
 	gtk_window_fullscreen((GtkWindow*)this->hwnd);
 }
 
 void UI::GUIForm::FromFullScn()
 {
 	gtk_window_unfullscreen((GtkWindow*)this->hwnd);
+	if (this->menu)
+	{
+		GtkWidget *menuBar = (GtkWidget*)this->menu->GetHMenu();
+		gtk_widget_show(menuBar);
+	}
 }
 
 UI::GUICore *UI::GUIForm::GetUI()
