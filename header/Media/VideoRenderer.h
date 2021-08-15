@@ -139,6 +139,7 @@ namespace Media
 //		Sync::Mutex *videoMut;
 		Bool videoPause;
 		Int32 videoProcCnt;
+		Bool updatingSize;
 
 		Int32 videoDelay;
 		UInt32 dispFrameTime;
@@ -193,7 +194,6 @@ namespace Media
 		void UpdateOutputSize(UOSInt width, UOSInt height);
 		void UpdateDispInfo(UOSInt width, UOSInt height, UInt32 bpp, Media::PixelFormat pf);
 
-		virtual Bool IsUpdatingSize() = 0;
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage) = 0;
 		virtual void DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn) = 0;
 	public:

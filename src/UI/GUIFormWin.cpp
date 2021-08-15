@@ -146,6 +146,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		me->EventClosed();
 		if (!me->isDialog)
 		{
+			me->DestroyObject();
 			DEL_CLASS(me);
 		}
 		else

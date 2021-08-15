@@ -66,9 +66,11 @@ namespace UI
 
 	protected:
 		//void UpdateFromBuff(VideoBuff *vbuff);
-		virtual Bool IsUpdatingSize();
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);
 		virtual void DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn);
+
+		virtual void BeginUpdateSize();
+		virtual void EndUpdateSize();
 	public:
 		GUIVideoBoxDD(GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~GUIVideoBoxDD();
@@ -90,6 +92,8 @@ namespace UI
 
 		void GetDebugValues(DebugValue *dbg);
 		void HandleMouseActon(MouseActionHandler hdlr, void *userObj);
+
+		virtual void DestroyObject();
 	};
 }
 #endif

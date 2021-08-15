@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_CONSOLEMEDIAPLAYER
 #define _SM_MEDIA_CONSOLEMEDIAPLAYER
 #include "Media/ColorManager.h"
-#include "Media/MediaFile.h"
+#include "Media/ConsoleVideoRenderer.h"
 #include "Media/MediaPlayerInterface.h"
 #include "Media/MonitorMgr.h"
 #include "Media/MonitorSurfaceMgr.h"
@@ -13,14 +13,16 @@ namespace Media
 	{
 	private:
 		Media::MonitorSurfaceMgr *surfaceMgr;
-		Media::MonitorSurface *primarySurface;
+		Media::ColorManager *colorMgr;
+		Media::ColorManagerSess *colorSess;
+		Media::ConsoleVideoRenderer *renderer;
 
+		virtual void OnMediaOpened();
 	public:
-		ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, Parser::ParserList *parsers);
+		ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, Parser::ParserList *parsers, Media::AudioDevice *audioDev);
 		virtual ~ConsoleMediaPlayer();
 
 		Bool IsError();
-		void Stop();
 	};
 }
 #endif

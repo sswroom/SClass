@@ -1613,3 +1613,8 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandle
 		return errType;
 	}
 }
+
+void UI::GUIControl::DestroyObject()
+{
+
+}

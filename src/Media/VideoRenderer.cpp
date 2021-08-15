@@ -875,7 +875,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 	}
 	if (frameType == Media::FT_DISCARD)
 		return;
-	if (me->IsUpdatingSize())
+	if (me->updatingSize)
 		return;
 
 	UOSInt buffCnt = me->buffCnt;
@@ -1769,6 +1769,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 	this->videoDelay = 0;
 	this->dispFrameTime = 0;
 	this->dispFrameNum = 0;
+	this->updatingSize = false;
 	this->srcYUVType = Media::ColorProfile::YUVT_UNKNOWN;
 	NEW_CLASS(this->srcColor, Media::ColorProfile(Media::ColorProfile::CPT_VUNKNOWN));
 	NEW_CLASS(this->videoInfo, Media::FrameInfo());
@@ -1895,6 +1896,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 Media::VideoRenderer::~VideoRenderer()
 {
 	UOSInt i;
+	this->updatingSize = true;
 	this->StopThreads();
 	DEL_CLASS(this->dispEvt);
 	DEL_CLASS(this->dispMut);

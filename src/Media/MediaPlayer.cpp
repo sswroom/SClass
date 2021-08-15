@@ -167,6 +167,8 @@ Media::MediaPlayer::MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDev
 	this->arenderer = 0;
 	this->currADecoder = 0;
 	this->currVDecoder = 0;
+	this->currVStm = 0;
+	this->currAStm = 0;
 	this->playing = false;
 	this->videoPlaying = false;
 	this->audioPlaying = false;
@@ -176,7 +178,10 @@ Media::MediaPlayer::MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDev
 
 Media::MediaPlayer::~MediaPlayer()
 {
-	this->LoadMedia(0);
+	if (this->currFile)
+	{
+		this->LoadMedia(0);
+	}
 	DEL_CLASS(this->clk);
 	DEL_CLASS(this->vdecoders);
 	DEL_CLASS(this->adecoders);
@@ -450,4 +455,10 @@ void Media::MediaPlayer::DetectCrop()
 	{
 		this->currVDecoder->CaptureImage(VideoCropImage, this);
 	}
+}
+
+void Media::MediaPlayer::Close()
+{
+	this->StopPlayback();
+	this->vrenderer = 0;
 }

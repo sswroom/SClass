@@ -39,6 +39,8 @@ namespace UI
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void *GetContainer();
+
+		virtual void DestroyObject();
 	};
 }
 #endif

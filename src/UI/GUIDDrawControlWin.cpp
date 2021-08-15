@@ -441,6 +441,17 @@ Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
 		return Media::PF_B8G8R8A8;
 	}
 }
+
+void UI::GUIDDrawControl::BeginUpdateSize()
+{
+	this->switching = true;
+}
+
+void UI::GUIDDrawControl::EndUpdateSize()
+{
+	this->switching = false;
+}
+
 UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
 {
 	this->inited = false;
@@ -659,7 +670,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (fullScn && !vfs)
 	{
-		this->switching = true;
+		this->BeginUpdateSize();
 		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)((Media::DDrawManager*)this->surfaceMgr)->GetDD7(this->GetHMonitor());
 		this->currScnMode = SM_FS;
 		DDSURFACEDESC2 ddsd;
@@ -672,7 +683,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 			mutUsage.EndUse();
 			this->rootForm->FromFullScn();
-			this->switching = false;
+			this->EndUpdateSize();
 			SwitchFullScreen(false, false);
 			return;
 		}
@@ -693,17 +704,17 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 			mutUsage.EndUse();
 			this->rootForm->FromFullScn();
-			this->switching = false;
+			this->EndUpdateSize());
 			SwitchFullScreen(false, false);
 			return;
 		}
 		mutUsage.EndUse();
-		this->switching = false;
+		this->EndUpdateSize();
 		this->OnSizeChanged(true);
 	}
 	else if (fullScn && vfs)
 	{
-		this->switching = true;
+		this->BeginUpdateSize();
 		if (this->surfaceMon) this->surfaceMgr->SetFSMode(this->surfaceMon, this->rootForm->GetHandle(), false);
 		if (this->imgCopy == 0)
 		{
@@ -766,12 +777,12 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 
 		this->CreateSurface();
 		mutUsage.EndUse();
-		this->switching = false;
+		this->EndUpdateSize();
 		this->OnSizeChanged(true);
 	}
 	else
 	{
-		this->switching = true;
+		this->BeginUpdateSize();
 		if (this->surfaceMon) this->surfaceMgr->SetFSMode(this->surfaceMon, this->rootForm->GetHandle(), false);
 		this->rootForm->FromFullScn();
 		if (this->directMode)
@@ -786,7 +797,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 
 		this->CreateSurface();
 		mutUsage.EndUse();
-		this->switching = false;
+		this->EndUpdateSize();
 		this->OnSizeChanged(true);
 	}
 }

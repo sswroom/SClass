@@ -51,6 +51,7 @@ void UI::GUIClientControl::ClearChildren()
 	while (i-- > 0)
 	{
 		GUIControl *ctrl = this->children->RemoveAt(i);
+		ctrl->DestroyObject();
 		DEL_CLASS(ctrl);
 	}
 }
@@ -223,3 +224,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 	this->UpdateChildrenSize(true);
 }
 
+void UI::GUIClientControl::DestroyObject()
+{
+	this->ClearChildren();
+}

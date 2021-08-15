@@ -300,6 +300,12 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 		MemFree(outBuff[i]);
 	}
 
+	if (readBuff)
+	{
+		MemFree(readBuff);
+		readBuff = 0;
+	}
+
 	DEL_CLASS(evt);
 	me->playing = false;
 	return 0;

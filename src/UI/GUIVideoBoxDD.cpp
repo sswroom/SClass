@@ -61,11 +61,6 @@
 	
 }*/
 
-Bool UI::GUIVideoBoxDD::IsUpdatingSize()
-{
-	return this->switching;
-}
-
 void UI::GUIVideoBoxDD::LockUpdateSize(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->surfaceMut);
@@ -74,6 +69,18 @@ void UI::GUIVideoBoxDD::LockUpdateSize(Sync::MutexUsage *mutUsage)
 void UI::GUIVideoBoxDD::DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
 {
 	this->DrawFromBuff(memPtr, lineAdd, destX, destY, buffWidth, buffHeight, clearScn);
+}
+
+void UI::GUIVideoBoxDD::BeginUpdateSize()
+{
+	this->updatingSize = true;
+	this->switching = true;
+}
+
+void UI::GUIVideoBoxDD::EndUpdateSize()
+{
+	this->updatingSize = false;
+	this->switching = false;
 }
 
 UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, buffCnt, threadCnt)
@@ -360,4 +367,11 @@ void UI::GUIVideoBoxDD::HandleMouseActon(MouseActionHandler hdlr, void *userObj)
 {
 	this->maHdlr = hdlr;
 	this->maHdlrObj = userObj;
+}
+
+void UI::GUIVideoBoxDD::DestroyObject()
+{
+	this->StopPlay();
+	this->SetVideo(0);
+	this->StopThreads();
 }

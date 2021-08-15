@@ -1546,3 +1546,8 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandle
 	}
 	return UI::GUIControl::DET_NOERROR;
 }
+
+void UI::GUIControl::DestroyObject()
+{
+
+}

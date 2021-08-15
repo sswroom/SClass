@@ -94,6 +94,7 @@ nodeps:
 @ArgsTest
 @GPIOSigGen
 @HelloWorld
+@HQMPCmd
 @SBench
 @SBenchmarkCli
 @SCRC
@@ -475,6 +476,9 @@ GPIOSigGen:
 HelloWorld:
 @HelloWorldMain.o
 @ConsoleStartup.o
+HQMPCmd:
+@HQMPCmdMain.o
+@ConsoleStartup.o
 HQMP3HQ:
 @HQMP3HQMain.o
 @GUIStartup.o
@@ -778,6 +782,7 @@ DiscDBMain.o: ../../main/SSWR/DiscDBMain.cpp
 DownloadMonitorMain.o: ../../main/SSWR/DownloadMonitorMain.cpp
 GPIOSigGenMain.o: ../../main/SSWR/GPIOSigGenMain.cpp
 HelloWorldMain.o: ../../main/SSWR/HelloWorldMain.cpp
+HQMPCmdMain.o: ../../main/SSWR/HQMPCmdMain.cpp
 HQMP3HQMain.o: ../../main/SSWR/HQMP3HQMain.cpp
 HQMP3Main.o: ../../main/SSWR/HQMP3Main.cpp
 ImageViewMain.o: ../../main/SSWR/ImageViewMain.cpp
@@ -1749,6 +1754,8 @@ Media/ColorProfile.h: ../../src/Media/ColorProfile.cpp
 Media/ColorSess.h:
 Media/ConsoleMediaPlayer.h: ../../src/Media/ConsoleMediaPlayer.cpp
 @ConsoleMediaPlayer.o
+Media/ConsoleVideoRenderer.h: ../../src/Media/ConsoleVideoRenderer.cpp
+@ConsoleVideoRenderer.o
 Media/Deinterlace8.h: ../../src/Media/Deinterlace8.cpp
 @Deinterlace8.o
 @Deinterlace8_CPP.o
@@ -3929,6 +3936,7 @@ ClockSpeechCh.o: ../../src/Media/ClockSpeechCh.cpp
 ColorConv.o: ../../src/Media/ColorConv.cpp
 ColorProfile.o: ../../src/Media/ColorProfile.cpp
 ConsoleMediaPlayer.o: ../../src/Media/ConsoleMediaPlayer.cpp
+ConsoleVideoRenderer.o: ../../src/Media/ConsoleVideoRenderer.cpp
 Deinterlace8.o: ../../src/Media/Deinterlace8.cpp
 DeinterlaceLR.o: ../../src/Media/DeinterlaceLR.cpp
 DrawImageTool.o: ../../src/Media/DrawImageTool.cpp

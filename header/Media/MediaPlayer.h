@@ -60,6 +60,8 @@ namespace Media
 		virtual Bool GotoChapter(UOSInt chapter);
 		virtual Bool GetVideoSize(UOSInt *w, UOSInt *h);
 		virtual void DetectCrop();
+
+		void Close();
 	};
 }
 #endif

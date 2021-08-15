@@ -417,6 +417,16 @@ Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
 	return Media::PF_B8G8R8A8;
 }
 
+void UI::GUIDDrawControl::BeginUpdateSize()
+{
+	this->switching = true;
+}
+
+void UI::GUIDDrawControl::EndUpdateSize()
+{
+	this->switching = false;
+}
+
 UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);

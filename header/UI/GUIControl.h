@@ -309,6 +309,8 @@ namespace UI
 		static const UTF8Char *GUIKeyGetName(GUIKey guiKey);
 
 		DragErrorType HandleDropEvents(GUIDropHandler *hdlr);
+
+		virtual void DestroyObject();
 	};
 }
 #endif

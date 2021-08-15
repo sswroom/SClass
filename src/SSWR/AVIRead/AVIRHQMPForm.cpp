@@ -361,7 +361,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		UOSInt j;
 		UTF8Char *u8ptr;
 		Int32 partNum;
-		me->currFile->GetSourceName(u8buff);
+		me->GetOpenedFile()->GetSourceName(u8buff);
 		i = Text::StrLastIndexOf(u8buff, '.');
 		j = Text::StrIndexOfICase(u8buff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
@@ -426,170 +426,44 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(void *userObj, UI::GUI
 
 void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 {
-
-}
-
-void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
-{
-
-}
-
-Bool SSWR::AVIRead::AVIRHQMPForm::OpenFile(const UTF8Char *fileName)
-{
-	Parser::ParserList *parsers = this->core->GetParserList();
-	IO::ParsedObject *pobj;
-	IO::StmData::FileData *fd;
-
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pobj = parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
-	if (pobj)
-	{
-		DEL_CLASS(fd);
-		return OpenVideo((Media::MediaFile*)pobj);
-	}
-	else
-	{
-		DEL_CLASS(fd);
-		return false;
-	}
-}
-
-Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
-{
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
-
-	this->player->LoadMedia(0);
-	SDEL_CLASS(this->currFile);
-	SDEL_CLASS(this->playlist);
-
-	Bool hasAudio = false;
-	Bool hasVideo = false;
-	Media::IMediaSource *msrc;
-	Media::MediaType mt;
-	IO::Path::PathType pt;
-	UInt64 fileSize;
-	IO::Path::FindFileSession *sess;
-	i = 0;
-	while ((msrc = mf->GetStream(i++, 0)) != 0)
-	{
-		mt = msrc->GetMediaType();
-		if (mt == Media::MEDIA_TYPE_VIDEO)
-		{
-			hasVideo = true;
-		}
-		else if (mt == Media::MEDIA_TYPE_AUDIO)
-		{
-			hasAudio = true;
-		}
-	}
-	if (hasVideo && !hasAudio)
-	{
-		Text::StrConcat(sbuff, mf->GetSourceNameObj());
-		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-		if (i != INVALID_INDEX)
-		{
-			j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
-			if (j != INVALID_INDEX)
-			{
-				Text::StrConcat(&sbuff[i + j + 1], IO::Path::ALL_FILES);
-				sess = IO::Path::FindFile(sbuff);
-				if (sess)
-				{
-					Parser::ParserList *parsers = this->core->GetParserList();
-
-					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize))
-					{
-						j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
-						if (j != INVALID_INDEX)
-						{
-							Bool audFile = false;
-							if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"m4a"))
-							{
-								audFile = true;
-							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"aac"))
-							{
-								audFile = true;
-							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"ac3"))
-							{
-								audFile = true;
-							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"wav"))
-							{
-								audFile = true;
-							}
-
-							if (audFile)
-							{
-								IO::StmData::FileData *fd;
-								Media::MediaFile *audFile;
-								NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-								audFile = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
-								DEL_CLASS(fd);
-								if (audFile)
-								{
-									Int32 syncTime;
-									k = 0;
-									while ((msrc = audFile->GetStream(k, &syncTime)) != 0)
-									{
-										audFile->KeepStream(k, true);
-										mf->AddSource(msrc, syncTime);
-										k++;
-									}
-									DEL_CLASS(audFile);
-								}
-							}
-						}
-					}
-					IO::Path::FindFileClose(sess);
-				}
-			}
-		}
-	}
-	
-	this->currFile = mf;
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ64 - "), this->currFile->GetSourceNameObj());
+		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ64 - "), this->GetOpenedFile()->GetSourceNameObj());
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ64 - "), this->currFile->GetSourceNameObj());
+		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ64 - "), this->GetOpenedFile()->GetSourceNameObj());
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3_64 - "), this->currFile->GetSourceNameObj());
+		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3_64 - "), this->GetOpenedFile()->GetSourceNameObj());
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ - "), this->currFile->GetSourceNameObj());
+		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ - "), this->GetOpenedFile()->GetSourceNameObj());
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ - "), this->currFile->GetSourceNameObj());
+		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ - "), this->GetOpenedFile()->GetSourceNameObj());
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3 - "), this->currFile->GetSourceNameObj());
+		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3 - "), this->GetOpenedFile()->GetSourceNameObj());
 	}
 #endif
 	this->SetText(sbuff);
-	this->player->LoadMedia(mf);
-	this->currPBC = this->player;
 
 	this->uOfst = 0;
 	this->vOfst = 0;
-	this->storeTime = (UInt32)-1;
 	this->vbox->SetUVOfst(this->uOfst, this->vOfst);
 
-	this->currChapInfo = this->currFile->GetChapterInfo();
+	this->currChapInfo = this->GetOpenedFile()->GetChapterInfo();
 	this->mnuChapters->ClearItems();
 	if (this->currChapInfo)
 	{
@@ -623,7 +497,7 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 		this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 	}
 	this->UpdateMenu();
-	this->currFile->GetSourceName(sbuff);
+	this->GetOpenedFile()->GetSourceName(sbuff);
 	if (Text::StrIndexOfICase(sbuff, (const UTF8Char*)"sRGB") != INVALID_INDEX)
 	{
 		this->vbox->SetSrcRGBType(Media::CS::TRANT_sRGB);
@@ -632,17 +506,12 @@ Bool SSWR::AVIRead::AVIRHQMPForm::OpenVideo(Media::MediaFile *mf)
 	{
 		this->vbox->SetSrcRGBType(Media::CS::TRANT_BT709);
 	}
-	return true;
 }
 
-void SSWR::AVIRead::AVIRHQMPForm::CloseFile()
+void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
 {
-	this->player->StopPlayback();
-	this->player->LoadMedia(0);
-	this->storeTime = (UInt32)-1;
-	SDEL_CLASS(this->currFile);
 	SDEL_CLASS(this->playlist);
-	this->currPBC = this->player;
+
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
@@ -719,7 +588,6 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	}
 #endif
 	this->playlist = 0;
-	this->storeTime = (UInt32)-1;
 
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;
@@ -917,10 +785,11 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->bwFilter, Media::ImageFilter::BWImgFilter(false));
 	this->vbox->AddImgFilter(this->bwFilter);
 
-	NEW_CLASS(this->player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
+	Media::MediaPlayer *player;
+	NEW_CLASS(player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
+	this->SetPlayer(player);
 	this->player->SetEndHandler(OnVideoEnd, this);
-	this->currFile = 0;
-	CloseFile();
+	this->CloseFile();
 
 	this->dbgFrm = 0;
 	this->AddTimer(30, OnTimerTick, this);
@@ -929,8 +798,6 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 {
 	SDEL_CLASS(this->listener);
-	this->CloseFile();
-	DEL_CLASS(this->player);
 	if (this->dbgFrm)
 		this->dbgFrm->Close();
 	this->ClearChildren();
@@ -1547,7 +1414,7 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	const UTF8Char *fname = req->GetQueryValue((const UTF8Char*)"fname");
-	if (this->currFile == 0)
+	if (this->GetOpenedFile() == 0)
 	{
 		resp->RedirectURL(req, (const UTF8Char*)"/", 0);
 		return;
@@ -1557,7 +1424,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	Text::StrConcat(sbuff, this->currFile->GetSourceNameObj());
+	Text::StrConcat(sbuff, this->GetOpenedFile()->GetSourceNameObj());
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 
@@ -1589,7 +1456,7 @@ void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req
 	writer->WriteLine((const UTF8Char*)"<body>");
 	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Back</a><br/><br/>");
 	writer->Write((const UTF8Char*)"<b>Current File: </b>");
-	u8ptr = Text::XML::ToNewHTMLText(this->currFile->GetSourceNameObj());
+	u8ptr = Text::XML::ToNewHTMLText(this->GetOpenedFile()->GetSourceNameObj());
 	writer->Write(u8ptr);
 	Text::XML::FreeNewText(u8ptr);
 	writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -1733,9 +1600,9 @@ void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, N
 	writer->WriteLine((const UTF8Char*)"<body>");
 	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Refresh</a><br/><br/>");
 	writer->Write((const UTF8Char*)"<b>Current File: </b>");
-	if (this->currFile)
+	if (this->GetOpenedFile())
 	{
-		u8ptr = Text::XML::ToNewHTMLText(this->currFile->GetSourceNameObj());
+		u8ptr = Text::XML::ToNewHTMLText(this->GetOpenedFile()->GetSourceNameObj());
 		writer->Write(u8ptr);
 		Text::XML::FreeNewText(u8ptr);
 
@@ -1947,36 +1814,7 @@ void SSWR::AVIRead::AVIRHQMPForm::Release()
 {
 }
 
-void SSWR::AVIRead::AVIRHQMPForm::PBStart()
+void SSWR::AVIRead::AVIRHQMPForm::DestroyObject()
 {
-	if (!this->player->IsPlaying())
-	{
-		this->currPBC->StartPlayback();
-		if (this->storeTime != (UInt32)-1)
-		{
-			this->player->SeekTo(this->storeTime);
-			this->storeTime = (UInt32)-1;
-		}
-	}
-}
-
-void SSWR::AVIRead::AVIRHQMPForm::PBStop()
-{
-	this->currPBC->StopPlayback();
-	this->storeTime = (UInt32)-1;
-}
-
-void SSWR::AVIRead::AVIRHQMPForm::PBPause()
-{
-	if (this->player->IsPlaying())
-	{
-		this->storeTime = this->player->GetCurrTime();
-		this->currPBC->StopPlayback();
-	}
-	else if (this->storeTime != (UInt32)-1)
-	{
-		this->currPBC->StartPlayback();
-		this->player->SeekTo(this->storeTime);
-		this->storeTime = (UInt32)-1;
-	}
+	this->CloseFile();
 }

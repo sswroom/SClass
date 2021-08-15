@@ -50,10 +50,10 @@ namespace UI
 		OSInt scnY;
 		UOSInt scnW;
 		UOSInt scnH;
+		Bool switching;
 		MonitorHandle *currMon;
 		ScreenMode currScnMode;
 		ScreenMode fullScnMode;
-		Bool switching;
 		IO::Library *lib;
 
 	private:
@@ -76,6 +76,9 @@ namespace UI
 		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl);
 		void LockSurfaceEnd();
 		Media::PixelFormat GetPixelFormat();
+
+		virtual void BeginUpdateSize();
+		virtual void EndUpdateSize();
 
 	public:
 		GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess);

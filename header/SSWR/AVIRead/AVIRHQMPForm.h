@@ -40,14 +40,10 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;
-			Media::MediaPlayer *player;
-			Media::MediaFile *currFile;
 			Media::Playlist *playlist;
-			Media::IPBControl *currPBC;
 			Media::ChapterInfo *currChapInfo;
 			Int32 uOfst;
 			Int32 vOfst;
-			UInt32 storeTime;
 			QualityMode qMode;
 			Bool pbEnd;
 			Net::WebServer::WebListener *listener;
@@ -70,12 +66,8 @@ namespace SSWR
 
 			virtual void OnMediaOpened();
 			virtual void OnMediaClosed();
-		public:
-			Bool OpenFile(const UTF8Char* fileName);
-			Bool OpenVideo(Media::MediaFile *mf);
 		private:
 			void SwitchAudio(OSInt audIndex);
-			void CloseFile();
 
 			static OSInt __stdcall VideoFileCompare(void *file1, void *file2);
 
@@ -90,9 +82,7 @@ namespace SSWR
 			virtual void WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 			virtual void Release();
 
-			void PBStart();
-			void PBStop();
-			void PBPause();
+			virtual void DestroyObject();
 		};
 	}
 }

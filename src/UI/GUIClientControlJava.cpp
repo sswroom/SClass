@@ -46,6 +46,7 @@ void UI::GUIClientControl::ClearChildren()
 	while (i-- > 0)
 	{
 		GUIControl *ctrl = this->children->RemoveAt(i);
+		ctrl->DestroyObject();
 		DEL_CLASS(ctrl);
 	}
 }
@@ -265,4 +266,7 @@ void *UI::GUIClientControl::GetContainer()
 	return data->container;*/
 }
 
-
+void UI::GUIClientControl::DestroyObject()
+{
+	this->ClearChildren();
+}

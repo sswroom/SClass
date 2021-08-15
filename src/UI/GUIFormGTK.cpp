@@ -594,6 +594,7 @@ void UI::GUIForm::EventClosed()
 	}
 	if (!this->isDialog)
 	{
+		this->DestroyObject();
 		DEL_CLASS(this);
 	}
 	else

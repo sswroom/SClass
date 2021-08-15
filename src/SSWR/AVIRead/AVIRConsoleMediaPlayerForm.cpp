@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
-	me->player->Stop();
+	me->player->PBStop();
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -35,7 +35,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->btnStop->SetRect(4, 4, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
 
-	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList()));
+	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	if (this->player->IsError())
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initialize player", (const UTF8Char*)"Console Media Player", this);
