@@ -145,6 +145,7 @@ typedef __m128i Int32x4;
 #define PMULM2HW4(v1, v2) _mm_slli_epi16(_mm_mulhi_epi16(v1, v2), 1)
 #define PMULM2HW8(v1, v2) _mm_slli_epi16(_mm_mulhi_epi16(v1, v2), 1)
 #define PMULLD4(v1, v2) _mm_mullo_epi16(v1, v2)
+#define PORW8(v1, v2) _mm_or_si128(v1, v2)
 #define SI16ToI8x4(v1) _mm_packs_epi16(v1, v1)
 #define SI16ToI8x8(v1) _mm_packs_epi16(v1, v1)
 #define SI16ToI8x16(v1, v2) _mm_packs_epi16(v1, v2)
