@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Media/GTKMonitorSurfaceMgr.h"
+//#include "Media/FBMonitorSurfaceMgr.h"
 #include "Media/ScreenCapturer.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -13,7 +13,7 @@
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
-	NEW_CLASS(this->surfaceMgr, Media::GTKMonitorSurfaceMgr(monMgr, colorMgr));
+	NEW_CLASS(this->surfaceMgr, Media::FBMonitorSurfaceMgr(monMgr, colorMgr));
 }
 
 Media::ScreenCapturer::~ScreenCapturer()

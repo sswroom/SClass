@@ -424,6 +424,16 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(void *userObj, UI::GUI
 	}
 }
 
+void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
+{
+
+}
+
+void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
+{
+
+}
+
 Bool SSWR::AVIRead::AVIRHQMPForm::OpenFile(const UTF8Char *fileName)
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
@@ -673,7 +683,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRHQMPForm::VideoFileCompare(void *file1, void 
 	return Text::StrCompare(vfile1->fileName, vfile2->fileName);
 }
 
-SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui), Media::MediaPlayerInterface(core->GetParserList())
 {
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
@@ -907,7 +917,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->bwFilter, Media::ImageFilter::BWImgFilter(false));
 	this->vbox->AddImgFilter(this->bwFilter);
 
-	NEW_CLASS(this->player, SSWR::AVIRead::AVIRMediaPlayer(this->vbox, this->core));
+	NEW_CLASS(this->player, SSWR::AVIRead::AVIRMediaPlayer(this->vbox, this->core->GetAudioDevice()));
 	this->player->SetEndHandler(OnVideoEnd, this);
 	this->currFile = 0;
 	CloseFile();

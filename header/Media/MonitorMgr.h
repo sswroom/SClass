@@ -27,5 +27,5 @@ namespace Media
 		Double GetMonitorDDPI(MonitorHandle *hMonitor);
 		void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 	};
-};
+}
 #endif

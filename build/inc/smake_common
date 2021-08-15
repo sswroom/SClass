@@ -1747,6 +1747,8 @@ Media/ColorConv.h: ../../src/Media/ColorConv.cpp
 Media/ColorProfile.h: ../../src/Media/ColorProfile.cpp
 @ColorProfile.o
 Media/ColorSess.h:
+Media/ConsoleMediaPlayer.h: ../../src/Media/ConsoleMediaPlayer.cpp
+@ConsoleMediaPlayer.o
 Media/Deinterlace8.h: ../../src/Media/Deinterlace8.cpp
 @Deinterlace8.o
 @Deinterlace8_CPP.o
@@ -1837,6 +1839,8 @@ Media/M2VStreamSource.h: ../../src/Media/M2VStreamSource.cpp
 @M2VStreamSource.o
 Media/MediaFile.h: ../../src/Media/MediaFile.cpp
 @MediaFile.o
+Media/MediaPlayerInterface.h: ../../src/Media/MediaPlayerInterface.cpp
+@MediaPlayerInterface.o
 Media/MemorySurface.h: ../../src/Media/MemorySurface.cpp
 @MemorySurface.o
 Media/MonitorMgr.h: ../../src/Media/MonitorMgr.cpp
@@ -1889,6 +1893,8 @@ Media/VectorGraph.h: ../../src/Media/VectorGraph.cpp
 @VectorGraph.o
 Media/VideoChecker.h: ../../src/Media/VideoChecker.cpp
 @VideoChecker.o
+Media/VideoRenderer.h: ../../src/Media/VideoRenderer.cpp
+@VideoRenderer.o
 Media/VideoSourceBase.h: ../../src/Media/VideoSourceBase.cpp
 @VideoSourceBase.o
 Media/VOBAC3StreamSource.h: ../../src/Media/VOBAC3StreamSource.cpp
@@ -2753,6 +2759,8 @@ SSWR/AVIRead/AVIRColorCustomForm.h: ../../src/SSWR/AVIRead/AVIRColorCustomForm.c
 @AVIRColorCustomForm.o
 SSWR/AVIRead/AVIRColorSettingForm.h: ../../src/SSWR/AVIRead/AVIRColorSettingForm.cpp
 @AVIRColorSettingForm.o
+SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h: ../../src/SSWR/AVIRead/AVIRConsoleMediaPlayerForm.cpp
+@AVIRConsoleMediaPlayerForm.o
 SSWR/AVIRead/AVIRCoordConvForm.h: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
 @AVIRCoordConvForm.o
 SSWR/AVIRead/AVIRCoordInfoForm.h: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
@@ -3920,6 +3928,7 @@ ChapterInfo.o: ../../src/Media/ChapterInfo.cpp
 ClockSpeechCh.o: ../../src/Media/ClockSpeechCh.cpp
 ColorConv.o: ../../src/Media/ColorConv.cpp
 ColorProfile.o: ../../src/Media/ColorProfile.cpp
+ConsoleMediaPlayer.o: ../../src/Media/ConsoleMediaPlayer.cpp
 Deinterlace8.o: ../../src/Media/Deinterlace8.cpp
 DeinterlaceLR.o: ../../src/Media/DeinterlaceLR.cpp
 DrawImageTool.o: ../../src/Media/DrawImageTool.cpp
@@ -3953,6 +3962,7 @@ LUT.o: ../../src/Media/LUT.cpp
 M2VFile.o: ../../src/Media/M2VFile.cpp
 M2VStreamSource.o: ../../src/Media/M2VStreamSource.cpp
 MediaFile.o: ../../src/Media/MediaFile.cpp
+MediaPlayerInterface.o: ../../src/Media/MediaPlayerInterface.cpp
 MemorySurface.o: ../../src/Media/MemorySurface.cpp
 MonitorMgr.o: ../../src/Media/MonitorMgr.cpp
 MPAStreamSource.o: ../../src/Media/MPAStreamSource.cpp
@@ -3977,6 +3987,7 @@ VCDMPGFile.o: ../../src/Media/VCDMPGFile.cpp
 VectorDocument.o: ../../src/Media/VectorDocument.cpp
 VectorGraph.o: ../../src/Media/VectorGraph.cpp
 VideoChecker.o: ../../src/Media/VideoChecker.cpp
+VideoRenderer.o: ../../src/Media/VideoRenderer.cpp
 VideoSourceBase.o: ../../src/Media/VideoSourceBase.cpp
 VOBAC3StreamSource.o: ../../src/Media/VOBAC3StreamSource.cpp
 VOBLPCMStreamSource.o: ../../src/Media/VOBLPCMStreamSource.cpp
@@ -4386,6 +4397,7 @@ AVIRCodePageForm.o: ../../src/SSWR/AVIRead/AVIRCodePageForm.cpp
 AVIRCodeProjectForm.o: ../../src/SSWR/AVIRead/AVIRCodeProjectForm.cpp
 AVIRColorCustomForm.o: ../../src/SSWR/AVIRead/AVIRColorCustomForm.cpp
 AVIRColorSettingForm.o: ../../src/SSWR/AVIRead/AVIRColorSettingForm.cpp
+AVIRConsoleMediaPlayerForm.o: ../../src/SSWR/AVIRead/AVIRConsoleMediaPlayerForm.cpp
 AVIRCoordConvForm.o: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
 AVIRCoordInfoForm.o: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
 AVIRCore.o: ../../src/SSWR/AVIRead/AVIRCore.cpp

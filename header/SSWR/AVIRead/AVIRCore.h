@@ -102,6 +102,7 @@ namespace SSWR
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
 			IO::GPIOControl *GetGPIOControl();
 			Net::SSLEngine *GetSSLEngine();
+			Media::AudioDevice *GetAudioDevice();
 
 			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
@@ -112,8 +113,8 @@ namespace SSWR
 			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 			Media::MonitorMgr *GetMonitorMgr();
 			
-			void SetAudioDevice(Data::ArrayList<const UTF8Char *> *audDevList);
-			Data::ArrayList<const UTF8Char *> *GetAudioDevices();
+			void SetAudioDeviceList(Data::ArrayList<const UTF8Char *> *audDevList);
+			Data::ArrayList<const UTF8Char *> *GetAudioDeviceList();
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 

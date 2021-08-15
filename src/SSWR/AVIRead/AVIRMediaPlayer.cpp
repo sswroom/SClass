@@ -35,10 +35,10 @@ void SSWR::AVIRead::AVIRMediaPlayer::PlayTime(UInt32 time)
 		this->arenderer->AudioInit(this->clk);
 		this->arenderer->SetEndNotify(OnAudioEnd, this);
 	}
-	if (this->vbox)
+	if (this->vrenderer)
 	{
-		this->vbox->VideoInit(this->clk);
-		this->vbox->SetEndNotify(OnVideoEnd, this);
+		this->vrenderer->VideoInit(this->clk);
+		this->vrenderer->SetEndNotify(OnVideoEnd, this);
 	}
 	if (this->arenderer)
 	{
@@ -46,10 +46,10 @@ void SSWR::AVIRead::AVIRMediaPlayer::PlayTime(UInt32 time)
 		this->arenderer->Start();
 		found = true;
 	}
-	if (this->vbox)
+	if (this->vrenderer)
 	{
 		this->videoPlaying = true;
-		this->vbox->VideoStart();
+		this->vrenderer->VideoStart();
 		found = true;
 	}
 	if (found)
@@ -114,12 +114,12 @@ void __stdcall SSWR::AVIRead::AVIRMediaPlayer::VideoCropImage(void *userObj, UIn
 	AVIRMediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
 	DEL_CLASS(img);
 	me->currVDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
-	me->vbox->UpdateCrop();
+	me->vrenderer->UpdateCrop();
 }
 
 void SSWR::AVIRead::AVIRMediaPlayer::ReleaseAudio()
 {
-	this->core->BindAudio(0);
+	this->audioDev->BindAudio(0);
 	this->arenderer = 0;
 	SDEL_CLASS(this->currADecoder);
 }
@@ -127,10 +127,10 @@ void SSWR::AVIRead::AVIRMediaPlayer::ReleaseAudio()
 Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime)
 {
 	Bool ret = false;
-	this->arenderer = this->core->BindAudio(asrc);
+	this->arenderer = this->audioDev->BindAudio(asrc);
 	if (this->arenderer)
 	{
-		this->vbox->SetTimeDelay(syncTime);
+		this->vrenderer->SetTimeDelay(syncTime);
 		this->currAStm = asrc;
 		ret = true;
 	}
@@ -139,9 +139,9 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc
 		this->currADecoder = this->adecoders->DecodeAudio(asrc);
 		if (this->currADecoder)
 		{
-			if ((this->arenderer = this->core->BindAudio(this->currADecoder)) != 0)
+			if ((this->arenderer = this->audioDev->BindAudio(this->currADecoder)) != 0)
 			{
-				this->vbox->SetTimeDelay(syncTime);
+				this->vrenderer->SetTimeDelay(syncTime);
 				this->currAStm = asrc;
 				ret = true;
 			}
@@ -154,10 +154,10 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc
 	return ret;
 }
 
-SSWR::AVIRead::AVIRMediaPlayer::AVIRMediaPlayer(UI::GUIVideoBoxDD *vbox, SSWR::AVIRead::AVIRCore *core)
+SSWR::AVIRead::AVIRMediaPlayer::AVIRMediaPlayer(UI::GUIVideoBoxDD *vrenderer, Media::AudioDevice *audioDev)
 {
-	this->core = core;
-	this->vbox = vbox;
+	this->audioDev = audioDev;
+	this->vrenderer = vrenderer;
 	NEW_CLASS(this->vdecoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASS(this->adecoders, Media::Decoder::AudioDecoderFinder());
 	NEW_CLASS(this->clk, Media::RefClock());
@@ -193,10 +193,10 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 	Bool videoFound;
 	this->currFile = file;
 	if (this->arenderer) this->arenderer->Stop();
-	if (this->vbox)
+	if (this->vrenderer)
 	{
-		this->vbox->StopPlay();
-		this->vbox->SetVideo(0);
+		this->vrenderer->StopPlay();
+		this->vrenderer->SetVideo(0);
 	}
 	this->ReleaseAudio();
 	this->currAStm = 0;
@@ -226,13 +226,13 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 			if (this->currVDecoder)
 			{
 				this->currVStm = vsrc;
-				this->vbox->SetVideo(this->currVDecoder);
+				this->vrenderer->SetVideo(this->currVDecoder);
 				this->clk->Stop();
 			}
 			else
 			{
 				this->currVStm = vsrc;
-				this->vbox->SetVideo(this->currVStm);
+				this->vrenderer->SetVideo(this->currVStm);
 				this->clk->Stop();
 			}
 		}
@@ -242,7 +242,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 		}
 		i++;
 	}
-	this->vbox->SetHasAudio(this->arenderer != 0);
+	this->vrenderer->SetHasAudio(this->arenderer != 0);
 	this->currTime = 0;
 
 	return videoFound || this->arenderer;
@@ -260,9 +260,9 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::StartPlayback()
 Bool SSWR::AVIRead::AVIRMediaPlayer::StopPlayback()
 {
 	this->playing = false;
-	if (this->vbox)
+	if (this->vrenderer)
 	{
-		this->vbox->StopPlay();
+		this->vrenderer->StopPlay();
 	}
 	if (this->arenderer)
 	{

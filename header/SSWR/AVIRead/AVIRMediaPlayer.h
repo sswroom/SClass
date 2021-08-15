@@ -1,9 +1,10 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMEDIAPLAYER
 #define _SM_SSWR_AVIREAD_AVIRMEDIAPLAYER
+#include "Media/AudioDevice.h"
 #include "Media/IMediaPlayer.h"
+#include "Media/VideoRenderer.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
-#include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMediaPlayer.h"
 #include "UI/GUIVideoBoxDD.h"
 
@@ -14,8 +15,8 @@ namespace SSWR
 		class AVIRMediaPlayer : public Media::IMediaPlayer
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
-			UI::GUIVideoBoxDD *vbox;
+			Media::AudioDevice *audioDev;
+			UI::GUIVideoBoxDD *vrenderer;
 			Media::Decoder::VideoDecoderFinder *vdecoders;
 			Media::Decoder::AudioDecoderFinder *adecoders;
 			Media::RefClock *clk;
@@ -45,7 +46,7 @@ namespace SSWR
 			void ReleaseAudio();
 			Bool SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime);
 		public:
-			AVIRMediaPlayer(UI::GUIVideoBoxDD *vbox, SSWR::AVIRead::AVIRCore *core);
+			AVIRMediaPlayer(UI::GUIVideoBoxDD *vrenderer, Media::AudioDevice *audioDev);
 			virtual ~AVIRMediaPlayer();
 
 			virtual void SetEndHandler(PBEndHandler hdlr, void *userObj);

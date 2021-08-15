@@ -45,6 +45,7 @@
 #include "SSWR/AVIRead/AVIRCodeImageGenForm.h"
 #include "SSWR/AVIRead/AVIRCodePageForm.h"
 #include "SSWR/AVIRead/AVIRColorSettingForm.h"
+#include "SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h"
 #include "SSWR/AVIRead/AVIRCoordConvForm.h"
 #include "SSWR/AVIRead/AVIRCoordInfoForm.h"
 #include "SSWR/AVIRead/AVIRCOVID19Form.h"
@@ -379,7 +380,8 @@ typedef enum
 	MNU_EW_DTU01,
 	MNU_BLUETOOTHCTL,
 	MNU_BLUETOOTHLOG,
-	MNU_CPP_ENUM
+	MNU_CPP_ENUM,
+	MNU_CONSOLE_MEDIA_PLAYER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -647,6 +649,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"Profiled Resizer", MNU_PROF_RESIZER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"HQMP3", MNU_HQMP3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"HQMP3HQ", MNU_HQMP3HQ, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Console Media Player", MNU_CONSOLE_MEDIA_PLAYER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"ICC Info", MNU_ICCINFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Code Image Generator", MNU_CODEIMAGEGEN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"EDID Viewer", MNU_EDIDVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2266,6 +2269,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRCppEnumForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRCppEnumForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_CONSOLE_MEDIA_PLAYER:
+		{
+			SSWR::AVIRead::AVIRConsoleMediaPlayerForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRConsoleMediaPlayerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

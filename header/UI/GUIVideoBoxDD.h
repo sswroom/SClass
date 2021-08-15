@@ -10,6 +10,7 @@
 #include "Media/ImageCopy.h"
 #include "Media/IVideoSource.h"
 #include "Media/RefClock.h"
+#include "Media/VideoRenderer.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/VideoFilter/AutoCropFilter.h"
 #include "Media/VideoFilter/IVTCFilter.h"
@@ -20,7 +21,7 @@
 
 namespace UI
 {
-	class GUIVideoBoxDD : public GUIDDrawControl, public Media::IColorHandler
+	class GUIVideoBoxDD : public GUIDDrawControl, public Media::IColorHandler, public Media::VideoRenderer
 	{
 	public:
 		typedef void (__stdcall *EndNotifier)(void *userObj);

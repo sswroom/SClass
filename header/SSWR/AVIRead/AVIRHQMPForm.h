@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRHQMPFORM
 #include "IO/Stream.h"
 #include "Media/MediaFile.h"
+#include "Media/MediaPlayerInterface.h"
 #include "Media/Playlist.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
@@ -18,7 +19,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRHQMPForm : public UI::GUIForm, public Net::WebServer::IWebHandler
+		class AVIRHQMPForm : public UI::GUIForm, public Net::WebServer::IWebHandler, public Media::MediaPlayerInterface
 		{
 		public:
 			typedef enum
@@ -66,8 +67,11 @@ namespace SSWR
 			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnVideoEnd(void *userObj);
 			static void __stdcall OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, OSInt x, OSInt y);
+
+			virtual void OnMediaOpened();
+			virtual void OnMediaClosed();
 		public:
-			Bool OpenFile(const UTF8Char *fileName);
+			Bool OpenFile(const UTF8Char* fileName);
 			Bool OpenVideo(Media::MediaFile *mf);
 		private:
 			void SwitchAudio(OSInt audIndex);

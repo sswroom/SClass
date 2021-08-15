@@ -1,9 +1,9 @@
 #include "Stdafx.h"
+#include "Media/FBMonitorSurfaceMgr.h"
 #include "Media/FBSurface.h"
-#include "Media/GTKMonitorSurfaceMgr.h"
 #include "Media/MemorySurface.h"
 
-Media::GTKMonitorSurfaceMgr::GTKMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess)
 {
 	this->monMgr = 0;
 	this->colorMgr = 0;
@@ -11,7 +11,7 @@ Media::GTKMonitorSurfaceMgr::GTKMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorM
 	this->ui = ui;
 }
 
-Media::GTKMonitorSurfaceMgr::GTKMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
@@ -19,12 +19,12 @@ Media::GTKMonitorSurfaceMgr::GTKMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Med
 	this->ui = 0;
 }
 
-Media::GTKMonitorSurfaceMgr::~GTKMonitorSurfaceMgr()
+Media::FBMonitorSurfaceMgr::~FBMonitorSurfaceMgr()
 {
 
 }
 
-Double Media::GTKMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
+Double Media::FBMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
 {
 	if (hMonitor == 0)
 	{
@@ -45,7 +45,7 @@ Double Media::GTKMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
 	return 96.0;
 }
 
-Media::ColorProfile *Media::GTKMonitorSurfaceMgr::GetMonitorColor(MonitorHandle *hMonitor)
+Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHandle *hMonitor)
 {
 	if (this->colorMgr)
 	{
@@ -59,7 +59,7 @@ Media::ColorProfile *Media::GTKMonitorSurfaceMgr::GetMonitorColor(MonitorHandle 
 	return 0;
 }
 
-Bool Media::GTKMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)
+Bool Media::FBMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)
 {
 	if (this->colorMgr)
 	{
@@ -72,28 +72,38 @@ Bool Media::GTKMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)
 	return false;
 }
 
-Bool Media::GTKMonitorSurfaceMgr::SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs)
+Bool Media::FBMonitorSurfaceMgr::SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs)
 {
 	return true;
 }
 
-void Media::GTKMonitorSurfaceMgr::WaitForVBlank(MonitorHandle *hMon)
+void Media::FBMonitorSurfaceMgr::WaitForVBlank(MonitorHandle *hMon)
 {
 }
 
-UInt32 Media::GTKMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
+UInt32 Media::FBMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
 {
 	return 0;
 }
 
-Media::MonitorSurface *Media::GTKMonitorSurfaceMgr::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
+MonitorHandle *Media::FBMonitorSurfaceMgr::GetMonitorHandle(UOSInt monIndex)
+{
+	return (MonitorHandle*)(1 + monIndex);
+}
+
+UOSInt Media::FBMonitorSurfaceMgr::GetMonitorCount()
+{
+	return 1;
+}
+
+Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
 {
 	Media::MemorySurface *surface;
 	NEW_CLASS(surface, Media::MemorySurface(width, height, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
 	return surface;
 }
 
-Media::MonitorSurface *Media::GTKMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
+Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
 {
 	Media::FBSurface *surface = 0;
 	NEW_CLASS(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon)));
@@ -109,7 +119,7 @@ Media::MonitorSurface *Media::GTKMonitorSurfaceMgr::CreatePrimarySurface(Monitor
 	return surface;
 }
 
-Bool Media::GTKMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface)
+Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface)
 {
 	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0);
 	if (pSurface)

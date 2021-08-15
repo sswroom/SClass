@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
-#include "Media/GTKMonitorSurfaceMgr.h"
+#include "Media/FBMonitorSurfaceMgr.h"
 #include "Media/ImageUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -423,7 +423,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->clsData->pSurfaceUpdated = true;
 	this->clsData->drawPause = 0;
 	
-	NEW_CLASS(this->surfaceMgr, Media::GTKMonitorSurfaceMgr(ui, colorSess));
+	NEW_CLASS(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui, colorSess));
 	this->inited = false;
 	this->primarySurface = 0;
 	this->buffSurface = 0;

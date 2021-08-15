@@ -8,8 +8,6 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
-#include "Sync/Thread.h"
-
 #ifndef FBIO_WAITFORVSYNC
   #define FBIO_WAITFORVSYNC _IOW('F', 0x20, __u32)
 #endif

@@ -293,6 +293,11 @@ Net::SSLEngine *SSWR::AVIRead::AVIRCore::GetSSLEngine()
 	return this->ssl;
 }
 
+Media::AudioDevice *SSWR::AVIRead::AVIRCore::GetAudioDevice()
+{
+	return this->audDevice;
+}
+
 UInt32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()
 {
 	if (this->currCodePage == 0)
@@ -337,7 +342,7 @@ Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 	return this->monMgr;
 }
 
-void SSWR::AVIRead::AVIRCore::SetAudioDevice(Data::ArrayList<const UTF8Char *> *devList)
+void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char *> *devList)
 {
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
 	WChar sbuff[32];
@@ -387,7 +392,7 @@ void SSWR::AVIRead::AVIRCore::SetAudioDevice(Data::ArrayList<const UTF8Char *> *
 	}
 }
 
-Data::ArrayList<const UTF8Char *> *SSWR::AVIRead::AVIRCore::GetAudioDevices()
+Data::ArrayList<const UTF8Char *> *SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
 {
 	return this->audDevList;
 }

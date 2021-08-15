@@ -11,13 +11,13 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 	me->lbDevice->GetSelectedItemText(sbuff);
 	if (Text::StrEquals(sbuff, (const UTF8Char*)"Default"))
 	{
-		me->core->SetAudioDevice(0);
+		me->core->SetAudioDeviceList(0);
 	}
 	else
 	{
 		Data::ArrayList<const UTF8Char *> audDevList;
 		audDevList.Add(sbuff);
-		me->core->SetAudioDevice(&audDevList);
+		me->core->SetAudioDeviceList(&audDevList);
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayList<const UTF8Char *> *audDevList = this->core->GetAudioDevices();
+	Data::ArrayList<const UTF8Char *> *audDevList = this->core->GetAudioDeviceList();
 	const UTF8Char *devName = audDevList->GetItem(0);
 	Bool found = false;
 	UOSInt i;

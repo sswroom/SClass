@@ -1,12 +1,12 @@
-#ifndef _SM_MEDIA_GTKMONITORSURFACEMGR
-#define _SM_MEDIA_GTKMONITORSURFACEMGR
+#ifndef _SM_MEDIA_FBMONITORSURFACEMGR
+#define _SM_MEDIA_FBMONITORSURFACEMGR
 #include "Media/ColorManager.h"
 #include "Media/MonitorMgr.h"
 #include "Media/MonitorSurfaceMgr.h"
 
 namespace Media
 {
-	class GTKMonitorSurfaceMgr : public MonitorSurfaceMgr
+	class FBMonitorSurfaceMgr : public MonitorSurfaceMgr
 	{
 	private:
 		Media::MonitorMgr *monMgr;
@@ -15,9 +15,9 @@ namespace Media
 		UI::GUICore *ui;
 
 	public:
-		GTKMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess);
-		GTKMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
-		virtual ~GTKMonitorSurfaceMgr();
+		FBMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess);
+		FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
+		virtual ~FBMonitorSurfaceMgr();
 
 		Double GetMonitorDPI(MonitorHandle *hMonitor);
 		Media::ColorProfile *GetMonitorColor(MonitorHandle *hMonitor);
@@ -26,6 +26,8 @@ namespace Media
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);
 		virtual void WaitForVBlank(MonitorHandle *hMon);
 		virtual UInt32 GetRefreshRate(MonitorHandle *hMon);
+		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex);
+		virtual UOSInt GetMonitorCount();
 
 		virtual MonitorSurface *CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth);
 		virtual MonitorSurface *CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow);
