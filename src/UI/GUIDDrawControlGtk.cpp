@@ -238,11 +238,80 @@ void UI::GUIDDrawControl::OnPaint()
 
 Bool UI::GUIDDrawControl::CreateSurface()
 {
+/*	this->ReleaseSurface();
+	this->ReleaseSubSurface();
+
+	if (this->debugWriter)
+	{
+		this->debugWriter->WriteLine((const UTF8Char*)"Create Surface");
+	}
+
+	if (this->currScnMode == SM_FS)
+	{
+		this->surfaceMon = this->GetHMonitor();
+		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, &this->primarySurface, &this->buffSurface);
+		if (succ)
+		{
+			this->bitDepth = this->primarySurface->info->storeBPP;
+			this->scnW = this->primarySurface->info->dispWidth;
+			this->scnH = this->primarySurface->info->dispHeight;
+		}
+		return succ;
+	}
+	else
+	{
+		ControlHandle *hWnd;
+		if (this->currScnMode == SM_VFS)
+		{
+			this->surfaceMon = this->GetHMonitor();
+			hWnd = 0;
+		}
+		else if (this->currScnMode == SM_WINDOWED_DIR)
+		{
+			this->surfaceMon = this->GetHMonitor();
+			hWnd = this->GetHandle();
+		}
+		else
+		{
+			this->surfaceMon = 0;
+			hWnd = this->GetHandle();
+		}
+		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd);
+		if (this->primarySurface)
+		{
+			if (this->debugWriter)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append((const UTF8Char*)"Primary surface desc: Size = ");
+				sb.AppendUOSInt(this->primarySurface->info->dispWidth);
+				sb.Append((const UTF8Char*)" x ");
+				sb.AppendUOSInt(this->primarySurface->info->dispHeight);
+				sb.Append((const UTF8Char*)", bpl = ");
+				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
+				sb.Append((const UTF8Char*)", hMon = ");
+				sb.AppendOSInt((OSInt)this->surfaceMon);
+				sb.Append((const UTF8Char*)", hWnd = ");
+				sb.AppendOSInt((OSInt)hWnd);
+				this->debugWriter->WriteLine(sb.ToString());
+			}
+			this->bitDepth = this->primarySurface->info->storeBPP;
+			this->scnW = this->primarySurface->info->dispWidth;
+			this->scnH = this->primarySurface->info->dispHeight;
+
+			CreateSubSurface();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}*/
 	return false;
 }
 
 void UI::GUIDDrawControl::ReleaseSurface()
 {
+//	SDEL_CLASS(this->primarySurface);
 }
 
 void UI::GUIDDrawControl::CreateSubSurface()
@@ -256,8 +325,10 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		return;
 	}
 	this->primarySurface = this->surfaceMgr->CreateSurface(this->surfaceW, this->surfaceH, 32);
+//	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->GetHMonitor(), 0);
 	this->buffSurface = this->surfaceMgr->CreateSurface(this->surfaceW, this->surfaceH, 32);
 	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->primarySurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
+//	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->buffSurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
 	if (buf == 0)
 	{
 		DEL_CLASS(this->primarySurface);
@@ -267,7 +338,9 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	}
 	else
 	{
-		ImageUtil_ColorFill32((UInt8*)this->primarySurface->GetHandle(), this->surfaceW * this->surfaceH, 0xff000000);
+		this->primarySurface->info->atype = Media::AT_ALPHA;
+		OSInt lineAdd;
+		ImageUtil_ColorFill32((UInt8*)this->primarySurface->LockSurface(&lineAdd), this->surfaceW * this->surfaceH, 0xff000000);
 		g_object_ref(buf);
 		this->clsData->pixBuf = buf;
 		this->clsData->pSurfaceUpdated = true;
@@ -291,25 +364,28 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
 {
-	if (this->surfaceW == targetWidth && this->surfaceH == targetHeight)
+	this->surfaceMut->Lock();
+	if (this->buffSurface == 0)
 	{
-		*bpl = this->surfaceW * 4;
-		return (UInt8*)this->buffSurface->GetHandle();
+		this->surfaceMut->Unlock();
+		return 0;
 	}
+	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
+	{
+		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
+		if (dptr)
+		{
+			return dptr;
+		}
+	}
+	this->surfaceMut->Unlock();
 	return 0;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
-}
-
-UInt8 *UI::GUIDDrawControl::LockSurfaceDirect(UOSInt *bpl)
-{
-	return 0;
-}
-
-void UI::GUIDDrawControl::LockSurfaceUnlock()
-{
+	this->buffSurface->UnlockSurface();
+	this->surfaceMut->Unlock();
 }
 
 Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
@@ -390,14 +466,14 @@ void UI::GUIDDrawControl::DrawToScreen()
 {
 	if (this->primarySurface && this->buffSurface)
 	{
-//		printf("Draw to screen 1\r\n");
-		ImageUtil_ConvR8G8B8N8_ARGB32((const UInt8*)this->buffSurface->GetHandle(), (UInt8*)this->primarySurface->GetHandle(), this->surfaceW, this->surfaceH, (OSInt)this->surfaceW * 4, (OSInt)this->surfaceW * 4);
 		if (this->clsData->drawPause)
 		{
 			this->clsData->drawPause--;
 		}
 		else
 		{
+			this->primarySurface->DrawFromSurface(this->buffSurface, true);
+//			this->clsData->drawPause = 0;
 			this->clsData->drawPause = 10;
 			if (this->clsData->pSurfaceUpdated)
 			{
@@ -417,7 +493,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
+void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->primarySurface)
@@ -428,52 +504,8 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt bpl, OSInt tlx, OSInt 
 		}
 		else
 		{
-			if (buff[0] == 0 && buff[1] == 0 && buff[2] == 0)
-			{
-				clearScn = true;
-			}
-			if (tlx < 0)
-			{
-				drawW += (UOSInt)tlx;
-				tlx = 0;
-			}
-			if (tly < 0)
-			{
-				drawH += (UOSInt)tly;
-				tly = 0;
-			}
-			if (tlx + (OSInt)drawW > (OSInt)this->surfaceW)
-			{
-				drawW = this->surfaceW - (UOSInt)tlx;
-			}
-			if (tly + (OSInt)drawH > (OSInt)this->surfaceH)
-			{
-				drawH = this->surfaceH - (UOSInt)tly;
-			}
-			if ((OSInt)drawW > 0 && (OSInt)drawH > 0)
-			{
-				if (tly > 0)
-				{
-					ImageUtil_ColorFill32((UInt8*)this->primarySurface->GetHandle(), this->surfaceW * (UOSInt)tly, 0xffcccccc);
-				}
-				if (tlx > 0)
-				{
-					ImageUtil_ImageColorFill32((UInt8*)this->primarySurface->GetHandle(), (UOSInt)tlx, this->surfaceH, this->surfaceW * 4, 0xffcccccc);
-				}
-				if (tlx + (OSInt)drawW < (OSInt)this->surfaceW)
-				{
-					ImageUtil_ImageColorFill32(((UInt8*)this->primarySurface->GetHandle()) + (tlx + (OSInt)drawW) * 4, (UOSInt)((OSInt)this->surfaceW - tlx - (OSInt)drawW), this->surfaceH, this->surfaceW * 4, 0xffcccccc);
-				}
-				ImageUtil_ConvR8G8B8N8_ARGB32(buff, tly * (OSInt)this->surfaceW * 4 + tlx * 4 + (UInt8*)this->primarySurface->GetHandle(), (UOSInt)drawW, (UOSInt)drawH, bpl, (OSInt)this->surfaceW * 4);
-				if (tly + (OSInt)drawH < (OSInt)this->surfaceH)
-				{
-					ImageUtil_ColorFill32(((UInt8*)this->primarySurface->GetHandle()) + (OSInt)this->surfaceW * 4 * (tly + (OSInt)drawH), this->surfaceW * (UOSInt)((OSInt)this->surfaceH - tly - (OSInt)drawH), 0xffcccccc);
-				}
-			}
-			else
-			{
-				ImageUtil_ColorFill32((UInt8*)this->primarySurface->GetHandle(), this->surfaceW * this->surfaceH, 0xffcccccc);
-			}
+			this->primarySurface->DrawFromMem(buff, lineAdd, tlx, tly, drawW, drawH, clearScn, true);
+//			this->clsData->drawPause = 0;
 //			Data::DateTime dt;
 //			dt.SetCurrTimeUTC();
 //			Int64 t = dt.ToTicks();

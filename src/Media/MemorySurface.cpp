@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Media/ImageCopyC.h"
+#include "Media/ImageUtil.h"
 #include "Media/MemorySurface.h"
 
 Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, Media::ColorProfile *color, Double dpi)
@@ -10,7 +11,7 @@ Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPi
 	this->info->atype = Media::AT_NO_ALPHA;
 	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-	this->info->storeBPP = bitPerPixel;
+	this->info->storeBPP = (UInt32)bitPerPixel;
 	this->info->pf = Media::FrameInfo::GetDefPixelFormat(0, this->info->storeBPP);
 	this->info->dispWidth = width;
 	this->info->dispHeight = height;
@@ -95,4 +96,97 @@ void *Media::MemorySurface::GetHandle()
 Bool Media::MemorySurface::DrawFromBuff()
 {
 	return false;
+}
+
+Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank)
+{
+	if (surface && surface->info->dispWidth == this->info->dispWidth && surface->info->dispHeight == this->info->dispHeight && surface->info->storeBPP == this->info->storeBPP)
+	{
+		if (waitForVBlank) this->WaitForVBlank();
+		surface->GetImageData(this->buffPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), false);
+		return true;
+	}
+	return false;
+}
+
+Bool Media::MemorySurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
+{
+	OSInt destWidth = (OSInt)this->info->dispWidth;
+	OSInt destHeight = (OSInt)this->info->dispHeight;
+	Bool succ = false;
+	if (waitForVBlank) this->WaitForVBlank();
+	OSInt drawX = 0;
+	OSInt drawY = 0;
+	if (destX < 0)
+	{
+		drawX = -destX;
+		buffW += (UOSInt)destX;
+		destX = 0;
+	}
+	if (destY < 0)
+	{
+		drawY = -destY;
+		buffH += (UOSInt)destY;
+		destY = 0;
+	}
+	if (destX + (OSInt)buffW > (OSInt)destWidth)
+	{
+		buffW = (UOSInt)(destWidth - destX);
+	}
+	if (destY + (OSInt)buffH > (OSInt)destHeight)
+	{
+		buffH = (UOSInt)(destHeight - destY);
+	}
+	if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+	{
+		if (this->info->atype == Media::AT_ALPHA && this->info->storeBPP == 32)
+		{
+			ImageUtil_ConvR8G8B8N8_ARGB32(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
+				(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info->storeBPP >> 3),
+				buffW, buffH, lineAdd, (OSInt)this->GetDataBpl());
+		}
+		else
+		{
+			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
+				(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info->storeBPP >> 3),
+				buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, this->GetDataBpl(), false);
+		}
+
+		if (clearScn)
+		{
+			UInt32 c = 0xFF000000;
+			if (destY > 0)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->buffPtr, (UOSInt)destWidth, (UOSInt)destY, this->GetDataBpl(), c);
+			}
+			if (destY + (OSInt)buffH < (OSInt)destHeight)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + ((UOSInt)destY + buffH) * this->GetDataBpl(), (UOSInt)destWidth, (UOSInt)(destHeight - (OSInt)buffH - destY), this->GetDataBpl(), c);
+			}
+			if (destX > 0)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destY * this->GetDataBpl(), (UOSInt)destX, buffH, GetDataBpl(), c);
+			}
+			if (destX + (OSInt)buffW < (OSInt)destWidth)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destY * this->GetDataBpl() + ((UOSInt)destX + buffW) * (this->info->storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destX - buffW, buffH, this->GetDataBpl(), c);
+			}
+		}
+	}
+	else if (clearScn)
+	{
+		ImageUtil_ImageColorFill32((UInt8*)this->buffPtr, (UOSInt)destWidth, (UOSInt)destHeight, this->GetDataBpl(), 0);
+	}
+	succ = true;
+	return succ;
+}
+
+UInt8 *Media::MemorySurface::LockSurface(OSInt *lineAdd)
+{
+	*lineAdd = (OSInt)this->GetDataBpl();
+	return this->buffPtr;
+}
+void Media::MemorySurface::UnlockSurface()
+{
+
 }

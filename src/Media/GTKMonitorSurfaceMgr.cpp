@@ -56,6 +56,7 @@ Media::ColorProfile *Media::GTKMonitorSurfaceMgr::GetMonitorColor(MonitorHandle 
 	{
 		return this->colorSess->GetRGBParam()->monProfile;
 	}
+	return 0;
 }
 
 Bool Media::GTKMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)

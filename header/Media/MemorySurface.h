@@ -21,7 +21,12 @@ namespace Media
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();
+
 		virtual Bool DrawFromBuff();
+		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank);
+		virtual Bool DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank);
+		virtual UInt8 *LockSurface(OSInt *lineAdd);
+		virtual void UnlockSurface();
 	};
 }
 #endif

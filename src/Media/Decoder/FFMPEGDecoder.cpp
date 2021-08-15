@@ -1543,7 +1543,7 @@ public:
 
 			while (avpkt.size > 0)
 			{
-				int gotFrame;
+				int gotFrame = 0;
 				ret = FFMPEGDecoder_avcodec_decode_audio4(this->ctx, this->frame, &gotFrame, &avpkt);
 				if (ret < 0)
 				{

@@ -559,7 +559,6 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 void UI::GUIDDrawControl::DrawToScreen()
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	RECT rcSrc;
 	if (this->debugWriter)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -578,10 +577,6 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	else if (this->currScnMode == SM_VFS)
 	{
-		rcSrc.left = 0;
-		rcSrc.top = 0;
-		rcSrc.right = (LONG)this->surfaceW;
-		rcSrc.bottom = (LONG)this->surfaceH;
 		if (this->primarySurface && this->buffSurface)
 		{
 			if (!this->primarySurface->DrawFromSurface(this->buffSurface, true))

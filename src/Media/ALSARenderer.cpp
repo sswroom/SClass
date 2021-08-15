@@ -21,6 +21,49 @@ static void ALSARenderer_Event(snd_async_handler_t *ahandler)
 	me->OnEvent();
 }
 
+snd_pcm_state_t ALSARenderer_GetState(void *hand)
+{
+	snd_pcm_state_t state;
+	state = snd_pcm_state((snd_pcm_t*)hand);
+	switch (state)
+	{
+	case SND_PCM_STATE_OPEN:
+		printf("State: OPEN\r\n");
+		break;
+	case SND_PCM_STATE_SETUP:
+		printf("State: SETUP\r\n");
+		break;
+	case SND_PCM_STATE_PREPARED:
+		printf("State: PREPARED\r\n");
+		break;
+	case SND_PCM_STATE_RUNNING:
+		printf("State: RUNNING\r\n");
+		break;
+	case SND_PCM_STATE_XRUN:
+		printf("State: XRUN\r\n");
+		break;
+	case SND_PCM_STATE_DRAINING:
+		printf("State: DRAINING\r\n");
+		break;
+	case SND_PCM_STATE_PAUSED:
+		printf("State: PAUSED\r\n");
+		break;
+	case SND_PCM_STATE_SUSPENDED:
+		printf("State: SUSPENDED\r\n");
+		break;
+	case SND_PCM_STATE_DISCONNECTED:
+		printf("State: DISCONNECTED\r\n");
+		break;
+	case SND_PCM_STATE_PRIVATE1:
+		printf("State: PRIVATE1\r\n");
+		break;
+	default:
+		printf("State: Unknown\r\n");
+		break;
+	}
+	return state;
+}
+
 UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 {
 	Media::ALSARenderer *me = (Media::ALSARenderer *)obj;
@@ -122,76 +165,106 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 		i++;
 	}
 
-	while (!me->stopPlay)
+	if (me->nonBlock)
 	{
-		if (isFirst)
+		while (!me->stopPlay)
 		{
-			isFirst = false;
-			if (me->buffTime)
+			if (isFirst)
 			{
-				i = (Int32)(me->buffTime * af.frequency / 1000);
+				isFirst = false;
+				if (me->buffTime)
+				{
+					i = (Int32)(me->buffTime * af.frequency / 1000);
+				}
+				else
+				{
+					i = (Int32)(af.frequency >> 1);
+				}
 			}
 			else
 			{
-				i = (Int32)(af.frequency >> 1);
+				i = (Int32)snd_pcm_avail_update((snd_pcm_t*)me->hand);
 			}
-		}
-		else
-		{
-			i = (Int32)snd_pcm_avail_update((snd_pcm_t*)me->hand);
-		}
-		if (i < 0)
-		{
-			printf("Error: snd_pcm_avail_update, %d %s\r\n", i, snd_strerror(i));
-			snd_pcm_state_t state;
-			state = snd_pcm_state((snd_pcm_t*)me->hand);
-			switch (state)
+			if (i < 0)
 			{
-			case SND_PCM_STATE_OPEN:
-				printf("State: OPEN\r\n");
-				break;
-			case SND_PCM_STATE_SETUP:
-				printf("State: SETUP\r\n");
-				break;
-			case SND_PCM_STATE_PREPARED:
-				printf("State: PREPARED\r\n");
-				break;
-			case SND_PCM_STATE_RUNNING:
-				printf("State: RUNNING\r\n");
-				break;
-			case SND_PCM_STATE_XRUN:
-				printf("State: XRUN\r\n");
-				break;
-			case SND_PCM_STATE_DRAINING:
-				printf("State: DRAINING\r\n");
-				break;
-			case SND_PCM_STATE_PAUSED:
-				printf("State: PAUSED\r\n");
-				break;
-			case SND_PCM_STATE_SUSPENDED:
-				printf("State: SUSPENDED\r\n");
-				break;
-			case SND_PCM_STATE_DISCONNECTED:
-				printf("State: DISCONNECTED\r\n");
-				break;
-			case SND_PCM_STATE_PRIVATE1:
-				printf("State: PRIVATE1\r\n");
-				break;
-			default:
-				printf("State: Unknown\r\n");
-				break;
-			}
-			if (state == SND_PCM_STATE_XRUN)
-			{
-				err = snd_pcm_prepare((snd_pcm_t*)me->hand);
-				if (err < 0)
+				printf("Error: snd_pcm_avail_update, %d %s\r\n", i, snd_strerror(i));
+				snd_pcm_state_t state = ALSARenderer_GetState(me->hand);
+				if (state == SND_PCM_STATE_XRUN)
 				{
-					printf("Error: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
+					err = snd_pcm_prepare((snd_pcm_t*)me->hand);
+					if (err < 0)
+					{
+						printf("Error: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
+					}
+					
 				}
 			}
+			i = (Int32)(i * (OSInt)(outBitPerSample >> 3) * af.nChannels);
+			while (i > 0)
+			{
+				if (buffSize[nextBlock] == 0)
+				{
+					me->stopPlay = true;
+					me->audsrc->Stop();
+					break;
+				}
+				if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
+				{
+					snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+	//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
+					i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
+
+					if (me->dataConv)
+					{
+						readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
+						buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, 16, outBuff[nextBlock]);
+					}
+					else
+					{
+						buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(outBuff[nextBlock], outBuffLeng, &af);
+					}
+					outSize[nextBlock] = 0;
+	//				dataExist[nextBlock] = true;
+
+					nextBlock = (nextBlock + 1) & 1;
+				}
+				else
+				{
+					snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (UInt32)i / (outBitPerSample >> 3) / af.nChannels);
+	//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
+					outSize[nextBlock] += (UInt32)i;
+					i = 0;
+					break;
+				}
+			}
+
+			thisT = GetCurrTime(me->hand);
+			if (thisT != 0)
+			{
+				if (lastT > thisT)
+				{
+		//			waveOutReset((HWAVEOUT)me->hwo);
+		//			waveOutRestart((HWAVEOUT)me->hwo);
+					lastT = thisT = GetCurrTime(me->hand);
+					refStart = thisT - me->audsrc->GetCurrTime();
+				}
+				else
+				{
+					me->clk->Start(thisT - refStart);
+					lastT = thisT;
+				}
+			}
+			else
+			{
+				lastT = thisT;
+			}
+			
+			me->playEvt->Wait(1000);
 		}
-		i = (Int32)((UInt32)i * (outBitPerSample >> 3) * af.nChannels);
-		while (i > 0)
+	}
+	else
+	{
+		while (!me->stopPlay)
 		{
 			if (buffSize[nextBlock] == 0)
 			{
@@ -199,58 +272,24 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				me->audsrc->Stop();
 				break;
 			}
-			if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
-			{
-				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
-//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
-				i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
+			snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+//			printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
+			i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
 
-				if (me->dataConv)
-				{
-					readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-					buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, 16, outBuff[nextBlock]);
-				}
-				else
-				{
-					buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(outBuff[nextBlock], outBuffLeng, &af);
-				}
-				outSize[nextBlock] = 0;
+			if (me->dataConv)
+			{
+				readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
+				buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, 16, outBuff[nextBlock]);
+			}
+			else
+			{
+				buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(outBuff[nextBlock], outBuffLeng, &af);
+			}
+			outSize[nextBlock] = 0;
 //				dataExist[nextBlock] = true;
 
-				nextBlock = (nextBlock + 1) & 1;
-			}
-			else
-			{
-				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (UInt32)i / (outBitPerSample >> 3) / af.nChannels);
-//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
-				outSize[nextBlock] += (UInt32)i;
-				i = 0;
-				break;
-			}
+			nextBlock = (nextBlock + 1) & 1;
 		}
-
-		thisT = GetCurrTime(me->hand);
-		if (thisT != 0)
-		{
-			if (lastT > thisT)
-			{
-	//			waveOutReset((HWAVEOUT)me->hwo);
-	//			waveOutRestart((HWAVEOUT)me->hwo);
-				lastT = thisT = GetCurrTime(me->hand);
-				refStart = thisT - me->audsrc->GetCurrTime();
-			}
-			else
-			{
-				me->clk->Start(thisT - refStart);
-				lastT = thisT;
-			}
-		}
-		else
-		{
-			lastT = thisT;
-		}
-		
-		me->playEvt->Wait(1000);
 	}
 	snd_pcm_drop((snd_pcm_t*)me->hand);
 	snd_pcm_reset((snd_pcm_t*)me->hand);
@@ -494,8 +533,9 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 	this->audsrc = 0;
 	this->playing = false;
 	this->endHdlr = 0;
-	this->buffTime = 0;
+	this->buffTime = 500;
 	this->hand = 0;
+	this->nonBlock = false;
 }
 
 Media::ALSARenderer::~ALSARenderer()
@@ -590,11 +630,21 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 			}
 		}
 	}
-	err = snd_pcm_open(&hand, cbuff, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+	int mode = 0;
+	if (this->nonBlock)
+	{
+		mode = SND_PCM_NONBLOCK;
+	}
+	err = snd_pcm_open(&hand, cbuff, SND_PCM_STREAM_PLAYBACK, mode);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_open(%s), err = %d %s\r\n", cbuff, err, snd_strerror(err));
-		return false;
+		printf("Error: snd_pcm_open(%s), err = %d %s, try default\r\n", cbuff, err, snd_strerror(err));
+		err = snd_pcm_open(&hand, "default", SND_PCM_STREAM_PLAYBACK, mode);
+		if (err < 0)
+		{
+			printf("Error: snd_pcm_open(default), err = %d %s\r\n", err, snd_strerror(err));
+			return false;
+		}
 	}
 	if (!this->SetHWParams(audsrc, hand))
 	{

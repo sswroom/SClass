@@ -19,6 +19,7 @@ namespace Media
 		EndNotifier endHdlr;
 		void *endHdlrObj;
 		Bool dataConv;
+		Bool nonBlock;
 
 		UInt32 buffTime;
 

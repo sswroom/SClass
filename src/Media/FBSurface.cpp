@@ -161,6 +161,78 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool wait
 	return false;
 }
 
+Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
+{
+	OSInt destWidth = (OSInt)this->info->dispWidth;
+	OSInt destHeight = (OSInt)this->info->dispHeight;
+	Bool succ = false;
+	if (waitForVBlank) this->WaitForVBlank();
+	OSInt drawX = 0;
+	OSInt drawY = 0;
+	if (destX < 0)
+	{
+		drawX = -destX;
+		buffW += (UOSInt)destX;
+		destX = 0;
+	}
+	if (destY < 0)
+	{
+		drawY = -destY;
+		buffH += (UOSInt)destY;
+		destY = 0;
+	}
+	if (destX + (OSInt)buffW > (OSInt)destWidth)
+	{
+		buffW = (UOSInt)(destWidth - destX);
+	}
+	if (destY + (OSInt)buffH > (OSInt)destHeight)
+	{
+		buffH = (UOSInt)(destHeight - destY);
+	}
+	if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+	{
+		ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
+			(UInt8*)this->clsData->dataPtr + destY * this->clsData->finfo.line_length + destX * ((OSInt)this->info->storeBPP >> 3),
+			buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)this->clsData->finfo.line_length, false);
+
+		if (clearScn)
+		{
+			if (destY > 0)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destY, (UInt32)this->clsData->finfo.line_length, 0);
+			}
+			if (destY + (OSInt)buffH < (OSInt)destHeight)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + (destY + (OSInt)buffH) * this->clsData->finfo.line_length, (UOSInt)destWidth, (UOSInt)(destHeight - (OSInt)buffH - destY), (UInt32)this->clsData->finfo.line_length, 0);
+			}
+			if (destX > 0)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * this->clsData->finfo.line_length, (UOSInt)destX, buffH, (UInt32)this->clsData->finfo.line_length, 0);
+			}
+			if (destX + (OSInt)buffW < (OSInt)destWidth)
+			{
+				ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * this->clsData->finfo.line_length + (destX + (OSInt)buffW) * (OSInt)(this->info->storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destX - buffW, buffH, (UInt32)this->clsData->finfo.line_length, 0);
+			}
+		}
+	}
+	else if (clearScn)
+	{
+		ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destHeight, (UInt32)this->clsData->finfo.line_length, 0);
+	}
+	succ = true;
+	return succ;
+}
+
+UInt8 *Media::FBSurface::LockSurface(OSInt *lineAdd)
+{
+	*lineAdd = this->clsData->finfo.line_length;
+	return this->clsData->dataPtr;
+}
+
+void Media::FBSurface::UnlockSurface()
+{
+}
+
 void Media::FBSurface::SetBuffSurface(Media::MonitorSurface *buffSurface)
 {
 	this->clsData->buffSurface = buffSurface;
