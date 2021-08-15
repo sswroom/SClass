@@ -50,6 +50,7 @@ ImageCopy_CPP.o: ../../src/Media/ImageCopy_SysV64.asm
 ImageTo8Bit_CPP.o: ../../src/Media/ImageTo8Bit_SysV64.asm
 ImageUtil_CPP.o: ../../src/Media/ImageUtil_SysV64.asm
 LRGBLimiter_CPP.o: ../../src/Media/LRGBLimiter_SysV64.asm
+MediaPlayer_CPP.o: ../../src/Media/MediaPlayer_CPP.cpp
 RGBColorFilter_CPP.o: ../../src/Media/RGBColorFilter_CPP.cpp
 AlphaBlend8_8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_8_CPP.cpp
 AlphaBlend8_C8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_C8_SysV64.asm
@@ -92,5 +93,4 @@ LanczosResizerLR_C16_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C16_CPP.cpp
 LanczosResizerLR_C32_CPU_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU_SysV64.asm
 AutoCropFilter_CPP.o: ../../src/Media/VideoFilter/AutoCropFilter_CPP.cpp
 IVTCFilter_CPP.o: ../../src/Media/VideoFilter/IVTCFilter_CPP.cpp
-AVIRMediaPlayer_CPP.o: ../../src/SSWR/AVIRead/AVIRMediaPlayer_CPP.cpp
 MyString_CPP.o: ../../src/Text/MyString_SysV64.asm

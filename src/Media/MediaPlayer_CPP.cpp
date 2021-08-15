@@ -2,7 +2,7 @@
 
 extern "C"
 {
-void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops)
+void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops)
 {
 	UInt8 *ptr;
 	UInt8 *ptr2;

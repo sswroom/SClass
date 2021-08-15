@@ -15,7 +15,7 @@
 
 extern "C"
 {
-	void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
+	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
 }
 
 typedef enum
@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 		return;
 	}
 
-	AVIRMediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
+	MediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
 	DEL_CLASS(img);
 	me->currDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vbdMain->UpdateCrop();

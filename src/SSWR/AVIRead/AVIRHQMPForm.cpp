@@ -917,7 +917,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->bwFilter, Media::ImageFilter::BWImgFilter(false));
 	this->vbox->AddImgFilter(this->bwFilter);
 
-	NEW_CLASS(this->player, SSWR::AVIRead::AVIRMediaPlayer(this->vbox, this->core->GetAudioDevice()));
+	NEW_CLASS(this->player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
 	this->player->SetEndHandler(OnVideoEnd, this);
 	this->currFile = 0;
 	CloseFile();

@@ -1,8 +1,8 @@
 section .text
 
-global AVIRMediaPlayer_VideoCropImageY
+global MediaPlayer_VideoCropImageY
 
-;AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
+;MediaPlayer_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
 
 ;0 rdi
 ;8 rbx
@@ -15,7 +15,7 @@ global AVIRMediaPlayer_VideoCropImageY
 ;r9 ySplit
 ;72 crops
 	align 16
-AVIRMediaPlayer_VideoCropImageY:
+MediaPlayer_VideoCropImageY:
 	push rbp
 	push rsi
 	push rbx

@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, 
 	this->HandleDropFiles(OnFileDrop, this);
 	this->UpdatePlaylist();
 
-	NEW_CLASS(this->player, SSWR::AVIRead::AVIRMediaPlayer(this->vbdMain, this->core->GetAudioDevice()));
+	NEW_CLASS(this->player, Media::MediaPlayer(this->vbdMain, this->core->GetAudioDevice()));
 	this->playlist->SetPlayer(this->player);
 }
 

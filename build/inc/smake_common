@@ -1839,6 +1839,9 @@ Media/M2VStreamSource.h: ../../src/Media/M2VStreamSource.cpp
 @M2VStreamSource.o
 Media/MediaFile.h: ../../src/Media/MediaFile.cpp
 @MediaFile.o
+Media/MediaPlayer.h: ../../src/Media/MediaPlayer.cpp
+@MediaPlayer.o
+@MediaPlayer_CPP.o
 Media/MediaPlayerInterface.h: ../../src/Media/MediaPlayerInterface.cpp
 @MediaPlayerInterface.o
 Media/MemorySurface.h: ../../src/Media/MemorySurface.cpp
@@ -2967,9 +2970,6 @@ SSWR/AVIRead/AVIRMACManagerForm.h: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
 @AVIRMACManagerForm.o
 SSWR/AVIRead/AVIRMediaForm.h: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
 @AVIRMediaForm.o
-SSWR/AVIRead/AVIRMediaPlayer.h: ../../src/SSWR/AVIRead/AVIRMediaPlayer.cpp
-@AVIRMediaPlayer.o
-@AVIRMediaPlayer_CPP.o
 SSWR/AVIRead/AVIRMIMEViewerForm.h: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
 @AVIRMIMEViewerForm.o
 SSWR/AVIRead/AVIRMODBUSMasterForm.h: ../../src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
@@ -3962,6 +3962,7 @@ LUT.o: ../../src/Media/LUT.cpp
 M2VFile.o: ../../src/Media/M2VFile.cpp
 M2VStreamSource.o: ../../src/Media/M2VStreamSource.cpp
 MediaFile.o: ../../src/Media/MediaFile.cpp
+MediaPlayer.o: ../../src/Media/MediaPlayer.cpp
 MediaPlayerInterface.o: ../../src/Media/MediaPlayerInterface.cpp
 MemorySurface.o: ../../src/Media/MemorySurface.cpp
 MonitorMgr.o: ../../src/Media/MonitorMgr.cpp
@@ -4501,7 +4502,6 @@ AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
 AVIRMACManagerForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
 AVIRMediaForm.o: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
-AVIRMediaPlayer.o: ../../src/SSWR/AVIRead/AVIRMediaPlayer.cpp
 AVIRMIMEViewerForm.o: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
 AVIRMODBUSMasterForm.o: ../../src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
 AVIRMQTTBrokerForm.o: ../../src/SSWR/AVIRead/AVIRMQTTBrokerForm.cpp

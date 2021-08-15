@@ -1,8 +1,8 @@
 section .text
 
-global _AVIRMediaPlayer_VideoCropImageY
+global _MediaPlayer_VideoCropImageY
 
-;_AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
+;_MediaPlayer_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
 
 ;0 edi
 ;4 ebx
@@ -15,7 +15,7 @@ global _AVIRMediaPlayer_VideoCropImageY
 ;32 ySplit
 ;36 crops
 
-_AVIRMediaPlayer_VideoCropImageY:
+_MediaPlayer_VideoCropImageY:
 	push ebp
 	push esi
 	push ebx

@@ -1,9 +1,9 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRPLAYLISTFORM
 #define _SM_SSWR_AVIREAD_AVIRPLAYLISTFORM
 #include "Media/IMediaPlayer.h"
+#include "Media/MediaPlayer.h"
 #include "Media/Playlist.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/AVIRMediaPlayer.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -31,7 +31,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;
 			Media::Playlist *playlist;
-			SSWR::AVIRead::AVIRMediaPlayer *player;
+			Media::MediaPlayer *player;
 			const WChar *currFileName;
 		private:
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);

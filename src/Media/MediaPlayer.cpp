@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
-#include "SSWR/AVIRead/AVIRMediaPlayer.h"
+#include "Media/MediaPlayer.h"
 
 extern "C"
 {
-	void AVIRMediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
+	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
 }
 
-void SSWR::AVIRead::AVIRMediaPlayer::PlayTime(UInt32 time)
+void Media::MediaPlayer::PlayTime(UInt32 time)
 {
 	if (this->currVDecoder)
 	{
@@ -58,9 +58,9 @@ void SSWR::AVIRead::AVIRMediaPlayer::PlayTime(UInt32 time)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaPlayer::OnVideoEnd(void *userObj)
+void __stdcall Media::MediaPlayer::OnVideoEnd(void *userObj)
 {
-	SSWR::AVIRead::AVIRMediaPlayer *me = (SSWR::AVIRead::AVIRMediaPlayer*)userObj;
+	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
 	Bool audPlaying = me->audioPlaying;
 	me->videoPlaying = false;
 	if (!audPlaying)
@@ -72,9 +72,9 @@ void __stdcall SSWR::AVIRead::AVIRMediaPlayer::OnVideoEnd(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaPlayer::OnAudioEnd(void *userObj)
+void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
 {
-	SSWR::AVIRead::AVIRMediaPlayer *me = (SSWR::AVIRead::AVIRMediaPlayer*)userObj;
+	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
 	Bool vidPlaying = me->videoPlaying;
 	me->audioPlaying = false;
 	if (!vidPlaying)
@@ -86,9 +86,9 @@ void __stdcall SSWR::AVIRead::AVIRMediaPlayer::OnAudioEnd(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
+void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
 {
-	SSWR::AVIRead::AVIRMediaPlayer *me = (SSWR::AVIRead::AVIRMediaPlayer*)userObj;
+	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
 	UOSInt w = img->info->dispWidth;
 	UOSInt h = img->info->dispHeight;
 	UInt8 *yptr = img->data;
@@ -111,20 +111,20 @@ void __stdcall SSWR::AVIRead::AVIRMediaPlayer::VideoCropImage(void *userObj, UIn
 		DEL_CLASS(img);
 		return;
 	}
-	AVIRMediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
+	MediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
 	DEL_CLASS(img);
 	me->currVDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vrenderer->UpdateCrop();
 }
 
-void SSWR::AVIRead::AVIRMediaPlayer::ReleaseAudio()
+void Media::MediaPlayer::ReleaseAudio()
 {
 	this->audioDev->BindAudio(0);
 	this->arenderer = 0;
 	SDEL_CLASS(this->currADecoder);
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime)
+Bool Media::MediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime)
 {
 	Bool ret = false;
 	this->arenderer = this->audioDev->BindAudio(asrc);
@@ -154,7 +154,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc
 	return ret;
 }
 
-SSWR::AVIRead::AVIRMediaPlayer::AVIRMediaPlayer(UI::GUIVideoBoxDD *vrenderer, Media::AudioDevice *audioDev)
+Media::MediaPlayer::MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDevice *audioDev)
 {
 	this->audioDev = audioDev;
 	this->vrenderer = vrenderer;
@@ -174,7 +174,7 @@ SSWR::AVIRead::AVIRMediaPlayer::AVIRMediaPlayer(UI::GUIVideoBoxDD *vrenderer, Me
 	this->endObj = 0;
 }
 
-SSWR::AVIRead::AVIRMediaPlayer::~AVIRMediaPlayer()
+Media::MediaPlayer::~MediaPlayer()
 {
 	this->LoadMedia(0);
 	DEL_CLASS(this->clk);
@@ -182,13 +182,13 @@ SSWR::AVIRead::AVIRMediaPlayer::~AVIRMediaPlayer()
 	DEL_CLASS(this->adecoders);
 }
 
-void SSWR::AVIRead::AVIRMediaPlayer::SetEndHandler(PBEndHandler hdlr, void *userObj)
+void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, void *userObj)
 {
 	this->endHdlr = hdlr;
 	this->endObj = userObj;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
+Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
 {
 	Bool videoFound;
 	this->currFile = file;
@@ -248,7 +248,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::LoadMedia(Media::MediaFile *file)
 	return videoFound || this->arenderer;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::StartPlayback()
+Bool Media::MediaPlayer::StartPlayback()
 {
 	if (this->IsPlaying())
 		return true;
@@ -257,7 +257,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::StartPlayback()
 	return this->playing;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::StopPlayback()
+Bool Media::MediaPlayer::StopPlayback()
 {
 	this->playing = false;
 	if (this->vrenderer)
@@ -274,7 +274,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::StopPlayback()
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::SeekTo(UInt32 time)
+Bool Media::MediaPlayer::SeekTo(UInt32 time)
 {
 	if (IsPlaying())
 	{
@@ -289,7 +289,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SeekTo(UInt32 time)
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudio(UOSInt index)
+Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 {
 	this->ReleaseAudio();
 	if (this->currFile == 0)
@@ -319,7 +319,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::SwitchAudio(UOSInt index)
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::IsPlaying()
+Bool Media::MediaPlayer::IsPlaying()
 {
 	if (this->arenderer && this->arenderer->IsPlaying())
 	{
@@ -333,7 +333,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::IsPlaying()
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::PrevChapter()
+Bool Media::MediaPlayer::PrevChapter()
 {
 	UOSInt i;
 	if (this->IsPlaying() && this->currChapInfo)
@@ -359,7 +359,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::PrevChapter()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::NextChapter()
+Bool Media::MediaPlayer::NextChapter()
 {
 	UOSInt i;
 	if (this->currChapInfo && this->IsPlaying())
@@ -380,7 +380,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::NextChapter()
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::GotoChapter(UOSInt chapter)
+Bool Media::MediaPlayer::GotoChapter(UOSInt chapter)
 {
 	if (this->currChapInfo)
 	{
@@ -394,12 +394,12 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::GotoChapter(UOSInt chapter)
 	}
 }
 
-UInt32 SSWR::AVIRead::AVIRMediaPlayer::GetCurrTime()
+UInt32 Media::MediaPlayer::GetCurrTime()
 {
 	return this->clk->GetCurrTime();
 }
 
-Bool SSWR::AVIRead::AVIRMediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
+Bool Media::MediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 {
 	Media::FrameInfo info;
 	UOSInt cropLeft;
@@ -444,7 +444,7 @@ Bool SSWR::AVIRead::AVIRMediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 	}
 }
 
-void SSWR::AVIRead::AVIRMediaPlayer::DetectCrop()
+void Media::MediaPlayer::DetectCrop()
 {
 	if (this->currVDecoder)
 	{

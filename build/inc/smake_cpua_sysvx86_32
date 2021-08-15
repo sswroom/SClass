@@ -43,6 +43,7 @@ ImageCopy_CPP.o: ../../src/Media/ImageCopy_CPP.cpp
 ImageTo8Bit_CPP.o: ../../src/Media/ImageTo8Bit_CPP.cpp
 ImageUtil_CPP.o: ../../src/Media/ImageUtil_32.asm
 LRGBLimiter_CPP.o: ../../src/Media/LRGBLimiter32.asm
+MediaPlayer_CPP.o: ../../src/Media/MediaPlayer_CPP.cpp
 RGBColorFilter_CPP.o: ../../src/Media/RGBColorFilter32.asm
 AlphaBlend8_8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_8_CPP.cpp
 AlphaBlend8_C8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_C8_CPP.cpp
@@ -85,5 +86,4 @@ LanczosResizerLR_C16_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C16_CPP.cpp
 LanczosResizerLR_C32_CPU_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
 AutoCropFilter_CPP.o: ../../src/Media/VideoFilter/AutoCropFilter_CPP.cpp
 IVTCFilter_CPP.o: ../../src/Media/VideoFilter/IVTCFilter_CPP.cpp
-AVIRMediaPlayer_CPP.o: ../../src/SSWR/AVIRead/AVIRMediaPlayer_CPP.cpp
 MyString_CPP.o: ../../src/Text/MyString_32.asm

@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRHQMPFORM
 #include "IO/Stream.h"
 #include "Media/MediaFile.h"
+#include "Media/MediaPlayer.h"
 #include "Media/MediaPlayerInterface.h"
 #include "Media/Playlist.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
@@ -10,7 +11,6 @@
 #include "Media/ImageFilter/BWImgFilter.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/AVIRMediaPlayer.h"
 #include "UI/GUIForm.h"
 #include "UI/GUITextBox.h"
 #include "UI/GUIVideoBoxDD.h"
@@ -40,7 +40,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;
-			SSWR::AVIRead::AVIRMediaPlayer *player;
+			Media::MediaPlayer *player;
 			Media::MediaFile *currFile;
 			Media::Playlist *playlist;
 			Media::IPBControl *currPBC;

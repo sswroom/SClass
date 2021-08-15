@@ -1,9 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHQMPPLAYLISTFORM
 #define _SM_SSWR_AVIREAD_AVIRHQMPPLAYLISTFORM
-#include "Media/IMediaPlayer.h"
 #include "Media/Playlist.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/AVIRMediaPlayer.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIListBox.h"
@@ -42,6 +40,6 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			Media::Playlist *GetPlaylist();
 		};
-	};
-};
+	}
+}
 #endif
