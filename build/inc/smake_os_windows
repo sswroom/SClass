@@ -56,6 +56,8 @@ Media/AudioDevice.h: ../../src/Media/AudioDeviceW.cpp
 @AudioDevice.o
 Media/DDrawSurface.h: ../../src/Media/DDrawSurface.cpp
 @DDrawSurface.o
+Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrWin.cpp
+@DefaultMonitorSurfaceMgr.o
 Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @KSRenderer.o
 @audfilter.o
@@ -153,6 +155,7 @@ ASIOOutRenderer.o: ../../src/Media/ASIOOutRenderer.cpp
 !-lole32
 AudioDevice.o: ../../src/Media/AudioDeviceW.cpp
 DDrawSurface.o: ../../src/Media/DDrawSurface.cpp
+DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrWin.cpp
 KSRenderer.o: ../../src/Media/KSRenderer.cpp
 $-I ../../ThirdParty/KSSample
 !-luuid

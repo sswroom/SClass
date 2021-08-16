@@ -34,6 +34,9 @@ namespace Media
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);
 		virtual void WaitForVBlank(MonitorHandle *hMon);
 		virtual UInt32 GetRefreshRate(MonitorHandle *hMon);
+		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex);
+		virtual UOSInt GetMonitorCount();
+
 		virtual MonitorSurface *CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth);
 		virtual MonitorSurface *CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow);
 		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface);

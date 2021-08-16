@@ -704,7 +704,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 			mutUsage.EndUse();
 			this->rootForm->FromFullScn();
-			this->EndUpdateSize());
+			this->EndUpdateSize();
 			SwitchFullScreen(false, false);
 			return;
 		}

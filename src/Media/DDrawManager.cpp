@@ -215,6 +215,40 @@ UInt32 Media::DDrawManager::GetRefreshRate(MonitorHandle *hMon)
 	}
 }
 
+BOOL CALLBACK DDrawManager_MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+{
+	UOSInt *data = (UOSInt*)dwData;
+	if (data[0] == data[1])
+	{
+		data[2] = (UOSInt)hMonitor;
+	}
+	data[0]++;
+    return TRUE;
+}
+
+MonitorHandle *Media::DDrawManager::GetMonitorHandle(UOSInt monIndex)
+{
+	UOSInt arrs[3];
+	arrs[0] = 0;
+	arrs[1] = monIndex;
+	arrs[2] = 0;
+	if (EnumDisplayMonitors(NULL, NULL, DDrawManager_MonitorEnumProc, (LPARAM)&arrs))
+		return (MonitorHandle*)arrs[2];
+	return 0;
+}
+
+UOSInt Media::DDrawManager::GetMonitorCount()
+{
+	UOSInt arrs[3];
+	arrs[0] = 0;
+	arrs[1] = 0;
+	arrs[2] = 0;
+	if (EnumDisplayMonitors(NULL, NULL, DDrawManager_MonitorEnumProc, (LPARAM)&arrs))
+		return arrs[0];
+	return 0;
+
+}
+
 Media::MonitorSurface *Media::DDrawManager::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
 {
 	if (this->IsError())
