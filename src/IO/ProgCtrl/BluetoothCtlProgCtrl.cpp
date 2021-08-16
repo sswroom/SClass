@@ -204,7 +204,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 
 						}
 						//[CHG] Device 00:1C:88:30:A0:B9 LegacyPairing: yes
-						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"LegancyPairing: "))
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"LegacyPairing: "))
 						{
 
 						}

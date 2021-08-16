@@ -1312,6 +1312,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x0BDA, 0x8152, 0x0000, "Realtek USB 10/100 LAN",                            "Realtek RTL8152 10/100 LAN"},
 	{0x0BDA, 0x8153, 0x3100, "Realtek USB 10/100/1000 LAN",                       "Realtek RTL8153 10/100/1000 LAN"},
 	{0x0BDA, 0x8179, 0x0000, "Realtek 802.11n WLAN NIC",                          "Realtek RTL8188EUS 802.11n"},
+	{0x0BDA, 0x8771, 0x0200, "Realtek Bluetooth Radio",                           "Realtek RTL8761B Bluetooth 5.0"},
 	{0x0BDA, 0x8812, 0x0000, "Realtek 802.11ac WLAN Adapter",                     "Realtek RTL8812AU Wireless 802.11ac 2x2 USB 3.0 NIC"},
 	{0x0BDA, 0x8813, 0x0000, "Realtek 802.11ac WLAN Adapter",                     "Realtek RTP8814AU Wireless 802.11ac 4x4:3 USB 3.0 NIC"},
 	{0x0BDA, 0x881A, 0x0000, "Realtek 802.11ac WLAN Adapter",                     "Realtek RTL8812AU-VS 802.11ac 2x2 USB 2.0"},
