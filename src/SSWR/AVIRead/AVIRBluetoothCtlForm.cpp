@@ -176,7 +176,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
 			statusMap->Put(dev->macInt, 0);
 		}
-		i++;
+		j++;
 	}
 	return k;
 }

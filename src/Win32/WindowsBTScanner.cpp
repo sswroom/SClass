@@ -199,5 +199,5 @@ Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetPublic
 Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
-	return this->pubDevMap;
+	return this->randDevMap;
 }

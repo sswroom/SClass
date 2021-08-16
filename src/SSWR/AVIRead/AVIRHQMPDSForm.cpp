@@ -181,10 +181,10 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.frameDispCnt);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Frame Skip before process: ");
-		sb.AppendI32(dbg.frameSkip1);
+		sb.AppendI32(dbg.frameSkipBefore);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Frame Skip after process: ");
-		sb.AppendI32(dbg.frameSkip2);
+		sb.AppendI32(dbg.frameSkipAfter);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"ProcTimes: ");
 		Text::SBAppendF64(&sb, dbg.hTime);
@@ -540,7 +540,7 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(UI::GUIClientControl *parent, UI::
 	this->uOfst = 0;
 	this->vOfst = 0;
 
-	NEW_CLASS(this->player, SSWR::AVIRead::AVIRMediaPlayer(this->vbox, this->core));
+	NEW_CLASS(this->player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
 	this->currFile = 0;
 	CloseFile();
 
