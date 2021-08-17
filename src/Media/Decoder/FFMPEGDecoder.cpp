@@ -120,7 +120,7 @@ typedef struct
 	Media::IVideoSource::FrameStruct frameStruct;
 } FFMPEGFrameInfo;
 
-typedef struct
+struct Media::Decoder::FFMPEGDecoder::ClassData
 {
 	Bool inited;
 	const AVCodec *codec;
@@ -149,11 +149,11 @@ typedef struct
 	IO::Stream *dbgStm;
 	IO::Writer *dbgWriter;
 #endif
-} FFMPEGClassData;
+};
 
 void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	FFMPEGClassData *data = (FFMPEGClassData*)this->clsData;
+	ClassData *data = this->clsData;
     AVPacket avpkt;
 	Int32 ret;
 #ifdef _DEBUG
@@ -477,7 +477,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 
 Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
-	FFMPEGClassData *data = MemAlloc(FFMPEGClassData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
 	this->endProcessing = false;
 	this->lastFrameTime = (UInt32)-1;
@@ -753,6 +753,10 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 			case AV_PIX_FMT_YUV420P:
 				data->storeWidth = (UInt32)data->frame->linesize[0];
 				break;
+			case AV_PIX_FMT_YUVJ422P:
+			case AV_PIX_FMT_YUV422P:
+				data->storeWidth = (UInt32)data->frame->width;
+				break;
 			default:
 				data->storeWidth = (UInt32)data->frame->linesize[0];
 				break;
@@ -790,7 +794,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 
 Media::Decoder::FFMPEGDecoder::~FFMPEGDecoder()
 {
-	FFMPEGClassData *data = (FFMPEGClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->inited)
 	{
 		FFMPEGDecoder_avcodec_close(data->ctx);
@@ -834,7 +838,7 @@ const UTF8Char *Media::Decoder::FFMPEGDecoder::GetFilterName()
 
 Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
-	FFMPEGClassData *data = (FFMPEGClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (this->sourceVideo == 0)
 		return false;
 	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
@@ -859,10 +863,11 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		break;
 	case AV_PIX_FMT_YUVJ422P:
 		fullRange = true;
+	case AV_PIX_FMT_YUV422P:
 		info->fourcc = *(UInt32*)"YUY2";
 		info->storeBPP = 16;
 		info->pf = Media::FrameInfo::GetDefPixelFormat(info->fourcc, info->storeBPP);
-		info->byteSize = (info->storeWidth * info->storeHeight * 3) >> 1;
+		info->byteSize = info->storeWidth * info->storeHeight * 2;
 		break;
 	case AV_PIX_FMT_YUV420P10LE:
 	case AV_PIX_FMT_YUV420P12LE:
@@ -1080,7 +1085,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 
 void Media::Decoder::FFMPEGDecoder::Stop()
 {
-	FFMPEGClassData *data = (FFMPEGClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (this->sourceVideo == 0)
 		return;
 
@@ -1131,7 +1136,7 @@ void Media::Decoder::FFMPEGDecoder::OnFrameChanged(Media::IVideoSource::FrameCha
 
 Bool Media::Decoder::FFMPEGDecoder::IsError()
 {
-	FFMPEGClassData *data = (FFMPEGClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	return !data->inited || data->frameSize == 0;
 }
 

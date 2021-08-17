@@ -11,7 +11,9 @@ namespace Media
 		class FFMPEGDecoder : public VDecoderBase
 		{
 		private:
-			void *clsData;
+			struct ClassData;
+
+			ClassData *clsData;
 			Bool endProcessing;
 			UInt32 lastFrameTime;
 
