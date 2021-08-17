@@ -103,7 +103,20 @@ Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, Bool 
 	if (surface && surface->info->dispWidth == this->info->dispWidth && surface->info->dispHeight == this->info->dispHeight && surface->info->storeBPP == this->info->storeBPP)
 	{
 		if (waitForVBlank) this->WaitForVBlank();
-		surface->GetImageData(this->buffPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), false);
+		if (this->info->atype == Media::AT_ALPHA && surface->info->atype == Media::AT_NO_ALPHA)
+		{
+			OSInt lineAdd;
+			UInt8 *srcPtr = surface->LockSurface(&lineAdd);
+			if (srcPtr)
+			{
+				ImageUtil_ConvR8G8B8N8_ARGB32(srcPtr, this->buffPtr, this->info->dispWidth, this->info->dispHeight, lineAdd, (OSInt)this->GetDataBpl());
+				surface->UnlockSurface();
+			}
+		}
+		else
+		{
+			surface->GetImageData(this->buffPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), false);
+		}
 		return true;
 	}
 	return false;
