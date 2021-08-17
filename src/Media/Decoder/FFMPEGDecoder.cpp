@@ -555,6 +555,11 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	case FOURCC('M', 'J', 'P', 'G'):
 		codecId = AV_CODEC_ID_MJPEG;
 		break;
+#if VERSION_FROM(55, 0, 0) //not sure
+	case FOURCC('a', 'v', '0', '1'):
+		codecId = AV_CODEC_ID_AV1;
+		break;
+#endif
 	case FOURCC('M', 'P', '4', '2'):
 
 	default:

@@ -601,6 +601,10 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				{
 					frInfo.fourcc = *(UInt32*)"vp09";
 				}
+				else if (*(Int32*)&buff[12] == *(Int32*)"av01")
+				{
+					frInfo.fourcc = *(UInt32*)"av01";
+				}
 
 				while (atomOfst < atomSize - 8)
 				{
