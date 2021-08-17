@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-//#include "Media/FBMonitorSurfaceMgr.h"
+//#include "Media/DRMMonitorSurfaceMgr.h"
+#include "Media/ImageUtil.h"
 #include "Media/ScreenCapturer.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -8,12 +9,13 @@
 #include <X11/Xatom.h>
 
 #include <stdio.h>
+/*#include "Sync/Thread.h"
 
-/*Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
-	NEW_CLASS(this->surfaceMgr, Media::FBMonitorSurfaceMgr(monMgr, colorMgr));
+	NEW_CLASS(this->surfaceMgr, Media::DRMMonitorSurfaceMgr(0, monMgr, colorMgr));
 }
 
 Media::ScreenCapturer::~ScreenCapturer()
@@ -26,10 +28,17 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 	Media::MonitorSurface *surface = this->surfaceMgr->CreatePrimarySurface(hMon, 0);
 	if (surface == 0) return 0;
 	Media::StaticImage *retImg = surface->CreateStaticImage();
+	OSInt lineAdd;
+	UInt8 *dataPtr = surface->LockSurface(&lineAdd);
+	UOSInt i = 10;
+	while (i-- > 0)
+	{
+		ImageUtil_ColorFill32(dataPtr, surface->info->storeWidth * surface->info->storeHeight, 0xff800000);
+		Sync::Thread::Sleep(1000);
+	}
 	DEL_CLASS(surface);
 	return retImg;
 }*/
-
 
 Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {

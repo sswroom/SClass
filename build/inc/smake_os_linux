@@ -52,6 +52,10 @@ Media/AudioDevice.h: ../../src/Media/AudioDeviceL.cpp
 @AudioDevice.o
 Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
 @DefaultMonitorSurfaceMgr.o
+Media/DRMMonitorSurfaceMgr.h: ../../src/Media/DRMMonitorSurfaceMgr.cpp
+@DRMMonitorSurfaceMgr.o
+Media/DRMSurface.h: ../../src/Media/DRMSurface.cpp
+@DRMSurface.o
 Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr.cpp
 @FBMonitorSurfaceMgr.o
 Media/FBSurface.h: ../../src/Media/FBSurface.cpp
@@ -126,6 +130,12 @@ ALSARenderer.o: ../../src/Media/ALSARenderer.cpp
 !-lasound
 AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
 DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
+DRMMonitorSurfaceMgr.o: ../../src/Media/DRMMonitorSurfaceMgr.cpp
+$`pkg-config --cflags libdrm`
+!`pkg-config --libs libdrm`
+DRMSurface.o: ../../src/Media/DRMSurface.cpp
+$`pkg-config --cflags libdrm`
+!`pkg-config --libs libdrm`
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
 FBSurface.o: ../../src/Media/FBSurface.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
