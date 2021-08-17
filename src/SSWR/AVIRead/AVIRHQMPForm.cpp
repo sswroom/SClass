@@ -5,6 +5,7 @@
 #include "IO/PowerInfo.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
+#include "Media/MediaPlayerWebInterface.h"
 #include "Media/CS/TransferFunc.h"
 #include "Net/MIME.h"
 #include "Net/URL.h"
@@ -184,11 +185,11 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
-		UI::GUIVideoBoxDD::DebugValue dbg;
+		Media::VideoRenderer::RendererStatus dbg;
 		UInt32 currTime;
 		UInt32 v;
 		NEW_CLASS(dbg.color, Media::ColorProfile());
-		me->vbox->GetDebugValues(&dbg);
+		me->vbox->GetStatus(&dbg);
 		sb.Append((const UTF8Char*)"Curr Time: ");
 		sb.AppendU32(dbg.currTime);
 		currTime = dbg.currTime;
@@ -545,13 +546,6 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
 	this->UpdateMenu();
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRHQMPForm::VideoFileCompare(void *file1, void *file2)
-{
-	VideoFileInfo *vfile1 = (VideoFileInfo*)file1;
-	VideoFileInfo *vfile2 = (VideoFileInfo*)file2;
-	return Text::StrCompare(vfile1->fileName, vfile2->fileName);
-}
-
 SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui), Media::MediaPlayerInterface(core->GetParserList())
 {
 	this->core = core;
@@ -806,7 +800,6 @@ SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 
 void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 {
-	UInt32 currTime;
 	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
@@ -922,7 +915,9 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_HTTP_ENABLE:
 		if (this->listener == 0)
 		{
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, this, 8080, 10, 2, (const UTF8Char*)"HQMP/1.0", false, true));
+			Media::MediaPlayerWebInterface *hdlr;
+			NEW_CLASS(hdlr, Media::MediaPlayerWebInterface(this, true));
+			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, hdlr, 8080, 10, 2, (const UTF8Char*)"HQMP/1.0", false, true));
 			if (this->listener->IsError())
 			{
 				DEL_CLASS(this->listener);
@@ -944,48 +939,28 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		this->PBPause();
 		break;
 	case MNU_PB_FWD:
-		if (this->player->IsPlaying())
-		{
-			currTime = this->player->GetCurrTime();
-			this->player->SeekTo(currTime + 10000);
-		}
+		this->PBJumpOfst(10000);
 		break;
 	case MNU_PB_BWD:
-		if (this->player->IsPlaying())
-		{
-			currTime = this->player->GetCurrTime() - 10000;
-			if (currTime < 0)
-				currTime = 0;
-			this->player->SeekTo(currTime);
-		}
+		this->PBJumpOfst(-10000);
 		break;
 	case MNU_PB_FWD2:
-		if (this->player->IsPlaying())
-		{
-			currTime = this->player->GetCurrTime();
-			this->player->SeekTo(currTime + 60000);
-		}
+		this->PBJumpOfst(60000);
 		break;
 	case MNU_PB_BWD2:
-		if (this->player->IsPlaying())
-		{
-			currTime = this->player->GetCurrTime();
-			if (currTime < 60000)
-				currTime = 0;
-			this->player->SeekTo(currTime - 60000);
-		}
+		this->PBJumpOfst(-60000);
 		break;
 	case MNU_PB_CHAP_PREV:
-		this->currPBC->PrevChapter();
+		this->PBPrevChapter();
 		break;
 	case MNU_PB_CHAP_NEXT:
-		this->currPBC->NextChapter();
+		this->PBNextChapter();
 		break;
 	case MNU_PB_AVOFST_DEC:
-		this->vbox->SetAVOfst(this->vbox->GetAVOfst() - 10);
+		this->PBDecAVOfst();
 		break;
 	case MNU_PB_AVOFST_INC:
-		this->vbox->SetAVOfst(this->vbox->GetAVOfst() + 10);
+		this->PBIncAVOfst();
 		break;
 	case MNU_VIDEO_ORISIZE:
 		{
@@ -1409,409 +1384,6 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMonitorChanged()
 	MonitorHandle *hMon = this->GetHMonitor();
 	this->colorSess->ChangeMonitor(hMon);
 	this->vbox->ChangeMonitor(hMon);
-}
-
-void SSWR::AVIRead::AVIRHQMPForm::BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
-{
-	const UTF8Char *fname = req->GetQueryValue((const UTF8Char*)"fname");
-	if (this->GetOpenedFile() == 0)
-	{
-		resp->RedirectURL(req, (const UTF8Char*)"/", 0);
-		return;
-	}
-	UTF8Char sbuff[1024];
-	UTF8Char sbuff2[1024];
-	UTF8Char *sptr;
-	UOSInt i;
-	UOSInt j;
-	Text::StrConcat(sbuff, this->GetOpenedFile()->GetSourceNameObj());
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[i + 1];
-
-	if (fname)
-	{
-		Text::StrConcat(sptr, fname);
-		if (this->OpenFile(sbuff))
-		{
-			this->EventMenuClicked(MNU_PB_START);
-			resp->RedirectURL(req, (const UTF8Char*)"/", 0);
-			return;
-		}
-	}
-	IO::MemoryStream *mstm;
-	IO::Writer *writer;
-	IO::Path::PathType pt;
-	IO::Path::FindFileSession *sess;
-	UInt8 *buff;
-	const UTF8Char *u8ptr;
-	UOSInt size;
-	UInt64 fileSize;
-
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
-
-	writer->WriteLine((const UTF8Char*)"<html>");
-	writer->WriteLine((const UTF8Char*)"<head><title>HQMP Control</title>");
-	writer->WriteLine((const UTF8Char*)"</head>");
-	writer->WriteLine((const UTF8Char*)"<body>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Back</a><br/><br/>");
-	writer->Write((const UTF8Char*)"<b>Current File: </b>");
-	u8ptr = Text::XML::ToNewHTMLText(this->GetOpenedFile()->GetSourceNameObj());
-	writer->Write(u8ptr);
-	Text::XML::FreeNewText(u8ptr);
-	writer->WriteLine((const UTF8Char*)"<hr/>");
-
-	writer->WriteLine((const UTF8Char*)"<table border=\"0\">");
-	writer->WriteLine((const UTF8Char*)"<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>");
-
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
-	sess = IO::Path::FindFile(sbuff);
-	if (sess)
-	{
-		Data::ArrayList<VideoFileInfo *> fileList;
-		VideoFileInfo *vfile;
-
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
-		{
-			if (pt == IO::Path::PT_FILE)
-			{
-				vfile = MemAlloc(VideoFileInfo, 1);
-				vfile->fileName = Text::StrCopyNew(sptr);
-				vfile->fileSize = fileSize;
-				fileList.Add(vfile);
-			}
-		}
-		IO::Path::FindFileClose(sess);
-
-		void **arr = (void**)fileList.GetArray(&j);
-		ArtificialQuickSort_SortCmp(arr, VideoFileCompare, 0, (OSInt)j - 1);
-
-		i = 0;
-		j = fileList.GetCount();
-		while (i < j)
-		{
-			vfile = fileList.GetItem(i);
-
-			writer->Write((const UTF8Char*)"<tr><td>");
-			writer->Write((const UTF8Char*)"<a href=\"/browse?fname=");
-			Text::TextEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName);
-			u8ptr = Text::XML::ToNewXMLText(sbuff2);
-			writer->Write(u8ptr);
-			Text::XML::FreeNewText(u8ptr);
-			writer->Write((const UTF8Char*)"\">");
-
-			u8ptr = Text::XML::ToNewHTMLText(vfile->fileName);
-			writer->Write(u8ptr);
-			Text::XML::FreeNewText(u8ptr);
-			writer->Write((const UTF8Char*)"</a></td><td>");
-			Text::StrUInt64(sbuff2, vfile->fileSize);
-			writer->Write(sbuff2);
-			writer->Write((const UTF8Char*)"</td><td>");
-
-			IO::Path::GetFileExt(sbuff2, vfile->fileName);
-			u8ptr = Net::MIME::GetMIMEFromExt(sbuff2);
-			writer->Write(u8ptr);
-			writer->WriteLine((const UTF8Char*)"</td></tr>");
-
-			Text::StrDelNew(vfile->fileName);
-			MemFree(vfile);
-			i++;
-		}
-	}
-	writer->WriteLine((const UTF8Char*)"</table>");
-
-	writer->WriteLine((const UTF8Char*)"</body>");
-	writer->WriteLine((const UTF8Char*)"</html>");
-	DEL_CLASS(writer);
-
-	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	buff = mstm->GetBuff(&size);
-	resp->AddContentLength(size);
-	resp->AddContentType((const UTF8Char*)"text/html;charset=UTF-8");
-	resp->Write(buff, size);
-	DEL_CLASS(mstm);
-}
-
-void SSWR::AVIRead::AVIRHQMPForm::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
-{
-	const UTF8Char *reqURI = req->GetRequestURI();
-	if (Text::StrEquals(reqURI, (const UTF8Char*)"/browse") || Text::StrStartsWith(reqURI, (const UTF8Char*)"/browse?"))
-	{
-		this->BrowseRequest(req, resp);
-		return;
-	}
-	if (Text::StrEquals(reqURI, (const UTF8Char*)"/start"))
-	{
-		this->EventMenuClicked(MNU_PB_START);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/stop"))
-	{
-		this->EventMenuClicked(MNU_PB_STOP);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/pause"))
-	{
-		this->EventMenuClicked(MNU_PB_PAUSE);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/backward60"))
-	{
-		this->EventMenuClicked(MNU_PB_BWD2);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/backward10"))
-	{
-		this->EventMenuClicked(MNU_PB_BWD);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/forward10"))
-	{
-		this->EventMenuClicked(MNU_PB_FWD);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/forward60"))
-	{
-		this->EventMenuClicked(MNU_PB_FWD2);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/prevchap"))
-	{
-		this->EventMenuClicked(MNU_PB_CHAP_PREV);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/nextchap"))
-	{
-		this->EventMenuClicked(MNU_PB_CHAP_NEXT);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/avofstdec"))
-	{
-		this->EventMenuClicked(MNU_PB_AVOFST_DEC);
-	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/avofstinc"))
-	{
-		this->EventMenuClicked(MNU_PB_AVOFST_INC);
-	}
-	IO::MemoryStream *mstm;
-	IO::Writer *writer;
-	UInt8 *buff;
-	const UTF8Char *u8ptr;
-	UOSInt size;
-
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
-
-	writer->WriteLine((const UTF8Char*)"<html>");
-	writer->WriteLine((const UTF8Char*)"<head><title>HQMP Control</title>");
-	writer->WriteLine((const UTF8Char*)"</head>");
-	writer->WriteLine((const UTF8Char*)"<body>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Refresh</a><br/><br/>");
-	writer->Write((const UTF8Char*)"<b>Current File: </b>");
-	if (this->GetOpenedFile())
-	{
-		u8ptr = Text::XML::ToNewHTMLText(this->GetOpenedFile()->GetSourceNameObj());
-		writer->Write(u8ptr);
-		Text::XML::FreeNewText(u8ptr);
-
-		writer->Write((const UTF8Char*)" <a href=\"/browse\">Browse</a>");
-	}
-	else
-	{
-		writer->Write((const UTF8Char*)"-");
-	}
-	writer->WriteLine((const UTF8Char*)"<br/>");
-
-	writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>");
-	writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>");
-	writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>");
-	writer->WriteLine((const UTF8Char*)"<br/>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/backward60\">Backward 1 Minute</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/backward10\">Backward 10 Seconds</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/forward10\">Forward 10 Seconds</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/forward60\">Forward 1 Minute</a>");
-	writer->WriteLine((const UTF8Char*)"<br/>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/prevchap\">Previous Chapter</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/nextchap\">Next Chapter</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/avofstdec\">A/V Offset Decrease</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/avofstinc\">A/V Offset Increase</a>");
-	{
-		Text::StringBuilderUTF8 sb;
-		UI::GUIVideoBoxDD::DebugValue dbg;
-		UInt32 currTime;
-		UInt32 v;
-
-		writer->WriteLine((const UTF8Char*)"<hr/>");
-		NEW_CLASS(dbg.color, Media::ColorProfile());
-		this->vbox->GetDebugValues(&dbg);
-		sb.Append((const UTF8Char*)"Curr Time: ");
-		sb.AppendU32(dbg.currTime);
-		currTime = dbg.currTime;
-		v = currTime / 3600000;
-		sb.Append((const UTF8Char*)" (");
-		sb.AppendU32(v);
-		sb.Append((const UTF8Char*)":");
-		currTime -= v * 3600000;
-		v = currTime / 60000;
-		if (v < 10)
-		{
-			sb.Append((const UTF8Char*)"0");
-		}
-		sb.AppendU32(v);
-		sb.Append((const UTF8Char*)":");
-		currTime -= v * 60000;
-		v = currTime / 1000;
-		if (v < 10)
-		{
-			sb.Append((const UTF8Char*)"0");
-		}
-		sb.AppendU32(v);
-		sb.Append((const UTF8Char*)".");
-		currTime -= v * 1000;
-		if (currTime < 10)
-		{
-			sb.Append((const UTF8Char*)"00");
-			sb.AppendU32(currTime);
-		}
-		else if (currTime < 100)
-		{
-			sb.Append((const UTF8Char*)"0");
-			sb.AppendU32(currTime);
-		}
-		else
-		{
-			sb.AppendU32(currTime);
-		}
-		sb.Append((const UTF8Char*)")<br/>\r\n");
-		sb.Append((const UTF8Char*)"Disp Frame Time: ");
-		sb.AppendU32(dbg.dispFrameTime);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Disp Frame Num: ");
-		sb.AppendU32(dbg.dispFrameNum);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Proc Delay: ");
-		sb.AppendI32(dbg.procDelay);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Disp Delay: ");
-		sb.AppendI32(dbg.dispDelay);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Disp Jitter: ");
-		sb.AppendI32(dbg.dispJitter);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Video Delay: ");
-		sb.AppendI32(dbg.videoDelay);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Source Delay: ");
-		sb.AppendI32(dbg.srcDelay);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"A/V Offset: ");
-		sb.AppendI32(dbg.avOfst);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Seek Count: ");
-		sb.AppendUOSInt(dbg.seekCnt);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Frame Displayed: ");
-		sb.AppendU32(dbg.frameDispCnt);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Frame Skip before process: ");
-		sb.AppendU32(dbg.frameSkipBefore);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Frame Skip after process: ");
-		sb.AppendU32(dbg.frameSkipAfter);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"ProcTimes H: ");
-		Text::SBAppendF64(&sb, dbg.hTime);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"ProcTimes V: ");
-		Text::SBAppendF64(&sb, dbg.vTime);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"ProcTimes C: ");
-		Text::SBAppendF64(&sb, dbg.csTime);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Buff: ");
-		sb.AppendI32(dbg.buffProc);
-		sb.Append((const UTF8Char*)",");
-		sb.AppendI32(dbg.buffReady);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Src Size: ");
-		sb.AppendUOSInt(dbg.srcWidth);
-		sb.Append((const UTF8Char*)" x ");
-		sb.AppendUOSInt(dbg.srcHeight);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Disp Size: ");
-		sb.AppendUOSInt(dbg.dispWidth);
-		sb.Append((const UTF8Char*)" x ");
-		sb.AppendUOSInt(dbg.dispHeight);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"PAR: ");
-		Text::SBAppendF64(&sb, dbg.par);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Decoder: ");
-		if (dbg.decoderName)
-		{
-			sb.Append(dbg.decoderName);
-		}
-		else
-		{
-			sb.Append((const UTF8Char*)"-");
-		}
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Format: ");
-		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Output Bitdepth: ");
-		sb.AppendU32(dbg.dispBitDepth);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Src YUV Type: ");
-		sb.Append(Media::ColorProfile::GetNameYUVType(dbg.srcYUVType));
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Src R Transfer: ");
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetRTranParam()->GetTranType()));
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Src G Transfer: ");
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetGTranParam()->GetTranType()));
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Src B Transfer: ");
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetBTranParam()->GetTranType()));
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"Src Gamma: ");
-		Text::SBAppendF64(&sb, dbg.color->GetRTranParam()->GetGamma());
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		Media::ColorProfile::ColorPrimaries *primaries = dbg.color->GetPrimaries(); 
-		sb.Append((const UTF8Char*)"Src RGB Primary: ");
-		sb.Append(Media::ColorProfile::GetNameColorType(primaries->colorType));
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"-Red:   ");
-		Text::SBAppendF64(&sb, primaries->rx);
-		sb.Append((const UTF8Char*)", ");
-		Text::SBAppendF64(&sb, primaries->ry);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"-Green: ");
-		Text::SBAppendF64(&sb, primaries->gx);
-		sb.Append((const UTF8Char*)", ");
-		Text::SBAppendF64(&sb, primaries->gy);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"-Blue:  ");
-		Text::SBAppendF64(&sb, primaries->bx);
-		sb.Append((const UTF8Char*)", ");
-		Text::SBAppendF64(&sb, primaries->by);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		sb.Append((const UTF8Char*)"-White: ");
-		Text::SBAppendF64(&sb, primaries->wx);
-		sb.Append((const UTF8Char*)", ");
-		Text::SBAppendF64(&sb, primaries->wy);
-		sb.Append((const UTF8Char*)"<br/>\r\n");
-		DEL_CLASS(dbg.color);
-		writer->Write(sb.ToString());
-	}
-
-	writer->WriteLine((const UTF8Char*)"</body>");
-	writer->WriteLine((const UTF8Char*)"</html>");
-	DEL_CLASS(writer);
-
-	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	buff = mstm->GetBuff(&size);
-	resp->AddContentLength(size);
-	resp->AddContentType((const UTF8Char*)"text/html;charset=UTF-8");
-	resp->Write(buff, size);
-	DEL_CLASS(mstm);
-}
-
-void SSWR::AVIRead::AVIRHQMPForm::Release()
-{
 }
 
 void SSWR::AVIRead::AVIRHQMPForm::DestroyObject()

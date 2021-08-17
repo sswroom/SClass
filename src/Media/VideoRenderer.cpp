@@ -2282,3 +2282,95 @@ void Media::VideoRenderer::Snapshot()
 		this->captureFrame = true;
 	}
 }
+
+void Media::VideoRenderer::GetStatus(RendererStatus *status)
+{
+	this->dispMut->LockRead();
+	if (this->dispClk && this->dispClk->Running())
+	{
+		status->currTime = this->dispClk->GetCurrTime();
+	}
+	else
+	{
+		status->currTime = 0;
+	}
+	this->dispMut->UnlockRead();
+	status->dispDelay = this->CalDispDelay();
+	status->procDelay = this->CalProcDelay();
+	status->dispJitter = this->CalDispJitter();
+	status->videoDelay = this->videoDelay;
+	status->avOfst = this->avOfst;
+	status->dispFrameTime = this->dispFrameTime;
+	status->frameDispCnt = this->frameDispCnt;
+	status->frameSkipBefore = this->frameSkipBeforeProc;
+	status->frameSkipAfter = this->frameSkipAfterProc;
+	status->srcDelay = this->timeDelay;
+	status->dispFrameNum = this->dispFrameNum;
+	status->srcYUVType = this->srcYUVType;
+	status->color->Set(this->videoInfo->color);
+	status->dispBitDepth = this->outputBpp;
+	status->srcWidth = this->videoInfo->dispWidth;
+	status->srcHeight = this->videoInfo->dispHeight;
+	status->dispWidth = this->outputWidth;
+	status->dispHeight = this->outputHeight;
+	if (this->video)
+	{
+		status->decoderName = this->video->GetFilterName();
+	}
+	else
+	{
+		status->decoderName = 0;
+	}
+	if (this->video)
+	{
+		status->seekCnt = this->video->GetDataSeekCount();
+	}
+	else
+	{
+		status->seekCnt = 0;
+	}
+	if (this->forcePAR)
+	{
+		status->par = this->forcePAR / this->monPAR;
+	}
+	else
+	{
+		status->par = this->videoInfo->par2 / this->monPAR;
+	}
+	UOSInt i;
+	status->format = this->videoInfo->fourcc;
+	status->buffProc = 0;
+	status->buffReady = 0;
+	Double hTime = 0;
+	Double vTime = 0;
+	Double csTime = 0;
+	i = this->threadCnt;
+	while (i-- > 0)
+	{
+		hTime += this->tstats[i].hTime;
+		vTime += this->tstats[i].vTime;
+		csTime += this->tstats[i].csTime;
+	}
+	status->hTime = hTime / Math::UOSInt2Double(this->threadCnt);
+	status->vTime = vTime / Math::UOSInt2Double(this->threadCnt);
+	status->csTime = csTime / Math::UOSInt2Double(this->threadCnt);
+
+	Sync::MutexUsage mutUsage(this->buffMut);
+	i = 0;
+	while (i < this->allBuffCnt)
+	{
+		if (this->buffs[i].isEmpty)
+		{
+		}
+		else if (this->buffs[i].isOutputReady)
+		{
+			status->buffReady++;
+		}
+		else
+		{
+			status->buffProc++;
+		}
+		i++;
+	}
+	mutUsage.EndUse();
+}

@@ -457,6 +457,11 @@ void Media::MediaPlayer::DetectCrop()
 	}
 }
 
+Media::VideoRenderer *Media::MediaPlayer::GetVideoRenderer()
+{
+	return this->vrenderer;
+}
+
 void Media::MediaPlayer::Close()
 {
 	this->StopPlayback();

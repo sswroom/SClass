@@ -19,7 +19,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRHQMPForm : public UI::GUIForm, public Net::WebServer::IWebHandler, public Media::MediaPlayerInterface
+		class AVIRHQMPForm : public UI::GUIForm, public Media::MediaPlayerInterface
 		{
 		public:
 			typedef enum
@@ -28,14 +28,6 @@ namespace SSWR
 				QM_HQ,
 				QM_UQ
 			} QualityMode;
-
-		private:
-			typedef struct
-			{
-				const UTF8Char *fileName;
-				UInt64 fileSize;
-			} VideoFileInfo;
-
 
 		private:
 			SSWR::AVIRead::AVIRCore *core;
@@ -69,18 +61,12 @@ namespace SSWR
 		private:
 			void SwitchAudio(OSInt audIndex);
 
-			static OSInt __stdcall VideoFileCompare(void *file1, void *file2);
-
 		public:
 			AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode);
 			virtual ~AVIRHQMPForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
-
-			void BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
-			virtual void WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
-			virtual void Release();
 
 			virtual void DestroyObject();
 		};

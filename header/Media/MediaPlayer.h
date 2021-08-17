@@ -61,6 +61,7 @@ namespace Media
 		virtual Bool GetVideoSize(UOSInt *w, UOSInt *h);
 		virtual void DetectCrop();
 
+		Media::VideoRenderer *GetVideoRenderer();
 		void Close();
 	};
 }

@@ -30,10 +30,17 @@ namespace Media
 		void CloseFile();
 
 		Media::MediaFile *GetOpenedFile();
+		Media::VideoRenderer *GetVideoRenderer();
 
 		void PBStart();
 		void PBStop();
 		void PBPause();
+		void PBPrevChapter();
+		void PBNextChapter();
+		void PBDecAVOfst();
+		void PBIncAVOfst();
+		void PBJumpOfst(Int32 ofst);
+		void PBJumpToTime(UInt32 time);
 	};
 }
 #endif

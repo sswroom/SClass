@@ -11,39 +11,6 @@ namespace UI
 	class GUIVideoBoxDD : public GUIDDrawControl, public Media::IColorHandler, public Media::VideoRenderer
 	{
 	public:
-
-		typedef struct
-		{
-			UInt32 currTime;
-			Int32 procDelay;
-			Int32 dispDelay;
-			Int32 dispJitter;
-			Int32 videoDelay;
-			UInt32 dispFrameTime;
-			UInt32 dispFrameNum;
-			UInt32 frameDispCnt;
-			UInt32 frameSkipBefore;
-			UInt32 frameSkipAfter;
-			Int32 srcDelay;
-			Int32 avOfst;
-			UInt32 format;
-			UOSInt srcWidth;
-			UOSInt srcHeight;
-			UOSInt dispWidth;
-			UOSInt dispHeight;
-			UOSInt seekCnt;
-			Double par;
-			UInt32 dispBitDepth;
-			Media::ColorProfile *color;
-			Media::ColorProfile::YUVType srcYUVType;
-			const UTF8Char *decoderName;
-			Int32 buffProc;
-			Int32 buffReady;
-			Double hTime;
-			Double vTime;
-			Double csTime;
-		} DebugValue;
-
 		typedef enum
 		{
 			MA_STOP,
@@ -90,7 +57,6 @@ namespace UI
 		virtual void OnMouseDown(OSInt x, OSInt y, MouseButton button);
 		virtual void OnMouseUp(OSInt x, OSInt y, MouseButton button);
 
-		void GetDebugValues(DebugValue *dbg);
 		void HandleMouseActon(MouseActionHandler hdlr, void *userObj);
 
 		virtual void DestroyObject();

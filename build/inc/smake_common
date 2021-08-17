@@ -1851,6 +1851,8 @@ Media/MediaPlayer.h: ../../src/Media/MediaPlayer.cpp
 @MediaPlayer_CPP.o
 Media/MediaPlayerInterface.h: ../../src/Media/MediaPlayerInterface.cpp
 @MediaPlayerInterface.o
+Media/MediaPlayerWebInterface.h: ../../src/Media/MediaPlayerWebInterface.cpp
+@MediaPlayerWebInterface.o
 Media/MemorySurface.h: ../../src/Media/MemorySurface.cpp
 @MemorySurface.o
 Media/MonitorMgr.h: ../../src/Media/MonitorMgr.cpp
@@ -3972,6 +3974,7 @@ M2VStreamSource.o: ../../src/Media/M2VStreamSource.cpp
 MediaFile.o: ../../src/Media/MediaFile.cpp
 MediaPlayer.o: ../../src/Media/MediaPlayer.cpp
 MediaPlayerInterface.o: ../../src/Media/MediaPlayerInterface.cpp
+MediaPlayerWebInterface.o: ../../src/Media/MediaPlayerWebInterface.cpp
 MemorySurface.o: ../../src/Media/MemorySurface.cpp
 MonitorMgr.o: ../../src/Media/MonitorMgr.cpp
 MPAStreamSource.o: ../../src/Media/MPAStreamSource.cpp

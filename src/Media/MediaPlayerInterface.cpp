@@ -175,6 +175,13 @@ Media::MediaFile *Media::MediaPlayerInterface::GetOpenedFile()
 	return this->currFile;
 }
 
+Media::VideoRenderer *Media::MediaPlayerInterface::GetVideoRenderer()
+{
+	if (this->player == 0)
+		return 0;
+	return this->player->GetVideoRenderer();
+}
+
 void Media::MediaPlayerInterface::PBStart()
 {
 	if (!this->player->IsPlaying())
@@ -206,5 +213,49 @@ void Media::MediaPlayerInterface::PBPause()
 		this->currPBC->StartPlayback();
 		this->player->SeekTo(this->storeTime);
 		this->storeTime = (UInt32)-1;
+	}
+}
+
+void Media::MediaPlayerInterface::PBPrevChapter()
+{
+	this->currPBC->PrevChapter();
+}
+
+void Media::MediaPlayerInterface::PBNextChapter()
+{
+	this->currPBC->NextChapter();
+}
+
+void Media::MediaPlayerInterface::PBDecAVOfst()
+{
+	VideoRenderer *vrenderer = this->player->GetVideoRenderer();
+	vrenderer->SetAVOfst(vrenderer->GetAVOfst() - 10);
+}
+
+void Media::MediaPlayerInterface::PBIncAVOfst()
+{
+	VideoRenderer *vrenderer = this->player->GetVideoRenderer();
+	vrenderer->SetAVOfst(vrenderer->GetAVOfst() + 10);
+}
+
+void Media::MediaPlayerInterface::PBJumpOfst(Int32 ofst)
+{
+	Int32 targetTime;
+	if (this->player->IsPlaying())
+	{
+		targetTime = (Int32)this->player->GetCurrTime() + ofst;
+		if (targetTime < 0)
+		{
+			targetTime = 0;
+		}
+		this->player->SeekTo((UInt32)targetTime);
+	}
+}
+
+void Media::MediaPlayerInterface::PBJumpToTime(UInt32 time)
+{
+	if (this->player->IsPlaying())
+	{
+		this->player->SeekTo(time);
 	}
 }
