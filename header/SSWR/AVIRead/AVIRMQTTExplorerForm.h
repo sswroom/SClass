@@ -52,6 +52,7 @@ namespace SSWR
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkSSL;
+			UI::GUILabel *lblStatus;
 			UI::GUIButton *btnStart;
 			UI::GUIListView *lvTopic;
 			UI::GUIVSplitter *vspTopic;

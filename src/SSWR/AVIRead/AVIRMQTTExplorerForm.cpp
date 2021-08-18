@@ -23,6 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		me->txtPassword->SetReadOnly(false);
 		me->chkSSL->SetEnabled(true);
 		me->lvTopic->ClearItems();
+		me->lblStatus->SetText((const UTF8Char*)"Disconnected");
+		me->btnStart->SetText((const UTF8Char*)"Start");
 	}
 	else
 	{
@@ -116,6 +118,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			me->txtUsername->SetReadOnly(true);
 			me->txtPassword->SetReadOnly(true);
 			me->lvTopic->ClearItems();
+			me->lblStatus->SetText((const UTF8Char*)"Connected");
+			me->btnStart->SetText((const UTF8Char*)"Stop");
 		}
 		else
 		{
@@ -146,6 +150,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPingTimerTick(void *userOb
 			me->txtPort->SetReadOnly(false);
 			me->txtUsername->SetReadOnly(false);
 			me->txtPassword->SetReadOnly(false);
+			me->lblStatus->SetText((const UTF8Char*)"Not Connected");
+			me->btnStart->SetText((const UTF8Char*)"Start");
 		}
 		else
 		{
@@ -160,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	Data::ArrayList<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*> *topicList;
 	Data::DateTime dt;
-	UTF8Char sbuff[32];
+	UTF8Char sbuff[64];
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
 	UOSInt i;
 	UOSInt j;
@@ -219,6 +225,25 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 		}
 	}
 	mutUsage.EndUse();
+
+	if (me->client)
+	{
+		if (me->client->IsError())
+		{
+			me->ServerStop();
+			me->txtHost->SetReadOnly(false);
+			me->txtPort->SetReadOnly(false);
+			me->txtUsername->SetReadOnly(false);
+			me->txtPassword->SetReadOnly(false);
+			me->lblStatus->SetText((const UTF8Char*)"Not Connected");
+			me->btnStart->SetText((const UTF8Char*)"Start");
+		}
+		else
+		{
+			Text::StrUInt64(Text::StrConcat(Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"Up: "), me->client->GetTotalUpload()), (const UTF8Char*)", Dn: "), me->client->GetTotalDownload());
+			me->lblStatus->SetText(sbuff);
+		}
+	}
 }
 
 
@@ -393,6 +418,8 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->pnlConnect, (const UTF8Char*)"Use SSL", false));
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Not Connected"));
+	this->lblStatus->SetRect(604, 4, 150, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlConnect, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(504, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);

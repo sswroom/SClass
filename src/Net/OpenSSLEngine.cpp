@@ -28,6 +28,7 @@ Net::TCPClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
 	}
 	else
 	{
+		this->sockf->SetRecvTimeout(s, 120000);
 		Net::TCPClient *cli;
 		NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
 		return cli;
@@ -300,6 +301,7 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 			return 0;
 		}
 	}
+	this->sockf->SetRecvTimeout(s, 120000);
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
 	return cli;

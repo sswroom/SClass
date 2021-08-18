@@ -91,6 +91,7 @@ UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
 		readSize = me->cli->Read(&buff[buffSize], 2048 - buffSize);
 		if (readSize <= 0)
 			break;
+		me->totalDownload += readSize;
 		buffSize += readSize;
 		readSize = me->protoHdlr->ParseProtocol(me->cli, me, me->cliData, buff, buffSize);
 		if (readSize == 0)
@@ -141,12 +142,21 @@ Net::MQTTClient::PacketInfo *Net::MQTTClient::GetNextPacket(UInt8 packetType, UO
 	}
 }
 
+Bool Net::MQTTClient::SendPacket(const UInt8 *packet, UOSInt packetSize)
+{
+	UOSInt sendSize = this->cli->Write(packet, packetSize);
+	this->totalUpload += sendSize;
+	return sendSize == packetSize;
+}
+
 Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->recvRunning = false;
 	this->recvStarted = false;
+	this->totalDownload = 0;
+	this->totalUpload = 0;
 	NEW_CLASS(this->hdlrList, Data::ArrayList<PublishMessageHdlr>());
 	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
 
@@ -265,7 +275,7 @@ Bool Net::MQTTClient::SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8C
 		i += j + 2;
 	}
 	j = this->protoHdlr->BuildPacket(packet2, 0x10, 0, packet1, i, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Bool Net::MQTTClient::SendPublish(const UTF8Char *topic, const UTF8Char *message)
@@ -286,7 +296,7 @@ Bool Net::MQTTClient::SendPublish(const UTF8Char *topic, const UTF8Char *message
 	i += j;
 
 	j = this->protoHdlr->BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Bool Net::MQTTClient::SendPubAck(UInt16 packetId)
@@ -297,7 +307,7 @@ Bool Net::MQTTClient::SendPubAck(UInt16 packetId)
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr->BuildPacket(packet2, 0x40, 0, packet1, 2, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Bool Net::MQTTClient::SendPubRec(UInt16 packetId)
@@ -308,7 +318,7 @@ Bool Net::MQTTClient::SendPubRec(UInt16 packetId)
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr->BuildPacket(packet2, 0x50, 0, packet1, 2, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Bool Net::MQTTClient::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
@@ -329,7 +339,7 @@ Bool Net::MQTTClient::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
 	i++;
 
 	j = this->protoHdlr->BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Bool Net::MQTTClient::SendPing()
@@ -337,7 +347,7 @@ Bool Net::MQTTClient::SendPing()
 	UInt8 packet2[16];
 	UOSInt j;
 	j = this->protoHdlr->BuildPacket(packet2, 0xc0, 0, packet2, 0, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Bool Net::MQTTClient::SendDisconnect()
@@ -345,7 +355,7 @@ Bool Net::MQTTClient::SendDisconnect()
 	UInt8 packet2[16];
 	UOSInt j;
 	j = this->protoHdlr->BuildPacket(packet2, 0xe0, 0, packet2, 0, this->cliData);
-	return this->cli->Write(packet2, j) == j;
+	return this->SendPacket(packet2, j);
 }
 
 Net::MQTTClient::ConnectStatus Net::MQTTClient::WaitConnAck(UOSInt timeoutMS)
@@ -384,6 +394,16 @@ void Net::MQTTClient::ClearPackets()
 	LIST_FREE_FUNC(this->packetList, MemFree);
 	this->packetList->Clear();
 	mutUsage.EndUse();
+}
+
+UInt64 Net::MQTTClient::GetTotalUpload()
+{
+	return this->totalUpload;
+}
+
+UInt64 Net::MQTTClient::GetTotalDownload()
+{
+	return this->totalDownload;
 }
 
 Bool Net::MQTTClient::PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)

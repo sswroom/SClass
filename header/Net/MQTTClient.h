@@ -46,6 +46,8 @@ namespace Net
 		Data::ArrayList<PacketInfo *> *packetList;
 		Sync::Mutex *packetMut;
 		Sync::Event *packetEvt;
+		UInt64 totalUpload;
+		UInt64 totalDownload;
 
 		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
@@ -53,6 +55,7 @@ namespace Net
 
 		void OnPublishMessage(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
+		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 	public:
 		MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn);
 		virtual ~MQTTClient();
@@ -71,6 +74,9 @@ namespace Net
 		ConnectStatus WaitConnAck(UOSInt timeoutMS);
 		UInt8 WaitSubAck(UInt16 packetId, UOSInt timeoutMS); //0x80 = failure
 		void ClearPackets();
+
+		UInt64 GetTotalUpload();
+		UInt64 GetTotalDownload();
 
 		static Bool PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message);
 	};
