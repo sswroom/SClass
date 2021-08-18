@@ -19,6 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 	UI::FileDialog *dlg;
 	me->txtFile->GetText(&sb);
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false));
+	dlg->AddFilter((const UTF8Char*)"*.asn", (const UTF8Char*)"ASN.1 MIB File");
+	dlg->AddFilter((const UTF8Char*)"*.mib", (const UTF8Char*)"MIB file");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->LoadFile(dlg->GetFileName());

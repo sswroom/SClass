@@ -1682,7 +1682,17 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		sbFileName.ClearStr();
 		sbFileName.Append(fileName);
 		sbFileName.Append((const UTF8Char*)".asn");
-		fileName = sbFileName.ToString();
+		if (IO::Path::GetPathType(sbFileName.ToString()) == IO::Path::PT_FILE)
+		{
+			fileName = sbFileName.ToString();
+		}
+		else
+		{
+			sbFileName.ClearStr();
+			sbFileName.Append(fileName);
+			sbFileName.Append((const UTF8Char*)".mib");
+			fileName = sbFileName.ToString();
+		}
 	}
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 	if (fs->IsError())
