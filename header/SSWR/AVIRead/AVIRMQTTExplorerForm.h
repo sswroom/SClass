@@ -41,6 +41,8 @@ namespace SSWR
 			Bool topicListChanged;
 			TopicStatus *currTopic;
 			Media::DrawImage *dispImg;
+			Crypto::X509File *cliCert;
+			Crypto::X509File *cliKey;
 
 			UI::GUIPanel *pnlConnect;
 			UI::GUILabel *lblHost;
@@ -52,6 +54,10 @@ namespace SSWR
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkSSL;
+			UI::GUIButton *btnCliCert;
+			UI::GUILabel *lblCliCert;
+			UI::GUIButton *btnCliKey;
+			UI::GUILabel *lblCliKey;
 			UI::GUILabel *lblStatus;
 			UI::GUIButton *btnStart;
 			UI::GUIListView *lvTopic;
@@ -59,6 +65,8 @@ namespace SSWR
 			UI::GUIPictureBoxSimple *pbTopic;
 
 			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnCliCertClicked(void *userObj);
+			static void __stdcall OnCliKeyClicked(void *userObj);
 			static void __stdcall OnTopicSelChg(void *userObj);
 			static void __stdcall OnPingTimerTick(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

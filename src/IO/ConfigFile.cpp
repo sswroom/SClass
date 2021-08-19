@@ -86,6 +86,32 @@ Bool IO::ConfigFile::SetValue(const UTF8Char *category, const UTF8Char *name, co
 	return true;
 }
 
+
+Bool IO::ConfigFile::RemoveValue(const UTF8Char *category, const UTF8Char *name)
+{
+	Data::StringUTF8Map<const UTF8Char *> *cate;
+	const UTF8Char *s;
+
+	if (name == 0)
+		return false;
+	if (category == 0)
+	{
+		category = (const UTF8Char*)"";
+	}
+	cate = this->cfgVals->Get(category);
+	if (cate == 0)
+	{
+		NEW_CLASS(cate, Data::StringUTF8Map<const UTF8Char *>());
+		this->cfgVals->Put(category, cate);
+	}
+	s = cate->Remove(name);
+	if (s)
+	{
+		Text::StrDelNew(s);
+	}
+	return true;
+}
+
 UOSInt IO::ConfigFile::GetCateCount()
 {
 	return this->cfgVals->GetCount();

@@ -13,8 +13,15 @@ namespace IO
 		} RegistryUser;
 
 	private:
+		struct ClassData;
+	
+		static void *thisRegistryFile;
+		static void *allRegistryFile;
+		ClassData *clsData;
 		void *hand;
 
+		static void *OpenUserType(RegistryUser usr);
+		static void CloseInternal(void *reg);
 	public:
 		static Registry *OpenSoftware(RegistryUser usr, const WChar *compName, const WChar *appName);
 		static Registry *OpenSoftware(RegistryUser usr, const WChar *compName);

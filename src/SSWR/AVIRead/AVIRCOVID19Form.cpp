@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"COVID19", false));
 	dlg->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
 	dlg->SetAllowMultiSel(false);
-	if (dlg->ShowDialog(me))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));

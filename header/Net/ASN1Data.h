@@ -22,6 +22,7 @@ namespace Net
 
 		virtual IO::ParsedObject::ParserType GetParserType();
 		virtual ASN1Type GetASN1Type() = 0;
+		virtual ASN1Data *Clone() = 0;
 		virtual void ToString(Text::StringBuilderUTF *sb) = 0;
 
 		Bool ToASN1String(Text::StringBuilderUTF *sb);

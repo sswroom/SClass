@@ -2,6 +2,8 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Data/LineChart.h"
+#include "IO/Path.h"
+#include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Media/ColorProfile.h"
 #include "SSWR/AVIRead/AVIRMQTTExplorerForm.h"
@@ -9,6 +11,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj)
@@ -50,8 +53,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"Error", me);
 			return;
 		}
-
-		NEW_CLASS(me->client, Net::MQTTClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), &addr, (UInt16)port, useSSL));
+		Net::SSLEngine *ssl = me->core->GetSSLEngine();
+		if (useSSL)
+		{
+			if (me->cliCert && me->cliKey)
+			{
+				ssl->SetClientCertASN1(me->cliCert, me->cliKey);
+			}
+		}
+		NEW_CLASS(me->client, Net::MQTTClient(me->core->GetSocketFactory(), ssl, &addr, (UInt16)port, useSSL));
 		if (me->client->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);
@@ -129,6 +139,72 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			return;
 		}
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	UI::FileDialog *dlg;
+	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"AVIRMQTTExplorerCliCert", false));
+	dlg->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"Cert file");
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
+	{
+		IO::StmData::FileData *fd;
+		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
+		DEL_CLASS(fd);
+		if (asn1 == 0)
+		{
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			return;
+		}
+		if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+		{
+			DEL_CLASS(asn1);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			return;
+		}
+		SDEL_CLASS(me->cliCert);
+		me->cliCert = (Crypto::X509File*)asn1;
+		const UTF8Char *csptr = dlg->GetFileName();
+		UOSInt i = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+		me->lblCliCert->SetText(csptr + i + 1);
+	}
+	DEL_CLASS(dlg);
+}
+
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	UI::FileDialog *dlg;
+	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"AVIRMQTTExplorerCliKey", false));
+	dlg->AddFilter((const UTF8Char*)"*.key", (const UTF8Char*)"Key file");
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
+	{
+		IO::StmData::FileData *fd;
+		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
+		DEL_CLASS(fd);
+		if (asn1 == 0)
+		{
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			return;
+		}
+		if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+		{
+			DEL_CLASS(asn1);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			return;
+		}
+		SDEL_CLASS(me->cliKey);
+		me->cliKey = (Crypto::X509File*)asn1;
+		const UTF8Char *csptr = dlg->GetFileName();
+		UOSInt i = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+		me->lblCliKey->SetText(csptr + i + 1);
+	}
+	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(void *userObj)
@@ -396,9 +472,11 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->topicMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>());
 	this->currTopic = 0;
 	this->dispImg = 0;
+	this->cliCert = 0;
+	this->cliKey = 0;
 
 	NEW_CLASS(this->pnlConnect, UI::GUIPanel(ui, this));
-	this->pnlConnect->SetRect(0, 0, 100, 55, false);
+	this->pnlConnect->SetRect(0, 0, 100, 79, false);
 	this->pnlConnect->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
@@ -418,11 +496,21 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->pnlConnect, (const UTF8Char*)"Use SSL", false));
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Not Connected"));
-	this->lblStatus->SetRect(604, 4, 150, 23, false);
+	NEW_CLASS(this->btnCliCert, UI::GUIButton(ui, this->pnlConnect, (const UTF8Char*)"Client Cert"));
+	this->btnCliCert->SetRect(604, 4, 75, 23, false);
+	this->btnCliCert->HandleButtonClick(OnCliCertClicked, this);
+	NEW_CLASS(this->lblCliCert, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)""));
+	this->lblCliCert->SetRect(684, 4, 100, 23, false);
+	NEW_CLASS(this->btnCliKey, UI::GUIButton(ui, this->pnlConnect, (const UTF8Char*)"Client Key"));
+	this->btnCliKey->SetRect(604, 28, 75, 23, false);
+	this->btnCliKey->HandleButtonClick(OnCliKeyClicked, this);
+	NEW_CLASS(this->lblCliKey, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)""));
+	this->lblCliKey->SetRect(684, 28, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlConnect, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(504, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Not Connected"));
+	this->lblStatus->SetRect(4, 56, 150, 23, false);
 	NEW_CLASS(this->pbTopic, UI::GUIPictureBoxSimple(ui, this, this->core->GetDrawEngine(), false));
 	this->pbTopic->SetRect(0, 0, 100, 300, false);
 	this->pbTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -464,6 +552,8 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	}
 	DEL_CLASS(this->topicMap);
 	DEL_CLASS(this->log);
+	SDEL_CLASS(this->cliCert);
+	SDEL_CLASS(this->cliKey);
 	if (this->dispImg)
 	{
 		this->core->GetDrawEngine()->DeleteImage(this->dispImg);

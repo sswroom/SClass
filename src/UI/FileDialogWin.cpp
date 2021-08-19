@@ -128,7 +128,7 @@ void UI::FileDialog::SetAllowMultiSel(Bool allowMulti)
 	this->allowMulti = allowMulti;
 }
 
-Bool UI::FileDialog::ShowDialog(void *ownerHandle)
+Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	WChar fname1[512];
 	WChar fname2[512];

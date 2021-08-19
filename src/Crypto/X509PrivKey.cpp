@@ -17,6 +17,13 @@ Crypto::X509File::FileType Crypto::X509PrivKey::GetFileType()
 	return FT_PRIV_KEY;
 }
 
+Net::ASN1Data *Crypto::X509PrivKey::Clone()
+{
+	Crypto::X509PrivKey *asn1;
+	NEW_CLASS(asn1, Crypto::X509PrivKey(this->GetSourceNameObj(), this->buff, this->buffSize));
+	return asn1;
+}
+
 void Crypto::X509PrivKey::ToString(Text::StringBuilderUTF *sb)
 {
 	if (IsPrivateKeyInfo(this->buff, this->buff + this->buffSize, "1"))

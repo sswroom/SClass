@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WellFormat", false));
 	AddFilters(dlg);
-	if (dlg->ShowDialog(me))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->txtFile->SetText(dlg->GetFileName());
 	}
@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WellFormatParse", true));
 		AddFilters(dlg);
 		dlg->SetFileName(sbFile.ToString());
-		if (dlg->ShowDialog(me))
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream *fs;
 			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));

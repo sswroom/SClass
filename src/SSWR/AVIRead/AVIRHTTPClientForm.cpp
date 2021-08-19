@@ -277,7 +277,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 	}
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HTTPClientSave", true));
-	if (dlg->ShowDialog(me))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		IO::FileStream *fs;
 		Bool succ = false;

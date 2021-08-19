@@ -11,6 +11,7 @@ namespace Crypto
 		virtual ~X509Cert();
 
 		virtual FileType GetFileType();
+		virtual ASN1Data *Clone();
 		virtual void ToString(Text::StringBuilderUTF *sb);
 	};
 }

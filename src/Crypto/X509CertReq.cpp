@@ -16,6 +16,13 @@ Crypto::X509File::FileType Crypto::X509CertReq::GetFileType()
 	return FT_CERT_REQ;
 }
 
+Net::ASN1Data *Crypto::X509CertReq::Clone()
+{
+	Crypto::X509CertReq *asn1;
+	NEW_CLASS(asn1, Crypto::X509CertReq(this->GetSourceNameObj(), this->buff, this->buffSize));
+	return asn1;
+}
+
 void Crypto::X509CertReq::ToString(Text::StringBuilderUTF *sb)
 {
 }

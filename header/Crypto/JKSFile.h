@@ -11,6 +11,7 @@ namespace Crypto
 		virtual ~JKSFile();
 
 		virtual FileType GetFileType();
+		virtual Net::ASN1Data *Clone();
 		virtual void ToString(Text::StringBuilderUTF *sb);
 	};
 }

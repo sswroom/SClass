@@ -16,6 +16,13 @@ Crypto::X509File::FileType Crypto::JKSFile::GetFileType()
 	return FT_JKS;
 }
 
+Net::ASN1Data *Crypto::JKSFile::Clone()
+{
+	Crypto::JKSFile *asn1;
+	NEW_CLASS(asn1, Crypto::JKSFile(this->GetSourceNameObj(), this->buff, this->buffSize));
+	return asn1;
+}
+
 void Crypto::JKSFile::ToString(Text::StringBuilderUTF *sb)
 {
 }

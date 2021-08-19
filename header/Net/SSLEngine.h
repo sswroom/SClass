@@ -70,6 +70,7 @@ namespace Net
 		
 		virtual Bool IsError() = 0;
 		virtual Bool SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1) = 0;
+		virtual Bool SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1) = 0;
 		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
 		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;

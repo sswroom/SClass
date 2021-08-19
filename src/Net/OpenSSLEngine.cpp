@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/X509File.h"
 #include "Data/DateTime.h"
 #include "IO/StmData/MemoryData.h"
 #include "Net/OpenSSLClient.h"
@@ -12,6 +13,8 @@
 struct Net::OpenSSLEngine::ClassData
 {
 	SSL_CTX *ctx;
+	Crypto::X509File *cliCert;
+	Crypto::X509File *cliKey;
 };
 
 Net::TCPClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
@@ -96,6 +99,8 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 	}
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ctx = SSL_CTX_new(m);
+	this->clsData->cliCert = 0;
+	this->clsData->cliKey = 0;
 	this->skipCertCheck = false;
 }
 
@@ -105,6 +110,8 @@ Net::OpenSSLEngine::~OpenSSLEngine()
 	{
 		SSL_CTX_free(this->clsData->ctx);
 	}
+	SDEL_CLASS(this->clsData->cliCert);
+	SDEL_CLASS(this->clsData->cliKey);
 	MemFree(this->clsData);
 	Net::OpenSSLCore::Deinit();
 }
@@ -140,18 +147,20 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::
 		return true;
 	}
 	return false;
+}
 
-/*	SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
-	if (SSL_CTX_use_certificate_file(this->clsData->ctx, (const Char*)certFile, SSL_FILETYPE_PEM) <= 0)
+Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
+{
+	SDEL_CLASS(this->clsData->cliCert);
+	SDEL_CLASS(this->clsData->cliKey);
+	if (certASN1)
 	{
-		return false;
+		this->clsData->cliCert = (Crypto::X509File*)certASN1->Clone();
 	}
-
-	if (SSL_CTX_use_PrivateKey_file(this->clsData->ctx, (const Char*)keyFile, SSL_FILETYPE_PEM) <= 0 )
+	if (keyASN1)
 	{
-		return false;
+		this->clsData->cliKey = (Crypto::X509File*)keyASN1->Clone();
 	}
-	return true;*/
 }
 
 UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
@@ -181,6 +190,14 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		if (err)
 			*err = ET_OUT_OF_MEMORY;
 		return 0;
+	}
+	if (this->clsData->cliCert)
+	{
+		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
+	}
+	if (this->clsData->cliKey)
+	{
+		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	UInt32 *s;
 	if (addr.addrType == Net::SocketUtil::AT_IPV4)

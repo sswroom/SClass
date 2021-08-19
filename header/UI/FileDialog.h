@@ -1,5 +1,6 @@
 #ifndef _SM_UI_FILEDIALOG
 #define _SM_UI_FILEDIALOG
+#include "Handles.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "IO/IFileSelector.h"
 #include "IO/Registry.h"
@@ -36,7 +37,7 @@ namespace UI
 
 		void SetAllowMultiSel(Bool allowMulti);
 
-		Bool ShowDialog(void *ownerHandle);
+		Bool ShowDialog(ControlHandle *ownerHandle);
 	};
 }
 #endif

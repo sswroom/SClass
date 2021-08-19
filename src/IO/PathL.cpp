@@ -14,6 +14,8 @@
 #include <sys/sysctl.h>
 #endif
 
+#include <stdio.h>
+
 #if !defined(PATH_MAX)
 #define PATH_MAX 512
 #endif
@@ -887,6 +889,19 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 	return Text::StrConcat(buff, L"/");
 }
 
+UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
+{
+	UOSInt i = 0;
+	while (environ[i])
+	{
+		if (Text::StrStartsWith(environ[i], "HOME="))
+		{
+			return Text::StrConcat(buff, (const UTF8Char*)environ[i] + 5);
+		}
+		i++;
+	}
+	return 0;
+}
 
 Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::DateTime *createTime, Data::DateTime *accessTime)
 {

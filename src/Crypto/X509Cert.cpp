@@ -16,6 +16,13 @@ Crypto::X509File::FileType Crypto::X509Cert::GetFileType()
 	return FT_CERT;
 }
 
+Net::ASN1Data *Crypto::X509Cert::Clone()
+{
+	Crypto::X509Cert *asn1;
+	NEW_CLASS(asn1, Crypto::X509Cert(this->GetSourceNameObj(), this->buff, this->buffSize));
+	return asn1;
+}
+
 void Crypto::X509Cert::ToString(Text::StringBuilderUTF *sb)
 {
 	if (IsCertificate(this->buff, this->buff + this->buffSize, "1"))

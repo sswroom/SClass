@@ -30,7 +30,7 @@ IO/PhysicalMem.h: ../../src/IO/PhysicalMemL.cpp
 @PhysicalMem.o
 IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
 @PowerInfo.o
-IO/Registry.h: ../../src/IO/RegistryNul.cpp
+IO/Registry.h: ../../src/IO/RegistryLinux.cpp
 @Registry.o
 IO/SerialPort.h: ../../src/IO/SerialPortL.cpp
 @SerialPort.o
@@ -125,7 +125,7 @@ Path.o: ../../src/IO/PathL.cpp
 PCIInfo.o: ../../src/IO/PCIInfoL.cpp
 PhysicalMem.o: ../../src/IO/PhysicalMemL.cpp
 PowerInfo.o: ../../src/IO/PowerInfoL.cpp
-Registry.o: ../../src/IO/RegistryNul.cpp
+Registry.o: ../../src/IO/RegistryLinux.cpp
 SerialPort.o: ../../src/IO/SerialPortL.cpp
 SimpleFileWriter.o: ../../src/IO/SimpleFileWriterL.cpp
 USBInfo.o: ../../src/IO/USBInfoL.cpp
