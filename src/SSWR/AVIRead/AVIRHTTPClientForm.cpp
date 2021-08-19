@@ -364,7 +364,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 			i = me->lvReqData->AddItem(param->name, param);
 			me->lvReqData->SetSubItem(i, 1, param->value);
 
-			if (spInd < 0)
+			if (spInd == INVALID_INDEX)
 			{
 				break;
 			}
