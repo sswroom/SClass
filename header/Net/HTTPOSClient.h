@@ -15,8 +15,10 @@ namespace Net
 {
 	class HTTPOSClient : public HTTPClient
 	{
+	public:
+		struct ClassData;
 	private:
-		void *clsData;
+		ClassData *clsData;
 		const UTF8Char *cliHost;
 		IO::MemoryStream *reqMstm;
 
@@ -44,6 +46,9 @@ namespace Net
 		virtual void AddHeader(const UTF8Char *name, const UTF8Char *value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);
+
+		virtual Bool IsSecureConn();
+		virtual Crypto::X509File *GetServerCert();
 	};
 }
 #endif

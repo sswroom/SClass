@@ -14,7 +14,7 @@
 
 #define BUFFSIZE 2048
 
-typedef struct
+struct Net::HTTPOSClient::ClassData
 {
 	CURL *curl;
 	struct curl_slist *headers;
@@ -22,11 +22,11 @@ typedef struct
 	const UTF8Char *userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
-} ClassData;
+};
 
 size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *userdata)
 {
-	ClassData *data = (ClassData*)userdata;
+	Net::HTTPOSClient::ClassData *data = (Net::HTTPOSClient::ClassData*)userdata;
 	if (Text::StrStartsWith(buffer, "HTTP/"))
 	{
 		return size * nitems;
@@ -57,20 +57,19 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 
 size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
-	ClassData *data = (ClassData*)userdata;
+	Net::HTTPOSClient::ClassData *data = (Net::HTTPOSClient::ClassData*)userdata;
 	data->respData->Write((const UInt8*)ptr, size * nmemb);
 	return size * nmemb;
 }
 
 Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
-	this->clsData = data;
-	data->curl = curl_easy_init();
-	data->headers = 0;
-	data->respHeaders = this->headers;
-	NEW_CLASS(data->respData, IO::MemoryStream((const UTF8Char*)"Net.HTTPOSClient.respData"));
-	data->contLen = 0x7fffffff;
+	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData->curl = curl_easy_init();
+	this->clsData->headers = 0;
+	this->clsData->respHeaders = this->headers;
+	NEW_CLASS(this->clsData->respData, IO::MemoryStream((const UTF8Char*)"Net.HTTPOSClient.respData"));
+	this->clsData->contLen = 0x7fffffff;
 	this->cliHost = 0;
 	this->writing = false;
 	this->dataBuff = 0;
@@ -82,7 +81,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userA
 	{
 		userAgent = (const UTF8Char*)"sswr/1.0";
 	}
-	data->userAgent = Text::StrCopyNew(userAgent);
+	this->clsData->userAgent = Text::StrCopyNew(userAgent);
 }
 
 Net::HTTPOSClient::~HTTPOSClient()
@@ -93,31 +92,28 @@ Net::HTTPOSClient::~HTTPOSClient()
 		MemFree(this->dataBuff);
 		this->dataBuff = 0;
 	}
-	ClassData *data = (ClassData*)this->clsData;
-	if (data->headers)
+	if (this->clsData->headers)
 	{
-		curl_slist_free_all(data->headers);
-		data->headers = 0;
+		curl_slist_free_all(this->clsData->headers);
+		this->clsData->headers = 0;
 	}
-	if (data->curl)
-		curl_easy_cleanup(data->curl);
-	Text::StrDelNew(data->userAgent);
-	DEL_CLASS(data->respData);
-	MemFree(data);
+	if (this->clsData->curl)
+		curl_easy_cleanup(this->clsData->curl);
+	Text::StrDelNew(this->clsData->userAgent);
+	DEL_CLASS(this->clsData->respData);
+	MemFree(this->clsData);
 	DEL_CLASS(this->reqMstm);
 }
 
 Bool Net::HTTPOSClient::IsError()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return data->curl == 0;
+	return this->clsData->curl == 0;
 }
 
 UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
 {
-	ClassData *data = (ClassData*)this->clsData;
 	this->EndRequest(0, 0);
-	if (data->curl == 0)
+	if (this->clsData->curl == 0)
 	{
 		return 0;
 	}
@@ -137,7 +133,7 @@ UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
 
 	if (this->buffSize == 0)
 	{
-		this->buffSize = data->respData->Read(this->dataBuff, size);
+		this->buffSize = this->clsData->respData->Read(this->dataBuff, size);
 	}
 	if (this->buffSize >= size)
 	{
@@ -200,8 +196,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UInt16 port;
 	UInt16 defPort;
 	Double t1;
-	ClassData *data = (ClassData*)this->clsData;
-	if (data->curl == 0)
+	if (this->clsData->curl == 0)
 	{
 		if (timeDNS)
 		{
@@ -384,23 +379,23 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else if (Text::StrEqualsICase(method, "PUT"))
 		{
-			curl_easy_setopt(data->curl, CURLOPT_CUSTOMREQUEST, "PUT");
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PUT");
 		}
 		else if (Text::StrEqualsICase(method, "PATCH"))
 		{
-			curl_easy_setopt(data->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
 		}
 		else if (Text::StrEqualsICase(method, "DELETE"))
 		{
-			curl_easy_setopt(data->curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 		}
 	}
 	//curl_easy_setopt(data->curl, CURLOPT_VERBOSE, 1);
-	curl_easy_setopt(data->curl, CURLOPT_URL, url);
-	curl_easy_setopt(data->curl, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_easy_setopt(data->curl, CURLOPT_SSL_VERIFYHOST, 0);
+	curl_easy_setopt(this->clsData->curl, CURLOPT_URL, url);
+	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYPEER, 0);
+	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYHOST, 0);
 
-	this->AddHeader((const UTF8Char*)"User-Agent", data->userAgent);
+	this->AddHeader((const UTF8Char*)"User-Agent", this->clsData->userAgent);
 	if (defHeaders)
 	{
 		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
@@ -441,8 +436,7 @@ void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
 
 void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 {
-	ClassData *data = (ClassData*)this->clsData;
-	if (data->curl == 0 || (this->writing && !this->canWrite))
+	if (this->clsData->curl == 0 || (this->writing && !this->canWrite))
 	{
 		if (timeReq)
 		{
@@ -472,23 +466,23 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		UOSInt reqSize;
 		UInt8 *reqBuff = this->reqMstm->GetBuff(&reqSize);
 
-		if (data->headers)
+		if (this->clsData->headers)
 		{
-			curl_easy_setopt(data->curl, CURLOPT_HTTPHEADER, data->headers);
+			curl_easy_setopt(this->clsData->curl, CURLOPT_HTTPHEADER, this->clsData->headers);
 		}
 		if (reqSize > 0)
 		{
-			curl_easy_setopt(data->curl, CURLOPT_POSTFIELDSIZE_LARGE, reqSize);
-			curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, reqBuff);
+			curl_easy_setopt(this->clsData->curl, CURLOPT_POSTFIELDSIZE_LARGE, reqSize);
+			curl_easy_setopt(this->clsData->curl, CURLOPT_POSTFIELDS, reqBuff);
 		}
-		curl_easy_setopt(data->curl, CURLOPT_HEADERFUNCTION, HTTPOSClient_HeaderFunc);
-		curl_easy_setopt(data->curl, CURLOPT_HEADERDATA, data);
-		curl_easy_setopt(data->curl, CURLOPT_WRITEFUNCTION, HTTPOSClient_WriteFunc);
-		curl_easy_setopt(data->curl, CURLOPT_WRITEDATA, data);
-		CURLcode res = curl_easy_perform(data->curl);
+		curl_easy_setopt(this->clsData->curl, CURLOPT_HEADERFUNCTION, HTTPOSClient_HeaderFunc);
+		curl_easy_setopt(this->clsData->curl, CURLOPT_HEADERDATA, this->clsData);
+		curl_easy_setopt(this->clsData->curl, CURLOPT_WRITEFUNCTION, HTTPOSClient_WriteFunc);
+		curl_easy_setopt(this->clsData->curl, CURLOPT_WRITEDATA, this->clsData);
+		CURLcode res = curl_easy_perform(this->clsData->curl);
 		this->reqMstm->Clear();
-		data->respData->SeekFromBeginning(0);
-		this->contLeng = data->contLen;
+		this->clsData->respData->SeekFromBeginning(0);
+		this->contLeng = this->clsData->contLen;
 		t1 = this->clk->GetTimeDiff();
 		if (timeReq)
 		{
@@ -500,7 +494,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 			this->contRead = 0;
 
 			long statusCode = 0;
-			curl_easy_getinfo(data->curl, CURLINFO_RESPONSE_CODE, &statusCode);
+			curl_easy_getinfo(this->clsData->curl, CURLINFO_RESPONSE_CODE, &statusCode);
 			this->respStatus = (Net::WebStatus::StatusCode)statusCode;
 
 		}
@@ -520,4 +514,29 @@ void Net::HTTPOSClient::SetTimeout(Int32 ms)
 {
 //	if (this->cli)
 //		this->cli->SetTimeout(this->timeOutMS = ms);
+}
+
+Bool Net::HTTPOSClient::IsSecureConn()
+{
+	if (this->url && Text::StrStartsWith(this->url, (const UTF8Char*)"https://"))
+	{
+		return true;
+	}
+	return false;
+}
+
+Crypto::X509File *Net::HTTPOSClient::GetServerCert()
+{
+	if (this->IsSecureConn() && this->clsData->curl)
+	{
+		struct curl_certinfo *ci;
+		if (!curl_easy_getinfo(this->clsData->curl, CURLINFO_CERTINFO, &ci))
+		{
+			if (ci->num_of_certs > 0)
+			{
+	//			ci->certinfo[0]->
+			}
+		}
+	}
+	return 0;
 }

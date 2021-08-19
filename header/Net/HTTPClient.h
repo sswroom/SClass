@@ -43,6 +43,9 @@ namespace Net
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Int32 ms) = 0;
 
+		virtual Bool IsSecureConn() = 0;
+		virtual Crypto::X509File *GetServerCert() = 0;
+
 		Bool FormBegin();
 		Bool FormAdd(const UTF8Char *name, const UTF8Char *value);
 		void AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);

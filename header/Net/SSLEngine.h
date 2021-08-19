@@ -1,7 +1,7 @@
 #ifndef _SM_NET_SSLENGINE
 #define _SM_NET_SSLENGINE
 #include "Crypto/X509File.h"
-#include "Net/TCPClient.h"
+#include "Net/SSLClient.h"
 
 namespace Net
 {
@@ -63,7 +63,7 @@ namespace Net
 		ThreadState *threadSt;
 
 		static UInt32 __stdcall ServerThread(void *userObj);
-		virtual Net::TCPClient *CreateServerConn(UInt32 *s) = 0;
+		virtual Net::SSLClient *CreateServerConn(UInt32 *s) = 0;
 		SSLEngine(Net::SocketFactory *sockf);
 	public:
 		virtual ~SSLEngine();
@@ -73,7 +73,7 @@ namespace Net
 		virtual Bool SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1) = 0;
 		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
-		virtual Net::TCPClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;
+		virtual Net::SSLClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;
 		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1) = 0;
 
 		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);

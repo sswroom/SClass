@@ -6,6 +6,7 @@
 struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
+	Crypto::X509File *remoteCert;
 };
 
 UInt32 Net::OpenSSLClient::GetLastErrorCode()
@@ -19,15 +20,24 @@ UInt32 Net::OpenSSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : TCPClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
+	this->clsData->remoteCert = 0;
+
+	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
+	if (cert != 0)
+	{
+		/////////////////////////////////
+		X509_free(cert);
+	}
 }
 
 Net::OpenSSLClient::~OpenSSLClient()
 {
 	SSL_free(this->clsData->ssl);
+	SDEL_CLASS(this->clsData->remoteCert);
 	MemFree(this->clsData);
 }
 
@@ -132,4 +142,9 @@ void Net::OpenSSLClient::Close()
 Bool Net::OpenSSLClient::Recover()
 {
 	return false;
+}
+
+Crypto::X509File *Net::OpenSSLClient::GetRemoteCert()
+{
+	return this->clsData->remoteCert;
 }

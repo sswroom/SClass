@@ -2374,6 +2374,8 @@ Net/SocketMonitor.h: ../../src/Net/SocketMonitor.cpp
 @SocketMonitor.o
 Net/SocketUtil.h: ../../src/Net/SocketUtil.cpp
 @SocketUtil.o
+Net/SSLClient.h: ../../src/Net/SSLClient.cpp
+@SSLClient.o
 Net/SSLEngine.h: ../../src/Net/SSLEngine.cpp
 @SSLEngine.o
 Net/SyslogServer.h: ../../src/Net/SyslogServer.cpp
@@ -4213,6 +4215,7 @@ SNMPUtil.o: ../../src/Net/SNMPUtil.cpp
 SocketFactory.o: ../../src/Net/SocketFactory.cpp
 SocketMonitor.o: ../../src/Net/SocketMonitor.cpp
 SocketUtil.o: ../../src/Net/SocketUtil.cpp
+SSLClient.o: ../../src/Net/SSLClient.cpp
 SSLEngine.o: ../../src/Net/SSLEngine.cpp
 SyslogServer.o: ../../src/Net/SyslogServer.cpp
 TCPBoardcastStream.o: ../../src/Net/TCPBoardcastStream.cpp

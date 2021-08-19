@@ -17,7 +17,7 @@ struct Net::OpenSSLEngine::ClassData
 	Crypto::X509File *cliKey;
 };
 
-Net::TCPClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
+Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	this->sockf->SetRecvTimeout(s, 2000);
@@ -32,7 +32,7 @@ Net::TCPClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
 	else
 	{
 		this->sockf->SetRecvTimeout(s, 120000);
-		Net::TCPClient *cli;
+		Net::SSLClient *cli;
 		NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
 		return cli;
 	}
@@ -161,6 +161,7 @@ Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X
 	{
 		this->clsData->cliKey = (Crypto::X509File*)keyASN1->Clone();
 	}
+	return true;
 }
 
 UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
@@ -175,7 +176,7 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
 {
 	Net::SocketUtil::AddressInfo addr;
 	if (!this->sockf->DNSResolveIP(hostName, &addr))
@@ -266,6 +267,7 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
 		if (currTime < dt.ToTicks())
 		{
+			X509_free(cert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
@@ -276,6 +278,7 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
 		if (currTime > dt.ToTicks())
 		{
+			X509_free(cert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
@@ -302,6 +305,7 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		}
 		if (!nameValid)
 		{
+			X509_free(cert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
@@ -311,15 +315,17 @@ Net::TCPClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		X509_NAME *issuer = X509_get_issuer_name(cert);
 		if (X509_NAME_cmp(name, issuer) == 0)
 		{
+			X509_free(cert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
 				*err = ET_SELF_SIGN;
 			return 0;
 		}
+		X509_free(cert);
 	}
 	this->sockf->SetRecvTimeout(s, 120000);
-	Net::TCPClient *cli;
+	Net::SSLClient *cli;
 	NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
 	return cli;
 }
