@@ -454,7 +454,14 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else
 		{
-			port = 80;
+			if (secure)
+			{
+				port = 443;
+			}
+			else
+			{
+				port = 80;
+			}
 		}
 	}
 	else
@@ -467,7 +474,14 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else
 		{
-			port = 80;
+			if (secure)
+			{
+				port = 443;
+			}
+			else
+			{
+				port = 80;
+			}
 			Text::StrConcat(svrname, ptrs[0]);
 		}
 	}
