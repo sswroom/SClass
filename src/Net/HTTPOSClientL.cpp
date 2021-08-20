@@ -395,6 +395,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	curl_easy_setopt(this->clsData->curl, CURLOPT_URL, url);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYPEER, 0);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYHOST, 0);
+	curl_easy_setopt(this->clsData->curl, CURLOPT_CERTINFO, 1L);
 
 	this->AddHeader((const UTF8Char*)"User-Agent", this->clsData->userAgent);
 	if (defHeaders)

@@ -97,6 +97,9 @@ namespace SSWR
 			UI::GUIButton *btnSave;
 			UI::GUIButton *btnView;
 
+			UI::GUITabPage *tpCert;
+			UI::GUITextBox *txtCert;
+
 			UI::GUITabPage *tpCookie;
 			UI::GUIListView *lvCookie;
 
@@ -129,6 +132,7 @@ namespace SSWR
 			Sync::Mutex *respMut;
 			const UTF8Char *respContType;
 			IO::MemoryStream *respData;
+			const UTF8Char *respCert;
 			Data::ArrayList<ParamValue*> *params;
 			Data::ArrayList<HTTPCookie *> *cookieList;
 			Sync::Mutex *cookieMut;
