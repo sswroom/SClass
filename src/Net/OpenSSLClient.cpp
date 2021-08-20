@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/OpenSSLCert.h"
 #include "Net/OpenSSLClient.h"
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -6,7 +7,7 @@
 struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
-	Crypto::X509File *remoteCert;
+	Crypto::Cert::OpenSSLCert *remoteCert;
 };
 
 UInt32 Net::OpenSSLClient::GetLastErrorCode()
@@ -29,8 +30,7 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *
 	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
 	if (cert != 0)
 	{
-		/////////////////////////////////
-		X509_free(cert);
+		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::OpenSSLCert(cert));
 	}
 }
 
@@ -144,7 +144,7 @@ Bool Net::OpenSSLClient::Recover()
 	return false;
 }
 
-Crypto::X509File *Net::OpenSSLClient::GetRemoteCert()
+Crypto::Cert::Certificate *Net::OpenSSLClient::GetRemoteCert()
 {
 	return this->clsData->remoteCert;
 }

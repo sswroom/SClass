@@ -1,5 +1,8 @@
 BUILD_OS := SOLARIS
 
+Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
+@CurlCert.o
+
 DB/MDBFile.h: ../../src/DB/MDBFile.cpp
 @MDBFile.o
 DB/MongoDB.h: ../../src/DB/MongoDB.cpp

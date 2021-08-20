@@ -89,18 +89,18 @@ Net::SSLEngine::~SSLEngine()
 Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile)
 {
 	Parser::FileParser::X509Parser parser;
-	Crypto::X509File *certASN1 = 0;
-	Crypto::X509File *keyASN1 = 0;
+	Crypto::Cert::X509File *certASN1 = 0;
+	Crypto::Cert::X509File *keyASN1 = 0;
 	if (certFile)
 	{
-		if ((certASN1 = (Crypto::X509File*)parser.ParseFilePath(certFile)) == 0)
+		if ((certASN1 = (Crypto::Cert::X509File*)parser.ParseFilePath(certFile)) == 0)
 		{
 			return false;
 		}
 	}
 	if (keyFile)
 	{
-		if ((keyASN1 = (Crypto::X509File*)parser.ParseFilePath(keyFile)) == 0)
+		if ((keyASN1 = (Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)) == 0)
 		{
 			SDEL_CLASS(certASN1);
 			return false;

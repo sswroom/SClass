@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SSLENGINE
 #define _SM_NET_SSLENGINE
-#include "Crypto/X509File.h"
+#include "Crypto/Cert/X509File.h"
 #include "Net/SSLClient.h"
 
 namespace Net
@@ -69,12 +69,12 @@ namespace Net
 		virtual ~SSLEngine();
 		
 		virtual Bool IsError() = 0;
-		virtual Bool SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1) = 0;
-		virtual Bool SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1) = 0;
+		virtual Bool SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1) = 0;
+		virtual Bool SetClientCertASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1) = 0;
 		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
 		virtual Net::SSLClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;
-		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1) = 0;
+		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
 
 		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
 		void ServerInit(UInt32 *s, ClientReadyHandler readyHdlr, void *userObj);

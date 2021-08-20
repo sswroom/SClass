@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/Cert/CurlCert.h"
 #include "Data/ArrayList.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
@@ -525,7 +526,7 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return false;
 }
 
-Crypto::X509File *Net::HTTPOSClient::GetServerCert()
+Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
 {
 	if (this->IsSecureConn() && this->clsData->curl)
 	{
@@ -534,7 +535,9 @@ Crypto::X509File *Net::HTTPOSClient::GetServerCert()
 		{
 			if (ci->num_of_certs > 0)
 			{
-	//			ci->certinfo[0]->
+				Crypto::Cert::Certificate *cert;
+				NEW_CLASS(cert, Crypto::Cert::CurlCert(ci->certinfo[0]));
+				return cert;
 			}
 		}
 	}

@@ -914,7 +914,7 @@ Bool Net::HTTPMyClient::IsSecureConn()
 	return this->cli->IsSSL();
 }
 
-Crypto::X509File *Net::HTTPMyClient::GetServerCert()
+Crypto::Cert::Certificate *Net::HTTPMyClient::GetServerCert()
 {
 	if (this->cli && this->cli->IsSSL())
 	{

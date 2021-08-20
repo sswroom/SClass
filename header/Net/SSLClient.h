@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SSLCLIENT
 #define _SM_NET_SSLCLIENT
-#include "Crypto/X509File.h"
+#include "Crypto/Cert/Certificate.h"
 #include "Net/TCPClient.h"
 
 namespace Net
@@ -12,7 +12,7 @@ namespace Net
 		virtual ~SSLClient();
 
 		virtual Bool IsSSL();
-		virtual Crypto::X509File *GetRemoteCert() = 0;
+		virtual Crypto::Cert::Certificate *GetRemoteCert() = 0;
 	};
 }
 #endif

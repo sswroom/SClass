@@ -41,8 +41,8 @@ namespace SSWR
 			Bool topicListChanged;
 			TopicStatus *currTopic;
 			Media::DrawImage *dispImg;
-			Crypto::X509File *cliCert;
-			Crypto::X509File *cliKey;
+			Crypto::Cert::X509File *cliCert;
+			Crypto::Cert::X509File *cliKey;
 
 			UI::GUIPanel *pnlConnect;
 			UI::GUILabel *lblHost;

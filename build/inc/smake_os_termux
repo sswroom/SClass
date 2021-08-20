@@ -1,4 +1,7 @@
 
+Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
+@CurlCert.o
+
 DB/MDBFile.h: ../../src/DB/MDBFileNul.cpp
 @MDBFile.o
 DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp

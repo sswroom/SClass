@@ -1,5 +1,6 @@
 #include "Stdafx.h"
-#include "Crypto/X509File.h"
+#include "Crypto/Cert/X509Cert.h"
+#include "Crypto/Cert/X509PrivKey.h"
 #include "Data/DateTime.h"
 #include "IO/StmData/MemoryData.h"
 #include "Net/OpenSSLClient.h"
@@ -13,8 +14,8 @@
 struct Net::OpenSSLEngine::ClassData
 {
 	SSL_CTX *ctx;
-	Crypto::X509File *cliCert;
-	Crypto::X509File *cliKey;
+	Crypto::Cert::X509File *cliCert;
+	Crypto::Cert::X509File *cliKey;
 };
 
 Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
@@ -126,14 +127,14 @@ Bool Net::OpenSSLEngine::IsError()
 	return this->clsData->ctx == 0;
 }
 
-Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
+Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	if (this->clsData->ctx == 0)
 	{
 		return false;
 	}
 	
-	if (certASN1 != 0 && certASN1->GetFileType() == Crypto::X509File::FT_CERT && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::X509File::FT_PRIV_KEY)
+	if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FT_CERT && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FT_PRIV_KEY)
 	{
 		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
@@ -149,17 +150,17 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::
 	return false;
 }
 
-Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
+Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
 	if (certASN1)
 	{
-		this->clsData->cliCert = (Crypto::X509File*)certASN1->Clone();
+		this->clsData->cliCert = (Crypto::Cert::X509File*)certASN1->Clone();
 	}
 	if (keyASN1)
 	{
-		this->clsData->cliKey = (Crypto::X509File*)keyASN1->Clone();
+		this->clsData->cliKey = (Crypto::Cert::X509File*)keyASN1->Clone();
 	}
 	return true;
 }
@@ -330,7 +331,7 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	return cli;
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1)
+Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
 	{
@@ -364,8 +365,8 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[4096];
-		Crypto::X509File *pobjKey = 0;
-		Crypto::X509File *pobjCert = 0;
+		Crypto::Cert::X509File *pobjKey = 0;
+		Crypto::Cert::X509File *pobjCert = 0;
 		IO::StmData::MemoryData *mdata;
 		Parser::FileParser::X509Parser parser;
 
@@ -375,7 +376,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (readSize > 0)
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjKey = (Crypto::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
 			DEL_CLASS(mdata);
 		}
 		PEM_write_bio_X509(bio1, cert);
@@ -383,7 +384,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (readSize > 0)
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjCert = (Crypto::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
 			DEL_CLASS(mdata);
 		}
 		BIO_free(bio1);
