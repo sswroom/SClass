@@ -99,8 +99,8 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 
 	if (me->dataConv)
 	{
-		outBuffLeng = readBuffLeng * 16 / af.bitpersample;
-		outBitPerSample = 16;
+		outBuffLeng = readBuffLeng * me->dataBits / af.bitpersample;
+		outBitPerSample = me->dataBits;
 	}
 	else
 	{
@@ -154,7 +154,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 		if (me->dataConv)
 		{
 			readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-			buffSize[i] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, 16, outBuff[i]);
+			buffSize[i] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[i]);
 		}
 		else
 		{
@@ -217,7 +217,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 					if (me->dataConv)
 					{
 						readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-						buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, 16, outBuff[nextBlock]);
+						buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
 					}
 					else
 					{
@@ -279,7 +279,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			if (me->dataConv)
 			{
 				readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-				buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, 16, outBuff[nextBlock]);
+				buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
 			}
 			else
 			{
@@ -394,18 +394,6 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
-	err = snd_pcm_hw_params_set_format(hand, params, sndFmt);
-	if (err < 0)
-	{
-		err = snd_pcm_hw_params_set_format(hand, params, SND_PCM_FORMAT_S16_LE);
-		if (err < 0)
-		{
-			printf("Error: snd_pcm_hw_params_set_format(%d), err = %d\r\n", sndFmt, err);
-			snd_pcm_hw_params_free(params);
-			return false;
-		}
-		this->dataConv = true;
-	}
 	UInt32 rrate = fmt.frequency;
 	err = snd_pcm_hw_params_set_rate_near(hand, params, &rrate, 0);
 	if (err < 0)
@@ -415,6 +403,32 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 		return false;
 	}
 //	printf("ALSA: Actual sample rate:%d\r\n", rrate);
+	err = snd_pcm_hw_params_set_format(hand, params, sndFmt);
+	if (err < 0)
+	{
+		if (snd_pcm_hw_params_set_format(hand, params, SND_PCM_FORMAT_S16_LE) >= 0)
+		{
+			this->dataConv = true;
+			this->dataBits = 16;
+		}
+		else if (snd_pcm_hw_params_set_format(hand, params, SND_PCM_FORMAT_S32_LE) >= 0)
+		{
+			this->dataConv = true;
+			this->dataBits = 32;
+		}
+		else if (snd_pcm_hw_params_set_format(hand, params, SND_PCM_FORMAT_S24_LE) >= 0)
+		{
+			this->dataConv = true;
+			this->dataBits = 24;
+		}
+		else
+		{
+			printf("Error: snd_pcm_hw_params_set_format(%d), err = %d (%s)\r\n", sndFmt, err, snd_strerror(err));
+			snd_pcm_hw_params_free(params);
+			return false;
+		}
+		printf("Data Convert required, bit count = %d\r\n", this->dataBits);
+	}
 	err = snd_pcm_hw_params_set_channels(hand, params, fmt.nChannels);
 	if (err < 0)
 	{
@@ -441,7 +455,7 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 	err = snd_pcm_hw_params(hand, params);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params, err = %d\r\n", err);
+		printf("Error: snd_pcm_hw_params, err = %d (%s)\r\n", err, snd_strerror(err));
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
@@ -582,6 +596,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	}
 
 	this->dataConv = false;
+	this->dataBits = 16;
 	
 	snd_pcm_t *hand;
 	snd_pcm_sw_params_t *swparams;

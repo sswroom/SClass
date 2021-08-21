@@ -11,6 +11,10 @@ namespace Media
         static UOSInt ConvertI32_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
         static UOSInt ConvertI24_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
         static UOSInt ConvertU8_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
+        static UOSInt ConvertF32_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
+        static UOSInt ConvertI24_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
+        static UOSInt ConvertI16_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
+        static UOSInt ConvertU8_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize);
 	};
 }
 #endif
