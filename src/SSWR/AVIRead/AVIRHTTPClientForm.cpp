@@ -627,6 +627,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respReqURL = Text::StrCopyNew(currURL);
 				me->respContType = contType;
 				me->respData = mstm;
+				SDEL_TEXT(me->respCert);
+				Crypto::Cert::Certificate *cert = cli->GetServerCert();
+				if (cert)
+				{
+					Text::StringBuilderUTF8 sb;
+					cert->ToString(&sb);
+					me->respCert = Text::StrCopyNew(sb.ToString());
+				}
 				respMutUsage.EndUse();
 			}
 			else
@@ -643,6 +651,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				SDEL_CLASS(me->respData);
 				SDEL_TEXT(me->respContType);
 				me->respReqURL = Text::StrCopyNew(currURL);
+				SDEL_TEXT(me->respCert);
 				mutUsage.EndUse();
 			}
 
@@ -757,6 +766,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 			}
 			me->lvHeaders->AddItem(hdr, 0);
 			i++;
+		}
+		if (me->respCert)
+		{
+			me->txtCert->SetText(me->respCert);
+		}
+		else
+		{
+			me->txtCert->SetText((const UTF8Char*)"");
 		}
 		me->respChanged = false;
 		me->tcMain->SetSelectedIndex(1);
@@ -970,6 +987,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->respContType = 0;
 	this->respReqURL = 0;
 	this->respData = 0;
+	this->respCert = 0;
 	this->userAgent = Text::StrCopyNew((const UTF8Char*)"SSWR/1.0");
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -1110,6 +1128,11 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvHeaders->SetFullRowSelect(true);
 	this->lvHeaders->AddColumn((const UTF8Char*)"Header", 1000);
 
+	this->tpCert = this->tcMain->AddTabPage((const UTF8Char*)"Cert");
+	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, this->tpCert, (const UTF8Char*)"", true));
+	this->txtCert->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtCert->SetReadOnly(true);
+
 	this->tpCookie = this->tcMain->AddTabPage((const UTF8Char*)"Cookie");
 	NEW_CLASS(this->lvCookie, UI::GUIListView(ui, this->tpCookie, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvCookie->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1147,6 +1170,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_TEXT(this->respReqURL);
 	SDEL_TEXT(this->respContType);
 	SDEL_CLASS(this->respData);
+	SDEL_TEXT(this->respCert);
 	DEL_CLASS(this->respMut);
 	Text::StrDelNew(this->userAgent);
 }

@@ -1,10 +1,10 @@
 #ifndef _SM_NET_OPENSSLCLIENT
 #define _SM_NET_OPENSSLCLIENT
-#include "Net/TCPClient.h"
+#include "Net/SSLClient.h"
 
 namespace Net
 {
-	class OpenSSLClient : public Net::TCPClient
+	class OpenSSLClient : public Net::SSLClient
 	{
 	protected:
 		struct ClassData;
@@ -28,6 +28,7 @@ namespace Net
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual Crypto::Cert::Certificate *GetRemoteCert();
 	};
 }
 #endif

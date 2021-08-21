@@ -361,6 +361,11 @@ Bool Net::TCPClient::Recover()
 	return false;
 }
 
+Bool Net::TCPClient::IsSSL()
+{
+	return false;
+}
+
 Bool Net::TCPClient::IsClosed()
 {
 	return (this->flags & 4) != 0;

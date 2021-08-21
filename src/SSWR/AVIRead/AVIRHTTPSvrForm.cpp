@@ -182,8 +182,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter common name", (const UTF8Char*)"HTTP Server", me);
 			return;
 		}
-		Crypto::X509File *certASN1;
-		Crypto::X509File *keyASN1;
+		Crypto::Cert::X509File *certASN1;
+		Crypto::Cert::X509File *keyASN1;
 		if (ssl->GenerateCert(sbCountry.ToString(), sbCompany.ToString(), sbCommonName.ToString(), &certASN1, &keyASN1))
 		{
 			ssl->SetServerCertsASN1(certASN1, keyASN1);

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/OpenSSLCert.h"
 #include "Net/OpenSSLClient.h"
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -6,6 +7,7 @@
 struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
+	Crypto::Cert::OpenSSLCert *remoteCert;
 };
 
 UInt32 Net::OpenSSLClient::GetLastErrorCode()
@@ -19,15 +21,23 @@ UInt32 Net::OpenSSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : TCPClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
+	this->clsData->remoteCert = 0;
+
+	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
+	if (cert != 0)
+	{
+		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::OpenSSLCert(cert));
+	}
 }
 
 Net::OpenSSLClient::~OpenSSLClient()
 {
 	SSL_free(this->clsData->ssl);
+	SDEL_CLASS(this->clsData->remoteCert);
 	MemFree(this->clsData);
 }
 
@@ -132,4 +142,9 @@ void Net::OpenSSLClient::Close()
 Bool Net::OpenSSLClient::Recover()
 {
 	return false;
+}
+
+Crypto::Cert::Certificate *Net::OpenSSLClient::GetRemoteCert()
+{
+	return this->clsData->remoteCert;
 }

@@ -454,7 +454,14 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else
 		{
-			port = 80;
+			if (secure)
+			{
+				port = 443;
+			}
+			else
+			{
+				port = 80;
+			}
 		}
 	}
 	else
@@ -467,7 +474,14 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else
 		{
-			port = 80;
+			if (secure)
+			{
+				port = 443;
+			}
+			else
+			{
+				port = 80;
+			}
 			Text::StrConcat(svrname, ptrs[0]);
 		}
 	}
@@ -903,4 +917,22 @@ void Net::HTTPMyClient::SetTimeout(Int32 ms)
 	this->timeOutMS = ms;
 	if (this->cli)
 		this->cli->SetTimeout(ms);
+}
+
+Bool Net::HTTPMyClient::IsSecureConn()
+{
+	if (this->cli == 0)
+	{
+		return false;
+	}
+	return this->cli->IsSSL();
+}
+
+Crypto::Cert::Certificate *Net::HTTPMyClient::GetServerCert()
+{
+	if (this->cli && this->cli->IsSSL())
+	{
+		return ((Net::SSLClient*)this->cli)->GetRemoteCert();
+	}
+	return 0;
 }

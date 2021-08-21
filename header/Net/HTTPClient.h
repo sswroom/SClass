@@ -1,5 +1,6 @@
 #ifndef _SM_NET_HTTPCLIENT
 #define _SM_NET_HTTPCLIENT
+#include "Crypto/Cert/Certificate.h"
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
 #include "IO/MemoryStream.h"
@@ -42,6 +43,9 @@ namespace Net
 		virtual void AddHeader(const UTF8Char *name, const UTF8Char *value) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Int32 ms) = 0;
+
+		virtual Bool IsSecureConn() = 0;
+		virtual Crypto::Cert::Certificate *GetServerCert() = 0;
 
 		Bool FormBegin();
 		Bool FormAdd(const UTF8Char *name, const UTF8Char *value);

@@ -3066,7 +3066,7 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 		sb->Append((const UTF8Char*)"Verification cinfo_index = ");
 		sindex = ReadMUInt16(&currPtr[1]);
 		sb->AppendU16(sindex);
-		ptr = this->constPool[sindex];
+/*		ptr = this->constPool[sindex];
 		if (ptr[0] == 1)
 		{
 			strLen = ReadMUInt16(&ptr[1]);
@@ -3076,7 +3076,7 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 			sb->Append((const UTF8Char*)" (");
 			sb->Append(sbTmp.ToString());
 			sb->Append((const UTF8Char*)")");
-		}
+		}*/
 		sb->Append((const UTF8Char*)"\r\n");
 		return currPtr + 3;
 	case 8:
@@ -5025,6 +5025,28 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					sb->AppendChar(' ', lev << 2);
 					sb->Append((const UTF8Char*)"// iadd stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return ET_ERROR;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" + ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x61: //ladd
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					sb->AppendChar(' ', lev << 2);
+					sb->Append((const UTF8Char*)"// ladd stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
 					return ET_ERROR;
 				}

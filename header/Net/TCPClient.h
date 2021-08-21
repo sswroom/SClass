@@ -39,6 +39,7 @@ namespace Net
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual Bool IsSSL();
 		Bool IsClosed();
 		Bool IsSendDown();
 		Bool IsRecvDown();

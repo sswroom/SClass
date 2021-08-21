@@ -482,6 +482,8 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		UOSInt len1 = Text::StrCharCnt(strs2[0]);
 		UOSInt len2 = Text::StrCharCnt(strs2[1]);
 		UOSInt len3 = Text::StrCharCnt(strs2[2]);
+		UOSInt len4 = Text::StrCharCnt(strs2[3]);
+		Char *timeStr = strs2[3];
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
 			Text::StrToUInt16(strs2[2], &this->year);
@@ -494,11 +496,18 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 			this->month = Data::DateTime::ParseMonthStr(strs2[1]);
 			this->day = Text::StrToUInt8(strs2[0]);
 		}
+		else if (len1 == 3 && len2 <= 2 && len4 == 4)
+		{
+			Text::StrToUInt16(strs2[3], &this->year);
+			this->month = Data::DateTime::ParseMonthStr(strs2[0]);
+			this->day = Text::StrToUInt8(strs2[1]);
+			timeStr = strs2[2];
+		}
 		else
 		{
 			succ = false;
 		}
-		if (Text::StrSplit(strs, 3, strs2[3], ':') == 3)
+		if (Text::StrSplit(strs, 3, timeStr, ':') == 3)
 		{
 			SetTime(strs);
 		}

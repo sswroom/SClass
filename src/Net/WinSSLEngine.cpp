@@ -124,7 +124,15 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 	}
 }
 
-Bool Net::WinSSLEngine::InitClient(Method method)
+void Net::WinSSLEngine::DeinitClient()
+{
+	if (this->clsData->cliInit)
+	{
+		FreeCredentialsHandle(&this->clsData->hCredCli);
+		this->clsData->cliInit = false;
+	}
+}
+Bool Net::WinSSLEngine::InitClient(Method method, void *cred)
 {
 	SCHANNEL_CRED credData;
 	SECURITY_STATUS status;
@@ -132,6 +140,11 @@ Bool Net::WinSSLEngine::InitClient(Method method)
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCHANNEL_CRED_VERSION;
 	credData.grbitEnabledProtocols = WinSSLEngine_GetProtocols(method, false);
+	if (cred)
+	{
+		credData.paCred = (PCCERT_CONTEXT*)&cred;
+		credData.cCreds = 1;
+	}
 
 	status = AcquireCredentialsHandle(
 		NULL,
@@ -656,6 +669,68 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X
 	return true;
 }
 
+Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
+{
+	if (certASN1 == 0 || keyASN1 == 0)
+	{
+		return false;
+	}
+	const WChar *containerName = L"ClientCert";
+	HCRYPTKEY hKey;
+	HCRYPTPROV hProv;
+	if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	{
+		if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
+		{
+			return false;
+		}
+	}
+	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+	{
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+
+/*	IO::DebugWriter debug;
+	Text::StringBuilderUTF16 sbDebug;
+	WinSSLEngine_HCRYPTPROV_ToString(hProv, &sbDebug);
+	debug.WriteLineW(sbDebug.ToString());*/
+
+	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
+	CRYPT_KEY_PROV_INFO keyProvInfo;
+	MemClear(&keyProvInfo, sizeof(keyProvInfo));
+	keyProvInfo.pwszContainerName = (WChar*)containerName;
+	keyProvInfo.pwszProvName = NULL;
+	keyProvInfo.dwProvType = PROV_RSA_FULL;
+	keyProvInfo.dwFlags = CRYPT_MACHINE_KEYSET;
+	keyProvInfo.cProvParam = 0;
+	keyProvInfo.rgProvParam = NULL;
+	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
+	BOOL succ = CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
+
+	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = NULL;
+	BOOL fCallerFreeProvOrNCryptKey = FALSE;
+	DWORD dwKeySpec;
+	succ = CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
+
+	this->DeinitClient();
+	if (!this->InitClient(this->clsData->method, (void*)serverCert) &&
+			!this->InitClient(M_TLSV1_2, (void*)serverCert) &&
+			!this->InitClient(M_TLSV1_1, (void*)serverCert) &&
+			!this->InitClient(M_TLSV1, (void*)serverCert))
+	{
+		CertFreeCertificateContext(serverCert);
+		CryptDestroyKey(hKey);
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+	this->clsData->cliInit = true;
+	CertFreeCertificateContext(serverCert);
+	CryptDestroyKey(hKey);
+	CryptReleaseContext(hProv, 0);
+	return true;
+}
+
 UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 {
 	*sbuff = 0;
@@ -666,10 +741,10 @@ Net::TCPClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 {
 	if (!this->clsData->cliInit)
 	{
-		if (!this->InitClient(this->clsData->method) &&
-			!this->InitClient(M_TLSV1_2) &&
-			!this->InitClient(M_TLSV1_1) &&
-			!this->InitClient(M_TLSV1))
+		if (!this->InitClient(this->clsData->method, 0) &&
+			!this->InitClient(M_TLSV1_2, 0) &&
+			!this->InitClient(M_TLSV1_1, 0) &&
+			!this->InitClient(M_TLSV1, 0))
 		{
 			return 0;
 		}

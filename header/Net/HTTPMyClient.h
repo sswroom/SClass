@@ -52,6 +52,9 @@ namespace Net
 		virtual void AddHeader(const UTF8Char *name, const UTF8Char *value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);
+
+		virtual Bool IsSecureConn();
+		virtual Crypto::Cert::Certificate *GetServerCert();
 	};
 }
 #endif
