@@ -31,6 +31,31 @@ UOSInt Media::LPCMConverter::Convert(UInt32 srcFormat, UInt16 srcBitPerSample, c
             }
         }
     }
+	else if (destFormat == 1 && destBitPerSample == 24)
+	{
+        if (srcFormat == 3)
+        {
+            if (srcBitPerSample == 32)
+            {
+                return ConvertF32_I24(destBuff, srcBuff, srcSize);
+            }
+        }
+        else if (srcFormat == 1)
+        {
+            if (srcBitPerSample == 32)
+            {
+                return ConvertI32_I24(destBuff, srcBuff, srcSize);
+            }
+            else if (srcBitPerSample == 16)
+            {
+                return ConvertI16_I24(destBuff, srcBuff, srcSize);
+            }
+            else if (srcBitPerSample == 8)
+            {
+                return ConvertU8_I24(destBuff, srcBuff, srcSize);
+            }
+        }
+	}
 	else if (destFormat == 1 && destBitPerSample == 32)
 	{
         if (srcFormat == 3)
@@ -119,6 +144,67 @@ UOSInt Media::LPCMConverter::ConvertU8_I16(UInt8 *destBuff, const UInt8 *srcBuff
     return srcSize * 2;
 }
 
+UOSInt Media::LPCMConverter::ConvertF32_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+{
+    UOSInt i = srcSize / 4;
+    while (i-- > 0)
+    {
+		Double v = ReadFloat(srcBuff) * 8388607.0;
+		Int32 v32 = Math::SDouble2Int24(v);
+        WriteInt32(destBuff, v32);
+
+        srcBuff += 4;
+        destBuff += 4;
+    }
+    return srcSize / 4 * 3;
+}
+
+UOSInt Media::LPCMConverter::ConvertI32_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+{
+    UOSInt i = srcSize / 4;
+    while (i-- > 0)
+    {
+        destBuff[0] = srcBuff[1];
+        destBuff[1] = srcBuff[2];
+        destBuff[2] = srcBuff[3];
+
+        srcBuff += 4;
+        destBuff += 3;
+    }
+    return srcSize / 4 * 3;
+}
+
+UOSInt Media::LPCMConverter::ConvertI16_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+{
+    UOSInt i = srcSize / 2;
+    while (i-- > 0)
+    {
+        destBuff[0] = srcBuff[1];
+        destBuff[1] = srcBuff[0];
+        destBuff[2] = srcBuff[1];
+
+        srcBuff += 2;
+        destBuff += 3;
+    }
+    return srcSize / 2 * 3;
+}
+
+UOSInt Media::LPCMConverter::ConvertU8_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+{
+    UInt8 v;
+    UOSInt i = srcSize;
+    while (i-- > 0)
+    {
+        v = (UInt8)(srcBuff[0] - 0x80);
+        destBuff[0] = v;
+        destBuff[1] = v;
+        destBuff[2] = v;
+
+        srcBuff++;
+        destBuff += 3;
+    }
+    return srcSize * 3;
+}
 
 UOSInt Media::LPCMConverter::ConvertF32_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
 {
