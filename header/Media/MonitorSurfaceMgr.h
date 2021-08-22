@@ -18,8 +18,8 @@ namespace Media
 		virtual UOSInt GetMonitorCount() = 0;
 
 		virtual MonitorSurface *CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth) = 0;
-		virtual MonitorSurface *CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow) = 0;
-		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface) = 0;
+		virtual MonitorSurface *CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType) = 0;
+		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, Media::RotateType rotateType) = 0;
 	};
 }
 #endif

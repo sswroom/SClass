@@ -103,10 +103,10 @@ Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(UOSInt width, U
 	return surface;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
+Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
 {
 	Media::FBSurface *surface = 0;
-	NEW_CLASS(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon)));
+	NEW_CLASS(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon), rotateType));
 	if (surface == 0)
 	{
 		return 0;
@@ -119,9 +119,9 @@ Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorH
 	return surface;
 }
 
-Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface)
+Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, Media::RotateType rotateType)
 {
-	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0);
+	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0, rotateType);
 	if (pSurface)
 	{
 		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info->dispWidth, pSurface->info->dispHeight, pSurface->info->storeBPP);

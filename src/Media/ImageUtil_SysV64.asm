@@ -4266,7 +4266,7 @@ r32cw180lop2:
 ImageUtil_Rotate32_CW270:
 _ImageUtil_Rotate32_CW270:
 	mov r10,rcx ;srcHeight
-	add rdi,r8 ;sbpl
+	add rdi,r8 ;srcPtr += sbpl
 	lea rax,[rcx*4] ;srcHeight
 	sub r9,rax ;dbpl
 	
@@ -4285,7 +4285,7 @@ r32cw270lop2:
 	dec r11
 	jnz r32cw270lop2
 	
-	add rdi,r9 ;dbpl
+	add rsi,r9 ;dbpl
 	dec rdx
 	jnz r32cw270lop
 	

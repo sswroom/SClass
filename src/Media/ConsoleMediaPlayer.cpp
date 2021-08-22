@@ -51,3 +51,8 @@ Bool Media::ConsoleMediaPlayer::IsError()
 {
 	return this->player == 0;
 }
+
+void Media::ConsoleMediaPlayer::SetRotateType(Media::RotateType rotateType)
+{
+	this->renderer->SetRotateType(rotateType);
+}

@@ -14,12 +14,14 @@ namespace Media
 	private:
 		Media::MonitorSurfaceMgr *surfaceMgr;
 		Media::MonitorSurface *primarySurface;
+		Sync::Mutex *mut;
 
 	public:
 		ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surfaceMgr, Media::ColorManagerSess *colorSess);
 		virtual ~ConsoleVideoRenderer();
 
 		Bool IsError();
+		void SetRotateType(Media::RotateType rotateType);
 
 		virtual Bool IsUpdatingSize();
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);

@@ -5,6 +5,7 @@
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUITextBox.h"
@@ -19,6 +20,8 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStop;
+			UI::GUILabel *lblRotate;
+			UI::GUIComboBox *cboRotate;
 
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ConsoleMediaPlayer *player;
@@ -27,6 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnStopClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall OnRotateChg(void *userObj);
 
 		public:
 			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

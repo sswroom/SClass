@@ -22,7 +22,7 @@ struct Media::FBSurface::ClassData
 	MonitorSurface *buffSurface;
 };
 
-Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi)
+Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi, Media::RotateType rotateType)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->hMon = hMon;
@@ -59,21 +59,8 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Dou
 	this->info->par2 = 1.0;
 	this->info->hdpi = dpi;
 	this->info->vdpi = dpi;
-	this->info->rotateType = Media::RT_NONE;
+	this->info->rotateType = rotateType;
 	this->info->color->Set(color);
-
-	if (this->clsData->vinfo.rotate == 90)
-	{
-		this->info->rotateType = Media::RT_CW_270;
-	}
-	else if (this->clsData->vinfo.rotate == 180)
-	{
-		this->info->rotateType = Media::RT_CW_180;
-	}
-	else if (this->clsData->vinfo.rotate == 270)
-	{
-		this->info->rotateType = Media::RT_CW_90;
-	}
 
 	if (this->info->rotateType == Media::RT_CW_90 || this->info->rotateType == Media::RT_CW_270)
 	{
@@ -101,7 +88,7 @@ Bool Media::FBSurface::IsError()
 Media::Image *Media::FBSurface::Clone()
 {
 	Media::FBSurface *surface;
-	NEW_CLASS(surface, Media::FBSurface(this->clsData->hMon, this->info->color, this->info->hdpi));
+	NEW_CLASS(surface, Media::FBSurface(this->clsData->hMon, this->info->color, this->info->hdpi, this->info->rotateType));
 	return surface;
 }
 
@@ -257,7 +244,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 		if (rt == Media::RT_NONE)
 		{
 			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
-				(UInt8*)this->clsData->dataPtr + destY * this->clsData->finfo.line_length + destX * ((OSInt)this->info->storeBPP >> 3),
+				(UInt8*)this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((OSInt)this->info->storeBPP >> 3),
 				buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)this->clsData->finfo.line_length, false);
 		}
 		else if (this->info->storeBPP == 32)
@@ -265,19 +252,19 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 			if (rt == Media::RT_CW_90)
 			{
 				ImageUtil_Rotate32_CW90(buff + drawY * lineAdd + drawX * 4, 
-				this->clsData->dataPtr + destX * this->clsData->finfo.line_length + (this->info->dispHeight - destY - buffH) * 4,
+				this->clsData->dataPtr + destX * this->clsData->finfo.line_length + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * 4,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
 			else if (rt == Media::RT_CW_180)
 			{
 				ImageUtil_Rotate32_CW180(buff + drawY * lineAdd + drawX * 4, 
-				this->clsData->dataPtr + (this->info->dispHeight - destY - buffH) * this->clsData->finfo.line_length + (this->info->dispWidth - destX - buffW) * 4,
+				this->clsData->dataPtr + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * this->clsData->finfo.line_length + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * 4,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
 			else if (rt == Media::RT_CW_270)
 			{
 				ImageUtil_Rotate32_CW270(buff + drawY * lineAdd + drawX * 4, 
-				this->clsData->dataPtr + (this->info->dispWidth - destX - buffW) * this->clsData->finfo.line_length + destY * 4,
+				this->clsData->dataPtr + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * this->clsData->finfo.line_length + destY * 4,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
 		}
@@ -286,19 +273,19 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 			if (rt == Media::RT_CW_90)
 			{
 				ImageUtil_Rotate64_CW90(buff + drawY * lineAdd + drawX * 8, 
-				this->clsData->dataPtr + destX * this->clsData->finfo.line_length + (this->info->dispHeight - destY - buffH) * 8,
+				this->clsData->dataPtr + destX * (Int32)this->clsData->finfo.line_length + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * 8,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
 			else if (rt == Media::RT_CW_180)
 			{
 				ImageUtil_Rotate64_CW180(buff + drawY * lineAdd + drawX * 8, 
-				this->clsData->dataPtr + (this->info->dispHeight - destY - buffH) * this->clsData->finfo.line_length + (this->info->dispWidth - destX - buffW) * 8,
+				this->clsData->dataPtr + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * this->clsData->finfo.line_length + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * 8,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
 			else if (rt == Media::RT_CW_270)
 			{
 				ImageUtil_Rotate64_CW270(buff + drawY * lineAdd + drawX * 8, 
-				this->clsData->dataPtr + (this->info->dispWidth - destX - buffW) * this->clsData->finfo.line_length + destY * 8,
+				this->clsData->dataPtr + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * (Int32)this->clsData->finfo.line_length + destY * 8,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
 		}
@@ -320,14 +307,13 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 				destHeight = tmpV;
 				destX = destWidth - oldY - (OSInt)oldH;
 				destY = oldX;
-				UOSInt tmpV2 = buffW;
-				buffW = buffH;
-				buffH = tmpV2;
+				buffW = oldH;
+				buffH = oldW;
 			}
 			else if (rt == Media::RT_CW_180)
 			{
-				destX = destWidth - oldX - (OSInt)buffW;
-				destY = destHeight - oldY - (OSInt)buffH;
+				destX = destWidth - oldX - (OSInt)oldW;
+				destY = destHeight - oldY - (OSInt)oldH;
 			}
 			else if (rt == Media::RT_CW_270)
 			{
@@ -335,10 +321,9 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 				destWidth = destHeight;
 				destHeight = tmpV;
 				destX = oldY;
-				destY = destHeight - oldX - (OSInt)buffW;
-				UOSInt tmpV2 = buffW;
-				buffW = buffH;
-				buffH = tmpV2;
+				destY = destHeight - oldX - (OSInt)oldW;
+				buffW = oldH;
+				buffH = oldW;
 			}
 		}
 

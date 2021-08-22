@@ -23,6 +23,12 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 	UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading files", (const UTF8Char*)"Console Media Player", me);
 }
 
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	me->player->SetRotateType((Media::RotateType)(OSInt)me->cboRotate->GetSelectedItem());
+}
+
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetText((const UTF8Char*)"Console Media Player");
@@ -41,6 +47,16 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, (const UTF8Char*)"Stop"));
 	this->btnStop->SetRect(4, 28, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
+	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, this, (const UTF8Char*)"Rotate"));
+	this->lblRotate->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->cboRotate, UI::GUIComboBox(ui, this, false));
+	this->cboRotate->SetRect(104, 52, 100, 23, false);
+	this->cboRotate->AddItem((const UTF8Char*)"No Rotate", (void*)Media::RT_NONE);
+	this->cboRotate->AddItem((const UTF8Char*)"CW 90", (void*)Media::RT_CW_90);
+	this->cboRotate->AddItem((const UTF8Char*)"CW 180", (void*)Media::RT_CW_180);
+	this->cboRotate->AddItem((const UTF8Char*)"CW 270", (void*)Media::RT_CW_270);
+	this->cboRotate->SetSelectedIndex(0);
+	this->cboRotate->HandleSelectionChange(OnRotateChg, this);
 
 	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	if (this->player->IsError())

@@ -13,7 +13,7 @@ namespace Media
 		ClassData *clsData;
 
 	public:
-		FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi);
+		FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi, Media::RotateType rotateType);
 		virtual ~FBSurface();
 
 		Bool IsError();

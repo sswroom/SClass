@@ -23,6 +23,7 @@ namespace Media
 		virtual ~ConsoleMediaPlayer();
 
 		Bool IsError();
+		void SetRotateType(Media::RotateType rotateType);
 	};
 }
 #endif
