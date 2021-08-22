@@ -1,6 +1,9 @@
 BUILD_OS := WINDOWS
 INCLUDEPATH+=:../../ThirdParty/KSSample
 
+Crypto/Cert/WinHttpCert.h: ../../src/Crypto/Cert/WinHttpCert.cpp
+@WinHttpCert.o
+
 DB/MDBFile.h: ../../src/DB/MDBFile.cpp
 @MDBFile.o
 DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
@@ -125,6 +128,8 @@ Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 @WinRTCore.o
 
 ConsoleStartup.o: ../../startup/ConStartup.cpp
+WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
+!-lwinhttp
 MDBFile.o: ../../src/DB/MDBFile.cpp
 !-lodbc32
 MongoDB.o: ../../src/DB/MongoDBNull.cpp

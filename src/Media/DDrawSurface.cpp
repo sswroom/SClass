@@ -17,7 +17,7 @@ struct Media::DDrawSurface::ClassData
 	Media::DDrawSurface *buffSurface;
 };
 
-Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease)
+Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->mgr = mgr;
@@ -53,6 +53,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info->hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info->vdpi = this->info->hdpi;
 	this->info->color->Set(mgr->GetMonProfile(hMon));
+	this->info->rotateType = Media::RT_NONE; //rotateType;
 }
 
 Media::DDrawSurface::~DDrawSurface()
@@ -276,13 +277,13 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 		if (destX < 0)
 		{
 			drawX = -destX;
-			buffW += destX;
+			buffW += (UOSInt)destX;
 			destX = 0;
 		}
 		if (destY < 0)
 		{
 			drawY = -destY;
-			buffH += destY;
+			buffH += (UOSInt)destY;
 			destY = 0;
 		}
 		if (rc.right > (OSInt)this->info->dispWidth)

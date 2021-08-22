@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Crypto/X509Cert.h"
-#include "Crypto/X509PrivKey.h"
+#include "Crypto/Cert/X509Cert.h"
+#include "Crypto/Cert/X509PrivKey.h"
 #include "Data/DateTime.h"
 //#include "IO/DebugWriter.h"
 #include "Net/WinSSLClient.h"
@@ -185,7 +185,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred)
 	return status == 0;
 }
 
-Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
+Net::SSLClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 {
 	if (!this->clsData->svrInit)
 	{
@@ -380,7 +380,7 @@ Net::TCPClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
 		}
 	}
 
-	Net::TCPClient *cli;
+	Net::SSLClient *cli;
 	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
 	return cli;
 }
@@ -606,7 +606,7 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 	return succ;
 }
 
-Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
+Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	if (this->clsData->svrInit)
 	{
@@ -669,7 +669,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::X509File *certASN1, Crypto::X
 	return true;
 }
 
-Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::X509File *certASN1, Crypto::X509File *keyASN1)
+Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
 	{
@@ -737,7 +737,7 @@ UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return sbuff;
 }
 
-Net::TCPClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -931,12 +931,12 @@ Net::TCPClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	}
 	Text::StrDelNew(wptr);
 
-	Net::TCPClient *cli;
+	Net::SSLClient *cli;
 	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
 	return cli;
 }
 
-Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::X509File **certASN1, Crypto::X509File **keyASN1)
+Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1035,8 +1035,8 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	NEW_CLASS(*certASN1, Crypto::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
-	*keyASN1 = Crypto::X509PrivKey::CreateFromRSAKey(certBuff, certBuffSize);
+	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromRSAKey(certBuff, certBuffSize);
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);

@@ -1,10 +1,10 @@
 #ifndef _SM_NET_WINSSLCLIENT
 #define _SM_NET_WINSSLCLIENT
-#include "Net/TCPClient.h"
+#include "Net/SSLClient.h"
 
 namespace Net
 {
-	class WinSSLClient : public Net::TCPClient
+	class WinSSLClient : public Net::SSLClient
 	{
 	protected:
 		struct ClassData;
@@ -27,6 +27,8 @@ namespace Net
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+
+		virtual Crypto::Cert::Certificate *GetRemoteCert();
 	};
 }
 #endif

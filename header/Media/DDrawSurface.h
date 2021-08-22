@@ -16,7 +16,7 @@ namespace Media
 		ClassData *clsData;
 
 	public:
-		DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease);
+		DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType);
 		virtual ~DDrawSurface();
 
 		virtual Media::Image *Clone();

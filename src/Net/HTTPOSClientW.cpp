@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-
 #include "MyMemory.h"
+#include "Crypto/Cert/WinHttpCert.h"
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
@@ -25,12 +25,13 @@
 
 #define BUFFSIZE 2048
 
-typedef struct
+struct Net::HTTPOSClient::ClassData
 {
 	HINTERNET hSession;
 	HINTERNET hConnect;
 	HINTERNET hRequest;
-} ClassData;
+	Bool https;
+};
 
 void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, DWORD dwInternetStatus, LPVOID lpvStatusInformation, DWORD dwStatusInformationLength)
 {
@@ -83,6 +84,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userA
 	data->hSession = 0;
 	data->hConnect = 0;
 	data->hRequest = 0;
+	data->https = false;
 	this->cliHost = 0;
 	this->writing = false;
 	this->dataBuff = 0;
@@ -456,6 +458,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 			WinHttpSetOption(data->hRequest, WINHTTP_OPTION_SECURITY_FLAGS, &flags, sizeof(flags));
 		}
 	}
+	data->https = https;
 	return true;
 }
 
@@ -609,4 +612,31 @@ void Net::HTTPOSClient::SetTimeout(Int32 ms)
 {
 //	if (this->cli)
 //		this->cli->SetTimeout(this->timeOutMS = ms);
+}
+
+Bool Net::HTTPOSClient::IsSecureConn()
+{
+	return this->clsData->https;
+}
+
+Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
+{
+	UInt8 *certInfo;
+	DWORD certSize = 0;
+	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SECURITY_CERTIFICATE_STRUCT, 0, &certSize) != FALSE)
+	{
+		return 0;
+	}
+	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+	{
+		return 0;
+	}
+	certInfo = MemAlloc(UInt8, certSize);
+	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SECURITY_CERTIFICATE_STRUCT, certInfo, &certSize) == FALSE)
+	{
+		return 0;
+	}
+	Crypto::Cert::WinHttpCert *cert;
+	NEW_CLASS(cert, Crypto::Cert::WinHttpCert(certInfo));
+	return cert;
 }

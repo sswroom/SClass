@@ -277,11 +277,11 @@ Media::MonitorSurface *Media::DDrawManager::CreateSurface(UOSInt width, UOSInt h
 		return 0;
 	}
 	Media::DDrawSurface *retSurface;
-	NEW_CLASS(retSurface, Media::DDrawSurface(this, lpDD, surface, 0, true));
+	NEW_CLASS(retSurface, Media::DDrawSurface(this, lpDD, surface, 0, true, Media::RT_NONE));
 	return retSurface;
 }
 
-Media::MonitorSurface *Media::DDrawManager::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
+Media::MonitorSurface *Media::DDrawManager::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
 {
 	if (this->IsError())
 	{
@@ -311,13 +311,13 @@ Media::MonitorSurface *Media::DDrawManager::CreatePrimarySurface(MonitorHandle *
 		return 0;
 	}
 	Media::DDrawSurface *surface;
-	NEW_CLASS(surface, Media::DDrawSurface(this, lpDD, primarySurface, hMon, true));
+	NEW_CLASS(surface, Media::DDrawSurface(this, lpDD, primarySurface, hMon, true, rotateType));
 	if (clipWindow)
 		surface->SetClipWindow(clipWindow);
 	return surface;
 }
 
-Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface)
+Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, RotateType rotateType)
 {
 	if (this->IsError())
 	{
@@ -351,8 +351,8 @@ Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, Mo
 
 	Media::DDrawSurface *ddSurface1;
 	Media::DDrawSurface *ddSurface2;
-	NEW_CLASS(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true));
-	NEW_CLASS(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false));
+	NEW_CLASS(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true, rotateType));
+	NEW_CLASS(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false, rotateType));
 	ddSurface1->SetBuffSurface(ddSurface2);
 	*primarySurface = ddSurface1;
 	*bufferSurface = ddSurface2;

@@ -33,7 +33,7 @@ void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs)
 	desc->cBuffers = nBuffs;
 }
 
-Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *ctxt) : TCPClient(sockf, s)
+Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *ctxt) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ctxt = *(CredHandle*)ctxt;
@@ -270,4 +270,9 @@ void Net::WinSSLClient::Close()
 Bool Net::WinSSLClient::Recover()
 {
 	return false;
+}
+
+Crypto::Cert::Certificate *Net::WinSSLClient::GetRemoteCert()
+{
+	return 0;
 }
