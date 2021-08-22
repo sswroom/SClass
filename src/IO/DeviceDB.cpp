@@ -1131,6 +1131,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x046D, 0xC336, 0x0000, "USB Device",                                        "Logitech G213"},
 	{0x046D, 0xC512, 0x5503, "Logitech 2.4GHz Cordless Desktop",                  "Logitech Pro 2400 Cordless Desktop"},
 	{0x046D, 0xC52B, 0x0000, "USB Device",                                        "Logitech M560"},
+	{0x046D, 0xC52B, 0x2411, "Logitech USB Receiver",                             "Logitech M350"},
 	{0x046D, 0xC52F, 0x3000, "Logitech USB Receiver",                             "Logitech M280"},
 	{0x046D, 0xC534, 0x0000, "Logitech USB Receiver",                             "Logitech C-U0010"},
 	{0x0471, 0x201F, 0x0000, "USB Device",                                        "Philips SDES170SC SATA"},
