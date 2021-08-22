@@ -70,7 +70,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 		info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 		info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		info.storeBPP = (UInt32)image->bits_per_pixel;
-		info.pf = Media::FrameInfo::GetDefPixelFormat(0, info.storeBPP);
+		info.pf = Media::PixelFormatGetDef(0, info.storeBPP);
 		if (info.storeBPP == 32 && monColor->Get10BitColor())
 		{
 			info.pf = Media::PF_LE_A2B10G10R10;
@@ -85,6 +85,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 		info.vdpi = info.hdpi;
 		const Media::IColorHandler::RGBPARAM2 *params = monColor->GetRGBParam();
 		info.color->Set(params->monProfile);
+		info.rotateType = Media::RT_NONE;
 		
 		if (valid)
 		{

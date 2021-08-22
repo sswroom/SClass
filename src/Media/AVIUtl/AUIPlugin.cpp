@@ -198,7 +198,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 	frameInfo->dispHeight = frameInfo->storeHeight;
 	frameInfo->fourcc = info.format->biCompression;
 	frameInfo->storeBPP = info.format->biBitCount;
-	frameInfo->pf = Media::FrameInfo::GetDefPixelFormat(info.format->biCompression, info.format->biBitCount);
+	frameInfo->pf = Media::PixelFormatGetDef(info.format->biCompression, info.format->biBitCount);
 	frameInfo->byteSize = info.format->biSizeImage;
 	frameInfo->par2 = 1;
 	frameInfo->hdpi = 96;

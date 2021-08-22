@@ -446,6 +446,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 		frInfo.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 		frInfo.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		frInfo.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+		frInfo.rotateType = Media::RT_NONE;
 	}
 
 	i = 8;

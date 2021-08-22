@@ -76,7 +76,7 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 
-	NEW_CLASS(outImg, Media::StaticImage(imgWidth, imgHeight, 0, bpp, Media::FrameInfo::GetDefPixelFormat(0, bpp), 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImg, Media::StaticImage(imgWidth, imgHeight, 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	if (outImg == 0)
 	{
 		return 0;

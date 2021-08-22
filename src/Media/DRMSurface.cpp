@@ -63,7 +63,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 					this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 					this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 					this->info->storeBPP = 32;
-					this->info->pf = Media::FrameInfo::GetDefPixelFormat(0, this->info->storeBPP);
+					this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
 					this->info->dispWidth = connector->modes[0].hdisplay;
 					this->info->dispHeight = connector->modes[0].vdisplay;
 					this->info->storeWidth = this->info->dispWidth; //(UOSInt)this->clsData->dataBpl / (this->info->storeBPP >> 3);

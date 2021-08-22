@@ -96,6 +96,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 	frameInfo->hdpi = 96;
 	frameInfo->ftype = Media::FT_NON_INTERLACE;
 	frameInfo->atype = Media::AT_NO_ALPHA;
+	frameInfo->rotateType = Media::RT_NONE;
 	if (pal)
 	{
 		frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_PAL);

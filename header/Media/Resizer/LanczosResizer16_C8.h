@@ -103,6 +103,6 @@ namespace Media
 			virtual Bool IsSupported(Media::FrameInfo *srcInfo);
 			virtual Media::StaticImage *ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
 		};
-	};
-};
+	}
+}
 #endif

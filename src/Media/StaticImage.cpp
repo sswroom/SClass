@@ -19,6 +19,7 @@ Media::StaticImage::StaticImage(Media::FrameInfo *imgInfo) : Media::Image(imgInf
 	this->info->hdpi = imgInfo->hdpi;
 	this->info->vdpi = imgInfo->vdpi;
 	this->info->ftype = imgInfo->ftype;
+	this->info->rotateType = imgInfo->rotateType;
 	this->data = MemAllocA(UInt8, info->byteSize + 4);
 }
 

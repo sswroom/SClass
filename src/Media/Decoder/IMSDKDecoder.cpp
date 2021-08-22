@@ -500,7 +500,7 @@ public:
 		info->dispHeight = this->par.mfx.FrameInfo.CropH;
 		info->fourcc = this->decFCC;
 		info->storeBPP = this->decBPP;
-		info->pf = Media::FrameInfo::GetDefPixelFormat(this->decFCC, this->decBPP);
+		info->pf = Media::PixelFormatGetDef(this->decFCC, this->decBPP);
 		info->byteSize = this->decFrameSize;
 		*maxFrameSize = this->decFrameSize;
 		return true;

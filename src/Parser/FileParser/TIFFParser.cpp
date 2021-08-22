@@ -158,7 +158,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		rowsPerStrip = GetUInt(exif, 278);
 		storeBPP = bpp;
 		Media::EXIFData::EXIFItem *item = exif->GetExifItem(0x111);
-		Media::PixelFormat pf = Media::FrameInfo::GetDefPixelFormat(0, bpp);
+		Media::PixelFormat pf = Media::PixelFormatGetDef(0, bpp);
 		if (item == 0)
 		{
 			valid = false;

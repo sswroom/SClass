@@ -41,6 +41,14 @@ namespace Media
 		YCOFST_C_CENTER_CENTER = 3
 	} YCOffset;
 
+	enum RotateType
+	{
+		RT_NONE,
+		RT_CW_90,
+		RT_CW_180,
+		RT_CW_270
+	};
+
 	typedef enum
 	{
 		PF_UNKNOWN,
@@ -100,6 +108,7 @@ namespace Media
 		FrameType ftype;
 		AlphaType atype;
 		ColorProfile *color;
+		RotateType rotateType;
 
 		Media::ColorProfile::YUVType yuvType;
 		Media::YCOffset ycOfst;
@@ -112,11 +121,14 @@ namespace Media
 		void Clear();
 		void Set(const FrameInfo *info);
 		void ToString(Text::StringBuilderUTF *sb);
-		static const UTF8Char *GetFrameTypeName(FrameType frameType);
-		static const UTF8Char *GetAlphaTypeName(AlphaType atype);
-		static const UTF8Char *GetYCOffsetName(YCOffset ycOfst);
-		static const UTF8Char *GetPixelFormatName(PixelFormat pf);
-		static PixelFormat GetDefPixelFormat(UInt32 fourcc, UInt32 storeBPP);
 	};
+
+	const UTF8Char *FrameTypeGetName(FrameType frameType);
+	const UTF8Char *AlphaTypeGetName(AlphaType atype);
+	const UTF8Char *YCOffsetGetName(YCOffset ycOfst);
+	const UTF8Char *PixelFormatGetName(PixelFormat pf);
+	PixelFormat PixelFormatGetDef(UInt32 fourcc, UInt32 storeBPP);
+	RotateType RotateTypeCalc(RotateType srcType, RotateType destType);
+	RotateType RotateTypeCombine(RotateType rtype1, RotateType rtype2);
 }
 #endif

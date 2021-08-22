@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	j = Media::ColorProfile::CPT_LAST;
 	while (i <= j)
 	{
-		this->cboColorProfile->AddItem(Media::ColorProfile::GetNameCommonProfile((Media::ColorProfile::CommonProfileType)i), (void*)i);
+		this->cboColorProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		i++;
 	}
 	this->cboColorProfile->SetSelectedIndex(0);

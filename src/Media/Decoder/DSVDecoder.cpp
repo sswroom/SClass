@@ -81,7 +81,7 @@ Bool Media::Decoder::DSVDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *fra
 	info->storeHeight = bmih->biHeight;
 	info->storeBPP = bmih->biBitCount;
 	info->fourcc = bmih->biCompression;
-	info->pf = Media::FrameInfo::GetDefPixelFormat(bmih->biCompression, bmih->biBitCount);
+	info->pf = Media::PixelFormatGetDef(bmih->biCompression, bmih->biBitCount);
 	info->byteSize = this->maxFrameSize;
 	return true;
 }

@@ -818,7 +818,7 @@ void Media::ColorProfile::ToString(Text::StringBuilderUTF *sb)
 	Text::SBAppendF64(sb, this->GetRTranParam()->GetGamma());
 	Media::ColorProfile::ColorPrimaries *primaries = this->GetPrimaries(); 
 	sb->Append((const UTF8Char*)"\r\n-RGB Primary: ");
-	sb->Append(Media::ColorProfile::GetNameColorType(primaries->colorType));
+	sb->Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 	sb->Append((const UTF8Char*)"\r\n-Red:   ");
 	Text::SBAppendF64(sb, primaries->rx);
 	sb->Append((const UTF8Char*)", ");
@@ -871,7 +871,7 @@ const UInt8 *Media::ColorProfile::GetRAWICC()
 	return this->rawICC;
 }
 
-const UTF8Char *Media::ColorProfile::GetNameYUVType(Media::ColorProfile::YUVType yuvType)
+const UTF8Char *Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType yuvType)
 {
 	if (yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255)
 	{
@@ -921,7 +921,7 @@ const UTF8Char *Media::ColorProfile::GetNameYUVType(Media::ColorProfile::YUVType
 	}
 }
 
-const UTF8Char *Media::ColorProfile::GetNameColorType(ColorType colorType)
+const UTF8Char *Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 {
 	switch (colorType)
 	{
@@ -973,7 +973,7 @@ const UTF8Char *Media::ColorProfile::GetNameColorType(ColorType colorType)
 	}
 }
 
-const UTF8Char *Media::ColorProfile::GetNameCommonProfile(CommonProfileType cpt)
+const UTF8Char *Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType cpt)
 {
 	switch (cpt)
 	{

@@ -460,7 +460,7 @@ Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *fr
 	info->dispHeight = info->storeHeight;
 	info->storeBPP = bmih->biBitCount;
 	info->fourcc = bmih->biCompression;
-	info->pf = Media::FrameInfo::GetDefPixelFormat(bmih->biCompression, bmih->biBitCount);
+	info->pf = Media::PixelFormatGetDef(bmih->biCompression, bmih->biBitCount);
 	info->byteSize = this->maxFrameSize;
 	return true;
 }

@@ -138,7 +138,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else
 		{
-			pf = Media::FrameInfo::GetDefPixelFormat(0, bpp);
+			pf = Media::PixelFormatGetDef(0, bpp);
 		}
 		biCompression = 0;
 		endPos = 26;
@@ -156,7 +156,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else
 		{
-			pf = Media::FrameInfo::GetDefPixelFormat(0, bpp);
+			pf = Media::PixelFormatGetDef(0, bpp);
 		}
 		biCompression = 0;
 		endPos = 30;
@@ -175,7 +175,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else
 		{
-			pf = Media::FrameInfo::GetDefPixelFormat(0, bpp);
+			pf = Media::PixelFormatGetDef(0, bpp);
 			atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA;
 		}
 		endPos = 14 + ReadUInt32(&hdr[14]);
@@ -305,7 +305,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else
 		{
-			pf = Media::FrameInfo::GetDefPixelFormat(0, bpp);
+			pf = Media::PixelFormatGetDef(0, bpp);
 			atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA;
 		}
 		endPos = 14 + ReadUInt32(&hdr[14]);

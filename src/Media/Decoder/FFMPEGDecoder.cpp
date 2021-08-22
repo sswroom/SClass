@@ -858,7 +858,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		//info->fourcc = *(Int32*)"YV12";
 		info->fourcc = FFMT_YUV420P8;
 		info->storeBPP = 12;
-		info->pf = Media::FrameInfo::GetDefPixelFormat(info->fourcc, info->storeBPP);
+		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
 		info->byteSize = (info->storeWidth * info->storeHeight * 3) >> 1;
 		break;
 	case AV_PIX_FMT_YUVJ422P:
@@ -866,7 +866,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	case AV_PIX_FMT_YUV422P:
 		info->fourcc = *(UInt32*)"YUY2";
 		info->storeBPP = 16;
-		info->pf = Media::FrameInfo::GetDefPixelFormat(info->fourcc, info->storeBPP);
+		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
 		info->byteSize = info->storeWidth * info->storeHeight * 2;
 		break;
 	case AV_PIX_FMT_YUV420P10LE:
@@ -880,13 +880,13 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 			info->fourcc = FFMT_YUV420P12LE;
 		}
 		info->storeBPP = 24;
-		info->pf = Media::FrameInfo::GetDefPixelFormat(info->fourcc, info->storeBPP);
+		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
 		info->byteSize = (info->storeWidth * info->storeHeight * 6) >> 1;
 		break;
 	case AV_PIX_FMT_YUV444P10LE:
 		info->fourcc = FFMT_YUV444P10LE;
 		info->storeBPP = 48;
-		info->pf = Media::FrameInfo::GetDefPixelFormat(info->fourcc, info->storeBPP);
+		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
 		info->byteSize = info->storeWidth * info->storeHeight * 6;
 		break;
 	default:

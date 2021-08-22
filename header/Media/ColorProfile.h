@@ -182,9 +182,9 @@ namespace Media
 		void SetRAWICC(const UInt8 *iccData);
 		const UInt8 *GetRAWICC();
 
-		static const UTF8Char *GetNameYUVType(YUVType yuvType);
-		static const UTF8Char *GetNameColorType(ColorType colorType);
-		static const UTF8Char *GetNameCommonProfile(CommonProfileType cpt);
+		static const UTF8Char *YUVTypeGetName(YUVType yuvType);
+		static const UTF8Char *ColorTypeGetName(ColorType colorType);
+		static const UTF8Char *CommonProfileTypeGetName(CommonProfileType cpt);
 		static void GetYUVConstants(YUVType yuvType, Double *kr, Double *kb);
 		static void YUV2RGB(YUVType yuvType, Double y, Double u, Double v, Double *r, Double *g, Double *b);
 		static void RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB);

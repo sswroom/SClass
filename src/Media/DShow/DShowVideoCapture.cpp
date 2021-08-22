@@ -130,7 +130,7 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 				info->fourcc = *(UInt32*)"DIBS";
 			}
 			info->storeBPP = format->bmiHeader.biBitCount;
-			info->pf = Media::FrameInfo::GetDefPixelFormat(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
+			info->pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
 			info->byteSize = format->bmiHeader.biSizeImage;
 			info->ftype = Media::FT_NON_INTERLACE;
 			info->dispWidth = (ULONG)format->bmiHeader.biWidth;
@@ -457,7 +457,7 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 				fmtArr[outCnt].info.storeHeight = fmtArr[outCnt].info.dispWidth;
 				fmtArr[outCnt].info.fourcc = format->bmiHeader.biCompression;
 				fmtArr[outCnt].info.storeBPP = format->bmiHeader.biBitCount;
-				fmtArr[outCnt].info.pf = Media::FrameInfo::GetDefPixelFormat(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
+				fmtArr[outCnt].info.pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
 				fmtArr[outCnt].info.byteSize = format->bmiHeader.biSizeImage;
 				fmtArr[outCnt].info.ftype = Media::FT_NON_INTERLACE;
 				fmtArr[outCnt].info.par2 = 1;

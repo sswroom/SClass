@@ -324,6 +324,7 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, Media:
 			}
 		}
 	}
+	frameInfo->rotateType = Media::RT_NONE;
 	
 	DEL_CLASS(reader);
 	MemFree(tmpBuff);

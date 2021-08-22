@@ -1525,7 +1525,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	this->txtTrans->SetReadOnly(true);
 	NEW_CLASS(this->lblPrimaries, UI::GUILabel(ui, this, (const UTF8Char*)"RGB Primaries"));
 	this->lblPrimaries->SetRect(16, 570, 150, 23, false);
-	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, this, Media::ColorProfile::GetNameColorType(this->colorProfile->GetPrimaries()->colorType)));
+	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType)));
 	this->txtPrimaries->SetRect(166, 570, 100, 23, false);
 	this->txtPrimaries->SetReadOnly(true);
 	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));

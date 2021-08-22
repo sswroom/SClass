@@ -297,6 +297,7 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 		flags->vcl_hrd_parameters_present_flag = vcl_hrd_parameters_present_flag != 0;
 	}
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	info->rotateType = Media::RT_NONE;
 	return true;
 }
 

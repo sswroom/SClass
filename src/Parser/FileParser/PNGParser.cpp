@@ -2559,6 +2559,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 					info.fourcc = 0;
 					info.ftype = Media::FT_NON_INTERLACE;
 					info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+					info.rotateType = Media::RT_NONE;
 					
 					ihdrFound = true;
 				}

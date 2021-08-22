@@ -40,6 +40,7 @@ void Media::FrameInfo::Clear()
 	this->atype = Media::AT_NO_ALPHA;
 	this->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->rotateType = Media::RT_NONE;
 }
 
 void Media::FrameInfo::Set(const FrameInfo *info)
@@ -58,6 +59,7 @@ void Media::FrameInfo::Set(const FrameInfo *info)
 	this->ftype = info->ftype;
 	this->atype = info->atype;
 	this->color->Set(info->color);
+	this->rotateType = info->rotateType;
 	this->yuvType = info->yuvType;
 	this->ycOfst = info->ycOfst;
 }
@@ -88,7 +90,7 @@ void Media::FrameInfo::ToString(Text::StringBuilderUTF *sb)
 	sb->AppendU32(this->storeBPP);
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Pixel Format = ");
-	sb->Append(Media::FrameInfo::GetPixelFormatName(this->pf));
+	sb->Append(Media::PixelFormatGetName(this->pf));
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Byte Size = ");
 	sb->AppendUOSInt(this->byteSize);
@@ -103,22 +105,22 @@ void Media::FrameInfo::ToString(Text::StringBuilderUTF *sb)
 	Text::SBAppendF64(sb, this->vdpi);
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Pixel Format = ");
-	sb->Append(Media::FrameInfo::GetFrameTypeName(this->ftype));
+	sb->Append(Media::FrameTypeGetName(this->ftype));
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Alpha Type = ");
-	sb->Append(Media::FrameInfo::GetAlphaTypeName(this->atype));
+	sb->Append(Media::AlphaTypeGetName(this->atype));
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"YUV Type = ");
-	sb->Append(Media::ColorProfile::GetNameYUVType(this->yuvType));
+	sb->Append(Media::ColorProfile::YUVTypeGetName(this->yuvType));
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"Y/C Offset = ");
-	sb->Append(Media::FrameInfo::GetYCOffsetName(this->ycOfst));
+	sb->Append(Media::YCOffsetGetName(this->ycOfst));
 	sb->Append((const UTF8Char*)"\r\n");
 	sb->Append((const UTF8Char*)"\r\nColor Profile:\r\n");
 	this->color->ToString(sb);
 }
 
-const UTF8Char *Media::FrameInfo::GetFrameTypeName(FrameType frameType)
+const UTF8Char *Media::FrameTypeGetName(FrameType frameType)
 {
 	switch (frameType)
 	{
@@ -145,7 +147,7 @@ const UTF8Char *Media::FrameInfo::GetFrameTypeName(FrameType frameType)
 	}
 }
 
-const UTF8Char *Media::FrameInfo::GetAlphaTypeName(AlphaType atype)
+const UTF8Char *Media::AlphaTypeGetName(AlphaType atype)
 {
 	switch (atype)
 	{
@@ -160,7 +162,7 @@ const UTF8Char *Media::FrameInfo::GetAlphaTypeName(AlphaType atype)
 	}
 }
 
-const UTF8Char *Media::FrameInfo::GetYCOffsetName(YCOffset ycOfst)
+const UTF8Char *Media::YCOffsetGetName(YCOffset ycOfst)
 {
 	switch (ycOfst)
 	{
@@ -177,7 +179,7 @@ const UTF8Char *Media::FrameInfo::GetYCOffsetName(YCOffset ycOfst)
 	}
 }
 
-const UTF8Char *Media::FrameInfo::GetPixelFormatName(PixelFormat pf)
+const UTF8Char *Media::PixelFormatGetName(PixelFormat pf)
 {
 	switch (pf)
 	{
@@ -245,7 +247,7 @@ const UTF8Char *Media::FrameInfo::GetPixelFormatName(PixelFormat pf)
 	}
 }
 
-Media::PixelFormat Media::FrameInfo::GetDefPixelFormat(UInt32 fourcc, UInt32 storeBPP)
+Media::PixelFormat Media::PixelFormatGetDef(UInt32 fourcc, UInt32 storeBPP)
 {
 	if (fourcc == 0 || fourcc == *(UInt32*)"DIBS")
 	{
@@ -271,4 +273,114 @@ Media::PixelFormat Media::FrameInfo::GetDefPixelFormat(UInt32 fourcc, UInt32 sto
 			return PF_LE_FB32G32R32A32;
 	}
 	return PF_UNKNOWN;
+}
+
+Media::RotateType Media::RotateTypeCalc(RotateType srcType, RotateType destType)
+{
+	if (srcType == destType)
+	{
+		return RT_NONE;
+	}
+	switch (srcType)
+	{
+	case RT_NONE:
+		return destType;
+	case RT_CW_90:
+		switch (destType)
+		{
+		case RT_NONE:
+			return RT_CW_270;
+		case RT_CW_90:
+			return RT_NONE;
+		case RT_CW_180:
+			return RT_CW_90;
+		case RT_CW_270:
+			return RT_CW_180;
+		default:
+			return RT_NONE;
+		}
+	case RT_CW_180:
+		switch (destType)
+		{
+		case RT_NONE:
+			return RT_CW_180;
+		case RT_CW_90:
+			return RT_CW_270;
+		case RT_CW_180:
+			return RT_NONE;
+		case RT_CW_270:
+			return RT_CW_90;
+		default:
+			return RT_NONE;
+		}
+	case RT_CW_270:
+		switch (destType)
+		{
+		case RT_NONE:
+			return RT_CW_90;
+		case RT_CW_90:
+			return RT_CW_180;
+		case RT_CW_180:
+			return RT_CW_270;
+		case RT_CW_270:
+			return RT_NONE;
+		default:
+			return RT_NONE;
+		}
+	default:
+		return RT_NONE;
+	}
+}
+
+Media::RotateType Media::RotateTypeCombine(RotateType rtype1, RotateType rtype2)
+{
+	switch (rtype1)
+	{
+	case RT_NONE:
+		return rtype2;
+	case RT_CW_90:
+		switch (rtype2)
+		{
+		case RT_NONE:
+			return RT_CW_90;
+		case RT_CW_90:
+			return RT_CW_180;
+		case RT_CW_180:
+			return RT_CW_270;
+		case RT_CW_270:
+			return RT_NONE;
+		default:
+			return RT_NONE;
+		}
+	case RT_CW_180:
+		switch (rtype2)
+		{
+		case RT_NONE:
+			return RT_CW_180;
+		case RT_CW_90:
+			return RT_CW_270;
+		case RT_CW_180:
+			return RT_NONE;
+		case RT_CW_270:
+			return RT_CW_90;
+		default:
+			return RT_NONE;
+		}
+	case RT_CW_270:
+		switch (rtype2)
+		{
+		case RT_NONE:
+			return RT_CW_270;
+		case RT_CW_90:
+			return RT_NONE;
+		case RT_CW_180:
+			return RT_CW_90;
+		case RT_CW_270:
+			return RT_CW_180;
+		default:
+			return RT_NONE;
+		}
+	default:
+		return RT_NONE;
+	}
 }

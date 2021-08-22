@@ -65,7 +65,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->info->dispHeight = this->info->storeHeight;
 	this->info->fourcc = 0;
 	this->info->storeBPP = vinfo.dwBitCount;
-	this->info->pf = Media::FrameInfo::GetDefPixelFormat(0, vinfo.dwBitCount);
+	this->info->pf = Media::PixelFormatGetDef(0, vinfo.dwBitCount);
 	this->info->byteSize = 0;
 	this->info->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 	this->info->atype = Media::AT_NO_ALPHA;

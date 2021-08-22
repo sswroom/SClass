@@ -12,7 +12,7 @@ Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPi
 	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info->storeBPP = (UInt32)bitPerPixel;
-	this->info->pf = Media::FrameInfo::GetDefPixelFormat(0, this->info->storeBPP);
+	this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
 	this->info->dispWidth = width;
 	this->info->dispHeight = height;
 	this->info->storeWidth = width;
@@ -22,6 +22,7 @@ Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPi
 	this->info->hdpi = dpi;
 	this->info->vdpi = dpi;
 	this->info->color->Set(color);
+	this->info->rotateType = Media::RT_NONE;
 }
 
 Media::MemorySurface::~MemorySurface()

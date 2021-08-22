@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(void *userOb
 		{
 			const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 			me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
-			me->txtMonPrimaries->SetText(Media::ColorProfile::GetNameColorType(rgbParam->monProfile->GetPrimaries()->colorType));
+			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
 			Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
 			me->txtMonRGBGamma->SetText(sbuff);
 		}
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(void *userOb
 			me->monColor->SetMonProfileType(cpt);
 			const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 			me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
-			me->txtMonPrimaries->SetText(Media::ColorProfile::GetNameColorType(rgbParam->monProfile->GetPrimaries()->colorType));
+			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
 			Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
 			me->txtMonRGBGamma->SetText(sbuff);
 		}
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 
 				const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 				me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
-				me->txtMonPrimaries->SetText(Media::ColorProfile::GetNameColorType(rgbParam->monProfile->GetPrimaries()->colorType));
+				me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
 				Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
 				me->txtMonRGBGamma->SetText(sbuff);
 				me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 1);
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonCustomClicked(void *use
 
 		const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 		me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
-		me->txtMonPrimaries->SetText(Media::ColorProfile::GetNameColorType(rgbParam->monProfile->GetPrimaries()->colorType));
+		me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
 		Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
 		me->txtMonRGBGamma->SetText(sbuff);
 		me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 2);
@@ -503,7 +503,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	j = Media::ColorProfile::CPT_LAST;
 	while (i < j)
 	{
-		k = this->cboMonProfile->AddItem(Media::ColorProfile::GetNameCommonProfile((Media::ColorProfile::CommonProfileType)i), (void*)i);
+		k = this->cboMonProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		if (i == rgbParam->monProfileType)
 		{
 			this->cboMonProfile->SetSelectedIndex(k);
@@ -567,12 +567,12 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	j = Media::ColorProfile::CPT_LAST;
 	while (i < j)
 	{
-		k = this->cboDefVProfile->AddItem(Media::ColorProfile::GetNameCommonProfile((Media::ColorProfile::CommonProfileType)i), (void*)i);
+		k = this->cboDefVProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		if (i == this->colorMgr->GetDefVProfileType())
 		{
 			this->cboDefVProfile->SetSelectedIndex(k);
 		}
-		k = this->cboDefPProfile->AddItem(Media::ColorProfile::GetNameCommonProfile((Media::ColorProfile::CommonProfileType)i), (void*)i);
+		k = this->cboDefPProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		if (i == this->colorMgr->GetDefPProfileType())
 		{
 			this->cboDefPProfile->SetSelectedIndex(k);

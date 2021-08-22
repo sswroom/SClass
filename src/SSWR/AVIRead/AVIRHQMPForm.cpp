@@ -309,7 +309,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendU32(dbg.dispBitDepth);
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Src YUV Type: ");
-		sb.Append(Media::ColorProfile::GetNameYUVType(dbg.srcYUVType));
+		sb.Append(Media::ColorProfile::YUVTypeGetName(dbg.srcYUVType));
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"Src R Transfer: ");
 		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetRTranParam()->GetTranType()));
@@ -325,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.Append((const UTF8Char*)"\r\n");
 		Media::ColorProfile::ColorPrimaries *primaries = dbg.color->GetPrimaries(); 
 		sb.Append((const UTF8Char*)"Src RGB Primary: ");
-		sb.Append(Media::ColorProfile::GetNameColorType(primaries->colorType));
+		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.Append((const UTF8Char*)"\r\n");
 		sb.Append((const UTF8Char*)"-Red:   ");
 		Text::SBAppendF64(&sb, primaries->rx);

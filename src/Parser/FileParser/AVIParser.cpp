@@ -420,7 +420,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 				info.storeHeight = info.dispHeight;
 				info.fourcc = bmih->biCompression;
 				info.storeBPP = bmih->biBitCount;
-				info.pf = Media::FrameInfo::GetDefPixelFormat(bmih->biCompression, bmih->biBitCount);
+				info.pf = Media::PixelFormatGetDef(bmih->biCompression, bmih->biBitCount);
 				info.byteSize = bmih->biSizeImage;
 				info.par2 = arARV / (Double)arARH;
 				info.hdpi = 96;
@@ -482,6 +482,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 					break;
 				}
 				info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+				info.rotateType = Media::RT_NONE;
 
 				Media::FileVideoSource *vstm;
 				NEW_CLASS(vstm, Media::FileVideoSource(fd, &info, strl[i].strh.dwRate, strl[i].strh.dwScale, false));

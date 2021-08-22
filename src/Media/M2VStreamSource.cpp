@@ -410,6 +410,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 {
 	NEW_CLASS(this->info, Media::FrameInfo());
+	this->info->Clear();
 	this->pbc = pbc;
 	this->frameCb = 0;
 	this->frameCbData = 0;

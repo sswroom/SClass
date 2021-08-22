@@ -50,7 +50,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Dou
 	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info->storeBPP = this->clsData->vinfo.bits_per_pixel;
-	this->info->pf = Media::FrameInfo::GetDefPixelFormat(0, this->info->storeBPP);
+	this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
 	this->info->dispWidth = this->clsData->vinfo.xres;
 	this->info->dispHeight = this->clsData->vinfo.yres;
 	this->info->storeWidth = (UOSInt)this->clsData->finfo.line_length / (this->info->storeBPP >> 3);
@@ -59,7 +59,28 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Dou
 	this->info->par2 = 1.0;
 	this->info->hdpi = dpi;
 	this->info->vdpi = dpi;
+	this->info->rotateType = Media::RT_NONE;
 	this->info->color->Set(color);
+
+	if (this->clsData->vinfo.rotate == 90)
+	{
+		this->info->rotateType = Media::RT_CW_270;
+	}
+	else if (this->clsData->vinfo.rotate == 180)
+	{
+		this->info->rotateType = Media::RT_CW_180;
+	}
+	else if (this->clsData->vinfo.rotate == 270)
+	{
+		this->info->rotateType = Media::RT_CW_90;
+	}
+
+	if (this->info->rotateType == Media::RT_CW_90 || this->info->rotateType == Media::RT_CW_270)
+	{
+		UOSInt tmpV = this->info->dispWidth;
+		this->info->dispWidth = this->info->dispHeight;
+		this->info->dispHeight = tmpV;
+	}
 }
 
 Media::FBSurface::~FBSurface()
@@ -142,7 +163,50 @@ Bool Media::FBSurface::DrawFromBuff()
 {
 	if (this->clsData->buffSurface)
 	{
-		this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->finfo.line_length, false);
+		RotateType rt = Media::RotateTypeCalc(this->clsData->buffSurface->info->rotateType, this->info->rotateType);
+		if (rt == Media::RT_NONE)
+		{
+			this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->finfo.line_length, false);
+		}
+		else
+		{
+			OSInt lineAdd;
+			UInt8 *buff = this->clsData->buffSurface->LockSurface(&lineAdd);
+			if (buff == 0)
+			{
+				return false;
+			}
+			if (this->info->storeBPP == 32)
+			{
+				if (rt == Media::RT_CW_90)
+				{
+					ImageUtil_Rotate32_CW90(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+				}
+				else if (rt == Media::RT_CW_180)
+				{
+					ImageUtil_Rotate32_CW180(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+				}
+				else if (rt == Media::RT_CW_270)
+				{
+					ImageUtil_Rotate32_CW270(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+				}
+			}
+			else if (this->info->storeBPP == 64)
+			{
+				if (rt == Media::RT_CW_90)
+				{
+					ImageUtil_Rotate64_CW90(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+				}
+				else if (rt == Media::RT_CW_180)
+				{
+					ImageUtil_Rotate64_CW180(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+				}
+				else if (rt == Media::RT_CW_270)
+				{
+					ImageUtil_Rotate64_CW270(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+				}
+			}
+		}
 		return true;
 	}
 	return false;
@@ -164,7 +228,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 	OSInt destWidth = (OSInt)this->info->dispWidth;
 	OSInt destHeight = (OSInt)this->info->dispHeight;
 	Bool succ = false;
-	if (waitForVBlank) this->WaitForVBlank();
+	RotateType rt = this->info->rotateType;
 	OSInt drawX = 0;
 	OSInt drawY = 0;
 	if (destX < 0)
@@ -187,11 +251,96 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 	{
 		buffH = (UOSInt)(destHeight - destY);
 	}
+	if (waitForVBlank) this->WaitForVBlank();
 	if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 	{
-		ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
-			(UInt8*)this->clsData->dataPtr + destY * this->clsData->finfo.line_length + destX * ((OSInt)this->info->storeBPP >> 3),
-			buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)this->clsData->finfo.line_length, false);
+		if (rt == Media::RT_NONE)
+		{
+			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
+				(UInt8*)this->clsData->dataPtr + destY * this->clsData->finfo.line_length + destX * ((OSInt)this->info->storeBPP >> 3),
+				buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)this->clsData->finfo.line_length, false);
+		}
+		else if (this->info->storeBPP == 32)
+		{
+			if (rt == Media::RT_CW_90)
+			{
+				ImageUtil_Rotate32_CW90(buff + drawY * lineAdd + drawX * 4, 
+				this->clsData->dataPtr + destX * this->clsData->finfo.line_length + (this->info->dispHeight - destY - buffH) * 4,
+				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+			}
+			else if (rt == Media::RT_CW_180)
+			{
+				ImageUtil_Rotate32_CW180(buff + drawY * lineAdd + drawX * 4, 
+				this->clsData->dataPtr + (this->info->dispHeight - destY - buffH) * this->clsData->finfo.line_length + (this->info->dispWidth - destX - buffW) * 4,
+				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+			}
+			else if (rt == Media::RT_CW_270)
+			{
+				ImageUtil_Rotate32_CW270(buff + drawY * lineAdd + drawX * 4, 
+				this->clsData->dataPtr + (this->info->dispWidth - destX - buffW) * this->clsData->finfo.line_length + destY * 4,
+				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+			}
+		}
+		else if (this->info->storeBPP == 64)
+		{
+			if (rt == Media::RT_CW_90)
+			{
+				ImageUtil_Rotate64_CW90(buff + drawY * lineAdd + drawX * 8, 
+				this->clsData->dataPtr + destX * this->clsData->finfo.line_length + (this->info->dispHeight - destY - buffH) * 8,
+				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+			}
+			else if (rt == Media::RT_CW_180)
+			{
+				ImageUtil_Rotate64_CW180(buff + drawY * lineAdd + drawX * 8, 
+				this->clsData->dataPtr + (this->info->dispHeight - destY - buffH) * this->clsData->finfo.line_length + (this->info->dispWidth - destX - buffW) * 8,
+				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+			}
+			else if (rt == Media::RT_CW_270)
+			{
+				ImageUtil_Rotate64_CW270(buff + drawY * lineAdd + drawX * 8, 
+				this->clsData->dataPtr + (this->info->dispWidth - destX - buffW) * this->clsData->finfo.line_length + destY * 8,
+				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+			}
+		}
+
+		if (rt == Media::RT_NONE)
+		{
+			
+		}
+		else
+		{
+			OSInt oldX = destX;
+			OSInt oldY = destY;
+			UOSInt oldW = buffW;
+			UOSInt oldH = buffH;
+			if (rt == Media::RT_CW_90)
+			{
+				OSInt tmpV = destWidth;
+				destWidth = destHeight;
+				destHeight = tmpV;
+				destX = destWidth - oldY - (OSInt)oldH;
+				destY = oldX;
+				UOSInt tmpV2 = buffW;
+				buffW = buffH;
+				buffH = tmpV2;
+			}
+			else if (rt == Media::RT_CW_180)
+			{
+				destX = destWidth - oldX - (OSInt)buffW;
+				destY = destHeight - oldY - (OSInt)buffH;
+			}
+			else if (rt == Media::RT_CW_270)
+			{
+				OSInt tmpV = destWidth;
+				destWidth = destHeight;
+				destHeight = tmpV;
+				destX = oldY;
+				destY = destHeight - oldX - (OSInt)buffW;
+				UOSInt tmpV2 = buffW;
+				buffW = buffH;
+				buffH = tmpV2;
+			}
+		}
 
 		if (clearScn)
 		{
@@ -215,7 +364,14 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 	}
 	else if (clearScn)
 	{
-		ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destHeight, (UInt32)this->clsData->finfo.line_length, 0xff000000);
+		if (this->info->rotateType == Media::RT_CW_90 || this->info->rotateType == Media::RT_CW_270)
+		{
+			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destHeight, (UOSInt)destWidth, (UInt32)this->clsData->finfo.line_length, 0xff000000);
+		}
+		else
+		{
+			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destHeight, (UInt32)this->clsData->finfo.line_length, 0xff000000);
+		}
 	}
 	succ = true;
 	return succ;

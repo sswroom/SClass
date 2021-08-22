@@ -39,7 +39,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info->storeBPP = ddsd.ddpfPixelFormat.dwRGBBitCount;
-	this->info->pf = Media::FrameInfo::GetDefPixelFormat(0, this->info->storeBPP);
+	this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
 	if (this->info->storeBPP == 32 && mgr->Is10BitColor(hMon))
 	{
 		this->info->pf = Media::PF_LE_A2B10G10R10;

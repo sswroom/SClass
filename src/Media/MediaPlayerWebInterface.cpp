@@ -372,7 +372,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		sb.AppendU32(status.dispBitDepth);
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Src YUV Type: ");
-		sb.Append(Media::ColorProfile::GetNameYUVType(status.srcYUVType));
+		sb.Append(Media::ColorProfile::YUVTypeGetName(status.srcYUVType));
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"Src R Transfer: ");
 		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(status.color->GetRTranParam()->GetTranType()));
@@ -388,7 +388,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		Media::ColorProfile::ColorPrimaries *primaries = status.color->GetPrimaries(); 
 		sb.Append((const UTF8Char*)"Src RGB Primary: ");
-		sb.Append(Media::ColorProfile::GetNameColorType(primaries->colorType));
+		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.Append((const UTF8Char*)"<br/>\r\n");
 		sb.Append((const UTF8Char*)"-Red:   ");
 		Text::SBAppendF64(&sb, primaries->rx);

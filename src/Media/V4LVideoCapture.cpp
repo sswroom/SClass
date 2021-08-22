@@ -156,6 +156,7 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameR
 	info->storeBPP = 16;
 	info->pf = Media::PF_UNKNOWN;
 	info->byteSize = 0;
+	info->rotateType = Media::RT_NONE;
 	info->par2 = 1;
 	info->hdpi = 72;
 	info->vdpi = 72;

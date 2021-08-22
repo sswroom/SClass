@@ -40,6 +40,7 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 	this->frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	this->frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->frameInfo->rotateType = Media::RT_NONE;
 }
 
 Net::RTPH264Handler::~RTPH264Handler()

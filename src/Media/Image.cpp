@@ -26,6 +26,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight)
 	info->color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
 	info->atype = Media::AT_ALPHA;
 	info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+	info->rotateType = Media::RT_NONE;
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	info->ftype = Media::FT_NON_INTERLACE;
 	this->pal = 0;
@@ -61,6 +62,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 	info->yuvType = yuvType;
 	info->ycOfst = ycOfst;
 	info->ftype = Media::FT_NON_INTERLACE;
+	info->rotateType = Media::RT_NONE;
 
 	if (pf == Media::PF_PAL_1_A1)
 	{
