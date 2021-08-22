@@ -318,7 +318,7 @@ namespace Math
 	FORCEINLINE Int32 SDouble2Int32(Double val)
 	{
 		if (val < -2147483648.0)
-			return -2147483648;
+			return -1 - 2147483647;
 		else if (val > 2147483647.0)
 			return 2147483647;
 		else

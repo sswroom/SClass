@@ -105,6 +105,7 @@ UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
 		}
 	}
 	me->recvRunning = false;
+	me->packetEvt->Set();
 	return 0;
 }
 
@@ -136,7 +137,7 @@ Net::MQTTClient::PacketInfo *Net::MQTTClient::GetNextPacket(UInt8 packetType, UO
 			MemFree(packet);
 		}
 		t = clk.GetTimeDiffus() / 1000;
-		if (t >= (OSInt)timeoutMS)
+		if (!this->recvRunning || t >= (OSInt)timeoutMS)
 			return 0;
 		this->packetEvt->Wait(timeoutMS - (UOSInt)t);
 	}
@@ -164,6 +165,7 @@ Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, cons
 	NEW_CLASS(this->packetList, Data::ArrayList<PacketInfo*>());
 	NEW_CLASS(this->packetEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTClient.packetEvt"));
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
+
 	if (this->ssl && sslConn)
 	{
 		Net::SSLEngine::ErrorType err;

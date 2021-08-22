@@ -150,9 +150,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
-		UI::GUIVideoBoxDD::DebugValue dbg;
+		Media::VideoRenderer::RendererStatus dbg;
 		NEW_CLASS(dbg.color, Media::ColorProfile());
-		me->vbox->GetDebugValues(&dbg);
+		me->vbox->GetStatus(&dbg);
 		sb.Append((const UTF8Char*)"Curr Time: ");
 		sb.AppendI32(dbg.currTime);
 		sb.Append((const UTF8Char*)"\r\n");
