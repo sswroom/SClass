@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 		return;
 
 	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"LineCounterSave", true));
+	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LineCounterSave", true));
 	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Result file");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

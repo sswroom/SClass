@@ -149,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"AVIRMQTTExplorerCliCert", false));
+	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false));
 	dlg->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"Cert file");
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -182,7 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"AVIRMQTTExplorerCliKey", false));
+	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false));
 	dlg->AddFilter((const UTF8Char*)"*.key", (const UTF8Char*)"Key file");
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))

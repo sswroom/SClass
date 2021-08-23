@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	this->gisForm = 0;
 	this->ui->SetMonitorMgr(this->monMgr);
 
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
+	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	NEW_CLASS(this->audDevice, Media::AudioDevice());
 	if (reg)
 	{
@@ -344,7 +344,7 @@ Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 
 void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char *> *devList)
 {
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
+	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	WChar sbuff[32];
 	UOSInt i;
 	UOSInt j;

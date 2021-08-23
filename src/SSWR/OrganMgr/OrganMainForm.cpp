@@ -741,7 +741,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 			if (me->env->GetUserFilePath(userFile, &sb))
 			{
 				UI::FileDialog *dlg;
-				NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"OrganMgrSave", true));
+				NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OrganMgrSave", true));
 				dlg->AddFilter((const UTF8Char*)"*.jpg", (const UTF8Char*)"JPEG File");
 				dlg->SetFileName(userFile->oriFileName);
 				if (dlg->ShowDialog(me->GetHandle()))
@@ -760,7 +760,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 	if (me->inputMode == IM_SPECIES)
 	{
 		UI::FolderDialog *dlg;
-		NEW_CLASS(dlg, UI::FolderDialog(L"sswr", L"AVIRead", L"OrganMgrSaveAll"));
+		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"OrganMgrSaveAll"));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Text::StringBuilderUTF8 sb;

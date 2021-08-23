@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	UTF8Char *sptr;
 	UI::FolderDialog *dlg;
 	path = me->icMain->GetFolder();
-	NEW_CLASS(dlg, UI::FolderDialog(L"sswr", L"AVIRead", L"ImageBatch"));
+	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatch"));
 	if (path)
 	{
 		dlg->SetFolder(path);

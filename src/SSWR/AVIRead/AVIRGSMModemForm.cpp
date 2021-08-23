@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 		smsMsg->GetMessageTime(&dt);
 
-		NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"SMSSave", true));
+		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SMSSave", true));
 		dlg->AddFilter((const UTF8Char*)"*.sms", (const UTF8Char*)"SMS File");
 		
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"SMS");

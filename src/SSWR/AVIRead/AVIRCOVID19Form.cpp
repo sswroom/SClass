@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
 	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"sswr", L"AVIRead", L"COVID19", false));
+	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"COVID19", false));
 	dlg->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))

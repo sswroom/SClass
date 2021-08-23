@@ -105,7 +105,7 @@ Bool Media::MonitorColorManager::Load()
 	IO::Registry *reg;
 	WChar sbuff[512];
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"Color");
+	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
 	{
 		reg2 = 0;
@@ -246,7 +246,7 @@ Bool Media::MonitorColorManager::Save()
 	IO::Registry *reg2;
 	IO::Registry *reg;
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"Color");
+	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
 	{
 		reg2 = 0;
@@ -782,7 +782,7 @@ Bool Media::ColorManager::LoadDef()
 	IO::Registry *regBase;
 	IO::Registry *reg;
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"Color");
+	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
 	{
 		reg = regBase;
@@ -816,7 +816,7 @@ Bool Media::ColorManager::SaveDef()
 	IO::Registry *regBase;
 	IO::Registry *reg;
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"Color");
+	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
 	{
 		reg = regBase;

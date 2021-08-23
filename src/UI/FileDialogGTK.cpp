@@ -50,16 +50,8 @@ UI::FileDialog::~FileDialog()
 	UOSInt i;
 	IO::Registry::CloseRegistry(this->reg);
 	MemFree(this->dialogName);
-	if (this->lastName)
-	{
-		Text::StrDelNew(this->lastName);
-		this->lastName = 0;
-	}
-	if (this->fileName)
-	{
-		Text::StrDelNew(this->fileName);
-		this->fileName = 0;
-	}
+	SDEL_TEXT(this->lastName);
+	SDEL_TEXT(this->fileName);
 	i = this->patterns->GetCount();
 	while (i-- > 0)
 	{
@@ -85,11 +77,7 @@ UOSInt UI::FileDialog::GetFilterIndex()
 
 void UI::FileDialog::SetFileName(const UTF8Char *fileName)
 {
-	if (this->fileName)
-	{
-		Text::StrDelNew(this->fileName);
-		this->fileName = 0;
-	}
+	SDEL_TEXT(this->fileName);
 	this->fileName = Text::StrCopyNew(fileName);
 }
 
@@ -263,83 +251,72 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			Text::StrConcat(sptr, ptrStart);
 		}
 	}
-
-	if (this->filterIndex == (UOSInt)-1)
-	{
-		if (isSave && filterCnt > 0 && initFileName[0])
-		{
-			GSList *list = gtk_file_chooser_list_filters(chooser);
-			const UTF8Char *csptr = Text::StrToUTF8New(initFileName);
-			i = 0;
-			while (i < filterCnt)
-			{
-				if (IO::Path::FileNameMatch(csptr, this->patterns->GetItem(i)))
-				{
-					gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
-					break;
-				}
-				list = list->next;
-				i++;
-			}
-			g_slist_free(list);
-			Text::StrDelNew(csptr);
-		}
-	}
-	else
-	{
-		UOSInt si = this->filterIndex;
-		GSList *list = gtk_file_chooser_list_filters(chooser);
-		while (true)
-		{
-			if (si == (UOSInt)-1)
-			{
-				gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
-				break;
-			}
-			si--;
-			if (list->next == 0)
-			{
-				break;
-			}
-			list = list->next;
-		}
-		g_slist_free(list);
-	}
 	
 
 /*	ofn.lpstrFilter = sb.ToString();
 	ofn.lpstrCustomFilter = 0; 
-	ofn.nMaxCustFilter = 0;
-	if (this->filterIndex == -1)
+	ofn.nMaxCustFilter = 0;*/
+	UOSInt nFilterIndex = 0;
+	if (this->filterIndex == INVALID_INDEX)
 	{
 		if (this->isSave && fnameBuff && fnameBuff[0] != 0)
 		{
 			Bool found = false;
+			UOSInt foundIndexLeng = 0;
+			const UTF8Char *u8fname = Text::StrToUTF8New(fnameBuff);
 			i = 0;
 			while (i < filterCnt)
 			{
-				if (IO::Path::FileNameMatch(fnameBuff, this->patterns->GetItem(i)))
+				if (IO::Path::FileNameMatch(u8fname, this->patterns->GetItem(i)))
 				{
-					found = true;
-					ofn.nFilterIndex = (UInt32)(i + 1);
-					break;
+					if (!found)
+					{
+						found = true;
+						nFilterIndex = (UInt32)(i + 1);
+						foundIndexLeng = Text::StrCharCnt(this->patterns->GetItem(i));
+					}
+					else if (Text::StrCharCnt(this->patterns->GetItem(i)) > foundIndexLeng)
+					{
+						nFilterIndex = (UInt32)(i + 1);
+						foundIndexLeng = Text::StrCharCnt(this->patterns->GetItem(i));
+					}
 				}
 				i++;
 			}
+			Text::StrDelNew(u8fname);
 			if (!found)
 			{
-				ofn.nFilterIndex = 1;
+				nFilterIndex = 1;
 			}
 		}
 		else
 		{
-			ofn.nFilterIndex = 1;
+			nFilterIndex = 1;
 		}
 	}
 	else
 	{
-		ofn.nFilterIndex = (UInt32)(this->filterIndex + 1);
+		nFilterIndex = (UInt32)(this->filterIndex + 1);
 	}
+	UOSInt si = nFilterIndex;
+	GSList *list = gtk_file_chooser_list_filters(chooser);
+	while (true)
+	{
+		if (si == (UOSInt)-1)
+		{
+			gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
+			break;
+		}
+		si--;
+		if (list->next == 0)
+		{
+			break;
+		}
+		list = list->next;
+	}
+	g_slist_free(list);
+
+/*
 	ofn.lpstrFile = fnameBuff;
 	ofn.nMaxFile = (UInt32)fnameBuffSize;
 	ofn.lpstrInitialDir = initDir;
@@ -369,10 +346,17 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
 	Text::StrDelNew(csptr);
 
-	if (initFileName[0])
+	if (fnameBuff)
 	{
-		csptr = Text::StrToUTF8New(initFileName);
-		gtk_file_chooser_set_current_name(chooser, (const Char*)csptr);
+		csptr = Text::StrToUTF8New(fnameBuff);
+		if (isSave)
+		{
+			gtk_file_chooser_set_current_name(chooser, (const Char*)csptr);
+		}
+		else
+		{
+			gtk_file_chooser_set_filename(chooser, (const Char*)csptr);
+		}
 		Text::StrDelNew(csptr);
 	}
 
@@ -413,6 +397,10 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			GSList *fileList = gtk_file_chooser_get_filenames(chooser);
 			GSList *it = fileList;
+			if (it)
+			{
+				Text::StrUTF8_WChar(fnameBuff, (const UTF8Char*)it->data, 0);
+			}
 			while (it)
 			{
 				this->fileNames->Add(Text::StrCopyNew((const UTF8Char*)it->data));
@@ -424,6 +412,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		else
 		{
 			char *csptr = gtk_file_chooser_get_filename(chooser);
+			Text::StrUTF8_WChar(fnameBuff, (const UTF8Char*)csptr, 0);
 			this->fileName = Text::StrCopyNew((const UTF8Char*)csptr);
 			g_free(csptr);
 		}

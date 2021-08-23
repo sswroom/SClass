@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(void *userObj)
 	me->rgbFilter->ProcessImage(me->srcImg->data, me->destImg->data, me->srcImg->info->dispWidth, me->srcImg->info->dispHeight, (me->srcImg->info->storeWidth * (me->srcImg->info->storeBPP >> 3)), (me->srcImg->info->storeWidth * (me->srcImg->info->storeBPP >> 3)), false);
 	me->previewCtrl->SetImage(me->destImg, true);
 
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
+	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
 	{
 		reg->SetValue(L"LastImgColorBright", (Int32)me->hsbBright->GetPos());
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnCancelClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"sswr", L"AVIRead");
+	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
 	{
 		Int32 v;

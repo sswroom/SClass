@@ -30,7 +30,7 @@ Media::ColorCorr::ColorCorr(WChar *name)
 
 	sptr = Text::StrConcat(buff, L"Color\\");
 	sptr = Text::StrConcat(sptr, name);
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"sswr", buff);
+	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
 	radd = reg->GetValueI32(L"RAdd") * 0.0001;
 	gadd = reg->GetValueI32(L"GAdd") * 0.0001;
 	badd = reg->GetValueI32(L"BAdd") * 0.0001;
@@ -74,7 +74,7 @@ Int32 Media::ColorCorr::Save(WChar *name)
 	WChar *sptr;
 	sptr = Text::StrConcat(buff, L"Color\\");
 	sptr = Text::StrConcat(sptr, name);
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"sswr", buff);
+	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
 	reg->SetValue(L"RAdd", (Int32)(radd * 10000));
 	reg->SetValue(L"GAdd", (Int32)(gadd * 10000));
 	reg->SetValue(L"BAdd", (Int32)(badd * 10000));
