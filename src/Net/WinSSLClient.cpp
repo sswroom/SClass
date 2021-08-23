@@ -111,7 +111,7 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				return ret;
 			}
 			this->clsData->recvOfst += recvSize;
-			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvBuffSize);
+			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
 			SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
 			SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
 			SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
@@ -126,6 +126,7 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			return ret;
 		}
 
+		this->clsData->recvOfst = 0;
 		UOSInt i = 0;
 		while (i < 4)
 		{
@@ -154,6 +155,11 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 						this->clsData->decSize += buffs[i].cbBuffer;
 					}
 				}
+			}
+			else if (buffs[i].BufferType == SECBUFFER_EXTRA)
+			{
+				MemCopyO(&this->clsData->recvBuff[this->clsData->recvOfst], buffs[i].pvBuffer, buffs[i].cbBuffer);
+				this->clsData->recvOfst += buffs[i].cbBuffer;
 			}
 			i++;
 		}

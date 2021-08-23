@@ -931,6 +931,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	}
 	Text::StrDelNew(wptr);
 
+	sockf->SetRecvTimeout(s, 120000);
 	Net::SSLClient *cli;
 	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
 	return cli;

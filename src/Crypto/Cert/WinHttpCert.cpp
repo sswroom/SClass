@@ -25,12 +25,15 @@ Crypto::Cert::WinHttpCert::~WinHttpCert()
 Bool Crypto::Cert::WinHttpCert::GetNotBefore(Data::DateTime *dt)
 {
 	dt->SetValueFILETIME(&this->clsData->certInfo->ftStart);
+	return true;
 }
 
 Bool Crypto::Cert::WinHttpCert::GetNotAfter(Data::DateTime *dt)
 {
 	dt->SetValueFILETIME(&this->clsData->certInfo->ftExpiry);
+	return true;
 }
+
 Bool Crypto::Cert::WinHttpCert::IsSelfSigned()
 {
 	if (this->clsData->certInfo->lpszIssuerInfo == 0 || this->clsData->certInfo->lpszSubjectInfo == 0)
