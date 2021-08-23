@@ -74,6 +74,7 @@ namespace SSWR
 
 			void UpdateTopicChart();
 			void ServerStop();
+			void ClearTopics();
 		public:
 			AVIRMQTTExplorerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMQTTExplorerForm();

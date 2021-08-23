@@ -26,11 +26,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		me->txtPassword->SetReadOnly(false);
 		me->chkSSL->SetEnabled(true);
 		me->lvTopic->ClearItems();
+		me->ClearTopics();
 		me->lblStatus->SetText((const UTF8Char*)"Disconnected");
 		me->btnStart->SetText((const UTF8Char*)"Start");
 	}
 	else
 	{
+		me->lvTopic->ClearItems();
+		me->ClearTopics();
+
+
 		Bool useSSL = me->chkSSL->IsChecked();
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
@@ -127,7 +132,6 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			me->txtPort->SetReadOnly(true);
 			me->txtUsername->SetReadOnly(true);
 			me->txtPassword->SetReadOnly(true);
-			me->lvTopic->ClearItems();
 			me->lblStatus->SetText((const UTF8Char*)"Connected");
 			me->btnStart->SetText((const UTF8Char*)"Stop");
 		}
@@ -461,6 +465,23 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ServerStop()
 	}
 }
 
+void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
+{
+	UOSInt i;
+	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
+	Data::ArrayList<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*> *topicList;
+	topicList = this->topicMap->GetValues();
+	i = topicList->GetCount();
+	while (i-- > 0)
+	{
+		topicSt = topicList->GetItem(i);
+		Text::StrDelNew(topicSt->topic);
+		MemFree(topicSt->currValue);
+		MemFree(topicSt);
+	}
+	this->topicMap->Clear();
+}
+
 SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
@@ -537,19 +558,8 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 {
 	this->ServerStop();
-	UOSInt i;
-	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
-	Data::ArrayList<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*> *topicList;
 	DEL_CLASS(this->topicMut);
-	topicList = this->topicMap->GetValues();
-	i = topicList->GetCount();
-	while (i-- > 0)
-	{
-		topicSt = topicList->GetItem(i);
-		Text::StrDelNew(topicSt->topic);
-		MemFree(topicSt->currValue);
-		MemFree(topicSt);
-	}
+	this->ClearTopics();
 	DEL_CLASS(this->topicMap);
 	DEL_CLASS(this->log);
 	SDEL_CLASS(this->cliCert);
