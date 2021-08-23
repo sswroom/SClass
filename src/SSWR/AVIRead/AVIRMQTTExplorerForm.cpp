@@ -25,14 +25,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		me->txtUsername->SetReadOnly(false);
 		me->txtPassword->SetReadOnly(false);
 		me->chkSSL->SetEnabled(true);
-		me->lvTopic->ClearItems();
+		me->lvRecvTopic->ClearItems();
 		me->ClearTopics();
 		me->lblStatus->SetText((const UTF8Char*)"Disconnected");
 		me->btnStart->SetText((const UTF8Char*)"Start");
 	}
 	else
 	{
-		me->lvTopic->ClearItems();
+		me->lvRecvTopic->ClearItems();
 		me->ClearTopics();
 
 
@@ -211,10 +211,35 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 	DEL_CLASS(dlg);
 }
 
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	if (me->client == 0)
+	{
+		return;
+	}
+
+	Text::StringBuilderUTF8 sbTopic;
+	Text::StringBuilderUTF8 sbContent;
+	me->txtPubTopic->GetText(&sbTopic);
+	me->txtPubContent->GetText(&sbContent);
+	if (sbTopic.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter topic", (const UTF8Char*)"MQTT Explorer", me);
+		return;
+	}
+	if (sbContent.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter content", (const UTF8Char*)"MQTT Explorer", me);
+		return;
+	}
+	me->client->SendPublish(sbTopic.ToString(), sbContent.ToString());
+}
+
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
-	me->currTopic = (SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*)me->lvTopic->GetSelectedItem();
+	me->currTopic = (SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*)me->lvRecvTopic->GetSelectedItem();
 	me->UpdateTopicChart();
 }
 
@@ -257,7 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 	if (me->topicListChanged)
 	{
 		me->topicListChanged = false;
-		me->lvTopic->ClearItems();
+		me->lvRecvTopic->ClearItems();
 		while (i < j)
 		{
 			topicSt = topicList->GetItem(i);
@@ -269,14 +294,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 					me->UpdateTopicChart();
 				}
 			}
-			me->lvTopic->AddItem(topicSt->topic, topicSt);
-			me->lvTopic->SetSubItem(i, 1, topicSt->currValue);
+			me->lvRecvTopic->AddItem(topicSt->topic, topicSt);
+			me->lvRecvTopic->SetSubItem(i, 1, topicSt->currValue);
 			Text::StrUOSInt(sbuff, topicSt->recvCnt);
-			me->lvTopic->SetSubItem(i, 2, sbuff);
+			me->lvRecvTopic->SetSubItem(i, 2, sbuff);
 			dt.SetTicks(topicSt->lastRecvTime);
 			dt.ToLocalTime();
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvTopic->SetSubItem(i, 3, sbuff);
+			me->lvRecvTopic->SetSubItem(i, 3, sbuff);
 			i++;
 		}
 	}
@@ -288,13 +313,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 			if (topicSt->updated)
 			{
 				topicSt->updated = false;
-				me->lvTopic->SetSubItem(i, 1, topicSt->currValue);
+				me->lvRecvTopic->SetSubItem(i, 1, topicSt->currValue);
 				Text::StrUOSInt(sbuff, topicSt->recvCnt);
-				me->lvTopic->SetSubItem(i, 2, sbuff);
+				me->lvRecvTopic->SetSubItem(i, 2, sbuff);
 				dt.SetTicks(topicSt->lastRecvTime);
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				me->lvTopic->SetSubItem(i, 3, sbuff);
+				me->lvRecvTopic->SetSubItem(i, 3, sbuff);
 
 				if (topicSt == me->currTopic)
 				{
@@ -391,7 +416,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 	Media::DrawEngine *deng = this->core->GetDrawEngine();
 	UOSInt w;
 	UOSInt h;
-	this->pbTopic->GetSizeP(&w, &h);
+	this->pbRecvTopic->GetSizeP(&w, &h);
 	if (w > 0 && h > 0)
 	{
 		if (this->dispImg == 0 || this->dispImg->GetWidth() != w || this->dispImg->GetHeight() != h)
@@ -452,7 +477,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 			
 		}
 		
-		this->pbTopic->SetImageDImg(this->dispImg);
+		this->pbRecvTopic->SetImageDImg(this->dispImg);
 	}
 }
 
@@ -532,20 +557,40 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Not Connected"));
 	this->lblStatus->SetRect(4, 56, 150, 23, false);
-	NEW_CLASS(this->pbTopic, UI::GUIPictureBoxSimple(ui, this, this->core->GetDrawEngine(), false));
-	this->pbTopic->SetRect(0, 0, 100, 300, false);
-	this->pbTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspTopic, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lvTopic, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
-	this->lvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvTopic->SetShowGrid(true);
-	this->lvTopic->SetFullRowSelect(true);
-	this->lvTopic->AddColumn((const UTF8Char*)"Topic", 200);
-	this->lvTopic->AddColumn((const UTF8Char*)"Message", 200);
-	this->lvTopic->AddColumn((const UTF8Char*)"Count", 60);
-	this->lvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
-	this->lvTopic->HandleSelChg(OnTopicSelChg, this);
+	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this));
+	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 
+	this->tpRecv = this->tcDetail->AddTabPage((const UTF8Char*)"Recv");
+	NEW_CLASS(this->pbRecvTopic, UI::GUIPictureBoxSimple(ui, this->tpRecv, this->core->GetDrawEngine(), false));
+	this->pbRecvTopic->SetRect(0, 0, 100, 300, false);
+	this->pbRecvTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->vspRecvTopic, UI::GUIVSplitter(ui, this->tpRecv, 3, true));
+	NEW_CLASS(this->lvRecvTopic, UI::GUIListView(ui, this->tpRecv, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvRecvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRecvTopic->SetShowGrid(true);
+	this->lvRecvTopic->SetFullRowSelect(true);
+	this->lvRecvTopic->AddColumn((const UTF8Char*)"Topic", 200);
+	this->lvRecvTopic->AddColumn((const UTF8Char*)"Message", 200);
+	this->lvRecvTopic->AddColumn((const UTF8Char*)"Count", 60);
+	this->lvRecvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
+	this->lvRecvTopic->HandleSelChg(OnTopicSelChg, this);
+
+	this->tpPublish = this->tcDetail->AddTabPage((const UTF8Char*)"Publish");
+	NEW_CLASS(this->pnlPubTopic, UI::GUIPanel(ui, this->tpPublish));
+	this->pnlPubTopic->SetRect(0, 0, 100, 31, false);
+	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->lblPubTopic, UI::GUILabel(ui, this->pnlPubTopic, (const UTF8Char*)"Topic"));
+	this->lblPubTopic->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtPubTopic, UI::GUITextBox(ui, this->pnlPubTopic, (const UTF8Char*)""));
+	this->txtPubTopic->SetRect(104, 4, 300, 23, false);
+	NEW_CLASS(this->pnlPubCtrl, UI::GUIPanel(ui, this->tpPublish));
+	this->pnlPubCtrl->SetRect(0, 0, 100, 31, false);
+	this->pnlPubCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this->pnlPubCtrl, (const UTF8Char*)"Publish"));
+	this->btnPublish->SetRect(4, 4, 75, 23, false);
+	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
+	NEW_CLASS(this->txtPubContent, UI::GUITextBox(ui, this->tpPublish, (const UTF8Char*)"", true));
+	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->log, IO::LogTool());
 	this->client = 0;

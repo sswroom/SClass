@@ -253,7 +253,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 					buff[6] = Text::StrHex2UInt8C(&sarr[0][12]);
 					buff[7] = Text::StrHex2UInt8C(&sarr[0][15]);
 					startAddr = ReadMUInt64(buff);
-					endAddr = startAddr | ((UInt64)(1 << (48 - bitCnt)) - 1);
+					endAddr = startAddr | (((UInt64)1 << (48 - bitCnt)) - 1);
 					succ = true;
 				}
 				else

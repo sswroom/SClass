@@ -910,7 +910,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 			}
 			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
 			{
-				MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
+				MemCopyO(recvBuff, &recvBuff[recvOfst - inputBuff[1].cbBuffer], inputBuff[1].cbBuffer);
 				recvOfst = inputBuff[1].cbBuffer;
 			}
 			else

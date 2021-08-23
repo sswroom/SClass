@@ -11,6 +11,8 @@
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIPictureBoxSimple.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
 
@@ -60,13 +62,25 @@ namespace SSWR
 			UI::GUILabel *lblCliKey;
 			UI::GUILabel *lblStatus;
 			UI::GUIButton *btnStart;
-			UI::GUIListView *lvTopic;
-			UI::GUIVSplitter *vspTopic;
-			UI::GUIPictureBoxSimple *pbTopic;
+			UI::GUITabControl *tcDetail;
+
+			UI::GUITabPage *tpRecv;
+			UI::GUIListView *lvRecvTopic;
+			UI::GUIVSplitter *vspRecvTopic;
+			UI::GUIPictureBoxSimple *pbRecvTopic;
+
+			UI::GUITabPage *tpPublish;
+			UI::GUIPanel *pnlPubTopic;
+			UI::GUILabel *lblPubTopic;
+			UI::GUITextBox *txtPubTopic;
+			UI::GUIPanel *pnlPubCtrl;
+			UI::GUIButton *btnPublish;
+			UI::GUITextBox *txtPubContent;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnCliCertClicked(void *userObj);
 			static void __stdcall OnCliKeyClicked(void *userObj);
+			static void __stdcall OnPublishClicked(void *userObj);
 			static void __stdcall OnTopicSelChg(void *userObj);
 			static void __stdcall OnPingTimerTick(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

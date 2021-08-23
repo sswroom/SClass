@@ -96,3 +96,42 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 	}
 	return true;
 }
+
+const UTF8Char *Net::MQTTUtil::PacketTypeGetName(UInt8 packetType)
+{
+	switch (packetType)
+	{
+	case 1:
+		return (const UTF8Char*)"CONNECT";
+	case 2:
+		return (const UTF8Char*)"CONNACK";
+	case 3:
+		return (const UTF8Char*)"PUBLISH";
+	case 4:
+		return (const UTF8Char*)"PUBACK";
+	case 5:
+		return (const UTF8Char*)"PUBREC";
+	case 6:
+		return (const UTF8Char*)"PUBREL";
+	case 7:
+		return (const UTF8Char*)"PUBCOMP";
+	case 8:
+		return (const UTF8Char*)"SUBSCRIBE";
+	case 9:
+		return (const UTF8Char*)"SUBACK";
+	case 10:
+		return (const UTF8Char*)"UNSUBSCRIBE";
+	case 11:
+		return (const UTF8Char*)"UNSUBACK";
+	case 12:
+		return (const UTF8Char*)"PINGREQ";
+	case 13:
+		return (const UTF8Char*)"PINGRESP";
+	case 14:
+		return (const UTF8Char*)"DISCONNECT";
+	case 15:
+		return (const UTF8Char*)"AUTH";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+}

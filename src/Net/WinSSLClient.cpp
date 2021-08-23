@@ -6,6 +6,17 @@
 #define SECURITY_WIN32
 #include <sspi.h>
 
+//#define DEBUG_PRINT
+#if defined(DEBUG_PRINT)
+#ifdef _MSC_VER
+#include <windows.h>
+#include <stdio.h>
+#define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); OutputDebugStringA(sbuff);}
+#else
+#include <stdio.h>
+#endif
+#endif
+
 struct Net::WinSSLClient::ClassData
 {
 	CredHandle *hCred;
@@ -110,6 +121,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				this->flags |= 2;
 				return ret;
 			}
+#if defined(DEBUG_PRINT)
+			printf("Recv size = %d\r\n", (UInt32)recvSize);
+#endif
 			this->clsData->recvOfst += recvSize;
 			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
 			SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);

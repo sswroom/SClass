@@ -8,7 +8,13 @@
 
 //#define DEBUG_PRINT
 #if defined(DEBUG_PRINT)
+#ifdef _MSC_VER
+#include <windows.h>
 #include <stdio.h>
+#define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); OutputDebugStringA(sbuff);}
+#else
+#include <stdio.h>
+#endif
 #endif
 
 void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
@@ -16,7 +22,8 @@ void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
 #endif
-	if ((cmdType & 0xf0) == 0x30 && cmdSize >= 2)
+	UInt8 packetType = (UInt8)(cmdType >> 4);
+	if (packetType == 3 && cmdSize >= 2)
 	{
 		UInt8 qosLev = (cmdType & 6) >> 1;
 		UOSInt i;
@@ -59,7 +66,7 @@ void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			topic = 0;
 		}
 	}
-	else
+	else if (packetType == 2 || packetType == 4 || packetType == 9 || packetType == 11 || packetType == 13)
 	{
 		PacketInfo *packet;
 		packet = (PacketInfo*)MemAlloc(UInt8, sizeof(PacketInfo) + cmdSize);
@@ -80,15 +87,17 @@ void Net::MQTTClient::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *bu
 UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
 {
 	Net::MQTTClient *me = (Net::MQTTClient*)userObj;
-	UInt8 buff[2048];
+	UOSInt maxBuffSize = 9000;
+	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt readSize;
 	me->recvStarted = true;
 	me->recvRunning = true;
 	buffSize = 0;
+	buff = MemAlloc(UInt8, maxBuffSize);
 	while (true)
 	{
-		readSize = me->cli->Read(&buff[buffSize], 2048 - buffSize);
+		readSize = me->cli->Read(&buff[buffSize], maxBuffSize - buffSize);
 		if (readSize <= 0)
 			break;
 		me->totalDownload += readSize;
@@ -104,6 +113,7 @@ UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
 			buffSize = readSize;
 		}
 	}
+	MemFree(buff);
 	me->recvRunning = false;
 	me->packetEvt->Set();
 	return 0;
@@ -339,7 +349,9 @@ Bool Net::MQTTClient::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
 	i += j + 2;
 	packet1[i] = 0;
 	i++;
-
+#if defined(DEBUG_PRINT)
+	printf("Subscribing topic %s\r\n", topic);
+#endif
 	j = this->protoHdlr->BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
 	return this->SendPacket(packet2, j);
 }
