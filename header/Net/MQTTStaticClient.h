@@ -1,11 +1,11 @@
-#ifndef _SM_NET_MQTTHANDLER
-#define _SM_NET_MQTTHANDLER
+#ifndef _SM_NET_MQTTSTATICCLIENT
+#define _SM_NET_MQTTSTATICCLIENT
 #include "Net/MQTTConn.h"
 #include "Sync/Event.h"
 
 namespace Net
 {
-	class MQTTHandler
+	class MQTTStaticClient
 	{
 	private:
 		Net::MQTTConn *conn;
@@ -16,8 +16,8 @@ namespace Net
 
 		static UInt32 __stdcall KAThread(void *userObj);
 	public:
-		MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds);
-		~MQTTHandler();
+		MQTTStaticClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds);
+		~MQTTStaticClient();
 
 		Bool IsError();
 

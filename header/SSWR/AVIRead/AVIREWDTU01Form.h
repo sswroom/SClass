@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREWDTU01FORM
 #define _SM_SSWR_AVIREAD_AVIREWDTU01FORM
 #include "Data/UInt64Map.h"
-#include "Net/MQTTHandler.h"
+#include "Net/MQTTStaticClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
 #include "Text/JSON.h"
@@ -38,7 +38,7 @@ namespace SSWR
 			UI::GUIListView *lvDevices;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Net::MQTTHandler *cli;
+			Net::MQTTStaticClient *cli;
 			Sync::Mutex *dataMut;
 			Bool dataChg;
 			Data::UInt64Map<DeviceEntry*> *dataMap;

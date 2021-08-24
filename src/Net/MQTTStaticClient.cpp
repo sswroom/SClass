@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Net/MQTTHandler.h"
+#include "Net/MQTTStaticClient.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall Net::MQTTHandler::KAThread(void *userObj)
+UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 {
-	Net::MQTTHandler *me = (Net::MQTTHandler*)userObj;
+	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)userObj;
 	me->kaRunning = true;
 	while (!me->kaToStop)
 	{
@@ -17,7 +17,7 @@ UInt32 __stdcall Net::MQTTHandler::KAThread(void *userObj)
 	return 0;
 }
 
-Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds)
+Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds)
 {
 	this->kaRunning = false;
 	this->kaToStop = false;
@@ -59,7 +59,7 @@ Net::MQTTHandler::MQTTHandler(Net::SocketFactory *sockf, const Net::SocketUtil::
 	}
 }
 
-Net::MQTTHandler::~MQTTHandler()
+Net::MQTTStaticClient::~MQTTStaticClient()
 {
 	if (this->kaRunning)
 	{
@@ -74,12 +74,12 @@ Net::MQTTHandler::~MQTTHandler()
 	DEL_CLASS(this->kaEvt);
 }
 
-Bool Net::MQTTHandler::IsError()
+Bool Net::MQTTStaticClient::IsError()
 {
 	return this->conn == 0;
 }
 
-Bool Net::MQTTHandler::Subscribe(const UTF8Char *topic)
+Bool Net::MQTTStaticClient::Subscribe(const UTF8Char *topic)
 {
 	if (this->conn == 0) return false;
 	if (this->conn->SendSubscribe(1, topic))
@@ -92,7 +92,7 @@ Bool Net::MQTTHandler::Subscribe(const UTF8Char *topic)
 	return false;
 }
 
-Bool Net::MQTTHandler::Publish(const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTStaticClient::Publish(const UTF8Char *topic, const UTF8Char *message)
 {
 	if (this->conn == 0) return false;
 	return this->conn->SendPublish(topic, message);
