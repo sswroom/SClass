@@ -343,6 +343,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBCon
 	this->schema = 0;
 	this->enableDebug = false;
 	this->tzQhr = 0;
+	this->forceTz = false;
 }
 
 DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
@@ -363,6 +364,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::
 	this->schema = 0;
 	this->enableDebug = false;
 	this->tzQhr = 0;
+	this->forceTz = false;
 	this->Connect(connStr);
 }
 
@@ -394,6 +396,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 		this->schema = 0;
 	lastStmtHand = 0;
 	this->tzQhr = 0;
+	this->forceTz = false;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
@@ -821,6 +824,7 @@ Bool DB::ODBCConn::IsLastDataError()
 void DB::ODBCConn::Reconnect()
 {
 	Close();
+	Int8 oldTzQhr = this->tzQhr;
 	if (this->connStr)
 	{
 		const UTF8Char *connStr = Text::StrCopyNew(this->connStr);
@@ -830,6 +834,10 @@ void DB::ODBCConn::Reconnect()
 	else
 	{
 		Connect(this->dsn, this->uid, this->pwd, this->schema);
+	}
+	if (this->forceTz)
+	{
+		this->tzQhr = oldTzQhr;
 	}
 }
 
@@ -1083,6 +1091,12 @@ const UTF8Char *DB::ODBCConn::GetConnPWD()
 const UTF8Char *DB::ODBCConn::GetConnSchema()
 {
 	return this->schema;
+}
+
+void DB::ODBCConn::ForceTz(Int8 tzQhr)
+{
+	this->forceTz = true;
+	this->tzQhr = tzQhr;
 }
 
 UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<const UTF8Char*> *driverList)

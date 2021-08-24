@@ -92,6 +92,11 @@ Int8 DB::SQLiteFile::GetTzQhr()
 	return 0;
 }
 
+void DB::SQLiteFile::ForceTz(Int8 tzQhr)
+{
+	
+}
+
 void DB::SQLiteFile::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"SQLite:");

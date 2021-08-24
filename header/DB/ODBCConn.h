@@ -39,6 +39,7 @@ namespace DB
 		const UTF8Char *connStr;
 		IO::LogTool *log;
 		Bool enableDebug;
+		Bool forceTz;
 		Int8 tzQhr;
 		Data::ArrayList<const UTF8Char *> *tableNames;
 
@@ -58,6 +59,7 @@ namespace DB
 		virtual DB::DBUtil::ServerType GetSvrType();
 		virtual ConnType GetConnType();
 		virtual Int8 GetTzQhr();
+		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF *sb);
 		virtual void Close();
 		void Dispose();
