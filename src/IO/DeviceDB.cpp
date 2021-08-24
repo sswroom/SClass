@@ -1600,6 +1600,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x1D6B, 0x0003, 0x0510, "Linux 5.10 xhci-hcd xHCI Host Controller",          "Linux USB 3.0 Root Hub"},
 	{0x1E0E, 0x9001, 0x0000, "SimTech, Incorperated SimTech SIM7000",             "SimTech SIM7000"},
 	{0x1F4D, 0xD750, 0x0000, "USB Device",                                        "MyGica D675"},
+	{0x1F75, 0x0918, 0x0320, "Device Storage STORAGE DEVICE",                     "Innostor IS918 Flash Drive"},
 	{0x2109, 0x0812, 0x0000, "VIA Labs, Inc. USB 3.0 Hub",                        "VIA VL-812 USB 3.0 Hub"},
 	{0x2109, 0x0815, 0x0701, "VIA Labs, Inc.          USB3.0 Hub",                "VIA VL-815 USB 3.0 Hub"},
 	{0x2109, 0x0817, 0x0214, "VIA Labs, Inc.          USB3.0 Hub",                "VIA VL-817 USB 3.0 Hub"},
