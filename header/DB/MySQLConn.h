@@ -34,6 +34,7 @@ namespace DB
 		virtual DB::DBUtil::ServerType GetSvrType();
 		virtual ConnType GetConnType();
 		virtual Int8 GetTzQhr();
+		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF *sb);
 		virtual void Close();
 		virtual void Dispose();

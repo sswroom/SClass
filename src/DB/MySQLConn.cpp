@@ -123,6 +123,10 @@ Int8 DB::MySQLConn::GetTzQhr()
 	return 0;
 }
 
+void DB::MySQLConn::ForceTz(Int8 tzQhr)
+{
+}
+
 void DB::MySQLConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"MySQL:");

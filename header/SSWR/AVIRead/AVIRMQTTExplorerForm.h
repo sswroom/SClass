@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTEXPLORERFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTEXPLORERFORM
 #include "Data/StringUTF8Map.h"
-#include "Net/MQTTClient.h"
+#include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
@@ -36,7 +36,7 @@ namespace SSWR
 			
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::MQTTClient *client;
+			Net::MQTTConn *client;
 			IO::LogTool *log;
 			Sync::Mutex *topicMut;
 			Data::StringUTF8Map<TopicStatus*> *topicMap;

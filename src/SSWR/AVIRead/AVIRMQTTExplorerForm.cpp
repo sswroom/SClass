@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 				ssl->SetClientCertASN1(me->cliCert, me->cliKey);
 			}
 		}
-		NEW_CLASS(me->client, Net::MQTTClient(me->core->GetSocketFactory(), ssl, &addr, (UInt16)port, useSSL));
+		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), ssl, &addr, (UInt16)port, useSSL));
 		if (me->client->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		SDEL_TEXT(password);
 		if (succ)
 		{
-			succ = (me->client->WaitConnAck(30000) == Net::MQTTClient::CS_ACCEPTED);
+			succ = (me->client->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
 		}
 
 		if (succ)

@@ -2305,8 +2305,8 @@ Net/MIME.h: ../../src/Net/MIME.cpp
 @MIME.o
 Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
 @MQTTBroker.o
-Net/MQTTClient.h: ../../src/Net/MQTTClient.cpp
-@MQTTClient.o
+Net/MQTTConn.h: ../../src/Net/MQTTConn.cpp
+@MQTTConn.o
 Net/MQTTHandler.h: ../../src/Net/MQTTHandler.cpp
 @MQTTHandler.o
 Net/MQTTUtil.h: ../../src/Net/MQTTUtil.cpp
@@ -4181,7 +4181,7 @@ MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MIBReader.o: ../../src/Net/MIBReader.cpp
 MIME.o: ../../src/Net/MIME.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
-MQTTClient.o: ../../src/Net/MQTTClient.cpp
+MQTTConn.o: ../../src/Net/MQTTConn.cpp
 MQTTHandler.o: ../../src/Net/MQTTHandler.cpp
 MQTTUtil.o: ../../src/Net/MQTTUtil.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp

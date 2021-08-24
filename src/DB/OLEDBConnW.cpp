@@ -283,6 +283,10 @@ Int8 DB::OLEDBConn::GetTzQhr()
 	return 0;
 }
 
+void DB::OLEDBConn::ForceTz(Int8 tzQhr)
+{
+}
+
 void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	ClassData *data = (ClassData *)this->clsData;

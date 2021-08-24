@@ -1714,7 +1714,7 @@ MIME.o: $(CLASSDIR)src/Net/MIME.cpp
 MQTTBroker.o: $(CLASSDIR)src/Net/MQTTBroker.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
-MQTTClient.o: $(CLASSDIR)src/Net/MQTTClient.cpp
+MQTTConn.o: $(CLASSDIR)src/Net/MQTTConn.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 NTPClient.o: $(CLASSDIR)src/Net/NTPClient.cpp

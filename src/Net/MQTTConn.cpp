@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "Manage/HiResClock.h"
-#include "Net/MQTTClient.h"
+#include "Net/MQTTConn.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
@@ -17,7 +17,7 @@
 #endif
 #endif
 
-void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
@@ -80,13 +80,13 @@ void Net::MQTTClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 	}
 }
 
-void Net::MQTTClient::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTConn::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
-UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
+UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 {
-	Net::MQTTClient *me = (Net::MQTTClient*)userObj;
+	Net::MQTTConn *me = (Net::MQTTConn*)userObj;
 	UOSInt maxBuffSize = 9000;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -119,7 +119,7 @@ UInt32 __stdcall Net::MQTTClient::RecvThread(void *userObj)
 	return 0;
 }
 
-void Net::MQTTClient::OnPublishMessage(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
+void Net::MQTTConn::OnPublishMessage(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
 {
 	UOSInt i = this->hdlrList->GetCount();
 	while (i-- > 0)
@@ -128,7 +128,7 @@ void Net::MQTTClient::OnPublishMessage(const UTF8Char *topic, const UInt8 *messa
 	}
 }
 
-Net::MQTTClient::PacketInfo *Net::MQTTClient::GetNextPacket(UInt8 packetType, UOSInt timeoutMS)
+Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt timeoutMS)
 {
 	Manage::HiResClock clk;
 	PacketInfo *packet;
@@ -153,14 +153,14 @@ Net::MQTTClient::PacketInfo *Net::MQTTClient::GetNextPacket(UInt8 packetType, UO
 	}
 }
 
-Bool Net::MQTTClient::SendPacket(const UInt8 *packet, UOSInt packetSize)
+Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 {
 	UOSInt sendSize = this->cli->Write(packet, packetSize);
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
 }
 
-Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn)
+Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -173,7 +173,7 @@ Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, cons
 
 	NEW_CLASS(this->packetMut, Sync::Mutex());
 	NEW_CLASS(this->packetList, Data::ArrayList<PacketInfo*>());
-	NEW_CLASS(this->packetEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTClient.packetEvt"));
+	NEW_CLASS(this->packetEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTConn.packetEvt"));
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
 
 	if (this->ssl && sslConn)
@@ -208,7 +208,7 @@ Net::MQTTClient::MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, cons
 	}
 }
 
-Net::MQTTClient::~MQTTClient()
+Net::MQTTConn::~MQTTConn()
 {
 	if (this->cli)
 	{
@@ -238,18 +238,18 @@ Net::MQTTClient::~MQTTClient()
 	DEL_CLASS(this->packetMut);
 }
 
-void Net::MQTTClient::HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj)
+void Net::MQTTConn::HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj)
 {
 	this->hdlrObjList->Add(userObj);
 	this->hdlrList->Add(hdlr);
 }
 
-Bool Net::MQTTClient::IsError()
+Bool Net::MQTTConn::IsError()
 {
 	return this->cli == 0 || !this->recvRunning;
 }
 
-Bool Net::MQTTClient::SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password)
+Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -290,7 +290,7 @@ Bool Net::MQTTClient::SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8C
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTClient::SendPublish(const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::SendPublish(const UTF8Char *topic, const UTF8Char *message)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -311,7 +311,7 @@ Bool Net::MQTTClient::SendPublish(const UTF8Char *topic, const UTF8Char *message
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTClient::SendPubAck(UInt16 packetId)
+Bool Net::MQTTConn::SendPubAck(UInt16 packetId)
 {
 	UInt8 packet1[16];
 	UInt8 packet2[16];
@@ -322,7 +322,7 @@ Bool Net::MQTTClient::SendPubAck(UInt16 packetId)
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTClient::SendPubRec(UInt16 packetId)
+Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 {
 	UInt8 packet1[16];
 	UInt8 packet2[16];
@@ -333,7 +333,7 @@ Bool Net::MQTTClient::SendPubRec(UInt16 packetId)
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTClient::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
+Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -356,7 +356,7 @@ Bool Net::MQTTClient::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTClient::SendPing()
+Bool Net::MQTTConn::SendPing()
 {
 	UInt8 packet2[16];
 	UOSInt j;
@@ -364,7 +364,7 @@ Bool Net::MQTTClient::SendPing()
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTClient::SendDisconnect()
+Bool Net::MQTTConn::SendDisconnect()
 {
 	UInt8 packet2[16];
 	UOSInt j;
@@ -372,18 +372,18 @@ Bool Net::MQTTClient::SendDisconnect()
 	return this->SendPacket(packet2, j);
 }
 
-Net::MQTTClient::ConnectStatus Net::MQTTClient::WaitConnAck(UOSInt timeoutMS)
+Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(UOSInt timeoutMS)
 {
 	PacketInfo *packet = this->GetNextPacket(0x20, timeoutMS);
 	if (packet == 0)
-		return Net::MQTTClient::CS_TIMEDOUT;
+		return Net::MQTTConn::CS_TIMEDOUT;
 
-	Net::MQTTClient::ConnectStatus ret = (Net::MQTTClient::ConnectStatus)packet->content[1];
+	Net::MQTTConn::ConnectStatus ret = (Net::MQTTConn::ConnectStatus)packet->content[1];
 	MemFree(packet);
 	return ret;
 }
 
-UInt8 Net::MQTTClient::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
+UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
 {
 	PacketInfo *packet = this->GetNextPacket(0x90, timeoutMS);
 	if (packet == 0)
@@ -402,7 +402,7 @@ UInt8 Net::MQTTClient::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
 	return ret;
 }
 
-void Net::MQTTClient::ClearPackets()
+void Net::MQTTConn::ClearPackets()
 {
 	Sync::MutexUsage mutUsage(this->packetMut);
 	LIST_FREE_FUNC(this->packetList, MemFree);
@@ -410,21 +410,21 @@ void Net::MQTTClient::ClearPackets()
 	mutUsage.EndUse();
 }
 
-UInt64 Net::MQTTClient::GetTotalUpload()
+UInt64 Net::MQTTConn::GetTotalUpload()
 {
 	return this->totalUpload;
 }
 
-UInt64 Net::MQTTClient::GetTotalDownload()
+UInt64 Net::MQTTConn::GetTotalDownload()
 {
 	return this->totalDownload;
 }
 
-Bool Net::MQTTClient::PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)
 {
-	Net::MQTTClient *cli;
+	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];
-	NEW_CLASS(cli, Net::MQTTClient(sockf, 0, addr, port, false));
+	NEW_CLASS(cli, Net::MQTTConn(sockf, 0, addr, port, false));
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);
@@ -437,7 +437,7 @@ Bool Net::MQTTClient::PublishMessage(Net::SocketFactory *sockf, const Net::Socke
 	Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"sswrMQTT/"), dt.ToTicks());
 	if (cli->SendConnect(4, 30, sbuff, username, password))
 	{
-		succ = (cli->WaitConnAck(30000) == Net::MQTTClient::CS_ACCEPTED);
+		succ = (cli->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
 	}
 	if (succ)
 	{

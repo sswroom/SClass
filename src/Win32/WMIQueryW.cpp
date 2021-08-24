@@ -97,6 +97,10 @@ Int8 Win32::WMIQuery::GetTzQhr()
 	return Data::DateTime::GetLocalTzQhr();
 }
 
+void Win32::WMIQuery::ForceTz(Int8 tzQhr)
+{
+}
+
 void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"WMI:");

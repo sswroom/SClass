@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTPUBLISHFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTPUBLISHFORM
-#include "Net/MQTTClient.h"
+#include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"

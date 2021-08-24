@@ -165,6 +165,12 @@ Int8 DB::ODBCConn::GetTzQhr()
 	return this->tzQhr;
 }
 
+void DB::ODBCConn::ForceTz(Int8 tzQhr)
+{
+	this->forceTz = true;
+	this->tzQhr = tzQhr;
+}
+
 void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char *)"ODBC:");

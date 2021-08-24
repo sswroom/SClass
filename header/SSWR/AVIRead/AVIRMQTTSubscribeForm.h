@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTSUBSCRIBEFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTSUBSCRIBEFORM
 #include "Data/StringUTF8Map.h"
-#include "Net/MQTTClient.h"
+#include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -37,7 +37,7 @@ namespace SSWR
 			
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::MQTTClient *client;
+			Net::MQTTConn *client;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
 			Sync::Mutex *topicMut;

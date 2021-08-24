@@ -1046,6 +1046,11 @@ Int8 Net::MySQLTCPClient::GetTzQhr()
 	return 0;
 }
 
+void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
+{
+
+}
+
 void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];

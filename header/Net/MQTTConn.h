@@ -1,5 +1,5 @@
-#ifndef _SM_NET_MQTTCLIENT
-#define _SM_NET_MQTTCLIENT
+#ifndef _SM_NET_MQTTCONN
+#define _SM_NET_MQTTCONN
 #include "Data/ArrayList.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
 #include "Net/SSLEngine.h"
@@ -9,7 +9,7 @@
 
 namespace Net
 {
-	class MQTTClient : public IO::IProtocolHandler::DataListener
+	class MQTTConn : public IO::IProtocolHandler::DataListener
 	{
 	public:
 		typedef enum
@@ -57,8 +57,8 @@ namespace Net
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 	public:
-		MQTTClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn);
-		virtual ~MQTTClient();
+		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn);
+		virtual ~MQTTConn();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);
 		Bool IsError();

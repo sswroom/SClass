@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 			return;
 		}
 
-		NEW_CLASS(me->client, Net::MQTTClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), &addr, (UInt16)port, false));
+		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), me->core->GetSSLEngine(), &addr, (UInt16)port, false));
 		if (me->client->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);
@@ -81,8 +81,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		SDEL_TEXT(password);
 		if (succ)
 		{
-			Net::MQTTClient::ConnectStatus status = me->client->WaitConnAck(30000);
-			succ = (status == Net::MQTTClient::CS_ACCEPTED);
+			Net::MQTTConn::ConnectStatus status = me->client->WaitConnAck(30000);
+			succ = (status == Net::MQTTConn::CS_ACCEPTED);
 		}
 		
 		if (succ)
