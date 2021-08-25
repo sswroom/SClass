@@ -49,7 +49,16 @@ void Net::MQTTStaticClient::Connect()
 		DEL_CLASS(conn);
 		return;
 	}
-	conn->HandlePublishMessage(this->hdlr, this->hdlrObj);
+	this->packetId = 1;
+	Sync::MutexUsage mutUsage(this->hdlrMut);
+	UOSInt i = 0;
+	UOSInt j = this->hdlrList->GetCount();
+	while (i < j)
+	{
+		conn->HandlePublishMessage(this->hdlrList->GetItem(i), this->hdlrObjList->GetItem(i));
+		i++;
+	}
+	mutUsage.EndUse();
 
 	Bool succ = conn->SendConnect(4, this->kaSeconds, this->clientId, this->username, this->password);
 	if (succ)
@@ -63,16 +72,47 @@ void Net::MQTTStaticClient::Connect()
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(this->connMut);
+		mutUsage.ReplaceMutex(this->connMut);
 		if (conn->IsError())
 		{
 			DEL_CLASS(conn);
+			return;
 		}
 		else
 		{
 			this->conn = conn;
 		}
+		Data::ArrayList<const UTF8Char*> topicList;
+		mutUsage.ReplaceMutex(this->topicMut);
+		topicList.AddRange(this->topicList);
+		mutUsage.EndUse();
+		
+		i = 0;
+		j = topicList.GetCount();
+		while (i < j)
+		{
+			mutUsage.ReplaceMutex(this->connMut);
+			if (this->conn == 0)
+			{
+				mutUsage.EndUse();
+				break;
+			}
+			UInt16 packetId = GetNextPacketId();
+			if (this->conn->SendSubscribe(packetId, topicList.GetItem(i)))
+			{
+				this->conn->WaitSubAck(packetId, 30000);
+			}
+			mutUsage.EndUse();
+
+			i++;
+		}
 	}
+}
+
+UInt16 Net::MQTTStaticClient::GetNextPacketId()
+{
+	Sync::MutexUsage mutUsage(this->packetIdMut);
+	return this->packetId++;
 }
 
 Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj)
@@ -90,8 +130,15 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	sb.Append((const UTF8Char*)"sswrMQTT/");
 	sb.AppendI64(dt.ToTicks());
 	this->clientId = Text::StrCopyNew(sb.ToString());
-	this->hdlr = hdlr;
-	this->hdlrObj = userObj;
+	this->packetId = 1;
+	NEW_CLASS(this->packetIdMut, Sync::Mutex());
+	NEW_CLASS(this->hdlrMut, Sync::Mutex());
+	NEW_CLASS(this->hdlrList, Data::ArrayList<Net::MQTTConn::PublishMessageHdlr>());
+	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
+	this->hdlrList->Add(hdlr);
+	this->hdlrObjList->Add(userObj);
+	NEW_CLASS(this->topicMut, Sync::Mutex());
+	NEW_CLASS(this->topicList, Data::ArrayList<const UTF8Char*>());
 
 	this->sockf = 0;
 	this->ssl = 0;
@@ -133,6 +180,13 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 	}
 	SDEL_CLASS(this->conn);
 	DEL_CLASS(this->connMut);
+	DEL_CLASS(this->hdlrMut);
+	DEL_CLASS(this->hdlrList);
+	DEL_CLASS(this->hdlrObjList);
+	DEL_CLASS(this->topicMut);
+	LIST_FREE_FUNC(this->topicList, Text::StrDelNew);
+	DEL_CLASS(this->topicList);
+	DEL_CLASS(this->packetIdMut);
 	DEL_CLASS(this->kaEvt);
 	SDEL_TEXT(this->username);
 	SDEL_TEXT(this->password);
@@ -150,13 +204,23 @@ Bool Net::MQTTStaticClient::ChannelFailure()
 	return this->conn == 0;
 }
 
+void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj)
+{
+	Sync::MutexUsage mutUsage(this->hdlrMut);
+	this->hdlrList->Add(hdlr);
+	this->hdlrObjList->Add(hdlrObj);
+}
+
 Bool Net::MQTTStaticClient::Subscribe(const UTF8Char *topic)
 {
-	Sync::MutexUsage mutUsage(this->connMut);
+	Sync::MutexUsage mutUsage(this->topicMut);
+	this->topicList->Add(Text::StrCopyNew(topic));
+	mutUsage.ReplaceMutex(this->connMut);
 	if (this->conn == 0) return false;
-	if (this->conn->SendSubscribe(1, topic))
+	UInt16 packetId = GetNextPacketId();
+	if (this->conn->SendSubscribe(packetId, topic))
 	{
-		if (this->conn->WaitSubAck(1, 30000) <= 2)
+		if (this->conn->WaitSubAck(packetId, 30000) <= 2)
 		{
 			return true;
 		}

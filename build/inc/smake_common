@@ -2258,6 +2258,8 @@ Net/EthernetAnalyzer.h: ../../src/Net/EthernetAnalyzer.cpp
 @EthernetAnalyzer.o
 Net/EthernetWebHandler.h: ../../src/Net/EthernetWebHandler.cpp
 @EthernetWebHandler.o
+Net/FailoverChannel.h:
+Net/FailoverHandler.h:
 Net/FTPClient.h: ../../src/Net/FTPClient.cpp
 @FTPClient.o
 Net/FTPConn.h: ../../src/Net/FTPConn.cpp
@@ -2305,6 +2307,7 @@ Net/MIME.h: ../../src/Net/MIME.cpp
 @MIME.o
 Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
 @MQTTBroker.o
+Net/MQTTClient.h:
 Net/MQTTConn.h: ../../src/Net/MQTTConn.cpp
 @MQTTConn.o
 Net/MQTTStaticClient.h: ../../src/Net/MQTTStaticClient.cpp
