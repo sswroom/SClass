@@ -10,13 +10,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	SSWR::AVIRead::AVIRMQTTPublishForm *me = (SSWR::AVIRead::AVIRMQTTPublishForm*)userObj;
 	Net::SocketUtil::AddressInfo addr;
 	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbHost;
 	const UTF8Char *topic = 0;
 	const UTF8Char *message = 0;
 	const UTF8Char *username = 0;
 	const UTF8Char *password = 0;
 	UInt16 port;
-	me->txtHost->GetText(&sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
+	me->txtHost->GetText(&sbHost);
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing host", (const UTF8Char *)"MQTT Publish", me);
 		return;
@@ -59,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	{
 		password = Text::StrCopyNew(sb.ToString());
 	}
-	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), &addr, port, username, password, topic, message))
+	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToString(), port, username, password, topic, message))
 	{
 		me->txtStatus->SetText((const UTF8Char*)"Success");
 	}

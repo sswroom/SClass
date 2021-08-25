@@ -31,6 +31,7 @@ namespace Net
 		} PacketInfo;
 
 		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, const UTF8Char *topic, const UInt8 *buff, UOSInt buffSize);
+		typedef void (__stdcall *DisconnectHdlr)(void *userObj);
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
@@ -42,6 +43,8 @@ namespace Net
 
 		Data::ArrayList<PublishMessageHdlr> *hdlrList;
 		Data::ArrayList<void *> *hdlrObjList;
+		DisconnectHdlr discHdlr;
+		void *discHdlrObj;
 
 		Data::ArrayList<PacketInfo *> *packetList;
 		Sync::Mutex *packetMut;
@@ -57,7 +60,7 @@ namespace Net
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 	public:
-		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn);
+		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj);
 		virtual ~MQTTConn();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);
@@ -78,7 +81,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message);
+		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message);
 	};
 }
 #endif

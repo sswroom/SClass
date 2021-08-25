@@ -116,6 +116,10 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	MemFree(buff);
 	me->recvRunning = false;
 	me->packetEvt->Set();
+	if (me->discHdlr)
+	{
+		me->discHdlr(me->discHdlrObj);
+	}
 	return 0;
 }
 
@@ -160,7 +164,7 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 	return sendSize == packetSize;
 }
 
-Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Bool sslConn)
+Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -168,6 +172,8 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Ne
 	this->recvStarted = false;
 	this->totalDownload = 0;
 	this->totalUpload = 0;
+	this->discHdlr = discHdlr;
+	this->discHdlrObj = discHdlrObj;
 	NEW_CLASS(this->hdlrList, Data::ArrayList<PublishMessageHdlr>());
 	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
 
@@ -176,16 +182,14 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const Ne
 	NEW_CLASS(this->packetEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTConn.packetEvt"));
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
 
-	if (this->ssl && sslConn)
+	if (this->ssl)
 	{
 		Net::SSLEngine::ErrorType err;
-		UTF8Char sbuff[128];
-		Net::SocketUtil::GetAddrName(sbuff, addr);
-		this->cli = this->ssl->Connect(sbuff, port, &err);
+		this->cli = this->ssl->Connect(host, port, &err);
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port));
 	}
 	if (this->cli == 0)
 	{
@@ -420,11 +424,11 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];
-	NEW_CLASS(cli, Net::MQTTConn(sockf, 0, addr, port, false));
+	NEW_CLASS(cli, Net::MQTTConn(sockf, ssl, host, port, 0, 0));
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);

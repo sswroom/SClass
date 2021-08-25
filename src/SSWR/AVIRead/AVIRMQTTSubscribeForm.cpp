@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 			return;
 		}
 
-		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), me->core->GetSSLEngine(), &addr, (UInt16)port, false));
+		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), 0, sb.ToString(), (UInt16)port, 0, 0));
 		if (me->client->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);

@@ -112,8 +112,8 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid port number", (const UTF8Char*)"EqasyWay EW-DTU01", me);
 		return;
 	}
-	NEW_CLASS(me->cli, Net::MQTTStaticClient(me->core->GetSocketFactory(), &addr, port, 0, 0, OnMQTTMessage, me, 30));
-	if (me->cli->IsError())
+	NEW_CLASS(me->cli, Net::MQTTStaticClient(me->core->GetSocketFactory(), 0, sbHost.ToString(), port, 0, 0, OnMQTTMessage, me, 30));
+	if (me->cli->ChannelFailure())
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to MQTT server", (const UTF8Char*)"EasyWay EW-DTU01", me);
 		SDEL_CLASS(me->cli);
