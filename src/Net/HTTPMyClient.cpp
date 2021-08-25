@@ -647,11 +647,29 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	}
 	if (method)
 	{
-		if (Text::StrCompareICase(method, "POST") == 0)
+		if (Text::StrEquals(method, "POST"))
 		{
 			this->canWrite = true;
 			this->writing = false;
 			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"POST ");
+		}
+		else if (Text::StrEquals(method, "PUT"))
+		{
+			this->canWrite = true;
+			this->writing = false;
+			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"PUT ");
+		}
+		else if (Text::StrEquals(method, "PATCH"))
+		{
+			this->canWrite = true;
+			this->writing = false;
+			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"PATCH ");
+		}
+		else if (Text::StrEquals(method, "DELETE"))
+		{
+			this->canWrite = false;
+			this->writing = false;
+			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"DELETE ");
 		}
 		else
 		{
