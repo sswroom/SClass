@@ -36,6 +36,7 @@ namespace SSWR
 			
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			Net::MQTTConn *client;
 			IO::LogTool *log;
 			Sync::Mutex *topicMut;

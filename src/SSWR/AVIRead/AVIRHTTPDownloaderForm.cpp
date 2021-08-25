@@ -2,6 +2,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPOSClient.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
 #include "Sync/Thread.h"
@@ -98,7 +99,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			}
 			Net::HTTPClient *cli;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), 0, false, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, false, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 			cli->Connect(currURL, "GET", &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)
 			{
@@ -267,6 +268,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	this->respChanged = false;
 	this->respHdrChanged = false;
 	this->threadRunning = false;
@@ -382,6 +384,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::~AVIRHTTPDownloaderForm()
 	DEL_CLASS(this->respHeaders);
 	SDEL_TEXT(this->downPath);
 	SDEL_TEXT(this->reqHeader);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRHTTPDownloaderForm::OnMonitorChanged()

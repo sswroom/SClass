@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
+#include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -154,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 
 	if (me->chkSSL->IsChecked())
 	{
-		ssl = me->core->GetSSLEngine();
+		ssl = me->ssl;
 /*		if (!ssl->SetServerCerts((const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.crt", (const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.key"))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in setting certs", (const UTF8Char*)"HTTP Server", me);
@@ -441,6 +442,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Server");
 	this->SetFont(0, 8.25, false);
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	this->svr = 0;
 	this->log = 0;
 	this->dirHdlr = 0;
@@ -612,6 +614,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::~AVIRHTTPSvrForm()
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRHTTPSvrForm::OnMonitorChanged()

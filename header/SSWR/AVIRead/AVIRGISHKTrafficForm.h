@@ -14,6 +14,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 
 			UI::GUILabel *lblRoadCenterline;
 			UI::GUITextBox *txtRoadCenterline;

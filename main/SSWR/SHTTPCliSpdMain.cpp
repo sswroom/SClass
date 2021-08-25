@@ -41,7 +41,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::SSLEngine *ssl;
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
-			ssl = Net::DefaultSSLEngine::Create(sockf);
+			ssl = Net::DefaultSSLEngine::Create(sockf, true);
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, (const UTF8Char*)"Test/1.0", false, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (!cli->Connect(url, "GET", &respTimeDNS, &respTimeConn, false))
 			{

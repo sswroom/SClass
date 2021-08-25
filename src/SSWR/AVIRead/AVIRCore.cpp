@@ -54,11 +54,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->encFact, Text::EncodingFactory());
 	NEW_CLASS(this->exporters, Exporter::ExporterList());
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf);
-	if (this->ssl)
-	{
-		this->ssl->SetSkipCertCheck(true);
-	}
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, u8buff));
 	NEW_CLASS(this->frms, Data::ArrayList<UI::GUIForm*>());
 	NEW_CLASS(this->log, IO::LogTool());
@@ -80,7 +76,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	this->parsers->SetMapManager(this->mapMgr);
 	this->parsers->SetWebBrowser(this->browser);
 	this->parsers->SetSocketFactory(this->sockf);
-	this->parsers->SetSSLEngine(ssl);
+	this->parsers->SetSSLEngine(this->ssl);
 	this->batchLyrs = 0;
 	this->batchLoad = false;
 	NEW_CLASS(this->audDevList, Data::ArrayList<const UTF8Char *>());
@@ -286,11 +282,6 @@ IO::VirtualIOPinMgr *SSWR::AVIRead::AVIRCore::GetVirtualIOPinMgr()
 IO::GPIOControl *SSWR::AVIRead::AVIRCore::GetGPIOControl()
 {
 	return this->gpioCtrl;
-}
-
-Net::SSLEngine *SSWR::AVIRead::AVIRCore::GetSSLEngine()
-{
-	return this->ssl;
 }
 
 Media::AudioDevice *SSWR::AVIRead::AVIRCore::GetAudioDevice()

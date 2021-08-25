@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSite7gogoForm.h"
 
@@ -55,8 +56,9 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
 
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	const UTF8Char *userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(core->GetSocketFactory(), core->GetSSLEngine(), core->GetEncFactory(), userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
@@ -82,6 +84,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRWebSite7gogoForm::~AVIRWebSite7gogoForm()
 {
 	DEL_CLASS(this->ctrl);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRWebSite7gogoForm::OnMonitorChanged()

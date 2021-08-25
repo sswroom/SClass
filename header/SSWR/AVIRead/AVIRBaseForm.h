@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBASEFORM
 #define _SM_SSWR_AVIREAD_AVIRBASEFORM
+#include "Net/SSLEngine.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIMainMenu.h"
@@ -13,6 +14,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			UI::GUIMainMenu *mnuMain;
+			Net::SSLEngine *ssl;
 
 		private:
 			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles);

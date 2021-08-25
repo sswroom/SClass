@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
 #include "Map/HKTrafficLayer.h"
+#include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
@@ -41,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 		if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 		{
 			Map::HKTrafficLayer *traffic;
-			NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetSocketFactory(), me->core->GetSSLEngine(), me->core->GetEncFactory()));
+			NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory()));
 			traffic->AddRoadLayer(lyr);
 			traffic->EndInit();
 			me->lyr = traffic;
@@ -72,6 +73,7 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(UI::GUIClientControl *
 	this->SetNoResize(true);
 
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = 0;
 

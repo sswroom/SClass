@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	ssl = Net::DefaultSSLEngine::Create(sockf);
+	ssl = Net::DefaultSSLEngine::Create(sockf, true);
 	if (ssl == 0 || !ssl->SetServerCerts((const UTF8Char*)"test.crt", (const UTF8Char*)"test.key"))
 	{
 		UTF8Char sbuff[512];

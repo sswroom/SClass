@@ -45,12 +45,12 @@ namespace SSWR
 			} IOPinType;
 
 		protected:
-			Net::SSLEngine *ssl;
 			Parser::ParserList *parsers;
 			Map::MapManager *mapMgr;
 			Media::ColorManager *colorMgr;
 			IO::SiLabDriver *siLabDriver;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Net::WebBrowser *browser;
 			Text::EncodingFactory *encFact;
 			Media::DrawEngine *eng;
@@ -101,7 +101,6 @@ namespace SSWR
 			Net::WebBrowser *GetWebBrowser();
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
 			IO::GPIOControl *GetGPIOControl();
-			Net::SSLEngine *GetSSLEngine();
 			Media::AudioDevice *GetAudioDevice();
 
 			UInt32 GetCurrCodePage();

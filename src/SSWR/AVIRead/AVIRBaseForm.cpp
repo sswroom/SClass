@@ -21,6 +21,7 @@
 #include "Media/MediaFile.h"
 #include "Media/Playlist.h"
 #include "Media/ScreenCapturer.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/URL.h"
 #include "SSWR/AVIRead/AVIRAboutForm.h"
 #include "SSWR/AVIRead/AVIRAccelerometerForm.h"
@@ -464,6 +465,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 480, ui)
 {
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 #if defined(CPU_X86_32)
 	this->SetText((const UTF8Char*)"AVIRead (x86 32-bit)");
 #elif defined(CPU_X86_64)
@@ -731,6 +733,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 SSWR::AVIRead::AVIRBaseForm::~AVIRBaseForm()
 {
 	this->core->CloseAllForm();
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
@@ -884,28 +887,28 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_CYCLE:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_TRANSP:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_LANDSCAPE:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_OUTDOORS:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_SPINAL:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_OSM_MAPQUEST:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetSocketFactory(), this->core->GetSSLEngine(), this->core->GetParserList()));
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	case MNU_ESRI_MAP:
 		{
@@ -924,7 +927,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
 				*u8ptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 				*u8ptr = 0;
-				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, u8buff, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
+				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, u8buff, this->core->GetSocketFactory(), this->ssl));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
@@ -988,7 +991,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, this->core->GetSocketFactory(), this->core->GetSSLEngine());
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"AVIRead", this);
@@ -1410,7 +1413,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TEST:
 		IO::Path::GetProcessFileName(u8buff);
 		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMCacheTest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://127.0.0.1/", u8buff, 18, this->core->GetSocketFactory(), this->core->GetSSLEngine()));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://127.0.0.1/", u8buff, 18, this->core->GetSocketFactory(), this->ssl));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;

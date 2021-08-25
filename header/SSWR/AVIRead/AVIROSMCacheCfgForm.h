@@ -15,6 +15,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			UI::GUILabel *lblMapType;
 			UI::GUIComboBox *cboMapType;
 			UI::GUILabel *lblHTTPPort;

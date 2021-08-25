@@ -6,6 +6,7 @@
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Media/ColorProfile.h"
+#include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRMQTTExplorerForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -58,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"Error", me);
 			return;
 		}
-		Net::SSLEngine *ssl = me->core->GetSSLEngine();
+		Net::SSLEngine *ssl = me->ssl;
 		if (useSSL)
 		{
 			if (me->cliCert && me->cliKey)
@@ -514,6 +515,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->topicMut, Sync::Mutex());
 	NEW_CLASS(this->topicMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>());
 	this->currTopic = 0;
@@ -614,6 +616,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 		this->core->GetDrawEngine()->DeleteImage(this->dispImg);
 		this->dispImg = 0;
 	}
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRMQTTExplorerForm::OnMonitorChanged()

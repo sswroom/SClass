@@ -158,7 +158,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));
 	NEW_CLASS(httpEvt, Sync::Event(true, (const UTF8Char*)"evt"));
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	ssl = Net::DefaultSSLEngine::Create(sockf);
+	ssl = Net::DefaultSSLEngine::Create(sockf, true);
 
 	wd = IO::Watchdog::Create(1);
 	if (wd && wd->IsError())

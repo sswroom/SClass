@@ -40,7 +40,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	NEW_CLASS(this->colorMgr, Media::ColorManager());
 	this->drawEng = Core::DefaultDrawEngine::CreateDrawEngine();
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf);
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->currCate = 0;
 	this->trips = 0;

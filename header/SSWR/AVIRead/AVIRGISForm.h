@@ -24,6 +24,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			UI::GUIForm *ctrlForm;
 			UI::GUITreeView::TreeItem *ctrlItem;
 			Media::ColorManagerSess *colorSess;

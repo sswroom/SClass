@@ -269,7 +269,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	ssl = Net::DefaultSSLEngine::Create(sockf);
+	ssl = Net::DefaultSSLEngine::Create(sockf, true);
 	NEW_CLASS(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
 	NEW_CLASS(tmpDt, Data::DateTime());

@@ -67,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::SSLEngine *ssl;
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
-			ssl = Net::DefaultSSLEngine::Create(sockf);
+			ssl = Net::DefaultSSLEngine::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, "POST", false);
 			if (mime)
 			{

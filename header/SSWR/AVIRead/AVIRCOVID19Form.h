@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #include "Data/Int64Map.h"
 #include "Data/StringUTF8Map.h"
+#include "Net/SSLEngine.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -34,6 +35,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Data::StringUTF8Map<CountryInfo*> *countries;
 
 			UI::GUIPanel *pnlRequest;

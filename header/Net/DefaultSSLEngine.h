@@ -7,7 +7,7 @@ namespace Net
 	class DefaultSSLEngine
 	{
 	public:
-		static Net::SSLEngine *Create(Net::SocketFactory *sockf);
+		static Net::SSLEngine *Create(Net::SocketFactory *sockf, Bool skipCertCheck);
 	};
 }
 #endif

@@ -24,6 +24,7 @@ namespace SSWR
 
 			Net::WebSite::WebSite7gogoControl *ctrl;
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 		public:

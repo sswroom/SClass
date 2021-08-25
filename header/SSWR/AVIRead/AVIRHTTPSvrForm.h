@@ -53,6 +53,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
 			Net::WebServer::HTTPDirectoryHandler *dirHdlr;

@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRSNBHandlerForm.h"
@@ -390,7 +391,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 
 	Int32 status = 0;
 	Net::HTTPClient *cli;
-	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), 0, false, url.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, false, url.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(url.ToString(), "POST", 0, 0, false);
 	cli->AddHeader((const UTF8Char*)"Iot-Program", (const UTF8Char*)"margorpnomis");
 	if (cli->IsError())
@@ -493,6 +494,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->SetFont(0, 8.25, false);
 
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	this->stm = stm;
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->devMut, Sync::RWMutex());
@@ -610,6 +612,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 	DEL_CLASS(this->devHandlerMap);
 	DEL_CLASS(this->devMap);
 	DEL_CLASS(this->devMut);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRSNBDongleForm::OnMonitorChanged()

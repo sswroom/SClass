@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Manage/HiResClock.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
 #include "Sync/Interlocked.h"
@@ -130,7 +131,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	status->threadRunning = true;
 	if (status->me->kaConn)
 	{
-		cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->core->GetSSLEngine(), 0, true, false);
+		cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, false);
 		while (!status->threadToStop)
 		{
 			url = status->me->GetNextURL();
@@ -182,7 +183,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			else
 			{
 				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->core->GetSSLEngine(), 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 				Sync::Interlocked::Increment(&status->me->failCnt);
 			}
 		}
@@ -195,7 +196,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			url = status->me->GetNextURL();
 			if (url == 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->core->GetSSLEngine(), 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (cli->Connect(url, "GET", &timeDNS, &timeConn, false))
 			{
 				cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
@@ -306,6 +307,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	this->threadStatus = 0;
 	NEW_CLASS(this->connMut, Sync::Mutex());
 	NEW_CLASS(this->connURLs, Data::ArrayList<const UTF8Char*>());

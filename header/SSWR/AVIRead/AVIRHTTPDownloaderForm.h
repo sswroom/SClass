@@ -51,6 +51,7 @@ namespace SSWR
 			UI::GUIListView *lvHeaders;
 
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;

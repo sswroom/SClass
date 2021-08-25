@@ -5,6 +5,7 @@
 #include "IO/StreamReader.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRCOVID19Form.h"
 #include "Sync/Thread.h"
@@ -35,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	UInt8 buff[2048];
 	UOSInt i;
 	IO::MemoryStream *mstm;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->core->GetSSLEngine(), (const UTF8Char*)"https://covid.ourworldindata.org/data/owid-covid-data.csv", "GET", true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, (const UTF8Char*)"https://covid.ourworldindata.org/data/owid-covid-data.csv", "GET", true);
 	NEW_CLASS(mstm, IO::MemoryStream(1024, (const UTF8Char*)"SSWR.AVIRead.AVIRCOVID19Form.OnDownloadClicked.mstm"));
 	while (true)
 	{
@@ -254,6 +255,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	NEW_CLASS(this->countries, Data::StringUTF8Map<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -287,6 +289,7 @@ SSWR::AVIRead::AVIRCOVID19Form::~AVIRCOVID19Form()
 {
 	this->ClearRecords();
 	DEL_CLASS(this->countries);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRCOVID19Form::OnMonitorChanged()

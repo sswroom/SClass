@@ -37,6 +37,7 @@ namespace SSWR
 			Net::RSS *rss;
 			Data::ArrayListStrUTF8 *rssList;
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static void __stdcall OnRecentSelChg(void *userObj);

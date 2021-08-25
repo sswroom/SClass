@@ -104,6 +104,7 @@ namespace SSWR
 			UI::GUIListView *lvCookie;
 
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;

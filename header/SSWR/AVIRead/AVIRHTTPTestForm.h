@@ -33,6 +33,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Manage::HiResClock *clk;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			ThreadStatus *threadStatus;
 			Sync::Mutex *connMut;
 			Data::ArrayList<const UTF8Char *> *connURLs;

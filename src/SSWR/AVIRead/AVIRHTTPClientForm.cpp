@@ -3,6 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/MemoryData.h"
 #include "Manage/HiResClock.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
 #include "Net/MIME.h"
@@ -457,7 +458,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqPassword = 0;
 			
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->core->GetSSLEngine(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 //			NEW_CLASS(cli, Net::HTTPOSClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown));
 			if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
@@ -525,7 +526,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->core->GetSSLEngine(), me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 					if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 					{
 						contType = 0;
@@ -968,6 +969,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	this->respChanged = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -1173,6 +1175,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_TEXT(this->respCert);
 	DEL_CLASS(this->respMut);
 	Text::StrDelNew(this->userAgent);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRHTTPClientForm::OnMonitorChanged()

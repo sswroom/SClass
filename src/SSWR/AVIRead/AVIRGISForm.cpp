@@ -13,6 +13,7 @@
 #include "Math/UTMGridConvertDbl.h"
 #include "Math/VectorImage.h"
 #include "Media/SharedImage.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/WebBrowser.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRGISCombineForm.h"
@@ -555,7 +556,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	sb.Append(listFile);
 	sb.Append((const UTF8Char*)"?t=");
 	sb.AppendI64(dt.ToTicks());
-	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->core->GetSSLEngine(), sb.ToString(), "GET", false);
+	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToString(), "GET", false);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	dateStr = 0;
 	timeStr = 0;
@@ -589,6 +590,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	this->env = env;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->scaleChanging = false;
@@ -776,6 +778,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	DEL_CLASS(this->env);
 	DEL_CLASS(this->ta);
 	DEL_CLASS(this->wgs84CSys);
+	SDEL_CLASS(this->ssl);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
@@ -1337,7 +1340,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UTF8Char sbuff[10];
 			UOSInt i;
 			Data::DateTime dt;
-			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->core->GetSSLEngine(), (const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml", "GET", false);
+			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, (const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml", "GET", false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
 			reader->ReadLine(&sb, 4096);
 			while (true)

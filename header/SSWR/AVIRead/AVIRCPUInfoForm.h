@@ -31,6 +31,7 @@ namespace SSWR
 			UI::GUIListView *lvFeature;
 
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 
 			static void __stdcall OnUploadClick(void *userObj);
 			static void __stdcall OnCopyInfoClick(void *userObj);

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSiteInstagramForm.h"
 
@@ -91,8 +92,9 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
 
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetSocketFactory(), core->GetSSLEngine(), core->GetEncFactory(), userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -137,6 +139,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 SSWR::AVIRead::AVIRWebSiteInstagramForm::~AVIRWebSiteInstagramForm()
 {
 	DEL_CLASS(this->ctrl);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRWebSiteInstagramForm::OnMonitorChanged()

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSiteTwitterForm.h"
 
@@ -52,8 +53,9 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientContr
 	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
 
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	const UTF8Char *userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetSocketFactory(), core->GetSSLEngine(), core->GetEncFactory(), userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
@@ -79,6 +81,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientContr
 SSWR::AVIRead::AVIRWebSiteTwitterForm::~AVIRWebSiteTwitterForm()
 {
 	DEL_CLASS(this->ctrl);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRWebSiteTwitterForm::OnMonitorChanged()

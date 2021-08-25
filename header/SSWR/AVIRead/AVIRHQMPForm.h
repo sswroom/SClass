@@ -9,6 +9,7 @@
 #include "Media/Decoder/VideoDecoderFinder.h"
 #include "Media/ImageFilter/BGImgFilter.h"
 #include "Media/ImageFilter/BWImgFilter.h"
+#include "Net/SSLEngine.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
@@ -31,6 +32,7 @@ namespace SSWR
 
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			Media::ColorManagerSess *colorSess;
 			Media::Playlist *playlist;
 			Media::ChapterInfo *currChapInfo;

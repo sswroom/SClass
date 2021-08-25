@@ -40,6 +40,7 @@ namespace SSWR
 			} DeviceInfo;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			IO::Stream *stm;
 			IO::SNBDongle *snb;
 			IO::LogTool *log;

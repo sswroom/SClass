@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRRSSItemForm.h"
 #include "SSWR/AVIRead/AVIRRSSReaderForm.h"
@@ -25,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		Net::RSS *rss;
 		Net::RSSItem *item;
 		const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-		NEW_CLASS(rss, Net::RSS(sb.ToString(), userAgent, me->core->GetSocketFactory(), me->core->GetSSLEngine()));
+		NEW_CLASS(rss, Net::RSS(sb.ToString(), userAgent, me->core->GetSocketFactory(), me->ssl));
 		if (!rss->IsError())
 		{
 			const UTF8Char *csptr;
@@ -203,6 +204,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
 
 	this->core = core;
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->rssList, Data::ArrayListStrUTF8());
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -256,6 +258,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 	}
 	DEL_CLASS(this->rssList);
 	SDEL_CLASS(this->rss);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRRSSReaderForm::OnMonitorChanged()

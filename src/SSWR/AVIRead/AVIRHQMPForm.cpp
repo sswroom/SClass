@@ -7,6 +7,7 @@
 #include "Math/Math.h"
 #include "Media/MediaPlayerWebInterface.h"
 #include "Media/CS/TransferFunc.h"
+#include "Net/DefaultSSLEngine.h"
 #include "Net/MIME.h"
 #include "Net/URL.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
@@ -551,6 +552,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
 	this->qMode = qMode;
 	this->pbEnd = false;
 	this->listener = 0;
@@ -796,6 +798,7 @@ SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 		this->dbgFrm->Close();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
@@ -827,7 +830,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, this->core->GetSocketFactory(), this->core->GetSSLEngine());
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"HQMP", this);
