@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
 	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
 	if (ip)
 	{
-		UInt32 *soc = me->sockf->CreateICMPIPv4Socket(ip);
+		Socket *soc = me->sockf->CreateICMPIPv4Socket(ip);
 		if (soc)
 		{
 			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnRAWData, me, 3));

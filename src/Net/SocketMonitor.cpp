@@ -36,7 +36,7 @@ UInt32 __stdcall Net::SocketMonitor::DataThread(void *obj)
 	return 0;
 }
 
-Net::SocketMonitor::SocketMonitor(Net::SocketFactory *sockf, UInt32 *soc, RAWDataHdlr hdlr, void *userData, UOSInt threadCnt)
+Net::SocketMonitor::SocketMonitor(Net::SocketFactory *sockf, Socket *soc, RAWDataHdlr hdlr, void *userData, UOSInt threadCnt)
 {
 	this->threadCnt = threadCnt;
 	this->threadStats = 0;

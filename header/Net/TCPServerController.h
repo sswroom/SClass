@@ -33,7 +33,7 @@ namespace Net
 		TCPServerHandler *hdlr;
 
 	private:
-		static void __stdcall ConnHdlr(UInt32 *s, void *userObj);
+		static void __stdcall ConnHdlr(Socket *s, void *userObj);
 		static void __stdcall EventHdlr(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall DataHdlr(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall TimeoutHdlr(Net::TCPClient *cli, void *userObj, void *cliData);

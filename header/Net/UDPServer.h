@@ -24,8 +24,8 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::SocketUtil::AddrType addrType;
-		UInt32 *socV4;
-		UInt32 *socV6;
+		Socket *socV4;
+		Socket *socV6;
 		UDPPacketHdlr hdlr;
 		const UTF8Char *logPrefix;
 		void *userData;

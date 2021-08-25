@@ -6,7 +6,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF8Char *proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *destHost, UInt16 destPort) : Net::TCPClient(sockf, (UInt32*)0)
+Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF8Char *proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *destHost, UInt16 destPort) : Net::TCPClient(sockf, (Socket*)0)
 {
 	this->SetSourceName(destHost);
 

@@ -21,7 +21,7 @@
 IO::Writer *console;
 Int32 threadCnt;
 Bool threadToStop;
-UInt32 *rawSock;
+Socket *rawSock;
 Net::SocketFactory *sockf;
 IO::LogTool *logTool;
 

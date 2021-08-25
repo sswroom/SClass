@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(Net::TCPClie
 {
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(UInt32 *s, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(Socket *s, void *userObj)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
 	Net::TCPClient *cli;

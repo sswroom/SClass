@@ -18,7 +18,7 @@ struct Net::OpenSSLEngine::ClassData
 	Crypto::Cert::X509File *cliKey;
 };
 
-Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(UInt32 *s)
+Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	this->sockf->SetRecvTimeout(s, 2000);
@@ -201,7 +201,7 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	{
 		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
-	UInt32 *s;
+	Socket *s;
 	if (addr.addrType == Net::SocketUtil::AT_IPV4)
 	{
 		s = this->sockf->CreateTCPSocketv4();

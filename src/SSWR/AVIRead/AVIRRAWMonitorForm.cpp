@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
 	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
 	if (ip)
 	{
-		UInt32 *soc;
+		Socket *soc;
 		
 		if ((soc = me->sockf->CreateRAWSocket()) != 0)
 		{

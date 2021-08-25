@@ -43,7 +43,7 @@ namespace Net
 		Int32 maxMailSize;
 		IO::FileStream *rawLog;
 
-		static void __stdcall ConnHdlr(UInt32 *s, void *userObj);
+		static void __stdcall ConnHdlr(Socket *s, void *userObj);
 		static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);

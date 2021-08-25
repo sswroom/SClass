@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SMTPServer::ConnHdlr(UInt32 *s, void *userObj)
+void __stdcall Net::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::SMTPServer *me = (Net::SMTPServer*)userObj;
 	Net::TCPClient *cli;

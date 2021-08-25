@@ -13,7 +13,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::WebServer::WebListener *listener;
 		Net::WebServer::WebStandardHandler *webHdlr;
-		UInt32 *rawSock;
+		Socket *rawSock;
 		Net::EthernetAnalyzer *analyzer;
 	
 		Int32 threadCnt;

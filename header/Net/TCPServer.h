@@ -10,7 +10,7 @@ namespace Net
 	class TCPServer
 	{
 	public:
-		typedef void (__stdcall *TCPServerConn)(UInt32 *s, void *userObj);
+		typedef void (__stdcall *TCPServerConn)(Socket *s, void *userObj);
 		typedef struct
 		{
 			TCPServer *me;
@@ -30,8 +30,8 @@ namespace Net
 		Bool errorv4;
 		Bool errorv6;
 		const UTF8Char *logPrefix;
-		UInt32 *svrSocv4;
-		UInt32 *svrSocv6;
+		Socket *svrSocv4;
+		Socket *svrSocv6;
 		void *userObj;
 		Int32 threadRunning;
 		Data::LinkedList *socs;

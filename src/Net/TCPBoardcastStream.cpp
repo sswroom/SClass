@@ -5,7 +5,7 @@
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TCPBoardcastStream::ConnHandler(UInt32 *s, void *userObj)
+void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 {
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
 	Net::TCPClient *cli;

@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 
 			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnClientConn(UInt32 *s, void *userObj);
+			static void __stdcall OnClientConn(Socket *s, void *userObj);
 			static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 			static void __stdcall OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);

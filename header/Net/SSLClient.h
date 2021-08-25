@@ -8,7 +8,7 @@ namespace Net
 	class SSLClient : public Net::TCPClient
 	{
 	public:
-		SSLClient(Net::SocketFactory *sockf, UInt32 *s);
+		SSLClient(Net::SocketFactory *sockf, Socket *s);
 		virtual ~SSLClient();
 
 		virtual Bool IsSSL();

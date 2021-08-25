@@ -23,7 +23,7 @@ namespace Net
 		const UTF8Char *ifName;
 		UInt8 hwAddr[6];
 		UInt32 ipAddr;
-		UInt32 *soc;
+		Socket *soc;
 		ARPResponseHdlr hdlr;
 		void *userData;
 

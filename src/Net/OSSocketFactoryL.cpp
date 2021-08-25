@@ -90,48 +90,48 @@ Net::OSSocketFactory::~OSSocketFactory()
 	SDEL_CLASS(this->dnsHdlr);
 }
 
-UInt32 *Net::OSSocketFactory::CreateTCPSocketv4()
+Socket *Net::OSSocketFactory::CreateTCPSocketv4()
 {
 	int s = socket(AF_INET, SOCK_STREAM, 0) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateTCPSocketv6()
+Socket *Net::OSSocketFactory::CreateTCPSocketv6()
 {
 	int s = socket(AF_INET6, SOCK_STREAM, 0) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateUDPSocketv4()
+Socket *Net::OSSocketFactory::CreateUDPSocketv4()
 {
 	int s = socket(AF_INET, SOCK_DGRAM, 0) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateUDPSocketv6()
+Socket *Net::OSSocketFactory::CreateUDPSocketv6()
 {
 	int s = socket(AF_INET6, SOCK_DGRAM, 0) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
-UInt32 *Net::OSSocketFactory::CreateICMPIPv4Socket(UInt32 ip)
+Socket *Net::OSSocketFactory::CreateICMPIPv4Socket(UInt32 ip)
 {
 	int s = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
+Socket *Net::OSSocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
 {
 	int s = socket(AF_INET, SOCK_RAW, IPPROTO_UDP) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateRAWIPv4Socket(UInt32 ip)
+Socket *Net::OSSocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 {
 	int s = socket(AF_INET, SOCK_RAW, IPPROTO_IP) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateARPSocket()
+Socket *Net::OSSocketFactory::CreateARPSocket()
 {
 	int s = socket(AF_INET, SOCK_PACKET, htons(ETH_P_ARP)) + 1;
 	if (s)
@@ -143,32 +143,32 @@ UInt32 *Net::OSSocketFactory::CreateARPSocket()
 		s_ll.sll_ifindex = 0; // all ifaces 
 		bind(s - 1, (struct sockaddr *)&s_ll, sizeof(s_ll));
 	}
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
-UInt32 *Net::OSSocketFactory::CreateRAWSocket()
+Socket *Net::OSSocketFactory::CreateRAWSocket()
 {
 #if defined(__APPLE__) || defined(__FreeBSD__)
 	return 0;
 #else
 	int s = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL)) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 #endif
 }
 
-void Net::OSSocketFactory::DestroySocket(UInt32 *socket)
+void Net::OSSocketFactory::DestroySocket(Socket *socket)
 {
 	int fd = this->SocketGetFD(socket);
 	shutdown(fd, SHUT_RDWR);
 	close(fd);
 }
 
-Bool Net::OSSocketFactory::SocketIsInvalid(UInt32 *socket)
+Bool Net::OSSocketFactory::SocketIsInvalid(Socket *socket)
 {
 	return (int)(OSInt)socket == 0;
 }
 
-Bool Net::OSSocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port)
+Bool Net::OSSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
 {
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
@@ -177,7 +177,7 @@ Bool Net::OSSocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port)
 	return bind(this->SocketGetFD(socket), (sockaddr*)&addr, sizeof(addr)) != -1;
 }
 
-Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	if (addr == 0 || addr->addrType == Net::SocketUtil::AT_IPV6)
 	{
@@ -209,18 +209,18 @@ Bool Net::OSSocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::Add
 	}
 }
 
-Bool Net::OSSocketFactory::SocketListen(UInt32 *socket)
+Bool Net::OSSocketFactory::SocketListen(Socket *socket)
 {
 	return listen(this->SocketGetFD(socket), SOMAXCONN) != -1;
 }
 
-UInt32 *Net::OSSocketFactory::SocketAccept(UInt32 *socket)
+Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
 {
 	sockaddr_in saddr;
 	socklen_t addrlen = sizeof(saddr);
 	int s;
 	s = accept(this->SocketGetFD(socket), (sockaddr*)&saddr, &addrlen) + 1;
-	return (UInt32*)(OSInt)s;
+	return (Socket*)(OSInt)s;
 }
 
 Int32 Net::OSSocketFactory::SocketGetLastError()
@@ -228,7 +228,7 @@ Int32 Net::OSSocketFactory::SocketGetLastError()
 	return errno;
 }
 
-Bool Net::OSSocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
 {
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
@@ -269,7 +269,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::Addres
 	}
 }
 
-Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
 {
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
@@ -310,13 +310,13 @@ Bool Net::OSSocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::Address
 	}
 }
 
-Int32 Net::OSSocketFactory::SocketGetFD(UInt32 *socket)
+Int32 Net::OSSocketFactory::SocketGetFD(Socket *socket)
 {
 	return -1 + (int)(OSInt)socket;
 }
 
 
-void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
+void Net::OSSocketFactory::SetDontLinger(Socket *socket, Bool val)
 {
 	linger ling;
 	socklen_t leng = sizeof(ling);
@@ -339,7 +339,7 @@ void Net::OSSocketFactory::SetDontLinger(UInt32 *socket, Bool val)
 	}
 }
 
-void Net::OSSocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
+void Net::OSSocketFactory::SetLinger(Socket *socket, UInt32 ms)
 {
 	linger ling;
 	ling.l_onoff = 1;
@@ -347,18 +347,18 @@ void Net::OSSocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
 	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
 }
 
-void Net::OSSocketFactory::SetRecvBuffSize(UInt32 *socket, Int32 buffSize)
+void Net::OSSocketFactory::SetRecvBuffSize(Socket *socket, Int32 buffSize)
 {
 	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_RCVBUF, &buffSize, sizeof(Int32));
 }
 
-void Net::OSSocketFactory::SetNoDelay(UInt32 *socket, Bool val)
+void Net::OSSocketFactory::SetNoDelay(Socket *socket, Bool val)
 {
 	int v = val?1:0;
 	setsockopt(this->SocketGetFD(socket), IPPROTO_TCP, TCP_NODELAY, (char*)&v, sizeof(v));
 }
 
-void Net::OSSocketFactory::SetRecvTimeout(UInt32 *socket, Int32 ms)
+void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Int32 ms)
 {
 	struct timeval tv;
 	tv.tv_sec = ms / 1000;
@@ -369,24 +369,24 @@ void Net::OSSocketFactory::SetRecvTimeout(UInt32 *socket, Int32 ms)
 	}
 }
 
-void Net::OSSocketFactory::SetReuseAddr(UInt32 *socket, Bool val)
+void Net::OSSocketFactory::SetReuseAddr(Socket *socket, Bool val)
 {
 	int v = val?1:0;
 	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_REUSEADDR, (char*)&v, sizeof(v));
 }
 
-void Net::OSSocketFactory::SetIPv4TTL(UInt32 *socket, Int32 ttl)
+void Net::OSSocketFactory::SetIPv4TTL(Socket *socket, Int32 ttl)
 {
 	setsockopt(this->SocketGetFD(socket), IPPROTO_IP, IP_TTL, (char*)&ttl, sizeof(ttl));
 }
 
-void Net::OSSocketFactory::SetBroadcast(UInt32 *socket, Bool val)
+void Net::OSSocketFactory::SetBroadcast(Socket *socket, Bool val)
 {
 	int v = val?1:0;
 	setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_BROADCAST, (char*)&v, sizeof(v));
 }
 
-void Net::OSSocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
+void Net::OSSocketFactory::AddIPMembership(Socket *socket, UInt32 ip)
 {
 	struct ip_mreq mreq;
 	mreq.imr_multiaddr.s_addr = ip;
@@ -394,7 +394,7 @@ void Net::OSSocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
 	setsockopt(this->SocketGetFD(socket), IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	int flags = 0;
 #if defined(MSG_NOSIGNAL)
@@ -438,7 +438,7 @@ UOSInt Net::OSSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt 
 	}
 }
 
-UOSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	OSInt ret = recv(this->SocketGetFD(socket), (char*)buff, (size_t)buffSize, 0);
 //	OSInt ret = read(this->SocketGetFD(socket), (char*)buff, (int)buffSize);
@@ -479,7 +479,7 @@ UOSInt Net::OSSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buf
 	}
 }
 
-void *Net::OSSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
 {
 	UOSInt ret = ReceiveData(socket, buff, buffSize, et);
 	if (ret)
@@ -499,7 +499,7 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 {
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
+UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
 {
 	OSInt recvSize;
 	sockaddr_storage addrBuff;
@@ -559,7 +559,7 @@ UOSInt Net::OSSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buff
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+UOSInt Net::OSSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	sockaddr_storage addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
@@ -602,7 +602,7 @@ UOSInt Net::OSSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt bu
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
+UOSInt Net::OSSocketFactory::SendToIF(Socket *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
 {
 	sockaddr addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
@@ -784,7 +784,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 	return false;
 }
 
-Bool Net::OSSocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
+Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
 {
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
@@ -824,7 +824,7 @@ Bool Net::OSSocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
     return connect(this->SocketGetFD(socket), (struct sockaddr *)&addr, sizeof(addr)) == 0;
 }
 
-Bool Net::OSSocketFactory::Connect(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	UInt8 addrBuff[28];
 	socklen_t socklen;
@@ -850,12 +850,12 @@ Bool Net::OSSocketFactory::Connect(UInt32 *socket, const Net::SocketUtil::Addres
 	return connect(this->SocketGetFD(socket), (const sockaddr*)addrBuff, socklen) == 0;
 }
 
-void Net::OSSocketFactory::ShutdownSend(UInt32 *socket)
+void Net::OSSocketFactory::ShutdownSend(Socket *socket)
 {
 	shutdown(this->SocketGetFD(socket), SHUT_WR);
 }
 
-Bool Net::OSSocketFactory::SocketGetReadBuff(UInt32 *socket, UInt32 *size)
+Bool Net::OSSocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 {
 /*	struct timeval tv;
 	fd_set readset;

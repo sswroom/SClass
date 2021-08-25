@@ -23,7 +23,7 @@ namespace Net
 		UInt8 *writeBuff;
 		UOSInt writeBuffSize;
 
-		static void __stdcall ConnHandler(UInt32 *s, void *userObj);
+		static void __stdcall ConnHandler(Socket *s, void *userObj);
 		static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);

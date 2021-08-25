@@ -159,7 +159,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 *s) : IO::Stream((const UTF8Char*)"")
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream((const UTF8Char*)"")
 {
 	this->sockf = sockf;
 	this->s = s;
@@ -445,7 +445,7 @@ void Net::TCPClient::SetTimeout(Int32 ms)
 	this->sockf->SetRecvTimeout(this->s, ms);
 }
 
-UInt32 *Net::TCPClient::GetSocket()
+Socket *Net::TCPClient::GetSocket()
 {
 	return s;
 }

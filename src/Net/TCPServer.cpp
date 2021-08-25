@@ -44,7 +44,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Subthread(void *o)
 	status->threadEvt->Set();
 	while (!status->toStop)
 	{
-		UInt32 *s;
+		Socket *s;
 		s = status->me->socf->SocketAccept(status->me->svrSocv4);
 		if (status->me->socf->SocketIsInvalid(s))
 		{
@@ -54,7 +54,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Subthread(void *o)
 		}
 		else
 		{
-			status->me->socs->Put((UInt32*)s);
+			status->me->socs->Put(s);
 			status->me->socsEvt->Set();
 		}
 	}
@@ -135,7 +135,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	}
 	while (!svr->toStop)
 	{
-		UInt32 *s;
+		Socket *s;
 		s = svr->socf->SocketAccept(svr->svrSocv4);
 		if (svr->socf->SocketIsInvalid(s))
 		{
@@ -145,7 +145,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 		}
 		else
 		{
-			svr->socs->Put((UInt32*)s);
+			svr->socs->Put(s);
 			svr->socsEvt->Set();
 
 /*			str = Text::StrConcat(buff, L"Client connected: ");
@@ -203,7 +203,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Subthread(void *o)
 	status->threadEvt->Set();
 	while (!status->toStop)
 	{
-		UInt32 *s;
+		Socket *s;
 		s = status->me->socf->SocketAccept(status->me->svrSocv6);
 		if (status->me->socf->SocketIsInvalid(s))
 		{
@@ -213,7 +213,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Subthread(void *o)
 		}
 		else
 		{
-			status->me->socs->Put((UInt32*)s);
+			status->me->socs->Put(s);
 			status->me->socsEvt->Set();
 		}
 	}
@@ -296,7 +296,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	}
 	while (!svr->toStop)
 	{
-		UInt32 *s;
+		Socket *s;
 		s = svr->socf->SocketAccept(svr->svrSocv6);
 		if (svr->socf->SocketIsInvalid(s))
 		{
@@ -367,9 +367,9 @@ UInt32 __stdcall Net::TCPServer::SvrThread2(void *o)
 	{
 		while (svr->socs->HasItems())
 		{
-			UInt32 *s = (UInt32*)svr->socs->Get();
+			Socket *s = (Socket*)svr->socs->Get();
 			str = Text::StrConcat(buff, (const UTF8Char*)"Client connected: ");
-			str = svr->socf->GetRemoteName(str, (UInt32*)s);
+			str = svr->socf->GetRemoteName(str, s);
 			svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
 			svr->hdlr(s, svr->userObj);
 		}

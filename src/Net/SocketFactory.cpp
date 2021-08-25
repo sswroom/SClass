@@ -97,7 +97,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host)
 	}
 }
 
-UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, UInt32 *socket)
+UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, Socket *socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -112,7 +112,7 @@ UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, UInt32 *socket)
 	}
 }
 
-UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, UInt32 *socket)
+UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, Socket *socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -127,7 +127,7 @@ UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, UInt32 *socket)
 	}
 }
 
-UInt64 Net::SocketFactory::GenSocketId(UInt32 *socket)
+UInt64 Net::SocketFactory::GenSocketId(Socket *socket)
 {
 	Net::SocketUtil::AddressInfo rAddr;
 	UInt16 rPort;

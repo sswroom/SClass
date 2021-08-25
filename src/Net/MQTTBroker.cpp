@@ -101,7 +101,7 @@ void __stdcall Net::MQTTBroker::OnClientTimeout(Net::TCPClient *cli, void *userO
 {
 }
 
-void __stdcall Net::MQTTBroker::OnClientConn(UInt32 *s, void *userObj)
+void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
 {
 	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
 	Net::TCPClient *cli;

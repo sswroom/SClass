@@ -5,7 +5,7 @@
 #include "Sync/Thread.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::TCPServerStream::ConnHandler(UInt32 *s, void *userObj)
+void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, void *userObj)
 {
 	Net::TCPServerStream *me = (Net::TCPServerStream*)userObj;
 	Net::TCPClient *cli;

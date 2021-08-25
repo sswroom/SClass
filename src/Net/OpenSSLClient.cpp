@@ -21,7 +21,7 @@ UInt32 Net::OpenSSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, UInt32 *s) : SSLClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *s) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;

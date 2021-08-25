@@ -172,17 +172,17 @@ Bool IO::Device::SIM7000SocketFactory::NetworkEnd()
 	return true; //this->modem->GPRSServiceSetAttached(false);
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateTCPSocketv4()
+Socket *IO::Device::SIM7000SocketFactory::CreateTCPSocketv4()
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateTCPSocketv6()
+Socket *IO::Device::SIM7000SocketFactory::CreateTCPSocketv6()
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
+Socket *IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
 {
 	OSInt i = 0;
 	OSInt j = 8;
@@ -193,44 +193,44 @@ UInt32 *IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
 			this->status[i].state = SS_UDP_UNOPENED;
 			this->status[i].udpRIP = 0;
 			this->status[i].udpRPort = 0;
-			return (UInt32*)(i + 1);
+			return (Socket*)(i + 1);
 		}
 		i++;
 	}
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateUDPSocketv6()
+Socket *IO::Device::SIM7000SocketFactory::CreateUDPSocketv6()
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateICMPIPv4Socket(UInt32 ip)
+Socket *IO::Device::SIM7000SocketFactory::CreateICMPIPv4Socket(UInt32 ip)
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
+Socket *IO::Device::SIM7000SocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateRAWIPv4Socket(UInt32 ip)
+Socket *IO::Device::SIM7000SocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateARPSocket()
+Socket *IO::Device::SIM7000SocketFactory::CreateARPSocket()
 {
 	return 0;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::CreateRAWSocket()
+Socket *IO::Device::SIM7000SocketFactory::CreateRAWSocket()
 {
 	return 0;
 }
 
-void IO::Device::SIM7000SocketFactory::DestroySocket(UInt32 *socket)
+void IO::Device::SIM7000SocketFactory::DestroySocket(Socket *socket)
 {
 	UOSInt i = (UOSInt)socket - 1;
 	DataPacket *packet;
@@ -263,7 +263,7 @@ void IO::Device::SIM7000SocketFactory::DestroySocket(UInt32 *socket)
 	}
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketIsInvalid(UInt32 *socket)
+Bool IO::Device::SIM7000SocketFactory::SocketIsInvalid(Socket *socket)
 {
 	OSInt i = -1 + (OSInt)socket;
 	if (i < 0 || i >= 8)
@@ -283,7 +283,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketIsInvalid(UInt32 *socket)
 	}
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
 {
 	UOSInt i = (UOSInt)socket - 1;
 	if (socket == 0 || i >= 8)
@@ -306,17 +306,17 @@ Bool IO::Device::SIM7000SocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, U
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketBind(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketListen(UInt32 *socket)
+Bool IO::Device::SIM7000SocketFactory::SocketListen(Socket *socket)
 {
 	return false;
 }
 
-UInt32 *IO::Device::SIM7000SocketFactory::SocketAccept(UInt32 *socket)
+Socket *IO::Device::SIM7000SocketFactory::SocketAccept(Socket *socket)
 {
 	return 0;
 }
@@ -326,75 +326,75 @@ Int32 IO::Device::SIM7000SocketFactory::SocketGetLastError()
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetRemoteAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool IO::Device::SIM7000SocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
 {
 	return false;
 }
 
-Int32 IO::Device::SIM7000SocketFactory::SocketGetFD(UInt32 *socket)
+Int32 IO::Device::SIM7000SocketFactory::SocketGetFD(Socket *socket)
 {
 	return false;
 }
 
-void IO::Device::SIM7000SocketFactory::SetDontLinger(UInt32 *socket, Bool val)
+void IO::Device::SIM7000SocketFactory::SetDontLinger(Socket *socket, Bool val)
 {
 
 }
 
-void IO::Device::SIM7000SocketFactory::SetLinger(UInt32 *socket, UInt32 ms)
+void IO::Device::SIM7000SocketFactory::SetLinger(Socket *socket, UInt32 ms)
 {
 
 }
 
-void IO::Device::SIM7000SocketFactory::SetRecvBuffSize(UInt32 *socket, Int32 buffSize)
+void IO::Device::SIM7000SocketFactory::SetRecvBuffSize(Socket *socket, Int32 buffSize)
 {
 
 }
 
-void IO::Device::SIM7000SocketFactory::SetNoDelay(UInt32 *socket, Bool val)
+void IO::Device::SIM7000SocketFactory::SetNoDelay(Socket *socket, Bool val)
 {
 	this->modem->NetSetDisableNagle(val);
 }
 
-void IO::Device::SIM7000SocketFactory::SetRecvTimeout(UInt32 *socket, Int32 ms)
+void IO::Device::SIM7000SocketFactory::SetRecvTimeout(Socket *socket, Int32 ms)
 {
 
 }
 
-void IO::Device::SIM7000SocketFactory::SetReuseAddr(UInt32 *socket, Bool val)
+void IO::Device::SIM7000SocketFactory::SetReuseAddr(Socket *socket, Bool val)
 {
 
 }
 
-void IO::Device::SIM7000SocketFactory::SetIPv4TTL(UInt32 *socket, Int32 ttl)
+void IO::Device::SIM7000SocketFactory::SetIPv4TTL(Socket *socket, Int32 ttl)
 {
 }
 
-void IO::Device::SIM7000SocketFactory::SetBroadcast(UInt32 *socket, Bool val)
+void IO::Device::SIM7000SocketFactory::SetBroadcast(Socket *socket, Bool val)
 {
 }
 
-void IO::Device::SIM7000SocketFactory::AddIPMembership(UInt32 *socket, UInt32 ip)
+void IO::Device::SIM7000SocketFactory::AddIPMembership(Socket *socket, UInt32 ip)
 {
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
-{
-	return 0;
-}
-
-UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
 	return 0;
 }
 
-void *IO::Device::SIM7000SocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+{
+	return 0;
+}
+
+void *IO::Device::SIM7000SocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
 {
 	return 0;
 }
@@ -410,7 +410,7 @@ void IO::Device::SIM7000SocketFactory::CancelReceiveData(void *reqData)
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
 {
 	OSInt i = -1 + (OSInt)socket;
 	if (i < 0 || i >= 8)
@@ -451,7 +451,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff,
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+UOSInt IO::Device::SIM7000SocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	UOSInt i = (UOSInt)socket - 1;
 	if (socket == 0 || i >= 8)
@@ -499,7 +499,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendTo(UInt32 *socket, const UInt8 *buf
 	}
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
+UOSInt IO::Device::SIM7000SocketFactory::SendToIF(Socket *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
 {
 	return 0;
 }
@@ -521,21 +521,21 @@ Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::Addr
 	return succ;
 }
 
-Bool IO::Device::SIM7000SocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::Connect(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	return false;
 }
 
-void IO::Device::SIM7000SocketFactory::ShutdownSend(UInt32 *socket)
+void IO::Device::SIM7000SocketFactory::ShutdownSend(Socket *socket)
 {
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(UInt32 *socket, UInt32 *size)
+Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 {
 	return false;
 }

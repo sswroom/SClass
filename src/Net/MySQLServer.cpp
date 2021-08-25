@@ -767,7 +767,7 @@ void __stdcall Net::MySQLServer::OnClientTimeout(Net::TCPClient *cli, void *user
 {
 }
 
-void __stdcall Net::MySQLServer::OnClientConn(UInt32 *s, void *userObj)
+void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 {
 	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
 	UInt8 buff[128];

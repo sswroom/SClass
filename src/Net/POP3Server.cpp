@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::POP3Server::ConnHdlr(UInt32 *s, void *userObj)
+void __stdcall Net::POP3Server::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::POP3Server *me = (Net::POP3Server*)userObj;
 	Net::TCPClient *cli;

@@ -11,7 +11,7 @@ namespace Net
 	{
 	protected:
 		Net::SocketFactory *sockf;
-		UInt32 *s;
+		Socket *s;
 		UInt64 currCnt;
 		UInt64 cliId;
 		Int32 flags; //1 = shutdown send, 2 = shutdown recv, 4 = closed, 8 = connect error
@@ -23,7 +23,7 @@ namespace Net
 		TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt16 port);
 		TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port);
 		TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
-		TCPClient(Net::SocketFactory *sockf, UInt32 *s);
+		TCPClient(Net::SocketFactory *sockf, Socket *s);
 		virtual ~TCPClient();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
@@ -58,7 +58,7 @@ namespace Net
 		void ShutdownSend();
 		void SetTimeout(Int32 ms);
 
-		UInt32 *GetSocket();
+		Socket *GetSocket();
 	};
 }
 #endif

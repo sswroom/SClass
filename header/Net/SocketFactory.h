@@ -6,6 +6,8 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
+struct Socket;
+
 namespace Net
 {
 	class ConnectionInfo;
@@ -145,55 +147,55 @@ namespace Net
 		SocketFactory(Bool noV6DNS);
 		virtual ~SocketFactory();
 
-		virtual UInt32 *CreateTCPSocketv4() = 0;
-		virtual UInt32 *CreateTCPSocketv6() = 0;
-		virtual UInt32 *CreateUDPSocketv4() = 0;
-		virtual UInt32 *CreateUDPSocketv6() = 0;
+		virtual Socket *CreateTCPSocketv4() = 0;
+		virtual Socket *CreateTCPSocketv6() = 0;
+		virtual Socket *CreateUDPSocketv4() = 0;
+		virtual Socket *CreateUDPSocketv6() = 0;
 
-		virtual UInt32 *CreateICMPIPv4Socket(UInt32 ip) = 0;
-		virtual UInt32 *CreateUDPRAWv4Socket(UInt32 ip) = 0;
-		virtual UInt32 *CreateRAWIPv4Socket(UInt32 ip) = 0;
-		virtual UInt32 *CreateARPSocket() = 0;
-		virtual UInt32 *CreateRAWSocket() = 0;
+		virtual Socket *CreateICMPIPv4Socket(UInt32 ip) = 0;
+		virtual Socket *CreateUDPRAWv4Socket(UInt32 ip) = 0;
+		virtual Socket *CreateRAWIPv4Socket(UInt32 ip) = 0;
+		virtual Socket *CreateARPSocket() = 0;
+		virtual Socket *CreateRAWSocket() = 0;
 
-		virtual void DestroySocket(UInt32 *socket) = 0;
-		virtual Bool SocketIsInvalid(UInt32 *socket) = 0;
-		virtual Bool SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port) = 0;
-		virtual Bool SocketBind(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
-		virtual Bool SocketListen(UInt32 *socket) = 0;
-		virtual UInt32 *SocketAccept(UInt32 *socket) = 0;
+		virtual void DestroySocket(Socket *socket) = 0;
+		virtual Bool SocketIsInvalid(Socket *socket) = 0;
+		virtual Bool SocketBindv4(Socket *socket, UInt32 ip, UInt16 port) = 0;
+		virtual Bool SocketBind(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual Bool SocketListen(Socket *socket) = 0;
+		virtual Socket *SocketAccept(Socket *socket) = 0;
 		virtual Int32 SocketGetLastError() = 0;
-		virtual Bool GetRemoteAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
-		virtual Bool GetLocalAddr(UInt32 *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
-		virtual Int32 SocketGetFD(UInt32 *socket) = 0;
+		virtual Bool GetRemoteAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
+		virtual Bool GetLocalAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
+		virtual Int32 SocketGetFD(Socket *socket) = 0;
 
-		virtual void SetDontLinger(UInt32 *socket, Bool val) = 0;
-		virtual void SetLinger(UInt32 *socket, UInt32 ms) = 0;
-		virtual void SetRecvBuffSize(UInt32 *socket, Int32 buffSize) = 0;
-		virtual void SetNoDelay(UInt32 *socket, Bool val) = 0;
-		virtual void SetRecvTimeout(UInt32 *socket, Int32 ms) = 0;
-		virtual void SetReuseAddr(UInt32 *socket, Bool val) = 0;
-		virtual void SetIPv4TTL(UInt32 *socket, Int32 ttl) = 0;
-		virtual void SetBroadcast(UInt32 *socket, Bool val) = 0;
-		virtual void AddIPMembership(UInt32 *socket, UInt32 ip) = 0;
+		virtual void SetDontLinger(Socket *socket, Bool val) = 0;
+		virtual void SetLinger(Socket *socket, UInt32 ms) = 0;
+		virtual void SetRecvBuffSize(Socket *socket, Int32 buffSize) = 0;
+		virtual void SetNoDelay(Socket *socket, Bool val) = 0;
+		virtual void SetRecvTimeout(Socket *socket, Int32 ms) = 0;
+		virtual void SetReuseAddr(Socket *socket, Bool val) = 0;
+		virtual void SetIPv4TTL(Socket *socket, Int32 ttl) = 0;
+		virtual void SetBroadcast(Socket *socket, Bool val) = 0;
+		virtual void AddIPMembership(Socket *socket, UInt32 ip) = 0;
 
-		virtual UOSInt SendData(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
-		virtual UOSInt ReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
-		virtual void *BeginReceiveData(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et) = 0;
+		virtual UOSInt SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
+		virtual UOSInt ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
+		virtual void *BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et) = 0;
 		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, Bool *incomplete) = 0;
 		virtual void CancelReceiveData(void *reqData) = 0;
 
-		virtual UOSInt UDPReceive(UInt32 *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et) = 0;
-		virtual UOSInt SendTo(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
-		virtual UOSInt SendToIF(UInt32 *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName) = 0;
+		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et) = 0;
+		virtual UOSInt SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual UOSInt SendToIF(Socket *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName) = 0;
 
 		virtual Bool IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl) = 0;
 
-		virtual Bool Connect(UInt32 *socket, UInt32 ip, UInt16 port) = 0;
-		virtual Bool Connect(UInt32 *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
-		virtual void ShutdownSend(UInt32 *socket) = 0;
+		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port) = 0;
+		virtual Bool Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual void ShutdownSend(Socket *socket) = 0;
 
-		virtual Bool SocketGetReadBuff(UInt32 *socket, UInt32 *size) = 0;
+		virtual Bool SocketGetReadBuff(Socket *socket, UInt32 *size) = 0;
 
 		virtual Bool DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr) = 0;
 		virtual Bool GetDefDNS(Net::SocketUtil::AddressInfo *addr) = 0;
@@ -222,10 +224,10 @@ namespace Net
 //		UInt32 GetLocalIPByDest(const WChar *host);////////////////////
 //		UInt32 GetLocalIPByDest(UInt32 ip);//////////////////////////
 
-		UTF8Char *GetRemoteName(UTF8Char *buff, UInt32 *socket);
-		UTF8Char *GetLocalName(UTF8Char *buff, UInt32 *socket);
+		UTF8Char *GetRemoteName(UTF8Char *buff, Socket *socket);
+		UTF8Char *GetLocalName(UTF8Char *buff, Socket *socket);
 #ifdef HAS_INT64
-		UInt64 GenSocketId(UInt32 *socket);
+		UInt64 GenSocketId(Socket *socket);
 		static void FromSocketId(UInt64 socketId, UInt32 *ip, UInt16 *port);
 #endif
 

@@ -17,7 +17,7 @@ void __stdcall Net::WebServer::WebListener::ClientReady(Net::TCPClient *cli, voi
 	me->cliMgr->AddClient(cli, conn);
 }
 
-void __stdcall Net::WebServer::WebListener::ConnHdlr(UInt32 *s, void *userObj)
+void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::TCPClient *cli;

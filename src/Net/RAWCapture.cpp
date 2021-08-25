@@ -218,7 +218,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 			this->fs->Write(buff, (UOSInt)i);
 		}
 
-		UInt32 *s = 0;
+		Socket *s = 0;
 		switch (type)
 		{
 		case CT_RAW:

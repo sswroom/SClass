@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 	me->txtPort->SetReadOnly(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(UInt32 *s, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
 	Net::TCPClient *cli;

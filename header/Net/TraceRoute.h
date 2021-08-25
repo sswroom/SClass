@@ -9,7 +9,7 @@ namespace Net
 	{
 	private:
 		Net::SocketFactory *sockf;
-		UInt32 *socV4;
+		Socket *socV4;
 		Bool threadRunning;
 		Bool threadToStop;
 
@@ -20,7 +20,7 @@ namespace Net
 		Sync::Event *resEvt;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
-		void ICMPChecksum(UInt8 *buff, OSInt buffSize);
+		void ICMPChecksum(UInt8 *buff, UOSInt buffSize);
 	public:
 		TraceRoute(Net::SocketFactory *sockf, UInt32 ip);
 		~TraceRoute();
@@ -28,5 +28,5 @@ namespace Net
 		Bool IsError();
 		Bool Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList);
 	};
-};
+}
 #endif

@@ -48,7 +48,7 @@ namespace Net
 		typedef struct
 		{
 			ThreadStatus status;
-			UInt32 *s;
+			Socket *s;
 			ClientReadyHandler clientReady;
 			void *clientReadyObj;
 			Sync::Event *evt;
@@ -63,7 +63,7 @@ namespace Net
 		ThreadState *threadSt;
 
 		static UInt32 __stdcall ServerThread(void *userObj);
-		virtual Net::SSLClient *CreateServerConn(UInt32 *s) = 0;
+		virtual Net::SSLClient *CreateServerConn(Socket *s) = 0;
 		SSLEngine(Net::SocketFactory *sockf);
 	public:
 		virtual ~SSLEngine();
@@ -77,7 +77,7 @@ namespace Net
 		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
 
 		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
-		void ServerInit(UInt32 *s, ClientReadyHandler readyHdlr, void *userObj);
+		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		static const UTF8Char *ErrorTypeGetName(ErrorType err);
 	};

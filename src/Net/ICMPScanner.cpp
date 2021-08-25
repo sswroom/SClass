@@ -218,7 +218,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 {
 	UInt8 buff[8];
 	UInt8 packetBuff[64];
-	UInt32 *s;
+	Socket *s;
 	WriteNUInt32(buff, ip);
 	if (buff[0] == 192 && buff[1] == 168)
 	{

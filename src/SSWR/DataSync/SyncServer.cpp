@@ -13,7 +13,7 @@ typedef struct
 	UInt8 buff[10240];
 } ClientData;
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientConn(UInt32 *s, void *userObj)
+void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, void *userObj)
 {
 	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
 	Net::TCPClient *cli;

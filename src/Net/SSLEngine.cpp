@@ -15,7 +15,7 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 		if (state->s)
 		{
 			state->status = TS_PROCESSING;
-			UInt32 *s = state->s;
+			Socket *s = state->s;
 			state->s = 0;
 
 			Net::TCPClient *cli = state->me->CreateServerConn(s);
@@ -112,7 +112,7 @@ Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *ke
 	return ret;
 }
 
-void Net::SSLEngine::ServerInit(UInt32 *s, ClientReadyHandler readyHdlr, void *userObj)
+void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj)
 {
 	UOSInt i = 0;
 	Bool found = false;

@@ -9,7 +9,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	Net::TCPPortScanner *me = (Net::TCPPortScanner*)userObj;
 	Net::SocketUtil::AddressInfo addr;
 	OSInt i;
-	UInt32 *s;
+	Socket *s;
 	Sync::Interlocked::Increment(&me->threadCnt);
 	while (!me->threadToStop)
 	{

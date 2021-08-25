@@ -11,7 +11,7 @@ namespace Net
 		struct ClassData *clsData;
 		Bool skipCertCheck;
 
-		virtual Net::SSLClient *CreateServerConn(UInt32 *s);
+		virtual Net::SSLClient *CreateServerConn(Socket *s);
 	public:
 		OpenSSLEngine(Net::SocketFactory *sockf, Method method);
 		virtual ~OpenSSLEngine();

@@ -93,7 +93,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(Net::TCPClient *
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(UInt32 *s, void *userObj)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *userObj)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	Net::TCPClient *cli;

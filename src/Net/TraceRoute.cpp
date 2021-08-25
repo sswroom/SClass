@@ -63,7 +63,7 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 	return 0;
 }
 
-void Net::TraceRoute::ICMPChecksum(UInt8 *buff, OSInt buffSize)
+void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 *oriBuff = buff;
     UInt32 sum = 0xffff;
