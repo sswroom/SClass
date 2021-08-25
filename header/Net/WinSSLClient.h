@@ -11,7 +11,7 @@ namespace Net
 		struct ClassData *clsData;
 
 	public:
-		WinSSLClient(Net::SocketFactory *sockf, UInt32 *s, void *ctxt);
+		WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt);
 		virtual ~WinSSLClient();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

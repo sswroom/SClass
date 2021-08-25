@@ -185,7 +185,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred)
 	return status == 0;
 }
 
-Net::SSLClient *Net::WinSSLEngine::CreateServerConn(UInt32 *s)
+Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 {
 	if (!this->clsData->svrInit)
 	{
@@ -752,7 +752,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	}
 
 	Net::SocketUtil::AddressInfo addr;
-	UInt32 *s;
+	Socket *s;
 	if (!this->sockf->DNSResolveIP(hostName, &addr))
 	{
 		if (err)
