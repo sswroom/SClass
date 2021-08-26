@@ -9824,6 +9824,7 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 		SDEL_TEXT(loc->ename);
 		MemFree(loc);
 	}
+	DEL_CLASS(this->locMap);
 	DEL_CLASS(this->parsers);
 	DEL_CLASS(this->resizerLR);
 	DEL_CLASS(this->resizerMut);
