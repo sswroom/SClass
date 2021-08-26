@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Sync/Event.h"
+#include "Sync/Interlocked.h"
+#include "Sync/Thread.h"
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
 
@@ -166,6 +168,7 @@ typedef struct
 {
 	pthread_cond_t cond;
 	pthread_mutex_t mutex;
+	UInt32 useCnt;
 } EventStatus;
 
 Sync::Event::Event(const UTF8Char *name)
@@ -174,6 +177,7 @@ Sync::Event::Event(const UTF8Char *name)
 	this->hand = status;
 	pthread_cond_init(&status->cond, 0);
 	pthread_mutex_init(&status->mutex, 0);
+	status->useCnt = 0;
 	this->isSet = false;
 	this->isAuto = true;
 }
@@ -184,6 +188,7 @@ Sync::Event::Event(Bool isAuto, const UTF8Char *name)
 	this->hand = status;
 	pthread_cond_init(&status->cond, 0);
 	pthread_mutex_init(&status->mutex, 0);
+	status->useCnt = 0;
 	this->isSet = false;
 	this->isAuto = isAuto;
 }
@@ -191,6 +196,10 @@ Sync::Event::Event(Bool isAuto, const UTF8Char *name)
 Sync::Event::~Event()
 {
 	EventStatus *status = (EventStatus*)this->hand;
+	while (status->useCnt != 0)
+	{
+		Sync::Thread::Sleep(1);
+	}
 	pthread_mutex_lock(&status->mutex);
 	pthread_cond_destroy(&status->cond);
 	pthread_mutex_unlock(&status->mutex);
@@ -369,18 +378,22 @@ void Sync::Event::Set()
 	EventStatus *status = (EventStatus*)this->hand;
 	if (this->isAuto)
 	{
+		Sync::Interlocked::Increment(&status->useCnt);
 		pthread_mutex_lock(&status->mutex);
 		this->isSet = true;
 		pthread_cond_signal(&status->cond);
 		pthread_mutex_unlock(&status->mutex);
+		Sync::Interlocked::Decrement(&status->useCnt);
 	}
 	else
 	{
+		Sync::Interlocked::Increment(&status->useCnt);
 		pthread_mutex_lock(&status->mutex);
 		this->isSet = true;
 		pthread_cond_signal(&status->cond);
 		pthread_cond_broadcast((pthread_cond_t*)this->hand);
 		pthread_mutex_unlock(&status->mutex);
+		Sync::Interlocked::Decrement(&status->useCnt);
 	}
 }
 

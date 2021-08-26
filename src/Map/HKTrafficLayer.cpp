@@ -844,6 +844,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::IMapDrawLayer((const UTF8Char*)"HKTraffic", 0, (const UTF8Char*)"HKTraffic")
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	NEW_CLASS(this->roadMut, Sync::Mutex());
 	NEW_CLASS(this->roadMap, Data::Int64Map<RoadInfo*>());

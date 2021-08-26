@@ -2282,6 +2282,8 @@ Net/HTTPProxyTCPClient.h: ../../src/Net/HTTPProxyTCPClient.cpp
 @HTTPProxyTCPClient.o
 Net/HTTPQueue.h: ../../src/Net/HTTPQueue.cpp
 @HTTPQueue.o
+Net/HTTPServerMonitor.h: ../../src/Net/HTTPServerMonitor.cpp
+@HTTPServerMonitor.o
 Net/IMailController.h:
 Net/ICMPScanner.h: ../../src/Net/ICMPScanner.cpp
 @ICMPScanner.o
@@ -4174,6 +4176,7 @@ HTTPMyClient.o: ../../src/Net/HTTPMyClient.cpp
 HTTPProxyClient.o: ../../src/Net/HTTPProxyClient.cpp
 HTTPProxyTCPClient.o: ../../src/Net/HTTPProxyTCPClient.cpp
 HTTPQueue.o: ../../src/Net/HTTPQueue.cpp
+HTTPServerMonitor.o: ../../src/Net/HTTPServerMonitor.cpp
 ICMPScanner.o: ../../src/Net/ICMPScanner.cpp
 IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
 LDAPClient.o: ../../src/Net/LDAPClient.cpp
