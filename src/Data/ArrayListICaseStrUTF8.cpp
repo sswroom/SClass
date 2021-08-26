@@ -15,7 +15,7 @@ Data::ArrayList<const UTF8Char*> *Data::ArrayListICaseStrUTF8::Clone()
 {
 	Data::ArrayListICaseStrUTF8 *newArr;
 	NEW_CLASS(newArr, Data::ArrayListICaseStrUTF8(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

@@ -764,7 +764,7 @@ Bool Net::LDAPClient::Search(const UTF8Char *baseObject, ScopeType scope, DerefT
 	mutUsage.EndUse();
 	if (valid)
 	{
-		results->AddRange(&resObjs);
+		results->AddAll(&resObjs);
 	}
 	else
 	{

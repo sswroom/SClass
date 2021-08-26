@@ -198,7 +198,7 @@ const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name)
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)
 {
-	categories->AddRange(this->categories);
+	categories->AddAll(this->categories);
 	return this->categories->GetCount();
 }
 
@@ -246,7 +246,7 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(OrganSpecies *sp, UInt32 mapCo
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(Data::ArrayList<OrganBook*> *items)
 {
-	items->AddRange(this->bookObjs);
+	items->AddAll(this->bookObjs);
 	return this->bookObjs->GetCount();
 }
 

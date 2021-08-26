@@ -113,8 +113,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	const Net::MACInfo::MACEntry *entry;
 	IO::BTDevLog::DevEntry *log;
 	Data::ArrayList<IO::BTDevLog::DevEntry*> logList;
-	logList.AddRange(this->btLog->GetPublicList());
-	logList.AddRange(this->btLog->GetRandomList());
+	logList.AddAll(this->btLog->GetPublicList());
+	logList.AddAll(this->btLog->GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UOSInt i;

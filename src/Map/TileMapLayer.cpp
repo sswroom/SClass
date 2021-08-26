@@ -87,8 +87,8 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 	NEW_CLASS(cacheIds, Data::ArrayListInt64());
 	NEW_CLASS(cacheImgs, Data::ArrayList<CachedImage*>());
 	Sync::MutexUsage lastMutUsage(this->lastMut);
-	cacheIds->AddRange(this->lastIds);
-	cacheImgs->AddRange(this->lastImgs);
+	cacheIds->AddAll(this->lastIds);
+	cacheImgs->AddAll(this->lastImgs);
 	this->lastIds->Clear();
 	this->lastImgs->Clear();
 

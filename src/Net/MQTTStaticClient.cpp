@@ -31,6 +31,10 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 void __stdcall Net::MQTTStaticClient::OnDisconnect(void *userObj)
 {
 	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)userObj;
+	if (!me->kaRunning)
+	{
+		return;
+	}
 	Sync::MutexUsage mutUsage(me->connMut);
 	if (me->conn)
 	{
@@ -84,7 +88,7 @@ void Net::MQTTStaticClient::Connect()
 		}
 		Data::ArrayList<const UTF8Char*> topicList;
 		mutUsage.ReplaceMutex(this->topicMut);
-		topicList.AddRange(this->topicList);
+		topicList.AddAll(this->topicList);
 		mutUsage.EndUse();
 		
 		i = 0;
@@ -178,7 +182,9 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 			Sync::Thread::Sleep(10);
 		}
 	}
+	Sync::MutexUsage mutUsage(this->connMut);
 	SDEL_CLASS(this->conn);
+	mutUsage.EndUse();
 	DEL_CLASS(this->connMut);
 	DEL_CLASS(this->hdlrMut);
 	DEL_CLASS(this->hdlrList);

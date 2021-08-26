@@ -114,7 +114,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 	packet->port = port;
 	MemCopyNO(&packet->trap, trap, sizeof(Net::SNMPUtil::TrapInfo));
 	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());
-	packet->itemList->AddRange(itemList);
+	packet->itemList->AddAll(itemList);
 	Sync::MutexUsage mutUsage(me->packetMut);
 	me->packetList->Add(packet);
 	mutUsage.EndUse();

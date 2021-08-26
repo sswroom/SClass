@@ -54,12 +54,12 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		Sync::MutexUsage mutUsage;
 		IO::BTScanLog::ScanRecord3 *entry;
 		Data::ArrayList<IO::BTScanLog::ScanRecord3*> logList;
-		logList.AddRange(me->btCapture->GetPublicList(&mutUsage));
+		logList.AddAll(me->btCapture->GetPublicList(&mutUsage));
 		sb.Append((const UTF8Char*)"<a href=\"btdetpub.html\">");
 		sb.Append((const UTF8Char*)"BT Public count = ");
 		sb.AppendUOSInt(logList.GetCount());
 		sb.Append((const UTF8Char*)"</a><br/>\r\n");
-		logList.AddRange(me->btCapture->GetRandomList(&mutUsage));
+		logList.AddAll(me->btCapture->GetRandomList(&mutUsage));
 		sb.Append((const UTF8Char*)"<a href=\"btdet.html\">");
 		sb.Append((const UTF8Char*)"BT Total count = ");
 		sb.AppendUOSInt(logList.GetCount());
@@ -111,8 +111,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList.AddRange(me->btCapture->GetPublicList(&mutUsage));
-	entryList.AddRange(me->btCapture->GetRandomList(&mutUsage));
+	entryList.AddAll(me->btCapture->GetPublicList(&mutUsage));
+	entryList.AddAll(me->btCapture->GetRandomList(&mutUsage));
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"refresh\" content=\"10\">\r\n");
@@ -143,8 +143,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList.AddRange(me->btCapture->GetPublicList(&mutUsage));
-	entryList.AddRange(me->btCapture->GetRandomList(&mutUsage));
+	entryList.AddAll(me->btCapture->GetPublicList(&mutUsage));
+	entryList.AddAll(me->btCapture->GetRandomList(&mutUsage));
 	sb.Append((const UTF8Char*)"<html><head><title>Capture Handler</title>\r\n");
 	sb.Append((const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n");
 	sb.Append((const UTF8Char*)"</head><body>\r\n");
@@ -377,7 +377,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
 	if (sort == 1)
 	{
-		sortList.AddRange(entryList);
+		sortList.AddAll(entryList);
 		entryList = &sortList;
 		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), WiFiLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
 	}
@@ -447,7 +447,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
 	if (sort == 1)
 	{
-		sortList.AddRange(entryList);
+		sortList.AddAll(entryList);
 		entryList = &sortList;
 		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), BTLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
 	}

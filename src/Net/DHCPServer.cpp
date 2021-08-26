@@ -272,7 +272,7 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 	this->devCount = devCount;
 	this->gateway = gateway;
 	NEW_CLASS(this->dnsList, Data::ArrayList<UInt32>());
-	this->dnsList->AddRange(dnsList);
+	this->dnsList->AddAll(dnsList);
 	this->ipLeaseTime = 86400;
 
 	this->devMut = 0;

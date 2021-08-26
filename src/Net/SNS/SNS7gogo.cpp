@@ -94,7 +94,7 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddRange(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
 
@@ -117,7 +117,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	idList.AddRange(this->itemMap->GetKeys());
+	idList.AddAll(this->itemMap->GetKeys());
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();

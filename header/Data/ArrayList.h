@@ -20,7 +20,7 @@ namespace Data
 		virtual ~ArrayList();
 
 		virtual UOSInt Add(T val);
-		UOSInt AddRange(ArrayList<T> *arr);
+		UOSInt AddAll(ArrayList<T> *arr);
 		virtual UOSInt AddRange(T *arr, UOSInt cnt);
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
@@ -80,7 +80,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayList<T>::AddRange(ArrayList<T> *arr)
+	template <class T> UOSInt ArrayList<T>::AddAll(ArrayList<T> *arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
@@ -228,7 +228,7 @@ namespace Data
 	template <class T> ArrayList<T> *ArrayList<T>::Clone()
 	{
 		ArrayList<T> *newArr = new ArrayList<T>(this->capacity);
-		newArr->AddRange(this);
+		newArr->AddAll(this);
 		return newArr;
 	}
 

@@ -60,5 +60,5 @@ DB::TableDef *DB::DBModel::GetTable(const UTF8Char *tableName)
 
 UOSInt DB::DBModel::GetTableNames(Data::ArrayList<const UTF8Char*> *tableNames)
 {
-	return tableNames->AddRange(this->tableMap->GetKeys());
+	return tableNames->AddAll(this->tableMap->GetKeys());
 }

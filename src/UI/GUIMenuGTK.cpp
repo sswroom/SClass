@@ -581,7 +581,7 @@ void *UI::GUIMenu::GetHMenu()
 UOSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
 {
 	UOSInt keyCnt = this->keys->GetCount();
-	keys->AddRange(this->keys);
+	keys->AddAll(this->keys);
 	UOSInt j = this->subMenus->GetCount();
 	UOSInt i = 0;
 	while (i < j)

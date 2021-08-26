@@ -233,8 +233,8 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 	}
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	Data::ArrayList<DevEntry*> logList;
-	logList.AddRange(this->pubDevs->GetValues());
-	logList.AddRange(this->randDevs->GetValues());
+	logList.AddAll(this->pubDevs->GetValues());
+	logList.AddAll(this->randDevs->GetValues());
 	DevEntry *log;
 	UOSInt i = 0;
 	UOSInt j = logList.GetCount();

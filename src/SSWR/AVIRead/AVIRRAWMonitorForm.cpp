@@ -585,7 +585,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		UOSInt j;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseDNSCli(&mutUsage);
-		cliList.AddRange(me->analyzer->DNSCliGetList());
+		cliList.AddAll(me->analyzer->DNSCliGetList());
 		mutUsage.EndUse();
 		me->lbDNSClient->ClearItems();
 		i = 0;
@@ -611,7 +611,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		UOSInt j;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseIPLog(&mutUsage);
-		ipLogList.AddRange(me->analyzer->IPLogGetList());
+		ipLogList.AddAll(me->analyzer->IPLogGetList());
 		mutUsage.EndUse();
 		me->lbIPLog->ClearItems();
 		i = 0;
@@ -639,7 +639,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		Sync::MutexUsage mutUsage;
 		me->adapterChanged = false;
 		me->analyzer->UseIPTran(&mutUsage);
-		ipTranList.AddRange(me->analyzer->IPTranGetList());
+		ipTranList.AddAll(me->analyzer->IPTranGetList());
 		mutUsage.EndUse();
 		me->ipTranCnt = ipTranList.GetCount();
 		i = 0;

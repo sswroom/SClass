@@ -92,7 +92,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 				mutUsage.BeginUse();
 				this->dnsCli->FreeAnswers(dnsStat->answers);
 				dnsStat->answers->Clear();
-				dnsStat->answers->AddRange(&ansArr);
+				dnsStat->answers->AddAll(&ansArr);
 			}
 			i = 0;
 			j = dnsStat->answers->GetCount();
@@ -177,7 +177,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 				mutUsage.BeginUse();
 				this->dnsCli->FreeAnswers(dnsStat->answers);
 				dnsStat->answers->Clear();
-				dnsStat->answers->AddRange(&ansArr);
+				dnsStat->answers->AddAll(&ansArr);
 			}
 			i = 0;
 			j = dnsStat->answers->GetCount();

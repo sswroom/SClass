@@ -330,7 +330,7 @@ void DB::SQLiteFile::Rollback(void *tran)
 
 UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	names->AddRange(this->tableNames);
+	names->AddAll(this->tableNames);
 	return this->tableNames->GetCount();
 }
 

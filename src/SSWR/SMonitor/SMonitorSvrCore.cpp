@@ -149,7 +149,7 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 		if (t >= me->currDate + 86400000)
 		{
 			me->devMut->LockRead();
-			devList->AddRange(me->devMap->GetValues());
+			devList->AddAll(me->devMap->GetValues());
 			me->devMut->UnlockRead();
 
 			me->dateMut->LockWrite();
@@ -159,7 +159,7 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 			{
 				dev = devList->GetItem(i);
 				dev->mut->LockWrite();
-				recList->AddRange(dev->yesterdayRecs->GetValues());
+				recList->AddAll(dev->yesterdayRecs->GetValues());
 				dev->yesterdayRecs->Clear();
 				dev->yesterdayRecs->PutAll(dev->todayRecs);
 				dev->todayRecs->Clear();
@@ -707,7 +707,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	UInt8 fsBuff[32];
 
 	this->devMut->LockRead();
-	devList.AddRange(this->devMap->GetValues());
+	devList.AddAll(this->devMap->GetValues());
 	this->devMut->UnlockRead();
 	dt.ToUTCTime();
 	fs = 0;
@@ -717,7 +717,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	{
 		dev = devList.GetItem(i);
 		dev->mut->LockWrite();
-		recList.AddRange(dev->recToStore);
+		recList.AddAll(dev->recToStore);
 		dev->recToStore->Clear();
 		dev->mut->UnlockWrite();
 
@@ -786,7 +786,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 		if (recList2.GetCount() > 0)
 		{
 			dev->mut->LockWrite();
-			dev->recToStore->AddRange(&recList2);
+			dev->recToStore->AddAll(&recList2);
 			dev->mut->UnlockWrite();
 			recList2.Clear();
 		}
@@ -2441,7 +2441,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetList(Data::ArrayList<WebUser*> *u
 {
 	UOSInt ret = userList->GetCount();
 	this->userMut->LockRead();
-	userList->AddRange(this->userMap->GetValues());
+	userList->AddAll(this->userMap->GetValues());
 	this->userMut->UnlockRead();
 	return userList->GetCount() - ret;
 }

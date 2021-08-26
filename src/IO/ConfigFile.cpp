@@ -122,7 +122,7 @@ UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
 	UOSInt retCnt;
 	UOSInt i = cateList->GetCount();
 	UOSInt j;
-	cateList->AddRange(this->cfgVals->GetKeys());
+	cateList->AddAll(this->cfgVals->GetKeys());
 	j = cateList->GetCount();
 	retCnt = j - i;
 	while (j-- > i)
@@ -147,7 +147,7 @@ UOSInt IO::ConfigFile::GetKeys(const UTF8Char *category, Data::ArrayList<const U
 	if (cate == 0)
 		return 0;
 	UOSInt cnt = keyList->GetCount();
-	keyList->AddRange(cate->GetKeys());
+	keyList->AddAll(cate->GetKeys());
 	return keyList->GetCount() - cnt;
 }
 

@@ -132,7 +132,7 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNSRSS::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddRange(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
 
@@ -155,7 +155,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	Net::RSSItem *item;
 	Data::ArrayListStrUTF8 idList;
 	Bool changed = false;
-	idList.AddRange(this->itemMap->GetKeys());
+	idList.AddAll(this->itemMap->GetKeys());
 
 	Net::RSS *rss;
 	NEW_CLASS(rss, Net::RSS(this->channelId, this->userAgent, this->sockf, this->ssl));

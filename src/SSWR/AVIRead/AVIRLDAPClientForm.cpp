@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
 	else
 	{
 		Net::LDAPClient::SearchResultsFree(me->dispResults);
-		me->dispResults->AddRange(&results);
+		me->dispResults->AddAll(&results);
 		me->lvSearch->ClearItems();
 		me->cboSearchResult->ClearItems();
 		Net::LDAPClient::SearchResObject *obj;

@@ -16,7 +16,7 @@ Data::ArrayList<Data::IComparable*> *Data::ArrayListCmp::Clone()
 {
 	Data::ArrayListCmp *newArr;
 	NEW_CLASS(newArr, Data::ArrayListCmp(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

@@ -717,7 +717,7 @@ Bool Net::DNSProxy::IsTargetChg()
 UOSInt Net::DNSProxy::GetReqv4List(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
-	reqList->AddRange(this->reqv4Map->GetKeys());
+	reqList->AddAll(this->reqv4Map->GetKeys());
 	mutUsage.EndUse();
 	return reqList->GetCount();
 }
@@ -725,7 +725,7 @@ UOSInt Net::DNSProxy::GetReqv4List(Data::ArrayList<const UTF8Char *> *reqList)
 UOSInt Net::DNSProxy::GetReqv6List(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
-	reqList->AddRange(this->reqv6Map->GetKeys());
+	reqList->AddAll(this->reqv6Map->GetKeys());
 	mutUsage.EndUse();
 	return reqList->GetCount();
 }
@@ -733,7 +733,7 @@ UOSInt Net::DNSProxy::GetReqv6List(Data::ArrayList<const UTF8Char *> *reqList)
 UOSInt Net::DNSProxy::GetReqOthList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->reqothMut);
-	reqList->AddRange(this->reqothMap->GetKeys());
+	reqList->AddAll(this->reqothMap->GetKeys());
 	mutUsage.EndUse();
 	return reqList->GetCount();
 }
@@ -743,7 +743,7 @@ UOSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
 	if (this->targetMap == 0)
 		return 0;
 	Sync::MutexUsage mutUsage(this->targetMut);
-	targetList->AddRange(this->targetMap->GetValues());
+	targetList->AddAll(this->targetMap->GetValues());
 	mutUsage.EndUse();
 	return targetList->GetCount();
 }
@@ -881,7 +881,7 @@ void Net::DNSProxy::SetServerIP(UInt32 serverIP)
 void Net::DNSProxy::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
 	Sync::MutexUsage mutUsage(this->dnsMut);
-	dnsList->AddRange(this->dnsList);
+	dnsList->AddAll(this->dnsList);
 	mutUsage.EndUse();
 }
 
@@ -916,7 +916,7 @@ UOSInt Net::DNSProxy::GetBlackList(Data::ArrayList<const UTF8Char*> *blackList)
 	UOSInt ret;
 	Sync::MutexUsage mutUsage(this->blackListMut);
 	ret = this->blackList->GetCount();
-	blackList->AddRange(this->blackList);
+	blackList->AddAll(this->blackList);
 	mutUsage.EndUse();
 	return ret;
 }

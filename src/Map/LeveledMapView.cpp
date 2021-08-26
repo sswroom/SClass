@@ -20,7 +20,7 @@ Map::LeveledMapView::LeveledMapView(UOSInt scnWidth, UOSInt scnHeight, Double ce
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
 	NEW_CLASS(this->scales, Data::ArrayListDbl());
-	this->scales->AddRange(scales);
+	this->scales->AddAll(scales);
 	ChangeViewXY(scnWidth, scnHeight, centLon, centLat, Math::Double2Int32(this->scales->GetItem(this->scales->GetCount() >> 1)));
 }
 

@@ -41,12 +41,12 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32());
 	if (ent->ipaddr)
 	{
-		this->ent.ipaddr->AddRange(ent->ipaddr);
+		this->ent.ipaddr->AddAll(ent->ipaddr);
 	}
 	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32());
 	if (ent->dnsaddr)
 	{
-		this->ent.dnsaddr->AddRange(ent->dnsaddr);
+		this->ent.dnsaddr->AddAll(ent->dnsaddr);
 	}
 	this->ent.defGW = ent->defGW;
 	this->ent.dhcpSvr = ent->dhcpSvr;

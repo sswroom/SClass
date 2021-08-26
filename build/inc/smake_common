@@ -85,6 +85,7 @@ nodeps:
 @HTTPServerTest
 @HTTPSTest
 @LogServer
+@MQTTFailover
 @NetRAWCapture
 @PingMonitor
 @PingScan
@@ -433,6 +434,9 @@ HTTPSTest:
 LogServer:
 @LogServerMain.o
 @ConsoleStartup.o
+MQTTFailover:
+@MQTTFailoverTest.o
+@ConsoleStartup.o
 NetRAWCapture:
 @NetRAWCapture.o
 @ConsoleStartup.o
@@ -767,6 +771,7 @@ ARPTest.o: ../../main/NetTest/ARPTest.cpp
 HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
 HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
+MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
 PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
 PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
@@ -2312,8 +2317,10 @@ Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
 Net/MQTTClient.h:
 Net/MQTTConn.h: ../../src/Net/MQTTConn.cpp
 @MQTTConn.o
+Net/MQTTFailoverClient.h: ../../src/Net/MQTTFailoverClient.cpp
+@MQTTFailoverClient.o
 Net/MQTTStaticClient.h: ../../src/Net/MQTTStaticClient.cpp
-@MQTTHandler.o
+@MQTTStaticClient.o
 Net/MQTTUtil.h: ../../src/Net/MQTTUtil.cpp
 @MQTTUtil.o
 Net/MySQLServer.h: ../../src/Net/MySQLServer.cpp
@@ -4188,7 +4195,8 @@ MIBReader.o: ../../src/Net/MIBReader.cpp
 MIME.o: ../../src/Net/MIME.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
 MQTTConn.o: ../../src/Net/MQTTConn.cpp
-MQTTHandler.o: ../../src/Net/MQTTStaticClient.cpp
+MQTTFailoverClient.o: ../../src/Net/MQTTFailoverClient.cpp
+MQTTStaticClient.o: ../../src/Net/MQTTStaticClient.cpp
 MQTTUtil.o: ../../src/Net/MQTTUtil.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp

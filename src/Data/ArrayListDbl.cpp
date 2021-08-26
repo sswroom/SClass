@@ -15,7 +15,7 @@ Data::ArrayListDbl::ArrayListDbl(UOSInt capacity) : Data::SortableArrayList<Doub
 Data::ArrayList<Double> *Data::ArrayListDbl::Clone()
 {
 	Data::ArrayListDbl *newArr = new Data::ArrayListDbl(this->capacity);
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

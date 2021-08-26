@@ -15,7 +15,7 @@ Data::ArrayList<Int64> *Data::ArrayListInt64::Clone()
 {
 	Data::ArrayListInt64 *newArr;
 	NEW_CLASS(newArr, Data::ArrayListInt64(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

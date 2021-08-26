@@ -91,7 +91,7 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		}		
 		mongoc_database_destroy(db);
 	}
-	names->AddRange(this->tableNames);
+	names->AddAll(this->tableNames);
 	return this->tableNames->GetCount();
 }
 

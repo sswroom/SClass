@@ -246,7 +246,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 			currArr = arr[i];
 			if (currArr)
 			{
-				cArr->AddRange(currArr);
+				cArr->AddAll(currArr);
 			}
 		}
 		UOSInt arrSize;

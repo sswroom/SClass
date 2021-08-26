@@ -411,7 +411,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **
 	Data::ArrayList<ImageStat *> *imgList;
 	NEW_CLASS(imgList, Data::ArrayList<ImageStat*>());
 	this->loadedMut->LockRead();
-	imgList->AddRange(this->loadedList);
+	imgList->AddAll(this->loadedList);
 	this->loadedMut->UnlockRead();
 
 	imgArr = imgList->GetArray(&retCnt);

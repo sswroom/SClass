@@ -14,7 +14,7 @@ Data::ArrayList<UInt32> *Data::ArrayListUInt32::Clone()
 {
 	Data::ArrayListUInt32 *newArr;
 	NEW_CLASS(newArr, Data::ArrayListUInt32(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

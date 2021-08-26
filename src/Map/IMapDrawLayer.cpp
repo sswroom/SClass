@@ -729,7 +729,7 @@ UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListStrUTF8 *outArr, Text::Se
 		i++;
 	}
 
-	outArr->AddRange(strList);
+	outArr->AddAll(strList);
 	DEL_CLASS(strList);
 	DEL_CLASS(objIds);
 	return resCnt;

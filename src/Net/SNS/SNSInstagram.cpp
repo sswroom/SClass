@@ -142,7 +142,7 @@ UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNSInstagram::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddRange(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
 
@@ -164,7 +164,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
 	Data::ArrayListStrUTF8 idList;
 	Bool changed = false;
-	idList.AddRange(this->itemMap->GetKeys());
+	idList.AddAll(this->itemMap->GetKeys());
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();

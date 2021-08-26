@@ -272,7 +272,7 @@ UOSInt IO::Device::GoProCameraControl::GetFileList(Data::ArrayList<IO::CameraCon
 	{
 		this->GetMediaList();
 	}
-	fileList->AddRange(this->fileList);
+	fileList->AddAll(this->fileList);
 	return this->fileList->GetCount();
 }
 

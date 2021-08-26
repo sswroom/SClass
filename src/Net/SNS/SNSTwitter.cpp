@@ -93,7 +93,7 @@ UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNSTwitter::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddRange(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap->GetValues());
 	return itemList->GetCount() - initCnt;
 }
 
@@ -116,7 +116,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	idList.AddRange(this->itemMap->GetKeys());
+	idList.AddAll(this->itemMap->GetKeys());
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();

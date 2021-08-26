@@ -259,7 +259,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	Text::StringBuilderUTF8 sb2;
 	Data::ArrayList<MapFilter*> newFilters;
 	MapFilter *filter;
-	newFilters.AddRange(filters);
+	newFilters.AddAll(filters);
 	i = names.GetCount();
 	while (i-- > 0)
 	{

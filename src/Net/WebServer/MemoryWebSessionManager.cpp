@@ -302,6 +302,6 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 void Net::WebServer::MemoryWebSessionManager::GetSessionIds(Data::ArrayList<Int64> *sessIds)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	sessIds->AddRange(this->sessIds);
+	sessIds->AddAll(this->sessIds);
 	mutUsage.EndUse();
 }

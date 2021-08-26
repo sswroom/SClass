@@ -25,8 +25,10 @@ namespace Net
 		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> *hdlrList;
 		Data::ArrayList<void *> *hdlrObjList;
 		Data::ArrayList<ClientInfo*> *cliList;
+		void FreeClient(ClientInfo *cliInfo);
+		static void __stdcall OnMessage(void *userObj, const UTF8Char *topic, const UInt8 *buff, UOSInt buffSize);
 	public:
-		MQTTFailoverClient(Net::FailoverHandler::FailoverType foType, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 kaSeconds);
+		MQTTFailoverClient(Net::FailoverType foType, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 kaSeconds);
 		virtual ~MQTTFailoverClient();
 
 		void AddClient(const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password);

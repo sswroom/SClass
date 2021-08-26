@@ -319,7 +319,7 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
 	if (this->tableNames)
 	{
-		names->AddRange(this->tableNames);
+		names->AddAll(this->tableNames);
 		return this->tableNames->GetCount();
 	}
 	else
@@ -336,7 +336,7 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 			}
 			this->CloseReader(rdr);
 		}
-		names->AddRange(this->tableNames);
+		names->AddAll(this->tableNames);
 		return this->tableNames->GetCount();
 	}
 }

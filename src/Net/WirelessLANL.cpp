@@ -125,7 +125,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 		i++;
 	}
 	NEW_CLASS(this->ieList, Data::ArrayList<Net::WirelessLANIE*>());
-	this->ieList->AddRange(bss->ieList);
+	this->ieList->AddAll(bss->ieList);
 	bss->ieList->Clear();
 }
 

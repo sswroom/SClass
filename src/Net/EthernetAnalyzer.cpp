@@ -263,7 +263,7 @@ UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
 UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
-	reqList->AddRange(this->dnsReqv4Map->GetKeys());
+	reqList->AddAll(this->dnsReqv4Map->GetKeys());
 	mutUsage.EndUse();
 	return reqList->GetCount();
 }
@@ -297,7 +297,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList
 UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
-	reqList->AddRange(this->dnsReqv6Map->GetKeys());
+	reqList->AddAll(this->dnsReqv6Map->GetKeys());
 	mutUsage.EndUse();
 	return reqList->GetCount();
 }
@@ -331,7 +331,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList
 UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
-	reqList->AddRange(this->dnsReqOthMap->GetKeys());
+	reqList->AddAll(this->dnsReqOthMap->GetKeys());
 	mutUsage.EndUse();
 	return reqList->GetCount();
 }
@@ -365,7 +365,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayLis
 UOSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> *targetList)
 {
 	Sync::MutexUsage mutUsage(this->dnsTargetMut);
-	targetList->AddRange(this->dnsTargetMap->GetValues());
+	targetList->AddAll(this->dnsTargetMap->GetValues());
 	mutUsage.EndUse();
 	return targetList->GetCount();
 }

@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	if (me->devChg)
 	{
 		me->devMut->LockRead();
-		devList.AddRange(me->devMap->GetValues());
+		devList.AddAll(me->devMap->GetValues());
 		me->devChg = false;
 		me->devMut->UnlockRead();
 
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	else
 	{
 		me->devMut->LockRead();
-		devList.AddRange(me->devMap->GetValues());
+		devList.AddAll(me->devMap->GetValues());
 		me->devMut->UnlockRead();
 
 		i = 0;

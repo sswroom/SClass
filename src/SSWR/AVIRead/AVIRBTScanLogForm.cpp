@@ -115,8 +115,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	Text::StringBuilderUTF8 sb;
 	IO::BTScanLog::DevEntry *log;
 	Data::ArrayList<IO::BTScanLog::DevEntry*> logList;
-	logList.AddRange(this->btLog->GetPublicList());
-	logList.AddRange(this->btLog->GetRandomList());
+	logList.AddAll(this->btLog->GetPublicList());
+	logList.AddAll(this->btLog->GetRandomList());
 	UTF8Char sbuff[64];
 	const UTF8Char *csptr;
 	UInt8 mac[8];

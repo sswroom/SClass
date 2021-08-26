@@ -15,7 +15,7 @@ Data::ArrayList<Text::String*> *Data::ArrayListString::Clone()
 {
 	Data::ArrayListString *newArr;
 	NEW_CLASS(newArr, Data::ArrayListString(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

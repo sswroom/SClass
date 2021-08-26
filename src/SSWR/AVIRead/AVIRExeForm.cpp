@@ -136,8 +136,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	if (sess)
 	{
 		this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
-		nfuncCalls->AddRange(sess->callAddrs);
-		nfuncCalls->AddRange(sess->jmpAddrs);
+		nfuncCalls->AddAll(sess->callAddrs);
+		nfuncCalls->AddAll(sess->jmpAddrs);
 		UOSInt arrSize;
 		UInt32 *tmpArr = nfuncCalls->GetArray(&arrSize);
 		ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
@@ -163,8 +163,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				parts->Insert(partInd->SortedInsert((eaddr->segm << 16) | eaddr->addr), eaddr);
                 
 				this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
-				nfuncCalls->AddRange(sess->callAddrs);
-				nfuncCalls->AddRange(sess->jmpAddrs);
+				nfuncCalls->AddAll(sess->callAddrs);
+				nfuncCalls->AddAll(sess->jmpAddrs);
 				tmpArr = nfuncCalls->GetArray(&arrSize);
 				ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
 				dasm->DeleteSess(sess);

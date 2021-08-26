@@ -243,7 +243,7 @@ UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSP
 {
 	UOSInt initSize = cliList->GetCount();
 	Sync::MutexUsage mutUsage(this->cliInfoMut);
-	cliList->AddRange(this->cliInfos->GetValues());
+	cliList->AddAll(this->cliInfos->GetValues());
 	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;
 }

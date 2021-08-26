@@ -32,7 +32,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo 
 	{
 		if (me->respList)
 		{
-			me->respList->AddRange(&itemList);
+			me->respList->AddAll(&itemList);
 		}
 		else
 		{
@@ -177,7 +177,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(const Net::SocketUtil::Addres
 	ret = this->V1GetNextRequest(agentAddr, community, oid, &thisList);
 	if (ret != Net::SNMPUtil::ES_NOERROR)
 	{
-		itemList->AddRange(&thisList);
+		itemList->AddAll(&thisList);
 		return ret;
 	}
 	while (thisList.GetCount() == 1)
@@ -216,7 +216,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(const Net::SocketUtil::Addres
 			break;
 		}
 	}
-	itemList->AddRange(&thisList);
+	itemList->AddAll(&thisList);
 	return Net::SNMPUtil::ES_NOERROR;
 }
 

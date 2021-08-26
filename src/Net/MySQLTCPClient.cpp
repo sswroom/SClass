@@ -1238,7 +1238,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 {
 	if (this->tableNames)
 	{
-		names->AddRange(this->tableNames);
+		names->AddAll(this->tableNames);
 		return this->tableNames->GetCount();
 	}
 	else
@@ -1255,7 +1255,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 			}
 			this->CloseReader(rdr);
 		}
-		names->AddRange(this->tableNames);
+		names->AddAll(this->tableNames);
 		return this->tableNames->GetCount();
 	}
 }

@@ -421,7 +421,7 @@ Bool Net::WebServer::WebRequest::GetHeader(Text::StringBuilderUTF *sb, const UTF
 
 UOSInt Net::WebServer::WebRequest::GetHeaderNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	names->AddRange(this->headerNames);
+	names->AddAll(this->headerNames);
 	return this->headerNames->GetCount();
 }
 

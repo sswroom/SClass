@@ -328,7 +328,7 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList)
 {
-	discList->AddRange(this->discMap->GetValues());
+	discList->AddAll(this->discMap->GetValues());
 	return this->discMap->GetCount();
 }
 
@@ -477,7 +477,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(Data::ArrayList<CategoryInfo*> *cateList)
 {
-	cateList->AddRange(this->cateMap->GetValues());
+	cateList->AddAll(this->cateMap->GetValues());
 	return this->cateMap->GetCount();
 }
 
@@ -488,7 +488,7 @@ const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDiscTyp
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList)
 {
-	discTypeList->AddRange(this->discTypeMap->GetValues());
+	discTypeList->AddAll(this->discTypeMap->GetValues());
 	return this->discTypeMap->GetCount();
 }
 
@@ -560,7 +560,7 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList)
 {
-	dvdVideoList->AddRange(this->dvdVideoMap->GetValues());
+	dvdVideoList->AddAll(this->dvdVideoMap->GetValues());
 	return this->dvdVideoMap->GetCount();
 }
 

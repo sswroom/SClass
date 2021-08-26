@@ -6,17 +6,17 @@
 
 namespace Net
 {
+	enum FailoverType
+	{
+		FT_MASTER_SLAVE,
+		FT_ACTIVE_PASSIVE,
+		FT_ROUND_ROBIN
+	};
+
 	template<class T> class FailoverHandler
 	{
-	public:
-		enum FailoverType
-		{
-			FT_MASTER_SLAVE,
-			FT_ACTIVE_PASSIVE,
-			FR_ROUND_ROBIN
-		};
 	private:
-		FailoverType foType;
+		Net::FailoverType foType;
 		UOSInt lastIndex;
 		Data::ArrayList<T *> *channelList;
 		Sync::Mutex *mut;
@@ -31,18 +31,18 @@ namespace Net
 		void AddChannel(T *channel);
 	};
 
-	template <class T> FailoverHandler<T>::FailoverHandler(FailoverType foType)
+	template <class T> FailoverHandler<T>::FailoverHandler(Net::FailoverType foType)
 	{
 		this->foType = foType;
 		this->lastIndex = 0;
-		NEW_CLASS(this->channelList, Data::ArrayList<T>());
+		NEW_CLASS(this->channelList, Data::ArrayList<T*>());
 		NEW_CLASS(this->mut, Sync::Mutex());
 	}
 
 	template <class T> FailoverHandler<T>::~FailoverHandler()
 	{
 		T *channel;
-		UOSInt i = this->channelList;
+		UOSInt i = this->channelList->GetCount();
 		while (i-- > 0)
 		{
 			channel = this->channelList->GetItem(i);
@@ -64,13 +64,13 @@ namespace Net
 		T *channel;
 		switch (this->foType)
 		{
-		case FT_ACTIVE_PASSIVE:
+		case Net::FT_ACTIVE_PASSIVE:
 			initIndex = this->lastIndex;
 			break;
-		case FT_MASTER_SLAVE:
+		case Net::FT_MASTER_SLAVE:
 			initIndex = 0;
 			break;
-		case FT_ROUND_ROBIN:
+		case Net::FT_ROUND_ROBIN:
 			initIndex = (this->lastIndex + 1) % this->channelList->GetCount();
 			break;
 		default:
@@ -104,7 +104,7 @@ namespace Net
 		UOSInt i = (this->lastIndex + 1) % j;
 		while (i != this->lastIndex)
 		{
-			channel = this->channelList->get(i);
+			channel = this->channelList->GetItem(i);
 			if (!channel->ChannelFailure())
 			{
 				chList->Add(channel);
@@ -119,7 +119,7 @@ namespace Net
 		UOSInt i = this->channelList->IndexOf(channel);
 		if (i != INVALID_INDEX)
 		{
-			this.lastIndex = i;
+			this->lastIndex = i;
 		}
 
 	}

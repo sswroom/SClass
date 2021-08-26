@@ -281,7 +281,7 @@ DB::TextDB::~TextDB()
 UOSInt DB::TextDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
 	UOSInt initCnt = names->GetCount();
-	names->AddRange(this->dbMap->GetKeys());
+	names->AddAll(this->dbMap->GetKeys());
 	return names->GetCount() - initCnt;
 }
 

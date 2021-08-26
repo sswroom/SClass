@@ -929,7 +929,7 @@ Text::JSONBase *Text::JSONObject::GetObjectValue(const UTF8Char *name)
 
 void Text::JSONObject::GetObjectNames(Data::ArrayList<const UTF8Char *> *names)
 {
-	names->AddRange(this->objVals->GetKeys());
+	names->AddAll(this->objVals->GetKeys());
 }
 
 const UTF8Char *Text::JSONObject::GetObjectString(const UTF8Char *name)
