@@ -260,6 +260,92 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	}
 }
 
+Bool Crypto::Cert::X509File::IsCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+{
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, path);
+	if (cnt < 4)
+	{
+		return false;
+	}
+	Char sbuff[256];
+	Char *sptr = Text::StrConcat(sbuff, path);
+	*sptr++ = '.';
+	UOSInt i = 1;
+	Text::StrUOSInt(sptr, i++);
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_INTEGER)
+	{
+		return false;
+	}
+	Text::StrUOSInt(sptr, i++);
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_SEQUENCE)
+	{
+		return false;
+	}
+	Text::StrUOSInt(sptr, i++);
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_SEQUENCE)
+	{
+		return false;
+	}
+	Text::StrUOSInt(sptr, i++);
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb)
+{
+	Char sbuff[256];
+	Char *sptr = Text::StrConcat(sbuff, path);
+	*sptr++ = '.';
+	UOSInt i = 1;
+	const UInt8 *itemPDU;
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	Text::StrUOSInt(sptr, i++);
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_INTEGER)
+		{
+			sb->Append((const UTF8Char*)"serialNumber = ");
+			AppendVersion(pdu, pduEnd, sbuff, sb);
+			sb->Append((const UTF8Char*)"\r\n");
+		}
+	}
+	Text::StrUOSInt(sptr, i++);
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			AppendName(itemPDU, itemPDU + itemLen, sb, (const UTF8Char*)"subject");
+		}
+	}
+	Text::StrUOSInt(sptr, i++);
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			AppendSubjectPublicKeyInfo(itemPDU, itemPDU + itemLen, sb, (const UTF8Char*)"subjectPublicKeyInfo");
+		}
+	}
+}
+
+Bool Crypto::Cert::X509File::IsCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+{
+	Char sbuff[256];
+	Text::StrConcat(Text::StrConcat(sbuff, path), ".1");
+	return IsSigned(pdu, pduEnd, path) && IsCertificateRequestInfo(pdu, pduEnd, sbuff);
+}
+
+void Crypto::Cert::X509File::AppendCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb)
+{
+	Char sbuff[256];
+	Text::StrConcat(Text::StrConcat(sbuff, path), ".1");
+	AppendCertificateRequestInfo(pdu, pduEnd, sbuff, sb);
+	AppendSigned(pdu, pduEnd, path, sb);
+}
+
 void Crypto::Cert::X509File::AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb)
 {
 	UOSInt itemLen;

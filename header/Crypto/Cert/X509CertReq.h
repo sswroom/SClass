@@ -6,6 +6,7 @@ namespace Crypto
 {
 	namespace Cert
 	{
+		//PKCS-10 CertificateRequest
 		class X509CertReq : public Crypto::Cert::X509File
 		{
 		public:

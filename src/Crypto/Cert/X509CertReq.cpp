@@ -25,4 +25,8 @@ Net::ASN1Data *Crypto::Cert::X509CertReq::Clone()
 
 void Crypto::Cert::X509CertReq::ToString(Text::StringBuilderUTF *sb)
 {
+	if (IsCertificateRequest(this->buff, this->buff + this->buffSize, "1"))
+	{
+		AppendCertificateRequest(this->buff, this->buff + this->buffSize, "1", sb);
+	}
 }
