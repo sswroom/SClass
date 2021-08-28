@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/Blowfish.h"
 #include "Data/ByteTool.h"
+#include "Text/MyString.h"
 
 #define N 16
 
@@ -282,26 +283,24 @@ void Crypto::Encrypt::Blowfish::EncryptInt()
 	Xr = this->xr;
 
 	i = 0;
+	Xl = Xl ^ this->p[i];
 	while (i < 16)
 	{
-		Xl = Xl ^ this->p[i];
-		Xr = this->F(Xl) ^ Xr;
+		temp =  this->s[0][ Xl >> 24];
+		temp += this->s[1][(Xl >> 16) & 0xff];
+		temp ^= this->s[2][(Xl >> 8)  & 0xff];
+		temp += this->s[3][ Xl        & 0xff];
+		Xr = Xr ^ temp ^ this->p[++i];
 
-		temp = Xl;
-		Xl = Xr;
-		Xr = temp;
-		i++;
+		temp =  this->s[0][ Xr >> 24];
+		temp += this->s[1][(Xr >> 16) & 0xff];
+		temp ^= this->s[2][(Xr >> 8)  & 0xff];
+		temp += this->s[3][ Xr        & 0xff];
+		Xl = Xl ^ temp ^ this->p[++i];
 	}
 
-	temp = Xl;
-	Xl = Xr;
-	Xr = temp;
-
-	Xr = Xr ^ this->p[N];
-	Xl = Xl ^ this->p[N + 1];
-
-	this->xl = Xl;
-	this->xr = Xr;
+	this->xl = Xr ^ this->p[N + 1];
+	this->xr = Xl;
 }
 
 void Crypto::Encrypt::Blowfish::DecryptInt()
@@ -315,49 +314,215 @@ void Crypto::Encrypt::Blowfish::DecryptInt()
 	Xr = this->xr;
 
 	i = N + 1;
+	Xl = Xl ^ this->p[N + 1];
 	while (i > 1)
 	{
-		Xl = Xl ^ this->p[i];
-		Xr = this->F(Xl) ^ Xr;
+		temp =  this->s[0][ Xl >> 24];
+		temp += this->s[1][(Xl >> 16) & 0xff];
+		temp ^= this->s[2][(Xl >> 8)  & 0xff];
+		temp += this->s[3][ Xl        & 0xff];
+		Xr = Xr ^ temp ^ this->p[--i];
 
-		temp = Xl;
-		Xl = Xr;
-		Xr = temp;
-
-		i--;
+		temp =  this->s[0][ Xr >> 24];
+		temp += this->s[1][(Xr >> 16) & 0xff];
+		temp ^= this->s[2][(Xr >> 8)  & 0xff];
+		temp += this->s[3][ Xr        & 0xff];
+		Xl = Xl ^ temp ^ this->p[--i];
 	}
 
-	temp = Xl;
-	Xl = Xr;
-	Xr = temp;
-
-	Xr = Xr ^ this->p[1];
-	Xl = Xl ^ this->p[0];
-
-	this->xl = Xl;
-	this->xr = Xr;
+	this->xl = Xr ^ this->p[0];
+	this->xr = Xl;
 }
 
-UInt32 Crypto::Encrypt::Blowfish::F(UInt32 x)
+void Crypto::Encrypt::Blowfish::Init()
 {
-   UInt16 a;
-   UInt16 b;
-   UInt16 c;
-   UInt16 d;
-   UInt32 y;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 
-   d = (UInt16)(x & 0xFF);
-   x >>= 8;
-   c = (UInt16)(x & 0xFF);
-   x >>= 8;
-   b = (UInt16)(x & 0xFF);
-   x >>= 8;
-   a = (UInt16)(x & 0xFF);
-   y = this->s[0][a] + this->s[1][b];
-   y = y ^ this->s[2][c];
-   y = y + this->s[3][d];
+	k = 0;
+	i = 0;
+	while (i < 4)
+	{
+		j = 0;
+		while (j < 256)
+		{
+			this->s[i][j] = origS[k];
+			j++;
+			k++;
+		}
+		i++;
+	}
 
-   return y;
+	j = 0;
+	i = 0;
+	while (i < N + 2)
+	{
+		this->p[i] = origP[i];
+		i++;
+	}
+}
+
+void Crypto::Encrypt::Blowfish::Key(const UInt8 *password, UOSInt pwdLen)
+{
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UInt32 data;
+
+	j = 0;
+	i = 0;
+	while (i < N + 2)
+	{
+		data = 0x00000000;
+		k = 0;
+		while (k < 4)
+		{
+			data = (data << 8) | password[j];
+			j = j + 1;
+			if (j >= pwdLen)
+				j = 0;
+			k++;
+		}
+		this->p[i] = this->p[i] ^ data;
+		i++;
+	}
+
+	this->xl = 0;
+	this->xr = 0;
+	i = 0;
+	while (i < N + 2)
+	{
+		this->EncryptInt();
+		this->p[i] = this->xl;
+		this->p[i + 1] = this->xr;
+
+		i += 2;
+	}
+
+	i = 0;
+	while (i < 4)
+	{
+		j = 0;
+		while (j < 256)
+		{
+			this->EncryptInt();
+			this->s[i][j + 0] = this->xl;
+			this->s[i][j + 1] = this->xr;
+			j += 2;
+		}
+		i++;
+	}
+}
+
+void Crypto::Encrypt::Blowfish::ExpandKey(const UInt8 *salt, const UInt8 *password, UOSInt pwdLen)
+{
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UInt32 data;
+
+	j = 0;
+	i = 0;
+	while (i < N + 2)
+	{
+		data = 0x00000000;
+		k = 0;
+		while (k < 4)
+		{
+			data = (data << 8) | password[j];
+			j = j + 1;
+			if (j >= pwdLen)
+				j = 0;
+			k++;
+		}
+		this->p[i] = this->p[i] ^ data;
+		i++;
+	}
+
+	this->xl = 0;
+	this->xr = 0;
+	if (salt == 0)
+	{
+		i = 0;
+		while (i < N + 2)
+		{
+			this->EncryptInt();
+			this->p[i] = this->xl;
+			this->p[i + 1] = this->xr;
+
+			i += 2;
+		}
+
+		i = 0;
+		while (i < 4)
+		{
+			j = 0;
+			while (j < 256)
+			{
+				this->EncryptInt();
+				this->s[i][j + 0] = this->xl;
+				this->s[i][j + 1] = this->xr;
+				j += 2;
+			}
+			i++;
+		}
+	}
+	else
+	{
+		UInt32 salt0 = ReadMUInt32(&salt[0]);
+		UInt32 salt4 = ReadMUInt32(&salt[4]);
+		UInt32 salt8 = ReadMUInt32(&salt[8]);
+		UInt32 salt12 = ReadMUInt32(&salt[12]);
+
+		i = 0;
+		while (i < N + 2)
+		{
+			if (i & 2)
+			{
+				this->xl = this->xl ^ salt8;
+				this->xr = this->xr ^ salt12;
+			}
+			else
+			{
+				this->xl = this->xl ^ salt0;
+				this->xr = this->xr ^ salt4;
+			}
+
+			this->EncryptInt();
+			this->p[i] = this->xl;
+			this->p[i + 1] = this->xr;
+
+			i += 2;
+		}
+
+		i = 0;
+		while (i < 4)
+		{
+			j = 0;
+			while (j < 256)
+			{
+				this->xl = this->xl ^ salt8;
+				this->xr = this->xr ^ salt12;
+				this->EncryptInt();
+				this->s[i][j + 0] = this->xl;
+				this->s[i][j + 1] = this->xr;
+
+				this->xl = this->xl ^ salt0;
+				this->xr = this->xr ^ salt4;
+				this->EncryptInt();
+				this->s[i][j + 2] = this->xl;
+				this->s[i][j + 3] = this->xr;
+				j += 4;
+			}
+			i++;
+		}
+	}
+}
+
+Crypto::Encrypt::Blowfish::Blowfish() : Crypto::Encrypt::BlockCipher(8)
+{
+
 }
 
 Crypto::Encrypt::Blowfish::Blowfish(const UInt8 *key, UOSInt keySize) : Crypto::Encrypt::BlockCipher(8)
@@ -392,66 +557,33 @@ UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(const UInt8 *inBlock, UInt8 *outB
 
 void Crypto::Encrypt::Blowfish::SetKey(const UInt8 *key, UOSInt keySize)
 {
+	this->Init();
+	this->ExpandKey(0, key, keySize);
+}
+
+void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password)
+{
 	UOSInt i;
-	UOSInt j;
 	UOSInt k;
-	UInt32 data;
 
-	k = 0;
-	i = 0;
-	while (i < 4)
+	this->Init();
+
+	k = Text::StrCharCnt(password);
+	this->ExpandKey(salt, password, k + 1);
+	i = 1 << cost;
+	while (i-- > 0)
 	{
-		j = 0;
-		while (j < 256)
-		{
-			this->s[i][j] = origS[k];
-			j++;
-			k++;
-		}
-		i++;
+		this->Key(password, k + 1);
+		this->Key(salt, 16);
 	}
+}
 
-	j = 0;
-	i = 0;
-	while (i < 16 + 2)
-	{
-		data = 0x00000000;
-		k = 0;
-		while (k < 4)
-		{
-			data = (data << 8) | key[j];
-			j = j + 1;
-			if (j >= keySize)
-				j = 0;
-			k++;
-		}
-		this->p[i] = origP[i] ^ data;
-		i++;
-	}
+void Crypto::Encrypt::Blowfish::EncryptBlk(UInt32 *lr)
+{
+	this->xl = lr[0];
+	this->xr = lr[1];
+	this->EncryptInt();
+	lr[0] = this->xl;
+	lr[1] = this->xr;
 
-	this->xl = 0x00000000;
-	this->xr = 0x00000000;
-
-	i = 0;
-	while (i < 16 + 2)
-	{
-		this->EncryptInt();
-		this->p[i] = this->xl;
-		this->p[i + 1] = this->xr;
-		i += 2;
-	}
-
-	i = 0;
-	while (i < 4)
-	{
-		j = 0;
-		while (j < 256)
-		{
-			this->EncryptInt();
-			this->s[i][j] = this->xl;
-			this->s[i][j + 1] = this->xr;
-			j += 2;
-		}
-		i++;
-	}
 }

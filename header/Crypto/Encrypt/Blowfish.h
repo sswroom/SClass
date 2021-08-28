@@ -19,8 +19,12 @@ namespace Crypto
 
 			void EncryptInt();
 			void DecryptInt();
-			UInt32 F(UInt32 x);
+
+			void Init();
+			void Key(const UInt8 *password, UOSInt pwdLen);
+			void ExpandKey(const UInt8 *salt, const UInt8 *password, UOSInt pwdLen);
 		public:
+			Blowfish();
 			Blowfish(const UInt8 *key, UOSInt keySize);
 			virtual ~Blowfish();
 
@@ -28,6 +32,8 @@ namespace Crypto
 			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam);
 
 			void SetKey(const UInt8 *key, UOSInt keySize);
+			void EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password);
+			void EncryptBlk(UInt32 *lr);
 		};
 	}
 }

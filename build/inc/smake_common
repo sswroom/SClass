@@ -19,6 +19,7 @@ nodeps:
 @AES128Test
 @AES192Test
 @AES256Test
+@BcryptTest
 @BlowfishTest
 @CRC32RTest
 @HOTPTest
@@ -186,6 +187,9 @@ AES192Test:
 @ConsoleStartup.o
 AES256Test:
 @AES256Test.o
+@ConsoleStartup.o
+BcryptTest:
+@BcryptTest.o
 @ConsoleStartup.o
 BlowfishTest:
 @BlowfishTest.o
@@ -698,6 +702,7 @@ GUITest9:
 AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
+BcryptTest.o: ../../main/CryptoTest/BcryptTest.cpp
 BlowfishTest.o: ../../main/CryptoTest/BlowfishTest.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
@@ -913,6 +918,8 @@ Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
 Crypto/Hash/Adler32.h: ../../src/Crypto/Hash/Adler32.cpp
 @Adler32.o
 @Adler32_CPP.o
+Crypto/Hash/Bcrypt.h: ../../src/Crypto/Hash/Bcrypt.cpp
+@Bcrypt.o
 Crypto/Hash/BruteForceAttack.h: ../../src/Crypto/Hash/BruteForceAttack.cpp
 @BruteForceAttack.o
 Crypto/Hash/CRC16.h: ../../src/Crypto/Hash/CRC16.cpp
@@ -1008,6 +1015,8 @@ Data/ArrayListUInt32.h: ../../src/Data/ArrayListUInt32.cpp
 Data/ArrayListUInt64.h: ../../src/Data/ArrayListUInt64.cpp
 @ArrayListUInt64.o
 Data/ArrayMap.h:
+Data/BinTool.h: ../../src/Data/BinTool.cpp
+@BinTool.o
 Data/BTreeUTF8Map.h:
 Data/ByteTool.h: ../../src/Data/ByteTool.cpp
 @ByteTool.o
@@ -3493,6 +3502,8 @@ Text/TextBinEnc/HexTextBinEnc.h: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
 Text/TextBinEnc/ITextBinEnc.h:
 Text/TextBinEnc/QuotedPrintableEnc.h: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
 @QuotedPrintableEnc.o
+Text/TextBinEnc/Radix64Enc.h: ../../src/Text/TextBinEnc/Radix64Enc.cpp
+@Radix64Enc.o
 Text/TextBinEnc/TextBinEncList.h: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 @TextBinEncList.o
 Text/TextBinEnc/UCS2TextBinEnc.h: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
@@ -3563,6 +3574,7 @@ Blowfish.o: ../../src/Crypto/Encrypt/Blowfish.cpp
 XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
 Adler32_CPP.o: ../../src/Crypto/Hash/Adler32_CPP.cpp
+Bcrypt.o: ../../src/Crypto/Hash/Bcrypt.cpp
 BruteForceAttack.o: ../../src/Crypto/Hash/BruteForceAttack.cpp
 CRC16.o: ../../src/Crypto/Hash/CRC16.cpp
 CRC16R.o: ../../src/Crypto/Hash/CRC16R.cpp
@@ -3610,6 +3622,7 @@ ArrayListString.o: ../../src/Data/ArrayListString.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp
 ArrayListUInt32.o: ../../src/Data/ArrayListUInt32.cpp
 ArrayListUInt64.o: ../../src/Data/ArrayListUInt64.cpp
+BinTool.o: ../../src/Data/BinTool.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
@@ -4777,6 +4790,7 @@ CPPByteArrBinEnc.o: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp
 CPPTextBinEnc.o: ../../src/Text/TextBinEnc/CPPTextBinEnc.cpp
 HexTextBinEnc.o: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
 QuotedPrintableEnc.o: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
+Radix64Enc.o: ../../src/Text/TextBinEnc/Radix64Enc.cpp
 TextBinEncList.o: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 UCS2TextBinEnc.o: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
