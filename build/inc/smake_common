@@ -19,6 +19,7 @@ nodeps:
 @AES128Test
 @AES192Test
 @AES256Test
+@BlowfishTest
 @CRC32RTest
 @HOTPTest
 @JasyptEncryptorTest
@@ -185,6 +186,9 @@ AES192Test:
 @ConsoleStartup.o
 AES256Test:
 @AES256Test.o
+@ConsoleStartup.o
+BlowfishTest:
+@BlowfishTest.o
 @ConsoleStartup.o
 CRC32RTest:
 @CRC32RTestMain.o
@@ -694,6 +698,7 @@ GUITest9:
 AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
+BlowfishTest.o: ../../main/CryptoTest/BlowfishTest.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
@@ -900,6 +905,8 @@ Crypto/Encrypt/Base64.h: ../../src/Crypto/Encrypt/Base64.cpp
 @Base64_CPP.o
 Crypto/Encrypt/BlockCipher.h: ../../src/Crypto/Encrypt/BlockCipher.cpp
 @BlockCipher.o
+Crypto/Encrypt/Blowfish.h: ../../src/Crypto/Encrypt/Blowfish.cpp
+@Blowfish.o
 Crypto/Encrypt/ICrypto.h:
 Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
 @XOREnc.o
@@ -3552,6 +3559,7 @@ AES256.o: ../../src/Crypto/Encrypt/AES256.cpp
 AESBase.o: ../../src/Crypto/Encrypt/AESBase.cpp
 Base64.o: ../../src/Crypto/Encrypt/Base64.cpp
 BlockCipher.o: ../../src/Crypto/Encrypt/BlockCipher.cpp
+Blowfish.o: ../../src/Crypto/Encrypt/Blowfish.cpp
 XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
 Adler32_CPP.o: ../../src/Crypto/Hash/Adler32_CPP.cpp

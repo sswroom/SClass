@@ -13,7 +13,7 @@ Crypto::Encrypt::AES256::~AES256()
 
 }
 
-OSInt Crypto::Encrypt::AES256::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam)
+UOSInt Crypto::Encrypt::AES256::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam)
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -124,7 +124,7 @@ OSInt Crypto::Encrypt::AES256::EncryptBlock(const UInt8 *inBlock, UInt8 *outBloc
 	return 16;
 }
 
-OSInt Crypto::Encrypt::AES256::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam)
+UOSInt Crypto::Encrypt::AES256::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam)
 {
 	UInt32 s0;
 	UInt32 s1;
