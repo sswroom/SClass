@@ -1774,6 +1774,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 	NEW_CLASS(this->srcColor, Media::ColorProfile(Media::ColorProfile::CPT_VUNKNOWN));
 	NEW_CLASS(this->videoInfo, Media::FrameInfo());
 	NEW_CLASS(this->outputCopier, Media::ImageCopy());
+	this->videoInfo->Clear();
 	this->frameRateDenorm = 1;
 	this->frameRateNorm = 30;
 	this->ignoreFrameTime = false;
@@ -1794,6 +1795,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 	this->cropTop = 0;
 	this->cropRight = 0;
 	this->cropBottom = 0;
+	this->dispClk = 0;
 
 	this->playing = false;
 	this->captureFrame = false;
