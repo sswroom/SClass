@@ -5,7 +5,7 @@
 #include "Data/ByteTool.h"
 #include "Data/RandomBytesGenerator.h"
 
-void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, UInt8 *salt, const UTF8Char *password, UInt8 *hashBuff)
+void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UInt8 *hashBuff)
 {
 	Crypto::Encrypt::Blowfish bf;
 	bf.EksBlowfishSetup(cost, salt, password);
@@ -84,6 +84,18 @@ Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, cons
 	{
 		return false;
 	}
+	Data::RandomBytesGenerator rand;
+	UInt8 salt[16];
+	rand.NextBytes(salt, 16);
+	return this->GenHash(sb, cost, salt, password);
+}
+
+Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password)
+{
+	if (cost < 4 || cost > 31)
+	{
+		return false;
+	}
 	sb->Append((const UTF8Char*)"$2a$");
 	if (cost < 10)
 	{
@@ -91,10 +103,7 @@ Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, cons
 	}
 	sb->AppendU32(cost);
 	sb->AppendChar('$', 1);
-	Data::RandomBytesGenerator rand;
-	UInt8 salt[16];
 	UInt8 hashCTxt[24];
-	rand.NextBytes(salt, 16);
 	this->radix64->EncodeBin(sb, salt, 16);
 	this->CalcHash(cost, salt, password, hashCTxt);
 	this->radix64->EncodeBin(sb, hashCTxt, 23);
