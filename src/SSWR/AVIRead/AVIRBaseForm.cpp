@@ -32,6 +32,7 @@
 #include "SSWR/AVIRead/AVIRASN1OIDForm.h"
 #include "SSWR/AVIRead/AVIRAudioFilterForm.h"
 #include "SSWR/AVIRead/AVIRBaseForm.h"
+#include "SSWR/AVIRead/AVIRBCryptForm.h"
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothForm.h"
@@ -382,7 +383,8 @@ typedef enum
 	MNU_BLUETOOTHCTL,
 	MNU_BLUETOOTHLOG,
 	MNU_CPP_ENUM,
-	MNU_CONSOLE_MEDIA_PLAYER
+	MNU_CONSOLE_MEDIA_PLAYER,
+	MNU_BCRYPT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -517,6 +519,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"Hash Speed", MNU_HASHTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Jasypt Encryptor", MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"One-Time Password (OTP)", MNU_OTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"BCrypt", MNU_BCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"ASN.1");
 	mnu2->AddItem((const UTF8Char*)"ASN.1 MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"ASN.1 OID", MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2279,6 +2282,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRConsoleMediaPlayerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRConsoleMediaPlayerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_BCRYPT:
+		{
+			SSWR::AVIRead::AVIRBCryptForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRBCryptForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
