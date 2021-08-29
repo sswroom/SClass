@@ -2,10 +2,11 @@
 #define _SM_NET_SMTPCONN
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
-#include "IO/StreamWriter.h"
 #include "IO/Writer.h"
-#include "Net/TCPClient.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
+#include "Net/TCPClient.h"
+#include "Text/UTF8Writer.h"
 
 namespace Net
 {
@@ -13,32 +14,32 @@ namespace Net
 	{
 	private:
 		Net::TCPClient *cli;
-		IO::StreamWriter *writer;
+		Text::UTF8Writer *writer;
 		Bool threadToStop;
 		Bool threadRunning;
 		Bool threadStarted;
-		Int32 codePage;
 		Bool logged;
 		Bool statusChg;
-		Int32 lastStatus;
-		WChar *msgRet;
+		UInt32 lastStatus;
+		UTF8Char *msgRet;
 		Sync::Event *evt;
 		IO::Writer *logWriter;
-		Int32 initCode;
+		UInt32 initCode;
 
 		static UInt32 __stdcall SMTPThread(void *userObj);
-		Int32 WaitForResult();
+		UInt32 WaitForResult();
 	public:
-		SMTPConn(const WChar *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage, IO::Writer *logWriter);
+		SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, IO::Writer *logWriter);
 		~SMTPConn();
 
 		Bool IsError();
 
-		Bool SendHelo(const WChar *cliName);
-		Bool SendEHlo(const WChar *cliName);
-		Bool SendMailFrom(const WChar *fromEmail);
-		Bool SendRcptTo(const WChar *toEmail);
+		Bool SendHelo(const UTF8Char *cliName);
+		Bool SendEHlo(const UTF8Char *cliName);
+		Bool SendMailFrom(const UTF8Char *fromEmail);
+		Bool SendRcptTo(const UTF8Char *toEmail);
+		Bool SendData(const UTF8Char *buff, UOSInt buffSize);
 		Bool SendQuit();
 	};
-};
+}
 #endif

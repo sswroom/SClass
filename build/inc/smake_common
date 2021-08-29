@@ -2275,6 +2275,8 @@ Net/DNSProxy.h: ../../src/Net/DNSProxy.cpp
 @DNSProxy.o
 Net/DNSServer.h: ../../src/Net/DNSServer.cpp
 @DNSServer.o
+Net/EmailValidator.h: ../../src/Net/EmailValidator.cpp
+@EmailValidator.o
 Net/EthernetAnalyzer.h: ../../src/Net/EthernetAnalyzer.cpp
 @EthernetAnalyzer.o
 Net/EthernetWebHandler.h: ../../src/Net/EthernetWebHandler.cpp
@@ -2385,6 +2387,8 @@ Net/RTSPClient.h: ../../src/Net/RTSPClient.cpp
 @RTSPClient.o
 Net/SDPFile.h: ../../src/Net/SDPFile.cpp
 @SDPFile.o
+Net/SMTPConn.h: ../../src/Net/SMTPConn.cpp
+@SMTPConn.o
 Net/SMTPServer.h: ../../src/Net/SMTPServer.cpp
 @SMTPServer.o
 Net/SNMPClient.h: ../../src/Net/SNMPClient.cpp
@@ -2842,6 +2846,8 @@ SSWR/AVIRead/AVIReGaugeSvrForm.h: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 @AVIReGaugeSvrForm.o
 SSWR/AVIRead/AVIRElectronicScaleForm.h: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
 @AVIRElectronicScaleForm.o
+SSWR/AVIRead/AVIREmailAddrValidForm.h: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
+@AVIREmailAddrValidForm.o
 SSWR/AVIRead/AVIREncryptForm.h: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 @AVIREncryptForm.o
 SSWR/AVIRead/AVIRESRIMapForm.h: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
@@ -4193,6 +4199,7 @@ DNSClient.o: ../../src/Net/DNSClient.cpp
 DNSHandler.o: ../../src/Net/DNSHandler.cpp
 DNSProxy.o: ../../src/Net/DNSProxy.cpp
 DNSServer.o: ../../src/Net/DNSServer.cpp
+EmailValidator.o: ../../src/Net/EmailValidator.cpp
 EthernetAnalyzer.o: ../../src/Net/EthernetAnalyzer.cpp
 EthernetWebHandler.o: ../../src/Net/EthernetWebHandler.cpp
 FTPClient.o: ../../src/Net/FTPClient.cpp
@@ -4243,6 +4250,7 @@ RTPH264Handler.o: ../../src/Net/RTPH264Handler.cpp
 RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
 SDPFile.o: ../../src/Net/SDPFile.cpp
+SMTPConn.o: ../../src/Net/SMTPConn.cpp
 SMTPServer.o: ../../src/Net/SMTPServer.cpp
 SNMPClient.o: ../../src/Net/SNMPClient.cpp
 SNMPInfo.o: ../../src/Net/SNMPInfo.cpp
@@ -4470,6 +4478,7 @@ AVIRDWQB30Form.o: ../../src/SSWR/AVIRead/AVIRDWQB30Form.cpp
 AVIREDIDViewerForm.o: ../../src/SSWR/AVIRead/AVIREDIDViewerForm.cpp
 AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
+AVIREmailAddrValidForm.o: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
 AVIREncryptForm.o: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
 AVIREWDTU01Form.o: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp

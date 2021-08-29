@@ -1,23 +1,24 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/StreamReader.h"
 #include "Manage/HiResClock.h"
 #include "Net/SMTPConn.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
+#include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Reader.h"
 
 UInt32 __stdcall Net::SMTPConn::SMTPThread(void *userObj)
 {
 	Net::SMTPConn *me = (Net::SMTPConn *)userObj;
-	IO::StreamReader *reader;
-	WChar sbuff[2048];
-	WChar sbuff2[4];
-	WChar *sptr;
+	Text::UTF8Reader *reader;
+	UTF8Char sbuff[2048];
+	UTF8Char sbuff2[4];
+	UTF8Char *sptr;
 	Int32 msgCode;
 
 	me->threadStarted = true;
 	me->threadRunning = true;
-	NEW_CLASS(reader, IO::StreamReader(me->cli, me->codePage));
+	NEW_CLASS(reader, Text::UTF8Reader(me->cli));
 	while (!me->threadToStop)
 	{
 		sptr = reader->ReadLine(sbuff, 2048);
@@ -25,7 +26,7 @@ UInt32 __stdcall Net::SMTPConn::SMTPThread(void *userObj)
 		{
 			if (me->logWriter)
 			{
-				me->logWriter->WriteLine(L"Connection Closed");
+				me->logWriter->WriteLine((const UTF8Char*)"Connection Closed");
 			}
 			break;
 		}
@@ -81,7 +82,7 @@ UInt32 __stdcall Net::SMTPConn::SMTPThread(void *userObj)
 	return 0;
 }
 
-Int32 Net::SMTPConn::WaitForResult()
+UInt32 Net::SMTPConn::WaitForResult()
 {
 	Manage::HiResClock clk;
 	while (this->threadRunning && !this->statusChg && clk.GetTimeDiff() < 30.0)
@@ -97,31 +98,32 @@ Int32 Net::SMTPConn::WaitForResult()
 		return 0;
 }
 
-Net::SMTPConn::SMTPConn(const WChar *host, UInt16 port, Net::SocketFactory *sockf, Int32 codePage, IO::Writer *logWriter)
+Net::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, IO::Writer *logWriter)
 {
-	this->codePage = codePage;
 	this->threadStarted = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->logged = false;
 	this->msgRet = 0;
 	this->statusChg = false;
-	UInt32 ip = sockf->GetIPByHost(host);
+	Net::SocketUtil::AddressInfo addr;
+	addr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	sockf->DNSResolveIP(host, &addr);
 	this->logWriter = logWriter;
-	NEW_CLASS(this->evt, Sync::Event(true, L"Net.SMTPConn.evt"));
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, ip, port));
-	NEW_CLASS(this->writer, IO::StreamWriter(this->cli, codePage));
+	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.SMTPConn.evt"));
+	NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
 	if (this->logWriter)
 	{
-		Text::StringBuilder sb;
-		WChar sbuff[20];
-		sb.Append(L"Connect to ");
+		Text::StringBuilderUTF8 sb;
+		UTF8Char sbuff[128];
+		sb.Append((const UTF8Char*)"Connect to ");
 		sb.Append(host);
-		sb.Append(L"(");
-		Net::SocketFactory::GetIPv4Name(sbuff, ip);
+		sb.Append((const UTF8Char*)"(");
+		Net::SocketUtil::GetAddrName(sbuff, &addr);
 		sb.Append(sbuff);
-		sb.Append(L"):");
-		sb.Append(port);
+		sb.Append((const UTF8Char*)"):");
+		sb.AppendU16(port);
 		this->logWriter->WriteLine(sb.ToString());
 	}
 	Sync::Thread::Create(SMTPThread, this);
@@ -147,62 +149,62 @@ Net::SMTPConn::~SMTPConn()
 
 Bool Net::SMTPConn::IsError()
 {
-	return this->initCode != 220 || this->cli->GetLastError() != 0;
+	return this->initCode != 220 || this->cli->IsConnectError();
 }
 
-Bool Net::SMTPConn::SendHelo(const WChar *cliName)
+Bool Net::SMTPConn::SendHelo(const UTF8Char *cliName)
 {
-	WChar sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, L"HELO "), cliName);
+	UTF8Char sbuff[512];
+	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HELO "), cliName);
 	this->statusChg = false;
 	if (this->logWriter)
 	{
 		this->logWriter->WriteLine(sbuff);
 	}
 	writer->WriteLine(sbuff);
-	Int32 code = WaitForResult();
+	UInt32 code = WaitForResult();
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendEHlo(const WChar *cliName)
+Bool Net::SMTPConn::SendEHlo(const UTF8Char *cliName)
 {
-	WChar sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, L"EHLO "), cliName);
+	UTF8Char sbuff[512];
+	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName);
 	this->statusChg = false;
 	if (this->logWriter)
 	{
 		this->logWriter->WriteLine(sbuff);
 	}
 	writer->WriteLine(sbuff);
-	Int32 code = WaitForResult();
+	UInt32 code = WaitForResult();
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendMailFrom(const WChar *fromEmail)
+Bool Net::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
 {
-	WChar sbuff[512];
-	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, L"MAIL FROM: <"), fromEmail), L">");
+	UTF8Char sbuff[512];
+	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"MAIL FROM: <"), fromEmail), (const UTF8Char*)">");
 	this->statusChg = false;
 	if (this->logWriter)
 	{
 		this->logWriter->WriteLine(sbuff);
 	}
 	writer->WriteLine(sbuff);
-	Int32 code = WaitForResult();
+	UInt32 code = WaitForResult();
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendRcptTo(const WChar *toEmail)
+Bool Net::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
 {
-	WChar sbuff[512];
-	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, L"RCPT TO: <"), toEmail), L">");
+	UTF8Char sbuff[512];
+	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RCPT TO: <"), toEmail), (const UTF8Char*)">");
 	this->statusChg = false;
 	if (this->logWriter)
 	{
 		this->logWriter->WriteLine(sbuff);
 	}
 	writer->WriteLine(sbuff);
-	Int32 code = WaitForResult();
+	UInt32 code = WaitForResult();
 	return code == 250;
 }
 
@@ -211,9 +213,29 @@ Bool Net::SMTPConn::SendQuit()
 	this->statusChg = false;
 	if (this->logWriter)
 	{
-		this->logWriter->WriteLine(L"QUIT");
+		this->logWriter->WriteLine((const UTF8Char*)"QUIT");
 	}
-	writer->WriteLine(L"QUIT");
-	Int32 code = WaitForResult();
+	writer->WriteLine((const UTF8Char*)"QUIT");
+	UInt32 code = WaitForResult();
 	return code == 221;
+}
+
+Bool Net::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
+{
+	this->statusChg = false;
+	if (this->logWriter)
+	{
+		this->logWriter->WriteLine((const UTF8Char*)"DATA");
+	}
+	writer->WriteLine((const UTF8Char*)"DATA");
+	UInt32 code = WaitForResult();
+	if (code != 354)
+	{
+		return false;
+	}
+	this->cli->Write(buff, buffSize);
+	this->cli->Write((const UInt8*)"\r\n.\r\n", 5);
+	code = WaitForResult();
+	return code == 250;
+	
 }

@@ -64,6 +64,7 @@
 #include "SSWR/AVIRead/AVIREDIDViewerForm.h"
 #include "SSWR/AVIRead/AVIReGaugeSvrForm.h"
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
+#include "SSWR/AVIRead/AVIREmailAddrValidForm.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
 #include "SSWR/AVIRead/AVIREWDTU01Form.h"
@@ -384,7 +385,8 @@ typedef enum
 	MNU_BLUETOOTHLOG,
 	MNU_CPP_ENUM,
 	MNU_CONSOLE_MEDIA_PLAYER,
-	MNU_BCRYPT
+	MNU_BCRYPT,
+	MNU_EMAIL_ADDR_VALID
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -609,7 +611,9 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"MySQL Server", MNU_MYSQLSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"WHOIS Client", MNU_WHOISCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"DHCP Server", MNU_DHCPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"SMTP Server", MNU_SMTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Email");
+	mnu2->AddItem((const UTF8Char*)"SMTP Server", MNU_SMTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Email Address Validator", MNU_EMAIL_ADDR_VALID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"RSS Reader", MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"eGauge Server", MNU_EGAUGESVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Log Server", MNU_LOGSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2289,6 +2293,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRBCryptForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBCryptForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_EMAIL_ADDR_VALID:
+		{
+			SSWR::AVIRead::AVIREmailAddrValidForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIREmailAddrValidForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
