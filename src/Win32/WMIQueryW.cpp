@@ -224,7 +224,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		}
 	}
 
-	names->AddRange(this->tabNames);
+	names->AddAll(this->tabNames);
 	return this->tabNames->GetCount();
 }
 
