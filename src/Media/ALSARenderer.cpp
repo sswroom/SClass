@@ -118,7 +118,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	err = snd_async_add_pcm_handler(&ahandler, (snd_pcm_t*)me->hand, ALSARenderer_Event, me);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_reset, %d, %s\r\n", err, snd_strerror(err));
+		printf("Error: snd_async_add_pcm_handler, %d, %s\r\n", err, snd_strerror(err));
 	}
 	lastT = thisT = GetCurrTime(me->hand);
 	refStart = thisT - audStartTime;
@@ -210,8 +210,11 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				}
 				if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
 				{
-					snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
-	//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
+					err = snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+					if (err < 0)
+					{
+						printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), err);
+					}
 					i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
 
 					if (me->dataConv)
