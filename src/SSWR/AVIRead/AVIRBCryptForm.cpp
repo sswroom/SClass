@@ -17,6 +17,12 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 		me->txtCost->Focus();
 		return;
 	}
+	if (cost < 4 || cost > 31)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Cost must be within 4-31", (const UTF8Char*)"BCrypt", me);
+		me->txtCost->Focus();
+		return;
+	}
 	sbCost.ClearStr();
 	Crypto::Hash::Bcrypt bcrypt;
 	bcrypt.GenHash(&sbCost, cost, sbPassword.ToString());
