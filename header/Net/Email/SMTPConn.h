@@ -1,5 +1,5 @@
-#ifndef _SM_NET_SMTPCONN
-#define _SM_NET_SMTPCONN
+#ifndef _SM_NET_EMAIL_SMTPCONN
+#define _SM_NET_EMAIL_SMTPCONN
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/Writer.h"
@@ -14,6 +14,13 @@ namespace Net
 	{
 		class SMTPConn
 		{
+		public:
+			enum ConnType
+			{
+				CT_PLAIN,
+				CT_STARTTLS,
+				CT_SSL
+			};
 		private:
 			Net::TCPClient *cli;
 			Text::UTF8Writer *writer;
@@ -31,7 +38,7 @@ namespace Net
 			static UInt32 __stdcall SMTPThread(void *userObj);
 			UInt32 WaitForResult();
 		public:
-			SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, IO::Writer *logWriter);
+			SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, ConnType connType, IO::Writer *logWriter);
 			~SMTPConn();
 
 			Bool IsError();

@@ -14,7 +14,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
 	UTF8Char *sptr;
-	Int32 msgCode;
+	UInt32 msgCode;
 
 	me->threadStarted = true;
 	me->threadRunning = true;
@@ -49,7 +49,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 			sbuff2[1] = sbuff[1];
 			sbuff2[2] = sbuff[2];
 			sbuff2[3] = 0;
-			msgCode = Text::StrToInt32(sbuff2);
+			msgCode = Text::StrToUInt32(sbuff2);
 			if (msgCode == 235)
 			{
 				me->logged = true;
@@ -98,7 +98,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult()
 		return 0;
 }
 
-Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, IO::Writer *logWriter)
+Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, ConnType connType, IO::Writer *logWriter)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -111,7 +111,20 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	sockf->DNSResolveIP(host, &addr);
 	this->logWriter = logWriter;
 	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.SMTPConn.evt"));
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+	if (connType == CT_SSL)
+	{
+		Net::SSLEngine::ErrorType err;
+		this->cli = ssl->Connect(host, port, &err);
+	}
+	else if (connType == CT_STARTTLS)
+	{
+		/////////////////////////
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+	}
+	else
+	{
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+	}
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
 	if (this->logWriter)
 	{
