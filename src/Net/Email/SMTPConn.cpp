@@ -1,15 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Manage/HiResClock.h"
-#include "Net/SMTPConn.h"
+#include "Net/Email/SMTPConn.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-UInt32 __stdcall Net::SMTPConn::SMTPThread(void *userObj)
+UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 {
-	Net::SMTPConn *me = (Net::SMTPConn *)userObj;
+	Net::Email::SMTPConn *me = (Net::Email::SMTPConn *)userObj;
 	Text::UTF8Reader *reader;
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
@@ -82,7 +82,7 @@ UInt32 __stdcall Net::SMTPConn::SMTPThread(void *userObj)
 	return 0;
 }
 
-UInt32 Net::SMTPConn::WaitForResult()
+UInt32 Net::Email::SMTPConn::WaitForResult()
 {
 	Manage::HiResClock clk;
 	while (this->threadRunning && !this->statusChg && clk.GetTimeDiff() < 30.0)
@@ -98,7 +98,7 @@ UInt32 Net::SMTPConn::WaitForResult()
 		return 0;
 }
 
-Net::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, IO::Writer *logWriter)
+Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, IO::Writer *logWriter)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -134,7 +134,7 @@ Net::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UT
 	this->initCode = WaitForResult();
 }
 
-Net::SMTPConn::~SMTPConn()
+Net::Email::SMTPConn::~SMTPConn()
 {
 	this->threadToStop = true;
 	this->cli->Close();
@@ -147,12 +147,12 @@ Net::SMTPConn::~SMTPConn()
 	DEL_CLASS(this->evt);
 }
 
-Bool Net::SMTPConn::IsError()
+Bool Net::Email::SMTPConn::IsError()
 {
 	return this->initCode != 220 || this->cli->IsConnectError();
 }
 
-Bool Net::SMTPConn::SendHelo(const UTF8Char *cliName)
+Bool Net::Email::SMTPConn::SendHelo(const UTF8Char *cliName)
 {
 	UTF8Char sbuff[512];
 	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HELO "), cliName);
@@ -166,7 +166,7 @@ Bool Net::SMTPConn::SendHelo(const UTF8Char *cliName)
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendEHlo(const UTF8Char *cliName)
+Bool Net::Email::SMTPConn::SendEHlo(const UTF8Char *cliName)
 {
 	UTF8Char sbuff[512];
 	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName);
@@ -180,7 +180,7 @@ Bool Net::SMTPConn::SendEHlo(const UTF8Char *cliName)
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
+Bool Net::Email::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
 {
 	UTF8Char sbuff[512];
 	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"MAIL FROM: <"), fromEmail), (const UTF8Char*)">");
@@ -194,7 +194,7 @@ Bool Net::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
+Bool Net::Email::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
 {
 	UTF8Char sbuff[512];
 	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RCPT TO: <"), toEmail), (const UTF8Char*)">");
@@ -208,7 +208,7 @@ Bool Net::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
 	return code == 250;
 }
 
-Bool Net::SMTPConn::SendQuit()
+Bool Net::Email::SMTPConn::SendQuit()
 {
 	this->statusChg = false;
 	if (this->logWriter)
@@ -220,7 +220,7 @@ Bool Net::SMTPConn::SendQuit()
 	return code == 221;
 }
 
-Bool Net::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
+Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 {
 	this->statusChg = false;
 	if (this->logWriter)

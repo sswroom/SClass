@@ -6,8 +6,8 @@ void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(void *us
 	SSWR::AVIRead::AVIREmailAddrValidForm *me = (SSWR::AVIRead::AVIREmailAddrValidForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtAddr->GetText(&sb);
-	Net::EmailValidator::Status status = me->validator->Validate(sb.ToString());
-	me->txtStatus->SetText(Net::EmailValidator::StatusGetName(status));
+	Net::Email::EmailValidator::Status status = me->validator->Validate(sb.ToString());
+	me->txtStatus->SetText(Net::Email::EmailValidator::StatusGetName(status));
 }
 
 SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 240, ui)
@@ -18,7 +18,7 @@ SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientContr
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->validator, Net::EmailValidator(this->core->GetSocketFactory()));
+	NEW_CLASS(this->validator, Net::Email::EmailValidator(this->core->GetSocketFactory()));
 
 	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this, (const UTF8Char*)"Email Address"));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);

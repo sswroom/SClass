@@ -1,15 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListUInt32.h"
-#include "Net/IMailController.h"
-#include "Net/POP3Server.h"
+#include "Net/Email/MailController.h"
+#include "Net/Email/POP3Server.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::POP3Server::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
 {
-	Net::POP3Server *me = (Net::POP3Server*)userObj;
+	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
 	Net::TCPClient *cli;
 	MailStatus *cliStatus;
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
@@ -27,7 +27,7 @@ void __stdcall Net::POP3Server::ConnHdlr(Socket *s, void *userObj)
 	me->WriteMessage(cli, true, me->greeting);
 }
 
-void __stdcall Net::POP3Server::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
@@ -61,9 +61,9 @@ void __stdcall Net::POP3Server::ClientEvent(Net::TCPClient *cli, void *userObj, 
 	}
 }
 
-void __stdcall Net::POP3Server::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::Email::POP3Server::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
-	Net::POP3Server *me = (Net::POP3Server*)userObj;
+	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
 	MailStatus *cliStatus;
 	cliStatus = (MailStatus*)cliData;
 	if (me->rawLog)
@@ -116,11 +116,11 @@ void __stdcall Net::POP3Server::ClientData(Net::TCPClient *cli, void *userObj, v
 	}
 }
 
-void __stdcall Net::POP3Server::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::Email::POP3Server::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
 {
 }
 
-UOSInt Net::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg)
+UOSInt Net::Email::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg)
 {
 	Text::StringBuilderUTF8 sb;
 	if (success)
@@ -148,7 +148,7 @@ UOSInt Net::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UT
 	return buffSize;
 }
 
-UOSInt Net::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg)
+UOSInt Net::Email::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg)
 {
 	UOSInt strLen = Text::StrCharCnt(msg);
 	UOSInt buffSize;
@@ -160,7 +160,7 @@ UOSInt Net::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg)
 	return buffSize;
 }
 
-void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd)
+void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd)
 {
 	if (Text::StrEquals(cmd, "CAPA"))
 	{
@@ -214,7 +214,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
 			{
 				Text::StringBuilderUTF8 sb;
-				Net::IMailController::MessageInfo info;
+				Net::Email::MailController::MessageInfo info;
 				WriteMessage(cli, true, (const UTF8Char *)"messages follow");
 				i = 0;
 				j = unreadList.GetCount();
@@ -255,7 +255,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 			}
 			else
 			{
-				Net::IMailController::MessageInfo info;
+				Net::Email::MailController::MessageInfo info;
 				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, &info))
 				{
 					Text::StringBuilderUTF8 sb;
@@ -356,7 +356,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
 			{
 				Text::StringBuilderUTF8 sb;
-				Net::IMailController::MessageInfo info;
+				Net::Email::MailController::MessageInfo info;
 				WriteMessage(cli, true, (const UTF8Char *)"unique-id listing follows");
 				i = 0;
 				j = unreadList.GetCount();
@@ -397,7 +397,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 			}
 			else
 			{
-				Net::IMailController::MessageInfo info;
+				Net::Email::MailController::MessageInfo info;
 				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, &info))
 				{
 					Text::StringBuilderUTF8 sb;
@@ -449,7 +449,7 @@ void Net::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char 
 	}
 }
 
-Net::POP3Server::POP3Server(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::IMailController *mailCtrl)
+Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl)
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -460,7 +460,7 @@ Net::POP3Server::POP3Server(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	NEW_CLASS(this->rawLog, IO::FileStream((const UTF8Char *)"POP3Log.dat", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 }
 
-Net::POP3Server::~POP3Server()
+Net::Email::POP3Server::~POP3Server()
 {
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
@@ -468,12 +468,12 @@ Net::POP3Server::~POP3Server()
 	Text::StrDelNew(this->greeting);
 }
 
-Bool Net::POP3Server::IsError()
+Bool Net::Email::POP3Server::IsError()
 {
 	return this->svr->IsV4Error();
 }
 
-UInt16 Net::POP3Server::GetDefaultPort()
+UInt16 Net::Email::POP3Server::GetDefaultPort()
 {
 	return 110;
 }

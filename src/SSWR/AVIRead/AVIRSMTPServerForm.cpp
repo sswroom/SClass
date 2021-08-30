@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
 			return;
 		}
-		NEW_CLASS(me->smtpSvr, Net::SMTPServer(me->core->GetSocketFactory(), port, me->log, (const UTF8Char *)"127.0.0.1", (const UTF8Char *)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
+		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->core->GetSocketFactory(), port, me->log, (const UTF8Char *)"127.0.0.1", (const UTF8Char *)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
 		if (me->smtpSvr->IsError())
 		{
 			DEL_CLASS(me->smtpSvr);
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
 			return;
 		}
-		NEW_CLASS(me->pop3Svr, Net::POP3Server(me->core->GetSocketFactory(), port, me->log, (const UTF8Char *)"Welcome to SSWR POP3 Server", me));
+		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), port, me->log, (const UTF8Char *)"Welcome to SSWR POP3 Server", me));
 		if (me->pop3Svr->IsError())
 		{
 			DEL_CLASS(me->pop3Svr);
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userOb
 	}
 }
 
-UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::SMTPServer::MailStatus *mail)
+UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail)
 {
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	UTF8Char sbuff[32];

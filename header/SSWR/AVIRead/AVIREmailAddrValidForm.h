@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREMAILADDRVALIDFORM
 #define _SM_SSWR_AVIREAD_AVIREMAILADDRVALIDFORM
-#include "Net/EmailValidator.h"
+#include "Net/Email/EmailValidator.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUITextBox *txtStatus;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Net::EmailValidator *validator;
+			Net::Email::EmailValidator *validator;
 
 			static void __stdcall OnValidateClicked(void *userObj);
 		public:

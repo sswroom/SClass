@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSMTPSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIRSMTPSERVERFORM
-#include "Net/POP3Server.h"
-#include "Net/SMTPServer.h"
+#include "Net/Email/POP3Server.h"
+#include "Net/Email/SMTPServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
@@ -20,7 +20,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRSMTPServerForm : public UI::GUIForm, public Net::IMailController
+		class AVIRSMTPServerForm : public UI::GUIForm, public Net::Email::MailController
 		{
 		private:
 			typedef struct
@@ -59,8 +59,8 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 			UI::GUIListBox *lbLog;
 
-			Net::SMTPServer *smtpSvr;
-			Net::POP3Server *pop3Svr;
+			Net::Email::SMTPServer *smtpSvr;
+			Net::Email::POP3Server *pop3Svr;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
 			Net::SocketFactory *sockf;
@@ -79,7 +79,7 @@ namespace SSWR
 			static void __stdcall OnPOP3StartClicked(void *userObj);
 			static void __stdcall OnLogFileClicked(void *userObj);
 			static void __stdcall OnEmailDblClicked(void *userObj, UOSInt index);
-			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::SMTPServer::MailStatus *mail);
+			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail);
 			static Bool __stdcall OnMailLogin(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
 			static void __stdcall OnTimerTick(void *userObj);
 			Int64 NextEmailId();

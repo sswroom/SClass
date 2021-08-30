@@ -1,8 +1,8 @@
 #include "Stdafx.h"
-#include "Net/EmailValidator.h"
-#include "Net/SMTPConn.h"
+#include "Net/Email/EmailValidator.h"
+#include "Net/Email/SMTPConn.h"
 
-Net::EmailValidator::EmailValidator(Net::SocketFactory *sockf)
+Net::Email::EmailValidator::EmailValidator(Net::SocketFactory *sockf)
 {
 	Net::SocketUtil::AddressInfo dnsAddr;
 	this->sockf = sockf;
@@ -10,15 +10,15 @@ Net::EmailValidator::EmailValidator(Net::SocketFactory *sockf)
 	NEW_CLASS(this->dnsClient, Net::DNSClient(this->sockf, &dnsAddr));
 }
 
-Net::EmailValidator::~EmailValidator()
+Net::Email::EmailValidator::~EmailValidator()
 {
 	DEL_CLASS(this->dnsClient);
 }
 
-Net::EmailValidator::Status Net::EmailValidator::Validate(const UTF8Char *emailAddr)
+Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UTF8Char *emailAddr)
 {
 	Net::SocketUtil::AddressInfo addr;
-	Net::SMTPConn *conn;
+	Net::Email::SMTPConn *conn;
 	const UTF8Char *emailDomain;
 	UOSInt i = Text::StrIndexOf(emailAddr, '@');
 	UOSInt j;
@@ -60,7 +60,7 @@ Net::EmailValidator::Status Net::EmailValidator::Validate(const UTF8Char *emailA
 		Text::StrDelNew(emailSvr);
 		return S_DOMAIN_NOT_RESOLVED;
 	}
-	NEW_CLASS(conn, Net::SMTPConn(this->sockf, 0, emailSvr, 25, 0));
+	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, 0, emailSvr, 25, 0));
 	Text::StrDelNew(emailSvr);
 	if (conn->IsError())
 	{
@@ -90,7 +90,7 @@ Net::EmailValidator::Status Net::EmailValidator::Validate(const UTF8Char *emailA
 	return S_VALID;
 }
 
-const UTF8Char *Net::EmailValidator::StatusGetName(Status status)
+const UTF8Char *Net::Email::EmailValidator::StatusGetName(Status status)
 {
 	switch (status)
 	{

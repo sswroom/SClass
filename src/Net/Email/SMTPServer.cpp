@@ -1,14 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Encrypt/Base64.h"
-#include "Net/SMTPServer.h"
+#include "Net/Email/SMTPServer.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SMTPServer::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 {
-	Net::SMTPServer *me = (Net::SMTPServer*)userObj;
+	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	Net::TCPClient *cli;
 	MailStatus *cliStatus;
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
@@ -32,7 +32,7 @@ void __stdcall Net::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 	me->WriteMessage(cli, 220, sb.ToString());
 }
 
-void __stdcall Net::SMTPServer::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::SMTPServer::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
@@ -66,11 +66,11 @@ void __stdcall Net::SMTPServer::ClientEvent(Net::TCPClient *cli, void *userObj, 
 	}
 }
 
-void __stdcall Net::SMTPServer::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
-	Net::SMTPServer *me = (Net::SMTPServer*)userObj;
-	Net::SMTPServer::MailStatus *cliStatus;
-	cliStatus = (Net::SMTPServer::MailStatus*)cliData;
+	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
+	Net::Email::SMTPServer::MailStatus *cliStatus;
+	cliStatus = (Net::Email::SMTPServer::MailStatus*)cliData;
 	if (me->rawLog)
 	{
 		me->rawLog->Write(buff, size);
@@ -132,11 +132,11 @@ void __stdcall Net::SMTPServer::ClientData(Net::TCPClient *cli, void *userObj, v
 	}
 }
 
-void __stdcall Net::SMTPServer::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::Email::SMTPServer::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
 {
 }
 
-UOSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg)
+UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
@@ -204,7 +204,7 @@ UOSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, cons
 	return strLen;
 }*/
 
-void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus *cliStatus, Char *cmd, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *cliStatus, Char *cmd, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{
@@ -448,7 +448,7 @@ void Net::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::SMTPServer::MailStatus 
 	
 }
 
-Net::SMTPServer::SMTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
+Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -463,7 +463,7 @@ Net::SMTPServer::SMTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	NEW_CLASS(this->rawLog, IO::FileStream((const UTF8Char*)"SMTPLog.dat", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
 }
 
-Net::SMTPServer::~SMTPServer()
+Net::Email::SMTPServer::~SMTPServer()
 {
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
@@ -472,12 +472,12 @@ Net::SMTPServer::~SMTPServer()
 	Text::StrDelNew(this->serverName);
 }
 
-Bool Net::SMTPServer::IsError()
+Bool Net::Email::SMTPServer::IsError()
 {
 	return this->svr->IsV4Error();
 }
 
-UInt16 Net::SMTPServer::GetDefaultPort()
+UInt16 Net::Email::SMTPServer::GetDefaultPort()
 {
 	return 25;
 }

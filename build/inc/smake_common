@@ -2275,8 +2275,6 @@ Net/DNSProxy.h: ../../src/Net/DNSProxy.cpp
 @DNSProxy.o
 Net/DNSServer.h: ../../src/Net/DNSServer.cpp
 @DNSServer.o
-Net/EmailValidator.h: ../../src/Net/EmailValidator.cpp
-@EmailValidator.o
 Net/EthernetAnalyzer.h: ../../src/Net/EthernetAnalyzer.cpp
 @EthernetAnalyzer.o
 Net/EthernetWebHandler.h: ../../src/Net/EthernetWebHandler.cpp
@@ -2307,7 +2305,6 @@ Net/HTTPQueue.h: ../../src/Net/HTTPQueue.cpp
 @HTTPQueue.o
 Net/HTTPServerMonitor.h: ../../src/Net/HTTPServerMonitor.cpp
 @HTTPServerMonitor.o
-Net/IMailController.h:
 Net/ICMPScanner.h: ../../src/Net/ICMPScanner.cpp
 @ICMPScanner.o
 Net/IPScanDetector.h: ../../src/Net/IPScanDetector.cpp
@@ -2359,8 +2356,6 @@ Net/PacketAnalyzerEthernet.h: ../../src/Net/PacketAnalyzerEthernet.cpp
 @PacketAnalyzerEthernet.o
 Net/PingMonitor.h: ../../src/Net/PingMonitor.cpp
 @PingMonitor.o
-Net/POP3Server.h: ../../src/Net/POP3Server.cpp
-@POP3Server.o
 Net/ProxyServer.h: ../../src/Net/ProxyServer.cpp
 @ProxyServer.o
 Net/RAWAnalyzer.h: ../../src/Net/RAWAnalyzer.cpp
@@ -2387,10 +2382,6 @@ Net/RTSPClient.h: ../../src/Net/RTSPClient.cpp
 @RTSPClient.o
 Net/SDPFile.h: ../../src/Net/SDPFile.cpp
 @SDPFile.o
-Net/SMTPConn.h: ../../src/Net/SMTPConn.cpp
-@SMTPConn.o
-Net/SMTPServer.h: ../../src/Net/SMTPServer.cpp
-@SMTPServer.o
 Net/SNMPClient.h: ../../src/Net/SNMPClient.cpp
 @SNMPClient.o
 Net/SNMPInfo.h: ../../src/Net/SNMPInfo.cpp
@@ -2459,6 +2450,15 @@ Net/WirelessLANIE.h: ../../src/Net/WirelessLANIE.cpp
 @WirelessLANIE.o
 Net/WOLClient.h: ../../src/Net/WOLClient.cpp
 @WOLClient.o
+Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
+@EmailValidator.o
+Net/Email/MailController.h:
+Net/Email/POP3Server.h: ../../src/Net/Email/POP3Server.cpp
+@POP3Server.o
+Net/Email/SMTPConn.h: ../../src/Net/Email/SMTPConn.cpp
+@SMTPConn.o
+Net/Email/SMTPServer.h: ../../src/Net/Email/SMTPServer.cpp
+@SMTPServer.o
 Net/SNS/SNS7gogo.h: ../../src/Net/SNS/SNS7gogo.cpp
 @SNS7gogo.o
 Net/SNS/SNSControl.h: ../../src/Net/SNS/SNSControl.cpp
@@ -4199,7 +4199,6 @@ DNSClient.o: ../../src/Net/DNSClient.cpp
 DNSHandler.o: ../../src/Net/DNSHandler.cpp
 DNSProxy.o: ../../src/Net/DNSProxy.cpp
 DNSServer.o: ../../src/Net/DNSServer.cpp
-EmailValidator.o: ../../src/Net/EmailValidator.cpp
 EthernetAnalyzer.o: ../../src/Net/EthernetAnalyzer.cpp
 EthernetWebHandler.o: ../../src/Net/EthernetWebHandler.cpp
 FTPClient.o: ../../src/Net/FTPClient.cpp
@@ -4237,7 +4236,7 @@ PacketAnalyzer.o: ../../src/Net/PacketAnalyzer.cpp
 PacketAnalyzerBluetooth.o: ../../src/Net/PacketAnalyzerBluetooth.cpp
 PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp
-POP3Server.o: ../../src/Net/POP3Server.cpp
+POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 ProxyServer.o: ../../src/Net/ProxyServer.cpp
 RAWAnalyzer.o: ../../src/Net/RAWAnalyzer.cpp
 RAWCapture.o: ../../src/Net/RAWCapture.cpp
@@ -4250,8 +4249,6 @@ RTPH264Handler.o: ../../src/Net/RTPH264Handler.cpp
 RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
 SDPFile.o: ../../src/Net/SDPFile.cpp
-SMTPConn.o: ../../src/Net/SMTPConn.cpp
-SMTPServer.o: ../../src/Net/SMTPServer.cpp
 SNMPClient.o: ../../src/Net/SNMPClient.cpp
 SNMPInfo.o: ../../src/Net/SNMPInfo.cpp
 SNMPManager.o: ../../src/Net/SNMPManager.cpp
@@ -4288,6 +4285,9 @@ WiFiCapturer.o: ../../src/Net/WiFiCapturer.cpp
 WiFiLogFile.o: ../../src/Net/WiFiLogFile.cpp
 WirelessLANIE.o: ../../src/Net/WirelessLANIE.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
+EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
+SMTPConn.o: ../../src/Net/Email/SMTPConn.cpp
+SMTPServer.o: ../../src/Net/Email/SMTPServer.cpp
 SNS7gogo.o: ../../src/Net/SNS/SNS7gogo.cpp
 SNSControl.o: ../../src/Net/SNS/SNSControl.cpp
 SNSInstagram.o: ../../src/Net/SNS/SNSInstagram.cpp
