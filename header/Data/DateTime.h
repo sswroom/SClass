@@ -10,6 +10,17 @@ namespace Data
 {
 	class DateTime : public Data::IComparable
 	{
+	public:
+		enum Weekday
+		{
+			W_SUNDAY,
+			W_MONDAY,
+			W_TUESDAY,
+			W_WEDNESDAY,
+			W_THURSDAY,
+			W_FRIDAY,
+			W_SATURDAY
+		};
 	private:
 		UInt16 year;
 		UInt8 month;
@@ -105,7 +116,7 @@ namespace Data
 		void ConvertTimeZoneQHR(Int8 tzQhr);
 		void SetTimeZoneQHR(Int8 tzQhr);
 		Int8 GetTimeZoneQHR();
-		Int32 GetWeekday(); //0 = Sun, 6 = Sat
+		Weekday GetWeekday();
 
 		static UInt8 ParseMonthStr(const Char *month);
 		static UInt8 ParseMonthStr(const UTF8Char *month);

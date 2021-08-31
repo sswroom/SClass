@@ -39,7 +39,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 			dt = row->GetValueDate(col->GetColName());
 			if (dt)
 			{
-				dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzz");
+				dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
 				json->ObjectAddStrUTF8(sb.ToString(), sbuff);
 			}
 			else

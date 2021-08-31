@@ -3,6 +3,7 @@
 #include "IO/Writer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Net/Email/EmailMessage.h"
 #include "Net/Email/SMTPConn.h"
 
 namespace Net
@@ -23,7 +24,7 @@ namespace Net
 			SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter);
 			~SMTPClient();
 
-			Bool Send();
+			Bool Send(Net::Email::EmailMessage *message);
 		};
 	}
 }

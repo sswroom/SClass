@@ -69,13 +69,13 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			i = me->lvInfo->AddItem((const UTF8Char*)"PubDate", 0);
 			if ((dt = rss->GetPubDate()) != 0)
 			{
-				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				me->lvInfo->SetSubItem(i, 1, sbuff);
 			}
 			i = me->lvInfo->AddItem((const UTF8Char*)"LastBuildDate", 0);
 			if ((dt = rss->GetLastBuildDate()) != 0)
 			{
-				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				me->lvInfo->SetSubItem(i, 1, sbuff);
 			}
 			i = me->lvInfo->AddItem((const UTF8Char*)"Generator", 0);

@@ -157,7 +157,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			{
 				dt.SetTicks(dev->readingTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 				writer->Write(sbuff);
 			}
 			writer->Write((const UTF8Char*)"</td><td>");
@@ -451,7 +451,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		{
 			dt.SetTicks(dev->readingTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			writer->Write(sbuff);
 		}
 		writer->Write((const UTF8Char*)"</td><td>");

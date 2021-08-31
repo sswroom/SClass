@@ -11,6 +11,7 @@ namespace Text
 		static void BuildString(Text::StringBuilderUTF *sb, const UTF8Char *s);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<const UTF8Char*> *map);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::List<const UTF8Char*> *list);
+		static Bool IsNonASCII(const UTF8Char *s);
 	};
 }
 #endif

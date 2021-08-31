@@ -149,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 				writer->WriteLineW(smsMsg->GetSMSC());
 			}
 			writer->Write((const UTF8Char*)"Date: ");
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 			writer->WriteLine(sbuff);
 			writer->WriteLine((const UTF8Char*)"Content: ");
 			writer->WriteLineW(smsMsg->GetContent());
@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 					writer->WriteLineW(smsMsg->GetSMSC());
 				}
 				writer->Write((const UTF8Char*)"Date: ");
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				writer->WriteLine(sbuff);
 				writer->WriteLine((const UTF8Char*)"Content: ");
 				writer->WriteLineW(smsMsg->GetContent());
@@ -297,7 +297,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 		k = this->lvSMS->AddItem(wbuff, sms);
 #endif
 		smsMsg->GetMessageTime(&dt);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 		this->lvSMS->SetSubItem(k, 1, sbuff);
 		const UTF16Char *cont = smsMsg->GetContent();
 		if (cont)

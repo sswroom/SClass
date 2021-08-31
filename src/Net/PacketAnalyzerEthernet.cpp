@@ -2740,7 +2740,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 					dt.SetUnixTimestamp((Int64)(((UInt64)(ReadMUInt16(&packet[k])) << 32) | ReadMUInt32(&packet[k + 2])));
 					sb->Append((const UTF8Char*)"\r\n-Time Signed=");
 					dt.ToLocalTime();
-					dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+					dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 					sb->Append(sbuff);
 					sb->Append((const UTF8Char*)"\r\n-Fudge=");
 					sb->AppendU16(ReadMUInt16(&packet[k + 6]));

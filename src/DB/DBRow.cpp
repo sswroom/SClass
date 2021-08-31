@@ -756,7 +756,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 				switch (dtype)
 				{
 				case DT_DATETIME:
-					this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzz");
+					this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzzz");
 					sb->AppendChar('\"', 1);
 					sb->Append(sbuff);
 					sb->AppendChar('\"', 1);

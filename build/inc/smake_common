@@ -92,6 +92,7 @@ nodeps:
 @PingMonitor
 @PingScan
 @PingTest
+@SMTPTest
 @WiFiCapture
 @WiFiScan
 @ArgsTest
@@ -457,6 +458,9 @@ PingScan:
 PingTest:
 @PingTest.o
 @ConsoleStartup.o
+SMTPTest:
+@SMTPTest.o
+@ConsoleStartup.o
 WiFiCapture:
 @WiFiCaptureMain.o
 @ConsoleStartup.o
@@ -786,6 +790,7 @@ NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
 PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
 PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
 PingTest.o: ../../main/NetTest/PingTest.cpp
+SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
 OpenCVFaceDetectMain.o: ../../main/OpenCV/OpenCVFaceDetectMain.cpp
@@ -2450,11 +2455,15 @@ Net/WirelessLANIE.h: ../../src/Net/WirelessLANIE.cpp
 @WirelessLANIE.o
 Net/WOLClient.h: ../../src/Net/WOLClient.cpp
 @WOLClient.o
+Net/Email/EmailMessage.h: ../../src/Net/Email/EmailMessage.cpp
+@EmailMessage.o
 Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
 @EmailValidator.o
 Net/Email/MailController.h:
 Net/Email/POP3Server.h: ../../src/Net/Email/POP3Server.cpp
 @POP3Server.o
+Net/Email/SMTPClient.h: ../../src/Net/Email/SMTPClient.cpp
+@SMTPClient.o
 Net/Email/SMTPConn.h: ../../src/Net/Email/SMTPConn.cpp
 @SMTPConn.o
 Net/Email/SMTPServer.h: ../../src/Net/Email/SMTPServer.cpp
@@ -3110,6 +3119,8 @@ SSWR/AVIRead/AVIRSetLocationSvcForm.h: ../../src/SSWR/AVIRead/AVIRSetLocationSvc
 @AVIRSetLocationSvcForm.o
 SSWR/AVIRead/AVIRSMakeForm.h: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
 @AVIRSMakeForm.o
+SSWR/AVIRead/AVIRSMTPClientForm.h: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
+@AVIRSMTPClientForm.o
 SSWR/AVIRead/AVIRSMTPServerForm.h: ../../src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
 @AVIRSMTPServerForm.o
 SSWR/AVIRead/AVIRSNBDongleForm.h: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
@@ -4285,7 +4296,9 @@ WiFiCapturer.o: ../../src/Net/WiFiCapturer.cpp
 WiFiLogFile.o: ../../src/Net/WiFiLogFile.cpp
 WirelessLANIE.o: ../../src/Net/WirelessLANIE.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
+EmailMessage.o: ../../src/Net/Email/EmailMessage.cpp
 EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
+SMTPClient.o: ../../src/Net/Email/SMTPClient.cpp
 SMTPConn.o: ../../src/Net/Email/SMTPConn.cpp
 SMTPServer.o: ../../src/Net/Email/SMTPServer.cpp
 SNS7gogo.o: ../../src/Net/SNS/SNS7gogo.cpp
@@ -4610,6 +4623,7 @@ AVIRSetAudioForm.o: ../../src/SSWR/AVIRead/AVIRSetAudioForm.cpp
 AVIRSetDPIForm.o: ../../src/SSWR/AVIRead/AVIRSetDPIForm.cpp
 AVIRSetLocationSvcForm.o: ../../src/SSWR/AVIRead/AVIRSetLocationSvcForm.cpp
 AVIRSMakeForm.o: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
+AVIRSMTPClientForm.o: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
 AVIRSMTPServerForm.o: ../../src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
 AVIRSNBDongleForm.o: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
 AVIRSNBHandlerForm.o: ../../src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
