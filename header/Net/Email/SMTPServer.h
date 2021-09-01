@@ -3,8 +3,10 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/TCPServer.h"
 #include "Net/TCPClientMgr.h"
+#include "Net/Email/SMTPConn.h"
 #include "Text/MyString.h"
 
 namespace Net
@@ -33,6 +35,8 @@ namespace Net
 			typedef Bool (__stdcall *LoginHandler)(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
+			Net::Email::SMTPConn::ConnType connType;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool *log;
@@ -42,9 +46,10 @@ namespace Net
 			MailHandler mailHdlr;
 			LoginHandler loginHdlr;
 			void *mailObj;
-			Int32 maxMailSize;
+			UInt32 maxMailSize;
 			IO::FileStream *rawLog;
 
+			static void __stdcall ClientReady(Net::TCPClient *cli, void *userObj);
 			static void __stdcall ConnHdlr(Socket *s, void *userObj);
 			static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
@@ -53,11 +58,11 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd, Text::LineBreakType lbt);
 		public:
-			SMTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj);
+			SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj);
 			~SMTPServer();
 
 			Bool IsError();
-			static UInt16 GetDefaultPort();
+			static UInt16 GetDefaultPort(Net::Email::SMTPConn::ConnType connType);
 		};
 	}
 }
