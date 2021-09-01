@@ -6,12 +6,10 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *userObj)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
-	Net::TCPClient *cli;
 	MailStatus *cliStatus;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 	cliStatus = MemAlloc(MailStatus, 1);
 	cliStatus->buff = MemAlloc(UInt8, 4096);
 	cliStatus->buffSize = 0;
@@ -30,6 +28,21 @@ void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 	sb.Append((const UTF8Char *)" ESMTP");
 //	sb.Append(me->serverName);
 	me->WriteMessage(cli, 220, sb.ToString());
+}
+
+void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
+{
+	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
+	Net::TCPClient *cli;
+	if (me->connType == Net::Email::SMTPConn::CT_SSL)
+	{
+		me->ssl->ServerInit(s, ClientReady, me);
+	}
+	else
+	{
+		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+		ClientReady(cli, me);
+	}
 }
 
 void __stdcall Net::Email::SMTPServer::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
@@ -363,7 +376,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		sb.Append((const UTF8Char *)"\r\nPIPELINING");
 		sb.Append((const UTF8Char *)"\r\nAUTH LOGIN PLAIN");
 		sb.Append((const UTF8Char *)"\r\nSIZE ");
-		sb.AppendI32(this->maxMailSize);
+		sb.AppendU32(this->maxMailSize);
 		sb.Append((const UTF8Char *)"\r\nOK");
 		WriteMessage(cli, 250, sb.ToString());
 	}
@@ -448,9 +461,11 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
+Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
+	this->connType = connType;
 	this->log = log;
 	this->domain = Text::StrCopyNew(domain);
 	this->serverName = Text::StrCopyNew(serverName);
@@ -477,7 +492,17 @@ Bool Net::Email::SMTPServer::IsError()
 	return this->svr->IsV4Error();
 }
 
-UInt16 Net::Email::SMTPServer::GetDefaultPort()
+UInt16 Net::Email::SMTPServer::GetDefaultPort(Net::Email::SMTPConn::ConnType connType)
 {
-	return 25;
+	switch (connType)
+	{
+	case Net::Email::SMTPConn::CT_PLAIN:
+		return 25;
+	case Net::Email::SMTPConn::CT_STARTTLS:
+		return 587;
+	case Net::Email::SMTPConn::CT_SSL:
+		return 465;
+	default:
+		return 25;
+	}
 }

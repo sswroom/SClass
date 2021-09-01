@@ -113,7 +113,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
 			sbOut.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			sbOut.Append(sbuff);
 			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
 			sbOut.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
@@ -213,7 +213,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
 			sbOut.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			sbOut.Append(sbuff);
 			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
 			sbOut.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
@@ -313,7 +313,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
 			sbOut.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			sbOut.Append(sbuff);
 			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
 			sbOut.Append((const UTF8Char*)"<tr><td>TTL</td><td>");

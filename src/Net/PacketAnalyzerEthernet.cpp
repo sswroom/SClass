@@ -2740,7 +2740,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 					dt.SetUnixTimestamp((Int64)(((UInt64)(ReadMUInt16(&packet[k])) << 32) | ReadMUInt32(&packet[k + 2])));
 					sb->Append((const UTF8Char*)"\r\n-Time Signed=");
 					dt.ToLocalTime();
-					dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+					dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 					sb->Append(sbuff);
 					sb->Append((const UTF8Char*)"\r\n-Fudge=");
 					sb->AppendU16(ReadMUInt16(&packet[k + 6]));
@@ -2945,6 +2945,8 @@ const UTF8Char *Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
 		return (const UTF8Char*)"Microsoft EPMAP";
 	case 139:
 		return (const UTF8Char*)"NetBIOS-SSN";
+	case 427:
+		return (const UTF8Char*)"SvrLoc";
 	case 443:
 		return (const UTF8Char*)"HTTPS";
 	case 445:
@@ -2955,6 +2957,8 @@ const UTF8Char *Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
 		return (const UTF8Char*)"VMWare ESX";
 	case 912:
 		return (const UTF8Char*)"VMWare ESX";
+	case 1022:
+		return (const UTF8Char*)"RFC3692-style Experiment 2";
 	case 3306:
 		return (const UTF8Char*)"MySQL";
 	case 3389:

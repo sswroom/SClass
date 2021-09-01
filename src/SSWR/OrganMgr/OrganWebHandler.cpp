@@ -3669,7 +3669,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						sb.Append((const UTF8Char*)"\">");
 						writer->Write(sb.ToString());
 					}
-					dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzz");
+					dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer->Write(sbuff2);
 					if (userFile->webuserId == env.user->id)
 					{
@@ -3739,7 +3739,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				}
 				else
 				{
-					dt.ToString(sbuff2, "yyyy-MM-dd zzz");
+					dt.ToString(sbuff2, "yyyy-MM-dd zzzz");
 					writer->Write(sbuff2);
 				}
 				writer->WriteLine((const UTF8Char*)"</center></td>");
@@ -4800,7 +4800,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						writer->Write((const UTF8Char*)"<b>");
 						writer->Write(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
 						writer->Write((const UTF8Char*)"</b> ");
-						dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzz");
+						dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 						writer->Write(u8buff2);
 						writer->Write((const UTF8Char*)"<br/>");
 					}
@@ -4842,7 +4842,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						writer->Write((const UTF8Char*)"<b>");
 						writer->Write(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
 						writer->Write((const UTF8Char*)"</b> ");
-						dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzz");
+						dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 						writer->Write(u8buff2);
 						writer->Write((const UTF8Char*)"<br/>");
 					}
@@ -5487,7 +5487,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							writer->Write((const UTF8Char*)"<b>");
 							writer->Write(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
 							writer->Write((const UTF8Char*)"</b> ");
-							dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzz");
+							dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 							writer->Write(u8buff2);
 							writer->Write((const UTF8Char*)"<br/>");
 						}
@@ -5724,7 +5724,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					writer->Write((const UTF8Char*)"<b>");
 					writer->Write(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
 					writer->Write((const UTF8Char*)"</b> ");
-					dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzz");
+					dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer->Write(u8buff2);
 					writer->Write((const UTF8Char*)"<br/>");
 				}
@@ -5765,7 +5765,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					writer->Write((const UTF8Char*)"<b>");
 					writer->Write(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
 					writer->Write((const UTF8Char*)"</b> ");
-					dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzz");
+					dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer->Write(u8buff2);
 					writer->Write((const UTF8Char*)"<br/>");
 				}
@@ -9441,7 +9441,7 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 				sb.Append((const UTF8Char*)"\">");
 				writer->Write(sb.ToString());
 
-				dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzz");
+				dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 				writer->Write(sbuff2);
 				if (userFile->webuserId == env->user->id)
 				{

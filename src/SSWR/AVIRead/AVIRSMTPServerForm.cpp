@@ -2,6 +2,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 #include "SSWR/AVIRead/AVIRSMTPServerForm.h"
 #include "Sync/MutexUsage.h"
@@ -33,7 +34,8 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
 			return;
 		}
-		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->core->GetSocketFactory(), port, me->log, (const UTF8Char *)"127.0.0.1", (const UTF8Char *)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
+		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
+		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, (const UTF8Char *)"127.0.0.1", (const UTF8Char *)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
 		if (me->smtpSvr->IsError())
 		{
 			DEL_CLASS(me->smtpSvr);
@@ -253,6 +255,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
+	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
 	this->smtpSvr = 0;
 	this->pop3Svr = 0;
 	this->totalSize = 0;
@@ -278,16 +281,24 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
 
 	NEW_CLASS(this->grpSMTP, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"SMTP"));
-	this->grpSMTP->SetRect(0, 0, 250, 64, false);
+	this->grpSMTP->SetRect(0, 0, 250, 88, false);
 	NEW_CLASS(this->lblSMTPPort, UI::GUILabel(ui, this->grpSMTP, (const UTF8Char*)"Port"));
 	this->lblSMTPPort->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtSMTPPort, UI::GUITextBox(ui, this->grpSMTP, (const UTF8Char*)"25"));
 	this->txtSMTPPort->SetRect(100, 0, 100, 23, false);
+	NEW_CLASS(this->lblSMTPType, UI::GUILabel(ui, this->grpSMTP, (const UTF8Char*)"Type"));
+	this->lblSMTPType->SetRect(0, 24, 100, 23, false);
+	NEW_CLASS(this->cboSMTPType, UI::GUIComboBox(ui, this->grpSMTP, false));
+	this->cboSMTPType->SetRect(100, 24, 100, 23, false);
+	this->cboSMTPType->AddItem((const UTF8Char*)"Plain", (void*)(OSInt)Net::Email::SMTPConn::CT_PLAIN);
+	this->cboSMTPType->AddItem((const UTF8Char*)"STARTTLS", (void*)(OSInt)Net::Email::SMTPConn::CT_STARTTLS);
+	this->cboSMTPType->AddItem((const UTF8Char*)"SSL", (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
+	this->cboSMTPType->SetSelectedIndex(0);
 	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->grpSMTP, (const UTF8Char*)"Start"));
-	this->btnSMTPStart->SetRect(100, 24, 75, 23, false);
+	this->btnSMTPStart->SetRect(100, 48, 75, 23, false);
 	this->btnSMTPStart->HandleButtonClick(OnSMTPStartClicked, this);
 	NEW_CLASS(this->grpPOP3, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"POP3"));
-	this->grpPOP3->SetRect(250, 0, 250, 64, false);
+	this->grpPOP3->SetRect(250, 0, 250, 88, false);
 	NEW_CLASS(this->lblPOP3Port, UI::GUILabel(ui, this->grpPOP3, (const UTF8Char*)"Port"));
 	this->lblPOP3Port->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtPOP3Port, UI::GUITextBox(ui, this->grpPOP3, (const UTF8Char*)"110"));
@@ -352,6 +363,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::~AVIRSMTPServerForm()
 	DEL_CLASS(this->mailList);
 	DEL_CLASS(this->mailMut);
 	DEL_CLASS(this->currIdMut);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRSMTPServerForm::OnMonitorChanged()

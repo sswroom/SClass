@@ -1,5 +1,5 @@
-#ifndef _SM_NET_POP3SERVER
-#define _SM_NET_POP3SERVER
+#ifndef _SM_NET_EMAIL_POP3SERVER
+#define _SM_NET_EMAIL_POP3SERVER
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"

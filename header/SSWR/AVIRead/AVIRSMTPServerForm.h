@@ -6,6 +6,7 @@
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
@@ -47,6 +48,8 @@ namespace SSWR
 			UI::GUIGroupBox *grpSMTP;
 			UI::GUILabel *lblSMTPPort;
 			UI::GUITextBox *txtSMTPPort;
+			UI::GUILabel *lblSMTPType;
+			UI::GUIComboBox *cboSMTPType;
 			UI::GUIButton *btnSMTPStart;
 			UI::GUIGroupBox *grpPOP3;
 			UI::GUILabel *lblPOP3Port;
@@ -64,6 +67,7 @@ namespace SSWR
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 
 			Int64 currId;
 			Sync::Mutex *currIdMut;

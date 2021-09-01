@@ -145,6 +145,7 @@
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
+#include "SSWR/AVIRead/AVIRSMTPClientForm.h"
 #include "SSWR/AVIRead/AVIRSMTPServerForm.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
@@ -386,7 +387,8 @@ typedef enum
 	MNU_CPP_ENUM,
 	MNU_CONSOLE_MEDIA_PLAYER,
 	MNU_BCRYPT,
-	MNU_EMAIL_ADDR_VALID
+	MNU_EMAIL_ADDR_VALID,
+	MNU_SMTP_CLIENT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -614,6 +616,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Email");
 	mnu2->AddItem((const UTF8Char*)"SMTP Server", MNU_SMTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Email Address Validator", MNU_EMAIL_ADDR_VALID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"SMTP Client", MNU_SMTP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"RSS Reader", MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"eGauge Server", MNU_EGAUGESVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Log Server", MNU_LOGSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2300,6 +2303,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIREmailAddrValidForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIREmailAddrValidForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SMTP_CLIENT:
+		{
+			SSWR::AVIRead::AVIRSMTPClientForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMTPClientForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

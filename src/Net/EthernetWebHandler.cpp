@@ -284,7 +284,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 				sb.Append((const UTF8Char*)"</td></tr>\r\n");
 				sb.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
 				reqTime.ToLocalTime();
-				reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+				reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"</td></tr>\r\n");
 				sb.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
@@ -396,7 +396,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 				sb.Append((const UTF8Char*)"</td></tr>\r\n");
 				sb.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
 				reqTime.ToLocalTime();
-				reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+				reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"</td></tr>\r\n");
 				sb.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
@@ -508,7 +508,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 				sb.Append((const UTF8Char*)"</td></tr>\r\n");
 				sb.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
 				reqTime.ToLocalTime();
-				reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+				reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 				sb.Append(sbuff);
 				sb.Append((const UTF8Char*)"</td></tr>\r\n");
 				sb.Append((const UTF8Char*)"<tr><td>TTL</td><td>");

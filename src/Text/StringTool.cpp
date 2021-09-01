@@ -64,3 +64,16 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::List<const 
 	}
 	sb->AppendChar('}', 1);
 }
+
+Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
+{
+	UTF8Char c;
+	while (c = *s++)
+	{
+		if (c >= 0x80)
+		{
+			return true;
+		}
+	}
+	return false;
+}

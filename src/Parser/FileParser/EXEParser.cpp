@@ -268,7 +268,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 			exef->AddProp((const UTF8Char*)"Number Of Sections", sbuff);
 			Data::DateTime dt;
 			dt.SetUnixTimestamp((UInt32)timeDateStamp);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzz");
+			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 			exef->AddProp((const UTF8Char*)"File Time", sbuff);
 			Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), pointerToSymbolTable);
 			exef->AddProp((const UTF8Char*)"Pointer to symbol table", sbuff);

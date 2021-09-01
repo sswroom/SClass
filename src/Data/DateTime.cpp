@@ -1376,7 +1376,7 @@ Int64 Data::DateTime::ToNTPTime()
 
 Char *Data::DateTime::ToString(Char *buff)
 {
-	return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+	return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 }
 
 Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
@@ -1881,6 +1881,23 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				*buff++ = (Char)((hr % 10) + 0x30);
 				pattern += 2;
 			}
+			else if (pattern[3] != 'z')
+			{
+				if (hr >= 0)
+				{
+					*buff++ = '+';
+				}
+				else
+				{
+					*buff++ = '-';
+					hr = -hr;
+				}
+				*buff++ = (Char)((hr / 10) + 0x30);
+				*buff++ = (Char)((hr % 10) + 0x30);
+				*buff++ = (Char)((min / 10) + 0x30);
+				*buff++ = (Char)((min % 10) + 0x30);
+				pattern += 3;
+			}
 			else
 			{
 				if (hr >= 0)
@@ -2119,9 +2136,9 @@ Int8 Data::DateTime::GetTimeZoneQHR()
 	return this->tzQhr;
 }
 
-Int32 Data::DateTime::GetWeekday()
+Data::DateTime::Weekday Data::DateTime::GetWeekday()
 {
-	return (Int32)((this->ToUnixTimestamp() + this->tzQhr * 900) / 86400 + 4) % 7;
+	return (Data::DateTime::Weekday)(((this->ToUnixTimestamp() + this->tzQhr * 900) / 86400 + 4) % 7);
 }
 
 Double Data::DateTime::MS2Days(Int64 ms)

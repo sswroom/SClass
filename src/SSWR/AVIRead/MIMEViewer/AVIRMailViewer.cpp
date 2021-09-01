@@ -69,7 +69,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	}
 	if (this->mail->GetDate(&dt))
 	{
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 		this->txtDate->SetText(sbuff);
 	}
 	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress *> addrList;

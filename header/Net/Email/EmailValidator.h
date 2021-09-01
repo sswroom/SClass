@@ -1,5 +1,5 @@
-#ifndef _SM_NET_EMAILVALIDATOR
-#define _SM_NET_EMAILVALIDATOR
+#ifndef _SM_NET_EMAIL_EMAILVALIDATOR
+#define _SM_NET_EMAIL_EMAILVALIDATOR
 #include "Net/DNSClient.h"
 
 namespace Net
