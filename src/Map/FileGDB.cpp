@@ -135,8 +135,8 @@ Bool Map::FileGDB::IsError()
 
 UOSInt Map::FileGDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	names->AddRange(this->tables);
-	names->AddRange(this->features);
+	names->AddAll(this->tables);
+	names->AddAll(this->features);
 	return this->tables->GetCount() + this->features->GetCount();
 }
 
