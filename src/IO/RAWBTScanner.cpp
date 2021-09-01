@@ -184,7 +184,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		}
 		else
 		{
-			dev = this->randRecMap->Get(rec.macInt);
+			dev = this->pubRecMap->Get(rec.macInt);
 		}
 		if (dev == 0)
 		{
