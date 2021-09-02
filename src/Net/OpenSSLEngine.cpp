@@ -11,6 +11,11 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+//#define SHOW_DEBUG
+#ifdef SHOW_DEBUG
+#include <stdio.h>
+#endif
+
 struct Net::OpenSSLEngine::ClassData
 {
 	SSL_CTX *ctx;
@@ -235,10 +240,15 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	this->sockf->SetNoDelay(s, true);
 	this->sockf->SetRecvTimeout(s, 2000);
 	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
-	if (SSL_connect(ssl) <= 0)
+	int ret;
+	if ((ret = SSL_connect(ssl)) <= 0)
 	{
 		this->sockf->DestroySocket(s);
 		SSL_free(ssl);
+#ifdef SHOW_DEBUG
+		int code = SSL_get_error(ssl, ret);
+		printf("SSL_connect: Error code = %d\r\n", code);
+#endif
 		if (err)
 			*err = ET_INIT_SESSION;
 		return 0;
