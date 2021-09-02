@@ -16,7 +16,7 @@ Data::ArrayList<const WChar*> *Data::ArrayListICaseStrW::Clone()
 {
 	Data::ArrayListICaseStrW *newArr;
 	NEW_CLASS(newArr, Data::ArrayListICaseStrW(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 
