@@ -13,7 +13,11 @@ namespace Crypto
 			X509Cert(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509Cert();
 
+			void GetSubjectCN(Text::StringBuilderUTF *sb);
+			
 			virtual FileType GetFileType();
+			virtual void ToShortName(Text::StringBuilderUTF *sb);
+
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF *sb);
 		};

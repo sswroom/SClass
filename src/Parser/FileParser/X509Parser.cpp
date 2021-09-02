@@ -4,7 +4,7 @@
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509PrivKey.h"
-#include "Crypto/Cert/X509RSAKey.h"
+#include "Crypto/Cert/X509Key.h"
 #include "Net/ASN1Util.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/MyString.h"
@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			dataLen = b64.DecodeBin(&buff[31], (UOSInt)len - 61, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509RSAKey(fd->GetFullFileName(), dataBuff, dataLen));
+			NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KT_RSA));
 		}
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 26], (const UTF8Char*)"-----END PRIVATE KEY-----\n"))

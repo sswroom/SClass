@@ -16,6 +16,11 @@ Crypto::Cert::X509File::FileType Crypto::JKSFile::GetFileType()
 	return FT_JKS;
 }
 
+void Crypto::JKSFile::ToShortName(Text::StringBuilderUTF *sb)
+{
+
+}
+
 Net::ASN1Data *Crypto::JKSFile::Clone()
 {
 	Crypto::JKSFile *asn1;

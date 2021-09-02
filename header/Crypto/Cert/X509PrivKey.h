@@ -13,6 +13,8 @@ namespace Crypto
 			virtual ~X509PrivKey();
 
 			virtual FileType GetFileType();
+			virtual void ToShortName(Text::StringBuilderUTF *sb);
+
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF *sb);
 

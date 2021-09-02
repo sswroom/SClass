@@ -45,6 +45,8 @@ namespace SSWR
 			UI::GUITabPage *tpEmail;
 			UI::GUITabPage *tpLog;
 
+			UI::GUIButton *btnCertKey;
+			UI::GUILabel *lblCertKey;
 			UI::GUIGroupBox *grpSMTP;
 			UI::GUILabel *lblSMTPPort;
 			UI::GUITextBox *txtSMTPPort;
@@ -68,6 +70,8 @@ namespace SSWR
 			UI::ListBoxLogger *logger;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
+			Crypto::Cert::X509File *sslCert;
+			Crypto::Cert::X509File *sslKey;
 
 			Int64 currId;
 			Sync::Mutex *currIdMut;
@@ -86,6 +90,7 @@ namespace SSWR
 			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail);
 			static Bool __stdcall OnMailLogin(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
 			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnCertKeyClicked(void *userObj);
 			Int64 NextEmailId();
 		public:
 			AVIRSMTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

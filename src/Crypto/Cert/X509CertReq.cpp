@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509CertReq.h"
+#include "Net/ASN1Util.h"
 
 Crypto::Cert::X509CertReq::X509CertReq(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
@@ -14,6 +15,17 @@ Crypto::Cert::X509CertReq::~X509CertReq()
 Crypto::Cert::X509File::FileType Crypto::Cert::X509CertReq::GetFileType()
 {
 	return FT_CERT_REQ;
+}
+
+void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF *sb)
+{
+	UOSInt len = 0;
+	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
+	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &len, &itemType);
+	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	{
+		NameGetCN(tmpBuff, tmpBuff + len, sb);
+	}
 }
 
 Net::ASN1Data *Crypto::Cert::X509CertReq::Clone()

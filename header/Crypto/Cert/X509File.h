@@ -9,14 +9,21 @@ namespace Crypto
 		class X509File : public Net::ASN1Data
 		{
 		public:
-			typedef enum
+			enum FileType
 			{
 				FT_CERT,
-				FT_RSA_KEY,
+				FT_KEY,
 				FT_CERT_REQ,
 				FT_PRIV_KEY,
 				FT_JKS
-			} FileType;
+			};
+
+			enum KeyType
+			{
+				KT_UNKNOWN,
+				KT_RSA
+			};
+
 		protected:
 			static Bool IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
 			static void AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
@@ -40,12 +47,23 @@ namespace Crypto
 			static void AppendRelativeDistinguishedName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
 			static void AppendAttributeTypeAndDistinguishedValue(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
 
+			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const Char *oidText, Text::StringBuilderUTF *sb);
+			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
+
+			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
+			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen);
+
 			X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 		public:
 			virtual ~X509File();
 
 			virtual Net::ASN1Data::ASN1Type GetASN1Type();
 			virtual FileType GetFileType() = 0;
+			virtual void ToShortName(Text::StringBuilderUTF *sb) = 0;
+
+			void ToShortString(Text::StringBuilderUTF *sb);
+			static const UTF8Char *FileTypeGetName(FileType fileType);
+			static const UTF8Char *KeyTypeGetName(KeyType keyType);
 		};
 	}
 }

@@ -561,6 +561,87 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 	}
 }
 
+Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const Char *oidText, Text::StringBuilderUTF *sb)
+{
+	Char sbuff[12];
+	const UInt8 *itemPDU;
+	const UInt8 *oidPDU;
+	const UInt8 *strPDU;
+	UOSInt itemLen;
+	UOSInt oidLen;
+	Net::ASN1Util::ItemType itemType;
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt i = 0;
+	while (i < cnt)
+	{
+		i++;
+
+		Text::StrConcat(Text::StrUOSInt(sbuff, i), ".1");
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+		{
+			if (itemType == Net::ASN1Util::IT_SEQUENCE)
+			{
+				oidPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &oidLen, &itemType);
+				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID && Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, oidText))
+				{
+					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &oidLen, &itemType);
+					if (strPDU)
+					{
+						sb->AppendC(strPDU, oidLen);
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+Bool Crypto::Cert::X509File::NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb)
+{
+	return NameGetByOID(pdu, pduEnd, "2.5.4.3", sb);
+}
+
+UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType)
+{
+	const UTF8Char *keyPDU;
+	UOSInt keyLen;
+	Net::ASN1Util::ItemType itemType;
+	switch (keyType)
+	{
+	case KT_RSA:
+		keyPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &keyLen, &itemType);
+		if (keyPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			UOSInt cnt = Net::ASN1Util::PDUCountItem(keyPDU, keyPDU + keyLen, 0);
+			if (cnt > 4)
+			{
+				UOSInt modulusLen;
+				const UInt8 *modulus = Net::ASN1Util::PDUGetItem(keyPDU, keyPDU + keyLen, "2", &modulusLen, &itemType);
+				UOSInt privateExponentLen;
+				const UInt8 *privateExponent = Net::ASN1Util::PDUGetItem(keyPDU, keyPDU + keyLen, "4", &privateExponentLen, &itemType);
+				if (modulus && privateExponent)
+				{
+					return (modulusLen - 1) << 3;
+				}
+			}
+		}
+		return 0;
+	case KT_UNKNOWN:
+	default:
+		return 0;
+	}
+}
+
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen)
+{
+	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, "1.2.840.113549.1.1.1"))
+	{
+		return KT_RSA;
+	}
+	return KT_UNKNOWN;
+}
+
 Crypto::Cert::X509File::X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
 {
 }
@@ -572,4 +653,42 @@ Crypto::Cert::X509File::~X509File()
 Net::ASN1Data::ASN1Type Crypto::Cert::X509File::GetASN1Type()
 {
 	return AT_X509;
+}
+
+void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF *sb)
+{
+	sb->Append(FileTypeGetName(this->GetFileType()));
+	sb->Append((const UTF8Char*)": ");
+	this->ToShortName(sb);
+}
+
+const UTF8Char *Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
+{
+	switch (fileType)
+	{
+	case FT_CERT:
+		return (const UTF8Char*)"Cert";
+	case FT_CERT_REQ:
+		return (const UTF8Char*)"CertReq";
+	case FT_KEY:
+		return (const UTF8Char*)"Key";
+	case FT_PRIV_KEY:
+		return (const UTF8Char*)"PrivateKey";
+	case FT_JKS:
+		return (const UTF8Char*)"JavaKeyStore";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+}
+
+const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
+{
+	switch (keyType)
+	{
+	case KT_RSA:
+		return (const UTF8Char*)"RSA";
+	case KT_UNKNOWN:
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
 }

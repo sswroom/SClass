@@ -246,6 +246,7 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
 	{
 		gtk_main_iteration();
 	}
+	this->hwnd = 0;
 	if (owner)
 	{
 		owner->SetEnabled(true);

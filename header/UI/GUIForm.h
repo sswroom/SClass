@@ -68,8 +68,9 @@ namespace UI
 
 		UI::GUIForm *currDialog;
 		Bool isDialog;
-		DialogResult dialogResult;
 		void *hAcc;
+	protected:
+		DialogResult dialogResult;
 
 	private:
 		static Int32 useCnt;

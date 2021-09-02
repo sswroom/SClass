@@ -898,10 +898,10 @@ Crypto/Cert/X509CertReq.h: ../../src/Crypto/Cert/X509CertReq.cpp
 @X509CertReq.o
 Crypto/Cert/X509File.h: ../../src/Crypto/Cert/X509File.cpp
 @X509File.o
+Crypto/Cert/X509Key.h: ../../src/Crypto/Cert/X509Key.cpp
+@X509Key.o
 Crypto/Cert/X509PrivKey.h: ../../src/Crypto/Cert/X509PrivKey.cpp
 @X509PrivKey.o
-Crypto/Cert/X509RSAKey.h: ../../src/Crypto/Cert/X509RSAKey.cpp
-@X509RSAKey.o
 Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
 @AES128.o
 Crypto/Encrypt/AES192.h: ../../src/Crypto/Encrypt/AES192.cpp
@@ -3137,6 +3137,8 @@ SSWR/AVIRead/AVIRSNMPWalkForm.h: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 @AVIRSNMPWalkForm.o
 SSWR/AVIRead/AVIRSNSManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
 @AVIRSNSManagerForm.o
+SSWR/AVIRead/AVIRSSLCertKeyForm.h: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
+@AVIRSSLCertKeyForm.o
 SSWR/AVIRead/AVIRStreamConvForm.h: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
 @AVIRStreamConvForm.o
 SSWR/AVIRead/AVIRStreamEchoForm.h: ../../src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
@@ -3581,8 +3583,8 @@ TOTP.o: ../../src/Crypto/TOTP.cpp
 X509Cert.o: ../../src/Crypto/Cert/X509Cert.cpp
 X509CertReq.o: ../../src/Crypto/Cert/X509CertReq.cpp
 X509File.o: ../../src/Crypto/Cert/X509File.cpp
+X509Key.o: ../../src/Crypto/Cert/X509Key.cpp
 X509PrivKey.o: ../../src/Crypto/Cert/X509PrivKey.cpp
-X509RSAKey.o: ../../src/Crypto/Cert/X509RSAKey.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
 AES256.o: ../../src/Crypto/Encrypt/AES256.cpp
@@ -4632,6 +4634,7 @@ AVIRSNMPManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
 AVIRSNMPTrapMonitorForm.o: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
+AVIRSSLCertKeyForm.o: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
 AVIRStreamConvForm.o: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
 AVIRStreamEchoForm.o: ../../src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
 AVIRStreamLatencyForm.o: ../../src/SSWR/AVIRead/AVIRStreamLatencyForm.cpp
