@@ -1,6 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509PRIVKEY
 #define _SM_CRYPTO_CERT_X509PRIVKEY
 #include "Crypto/Cert/X509File.h"
+#include "Crypto/Cert/X509Key.h"
 
 namespace Crypto
 {
@@ -19,6 +20,7 @@ namespace Crypto
 			virtual void ToString(Text::StringBuilderUTF *sb);
 
 			static X509PrivKey *CreateFromRSAKey(const UInt8 *buff, UOSInt buffSize);
+			static X509PrivKey *CreateFromKey(Crypto::Cert::X509Key *key);
 		};
 	}
 }

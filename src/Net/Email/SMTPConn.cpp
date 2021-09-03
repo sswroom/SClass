@@ -118,8 +118,35 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	}
 	else if (connType == CT_STARTTLS)
 	{
-		/////////////////////////
+		UInt8 buff[1024];
+		UOSInt buffSize;
 		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+		this->cli->SetTimeout(2000);
+		buffSize = this->cli->Read(buff, 1024);
+		if (buffSize > 2 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
+		{
+			this->cli->Write((const UTF8Char*)"STARTTLS\r\n", 10);
+			buffSize = this->cli->Read(buff, 1024);
+			if (buffSize > 0 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
+			{
+				Socket *s = this->cli->RemoveSocket();
+				Net::SSLEngine::ErrorType err;
+				Net::TCPClient *cli = ssl->ClientInit(s, host, &err);
+				if (cli)
+				{
+					DEL_CLASS(this->cli);
+					this->cli = cli;
+				}
+			}
+			else
+			{
+				this->cli->Close();
+			}
+		}
+		else
+		{
+			this->cli->Close();
+		}
 	}
 	else
 	{
@@ -144,12 +171,23 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	{
 		Sync::Thread::Sleep(10);
 	}
-	this->initCode = WaitForResult();
+	if (connType == CT_STARTTLS)
+	{
+		this->initCode = 220;
+	}
+	else
+	{
+		this->initCode = WaitForResult();
+	}
 }
 
 Net::Email::SMTPConn::~SMTPConn()
 {
 	this->threadToStop = true;
+	if (cli)
+	{
+
+	}
 	this->cli->Close();
 	while (this->threadRunning)
 	{

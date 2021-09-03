@@ -627,10 +627,24 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 			return false;
 		}
 	}
-	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FT_PRIV_KEY)
 	{
-		CryptReleaseContext(hProv, 0);
-		return false;
+		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+		{
+			CryptReleaseContext(hProv, 0);
+			return false;
+		}
+	}
+	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FT_KEY)
+	{
+		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
+		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+		{
+			DEL_CLASS(privKey);
+			CryptReleaseContext(hProv, 0);
+			return false;
+		}
+		DEL_CLASS(privKey);
 	}
 
 /*	IO::DebugWriter debug;

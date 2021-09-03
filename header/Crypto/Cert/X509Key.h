@@ -19,6 +19,8 @@ namespace Crypto
 			
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF *sb);
+
+			KeyType GetKeyType();
 		};
 	}
 }

@@ -102,7 +102,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	this->clientThreadRunning = false;
 	this->workerCnt = 0;
 	NEW_CLASS(this->cliArr, Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*>());
-	NEW_CLASS(this->cliIdArr, Data::ArrayListInt64());
+	NEW_CLASS(this->cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(this->cliMut, Sync::Mutex());
 	this->workerTasks = 0;
 	this->clsData = 0;
@@ -154,7 +154,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	Sync::Thread::Create(WorkerThread, tdata, 65536);
 }
 
-Bool Net::TCPClientMgr::SendClientData(Int64 cliId, const UInt8 *buff, UOSInt buffSize)
+Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize)
 {
 	OSInt i;
 	Net::TCPClientMgr::TCPClientStatus *cliStat = 0;
@@ -196,17 +196,12 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::BeginGetClient()
+void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
 {
-	this->cliMut->Use();
+	mutUsage->ReplaceMutex(this->cliMut);
 }
 
-void Net::TCPClientMgr::EndGetClient()
-{
-	this->cliMut->Unuse();
-}
-
-OSInt Net::TCPClientMgr::GetClientCount()
+UOSInt Net::TCPClientMgr::GetClientCount()
 {
 	return this->cliArr->GetCount();
 }
@@ -222,7 +217,7 @@ void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
 	}
 }
 
-Net::TCPClient *Net::TCPClientMgr::GetClient(OSInt index, void **cliData)
+Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, void **cliData)
 {
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr->GetItem(index);
 	if (cliStat)

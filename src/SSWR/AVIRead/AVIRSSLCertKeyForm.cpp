@@ -23,27 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userOb
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
-		DEL_CLASS(fd);
-		if (asn1 == 0)
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", me);
-			return;
-		}
-		if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
-		{
-			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", me);
-			return;
-		}
-		SDEL_CLASS(me->cert);
-		me->cert = (Crypto::Cert::X509File*)asn1;
-
-		Text::StringBuilderUTF8 sb;
-		me->cert->ToShortString(&sb);
-		me->lblFileCert->SetText(sb.ToString());
+		me->LoadFile(dlg->GetFileName());
 	}
 	DEL_CLASS(dlg);
 }
@@ -57,27 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
-		DEL_CLASS(fd);
-		if (asn1 == 0)
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", me);
-			return;
-		}
-		if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
-		{
-			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", me);
-			return;
-		}
-		SDEL_CLASS(me->key);
-		me->key = (Crypto::Cert::X509File*)asn1;
-
-		Text::StringBuilderUTF8 sb;
-		me->cert->ToShortString(&sb);
-		me->lblFileKey->SetText(sb.ToString());
+		me->LoadFile(dlg->GetFileName());
 	}
 	DEL_CLASS(dlg);
 }
@@ -129,8 +89,61 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in generating certs", (const UTF8Char*)"SSL Cert/Key", me);
 		return;
+	}	
+}
+
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
+	UOSInt i = nFiles;
+	while (i-- > 0)
+	{
+		me->LoadFile(files[i]);
 	}
-	
+}
+
+void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
+{
+	IO::StmData::FileData *fd;
+	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+	Net::ASN1Data *asn1 = (Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
+	DEL_CLASS(fd);
+	if (asn1 == 0)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", this);
+		return;
+	}
+	if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+	{
+		DEL_CLASS(asn1);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", this);
+		return;
+	}
+	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+	if (x509->GetFileType() == Crypto::Cert::X509File::FT_CERT)
+	{
+		SDEL_CLASS(this->cert);
+		this->cert = x509;
+
+		Text::StringBuilderUTF8 sb;
+		this->cert->ToShortString(&sb);
+		this->lblFileCert->SetText(sb.ToString());
+		this->tcMain->SetSelectedPage(this->tpFile);
+	}
+	else if (x509->GetFileType() == Crypto::Cert::X509File::FT_PRIV_KEY || x509->GetFileType() == Crypto::Cert::X509File::FT_KEY)
+	{
+		SDEL_CLASS(this->key);
+		this->key = x509;
+
+		Text::StringBuilderUTF8 sb;
+		this->key->ToShortString(&sb);
+		this->lblFileKey->SetText(sb.ToString());
+		this->tcMain->SetSelectedPage(this->tpFile);
+	}
+	else
+	{
+		DEL_CLASS(x509);
+	}
 }
 
 SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509File *cert, Crypto::Cert::X509File *key) : UI::GUIForm(parent, 456, 200, ui)
@@ -208,6 +221,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 		this->initKey->ToShortName(&sb);
 		this->txtCurrKey->SetText(sb.ToString());
 	}
+	this->HandleDropFiles(OnFileDrop, this);
 }
 
 SSWR::AVIRead::AVIRSSLCertKeyForm::~AVIRSSLCertKeyForm()

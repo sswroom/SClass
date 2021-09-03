@@ -44,6 +44,113 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	}
 }
 
+Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, const UTF8Char *hostName, ErrorType *err)
+{
+	SSL *ssl = (SSL*)sslObj;
+	this->sockf->SetNoDelay(s, true);
+	this->sockf->SetRecvTimeout(s, 2000);
+	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
+	int ret;
+	if ((ret = SSL_connect(ssl)) <= 0)
+	{
+		this->sockf->DestroySocket(s);
+		SSL_free(ssl);
+#ifdef SHOW_DEBUG
+		int code = SSL_get_error(ssl, ret);
+		printf("SSL_connect: Error code = %d\r\n", code);
+#endif
+		if (err)
+			*err = ET_INIT_SESSION;
+		return 0;
+	}
+	if (!this->skipCertCheck)
+	{
+		X509 *cert = SSL_get_peer_certificate(ssl);
+		if (cert == 0)
+		{
+			this->sockf->DestroySocket(s);
+			SSL_free(ssl);
+			if (err)
+				*err = ET_CERT_NOT_FOUND;
+			return 0;
+		}
+
+		Char sbuff[512];
+		Char *sarr[10];
+		ASN1_TIME *notBefore = X509_get_notBefore(cert);
+		ASN1_TIME *notAfter = X509_get_notAfter(cert);
+		Data::DateTime dt;
+		Int64 currTime;
+		dt.SetCurrTimeUTC();
+		currTime = dt.ToTicks();
+		tm tm;
+		ASN1_TIME_to_tm(notBefore, &tm);
+		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
+		if (currTime < dt.ToTicks())
+		{
+			X509_free(cert);
+			this->sockf->DestroySocket(s);
+			SSL_free(ssl);
+			if (err)
+				*err = ET_INVALID_PERIOD;
+			return 0;
+		}
+		ASN1_TIME_to_tm(notAfter, &tm);
+		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
+		if (currTime > dt.ToTicks())
+		{
+			X509_free(cert);
+			this->sockf->DestroySocket(s);
+			SSL_free(ssl);
+			if (err)
+				*err = ET_INVALID_PERIOD;
+			return 0;
+		}
+
+		X509_NAME *name = X509_get_subject_name(cert);
+		X509_NAME_oneline(name, sbuff, 512);
+		Bool nameValid = false;
+		UOSInt i = 0;
+		UOSInt j = Text::StrSplit(sarr, 10, sbuff, '/');
+		while (i < j)
+		{
+			if (Text::StrStartsWith(sarr[i], "CN="))
+			{
+				if (Text::StrEquals(&sarr[i][3], (const Char*)hostName))
+				{
+					nameValid = true;
+				}
+				break;
+			}
+			i++;
+		}
+		if (!nameValid)
+		{
+			X509_free(cert);
+			this->sockf->DestroySocket(s);
+			SSL_free(ssl);
+			if (err)
+				*err = ET_INVALID_NAME;
+			return 0;
+		}
+		X509_NAME *issuer = X509_get_issuer_name(cert);
+		if (X509_NAME_cmp(name, issuer) == 0)
+		{
+			X509_free(cert);
+			this->sockf->DestroySocket(s);
+			SSL_free(ssl);
+			if (err)
+				*err = ET_SELF_SIGN;
+			return 0;
+		}
+		X509_free(cert);
+	}
+	this->sockf->SetRecvTimeout(s, 120000);
+	Net::SSLClient *cli;
+	NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
+	return cli;
+}
+
 Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Net::SSLEngine(sockf)
 {
 	Net::OpenSSLCore::Init();
@@ -152,6 +259,22 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cr
 		}
 		return true;
 	}
+	else if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FT_CERT && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FT_KEY)
+	{
+		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
+		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
+		{
+			return false;
+		}
+		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
+		if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+		{
+			DEL_CLASS(privKey);
+			return false;
+		}
+		DEL_CLASS(privKey);
+		return true;
+	}
 	return false;
 }
 
@@ -237,108 +360,27 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 			*err = ET_CANNOT_CONNECT;
 		return 0;
 	}
-	this->sockf->SetNoDelay(s, true);
-	this->sockf->SetRecvTimeout(s, 2000);
-	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
-	int ret;
-	if ((ret = SSL_connect(ssl)) <= 0)
+	return CreateClientConn(ssl, s, hostName, err);
+}
+
+Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err)
+{
+	SSL *ssl = SSL_new(this->clsData->ctx);
+	if (ssl == 0)
 	{
-		this->sockf->DestroySocket(s);
-		SSL_free(ssl);
-#ifdef SHOW_DEBUG
-		int code = SSL_get_error(ssl, ret);
-		printf("SSL_connect: Error code = %d\r\n", code);
-#endif
 		if (err)
-			*err = ET_INIT_SESSION;
+			*err = ET_OUT_OF_MEMORY;
 		return 0;
 	}
-	if (!this->skipCertCheck)
+	if (this->clsData->cliCert)
 	{
-		X509 *cert = SSL_get_peer_certificate(ssl);
-		if (cert == 0)
-		{
-			this->sockf->DestroySocket(s);
-			SSL_free(ssl);
-			if (err)
-				*err = ET_CERT_NOT_FOUND;
-			return 0;
-		}
-
-		Char sbuff[512];
-		Char *sarr[10];
-		ASN1_TIME *notBefore = X509_get_notBefore(cert);
-		ASN1_TIME *notAfter = X509_get_notAfter(cert);
-		Data::DateTime dt;
-		Int64 currTime;
-		dt.SetCurrTimeUTC();
-		currTime = dt.ToTicks();
-		tm tm;
-		ASN1_TIME_to_tm(notBefore, &tm);
-		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
-		if (currTime < dt.ToTicks())
-		{
-			X509_free(cert);
-			this->sockf->DestroySocket(s);
-			SSL_free(ssl);
-			if (err)
-				*err = ET_INVALID_PERIOD;
-			return 0;
-		}
-		ASN1_TIME_to_tm(notAfter, &tm);
-		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
-		if (currTime > dt.ToTicks())
-		{
-			X509_free(cert);
-			this->sockf->DestroySocket(s);
-			SSL_free(ssl);
-			if (err)
-				*err = ET_INVALID_PERIOD;
-			return 0;
-		}
-
-		X509_NAME *name = X509_get_subject_name(cert);
-		X509_NAME_oneline(name, sbuff, 512);
-		Bool nameValid = false;
-		UOSInt i = 0;
-		UOSInt j = Text::StrSplit(sarr, 10, sbuff, '/');
-		while (i < j)
-		{
-			if (Text::StrStartsWith(sarr[i], "CN="))
-			{
-				if (Text::StrEquals(&sarr[i][3], (const Char*)hostName))
-				{
-					nameValid = true;
-				}
-				break;
-			}
-			i++;
-		}
-		if (!nameValid)
-		{
-			X509_free(cert);
-			this->sockf->DestroySocket(s);
-			SSL_free(ssl);
-			if (err)
-				*err = ET_INVALID_NAME;
-			return 0;
-		}
-		X509_NAME *issuer = X509_get_issuer_name(cert);
-		if (X509_NAME_cmp(name, issuer) == 0)
-		{
-			X509_free(cert);
-			this->sockf->DestroySocket(s);
-			SSL_free(ssl);
-			if (err)
-				*err = ET_SELF_SIGN;
-			return 0;
-		}
-		X509_free(cert);
+		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
 	}
-	this->sockf->SetRecvTimeout(s, 120000);
-	Net::SSLClient *cli;
-	NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
-	return cli;
+	if (this->clsData->cliKey)
+	{
+		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
+	}
+	return CreateClientConn(ssl, s, hostName, err);
 }
 
 Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1)

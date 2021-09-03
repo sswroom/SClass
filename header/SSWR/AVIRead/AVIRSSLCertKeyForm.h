@@ -52,6 +52,9 @@ namespace SSWR
 			static void __stdcall OnFileKeyClicked(void *userObj);
 			static void __stdcall OnFileConfirmClicked(void *userObj);
 			static void __stdcall OnGenerateClicked(void *userObj);
+			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
+
+			void LoadFile(const UTF8Char *fileName);
 
 		public:
 			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509File *cert, Crypto::Cert::X509File *key);

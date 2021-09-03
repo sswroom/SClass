@@ -23,11 +23,14 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 	cliStatus->userName = 0;
 	me->cliMgr->AddClient(cli, cliStatus);
 
-	Text::StringBuilderUTF8 sb;
-	sb.Append(me->domain);
-	sb.Append((const UTF8Char *)" ESMTP");
-//	sb.Append(me->serverName);
-	me->WriteMessage(cli, 220, sb.ToString());
+	if (me->connType != Net::Email::SMTPConn::CT_STARTTLS || !cli->IsSSL())
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(me->domain);
+		sb.Append((const UTF8Char *)" ESMTP");
+	//	sb.Append(me->serverName);
+		me->WriteMessage(cli, 220, sb.ToString());
+	}
 }
 
 void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
@@ -347,6 +350,14 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		WriteMessage(cli, 221, (const UTF8Char *)"Bye");
 		cli->ShutdownSend();
 	}
+	else if (Text::StrEquals(cmd, "STARTTLS"))
+	{
+		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::CT_STARTTLS)
+		{
+			WriteMessage(cli, 220, (const UTF8Char *)"Go ahead");
+			this->ssl->ServerInit(cli->RemoveSocket(), ClientReady, this);;
+		}
+	}
 	else if (Text::StrStartsWith(cmd, "HELO "))
 	{
 		if (cliStatus->cliName)
@@ -373,6 +384,10 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		sb.Append((UTF8Char*)cliStatus->cliName);
 		sb.Append((const UTF8Char *)"\r\nHELP");
 		sb.Append((const UTF8Char *)"\r\n8BITMIME");
+		if (this->connType == Net::Email::SMTPConn::CT_STARTTLS && !cli->IsSSL())
+		{
+			sb.Append((const UTF8Char *)"\r\nSTARTTLS");
+		}
 		sb.Append((const UTF8Char *)"\r\nPIPELINING");
 		sb.Append((const UTF8Char *)"\r\nAUTH LOGIN PLAIN");
 		sb.Append((const UTF8Char *)"\r\nSIZE ");

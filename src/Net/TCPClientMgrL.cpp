@@ -111,11 +111,24 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 		while (i < pollCliCnt)
 		{
 			cliStat = me->cliArr->GetItem(i);
-			if (cliStat->reading)
+			Socket *s = cliStat->cli->GetSocket();
+			if (s == 0)
+			{
+				TCPClientMgr_RemoveCliStat(me->cliArr, me->cliIdArr, cliStat);
+
+				DEL_CLASS(cliStat->lastDataTime);
+				DEL_CLASS(cliStat->readMut);
+				MemFree(cliStat->buff);
+				me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
+				MemFree(cliStat);
+				i--;
+				pollCliCnt--;
+			}
+			else if (cliStat->reading)
 			{
 				pollCli[pollReqCnt] = cliStat;
 				pollReqCnt++;
-				pollfds[pollReqCnt].fd = -1 + (int)(OSInt)cliStat->cli->GetSocket();
+				pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s;
 				pollfds[pollReqCnt].events = POLLIN;
 				pollfds[pollReqCnt].revents = 0;
 				if (cliStat->recvDataExist)

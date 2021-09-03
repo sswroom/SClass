@@ -450,3 +450,10 @@ Socket *Net::TCPClient::GetSocket()
 	return s;
 }
 
+Socket *Net::TCPClient::RemoveSocket()
+{
+	Socket *s = this->s;
+	this->s = 0;
+	this->flags |= 4;
+	return s;
+}

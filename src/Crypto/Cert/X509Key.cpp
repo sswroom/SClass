@@ -35,3 +35,8 @@ Net::ASN1Data *Crypto::Cert::X509Key::Clone()
 void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
 {
 }
+
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType()
+{
+	return this->keyType;
+}

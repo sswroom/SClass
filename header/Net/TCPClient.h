@@ -59,6 +59,7 @@ namespace Net
 		void SetTimeout(Int32 ms);
 
 		Socket *GetSocket();
+		Socket *RemoveSocket();
 	};
 }
 #endif
