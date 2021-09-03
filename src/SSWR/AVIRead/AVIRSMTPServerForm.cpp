@@ -73,7 +73,18 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
 			return;
 		}
-		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), port, me->log, (const UTF8Char *)"Welcome to SSWR POP3 Server", me));
+		Net::SSLEngine *ssl = 0;
+		if (me->chkPOP3SSL->IsChecked())
+		{
+			if (me->sslCert == 0 || me->sslKey == 0)
+			{
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select SSL Cert/Key", (const UTF8Char*)"SMTP Server", me);
+				return;
+			}
+			ssl = me->ssl;
+			ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+		}
+		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, (const UTF8Char *)"Welcome to SSWR POP3 Server", me));
 		if (me->pop3Svr->IsError())
 		{
 			DEL_CLASS(me->pop3Svr);
@@ -270,6 +281,42 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnCertKeyClicked(void *userObj
 	DEL_CLASS(frm);
 }
 
+void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPTypeSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
+	UInt16 port;
+	Text::StringBuilderUTF8 sb;
+	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
+	me->txtSMTPPort->GetText(&sb);
+	if (sb.ToUInt16(&port))
+	{
+		if (port == Net::Email::SMTPServer::GetDefaultPort(me->smtpType))
+		{
+			sb.ClearStr();
+			sb.AppendU16(Net::Email::SMTPServer::GetDefaultPort(newType));
+			me->txtSMTPPort->SetText(sb.ToString());
+		}
+	}
+	me->smtpType = newType;
+}
+
+void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3SSLChanged(void *userObj, Bool isChecked)
+{
+	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
+	UInt16 port;
+	Text::StringBuilderUTF8 sb;
+	me->txtPOP3Port->GetText(&sb);
+	if (sb.ToUInt16(&port))
+	{
+		if (port == Net::Email::POP3Server::GetDefaultPort(!isChecked))
+		{
+			sb.ClearStr();
+			sb.AppendU16(Net::Email::POP3Server::GetDefaultPort(isChecked));
+			me->txtPOP3Port->SetText(sb.ToString());
+		}
+	}
+}
+
 Int64 SSWR::AVIRead::AVIRSMTPServerForm::NextEmailId()
 {
 	Sync::MutexUsage mutUsage(this->currIdMut);
@@ -293,6 +340,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->totalSize = 0;
 	this->recvIndex = 0;
 	this->recvSize = 0;
+	this->smtpType = Net::Email::SMTPConn::CT_PLAIN;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	this->currId = dt.ToTicks();
@@ -331,6 +379,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->cboSMTPType->AddItem((const UTF8Char*)"STARTTLS", (void*)(OSInt)Net::Email::SMTPConn::CT_STARTTLS);
 	this->cboSMTPType->AddItem((const UTF8Char*)"SSL", (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
 	this->cboSMTPType->SetSelectedIndex(0);
+	this->cboSMTPType->HandleSelectionChange(OnSMTPTypeSelChg, this);
 	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->grpSMTP, (const UTF8Char*)"Start"));
 	this->btnSMTPStart->SetRect(100, 48, 75, 23, false);
 	this->btnSMTPStart->HandleButtonClick(OnSMTPStartClicked, this);
@@ -340,8 +389,11 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->lblPOP3Port->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtPOP3Port, UI::GUITextBox(ui, this->grpPOP3, (const UTF8Char*)"110"));
 	this->txtPOP3Port->SetRect(100, 0, 100, 23, false);
+	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->grpPOP3, (const UTF8Char*)"Enable SSL", false));
+	this->chkPOP3SSL->SetRect(100, 24, 100, 23, false);
+	this->chkPOP3SSL->HandleCheckedChange(OnPOP3SSLChanged, this);
 	NEW_CLASS(this->btnPOP3Start, UI::GUIButton(ui, this->grpPOP3, (const UTF8Char*)"Start"));
-	this->btnPOP3Start->SetRect(100, 24, 75, 23, false);
+	this->btnPOP3Start->SetRect(100, 48, 75, 23, false);
 	this->btnPOP3Start->HandleButtonClick(OnPOP3StartClicked, this);
 	NEW_CLASS(this->btnLogFile, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Log To File"));
 	this->btnLogFile->SetRect(4, 112, 75, 23, false);

@@ -56,6 +56,7 @@ namespace SSWR
 			UI::GUIGroupBox *grpPOP3;
 			UI::GUILabel *lblPOP3Port;
 			UI::GUITextBox *txtPOP3Port;
+			UI::GUICheckBox *chkPOP3SSL;
 			UI::GUIButton *btnPOP3Start;
 			UI::GUIButton *btnLogFile;
 
@@ -72,6 +73,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Crypto::Cert::X509File *sslCert;
 			Crypto::Cert::X509File *sslKey;
+			Net::Email::SMTPConn::ConnType smtpType;
 
 			Int64 currId;
 			Sync::Mutex *currIdMut;
@@ -91,6 +93,8 @@ namespace SSWR
 			static Bool __stdcall OnMailLogin(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnCertKeyClicked(void *userObj);
+			static void __stdcall OnSMTPTypeSelChg(void *userObj);
+			static void __stdcall OnPOP3SSLChanged(void *userObj, Bool isChecked);
 			Int64 NextEmailId();
 		public:
 			AVIRSMTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

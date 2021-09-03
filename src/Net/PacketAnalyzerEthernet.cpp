@@ -2945,18 +2945,28 @@ const UTF8Char *Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
 		return (const UTF8Char*)"Microsoft EPMAP";
 	case 139:
 		return (const UTF8Char*)"NetBIOS-SSN";
+	case 143:
+		return (const UTF8Char*)"IMAP";
 	case 427:
 		return (const UTF8Char*)"SvrLoc";
 	case 443:
 		return (const UTF8Char*)"HTTPS";
 	case 445:
 		return (const UTF8Char*)"Microsoft-DS";
+	case 465:
+		return (const UTF8Char*)"SMTPS";
 	case 538:
 		return (const UTF8Char*)"GDOMAP";
+	case 587:
+		return (const UTF8Char*)"SMTP STARTTLS";
 	case 902:
 		return (const UTF8Char*)"VMWare ESX";
 	case 912:
 		return (const UTF8Char*)"VMWare ESX";
+	case 993:
+		return (const UTF8Char*)"IMAPS";
+	case 995:
+		return (const UTF8Char*)"POP3S";
 	case 1022:
 		return (const UTF8Char*)"RFC3692-style Experiment 2";
 	case 3306:

@@ -3,6 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/TCPServer.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/Email/MailController.h"
@@ -29,6 +30,7 @@ namespace Net
 			typedef WChar *(__stdcall *MailHandler)(WChar *queryId, void *userObj, Net::TCPClient *cli, MailStatus *mail);
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool *log;
@@ -37,6 +39,7 @@ namespace Net
 			Net::Email::MailController *mailCtrl;
 			IO::FileStream *rawLog;
 
+			static void __stdcall ConnReady(Net::TCPClient *cli, void *userObj);
 			static void __stdcall ConnHdlr(Socket *s, void *userObj);
 			static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
@@ -46,11 +49,11 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd);
 		public:
-			POP3Server(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl);
+			POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl);
 			~POP3Server();
 
 			Bool IsError();
-			static UInt16 GetDefaultPort();
+			static UInt16 GetDefaultPort(Bool ssl);
 		};
 	}
 }

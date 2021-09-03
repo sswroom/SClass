@@ -7,12 +7,10 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::Email::POP3Server::ConnReady(Net::TCPClient *cli, void *userObj)
 {
 	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
-	Net::TCPClient *cli;
 	MailStatus *cliStatus;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 	cliStatus = MemAlloc(MailStatus, 1);
 	cliStatus->buff = MemAlloc(UInt8, 2048);
 	cliStatus->buffSize = 0;
@@ -25,6 +23,21 @@ void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
 	me->cliMgr->AddClient(cli, cliStatus);
 
 	me->WriteMessage(cli, true, me->greeting);
+}
+
+void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
+{
+	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
+	if (me->ssl)
+	{
+		me->ssl->ServerInit(s, ConnReady, me);
+	}
+	else
+	{
+		Net::TCPClient *cli;
+		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+		ConnReady(cli, me);
+	}
 }
 
 void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
@@ -449,9 +462,10 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	}
 }
 
-Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl)
+Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->log = log;
 	this->greeting = Text::StrCopyNew(greeting);
 	this->mailCtrl = mailCtrl;
@@ -473,7 +487,14 @@ Bool Net::Email::POP3Server::IsError()
 	return this->svr->IsV4Error();
 }
 
-UInt16 Net::Email::POP3Server::GetDefaultPort()
+UInt16 Net::Email::POP3Server::GetDefaultPort(Bool ssl)
 {
-	return 110;
+	if (ssl)
+	{
+		return 995;
+	}
+	else
+	{
+		return 110;
+	}
 }
