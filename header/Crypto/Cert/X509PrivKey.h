@@ -19,7 +19,7 @@ namespace Crypto
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF *sb);
 
-			static X509PrivKey *CreateFromRSAKey(const UInt8 *buff, UOSInt buffSize);
+			static X509PrivKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize);
 			static X509PrivKey *CreateFromKey(Crypto::Cert::X509Key *key);
 		};
 	}

@@ -64,6 +64,7 @@ namespace Crypto
 			void ToShortString(Text::StringBuilderUTF *sb);
 			static const UTF8Char *FileTypeGetName(FileType fileType);
 			static const UTF8Char *KeyTypeGetName(KeyType keyType);
+			static const Char *KeyTypeGetOID(KeyType keyType);
 		};
 	}
 }

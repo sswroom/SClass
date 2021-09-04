@@ -54,19 +54,19 @@ void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF *sb)
 	}
 }
 
-Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromRSAKey(const UInt8 *buff, UOSInt buffSize)
+Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize)
 {
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();
 	keyPDU.AppendInt32(0);
 	keyPDU.BeginSequence();
-	keyPDU.AppendOIDString("1.2.840.113549.1.1.1");
+	keyPDU.AppendOIDString(KeyTypeGetOID(keyType));
 	keyPDU.AppendNull();
 	keyPDU.EndLevel();
 	keyPDU.AppendOctetString(buff, buffSize);
 	keyPDU.EndLevel();
 	Crypto::Cert::X509PrivKey *key;
-	NEW_CLASS(key, Crypto::Cert::X509PrivKey((const UTF8Char*)"RSAKey", keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
+	NEW_CLASS(key, Crypto::Cert::X509PrivKey((const UTF8Char*)"PrivKey", keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
 	return key;
 }
 
@@ -76,15 +76,7 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(Crypto::Cert
 	keyPDU.BeginSequence();
 	keyPDU.AppendInt32(0);
 	keyPDU.BeginSequence();
-	switch (key->GetKeyType())
-	{
-	case KT_RSA:
-		keyPDU.AppendOIDString("1.2.840.113549.1.1.1");
-		break;
-	default:
-		keyPDU.AppendOIDString("1.2.840.113549.1.1.1");
-		break;
-	}
+	keyPDU.AppendOIDString(KeyTypeGetOID(key->GetKeyType()));
 	keyPDU.AppendNull();
 	keyPDU.EndLevel();
 	keyPDU.AppendOctetString(key->GetASN1Buff(), key->GetASN1BuffSize());

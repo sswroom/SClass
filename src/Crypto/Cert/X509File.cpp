@@ -692,3 +692,15 @@ const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 		return (const UTF8Char*)"Unknown";
 	}
 }
+
+const Char *Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
+{
+	switch (keyType)
+	{
+	case KT_RSA:
+		return "1.2.840.113549.1.1.1";
+	case KT_UNKNOWN:
+	default:
+		return "1.2.840.113549.1.1.1";
+	}
+}

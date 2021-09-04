@@ -185,6 +185,158 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred)
 	return status == 0;
 }
 
+Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, const UTF8Char *hostName, ErrorType *err)
+{
+	CtxtHandle ctxt;
+	const WChar *wptr = Text::StrToWCharNew(hostName);
+	UInt32 retFlags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_STREAM;
+	TimeStamp ts;
+	SecBuffer outputBuff[3];
+	SecBuffer_Set(&outputBuff[0], SECBUFFER_EMPTY, 0, 0);
+	SecBufferDesc inputDesc;
+	SecBufferDesc outputDesc;
+	SecBufferDesc_Set(&outputDesc, outputBuff, 1);
+
+	if (this->skipCertCheck)
+	{
+		retFlags |= ISC_REQ_MANUAL_CRED_VALIDATION;
+	}
+
+	SECURITY_STATUS status;
+	status = InitializeSecurityContext(
+		&this->clsData->hCredCli,
+		0,
+		(WChar*)wptr,
+		(unsigned long)retFlags,
+		0,
+		0,
+		0,
+		0,
+		&ctxt,
+		&outputDesc,
+		(unsigned long*)&retFlags,
+		&ts
+	);
+	if (status != SEC_I_CONTINUE_NEEDED)
+	{
+		Text::StrDelNew(wptr);
+		return 0;
+	}
+	Net::SocketFactory::ErrorType et;
+	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, &et) != outputBuff[0].cbBuffer)
+	{
+		DeleteSecurityContext(&ctxt);
+		FreeContextBuffer(outputBuff[0].pvBuffer);
+		Text::StrDelNew(wptr);
+		return 0;
+	}
+	FreeContextBuffer(outputBuff[0].pvBuffer);
+
+	this->sockf->SetRecvTimeout(s, 3000);
+	SecBuffer inputBuff[2];
+	UInt8 recvBuff[2048];
+	UOSInt recvOfst = 0;
+	UOSInt recvSize;
+	UOSInt i;
+	while (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_INCOMPLETE_MESSAGE)
+	{
+		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
+		{
+			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, &et);
+			if (recvSize <= 0)
+			{
+				Text::StrDelNew(wptr);
+				return 0;
+			}
+			recvOfst += recvSize;
+		}
+
+		SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvOfst);
+		SecBuffer_Set(&inputBuff[1], SECBUFFER_EMPTY, 0, 0);
+		SecBufferDesc_Set(&inputDesc, inputBuff, 2);
+
+		SecBuffer_Set(&outputBuff[0], SECBUFFER_TOKEN, 0, 0);
+#if defined(SECBUFFER_ALERT)
+		SecBuffer_Set(&outputBuff[1], SECBUFFER_ALERT, 0, 0);
+#else
+		SecBuffer_Set(&outputBuff[1], SECBUFFER_EMPTY, 0, 0);
+#endif
+		SecBuffer_Set(&outputBuff[2], SECBUFFER_EMPTY, 0, 0);
+		SecBufferDesc_Set(&outputDesc, outputBuff, 3);
+
+		status = InitializeSecurityContext(
+			&this->clsData->hCredCli,
+			&ctxt,
+			(WChar*)wptr,
+			retFlags,
+			0,
+			0,
+			&inputDesc,
+			0,
+			0,
+			&outputDesc,
+			(unsigned long*)&retFlags,
+			&ts);
+
+		if (status == SEC_E_INCOMPLETE_MESSAGE)
+		{
+
+		}
+		else if (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_OK)
+		{
+			Bool succ = true;
+			i = 0;
+			while (i < 3)
+			{
+				if (outputBuff[i].BufferType == SECBUFFER_TOKEN && outputBuff[i].cbBuffer > 0)
+				{
+					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
+					{
+						succ = false;
+					}
+				}
+
+				if (outputBuff[i].pvBuffer)
+				{
+					FreeContextBuffer(outputBuff[i].pvBuffer);
+				}
+				i++;
+			}
+			if (!succ)
+			{
+				DeleteSecurityContext(&ctxt);
+				Text::StrDelNew(wptr);
+				return 0;
+			}
+			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
+			{
+				MemCopyO(recvBuff, &recvBuff[recvOfst - inputBuff[1].cbBuffer], inputBuff[1].cbBuffer);
+				recvOfst = inputBuff[1].cbBuffer;
+			}
+			else
+			{
+				recvOfst = 0;
+			}
+		}
+		else
+		{
+			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
+			{
+
+			}
+			DeleteSecurityContext(&ctxt);
+			Text::StrDelNew(wptr);
+			return 0;
+		}
+	}
+	Text::StrDelNew(wptr);
+
+	sockf->SetRecvTimeout(s, 120000);
+	Net::SSLClient *cli;
+	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
+	return cli;
+}
+
 Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 {
 	if (!this->clsData->svrInit)
@@ -662,12 +814,12 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
-	BOOL succ = CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
+	CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
 
-	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = NULL;
+	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = 0;
 	BOOL fCallerFreeProvOrNCryptKey = FALSE;
 	DWORD dwKeySpec;
-	succ = CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
+	CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
 
 	if (!this->InitServer(this->clsData->method, (void*)serverCert))
 	{
@@ -720,12 +872,12 @@ Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Cryp
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
-	BOOL succ = CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
+	CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
 
-	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = NULL;
+	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = 0;
 	BOOL fCallerFreeProvOrNCryptKey = FALSE;
 	DWORD dwKeySpec;
-	succ = CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
+	CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
 
 	this->DeinitClient();
 	if (!this->InitClient(this->clsData->method, (void*)serverCert) &&
@@ -800,155 +952,24 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 			*err = ET_CANNOT_CONNECT;
 		return 0;
 	}
+	
+	return CreateClientConn(0, s, hostName, err);
+}
 
-	CtxtHandle ctxt;
-	const WChar *wptr = Text::StrToWCharNew(hostName);
-	UInt32 retFlags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_STREAM;
-	TimeStamp ts;
-	SecBuffer outputBuff[3];
-	SecBuffer_Set(&outputBuff[0], SECBUFFER_EMPTY, 0, 0);
-	SecBufferDesc inputDesc;
-	SecBufferDesc outputDesc;
-	SecBufferDesc_Set(&outputDesc, outputBuff, 1);
-
-	if (this->skipCertCheck)
+Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err)
+{
+	if (!this->clsData->cliInit)
 	{
-		retFlags |= ISC_REQ_MANUAL_CRED_VALIDATION;
-	}
-
-	SECURITY_STATUS status;
-	status = InitializeSecurityContext(
-		&this->clsData->hCredCli,
-		0,
-		(WChar*)wptr,
-		(unsigned long)retFlags,
-		0,
-		0,
-		0,
-		0,
-		&ctxt,
-		&outputDesc,
-		(unsigned long*)&retFlags,
-		&ts
-	);
-	if (status != SEC_I_CONTINUE_NEEDED)
-	{
-		Text::StrDelNew(wptr);
-		return 0;
-	}
-	Net::SocketFactory::ErrorType et;
-	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, &et) != outputBuff[0].cbBuffer)
-	{
-		DeleteSecurityContext(&ctxt);
-		FreeContextBuffer(outputBuff[0].pvBuffer);
-		Text::StrDelNew(wptr);
-		return 0;
-	}
-	FreeContextBuffer(outputBuff[0].pvBuffer);
-
-	this->sockf->SetRecvTimeout(s, 3000);
-	SecBuffer inputBuff[2];
-	UInt8 recvBuff[2048];
-	UOSInt recvOfst = 0;
-	UOSInt recvSize;
-	UOSInt i;
-	while (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_INCOMPLETE_MESSAGE)
-	{
-		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
+		if (!this->InitClient(this->clsData->method, 0) &&
+			!this->InitClient(M_TLSV1_2, 0) &&
+			!this->InitClient(M_TLSV1_1, 0) &&
+			!this->InitClient(M_TLSV1, 0))
 		{
-			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, &et);
-			if (recvSize <= 0)
-			{
-				Text::StrDelNew(wptr);
-				return 0;
-			}
-			recvOfst += recvSize;
-		}
-
-		SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvOfst);
-		SecBuffer_Set(&inputBuff[1], SECBUFFER_EMPTY, 0, 0);
-		SecBufferDesc_Set(&inputDesc, inputBuff, 2);
-
-		SecBuffer_Set(&outputBuff[0], SECBUFFER_TOKEN, 0, 0);
-#if defined(SECBUFFER_ALERT)
-		SecBuffer_Set(&outputBuff[1], SECBUFFER_ALERT, 0, 0);
-#else
-		SecBuffer_Set(&outputBuff[1], SECBUFFER_EMPTY, 0, 0);
-#endif
-		SecBuffer_Set(&outputBuff[2], SECBUFFER_EMPTY, 0, 0);
-		SecBufferDesc_Set(&outputDesc, outputBuff, 3);
-
-		status = InitializeSecurityContext(
-			&this->clsData->hCredCli,
-			&ctxt,
-			(WChar*)wptr,
-			retFlags,
-			0,
-			0,
-			&inputDesc,
-			0,
-			0,
-			&outputDesc,
-			(unsigned long*)&retFlags,
-			&ts);
-
-		if (status == SEC_E_INCOMPLETE_MESSAGE)
-		{
-
-		}
-		else if (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_OK)
-		{
-			Bool succ = true;
-			i = 0;
-			while (i < 3)
-			{
-				if (outputBuff[i].BufferType == SECBUFFER_TOKEN && outputBuff[i].cbBuffer > 0)
-				{
-					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
-					{
-						succ = false;
-					}
-				}
-
-				if (outputBuff[i].pvBuffer)
-				{
-					FreeContextBuffer(outputBuff[i].pvBuffer);
-				}
-				i++;
-			}
-			if (!succ)
-			{
-				DeleteSecurityContext(&ctxt);
-				Text::StrDelNew(wptr);
-				return 0;
-			}
-			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
-			{
-				MemCopyO(recvBuff, &recvBuff[recvOfst - inputBuff[1].cbBuffer], inputBuff[1].cbBuffer);
-				recvOfst = inputBuff[1].cbBuffer;
-			}
-			else
-			{
-				recvOfst = 0;
-			}
-		}
-		else
-		{
-			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
-			{
-
-			}
-			DeleteSecurityContext(&ctxt);
-			Text::StrDelNew(wptr);
 			return 0;
 		}
+		this->clsData->cliInit = true;
 	}
-	Text::StrDelNew(wptr);
-
-	sockf->SetRecvTimeout(s, 120000);
-	Net::SSLClient *cli;
-	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
-	return cli;
+	return this->CreateClientConn(0, s, hostName, err);
 }
 
 Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1)
@@ -979,9 +1000,6 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	PCCERT_CONTEXT pCertContext = NULL;
 	BYTE *pbEncoded = NULL;
 	DWORD cbEncoded = 0;
-	HCERTSTORE hStore = NULL;
-	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = NULL;
-	BOOL fCallerFreeProvOrNCryptKey = FALSE;
 
 	if (!CertStrToName(X509_ASN_ENCODING, sb.ToString(), CERT_X500_NAME_STR, NULL, pbEncoded, &cbEncoded, NULL))
 	{
@@ -1022,7 +1040,7 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	GetSystemTime(&endTime);
 	endTime.wYear += 1;
 
-	pCertContext = CertCreateSelfSignCertificate(NULL, &subjectIssuerBlob, 0, &keyProvInfo, &signatureAlgorithm, 0, &endTime, 0);
+	pCertContext = CertCreateSelfSignCertificate(0, &subjectIssuerBlob, 0, &keyProvInfo, &signatureAlgorithm, 0, &endTime, 0);
 	if (!pCertContext)
 	{
 		MemFree(pbEncoded);
@@ -1051,7 +1069,7 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		return false;
 	}
 	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromRSAKey(certBuff, certBuffSize);
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KT_RSA, certBuff, certBuffSize);
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);
