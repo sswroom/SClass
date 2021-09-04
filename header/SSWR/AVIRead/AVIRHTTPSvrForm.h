@@ -61,6 +61,8 @@ namespace SSWR
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
 			AVIRHTTPLog *reqLog;
 			UOSInt lastAccessIndex;
+			Crypto::Cert::X509File *sslCert;
+			Crypto::Cert::X509File *sslKey;
 
 			UI::GUITabControl *tcMain;
 			UI::GUITabPage *tpControl;
@@ -75,6 +77,10 @@ namespace SSWR
 			UI::GUITextBox *txtDocDir;
 			UI::GUILabel *lblLogDir;
 			UI::GUITextBox *txtLogDir;
+			UI::GUILabel *lblSSL;
+			UI::GUICheckBox *chkSSL;
+			UI::GUIButton *btnSSLCert;
+			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblAllowBrowse;
 			UI::GUICheckBox *chkAllowBrowse;
 			UI::GUILabel *lblAllowProxy;
@@ -91,14 +97,6 @@ namespace SSWR
 			UI::GUICheckBox *chkCrossOrigin;
 			UI::GUILabel *lblDownloadCnt;
 			UI::GUICheckBox *chkDownloadCnt;
-			UI::GUIGroupBox *grpSSL;
-			UI::GUICheckBox *chkSSL;
-			UI::GUILabel *lblSSLCountry;
-			UI::GUITextBox *txtSSLCountry;
-			UI::GUILabel *lblSSLCompany;
-			UI::GUITextBox *txtSSLCompany;
-			UI::GUILabel *lblSSLCommonName;
-			UI::GUITextBox *txtSSLCommonName;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
 
@@ -132,6 +130,7 @@ namespace SSWR
 			static void __stdcall OnLogSel(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnAccessSelChg(void *userObj);
+			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
 			AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPSvrForm();
@@ -145,6 +144,6 @@ namespace SSWR
 			void SetAllowProxy(Bool allowProxy);
 			void StartListen();
 		};
-	};
+	}
 }
 #endif

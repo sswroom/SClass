@@ -4,6 +4,7 @@
 #include "Net/MQTTBroker.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -33,6 +34,9 @@ namespace SSWR
 			
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
+			Crypto::Cert::X509File *sslCert;
+			Crypto::Cert::X509File *sslKey;
 			Net::MQTTBroker *broker;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
@@ -43,6 +47,10 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpStatus;
+			UI::GUILabel *lblSSL;
+			UI::GUICheckBox *chkSSL;
+			UI::GUIButton *btnSSLCert;
+			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStart;
@@ -55,6 +63,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnSSLCertClicked(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnTopicUpdate(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);

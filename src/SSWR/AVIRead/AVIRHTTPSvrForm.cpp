@@ -2,6 +2,7 @@
 #include "IO/Path.h"
 #include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
+#include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -155,47 +156,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 
 	if (me->chkSSL->IsChecked())
 	{
+		if (me->sslCert == 0 || me->sslKey == 0)
+		{
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select SSL Cert/Key First", (const UTF8Char*)"HTTP Server", me);
+			return;
+		}
 		ssl = me->ssl;
-/*		if (!ssl->SetServerCerts((const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.crt", (const UTF8Char*)"C:\\Progs\\SSWR\\AVIRead2017\\test.key"))
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in setting certs", (const UTF8Char*)"HTTP Server", me);
-			return;
-		}*/
-		
-		Text::StringBuilderUTF8 sbCountry;
-		Text::StringBuilderUTF8 sbCompany;
-		Text::StringBuilderUTF8 sbCommonName;
-		me->txtSSLCountry->GetText(&sbCountry);
-		me->txtSSLCompany->GetText(&sbCompany);
-		me->txtSSLCommonName->GetText(&sbCommonName);
-		if (sbCountry.GetLength() != 2)
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Country must be 2 characters", (const UTF8Char*)"HTTP Server", me);
-			return;
-		}
-		if (sbCompany.GetLength() == 0)
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter company", (const UTF8Char*)"HTTP Server", me);
-			return;
-		}
-		if (sbCommonName.GetLength() == 0)
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter common name", (const UTF8Char*)"HTTP Server", me);
-			return;
-		}
-		Crypto::Cert::X509File *certASN1;
-		Crypto::Cert::X509File *keyASN1;
-		if (ssl->GenerateCert(sbCountry.ToString(), sbCompany.ToString(), sbCommonName.ToString(), &certASN1, &keyASN1))
-		{
-			ssl->SetServerCertsASN1(certASN1, keyASN1);
-			SDEL_CLASS(certASN1);
-			SDEL_CLASS(keyASN1);
-		}
-		else
-		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in generating certs", (const UTF8Char*)"HTTP Server", me);
-			return;
-		}
+		ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
 	}
 	if (port > 0 && port < 65535)
 	{
@@ -259,9 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		me->chkCrossOrigin->SetEnabled(false);
 		me->chkDownloadCnt->SetEnabled(false);
 		me->chkSSL->SetEnabled(false);
-		me->txtSSLCountry->SetReadOnly(true);
-		me->txtSSLCompany->SetReadOnly(true);
-		me->txtSSLCommonName->SetReadOnly(true);
+		me->btnSSLCert->SetEnabled(false);
 	}
 	else
 	{
@@ -304,9 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 	me->chkCrossOrigin->SetEnabled(true);
 	me->chkDownloadCnt->SetEnabled(true);
 	me->chkSSL->SetEnabled(true);
-	me->txtSSLCountry->SetReadOnly(false);
-	me->txtSSLCompany->SetReadOnly(false);
-	me->txtSSLCommonName->SetReadOnly(false);
+	me->btnSSLCert->SetEnabled(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(void *userObj)
@@ -435,6 +398,26 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	me->txtAccess->SetText(sb.ToString());
 }
 
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	SSWR::AVIRead::AVIRSSLCertKeyForm *frm;
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRSSLCertKeyForm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey));
+	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	{
+		SDEL_CLASS(me->sslCert);
+		SDEL_CLASS(me->sslKey);
+		me->sslCert = frm->GetCert();
+		me->sslKey = frm->GetKey();
+		Text::StringBuilderUTF8 sb;
+		me->sslCert->ToShortString(&sb);
+		sb.Append((const UTF8Char*)", ");
+		me->sslKey->ToShortString(&sb);
+		me->lblSSLCert->SetText(sb.ToString());
+	}
+	DEL_CLASS(frm);
+}
+
 SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
@@ -443,6 +426,8 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->SetText((const UTF8Char*)"HTTP Server");
 	this->SetFont(0, 8.25, false);
 	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->sslCert = 0;
+	this->sslKey = 0;
 	this->svr = 0;
 	this->log = 0;
 	this->dirHdlr = 0;
@@ -464,7 +449,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
 
 	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"Parameters"));
-	this->grpParam->SetRect(0, 0, 620, 296, false);
+	this->grpParam->SetRect(0, 0, 620, 320, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
@@ -486,61 +471,52 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	Text::StrConcat(&sbuff[i+1], (const UTF8Char*)"log");
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
 	this->txtLogDir->SetRect(108, 56, 500, 23, false);
+	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"SSL"));
+	this->lblSSL->SetRect(8, 80, 100, 23, false);
+	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
+	this->chkSSL->SetRect(108, 80, 100, 23, false);
+	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->grpParam, (const UTF8Char*)"Cert/Key"));
+	this->btnSSLCert->SetRect(208, 80, 75,23, false);
+	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
+	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)""));
+	this->lblSSLCert->SetRect(288, 80, 200, 23, false);
 	NEW_CLASS(this->lblAllowBrowse, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Directory Browsing"));
-	this->lblAllowBrowse->SetRect(8, 80, 100, 23, false);
+	this->lblAllowBrowse->SetRect(8, 104, 100, 23, false);
 	NEW_CLASS(this->chkAllowBrowse, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Allow", true));
-	this->chkAllowBrowse->SetRect(108, 80, 100, 23, false);
+	this->chkAllowBrowse->SetRect(108, 104, 100, 23, false);
 	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Proxy Connection"));
-	this->lblAllowProxy->SetRect(8, 104, 100, 23, false);
-	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Allow", true));
-	this->chkAllowProxy->SetRect(108, 104, 100, 23, false);
+	this->lblAllowProxy->SetRect(8, 128, 100, 23, false);
+	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Allow", false));
+	this->chkAllowProxy->SetRect(108, 128, 100, 23, false);
 	NEW_CLASS(this->lblCacheFile, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Cache File"));
-	this->lblCacheFile->SetRect(8, 128, 100, 23, false);
-	NEW_CLASS(this->chkCacheFile, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", true));
-	this->chkCacheFile->SetRect(108, 128, 100, 23, false);
+	this->lblCacheFile->SetRect(8, 152, 100, 23, false);
+	NEW_CLASS(this->chkCacheFile, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
+	this->chkCacheFile->SetRect(108, 152, 100, 23, false);
 	NEW_CLASS(this->lblPackageFile, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Expand Packages"));
-	this->lblPackageFile->SetRect(8, 152, 100, 23, false);
+	this->lblPackageFile->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->chkPackageFile, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
-	this->chkPackageFile->SetRect(108, 152, 100, 23, false);
+	this->chkPackageFile->SetRect(108, 176, 100, 23, false);
 	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Skip Logging"));
-	this->lblSkipLog->SetRect(8, 176, 100, 23, false);
-	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
-	this->chkSkipLog->SetRect(108, 176, 100, 23, false);
+	this->lblSkipLog->SetRect(8, 200, 100, 23, false);
+	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", true));
+	this->chkSkipLog->SetRect(108, 200, 100, 23, false);
 	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Allow KA"));
-	this->lblAllowKA->SetRect(8, 200, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", true));
-	this->chkAllowKA->SetRect(108, 200, 100, 23, false);
+	this->lblAllowKA->SetRect(8, 224, 100, 23, false);
+	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
+	this->chkAllowKA->SetRect(108, 224, 100, 23, false);
 	NEW_CLASS(this->lblCrossOrigin, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Cross Origin"));
-	this->lblCrossOrigin->SetRect(8, 224, 100, 23, false);
+	this->lblCrossOrigin->SetRect(8, 248, 100, 23, false);
 	NEW_CLASS(this->chkCrossOrigin, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Allow", false));
-	this->chkCrossOrigin->SetRect(108, 224, 100, 23, false);
+	this->chkCrossOrigin->SetRect(108, 248, 100, 23, false);
 	NEW_CLASS(this->lblDownloadCnt, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Download Count"));
-	this->lblDownloadCnt->SetRect(8, 248, 100, 23, false);
+	this->lblDownloadCnt->SetRect(8, 272, 100, 23, false);
 	NEW_CLASS(this->chkDownloadCnt, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
-	this->chkDownloadCnt->SetRect(108, 248, 100, 23, false);
-
-	NEW_CLASS(this->grpSSL, UI::GUIGroupBox(ui, this->grpParam, (const UTF8Char*)"SSL"));
-	this->grpSSL->SetRect(208, 80, 224, 120, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->grpSSL, (const UTF8Char*)"Enable", false));
-	this->chkSSL->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblSSLCountry, UI::GUILabel(ui, this->grpSSL, (const UTF8Char*)"Country"));
-	this->lblSSLCountry->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtSSLCountry, UI::GUITextBox(ui, this->grpSSL, (const UTF8Char*)"HK"));
-	this->txtSSLCountry->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblSSLCompany, UI::GUILabel(ui, this->grpSSL, (const UTF8Char*)"Company"));
-	this->lblSSLCompany->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtSSLCompany, UI::GUITextBox(ui, this->grpSSL, (const UTF8Char*)"Test"));
-	this->txtSSLCompany->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblSSLCommonName, UI::GUILabel(ui, this->grpSSL, (const UTF8Char*)"Common Name"));
-	this->lblSSLCommonName->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtSSLCommonName, UI::GUITextBox(ui, this->grpSSL, (const UTF8Char*)"localhost"));
-	this->txtSSLCommonName->SetRect(104, 76, 100, 23, false);
-
+	this->chkDownloadCnt->SetRect(108, 272, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
-	this->btnStart->SetRect(200, 308, 75, 23, false);
+	this->btnStart->SetRect(200, 332, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Stop"));
-	this->btnStop->SetRect(300, 308, 75, 23, false);
+	this->btnStop->SetRect(300, 332, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 
 	NEW_CLASS(this->lblConnCurr, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Curr"));
@@ -615,6 +591,8 @@ SSWR::AVIRead::AVIRHTTPSvrForm::~AVIRHTTPSvrForm()
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);
 	SDEL_CLASS(this->ssl);
+	SDEL_CLASS(this->sslCert);
+	SDEL_CLASS(this->sslKey);
 }
 
 void SSWR::AVIRead::AVIRHTTPSvrForm::OnMonitorChanged()

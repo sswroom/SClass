@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
+#include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
@@ -17,6 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
+		Bool sslEnable = me->chkSSL->IsChecked();
 		UInt16 port;
 		me->txtPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
@@ -29,7 +32,23 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), me->log, port, true));
+			Net::SSLEngine *ssl;
+			if (sslEnable)
+			{
+				if (me->ssl == 0)
+				{
+					UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in initializing SSL engine", (const UTF8Char *)"MQTT Broker", me);
+					return;
+				}
+				if (me->sslCert == 0 || me->sslKey == 0)
+				{
+					UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select SSL Cert/Key to enable SSL", (const UTF8Char *)"MQTT Broker", me);
+					return;
+				}
+				ssl = me->ssl;
+				ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+			}
+			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true));
 			if (me->broker->IsError())
 			{
 				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in starting server", (const UTF8Char *)"Error", me);
@@ -43,6 +62,32 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			}
 		}
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
+	if (me->broker)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"You cannot change cert when server is started", (const UTF8Char*)"MQTT Broker", me);
+		return;
+	}
+	SSWR::AVIRead::AVIRSSLCertKeyForm *frm;
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRSSLCertKeyForm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey));
+	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	{
+		SDEL_CLASS(me->sslCert);
+		SDEL_CLASS(me->sslKey);
+		me->sslCert = frm->GetCert();
+		me->sslKey = frm->GetKey();
+		Text::StringBuilderUTF8 sb;
+		me->sslCert->ToShortString(&sb);
+		sb.Append((const UTF8Char*)", ");
+		me->sslKey->ToShortString(&sb);
+		me->lblSSLCert->SetText(sb.ToString());
+	}
+	DEL_CLASS(frm);
+
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(void *userObj)
@@ -163,6 +208,9 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->sslCert = 0;
+	this->sslKey = 0;
 	NEW_CLASS(this->topicMut, Sync::Mutex());
 	NEW_CLASS(this->topicMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>());
 	this->topicListUpdated = false;
@@ -171,12 +219,21 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"SSL"));
+	this->lblSSL->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, (const UTF8Char*)"Enable", false));
+	this->chkSSL->SetRect(104, 4, 100, 23, false);
+	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Cert/Key"));
+	this->btnSSLCert->SetRect(204, 4, 75, 23, false);
+	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
+	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)""));
+	this->lblSSLCert->SetRect(284, 4, 200, 23, false);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Port"));
-	this->lblPort->SetRect(4, 4, 100, 23, false);
+	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"1883"));
-	this->txtPort->SetRect(104, 4, 100, 23, false);
+	this->txtPort->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Start"));
-	this->btnStart->SetRect(204, 4, 75, 23, false);
+	this->btnStart->SetRect(204, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
 	this->tpTopic = this->tcMain->AddTabPage((const UTF8Char*)"Topic");
@@ -222,6 +279,9 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	}
 	DEL_CLASS(this->topicMap);
 	DEL_CLASS(this->topicMut);
+	SDEL_CLASS(this->ssl);
+	SDEL_CLASS(this->sslCert);
+	SDEL_CLASS(this->sslKey);
 }
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::OnMonitorChanged()

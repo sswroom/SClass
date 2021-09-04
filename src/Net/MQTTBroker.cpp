@@ -101,12 +101,10 @@ void __stdcall Net::MQTTBroker::OnClientTimeout(Net::TCPClient *cli, void *userO
 {
 }
 
-void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
+void __stdcall Net::MQTTBroker::OnClientReady(Net::TCPClient *cli, void *userObj)
 {
 	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
-	Net::TCPClient *cli;
 	ClientData *data;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 	data = MemAlloc(ClientData, 1);
 	data->buffSize = 0;
 	data->cliData = me->protoHdlr->CreateStreamData(cli);
@@ -118,6 +116,21 @@ void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
 	if (cnt > me->infoCliMax)
 	{
 		me->infoCliMax = cnt;
+	}
+}
+
+void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
+{
+	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
+	if (me->ssl)
+	{
+		me->ssl->ServerInit(s, OnClientReady, me);
+	}
+	else
+	{
+		Net::TCPClient *cli;
+		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+		OnClientReady(cli, me);
 	}
 }
 
@@ -909,9 +922,10 @@ Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo 
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Bool sysInfo)
+Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->log = log;
 	this->connHdlr = 0;
 	this->connObj = 0;

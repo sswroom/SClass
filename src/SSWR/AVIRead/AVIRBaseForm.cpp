@@ -1100,8 +1100,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, this->ui, this->core));
 			if (frm->IsError())
 			{
-				DEL_CLASS(frm);
 				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in starting DNS proxy. Port is in use?", (const UTF8Char *)"Error", this);
+				DEL_CLASS(frm);
 			}
 			else
 			{

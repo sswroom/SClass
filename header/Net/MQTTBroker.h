@@ -3,6 +3,7 @@
 #include "Data/StringUTF8Map.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
 #include "Net/SocketFactory.h"
+#include "Net/SSLEngine.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
 
@@ -47,6 +48,7 @@ namespace Net
 		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
 	private:
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		IO::LogTool *log;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
@@ -81,6 +83,7 @@ namespace Net
 		static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
+		static void __stdcall OnClientReady(Net::TCPClient *cli, void *userObj);
 		static void __stdcall OnClientConn(Socket *s, void *userObj);
 		
 		static UInt32 __stdcall SysInfoThread(void *userObj);
@@ -90,7 +93,7 @@ namespace Net
 		void UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);
 	public:
-		MQTTBroker(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Bool sysInfo);
+		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo);
 		virtual ~MQTTBroker();
 
 		Bool IsError();

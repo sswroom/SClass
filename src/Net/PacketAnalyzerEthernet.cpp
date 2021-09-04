@@ -2937,6 +2937,8 @@ const UTF8Char *Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
 		return (const UTF8Char*)"WHOIS";
 	case 53:
 		return (const UTF8Char*)"DNS";
+	case 69:
+		return (const UTF8Char*)"TFTP";
 	case 80:
 		return (const UTF8Char*)"HTTP";
 	case 110:
