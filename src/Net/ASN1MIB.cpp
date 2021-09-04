@@ -7,7 +7,7 @@
 #include "Net/MIBReader.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
-#define DEBUGOBJ "ManualHandlingInstructions"
+#define DEBUGOBJ "id-dsa"
 
 UOSInt Net::ASN1MIB::CalcLineSpace(const UTF8Char *txt)
 {
@@ -632,6 +632,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											}
 										}
 									}
+									currObj = 0;
+								}
+								else if (Text::StrEquals(currObj->typeName, (const UTF8Char*)"OBJECT IDENTIFIER"))
+								{
 									currObj = 0;
 								}
 							}

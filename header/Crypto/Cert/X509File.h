@@ -21,7 +21,10 @@ namespace Crypto
 			enum KeyType
 			{
 				KT_UNKNOWN,
-				KT_RSA
+				KT_RSA,
+				KT_DSA,
+				KT_ECDSA,
+				KT_ED25519
 			};
 
 		protected:

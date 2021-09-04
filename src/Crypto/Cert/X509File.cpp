@@ -687,6 +687,12 @@ const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 	{
 	case KT_RSA:
 		return (const UTF8Char*)"RSA";
+	case KT_DSA:
+		return (const UTF8Char*)"DSA";
+	case KT_ECDSA:
+		return (const UTF8Char*)"ECDSA";
+	case KT_ED25519:
+		return (const UTF8Char*)"ED25519";
 	case KT_UNKNOWN:
 	default:
 		return (const UTF8Char*)"Unknown";
@@ -699,6 +705,12 @@ const Char *Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 	{
 	case KT_RSA:
 		return "1.2.840.113549.1.1.1";
+	case KT_DSA:
+		return "1.2.840.10040.4.1";
+	case KT_ECDSA:
+		return "1.2.840.10045.2.1";
+	case KT_ED25519:
+		return "1.3.101.112";
 	case KT_UNKNOWN:
 	default:
 		return "1.2.840.113549.1.1.1";
