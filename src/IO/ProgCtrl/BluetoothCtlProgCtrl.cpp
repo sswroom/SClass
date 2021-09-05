@@ -99,6 +99,10 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 					{
 						
 					}
+					else if (Text::StrStartsWith(&sarr[0][35], (const UTF8Char*)"Pairable: "))
+					{
+						
+					}
 					else
 					{
 						printf("Unknown Line: %s\r\n", sarr[0]);
@@ -210,6 +214,11 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						}
 						//[CHG] Device D8:16:35:2D:60:F3 Appearance: 0x00c0
 						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Appearance: "))
+						{
+
+						}
+						//[CHG] Device A4:30:7A:91:5E:EF Icon: audio-card
+						else if (Text::StrStartsWith(&sarr[0][31], (const UTF8Char*)"Icon: "))
 						{
 
 						}

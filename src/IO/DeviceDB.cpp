@@ -1241,6 +1241,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x0781, 0x559B, 0x0000, "USB Device",                                        "SanDisk Cruzer Blade 3.0"},
 	{0x0781, 0x559C, 0x0000, "USB Device",                                        "SanDisk Ultra Dual Drive"},
 	{0x0781, 0x559E, 0x0000, "USB Device",                                        "SanDisk Dual Drive"},
+	{0x0781, 0x55AE, 0x3000, "SanDisk Extreme 55AE",                              "SanDisk Extreme Portable SSD E61"},
 	{0x0781, 0xCFFA, 0x0000, "USB Device",                                        "SanDisk iXpand Flash Drive"},
 	{0x07AB, 0xFCA5, 0x0000, "Freecom mHDD",                                      "Freecom mHDD"},
 	{0x0817, 0x7691, 0x0107, "MSD 30FPS",                                         "USB HDMI Adapter (4K30P)"},
