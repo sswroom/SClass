@@ -432,13 +432,13 @@ Manage::ThreadContextX86_64::~ThreadContextX86_64()
 	MemFree(this->context);
 }
 
-OSInt Manage::ThreadContextX86_64::GetRegisterCnt()
+UOSInt Manage::ThreadContextX86_64::GetRegisterCnt()
 {
-	OSInt cnt = 21;
+	UOSInt cnt = 21;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextX86_64::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	switch (index)
 	{
@@ -536,7 +536,7 @@ void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF *sb)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
-	Int32 bitCnt;
+	UInt32 bitCnt;
 	OSInt i = 0;
 	OSInt j = this->GetRegisterCnt();
 	OSInt k;
@@ -594,32 +594,32 @@ UOSInt Manage::ThreadContextX86_64::GetProcessId()
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextX86_64::GetInstAddr()
+UOSInt Manage::ThreadContextX86_64::GetInstAddr()
 {
 	return this->GetRIP();
 }
 
-OSInt Manage::ThreadContextX86_64::GetStackAddr()
+UOSInt Manage::ThreadContextX86_64::GetStackAddr()
 {
 	return this->GetRSP();
 }
 
-OSInt Manage::ThreadContextX86_64::GetFrameAddr()
+UOSInt Manage::ThreadContextX86_64::GetFrameAddr()
 {
 	return this->GetRBP();
 }
 
-void Manage::ThreadContextX86_64::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextX86_64::SetInstAddr(UOSInt instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__rip = instAddr;
 }
 
-void Manage::ThreadContextX86_64::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextX86_64::SetStackAddr(UOSInt stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__rsp = stackAddr;
 }
 
-void Manage::ThreadContextX86_64::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__rbp = frameAddr;
 }

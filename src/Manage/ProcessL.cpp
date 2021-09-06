@@ -16,6 +16,7 @@
 #include <errno.h>
 #if defined(__APPLE__)
 #include <mach-o/dyld.h>
+#define __pid_t pid_t
 #else
 #include <link.h>
 #endif
