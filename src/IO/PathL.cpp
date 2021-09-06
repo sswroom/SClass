@@ -15,6 +15,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #if !defined(PATH_MAX)
 #define PATH_MAX 512
@@ -892,13 +893,10 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 {
 	UOSInt i = 0;
-	while (environ[i])
+	const Char *homeDir = getenv("HOME");
+	if (homeDir)
 	{
-		if (Text::StrStartsWith(environ[i], "HOME="))
-		{
-			return Text::StrConcat(buff, (const UTF8Char*)environ[i] + 5);
-		}
-		i++;
+		return Text::StrConcat(buff, (const UTF8Char*)homeDir);
 	}
 	return 0;
 }

@@ -183,9 +183,9 @@ LanczosResizerH8_8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerH8_8_CPP.cp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 LanczosResizerLR_C32_CPU_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_CPU_SysV64.asm
-	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf64 -o $@ $< $(ASMSUFFIX)
-
-MyString_CPP.o: $(CLASSDIR)src/Text/MyString_SysV64.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f macho64 -o $@ $< $(ASMSUFFIX)
+
+MyString_CPP.o: $(CLASSDIR)src/Text/MyString_CPP.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 
