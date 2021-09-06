@@ -674,6 +674,25 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtWPAD->GetText(&sb);
+	if (sb.GetLength() > 0)
+	{
+		Net::SocketUtil::AddressInfo addr;
+		if (Net::SocketUtil::GetIPAddr(sb.ToString(), &addr))
+		{
+			me->proxy->SetWebProxyAutoDiscovery(&addr);
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input a valid IP address in WPAD", (const UTF8Char*)"DNS Proxy", me);
+		}
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
@@ -820,6 +839,13 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnDNSSet, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"&Set"));
 	this->btnDNSSet->SetRect(284, 316, 75, 23, false);
 	this->btnDNSSet->HandleButtonClick(OnDNSSetClicked, this);
+	NEW_CLASS(this->lblWPAD, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"WPAD Address"));
+	this->lblWPAD->SetRect(4, 340, 100, 23, false);
+	NEW_CLASS(this->txtWPAD, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)""));
+	this->txtWPAD->SetRect(104, 340, 100, 23, false);
+	NEW_CLASS(this->btnWPAD, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Set"));
+	this->btnWPAD->SetRect(204, 340, 75, 23, false);
+	this->btnWPAD->HandleButtonClick(OnWPADClicked, this);
 
 	this->tpV4Main = this->tcMain->AddTabPage((const UTF8Char*)"Req v4");
 	NEW_CLASS(this->lbV4Request, UI::GUIListBox(ui, this->tpV4Main, false));

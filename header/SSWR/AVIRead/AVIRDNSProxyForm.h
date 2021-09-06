@@ -137,6 +137,9 @@ namespace SSWR
 			UI::GUITextBox *txtDNSServer2;
 			UI::GUIButton *btnDNSAdd;
 			UI::GUIButton *btnDNSSet;
+			UI::GUILabel *lblWPAD;
+			UI::GUITextBox *txtWPAD;
+			UI::GUIButton *btnWPAD;
 
 			UI::GUITabPage *tpSearch;
 			UI::GUIPanel *pnlSearch;
@@ -213,6 +216,7 @@ namespace SSWR
 			static void __stdcall OnClientSelChg(void *userObj);
 			static void __stdcall OnDisableV6Chg(void *userObj, Bool isChecked);
 			static void __stdcall OnBlackListClicked(void *userObj);
+			static void __stdcall OnWPADClicked(void *userObj);
 			static void __stdcall OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 			void UpdateDNSList();

@@ -9,6 +9,13 @@ namespace Net
 	class DNSProxy
 	{
 	public:
+		enum NameStatus
+		{
+			NS_NORMAL,
+			NS_BLOCKED,
+			NS_CUSTOM
+		};
+
 		typedef struct
 		{
 			UInt32 ip;
@@ -23,7 +30,8 @@ namespace Net
 			UOSInt recSize;
 			Int64 reqTime;
 			UInt32 ttl;
-			Int32 status; //0 = normal, 1 = blocked
+			NameStatus status;
+			Net::SocketUtil::AddressInfo customAddr;
 			Sync::Mutex *mut;
 		} RequestResult;
 
@@ -85,7 +93,8 @@ namespace Net
 		UInt32 NextId();
 		CliRequestStatus *NewCliReq(UInt32 id);
 		void DelCliReq(UInt32 id);
-		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool blockResult);
+		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
+		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
 	public:
 		DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget);
 		~DNSProxy();
@@ -113,6 +122,8 @@ namespace Net
 		UOSInt GetBlackList(Data::ArrayList<const UTF8Char*> *blackList);
 		Bool AddBlackList(const UTF8Char *blackList);
 		void HandleDNSRequest(DNSProxyRequest hdlr, void *userObj);
+		void SetCustomAnswer(const UTF8Char *name, const Net::SocketUtil::AddressInfo *addr);
+		void SetWebProxyAutoDiscovery(const Net::SocketUtil::AddressInfo *addr);
 	};
 }
 #endif
