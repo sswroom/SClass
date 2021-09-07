@@ -6,6 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
+#include "Text/TextBinEnc/Base64Enc.h"
+
+#include <stdio.h>
 
 UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 {
@@ -59,6 +62,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 				if (me->msgRet)
 				{
 					me->msgRet = Text::StrConcat(me->msgRet, &sbuff[4]);
+					me->msgRet = 0;
 				}
 				me->lastStatus = msgCode;
 				me->statusChg = true;
@@ -106,6 +110,9 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	this->logged = false;
 	this->msgRet = 0;
 	this->statusChg = false;
+	this->maxSize = 0;
+	this->authLogin = false;
+	this->authPlain = false;
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::SocketUtil::AT_UNKNOWN;
 	sockf->DNSResolveIP(host, &addr);
@@ -123,19 +130,46 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
 		this->cli->SetTimeout(2000);
 		buffSize = this->cli->Read(buff, 1024);
+		if (this->logWriter)
+		{
+			this->logWriter->Write(buff, buffSize);
+		}
 		if (buffSize > 2 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 		{
+			if (this->logWriter)
+			{
+				this->logWriter->WriteLine((const UTF8Char*)"STARTTLS");
+			}
 			this->cli->Write((const UTF8Char*)"STARTTLS\r\n", 10);
 			buffSize = this->cli->Read(buff, 1024);
+			if (this->logWriter)
+			{
+				this->logWriter->Write(buff, buffSize);
+			}
 			if (buffSize > 0 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 			{
+				if (this->logWriter)
+				{
+					this->logWriter->WriteLine((const UTF8Char*)"SSL Handshake begin");
+				}
 				Socket *s = this->cli->RemoveSocket();
 				Net::SSLEngine::ErrorType err;
 				Net::TCPClient *cli = ssl->ClientInit(s, host, &err);
 				if (cli)
 				{
+					if (this->logWriter)
+					{
+						this->logWriter->WriteLine((const UTF8Char*)"SSL Handshake success");
+					}
 					DEL_CLASS(this->cli);
 					this->cli = cli;
+				}
+				else
+				{
+					if (this->logWriter)
+					{
+						this->logWriter->WriteLine((const UTF8Char*)"SSL Handshake failed");
+					}
 				}
 			}
 			else
@@ -152,6 +186,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	{
 		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
 	}
+	this->cli->SetNoDelay(false);
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
 	if (this->logWriter)
 	{
@@ -219,16 +254,140 @@ Bool Net::Email::SMTPConn::SendHelo(const UTF8Char *cliName)
 
 Bool Net::Email::SMTPConn::SendEHlo(const UTF8Char *cliName)
 {
+	UTF8Char returnMsg[2048];
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName);
+	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName), (const UTF8Char*)"\r\n");
 	this->statusChg = false;
+	returnMsg[0] = 0;
+	this->msgRet = returnMsg;
 	if (this->logWriter)
 	{
-		this->logWriter->WriteLine(sbuff);
+		this->logWriter->Write(sbuff);
 	}
-	writer->WriteLine(sbuff);
+	writer->Write(sbuff);
 	UInt32 code = WaitForResult();
+	if (code == 0)
+	{
+		this->statusChg = false;
+		this->msgRet = returnMsg;
+		writer->Write(sbuff);
+		code = WaitForResult();
+	}
+	if (code == 250)
+	{
+		UTF8Char *sarr[2];
+		UTF8Char *sarr2[2];
+		sarr[1] = returnMsg;
+		UOSInt i;
+		UOSInt j;
+		while (true)
+		{
+			i = Text::StrSplitLine(sarr, 2, sarr[1]);
+			if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"SIZE "))
+			{
+				this->maxSize = Text::StrToUOSInt(sarr[0] + 5);
+			}
+			else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"AUTH "))
+			{
+				sarr2[1] = sarr[0] + 5;
+				while (true)
+				{
+					j = Text::StrSplit(sarr2, 2, sarr2[1], ' ');
+					if (Text::StrEquals(sarr2[0], (const UTF8Char*)"LOGIN"))
+					{
+						this->authLogin = true;
+					}
+					else if (Text::StrEquals(sarr2[0], (const UTF8Char*)"PLAIN"))
+					{
+						this->authPlain = true;
+					}
+					if (j != 2)
+					{
+						break;
+					}
+				}
+			}
+			if (i != 2)
+			{
+				break;
+			}
+		}
+	}
 	return code == 250;
+}
+
+Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *password)
+{
+	if (this->authPlain)
+	{
+		UTF8Char pwdBuff[128];
+		UTF8Char *sptr2 = pwdBuff;
+		*sptr2++ = 0;
+		sptr2 = Text::StrConcat(sptr2, userName) + 1;
+		sptr2 = Text::StrConcat(sptr2, password);
+		Text::TextBinEnc::Base64Enc b64;
+		Text::StringBuilderUTF8 sbCmd;
+		sbCmd.Append((const UTF8Char*)"AUTH PLAIN ");
+		b64.EncodeBin(&sbCmd, pwdBuff, sptr2 - pwdBuff);
+		
+		this->statusChg = false;
+		if (this->logWriter)
+		{
+			this->logWriter->WriteLine(sbCmd.ToString());
+		}
+		writer->WriteLine(sbCmd.ToString());
+		UInt32 code = WaitForResult();
+		return code == 235;
+	}
+	else if (this->authLogin)
+	{
+		UTF8Char retBuff[256];
+		Text::TextBinEnc::Base64Enc b64;
+		Text::StringBuilderUTF8 sbCmd;
+		UInt32 code;
+		retBuff[0] = 0;
+		this->statusChg = false;
+		this->msgRet = retBuff;
+		if (this->logWriter)
+		{
+			this->logWriter->WriteLine((const UTF8Char*)"AUTH LOGIN");
+		}
+		writer->WriteLine((const UTF8Char*)"AUTH LOGIN");
+		code = WaitForResult();
+		if (code != 334 || !Text::StrEquals(retBuff, (const UTF8Char*)"VXNlcm5hbWU6"))
+		{
+			return false;
+		}
+		sbCmd.ClearStr();
+		b64.EncodeBin(&sbCmd, userName, Text::StrCharCnt(userName));
+		this->statusChg = false;
+		this->msgRet = retBuff;
+		if (this->logWriter)
+		{
+			this->logWriter->WriteLine(sbCmd.ToString());
+		}
+		writer->WriteLine(sbCmd.ToString());
+		code = WaitForResult();
+		if (code != 334 || !Text::StrEquals(retBuff, (const UTF8Char*)"UGFzc3dvcmQ6"))
+		{
+			return false;
+		}
+		sbCmd.ClearStr();
+		b64.EncodeBin(&sbCmd, password, Text::StrCharCnt(password));
+		this->statusChg = false;
+		this->msgRet = retBuff;
+		if (this->logWriter)
+		{
+			this->logWriter->WriteLine(sbCmd.ToString());
+		}
+		writer->WriteLine(sbCmd.ToString());
+		code = WaitForResult();
+		return code == 235;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Bool Net::Email::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
@@ -284,6 +443,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 	{
 		return false;
 	}
+	this->statusChg = false;
 	this->cli->Write(buff, buffSize);
 	this->cli->Write((const UInt8*)"\r\n.\r\n", 5);
 	code = WaitForResult();

@@ -1,5 +1,5 @@
-#ifndef _SM_DB_MYSQLCCONN
-#define _SM_DB_MYSQLCCONN
+#ifndef _SM_DB_MYSQLCONN
+#define _SM_DB_MYSQLCONN
 #include "Data/ArrayList.h"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"

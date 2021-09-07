@@ -28,6 +28,7 @@ namespace Net
 			Bool SetSubject(const UTF8Char *subject);
 			Bool SetContent(const UTF8Char *content, const Char *contentType);
 			Bool SetSentDate(Data::DateTime *dt);
+			Bool SetMessageId(const UTF8Char *msgId);
 			Bool SetFrom(const UTF8Char *name, const UTF8Char *addr);
 			Bool AddTo(const UTF8Char *name, const UTF8Char *addr);
 			Bool AddCc(const UTF8Char *name, const UTF8Char *addr);
@@ -37,6 +38,8 @@ namespace Net
 			const UTF8Char *GetFromAddr();
 			Data::ArrayList<const UTF8Char*> *GetRecpList();
 			Bool WriteToStream(IO::Stream *stm);
+
+			static Bool GenerateMessageID(Text::StringBuilderUTF *sb, const UTF8Char *fromAddr);
 		};
 	}
 }

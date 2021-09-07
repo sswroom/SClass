@@ -892,7 +892,6 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 
 UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 {
-	UOSInt i = 0;
 	const Char *homeDir = getenv("HOME");
 	if (homeDir)
 	{

@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/CRC32R.h"
+#include "Data/ByteTool.h"
 #include "Net/Email/EmailMessage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -91,6 +93,7 @@ Bool Net::Email::EmailMessage::SetSubject(const UTF8Char *subject)
 
 Bool Net::Email::EmailMessage::SetContent(const UTF8Char *content, const Char *contentType)
 {
+	this->SetHeader("Content-Type", (const UTF8Char*)contentType);
 	UOSInt contentLen = Text::StrCharCnt(content);
 	if (this->content)
 		MemFree(this->content);
@@ -127,10 +130,21 @@ Bool Net::Email::EmailMessage::SetSentDate(Data::DateTime *dt)
 	case Data::DateTime::W_SATURDAY:
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Sat, ");
 		break;
+	default:
+		sptr = sbuff;
+		break;
 	};
 	dt->ToString(sptr, "dd MMM yyyy HH:mm:ss zzz");
-	this->SetHeader("Date", sbuff);
-	return true;
+	return this->SetHeader("Date", sbuff);
+}
+
+Bool Net::Email::EmailMessage::SetMessageId(const UTF8Char *msgId)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.AppendChar('<', 1);
+	sb.Append(msgId);
+	sb.AppendChar('>', 1);
+	return this->SetHeader("Message-ID", sb.ToString());
 }
 
 Bool Net::Email::EmailMessage::SetFrom(const UTF8Char *name, const UTF8Char *addr)
@@ -140,11 +154,13 @@ Bool Net::Email::EmailMessage::SetFrom(const UTF8Char *name, const UTF8Char *add
 	{
 		if (Text::StringTool::IsNonASCII(name))
 		{
-			sb.Append(name);
+			this->AppendUTF8Header(&sb, name);			
 		}
 		else
 		{
-			this->AppendUTF8Header(&sb, name);			
+			sb.AppendChar('"', 1);
+			sb.Append(name);
+			sb.AppendChar('"', 1);
 		}
 		sb.AppendChar(' ', 1);
 	}
@@ -170,11 +186,13 @@ Bool Net::Email::EmailMessage::AddTo(const UTF8Char *name, const UTF8Char *addr)
 	{
 		if (Text::StringTool::IsNonASCII(name))
 		{
-			sb.Append(name);
+			this->AppendUTF8Header(&sb, name);			
 		}
 		else
 		{
-			this->AppendUTF8Header(&sb, name);			
+			sb.AppendChar('"', 1);
+			sb.Append(name);
+			sb.AppendChar('"', 1);
 		}
 		sb.AppendChar(' ', 1);
 	}
@@ -199,11 +217,13 @@ Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 	{
 		if (Text::StringTool::IsNonASCII(name))
 		{
-			sb.Append(name);
+			this->AppendUTF8Header(&sb, name);			
 		}
 		else
 		{
-			this->AppendUTF8Header(&sb, name);			
+			sb.AppendChar('"', 1);
+			sb.Append(name);
+			sb.AppendChar('"', 1);
 		}
 		sb.AppendChar(' ', 1);
 	}
@@ -258,5 +278,22 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	}
 	stm->Write((const UTF8Char*)"\r\n", 2);
 	stm->Write(this->content, this->contentLen);
+	return true;
+}
+
+Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF *sb, const UTF8Char *mailFrom)
+{
+	Data::DateTime dt;
+	dt.SetCurrTimeUTC();
+	sb->AppendHex64(dt.ToTicks());
+	sb->AppendChar('.', 1);
+	UInt8 crcVal[4];
+	Crypto::Hash::CRC32R crc;
+	UOSInt i;
+	i = Text::StrIndexOf(mailFrom, '@');
+	crc.Calc((UInt8*)mailFrom, i);
+	crc.GetValue((UInt8*)&crcVal);
+	sb->AppendHex32(ReadMUInt32(crcVal));
+	sb->Append(&mailFrom[i]);
 	return true;
 }

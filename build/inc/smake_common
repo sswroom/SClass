@@ -37,6 +37,7 @@ nodeps:
 @SHA512Test
 @X509Test
 @SortSpeed
+@MySQLCheck
 @XLSXExporterTest
 @AM2315Test
 @BLEScanTest
@@ -249,6 +250,9 @@ SortSpeed:
 #DB
 MongoDBTest:
 @MongoDBTest.o
+@ConsoleStartup.o
+MySQLCheck:
+@MySQLCheckMain.o
 @ConsoleStartup.o
 
 #Exporter
@@ -725,6 +729,7 @@ SHA512Test.o: ../../main/CryptoTest/SHA512Test.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
+MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
 AM2315Test.o: ../../main/IO/AM2315Test.cpp
 BLEScanTest.o: ../../main/IO/BLEScanTest.cpp
@@ -1131,6 +1136,8 @@ DB/DBUtil.h: ../../src/DB/DBUtil.cpp
 @DBUtil.o
 DB/MSSQLConn.h: ../../src/DB/MSSQLConn.cpp
 @MSSQLConn.o
+DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
+@MySQLMaintance.o
 DB/PageRequest.h: ../../src/DB/PageRequest.cpp
 @PageRequest.o
 DB/ReadingDB.h: ../../src/DB/ReadingDB.cpp
@@ -3688,6 +3695,7 @@ DBRow.o: ../../src/DB/DBRow.cpp
 DBTool.o: ../../src/DB/DBTool.cpp
 DBUtil.o: ../../src/DB/DBUtil.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
+MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp

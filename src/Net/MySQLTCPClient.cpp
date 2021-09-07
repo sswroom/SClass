@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
+#include "DB/DBUtil.h"
 #include "IO/OS.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/MySQLUtil.h"
@@ -1272,6 +1273,40 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *name, UOSInt max
 		sb.AppendUOSInt(maxCnt);
 	}
 	return this->ExecuteReader(sb.ToString());
+}
+
+Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
+{
+	UTF8Char sbuff[128];
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"use ");
+	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::DBUtil::SVR_TYPE_MYSQL);
+	if (colLen > 127)
+	{
+		UTF8Char *sptr = MemAlloc(UTF8Char, colLen + 1);
+		DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::SVR_TYPE_MYSQL);
+		sb.Append(sptr);
+		MemFree(sptr);
+	}
+	else
+	{
+		DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::SVR_TYPE_MYSQL);
+		sb.Append(sbuff);
+	}
+	if (this->ExecuteNonQuery(sb.ToString()) >= 0)
+	{
+		if (this->tableNames)
+		{
+			LIST_FREE_FUNC(this->tableNames, Text::StrDelNew);
+			DEL_CLASS(this->tableNames);
+			this->tableNames = 0;
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Bool Net::MySQLTCPClient::IsError()

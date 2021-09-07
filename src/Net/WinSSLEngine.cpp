@@ -13,6 +13,11 @@
 #include <sspi.h>
 #include <schnlsp.h>
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 struct Net::WinSSLEngine::ClassData
 {
 	CredHandle hCredCli;
@@ -219,12 +224,21 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
+#if defined(VERBOSE)
+		printf("SSL: Error in InitializeSecurityContext, ret = %x\r\n", (UInt32)status);
+#endif
 		Text::StrDelNew(wptr);
 		return 0;
 	}
 	Net::SocketFactory::ErrorType et;
+#if defined(VERBOSE)
+	printf("SSL: SendData, size = %d\r\n", (Int32)outputBuff[0].cbBuffer);
+#endif
 	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, &et) != outputBuff[0].cbBuffer)
 	{
+#if defined(VERBOSE)
+		printf("SSL: Error in sendData, ret = %x\r\n", (UInt32)status);
+#endif
 		DeleteSecurityContext(&ctxt);
 		FreeContextBuffer(outputBuff[0].pvBuffer);
 		Text::StrDelNew(wptr);
@@ -234,7 +248,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 
 	this->sockf->SetRecvTimeout(s, 3000);
 	SecBuffer inputBuff[2];
-	UInt8 recvBuff[2048];
+	UInt8 recvBuff[8192];
 	UOSInt recvOfst = 0;
 	UOSInt recvSize;
 	UOSInt i;
@@ -242,7 +256,10 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 	{
 		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, &et);
+			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 8192 - recvOfst, &et);
+#if defined(VERBOSE)
+			printf("SSL: recvData, size = %d\r\n", (UInt32)recvSize);
+#endif
 			if (recvSize <= 0)
 			{
 				Text::StrDelNew(wptr);
@@ -320,6 +337,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 		}
 		else
 		{
+#if defined(VERBOSE)
+			printf("SSL: Error in InitializeSecurityContext 2, ret = %x\r\n", (UInt32)status);
+#endif
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
 			{
 

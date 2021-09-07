@@ -10,11 +10,23 @@ Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->port = port;
 	this->connType = connType;
 	this->logWriter = logWriter;
+	this->authUser = 0;
+	this->authPassword = 0;
 }
 
 Net::Email::SMTPClient::~SMTPClient()
 {
 	Text::StrDelNew(this->host);
+	SDEL_TEXT(this->authUser);
+	SDEL_TEXT(this->authPassword);
+}
+
+void Net::Email::SMTPClient::SetPlainAuth(const UTF8Char *userName, const UTF8Char *password)
+{
+	SDEL_TEXT(this->authUser);
+	SDEL_TEXT(this->authPassword);
+	this->authUser = SCOPY_TEXT(userName);
+	this->authPassword = SCOPY_TEXT(password);
 }
 
 Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
@@ -38,6 +50,14 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	if (!conn->SendEHlo((const UTF8Char*)"[127.0.0.1]"))
 	{
 		if (!conn->SendHelo((const UTF8Char*)"[127.0.0.1]"))
+		{
+			DEL_CLASS(conn);
+			return false;
+		}
+	}
+	if (this->authUser && this->authPassword)
+	{
+		if (!conn->SendAuth(this->authUser, this->authPassword))
 		{
 			DEL_CLASS(conn);
 			return false;

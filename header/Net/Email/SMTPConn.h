@@ -34,6 +34,9 @@ namespace Net
 			Sync::Event *evt;
 			IO::Writer *logWriter;
 			UInt32 initCode;
+			UOSInt maxSize;
+			Bool authPlain;
+			Bool authLogin;
 
 			static UInt32 __stdcall SMTPThread(void *userObj);
 			UInt32 WaitForResult();
@@ -45,6 +48,7 @@ namespace Net
 
 			Bool SendHelo(const UTF8Char *cliName);
 			Bool SendEHlo(const UTF8Char *cliName);
+			Bool SendAuth(const UTF8Char *userName, const UTF8Char *password);
 			Bool SendMailFrom(const UTF8Char *fromEmail);
 			Bool SendRcptTo(const UTF8Char *toEmail);
 			Bool SendData(const UTF8Char *buff, UOSInt buffSize);

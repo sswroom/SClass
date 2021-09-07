@@ -68,7 +68,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::List<const 
 Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
 {
 	UTF8Char c;
-	while (c = *s++)
+	while ((c = *s++) != 0)
 	{
 		if (c >= 0x80)
 		{
