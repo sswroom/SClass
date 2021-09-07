@@ -47,6 +47,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{"mp4",  "video/mp4"},
 	{"mpg",  "video/mpeg"},
 	{"ogg",  "application/ogg"},
+	{"pac",  "application/x-ns-proxy-autoconfig"},
 	{"pdf",  "application/pdf"},
 	{"pic",  "image/x-pict"},
 	{"png",  "image/png"},

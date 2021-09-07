@@ -145,7 +145,7 @@ UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 			cnt += 4;
 			break;
 		case '\'':
-			cnt += 6;
+			cnt += 5;
 			break;
 		case '"':
 			cnt += 6;
@@ -182,7 +182,7 @@ UOSInt Text::XML::GetHTMLTextLen(const WChar *text)
 			cnt += 4;
 			break;
 		case '\'':
-			cnt += 6;
+			cnt += 5;
 			break;
 		case '"':
 			cnt += 6;
@@ -482,9 +482,9 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 		if (c == '&')
 		{
 			dptr[0] = '&';
-			dptr[1] = 'a';
-			dptr[2] = 'm';
-			dptr[3] = 'p';
+			dptr[1] = '#';
+			dptr[2] = '3';
+			dptr[3] = '8';
 			dptr[4] = ';';
 			dptr += 5;
 		}
@@ -507,12 +507,11 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 		else if (c == '\'')
 		{
 			dptr[0] = '&';
-			dptr[1] = 'a';
-			dptr[2] = 'p';
-			dptr[3] = 'o';
-			dptr[4] = 's';
-			dptr[5] = ';';
-			dptr += 6;
+			dptr[1] = '#';
+			dptr[2] = '3';
+			dptr[3] = '9';
+			dptr[4] = ';';
+			dptr += 5;
 		}
 		else if (c == '"')
 		{
@@ -556,9 +555,9 @@ WChar *Text::XML::ToHTMLText(WChar *buff, const WChar *text)
 		if (c == '&')
 		{
 			dptr[0] = '&';
-			dptr[1] = 'a';
-			dptr[2] = 'm';
-			dptr[3] = 'p';
+			dptr[1] = '#';
+			dptr[2] = '3';
+			dptr[3] = '8';
 			dptr[4] = ';';
 			dptr += 5;
 		}
@@ -581,12 +580,11 @@ WChar *Text::XML::ToHTMLText(WChar *buff, const WChar *text)
 		else if (c == '\'')
 		{
 			dptr[0] = '&';
-			dptr[1] = 'a';
-			dptr[2] = 'p';
-			dptr[3] = 'o';
-			dptr[4] = 's';
-			dptr[5] = ';';
-			dptr += 6;
+			dptr[1] = '#';
+			dptr[2] = '3';
+			dptr[3] = '9';
+			dptr[4] = ';';
+			dptr += 5;
 		}
 		else if (c == '"')
 		{
