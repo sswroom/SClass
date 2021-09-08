@@ -101,5 +101,5 @@ namespace Win32
 		static void GetProcessorFamily(Text::StringBuilderUTF *sb, Int32 family);
 		static void GetConnectorType(Text::StringBuilderUTF *sb, UInt8 type);
 	};
-};
+}
 #endif

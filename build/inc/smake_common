@@ -3126,6 +3126,8 @@ SSWR/AVIRead/AVIRSetLocationSvcForm.h: ../../src/SSWR/AVIRead/AVIRSetLocationSvc
 @AVIRSetLocationSvcForm.o
 SSWR/AVIRead/AVIRSMakeForm.h: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
 @AVIRSMakeForm.o
+SSWR/AVIRead/AVIRSMBIOSForm.h: ../../src/SSWR/AVIRead/AVIRSMBIOSForm.cpp
+@AVIRSMBIOSForm.o
 SSWR/AVIRead/AVIRSMTPClientForm.h: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
 @AVIRSMTPClientForm.o
 SSWR/AVIRead/AVIRSMTPServerForm.h: ../../src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
@@ -4633,6 +4635,7 @@ AVIRSetAudioForm.o: ../../src/SSWR/AVIRead/AVIRSetAudioForm.cpp
 AVIRSetDPIForm.o: ../../src/SSWR/AVIRead/AVIRSetDPIForm.cpp
 AVIRSetLocationSvcForm.o: ../../src/SSWR/AVIRead/AVIRSetLocationSvcForm.cpp
 AVIRSMakeForm.o: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
+AVIRSMBIOSForm.o: ../../src/SSWR/AVIRead/AVIRSMBIOSForm.cpp
 AVIRSMTPClientForm.o: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
 AVIRSMTPServerForm.o: ../../src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
 AVIRSNBDongleForm.o: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp

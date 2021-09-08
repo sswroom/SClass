@@ -145,6 +145,7 @@
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
+#include "SSWR/AVIRead/AVIRSMBIOSForm.h"
 #include "SSWR/AVIRead/AVIRSMTPClientForm.h"
 #include "SSWR/AVIRead/AVIRSMTPServerForm.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
@@ -388,7 +389,8 @@ typedef enum
 	MNU_CONSOLE_MEDIA_PLAYER,
 	MNU_BCRYPT,
 	MNU_EMAIL_ADDR_VALID,
-	MNU_SMTP_CLIENT
+	MNU_SMTP_CLIENT,
+	MNU_SMBIOS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -695,6 +697,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"SHPConv", MNU_SHPCONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Device");
+	mnu->AddItem((const UTF8Char*)"SMBIOS", MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"&Capture Device", MNU_CAP_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"&WIA Device", MNU_WIA_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"CP&U Info", MNU_CPUINFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2310,6 +2313,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSMTPClientForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMTPClientForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SMBIOS:
+		{
+			SSWR::AVIRead::AVIRSMBIOSForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMBIOSForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
