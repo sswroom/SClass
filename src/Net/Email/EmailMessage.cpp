@@ -285,7 +285,7 @@ Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF *sb, con
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	sb->AppendHex64(dt.ToTicks());
+	sb->AppendHex64((UInt64)dt.ToTicks());
 	sb->AppendChar('.', 1);
 	UInt8 crcVal[4];
 	Crypto::Hash::CRC32R crc;

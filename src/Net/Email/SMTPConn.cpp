@@ -328,7 +328,7 @@ Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *pa
 		Text::TextBinEnc::Base64Enc b64;
 		Text::StringBuilderUTF8 sbCmd;
 		sbCmd.Append((const UTF8Char*)"AUTH PLAIN ");
-		b64.EncodeBin(&sbCmd, pwdBuff, sptr2 - pwdBuff);
+		b64.EncodeBin(&sbCmd, pwdBuff, (UOSInt)(sptr2 - pwdBuff));
 		
 		this->statusChg = false;
 		if (this->logWriter)

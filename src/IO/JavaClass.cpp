@@ -3033,8 +3033,6 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 		return currPtr;
 	}
 	UInt16 sindex;
-	UInt16 strLen;
-	UInt8 *ptr;
 	sb->AppendChar(' ', lev << 1);
 	sb->Append((const UTF8Char*)"VerificationType = ");
 	switch (currPtr[0])
@@ -3061,24 +3059,28 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 		sb->Append((const UTF8Char*)"UninitializedThis\r\n");
 		return currPtr + 1;
 	case 7:
-		sb->Append((const UTF8Char*)"Object\r\n");
-		sb->AppendChar(' ', lev << 1);
-		sb->Append((const UTF8Char*)"Verification cinfo_index = ");
-		sindex = ReadMUInt16(&currPtr[1]);
-		sb->AppendU16(sindex);
-/*		ptr = this->constPool[sindex];
-		if (ptr[0] == 1)
 		{
-			strLen = ReadMUInt16(&ptr[1]);
-			Text::StringBuilderUTF8 sbTmp;
-			sbTmp.AppendC(ptr + 3, strLen);
-			sbTmp.Replace('/', '.');
-			sb->Append((const UTF8Char*)" (");
-			sb->Append(sbTmp.ToString());
-			sb->Append((const UTF8Char*)")");
-		}*/
-		sb->Append((const UTF8Char*)"\r\n");
-		return currPtr + 3;
+			sb->Append((const UTF8Char*)"Object\r\n");
+			sb->AppendChar(' ', lev << 1);
+			sb->Append((const UTF8Char*)"Verification cinfo_index = ");
+			sindex = ReadMUInt16(&currPtr[1]);
+			sb->AppendU16(sindex);
+	/*		UInt16 strLen;
+			UInt8 *ptr;
+			ptr = this->constPool[sindex];
+			if (ptr[0] == 1)
+			{
+				strLen = ReadMUInt16(&ptr[1]);
+				Text::StringBuilderUTF8 sbTmp;
+				sbTmp.AppendC(ptr + 3, strLen);
+				sbTmp.Replace('/', '.');
+				sb->Append((const UTF8Char*)" (");
+				sb->Append(sbTmp.ToString());
+				sb->Append((const UTF8Char*)")");
+			}*/
+			sb->Append((const UTF8Char*)"\r\n");
+			return currPtr + 3;
+		}
 	case 8:
 		sb->Append((const UTF8Char*)"Uninitialized\r\n");
 		sb->AppendChar(' ', lev << 1);

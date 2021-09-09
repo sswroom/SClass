@@ -6,6 +6,7 @@
 #include "IO/PackageFile.h"
 #include "IO/Path.h"
 #include "IO/StreamDataStream.h"
+#include "IO/SystemInfoLog.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/OruxDBLayer.h"
 #include "Map/ReloadableMapLayer.h"
@@ -1258,6 +1259,345 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}
 			}
 		}
+	}
+	else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"SYSTEMINFO"))
+	{
+		Text::StringBuilderUTF8 sb;
+		IO::SystemInfoLog *sysInfo;
+		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
+		while (reader->ReadNext())
+		{
+			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			{
+				break;
+			}
+			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			{
+				if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"SYSTEM"))
+				{
+					while (reader->ReadNext())
+					{
+						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						{
+							break;
+						}
+						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						{
+							if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"OSNAME"))
+							{
+								sb.ClearStr();
+								if (reader->ReadNodeText(&sb))
+								{
+									sysInfo->SetOSName(sb.ToString());
+								}
+							}
+							else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"OSVER"))
+							{
+								sb.ClearStr();
+								if (reader->ReadNodeText(&sb))
+								{
+									sysInfo->SetOSVer(sb.ToString());
+								}
+							}
+							else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"OSLANGUAGE"))
+							{
+								sb.ClearStr();
+								if (reader->ReadNodeText(&sb))
+								{
+									sysInfo->SetOSLocale(Text::StrToUInt32(sb.ToString()));
+								}
+							}
+							else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"ARCHITECTURE"))
+							{
+								sb.ClearStr();
+								if (reader->ReadNodeText(&sb))
+								{
+									sysInfo->SetArchitecture(Text::StrToUInt32(sb.ToString()));
+								}
+							}
+							else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"PRODUCTTYPE"))
+							{
+								sb.ClearStr();
+								if (reader->ReadNodeText(&sb))
+								{
+									sysInfo->SetProductType(Text::StrToUInt32(sb.ToString()));
+								}
+							}
+						}
+					}
+				}
+				else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"SERVERROLES"))
+				{
+					while (reader->ReadNext())
+					{
+						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						{
+							break;
+						}
+						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						{
+							if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"REG_VALUE"))
+							{
+								const UTF8Char *roleName = 0;
+								const UTF8Char *roleData = 0;
+								while (reader->ReadNext())
+								{
+									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									{
+										break;
+									}
+									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									{
+										if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"NAME"))
+										{
+											SDEL_TEXT(roleName);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												roleName = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DATA"))
+										{
+											SDEL_TEXT(roleData);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												roleData = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else
+										{
+											reader->SkipElement();
+										}
+									}
+								}
+								if (roleName && roleData)
+								{
+									sysInfo->AddServerRole(roleName, roleData);
+								}
+								SDEL_TEXT(roleName);
+								SDEL_TEXT(roleData);
+							}
+							else
+							{
+								reader->SkipElement();
+							}
+						}
+					}
+				}
+				else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DEVICES"))
+				{
+					while (reader->ReadNext())
+					{
+						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						{
+							break;
+						}
+						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						{
+							if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DEVICE"))
+							{
+								const UTF8Char *desc = 0;
+								const UTF8Char *hwId = 0;
+								const UTF8Char *service = 0;
+								const UTF8Char *driver = 0;
+								while (reader->ReadNext())
+								{
+									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									{
+										break;
+									}
+									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									{
+										if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DESCRIPTION"))
+										{
+											SDEL_TEXT(desc);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												desc = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"HARDWAREID"))
+										{
+											SDEL_TEXT(hwId);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												hwId = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"SERVICE"))
+										{
+											SDEL_TEXT(service);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												service = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DRIVER"))
+										{
+											SDEL_TEXT(driver);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												driver = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else
+										{
+											reader->SkipElement();
+										}
+									}
+								}
+								if (desc && hwId)
+								{
+									sysInfo->AddDeviceInfo(desc, hwId, service, driver);
+								}
+								SDEL_TEXT(desc);
+								SDEL_TEXT(hwId);
+								SDEL_TEXT(service);
+								SDEL_TEXT(driver);
+							}
+							else
+							{
+								reader->SkipElement();
+							}
+						}
+					}
+				}
+				else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DRIVERS"))
+				{
+					while (reader->ReadNext())
+					{
+						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						{
+							break;
+						}
+						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						{
+							if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"DRIVER"))
+							{
+								const UTF8Char *fileName = 0;
+								UInt64 fileSize = 0;
+								const UTF8Char *createDate = 0;
+								const UTF8Char *version = 0;
+								const UTF8Char *manufacturer = 0;
+								const UTF8Char *productName = 0;
+								const UTF8Char *group = 0;
+								UInt32 altitude = 0;
+								while (reader->ReadNext())
+								{
+									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									{
+										break;
+									}
+									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									{
+										if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"FILENAME"))
+										{
+											SDEL_TEXT(fileName);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												fileName = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"FILESIZE"))
+										{
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												fileSize = Text::StrToUInt64(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"CREATIONDATE"))
+										{
+											SDEL_TEXT(createDate);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												createDate = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"VERSION"))
+										{
+											SDEL_TEXT(version);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												version = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"MANUFACTURER"))
+										{
+											SDEL_TEXT(manufacturer);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												manufacturer = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"PRODUCTNAME"))
+										{
+											SDEL_TEXT(productName);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												productName = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"GROUP"))
+										{
+											SDEL_TEXT(group);
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												group = Text::StrCopyNew(sb.ToString());
+											}
+										}
+										else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"ALTITUDE"))
+										{
+											sb.ClearStr();
+											if (reader->ReadNodeText(&sb))
+											{
+												altitude = Text::StrToUInt32(sb.ToString());
+											}
+										}
+										else
+										{
+											reader->SkipElement();
+										}
+									}
+								}
+								if (fileName)
+								{
+									sysInfo->AddDriverInfo(fileName, fileSize, createDate, version, manufacturer, productName, group, altitude);
+								}
+								SDEL_TEXT(fileName);
+								SDEL_TEXT(createDate);
+								SDEL_TEXT(version);
+								SDEL_TEXT(manufacturer);
+								SDEL_TEXT(productName);
+								SDEL_TEXT(group);
+							}
+							else
+							{
+								reader->SkipElement();
+							}
+						}
+					}
+				}
+				else
+				{
+					reader->SkipElement();
+				}
+			}
+		}
+		DEL_CLASS(reader);
+		return sysInfo;
 	}
 	DEL_CLASS(reader);
 	return 0;

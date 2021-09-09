@@ -34,7 +34,8 @@ namespace IO
 			PT_JAVA_CLASS,
 			PT_SMAKE,
 			PT_ASN1_DATA,
-			PT_BTSCANLOG
+			PT_BTSCANLOG,
+			PT_SYSTEMINFOLOG
 		} ParserType;
 
 	protected:

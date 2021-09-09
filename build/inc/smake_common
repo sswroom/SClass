@@ -1393,6 +1393,8 @@ IO/StreamWriter.h: ../../src/IO/StreamWriter.cpp
 @StreamWriter.o
 IO/StringLogger.h: ../../src/IO/StringLogger.cpp
 @StringLogger.o
+IO/SystemInfoLog.h: ../../src/IO/SystemInfoLog.cpp
+@SystemInfoLog.o
 IO/TVControl.h: ../../src/IO/TVControl.cpp
 @TVControl.o
 IO/UDPFileLog.h: ../../src/IO/UDPFileLog.cpp
@@ -3162,6 +3164,8 @@ SSWR/AVIRead/AVIRSudokuForm.h: ../../src/SSWR/AVIRead/AVIRSudokuForm.cpp
 @AVIRSudokuForm.o
 SSWR/AVIRead/AVIRSyslogServerForm.h: ../../src/SSWR/AVIRead/AVIRSyslogServerForm.cpp
 @AVIRSyslogServerForm.o
+SSWR/AVIRead/AVIRSystemInfoLogForm.h: ../../src/SSWR/AVIRead/AVIRSystemInfoLogForm.cpp
+@AVIRSystemInfoLogForm.o
 SSWR/AVIRead/AVIRTableMsgForm.h: ../../src/SSWR/AVIRead/AVIRTableMsgForm.cpp
 @AVIRTableMsgForm.o
 SSWR/AVIRead/AVIRTCPPortScanForm.h: ../../src/SSWR/AVIRead/AVIRTCPPortScanForm.cpp
@@ -3819,6 +3823,7 @@ StreamReader.o: ../../src/IO/StreamReader.cpp
 StreamRecorder.o: ../../src/IO/StreamRecorder.cpp
 StreamWriter.o: ../../src/IO/StreamWriter.cpp
 StringLogger.o: ../../src/IO/StringLogger.cpp
+SystemInfoLog.o: ../../src/IO/SystemInfoLog.cpp
 TVControl.o: ../../src/IO/TVControl.cpp
 UDPFileLog.o: ../../src/IO/UDPFileLog.cpp
 UDPLog.o: ../../src/IO/UDPLog.cpp
@@ -4653,6 +4658,7 @@ AVIRStreamTermForm.o: ../../src/SSWR/AVIRead/AVIRStreamTermForm.cpp
 AVIRStringMsgForm.o: ../../src/SSWR/AVIRead/AVIRStringMsgForm.cpp
 AVIRSudokuForm.o: ../../src/SSWR/AVIRead/AVIRSudokuForm.cpp
 AVIRSyslogServerForm.o: ../../src/SSWR/AVIRead/AVIRSyslogServerForm.cpp
+AVIRSystemInfoLogForm.o: ../../src/SSWR/AVIRead/AVIRSystemInfoLogForm.cpp
 AVIRTableMsgForm.o: ../../src/SSWR/AVIRead/AVIRTableMsgForm.cpp
 AVIRTCPPortScanForm.o: ../../src/SSWR/AVIRead/AVIRTCPPortScanForm.cpp
 AVIRTCPSpdCliForm.o: ../../src/SSWR/AVIRead/AVIRTCPSpdCliForm.cpp

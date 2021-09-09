@@ -25,6 +25,7 @@
 #include "SSWR/AVIRead/AVIRSectorForm.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
+#include "SSWR/AVIRead/AVIRSystemInfoLogForm.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -219,6 +220,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		{
 			SSWR::AVIRead::AVIRBTScanLogForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBTScanLogForm(0, this->ui, this, (IO::BTScanLog*)pobj));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
+	case IO::ParsedObject::PT_SYSTEMINFOLOG:
+		{
+			SSWR::AVIRead::AVIRSystemInfoLogForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSystemInfoLogForm(0, this->ui, this, (IO::SystemInfoLog*)pobj));
 			InitForm(frm);
 			frm->Show();
 		}

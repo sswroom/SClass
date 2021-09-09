@@ -627,6 +627,9 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 			}
 		}
 		return 0;
+	case KT_DSA:
+	case KT_ECDSA:
+	case KT_ED25519:
 	case KT_UNKNOWN:
 	default:
 		return 0;
