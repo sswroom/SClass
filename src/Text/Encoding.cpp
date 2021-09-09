@@ -394,6 +394,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
+		UOSInt retSize = byteSize << 1;
 		while (byteSize-- > 0)
 		{
 			c = ReadUInt16(bytes);
@@ -457,7 +458,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		*dest = 0;
 		if (byteConv)
 		{
-			*byteConv = (UOSInt)(dest - buff);
+			*byteConv = retSize;
 		}
 		return dest;
 	}
@@ -467,6 +468,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
+		UOSInt retSize = byteSize << 1;
 		while (byteSize-- > 0)
 		{
 			c = ReadMUInt16(bytes);
@@ -530,7 +532,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		*dest = 0;
 		if (byteConv)
 		{
-			*byteConv = (UOSInt)(dest - buff);
+			*byteConv = retSize;
 		}
 		return dest;
 	}

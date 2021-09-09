@@ -19,10 +19,13 @@ namespace Text
 		} ParseMode;
 	private:
 		Text::Encoding *enc;
+		Bool stmEnc;
 		Text::EncodingFactory *encFact;
 		IO::Stream *stm;
-		UInt8 *readBuff;
+		UTF8Char *readBuff;
 		UOSInt buffSize;
+		UInt8 *rawBuff;
+		UOSInt rawBuffSize;
 		UOSInt parseOfst;
 		OSInt parseError; //Max = 52
 		ParseMode mode;
@@ -36,6 +39,8 @@ namespace Text
 
 		void FreeCurrent();
 		Bool IsHTMLSkip();
+		void InitBuffer();
+		UOSInt FillBuffer();
 	public:
 		XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, ParseMode mode);
 		~XMLReader();

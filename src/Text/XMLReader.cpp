@@ -7,6 +7,8 @@
 
 #define BUFFSIZE 4096
 
+#include <stdio.h>
+
 void Text::XMLReader::FreeCurrent()
 {
 	SDEL_TEXT(this->nodeText);
@@ -50,15 +52,89 @@ Bool Text::XMLReader::IsHTMLSkip()
 	return false;
 }
 
+void Text::XMLReader::InitBuffer()
+{
+	this->rawBuffSize = this->stm->Read(this->rawBuff, BUFFSIZE);
+	if (this->rawBuffSize >= 4)
+	{
+		if (this->rawBuff[0] == 0xFF && this->rawBuff[1] == 0xFE)
+		{
+			NEW_CLASS(this->enc, Text::Encoding(1200));
+			this->stmEnc = true;
+			MemCopyO(this->rawBuff, &this->rawBuff[2], this->rawBuffSize - 2);
+			this->rawBuffSize -= 2;
+		}
+		else if (this->rawBuff[0] == 0xFE && this->rawBuff[1] == 0xFF)
+		{
+			NEW_CLASS(this->enc, Text::Encoding(1201));
+			this->stmEnc = true;
+			MemCopyO(this->rawBuff, &this->rawBuff[2], this->rawBuffSize - 2);
+			this->rawBuffSize -= 2;
+		}
+		else if (this->rawBuff[0] == '<' && this->rawBuff[1] == 0 && this->rawBuff[2] != 0 && this->rawBuff[3] == 0)
+		{
+			NEW_CLASS(this->enc, Text::Encoding(1200));
+			this->stmEnc = true;
+		}
+		else if (this->rawBuff[1] == '<' && this->rawBuff[0] == 0 && this->rawBuff[3] != 0 && this->rawBuff[2] == 0)
+		{
+			NEW_CLASS(this->enc, Text::Encoding(1201));
+			this->stmEnc = true;
+		}
+	}
+	if (this->enc == 0)
+	{
+		MemCopyNO(this->readBuff, this->rawBuff, this->rawBuffSize);
+		this->buffSize = this->rawBuffSize;
+	}
+}
+
+UOSInt Text::XMLReader::FillBuffer()
+{
+	if (this->enc && this->stmEnc)
+	{
+		UOSInt rawReadSize = this->stm->Read(&this->rawBuff[this->rawBuffSize], BUFFSIZE - this->rawBuffSize);
+		this->rawBuffSize += rawReadSize;
+		if (this->buffSize >= (BUFFSIZE >> 1))
+		{
+			return 0;
+		}
+		rawReadSize = (BUFFSIZE >> 1) - this->buffSize;
+		if (rawReadSize > this->rawBuffSize)
+		{
+			rawReadSize = this->rawBuffSize;
+		}
+		UTF8Char *sptr = this->enc->UTF8FromBytes(&this->readBuff[this->buffSize], this->rawBuff, rawReadSize, &rawReadSize);
+		if (rawReadSize == this->rawBuffSize)
+		{
+			this->rawBuffSize = 0;
+		}
+		else if (rawReadSize > 0)
+		{
+			MemCopyO(this->rawBuff, &this->rawBuff[rawReadSize], this->rawBuffSize - rawReadSize);
+			this->rawBuffSize -= rawReadSize;
+		}
+		UOSInt retSize = (UOSInt)(sptr - &this->readBuff[this->buffSize]);
+		return retSize;
+	}
+	else
+	{
+		return this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+	}
+}
+
 Text::XMLReader::XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, ParseMode mode)
 {
 	this->encFact = encFact;
 	this->enc = 0;
 	this->stm = stm;
+	this->stmEnc = false;
 	this->mode = mode;
 	NEW_CLASS(this->attrList, Data::ArrayList<Text::XMLAttrib*>());
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffSize = 0;
+	this->rawBuff = MemAlloc(UInt8, BUFFSIZE);
+	this->rawBuffSize = 0;
 	this->parseOfst = 0;
 	NEW_CLASS(this->pathList, Data::ArrayList<const UTF8Char*>());
 	this->nodeText = 0;
@@ -66,6 +142,7 @@ Text::XMLReader::XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, Pars
 	this->emptyNode = false;
 	this->parseError = 0;
 	this->nt = Text::XMLNode::NT_UNKNOWN;
+	this->InitBuffer();
 }
 
 Text::XMLReader::~XMLReader()
@@ -80,6 +157,7 @@ Text::XMLReader::~XMLReader()
 	DEL_CLASS(this->pathList);
 	DEL_CLASS(this->attrList);
 	MemFree(this->readBuff);
+	MemFree(this->rawBuff);
 	SDEL_CLASS(this->enc);
 }
 
@@ -213,7 +291,7 @@ Bool Text::XMLReader::ReadNext()
 				this->parseOfst = 0;
 			}
 		}
-		UOSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+		UOSInt readSize = this->FillBuffer();
 		if (readSize > 0)
 		{
 			this->buffSize += readSize;
@@ -247,7 +325,7 @@ Bool Text::XMLReader::ReadNext()
 						this->parseOfst = 0;
 						this->buffSize = 0;
 					}
-					UOSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+					UOSInt readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 1;
@@ -284,7 +362,7 @@ Bool Text::XMLReader::ReadNext()
 						this->parseOfst = 0;
 						this->buffSize = 0;
 					}
-					UOSInt readSize = this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+					UOSInt readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 2;
@@ -319,7 +397,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						this->parseOfst = 0;
 						this->buffSize = 0;
-						UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+						UOSInt readSize = this->FillBuffer();
 						if (readSize <= 0)
 						{
 							this->parseError = 41;
@@ -516,7 +594,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					this->parseOfst = 0;
 					this->buffSize = 0;
-					UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+					UOSInt readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 4;
@@ -661,7 +739,7 @@ Bool Text::XMLReader::ReadNext()
 									if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"ENCODING"))
 									{
 										UInt32 cp = this->encFact->GetCodePage(attr->value);
-										if (cp)
+										if (cp && !this->stmEnc)
 										{
 											SDEL_CLASS(this->enc);
 											NEW_CLASS(this->enc, Text::Encoding(cp));
@@ -753,7 +831,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					this->parseOfst = 0;
 					this->buffSize = 0;
-					UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+					UOSInt readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 17;
@@ -845,7 +923,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					this->parseOfst = 0;
 					this->buffSize = 0;
-					UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+					UOSInt readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 24;
@@ -874,7 +952,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
 							SDEL_TEXT(attr->value);
-							if (this->enc)
+							if (this->enc && !this->stmEnc)
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
@@ -1068,7 +1146,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
 							SDEL_TEXT(attr->value);
-							if (this->enc)
+							if (this->enc && !this->stmEnc)
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
@@ -1121,7 +1199,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
 							SDEL_TEXT(attr->value);
-							if (this->enc)
+							if (this->enc && !this->stmEnc)
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
@@ -1161,7 +1239,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						this->parseOfst = 0;
 						this->buffSize = 1;
-						UOSInt readSize = this->stm->Read(&this->readBuff[1], BUFFSIZE - 1);
+						UOSInt readSize = this->FillBuffer();
 						if (readSize <= 0)
 						{
 							this->parseError = 40;
@@ -1197,7 +1275,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
 							SDEL_TEXT(attr->value);
-							if (this->enc)
+							if (this->enc && !this->stmEnc)
 							{
 								UOSInt mlen;
 								UInt8 *buff = mstm.GetBuff(&mlen);
@@ -1315,10 +1393,10 @@ Bool Text::XMLReader::ReadNext()
 			{
 				this->parseOfst = 0;
 				this->buffSize = 0;
-				UOSInt readSize = this->stm->Read(this->readBuff, BUFFSIZE);
+				UOSInt readSize = this->FillBuffer();
 				if (readSize <= 0)
 				{
-					if (this->enc)
+					if (this->enc && !this->stmEnc)
 					{
 						UOSInt mlen;
 						UInt8 *buff = mstm.GetBuff(&mlen);
@@ -1356,7 +1434,7 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else
 				{
-					if (this->enc)
+					if (this->enc && !this->stmEnc)
 					{
 						UOSInt mlen;
 						UInt8 *buff = mstm.GetBuff(&mlen);
