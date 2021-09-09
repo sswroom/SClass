@@ -2832,6 +2832,8 @@ SSWR/AVIRead/AVIRCoordConvForm.h: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
 @AVIRCoordConvForm.o
 SSWR/AVIRead/AVIRCoordInfoForm.h: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
 @AVIRCoordInfoForm.o
+SSWR/AVIRead/AVIRCoordSysForm.h: ../../src/SSWR/AVIRead/AVIRCoordSysForm.cpp
+@AVIRCoordSysForm.o
 SSWR/AVIRead/AVIRCore.h: ../../src/SSWR/AVIRead/AVIRCore.cpp
 @AVIRCore.o
 SSWR/AVIRead/AVIRCOVID19Form.h: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
@@ -4492,6 +4494,7 @@ AVIRColorSettingForm.o: ../../src/SSWR/AVIRead/AVIRColorSettingForm.cpp
 AVIRConsoleMediaPlayerForm.o: ../../src/SSWR/AVIRead/AVIRConsoleMediaPlayerForm.cpp
 AVIRCoordConvForm.o: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
 AVIRCoordInfoForm.o: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
+AVIRCoordSysForm.o: ../../src/SSWR/AVIRead/AVIRCoordSysForm.cpp
 AVIRCore.o: ../../src/SSWR/AVIRead/AVIRCore.cpp
 AVIRCOVID19Form.o: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
 AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp

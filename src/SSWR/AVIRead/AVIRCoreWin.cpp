@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
+#include "SSWR/AVIRead/AVIRCoordSysForm.h"
 #include "SSWR/AVIRead/AVIRCoreWin.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
@@ -232,9 +233,16 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
+	case IO::ParsedObject::PT_COORDINATE_SYSTEM:
+		{
+			SSWR::AVIRead::AVIRCoordSysForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRCoordSysForm(0, this->ui, this, (Math::CoordinateSystem*)pobj));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
 	case IO::ParsedObject::PT_TEXT_DOCUMENT:
 	case IO::ParsedObject::PT_WORKBOOK:
-	case IO::ParsedObject::PT_COORDINATE_SYSTEM:
 	case IO::ParsedObject::PT_VECTOR_DOCUMENT:
 	case IO::ParsedObject::PT_UNKNOWN:
 	default:
