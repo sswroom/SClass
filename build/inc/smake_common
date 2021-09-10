@@ -2358,6 +2358,10 @@ Net/MySQLTCPClient.h: ../../src/Net/MySQLTCPClient.cpp
 @MySQLTCPClient.o
 Net/MySQLUtil.h: ../../src/Net/MySQLUtil.cpp
 @MySQLUtil.o
+Net/NetBIOSScanner.h: ../../src/Net/NetBIOSScanner.cpp
+@NetBIOSScanner.o
+Net/NetBIOSUtil.h: ../../src/Net/NetBIOSUtil.cpp
+@NetBIOSUtil.o
 Net/NTPClient.h: ../../src/Net/NTPClient.cpp
 @NTPClient.o
 Net/NTPServer.h: ../../src/Net/NTPServer.cpp
@@ -3058,6 +3062,8 @@ SSWR/AVIRead/AVIRMySQLConnForm.h: ../../src/SSWR/AVIRead/AVIRMySQLConnForm.cpp
 @AVIRMySQLConnForm.o
 SSWR/AVIRead/AVIRMySQLServerForm.h: ../../src/SSWR/AVIRead/AVIRMySQLServerForm.cpp
 @AVIRMySQLServerForm.o
+SSWR/AVIRead/AVIRNetBIOSScannerForm.h: ../../src/SSWR/AVIRead/AVIRNetBIOSScannerForm.cpp
+@AVIRNetBIOSScannerForm.o
 SSWR/AVIRead/AVIRNetInfoForm.h: ../../src/SSWR/AVIRead/AVIRNetInfoForm.cpp
 @AVIRNetInfoForm.o
 SSWR/AVIRead/AVIRNetPingForm.h: ../../src/SSWR/AVIRead/AVIRNetPingForm.cpp
@@ -4260,6 +4266,8 @@ MQTTUtil.o: ../../src/Net/MQTTUtil.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
+NetBIOSScanner.o: ../../src/Net/NetBIOSScanner.cpp
+NetBIOSUtil.o: ../../src/Net/NetBIOSUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp
 NTPServer.o: ../../src/Net/NTPServer.cpp
 PacketAnalyzer.o: ../../src/Net/PacketAnalyzer.cpp
@@ -4607,6 +4615,7 @@ AVIRMSSQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMSSQLConnForm.cpp
 AVIRMySQLClientForm.o: ../../src/SSWR/AVIRead/AVIRMySQLClientForm.cpp
 AVIRMySQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMySQLConnForm.cpp
 AVIRMySQLServerForm.o: ../../src/SSWR/AVIRead/AVIRMySQLServerForm.cpp
+AVIRNetBIOSScannerForm.o: ../../src/SSWR/AVIRead/AVIRNetBIOSScannerForm.cpp
 AVIRNetInfoForm.o: ../../src/SSWR/AVIRead/AVIRNetInfoForm.cpp
 AVIRNetPingForm.o: ../../src/SSWR/AVIRead/AVIRNetPingForm.cpp
 AVIRNetRAWCaptureForm.o: ../../src/SSWR/AVIRead/AVIRNetRAWCaptureForm.cpp

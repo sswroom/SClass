@@ -29,7 +29,6 @@ namespace Net
 
 		static UOSInt HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 
-		static UTF8Char *NetBIOSGetName(UTF8Char *sbuff, const UTF8Char *nbName);
 		static const UTF8Char *TCPPortGetName(UInt16 port); //null = unknwon
 		static const UTF8Char *UDPPortGetName(UInt16 port); //null = unknwon
 		static const UTF8Char *LSAPGetName(UInt8 lsap);

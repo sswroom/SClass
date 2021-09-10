@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			Net::SSLEngine *ssl;
+			Net::SSLEngine *ssl = 0;
 			if (sslEnable)
 			{
 				if (me->ssl == 0)

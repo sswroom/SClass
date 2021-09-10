@@ -115,6 +115,7 @@
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
 #include "SSWR/AVIRead/AVIRMySQLServerForm.h"
+#include "SSWR/AVIRead/AVIRNetBIOSScannerForm.h"
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "SSWR/AVIRead/AVIRNetPingForm.h"
 #include "SSWR/AVIRead/AVIRNetRAWCaptureForm.h"
@@ -390,7 +391,8 @@ typedef enum
 	MNU_BCRYPT,
 	MNU_EMAIL_ADDR_VALID,
 	MNU_SMTP_CLIENT,
-	MNU_SMBIOS
+	MNU_SMBIOS,
+	MNU_NETBIOS_SCANNER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -619,6 +621,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"SMTP Server", MNU_SMTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"Email Address Validator", MNU_EMAIL_ADDR_VALID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"SMTP Client", MNU_SMTP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu((const UTF8Char*)"NetBIOS");
+	mnu2->AddItem((const UTF8Char*)"NetBIOS Scanner", MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"RSS Reader", MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"eGauge Server", MNU_EGAUGESVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Log Server", MNU_LOGSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2320,6 +2324,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSMBIOSForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMBIOSForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_NETBIOS_SCANNER:
+		{
+			SSWR::AVIRead::AVIRNetBIOSScannerForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRNetBIOSScannerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

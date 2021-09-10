@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Net/DNSClient.h"
 #include "Net/MACInfo.h"
+#include "Net/NetBIOSUtil.h"
 #include "Net/NTPServer.h"
 #include "Net/PacketAnalyzerEthernet.h"
 #include "Net/SNMPInfo.h"
@@ -1897,7 +1898,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
 			sb->Append((const UTF8Char*)"\r\nQUESTION_NAME=");
 			sb->Append(sbuff);
-			if ((sptr = NetBIOSGetName(sbuff2, sbuff)) != 0)
+			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
 			{
 				sptr[-1] = 0;
 				Text::StrRTrim(sbuff2);
@@ -1934,7 +1935,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
 			sb->Append((const UTF8Char*)"\r\nRR_NAME=");
 			sb->Append(sbuff);
-			if ((sptr = NetBIOSGetName(sbuff2, sbuff)) != 0)
+			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
 			{
 				sptr[-1] = 0;
 				Text::StrRTrim(sbuff2);
@@ -2043,7 +2044,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
 			sb->Append((const UTF8Char*)"\r\nSOURCE_NAME=");
 			sb->Append(sbuff);
-			if ((sptr = NetBIOSGetName(sbuff2, sbuff)) != 0)
+			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
 			{
 				sptr[-1] = 0;
 				Text::StrRTrim(sbuff2);
@@ -2054,7 +2055,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
 			sb->Append((const UTF8Char*)"\r\nDESTINATION_NAME=");
 			sb->Append(sbuff);
-			if ((sptr = NetBIOSGetName(sbuff2, sbuff)) != 0)
+			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
 			{
 				sptr[-1] = 0;
 				Text::StrRTrim(sbuff2);
@@ -2089,7 +2090,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
 			sb->Append((const UTF8Char*)"\r\nDESTINATION_NAME=");
 			sb->Append(sbuff);
-			if ((sptr = NetBIOSGetName(sbuff2, sbuff)) != 0)
+			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
 			{
 				sptr[-1] = 0;
 				Text::StrRTrim(sbuff2);
@@ -2899,26 +2900,6 @@ UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOS
 		sb->AppendHexBuff(&packet[20], (UOSInt)((packet[0] & 0xf) << 2) - 20, ' ', Text::LBT_CRLF);
 		return (packet[0] & 0xf) << 2;
 	}
-}
-
-UTF8Char *Net::PacketAnalyzerEthernet::NetBIOSGetName(UTF8Char *sbuff, const UTF8Char *nbName)
-{
-	UTF8Char c1;
-	UTF8Char c2;
-	while (true)
-	{
-		c1 = *nbName++;
-		if (c1 == 0)
-			break;
-		c2 = *nbName++;
-		if (c1 < 65 || c1 >= 81 || c2 < 65 || c2 >= 81)
-		{
-			return 0;
-		}
-		*sbuff++ = (UTF8Char)(((c1 - 65) << 4) | (c2 - 65));
-	}
-	*sbuff = 0;
-	return sbuff;
 }
 
 const UTF8Char *Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
