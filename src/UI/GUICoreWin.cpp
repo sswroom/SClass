@@ -225,6 +225,11 @@ void UI::GUICoreWin::SetMonitorMgr(Media::MonitorMgr *monMgr)
 	this->monMgr = monMgr;
 }
 
+Bool UI::GUICoreWin::IsForwarded()
+{
+	return false;
+}
+
 OSInt UI::GUICoreWin::MSGetWindowObj(ControlHandle *hWnd, OSInt index)
 {
 #ifdef _WIN32_WCE

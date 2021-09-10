@@ -44,6 +44,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	WChar sbuff2[32];
 	UTF8Char u8buff[512];
 	this->ui = ui;
+	this->forwardedUI = this->ui->IsForwarded();
 	this->currCodePage = 0;
 	this->eng = ui->CreateDrawEngine();
 	IO::Path::GetProcessFileName(u8buff);
@@ -310,22 +311,42 @@ IO::LogTool *SSWR::AVIRead::AVIRCore::GetLog()
 
 Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)
 {
-	return this->monMgr->GetMonitorHDPI(hMonitor);
+	if (this->forwardedUI)
+	{
+		return this->ui->GetMagnifyRatio(hMonitor) * 96.0;
+	}
+	else
+	{
+		return this->monMgr->GetMonitorHDPI(hMonitor);
+	}
 }
 
 void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
 {
-	this->monMgr->SetMonitorHDPI(hMonitor, monitorHDPI);
+	if (!this->forwardedUI)
+	{
+		this->monMgr->SetMonitorHDPI(hMonitor, monitorHDPI);
+	}
 }
 
 Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(MonitorHandle *hMonitor)
 {
-	return this->monMgr->GetMonitorDDPI(hMonitor);
+	if (this->forwardedUI)
+	{
+		return 96.0;
+	}
+	else
+	{
+		return this->monMgr->GetMonitorDDPI(hMonitor);
+	}
 }
 
 void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI)
 {
-	this->monMgr->SetMonitorDDPI(hMonitor, monitorDDPI);
+	if (!this->forwardedUI)
+	{
+		this->monMgr->SetMonitorDDPI(hMonitor, monitorDDPI);
+	}
 }
 
 Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()

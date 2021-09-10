@@ -181,3 +181,7 @@ void UI::GUICoreJava::SetMonitorMgr(Media::MonitorMgr *monMgr)
 	this->monMgr = monMgr;
 }
 
+Bool UI::GUICoreJava::IsForwarded()
+{
+	return getenv("SSH_CLIENT") != 0;
+}

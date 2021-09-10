@@ -64,6 +64,7 @@ namespace SSWR
 			Media::MonitorMgr *monMgr;
 			IO::VirtualIOPinMgr *vioPinMgr;
 			IO::GPIOControl *gpioCtrl;
+			Bool forwardedUI;
 
 			Data::ArrayList<UI::GUIForm *> *frms;
 			SSWR::AVIRead::AVIRGISForm *gisForm;
