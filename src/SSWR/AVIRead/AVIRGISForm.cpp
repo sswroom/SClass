@@ -757,7 +757,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 
 SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 {
-	this->mapCtrl->SetRenderer(0);
+	//this->mapCtrl->SetRenderer(0);
 	UOSInt i;
 	this->CloseCtrlForm();
 	i = this->subForms->GetCount();
