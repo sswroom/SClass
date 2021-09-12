@@ -3,6 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
+#include "Net/PacketAnalyzerEthernet.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
@@ -943,6 +944,61 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	Net::EthernetAnalyzer::MACStatus *mac = (Net::EthernetAnalyzer::MACStatus *)me->lvDevice->GetSelectedItem();
+	Data::DateTime dt;
+	Text::StringBuilderUTF8 sb;
+	UTF8Char sbuff[128];
+	if (mac)
+	{
+		UOSInt cnt;
+		UOSInt i;
+		Sync::MutexUsage mutUsage;
+		me->analyzer->UseMAC(&mutUsage);
+		cnt = mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt;
+		if (cnt <= 16)
+		{
+			i = 0;
+			while (i < cnt)
+			{
+				dt.SetTicks(mac->packetTime[i]);
+				dt.ToLocalTime();
+				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb.Append(sbuff);
+				sb.Append((const UTF8Char*)"\r\n");
+				sb.Append((const UTF8Char*)"Dest MAC: ");
+				WriteMUInt64(sbuff, mac->packetDestMAC[i]);
+				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[i], mac->packetData[i], mac->packetSize[i], &sb);
+				sb.Append((const UTF8Char*)"\r\n");
+				sb.Append((const UTF8Char*)"\r\n");
+				i++;
+			}
+		}
+		else
+		{
+			i = 0;
+			while (i < 16)
+			{
+				dt.SetTicks(mac->packetTime[(cnt + i) & 15]);
+				dt.ToLocalTime();
+				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb.Append(sbuff);
+				sb.Append((const UTF8Char*)"\r\n");
+				sb.Append((const UTF8Char*)"Dest MAC: ");
+				WriteMUInt64(sbuff, mac->packetDestMAC[(cnt + i) & 15]);
+				sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LBT_NONE);
+				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], mac->packetData[(cnt + i) & 15], mac->packetSize[(cnt + i) & 15], &sb);
+				sb.Append((const UTF8Char*)"\r\n");
+				sb.Append((const UTF8Char*)"\r\n");
+				i++;
+			}
+		}
+	}
+	me->txtDevice->SetText(sb.ToString());
+}
+
 SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 8.25, false);
@@ -997,6 +1053,11 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDevice = this->tcMain->AddTabPage((const UTF8Char*)"Device");
+	NEW_CLASS(this->txtDevice, UI::GUITextBox(ui, this->tpDevice, (const UTF8Char*)"", true));
+	this->txtDevice->SetReadOnly(true);
+	this->txtDevice->SetRect(0, 0, 100, 300, false);
+	this->txtDevice->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->vspDevice, UI::GUIVSplitter(ui, this->tpDevice, 3, true));
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 10));
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
@@ -1011,6 +1072,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDevice->AddColumn((const UTF8Char*)"Other Dest", 50);
 	this->lvDevice->AddColumn((const UTF8Char*)"Name", 120);
 	this->lvDevice->AddColumn((const UTF8Char*)"IP List", 280);
+	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
 
 	this->tpIPTran = this->tcMain->AddTabPage((const UTF8Char*)"IP Tran");
 	NEW_CLASS(this->lbIPTran, UI::GUIListBox(ui, this->tpIPTran, false));

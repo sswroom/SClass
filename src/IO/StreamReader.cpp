@@ -78,20 +78,20 @@ void IO::StreamReader::CheckHeader()
 	if (buffSize != 0)
 		return;
 	buffSize += stm->Read(&buff[buffSize], 4 - buffSize);
-	if (buff[0] == 0xef && buff[1] == 0xbb && buff[2] == 0xbf)
+	if (buffSize >= 3 && buff[0] == 0xef && buff[1] == 0xbb && buff[2] == 0xbf)
 	{
 		enc->SetCodePage(65001);
 		buff[0] = buff[3];
 		buffSize -= 3;
 	}
-	else if (buff[0] == 0xff && buff[1] == 0xfe)
+	else if (buffSize >= 2 && buff[0] == 0xff && buff[1] == 0xfe)
 	{
 		enc->SetCodePage(1200);
 		buff[0] = buff[2];
 		buff[1] = buff[3];
 		buffSize -= 2;
 	}
-	else if (buff[0] == 0xfe && buff[1] == 0xff)
+	else if (buffSize >= 2 && buff[0] == 0xfe && buff[1] == 0xff)
 	{
 		enc->SetCodePage(1201);
 		buff[0] = buff[2];

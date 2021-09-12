@@ -1859,7 +1859,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			}
 		}
 	}
-	else if (destPort == 137 && packetSize >= 12)
+	else if ((srcPort == 137 || destPort == 137) && packetSize >= 12)
 	{
 		UInt16 qdcount = ReadMUInt16(&packet[4]);
 		UInt16 ancount = ReadMUInt16(&packet[6]);
@@ -1975,6 +1975,83 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				sb->Append((const UTF8Char*)"\r\nNB_ADDRESS=");
 				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[i + 2]));
 				sb->Append(sbuff);
+			}
+			else if (rrType == 0x21 && rdLength >= 1)
+			{
+				UOSInt nName = packet[i];
+				if (nName * 18 + 43 <= rdLength)
+				{
+					UOSInt k;
+					sb->Append((const UTF8Char*)"\r\nNumber_of_name=");
+					sb->AppendUOSInt(nName);
+					k = 0;
+					while (k < nName)
+					{
+						sb->Append((const UTF8Char*)"\r\nName");
+						sb->AppendUOSInt(k);
+						sb->AppendChar('=', 1);
+						MemCopyNO(sbuff, &packet[i + 1 + k * 18], 15);
+						sbuff[15] = 0;
+						Text::StrRTrim(sbuff);
+						sb->Append(sbuff);
+						sb->Append((const UTF8Char*)", Type=");
+						sb->AppendU16(packet[i + 1 + k * 18 + 15]);
+						sb->Append((const UTF8Char*)" (");
+						sb->Append(Net::NetBIOSUtil::NameTypeGetName(packet[i + 1 + k * 18 + 15]));
+						sb->Append((const UTF8Char*)"), Flags=0x");
+						sb->AppendHex16(ReadMUInt16(&packet[i + 1 + k * 18 + 16]));
+						k++;
+					}
+					sb->Append((const UTF8Char*)"\r\nUnit ID=");
+					sb->AppendHexBuff(&packet[i + 1 + nName * 18], 6, ':', Text::LBT_NONE);
+					sb->Append((const UTF8Char*)" (");
+					sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(&packet[i + 1 + nName * 18])->name);
+					sb->AppendChar(')', 1);
+					sb->Append((const UTF8Char*)"\r\nJumpers=0x");
+					sb->AppendHex8(packet[i + 7 + nName * 18]);
+					sb->Append((const UTF8Char*)"\r\nTest Result=0x");
+					sb->AppendHex8(packet[i + 8 + nName * 18]);
+					sb->Append((const UTF8Char*)"\r\nVersion number=0x");
+					sb->AppendHex16(ReadMUInt16(&packet[i + 9 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nPeriod of statistics=0x");
+					sb->AppendHex16(ReadMUInt16(&packet[i + 11 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of CRCs=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 13 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of alignment errors=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 15 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of collision=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 17 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of send aborts=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 19 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of good sends=");
+					sb->AppendU32(ReadMUInt32(&packet[i + 21 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of good receives=");
+					sb->AppendU32(ReadMUInt32(&packet[i + 25 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of retransmits=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 29 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of no resource conditions=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 31 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of command blocks=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 33 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nNumber of pending sessions=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 35 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nMax number of pending sessions=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 37 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nMax total sessions possible=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 39 + nName * 18]));
+					sb->Append((const UTF8Char*)"\r\nSesison data packet size=");
+					sb->AppendU16(ReadMUInt16(&packet[i + 41 + nName * 18]));
+					if (nName * 18 + 43 < rdLength)
+					{
+						sb->Append((const UTF8Char*)"\r\nUnknown: ");
+						sb->AppendHexBuff(&packet[i + nName * 18 + 43], rdLength - nName * 18 - 43, ' ', Text::LBT_NONE);
+					}
+				}
+				else
+				{
+					sb->Append((const UTF8Char*)"\r\nRDATA=");
+					sb->AppendHexBuff(&packet[i], rdLength, ' ', Text::LBT_NONE);
+				}
 			}
 			else
 			{

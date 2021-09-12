@@ -58,6 +58,11 @@ namespace Net
 			UInt64 othSrcCnt;
 			UInt64 othDestCnt;
 			const UTF8Char *name;
+			Int64 packetTime[16];
+			UInt64 packetDestMAC[16];
+			UInt16 packetEtherType[16];
+			UOSInt packetSize[16];
+			UInt8 *packetData[16];
 		} MACStatus;
 
 		typedef struct

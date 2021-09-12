@@ -19,6 +19,7 @@
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
+#include "UI/GUIVSplitter.h"
 #include "UI/ListBoxLogger.h"
 
 namespace SSWR
@@ -75,6 +76,8 @@ namespace SSWR
 
 			UI::GUITabPage *tpDevice;
 			UI::GUIListView *lvDevice;
+			UI::GUIVSplitter *vspDevice;
+			UI::GUITextBox *txtDevice;
 
 			UI::GUITabPage *tpIPTran;
 			UI::GUIListBox *lbIPTran;
@@ -177,6 +180,7 @@ namespace SSWR
 			static void __stdcall OnDNSClientSelChg(void *userObj);
 			static void __stdcall OnIPLogSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnDeviceSelChg(void *userObj);
 
 		public:
 			AVIRRAWMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer);

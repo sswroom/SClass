@@ -83,6 +83,12 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	{
 		mac = macList->GetItem(i);
 		SDEL_TEXT(mac->name);
+		j = 16;
+		while (j-- > 0)
+		{
+			if (mac->packetData[j])
+				MemFree(mac->packetData[j]);
+		}
 		MemFree(mac);
 	}
 	DEL_CLASS(this->macMap);
@@ -544,6 +550,24 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packe
 {
 	MACStatus *mac;
 	Bool valid = true;
+	Data::DateTime dt;
+	dt.SetCurrTimeUTC();
+	Sync::MutexUsage mutUsage(this->macMut);
+	UOSInt cnt;
+	mac = this->MACGet(srcMAC);
+	cnt = mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt;
+	mac->packetTime[cnt & 15] = dt.ToTicks();
+	mac->packetSize[cnt & 15] = packetSize;
+	mac->packetDestMAC[cnt & 15] = destMAC;
+	mac->packetEtherType[cnt & 15] = etherType;
+	if (mac->packetData[cnt & 15])
+	{
+		MemFree(mac->packetData[cnt & 15]);
+	}
+	mac->packetData[cnt & 15] = MemAlloc(UInt8, packetSize);
+	MemCopyNO(mac->packetData[cnt & 15], packet, packetSize);
+	mutUsage.EndUse();
+
 	switch (etherType)
 	{
 	case 0x0006: //ARP
@@ -1436,12 +1460,53 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						}
 						valid = true;
 					}
-					else if (srcPort == 137 && destPort == 137) // NetBIOS-NS (RFC 1002)
+					else if (srcPort == 137 || destPort == 137) // NetBIOS-NS (RFC 1002)
 					{
 						//UInt16 name_trn_id = ReadMUInt16(&ipData[8]);
 //									Bool isResponse = (ipData[10] & 0x80) != 0;
 						UInt8 opcode = (ipData[10] & 0x78) >> 3;
-						if (opcode == 5)
+						if (opcode == 0) //query
+						{
+							UInt16 nQuestion = ReadMUInt16(&ipData[12]);
+							UInt16 nAnswer = ReadMUInt16(&ipData[14]);
+							if (nQuestion == 0 && nAnswer == 1 && ipDataSize >= 64)
+							{
+								UInt16 questType = ReadMUInt16(&ipData[54]);
+								UInt16 leng = ReadMUInt16(&ipData[62]);
+								if (ipDataSize >= 64 + (UOSInt)leng)
+								{
+									if (questType == 33) //NBSTAT
+									{
+										UInt8 nName = ipData[64];
+										if (nName * 18 + 1 <= leng)
+										{
+											UOSInt i = 0;
+											while (i < nName)
+											{
+												UInt16 flags = ReadMUInt16(&ipData[65 + i * 18 + 16]);
+												if ((flags & 0x8000) == 0 && ipData[65 + i * 18 + 15] == 0)
+												{
+													Sync::MutexUsage mutUsage(this->macMut);
+													mac = this->MACGet(srcMAC);
+													if (mac->name == 0)
+													{
+														MemCopyNO(sbuff, &ipData[65 + i * 18], 15);
+														sbuff[15] = 0;
+														Text::StrRTrim(sbuff);
+														mac->name = Text::StrCopyNew(sbuff);
+													}
+													mutUsage.EndUse();
+													break;
+												}
+												i++;
+											}
+										}
+									}
+								}
+							}
+							valid = true;
+						}
+						else if (opcode == 5)
 						{
 /*
 FF FF FF FF FF FF 88 B1 11 39 8B 9F 08 00 45 00 
@@ -1460,7 +1525,7 @@ FF FF FF FF FF FF 88 B1 11 39 8B 9F 08 00 45 00
 							valid = true;
 						}
 					}
-					else if (srcPort == 138 && destPort == 138) // NetBIOS-DGM
+					else if (srcPort == 138 || destPort == 138) // NetBIOS-DGM
 					{
 /*
 FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00 
