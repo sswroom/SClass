@@ -28,8 +28,8 @@ UTF8Char *Net::NetBIOSUtil::SetName(UTF8Char *nbBuff, const UTF8Char *name)
 	while (i-- > 0)
 	{
 		c = *name;
-		nbBuff[0] = 65 + (c >> 4);
-		nbBuff[1] = 65 + (c & 15);
+		nbBuff[0] = (UTF8Char)(65 + (c >> 4));
+		nbBuff[1] = (UTF8Char)(65 + (c & 15));
 		nbBuff += 2;
 		if (c) name++;
 	}

@@ -241,6 +241,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 			{
 				addr->addrType = Net::SocketUtil::AT_IPV4;
 				*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
+				MemClear(&addr->addr[4], 16);
 			}
 			if (port)
 			{
