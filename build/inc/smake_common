@@ -2262,6 +2262,8 @@ Media/VideoFilter/UVOffsetFilter.h: ../../src/Media/VideoFilter/UVOffsetFilter.c
 Media/VideoFilter/VideoFilterBase.h: ../../src/Media/VideoFilter/VideoFilterBase.cpp
 @VideoFilterBase.o
 
+Net/AddressRange.h: ../../src/Net/AddressRange.cpp
+@AddressRange.o
 Net/ARPHandler.h: ../../src/Net/ARPHandler.cpp
 @ARPHandler.o
 Net/ASN1Data.h: ../../src/Net/ASN1Data.cpp
@@ -4222,6 +4224,7 @@ AutoCropFilter.o: ../../src/Media/VideoFilter/AutoCropFilter.cpp
 IVTCFilter.o: ../../src/Media/VideoFilter/IVTCFilter.cpp
 UVOffsetFilter.o: ../../src/Media/VideoFilter/UVOffsetFilter.cpp
 VideoFilterBase.o: ../../src/Media/VideoFilter/VideoFilterBase.cpp
+AddressRange.o: ../../src/Net/AddressRange.cpp
 ARPHandler.o: ../../src/Net/ARPHandler.cpp
 ASN1Data.o: ../../src/Net/ASN1Data.cpp
 ASN1MIB.o: ../../src/Net/ASN1MIB.cpp

@@ -356,6 +356,12 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 		sb->Append((const UTF8Char*)"\r\nIPv6:");
 		PacketIPv6GetDetail(packet, packetSize, sb);
 		return;
+	case 0x8874: //broadcom
+		sb->Append((const UTF8Char*)" (Broadcom)");
+		sb->Append((const UTF8Char*)"\r\n");
+		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+		return;
 	default:
 		sb->Append((const UTF8Char*)"\r\n");
 		sb->Append((const UTF8Char*)"\r\n");

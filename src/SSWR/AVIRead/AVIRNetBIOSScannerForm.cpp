@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Net/AddressRange.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
 #include "Net/NetBIOSUtil.h"
@@ -12,26 +13,27 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *use
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	me->txtTargetAddr->GetText(&sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
+	Net::AddressRange range(sb.ToString(), me->chkTargetScan->IsChecked());
+	if (range.GetCount() == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing Target Address", (const UTF8Char*)"NetBIOS Scanner", me);
 		return;
 	}
-
-	UInt32 ip = ReadNUInt32(addr.addr);
-	Net::SocketUtil::IPType ipType = Net::SocketUtil::GetIPv4Type(ip);
-	if (ipType == Net::SocketUtil::IT_BROADCAST && me->chkTargetScan->IsChecked())
+	if (range.GetCount() > 1024)
 	{
-		addr.addr[3] = 1;
-		while (addr.addr[3] < 255)
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Too many address to send", (const UTF8Char*)"NetBIOS Scanner", me);
+		return;
+	}
+
+	UOSInt i = 0;
+	UOSInt j = range.GetCount();
+	while (i < j)
+	{
+		if (range.GetItem(i, &addr))
 		{
 			me->netbios->SendRequest(ReadNUInt32(addr.addr));
-			addr.addr[3]++;	
 		}
-	}
-	else
-	{
-		me->netbios->SendRequest(ip);
+		i++;
 	}
 }
 
@@ -139,7 +141,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvAnswers->AddColumn((const UTF8Char *)"IP", 100);
 	this->lvAnswers->AddColumn((const UTF8Char *)"Unit ID", 120);
 	this->lvAnswers->AddColumn((const UTF8Char *)"Vendor", 120);
-	this->lvAnswers->AddColumn((const UTF8Char *)"Name", 100);
+	this->lvAnswers->AddColumn((const UTF8Char *)"Name", 140);
 	this->lvAnswers->AddColumn((const UTF8Char *)"TTL", 80);
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
 	NEW_CLASS(this->vspAnswers, UI::GUIVSplitter(ui, this, 3, false));
@@ -147,7 +149,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntries->SetShowGrid(true);
 	this->lvEntries->SetFullRowSelect(true);
-	this->lvEntries->AddColumn((const UTF8Char *)"Name", 100);
+	this->lvEntries->AddColumn((const UTF8Char *)"Name", 140);
 	this->lvEntries->AddColumn((const UTF8Char *)"TypeCode", 80);
 	this->lvEntries->AddColumn((const UTF8Char *)"TypeName", 150);
 	this->lvEntries->AddColumn((const UTF8Char *)"Flags", 80);
