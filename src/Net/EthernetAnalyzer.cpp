@@ -1763,6 +1763,7 @@ Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, UOSInt packetSize, UI
 {
 	Bool valid = true;
 	MACStatus *mac;
+	UOSInt i;
 	if (packetSize >= 28)
 	{
 		UInt16 htype = ReadMUInt16(&packet[0]);
@@ -1777,9 +1778,25 @@ Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, UOSInt packetSize, UI
 
 			if (this->atype & AT_DEVICE)
 			{
+				UInt32 ipAddr = ReadNUInt32(&packet[14]);
+
 				Sync::MutexUsage mutUsage(this->macMut);
 				mac = this->MACGet(srcMAC);
 				mac->othSrcCnt++;
+				i = 0;
+				while (i < 4)
+				{
+					if (mac->ipv4Addr[i] == ipAddr)
+					{
+						break;
+					}
+					else if (mac->ipv4Addr[i] == 0)
+					{
+						mac->ipv4Addr[i] = ipAddr;
+						break;
+					}
+					i++;
+				}
 
 				mac = this->MACGet(destMAC);
 				mac->othDestCnt++;

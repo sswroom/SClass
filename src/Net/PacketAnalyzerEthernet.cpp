@@ -324,15 +324,21 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 				sb->Append((const UTF8Char*)" (Reply)");
 				break;
 			}
-			if (htype == 1 && ptype == 0x0800 && hlen == 6 && plen == 4 && packetSize >= 42)
+			if (htype == 1 && ptype == 0x0800 && hlen == 6 && plen == 4 && packetSize >= 28)
 			{
 				sb->Append((const UTF8Char*)"\r\nSender hardware address (SHA)=");
 				sb->AppendHexBuff(&packet[8], 6, ':', Text::LBT_NONE);
+				sb->Append((const UTF8Char*)" (");
+				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(&packet[8])->name);
+				sb->AppendChar(')', 1);
 				sb->Append((const UTF8Char*)"\r\nSender protocol address (SPA)=");
 				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[14]));
 				sb->Append(sbuff);
 				sb->Append((const UTF8Char*)"\r\nTarget hardware address (THA)=");
 				sb->AppendHexBuff(&packet[18], 6, ':', Text::LBT_NONE);
+				sb->Append((const UTF8Char*)" (");
+				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(&packet[18])->name);
+				sb->AppendChar(')', 1);
 				sb->Append((const UTF8Char*)"\r\nTarget protocol address (TPA)=");
 				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[24]));
 				sb->Append(sbuff);
@@ -346,7 +352,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 			else
 			{
 				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(&packet[8], packetSize - 8, ' ', Text::LBT_CRLF);
 			}
 		}
 		return;
