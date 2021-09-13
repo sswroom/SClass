@@ -43,6 +43,44 @@ Net::EthernetAnalyzer::MACStatus *Net::EthernetAnalyzer::MACGet(UInt64 macAddr)
 	return mac;
 }
 
+void Net::EthernetAnalyzer::MDNSAdd(Net::DNSClient::RequestAnswer *ans)
+{
+	Sync::MutexUsage mutUsage(this->mdnsMut);
+	Net::DNSClient::RequestAnswer *rans;
+	OSInt i = 0;
+	OSInt j = (OSInt)this->mdnsList->GetCount() - 1;
+	OSInt k;
+	OSInt l;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		rans = this->mdnsList->GetItem((UOSInt)k);
+		l = Text::StrCompare(rans->name, ans->name);
+		if (l < 0)
+		{
+			i = k + 1;
+		}
+		else if (l > 0)
+		{
+			j = k - 1;
+		}
+		else if (rans->recType < ans->recType)
+		{
+			i = k + 1;
+		}
+		else if (rans->recType > ans->recType)
+		{
+			j = k - 1;
+		}
+		else
+		{
+			Net::DNSClient::FreeAnswer(ans);
+			return;
+		}
+	}
+	this->mdnsList->Insert((UOSInt)i, ans);
+}
+
 Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, const UTF8Char *name) : IO::ParsedObject(name)
 {
 	this->atype = aType;
@@ -70,6 +108,8 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->ipLogMap, Data::UInt32Map<Net::EthernetAnalyzer::IPLogInfo*>());
 	NEW_CLASS(this->dhcpMut, Sync::Mutex());
 	NEW_CLASS(this->dhcpMap, Data::UInt64Map<DHCPInfo*>());
+	NEW_CLASS(this->mdnsMut, Sync::Mutex());
+	NEW_CLASS(this->mdnsList, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
 }
 
 Net::EthernetAnalyzer::~EthernetAnalyzer()
@@ -209,6 +249,10 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	}
 	DEL_CLASS(this->dhcpMap);
 	DEL_CLASS(this->dhcpMut);
+
+	LIST_FREE_FUNC(this->mdnsList, Net::DNSClient::FreeAnswer);
+	DEL_CLASS(this->mdnsList);
+	DEL_CLASS(this->mdnsMut);
 }
 
 IO::ParsedObject::ParserType Net::EthernetAnalyzer::GetParserType()
@@ -379,6 +423,18 @@ UOSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnal
 UOSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 {
 	return this->dnsTargetMap->GetCount();
+}
+
+UOSInt Net::EthernetAnalyzer::MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList)
+{
+	Sync::MutexUsage mutUsage(this->mdnsMut);
+	mdnsList->AddAll(this->mdnsList);
+	return this->mdnsList->GetCount();
+}
+
+UOSInt Net::EthernetAnalyzer::MDNSGetCount()
+{
+	return this->mdnsList->GetCount();
 }
 
 void Net::EthernetAnalyzer::UseDHCP(Sync::MutexUsage *mutUsage)
@@ -1669,7 +1725,20 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 					}
 					else if (srcPort == 5353 && destPort == 5353) //mDNS
 					{
-						////////////////////////////
+						UInt16 flags = ReadMUInt16(&ipData[10]);
+						if ((flags & 0xf800) == 0x8000) //Response query
+						{
+							UInt16 nAns = ReadMUInt16(&ipData[14]);
+							UOSInt i = 12;
+							UOSInt j = 0;
+							Net::DNSClient::RequestAnswer *ans;
+							while (j < nAns)
+							{
+								ans = Net::DNSClient::ParseAnswer(&ipData[8], ipDataSize - 8, &i);
+								this->MDNSAdd(ans);
+								j++;
+							}
+						}
 						valid = true;
 					}
 					else if (destPort == 5355) //LLMNR

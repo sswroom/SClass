@@ -397,6 +397,51 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem();
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	if (ans)
+	{
+		me->txtMDNSName->SetText(ans->name);
+		sptr = Text::StrUInt16(sbuff, ans->recType);
+		const UTF8Char *typeId = Net::DNSClient::TypeGetID(ans->recType);
+		if (typeId)
+		{
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+			sptr = Text::StrConcat(sptr, typeId);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+		}
+		me->txtMDNSType->SetText(sbuff);
+		sptr = Text::StrUInt16(sbuff, ans->recClass & 0x7fff);
+		if (ans->recClass & 0x8000)
+		{
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", cache flush");
+		}
+		me->txtMDNSClass->SetText(sbuff);
+		Text::StrUInt32(sbuff, ans->ttl);
+		me->txtMDNSTTL->SetText(sbuff);
+		if (ans->rd)
+		{
+			me->txtMDNSResult->SetText(ans->rd);
+		}
+		else
+		{
+			me->txtMDNSResult->SetText((const UTF8Char*)"");
+		}
+	}
+	else
+	{
+		me->txtMDNSName->SetText((const UTF8Char*)"");
+		me->txtMDNSType->SetText((const UTF8Char*)"");
+		me->txtMDNSClass->SetText((const UTF8Char*)"");
+		me->txtMDNSTTL->SetText((const UTF8Char*)"");
+		me->txtMDNSResult->SetText((const UTF8Char*)"");
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
@@ -573,6 +618,28 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			if (target == currSel)
 			{
 				me->lbDNSTarget->SetSelectedIndex(i);
+			}
+			i++;
+		}
+	}
+	if (me->analyzer->MDNSGetCount() != me->lbMDNS->GetCount())
+	{
+		Data::ArrayList<Net::DNSClient::RequestAnswer *> mdnsList;
+		Net::DNSClient::RequestAnswer *ans;
+		Net::DNSClient::RequestAnswer *currSel = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem();
+		UOSInt i;
+		UOSInt j;
+		me->analyzer->MDNSGetList(&mdnsList);
+		me->lbMDNS->ClearItems();
+		i = 0;
+		j = mdnsList.GetCount();
+		while (i < j)
+		{
+			ans = mdnsList.GetItem(i);
+			me->lbMDNS->AddItem(ans->name, ans);
+			if (ans == currSel)
+			{
+				me->lbMDNS->SetSelectedIndex(i);
 			}
 			i++;
 		}
@@ -1227,6 +1294,40 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtDNSTargetWhois, UI::GUITextBox(ui, this->tpDNSTargetWhois, (const UTF8Char*)"", true));
 	this->txtDNSTargetWhois->SetReadOnly(true);
 	this->txtDNSTargetWhois->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpMDNS = this->tcMain->AddTabPage((const UTF8Char*)"MDNS");
+	NEW_CLASS(this->lbMDNS, UI::GUIListBox(ui, this->tpMDNS, false));
+	this->lbMDNS->SetRect(0, 0, 200, 23, false);
+	this->lbMDNS->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbMDNS->HandleSelectionChange(OnMDNSSelChg, this);
+	NEW_CLASS(this->hspMDNS, UI::GUIHSplitter(ui, this->tpMDNS, 3, false));
+	NEW_CLASS(this->pnlMDNS, UI::GUIPanel(ui, this->tpMDNS));
+	this->pnlMDNS->SetDockType(UI::GUIControl::DOCK_FILL);
+	NEW_CLASS(this->lblMDNSName, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Name"));
+	this->lblMDNSName->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtMDNSName, UI::GUITextBox(ui, this->pnlMDNS, (const UTF8Char*)""));
+	this->txtMDNSName->SetRect(104, 4, 400, 23, false);
+	this->txtMDNSName->SetReadOnly(true);
+	NEW_CLASS(this->lblMDNSType, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Type"));
+	this->lblMDNSType->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtMDNSType, UI::GUITextBox(ui, this->pnlMDNS, (const UTF8Char*)""));
+	this->txtMDNSType->SetRect(104, 28, 200, 23, false);
+	this->txtMDNSType->SetReadOnly(true);
+	NEW_CLASS(this->lblMDNSClass, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Class"));
+	this->lblMDNSClass->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtMDNSClass, UI::GUITextBox(ui, this->pnlMDNS, (const UTF8Char*)""));
+	this->txtMDNSClass->SetRect(104, 52, 200, 23, false);
+	this->txtMDNSClass->SetReadOnly(true);
+	NEW_CLASS(this->lblMDNSTTL, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"TTL"));
+	this->lblMDNSTTL->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->txtMDNSTTL, UI::GUITextBox(ui, this->pnlMDNS, (const UTF8Char*)""));
+	this->txtMDNSTTL->SetRect(104, 76, 100, 23, false);
+	this->txtMDNSTTL->SetReadOnly(true);
+	NEW_CLASS(this->lblMDNSResult, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Result"));
+	this->lblMDNSResult->SetRect(4, 100, 100, 23, false);
+	NEW_CLASS(this->txtMDNSResult, UI::GUITextBox(ui, this->pnlMDNS, (const UTF8Char*)""));
+	this->txtMDNSResult->SetRect(104, 100, 400, 23, false);
+	this->txtMDNSResult->SetReadOnly(true);
 
 	this->tpDNSClient = this->tcMain->AddTabPage((const UTF8Char*)"DNS Client");
 	NEW_CLASS(this->lbDNSClient, UI::GUIListBox(ui, this->tpDNSClient, false));

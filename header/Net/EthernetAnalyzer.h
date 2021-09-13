@@ -145,6 +145,8 @@ namespace Net
 		Data::UInt32Map<IPLogInfo*> *ipLogMap;
 		Sync::Mutex *dhcpMut;
 		Data::UInt64Map<DHCPInfo*> *dhcpMap;
+		Sync::Mutex *mdnsMut;
+		Data::ArrayList<Net::DNSClient::RequestAnswer*> *mdnsList;
 
 		Pingv4Handler pingv4ReqHdlr;
 		void *pingv4ReqObj;
@@ -157,7 +159,7 @@ namespace Net
 		static void NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize);
 
 		MACStatus *MACGet(UInt64 macAddr);
-
+		void MDNSAdd(Net::DNSClient::RequestAnswer *ans);
 	public:
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, const UTF8Char *name);
 		virtual ~EthernetAnalyzer();
@@ -185,6 +187,8 @@ namespace Net
 		Bool DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
 		UOSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release
 		UOSInt DNSTargetGetCount();
+		UOSInt MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList); //no need release
+		UOSInt MDNSGetCount();
 		void UseDHCP(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DHCPInfo*> *DHCPGetList();
 		void UseIPLog(Sync::MutexUsage *mutUsage);

@@ -446,7 +446,6 @@ UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt st
 UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::ArrayList<RequestAnswer*> *answers)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
 	RequestAnswer *ans;
 	UOSInt ansCount = ReadMUInt16(&buff[6]);
 	UOSInt cnt2 = ReadMUInt16(&buff[8]);
@@ -454,128 +453,13 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 	ansCount += cnt2 + cnt3;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
 	i = ParseString(sbuff, buff, 12, dataSize);
 	i += 4;
 
 	j = 0;
 	while (j < ansCount && i < dataSize)
 	{
-		i = ParseString(sbuff, buff, i, dataSize);
-		ans = MemAlloc(RequestAnswer, 1);
-		ans->name = Text::StrCopyNew(sbuff);
-		ans->recType = ReadMUInt16(&buff[i]);
-		ans->recClass = ReadMUInt16(&buff[i + 2]);
-		ans->ttl = ReadMUInt32(&buff[i + 4]);
-		ans->addr.addrType = Net::SocketUtil::AT_UNKNOWN;
-		k = ReadMUInt16(&buff[i + 8]);
-		switch (ans->recType)
-		{
-		case 1: // A - a host address
-			Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadUInt32(&buff[i + 10]));
-			Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
-			ans->rd = Text::StrCopyNew(sbuff);
-			break;
-		case 2: // NS - an authoritative name server
-		case 5: // CNAME - the canonical name for an alias
-		case 12: // PTR - a domain name pointer
-			ParseString(sbuff, buff, i + 10, i + 10 + k);
-			ans->rd = Text::StrCopyNew(sbuff);
-			break;
-		case 6: // SOA - Start of [a zone of] authority
-			{
-				UOSInt l;
-				Text::StringBuilderUTF8 sb;
-				l = ParseString(sbuff, buff, i + 10, i + 10 + k);
-				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)", MailAddr=");
-				l = ParseString(sbuff, buff, l, i + 10 + k);
-				sb.Append(sbuff);
-				if (l + 20 <= i + 10 + k)
-				{
-					sb.Append((const UTF8Char*)", SN=");
-					sb.AppendU32(ReadMUInt32(&buff[l]));
-					sb.Append((const UTF8Char*)", Refresh=");
-					sb.AppendU32(ReadMUInt32(&buff[l + 4]));
-					sb.Append((const UTF8Char*)", Retry=");
-					sb.AppendU32(ReadMUInt32(&buff[l + 8]));
-					sb.Append((const UTF8Char*)", Expire=");
-					sb.AppendU32(ReadMUInt32(&buff[l + 12]));
-					sb.Append((const UTF8Char*)", DefTTL=");
-					sb.AppendU32(ReadMUInt32(&buff[l + 16]));
-				}
-				ans->rd = Text::StrCopyNew(sb.ToString());
-			}
-			break;
-		case 15: // MX - mail exchange
-			ans->priority = ReadMUInt16(&buff[i + 10]);
-			ParseString(sbuff, buff, i + 12, i + 10 + k);
-			ans->rd = Text::StrCopyNew(sbuff);
-			break;
-		case 28: // AAAA
-			{
-				Net::SocketUtil::SetAddrInfoV6(&ans->addr, &buff[i + 10], 0);
-				Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
-				ans->rd = Text::StrCopyNew(sbuff);
-			}
-			break;
-		case 48: // DNSKEY - DNS Key record
-			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Flags = ");
-				sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Protocol = ");
-				sptr = Text::StrUInt16(sptr, buff[i + 12]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
-				sptr = Text::StrUInt16(sptr, buff[i + 13]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Public Key = ");
-				sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
-				ans->rd = Text::StrCopyNew(sbuff);
-			}
-			break;
-		case 46: // RRSIG - DNSSEC signature
-			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Type Covered = ");
-				sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
-				sptr = Text::StrUInt16(sptr, buff[i + 12]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Labels = ");
-				sptr = Text::StrUInt16(sptr, buff[i + 13]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Original TTL = ");
-				sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 14]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature Expiration = ");
-				sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 18]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature Inception = ");
-				sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 22]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Key Tag = ");
-				sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 26]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signer's Name = ");
-				const UInt8 *tmpPtr = &buff[i + 28];
-				while ((*sptr++ = *tmpPtr++) != 0);
-				sptr--;
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature = ");
-				sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UOSInt)(tmpPtr - &buff[i + 10]), ' ');
-				ans->rd = Text::StrCopyNew(sbuff);
-			}
-			break;
-		case 43: // DS - Delegation signer
-			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Key Tag = ");
-				sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
-				sptr = Text::StrUInt16(sptr, buff[i + 12]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Digest Type = ");
-				sptr = Text::StrUInt16(sptr, buff[i + 13]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Digest = ");
-				sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
-				ans->rd = Text::StrCopyNew(sbuff);
-			}
-			break;
-		case 47: // NSEC - Next Secure record
-		default:
-			ans->rd = 0;
-			break;
-		}
-		i += k + 10;
+		ans = ParseAnswer(buff, dataSize, &i);
 		answers->Add(ans);
 
 		j++;
@@ -583,17 +467,171 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 	return ansCount;
 }
 
+Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UOSInt dataSize, UOSInt *index)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	RequestAnswer *ans;
+	UOSInt i = *index;
+	UOSInt k;
+	i = ParseString(sbuff, buff, i, dataSize);
+	ans = MemAlloc(RequestAnswer, 1);
+	ans->name = Text::StrCopyNew(sbuff);
+	ans->recType = ReadMUInt16(&buff[i]);
+	ans->recClass = ReadMUInt16(&buff[i + 2]);
+	ans->ttl = ReadMUInt32(&buff[i + 4]);
+	ans->addr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	k = ReadMUInt16(&buff[i + 8]);
+	switch (ans->recType)
+	{
+	case 1: // A - a host address
+		Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadNUInt32(&buff[i + 10]));
+		Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
+		ans->rd = Text::StrCopyNew(sbuff);
+		break;
+	case 2: // NS - an authoritative name server
+	case 5: // CNAME - the canonical name for an alias
+	case 12: // PTR - a domain name pointer
+		ParseString(sbuff, buff, i + 10, i + 10 + k);
+		ans->rd = Text::StrCopyNew(sbuff);
+		break;
+	case 6: // SOA - Start of [a zone of] authority
+		{
+			UOSInt l;
+			Text::StringBuilderUTF8 sb;
+			l = ParseString(sbuff, buff, i + 10, i + 10 + k);
+			sb.Append(sbuff);
+			sb.Append((const UTF8Char*)", MailAddr=");
+			l = ParseString(sbuff, buff, l, i + 10 + k);
+			sb.Append(sbuff);
+			if (l + 20 <= i + 10 + k)
+			{
+				sb.Append((const UTF8Char*)", SN=");
+				sb.AppendU32(ReadMUInt32(&buff[l]));
+				sb.Append((const UTF8Char*)", Refresh=");
+				sb.AppendU32(ReadMUInt32(&buff[l + 4]));
+				sb.Append((const UTF8Char*)", Retry=");
+				sb.AppendU32(ReadMUInt32(&buff[l + 8]));
+				sb.Append((const UTF8Char*)", Expire=");
+				sb.AppendU32(ReadMUInt32(&buff[l + 12]));
+				sb.Append((const UTF8Char*)", DefTTL=");
+				sb.AppendU32(ReadMUInt32(&buff[l + 16]));
+			}
+			ans->rd = Text::StrCopyNew(sb.ToString());
+		}
+		break;
+	case 15: // MX - mail exchange
+		ans->priority = ReadMUInt16(&buff[i + 10]);
+		ParseString(sbuff, buff, i + 12, i + 10 + k);
+		ans->rd = Text::StrCopyNew(sbuff);
+		break;
+	case 16: // TXT - Text strings
+		{
+			sptr = sbuff;
+			*sptr = 0;
+			UOSInt currInd = i + 10;
+			UOSInt endInd = i + 10 + k;
+			while (currInd < endInd)
+			{
+				if (sptr != sbuff)
+				{
+					sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+				}
+				sptr = Text::StrConcatC(sptr, &buff[currInd + 1], buff[currInd]);
+				currInd += 1 + buff[currInd];
+			}
+			ans->rd = Text::StrCopyNew(sbuff);
+		}
+		break;
+	case 28: // AAAA
+		{
+			Net::SocketUtil::SetAddrInfoV6(&ans->addr, &buff[i + 10], 0);
+			Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
+			ans->rd = Text::StrCopyNew(sbuff);
+		}
+		break;
+	case 33: // SRV - Server Selection
+		{
+			ans->priority = ReadMUInt16(&buff[i + 10]);
+			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Weight = ");
+			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 12]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Port = ");
+			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 14]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Target = ");
+			ParseString(sptr, buff, i + 16, i + 10 + k);
+			ans->rd = Text::StrCopyNew(sbuff);
+		}
+		break;
+	case 48: // DNSKEY - DNS Key record
+		{
+			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Flags = ");
+			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Protocol = ");
+			sptr = Text::StrUInt16(sptr, buff[i + 12]);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
+			sptr = Text::StrUInt16(sptr, buff[i + 13]);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Public Key = ");
+			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
+			ans->rd = Text::StrCopyNew(sbuff);
+		}
+		break;
+	case 46: // RRSIG - DNSSEC signature
+		{
+			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Type Covered = ");
+			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
+			sptr = Text::StrUInt16(sptr, buff[i + 12]);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Labels = ");
+			sptr = Text::StrUInt16(sptr, buff[i + 13]);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Original TTL = ");
+			sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 14]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature Expiration = ");
+			sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 18]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature Inception = ");
+			sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 22]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Key Tag = ");
+			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 26]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signer's Name = ");
+			const UInt8 *tmpPtr = &buff[i + 28];
+			while ((*sptr++ = *tmpPtr++) != 0);
+			sptr--;
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature = ");
+			sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UOSInt)(tmpPtr - &buff[i + 10]), ' ');
+			ans->rd = Text::StrCopyNew(sbuff);
+		}
+		break;
+	case 43: // DS - Delegation signer
+		{
+			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Key Tag = ");
+			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
+			sptr = Text::StrUInt16(sptr, buff[i + 12]);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Digest Type = ");
+			sptr = Text::StrUInt16(sptr, buff[i + 13]);
+			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Digest = ");
+			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
+			ans->rd = Text::StrCopyNew(sbuff);
+		}
+		break;
+	case 47: // NSEC - Next Secure record
+	default:
+		ans->rd = 0;
+		break;
+	}
+	*index = i + k + 10;
+	return ans;
+}
+
 void Net::DNSClient::FreeAnswers(Data::ArrayList<RequestAnswer*> *answers)
 {
-	RequestAnswer *ans;
-	UOSInt i = answers->GetCount();
-	while (i-- > 0)
-	{
-		ans = answers->RemoveAt(i);
-		Text::StrDelNew(ans->name);
-		SDEL_TEXT(ans->rd);
-		MemFree(ans);
-	}
+	LIST_FREE_FUNC(answers, FreeAnswer);
+}
+
+void Net::DNSClient::FreeAnswer(RequestAnswer *ans)
+{
+	Text::StrDelNew(ans->name);
+	SDEL_TEXT(ans->rd);
+	MemFree(ans);
 }
 
 UInt32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)

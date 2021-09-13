@@ -133,6 +133,21 @@ namespace SSWR
 			UI::GUITabPage *tpDNSTargetWhois;
 			UI::GUITextBox *txtDNSTargetWhois;
 
+			UI::GUITabPage *tpMDNS;
+			UI::GUIListBox *lbMDNS;
+			UI::GUIHSplitter *hspMDNS;
+			UI::GUIPanel *pnlMDNS;
+			UI::GUILabel *lblMDNSName;
+			UI::GUITextBox *txtMDNSName;
+			UI::GUILabel *lblMDNSType;
+			UI::GUITextBox *txtMDNSType;
+			UI::GUILabel *lblMDNSClass;
+			UI::GUITextBox *txtMDNSClass;
+			UI::GUILabel *lblMDNSTTL;
+			UI::GUITextBox *txtMDNSTTL;
+			UI::GUILabel *lblMDNSResult;
+			UI::GUITextBox *txtMDNSResult;
+
 			UI::GUITabPage *tpDNSClient;
 			UI::GUIListBox *lbDNSClient;
 			UI::GUIHSplitter *hspDNSClient;
@@ -177,6 +192,7 @@ namespace SSWR
 			static void __stdcall OnDNSReqv6SelChg(void *userObj);
 			static void __stdcall OnDNSReqOthSelChg(void *userObj);
 			static void __stdcall OnDNSTargetSelChg(void *userObj);
+			static void __stdcall OnMDNSSelChg(void *userObj);
 			static void __stdcall OnDNSClientSelChg(void *userObj);
 			static void __stdcall OnIPLogSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
@@ -188,6 +204,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif
