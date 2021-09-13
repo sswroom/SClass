@@ -4,6 +4,7 @@
 #include "Sync/Event.h"
 
 #include <winrt/Windows.Devices.Bluetooth.Advertisement.h>
+#include <windows.h>
 
 namespace Win32
 {
@@ -16,7 +17,9 @@ namespace Win32
 		Sync::Mutex *devMut;
 		RecordHandler recHdlr;
 		void *recHdlrObj;
-
+		void *handle;
+		Bool threadRunning;
+		OVERLAPPED overlapped;
 
 		void ReceivedHandler(winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const &sender,
 			winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const &args);
@@ -25,6 +28,9 @@ namespace Win32
 
 		IO::BTScanLog::ScanRecord3 *DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType);
 		void DeviceFree(IO::BTScanLog::ScanRecord3 *rec);
+		static UInt32 __stdcall ScanThread(void *userObj);
+		Bool BeginScan();
+		void EndScan();
 	public:
 		WindowsBTScanner();
 		virtual ~WindowsBTScanner();

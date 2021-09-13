@@ -6,6 +6,8 @@
 #include "Win32/WinRTCore.h"
 #include "Data/ByteTool.h"
 #include <sdkddkver.h>
+#include <windows.h>
+#include <bluetoothapis.h>
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -120,11 +122,110 @@ void Win32::WindowsBTScanner::DeviceFree(IO::BTScanLog::ScanRecord3 *rec)
 	MemFree(rec);
 }
 
+#if true
+struct LE_SCAN_REQUEST
+{
+	DWORD unknown1;
+	DWORD scanType;
+	DWORD unknown2;
+	WORD scanInterval;
+	WORD scanWindow;
+	DWORD unknown3[2];
+};
+#else
+struct LE_SCAN_REQUEST
+{
+	DWORD scanType;
+	WORD scanInterval;
+	WORD scanWindow;
+};
+#endif
+
+UInt32 __stdcall Win32::WindowsBTScanner::ScanThread(void *userObj)
+{
+	Win32::WindowsBTScanner *me = (Win32::WindowsBTScanner*)userObj;
+	BLUETOOTH_FIND_RADIO_PARAMS param;
+	param.dwSize = sizeof(param);
+	HANDLE handle;
+	HBLUETOOTH_RADIO_FIND hFind = BluetoothFindFirstRadio(&param, &handle);
+	if (hFind == 0)
+	{
+		printf("No bluetooth radio found: %X\r\n", GetLastError());
+		return 0;
+	}
+	me->handle = handle;
+	BluetoothFindRadioClose(hFind);
+	me->threadRunning = true;
+	LE_SCAN_REQUEST req;
+	MemClear(&req, sizeof(req));
+	req.scanType = 0;
+	req.scanInterval = 29;
+	req.scanWindow = 29;
+	DWORD outSize;
+	printf("Begin Scan request, size = %d, Handle = %x\r\n", sizeof(req), handle);
+	if (DeviceIoControl(handle, 0x41118c, &req, sizeof(req), 0, 0, &outSize, 0) == 0)
+	{
+		printf("Error: %x\r\n", GetLastError());
+	}
+	printf("End Scan request\r\n");
+	me->threadRunning = false;
+	CloseHandle(handle);
+	return 0;
+}
+
+Bool Win32::WindowsBTScanner::BeginScan()
+{
+	BLUETOOTH_FIND_RADIO_PARAMS param;
+	param.dwSize = sizeof(param);
+	HANDLE handle;
+	HBLUETOOTH_RADIO_FIND hFind = BluetoothFindFirstRadio(&param, &handle);
+	this->handle = 0;
+	if (hFind == 0)
+	{
+		printf("No bluetooth radio found: %X\r\n", GetLastError());
+		return false;
+	}
+	this->handle = handle;
+	LE_SCAN_REQUEST req;
+	MemClear(&req, sizeof(req));
+	req.scanType = 0;
+	req.scanInterval = 29;
+	req.scanWindow = 29;
+	DWORD outSize;
+	BluetoothFindRadioClose(hFind);
+	printf("Begin Scan request, size = %d, Handle = %x\r\n", sizeof(req), handle);
+	MemClear(&this->overlapped, sizeof(OVERLAPPED));
+	this->overlapped.hEvent = CreateEvent(0, FALSE, FALSE, 0);
+	if (DeviceIoControl(handle, 0x41118c, &req, sizeof(req), 0, 0, 0, &this->overlapped) == 0)
+	{
+		printf("Error: %x\r\n", GetLastError());
+		CloseHandle(handle);
+		this->handle = 0;
+		CloseHandle(this->overlapped.hEvent);
+		return false;
+	}
+	printf("End Scan request\r\n");
+	return true;
+}
+
+void Win32::WindowsBTScanner::EndScan()
+{
+	if (this->handle)
+	{
+		CancelIo(this->handle);
+		CloseHandle(handle);
+		this->handle = 0;
+		CloseHandle(this->overlapped.hEvent);
+	}
+}
+
 Win32::WindowsBTScanner::WindowsBTScanner()
 {
 	Win32::WinRTCore::Init();
 	this->recHdlr = 0;
 	this->recHdlrObj = 0;
+	this->threadRunning = false;
+	this->handle = 0;
 	NEW_CLASS(this->devMut, Sync::Mutex());
 	NEW_CLASS(this->pubDevMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
 	NEW_CLASS(this->randDevMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
@@ -155,16 +256,27 @@ void Win32::WindowsBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userO
 
 Bool Win32::WindowsBTScanner::IsScanOn()
 {
-	return this->watcher.Status() == BluetoothLEAdvertisementWatcherStatus::Started;
+	return this->threadRunning || this->watcher.Status() == BluetoothLEAdvertisementWatcherStatus::Started;
 }
 
 void Win32::WindowsBTScanner::ScanOn()
 {
 	this->watcher.Start();
+//	this->BeginScan();
+	if (!this->threadRunning)
+	{
+		Sync::Thread::Create(ScanThread, this);
+	}
 }
 
 void Win32::WindowsBTScanner::ScanOff()
 {
+	if (this->threadRunning)
+	{
+		CancelIo(this->handle);
+//		CloseHandle(this->handle);
+	}
+//	this->EndScan();
 	this->watcher.Stop();
 }
 
