@@ -1055,6 +1055,7 @@ Data/RandomMT19937.h: ../../src/Data/RandomMT19937.cpp
 Data/RandomOS.h: ../../src/Data/RandomOS.cpp
 @RandomOS.o
 Data/ReadingList.h:
+Data/ReadonlyArray.h:
 Data/SortableArrayList.h:
 Data/StringCMap.h:
 Data/StringUTF8Map.h:
@@ -1064,6 +1065,10 @@ Data/UInt64Map.h:
 Data/Usable.h:
 Data/Usage.h: ../../src/Data/Usage.cpp
 @Usage.o
+Data/VariItem.h: ../../src/Data/VariItem.cpp
+@VariItem.o
+Data/VariObject.h: ../../src/Data/VariObject.cpp
+@VariObject.o
 Data/Compress/Decompressor.h: ../../src/Data/Compress/Decompressor.cpp
 @Decompressor.o
 Data/Compress/Inflate.h: ../../src/Data/Compress/Inflate.cpp
@@ -3677,6 +3682,8 @@ RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
 Usage.o: ../../src/Data/Usage.cpp
+VariItem.o: ../../src/Data/VariItem.cpp
+VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
 Inflate.o: ../../src/Data/Compress/Inflate.cpp
 $-I ../../ThirdParty/miniz

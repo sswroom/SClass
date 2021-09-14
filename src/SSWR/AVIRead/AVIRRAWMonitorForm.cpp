@@ -1129,7 +1129,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);
-	this->lvDevice->AddColumn((const UTF8Char*)"MAC", 105);
+	this->lvDevice->AddColumn((const UTF8Char*)"MAC", 115);
 	this->lvDevice->AddColumn((const UTF8Char*)"Vendor", 200);
 	this->lvDevice->AddColumn((const UTF8Char*)"IPv4 Src", 50);
 	this->lvDevice->AddColumn((const UTF8Char*)"IPv4 Dest", 50);
