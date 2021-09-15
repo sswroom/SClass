@@ -13,6 +13,7 @@ namespace Data
 		~ReadonlyArray();
 
 		UOSInt GetCount();
+		const T *GetArray();
 		T GetItem(UOSInt index);
 		T operator [](UOSInt index);
 	};
@@ -31,7 +32,12 @@ namespace Data
 
 	template <class T> UOSInt ReadonlyArray<T>::GetCount()
 	{
-		return cnt;
+		return this->cnt;
+	}
+
+	template <class T> const T *ReadonlyArray<T>::GetArray()
+	{
+		return this->arr;
 	}
 
 	template <class T> T ReadonlyArray<T>::GetItem(UOSInt index)

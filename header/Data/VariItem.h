@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "Data/ReadonlyArray.h"
 #include "Math/Vector2D.h"
+#include "Text/StringBuilderUTF.h"
 
 namespace Data
 {
@@ -58,6 +59,8 @@ namespace Data
 
 		ItemType GetItemType();
 		const ItemValue GetItemValue();
+
+		void ToString(Text::StringBuilderUTF *sb);
 
 		static VariItem *NewNull();
 		static VariItem *NewStr(const UTF8Char *str);

@@ -1,7 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/VariItem.h"
+#include "Math/WKTWriter.h"
+#include "Text/JSText.h"
 #include "Text/MyString.h"
+#include "Text/MyStringFloat.h"
 
 Data::VariItem::VariItem(ItemType itemType, ItemValue val)
 {
@@ -50,6 +53,74 @@ Data::VariItem::ItemType Data::VariItem::GetItemType()
 const Data::VariItem::ItemValue Data::VariItem::GetItemValue()
 {
 	return this->val;
+}
+
+void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
+{
+	const UTF8Char *csptr;
+	UTF8Char sbuff[64];
+	switch (this->itemType)
+	{
+	case IT_UNKNOWN:
+	case IT_NULL:
+		sb->Append((const UTF8Char*)"null");
+		return;
+	case IT_F32:
+		Text::SBAppendF32(sb, this->val.f32);
+		return;
+	case IT_F64:
+		Text::SBAppendF64(sb, this->val.f64);
+		return;
+	case IT_I8:
+		sb->AppendI16(this->val.i8);
+		return;
+	case IT_U8:
+		sb->AppendU16(this->val.u8);
+		return;
+	case IT_I16:
+		sb->AppendI16(this->val.i16);
+		return;
+	case IT_U16:
+		sb->AppendU16(this->val.u16);
+		return;
+	case IT_I32:
+		sb->AppendI32(this->val.i32);
+		return;
+	case IT_U32:
+		sb->AppendU32(this->val.u32);
+		return;
+	case IT_I64:
+		sb->AppendI64(this->val.i64);
+		return;
+	case IT_U64:
+		sb->AppendU64(this->val.u64);
+		return;
+	case IT_BOOL:
+		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
+		break;
+	case IT_STR:
+		csptr = Text::JSText::ToNewJSTextDQuote(this->val.str);
+		sb->Append(csptr);
+		Text::JSText::FreeNewText(csptr);
+		return;
+	case IT_DATE:
+		this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sb->AppendChar('\"', 1);
+		sb->Append(sbuff);
+		sb->AppendChar('\"', 1);
+		break;
+	case IT_BYTEARR:
+		sb->AppendChar('\"', 1);
+		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LBT_NONE);
+		sb->AppendChar('\"', 1);
+		return;
+	case IT_VECTOR:
+		{
+			Math::WKTWriter writer;
+			writer.GenerateWKT(sb, this->val.vector);
+		}
+		return;
+	}
 }
 
 Data::VariItem *Data::VariItem::NewNull()
