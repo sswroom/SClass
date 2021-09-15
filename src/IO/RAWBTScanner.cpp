@@ -5,6 +5,8 @@
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Sync/Thread.h"
 
+//#include <stdio.h>
+
 struct IO::RAWBTScanner::ClassData
 {
 	UOSInt devCnt;
@@ -129,14 +131,19 @@ void IO::RAWBTScanner::ScanOff()
 	if (this->clsData->threadRunning)
 	{
 		this->clsData->threadToStop = true;
+//		printf("RAWBT scan off\r\n");
 		this->clsData->btMon->Close();
+//		printf("RAWBT btMon closed\r\n");
 		if (this->clsData->btCtrl)
 			this->clsData->btCtrl->ScanOff();
+//		printf("RAWBT ctrl off\r\n");
 		while (this->clsData->threadRunning)
 		{
 			Sync::Thread::Sleep(1);
 		}
+//		printf("RAWBT thread stopped\r\n");
 		DEL_CLASS(this->clsData->btMon);
+//		printf("RAWBT released\r\n");
 		this->clsData->btMon = 0;
 	}
 }

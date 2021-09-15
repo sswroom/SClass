@@ -39,7 +39,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 			Sync::MutexUsage mutUsage(me->lastCmdMut);
 			if (me->lastCmd && Text::StrEquals(me->lastCmd, sarr[0]))
 			{
-
+				me->cmdReady = true;
 			}
 			else
 			{

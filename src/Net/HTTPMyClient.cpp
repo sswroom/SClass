@@ -788,6 +788,9 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		while (writeSize < reqSize)
 		{
 			currSize = this->cli->Write(&reqBuff[writeSize], reqSize - writeSize);
+#ifdef SHOWDEBUG
+			printf("Writing %d bytes, sent %d bytes\r\n", (UInt32)(reqSize - writeSize), (UInt32)currSize);
+#endif
 			if (currSize <= 0)
 				break;
 			writeSize += currSize;
