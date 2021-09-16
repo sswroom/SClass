@@ -273,8 +273,8 @@ namespace UI
 		void *GetBGBrush();
 		virtual Bool IsFormFocused();
 		virtual void Focus();
-		OSInt GetScrollHPos();
-		OSInt GetScrollVPos();
+		virtual OSInt GetScrollHPos();
+		virtual OSInt GetScrollVPos();
 		void ScrollTo(OSInt x, OSInt y);
 
 		virtual const UTF8Char *GetObjectClass() = 0;

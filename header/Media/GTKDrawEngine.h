@@ -32,8 +32,8 @@ namespace Media
 		OSInt fontSlant;
 		OSInt fontWeight;
 	public:
-		GTKDrawFont(const UTF8Char *fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
-		GTKDrawFont(const UTF8Char *fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight);
+		GTKDrawFont(const UTF8Char *fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
+		GTKDrawFont(const UTF8Char *fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
 		~GTKDrawFont();
 
 		void Init(void *cr);

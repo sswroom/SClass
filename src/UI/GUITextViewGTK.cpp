@@ -1,864 +1,502 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/Encoding.h"
+#include "IO/Library.h"
+#include "Math/Ellipse.h"
+#include "Math/Math.h"
+#include "Math/PieArea.h"
+#include "Math/Polyline.h"
+#include "Media/GTKDrawEngine.h"
 #include "Sync/Interlocked.h"
-#include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
-#include "Text/MyString.h"
-#include "Text/StringBuilderUTF8.h"
-#include "Win32/Clipboard.h"
+#include "UI/GUIClientControl.h"
 #include "UI/GUITextView.h"
 #include "UI/MessageDialog.h"
+#include <gtk/gtk.h>
+#define SCROLLWIDTH 8
 
-#define READBUFFSIZE 1048576
+struct UI::GUITextView::ClassData
+{
+	UOSInt scrHPos;
+	UOSInt scrHMin;
+	UOSInt scrHMax;
+	UOSInt scrHPage;
+	Bool scrHDown;
+	OSInt scrHDownX;
+	UOSInt scrHDownPos;
+
+	UOSInt scrVPos;
+	UOSInt scrVMin;
+	UOSInt scrVMax;
+	UOSInt scrVPage;
+	Bool scrVDown;
+	OSInt scrVDownY;
+	UOSInt scrVDownPos;
+
+	guint timerId;
+};
 
 OSInt UI::GUITextView::useCnt = 0;
 
-UInt32 __stdcall UI::GUITextView::ProcThread(void *userObj)
+gboolean GUITextView_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-	UOSInt lineCurr;
-	WChar lastC;
-	WChar c;
-	UI::GUITextView *me = (UI::GUITextView*)userObj;
-	me->threadRunning = true;
-	while (!me->threadToStop)
+	UI::GUITextView *me = (UI::GUITextView*)data;
+	me->OnDraw(cr);
+	return true;
+}
+
+gboolean GUITextView_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	UI::GUITextView *me = (UI::GUITextView*)data;
+	GdkEventButton *evt = (GdkEventButton*)event;
+	if (evt->type == GDK_BUTTON_PRESS)
 	{
-		if (me->loadNewFile)
+		UI::GUIControl::MouseButton btn;
+		switch (evt->button)
 		{
-			if (me->isSearching)
-			{
-				SDEL_TEXT(me->srchText);
-				me->isSearching = false;
-			}
-			Sync::MutexUsage mutUsage(me->mut);
-			me->loadNewFile = false;
-			if (me->fs)
-			{
-				DEL_CLASS(me->fs);
-			}
-			NEW_CLASS(me->fs, IO::FileStream(me->fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
-			me->lineOfsts->Clear();
-			me->readingFile = true;
-			me->readBuffOfst = 0;
-			me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-			me->fileCodePage = me->codePage;
-			mutUsage.EndUse();
-
-			if (me->readBuffSize >= 3)
-			{
-				if (me->readBuff[0] == 0xff && me->readBuff[1] == 0xfe)
-				{
-					me->fileCodePage = 1200;
-					me->readBuffSize -= 2;
-					me->readBuffOfst = 2;
-					MemCopyO(me->readBuff, &me->readBuff[2], me->readBuffSize);
-				}
-				else if (me->readBuff[0] == 0xfe && me->readBuff[1] == 0xff)
-				{
-					me->fileCodePage = 1201;
-					me->readBuffSize -= 2;
-					me->readBuffOfst = 2;
-					MemCopyO(me->readBuff, &me->readBuff[2], me->readBuffSize);
-				}
-				else if (me->readBuff[0] == 0xef && me->readBuff[1] == 0xbb && me->readBuff[2] == 0xbf)
-				{
-					me->fileCodePage = 65001;
-					me->readBuffSize -= 3;
-					me->readBuffOfst = 3;
-					MemCopyO(me->readBuff, &me->readBuff[3], me->readBuffSize);
-				}
-			}
-
-			mutUsage.BeginUse();
-			me->lineOfsts->Add(me->readBuffOfst);
-			mutUsage.EndUse();
-			lastC = 0;
-			if (me->fileCodePage == 1200)
-			{
-				while (me->readBuffSize > 0)
-				{
-					if (me->loadNewFile || me->threadToStop)
-						break;
-
-					mutUsage.BeginUse();
-					lineCurr = 0;
-					while (lineCurr < me->readBuffSize)
-					{
-						c = *(WChar*)&me->readBuff[lineCurr];
-						if (lastC == 0xd)
-						{
-							if (c == 0xa)
-							{
-								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-							}
-							else
-							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-							}
-						}
-						else if (lastC == 0xa)
-						{
-							if (c == 0xd)
-							{
-								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-							}
-							else
-							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-							}
-						}
-						lastC = c;
-						lineCurr += 2;
-					}
-					me->readBuffOfst += me->readBuffSize;
-
-					me->fs->SeekFromBeginning(me->readBuffOfst);
-					me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-					mutUsage.EndUse();
-				}
-			}
-			else if (me->fileCodePage == 1201)
-			{
-				while (me->readBuffSize > 0)
-				{
-					if (me->loadNewFile || me->threadToStop)
-						break;
-
-					lineCurr = 0;
-					mutUsage.BeginUse();
-					while (lineCurr < me->readBuffSize)
-					{
-						c = (me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1];
-						if (lastC == 0xd)
-						{
-							if (c == 0xa)
-							{
-								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-							}
-							else
-							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-							}
-						}
-						else if (lastC == 0xa)
-						{
-							if (c == 0xd)
-							{
-								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-							}
-							else
-							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-							}
-						}
-						lastC = c;
-						lineCurr += 2;
-					}
-					me->readBuffOfst += me->readBuffSize;
-
-					me->fs->SeekFromBeginning(me->readBuffOfst);
-					me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-					mutUsage.EndUse();
-				}
-			}
-			else
-			{
-				while (me->readBuffSize > 0)
-				{
-					if (me->loadNewFile || me->threadToStop)
-						break;
-
-					lineCurr = 0;
-					mutUsage.BeginUse();
-					while (lineCurr < me->readBuffSize)
-					{
-						c = me->readBuff[lineCurr];
-						if (lastC == 0xd)
-						{
-							if (c == 0xa)
-							{
-								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-							}
-							else
-							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-							}
-						}
-						else if (lastC == 0xa)
-						{
-							if (c == 0xd)
-							{
-								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-							}
-							else
-							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-							}
-						}
-						lastC = c;
-						lineCurr += 1;
-					}
-					me->readBuffOfst += me->readBuffSize;
-
-					me->fs->SeekFromBeginning(me->readBuffOfst);
-					me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-					mutUsage.EndUse();
-				}
-			}
-			if (me->loadNewFile || me->threadToStop)
-			{
-			}
-			else
-			{
-				me->lineOfsts->Add(me->readBuffOfst);
-			}
-			me->fileSize = me->readBuffOfst;
-			me->readingFile = false;
+			default:
+			case 1:
+				btn = UI::GUIControl::MBTN_LEFT;
+				break;
+			case 2:
+				btn = UI::GUIControl::MBTN_MIDDLE;
+				break;
+			case 3:
+				btn = UI::GUIControl::MBTN_RIGHT;
+				break;
+			case 4:
+				btn = UI::GUIControl::MBTN_X1;
+				break;
+			case 5:
+				btn = UI::GUIControl::MBTN_X2;
+				break;
 		}
-		else if (me->fs)
-		{
-			UInt64 size;
-			Sync::MutexUsage mutUsage(me->mut);
-			size = me->fs->GetLength();
-			mutUsage.EndUse();
-			if (size > me->fileSize)
-			{
-				UOSInt i;
-				mutUsage.BeginUse();
-				i = me->lineOfsts->GetCount();
-				me->lineOfsts->RemoveAt(i - 1);
-				me->readBuffOfst = me->lineOfsts->GetItem(i - 2);
-				me->readingFile = true;
-				me->fs->SeekFromBeginning(me->readBuffOfst);
-				me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-				mutUsage.EndUse();
-			
-				lastC = 0;
-				if (me->fileCodePage == 1200)
-				{
-					while (me->readBuffSize > 0)
-					{
-						if (me->loadNewFile || me->threadToStop)
-							break;
-
-						mutUsage.BeginUse();
-						lineCurr = 0;
-						while (lineCurr < me->readBuffSize)
-						{
-							c = *(WChar*)&me->readBuff[lineCurr];
-							if (lastC == 0xd)
-							{
-								if (c == 0xa)
-								{
-									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-								}
-								else
-								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-								}
-							}
-							else if (lastC == 0xa)
-							{
-								if (c == 0xd)
-								{
-									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-								}
-								else
-								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-								}
-							}
-							lastC = c;
-							lineCurr += 2;
-						}
-						me->readBuffOfst += me->readBuffSize;
-
-						me->fs->SeekFromBeginning(me->readBuffOfst);
-						me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-						mutUsage.EndUse();
-					}
-				}
-				else if (me->fileCodePage == 1201)
-				{
-					while (me->readBuffSize > 0)
-					{
-						if (me->loadNewFile || me->threadToStop)
-							break;
-
-						lineCurr = 0;
-						mutUsage.BeginUse();
-						while (lineCurr < me->readBuffSize)
-						{
-							c = (me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1];
-							if (lastC == 0xd)
-							{
-								if (c == 0xa)
-								{
-									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-								}
-								else
-								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-								}
-							}
-							else if (lastC == 0xa)
-							{
-								if (c == 0xd)
-								{
-									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-								}
-								else
-								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-								}
-							}
-							lastC = c;
-							lineCurr += 2;
-						}
-						me->readBuffOfst += me->readBuffSize;
-
-						me->fs->SeekFromBeginning(me->readBuffOfst);
-						me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-						mutUsage.EndUse();
-					}
-				}
-				else
-				{
-					while (me->readBuffSize > 0)
-					{
-						if (me->loadNewFile || me->threadToStop)
-							break;
-
-						lineCurr = 0;
-						mutUsage.BeginUse();
-						while (lineCurr < me->readBuffSize)
-						{
-							c = me->readBuff[lineCurr];
-							if (lastC == 0xd)
-							{
-								if (c == 0xa)
-								{
-									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-								}
-								else
-								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-								}
-							}
-							else if (lastC == 0xa)
-							{
-								if (c == 0xd)
-								{
-									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
-								}
-								else
-								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
-								}
-							}
-							lastC = c;
-							lineCurr += 1;
-						}
-						me->readBuffOfst += me->readBuffSize;
-
-						me->fs->SeekFromBeginning(me->readBuffOfst);
-						me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
-						mutUsage.EndUse();
-					}
-				}
-				if (me->loadNewFile || me->threadToStop)
-				{
-				}
-				else
-				{
-					me->lineOfsts->Add(me->readBuffOfst);
-				}
-				me->fileSize = me->readBuffOfst;
-				me->readingFile = false;
-			}
-		}
-
-		if (me->isSearching)
-		{
-			UInt8 *srchTxt;
-			UOSInt srchTxtLen;
-			UOSInt strLen;
-			UInt32 startCaretX = me->caretX;
-			UOSInt startCaretY = me->caretY;
-			UInt32 srchCaretX;
-			UOSInt srchCaretY;
-			UInt64 startLineOfst = me->lineOfsts->GetItem(startCaretY);
-			UInt64 nextLineOfst = me->lineOfsts->GetItem(startCaretY + 1);
-			UInt8 *srchBuff;
-			UInt64 currOfst;
-			UOSInt currSize;
-			UOSInt srchIndex;
-			Bool found = false;
-
-			if (me->fs)
-			{
-				Text::Encoding enc(me->fileCodePage);
-				strLen = Text::StrCharCnt(me->srchText);
-				srchTxtLen = enc.UTF8CountBytesC(me->srchText, strLen);
-				srchTxt = MemAlloc(UInt8, srchTxtLen + 1);
-				enc.UTF8ToBytesC(srchTxt, me->srchText, strLen);
-				srchTxt[srchTxtLen] = 0;
-
-				srchBuff = MemAlloc(UInt8, READBUFFSIZE + 1);
-				currOfst = startLineOfst;
-				while (true)
-				{
-					Sync::MutexUsage mutUsage(me->mut);
-					if (me->fs)
-					{
-						me->fs->SeekFromBeginning(currOfst);
-						currSize = me->fs->Read(srchBuff, READBUFFSIZE);
-						srchBuff[currSize] = 0;
-					}
-					else
-					{
-						currSize = 0;
-					}
-					mutUsage.EndUse();
-					if (currSize <= srchTxtLen)
-					{
-						break;
-					}
-
-					srchIndex = Text::StrIndexOf((Char*)srchBuff, (Char*)srchTxt);
-					if (srchIndex != INVALID_INDEX)
-					{
-						me->GetPosFromByteOfst(currOfst + (UOSInt)srchIndex, &srchCaretX, &srchCaretY);
-						if (srchCaretY == startCaretY && srchCaretX <= startCaretX)
-						{
-							UOSInt tmpIndex;
-							while (true)
-							{
-								tmpIndex = Text::StrIndexOf((Char*)srchBuff + srchIndex + 1, (Char*)srchTxt);
-								if (tmpIndex == INVALID_INDEX)
-									break;
-								
-								me->GetPosFromByteOfst(currOfst + (UOSInt)srchIndex + 1 + (UOSInt)tmpIndex, &srchCaretX, &srchCaretY);
-								if (srchCaretY == startCaretY && srchCaretX <= startCaretX)
-								{
-									srchIndex += 1 + tmpIndex;
-								}
-								else
-								{
-									me->selStartX = srchCaretX;
-									me->selStartY = srchCaretY;
-									me->selEndX = srchCaretX + (UInt32)strLen;
-									me->selEndY = srchCaretY;
-									me->GoToText(srchCaretY, srchCaretX);
-									me->Redraw();
-									found = true;
-									break;
-								}
-							}
-							if (found)
-							{
-								break;
-							}
-						}
-						else
-						{
-							me->selStartX = srchCaretX;
-							me->selStartY = srchCaretY;
-							me->selEndX = srchCaretX + (UInt32)strLen;
-							me->selEndY = srchCaretY;
-							me->GoToText(srchCaretY, srchCaretX);
-							me->Redraw();
-							found = true;
-							break;
-						}
-					}
-					currOfst += currSize - srchTxtLen + 1;
-				}
-
-				if (!found)
-				{
-					currOfst = 0;
-					while (currOfst < nextLineOfst)
-					{
-						Sync::MutexUsage mutUsage(me->mut);
-						if (me->fs)
-						{
-							currSize = (UOSInt)(nextLineOfst - currOfst);
-							if (currSize > READBUFFSIZE)
-							{
-								currSize = READBUFFSIZE;
-							}
-							me->fs->SeekFromBeginning(currOfst);
-							currSize = me->fs->Read(srchBuff, currSize);
-							srchBuff[currSize] = 0;
-						}
-						else
-						{
-							currSize = 0;
-						}
-						mutUsage.EndUse();
-						if (currSize <= srchTxtLen)
-						{
-							break;
-						}
-
-						srchIndex = Text::StrIndexOf((Char*)srchBuff, (Char*)srchTxt);
-						if (srchIndex != INVALID_INDEX)
-						{
-							me->GetPosFromByteOfst(currOfst + (UOSInt)srchIndex, &srchCaretX, &srchCaretY);
-							if (srchCaretY < startCaretY || srchCaretX < startCaretX)
-							{
-								me->selStartX = srchCaretX;
-								me->selStartY = srchCaretY;
-								me->selEndX = srchCaretX + (UInt32)strLen;
-								me->selEndY = srchCaretY;
-								me->GoToText(srchCaretY, srchCaretX);
-								me->Redraw();
-								found = true;
-								break;
-							}
-						}
-						currOfst += currSize - srchTxtLen + 1;
-					}
-				}
-
-				MemFree(srchBuff);
-				MemFree(srchTxt);
-			}
-			SDEL_TEXT(me->srchText);
-			me->isSearching = false;
-		}
-		me->evtThread->Wait(1000);
+		me->OnMouseDown(Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y), btn);
 	}
-	me->threadRunning = false;
-	return 0;
+	return false;
 }
 
-void UI::GUITextView::Init(void *hInst)
+gboolean GUITextView_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
+	UI::GUITextView *me = (UI::GUITextView*)data;
+	GdkEventButton *evt = (GdkEventButton*)event;
+	if (evt->type == GDK_BUTTON_RELEASE)
+	{
+		UI::GUIControl::MouseButton btn;
+		switch (evt->button)
+		{
+			default:
+			case 1:
+				btn = UI::GUIControl::MBTN_LEFT;
+				break;
+			case 2:
+				btn = UI::GUIControl::MBTN_MIDDLE;
+				break;
+			case 3:
+				btn = UI::GUIControl::MBTN_RIGHT;
+				break;
+			case 4:
+				btn = UI::GUIControl::MBTN_X1;
+				break;
+			case 5:
+				btn = UI::GUIControl::MBTN_X2;
+				break;
+		}
+		me->OnMouseUp(Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y), btn);
+	}
+	return false;
 }
 
-void UI::GUITextView::Deinit(void *hInst)
+gboolean GUITextView_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
+	UI::GUITextView *me = (UI::GUITextView*)data;
+	GdkEventMotion *evt = (GdkEventMotion*)event;
+	me->OnMouseMove(Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y));
+	return false;
 }
 
-void UI::GUITextView::OnPaint()
+gboolean GUITextView_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
+	UI::GUITextView *me = (UI::GUITextView*)data;
+	GdkEventScroll *evt = (GdkEventScroll*)event;
+	if (evt->direction == GDK_SCROLL_UP || (evt->direction == GDK_SCROLL_SMOOTH && evt->delta_y < 0))
+	{
+		me->OnMouseWheel(false);
+		return true;
+	}
+	else if (evt->direction == GDK_SCROLL_DOWN || (evt->direction == GDK_SCROLL_SMOOTH && evt->delta_y > 0))
+	{
+		me->OnMouseWheel(true);
+		return true;
+	}
+	return false;
+}
+
+Int32 GUITextView_OnTick(void *userObj)
+{
+	UI::GUITextView *me = (UI::GUITextView*)userObj;
+	me->EventTimerTick();
+	return 1;
+}
+
+gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey event, gpointer user_data)
+{
+	UI::GUITextView *me = (UI::GUITextView*)user_data;
+	switch (event.keyval)
+	{
+	case GDK_KEY_Home:
+		if (event.state & GDK_CONTROL_MASK)
+		{
+			me->EventHome();
+		}
+		else
+		{
+			me->EventLineBegin();
+		}
+		break;
+	case GDK_KEY_End:
+		if (event.state & GDK_CONTROL_MASK)
+		{
+			me->EventEnd();
+		}
+		else
+		{
+			me->EventLineEnd();
+		}
+		break;
+	case GDK_KEY_Left:
+		me->EventLeft();
+		break;
+	case GDK_KEY_Right:
+		me->EventRight();
+		break;
+	case GDK_KEY_Up:
+		me->EventLineUp();
+		break;
+	case GDK_KEY_Down:
+		me->EventLineDown();
+		break;
+	case GDK_KEY_Page_Up:
+		me->EventPageUp();
+		break;
+	case GDK_KEY_Page_Down:
+		me->EventPageDown();
+		break;
+	case GDK_KEY_c:
+	case GDK_KEY_C:
+		if (event.state & GDK_CONTROL_MASK)
+		{
+			me->EventCopy();
+		}
+		break;
+	default:
+		return false;
+	}
+	return true;
+}
+
+void __stdcall UI::GUITextView::OnResize(void *userObj)
+{
+	UI::GUITextView *me = (UI::GUITextView*)userObj;
+	UOSInt scnW;
+	UOSInt scnH;
+	if (me->drawBuff)
+	{
+		me->deng->DeleteImage(me->drawBuff);
+	}
+	me->GetSizeP(&scnW, &scnH);
+	if ((me->clsData->scrVMax - me->clsData->scrVMin) > me->clsData->scrVPage)
+	{
+		scnH -= SCROLLWIDTH;
+	}
+	if ((me->clsData->scrHMax - me->clsData->scrHMin) > me->clsData->scrHPage)
+	{
+		scnW -= SCROLLWIDTH;
+	}
+	me->drawBuff = me->deng->CreateImage32(scnW, scnH, Media::AT_NO_ALPHA);
+	me->drawBuff->SetHDPI(me->GetHDPI());
+	me->drawBuff->SetVDPI(me->GetHDPI());
+	me->UpdateScrollBar();
+	me->Redraw();
 }
 
 void UI::GUITextView::UpdateScrollBar()
 {
-}
-
-void UI::GUITextView::CopySelected()
-{
-	if (this->selStartX == this->selEndX && this->selStartY == this->selEndY)
+	if (this->drawFont == 0)
 	{
 		return;
 	}
 
-	UOSInt selTopX;
-	UOSInt selTopY;
-	UOSInt selBottomX;
-	UOSInt selBottomY;
-	selTopX = this->selStartX;
-	selTopY = this->selStartY;
-	selBottomX = this->selEndX;
-	selBottomY = this->selEndY;
-	if (selTopY > selBottomY)
+	Double sz[2];
+	if (this->drawBuff == 0)
 	{
-		selTopX = this->selEndX;
-		selTopY = this->selEndY;
-		selBottomX = this->selStartX;
-		selBottomY = this->selStartY;
-	}
-	else if (selTopY < selBottomY)
-	{
-	}
-	else if (selTopX > selBottomX)
-	{
-		selTopX = this->selEndX;
-		selTopY = this->selEndY;
-		selBottomX = this->selStartX;
-		selBottomY = this->selStartY;
-	}
-	else if (selTopX < selBottomX)
-	{
-	}
-	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fs == 0)
-	{
-		mutUsage.EndUse();
-		return;
-	}
-
-	Text::Encoding *enc;
-	UInt8 *rbuff;
-	UTF8Char *line;
-	UInt64 startOfst;
-	UInt64 endOfst;
-	UOSInt j;
-
-	NEW_CLASS(enc, Text::Encoding(this->fileCodePage));
-	if (selTopY == selBottomY)
-	{
-		startOfst = this->lineOfsts->GetItem(selTopY);
-		endOfst = this->lineOfsts->GetItem(selTopY + 1);
-		if (endOfst == 0)
-		{
-			mutUsage.EndUse();
-			DEL_CLASS(enc);
-			return;
-//			endOfst = this->fs->GetLength();
-		}
-		rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));
-		this->fs->SeekFromBeginning(startOfst);
-		this->fs->Read(rbuff, (UOSInt)(endOfst - startOfst));
-		mutUsage.EndUse();
-
-		j = enc->CountUTF8Chars(rbuff, (UOSInt)(endOfst - startOfst));
-		line = MemAlloc(UTF8Char, j + 1);
-		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
-		line[selBottomX] = 0;
-		Win32::Clipboard::SetString(this->hwnd, &line[selTopX]);
-		MemFree(line);
-		MemFree(rbuff);
+		sz[1] = 12;
 	}
 	else
 	{
-		Text::StringBuilderUTF8 sb;
-
-		startOfst = this->lineOfsts->GetItem(selTopY);
-		endOfst = this->lineOfsts->GetItem(selBottomY);
-		if (endOfst == 0)
+		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		if (fnt == 0)
 		{
-			mutUsage.EndUse();
-			DEL_CLASS(enc);
-			return;
-//			endOfst = this->fs->GetLength();
+			sz[1] = 12;
 		}
-		else if (endOfst - startOfst > 1048576)
+		else
 		{
-			mutUsage.EndUse();
-			DEL_CLASS(enc);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Failed to copy because selected area is too long", (const UTF8Char*)"TextViewer", this);
-			return;
+			this->drawBuff->GetTextSize(fnt, (const UTF8Char*)"Test", sz);
+			this->drawBuff->DelFont(fnt);
 		}
-		rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));
-		this->fs->SeekFromBeginning(startOfst);
-		this->fs->Read(rbuff, (UOSInt)(endOfst - startOfst));
-
-		j = enc->CountUTF8Chars(rbuff, (UOSInt)(endOfst - startOfst));
-		line = MemAlloc(UTF8Char, j + 1);
-		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
-		sb.Append(&line[selTopX]);
-		MemFree(line);
-		MemFree(rbuff);
-
-		startOfst = this->lineOfsts->GetItem(selBottomY);
-		endOfst = this->lineOfsts->GetItem(selBottomY + 1);
-		if (endOfst == 0)
-		{
-			mutUsage.EndUse();
-			return;
-//			endOfst = this->fs->GetLength();
-		}
-		rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));
-		this->fs->SeekFromBeginning(startOfst);
-		this->fs->Read(rbuff, (UOSInt)(endOfst - startOfst));
-		mutUsage.EndUse();
-		j = enc->CountUTF8Chars(rbuff, (UOSInt)(endOfst - startOfst));
-		line = MemAlloc(UTF8Char, j + 1);
-		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
-		line[selBottomX] = 0;
-		sb.Append(line);
-		MemFree(line);
-		MemFree(rbuff);
-
-		Win32::Clipboard::SetString(this->hwnd, sb.ToString());
 	}
-	DEL_CLASS(enc);
-}
-
-void UI::GUITextView::UpdateCaretPos()
-{
-}
-
-void UI::GUITextView::EnsureCaretVisible()
-{
-}
-
-UOSInt UI::GUITextView::GetLineCharCnt(UOSInt lineNum)
-{
-	UInt64 lineOfst;
-	UInt64 nextOfst;
-	UInt8 *rbuff;
-
-	lineOfst = this->lineOfsts->GetItem(lineNum);
-	nextOfst = this->lineOfsts->GetItem(lineNum + 1);
-	if (nextOfst == 0 && this->lineOfsts->GetCount() - 1 <= lineNum + 1)
+	UOSInt width;
+	UOSInt height;
+	this->GetSizeP(&width, &height);
+	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage)
 	{
-		nextOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+		height -= SCROLLWIDTH;
 	}
-	if (nextOfst > lineOfst)
+	if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage)
 	{
-		Text::Encoding enc(this->fileCodePage);
-		rbuff = MemAlloc(UInt8, (UOSInt)(nextOfst - lineOfst));
-		this->fs->SeekFromBeginning(lineOfst);
-		this->fs->Read(rbuff, (UOSInt)(nextOfst - lineOfst));
-		UOSInt charCnt = enc.CountWChars(rbuff, (UOSInt)(nextOfst - lineOfst));
-		WChar *line = MemAlloc(WChar, charCnt + 1);
-		enc.WFromBytes(line, rbuff, (UOSInt)(nextOfst - lineOfst), 0);
-		charCnt -= 1;
-		if (charCnt > 0 && (line[charCnt - 1] == 0x0d || line[charCnt - 1] == 0x0a))
+		width -= SCROLLWIDTH;
+	}
+
+	this->pageLineCnt = (UInt32)(Math::UOSInt2Double(height) / sz[1]);
+	this->pageLineHeight = sz[1];
+	this->clsData->scrVPage = this->pageLineCnt;
+	this->clsData->scrHPage = width;
+	this->Redraw();
+}
+
+Bool UI::GUITextView::IsShiftPressed()
+{
+	return false;
+}
+
+void UI::GUITextView::SetScrollHPos(UOSInt pos, Bool redraw)
+{
+	if (this->clsData->scrHPos == pos)
+	{
+		return;
+	}
+	this->clsData->scrHPos = pos;
+	if (this->clsData->scrHPos > this->clsData->scrHMax - this->clsData->scrHPage + 1)
+	{
+		this->clsData->scrHPos = this->clsData->scrHMax - this->clsData->scrHPage + 1;
+	}
+	if (this->clsData->scrHPos < this->clsData->scrHMin)
+	{
+		this->clsData->scrHPos = this->clsData->scrHMin;
+	}
+	if (redraw)
+	{
+		this->Redraw();
+	}
+}
+
+void UI::GUITextView::SetScrollVPos(UOSInt pos, Bool redraw)
+{
+	if (this->clsData->scrVPos == pos)
+	{
+		return;
+	}
+	this->clsData->scrVPos = pos;
+	if (this->clsData->scrVPos > this->clsData->scrVMax - this->clsData->scrVPage + 1)
+	{
+		this->clsData->scrVPos = this->clsData->scrVMax - this->clsData->scrVPage + 1;
+	}
+	if (this->clsData->scrVPos < this->clsData->scrVMin)
+	{
+		this->clsData->scrVPos = this->clsData->scrVMin;
+	}
+	if (redraw)
+	{
+		this->Redraw();
+	}
+}
+
+void UI::GUITextView::SetScrollHRange(UOSInt min, UOSInt max)
+{
+	if (this->clsData->scrHMin == min && this->clsData->scrHMax == max)
+	{
+		return;
+	}
+	this->clsData->scrHMin = min;
+	this->clsData->scrHMax = max;
+	if (this->clsData->scrHPos > this->clsData->scrHMax - this->clsData->scrHPage + 1)
+	{
+		this->clsData->scrHPos = this->clsData->scrHMax - this->clsData->scrHPage + 1;
+	}
+	if (this->clsData->scrHPos < this->clsData->scrHMin)
+	{
+		this->clsData->scrHPos = this->clsData->scrHMin;
+	}
+	this->Redraw();
+}
+
+void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
+{
+	if (this->clsData->scrVMin == min && this->clsData->scrVMax == max)
+	{
+		return;
+	}
+	this->clsData->scrVMin = min;
+	this->clsData->scrVMax = max;
+	if (this->clsData->scrVPos > this->clsData->scrVMax - this->clsData->scrVPage + 1)
+	{
+		this->clsData->scrVPos = this->clsData->scrVMax - this->clsData->scrVPage + 1;
+	}
+	if (this->clsData->scrVPos < this->clsData->scrVMin)
+	{
+		this->clsData->scrVPos = this->clsData->scrVMin;
+	}
+	this->Redraw();
+}
+
+UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
+{
+	Double pxLeft = Math::UOSInt2Double(pxWidth);
+	UTF8Char sbuff[7];
+	UTF32Char u32c;
+	const UTF8Char *currPtr;
+	const UTF8Char *nextPtr;
+
+	GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
+	cairo_region_t *region = cairo_region_create();
+	GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
+	cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
+	WChar c;
+	Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+	c = str[strLen];
+	str[strLen] = 0;
+	const UTF8Char *csptr = Text::StrToUTF8New(str);
+	str[strLen] = c;
+	((Media::GTKDrawFont*)fnt)->Init(cr);
+	cairo_text_extents_t extents;
+
+	currPtr = csptr;
+	while (true)
+	{
+		nextPtr = Text::StrReadChar(currPtr, &u32c);
+		if (u32c == 0)
 		{
-			charCnt--;
+			break;
 		}
-		MemFree(line);
-		MemFree(rbuff);
-		return charCnt;
+		Text::StrWriteChar(sbuff, u32c)[0] = 0;
+		
+		cairo_text_extents(cr, (const Char*)sbuff, &extents);
+		if (extents.width > pxLeft)
+		{
+			break;
+		}
+		pxLeft -= extents.width;
+		currPtr = nextPtr;
+		if (pxLeft <= 0)
+		{
+			break;
+		}
+	}
+	UOSInt ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
+	Text::StrDelNew(csptr);
+	this->drawBuff->DelFont(fnt);
+	gdk_window_end_draw_frame(window, drawing);
+	cairo_region_destroy(region);
+	return (UInt32)ret;
+}
+
+void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
+{
+	if (this->drawBuff)
+	{
+		WChar c;
+		Double sz[2];
+		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		c = str[strLen];
+		str[strLen] = 0;
+		const UTF8Char *csptr = Text::StrToUTF8New(str);
+		str[strLen] = c;
+		this->drawBuff->GetTextSize(fnt, csptr, sz);
+		Text::StrDelNew(csptr);
+		*width = (UOSInt)Math::Double2OSInt(sz[0]);
+		*height = (UOSInt)Math::Double2OSInt(sz[1]);
+		this->drawBuff->DelFont(fnt);
 	}
 	else
 	{
-		return 0;
+		GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
+		cairo_region_t *region = cairo_region_create();
+		GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
+		cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
+		WChar c;
+		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		c = str[strLen];
+		str[strLen] = 0;
+		const UTF8Char *csptr = Text::StrToUTF8New(str);
+		str[strLen] = c;
+		((Media::GTKDrawFont*)fnt)->Init(cr);
+		cairo_text_extents_t extents;
+		cairo_text_extents(cr, (const Char*)csptr, &extents);
+		Text::StrDelNew(csptr);
+		*width = (UOSInt)Math::Double2OSInt(extents.width) + 2;
+		*height = (UOSInt)Math::Double2OSInt(((Media::GTKDrawFont*)fnt)->GetHeight()) + 2;
+		this->drawBuff->DelFont(fnt);
+		gdk_window_end_draw_frame(window, drawing);
+		cairo_region_destroy(region);
 	}
 }
 
-void UI::GUITextView::GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY)
+void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 {
-	OSInt lineNum = this->lineOfsts->SortedIndexOf(byteOfst);
-	if (lineNum >= 0)
-	{
-		*txtPosX = 0;
-		*txtPosY = (UOSInt)lineNum;
-		return;
-	}
-	lineNum = ~lineNum - 1;
-	UInt64 thisOfst = this->lineOfsts->GetItem((UOSInt)lineNum);
-	UOSInt buffSize = (UOSInt)(byteOfst - thisOfst);
-	UInt8 *rbuff = MemAlloc(UInt8, buffSize);
-	Text::Encoding enc(this->fileCodePage);
-	Sync::MutexUsage mutUsage(this->mut);
-	this->fs->SeekFromBeginning(thisOfst);
-	this->fs->Read(rbuff, buffSize);
-	mutUsage.EndUse();
-	*txtPosX = (UInt32)enc.CountWChars(rbuff, buffSize);
-	*txtPosY = (UOSInt)lineNum;
-	MemFree(rbuff);
+
 }
 
-void UI::GUITextView::UpdateCaretSel(Bool noRedraw)
+UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
 {
-}
-
-void UI::GUITextView::EventTextPosUpdated()
-{
-	UOSInt i = this->textPosUpdHdlr->GetCount();
-	while (i-- > 0)
-	{
-		this->textPosUpdHdlr->GetItem(i)(this->textPosUpdObj->GetItem(i), this->caretX, this->caretY);
-	}
-}
-
-UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
-{
-	this->fileName = 0;
-	this->threadToStop = false;
-	this->threadRunning = false;
-	this->loadNewFile = false;
-	this->readingFile = false;
-	this->readBuff = MemAlloc(UInt8, READBUFFSIZE);
-	this->readBuffOfst = 0;
-	this->readBuffSize = 0;
-	this->fs = 0;
-	this->codePage = 0;
-	this->bgBmp = 0;
-	this->lastLineCnt = (UOSInt)-1;
-	this->dispLineNumW = 0;
+	this->deng = deng;
+	this->drawBuff = 0;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
-	this->mouseDown = false;
-	this->selStartX = 0;
-	this->selStartY = 0;
-	this->selEndX = 0;
-	this->selEndY = 0;
-	this->caretX = 0;
-	this->caretY = 0;
-	this->isSearching = false;
-	this->srchText = 0;
-	this->fileSize = 0;
-	NEW_CLASS(lineOfsts, Data::ArrayListUInt64());
-	NEW_CLASS(this->textPosUpdHdlr, Data::ArrayList<TextPosEvent>());
-	NEW_CLASS(this->textPosUpdObj, Data::ArrayList<void *>());
 
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
-	{
-//		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
-	}
-	NEW_CLASS(this->evtThread, Sync::Event(true, (const UTF8Char*)"UI.MSWindowTextFileView.evtThread"));
-	NEW_CLASS(this->mut, Sync::Mutex());
-	Sync::Thread::Create(ProcThread, this);
+	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData->scrVMin = 0;
+	this->clsData->scrVMax = 100;
+	this->clsData->scrVPage = 10;
+	this->clsData->scrVPos = 0;
+	this->clsData->scrVDown = false;
+	this->clsData->scrVDownPos = 0;
+	this->clsData->scrVDownY = 0;
+	this->clsData->scrHMin = 0;
+	this->clsData->scrHMax = 100;
+	this->clsData->scrHPage = 10;
+	this->clsData->scrHPos = 0;
+	this->clsData->scrHDown = false;
+	this->clsData->scrHDownPos = 0;
+	this->clsData->scrHDownX = 0;
 
-/*	Int32 style = WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP;
-	if (parent->IsChildVisible())
-	{
-		style = style | WS_VISIBLE;
-	}
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
-	SetTimer((HWND)this->hwnd, 1, 1000, 0);*/
+	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
+	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUITextView_OnDraw), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUITextView_OnMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUITextView_OnMouseUp), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUITextView_OnMouseMove), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUITextView_OnMouseWheel), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUITextView_OnKeyDown), this);
+
+	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
+	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
+//	gtk_grab_add((GtkWidget*)this->hwnd);
+	parent->AddChild(this);
+	this->HandleSizeChanged(OnResize, this);
+	this->Show();
+	this->clsData->timerId = g_timeout_add(1000, GUITextView_OnTick, this);
 }
 
 UI::GUITextView::~GUITextView()
 {
-//	KillTimer((HWND)this->hwnd, 1);
-	this->threadToStop = true;
-	this->evtThread->Set();
-	while (this->threadRunning)
+	g_source_remove(this->clsData->timerId);
+	if (this->drawBuff)
 	{
-		Sync::Thread::Sleep(10);
+		this->deng->DeleteImage(this->drawBuff);
 	}
-	MemFree(this->readBuff);
-	if (this->fs)
-	{
-		DEL_CLASS(this->fs);
-	}
-	if (this->fileName)
-	{
-		Text::StrDelNew(this->fileName);
-		this->fileName = 0;
-	}
-/*	if (this->bgBmp)
-	{
-		DeleteObject((HBITMAP)this->bgBmp);
-		this->bgBmp = 0;
-	}*/
-	DEL_CLASS(this->evtThread);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->lineOfsts);
-	DEL_CLASS(this->textPosUpdHdlr);
-	DEL_CLASS(this->textPosUpdObj);
-	SDEL_TEXT(this->srchText);
-	if (Sync::Interlocked::Decrement(&useCnt) == 0)
-	{
-//		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
-	}
+	MemFree(this->clsData);
 }
 
 const UTF8Char *UI::GUITextView::GetObjectClass()
 {
-	return (const UTF8Char*)"TextFileView";
+	return (const UTF8Char*)"TextView";
 }
 
 OSInt UI::GUITextView::OnNotify(UInt32 code, void *lParam)
@@ -872,169 +510,236 @@ void UI::GUITextView::UpdateFont()
 	UpdateScrollBar();
 }
 
-Bool UI::GUITextView::IsLoading()
+OSInt UI::GUITextView::GetScrollHPos()
 {
-	return this->readingFile;
+	return (OSInt)this->clsData->scrHPos;
 }
 
-UOSInt UI::GUITextView::GetLineCount()
+OSInt UI::GUITextView::GetScrollVPos()
 {
-	return this->lineOfsts->GetCount() - 1;
+	return (OSInt)this->clsData->scrVPos;
 }
 
-void UI::GUITextView::SetCodePage(UInt32 codePage)
+void UI::GUITextView::OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	this->codePage = codePage;
-	mutUsage.EndUse();
-}
-
-Bool UI::GUITextView::LoadFile(const UTF8Char *fileName)
-{
-/*	while (this->isSearching)
+	UOSInt width;
+	UOSInt height;
+	this->GetSizeP(&width, &height);
+	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage && scnX >= (OSInt)width - SCROLLWIDTH)
 	{
-		Sync::Thread::Sleep(10);
-	}
-
-	this->mut->Lock();
-	if (this->fileName)
-	{
-		Text::StrDelNew(this->fileName);
-	}
-	this->fileName = Text::StrCopyNew(fileName);
-	this->loadNewFile = true;
-	this->fileSize = 0;
-
-	this->lastLineCnt = 0;
-	SetScrollRange((HWND)this->hwnd, SB_VERT, 0, 0, TRUE);
-
-	this->caretX = 0;
-	this->caretY = 0;
-	this->selStartX = 0;
-	this->selStartY = 0;
-	this->selEndX = 0;
-	this->selEndY = 0;
-	this->selLastX = 0;
-	this->selLastY = 0;
-	this->evtThread->Set();
-	this->mut->Unlock();
-	this->EventTextPosUpdated();*/
-	return true;
-}
-
-const UTF8Char *UI::GUITextView::GetFileName()
-{
-	return this->fileName;
-}
-
-void UI::GUITextView::GetTextPos(Int32 scnPosX, Int32 scnPosY, UInt32 *textPosX, UOSInt *textPosY)
-{
-/*	OSInt textY = GetScrollPos((HWND)this->hwnd, SB_VERT) + (scnPosY / this->pageLineHeight);
-	Int32 drawX;
-	Int32 textX = 0;
-	if (textY >= this->lineOfsts->GetCount() - 1)
-	{
-		textY = this->lineOfsts->GetCount() - 1;
-		textX = 0;
-		*textPosX = textX;
-		*textPosY = textY;
-		return;
-	}
-	drawX = scnPosX + GetScrollPos((HWND)this->hwnd, SB_HORZ) - this->dispLineNumW;
-	if (drawX < 0)
-	{
-		textX = 0;
-		*textPosX = textX;
-		*textPosY = textY;
-		return;
-	}
-	if (this->fs)
-	{
-		UInt8 *rbuff;
-		Int64 lineOfst;
-		Int64 nextOfst;
-		this->mut->Lock();
-		lineOfst = this->lineOfsts->GetItem(textY);
-		nextOfst = this->lineOfsts->GetItem(textY + 1);
-		if (nextOfst == 0 && this->lineOfsts->GetCount() - 1 <= textY + 1)
+		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			nextOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+			UOSInt range = clsData->scrVMax - clsData->scrVMin;
+			UOSInt scrollY1 = height * (clsData->scrVPos - clsData->scrVMin) / range;
+			UOSInt scrollY2 = height * clsData->scrVPage / range + scrollY1;
+			if (scnY >= (OSInt)scrollY1 && scnY < (OSInt)scrollY2)
+			{
+				clsData->scrVDownY = scnY;
+				clsData->scrVDownPos = clsData->scrVPos;
+				clsData->scrVDown = true;
+			}
+			else
+			{
+				clsData->scrVPos = (UInt32)(scnY * (OSInt)(clsData->scrVMax - clsData->scrVMin - clsData->scrVPage) / (OSInt)height);
+				this->Redraw();
+			}
 		}
-		if (nextOfst > lineOfst)
+	}
+	else if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage && scnY >= (OSInt)height - SCROLLWIDTH)
+	{
+		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			WChar *line;
-			SIZE sz;
-
-			Text::Encoding enc(this->fileCodePage);
-			rbuff = MemAlloc(UInt8, (OSInt)(nextOfst - lineOfst));
-			this->fs->SeekFromBeginning(lineOfst);
-			this->fs->Read(rbuff, (OSInt)(nextOfst - lineOfst));
-			OSInt charCnt = enc.CountWChars(rbuff, (OSInt)(nextOfst - lineOfst));
-			line = MemAlloc(WChar, charCnt + 1);
-			enc.WFromBytes(line, rbuff, (OSInt)(nextOfst - lineOfst), 0);
-			Text::StrReplace(line, '\t', ' ');
-			charCnt -= 1;
-			if (charCnt > 0 && (line[charCnt] == 0xd || line[charCnt] == 0xa))
+			UOSInt range = clsData->scrHMax - clsData->scrHMin;
+			UOSInt scrollX1 = width * (clsData->scrHPos - clsData->scrHMin) / range;
+			UOSInt scrollX2 = width * clsData->scrHPage / range + scrollX1;
+			if (scnX >= (OSInt)scrollX1 && scnX < (OSInt)scrollX2)
 			{
-				charCnt--;
+				clsData->scrHDownX = scnX;
+				clsData->scrHDownPos = clsData->scrHPos;
+				clsData->scrHDown = true;
 			}
-			HDC hdc = GetDC((HWND)this->hwnd);
-			void *fnt = this->GetFont();
-			if (fnt)
+			else
 			{
-				SelectObject(hdc, fnt);
+				clsData->scrHPos = (UInt32)(scnX * (OSInt)(clsData->scrHMax - clsData->scrHMin - clsData->scrHPage) / (OSInt)width);
+				this->Redraw();
 			}
-			GetTextExtentExPoint(hdc, line, (Int32)charCnt, drawX, &textX, 0, &sz);
-			ReleaseDC((HWND)this->hwnd, hdc);
-			MemFree(line);
-			MemFree(rbuff);
 		}
-		this->mut->Unlock();
 	}
-	*textPosX = textX;
-	*textPosY = textY;*/
-}
-
-UOSInt UI::GUITextView::GetTextPosY()
-{
-	return this->caretY;
-}
-
-UInt32 UI::GUITextView::GetTextPosX()
-{
-	return this->caretX;
-}
-
-void UI::GUITextView::GoToText(UOSInt newPosY, UInt32 newPosX)
-{
-	UOSInt lineCharCnt;
-	if (newPosY >= this->lineOfsts->GetCount())
+	else
 	{
-		newPosY = this->lineOfsts->GetCount() - 1;
+		this->EventMouseDown(scnX, scnY, btn);
 	}
-	if (newPosX > (lineCharCnt = this->GetLineCharCnt(newPosY)))
-	{
-		newPosX = (UInt32)lineCharCnt;
-	}
-	this->caretX = newPosX;
-	this->caretY = newPosY;
-	this->EnsureCaretVisible();
-	this->EventTextPosUpdated();
+
 }
 
-void UI::GUITextView::SearchText(const UTF8Char *txt)
+void UI::GUITextView::OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
 {
-	if (this->fs && !this->isSearching)
+	if (this->clsData->scrVDown && btn == UI::GUIControl::MBTN_LEFT)
 	{
-		SDEL_TEXT(this->srchText);
-		this->srchText = Text::StrCopyNew(txt);
-		this->isSearching = true;
-		this->evtThread->Set();
+		this->clsData->scrVDown = false;
+	}
+	else if (this->clsData->scrHDown && btn == UI::GUIControl::MBTN_LEFT)
+	{
+		this->clsData->scrHDown = false;
+	}
+	else
+	{
+		this->EventMouseUp(scnX, scnY, btn);
 	}
 }
 
-void UI::GUITextView::HandleTextPosUpdate(TextPosEvent hdlr, void *obj)
+void UI::GUITextView::OnMouseMove(OSInt scnX, OSInt scnY)
 {
-	this->textPosUpdHdlr->Add(hdlr);
-	this->textPosUpdObj->Add(obj);
+	UOSInt width;
+	UOSInt height;
+	this->GetSizeP(&width, &height);
+	if (this->clsData->scrVDown)
+	{
+		UOSInt range = this->clsData->scrVMax - this->clsData->scrVMin;
+		UOSInt scrollPos = clsData->scrVDownPos + (UOSInt)(scnY - clsData->scrVDownY) * range / height;
+		if (scrollPos < clsData->scrVMin)
+		{
+			clsData->scrVPos = clsData->scrVMin;
+		}
+		else if (scrollPos > clsData->scrVMax - clsData->scrVPage)
+		{
+			clsData->scrVPos = clsData->scrVMax - clsData->scrVPage;
+		}
+		else
+		{
+			clsData->scrVPos = scrollPos;
+		}
+		this->Redraw();
+	}
+	else if (this->clsData->scrHDown)
+	{
+		UOSInt range = clsData->scrHMax - clsData->scrHMin;
+		UOSInt scrollPos = clsData->scrHDownPos + (UOSInt)(scnX - clsData->scrHDownX) * range / width;
+		if (scrollPos < clsData->scrHMin)
+		{
+			clsData->scrHPos = clsData->scrHMin;
+		}
+		else if (scrollPos > clsData->scrHMax - clsData->scrHPage)
+		{
+			clsData->scrHPos = clsData->scrHMax - clsData->scrHPage;
+		}
+		else
+		{
+			clsData->scrHPos = scrollPos;
+		}
+		this->Redraw();
+	}
+	else
+	{
+		this->EventMouseMove(scnX, scnY);
+	}
+}
+
+void UI::GUITextView::OnMouseWheel(Bool isDown)
+{
+	if (false)
+	{
+		UOSInt scrollSize = clsData->scrHPage >> 2;
+		if (scrollSize < 1)
+		{
+			scrollSize = 1;
+		}
+		if (!isDown)
+		{
+			clsData->scrHPos -= scrollSize;
+			if (clsData->scrHPos < clsData->scrHMin)
+				clsData->scrHPos = clsData->scrHMin;
+			this->Redraw();
+		}
+		else
+		{
+			clsData->scrHPos += scrollSize;
+			if (clsData->scrHPos > clsData->scrHMax - clsData->scrHPage)
+				clsData->scrHPos = clsData->scrHMax - clsData->scrHPage;
+			this->Redraw();
+		}
+	}
+	else
+	{
+		UOSInt scrollSize = clsData->scrVPage >> 2;
+		if (scrollSize < 1)
+		{
+			scrollSize = 1;
+		}
+		if (!isDown)
+		{
+			if (clsData->scrVPos <= scrollSize)
+			{
+				clsData->scrVPos = clsData->scrVMin;
+			}
+			else
+			{
+				clsData->scrVPos -= scrollSize;
+				if (clsData->scrVPos < clsData->scrVMin)
+					clsData->scrVPos = clsData->scrVMin;
+			}
+			this->Redraw();
+		}
+		else
+		{
+			clsData->scrVPos += scrollSize;
+			if (clsData->scrVPos > clsData->scrVMax - clsData->scrVPage)
+				clsData->scrVPos = clsData->scrVMax - clsData->scrVPage;
+			this->Redraw();
+		}
+	}
+}
+
+void UI::GUITextView::OnDraw(void *cr)
+{
+	UOSInt width;
+	UOSInt height;
+	this->GetSizeP(&width, &height);
+	UOSInt drawWidth = width;
+	UOSInt drawHeight = height;
+	Bool hasHScr = false;;
+	Bool hasVScr = false;
+
+	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage)
+	{
+		hasVScr = true;
+		drawHeight -= SCROLLWIDTH;
+	}
+	if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage)
+	{
+		hasHScr = true;
+		drawHeight -= SCROLLWIDTH;
+	}
+	Media::DrawImage *dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, 0, 0, (OSInt)drawWidth, (OSInt)drawHeight);
+	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+	this->DrawImage(dimg);
+	this->deng->DeleteImage(dimg);
+
+	if (hasVScr)
+	{
+		dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, (OSInt)width - SCROLLWIDTH, 0, SCROLLWIDTH, (OSInt)drawHeight);
+		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		Media::DrawBrush *b = dimg->NewBrushARGB(0xffffffff);
+		dimg->DrawRect(0, 0, SCROLLWIDTH, Math::UOSInt2Double(drawHeight), 0, b);
+		dimg->DelBrush(b);
+		b = dimg->NewBrushARGB(0xffcccccc);
+		UOSInt range = clsData->scrVMax - clsData->scrVMin;
+		dimg->DrawRect(0, Math::UOSInt2Double(drawHeight * (clsData->scrVPos - clsData->scrVMin) / range), SCROLLWIDTH, Math::UOSInt2Double(drawHeight * clsData->scrVPage / range), 0, b);
+		this->deng->DeleteImage(dimg);
+	}
+	if (hasHScr)
+	{
+		dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, 0, (OSInt)height - SCROLLWIDTH, (OSInt)drawWidth, SCROLLWIDTH);
+		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		Media::DrawBrush *b = dimg->NewBrushARGB(0xffffffff);
+		dimg->DrawRect(0, 0, Math::UOSInt2Double(drawWidth), SCROLLWIDTH, 0, b);
+		dimg->DelBrush(b);
+		b = dimg->NewBrushARGB(0xffcccccc);
+		UOSInt range = clsData->scrHMax - clsData->scrHMin;
+		dimg->DrawRect(Math::UOSInt2Double(drawWidth * (clsData->scrHPos - clsData->scrHMin) / range), 0, Math::UOSInt2Double(drawHeight * clsData->scrHPage / range), SCROLLWIDTH, 0, b);
+		this->deng->DeleteImage(dimg);
+	}
 }

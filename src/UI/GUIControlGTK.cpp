@@ -762,7 +762,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 		Double height = pango_font_description_get_size(fnt) / (Double)PANGO_SCALE;
 
 		Media::DrawFont *font;
-		NEW_CLASS(font, Media::GTKDrawFont((const UTF8Char*)family, height * 72.0 / img->GetHDPI(), (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (OSInt)weight));
+		NEW_CLASS(font, Media::GTKDrawFont((const UTF8Char*)family, height * img->GetHDPI() / 72.0, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		return font;
 	}
 	else

@@ -1,9 +1,6 @@
 #ifndef _SM_UI_GUITEXTVIEW
 #define _SM_UI_GUITEXTVIEW
-#include "Data/ArrayListUInt64.h"
-#include "IO/FileStream.h"
-#include "Sync/Event.h"
-#include "Sync/Mutex.h"
+#include "Media/DrawEngine.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -11,17 +8,21 @@ namespace UI
 	class GUITextView : public GUIControl
 	{
 	private:
+		struct ClassData;
+
 		static OSInt useCnt;
 		Media::DrawEngine *deng;
+		ClassData *clsData;
 		void *drawFont;
+		Media::DrawImage *drawBuff;
 
 	protected:	
 		UInt32 pageLineCnt;
-		Int32 pageLineHeight;
-		Media::DrawImage *drawBuff;
+		Double pageLineHeight;
 
 	private:
 		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+		static void __stdcall OnResize(void *userObj);
 		void Init(void *hInst);
 		void Deinit(void *hInst);
 		void OnPaint();
@@ -44,6 +45,8 @@ namespace UI
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void UpdateFont();
+		virtual OSInt GetScrollHPos();
+		virtual OSInt GetScrollVPos();
 
 		virtual void EventLineUp() = 0;
 		virtual void EventLineDown() = 0;
@@ -60,8 +63,14 @@ namespace UI
 		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn) = 0;
 		virtual void EventMouseMove(OSInt scnX, OSInt scnY) = 0;
 		virtual void EventTimerTick() = 0;
-		virtual void UpdateDrawBuff() = 0;
+		virtual void DrawImage(Media::DrawImage *dimg) = 0;
 		virtual void UpdateCaretPos() = 0;
+
+		void OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
+		void OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
+		void OnMouseMove(OSInt scnX, OSInt scnY);
+		void OnMouseWheel(Bool isDown);
+		void OnDraw(void *cr);
 	};
 }
 #endif

@@ -638,7 +638,9 @@ void UI::GUITextFileView::UpdateCaretSel(Bool noRedraw)
 		this->selEndX = this->caretX;
 		this->selEndY = this->caretY;
 		if (!noRedraw)
+		{
 			this->Redraw();
+		}
 	}
 	else if (this->selStartX == this->selEndX && this->selStartY == this->selEndY)
 	{
@@ -654,7 +656,9 @@ void UI::GUITextFileView::UpdateCaretSel(Bool noRedraw)
 		this->selEndX = this->caretX;
 		this->selEndY = this->caretY;
 		if (!noRedraw)
+		{
 			this->Redraw();
+		}
 	}
 }
 
@@ -921,7 +925,7 @@ void UI::GUITextFileView::EventLineUp()
 	UOSInt textYPos;
 	if (this->caretY > 0)
 	{
-		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - this->pageLineHeight, &textXPos, &textYPos);
+		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Math::Double2Int32(this->pageLineHeight), &textXPos, &textYPos);
 		this->caretX = textXPos;
 		this->caretY = textYPos;
 		this->UpdateCaretSel(false);
@@ -935,7 +939,7 @@ void UI::GUITextFileView::EventLineDown()
 {
 	UInt32 textXPos;
 	UOSInt textYPos;
-	this->GetTextPos(this->caretDispX, this->caretDispY + this->pageLineHeight, &textXPos, &textYPos);
+	this->GetTextPos(this->caretDispX, this->caretDispY + Math::Double2Int32(this->pageLineHeight), &textXPos, &textYPos);
 	this->caretX = textXPos;
 	this->caretY = textYPos;
 	this->UpdateCaretSel(false);
@@ -1102,7 +1106,7 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 	{
 		OSInt lineOfst;
 		Bool needRedraw = false;
-		lineOfst = scnX / this->pageLineHeight;
+		lineOfst = Math::Double2OSInt(Math::OSInt2Double(scnX) / this->pageLineHeight);
 		if (lineOfst < 0)
 		{
 			this->SetScrollVPos((UOSInt)(this->GetScrollVPos() + lineOfst), false);
@@ -1159,7 +1163,7 @@ void UI::GUITextFileView::EventTimerTick()
 	}
 }
 
-void UI::GUITextFileView::UpdateDrawBuff()
+void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 {
 //	WChar sbuff[21];
 	UTF8Char u8buff[21];
@@ -1185,9 +1189,9 @@ void UI::GUITextFileView::UpdateDrawBuff()
 	xPos = (UOSInt)this->GetScrollHPos();
 	yPos = (UOSInt)this->GetScrollVPos();
 
-	Media::DrawBrush *bgBrush = this->drawBuff->NewBrushARGB(0xffffffff);
-	this->drawBuff->DrawRect(0, 0, Math::UOSInt2Double(this->drawBuff->GetWidth()), Math::UOSInt2Double(this->drawBuff->GetHeight()), 0, bgBrush);
-	this->drawBuff->DelBrush(bgBrush);
+	Media::DrawBrush *bgBrush = dimg->NewBrushARGB(0xffffffff);
+	dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, bgBrush);
+	dimg->DelBrush(bgBrush);
 
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fs == 0)
@@ -1206,10 +1210,10 @@ void UI::GUITextFileView::UpdateDrawBuff()
 	this->fs->SeekFromBeginning(startOfst);
 	this->fs->Read(rbuff, (UOSInt)(endOfst - startOfst));
 
-	maxScnWidth = this->drawBuff->GetWidth() + xPos;
-	Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+	maxScnWidth = dimg->GetWidth() + xPos;
+	Media::DrawFont *fnt = this->CreateDrawFont(dimg);
 	Text::StrUOSInt(u8buff, this->pageLineCnt + yPos);
-	this->drawBuff->GetTextSize(fnt, u8buff, sz);
+	dimg->GetTextSize(fnt, u8buff, sz);
 	this->dispLineNumW = (UInt32)Math::Double2Int32(sz[0]) + 8;
 
 	UInt32 selTopX;
@@ -1241,9 +1245,9 @@ void UI::GUITextFileView::UpdateDrawBuff()
 	{
 	}
 
-	Media::DrawBrush *textBrush = this->drawBuff->NewBrushARGB(0xff000000);
-	Media::DrawBrush *lineNumBrush = this->drawBuff->NewBrushARGB(0xff0000ff);
-	Media::DrawBrush *selBrush = this->drawBuff->NewBrushARGB(0xffccccff);
+	Media::DrawBrush *textBrush = dimg->NewBrushARGB(0xff000000);
+	Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(0xff0000ff);
+	Media::DrawBrush *selBrush = dimg->NewBrushARGB(0xffccccff);
 	currOfst = startOfst;
 	i = 0;
 	while (i < this->pageLineCnt)
@@ -1291,7 +1295,7 @@ void UI::GUITextFileView::UpdateDrawBuff()
 				Double szWhole[2];
 				Double szThis[2];
 				csptr = Text::StrToUTF8New(line);
-				this->drawBuff->GetTextSize(fnt, csptr, szWhole);
+				dimg->GetTextSize(fnt, csptr, szWhole);
 				if (maxScnWidth < (UOSInt)Math::Double2OSInt(szWhole[0] + sz[0] + 8))
 				{
 					maxScnWidth = (UOSInt)Math::Double2OSInt(szWhole[0] + sz[0] + 8);
@@ -1300,19 +1304,19 @@ void UI::GUITextFileView::UpdateDrawBuff()
 				Double drawTop = Math::UOSInt2Double(i) * sz[1];
 				Double drawLeft = sz[0] + 8 - Math::UOSInt2Double(xPos);
 				Text::StrUOSInt(u8buff, i + yPos + 1);
-				this->drawBuff->DrawString(-Math::UOSInt2Double(xPos), drawTop, u8buff, fnt, lineNumBrush);
+				dimg->DrawString(-Math::UOSInt2Double(xPos), drawTop, u8buff, fnt, lineNumBrush);
 
 				if (i + yPos > selTopY && i + yPos < selBottomY)
 				{
-					this->drawBuff->GetTextSize(fnt, csptr, szThis);
-					this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-					this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+					dimg->GetTextSize(fnt, csptr, szThis);
+					dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+					dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 				}
 				else if (i + yPos == selTopY && selTopY == selBottomY)
 				{
 					if (sptr - line <= selTopX || selTopX == selBottomX)
 					{
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
 					else if (sptr - line <= selBottomX)
 					{
@@ -1322,15 +1326,15 @@ void UI::GUITextFileView::UpdateDrawBuff()
 							line[selTopX] = 0;
 							csptr2 = Text::StrToUTF8New(line);
 							line[selTopX] = c;
-							this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-							this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+							dimg->GetTextSize(fnt, csptr2, szThis);
+							dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 							drawLeft += szThis[0];
 							Text::StrDelNew(csptr2);
 						}
 						csptr2 = Text::StrToUTF8New(&line[selTopX]);
-						this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-						this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr2, szThis);
+						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						Text::StrDelNew(csptr2);
 					}
 					else
@@ -1341,8 +1345,8 @@ void UI::GUITextFileView::UpdateDrawBuff()
 							line[selTopX] = 0;
 							csptr2 = Text::StrToUTF8New(line);
 							line[selTopX] = c;
-							this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-							this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+							dimg->GetTextSize(fnt, csptr2, szThis);
+							dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 							drawLeft += szThis[0];
 							Text::StrDelNew(csptr2);
 						}
@@ -1350,14 +1354,14 @@ void UI::GUITextFileView::UpdateDrawBuff()
 						line[selBottomX] = 0;
 						csptr2 = Text::StrToUTF8New(&line[selTopX]);
 						line[selBottomX] = c;
-						this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-						this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr2, szThis);
+						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						Text::StrDelNew(csptr2);
 						drawLeft += szThis[0];
 
 						csptr2 = Text::StrToUTF8New(&line[selBottomX]);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						Text::StrDelNew(csptr2);
 					}
 				}
@@ -1365,13 +1369,13 @@ void UI::GUITextFileView::UpdateDrawBuff()
 				{
 					if (selTopX == 0)
 					{
-						this->drawBuff->GetTextSize(fnt, csptr, szThis);
-						this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr, szThis);
+						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
 					else if (sptr - line <= selTopX)
 					{
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
 					else
 					{
@@ -1379,14 +1383,14 @@ void UI::GUITextFileView::UpdateDrawBuff()
 						line[selTopX] = 0;
 						csptr2 = Text::StrToUTF8New(line);
 						line[selTopX] = c;
-						this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr2, szThis);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						drawLeft += szThis[0];
 						Text::StrDelNew(csptr2);
 						csptr2 = Text::StrToUTF8New(&line[selTopX]);
-						this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-						this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr2, szThis);
+						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						Text::StrDelNew(csptr2);
 					}
 				}
@@ -1394,13 +1398,13 @@ void UI::GUITextFileView::UpdateDrawBuff()
 				{
 					if (selBottomX == 0)
 					{
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
 					else if (sptr - line <= selBottomX)
 					{
-						this->drawBuff->GetTextSize(fnt, csptr, szThis);
-						this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr, szThis);
+						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
 					else
 					{
@@ -1408,20 +1412,20 @@ void UI::GUITextFileView::UpdateDrawBuff()
 						line[selBottomX] = 0;
 						csptr2 = Text::StrToUTF8New(line);
 						line[selBottomX] = c;
-						this->drawBuff->GetTextSize(fnt, csptr2, szThis);
-						this->drawBuff->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->GetTextSize(fnt, csptr2, szThis);
+						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						Text::StrDelNew(csptr2);
 						drawLeft += szThis[0];
 
 						csptr2 = Text::StrToUTF8New(&line[selBottomX]);
-						this->drawBuff->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
 						Text::StrDelNew(csptr2);
 					}
 				}
 				else
 				{
-					this->drawBuff->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+					dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 				}
 				Text::StrDelNew(csptr);
 			}
@@ -1431,10 +1435,10 @@ void UI::GUITextFileView::UpdateDrawBuff()
 		currOfst = nextOfst;
 		i++;
 	}
-	this->drawBuff->DelBrush(textBrush);
-	this->drawBuff->DelBrush(lineNumBrush);
-	this->drawBuff->DelBrush(selBrush);
-	this->drawBuff->DelFont(fnt);
+	dimg->DelBrush(textBrush);
+	dimg->DelBrush(lineNumBrush);
+	dimg->DelBrush(selBrush);
+	dimg->DelFont(fnt);
 
 	DEL_CLASS(enc);
 	MemFree(rbuff);
@@ -1553,7 +1557,7 @@ const UTF8Char *UI::GUITextFileView::GetFileName()
 
 void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY)
 {
-	OSInt textY = this->GetScrollVPos() + (scnPosY / this->pageLineHeight);
+	OSInt textY = this->GetScrollVPos() + (OSInt)(Math::OSInt2Double(scnPosY) / this->pageLineHeight);
 	Int32 drawX;
 	UInt32 textX = 0;
 	if (textY >= (OSInt)this->lineOfsts->GetCount() - 1)

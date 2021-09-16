@@ -2,17 +2,9 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/GDIEngine.h"
-#include "Text/Encoding.h"
 #include "Sync/Interlocked.h"
-#include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
-#include "Text/MyString.h"
-#include "Text/MyStringW.h"
-#include "Text/StringBuilderUTF8.h"
-#include "Win32/Clipboard.h"
 #include "UI/GUICoreWin.h"
 #include "UI/GUITextView.h"
-#include "UI/MessageDialog.h"
 #include <windows.h>
 
 #define READBUFFSIZE 1048576
@@ -399,7 +391,7 @@ void UI::GUITextView::OnPaint()
 		return;
 	}
 
-	this->UpdateDrawBuff();
+	this->DrawImage(this->drawBuff);
 
 	Media::GDIImage *img = (Media::GDIImage*)this->drawBuff;
 	BeginPaint((HWND)this->hwnd, &ps);
@@ -585,4 +577,14 @@ void UI::GUITextView::UpdateFont()
 {
 	this->drawFont = this->GetFont();
 	UpdateScrollBar();
+}
+
+OSInt UI::GUITextView::GetScrollHPos()
+{
+	return ::GetScrollPos((HWND)this->hwnd, SB_HORZ);
+}
+
+OSInt UI::GUITextView::GetScrollVPos()
+{
+	return ::GetScrollPos((HWND)this->hwnd, SB_VERT);
 }

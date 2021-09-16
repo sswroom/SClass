@@ -172,7 +172,7 @@ Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, Double fontHeight, Med
 {
 	if (fontName == 0)
 	{
-		fontName = (const UTF8Char*)"Arial";
+		fontName = (const UTF8Char*)"sans-serif";
 	}
 	this->fontName = Text::StrCopyNew(fontName);
 	this->fontHeight = fontHeight;
@@ -198,7 +198,7 @@ Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, Double fontHeight, OSI
 {
 	if (fontName == 0)
 	{
-		fontName = (const UTF8Char*)"Arial";
+		fontName = (const UTF8Char*)"sans-serif";
 	}
 	this->fontName = Text::StrCopyNew(fontName);
 	this->fontHeight = fontHeight;
@@ -773,10 +773,12 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	}
 	if (this->surface == 0)
 	{
+		cairo_surface_flush((cairo_surface_t*)gimg->surface);
 		if (gimg->info->atype == Media::AT_NO_ALPHA)
 		{
 			Bool revOrder;
 			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(&revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
 		cairo_translate((cairo_t*)this->cr, tlx + Math::OSInt2Double(this->left), tly + Math::OSInt2Double(this->top));
