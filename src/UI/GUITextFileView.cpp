@@ -925,7 +925,7 @@ void UI::GUITextFileView::EventLineUp()
 	UOSInt textYPos;
 	if (this->caretY > 0)
 	{
-		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Math::Double2Int32(this->pageLineHeight), &textXPos, &textYPos);
+		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Math::Double2Int32(this->pageLineHeight - 2), &textXPos, &textYPos);
 		this->caretX = textXPos;
 		this->caretY = textYPos;
 		this->UpdateCaretSel(false);
@@ -939,7 +939,7 @@ void UI::GUITextFileView::EventLineDown()
 {
 	UInt32 textXPos;
 	UOSInt textYPos;
-	this->GetTextPos(this->caretDispX, this->caretDispY + Math::Double2Int32(this->pageLineHeight), &textXPos, &textYPos);
+	this->GetTextPos(this->caretDispX, this->caretDispY + Math::Double2Int32(this->pageLineHeight + 3), &textXPos, &textYPos);
 	this->caretX = textXPos;
 	this->caretY = textYPos;
 	this->UpdateCaretSel(false);
@@ -1087,6 +1087,7 @@ void UI::GUITextFileView::EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn
 		this->mouseDown = true;
 		this->Redraw();
 		this->EventTextPosUpdated();
+		this->UpdateCaretPos();
 	}
 }
 
@@ -1128,6 +1129,7 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 			this->caretY = textYPos;
 			needRedraw = true;
 			this->EventTextPosUpdated();
+			this->UpdateCaretPos();
 		}
 		if (needRedraw)
 		{
@@ -1497,7 +1499,7 @@ void UI::GUITextFileView::UpdateCaretPos()
 	}
 
 	this->caretDispX = (Int32)(xPos - xScr);
-	this->caretDispY = (Int32)((this->caretY - yPos) * (UInt32)this->pageLineHeight);
+	this->caretDispY = (Int32)(Math::UOSInt2Double(this->caretY - yPos) * this->pageLineHeight);
 	this->SetCaretPos(this->caretDispX, this->caretDispY);
 }
 
@@ -1557,7 +1559,7 @@ const UTF8Char *UI::GUITextFileView::GetFileName()
 
 void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY)
 {
-	OSInt textY = this->GetScrollVPos() + (OSInt)(Math::OSInt2Double(scnPosY) / this->pageLineHeight);
+	OSInt textY = (OSInt)(Math::OSInt2Double(this->GetScrollVPos()) + Math::OSInt2Double(scnPosY) / this->pageLineHeight);
 	Int32 drawX;
 	UInt32 textX = 0;
 	if (textY >= (OSInt)this->lineOfsts->GetCount() - 1)

@@ -70,6 +70,7 @@ gboolean GUITextView_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer da
 				break;
 		}
 		me->OnMouseDown(Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y), btn);
+		me->Focus();
 	}
 	return false;
 }
@@ -137,13 +138,13 @@ Int32 GUITextView_OnTick(void *userObj)
 	return 1;
 }
 
-gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey event, gpointer user_data)
+gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpointer user_data)
 {
 	UI::GUITextView *me = (UI::GUITextView*)user_data;
-	switch (event.keyval)
+	switch (event->keyval)
 	{
 	case GDK_KEY_Home:
-		if (event.state & GDK_CONTROL_MASK)
+		if (event->state & GDK_CONTROL_MASK)
 		{
 			me->EventHome();
 		}
@@ -153,7 +154,7 @@ gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey event, gpointer user
 		}
 		break;
 	case GDK_KEY_End:
-		if (event.state & GDK_CONTROL_MASK)
+		if (event->state & GDK_CONTROL_MASK)
 		{
 			me->EventEnd();
 		}
@@ -182,7 +183,7 @@ gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey event, gpointer user
 		break;
 	case GDK_KEY_c:
 	case GDK_KEY_C:
-		if (event.state & GDK_CONTROL_MASK)
+		if (event->state & GDK_CONTROL_MASK)
 		{
 			me->EventCopy();
 		}
