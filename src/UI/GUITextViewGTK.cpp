@@ -32,6 +32,7 @@ struct UI::GUITextView::ClassData
 	UOSInt scrVDownPos;
 
 	guint timerId;
+	Bool shiftDown;
 };
 
 OSInt UI::GUITextView::useCnt = 0;
@@ -47,6 +48,7 @@ gboolean GUITextView_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer da
 {
 	UI::GUITextView *me = (UI::GUITextView*)data;
 	GdkEventButton *evt = (GdkEventButton*)event;
+	me->SetShiftState((evt->state & GDK_SHIFT_MASK) != 0);
 	if (evt->type == GDK_BUTTON_PRESS)
 	{
 		UI::GUIControl::MouseButton btn;
@@ -79,6 +81,7 @@ gboolean GUITextView_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data
 {
 	UI::GUITextView *me = (UI::GUITextView*)data;
 	GdkEventButton *evt = (GdkEventButton*)event;
+	me->SetShiftState((evt->state & GDK_SHIFT_MASK) != 0);
 	if (evt->type == GDK_BUTTON_RELEASE)
 	{
 		UI::GUIControl::MouseButton btn;
@@ -110,6 +113,7 @@ gboolean GUITextView_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointer da
 {
 	UI::GUITextView *me = (UI::GUITextView*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
+	me->SetShiftState((evt->state & GDK_SHIFT_MASK) != 0);
 	me->OnMouseMove(Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y));
 	return false;
 }
@@ -118,6 +122,7 @@ gboolean GUITextView_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpointer d
 {
 	UI::GUITextView *me = (UI::GUITextView*)data;
 	GdkEventScroll *evt = (GdkEventScroll*)event;
+	me->SetShiftState((evt->state & GDK_SHIFT_MASK) != 0);
 	if (evt->direction == GDK_SCROLL_UP || (evt->direction == GDK_SCROLL_SMOOTH && evt->delta_y < 0))
 	{
 		me->OnMouseWheel(false);
@@ -141,6 +146,7 @@ Int32 GUITextView_OnTick(void *userObj)
 gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpointer user_data)
 {
 	UI::GUITextView *me = (UI::GUITextView*)user_data;
+	me->SetShiftState((event->state & GDK_SHIFT_MASK) != 0);
 	switch (event->keyval)
 	{
 	case GDK_KEY_Home:
@@ -265,7 +271,7 @@ void UI::GUITextView::UpdateScrollBar()
 
 Bool UI::GUITextView::IsShiftPressed()
 {
-	return false;
+	return this->clsData->shiftDown;
 }
 
 void UI::GUITextView::SetScrollHPos(UOSInt pos, Bool redraw)
@@ -467,6 +473,7 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->clsData->scrHDown = false;
 	this->clsData->scrHDownPos = 0;
 	this->clsData->scrHDownX = 0;
+	this->clsData->shiftDown = false;
 
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUITextView_OnDraw), this);
@@ -743,4 +750,9 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg->DrawRect(Math::UOSInt2Double(drawWidth * (clsData->scrHPos - clsData->scrHMin) / range), 0, Math::UOSInt2Double(drawHeight * clsData->scrHPage / range), SCROLLWIDTH, 0, b);
 		this->deng->DeleteImage(dimg);
 	}
+}
+
+void UI::GUITextView::SetShiftState(Bool isDown)
+{
+	this->clsData->shiftDown = isDown;
 }

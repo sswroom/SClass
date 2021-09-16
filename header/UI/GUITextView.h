@@ -71,6 +71,7 @@ namespace UI
 		void OnMouseMove(OSInt scnX, OSInt scnY);
 		void OnMouseWheel(Bool isDown);
 		void OnDraw(void *cr);
+		void SetShiftState(Bool isDown);
 	};
 }
 #endif
