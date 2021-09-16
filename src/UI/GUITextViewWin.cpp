@@ -356,6 +356,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 			me->drawBuff->SetHDPI(me->GetHDPI());
 			me->drawBuff->SetVDPI(me->GetHDPI());
 			me->UpdateScrollBar();
+			me->Redraw();
 		}
 		break;//DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 	}
@@ -417,15 +418,22 @@ void UI::GUITextView::UpdateScrollBar()
 
 	Double sz[2];
 	RECT rc;
-	Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
-	if (fnt == 0)
+	if (this->drawBuff == 0)
 	{
 		sz[1] = 12;
 	}
 	else
 	{
-		this->drawBuff->GetTextSize(fnt, (const UTF8Char*)"Test", sz);
-		this->drawBuff->DelFont(fnt);
+		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		if (fnt == 0)
+		{
+			sz[1] = 12;
+		}
+		else
+		{
+			this->drawBuff->GetTextSize(fnt, (const UTF8Char*)"Test", sz);
+			this->drawBuff->DelFont(fnt);
+		}
 	}
 	GetClientRect((HWND)this->hwnd, &rc);
 	SCROLLINFO si;
@@ -468,33 +476,59 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
-	SIZE sz;
-	HDC hdc = GetDC((HWND)this->hwnd);
-	void *fnt = this->GetFont();
-	if (fnt)
+	if (this->drawBuff)
 	{
-		SelectObject(hdc, fnt);
+		SIZE sz;
+		Media::GDIFont *fnt = (Media::GDIFont*)this->CreateDrawFont(this->drawBuff);
+		Media::GDIImage *img = (Media::GDIImage*)this->drawBuff;
+		HDC hdc = (HDC)img->hdcBmp;
+		SelectObject(hdc, (HFONT)fnt->hfont);
+		Int32 textX;
+		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+		this->drawBuff->DelFont(fnt);
+		return (UInt32)textX;
 	}
-	Int32 textX;
-	GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
-	ReleaseDC((HWND)this->hwnd, hdc);
-
-	return (UInt32)textX;
+	else
+	{
+		SIZE sz;
+		HDC hdc = GetDC((HWND)this->hwnd);
+		void *fnt = this->GetFont();
+		if (fnt)
+		{
+			SelectObject(hdc, fnt);
+		}
+		Int32 textX;
+		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+		ReleaseDC((HWND)this->hwnd, hdc);
+		return (UInt32)textX;
+	}
 }
 
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
-	SIZE sz;
-	HDC hdc = GetDC((HWND)this->hwnd);
-	void *fnt = this->GetFont();
-	if (fnt)
+	if (this->drawBuff)
 	{
-		SelectObject(hdc, fnt);
+		Double sz[2];
+		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, strLen, sz);
+		*width = (UOSInt)Math::Double2OSInt(sz[0]);
+		*height = (UOSInt)Math::Double2OSInt(sz[1]);
+		this->drawBuff->DelFont(fnt);
 	}
-	GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, 0, 0, 0, &sz);
-	ReleaseDC((HWND)this->hwnd, hdc);
-	*width = (UInt32)sz.cx;
-	*height = (UInt32)sz.cy;
+	else
+	{
+		SIZE sz;
+		HDC hdc = GetDC((HWND)this->hwnd);
+		void *fnt = this->GetFont();
+		if (fnt)
+		{
+			SelectObject(hdc, fnt);
+		}
+		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, 0, 0, 0, &sz);
+		ReleaseDC((HWND)this->hwnd, hdc);
+		*width = (UInt32)sz.cx;
+		*height = (UInt32)sz.cy;
+	}
 }
 
 void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
