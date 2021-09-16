@@ -94,8 +94,8 @@ UI/GUITabPage.h: ../../src/UI/GUITabPage.cpp
 @GUITabPage.o
 UI/GUITextBox.h: ../../src/UI/GUITextBoxGTK.cpp
 @GUITextBox.o
-UI/GUITextFileView.h: ../../src/UI/GUITextFileViewGTK.cpp
-@GUITextFileView.o
+UI/GUITextView.h: ../../src/UI/GUITextViewGTK.cpp
+@GUITextView.o
 UI/GUITimer.h: ../../src/UI/GUITimerJava.cpp
 @GUITimer.o
 UI/GUITrackBar.h: ../../src/UI/GUITrackBarGTK.cpp
@@ -166,7 +166,7 @@ GUIRealtimeLineChart.o: ../../src/UI/GUIRealtimeLineChartGTK.cpp
 GUITabControl.o: ../../src/UI/GUITabControlGTK.cpp
 GUITabPage.o: ../../src/UI/GUITabPage.cpp
 GUITextBox.o: ../../src/UI/GUITextBoxGTK.cpp
-GUITextFileView.o: ../../src/UI/GUITextFileViewGTK.cpp
+GUITextView.o: ../../src/UI/GUITextViewGTK.cpp
 GUITimer.o: ../../src/UI/GUITimerJava.cpp
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux

@@ -4,11 +4,11 @@
 #include "IO/FileStream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "UI/GUIClientControl.h"
+#include "UI/GUITextView.h"
 
 namespace UI
 {
-	class GUITextFileView : public GUIControl
+	class GUITextFileView : public GUITextView
 	{
 	public:
 		typedef void (__stdcall *TextPosEvent)(void *userObj, UInt32 textPosX, UOSInt textPosY);
@@ -16,9 +16,8 @@ namespace UI
 		Data::ArrayList<TextPosEvent> *textPosUpdHdlr;
 		Data::ArrayList<void *> *textPosUpdObj;
 		IO::FileStream *fs;
-		static OSInt useCnt;
 		UInt32 codePage;
-		void *drawFont;
+//		void *drawFont;
 		UOSInt lastLineCnt;
 
 		const UTF8Char *fileName;
@@ -35,10 +34,7 @@ namespace UI
 		Bool threadRunning;
 		Bool loadNewFile;
 		Bool readingFile;
-		UInt32 pageLineCnt;
-		Int32 pageLineHeight;
-		void *bgBmp;
-		Int32 dispLineNumW;
+		UInt32 dispLineNumW;
 		UInt32 selStartX;
 		UOSInt selStartY;
 		UInt32 selEndX;
@@ -54,34 +50,43 @@ namespace UI
 		Int32 caretDispX;
 		Int32 caretDispY;
 
-		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 		static UInt32 __stdcall ProcThread(void *userObj);
-		void Init(void *hInst);
-		void Deinit(void *hInst);
-		void OnPaint();
-		void UpdateScrollBar();
-		void CopySelected();
-		void UpdateCaretPos();
+
 		void EnsureCaretVisible();
+		void UpdateCaretSel(Bool noRedraw);
+		void CopySelected();
 		UOSInt GetLineCharCnt(UOSInt lineNum);
 		void GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY);
-		void UpdateCaretSel(Bool noRedraw);
 
 		void EventTextPosUpdated();
 	public:
-		GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *parent);
+		GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng);
 		virtual ~GUITextFileView();
 
-		virtual const UTF8Char *GetObjectClass();
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		virtual void UpdateFont();
+		virtual void EventLineUp();
+		virtual void EventLineDown();
+		virtual void EventPageUp();
+		virtual void EventPageDown();
+		virtual void EventLeft();
+		virtual void EventRight();
+		virtual void EventHome();
+		virtual void EventEnd();
+		virtual void EventLineBegin();
+		virtual void EventLineEnd();
+		virtual void EventCopy();
+		virtual void EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
+		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
+		virtual void EventMouseMove(OSInt scnX, OSInt scnY);
+		virtual void EventTimerTick();
+		virtual void UpdateDrawBuff();
+		virtual void UpdateCaretPos();
 
 		Bool IsLoading();
 		UOSInt GetLineCount();
 		void SetCodePage(UInt32 codePage);
 		Bool LoadFile(const UTF8Char *fileName);
 		const UTF8Char *GetFileName();
-		void GetTextPos(Int32 scnPosX, Int32 scnPosY, UInt32 *textPosX, UOSInt *textPosY);
+		void GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY);
 		UOSInt GetTextPosY();
 		UInt32 GetTextPosX();
 		void GoToText(UOSInt newPosY, UInt32 newPosX);

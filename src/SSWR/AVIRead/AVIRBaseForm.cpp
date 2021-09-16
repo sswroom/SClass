@@ -954,7 +954,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TEXT_VIEWER:
 		{
 			UtilUI::TextViewerForm *frm;
-			NEW_CLASS(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetCurrCodePage()));
+			NEW_CLASS(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), this->core->GetCurrCodePage()));
 			frm->ShowDialog(this);
 			DEL_CLASS(frm);
 		}

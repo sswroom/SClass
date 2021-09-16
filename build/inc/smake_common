@@ -3582,6 +3582,8 @@ UI/GUIPictureList.h: ../../src/UI/GUIPictureList.cpp
 @GUIPictureList.o
 UI/GUISudokuViewer.h: ../../src/UI/GUISudokuViewer.cpp
 @GUISudokuViewer.o
+UI/GUITextFileView.h: ../../src/UI/GUITextFileView.cpp
+@GUITextFileView.o
 UI/GUIVideoBoxDD.h: ../../src/UI/GUIVideoBoxDD.cpp
 @GUIVideoBoxDD.o
 UI/GUIVideoBoxDDLQ.h: ../../src/UI/GUIVideoBoxDDLQ.cpp
@@ -4871,6 +4873,7 @@ GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp
 GUIPictureList.o: ../../src/UI/GUIPictureList.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
+GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp

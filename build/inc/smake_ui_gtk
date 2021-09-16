@@ -97,8 +97,8 @@ UI/GUITabPage.h: ../../src/UI/GUITabPage.cpp
 @GUITabPage.o
 UI/GUITextBox.h: ../../src/UI/GUITextBoxGTK.cpp
 @GUITextBox.o
-UI/GUITextFileView.h: ../../src/UI/GUITextFileViewGTK.cpp
-@GUITextFileView.o
+UI/GUITextView.h: ../../src/UI/GUITextViewGTK.cpp
+@GUITextView.o
 UI/GUITimer.h: ../../src/UI/GUITimerGTK.cpp
 @GUITimer.o
 UI/GUITrackBar.h: ../../src/UI/GUITrackBarGTK.cpp
@@ -208,7 +208,7 @@ GUITabPage.o: ../../src/UI/GUITabPage.cpp
 $`pkg-config --cflags gtk+-3.0`
 GUITextBox.o: ../../src/UI/GUITextBoxGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
-GUITextFileView.o: ../../src/UI/GUITextFileViewGTK.cpp
+GUITextView.o: ../../src/UI/GUITextViewGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 GUITimer.o: ../../src/UI/GUITimerGTK.cpp
 $`pkg-config --cflags gtk+-3.0`

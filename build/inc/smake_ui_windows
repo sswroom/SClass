@@ -100,8 +100,8 @@ UI/GUITabPage.h: ../../src/UI/GUITabPage.cpp
 @GUITabPage.o
 UI/GUITextBox.h: ../../src/UI/GUITextBoxWin.cpp
 @GUITextBox.o
-UI/GUITextFileView.h: ../../src/UI/GUITextFileViewWin.cpp
-@GUITextFileView.o
+UI/GUITextView.h: ../../src/UI/GUITextViewWin.cpp
+@GUITextView.o
 UI/GUITimer.h: ../../src/UI/GUITimerWin.cpp
 @GUITimer.o
 UI/GUITrackBar.h: ../../src/UI/GUITrackBarWin.cpp
@@ -182,7 +182,7 @@ GUITabControl.o: ../../src/UI/GUITabControlWin.cpp
 !-lcomctl32
 GUITabPage.o: ../../src/UI/GUITabPage.cpp
 GUITextBox.o: ../../src/UI/GUITextBoxWin.cpp
-GUITextFileView.o: ../../src/UI/GUITextFileViewWin.cpp
+GUITextView.o: ../../src/UI/GUITextViewWin.cpp
 GUITimer.o: ../../src/UI/GUITimerWin.cpp
 GUITrackBar.o: ../../src/UI/GUITrackBarWin.cpp
 !-lcomctl32
