@@ -1,5 +1,6 @@
 #ifndef _SM_UI_FONTDIALOG
 #define _SM_UI_FONTDIALOG
+#include "Handles.h"
 #include "IO/Registry.h"
 
 namespace UI
@@ -17,7 +18,7 @@ namespace UI
 		FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 		~FontDialog();
 
-		Bool ShowDialog(void *ownerHandle);
+		Bool ShowDialog(ControlHandle *ownerHandle);
 
 		const UTF8Char *GetFontName();
 		Double GetFontSizePt();

@@ -15,7 +15,7 @@ UI::FontDialog::FontDialog()
 
 UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	this->fontName = Text::StrCopyNew(fontName);
+	this->fontName = SCOPY_TEXT(fontName);
 	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
@@ -23,13 +23,10 @@ UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isB
 
 UI::FontDialog::~FontDialog()
 {
-	if (this->fontName)
-	{
-		Text::StrDelNew(this->fontName);
-	}
+	SDEL_TEXT(this->fontName);
 }
 
-Bool UI::FontDialog::ShowDialog(void *ownerHandle)
+Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	GtkWidget *dlg = gtk_font_chooser_dialog_new("Select Font", (GtkWindow*)ownerHandle);
 	if (this->fontName)
@@ -45,7 +42,7 @@ Bool UI::FontDialog::ShowDialog(void *ownerHandle)
 		if (fontDesc)
 		{
 			const char *family = pango_font_description_get_family(fontDesc);
-			Text::StrDelNew(this->fontName);
+			SDEL_TEXT(this->fontName);
 			this->fontName = Text::StrCopyNew((const UTF8Char*)family);
 			this->isBold = pango_font_description_get_weight(fontDesc) >= PANGO_WEIGHT_BOLD;
 			this->isItalic = pango_font_description_get_style(fontDesc) == PANGO_STYLE_ITALIC;

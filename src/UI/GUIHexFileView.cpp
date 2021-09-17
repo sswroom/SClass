@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
+#include "Text/CharUtil.h"
 #include "UI/GUIHexFileView.h"
 
 UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUITextView(ui, parent, deng)
@@ -7,11 +8,15 @@ UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent
 	this->fs = 0;
 	this->fileSize = 0;
 	this->currOfst = 0;
+	NEW_CLASS(this->hdlrList, Data::ArrayList<OffsetChgHandler>());
+	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
 }
 
 UI::GUIHexFileView::~GUIHexFileView()
 {
 	SDEL_CLASS(this->fs);
+	DEL_CLASS(this->hdlrList);
+	DEL_CLASS(this->hdlrObjList);
 }
 
 void UI::GUIHexFileView::EventLineUp()
@@ -165,15 +170,21 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		UOSInt i;
 		UOSInt j;
 		UTF8Char c;
+		UTF32Char wc;
 		UInt8 *readBuff;
 		UInt8 *currPtr;
 		UOSInt k;
 		UOSInt readBuffSize = (this->pageLineCnt + 1) * 16;
-		readBuff = MemAlloc(UInt8, readBuffSize);
+		const UTF8Char *textPtr;
+		const UTF8Char *textPtr2;
+		UOSInt textSkip;
+		readBuff = MemAlloc(UInt8, readBuffSize + 1);
 		this->fs->SeekFromBeginning(currOfst);
 		readBuffSize = this->fs->Read(readBuff, readBuffSize);
 		currPtr = readBuff;
+		readBuff[readBuffSize] = 0;
 		k = 0;
+		textSkip = 0;
 
 		while (currOfst < this->fileSize && currY < dHeight)
 		{
@@ -211,6 +222,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				k = readBuffSize;
 			}
 			readBuffSize -= k;
+			textPtr = currPtr;
 			j = 0;
 			while (j < k)
 			{
@@ -229,6 +241,49 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				currX += hHeight * 2;
 				j++;
 			}
+
+			if (k < 16)
+			{
+				currX += hHeight * 3 * Math::UOSInt2Double(16 - k);
+			}
+			j = textSkip;
+			if (textSkip > 0)
+			{
+				currX += hHeight * Math::UOSInt2Double(textSkip);
+				textPtr += textSkip;
+				textSkip = 0;
+			}
+			while (j < k)
+			{
+				if (Text::CharUtil::UTF8CharValid(textPtr))
+				{
+					textPtr2 = Text::StrReadChar(textPtr, &wc);
+					if (wc < 32)
+					{
+						dimg->DrawString(currX, currY, (const UTF8Char*)".", f, textBrush);
+					}
+					else
+					{
+						Text::StrWriteChar(sbuff, wc)[0] = 0;
+						dimg->DrawString(currX, currY, sbuff, f, textBrush);
+					}
+					currX += hHeight * Math::OSInt2Double(textPtr2 - textPtr);
+					j += (UOSInt)(textPtr2 - textPtr);
+					textPtr = textPtr2;
+				}
+				else
+				{
+					dimg->DrawString(currX, currY, (const UTF8Char*)".", f, textBrush);
+					textPtr++;
+					currX += hHeight;
+					j++;
+				}
+			}
+			if (j > k)
+			{
+				textSkip = j - k;
+			}
+
 			currOfst += 16;
 			currY += this->pageLineHeight;
 		}
@@ -324,9 +379,30 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 		this->SetScrollVPos((ofst >> 4) - this->pageLineCnt + 1, true);
 	}
 	this->Redraw();
+	UOSInt i = this->hdlrList->GetCount();
+	while (i-- > 0)
+	{
+		this->hdlrList->GetItem(i)(this->hdlrObjList->GetItem(i), ofst);
+	}
 }
 
 UInt64 UI::GUIHexFileView::GetCurrOfst()
 {
 	return this->currOfst;
+}
+
+UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff)
+{
+	if (this->fs == 0)
+	{
+		return 0;
+	}
+	this->fs->SeekFromBeginning(ofst);
+	return this->fs->Read(outBuff, size);
+}
+
+void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)
+{
+	this->hdlrObjList->Add(hdlrObj);
+	this->hdlrList->Add(hdlr);
 }

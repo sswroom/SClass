@@ -31,7 +31,7 @@ UI::FontDialog::~FontDialog()
 	}
 }
 
-Bool UI::FontDialog::ShowDialog(void *ownerHandle)
+Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	LOGFONTW lf;
 	CHOOSEFONTW cfont;

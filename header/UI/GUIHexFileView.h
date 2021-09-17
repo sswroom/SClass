@@ -7,10 +7,14 @@ namespace UI
 {
 	class GUIHexFileView : public GUITextView
 	{
+	public:
+		typedef void (__stdcall *OffsetChgHandler)(void *userObj, UInt64 offset);
 	private:
 		IO::FileStream *fs;
 		UInt64 fileSize;
 		UInt64 currOfst;
+		Data::ArrayList<OffsetChgHandler> *hdlrList;
+		Data::ArrayList<void *> *hdlrObjList;
 
 	public:
 		GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng);
@@ -38,6 +42,9 @@ namespace UI
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();
+		UOSInt GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff);
+
+		void HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj);
 	};
 }
 #endif
