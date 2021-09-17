@@ -610,36 +610,36 @@ void UI::GUITextView::OnMouseMove(OSInt scnX, OSInt scnY)
 	if (this->clsData->scrVDown)
 	{
 		UOSInt range = this->clsData->scrVMax - this->clsData->scrVMin;
-		UOSInt scrollPos = clsData->scrVDownPos + (UOSInt)(scnY - clsData->scrVDownY) * range / height;
-		if (scrollPos < clsData->scrVMin)
+		OSInt scrollPos = (OSInt)clsData->scrVDownPos + (scnY - clsData->scrVDownY) * (OSInt)range / (OSInt)height;
+		if (scrollPos < (OSInt)clsData->scrVMin)
 		{
 			clsData->scrVPos = clsData->scrVMin;
 		}
-		else if (scrollPos > clsData->scrVMax - clsData->scrVPage)
+		else if ((UOSInt)scrollPos > clsData->scrVMax - clsData->scrVPage)
 		{
 			clsData->scrVPos = clsData->scrVMax - clsData->scrVPage;
 		}
 		else
 		{
-			clsData->scrVPos = scrollPos;
+			clsData->scrVPos = (UOSInt)scrollPos;
 		}
 		this->Redraw();
 	}
 	else if (this->clsData->scrHDown)
 	{
 		UOSInt range = clsData->scrHMax - clsData->scrHMin;
-		UOSInt scrollPos = clsData->scrHDownPos + (UOSInt)(scnX - clsData->scrHDownX) * range / width;
-		if (scrollPos < clsData->scrHMin)
+		OSInt scrollPos = (OSInt)clsData->scrHDownPos + (scnX - clsData->scrHDownX) * (OSInt)range / (OSInt)width;
+		if (scrollPos < (OSInt)clsData->scrHMin)
 		{
 			clsData->scrHPos = clsData->scrHMin;
 		}
-		else if (scrollPos > clsData->scrHMax - clsData->scrHPage)
+		else if ((UOSInt)scrollPos > clsData->scrHMax - clsData->scrHPage)
 		{
 			clsData->scrHPos = clsData->scrHMax - clsData->scrHPage;
 		}
 		else
 		{
-			clsData->scrHPos = scrollPos;
+			clsData->scrHPos = (UOSInt)scrollPos;
 		}
 		this->Redraw();
 	}

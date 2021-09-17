@@ -2967,6 +2967,8 @@ SSWR/AVIRead/AVIRGUIEventForm.h: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
 @AVIRGUIEventForm.o
 SSWR/AVIRead/AVIRHashTestForm.h: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
 @AVIRHashTestForm.o
+SSWR/AVIRead/AVIRHexViewerForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
+@AVIRHexViewerForm.o
 SSWR/AVIRead/AVIRHIDDeviceForm.h: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 @AVIRHIDDeviceForm.o
 SSWR/AVIRead/AVIRHQMPForm.h: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
@@ -3572,6 +3574,8 @@ adl_structures.h:
 miniz.h: ../../ThirdParty/miniz/miniz.c
 @miniz.o
 
+UI/GUIHexFileView.h: ../../src/UI/GUIHexFileView.cpp
+@GUIHexFileView.o
 UI/GUIMapControl.h: ../../src/UI/GUIMapControl.cpp
 @GUIMapControl.o
 UI/GUIMapTreeView.h: ../../src/UI/GUIMapTreeView.cpp
@@ -4576,6 +4580,7 @@ AVIRGPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRGPUInfoForm.cpp
 AVIRGSMModemForm.o: ../../src/SSWR/AVIRead/AVIRGSMModemForm.cpp
 AVIRGUIEventForm.o: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
 AVIRHashTestForm.o: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
+AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
@@ -4868,6 +4873,7 @@ FormEncoding.o: ../../src/Text/TextEnc/FormEncoding.cpp
 Punycode.o: ../../src/Text/TextEnc/Punycode.cpp
 URIEncoding.o: ../../src/Text/TextEnc/URIEncoding.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
+GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp

@@ -79,6 +79,7 @@
 #include "SSWR/AVIRead/AVIRGPUInfoForm.h"
 #include "SSWR/AVIRead/AVIRGUIEventForm.h"
 #include "SSWR/AVIRead/AVIRHashTestForm.h"
+#include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRHIDDeviceForm.h"
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
@@ -392,7 +393,8 @@ typedef enum
 	MNU_EMAIL_ADDR_VALID,
 	MNU_SMTP_CLIENT,
 	MNU_SMBIOS,
-	MNU_NETBIOS_SCANNER
+	MNU_NETBIOS_SCANNER,
+	MNU_HEX_VIEWER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -551,6 +553,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"Stream Latency", MNU_STREAMLATENCY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem((const UTF8Char*)"Text Viewer", MNU_TEXT_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Hex Viewer", MNU_HEX_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"File Extractor", MNU_FILEEX, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"File Hash", MNU_FILE_HASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"File Size Pack", MNU_FILE_SIZE_PACK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2331,6 +2334,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRNetBIOSScannerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRNetBIOSScannerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_HEX_VIEWER:
+		{
+			SSWR::AVIRead::AVIRHexViewerForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
