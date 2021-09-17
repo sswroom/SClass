@@ -1191,7 +1191,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	xPos = (UOSInt)this->GetScrollHPos();
 	yPos = (UOSInt)this->GetScrollVPos();
 
-	Media::DrawBrush *bgBrush = dimg->NewBrushARGB(0xffffffff);
+	Media::DrawBrush *bgBrush = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, bgBrush);
 	dimg->DelBrush(bgBrush);
 
@@ -1247,9 +1247,9 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	{
 	}
 
-	Media::DrawBrush *textBrush = dimg->NewBrushARGB(0xff000000);
-	Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(0xff0000ff);
-	Media::DrawBrush *selBrush = dimg->NewBrushARGB(0xffccccff);
+	Media::DrawBrush *textBrush = dimg->NewBrushARGB(this->txtColor);
+	Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
+	Media::DrawBrush *selBrush = dimg->NewBrushARGB(this->selColor);
 	currOfst = startOfst;
 	i = 0;
 	while (i < this->pageLineCnt)

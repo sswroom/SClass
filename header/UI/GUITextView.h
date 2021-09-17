@@ -19,6 +19,11 @@ namespace UI
 	protected:	
 		UInt32 pageLineCnt;
 		Double pageLineHeight;
+		UInt32 bgColor;
+		UInt32 scrColor;
+		UInt32 txtColor;
+		UInt32 lineNumColor;
+		UInt32 selColor;
 
 	private:
 		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);

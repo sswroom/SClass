@@ -457,6 +457,12 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->drawBuff = 0;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
+	this->bgColor = 0xffffffff;
+	this->scrColor = 0xffcccccc;
+	this->txtColor = 0xff000000;
+	this->lineNumColor = 0xff0000ff;
+	this->selColor = 0xffccccff;
+
 
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->scrVMin = 0;
@@ -729,10 +735,10 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, (OSInt)width - SCROLLWIDTH, 0, SCROLLWIDTH, (OSInt)drawHeight);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		Media::DrawBrush *b = dimg->NewBrushARGB(0xffffffff);
+		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(0, 0, SCROLLWIDTH, Math::UOSInt2Double(drawHeight), 0, b);
 		dimg->DelBrush(b);
-		b = dimg->NewBrushARGB(0xffcccccc);
+		b = dimg->NewBrushARGB(this->scrColor);
 		UOSInt range = clsData->scrVMax - clsData->scrVMin;
 		dimg->DrawRect(0, Math::UOSInt2Double(drawHeight * (clsData->scrVPos - clsData->scrVMin) / range), SCROLLWIDTH, Math::UOSInt2Double(drawHeight * clsData->scrVPage / range), 0, b);
 		this->deng->DeleteImage(dimg);
@@ -742,10 +748,10 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, 0, (OSInt)height - SCROLLWIDTH, (OSInt)drawWidth, SCROLLWIDTH);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		Media::DrawBrush *b = dimg->NewBrushARGB(0xffffffff);
+		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(0, 0, Math::UOSInt2Double(drawWidth), SCROLLWIDTH, 0, b);
 		dimg->DelBrush(b);
-		b = dimg->NewBrushARGB(0xffcccccc);
+		b = dimg->NewBrushARGB(this->scrColor);
 		UOSInt range = clsData->scrHMax - clsData->scrHMin;
 		dimg->DrawRect(Math::UOSInt2Double(drawWidth * (clsData->scrHPos - clsData->scrHMin) / range), 0, Math::UOSInt2Double(drawHeight * clsData->scrHPage / range), SCROLLWIDTH, 0, b);
 		this->deng->DeleteImage(dimg);
