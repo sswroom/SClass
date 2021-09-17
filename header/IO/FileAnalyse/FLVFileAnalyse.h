@@ -39,6 +39,7 @@ namespace IO
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb);
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual UOSInt GetFrameIndex(UInt64 ofst);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

@@ -322,6 +322,32 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	return true;
 }
 
+UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt k;
+	PNGTag *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->tags->GetItem(k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->size)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k;
+		}
+	}
+	return INVALID_INDEX;
+}
+
 Bool IO::FileAnalyse::PNGFileAnalyse::IsError()
 {
 	return this->fd == 0;

@@ -259,6 +259,15 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 
 }
 
+UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	if (ofst >= this->fileSize)
+	{
+		return INVALID_INDEX;
+	}
+	return (UOSInt)(ofst / this->packSize);
+}
+
 Bool IO::FileAnalyse::TSFileAnalyse::IsError()
 {
 	return this->fd == 0;

@@ -835,6 +835,32 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	return true;
 }
 
+UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->blockList->GetCount() - 1;
+	OSInt k;
+	BlockInfo *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->blockList->GetItem(k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->blockLength)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k;
+		}
+	}
+	return INVALID_INDEX;
+}
+
 Bool IO::FileAnalyse::PCapngFileAnalyse::IsError()
 {
 	return this->fd == 0;

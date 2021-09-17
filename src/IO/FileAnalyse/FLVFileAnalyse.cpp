@@ -303,6 +303,36 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	return true;
 }
 
+UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	if (ofst < this->hdrSize)
+	{
+		return 0;
+	}
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt k;
+	FLVTag *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->tags->GetItem(k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->size)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k + 1;
+		}
+	}
+	return INVALID_INDEX;
+}
+
 Bool IO::FileAnalyse::FLVFileAnalyse::IsError()
 {
 	return this->fd == 0;

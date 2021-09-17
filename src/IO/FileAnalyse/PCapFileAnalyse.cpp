@@ -238,6 +238,37 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	return true;
 }
 
+UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	if (ofst < 24)
+	{
+		return 0;
+	}
+	OSInt i = 0;
+	OSInt j = (OSInt)this->ofstList->GetCount() - 1;
+	OSInt k;
+	UInt64 packOfst;
+	UInt64 nextOfst;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		packOfst = this->ofstList->GetItem(k);
+		if (ofst < packOfst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= packOfst + this->sizeList->GetItem(k))
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k + 1;
+		}
+	}
+	return INVALID_INDEX;
+}
+
 Bool IO::FileAnalyse::PCapFileAnalyse::IsError()
 {
 	return this->fd == 0;
