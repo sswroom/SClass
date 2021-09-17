@@ -337,13 +337,12 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 	case WM_SIZE:
 		if (me)
 		{
-			UOSInt scnW;
-			UOSInt scnH;
+			UOSInt scnW = (UInt16)LOWORD(lParam);
+			UOSInt scnH = (UInt16)HIWORD(lParam);
 			if (me->drawBuff)
 			{
 				me->deng->DeleteImage(me->drawBuff);
 			}
-			me->GetSizeP(&scnW, &scnH);
 			me->drawBuff = me->deng->CreateImage32(scnW, scnH, Media::AT_NO_ALPHA);
 			me->drawBuff->SetHDPI(me->GetHDPI());
 			me->drawBuff->SetVDPI(me->GetHDPI());
@@ -382,10 +381,10 @@ void UI::GUITextView::OnPaint()
 {
 	RECT rc;
 	PAINTSTRUCT ps;
+	GetClientRect((HWND)this->hwnd, &rc);
 	if (this->drawBuff == 0)
 	{	
 		BeginPaint((HWND)this->hwnd, &ps);
-		GetClientRect((HWND)this->hwnd, &rc);
 		FillRect(ps.hdc, &rc, BGBRUSH);
 		EndPaint((HWND)this->hwnd, &ps);
 		return;
@@ -395,7 +394,6 @@ void UI::GUITextView::OnPaint()
 
 	Media::GDIImage *img = (Media::GDIImage*)this->drawBuff;
 	BeginPaint((HWND)this->hwnd, &ps);
-	GetClientRect((HWND)this->hwnd, &rc);
 	BitBlt(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top, (HDC)img->hdcBmp, 0, 0, SRCCOPY);
 	EndPaint((HWND)this->hwnd, &ps);
 	this->UpdateCaretPos();
@@ -582,6 +580,7 @@ void UI::GUITextView::UpdateFont()
 {
 	this->drawFont = this->GetFont();
 	UpdateScrollBar();
+	this->Redraw();
 }
 
 OSInt UI::GUITextView::GetScrollHPos()

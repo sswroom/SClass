@@ -45,6 +45,10 @@ void UI::GUIHexFileView::EventPageUp()
 	{
 		this->GoToOffset(this->currOfst - (this->pageLineCnt * 16));
 	}
+	else
+	{
+		this->GoToOffset(this->currOfst & 15);
+	}
 }
 
 void UI::GUIHexFileView::EventPageDown()
@@ -297,6 +301,21 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 
 void UI::GUIHexFileView::UpdateCaretPos()
 {
+	OSInt posV = this->GetScrollVPos();
+	Double currY = this->pageLineHeight * Math::OSInt2Double((OSInt)(this->currOfst >> 4) - posV);
+	Double currX;
+	UOSInt charCnt;
+	if (this->fileSize < 0x100000000)
+	{
+		charCnt = 9;
+	}
+	else
+	{
+		charCnt = 17;
+	}
+	charCnt += (UOSInt)(this->currOfst & 15) * 3;
+	currX = charCnt * this->pageLineHeight * 0.5;
+	this->SetCaretPos(Math::Double2OSInt(currX), Math::Double2OSInt(currY));
 }
 
 Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName)
@@ -379,6 +398,7 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 		this->SetScrollVPos((ofst >> 4) - this->pageLineCnt + 1, true);
 	}
 	this->Redraw();
+	this->UpdateCaretPos();
 	UOSInt i = this->hdlrList->GetCount();
 	while (i-- > 0)
 	{

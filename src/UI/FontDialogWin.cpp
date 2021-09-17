@@ -17,7 +17,7 @@ UI::FontDialog::FontDialog()
 
 UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	this->fontName = Text::StrCopyNew(fontName);
+	this->fontName = SCOPY_TEXT(fontName);
 	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
@@ -25,10 +25,7 @@ UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isB
 
 UI::FontDialog::~FontDialog()
 {
-	if (this->fontName)
-	{
-		Text::StrDelNew(this->fontName);
-	}
+	SDEL_TEXT(this->fontName);
 }
 
 Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
