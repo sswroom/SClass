@@ -8,10 +8,11 @@
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	Bool dynamicSize = me->chkDynamicSize->IsChecked();
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->hexView->LoadFile(files[i]))
+		if (me->hexView->LoadFile(files[i], dynamicSize))
 		{
 			break;
 		}
@@ -203,6 +204,8 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtFloat64, UI::GUITextBox(ui, this->pnlValues, (const UTF8Char*)""));
 	this->txtFloat64->SetRect(604, 52, 150, 23, false);
 	this->txtFloat64->SetReadOnly(true);
+	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->pnlValues, (const UTF8Char*)"Dynamic Size", true));
+	this->chkDynamicSize->SetRect(504, 76, 100, 23, false);
 	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->pnlValues, (const UTF8Char *)"Sel Font"));
 	this->btnFont->SetRect(504, 100, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);

@@ -6,6 +6,7 @@
 UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUITextView(ui, parent, deng)
 {
 	this->fs = 0;
+	this->fd = 0;
 	this->fileSize = 0;
 	this->currOfst = 0;
 	NEW_CLASS(this->hdlrList, Data::ArrayList<OffsetChgHandler>());
@@ -15,6 +16,7 @@ UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent
 UI::GUIHexFileView::~GUIHexFileView()
 {
 	SDEL_CLASS(this->fs);
+	SDEL_CLASS(this->fd);
 	DEL_CLASS(this->hdlrList);
 	DEL_CLASS(this->hdlrObjList);
 }
@@ -183,8 +185,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		const UTF8Char *textPtr2;
 		UOSInt textSkip;
 		readBuff = MemAlloc(UInt8, readBuffSize + 1);
-		this->fs->SeekFromBeginning(currOfst);
-		readBuffSize = this->fs->Read(readBuff, readBuffSize);
+		readBuffSize = this->GetFileData(currOfst, readBuffSize, readBuff);
 		currPtr = readBuff;
 		readBuff[readBuffSize] = 0;
 		k = 0;
@@ -318,19 +319,38 @@ void UI::GUIHexFileView::UpdateCaretPos()
 	this->SetCaretPos(Math::Double2OSInt(currX), Math::Double2OSInt(currY));
 }
 
-Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName)
+Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
-	if (fs->IsError())
+	if (dynamicSize)
 	{
-		DEL_CLASS(fs);
-		return false;
+		IO::FileStream *fs;
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		if (fs->IsError())
+		{
+			DEL_CLASS(fs);
+			return false;
+		}
+		SDEL_CLASS(this->fs);
+		SDEL_CLASS(this->fd);
+		this->fs = fs;
+		this->fileSize = 0;
+		this->currOfst = 0;
 	}
-	SDEL_CLASS(this->fs);
-	this->fs = fs;
-	this->fileSize = 0;
-	this->currOfst = 0;
+	else
+	{
+		IO::StmData::FileData *fd;
+		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+		if (fd->IsError())
+		{
+			DEL_CLASS(fd);
+			return false;
+		}
+		SDEL_CLASS(this->fs);
+		SDEL_CLASS(this->fd);
+		this->fd = fd;
+		this->fileSize = this->fd->GetDataSize();
+		this->currOfst = 0;
+	}
 	this->Redraw();
 	return true;
 }
@@ -413,12 +433,19 @@ UInt64 UI::GUIHexFileView::GetCurrOfst()
 
 UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff)
 {
-	if (this->fs == 0)
+	if (this->fd)
+	{
+		return this->fd->GetRealData(ofst, size, outBuff);
+	}
+	else if (this->fs)
+	{
+		this->fs->SeekFromBeginning(ofst);
+		return this->fs->Read(outBuff, size);
+	}
+	else
 	{
 		return 0;
 	}
-	this->fs->SeekFromBeginning(ofst);
-	return this->fs->Read(outBuff, size);
 }
 
 void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)

@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRHEXVIEWERFORM
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHexFileView.h"
 #include "UI/GUILabel.h"
@@ -43,6 +44,7 @@ namespace SSWR
 			UI::GUITextBox *txtFloat32;
 			UI::GUILabel *lblFloat64;
 			UI::GUITextBox *txtFloat64;
+			UI::GUICheckBox *chkDynamicSize;
 			UI::GUIButton *btnFont;
 
 			static void __stdcall OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);

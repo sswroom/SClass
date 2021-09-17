@@ -216,6 +216,10 @@ IO::FileStream *IO::StmData::FileData::GetFileStream()
 	return 0;
 }
 
+Bool IO::StmData::FileData::IsError()
+{
+	return fdh == 0;
+}
 
 void IO::StmData::FileData::Close()
 {
