@@ -867,7 +867,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UInt64 ofst)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem(k);
+		pack = this->packs->GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;

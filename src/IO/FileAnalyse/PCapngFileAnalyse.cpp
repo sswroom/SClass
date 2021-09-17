@@ -844,7 +844,7 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->blockList->GetItem(k);
+		pack = this->blockList->GetItem((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;

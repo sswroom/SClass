@@ -315,7 +315,7 @@ void UI::GUIHexFileView::UpdateCaretPos()
 		charCnt = 17;
 	}
 	charCnt += (UOSInt)(this->currOfst & 15) * 3;
-	currX = charCnt * this->pageLineHeight * 0.5;
+	currX = Math::UOSInt2Double(charCnt) * this->pageLineHeight * 0.5;
 	this->SetCaretPos(Math::Double2OSInt(currX), Math::Double2OSInt(currY));
 }
 

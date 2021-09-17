@@ -248,16 +248,15 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt j = (OSInt)this->ofstList->GetCount() - 1;
 	OSInt k;
 	UInt64 packOfst;
-	UInt64 nextOfst;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		packOfst = this->ofstList->GetItem(k);
+		packOfst = this->ofstList->GetItem((UOSInt)k);
 		if (ofst < packOfst)
 		{
 			j = k - 1;
 		}
-		else if (ofst >= packOfst + this->sizeList->GetItem(k))
+		else if (ofst >= packOfst + this->sizeList->GetItem((UOSInt)k))
 		{
 			i = k + 1;
 		}

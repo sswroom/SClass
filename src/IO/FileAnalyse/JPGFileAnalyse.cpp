@@ -580,7 +580,7 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags->GetItem(k);
+		pack = this->tags->GetItem((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
