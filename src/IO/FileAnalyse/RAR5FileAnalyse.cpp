@@ -115,6 +115,11 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"RAR5";
+}
+
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

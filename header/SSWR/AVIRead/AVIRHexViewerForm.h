@@ -45,6 +45,12 @@ namespace SSWR
 			UI::GUILabel *lblFloat64;
 			UI::GUITextBox *txtFloat64;
 			UI::GUICheckBox *chkDynamicSize;
+			UI::GUILabel *lblFileFormat;
+			UI::GUITextBox *txtFileFormat;
+			UI::GUILabel *lblFrameName;
+			UI::GUITextBox *txtFrameName;
+			UI::GUILabel *lblFieldDetail;
+			UI::GUITextBox *txtFieldDetail;
 			UI::GUIButton *btnFont;
 
 			static void __stdcall OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);

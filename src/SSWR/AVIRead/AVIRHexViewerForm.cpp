@@ -14,6 +14,19 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 	{
 		if (me->hexView->LoadFile(files[i], dynamicSize))
 		{
+			const UTF8Char *name = me->hexView->GetAnalyzerName();
+			if (name)
+			{
+				me->txtFileFormat->SetText(name);
+			}
+			else if (dynamicSize)
+			{
+				me->txtFileFormat->SetText((const UTF8Char*)"Unknown (Dynamic Size cannot determine)");
+			}
+			else
+			{
+				me->txtFileFormat->SetText((const UTF8Char*)"Unknown");
+			}
 			break;
 		}
 		i++;
@@ -121,6 +134,16 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 		me->txtUInt64->SetText((const UTF8Char*)"-");
 		me->txtFloat64->SetText((const UTF8Char*)"-");
 	}
+
+	Text::StringBuilderUTF8 sb;
+	if (me->hexView->GetFrameName(&sb))
+	{
+		me->txtFrameName->SetText(sb.ToString());
+	}
+	else
+	{
+		me->txtFrameName->SetText((const UTF8Char*)"-");
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
@@ -145,7 +168,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlValues, UI::GUIPanel(ui, this));
-	this->pnlValues->SetRect(0, 0, 100, 128, false);
+	this->pnlValues->SetRect(0, 0, 100, 200, false);
 	this->pnlValues->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblEndian, UI::GUILabel(ui, this->pnlValues, (const UTF8Char*)"Endian"));
 	this->lblEndian->SetRect(4, 4, 100, 23, false);
@@ -209,6 +232,22 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->pnlValues, (const UTF8Char *)"Sel Font"));
 	this->btnFont->SetRect(504, 100, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
+	NEW_CLASS(this->lblFileFormat, UI::GUILabel(ui, this->pnlValues, (const UTF8Char*)"File Format"));
+	this->lblFileFormat->SetRect(4, 124, 100, 23, false);
+	NEW_CLASS(this->txtFileFormat, UI::GUITextBox(ui, this->pnlValues, (const UTF8Char*)""));
+	this->txtFileFormat->SetRect(104, 124, 500, 23, false);
+	this->txtFileFormat->SetReadOnly(true);
+	NEW_CLASS(this->lblFrameName, UI::GUILabel(ui, this->pnlValues, (const UTF8Char*)"Frame Name"));
+	this->lblFrameName->SetRect(4, 148, 100, 23, false);
+	NEW_CLASS(this->txtFrameName, UI::GUITextBox(ui, this->pnlValues, (const UTF8Char*)""));
+	this->txtFrameName->SetRect(104, 148, 500, 23, false);
+	this->txtFrameName->SetReadOnly(true);
+	NEW_CLASS(this->lblFieldDetail, UI::GUILabel(ui, this->pnlValues, (const UTF8Char*)"Field Detail"));
+	this->lblFieldDetail->SetRect(4, 172, 100, 23, false);
+	NEW_CLASS(this->txtFieldDetail, UI::GUITextBox(ui, this->pnlValues, (const UTF8Char*)""));
+	this->txtFieldDetail->SetRect(104, 172, 500, 23, false);
+	this->txtFieldDetail->SetReadOnly(true);
+
 	NEW_CLASS(this->hexView, UI::GUIHexFileView(ui, this, this->core->GetDrawEngine()));
 	this->hexView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hexView->HandleOffsetChg(OnOffsetChg, this);

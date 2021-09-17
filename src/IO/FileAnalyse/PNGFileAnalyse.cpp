@@ -91,6 +91,11 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
+const UTF8Char *IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"PNG";
+}
+
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
 {
 	return this->tags->GetCount();

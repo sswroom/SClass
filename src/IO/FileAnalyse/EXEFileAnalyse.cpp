@@ -303,6 +303,11 @@ IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 	}
 }
 
+const UTF8Char *IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"EXE";
+}
+
 UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

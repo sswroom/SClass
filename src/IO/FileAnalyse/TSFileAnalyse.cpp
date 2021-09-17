@@ -35,6 +35,11 @@ IO::FileAnalyse::TSFileAnalyse::~TSFileAnalyse()
 	SDEL_CLASS(this->fd);
 }
 
+const UTF8Char *IO::FileAnalyse::TSFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"Transport Stream (TS)";
+}
+
 UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
 {
 	return (UOSInt)(this->fileSize / this->packSize);

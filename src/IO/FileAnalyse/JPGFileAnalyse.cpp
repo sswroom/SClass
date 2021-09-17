@@ -221,6 +221,11 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
+const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"JPEG";
+}
+
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 {
 	return this->tags->GetCount();

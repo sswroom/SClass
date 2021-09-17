@@ -126,6 +126,11 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"NFDump";
+}
+
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

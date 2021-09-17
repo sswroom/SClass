@@ -103,6 +103,11 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 	MemFree(this->packetBuff);
 }
 
+const UTF8Char *IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"pcap";
+}
+
 UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
 {
 	return 1 + this->ofstList->GetCount();

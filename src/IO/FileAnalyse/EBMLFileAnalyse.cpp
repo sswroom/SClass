@@ -426,6 +426,11 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"EMBL";
+}
+
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

@@ -191,6 +191,11 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 	MemFree(this->packetBuff);
 }
 
+const UTF8Char *IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"pcapng";
+}
+
 UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 {
 	return this->blockList->GetCount();

@@ -105,6 +105,11 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::QTFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"Quicktime";
+}
+
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

@@ -169,6 +169,11 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"SPK";
+}
+
 UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

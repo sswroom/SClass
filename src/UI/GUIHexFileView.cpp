@@ -7,16 +7,19 @@ UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent
 {
 	this->fs = 0;
 	this->fd = 0;
+	this->analyse = 0;
 	this->fileSize = 0;
 	this->currOfst = 0;
 	NEW_CLASS(this->hdlrList, Data::ArrayList<OffsetChgHandler>());
 	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
+	this->SetScrollHRange(0, 0);
 }
 
 UI::GUIHexFileView::~GUIHexFileView()
 {
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
+	SDEL_CLASS(this->analyse);
 	DEL_CLASS(this->hdlrList);
 	DEL_CLASS(this->hdlrObjList);
 }
@@ -330,6 +333,7 @@ Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
 			DEL_CLASS(fs);
 			return false;
 		}
+		SDEL_CLASS(this->analyse);
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
 		this->fs = fs;
@@ -345,11 +349,14 @@ Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
 			DEL_CLASS(fd);
 			return false;
 		}
+		SDEL_CLASS(this->analyse);
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
 		this->fd = fd;
+		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
 		this->fileSize = this->fd->GetDataSize();
 		this->currOfst = 0;
+		this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
 	}
 	this->Redraw();
 	return true;
@@ -452,4 +459,27 @@ void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)
 {
 	this->hdlrObjList->Add(hdlrObj);
 	this->hdlrList->Add(hdlr);
+}
+
+const UTF8Char *UI::GUIHexFileView::GetAnalyzerName()
+{
+	if (this->analyse)
+	{
+		return this->analyse->GetFormatName();
+	}
+	return 0;
+}
+
+Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF *sb)
+{
+	if (this->analyse == 0)
+	{
+		return false;
+	}
+	UOSInt index = this->analyse->GetFrameIndex(this->currOfst);
+	if (index == INVALID_INDEX)
+	{
+		return false;
+	}
+	return this->analyse->GetFrameName(index, sb);
 }

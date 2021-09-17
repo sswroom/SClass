@@ -15,6 +15,7 @@ namespace IO
 		public:
 			virtual ~IFileAnalyse();
 
+			virtual const UTF8Char *GetFormatName() = 0;
 			virtual UOSInt GetFrameCount() = 0;
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb) = 0;
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb) = 0;

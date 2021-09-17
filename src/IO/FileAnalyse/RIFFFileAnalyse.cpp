@@ -103,6 +103,11 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"RIFF";
+}
+
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

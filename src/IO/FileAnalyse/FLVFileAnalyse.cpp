@@ -185,6 +185,11 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
+const UTF8Char *IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"FLV";
+}
+
 UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
 {
 	return 1 + this->tags->GetCount();

@@ -160,6 +160,11 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
+const UTF8Char *IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"MPEG";
+}
+
 UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 {
 	return this->packs->GetCount();

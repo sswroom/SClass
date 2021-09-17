@@ -711,13 +711,13 @@ void UI::GUITextView::OnDraw(void *cr)
 	this->GetSizeP(&width, &height);
 	UOSInt drawWidth = width;
 	UOSInt drawHeight = height;
-	Bool hasHScr = false;;
+	Bool hasHScr = false;
 	Bool hasVScr = false;
 
 	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage)
 	{
 		hasVScr = true;
-		drawHeight -= SCROLLWIDTH;
+		drawWidth -= SCROLLWIDTH;
 	}
 	if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage)
 	{
