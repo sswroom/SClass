@@ -139,10 +139,24 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	if (me->hexView->GetFrameName(&sb))
 	{
 		me->txtFrameName->SetText(sb.ToString());
+		const IO::FileAnalyse::FrameDetail::FieldInfo *field = me->hexView->GetFieldInfo();
+		if (field == 0)
+		{
+			me->txtFieldDetail->SetText((const UTF8Char*)"-");
+		}
+		else
+		{
+			sb.ClearStr();
+			sb.Append(field->name);
+			sb.AppendChar('=', 1);
+			sb.Append(field->value);
+			me->txtFieldDetail->SetText(sb.ToString());
+		}
 	}
 	else
 	{
 		me->txtFrameName->SetText((const UTF8Char*)"-");
+		me->txtFieldDetail->SetText((const UTF8Char*)"-");
 	}
 }
 

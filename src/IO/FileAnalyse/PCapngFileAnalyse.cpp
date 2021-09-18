@@ -5,6 +5,7 @@
 #include "Net/PacketAnalyzer.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Thread.h"
+#include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 {
@@ -864,6 +865,648 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 	}
 	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	IO::FileAnalyse::FrameDetail *frame;
+	UTF8Char sbuff[64];
+	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
+	if (index >= this->blockList->GetCount())
+	{
+		return 0;
+	}
+	block = this->blockList->GetItem(index);
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(block->ofst, block->blockLength));
+	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
+	if (this->isBE)
+	{
+		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ReadMUInt32(this->packetBuff));
+		frame->AddField(0, 4, (const UTF8Char*)"Type", sbuff);
+		Text::StrUInt32(sbuff, ReadMUInt32(&this->packetBuff[4]));
+		frame->AddField(4, 4, (const UTF8Char*)"TotalSize", sbuff);
+	}
+	else
+	{
+		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ReadUInt32(this->packetBuff));
+		frame->AddField(0, 4, (const UTF8Char*)"Type", sbuff);
+		Text::StrUInt32(sbuff, ReadUInt32(&this->packetBuff[4]));
+		frame->AddField(4, 4, (const UTF8Char*)"TotalSize", sbuff);
+	}
+	Text::StringBuilderUTF8 sb;
+
+	if (block->blockType == 0x0a0d0d0a)
+	{
+		frame->AddFieldSeperstor(8, (const UTF8Char*)"Section Header Block:");
+		UInt16 majorVer;
+		UInt16 minorVer;
+		Int64 sectionLength;
+		if (this->isBE)
+		{
+			frame->AddField(8, 4, (const UTF8Char*)"Byte Order", (const UTF8Char*)"Big-endian");
+			majorVer = ReadMUInt16(&this->packetBuff[12]);
+			minorVer = ReadMUInt16(&this->packetBuff[14]);
+			sectionLength = ReadMInt64(&this->packetBuff[16]);
+		}
+		else
+		{
+			frame->AddField(8, 4, (const UTF8Char*)"Byte Order", (const UTF8Char*)"Little-endian");
+			majorVer = ReadUInt16(&this->packetBuff[12]);
+			minorVer = ReadUInt16(&this->packetBuff[14]);
+			sectionLength = ReadInt64(&this->packetBuff[16]);
+		}
+		Text::StrUInt16(sbuff, majorVer);
+		frame->AddField(12, 2, (const UTF8Char*)"Major Version", sbuff);
+		Text::StrUInt16(sbuff, minorVer);
+		frame->AddField(14, 2, (const UTF8Char*)"Minor Version", sbuff);
+		Text::StrInt64(sbuff, sectionLength);
+		frame->AddField(16, 8, (const UTF8Char*)"Section Length", sbuff);
+
+		UInt16 optCode;
+		UInt16 optLeng;
+		UInt32 i = 24;
+		while (i < block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				optCode = ReadMUInt16(&this->packetBuff[i]);
+				optLeng = ReadMUInt16(&this->packetBuff[i + 2]);
+			}
+			else
+			{
+				optCode = ReadUInt16(&this->packetBuff[i]);
+				optLeng = ReadUInt16(&this->packetBuff[i + 2]);
+			}
+			Text::StrUInt16(sbuff, optCode);
+			frame->AddField(i, 2, (const UTF8Char*)"Option Code", sbuff);
+			Text::StrUInt16(sbuff, optLeng);
+			frame->AddField(i + 2, 2, (const UTF8Char*)"Option Length", sbuff);
+			if (i + 4 + optLeng > block->blockLength)
+			{
+				break;
+			}
+			if (optCode == 0)
+			{
+				i += 4;
+				break;
+			}
+			else if (optCode == 1)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Comment", sb.ToString());
+			}
+			else if (optCode == 2)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Hardware", sb.ToString());
+			}
+			else if (optCode == 3)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"OS", sb.ToString());
+			}
+			else if (optCode == 4)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"User Application", sb.ToString());
+			}
+
+			i += 4 + (UInt32)optLeng;
+			if (i & 3)
+			{
+				sb.ClearStr();
+				sb.AppendHexBuff(&this->packetBuff[i], 4 - (i & 3), ' ', Text::LBT_NONE);
+				frame->AddField(i, 4 - (i & 3), (const UTF8Char*)"Padding", sb.ToString());
+
+				i += 4 - (i & 3);
+			}
+		}
+		if (i == block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				Text::StrUInt32(sbuff, ReadMUInt32(&this->packetBuff[i]));
+			}
+			else
+			{
+				Text::StrUInt32(sbuff, ReadUInt32(&this->packetBuff[i]));
+			}
+			frame->AddField(i, 4, (const UTF8Char*)"TotalSize", sbuff);
+		}
+	}
+	else if (block->blockType == 1)
+	{
+		frame->AddFieldSeperstor(8, (const UTF8Char*)"Interface Description Block:");
+		UInt16 linkType;
+		UInt16 reserved;
+		UInt32 snapLen;
+		if (this->isBE)
+		{
+			linkType = ReadMUInt16(&this->packetBuff[8]);
+			reserved = ReadMUInt16(&this->packetBuff[10]);
+			snapLen = ReadMUInt32(&this->packetBuff[12]);
+		}
+		else
+		{
+			linkType = ReadUInt16(&this->packetBuff[8]);
+			reserved = ReadUInt16(&this->packetBuff[10]);
+			snapLen = ReadUInt32(&this->packetBuff[12]);
+		}
+		sb.ClearStr();
+		sb.AppendU16(linkType);
+		const UTF8Char *csptr = IO::RAWMonitor::LinkTypeGetName(linkType);
+		if (csptr)
+		{
+			sb.Append((const UTF8Char*)" (");
+			sb.Append(csptr);
+			sb.Append((const UTF8Char*)")");
+		}
+		frame->AddField(8, 2, (const UTF8Char*)"LinkType", sb.ToString());
+		Text::StrHexVal16(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), reserved);
+		frame->AddField(10, 2, (const UTF8Char*)"Reserved", sbuff);
+		Text::StrUInt32(sbuff, snapLen);
+		frame->AddField(12, 4, (const UTF8Char*)"Snap Length", sbuff);
+		UInt16 optCode;
+		UInt16 optLeng;
+		UInt32 i = 16;
+		while (i < block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				optCode = ReadMUInt16(&this->packetBuff[i]);
+				optLeng = ReadMUInt16(&this->packetBuff[i + 2]);
+			}
+			else
+			{
+				optCode = ReadUInt16(&this->packetBuff[i]);
+				optLeng = ReadUInt16(&this->packetBuff[i + 2]);
+			}
+			Text::StrUInt16(sbuff, optCode);
+			frame->AddField(i, 2, (const UTF8Char*)"Option Code", sbuff);
+			Text::StrUInt16(sbuff, optLeng);
+			frame->AddField(i + 2, 2, (const UTF8Char*)"Option Length", sbuff);
+			if (i + 4 + optLeng > block->blockLength)
+			{
+				break;
+			}
+			if (optCode == 0)
+			{
+				i += 4;
+				break;
+			}
+			else if (optCode == 1)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Comment", sb.ToString());
+			}
+			else if (optCode == 2)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Name", sb.ToString());
+			}
+			else if (optCode == 3)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Description", sb.ToString());
+			}
+			else if (optCode == 4)
+			{
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 4]));
+				frame->AddField(i + 4, 4, (const UTF8Char*)"IPv4 Address", sbuff);
+				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 8]));
+				frame->AddField(i + 8, 4, (const UTF8Char*)"Netmask", sbuff);
+			}
+			else if (optCode == 5)
+			{
+				Net::SocketUtil::AddressInfo addr;
+				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
+				Text::StrUInt16(Text::StrConcat(Net::SocketUtil::GetAddrName(sbuff, &addr), (const UTF8Char*)"/"), this->packetBuff[i + 20]);
+				frame->AddField(i + 4, 17, (const UTF8Char*)"IPv6 Address", sbuff);
+			}
+			else if (optCode == 6)
+			{
+				sb.ClearStr();
+				sb.AppendHexBuff(&this->packetBuff[i + 4], 6, ':', Text::LBT_NONE);
+				frame->AddField(i + 4, 6, (const UTF8Char*)"MAC Address", sb.ToString());
+			}
+			else if (optCode == 7)
+			{
+				sb.ClearStr();
+				sb.AppendHexBuff(&this->packetBuff[i + 4], 8, ':', Text::LBT_NONE);
+				frame->AddField(i + 4, 8, (const UTF8Char*)"EUI Address", sb.ToString());
+			}
+			else if (optCode == 8)
+			{
+				Int64 speed;
+				if (this->isBE)
+				{
+					speed = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					speed = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrConcat(Text::StrInt64(sbuff, speed), (const UTF8Char*)"bps");
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Speed", sbuff);
+			}
+			else if (optCode == 9)
+			{
+				Text::StrInt16(sbuff, (Int8)this->packetBuff[i + 4]);
+				frame->AddField(i + 4, 1, (const UTF8Char*)"Timestamps resolution", sbuff);
+			}
+			else if (optCode == 10)
+			{
+				Int32 tzone;
+				if (this->isBE)
+				{
+					tzone = ReadMInt32(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					tzone = ReadInt32(&this->packetBuff[i + 4]);
+				}
+				Text::StrInt32(sbuff, tzone);
+				frame->AddField(i + 4, 1, (const UTF8Char*)"Time Zone", sbuff);
+			}
+			else if (optCode == 11)
+			{
+				sb.ClearStr();
+				sb.AppendU16(this->packetBuff[i + 4]);
+				if (optLeng > 1)
+				{
+					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(&this->packetBuff[i + 5], (UOSInt)optLeng - 1);
+					sb.Append((const UTF8Char*)")");
+				}
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Filter", sb.ToString());
+			}
+			else if (optCode == 12)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"OS", sb.ToString());
+			}
+			else if (optCode == 13)
+			{
+				Text::StrUInt16(sbuff, this->packetBuff[i + 4]);
+				frame->AddField(i + 4, 1, (const UTF8Char*)"Frame Check Sequence Length", sbuff);
+			}
+			else if (optCode == 14)
+			{
+				Int64 tsOffset;
+				if (this->isBE)
+				{
+					tsOffset = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					tsOffset = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrConcat(Text::StrInt64(sbuff, tsOffset), (const UTF8Char*)"sec.");
+				frame->AddField(i + 4, 8, (const UTF8Char*)"TS Offset", sbuff);
+			}
+			else if (optCode == 15)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Hardware", sb.ToString());
+			}
+
+			i += 4 + (UInt32)optLeng;
+			if (i & 3)
+			{
+				sb.ClearStr();
+				sb.AppendHexBuff(&this->packetBuff[i], 4 - (i & 3), ' ', Text::LBT_NONE);
+				frame->AddField(i, 4 - (i & 3), (const UTF8Char*)"Padding", sb.ToString());
+
+				i += 4 - (i & 3);
+			}
+		}
+		if (i == block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				Text::StrUInt32(sbuff, ReadMUInt32(&this->packetBuff[i]));
+			}
+			else
+			{
+				Text::StrUInt32(sbuff, ReadUInt32(&this->packetBuff[i]));
+			}
+			frame->AddField(i, 4, (const UTF8Char*)"TotalSize", sbuff);
+		}
+	}
+	else if (block->blockType == 6)
+	{
+		frame->AddFieldSeperstor(8, (const UTF8Char*)"Enhanced Packet Block:");
+		UInt32 ifId;
+		Int64 ts;
+		UInt32 capPSize;
+		UInt32 oriPSize;
+		Data::DateTime dt;
+		if (this->isBE)
+		{
+			ifId = ReadMUInt32(&this->packetBuff[8]);
+			ts = ReadMInt64(&this->packetBuff[12]);
+			capPSize = ReadMUInt32(&this->packetBuff[20]);
+			oriPSize = ReadMUInt32(&this->packetBuff[24]);
+		}
+		else
+		{
+			ifId = ReadUInt32(&this->packetBuff[8]);
+			ts = (((Int64)ReadInt32(&this->packetBuff[12])) << 32) | ReadUInt32(&this->packetBuff[16]);
+			capPSize = ReadUInt32(&this->packetBuff[20]);
+			oriPSize = ReadUInt32(&this->packetBuff[24]);
+		}
+		Text::StrUInt32(sbuff, ifId);
+		frame->AddField(8, 4, (const UTF8Char*)"Interface ID", sbuff);
+		SetTime(&dt, ts, block->timeResol);
+		dt.ToLocalTime();
+		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		frame->AddField(12, 8, (const UTF8Char*)"Time", sbuff);
+		Text::StrUInt32(sbuff, capPSize);
+		frame->AddField(20, 4, (const UTF8Char*)"Captured Packet Length", sbuff);
+		Text::StrUInt32(sbuff, oriPSize);
+		frame->AddField(24, 4, (const UTF8Char*)"Original Packet Length", sbuff);
+		UInt32 i;
+		if (capPSize + 32 <= block->blockLength)
+		{
+//			Net::PacketAnalyzer::PacketDataGetDetail(block->linkType, &this->packetBuff[28], capPSize, sb);
+
+			UInt16 optCode;
+			UInt16 optLeng;
+			i = 28 + capPSize;
+			if (i & 3)
+			{
+				sb.ClearStr();
+				sb.AppendHexBuff(&this->packetBuff[i], 4 - (i & 3), ' ', Text::LBT_NONE);
+				frame->AddField(i, 4 - (i & 3), (const UTF8Char*)"Padding", sb.ToString());
+
+				i += 4 - (i & 3);
+			}
+			while (i < block->blockLength - 4)
+			{
+				if (this->isBE)
+				{
+					optCode = ReadMUInt16(&this->packetBuff[i]);
+					optLeng = ReadMUInt16(&this->packetBuff[i + 2]);
+				}
+				else
+				{
+					optCode = ReadUInt16(&this->packetBuff[i]);
+					optLeng = ReadUInt16(&this->packetBuff[i + 2]);
+				}
+				Text::StrUInt16(sbuff, optCode);
+				frame->AddField(i, 2, (const UTF8Char*)"Option Code", sbuff);
+				Text::StrUInt16(sbuff, optLeng);
+				frame->AddField(i + 2, 2, (const UTF8Char*)"Option Length", sbuff);
+				if (i + 4 + optLeng > block->blockLength)
+				{
+					break;
+				}
+				if (optCode == 0)
+				{
+					i += 4;
+					break;
+				}
+				else if (optCode == 1)
+				{
+					sb.ClearStr();
+					sb.AppendC(&this->packetBuff[i + 4], optLeng);
+					frame->AddField(i + 4, optLeng, (const UTF8Char*)"Comment", sb.ToString());
+				}
+				else if (optCode == 2)
+				{
+					sb.ClearStr();
+					sb.AppendC(&this->packetBuff[i + 4], optLeng);
+					frame->AddField(i + 4, optLeng, (const UTF8Char*)"Hardware", sb.ToString());
+				}
+				else if (optCode == 3)
+				{
+					sb.ClearStr();
+					sb.AppendC(&this->packetBuff[i + 4], optLeng);
+					frame->AddField(i + 4, optLeng, (const UTF8Char*)"OS", sb.ToString());
+				}
+				else if (optCode == 4)
+				{
+					sb.ClearStr();
+					sb.AppendC(&this->packetBuff[i + 4], optLeng);
+					frame->AddField(i + 4, optLeng, (const UTF8Char*)"User Application", sb.ToString());
+				}
+
+				i += 4 + (UInt32)optLeng;
+				if (i & 3)
+				{
+					sb.ClearStr();
+					sb.AppendHexBuff(&this->packetBuff[i], 4 - (i & 3), ' ', Text::LBT_NONE);
+					frame->AddField(i, 4 - (i & 3), (const UTF8Char*)"Padding", sb.ToString());
+
+					i += 4 - (i & 3);
+				}
+			}
+		}
+		else
+		{
+			sb.ClearStr();
+			sb.AppendHexBuff(&this->packetBuff[28], block->blockLength - 32, ' ', Text::LBT_CRLF);
+			frame->AddField(28, block->blockLength - 32, (const UTF8Char*)"Unknown", sb.ToString());
+			i = block->blockLength - 4;
+		}
+		if (i == block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				Text::StrUInt32(sbuff, ReadMUInt32(&this->packetBuff[i]));
+			}
+			else
+			{
+				Text::StrUInt32(sbuff, ReadUInt32(&this->packetBuff[i]));
+			}
+			frame->AddField(i, 4, (const UTF8Char*)"TotalSize", sbuff);
+		}
+	}
+	else if (block->blockType == 5)
+	{
+		frame->AddFieldSeperstor(8, (const UTF8Char*)"Interface Statistics Block:");
+		UInt32 ifId;
+		Int64 ts;
+		Data::DateTime dt;
+		if (this->isBE)
+		{
+			ifId = ReadMUInt32(&this->packetBuff[8]);
+			ts = ReadMInt64(&this->packetBuff[12]);
+		}
+		else
+		{
+			ifId = ReadUInt32(&this->packetBuff[8]);
+			ts = (((Int64)ReadInt32(&this->packetBuff[12])) << 32) | ReadUInt32(&this->packetBuff[16]);
+		}
+		Text::StrUInt32(sbuff, ifId);
+		frame->AddField(8, 4, (const UTF8Char*)"Interface ID", sbuff);
+		SetTime(&dt, ts, block->timeResol);
+		dt.ToLocalTime();
+		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		frame->AddField(12, 8, (const UTF8Char*)"Time", sbuff);
+		UInt16 optCode;
+		UInt16 optLeng;
+		UInt32 i = 20;
+		while (i < block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				optCode = ReadMUInt16(&this->packetBuff[i]);
+				optLeng = ReadMUInt16(&this->packetBuff[i + 2]);
+			}
+			else
+			{
+				optCode = ReadUInt16(&this->packetBuff[i]);
+				optLeng = ReadUInt16(&this->packetBuff[i + 2]);
+			}
+			Text::StrUInt16(sbuff, optCode);
+			frame->AddField(i, 2, (const UTF8Char*)"Option Code", sbuff);
+			Text::StrUInt16(sbuff, optLeng);
+			frame->AddField(i + 2, 2, (const UTF8Char*)"Option Length", sbuff);
+			if (i + 4 + optLeng > block->blockLength)
+			{
+				break;
+			}
+			if (optCode == 0)
+			{
+				i += 4;
+				break;
+			}
+			else if (optCode == 1)
+			{
+				sb.ClearStr();
+				sb.AppendC(&this->packetBuff[i + 4], optLeng);
+				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Comment", sb.ToString());
+			}
+			else if (optCode == 2)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = (((Int64)ReadInt32(&this->packetBuff[i + 4])) << 32) | ReadUInt32(&this->packetBuff[i + 8]);
+				}
+				SetTime(&dt, ts, block->timeResol);
+				dt.ToLocalTime();
+				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Start Time", sbuff);
+			}
+			else if (optCode == 3)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = (((Int64)ReadInt32(&this->packetBuff[i + 4])) << 32) | ReadUInt32(&this->packetBuff[i + 8]);
+				}
+				SetTime(&dt, ts, block->timeResol);
+				dt.ToLocalTime();
+				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				frame->AddField(i + 4, 8, (const UTF8Char*)"End Time", sbuff);
+			}
+			else if (optCode == 4)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrInt64(sbuff, ts);
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Received Packets", sbuff);
+			}
+			else if (optCode == 5)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrInt64(sbuff, ts);
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Dropped Packets", sbuff);
+			}
+			else if (optCode == 6)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrInt64(sbuff, ts);
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Packets Accepted by Filter", sbuff);
+			}
+			else if (optCode == 7)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrInt64(sbuff, ts);
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Packets Dropped by OS", sbuff);
+			}
+			else if (optCode == 8)
+			{
+				if (this->isBE)
+				{
+					ts = ReadMInt64(&this->packetBuff[i + 4]);
+				}
+				else
+				{
+					ts = ReadInt64(&this->packetBuff[i + 4]);
+				}
+				Text::StrInt64(sbuff, ts);
+				frame->AddField(i + 4, 8, (const UTF8Char*)"Packets Delivered to the user", sbuff);
+			}
+
+			i += 4 + (UInt32)optLeng;
+			if (i & 3)
+			{
+				sb.ClearStr();
+				sb.AppendHexBuff(&this->packetBuff[i], 4 - (i & 3), ' ', Text::LBT_NONE);
+				frame->AddField(i, 4 - (i & 3), (const UTF8Char*)"Padding", sb.ToString());
+
+				i += 4 - (i & 3);
+			}
+		}
+		if (i == block->blockLength - 4)
+		{
+			if (this->isBE)
+			{
+				Text::StrUInt32(sbuff, ReadMUInt32(&this->packetBuff[i]));
+			}
+			else
+			{
+				Text::StrUInt32(sbuff, ReadUInt32(&this->packetBuff[i]));
+			}
+			frame->AddField(i, 4, (const UTF8Char*)"TotalSize", sbuff);
+		}
+	}
+	return frame;
 }
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::IsError()

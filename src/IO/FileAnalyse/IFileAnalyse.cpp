@@ -20,6 +20,18 @@ IO::FileAnalyse::IFileAnalyse::~IFileAnalyse()
 {
 }
 
+Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::FrameDetail *frame = this->GetFrameDetail(index);
+	if (frame == 0)
+	{
+		return false;
+	}
+	frame->ToString(sb);
+	DEL_CLASS(frame);
+	return true;
+}
+
 IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IStreamData *fd)
 {
 	UInt8 buff[256];

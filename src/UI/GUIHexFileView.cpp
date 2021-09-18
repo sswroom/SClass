@@ -8,8 +8,11 @@ UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent
 	this->fs = 0;
 	this->fd = 0;
 	this->analyse = 0;
+	this->frame = 0;
 	this->fileSize = 0;
 	this->currOfst = 0;
+	this->frameColor = 0xffdedf9a;
+	this->fieldColor = 0xffdf9abd;
 	NEW_CLASS(this->hdlrList, Data::ArrayList<OffsetChgHandler>());
 	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
 	this->SetScrollHRange(0, 0);
@@ -20,6 +23,7 @@ UI::GUIHexFileView::~GUIHexFileView()
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
 	SDEL_CLASS(this->analyse);
+	SDEL_CLASS(this->frame);
 	DEL_CLASS(this->hdlrList);
 	DEL_CLASS(this->hdlrObjList);
 }
@@ -172,6 +176,8 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
 		Media::DrawBrush *textBrush = dimg->NewBrushARGB(this->txtColor);
 		Media::DrawBrush *selBrush = dimg->NewBrushARGB(this->selColor);
+		Media::DrawBrush *frameBrush = dimg->NewBrushARGB(this->frameColor);
+		Media::DrawBrush *fieldBrush = dimg->NewBrushARGB(this->fieldColor);
 		Double currY = 0;
 		Double currX;
 		Double hHeight = this->pageLineHeight * 0.5;
@@ -187,6 +193,12 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		const UTF8Char *textPtr;
 		const UTF8Char *textPtr2;
 		UOSInt textSkip;
+		UInt64 drawOfst;
+		const IO::FileAnalyse::FrameDetail::FieldInfo *fieldInfo = 0;
+		if (this->frame)
+		{
+			fieldInfo = this->frame->GetFieldInfo(this->currOfst);
+		}
 		readBuff = MemAlloc(UInt8, readBuffSize + 1);
 		readBuffSize = this->GetFileData(currOfst, readBuffSize, readBuff);
 		currPtr = readBuff;
@@ -234,7 +246,30 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 			j = 0;
 			while (j < k)
 			{
-				if (this->currOfst == currOfst + j)
+				drawOfst = currOfst + j;
+				if (this->frame && (drawOfst >= this->frame->GetOffset()) && (drawOfst < this->frame->GetOffset() + this->frame->GetSize()))
+				{
+					if (j + 1 == k || (drawOfst + 1 == this->frame->GetOffset() + this->frame->GetSize()))
+					{
+						dimg->DrawRect(currX, currY, this->pageLineHeight, this->pageLineHeight, 0, frameBrush);
+					}
+					else
+					{
+						dimg->DrawRect(currX, currY, this->pageLineHeight * 1.5, this->pageLineHeight, 0, frameBrush);
+					}
+					if (fieldInfo && drawOfst >= this->frame->GetOffset() + fieldInfo->ofst && drawOfst < this->frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
+					{
+						if (j + 1 == k || drawOfst + 1 == this->frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
+						{
+							dimg->DrawRect(currX, currY, this->pageLineHeight, this->pageLineHeight, 0, fieldBrush);
+						}
+						else
+						{
+							dimg->DrawRect(currX, currY, this->pageLineHeight * 1.5, this->pageLineHeight, 0, fieldBrush);
+						}
+					}
+				}
+				if (this->currOfst == drawOfst)
 				{
 					dimg->DrawRect(currX, currY, this->pageLineHeight, this->pageLineHeight, 0, selBrush);
 				}
@@ -295,6 +330,8 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 			currOfst += 16;
 			currY += this->pageLineHeight;
 		}
+		dimg->DelBrush(fieldBrush);
+		dimg->DelBrush(frameBrush);
 		dimg->DelBrush(selBrush);
 		dimg->DelBrush(textBrush);
 		dimg->DelBrush(lineNumBrush);
@@ -336,6 +373,7 @@ Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
 		SDEL_CLASS(this->analyse);
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
+		SDEL_CLASS(this->frame);
 		this->fs = fs;
 		this->fileSize = 0;
 		this->currOfst = 0;
@@ -352,11 +390,13 @@ Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
 		SDEL_CLASS(this->analyse);
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
+		SDEL_CLASS(this->frame);
 		this->fd = fd;
 		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
 		this->fileSize = this->fd->GetDataSize();
-		this->currOfst = 0;
+		this->currOfst = 1;
 		this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
+		this->GoToOffset(0);
 	}
 	this->Redraw();
 	return true;
@@ -414,6 +454,19 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	{
 		return;
 	}
+	if (this->analyse)
+	{
+		if (this->frame == 0 || ofst < this->frame->GetOffset() || ofst >= this->frame->GetOffset() + this->frame->GetSize())
+		{
+			SDEL_CLASS(this->frame);
+			UOSInt i = this->analyse->GetFrameIndex(ofst);
+			if (i != INVALID_INDEX)
+			{
+				this->frame = this->analyse->GetFrameDetail(i);
+			}
+		}
+	}
+
 	OSInt vPos = this->GetScrollVPos();
 	this->currOfst = ofst;
 	if (vPos > (OSInt)(ofst >> 4))
@@ -482,4 +535,13 @@ Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF *sb)
 		return false;
 	}
 	return this->analyse->GetFrameName(index, sb);
+}
+
+const IO::FileAnalyse::FrameDetail::FieldInfo *UI::GUIHexFileView::GetFieldInfo()
+{
+	if (this->frame)
+	{
+		return this->frame->GetFieldInfo(this->currOfst);
+	}
+	return 0;
 }

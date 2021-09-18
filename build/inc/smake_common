@@ -1465,6 +1465,8 @@ IO/FileAnalyse/EXEFileAnalyse.h: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 @EXEFileAnalyse.o
 IO/FileAnalyse/FLVFileAnalyse.h: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 @FLVFileAnalyse.o
+IO/FileAnalyse/FrameDetail.h: ../../src/IO/FileAnalyse/FrameDetail.cpp
+@FrameDetail.o
 IO/FileAnalyse/IFileAnalyse.h: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 @IFileAnalyse.o
 IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
@@ -3880,6 +3882,7 @@ TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FLVFileAnalyse.o: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
+FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
 IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp

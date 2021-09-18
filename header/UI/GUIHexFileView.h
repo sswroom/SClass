@@ -14,10 +14,13 @@ namespace UI
 		IO::FileStream *fs;
 		IO::StmData::FileData *fd;
 		IO::FileAnalyse::IFileAnalyse *analyse;
+		IO::FileAnalyse::FrameDetail *frame;
 		UInt64 fileSize;
 		UInt64 currOfst;
 		Data::ArrayList<OffsetChgHandler> *hdlrList;
 		Data::ArrayList<void *> *hdlrObjList;
+		UInt32 frameColor;
+		UInt32 fieldColor;
 
 	public:
 		GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng);
@@ -51,6 +54,7 @@ namespace UI
 
 		const UTF8Char *GetAnalyzerName();
 		Bool GetFrameName(Text::StringBuilderUTF *sb);
+		const IO::FileAnalyse::FrameDetail::FieldInfo *GetFieldInfo();
 	};
 }
 #endif

@@ -443,6 +443,289 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	IO::FileAnalyse::FrameDetail *frame;
+	PackInfo *pack;
+	UInt8 *packBuff;
+	UInt8 buff[5];
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	pack = this->packs->GetItem(index);
+	if (pack == 0)
+		return 0;
+
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
+	return frame;
+/*	sb->AppendU64(pack->fileOfst);
+	sb->Append((const UTF8Char*)": Type=");
+	*(Int32*)buff = pack->packType;
+	buff[4] = 0;
+	sb->Append((UTF8Char*)buff);
+	if (pack->subPackType != 0)
+	{
+		sb->Append((const UTF8Char*)", SubType=");
+		*(Int32*)buff = pack->subPackType;
+		buff[4] = 0;
+		sb->Append((UTF8Char*)buff);
+	}
+	sb->Append((const UTF8Char*)", size=");
+	sb->AppendUOSInt(pack->packSize);
+
+	if (pack->packType == *(Int32*)"avih")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\nMicroSec Per Frame = ");
+		sb->AppendU32(ReadUInt32(&packBuff[0]));
+		sb->Append((const UTF8Char*)"\r\nMax Bytes Per Second = ");
+		sb->AppendU32(ReadUInt32(&packBuff[4]));
+		sb->Append((const UTF8Char*)"\r\nPadding Granularity = ");
+		sb->AppendU32(ReadUInt32(&packBuff[8]));
+		sb->Append((const UTF8Char*)"\r\nFlags = 0x");
+		sb->AppendHex32(ReadUInt32(&packBuff[12]));
+		sb->Append((const UTF8Char*)"\r\nTotal Frames = ");
+		sb->AppendU32(ReadUInt32(&packBuff[16]));
+		sb->Append((const UTF8Char*)"\r\nInitial Frames = ");
+		sb->AppendU32(ReadUInt32(&packBuff[20]));
+		sb->Append((const UTF8Char*)"\r\nStream Count = ");
+		sb->AppendU32(ReadUInt32(&packBuff[24]));
+		sb->Append((const UTF8Char*)"\r\nSuggested Buffer Size = ");
+		sb->AppendU32(ReadUInt32(&packBuff[28]));
+		sb->Append((const UTF8Char*)"\r\nWidth = ");
+		sb->AppendU32(ReadUInt32(&packBuff[32]));
+		sb->Append((const UTF8Char*)"\r\nHeight = ");
+		sb->AppendU32(ReadUInt32(&packBuff[36]));
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"strh")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\nfccType = ");
+		*(Int32*)buff = *(Int32*)&packBuff[0];
+		sb->Append((UTF8Char*)buff);
+		sb->Append((const UTF8Char*)"\r\nfccHandler = ");
+		if (*(Int32*)&packBuff[4] == 0)
+		{
+			sb->Append((const UTF8Char*)"0");
+		}
+		else
+		{
+			*(Int32*)buff = *(Int32*)&packBuff[4];
+			sb->Append((UTF8Char*)buff);
+		}
+		sb->Append((const UTF8Char*)"\r\nFlags = 0x");
+		sb->AppendHex32(ReadUInt32(&packBuff[8]));
+		sb->Append((const UTF8Char*)"\r\nPriority = ");
+		sb->AppendU32(ReadUInt32(&packBuff[12]));
+		sb->Append((const UTF8Char*)"\r\nInitial Frames = ");
+		sb->AppendU32(ReadUInt32(&packBuff[16]));
+		sb->Append((const UTF8Char*)"\r\nScale = ");
+		sb->AppendU32(ReadUInt32(&packBuff[20]));
+		sb->Append((const UTF8Char*)"\r\nRate = ");
+		sb->AppendU32(ReadUInt32(&packBuff[24]));
+		sb->Append((const UTF8Char*)"\r\nStart = ");
+		sb->AppendU32(ReadUInt32(&packBuff[28]));
+		sb->Append((const UTF8Char*)"\r\nLength = ");
+		sb->AppendU32(ReadUInt32(&packBuff[32]));
+		sb->Append((const UTF8Char*)"\r\nSuggested Buffer Size = ");
+		sb->AppendU32(ReadUInt32(&packBuff[36]));
+		sb->Append((const UTF8Char*)"\r\nQuality = ");
+		sb->AppendU32(ReadUInt32(&packBuff[40]));
+		sb->Append((const UTF8Char*)"\r\nSample Size = ");
+		sb->AppendU32(ReadUInt32(&packBuff[44]));
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"strf")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		if (ReadUInt32(packBuff) == pack->packSize - 8)
+		{
+			sb->Append((const UTF8Char*)"\r\nbiSize = ");
+			sb->AppendU32(ReadUInt32(&packBuff[0]));
+			sb->Append((const UTF8Char*)"\r\nbiWidth = ");
+			sb->AppendU32(ReadUInt32(&packBuff[4]));
+			sb->Append((const UTF8Char*)"\r\nbiHeight = ");
+			sb->AppendU32(ReadUInt32(&packBuff[8]));
+			sb->Append((const UTF8Char*)"\r\nbiPlanes = ");
+			sb->AppendU16(ReadUInt16(&packBuff[12]));
+			sb->Append((const UTF8Char*)"\r\nbiBitCount = ");
+			sb->AppendU16(ReadUInt16(&packBuff[14]));
+			sb->Append((const UTF8Char*)"\r\nbiCompression = ");
+			if (ReadUInt32(&packBuff[16]) == 0)
+			{
+				sb->Append((const UTF8Char*)"0");
+			}
+			else
+			{
+				*(Int32*)buff = *(Int32*)&packBuff[16];
+				sb->Append((UTF8Char*)buff);
+			}
+			sb->Append((const UTF8Char*)"\r\nbiSizeImage = ");
+			sb->AppendU32(ReadUInt32(&packBuff[20]));
+			sb->Append((const UTF8Char*)"\r\nbiXPelsPerMeter = ");
+			sb->AppendU32(ReadUInt32(&packBuff[24]));
+			sb->Append((const UTF8Char*)"\r\nbiYPelsPerMeter = ");
+			sb->AppendU32(ReadUInt32(&packBuff[28]));
+			sb->Append((const UTF8Char*)"\r\nbiClrUsed = ");
+			sb->AppendU32(ReadUInt32(&packBuff[32]));
+			sb->Append((const UTF8Char*)"\r\nbiClrImportant = ");
+			sb->AppendU32(ReadUInt32(&packBuff[36]));
+		}
+		else
+		{
+			sb->Append((const UTF8Char*)"\r\nwFormatTag = 0x");
+			sb->AppendHex16(ReadUInt16(&packBuff[0]));
+			sb->Append((const UTF8Char*)"\r\nnChannels = ");
+			sb->AppendU16(ReadUInt16(&packBuff[2]));
+			sb->Append((const UTF8Char*)"\r\nnSamplesPerSecond = ");
+			sb->AppendU32(ReadUInt32(&packBuff[4]));
+			sb->Append((const UTF8Char*)"\r\nnAvgBytesPerSec = ");
+			sb->AppendU32(ReadUInt32(&packBuff[8]));
+			sb->Append((const UTF8Char*)"\r\nnBlockAlign = ");
+			sb->AppendU16(ReadUInt16(&packBuff[12]));
+			sb->Append((const UTF8Char*)"\r\nwBitsPerSample = ");
+			sb->AppendU16(ReadUInt16(&packBuff[14]));
+		}
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"JUNK")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendHexBuff(packBuff, pack->packSize - 8, ' ', Text::LBT_CRLF);
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"dmlh")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\nFrame Count = ");
+		sb->AppendU32(ReadUInt32(&packBuff[0]));
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"00db" || pack->packType == *(Int32*)"00dc" || pack->packType == *(Int32*)"01wb" || pack->packType == *(Int32*)"02wb")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendHexBuff(packBuff, pack->packSize - 8, ' ', Text::LBT_CRLF);
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"idx1")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		i = 0;
+		j = (pack->packSize - 8) >> 4;
+		k = 0;
+		sb->Append((const UTF8Char*)"\r\nIndex List:");
+		while (i < j)
+		{
+			*(Int32*)buff = *(Int32*)&packBuff[k];
+			sb->Append((const UTF8Char*)"\r\nType=");
+			sb->Append((UTF8Char*)buff);
+			sb->Append((const UTF8Char*)", Offset=");
+			sb->AppendU32(ReadUInt32(&packBuff[k + 8]));
+			sb->Append((const UTF8Char*)", Size=");
+			sb->AppendU32(ReadUInt32(&packBuff[k + 12]));
+			if (packBuff[k + 4] != 0)
+			{
+				sb->Append((const UTF8Char*)" (key)");
+			}
+			k += 16;
+			i++;
+		}
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"anih")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\ncbSize = ");
+		sb->AppendU32(ReadUInt32(&packBuff[0]));
+		sb->Append((const UTF8Char*)"\r\nNumber of Frames = ");
+		sb->AppendU32(ReadUInt32(&packBuff[4]));
+		sb->Append((const UTF8Char*)"\r\nNumber of Steps = ");
+		sb->AppendU32(ReadUInt32(&packBuff[8]));
+		sb->Append((const UTF8Char*)"\r\nWidth");
+		sb->AppendU32(ReadUInt32(&packBuff[12]));
+		sb->Append((const UTF8Char*)"\r\nHeight = ");
+		sb->AppendU32(ReadUInt32(&packBuff[16]));
+		sb->Append((const UTF8Char*)"\r\nBits per Pixel = ");
+		sb->AppendU32(ReadUInt32(&packBuff[20]));
+		sb->Append((const UTF8Char*)"\r\nNumber of color planes = ");
+		sb->AppendU32(ReadUInt32(&packBuff[24]));
+		sb->Append((const UTF8Char*)"\r\nDefault frame display rate = ");
+		sb->AppendU32(ReadUInt32(&packBuff[28]));
+		sb->Append((const UTF8Char*)"\r\nAttributes Flags = 0x");
+		sb->AppendHex32(ReadUInt32(&packBuff[32]));
+
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"icon")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+
+		sb->Append((const UTF8Char*)"\r\nFile Header = ");
+		sb->AppendU16(ReadUInt16(&packBuff[0]));
+		sb->Append((const UTF8Char*)"\r\nFile Format = ");
+		sb->AppendU16(ReadUInt16(&packBuff[2]));
+		sb->Append((const UTF8Char*)"\r\nNumber of Images = ");
+		sb->AppendU16(ReadUInt16(&packBuff[4]));
+		OSInt i = 0;
+		OSInt j = ReadUInt16(&packBuff[4]);
+		while (i < j)
+		{
+			sb->Append((const UTF8Char*)"\r\nImage ");
+			sb->AppendOSInt(i);
+			sb->Append((const UTF8Char*)":");
+
+			sb->Append((const UTF8Char*)"\r\nWidth = ");
+			sb->AppendU16(packBuff[6 + (i << 4)]);
+			sb->Append((const UTF8Char*)"\r\nHeight = ");
+			sb->AppendU16(packBuff[7 + (i << 4)]);
+			sb->Append((const UTF8Char*)"\r\nNumber of Color = ");
+			sb->AppendU16(packBuff[8 + (i << 4)]);
+			sb->Append((const UTF8Char*)"\r\nReserved = ");
+			sb->AppendU16(packBuff[9 + (i << 4)]);
+			sb->Append((const UTF8Char*)"\r\nHotSpot X = ");
+			sb->AppendU16(ReadUInt16(&packBuff[10 + (i << 4)]));
+			sb->Append((const UTF8Char*)"\r\nHotSpot Y = ");
+			sb->AppendU16(ReadUInt16(&packBuff[12 + (i << 4)]));
+			sb->Append((const UTF8Char*)"\r\nImage Size = ");
+			sb->AppendU32(ReadUInt32(&packBuff[14 + (i << 4)]));
+			sb->Append((const UTF8Char*)"\r\nOffset = ");
+			sb->AppendU32(ReadUInt32(&packBuff[18 + (i << 4)]));
+			
+			i++;
+		}
+
+		MemFree(packBuff);
+	}
+	return true;*/
+}
+
 Bool IO::FileAnalyse::RIFFFileAnalyse::IsError()
 {
 	return this->fd == 0;

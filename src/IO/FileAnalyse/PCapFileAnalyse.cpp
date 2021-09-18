@@ -5,6 +5,7 @@
 #include "Net/PacketAnalyzer.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
+#include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 {
@@ -271,6 +272,106 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 	}
 	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	Text::StringBuilderUTF8 sb;
+	IO::FileAnalyse::FrameDetail *frame;
+	UTF8Char sbuff[128];
+	if (index == 0)
+	{
+		UInt16 version_major;
+		UInt16 version_minor;
+		Int32  thiszone;
+		UInt32 sigfigs;
+		UInt32 snaplen;
+		UInt32 network;
+		const UTF8Char *csptr;
+		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, 24));
+		frame->AddHeader((const UTF8Char*)"PCAP Header");
+		fd->GetRealData(0, 24, this->packetBuff);
+		if (this->isBE)
+		{
+			version_major = ReadMUInt16(&this->packetBuff[4]);
+			version_minor = ReadMUInt16(&this->packetBuff[6]);
+			thiszone = ReadMInt32(&this->packetBuff[8]);
+			sigfigs = ReadMUInt32(&this->packetBuff[12]);
+			snaplen = ReadMUInt32(&this->packetBuff[16]);
+			network = ReadMUInt32(&this->packetBuff[20]);
+		}
+		else
+		{
+			version_major = ReadUInt16(&this->packetBuff[4]);
+			version_minor = ReadUInt16(&this->packetBuff[6]);
+			thiszone = ReadInt32(&this->packetBuff[8]);
+			sigfigs = ReadUInt32(&this->packetBuff[12]);
+			snaplen = ReadUInt32(&this->packetBuff[16]);
+			network = ReadUInt32(&this->packetBuff[20]);
+		}
+		Text::StrUInt16(sbuff, version_major);
+		frame->AddField(4, 2, (const UTF8Char*)"VersionMajor", sbuff);
+		Text::StrUInt16(sbuff, version_minor);
+		frame->AddField(6, 2, (const UTF8Char*)"VersionMinor", sbuff);
+		Text::StrInt32(sbuff, thiszone);
+		frame->AddField(8, 4, (const UTF8Char*)"ThisZone", sbuff);
+		Text::StrUInt32(sbuff, sigfigs);
+		frame->AddField(12, 4, (const UTF8Char*)"Sigfigs", sbuff);
+		Text::StrUInt32(sbuff, snaplen);
+		frame->AddField(16, 4, (const UTF8Char*)"SnapLen", sbuff);
+		sb.ClearStr();
+		sb.AppendU32(network);
+		csptr = IO::RAWMonitor::LinkTypeGetName(network);
+		if (csptr)
+		{
+			sb.Append((const UTF8Char*)" (");
+			sb.Append(csptr);
+			sb.Append((const UTF8Char*)")");
+		}
+		frame->AddField(20, 4, (const UTF8Char*)"Network", sb.ToString());
+		return frame;
+	}
+	UInt64 ofst;
+	UInt64 size;
+	UInt32 psize;
+	if (index > this->ofstList->GetCount())
+	{
+		return 0;
+	}
+	Sync::MutexUsage mutUsage(this->dataMut);
+	ofst = this->ofstList->GetItem(index - 1);
+	size = this->sizeList->GetItem(index - 1);
+	mutUsage.EndUse();
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
+	return frame;
+/*	
+	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
+	sb->Append((const UTF8Char*)"Offset=");
+	sb->AppendU64(ofst);
+	sb->Append((const UTF8Char*)"\r\nTotalSize=");
+	sb->AppendU64(size);
+	Data::DateTime dt;
+	if (this->isBE)
+	{
+		dt.SetUnixTimestamp(ReadMUInt32(&this->packetBuff[0]));
+		dt.SetMS(ReadMUInt32(&this->packetBuff[4]) / 1000);
+		psize = ReadMUInt32(&this->packetBuff[12]);
+	}
+	else
+	{
+		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
+		dt.SetMS(ReadUInt32(&this->packetBuff[4]) / 1000);
+		psize = ReadUInt32(&this->packetBuff[12]);
+	}
+	UTF8Char sbuff[64];
+	dt.ToLocalTime();
+	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	sb->Append((const UTF8Char*)"\r\nTime=");
+	sb->Append(sbuff);
+	sb->Append((const UTF8Char*)"\r\nPacketSize=");
+	sb->AppendU32(psize);
+	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
+	return true;*/
 }
 
 Bool IO::FileAnalyse::PCapFileAnalyse::IsError()
