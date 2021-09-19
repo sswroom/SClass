@@ -1467,6 +1467,8 @@ IO/FileAnalyse/FLVFileAnalyse.h: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 @FLVFileAnalyse.o
 IO/FileAnalyse/FrameDetail.h: ../../src/IO/FileAnalyse/FrameDetail.cpp
 @FrameDetail.o
+IO/FileAnalyse/FrameDetailHandler.h: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
+@FrameDetailHandler.o
 IO/FileAnalyse/IFileAnalyse.h: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 @IFileAnalyse.o
 IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
@@ -1487,6 +1489,8 @@ IO/FileAnalyse/RAR5FileAnalyse.h: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 @RAR5FileAnalyse.o
 IO/FileAnalyse/RIFFFileAnalyse.h: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
 @RIFFFileAnalyse.o
+IO/FileAnalyse/SBFrameDetail.h: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
+@SBFrameDetail.o
 IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
@@ -3883,6 +3887,7 @@ EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FLVFileAnalyse.o: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
+FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
 IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
@@ -3893,6 +3898,7 @@ PNGFileAnalyse.o: ../../src/IO/FileAnalyse/PNGFileAnalyse.cpp
 QTFileAnalyse.o: ../../src/IO/FileAnalyse/QTFileAnalyse.cpp
 RAR5FileAnalyse.o: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 RIFFFileAnalyse.o: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
+SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp

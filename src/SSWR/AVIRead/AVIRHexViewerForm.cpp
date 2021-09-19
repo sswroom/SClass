@@ -4,6 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/FontDialog.h"
+#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
@@ -27,6 +28,11 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 			{
 				me->txtFileFormat->SetText((const UTF8Char*)"Unknown");
 			}
+
+			Text::StringBuilderUTF8 sb;
+			sb.Append((const UTF8Char*)"Hex Viewer - ");
+			sb.Append(files[i]);
+			me->SetText(sb.ToString());
 			break;
 		}
 		i++;
@@ -173,6 +179,15 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
 	DEL_CLASS(dlg);
 }
 
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	if (!me->hexView->GoToNextUnkField())
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"No unknown field found", (const UTF8Char*)"Hex Viewer", me);
+	}
+}
+
 SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText((const UTF8Char*)"Hex Viewer");
@@ -246,6 +261,9 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->pnlValues, (const UTF8Char *)"Sel Font"));
 	this->btnFont->SetRect(504, 100, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
+	NEW_CLASS(this->btnNextUnk, UI::GUIButton(ui, this->pnlValues, (const UTF8Char*)"Next Unknown"));
+	this->btnNextUnk->SetRect(584, 100, 75, 23, false);
+	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
 	NEW_CLASS(this->lblFileFormat, UI::GUILabel(ui, this->pnlValues, (const UTF8Char*)"File Format"));
 	this->lblFileFormat->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtFileFormat, UI::GUITextBox(ui, this->pnlValues, (const UTF8Char*)""));

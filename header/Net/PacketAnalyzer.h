@@ -1,5 +1,6 @@
 #ifndef _SM_NET_PACKETANALYZER
 #define _SM_NET_PACKETANALYZER
+#include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Net
@@ -9,6 +10,7 @@ namespace Net
 	public:
 		static Bool PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
 		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 	};
 }
 #endif

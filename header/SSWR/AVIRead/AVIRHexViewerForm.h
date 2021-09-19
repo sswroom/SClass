@@ -52,11 +52,13 @@ namespace SSWR
 			UI::GUILabel *lblFieldDetail;
 			UI::GUITextBox *txtFieldDetail;
 			UI::GUIButton *btnFont;
+			UI::GUIButton *btnNextUnk;
 
 			static void __stdcall OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnEndianChg(void *userObj, Bool newState);
 			static void __stdcall OnOffsetChg(void *userObj, UInt64 ofst);
 			static void __stdcall OnFontClicked(void *userObj);
+			static void __stdcall OnNextUnkClicked(void *userObj);
 		public:
 			AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHexViewerForm();

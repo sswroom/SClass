@@ -545,3 +545,58 @@ const IO::FileAnalyse::FrameDetail::FieldInfo *UI::GUIHexFileView::GetFieldInfo(
 	}
 	return 0;
 }
+
+Bool UI::GUIHexFileView::GoToNextUnkField()
+{
+	if (this->analyse == 0)
+	{
+		return false;
+	}
+	UInt64 currOfst = this->currOfst;
+	UOSInt index = this->analyse->GetFrameIndex(currOfst);
+	if (index == INVALID_INDEX)
+	{
+		return true;
+	}
+	IO::FileAnalyse::FrameDetail *frame = this->analyse->GetFrameDetail(index);
+	const IO::FileAnalyse::FrameDetail::FieldInfo *field;
+	if (frame == 0)
+	{
+		return true;
+	}
+	while (currOfst < this->fileSize)
+	{
+		if (currOfst >= frame->GetOffset() + frame->GetSize())
+		{
+			DEL_CLASS(frame);
+			index = this->analyse->GetFrameIndex(currOfst);
+			if (index == INVALID_INDEX)
+			{
+				this->GoToOffset(currOfst);
+				return true;
+			}
+			frame = this->analyse->GetFrameDetail(index);
+			if (frame == 0)
+			{
+				this->GoToOffset(currOfst);
+				return true;
+			}
+			if (currOfst < frame->GetOffset() || currOfst >= frame->GetOffset() + frame->GetSize())
+			{
+				this->GoToOffset(currOfst);
+				DEL_CLASS(frame);
+				return true;
+			}
+		}
+		field = frame->GetFieldInfo(currOfst);
+		if (field == 0)
+		{
+			this->GoToOffset(currOfst);
+			DEL_CLASS(frame);
+			return true;
+		}
+		currOfst = frame->GetOffset() + field->ofst + field->size;
+	}
+	DEL_CLASS(frame);
+	return false;
+}

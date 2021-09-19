@@ -1,13 +1,14 @@
 #ifndef _SM_IO_FILEANALYSE_FRAMEDETAIL
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
 #include "Data/ArrayList.h"
+#include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
 {
 	namespace FileAnalyse
 	{
-		class FrameDetail
+		class FrameDetail : public IO::FileAnalyse::FrameDetailHandler
 		{
 		public:
 			enum FieldType
@@ -37,17 +38,17 @@ namespace IO
 			void AddFieldInfo(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType);
 		public:
 			FrameDetail(UInt64 ofst, UInt32 size);
-			~FrameDetail();
+			virtual ~FrameDetail();
 
 			UInt64 GetOffset();
 			UInt32 GetSize();
 			const FieldInfo *GetFieldInfo(UInt64 ofst);
 
-			void AddHeader(const UTF8Char *header);
-			void AddField(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
-			void AddSubfield(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
-			void AddFieldSeperstor(UInt32 ofst, const UTF8Char *name);
-			void AddText(UInt32 ofst, const UTF8Char *name);
+			virtual void AddHeader(const UTF8Char *header);
+			virtual void AddField(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
+			virtual void AddSubfield(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
+			virtual void AddFieldSeperstor(UInt32 ofst, const UTF8Char *name);
+			virtual void AddText(UInt32 ofst, const UTF8Char *name);
 
 			void ToString(Text::StringBuilderUTF *sb);
 		};
