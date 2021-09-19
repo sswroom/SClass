@@ -34,16 +34,16 @@ void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *pack
 	switch (linkType)
 	{
 	case 0:
-//		Net::PacketAnalyzerEthernet::PacketNullGetDetail(packet, packetSize, frameOfst, frame);
+		Net::PacketAnalyzerEthernet::PacketNullGetDetail(packet, packetSize, frameOfst, frame);
 		break;
 	case 1:
-//		Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(packet, packetSize, frameOfst, frame);
+		Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(packet, packetSize, frameOfst, frame);
 		break;
 	case 101:
-//		Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(packet, packetSize, frameOfst, frame);
+		Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(packet, packetSize, frameOfst, frame);
 		break;
 	case 113:
-//		Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(packet, packetSize, frameOfst, frame);
+		Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(packet, packetSize, frameOfst, frame);
 		break;
 	case 201:
 		Net::PacketAnalyzerBluetooth::PacketGetDetail(packet, packetSize, frameOfst, frame);
@@ -52,7 +52,7 @@ void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *pack
 		{
 			Text::StringBuilderUTF8 sb;	
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
-			frame->AddField(frameOfst, packetSize, (const UTF8Char *)"Unknown", sb.ToString());
+			frame->AddField(frameOfst, (UInt32)packetSize, (const UTF8Char *)"Unknown", sb.ToString());
 		}
 		break;
 	}

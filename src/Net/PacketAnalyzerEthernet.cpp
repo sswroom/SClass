@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/FileAnalyse/SBFrameDetail.h"
 #include "Net/DNSClient.h"
 #include "Net/MACInfo.h"
 #include "Net/NetBIOSUtil.h"
@@ -11,6 +12,7 @@
 #include "Text/JSText.h"
 #include "Text/HTMLUtil.h"
 #include "Text/MyStringFloat.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
 Bool Net::PacketAnalyzerEthernet::PacketNullGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
@@ -171,507 +173,519 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 	}
 }
 
-
 void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	UInt32 packetType = ReadMUInt32(packet);
-	sb->Append((const UTF8Char*)"\r\nPacket Type=");
-	sb->AppendU32(packetType);
-	switch (packetType)
-	{
-	case 2:
-		PacketIPv4GetDetail(&packet[4], packetSize - 4, sb);
-		break;
-	case 24:
-	case 28:
-	case 30:
-		PacketIPv6GetDetail(&packet[4], packetSize - 4, sb);
-		break;
-	}
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketNullGetDetail(packet, packetSize, 0, &frame);
 }
 
 void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	const Net::MACInfo::MACEntry *mac;
-	sb->Append((const UTF8Char*)"\r\nSrcMAC=");
-	sb->AppendHexBuff(&packet[6], 6, ':', Text::LBT_NONE);
-	mac = Net::MACInfo::GetMACInfoBuff(&packet[6]);
-	sb->Append((const UTF8Char*)" (");
-	sb->Append((const UTF8Char*)mac->name);
-	sb->Append((const UTF8Char*)")");
-	sb->Append((const UTF8Char*)"\r\nDestMAC=");
-	sb->AppendHexBuff(&packet[0], 6, ':', Text::LBT_NONE);
-	mac = Net::MACInfo::GetMACInfoBuff(&packet[0]);
-	sb->Append((const UTF8Char*)" (");
-	sb->Append((const UTF8Char*)mac->name);
-	sb->Append((const UTF8Char*)")");
-	PacketEthernetDataGetDetail(ReadMUInt16(&packet[12]), &packet[14], packetSize - 14, sb);
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketNullGetDetail(packet, packetSize, 0, &frame);
 }
 
 void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"\r\nPacket Type=");
-	sb->AppendU16(ReadMUInt16(&packet[0]));
-	switch (ReadMUInt16(&packet[0]))
-	{
-	case 0:
-		sb->Append((const UTF8Char*)" (Unicast to us)");
-		break;
-	case 1:
-		sb->Append((const UTF8Char*)" (Broadcast to us)");
-		break;
-	case 2:
-		sb->Append((const UTF8Char*)" (Multicast to us)");
-		break;
-	case 3:
-		sb->Append((const UTF8Char*)" (Sent by somebody else to somebody else)");
-		break;
-	case 4:
-		sb->Append((const UTF8Char*)" (Sent by us)");
-		break;
-	}
-	sb->Append((const UTF8Char*)"\r\nLink-Layer Device Type=");
-	sb->AppendU16(ReadMUInt16(&packet[2]));
-	switch (ReadMUInt16(&packet[2]))
-	{
-	case 772:
-		sb->Append((const UTF8Char*)" (Link Layer Address Type)");
-		break;
-	case 778:
-		sb->Append((const UTF8Char*)" (IP GRE Protocol Type)");
-		break;
-	case 803:
-		sb->Append((const UTF8Char*)" (IEEE802.11)");
-		break;
-	}
-	sb->Append((const UTF8Char*)"\r\nLink-Layer Address Length=");
-	UInt16 len = ReadMUInt16(&packet[4]);
-	sb->AppendU16(len);
-	if (len > 0)
-	{
-		sb->Append((const UTF8Char*)"\r\nLink-Layer Address=");
-		sb->AppendHexBuff(&packet[6], (len > 8)?8:len, ':', Text::LBT_NONE);
-		if (len == 6)
-		{
-			const Net::MACInfo::MACEntry *macInfo = Net::MACInfo::GetMACInfoBuff(&packet[6]);
-			sb->Append((const UTF8Char*)" (");
-			sb->Append((const UTF8Char*)macInfo->name);
-			sb->Append((const UTF8Char*)")");
-		}
-	}
-	PacketEthernetDataGetDetail(ReadMUInt16(&packet[14]), &packet[16], packetSize - 16, sb);
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketNullGetDetail(packet, packetSize, 0, &frame);
 }
 
 void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"\r\nEtherType=0x");
-	sb->AppendHex16(etherType);
-	switch (etherType)
-	{
-	case 0x0004: //IEEE802.2 LLC
-		sb->Append((const UTF8Char*)" (IEEE802.2 LLC)");
-		PacketIEEE802_2LLCGetDetail(packet, packetSize, sb);
-		return;
-	case 0x0006: //ARP
-		sb->Append((const UTF8Char*)" (ARP)");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"\r\nARP:");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
-		return;
-	case 0x26: //Legnth = 0x26 (IEEE802.2 LLC)
-		PacketIEEE802_2LLCGetDetail(packet, packetSize, sb);
-		return;
-	case 0x0800: //IPv4
-		sb->Append((const UTF8Char*)" (IPv4)");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"\r\nIPv4:");
-		PacketIPv4GetDetail(packet, packetSize, sb);
-		return;
-	case 0x0806: //ARP
-		sb->Append((const UTF8Char*)" (ARP)");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"\r\nARP:");
-		if (packetSize < 22)
-		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
-		}
-		else
-		{
-			UInt8 sbuff[32];
-			UInt16 htype = ReadMUInt16(&packet[0]);
-			UInt16 ptype = ReadMUInt16(&packet[2]);
-			UInt8 hlen = packet[4];
-			UInt8 plen = packet[5];
-			UInt16 oper = ReadMUInt16(&packet[6]);
-			sb->Append((const UTF8Char*)"\r\nHardware Type (HTYPE)=");
-			sb->AppendU16(htype);
-			sb->Append((const UTF8Char*)"\r\nProtocol Type (PTYPE)=0x");
-			sb->AppendHex16(ptype);
-			sb->Append((const UTF8Char*)"\r\nHardware address length (HLEN)=");
-			sb->AppendU16(hlen);
-			sb->Append((const UTF8Char*)"\r\nProtocol address length (PLEN)=");
-			sb->AppendU16(plen);
-			sb->Append((const UTF8Char*)"\r\nOperation (OPER)=");
-			sb->AppendU16(oper);
-			switch (oper)
-			{
-			case 1:
-				sb->Append((const UTF8Char*)" (Request)");
-				break;
-			case 2:
-				sb->Append((const UTF8Char*)" (Reply)");
-				break;
-			}
-			if (htype == 1 && ptype == 0x0800 && hlen == 6 && plen == 4 && packetSize >= 28)
-			{
-				sb->Append((const UTF8Char*)"\r\nSender hardware address (SHA)=");
-				sb->AppendHexBuff(&packet[8], 6, ':', Text::LBT_NONE);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(&packet[8])->name);
-				sb->AppendChar(')', 1);
-				sb->Append((const UTF8Char*)"\r\nSender protocol address (SPA)=");
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[14]));
-				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)"\r\nTarget hardware address (THA)=");
-				sb->AppendHexBuff(&packet[18], 6, ':', Text::LBT_NONE);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(&packet[18])->name);
-				sb->AppendChar(')', 1);
-				sb->Append((const UTF8Char*)"\r\nTarget protocol address (TPA)=");
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[24]));
-				sb->Append(sbuff);
-				if (packetSize > 28)
-				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[28], packetSize - 28, ' ', Text::LBT_CRLF);
-				}
-			}
-			else
-			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[8], packetSize - 8, ' ', Text::LBT_CRLF);
-			}
-		}
-		return;
-	case 0x86DD: //IPv6
-		sb->Append((const UTF8Char*)" (IPv6)");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"\r\nIPv6:");
-		PacketIPv6GetDetail(packet, packetSize, sb);
-		return;
-	case 0x8874: //broadcom
-		sb->Append((const UTF8Char*)" (Broadcom)");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
-		return;
-	default:
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
-		return;
-	}
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketEthernetDataGetDetail(etherType, packet, packetSize, 0, &frame);
 }
 
 void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	const UTF8Char *csptr;
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"\r\nIEEE802.2 LLC:");
-	sb->Append((const UTF8Char*)"\r\nDSAP Address=0x");
-	sb->AppendHex8(packet[0]);
-	csptr = LSAPGetName(packet[0]);
-	if (csptr)
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketIEEE802_2LLCGetDetail(packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketIPv4GetDetail(packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketIPv6GetDetail(packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketIPDataGetDetail(protocol, packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketUDPGetDetail(srcPort, destPort, packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketDNSGetDetail(packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketLoRaMACGetDetail(packet, packetSize, 0, &frame);
+}
+
+UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+{
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	return HeaderIPv4GetDetail(packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	UInt32 packetType = ReadMUInt32(packet);
+	frame->AddUInt(frameOfst, 4, "Packet Type", packetType);
+	switch (packetType)
 	{
-		sb->Append((const UTF8Char*)" (");
-		sb->Append(csptr);
-		sb->Append((const UTF8Char*)")");
+	case 2:
+		PacketIPv4GetDetail(&packet[4], packetSize - 4, frameOfst + 4, frame);
+		break;
+	case 24:
+	case 28:
+	case 30:
+		PacketIPv6GetDetail(&packet[4], packetSize - 4, frameOfst + 4, frame);
+		break;
 	}
-	sb->Append((const UTF8Char*)"\r\nSSAP Address=0x");
-	sb->AppendHex8(packet[1]);
-	csptr = LSAPGetName(packet[1]);
-	if (csptr)
+}
+
+void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	frame->AddMACAddr(frameOfst + 0, "DestMAC", &packet[0], true);
+	frame->AddMACAddr(frameOfst + 6, "SrcMAC", &packet[6], true);
+	UInt16 etherType = ReadMUInt16(&packet[12]);
+	frame->AddHex16Name(frameOfst + 12, "EtherType", etherType, EtherTypeGetName(etherType));
+	PacketEthernetDataGetDetail(etherType, &packet[14], packetSize - 14, frameOfst + 14, frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	const Char *vName;
+	UInt16 v;
+	v = ReadMUInt16(&packet[0]);
+	vName = 0;
+	switch (v)
 	{
-		sb->Append((const UTF8Char*)" (");
-		sb->Append(csptr);
-		sb->Append((const UTF8Char*)")");
+	case 0:
+		vName = "Unicast to us";
+		break;
+	case 1:
+		vName = "Broadcast to us";
+		break;
+	case 2:
+		vName = "Multicast to us";
+		break;
+	case 3:
+		vName = "Sent by somebody else to somebody else";
+		break;
+	case 4:
+		vName = "Sent by us";
+		break;
 	}
-	sb->Append((const UTF8Char*)"\r\n");
+	frame->AddUIntName(frameOfst + 0, 2, "Packet Type", v, (const UTF8Char*)vName);
+	vName = 0;
+	v = ReadMUInt16(&packet[2]);
+	switch (v)
+	{
+	case 772:
+		vName = "Link Layer Address Type";
+		break;
+	case 778:
+		vName = "IP GRE Protocol Type";
+		break;
+	case 803:
+		vName = "IEEE802.11";
+		break;
+	}
+	frame->AddUIntName(frameOfst + 2, 2, "Link-Layer Device Type", v, (const UTF8Char *)vName);
+	UInt16 len = ReadMUInt16(&packet[4]);
+	frame->AddUInt(frameOfst + 4, 2, "Link-Layer Address Length", len);
+	if (len > 0)
+	{
+		if (len == 6)
+		{
+			frame->AddMACAddr(frameOfst + 6, "Link-Layer Address", &packet[6], true);
+		}
+		else
+		{
+			if (len > 8)
+			{
+				frame->AddHexBuff(frameOfst + 6, 8, "Link-Layer Address", &packet[6], false);
+			}
+			else
+			{
+				frame->AddHexBuff(frameOfst + 6, len, "Link-Layer Address", &packet[6], false);
+			}
+		}
+	}
+	UInt16 etherType = ReadMUInt16(&packet[14]);
+	frame->AddHex16Name(frameOfst + 14, "EtherType", etherType, EtherTypeGetName(etherType));
+	PacketEthernetDataGetDetail(etherType, &packet[16], packetSize - 16, frameOfst + 16, frame);
+}
+
+void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	switch (etherType)
+	{
+	case 0x0004: //IEEE802.2 LLC
+		frame->AddFieldSeperstor(frameOfst, (const UTF8Char*)"IEEE802.2 LLC:");
+		PacketIEEE802_2LLCGetDetail(packet, packetSize, frameOfst, frame);
+		return;
+	case 0x26: //Legnth = 0x26 (IEEE802.2 LLC)
+		frame->AddFieldSeperstor(frameOfst, (const UTF8Char*)"IEEE802.2 LLC:");
+		PacketIEEE802_2LLCGetDetail(packet, packetSize, frameOfst, frame);
+		return;
+	case 0x0800: //IPv4
+		frame->AddFieldSeperstor(frameOfst, (const UTF8Char*)"IPv4:");
+		PacketIPv4GetDetail(packet, packetSize, frameOfst, frame);
+		return;
+	case 0x0806: //ARP
+		frame->AddFieldSeperstor(frameOfst, (const UTF8Char*)"ARP:");
+		PacketARPGetDetail(packet, packetSize, frameOfst, frame);
+		return;
+	case 0x86DD: //IPv6
+		frame->AddFieldSeperstor(frameOfst, (const UTF8Char*)"IPv6:");
+		PacketIPv6GetDetail(packet, packetSize, frameOfst, frame);
+		return;
+	default:
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddFieldSeperstor(frameOfst, sb.ToString());
+		}
+		return;
+	}
+}
+
+void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	const Char *vName;
+	UTF8Char sbuff[32];
+	frame->AddHex8Name(frameOfst + 0, "DSAP Address", packet[0], LSAPGetName(packet[0]));
+	frame->AddHex8Name(frameOfst + 1, "SSAP Address", packet[1], LSAPGetName(packet[1]));
 	switch (packet[1])
 	{
 	case 0x42: //Spanning Tree Protocol (STP)
 		if (packetSize >= 38)
 		{
 			UInt16 protoId;
-			sb->Append((const UTF8Char*)"\r\nSpanning Tree Protocol:");
-			sb->Append((const UTF8Char*)"\r\nControl=0x");
-			sb->AppendHex8(packet[2]);
-			sb->Append((const UTF8Char*)"\r\nProtocol ID=0x");
+			frame->AddFieldSeperstor(frameOfst + 2, (const UTF8Char*)"Spanning Tree Protocol:");
+			frame->AddHex8(frameOfst + 2, "Control", packet[2]);
 			protoId = ReadMUInt16(&packet[3]);
-			sb->AppendHex16(protoId);
+			vName = 0;
 			switch (protoId)
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (IEEE 802.1D)");
+				vName = "IEEE 802.1D";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nVersion ID=0x");
-			sb->AppendHex8(packet[5]);
+			frame->AddHex16Name(frameOfst + 3, "Protocol ID", protoId, (const UTF8Char*)vName);
+			vName = 0;
 			switch (packet[5])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (Config & TCN)");
+				vName = "Config & TCN";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (RST)");
+				vName = "RST";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (MST)");
+				vName = "MST";
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)" (SPT)");
+				vName = "SPT";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nBPDU Type=0x");
-			sb->AppendHex8(packet[6]);
+			frame->AddHex8Name(frameOfst + 5, "Version ID", packet[5], (const UTF8Char*)vName);
+			vName = 0;
 			switch (packet[6])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (STP Config BPDU)");
+				vName = "STP Config BPDU";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (RST/MST Config BPDU)");
+				vName = "RST/MST Config BPDU";
 				break;
 			case 0x80:
-				sb->Append((const UTF8Char*)" (TCN BPDU)");
+				vName = "TCN BPDU";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nFlags=0x");
-			sb->AppendHex8(packet[7]);
-			sb->Append((const UTF8Char*)"\r\nRoot Bridge Priority=");
-			sb->AppendU16((UInt16)(packet[8] >> 4));
-			sb->Append((const UTF8Char*)"\r\nRoot Bridge System ID Extension=");
-			sb->AppendU16(ReadMUInt16(&packet[8]) & 0xfff);
-			sb->Append((const UTF8Char*)"\r\nRoot Bridge MAC Address=");
-			sb->AppendHexBuff(&packet[10], 6, ':', Text::LBT_NONE);
-			sb->Append((const UTF8Char*)"\r\nRoot Path Cost=");
-			sb->AppendU32(ReadMUInt32(&packet[16]));
-			sb->Append((const UTF8Char*)"\r\nBridge Priority=");
-			sb->AppendU16((UInt16)(packet[20] >> 4));
-			sb->Append((const UTF8Char*)"\r\nBridge System ID Extension=");
-			sb->AppendU16(ReadMUInt16(&packet[20]) & 0xfff);
-			sb->Append((const UTF8Char*)"\r\nBridge MAC Address=");
-			sb->AppendHexBuff(&packet[22], 6, ':', Text::LBT_NONE);
-			sb->Append((const UTF8Char*)"\r\nPort ID=");
-			sb->AppendU16(ReadMUInt16(&packet[28]));
-			sb->Append((const UTF8Char*)"\r\nMessage Age=");
-			Text::SBAppendF64(sb, ReadMUInt16(&packet[30]) / 256.0);
-			sb->Append((const UTF8Char*)"\r\nMax Age=");
-			Text::SBAppendF64(sb, ReadMUInt16(&packet[32]) / 256.0);
-			sb->Append((const UTF8Char*)"\r\nHello Time=");
-			Text::SBAppendF64(sb, ReadMUInt16(&packet[34]) / 256.0);
-			sb->Append((const UTF8Char*)"\r\nForward Delay=");
-			Text::SBAppendF64(sb, ReadMUInt16(&packet[36]) / 256.0);
+			frame->AddHex8Name(frameOfst + 6, "BPDU Type", packet[6], (const UTF8Char*)vName);
+			frame->AddHex8(frameOfst + 7, "Flags", packet[7]);
+			frame->AddHex16(frameOfst + 8, "Root Bridge", ReadMUInt16(&packet[8]));
+			Text::StrUInt16(sbuff, (UInt16)(packet[8] >> 4));
+			frame->AddSubfield(frameOfst + 8, 2, (const UTF8Char*)"Root Bridge Priority", sbuff);
+			Text::StrUInt16(sbuff, ReadMUInt16(&packet[8]) & 0xfff);
+			frame->AddSubfield(frameOfst + 8, 2, (const UTF8Char*)"Root Bridge System ID Extension", sbuff);
+			frame->AddMACAddr(frameOfst + 10, "Root Bridge MAC Address", &packet[10], false);
+			frame->AddUInt(frameOfst + 16, 4, "Root Path Cost", ReadMUInt32(&packet[16]));
+			frame->AddHex16(frameOfst + 20, "Bridge", ReadMUInt16(&packet[20]));
+			Text::StrUInt16(sbuff, (UInt16)(packet[20] >> 4));
+			frame->AddSubfield(frameOfst + 20, 2, (const UTF8Char*)"Bridge Priority", sbuff);
+			Text::StrUInt16(sbuff, ReadMUInt16(&packet[20]) & 0xfff);
+			frame->AddSubfield(frameOfst + 20, 2, (const UTF8Char*)"Bridge System ID Extension", sbuff);
+			frame->AddMACAddr(frameOfst + 22, "Bridge MAC Address", &packet[22], false);
+			frame->AddUInt(frameOfst + 28, 2, "Port ID", ReadMUInt16(&packet[28]));
+			frame->AddFloat(frameOfst + 30, 2, "Message Age", ReadMUInt16(&packet[30]) / 256.0);
+			frame->AddFloat(frameOfst + 32, 2, "Max Age", ReadMUInt16(&packet[32]) / 256.0);
+			frame->AddFloat(frameOfst + 34, 2, "Hello Time", ReadMUInt16(&packet[34]) / 256.0);
+			frame->AddFloat(frameOfst + 36, 2, "Forward Delay", ReadMUInt16(&packet[36]) / 256.0);
 			if (packetSize > 38)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[38], packetSize - 38, ' ', Text::LBT_CRLF);
+				Text::StringBuilderUTF8 sb;
+				sb.AppendHexBuff(&packet[38], packetSize - 38, ' ', Text::LBT_CRLF);
+				frame->AddFieldSeperstor(frameOfst + 38, sb.ToString());
 			}
 		}
 		break;
 	default:
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(&packet[3], packetSize - 3, ' ', Text::LBT_CRLF);
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(&packet[2], packetSize - 2, ' ', Text::LBT_CRLF);
+			frame->AddFieldSeperstor(frameOfst + 2, sb.ToString());
+		}
 		break;
 	}
 
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	if (packetSize < 22)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+		frame->AddText(frameOfst, sb.ToString());
+	}
+	else
+	{
+		const Char *vName;
+		UInt16 htype = ReadMUInt16(&packet[0]);
+		UInt16 ptype = ReadMUInt16(&packet[2]);
+		UInt8 hlen = packet[4];
+		UInt8 plen = packet[5];
+		UInt16 oper = ReadMUInt16(&packet[6]);
+		frame->AddUInt(frameOfst + 0, 2, "Hardware Type (HTYPE)", htype);
+		frame->AddHex16(frameOfst + 2, "Protocol Type (PTYPE)", ptype);
+		frame->AddUInt(frameOfst + 4, 1, "Hardware address length (HLEN)", hlen);
+		frame->AddUInt(frameOfst + 5, 1, "Protocol address length (PLEN)", plen);
+		vName = 0;
+		switch (oper)
+		{
+		case 1:
+			vName = "Request";
+			break;
+		case 2:
+			vName = "Reply";
+			break;
+		}
+		frame->AddUIntName(frameOfst + 6, 2, "Operation (OPER)", oper, (const UTF8Char*)vName);
+		if (htype == 1 && ptype == 0x0800 && hlen == 6 && plen == 4 && packetSize >= 28)
+		{
+			frame->AddMACAddr(frameOfst + 8, "Sender hardware address (SHA)", &packet[8], true);
+			frame->AddIPv4(frameOfst + 14, "Sender protocol address (SPA)", &packet[14]);
+			frame->AddMACAddr(frameOfst + 18, "Target hardware address (THA)", &packet[18], true);
+			frame->AddIPv4(frameOfst + 24, "Target protocol address (TPA)", &packet[24]);
+			if (packetSize > 28)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.AppendHexBuff(&packet[28], packetSize - 28, ' ', Text::LBT_CRLF);
+				frame->AddFieldSeperstor(frameOfst + 28, sb.ToString());
+			}
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(&packet[8], packetSize - 8, ' ', Text::LBT_CRLF);
+			frame->AddText(frameOfst + 8, sb.ToString());
+		}
+	}
+}
+
+void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
 	if ((packet[0] & 0xf0) != 0x40 || packetSize < 20)
 	{
-		sb->Append((const UTF8Char*)"\r\nNot IPv4 Packet");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+		frame->AddText(frameOfst, (const UTF8Char*)"Not IPv4 Packet");
+		frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		return;
 	}
 
 	const UInt8 *ipData;
 	UOSInt ipDataSize;
-	ipDataSize = HeaderIPv4GetDetail(packet, packetSize, sb);
+	ipDataSize = HeaderIPv4GetDetail(packet, packetSize, frameOfst, frame);
 	ipData = &packet[ipDataSize];
+	frameOfst += (UInt32)ipDataSize;
 	ipDataSize = packetSize - ipDataSize;
 
-	sb->Append((const UTF8Char*)"\r\n");
-	PacketIPDataGetDetail(packet[9], ipData, ipDataSize, sb);
+	PacketIPDataGetDetail(packet[9], ipData, ipDataSize, frameOfst, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
 	UTF8Char sbuff[64];
 	if ((packet[0] & 0xf0) != 0x60 || packetSize < 40)
 	{
-		sb->Append((const UTF8Char*)"\r\nNot IPv6 Packet");
+		frame->AddText(frameOfst, (const UTF8Char*)"Not IPv6 Packet");
+		frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		return;
 	}
 
-	sb->Append((const UTF8Char*)"\r\nVersion=6");
-	sb->Append((const UTF8Char*)"\r\nDS=");
-	sb->AppendU16((UInt16)(((packet[0] & 0xf) << 2) | (packet[1] >> 6)));
-	sb->Append((const UTF8Char*)"\r\nECN=");
-	sb->AppendU16((UInt16)((packet[1] & 0x30) >> 4));
-	sb->Append((const UTF8Char*)"\r\nFlow Label=");
-	sb->AppendU16((UInt16)(((packet[1] & 0xf) << 16) | ReadMUInt16(&packet[2])));
-	sb->Append((const UTF8Char*)"\r\nPayload Length=");
-	sb->AppendU16(ReadMUInt16(&packet[4]));
-	sb->Append((const UTF8Char*)"\r\nNext Header=");
-	sb->AppendU16(packet[6]);
-	sb->Append((const UTF8Char*)"\r\nHop Limit=");
-	sb->AppendU16(packet[7]);
-	Net::SocketUtil::AddressInfo addr;
-	sb->Append((const UTF8Char*)"\r\nSource Address=");
-	Net::SocketUtil::SetAddrInfoV6(&addr, &packet[8], 0);
-	Net::SocketUtil::GetAddrName(sbuff, &addr);
-	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)"\r\nDestination Address=");
-	Net::SocketUtil::SetAddrInfoV6(&addr, &packet[24], 0);
-	Net::SocketUtil::GetAddrName(sbuff, &addr);
-	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)"\r\n");
-	PacketIPDataGetDetail(packet[6], &packet[40], packetSize - 40, sb);
+	frame->AddHexBuff(frameOfst, 4, "Header Misc", packet, false);
+	frame->AddSubfield(frameOfst, 1, (const UTF8Char*)"Version", (const UTF8Char*)"6");
+	Text::StrUInt16(sbuff, (UInt16)(((packet[0] & 0xf) << 2) | (packet[1] >> 6)));
+	frame->AddSubfield(frameOfst, 2, (const UTF8Char*)"DS", sbuff);
+	Text::StrUInt16(sbuff, (UInt16)((packet[1] & 0x30) >> 4));
+	frame->AddSubfield(frameOfst, 2, (const UTF8Char*)"ECN", sbuff);
+	Text::StrUInt32(sbuff, (UInt32)(((packet[1] & 0xf) << 16) | ReadMUInt16(&packet[2])));
+	frame->AddSubfield(frameOfst + 1, 3, (const UTF8Char*)"Flow Label", sbuff);
+	frame->AddUInt(frameOfst + 4, 2, "Payload Length", ReadMUInt16(&packet[4]));
+	frame->AddUInt(frameOfst + 6, 1, "Next Header", packet[6]);
+	frame->AddUInt(frameOfst + 7, 1, "Hop Limit", packet[7]);
+	frame->AddIPv6(frameOfst + 8, "Source Address", &packet[8]);
+	frame->AddIPv6(frameOfst + 24, "Destination Address", &packet[24]);
+	PacketIPDataGetDetail(packet[6], &packet[40], packetSize - 40, frameOfst + 40, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
 	UTF8Char sbuff[64];
+	const Char *vName;
 	switch (protocol)
 	{
 	case 1: //ICMP
-		sb->Append((const UTF8Char*)"\r\nICMP:");
+		frame->AddText(frameOfst, (const UTF8Char*)"ICMP:");
 		if (packetSize >= 4)
 		{
 			UOSInt i = 4;
-			sb->Append((const UTF8Char*)"\r\nType=");
-			sb->AppendU16(packet[0]);
+			vName = 0;
 			switch (packet[0])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (Echo Reply)");
+				vName = "Echo Reply";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (Destination Unreachable)");
+				vName = "Destination Unreachable";
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)" (Source Quench)");
+				vName = "Source Quench";
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)" (Redirect Message)");
+				vName = "Redirect Message";
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)" (Alternate Host Address)");
+				vName = "Alternate Host Address";
 				break;
 			case 8:
-				sb->Append((const UTF8Char*)" (Echo Request)");
+				vName = "Echo Request";
 				break;
 			case 9:
-				sb->Append((const UTF8Char*)" (Router Advertisement)");
+				vName = "Router Advertisement";
 				break;
 			case 10:
-				sb->Append((const UTF8Char*)" (Router Solicitation)");
+				vName = "Router Solicitation";
 				break;
 			case 11:
-				sb->Append((const UTF8Char*)" (Time Exceeded)");
+				vName = "Time Exceeded";
 				break;
 			case 12:
-				sb->Append((const UTF8Char*)" (Parameter Problem: Bad IP header)");
+				vName = "Parameter Problem: Bad IP header";
 				break;
 			case 13:
-				sb->Append((const UTF8Char*)" (Timestamp)");
+				vName = "Timestamp";
 				break;
 			case 14:
-				sb->Append((const UTF8Char*)" (Timestamp Reply)");
+				vName = "Timestamp Reply";
 				break;
 			case 15:
-				sb->Append((const UTF8Char*)" (Information Request)");
+				vName = "Information Request";
 				break;
 			case 16:
-				sb->Append((const UTF8Char*)" (Information Reply)");
+				vName = "Information Reply";
 				break;
 			case 17:
-				sb->Append((const UTF8Char*)" (Address Mask Request)");
+				vName = "Address Mask Request";
 				break;
 			case 18:
-				sb->Append((const UTF8Char*)" (Address Mask Reply)");
+				vName = "Address Mask Reply";
 				break;
 			case 30:
-				sb->Append((const UTF8Char*)" (Traceroute)");
+				vName = "Traceroute";
 				break;
 			case 42:
-				sb->Append((const UTF8Char*)" (Extended Echo Request)");
+				vName = "Extended Echo Request";
 				break;
 			case 43:
-				sb->Append((const UTF8Char*)" (Extended Echo Reply)");
+				vName = "Extended Echo Reply";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nCode=");
-			sb->AppendU16(packet[1]);
+			frame->AddUIntName(frameOfst + 0, 1, "Type", packet[0], (const UTF8Char*)vName);
+
 			switch (packet[0])
 			{
 			case 3:
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (Destination network unreachable)");
+					vName = "Destination network unreachable";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (Destination host unreachable)");
+					vName = "Destination host unreachable";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (Destination protocol unreachable)");
+					vName = "Destination protocol unreachable";
 					break;
 				case 3:
-					sb->Append((const UTF8Char*)" (Destination port unreachable)");
+					vName = "Destination port unreachable";
 					break;
 				case 4:
-					sb->Append((const UTF8Char*)" (Fragmentation required)");
+					vName = "Fragmentation required";
 					break;
 				case 5:
-					sb->Append((const UTF8Char*)" (Source route failed)");
+					vName = "Source route failed";
 					break;
 				case 6:
-					sb->Append((const UTF8Char*)" (Destination network unknown)");
+					vName = "Destination network unknown";
 					break;
 				case 7:
-					sb->Append((const UTF8Char*)" (Destination host unknown)");
+					vName = "Destination host unknown";
 					break;
 				case 8:
-					sb->Append((const UTF8Char*)" (Source host isolated)");
+					vName = "Source host isolated";
 					break;
 				case 9:
-					sb->Append((const UTF8Char*)" (Network administratively prohibited)");
+					vName = "Network administratively prohibited";
 					break;
 				case 10:
-					sb->Append((const UTF8Char*)" (Host administratively prohibited)");
+					vName = "Host administratively prohibited";
 					break;
 				case 11:
-					sb->Append((const UTF8Char*)" (Network unreachable for ToS)");
+					vName = "Network unreachable for ToS";
 					break;
 				case 12:
-					sb->Append((const UTF8Char*)" (Host unreachable for ToS)");
+					vName = "Host unreachable for ToS";
 					break;
 				case 13:
-					sb->Append((const UTF8Char*)" (Communication administratively prohibited)");
+					vName = "Communication administratively prohibited";
 					break;
 				case 14:
-					sb->Append((const UTF8Char*)" (Host Precedence Violation)");
+					vName = "Host Precedence Violation";
 					break;
 				case 15:
-					sb->Append((const UTF8Char*)" (Precedence cutoff in effect)");
+					vName = "Precedence cutoff in effect";
 					break;
 				}
 				break;
@@ -679,16 +693,16 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (Redirect Datagram for the Network)");
+					vName = "Redirect Datagram for the Network";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (Redirect Datagram for the Host)");
+					vName = "Redirect Datagram for the Host";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (Redirect Datagram for the ToS & network)");
+					vName = "Redirect Datagram for the ToS & network";
 					break;
 				case 3:
-					sb->Append((const UTF8Char*)" (Redirect Datagram for the ToS & host)");
+					vName = "Redirect Datagram for the ToS & host";
 					break;
 				}
 				break;
@@ -696,10 +710,10 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (TTL expired in transit)");
+					vName = "TTL expired in transit";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (Fragment reassembly time exceeded)");
+					vName = "Fragment reassembly time exceeded";
 					break;
 				}
 				break;
@@ -707,13 +721,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (Pointer indicates the error)");
+					vName = "Pointer indicates the error";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (Missing a required option)");
+					vName = "Missing a required option";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (Bad length)");
+					vName = "Bad length";
 					break;
 				}
 				break;
@@ -721,231 +735,215 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (No Error)");
+					vName = "No Error";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (Malformed Query)");
+					vName = "Malformed Query";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (No Such Interface)");
+					vName = "No Such Interface";
 					break;
 				case 3:
-					sb->Append((const UTF8Char*)" (No Such Table Entry)");
+					vName = "No Such Table Entry";
 					break;
 				case 4:
-					sb->Append((const UTF8Char*)" (Multiple Interfaces Satisfy Query)");
+					vName = "Multiple Interfaces Satisfy Query";
 					break;
 				}
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nChecksum=0x");
-			sb->AppendHex16(ReadMUInt16(&packet[2]));
+			frame->AddUIntName(frameOfst + 1, 1, "Code", packet[1], (const UTF8Char*)vName);
+			frame->AddHex16(frameOfst + 2, "Checksum", ReadMUInt16(&packet[2]));
 			switch (packet[0])
 			{
 			case 3:
-				sb->Append((const UTF8Char*)"\r\nNext-hop MTU=");
-				sb->AppendU16(ReadMUInt16(&packet[4]));
+				frame->AddUInt(frameOfst + 4, 2, "Next-hop MTU", ReadMUInt16(&packet[4]));
+				frame->AddHexBuff(frameOfst + 6, 2, "Unused", &packet[6], false);
+				//////////////////////////////
+				frame->AddText(frameOfst + 8, (const UTF8Char*)"Original IP Header:");
 				i = 8;
-				sb->Append((const UTF8Char*)"\r\nOriginal IP Header:");
-				i += HeaderIPv4GetDetail(&packet[i], packetSize - i, sb);
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
-				i = packetSize;
+				UInt8 protocol = packet[i + 9];
+				i += HeaderIPv4GetDetail(&packet[i], packetSize - i, frameOfst + (UInt32)i, frame);
+				PacketIPDataGetDetail(protocol, &packet[i], packetSize - i, frameOfst + (UInt32)i, frame);
 				break;
 			}
 			if (i < packetSize)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
 			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		return;
 	case 2: //IGMP
-		sb->Append((const UTF8Char*)"\r\nIGMP:");
+		frame->AddText(frameOfst, (const UTF8Char*)"IGMP:");
 		if (packet[0] == 0x11)
 		{
-			sb->Append((const UTF8Char*)"\r\nType=0x11 (IGMPv3 membership query)");
+			frame->AddField(frameOfst + 0, 1, (const UTF8Char*)"Type", (const UTF8Char*)"0x11 (IGMPv3 membership query)");
 			if (packetSize >= 8)
 			{
 				UInt16 n;
-				sb->Append((const UTF8Char*)"\r\nMax Resp Time=");
-				sb->AppendU16(packet[1]);
-				sb->Append((const UTF8Char*)"\r\nChecksum=0x");
-				sb->AppendHex16(ReadMUInt16(&packet[2]));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[4]));
-				sb->Append((const UTF8Char*)"\r\nGroup Address=");
-				sb->Append(sbuff);
+				frame->AddUInt(frameOfst + 1, 1, "Max Resp Time", packet[1]);
+				frame->AddHex16(frameOfst + 2, "Checksum", ReadMUInt16(&packet[2]));
+				frame->AddIPv4(frameOfst + 4, "Group Address", &packet[4]);
 				if (packetSize >= 16)
 				{
-					sb->Append((const UTF8Char*)"\r\nFlags=0x");
-					sb->AppendHex8(packet[8]);
-					sb->Append((const UTF8Char*)"\r\nQQIC=");
-					sb->AppendU16(packet[9]);
-					sb->Append((const UTF8Char*)"\r\nQQIC=");
+					frame->AddHex8(frameOfst + 8, "Flags", packet[8]);
+					frame->AddUInt(frameOfst + 9, 1, "QQIC", packet[9]);
 					n = ReadMUInt16(&packet[10]);
-					sb->AppendU16(n);
+					frame->AddUInt(frameOfst + 10, 2, "QQIC", n);
 					if (packetSize >= 12 + (UOSInt)n * 4)
 					{
 						UInt16 i = 0;
 						while (i < n)
 						{
-							sb->Append((const UTF8Char*)"\r\nSource Address[");
-							sb->AppendU16(i);
-							sb->Append((const UTF8Char*)"]=");
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[12 + i * 4]));
-							sb->Append(sbuff);
+							Text::StrConcat(Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"Source Address["), i), (const UTF8Char*)"]");
+							frame->AddIPv4(frameOfst + 12 + i * 4, (const Char*)sbuff, &packet[12 + i * 4]);
 							i++;
 						}
 						if (packetSize > 12 + (UOSInt)n * 4)
 						{
-							sb->Append((const UTF8Char*)"\r\n");
-							sb->Append((const UTF8Char*)"\r\n");
-							sb->AppendHexBuff(&packet[12 + n * 4], packetSize - 12 - (UOSInt)n * 4, ' ', Text::LBT_CRLF);
+							frame->AddTextHexBuff(frameOfst + 12 + n * 4, packetSize - 12 - (UInt32)n * 4, &packet[12 + n * 4], true);
 						}
 					}
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[8], packetSize - 8, ' ', Text::LBT_CRLF);
+					frame->AddTextHexBuff(frameOfst + 8, packetSize - 8, &packet[8], true);
 				}
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[1], packetSize - 1, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + 1, packetSize - 1, &packet[1], true);
 			}
 		}
 		else if (packet[0] == 0x16)
 		{
-			sb->Append((const UTF8Char*)"\r\nType=0x16 (IGMPv2 Membership Report)");
+			frame->AddField(frameOfst + 0, 1, (const UTF8Char*)"Type", (const UTF8Char*)"0x16 (IGMPv2 Membership Report)");
 			if (packetSize >= 8)
 			{
-				sb->Append((const UTF8Char*)"\r\nMax Resp Time=");
-				sb->AppendU16(packet[1]);
-				sb->Append((const UTF8Char*)"\r\nChecksum=0x");
-				sb->AppendHex16(ReadMUInt16(&packet[2]));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[4]));
-				sb->Append((const UTF8Char*)"\r\nGroup Address=");
-				sb->Append(sbuff);
+				frame->AddUInt(frameOfst + 1, 1, "Max Resp Time", packet[1]);
+				frame->AddHex16(frameOfst + 2, "Checksum", ReadMUInt16(&packet[2]));
+				frame->AddIPv4(frameOfst + 4, "Group Address", &packet[4]);
 				if (packetSize > 8)
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[8], packetSize - 8, ' ', Text::LBT_CRLF);
+					frame->AddTextHexBuff(frameOfst + 8, packetSize - 8, &packet[8], true);
 				}
 			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\nType=0x");
-			sb->AppendHex8(packet[0]);
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddHex8(frameOfst + 0, "Type", packet[0]);
+			frame->AddTextHexBuff(frameOfst + 1, packetSize - 1, &packet[1], true);
 		}
 		return;
 	case 6:
 	{
-		sb->Append((const UTF8Char*)"\r\nTCP:");
+		frame->AddText(frameOfst, (const UTF8Char*)"TCP:");
 		if (packetSize < 20)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\nSource Port=");
-			sb->AppendU16(ReadMUInt16(&packet[0]));
-			sb->Append((const UTF8Char*)"\r\nDestination Port=");
-			sb->AppendU16(ReadMUInt16(&packet[2]));
-			sb->Append((const UTF8Char*)"\r\nSequence Number=");
-			sb->AppendU32(ReadMUInt32(&packet[4]));
-			sb->Append((const UTF8Char*)"\r\nAcknowledgment Number=");
-			sb->AppendU32(ReadMUInt32(&packet[8]));
-			sb->Append((const UTF8Char*)"\r\nData Offset=");
-			sb->AppendU16((UInt16)(packet[12] >> 4));
-			sb->Append((const UTF8Char*)"\r\nNS=");
-			sb->AppendU16(packet[12] & 1);
-			sb->Append((const UTF8Char*)"\r\nCWR=");
-			sb->AppendU16((UInt16)((packet[13] >> 7) & 1));
-			sb->Append((const UTF8Char*)"\r\nECE=");
-			sb->AppendU16((UInt16)((packet[13] >> 6) & 1));
-			sb->Append((const UTF8Char*)"\r\nURG=");
-			sb->AppendU16((UInt16)((packet[13] >> 5) & 1));
-			sb->Append((const UTF8Char*)"\r\nACK=");
-			sb->AppendU16((UInt16)((packet[13] >> 4) & 1));
-			sb->Append((const UTF8Char*)"\r\nPSH=");
-			sb->AppendU16((UInt16)((packet[13] >> 3) & 1));
-			sb->Append((const UTF8Char*)"\r\nRST=");
-			sb->AppendU16((UInt16)((packet[13] >> 2) & 1));
-			sb->Append((const UTF8Char*)"\r\nSYN=");
-			sb->AppendU16((UInt16)((packet[13] >> 1) & 1));
-			sb->Append((const UTF8Char*)"\r\nFIN=");
-			sb->AppendU16(packet[13] & 1);
-			sb->Append((const UTF8Char*)"\r\nWindow Size=");
-			sb->AppendU16(ReadMUInt16(&packet[14]));
-			sb->Append((const UTF8Char*)"\r\nChecksum=0x");
-			sb->AppendHex16(ReadMUInt16(&packet[16]));
-			sb->Append((const UTF8Char*)"\r\nUrgent Pointer=0x");
-			sb->AppendHex16(ReadMUInt16(&packet[18]));
+			frame->AddUInt(frameOfst + 0, 2, "Source Port", ReadMUInt16(&packet[0]));
+			frame->AddUInt(frameOfst + 2, 2, "Destination Port", ReadMUInt16(&packet[2]));
+			frame->AddUInt(frameOfst + 4, 4, "Sequence Number", ReadMUInt32(&packet[4]));
+			frame->AddUInt(frameOfst + 8, 4, "Acknowledgment Number", ReadMUInt32(&packet[8]));
+			frame->AddUInt(frameOfst + 12, 1, "Data Offset", (UInt16)(packet[12] >> 4));
+			Text::StrUInt16(sbuff, packet[12] & 1);
+			frame->AddSubfield(frameOfst + 12, 1, (const UTF8Char*)"NS", sbuff);
+			frame->AddHex8(frameOfst + 13, "Flags", packet[13]);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 7) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"CWR", sbuff);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 6) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"ECE", sbuff);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 5) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"URG", sbuff);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 4) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"ACK", sbuff);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 3) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"PSH", sbuff);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 2) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"RST", sbuff);
+			Text::StrUInt16(sbuff, (UInt16)((packet[13] >> 1) & 1));
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"SYN", sbuff);
+			Text::StrUInt16(sbuff, packet[13] & 1);
+			frame->AddSubfield(frameOfst + 13, 1, (const UTF8Char*)"FIN", sbuff);
+			frame->AddUInt(frameOfst + 14, 2, "Window Size", ReadMUInt16(&packet[14]));
+			frame->AddHex16(frameOfst + 16, "Checksum", ReadMUInt16(&packet[16]));
+			frame->AddHex16(frameOfst + 18, "Urgent Pointer", ReadMUInt16(&packet[18]));
 			UOSInt headerLen = (UOSInt)(packet[12] >> 4) * 4;
 			if (headerLen > 20)
 			{
-				sb->Append((const UTF8Char*)"\r\nOptions:");
+				frame->AddText(frameOfst + 20, (const UTF8Char*)"Options:");
 				UOSInt i = 20;
 				while (i < headerLen)
 				{
-					sb->Append((const UTF8Char*)"\r\nKind=");
-					sb->AppendU16(packet[i]);
+					vName = 0;
 					switch (packet[i])
 					{
 					case 0:
-						sb->Append((const UTF8Char*)" (End of option list)");
+						vName = "End of option list";
+						break;
+					case 1:
+						vName = "No operation";
+						break;
+					case 2:
+						vName = "No operation";
+						break;
+					case 3:
+						vName = "Window scale";
+						break;
+					case 4:
+						vName = "SACK permitted";
+						break;
+					case 8:
+						vName = "Time Stamp Option";
+						break;
+					}
+					frame->AddUIntName(frameOfst + i, 1, "Kind", packet[i], (const UTF8Char*)vName);
+
+					switch (packet[i])
+					{
+					case 0:
 						i = headerLen - 1;
 						break;
 					case 1:
-						sb->Append((const UTF8Char*)" (No operation)");
 						break;
 					case 2:
-						sb->Append((const UTF8Char*)" (No operation)");
-						sb->Append((const UTF8Char*)", Length=");
-						sb->AppendU16(packet[i + 1]);
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
 						if (packet[i + 1] == 4)
 						{
-							sb->Append((const UTF8Char*)", Value=");
-							sb->AppendU16(ReadMUInt16(&packet[i + 2]));
+							frame->AddUInt(frameOfst + i + 2, 2, "Value", ReadMUInt16(&packet[i + 2]));
 						}
 						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					case 3:
-						sb->Append((const UTF8Char*)" (Window scale)");
-						sb->Append((const UTF8Char*)", Length=");
-						sb->AppendU16(packet[i + 1]);
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
 						if (packet[i + 1] == 3)
 						{
-							sb->Append((const UTF8Char*)", Value=");
-							sb->AppendU16(packet[i + 2]);
+							frame->AddUInt(frameOfst + i + 2, 1, "Value", packet[i + 2]);
 						}
 						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					case 4:
-						sb->Append((const UTF8Char*)" (SACK permitted)");
-						sb->Append((const UTF8Char*)", Length=");
-						sb->AppendU16(packet[i + 1]);
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
+						i += (UOSInt)packet[i + 1] - 1;
+						break;
+					case 8:
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
+						if (packet[i + 1] == 10)
+						{
+							frame->AddUInt(frameOfst + i + 2, 4, "Timestamp value", ReadMUInt32(&packet[i + 2]));
+							frame->AddUInt(frameOfst + i + 6, 4, "Timestamp echo reply", ReadMUInt32(&packet[i + 6]));
+						}
 						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					default:
-						sb->Append((const UTF8Char*)", Length=");
-						sb->AppendU16(packet[i + 1]);
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
 						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					}
@@ -954,10 +952,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 			}
 			if (packetSize > headerLen)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\nData:");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[headerLen], packetSize - headerLen, ' ', Text::LBT_CRLF);
+				frame->AddHexBuff(frameOfst + headerLen, packetSize - headerLen, "Data", &packet[headerLen], true);
 			}
 		}
 		return;
@@ -966,210 +961,186 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 	{
 		UInt16 srcPort = 0;
 		UInt16 destPort = 0;
-		const UTF8Char *csptr;
 		UOSInt udpLen = packetSize;
-		sb->Append((const UTF8Char*)"\r\nUDP:");
+		frame->AddText(frameOfst, (const UTF8Char*)"UDP:");
 		
 		if (packetSize >= 2)
 		{
-			sb->Append((const UTF8Char*)"\r\nSrcPort=");
 			srcPort = ReadMUInt16(&packet[0]);
-			sb->AppendU16(srcPort);
-			csptr = UDPPortGetName(srcPort);
-			if (csptr)
-			{
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(csptr);
-				sb->Append((const UTF8Char*)")");
-			}
+			frame->AddUIntName(frameOfst + 0, 2, "SrcPort", srcPort, UDPPortGetName(srcPort));
 		}
 		if (packetSize >= 4)
 		{
-			sb->Append((const UTF8Char*)"\r\nDestPort=");
 			destPort = ReadMUInt16(&packet[2]);
-			sb->AppendU16(destPort);
-			csptr = UDPPortGetName(destPort);
-			if (csptr)
-			{
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(csptr);
-				sb->Append((const UTF8Char*)")");
-			}
+			frame->AddUIntName(frameOfst + 2, 2, "DestPort", destPort, UDPPortGetName(destPort));
 		}
 		if (packetSize >= 6)
 		{
 			udpLen = ReadMUInt16(&packet[4]);
-			sb->Append((const UTF8Char*)"\r\nLength=");
-			sb->AppendUOSInt(udpLen);
+			frame->AddUInt(frameOfst + 4, 2, "Length", udpLen);
 			if (packetSize < udpLen)
 				udpLen = packetSize;
 		}
 		if (packetSize >= 8)
 		{
-			sb->Append((const UTF8Char*)"\r\nChecksum=0x");
-			sb->AppendHex16(ReadMUInt16(&packet[6]));
+			frame->AddHex16(frameOfst + 6, "Checksum", ReadMUInt16(&packet[6]));
 		}
 		if (packetSize > 8)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			PacketUDPGetDetail(srcPort, destPort, &packet[8], udpLen - 8, sb);
+			PacketUDPGetDetail(srcPort, destPort, &packet[8], udpLen - 8, frameOfst + 8, frame);
 			if (packetSize > udpLen)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\nPadding:");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[udpLen], packetSize - udpLen, ' ', Text::LBT_CRLF);
+				frame->AddHexBuff(frameOfst + udpLen, packetSize - udpLen, "Padding", &packet[udpLen], true);
 			}
 		}
 		return;
 	}
 	case 58:
-		sb->Append((const UTF8Char*)"\r\nICMPv6:");
+		frame->AddText(frameOfst, (const UTF8Char*)"ICMPv6:");
 		if (packetSize >= 4)
 		{
-			sb->Append((const UTF8Char*)"\r\nType=");
-			sb->AppendU16(packet[0]);
+			vName = 0;
 			switch (packet[0])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)" (Destination unreachable)");
+				vName = "Destination unreachable";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (Packet Too Big)");
+				vName = "Packet Too Big";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (Time exceeded)");
+				vName = "Time exceeded";
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)" (Parameter problem)");
+				vName = "Parameter problem";
 				break;
 			case 100:
-				sb->Append((const UTF8Char*)" (Private experimentation)");
+				vName = "Private experimentation";
 				break;
 			case 101:
-				sb->Append((const UTF8Char*)" (Private experimentation)");
+				vName = "Private experimentation";
 				break;
 			case 127:
-				sb->Append((const UTF8Char*)" (Reserved for expansion of ICMPv6 error messages)");
+				vName = "Reserved for expansion of ICMPv6 error messages";
 				break;
 			case 128:
-				sb->Append((const UTF8Char*)" (Echo Request)");
+				vName = "Echo Request";
 				break;
 			case 129:
-				sb->Append((const UTF8Char*)" (Echo Reply)");
+				vName = "Echo Reply";
 				break;
 			case 130:
-				sb->Append((const UTF8Char*)" (Multicast Listener Query)");
+				vName = "Multicast Listener Query";
 				break;
 			case 131:
-				sb->Append((const UTF8Char*)" (Multicast Listener Report)");
+				vName = "Multicast Listener Report";
 				break;
 			case 132:
-				sb->Append((const UTF8Char*)" (Multicast Listener Done)");
+				vName = "Multicast Listener Done";
 				break;
 			case 133:
-				sb->Append((const UTF8Char*)" (Router Solicitation)");
+				vName = "Router Solicitation";
 				break;
 			case 134:
-				sb->Append((const UTF8Char*)" (Router Advertisement)");
+				vName = "Router Advertisement";
 				break;
 			case 135:
-				sb->Append((const UTF8Char*)" (Neighbor Solicitation)");
+				vName = "Neighbor Solicitation";
 				break;
 			case 136:
-				sb->Append((const UTF8Char*)" (Neighbor Advertisement)");
+				vName = "Neighbor Advertisement";
 				break;
 			case 137:
-				sb->Append((const UTF8Char*)" (Redirect Message)");
+				vName = "Redirect Message";
 				break;
 			case 138:
-				sb->Append((const UTF8Char*)" (Router Renumbering)");
+				vName = "Router Renumbering";
 				break;
 			case 139:
-				sb->Append((const UTF8Char*)" (ICMP Node Information Query)");
+				vName = "ICMP Node Information Query";
 				break;
 			case 140:
-				sb->Append((const UTF8Char*)" (ICMP Node Information Response)");
+				vName = "ICMP Node Information Response";
 				break;
 			case 141:
-				sb->Append((const UTF8Char*)" (Inverse Neighbor Discovery Solicitation Message)");
+				vName = "Inverse Neighbor Discovery Solicitation Message";
 				break;
 			case 142:
-				sb->Append((const UTF8Char*)" (Inverse Neighbor Discovery Advertisement Message)");
+				vName = "Inverse Neighbor Discovery Advertisement Message";
 				break;
 			case 143:
-				sb->Append((const UTF8Char*)" (Multicast Listener Discovery (MLDv2) reports)");
+				vName = "Multicast Listener Discovery (MLDv2) reports";
 				break;
 			case 144:
-				sb->Append((const UTF8Char*)" (Home Agent Address Discovery Request Message)");
+				vName = "Home Agent Address Discovery Request Message";
 				break;
 			case 145:
-				sb->Append((const UTF8Char*)" (Home Agent Address Discovery Reply Message)");
+				vName = "Home Agent Address Discovery Reply Message";
 				break;
 			case 146:
-				sb->Append((const UTF8Char*)" (Mobile Prefix Solicitation)");
+				vName = "Mobile Prefix Solicitation";
 				break;
 			case 147:
-				sb->Append((const UTF8Char*)" (Mobile Prefix Advertisement)");
+				vName = "Mobile Prefix Advertisement";
 				break;
 			case 148:
-				sb->Append((const UTF8Char*)" (Certification Path Solicitation)");
+				vName = "Certification Path Solicitation";
 				break;
 			case 149:
-				sb->Append((const UTF8Char*)" (Certification Path Advertisement)");
+				vName = "Certification Path Advertisement";
 				break;
 			case 151:
-				sb->Append((const UTF8Char*)" (Multicast Router Advertisement)");
+				vName = "Multicast Router Advertisement";
 				break;
 			case 152:
-				sb->Append((const UTF8Char*)" (Multicast Router Solicitation)");
+				vName = "Multicast Router Solicitation";
 				break;
 			case 153:
-				sb->Append((const UTF8Char*)" (Multicast Router Termination)");
+				vName = "Multicast Router Termination";
 				break;
 			case 155:
-				sb->Append((const UTF8Char*)" (RPL Control Message)");
+				vName = "RPL Control Message";
 				break;
 			case 200:
-				sb->Append((const UTF8Char*)" (Private experimentation)");
+				vName = "Private experimentation";
 				break;
 			case 201:
-				sb->Append((const UTF8Char*)" (Private experimentation)");
+				vName = "Private experimentation";
 				break;
 			case 255:
-				sb->Append((const UTF8Char*)" (Reserved for expansion of ICMPv6 informational messages)");
+				vName = "Reserved for expansion of ICMPv6 informational messages";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nCode=");
-			sb->AppendU16(packet[1]);
+			frame->AddUIntName(frameOfst + 0, 1, "Type", packet[0], (const UTF8Char*)vName);
+
 			switch (packet[0])
 			{
 			case 1: //Destination unreachable
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (no route to destination)");
+					vName = "no route to destination";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (communication with destination administratively prohibited)");
+					vName = "communication with destination administratively prohibited";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (beyond scope of source address)");
+					vName = "beyond scope of source address";
 					break;
 				case 3:
-					sb->Append((const UTF8Char*)" (address unreachable)");
+					vName = "address unreachable";
 					break;
 				case 4:
-					sb->Append((const UTF8Char*)" (port unreachable)");
+					vName = "port unreachable";
 					break;
 				case 5:
-					sb->Append((const UTF8Char*)" (source address failed ingress/egress policy)");
+					vName = "source address failed ingress/egress policy";
 					break;
 				case 6:
-					sb->Append((const UTF8Char*)" (reject route to destination)");
+					vName = "reject route to destination";
 					break;
 				case 7:
-					sb->Append((const UTF8Char*)" (Error in Source Routing Header)");
+					vName = "Error in Source Routing Header";
 					break;
 				}
 				break;
@@ -1177,10 +1148,10 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (hop limit exceeded in transit)");
+					vName = "hop limit exceeded in transit";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (fragment reassembly time exceeded)");
+					vName = "fragment reassembly time exceeded";
 					break;
 				}
 				break;
@@ -1188,13 +1159,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (erroneous header field encountered)");
+					vName = "erroneous header field encountered";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (unrecognized Next Header type encountered)");
+					vName = "unrecognized Next Header type encountered";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (unrecognized IPv6 option encountered)");
+					vName = "unrecognized IPv6 option encountered";
 					break;
 				}
 				break;
@@ -1202,13 +1173,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (Router Renumbering Command)");
+					vName = "Router Renumbering Command";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (Router Renumbering Result)");
+					vName = "Router Renumbering Result";
 					break;
 				case 255:
-					sb->Append((const UTF8Char*)" (Sequence Number Reset)");
+					vName = "Sequence Number Reset";
 					break;
 				}
 				break;
@@ -1216,13 +1187,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (The Data field contains an IPv6 address which is the Subject of this Query)");
+					vName = "The Data field contains an IPv6 address which is the Subject of this Query";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (The Data field contains a name which is the Subject of this Query, or is empty, as in the case of a NOOP)");
+					vName = "The Data field contains a name which is the Subject of this Query, or is empty, as in the case of a NOOP";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (The Data field contains an IPv4 address which is the Subject of this Query)");
+					vName = "The Data field contains an IPv4 address which is the Subject of this Query";
 					break;
 				}
 				break;
@@ -1230,76 +1201,61 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					sb->Append((const UTF8Char*)" (A successful reply. The Reply Data field may or may not be empty)");
+					vName = "A successful reply. The Reply Data field may or may not be empty";
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)" (The Responder refuses to supply the answer. The Reply Data field will be empty.)");
+					vName = "The Responder refuses to supply the answer. The Reply Data field will be empty.";
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)" (The Qtype of the Query is unknown to the Responder. The Reply Data field will be empty)");
+					vName = "The Qtype of the Query is unknown to the Responder. The Reply Data field will be empty";
 					break;
 				}
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nChecksum=0x");
-			sb->AppendHex16(ReadMUInt16(&packet[2]));
+			frame->AddUIntName(frameOfst + 1, 1, "Code", packet[1], (const UTF8Char*)vName);
+			frame->AddHex16(frameOfst + 2, "Checksum", ReadMUInt16(&packet[2]));
 			switch (packet[0])
 			{
 			case 134:
 				if (packetSize >= 24)
 				{
-					sb->Append((const UTF8Char*)"\r\nHop Limit=");
-					sb->AppendU16(packet[4]);
-					sb->Append((const UTF8Char*)"\r\nFlags=0x");
-					sb->AppendHex8(packet[5]);
-					sb->Append((const UTF8Char*)"\r\nRouter Lifetime=");
-					sb->AppendU16(ReadMUInt16(&packet[6]));
-					sb->Append((const UTF8Char*)"\r\nReachable Timer=");
-					sb->AppendU32(ReadMUInt32(&packet[8]));
-					sb->Append((const UTF8Char*)"\r\nRetains Timer=");
-					sb->AppendU32(ReadMUInt32(&packet[12]));
+					frame->AddUInt(frameOfst + 4, 1, "Hop Limit", packet[4]);
+					frame->AddHex8(frameOfst + 5, "Flags", packet[5]);
+					frame->AddUInt(frameOfst + 6, 2, "Router Lifetime", ReadMUInt16(&packet[6]));
+					frame->AddUInt(frameOfst + 8, 4, "Reachable Timer", ReadMUInt32(&packet[8]));
+					frame->AddUInt(frameOfst + 12, 4, "Retains Timer", ReadMUInt32(&packet[12]));
 					UOSInt i = 16;
 					while (i + 7 < packetSize)
 					{
-						sb->Append((const UTF8Char*)"\r\nType=");
-						sb->AppendU16(packet[i]);
+						vName = 0;
 						switch (packet[i])
 						{
 						case 1:
-							sb->Append((const UTF8Char *)" (Source Link-layer Address)");
+							vName = "Source Link-layer Address";
 							break;
 						case 2:
-							sb->Append((const UTF8Char *)" (Target Link-layer Address)");
+							vName = "Target Link-layer Address";
 							break;
 						}
-						sb->Append((const UTF8Char*)"\r\nLength=");
-						sb->AppendU16(packet[i + 1]);
+						frame->AddUIntName(frameOfst + i, 1, "Type", packet[i], (const UTF8Char*)vName);
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
 						switch (packet[i])
 						{
 						case 1:
 						case 2:
-							sb->Append((const UTF8Char*)"\r\nAddress=");
-							sb->AppendHexBuff(&packet[i + 2], 6, ':', Text::LBT_NONE);
+							frame->AddMACAddr(frameOfst + i + 2, "Address", &packet[i + 2], true);
 							break;
 						case 3:
-							sb->Append((const UTF8Char*)"\r\nPrefix Length=");
-							sb->AppendU16(packet[i + 2]);
-							sb->Append((const UTF8Char*)"\r\nFlags=");
-							sb->AppendU16(packet[i + 3]);
-							sb->Append((const UTF8Char*)"\r\nValid Lifetime=");
-							sb->AppendU32(ReadMUInt32(&packet[i + 4]));
-							sb->Append((const UTF8Char*)"\r\nPreferred Lifetime=");
-							sb->AppendU32(ReadMUInt32(&packet[i + 8]));
-							sb->Append((const UTF8Char*)"\r\nReserved=");
-							sb->AppendU32(ReadMUInt32(&packet[i + 12]));
-							sb->Append((const UTF8Char*)"\r\nPrefix=");
-							sb->AppendHexBuff(&packet[i + 16], (UOSInt)packet[i + 1] - 16, ' ', Text::LBT_NONE);
+							frame->AddUInt(frameOfst + i + 2, 1, "Prefix Length", packet[i + 2]);
+							frame->AddHex8(frameOfst + i + 3, "Flags", packet[i + 3]);
+							frame->AddUInt(frameOfst + i + 4, 4, "Valid Lifetime", ReadMUInt32(&packet[i + 4]));
+							frame->AddUInt(frameOfst + i + 8, 4, "Preferred Lifetime", ReadMUInt32(&packet[i + 8]));
+							frame->AddUInt(frameOfst + i + 12, 4, "Reserved", ReadMUInt32(&packet[i + 12]));
+							frame->AddHexBuff(frameOfst + i + 16, (UInt32)packet[i + 1] - 16, "Prefix", &packet[i + 16], false);
 							break;
 						case 5:
-							sb->Append((const UTF8Char*)"\r\nPrefix Length=");
-							sb->AppendU16(ReadMUInt16(&packet[i + 2]));
-							sb->Append((const UTF8Char*)"\r\nMTU=");
-							sb->AppendU32(ReadMUInt32(&packet[i + 4]));
+							frame->AddUInt(frameOfst + i + 2, 2, "Prefix Length", ReadMUInt16(&packet[i + 2]));
+							frame->AddUInt(frameOfst + i + 4, 4, "MTU", ReadMUInt32(&packet[i + 4]));
 							break;
 						}
 						i += (UOSInt)packet[i + 1] * 8;
@@ -1307,171 +1263,127 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[4], packetSize - 4, ' ', Text::LBT_CRLF);
+					frame->AddTextHexBuff(frameOfst + 4, packetSize - 4, &packet[4], true);
 				}
 				break;
 			case 135:
 				if (packetSize >= 24)
 				{
-					Net::SocketUtil::AddressInfo addr;
-					sb->Append((const UTF8Char*)"\r\nReserved=0x");
-					sb->AppendHex32(ReadMUInt32(&packet[4]));
-					Net::SocketUtil::SetAddrInfoV6(&addr, &packet[8], 0);
-					Net::SocketUtil::GetAddrName(sbuff, &addr);
-					sb->Append((const UTF8Char*)"\r\nTarget Address=");
-					sb->Append(sbuff);
+					frame->AddHex32(frameOfst + 4, "Reserved", ReadMUInt32(&packet[4]));
+					frame->AddIPv4(frameOfst + 8, "Target Address", &packet[8]);
 					UOSInt i = 24;
 					while (i < packetSize)
 					{
-						sb->Append((const UTF8Char*)"\r\nType=");
-						sb->AppendU16(packet[i]);
-						sb->Append((const UTF8Char*)"\r\nLength=");
-						sb->AppendU16(packet[i + 1]);
+						vName = 0;
 						switch (packet[i])
 						{
 						case 1:
-							sb->Append((const UTF8Char *)" (Source Link-layer Address)");
+							vName = "Source Link-layer Address";
 							break;
 						case 2:
-							sb->Append((const UTF8Char *)" (Target Link-layer Address)");
+							vName = "Target Link-layer Address";
 							break;
 						}
-						sb->Append((const UTF8Char*)"\r\nAddress=");
-						sb->AppendHexBuff(&packet[i + 2], 6, ':', Text::LBT_NONE);
+						frame->AddUIntName(frameOfst + i, 1, "Type", packet[i], (const UTF8Char*)vName);
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
+						frame->AddMACAddr(frameOfst + i + 2, "Address", &packet[i + 2], true);
 						i += 8;
 					}
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[4], packetSize - 4, ' ', Text::LBT_CRLF);
+					frame->AddTextHexBuff(frameOfst + 4, packetSize - 4, &packet[4], true);
 				}
 				break;
 			default:
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[4], packetSize - 4, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + 4, packetSize - 4, &packet[4], true);
 				break;
 			}
 		}
 		return;
 	default:
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+		frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		return;
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
+	const Char *vName;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[64];
-	UTF8Char *sptr;
 	if (destPort == 53)
 	{
-		sb->Append((const UTF8Char*)"\r\nDNS Request:");
+		frame->AddText(frameOfst, (const UTF8Char*)"DNS Request:");
 		if (packetSize < 12)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		else
 		{
-			PacketDNSGetDetail(packet, packetSize, sb);
+			PacketDNSGetDetail(packet, packetSize, frameOfst, frame);
 		}
 	}
 	else if (srcPort == 53)
 	{
-		sb->Append((const UTF8Char*)"\r\nDNS Reply:");
+		frame->AddText(frameOfst, (const UTF8Char*)"DNS Reply:");
 		if (packetSize < 12)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		else
 		{
-			PacketDNSGetDetail(packet, packetSize, sb);
+			PacketDNSGetDetail(packet, packetSize, frameOfst, frame);
 		}
 	}
 	else if (srcPort == 67 || destPort == 67)
 	{
-		sb->Append((const UTF8Char*)"\r\nBOOTP (DHCP):");
+		frame->AddText(frameOfst, (const UTF8Char*)"BOOTP (DHCP):");
 		if (packetSize < 240)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		else if (ReadMUInt32(&packet[236]) == 0x63825363)
 		{
-			sb->Append((const UTF8Char*)"\r\nOP=");
-			sb->AppendU16(packet[0]);
+			vName = 0;
 			switch (packet[0])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)" (Request)");
+				vName = "Request";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (Reply)");
+				vName = "Reply";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nHardware Type (HTYPE)=");
-			sb->AppendU16(packet[1]);
-			sb->Append((const UTF8Char*)"\r\nHardware Address Length (HLEN)=");
-			sb->AppendU16(packet[2]);
-			sb->Append((const UTF8Char*)"\r\nHOPS=");
-			sb->AppendU16(packet[3]);
-			sb->Append((const UTF8Char*)"\r\nTransaction ID=0x");
-			sb->AppendHex32(ReadMUInt32(&packet[4]));
-			sb->Append((const UTF8Char*)"\r\nSeconds Elapsed (SECS)=");
-			sb->AppendU16(ReadMUInt16(&packet[8]));
-			sb->Append((const UTF8Char*)"\r\nFlags=0x");
-			sb->AppendHex16(ReadMUInt16(&packet[10]));
-			sb->Append((const UTF8Char*)"\r\nClient IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[12]));
-			sb->Append(sbuff);
-			sb->Append((const UTF8Char*)"\r\nYour IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[16]));
-			sb->Append(sbuff);
-			sb->Append((const UTF8Char*)"\r\nServer IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[20]));
-			sb->Append(sbuff);
-			sb->Append((const UTF8Char*)"\r\nGateway IP Address=");
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[24]));
-			sb->Append(sbuff);
-			sb->Append((const UTF8Char*)"\r\nClient Hardware Address=");
-			sb->AppendHexBuff(&packet[28], 6, ':', Text::LBT_NONE);
-			sb->Append((const UTF8Char*)"\r\nPadding=");
-			sb->AppendHexBuff(&packet[34], 10, ' ', Text::LBT_NONE);
-			sb->Append((const UTF8Char*)"\r\nServer Host Name=");
-			sb->AppendS(&packet[44], 64);
-			sb->Append((const UTF8Char*)"\r\nBoot File Name=");
-			sb->AppendS(&packet[108], 128);
-			sb->Append((const UTF8Char*)"\r\nDHCP Magic=0x");
-			sb->AppendHex32(ReadMUInt32(&packet[236]));
+			frame->AddUIntName(frameOfst + 0, 1, "OP", packet[0], (const UTF8Char*)vName);
+			frame->AddUInt(frameOfst + 1, 1, "Hardware Type (HTYPE)", packet[1]);
+			frame->AddUInt(frameOfst + 2, 1, "Hardware Address Length (HLEN)", packet[2]);
+			frame->AddUInt(frameOfst + 3, 1, "HOPS", packet[3]);
+			frame->AddHex32(frameOfst + 4, "Transaction ID", ReadMUInt32(&packet[4]));
+			frame->AddUInt(frameOfst + 8, 2, "Seconds Elapsed (SECS)", ReadMUInt16(&packet[8]));
+			frame->AddHex16(frameOfst + 10, "Flags", ReadMUInt16(&packet[10]));
+			frame->AddIPv4(frameOfst + 12, "Client IP Address", &packet[12]);
+			frame->AddIPv4(frameOfst + 16, "Your IP Address", &packet[16]);
+			frame->AddIPv4(frameOfst + 20, "Server IP Address", &packet[20]);
+			frame->AddIPv4(frameOfst + 24, "Gateway IP Address", &packet[24]);
+			frame->AddMACAddr(frameOfst + 28, "Client Hardware Address", &packet[28], true);
+			frame->AddHexBuff(frameOfst + 34, 10, "Padding", &packet[34], false);
+			frame->AddStrS(frameOfst + 44, 64, "Server Host Name", &packet[44]);
+			frame->AddStrS(frameOfst + 108, 128, "Server Host Name", &packet[108]);
+			frame->AddHex32(frameOfst + 236, "DHCP Magic", ReadMUInt32(&packet[236]));
 			const UInt8 *currPtr = &packet[240];
 			const UInt8 *endPtr = &packet[packetSize];
-			const UTF8Char *csptr;
 			UInt8 t;
 			UInt8 len;
 			while (currPtr < endPtr)
 			{
 				t = *currPtr++;
-				sb->Append((const UTF8Char*)"\r\nOption Type=");
-				sb->AppendU16(t);
-				csptr = DHCPOptionGetName(t);
-				if (csptr)
-				{
-					sb->Append((const UTF8Char*)" (");
-					sb->Append(csptr);
-					sb->Append((const UTF8Char*)")");
-				}
+				frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet - 1), 1, "Option Type", t, DHCPOptionGetName(t));
 				if (t == 255)
 				{
 					if (currPtr < endPtr)
 					{
-						sb->Append((const UTF8Char*)"\r\nPadding:");
-						sb->Append((const UTF8Char*)"\r\n");
-						sb->AppendHexBuff(currPtr, (UOSInt)(endPtr - currPtr), ' ', Text::LBT_CRLF);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet), (UInt32)(endPtr - currPtr), "Padding", currPtr, true);
 					}
 					break;
 				}
@@ -1480,170 +1392,131 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					break;
 				}
 				len = *currPtr++;
-				sb->Append((const UTF8Char*)"\r\nOption Length=");
-				sb->AppendU16(len);
+				frame->AddUInt(frameOfst + (UInt32)(currPtr - packet - 1), 1, "Option Length", len);
 				if (t == 1 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nSubnet Mask=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
-					sb->Append(sbuff);
+					frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), "Subnet Mask", currPtr);
 				}
 				else if (t == 3 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nRouter=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
-					sb->Append(sbuff);
+					frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), "Router", currPtr);
 				}
 				else if (t == 6 && len > 0 && (len & 3) == 0)
 				{
-					sb->Append((const UTF8Char*)"\r\nDNS=");
+
 					OSInt i = 0;
 					while (i < len)
 					{
-						if (i > 0)
-						{
-							sb->Append((const UTF8Char*)", ");
-						}
-						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&currPtr[i]));
-						sb->Append(sbuff);
+						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"DNS"), i >> 2);
+						frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), (const Char*)sbuff, &currPtr[i]);
 						i += 4;
 					}
 				}
 				else if (t == 12 && len > 0)
 				{
-					sb->Append((const UTF8Char*)"\r\nHost Name=");
-					sb->AppendC(currPtr, len);
+					frame->AddStrC(frameOfst + (UInt32)(currPtr - packet), len, "Host Name", currPtr);
 				}
 				else if (t == 15 && len > 0)
 				{
-					sb->Append((const UTF8Char*)"\r\nDomain Name=");
-					sb->AppendC(currPtr, len);
+					frame->AddStrC(frameOfst + (UInt32)(currPtr - packet), len, "Domain Name", currPtr);
 				}
 				else if (t == 50 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nRequested IP Address=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
-					sb->Append(sbuff);
+					frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), "Requested IP Address", currPtr);
 				}
 				else if (t == 51 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nIP Address Lease Time=");
-					sb->AppendU32(ReadMUInt32(currPtr));
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 4, "IP Address Lease Time", ReadMUInt32(currPtr));
 				}
 				else if (t == 53 && len == 1)
 				{
-					sb->Append((const UTF8Char*)"\r\nDHCP Type=");
-					sb->AppendU16(currPtr[0]);
+					vName = 0;
 					switch (currPtr[0])
 					{
 					case 1:
-						sb->Append((const UTF8Char*)" (Discover)");
+						vName = "Discover";
 						break;
 					case 2:
-						sb->Append((const UTF8Char*)" (Offer)");
+						vName = "Offer";
 						break;
 					case 3:
-						sb->Append((const UTF8Char*)" (Request)");
+						vName = "Request";
 						break;
 					case 5:
-						sb->Append((const UTF8Char*)" (ACK)");
+						vName = "ACK";
 						break;
 					}
+					frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet), 1, "DHCP Type", currPtr[0], (const UTF8Char*)vName);
 				}
 				else if (t == 54 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nDHCP Server=");
-					Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(currPtr));
-					sb->Append(sbuff);
+					frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), "DHCP Server", currPtr);
 				}
 				else if (t == 55 && len > 0)
 				{
 					OSInt i;
-					sb->Append((const UTF8Char*)"\r\nParameter Request List:");
+					frame->AddText(frameOfst + (UInt32)(currPtr - packet), (const UTF8Char*)"\r\nParameter Request List:");
 					i = 0;
 					while (i < len)
 					{
-						sb->Append((const UTF8Char*)"\r\n-");
-						sb->AppendU16(currPtr[i]);
-						csptr = DHCPOptionGetName(currPtr[i]);
-						if (csptr)
-						{
-							sb->Append((const UTF8Char*)" (");
-							sb->Append(csptr);
-							sb->Append((const UTF8Char*)")");
-						}
+						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Parameter Request "), i);
+						frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet + i), 1, (const Char*)sbuff, currPtr[i], DHCPOptionGetName(currPtr[i]));
 						i++;
 					}
 				}
 				else if (t == 57 && len == 2)
 				{
-					sb->Append((const UTF8Char*)"\r\nMax DHCP Message Size=");
-					sb->AppendU16(ReadMUInt16(currPtr));
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 2, "Max DHCP Message Size", ReadMUInt16(currPtr));
 				}
 				else if (t == 58 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nRenew Time=");
-					sb->AppendU32(ReadMUInt32(currPtr));
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 4, "Renew Time", ReadMUInt32(currPtr));
 				}
 				else if (t == 59 && len == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nRebinding Time=");
-					sb->AppendU32(ReadMUInt32(currPtr));
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 4, "Rebinding Time", ReadMUInt32(currPtr));
 				}
 				else if (t == 60 && len >= 1)
 				{
-					sb->Append((const UTF8Char*)"\r\nVendor Class ID=");
-					sb->AppendC(currPtr, len);
+					frame->AddStrC(frameOfst + (UInt32)(currPtr - packet), len, "Vendor Class ID", currPtr);
 				}
 				else if (t == 61 && len >= 1)
 				{
-					sb->Append((const UTF8Char*)"\r\nClient ID Type=");
-					sb->AppendU16(currPtr[0]);
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 1, "Client ID Type", currPtr[0]);
 					if (len > 1)
 					{
-						sb->Append((const UTF8Char*)"\r\nClient ID=");
-						sb->AppendHexBuff(&currPtr[1], (UOSInt)len - 1, ':', Text::LBT_NONE);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, len - 1, "Client ID", &currPtr[1], ':', false);
 					}
 				}
 				else if (t == 66 && len >= 1)
 				{
-					sb->Append((const UTF8Char*)"\r\nTFTP Server Name=");
-					sb->AppendC(currPtr, len);
+					frame->AddStrC(frameOfst + (UInt32)(currPtr - packet), len, "TFTP Server Name", currPtr);
 				}
 				else if (t == 81 && len >= 3)
 				{
-					sb->Append((const UTF8Char*)"\r\nFlags=0x");
-					sb->AppendHex8(currPtr[0]);
-					sb->Append((const UTF8Char*)"\r\nRCODE1=");
-					sb->AppendU16(currPtr[1]);
-					sb->Append((const UTF8Char*)"\r\nRCODE2=");
-					sb->AppendU16(currPtr[1]);
+					frame->AddHex8(frameOfst + (UInt32)(currPtr - packet), "Frags", currPtr[0]);
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet) + 1, 1, "RCODE1", currPtr[1]);
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet) + 2, 1, "RCODE2", currPtr[2]);
 					if (len > 3)
 					{
-						sb->Append((const UTF8Char*)"\r\nDomain Name=");
-						sb->AppendC(&currPtr[3], (UOSInt)len - 3);
+						frame->AddStrC(frameOfst + (UInt32)(currPtr - packet + 3), len - 3, "Domain Name", &currPtr[3]);
 					}
 				}
 				else if (t == 120 && len >= 1)
 				{
-					sb->Append((const UTF8Char*)"\r\nSIP Server Encoding=");
-					sb->AppendU16(currPtr[0]);
+					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 1, "SIP Server Encoding", currPtr[0]);
 					if (currPtr[0] == 1 && len == 5)
 					{
-						sb->Append((const UTF8Char*)"\r\nSIP Server Address=");
-						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&currPtr[1]));
-						sb->Append(sbuff);
+						frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet) + 1, "SIP Server Address", &currPtr[1]);
 					}
 					else if (len > 1)
 					{
-						sb->Append((const UTF8Char*)"\r\n");
-						sb->AppendHexBuff(&currPtr[1], (UOSInt)len - 1, ' ', Text::LBT_CRLF);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, len - 1, "Unknown", &currPtr[1], true);
 					}
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(currPtr, len, ' ', Text::LBT_CRLF);
+					frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet), len, "Unknown", currPtr, true);
 				}
 
 				currPtr += len;
@@ -1651,8 +1524,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 	}
 	else if (srcPort == 69 || destPort == 69)
@@ -1660,43 +1532,42 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		UInt16 opcode = ReadMUInt16(packet);
 		UOSInt i = 2;
 		UOSInt len;
-		sb->Append((const UTF8Char*)"\r\nTFTP:");
-		sb->Append((const UTF8Char*)"\r\nOpcode=");
-		sb->AppendU16(opcode);
+		frame->AddText(frameOfst, (const UTF8Char*)"TFTP:");
+		vName = 0;
 		switch (opcode)
 		{
 		case 1:
-			sb->Append((const UTF8Char*)" (Read request)");
+			vName = "Read request";
 			break;
 		case 2:
-			sb->Append((const UTF8Char*)" (Write request)");
+			vName = "Write request";
 			break;
 		case 3:
-			sb->Append((const UTF8Char*)" (Data)");
+			vName = "Data";
 			break;
 		case 4:
-			sb->Append((const UTF8Char*)" (Acknowledgment)");
+			vName = "Acknowledgment";
 			break;
 		case 5:
-			sb->Append((const UTF8Char*)" (Error)");
+			vName = "Error";
 			break;
 		case 6:
-			sb->Append((const UTF8Char*)" (Options Acknowledgment)");
+			vName = "Options Acknowledgment";
 			break;
 		}
+		frame->AddUIntName(frameOfst, 2, "Opcode", opcode, (const UTF8Char*)"vName");
+
 		if (opcode == 1 || opcode == 2)
 		{
 			if (packet[packetSize - 1] == 0)
 			{
 				len = Text::StrCharCnt(&packet[2]);
-				sb->Append((const UTF8Char*)"\r\nFilename=");
-				sb->Append(&packet[2]);
+				frame->AddField(frameOfst + 2, (UInt32)len + 1, (const UTF8Char*)"Filename", &packet[2]);
 				i += len + 1;
 				if (i < packetSize)
 				{
 					len = Text::StrCharCnt(&packet[i]);
-					sb->Append((const UTF8Char*)"\r\nMode=");
-					sb->Append(&packet[i]);
+					frame->AddField(frameOfst + (UInt32)i, (UInt32)len + 1, (const UTF8Char*)"Mode", &packet[i]);
 					i += len + 1;
 				}
 				OSInt optId = 0;
@@ -1705,15 +1576,13 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					len = Text::StrCharCnt(&packet[i]);
 					if (optId & 1)
 					{
-						sb->Append((const UTF8Char*)"\r\nValue");
+						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Value"), 1 + (optId >> 1));
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)"\r\nOption");
+						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Option"), 1 + (optId >> 1));
 					}
-					sb->AppendOSInt(1 + (optId >> 1));
-					sb->Append((const UTF8Char*)"=");
-					sb->Append(&packet[i]);
+					frame->AddField(frameOfst + (UInt32)i, (UInt32)len + 1, sbuff, &packet[i]);
 					i += len + 1;
 					optId++;
 				}
@@ -1721,153 +1590,139 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		}
 		if (packetSize > i)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
 		}
 	}
 	else if (srcPort == 123 || destPort == 123) //RFC 5905
 	{
 		if (destPort == 123)
 		{
-			sb->Append((const UTF8Char*)"\r\nNTP Request:");
+			frame->AddText(frameOfst, (const UTF8Char*)"NTP Request:");
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\nNTP Reply:");
+			frame->AddText(frameOfst, (const UTF8Char*)"NTP Reply:");
 		}
 		
 		if (packetSize < 48)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\nLeap Indicator=");
-			sb->AppendU16((UInt16)(packet[0] >> 6));
+			vName = 0;
 			switch (packet[0] >> 6)
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (No warning)");
+				vName = "No warning";
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)" (Last minute of the day has 61 seconds)");
+				vName = "Last minute of the day has 61 seconds";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (Last minute of the day has 59 seconds)");
+				vName = "Last minute of the day has 59 seconds";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (Unknown)");
+				vName = "Unknown";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nVersion Number=");
-			sb->AppendU16((packet[0] >> 3) & 7);
-			sb->Append((const UTF8Char*)"\r\nMode=");
-			sb->AppendU16(packet[0] & 7);
+			frame->AddUIntName(frameOfst + 0, 1, "Leap Indicator", packet[0] >> 6, (const UTF8Char*)vName);
+			frame->AddUInt(frameOfst + 0, 1, "Version Number", (packet[0] >> 3) & 7);
+			vName = 0;
 			switch (packet[0] & 7)
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (Reserved)");
+				vName = "Reserved";
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)" (Symmetric active)");
+				vName = "Symmetric active";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (Symmetric passive)");
+				vName = "Symmetric passive";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (Client)");
+				vName = "Client";
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)" (Server)");
+				vName = "Server";
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)" (Broadcast)");
+				vName = "Broadcast";
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)" (NTP Control Message)");
+				vName = "NTP Control Message";
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)" (Reserved for private use)");
+				vName = "Reserved for private use";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nStratum=");
-			sb->AppendU16(packet[1]);
+			frame->AddUIntName(frameOfst + 0, 1, "Mode", packet[0] & 7, (const UTF8Char*)vName);
 			if (packet[1] == 0)
 			{
-				sb->Append((const UTF8Char*)" (Unspecified or invalid)");
+				vName = "Unspecified or invalid";
 			}
 			else if (packet[1] == 1)
 			{
-				sb->Append((const UTF8Char*)" (Primary Server)");
+				vName = "Primary Server";
 			}
 			else if (packet[1] < 16)
 			{
-				sb->Append((const UTF8Char*)" (Secondary Server)");
+				vName = "Secondary Server";
 			}
 			else if (packet[1] == 16)
 			{
-				sb->Append((const UTF8Char*)" (Unsynchronized)");
+				vName = "Unsynchronized";
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)" (Reserved)");
+				vName = "Reserved";
 			}
-			sb->Append((const UTF8Char*)"\r\nPoll=");
-			sb->AppendU16(packet[2]);
-			sb->Append((const UTF8Char*)"\r\nPrecision=");
-			sb->AppendI16((Int8)packet[3]);
-			sb->Append((const UTF8Char*)"\r\nRoot Delay=");
-			Text::SBAppendF64(sb, ReadMUInt32(&packet[4]) / 65536.0);
-			sb->Append((const UTF8Char*)"\r\nRoot Dispersion=");
-			Text::SBAppendF64(sb, ReadMUInt32(&packet[8]) / 65536.0);
-			sb->Append((const UTF8Char*)"\r\nReference ID=");
-			sb->AppendHexBuff(&packet[12], 4, ' ', Text::LBT_NONE);
+			frame->AddUIntName(frameOfst + 1, 1, "Stratum", packet[1], (const UTF8Char*)vName);
+			frame->AddUInt(frameOfst + 2, 1, "Poll", packet[2]);
+			frame->AddInt(frameOfst + 3, 1, "Precision", (Int8)packet[3]);
+			frame->AddFloat(frameOfst + 4, 4, "Root Delay", ReadMUInt32(&packet[4]) / 65536.0);
+			frame->AddFloat(frameOfst + 8, 4, "Root Dispersion", ReadMUInt32(&packet[8]) / 65536.0);
+			frame->AddHexBuff(frameOfst + 12, 4, "Reference ID", &packet[12], false);
 			Data::DateTime dt;
-			sb->Append((const UTF8Char*)"\r\nReference Timestamp=");
 			if (ReadNInt64(&packet[16]) == 0)
-				sb->Append((const UTF8Char*)"0");
+				Text::StrConcat(sbuff, (const UTF8Char*)"0");
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[16], &dt);
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->Append(sbuff);
 			}
-			sb->Append((const UTF8Char*)"\r\nOrigin Timestamp=");
+			frame->AddField(frameOfst + 16, 8, (const UTF8Char*)"Reference Timestamp", sbuff);
 			if (ReadNInt64(&packet[24]) == 0)
-				sb->Append((const UTF8Char*)"0");
+				Text::StrConcat(sbuff, (const UTF8Char*)"0");
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[24], &dt);
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->Append(sbuff);
 			}
-			sb->Append((const UTF8Char*)"\r\nReceive Timestamp=");
+			frame->AddField(frameOfst + 24, 8, (const UTF8Char*)"Origin Timestamp", sbuff);
 			if (ReadNInt64(&packet[32]) == 0)
-				sb->Append((const UTF8Char*)"0");
+				Text::StrConcat(sbuff, (const UTF8Char*)"0");
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[32], &dt);
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->Append(sbuff);
 			}
-			sb->Append((const UTF8Char*)"\r\nTransmit Timestamp=");
+			frame->AddField(frameOfst + 32, 8, (const UTF8Char*)"Receive Timestamp", sbuff);
 			if (ReadNInt64(&packet[40]) == 0)
-				sb->Append((const UTF8Char*)"0");
+				Text::StrConcat(sbuff, (const UTF8Char*)"0");
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[40], &dt);
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->Append(sbuff);
 			}
+			frame->AddField(frameOfst + 40, 8, (const UTF8Char*)"Transmit Timestamp", sbuff);
 			if (packetSize > 48)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[48], packetSize - 48, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + 48, packetSize - 48, &packet[48], true);
 			}
 		}
 	}
@@ -1877,26 +1732,23 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		UInt16 ancount = ReadMUInt16(&packet[6]);
 		UInt16 nscount = ReadMUInt16(&packet[8]);
 		UInt16 arcount = ReadMUInt16(&packet[10]);
-		sb->Append((const UTF8Char*)"\r\nNetBIOS-NS:");
-		sb->Append((const UTF8Char*)"\r\nNAME_TRN_ID=0x");
-		sb->AppendHex16(ReadMUInt16(&packet[0]));
-		sb->Append((const UTF8Char*)"\r\nResponse=");
-		sb->AppendU16((UInt16)(packet[1] >> 7));
-		sb->Append((const UTF8Char*)"\r\nOPCODE=");
-		sb->AppendU16((UInt16)((packet[1] & 0x78) >> 3));
-		sb->Append((const UTF8Char*)"\r\nNMFLAGS=0x");
-		sb->AppendHex16((ReadMUInt16(&packet[1]) & 0x7F0) >> 4);
-		sb->Append((const UTF8Char*)"\r\nRCODE=");
-		sb->AppendU16(packet[3] & 0xf);
-		sb->Append((const UTF8Char*)"\r\nQDCOUNT=");
-		sb->AppendU16(qdcount);
-		sb->Append((const UTF8Char*)"\r\nANCOUNT=");
-		sb->AppendU16(ancount);
-		sb->Append((const UTF8Char*)"\r\nNSCOUNT=");
-		sb->AppendU16(nscount);
-		sb->Append((const UTF8Char*)"\r\nARCOUNT=");
-		sb->AppendU16(arcount);
+		frame->AddText(frameOfst, (const UTF8Char*)"NetBIOS-NS:");
+		frame->AddHex16(frameOfst + 0, "NAME_TRN_ID", ReadMUInt16(&packet[0]));
+		frame->AddHex16(frameOfst + 2, "Flags", ReadMUInt16(&packet[2]));
+		Text::StrUInt16(sbuff, (UInt16)(packet[2] >> 7));
+		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"Response", sbuff);
+		Text::StrUInt16(sbuff, (UInt16)((packet[2] & 0x78) >> 3));
+		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"OPCODE", sbuff);
+		Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt8)((ReadMUInt16(&packet[2]) & 0x7F0) >> 4));
+		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"NMFLAGS", sbuff);
+		Text::StrUInt16(sbuff, packet[3] & 0xf);
+		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"RCODE", sbuff);
+		frame->AddUInt(frameOfst + 4, 2, "QDCOUNT", qdcount);
+		frame->AddUInt(frameOfst + 6, 2, "ANCOUNT", ancount);
+		frame->AddUInt(frameOfst + 8, 2, "NSCOUNT", nscount);
+		frame->AddUInt(frameOfst + 10, 2, "ARCOUNT", arcount);
 		UOSInt i;
+		UOSInt k;
 		UInt8 j;
 		UInt16 qType;
 		UInt16 qClass;
@@ -1907,36 +1759,29 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		j = 0;
 		while (j < qdcount)
 		{
-			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			sb->Append((const UTF8Char*)"\r\nQUESTION_NAME=");
-			sb->Append(sbuff);
-			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
-			{
-				sptr[-1] = 0;
-				Text::StrRTrim(sbuff2);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(sbuff2);
-				sb->Append((const UTF8Char*)")");
-			}
-			sb->Append((const UTF8Char*)"\r\nQUESTION_TYPE=");
+			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+			frame->AddNetBIOSName(frameOfst + i, k - i, "QUESTION_NAME", sbuff);
+			i = k;
 			qType = ReadMUInt16(&packet[i]);
-			sb->AppendU16(qType);
+			vName = 0;
 			switch (qType)
 			{
 			case 0x20:
-				sb->Append((const UTF8Char*)" (NB)");
+				vName = "NB";
 				break;
 			case 0x21:
-				sb->Append((const UTF8Char*)" (NBSTAT)");
+				vName = "NBSTAT";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nQUESTION_CLASS=");
+			frame->AddUIntName(frameOfst + i, 2, "QUESTION_TYPE", qType, (const UTF8Char*)vName);
+
 			qClass = ReadMUInt16(&packet[2 + i]);
-			sb->AppendU16(qClass);
+			vName = 0;
 			if (qClass == 1)
 			{
-				sb->Append((const UTF8Char*)" (IN)");
+				vName = "IN";
 			}
+			frame->AddUIntName(frameOfst + i + 2, 2, "QUESTION_CLASS", qClass, (const UTF8Char*)vName);
 			i += 4;
 			j++;
 		}
@@ -1944,49 +1789,37 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		ancount = (UInt16)(ancount + nscount + arcount);
 		while (j < ancount)
 		{
-			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			sb->Append((const UTF8Char*)"\r\nRR_NAME=");
-			sb->Append(sbuff);
-			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
-			{
-				sptr[-1] = 0;
-				Text::StrRTrim(sbuff2);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(sbuff2);
-				sb->Append((const UTF8Char*)")");
-			}
-			sb->Append((const UTF8Char*)"\r\nRR_TYPE=");
+			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+			frame->AddNetBIOSName(frameOfst + i, k - i, "RR_NAME", sbuff);
+			i = k;
 			rrType = ReadMUInt16(&packet[i]);
-			sb->AppendU16(rrType);
+			vName = 0;
 			switch (rrType)
 			{
 			case 0x20:
-				sb->Append((const UTF8Char*)" (NB)");
+				vName = "NB";
 				break;
 			case 0x21:
-				sb->Append((const UTF8Char*)" (NBSTAT)");
+				vName = "NBSTAT";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nRR_CLASS=");
+			frame->AddUIntName(frameOfst + i, 2, "RR_TYPE", rrType, (const UTF8Char*)vName);
+
 			rrClass = ReadMUInt16(&packet[2 + i]);
-			sb->AppendU16(rrClass);
+			vName = 0;
 			if (rrClass == 1)
 			{
-				sb->Append((const UTF8Char*)" (IN)");
+				vName = "IN";
 			}
-			sb->Append((const UTF8Char*)"\r\nTTL=");
-			sb->AppendU32(ReadMUInt32(&packet[4 + i]));
+			frame->AddUIntName(frameOfst + i + 2, 2, "RR_CLASS", rrClass, (const UTF8Char*)vName);
+			frame->AddUInt(frameOfst + i + 4, 4, "TTL", ReadMUInt32(&packet[4 + i]));
 			rdLength = ReadMUInt16(&packet[8 + i]);
-			sb->Append((const UTF8Char*)"\r\nRD_LENGTH=");
-			sb->AppendU16(rdLength);
+			frame->AddUInt(frameOfst + i + 8, 2, "RD_LENGTH", rdLength);
 			i += 10;
 			if (rrType == 0x20 && rdLength == 6)
 			{
-				sb->Append((const UTF8Char*)"\r\nNB_FLAGS=0x");
-				sb->AppendHex16(ReadMUInt16(&packet[i]));
-				sb->Append((const UTF8Char*)"\r\nNB_ADDRESS=");
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[i + 2]));
-				sb->Append(sbuff);
+				frame->AddHex16(frameOfst + i, "NB_FLAGS", ReadMUInt16(&packet[i]));
+				frame->AddIPv4(frameOfst + i + 2, "NB_ADDRESS", &packet[i + 2]);
 			}
 			else if (rrType == 0x21 && rdLength >= 1)
 			{
@@ -1994,287 +1827,219 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				if (nName * 18 + 43 <= rdLength)
 				{
 					UOSInt k;
-					sb->Append((const UTF8Char*)"\r\nNumber_of_name=");
-					sb->AppendUOSInt(nName);
+					frame->AddUInt(frameOfst + i, 1, "Number_of_name", nName);
 					k = 0;
 					while (k < nName)
 					{
-						sb->Append((const UTF8Char*)"\r\nName");
-						sb->AppendUOSInt(k);
-						sb->AppendChar('=', 1);
-						MemCopyNO(sbuff, &packet[i + 1 + k * 18], 15);
-						sbuff[15] = 0;
-						Text::StrRTrim(sbuff);
-						sb->Append(sbuff);
-						sb->Append((const UTF8Char*)", Type=");
-						sb->AppendU16(packet[i + 1 + k * 18 + 15]);
-						sb->Append((const UTF8Char*)" (");
-						sb->Append(Net::NetBIOSUtil::NameTypeGetName(packet[i + 1 + k * 18 + 15]));
-						sb->Append((const UTF8Char*)"), Flags=0x");
-						sb->AppendHex16(ReadMUInt16(&packet[i + 1 + k * 18 + 16]));
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Name"), k);
+						MemCopyNO(sbuff2, &packet[i + 1 + k * 18], 15);
+						sbuff2[15] = 0;
+						Text::StrRTrim(sbuff2);
+						frame->AddField(frameOfst + (UInt32)i + 1 + (UInt32)k * 18, 15, sbuff, sbuff2);
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Type"), k);
+						frame->AddUIntName(frameOfst + i + 1 + k * 18 + 15, 1, (const Char*)sbuff, packet[i + 1 + k * 18 + 15], Net::NetBIOSUtil::NameTypeGetName(packet[i + 1 + k * 18 + 15]));
+						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Flags"), k);
+						frame->AddHex16(frameOfst + i + 1 + k * 18 + 16, (const Char*)sbuff, ReadMUInt16(&packet[i + 1 + k * 18 + 16]));
 						k++;
 					}
-					sb->Append((const UTF8Char*)"\r\nUnit ID=");
-					sb->AppendHexBuff(&packet[i + 1 + nName * 18], 6, ':', Text::LBT_NONE);
-					sb->Append((const UTF8Char*)" (");
-					sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(&packet[i + 1 + nName * 18])->name);
-					sb->AppendChar(')', 1);
-					sb->Append((const UTF8Char*)"\r\nJumpers=0x");
-					sb->AppendHex8(packet[i + 7 + nName * 18]);
-					sb->Append((const UTF8Char*)"\r\nTest Result=0x");
-					sb->AppendHex8(packet[i + 8 + nName * 18]);
-					sb->Append((const UTF8Char*)"\r\nVersion number=0x");
-					sb->AppendHex16(ReadMUInt16(&packet[i + 9 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nPeriod of statistics=0x");
-					sb->AppendHex16(ReadMUInt16(&packet[i + 11 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of CRCs=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 13 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of alignment errors=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 15 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of collision=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 17 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of send aborts=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 19 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of good sends=");
-					sb->AppendU32(ReadMUInt32(&packet[i + 21 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of good receives=");
-					sb->AppendU32(ReadMUInt32(&packet[i + 25 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of retransmits=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 29 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of no resource conditions=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 31 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of command blocks=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 33 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nNumber of pending sessions=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 35 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nMax number of pending sessions=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 37 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nMax total sessions possible=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 39 + nName * 18]));
-					sb->Append((const UTF8Char*)"\r\nSesison data packet size=");
-					sb->AppendU16(ReadMUInt16(&packet[i + 41 + nName * 18]));
+					frame->AddMACAddr(frameOfst + i + 1 + nName * 18, "Unit ID", &packet[i + 1 + nName * 18], true);
+					frame->AddHex8(frameOfst + i + 7 + nName * 18, "Jumpers", packet[i + 7 + nName * 18]);
+					frame->AddHex8(frameOfst + i + 8 + nName * 18, "Test Result", packet[i + 8 + nName * 18]);
+					frame->AddHex16(frameOfst + i + 9 + nName * 18, "Version number", ReadMUInt16(&packet[i + 9 + nName * 18]));
+					frame->AddHex16(frameOfst + i + 11 + nName * 18, "Period of statistics", ReadMUInt16(&packet[i + 11 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 13 + nName * 18, 2, "Number of CRCs", ReadMUInt16(&packet[i + 13 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 15 + nName * 18, 2, "Number of alignment errors", ReadMUInt16(&packet[i + 15 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 17 + nName * 18, 2, "Number of collision", ReadMUInt16(&packet[i + 17 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 19 + nName * 18, 2, "Number of send aborts", ReadMUInt16(&packet[i + 19 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 21 + nName * 18, 4, "Number of good sends", ReadMUInt32(&packet[i + 21 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 25 + nName * 18, 4, "Number of good receives", ReadMUInt32(&packet[i + 25 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 29 + nName * 18, 2, "Number of retransmits", ReadMUInt16(&packet[i + 29 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 31 + nName * 18, 2, "Number of no resource conditions", ReadMUInt16(&packet[i + 31 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 33 + nName * 18, 2, "Number of command blocks", ReadMUInt16(&packet[i + 33 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 35 + nName * 18, 2, "Number of pending sessions", ReadMUInt16(&packet[i + 35 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 37 + nName * 18, 2, "Max number of pending sessions", ReadMUInt16(&packet[i + 37 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 39 + nName * 18, 2, "Max total sessions possible", ReadMUInt16(&packet[i + 39 + nName * 18]));
+					frame->AddUInt(frameOfst + i + 41 + nName * 18, 2, "Sesison data packet size", ReadMUInt16(&packet[i + 41 + nName * 18]));
 					if (nName * 18 + 43 < rdLength)
 					{
-						sb->Append((const UTF8Char*)"\r\nUnknown: ");
-						sb->AppendHexBuff(&packet[i + nName * 18 + 43], rdLength - nName * 18 - 43, ' ', Text::LBT_NONE);
+						frame->AddHexBuff(frameOfst + i + nName * 18 + 43, rdLength - nName * 18 - 43, "Unknown", &packet[i + nName * 18 + 43], false);
 					}
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\nRDATA=");
-					sb->AppendHexBuff(&packet[i], rdLength, ' ', Text::LBT_NONE);
+					frame->AddHexBuff(frameOfst + i, rdLength, "RDATA", &packet[i], false);
 				}
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"\r\nRDATA=");
-				sb->AppendHexBuff(&packet[i], rdLength, ' ', Text::LBT_NONE);
+				frame->AddHexBuff(frameOfst + i, rdLength, "RDATA", &packet[i], false);
 			}
 			i += rdLength;
 			j++;
 		}
 		if (packetSize > i)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
 		}
 	}
 	else if (destPort == 138 && packetSize >= 10)
 	{
 		UInt8 msgType = packet[0];
-		sb->Append((const UTF8Char*)"\r\nNetBIOS-DS:");
-		sb->Append((const UTF8Char*)"\r\nMSG_TYPE=0x");
-		sb->AppendHex8(msgType);
+		frame->AddText(frameOfst, (const UTF8Char*)"NetBIOS-DS:");
+		vName = 0;
 		switch (msgType)
 		{
 		case 0x10:
-			sb->Append((const UTF8Char*)" (Direct Unique Datagram)");
+			vName = "Direct Unique Datagram";
 			break;
 		case 0x11:
-			sb->Append((const UTF8Char*)" (Direct Group Datagram)");
+			vName = "Direct Group Datagram";
 			break;
 		case 0x12:
-			sb->Append((const UTF8Char*)" (Broadcast Datagram)");
+			vName = "Broadcast Datagram";
 			break;
 		case 0x13:
-			sb->Append((const UTF8Char*)" (Datagram Error)");
+			vName = "Datagram Error";
 			break;
 		case 0x14:
-			sb->Append((const UTF8Char*)" (Datagram Query Request)");
+			vName = "Datagram Query Request";
 			break;
 		case 0x15:
-			sb->Append((const UTF8Char*)" (Datagram Positive Query Response)");
+			vName = "Datagram Positive Query Response";
 			break;
 		case 0x16:
-			sb->Append((const UTF8Char*)" (Datagram Negative Query Response)");
+			vName = "Datagram Negative Query Response";
 			break;
 		}
-		sb->Append((const UTF8Char*)"\r\nFLAGS=0x");
-		sb->AppendHex8(packet[1]);
-		sb->Append((const UTF8Char*)"\r\nDGM_ID=");
-		sb->AppendU16(ReadMUInt16(&packet[2]));
-		sb->Append((const UTF8Char*)"\r\nSOURCE_IP=");
-		Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[4]));
-		sb->Append(sbuff);
-		sb->Append((const UTF8Char*)"\r\nSOURCE_PORT=");
-		sb->AppendU16(ReadMUInt16(&packet[8]));
+		frame->AddHex8Name(frameOfst + 0, "MSG_TYPE", msgType, (const UTF8Char*)vName);
+		frame->AddHex8(frameOfst + 1, "FLAGS", packet[1]);
+		frame->AddUInt(frameOfst + 2, 2, "DGM_ID", ReadMUInt16(&packet[2]));
+		frame->AddIPv4(frameOfst + 4, "SOURCE_IP", &packet[4]);
+		frame->AddUInt(frameOfst + 8, 2, "SOURCE_PORT", ReadMUInt16(&packet[8]));
 		UOSInt i;
+		UOSInt j;
 		i = 10;
 		switch (msgType)
 		{
 		case 0x10:
 		case 0x11:
 		case 0x12:
-			sb->Append((const UTF8Char*)"\r\nDGM_LENGTH=");
-			sb->AppendU16(ReadMUInt16(&packet[10]));
-			sb->Append((const UTF8Char*)"\r\nPACKET_OFFSET=");
-			sb->AppendU16(ReadMUInt16(&packet[12]));
+			frame->AddUInt(frameOfst + 10, 2, "DGM_LENGTH", ReadMUInt16(&packet[10]));
+			frame->AddUInt(frameOfst + 12, 2, "PACKET_OFFSET", ReadMUInt16(&packet[12]));
 			i = 14;
-			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			sb->Append((const UTF8Char*)"\r\nSOURCE_NAME=");
-			sb->Append(sbuff);
-			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
-			{
-				sptr[-1] = 0;
-				Text::StrRTrim(sbuff2);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(sbuff2);
-				sb->Append((const UTF8Char*)")");
-			}
-			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			sb->Append((const UTF8Char*)"\r\nDESTINATION_NAME=");
-			sb->Append(sbuff);
-			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
-			{
-				sptr[-1] = 0;
-				Text::StrRTrim(sbuff2);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(sbuff2);
-				sb->Append((const UTF8Char*)")");
-			}
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), "SOURCE_NAME", sbuff);
+			i = j;
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), "DESTINATION_NAME", sbuff);
+			i = j;
 			break;
 		case 0x13:
 			if (packetSize >= 19)
 			{
-				sb->Append((const UTF8Char*)"\r\nERROR_CODE=0x");
-				sb->AppendHex8(packet[10]);
+				vName = 0;
 				switch (packet[10])
 				{
 				case 0x82:
-					sb->Append((const UTF8Char*)" (Destination Name Not Present)");
+					vName = "Destination Name Not Present";
 					break;
 				case 0x83:
-					sb->Append((const UTF8Char*)" (Invalid Source Name Format)");
+					vName = "Invalid Source Name Format";
 					break;
 				case 0x84:
-					sb->Append((const UTF8Char*)" (Invalid Destination Name Format)");
+					vName = "Invalid Destination Name Format";
 					break;
 				}
+				frame->AddHex8Name(frameOfst + 10, "ERROR_CODE", packet[10], (const UTF8Char*)vName);
 				i = 11;
 			}
 			break;
 		case 0x14:
 		case 0x15:
 		case 0x16:
-			i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			sb->Append((const UTF8Char*)"\r\nDESTINATION_NAME=");
-			sb->Append(sbuff);
-			if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, sbuff)) != 0)
-			{
-				sptr[-1] = 0;
-				Text::StrRTrim(sbuff2);
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(sbuff2);
-				sb->Append((const UTF8Char*)")");
-			}
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), "DESTINATION_NAME", sbuff);
+			i = j;
 			break;
 		}
 
 		if (packetSize > i)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
 		}
 	}
 	else if (srcPort == 161 || destPort == 161 || destPort == 162 || srcPort == 162)
 	{
 		if (packet[0] == 0x30)
 		{
-			sb->Append((const UTF8Char*)"\r\nSNMP:");
-			sb->Append((const UTF8Char*)"\r\n");
+			frame->AddText(frameOfst, (const UTF8Char*)"SNMP:");
 			Net::SNMPInfo snmp;
-			UOSInt i = snmp.PDUGetDetail((const UTF8Char*)"Message", packet, packetSize, 0, sb);
+			Text::StringBuilderUTF8 sb;
+			UOSInt i = snmp.PDUGetDetail((const UTF8Char*)"Message", packet, packetSize, 0, &sb);
+			frame->AddField(frameOfst, (UInt32)i, sb.ToString(), 0);
 			if (packetSize > i)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
 			}
 		}
 	}
 	else if (srcPort == 427 || destPort == 427) //RFC 2165/2608
 	{
 		UOSInt i;
-		sb->Append((const UTF8Char*)"\r\nService Location Protocol:");
-		sb->Append((const UTF8Char*)"\r\nVersion=");
-		sb->AppendU16(packet[0]);
-		sb->Append((const UTF8Char*)"\r\nFunction-ID=");
-		sb->AppendU16(packet[1]);
+		frame->AddText(frameOfst, (const UTF8Char*)"Service Location Protocol:");
+		frame->AddUInt(frameOfst + 0, 1, "Version", packet[0]);
+		vName = 0;
 		switch (packet[1])
 		{
 		case 1:
-			sb->Append((const UTF8Char*)" (Service Request)");
+			vName = "Service Request";
 			break;
 		case 2:
-			sb->Append((const UTF8Char*)" (Service Reply)");
+			vName = "Service Reply";
 			break;
 		case 3:
-			sb->Append((const UTF8Char*)" (Service Registration)");
+			vName = "Service Registration";
 			break;
 		case 4:
-			sb->Append((const UTF8Char*)" (Service Deregister)");
+			vName = "Service Deregister";
 			break;
 		case 5:
-			sb->Append((const UTF8Char*)" (Service Acknowledge)");
+			vName = "Service Acknowledge";
 			break;
 		case 6:
-			sb->Append((const UTF8Char*)" (Attribute Request)");
+			vName = "Attribute Request";
 			break;
 		case 7:
-			sb->Append((const UTF8Char*)" (Attribute Reply)");
+			vName = "Attribute Reply";
 			break;
 		case 8:
-			sb->Append((const UTF8Char*)" (DA Advertisement)");
+			vName = "DA Advertisement";
 			break;
 		case 9:
-			sb->Append((const UTF8Char*)" (Service Type Request)");
+			vName = "Service Type Request";
 			break;
 		case 10:
-			sb->Append((const UTF8Char*)" (Service Type Reply)");
+			vName = "Service Type Reply";
 			break;
 		case 11:
-			sb->Append((const UTF8Char*)" (SA Advertisement)");
+			vName = "SA Advertisement";
 			break;
 		}
+		frame->AddUIntName(frameOfst + 1, 1, "Function-ID", packet[1], (const UTF8Char*)vName);
 		i = 2;
 		UInt16 len;
 		UInt16 len2;
 		if (packet[0] == 1)
 		{
 			len = ReadMUInt16(&packet[2]);
-			sb->Append((const UTF8Char*)"\r\nLength=");
-			sb->AppendU16(len);
-			sb->Append((const UTF8Char*)"\r\nFlags=0x");
-			sb->AppendHex8(packet[4]);
-			sb->Append((const UTF8Char*)"\r\nDialect=");
-			sb->AppendU16(packet[5]);
-			sb->Append((const UTF8Char*)"\r\nLanguage Code=");
-			sb->AppendC(&packet[6], 2);
+			frame->AddUInt(frameOfst + 2, 2, "Length", len);
+			frame->AddHex8(frameOfst + 4, "Flags", packet[4]);
+			frame->AddUInt(frameOfst + 5, 1, "Dialect", packet[5]);
+			frame->AddStrC(frameOfst + 6, 2, "Language Code", &packet[6]);
 			UInt16 enc;
-			sb->Append((const UTF8Char*)"\r\nCharacter Encoding=");
 			enc = ReadMUInt16(&packet[8]);
-			sb->AppendU16(enc);
-			sb->Append((const UTF8Char*)"\r\nTransaction Identifier=");
-			sb->AppendU16(ReadMUInt16(&packet[10]));
+			frame->AddUInt(frameOfst + 8, 2, "Character Encoding", enc);
+			frame->AddUInt(frameOfst + 10, 2, "Transaction Identifier", ReadMUInt16(&packet[10]));
 			if (packet[1] == 1)
 			{
 				i = 12;
@@ -2282,19 +2047,18 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				{
 					len2 = ReadMUInt16(&packet[i]);
 					i += 2;
-					sb->Append((const UTF8Char*)"\r\nPrevious Responders=");
 					if (len2 == 0)
 					{
-					
+						frame->AddField(frameOfst + (UInt32)i - 2, 2, (const UTF8Char*)"Previous Responders", (const UTF8Char*)"");
 					}
 					else if (len2 + i <= len)
 					{
-						sb->AppendC(&packet[i], len2);
+						frame->AddStrC(frameOfst + i - 2, 2 + len2, "Previous Responders", &packet[i]);
 						i += len2;
 					}
 					else
 					{
-						sb->AppendC(&packet[i], len - i);
+						frame->AddStrC(frameOfst + i - 2, (UOSInt)len - i + 2, "Previous Responders", &packet[i]);
 						i = len;
 					}
 				}
@@ -2302,19 +2066,18 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				{
 					len2 = ReadMUInt16(&packet[i]);
 					i += 2;
-					sb->Append((const UTF8Char*)"\r\nService Request=");
 					if (len2 == 0)
 					{
-					
+						frame->AddField(frameOfst + (UInt32)i - 2, 2, (const UTF8Char*)"Service Request", (const UTF8Char*)"");
 					}
 					else if (len2 + i <= len)
 					{
-						sb->AppendC(&packet[i], len2);
+						frame->AddStrC(frameOfst + i - 2, 2 + len2, "Service Request", &packet[i]);
 						i += len2;
 					}
 					else
 					{
-						sb->AppendC(&packet[i], len - i);
+						frame->AddStrC(frameOfst + i - 2, len - i + 2, "Service Request", &packet[i]);
 						i = len;
 					}
 				}
@@ -2323,53 +2086,48 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 
 		if (i < packetSize)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
 		}
 	}
 	else if (destPort == 1700)
 	{
 		if (packetSize >= 12 && packet[3] < 6)
 		{
-			sb->Append((const UTF8Char*)"\r\nLoRa Gateway:");
-			sb->Append((const UTF8Char*)"\r\nProtocol Version=");
-			sb->AppendU16(packet[0]);
-			sb->Append((const UTF8Char*)"\r\nRandom Token=");
-			sb->AppendU16(ReadMUInt16(&packet[1]));
-			sb->Append((const UTF8Char*)"\r\nIdentifier=");
-			sb->AppendU16(packet[3]);
+			frame->AddText(frameOfst, (const UTF8Char*)"LoRa Gateway:");
+			frame->AddUInt(frameOfst + 0, 1, "Protocol Version", packet[0]);
+			frame->AddUInt(frameOfst + 1, 2, "Random Token", ReadMUInt16(&packet[1]));
 			switch (packet[3])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (PUSH_DATA)");
+				vName = "PUSH_DATA";
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)" (PUSH_ACK)");
+				vName = "PUSH_ACK";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (PULL_DATA)");
+				vName = "PULL_DATA";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (PULL_RESP)");
+				vName = "PULL_RESP";
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)" (PULL_ACK)");
+				vName = "PULL_ACK";
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)" (TX_ACK)");
+				vName = "TX_ACK";
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\nGateway UID=");
-			sb->AppendHexBuff(&packet[4], 8, 0, Text::LBT_NONE);
+			frame->AddUIntName(frameOfst + 3, 1, "Protocol Version", packet[3], (const UTF8Char*)vName);
+			frame->AddHexBuff(frameOfst + 4, 8, "Gateway UID", &packet[4], 0, false);
 
 			if (packetSize > 12)
 			{
 				if (packet[12] == 0x7B)
 				{
-					sb->Append((const UTF8Char*)"\r\nContent:");
-					sb->Append((const UTF8Char*)"\r\n");
-					Text::JSText::JSONWellFormat(&packet[12], packetSize - 12, 0, sb);
+					frame->AddText(frameOfst + 12, (const UTF8Char*)"\r\nContent:");
+					Text::StringBuilderUTF8 sb;
+					Text::JSText::JSONWellFormat(&packet[12], packetSize - 12, 0, &sb);
+					frame->AddField(frameOfst + 12, (UInt32)packetSize - 12, sb.ToString(), 0);
 					Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(&packet[12], packetSize - 12);
 					if (json)
 					{
@@ -2398,20 +2156,21 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											UOSInt dataLen;
 											UInt8 *dataBuff;
 											const UTF8Char *dataStr = jstr->GetValue();
-											sb->Append((const UTF8Char*)"\r\n");
-											sb->Append((const UTF8Char*)"\r\n");
-											sb->Append(dataStr);
-											sb->Append((const UTF8Char*)":");
+											sb.ClearStr();
+											sb.Append((const UTF8Char*)"\r\n");
+											sb.Append(dataStr);
+											sb.Append((const UTF8Char*)":");
 											dataLen = b64.CalcBinSize(dataStr);
 											dataBuff = MemAlloc(UInt8, dataLen);
 											if (b64.DecodeBin(dataStr, dataBuff) == dataLen)
 											{
-												PacketLoRaMACGetDetail(dataBuff, dataLen, sb);
+												PacketLoRaMACGetDetail(dataBuff, dataLen, &sb);
 											}
 											else
 											{
-												sb->Append((const UTF8Char*)"\r\nNot base64 encoding");
+												sb.Append((const UTF8Char*)"\r\nNot base64 encoding");
 											}
+											frame->AddText(frameOfst + 12, sb.ToString());
 											MemFree(dataBuff);
 										}
 									}
@@ -2424,206 +2183,184 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[12], packetSize - 12, ' ', Text::LBT_CRLF);
+					frame->AddTextHexBuff(frameOfst + 12, packetSize - 12, &packet[12], true);
 				}
 			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 	}
 	else if (srcPort == 1700)
 	{
 		if (packetSize >= 4 && packet[3] < 5)
 		{
-			sb->Append((const UTF8Char*)"\r\nLoRa Gateway PUSH_ACK:");
-			sb->Append((const UTF8Char*)"\r\nProtocol Version=");
-			sb->AppendU16(packet[0]);
-			sb->Append((const UTF8Char*)"\r\nRandom Token=");
-			sb->AppendU16(ReadMUInt16(&packet[1]));
-			sb->Append((const UTF8Char*)"\r\nIdentifier=");
-			sb->AppendU16(packet[3]);
+			frame->AddText(frameOfst, (const UTF8Char*)"LoRa Gateway PUSH_ACK:");
+			frame->AddUInt(frameOfst + 0, 1, "Protocol Version", packet[0]);
+			frame->AddUInt(frameOfst + 1, 2, "Random Token", ReadMUInt16(&packet[1]));
 			switch (packet[3])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (PUSH_DATA)");
+				vName = "PUSH_DATA";
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)" (PUSH_ACK)");
+				vName = "PUSH_ACK";
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)" (PULL_DATA)");
+				vName = "PULL_DATA";
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)" (PULL_RESP)");
+				vName = "PULL_RESP";
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)" (PULL_ACK)");
+				vName = "PULL_ACK";
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)" (TX_ACK)");
+				vName = "TX_ACK";
 				break;
 			}
+			frame->AddUIntName(frameOfst + 3, 1, "Protocol Version", packet[3], (const UTF8Char*)vName);
 			if (packetSize > 4)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[4], packetSize - 4, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + 4, packetSize - 4, &packet[4], true);
 			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 	}
 	else if (destPort == 1900)
 	{
-		sb->Append((const UTF8Char*)"\r\nSSDP Request:");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendC(packet, packetSize);
+		frame->AddText(frameOfst, (const UTF8Char*)"SSDP Request:");
+		const UTF8Char *csptr = Text::StrCopyNewC(packet, packetSize);
+		frame->AddField(frameOfst, (UInt32)packetSize, csptr, 0);
+		Text::StrDelNew(csptr);
 	}
 	else if (srcPort == 1900)
 	{
-		sb->Append((const UTF8Char*)"\r\nSSDP Reply:");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendC(packet, packetSize);
+		frame->AddText(frameOfst, (const UTF8Char*)"SSDP Reply:");
+		const UTF8Char *csptr = Text::StrCopyNewC(packet, packetSize);
+		frame->AddField(frameOfst, (UInt32)packetSize, csptr, 0);
+		Text::StrDelNew(csptr);
 	}
 	else if (destPort == 3702)
 	{
-		sb->Append((const UTF8Char*)"\r\nWS-Discovery Request:");
-		sb->Append((const UTF8Char*)"\r\n");
-		Text::HTMLUtil::XMLWellFormat(packet, packetSize, 0, sb);
+		frame->AddText(frameOfst, (const UTF8Char*)"WS-Discovery Request:");
+		Text::StringBuilderUTF8 sb;
+		Text::HTMLUtil::XMLWellFormat(packet, packetSize, 0, &sb);
+		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToString(), 0);
 	}
 	else if (srcPort == 3702)
 	{
-		sb->Append((const UTF8Char*)"\r\nWS-Discovery Reply:");
-		sb->Append((const UTF8Char*)"\r\n");
-		Text::HTMLUtil::XMLWellFormat(packet, packetSize, 0, sb);
+		frame->AddText(frameOfst, (const UTF8Char*)"WS-Discovery Reply:");
+		Text::StringBuilderUTF8 sb;
+		Text::HTMLUtil::XMLWellFormat(packet, packetSize, 0, &sb);
+		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToString(), 0);
 	}
 	else if (destPort == 5353)
 	{
-		sb->Append((const UTF8Char*)"\r\nmDNS:");
+		frame->AddText(frameOfst, (const UTF8Char*)"mDNS:");
 		if (packetSize < 12)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 		}
 		else
 		{
-			PacketDNSGetDetail(packet, packetSize, sb);
+			PacketDNSGetDetail(packet, packetSize, frameOfst, frame);
 		}
 	}
 	else if (srcPort == 17500 && destPort == 17500)
 	{
-		sb->Append((const UTF8Char*)"\r\nDropbox LAN Sync Discovery:");
-		sb->Append((const UTF8Char*)"\r\n");
-		Text::JSText::JSONWellFormat(packet, packetSize, 0, sb);
+		frame->AddText(frameOfst, (const UTF8Char*)"Dropbox LAN Sync Discovery:");
+		Text::StringBuilderUTF8 sb;
+		Text::JSText::JSONWellFormat(packet, packetSize, 0, &sb);
+		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToString(), 0);
+	}
+	else if (srcPort >= 1024 && destPort >= 1024)
+	{
+		frame->AddHexBuff(frameOfst, packetSize, "Private Packet", packet, true);		
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"\r\nUnknown Data:");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+		frame->AddText(frameOfst, (const UTF8Char*)"Unknown Data:");
+		frame->AddTextHexBuff(frameOfst, packetSize, packet, true);
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
 	UTF8Char sbuff[128];
-	const UTF8Char *csptr;
-	sb->Append((const UTF8Char*)"\r\nID=");
-	sb->AppendU16(ReadMUInt16(&packet[0]));
-	sb->Append((const UTF8Char*)"\r\nQR=");
-	sb->Append((packet[2] & 0x80)?(const UTF8Char*)"1 (Response)":(const UTF8Char*)"0 (Request)");
-	sb->Append((const UTF8Char*)"\r\nOPCODE=");
+	const Char *vName;
+	frame->AddUInt(frameOfst + 0, 2, "ID", ReadMUInt16(&packet[0]));
+	frame->AddField(frameOfst + 2, 1, (const UTF8Char*)"QR", (packet[2] & 0x80)?(const UTF8Char*)"1 (Response)":(const UTF8Char*)"0 (Request)");
 	UInt8 opcode = (packet[2] & 0x78) >> 3;
-	sb->AppendU16(opcode);
+	vName = 0;
 	switch (opcode)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (QUERY)");
+		vName = "QUERY";
 		break;
 	case 1:
-		sb->Append((const UTF8Char*)" (IQUERY)");
+		vName = "IQUERY";
 		break;
 	case 2:
-		sb->Append((const UTF8Char*)" (STATUS)");
+		vName = "STATUS";
 		break;
 	}
-	sb->Append((const UTF8Char*)"\r\nAA=");
-	sb->AppendU16((packet[2] & 4) >> 2);
-	sb->Append((const UTF8Char*)"\r\nTC=");
-	sb->AppendU16((packet[2] & 2) >> 1);
-	sb->Append((const UTF8Char*)"\r\nRD=");
-	sb->AppendU16((packet[2] & 1));
-	sb->Append((const UTF8Char*)"\r\nRA=");
-	sb->AppendU16((packet[3] & 0x80) >> 7);
-	sb->Append((const UTF8Char*)"\r\nZ=");
-	sb->AppendU16((packet[3] & 0x70) >> 4);
-	sb->Append((const UTF8Char*)"\r\nRCODE=");
+	frame->AddUIntName(frameOfst + 2, 1, "OPCODE", opcode, (const UTF8Char*)vName);
+	frame->AddUInt(frameOfst + 2, 1, "AA", (packet[2] & 4) >> 2);
+	frame->AddUInt(frameOfst + 2, 1, "TC", (packet[2] & 2) >> 1);
+	frame->AddUInt(frameOfst + 2, 1, "RD", (packet[2] & 1));
+	frame->AddUInt(frameOfst + 3, 1, "RA", (packet[3] & 0x80) >> 7);
+	frame->AddUInt(frameOfst + 3, 1, "Z", (packet[3] & 0x70) >> 4);
 	UInt8 rcode = packet[3] & 0xf;
-	sb->AppendU16(rcode);
+	vName = 0;
 	switch (rcode)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (No error)");
+		vName = "No error";
 		break;
 	case 1:
-		sb->Append((const UTF8Char*)" (Format error)");
+		vName = "Format error";
 		break;
 	case 2:
-		sb->Append((const UTF8Char*)" (Server failure)");
+		vName = "Server failure";
 		break;
 	case 3:
-		sb->Append((const UTF8Char*)" (Name Error)");
+		vName = "Name Error";
 		break;
 	case 4:
-		sb->Append((const UTF8Char*)" (Not Implemented)");
+		vName = "Not Implemented";
 		break;
 	case 5:
-		sb->Append((const UTF8Char*)" (Refused)");
+		vName = "Refused";
 		break;
 	}
+	frame->AddUIntName(frameOfst + 3, 1, "RCODE", rcode, (const UTF8Char*)vName);
+
 	UInt16 qdcount = ReadMUInt16(&packet[4]);
 	UInt16 ancount = ReadMUInt16(&packet[6]);
 	UInt16 nscount = ReadMUInt16(&packet[8]);
 	UInt16 arcount = ReadMUInt16(&packet[10]);
-	sb->Append((const UTF8Char*)"\r\nQDCOUNT=");
-	sb->AppendU16(qdcount);
-	sb->Append((const UTF8Char*)"\r\nANCOUNT=");
-	sb->AppendU16(ancount);
-	sb->Append((const UTF8Char*)"\r\nNSCOUNT=");
-	sb->AppendU16(nscount);
-	sb->Append((const UTF8Char*)"\r\nARCOUNT=");
-	sb->AppendU16(arcount);
+	frame->AddUInt(frameOfst + 4, 2, "QDCOUNT", qdcount);
+	frame->AddUInt(frameOfst + 6, 2, "ANCOUNT", ancount);
+	frame->AddUInt(frameOfst + 8, 2, "NSCOUNT", nscount);
+	frame->AddUInt(frameOfst + 10, 2, "ARCOUNT", arcount);
 	UOSInt i = 12;
 	UInt16 j;
+	UOSInt k;
 	UInt16 t;
 	j = 0;
 	while (j < qdcount)
 	{
-		i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-		sb->Append((const UTF8Char*)"\r\nQNAME=");
-		sb->Append(sbuff);
-		sb->Append((const UTF8Char*)"\r\nQTYPE=");
+		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), (const UTF8Char*)"QNAME", sbuff);
+		i = k;
 		t = ReadMUInt16(&packet[i]);
-		sb->AppendU16(t);
-		csptr = Net::DNSClient::TypeGetID(t);
-		if (csptr)
-		{
-			sb->Append((const UTF8Char*)" (");
-			sb->Append(csptr);
-			sb->Append((const UTF8Char*)")");
-		}
-		sb->Append((const UTF8Char*)"\r\nQCLASS=");
-		sb->AppendU16(ReadMUInt16(&packet[i + 2]));
+		frame->AddUIntName(frameOfst + i, 2, "QTYPE", t, Net::DNSClient::TypeGetID(t));
+		frame->AddUInt(frameOfst + i + 2, 2, "QCLASS", ReadMUInt16(&packet[i + 2]));
 
 		i += 4;
 		j++;
@@ -2636,79 +2373,58 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 		UInt16 rrClass;
 		UInt16 rdLength;
 		UOSInt k;
+		UOSInt l;
 
-		i = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-		sb->Append((const UTF8Char*)"\r\nNAME=");
-		sb->Append(sbuff);
+		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
+		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), (const UTF8Char*)"NAME", sbuff);
+		i = k;
 		rrType = ReadMUInt16(&packet[i]);
 		rrClass = ReadMUInt16(&packet[i + 2]);
 		rdLength = ReadMUInt16(&packet[i + 8]);
-		sb->Append((const UTF8Char*)"\r\nTYPE=");
-		sb->AppendU16(rrType);
-		csptr = Net::DNSClient::TypeGetID(rrType);
-		if (csptr)
-		{
-			sb->Append((const UTF8Char*)" (");
-			sb->Append(csptr);
-			sb->Append((const UTF8Char*)")");
-		}
-		sb->Append((const UTF8Char*)"\r\nCLASS=");
-		sb->AppendU16(rrClass);
-		sb->Append((const UTF8Char*)"\r\nTTL=");
-		sb->AppendU32(ReadMUInt32(&packet[i + 4]));
-		sb->Append((const UTF8Char*)"\r\nRDLENGTH=");
-		sb->AppendU16(rdLength);
-		sb->Append((const UTF8Char*)"\r\nRDATA=");
+		frame->AddUIntName(frameOfst + i, 2, "TYPE", rrType, Net::DNSClient::TypeGetID(rrType));
+		frame->AddUInt(frameOfst + i + 2, 2, "CLASS", rrClass);
+		frame->AddUInt(frameOfst + i + 4, 4, "TTL", ReadMUInt32(&packet[i + 4]));
+		frame->AddUInt(frameOfst + i + 8, 2, "RDLENGTH", rdLength);
 		i += 10;
 		switch (rrType)
 		{
 		case 1: // A - a host address
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[i]));
-			sb->Append(sbuff);
+			frame->AddIPv4(frameOfst + i, "RDATA", &packet[i]);
 			break;
 		case 2: // NS - an authoritative name server
 		case 5: // CNAME - the canonical name for an alias
 		case 12: // PTR - a domain name pointer
-			Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-			sb->Append(sbuff);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
+			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), (const UTF8Char*)"RDATA", sbuff);
 			break;
 		case 6:
 			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-			sb->Append(sbuff);
-			sb->Append((const UTF8Char*)"\r\n-MailAddr=");
-			k = Net::DNSClient::ParseString(sbuff, packet, k, i + rdLength);
-			sb->Append(sbuff);
+			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), (const UTF8Char*)"RDATA", sbuff);
+			l = Net::DNSClient::ParseString(sbuff, packet, k, i + rdLength);
+			frame->AddField(frameOfst + (UInt32)k, (UInt32)(l - k), (const UTF8Char*)"-MailAddr", sbuff);
+			k = l;
 			if (k + 20 <= i + rdLength)
 			{
-				sb->Append((const UTF8Char*)"\r\n-SN=");
-				sb->AppendU32(ReadMUInt32(&packet[k]));
-				sb->Append((const UTF8Char*)"\r\n-Refresh=");
-				sb->AppendU32(ReadMUInt32(&packet[k + 4]));
-				sb->Append((const UTF8Char*)"\r\n-Retry=");
-				sb->AppendU32(ReadMUInt32(&packet[k + 8]));
-				sb->Append((const UTF8Char*)"\r\n-Expire=");
-				sb->AppendU32(ReadMUInt32(&packet[k + 12]));
-				sb->Append((const UTF8Char*)"\r\n-DefTTL=");
-				sb->AppendU32(ReadMUInt32(&packet[k + 16]));
+				frame->AddUInt(frameOfst + k, 4, "-SN", ReadMUInt32(&packet[k]));
+				frame->AddUInt(frameOfst + k + 4, 4, "-Refresh", ReadMUInt32(&packet[k + 4]));
+				frame->AddUInt(frameOfst + k + 8, 4, "-Retry", ReadMUInt32(&packet[k + 8]));
+				frame->AddUInt(frameOfst + k + 12, 4, "-Expire", ReadMUInt32(&packet[k + 12]));
+				frame->AddUInt(frameOfst + k + 16, 4, "-DefTTL", ReadMUInt32(&packet[k + 16]));
 				k += 20;
 				if (k < i + rdLength)
 				{
-					sb->Append((const UTF8Char*)"\r\n");
-					sb->AppendHexBuff(&packet[k], i + rdLength - k, ' ', Text::LBT_CRLF);
+					frame->AddTextHexBuff(frameOfst + k , i + rdLength - k, &packet[k], true);
 				}
 			}
 			else if (k < i + rdLength)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
-				sb->AppendHexBuff(&packet[k], i + rdLength - k, ' ', Text::LBT_CRLF);
+				frame->AddTextHexBuff(frameOfst + k , i + (UOSInt)rdLength - k, &packet[k], true);
 			}
 			break;
 		case 15: // MX - mail exchange
-			sb->Append((const UTF8Char*)"Priority=");
-			sb->AppendU16(ReadMUInt16(&packet[i]));
-			sb->Append((const UTF8Char*)", ");
-			Net::DNSClient::ParseString(sbuff, packet, i + 2, i + rdLength);
-			sb->Append(sbuff);
+			frame->AddUInt(frameOfst + i, 2, "Priority", ReadMUInt16(&packet[i]));
+			k = Net::DNSClient::ParseString(sbuff, packet, i + 2, i + rdLength);
+			frame->AddField(frameOfst + (UInt32)i + 2, (UInt32)(k - i - 2), (const UTF8Char*)"RDATA", sbuff);
 			break;
 		case 16: // TXT - text strings
 			{
@@ -2717,159 +2433,119 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 				{
 					if ((UOSInt)packet[i + k] + 1 + k > rdLength)
 					{
-						sb->AppendHexBuff(&packet[i + k], rdLength - k, ' ', Text::LBT_NONE);
+						frame->AddTextHexBuff(frameOfst + i + k, rdLength - k, &packet[i + k], false);
 						break;
 					}
-					if (k > 0)
-					{
-						sb->Append((const UTF8Char*)", ");
-					}
-					sb->AppendC(&packet[i + k + 1], packet[i + k]);
+					frame->AddUInt(frameOfst + i + k, 1, "StrLen", packet[i + k]);
+					frame->AddStrC(frameOfst + i + k + 1, packet[i + k], "RDATA", &packet[i + k + 1]);
 					k += (UOSInt)packet[i + k] + 1;
 				}
 			}
 			break;
 		case 28: // AAAA
 			{
-				Net::SocketUtil::AddressInfo addr;
-				Net::SocketUtil::SetAddrInfoV6(&addr, &packet[i], 0);
-				Net::SocketUtil::GetAddrName(sbuff, &addr);
-				sb->Append(sbuff);
+				frame->AddIPv6(frameOfst + i, "RDATA", &packet[i]);
 			}
 			break;
 		case 33: // SRV - 
 			{
-				sb->Append((const UTF8Char*)"Priority=");
-				sb->AppendU16(ReadMUInt16(&packet[i]));
-				sb->Append((const UTF8Char*)", Weight=");
-				sb->AppendU16(ReadMUInt16(&packet[i + 2]));
-				sb->Append((const UTF8Char*)", Port=");
-				sb->AppendU16(ReadMUInt16(&packet[i + 4]));
-				sb->Append((const UTF8Char*)", Target=");
-				Net::DNSClient::ParseString(sbuff, packet, i + 6, i + rdLength);
-				sb->Append(sbuff);
+				frame->AddUInt(frameOfst + i, 2, "Priority", ReadMUInt16(&packet[i]));
+				frame->AddUInt(frameOfst + i + 2, 2, "Weight", ReadMUInt16(&packet[i + 2]));
+				frame->AddUInt(frameOfst + i + 4, 2, "Port", ReadMUInt16(&packet[i + 4]));
+				k = Net::DNSClient::ParseString(sbuff, packet, i + 6, i + rdLength);
+				frame->AddField(frameOfst + (UInt32)i + 6, (UInt32)(k - i - 6), (const UTF8Char*)"Target", sbuff);
 			}
 			break;
 		case 41: // OPT - 
 			{
-				sb->Append((const UTF8Char*)"OPTION-CODE=");
-				sb->AppendU16(ReadMUInt16(&packet[i]));
-				sb->Append((const UTF8Char*)", OPTION-LENGTH=");
-				sb->AppendU16(ReadMUInt16(&packet[i + 2]));
-				sb->Append((const UTF8Char*)", OPTION-DATA=");
-				sb->AppendHexBuff(&packet[i + 4], (UOSInt)rdLength - 4, ' ', Text::LBT_NONE);
+				frame->AddUInt(frameOfst + i, 2, "OPTION-CODE", ReadMUInt16(&packet[i]));
+				frame->AddUInt(frameOfst + i + 2, 2, "OPTION-LENGTH", ReadMUInt16(&packet[i + 2]));
+				frame->AddHexBuff(frameOfst + i + 4, (UInt32)rdLength - 4, "OPTION-DATA", &packet[i + 4], false);
 			}
 			break;
 		case 43: // DS - Delegation signer
 			{
-				sb->Append((const UTF8Char*)"Key Tag=");
-				sb->AppendU16(ReadMUInt16(&packet[i]));
-				sb->Append((const UTF8Char*)", Algorithm=");
-				sb->AppendU16(packet[i + 2]);
-				sb->Append((const UTF8Char*)", Digest Type=");
-				sb->AppendU16(packet[i + 3]);
-				sb->Append((const UTF8Char*)", Digest=");
-				sb->AppendHexBuff(&packet[i + 4], (UOSInt)rdLength - 4, ' ', Text::LBT_NONE);
+				frame->AddUInt(frameOfst + i, 2, "Key Tag", ReadMUInt16(&packet[i]));
+				frame->AddUInt(frameOfst + i + 2, 1, "Algorithm", packet[i + 2]);
+				frame->AddUInt(frameOfst + i + 3, 1, "Digest Type", packet[i + 3]);
+				frame->AddHexBuff(frameOfst + i + 4, (UInt32)rdLength - 4, "Digest", &packet[i + 4], false);
 			}
 			break;
 		case 46: // RRSIG - DNSSEC signature
 			{
-				sb->Append((const UTF8Char*)"Type Covered=");
-				sb->AppendU16(ReadMUInt16(&packet[i]));
-				sb->Append((const UTF8Char*)", Algorithm=");
-				sb->AppendU16(packet[i + 2]);
-				sb->Append((const UTF8Char*)", Labels=");
-				sb->AppendU16(packet[i + 3]);
-				sb->Append((const UTF8Char*)", Original TTL=");
-				sb->AppendU32(ReadMUInt32(&packet[i + 4]));
-				sb->Append((const UTF8Char*)", Signature Expiration=");
-				sb->AppendU32(ReadMUInt32(&packet[i + 8]));
-				sb->Append((const UTF8Char*)", Signature Inception=");
-				sb->AppendU32(ReadMUInt32(&packet[i + 12]));
-				sb->Append((const UTF8Char*)", Key Tag=");
-				sb->AppendU16(ReadMUInt16(&packet[i + 16]));
-				sb->Append((const UTF8Char*)", Signer's Name=");
-				sb->Append(&packet[i + 18]);
-				sb->Append((const UTF8Char*)", Signature=");
+				frame->AddUInt(frameOfst + i, 2, "Type Covered", ReadMUInt16(&packet[i]));
+				frame->AddUInt(frameOfst + i + 2, 1, "Algorithm", packet[i + 2]);
+				frame->AddUInt(frameOfst + i + 3, 1, "Labels", packet[i + 3]);
+				frame->AddUInt(frameOfst + i + 4, 4, "Original TTL", ReadMUInt32(&packet[i + 4]));
+				frame->AddUInt(frameOfst + i + 8, 4, "Signature Expiration", ReadMUInt32(&packet[i + 8]));
+				frame->AddUInt(frameOfst + i + 12, 4, "Signature Inception", ReadMUInt32(&packet[i + 12]));
+				frame->AddUInt(frameOfst + i + 16, 2, "Key Tag", ReadMUInt16(&packet[i + 16]));
 				UOSInt nameLen = Text::StrCharCnt(&packet[i + 18]);
-				sb->AppendHexBuff(&packet[i + 19 + nameLen], (UOSInt)rdLength - 19 - nameLen, ' ', Text::LBT_NONE);
+				frame->AddField(frameOfst + (UInt32)i + 18, (UInt32)nameLen + 1, (const UTF8Char*)"Signer's Name", &packet[i + 18]);
+				frame->AddHexBuff(frameOfst + i + 19 + nameLen, (UOSInt)rdLength - 19 - nameLen, "Signature", &packet[i + 19 + nameLen], false);
 			}
 			break;
 		case 47: // NSEC - Next Secure record
 			{
 				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-				sb->Append((const UTF8Char*)"Next Domain Name=");
-				sb->Append(sbuff);
+				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), (const UTF8Char*)"Next Domain Name", sbuff);
 				if (k < i + rdLength)
 				{
-					sb->Append((const UTF8Char*)", ");
-					sb->AppendHexBuff(&packet[k], i + rdLength - k, ' ', Text::LBT_NONE);
+					frame->AddHexBuff(frameOfst + k, i + rdLength - k, "RDATA", &packet[k], false);
 				}
 			}
 			break;
 		case 48: // DNSKEY - DNS Key record
 			{
-				sb->Append((const UTF8Char*)"Flags=");
-				sb->AppendU16(ReadMUInt16(&packet[i]));
-				sb->Append((const UTF8Char*)", Protocol=");
-				sb->AppendU16(packet[i + 2]);
-				sb->Append((const UTF8Char*)", Algorithm=");
-				sb->AppendU16(packet[i + 3]);
-				sb->Append((const UTF8Char*)", Public Key=");
-				sb->AppendHexBuff(&packet[i + 4], (UOSInt)rdLength - 4, ' ', Text::LBT_NONE);
+				frame->AddUInt(frameOfst + i, 2, "Flags", ReadMUInt16(&packet[i]));
+				frame->AddUInt(frameOfst + i + 2, 1, "Protocol", packet[i + 2]);
+				frame->AddUInt(frameOfst + i + 3, 1, "Algorithm", packet[i + 3]);
+				frame->AddHexBuff(frameOfst + i + 4, (UOSInt)rdLength - 4, "Public Key", &packet[i + 4], false);
 			}
 			break;
 		case 250: // TSIG
 			{
 				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-				sb->Append((const UTF8Char*)"\r\n-Algorithm=");
-				sb->Append(sbuff);
+				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), (const UTF8Char*)"Algorithm", sbuff);
 				if (k + 10 < i + rdLength)
 				{
 					Data::DateTime dt;
 					dt.SetUnixTimestamp((Int64)(((UInt64)(ReadMUInt16(&packet[k])) << 32) | ReadMUInt32(&packet[k + 2])));
-					sb->Append((const UTF8Char*)"\r\n-Time Signed=");
 					dt.ToLocalTime();
 					dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-					sb->Append(sbuff);
-					sb->Append((const UTF8Char*)"\r\n-Fudge=");
-					sb->AppendU16(ReadMUInt16(&packet[k + 6]));
-					sb->Append((const UTF8Char*)"\r\n-MAC Size=");
+					frame->AddField(frameOfst + (UInt32)k, 6, (const UTF8Char*)"Time Signed", sbuff);
+					frame->AddUInt(frameOfst + k + 6, 2, "Fudge", ReadMUInt16(&packet[k + 6]));
 					UOSInt macSize = ReadMUInt16(&packet[k + 8]);
-					sb->AppendUOSInt(macSize);
+					frame->AddUInt(frameOfst + k + 8, 2, "MAC Size", macSize);
 					k += 10;
 					if (macSize > 0 && k + macSize <= i + rdLength)
 					{
-						sb->Append((const UTF8Char*)"\r\n-MAC=");
-						sb->AppendHexBuff(&packet[k], macSize, ' ', Text::LBT_NONE);
+						frame->AddHexBuff(frameOfst + k, macSize, "MAC", &packet[k], false);
 						k += macSize;
 					}
 					if (k + 6 <= i + rdLength)
 					{
-						sb->Append((const UTF8Char*)"\r\n-Original Id=");
-						sb->AppendU16(ReadMUInt16(&packet[k]));
-						sb->Append((const UTF8Char*)"\r\n-Error=");
-						sb->AppendU16(ReadMUInt16(&packet[k + 2]));
-						sb->Append((const UTF8Char*)"\r\n-Other Len=");
-						sb->AppendU16(ReadMUInt16(&packet[k + 4]));
+						frame->AddUInt(frameOfst + k + 0, 2, "Original Id", ReadMUInt16(&packet[k + 0]));
+						frame->AddUInt(frameOfst + k + 2, 2, "Error", ReadMUInt16(&packet[k + 2]));
+						frame->AddUInt(frameOfst + k + 4, 2, "Other Len", ReadMUInt16(&packet[k + 4]));
 						k += 6;
 					}
 					if (k < i + rdLength)
 					{
-						sb->Append((const UTF8Char*)"\r\n-Other=");
-						sb->AppendHexBuff(&packet[k], i + rdLength - k, ' ', Text::LBT_NONE);
+						frame->AddHexBuff(frameOfst + k, i + rdLength - k, "Other", &packet[k], false);
 					}
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"\r\n-");
-					sb->AppendHexBuff(&packet[k], i + rdLength - k, ' ', Text::LBT_NONE);
+					frame->AddText(frameOfst + (UInt32)k, (const UTF8Char*)"RDDATA:");
+					frame->AddTextHexBuff(frameOfst + k, i + rdLength - k, &packet[k], false);
 				}
 				
 			}
 			break;
 		default:
-			sb->AppendHexBuff(&packet[i], rdLength, ' ', Text::LBT_NONE);
+			frame->AddText(frameOfst + (UInt32)i, (const UTF8Char*)"RDDATA:");
+			frame->AddTextHexBuff(frameOfst + i, rdLength, &packet[i], false);
 			break;
 		}
 		i += rdLength;
@@ -2877,107 +2553,97 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 	}
 	if (i < packetSize)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(&packet[i], packetSize - i, ' ', Text::LBT_CRLF);
+		frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], false);
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	sb->Append((const UTF8Char*)"\r\nMessage type (MType)=");
-	sb->AppendU16((UInt16)(packet[0] >> 5));
+	const Char *vName = 0;
 	switch (packet[0] >> 5)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (Join-request)");
+		vName = "Join-request";
 		break;
 	case 1:
-		sb->Append((const UTF8Char*)" (Join-accept)");
+		vName = "Join-accept";
 		break;
 	case 2:
-		sb->Append((const UTF8Char*)" (Unconfirmed Data Up)");
+		vName = "Unconfirmed Data Up";
 		break;
 	case 3:
-		sb->Append((const UTF8Char*)" (Unconfirmed Data Down)");
+		vName = "Unconfirmed Data Down";
 		break;
 	case 4:
-		sb->Append((const UTF8Char*)" (Confirmed Data Up)");
+		vName = "Confirmed Data Up";
 		break;
 	case 5:
-		sb->Append((const UTF8Char*)" (Confirmed Data Down)");
+		vName = "Confirmed Data Down";
 		break;
 	case 6:
-		sb->Append((const UTF8Char*)" (Rejoin-request)");
+		vName = "Rejoin-request";
 		break;
 	case 7:
-		sb->Append((const UTF8Char*)" (Proprietary)");
+		vName = "Proprietary";
 		break;
 	}
-	sb->Append((const UTF8Char*)"\r\nRFU=");
-	sb->AppendU16((packet[0] >> 2) & 7);
-	sb->Append((const UTF8Char*)"\r\nMajor=");
-	sb->AppendU16(packet[0] & 3);
+	frame->AddUIntName(frameOfst + 0, 1, "Message type (MType)", (UInt16)(packet[0] >> 5), (const UTF8Char*)vName);
+	frame->AddUInt(frameOfst + 0, 1, "RFU", (packet[0] >> 2) & 7);
+	frame->AddUInt(frameOfst + 0, 1, "Major", packet[0] & 3);
 	UInt8 mType = (UInt8)(packet[0] >> 5);
 	if (mType == 0 || mType == 1 || mType == 6)
 	{
 		if (packetSize == 23)
 		{
-			sb->Append((const UTF8Char*)"\r\nJoinEUI=");
-			sb->AppendHex64(ReadUInt64(&packet[1]));
-			sb->Append((const UTF8Char*)"\r\nDevEUI=");
-			sb->AppendHex64(ReadUInt64(&packet[9]));
-			sb->Append((const UTF8Char*)"\r\nDevNonce=");
-			sb->AppendU16(ReadUInt16(&packet[17]));
+			UInt8 buff[8];
+			buff[0] = packet[8];
+			buff[1] = packet[7];
+			buff[2] = packet[6];
+			buff[3] = packet[5];
+			buff[4] = packet[4];
+			buff[5] = packet[3];
+			buff[6] = packet[2];
+			buff[7] = packet[1];
+			frame->AddHexBuff(frameOfst + 1, 8, "JoinEUI", buff, 0, false);
+			buff[0] = packet[16];
+			buff[1] = packet[15];
+			buff[2] = packet[14];
+			buff[3] = packet[13];
+			buff[4] = packet[12];
+			buff[5] = packet[11];
+			buff[6] = packet[10];
+			buff[7] = packet[9];
+			frame->AddHexBuff(frameOfst + 1, 8, "DevEUI", buff, 0, false);
+			frame->AddUInt(frameOfst + 17, 2, "DevNonce", ReadUInt16(&packet[17]));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\nMACPayload:");
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(&packet[1], packetSize - 5, ' ', Text::LBT_CRLF);
+			frame->AddHexBuff(frameOfst + 1, packetSize - 5, "MACPayload", &packet[1], true);
 		}
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"\r\nMACPayload:");
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(&packet[1], packetSize - 5, ' ', Text::LBT_CRLF);
+		frame->AddHexBuff(frameOfst + 1, packetSize - 5, "MACPayload", &packet[1], true);
 	}
-
-	sb->Append((const UTF8Char*)"\r\nMIC=");
-	sb->AppendHexBuff(&packet[packetSize - 4], 4, ' ', Text::LBT_NONE);
+	frame->AddHexBuff(frameOfst + packetSize - 4, 4, "MIC", &packet[packetSize - 4], false);
 }
 
 
-UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	UTF8Char sbuff[32];
-	sb->Append((const UTF8Char*)"\r\nVersion=4");
-	sb->Append((const UTF8Char*)"\r\nInternet Header Length=");
-	sb->AppendU16((UInt16)packet[0] & 0xf);
-	sb->Append((const UTF8Char*)"\r\nDSCP=");
-	sb->AppendU16((UInt16)(packet[1] >> 2));
-	sb->Append((const UTF8Char*)"\r\nECN=");
-	sb->AppendU16((UInt16)packet[1] & 0x3);
-	sb->Append((const UTF8Char*)"\r\nTotal Size=");
-	sb->AppendU16(ReadMUInt16(&packet[2]));
-	sb->Append((const UTF8Char*)"\r\nIdentification=");
-	sb->AppendU16(ReadMUInt16(&packet[4]));
-	sb->Append((const UTF8Char*)"\r\nFlags=");
-	sb->AppendU16((UInt16)(packet[6] >> 5));
-	sb->Append((const UTF8Char*)"\r\nFragment Offset=");
-	sb->AppendU16(ReadMUInt16(&packet[6]) & 0x1fff);
-	sb->Append((const UTF8Char*)"\r\nTTL=");
-	sb->AppendU16((UInt16)packet[8]);
-	sb->Append((const UTF8Char*)"\r\nProtocol=");
-	sb->AppendU16((UInt16)packet[9]);
-	sb->Append((const UTF8Char*)"\r\nHeader Checksum=0x");
-	sb->AppendHex16(ReadMUInt16(&packet[10]));
-	Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[12]));
-	sb->Append((const UTF8Char*)"\r\nSrcIP=");
-	sb->Append(sbuff);
-	Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&packet[16]));
-	sb->Append((const UTF8Char*)"\r\nDestIP=");
-	sb->Append(sbuff);
+	frame->AddField(frameOfst + 0, 1, (const UTF8Char*)"Version", (const UTF8Char*)"4");
+	frame->AddUInt(frameOfst + 0, 1, "Internet Header Length", (UInt16)packet[0] & 0xf);
+	frame->AddUInt(frameOfst + 1, 1, "DSCP", (UInt16)(packet[1] >> 2));
+	frame->AddUInt(frameOfst + 1, 1, "ECN", (UInt16)packet[1] & 0x3);
+	frame->AddUInt(frameOfst + 2, 2, "Total Size", ReadMUInt16(&packet[2]));
+	frame->AddUInt(frameOfst + 4, 2, "Identification", ReadMUInt16(&packet[4]));
+	frame->AddUInt(frameOfst + 6, 2, "Flags", (UInt16)(packet[6] >> 5));
+	frame->AddUInt(frameOfst + 6, 2, "Fragment Offset", ReadMUInt16(&packet[6]) & 0x1fff);
+	frame->AddUInt(frameOfst + 8, 1, "TTL", packet[8]);
+	frame->AddUInt(frameOfst + 9, 1, "Protocol", packet[9]);
+	frame->AddHex16(frameOfst + 10, "Header Checksum", ReadMUInt16(&packet[10]));
+	frame->AddIPv4(frameOfst + 12, "SrcIP", &packet[12]);
+	frame->AddIPv4(frameOfst + 16, "DestIP", &packet[16]);
 
 	if ((packet[0] & 0xf) <= 5)
 	{
@@ -2985,8 +2651,7 @@ UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOS
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"\r\nOptions:\r\n");
-		sb->AppendHexBuff(&packet[20], (UOSInt)((packet[0] & 0xf) << 2) - 20, ' ', Text::LBT_CRLF);
+		frame->AddHexBuff(frameOfst + 20, (UInt32)((packet[0] & 0xf) << 2) - 20, "Options", &packet[20], true);
 		return (packet[0] & 0xf) << 2;
 	}
 }
@@ -3304,6 +2969,28 @@ const UTF8Char *Net::PacketAnalyzerEthernet::DHCPOptionGetName(UInt8 t)
 		return (const UTF8Char*)"Microsoft Classless Static Route";
 	case 255:
 		return (const UTF8Char*)"End";
+	}
+	return 0;
+}
+
+const UTF8Char *Net::PacketAnalyzerEthernet::EtherTypeGetName(UInt16 etherType)
+{
+	switch (etherType)
+	{
+	case 0x0004:
+		return (const UTF8Char*)"IEEE802.2 LLC";
+	case 0x0006: //ARP
+		return (const UTF8Char*)"ARP";
+	case 0x26: //Legnth = 0x26 (IEEE802.2 LLC)
+		return (const UTF8Char*)"IEEE802.2 LLC";
+	case 0x0800: //IPv4
+		return (const UTF8Char*)"IPv4";
+	case 0x0806: //ARP
+		return (const UTF8Char*)"ARP";
+	case 0x86DD: //IPv6
+		return (const UTF8Char*)"IPv6";
+	case 0x8874: //broadcom
+		return (const UTF8Char*)"Broadcom";
 	}
 	return 0;
 }
