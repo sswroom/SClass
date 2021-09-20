@@ -501,16 +501,12 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt
 			frame->AddIPv4(frameOfst + 24, "Target protocol address (TPA)", &packet[24]);
 			if (packetSize > 28)
 			{
-				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(&packet[28], packetSize - 28, ' ', Text::LBT_CRLF);
-				frame->AddFieldSeperstor(frameOfst + 28, sb.ToString());
+				frame->AddHexBuff(frameOfst + 28, packetSize - 28, "Trailer", &packet[28], true);
 			}
 		}
 		else
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(&packet[8], packetSize - 8, ' ', Text::LBT_CRLF);
-			frame->AddText(frameOfst + 8, sb.ToString());
+			frame->AddTextHexBuff(frameOfst + 8, packetSize - 8, &packet[8], true);
 		}
 	}
 }
@@ -757,14 +753,22 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 			switch (packet[0])
 			{
 			case 3:
-				frame->AddUInt(frameOfst + 4, 2, "Next-hop MTU", ReadMUInt16(&packet[4]));
-				frame->AddHexBuff(frameOfst + 6, 2, "Unused", &packet[6], false);
-				//////////////////////////////
-				frame->AddText(frameOfst + 8, (const UTF8Char*)"Original IP Header:");
-				i = 8;
-				UInt8 protocol = packet[i + 9];
-				i += HeaderIPv4GetDetail(&packet[i], packetSize - i, frameOfst + (UInt32)i, frame);
-				PacketIPDataGetDetail(protocol, &packet[i], packetSize - i, frameOfst + (UInt32)i, frame);
+				{
+					frame->AddUInt(frameOfst + 4, 2, "Next-hop MTU", ReadMUInt16(&packet[4]));
+					frame->AddHexBuff(frameOfst + 6, 2, "Unused", &packet[6], false);
+					frame->AddText(frameOfst + 8, (const UTF8Char*)"Original IP Header:");
+					i = 8;
+					UInt8 protocol = packet[i + 9];
+					i += HeaderIPv4GetDetail(&packet[i], packetSize - i, frameOfst + (UInt32)i, frame);
+					PacketIPDataGetDetail(protocol, &packet[i], packetSize - i, frameOfst + (UInt32)i, frame);
+				}
+				break;
+			case 0:
+			case 8:
+				frame->AddUInt(frameOfst + 4, 2, "Identifier", ReadMUInt16(&packet[4]));
+				frame->AddUInt(frameOfst + 6, 2, "Sequence Number", ReadMUInt16(&packet[6]));
+				frame->AddHexBuff(frameOfst + 8, packetSize - 8, "Data", &packet[8], true);
+				i = packetSize;
 				break;
 			}
 			if (i < packetSize)
@@ -900,6 +904,9 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 					case 4:
 						vName = "SACK permitted";
 						break;
+					case 5:
+						vName = "SACK";
+						break;
 					case 8:
 						vName = "Time Stamp Option";
 						break;
@@ -931,6 +938,15 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 						break;
 					case 4:
 						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
+						i += (UOSInt)packet[i + 1] - 1;
+						break;
+					case 5:
+						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
+						if (packet[i + 1] == 10)
+						{
+							frame->AddUInt(frameOfst + i + 2, 4, "Left Edge", ReadMUInt32(&packet[i + 2]));
+							frame->AddUInt(frameOfst + i + 6, 4, "Right Edge", ReadMUInt32(&packet[i + 6]));
+						}
 						i += (UOSInt)packet[i + 1] - 1;
 						break;
 					case 8:

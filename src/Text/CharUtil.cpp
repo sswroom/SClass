@@ -74,15 +74,24 @@ Bool Text::CharUtil::UTF8CharValid(const UTF8Char *sptr)
 	}
 	else if ((c & 0xF8) == 0xF0)
 	{
-		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80);
+		if (((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80))
+		{
+			UInt32 code = (((UInt32)sptr[0] & 0x7) << 18) | (((UInt32)sptr[1] & 0x3f) << 12) | (((UInt32)sptr[2] & 0x3f) << 6) | (sptr[3] & 0x3f);
+			return code < 0x110000;
+		}
+		return false;
 	}
-	else if ((c & 0xFC) == 0xF8)
+	else
+	{
+		return false;
+	}
+/*	else if ((c & 0xFC) == 0xF8)
 	{
 		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80) && ((sptr[4] & 0xC0) == 0x80);
 	}
 	else if ((c & 0xFE) == 0xFC)
 	{
 		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80) && ((sptr[4] & 0xC0) == 0x80) && ((sptr[5] & 0xC0) == 0x80);
-	}
+	}*/
 	return false;
 }

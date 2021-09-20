@@ -241,6 +241,8 @@ namespace Text
 	{
 		UOSInt lbCnt = (buffSize >> 4);
 		OSInt i;
+		if (buffSize == 0)
+			return this;
 		if ((buffSize & 15) == 0)
 			lbCnt -= 1;
 		if (lineBreak == LBT_CRLF)

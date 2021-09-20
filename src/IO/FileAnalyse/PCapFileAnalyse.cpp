@@ -287,12 +287,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 		UInt32 sigfigs;
 		UInt32 snaplen;
 		UInt32 network;
-		const UTF8Char *csptr;
 		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, 24));
 		frame->AddHeader((const UTF8Char*)"PCAP Header");
 		fd->GetRealData(0, 24, this->packetBuff);
 		if (this->isBE)
 		{
+			frame->AddField(0, 4, (const UTF8Char*)"Endian", (const UTF8Char*)"Big Endian");
 			version_major = ReadMUInt16(&this->packetBuff[4]);
 			version_minor = ReadMUInt16(&this->packetBuff[6]);
 			thiszone = ReadMInt32(&this->packetBuff[8]);
@@ -302,6 +302,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 		}
 		else
 		{
+			frame->AddField(0, 4, (const UTF8Char*)"Endian", (const UTF8Char*)"Little Endian");
 			version_major = ReadUInt16(&this->packetBuff[4]);
 			version_minor = ReadUInt16(&this->packetBuff[6]);
 			thiszone = ReadInt32(&this->packetBuff[8]);
@@ -309,30 +310,17 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 			snaplen = ReadUInt32(&this->packetBuff[16]);
 			network = ReadUInt32(&this->packetBuff[20]);
 		}
-		Text::StrUInt16(sbuff, version_major);
-		frame->AddField(4, 2, (const UTF8Char*)"VersionMajor", sbuff);
-		Text::StrUInt16(sbuff, version_minor);
-		frame->AddField(6, 2, (const UTF8Char*)"VersionMinor", sbuff);
-		Text::StrInt32(sbuff, thiszone);
-		frame->AddField(8, 4, (const UTF8Char*)"ThisZone", sbuff);
-		Text::StrUInt32(sbuff, sigfigs);
-		frame->AddField(12, 4, (const UTF8Char*)"Sigfigs", sbuff);
-		Text::StrUInt32(sbuff, snaplen);
-		frame->AddField(16, 4, (const UTF8Char*)"SnapLen", sbuff);
-		sb.ClearStr();
-		sb.AppendU32(network);
-		csptr = IO::RAWMonitor::LinkTypeGetName(network);
-		if (csptr)
-		{
-			sb.Append((const UTF8Char*)" (");
-			sb.Append(csptr);
-			sb.Append((const UTF8Char*)")");
-		}
-		frame->AddField(20, 4, (const UTF8Char*)"Network", sb.ToString());
+		frame->AddUInt(4, 2, "VersionMajor", version_major);
+		frame->AddUInt(6, 2, "VersionMinor", version_minor);
+		frame->AddInt(8, 4, "ThisZone", thiszone);
+		frame->AddUInt(12, 4, "Sigfigs", sigfigs);
+		frame->AddUInt(16, 4, "SnapLen", snaplen);
+		frame->AddUIntName(20, 4, "Network", network, IO::RAWMonitor::LinkTypeGetName(network));
 		return frame;
 	}
 	UInt64 ofst;
 	UInt64 size;
+	UInt32 storeSize;
 	UInt32 psize;
 	if (index > this->ofstList->GetCount())
 	{
@@ -343,35 +331,31 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	size = this->sizeList->GetItem(index - 1);
 	mutUsage.EndUse();
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
-	return frame;
-/*	
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
-	sb->Append((const UTF8Char*)"Offset=");
-	sb->AppendU64(ofst);
-	sb->Append((const UTF8Char*)"\r\nTotalSize=");
-	sb->AppendU64(size);
+	Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"TotalSize="), size);
+	frame->AddHeader(sbuff);
 	Data::DateTime dt;
 	if (this->isBE)
 	{
 		dt.SetUnixTimestamp(ReadMUInt32(&this->packetBuff[0]));
 		dt.SetMS(ReadMUInt32(&this->packetBuff[4]) / 1000);
+		storeSize = ReadMUInt32(&this->packetBuff[8]);
 		psize = ReadMUInt32(&this->packetBuff[12]);
 	}
 	else
 	{
 		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
 		dt.SetMS(ReadUInt32(&this->packetBuff[4]) / 1000);
+		storeSize = ReadUInt32(&this->packetBuff[8]);
 		psize = ReadUInt32(&this->packetBuff[12]);
 	}
-	UTF8Char sbuff[64];
 	dt.ToLocalTime();
 	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-	sb->Append((const UTF8Char*)"\r\nTime=");
-	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)"\r\nPacketSize=");
-	sb->AppendU32(psize);
-	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
-	return true;*/
+	frame->AddField(0, 8, (const UTF8Char*)"Time", sbuff);
+	frame->AddUInt(8, 4, "StorageSize", storeSize);
+	frame->AddUInt(12, 4, "PacketSize", psize);
+	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, 16, frame);
+	return frame;
 }
 
 Bool IO::FileAnalyse::PCapFileAnalyse::IsError()
