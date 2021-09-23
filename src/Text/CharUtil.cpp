@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Text/CharUtil.h"
 
+#include <stdio.h>
+
 Bool Text::CharUtil::PtrIsWS(const UTF8Char **sptr)
 {
 	UTF8Char c = **sptr;
@@ -106,7 +108,7 @@ Bool Text::CharUtil::UTF8CharValid(const UTF8Char *sptr)
 	{
 		return false;
 	}
-	if (code == 0xFDDE)
+	if (code >= 0xD800 && code < 0xE000)
 	{
 		return false;
 	}

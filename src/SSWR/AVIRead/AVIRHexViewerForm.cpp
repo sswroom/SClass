@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
+#include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/FontDialog.h"
@@ -140,6 +141,17 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 		me->txtUInt64->SetText((const UTF8Char*)"-");
 		me->txtFloat64->SetText((const UTF8Char*)"-");
 	}
+	if (Text::CharUtil::UTF8CharValid(buff))
+	{
+		UTF32Char c;
+		Text::StrReadChar(buff, &c);
+		Text::StrHexVal32V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt32)c);
+		me->txtUTF8CharCode->SetText(sbuff);
+	}
+	else
+	{
+		me->txtUTF8CharCode->SetText((const UTF8Char*)"-");
+	}
 
 	Text::StringBuilderUTF8 sb;
 	if (me->hexView->GetFrameName(&sb))
@@ -277,14 +289,19 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtFloat64, UI::GUITextBox(ui, this->tpValues, (const UTF8Char*)""));
 	this->txtFloat64->SetRect(604, 52, 150, 23, false);
 	this->txtFloat64->SetReadOnly(true);
-	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, (const UTF8Char*)"Dynamic Size", false));
-	this->chkDynamicSize->SetRect(504, 76, 100, 23, false);
+	NEW_CLASS(this->lblUTF8CharCode, UI::GUILabel(ui, this->tpValues, (const UTF8Char*)"Char Code"));
+	this->lblUTF8CharCode->SetRect(504, 76, 100, 23, false);
+	NEW_CLASS(this->txtUTF8CharCode, UI::GUITextBox(ui, this->tpValues, (const UTF8Char*)""));
+	this->txtUTF8CharCode->SetRect(604, 76, 150, 23, false);
+	this->txtUTF8CharCode->SetReadOnly(true);
 	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->tpValues, (const UTF8Char *)"Sel Font"));
-	this->btnFont->SetRect(504, 100, 75, 23, false);
+	this->btnFont->SetRect(4, 124, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
 	NEW_CLASS(this->btnNextUnk, UI::GUIButton(ui, this->tpValues, (const UTF8Char*)"Next Unknown"));
-	this->btnNextUnk->SetRect(584, 100, 75, 23, false);
+	this->btnNextUnk->SetRect(84, 124, 75, 23, false);
 	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
+	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, (const UTF8Char*)"Dynamic Size", false));
+	this->chkDynamicSize->SetRect(164, 124, 100, 23, false);
 
 	this->tpAnalyse = this->tcMain->AddTabPage((const UTF8Char*)"Analyse");
 	NEW_CLASS(this->lblFileFormat, UI::GUILabel(ui, this->tpAnalyse, (const UTF8Char*)"File Format"));

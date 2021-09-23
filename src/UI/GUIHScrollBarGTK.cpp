@@ -84,6 +84,14 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 		void *container = this->parent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
 	}
+	if (right < left)
+	{
+		right = left;
+	}
+	if (bottom < top)
+	{
+		bottom = top;
+	}
 	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((right - left) * this->hdpi / this->ddpi), Math::Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
@@ -127,6 +135,14 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	{
 		void *container = this->parent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32(Math::OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(Math::OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
+	}
+	if (right < left)
+	{
+		right = left;
+	}
+	if (bottom < top)
+	{
+		bottom = top;
 	}
 	gtk_widget_set_size_request((GtkWidget*)this->hwnd, (gint)(right - left), (gint)(bottom - top));
 

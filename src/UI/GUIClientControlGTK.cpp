@@ -26,6 +26,14 @@ void UI::GUIClientControl::InitContainer()
 	Double outW;
 	Double outH;
 	this->GetClientSize(&outW, &outH);
+	if (outW < 0)
+	{
+		outW = 0;
+	}
+	if (outH < 0)
+	{
+		outH = 0;
+	}
 	if (!Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"WinForm"))
 	{
 		gtk_widget_set_size_request(data->scrolledWin, Math::Double2Int32(outW * this->hdpi / this->ddpi), Math::Double2Int32(outH * this->hdpi / this->ddpi));
@@ -228,6 +236,11 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
 	if (outW != -1 && outH != -1)
 	{
+		if (outW < 0 || outH < 0)
+		{
+			outW = 0;
+			outH = 0;
+		}
 		ClientControlData *data = (ClientControlData*)this->container;
 		if (data)
 		{

@@ -48,9 +48,11 @@ namespace SSWR
 			UI::GUITextBox *txtFloat32;
 			UI::GUILabel *lblFloat64;
 			UI::GUITextBox *txtFloat64;
-			UI::GUICheckBox *chkDynamicSize;
+			UI::GUILabel *lblUTF8CharCode;
+			UI::GUITextBox *txtUTF8CharCode;
 			UI::GUIButton *btnFont;
 			UI::GUIButton *btnNextUnk;
+			UI::GUICheckBox *chkDynamicSize;
 
 			UI::GUITabPage *tpAnalyse;
 			UI::GUILabel *lblFileFormat;

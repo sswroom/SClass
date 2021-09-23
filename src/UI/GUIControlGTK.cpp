@@ -201,6 +201,14 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 		void *container = this->parent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
 	}
+	if ((right - left) < 0)
+	{
+		right = left;
+	}
+	if ((bottom - top) < 0)
+	{
+		bottom = top;
+	}
 	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((right - left) * this->hdpi / this->ddpi), Math::Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
@@ -249,6 +257,14 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	{
 		void *container = this->parent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32(Math::OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(Math::OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
+	}
+	if ((right - left) < 0)
+	{
+		right = left;
+	}
+	if ((bottom - top) < 0)
+	{
+		bottom = top;
 	}
 	gtk_widget_set_size_request((GtkWidget*)this->hwnd, (gint)(right - left), (gint)(bottom - top));
 
@@ -508,6 +524,14 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 		void *container = this->parent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi));
+		if (this->lxPos2 < this->lxPos)
+		{
+			this->lxPos2 = this->lxPos;
+		}
+		if (this->lyPos2 < this->lyPos)
+		{
+			this->lyPos2 = this->lyPos;
+		}
 		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 	}
 	else if (isForm)
