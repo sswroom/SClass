@@ -689,9 +689,9 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
 	this->reqMstm->Write((UInt8*)host, hostLen);
 
-	this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
 	if (defHeaders)
 	{
+		this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
 		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
 		this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
 		if (this->kaConn)

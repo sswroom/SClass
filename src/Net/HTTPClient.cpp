@@ -146,6 +146,11 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 	return false;
 }
 
+const UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index)
+{
+	return this->headers->GetItem(index);
+}
+
 UInt64 Net::HTTPClient::GetContentLength()
 {
 	this->EndRequest(0, 0);

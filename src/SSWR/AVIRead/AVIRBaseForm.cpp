@@ -84,6 +84,7 @@
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
+#include "SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h"
 #include "SSWR/AVIRead/AVIRHTTPProxyClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
@@ -394,7 +395,8 @@ typedef enum
 	MNU_SMTP_CLIENT,
 	MNU_SMBIOS,
 	MNU_NETBIOS_SCANNER,
-	MNU_HEX_VIEWER
+	MNU_HEX_VIEWER,
+	MNU_HTTP_LOAD_BALANCE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -594,6 +596,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"HTTP Proxy Client", MNU_HTTPPROXYCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 //	mnu2->AddItem((const UTF8Char*)"Proxy Server", MNU_PROXYSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"RESTful Server", MNU_RESTFUL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"HTTP Load Balance", MNU_HTTP_LOAD_BALANCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"NTP");
 	mnu2->AddItem((const UTF8Char*)"NTP Server", MNU_NTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"NTP Client", MNU_NTPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2341,6 +2344,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRHexViewerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_HTTP_LOAD_BALANCE:
+		{
+			SSWR::AVIRead::AVIRHTTPLoadBalanceForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPLoadBalanceForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

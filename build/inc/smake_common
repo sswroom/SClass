@@ -2513,6 +2513,8 @@ Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
 Net/WebServer/HTTPDirectoryHandler.h: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 @HTTPDirectoryHandler.o
 Net/WebServer/HTTPFormParser.h:
+Net/WebServer/HTTPForwardHandler.h: ../../src/Net/WebServer/HTTPForwardHandler.cpp
+@HTTPForwardHandler.o
 Net/WebServer/HTTPServerUtil.h: ../../src/Net/WebServer/HTTPServerUtil.cpp
 @HTTPServerUtil.o
 Net/WebServer/IReqLogger.h:
@@ -2985,6 +2987,8 @@ SSWR/AVIRead/AVIRHTTPClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 @AVIRHTTPClientForm.o
 SSWR/AVIRead/AVIRHTTPDownloaderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
 @AVIRHTTPDownloaderForm.o
+SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
+@AVIRHTTPLoadBalanceForm.o
 SSWR/AVIRead/AVIRHTTPProxyClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
 @AVIRHTTPProxyClientForm.o
 SSWR/AVIRead/AVIRHTTPSvrForm.h: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
@@ -4362,6 +4366,7 @@ SNSTwitter.o: ../../src/Net/SNS/SNSTwitter.cpp
 CapturerWebHandler.o: ../../src/Net/WebServer/CapturerWebHandler.cpp
 EGaugeHandler.o: ../../src/Net/WebServer/EGaugeHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
+HTTPForwardHandler.o: ../../src/Net/WebServer/HTTPForwardHandler.cpp
 HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp
 $-I ../../ThirdParty/miniz
 IWebRequest.o: ../../src/Net/WebServer/IWebRequest.cpp
@@ -4595,6 +4600,7 @@ AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
 AVIRHTTPClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 AVIRHTTPDownloaderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
+AVIRHTTPLoadBalanceForm.o: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
 AVIRHTTPProxyClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
 AVIRHTTPSvrForm.o: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
 AVIRHTTPTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPTestForm.cpp

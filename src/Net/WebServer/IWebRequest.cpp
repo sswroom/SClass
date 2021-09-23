@@ -255,7 +255,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(const UTF8Char *name, UInt64
 	return Text::StrToUInt64(csptr, valOut);
 }
 
-const UTF8Char *Net::WebServer::IWebRequest::GetReqMethodStr()
+const Char *Net::WebServer::IWebRequest::GetReqMethodStr()
 {
 	return RequestMethodGetName(GetReqMethod());
 }
@@ -295,45 +295,45 @@ const UTF8Char *Net::WebServer::IWebRequest::GetOSVer()
 	return this->reqOSVer;
 }
 
-const UTF8Char *Net::WebServer::IWebRequest::RequestMethodGetName(RequestMethod reqMeth)
+const Char *Net::WebServer::IWebRequest::RequestMethodGetName(RequestMethod reqMeth)
 {
 	switch (reqMeth)
 	{
 	case REQMETH_HTTP_GET:
-		return (const UTF8Char*)"GET";
+		return "GET";
 	case REQMETH_HTTP_POST:
-		return (const UTF8Char*)"POST";
+		return "POST";
 	case REQMETH_HTTP_PUT:
-		return (const UTF8Char*)"PUT";
+		return "PUT";
 	case REQMETH_HTTP_PATCH:
-		return (const UTF8Char*)"PATCH";
+		return "PATCH";
 	case REQMETH_HTTP_DELETE:
-		return (const UTF8Char*)"DELETE";
+		return "DELETE";
 	case REQMETH_HTTP_CONNECT:
-		return (const UTF8Char*)"CONNECT";
+		return "CONNECT";
 	case REQMETH_RTSP_DESCRIBE:
-		return (const UTF8Char*)"DESCRIBE";
+		return "DESCRIBE";
 	case REQMETH_RTSP_ANNOUNCE:
-		return (const UTF8Char*)"ANNOUNCE";
+		return "ANNOUNCE";
 	case REQMETH_RTSP_GET_PARAMETER:
-		return (const UTF8Char*)"GET_PARAMETER";
+		return "GET_PARAMETER";
 	case REQMETH_RTSP_OPTIONS:
-		return (const UTF8Char*)"OPTIONS";
+		return "OPTIONS";
 	case REQMETH_RTSP_PAUSE:
-		return (const UTF8Char*)"PAUSE";
+		return "PAUSE";
 	case REQMETH_RTSP_PLAY:
-		return (const UTF8Char*)"PLAY";
+		return "PLAY";
 	case REQMETH_RTSP_RECORD:
-		return (const UTF8Char*)"RECORD";
+		return "RECORD";
 	case REQMETH_RTSP_REDIRECT:
-		return (const UTF8Char*)"REDIRECT";
+		return "REDIRECT";
 	case REQMETH_RTSP_SETUP:
-		return (const UTF8Char*)"SETUP";
+		return "SETUP";
 	case REQMETH_RTSP_SET_PARAMETER:
-		return (const UTF8Char*)"SET_PARAMETER";
+		return "SET_PARAMETER";
 	case REQMETH_RTSP_TEARDOWN:
-		return (const UTF8Char*)"TEARDOWN";
+		return "TEARDOWN";
 	default:
-		return (const UTF8Char*)"?";
+		return "?";
 	}
 }
