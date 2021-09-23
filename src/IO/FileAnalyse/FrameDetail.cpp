@@ -8,18 +8,18 @@ void IO::FileAnalyse::FrameDetail::FreeFieldInfo(FieldInfo *field)
 	MemFree(field);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldInfo(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType)
+void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType)
 {
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
-	field->ofst = ofst;
-	field->size = size;
+	field->ofst = (UInt32)ofst;
+	field->size = (UInt32)size;
 	field->name = Text::StrCopyNew(name);
 	field->value = SCOPY_TEXT(value);
 	field->fieldType = fieldType;
 	this->fields->Add(field);
 }
 
-IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt32 size)
+IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 {
 	this->ofst = ofst;
 	this->size = size;
@@ -40,12 +40,12 @@ UInt64 IO::FileAnalyse::FrameDetail::GetOffset()
 	return this->ofst;
 }
 
-UInt32 IO::FileAnalyse::FrameDetail::GetSize()
+UInt64 IO::FileAnalyse::FrameDetail::GetSize()
 {
 	return this->size;
 }
 
-const IO::FileAnalyse::FrameDetail::FieldInfo *IO::FileAnalyse::FrameDetail::GetFieldInfo(UInt64 ofst)
+UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList)
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -53,18 +53,20 @@ const IO::FileAnalyse::FrameDetail::FieldInfo *IO::FileAnalyse::FrameDetail::Get
 	}
 	FieldInfo *field;
 	UInt32 frameOfst = (UInt32)(ofst - this->ofst);
+	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = this->fields->GetCount();
 	while (i < j)
 	{
 		field = this->fields->GetItem(i);
-		if (field->fieldType == FT_FIELD && frameOfst >= field->ofst && frameOfst < field->ofst + field->size)
+		if ((field->fieldType == FT_FIELD || field->fieldType == FT_SUBFRAME) && frameOfst >= field->ofst && frameOfst < field->ofst + field->size)
 		{
-			return field;
+			fieldList->Add(field);
+			ret++;
 		}
 		i++;
 	}
-	return 0;
+	return ret;
 }
 
 void IO::FileAnalyse::FrameDetail::AddHeader(const UTF8Char *header)
@@ -72,24 +74,29 @@ void IO::FileAnalyse::FrameDetail::AddHeader(const UTF8Char *header)
 	this->headers->Add(Text::StrCopyNew(header));
 }
 
-void IO::FileAnalyse::FrameDetail::AddField(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value)
+void IO::FileAnalyse::FrameDetail::AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_FIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddSubfield(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value)
+void IO::FileAnalyse::FrameDetail::AddSubfield(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_SUBFIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UInt32 ofst, const UTF8Char *name)
+void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UOSInt ofst, const UTF8Char *name)
 {
 	this->AddFieldInfo(ofst, 0, name, 0, FT_SEPERATOR);
 }
 
-void IO::FileAnalyse::FrameDetail::AddText(UInt32 ofst, const UTF8Char *name)
+void IO::FileAnalyse::FrameDetail::AddText(UOSInt ofst, const UTF8Char *name)
 {
 	this->AddFieldInfo(ofst, 0, name, 0, FT_TEXT);
+}
+
+void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
+{
+	this->AddFieldInfo(ofst, size, (const UTF8Char*)"Subframe", 0, FT_SUBFRAME);
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF *sb)
@@ -126,6 +133,8 @@ void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF *sb)
 			case FT_SEPERATOR:
 				sb->Append((const UTF8Char *)"\r\n\r\n");
 				break;
+			case FT_SUBFRAME:
+				sb->Append((const UTF8Char*)"\r\n");
 			}
 			sb->Append(field->name);
 			if (field->value)

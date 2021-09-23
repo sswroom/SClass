@@ -210,7 +210,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				}
 				if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
 				{
-					err = snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+					err = (int)snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
 					if (err < 0)
 					{
 						printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), err);

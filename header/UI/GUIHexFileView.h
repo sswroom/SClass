@@ -54,7 +54,7 @@ namespace UI
 
 		const UTF8Char *GetAnalyzerName();
 		Bool GetFrameName(Text::StringBuilderUTF *sb);
-		const IO::FileAnalyse::FrameDetail::FieldInfo *GetFieldInfo();
+		UOSInt GetFieldInfos(Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *> *fieldList);
 		Bool GoToNextUnkField();
 	};
 }

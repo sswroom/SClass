@@ -768,14 +768,8 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::FrameDetail *frame;
-	UTF8Char sbuff[64];
-	UInt8 *extBuff;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -797,82 +791,54 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	{
 		frame->AddHeader((const UTF8Char*)"Type=Data Block");
 	}
-	return frame;
 
-/*
 	if (pack->packType == 0)
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-
-		sb->Append((const UTF8Char*)"\r\nVersion = ");
-		sb->AppendU16(ReadUInt16(&packBuff[2]));
-		sb->Append((const UTF8Char*)"\r\nFlags = 0x");
-		sb->AppendHex32V(ReadUInt32(&packBuff[4]));
+		frame->AddUInt(2, 2, "Version", ReadUInt16(&packBuff[2]));
+		frame->AddHex32(4, "Flags", ReadUInt32(&packBuff[4]));
 		if (packBuff[4] & 1)
 		{
-			sb->Append((const UTF8Char*)" Compressed");
+			frame->AddField(4, 4, (const UTF8Char*)"Flags", (const UTF8Char*)" Compressed");
 		}
 		if (packBuff[4] & 2)
 		{
-			sb->Append((const UTF8Char*)" Anonimized");
+			frame->AddField(4, 4, (const UTF8Char*)"Flags", (const UTF8Char*)" Anonimized");
 		}
 		if (packBuff[4] & 4)
 		{
-			sb->Append((const UTF8Char*)" Catalog");
+			frame->AddField(4, 4, (const UTF8Char*)"Flags", (const UTF8Char*)" Catalog");
 		}
-		sb->Append((const UTF8Char*)"\r\nNumber of Blocks = ");
-		sb->AppendU32(ReadUInt32(&packBuff[8]));
-		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
-		sb->Append((UTF8Char*)&packBuff[12]);
-
+		frame->AddUInt(8, 4, "Number of Blocks", ReadUInt32(&packBuff[8]));
+		UOSInt strLen = Text::StrCharCnt(&packBuff[12]);
+		frame->AddStrS(12, strLen + 1, "Identifier", &packBuff[12]);
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-
-		sb->Append((const UTF8Char*)"\r\nNumber of flows = ");
-		sb->AppendI64(ReadInt64(&packBuff[0]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes = ");
-		sb->AppendI64(ReadInt64(&packBuff[8]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets = ");
-		sb->AppendI64(ReadInt64(&packBuff[16]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (TCP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[24]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (UDP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[32]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (ICMP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[40]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (Other) = ");
-		sb->AppendI64(ReadInt64(&packBuff[48]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (TCP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[56]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (UDP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[64]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (ICMP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[72]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (Other) = ");
-		sb->AppendI64(ReadInt64(&packBuff[80]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (TCP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[88]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (UDP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[96]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (ICMP) = ");
-		sb->AppendI64(ReadInt64(&packBuff[104]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (Other) = ");
-		sb->AppendI64(ReadInt64(&packBuff[112]));
-		sb->Append((const UTF8Char*)"\r\nFirst seen = ");
-		sb->AppendU32(ReadUInt32(&packBuff[120]));
-		sb->Append((const UTF8Char*)"\r\nLast seen = ");
-		sb->AppendU32(ReadUInt32(&packBuff[124]));
-		sb->Append((const UTF8Char*)"\r\nmSec First = ");
-		sb->AppendU16(ReadUInt16(&packBuff[128]));
-		sb->Append((const UTF8Char*)"\r\nmSec Last = ");
-		sb->AppendU16(ReadUInt16(&packBuff[130]));
-		sb->Append((const UTF8Char*)"\r\nSequence Failure = ");
-		sb->AppendU32(ReadUInt32(&packBuff[132]));
+		frame->AddUInt64(0, "Number of flows", ReadUInt64(&packBuff[0]));
+		frame->AddUInt64(8, "Number of bytes", ReadUInt64(&packBuff[8]));
+		frame->AddUInt64(16, "Number of packets", ReadUInt64(&packBuff[16]));
+		frame->AddUInt64(24, "Number of flows (TCP)", ReadUInt64(&packBuff[24]));
+		frame->AddUInt64(32, "Number of flows (UDP)", ReadUInt64(&packBuff[32]));
+		frame->AddUInt64(40, "Number of flows (ICMP)", ReadUInt64(&packBuff[40]));
+		frame->AddUInt64(48, "Number of flows (Other)", ReadUInt64(&packBuff[48]));
+		frame->AddUInt64(56, "Number of bytes (TCP)", ReadUInt64(&packBuff[56]));
+		frame->AddUInt64(64, "Number of bytes (UDP)", ReadUInt64(&packBuff[64]));
+		frame->AddUInt64(72, "Number of bytes (ICMP)", ReadUInt64(&packBuff[72]));
+		frame->AddUInt64(80, "Number of bytes (Other)", ReadUInt64(&packBuff[80]));
+		frame->AddUInt64(88, "Number of packets (TCP)", ReadUInt64(&packBuff[88]));
+		frame->AddUInt64(96, "Number of packets (UDP)", ReadUInt64(&packBuff[96]));
+		frame->AddUInt64(104, "Number of packets (ICMP)", ReadUInt64(&packBuff[104]));
+		frame->AddUInt64(112, "Number of packets (Other)", ReadUInt64(&packBuff[112]));
+		frame->AddUInt(120, 4, "Number of flows", ReadUInt32(&packBuff[120]));
+		frame->AddUInt(124, 4, "Number of flows", ReadUInt32(&packBuff[124]));
+		frame->AddUInt(128, 2, "Number of flows", ReadUInt16(&packBuff[128]));
+		frame->AddUInt(130, 2, "Number of flows", ReadUInt16(&packBuff[130]));
+		frame->AddUInt(132, 4, "Number of flows", ReadUInt32(&packBuff[132]));
 
 		MemFree(packBuff);
 	}
@@ -880,26 +846,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-
-		sb->Append((const UTF8Char*)"\r\nNumber of records = ");
-		sb->AppendU32(ReadUInt32(&packBuff[0]));
-		sb->Append((const UTF8Char*)"\r\nBlock size = ");
-		sb->AppendU32(ReadUInt32(&packBuff[4]));
-		sb->Append((const UTF8Char*)"\r\nBlock ID = ");
-		sb->AppendU16(ReadUInt16(&packBuff[8]));
-		sb->Append((const UTF8Char*)"\r\nFlags = ");
-		sb->AppendU16(ReadUInt16(&packBuff[10]));
+		frame->AddUInt(0, 4, "Number of records", ReadUInt32(&packBuff[0]));
+		frame->AddUInt(4, 4, "Block size", ReadUInt32(&packBuff[4]));
+		frame->AddUInt(8, 2, "Block ID", ReadUInt16(&packBuff[8]));
+		frame->AddUInt(10, 2, "Flags", ReadUInt16(&packBuff[10]));
 		if (packBuff[10] == 0)
 		{
-			sb->Append((const UTF8Char*)" kompatibility");
+			frame->AddField(10, 2, (const UTF8Char*)"Flags", (const UTF8Char*)"kompatibility");
 		}
 		else if (packBuff[10] == 1)
 		{
-			sb->Append((const UTF8Char*)" block uncompressed");
+			frame->AddField(10, 2, (const UTF8Char*)"Flags", (const UTF8Char*)"block uncompressed");
 		}
 		else if (packBuff[10] == 2)
 		{
-			sb->Append((const UTF8Char*)" block compressed");
+			frame->AddField(10, 2, (const UTF8Char*)"Flags", (const UTF8Char*)"block compressed");
 		}
 		MemFree(packBuff);
 	}
@@ -907,13 +868,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	{
 		UOSInt size = pack->packSize;
 		UOSInt dispSize = size;
-		if (dispSize > 256)
-			dispSize = 256;
 		packBuff = MemAlloc(UInt8, size);
 		this->fd->GetRealData(pack->fileOfst, size, packBuff);
 
-		sb->Append((const UTF8Char*)"\r\n\r\n");
-		sb->AppendHexBuff(packBuff, dispSize, ' ', Text::LBT_CRLF);
+		if (dispSize > 256)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(packBuff, 256, ' ', Text::LBT_CRLF);
+			frame->AddField(0, dispSize, (const UTF8Char*)"LZO Compressed", sb.ToString());
+			dispSize = 256;
+		}
+		else
+		{
+			frame->AddHexBuff(0, dispSize, "LZO Compressed", packBuff, dispSize);
+		}
+
 		if (this->hasLZODecomp)
 		{
 			Data::DateTime dt;
@@ -922,6 +891,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 			decBuffSize = this->LZODecompBlock(packBuff, size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
+/*				UInt8 *extBuff;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
+				UOSInt l;
 				UInt32 recType;
 				UInt32 recSize;
 				sb->Append((const UTF8Char*)"\r\n");
@@ -1330,13 +1304,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 						sb->Append((const UTF8Char*)" (CommonRecord)");
 					}
 					i += recSize;
-				}
+				}*/
 			}
 			MemFree(decBuff);
 		}
 		MemFree(packBuff);
 	}
-	return true;*/
+	return frame;
 }
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::IsError()

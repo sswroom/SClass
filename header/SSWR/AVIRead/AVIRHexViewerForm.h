@@ -8,6 +8,8 @@
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIRadioButton.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -20,7 +22,9 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 
 			UI::GUIHexFileView *hexView;
-			UI::GUIPanel *pnlValues;
+			UI::GUITabControl *tcMain;
+			
+			UI::GUITabPage *tpValues;
 			UI::GUILabel *lblEndian;
 			UI::GUIRadioButton *radEndianLittle;
 			UI::GUIRadioButton *radEndianBig;
@@ -45,14 +49,16 @@ namespace SSWR
 			UI::GUILabel *lblFloat64;
 			UI::GUITextBox *txtFloat64;
 			UI::GUICheckBox *chkDynamicSize;
+			UI::GUIButton *btnFont;
+			UI::GUIButton *btnNextUnk;
+
+			UI::GUITabPage *tpAnalyse;
 			UI::GUILabel *lblFileFormat;
 			UI::GUITextBox *txtFileFormat;
 			UI::GUILabel *lblFrameName;
 			UI::GUITextBox *txtFrameName;
 			UI::GUILabel *lblFieldDetail;
 			UI::GUITextBox *txtFieldDetail;
-			UI::GUIButton *btnFont;
-			UI::GUIButton *btnNextUnk;
 
 			static void __stdcall OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnEndianChg(void *userObj, Bool newState);

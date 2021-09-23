@@ -14,6 +14,7 @@ namespace IO
 		private:
 			typedef struct
 			{
+				UOSInt lev;
 				UInt64 fileOfst;
 				UOSInt packSize;
 				Int32 packType;
@@ -28,9 +29,11 @@ namespace IO
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool threadStarted;
+			UOSInt maxLev;
 
-			void ParseRange(UInt64 ofst, UInt64 size);
+			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
 			static UInt32 __stdcall ParseThread(void *userObj);
+			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
 			RIFFFileAnalyse(IO::IStreamData *fd);
 			virtual ~RIFFFileAnalyse();

@@ -197,7 +197,12 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		const IO::FileAnalyse::FrameDetail::FieldInfo *fieldInfo = 0;
 		if (this->frame)
 		{
-			fieldInfo = this->frame->GetFieldInfo(this->currOfst);
+			Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
+			this->frame->GetFieldInfos(this->currOfst, &fieldList);
+			if (fieldList.GetCount() > 0)
+			{
+				fieldInfo = fieldList.GetItem(0);
+			}
 		}
 		readBuff = MemAlloc(UInt8, readBuffSize + 1);
 		readBuffSize = this->GetFileData(currOfst, readBuffSize, readBuff);
@@ -537,11 +542,35 @@ Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF *sb)
 	return this->analyse->GetFrameName(index, sb);
 }
 
-const IO::FileAnalyse::FrameDetail::FieldInfo *UI::GUIHexFileView::GetFieldInfo()
+UOSInt UI::GUIHexFileView::GetFieldInfos(Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *> *fieldList)
 {
 	if (this->frame)
 	{
-		return this->frame->GetFieldInfo(this->currOfst);
+		UOSInt i = this->frame->GetFieldInfos(this->currOfst, fieldList);
+		if (i > 0)
+		{
+			const IO::FileAnalyse::FrameDetail::FieldInfo *field;
+			UOSInt k = fieldList->GetCount();
+			UOSInt j = k - i;
+			while (j < k)
+			{
+				field = fieldList->GetItem(j);
+				if (field->fieldType == IO::FileAnalyse::FrameDetail::FT_SUBFRAME)
+				{
+					j = this->analyse->GetFrameIndex(this->currOfst);
+					if (j == INVALID_INDEX)
+					{
+						return i;
+					}
+					DEL_CLASS(this->frame);
+					this->frame = this->analyse->GetFrameDetail(j);
+					fieldList->RemoveRange(k - i, i);
+					return this->frame->GetFieldInfos(this->currOfst, fieldList);
+				}
+				j++;
+			}
+		}
+		return i;
 	}
 	return 0;
 }
@@ -559,6 +588,7 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 		return true;
 	}
 	IO::FileAnalyse::FrameDetail *frame = this->analyse->GetFrameDetail(index);
+	Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
 	const IO::FileAnalyse::FrameDetail::FieldInfo *field;
 	if (frame == 0)
 	{
@@ -588,13 +618,14 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 				return true;
 			}
 		}
-		field = frame->GetFieldInfo(currOfst);
-		if (field == 0)
+		fieldList.Clear();
+		if (frame->GetFieldInfos(currOfst, &fieldList) == 0)
 		{
 			this->GoToOffset(currOfst);
 			DEL_CLASS(frame);
 			return true;
 		}
+		field = fieldList.GetItem(0);
 		currOfst = frame->GetOffset() + field->ofst + field->size;
 	}
 	DEL_CLASS(frame);

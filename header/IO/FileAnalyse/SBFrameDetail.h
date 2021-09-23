@@ -16,10 +16,11 @@ namespace IO
 			virtual ~SBFrameDetail();
 
 			virtual void AddHeader(const UTF8Char *header);
-			virtual void AddField(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddSubfield(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddFieldSeperstor(UInt32 ofst, const UTF8Char *name);
-			virtual void AddText(UInt32 ofst, const UTF8Char *name);
+			virtual void AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
+			virtual void AddSubfield(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
+			virtual void AddFieldSeperstor(UOSInt ofst, const UTF8Char *name);
+			virtual void AddText(UOSInt ofst, const UTF8Char *name);
+			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 		};
 	}
 }

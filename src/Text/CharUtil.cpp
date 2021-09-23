@@ -60,31 +60,58 @@ Bool Text::CharUtil::IsAlphabet(UTF8Char c)
 Bool Text::CharUtil::UTF8CharValid(const UTF8Char *sptr)
 {
 	UTF8Char c = *sptr;
+	UInt32 code;
 	if (c < 0x80)
 	{
 		return true;
 	}
 	else if ((c & 0xE0) == 0xC0)
 	{
-		return ((sptr[1] & 0xC0) == 0x80);
+		if ((sptr[1] & 0xC0) == 0x80)
+		{
+			code = (((UInt32)c & 0x1f) << 6) | (sptr[1] & 0x3f);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else if ((c & 0xF0) == 0xE0)
 	{
-		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80);
+		if (((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80))
+		{
+			code = (((UInt32)c & 0xf) << 12) | (((UInt32)sptr[1] & 0x3f) << 6) | (sptr[2] & 0x3f);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else if ((c & 0xF8) == 0xF0)
 	{
 		if (((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80))
 		{
-			UInt32 code = (((UInt32)sptr[0] & 0x7) << 18) | (((UInt32)sptr[1] & 0x3f) << 12) | (((UInt32)sptr[2] & 0x3f) << 6) | (sptr[3] & 0x3f);
-			return code < 0x110000;
+			code = (((UInt32)sptr[0] & 0x7) << 18) | (((UInt32)sptr[1] & 0x3f) << 12) | (((UInt32)sptr[2] & 0x3f) << 6) | (sptr[3] & 0x3f);
 		}
-		return false;
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
 		return false;
 	}
+	if (code >= 0x110000)
+	{
+		return false;
+	}
+	if (code == 0xFDDE)
+	{
+		return false;
+	}
+	return true;
+
 /*	else if ((c & 0xFC) == 0xF8)
 	{
 		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80) && ((sptr[4] & 0xC0) == 0x80);

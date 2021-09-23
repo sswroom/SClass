@@ -48,7 +48,6 @@ namespace IO
 			virtual const UTF8Char *GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb);
-			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual FrameDetail *GetFrameDetail(UOSInt index);
 
@@ -56,7 +55,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(const UTF8Char *outputFile);
 
-			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, Text::StringBuilderUTF *sb);
+			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, IO::FileAnalyse::FrameDetail *frame);
 		};
 	}
 }

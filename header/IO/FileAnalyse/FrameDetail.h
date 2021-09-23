@@ -16,7 +16,8 @@ namespace IO
 				FT_FIELD,
 				FT_SUBFIELD,
 				FT_SEPERATOR,
-				FT_TEXT
+				FT_TEXT,
+				FT_SUBFRAME
 			};
 
 			struct FieldInfo
@@ -29,26 +30,27 @@ namespace IO
 			};
 		private:
 			UInt64 ofst;
-			UInt32 size;
+			UInt64 size;
 
 			Data::ArrayList<const UTF8Char*> *headers;
 			Data::ArrayList<FieldInfo*> *fields;
 
 			void FreeFieldInfo(FieldInfo *field);
-			void AddFieldInfo(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType);
+			void AddFieldInfo(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType);
 		public:
-			FrameDetail(UInt64 ofst, UInt32 size);
+			FrameDetail(UInt64 ofst, UInt64 size);
 			virtual ~FrameDetail();
 
 			UInt64 GetOffset();
-			UInt32 GetSize();
-			const FieldInfo *GetFieldInfo(UInt64 ofst);
+			UInt64 GetSize();
+			UOSInt GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList);
 
 			virtual void AddHeader(const UTF8Char *header);
-			virtual void AddField(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddSubfield(UInt32 ofst, UInt32 size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddFieldSeperstor(UInt32 ofst, const UTF8Char *name);
-			virtual void AddText(UInt32 ofst, const UTF8Char *name);
+			virtual void AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
+			virtual void AddSubfield(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
+			virtual void AddFieldSeperstor(UOSInt ofst, const UTF8Char *name);
+			virtual void AddText(UOSInt ofst, const UTF8Char *name);
+			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 
 			void ToString(Text::StringBuilderUTF *sb);
 		};

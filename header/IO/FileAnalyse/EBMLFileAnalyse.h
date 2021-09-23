@@ -49,13 +49,15 @@ namespace IO
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool threadStarted;
+			UOSInt maxLev;
 
 			static ElementInfo elements[];
 
-			static const UInt8 *ReadInt(const UInt8 *buffPtr, UInt64 *val);
+			static const UInt8 *ReadInt(const UInt8 *buffPtr, UInt64 *val, UInt32 *intSize);
 			static const ElementInfo *GetElementInfo(UInt32 elementId);
 			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
 			static UInt32 __stdcall ParseThread(void *userObj);
+			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
 			EBMLFileAnalyse(IO::IStreamData *fd);
 			virtual ~EBMLFileAnalyse();
