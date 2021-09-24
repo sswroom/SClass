@@ -30,15 +30,18 @@ namespace IO
 			Bool threadStarted;
 
 			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb);
-			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb);
+			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			FLVFileAnalyse(IO::IStreamData *fd);
 			virtual ~FLVFileAnalyse();
 
+			virtual const UTF8Char *GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb);
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual UOSInt GetFrameIndex(UInt64 ofst);
+			virtual FrameDetail *GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

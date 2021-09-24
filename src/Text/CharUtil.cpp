@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Text/CharUtil.h"
 
+#include <stdio.h>
+
 Bool Text::CharUtil::PtrIsWS(const UTF8Char **sptr)
 {
 	UTF8Char c = **sptr;
@@ -55,4 +57,70 @@ Bool Text::CharUtil::IsAlphaNumeric(UTF8Char c)
 Bool Text::CharUtil::IsAlphabet(UTF8Char c)
 {
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+
+Bool Text::CharUtil::UTF8CharValid(const UTF8Char *sptr)
+{
+	UTF8Char c = *sptr;
+	UInt32 code;
+	if (c < 0x80)
+	{
+		return true;
+	}
+	else if ((c & 0xE0) == 0xC0)
+	{
+		if ((sptr[1] & 0xC0) == 0x80)
+		{
+			code = (((UInt32)c & 0x1f) << 6) | (sptr[1] & 0x3f);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if ((c & 0xF0) == 0xE0)
+	{
+		if (((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80))
+		{
+			code = (((UInt32)c & 0xf) << 12) | (((UInt32)sptr[1] & 0x3f) << 6) | (sptr[2] & 0x3f);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if ((c & 0xF8) == 0xF0)
+	{
+		if (((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80))
+		{
+			code = (((UInt32)sptr[0] & 0x7) << 18) | (((UInt32)sptr[1] & 0x3f) << 12) | (((UInt32)sptr[2] & 0x3f) << 6) | (sptr[3] & 0x3f);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+	if (code >= 0x110000)
+	{
+		return false;
+	}
+	if (code >= 0xD800 && code < 0xE000)
+	{
+		return false;
+	}
+	return true;
+
+/*	else if ((c & 0xFC) == 0xF8)
+	{
+		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80) && ((sptr[4] & 0xC0) == 0x80);
+	}
+	else if ((c & 0xFE) == 0xFC)
+	{
+		return ((sptr[1] & 0xC0) == 0x80) && ((sptr[2] & 0xC0) == 0x80) && ((sptr[3] & 0xC0) == 0x80) && ((sptr[4] & 0xC0) == 0x80) && ((sptr[5] & 0xC0) == 0x80);
+	}*/
+	return false;
 }

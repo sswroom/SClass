@@ -59,6 +59,7 @@ namespace IO
 			virtual UOSInt GetSeekCount();
 
 			IO::FileStream *GetFileStream();
+			Bool IsError();
 		private:
 			void Close();
 		};

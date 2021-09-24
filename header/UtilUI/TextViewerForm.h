@@ -1,5 +1,6 @@
 #ifndef _SM_UTILUI_TEXTVIEWERFORM
 #define _SM_UTILUI_TEXTVIEWERFORM
+#include "Media/DrawEngine.h"
 #include "Media/MonitorMgr.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIMainMenu.h"
@@ -24,7 +25,7 @@ namespace UtilUI
 		static void __stdcall OnTextPosUpd(void *userObj, UInt32 textPosX, UOSInt textPosY);
 		static void __stdcall OnSearchClosed(void *userObj, UI::GUIForm *frm);
 	public:
-		TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, UInt32 codePage);
+		TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, Media::DrawEngine *deng, UInt32 codePage);
 		virtual ~TextViewerForm();
 
 		virtual void EventMenuClicked(UInt16 cmdId);
@@ -32,5 +33,5 @@ namespace UtilUI
 
 		Bool SearchText(const UTF8Char *txt);
 	};
-};
+}
 #endif

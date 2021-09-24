@@ -6,6 +6,7 @@
 #include "Parser/FileParser/TIFFParser.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
+#include "Text/StringBuilderUTF8.h"
 
 const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 {
@@ -219,6 +220,11 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
+}
+
+const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"JPEG";
 }
 
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
@@ -569,6 +575,338 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		MemFree(tagData);
 	}
 	return true;
+}
+
+UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt k;
+	JPGTag *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->tags->GetItem((UOSInt)k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->size)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k;
+		}
+	}
+	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	IO::FileAnalyse::FrameDetail *frame;
+	UTF8Char sbuff[128];
+	UInt8 *tagData;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	Int32 v;
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
+	if (tag == 0)
+		return 0;
+	
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
+	frame->AddHeader(sbuff);
+	if (tag->tagType != 0)
+	{
+		frame->AddHex8(0, "Start of Tag", 0xFF);
+		frame->AddHex8Name(1, "TagType", tag->tagType, GetTagName(tag->tagType));
+	}
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Size="), tag->size);
+	frame->AddText(2, sbuff);
+	if (tag->tagType == 0xc4)
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		frame->AddUInt(4, 1, "Table class", (UInt16)(tagData[4] >> 4));
+		frame->AddUInt(4, 1, "Table identifier", tagData[4] & 15);
+		i = 0;
+		while (i < 16)
+		{
+			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Code length "), i + 1), (const UTF8Char*)" count");
+			frame->AddUInt(5 + i, 1, (const Char*)sbuff, tagData[5 + i]);
+
+			i++;
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xc8)
+	{
+	}
+	else if (tag->tagType == 0xcc)
+	{
+	}
+	else if (tag->tagType >= 0xc0 && tag->tagType <= 0xcf) //SOFn
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		frame->AddUInt(4, 1, "Sample precision", tagData[4]);
+		frame->AddInt(5, 2, "Number of lines", ReadMInt16(&tagData[5]));
+		frame->AddInt(7, 2, "Number of samples/line", ReadMInt16(&tagData[7]));
+		frame->AddUInt(9, 1, "Number of components in frame", tagData[9]);
+		i = 0;
+		j = 10;
+		while (i < tagData[9])
+		{
+			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Component "), i), (const UTF8Char*)":");
+			frame->AddText((UInt32)j, sbuff);
+			frame->AddUInt(j, 1, "Component identifier", tagData[j]);
+			frame->AddUInt(j + 1, 1, "Horizontal sampling factor", (UInt16)(tagData[j + 1] >> 4));
+			frame->AddUInt(j + 1, 1, "Vertical sampling factor", tagData[j + 1] & 15);
+			frame->AddUInt(j + 2, 1, "Quantization table destination selector", tagData[j + 2]);
+			j += 3;
+
+			i++;
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xda) //SOS
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		frame->AddUInt(4, 1, "Number of components in scan", tagData[4]);
+		j = 5;
+		i = 0;
+		while (i < tagData[4])
+		{
+			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Component "), i), (const UTF8Char*)":");
+			frame->AddText((UInt32)j, sbuff);
+			frame->AddUInt(j, 1, "Scan component selector", tagData[j]);
+			frame->AddUInt(j + 1, 1, "DC entropy coding selector", (UInt16)(tagData[j + 1] >> 4));
+			frame->AddUInt(j + 1, 1, "AC entropy coding selector", tagData[j + 1] & 15);
+			j += 2;
+			i++;
+		}
+		frame->AddUInt(j, 1, "Start of spectral selection", tagData[j]);
+		frame->AddUInt(j + 1, 1, "End of spectral selection", tagData[j + 1]);
+		frame->AddUInt(j + 2, 1, "Successive approximation bit position high", (UInt16)(tagData[j + 2] >> 4));
+		frame->AddUInt(j + 2, 1, "Successive approximation bit position low", tagData[j + 2] & 15);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xdb) //DQT
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		frame->AddUInt(4, 1, "Element precision", (UInt16)(tagData[4] >> 4));
+		frame->AddUInt(4, 1, "Table identifier", tagData[4] & 15);
+		if (tagData[4] * 0xf0 == 0x10)
+		{
+			Text::StringBuilderUTF8 sb;
+			i = 8;
+			j = 5;
+			while (i-- > 0)
+			{
+				sb.Append((const UTF8Char*)"\r\n");
+				k = 8;
+				while (k-- > 0)
+				{
+					v = ReadMUInt16(&tagData[j]);
+					if (v < 10)
+					{
+						sb.Append((const UTF8Char*)"     ");
+					}
+					else if (v < 100)
+					{
+						sb.Append((const UTF8Char*)"    ");
+					}
+					else if (v < 1000)
+					{
+						sb.Append((const UTF8Char*)"   ");
+					}
+					else if (v < 10000)
+					{
+						sb.Append((const UTF8Char*)"  ");
+					}
+					else
+					{
+						sb.Append((const UTF8Char*)" ");
+					}
+					sb.AppendI32(v);
+
+					j += 2;
+				}
+			}
+			frame->AddField(5, 128, (const UTF8Char*)"Table", sb.ToString());
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			i = 8;
+			j = 5;
+			while (i-- > 0)
+			{
+				sb.Append((const UTF8Char*)"\r\n");
+				k = 8;
+				while (k-- > 0)
+				{
+					if (tagData[j] < 10)
+					{
+						sb.Append((const UTF8Char*)"   ");
+					}
+					else if (tagData[j] < 100)
+					{
+						sb.Append((const UTF8Char*)"  ");
+					}
+					else
+					{
+						sb.Append((const UTF8Char*)" ");
+					}
+					sb.AppendU16(tagData[j]);
+
+					j++;
+				}
+			}
+			frame->AddField(5, 64, (const UTF8Char*)"Table", sb.ToString());
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xe0) //APP0
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		i = Text::StrCharCnt(&tagData[4]);
+		frame->AddStrC(4, i + 1, "Identifier", &tagData[4]);
+		if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'I' && tagData[7] == 'F' && tagData[8] == 0)
+		{
+			frame->AddUInt(9, 1, "Major Version", tagData[9]);
+			frame->AddUInt(10, 1, "Minor Version", tagData[10]);
+			frame->AddUInt(11, 1, "Density unit", tagData[11]);
+			frame->AddInt(12, 2, "Horizontal pixel density", ReadMInt16(&tagData[12]));
+			frame->AddInt(14, 2, "Vertical pixel density", ReadMInt16(&tagData[14]));
+			frame->AddUInt(16, 1, "X Thumbnail", tagData[16]);
+			frame->AddUInt(17, 1, "Y Thumbnail", tagData[17]);
+		}
+		else if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'X' && tagData[7] == 'X' && tagData[8] == 0)
+		{
+			const Char *vName = 0;
+			switch (tagData[9])
+			{
+				case 10:
+					vName = "JPEG format";
+					break;
+				case 11:
+					vName = "8-bit palettized format";
+					break;
+				case 13:
+					vName = "24-bit RGB format";
+					break;
+			}
+			frame->AddUIntName(9, 1, "Thumbnail format", tagData[9], (const UTF8Char*)vName);
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xe1) //APP1
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		i = Text::StrCharCnt(&tagData[4]);
+		frame->AddStrC(4, i + 1, "Identifier", &tagData[4]);
+		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
+		{
+			Media::EXIFData::RInt32Func readInt32;
+			Media::EXIFData::RInt16Func readInt16;
+			Bool valid = true;
+			if (*(Int16*)&tagData[10] == *(Int16*)"II")
+			{
+				readInt32 = Media::EXIFData::TReadInt32;
+				readInt16 = Media::EXIFData::TReadInt16;
+			}
+			else if (*(Int16*)&tagData[10] == *(Int16*)"MM")
+			{
+				readInt32 = Media::EXIFData::TReadMInt32;
+				readInt16 = Media::EXIFData::TReadMInt16;
+			}
+			else
+			{
+				valid = false;
+			}
+			if (valid)
+			{
+				if (readInt16(&tagData[12]) != 42)
+				{
+					valid = false;
+				}
+				if (readInt32(&tagData[14]) != 8)
+				{
+					valid = false;
+				}
+			}
+			if (valid)
+			{
+				UInt32 nextOfst;
+				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, tag->ofst + 18, readInt32, readInt16, &nextOfst, tag->ofst + 10);
+				if (exif)
+				{
+					Text::StringBuilderUTF8 sb;
+					exif->ToString(&sb, 0);
+					frame->AddText(18, sb.ToString());
+					DEL_CLASS(exif);
+				}
+			}
+		}
+		else if (Text::StrEquals((Char*)&tagData[4], "http://ns.adobe.com/xap/1.0/"))
+		{
+			frame->AddStrC(33, tag->size - 33, "Data", &tagData[33]);
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xe2) //APP2
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		i = Text::StrCharCnt(&tagData[4]);
+		frame->AddStrC(4, i + 1, "Identifier", &tagData[4]);
+		if (Text::StrEquals((Char*)&tagData[4], "ICC_PROFILE"))
+		{
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
+			if (icc)
+			{
+				Text::StringBuilderUTF8 sb;
+				icc->ToString(&sb);
+				frame->AddText(18, sb.ToString());
+				DEL_CLASS(icc);
+			}
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xed) //APP13
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		i = Text::StrCharCnt(&tagData[4]);
+		frame->AddStrC(4, i + 1, "Identifier", &tagData[4]);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 0xee) //APP14
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
+		i = Text::StrCharCnt(&tagData[4]);
+		frame->AddStrC(4, i + 1, "Identifier", &tagData[4]);
+		MemFree(tagData);
+	}
+	return frame;
 }
 
 Bool IO::FileAnalyse::JPGFileAnalyse::IsError()

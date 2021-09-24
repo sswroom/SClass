@@ -689,9 +689,9 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
 	this->reqMstm->Write((UInt8*)host, hostLen);
 
-	this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
 	if (defHeaders)
 	{
+		this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
 		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
 		this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
 		if (this->kaConn)
@@ -788,6 +788,9 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		while (writeSize < reqSize)
 		{
 			currSize = this->cli->Write(&reqBuff[writeSize], reqSize - writeSize);
+#ifdef SHOWDEBUG
+			printf("Writing %d bytes, sent %d bytes\r\n", (UInt32)(reqSize - writeSize), (UInt32)currSize);
+#endif
 			if (currSize <= 0)
 				break;
 			writeSize += currSize;

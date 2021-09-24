@@ -1055,6 +1055,7 @@ Data/RandomMT19937.h: ../../src/Data/RandomMT19937.cpp
 Data/RandomOS.h: ../../src/Data/RandomOS.cpp
 @RandomOS.o
 Data/ReadingList.h:
+Data/ReadonlyArray.h:
 Data/SortableArrayList.h:
 Data/StringCMap.h:
 Data/StringUTF8Map.h:
@@ -1064,6 +1065,10 @@ Data/UInt64Map.h:
 Data/Usable.h:
 Data/Usage.h: ../../src/Data/Usage.cpp
 @Usage.o
+Data/VariItem.h: ../../src/Data/VariItem.cpp
+@VariItem.o
+Data/VariObject.h: ../../src/Data/VariObject.cpp
+@VariObject.o
 Data/Compress/Decompressor.h: ../../src/Data/Compress/Decompressor.cpp
 @Decompressor.o
 Data/Compress/Inflate.h: ../../src/Data/Compress/Inflate.cpp
@@ -1460,6 +1465,10 @@ IO/FileAnalyse/EXEFileAnalyse.h: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 @EXEFileAnalyse.o
 IO/FileAnalyse/FLVFileAnalyse.h: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 @FLVFileAnalyse.o
+IO/FileAnalyse/FrameDetail.h: ../../src/IO/FileAnalyse/FrameDetail.cpp
+@FrameDetail.o
+IO/FileAnalyse/FrameDetailHandler.h: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
+@FrameDetailHandler.o
 IO/FileAnalyse/IFileAnalyse.h: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 @IFileAnalyse.o
 IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
@@ -1480,6 +1489,8 @@ IO/FileAnalyse/RAR5FileAnalyse.h: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 @RAR5FileAnalyse.o
 IO/FileAnalyse/RIFFFileAnalyse.h: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
 @RIFFFileAnalyse.o
+IO/FileAnalyse/SBFrameDetail.h: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
+@SBFrameDetail.o
 IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
@@ -2502,6 +2513,8 @@ Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
 Net/WebServer/HTTPDirectoryHandler.h: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 @HTTPDirectoryHandler.o
 Net/WebServer/HTTPFormParser.h:
+Net/WebServer/HTTPForwardHandler.h: ../../src/Net/WebServer/HTTPForwardHandler.cpp
+@HTTPForwardHandler.o
 Net/WebServer/HTTPServerUtil.h: ../../src/Net/WebServer/HTTPServerUtil.cpp
 @HTTPServerUtil.o
 Net/WebServer/IReqLogger.h:
@@ -2962,6 +2975,8 @@ SSWR/AVIRead/AVIRGUIEventForm.h: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
 @AVIRGUIEventForm.o
 SSWR/AVIRead/AVIRHashTestForm.h: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
 @AVIRHashTestForm.o
+SSWR/AVIRead/AVIRHexViewerForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
+@AVIRHexViewerForm.o
 SSWR/AVIRead/AVIRHIDDeviceForm.h: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 @AVIRHIDDeviceForm.o
 SSWR/AVIRead/AVIRHQMPForm.h: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
@@ -2972,6 +2987,8 @@ SSWR/AVIRead/AVIRHTTPClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 @AVIRHTTPClientForm.o
 SSWR/AVIRead/AVIRHTTPDownloaderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
 @AVIRHTTPDownloaderForm.o
+SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
+@AVIRHTTPLoadBalanceForm.o
 SSWR/AVIRead/AVIRHTTPProxyClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
 @AVIRHTTPProxyClientForm.o
 SSWR/AVIRead/AVIRHTTPSvrForm.h: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
@@ -3567,6 +3584,8 @@ adl_structures.h:
 miniz.h: ../../ThirdParty/miniz/miniz.c
 @miniz.o
 
+UI/GUIHexFileView.h: ../../src/UI/GUIHexFileView.cpp
+@GUIHexFileView.o
 UI/GUIMapControl.h: ../../src/UI/GUIMapControl.cpp
 @GUIMapControl.o
 UI/GUIMapTreeView.h: ../../src/UI/GUIMapTreeView.cpp
@@ -3577,6 +3596,8 @@ UI/GUIPictureList.h: ../../src/UI/GUIPictureList.cpp
 @GUIPictureList.o
 UI/GUISudokuViewer.h: ../../src/UI/GUISudokuViewer.cpp
 @GUISudokuViewer.o
+UI/GUITextFileView.h: ../../src/UI/GUITextFileView.cpp
+@GUITextFileView.o
 UI/GUIVideoBoxDD.h: ../../src/UI/GUIVideoBoxDD.cpp
 @GUIVideoBoxDD.o
 UI/GUIVideoBoxDDLQ.h: ../../src/UI/GUIVideoBoxDDLQ.cpp
@@ -3677,6 +3698,8 @@ RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
 Usage.o: ../../src/Data/Usage.cpp
+VariItem.o: ../../src/Data/VariItem.cpp
+VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
 Inflate.o: ../../src/Data/Compress/Inflate.cpp
 $-I ../../ThirdParty/miniz
@@ -3867,6 +3890,8 @@ TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FLVFileAnalyse.o: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
+FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
+FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
 IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
@@ -3877,6 +3902,7 @@ PNGFileAnalyse.o: ../../src/IO/FileAnalyse/PNGFileAnalyse.cpp
 QTFileAnalyse.o: ../../src/IO/FileAnalyse/QTFileAnalyse.cpp
 RAR5FileAnalyse.o: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 RIFFFileAnalyse.o: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
+SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
@@ -4340,6 +4366,7 @@ SNSTwitter.o: ../../src/Net/SNS/SNSTwitter.cpp
 CapturerWebHandler.o: ../../src/Net/WebServer/CapturerWebHandler.cpp
 EGaugeHandler.o: ../../src/Net/WebServer/EGaugeHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
+HTTPForwardHandler.o: ../../src/Net/WebServer/HTTPForwardHandler.cpp
 HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp
 $-I ../../ThirdParty/miniz
 IWebRequest.o: ../../src/Net/WebServer/IWebRequest.cpp
@@ -4567,11 +4594,13 @@ AVIRGPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRGPUInfoForm.cpp
 AVIRGSMModemForm.o: ../../src/SSWR/AVIRead/AVIRGSMModemForm.cpp
 AVIRGUIEventForm.o: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
 AVIRHashTestForm.o: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
+AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
 AVIRHTTPClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 AVIRHTTPDownloaderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
+AVIRHTTPLoadBalanceForm.o: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
 AVIRHTTPProxyClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
 AVIRHTTPSvrForm.o: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
 AVIRHTTPTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPTestForm.cpp
@@ -4859,11 +4888,13 @@ FormEncoding.o: ../../src/Text/TextEnc/FormEncoding.cpp
 Punycode.o: ../../src/Text/TextEnc/Punycode.cpp
 URIEncoding.o: ../../src/Text/TextEnc/URIEncoding.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
+GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp
 GUIPictureList.o: ../../src/UI/GUIPictureList.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
+GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp

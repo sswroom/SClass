@@ -326,7 +326,15 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	gtk_window_set_resizable((GtkWindow*)this->hwnd, noResize?FALSE:TRUE);
 	if (noResize)
 	{
-		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos)* this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
+		if (this->lxPos2 < this->lxPos)
+		{
+			this->lxPos2 = this->lxPos;
+		}
+		if (this->lyPos2 < this->lyPos)
+		{
+			this->lyPos2 = this->lyPos;
+		}
+		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
 	}
 }
 
@@ -475,6 +483,14 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		{
 			ClientControlData *data = (ClientControlData*)this->container;
 			this->selfResize = true;
+			if (outW < 3)
+			{
+				outW = 3;
+			}
+			if (outH < 28)
+			{
+				outH = 28;
+			}
 //			gtk_widget_set_size_request(data->scrolledWin, outW - 3, outH - 28);
 			gtk_widget_set_size_request(data->container, outW - 3, outH - 28);
 			this->selfResize = false;

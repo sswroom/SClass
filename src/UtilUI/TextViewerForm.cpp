@@ -34,7 +34,7 @@ void __stdcall UtilUI::TextViewerForm::OnSearchClosed(void *userObj, UI::GUIForm
 	me->srchFrm = 0;
 }
 
-UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
+UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, Media::DrawEngine *deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UI::GUIMenu *mnu;
 	this->SetFont(0, 8.25, false);
@@ -49,7 +49,7 @@ UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, UI::GUICore
 	this->txtStatus->SetRect(0, 0, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtView, UI::GUITextFileView(ui, this));
+	NEW_CLASS(this->txtView, UI::GUITextFileView(ui, this, deng));
 	this->txtView->SetCodePage(codePage);
 	this->txtView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->HandleDropFiles(OnFileDrop, this);

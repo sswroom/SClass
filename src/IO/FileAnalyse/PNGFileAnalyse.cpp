@@ -91,6 +91,11 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
+const UTF8Char *IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"PNG";
+}
+
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
 {
 	return this->tags->GetCount();
@@ -320,6 +325,197 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		}
 	}
 	return true;
+}
+
+UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt k;
+	PNGTag *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->tags->GetItem((UOSInt)k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->size)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k;
+		}
+	}
+	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	UTF8Char sbuff[128];
+	UTF8Char *sptr2;
+	UTF8Char *sptr;
+	IO::FileAnalyse::FrameDetail *frame;
+	UInt8 *tagData;
+	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags->GetItem(index);
+	if (tag == 0)
+		return 0;
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
+	frame->AddHeader(sbuff);
+	frame->AddUInt(0, 4, "Size", tag->size - 12);
+	frame->AddStrC(4, 4, "TagType", (const UTF8Char*)&tag->tagType);
+	if (tag->tagType == *(Int32*)"IHDR")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(8, 4, "Width", ReadMUInt32(&tagData[8]));
+		frame->AddUInt(12, 4, "Height", ReadMUInt32(&tagData[12]));
+		frame->AddUInt(16, 1, "Bit depth", tagData[16]);
+		frame->AddUInt(17, 1, "Color type", tagData[17]);
+		frame->AddUInt(18, 1, "Compression method", tagData[18]);
+		frame->AddUInt(19, 1, "Filter method", tagData[19]);
+		frame->AddUInt(20, 1, "Interlace method", tagData[20]);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"gAMA")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddInt(8, 4, "Gamma", ReadMInt32(&tagData[8]));
+		frame->AddFloat(8, 4, "Gamma", 100000.0 / ReadMInt32(&tagData[8]));
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"sRGB")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(8, 1, "Rendering intent", tagData[8]);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"cHRM")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddFloat(8, 4, "White Point x", ReadMInt32(&tagData[8]) / 100000.0);
+		frame->AddFloat(12, 4, "White Point y", ReadMInt32(&tagData[12]) / 100000.0);
+		frame->AddFloat(16, 4, "Red x", ReadMInt32(&tagData[16]) / 100000.0);
+		frame->AddFloat(20, 4, "Red y", ReadMInt32(&tagData[20]) / 100000.0);
+		frame->AddFloat(24, 4, "Green x", ReadMInt32(&tagData[24]) / 100000.0);
+		frame->AddFloat(28, 4, "Green y", ReadMInt32(&tagData[28]) / 100000.0);
+		frame->AddFloat(32, 4, "Blue x", ReadMInt32(&tagData[32]) / 100000.0);
+		frame->AddFloat(36, 4, "Blue y", ReadMInt32(&tagData[36]) / 100000.0);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"acTL")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(8, 4, "Number of frames", ReadMUInt32(&tagData[8]));
+		frame->AddUInt(12, 4, "Number of time to loop", ReadMUInt32(&tagData[12]));
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"fcTL")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(8, 4, "Sequence number", ReadMUInt32(&tagData[8]));
+		frame->AddUInt(12, 4, "Width", ReadMUInt32(&tagData[12]));
+		frame->AddUInt(16, 4, "Height", ReadMUInt32(&tagData[16]));
+		frame->AddInt(20, 4, "X Offset", ReadMInt32(&tagData[20]));
+		frame->AddInt(24, 4, "Y Offset", ReadMInt32(&tagData[24]));
+		frame->AddInt(28, 2, "Delay numerator", ReadMInt16(&tagData[28]));
+		frame->AddInt(30, 2, "Delay denominator", ReadMInt16(&tagData[30]));
+		frame->AddInt(32, 1, "Disposal operation", tagData[32]);
+		frame->AddInt(33, 1, "Blend operation", tagData[33]);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"fdAT")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddUInt(8, 4, "Sequence number", ReadMUInt32(&tagData[8]));
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"pHYs")
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		frame->AddInt(8, 4, "H Pixel per unit", ReadMInt32(&tagData[8]));
+		frame->AddInt(12, 4, "V Pixel per unit", ReadMInt32(&tagData[12]));
+		frame->AddUInt(16, 1, "Unit type", tagData[16]);
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"iCCP")
+	{
+		UOSInt i;
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		i = Text::StrCharCnt((Char*)&tagData[8]);
+		frame->AddStrS(8, i + 1, "Profile name", &tagData[8]);
+		i += 9;
+		frame->AddUInt(i, 1, "Compression Method", tagData[i]);
+
+		if (tagData[i] == 0)
+		{
+			frame->AddUInt(i + 1, 1, "zlib Compression Method", tagData[i + 1]);
+			frame->AddUInt(i + 2, 1, "Additional flags", tagData[i + 2]);
+			frame->AddHex32(tag->size - 8, "Check value", ReadMUInt32(&tagData[tag->size - 8]));
+
+/*			IO::MemoryStream *mstm;
+			IO::IStreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			Data::Compress::Inflate comp;
+			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
+			if (!comp.Decompress(mstm, stmData))
+			{
+				UOSInt iccSize;
+				UInt8 *iccBuff = mstm->GetBuff(&iccSize);
+				Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
+				if (icc)
+				{
+					sb->Append((const UTF8Char*)"\r\n\r\n");
+					icc->ToString(sb);
+					DEL_CLASS(icc);
+				}
+			}
+			DEL_CLASS(mstm);
+			DEL_CLASS(stmData);*/
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == *(Int32*)"PLTE")
+	{
+		if (tag->size <= 768 + 12 && (tag->size % 3) == 0)
+		{
+			UOSInt i;
+			UOSInt j;
+			tagData = MemAlloc(UInt8, tag->size - 12);
+			this->fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
+			i = 0;
+			j = 0;
+			while (j < tag->size - 12)
+			{
+				sptr2 = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Entry "), i) + 1;
+				sptr = sptr2;
+				sptr = Text::StrConcat(sptr, (const UTF8Char*)"R");
+				sptr = Text::StrUInt16(sptr, tagData[j + 0]);
+				sptr = Text::StrConcat(sptr, (const UTF8Char*)"G");
+				sptr = Text::StrUInt16(sptr, tagData[j + 1]);
+				sptr = Text::StrConcat(sptr, (const UTF8Char*)"B");
+				sptr = Text::StrUInt16(sptr, tagData[j + 2]);
+				frame->AddField(8 + j, 3, sbuff, sptr2);
+				
+				i++;
+				j += 3;
+			}
+			MemFree(tagData);
+		}
+	}
+	frame->AddHex32(tag->size - 4, "CRC", tag->crc);
+	return frame;
 }
 
 Bool IO::FileAnalyse::PNGFileAnalyse::IsError()

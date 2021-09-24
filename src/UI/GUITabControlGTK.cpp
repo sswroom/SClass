@@ -134,16 +134,27 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 	GtkAllocation clip;
 	this->GetSizeP(&width, &height);
 	GtkWidget *page;
-	gtk_widget_get_allocation((GtkWidget*)this->hwnd, &clip);
+	clip.y = 0;
+	clip.height = 0;
+
+	page = gtk_notebook_get_nth_page((GtkNotebook*)this->hwnd, -1);
+	if (page)
+	{
+//		printf("Page allocation\r\n");
+		gtk_widget_get_allocation(page, &clip);
+	}
 	if (clip.y <= 0)
 	{
-		page = gtk_notebook_get_nth_page((GtkNotebook*)this->hwnd, -1);
-		if (page)
-		{
-			gtk_widget_get_allocation(page, &clip);
-		}
+		btnH = 16;		
 	}
-	btnH = clip.y;
+	else
+	{
+		OSInt posX;
+		OSInt posY;
+		this->GetPositionP(&posX, &posY);
+//		printf("TabPage clip.y = %d, clip.height = %d, height = %d, posY = %d\r\n", clip.y, clip.height, (UInt32)height, (Int32)posY);
+		btnH = clip.y - posY;
+	}
 	if (x)
 		*x = 0;
 	if (y)
@@ -152,6 +163,7 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 		*w = width - 2;
 	if (h)
 		*h = height - (UOSInt)btnH - 2;
+//	printf("TabPage Rect: %d, %d, %d, %d\r\n", 0, (Int32)btnH, (Int32)width - 2, (Int32)(height - (UOSInt)btnH - 2));
 }
 
 void *UI::GUITabControl::GetTabPageFont()

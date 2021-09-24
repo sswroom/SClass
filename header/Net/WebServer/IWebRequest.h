@@ -90,13 +90,13 @@ namespace Net
 			virtual UInt16 GetClientPort() = 0;
 			virtual const UInt8 *GetReqData(UOSInt *dataSize) = 0;
 
-			const UTF8Char *GetReqMethodStr();
+			const Char *GetReqMethodStr();
 			Net::BrowserInfo::BrowserType GetBrowser();
 			const UTF8Char *GetBrowserVer();
 			Manage::OSInfo::OSType GetOS();
 			const UTF8Char *GetOSVer();
 
-			static const UTF8Char *RequestMethodGetName(RequestMethod reqMeth);
+			static const Char *RequestMethodGetName(RequestMethod reqMeth);
 		};
 	}
 }

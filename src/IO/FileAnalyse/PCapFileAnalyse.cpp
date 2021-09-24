@@ -5,6 +5,7 @@
 #include "Net/PacketAnalyzer.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
+#include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 {
@@ -101,6 +102,11 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 	DEL_CLASS(this->sizeList);
 	DEL_CLASS(this->dataMut);
 	MemFree(this->packetBuff);
+}
+
+const UTF8Char *IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"pcap";
 }
 
 UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
@@ -236,6 +242,120 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	sb->AppendU32(psize);
 	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
 	return true;
+}
+
+UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	if (ofst < 24)
+	{
+		return 0;
+	}
+	OSInt i = 0;
+	OSInt j = (OSInt)this->ofstList->GetCount() - 1;
+	OSInt k;
+	UInt64 packOfst;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		packOfst = this->ofstList->GetItem((UOSInt)k);
+		if (ofst < packOfst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= packOfst + this->sizeList->GetItem((UOSInt)k))
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k + 1;
+		}
+	}
+	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	Text::StringBuilderUTF8 sb;
+	IO::FileAnalyse::FrameDetail *frame;
+	UTF8Char sbuff[128];
+	if (index == 0)
+	{
+		UInt16 version_major;
+		UInt16 version_minor;
+		Int32  thiszone;
+		UInt32 sigfigs;
+		UInt32 snaplen;
+		UInt32 network;
+		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, 24));
+		frame->AddHeader((const UTF8Char*)"PCAP Header");
+		fd->GetRealData(0, 24, this->packetBuff);
+		if (this->isBE)
+		{
+			frame->AddField(0, 4, (const UTF8Char*)"Endian", (const UTF8Char*)"Big Endian");
+			version_major = ReadMUInt16(&this->packetBuff[4]);
+			version_minor = ReadMUInt16(&this->packetBuff[6]);
+			thiszone = ReadMInt32(&this->packetBuff[8]);
+			sigfigs = ReadMUInt32(&this->packetBuff[12]);
+			snaplen = ReadMUInt32(&this->packetBuff[16]);
+			network = ReadMUInt32(&this->packetBuff[20]);
+		}
+		else
+		{
+			frame->AddField(0, 4, (const UTF8Char*)"Endian", (const UTF8Char*)"Little Endian");
+			version_major = ReadUInt16(&this->packetBuff[4]);
+			version_minor = ReadUInt16(&this->packetBuff[6]);
+			thiszone = ReadInt32(&this->packetBuff[8]);
+			sigfigs = ReadUInt32(&this->packetBuff[12]);
+			snaplen = ReadUInt32(&this->packetBuff[16]);
+			network = ReadUInt32(&this->packetBuff[20]);
+		}
+		frame->AddUInt(4, 2, "VersionMajor", version_major);
+		frame->AddUInt(6, 2, "VersionMinor", version_minor);
+		frame->AddInt(8, 4, "ThisZone", thiszone);
+		frame->AddUInt(12, 4, "Sigfigs", sigfigs);
+		frame->AddUInt(16, 4, "SnapLen", snaplen);
+		frame->AddUIntName(20, 4, "Network", network, IO::RAWMonitor::LinkTypeGetName(network));
+		return frame;
+	}
+	UInt64 ofst;
+	UInt64 size;
+	UInt32 storeSize;
+	UInt32 psize;
+	if (index > this->ofstList->GetCount())
+	{
+		return 0;
+	}
+	Sync::MutexUsage mutUsage(this->dataMut);
+	ofst = this->ofstList->GetItem(index - 1);
+	size = this->sizeList->GetItem(index - 1);
+	mutUsage.EndUse();
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
+	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
+	Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"TotalSize="), size);
+	frame->AddHeader(sbuff);
+	Data::DateTime dt;
+	if (this->isBE)
+	{
+		dt.SetUnixTimestamp(ReadMUInt32(&this->packetBuff[0]));
+		dt.SetMS(ReadMUInt32(&this->packetBuff[4]) / 1000);
+		storeSize = ReadMUInt32(&this->packetBuff[8]);
+		psize = ReadMUInt32(&this->packetBuff[12]);
+	}
+	else
+	{
+		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
+		dt.SetMS(ReadUInt32(&this->packetBuff[4]) / 1000);
+		storeSize = ReadUInt32(&this->packetBuff[8]);
+		psize = ReadUInt32(&this->packetBuff[12]);
+	}
+	dt.ToLocalTime();
+	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	frame->AddField(0, 8, (const UTF8Char*)"Time", sbuff);
+	frame->AddUInt(8, 4, "StorageSize", storeSize);
+	frame->AddUInt(12, 4, "PacketSize", psize);
+	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, 16, frame);
+	return frame;
 }
 
 Bool IO::FileAnalyse::PCapFileAnalyse::IsError()

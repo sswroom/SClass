@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/RAR5FileAnalyse.h"
 #include "Sync/Thread.h"
+#include "Text/StringBuilderUTF8.h"
 
 // https://www.rarlab.com/technote.htm
 
@@ -22,6 +23,32 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::ReadVInt(const UInt8 *buffPtr, UI
 	}
 	*val = v;
 	return buffPtr;
+}
+
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr)
+{
+	UInt64 iVal;
+	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
+	frame->AddUInt64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
+	return nextPtr;
+}
+
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val)
+{
+	UInt64 iVal;
+	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
+	frame->AddUInt64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
+	if (val) *val = iVal;
+	return nextPtr;
+}
+
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val)
+{
+	UInt64 iVal;
+	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
+	frame->AddHex64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
+	if (val) *val = iVal;
+	return nextPtr;
 }
 
 UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
@@ -113,6 +140,11 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(this->packs, MemFree);
 	DEL_CLASS(this->packs);
+}
+
+const UTF8Char *IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"RAR5";
 }
 
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
@@ -458,6 +490,338 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 
 	MemFree(packBuff);
 	return true;
+}
+
+UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt k;
+	BlockInfo *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->packs->GetItem((UOSInt)k);
+		if (ofst < pack->fileOfst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->fileOfst + pack->headerSize + pack->dataSize)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k;
+		}
+	}
+	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index)
+{
+	IO::FileAnalyse::FrameDetail *frame;
+	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
+	UInt8 *packBuff;
+	UInt64 iVal;
+	UInt64 headerFlags;
+	UInt64 extraSize;
+	const Char *vName;
+	const UInt8 *packPtr;
+	const UInt8 *extraEnd;
+	const UInt8 *packEnd;
+	const UInt8 *nextPtr;
+	const UInt8 *nextPtr2;
+	pack = this->packs->GetItem(index);
+	if (pack == 0)
+		return 0;
+
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)(pack->headerSize + pack->dataSize)));
+	packBuff = MemAlloc(UInt8, pack->headerSize);
+	this->fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
+	frame->AddHex32(0, "Block CRC", ReadUInt32(&packBuff[0]));
+	packPtr = packBuff + 4;
+	packEnd = packBuff + pack->headerSize;
+	packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Header Size", packPtr);
+	nextPtr = ReadVInt(packPtr, &iVal);
+	vName = 0;
+	switch (iVal)
+	{
+	case 1:
+		vName = "Main archive header";
+		break;
+	case 2:
+		vName = "File header";
+		break;
+	case 3:
+		vName = "Service header";
+		break;
+	case 4:
+		vName = "Archive encryption header";
+		break;
+	case 5:
+		vName = "End of archive header";
+		break;
+	}
+	frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Type", iVal, (const UTF8Char*)vName);
+	packPtr = nextPtr;
+	nextPtr = ReadVInt(packPtr, &headerFlags);
+	frame->AddHex64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Flags", headerFlags);
+	packPtr = nextPtr;
+	extraSize = 0;
+	if (headerFlags & 1)
+	{
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Extra Area Size", packPtr, &extraSize);
+	}
+	if (headerFlags & 2)
+	{
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Data Size", packPtr);
+	}
+
+	if (pack->headerType == 1)
+	{
+		nextPtr = ReadVInt(packPtr, &iVal);
+		Text::StringBuilderUTF8 sb;
+		sb.Append((const UTF8Char*)"0x");
+		sb.AppendHex16((UInt16)iVal);
+		if (iVal & 1)
+		{
+			sb.Append((const UTF8Char*)" (Volume)");
+		}
+		if (iVal & 2)
+		{
+			sb.Append((const UTF8Char*)" (Volume number field is present)");
+		}
+		if (iVal & 4)
+		{
+			sb.Append((const UTF8Char*)" (Solid archive)");
+		}
+		if (iVal & 8)
+		{
+			sb.Append((const UTF8Char*)" (Recovery record is present)");
+		}
+		if (iVal & 16)
+		{
+			sb.Append((const UTF8Char*)" (Locked archive)");
+		}
+		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), (const UTF8Char*)"Archive flags", sb.ToString());
+		packPtr = nextPtr;
+
+		if (iVal & 2)
+		{
+			packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Volume number", packPtr);
+		}
+		extraEnd = packPtr + extraSize;
+		if (extraEnd <= packEnd)
+		{
+			while (packPtr < extraEnd)
+			{
+				nextPtr2 = ReadVInt(packPtr, &extraSize);
+				nextPtr = nextPtr2 + extraSize;
+				if (nextPtr > extraEnd)
+				{
+					break;
+				}
+				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Extra Rec Size", extraSize);
+				packPtr = nextPtr2;
+				nextPtr2 = ReadVInt(packPtr, &iVal);
+				if (iVal == 1)
+				{
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, (const UTF8Char*)"Locator");
+					packPtr = nextPtr2;
+					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Flags", packPtr, &iVal);
+					if (iVal & 1)
+					{
+						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Quick open offset", packPtr, &iVal);
+					}
+					if (iVal & 2)
+					{
+						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Recovery record offset", packPtr, &iVal);
+					}
+				}
+				else
+				{
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, 0);
+				}
+				packPtr = nextPtr;
+			}
+		}
+	}
+	else if (pack->headerType == 2 || pack->headerType == 3)
+	{
+		nextPtr = ReadVInt(packPtr, &headerFlags);
+		Text::StringBuilderUTF8 sb;
+		sb.Append((const UTF8Char*)"0x");
+		sb.AppendHex16((UInt16)headerFlags);
+		if (headerFlags & 1)
+		{
+			sb.Append((const UTF8Char*)" (Directory file system object)");
+		}
+		if (headerFlags & 2)
+		{
+			sb.Append((const UTF8Char*)" (Time field in Unix format is present)");
+		}
+		if (headerFlags & 4)
+		{
+			sb.Append((const UTF8Char*)" (CRC32 field is present)");
+		}
+		if (headerFlags & 8)
+		{
+			sb.Append((const UTF8Char*)" (Unpacked size is unknown)");
+		}
+		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), (const UTF8Char*)"File flags", sb.ToString());
+		packPtr = nextPtr;
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Unpacked size", packPtr, 0);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Attributes", packPtr, 0);
+		if (headerFlags & 2)
+		{
+			frame->AddUInt((UOSInt)(packPtr - packBuff), 4, "mtime", ReadUInt32(packPtr));
+			packPtr += 4;
+		}
+		if (headerFlags & 4)
+		{
+			frame->AddHex32((UOSInt)(packPtr - packBuff), "Data CRC32", ReadUInt32(packPtr));
+			packPtr += 4;
+		}
+		nextPtr = ReadVInt(packPtr, &iVal);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression version", iVal & 0x3f);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression Solid Flag", (iVal & 0x40) >> 6);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression method", (iVal & 0x380) >> 7);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression dir size", (iVal & 0x3c00) >> 10);
+		packPtr = nextPtr;
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Host OS", packPtr);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Name length", packPtr, &iVal);
+		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, "Name", packPtr);
+		packPtr += (UOSInt)iVal;
+
+		extraEnd = packPtr + extraSize;
+		if (extraEnd <= packEnd)
+		{
+			while (packPtr < extraEnd)
+			{
+				nextPtr2 = ReadVInt(packPtr, &extraSize);
+				nextPtr = nextPtr2 + extraSize;
+				if (nextPtr > extraEnd)
+				{
+					break;
+				}
+				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Extra Rec Size", extraSize);
+				packPtr = nextPtr2;
+				nextPtr2 = ReadVInt(packPtr, &iVal);
+				vName = 0;
+				switch (iVal)
+				{
+				case 1:
+					vName = "File encryption";
+					break;
+				case 2:
+					vName = "File hash";
+					break;
+				case 3:
+					vName = "File time";
+					break;
+				case 4:
+					vName = "File version";
+					break;
+				case 5:
+					vName = "Redirection";
+					break;
+				case 6:
+					vName = "Unix owner";
+					break;
+				case 7:
+					vName = "Service data";
+					break;
+				}
+				frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, (const UTF8Char*)vName);
+				packPtr = nextPtr2;
+
+				if (iVal == 3)
+				{
+					Data::DateTime dt;
+					UTF8Char sbuff[64];
+					packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Flags", packPtr, &headerFlags);
+					if (headerFlags & 2)
+					{
+						if (headerFlags & 1)
+						{
+							dt.SetUnixTimestamp(ReadUInt32(packPtr));
+							nextPtr2 = packPtr + 4;
+						}
+						else
+						{
+							dt.SetValueFILETIME((void*)packPtr);
+							nextPtr2 = packPtr + 8;
+						}
+						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), (const UTF8Char*)"mtime", sbuff);
+						packPtr = nextPtr2;
+					}
+					if (headerFlags & 4)
+					{
+						if (headerFlags & 1)
+						{
+							dt.SetUnixTimestamp(ReadUInt32(packPtr));
+							nextPtr2 = packPtr + 4;
+						}
+						else
+						{
+							dt.SetValueFILETIME((void*)packPtr);
+							nextPtr2 = packPtr + 8;
+						}
+						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), (const UTF8Char*)"ctime", sbuff);
+						packPtr = nextPtr2;
+					}
+					if (headerFlags & 8)
+					{
+						if (headerFlags & 1)
+						{
+							dt.SetUnixTimestamp(ReadUInt32(packPtr));
+							nextPtr2 = packPtr + 4;
+						}
+						else
+						{
+							dt.SetValueFILETIME((void*)packPtr);
+							nextPtr2 = packPtr + 8;
+						}
+						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), (const UTF8Char*)"atime", sbuff);
+						packPtr = nextPtr2;
+					}
+				}
+				packPtr = nextPtr;
+			}
+		}
+	}
+	else if (pack->headerType == 5)
+	{
+		packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "End of archive flags", packPtr, &headerFlags);
+	}
+
+	/*	sb->Append((const UTF8Char*)"\r\nMicroSec Per Frame = ");
+	sb->AppendU32(ReadUInt32(&packBuff[0]));
+	sb->Append((const UTF8Char*)"\r\nMax Bytes Per Second = ");
+	sb->AppendU32(ReadUInt32(&packBuff[4]));
+	sb->Append((const UTF8Char*)"\r\nPadding Granularity = ");
+	sb->AppendU32(ReadUInt32(&packBuff[8]));
+	sb->Append((const UTF8Char*)"\r\nFlags = 0x");
+	sb->AppendHex32(ReadUInt32(&packBuff[12]));
+	sb->Append((const UTF8Char*)"\r\nTotal Frames = ");
+	sb->AppendU32(ReadUInt32(&packBuff[16]));
+	sb->Append((const UTF8Char*)"\r\nInitial Frames = ");
+	sb->AppendU32(ReadUInt32(&packBuff[20]));
+	sb->Append((const UTF8Char*)"\r\nStream Count = ");
+	sb->AppendU32(ReadUInt32(&packBuff[24]));
+	sb->Append((const UTF8Char*)"\r\nSuggested Buffer Size = ");
+	sb->AppendU32(ReadUInt32(&packBuff[28]));
+	sb->Append((const UTF8Char*)"\r\nWidth = ");
+	sb->AppendU32(ReadUInt32(&packBuff[32]));
+	sb->Append((const UTF8Char*)"\r\nHeight = ");
+	sb->AppendU32(ReadUInt32(&packBuff[36]));*/
+
+	MemFree(packBuff);
+	return frame;
 }
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::IsError()

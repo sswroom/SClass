@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Net/MACInfo.h"
+#include "IO/FileAnalyse/SBFrameDetail.h"
 #include "Net/PacketAnalyzerBluetooth.h"
 #include "Text/MyStringFloat.h"
+#include "Text/StringBuilderUTF8.h"
 
 IO::DeviceDB::VendorInfo Net::PacketAnalyzerBluetooth::vendorList[] = {
 	{0x0000, "Ericsson Technology Licensing"},
@@ -1142,375 +1143,258 @@ IO::DeviceDB::VendorInfo Net::PacketAnalyzerBluetooth::vendorList[] = {
 	{0xFFFF, "SPECIAL USE/DEFAULT"},
 };
 
-void Net::PacketAnalyzerBluetooth::AppendBool(Text::StringBuilderUTF *sb, const Char *name, UInt8 v)
+void Net::PacketAnalyzerBluetooth::AddDirection(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 dir)
 {
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->AppendChar('=', 1);
-	if (v == 0)
-	{
-		sb->Append((const UTF8Char*)"false");
-	}
-	else if (v == 1)
-	{
-		sb->Append((const UTF8Char*)"true");
-	}
-	else
-	{
-		sb->Append((const UTF8Char*)"0x");
-		sb->AppendHex8(v);
-	}
-}
-
-void Net::PacketAnalyzerBluetooth::AppendUInt(Text::StringBuilderUTF *sb, const Char *name, UOSInt v)
-{
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->AppendChar('=', 1);
-	sb->AppendUOSInt(v);
-}
-
-void Net::PacketAnalyzerBluetooth::AppendHex8(Text::StringBuilderUTF *sb, const Char *name, UInt8 v)
-{
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->Append((const UTF8Char*)"=0x");
-	sb->AppendHex8(v);
-}
-
-void Net::PacketAnalyzerBluetooth::AppendHex16(Text::StringBuilderUTF *sb, const Char *name, UInt16 v)
-{
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->Append((const UTF8Char*)"=0x");
-	sb->AppendHex16(v);
-}
-
-void Net::PacketAnalyzerBluetooth::AppendDirection(Text::StringBuilderUTF *sb, UInt32 dir)
-{
-	sb->Append((const UTF8Char*)"\r\nDirection=");
 	switch (dir)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)"Sent");
+		frame->AddField(frameOfst, 4, (const UTF8Char*)"Direction", (const UTF8Char*)"Sent");
 		break;
 	case 1:
-		sb->Append((const UTF8Char*)"Rcvd");
+		frame->AddField(frameOfst, 4, (const UTF8Char*)"Direction", (const UTF8Char*)"Rcvd");
 		break;
 	default:
-		sb->Append((const UTF8Char*)"Unknown (0x");
-		sb->AppendHex32(dir);
-		sb->AppendChar(')', 1);
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append((const UTF8Char*)"Unknown (0x");
+			sb.AppendHex32(dir);
+			sb.AppendChar(')', 1);
+			frame->AddField(frameOfst, 4, (const UTF8Char*)"Direction", sb.ToString());
+		}
 		break;
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::AppendHCIPacketType(Text::StringBuilderUTF *sb, UInt8 packetType)
+void Net::PacketAnalyzerBluetooth::AddHCIPacketType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 packetType)
 {
-	sb->Append((const UTF8Char*)"\r\nHCI Packet Type=0x");
-	sb->AppendHex8(packetType);
-	const UTF8Char *csptr = HCIPacketTypeGetName(packetType);
-	if (csptr)
-	{
-		sb->Append((const UTF8Char*)" (");
-		sb->Append(csptr);
-		sb->AppendChar(')', 1);
-	}
-	else
-	{
-		sb->Append((const UTF8Char*)" (Unkonwn)");
-	}
+	frame->AddHex8Name(frameOfst, "HCI Packet Type", packetType, HCIPacketTypeGetName(packetType));
 }
 
-void Net::PacketAnalyzerBluetooth::AppendParamLen(Text::StringBuilderUTF *sb, UInt8 len)
+void Net::PacketAnalyzerBluetooth::AddParamLen(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 len)
 {
-	sb->Append((const UTF8Char*)"\r\nParameter Total Length=");
-	sb->AppendU16(len);
+	frame->AddUInt(frameOfst, 1, "Parameter Total Length", len);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendCmdOpcode(Text::StringBuilderUTF *sb, UInt16 cmd)
+void Net::PacketAnalyzerBluetooth::AddCmdOpcode(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 cmd)
 {
-	sb->Append((const UTF8Char*)"\r\nCommand Opcode=0x");
-	sb->AppendHex16(cmd);
-	const UTF8Char *csptr = CmdGetName(cmd);
-	if (csptr)
-	{
-		sb->Append((const UTF8Char*)" (");
-		sb->Append(csptr);
-		sb->AppendChar(')', 1);
-	}
-	else
-	{
-		sb->Append((const UTF8Char*)" (Unkonwn)");
-	}
+	frame->AddHex16Name(frameOfst, "Command Opcode", cmd, CmdGetName(cmd));
 }
 
-void Net::PacketAnalyzerBluetooth::AppendBDAddr(Text::StringBuilderUTF *sb, const Char *name, const UInt8 *mac, Bool randomAddr)
+void Net::PacketAnalyzerBluetooth::AddBDAddr(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const Char *name, const UInt8 *mac, Bool randomAddr)
 {
 	UInt8 macBuff[6];
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->AppendChar('=', 1);
 	macBuff[0] = mac[5];
 	macBuff[1] = mac[4];
 	macBuff[2] = mac[3];
 	macBuff[3] = mac[2];
 	macBuff[4] = mac[1];
 	macBuff[5] = mac[0];
-	sb->AppendHexBuff(macBuff, 6, ':', Text::LBT_NONE);
-	if (!randomAddr)
-	{
-		const Net::MACInfo::MACEntry *entry;
-		sb->Append((const UTF8Char*)" (");
-		entry = Net::MACInfo::GetMACInfoBuff(macBuff);
-		if (entry && entry->name[0])
-		{
-			sb->Append((const UTF8Char*)entry->name);
-		}
-		else
-		{
-			sb->Append((const UTF8Char*)"Unknown");
-		}
-		sb->AppendChar(')', 1);
-	}
+	frame->AddMACAddr(frameOfst, name, macBuff, !randomAddr);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendScanType(Text::StringBuilderUTF *sb, UInt8 scanType)
+void Net::PacketAnalyzerBluetooth::AddScanType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 scanType)
 {
-	sb->Append((const UTF8Char*)"\r\nScan Type=0x");
-	sb->AppendHex8(scanType);
+	const Char *vName = 0;
 	switch (scanType)
 	{
 	case 1:
-		sb->Append((const UTF8Char*)" (Active)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "Active";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, "Scan Type", scanType, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendScanFilterPolicy(Text::StringBuilderUTF *sb, UInt8 scanType)
+void Net::PacketAnalyzerBluetooth::AddScanFilterPolicy(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 scanType)
 {
-	sb->Append((const UTF8Char*)"\r\nScan Filter Policy=0x");
-	sb->AppendHex8(scanType);
+	const Char *vName = 0;
 	switch (scanType)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (Accept all advertisements, except directed advertisements not addressed to this device)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "Accept all advertisements, except directed advertisements not addressed to this device";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, "Scan Filter Policy", scanType, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendScanInterval(Text::StringBuilderUTF *sb, UInt16 scanInt)
+void Net::PacketAnalyzerBluetooth::AddScanInterval(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 scanInt)
 {
-	sb->Append((const UTF8Char*)"\r\nScan Interval=");
-	sb->AppendU16(scanInt);
-	sb->Append((const UTF8Char*)" (");
-	Text::SBAppendF64(sb, 0.625 * scanInt);
-	sb->Append((const UTF8Char*)"ms)");
+	Text::StringBuilderUTF8 sb;
+	sb.AppendU16(scanInt);
+	sb.Append((const UTF8Char*)" (");
+	Text::SBAppendF64(&sb, 0.625 * scanInt);
+	sb.Append((const UTF8Char*)"ms)");
+	frame->AddField(frameOfst, 2, (const UTF8Char*)"Scan Interval", sb.ToString());
 }
 
-void Net::PacketAnalyzerBluetooth::AppendScanWindow(Text::StringBuilderUTF *sb, UInt16 scanWind)
+void Net::PacketAnalyzerBluetooth::AddScanWindow(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 scanWind)
 {
-	sb->Append((const UTF8Char*)"\r\nScan Window=");
-	sb->AppendU16(scanWind);
-	sb->Append((const UTF8Char*)" (");
-	Text::SBAppendF64(sb, 0.625 * scanWind);
-	sb->Append((const UTF8Char*)"ms)");
+	Text::StringBuilderUTF8 sb;
+	sb.AppendU16(scanWind);
+	sb.Append((const UTF8Char*)" (");
+	Text::SBAppendF64(&sb, 0.625 * scanWind);
+	sb.Append((const UTF8Char*)"ms)");
+	frame->AddField(frameOfst, 2, (const UTF8Char*)"Scan Window", sb.ToString());
 }
 
-void Net::PacketAnalyzerBluetooth::AppendAddrType(Text::StringBuilderUTF *sb, const Char *name, UInt8 addrType)
+void Net::PacketAnalyzerBluetooth::AddAddrType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const Char *name, UInt8 addrType)
 {
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->Append((const UTF8Char*)" Address Type=0x");
-	sb->AppendHex8(addrType);
+	const Char *vName = 0;
 	switch (addrType)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (Public Device Address)");
+		vName = "Public Device Address";
 		break;
 	case 1:
-		sb->Append((const UTF8Char*)" (Random Address Type)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "Random Address Type";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, name, addrType, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendHCIEvent(Text::StringBuilderUTF *sb, UInt8 evt)
+void Net::PacketAnalyzerBluetooth::AddHCIEvent(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 evt)
 {
-	sb->Append((const UTF8Char*)"\r\nEvent Code=0x");
-	sb->AppendHex8(evt);
-	const UTF8Char *csptr = HCIEventGetName(evt);
-	if (csptr)
-	{
-		sb->Append((const UTF8Char*)" (");
-		sb->Append(csptr);
-		sb->AppendChar(')', 1);
-	}
-	else
-	{
-		sb->Append((const UTF8Char*)" (Unknown)");
-	}
+	frame->AddHex8Name(frameOfst, "Event Code", evt, HCIEventGetName(evt));
 }
 
-void Net::PacketAnalyzerBluetooth::AppendLESubEvent(Text::StringBuilderUTF *sb, UInt8 subEvt)
+void Net::PacketAnalyzerBluetooth::AddLESubEvent(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 subEvt)
 {
-	sb->Append((const UTF8Char*)"\r\nSub Event=0x");
-	sb->AppendHex8(subEvt);
-	const UTF8Char *csptr = LESubEventGetName(subEvt);
-	if (csptr)
-	{
-		sb->Append((const UTF8Char*)" (");
-		sb->Append(csptr);
-		sb->AppendChar(')', 1);
-	}
-	else
-	{
-		sb->Append((const UTF8Char*)" (Unknown)");
-	}
+	frame->AddHex8Name(frameOfst, "Sub Event", subEvt, LESubEventGetName(subEvt));
 }
 
-void Net::PacketAnalyzerBluetooth::AppendAdvEvtType(Text::StringBuilderUTF *sb, UInt8 evtType)
+void Net::PacketAnalyzerBluetooth::AddAdvEvtType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 evtType)
 {
-	sb->Append((const UTF8Char*)"\r\nEvent Type=0x");
-	sb->AppendHex8(evtType);
+	const Char *vName = 0;
 	switch (evtType)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (Connectable Undirected Advertising)");
+		vName = "Connectable Undirected Advertising";
 		break;
 	case 3:
-		sb->Append((const UTF8Char*)" (Non-Connectable Undirected Advertising)");
+		vName = "Non-Connectable Undirected Advertising";
 		break;
 	case 4:
-		sb->Append((const UTF8Char*)" (Scan Response)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "Scan Response";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, "Event Type", evtType, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendRSSI(Text::StringBuilderUTF *sb, Int8 rssi)
+void Net::PacketAnalyzerBluetooth::AddRSSI(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Int8 rssi)
 {
-	sb->Append((const UTF8Char*)"\r\nRSSI=");
-	sb->AppendI16(rssi);
-	sb->Append((const UTF8Char*)"dBm");
+	UTF8Char sbuff[16];
+	Text::StrConcat(Text::StrInt16(sbuff, rssi), (const UTF8Char*)"dBm");
+	frame->AddField(frameOfst, 1, (const UTF8Char*)"RSSI", sbuff);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendAdvData(Text::StringBuilderUTF *sb, const UInt8 *packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
 {
+	const Char *vName;
+	Text::StringBuilderUTF8 sb;
+	UInt16 u16;
 	UInt8 len;
-	UOSInt i = 0;
-	UOSInt j;
+	UInt32 i = 0;
+	UInt32 j;
 	while (i < packetSize)
 	{
 		len = packet[i];
 		if (len + i + 1 > packetSize)
 		{
-			AppendUnknown(sb, packet + i, packetSize - i);
+			AddUnknown(frame, frameOfst + i, packet + i, packetSize - i);
 			return;
 		}
 		if (len == 0)
 		{
+			frame->AddField(frameOfst + i, (UInt32)packetSize - i, (const UTF8Char*)"Unused", 0);
 			return;
 		}
+		frame->AddUInt(frameOfst + i, 1, "Adv Item Len", len);
+		frame->AddHex8(frameOfst + i + 1, "Adv Item Type", packet[i + 1]);
 		if (packet[i + 1] == 1 && len == 2)
 		{
-			sb->Append((const UTF8Char*)"\r\nFlags=0x");
-			sb->AppendHex8(packet[i + 2]);
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"0x");
+			sb.AppendHex8(packet[i + 2]);
 			Bool found = false;
 			if (packet[i + 2] & 1)
 			{
-				sb->Append((const UTF8Char*)" LE Limited Discoverable Mode");
+				sb.Append((const UTF8Char*)" LE Limited Discoverable Mode");
 				found = true;
 			}
 			if (packet[i + 2] & 2)
 			{
-				if (found) sb->AppendChar(',', 1);
-				sb->Append((const UTF8Char*)" LE General Discoverable Mode");
+				if (found) sb.AppendChar(',', 1);
+				sb.Append((const UTF8Char*)" LE General Discoverable Mode");
 				found = true;
 			}
 			if (packet[i + 2] & 4)
 			{
-				if (found) sb->AppendChar(',', 1);
-				sb->Append((const UTF8Char*)" BR/EDR Not Supported");
+				if (found) sb.AppendChar(',', 1);
+				sb.Append((const UTF8Char*)" BR/EDR Not Supported");
 				found = true;
 			}
 			if (packet[i + 2] & 8)
 			{
-				if (found) sb->AppendChar(',', 1);
-				sb->Append((const UTF8Char*)" Simultaneous LE and BR/EDR to Same Device Capable (Controller)");
+				if (found) sb.AppendChar(',', 1);
+				sb.Append((const UTF8Char*)" Simultaneous LE and BR/EDR to Same Device Capable (Controller)");
 				found = true;
 			}
 			if (packet[i + 2] & 16)
 			{
-				if (found) sb->AppendChar(',', 1);
-				sb->Append((const UTF8Char*)" Simultaneous LE and BR/EDR to Same Device Capable (Host)");
+				if (found) sb.AppendChar(',', 1);
+				sb.Append((const UTF8Char*)" Simultaneous LE and BR/EDR to Same Device Capable (Host)");
 				found = true;
 			}
+			frame->AddField(frameOfst + i + 2, 1, (const UTF8Char*)"Flags", sb.ToString());
 		}
 		else if (packet[i + 1] == 2 && len == 3)
 		{
-			sb->Append((const UTF8Char*)"\r\n16-bit Service Class UUIDs (incomplete)=0x");
-			sb->AppendHex16(ReadUInt16(&packet[i + 2]));
-			switch (ReadUInt16(&packet[i + 2]))
+			u16 = ReadUInt16(&packet[i + 2]);
+			vName = 0;
+			switch (u16)
 			{
 			case 0xFE24:
-				sb->Append((const UTF8Char*)" (August Home Inc)");
-				break;
-			default:
-				sb->Append((const UTF8Char*)" (Unknown)");
+				vName = "August Home Inc";
 				break;
 			}
+			frame->AddHex16Name(frameOfst + i + 2, "16-bit Service Class UUIDs (incomplete)", u16, (const UTF8Char*)vName);
 		}
 		else if (packet[i + 1] == 3 && len >= 3 && len & 1)
 		{
-			sb->Append((const UTF8Char*)"\r\n16-bit Service Class UUIDs=");
 			j = 2;
 			while (j < len)
 			{
-				if (j > 2)
-				{
-					sb->Append((const UTF8Char*)", ");
-				}
 				switch (ReadUInt16(&packet[i + j]))
 				{
 				case 0x0001:
-					sb->Append((const UTF8Char*)"SDP");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"SDP");
 					break;
 				case 0x0003:
-					sb->Append((const UTF8Char*)"RFCOMM");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"RFCOMM");
 					break;
 				case 0x0100:
-					sb->Append((const UTF8Char*)"L2CAP");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"L2CAP");
 					break;
 				case 0x1101:
-					sb->Append((const UTF8Char*)"Serial Port");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"Serial Port");
 					break;
 				case 0x111F:
-					sb->Append((const UTF8Char*)"Handsfree Audio Gateway");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"Handsfree Audio Gateway");
 					break;
 				case 0x1200:
-					sb->Append((const UTF8Char*)"PnP Information");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"PnP Information");
 					break;
 				case 0x1203:
-					sb->Append((const UTF8Char*)"Generic Audio");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"Generic Audio");
 					break;
 				case 0xFE8F:
-					sb->Append((const UTF8Char*)"CSR");
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", (const UTF8Char*)"CSR");
 					break;
 				default:
-					sb->Append((const UTF8Char*)"Unknown(0x");
-					sb->AppendHex16(ReadUInt16(&packet[i + j]));
-					sb->AppendChar(')', 1);
+					sb.ClearStr();
+					sb.Append((const UTF8Char*)"Unknown(0x");
+					sb.AppendHex16(ReadUInt16(&packet[i + j]));
+					sb.AppendChar(')', 1);
+					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", sb.ToString());
 					break;
 				}
 				j += 2;
@@ -1518,260 +1402,581 @@ void Net::PacketAnalyzerBluetooth::AppendAdvData(Text::StringBuilderUTF *sb, con
 		}
 		else if (packet[i + 1] == 6 && len == 17)
 		{
-			sb->Append((const UTF8Char*)"\r\n128-bit Service Class UUIDs (incomplete)=");
-			sb->AppendHex32(ReadUInt32(&packet[i + 14]));
-			sb->AppendChar('-', 1);
-			sb->AppendHex16(ReadUInt16(&packet[i + 12]));
-			sb->AppendChar('-', 1);
-			sb->AppendHex16(ReadUInt16(&packet[i + 10]));
-			sb->AppendChar('-', 1);
-			sb->AppendHex16(ReadUInt16(&packet[i + 8]));
-			sb->AppendChar('-', 1);
-			sb->AppendHex32(ReadUInt32(&packet[i + 4]));
-			sb->AppendHex16(ReadUInt16(&packet[i + 2]));
+			sb.ClearStr();
+			sb.AppendHex32(ReadUInt32(&packet[i + 14]));
+			sb.AppendChar('-', 1);
+			sb.AppendHex16(ReadUInt16(&packet[i + 12]));
+			sb.AppendChar('-', 1);
+			sb.AppendHex16(ReadUInt16(&packet[i + 10]));
+			sb.AppendChar('-', 1);
+			sb.AppendHex16(ReadUInt16(&packet[i + 8]));
+			sb.AppendChar('-', 1);
+			sb.AppendHex32(ReadUInt32(&packet[i + 4]));
+			sb.AppendHex16(ReadUInt16(&packet[i + 2]));
+			frame->AddField(frameOfst + i + 2, 16, (const UTF8Char*)"128-bit Service Class UUIDs (incomplete)", sb.ToString());
 		}
 		else if (packet[i + 1] == 8)
 		{
-			sb->Append((const UTF8Char*)"\r\nDevice Name (shortened)=");
-			sb->AppendC(&packet[i + 2], (UOSInt)packet[i + 1] - 1);
+			sb.ClearStr();
+			sb.AppendC(&packet[i + 2], (UOSInt)len - 1);
+			frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Device Name (shortened)", sb.ToString());
 		}
 		else if (packet[i + 1] == 9)
 		{
-			sb->Append((const UTF8Char*)"\r\nDevice Name=");
-			sb->AppendC(&packet[i + 2], (UOSInt)packet[i + 1] - 1);
+			sb.ClearStr();
+			sb.AppendC(&packet[i + 2], (UOSInt)len - 1);
+			frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Device Name", sb.ToString());
 		}
 		else if (packet[i + 1] == 0x0A && len == 2)
 		{
-			sb->Append((const UTF8Char*)"\r\nTx Power Level=");
-			sb->AppendU16(packet[i + 2]);
-			sb->Append((const UTF8Char*)"dBm");
+			sb.ClearStr();
+			sb.AppendU16(packet[i + 2]);
+			sb.Append((const UTF8Char*)"dBm");
+			frame->AddField(frameOfst + i + 2, 1, (const UTF8Char*)"Tx Power Level", sb.ToString());
 		}
 		else if (packet[i + 1] == 0xff && len >= 3)
 		{
-			sb->Append((const UTF8Char*)"\r\nManufacturer Specific=0x");
-			sb->AppendHex16(ReadUInt16(&packet[i + 2]));
-			const UTF8Char *csptr = CompanyGetName(ReadUInt16(&packet[i + 2]));
+			UInt16 compId = ReadUInt16(&packet[i + 2]);
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"0x");
+			sb.AppendHex16(compId);
+			const UTF8Char *csptr = CompanyGetName(compId);
 			if (csptr)
 			{
-				sb->Append((const UTF8Char*)" (");
-				sb->Append(csptr);
-				sb->AppendChar(')', 1);
+				sb.Append((const UTF8Char*)" (");
+				sb.Append(csptr);
+				sb.AppendChar(')', 1);
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)" (Unknown)");
+				sb.Append((const UTF8Char*)" (Unknown)");
 			}
-			sb->Append((const UTF8Char*)", Value=");
-			sb->AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LBT_NONE);
+			if (compId == 0x4C)
+			{
+				/////////////////// https://github.com/furiousMAC/continuity/tree/master/messages
+				frame->AddField(frameOfst + i + 2, 2, (const UTF8Char*)"Manufacturer Specific", sb.ToString());
+				j = 4;
+				while (j < (UInt32)len - 1)
+				{
+					vName = 0;
+					switch (packet[i + j])
+					{
+					case 2:
+						vName = "Proximity Beacons";
+						break;
+					case 3:
+						vName = "AirPrint Message";
+						break;
+					case 5:
+						vName = "AirDrop Message";
+						break;
+					case 6:
+						vName = "HomeKit Message";
+						break;
+					case 7:
+						vName = "Proximity Pairing Message";
+						break;
+					case 8:
+						vName = "Hey Siri Message";
+						break;
+					case 9:
+						vName = "Airplay Target Message";
+						break;
+					case 10:
+						vName = "Airplay Source Message";
+						break;
+					case 11:
+						vName = "Magic Switch Message";
+						break;
+					case 12:
+						vName = "Handoff Message";
+						break;
+					case 13:
+						vName = "Tethering Target Message";
+						break;
+					case 14:
+						vName = "Tethering Source Message";
+						break;
+					case 15:
+						vName = "Nearby Action";
+						break;
+					case 16:
+						vName = "Nearby Info";
+						break;
+					case 18:
+						vName = "Find My Message";
+						break;
+					}
+					frame->AddHex8Name(frameOfst + i + j, "Apple Type", packet[i + j], (const UTF8Char*)vName);
+					frame->AddUInt(frameOfst + i + j + 1, 1, "Apple Length", packet[i + j + 1]);
+					UInt8 appLen = packet[i + j + 1] & 0x7F;
+					if (appLen + j + 1 <= len)
+					{
+						if (packet[i + j] == 2 && appLen == 21)
+						{
+							sb.ClearStr();
+							sb.AppendHex32(ReadUInt32(&packet[i + j + 14]));
+							sb.AppendChar('-', 1);
+							sb.AppendHex16(ReadUInt16(&packet[i + j + 12]));
+							sb.AppendChar('-', 1);
+							sb.AppendHex16(ReadUInt16(&packet[i + j + 10]));
+							sb.AppendChar('-', 1);
+							sb.AppendHex16(ReadUInt16(&packet[i + j + 8]));
+							sb.AppendChar('-', 1);
+							sb.AppendHex32(ReadUInt32(&packet[i + j + 4]));
+							sb.AppendHex16(ReadUInt16(&packet[i + j + 2]));
+							frame->AddField(frameOfst + i + j + 2, 16, (const UTF8Char*)"Proximity UUID", sb.ToString());
+							frame->AddHex16(frameOfst + i + j + 18, "Major", ReadUInt16(&packet[i + j + 18]));
+							frame->AddHex16(frameOfst + i + j + 20, "Minor", ReadUInt16(&packet[i + j + 20]));
+							frame->AddInt(frameOfst + i + j + 22, 1, "Measured Power", (Int8)packet[i + j + 22]);
+						}
+						else if (packet[i + j] == 5 && appLen == 18)
+						{
+							frame->AddHexBuff(frameOfst + i + j + 2, 8, "Zeros", &packet[i + j + 2], false);
+							frame->AddUInt(frameOfst + i + j + 10, 1, "AirDrop Version", packet[i + j + 10]);
+							frame->AddHex16(frameOfst + i + j + 11, "Short Hash of Apple ID", ReadMUInt16(&packet[i + j + 11]));
+							frame->AddHex16(frameOfst + i + j + 13, "Short Hash of Phone Number", ReadMUInt16(&packet[i + j + 13]));
+							frame->AddHex16(frameOfst + i + j + 15, "Short Hash of Email", ReadMUInt16(&packet[i + j + 15]));
+							frame->AddHex16(frameOfst + i + j + 17, "Short Hash of Email2", ReadMUInt16(&packet[i + j + 17]));
+							frame->AddHexBuff(frameOfst + i + j + 19, 1, "Zero", &packet[i + j + 19], false);
+						}
+						else if (packet[i + j] == 6 && appLen == 13)
+						{
+							frame->AddHex8(frameOfst + i + j + 2, "Status", packet[i + j + 2]);
+							frame->AddMACAddr(frameOfst + i + j + 3, "Device ID", &packet[i + j + 3], false);
+							frame->AddUInt(frameOfst + i + j + 9, 2, "Category", ReadUInt16(&packet[i + j + 9]));
+							frame->AddUInt(frameOfst + i + j + 11, 2, "Global State Number", ReadUInt16(&packet[i + j + 11]));
+							frame->AddUInt(frameOfst + i + j + 13, 1, "Configuration Number", packet[i + j + 13]);
+							frame->AddUInt(frameOfst + i + j + 14, 1, "Compatible Version", packet[i + j + 14]);
+						}
+						else if (packet[i + j] == 7 && appLen >= 9)
+						{
+							frame->AddHex8(frameOfst + i + j + 2, "Unknown", packet[i + j + 2]);
+							frame->AddHex16(frameOfst + i + j + 3, "Device Model", ReadUInt16(&packet[i + j + 3]));
+							frame->AddHex8(frameOfst + i + j + 5, "Status", packet[i + j + 5]);
+							frame->AddHex16(frameOfst + i + j + 6, "Battery Levels", ReadUInt16(&packet[i + j + 6]));
+							sb.ClearStr();
+							sb.AppendU32((UInt32)(packet[i + j + 6] & 15) * 10);
+							frame->AddSubfield(frameOfst + i + j + 6, 2, (const UTF8Char*)"Left Battery Level", sb.ToString());
+							sb.ClearStr();
+							sb.AppendU32((UInt32)(packet[i + j + 6] >> 4) * 10);
+							frame->AddSubfield(frameOfst + i + j + 6, 2, (const UTF8Char*)"Right Battery Level", sb.ToString());
+							sb.ClearStr();
+							sb.AppendU32((UInt32)(packet[i + j + 7] & 15) * 10);
+							frame->AddSubfield(frameOfst + i + j + 6, 2, (const UTF8Char*)"Case Battery Level", sb.ToString());
+							sb.ClearStr();
+							sb.AppendU32((UInt32)(packet[i + j + 7] & 0x10) >> 4);
+							frame->AddSubfield(frameOfst + i + j + 6, 2, (const UTF8Char*)"Left Charging", sb.ToString());
+							sb.ClearStr();
+							sb.AppendU32((UInt32)(packet[i + j + 7] & 0x20) >> 5);
+							frame->AddSubfield(frameOfst + i + j + 6, 2, (const UTF8Char*)"Right Charging", sb.ToString());
+							sb.ClearStr();
+							sb.AppendU32((UInt32)(packet[i + j + 7] & 0x40) >> 6);
+							frame->AddSubfield(frameOfst + i + j + 6, 2, (const UTF8Char*)"Case Charging", sb.ToString());
+							frame->AddUInt(frameOfst + i + j + 8, 1, "Open Count", packet[i + j + 8]);
+							frame->AddHex8(frameOfst + i + j + 9, "Device Color", packet[i + j + 9]);
+							frame->AddHex8(frameOfst + i + j + 10, "Unknown", packet[i + j + 10]);
+							if (appLen > 9)
+							{
+								frame->AddHexBuff(frameOfst + i + j + 11, appLen - 9, "Encrypted Data", &packet[i + j + 11], false);
+							}
+						}
+						else if (packet[i + j] == 9 && appLen == 6)
+						{
+							frame->AddHex8(frameOfst + i + j + 2, "Flags", packet[i + j + 2]);
+							frame->AddHex8(frameOfst + i + j + 3, "Seed", packet[i + j + 3]);
+							frame->AddIPv4(frameOfst + i + j + 4, "AirPlay IPv4 Address", &packet[i + j + 4]);
+						}
+						else if (packet[i + j] == 10 && appLen == 1)
+						{
+							frame->AddHex8(frameOfst + i + j + 2, "Data", packet[i + j + 2]);
+						}
+						else if (packet[i + j] == 12 && appLen== 14)
+						{
+							frame->AddBool(frameOfst + i + j + 2, "Copy/Cut Performed", packet[i + j + 2]);
+							frame->AddUInt(frameOfst + i + j + 3, 2, "Sequence Number", ReadUInt16(&packet[i + j + 3]));
+							frame->AddHex8(frameOfst + i + j + 5, "AES-GCM Auth Tag", packet[i + j + 5]);
+							frame->AddHexBuff(frameOfst + i + j + 6, 10, "Encrypted Handoff Data", &packet[i + j + 6], false);
+						}
+						else if (packet[i + j] == 15 && appLen >= 2)
+						{
+							frame->AddHex8(frameOfst + i + j + 2, "Flags", packet[i + j + 2]);
+							vName = 0;
+							switch (packet[i + j + 3])
+							{
+							case 1:
+								vName = "Apple TV Setup";
+								break;
+							case 4:
+								vName = "Mobile Backup";
+								break;
+							case 0x05:
+								vName = "Watch Setup";
+								break;
+							case 0x06:
+								vName = "Apple TV Pair";
+								break;
+							case 0x07:
+								vName = "Internet Relay";
+								break;
+							case 0x08:
+								vName = "WiFi Password";
+								break;
+							case 0x09:
+								vName = "iOS Setup";
+								break;
+							case 0x0A:
+								vName = "Repair";
+								break;
+							case 0x0B:
+								vName = "Speaker Setupd";
+								break;
+							case 0x0C:
+								vName = "Apple Pay";
+								break;
+							case 0x0D:
+								vName = "Whole Home Audio Setup";
+								break;
+							case 0x0E:
+								vName = "Developer Tools Pairing Request";
+								break;
+							case 0x0F:
+								vName = "Answered Call";
+								break;
+							case 0x10:
+								vName = "Ended Call";
+								break;
+							case 0x11:
+								vName = "DD Ping";
+								break;
+							case 0x12:
+								vName = "DD Pong";
+								break;
+							case 0x13:
+								vName = "Remote Auto Fill";
+								break;
+							case 0x14:
+								vName = "Companion Link Proximity";
+								break;
+							case 0x15:
+								vName = "Remote Management";
+								break;
+							case 0x16:
+								vName = "Remote Auto Fill Pong";
+								break;
+							case 0x17:
+								vName = "Remote Display";
+								break;
+							}
+							frame->AddUIntName(frameOfst + i + j + 3, 1, "Action Type", packet[i + j + 3], (const UTF8Char*)vName);
+							if (appLen >= 5)
+							{
+								frame->AddHexBuff(frameOfst + i + j + 4, 3, "Authentication Tag", &packet[i + j + 4], false);
+							}
+						}
+						else if (packet[i + j] == 16 && appLen >= 2)
+						{
+							sb.ClearStr();
+							sb.Append((const UTF8Char*)"0x");
+							sb.AppendHex8(packet[i + j + 2]);
+							switch (packet[i + j + 2] & 15)
+							{
+							case 0:
+								sb.Append((const UTF8Char*)" (Activity Level Unknown)");
+								break;
+							case 1:
+								sb.Append((const UTF8Char*)" (Activity Reporting Disabled )");
+								break;
+							case 3:
+								sb.Append((const UTF8Char*)" (Idle User)");
+								break;
+							case 5:
+								sb.Append((const UTF8Char*)" (Audio playing while screen locked)");
+								break;
+							case 7:
+								sb.Append((const UTF8Char*)" (Active user (screen on) )");
+								break;
+							case 9:
+								sb.Append((const UTF8Char*)" (Screen on with video playing)");
+								break;
+							case 10:
+								sb.Append((const UTF8Char*)" (Watch on wrist and unlocked)");
+								break;
+							case 11:
+								sb.Append((const UTF8Char*)" (Recent user interaction)");
+								break;
+							case 13:
+								sb.Append((const UTF8Char*)" (User is driving a vehicle)");
+								break;
+							case 14:
+								sb.Append((const UTF8Char*)" (Phone or Facetime Call)");
+								break;
+							default:
+								sb.Append((const UTF8Char*)" (Unknown)");
+								break;
+							}
+							if (packet[i + j + 2] & 0x10)
+							{
+								sb.Append((const UTF8Char*)", primary iCloud account device");
+							}
+							if (packet[i + j + 2] & 0x20)
+							{
+								sb.Append((const UTF8Char*)", Unknown");
+							}
+							if (packet[i + j + 2] & 0x40)
+							{
+								sb.Append((const UTF8Char*)", AirDrop Receiving is enabled");
+							}
+							if (packet[i + j + 2] & 0x80)
+							{
+								sb.Append((const UTF8Char*)", Unknown");
+							}
+							frame->AddField(frameOfst + i + j + 2, 1, (const UTF8Char*)"Action", sb.ToString());
+							frame->AddHex8(frameOfst + i + j + 3, "Status", packet[i + j + 3]);
+							if (packet[i + j + 3] & 2)
+							{
+								if (appLen >= 6)
+								{
+									frame->AddHexBuff(frameOfst + i + j + 4, 4, "Authentication Tag", &packet[i + j + 4], false);
+								}
+								else if (appLen > 2)
+								{
+									frame->AddHexBuff(frameOfst + i + j + 4, appLen - 2, "Authentication Tag", &packet[i + j + 4], false);
+								}
+								if (appLen >= 7)
+								{
+									frame->AddHex8(frameOfst + i + j + 8, "Post Auth Tag Data", packet[i + j + 8]);
+								}
+							}
+							else
+							{
+								if (appLen >= 5)
+								{
+									frame->AddHexBuff(frameOfst + i + j + 4, 3, "Authentication Tag", &packet[i + j + 4], false);
+								}
+								else if (appLen > 2)
+								{
+									frame->AddHexBuff(frameOfst + i + j + 4, appLen - 2, "Authentication Tag", &packet[i + j + 4], false);
+								}
+								if (appLen >= 6)
+								{
+									frame->AddHex8(frameOfst + i + j + 7, "Post Auth Tag Data", packet[i + j + 7]);
+								}
+							}
+						}
+						else if (packet[i + j] == 18 && appLen >= 25)
+						{
+							frame->AddHex8(frameOfst + i + j + 2, "Status", packet[i + j + 2]);
+							frame->AddHexBuff(frameOfst + i + j + 3, 22, "Byte 6-27 of Public Key", &packet[i + j + 3], false);
+							frame->AddHex8(frameOfst + i + j + 25, "Byte 0, Bit 6-7 of public key", packet[i + j + 25]);
+							frame->AddHex8(frameOfst + i + j + 26, "Hint (Byte 5 of BD_ADDR)", packet[i + j + 26]);
+						}
+						else if (packet[i + j] == 19)
+						{
+							frame->AddHexBuff(frameOfst + i + j + 2, appLen, "Unknown", &packet[i + j + 2], false);
+						}
+					}
+					j += appLen + 2;
+				}
+			}
+			else
+			{
+				sb.Append((const UTF8Char*)", Value=");
+				sb.AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LBT_NONE);
+				frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Manufacturer Specific", sb.ToString());
+			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\nType=0x");
-			sb->AppendHex8(packet[i + 1]);
-			sb->Append((const UTF8Char*)", Value=");
-			sb->AppendHexBuff(packet + i + 2, (UOSInt)len - 1, ' ', Text::LBT_NONE);
+			sb.ClearStr();
+			sb.AppendHexBuff(packet + i + 2, (UOSInt)len - 1, ' ', Text::LBT_NONE);
+			frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Adv Item Value", sb.ToString());
 		}
-		i += (UOSInt)len + 1;
+		i += (UInt32)len + 1;
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::AppendLAP(Text::StringBuilderUTF *sb, UInt32 lap)
+void Net::PacketAnalyzerBluetooth::AddLAP(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 lap)
 {
-	sb->Append((const UTF8Char*)"\r\nLAP=0x");
-	sb->AppendHex24(lap);
+	frame->AddHex24(frameOfst, "LAP", lap);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendInquiryLen(Text::StringBuilderUTF *sb, UInt8 len)
+void Net::PacketAnalyzerBluetooth::AddInquiryLen(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 len)
 {
-	sb->Append((const UTF8Char*)"\r\nInquiry Length=");
-	sb->AppendU16(len);
+	const Char *vName = 0;
 	switch (len)
 	{
 	case 4:
-		sb->Append((const UTF8Char*)" (5.12 sec)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "5.12 sec";
 		break;
 	}
+	frame->AddUIntName(frameOfst, 1, "Inquiry Length", len, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendPageScanMode(Text::StringBuilderUTF *sb, UInt8 mode)
+void Net::PacketAnalyzerBluetooth::AddPageScanMode(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 mode)
 {
-	sb->Append((const UTF8Char*)"\r\nPage Scan Repetition Mode=0x");
-	sb->AppendHex8(mode);
+	const Char *vName = 0;
 	switch (mode)
 	{
 	case 1:
-		sb->Append((const UTF8Char*)" (R1)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "R1";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, "Page Scan Repetition Mode", mode, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendClassOfDevice(Text::StringBuilderUTF *sb, UInt32 cls)
+void Net::PacketAnalyzerBluetooth::AddClassOfDevice(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 cls)
 {
-	sb->Append((const UTF8Char*)"\r\nClass Of Device=0x");
-	sb->AppendHex24(cls);
-	sb->Append((const UTF8Char*)", Class=");
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"0x");
+	sb.AppendHex24(cls);
+	sb.Append((const UTF8Char*)", Class=");
 	switch (cls & 31)
 	{
 	case 2:
-		sb->Append((const UTF8Char*)"Phone");
+		sb.Append((const UTF8Char*)"Phone");
 		break;
 	default:
-		sb->AppendU16(cls & 31);
-		sb->Append((const UTF8Char*)" (Unknown)");
+		sb.AppendU16(cls & 31);
+		sb.Append((const UTF8Char*)" (Unknown)");
 		break;
 	}
 	if (cls & 0x20)
 	{
-		sb->Append((const UTF8Char*)", Limited Discoverable Mode");
+		sb.Append((const UTF8Char*)", Limited Discoverable Mode");
 	}
 	if (cls & 0x100)
 	{
-		sb->Append((const UTF8Char*)", Positioning");
+		sb.Append((const UTF8Char*)", Positioning");
 	}
 	if (cls & 0x200)
 	{
-		sb->Append((const UTF8Char*)", Networking");
+		sb.Append((const UTF8Char*)", Networking");
 	}
 	if (cls & 0x400)
 	{
-		sb->Append((const UTF8Char*)", Rendering");
+		sb.Append((const UTF8Char*)", Rendering");
 	}
 	if (cls & 0x800)
 	{
-		sb->Append((const UTF8Char*)", Capturing");
+		sb.Append((const UTF8Char*)", Capturing");
 	}
 	if (cls & 0x1000)
 	{
-		sb->Append((const UTF8Char*)", Object Transfer");
+		sb.Append((const UTF8Char*)", Object Transfer");
 	}
 	if (cls & 0x2000)
 	{
-		sb->Append((const UTF8Char*)", Audio");
+		sb.Append((const UTF8Char*)", Audio");
 	}
 	if (cls & 0x4000)
 	{
-		sb->Append((const UTF8Char*)", Telephony");
+		sb.Append((const UTF8Char*)", Telephony");
 	}
 	if (cls & 0x8000)
 	{
-		sb->Append((const UTF8Char*)", Information");
+		sb.Append((const UTF8Char*)", Information");
 	}
-	sb->Append((const UTF8Char*)", Format=");
-	sb->AppendU32((cls >> 16) & 3);
-	sb->Append((const UTF8Char*)", Minor Class=");
-	sb->AppendU32((cls >> 18) & 0x3F);
+	sb.Append((const UTF8Char*)", Format=");
+	sb.AppendU32((cls >> 16) & 3);
+	sb.Append((const UTF8Char*)", Minor Class=");
+	sb.AppendU32((cls >> 18) & 0x3F);
+	frame->AddField(frameOfst, 3, (const UTF8Char*)"Class Of Device", sb.ToString());
 }
 
-void Net::PacketAnalyzerBluetooth::AppendClockOffset(Text::StringBuilderUTF *sb, UInt16 ofst)
+void Net::PacketAnalyzerBluetooth::AddClockOffset(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 ofst)
 {
-	sb->Append((const UTF8Char*)"\r\nClock Offset=0x");
-	sb->AppendHex16(ofst);
+	frame->AddHex16(frameOfst, "Clock Offset", ofst);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendExAdvEvtType(Text::StringBuilderUTF *sb, UInt16 evtType)
+void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 evtType)
 {
-	sb->Append((const UTF8Char*)"\r\nEvent Type=0x");
-	sb->AppendHex16(evtType);
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"0x");
+	sb.AppendHex16(evtType);
 	if (evtType & 1)
 	{
-		sb->Append((const UTF8Char*)", Connectable");
+		sb.Append((const UTF8Char*)", Connectable");
 	}
 	if (evtType & 2)
 	{
-		sb->Append((const UTF8Char*)", Scannable");
+		sb.Append((const UTF8Char*)", Scannable");
 	}
 	if (evtType & 4)
 	{
-		sb->Append((const UTF8Char*)", Directed");
+		sb.Append((const UTF8Char*)", Directed");
 	}
 	if (evtType & 8)
 	{
-		sb->Append((const UTF8Char*)", Scan Response");
+		sb.Append((const UTF8Char*)", Scan Response");
 	}
 	if (evtType & 16)
 	{
-		sb->Append((const UTF8Char*)", Legacy");
+		sb.Append((const UTF8Char*)", Legacy");
 	}
-	sb->Append((const UTF8Char*)", Data Status=");
-	sb->AppendUOSInt((((UOSInt)evtType) >> 5) & 3);
+	sb.Append((const UTF8Char*)", Data Status=");
+	sb.AppendUOSInt((((UOSInt)evtType) >> 5) & 3);
 	switch ((((UOSInt)evtType) >> 5) & 3)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (Complete)");
+		sb.Append((const UTF8Char*)" (Complete)");
 		break;
 	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		sb.Append((const UTF8Char*)" (Unknown)");
 		break;
 	}
+	frame->AddField(frameOfst, 2, (const UTF8Char*)"Event Type", sb.ToString());
 }
 
-void Net::PacketAnalyzerBluetooth::AppendPHYType(Text::StringBuilderUTF *sb, const Char *name, UInt8 phyType)
+void Net::PacketAnalyzerBluetooth::AddPHYType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const Char *name, UInt8 phyType)
 {
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)name);
-	sb->Append((const UTF8Char*)"=0x");
-	sb->AppendHex8(phyType);
+	const Char *vName = 0;
 	switch (phyType)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (No packets)");
+		vName = "No packets";
 		break;
 	case 1:
-		sb->Append((const UTF8Char*)" (LE 1M)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "LE 1M";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, name, phyType, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendAdvSID(Text::StringBuilderUTF *sb, UInt8 sid)
+void Net::PacketAnalyzerBluetooth::AddAdvSID(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 sid)
 {
-	sb->Append((const UTF8Char*)"\r\nAdvertising SID=0x");
-	sb->AppendHex8(sid);
+	const Char *vName = 0;
 	switch (sid)
 	{
 	case 0xFF:
-		sb->Append((const UTF8Char*)" (Not available)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "Not available";
 		break;
 	}
+	frame->AddHex8Name(frameOfst, "Advertising SID", sid, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendTxPower(Text::StringBuilderUTF *sb, Int8 txPower)
+void Net::PacketAnalyzerBluetooth::AddTxPower(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Int8 txPower)
 {
-	sb->Append((const UTF8Char*)"\r\nTxPower=");
-	sb->AppendI16(txPower);
-	sb->Append((const UTF8Char*)"dBm");
+	UTF8Char sbuff[16];
+	Text::StrConcat(Text::StrInt16(sbuff, txPower), (const UTF8Char*)"dBm");
+	frame->AddField(frameOfst, 1, (const UTF8Char*)"TxPower", sbuff);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendPeriodicAdv(Text::StringBuilderUTF *sb, UInt16 interval)
+void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 interval)
 {
-	sb->Append((const UTF8Char*)"\r\nPeriodic Advertising Interval=0x");
-	sb->AppendHex16(interval);
+	const Char *vName = 0;
 	switch (interval)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)" (No periodic advertising)");
-		break;
-	default:
-		sb->Append((const UTF8Char*)" (Unknown)");
+		vName = "No periodic advertising";
 		break;
 	}
+	frame->AddHex16Name(frameOfst, "Periodic Advertising Interval", interval, (const UTF8Char*)vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AppendUnknown(Text::StringBuilderUTF *sb, const UInt8 *packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddUnknown(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
 {
-	sb->Append((const UTF8Char*)"\r\nUnknown:\r\n");
-	sb->AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+	frame->AddHexBuff(frameOfst, (UInt32)packetSize, "Unknown", packet, true);
 }
 
 Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
@@ -1887,18 +2092,25 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 
 void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
 {
-	UOSInt i;
+	IO::FileAnalyse::SBFrameDetail frame(sb);
+	PacketGetDetail(packet, packetSize, 0, &frame);
+}
+
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+{
+	const Char *vName;
+	UInt32 i;
 	UInt32 dir = ReadMUInt32(&packet[0]);
-	AppendDirection(sb, dir);
-	AppendHCIPacketType(sb, packet[4]);
+	AddDirection(frame, frameOfst + 0, dir);
+	AddHCIPacketType(frame, frameOfst + 4, packet[4]);
 	switch (packet[4])
 	{
 	case 1:
 		{
 			UInt16 cmd = ReadUInt16(&packet[5]);
 			UInt8 cmdLen = packet[7];
-			AppendCmdOpcode(sb, cmd);
-			AppendParamLen(sb, cmdLen);
+			AddCmdOpcode(frame, frameOfst + 5, cmd);
+			AddParamLen(frame, frameOfst + 7, cmdLen);
 			if (8 + (UOSInt)cmdLen <= packetSize)
 			{
 				switch (cmd)
@@ -1906,225 +2118,216 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt p
 				case 0x0401:
 					if (cmdLen == 5)
 					{
-						AppendLAP(sb, ReadUInt24(&packet[8]));
-						AppendInquiryLen(sb, packet[11]);
-						AppendUInt(sb, "Num Response", packet[12]);
+						AddLAP(frame, frameOfst + 8, ReadUInt24(&packet[8]));
+						AddInquiryLen(frame, frameOfst + 11, packet[11]);
+						frame->AddUInt(frameOfst + 12, 1, "Num Response", packet[12]);
 					}
 					else
 					{
-						AppendUnknown(sb, packet + 8, cmdLen);
+						AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					}
 					break;
 				case 0x2005:
 					if (cmdLen == 6)
 					{
-						AppendBDAddr(sb, "BD_ADDR", packet + 8, true);
+						AddBDAddr(frame, frameOfst + 8, "BD_ADDR", packet + 8, true);
 					}
 					else
 					{
-						AppendUnknown(sb, packet + 8, cmdLen);
+						AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					}
 					break;
 				case 0x200B:
 					if (cmdLen == 7)
 					{
-						AppendScanType(sb, packet[8]);
-						AppendScanInterval(sb, ReadUInt16(&packet[9]));
-						AppendScanWindow(sb, ReadUInt16(&packet[11]));
-						AppendAddrType(sb, "Own", packet[13]);
-						AppendScanFilterPolicy(sb, packet[14]);
+						AddScanType(frame, frameOfst + 8, packet[8]);
+						AddScanInterval(frame, frameOfst + 9, ReadUInt16(&packet[9]));
+						AddScanWindow(frame, frameOfst + 11, ReadUInt16(&packet[11]));
+						AddAddrType(frame, frameOfst + 13, "Own Address Type", packet[13]);
+						AddScanFilterPolicy(frame, frameOfst + 14, packet[14]);
 					}
 					else
 					{
-						AppendUnknown(sb, packet + 8, cmdLen);
+						AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					}
 					break;
 				case 0x200C:
 					if (cmdLen == 2)
 					{
-						AppendBool(sb, "Scan Enable", packet[8]);
-						AppendBool(sb, "Filter Duplicates", packet[9]);
+						frame->AddBool(frameOfst + 8, "Scan Enable", packet[8]);
+						frame->AddBool(frameOfst + 9, "Filter Duplicates", packet[9]);
 					}
 					else
 					{
-						AppendUnknown(sb, packet + 8, cmdLen);
+						AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					}
 					break;
 				case 0x2041:
 					if (cmdLen == 8)
 					{
-						AppendAddrType(sb, "Own", packet[8]);
-						AppendScanFilterPolicy(sb, packet[9]);
-						AppendPHYType(sb, "Scanning PHYs", packet[10]);
-						AppendScanType(sb, packet[11]);
-						AppendScanInterval(sb, ReadUInt16(&packet[12]));
-						AppendScanWindow(sb, ReadUInt16(&packet[14]));
+						AddAddrType(frame, frameOfst + 8, "Own Address Type", packet[8]);
+						AddScanFilterPolicy(frame, frameOfst + 9, packet[9]);
+						AddPHYType(frame, frameOfst + 10, "Scanning PHYs", packet[10]);
+						AddScanType(frame, frameOfst + 11, packet[11]);
+						AddScanInterval(frame, frameOfst + 12, ReadUInt16(&packet[12]));
+						AddScanWindow(frame, frameOfst + 14, ReadUInt16(&packet[14]));
 					}
 					else
 					{
-						AppendUnknown(sb, packet + 8, cmdLen);
+						AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					}
 					break;
 				default:
-					AppendUnknown(sb, packet + 8, cmdLen);
+					AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					break;
 				}
 				if (8 + (UOSInt)cmdLen < packetSize)
 				{
-					AppendUnknown(sb, packet + 8 + cmdLen, packetSize - 8 - cmdLen);
+					AddUnknown(frame, frameOfst + 8 + cmdLen, packet + 8 + cmdLen, packetSize - 8 - cmdLen);
 				}
 			}
 		}
 		break;
 	case 2:
-		AppendHex16(sb, "Connection Handle", ReadUInt16(&packet[5]));
-		AppendUInt(sb, "Data Total Length", ReadUInt16(&packet[7]));
-		AppendUnknown(sb, packet + 9, packetSize - 9);
+		frame->AddHex16(frameOfst + 5, "Connection Handle", ReadUInt16(&packet[5]));
+		frame->AddUInt(frameOfst + 7, 2, "Data Total Length", ReadUInt16(&packet[7]));
+		AddUnknown(frame, frameOfst + 9, packet + 9, packetSize - 9);
 		break;
 	case 4:
-		AppendHCIEvent(sb, packet[5]);
-		AppendParamLen(sb, packet[6]);
+		AddHCIEvent(frame, frameOfst + 5, packet[5]);
+		AddParamLen(frame, frameOfst + 6, packet[6]);
 		switch (packet[5])
 		{
 		case 0x01: //Inquiry Complete
-			sb->Append((const UTF8Char*)"\r\nStatus=0x");
-			sb->AppendHex8(packet[7]);
+			vName = 0;
 			switch (packet[7])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (Success)");
-				break;
-			default:
-				sb->Append((const UTF8Char*)" (Unknown)");
+				vName = "Success";
 				break;
 			}
+			frame->AddHex8Name(frameOfst + 7, "Status", packet[7], (const UTF8Char*)vName);
 			if (packetSize > 8)
 			{
-				AppendUnknown(sb, packet + 8, packetSize + 8);
+				AddUnknown(frame, frameOfst + 8, packet + 8, packetSize + 8);
 			}
 			break;
 		case 0x0E: //Command Complete
-			AppendUInt(sb, "Number of Allowed Command Packets", packet[7]);
-			AppendCmdOpcode(sb, ReadUInt16(&packet[8]));
-			sb->Append((const UTF8Char*)"\r\nStatus=0x");
-			sb->AppendHex8(packet[10]);
+			frame->AddUInt(frameOfst + 7, 1, "Number of Allowed Command Packets", packet[7]);
+			AddCmdOpcode(frame, frameOfst + 8, ReadUInt16(&packet[8]));
+			vName = 0;
 			switch (packet[10])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (Success)");
-				break;
-			default:
-				sb->Append((const UTF8Char*)" (Unknown)");
+				vName = "Success";
 				break;
 			}
+			frame->AddHex8Name(frameOfst + 10, "Status", packet[10], (const UTF8Char*)vName);
 			if (packetSize > 11)
 			{
-				AppendUnknown(sb, packet + 11, packetSize + 11);
+				AddUnknown(frame, frameOfst + 11, packet + 11, packetSize - 11);
 			}
 			break;
 		case 0x0F: //Command Status
-			sb->Append((const UTF8Char*)"\r\nStatus=0x");
-			sb->AppendHex8(packet[7]);
+			vName = 0;
 			switch (packet[7])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)" (Pending)");
-				break;
-			default:
-				sb->Append((const UTF8Char*)" (Unknown)");
+				vName = "Pending";
 				break;
 			}
-			AppendUInt(sb, "Number of Allowed Command Packets", packet[8]);
-			AppendCmdOpcode(sb, ReadUInt16(&packet[9]));
+			frame->AddHex8Name(frameOfst + 7, "Status", packet[7], (const UTF8Char*)vName);
+			frame->AddUInt(frameOfst + 8, 1, "Number of Allowed Command Packets", packet[8]);
+			AddCmdOpcode(frame, frameOfst + 9, ReadUInt16(&packet[9]));
 			break;
 		case 0x2F: //Extended Inquery Result
-			AppendUInt(sb, "Number of responses", packet[7]);
-			AppendBDAddr(sb, "BD_ADDR", &packet[8], false);
-			AppendPageScanMode(sb, packet[14]);
-			AppendHex8(sb, "Reserved", packet[15]);
-			AppendClassOfDevice(sb, ReadUInt24(&packet[16]));
-			AppendClockOffset(sb, ReadUInt16(&packet[19]));
-			AppendRSSI(sb, (Int8)packet[21]);
-			AppendAdvData(sb, &packet[22], packetSize - 22);
+			frame->AddUInt(frameOfst + 7, 1, "Number of responses", packet[7]);
+			AddBDAddr(frame, frameOfst + 8, "BD_ADDR", &packet[8], false);
+			AddPageScanMode(frame, frameOfst + 14, packet[14]);
+			frame->AddHex8(frameOfst + 15, "Reserved", packet[15]);
+			AddClassOfDevice(frame, frameOfst + 16, ReadUInt24(&packet[16]));
+			AddClockOffset(frame, frameOfst + 19, ReadUInt16(&packet[19]));
+			AddRSSI(frame, frameOfst + 21, (Int8)packet[21]);
+			AddAdvData(frame, frameOfst + 22, &packet[22], packetSize - 22);
 			break;
 		case 0x3E: //LE Meta
-			AppendLESubEvent(sb, packet[7]);
+			AddLESubEvent(frame, frameOfst + 7, packet[7]);
 			switch (packet[7])
 			{
 			case 2:
-				AppendUInt(sb, "Num Reports", packet[8]);
+				frame->AddUInt(frameOfst + 8, 1, "Num Reports", packet[8]);
 				if (packet[8] != 1 || packet[6] < 11)
 				{
-					AppendUnknown(sb, packet + 9, packetSize + 9);
+					AddUnknown(frame, frameOfst + 9, packet + 9, packetSize + 9);
 					break;
 				}
-				AppendAdvEvtType(sb, packet[9]);
-				AppendAddrType(sb, "Peer", packet[10]);
-				AppendBDAddr(sb, "BD_ADDR", packet + 11, packet[10] == 1);
-				AppendUInt(sb, "Adv Data Length", packet[17]);
+				AddAdvEvtType(frame, frameOfst + 9, packet[9]);
+				AddAddrType(frame, frameOfst + 10, "Peer Address Type", packet[10]);
+				AddBDAddr(frame, frameOfst + 11, "BD_ADDR", packet + 11, packet[10] == 1);
+				frame->AddUInt(frameOfst + 17, 1, "Adv Data Length", packet[17]);
 				if (18 + (UOSInt)packet[17] < packetSize)
 				{
-					AppendAdvData(sb, packet + 18, packet[17]);
+					AddAdvData(frame, frameOfst + 18, packet + 18, packet[17]);
 				}
 				else if (packetSize > 18)
 				{
-					AppendUnknown(sb, packet + 18, packetSize - 18);
+					AddUnknown(frame, frameOfst + 18, packet + 18, packetSize - 18);
 				}
 				i = 18 + (UOSInt)packet[17];
 				if (i < packetSize)
 				{
-					AppendRSSI(sb, (Int8)packet[i]);
+					AddRSSI(frame, frameOfst + i, (Int8)packet[i]);
 					i++;
 				}
 				if (i < packetSize)
 				{
-					AppendUnknown(sb, packet + i, packetSize - i);
+					AddUnknown(frame, frameOfst + i, packet + i, packetSize - i);
 				}
 				break;
 			case 0x0D: //LE Exteded Advertising Report
-				AppendUInt(sb, "Num Reports", packet[8]);
+				frame->AddUInt(frameOfst + 8, 1, "Num Reports", packet[8]);
 				if (packet[8] != 1 || packet[6] < 26)
 				{
-					AppendUnknown(sb, packet + 9, packetSize + 9);
+					AddUnknown(frame, frameOfst + 9, packet + 9, packetSize + 9);
 					break;
 				}
-				AppendExAdvEvtType(sb, ReadUInt16(&packet[9]));
-				AppendAddrType(sb, "Peer", packet[11]);
-				AppendBDAddr(sb, "BD_ADDR", packet + 12, packet[11] == 1);
-				AppendPHYType(sb, "Primary PHY", packet[18]);
-				AppendPHYType(sb, "Secondary PHY", packet[19]);
-				AppendAdvSID(sb, packet[20]);
-				AppendTxPower(sb, (Int8)packet[21]);
-				AppendRSSI(sb, (Int8)packet[22]);
-				AppendPeriodicAdv(sb, ReadUInt16(&packet[23]));
-				AppendAddrType(sb, "Direct", packet[25]);
-				AppendBDAddr(sb, "Direct BD_ADDR", packet + 26, packet[25] == 1);
-				AppendUInt(sb, "Adv Data Length", packet[32]);
+				AddExAdvEvtType(frame, frameOfst + 9, ReadUInt16(&packet[9]));
+				AddAddrType(frame, frameOfst + 11, "Peer Address Type", packet[11]);
+				AddBDAddr(frame, frameOfst + 12, "BD_ADDR", packet + 12, packet[11] == 1);
+				AddPHYType(frame, frameOfst + 18, "Primary PHY", packet[18]);
+				AddPHYType(frame, frameOfst + 19, "Secondary PHY", packet[19]);
+				AddAdvSID(frame, frameOfst + 20, packet[20]);
+				AddTxPower(frame, frameOfst + 21, (Int8)packet[21]);
+				AddRSSI(frame, frameOfst + 22, (Int8)packet[22]);
+				AddPeriodicAdv(frame, frameOfst + 23, ReadUInt16(&packet[23]));
+				AddAddrType(frame, frameOfst + 25, "Direct Address Type", packet[25]);
+				AddBDAddr(frame, frameOfst + 26, "Direct BD_ADDR", packet + 26, packet[25] == 1);
+				frame->AddUInt(frameOfst + 32, 1, "Adv Data Length", packet[32]);
 				if (33 + (UOSInt)packet[32] <= packetSize)
 				{
-					AppendAdvData(sb, packet + 33, packet[32]);
+					AddAdvData(frame, frameOfst + 33, packet + 33, packet[32]);
 					if (33 + (UOSInt)packet[32] < packetSize)
 					{
-						AppendUnknown(sb, packet + 33 + (UOSInt)packet[32], packetSize - 33 - (UOSInt)packet[32]);
+						AddUnknown(frame, frameOfst + 33 + (UInt32)packet[32], packet + 33 + (UOSInt)packet[32], packetSize - 33 - (UOSInt)packet[32]);
 					}
 				}
 				else if (packetSize > 33)
 				{
-					AppendUnknown(sb, packet + 33, packetSize - 33);
+					AddUnknown(frame, frameOfst + 33, packet + 33, packetSize - 33);
 				}
 				break;
 			default:
-				AppendUnknown(sb, packet + 8, packetSize + 8);
+				AddUnknown(frame, frameOfst + 8, packet + 8, packetSize + 8);
 				break;
 			}
 			break;
 		default:
-			AppendUnknown(sb, packet + 7, packetSize - 7);
+			AddUnknown(frame, frameOfst + 7, packet + 7, packetSize - 7);
 			break;
 		}
 		break;
 	default:
-		AppendUnknown(sb, packet + 5, packetSize - 5);
+		AddUnknown(frame, frameOfst + 5, packet + 5, packetSize - 5);
 		break;		
 	}
 }

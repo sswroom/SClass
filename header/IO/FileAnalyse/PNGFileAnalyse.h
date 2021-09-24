@@ -34,9 +34,12 @@ namespace IO
 			PNGFileAnalyse(IO::IStreamData *fd);
 			virtual ~PNGFileAnalyse();
 
+			virtual const UTF8Char *GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb);
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual UOSInt GetFrameIndex(UInt64 ofst);
+			virtual FrameDetail *GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

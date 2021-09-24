@@ -22,3 +22,95 @@ DB::TableDef *DB::DBReader::GenTableDef(const UTF8Char *tableName)
 	}
 	return table;
 }
+
+Data::VariObject *DB::DBReader::CreateVariObject()
+{
+	UTF8Char sbuff[256];
+	UOSInt i;
+	UOSInt j;
+	UOSInt size;
+	DB::DBUtil::ColType ctype;
+	Data::VariObject *obj;
+	Data::DateTime dt;
+	const UTF8Char *csptr;
+	UInt8 *binBuff;
+	Math::Vector2D *vec;
+	NEW_CLASS(obj, Data::VariObject());
+	i = 0;
+	j = this->ColCount();
+	while (i < j)
+	{
+		this->GetName(i, sbuff);
+		if (this->IsNull(i))
+		{
+			obj->SetItemNull(sbuff);
+		}
+		else
+		{
+			ctype = this->GetColType(i, &size);
+			switch (ctype)
+			{
+			case DB::DBUtil::CT_VarChar:
+			case DB::DBUtil::CT_Char:
+			case DB::DBUtil::CT_NVarChar:
+			case DB::DBUtil::CT_NChar:
+				csptr = this->GetNewStr(i);
+				obj->SetItemStr(sbuff, csptr);
+				this->DelNewStr(csptr);
+				break;
+			case DB::DBUtil::CT_DateTime:
+			case DB::DBUtil::CT_DateTime2:
+				this->GetDate(i, &dt);
+				obj->SetItemDate(sbuff, &dt);
+				break;
+			case DB::DBUtil::CT_Double:
+				obj->SetItemF64(sbuff, this->GetDbl(i));
+				break;
+			case DB::DBUtil::CT_Float:
+				obj->SetItemF32(sbuff, (Single)this->GetDbl(i));
+				break;
+			case DB::DBUtil::CT_Bool:
+				obj->SetItemBool(sbuff, this->GetBool(i));
+				break;
+			case DB::DBUtil::CT_Byte:
+				obj->SetItemU8(sbuff, (UInt8)this->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_Int16:
+				obj->SetItemI16(sbuff, (Int16)this->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_UInt16:
+				obj->SetItemU16(sbuff, (UInt16)this->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_Int32:
+				obj->SetItemI32(sbuff, this->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_UInt32:
+				obj->SetItemU32(sbuff, (UInt32)this->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_Int64:
+				obj->SetItemI64(sbuff, this->GetInt64(i));
+				break;
+			case DB::DBUtil::CT_UInt64:
+				obj->SetItemU64(sbuff, (UInt64)this->GetInt64(i));
+				break;
+			case DB::DBUtil::CT_Binary:
+				size = this->GetBinarySize(i);
+				binBuff = MemAlloc(UInt8, size);
+				this->GetBinary(i, binBuff);
+				obj->SetItemByteArray(sbuff, binBuff, size);
+				MemFree(binBuff);
+				break;
+			case DB::DBUtil::CT_Vector:
+				vec = this->GetVector(i);
+				obj->SetItemVector(sbuff, vec);
+				DEL_CLASS(vec);
+				break;
+			case DB::DBUtil::CT_Unknown:
+			default:
+				break;
+			}
+		}
+		i++;
+	}
+	return obj;
+}

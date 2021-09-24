@@ -1,5 +1,6 @@
 #ifndef _SM_DB_DBREADER
 #define _SM_DB_DBREADER
+#include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Math/Vector2D.h"
 #include "Text/StringBuilderUTF.h"
@@ -47,6 +48,7 @@ namespace DB
 		virtual void DelNewStr(const UTF8Char *s) = 0;
 
 		TableDef *GenTableDef(const UTF8Char *tableName);
+		Data::VariObject *CreateVariObject();
 	};
 }
 #endif

@@ -13,6 +13,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt l;
 	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
 		i = sb->IndexOf((const UTF8Char*)"*/", initSize);
@@ -38,8 +39,15 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	{
 		j = sb->IndexOf((const UTF8Char*)"/*", initSize);
 		k = sb->IndexOf((const UTF8Char*)"\"", initSize);
-		if (j == INVALID_INDEX && k == INVALID_INDEX)
+		l = sb->IndexOf((const UTF8Char*)"//", initSize);
+		if (j == INVALID_INDEX && k == INVALID_INDEX && l == INVALID_INDEX)
 		{
+			break;
+		}
+
+		if (l != INVALID_INDEX && (j == INVALID_INDEX || j > l) && (k == INVALID_INDEX || k > l))
+		{
+			sb->TrimToLength(l);
 			break;
 		}
 

@@ -202,6 +202,37 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 	{
 		return false;
 	}
+	if (sb.Equals((const UTF8Char*)"typedef"))
+	{
+		sb.ClearStr();
+		if (!reader.NextWord(&sb))
+		{
+			return false;
+		}
+		if (!sb.Equals((const UTF8Char*)"enum"))
+		{
+			return false;
+		}
+		sb.ClearStr();
+		if (!reader.NextWord(&sb))
+		{
+			return false;
+		}
+	}
+	else if (sb.Equals((const UTF8Char*)"enum"))
+	{
+		sb.ClearStr();
+		if (!reader.NextWord(&sb))
+		{
+			return false;
+		}
+		sb.ClearStr();
+		if (!reader.NextWord(&sb))
+		{
+			return false;
+		}
+	}
+
 	if (!sb.Equals((const UTF8Char*)"{"))
 	{
 		return false;

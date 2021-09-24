@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
+#include "IO/FileAnalyse/SBFrameDetail.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
+#include "Text/StringBuilderUTF8.h"
 
 UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb)
 {
@@ -95,12 +97,13 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 	}
 }
 
-void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb)
+void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	sb->Append((const UTF8Char*)"\r\n");
-	ofst = ParseScriptDataVal(data, ofst, endOfst, sb);
-	sb->Append((const UTF8Char*)" = ");
-	ofst = ParseScriptDataVal(data, ofst, endOfst, sb);
+	Text::StringBuilderUTF8 sbName;
+	Text::StringBuilderUTF8 sbVal;
+	UOSInt ofstName = ParseScriptDataVal(data, ofst, endOfst, &sbName);
+	UOSInt ofstVal = ParseScriptDataVal(data, ofstName, endOfst, &sbVal);
+	frame->AddField(frameOfst + ofst, ofstVal - ofst, sbName.ToString(), sbVal.ToString());
 }
 
 UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
@@ -183,6 +186,11 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
+}
+
+const UTF8Char *IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
+{
+	return (const UTF8Char*)"FLV";
 }
 
 UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
@@ -297,10 +305,141 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		ParseScriptData(tagData, 11, tag->size, sb);
+		IO::FileAnalyse::SBFrameDetail frame(sb);
+		ParseScriptData(tagData, 11, tag->size, 0, &frame);
 		MemFree(tagData);
 	}
 	return true;
+}
+
+UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	if (ofst < this->hdrSize)
+	{
+		return 0;
+	}
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt k;
+	FLVTag *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->tags->GetItem((UOSInt)k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->size)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k + 1;
+		}
+	}
+	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	IO::FileAnalyse::FrameDetail *frame;
+	UInt8 buff[128];
+	UTF8Char sbuff[128];
+	UInt8 *tagData;
+	const Char *vName;
+	if (index == 0)
+	{
+		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, (UInt32)this->hdrSize));
+		this->fd->GetRealData(0, this->hdrSize, buff);
+		Text::StrConcatC(sbuff, buff, 3);
+		frame->AddField(0, 3, (const UTF8Char*)"Magic", sbuff);
+		Text::StrUInt16(sbuff, buff[3]);
+		frame->AddField(3, 1, (const UTF8Char*)"Version", sbuff);
+		Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), buff[4]);
+		frame->AddField(4, 1, (const UTF8Char*)"TypeFlags", sbuff);
+		Text::StrUInt16(sbuff, (UInt16)(buff[4] >> 3));
+		frame->AddSubfield(4, 1, (const UTF8Char*)"Reserved", sbuff);
+		Text::StrUInt16(sbuff, (UInt16)((buff[4] >> 2) & 1));
+		frame->AddSubfield(4, 1, (const UTF8Char*)"Audio", sbuff);
+		Text::StrUInt16(sbuff, (UInt16)((buff[4] >> 1) & 1));
+		frame->AddSubfield(4, 1, (const UTF8Char*)"Reserved", sbuff);
+		Text::StrUInt16(sbuff, (UInt16)(buff[4] & 1));
+		frame->AddSubfield(4, 1, (const UTF8Char*)"Video", sbuff);
+		Text::StrUInt32(sbuff, ReadMUInt32(&buff[5]));
+		frame->AddField(5, 4, (const UTF8Char*)"DataOffset", sbuff);
+		return frame;
+	}
+	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags->GetItem(index - 1);
+	if (tag == 0)
+		return 0;
+	
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
+	frame->AddHeader(sbuff);
+
+	this->fd->GetRealData(tag->ofst, 11, buff);
+	frame->AddUInt(0, 1, "Reserved", (UInt16)(buff[0] >> 6));
+	frame->AddUInt(0, 1, "Filter", (UInt16)((buff[0] >> 5) & 1));
+	vName = 0;
+	switch (tag->tagType)
+	{
+	case 8:
+		vName = "audio";
+		break;
+	case 9:
+		vName = "video";
+		break;
+	case 18:
+		vName = "script data";
+		break;
+	}
+	frame->AddUIntName(0, 1, "TagType", buff[0] & 0x1f, (const UTF8Char*)vName);
+	frame->AddUInt(1, 3, "DataSize", ReadMUInt24(&buff[1]));
+	frame->AddUInt(4, 3, "Timestamp", ReadMUInt24(&buff[4]));
+	frame->AddUInt(7, 1, "Timestamp Extended", buff[7]);
+	if (tag->tagType == 8)
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+
+		if (tag->size >= 256 + 11)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(&tagData[11], 256, ' ', Text::LBT_CRLF);
+			frame->AddField(11, tag->size - 11, (const UTF8Char*)"data", sb.ToString());
+		}
+		else
+		{
+			frame->AddHexBuff(11, tag->size - 11, "data", &tagData[11], true);
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 9)
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		if (tag->size >= 256 + 11)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(&tagData[11], 256, ' ', Text::LBT_CRLF);
+			frame->AddField(11, tag->size - 11, (const UTF8Char*)"data", sb.ToString());
+		}
+		else
+		{
+			frame->AddHexBuff(11, tag->size - 11, "data", &tagData[11], true);
+		}
+		MemFree(tagData);
+	}
+	else if (tag->tagType == 18)
+	{
+		tagData = MemAlloc(UInt8, tag->size);
+		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		ParseScriptData(tagData, 11, tag->size, 0, frame);
+		MemFree(tagData);
+	}
+	return frame;
 }
 
 Bool IO::FileAnalyse::FLVFileAnalyse::IsError()

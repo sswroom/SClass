@@ -29,14 +29,20 @@ namespace IO
 			Bool threadStarted;
 
 			static const UInt8 *ReadVInt(const UInt8 *buffPtr, UInt64 *val);
+			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr);
+			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val);
+			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			RAR5FileAnalyse(IO::IStreamData *fd);
 			virtual ~RAR5FileAnalyse();
 
+			virtual const UTF8Char *GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb);
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual UOSInt GetFrameIndex(UInt64 ofst);
+			virtual FrameDetail *GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

@@ -11,6 +11,7 @@ namespace Text
 		static Bool IsPunctuation(UTF8Char c);
 		static Bool IsAlphaNumeric(UTF8Char c);
 		static Bool IsAlphabet(UTF8Char c);
+		static Bool UTF8CharValid(const UTF8Char *sptr);
 	};
 }
 #endif
