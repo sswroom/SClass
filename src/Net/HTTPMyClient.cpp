@@ -15,10 +15,20 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
+//#define LOGREPLY
 //#define SHOWDEBUG
 //#define DEBUGSPEED
 #if defined(SHOWDEBUG) || defined(DEBUGSPEED)
 #include <stdio.h>
+#endif
+
+#if defined(LOGREPLY)
+#include "IO/FileStream.h"
+struct Net::HTTPMyClient::ClassData
+{
+	IO::FileStream *fs;
+};
+
 #endif
 
 #define BUFFSIZE 2048
@@ -29,6 +39,10 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	{
 		userAgent = (const UTF8Char*)"sswr/1.0";
 	}
+#if defined(LOGREPLY)
+	this->clsData = MemAlloc(ClassData, 1);
+	NEW_CLASS(this->clsData->fs, IO::FileStream((const UTF8Char*)"HTTPClientData.dat", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+#endif
 	this->ssl = ssl;
 	this->cli = 0;
 	this->cliHost = 0;
@@ -67,6 +81,10 @@ Net::HTTPMyClient::~HTTPMyClient()
 	DEL_CLASS(this->reqHeaders);
 	DEL_CLASS(this->reqMstm);
 	Text::StrDelNew(this->userAgent);
+#if defined(LOGREPLY)
+	DEL_CLASS(this->clsData->fs);
+	MemFree(this->clsData);
+#endif
 }
 
 Bool Net::HTTPMyClient::IsError()
@@ -113,6 +131,12 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 					return 0;
 				}
+#ifdef LOGREPLY
+				if (i > 0)
+				{
+					this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
+				}
+#endif
 				this->buffSize += i;
 			}
 			if (size >= this->buffSize)
@@ -175,6 +199,12 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 				return 0;
 			}
+#ifdef LOGREPLY
+			if (i > 0)
+			{
+				this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
+			}
+#endif
 			this->buffSize += i;
 		}
 		while (INVALID_INDEX == (i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n")))
@@ -194,6 +224,9 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 				return 0;
 			}
+#ifdef LOGREPLY
+			this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
+#endif
 			this->buffSize += i;
 			this->dataBuff[this->buffSize] = 0;
 		}
@@ -294,6 +327,12 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 			{
 				printf("WSA Error code=0x%X\r\n", WSAGetLastError());
 			}*/
+#endif
+#ifdef LOGREPLY
+			if (this->buffSize > 0)
+			{
+				this->clsData->fs->Write(this->dataBuff, this->buffSize);
+			}
 #endif
 		}
 		if (this->buffSize >= size)
@@ -604,6 +643,9 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 				}
 				return false;
 			}
+#ifdef LOGREPLY
+			this->clsData->fs->Write(this->dataBuff, size);
+#endif
 			this->contRead += size;
 		}
 		if (timeDNS)
@@ -811,6 +853,12 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		while (this->buffSize < 32)
 		{
 			UOSInt recvSize = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+#ifdef LOGREPLY
+			if (recvSize > 0)
+			{
+				this->clsData->fs->Write(&this->dataBuff[this->buffSize], recvSize);
+			}
+#endif
 			this->buffSize += recvSize;
 			if (recvSize <= 0)
 				break;
@@ -880,11 +928,11 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #endif
 					this->headers->Add(sptr);
 
-					if (Text::StrStartsWith(sptr, (const UTF8Char*)"Content-Length: "))
+					if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Content-Length: "))
 					{
 						this->contLeng = Text::StrToUInt64(&sptr[16]);
 					}
-					else if (Text::StrStartsWith(sptr, (const UTF8Char*)"Transfer-Encoding: "))
+					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Transfer-Encoding: "))
 					{
 						if (Text::StrStartsWith(&sptr[19], (const UTF8Char*)"chunked"))
 						{
@@ -914,6 +962,9 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				}
 				else
 				{
+#ifdef LOGREPLY
+					this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
+#endif
 					this->buffSize += i;
 					this->dataBuff[this->buffSize] = 0;
 				}

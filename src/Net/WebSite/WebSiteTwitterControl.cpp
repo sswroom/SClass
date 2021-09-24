@@ -12,6 +12,7 @@
 Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = 0;
 }
@@ -44,10 +45,26 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(const UTF8Char *chan
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, true);
-	cli->Connect(sb.ToString(), "GET", 0, 0, true);
+	cli->Connect(sb.ToString(), "GET", 0, 0, false);
+	cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
+	cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+	cli->SetTimeout(20000);
+#if defined(VERBOSE)
+	printf("HTTP Status code = %d\r\n", cli->GetRespStatus());
+#endif
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
+#if defined(VERBOSE)
+		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		{
+			printf("%d, <%s>\r\n", (UInt32)reader->GetPathLev(), reader->GetNodeText());
+		}
+		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		{
+			printf("%d, </%s>\r\n", (UInt32)reader->GetPathLev(), reader->GetNodeText());
+		}
+#endif
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"div"))
 		{
 			attr = reader->GetAttrib((UOSInt)0);

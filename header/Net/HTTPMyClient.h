@@ -16,6 +16,9 @@ namespace Net
 {
 	class HTTPMyClient : public HTTPClient
 	{
+	private:
+		struct ClassData;
+		ClassData *clsData;
 	protected:
 		Net::SSLEngine *ssl;
 		Net::TCPClient *cli;

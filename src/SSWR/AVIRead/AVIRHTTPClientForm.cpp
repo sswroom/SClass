@@ -428,14 +428,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	const Char *currMeth;
 	Bool currOSClient;
 	UInt8 buff[4096];
-	UTF8Char *pathPtr;
 	UTF8Char *sbuff;
 	UTF8Char *cookiePtr;
-	SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
 	UOSInt i;
 	UOSInt j;
-	UOSInt len1;
-	UOSInt len2;
 	me->threadRunning = true;
 	sbuff = MemAlloc(UTF8Char, 65536);
 	while (!me->threadToStop)
@@ -467,38 +463,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.respData"));
 				cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
 				cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+				cli->AddHeader((const UTF8Char*)"User-Agent", me->userAgent);
 				
-				cookiePtr = 0;
-				pathPtr = Text::URLString::GetURLDomain(buff, currURL, 0) + 1;
-				Text::URLString::GetURLPath(pathPtr, currURL);
-				len1 = Text::StrCharCnt(buff);
-				Sync::MutexUsage mutUsage(me->cookieMut);
-				i = 0;
-				j = me->cookieList->GetCount();
-				while (i < j)
-				{
-					cookie = me->cookieList->GetItem(i);
-					len2 = Text::StrCharCnt(cookie->domain);
-					if ((len1 == len2 && Text::StrEquals(buff, cookie->domain)) || (len1 > len2 && buff[len1 - len2 - 1] == '.' && Text::StrEquals(&buff[len1 - len2], cookie->domain)))
-					{
-						if (cookie->path == 0 || Text::StrStartsWith(pathPtr, cookie->path))
-						{
-							if (cookiePtr == 0)
-							{
-								cookiePtr = Text::StrConcat(sbuff, cookie->name);
-							}
-							else
-							{
-								cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"; ");
-								cookiePtr = Text::StrConcat(cookiePtr, cookie->name);
-							}
-							cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"=");
-							cookiePtr = Text::StrConcat(cookiePtr, cookie->value);
-						}
-					}
-					i++;
-				}
-				mutUsage.EndUse();
+				cookiePtr = me->AppendCookie(sbuff, currURL);
 				if (cookiePtr)
 				{
 					cli->AddHeader((const UTF8Char*)"Cookie", sbuff);
@@ -540,37 +507,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						b64Enc.EncodeBin(&sbAuth, buff, i);
 						cli->AddHeader((const UTF8Char*)"Authorization", sbAuth.ToString());
 						
-						cookiePtr = 0;
-						pathPtr = Text::URLString::GetURLDomain(buff, currURL, 0) + 1;
-						Text::URLString::GetURLPath(pathPtr, currURL);
-						len1 = Text::StrCharCnt(buff);
-						mutUsage.ReplaceMutex(me->cookieMut);
-						i = 0;
-						j = me->cookieList->GetCount();
-						while (i < j)
-						{
-							cookie = me->cookieList->GetItem(i);
-							len2 = Text::StrCharCnt(cookie->domain);
-							if ((len1 == len2 && Text::StrEquals(buff, cookie->domain)) || (len1 > len2 && buff[len1 - len2 - 1] == '.' && Text::StrEquals(&buff[len1 - len2], cookie->domain)))
-							{
-								if (cookie->path == 0 || Text::StrStartsWith(pathPtr, cookie->path))
-								{
-									if (cookiePtr == 0)
-									{
-										cookiePtr = Text::StrConcat(sbuff, cookie->name);
-									}
-									else
-									{
-										cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"; ");
-										cookiePtr = Text::StrConcat(cookiePtr, cookie->name);
-									}
-									cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"=");
-									cookiePtr = Text::StrConcat(cookiePtr, cookie->value);
-								}
-							}
-							i++;
-						}
-						mutUsage.EndUse();
+						cookiePtr = me->AppendCookie(sbuff, currURL);
 						if (cookiePtr)
 						{
 							cli->AddHeader((const UTF8Char*)"Cookie", sbuff);
@@ -751,7 +688,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			hdr = me->respHeaders->GetItem(i);
-			if (Text::StrStartsWith(hdr, (const UTF8Char*)"Set-Cookie: "))
+			if (Text::StrStartsWithICase(hdr, (const UTF8Char*)"Set-Cookie: "))
 			{
 				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr[12], me->respReqURL);
 				if (cookie)
@@ -898,6 +835,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 				{
 					Text::StrConcat(domain, &sarr[0][7]);
 				}
+				else if (len1 + 1 == len2 && sarr[0][7] == '.' && Text::StrEquals(domain, &sarr[0][8]))
+				{
+					Text::StrConcat(domain, &sarr[0][7]);
+				}
 				else
 				{
 					valid = false;
@@ -959,6 +900,62 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	{
 		return 0;
 	}
+}
+
+UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const UTF8Char *reqURL)
+{
+	UInt8 buff[4096];
+	HTTPCookie *cookie;
+	UOSInt len1;
+	UOSInt len2;
+	UOSInt i;
+	UOSInt j;
+	UTF8Char *cookiePtr = 0;
+	UTF8Char *pathPtr;
+	pathPtr = Text::URLString::GetURLDomain(buff, reqURL, 0) + 1;
+	Text::URLString::GetURLPath(pathPtr, reqURL);
+	len1 = Text::StrCharCnt(buff);
+	Sync::MutexUsage mutUsage(this->cookieMut);
+	i = 0;
+	j = this->cookieList->GetCount();
+	while (i < j)
+	{
+		cookie = this->cookieList->GetItem(i);
+		len2 = Text::StrCharCnt(cookie->domain);
+		Bool valid = false;
+		if (len1 == len2 && Text::StrEquals(buff, cookie->domain))
+		{
+			valid = true;
+		}
+		else if (len1 > len2 && buff[len1 - len2 - 1] == '.' && Text::StrEquals(&buff[len1 - len2], cookie->domain))
+		{
+			valid = true;
+		}
+		else if (len1 + 1 == len2 && cookie->domain[0] == '.' && Text::StrEquals(buff, &cookie->domain[1]))
+		{
+			valid = true;
+		}
+		if (valid)
+		{
+			if (cookie->path == 0 || Text::StrStartsWith(pathPtr, cookie->path))
+			{
+				if (cookiePtr == 0)
+				{
+					cookiePtr = Text::StrConcat(sbuff, cookie->name);
+				}
+				else
+				{
+					cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"; ");
+					cookiePtr = Text::StrConcat(cookiePtr, cookie->name);
+				}
+				cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"=");
+				cookiePtr = Text::StrConcat(cookiePtr, cookie->value);
+			}
+		}
+		i++;
+	}
+	mutUsage.EndUse();
+	return cookiePtr;
 }
 
 SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
