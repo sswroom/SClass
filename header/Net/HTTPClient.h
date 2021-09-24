@@ -72,6 +72,7 @@ namespace Net
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn, Bool isSecure);
 		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn);
 		static Bool IsHTTPURL(const UTF8Char *url);
+		static void PrepareSSL(Net::SSLEngine *ssl);
 	};
 }
 #endif

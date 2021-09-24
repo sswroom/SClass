@@ -967,6 +967,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
 	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	Net::HTTPClient::PrepareSSL(this->ssl);
 	this->respChanged = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -1000,7 +1001,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"http://"));
 	this->txtURL->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->chkNoShutdown, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"No Shutdown", false));
+	NEW_CLASS(this->chkNoShutdown, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"No Shutdown", true));
 	this->chkNoShutdown->SetRect(504, 4, 100, 23, false);
 	NEW_CLASS(this->lblMethod, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Method"));
 	this->lblMethod->SetRect(4, 28, 100, 23, false);

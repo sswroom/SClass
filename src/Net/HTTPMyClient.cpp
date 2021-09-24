@@ -559,7 +559,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 			if (secure)
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = this->ssl->Connect(svrname, port, &err);
+				this->cli = this->ssl->Connect(this->cliHost, port, &err);
 #ifdef SHOWDEBUG				
 				if (this->cli == 0)
 				{

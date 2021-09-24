@@ -307,3 +307,7 @@ Bool Net::HTTPClient::IsHTTPURL(const UTF8Char *url)
 	}
 	return Text::StrStartsWith(url, (const UTF8Char*)"http://") || Text::StrStartsWith(url, (const UTF8Char*)"https://");
 }
+
+void Net::HTTPClient::PrepareSSL(Net::SSLEngine *ssl)
+{
+}
