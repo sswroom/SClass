@@ -15,8 +15,8 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
-//#define LOGREPLY
-//#define SHOWDEBUG
+#define LOGREPLY
+#define SHOWDEBUG
 //#define DEBUGSPEED
 #if defined(SHOWDEBUG) || defined(DEBUGSPEED)
 #include <stdio.h>
@@ -31,7 +31,7 @@ struct Net::HTTPMyClient::ClassData
 
 #endif
 
-#define BUFFSIZE 2048
+#define BUFFSIZE 8192
 
 Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
@@ -131,6 +131,9 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 					return 0;
 				}
+#ifdef SHOWDEBUG
+				printf("Read from remote(1) = %d\r\n", (Int32)i);
+#endif
 #ifdef LOGREPLY
 				if (i > 0)
 				{
@@ -199,6 +202,9 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 				return 0;
 			}
+#ifdef SHOWDEBUG
+			printf("Read from remote(2) = %d\r\n", (Int32)i);
+#endif
 #ifdef LOGREPLY
 			if (i > 0)
 			{
@@ -224,6 +230,9 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 				return 0;
 			}
+#ifdef SHOWDEBUG
+			printf("Read from remote(3) = %d\r\n", (Int32)i);
+#endif
 #ifdef LOGREPLY
 			this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 #endif
@@ -322,7 +331,7 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 		{
 			this->buffSize = cli->Read(this->dataBuff, size);
 #ifdef SHOWDEBUG
-			printf("Read from remote = %d\r\n", (Int32)this->buffSize);
+			printf("Read from remote(4) = %d\r\n", (Int32)this->buffSize);
 /*			if (this->buffSize == 0)
 			{
 				printf("WSA Error code=0x%X\r\n", WSAGetLastError());
@@ -629,7 +638,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 			}
 			size = this->cli->Read(this->dataBuff, size);
 #ifdef SHOWDEBUG
-			printf("Read from remote, size = %d\r\n", (Int32)size);
+			printf("Read from remote(5), size = %d\r\n", (Int32)size);
 #endif
 			if (size == 0)
 			{
@@ -853,6 +862,9 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		while (this->buffSize < 32)
 		{
 			UOSInt recvSize = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+#ifdef SHOWDEBUG
+			printf("Read from remote(6) = %d\r\n", (Int32)recvSize);
+#endif
 #ifdef LOGREPLY
 			if (recvSize > 0)
 			{
@@ -962,11 +974,15 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				}
 				else
 				{
+#ifdef SHOWDEBUG
+					printf("Read from remote(7) = %d\r\n", (Int32)i);
+#endif
 #ifdef LOGREPLY
 					this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 #endif
 					this->buffSize += i;
 					this->dataBuff[this->buffSize] = 0;
+					ptr = (Char*)this->dataBuff;
 				}
 			}
 		}
