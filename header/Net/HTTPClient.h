@@ -70,6 +70,7 @@ namespace Net
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn, Bool isSecure);
 		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn);
+		static Bool IsHTTPURL(const UTF8Char *url);
 	};
 }
 #endif

@@ -293,3 +293,12 @@ Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }
+
+Bool Net::HTTPClient::IsHTTPURL(const UTF8Char *url)
+{
+	if (url == 0)
+	{
+		return false;
+	}
+	return Text::StrStartsWith(url, (const UTF8Char*)"http://") || Text::StrStartsWith(url, (const UTF8Char*)"https://");
+}
