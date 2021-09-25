@@ -136,6 +136,13 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 				SDEL_CLASS(this->pubDate);
 				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
 			}
+			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"updated") == 0)
+			{
+				sb->ClearStr();
+				node->GetInnerText(sb);
+				SDEL_CLASS(this->pubDate);
+				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
+			}
 			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"objectId") == 0)
 			{
 				sb->ClearStr();
@@ -161,6 +168,13 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				this->lon = Text::StrToDouble(sb->ToString());
+			}
+			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"content") == 0)
+			{
+				sb->ClearStr();
+				node->GetInnerText(sb);
+				SDEL_TEXT(this->description);
+				this->description = Text::StrCopyNew(sb->ToString());
 			}
 			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"media:group") == 0)
 			{
@@ -670,16 +684,22 @@ Bool Net::RSS::IsError()
 
 UOSInt Net::RSS::Add(Net::RSSItem* val)
 {
+	if (this->items == 0)
+		return INVALID_INDEX;
 	return this->items->Add(val);
 }
 
 UOSInt Net::RSS::GetCount()
 {
+	if (this->items == 0)
+		return 0;
 	return this->items->GetCount();
 }
 
 Net::RSSItem *Net::RSS::GetItem(UOSInt Index)
 {
+	if (this->items == 0)
+		return 0;
 	return this->items->GetItem(Index);
 }
 
