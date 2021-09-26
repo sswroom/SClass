@@ -51,7 +51,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 				{
 					sb.Append((const UTF8Char *)", ");
 				}
-				sb.Append(Net::WebServer::IWebRequest::RequestMethodGetName((Net::WebServer::IWebRequest::RequestMethod)methods->GetItem(i)));
+				sb.Append((const UTF8Char*)Net::WebServer::IWebRequest::RequestMethodGetName((Net::WebServer::IWebRequest::RequestMethod)methods->GetItem(i)));
 				i++;
 			}
 			resp->AddHeader((const UTF8Char*)"Allow", sb.ToString());
