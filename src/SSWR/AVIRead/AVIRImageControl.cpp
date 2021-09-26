@@ -715,13 +715,13 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 				status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 				this->UpdateImgPreview(status);
 			}
-			dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-			dimg->DrawRect(0, Math::UOSInt2Double(i * itemTH - scrPos + itemBH), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+			dimg->DrawRect(0, Math::OSInt2Double((OSInt)(i * itemTH - scrPos)), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
+			dimg->DrawRect(0, Math::OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH)), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
 			if (status->previewImg2)
 			{
 				status->previewImg2->SetHDPI(dimg->GetHDPI());
 				status->previewImg2->SetVDPI(dimg->GetVDPI());
-				dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::UOSInt2Double(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)));
+				dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1))));
 			}
 			if (status->fileName)
 			{
@@ -865,9 +865,14 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 
 void SSWR::AVIRead::AVIRImageControl::SetFolder(const UTF8Char *folderPath)
 {
+	Bool loading = this->IsLoadingDir();
 	ThreadCancelTasks();
 	if (this->folderPath)
 	{
+		if (!loading)
+		{
+			this->SaveSetting();
+		}
 		Sync::MutexUsage mutUsage(this->folderMut);
 		this->EndFolder();
 		Text::StrDelNew(this->folderPath);

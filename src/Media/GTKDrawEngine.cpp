@@ -363,6 +363,7 @@ void Media::GTKDrawImage::SetVDPI(Double dpi)
 UInt8 *Media::GTKDrawImage::GetImgBits(Bool *revOrder)
 {
 	cairo_surface_flush((cairo_surface_t*)this->surface);
+	if (revOrder) *revOrder = false;
 	return cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 }
 

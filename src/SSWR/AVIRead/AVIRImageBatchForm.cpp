@@ -268,11 +268,6 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRImageBatchForm::~AVIRImageBatchForm()
 {
-	if (!this->icMain->IsLoadingDir())
-	{
-		this->icMain->SaveSetting();
-	}
-	this->pbMain->SetImage(0, false);
 	SDEL_CLASS(this->dispImage);
 	SDEL_CLASS(this->previewImage);
 	SDEL_CLASS(this->filteredImage);
