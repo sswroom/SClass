@@ -1567,7 +1567,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapScaleScroll(void *userObj, Int32 newVal)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapScaleScroll(void *userObj, UOSInt newVal)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	me->mcMap->SetMapScale(Math::Double2Int32(me->mapTile->GetLevelScale(newVal)));

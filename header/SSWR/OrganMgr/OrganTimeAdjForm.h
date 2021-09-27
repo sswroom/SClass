@@ -59,7 +59,7 @@ namespace SSWR
 			static void __stdcall OnSpeciesChg(void *userObj);
 			static void __stdcall OnTileUpdated(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnMapScaleScroll(void *userObj, Int32 newVal);
+			static void __stdcall OnMapScaleScroll(void *userObj, UOSInt newVal);
 			static void __stdcall OnTrackChg(void *userObj);
 			static void __stdcall OnPictureChg(void *userObj);
 			static void __stdcall OnCameraChg(void *userObj);

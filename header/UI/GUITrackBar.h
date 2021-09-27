@@ -7,7 +7,7 @@ namespace UI
 	class GUITrackBar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *ScrollEvent)(void *userObj, Int32 scrollPos);
+		typedef void (__stdcall *ScrollEvent)(void *userObj, UOSInt scrollPos);
 
 	private:
 		Data::ArrayList<ScrollEvent> *scrollHandlers;
@@ -16,17 +16,17 @@ namespace UI
 	public:
 		void EventScrolled();
 	public:
-		GUITrackBar(GUICore *ui, UI::GUIClientControl *parent, Int32 minVal, Int32 maxVal, Int32 currVal);
+		GUITrackBar(GUICore *ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 		virtual ~GUITrackBar();
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-		void SetPos(Int32 pos);
-		void SetRange(Int32 minVal, Int32 maxVal);
-		Int32 GetPos();
+		void SetPos(UOSInt pos);
+		void SetRange(UOSInt minVal, UOSInt maxVal);
+		UOSInt GetPos();
 
 		void HandleScrolled(ScrollEvent hdlr, void *userObj);
 	};
-};
+}
 #endif

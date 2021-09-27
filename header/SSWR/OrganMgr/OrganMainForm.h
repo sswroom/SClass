@@ -201,7 +201,7 @@ namespace SSWR
 			static void __stdcall OnObjPlaceClicked(void *userObj);
 			static void __stdcall OnObjCombineClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnMapScaleScroll(void *userObj, Int32 newVal);
+			static void __stdcall OnMapScaleScroll(void *userObj, UOSInt newVal);
 			static void __stdcall OnTileUpdated(void *userObj);
 			static void __stdcall OnMapMouseMove(void *userObj, OSInt x, OSInt y);
 			static void __stdcall OnMapDraw(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);

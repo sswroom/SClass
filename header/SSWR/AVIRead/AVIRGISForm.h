@@ -80,12 +80,12 @@ namespace SSWR
 			static Bool __stdcall OnMapMouseUp(void *userObj, OSInt x, OSInt y, MouseButton button);
 			static void __stdcall OnMapScaleChanged(void *userObj, Double newScale);
 			static void __stdcall OnMapUpdated(void *userObj, Double centerX, Double centerY, Double timeUsed);
-			static void __stdcall OnScaleScrolled(void *userObj, Int32 newVal);
+			static void __stdcall OnScaleScrolled(void *userObj, UOSInt newVal);
 			static void __stdcall OnTreeRightClick(void *userObj);
 			static void __stdcall OnCtrlFormClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnSubFormClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnMapLayerUpdated(void *userObj);
-			static void __stdcall OnTimeScrolled(void *userObj, Int32 newVal);
+			static void __stdcall OnTimeScrolled(void *userObj, UOSInt newVal);
 			static void __stdcall OnTimeChecked(void *userObj, Bool newState);
 			static void __stdcall OnTreeDrag(void *userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem);
 			static void __stdcall OnTimerTick(void *userObj);
