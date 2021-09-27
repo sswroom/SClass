@@ -1864,6 +1864,7 @@ Media/ImageTo8Bit.h: ../../src/Media/ImageTo8Bit.cpp
 @ImageTo8Bit.o
 @ImageTo8Bit_CPP.o
 Media/ImageUtil.h:
+@ImageUtil.o
 @ImageUtil_CPP.o
 Media/IMediaPlayer.h:
 Media/IMediaSource.h:
@@ -4071,6 +4072,7 @@ ImageCopy.o: ../../src/Media/ImageCopy.cpp
 ImageGenerator.o: ../../src/Media/ImageGenerator.cpp
 ImageList.o: ../../src/Media/ImageList.cpp
 ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
+ImageUtil.o: ../../src/Media/ImageUtil.cpp
 IRealtimeVideoSource.o: ../../src/Media/IRealtimeVideoSource.cpp
 IVideoSource.o: ../../src/Media/IVideoSource.cpp
 JPEGFile.o: ../../src/Media/JPEGFile.cpp

@@ -518,7 +518,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, OSInt 
 
 		me->dispImageToCrop = false;
 		me->dispImageDown = false;
-		me->pbImg->Redraw();
+		me->pbImg->UpdateBufferImage();
 		return true;
 	}
 	return false;
@@ -531,7 +531,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, OSIn
 	{
 		me->dispImageCurrX = scnX;
 		me->dispImageCurrY = scnY;
-		me->pbImg->Redraw();
+		me->pbImg->UpdateBufferImage();
 	}
 	return false;
 }
@@ -558,6 +558,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 				}
 				else if (x1 < 0 || x2 >= Math::UOSInt2Double(w) || y1 < 0 || y2 >= Math::UOSInt2Double(h))
 				{
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y1), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y2), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x1), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x2), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
 				}
 				else
 				{
@@ -578,6 +582,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 				}
 				else if (x1 < 0 || x2 >= Math::UOSInt2Double(w) || y1 < 0 || y2 >= Math::UOSInt2Double(h))
 				{
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y1), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y2), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x1), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x2), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
 				}
 				else
 				{

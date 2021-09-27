@@ -113,6 +113,7 @@ namespace UI
 		void Scn2ImagePos(OSInt x, OSInt y, Double *imgX, Double *imgY);
 		void Image2ScnPos(Double x, Double y, Double *scnX, Double *scnY);
 		void ZoomToFit();
+		void UpdateBufferImage();
 	};
 }
 #endif

@@ -1196,8 +1196,26 @@ void UI::GUIPictureBoxDD::Image2ScnPos(Double imgX, Double imgY, Double *scnX, D
 
 	if (this->mouseDowned)
 	{
-		*scnX = Math::OSInt2Double(destRect[0]) + (imgX - srcRect[0]) * Math::OSInt2Double(destRect[2]) / srcRect[2] - Math::OSInt2Double(this->mouseDownX) + Math::OSInt2Double(this->mouseCurrX);
-		*scnY = Math::OSInt2Double(destRect[1]) + (imgY - srcRect[1]) * Math::OSInt2Double(destRect[3]) / srcRect[3] - Math::OSInt2Double(this->mouseDownY) + Math::OSInt2Double(this->mouseCurrY);
+		Double currCenterX = this->zoomCenterX + Math::OSInt2Double(this->mouseDownX - this->mouseCurrX) / this->zoomScale;
+		Double currCenterY = this->zoomCenterY + Math::OSInt2Double(this->mouseDownY - this->mouseCurrY) / this->zoomScale;
+		if (this->zoomScale != this->zoomMinScale)
+		{
+			if (currCenterX < this->zoomMinX)
+				currCenterX = this->zoomMinX;
+			else if (currCenterX > this->zoomMaxX)
+				currCenterX = this->zoomMaxX;
+		}
+
+		if (currCenterY < this->zoomMinY)
+			currCenterY = this->zoomMinY;
+		else if (currCenterY > this->zoomMaxY)
+			currCenterY = this->zoomMaxY;
+		
+		Double xSub = (currCenterX - this->zoomCenterX) * this->zoomScale;
+		Double ySub = (currCenterY - this->zoomCenterY) * this->zoomScale;
+
+		*scnX = Math::OSInt2Double(destRect[0]) + (imgX - srcRect[0]) * Math::OSInt2Double(destRect[2]) / srcRect[2] - xSub;
+		*scnY = Math::OSInt2Double(destRect[1]) + (imgY - srcRect[1]) * Math::OSInt2Double(destRect[3]) / srcRect[3] - ySub;
 	}
 	else
 	{
@@ -1227,6 +1245,12 @@ void UI::GUIPictureBoxDD::ZoomToFit()
 	}
 	outZoomScale = outW / srcW;
 	this->zoomScale = outZoomScale;
+	this->UpdateSubSurface();
+	DrawToScreen();
+}
+
+void UI::GUIPictureBoxDD::UpdateBufferImage()
+{
 	this->UpdateSubSurface();
 	DrawToScreen();
 }

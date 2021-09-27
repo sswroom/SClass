@@ -77,4 +77,13 @@ extern "C"
 	void ImageUtil_YUV_Y416ShiftW(UInt8 *destPtr, const UInt8 *yptr, const UInt8 *uptr, const UInt8 *vptr, UOSInt pixelCnt, UOSInt shiftCnt); //Assume aligned
 }
 
+namespace Media
+{
+	class ImageUtil
+	{
+	public:
+		static void DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt y, OSInt x1, OSInt x2, UInt32 col); //no alpha
+		static void DrawVLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt x, OSInt y1, OSInt y2, UInt32 col); //no alpha
+	};
+}
 #endif

@@ -60,7 +60,7 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(UI::GUIClientControl 
 	this->txtFileTime->SetRect(100, 96, 200, 23, false);
 	this->txtFileTime->SetReadOnly(true);
 	Text::StrDouble(sbuff, userFile->lat);
-	NEW_CLASS(this->lblLat, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageDetailFileLat")));
+	NEW_CLASS(this->lblLat, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageDetailLat")));
 	this->lblLat->SetRect(0, 120, 100, 23, false);
 	NEW_CLASS(this->txtLat, UI::GUITextBox(ui, this, sbuff));
 	this->txtLat->SetRect(100, 120, 150, 23, false);
