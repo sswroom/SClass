@@ -19,7 +19,7 @@ void UI::GUITrackBar::EventScrolled()
 	}
 }
 
-UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, Int32 minVal, Int32 maxVal, Int32 currVal) : UI::GUIControl(ui, parent)
+UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -73,22 +73,22 @@ OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUITrackBar::SetPos(Int32 pos)
+void UI::GUITrackBar::SetPos(UOSInt pos)
 {
 	SendMessage((HWND)this->hwnd, TBM_SETPOS, TRUE, pos);
 	EventScrolled();
 //	InvalidateRect((HWND)this->hwnd, 0, false);
 }
 
-void UI::GUITrackBar::SetRange(Int32 minVal, Int32 maxVal)
+void UI::GUITrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
 {
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, minVal);
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, maxVal);
 }
 
-Int32 UI::GUITrackBar::GetPos()
+UOSInt UI::GUITrackBar::GetPos()
 {
-	return (Int32)SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
 }
 
 void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, void *userObj)
