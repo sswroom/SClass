@@ -34,12 +34,14 @@ namespace SSWR
 			UI::GUILabel *lblBright;
 			UI::GUIHScrollBar *hsbBright;
 			UI::GUILabel *lblBrightV;
+			UI::GUIButton *btnBrightReset;
 			UI::GUILabel *lblContr;
 			UI::GUIHScrollBar *hsbContr;
 			UI::GUILabel *lblContrV;
 			UI::GUILabel *lblGamma;
 			UI::GUIHScrollBar *hsbGamma;
 			UI::GUILabel *lblGammaV;
+			UI::GUIButton *btnGammaReset;
 			UI::GUILabel *lblHDRLev;
 			UI::GUIHScrollBar *hsbHDRLev;
 			UI::GUILabel *lblHDRLevV;
@@ -57,6 +59,9 @@ namespace SSWR
 			static void __stdcall OnColorChg(void *userObj, UOSInt newPos);
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
 			static void __stdcall OnProgressUpdated(void *userObj, UOSInt finCnt);
+			static void __stdcall OnKeyDown(void *userObj, UI::GUIControl::GUIKey key);
+			static void __stdcall OnBrightResetClicked(void *userObj);
+			static void __stdcall OnGammaResetClicked(void *userObj);
 
 			void UpdatePreview();
 		public:

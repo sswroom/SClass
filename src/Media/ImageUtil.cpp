@@ -4,7 +4,7 @@
 
 void Media::ImageUtil::DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt y, OSInt x1, OSInt x2, UInt32 col)
 {
-	if (y < 0 || y >= h || x1 >= (OSInt)w || x2 < 0)
+	if (y < 0 || (UOSInt)y >= h || x1 >= (OSInt)w || x2 < 0)
 	{
 		return;
 	}
@@ -24,14 +24,14 @@ void Media::ImageUtil::DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt
 	pixelPtr = pixelPtr + (UOSInt)y * bpl + (UOSInt)x1 * 4;
 	while (cnt-- > 0)
 	{
-		WriteInt32(pixelPtr, col);
+		WriteUInt32(pixelPtr, col);
 		pixelPtr += 4;
 	}
 }
 
 void Media::ImageUtil::DrawVLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt x, OSInt y1, OSInt y2, UInt32 col)
 {
-	if (x < 0 || x >= w || y1 >= (OSInt)h || y2 < 0)
+	if (x < 0 || (UOSInt)x >= w || y1 >= (OSInt)h || y2 < 0)
 	{
 		return;
 	}
@@ -51,7 +51,7 @@ void Media::ImageUtil::DrawVLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt
 	pixelPtr = pixelPtr + (UOSInt)y1 * bpl + (UOSInt)x * 4;
 	while (cnt-- > 0)
 	{
-		WriteInt32(pixelPtr, col);
+		WriteUInt32(pixelPtr, col);
 		pixelPtr += bpl;
 	}
 }

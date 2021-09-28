@@ -154,6 +154,61 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(void *userOb
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(void *userObj, UI::GUIControl::GUIKey key)
+{
+	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	if (key == UI::GUIControl::GK_LEFT)
+	{
+		UOSInt currPos = me->hsbContr->GetPos();
+		if (currPos < 10)
+		{
+			currPos = 0;
+		}
+		else
+		{
+			currPos -= 10;
+		}
+		me->hsbContr->SetPos(currPos);
+	}
+	else if (key == UI::GUIControl::GK_RIGHT)
+	{
+		UOSInt currPos = me->hsbContr->GetPos();
+		currPos += 10;
+		me->hsbContr->SetPos(currPos);
+	}
+	else if (key == UI::GUIControl::GK_HOME)
+	{
+		UOSInt currPos = me->hsbContr->GetPos();
+		if (currPos < 100)
+		{
+			currPos = 0;
+		}
+		else
+		{
+			currPos -= 100;
+		}
+		me->hsbContr->SetPos(currPos);
+	}
+	else if (key == UI::GUIControl::GK_END)
+	{
+		UOSInt currPos = me->hsbContr->GetPos();
+		currPos += 100;
+		me->hsbContr->SetPos(currPos);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnBrightResetClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	me->hsbBright->SetPos(1000);
+}
+
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	me->hsbGamma->SetPos(100);
+}
+
 void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 {
 	if (this->filteredImage)
@@ -205,6 +260,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->icMain->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->icMain->SetDispImageHandler(OnImageChanged, this);
 	this->icMain->SetProgressHandler(OnProgressUpdated, this);
+	this->icMain->HandleKeyDown(OnKeyDown, this);
 //	NEW_CLASS(this->hspLeft, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlImage, UI::GUIPanel(ui, this));
 	this->pnlImage->SetRect(0, 0, 200, 100, false);
@@ -221,6 +277,9 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbBright->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblBrightV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
 	this->lblBrightV->SetRect(500, 0,100, 23, false);
+	NEW_CLASS(this->btnBrightReset, UI::GUIButton(ui, this->pnlImage, (const UTF8Char*)"Reset"));
+	this->btnBrightReset->SetRect(600, 0, 75, 23, false);
+	this->btnBrightReset->HandleButtonClick(OnBrightResetClicked, this);
 	NEW_CLASS(this->lblContr, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"Contrast"));
 	this->lblContr->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->hsbContr, UI::GUIHScrollBar(ui, this->pnlImage, 16));
@@ -239,6 +298,9 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbGamma->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
 	this->lblGammaV->SetRect(500, 48, 100, 23, false);
+	NEW_CLASS(this->btnGammaReset, UI::GUIButton(ui, this->pnlImage, (const UTF8Char*)"Reset"));
+	this->btnGammaReset->SetRect(600, 48, 75, 23, false);
+	this->btnGammaReset->HandleButtonClick(OnGammaResetClicked, this);
 	NEW_CLASS(this->lblHDRLev, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"HDR Lev"));
 	this->lblHDRLev->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->hsbHDRLev, UI::GUIHScrollBar(ui, this->pnlImage, 16));

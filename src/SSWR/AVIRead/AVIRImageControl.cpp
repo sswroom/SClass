@@ -19,6 +19,8 @@
 #include "Text/UTF8Writer.h"
 #include "UI/GUIClientControl.h"
 
+#include <stdio.h>
+
 UInt32 __stdcall SSWR::AVIRead::AVIRImageControl::FolderThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageControl *me = (SSWR::AVIRead::AVIRImageControl*)userObj;
@@ -75,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 		UOSInt scnW;
 		UOSInt scnH;
 		me->GetSizeP(&scnW, &scnH);
-		me->SetVScrollBar(0, totalHeight, (UInt32)Math::Double2Int32(Math::UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
+		me->SetVScrollBar(0, totalHeight, (UOSInt)Math::Double2OSInt(Math::UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
 		me->imgUpdated = true;
 	}
 
@@ -510,6 +512,8 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(UI::GUICore *ui, UI::GUIClient
 	this->colorSess->AddHandler(this);
 	this->exportCurrCnt = 0;
 	this->exportFmt = EF_JPG;
+	this->keyHdlr = 0;
+	this->keyObj = 0;
 	NEW_CLASS(this->ioMut, Sync::Mutex());
 	NEW_CLASS(this->folderMut, Sync::Mutex());
 	NEW_CLASS(this->folderThreadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRImageControl.folderThreadEvt"));
@@ -860,6 +864,23 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 				}
 			}
 		}
+	}
+}
+
+void SSWR::AVIRead::AVIRImageControl::OnKeyDown(UInt32 keyCode)
+{
+	UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(keyCode);
+	if (key == UI::GUIControl::GK_UP)
+	{
+		this->MoveUp();
+	}
+	else if (key == UI::GUIControl::GK_DOWN)
+	{
+		this->MoveDown();
+	}
+	else if (this->keyHdlr)
+	{
+		this->keyHdlr(this->keyObj, key);
 	}
 }
 
@@ -1317,4 +1338,10 @@ void SSWR::AVIRead::AVIRImageControl::SelectAll()
 	}
 	mutUsage.EndUse();
 	this->Redraw();
+}
+
+void SSWR::AVIRead::AVIRImageControl::HandleKeyDown(KeyDownHandler keyHdlr, void *keyObj)
+{
+	this->keyObj = keyObj;
+	this->keyHdlr = keyHdlr;
 }

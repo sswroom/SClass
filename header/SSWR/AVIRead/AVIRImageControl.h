@@ -54,6 +54,7 @@ namespace SSWR
 		public:
 			typedef void (__stdcall *DispImageChanged)(void *userObj, const UTF8Char *fileName, const ImageSetting *setting);
 			typedef void (__stdcall *ProgressUpdated)(void *userObj, UOSInt finCnt);
+			typedef void (__stdcall *KeyDownHandler)(void *userObj, UI::GUIControl::GUIKey key);
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;
@@ -83,6 +84,8 @@ namespace SSWR
 			UOSInt exportCurrCnt;
 			Sync::Mutex *exportMut;
 			ExportFormat exportFmt;
+			KeyDownHandler keyHdlr;
+			void *keyObj;
 
 			Sync::Mutex *cameraMut;
 			Data::StringUTF8Map<CameraCorr*> *cameraMap;
@@ -114,6 +117,7 @@ namespace SSWR
 
 			virtual void OnDraw(Media::DrawImage *img);
 			virtual void OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+			virtual void OnKeyDown(UInt32 keyCode);
 
 			void SetFolder(const UTF8Char *folderPath);
 			const UTF8Char *GetFolder();
@@ -131,6 +135,8 @@ namespace SSWR
 			void MoveUp();
 			void MoveDown();
 			void SelectAll();
+
+			void HandleKeyDown(KeyDownHandler keyHdlr, void *keyObj);
 		};
 	}
 }

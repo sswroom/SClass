@@ -70,6 +70,7 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
 	ClassData *clsData = (ClassData*)me->clsData;
 	GdkEventButton *evt = (GdkEventButton*)event;
+	me->Focus();
 	if (evt->type == GDK_BUTTON_PRESS)
 	{
 		OSInt width = gtk_widget_get_allocated_width(widget);
@@ -229,6 +230,14 @@ gboolean GUICustomDrawVScroll_OnMouseWheel(GtkWidget *widget, GdkEvent *event, g
 	return false;
 }
 
+
+gboolean GUICustomDrawVScroll_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpointer user_data)
+{
+	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)user_data;
+	me->OnKeyDown(event->keyval);
+	return true;
+}
+
 void UI::GUICustomDrawVScroll::ClearBackground(Media::DrawImage *img)
 {
 	GtkStyleContext *context;
@@ -261,6 +270,7 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientCon
 	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseUp), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseMove), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseWheel), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUICustomDrawVScroll_OnKeyDown), this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
 	parent->AddChild(this);
