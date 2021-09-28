@@ -397,6 +397,7 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(UI::GUICore *ui, UI::GUIClientControl *pare
 	this->csconv = 0;
 	this->imgBuff = 0;
 	this->zoomScale = 1.0;
+	this->zoomMinScale = 1.0;
 	this->mouseDowned = false;
 	this->curr10Bit = false;
 	this->resizer = 0;

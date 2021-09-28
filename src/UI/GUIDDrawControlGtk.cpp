@@ -373,7 +373,10 @@ void UI::GUIDDrawControl::CreateSubSurface()
 
 void UI::GUIDDrawControl::ReleaseSubSurface()
 {
-	gtk_image_clear((GtkImage*)this->clsData->imgCtrl);
+	if (this->clsData->imgCtrl)
+	{
+		gtk_image_clear((GtkImage*)this->clsData->imgCtrl);
+	}
 	if (this->primarySurface)
 	{
 		g_object_unref(this->clsData->pixBuf);
@@ -474,6 +477,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 UI::GUIDDrawControl::~GUIDDrawControl()
 {
 	this->ReleaseSurface();
+	this->clsData->imgCtrl = 0;
 	this->ReleaseSubSurface();
 
 	DEL_CLASS(this->surfaceMut);
