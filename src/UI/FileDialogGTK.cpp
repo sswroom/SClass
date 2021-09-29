@@ -272,12 +272,12 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 					if (!found)
 					{
 						found = true;
-						nFilterIndex = (UInt32)(i + 1);
+						nFilterIndex = i;
 						foundIndexLeng = Text::StrCharCnt(this->patterns->GetItem(i));
 					}
 					else if (Text::StrCharCnt(this->patterns->GetItem(i)) > foundIndexLeng)
 					{
-						nFilterIndex = (UInt32)(i + 1);
+						nFilterIndex = i;
 						foundIndexLeng = Text::StrCharCnt(this->patterns->GetItem(i));
 					}
 				}
@@ -286,23 +286,23 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			Text::StrDelNew(u8fname);
 			if (!found)
 			{
-				nFilterIndex = 1;
+				nFilterIndex = 0;
 			}
 		}
 		else
 		{
-			nFilterIndex = 1;
+			nFilterIndex = 0;
 		}
 	}
 	else
 	{
-		nFilterIndex = (UInt32)(this->filterIndex + 1);
+		nFilterIndex = this->filterIndex;
 	}
 	UOSInt si = nFilterIndex;
 	GSList *list = gtk_file_chooser_list_filters(chooser);
 	while (true)
 	{
-		if (si == (UOSInt)-1)
+		if (si == 0)
 		{
 			gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
 			break;
@@ -342,13 +342,25 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	else
 		ret = GetOpenFileNameW(&ofn) != 0;*/
 
-	const UTF8Char *csptr = Text::StrToUTF8New(initDir);
-	gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
-	Text::StrDelNew(csptr);
-
+	const UTF8Char *csptr;
 	if (fnameBuff)
 	{
-		csptr = Text::StrToUTF8New(fnameBuff);
+		si = Text::StrLastIndexOf(fnameBuff, IO::Path::PATH_SEPERATOR);
+		if (si == INVALID_INDEX)
+		{
+			csptr = Text::StrToUTF8New(initDir);
+			gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
+			Text::StrDelNew(csptr);
+		}
+		else
+		{
+			fnameBuff[si] = 0;
+			csptr = Text::StrToUTF8New(fnameBuff);
+			gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
+			Text::StrDelNew(csptr);
+			fnameBuff[si] = IO::Path::PATH_SEPERATOR;
+		}
+		csptr = Text::StrToUTF8New(&fnameBuff[si + 1]);
 		if (isSave)
 		{
 			gtk_file_chooser_set_current_name(chooser, (const Char*)csptr);
@@ -357,6 +369,12 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			gtk_file_chooser_set_filename(chooser, (const Char*)csptr);
 		}
+		Text::StrDelNew(csptr);
+	}
+	else
+	{
+		csptr = Text::StrToUTF8New(initDir);
+		gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
 		Text::StrDelNew(csptr);
 	}
 
