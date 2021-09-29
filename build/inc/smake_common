@@ -110,6 +110,7 @@ nodeps:
 @SHTTPServer
 @SHWInfo
 @SignalTest
+@SIMDTest
 @smake
 @SMD5
 @SMonitorSvr
@@ -553,6 +554,9 @@ SHWInfo:
 SignalTest:
 @SignalTestMain.o
 @ConsoleStartup.o
+SIMDTest:
+@SIMDTest.o
+@ConsoleStartup.o
 smake:
 @SMakeMain.o
 @ConsoleStartup.o
@@ -825,6 +829,7 @@ SHTTPPostMain.o: ../../main/SSWR/SHTTPPostMain.cpp
 SHTTPServerMain.o: ../../main/SSWR/SHTTPServerMain.cpp
 SHWInfoMain.o: ../../main/SSWR/SHWInfoMain.cpp
 SignalTestMain.o: ../../main/SSWR/SignalTestMain.cpp
+SIMDTest.o: ../../main/SSWR/SIMDTest.cpp
 SMakeMain.o: ../../main/SSWR/SMakeMain.cpp
 SMD5Main.o: ../../main/SSWR/SMD5Main.cpp
 SMonitorSvrMain.o: ../../main/SSWR/SMonitorSvrMain.cpp
