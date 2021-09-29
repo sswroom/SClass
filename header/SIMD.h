@@ -267,6 +267,9 @@ typedef int32x4_t Int32x4;
 #define PStoreInt16x8(ptr, v) *(int16x8_t*)(ptr) = v
 #define PStoreInt16x8A(ptr, v) *(int16x8_t*)(ptr) = v
 #define PStoreInt16x8NC(ptr, v) *(int16x8_t*)(ptr) = v
+#define PStoreUInt16x8(ptr, v) *(uint16x8_t*)(ptr) = v
+#define PStoreUInt16x8A(ptr, v) *(uint16x8_t*)(ptr) = v
+#define PStoreUInt16x8NC(ptr, v) *(uint16x8_t*)(ptr) = v
 #define PStoreInt32x4(ptr, v) *(int32x4_t*)(ptr) = v
 #define PStoreInt32x4NC(ptr, v) *(int32x4_t*)(ptr) = v
 #else
@@ -276,6 +279,9 @@ typedef int32x4_t Int32x4;
 #define PLoadInt16x4(ptr) (*(volatile int16x4_t*)(ptr))
 #define PLoadInt16x8(ptr) (*(volatile int16x8_t*)(ptr))
 #define PLoadInt16x8A(ptr) (*(volatile int16x8_t*)(ptr))
+#define PLoadUInt16x4(ptr) (*(volatile uint16x4_t*)(ptr))
+#define PLoadUInt16x8(ptr) (*(volatile uint16x8_t*)(ptr))
+#define PLoadUInt16x8A(ptr) (*(volatile uint16x8_t*)(ptr))
 #define PLoadInt32x4(ptr) (*(volatile int32x4_t*)(ptr))
 #define PLoadInt32x4A(ptr) (*(volatile int32x4_t*)(ptr))
 #define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr1), *(int16x4_t*)(ptr2))
@@ -288,6 +294,9 @@ typedef int32x4_t Int32x4;
 #define PStoreInt16x8(ptr, v) *(int16x8_t*)(ptr) = v
 #define PStoreInt16x8A(ptr, v) *(int16x8_t*)(ptr) = v
 #define PStoreInt16x8NC(ptr, v) *(int16x8_t*)(ptr) = v
+#define PStoreUInt16x8(ptr, v) *(uint16x8_t*)(ptr) = v
+#define PStoreUInt16x8A(ptr, v) *(uint16x8_t*)(ptr) = v
+#define PStoreUInt16x8NC(ptr, v) *(uint16x8_t*)(ptr) = v
 #define PStoreInt32x4(ptr, v) *(int32x4_t*)(ptr) = v
 #define PStoreInt32x4NC(ptr, v) *(int32x4_t*)(ptr) = v
 #endif
