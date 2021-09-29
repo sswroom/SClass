@@ -363,6 +363,23 @@ Int16x8 FORCEINLINE PUNPCKHWW8(Int16x8 v1, Int16x8 v2)
 {
 	return vzipq_s16(v1, v2).val[1];
 }
+
+Int32x4 FORCEINLINE PUNPCKLWD4(Int16x8 v1, Int16x8 v2)
+{
+	return vreinterpretq_s16_s32(vzipq_s16(v1, v2).val[0]);
+}
+
+Int32x4 FORCEINLINE PUNPCKHWD4(Int16x8 v1, Int16x8 v2)
+{
+	return vreinterpretq_s16_s32(vzipq_s16(v1, v2).val[1]);
+}
+
+Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
+{
+	int16x4x2_t v = vzip_s16(v1, v2);
+	return vreinterpretq_s16_s32(vcombine_s16(v.val[0], v.val[1]));
+}
+
 //#define PUNPCKWD4(v1, v2) _mm_unpacklo_epi16(v1, v2)
 #define PMergeW4(v1, v2) vcombine_s16(v1, v2)
 #define PMergeLW4(v1, v2) vcombine_s16(vget_low_s16(v1), vget_low_s16(v2))
