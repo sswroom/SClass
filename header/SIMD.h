@@ -1,4 +1,4 @@
-#define ENABLE_SSE
+//#define ENABLE_SSE
 #define ENABLE_NEON
 
 Int8 FORCEINLINE SI16ToI8(Int16 v)
@@ -257,7 +257,7 @@ typedef int32x4_t Int32x4;
 #define PLoadUInt16x8A(ptr) (*(uint16x8_t*)(ptr))
 #define PLoadInt32x4(ptr) (*(int32x4_t*)(ptr))
 #define PLoadInt32x4A(ptr) (*(int32x4_t*)(ptr))
-#define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr1), *(int16x4_t*)(ptr2))
+#define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr2), *(int16x4_t*)(ptr1))
 #define PStoreUInt8x4(ptr, v) *(UInt32*)(ptr) = vget_lane_u32(vreinterpret_u8_u32(v), 0)
 #define PStoreUInt8x8(ptr, v) *(uint8x8_t*)(ptr) = v
 #define PStoreUInt8x16(ptr, v) *(uint8x16_t*)(ptr) = v
@@ -1129,14 +1129,14 @@ Int16x8 FORCEINLINE PMergeHW4(Int16x8 val1, Int16x8 val2)
 Int16x8 FORCEINLINE PMergeSARDW4(Int32x4 val1, Int32x4 val2, UInt8 cnt)
 {
 	Int16x8 ret;
-	ret.vals[0] = (Int16)(val1.vals[0] >> cnt);
-	ret.vals[1] = (Int16)(val1.vals[1] >> cnt);
-	ret.vals[2] = (Int16)(val1.vals[2] >> cnt);
-	ret.vals[3] = (Int16)(val1.vals[3] >> cnt);
-	ret.vals[4] = (Int16)(val2.vals[0] >> cnt);
-	ret.vals[5] = (Int16)(val2.vals[1] >> cnt);
-	ret.vals[6] = (Int16)(val2.vals[2] >> cnt);
-	ret.vals[7] = (Int16)(val2.vals[3] >> cnt);
+	ret.vals[0] = SI32ToI16(val1.vals[0] >> cnt);
+	ret.vals[1] = SI32ToI16(val1.vals[1] >> cnt);
+	ret.vals[2] = SI32ToI16(val1.vals[2] >> cnt);
+	ret.vals[3] = SI32ToI16(val1.vals[3] >> cnt);
+	ret.vals[4] = SI32ToI16(val2.vals[0] >> cnt);
+	ret.vals[5] = SI32ToI16(val2.vals[1] >> cnt);
+	ret.vals[6] = SI32ToI16(val2.vals[2] >> cnt);
+	ret.vals[7] = SI32ToI16(val2.vals[3] >> cnt);
 	return ret;
 }
 

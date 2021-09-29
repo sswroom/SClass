@@ -303,6 +303,42 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	CmpResult(PEXTD4(i32x4, 0) == 0x33221100 && PEXTD4(i32x4, 1) == 0x77665544 && PEXTD4(i32x4, 2) == (Int32)0xBBAA9988 && PEXTD4(i32x4, 3) == (Int32)0xFFEEDDCC, "PEXTD4");
 	u16x4 = PINSUW4(PINSUW4(u16x4, 1, 0x1234), 3, 0x4567);
 	UInt16x4Cmp(PINSUW4(PINSUW4(u16x4, 1, 0x1234), 3, 0x4567), "PINSUW4", 0x1100, 0x1234, 0x5544, 0x4567);
+	UInt8x8Cmp(PUNPCKUBB4(PLoadUInt8x4(abuff), PLoadUInt8x4(&abuff[16])), "PUNPCKUBB4", 0x00, 0xFF, 0x11, 0xEE, 0x22, 0xDD, 0x33, 0xCC);
+	UInt16x4Cmp(PUNPCKUBW4(PLoadUInt8x4(abuff), PLoadUInt8x4(&abuff[16])), "PUNPCKUBW4", 0xFF00, 0xEE11, 0xDD22, 0xCC33);
+	UInt16x8Cmp(PUNPCKLUBW8(PLoadUInt8x16(abuff), PLoadUInt8x16(&abuff[16])), "PUNPCKLUBW8", 0xFF00, 0xEE11, 0xDD22, 0xCC33, 0xBB44, 0xAA55, 0x9966, 0x8877);
+	UInt16x8Cmp(PUNPCKHUBW8(PLoadUInt8x16(abuff), PLoadUInt8x16(&abuff[16])), "PUNPCKHUBW8", 0x7788, 0x6699, 0x55AA, 0x44BB, 0x33CC, 0x22DD, 0x11EE, 0x00FF);
+	Int16x8Cmp(PUNPCKWW4(PLoadInt16x4(abuff), PLoadInt16x4(&abuff[16])), "PUNPCKWW4", (Int16)0x1100, (Int16)0xEEFF, (Int16)0x3322, (Int16)0xCCDD, (Int16)0x5544, (Int16)0xAABB, (Int16)0x7766, (Int16)0x8899);
+	Int16x8Cmp(PUNPCKLWW8(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PUNPCKLWW8", (Int16)0x1100, (Int16)0xEEFF, (Int16)0x3322, (Int16)0xCCDD, (Int16)0x5544, (Int16)0xAABB, (Int16)0x7766, (Int16)0x8899);
+	Int16x8Cmp(PUNPCKHWW8(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PUNPCKHWW8", (Int16)0x9988, (Int16)0x6677, (Int16)0xBBAA, (Int16)0x4455, (Int16)0xDDCC, (Int16)0x2233, (Int16)0xFFEE, (Int16)0x0011);
+	Int32x4Cmp(PUNPCKLWD4(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PUNPCKLWD4", (Int32)0xEEFF1100, (Int32)0xCCDD3322, (Int32)0xAABB5544, (Int32)0x88997766);
+	Int32x4Cmp(PUNPCKHWD4(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PUNPCKHWD4", (Int32)0x66779988, (Int32)0x4455BBAA, (Int32)0x2233DDCC, (Int32)0x0011FFEE);
+	Int32x4Cmp(PUNPCKWD4(PLoadInt16x4(abuff), PLoadInt16x4(&abuff[16])), "PUNPCKWD4", (Int32)0xEEFF1100, (Int32)0xCCDD3322, (Int32)0xAABB5544, (Int32)0x88997766);
+	Int16x8Cmp(PMergeW4(PLoadInt16x4(abuff), PLoadInt16x4(&abuff[16])), "PMergeW4", (Int16)0x1100, (Int16)0x3322, (Int16)0x5544, (Int16)0x7766, (Int16)0xEEFF, (Int16)0xCCDD, (Int16)0xAABB, (Int16)0x8899);
+	Int16x8Cmp(PMergeLW4(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PMergeLW4", (Int16)0x1100, (Int16)0x3322, (Int16)0x5544, (Int16)0x7766, (Int16)0xEEFF, (Int16)0xCCDD, (Int16)0xAABB, (Int16)0x8899);
+	Int16x8Cmp(PMergeHW4(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PMergeHW4", (Int16)0x9988, (Int16)0xBBAA, (Int16)0xDDCC, (Int16)0xFFEE, (Int16)0x6677, (Int16)0x4455, (Int16)0x2233, (Int16)0x0011);
+	Int16x8Cmp(PMergeSARDW4(PLoadInt32x4(abuff), PLoadInt32x4(&abuff[16]), 16), "PMergeSARDW4 16", (Int16)0x3322, (Int16)0x7766, (Int16)0xBBAA, (Int16)0xFFEE, (Int16)0xCCDD, (Int16)0x8899, (Int16)0x4455, (Int16)0x0011);
+	Int16x8Cmp(PMergeSARDW4(PLoadInt32x4(abuff), PLoadInt32x4(&abuff[16]), 15), "PMergeSARDW4 15", (Int16)0x6644, (Int16)0x7FFF, (Int16)0x8000, (Int16)0xFFDD, (Int16)0x99BB, (Int16)0x8000, (Int16)0x7FFF, (Int16)0x0022);
+	i16x8 = PMergeSARDW4(PLoadInt32x4(abuff), PLoadInt32x4(&abuff[16]), 16);
+	printf("PMergeSARDW4[0] = %x\r\n", PEXTW8(i16x8, 0));
+	printf("PMergeSARDW4[1] = %x\r\n", PEXTW8(i16x8, 1));
+	printf("PMergeSARDW4[2] = %x\r\n", PEXTW8(i16x8, 2));
+	printf("PMergeSARDW4[3] = %x\r\n", PEXTW8(i16x8, 3));
+	printf("PMergeSARDW4[4] = %x\r\n", PEXTW8(i16x8, 4));
+	printf("PMergeSARDW4[5] = %x\r\n", PEXTW8(i16x8, 5));
+	printf("PMergeSARDW4[6] = %x\r\n", PEXTW8(i16x8, 6));
+	printf("PMergeSARDW4[7] = %x\r\n", PEXTW8(i16x8, 7));
+	i16x8 = PMergeSARDW4(PLoadInt32x4(abuff), PLoadInt32x4(&abuff[16]), 15);
+	printf("PMergeSARDW4[0] = %x\r\n", PEXTW8(i16x8, 0));
+	printf("PMergeSARDW4[1] = %x\r\n", PEXTW8(i16x8, 1));
+	printf("PMergeSARDW4[2] = %x\r\n", PEXTW8(i16x8, 2));
+	printf("PMergeSARDW4[3] = %x\r\n", PEXTW8(i16x8, 3));
+	printf("PMergeSARDW4[4] = %x\r\n", PEXTW8(i16x8, 4));
+	printf("PMergeSARDW4[5] = %x\r\n", PEXTW8(i16x8, 5));
+	printf("PMergeSARDW4[6] = %x\r\n", PEXTW8(i16x8, 6));
+	printf("PMergeSARDW4[7] = %x\r\n", PEXTW8(i16x8, 7));
+/*
+#define PMergeSARDW4(v1, v2, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), _mm_srai_epi32(v2, cnt))*/
+
 /*
 #define PUNPCKBB8(v1, v2) _mm_unpacklo_epi8(v1, v2)
 #define PUNPCKUBB4(v1, v2) _mm_unpacklo_epi8(v1, v2)
