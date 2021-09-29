@@ -1,3 +1,6 @@
+#define ENABLE_SSE
+#define ENABLE_NEON
+
 Int8 FORCEINLINE SI16ToI8(Int16 v)
 {
 	if (v <= -128)
@@ -32,7 +35,7 @@ UInt8 FORCEINLINE SU32ToU8(UInt32 v)
 	return (UInt8)v;
 }
 
-#if 1 && (defined(CPU_X86_64) || defined(CPU_X86_32))
+#if defined(ENABLE_SSE) && (defined(CPU_X86_64) || defined(CPU_X86_32))
 #if defined(_MSC_VER)
 #include <intrin.h>
 #else
@@ -49,23 +52,30 @@ typedef __m128i Int32x4;
 
 #define PUInt8x4Clear() _mm_setzero_si128()
 #define PUInt8x8Clear() _mm_setzero_si128()
+#define PUInt8x16Clear() _mm_setzero_si128()
 #define PInt16x4Clear() _mm_setzero_si128()
+#define PUInt16x4Clear() _mm_setzero_si128()
 #define PInt16x8Clear() _mm_setzero_si128()
+#define PUInt16x8Clear() _mm_setzero_si128()
 #define PInt32x4Clear() _mm_setzero_si128()
+#define PUInt32x4Clear() _mm_setzero_si128()
 #define PUInt8x4SetA(v) _mm_set1_epi8((Int8)(UInt8)v)
 #define PUInt8x8SetA(v) _mm_set1_epi8((Int8)(UInt8)v)
 #define PUInt8x16SetA(v) _mm_set1_epi8((Int8)(UInt8)v)
-#define PUInt16x4SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt16x4SetA(v) _mm_set1_epi16(v)
+#define PUInt16x4SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt16x8SetA(v) _mm_set1_epi16(v)
+#define PUInt16x8SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt32x4SetA(v) _mm_set1_epi32(v)
-#define PUInt32x4SetA(v) _mm_set1_epi32(v)
 #define PLoadUInt8x4(ptr) _mm_cvtsi32_si128(*(Int32*)(ptr))
 #define PLoadUInt8x8(ptr) _mm_loadl_epi64((__m128i*)(ptr))
 #define PLoadUInt8x16(ptr) _mm_loadu_si128((__m128i*)(ptr))
 #define PLoadInt16x4(ptr) _mm_loadl_epi64((__m128i*)(ptr))
+#define PLoadUInt16x4(ptr) _mm_loadl_epi64((__m128i*)(ptr))
 #define PLoadInt16x8(ptr) _mm_loadu_si128((__m128i*)(ptr))
 #define PLoadInt16x8A(ptr) _mm_load_si128((__m128i*)(ptr))
+#define PLoadUInt16x8(ptr) _mm_loadu_si128((__m128i*)(ptr))
+#define PLoadUInt16x8A(ptr) _mm_load_si128((__m128i*)(ptr))
 #define PLoadInt32x4(ptr) _mm_loadu_si128((__m128i*)(ptr))
 #define PLoadInt32x4A(ptr) _mm_load_si128((__m128i*)(ptr))
 #define PMLoadInt16x4(ptr1, ptr2) _mm_set_epi64x(*(Int64*)ptr1, *(Int64*)ptr2)
@@ -78,6 +88,7 @@ typedef __m128i Int32x4;
 #define PStoreInt16x8A(ptr, v) _mm_store_si128((__m128i*)(ptr), v)
 #define PStoreInt16x8NC(ptr, v) _mm_stream_si128((__m128i*)(ptr), v)
 #define PStoreUInt16x4(ptr, v) _mm_storel_epi64((__m128i*)(ptr), v)
+#define PStoreUInt16x8(ptr, v) _mm_storeu_si128((__m128i*)(ptr), v)
 #define PStoreInt32x4(ptr, v) _mm_storeu_si128((__m128i*)(ptr), v)
 #define PStoreInt32x4A(ptr, v) _mm_store_si128((__m128i*)(ptr), v)
 #define PStoreInt32x4NC(ptr, v) _mm_stream_si128((__m128i*)(ptr), v)
@@ -201,7 +212,7 @@ void FORCEINLINE PStoreInt32x8NC(void *ptr, Int32x8 v)
 }
 
 #endif
-#elif 1 && (defined(__ARM_NEON) || defined(__ARM_NEON__) || defined(__ARM_ARCH_7) || defined(_M_ARM64))
+#elif defined(ENABLE_NEON) && (defined(__ARM_NEON) || defined(__ARM_NEON__) || defined(__ARM_ARCH_7) || defined(_M_ARM64))
 #if defined(_M_ARM64)
 #include <arm64_neon.h>
 #else
@@ -433,7 +444,7 @@ typedef struct
 
 typedef struct
 {
-	UInt16 vals[8];
+	UInt16 vals[4];
 } UInt16x4;
 
 typedef struct
@@ -484,6 +495,28 @@ UInt8x8 FORCEINLINE PUInt8x8Clear()
 	return ret;
 }
 
+UInt8x16 FORCEINLINE PUInt8x16Clear()
+{
+	UInt8x16 ret;
+	ret.vals[0] = 0;
+	ret.vals[1] = 0;
+	ret.vals[2] = 0;
+	ret.vals[3] = 0;
+	ret.vals[4] = 0;
+	ret.vals[5] = 0;
+	ret.vals[6] = 0;
+	ret.vals[7] = 0;
+	ret.vals[8] = 0;
+	ret.vals[9] = 0;
+	ret.vals[10] = 0;
+	ret.vals[11] = 0;
+	ret.vals[12] = 0;
+	ret.vals[13] = 0;
+	ret.vals[14] = 0;
+	ret.vals[15] = 0;
+	return ret;
+}
+
 Int16x4 FORCEINLINE PInt16x4Clear()
 {
 	Int16x4 ret;
@@ -494,9 +527,33 @@ Int16x4 FORCEINLINE PInt16x4Clear()
 	return ret;
 }
 
+UInt16x4 FORCEINLINE PUInt16x4Clear()
+{
+	UInt16x4 ret;
+	ret.vals[0] = 0;
+	ret.vals[1] = 0;
+	ret.vals[2] = 0;
+	ret.vals[3] = 0;
+	return ret;
+}
+
 Int16x8 FORCEINLINE PInt16x8Clear()
 {
 	Int16x8 ret;
+	ret.vals[0] = 0;
+	ret.vals[1] = 0;
+	ret.vals[2] = 0;
+	ret.vals[3] = 0;
+	ret.vals[4] = 0;
+	ret.vals[5] = 0;
+	ret.vals[6] = 0;
+	ret.vals[7] = 0;
+	return ret;
+}
+
+UInt16x8 FORCEINLINE PUInt16x8Clear()
+{
+	UInt16x8 ret;
 	ret.vals[0] = 0;
 	ret.vals[1] = 0;
 	ret.vals[2] = 0;
@@ -588,6 +645,16 @@ Int16x4 FORCEINLINE PInt16x4SetA(Int16 val)
 	return ret;
 }
 
+UInt16x4 FORCEINLINE PUInt16x4SetA(UInt16 val)
+{
+	UInt16x4 ret;
+	ret.vals[0] = val;
+	ret.vals[1] = val;
+	ret.vals[2] = val;
+	ret.vals[3] = val;
+	return ret;
+}
+
 Int16x8 FORCEINLINE PInt16x8SetA(Int16 val)
 {
 	Int16x8 ret;
@@ -602,13 +669,17 @@ Int16x8 FORCEINLINE PInt16x8SetA(Int16 val)
 	return ret;
 }
 
-UInt16x4 FORCEINLINE PUInt16x4SetA(UInt16 val)
+UInt16x8 FORCEINLINE PUInt16x8SetA(UInt16 val)
 {
-	UInt16x4 ret;
+	UInt16x8 ret;
 	ret.vals[0] = val;
 	ret.vals[1] = val;
 	ret.vals[2] = val;
 	ret.vals[3] = val;
+	ret.vals[4] = val;
+	ret.vals[5] = val;
+	ret.vals[6] = val;
+	ret.vals[7] = val;
 	return ret;
 }
 
@@ -652,6 +723,11 @@ Int16x4 FORCEINLINE PLoadInt16x4(const void *ptr)
 	return *(Int16x4*)ptr;
 }
 
+UInt16x4 FORCEINLINE PLoadUInt16x4(const void *ptr)
+{
+	return *(UInt16x4*)ptr;
+}
+
 Int16x8 FORCEINLINE PLoadInt16x8(const void *ptr)
 {
 	return *(Int16x8*)ptr;
@@ -660,6 +736,16 @@ Int16x8 FORCEINLINE PLoadInt16x8(const void *ptr)
 Int16x8 FORCEINLINE PLoadInt16x8A(const void *ptr)
 {
 	return *(Int16x8*)ptr;
+}
+
+UInt16x8 FORCEINLINE PLoadUInt16x8(const void *ptr)
+{
+	return *(UInt16x8*)ptr;
+}
+
+UInt16x8 FORCEINLINE PLoadUInt16x8A(const void *ptr)
+{
+	return *(UInt16x8*)ptr;
 }
 
 Int32x4 FORCEINLINE PLoadInt32x4(const void *ptr)
@@ -672,17 +758,6 @@ Int32x4 FORCEINLINE PLoadInt32x4A(const void *ptr)
 	return *(Int32x4*)ptr;
 }
 
-Int32x4 FORCEINLINE PLoadInt32x4A(volatile void *ptr)
-{
-	volatile Int32x4 *iptr = (volatile Int32x4*)ptr;
-	Int32x4 ret;
-	ret.vals[0] = iptr->vals[0];
-	ret.vals[1] = iptr->vals[1];
-	ret.vals[2] = iptr->vals[2];
-	ret.vals[3] = iptr->vals[3];
-	return ret;
-}
-
 Int32x8 FORCEINLINE PLoadInt32x8(const void *ptr)
 {
 	return *(Int32x8*)ptr;
@@ -691,8 +766,8 @@ Int32x8 FORCEINLINE PLoadInt32x8(const void *ptr)
 Int16x8 FORCEINLINE PMLoadInt16x4(const void *ptr1, const void *ptr2)
 {
 	Int16x8 ret;
-	*(Int64*)&ret.vals[0] = *(Int64*)ptr1;
-	*(Int64*)&ret.vals[4] = *(Int64*)ptr2;
+	*(Int64*)&ret.vals[4] = *(Int64*)ptr1;
+	*(Int64*)&ret.vals[0] = *(Int64*)ptr2;
 	return ret;
 }
 
@@ -740,6 +815,11 @@ void FORCEINLINE PStoreInt16x8NC(void *ptr, Int16x8 v)
 void FORCEINLINE PStoreUInt16x4(void *ptr, UInt16x4 v)
 {
 	*(UInt16x4*)ptr = v;
+}
+
+void FORCEINLINE PStoreUInt16x8(void *ptr, UInt16x8 v)
+{
+	*(UInt16x8*)ptr = v;
 }
 
 void FORCEINLINE PStoreInt32x4(void *ptr, Int32x4 v)
@@ -867,52 +947,52 @@ UInt8x16 FORCEINLINE PUNPCKUBB8(UInt8x8 val1, UInt8x8 val2)
 UInt16x4 FORCEINLINE PUNPCKUBW4(UInt8x4 val1, UInt8x4 val2)
 {
 	UInt16x4 ret;
-	ret.vals[0] = val1.vals[0] | (val2.vals[0] << 8);
-	ret.vals[1] = val1.vals[1] | (val2.vals[1] << 8);
-	ret.vals[2] = val1.vals[2] | (val2.vals[2] << 8);
-	ret.vals[3] = val1.vals[3] | (val2.vals[3] << 8);
+	ret.vals[0] = (UInt16)(val1.vals[0] | (val2.vals[0] << 8));
+	ret.vals[1] = (UInt16)(val1.vals[1] | (val2.vals[1] << 8));
+	ret.vals[2] = (UInt16)(val1.vals[2] | (val2.vals[2] << 8));
+	ret.vals[3] = (UInt16)(val1.vals[3] | (val2.vals[3] << 8));
 	return ret;
 }
 
 UInt16x8 FORCEINLINE PUNPCKUBW8(UInt8x8 val1, UInt8x8 val2)
 {
 	UInt16x8 ret;
-	ret.vals[0] = val1.vals[0] | (val2.vals[0] << 8);
-	ret.vals[1] = val1.vals[1] | (val2.vals[1] << 8);
-	ret.vals[2] = val1.vals[2] | (val2.vals[2] << 8);
-	ret.vals[3] = val1.vals[3] | (val2.vals[3] << 8);
-	ret.vals[4] = val1.vals[4] | (val2.vals[4] << 8);
-	ret.vals[5] = val1.vals[5] | (val2.vals[5] << 8);
-	ret.vals[6] = val1.vals[6] | (val2.vals[6] << 8);
-	ret.vals[7] = val1.vals[7] | (val2.vals[7] << 8);
+	ret.vals[0] = (UInt16)(val1.vals[0] | (val2.vals[0] << 8));
+	ret.vals[1] = (UInt16)(val1.vals[1] | (val2.vals[1] << 8));
+	ret.vals[2] = (UInt16)(val1.vals[2] | (val2.vals[2] << 8));
+	ret.vals[3] = (UInt16)(val1.vals[3] | (val2.vals[3] << 8));
+	ret.vals[4] = (UInt16)(val1.vals[4] | (val2.vals[4] << 8));
+	ret.vals[5] = (UInt16)(val1.vals[5] | (val2.vals[5] << 8));
+	ret.vals[6] = (UInt16)(val1.vals[6] | (val2.vals[6] << 8));
+	ret.vals[7] = (UInt16)(val1.vals[7] | (val2.vals[7] << 8));
 	return ret;
 }
 
 UInt16x8 FORCEINLINE PUNPCKLUBW8(UInt8x16 val1, UInt8x16 val2)
 {
 	UInt16x8 ret;
-	ret.vals[0] = val1.vals[0] | (val2.vals[0] << 8);
-	ret.vals[1] = val1.vals[1] | (val2.vals[1] << 8);
-	ret.vals[2] = val1.vals[2] | (val2.vals[2] << 8);
-	ret.vals[3] = val1.vals[3] | (val2.vals[3] << 8);
-	ret.vals[4] = val1.vals[4] | (val2.vals[4] << 8);
-	ret.vals[5] = val1.vals[5] | (val2.vals[5] << 8);
-	ret.vals[6] = val1.vals[6] | (val2.vals[6] << 8);
-	ret.vals[7] = val1.vals[7] | (val2.vals[7] << 8);
+	ret.vals[0] = (UInt16)(val1.vals[0] | (val2.vals[0] << 8));
+	ret.vals[1] = (UInt16)(val1.vals[1] | (val2.vals[1] << 8));
+	ret.vals[2] = (UInt16)(val1.vals[2] | (val2.vals[2] << 8));
+	ret.vals[3] = (UInt16)(val1.vals[3] | (val2.vals[3] << 8));
+	ret.vals[4] = (UInt16)(val1.vals[4] | (val2.vals[4] << 8));
+	ret.vals[5] = (UInt16)(val1.vals[5] | (val2.vals[5] << 8));
+	ret.vals[6] = (UInt16)(val1.vals[6] | (val2.vals[6] << 8));
+	ret.vals[7] = (UInt16)(val1.vals[7] | (val2.vals[7] << 8));
 	return ret;
 }
 
 UInt16x8 FORCEINLINE PUNPCKHUBW8(UInt8x16 val1, UInt8x16 val2)
 {
 	UInt16x8 ret;
-	ret.vals[0] = val1.vals[8] | (val2.vals[8] << 8);
-	ret.vals[1] = val1.vals[9] | (val2.vals[9] << 8);
-	ret.vals[2] = val1.vals[10] | (val2.vals[10] << 8);
-	ret.vals[3] = val1.vals[11] | (val2.vals[11] << 8);
-	ret.vals[4] = val1.vals[12] | (val2.vals[12] << 8);
-	ret.vals[5] = val1.vals[13] | (val2.vals[13] << 8);
-	ret.vals[6] = val1.vals[14] | (val2.vals[14] << 8);
-	ret.vals[7] = val1.vals[15] | (val2.vals[15] << 8);
+	ret.vals[0] = (UInt16)(val1.vals[8] | (val2.vals[8] << 8));
+	ret.vals[1] = (UInt16)(val1.vals[9] | (val2.vals[9] << 8));
+	ret.vals[2] = (UInt16)(val1.vals[10] | (val2.vals[10] << 8));
+	ret.vals[3] = (UInt16)(val1.vals[11] | (val2.vals[11] << 8));
+	ret.vals[4] = (UInt16)(val1.vals[12] | (val2.vals[12] << 8));
+	ret.vals[5] = (UInt16)(val1.vals[13] | (val2.vals[13] << 8));
+	ret.vals[6] = (UInt16)(val1.vals[14] | (val2.vals[14] << 8));
+	ret.vals[7] = (UInt16)(val1.vals[15] | (val2.vals[15] << 8));
 	return ret;
 }
 
@@ -1133,10 +1213,10 @@ Int16x8 FORCEINLINE PSARSDW8(Int32x4 v1, Int32x4 v2, UInt8 cnt)
 UInt8x4 FORCEINLINE PSHRADDWB4(UInt16x4 v1, UInt16x4 v2, UInt8 cnt)
 {
 	UInt8x4 ret;
-	ret.vals[0] = ((v1.vals[0] + v2.vals[0]) >> cnt) & 0xff;
-	ret.vals[1] = ((v1.vals[1] + v2.vals[1]) >> cnt) & 0xff;
-	ret.vals[2] = ((v1.vals[2] + v2.vals[2]) >> cnt) & 0xff;
-	ret.vals[3] = ((v1.vals[3] + v2.vals[3]) >> cnt) & 0xff;
+	ret.vals[0] = (UInt8)(((v1.vals[0] + v2.vals[0]) >> cnt) & 0xff);
+	ret.vals[1] = (UInt8)(((v1.vals[1] + v2.vals[1]) >> cnt) & 0xff);
+	ret.vals[2] = (UInt8)(((v1.vals[2] + v2.vals[2]) >> cnt) & 0xff);
+	ret.vals[3] = (UInt8)(((v1.vals[3] + v2.vals[3]) >> cnt) & 0xff);
 	return ret;
 }
 
@@ -1226,10 +1306,10 @@ Int32x4 FORCEINLINE PADDD4(Int32x4 val1, Int32x4 val2)
 UInt8x4 FORCEINLINE PADDSUWB4(UInt16x4 val1, UInt16x4 val2)
 {
 	UInt8x4 ret;
-	ret.vals[0] = (val1.vals[0] + val2.vals[0]) & 0xff;
-	ret.vals[1] = (val1.vals[1] + val2.vals[1]) & 0xff;
-	ret.vals[2] = (val1.vals[2] + val2.vals[2]) & 0xff;
-	ret.vals[3] = (val1.vals[3] + val2.vals[3]) & 0xff;
+	ret.vals[0] = (UInt8)((val1.vals[0] + val2.vals[0]) & 0xff);
+	ret.vals[1] = (UInt8)((val1.vals[1] + val2.vals[1]) & 0xff);
+	ret.vals[2] = (UInt8)((val1.vals[2] + val2.vals[2]) & 0xff);
+	ret.vals[3] = (UInt8)((val1.vals[3] + val2.vals[3]) & 0xff);
 	return ret;
 }
 
@@ -1325,23 +1405,23 @@ Int32x4 FORCEINLINE PSUBD4(Int32x4 val1, Int32x4 val2)
 
 Int16x4 FORCEINLINE PMULHW4(Int16x4 val1, Int16x4 val2)
 {
-	val1.vals[0] = (((Int32)val1.vals[0]) * val2.vals[0]) >> 16;
-	val1.vals[1] = (((Int32)val1.vals[1]) * val2.vals[1]) >> 16;
-	val1.vals[2] = (((Int32)val1.vals[2]) * val2.vals[2]) >> 16;
-	val1.vals[3] = (((Int32)val1.vals[3]) * val2.vals[3]) >> 16;
+	val1.vals[0] = (Int16)((((Int32)val1.vals[0]) * val2.vals[0]) >> 16);
+	val1.vals[1] = (Int16)((((Int32)val1.vals[1]) * val2.vals[1]) >> 16);
+	val1.vals[2] = (Int16)((((Int32)val1.vals[2]) * val2.vals[2]) >> 16);
+	val1.vals[3] = (Int16)((((Int32)val1.vals[3]) * val2.vals[3]) >> 16);
 	return val1;
 }
 
 Int16x8 FORCEINLINE PMULHW8(Int16x8 val1, Int16x8 val2)
 {
-	val1.vals[0] = (((Int32)val1.vals[0]) * val2.vals[0]) >> 16;
-	val1.vals[1] = (((Int32)val1.vals[1]) * val2.vals[1]) >> 16;
-	val1.vals[2] = (((Int32)val1.vals[2]) * val2.vals[2]) >> 16;
-	val1.vals[3] = (((Int32)val1.vals[3]) * val2.vals[3]) >> 16;
-	val1.vals[4] = (((Int32)val1.vals[4]) * val2.vals[4]) >> 16;
-	val1.vals[5] = (((Int32)val1.vals[5]) * val2.vals[5]) >> 16;
-	val1.vals[6] = (((Int32)val1.vals[6]) * val2.vals[6]) >> 16;
-	val1.vals[7] = (((Int32)val1.vals[7]) * val2.vals[7]) >> 16;
+	val1.vals[0] = (Int16)((((Int32)val1.vals[0]) * val2.vals[0]) >> 16);
+	val1.vals[1] = (Int16)((((Int32)val1.vals[1]) * val2.vals[1]) >> 16);
+	val1.vals[2] = (Int16)((((Int32)val1.vals[2]) * val2.vals[2]) >> 16);
+	val1.vals[3] = (Int16)((((Int32)val1.vals[3]) * val2.vals[3]) >> 16);
+	val1.vals[4] = (Int16)((((Int32)val1.vals[4]) * val2.vals[4]) >> 16);
+	val1.vals[5] = (Int16)((((Int32)val1.vals[5]) * val2.vals[5]) >> 16);
+	val1.vals[6] = (Int16)((((Int32)val1.vals[6]) * val2.vals[6]) >> 16);
+	val1.vals[7] = (Int16)((((Int32)val1.vals[7]) * val2.vals[7]) >> 16);
 	return val1;
 }
 
@@ -1356,32 +1436,32 @@ UInt16x4 FORCEINLINE PMULULW4(UInt16x4 val1, UInt16x4 val2)
 
 UInt16x4 FORCEINLINE PMULUHW4(UInt16x4 val1, UInt16x4 val2)
 {
-	val1.vals[0] = (val1.vals[0] * (UInt32)val2.vals[0]) >> 16;
-	val1.vals[1] = (val1.vals[1] * (UInt32)val2.vals[1]) >> 16;
-	val1.vals[2] = (val1.vals[2] * (UInt32)val2.vals[2]) >> 16;
-	val1.vals[3] = (val1.vals[3] * (UInt32)val2.vals[3]) >> 16;
+	val1.vals[0] = (UInt16)((val1.vals[0] * (UInt32)val2.vals[0]) >> 16);
+	val1.vals[1] = (UInt16)((val1.vals[1] * (UInt32)val2.vals[1]) >> 16);
+	val1.vals[2] = (UInt16)((val1.vals[2] * (UInt32)val2.vals[2]) >> 16);
+	val1.vals[3] = (UInt16)((val1.vals[3] * (UInt32)val2.vals[3]) >> 16);
 	return val1;
 }
 
 Int16x4 FORCEINLINE PMULM2HW4(Int16x4 val1, Int16x4 val2)
 {
-	val1.vals[0] = (val1.vals[0] * val2.vals[0]) >> 15;
-	val1.vals[1] = (val1.vals[1] * val2.vals[1]) >> 15;
-	val1.vals[2] = (val1.vals[2] * val2.vals[2]) >> 15;
-	val1.vals[3] = (val1.vals[3] * val2.vals[3]) >> 15;
+	val1.vals[0] = (Int16)((val1.vals[0] * val2.vals[0]) >> 15);
+	val1.vals[1] = (Int16)((val1.vals[1] * val2.vals[1]) >> 15);
+	val1.vals[2] = (Int16)((val1.vals[2] * val2.vals[2]) >> 15);
+	val1.vals[3] = (Int16)((val1.vals[3] * val2.vals[3]) >> 15);
 	return val1;
 }
 
 Int16x8 FORCEINLINE PMULM2HW8(Int16x8 val1, Int16x8 val2)
 {
-	val1.vals[0] = (val1.vals[0] * val2.vals[0]) >> 15;
-	val1.vals[1] = (val1.vals[1] * val2.vals[1]) >> 15;
-	val1.vals[2] = (val1.vals[2] * val2.vals[2]) >> 15;
-	val1.vals[3] = (val1.vals[3] * val2.vals[3]) >> 15;
-	val1.vals[4] = (val1.vals[4] * val2.vals[4]) >> 15;
-	val1.vals[5] = (val1.vals[5] * val2.vals[5]) >> 15;
-	val1.vals[6] = (val1.vals[6] * val2.vals[6]) >> 15;
-	val1.vals[7] = (val1.vals[7] * val2.vals[7]) >> 15;
+	val1.vals[0] = (Int16)((val1.vals[0] * val2.vals[0]) >> 15);
+	val1.vals[1] = (Int16)((val1.vals[1] * val2.vals[1]) >> 15);
+	val1.vals[2] = (Int16)((val1.vals[2] * val2.vals[2]) >> 15);
+	val1.vals[3] = (Int16)((val1.vals[3] * val2.vals[3]) >> 15);
+	val1.vals[4] = (Int16)((val1.vals[4] * val2.vals[4]) >> 15);
+	val1.vals[5] = (Int16)((val1.vals[5] * val2.vals[5]) >> 15);
+	val1.vals[6] = (Int16)((val1.vals[6] * val2.vals[6]) >> 15);
+	val1.vals[7] = (Int16)((val1.vals[7] * val2.vals[7]) >> 15);
 	return val1;
 }
 
