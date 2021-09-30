@@ -444,8 +444,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Int16x8Cmp(PMULHW8(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PMULHW8", (Int16)0xFEDE, (Int16)0xF5C9, (Int16)0xE399, (Int16)0xC84F, (Int16)0xD6FC, (Int16)0xEDC2, (Int16)0xFB6E, (Int16)0xFFFF);
 	UInt16x4Cmp(PMULUHW4(PLoadUInt16x4(abuff), PLoadUInt16x4(&abuff[16])), "PMULUHW4", 0x0FDE, 0x28EB, 0x38DD, 0x3FB5);
 	UInt16x4Cmp(PMULULW4(PLoadUInt16x4(abuff), PLoadUInt16x4(&abuff[16])), "PMULULW4", 0xEF00, 0x3C5A, 0x70AC, 0x8BF6);
-	Int16x4Cmp(PMULM2HW4(PLoadInt16x4(abuff), PLoadInt16x4(&abuff[16])), "PMULM2HW4", (Int16)0xFDBC, (Int16)0xEB92, (Int16)0xC732, (Int16)0x909E);
-	Int16x8Cmp(PMULM2HW8(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PMULM2HW8", (Int16)0xFDBC, (Int16)0xEB92, (Int16)0xC732, (Int16)0x909E, (Int16)0xADF8, (Int16)0xDB84, (Int16)0xF6DC, (Int16)0xFFFE);
+	Int16x4Cmp(PORW4(PMULM2HW4(PLoadInt16x4(abuff), PLoadInt16x4(&abuff[16])), PInt16x4SetA(1)), "PMULM2HW4", (Int16)0xFDBD, (Int16)0xEB93, (Int16)0xC733, (Int16)0x909F);
+	Int16x8Cmp(PORW8(PMULM2HW8(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), PInt16x8SetA(1)), "PMULM2HW8", (Int16)0xFDBD, (Int16)0xEB93, (Int16)0xC733, (Int16)0x909F, (Int16)0xADF9, (Int16)0xDB85, (Int16)0xF6DD, (Int16)0xFFFF);
 	Int16x8Cmp(PORW8(PLoadInt16x8(abuff), PLoadInt16x8(&abuff[16])), "PORW8", (Int16)0xFFFF, (Int16)0xFFFF, (Int16)0xFFFF, (Int16)0xFFFF, (Int16)0xFFFF, (Int16)0xFFFF, (Int16)0xFFFF, (Int16)0xFFFF);
 
 /*
