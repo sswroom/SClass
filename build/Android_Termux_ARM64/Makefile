@@ -9,7 +9,6 @@ ANDROID_API:=$(shell getprop ro.build.version.sdk)
 CFLAGS += -I ../../header
 CFLAGS += -O
 CFLAGS += -ffunction-sections -fdata-sections
-#CFLAGS += -DTIMEDWAIT_BUG=1
 CFLAGS += -flax-vector-conversions
 CFLAGS += -D__ANDROID_API__=$(ANDROID_API)
 ASMFLAGS :=

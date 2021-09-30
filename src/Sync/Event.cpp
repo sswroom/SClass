@@ -156,10 +156,6 @@ void *Sync::Event::GetHandle()
 	return 0;
 }
 #else
-//#define TIMEDWAIT_BUG
-#if defined(TIMEDWAIT_BUG)
-#include <unistd.h>
-#endif
 #include <errno.h>
 #include <pthread.h>
 #include <sys/time.h>
@@ -250,78 +246,6 @@ Bool Sync::Event::Wait(UOSInt timeout)
 {
 	EventStatus *status = (EventStatus*)this->hand;
 	Bool isTO = false;
-#if defined(TIMEDWAIT_BUG)
-	struct timeval t;
-	struct timezone tz;
-	UInt64 stTime;
-	UInt64 currTime;
-
-	if (this->isAuto)
-	{
-		pthread_mutex_lock(&status->mutex);
-		if (this->isSet)
-		{
-			this->isSet = false;
-			pthread_mutex_unlock(&status->mutex);
-		}
-		else
-		{
-			pthread_mutex_unlock(&status->mutex);
-			gettimeofday(&t, &tz);
-			stTime = t.tv_sec * (UInt64)1000000 + t.tv_usec;
-			while (!(volatile Int32)this->isSet)
-			{
-				gettimeofday(&t, &tz);
-				currTime = t.tv_sec * (UInt64)1000000 + t.tv_usec;
-				if (currTime >= stTime)
-				{
-					currTime = (currTime - stTime) / 1000;
-				}
-				else
-				{
-					currTime = (86400000000 - (currTime - stTime)) / 1000;
-				}
-				if (currTime >= timeout)
-				{
-					isTO = true;
-					break;
-				}
-				usleep(100);
-			}
-			this->isSet = false;
-		}
-	}
-	else
-	{
-		if (this->isSet)
-		{
-		}
-		else
-		{
-			gettimeofday(&t, &tz);
-			stTime = t.tv_sec * (Int64)1000000 + t.tv_usec;
-			while (!(volatile Int32)this->isSet)
-			{
-				gettimeofday(&t, &tz);
-				currTime = t.tv_sec * (Int64)1000000 + t.tv_usec;
-				if (currTime >= stTime)
-				{
-					currTime = (currTime - stTime) / 1000;
-				}
-				else
-				{
-					currTime = (86400000000 - (currTime - stTime)) / 1000;
-				}
-				if (currTime >= timeout)
-				{
-					isTO = true;
-					break;
-				}
-				usleep(100);
-			}
-		}
-	}
-#else
 	struct timespec outtime;
 	int ret;
 
@@ -377,7 +301,6 @@ Bool Sync::Event::Wait(UOSInt timeout)
 		}
 		pthread_mutex_unlock(&status->mutex);
 	}
-#endif
 	return isTO;
 }
 

@@ -9,7 +9,6 @@ CFLAGS += -I ../../header
 CFLAGS += -O
 CFLAGS += -g
 #CFLAGS += -ffunction-sections -fdata-sections
-CFLAGS += -DTIMEDWAIT_BUG=1
 CFLAGS += -flax-vector-conversions
 ASMFLAGS :=
 CSUFFIX :=

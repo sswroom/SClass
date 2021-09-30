@@ -8,7 +8,6 @@ CLASSDIR:=../../
 CFLAGS += -I ../../header
 CFLAGS += -O
 CFLAGS += -ffunction-sections -fdata-sections
-CFLAGS += -DTIMEDWAIT_BUG
 CFLAGS += -flax-vector-conversions
 ASMFLAGS :=
 CSUFFIX :=
