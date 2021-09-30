@@ -409,7 +409,14 @@ Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
 #define PSARD4(v1, cnt) vshrq_n_s32(v1, cnt)
 #define PSARSDW4(v1, cnt) vqshrn_n_s32(v1, cnt)
 #define PSARSDW8(v1, v2, cnt) vcombine_s16(vqshrn_n_s32(v1, cnt), vqshrn_n_s32(v2, cnt))
-#define PSHRADDWB4(v1, v2, cnt) ((cnt <= 8)?vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), cnt):vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), cnt - 8))
+Uint8x8 FORCEINLINE PSHRADDWB4(UInt16x8 v1, UInt16x8 v2, const Int32 cnt)
+{
+	UInt8x8 v = vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), (cnt <= 8)?cnt:8);
+	if (cnt > 8)
+	{
+		v = vshr_n_u8(v, cnt - 8);
+	}
+}
 #define PADDUB4(v1, v2) vadd_u8(v1, v2)
 #define PADDUB8(v1, v2) vadd_u8(v1, v2)
 #define PADDUB16(v1, v2) vaddq_u8(v1, v2)
