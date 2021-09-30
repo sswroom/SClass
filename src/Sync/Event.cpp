@@ -173,11 +173,12 @@ typedef struct
 
 Sync::Event::Event(const UTF8Char *name)
 {
-	EventStatus *status = MemAlloc(EventStatus, 1);
+	EventStatus *status = MemAllocA(EventStatus, 1);
 	this->hand = status;
 	pthread_condattr_t cattr;
 	pthread_condattr_init(&cattr);
 	pthread_condattr_setpshared(&cattr, PTHREAD_PROCESS_SHARED);
+	pthread_condattr_setclock(&cattr, CLOCK_MONOTONIC);
 	pthread_cond_init(&status->cond, &cattr);
 	pthread_mutex_init(&status->mutex, 0);
 	status->useCnt = 0;
@@ -187,11 +188,12 @@ Sync::Event::Event(const UTF8Char *name)
 
 Sync::Event::Event(Bool isAuto, const UTF8Char *name)
 {
-	EventStatus *status = MemAlloc(EventStatus, 1);
+	EventStatus *status = MemAllocA(EventStatus, 1);
 	this->hand = status;
 	pthread_condattr_t cattr;
 	pthread_condattr_init(&cattr);
 	pthread_condattr_setpshared(&cattr, PTHREAD_PROCESS_SHARED);
+	pthread_condattr_setclock(&cattr, CLOCK_MONOTONIC);
 	pthread_cond_init(&status->cond, &cattr);
 	pthread_mutex_init(&status->mutex, 0);
 	status->useCnt = 0;
@@ -210,7 +212,7 @@ Sync::Event::~Event()
 	pthread_cond_destroy(&status->cond);
 	pthread_mutex_unlock(&status->mutex);
 	pthread_mutex_destroy(&status->mutex);
-	MemFree(status);
+	MemFreeA(status);
 }
 
 void Sync::Event::Wait()
