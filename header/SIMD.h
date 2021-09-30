@@ -411,12 +411,40 @@ Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
 #define PSARSDW8(v1, v2, cnt) vcombine_s16(vqshrn_n_s32(v1, cnt), vqshrn_n_s32(v2, cnt))
 UInt8x4 FORCEINLINE PSHRADDWB4(UInt16x4 v1, UInt16x4 v2, const Int32 cnt)
 {
-	UInt8x4 v = vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), (cnt <= 8)?cnt:8);
-	if (cnt > 8)
+	switch (cnt)
 	{
-		v = vshr_n_u8(v, cnt - 8);
+	default:
+	case 1:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 1);
+	case 2:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 2);
+	case 3:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 3);
+	case 4:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 4);
+	case 5:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 5);
+	case 6:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 6);
+	case 7:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 7);
+	case 8:
+		return vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8);
+	case 9:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 1);
+	case 10:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 2);
+	case 11:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 3);
+	case 12:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 4);
+	case 13:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 5);
+	case 14:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 6);
+	case 15:
+		return vshr_n_u8(vqshrn_n_u16(vcombine_u16(vqadd_u16(v1, v2), v2), 8), 7);
 	}
-	return v;
 }
 #define PADDUB4(v1, v2) vadd_u8(v1, v2)
 #define PADDUB8(v1, v2) vadd_u8(v1, v2)
