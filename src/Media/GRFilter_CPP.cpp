@@ -52,7 +52,7 @@ extern "C" void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 		while (i-- > 0)
 		{
 			thisSrc = PCONVU16x4_I(PUNPCKUBW4(PLoadUInt8x4(&srcPtr[0]), zeroU8x4));
-			PStoreUInt8x4(destPtr, PADDSUWB4(PUNPCKUBW4(PLoadUInt8x4(&destPtr[0]), zeroU8x4), PCONVI16x4_U(PMULHW4(PSUBW4(thisSrc, lastSrc), levelx4))));
+			PStoreUInt8x4(destPtr, PADDSUWB4(PCONVU16x4_I(PUNPCKUBW4(PLoadUInt8x4(&destPtr[0]), zeroU8x4)), PMULHW4(PSUBW4(thisSrc, lastSrc), levelx4)));
 			lastSrc = thisSrc;
 /*			v = destPtr[0] + ((((Int32)srcPtr[0] - (Int32)srcPtr[-4]) * level) >> 8);
 			if (v < 0)

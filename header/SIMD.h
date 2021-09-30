@@ -1,4 +1,4 @@
-//#define ENABLE_SSE
+#define ENABLE_SSE
 #define ENABLE_NEON
 
 Int8 FORCEINLINE SI16ToI8(Int16 v)
@@ -23,6 +23,22 @@ UInt8 FORCEINLINE SI32ToU8(Int32 v)
 {
 	if (v <= 0)
 		return 0;
+	if (v >= 255)
+		return 255;
+	return (UInt8)v;
+}
+
+UInt8 FORCEINLINE SI16ToU8(Int16 v)
+{
+	if (v < 0)
+		return 0;
+	if (v >= 255)
+		return 255;
+	return (UInt8)v;
+}
+
+UInt8 FORCEINLINE SU16ToU8(UInt16 v)
+{
 	if (v >= 255)
 		return 255;
 	return (UInt8)v;
@@ -133,7 +149,7 @@ typedef __m128i Int32x4;
 #define PSARD4(v1, v2) _mm_srai_epi32(v1, v2)
 #define PSARSDW4(v1, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), v1)
 #define PSARSDW8(v1, v2, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), _mm_srai_epi32(v2, cnt))
-#define PSHRADDWB4(v1, v2, cnt) _mm_packs_epi16(_mm_srli_epi16(_mm_adds_epu16(v1, v2), cnt), v2)
+#define PSHRADDWB4(v1, v2, cnt) _mm_packus_epi16(_mm_srli_epi16(_mm_adds_epu16(v1, v2), cnt), v2)
 #define PADDUB4(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB8(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB16(v1, v2) _mm_add_epi8(v1, v2)
@@ -141,7 +157,7 @@ typedef __m128i Int32x4;
 #define PADDUW4(v1, v2) _mm_add_epi16(v1, v2)
 #define PADDW8(v1, v2) _mm_add_epi16(v1, v2)
 #define PADDD4(v1, v2) _mm_add_epi32(v1, v2)
-#define PADDSUWB4(v1, v2) _mm_packs_epi16(_mm_add_epi16(v1, v2), v2)
+#define PADDSUWB4(v1, v2) _mm_packus_epi16(_mm_add_epi16(v1, v2), v2)
 #define PSADDW4(v1, v2) _mm_adds_epi16(v1, v2)
 #define PSADDUW4(v1, v2) _mm_adds_epu16(v1, v2)
 #define PSADDW8(v1, v2) _mm_adds_epi16(v1, v2)
@@ -155,7 +171,6 @@ typedef __m128i Int32x4;
 #define PMULULW4(v1, v2) _mm_mullo_epi16(v1, v2)
 #define PMULM2HW4(v1, v2) _mm_slli_epi16(_mm_mulhi_epi16(v1, v2), 1)
 #define PMULM2HW8(v1, v2) _mm_slli_epi16(_mm_mulhi_epi16(v1, v2), 1)
-#define PMULLD4(v1, v2) _mm_mullo_epi16(v1, v2)
 #define PORW8(v1, v2) _mm_or_si128(v1, v2)
 #define SI16ToI8x4(v1) _mm_packs_epi16(v1, v1)
 #define SI16ToI8x8(v1) _mm_packs_epi16(v1, v1)
@@ -1243,16 +1258,6 @@ Int16x8 FORCEINLINE PSARSDW8(Int32x4 v1, Int32x4 v2, UInt8 cnt)
 	return ret;
 }
 
-UInt8x4 FORCEINLINE PSHRADDWB4(UInt16x4 v1, UInt16x4 v2, UInt8 cnt)
-{
-	UInt8x4 ret;
-	ret.vals[0] = (UInt8)(((v1.vals[0] + v2.vals[0]) >> cnt) & 0xff);
-	ret.vals[1] = (UInt8)(((v1.vals[1] + v2.vals[1]) >> cnt) & 0xff);
-	ret.vals[2] = (UInt8)(((v1.vals[2] + v2.vals[2]) >> cnt) & 0xff);
-	ret.vals[3] = (UInt8)(((v1.vals[3] + v2.vals[3]) >> cnt) & 0xff);
-	return ret;
-}
-
 UInt8x4 FORCEINLINE PADDUB4(UInt8x4 val1, UInt8x4 val2)
 {
 	val1.vals[0] += val2.vals[0];
@@ -1336,13 +1341,13 @@ Int32x4 FORCEINLINE PADDD4(Int32x4 val1, Int32x4 val2)
 	return val1;
 }
 
-UInt8x4 FORCEINLINE PADDSUWB4(UInt16x4 val1, UInt16x4 val2)
+UInt8x4 FORCEINLINE PADDSUWB4(Int16x4 val1, Int16x4 val2)
 {
 	UInt8x4 ret;
-	ret.vals[0] = (UInt8)((val1.vals[0] + val2.vals[0]) & 0xff);
-	ret.vals[1] = (UInt8)((val1.vals[1] + val2.vals[1]) & 0xff);
-	ret.vals[2] = (UInt8)((val1.vals[2] + val2.vals[2]) & 0xff);
-	ret.vals[3] = (UInt8)((val1.vals[3] + val2.vals[3]) & 0xff);
+	ret.vals[0] = SI16ToU8((Int16)(val1.vals[0] + val2.vals[0]));
+	ret.vals[1] = SI16ToU8((Int16)(val1.vals[1] + val2.vals[1]));
+	ret.vals[2] = SI16ToU8((Int16)(val1.vals[2] + val2.vals[2]));
+	ret.vals[3] = SI16ToU8((Int16)(val1.vals[3] + val2.vals[3]));
 	return ret;
 }
 
@@ -1436,6 +1441,17 @@ Int32x4 FORCEINLINE PSUBD4(Int32x4 val1, Int32x4 val2)
 	return val1;
 }
 
+UInt8x4 FORCEINLINE PSHRADDWB4(UInt16x4 v1, UInt16x4 v2, UInt8 cnt)
+{
+	UInt8x4 ret;
+	UInt16x4 v = PSADDUW4(v1, v2);
+	ret.vals[0] = SU16ToU8((UInt16)(v.vals[0] >> cnt));
+	ret.vals[1] = SU16ToU8((UInt16)(v.vals[1] >> cnt));
+	ret.vals[2] = SU16ToU8((UInt16)(v.vals[2] >> cnt));
+	ret.vals[3] = SU16ToU8((UInt16)(v.vals[3] >> cnt));
+	return ret;
+}
+
 Int16x4 FORCEINLINE PMULHW4(Int16x4 val1, Int16x4 val2)
 {
 	val1.vals[0] = (Int16)((((Int32)val1.vals[0]) * val2.vals[0]) >> 16);
@@ -1478,32 +1494,23 @@ UInt16x4 FORCEINLINE PMULUHW4(UInt16x4 val1, UInt16x4 val2)
 
 Int16x4 FORCEINLINE PMULM2HW4(Int16x4 val1, Int16x4 val2)
 {
-	val1.vals[0] = (Int16)((val1.vals[0] * val2.vals[0]) >> 15);
-	val1.vals[1] = (Int16)((val1.vals[1] * val2.vals[1]) >> 15);
-	val1.vals[2] = (Int16)((val1.vals[2] * val2.vals[2]) >> 15);
-	val1.vals[3] = (Int16)((val1.vals[3] * val2.vals[3]) >> 15);
+	val1.vals[0] = (Int16)(((val1.vals[0] * val2.vals[0]) >> 15) & 0xFFFE);
+	val1.vals[1] = (Int16)(((val1.vals[1] * val2.vals[1]) >> 15) & 0xFFFE);
+	val1.vals[2] = (Int16)(((val1.vals[2] * val2.vals[2]) >> 15) & 0xFFFE);
+	val1.vals[3] = (Int16)(((val1.vals[3] * val2.vals[3]) >> 15) & 0xFFFE);
 	return val1;
 }
 
 Int16x8 FORCEINLINE PMULM2HW8(Int16x8 val1, Int16x8 val2)
 {
-	val1.vals[0] = (Int16)((val1.vals[0] * val2.vals[0]) >> 15);
-	val1.vals[1] = (Int16)((val1.vals[1] * val2.vals[1]) >> 15);
-	val1.vals[2] = (Int16)((val1.vals[2] * val2.vals[2]) >> 15);
-	val1.vals[3] = (Int16)((val1.vals[3] * val2.vals[3]) >> 15);
-	val1.vals[4] = (Int16)((val1.vals[4] * val2.vals[4]) >> 15);
-	val1.vals[5] = (Int16)((val1.vals[5] * val2.vals[5]) >> 15);
-	val1.vals[6] = (Int16)((val1.vals[6] * val2.vals[6]) >> 15);
-	val1.vals[7] = (Int16)((val1.vals[7] * val2.vals[7]) >> 15);
-	return val1;
-}
-
-Int32x4 FORCEINLINE PMULLD4(Int32x4 val1, Int32x4 val2)
-{
-	val1.vals[0] *= val2.vals[0];
-	val1.vals[1] *= val2.vals[1];
-	val1.vals[2] *= val2.vals[2];
-	val1.vals[3] *= val2.vals[3];
+	val1.vals[0] = (Int16)(((val1.vals[0] * val2.vals[0]) >> 15) & 0xFFFE);
+	val1.vals[1] = (Int16)(((val1.vals[1] * val2.vals[1]) >> 15) & 0xFFFE);
+	val1.vals[2] = (Int16)(((val1.vals[2] * val2.vals[2]) >> 15) & 0xFFFE);
+	val1.vals[3] = (Int16)(((val1.vals[3] * val2.vals[3]) >> 15) & 0xFFFE);
+	val1.vals[4] = (Int16)(((val1.vals[4] * val2.vals[4]) >> 15) & 0xFFFE);
+	val1.vals[5] = (Int16)(((val1.vals[5] * val2.vals[5]) >> 15) & 0xFFFE);
+	val1.vals[6] = (Int16)(((val1.vals[6] * val2.vals[6]) >> 15) & 0xFFFE);
+	val1.vals[7] = (Int16)(((val1.vals[7] * val2.vals[7]) >> 15) & 0xFFFE);
 	return val1;
 }
 
@@ -1524,6 +1531,20 @@ UInt8x4 FORCEINLINE PSRADDWB4(UInt16x4 val1, UInt16x4 val2, UInt8 cnt)
 	ret.vals[1] = SU32ToU8((val1.vals[1] + (UInt32)val2.vals[1]) >> cnt);
 	ret.vals[2] = SU32ToU8((val1.vals[2] + (UInt32)val2.vals[2]) >> cnt);
 	ret.vals[3] = SU32ToU8((val1.vals[3] + (UInt32)val2.vals[3]) >> cnt);
+	return ret;
+}
+
+Int16x8 FORCEINLINE PORW8(Int16x8 val1, Int16x8 val2)
+{
+	Int16x8 ret;
+	ret.vals[0] = val1.vals[0] | val2.vals[0];
+	ret.vals[1] = val1.vals[1] | val2.vals[1];
+	ret.vals[2] = val1.vals[2] | val2.vals[2];
+	ret.vals[3] = val1.vals[3] | val2.vals[3];
+	ret.vals[4] = val1.vals[4] | val2.vals[4];
+	ret.vals[5] = val1.vals[5] | val2.vals[5];
+	ret.vals[6] = val1.vals[6] | val2.vals[6];
+	ret.vals[7] = val1.vals[7] | val2.vals[7];
 	return ret;
 }
 
