@@ -69,6 +69,8 @@ Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
+CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
+!-lcurl
 MDBFile.o: ../../src/DB/MDBFile.cpp
 !-lodbc
 !-lodbcinst
