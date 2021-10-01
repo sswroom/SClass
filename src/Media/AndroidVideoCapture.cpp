@@ -79,7 +79,7 @@ const UTF8Char *Media::AndroidVideoCapture::GetFilterName()
 	return (const UTF8Char*)"AndroidVideoCapture";
 }
 
-Bool Media::AndroidVideoCapture::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::AndroidVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	if (this->camWidth == 0 || this->camHeight == 0)
 		return false;
@@ -209,7 +209,7 @@ Bool Media::AndroidVideoCapture::IsRunning()
 	return this->started;
 }
 
-void Media::AndroidVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, Int32 frameRateNumer, Int32 frameRateDenom)
+void Media::AndroidVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	this->camWidth = width;
 	this->camHeight = height;
@@ -359,7 +359,7 @@ void Media::AndroidVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 	ACameraMetadata_free(metadataObj);
 }
 
-OSInt Media::AndroidVideoCapture::GetDataSeekCount()
+UOSInt Media::AndroidVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }

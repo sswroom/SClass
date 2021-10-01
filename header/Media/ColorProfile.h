@@ -106,7 +106,7 @@ namespace Media
 			WPT_DCI
 		} WhitePointType;
 
-		typedef struct
+		struct ColorCoordinate
 		{
 			Double X;
 			Double Y;
@@ -115,7 +115,7 @@ namespace Media
 			void SetFromxyY(Double x, Double y, Double Y);
 			void SetFromXYZ(Double X, Double Y, Double Z);
 			void Getxy(Double *x, Double *y);
-		} ColorCoordinate;
+		};
 
 		class ColorPrimaries
 		{

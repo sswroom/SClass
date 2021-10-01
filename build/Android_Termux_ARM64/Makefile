@@ -10,7 +10,7 @@ CFLAGS += -I ../../header
 CFLAGS += -O
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -flax-vector-conversions
-CFLAGS += -D__ANDROID_API__=$(ANDROID_API)
+#CFLAGS += -D__ANDROID_API__=$(ANDROID_API)
 ASMFLAGS :=
 CSUFFIX :=
 ASMSUFFIX :=
