@@ -5,7 +5,7 @@
 #include "Media/MonitorInfo.h"
 #include "Text/MyString.h"
 
-Media::MonitorInfo::MonitorInfo(void *hMonitor)
+Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 {
 	this->isPrimary = true;
 	this->left = 0;

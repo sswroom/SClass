@@ -8,7 +8,7 @@ namespace Media
 	class IColorHandler
 	{
 	public:
-		typedef struct
+		struct YUVPARAM
 		{
 			Double Brightness;
 			Double Contrast;
@@ -42,7 +42,7 @@ namespace Media
 				this->BAdd = 0;
 				this->BMul = 1;
 			}
-		} YUVPARAM;
+		};
 
 		class RGBPARAM2
 		{
