@@ -12,10 +12,9 @@ namespace Media
 		Media::MonitorMgr *monMgr;
 		Media::ColorManager *colorMgr;
 		Media::ColorManagerSess *colorSess;
-		UI::GUICore *ui;
 
 	public:
-		FBMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess);
+		FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
 		FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 		virtual ~FBMonitorSurfaceMgr();
 

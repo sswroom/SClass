@@ -10,12 +10,12 @@
 void UI::GUITrackBar::EventScrolled()
 {
 	UOSInt i;
-	Int32 pos;
-	pos = (Int32)SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
+	OSInt pos;
+	pos = SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
 	i = this->scrollHandlers->GetCount();
 	while (i-- > 0)
 	{
-		this->scrollHandlers->GetItem(i)(this->scrollHandlersObj->GetItem(i), pos);
+		this->scrollHandlers->GetItem(i)(this->scrollHandlersObj->GetItem(i), (UOSInt)pos);
 	}
 }
 
@@ -36,9 +36,9 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSI
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, TRACKBAR_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, minVal);
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, maxVal);
-	SendMessage((HWND)this->hwnd, TBM_SETPOS, 0, currVal);
+	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
+	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
+	SendMessage((HWND)this->hwnd, TBM_SETPOS, 0, (LPARAM)currVal);
 }
 
 UI::GUITrackBar::~GUITrackBar()
@@ -75,15 +75,15 @@ OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUITrackBar::SetPos(UOSInt pos)
 {
-	SendMessage((HWND)this->hwnd, TBM_SETPOS, TRUE, pos);
+	SendMessage((HWND)this->hwnd, TBM_SETPOS, TRUE, (LPARAM)pos);
 	EventScrolled();
 //	InvalidateRect((HWND)this->hwnd, 0, false);
 }
 
 void UI::GUITrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
 {
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, minVal);
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, maxVal);
+	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
+	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
 }
 
 UOSInt UI::GUITrackBar::GetPos()

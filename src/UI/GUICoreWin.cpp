@@ -225,6 +225,11 @@ void UI::GUICoreWin::SetMonitorMgr(Media::MonitorMgr *monMgr)
 	this->monMgr = monMgr;
 }
 
+Media::MonitorMgr *UI::GUICoreWin::GetMonitorMgr()
+{
+	return this->monMgr;
+}
+
 Bool UI::GUICoreWin::IsForwarded()
 {
 	return false;

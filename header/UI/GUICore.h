@@ -35,6 +35,7 @@ namespace UI
 		virtual void SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot) = 0;
 		virtual void GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi) = 0;
 		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr) = 0;
+		virtual Media::MonitorMgr *GetMonitorMgr() = 0;
 		virtual Bool IsForwarded() = 0;
 	};
 }

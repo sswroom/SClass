@@ -308,11 +308,11 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 		drawHeight = rc.bottom - rc.top;
 		if (destX + (OSInt)buffW > (OSInt)drawWidth)
 		{
-			buffW = drawWidth - destX;
+			buffW = (UOSInt)(drawWidth - destX);
 		}
 		if (destY + (OSInt)buffH > (OSInt)drawHeight)
 		{
-			buffH = drawHeight - destY;
+			buffH = (UOSInt)(drawHeight - destY);
 		}
 		if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 		{

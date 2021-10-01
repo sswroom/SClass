@@ -17,7 +17,7 @@ namespace Media
 		static Int32 __stdcall DDEnumMonCall(void *guid, Char *driverDesc, Char *driverName, void *context, void *hMonitor);
 		void ReleaseAll();
 	public:
-		DDrawManager(UI::GUICore *ui, Media::ColorManagerSess *colorSess);
+		DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
 		DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 		virtual ~DDrawManager();
 

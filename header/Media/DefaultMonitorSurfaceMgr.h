@@ -9,7 +9,7 @@ namespace Media
 	class DefaultMonitorSurfaceMgr
 	{
 	public:
-		static MonitorSurfaceMgr *Create(UI::GUICore *ui, Media::ColorManagerSess *colorSess);
+		static MonitorSurfaceMgr *Create(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
 		static MonitorSurfaceMgr *Create(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 	};
 }

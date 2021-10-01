@@ -3,7 +3,7 @@
 
 extern "C" void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	if (copySize == sstep && copySize == dstep)
+	if ((OSInt)copySize == sstep && (OSInt)copySize == dstep)
 	{
 		MemCopyNANC(outPt, inPt, copySize * height);
 	}

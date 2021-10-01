@@ -493,7 +493,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
-	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui, colorSess));
+	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess));
 	if (((Media::DDrawManager*)this->surfaceMgr)->IsError())
 	{
 	}

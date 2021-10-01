@@ -11,7 +11,6 @@ struct Media::DDrawManager::ClassData
 	Media::MonitorMgr *monMgr;
 	Media::ColorManager *colorMgr;
 	Media::ColorManagerSess *colorSess;
-	UI::GUICore *ui;
 };
 
 Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc, Char *driverName, void *context, void *hMonitor)
@@ -63,7 +62,7 @@ void Media::DDrawManager::ReleaseAll()
 	this->clsData->monMap->Clear();
 }
 
-Media::DDrawManager::DDrawManager(UI::GUICore *ui, Media::ColorManagerSess *colorSess)
+Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	NEW_CLASS(this->clsData->monMap, Data::Int64Map<LPDIRECTDRAW7>());
@@ -71,7 +70,6 @@ Media::DDrawManager::DDrawManager(UI::GUICore *ui, Media::ColorManagerSess *colo
 	this->clsData->monMgr = 0;
 	this->clsData->colorMgr = 0;
 	this->clsData->colorSess = colorSess;
-	this->clsData->ui = ui;
 	this->RecheckMonitor();
 }
 
@@ -83,7 +81,6 @@ Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager
 	this->clsData->monMgr = monMgr;
 	this->clsData->colorMgr = colorMgr;
 	this->clsData->colorSess = 0;
-	this->clsData->ui = 0;
 	this->RecheckMonitor();
 }
 
@@ -135,14 +132,7 @@ Double Media::DDrawManager::GetMonitorDPI(MonitorHandle *hMonitor)
 		return 96.0;
 	}
 
-	if (this->clsData->ui)
-	{
-		Double hdpi;
-		Double vdpi;
-		this->clsData->ui->GetMonitorDPIs(hMonitor, &hdpi, &vdpi);
-		return hdpi;
-	}
-	else if (this->clsData->monMgr)
+	if (this->clsData->monMgr)
 	{
 		return this->clsData->monMgr->GetMonitorHDPI(hMonitor);
 	}

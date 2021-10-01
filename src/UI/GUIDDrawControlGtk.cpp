@@ -436,7 +436,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->clsData->pSurfaceUpdated = true;
 	this->clsData->drawPause = 0;
 	
-	NEW_CLASS(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui, colorSess));
+	NEW_CLASS(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui->GetMonitorMgr(), colorSess));
 	this->inited = false;
 	this->primarySurface = 0;
 	this->buffSurface = 0;

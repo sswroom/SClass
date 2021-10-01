@@ -3,12 +3,11 @@
 #include "Media/FBSurface.h"
 #include "Media/MemorySurface.h"
 
-Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(UI::GUICore *ui, Media::ColorManagerSess *colorSess)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
 {
 	this->monMgr = 0;
 	this->colorMgr = 0;
 	this->colorSess = colorSess;
-	this->ui = ui;
 }
 
 Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
@@ -16,7 +15,6 @@ Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
 	this->colorSess = 0;
-	this->ui = 0;
 }
 
 Media::FBMonitorSurfaceMgr::~FBMonitorSurfaceMgr()
@@ -31,14 +29,7 @@ Double Media::FBMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
 		return 96.0;
 	}
 
-	if (this->ui)
-	{
-		Double hdpi;
-		Double vdpi;
-		this->ui->GetMonitorDPIs(hMonitor, &hdpi, &vdpi);
-		return hdpi;
-	}
-	else if (this->monMgr)
+	if (this->monMgr)
 	{
 		return this->monMgr->GetMonitorHDPI(hMonitor);
 	}

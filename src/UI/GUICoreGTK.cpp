@@ -173,6 +173,11 @@ void UI::GUICoreGTK::SetMonitorMgr(Media::MonitorMgr *monMgr)
 	this->monMgr = monMgr;
 }
 
+Media::MonitorMgr *UI::GUICoreGTK::GetMonitorMgr()
+{
+	return this->monMgr;
+}
+
 Bool UI::GUICoreGTK::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
