@@ -171,11 +171,7 @@ Sync::Event::Event(const UTF8Char *name)
 {
 	EventStatus *status = MemAllocA(EventStatus, 1);
 	this->hand = status;
-	pthread_condattr_t cattr;
-	pthread_condattr_init(&cattr);
-	pthread_condattr_setpshared(&cattr, PTHREAD_PROCESS_SHARED);
-	pthread_condattr_setclock(&cattr, CLOCK_MONOTONIC);
-	pthread_cond_init(&status->cond, &cattr);
+	pthread_cond_init(&status->cond, 0);
 	pthread_mutex_init(&status->mutex, 0);
 	status->useCnt = 0;
 	this->isSet = false;
@@ -186,11 +182,7 @@ Sync::Event::Event(Bool isAuto, const UTF8Char *name)
 {
 	EventStatus *status = MemAllocA(EventStatus, 1);
 	this->hand = status;
-	pthread_condattr_t cattr;
-	pthread_condattr_init(&cattr);
-	pthread_condattr_setpshared(&cattr, PTHREAD_PROCESS_SHARED);
-	pthread_condattr_setclock(&cattr, CLOCK_MONOTONIC);
-	pthread_cond_init(&status->cond, &cattr);
+	pthread_cond_init(&status->cond, 0);
 	pthread_mutex_init(&status->mutex, 0);
 	status->useCnt = 0;
 	this->isSet = false;

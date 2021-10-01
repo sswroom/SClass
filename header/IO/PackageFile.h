@@ -13,7 +13,7 @@
 
 namespace IO
 {
-	typedef struct 
+	struct PackFileItem
 	{
 		typedef enum
 		{
@@ -40,7 +40,7 @@ namespace IO
 		CompressInfo *compInfo;
 		Int64 modTimeTick;
 		Int32 useCnt;
-	} PackFileItem;
+	};
 
 	class PackageFile : public IO::ParsedObject
 	{
