@@ -2,7 +2,6 @@
 #define _SM_MEDIA_MONITORSURFACEMGR
 #include "Handles.h"
 #include "Media/MonitorSurface.h"
-#include "UI/GUIControl.h"
 
 namespace Media
 {
