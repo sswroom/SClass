@@ -52,6 +52,8 @@ Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCapture.cpp
 @AndroidVideoCapture.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceAndroid.cpp
 @AudioDevice.o
+Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
+@DefaultMonitorSurfaceMgr.o
 Media/OpenSLESRenderer.h: ../../src/Media/OpenSLESRenderer.cpp
 @OpenSLESRenderer.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
@@ -106,6 +108,7 @@ AAudioRenderer.o: ../../src/Media/AAudioRenderer.cpp
 AndroidVideoCapture.o: ../../src/Media/AndroidVideoCapture.cpp
 !?(ANDROID_API >= 24) -lcamera2ndk -lmediandk
 AudioDevice.o: ../../src/Media/AudioDeviceAndroid.cpp
+DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
 OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp

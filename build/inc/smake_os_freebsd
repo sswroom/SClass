@@ -39,6 +39,8 @@ Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
+Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
+@DefaultMonitorSurfaceMgr.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
@@ -102,6 +104,7 @@ SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`

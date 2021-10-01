@@ -42,6 +42,8 @@ Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
+Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
+@DefaultMonitorSurfaceMgr.o
 Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr.cpp
 @FBMonitorSurfaceMgr.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
@@ -89,6 +91,7 @@ SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp

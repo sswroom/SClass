@@ -43,6 +43,8 @@ Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCaptureNull.cpp
 @AndroidVideoCapture.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
+Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
+@DefaultMonitorSurfaceMgr.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
@@ -89,6 +91,7 @@ ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AndroidVideoCapture.o: ../../src/Media/AndroidVideoCaptureNull.cpp
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
