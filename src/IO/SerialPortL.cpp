@@ -420,8 +420,9 @@ void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 	return 0;
 }
 
-UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait)
+UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
+	if (incomplete) *incomplete = false;
 	return 0;
 }
 

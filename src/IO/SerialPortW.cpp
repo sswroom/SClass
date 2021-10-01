@@ -476,15 +476,17 @@ void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 #endif
 }
 
-UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait)
+UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
 #ifdef _WIN32_WCE
+	if (incomplete) *incomplete = false;
 	return (UOSInt)reqData;
 #else
 	ReadEvent *re = (ReadEvent*)reqData;
 	UInt32 retVal;
 	Int32 result = GetOverlappedResult(this->handle, &re->ol, (DWORD*)&retVal, toWait?TRUE:FALSE);
 	MemFree(re);
+	if (incomplete) *incomplete = false;
 	if (result)
 		return retVal;
 	return 0;

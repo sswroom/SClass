@@ -11,7 +11,7 @@ extern "C"
 	UInt8 SerialPort_Read();
 };
 
-IO::SerialPort::SerialPort(UOSInt portNum, Int32 baudRate, IO::SerialPort::ParityType parity, Bool flowCtrl) : IO::Stream((const UTF8Char*)"SerialPort")
+IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, IO::SerialPort::ParityType parity, Bool flowCtrl) : IO::Stream((const UTF8Char*)"SerialPort")
 {
 	this->handle = 0;
 	this->rdEvt = 0;
@@ -36,9 +36,9 @@ IO::SerialPort::~SerialPort()
 {
 }
 
-OSInt IO::SerialPort::Read(UInt8 *buff, OSInt size)
+UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 {
-	OSInt retSize = 1;
+	UOSInt retSize = 1;
 	*buff++ = SerialPort_Read();
 	while (retSize < size && SerialPort_Available())
 	{
@@ -48,9 +48,9 @@ OSInt IO::SerialPort::Read(UInt8 *buff, OSInt size)
 	return retSize;
 }
 
-OSInt IO::SerialPort::Write(const UInt8 *buff, OSInt size)
+UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
 {
-	OSInt i = size;
+	UOSInt i = size;
 	while (size > 0)
 	{
 		SerialPort_Write(*buff++);
@@ -64,13 +64,14 @@ Bool IO::SerialPort::HasData()
 	return SerialPort_Available();
 }
 
-void *IO::SerialPort::BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
 	return 0;
 }
 
-Int32 IO::SerialPort::EndRead(void *reqData)
+UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
+	if (incomplete) *incomplete = false;
 	return 0;
 }
 
@@ -78,11 +79,11 @@ void IO::SerialPort::CancelRead(void *reqData)
 {
 }
 
-void *IO::SerialPort::BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
 }
 
-Int32 IO::SerialPort::EndWrite(void *reqData)
+UOSInt IO::SerialPort::EndWrite(void *reqData, Bool toWait)
 {
 	return 0;
 }

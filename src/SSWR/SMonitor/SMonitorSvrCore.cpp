@@ -1243,7 +1243,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		{
 			if (csptr2 && IO::Path::GetPathType(csptr2) == IO::Path::PT_DIRECTORY)
 			{
-				if (Text::StrToUInt16(csptr1, &port) && port > 0 && port < 65536)
+				if (Text::StrToUInt16(csptr1, &port) && port > 0)
 				{
 					Net::WebServer::HTTPDirectoryHandler *hdlr;
 					SSWR::SMonitor::SMonitorWebHandler *shdlr;
@@ -1293,7 +1293,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		csptr1 = cfg->GetValue((const UTF8Char*)"ClientPort");
 		if (csptr1)
 		{
-			if (Text::StrToUInt16(csptr1, &port) && port > 0 && port < 65536)
+			if (Text::StrToUInt16(csptr1, &port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
 				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, (const UTF8Char*)"CLI: "));
@@ -1318,7 +1318,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		csptr1 = cfg->GetValue((const UTF8Char*)"DataUDPPort");
 		if (csptr1)
 		{
-			if (Text::StrToUInt16(csptr1, &port) && port > 0 && port < 65536)
+			if (Text::StrToUInt16(csptr1, &port) && port > 0)
 			{
 				Crypto::Hash::CRC16 *crc;
 				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));

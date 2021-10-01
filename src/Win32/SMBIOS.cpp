@@ -449,7 +449,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 				{
 					sb->Append((const UTF8Char*)"MB");
 				}
-				else if ((dataBuff[25] & 0xc0) == 1)
+				else if ((dataBuff[25] & 0xc0) == 0x40)
 				{
 					sb->Append((const UTF8Char*)"GB");
 				}
