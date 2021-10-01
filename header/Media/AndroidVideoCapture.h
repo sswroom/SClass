@@ -55,10 +55,10 @@ namespace Media
 		AndroidVideoCaptureMgr();
 		~AndroidVideoCaptureMgr();
 
-		OSInt GetDeviceList(Data::ArrayList<Int32> *devList);
-		UTF8Char *GetDeviceName(UTF8Char *buff, OSInt devId);
+		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
+		UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devId);
 
-		Media::IVideoCapture *CreateDevice(OSInt devId);
+		Media::IVideoCapture *CreateDevice(UOSInt devId);
 	};
 }
 #endif

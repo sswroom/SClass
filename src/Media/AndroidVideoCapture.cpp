@@ -394,12 +394,12 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 	}
 }
 
-OSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<Int32> *devList)
+OSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
 		ACameraIdList *cameraIdList = (ACameraIdList*)this->cameraIdList;
-		Int32 i = 0;
+		UInt32 i = 0;
 		while (i < cameraIdList->numCameras)
 		{
 			devList->Add(i);
@@ -410,12 +410,12 @@ OSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<Int32> *devLi
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSInt devId)
+UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
 		ACameraIdList *cameraIdList = (ACameraIdList*)this->cameraIdList;
-		if (devId >= 0 && devId < cameraIdList->numCameras)
+		if (devId < cameraIdList->numCameras)
 		{
 			return Text::StrConcat(buff, (const UTF8Char*)cameraIdList->cameraIds[devId]);
 		}
@@ -424,12 +424,12 @@ UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSInt dev
 	return 0;
 }
 
-Media::IVideoCapture *Media::AndroidVideoCaptureMgr::CreateDevice(OSInt devId)
+Media::IVideoCapture *Media::AndroidVideoCaptureMgr::CreateDevice(UOSInt devId)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
 		ACameraIdList *cameraIdList = (ACameraIdList*)this->cameraIdList;
-		if (devId >= 0 && devId < cameraIdList->numCameras)
+		if (devId < cameraIdList->numCameras)
 		{
 			Media::AndroidVideoCapture *capture;
 			NEW_CLASS(capture, Media::AndroidVideoCapture(this->cameraMgr, cameraIdList->cameraIds[devId]));
@@ -451,17 +451,17 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 
 }
 
-OSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<Int32> *devList)
+UOSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, OSInt devId)
+UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
 {
 	return 0;
 }
 
-Media::IVideoCapture *Media::AndroidVideoCaptureMgr::CreateDevice(OSInt devId)
+Media::IVideoCapture *Media::AndroidVideoCaptureMgr::CreateDevice(UOSInt devId)
 {
 	return 0;
 }
