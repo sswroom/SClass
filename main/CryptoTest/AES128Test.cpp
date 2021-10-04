@@ -3,6 +3,8 @@
 #include "Core/Core.h"
 #include "Crypto/Encrypt/AES128.h"
 #include "IO/ConsoleWriter.h"
+#include "Manage/HiResClock.h"
+#include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -116,6 +118,33 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendHexBuff(decText, 16, 0, Text::LBT_NONE);
 	console.WriteLine(sb.ToString());
 	console.WriteLine();
+
+	UInt8 *tempBuff = MemAlloc(UInt8, 1048576);
+	MemClear(tempBuff, 1048576);
+	Manage::HiResClock clk;
+	UOSInt i = 100;
+	while (i-- > 0)
+	{
+		aes->Encrypt(tempBuff, 1048576, tempBuff, 0);
+	}
+	Double t = clk.GetTimeDiff();
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"Encrypt rate = ");
+	Text::SBAppendF64(&sb, 104857600 / t);
+	console.WriteLine(sb.ToString());
+
+	clk.Start();
+	i = 100;
+	while (i-- > 0)
+	{
+		aes->Decrypt(tempBuff, 1048576, tempBuff, 0);
+	}
+	t = clk.GetTimeDiff();
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"Decrypt rate = ");
+	Text::SBAppendF64(&sb, 104857600 / t);
+	console.WriteLine(sb.ToString());
+	MemFree(tempBuff);
 
 	DEL_CLASS(aes);
 	return 0;
