@@ -7,6 +7,8 @@ global _CRC32R_Reverse
 global CRC32R_Calc
 global _CRC32R_Calc
 
+extern _UseSSE42
+
 ;void CRC32R_InitTable(UInt32 *tab, UInt32 rpn);
 ;16 retAddr
 ;rdi tab
@@ -161,6 +163,12 @@ _CRC32R_Calc:
 	mov rax,rcx ;currVal
 	mov r8,rdx ;tab
 	mov r9,rsi ;buffSize
+	cmp dword [r8+512],0x82F63B78
+	jnz calclop0
+	cmp dword [rel _UseSSE42],0
+	jnz calcsse42
+	align 16
+calclop0:
 	mov r11,r9 ;buffSize
 	shr r9,4 ;buffSize 
 	jz calclop1
@@ -249,3 +257,26 @@ calcexit:
 	mov rbx,r10
 	ret
 
+calcsse42:
+	mov r11,r9
+	shr r9,3
+	jz calcsse42_2
+	align 16
+calcsse42_1:
+	crc32 rax,qword [rdi]
+	lea rdi,[rdi+8]
+	dec r9
+	jnz calcsse42_1
+
+	align 16
+calcsse42_2:
+	and r11,7
+	jz calcexit
+
+	align 16
+calcsse42_3:
+	crc32 eax,byte [rdi]
+	lea rdi,[rdi+1]
+	dec r11
+	jnz calcsse42_3
+	jmp calcexit

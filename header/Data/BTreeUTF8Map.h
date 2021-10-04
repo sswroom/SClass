@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_BTREEUTF8MAP
 #define _SM_DATA_BTREEUTF8MAP
 #include "MyMemory.h"
+#include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
 #include "Data/IMap.h"
@@ -363,7 +364,7 @@ namespace Data
 	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : IMap<const UTF8Char*, T>()
 	{
 		rootNode = 0;
-		NEW_CLASS(crc, Crypto::Hash::CRC32R(Crypto::Hash::CRC32R::GetPolynormialIEEE()));
+		NEW_CLASS(crc, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
 	}
 
 	template <class T> BTreeUTF8Map<T>::~BTreeUTF8Map()

@@ -43,6 +43,7 @@ void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt
 */
 
 #if !defined(_WIN32) && !defined(__APPLE__)
+#define UseSSE42 _UseSSE42
 #define UseAVX _UseAVX
 #define CPUBrand _CPUBrand
 #endif
