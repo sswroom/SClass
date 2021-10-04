@@ -67,12 +67,14 @@ MemCopyFunc MemCopyNANC = MemCopyNANC_SSE;
 extern "C"
 {
 	Int32 UseAVX = 0;
+	Int32 UseSSE42 = 0;
 	Int32 CPUBrand = 0;
 }
 #elif defined(CPU_X86_32)
 extern "C"
 {
 	Int32 UseAVX = 0;
+	Int32 UseSSE42 = 0;
 	Int32 CPUBrand = 0;
 }
 #endif
@@ -130,6 +132,10 @@ void MemInit()
 				MemCopyNAC = MemCopyNAC_AVX;
 				MemCopyNANC = MemCopyNANC_AVX;
 			}
+		}
+		if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_SSE42))
+		{
+			UseSSE42 = 1;
 		}
 #elif defined(CPU_X86_32)
 	Manage::CPUInfo cpuInfo;

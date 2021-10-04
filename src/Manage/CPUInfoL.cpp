@@ -172,6 +172,9 @@ Bool Manage::CPUInfo::HasInstruction(InstructionType instType)
 	case IT_SSE41:
 		__cpuid(cpuInfo, 1);
 		return (cpuInfo[2] & 0x80000) != 0;
+	case IT_SSE42:
+		__cpuid(cpuInfo, 1);
+		return (cpuInfo[2] & 0x100000) != 0;
 	case IT_AVX:
 		__cpuid(cpuInfo, 1);
 		return (cpuInfo[2] & 0x10000000) != 0;

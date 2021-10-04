@@ -29,6 +29,7 @@ namespace Crypto
 			virtual UOSInt GetResultSize();
 
 			static UInt32 GetPolynormialIEEE();
+			static UInt32 GetPolynormialCastagnoli();
 		};
 	}
 }

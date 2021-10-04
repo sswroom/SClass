@@ -81,3 +81,8 @@ UInt32 Crypto::Hash::CRC32::GetPolynormialIEEE()
 {
 	return 0x04C11DB7;
 }
+
+UInt32 Crypto::Hash::CRC32::GetPolynormialCastagnoli()
+{
+	return 0x1EDC6F41;
+}

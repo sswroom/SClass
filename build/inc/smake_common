@@ -197,6 +197,9 @@ BcryptTest:
 BlowfishTest:
 @BlowfishTest.o
 @ConsoleStartup.o
+CRC32CTest:
+@CRC32CTest.o
+@ConsoleStartup.o
 CRC32RTest:
 @CRC32RTestMain.o
 @ConsoleStartup.o
@@ -716,6 +719,7 @@ AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 BcryptTest.o: ../../main/CryptoTest/BcryptTest.cpp
 BlowfishTest.o: ../../main/CryptoTest/BlowfishTest.cpp
+CRC32CTest.o: ../../main/CryptoTest/CRC32CTest.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp

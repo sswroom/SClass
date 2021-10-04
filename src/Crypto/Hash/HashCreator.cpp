@@ -41,7 +41,10 @@ Crypto::Hash::IHash *Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashTyp
 		NEW_CLASS(hash, Crypto::Hash::CRC32());
 		break;
 	case Crypto::Hash::HT_CRC32R_IEEE:
-		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32R::GetPolynormialIEEE()));
+		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
+		break;
+	case Crypto::Hash::HT_CRC32C:
+		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialCastagnoli()));
 		break;
 	case Crypto::Hash::HT_DJB2:
 		NEW_CLASS(hash, Crypto::Hash::DJB2());

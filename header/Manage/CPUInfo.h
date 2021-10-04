@@ -13,6 +13,7 @@ namespace Manage
 		{
 			IT_X86,
 			IT_SSE41,
+			IT_SSE42,
 			IT_AVX,
 			IT_AVX2
 		} InstructionType;

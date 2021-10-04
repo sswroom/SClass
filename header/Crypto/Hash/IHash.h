@@ -13,6 +13,7 @@ namespace Crypto
 			HT_CRC16R,
 			HT_CRC32,
 			HT_CRC32R_IEEE,
+			HT_CRC32C,
 			HT_DJB2,
 			HT_DJB2A,
 			HT_FNV1,

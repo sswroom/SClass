@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
 #include "Text/MyString.h"
@@ -28,7 +29,7 @@ void Crypto::Hash::CRC32R::InitTable(UInt32 polynomial)
 
 Crypto::Hash::CRC32R::CRC32R()
 {
-	InitTable(GetPolynormialIEEE());
+	InitTable(Crypto::Hash::CRC32::GetPolynormialIEEE());
 }
 
 Crypto::Hash::CRC32R::CRC32R(UInt32 polynomial)
@@ -76,10 +77,4 @@ UOSInt Crypto::Hash::CRC32R::GetBlockSize()
 UOSInt Crypto::Hash::CRC32R::GetResultSize()
 {
 	return 4;
-}
-
-UInt32 Crypto::Hash::CRC32R::GetPolynormialIEEE()
-{
-	return 0x04C11DB7;
-//	return 0xedb88320;
 }
