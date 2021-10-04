@@ -663,4 +663,50 @@ FORCEINLINE void ShrEq8(UInt8 *dptr, UInt32 val)
 	*dptr = (UInt8)(*dptr >> val);
 }
 
+FORCEINLINE Double UInt16_Float16(UInt16 val)
+{
+	UInt16 e = (val >> 10) & 0x1F;
+	if (e == 0)
+	{
+		if ((val & 0x3ff) == 0)
+		{
+
+		}
+		else
+		{
+			Double d = (val & 0x3ff) / 1024.0 * 0.000061035156;
+			if (val & 0x8000)
+			{
+				return -d;
+			}
+			else
+			{
+				return d;
+			}
+		}
+	}
+	else if (e == 0x1F)
+	{
+		e = 0x7ff;
+	}
+	else
+	{
+		e = e - 15 + 1023;
+	}
+	UInt8 buff[8];
+	buff[0] = 0;
+	buff[1] = 0;
+	buff[2] = 0;
+	buff[3] = 0;
+	buff[4] = 0;
+	buff[5] = (UInt8)((val << 2) & 0xff);
+	buff[6] = (UInt8)(((val >> 6) & 0xf) | ((e << 4) & 0xf0));
+	buff[7] = (UInt8)(((val >> 8) & 0x80) | (e >> 4));
+	return ReadDouble(buff);
+}
+
+#define ReadFloat16(dptr) UInt16_Float16(ReadUInt16(dptr))
+#define ReadMFloat16(dptr) UInt16_Float16(ReadMUInt16(dptr))
+#define ReadNFloat16(dptr) UInt16_Float16(ReadNUInt16(dptr))
+
 #endif

@@ -36,6 +36,7 @@ nodeps:
 @SHA384Test
 @SHA512Test
 @X509Test
+@Float16Test
 @SortSpeed
 @MySQLCheck
 @XLSXExporterTest
@@ -247,6 +248,9 @@ X509Test:
 @ConsoleStartup.o
 
 #Data
+Float16Test:
+@Float16Test.o
+@ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
 @ConsoleStartup.o
@@ -735,6 +739,7 @@ SHA256Test.o: ../../main/CryptoTest/SHA256Test.cpp
 SHA384Test.o: ../../main/CryptoTest/SHA384Test.cpp
 SHA512Test.o: ../../main/CryptoTest/SHA512Test.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
+Float16Test.o: ../../main/Data/Float16Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp

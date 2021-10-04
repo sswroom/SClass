@@ -390,6 +390,11 @@ namespace Math
 		return 0x7ff0000000000000LL == *(Int64*)&val;
 	}
 
+	FORCEINLINE Bool IsNeg(Double val)
+	{
+		return (Int64)0x8000000000000000LL & *(Int64*)&val;
+	}
+
 	FORCEINLINE Double GetNAN()
 	{
 		UInt64 v = 0xffffffffffffffffLL;

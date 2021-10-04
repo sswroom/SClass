@@ -11,7 +11,14 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 {
 	if (val == 0)
 	{
-		return Text::StrConcat(oriStr, "0");
+		if (Math::IsNeg(val))
+		{
+			return Text::StrConcat(oriStr, "-0");
+		}
+		else
+		{
+			return Text::StrConcat(oriStr, "0");
+		}
 	}
 	else if (Math::IsNAN(val))
 	{
@@ -184,7 +191,14 @@ UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)
 {
 	if (val == 0)
 	{
-		return Text::StrConcatASCII(oriStr, "0");
+		if (Math::IsNeg(val))
+		{
+			return Text::StrConcatASCII(oriStr, "-0");
+		}
+		else
+		{
+			return Text::StrConcatASCII(oriStr, "0");
+		}
 	}
 	else if (Math::IsNAN(val))
 	{
@@ -361,7 +375,14 @@ UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
 {
 	if (val == 0)
 	{
-		return Text::StrConcatASCII(oriStr, "0");
+		if (Math::IsNeg(val))
+		{
+			return Text::StrConcatASCII(oriStr, "-0");
+		}
+		else
+		{
+			return Text::StrConcatASCII(oriStr, "0");
+		}
 	}
 	else if (Math::IsNAN(val))
 	{
