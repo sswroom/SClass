@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -52,7 +53,7 @@ Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, cons
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->cacheDir = Text::StrCopyNew(cacheDir);
-	NEW_CLASS(this->hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32R::GetPolynormialIEEE()));
+	NEW_CLASS(this->hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
 	NEW_CLASS(this->queue, Net::HTTPQueue(sockf, ssl));
 }
 

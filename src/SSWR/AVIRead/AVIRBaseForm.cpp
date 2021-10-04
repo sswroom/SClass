@@ -939,7 +939,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRESRIMapForm(0, this->ui, this->core));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32R::GetPolynormialIEEE());
+				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
 				Map::ESRI::ESRITileMap *map;
 				UInt8 crcVal[4];
 				const UTF8Char *url = frm->GetSelectedURL();

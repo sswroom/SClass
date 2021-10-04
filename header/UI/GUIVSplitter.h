@@ -31,6 +31,8 @@ namespace UI
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		void EventMouseDown(UI::GUIControl::MouseButton btn, OSInt x, OSInt y);
+		void EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OSInt y);
 	};
 }
 #endif

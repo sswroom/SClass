@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
 #include "Crypto/Hash/SHA1.h"
@@ -22,7 +23,7 @@ Crypto::Hash::IHash *IO::FileCheck::CreateHash(CheckType chkType)
 	Crypto::Hash::IHash *hash;
 	if (chkType == IO::FileCheck::CT_CRC32)
 	{
-		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32R::GetPolynormialIEEE()));
+		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
 	}
 	else if (chkType == IO::FileCheck::CT_MD4)
 	{
