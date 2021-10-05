@@ -759,6 +759,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 {
 	//this->mapCtrl->SetRenderer(0);
 	UOSInt i;
+	this->pauseUpdate = true;
 	this->CloseCtrlForm();
 	i = this->subForms->GetCount();
 	while (i-- > 0)
@@ -1595,7 +1596,10 @@ void SSWR::AVIRead::AVIRGISForm::ShowMarkerDir(Double lat, Double lon, Double di
 
 void SSWR::AVIRead::AVIRGISForm::HideMarker()
 {
-	this->mapCtrl->HideMarker();
+	if (!this->pauseUpdate)
+	{
+		this->mapCtrl->HideMarker();
+	}
 }
 
 void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Math::Vector2D *vec)
