@@ -804,12 +804,12 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 						while (i < n)
 						{
 							Text::StrConcat(Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"Source Address["), i), (const UTF8Char*)"]");
-							frame->AddIPv4(frameOfst + 12 + i * 4, (const Char*)sbuff, &packet[12 + i * 4]);
+							frame->AddIPv4(frameOfst + 12 + (UOSInt)i * 4, (const Char*)sbuff, &packet[12 + i * 4]);
 							i++;
 						}
 						if (packetSize > 12 + (UOSInt)n * 4)
 						{
-							frame->AddTextHexBuff(frameOfst + 12 + n * 4, packetSize - 12 - (UInt32)n * 4, &packet[12 + n * 4], true);
+							frame->AddTextHexBuff(frameOfst + 12 + (UOSInt)n * 4, packetSize - 12 - (UInt32)n * 4, &packet[12 + n * 4], true);
 						}
 					}
 				}
@@ -1501,7 +1501,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 1, "Client ID Type", currPtr[0]);
 					if (len > 1)
 					{
-						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, len - 1, "Client ID", &currPtr[1], ':', false);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, (UOSInt)len - 1, "Client ID", &currPtr[1], ':', false);
 					}
 				}
 				else if (t == 66 && len >= 1)
@@ -1515,7 +1515,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet) + 2, 1, "RCODE2", currPtr[2]);
 					if (len > 3)
 					{
-						frame->AddStrC(frameOfst + (UInt32)(currPtr - packet + 3), len - 3, "Domain Name", &currPtr[3]);
+						frame->AddStrC(frameOfst + (UInt32)(currPtr - packet + 3), (UOSInt)len - 3, "Domain Name", &currPtr[3]);
 					}
 				}
 				else if (t == 120 && len >= 1)
@@ -1527,7 +1527,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					}
 					else if (len > 1)
 					{
-						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, len - 1, "Unknown", &currPtr[1], true);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, (UOSInt)len - 1, "Unknown", &currPtr[1], true);
 					}
 				}
 				else
@@ -1642,7 +1642,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				vName = "Unknown";
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, "Leap Indicator", packet[0] >> 6, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 0, 1, "Leap Indicator", (UOSInt)packet[0] >> 6, (const UTF8Char*)vName);
 			frame->AddUInt(frameOfst + 0, 1, "Version Number", (packet[0] >> 3) & 7);
 			vName = 0;
 			switch (packet[0] & 7)
@@ -2069,7 +2069,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					}
 					else if (len2 + i <= len)
 					{
-						frame->AddStrC(frameOfst + i - 2, 2 + len2, "Previous Responders", &packet[i]);
+						frame->AddStrC(frameOfst + i - 2, 2 + (UOSInt)len2, "Previous Responders", &packet[i]);
 						i += len2;
 					}
 					else
@@ -2088,7 +2088,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					}
 					else if (len2 + i <= len)
 					{
-						frame->AddStrC(frameOfst + i - 2, 2 + len2, "Service Request", &packet[i]);
+						frame->AddStrC(frameOfst + i - 2, 2 + (UOSInt)len2, "Service Request", &packet[i]);
 						i += len2;
 					}
 					else

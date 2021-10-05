@@ -334,7 +334,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 				if (flags & 0x10)
 				{
 					UInt64 program_clock_reference = ReadMUInt32(&buff[currOfst]);
-					program_clock_reference = (program_clock_reference << 1) | (buff[currOfst + 4] >> 7);
+					program_clock_reference = (program_clock_reference << 1) | (UInt32)(buff[currOfst + 4] >> 7);
 					program_clock_reference = program_clock_reference * 300 + (ReadMUInt16(&buff[currOfst + 4]) & 0x1ff);
 					Text::StrUInt64(sbuff, program_clock_reference);
 					frame->AddField(currOfst, 6, (const UTF8Char*)"program_clock_reference", sbuff);
@@ -343,7 +343,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 				if (flags & 0x8)
 				{
 					UInt64 original_program_clock_reference = ReadMUInt32(&buff[currOfst]);
-					original_program_clock_reference = (original_program_clock_reference << 1) | (buff[currOfst + 4] >> 7);
+					original_program_clock_reference = (original_program_clock_reference << 1) | (UInt32)(buff[currOfst + 4] >> 7);
 					original_program_clock_reference = original_program_clock_reference * 300 + (ReadMUInt16(&buff[currOfst + 4]) & 0x1ff);
 					Text::StrUInt64(sbuff, original_program_clock_reference);
 					frame->AddField(currOfst, 6, (const UTF8Char*)"original_program_clock_reference", sbuff);
@@ -389,7 +389,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 						UInt64 DTS_next_AU;
 						frame->AddUInt(currOfst, 5, "splice_type", (UInt8)(buff[currOfst] >> 4));
 						DTS_next_AU = buff[currOfst] & 0xe;
-						DTS_next_AU = (DTS_next_AU << 29) | ((ReadMUInt16(&buff[currOfst + 1]) & 0xfffe) << 14) | (ReadMUInt16(&buff[currOfst + 3]) >> 1);
+						DTS_next_AU = (DTS_next_AU << 29) | ((ReadMUInt16(&buff[currOfst + 1]) & 0xfffe) << 14) | (UInt32)(ReadMUInt16(&buff[currOfst + 3]) >> 1);
 						Text::StrUInt64(sbuff, DTS_next_AU);
 						frame->AddField(currOfst, 5, (const UTF8Char*)"DTS_next_AU", sbuff);
 						currOfst += 5;

@@ -1419,13 +1419,13 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 		{
 			sb.ClearStr();
 			sb.AppendC(&packet[i + 2], (UOSInt)len - 1);
-			frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Device Name (shortened)", sb.ToString());
+			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Device Name (shortened)", sb.ToString());
 		}
 		else if (packet[i + 1] == 9)
 		{
 			sb.ClearStr();
 			sb.AppendC(&packet[i + 2], (UOSInt)len - 1);
-			frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Device Name", sb.ToString());
+			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Device Name", sb.ToString());
 		}
 		else if (packet[i + 1] == 0x0A && len == 2)
 		{
@@ -1578,7 +1578,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 							frame->AddHex8(frameOfst + i + j + 10, "Unknown", packet[i + j + 10]);
 							if (appLen > 9)
 							{
-								frame->AddHexBuff(frameOfst + i + j + 11, appLen - 9, "Encrypted Data", &packet[i + j + 11], false);
+								frame->AddHexBuff(frameOfst + i + j + 11, (UOSInt)appLen - 9, "Encrypted Data", &packet[i + j + 11], false);
 							}
 						}
 						else if (packet[i + j] == 9 && appLen == 6)
@@ -1741,7 +1741,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 								}
 								else if (appLen > 2)
 								{
-									frame->AddHexBuff(frameOfst + i + j + 4, appLen - 2, "Authentication Tag", &packet[i + j + 4], false);
+									frame->AddHexBuff(frameOfst + i + j + 4, (UOSInt)appLen - 2, "Authentication Tag", &packet[i + j + 4], false);
 								}
 								if (appLen >= 7)
 								{
@@ -1756,7 +1756,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 								}
 								else if (appLen > 2)
 								{
-									frame->AddHexBuff(frameOfst + i + j + 4, appLen - 2, "Authentication Tag", &packet[i + j + 4], false);
+									frame->AddHexBuff(frameOfst + i + j + 4, (UOSInt)appLen - 2, "Authentication Tag", &packet[i + j + 4], false);
 								}
 								if (appLen >= 6)
 								{
@@ -1776,21 +1776,21 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 							frame->AddHexBuff(frameOfst + i + j + 2, appLen, "Unknown", &packet[i + j + 2], false);
 						}
 					}
-					j += appLen + 2;
+					j += (UInt32)appLen + 2;
 				}
 			}
 			else
 			{
 				sb.Append((const UTF8Char*)", Value=");
 				sb.AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LBT_NONE);
-				frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Manufacturer Specific", sb.ToString());
+				frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Manufacturer Specific", sb.ToString());
 			}
 		}
 		else
 		{
 			sb.ClearStr();
 			sb.AppendHexBuff(packet + i + 2, (UOSInt)len - 1, ' ', Text::LBT_NONE);
-			frame->AddField(frameOfst + i + 2, len - 1, (const UTF8Char*)"Adv Item Value", sb.ToString());
+			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Adv Item Value", sb.ToString());
 		}
 		i += (UInt32)len + 1;
 	}
@@ -2273,7 +2273,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt p
 				{
 					AddUnknown(frame, frameOfst + 18, packet + 18, packetSize - 18);
 				}
-				i = 18 + (UOSInt)packet[17];
+				i = 18 + (UInt32)packet[17];
 				if (i < packetSize)
 				{
 					AddRSSI(frame, frameOfst + i, (Int8)packet[i]);

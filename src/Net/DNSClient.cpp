@@ -538,7 +538,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
 				}
 				sptr = Text::StrConcatC(sptr, &buff[currInd + 1], buff[currInd]);
-				currInd += 1 + buff[currInd];
+				currInd += 1 + (UOSInt)buff[currInd];
 			}
 			ans->rd = Text::StrCopyNew(sbuff);
 		}

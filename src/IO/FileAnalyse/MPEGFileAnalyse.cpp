@@ -1162,7 +1162,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		
 			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - 9 - packBuff[8]);
 			frame->AddText(i, sbuff);
-			frame->AddHexBuff(9 + packBuff[8], pack->packSize - 9 - packBuff[8], "Content", &packBuff[9 + packBuff[8]], true);
+			frame->AddHexBuff(9 + (UOSInt)packBuff[8], pack->packSize - 9 - packBuff[8], "Content", &packBuff[9 + packBuff[8]], true);
 		}
 		else
 		{
