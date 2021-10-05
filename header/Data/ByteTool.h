@@ -691,7 +691,7 @@ FORCEINLINE Double UInt16_Float16(UInt16 val)
 	}
 	else
 	{
-		e = e - 15 + 1023;
+		e = (UInt16)(e - 15 + 1023);
 	}
 	UInt8 buff[8];
 	buff[0] = 0;
