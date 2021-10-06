@@ -282,7 +282,7 @@ WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
 		return 0;
 	else
 	{
-		return Text::StrUTF8_WChar(sbuff, (UTF8Char*)buff, -1, 0);
+		return Text::StrUTF8_WChar(sbuff, (UTF8Char*)buff, 0);
 	}
 #else
 	if (fgetws(sbuff, (int)nChar, stdin) == 0)

@@ -825,7 +825,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 
 Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
 {
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(__CYGWIN__)
 	MIB_IPNETROW row;
 	row.dwIndex = (UInt32)ifIndex;
 	row.dwPhysAddrLen = 6;

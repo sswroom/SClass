@@ -64,7 +64,7 @@ UTF8Char *IO::Console::GetLine(UTF8Char *buff)
     ptr = gets(sbuff);
 	if (ptr)
 	{
-		return Text::StrUTF8_WChar(buff, (UTF8Char*)sbuff, -1, 0);
+		return Text::StrConcat(buff, (UTF8Char*)sbuff);
 	}
 	else
 	{

@@ -875,8 +875,8 @@ public:
     // do something with these media samples
     STDMETHODIMP ReceiveMultiple (
         __in_ecount(nSamples) IMediaSample **pSamples,
-        long nSamples,
-        __out long *nSamplesProcessed);
+        LONG nSamples,
+        __out LONG *nSamplesProcessed);
 
     // See if Receive() blocks
     STDMETHODIMP ReceiveCanBlock();

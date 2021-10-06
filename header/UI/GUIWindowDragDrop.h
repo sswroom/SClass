@@ -2,6 +2,7 @@
 #define _SM_UI_GUIWINDOWDRAGDROP
 #include "Data/StringUTF8Map.h"
 #include "UI/GUIControl.h"
+#include <windows.h>
 #include <ole2.h>
 
 namespace UI
@@ -46,6 +47,6 @@ namespace UI
 
 		void SetHandler(UI::GUIDropHandler *hdlr);
 	};
-};
+}
 
 #endif

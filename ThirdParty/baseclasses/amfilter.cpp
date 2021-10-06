@@ -3030,8 +3030,8 @@ CBaseInputPin::Receive(IMediaSample *pSample)
 STDMETHODIMP
 CBaseInputPin::ReceiveMultiple (
     __in_ecount(nSamples) IMediaSample **pSamples,
-    long nSamples,
-    __out long *nSamplesProcessed)
+    LONG nSamples,
+    __out LONG *nSamplesProcessed)
 {
     CheckPointer(pSamples,E_POINTER);
     ValidateReadPtr(pSamples,nSamples * sizeof(IMediaSample *));

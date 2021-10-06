@@ -11,7 +11,7 @@
 #include <sensors.h>
 #include <stdio.h>
 
-#if !defined(__MINGW32__)
+#if !defined(__MINGW32__) && !defined(__CYGWIN__)
 // {77a1c827-fcd2-4689-8915-9d613cc5fa3e}
 DEFINE_GUID(CLSID_SensorManager,              0X77a1c827, 0Xfcd2, 0X4689, 0X89, 0X15, 0X9d, 0X61, 0X3c, 0Xc5, 0Xfa, 0X3e);
 #endif

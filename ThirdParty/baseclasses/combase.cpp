@@ -157,6 +157,10 @@ template<class T> inline static T ourmax( const T & a, const T & b )
     return a > b ? a : b;
 }
 
+inline static ULONG ourmax(ULONG a, unsigned int b)
+{
+	return a > b ? a : b;
+}
 /* AddRef */
 
 STDMETHODIMP_(ULONG) CUnknown::NonDelegatingAddRef()

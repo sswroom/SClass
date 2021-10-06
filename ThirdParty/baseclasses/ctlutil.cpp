@@ -20,6 +20,9 @@
 // 'bool' non standard reserved word
 #pragma warning(disable:4237)
 
+#if !defined(_I64_MAX)
+#define _I64_MAX 0x7FFFFFFFFFFFFFFFLL
+#endif
 
 // --- CBaseDispatch implementation ----------
 CBaseDispatch::~CBaseDispatch()
@@ -1097,7 +1100,7 @@ CSourceSeeking::CSourceSeeking(
     __in CCritSec * pLock) :
         CUnknown(pName, pUnk),
         m_pLock(pLock),
-        m_rtStart((long)0)
+        m_rtStart((LONG)0)
 {
     m_rtStop = _I64_MAX / 2;
     m_rtDuration = m_rtStop;

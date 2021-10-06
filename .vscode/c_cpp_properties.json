@@ -125,6 +125,29 @@
             "intelliSenseMode": "gcc-x64"
         },
         {
+            "name": "msys2",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "C:/msys64/usr/include",
+				"C:/msys64/mingw64/x86_64-w64-mingw32/include",
+                "${workspaceFolder}/../opencv/build/include",
+                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl"
+            ],
+            "defines": [
+                "UNICODE",
+                "_UNICODE",
+				"__CYGWIN__"
+            ],
+            "compilerPath": "\"C:/msys64/usr/bin/g++.exe\"",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
             "name": "Windows_cc_x64",
             "includePath": [
                 "${workspaceFolder}/../SClass/header",

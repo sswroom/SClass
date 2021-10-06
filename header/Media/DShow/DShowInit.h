@@ -35,7 +35,7 @@ inline unsigned long min(unsigned long a, unsigned long b) {return (a > b)?b:a;}
 #elif _MSC_VER <= 1600
 #define PTCHAR (TCHAR *)
 #endif
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(__CYGWIN__)
 constexpr long long int operator "" I64 (unsigned long long int v)
 {
 	return (long long int)v;

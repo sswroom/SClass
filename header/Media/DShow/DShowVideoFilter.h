@@ -287,7 +287,7 @@ namespace Media
 				return this->frameMul;
 			}
 		};
-	};
-};
+	}
+}
 
 #endif

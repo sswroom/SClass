@@ -1,7 +1,5 @@
 INCLUDEPATH:=../../header
 CFLAGS += -I ../../header
-INCLUDEPATH+=:../../privheader
-CFLAGS += -I ../../privheader
 INCLUDEPATH+=:../../ThirdParty/miniz
 INCLUDEPATH+=:../../ThirdParty/sqlite3
 INCLUDEPATH+=:../../ThirdParty/adl

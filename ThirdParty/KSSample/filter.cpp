@@ -16,6 +16,7 @@
 #if defined(__CYGWIN__) || defined(__MINGW32__)
 #include "Stdafx.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #define _tcsncpy(a, b, c) Text::StrConcatC(a, b, c)
 #endif
 #include "kssample.h"
