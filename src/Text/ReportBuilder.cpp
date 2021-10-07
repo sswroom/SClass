@@ -743,22 +743,27 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		g->DelBrush(b);
 		g->DelPen(p);
 
+		Double paperWidthMM;
+		Double paperHeightMM;
+		if (this->paperHori)
+		{
+			paperWidthMM = paperSize.GetHeightMM();
+			paperHeightMM = paperSize.GetWidthMM();
+		}
+		else
+		{
+			paperWidthMM = paperSize.GetWidthMM();
+			paperHeightMM = paperSize.GetHeightMM();
+		}
 		if (k >= l)
 		{
 			if (this->chart)
 			{
-				this->chart->Plot(g, border, currY, drawWidth, paperSize.GetHeightMM() - border - currY);
+				this->chart->Plot(g, border, currY, drawWidth, paperHeightMM - border - currY);
 			}
 			break;
 		}
-		if (this->paperHori)
-		{
-			g = doc->AddGraph(paperSize.GetHeightMM(), paperSize.GetWidthMM(), Math::Unit::Distance::DU_MILLIMETER);
-		}
-		else
-		{
-			g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
-		}
+		g = doc->AddGraph(paperWidthMM, paperHeightMM, Math::Unit::Distance::DU_MILLIMETER);
 		lastRowType = RT_UNKNOWN;
 	}
 	MemFree(colMinWidth);
