@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Sync/Interlocked.h"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__)
 #include <windows.h>
 
 Int32 Sync::Interlocked::Increment(Int32 *val)

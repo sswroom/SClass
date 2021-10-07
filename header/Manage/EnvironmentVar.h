@@ -18,5 +18,5 @@ namespace Manage
 
 		static UTF8Char *GetEnvValue(UTF8Char *buff, const UTF8Char *name);
 	};
-};
+}
 #endif
