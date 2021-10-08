@@ -312,7 +312,8 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				{
 					Text::StringBuilderUTF8 result;
 					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, i - 2);
-					if (Manage::Process::ExecuteProcess(cmd, &result) != 0)
+					Int32 ret;
+					if ((ret = Manage::Process::ExecuteProcess(cmd, &result)) != 0)
 					{
 						valid = false;
 					}
@@ -340,7 +341,8 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				{
 					Text::StringBuilderUTF8 result;
 					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, (UOSInt)i - 2);
-					if (Manage::Process::ExecuteProcess(cmd, &result) != 0)
+					Int32 ret;
+					if ((ret = Manage::Process::ExecuteProcess(cmd, &result)) != 0)
 					{
 						valid = false;
 					}

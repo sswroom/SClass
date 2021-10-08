@@ -2112,6 +2112,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, (const UTF8Char*)"LoRa Gateway:");
 			frame->AddUInt(frameOfst + 0, 1, "Protocol Version", packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, "Random Token", ReadMUInt16(&packet[1]));
+			vName = 0;
 			switch (packet[3])
 			{
 			case 0:
@@ -2215,6 +2216,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, (const UTF8Char*)"LoRa Gateway PUSH_ACK:");
 			frame->AddUInt(frameOfst + 0, 1, "Protocol Version", packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, "Random Token", ReadMUInt16(&packet[1]));
+			vName = 0;
 			switch (packet[3])
 			{
 			case 0:

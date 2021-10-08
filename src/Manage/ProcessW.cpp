@@ -7,6 +7,7 @@
 #include "IO/StreamReader.h"
 #include "Manage/Process.h"
 #include "Sync/Interlocked.h"
+#include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -21,6 +22,8 @@
 #else
 extern "C" DWORD SetProcPermissions(DWORD newperms);
 #endif
+
+static Int32 Process_ExecFileId = 0;
 
 Manage::Process::Process(UOSInt procId, Bool controlRight)
 {
@@ -1033,12 +1036,11 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 	IO::Path::GetFileDirectoryW(buff, progName);
 	PROCESS_INFORMATION procInfo;
 	STARTUPINFOW startInfo;
-	static Int32 Process_Id = 0;
 	BOOL createRet;
 	sptr = IO::Path::GetTempFile(tmpFile, (const UTF8Char*)"ProcessTmp");
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
-	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_Id));
+	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_ExecFileId));
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
 
 	SECURITY_ATTRIBUTES sa;
@@ -1057,7 +1059,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 	startInfo.cb = sizeof(startInfo);
 	startInfo.dwFlags = STARTF_USESTDHANDLES;
 	const WChar *wptr = Text::StrToWCharNew(tmpFile);
-	startInfo.hStdOutput = CreateFileW(wptr, GENERIC_WRITE, 0, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	startInfo.hStdOutput = CreateFileW(wptr, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 	Text::StrDelNew(wptr);
 	startInfo.hStdError = startInfo.hStdOutput;
 	startInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
@@ -1072,6 +1074,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
 		CloseHandle(startInfo.hStdOutput);
+		CloseHandle(startInfo.hStdError);
 
 		if (result)
 		{
@@ -1079,7 +1082,17 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 			IO::FileStream *fs;
 			UTF8Char lineBuff[128];
 			UTF8Char *linePtr;
-			NEW_CLASS(fs, IO::FileStream(tmpFile, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+			UOSInt retryCnt = 20;
+			while (true)
+			{
+				NEW_CLASS(fs, IO::FileStream(tmpFile, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+				if (!fs->IsError() || retryCnt-- <= 0)
+				{
+					break;
+				}
+				DEL_CLASS(fs);
+				Sync::Thread::Sleep(100);
+			}
 			NEW_CLASS(reader, IO::StreamReader(fs));
 			while ((linePtr = reader->ReadLine(lineBuff, 124)) != 0)
 			{

@@ -38,6 +38,10 @@ UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)
 {
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
+	if (Text::StrEqualsICase(&tmpBuff[3], L"Windows\\"))
+	{
+		Text::StrConcat(tmpBuff, L".\\");
+	}
 	Path::CreateDirectoryW(tmpBuff);
 	return Text::StrConcat(Text::StrWChar_UTF8(buff, tmpBuff), fileName);
 }
@@ -46,6 +50,10 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 {
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
+	if (Text::StrEqualsICase(&tmpBuff[3], L"Windows\\"))
+	{
+		Text::StrConcat(tmpBuff, L".\\");
+	}
 	Path::CreateDirectoryW(tmpBuff);
 	return Text::StrConcat(Text::StrConcat(buff, tmpBuff), fileName);
 }

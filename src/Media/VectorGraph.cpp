@@ -13,8 +13,6 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-#include <stdio.h>
-
 Media::VectorGraph::VectorPenStyle::VectorPenStyle(UOSInt index, UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
 	this->index = index;
@@ -609,6 +607,8 @@ void Media::VectorGraph::DelFont(DrawFont *f)
 Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz)
 {
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
+	tmpImg->SetHDPI(this->GetHDPI());
+	tmpImg->SetVDPI(this->GetVDPI());
 	Media::DrawFont *f;
 	Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
 	Double fntSizePt = fntStyle->GetHeightPt();
@@ -633,6 +633,8 @@ Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double 
 Bool Media::VectorGraph::GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz)
 {
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
+	tmpImg->SetHDPI(this->GetHDPI());
+	tmpImg->SetVDPI(this->GetVDPI());
 	Media::DrawFont *f;
 	Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
 	Double fntSizePt = fntStyle->GetHeightPt();
