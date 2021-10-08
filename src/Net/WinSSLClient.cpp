@@ -113,6 +113,13 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 		SecBufferDesc buffDesc;
 		SecBuffer buffs[4];
 		SECURITY_STATUS status = SEC_E_INCOMPLETE_MESSAGE;
+
+		SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+		SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
+		SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
+		SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
+		SecBufferDesc_Set(&buffDesc, buffs, 4);
+		status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
 			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, &et);
@@ -148,6 +155,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			{
 				if (buffs[i].cbBuffer <= size)
 				{
+#if defined(DEBUG_PRINT)
+					printf("Dec size1 = %d, size = %d\r\n", buffs[i].cbBuffer, (UInt32)size);
+#endif
 					MemCopyNO(buff, buffs[i].pvBuffer, buffs[i].cbBuffer);
 					size -= buffs[i].cbBuffer;
 					buff += buffs[i].cbBuffer;
@@ -157,6 +167,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				{
 					if (size > 0)
 					{
+#if defined(DEBUG_PRINT)
+						printf("Dec size2 = %d\r\n", buffs[i].cbBuffer);
+#endif
 						MemCopyNO(buff, buffs[i].pvBuffer, size);
 						ret += size;
 						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], size + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - size);
@@ -165,6 +178,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 					}
 					else
 					{
+#if defined(DEBUG_PRINT)
+						printf("Dec size3 = %d\r\n", buffs[i].cbBuffer);
+#endif
 						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buffs[i].pvBuffer, buffs[i].cbBuffer);
 						this->clsData->decSize += buffs[i].cbBuffer;
 					}
@@ -172,6 +188,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			}
 			else if (buffs[i].BufferType == SECBUFFER_EXTRA)
 			{
+#if defined(DEBUG_PRINT)
+				printf("Ext size = %d\r\n", buffs[i].cbBuffer);
+#endif
 				MemCopyO(&this->clsData->recvBuff[this->clsData->recvOfst], buffs[i].pvBuffer, buffs[i].cbBuffer);
 				this->clsData->recvOfst += buffs[i].cbBuffer;
 			}
