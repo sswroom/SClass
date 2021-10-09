@@ -46,6 +46,7 @@ namespace Text
 		} IconStatus;
 	private:
 		const UTF8Char *name;
+		const UTF8Char *fontName;
 		UOSInt colCount;
 		Data::ArrayList<const UTF8Char **> *preheaders;
 		Data::ArrayList<const UTF8Char **> *headers;
@@ -62,6 +63,7 @@ namespace Text
 		ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns);
 		~ReportBuilder();
 
+		void SetFontName(const UTF8Char *fontName);
 		void SetPaperHori(Bool paperHori);
 		void AddChart(Data::IChart *chart);
 		void AddPreHeader(const UTF8Char *name, const UTF8Char *val);

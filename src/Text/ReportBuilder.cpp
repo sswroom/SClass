@@ -12,6 +12,7 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 	const UTF8Char **cols;
 	UOSInt i;
 	this->name = Text::StrCopyNew(name);
+	this->fontName = Text::StrCopyNew((const UTF8Char*)"Arial");
 	this->colCount = colCount;
 	this->colWidth = MemAlloc(Double, this->colCount);
 	this->chart = 0;
@@ -110,7 +111,17 @@ Text::ReportBuilder::~ReportBuilder()
 	DEL_CLASS(this->icons);
 	MemFree(this->colWidth);
 	MemFree(this->colTypes);
+	Text::StrDelNew(this->fontName);
 	Text::StrDelNew(this->name);
+}
+
+void Text::ReportBuilder::SetFontName(const UTF8Char *fontName)
+{
+	if (fontName)
+	{
+		Text::StrDelNew(this->fontName);
+		this->fontName = Text::StrCopyNew(fontName);
+	}
 }
 
 void Text::ReportBuilder::SetPaperHori(Bool paperHori)
@@ -487,7 +498,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	{
 		g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
-	f = g->NewFontPt((const UTF8Char*)"Arial", fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
+	f = g->NewFontPt(this->fontName, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
 	i = this->headers->GetCount();
@@ -611,7 +622,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	l = this->tableContent->GetCount();
 	while (true)
 	{
-		f = g->NewFontPt((const UTF8Char*)"Arial", fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
+		f = g->NewFontPt(this->fontName, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 		b = g->NewBrushARGB(0xff000000);
 		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
 

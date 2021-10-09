@@ -456,11 +456,11 @@ const Text::CharUtil::UnicodeBlock *Text::CharUtil::GetUnicodeBlock(UTF32Char c)
 	{
 		k = (i + j) >> 1;
 		blk = &ublk[k];
-		if (c < blk->firstCode)
+		if ((UInt32)c < blk->firstCode)
 		{
 			j = k - 1;
 		}
-		else if (c > blk->lastCode)
+		else if ((UInt32)c > blk->lastCode)
 		{
 			i = k + 1;
 		}
