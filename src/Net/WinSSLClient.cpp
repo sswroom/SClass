@@ -99,6 +99,13 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[size], this->clsData->decSize - size);
 				this->clsData->decSize -= size;
 			}
+			else
+			{
+				this->clsData->decSize = 0;
+			}
+#if defined(DEBUG_PRINT)
+			printf("Return size1 = %d, \r\n", (UInt32)size);
+#endif
 			return size;
 		}
 		MemCopyNO(buff, this->clsData->decBuff, this->clsData->decSize);
@@ -144,6 +151,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 		{
 			this->flags |= 2;
 			this->sockf->DestroySocket(this->s);
+#if defined(DEBUG_PRINT)
+			printf("Return size2 = %d\r\n", (UInt32)ret);
+#endif
 			return ret;
 		}
 
@@ -156,7 +166,7 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				if (buffs[i].cbBuffer <= size)
 				{
 #if defined(DEBUG_PRINT)
-					printf("Dec size1 = %d, size = %d\r\n", buffs[i].cbBuffer, (UInt32)size);
+					printf("Dec size1 = %d, size = %d\r\n", (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
 					MemCopyNO(buff, buffs[i].pvBuffer, buffs[i].cbBuffer);
 					size -= buffs[i].cbBuffer;
@@ -168,7 +178,7 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 					if (size > 0)
 					{
 #if defined(DEBUG_PRINT)
-						printf("Dec size2 = %d\r\n", buffs[i].cbBuffer);
+						printf("Dec size2 = %d, size = %d\r\n", (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
 						MemCopyNO(buff, buffs[i].pvBuffer, size);
 						ret += size;
@@ -179,7 +189,7 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 					else
 					{
 #if defined(DEBUG_PRINT)
-						printf("Dec size3 = %d\r\n", buffs[i].cbBuffer);
+						printf("Dec size3 = %d\r\n", (UInt32)buffs[i].cbBuffer);
 #endif
 						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buffs[i].pvBuffer, buffs[i].cbBuffer);
 						this->clsData->decSize += buffs[i].cbBuffer;
@@ -189,17 +199,23 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			else if (buffs[i].BufferType == SECBUFFER_EXTRA)
 			{
 #if defined(DEBUG_PRINT)
-				printf("Ext size = %d\r\n", buffs[i].cbBuffer);
+				printf("Ext size = %d\r\n", (UInt32)buffs[i].cbBuffer);
 #endif
 				MemCopyO(&this->clsData->recvBuff[this->clsData->recvOfst], buffs[i].pvBuffer, buffs[i].cbBuffer);
 				this->clsData->recvOfst += buffs[i].cbBuffer;
 			}
 			i++;
 		}
+#if defined(DEBUG_PRINT)
+		printf("Return size3 = %d\r\n", (UInt32)ret);
+#endif
 		return ret;
 	}
 	else
 	{
+#if defined(DEBUG_PRINT)
+		printf("Return size4 = %d\r\n", (UInt32)ret);
+#endif
 		return ret;
 	}
 }
