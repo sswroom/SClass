@@ -5,6 +5,9 @@
 #include "Win32/WindowsBTScanner.h"
 #include "Win32/WinRTCore.h"
 #include "Data/ByteTool.h"
+#if _MSC_VER >= 1929
+#include <winrt/Windows.Foundation.h>
+#endif
 #include <sdkddkver.h>
 #include <windows.h>
 #include <bluetoothapis.h>
@@ -14,17 +17,17 @@ using namespace Windows::Foundation;
 using namespace Windows::Devices::Bluetooth;
 using namespace Windows::Devices::Bluetooth::Advertisement;
 
-void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const &sender,
-	winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const &args)
+void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const& sender,
+	winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const& args)
 {
 	IO::BTScanLog::AddressType addrType;
 	Int8 txPower;
 #if _MSC_VER >= 1920
-	if (args.BluetoothAddressType() == BluetoothLEAdvertisementAddressType::Public)
+	if (args.BluetoothAddressType() == BluetoothAddressType::Public)
 	{
 		addrType = IO::BTScanLog::AT_PUBLIC;
 	}
-	else if (args.BluetoothAddressType() == BluetoothLEAdvertisementAddressType::Random)
+	else if (args.BluetoothAddressType() == BluetoothAddressType::Random)
 	{
 		addrType = IO::BTScanLog::AT_RANDOM;
 	}
@@ -32,7 +35,11 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	{
 		addrType = IO::BTScanLog::AT_UNKNOWN;
 	}
+#if _MSC_VER >= 1929
+	txPower = (Int8)args.TransmitPowerLevelInDBm().Value();
+#else
 	txPower = (Int8)args.TransmitPowerLevelInDBm();
+#endif
 #else
 	addrType = IO::BTScanLog::AT_UNKNOWN;
 	txPower = 0;
@@ -74,7 +81,11 @@ void Win32::WindowsBTScanner::StoppedHandler(winrt::Windows::Devices::Bluetooth:
 	winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcherStoppedEventArgs const &args)
 {
 }
-
+/*public: __cdecl winrt::Windows::Foundation::TypedEventHandler<
+	struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs>::
+		TypedEventHandler<struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs>
+			<class Win32::WindowsBTScanner, void(__cdecl Win32::WindowsBTScanner::*)(struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const&, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const&)>
+				(class Win32::WindowsBTScanner*, void(__cdecl Win32::WindowsBTScanner::*)(struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const&, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const&))*/
 IO::BTScanLog::ScanRecord3 *Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType)
 {
 	Sync::MutexUsage mutUsage(this->devMut);
@@ -191,7 +202,6 @@ Bool Win32::WindowsBTScanner::BeginScan()
 	req.scanType = 0;
 	req.scanInterval = 29;
 	req.scanWindow = 29;
-	DWORD outSize;
 	BluetoothFindRadioClose(hFind);
 	printf("Begin Scan request, size = %d, Handle = %x\r\n", (UInt32)sizeof(req), (UInt32)(UOSInt)handle);
 	MemClear(&this->overlapped, sizeof(OVERLAPPED));

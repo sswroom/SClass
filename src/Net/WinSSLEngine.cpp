@@ -219,7 +219,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 		0,
 		&ctxt,
 		&outputDesc,
-		(unsigned __LONG32*)&retFlags,
+		(unsigned long*)&retFlags,
 		&ts
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
@@ -292,7 +292,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 			0,
 			0,
 			&outputDesc,
-			(unsigned __LONG32*)&retFlags,
+			(unsigned long*)&retFlags,
 			&ts);
 
 		if (status == SEC_E_INCOMPLETE_MESSAGE)
@@ -417,7 +417,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 		0,
 		&ctxt,
 		&outputDesc,
-		(unsigned __LONG32*)&retFlags,
+		(unsigned long*)&retFlags,
 		&ts
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
@@ -495,7 +495,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			0,
 			&ctxt,
 			&outputDesc,
-			(unsigned __LONG32*)&retFlags,
+			(unsigned long*)&retFlags,
 			&ts
 		);
 
