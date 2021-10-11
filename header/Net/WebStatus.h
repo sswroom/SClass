@@ -6,7 +6,7 @@ namespace Net
 	class WebStatus
 	{
 	public:
-		typedef enum
+		enum StatusCode
 		{
 			SC_UNKNOWN = 0,
 			SC_CONTINUE = 100,
@@ -53,7 +53,7 @@ namespace Net
 			SC_SERVICE_UNAVAILABLE = 503,
 			SC_GATEWAY_TIMEOUT = 504,
 			SC_VERSION_NOT_SUPPORTED = 505,
-		} StatusCode;
+		};
 	private:
 		typedef struct
 		{
