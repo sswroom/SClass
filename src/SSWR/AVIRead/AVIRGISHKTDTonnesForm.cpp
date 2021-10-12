@@ -129,14 +129,14 @@ SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl
 
 	NEW_CLASS(this->lblRoadRoute, UI::GUILabel(ui, this, (const UTF8Char*)"Road Route"));
 	this->lblRoadRoute->SetRect(4, 4, 150, 23, false);
-	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, this, (const UTF8Char*)"L:\\Backup\\PROGS_20101124\\PROGS\\Skypower\\0_req\\20180628 Road Traffic\\ROADROUTE.mdb"));
+	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, this, (const UTF8Char*)"20180628 Road Traffic\\ROADROUTE.mdb"));
 	this->txtRoadRoute->SetRect(154, 4, 750, 23, false);
 	NEW_CLASS(this->btnRoadRoute, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnRoadRoute->SetRect(904, 4, 75, 23, false);
 	this->btnRoadRoute->HandleButtonClick(OnRoadRouteClicked, this);
 	NEW_CLASS(this->lblVehicleRes, UI::GUILabel(ui, this, (const UTF8Char*)"Vehicle Restriction"));
 	this->lblVehicleRes->SetRect(4, 28, 150, 23, false);
-	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, this, (const UTF8Char*)"L:\\Backup\\PROGS_20101124\\PROGS\\Skypower\\0_req\\20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb"));
+	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, this, (const UTF8Char*)"20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb"));
 	this->txtVehicleRes->SetRect(154, 28, 750, 23, false);
 	NEW_CLASS(this->btnVehicleRes, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnVehicleRes->SetRect(904, 28, 75, 23, false);

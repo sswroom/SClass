@@ -25,6 +25,7 @@
 #include "Net/URL.h"
 #include "SSWR/AVIRead/AVIRAboutForm.h"
 #include "SSWR/AVIRead/AVIRAccelerometerForm.h"
+#include "SSWR/AVIRead/AVIRACMEClientForm.h"
 #include "SSWR/AVIRead/AVIRARPPingForm.h"
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
 #include "SSWR/AVIRead/AVIRAsmConvForm.h"
@@ -396,7 +397,8 @@ typedef enum
 	MNU_SMBIOS,
 	MNU_NETBIOS_SCANNER,
 	MNU_HEX_VIEWER,
-	MNU_HTTP_LOAD_BALANCE
+	MNU_HTTP_LOAD_BALANCE,
+	MNU_ACME_CLIENT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -629,6 +631,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"SMTP Client", MNU_SMTP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"NetBIOS");
 	mnu2->AddItem((const UTF8Char*)"NetBIOS Scanner", MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"ACME Client", MNU_ACME_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"RSS Reader", MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"eGauge Server", MNU_EGAUGESVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Log Server", MNU_LOGSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2351,6 +2354,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRHTTPLoadBalanceForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPLoadBalanceForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_ACME_CLIENT:
+		{
+			SSWR::AVIRead::AVIRACMEClientForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRACMEClientForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

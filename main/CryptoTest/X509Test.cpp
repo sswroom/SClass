@@ -9,7 +9,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
 	Parser::FileParser::X509Parser parser;
-	const UTF8Char *fileName = (const UTF8Char*)"/home/sswroom/Progs/Stoneroad/keys/server.crt";
+	const UTF8Char *fileName = (const UTF8Char*)"/home/sswroom/Progs/Temp/keys/server.crt";
 
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));

@@ -48,7 +48,7 @@ void Net::AddressList::Insert(UOSInt index, const Net::SocketUtil::AddressInfo *
 	this->addrList->Insert(index, CloneItem(val));
 }
 
-OSInt Net::AddressList::IndexOf(const Net::SocketUtil::AddressInfo *val)
+UOSInt Net::AddressList::IndexOf(const Net::SocketUtil::AddressInfo *val)
 {
 	UOSInt i = 0;
 	UOSInt j = this->addrList->GetCount();
@@ -60,7 +60,7 @@ OSInt Net::AddressList::IndexOf(const Net::SocketUtil::AddressInfo *val)
 		}
 		i++;
 	}
-	return -1;
+	return INVALID_INDEX;
 }
 
 void Net::AddressList::Clear()

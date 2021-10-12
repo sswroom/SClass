@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"gis.ectrak.com.hk"));
+	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);

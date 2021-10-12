@@ -20,7 +20,7 @@ namespace Net
 		virtual Bool Remove(const Net::SocketUtil::AddressInfo *val);
 		virtual const Net::SocketUtil::AddressInfo *RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, const Net::SocketUtil::AddressInfo *val);
-		virtual OSInt IndexOf(const Net::SocketUtil::AddressInfo *val); //-1 = not found
+		virtual UOSInt IndexOf(const Net::SocketUtil::AddressInfo *val); //-1 = not found
 		virtual void Clear();
 
 		virtual UOSInt GetCount();

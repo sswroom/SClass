@@ -663,9 +663,6 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 0C 00 01 8C 00 00 00 00 3D CF 00 4B 
                     Encryption key:on
 10 00 2B 8B 00 00 00 00 00 00 00 08 00 00 00 00 
-                    ESSID:"Stoneroad-5G"
-1C 00 1B 8B 00 00 00 00 0C 00 01 00 00 00 00 00 
-53 74 6F 6E 65 72 6F 61 64 2D 35 47 
                     Bit Rates:6 Mb/s; 9 Mb/s; 12 Mb/s; 18 Mb/s; 24 Mb/s
                               36 Mb/s; 48 Mb/s; 54 Mb/s
 48 00 21 8B 00 00 00 00 80 8D 5B 00 00 00 00 00 

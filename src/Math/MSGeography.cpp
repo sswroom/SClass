@@ -6,19 +6,6 @@
 #include "Math/Polygon.h"
 
 // https://sqlprotocoldoc.blob.core.windows.net/productionsqlarchives/MS-SSCLRT/%5bMS-SSCLRT%5d.pdf
-/*
-Driver={ODBC Driver 17 for SQL Server};Server=tcp:47.52.40.6,11433;uid=rpisdbadm;pwd=1q2w3e4r!Q@W#E$R;database=rpis_sde
-https://gis.ectrak.com.hk:6443/arcgis/rest/services/TmpTest/GeoTest/MapServer
-
-POLYGON ((50.497600000351667 10.510199999436736, 74.660500000230968 51.707599999383092, 53.830400000326335 45.041899999603629, 29.204499999992549 18.471999999135733, 50.497600000351667 10.510199999436736))
-16 09 00 00 01 04 05 00 00 00 00 00 58 5B B1 3F 
-49 40 00 00 30 EF 38 05 25 40 00 00 CB A1 45 AA 
-52 40 00 00 04 A3 92 DA 49 40 00 00 16 8C 4A EA 
-4A 40 00 00 AC FA 5C 85 46 40 00 00 AC 1C 5A 34 
-3D 40 00 00 F0 FD D4 78 32 40 00 00 58 5B B1 3F 
-49 40 00 00 30 EF 38 05 25 40 01 00 00 00 02 00 
-00 00 00 01 00 00 00 FF FF FF FF 00 00 00 00 03
-*/
 
 Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, UInt32 *srIdOut)
 {

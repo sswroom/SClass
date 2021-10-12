@@ -2286,6 +2286,8 @@ Media/VideoFilter/UVOffsetFilter.h: ../../src/Media/VideoFilter/UVOffsetFilter.c
 Media/VideoFilter/VideoFilterBase.h: ../../src/Media/VideoFilter/VideoFilterBase.cpp
 @VideoFilterBase.o
 
+Net/ACMEClient.h: ../../src/Net/ACMEClient.cpp
+@ACMEClient.o
 Net/AddressRange.h: ../../src/Net/AddressRange.cpp
 @AddressRange.o
 Net/ARPHandler.h: ../../src/Net/ARPHandler.cpp
@@ -2800,6 +2802,8 @@ SSWR/AVIRead/AVIRAccelerometerForm.h: ../../src/SSWR/AVIRead/AVIRAccelerometerFo
 @AVIRAccelerometerForm.o
 SSWR/AVIRead/AVIRAccessConnForm.h: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 @AVIRAccessConnForm.o
+SSWR/AVIRead/AVIRACMEClientForm.h: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
+@AVIRACMEClientForm.o
 SSWR/AVIRead/AVIRARPPingForm.h: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 @AVIRARPPingForm.o
 SSWR/AVIRead/AVIRARPScanForm.h: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
@@ -4264,6 +4268,7 @@ AutoCropFilter.o: ../../src/Media/VideoFilter/AutoCropFilter.cpp
 IVTCFilter.o: ../../src/Media/VideoFilter/IVTCFilter.cpp
 UVOffsetFilter.o: ../../src/Media/VideoFilter/UVOffsetFilter.cpp
 VideoFilterBase.o: ../../src/Media/VideoFilter/VideoFilterBase.cpp
+ACMEClient.o: ../../src/Net/ACMEClient.cpp
 AddressRange.o: ../../src/Net/AddressRange.cpp
 ARPHandler.o: ../../src/Net/ARPHandler.cpp
 ASN1Data.o: ../../src/Net/ASN1Data.cpp
@@ -4514,6 +4519,7 @@ ProcMonForm.o: ../../src/SSWR/ProcMonForm.cpp
 AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
 AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
 AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
+AVIRACMEClientForm.o: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
 AVIRARPPingForm.o: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 AVIRARPScanForm.o: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
 AVIRAsmConvForm.o: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
