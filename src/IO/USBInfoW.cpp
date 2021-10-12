@@ -93,24 +93,30 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_LogicalDevice", 0, 0, 0);
 	if (r)
 	{
-		Bool valid = true;
-		sbuff[0] = 0;
-		r->GetName(5, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"Description"))
+		UOSInt descCol = INVALID_INDEX;
+		UOSInt devIdCol = INVALID_INDEX;
+		UOSInt i = 0;
+		UOSInt j = r->ColCount();
+		while (i < j)
 		{
-			valid = false;
+			sbuff[0] = 0;
+			r->GetName(i, sbuff);
+			if (Text::StrEquals(sbuff, (const UTF8Char*)"Description"))
+			{
+				descCol = i;
+			}
+			else if (Text::StrEquals(sbuff, (const UTF8Char*)"DeviceID"))
+			{
+				devIdCol = i;
+			}
+			i++;
 		}
-		r->GetName(6, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"DeviceID"))
-		{
-			valid = false;
-		}
-		if (valid)
+		if (descCol != INVALID_INDEX && devIdCol != INVALID_INDEX)
 		{
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				r->GetStr(6, &sb);
+				r->GetStr(devIdCol, &sb);
 				if (sb.StartsWith((const UTF8Char*)"USB\\VID_"))
 				{
 					sb.ToString()[12] = 0;
@@ -123,7 +129,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					{
 						existList.SortedInsert(id);
 						sb.ClearStr();
-						r->GetStr(5, &sb);
+						r->GetStr(descCol, &sb);
 						clsData.dispName = sb.ToString();
 						NEW_CLASS(usb, IO::USBInfo(&clsData));
 						usbList->Add(usb);
