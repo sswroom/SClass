@@ -13,7 +13,7 @@
 #include <sspi.h>
 #include <schnlsp.h>
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -1169,15 +1169,15 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	ALG_ID alg;
 	if (hashType == Crypto::Hash::HT_SHA256)
 	{
-		alg = ALG_CLASS_SIGNATURE | ALG_SID_SHA_256;
+		alg = CALG_SHA_256;
 	}
 	else if (hashType == Crypto::Hash::HT_SHA384)
 	{
-		alg = ALG_CLASS_SIGNATURE | ALG_SID_SHA_384;
+		alg = CALG_SHA_384;
 	}
 	else if (hashType == Crypto::Hash::HT_SHA512)
 	{
-		alg = ALG_CLASS_SIGNATURE | ALG_SID_SHA_512;
+		alg = CALG_SHA_512;
 	}
 	else
 	{
@@ -1186,24 +1186,11 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 #endif
 		return false;
 	}
-	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
-	{
-		alg |= ALG_TYPE_RSA;
-	}
-	else
-	{
-#if defined(VERBOSE)
-		printf("SSL: key type not supported\r\n");
-#endif
-		return false;
-	}
-
-	const WChar *containerName = L"Signature";
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
-	if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	if (!CryptAcquireContext(&hProv, 0, MS_ENH_RSA_AES_PROV, PROV_RSA_AES, CRYPT_VERIFYCONTEXT))
 	{
-		if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
+		if (!CryptAcquireContext(&hProv, 0, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
 		{
 #if defined(VERBOSE)
 			printf("SSL: CryptAcquireContext failed\r\n");
@@ -1223,13 +1210,14 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	}
 	DEL_CLASS(privKey);
 	HCRYPTHASH hHash;
-	if (!CryptCreateHash(hProv, ALG_CLASS_SIGNATURE | ALG_TYPE_RSA | ALG_SID_SHA_256, hKey, 0, &hHash))
+	if (!CryptCreateHash(hProv, alg, 0, 0, &hHash))
 	{
+#if defined(VERBOSE)
+		UInt32 errCode = GetLastError();
+		printf("SSL: CryptCreateHash failed, errCode = 0x%x\r\n", errCode);
+#endif
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyKey(hKey);
-#if defined(VERBOSE)
-		printf("SSL: CryptCreateHash failed\r\n");
-#endif
 		return false;
 	}
 	if (!CryptHashData(hHash, payload, (DWORD)payloadLen, 0))
@@ -1242,15 +1230,16 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 #endif
 		return false;
 	}
-	DWORD len;
-	if (!CryptSignHash(hHash, AT_SIGNATURE, 0, 0, signData, &len))
+	DWORD len = 512;
+	if (!CryptSignHash(hHash, AT_KEYEXCHANGE, 0, 0, signData, &len))
 	{
+#if defined(VERBOSE)
+		UInt32 errCode = GetLastError();
+		printf("SSL: CryptSignHash failed, errCode = 0x%x\r\n", errCode);
+#endif
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
 		CryptDestroyKey(hKey);
-#if defined(VERBOSE)
-		printf("SSL: CryptSignHash failed\r\n");
-#endif
 		return false;
 	}
 	*signLen = len;

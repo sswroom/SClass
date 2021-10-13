@@ -250,7 +250,10 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 
 void Crypto::Token::JWTHandler::FreeResult(Data::StringUTF8Map<const UTF8Char*> *result)
 {
-	Data::ArrayList<const UTF8Char*> *vals = result->GetValues();
-	LIST_FREE_FUNC(vals, Text::StrDelNew);
-	DEL_CLASS(result);
+	if (result)
+	{
+		Data::ArrayList<const UTF8Char*>* vals = result->GetValues();
+		LIST_FREE_FUNC(vals, Text::StrDelNew);
+		DEL_CLASS(result);
+	}
 }
