@@ -117,7 +117,7 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Ch
 	{
 		while ((sptr = IO::Path::FindNextFile(folderBuffEnd, sess, 0, &pt, 0)) != 0)
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				Bool toSkip = false;
 				if (Text::StrEndsWithICase(folderBuffEnd, (const UTF8Char*)".vob"))
@@ -136,7 +136,7 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Ch
 					}
 				}
 			}
-			else if (pt == IO::Path::PT_DIRECTORY)
+			else if (pt == IO::Path::PathType::Directory)
 			{
 				if (folderBuffEnd[0] == '.' && folderBuffEnd[1] == 0)
 				{

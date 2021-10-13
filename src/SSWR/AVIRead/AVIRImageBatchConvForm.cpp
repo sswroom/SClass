@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		return;
 	}
 	sptr = me->txtDir->GetText(sbuff);
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Not a directory", (const UTF8Char*)"Error", me);
 		return;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		}
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 				imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);

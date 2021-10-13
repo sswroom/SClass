@@ -461,3 +461,27 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 	return outStm;
 #endif
 }
+
+UOSInt IO::FileStream::LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize)
+{
+	IO::FileStream *fs;
+	NEW_CLASS(fs, IO::FileStream(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal));
+	if (fs->IsError())
+	{
+		DEL_CLASS(fs);
+		return 0;
+	}
+	UInt64 fileLen = fs->GetLength();
+	if (fileLen > maxBuffSize || fileLen == 0)
+	{
+		DEL_CLASS(fs);
+		return 0;
+	}
+	UOSInt readSize = fs->Read(buff, maxBuffSize);
+	DEL_CLASS(fs);
+	if (readSize == fileLen)
+	{
+		return readSize;
+	}
+	return 0;
+}

@@ -45,7 +45,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
-			if (sptr[0] != '.' && pt != IO::Path::PT_FILE)
+			if (sptr[0] != '.' && pt != IO::Path::PathType::File)
 			{
 				sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/");
 				Text::StrConcat(sptr2, IO::Path::ALL_FILES);
@@ -54,7 +54,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 				{
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
-						if (sptr2[0] != '.' && pt != IO::Path::PT_FILE && (sptr3 - sptr2) <= 15 && Text::StrIndexOf(sptr2, ':') != INVALID_INDEX)
+						if (sptr2[0] != '.' && pt != IO::Path::PathType::File && (sptr3 - sptr2) <= 15 && Text::StrIndexOf(sptr2, ':') != INVALID_INDEX)
 						{
 							Bool valid = true;
 							Text::StrConcat(nameBuff, sptr2);

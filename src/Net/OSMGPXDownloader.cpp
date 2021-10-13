@@ -48,7 +48,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	sptr = Text::StrConcat(sbuff, this->storeDir);
 	sptr = Text::StrConcat(sptr, item->author);
 	pt = IO::Path::GetPathType(sbuff);
-	if (pt == IO::Path::PT_UNKNOWN)
+	if (pt == IO::Path::PathType::Unknown)
 	{
 		IO::Path::CreateDirectory(sbuff);
 	}
@@ -56,7 +56,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	sptr = Text::StrConcat(sptr, gpxId);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".gpx");
 	pt = IO::Path::GetPathType(sbuff);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 	}
 	else

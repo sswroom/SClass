@@ -64,6 +64,7 @@ namespace IO
 
 		static IO::FileStream *CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
 		static IO::FileStream *OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);
+		static UOSInt LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize);
 	};
 }
 #endif

@@ -384,14 +384,14 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, 
 		{
 			if (size + currSize > maxSize)
 				break;
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				file = this->BurntFileNew(sptr, &relPath[1], size);
 				this->lbFileName->AddItem(&relPath[1], file);
 				this->fileList->Add(file);
 				currSize += size;
 			}
-			else if (pt == IO::Path::PT_DIRECTORY && sptr[0] != '.')
+			else if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{
 				size = this->SearchSubDir(sbuff, relPath, maxSize - currSize);
 				currSize += size;

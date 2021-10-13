@@ -17,7 +17,7 @@ IO::SystemInfo::SystemInfo()
 	SystemData *data = MemAlloc(SystemData, 1);
 	data->platformName = 0;
 	this->clsData = data;
-	if (IO::Path::GetPathType((const UTF8Char*)"/etc/OrangePi_Camera.conf") == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType((const UTF8Char*)"/etc/OrangePi_Camera.conf") == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/OrangePi_Camera.conf");
 		if (cfg)
@@ -30,11 +30,11 @@ IO::SystemInfo::SystemInfo()
 			DEL_CLASS(cfg);
 		}
 	}
-	else if (IO::Path::GetPathType((const UTF8Char*)"/boot/orangepi/OrangePIH6.dtb") == IO::Path::PT_FILE)
+	else if (IO::Path::GetPathType((const UTF8Char*)"/boot/orangepi/OrangePIH6.dtb") == IO::Path::PathType::File)
 	{
 		data->platformName = Text::StrCopyNew((const UTF8Char*)"Orange PI One Plus");
 	}
-	else if (IO::Path::GetPathType((const UTF8Char*)"/boot/orangepi/OrangePI-A64.dtb") == IO::Path::PT_FILE)
+	else if (IO::Path::GetPathType((const UTF8Char*)"/boot/orangepi/OrangePI-A64.dtb") == IO::Path::PathType::File)
 	{
 		data->platformName = Text::StrCopyNew((const UTF8Char*)"Orange PI Win Plus");
 	}

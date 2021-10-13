@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	me->dtpStartTime->GetSelectedTime(&dt1);
 	me->dtpEndTime->GetSelectedTime(&dt2);
 	me->txtFileDir->GetText(&sb);
-	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"The file dir is not a directory", me->GetFormName(), me);
 		return;
@@ -105,7 +105,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 	{
 		while ((sptr = IO::Path::FindNextFile(pathEnd, sess, &modTime, &pt, 0)) != 0)
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				succ = false;
 				i = Text::StrIndexOf(pathEnd, '.');
@@ -174,7 +174,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 					}
 				}
 			}
-			else if (pt == IO::Path::PT_DIRECTORY)
+			else if (pt == IO::Path::PathType::Directory)
 			{
 				if (pathEnd[0] != '.')
 				{

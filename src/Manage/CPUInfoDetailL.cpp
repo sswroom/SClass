@@ -43,15 +43,15 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			{
 				this->cpuModel = (const UTF8Char*)"APQ8064";
 			}
-			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/rk3368_thermal") == IO::Path::PT_DIRECTORY)
+			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/rk3368_thermal") == IO::Path::PathType::Directory)
 			{
 				this->cpuModel = (const UTF8Char*)"RK3368";
 			}
-			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/devices/platform/rk3026-codec") == IO::Path::PT_DIRECTORY)
+			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/devices/platform/rk3026-codec") == IO::Path::PathType::Directory)
 			{
 				this->cpuModel = (const UTF8Char*)"RK3026";
 			}
-			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/bcm2835_thermal") == IO::Path::PT_DIRECTORY)
+			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/bcm2835_thermal") == IO::Path::PathType::Directory)
 			{
 				if (cpuPart == 0xd03)
 				{
@@ -62,7 +62,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 					this->cpuModel = (const UTF8Char*)"BCM2835";
 				}
 			}
-			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/rtk129x-cpufreq") == IO::Path::PT_DIRECTORY)
+			else if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/rtk129x-cpufreq") == IO::Path::PathType::Directory)
 			{
 				OSInt threadCnt = Sync::Thread::GetThreadCnt();
 				if (threadCnt == 2)
@@ -71,11 +71,11 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 				}
 				else
 				{
-					if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/[RTD129x PCIE Slot2]") == IO::Path::PT_UNKNOWN)
+					if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/[RTD129x PCIE Slot2]") == IO::Path::PathType::Unknown)
 					{
 						this->cpuModel = (const UTF8Char*)"RTD1294";
 					}
-					else if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/devices/9803f000.sata:sata-port@2") == IO::Path::PT_UNKNOWN)
+					else if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/devices/9803f000.sata:sata-port@2") == IO::Path::PathType::Unknown)
 					{
 						this->cpuModel = (const UTF8Char*)"RTD1295";
 					}
@@ -107,7 +107,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 					}
 					if (Text::StrEquals(fileBuff, (const UTF8Char*)"AM335X"))
 					{
-						Bool hasCAN = (IO::Path::GetPathType((const UTF8Char*)"/proc/net/can") == IO::Path::PT_DIRECTORY);
+						Bool hasCAN = (IO::Path::GetPathType((const UTF8Char*)"/proc/net/can") == IO::Path::PathType::Directory);
 						Bool hasGraphics = false;
 						Bool hasPRUICSS = false;
 //						Bool hasEtherCAT = false;
@@ -164,11 +164,11 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 				}
 				else if (threadCnt == 4)
 				{
-					if (IO::Path::GetPathType((const UTF8Char*)"/sys/class/amaudio") != IO::Path::PT_DIRECTORY)
+					if (IO::Path::GetPathType((const UTF8Char*)"/sys/class/amaudio") != IO::Path::PathType::Directory)
 					{
 						this->cpuModel = (const UTF8Char*)"Amlogic S905";
 					}
-					else if (IO::Path::GetPathType((const UTF8Char*)"/sys/class/tsdemux") != IO::Path::PT_DIRECTORY)
+					else if (IO::Path::GetPathType((const UTF8Char*)"/sys/class/tsdemux") != IO::Path::PathType::Directory)
 					{
 						this->cpuModel = (const UTF8Char*)"Amlogic S905D";
 					}
@@ -180,9 +180,9 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (this->brand == Manage::CPUVendor::CB_QUALCOMM)
 			{
-				if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/cpufreq-ipq40xx") == IO::Path::PT_DIRECTORY)
+				if (IO::Path::GetPathType((const UTF8Char*)"/sys/bus/platform/drivers/cpufreq-ipq40xx") == IO::Path::PathType::Directory)
 				{
-					Bool hasSDCard = (IO::Path::GetPathType((const UTF8Char*)"/sys/class/mmc_host") == IO::Path::PT_DIRECTORY);
+					Bool hasSDCard = (IO::Path::GetPathType((const UTF8Char*)"/sys/class/mmc_host") == IO::Path::PathType::Directory);
 					Bool has4_9GHz = false;
 					if (!has4_9GHz)
 					{

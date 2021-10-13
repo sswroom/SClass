@@ -9,12 +9,12 @@
 UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 {
 	ThreadState *state = (ThreadState*)userObj;
-	state->status = TS_RUNNING;
+	state->status = ThreadStatus::Running;
 	while (!state->me->threadToStop)
 	{
 		if (state->s)
 		{
-			state->status = TS_PROCESSING;
+			state->status = ThreadStatus::Processing;
 			Socket *s = state->s;
 			state->s = 0;
 
@@ -23,11 +23,11 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 			{
 				state->clientReady(cli, state->clientReadyObj);
 			}
-			state->status = TS_RUNNING;
+			state->status = ThreadStatus::Running;
 		}
 		state->evt->Wait(10000);		
 	}
-	state->status = TS_NOT_RUNNING;
+	state->status = ThreadStatus::NotRunning;
 	return 0;
 }
 
@@ -42,7 +42,7 @@ Net::SSLEngine::SSLEngine(Net::SocketFactory *sockf)
 	UOSInt i = this->maxThreadCnt;
 	while (i-- > 0)
 	{
-		this->threadSt[i].status = TS_NOT_RUNNING;
+		this->threadSt[i].status = ThreadStatus::NotRunning;
 		this->threadSt[i].s = 0;
 	}
 }
@@ -62,7 +62,7 @@ Net::SSLEngine::~SSLEngine()
 		i = this->currThreadCnt;
 		while (i-- > 0)
 		{
-			if (this->threadSt[i].status != TS_NOT_RUNNING)
+			if (this->threadSt[i].status != ThreadStatus::NotRunning)
 			{
 				running = true;
 				break;
@@ -121,7 +121,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 	{
 		while (i < this->currThreadCnt)
 		{
-			if (this->threadSt[i].status == TS_RUNNING)
+			if (this->threadSt[i].status == ThreadStatus::Running)
 			{
 				found = true;
 				this->threadSt[i].clientReady = readyHdlr;
@@ -144,7 +144,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 			this->threadSt[i].clientReady = readyHdlr;
 			this->threadSt[i].clientReadyObj = userObj;
 			this->threadSt[i].s = s;
-			this->threadSt[i].status = TS_STARTING;
+			this->threadSt[i].status = ThreadStatus::Starting;
 			this->threadSt[i].me = this;
 			Sync::Thread::Create(ServerThread, &this->threadSt[i]);
 			break;
@@ -162,23 +162,23 @@ const UTF8Char *Net::SSLEngine::ErrorTypeGetName(ErrorType err)
 {
 	switch (err)
 	{
-	case ET_NONE:
+	case ErrorType::None:
 		return (const UTF8Char*)"No Error";
-	case ET_HOSTNAME_NOT_RESOLVED:
+	case ErrorType::HostnameNotResolved:
 		return (const UTF8Char*)"Hostname cannot not resolve";
-	case ET_OUT_OF_MEMORY:
+	case ErrorType::OutOfMemory:
 		return (const UTF8Char*)"Out of memory";
-	case ET_CANNOT_CONNECT:
+	case ErrorType::CannotConnect:
 		return (const UTF8Char*)"Cannot connect to destination";
-	case ET_INIT_SESSION:
+	case ErrorType::InitSession:
 		return (const UTF8Char*)"Failed in initializing session";
-	case ET_CERT_NOT_FOUND:
+	case ErrorType::CertNotFound:
 		return (const UTF8Char*)"Server Certification not found";
-	case ET_INVALID_NAME:
+	case ErrorType::InvalidName:
 		return (const UTF8Char*)"Invalid cert name";
-	case ET_SELF_SIGN:
+	case ErrorType::SelfSign:
 		return (const UTF8Char*)"Self Signed Certification";
-	case ET_INVALID_PERIOD:
+	case ErrorType::InvalidPeriod:
 		return (const UTF8Char*)"Valid period out of range";
 	default:
 		return (const UTF8Char*)"Unknown";

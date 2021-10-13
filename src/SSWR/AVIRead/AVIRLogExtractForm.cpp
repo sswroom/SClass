@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 	me->txtPrefix->GetText(&sb2);
 	me->txtOFile->GetText(&sb3);
 	me->txtSuffix->GetText(&sbSuffix);
-	if (IO::Path::GetPathType(sb1.ToString()) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sb1.ToString()) != IO::Path::PathType::File)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Source File not found", (const UTF8Char*)"Error", me);
 	}

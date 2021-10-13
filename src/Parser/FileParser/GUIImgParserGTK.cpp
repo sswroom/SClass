@@ -207,7 +207,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 				sb.RemoveChars(sb.GetCharCnt() - j);
 			}
 			sb.Append((const UTF8Char*)".tfw");
-			if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PT_FILE)
+			if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PathType::File)
 			{
 				IO::FileStream *fs;
 				IO::StreamReader *reader;

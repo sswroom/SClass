@@ -69,7 +69,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 	UTF8Char sbuff[512];
 	IO::Path::PathType pt = IO::Path::GetPathType(url);
 	/////////////////////////////////////////////
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(url, false));

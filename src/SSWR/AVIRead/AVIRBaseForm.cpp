@@ -415,7 +415,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	while (i < nFiles)
 	{
 		pt = IO::Path::GetPathType(files[i]);
-		if (pt == IO::Path::PT_DIRECTORY)
+		if (pt == IO::Path::PathType::Directory)
 		{
 			Bool valid = false;
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
@@ -458,7 +458,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 				}
 			}
 		}
-		else if (pt == IO::Path::PT_FILE)
+		else if (pt == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 			if (!me->core->LoadData(fd, 0))
@@ -994,7 +994,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = Text::StrIndexOf(fname, ':');
 				if (i == INVALID_INDEX || i == 1)
 				{
-					if (IO::Path::GetPathType(fname) == IO::Path::PT_DIRECTORY)
+					if (IO::Path::GetPathType(fname) == IO::Path::PathType::Directory)
 					{
 						IO::DirectoryPackage *dp;
 						NEW_CLASS(dp, IO::DirectoryPackage(fname));

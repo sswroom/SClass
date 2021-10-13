@@ -836,11 +836,11 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 		{
 			if (sess->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				*pt = IO::Path::PT_DIRECTORY;
+				*pt = IO::Path::PathType::Directory;
 			}
 			else
 			{
-				*pt = IO::Path::PT_FILE;
+				*pt = IO::Path::PathType::File;
 			}
 		}
 		if (fileSize)
@@ -878,11 +878,11 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 		{
 			if (sess->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				*pt = IO::Path::PT_DIRECTORY;
+				*pt = IO::Path::PathType::Directory;
 			}
 			else
 			{
-				*pt = IO::Path::PT_FILE;
+				*pt = IO::Path::PathType::File;
 			}
 		}
 		if (fileSize)

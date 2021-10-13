@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		this->txtDir->Focus();
 		return;
 	}
-	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input directory", (const UTF8Char *)"Error", this);
 		this->txtDir->Focus();
@@ -173,7 +173,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(file, MyFile(sptr, fileSize));
 				this->fileList->Add(file);

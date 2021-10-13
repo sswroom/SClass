@@ -5,7 +5,7 @@
 Net::SSLEngine *Net::DefaultSSLEngine::Create(Net::SocketFactory *sockf, Bool skipCertCheck)
 {
 	Net::SSLEngine *ssl;
-	NEW_CLASS(ssl, Net::OpenSSLEngine(sockf, Net::SSLEngine::M_DEFAULT));
+	NEW_CLASS(ssl, Net::OpenSSLEngine(sockf, Net::SSLEngine::Method::Default));
 	if (ssl->IsError())
 	{
 		DEL_CLASS(ssl);

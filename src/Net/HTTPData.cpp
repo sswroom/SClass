@@ -25,7 +25,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url, "GET", true);
 	}
 	fdh->evtTmp->Set();
-	if (IO::Path::GetPathType(fdh->localFile) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(fdh->localFile) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(fdh->localFile, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -195,13 +195,13 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 	Bool needReload = forceReload;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
 	fdh = 0;
-	if (pt == IO::Path::PT_DIRECTORY)
+	if (pt == IO::Path::PathType::Directory)
 	{
 		this->dataLength = 0;
 		this->dataOffset = 0;
 		return;
 	}
-	else if (pt == IO::Path::PT_UNKNOWN)
+	else if (pt == IO::Path::PathType::Unknown)
 	{
 		needReload = true;
 	}

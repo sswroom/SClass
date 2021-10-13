@@ -1220,6 +1220,8 @@ Exporter/MEVExporter.h: ../../src/Exporter/MEVExporter.cpp
 @MEVExporter.o
 Exporter/OruxMapExporter.h: ../../src/Exporter/OruxMapExporter.cpp
 @OruxMapExporter.o
+Exporter/PEMExporter.h: ../../src/Exporter/PEMExporter.cpp
+@PEMExporter.o
 Exporter/PLTExporter.h: ../../src/Exporter/PLTExporter.cpp
 @PLTExporter.o
 Exporter/PNGExporter.h: ../../src/Exporter/PNGExporter.cpp
@@ -3787,6 +3789,7 @@ MD5Exporter.o: ../../src/Exporter/MD5Exporter.cpp
 MDBExporter.o: ../../src/Exporter/MDBExporter.cpp
 MEVExporter.o: ../../src/Exporter/MEVExporter.cpp
 OruxMapExporter.o: ../../src/Exporter/OruxMapExporter.cpp
+PEMExporter.o: ../../src/Exporter/PEMExporter.cpp
 PLTExporter.o: ../../src/Exporter/PLTExporter.cpp
 PNGExporter.o: ../../src/Exporter/PNGExporter.cpp
 SFVExporter.o: ../../src/Exporter/SFVExporter.cpp

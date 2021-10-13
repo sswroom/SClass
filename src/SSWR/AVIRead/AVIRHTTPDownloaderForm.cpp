@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtDownloadDir->GetText(&sb);
-	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid download path", (const UTF8Char *)"Request", me);
 		return;

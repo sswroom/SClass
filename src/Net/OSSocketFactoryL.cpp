@@ -63,7 +63,7 @@ typedef struct
 Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS)
 {
 /*	const UTF8Char *fileName = (const UTF8Char*)"/proc/sys/net/ipv6/bindv6only";
-	if (IO::Path::GetPathType(fileName) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(fileName) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::CreateWRITE, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

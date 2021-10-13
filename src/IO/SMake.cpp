@@ -663,7 +663,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 			sb2.Replace('/', '\\');
 		}
 
-		if (IO::Path::GetPathType(sb2.ToString()) == IO::Path::PT_FILE)
+		if (IO::Path::GetPathType(sb2.ToString()) == IO::Path::PathType::File)
 		{
 			if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 			{
@@ -698,7 +698,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	{
 		sb.Replace('/', '\\');
 	}
-	if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{
@@ -1373,7 +1373,7 @@ void IO::SMake::CleanFiles()
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				IO::Path::DeleteFile(sbuff);
 			}

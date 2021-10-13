@@ -152,7 +152,7 @@ const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			i++;
 		}
 		thisPt = IO::Path::GetPathType(this->currBuff);
-		if (thisPt != IO::Path::PT_UNKNOWN)
+		if (thisPt != IO::Path::PathType::Unknown)
 		{
 			if (pt)
 			{

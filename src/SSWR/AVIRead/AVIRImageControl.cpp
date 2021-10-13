@@ -183,7 +183,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		UOSInt currCnt = 0;
 		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				Sync::MutexUsage mutUsage(this->ioMut);
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
@@ -372,7 +372,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				IO::Path::DeleteFile(sbuff);
 			}

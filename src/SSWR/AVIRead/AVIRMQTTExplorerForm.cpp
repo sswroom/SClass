@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
 			return;
 		}
-		if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
 			return;
 		}
-		if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);

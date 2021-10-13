@@ -1681,12 +1681,12 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	Net::MIBReader *reader;
 	ModuleInfo *module;
 	Bool succ;
-	if (IO::Path::GetPathType(fileName) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(fileName) != IO::Path::PathType::File)
 	{
 		sbFileName.ClearStr();
 		sbFileName.Append(fileName);
 		sbFileName.Append((const UTF8Char*)".asn");
-		if (IO::Path::GetPathType(sbFileName.ToString()) == IO::Path::PT_FILE)
+		if (IO::Path::GetPathType(sbFileName.ToString()) == IO::Path::PathType::File)
 		{
 			fileName = sbFileName.ToString();
 		}

@@ -74,7 +74,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	pt = IO::Path::GetPathType(sb.ToString());
 	if (opcode == 1)
 	{
-		if (pt == IO::Path::PT_FILE)
+		if (pt == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
@@ -133,7 +133,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	}
 	else if (opcode == 2)
 	{
-		if (pt == IO::Path::PT_FILE)
+		if (pt == IO::Path::PathType::File)
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
@@ -141,7 +141,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
-		else if (pt == IO::Path::PT_DIRECTORY)
+		else if (pt == IO::Path::PathType::Directory)
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);

@@ -113,7 +113,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", this);
 		return;
 	}
-	if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		DEL_CLASS(asn1);
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", this);

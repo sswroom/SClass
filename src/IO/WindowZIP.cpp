@@ -15,11 +15,11 @@ IO::WindowZIP::WindowZIP(const WChar *zipFile)
 	IO::Path::PathType pt = IO::Path::GetPathTypeW(zipFile);
 	this->error = true;
 	this->filePath = Text::StrCopyNew(zipFile);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		this->error = false;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		return;
 	}

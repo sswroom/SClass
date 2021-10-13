@@ -2267,7 +2267,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 				i = Text::StrLastIndexOf(u8buff2, IO::Path::PATH_SEPERATOR);
 				this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
 				
-				if (IO::Path::GetPathType(u8buff) == IO::Path::PT_DIRECTORY)
+				if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::Directory)
 				{
 					if (IO::FileUtil::MoveFile(u8buff, u8buff2, IO::FileUtil::FEA_FAIL, 0, 0))
 					{

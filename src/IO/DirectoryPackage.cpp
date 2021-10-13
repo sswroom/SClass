@@ -103,11 +103,11 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index)
 	if (fileName == 0)
 		return IO::PackageFile::POT_UNKNOWN;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		return IO::PackageFile::POT_STREAMDATA;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		return IO::PackageFile::POT_PACKAGEFILE;
 	}
@@ -133,7 +133,7 @@ IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index)
 	if (fileName == 0)
 		return 0;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
@@ -151,7 +151,7 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index)
 	if (fileName == 0)
 		return 0;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_DIRECTORY)
+	if (pt == IO::Path::PathType::Directory)
 	{
 		IO::DirectoryPackage *pkg;
 		NEW_CLASS(pkg, IO::DirectoryPackage(fileName));
@@ -224,7 +224,7 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 	IO::Path::PathType pt;
 	Bool ret;
 	pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -242,7 +242,7 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 		}
 		return ret;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -268,7 +268,7 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 	IO::Path::PathType pt;
 	Bool ret;
 	pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -286,7 +286,7 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 		}
 		return ret;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -312,7 +312,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 	IO::Path::PathType pt;
 	Bool ret;
 	pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -330,7 +330,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 		}
 		return ret;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -356,7 +356,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 	IO::Path::PathType pt;
 	Bool ret;
 	pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
@@ -374,7 +374,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 		}
 		return ret;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;

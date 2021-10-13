@@ -1,7 +1,10 @@
 #include "Stdafx.h"
+#include "Exporter/PEMExporter.h"
+#include "IO/FileStream.h"
 #include "Net/ACMEConn.h"
 #include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Parser/FileParser/X509Parser.h"
 #include "Text/JSON.h"
 
 
@@ -20,6 +23,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	this->sockf = sockf;
+	this->key = 0;
 	this->ssl = Net::DefaultSSLEngine::Create(sockf, false);
 	this->serverHost = Text::StrCopyNew(serverHost);
 	this->port = port;
@@ -152,20 +156,55 @@ const UTF8Char *Net::ACMEConn::GetWebsite()
 
 Bool Net::ACMEConn::NewKey()
 {
+	Crypto::Cert::X509Key *key = this->ssl->GenerateRSAKey();
+	if (key)
+	{
+		SDEL_CLASS(this->key);
+		this->key = key;
+		return true;
+	}
 	return false;
 }
 
 Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
 {
+	if (key && key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
+	{
+		SDEL_CLASS(this->key);
+		this->key = (Crypto::Cert::X509Key*)key->Clone();
+		return true;
+	}
 	return false;
 }
 
 Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName)
 {
+	UInt8 keyPEM[4096];
+	UOSInt keyPEMSize = IO::FileStream::LoadFile(fileName, keyPEM, 4096);
+	if (keyPEMSize == 0)
+	{
+		return false;
+	}
+	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, fileName);
+	if (x509 == 0)
+	{
+		return false;
+	}
+	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && ((Crypto::Cert::X509Key*)x509)->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
+	{
+		SDEL_CLASS(this->key);
+		this->key = (Crypto::Cert::X509Key*)x509;
+		return true;
+	}
+	DEL_CLASS(x509);
 	return false;
 }
 
 Bool Net::ACMEConn::SaveKey(const UTF8Char *fileName)
 {
-	return false;
+	if (this->key == 0)
+	{
+		return false;
+	}
+	return Exporter::PEMExporter::ExportFile(fileName, this->key);
 }

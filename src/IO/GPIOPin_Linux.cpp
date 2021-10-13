@@ -28,7 +28,7 @@ IO::GPIOPin::GPIOPin(OSInt pinNum)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
 	{
 		Char sbuff2[12];
 		Text::StrInt32(sbuff2, this->pinNum);
@@ -45,7 +45,7 @@ Bool IO::GPIOPin::IsError()
 	UTF8Char sbuff[128];
 	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	return IO::Path::GetPathType(sbuff) != IO::Path::PT_DIRECTORY;
+	return IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory;
 }
 
 Bool IO::GPIOPin::IsPinHigh()

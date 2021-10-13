@@ -121,7 +121,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			{
 				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".md4");
 			}
-			if (IO::Path::GetPathType(sbuff) == IO::Path::PT_UNKNOWN)
+			if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Unknown)
 			{
 				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName, chkType, me, false);
 				IO::FileStream *fs;

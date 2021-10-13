@@ -100,11 +100,11 @@ WChar *IO::CEControl::FindNextFile(WChar *buff, void *session, Data::DateTime *m
 		}
 		if (sess->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
-			*pt = IO::Path::PT_DIRECTORY;
+			*pt = IO::Path::PathType::Directory;
 		}
 		else
 		{
-			*pt = IO::Path::PT_FILE;
+			*pt = IO::Path::PathType::File;
 		}
 		sess->lastFound = (CeFindNextFile(sess->handle, &sess->findData) != 0);
 		return outPtr;
@@ -128,15 +128,15 @@ IO::Path::PathType IO::CEControl::GetPathType(const WChar *path)
 	UInt32 fatt = CeGetFileAttributes(path);
 	if (fatt == INVALID_FILE_ATTRIBUTES)
 	{
-		return IO::Path::PT_UNKNOWN;
+		return IO::Path::PathType::Unknown;
 	}
 	else if (fatt & FILE_ATTRIBUTE_DIRECTORY)
 	{
-		return IO::Path::PT_DIRECTORY;
+		return IO::Path::PathType::Directory;
 	}
 	else
 	{
-		return IO::Path::PT_FILE;
+		return IO::Path::PathType::File;
 	}
 }
 

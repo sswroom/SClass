@@ -56,7 +56,7 @@ UInt32 __stdcall UI::MSWindowPictureView::ThreadProc(void *userObj)
 					if (me->threadToStop)
 						break;
 
-					if (pt == IO::Path::PT_DIRECTORY)
+					if (pt == IO::Path::PathType::Directory)
 					{
 						if (Text::StrEquals(sptr, L"."))
 						{
@@ -92,7 +92,7 @@ UInt32 __stdcall UI::MSWindowPictureView::ThreadProc(void *userObj)
 							me->previewMut->Unlock();
 						}
 					}
-					else if (pt == IO::Path::PT_FILE)
+					else if (pt == IO::Path::PathType::File)
 					{
 						NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 						pobj = me->parsers->ParseFile(fd, &t);
@@ -326,7 +326,7 @@ OSInt UI::MSWindowPictureView::OnNotify(UInt32 code, void *lParam)
 
 void UI::MSWindowPictureView::SetDirectory(const WChar *dir)
 {
-	if (IO::Path::GetPathType(dir) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(dir) != IO::Path::PathType::Directory)
 		return;
 	this->threadMut->Lock();
 	if (this->currDir)

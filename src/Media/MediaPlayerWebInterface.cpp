@@ -90,7 +90,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				vfile = MemAlloc(VideoFileInfo, 1);
 				vfile->fileName = Text::StrCopyNew(sptr);

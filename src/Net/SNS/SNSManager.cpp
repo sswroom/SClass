@@ -464,7 +464,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 		Net::SNS::SNSControl::SNSType type = Net::SNS::SNSControl::ST_UNKNOWN;
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
-			if (pt == IO::Path::PT_DIRECTORY && sptr[0] != '.')
+			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 				Text::StrConcat(sptr2, (const UTF8Char*)"channel.txt");

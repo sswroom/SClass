@@ -1,7 +1,10 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509Key.h"
 #include "Exporter/PEMExporter.h"
 #include "IO/FileStream.h"
 #include "Net/ASN1Data.h"
+#include "Text/StringBuilderUTF8.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
 Exporter::PEMExporter::PEMExporter()
 {
@@ -15,7 +18,7 @@ Exporter::PEMExporter::~PEMExporter()
 
 Int32 Exporter::PEMExporter::GetName()
 {
-	return (Int32)"PEME";
+	return *(Int32*)"PEME";
 }
 
 IO::FileExporter::SupportType Exporter::PEMExporter::IsObjectSupported(IO::ParsedObject *pobj)
@@ -25,7 +28,7 @@ IO::FileExporter::SupportType Exporter::PEMExporter::IsObjectSupported(IO::Parse
 		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
-	if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -59,7 +62,7 @@ Bool Exporter::PEMExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	}
 	Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
-	if (asn1->GetASN1Type() != Net::ASN1Data::AT_X509)
+	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		return false;
 	}
@@ -68,7 +71,55 @@ Bool Exporter::PEMExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::X509File *x509)
 {
-	//////////////////////////////
+	Text::TextBinEnc::Base64Enc b64;
+	Text::StringBuilderUTF8 sb;
+	switch (x509->GetFileType())
+	{
+	case Crypto::Cert::X509File::FileType::Cert:
+		sb.Append((const UTF8Char*)"-----BEGIN CERTIFICATE-----\n");
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+		sb.Append((const UTF8Char*)"\n-----END CERTIFICATE-----\n");
+		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	case Crypto::Cert::X509File::FileType::CertRequest:
+		sb.Append((const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----\n");
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+		sb.Append((const UTF8Char*)"\n-----END CERTIFICATE REQUEST-----\n");
+		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	case Crypto::Cert::X509File::FileType::Jks:
+		return false;
+	case Crypto::Cert::X509File::FileType::Key:
+		{
+			Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
+			switch (key->GetKeyType())
+			{
+			case Crypto::Cert::X509Key::KeyType::RSA:
+				sb.Append((const UTF8Char*)"-----BEGIN RSA PRIVATE KEY-----\n");
+				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+				sb.Append((const UTF8Char*)"\n-----END RSA PRIVATE KEY-----\n");
+				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+			case Crypto::Cert::X509Key::KeyType::DSA:
+				sb.Append((const UTF8Char*)"-----BEGIN DSA PRIVATE KEY-----\n");
+				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+				sb.Append((const UTF8Char*)"\n-----END DSA PRIVATE KEY-----\n");
+				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+			case Crypto::Cert::X509Key::KeyType::ECDSA:
+				sb.Append((const UTF8Char*)"-----BEGIN EC PRIVATE KEY-----\n");
+				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+				sb.Append((const UTF8Char*)"\n-----END EC PRIVATE KEY-----\n");
+				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+			case Crypto::Cert::X509Key::KeyType::ED25519:
+			case Crypto::Cert::X509Key::KeyType::Unknown:
+			default:
+				return false;
+			}
+		}
+		return false;
+	case Crypto::Cert::X509File::FileType::PrivateKey:
+		sb.Append((const UTF8Char*)"-----BEGIN PRIVATE KEY-----\n");
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+		sb.Append((const UTF8Char*)"\n-----END PRIVATE KEY-----\n");
+		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	}
 	return false;
 }
 

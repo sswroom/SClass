@@ -27,7 +27,7 @@ Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)
 	succ = true;
 	while (succ && IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
 	{
-		if (pt == IO::Path::PT_FILE)
+		if (pt == IO::Path::PathType::File)
 		{
 			Char sbuff2[512];
 			Char sbuff[512];
@@ -45,7 +45,7 @@ Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)
 				succ = false;
 			}
 		}
-		else if (pt == IO::Path::PT_DIRECTORY)
+		else if (pt == IO::Path::PathType::Directory)
 		{
 			if (sptr[0] == '.')
 			{
@@ -98,7 +98,7 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 		return false;
 
 	pt = IO::Path::GetPathType(sourceFile);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		Char sbuff[512];
 		UOSInt i;
@@ -106,7 +106,7 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 		i = Text::StrLastIndexOf(sbuff, (Char)IO::Path::PATH_SEPERATOR);
 		return mz_zip_writer_add_file(zip, &sbuff[i + 1], sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		Text::StrConcat(sbuff, sourceFile);

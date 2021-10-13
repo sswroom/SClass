@@ -8,10 +8,10 @@ namespace Net
 	class ASN1Data : public IO::ParsedObject
 	{
 	public:
-		typedef enum
+		enum class ASN1Type
 		{
-			AT_X509
-		} ASN1Type;
+			X509
+		};
 	protected:
 		UInt8 *buff;
 		UOSInt buffSize;

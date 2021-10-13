@@ -358,7 +358,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			const UTF8Char *u8ptr = Text::StrToUTF8New(fnameBuff);
 			IO::Path::PathType pt = IO::Path::GetPathType(u8ptr);
 			Text::StrDelNew(u8ptr);
-			if (pt == IO::Path::PT_DIRECTORY)
+			if (pt == IO::Path::PathType::Directory)
 			{
 				dptr = Text::StrConcat(fname, fnameBuff);
 				sptr = &fnameBuff[Text::StrCharCnt(fnameBuff) + 1];

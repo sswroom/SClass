@@ -64,7 +64,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	}
 
 	pt = IO::Path::GetPathType(path);
-	if (pt == IO::Path::PT_FILE)
+	if (pt == IO::Path::PathType::File)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 
@@ -116,7 +116,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 			}
 		}
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 		UOSInt i = (UOSInt)(Text::StrConcat(&sbuff[2], path) - sbuff);
@@ -187,7 +187,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_DIRECTORY)
+			if (pt == IO::Path::PathType::Directory)
 			{
 				if (sptr[0] == '.')
 				{
@@ -201,7 +201,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 					}
 				}
 			}
-			else if (pt == IO::Path::PT_FILE)
+			else if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 				if (fs->IsError())

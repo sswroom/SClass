@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter Log Dir", (const UTF8Char *)"Log Backup", me);
 		return;
 	}
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char *)"Invalid Log Dir", (const UTF8Char *)"Log Backup", me);
 		return;
@@ -109,11 +109,11 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 			while (k < l)
 			{
 				pt = IO::Path::GetPathType(logGrp->fileNames->GetItem(k));
-				if (pt == IO::Path::PT_FILE)
+				if (pt == IO::Path::PathType::File)
 				{
 					IO::Path::DeleteFile(logGrp->fileNames->GetItem(k));
 				}
-				else if (pt == IO::Path::PT_DIRECTORY)
+				else if (pt == IO::Path::PathType::Directory)
 				{
 					IO::FileUtil::DeleteFile(logGrp->fileNames->GetItem(k), true);
 				}

@@ -23,7 +23,7 @@
 Bool IO::FileUtil::DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(file);
-	if (pt == IO::Path::PT_DIRECTORY)
+	if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		Text::StrConcat(sbuff, file);
@@ -56,7 +56,7 @@ Bool IO::FileUtil::DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile)
 /*Bool IO::FileUtil::DeleteFile(const WChar *file, Bool deleteRdonlyFile)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(file);
-	if (pt == IO::Path::PT_DIRECTORY)
+	if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		Text::StrWChar_UTF8(sbuff, file);
@@ -190,7 +190,7 @@ typedef struct
 	IO::ActiveStreamReader *asr;
 	if (fea == IO::FileUtil::FEA_FAIL)
 	{
-		if (IO::Path::GetPathType(file2) != IO::Path::PT_UNKNOWN)
+		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
 			return false;
 	}
 	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -330,7 +330,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	IO::ActiveStreamReader *asr;
 	if (fea == IO::FileUtil::FEA_FAIL)
 	{
-		if (IO::Path::GetPathType(file2) != IO::Path::PT_UNKNOWN)
+		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
 			return false;
 	}
 	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -495,7 +495,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		Bool succ = true;
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				Text::StrConcat(dptr, sptr);
 				if (!CopyFile(sbuff, dbuff, fea, progHdlr, bnt))
@@ -504,7 +504,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 					break;
 				}
 			}
-			else if (pt == IO::Path::PT_DIRECTORY)
+			else if (pt == IO::Path::PathType::Directory)
 			{
 				if (sptr[0] == '.' && sptr[1] == 0)
 				{
@@ -569,7 +569,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 		Bool succ = true;
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				Text::StrConcat(dptr, sptr);
 				if (!CopyFile(sbuff, dbuff, fea, progHdlr, bnt))
@@ -578,7 +578,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 					break;
 				}
 			}
-			else if (pt == IO::Path::PT_DIRECTORY)
+			else if (pt == IO::Path::PathType::Directory)
 			{
 				if (sptr[0] == '.' && sptr[1] == 0)
 				{
@@ -720,7 +720,7 @@ Bool IO::FileUtil::MoveFile(const UTF8Char *srcFile, const UTF8Char *destFile, F
 			}
 			else
 			{
-				if (pt == IO::Path::PT_FILE)
+				if (pt == IO::Path::PathType::File)
 				{
 					Text::StrConcat(dptr, sptr);
 					succ = IO::FileUtil::MoveFile(sbuff, dbuff, fea, progHdlr, bnt);
@@ -729,7 +729,7 @@ Bool IO::FileUtil::MoveFile(const UTF8Char *srcFile, const UTF8Char *destFile, F
 						break;
 					}
 				}
-				else if (pt == IO::Path::PT_DIRECTORY)
+				else if (pt == IO::Path::PathType::Directory)
 				{
 					Text::StrConcat(dptr, sptr);
 					succ = IO::FileUtil::MoveDir(sbuff, dbuff, fea, progHdlr, bnt);
@@ -802,7 +802,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 			}
 			else
 			{
-				if (pt == IO::Path::PT_FILE)
+				if (pt == IO::Path::PathType::File)
 				{
 					Text::StrConcat(dptr, sptr);
 					succ = IO::FileUtil::MoveFile(sbuff, dbuff, fea, progHdlr, bnt);
@@ -811,7 +811,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 						break;
 					}
 				}
-				else if (pt == IO::Path::PT_DIRECTORY)
+				else if (pt == IO::Path::PathType::Directory)
 				{
 					Text::StrConcat(dptr, sptr);
 					succ = IO::FileUtil::MoveDir(sbuff, dbuff, fea, progHdlr, bnt);
@@ -862,7 +862,7 @@ Bool IO::FileUtil::DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile)
 		return false;
 	while (succ && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 	{
-		if (pt == IO::Path::PT_FILE)
+		if (pt == IO::Path::PathType::File)
 		{
 			const WChar *wdir = Text::StrToWCharNew(dir);
 			BOOL ret = ::DeleteFileW(wdir);
@@ -881,7 +881,7 @@ Bool IO::FileUtil::DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile)
 			}
 			Text::StrDelNew(wdir);
 		}
-		else if (pt == IO::Path::PT_DIRECTORY)
+		else if (pt == IO::Path::PathType::Directory)
 		{
 			if (sptr[0] == '.' && sptr[1] == 0)
 			{

@@ -655,7 +655,7 @@ Crypto::Cert::X509File::~X509File()
 
 Net::ASN1Data::ASN1Type Crypto::Cert::X509File::GetASN1Type()
 {
-	return AT_X509;
+	return ASN1Type::X509;
 }
 
 void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF *sb)

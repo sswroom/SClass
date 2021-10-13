@@ -34,11 +34,11 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(void *obj1, void *obj2)
 	DirectoryEntry *ent2 = (DirectoryEntry *)obj2;
 	if (ent1->pt != ent2->pt)
 	{
-		if (ent1->pt == IO::Path::PT_DIRECTORY)
+		if (ent1->pt == IO::Path::PathType::Directory)
 		{
 			return -1;
 		}
-		else if (ent2->pt == IO::Path::PT_DIRECTORY)
+		else if (ent2->pt == IO::Path::PathType::Directory)
 		{
 			return 1;
 		}
@@ -170,7 +170,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			Text::StringBuilder sbTmp;
 			sbTmp.Append(sb.ToString());
 			sbTmp.Append(sbuff);
-			if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PT_UNKNOWN)
+			if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PathType::Unknown)
 			{
 				IO::FileStream *uplFS;
 				NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
@@ -618,12 +618,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 
 	IO::Path::PathType pt = IO::Path::GetPathType(sptr);
-	if (pt == IO::Path::PT_UNKNOWN)
+	if (pt == IO::Path::PathType::Unknown)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	else if (pt == IO::Path::PT_DIRECTORY)
+	else if (pt == IO::Path::PathType::Directory)
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.Append(sb.ToString());
@@ -637,7 +637,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb2.Append((const UTF8Char*)"index.html");
 		}
 		pt = IO::Path::GetPathType(sb2.ToString());
-		if (pt == IO::Path::PT_FILE)
+		if (pt == IO::Path::PathType::File)
 		{
 			sb.ClearStr();
 			sb.Append(sb2.ToString());
@@ -734,7 +734,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.Append(sb.ToString());
 						sbTmp.Append((UTF8Char*)buff);
-						if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PT_UNKNOWN)
+						if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PathType::Unknown)
 						{
 							IO::FileStream *uplFS;
 							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
@@ -913,7 +913,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								sbOut.AppendC((const UTF8Char*)"<a href=\"", 9);
 								Text::TextEnc::URIEncoding::URIEncode(sbuff2, sptr2);
 								sbOut.Append(sbuff2);
-								if (pt == IO::Path::PT_DIRECTORY)
+								if (pt == IO::Path::PathType::Directory)
 								{
 									sbOut.AppendChar('/', 1);
 								}
@@ -929,7 +929,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 									sbOut.AppendC((const UTF8Char*)"</font>", 7);
 								}
 								sbOut.AppendC((const UTF8Char*)"</a></td><td>", 13);
-								if (pt == IO::Path::PT_DIRECTORY)
+								if (pt == IO::Path::PathType::Directory)
 								{
 									sbOut.AppendC((const UTF8Char*)"Directory", 9);
 									sbOut.AppendC((const UTF8Char*)"</td><td>", 9);
@@ -1015,7 +1015,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							sbOut.Append((const UTF8Char*)"<a href=\"");
 							Text::TextEnc::URIEncoding::URIEncode(sbuff2, ent->fileName);
 							sbOut.Append(sbuff2);
-							if (ent->pt == IO::Path::PT_DIRECTORY)
+							if (ent->pt == IO::Path::PathType::Directory)
 							{
 								sbOut.Append((const UTF8Char*)"/");
 							}
@@ -1031,7 +1031,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								sbOut.Append((const UTF8Char*)"</font>");
 							}
 							sbOut.Append((const UTF8Char*)"</a></td><td>");
-							if (ent->pt == IO::Path::PT_DIRECTORY)
+							if (ent->pt == IO::Path::PathType::Directory)
 							{
 								sbOut.Append((const UTF8Char*)"Directory");
 								sbOut.Append((const UTF8Char*)"</td><td>");
@@ -1071,7 +1071,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 		}
 	}
-	else if (pt == IO::Path::PT_FILE)
+	else if (pt == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb2;
 		IO::FileStream *fs;
@@ -1376,7 +1376,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 
 		while (IO::Path::FindNextFile(sptr, sess, &dt, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 				pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);

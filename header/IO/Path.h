@@ -8,12 +8,12 @@ namespace IO
 	class Path
 	{
 	public:
-		typedef enum
+		enum class PathType
 		{
-			PT_UNKNOWN,
-			PT_FILE,
-			PT_DIRECTORY
-		} PathType;
+			Unknown,
+			File,
+			Directory
+		};
 		struct FindFileSession;
 
 		static UTF8Char PATH_SEPERATOR;

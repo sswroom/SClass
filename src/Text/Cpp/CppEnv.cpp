@@ -207,7 +207,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 		Text::StrConcat(buff, sourceFile);
 		i = Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR);
 		sptr2 = Text::StrConcat(&buff[i + 1], includeFile);
-		if (IO::Path::GetPathType(buff) == IO::Path::PT_FILE)
+		if (IO::Path::GetPathType(buff) == IO::Path::PathType::File)
 			return sptr2;
 	}
 	i = 0;
@@ -228,7 +228,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 		sptr2 = Text::StrConcat(sptr, includeFile);
 		if (IO::Path::PATH_SEPERATOR != '/')
 			Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
-		if (IO::Path::GetPathType(buff) == IO::Path::PT_FILE)
+		if (IO::Path::GetPathType(buff) == IO::Path::PathType::File)
 			return sptr2;
 		i++;
 	}
@@ -543,7 +543,7 @@ Bool Text::Cpp::CppEnv::IsCompilerExist(Text::VSProject::VisualStudioVersion vsv
 	if (sptr == 0)
 		return false;
 	Text::StrConcat(sptr, (const UTF8Char*)"bin\\ml.exe");
-	return IO::Path::GetPathType(sbuff) == IO::Path::PT_FILE;
+	return IO::Path::GetPathType(sbuff) == IO::Path::PathType::File;
 }
 
 /*
@@ -564,28 +564,28 @@ Text::Cpp::CppEnv::CompilerType Text::Cpp::CppEnv::GetSystemCompiler(WChar *incl
 	WChar *sptr;
 	sptr = IO::Path::GetSystemProgramPath(includePath);
 	Text::StrConcat(sptr, L"\\Microsoft Visual Studio 10.0\\VC\\bin\\ml.exe");
-	if (IO::Path::GetPathType(includePath) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
 		Text::StrConcat(sptr, L"\\Microsoft Visual Studio 10.0\\VC\\include");
 		return Text::Cpp::CppEnv::CT_VS10;
 	}
 
 	Text::StrConcat(sptr, L"\\Microsoft Visual Studio 9.0\\VC\\bin\\ml.exe");
-	if (IO::Path::GetPathType(includePath) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
 		Text::StrConcat(sptr, L"\\Microsoft Visual Studio 9.0\\VC\\include");
 		return Text::Cpp::CppEnv::CT_VS9;
 	}
 
 	Text::StrConcat(sptr, L"\\Microsoft Visual Studio 8\\VC\\bin\\ml.exe");
-	if (IO::Path::GetPathType(includePath) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
 		Text::StrConcat(sptr, L"\\Microsoft Visual Studio 8\\VC\\include");
 		return Text::Cpp::CppEnv::CT_VS8;
 	}
 
 	Text::StrConcat(sptr, L"\\Microsoft Visual Studio .NET 2003\\VC7\\bin\\ml.exe");
-	if (IO::Path::GetPathType(includePath) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
 		Text::StrConcat(sptr, L"\\Microsoft Visual Studio .NET 2003\\VC7\\include");
 		return Text::Cpp::CppEnv::CT_VS71;

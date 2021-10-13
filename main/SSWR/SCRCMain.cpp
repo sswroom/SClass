@@ -149,7 +149,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (cmdCnt == 2)
 	{
 		IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1]);
-		if (pt == IO::Path::PT_UNKNOWN)
+		if (pt == IO::Path::PathType::Unknown)
 		{
 			console->WriteLine((const UTF8Char*)"File not found");
 		}

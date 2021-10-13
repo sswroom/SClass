@@ -202,7 +202,7 @@ Bool Manage::Process::IsRunning()
 	Int32 exitCode;
 	waitpid((__pid_t)this->procId, &exitCode, WNOHANG);
 	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId);
-	if (IO::Path::GetPathType(sbuff) == IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Directory)
 	{
 		return true;
 	}
@@ -756,7 +756,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
-		if (pt == IO::Path::PT_DIRECTORY && Text::StrToUInt32(sptr, &pid))
+		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
 		{
 			IO::FileStream *fs;
 			Text::UTF8Reader *reader;
@@ -825,7 +825,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
-		if (pt == IO::Path::PT_DIRECTORY && Text::StrToUInt32(sptr, &pid))
+		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
 		{
 			IO::FileStream *fs;
 			Text::UTF8Reader *reader;
@@ -941,7 +941,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];
 	UTF8Char *sptr;
-	if (IO::Path::GetPathType((const UTF8Char*)"/tmp") == IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType((const UTF8Char*)"/tmp") == IO::Path::PathType::Directory)
 	{
 		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"/tmp/ExecuteProcess");
 	}

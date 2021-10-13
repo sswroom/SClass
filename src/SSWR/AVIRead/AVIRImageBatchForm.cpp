@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 			IO::Path::PathType pt;
 			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 			{
-				if (pt == IO::Path::PT_FILE)
+				if (pt == IO::Path::PathType::File)
 				{
 					fileCnt++;
 				}

@@ -84,12 +84,12 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	while (i < nFiles)
 	{
 		pt = IO::Path::GetPathType(files[i]);
-		if (pt == IO::Path::PT_DIRECTORY)
+		if (pt == IO::Path::PathType::Directory)
 		{
 			NEW_CLASS(pkg, IO::DirectoryPackage(files[i]));
 			me->core->OpenObject(pkg);
 		}
-		else if (pt == IO::Path::PT_FILE)
+		else if (pt == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 			if (!me->core->LoadData(fd, 0))

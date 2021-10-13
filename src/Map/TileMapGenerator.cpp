@@ -99,7 +99,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 		mutUsage.EndUse();
 		return true;
 	}
-	if (IO::Path::GetPathType(sbuff) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 	{
 		mutUsage.EndUse();
 		return true;
@@ -175,7 +175,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	GenerateDBFile(x, y + 1, scale, mapSch);
 
 	GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".png");
-	if (IO::Path::GetPathType(sbuff2) == IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
 		return true;
 
 	NEW_CLASS(mstm, IO::MemoryStream(1048576, (const UTF8Char*)"Map.TileMapGenerator.GenerateTile"));

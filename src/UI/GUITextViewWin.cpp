@@ -109,7 +109,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		RegisterHotKey((HWND)hWnd, HK_SLINEHOME, MOD_SHIFT, VK_HOME);
 		RegisterHotKey((HWND)hWnd, HK_SLINEEND, MOD_SHIFT, VK_END);
 
-		CreateCaret((HWND)hWnd, 0, 2, me->pageLineHeight);
+		CreateCaret((HWND)hWnd, 0, 2, Math::Double2Int32(me->pageLineHeight));
 		me->UpdateCaretPos();
 		ShowCaret((HWND)hWnd); 
 		break;

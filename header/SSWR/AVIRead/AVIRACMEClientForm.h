@@ -20,6 +20,8 @@ namespace SSWR
 
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
+			UI::GUILabel *lblKeyFile;
+			UI::GUITextBox *txtKeyFile;
 			UI::GUIButton *btnStart;
 
 			UI::GUILabel *lblTermOfService;

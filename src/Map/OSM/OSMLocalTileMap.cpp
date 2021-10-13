@@ -41,7 +41,7 @@
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
 		{
-			if (pt == IO::Path::PT_DIRECTORY && sptr[0] != '.')
+			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{
 				if (Text::StrToInt32(sptr, &currVal) && currVal > this->maxLevel)
 				{
@@ -64,7 +64,7 @@
 		{
 			while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
 			{
-				if (pt == IO::Path::PT_DIRECTORY && sptr[0] != '.')
+				if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 				{
 					if (Text::StrToInt32(sptr, &currVal))
 					{
@@ -94,7 +94,7 @@
 			{
 				while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
 				{
-					if (pt == IO::Path::PT_FILE)
+					if (pt == IO::Path::PathType::File)
 					{
 						i = Text::StrIndexOf(sptr, '.');
 						if (i != INVALID_INDEX)

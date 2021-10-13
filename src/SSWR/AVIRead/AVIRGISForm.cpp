@@ -137,13 +137,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 	{
 		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]);
 		pobj = 0;
-		if (pathType == IO::Path::PT_FILE)
+		if (pathType == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 			pobj = parsers->ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 		}
-		else if (pathType == IO::Path::PT_DIRECTORY)
+		else if (pathType == IO::Path::PathType::Directory)
 		{
 			IO::DirectoryPackage *dpkg;
 			NEW_CLASS(dpkg, IO::DirectoryPackage(files[i]));

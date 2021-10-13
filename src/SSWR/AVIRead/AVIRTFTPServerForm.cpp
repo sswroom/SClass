@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtFilePath->GetText(&sb);
-	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
 		return;
 	}

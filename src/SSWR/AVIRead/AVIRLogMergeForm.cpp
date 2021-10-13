@@ -77,11 +77,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 	me->txtFile1->GetText(&sb1);
 	me->txtFile2->GetText(&sb2);
 	me->txtOFile->GetText(&sb3);
-	if (IO::Path::GetPathType(sb1.ToString()) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sb1.ToString()) != IO::Path::PathType::File)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"File1 not found", (const UTF8Char*)"Error", me);
 	}
-	else if (IO::Path::GetPathType(sb2.ToString()) != IO::Path::PT_FILE)
+	else if (IO::Path::GetPathType(sb2.ToString()) != IO::Path::PathType::File)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"File2 not found", (const UTF8Char*)"Error", me);
 	}

@@ -79,7 +79,7 @@ void UtilUI::DataSenderForm::AddFile(const WChar *fileName)
 	WChar sbuff[512];
 	WChar *sptr;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
-	if (pt == IO::Path::PT_DIRECTORY)
+	if (pt == IO::Path::PathType::Directory)
 	{
 		Text::StrConcat(Text::StrConcat(sbuff, L"(Dir)"), fileName);
 		this->lbFiles->AddItem(sbuff, 0);
@@ -96,7 +96,7 @@ void UtilUI::DataSenderForm::AddFile(const WChar *fileName)
 			IO::Path::PathType pt;
 			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
 			{
-				if (pt == IO::Path::PT_FILE)
+				if (pt == IO::Path::PathType::File)
 				{
 					this->reader->AddFile(sbuff);
 				}
@@ -104,7 +104,7 @@ void UtilUI::DataSenderForm::AddFile(const WChar *fileName)
 			IO::Path::FindFileClose(sess);
 		}
 	}
-	else if (pt == IO::Path::PT_FILE)
+	else if (pt == IO::Path::PathType::File)
 	{
 		Text::StrConcat(Text::StrConcat(sbuff, L"(File)"), fileName);
 		this->lbFiles->AddItem(sbuff, 0);

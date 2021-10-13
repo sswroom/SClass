@@ -69,7 +69,7 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 		{
 			*pClsid = pImageCodecInfo[j].Clsid;
 			MemFree(pImageCodecInfo);
-			return j;  // Success
+			return (INT)j;  // Success
 		}
 	}
 
@@ -252,8 +252,8 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 			HBITMAP hBmp;
 			HDC hdcBmp;
 			bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-			bmi.bmiHeader.biWidth = bmpd.Width;
-			bmi.bmiHeader.biHeight = bmpd.Height;
+			bmi.bmiHeader.biWidth = (LONG)bmpd.Width;
+			bmi.bmiHeader.biHeight = (LONG)bmpd.Height;
 			bmi.bmiHeader.biPlanes = 1;
 			bmi.bmiHeader.biBitCount = 32;
 			bmi.bmiHeader.biCompression = BI_RGB;
@@ -266,10 +266,10 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 			{
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UInt8 *imgDest = (UInt8*)pBits;
-				Int32 dbpl = bmpd.Width << 2;
+				UInt32 dbpl = bmpd.Width << 2;
 				Int32 sbpl = bmpd.Stride;
 				imgDest += bmpd.Height * dbpl;
-				Int32 i = bmpd.Height;
+				UInt32 i = bmpd.Height;
 				while (i-- > 0)
 				{
 					imgDest -= dbpl;
@@ -283,7 +283,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
+					NEW_CLASS(img, GDIImage(this, 0, 0, (UOSInt)bmi.bmiHeader.biWidth, (UOSInt)bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
 				}
 				else
 				{
@@ -337,7 +337,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		Int32 j;
 		UInt8 *psrc;
 		UInt8 *psrc2;
-		Int32 *pdest;
+		UInt32 *pdest;
 
 		switch (bpp)
 		{
@@ -350,10 +350,10 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 				{
 					lineW = lineW + 4 - (lineW & 3);
 				}
-				buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
+				buff = MemAlloc(UInt8, buffSize = (UInt32)(lineW * bmi.bmiHeader.biHeight));
 				fstm->Read(buff, buffSize);
 				psrc = (UInt8*)pBits;
-				pdest = (Int32*)buff;
+				pdest = (UInt32*)buff;
 				j = bmi.bmiHeader.biHeight;
 				while (j-- > 0)
 				{
@@ -361,7 +361,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 					i = bmi.bmiHeader.biWidth;
 					while (i-- > 0)
 					{
-						*pdest++ = ((Int32*)pal)[*psrc2++] | 0xff000000;
+						*pdest++ = ((UInt32*)pal)[*psrc2++] | 0xff000000;
 					}
 					psrc += lineW;
 				}
@@ -411,7 +411,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 				buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
 				fstm->Read(buff, buffSize);
 				psrc = (UInt8*)pBits;
-				pdest = (Int32*)buff;
+				pdest = (UInt32*)buff;
 				j = bmi.bmiHeader.biHeight;
 				while (j-- > 0)
 				{
@@ -419,7 +419,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 					i = bmi.bmiHeader.biWidth;
 					while (i-- > 0)
 					{
-						*pdest++ = psrc2[0] | ((Int32)psrc2[1] << 8) | ((Int32)psrc2[2] << 16) | 0xff000000;
+						*pdest++ = psrc2[0] | ((UInt32)psrc2[1] << 8) | ((UInt32)psrc2[2] << 16) | 0xff000000;
 					}
 					psrc += lineW;
 				}
@@ -431,7 +431,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, 0, 0, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+					NEW_CLASS(img, GDIImage(this, 0, 0, (ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight, 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
 				}
 				else
 				{
@@ -493,7 +493,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
 			OSInt sbpl = (OSInt)simg->info->storeWidth << 2;
 			OSInt dbpl = (OSInt)simg->info->dispWidth << 2;
-			ImageCopy_ImgCopy(sptr, dptr + (dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
+			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
 		}
 	}
 	else
@@ -505,7 +505,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
 			OSInt sbpl = (OSInt)simg->info->storeWidth << 2;
 			OSInt dbpl = (OSInt)simg->info->dispWidth << 2;
-			ImageCopy_ImgCopy(sptr, dptr + (dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
+			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
 		}
 		DEL_CLASS(simg);
 	}
@@ -974,7 +974,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 				i++;
 			}
 #else
-			PolyPolygonAccel((HDC)this->hdcBmp, points, pointCnt, nPointCnt, left, top, width, height, Math::Double2Int32(penWidth));
+			PolyPolygonAccel((HDC)this->hdcBmp, points, pointCnt, nPointCnt, left, top, (OSInt)width, (OSInt)height, Math::Double2Int32(penWidth));
 #endif
 		}
 		else if (this->bmpBits && (((GDIBrush*)b)->oriColor & 0xff000000) == 0xff000000)
@@ -1292,8 +1292,8 @@ Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, Dr
 			return false;
 		UInt8 *imgPtr = (UInt8*)tmpImg->bmpBits;
 		UInt8 *imgPtr2 = (UInt8*)this->bmpBits;
-		OSInt imgW = this->width;
-		OSInt imgH = this->height;
+		UOSInt imgW = this->width;
+		UOSInt imgH = this->height;
 		Int32 c1 = 0;
 		Int32 c2 = 0;
 		ImageUtil_ColorFill32(imgPtr, imgW * imgH, 0xff000000);
@@ -1701,8 +1701,8 @@ Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, D
 	sz[1] = maxV - minV;
 	drawY = py - minV;
 	py = minV;
-	dwidth = this->width - px;
-	dheight = this->height - py;
+	dwidth = (OSInt)this->width - px;
+	dheight = (OSInt)this->height - py;
 
 	if (dwidth < 0)
 	{
@@ -1740,11 +1740,11 @@ Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, D
 		}
 		if ((OSInt)gimg->GetHeight() - sheight < sy)
 		{
-			sheight = gimg->GetHeight() - sy;
+			sheight = (OSInt)gimg->GetHeight() - sy;
 		}
 		if ((OSInt)gimg->GetWidth() - swidth < sx)
 		{
-			swidth = gimg->GetWidth() - sx;
+			swidth = (OSInt)gimg->GetWidth() - sx;
 		}
 		if (dwidth + (OSInt)buffSize < swidth)
 		{
@@ -2664,7 +2664,7 @@ UOSInt Media::GDIImage::SavePng(IO::SeekableStream *stm)
 	if(stat == Gdiplus::Ok)
 		return 0;
 	else
-		return (UOSInt)stat | 0x10000; 
+		return ((UOSInt)stat) | 0x10000; 
 #else
 	return 0x10000;
 #endif
@@ -2743,7 +2743,7 @@ UOSInt Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
 	if(stat == Gdiplus::Ok)
 		return 0;
 	else
-		return (UOSInt)stat | 0x10000; 
+		return ((UOSInt)stat) | 0x10000; 
 #else
 	return 0x10000;
 #endif
@@ -2781,7 +2781,7 @@ UOSInt Media::GDIImage::SaveJPG(IO::SeekableStream *stm)
 	if(stat == Gdiplus::Ok)
 		return 0;
 	else
-		return (UOSInt)stat | 0x10000; 
+		return ((UOSInt)stat) | 0x10000; 
 #else
 	return 0x10000;
 #endif
@@ -2802,7 +2802,7 @@ void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSIn
 	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }
 
-Int32 Media::GDIImage::GetPixel32(OSInt x, OSInt y)
+UInt32 Media::GDIImage::GetPixel32(OSInt x, OSInt y)
 {
 	if (x < 0 || x >= (OSInt)this->width)
 		return 0;
@@ -2810,11 +2810,11 @@ Int32 Media::GDIImage::GetPixel32(OSInt x, OSInt y)
 		return 0;
 	if (this->bitCount == 32)
 	{
-		return *(Int32*)(((y * this->width + x) * 4) + (UInt8*)this->bmpBits);
+		return *(UInt32*)(((y * this->width + x) * 4) + (UInt8*)this->bmpBits);
 	}
 	else if (this->bitCount == 24)
 	{
-		return 0xff000000 | *(Int32*)(((y * this->width + x) * 3) + (UInt8*)this->bmpBits);
+		return 0xff000000 | *(UInt32*)(((y * this->width + x) * 3) + (UInt8*)this->bmpBits);
 	}
 	else
 	{
@@ -2861,8 +2861,8 @@ void Media::GDIImage::PolygonAccel(void *hdc, Int32 *points, UOSInt nPoints, OSI
 	//////////////////////////////////////////
 	Int32 *pointsTmp = MemAlloc(Int32, nPoints << 2);
 	Int32 *pointsTmp2;
-	OSInt ptCnt;
-	OSInt ptCnt2;
+	UOSInt ptCnt;
+	UOSInt ptCnt2;
 
 	if (pointsTmp == 0)
 	{
@@ -2899,13 +2899,13 @@ void Media::GDIImage::PolyPolygonAccel(void *hdc, Int32 *points, UInt32 *pointCn
 	Int32 *pointsTmp3;
 
 	Int32 *currPoints;
-	Int32 nParts;
-	OSInt ptCnt;
-	OSInt ptCnt2;
+	UInt32 nParts;
+	UOSInt ptCnt;
+	UOSInt ptCnt2;
 
-	Int32 pointsTmp3Size;
-	Int32 totalPoints = 0;
-	Int32 nPoints;
+	UInt32 pointsTmp3Size;
+	UInt32 totalPoints = 0;
+	UInt32 nPoints;
 	UOSInt i = nPointCnt;
 	while (i-- > 0)
 	{
@@ -3009,17 +3009,17 @@ Bool Media::GDIImage::DrawRectN(OSInt oriX, OSInt oriY, OSInt oriW, OSInt oriH, 
 	if (h <= 0)
 		return false;
 	
-	OSInt bpl = this->width << 2;
-	UInt8 *initOfst = ((UInt8*) this->bmpBits) + bpl * y + (x << 2);
-	Int32 c = gb->oriColor;
+	UOSInt bpl = this->width << 2;
+	UInt8 *initOfst = ((UInt8*) this->bmpBits) + (OSInt)bpl * y + (x << 2);
+	UInt32 c = gb->oriColor;
 
 	if ((c & 0xff000000) == 0xff000000)
 	{
-		ImageUtil_ImageColorFill32(initOfst, w, h, bpl, c);
+		ImageUtil_ImageColorFill32(initOfst, (UOSInt)w, (UOSInt)h, bpl, c);
 	}
 	else
 	{
-		ImageUtil_ImageColorBlend32(initOfst, w, h, bpl, c);
+		ImageUtil_ImageColorBlend32(initOfst, (UOSInt)w, (UOSInt)h, bpl, c);
 	}
 	if (p)
 	{
@@ -3052,7 +3052,7 @@ void Media::GDIImage::MulImageAlpha(Double val)
 	}
 	if (this->info->storeBPP == 32 && this->bmpBits && this->info->pf == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ImageAlphaMul32((UInt8*)this->bmpBits, this->width, this->height, this->width << 2, Math::Double2Int32(val * 65536));
+		ImageUtil_ImageAlphaMul32((UInt8*)this->bmpBits, this->width, this->height, this->width << 2, (UInt32)Math::Double2Int32(val * 65536.0));
 	}
 }
 
@@ -3074,11 +3074,11 @@ void Media::GDIImage::FillAlphaRect(OSInt left, OSInt top, OSInt width, OSInt he
 		return;
 	if (left + width > (OSInt)this->width)
 	{
-		width = this->width - left;
+		width = (OSInt)this->width - left;
 	}
 	if (top + height > (OSInt)this->height)
 	{
-		height = this->height - top;
+		height = (OSInt)this->height - top;
 	}
 	if (width <= 0)
 		return;
@@ -3087,9 +3087,9 @@ void Media::GDIImage::FillAlphaRect(OSInt left, OSInt top, OSInt width, OSInt he
 	if (this->info->storeBPP == 32 && this->bmpBits && this->info->pf == Media::PF_B8G8R8A8)
 	{
 		UInt8 *pbits = (UInt8*)this->bmpBits;
-		OSInt bpl = this->width * 4;
-		pbits = pbits + (this->height - top - height) * bpl + left * 4;
-		ImageUtil_ImageFillAlpha32(pbits, width, height, bpl, alpha);
+		UOSInt bpl = this->width * 4;
+		pbits = pbits + ((OSInt)this->height - top - height) * (OSInt)bpl + left * 4;
+		ImageUtil_ImageFillAlpha32(pbits, (UOSInt)width, (UOSInt)height, bpl, alpha);
 	}
 }
 
@@ -3112,7 +3112,7 @@ void *Media::GDIImage::CreateGDIImage()
 		bmp->LockBits(&rect, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, bitmapData);
 		i = this->height;
 		sbpl = this->GetDataBpl();
-		dbpl = bitmapData->Stride;
+		dbpl = (UINT)bitmapData->Stride;
 		sptr = i * sbpl + (UInt8*)this->bmpBits;
 		dptr = (UInt8*)bitmapData->Scan0;
 

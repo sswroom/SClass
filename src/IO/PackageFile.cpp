@@ -619,7 +619,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		}
 		if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
 		{
-			if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_UNKNOWN)
+			if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Unknown)
 				return false;
 
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
@@ -674,7 +674,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		{
 			UInt64 fileSize = item->fd->GetDataSize();
 			UOSInt readSize;
-			if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_UNKNOWN)
+			if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Unknown)
 				return false;
 
 			if (fileSize < 1048576)

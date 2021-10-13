@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	{
 		sb.RemoveChars(1);
 	}
-	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PT_DIRECTORY)
+	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
 		return;
 	}
@@ -145,14 +145,14 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	{
 		while ((sptr = IO::Path::FindNextFile(pathBuffEnd, sess, 0, &pt, 0)) != 0)
 		{
-			if (pt == IO::Path::PT_DIRECTORY)
+			if (pt == IO::Path::PathType::Directory)
 			{
 				if (pathBuffEnd[0] != '.')
 				{
 					CalcDir(pathBuff, sptr);
 				}
 			}
-			else if (pt == IO::Path::PT_FILE)
+			else if (pt == IO::Path::PathType::File)
 			{
 				found = false;
 				i = Text::StrLastIndexOf(pathBuffEnd, '.') + 1;

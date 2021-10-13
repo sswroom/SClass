@@ -208,7 +208,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 			return sptr;
 		}
 		IO::Path::PathType pt = IO::Path::GetPathType(sbuff);
-		if (pt != IO::Path::PT_UNKNOWN)
+		if (pt != IO::Path::PathType::Unknown)
 		{
 			return IO::Path::AppendPath(sbuff, path);
 		}

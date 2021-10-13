@@ -61,7 +61,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 		printf("SSL_connect: ret = %d, Error code = %d\r\n", ret, code);
 #endif
 		if (err)
-			*err = ET_INIT_SESSION;
+			*err = ErrorType::InitSession;
 		return 0;
 	}
 	if (!this->skipCertCheck)
@@ -72,7 +72,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
-				*err = ET_CERT_NOT_FOUND;
+				*err = ErrorType::CertNotFound;
 			return 0;
 		}
 
@@ -93,7 +93,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
-				*err = ET_INVALID_PERIOD;
+				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
 		ASN1_TIME_to_tm(notAfter, &tm);
@@ -104,7 +104,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
-				*err = ET_INVALID_PERIOD;
+				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
 
@@ -131,7 +131,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
-				*err = ET_INVALID_NAME;
+				*err = ErrorType::InvalidName;
 			return 0;
 		}
 		X509_NAME *issuer = X509_get_issuer_name(cert);
@@ -141,7 +141,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
-				*err = ET_SELF_SIGN;
+				*err = ErrorType::SelfSign;
 			return 0;
 		}
 		X509_free(cert);
@@ -158,52 +158,52 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 	const SSL_METHOD *m = 0;
 	switch (method)
 	{
-	case M_SSLV3:
+	case Method::SSLV3:
 #ifdef OPENSSL_NO_SSL3_METHOD
 		m = SSLv23_method();
 #else
 		m = SSLv3_method();
 #endif
 		break;
-	case M_SSLV23:
+	case Method::SSLV23:
 		m = SSLv23_method();
 		break;
-	case M_DEFAULT:
-	case M_TLS:
+	case Method::Default:
+	case Method::TLS:
 		m = TLS_method();
 		break;
-	case M_TLSV1:
+	case Method::TLSV1:
 #ifdef OPENSSL_NO_TLS1_METHOD
 		m = TLS_method();
 #else
 		m = TLSv1_method();
 #endif
 		break;
-	case M_TLSV1_1:
+	case Method::TLSV1_1:
 #ifdef OPENSSL_NO_TLS1_1_METHOD
 		m = TLS_method();
 #else
 		m = TLSv1_1_method();
 #endif
 		break;
-	case M_TLSV1_2:
+	case Method::TLSV1_2:
 #ifdef OPENSSL_NO_TLS1_2_METHOD
 		m = TLS_method();
 #else
 		m = TLSv1_2_method();
 #endif
 		break;
-	case M_DTLS:
+	case Method::DTLS:
 		m = DTLS_method();
 		break;
-	case M_DTLSV1:
+	case Method::DTLSV1:
 #ifdef OPENSSL_NO_DTLS1_METHOD
 		m = DTLS_method();
 #else
 		m = DTLSv1_method();
 #endif
 		break;
-	case M_DTLSV1_2:
+	case Method::DTLSV1_2:
 #ifdef OPENSSL_NO_DTLS1_2_METHOD
 		m = DTLS_method();
 #else
@@ -312,14 +312,14 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	if (!this->sockf->DNSResolveIP(hostName, &addr))
 	{
 		if (err)
-			*err = ET_HOSTNAME_NOT_RESOLVED;
+			*err = ErrorType::HostnameNotResolved;
 		return 0;
 	}
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)
 	{
 		if (err)
-			*err = ET_OUT_OF_MEMORY;
+			*err = ErrorType::OutOfMemory;
 		return 0;
 	}
 	if (this->clsData->cliCert)
@@ -343,14 +343,14 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	{
 		SSL_free(ssl);
 		if (err)
-			*err = ET_HOSTNAME_NOT_RESOLVED;
+			*err = ErrorType::HostnameNotResolved;
 		return 0;
 	}
 	if (s == 0)
 	{
 		SSL_free(ssl);
 		if (err)
-			*err = ET_OUT_OF_MEMORY;
+			*err = ErrorType::OutOfMemory;
 		return 0;
 	}
 	if (!this->sockf->Connect(s, &addr, port))
@@ -358,7 +358,7 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		this->sockf->DestroySocket(s);
 		SSL_free(ssl);
 		if (err)
-			*err = ET_CANNOT_CONNECT;
+			*err = ErrorType::CannotConnect;
 		return 0;
 	}
 	return CreateClientConn(ssl, s, hostName, err);
@@ -370,7 +370,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, const UTF8Char *hostNa
 	if (ssl == 0)
 	{
 		if (err)
-			*err = ET_OUT_OF_MEMORY;
+			*err = ErrorType::OutOfMemory;
 		return 0;
 	}
 	if (this->clsData->cliCert)
@@ -463,4 +463,39 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 	}
 	BN_free(bn);
 	return succ;
+}
+
+Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
+{
+	BIGNUM *bn = BN_new();
+	BN_set_word(bn, RSA_F4);
+	RSA *rsa = RSA_new();
+	if (RSA_generate_key_ex(rsa, 2048, bn, 0) > 0)
+	{
+		BIO *bio1;
+		BIO *bio2;
+		UInt8 buff[4096];
+		Crypto::Cert::X509File *pobjKey = 0;
+		IO::StmData::MemoryData *mdata;
+		Parser::FileParser::X509Parser parser;
+
+		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
+		PEM_write_bio_RSAPrivateKey(bio1, rsa, nullptr, nullptr, 0, nullptr, nullptr);
+		int readSize = BIO_read(bio2, buff, 4096);
+		if (readSize > 0)
+		{
+			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
+			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			DEL_CLASS(mdata);
+		}
+		BIO_free(bio1);
+		BIO_free(bio2);
+
+		RSA_free(rsa);
+		BN_free(bn);
+		return (Crypto::Cert::X509Key*)pobjKey;
+	}
+	RSA_free(rsa);
+	BN_free(bn);
+	return 0;
 }

@@ -37,43 +37,43 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 	{
 		switch (method)
 		{
-		case Net::SSLEngine::M_DEFAULT:
+		case Net::SSLEngine::Method::Default:
 			return 0;
-		case Net::SSLEngine::M_SSLV3:
+		case Net::SSLEngine::Method::SSLV3:
 			return SP_PROT_SSL3_SERVER;
-		case Net::SSLEngine::M_SSLV23:
+		case Net::SSLEngine::Method::SSLV23:
 			return SP_PROT_SSL2_SERVER;
 		#if defined(SP_PROT_TLS1_2)
-		case Net::SSLEngine::M_TLS:
+		case Net::SSLEngine::Method::TLS:
 			return SP_PROT_TLS1_1_SERVER;
-		case Net::SSLEngine::M_TLSV1:
+		case Net::SSLEngine::Method::TLSV1:
 			return SP_PROT_TLS1_0_SERVER;
-		case Net::SSLEngine::M_TLSV1_1:
+		case Net::SSLEngine::Method::TLSV1_1:
 			return SP_PROT_TLS1_1_SERVER;
-		case Net::SSLEngine::M_TLSV1_2:
+		case Net::SSLEngine::Method::TLSV1_2:
 			return SP_PROT_TLS1_2_SERVER;
-		case Net::SSLEngine::M_DTLS:
+		case Net::SSLEngine::Method::DTLS:
 			return SP_PROT_DTLS1_0_SERVER;
-		case Net::SSLEngine::M_DTLSV1:
+		case Net::SSLEngine::Method::DTLSV1:
 			return SP_PROT_DTLS1_0_SERVER;
-		case Net::SSLEngine::M_DTLSV1_2:
+		case Net::SSLEngine::Method::DTLSV1_2:
 			return SP_PROT_DTLS1_2_SERVER;
 		default:
 			return SP_PROT_TLS1_0_SERVER || SP_PROT_TLS1_1_SERVER || SP_PROT_TLS1_2_SERVER || SP_PROT_TLS1_3_SERVER;
 		#else
-		case Net::SSLEngine::M_TLS:
+		case Net::SSLEngine::Method::TLS:
 			return SP_PROT_TLS1;
-		case Net::SSLEngine::M_TLSV1:
+		case Net::SSLEngine::Method::TLSV1:
 			return SP_PROT_TLS1;
-		case Net::SSLEngine::M_TLSV1_1:
+		case Net::SSLEngine::Method::TLSV1_1:
 			return SP_PROT_TLS1;
-		case Net::SSLEngine::M_TLSV1_2:
+		case Net::SSLEngine::Method::TLSV1_2:
 			return SP_PROT_TLS1;
-		case Net::SSLEngine::M_DTLS:
+		case Net::SSLEngine::Method::DTLS:
 			return SP_PROT_TLS1;
-		case Net::SSLEngine::M_DTLSV1:
+		case Net::SSLEngine::Method::DTLSV1:
 			return SP_PROT_TLS1;
-		case Net::SSLEngine::M_DTLSV1_2:
+		case Net::SSLEngine::Method::DTLSV1_2:
 			return SP_PROT_TLS1;
 		default:
 			return SP_PROT_TLS1;
@@ -84,43 +84,43 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 	{
 		switch (method)
 		{
-		case Net::SSLEngine::M_DEFAULT:
+		case Net::SSLEngine::Method::Default:
 			return 0;
-		case Net::SSLEngine::M_SSLV3:
+		case Net::SSLEngine::Method::SSLV3:
 			return SP_PROT_SSL3_CLIENT;
-		case Net::SSLEngine::M_SSLV23:
+		case Net::SSLEngine::Method::SSLV23:
 			return SP_PROT_SSL3_CLIENT;
 		#if defined(SP_PROT_TLS1_2)
-		case Net::SSLEngine::M_TLS:
+		case Net::SSLEngine::Method::TLS:
 			return SP_PROT_TLS1_2_CLIENT;
-		case Net::SSLEngine::M_TLSV1:
+		case Net::SSLEngine::Method::TLSV1:
 			return SP_PROT_TLS1_0_CLIENT;
-		case Net::SSLEngine::M_TLSV1_1:
+		case Net::SSLEngine::Method::TLSV1_1:
 			return SP_PROT_TLS1_1_CLIENT;
-		case Net::SSLEngine::M_TLSV1_2:
+		case Net::SSLEngine::Method::TLSV1_2:
 			return SP_PROT_TLS1_2_CLIENT;
-		case Net::SSLEngine::M_DTLS:
+		case Net::SSLEngine::Method::DTLS:
 			return SP_PROT_DTLS1_2_CLIENT;
-		case Net::SSLEngine::M_DTLSV1:
+		case Net::SSLEngine::Method::DTLSV1:
 			return SP_PROT_DTLS1_0_CLIENT;
-		case Net::SSLEngine::M_DTLSV1_2:
+		case Net::SSLEngine::Method::DTLSV1_2:
 			return SP_PROT_DTLS1_2_CLIENT;
 		default:
 			return SP_PROT_TLS1_2_CLIENT;
 		#else
-		case Net::SSLEngine::M_TLS:
+		case Net::SSLEngine::Method::TLS:
 			return SP_PROT_TLS1_CLIENT;
-		case Net::SSLEngine::M_TLSV1:
+		case Net::SSLEngine::Method::TLSV1:
 			return SP_PROT_TLS1_CLIENT;
-		case Net::SSLEngine::M_TLSV1_1:
+		case Net::SSLEngine::Method::TLSV1_1:
 			return SP_PROT_TLS1_CLIENT;
-		case Net::SSLEngine::M_TLSV1_2:
+		case Net::SSLEngine::Method::TLSV1_2:
 			return SP_PROT_TLS1_CLIENT;
-		case Net::SSLEngine::M_DTLS:
+		case Net::SSLEngine::Method::DTLS:
 			return SP_PROT_TLS1_CLIENT;
-		case Net::SSLEngine::M_DTLSV1:
+		case Net::SSLEngine::Method::DTLSV1:
 			return SP_PROT_TLS1_CLIENT;
-		case Net::SSLEngine::M_DTLSV1_2:
+		case Net::SSLEngine::Method::DTLSV1_2:
 			return SP_PROT_TLS1_CLIENT;
 		default:
 			return SP_PROT_TLS1_CLIENT;
@@ -901,9 +901,9 @@ Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Cryp
 
 	this->DeinitClient();
 	if (!this->InitClient(this->clsData->method, (void*)serverCert) &&
-			!this->InitClient(M_TLSV1_2, (void*)serverCert) &&
-			!this->InitClient(M_TLSV1_1, (void*)serverCert) &&
-			!this->InitClient(M_TLSV1, (void*)serverCert))
+			!this->InitClient(Method::TLSV1_2, (void*)serverCert) &&
+			!this->InitClient(Method::TLSV1_1, (void*)serverCert) &&
+			!this->InitClient(Method::TLSV1, (void*)serverCert))
 	{
 		CertFreeCertificateContext(serverCert);
 		CryptDestroyKey(hKey);
@@ -928,9 +928,9 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	if (!this->clsData->cliInit)
 	{
 		if (!this->InitClient(this->clsData->method, 0) &&
-			!this->InitClient(M_TLSV1_2, 0) &&
-			!this->InitClient(M_TLSV1_1, 0) &&
-			!this->InitClient(M_TLSV1, 0))
+			!this->InitClient(Method::TLSV1_2, 0) &&
+			!this->InitClient(Method::TLSV1_1, 0) &&
+			!this->InitClient(Method::TLSV1, 0))
 		{
 			return 0;
 		}
@@ -942,7 +942,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	if (!this->sockf->DNSResolveIP(hostName, &addr))
 	{
 		if (err)
-			*err = ET_HOSTNAME_NOT_RESOLVED;
+			*err = ErrorType::HostnameNotResolved;
 		return 0;
 	}
 	if (addr.addrType == Net::SocketUtil::AT_IPV4)
@@ -956,20 +956,20 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	else
 	{
 		if (err)
-			*err = ET_HOSTNAME_NOT_RESOLVED;
+			*err = ErrorType::HostnameNotResolved;
 		return 0;
 	}
 	if (s == 0)
 	{
 		if (err)
-			*err = ET_OUT_OF_MEMORY;
+			*err = ErrorType::OutOfMemory;
 		return 0;
 	}
 	if (!this->sockf->Connect(s, &addr, port))
 	{
 		this->sockf->DestroySocket(s);
 		if (err)
-			*err = ET_CANNOT_CONNECT;
+			*err = ErrorType::CannotConnect;
 		return 0;
 	}
 	
@@ -981,9 +981,9 @@ Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, const UTF8Char *hostNam
 	if (!this->clsData->cliInit)
 	{
 		if (!this->InitClient(this->clsData->method, 0) &&
-			!this->InitClient(M_TLSV1_2, 0) &&
-			!this->InitClient(M_TLSV1_1, 0) &&
-			!this->InitClient(M_TLSV1, 0))
+			!this->InitClient(Method::TLSV1_2, 0) &&
+			!this->InitClient(Method::TLSV1_1, 0) &&
+			!this->InitClient(Method::TLSV1, 0))
 		{
 			return 0;
 		}
@@ -1096,4 +1096,45 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return true;
+}
+
+Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
+{
+	HCRYPTKEY hKey;
+	HCRYPTPROV hProv;
+	UInt8 privKeyBuff[2048];
+	DWORD privKeySize = 2048;
+	UInt8 certBuff[4096];
+	DWORD certBuffSize = 4096;
+	if (!CryptAcquireContext(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	{
+		if (!CryptAcquireContext(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
+		{
+			return 0;
+		}
+	}
+	if (!CryptGenKey(hProv, AT_SIGNATURE, 0x08000000 | CRYPT_EXPORTABLE, &hKey))
+	{
+		CryptReleaseContext(hProv, 0);
+		return 0;
+	}
+
+	if (!CryptExportKey(hKey, 0, PRIVATEKEYBLOB, 0, privKeyBuff, &privKeySize))
+	{
+		CryptDestroyKey(hKey);
+		CryptReleaseContext(hProv, 0);
+		return 0;
+	}
+	if (!CryptEncodeObjectEx(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, PKCS_RSA_PRIVATE_KEY, privKeyBuff, 0, 0, certBuff, &certBuffSize))
+	{
+		CryptDestroyKey(hKey);
+		CryptReleaseContext(hProv, 0);
+		return 0;
+	}
+
+	Crypto::Cert::X509Key *key;
+	NEW_CLASS(key, Crypto::Cert::X509Key((const UTF8Char*)"RSAGen", certBuff, certBuffSize, Crypto::Cert::X509File::KeyType::RSA));
+	CryptDestroyKey(hKey);
+	CryptReleaseContext(hProv, 0);
+	return key;
 }

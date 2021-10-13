@@ -43,22 +43,22 @@ IO::ParsedObject *Parser::FileParser::SPDParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 	Text::StrConcat(&sbuff[i], (const UTF8Char*)".sps");
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 	Text::StrConcat(&sbuff[i], (const UTF8Char*)".spi");
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 	Text::StrConcat(&sbuff[i], (const UTF8Char*)".spb");
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PT_FILE)
+	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}

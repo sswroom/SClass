@@ -301,7 +301,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
 					u8ptr = Text::StrConcat(u8ptr, cpuModel);
 
-					if (IO::Path::GetPathType(path) == IO::Path::PT_UNKNOWN)
+					if (IO::Path::GetPathType(path) == IO::Path::PathType::Unknown)
 					{
 						NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fileSize == fs->Write(fileBuff, fileSize))
@@ -363,7 +363,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		IO::Path::PathType pt;
 		while (IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0))
 		{
-			if (pt == IO::Path::PT_FILE)
+			if (pt == IO::Path::PathType::File)
 			{
 				if (Text::StrStartsWith(u8ptr, (const UTF8Char*)"Unknown"))
 				{

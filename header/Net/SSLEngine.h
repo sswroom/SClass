@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SSLENGINE
 #define _SM_NET_SSLENGINE
 #include "Crypto/Cert/X509File.h"
+#include "Crypto/Cert/X509Key.h"
 #include "Net/SSLClient.h"
 
 namespace Net
@@ -8,44 +9,44 @@ namespace Net
 	class SSLEngine
 	{
 	public:
-		typedef enum
+		enum class Method
 		{
-			M_DEFAULT,
-			M_SSLV3,
-			M_SSLV23,
-			M_TLS,
-			M_TLSV1,
-			M_TLSV1_1,
-			M_TLSV1_2,
-			M_DTLS,
-			M_DTLSV1,
-			M_DTLSV1_2
-		} Method;
+			Default,
+			SSLV3,
+			SSLV23,
+			TLS,
+			TLSV1,
+			TLSV1_1,
+			TLSV1_2,
+			DTLS,
+			DTLSV1,
+			DTLSV1_2
+		};
 
-		typedef enum
+		enum class ErrorType
 		{
-			ET_NONE,
-			ET_HOSTNAME_NOT_RESOLVED,
-			ET_OUT_OF_MEMORY,
-			ET_CANNOT_CONNECT,
-			ET_INIT_SESSION,
-			ET_CERT_NOT_FOUND,
-			ET_INVALID_NAME,
-			ET_SELF_SIGN,
-			ET_INVALID_PERIOD
-		} ErrorType;
+			None,
+			HostnameNotResolved,
+			OutOfMemory,
+			CannotConnect,
+			InitSession,
+			CertNotFound,
+			InvalidName,
+			SelfSign,
+			InvalidPeriod
+		};
 
-		typedef enum
+		enum class ThreadStatus
 		{
-			TS_NOT_RUNNING,
-			TS_STARTING,
-			TS_RUNNING,
-			TS_PROCESSING
-		} ThreadStatus;
+			NotRunning,
+			Starting,
+			Running,
+			Processing
+		};
 
 		typedef void (__stdcall *ClientReadyHandler)(Net::TCPClient *cli, void *userObj);
 
-		typedef struct
+		struct ThreadState
 		{
 			ThreadStatus status;
 			Socket *s;
@@ -53,7 +54,7 @@ namespace Net
 			void *clientReadyObj;
 			Sync::Event *evt;
 			SSLEngine *me;
-		} ThreadState;
+		};
 	protected:
 		Net::SocketFactory *sockf;
 		UOSInt maxThreadCnt;
@@ -76,6 +77,7 @@ namespace Net
 		virtual Net::SSLClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err) = 0;
 		virtual Net::SSLClient *ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err) = 0;
 		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
+		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
 
 		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
