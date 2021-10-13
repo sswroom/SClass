@@ -740,7 +740,8 @@ void WinSSLEngine_HCRYPTPROV_ToString(HCRYPTPROV hProv, Text::StringBuilderUTF *
 Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 	_In_ HCRYPTPROV hProv,
 	_In_ const UInt8 *pbKey,
-	_In_ ULONG cbKey)
+	_In_ ULONG cbKey,
+	Bool signature)
 {
 	ULONG cb;
 	PCRYPT_PRIVATE_KEY_INFO PrivateKeyInfo;
@@ -760,6 +761,10 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 
 		if (succ)
 		{
+			if (signature && ppks->aiKeyAlg == CALG_RSA_KEYX)
+			{
+				ppks->aiKeyAlg = CALG_RSA_SIGN;
+			}
 			succ = CryptImportKey(hProv, (PUCHAR)ppks, cb, 0, CRYPT_EXPORTABLE, phKey);
 			if (!succ)
 			{
@@ -819,7 +824,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 	}
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
-		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize(), false))
 		{
 			CryptReleaseContext(hProv, 0);
 			return false;
@@ -828,7 +833,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
-		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize(), false))
 		{
 			DEL_CLASS(privKey);
 			CryptReleaseContext(hProv, 0);
@@ -889,7 +894,7 @@ Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Cryp
 			return false;
 		}
 	}
-	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
+	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize(), false))
 	{
 		CryptReleaseContext(hProv, 0);
 		return false;
@@ -1188,7 +1193,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	}
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
-	if (!CryptAcquireContext(&hProv, 0, MS_ENH_RSA_AES_PROV, PROV_RSA_AES, CRYPT_VERIFYCONTEXT))
+	if (!CryptAcquireContext(&hProv, 0, MS_ENH_RSA_AES_PROV, PROV_RSA_AES, 0))// CRYPT_VERIFYCONTEXT))
 	{
 		if (!CryptAcquireContext(&hProv, 0, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
 		{
@@ -1199,7 +1204,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		}
 	}
 	Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
-	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize()))
+	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), true))
 	{
 #if defined(VERBOSE)
 		printf("SSL: Import Key failed\r\n");
@@ -1231,7 +1236,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		return false;
 	}
 	DWORD len = 512;
-	if (!CryptSignHash(hHash, AT_KEYEXCHANGE, 0, 0, signData, &len))
+	if (!CryptSignHash(hHash, AT_SIGNATURE, 0, 0, signData, &len))
 	{
 #if defined(VERBOSE)
 		UInt32 errCode = GetLastError();
@@ -1246,6 +1251,17 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	CryptReleaseContext(hProv, 0);
 	CryptDestroyHash(hHash);
 	CryptDestroyKey(hKey);
+	UOSInt i = 0;
+	UOSInt j = len - 1;
+	UInt8 t;
+	while (i < j)
+	{
+		t = signData[i];
+		signData[i] = signData[j];
+		signData[j] = t;
+		i++;
+		j--;
+	}
 #if defined(VERBOSE)
 	printf("SSL: Signature success, len = %d\r\n", (UInt32)len);
 #endif
